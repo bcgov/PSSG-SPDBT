@@ -1,0 +1,92 @@
+(common) {
+    header /* {
+        # remove server-identifying header
+        -Server
+
+        # disable FLoC tracking
+        Permissions-Policy interest-cohort=()
+
+        # Content-Security-Policy "default-src * data: blob: filesystem: 'unsafe-inline' 'unsafe-eval'";
+        Content-Security-Policy "default-src 'self'; base-uri 'self'; object-src 'self'; img-src 'self' https://* blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' *.tinymce.com *.tiny.cloud; style-src 'self' 'unsafe-inline' https://*; connect-src 'self' https://login.microsoftonline.com https://graph.microsoft.com *.tinymce.com *.tiny.cloud blob:; font-src 'self' https://fonts.gstatic.com *.tinymce.com *.tiny.cloud data:; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
+        
+        # enable HSTS
+        Strict-Transport-Security max-age=86400
+
+        # disable clients from sniffing the media type
+        X-Content-Type-Options nosniff
+
+        # clickjacking protection
+        X-Frame-Options DENY
+
+        # XSS protection
+        X-XSS-Protection 1
+
+        # keep referrer data off of HTTP connections
+        Referrer-Policy no-referrer-when-downgrade
+
+        # prevent cached content
+        Cache-Control no-store
+    }
+}
+
+{$WEB_HOST_NAME}:{$WEB_HOST_PORT} {
+    # Log everything to stdout
+    log {
+        output stdout
+    }
+
+    #  Set server root
+    root * /srv
+
+    # Enable serving static files
+    file_server
+
+    # Enable gzip, zstd compression
+    encode zstd gzip
+
+    # Enable templates module - required for 
+    templates
+
+    # Openly exposed health check endpoint
+    handle /health {
+        respond 200
+    }
+
+    # Openly exposed version endpoint
+    handle /version {
+        respond 200 {
+            body `{"version-tag": "{$VERSION_TAG}", "git-commit": "{$COMMIT_HASH}"}`
+            close
+        }
+    }
+
+    # Named matcher for backend paths
+    @backend {
+        path /api/*
+        path /swagger*
+    }
+
+    # Proxy requests to backend service
+    handle @backend {
+        reverse_proxy {$API_HOST}:{$API_PORT} {
+            header_up Host {upstream_hostport}
+            header_up X-Forwarded-Host {host}
+        }
+    }
+
+    # Proxy requests to notifications service, removing path prefix
+    handle_path /messagerelay/* {
+        reverse_proxy {$MESSAGE_RELAY_HOST}:{$MESSAGE_RELAY_PORT} {
+            header_up Host {upstream_hostport}
+            header_up X-Forwarded-Host {host}
+        }
+    }
+
+    # Handle requests for Angular router
+    handle {
+		try_files {path} /index.html
+		file_server
+	}
+
+    import common
+}

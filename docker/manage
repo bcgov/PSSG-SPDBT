@@ -1,0 +1,234 @@
+#!/bin/bash
+export MSYS_NO_PATHCONV=1
+# getDockerHost; for details refer to https://github.com/bcgov/DITP-DevOps/tree/main/code/snippets#getdockerhost
+. /dev/stdin <<<"$(cat <(curl -s --raw https://raw.githubusercontent.com/bcgov/DITP-DevOps/main/code/snippets/getDockerHost))" 
+export DOCKERHOST=$(getDockerHost)
+export COMPOSE_PROJECT_NAME="rsvp-cms"
+set -e
+
+SCRIPT_HOME="$(cd "$(dirname "$0")" && pwd)"
+
+usage() {
+  cat <<-EOF
+    
+      Usage: $0 [command] [options]
+    
+      Commands:
+    
+      logs - Display the logs from the docker compose run (ctrl-c to exit).
+
+      start - Runs the containers in production mode.
+
+      up - Same as start.
+
+      start-dev - Runs a live development version of the containers, with hot-reloading
+              enabled.
+
+      start-api - Only starts the backend components in production mode.
+
+      start-api-dev - Only starts the backend components in development mode, with hot-reloading enabled.
+
+      build - Build the docker images for the project.
+    
+              Components can be built individually, as shown below.
+    
+              Examples:
+                - Build only the backend.
+    
+                $0 build backend
+         
+              By default all containers that components comprise of, will be rebuilt.
+    
+                $0 build
+              Containers:
+                - backend
+                - backend-dev
+                - frontend
+
+      stop - Stops the services.  This is a non-destructive process.  The volumes and containers
+             are not deleted so they will be reused the next time you run start.
+    
+      down - Brings down the services and removes the volumes (storage) and containers.
+
+      rm - Same as down
+
+      seed - Seeds the database with test data.
+EOF
+  exit 1
+}
+
+# Default settings
+DEFAULT_CONTAINERS="db blobstorage cache clamav-server pdf maildev"
+PROD_CONTAINERS="backend frontend"
+DEV_CONTAINERS="backend-dev frontend-dev"
+
+# Function definition START
+
+build-backend() {
+  echo -e "\nBuilding rsvp-cms-backend image..."
+  docker build --rm \
+    --build-arg VERSION_TAG=$(getGitTagName) \
+    --build-arg COMMIT_HASH=$(getCommitHash) \
+    -t 'rsvp-cms-backend' \
+    -f '../docker/backend/Dockerfile.production' '../'
+}
+
+build-backend-dev() {
+  echo -e "\nBuilding rsvp-cms-backend-dev image..."
+  docker build --rm \
+    -t 'rsvp-cms-backend-dev' \
+    -f '../docker/backend/Dockerfile' '../'
+}
+
+build-frontend() {
+  echo -e "\nBuilding rsvp-cms-frontend image..."
+  docker build --rm \
+    --build-arg VERSION_TAG=$(getGitTagName) \
+    --build-arg COMMIT_HASH=$(getCommitHash) \
+    -t 'rsvp-cms-frontend' \
+    -f '../docker/frontend/Dockerfile.production' '../'
+}
+
+build-all() {
+  build-backend
+  build-backend-dev
+  build-frontend
+}
+
+getGitTagName() {
+  echo $(git describe --tag)
+}
+
+getCommitHash() {
+  echo $(git show -s --format=%h)
+}
+
+getStartupParams() {
+  CONTAINERS=""
+  ARGS=""
+
+  for arg in $@; do
+    case "$arg" in
+    *=*)
+      # Skip it
+      ;;
+    -*)
+      ARGS+=" $arg"
+      ;;
+    *)
+      # Skip it
+      ;;
+    esac
+  done
+
+  echo ${ARGS}
+}
+
+deleteVolumes() {
+  _projectName=${COMPOSE_PROJECT_NAME:-docker}
+
+  echo "Stopping and removing any running containers ..."
+  docker-compose down -v
+
+  _pattern="^${_projectName}_\|^docker_"
+  _volumes=$(docker volume ls -q | grep ${_pattern})
+
+  if [ ! -z "${_volumes}" ]; then
+    echo "Removing project volumes ..."
+    echo ${_volumes} | xargs docker volume rm
+  else
+    echo "No project volumes exist."
+  fi
+}
+
+toLower() {
+  echo $(echo ${@} | tr '[:upper:]' '[:lower:]')
+}
+
+echoError (){
+  _msg=${1}
+  _red='\033[0;31m'
+  _nc='\033[0m' # No Color
+  echo -e "${_red}${_msg}${_nc}" >&2
+}
+
+functionExists() {
+  (
+    if [ ! -z ${1} ] && type ${1} &>/dev/null; then
+      return 0
+    else
+      return 1
+    fi
+  )
+}
+
+seedData() {
+  echo "Seeding database with test data..."
+  docker exec -it rsvp-cms_db_1 /bin/bash -c '/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${SA_PASSWORD} -d ${DATABASE_NAME} -i /tmp/db/dummy-test-data.sql'
+  echo "Done!"
+}
+
+# Function definition END
+
+pushd "${SCRIPT_HOME}" >/dev/null
+COMMAND=$(toLower ${1})
+shift || COMMAND=usage
+
+_startupParams=$(getStartupParams $@)
+
+case "${COMMAND}" in
+  logs)
+    docker-compose logs -f
+    ;;
+  build)
+    buildImage=$(toLower ${1})
+    shift || buildImage=all
+    buildImage=$(echo ${buildImage} | sed s~^cms-~~)
+    case "$buildImage" in
+      *=*)
+        buildImage=all
+        ;;
+    esac
+
+    if functionExists "build-${buildImage}"; then
+      eval "build-${buildImage}"
+    else
+      echoError "\nThe build function, build-${buildImage}, does not exist.  Please check your build parameters and try again.\nUse '-h' to get full help details."
+      exit 1
+    fi
+    ;;
+  start|up)
+    _startupParams="--build --force-recreate ${_startupParams}"
+    docker-compose up -d ${_startupParams} $DEFAULT_CONTAINERS $PROD_CONTAINERS
+    docker-compose logs -f
+    ;;
+  start-api)
+    _startupParams="--build --force-recreate ${_startupParams}"
+    docker-compose up -d ${_startupParams} $DEFAULT_CONTAINERS backend
+    docker-compose logs -f
+    ;;
+  start-api-dev)
+    _startupParams="--build --force-recreate ${_startupParams}"
+    docker-compose up -d ${_startupParams} $DEFAULT_CONTAINERS backend-dev
+    docker-compose logs -f
+    ;;
+  start-dev)
+    _startupParams="--build --force-recreate ${_startupParams}"
+    docker-compose up -d ${_startupParams} $DEFAULT_CONTAINERS $DEV_CONTAINERS
+    docker-compose logs -f
+    ;;
+  stop)
+    docker-compose stop 
+    ;;
+  rm|down)
+    deleteVolumes
+    ;;
+  seed)
+    seedData 
+    ;;
+  *)
+    usage
+    ;;
+esac
+
+popd >/dev/null

@@ -1,0 +1,92 @@
+#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
+
+ARG VERSION_TAG=undefined
+ARG COMMIT_HASH=undefined
+
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+WORKDIR /app
+EXPOSE 80
+
+ARG VERSION_TAG
+ARG COMMIT_HASH
+
+ENV VERSION_TAG=$VERSION_TAG
+ENV COMMIT_HASH=$COMMIT_HASH
+
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+
+#  Copy solution file
+COPY backend/Rsvp.Cms.sln .
+
+# Copy app project files
+COPY backend/Rsvp.Cms.Api/Rsvp.Cms.Api.csproj Rsvp.Cms.Api/
+COPY backend/Rsvp.Cms.Audit.Data/Rsvp.Cms.Audit.Data.csproj Rsvp.Cms.Audit.Data/
+COPY backend/Rsvp.Cms.Audit.Entities/Rsvp.Cms.Audit.Entities.csproj Rsvp.Cms.Audit.Entities/
+COPY backend/Rsvp.Cms.Common/Rsvp.Cms.Common.csproj Rsvp.Cms.Common/
+COPY backend/Rsvp.Cms.Data/Rsvp.Cms.Data.csproj Rsvp.Cms.Data/
+COPY backend/Rsvp.Cms.Data.Seeder/Rsvp.Cms.Data.Seeder.csproj Rsvp.Cms.Data.Seeder/
+COPY backend/Rsvp.Cms.DocumentStorage/Rsvp.Cms.DocumentStorage.csproj Rsvp.Cms.DocumentStorage/
+COPY backend/Rsvp.Cms.Entities/Rsvp.Cms.Entities.csproj Rsvp.Cms.Entities/
+COPY backend/Rsvp.Cms.Services/Rsvp.Cms.Services.csproj Rsvp.Cms.Services/
+COPY backend/Rsvp.Cms.UserInterface/Rsvp.Cms.UserInterface.csproj Rsvp.Cms.UserInterface/
+COPY backend/Rsvp.Cms.VacApiInterface/Rsvp.Cms.VacApiInterface.csproj Rsvp.Cms.VacApiInterface/
+COPY backend/Rsvp.Shared.ApiWrapper/Rsvp.Shared.ApiWrapper.csproj Rsvp.Shared.ApiWrapper/
+COPY backend/Rsvp.Shared.Logging/Rsvp.Shared.Logging.csproj Rsvp.Shared.Logging/
+COPY backend/Rsvp.Cms.RulesManagement/Rsvp.Cms.RulesManagement.csproj Rsvp.Cms.RulesManagement/
+COPY backend/Rsvp.Cms.Transformations/Rsvp.Cms.Transformations.csproj Rsvp.Cms.Transformations/
+
+# Copy test project files
+COPY backend/Rsvp.Cms.Common.UnitTests/Rsvp.Cms.Common.UnitTests.csproj Rsvp.Cms.Common.UnitTests/
+COPY backend/Rsvp.Cms.Data.Seeder.UnitTests/Rsvp.Cms.Data.Seeder.UnitTests.csproj Rsvp.Cms.Data.Seeder.UnitTests/
+COPY backend/Rsvp.Cms.DocumentStorage.IntegrationTests/Rsvp.Cms.DocumentStorage.IntegrationTests.csproj Rsvp.Cms.DocumentStorage.IntegrationTests/
+COPY backend/Rsvp.Cms.Services.UnitTests/Rsvp.Cms.Services.UnitTests.csproj Rsvp.Cms.Services.UnitTests/
+COPY backend/Rsvp.Cms.Services.IntegrationTests/Rsvp.Cms.Services.IntegrationTests.csproj Rsvp.Cms.Services.IntegrationTests/
+COPY backend/Rsvp.Cms.Tests/Rsvp.Cms.Tests.csproj Rsvp.Cms.Tests/
+COPY backend/Rsvp.Cms.UserInterface.IntegrationTests/Rsvp.Cms.UserInterface.IntegrationTests.csproj Rsvp.Cms.UserInterface.IntegrationTests/
+COPY backend/Rsvp.Cms.Api.UnitTests/Rsvp.Cms.Api.UnitTests.csproj Rsvp.Cms.Api.UnitTests/
+COPY backend/Rsvp.Cms.RulesManagement.UnitTests/Rsvp.Cms.RulesManagement.UnitTests.csproj Rsvp.Cms.RulesManagement.UnitTests/
+
+# Restore solution's nuget packages and copy all files
+RUN dotnet restore Rsvp.Cms.sln
+COPY backend/ .
+
+# Build solution
+WORKDIR /src/Rsvp.Cms.Api
+RUN dotnet build "Rsvp.Cms.Api.csproj" -c Release --no-restore -o /app/build
+
+# Run test
+WORKDIR /src
+# Copy form-template files
+COPY form-templates form-templates/
+COPY workflow-configurations workflow-configurations/
+COPY pdf-templates pdf-templates/
+COPY email-templates email-templates/
+COPY backend/Rsvp.Cms.RulesManagement/Workflows Workflows/
+LABEL test=true
+RUN dotnet test -c Release --no-restore \
+    --filter UnitTests \
+    --results-directory /testresults \
+    --logger "trx;LogFileName=Rsvp.Cms.UnitTests.trx" \
+    /p:CollectCoverage=true \
+    /p:CoverletOutputFormat=\"json,cobertura\" \
+    /p:CoverletOutput=/testresults/coverage/ \
+    -p:MergeWith=/testresults/coverage/coverage.json \
+    Rsvp.Cms.sln 
+
+FROM build AS publish
+WORKDIR /src/Rsvp.Cms.Api
+RUN dotnet publish "Rsvp.Cms.Api.csproj" -c Release --no-restore -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+# Copy form-template files
+COPY form-templates form-templates/
+# Copy workflow-configurations files
+COPY workflow-configurations workflow-configurations/
+# Copy pdf-template files
+COPY pdf-templates pdf-templates/
+# Copy email-templates files
+COPY email-templates email-templates/
+ENTRYPOINT ["dotnet", "Rsvp.Cms.Api.dll"]
