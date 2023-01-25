@@ -1,0 +1,14 @@
+{
+  "production": true,
+  "environment": "local",
+  "rootUrl": "",
+  "authentication": {
+    "issuer": "https://login.microsoftonline.com/57b68a03-0d3b-4b64-ad06-66d0834b1516/v2.0",
+    "clientId": "d20e3e73-891a-4b92-8ce4-05e0d0e6127a",
+    "scope": "openid profile email offline_access",
+    "requireHttps": true,
+    "showDebugInformation": true
+  },
+  "eligibilityChecklistUrl": "https://wcginternational.sharepoint.com/sites/RehabilitationImplementation/Shared Documents/CMS_RESOURCES/",
+  "israChecklistUrl": "https://wcginternational.sharepoint.com/sites/RehabilitationImplementation/Shared Documents/CMS_RESOURCES/"
+}
