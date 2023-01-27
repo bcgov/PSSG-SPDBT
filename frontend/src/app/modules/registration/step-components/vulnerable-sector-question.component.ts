@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component } from '@angular/core';
 import { RegistrationFormStepComponent } from '../registration.component';
 
 export class VulnerableSectorQuestionModel {
@@ -10,15 +10,15 @@ export class VulnerableSectorQuestionModel {
 	template: `
 		<div class="step">
 			<div class="title mb-5">Tell us a bit more about your employees:</div>
-			<div class="row">
+			<div class="step-container row">
 				<div class="col-md-3 col-sm-6 mb-3">
 					<div
-						class="vulnerable-sector-question__box"
+						class="step-container__box"
 						(click)="onDataChange('CHILDREN')"
-						[ngClass]="{ 'active-selection': stepData.employeeInteractionFlag == 'CHILDREN' }"
+						[ngClass]="{ 'active-selection': employeeInteractionFlag == 'CHILDREN' }"
 					>
 						<ng-container *ngIf="displayHelp1; else noHelp1">
-							<div class="vulnerable-sector-question__box__info">
+							<div class="step-container__box__info">
 								<mat-icon class="info-icon" (click)="onViewHelp1($event)">close</mat-icon>
 							</div>
 							<div class="px-2 pb-3">
@@ -28,7 +28,7 @@ export class VulnerableSectorQuestionModel {
 							</div>
 						</ng-container>
 						<ng-template #noHelp1>
-							<div class="vulnerable-sector-question__box__info">
+							<div class="step-container__box__info">
 								<mat-icon class="info-icon" (click)="onViewHelp1($event)">help_outline</mat-icon>
 							</div>
 							<div class="px-2 pb-3">
@@ -40,12 +40,12 @@ export class VulnerableSectorQuestionModel {
 				</div>
 				<div class="col-md-3 col-sm-6 mb-3">
 					<div
-						class="vulnerable-sector-question__box"
+						class="step-container__box"
 						(click)="onDataChange('ADULTS')"
-						[ngClass]="{ 'active-selection': stepData.employeeInteractionFlag == 'ADULTS' }"
+						[ngClass]="{ 'active-selection': employeeInteractionFlag == 'ADULTS' }"
 					>
 						<ng-container *ngIf="displayHelp2; else noHelp2">
-							<div class="vulnerable-sector-question__box__info">
+							<div class="step-container__box__info">
 								<mat-icon class="info-icon" (click)="onViewHelp2($event)">close</mat-icon>
 							</div>
 							<div class="px-2 pb-3">
@@ -53,7 +53,7 @@ export class VulnerableSectorQuestionModel {
 							</div>
 						</ng-container>
 						<ng-template #noHelp2>
-							<div class="vulnerable-sector-question__box__info">
+							<div class="step-container__box__info">
 								<mat-icon class="info-icon" (click)="onViewHelp2($event)">help_outline</mat-icon>
 							</div>
 							<div class="px-2 pb-3">
@@ -65,10 +65,10 @@ export class VulnerableSectorQuestionModel {
 				</div>
 				<div class="col-md-3 col-sm-6 mb-3">
 					<div
-						class="vulnerable-sector-question__box px-2 pb-3"
+						class="step-container__box px-2 pb-3"
 						style="padding-top: 32px;"
 						(click)="onDataChange('CHILDREN_ADULTS')"
-						[ngClass]="{ 'active-selection': stepData.employeeInteractionFlag == 'CHILDREN_ADULTS' }"
+						[ngClass]="{ 'active-selection': employeeInteractionFlag == 'CHILDREN_ADULTS' }"
 					>
 						<div class="info-icon"><mat-icon>diversity_3</mat-icon></div>
 						My employees work with <strong>children and vulnerable adults</strong>
@@ -76,77 +76,41 @@ export class VulnerableSectorQuestionModel {
 				</div>
 				<div class="col-md-3 col-sm-6 mb-3">
 					<div
-						class="vulnerable-sector-question__box px-2 pb-3"
+						class="step-container__box px-2 pb-3"
 						style="padding-top: 32px;"
 						(click)="onDataChange('NEITHER')"
-						[ngClass]="{ 'active-selection': stepData.employeeInteractionFlag == 'NEITHER' }"
+						[ngClass]="{ 'active-selection': employeeInteractionFlag == 'NEITHER' }"
 					>
 						<div class="info-icon"><mat-icon>person_off</mat-icon></div>
 						My employee <strong>do not work</strong> with children or vulnerable adults
 					</div>
 				</div>
 			</div>
+			<mat-error style="text-align: center;" *ngIf="isDirtyAndInvalid">An option must be selected</mat-error>
 		</div>
 	`,
-	styles: [
-		`
-			.info-icon {
-				display: block;
-				text-align: center;
-
-				.mat-icon {
-					color: var(--color-primary);
-					font-size: 50px;
-					height: 50px;
-					width: 50px;
-				}
-			}
-
-			.vulnerable-sector-question {
-				&__box {
-					height: 100%;
-					border-radius: 4px;
-					border: 1px solid grey;
-					box-shadow: 0 3px 1px -2px #0003, 0 2px 2px #00000024, 0 1px 5px #0000001f;
-					text-align: center;
-
-					&__info {
-						padding: 4px;
-						display: grid;
-						justify-content: end;
-					}
-				}
-
-				&__box:hover {
-					color: var(--color-primary-light);
-					box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
-
-					mat-icon {
-						color: var(--color-primary-light);
-					}
-				}
-			}
-		`,
-	],
+	styles: [],
 })
 export class VulnerableSectorQuestionComponent implements RegistrationFormStepComponent {
+	employeeInteractionFlag: string | null = null;
+	isDirtyAndInvalid = false;
 	displayHelp1 = false;
 	displayHelp2 = false;
 
-	@Input() stepData!: VulnerableSectorQuestionModel;
-	@Output() formValidity: EventEmitter<boolean> = new EventEmitter<boolean>();
-
 	onDataChange(_val: string) {
-		this.stepData.employeeInteractionFlag = _val;
-		this.formValidity.emit(this.isFormValid());
+		this.employeeInteractionFlag = _val;
+		const isValid = this.isFormValid();
+		this.isDirtyAndInvalid = !isValid;
 	}
 
 	getDataToSave(): any {
-		return this.stepData;
+		return { employeeInteractionFlag: this.employeeInteractionFlag };
 	}
 
 	isFormValid(): boolean {
-		return this.stepData.employeeInteractionFlag ? true : false;
+		const isValid = this.employeeInteractionFlag ? true : false;
+		this.isDirtyAndInvalid = !isValid;
+		return isValid;
 	}
 
 	onViewHelp1(event: any): void {

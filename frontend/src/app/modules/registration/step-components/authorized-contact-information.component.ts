@@ -1,84 +1,81 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { UntilDestroy } from '@ngneat/until-destroy';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { RegistrationFormStepComponent } from '../registration.component';
 
 export class AuthorizedContactModel {
-	givenName: string = '';
-	surname: string = '';
-	jobTitle: string = '';
-	email: string = '';
-	day: string = '';
-	month: string = '';
-	year: string = '';
-	areaCode: string = '';
-	phoneNumber: string = '';
-	ext: string = '';
+	contactGivenName: string = '';
+	contactSurname: string = '';
+	contactJobTitle: string = '';
+	contactEmail: string = '';
+	contactDateOfBirth: string = '';
+	contactPhoneNumber: string = '';
+	contactPhoneExt: string = '';
 }
 
-@UntilDestroy({ checkProperties: true })
 @Component({
 	selector: 'app-authorized-contact-information',
 	template: `
-		<form [formGroup]="form">
+		<form [formGroup]="form" novalidate>
 			<div class="step">
 				<div class="title mb-5">Please provide your work contact information:</div>
 				<div class="row">
 					<div class="offset-md-2 col-md-4 col-sm-12">
 						<mat-form-field>
-							<input matInput formControlName="givenName" placeholder="Given Name" />
+							<mat-label>Given Name</mat-label>
+							<input matInput formControlName="contactGivenName" maxlength="40" />
+							<mat-error *ngIf="form.get('contactGivenName')?.hasError('required')">Required</mat-error>
+							<mat-error *ngIf="form.get('contactGivenName')?.hasError('pattern')"
+								>Only characters are allowed</mat-error
+							>
 						</mat-form-field>
 					</div>
 					<div class="col-md-4 col-sm-12">
 						<mat-form-field>
-							<input matInput formControlName="surname" placeholder="Surname" />
+							<mat-label>Surname</mat-label>
+							<input matInput formControlName="contactSurname" maxlength="40" />
+							<mat-error *ngIf="form.get('contactSurname')?.hasError('required')">Required</mat-error>
+							<mat-error *ngIf="form.get('contactSurname')?.hasError('pattern')">Only characters are allowed</mat-error>
 						</mat-form-field>
 					</div>
 				</div>
 				<div class="row">
 					<div class="offset-md-2 col-md-4 col-sm-12">
 						<mat-form-field>
-							<input matInput formControlName="jobTitle" placeholder="Job Title" />
+							<mat-label>Job Title</mat-label>
+							<input matInput formControlName="contactJobTitle" maxlength="100" />
+							<mat-error *ngIf="form.get('contactJobTitle')?.hasError('required')">Required</mat-error>
 						</mat-form-field>
 					</div>
 					<div class="col-md-4 col-sm-12">
 						<mat-form-field>
-							<input matInput formControlName="email" placeholder="Your Work Email Address" />
+							<mat-label>Your Work Email Address</mat-label>
+							<input matInput formControlName="contactEmail" placeholder="name@domain.com" maxlength="75" />
+							<mat-error *ngIf="form.get('contactEmail')?.hasError('email')"> Must be a valid email address </mat-error>
+							<mat-error *ngIf="form.get('contactEmail')?.hasError('required')">Required</mat-error>
 						</mat-form-field>
 					</div>
 				</div>
 				<div class="row">
 					<div class="offset-md-2 col-md-2 col-sm-12">
 						<mat-form-field>
-							<input matInput formControlName="day" placeholder="Day" />
+							<mat-label>Date of Birth</mat-label>
+							<input matInput [matDatepicker]="picker" formControlName="contactDateOfBirth" />
+							<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+							<mat-datepicker #picker startView="multi-year" [startAt]="startDate"></mat-datepicker>
+							<mat-error *ngIf="form.get('contactDateOfBirth')?.hasError('required')">Required</mat-error>
 						</mat-form-field>
 					</div>
 					<div class="col-md-3 col-sm-12">
 						<mat-form-field>
-							<input matInput formControlName="month" placeholder="Month" />
+							<mat-label>Direct Phone Number</mat-label>
+							<input matInput formControlName="contactPhoneNumber" mask="(000) 000-0000" [showMaskTyped]="true" />
+							<mat-error *ngIf="form.get('contactPhoneNumber')?.hasError('required')">Required</mat-error>
 						</mat-form-field>
 					</div>
 					<div class="col-md-3 col-sm-12">
 						<mat-form-field>
-							<input matInput formControlName="year" placeholder="Year" />
-						</mat-form-field>
-					</div>
-				</div>
-				<div class="row">
-					<div class="offset-md-2 col-md-2 col-sm-12">
-						<mat-form-field>
-							<input matInput formControlName="areaCode" placeholder="Area Code" />
-						</mat-form-field>
-					</div>
-					<div class="col-md-3 col-sm-12">
-						<mat-form-field>
-							<input matInput formControlName="phoneNumber" placeholder="Direct Phone Number" />
-							<mat-hint>XXX-XXX-XXXX</mat-hint>
-						</mat-form-field>
-					</div>
-					<div class="col-md-3 col-sm-12">
-						<mat-form-field>
-							<input matInput formControlName="ext" placeholder="Ext." />
+							<mat-label>Ext. (optional)</mat-label>
+							<input matInput formControlName="contactPhoneExt" />
 						</mat-form-field>
 					</div>
 				</div>
@@ -90,36 +87,27 @@ export class AuthorizedContactModel {
 export class AuthorizedContactInformationComponent implements OnInit, RegistrationFormStepComponent {
 	form!: FormGroup;
 
-	@Input() stepData!: AuthorizedContactModel;
-	@Output() formValidity: EventEmitter<boolean> = new EventEmitter<boolean>();
+	startDate = new Date(2000, 0, 1);
 
 	constructor(private formBuilder: FormBuilder) {}
 
 	ngOnInit(): void {
 		this.form = this.formBuilder.group({
-			givenName: new FormControl(''),
-			surname: new FormControl(''),
-			jobTitle: new FormControl(''),
-			email: new FormControl(''),
-			day: new FormControl(''),
-			month: new FormControl(''),
-			year: new FormControl(''),
-			areaCode: new FormControl(''),
-			phoneNumber: new FormControl(''),
-			ext: new FormControl(''),
-		});
-
-		this.form.valueChanges.subscribe((_val: any) => {
-			this.stepData = this.form.value;
-			this.formValidity.emit(this.isFormValid());
+			contactGivenName: new FormControl('', [Validators.pattern("^[a-zA-Z -']+"), Validators.required]),
+			contactSurname: new FormControl('', [Validators.pattern("^[a-zA-Z -']+"), Validators.required]),
+			contactJobTitle: new FormControl('', [Validators.required]),
+			contactEmail: new FormControl('', [Validators.email, Validators.required]),
+			contactDateOfBirth: new FormControl('', [Validators.required]),
+			contactPhoneNumber: new FormControl('', [Validators.required]),
+			contactPhoneExt: new FormControl(''),
 		});
 	}
 
 	getDataToSave(): any {
-		return this.stepData;
+		return this.form.value;
 	}
 
 	isFormValid(): boolean {
-		return this.stepData.surname ? true : false;
+		return this.form.valid;
 	}
 }

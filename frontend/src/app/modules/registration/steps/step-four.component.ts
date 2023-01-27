@@ -7,25 +7,14 @@ import { AgreementOfTermsComponent, AgreementOfTermsModel } from '../step-compon
 	template: `
 		<mat-stepper class="child-stepper" #childstepper>
 			<mat-step>
-				<app-agreement-of-terms
-					[stepData]="agreementOfTermsData"
-					(formValidity)="onAgreementOfTermsValidity($event)"
-				></app-agreement-of-terms>
+				<app-agreement-of-terms></app-agreement-of-terms>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button
-							mat-raised-button
-							color="primary"
-							class="large mb-2"
-							[disabled]="!isFormValid14"
-							(click)="onSaveNext()"
-						>
-							Save
-						</button>
+						<button mat-raised-button color="primary" class="large mb-2" (click)="onSaveNext()">Save</button>
 					</div>
 				</div>
 			</mat-step>
@@ -59,6 +48,12 @@ export class StepFourComponent {
 
 	@ViewChild('childstepper') private childstepper!: MatStepper;
 
+	getStepData(): any {
+		return {
+			...this.agreementOfTermsComponent.getDataToSave(),
+		};
+	}
+
 	onAgreementOfTermsValidity(isFormValid: boolean): void {
 		this.isFormValid14 = isFormValid;
 		if (isFormValid) {
@@ -75,6 +70,9 @@ export class StepFourComponent {
 	}
 
 	onSaveNext(): void {
+		this.agreementOfTermsComponent.form.markAllAsTouched();
+		const isValid = this.agreementOfTermsComponent.isFormValid();
+		if (!isValid) return;
 		this.saveStepperStep.emit(true);
 	}
 }

@@ -11,7 +11,7 @@ import { Component } from '@angular/core';
 				<div class="offset-md-2 col-md-8 col-sm-12">
 					<table class="mb-4">
 						<tr>
-							<td class="point__icon mr-4"><mat-icon>check</mat-icon></td>
+							<td class="point__icon mr-4"><mat-icon>find_in_page</mat-icon></td>
 							<td>
 								Your application will be reviewed by our security screening staff. If we need any more information,
 								we'll contact you.
@@ -19,53 +19,26 @@ import { Component } from '@angular/core';
 						</tr>
 						<tr>
 							<td colspan="2">
-								<mat-divider class="my-3"></mat-divider>
+								<mat-divider vertical class="pl-4 divider"></mat-divider>
 							</td>
 						</tr>
 						<tr>
-							<td class="point__icon"><mat-icon>check</mat-icon></td>
+							<td class="point__icon"><mat-icon>task_alt</mat-icon></td>
 							<td>Check on your application status and get updates on progress.</td>
 						</tr>
 						<tr>
 							<td colspan="2">
-								<mat-divider class="my-3"></mat-divider>
+								<mat-divider vertical class="pl-4 divider"></mat-divider>
 							</td>
 						</tr>
 						<tr>
-							<td class="point__icon"><mat-icon>check</mat-icon></td>
+							<td class="point__icon"><mat-icon>connect_without_contact</mat-icon></td>
 							<td>
 								If your registration is approved, we'll send a link to the organization portal for you to manage all of
 								your screenings.
 							</td>
 						</tr>
 					</table>
-
-					<!-- <div class="point mb-4">
-						<div class="point__icon">
-							<mat-icon>check</mat-icon>
-						</div>
-						<div class="point__text">
-							Your application will be reviewed by our security screening staff. If we need any more information, we'll
-							contact you.
-						</div>
-					</div>
-
-					<div class="point mb-4">
-						<div class="point__icon">
-							<mat-icon>check</mat-icon>
-						</div>
-						<div class="point__text">Check on your application status and get updates on progress.</div>
-					</div>
-
-					<div class="point mb-4">
-						<div class="point__icon">
-							<mat-icon>check</mat-icon>
-						</div>
-						<div class="point__text">
-							If your registration is approved, we'll send a link to the organization portal for you to manage all of
-							your screenings.
-						</div>
-					</div> -->
 				</div>
 			</div>
 		</div>
@@ -75,6 +48,7 @@ import { Component } from '@angular/core';
 			.point {
 				&__icon {
 					display: inline-block;
+					color: green;
 
 					.mat-icon {
 						color: var(--color-primary);
@@ -86,6 +60,14 @@ import { Component } from '@angular/core';
 
 				&__text {
 				}
+			}
+
+			.divider {
+				min-height: 50px;
+				border-color: green;
+				border-width: medium;
+				width: 0px;
+				position: relative;
 			}
 		`,
 	],
