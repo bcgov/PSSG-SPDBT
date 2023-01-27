@@ -1,10 +1,11 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
-import { MatNativeDateModule, MAT_DATE_FORMATS } from '@angular/material/core';
+import { MatDateFormats, MatNativeDateModule, MAT_DATE_FORMATS, MAT_NATIVE_DATE_FORMATS } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -50,19 +51,32 @@ const AngularMaterialModules = [
 	MatStepperModule,
 	MatChipsModule,
 	MatNativeDateModule,
+	MatAutocompleteModule,
 ];
 
-export const APP_DATE_FORMAT = 'dd-MMM-yyyy';
-export const APP_DATE_FORMATS = {
-	parse: {
-		// Reformat entered date values to this format
-		dateInput: APP_DATE_FORMAT,
-	},
+// export const APP_DATE_FORMAT = 'dd-MMM-yyyy';
+// export const APP_DATE_FORMATS = {
+// 	parse: {
+// 		// Reformat entered date values to this format
+// 		dateInput: APP_DATE_FORMAT,
+// 	},
+// 	display: {
+// 		dateInput: APP_DATE_FORMAT,
+// 		monthYearLabel: 'MMM yyyy',
+// 		dateA11yLabel: APP_DATE_FORMAT,
+// 		monthYearA11yLabel: 'MMM yyyy',
+// 	},
+// };
+
+export const GRI_DATE_FORMATS: MatDateFormats = {
+	...MAT_NATIVE_DATE_FORMATS,
 	display: {
-		dateInput: APP_DATE_FORMAT,
-		monthYearLabel: 'MMM yyyy',
-		dateA11yLabel: APP_DATE_FORMAT,
-		monthYearA11yLabel: 'MMM yyyy',
+		...MAT_NATIVE_DATE_FORMATS.display,
+		dateInput: {
+			year: 'numeric',
+			month: 'short',
+			day: 'numeric',
+		} as Intl.DateTimeFormatOptions,
 	},
 };
 
@@ -76,13 +90,11 @@ const matFormFieldCustomOptions: MatFormFieldDefaultOptions = {
 	declarations: [],
 	imports: [...AngularMaterialModules],
 	exports: [...AngularMaterialModules],
-	// providers: [
-	//   {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {useUtc: true}}
-	// ]
 	providers: [
-		// {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {useUtc: true}}
-
-		{ provide: MAT_DATE_FORMATS, useValue: APP_DATE_FORMATS },
+		{
+			provide: MAT_DATE_FORMATS,
+			useValue: GRI_DATE_FORMATS,
+		},
 		{
 			provide: MAT_RADIO_DEFAULT_OPTIONS,
 			useValue: { color: 'primary' },
@@ -98,22 +110,6 @@ const matFormFieldCustomOptions: MatFormFieldDefaultOptions = {
 			provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
 			useValue: matFormFieldCustomOptions,
 		},
-		// {
-		// 	provide: STEPPER_GLOBAL_OPTIONS,
-		// 	useValue: { displayDefaultIndicatorType: false },
-		// },
-		// {
-		// 	provide: MAT_LUXON_DATE_ADAPTER_OPTIONS,
-		// 	useValue: {
-		// 		useUtc: false,
-		// 		firstDayOfWeek: 0,
-		// 	},
-		// },
-		// 	{
-		// 		provide: DateAdapter,
-		// 		useClass: RSVPCMSDateAdapter,
-		// 		deps: [MAT_DATE_LOCALE, MAT_LUXON_DATE_ADAPTER_OPTIONS],
-		// 	},
 	],
 	schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

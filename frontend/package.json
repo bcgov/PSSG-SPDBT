@@ -26,6 +26,7 @@
     "bootstrap": "^5.2.3",
     "jquery": "^3.6.3",
     "ng-openapi-gen": "^0.23.0",
+    "ngx-mask": "^15.0.2",
     "ngx-spinner": "^15.0.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

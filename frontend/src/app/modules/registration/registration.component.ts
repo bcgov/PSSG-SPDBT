@@ -1,6 +1,6 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperOrientation } from '@angular/cdk/stepper';
-import { Component, EventEmitter, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { distinctUntilChanged } from 'rxjs';
 import { StepFourComponent } from './steps/step-four.component';
@@ -11,9 +11,6 @@ import { StepTwoComponent } from './steps/step-two.component';
 export interface RegistrationFormStepComponent {
 	getDataToSave(): any;
 	isFormValid(): boolean;
-	stepData: any;
-
-	formValidity: EventEmitter<boolean>;
 }
 
 @Component({
@@ -101,24 +98,15 @@ export class RegistrationComponent implements OnInit {
 		console.log('onSaveStepperStep SAVE DATA');
 
 		if (this.stepOneComponent) {
-			console.log('step1', this.stepOneComponent.registrationPathSelectionData);
-			console.log('step1', this.stepOneComponent.organizationOptionsData);
-			console.log('step1', this.stepOneComponent.fundingQuestionData);
-			console.log('step1', this.stepOneComponent.compensationQuestionData);
-			console.log('step1', this.stepOneComponent.vulnerableSectorQuestionData);
+			console.log('step1', this.stepOneComponent.getStepData());
 		}
 
 		if (this.stepThreeComponent) {
-			console.log('step3', this.stepThreeComponent.authorizedContactData);
-			console.log('step3', this.stepThreeComponent.organizationNameData);
-			console.log('step3', this.stepThreeComponent.organizationInformationData);
-			console.log('step3', this.stepThreeComponent.mailingAddressData);
-			console.log('step3', this.stepThreeComponent.screeningsQuestionData);
-			console.log('step3', this.stepThreeComponent.paymentQuestionData);
+			console.log('step3', this.stepThreeComponent.getStepData());
 		}
 
 		if (this.stepFourComponent) {
-			console.log('step4', this.stepFourComponent.agreementOfTermsData);
+			console.log('step4', this.stepFourComponent.getStepData());
 		}
 
 		this.stepFourComponent.childStepNext();

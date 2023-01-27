@@ -63,3 +63,17 @@ mat-hint {
 .mat-horizontal-content-container {
   padding: 0 !important;
 }
+
+.mat-mdc-form-field-error {
+  font-size: .75em;
+  font-weight: 400;
+}
+
+mat-label {  
+  color: var(--color-grey-dark);
+  font-weight: 500;
+}
+
+.mat-mdc-form-field-required-marker {
+  display: none;
+}

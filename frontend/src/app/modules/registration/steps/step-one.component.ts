@@ -23,16 +23,11 @@ import {
 	template: `
 		<mat-stepper class="child-stepper" #childstepper>
 			<mat-step>
-				<app-registration-path-selection
-					[stepData]="registrationPathSelectionData"
-					(formValidity)="onRegistrationPathValidity($event)"
-				></app-registration-path-selection>
+				<app-registration-path-selection></app-registration-path-selection>
 
 				<div class="row mt-4">
 					<div class="offset-lg-4 col-lg-4 offset-md-4 col-md-4 col-sm-12">
-						<button mat-raised-button color="primary" class="large mb-2" [disabled]="!isFormValid0" matStepperNext>
-							Next
-						</button>
+						<button mat-raised-button color="primary" class="large mb-2" (click)="onFormValidNextStep(0)">Next</button>
 					</div>
 				</div>
 			</mat-step>
@@ -40,8 +35,6 @@ import {
 			<mat-step>
 				<app-organization-options
 					[registrationTypeCode]="registrationPathSelectionData.registrationTypeCode"
-					[stepData]="organizationOptionsData"
-					(formValidity)="onOrganizationOptionsValidity($event)"
 				></app-organization-options>
 
 				<div class="row mt-4">
@@ -49,27 +42,20 @@ import {
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" [disabled]="!isFormValid1" class="large mb-2" matStepperNext>
-							Next
-						</button>
+						<button mat-raised-button color="primary" class="large mb-2" (click)="onFormValidNextStep(1)">Next</button>
 					</div>
 				</div>
 			</mat-step>
 
 			<mat-step *ngIf="showStep2">
-				<app-funding-question
-					[stepData]="fundingQuestionData"
-					(formValidity)="onFundingQuestionValidity($event)"
-				></app-funding-question>
+				<app-funding-question></app-funding-question>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" class="large mb-2" [disabled]="!isFormValid2" matStepperNext>
-							Next
-						</button>
+						<button mat-raised-button color="primary" class="large mb-2" (click)="onFormValidNextStep(2)">Next</button>
 					</div>
 				</div>
 			</mat-step>
@@ -88,43 +74,27 @@ import {
 			</mat-step>
 
 			<mat-step *ngIf="showStep3">
-				<app-compensation-question
-					[stepData]="compensationQuestionData"
-					(formValidity)="onCompensationQuestionValidity($event)"
-				></app-compensation-question>
+				<app-compensation-question></app-compensation-question>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" class="large mb-2" [disabled]="!isFormValid3" matStepperNext>
-							Next
-						</button>
+						<button mat-raised-button color="primary" class="large mb-2" (click)="onFormValidNextStep(3)">Next</button>
 					</div>
 				</div>
 			</mat-step>
 
 			<mat-step>
-				<app-vulnerable-sector-question
-					[stepData]="vulnerableSectorQuestionData"
-					(formValidity)="onVulnerableSectorQuestionValidity($event)"
-				></app-vulnerable-sector-question>
+				<app-vulnerable-sector-question></app-vulnerable-sector-question>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button
-							mat-raised-button
-							color="primary"
-							class="large mb-2"
-							[disabled]="!isFormValid5"
-							(click)="onStepNext()"
-						>
-							Next
-						</button>
+						<button mat-raised-button color="primary" class="large mb-2" (click)="onStepNext(5)">Next</button>
 					</div>
 				</div>
 			</mat-step>
@@ -152,12 +122,6 @@ export class StepOneComponent {
 	showStep4 = false;
 	showStep6 = false;
 
-	isFormValid0: boolean = false;
-	isFormValid1: boolean = false;
-	isFormValid2: boolean = false;
-	isFormValid3: boolean = false;
-	isFormValid5: boolean = false;
-
 	registrationPathSelectionData: RegistrationPathSelectionModel = { registrationTypeCode: '' };
 	organizationOptionsData: OrganizationOptionsModel = { organizationType: '' };
 	fundingQuestionData: FundingQuestionModel = { operatingBudgetFlag: '' };
@@ -184,57 +148,80 @@ export class StepOneComponent {
 
 	@ViewChild('childstepper') private childstepper!: MatStepper;
 
-	onRegistrationPathValidity(isValid: boolean): void {
-		this.isFormValid0 = isValid;
-		if (isValid) {
-			this.registrationPathSelectionData = this.registrationPathSelectionComponent.getDataToSave();
-			this.selectRegistrationType.emit(this.registrationPathSelectionData.registrationTypeCode);
-			this.showStep3 = this.registrationPathSelectionData.registrationTypeCode == 'EMP' ? false : true;
-		}
+	getStepData(): any {
+		return {
+			...this.registrationPathSelectionComponent.getDataToSave(),
+			...this.organizationOptionsComponent.getDataToSave(),
+			...(this.fundingQuestionComponent ? this.fundingQuestionComponent.getDataToSave() : {}),
+			...(this.compensationQuestionComponent ? this.compensationQuestionComponent.getDataToSave() : {}),
+			...this.vulnerableSectorQuestionComponent.getDataToSave(),
+		};
 	}
 
-	onOrganizationOptionsValidity(isValid: boolean) {
-		this.isFormValid1 = isValid;
-		if (isValid) {
-			this.organizationOptionsData = this.organizationOptionsComponent.getDataToSave();
+	onStepNext(formNumber: number): void {
+		const isValid = this.dirtyForm(formNumber);
+		if (!isValid) return;
 
-			if (this.registrationPathSelectionData.registrationTypeCode == 'EMP') {
-				this.showStep2 = this.organizationOptionsData.organizationType == '4' ? true : false;
-			} else {
-				this.showStep2 = this.organizationOptionsData.organizationType == '6' ? true : false;
-			}
-		}
-	}
-
-	onFundingQuestionValidity(isValid: boolean) {
-		this.isFormValid2 = isValid;
-		if (isValid) {
-			this.fundingQuestionData = this.fundingQuestionComponent.getDataToSave();
-			this.showStep4 = this.fundingQuestionData.operatingBudgetFlag == 'NO' ? true : false;
-		}
-	}
-
-	onCompensationQuestionValidity(isValid: boolean) {
-		this.isFormValid3 = isValid;
-		if (isValid) {
-			this.compensationQuestionData = this.compensationQuestionComponent.getDataToSave();
-			this.showStep6 = this.compensationQuestionData.employeeMonetaryCompensationFlag == 'NEITHER' ? true : false;
-		}
-	}
-
-	onVulnerableSectorQuestionValidity(isValid: boolean) {
-		this.isFormValid5 = isValid;
-		if (isValid) {
-			this.vulnerableSectorQuestionData = this.vulnerableSectorQuestionComponent.getDataToSave();
-			this.showStep6 = this.vulnerableSectorQuestionData.employeeInteractionFlag == 'NEITHER' ? true : false;
-		}
-	}
-
-	onStepNext(): void {
 		if (!this.showStep6) {
 			this.nextStepperStep.emit(true);
 		} else {
 			this.childstepper.next();
 		}
+	}
+
+	onFormValidNextStep(formNumber: number): void {
+		console.log(this.registrationPathSelectionData, this.registrationPathSelectionComponent.getDataToSave());
+		const isValid = this.dirtyForm(formNumber);
+		console.log('isValid', isValid);
+		if (!isValid) return;
+		this.childstepper.next();
+	}
+
+	private dirtyForm(step: number): boolean {
+		let isValid: boolean;
+		switch (step) {
+			case 0:
+				this.registrationPathSelectionData = this.registrationPathSelectionComponent.getDataToSave();
+				return this.registrationPathSelectionComponent.isFormValid();
+			case 1:
+				isValid = this.organizationOptionsComponent.isFormValid();
+
+				if (isValid) {
+					this.organizationOptionsData = this.organizationOptionsComponent.getDataToSave();
+					if (this.registrationPathSelectionData.registrationTypeCode == 'EMP') {
+						this.showStep2 = this.organizationOptionsData.organizationType == '4' ? true : false;
+					} else {
+						this.showStep2 = this.organizationOptionsData.organizationType == '16' ? true : false;
+					}
+				}
+				return isValid;
+			case 2:
+				this.fundingQuestionComponent.form.markAllAsTouched();
+				isValid = this.fundingQuestionComponent.isFormValid();
+				if (isValid) {
+					this.fundingQuestionData = this.fundingQuestionComponent.getDataToSave();
+					this.showStep4 = this.fundingQuestionData.operatingBudgetFlag == 'NO' ? true : false;
+				}
+				return isValid;
+			case 3:
+				this.compensationQuestionComponent.form.markAllAsTouched();
+				isValid = this.compensationQuestionComponent.isFormValid();
+				if (isValid) {
+					this.compensationQuestionData = this.compensationQuestionComponent.getDataToSave();
+					this.showStep6 = this.compensationQuestionData.employeeMonetaryCompensationFlag == 'NEITHER' ? true : false;
+				}
+				return isValid;
+			case 5:
+				isValid = this.vulnerableSectorQuestionComponent.isFormValid();
+				if (isValid) {
+					this.vulnerableSectorQuestionData = this.vulnerableSectorQuestionComponent.getDataToSave();
+					this.showStep6 = this.vulnerableSectorQuestionData.employeeInteractionFlag == 'NEITHER' ? true : false;
+				}
+				return isValid;
+
+			default:
+				console.log('Unknown Form', step);
+		}
+		return false;
 	}
 }

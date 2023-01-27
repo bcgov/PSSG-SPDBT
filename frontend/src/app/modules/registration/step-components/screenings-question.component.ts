@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { MatRadioChange } from '@angular/material/radio';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { RegistrationFormStepComponent } from '../registration.component';
 
 export class ScreeningsQuestionModel {
@@ -9,41 +9,49 @@ export class ScreeningsQuestionModel {
 @Component({
 	selector: 'app-screenings-question',
 	template: `
-		<div class="step">
-			<div class="title mb-5">How many screenings do you anticipate your organization requesting per year?</div>
-			<div class="row">
-				<div class="offset-md-4 col-md-4 col-sm-12">
-					<mat-radio-group
-						aria-label="Select an option"
-						[(ngModel)]="stepData.screeningsCount"
-						(change)="onDataChange($event)"
-					>
-						<mat-radio-button value="LESS_THAN_100"> 0 - 100 </mat-radio-button>
-						<mat-divider class="my-3"></mat-divider>
-						<mat-radio-button value="100_TO_500"> 100 - 500 </mat-radio-button>
-						<mat-divider class="my-3"></mat-divider>
-						<mat-radio-button value="MORE_THAN_500"> More than 500 </mat-radio-button>
-					</mat-radio-group>
+		<form [formGroup]="form" novalidate>
+			<div class="step">
+				<div class="title mb-5">How many screenings do you anticipate your organization requesting per year?</div>
+				<div class="row">
+					<div class="offset-md-4 col-md-4 col-sm-12">
+						<mat-radio-group aria-label="Select an option" formControlName="screeningsCount">
+							<mat-radio-button value="LESS_THAN_100"> 0 - 100 </mat-radio-button>
+							<mat-divider class="my-3"></mat-divider>
+							<mat-radio-button value="100_TO_500"> 100 - 500 </mat-radio-button>
+							<mat-divider class="my-3"></mat-divider>
+							<mat-radio-button value="MORE_THAN_500"> More than 500 </mat-radio-button>
+							<mat-error
+								*ngIf="
+									(form.get('screeningsCount')?.dirty || form.get('screeningsCount')?.touched) &&
+									form.get('screeningsCount')?.invalid &&
+									form.get('screeningsCount')?.hasError('required')
+								"
+								>Required</mat-error
+							>
+						</mat-radio-group>
+					</div>
 				</div>
 			</div>
-		</div>
+		</form>
 	`,
 	styles: [],
 })
-export class ScreeningsQuestionComponent implements RegistrationFormStepComponent {
-	@Input() stepData!: ScreeningsQuestionModel;
-	@Output() formValidity: EventEmitter<boolean> = new EventEmitter<boolean>();
+export class ScreeningsQuestionComponent implements OnInit, RegistrationFormStepComponent {
+	form!: FormGroup;
 
-	onDataChange(data: MatRadioChange) {
-		this.stepData.screeningsCount = data.value;
-		this.formValidity.emit(this.isFormValid());
+	constructor(private formBuilder: FormBuilder) {}
+
+	ngOnInit(): void {
+		this.form = this.formBuilder.group({
+			screeningsCount: new FormControl('', [Validators.required]),
+		});
 	}
 
 	getDataToSave(): any {
-		return this.stepData;
+		return this.form.value;
 	}
 
 	isFormValid(): boolean {
-		return this.stepData.screeningsCount ? true : false;
+		return this.form.valid;
 	}
 }

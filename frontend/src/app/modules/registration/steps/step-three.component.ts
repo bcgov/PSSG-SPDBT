@@ -1,123 +1,83 @@
 import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import {
-	AuthorizedContactInformationComponent,
-	AuthorizedContactModel,
-} from '../step-components/authorized-contact-information.component';
-import { MailingAddressComponent, MailingAddressModel } from '../step-components/mailing-address.component';
-import {
-	OrganizationInformationComponent,
-	OrganizationInformationModel,
-} from '../step-components/organization-information.component';
-import { OrganizationNameComponent, OrganizationNameModel } from '../step-components/organization-name.component';
-import { PaymentQuestionComponent, PaymentQuestionModel } from '../step-components/payment-question.component';
-import { ScreeningsQuestionComponent, ScreeningsQuestionModel } from '../step-components/screenings-question.component';
+import { AuthorizedContactInformationComponent } from '../step-components/authorized-contact-information.component';
+import { MailingAddressComponent } from '../step-components/mailing-address.component';
+import { OrganizationInformationComponent } from '../step-components/organization-information.component';
+import { OrganizationNameComponent } from '../step-components/organization-name.component';
+import { PaymentQuestionComponent } from '../step-components/payment-question.component';
+import { ScreeningsQuestionComponent } from '../step-components/screenings-question.component';
 
 @Component({
 	selector: 'app-step-three',
 	template: `
 		<mat-stepper class="child-stepper" #childstepper>
 			<mat-step>
-				<app-authorized-contact-information
-					[stepData]="authorizedContactData"
-					(formValidity)="onAuthorizedContactValidity($event)"
-				></app-authorized-contact-information>
+				<app-authorized-contact-information></app-authorized-contact-information>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" class="large mb-2" [disabled]="!isFormValid10" matStepperNext>
-							Next
-						</button>
+						<button mat-raised-button color="primary" class="large mb-2" (click)="onFormValidNextStep(10)">Next</button>
 					</div>
 				</div>
 			</mat-step>
 
 			<mat-step>
-				<app-organization-name
-					[stepData]="organizationNameData"
-					(formValidity)="onOrganizationNameValidity($event)"
-				></app-organization-name>
+				<app-organization-name></app-organization-name>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" [disabled]="!isFormValid8" class="large mb-2" matStepperNext>
-							Next
-						</button>
+						<button mat-raised-button color="primary" class="large mb-2" (click)="onFormValidNextStep(8)">Next</button>
 					</div>
 				</div>
 			</mat-step>
 
 			<mat-step>
-				<app-organization-information
-					[stepData]="organizationInformationData"
-					(formValidity)="onOrganizationInformationValidity($event)"
-				></app-organization-information>
+				<app-organization-information></app-organization-information>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" [disabled]="!isFormValid9" class="large mb-2" matStepperNext>
-							Next
-						</button>
+						<button mat-raised-button color="primary" class="large mb-2" (click)="onFormValidNextStep(9)">Next</button>
 					</div>
 				</div>
 			</mat-step>
 
 			<mat-step>
-				<app-mailing-address
-					[stepData]="mailingAddressData"
-					(formValidity)="onMailingAddressValidity($event)"
-				></app-mailing-address>
+				<app-mailing-address></app-mailing-address>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" class="large mb-2" [disabled]="!isFormValid11" matStepperNext>
-							Next
-						</button>
+						<button mat-raised-button color="primary" class="large mb-2" (click)="onFormValidNextStep(11)">Next</button>
 					</div>
 				</div>
 			</mat-step>
 
 			<mat-step>
-				<app-screenings-question
-					[stepData]="screeningsQuestionData"
-					(formValidity)="onScreeningsQuestionValidity($event)"
-				></app-screenings-question>
+				<app-screenings-question></app-screenings-question>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button
-							mat-raised-button
-							color="primary"
-							class="large mb-2"
-							[disabled]="!isFormValid12"
-							(click)="onStepNext()"
-						>
-							Next
-						</button>
+						<button mat-raised-button color="primary" class="large mb-2" (click)="onStepNext(12)">Next</button>
 					</div>
 				</div>
 			</mat-step>
 
 			<mat-step *ngIf="showStep13">
-				<app-payment-question
-					[stepData]="paymentQuestionData"
-					(formValidity)="onPaymentQuestionValidity($event)"
-				></app-payment-question>
+				<app-payment-question></app-payment-question>
 				<!-- Note: This screen is only shows up when “employees" is selected -->
 
 				<div class="row mt-4">
@@ -125,15 +85,7 @@ import { ScreeningsQuestionComponent, ScreeningsQuestionModel } from '../step-co
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button
-							mat-raised-button
-							color="primary"
-							class="large mb-2"
-							[disabled]="!isFormValid13"
-							(click)="goToStepNext()"
-						>
-							Next
-						</button>
+						<button mat-raised-button color="primary" class="large mb-2" (click)="goToStepNext(13)">Next</button>
 					</div>
 				</div>
 			</mat-step>
@@ -144,46 +96,6 @@ import { ScreeningsQuestionComponent, ScreeningsQuestionModel } from '../step-co
 })
 export class StepThreeComponent {
 	showStep13: boolean = false;
-
-	isFormValid8: boolean = false;
-	isFormValid9: boolean = false;
-	isFormValid10: boolean = false;
-	isFormValid11: boolean = false;
-	isFormValid12: boolean = false;
-	isFormValid13: boolean = false;
-
-	authorizedContactData: AuthorizedContactModel = {
-		givenName: '',
-		surname: '',
-		jobTitle: '',
-		email: '',
-		day: '',
-		month: '',
-		year: '',
-		areaCode: '',
-		phoneNumber: '',
-		ext: '',
-	};
-	organizationNameData: OrganizationNameModel = { organizationName: '' };
-	organizationInformationData: OrganizationInformationModel = {
-		phoneOrEmailFlag: '',
-		email: '',
-		emailConfirmation: '',
-		areaCode: '',
-		phoneNumber: '',
-		ext: '',
-	};
-	mailingAddressData: MailingAddressModel = {
-		mailingAddress: '',
-		addressLine1: '',
-		addressLine2: '',
-		city: '',
-		postalCode: '',
-		province: '',
-		country: '',
-	};
-	screeningsQuestionData: ScreeningsQuestionModel = { screeningsCount: '' };
-	paymentQuestionData: PaymentQuestionModel = { checkFeePayer: '' };
 
 	private _registrationTypeCode!: string;
 	@Input() set registrationTypeCode(value: string) {
@@ -216,53 +128,25 @@ export class StepThreeComponent {
 
 	@ViewChild('childstepper') private childstepper!: MatStepper;
 
-	onAuthorizedContactValidity(isValid: boolean): void {
-		this.isFormValid10 = isValid;
-		if (isValid) {
-			this.authorizedContactData = this.authorizedContactInformationComponent.getDataToSave();
-		}
-	}
-
-	onOrganizationNameValidity(isValid: boolean): void {
-		this.isFormValid8 = isValid;
-		if (isValid) {
-			this.organizationNameData = this.organizationNameComponent.getDataToSave();
-		}
-	}
-
-	onOrganizationInformationValidity(isValid: boolean): void {
-		this.isFormValid9 = isValid;
-		if (isValid) {
-			this.organizationInformationData = this.organizationInformationComponent.getDataToSave();
-		}
-	}
-
-	onMailingAddressValidity(isValid: boolean): void {
-		this.isFormValid11 = isValid;
-		if (isValid) {
-			this.mailingAddressData = this.mailingAddressComponent.getDataToSave();
-		}
-	}
-
-	onScreeningsQuestionValidity(isValid: boolean): void {
-		this.isFormValid12 = isValid;
-		if (isValid) {
-			this.screeningsQuestionData = this.screeningsQuestionComponent.getDataToSave();
-		}
-	}
-
-	onPaymentQuestionValidity(isValid: boolean): void {
-		this.isFormValid13 = isValid;
-		if (isValid) {
-			this.paymentQuestionData = this.paymentQuestionComponent.getDataToSave();
-		}
+	getStepData(): any {
+		return {
+			...this.authorizedContactInformationComponent.getDataToSave(),
+			...this.organizationNameComponent.getDataToSave(),
+			...this.organizationInformationComponent.getDataToSave(),
+			...this.mailingAddressComponent.getDataToSave(),
+			...this.screeningsQuestionComponent.getDataToSave(),
+			...(this.paymentQuestionComponent ? this.paymentQuestionComponent.getDataToSave() : {}),
+		};
 	}
 
 	onStepPrevious(): void {
 		this.previousStepperStep.emit(true);
 	}
 
-	onStepNext(): void {
+	onStepNext(formNumber: number): void {
+		const isValid = this.dirtyForm(formNumber);
+		if (!isValid) return;
+
 		if (!this.showStep13) {
 			this.nextStepperStep.emit(true);
 		} else {
@@ -270,7 +154,43 @@ export class StepThreeComponent {
 		}
 	}
 
-	goToStepNext(): void {
+	onFormValidNextStep(formNumber: number): void {
+		console.log(this.getStepData());
+		const isValid = this.dirtyForm(formNumber);
+		console.log('isValid', isValid);
+		if (!isValid) return;
+		this.childstepper.next();
+	}
+
+	goToStepNext(formNumber: number): void {
+		const isValid = this.dirtyForm(formNumber);
+		if (!isValid) return;
 		this.nextStepperStep.emit(true);
+	}
+
+	private dirtyForm(step: number): boolean {
+		switch (step) {
+			case 13:
+				this.paymentQuestionComponent.form.markAllAsTouched();
+				return this.paymentQuestionComponent.isFormValid();
+			case 12:
+				this.screeningsQuestionComponent.form.markAllAsTouched();
+				return this.screeningsQuestionComponent.isFormValid();
+			case 11:
+				this.mailingAddressComponent.form.markAllAsTouched();
+				return this.mailingAddressComponent.isFormValid();
+			case 10:
+				this.authorizedContactInformationComponent.form.markAllAsTouched();
+				return this.authorizedContactInformationComponent.isFormValid();
+			case 9:
+				this.organizationInformationComponent.form.markAllAsTouched();
+				return this.organizationInformationComponent.isFormValid();
+			case 8:
+				this.organizationNameComponent.form.markAllAsTouched();
+				return this.organizationNameComponent.isFormValid();
+			default:
+				console.log('Unknown Form', step);
+		}
+		return false;
 	}
 }
