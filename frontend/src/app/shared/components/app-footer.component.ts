@@ -29,6 +29,23 @@ import { Component } from '@angular/core';
 				color: white;
 				font-size: smaller;
 			}
+
+			@media (max-width: 575px) {
+				.mat-toolbar-row,
+				.mat-toolbar-single-row {
+					display: block;
+					height: unset;
+				}
+
+				a {
+					display: block;
+					padding: 6px;
+				}
+
+				.divider {
+					display: none;
+				}
+			}
 		`,
 	],
 })
