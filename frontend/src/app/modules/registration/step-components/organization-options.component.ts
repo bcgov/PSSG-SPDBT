@@ -260,6 +260,10 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 		return isValid;
 	}
 
+	clearCurrentData(): void {
+		this.organizationType = '';
+	}
+
 	onViewHelp(option: any, event: any): void {
 		option.showHelp = !option.showHelp;
 		event.stopPropagation();

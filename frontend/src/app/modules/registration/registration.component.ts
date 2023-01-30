@@ -10,6 +10,7 @@ import { StepTwoComponent } from './steps/step-two.component';
 
 export interface RegistrationFormStepComponent {
 	getDataToSave(): any;
+	clearCurrentData(): void;
 	isFormValid(): boolean;
 }
 
@@ -22,6 +23,7 @@ export interface RegistrationFormStepComponent {
 				<app-step-one
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(selectRegistrationType)="onSelectRegistrationType($event)"
+					(clearRegistrationData)="onClearRegistrationData()"
 				></app-step-one>
 			</mat-step>
 
@@ -120,6 +122,11 @@ export class RegistrationComponent implements OnInit {
 
 	onSelectRegistrationType(type: string): void {
 		this.registrationTypeCode = type;
+	}
+
+	onClearRegistrationData(): void {
+		this.stepThreeComponent.clearStepData();
+		this.stepFourComponent.clearStepData();
 	}
 
 	private breakpointChanged() {

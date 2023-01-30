@@ -26,7 +26,7 @@ export class PaymentQuestionModel {
 							<mat-divider class="my-3"></mat-divider>
 							<mat-radio-button value="DEPENDS_ON_SITUATION"> Depends on situation </mat-radio-button>
 						</mat-radio-group>
-						<mat-error *ngIf="form.get('checkFeePayer')?.hasError('required')">Required</mat-error>
+						<mat-error *ngIf="form.get('checkFeePayer')?.hasError('required')">An option must be selected</mat-error>
 					</div>
 				</div>
 			</div>
@@ -51,5 +51,9 @@ export class PaymentQuestionComponent implements OnInit, RegistrationFormStepCom
 
 	isFormValid(): boolean {
 		return this.form.valid;
+	}
+
+	clearCurrentData(): void {
+		this.form.reset();
 	}
 }

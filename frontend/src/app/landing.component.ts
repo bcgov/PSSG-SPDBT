@@ -5,7 +5,16 @@ import { Component } from '@angular/core';
 	template: `
 		<div class="row" style="margin-top: 8em;">
 			<div class="col-sm-12 offset-md-2 col-md-8 offset-lg-3 col-lg-6">
-				<button mat-raised-button color="primary" class="large mb-2" [routerLink]="['/register/']">Register Now</button>
+				<button mat-stroked-button color="primary" class="large mb-2" [routerLink]="['/register/']">
+					Organization Registration
+				</button>
+			</div>
+		</div>
+		<div class="row mt-4">
+			<div class="col-sm-12 offset-md-2 col-md-8 offset-lg-3 col-lg-6">
+				<button mat-stroked-button color="primary" class="large mb-2" [routerLink]="['/']">
+					Screening Application
+				</button>
 			</div>
 		</div>
 	`,

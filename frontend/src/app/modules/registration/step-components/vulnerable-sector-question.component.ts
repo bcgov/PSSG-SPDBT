@@ -113,6 +113,10 @@ export class VulnerableSectorQuestionComponent implements RegistrationFormStepCo
 		return isValid;
 	}
 
+	clearCurrentData(): void {
+		this.employeeInteractionFlag = null;
+	}
+
 	onViewHelp1(event: any): void {
 		this.displayHelp1 = !this.displayHelp1;
 		event.stopPropagation();

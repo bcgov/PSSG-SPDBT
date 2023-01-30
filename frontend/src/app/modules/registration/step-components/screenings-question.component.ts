@@ -26,7 +26,7 @@ export class ScreeningsQuestionModel {
 									form.get('screeningsCount')?.invalid &&
 									form.get('screeningsCount')?.hasError('required')
 								"
-								>Required</mat-error
+								>An option must be selected</mat-error
 							>
 						</mat-radio-group>
 					</div>
@@ -53,5 +53,9 @@ export class ScreeningsQuestionComponent implements OnInit, RegistrationFormStep
 
 	isFormValid(): boolean {
 		return this.form.valid;
+	}
+
+	clearCurrentData(): void {
+		this.form.reset();
 	}
 }

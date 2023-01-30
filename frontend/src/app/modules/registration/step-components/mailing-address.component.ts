@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { UntilDestroy } from '@ngneat/until-destroy';
+import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { RegistrationFormStepComponent } from '../registration.component';
 
 export class MailingAddressModel {
@@ -80,7 +81,12 @@ export interface AddressAutocompleteRetrieveResponse {
 
 						<mat-form-field>
 							<mat-label>Street Address 1</mat-label>
-							<input matInput formControlName="mailingAddressLine1" [matAutocomplete]="auto" />
+							<input
+								matInput
+								formControlName="mailingAddressLine1"
+								[matAutocomplete]="auto"
+								[errorStateMatcher]="matcher"
+							/>
 							<mat-autocomplete #auto="matAutocomplete">
 								<mat-option
 									*ngFor="let field of addressAutocompleteFields"
@@ -94,7 +100,7 @@ export interface AddressAutocompleteRetrieveResponse {
 								Start with unit number and street number. Address autocompleted by
 								<a href="https://www.canadapost.ca/pca" target="_blank">Canada Post</a>.
 							</mat-hint>
-							<mat-error *ngIf="form.get('mailingAddressLine1')?.hasError('required')">Required</mat-error>
+							<mat-error *ngIf="form.get('mailingAddressLine1')?.hasError('required')">This is required</mat-error>
 						</mat-form-field>
 					</div>
 				</div>
@@ -143,6 +149,7 @@ export interface AddressAutocompleteRetrieveResponse {
 export class MailingAddressComponent implements OnInit, RegistrationFormStepComponent {
 	form!: FormGroup;
 	addressAutocompleteFields: AddressAutocompleteFindResponse[] = [];
+	matcher = new FormErrorStateMatcher();
 
 	constructor(private formBuilder: FormBuilder) {}
 
@@ -199,6 +206,10 @@ export class MailingAddressComponent implements OnInit, RegistrationFormStepComp
 
 	isFormValid(): boolean {
 		return this.form.valid;
+	}
+
+	clearCurrentData(): void {
+		this.form.reset();
 	}
 
 	get autocomplete(): FormControl {
