@@ -86,7 +86,7 @@ export class AgreementOfTermsModel {
 								form.get('agreeToTermsAndConditions')?.invalid &&
 								form.get('agreeToTermsAndConditions')?.hasError('required')
 							"
-							>Required</mat-error
+							>This is required</mat-error
 						>
 					</div>
 				</div>
@@ -126,6 +126,10 @@ export class AgreementOfTermsComponent implements OnInit, RegistrationFormStepCo
 		this.displayScrollToBottomMessage = !this.hasScrolledToBottom;
 
 		return this.form.valid && this.hasScrolledToBottom ? true : false;
+	}
+
+	clearCurrentData(): void {
+		this.form.reset();
 	}
 
 	onScrollTermsAndConditions(e: any) {

@@ -23,7 +23,7 @@ import {
 	template: `
 		<mat-stepper class="child-stepper" #childstepper>
 			<mat-step>
-				<app-registration-path-selection></app-registration-path-selection>
+				<app-registration-path-selection (clearData)="onClearStepData()"></app-registration-path-selection>
 
 				<div class="row mt-4">
 					<div class="offset-lg-4 col-lg-4 offset-md-4 col-md-4 col-sm-12">
@@ -130,6 +130,7 @@ export class StepOneComponent {
 
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() selectRegistrationType: EventEmitter<string> = new EventEmitter<string>();
+	@Output() clearRegistrationData: EventEmitter<boolean> = new EventEmitter<boolean>();
 
 	@ViewChild(RegistrationPathSelectionComponent)
 	registrationPathSelectionComponent!: RegistrationPathSelectionComponent;
@@ -170,11 +171,18 @@ export class StepOneComponent {
 	}
 
 	onFormValidNextStep(formNumber: number): void {
-		console.log(this.registrationPathSelectionData, this.registrationPathSelectionComponent.getDataToSave());
 		const isValid = this.dirtyForm(formNumber);
-		console.log('isValid', isValid);
 		if (!isValid) return;
 		this.childstepper.next();
+	}
+
+	onClearStepData(): void {
+		this.organizationOptionsComponent?.clearCurrentData();
+		this.fundingQuestionComponent?.clearCurrentData();
+		this.compensationQuestionComponent?.clearCurrentData();
+		this.vulnerableSectorQuestionComponent?.clearCurrentData();
+
+		this.clearRegistrationData.emit(true);
 	}
 
 	private dirtyForm(step: number): boolean {

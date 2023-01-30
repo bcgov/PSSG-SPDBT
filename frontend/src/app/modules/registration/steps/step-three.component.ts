@@ -155,9 +155,7 @@ export class StepThreeComponent {
 	}
 
 	onFormValidNextStep(formNumber: number): void {
-		console.log(this.getStepData());
 		const isValid = this.dirtyForm(formNumber);
-		console.log('isValid', isValid);
 		if (!isValid) return;
 		this.childstepper.next();
 	}
@@ -192,5 +190,14 @@ export class StepThreeComponent {
 				console.log('Unknown Form', step);
 		}
 		return false;
+	}
+
+	clearStepData(): void {
+		this.authorizedContactInformationComponent?.clearCurrentData();
+		this.organizationNameComponent?.clearCurrentData();
+		this.organizationInformationComponent?.clearCurrentData();
+		this.mailingAddressComponent?.clearCurrentData();
+		this.screeningsQuestionComponent?.clearCurrentData();
+		this.paymentQuestionComponent?.clearCurrentData();
 	}
 }

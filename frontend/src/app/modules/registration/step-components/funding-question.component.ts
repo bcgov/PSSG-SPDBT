@@ -33,7 +33,7 @@ export class FundingQuestionModel {
 								form.get('operatingBudgetFlag')?.invalid &&
 								form.get('operatingBudgetFlag')?.hasError('required')
 							"
-							>Required</mat-error
+							>An option must be selected</mat-error
 						>
 					</div>
 				</div>
@@ -67,5 +67,9 @@ export class FundingQuestionComponent implements OnInit, RegistrationFormStepCom
 
 	isFormValid(): boolean {
 		return this.form.valid;
+	}
+
+	clearCurrentData(): void {
+		this.form.reset();
 	}
 }

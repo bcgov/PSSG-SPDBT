@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { RegistrationFormStepComponent } from '../registration.component';
 
 export class RegistrationPathSelectionModel {
@@ -85,7 +85,13 @@ export class RegistrationPathSelectionComponent implements RegistrationFormStepC
 	isDirtyAndInvalid = false;
 	displayHelp = true;
 
+	@Output() clearData: EventEmitter<boolean> = new EventEmitter<boolean>();
+
 	onDataChange(_val: string) {
+		if (this.registrationTypeCode) {
+			this.clearData.emit(true);
+		}
+
 		this.registrationTypeCode = _val;
 		const isValid = this.isFormValid();
 		this.isDirtyAndInvalid = !isValid;
@@ -104,5 +110,9 @@ export class RegistrationPathSelectionComponent implements RegistrationFormStepC
 		const isValid = this.registrationTypeCode ? true : false;
 		this.isDirtyAndInvalid = !isValid;
 		return isValid;
+	}
+
+	clearCurrentData(): void {
+		// do not clear data from this component
 	}
 }

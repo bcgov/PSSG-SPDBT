@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { RegistrationFormStepComponent } from '../registration.component';
 
 export class OrganizationNameModel {
@@ -17,10 +18,16 @@ export class OrganizationNameModel {
 					<div class="offset-md-2 col-md-8 col-sm-12">
 						<mat-form-field>
 							<mat-label>Organization Name</mat-label>
-							<input matInput formControlName="organizationName" maxlength="160" required />
+							<input
+								matInput
+								formControlName="organizationName"
+								maxlength="160"
+								required
+								[errorStateMatcher]="matcher"
+							/>
 							<mat-hint>Please enter your 'Doing Business As' name</mat-hint>
 							<img class="icon-size" matPrefix src="/assets/organization-name.png" />
-							<mat-error *ngIf="form.get('organizationName')?.hasError('required')">Required</mat-error>
+							<mat-error *ngIf="form.get('organizationName')?.hasError('required')">This is required</mat-error>
 						</mat-form-field>
 					</div>
 				</div>
@@ -31,6 +38,7 @@ export class OrganizationNameModel {
 })
 export class OrganizationNameComponent implements OnInit, RegistrationFormStepComponent {
 	form!: FormGroup;
+	matcher = new FormErrorStateMatcher();
 
 	constructor(private formBuilder: FormBuilder) {}
 
@@ -46,5 +54,9 @@ export class OrganizationNameComponent implements OnInit, RegistrationFormStepCo
 
 	isFormValid(): boolean {
 		return this.form.valid;
+	}
+
+	clearCurrentData(): void {
+		this.form.reset();
 	}
 }

@@ -37,7 +37,7 @@ export class CompensationQuestionModel {
 								form.get('employeeMonetaryCompensationFlag')?.invalid &&
 								form.get('employeeMonetaryCompensationFlag')?.hasError('required')
 							"
-							>Required</mat-error
+							>An option must be selected</mat-error
 						>
 					</div>
 				</div>
@@ -63,5 +63,9 @@ export class CompensationQuestionComponent implements OnInit, RegistrationFormSt
 
 	isFormValid(): boolean {
 		return this.form.valid;
+	}
+
+	clearCurrentData(): void {
+		this.form.reset();
 	}
 }

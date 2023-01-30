@@ -75,4 +75,8 @@ export class StepFourComponent {
 		if (!isValid) return;
 		this.saveStepperStep.emit(true);
 	}
+
+	clearStepData(): void {
+		this.agreementOfTermsComponent?.clearCurrentData();
+	}
 }

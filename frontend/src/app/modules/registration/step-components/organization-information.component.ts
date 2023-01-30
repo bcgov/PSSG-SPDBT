@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { RegistrationFormStepComponent } from '../registration.component';
 
 export class OrganizationInformationModel {
@@ -32,12 +33,19 @@ export class OrganizationInformationModel {
 									<div class="offset-md-2 col-md-8 col-sm-12">
 										<mat-form-field>
 											<mat-label>Email Address</mat-label>
-											<input matInput formControlName="genericEmail" type="email" maxlength="75" required />
+											<input
+												matInput
+												formControlName="genericEmail"
+												type="email"
+												maxlength="75"
+												required
+												[errorStateMatcher]="matcher"
+											/>
 											<img class="icon-size" matPrefix src="/assets/email.png" />
 											<mat-error *ngIf="form.get('genericEmail')?.hasError('email')">
 												Must be a valid email address
 											</mat-error>
-											<mat-error *ngIf="form.get('genericEmail')?.hasError('required')">Required</mat-error>
+											<mat-error *ngIf="form.get('genericEmail')?.hasError('required')">This is required</mat-error>
 										</mat-form-field>
 									</div>
 								</div>
@@ -45,7 +53,14 @@ export class OrganizationInformationModel {
 									<div class="offset-md-2 col-md-8 col-sm-12">
 										<mat-form-field>
 											<mat-label>Confirm Email Address</mat-label>
-											<input matInput formControlName="genericEmailConfirmation" type="email" maxlength="75" required />
+											<input
+												matInput
+												formControlName="genericEmailConfirmation"
+												type="email"
+												maxlength="75"
+												required
+												[errorStateMatcher]="matcher"
+											/>
 											<img class="icon-size" matPrefix src="/assets/email.png" />
 											<mat-error *ngIf="form.get('genericEmailConfirmation')?.hasError('email')">
 												Must be a valid email address
@@ -68,8 +83,11 @@ export class OrganizationInformationModel {
 												mask="(000) 000-0000"
 												[showMaskTyped]="true"
 												required
+												[errorStateMatcher]="matcher"
 											/>
-											<mat-error *ngIf="form.get('genericPhoneNumber')?.hasError('required')">Required</mat-error>
+											<mat-error *ngIf="form.get('genericPhoneNumber')?.hasError('required')"
+												>This is required</mat-error
+											>
 										</mat-form-field>
 									</div>
 									<div class="col-md-4 col-sm-12">
@@ -91,7 +109,7 @@ export class OrganizationInformationModel {
 									form.get('hasPhoneOrEmail')?.invalid &&
 									form.get('hasPhoneOrEmail')?.hasError('required')
 								"
-								>Required</mat-error
+								>This is required</mat-error
 							>
 						</mat-radio-group>
 					</div>
@@ -111,6 +129,7 @@ export class OrganizationInformationModel {
 })
 export class OrganizationInformationComponent implements OnInit, RegistrationFormStepComponent {
 	form!: FormGroup;
+	matcher = new FormErrorStateMatcher();
 
 	constructor(private formBuilder: FormBuilder) {}
 
@@ -142,6 +161,10 @@ export class OrganizationInformationComponent implements OnInit, RegistrationFor
 	isFormValid(): boolean {
 		if (!this.hasPhoneOrEmail || !this.hasPhoneOrEmail.value) return false;
 		return this.hasPhoneOrEmail.value == 'YES' ? this.form.valid : true;
+	}
+
+	clearCurrentData(): void {
+		this.form.reset();
 	}
 
 	public get hasPhoneOrEmail(): FormControl {

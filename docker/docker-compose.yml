@@ -32,7 +32,7 @@ services:
       ]
 
   frontend:
-    image: rsvp-cms-frontend
+    image: spd-frontend
     environment:
       WEB_HOST_NAME: http://localhost
       WEB_HOST_PORT: 5200
