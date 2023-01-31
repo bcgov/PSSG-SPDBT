@@ -15,10 +15,10 @@ on:
       - .github/workflows/org-registration-fe-cd.yml
 
 jobs:
-  build-organization-registration:
+  build-deploy-organization-registration:
     uses: ./.github/workflows/cd-workflow.yml
     with:
       DOCKER_CONTEXT: frontend
-      DOCKER_FILE: frontend/dockerfile
+      DOCKER_FILE: frontend/Dockerfile
       DOCKER_IMAGE_NAME: organization-registration
     secrets: inherit
