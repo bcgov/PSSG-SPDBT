@@ -112,14 +112,14 @@ $spd-test-theme: mat.define-light-theme((
   --color-primary-dark: #001b4a
 
 	--color-light-green: #e9f6ee;
-	--color-yellow: #ffb200;  // BC Gov. Secondary
-	--color-red: #ed202a;
-	--color-green: green;
+	--color-yellow: #FCBA19;  // BC Gov. Secondary
+	--color-red: #D8292F;
+	--color-green: #2E8540;
   
   --color-grey-lightest: #eeeeee;
   --color-grey-lighter: #e1e1e1;
   --color-grey-light: #bdbdbd; // divider colour
-  --color-grey: #575757; // secondary text colour
+  --color-grey: #606060; // secondary text colour
   --color-grey-dark: #212121; // primary text colour
 
 	--size-1: 8px;
@@ -132,20 +132,6 @@ $spd-test-theme: mat.define-light-theme((
 
 @import './material-overrides';
 
-.header-border {
-  border-bottom: 4px solid theme-palette(yellow) ;
-}
-
-.active-selection {
-  border: 2px solid #003366;
-  color: var(--color-white) !important;
-  background-color:#286090 !important; //#0f48ae !important; // #003366 !important;
-
-  mat-icon {
-    color: var(--color-white) !important;
-  }
-}
-
 .step {
   width: 100%;
   align-items: center;
@@ -156,18 +142,6 @@ $spd-test-theme: mat.define-light-theme((
 .child-stepper {
   .mat-horizontal-stepper-header-container {
     display: none;
-  }
-}
-
-.title {
-  // font-size: 1.4em;
-  font-size: 1.7em;
-  font-weight: 400;
-  text-align: center;
-
-  &__sub-title {
-    font-size: small;
-    font-weight: 500;
   }
 }
 
@@ -183,64 +157,4 @@ $spd-test-theme: mat.define-light-theme((
 a {  
   cursor: pointer;
   text-decoration: none;
-}
-
-.info-icon {
-  display: block;
-  text-align: center;
-
-  .mat-icon {
-    color: var(--color-primary);
-    font-size: 50px;
-    height: 50px;
-    width: 50px;
-  }
-}
-
-.step-container {
-  cursor: pointer;
-
-  &__box {
-    height: 100%;
-    border-radius: 4px;
-    border: 1px solid grey;
-    box-shadow: 0 3px 1px -2px #0003, 0 2px 2px #00000024, 0 1px 5px #0000001f;
-    text-align: center;
-
-    &__info {
-      padding: 4px;
-      display: grid;
-      justify-content: end;
-    }
-
-    &__title {
-      font-size: 1.3em;
-      font-weight: 500;
-      text-align: center;
-  
-      &__icon {
-        color: var(--color-primary);
-        font-size: 100px !important;
-        height: 100px !important;
-        width: 100px !important;
-      }
-    }
-
-    &__help-wrapper {
-      text-align: left;
-    }
-  
-    &__help-title {
-      font-size: 1.3em;
-    }
-  }
-
-  &__box:hover {
-    color: var(--color-primary-light);
-    box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
-
-    mat-icon {
-      color: var(--color-primary-light);
-    }
-  }
 }

@@ -1,1 +1,102 @@
+.active-selection-main {
+  border: 2px solid #286090 !important;
+  color: #286090 !important;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px !important;
+}
 
+.active-selection-border {
+  border: 2px solid var(--color-yellow) !important;
+  // color: var(--color-yellow) !important;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px !important;
+  // box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px !important;
+}
+
+.active-selection-whole {
+  border: 2px solid #003366;
+  color: var(--color-white) !important;
+  background-color:#286090 !important; //#0f48ae !important; // #003366 !important;
+
+  mat-icon {
+    color: var(--color-white) !important;
+  }
+}
+
+.title {
+  // font-size: 1.4em;
+  font-size: 1.7em;
+  font-weight: 400;
+  text-align: center;
+
+  &__sub-title {
+    font-size: small;
+    font-weight: 500;
+  }
+}
+
+.info-icon {
+  color: var(--color-grey-light);
+  font-size: 30px !important;
+  height: 30px !important;
+  width: 30px !important;
+}
+
+// .info-icon {
+//   display: block;
+//   text-align: center;
+
+//   .mat-icon {
+//     color: var(--color-grey-light);
+//     font-size: 30px !important;
+//     height: 30px !important;
+//     width: 30px !important;
+//   }
+// }
+
+.step-container {
+  cursor: pointer;
+
+  &__box {
+    height: 100%;
+    border-radius: 4px;
+    border: 1px solid grey;
+    box-shadow: 0 3px 1px -2px #0003, 0 2px 2px #00000024, 0 1px 5px #0000001f;
+    text-align: center;
+
+    &__info {
+      padding: 4px;
+      display: grid;
+      justify-content: end;
+    }
+
+    &__title {
+      font-size: 1.3em;
+      font-weight: 500;
+      text-align: center;
+  
+      &__icon {
+        color: var(--color-primary);
+        font-size: 100px !important;
+        height: 100px !important;
+        width: 100px !important;
+      }
+    }
+
+    &__help-wrapper {
+      text-align: left;
+    }
+  
+    &__help-title {
+      font-size: 1.3em;
+    }
+  }
+
+  &__box:hover {
+    color: var(--color-primary-light);
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+    // box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+
+    mat-icon {
+      color: var(--color-primary-light);
+    }
+  }
+}

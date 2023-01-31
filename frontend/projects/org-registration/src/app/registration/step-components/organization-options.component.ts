@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
 import { RegistrationFormStepComponent } from '../registration.component';
 
@@ -13,35 +13,50 @@ export class OrganizationOptionsModel {
 			<div class="title mb-5">Select how would you best describe your organization?</div>
 			<div class="d-none d-md-block">
 				<div class="step-container row">
-					<ng-container *ngFor="let option of options; let i = index">
-						<div class="col-md-3 col-sm-6 mb-3">
-							<div
-								class="step-container__box"
-								(click)="onDataChange(option.code)"
-								[ngClass]="{ 'active-selection': organizationType == option.code }"
-							>
-								<ng-container *ngIf="option.showHelp; else noHelp">
-									<div class="step-container__box__info">
-										<mat-icon class="info-icon" (click)="onViewHelp(option, $event)">close</mat-icon>
+					<div class="col-8 mx-auto">
+						<div class="row">
+							<ng-container *ngFor="let option of options; let i = index">
+								<div class="col-lg-4 col-md-4 col-sm-6 mb-3">
+									<div
+										class="step-container__box"
+										(click)="onDataChange(option.code)"
+										[ngClass]="{ 'active-selection-border': organizationType == option.code }"
+									>
+										<ng-container *ngIf="option.showHelp; else noHelp">
+											<div class="step-container__box__info">
+												<mat-icon class="info-icon" (click)="onViewHelp(option, $event)">close</mat-icon>
+											</div>
+											<div class="px-2 pb-3">
+												{{ option.helpText }}
+											</div>
+										</ng-container>
+										<ng-template #noHelp>
+											<div class="step-container__box__info">
+												<mat-icon class="info-icon" (click)="onViewHelp(option, $event)">help_outline</mat-icon>
+											</div>
+											<ng-container *ngIf="organizationType != option.code; else selectedIcon">
+												<div class="card-icon-container">
+													<img class="card-icon-container__icon" src="{{ option.icon }}" />
+												</div>
+												<div class="px-2 pb-3">
+													{{ option.helpText }}
+												</div>
+											</ng-container>
+
+											<ng-template #selectedIcon>
+												<div class="card-icon-container">
+													<img class="card-icon-container__icon" src="{{ option.selectedIcon }}" />
+												</div>
+												<div class="px-2 pb-3">
+													{{ option.helpText }}
+												</div>
+											</ng-template>
+										</ng-template>
 									</div>
-									<div class="px-2 pb-3">
-										{{ option.helpText }}
-									</div>
-								</ng-container>
-								<ng-template #noHelp>
-									<div class="step-container__box__info">
-										<mat-icon class="info-icon" (click)="onViewHelp(option, $event)">help_outline</mat-icon>
-									</div>
-									<div class="px-2 pb-3">
-										<div class="info-icon">
-											<mat-icon>{{ option.icon }}</mat-icon>
-										</div>
-										{{ option.text }}
-									</div>
-								</ng-template>
-							</div>
+								</div>
+							</ng-container>
 						</div>
-					</ng-container>
+					</div>
 				</div>
 			</div>
 			<div class="d-md-none">
@@ -68,9 +83,22 @@ export class OrganizationOptionsModel {
 			<mat-error style="text-align: center;" *ngIf="isDirtyAndInvalid">An option must be selected</mat-error>
 		</div>
 	`,
-	styles: [],
+	styles: [
+		`
+			.card-icon-container {
+				&__icon {
+					max-width: 5em;
+				}
+			}
+
+			.card-icon-container {
+				display: block;
+				text-align: center;
+			}
+		`,
+	],
 })
-export class OrganizationOptionsComponent implements RegistrationFormStepComponent {
+export class OrganizationOptionsComponent implements OnInit, RegistrationFormStepComponent {
 	organizationType = '';
 	// currentHelpText = '';
 	isDirtyAndInvalid = false;
@@ -88,7 +116,8 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 	options_emp = [
 		{
 			code: '1',
-			icon: 'family_restroom',
+			icon: '/assets/1a.png',
+			selectedIcon: '/assets/1b.png',
 			text: 'A childcare facility or daycare',
 			showHelp: false,
 			helpText:
@@ -96,7 +125,8 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 		},
 		{
 			code: '2',
-			icon: 'family_restroom',
+			icon: '/assets/2a.png',
+			selectedIcon: '/assets/2b.png',
 			text: 'A health board, hospital, or care facility',
 			showHelp: false,
 			helpText:
@@ -104,14 +134,16 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 		},
 		{
 			code: '3',
-			icon: 'family_restroom',
+			icon: '/assets/6a.png',
+			selectedIcon: '/assets/6b.png',
 			text: 'A school board or education authority',
 			showHelp: false,
 			helpText: 'Sed ut perspiciatis unde omnis iste natus error.',
 		},
 		{
 			code: '4',
-			icon: 'family_restroom',
+			icon: '/assets/8a.png',
+			selectedIcon: '/assets/8b.png',
 			text: 'An organization or person who receives ongoing provincial funding',
 			showHelp: false,
 			helpText:
@@ -119,14 +151,16 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 		},
 		{
 			code: '5',
-			icon: 'family_restroom',
+			icon: '/assets/3a.png',
+			selectedIcon: '/assets/3b.png',
 			text: 'A mainly government-owned corporation (for example, BC Housing)',
 			showHelp: false,
 			helpText: 'At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium.',
 		},
 		{
 			code: '6',
-			icon: 'family_restroom',
+			icon: '/assets/4a.png',
+			selectedIcon: '/assets/4b.png',
 			text: 'A provincial government ministry or related agency',
 			showHelp: false,
 			helpText:
@@ -134,29 +168,25 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 		},
 		{
 			code: '7',
-			icon: 'family_restroom',
+			icon: '/assets/5a.png',
+			selectedIcon: '/assets/5b.png',
 			text: 'A registered health professional or social worker',
 			showHelp: false,
 			helpText: 'Et harum quidem rerum facilis est et expedita distinctio.',
 		},
 		{
 			code: '8',
-			icon: 'family_restroom',
+			icon: '/assets/11a.png',
+			selectedIcon: '/assets/11b.png',
 			text: 'A governing body under the Health Professions Act or the Social Workers Act',
 			showHelp: false,
 			helpText: 'Sed ut perspiciatis unde omnis iste natus error.',
 		},
 		{
 			code: '9',
-			icon: 'family_restroom',
+			icon: '/assets/9a.png',
+			selectedIcon: '/assets/9b.png',
 			text: 'An act- or minister-appointed board, commission, or council',
-			showHelp: false,
-			helpText: 'At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium.',
-		},
-		{
-			code: '10',
-			icon: 'family_restroom',
-			text: 'None of these options apply to my organization',
 			showHelp: false,
 			helpText: 'At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium.',
 		},
@@ -165,7 +195,8 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 	options_vol = [
 		{
 			code: '11',
-			icon: 'family_restroom',
+			icon: '/assets/11a.png',
+			selectedIcon: '/assets/11b.png',
 			text: 'A registered non profit organization',
 			showHelp: false,
 			helpText:
@@ -173,70 +204,108 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 		},
 		{
 			code: '12',
-			icon: 'family_restroom',
-			text: 'A childcare facility or daycare',
+			icon: '/assets/11a.png',
+			selectedIcon: '/assets/11b.png',
+			text: 'A non profit organization registered with BC Corporate Registries',
 			showHelp: false,
 			helpText: 'Sed ut perspiciatis unde omnis iste natus error.',
 		},
 		{
 			code: '13',
-			icon: 'family_restroom',
-			text: 'A health board, hospital, or care facility',
+			icon: '/assets/1a.png',
+			selectedIcon: '/assets/1b.png',
+			text: 'A childcare facility or daycare',
+			showHelp: false,
+			helpText: 'Sed ut perspiciatis unde omnis iste natus error.',
+		},
+		{
+			code: '14',
+			icon: '/assets/2a.png',
+			selectedIcon: '/assets/2b.png',
+			text: 'A regional health board, public health facility, private hospital, or care facility',
 			showHelp: false,
 			helpText:
 				'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
 		},
 		{
-			code: '14',
-			icon: 'family_restroom',
-			text: 'A school board or education authority',
+			code: '15',
+			icon: '/assets/12a.png',
+			selectedIcon: '/assets/12b.png',
+			text: 'A school board, francophone education authority, or independent school authority',
 			showHelp: false,
 			helpText: 'At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium.',
 		},
 		{
-			code: '15',
-			icon: 'family_restroom',
-			text: 'An organization or person who receives ongoing provincial funding',
+			code: '16',
+			icon: '/assets/8a.png',
+			selectedIcon: '/assets/8b.png',
+			text: 'An individual or business that receives operating funds from the B.C. government',
 			showHelp: false,
 			helpText:
 				'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
 		},
 		{
-			code: '16',
-			icon: 'family_restroom',
+			code: '17',
+			icon: '/assets/3a.png',
+			selectedIcon: '/assets/3b.png',
 			text: 'A mainly government-owned corporation (for example, BC Housing)',
 			showHelp: false,
 			helpText: 'Et harum quidem rerum facilis est et expedita distinctio.',
 		},
 		{
-			code: '17',
-			icon: 'family_restroom',
-			text: 'A provincial government ministry or related agency',
+			code: '18',
+			icon: '/assets/12a.png',
+			selectedIcon: '/assets/12b.png',
+			text: 'BC Public Service or a related agency',
 			showHelp: false,
 			helpText: 'Sed ut perspiciatis unde omnis iste natus error.',
 		},
 		{
-			code: '18',
-			icon: 'family_restroom',
+			code: '19',
+			icon: '/assets/5a.png',
+			selectedIcon: '/assets/5b.png',
 			text: 'A registered health professional or social worker',
 			showHelp: false,
 			helpText: 'At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium.',
 		},
 		{
-			code: '19',
-			icon: 'family_restroom',
+			code: '20',
+			icon: '/assets/10a.png',
+			selectedIcon: '/assets/10b.png',
 			text: 'A municipality',
 			showHelp: false,
 			helpText: 'At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium.',
 		},
 		{
-			code: '20',
-			icon: 'family_restroom',
+			code: '21',
+			icon: '/assets/12a.png',
+			selectedIcon: '/assets/12b.png',
 			text: 'A post-secondary institution',
 			showHelp: false,
 			helpText: 'At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium.',
 		},
 	];
+
+	ngOnInit(): void {
+		// this.options_emp.forEach((tmp) => {
+		// 	const x = new Image();
+		// 	x.src = tmp.selectedIcon;
+		// 	console.log('loaded: ' + x.src);
+		// });
+		// var images = new Array()
+		// var i : number;
+		// function preload() {
+		// 	for (i = 0; i < this.options_emp.length; i++) {
+		// 		images[i] = new Image()
+		// 		images[i].src = preload.arguments[i]
+		// 	}
+		// }
+		// preload(
+		// 	"http://domain.tld/gallery/image-001.jpg",
+		// 	"http://domain.tld/gallery/image-002.jpg",
+		// 	"http://domain.tld/gallery/image-003.jpg"
+		// )
+	}
 
 	onDataChange(_val: string) {
 		this.organizationType = _val;
