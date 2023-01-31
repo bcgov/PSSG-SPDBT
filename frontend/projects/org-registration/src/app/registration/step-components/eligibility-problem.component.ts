@@ -10,7 +10,7 @@ import { Component } from '@angular/core';
 			<div class="row">
 				<div class="offset-md-3 col-md-6 col-sm-12">
 					<div style="text-align: center;">
-						<mat-icon class="eligibility-problem_icon">warning</mat-icon>
+						<mat-icon class="eligibility-problem-icon">warning</mat-icon>
 					</div>
 					<div class="eligibility-problem">
 						Please make another selection, or refer to our resources on criminal record checks to find your local police
@@ -29,8 +29,8 @@ import { Component } from '@angular/core';
 				text-align: center;
 			}
 
-			.eligibility-problem_icon {
-				color: red;
+			.eligibility-problem-icon {
+				color: var(--color-red);
 				font-size: 100px;
 				height: 100px;
 				width: 100px;

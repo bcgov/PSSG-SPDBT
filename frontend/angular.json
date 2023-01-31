@@ -27,11 +27,16 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "projects/org-registration/src/favicon.ico",
-              "projects/org-registration/src/assets"
+              "projects/org-registration/src/assets",
+              {
+                "glob": "**/*",
+                "input": "projects/shared/src/lib/assets/",
+                "output": "./assets"
+              }
             ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "projects/src/scss/app.scss",
+              "projects/shared/src/lib/scss/app.scss",
               "projects/org-registration/src/scss/app.scss"
             ],
             "scripts": [
@@ -95,11 +100,16 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "projects/org-registration/src/favicon.ico",
-              "projects/org-registration/src/assets"
+              "projects/org-registration/src/assets",
+              {
+                "glob": "**/*",
+                "input": "projects/shared/src/lib/assets/",
+                "output": "./assets"
+              }
             ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "projects/src/scss/app.scss",
+              "projects/shared/src/lib/scss/app.scss",
               "projects/org-registration/src/scss/app.scss"
             ],
             "scripts": [
@@ -134,12 +144,17 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "projects/scr-application/src/favicon.ico",
-              "projects/scr-application/src/assets"
+              "projects/scr-application/src/assets",
+              {
+                "glob": "**/*",
+                "input": "projects/shared/src/lib/assets/",
+                "output": "./assets"
+              }
             ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "projects/src/scss/app.scss",
-              "projects/org-registration/src/scss/app.scss"
+              "projects/shared/src/lib/scss/app.scss",
+              "projects/scr-application/src/scss/app.scss"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
@@ -202,12 +217,17 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "projects/scr-application/src/favicon.ico",
-              "projects/scr-application/src/assets"
+              "projects/scr-application/src/assets",
+              {
+                "glob": "**/*",
+                "input": "projects/shared/src/lib/assets/",
+                "output": "./assets"
+              }
             ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "projects/src/scss/app.scss",
-              "projects/org-registration/src/scss/app.scss"
+              "projects/shared/src/lib/scss/app.scss",
+              "projects/scr-application/src/scss/app.scss"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",

@@ -22,9 +22,9 @@ export class PaymentQuestionModel {
 							<mat-divider class="my-3"></mat-divider>
 							<mat-radio-button value="APPLICANT"> The applicant </mat-radio-button>
 							<mat-divider class="my-3"></mat-divider>
-							<mat-radio-button value="DO_NOT_KNOW"> I don't know </mat-radio-button>
-							<mat-divider class="my-3"></mat-divider>
 							<mat-radio-button value="DEPENDS_ON_SITUATION"> Depends on situation </mat-radio-button>
+							<mat-divider class="my-3"></mat-divider>
+							<mat-radio-button value="DO_NOT_KNOW"> I don't know </mat-radio-button>
 						</mat-radio-group>
 						<mat-error *ngIf="form.get('checkFeePayer')?.hasError('required')">An option must be selected</mat-error>
 					</div>

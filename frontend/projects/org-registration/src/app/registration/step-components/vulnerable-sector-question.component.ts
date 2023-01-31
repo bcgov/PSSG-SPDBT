@@ -9,13 +9,18 @@ export class VulnerableSectorQuestionModel {
 	selector: 'app-vulnerable-sector-question',
 	template: `
 		<div class="step">
-			<div class="title mb-5">Tell us a bit more about your employees:</div>
+			<div class="title mb-5">
+				Tell us a bit more about your employees:
+				<div class="title__sub-title mt-2">
+					To “Works With” means to have direct or unsupervised access to children and/or vulnerable adults.
+				</div>
+			</div>
 			<div class="step-container row">
 				<div class="col-md-3 col-sm-6 mb-3">
 					<div
 						class="step-container__box"
 						(click)="onDataChange('CHILDREN')"
-						[ngClass]="{ 'active-selection': employeeInteractionFlag == 'CHILDREN' }"
+						[ngClass]="{ 'active-selection-whole': employeeInteractionFlag == 'CHILDREN' }"
 					>
 						<ng-container *ngIf="displayHelp1; else noHelp1">
 							<div class="step-container__box__info">
@@ -32,7 +37,7 @@ export class VulnerableSectorQuestionModel {
 								<mat-icon class="info-icon" (click)="onViewHelp1($event)">help_outline</mat-icon>
 							</div>
 							<div class="px-2 pb-3">
-								<div class="info-icon"><mat-icon>family_restroom</mat-icon></div>
+								<div class="info-icon-container"><mat-icon>family_restroom</mat-icon></div>
 								My employees work with <strong>children</strong>
 							</div>
 						</ng-template>
@@ -42,7 +47,7 @@ export class VulnerableSectorQuestionModel {
 					<div
 						class="step-container__box"
 						(click)="onDataChange('ADULTS')"
-						[ngClass]="{ 'active-selection': employeeInteractionFlag == 'ADULTS' }"
+						[ngClass]="{ 'active-selection-whole': employeeInteractionFlag == 'ADULTS' }"
 					>
 						<ng-container *ngIf="displayHelp2; else noHelp2">
 							<div class="step-container__box__info">
@@ -57,7 +62,7 @@ export class VulnerableSectorQuestionModel {
 								<mat-icon class="info-icon" (click)="onViewHelp2($event)">help_outline</mat-icon>
 							</div>
 							<div class="px-2 pb-3">
-								<div class="info-icon"><mat-icon>elderly</mat-icon></div>
+								<div class="info-icon-container"><mat-icon>elderly</mat-icon></div>
 								My employees work with <strong>vulnerable adults</strong>
 							</div>
 						</ng-template>
@@ -68,9 +73,9 @@ export class VulnerableSectorQuestionModel {
 						class="step-container__box px-2 pb-3"
 						style="padding-top: 32px;"
 						(click)="onDataChange('CHILDREN_ADULTS')"
-						[ngClass]="{ 'active-selection': employeeInteractionFlag == 'CHILDREN_ADULTS' }"
+						[ngClass]="{ 'active-selection-whole': employeeInteractionFlag == 'CHILDREN_ADULTS' }"
 					>
-						<div class="info-icon"><mat-icon>diversity_3</mat-icon></div>
+						<div class="info-icon-container"><mat-icon>diversity_3</mat-icon></div>
 						My employees work with <strong>children and vulnerable adults</strong>
 					</div>
 				</div>
@@ -79,9 +84,9 @@ export class VulnerableSectorQuestionModel {
 						class="step-container__box px-2 pb-3"
 						style="padding-top: 32px;"
 						(click)="onDataChange('NEITHER')"
-						[ngClass]="{ 'active-selection': employeeInteractionFlag == 'NEITHER' }"
+						[ngClass]="{ 'active-selection-whole': employeeInteractionFlag == 'NEITHER' }"
 					>
-						<div class="info-icon"><mat-icon>person_off</mat-icon></div>
+						<div class="info-icon-container"><mat-icon>person_off</mat-icon></div>
 						My employee <strong>do not work</strong> with children or vulnerable adults
 					</div>
 				</div>
@@ -89,7 +94,21 @@ export class VulnerableSectorQuestionModel {
 			<mat-error style="text-align: center;" *ngIf="isDirtyAndInvalid">An option must be selected</mat-error>
 		</div>
 	`,
-	styles: [],
+	styles: [
+		`
+			.info-icon-container {
+				display: block;
+				text-align: center;
+
+				.mat-icon {
+					color: var(--color-grey-light);
+					font-size: 50px !important;
+					height: 50px !important;
+					width: 50px !important;
+				}
+			}
+		`,
+	],
 })
 export class VulnerableSectorQuestionComponent implements RegistrationFormStepComponent {
 	employeeInteractionFlag: string | null = null;
