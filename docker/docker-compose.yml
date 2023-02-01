@@ -63,4 +63,4 @@ volumes:
   frontend-npm-cache:
 
 networks:
-  rsp_it:
+  spd_it:
