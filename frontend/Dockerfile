@@ -9,5 +9,5 @@ RUN npm run build shared
 RUN npm run build --project orgRegistration
 
 # run stage
-FROM registry.access.redhat.com/ubi8/nginx-120:latest
+FROM nginxinc/nginx-unprivileged:latest
 COPY --from=build-stage /usr/src/app/dist/org-registration /usr/share/nginx/html
