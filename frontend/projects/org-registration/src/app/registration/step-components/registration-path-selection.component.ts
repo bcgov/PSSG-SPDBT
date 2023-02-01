@@ -31,7 +31,7 @@ export class RegistrationPathSelectionModel {
 								<mat-icon class="main-info-icon" (click)="onViewHelp($event)">close</mat-icon>
 							</div>
 							<div class="step-container__box__help-wrapper pb-2 px-2  pb-sm-4 px-sm-4">
-								<div class="step-container__box__help-title">Employees Include...</div>
+								<div class="step-container__box__help-title mb-2">Employees Include...</div>
 								<ul>
 									<li>Regular employees</li>
 									<li>Part-time or auxilliary employees</li>

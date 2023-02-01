@@ -36,19 +36,20 @@ export class OrganizationOptionsModel {
 											</div>
 											<ng-container *ngIf="organizationType != option.code; else selectedIcon">
 												<div class="card-icon-container">
-													<img class="card-icon-container__icon" src="{{ option.icon }}" />
+													<img ngSrc="/assets/1a.png" priority />
+													<img class="card-icon-container__icon" [src]="option.icon" />
 												</div>
 												<div class="px-2 pb-3">
-													{{ option.helpText }}
+													{{ option.text }}
 												</div>
 											</ng-container>
 
 											<ng-template #selectedIcon>
 												<div class="card-icon-container">
-													<img class="card-icon-container__icon" src="{{ option.selectedIcon }}" />
+													<img class="card-icon-container__icon" [src]="option.selectedIcon" />
 												</div>
 												<div class="px-2 pb-3">
-													{{ option.helpText }}
+													{{ option.text }}
 												</div>
 											</ng-template>
 										</ng-template>
