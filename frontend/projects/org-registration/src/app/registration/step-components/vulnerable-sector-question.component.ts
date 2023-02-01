@@ -27,9 +27,9 @@ export class VulnerableSectorQuestionModel {
 								<mat-icon class="info-icon" (click)="onViewHelp1($event)">close</mat-icon>
 							</div>
 							<div class="px-2 pb-3">
-								Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-								dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-								ex ea commodo consequat.
+								<!-- <div class="step-container__box__help-wrapper pb-2 px-2  pb-sm-4 px-sm-4"> -->
+								<div class="step-container__box__help-title mb-2">What does child mean?</div>
+								<p>A child is a person who is under the age of 19.</p>
 							</div>
 						</ng-container>
 						<ng-template #noHelp1>
@@ -54,7 +54,9 @@ export class VulnerableSectorQuestionModel {
 								<mat-icon class="info-icon" (click)="onViewHelp2($event)">close</mat-icon>
 							</div>
 							<div class="px-2 pb-3">
-								Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+								<div class="step-container__box__help-title mb-2">What does vulnerable adult mean?</div>
+								<p>A vulnerable adult is a person 19 and over who receives healthcare services that are not acute.</p>
+								<p>Acute means short-term treatment for a severe injury or illness.</p>
 							</div>
 						</ng-container>
 						<ng-template #noHelp2>

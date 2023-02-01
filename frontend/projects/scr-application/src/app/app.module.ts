@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
@@ -11,18 +12,19 @@ import { LandingComponent } from './landing.component';
 import { ScreeningComponent } from './screening/screening.component';
 
 @NgModule({
-  declarations: [AppComponent, LandingComponent, ScreeningComponent],
-  imports: [
-    AppRoutingModule,
-    BrowserModule,
-    BrowserAnimationsModule,
-    CommonModule,
-    MaterialModule,
-    FormsModule,
-    ReactiveFormsModule,
-    SharedModule,
-  ],
-  providers: [],
-  bootstrap: [AppComponent],
+	declarations: [AppComponent, LandingComponent, ScreeningComponent],
+	imports: [
+		AppRoutingModule,
+		BrowserModule,
+		BrowserAnimationsModule,
+		HttpClientModule,
+		CommonModule,
+		MaterialModule,
+		FormsModule,
+		ReactiveFormsModule,
+		SharedModule,
+	],
+	providers: [],
+	bootstrap: [AppComponent],
 })
 export class AppModule {}

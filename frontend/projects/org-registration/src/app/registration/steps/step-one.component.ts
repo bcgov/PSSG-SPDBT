@@ -99,7 +99,7 @@ import {
 				</div>
 			</mat-step>
 
-			<mat-step *ngIf="showStep6">
+			<mat-step>
 				<app-eligibility-problem></app-eligibility-problem>
 
 				<div class="row mt-4">

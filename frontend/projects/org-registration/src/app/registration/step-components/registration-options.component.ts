@@ -13,7 +13,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 							<div>Register with Business BCeID</div>
 							<img class="step-container__box__title__image mt-2" src="/assets/BCeID_Card.svg" />
 						</div>
-						<div class="step-container__box__content pt-4 px-4">
+						<div class="step-container__box__content pt-4 px-4" style="padding-left: 6em!important;">
 							<table class="ml-5 mb-5" style="text-align: left;">
 								<tr>
 									<td class="pr-2 pb-2">
