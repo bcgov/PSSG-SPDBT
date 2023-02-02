@@ -19,7 +19,7 @@ export class RegistrationPathSelectionModel {
 					>
 						<ng-container *ngIf="displayHelp; else employeesHelp">
 							<div class="step-container__box__info">
-								<mat-icon class="main-info-icon" (click)="onViewHelp($event)">help_outline</mat-icon>
+								<mat-icon class="main-icon" (click)="onViewHelp($event)">help_outline</mat-icon>
 							</div>
 							<div class="step-container__box__title  pt-0 pt-sm-5 pb-0 pb-sm-5 mb-5">
 								<mat-icon class="step-container__box__title__icon">groups</mat-icon>
@@ -28,7 +28,7 @@ export class RegistrationPathSelectionModel {
 						</ng-container>
 						<ng-template #employeesHelp>
 							<div class="step-container__box__info">
-								<mat-icon class="main-info-icon" (click)="onViewHelp($event)">close</mat-icon>
+								<mat-icon class="main-icon" (click)="onViewHelp($event)">close</mat-icon>
 							</div>
 							<div class="step-container__box__help-wrapper pb-2 px-2  pb-sm-4 px-sm-4">
 								<div class="step-container__box__help-title mb-2">Employees Include...</div>
@@ -51,7 +51,7 @@ export class RegistrationPathSelectionModel {
 					>
 						<ng-container *ngIf="displayHelp; else volunteersHelp">
 							<div class="step-container__box__info">
-								<mat-icon class="main-info-icon" (click)="onViewHelp($event)">help_outline</mat-icon>
+								<mat-icon class="main-icon" (click)="onViewHelp($event)">help_outline</mat-icon>
 							</div>
 							<div class="step-container__box__title  pt-0 pt-sm-5 pb-0 pb-sm-5 mb-5">
 								<mat-icon class="step-container__box__title__icon">diversity_3</mat-icon>
@@ -60,7 +60,7 @@ export class RegistrationPathSelectionModel {
 						</ng-container>
 						<ng-template #volunteersHelp>
 							<div class="step-container__box__info">
-								<mat-icon class="main-info-icon" (click)="onViewHelp($event)">close</mat-icon>
+								<mat-icon class="main-icon" (click)="onViewHelp($event)">close</mat-icon>
 							</div>
 							<div class="step-container__box__help-wrapper pb-2 px-2  pb-sm-4 px-sm-4">
 								<div class="step-container__box__help-title mb-2">Volunteers Include...</div>
@@ -80,7 +80,7 @@ export class RegistrationPathSelectionModel {
 	`,
 	styles: [
 		`
-			.main-info-icon {
+			.main-icon {
 				color: var(--color-grey-light);
 				font-size: 30px !important;
 				height: 30px !important;

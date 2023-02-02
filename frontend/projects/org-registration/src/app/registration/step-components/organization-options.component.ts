@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
 import { RegistrationFormStepComponent } from '../registration.component';
 
@@ -24,7 +24,7 @@ export class OrganizationOptionsModel {
 									>
 										<ng-container *ngIf="option.showHelp; else noHelp">
 											<div class="step-container__box__info">
-												<mat-icon class="info-icon" (click)="onViewHelp(option, $event)">close</mat-icon>
+												<mat-icon class="larger-icon" (click)="onViewHelp(option, $event)">close</mat-icon>
 											</div>
 											<div class="px-2 pb-3">
 												{{ option.helpText }}
@@ -32,11 +32,10 @@ export class OrganizationOptionsModel {
 										</ng-container>
 										<ng-template #noHelp>
 											<div class="step-container__box__info">
-												<mat-icon class="info-icon" (click)="onViewHelp(option, $event)">help_outline</mat-icon>
+												<mat-icon class="larger-icon" (click)="onViewHelp(option, $event)">help_outline</mat-icon>
 											</div>
 											<ng-container *ngIf="organizationType != option.code; else selectedIcon">
 												<div class="card-icon-container">
-													<img ngSrc="/assets/1a.png" priority />
 													<img class="card-icon-container__icon" [src]="option.icon" />
 												</div>
 												<div class="px-2 pb-3">
@@ -71,7 +70,7 @@ export class OrganizationOptionsModel {
 							</mat-select>
 						</mat-form-field>
 						<!--  style="display: inherit;" <div *ngIf="organizationType" style="position: inherit;top: 15px;left: 2px;">
-							<mat-icon class="info-icon" (click)="onViewHelpForSelection()">help_outline</mat-icon>
+							<mat-icon class="larger-icon" (click)="onViewHelpForSelection()">help_outline</mat-icon>
 						</div> -->
 					</div>
 				</div>
@@ -88,7 +87,7 @@ export class OrganizationOptionsModel {
 		`
 			.card-icon-container {
 				&__icon {
-					max-width: 5em;
+					max-width: 4em;
 				}
 			}
 
@@ -99,14 +98,30 @@ export class OrganizationOptionsModel {
 		`,
 	],
 })
-export class OrganizationOptionsComponent implements OnInit, RegistrationFormStepComponent {
+export class OrganizationOptionsComponent implements RegistrationFormStepComponent {
 	organizationType = '';
 	// currentHelpText = '';
 	isDirtyAndInvalid = false;
+	selectedIconImages = new Array();
 
 	private _registrationTypeCode!: string;
 	@Input() set registrationTypeCode(value: string) {
-		this.options = value == 'EMP' ? this.options_emp : this.options_vol;
+		// Preload the 'selectedIcon' images... prevents flicker when you click on card.
+		if (value == 'EMP') {
+			this.options = this.options_emp;
+			this.options_emp.forEach((opt) => {
+				const tmp = new Image();
+				tmp.src = opt.selectedIcon;
+				this.selectedIconImages.push(tmp);
+			});
+		} else {
+			this.options = this.options_vol;
+			this.options_vol.forEach((opt) => {
+				const tmp = new Image();
+				tmp.src = opt.selectedIcon;
+				this.selectedIconImages.push(tmp);
+			});
+		}
 	}
 	get registrationTypeCode(): string {
 		return this._registrationTypeCode;
@@ -286,27 +301,6 @@ export class OrganizationOptionsComponent implements OnInit, RegistrationFormSte
 			helpText: 'At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium.',
 		},
 	];
-
-	ngOnInit(): void {
-		// this.options_emp.forEach((tmp) => {
-		// 	const x = new Image();
-		// 	x.src = tmp.selectedIcon;
-		// 	console.log('loaded: ' + x.src);
-		// });
-		// var images = new Array()
-		// var i : number;
-		// function preload() {
-		// 	for (i = 0; i < this.options_emp.length; i++) {
-		// 		images[i] = new Image()
-		// 		images[i].src = preload.arguments[i]
-		// 	}
-		// }
-		// preload(
-		// 	"http://domain.tld/gallery/image-001.jpg",
-		// 	"http://domain.tld/gallery/image-002.jpg",
-		// 	"http://domain.tld/gallery/image-003.jpg"
-		// )
-	}
 
 	onDataChange(_val: string) {
 		this.organizationType = _val;
