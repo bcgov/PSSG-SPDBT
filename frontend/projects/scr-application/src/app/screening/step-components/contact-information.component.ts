@@ -1,26 +1,24 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
 import { FormErrorStateMatcher } from 'projects/shared/src/public-api';
-import { RegistrationFormStepComponent } from '../registration.component';
-
-export class AuthorizedContactModel {
-	contactGivenName: string = '';
-	contactSurname: string = '';
-	contactJobTitle: string = '';
-	contactEmail: string = '';
-	contactDateOfBirth: string = '';
-	contactPhoneNumber: string = '';
-	contactPhoneExt: string = '';
-}
+import { ScreeningFormStepComponent } from '../screening.component';
 
 @Component({
-	selector: 'app-authorized-contact-information',
+	selector: 'app-contact-information',
 	template: `
-		<form [formGroup]="form" #formDirective="ngForm" novalidate>
+		<form [formGroup]="form" novalidate>
 			<div class="step">
-				<div class="title mb-5">Please provide your work contact information:</div>
+				<div class="title mb-5">Please confirm your contact information:</div>
 				<div class="row">
 					<div class="offset-md-2 col-md-4 col-sm-12">
+						Requesting Organization<br />
+						Organization Phone Number<br />
+						Organization Address<br />
+						Job Title<br />
+						Vulnerable Sector Category<br />
+					</div>
+
+					<!-- <div class="offset-md-2 col-md-4 col-sm-12">
 						<mat-form-field>
 							<mat-label>Given Name</mat-label>
 							<input matInput formControlName="contactGivenName" maxlength="40" [errorStateMatcher]="matcher" />
@@ -37,9 +35,9 @@ export class AuthorizedContactModel {
 							<mat-error *ngIf="form.get('contactSurname')?.hasError('required')">This is required</mat-error>
 							<mat-error *ngIf="form.get('contactSurname')?.hasError('pattern')">Only characters are allowed</mat-error>
 						</mat-form-field>
-					</div>
+					</div> -->
 				</div>
-				<div class="row">
+				<!-- <div class="row">
 					<div class="offset-md-2 col-md-4 col-sm-12">
 						<mat-form-field>
 							<mat-label>Job Title</mat-label>
@@ -96,13 +94,13 @@ export class AuthorizedContactModel {
 							<input matInput formControlName="contactPhoneExt" />
 						</mat-form-field>
 					</div>
-				</div>
+				</div> -->
 			</div>
 		</form>
 	`,
 	styles: [],
 })
-export class AuthorizedContactInformationComponent implements RegistrationFormStepComponent {
+export class ContactInformationComponent implements ScreeningFormStepComponent {
 	form: FormGroup = this.formBuilder.group({
 		contactGivenName: new FormControl('', [Validators.pattern("^[a-zA-Z -']+"), Validators.required]),
 		contactSurname: new FormControl('', [Validators.pattern("^[a-zA-Z -']+"), Validators.required]),

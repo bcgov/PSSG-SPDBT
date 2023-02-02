@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 @Component({
 	selector: 'app-footer',
 	template: `
-		<mat-toolbar color="primary">
+		<mat-toolbar color="primary" class="footer">
 			<a href="/">Home</a>
 			<a href="https://www2.gov.bc.ca/gov/content/home/disclaimer">Disclaimer</a>
 			<a href="https://www2.gov.bc.ca/gov/content/home/privacy">Privacy</a>
@@ -14,9 +14,8 @@ import { Component } from '@angular/core';
 	`,
 	styles: [
 		`
-			.divider {
-				padding-left: 10px;
-				padding-right: 10px;
+			.footer {
+				border-top: 2px solid var(--color-yellow);
 			}
 
 			a {

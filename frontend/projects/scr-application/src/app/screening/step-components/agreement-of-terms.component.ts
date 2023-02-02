@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { RegistrationFormStepComponent } from '../registration.component';
+import { ScreeningFormStepComponent } from '../screening.component';
 
 @Component({
 	selector: 'app-agreement-of-terms',
@@ -101,7 +101,7 @@ import { RegistrationFormStepComponent } from '../registration.component';
 		`,
 	],
 })
-export class AgreementOfTermsComponent implements OnInit, RegistrationFormStepComponent {
+export class AgreementOfTermsComponent implements OnInit, ScreeningFormStepComponent {
 	form!: FormGroup;
 	hasScrolledToBottom = false;
 	displayScrollToBottomMessage = false;

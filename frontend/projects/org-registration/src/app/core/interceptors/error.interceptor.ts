@@ -49,7 +49,7 @@ export class ErrorInterceptor implements HttpInterceptor {
 					type: 'warn',
 					title,
 					message,
-					actionText: 'Close',
+					cancelText: 'Close',
 				};
 
 				this.dialog.open(DialogComponent, { data: dialogOptions });

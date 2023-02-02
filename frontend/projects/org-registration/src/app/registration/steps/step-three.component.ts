@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { AuthorizedContactInformationComponent } from '../step-components/authorized-contact-information.component';
+import { ContactInformationComponent } from '../step-components/contact-information.component';
 import { MailingAddressComponent } from '../step-components/mailing-address.component';
 import { OrganizationInformationComponent } from '../step-components/organization-information.component';
 import { OrganizationNameComponent } from '../step-components/organization-name.component';
@@ -12,7 +12,7 @@ import { ScreeningsQuestionComponent } from '../step-components/screenings-quest
 	template: `
 		<mat-stepper class="child-stepper" #childstepper>
 			<mat-step>
-				<app-authorized-contact-information></app-authorized-contact-information>
+				<app-contact-information></app-contact-information>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -108,8 +108,8 @@ export class StepThreeComponent {
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 
-	@ViewChild(AuthorizedContactInformationComponent)
-	authorizedContactInformationComponent!: AuthorizedContactInformationComponent;
+	@ViewChild(ContactInformationComponent)
+	contactInformationComponent!: ContactInformationComponent;
 
 	@ViewChild(OrganizationNameComponent)
 	organizationNameComponent!: OrganizationNameComponent;
@@ -130,7 +130,7 @@ export class StepThreeComponent {
 
 	getStepData(): any {
 		return {
-			...this.authorizedContactInformationComponent.getDataToSave(),
+			...this.contactInformationComponent.getDataToSave(),
 			...this.organizationNameComponent.getDataToSave(),
 			...this.organizationInformationComponent.getDataToSave(),
 			...this.mailingAddressComponent.getDataToSave(),
@@ -178,8 +178,8 @@ export class StepThreeComponent {
 				this.mailingAddressComponent.form.markAllAsTouched();
 				return this.mailingAddressComponent.isFormValid();
 			case 10:
-				this.authorizedContactInformationComponent.form.markAllAsTouched();
-				return this.authorizedContactInformationComponent.isFormValid();
+				this.contactInformationComponent.form.markAllAsTouched();
+				return this.contactInformationComponent.isFormValid();
 			case 9:
 				this.organizationInformationComponent.form.markAllAsTouched();
 				return this.organizationInformationComponent.isFormValid();
@@ -193,7 +193,7 @@ export class StepThreeComponent {
 	}
 
 	clearStepData(): void {
-		this.authorizedContactInformationComponent?.clearCurrentData();
+		this.contactInformationComponent?.clearCurrentData();
 		this.organizationNameComponent?.clearCurrentData();
 		this.organizationInformationComponent?.clearCurrentData();
 		this.mailingAddressComponent?.clearCurrentData();

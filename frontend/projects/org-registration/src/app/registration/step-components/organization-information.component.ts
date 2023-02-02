@@ -3,14 +3,6 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { FormErrorStateMatcher } from 'projects/shared/src/public-api';
 import { RegistrationFormStepComponent } from '../registration.component';
 
-export class OrganizationInformationModel {
-	hasPhoneOrEmail: string = '';
-	genericEmail: string = '';
-	genericEmailConfirmation: string = '';
-	genericPhoneNumber: string = '';
-	genericPhoneExt: string = '';
-}
-
 @Component({
 	selector: 'app-organization-information',
 	template: `

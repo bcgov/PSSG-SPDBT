@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { AgreementOfTermsComponent, AgreementOfTermsModel } from '../step-components/agreement-of-terms.component';
+import { AgreementOfTermsComponent } from '../step-components/agreement-of-terms.component';
 
 @Component({
 	selector: 'app-step-four',
@@ -20,7 +20,7 @@ import { AgreementOfTermsComponent, AgreementOfTermsModel } from '../step-compon
 			</mat-step>
 
 			<mat-step>
-				<app-completed></app-completed>
+				<app-completed [sendToEmailAddress]="sendToEmailAddress"></app-completed>
 
 				<div class="row mt-4">
 					<div class="offset-lg-4 col-lg-4 offset-md-4 col-md-4 col-sm-12">
@@ -34,12 +34,7 @@ import { AgreementOfTermsComponent, AgreementOfTermsModel } from '../step-compon
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepFourComponent {
-	isFormValid14: boolean = false;
-
-	agreementOfTermsData: AgreementOfTermsModel = {
-		agreeToTermsAndConditions: false,
-	};
-
+	@Input() sendToEmailAddress = '';
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() saveStepperStep: EventEmitter<boolean> = new EventEmitter();
 
@@ -52,13 +47,6 @@ export class StepFourComponent {
 		return {
 			...this.agreementOfTermsComponent.getDataToSave(),
 		};
-	}
-
-	onAgreementOfTermsValidity(isFormValid: boolean): void {
-		this.isFormValid14 = isFormValid;
-		if (isFormValid) {
-			this.agreementOfTermsData = this.agreementOfTermsComponent.getDataToSave();
-		}
 	}
 
 	childStepNext(): void {

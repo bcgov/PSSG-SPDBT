@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
 	selector: 'app-completed',
@@ -7,7 +7,8 @@ import { Component } from '@angular/core';
 			<div class="title mb-5">
 				Thank you!
 				<div style="font-size: smaller">
-					Your registration is complete, and a confirmation email has been sent to [email address]
+					Your registration is complete, and a confirmation email has been sent to<br />
+					{{ sendToEmailAddress }}
 				</div>
 			</div>
 			<div class="row">
@@ -73,4 +74,6 @@ import { Component } from '@angular/core';
 		`,
 	],
 })
-export class CompletedComponent {}
+export class CompletedComponent {
+	@Input() sendToEmailAddress = '';
+}

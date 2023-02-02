@@ -3,7 +3,7 @@ import { StepperOrientation } from '@angular/cdk/stepper';
 import { Component, OnInit } from '@angular/core';
 import { distinctUntilChanged } from 'rxjs';
 
-export interface RegistrationFormStepComponent {
+export interface ScreeningFormStepComponent {
 	getDataToSave(): any;
 	clearCurrentData(): void;
 	isFormValid(): boolean;
@@ -11,7 +11,32 @@ export interface RegistrationFormStepComponent {
 
 @Component({
 	selector: 'app-screening',
-	template: ` screening `,
+	template: `
+		<!-- <mat-progress-bar mode="determinate" value="40"></mat-progress-bar> -->
+
+		<mat-stepper linear labelPosition="bottom" [orientation]="orientation" #stepper>
+			<mat-step completed="true">
+				<ng-template matStepLabel>Eligibility</ng-template>
+				<app-step-one></app-step-one>
+			</mat-step>
+			<mat-step completed="true">
+				<ng-template matStepLabel>Business Information</ng-template>
+				<app-step-two></app-step-two>
+			</mat-step>
+			<mat-step completed="true">
+				<ng-template matStepLabel>Business Information</ng-template>
+				<app-step-two></app-step-two>
+			</mat-step>
+			<mat-step completed="true">
+				<ng-template matStepLabel>Business Information</ng-template>
+				<app-step-two></app-step-two>
+			</mat-step>
+			<mat-step completed="true">
+				<ng-template matStepLabel>Complete</ng-template>
+				<app-step-two></app-step-two>
+			</mat-step>
+		</mat-stepper>
+	`,
 	styles: [],
 })
 export class ScreeningComponent implements OnInit {
