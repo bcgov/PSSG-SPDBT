@@ -6,13 +6,7 @@ on:
       - main
     paths:
       - frontend/**
-      - .github/workflows/org-registration-fe-cd.yml
-  pull_request:
-    branches: 
-      - main
-    paths:
-      - frontend/**
-      - .github/workflows/org-registration-fe-cd.yml
+      - .github/workflows/org-registration-fe-main-cd.yml
 
 jobs:
   build-deploy-organization-registration:
