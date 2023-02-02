@@ -36,6 +36,7 @@
             ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/ngx-spinner/animations/square-jelly-box.css",
               "projects/shared/src/lib/scss/app.scss",
               "projects/org-registration/src/scss/app.scss"
             ],
@@ -81,7 +82,11 @@
               "browserTarget": "orgRegistration:build:development"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "development",
+          "options": {
+            "browserTarget": "frontend:build",
+            "proxyConfig": "proxy.conf.json"
+          }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -109,6 +114,7 @@
             ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/ngx-spinner/animations/square-jelly-box.css",
               "projects/shared/src/lib/scss/app.scss",
               "projects/org-registration/src/scss/app.scss"
             ],
@@ -153,6 +159,7 @@
             ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/ngx-spinner/animations/square-jelly-box.css",
               "projects/shared/src/lib/scss/app.scss",
               "projects/scr-application/src/scss/app.scss"
             ],
@@ -226,6 +233,7 @@
             ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/ngx-spinner/animations/square-jelly-box.css",
               "projects/shared/src/lib/scss/app.scss",
               "projects/scr-application/src/scss/app.scss"
             ],

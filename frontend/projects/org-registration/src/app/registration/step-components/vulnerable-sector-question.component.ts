@@ -24,7 +24,7 @@ export class VulnerableSectorQuestionModel {
 					>
 						<ng-container *ngIf="displayHelp1; else noHelp1">
 							<div class="step-container__box__info">
-								<mat-icon class="info-icon" (click)="onViewHelp1($event)">close</mat-icon>
+								<mat-icon class="larger-icon" (click)="onViewHelp1($event)">close</mat-icon>
 							</div>
 							<div class="px-2 pb-3">
 								<!-- <div class="step-container__box__help-wrapper pb-2 px-2  pb-sm-4 px-sm-4"> -->
@@ -34,10 +34,10 @@ export class VulnerableSectorQuestionModel {
 						</ng-container>
 						<ng-template #noHelp1>
 							<div class="step-container__box__info">
-								<mat-icon class="info-icon" (click)="onViewHelp1($event)">help_outline</mat-icon>
+								<mat-icon class="larger-icon" (click)="onViewHelp1($event)">help_outline</mat-icon>
 							</div>
 							<div class="px-2 pb-3">
-								<div class="info-icon-container"><mat-icon>family_restroom</mat-icon></div>
+								<div class="icon-container"><mat-icon>family_restroom</mat-icon></div>
 								My employees work with <strong>children</strong>
 							</div>
 						</ng-template>
@@ -51,7 +51,7 @@ export class VulnerableSectorQuestionModel {
 					>
 						<ng-container *ngIf="displayHelp2; else noHelp2">
 							<div class="step-container__box__info">
-								<mat-icon class="info-icon" (click)="onViewHelp2($event)">close</mat-icon>
+								<mat-icon class="larger-icon" (click)="onViewHelp2($event)">close</mat-icon>
 							</div>
 							<div class="px-2 pb-3">
 								<div class="step-container__box__help-title mb-2">What does vulnerable adult mean?</div>
@@ -61,10 +61,10 @@ export class VulnerableSectorQuestionModel {
 						</ng-container>
 						<ng-template #noHelp2>
 							<div class="step-container__box__info">
-								<mat-icon class="info-icon" (click)="onViewHelp2($event)">help_outline</mat-icon>
+								<mat-icon class="larger-icon" (click)="onViewHelp2($event)">help_outline</mat-icon>
 							</div>
 							<div class="px-2 pb-3">
-								<div class="info-icon-container"><mat-icon>elderly</mat-icon></div>
+								<div class="icon-container"><mat-icon>elderly</mat-icon></div>
 								My employees work with <strong>vulnerable adults</strong>
 							</div>
 						</ng-template>
@@ -77,7 +77,7 @@ export class VulnerableSectorQuestionModel {
 						(click)="onDataChange('CHILDREN_ADULTS')"
 						[ngClass]="{ 'active-selection-whole': employeeInteractionFlag == 'CHILDREN_ADULTS' }"
 					>
-						<div class="info-icon-container"><mat-icon>diversity_3</mat-icon></div>
+						<div class="icon-container"><mat-icon>diversity_3</mat-icon></div>
 						My employees work with <strong>children and vulnerable adults</strong>
 					</div>
 				</div>
@@ -88,7 +88,7 @@ export class VulnerableSectorQuestionModel {
 						(click)="onDataChange('NEITHER')"
 						[ngClass]="{ 'active-selection-whole': employeeInteractionFlag == 'NEITHER' }"
 					>
-						<div class="info-icon-container"><mat-icon>person_off</mat-icon></div>
+						<div class="icon-container"><mat-icon>person_off</mat-icon></div>
 						My employee <strong>do not work</strong> with children or vulnerable adults
 					</div>
 				</div>
@@ -98,12 +98,12 @@ export class VulnerableSectorQuestionModel {
 	`,
 	styles: [
 		`
-			.info-icon-container {
+			.icon-container {
 				display: block;
 				text-align: center;
 
 				.mat-icon {
-					color: var(--color-grey-light);
+					color: var(--color-black);
 					font-size: 50px !important;
 					height: 50px !important;
 					width: 50px !important;

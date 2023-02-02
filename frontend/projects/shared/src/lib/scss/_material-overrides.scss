@@ -25,6 +25,10 @@ button.mdc-button {
   color: #fff !important;
 }
 
+.mat-step-header:active, .mat-step-header.cdk-program-focused, .mat-step-header.cdk-keyboard-focuses {
+  background-color: unset;// rgba(0, 0, 0, 0.04);
+}
+
 .mdc-form-field {
   background-color: rgba(245, 245, 245);
 }

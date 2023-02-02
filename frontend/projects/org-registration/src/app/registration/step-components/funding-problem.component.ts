@@ -14,8 +14,12 @@ import { Component } from '@angular/core';
 						<mat-icon class="funding-problem-icon">warning</mat-icon>
 					</div>
 					<div class="funding-problem">
-						Please make another selection, or refer to our resources on criminal record checks to find your local police
-						detachment.
+						Please make another selection, or refer to
+						<a href="https://www2.gov.bc.ca/gov/content/safety/crime-prevention/criminal-record-check" target="_blank">
+							our resources
+						</a>
+						on criminal record checks to find your local police detachment.
+						<mat-icon class="smaller-icon" matTooltip="To be determined">help_outline</mat-icon>
 					</div>
 				</div>
 			</div>

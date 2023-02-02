@@ -1,12 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgxSpinnerModule } from 'ngx-spinner';
 import { MaterialModule, SharedModule } from 'projects/shared/src/public-api';
+import { ApiConfiguration } from './api/api-configuration';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { CoreModule } from './core/core.module';
 import { LandingComponent } from './landing.component';
 import { RegistrationComponent } from './registration/registration.component';
 import { AgreementOfTermsComponent } from './registration/step-components/agreement-of-terms.component';
@@ -29,6 +32,12 @@ import { StepFourComponent } from './registration/steps/step-four.component';
 import { StepOneComponent } from './registration/steps/step-one.component';
 import { StepThreeComponent } from './registration/steps/step-three.component';
 import { StepTwoComponent } from './registration/steps/step-two.component';
+
+export function appInitializer(config: ApiConfiguration): Function {
+	return () => {
+		config.rootUrl = 'https://localhost:53067';
+	};
+}
 
 @NgModule({
 	declarations: [
@@ -58,6 +67,7 @@ import { StepTwoComponent } from './registration/steps/step-two.component';
 	],
 	imports: [
 		AppRoutingModule,
+		CoreModule,
 		BrowserModule,
 		BrowserAnimationsModule,
 		HttpClientModule,
@@ -65,9 +75,17 @@ import { StepTwoComponent } from './registration/steps/step-two.component';
 		MaterialModule,
 		FormsModule,
 		ReactiveFormsModule,
+		NgxSpinnerModule,
 		SharedModule,
 	],
-	providers: [],
+	providers: [
+		{
+			provide: APP_INITIALIZER,
+			useFactory: appInitializer,
+			multi: true,
+			deps: [ApiConfiguration],
+		},
+	],
 	bootstrap: [AppComponent],
 })
 export class AppModule {}

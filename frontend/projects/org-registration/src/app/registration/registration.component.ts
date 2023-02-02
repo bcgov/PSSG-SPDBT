@@ -1,8 +1,9 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperOrientation } from '@angular/cdk/stepper';
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { distinctUntilChanged } from 'rxjs';
+import { WeatherForecastService } from '../api/services';
 import { StepFourComponent } from './steps/step-four.component';
 import { StepOneComponent } from './steps/step-one.component';
 import { StepThreeComponent } from './steps/step-three.component';
@@ -18,7 +19,7 @@ export interface RegistrationFormStepComponent {
 	selector: 'app-registration',
 	template: `
 		<mat-stepper linear labelPosition="bottom" [orientation]="orientation" #stepper>
-			<mat-step>
+			<mat-step completed="false">
 				<ng-template matStepLabel>Eligibility</ng-template>
 				<app-step-one
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -27,7 +28,7 @@ export interface RegistrationFormStepComponent {
 				></app-step-one>
 			</mat-step>
 
-			<mat-step>
+			<mat-step completed="false">
 				<ng-template matStepLabel>Log In Options</ng-template>
 				<app-step-two
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -35,7 +36,7 @@ export interface RegistrationFormStepComponent {
 				></app-step-two>
 			</mat-step>
 
-			<mat-step>
+			<mat-step completed="false">
 				<ng-template matStepLabel>Business Information</ng-template>
 				<app-step-three
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -44,7 +45,7 @@ export interface RegistrationFormStepComponent {
 				></app-step-three>
 			</mat-step>
 
-			<mat-step>
+			<mat-step completed="false">
 				<ng-template matStepLabel>Complete</ng-template>
 				<app-step-four
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -53,14 +54,7 @@ export interface RegistrationFormStepComponent {
 			</mat-step>
 		</mat-stepper>
 	`,
-	styles: [
-		`
-			.mat-horizontal-stepper-header {
-				pointer-events: none !important;
-			}
-		`,
-	],
-	encapsulation: ViewEncapsulation.None,
+	styles: [],
 })
 export class RegistrationComponent implements OnInit {
 	registrationTypeCode = '';
@@ -80,7 +74,7 @@ export class RegistrationComponent implements OnInit {
 	@ViewChild(StepFourComponent)
 	stepFourComponent!: StepFourComponent;
 
-	constructor(private breakpointObserver: BreakpointObserver) {}
+	constructor(private breakpointObserver: BreakpointObserver, private weatherForecastService: WeatherForecastService) {}
 
 	ngOnInit(): void {
 		this.breakpointObserver
@@ -97,21 +91,28 @@ export class RegistrationComponent implements OnInit {
 	}
 
 	onSaveStepperStep(): void {
-		console.log('onSaveStepperStep SAVE DATA');
-
+		let dataToSave = {};
 		if (this.stepOneComponent) {
-			console.log('step1', this.stepOneComponent.getStepData());
+			dataToSave = { ...dataToSave, ...this.stepOneComponent.getStepData() };
 		}
 
 		if (this.stepThreeComponent) {
-			console.log('step3', this.stepThreeComponent.getStepData());
+			dataToSave = { ...dataToSave, ...this.stepThreeComponent.getStepData() };
 		}
 
 		if (this.stepFourComponent) {
-			console.log('step4', this.stepFourComponent.getStepData());
+			dataToSave = { ...dataToSave, ...this.stepFourComponent.getStepData() };
 		}
 
-		this.stepFourComponent.childStepNext();
+		console.log('onSaveStepperStep', dataToSave);
+
+		// this.spinnerService.show('loaderSpinner');
+		this.weatherForecastService
+			.getWeatherForecast$Json$Response()
+			.pipe()
+			.subscribe((res: any) => {
+				this.stepFourComponent.childStepNext();
+			});
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
@@ -125,6 +126,10 @@ export class RegistrationComponent implements OnInit {
 	}
 
 	onClearRegistrationData(): void {
+		this.stepper.steps.forEach((step) => {
+			step.completed = false;
+		});
+
 		this.stepThreeComponent.clearStepData();
 		this.stepFourComponent.clearStepData();
 	}
@@ -135,15 +140,5 @@ export class RegistrationComponent implements OnInit {
 		} else {
 			this.orientation = 'vertical';
 		}
-
-		// if(this.breakpointObserver.isMatched(Breakpoints.Medium)) {
-		// 	this.orientation = 'horizontal';
-		//   this.currentBreakpoint = Breakpoints.Medium;
-		// } else if(this.breakpointObserver.isMatched(Breakpoints.Small)) {
-		// 	this.orientation = 'vertical';
-		//   this.currentBreakpoint = Breakpoints.Small;
-		// } else if(this.breakpointObserver.isMatched('(min-width: 500px)')) {
-		//   this.currentBreakpoint = '(min-width: 500px)';
-		// }
 	}
 }

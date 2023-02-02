@@ -33,24 +33,19 @@
   }
 }
 
-.info-icon {
+.larger-icon {
   color: var(--color-grey-light);
   font-size: 30px !important;
   height: 30px !important;
   width: 30px !important;
 }
 
-// .info-icon {
-//   display: block;
-//   text-align: center;
-
-//   .mat-icon {
-//     color: var(--color-grey-light);
-//     font-size: 30px !important;
-//     height: 30px !important;
-//     width: 30px !important;
-//   }
-// }
+.smaller-icon {
+  color: var(--color-grey-light);
+  font-size: 20px !important;
+  height: 20px !important;
+  width: 20px !important;
+}
 
 .step-container {
   cursor: pointer;

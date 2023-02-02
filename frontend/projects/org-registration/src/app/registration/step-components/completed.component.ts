@@ -5,7 +5,10 @@ import { Component } from '@angular/core';
 	template: `
 		<div class="step">
 			<div class="title mb-5">
-				Thank you! Your registration is complete, and a confirmation email has been sent to [email address]
+				Thank you!
+				<div style="font-size: smaller">
+					Your registration is complete, and a confirmation email has been sent to [email address]
+				</div>
 			</div>
 			<div class="row">
 				<div class="offset-md-2 col-md-8 col-sm-12">
