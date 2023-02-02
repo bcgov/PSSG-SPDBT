@@ -16,6 +16,10 @@ on:
         required: false
         type: string
         default: latest
+      DOCKER_PUSH:
+        required: false
+        type: boolean
+        default: false
     secrets:
       DOCKER_REGISTRY:
         required: true
@@ -41,10 +45,10 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build
+      - name: Build and Push
         uses: docker/build-push-action@v3
         with:
           context: ${{ inputs.DOCKER_CONTEXT }}
           file: ${{ inputs.DOCKER_FILE }}
-          push: true          
+          push: ${{ inputs.DOCKER_PUSH }}          
           tags: ${{ secrets.DOCKER_REGISTRY }}/${{ inputs.DOCKER_IMAGE_NAME }}:${{ inputs.DOCKER_IMAGE_TAG }}

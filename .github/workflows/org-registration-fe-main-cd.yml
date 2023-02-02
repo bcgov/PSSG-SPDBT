@@ -1,0 +1,19 @@
+name: Organization Registration FrontEnd CI/CD
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - frontend/**
+      - .github/workflows/org-registration-fe-cd.yml
+
+jobs:
+  build-deploy-organization-registration:
+    uses: ./.github/workflows/cd-workflow.yml
+    with:
+      DOCKER_CONTEXT: frontend
+      DOCKER_FILE: frontend/Dockerfile
+      DOCKER_IMAGE_NAME: organization-registration
+      DOCKER_PUSH: true
+    secrets: inherit
