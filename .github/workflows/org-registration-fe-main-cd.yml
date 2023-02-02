@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - frontend/**
-      - .github/workflows/org-registration-fe-cd.yml
+      - .github/workflows/org-registration-fe-main-cd.yml
 
 jobs:
   build-deploy-organization-registration:
@@ -15,5 +15,4 @@ jobs:
       DOCKER_CONTEXT: frontend
       DOCKER_FILE: frontend/Dockerfile
       DOCKER_IMAGE_NAME: organization-registration
-      DOCKER_PUSH: true
     secrets: inherit
