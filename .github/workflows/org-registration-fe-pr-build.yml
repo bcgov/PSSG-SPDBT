@@ -1,14 +1,8 @@
-name: Organization Registration FrontEnd CI/CD
+name: Pull Request - Organization Registration FrontEnd Build
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - frontend/**
-      - .github/workflows/org-registration-fe-cd.yml
   pull_request:
-    branches: 
+    branches:
       - main
     paths:
       - frontend/**
@@ -21,4 +15,5 @@ jobs:
       DOCKER_CONTEXT: frontend
       DOCKER_FILE: frontend/Dockerfile
       DOCKER_IMAGE_NAME: organization-registration
+      DOCKER_PUSH: false
     secrets: inherit
