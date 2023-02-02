@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
+using SPD.Common.ViewModels;
 
 namespace SPD.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class WeatherForecastController : ControllerBase
+    public class WeatherForecastController : Controller
     {
         private static readonly string[] Summaries = new[]
         {
@@ -28,6 +29,12 @@ namespace SPD.Api.Controllers
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             })
             .ToArray();
+        }
+
+        [HttpPost]
+        public ActionResult<TestCreateRequest> CreateWeatherForecast(TestCreateRequest req)
+        {
+            return req;
         }
     }
 }

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { FormErrorStateMatcher } from 'projects/shared/src/public-api';
-import { RegistrationFormStepComponent } from '../registration.component';
+import { ScreeningFormStepComponent } from '../screening.component';
 
 export interface AddressAutocompleteFindResponse {
 	id: string;
@@ -58,7 +58,7 @@ export interface AddressAutocompleteRetrieveResponse {
 	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="step">
-				<div class="title mb-5">What is your organization's mailing address?</div>
+				<div class="title mb-5">What is your mailing address?</div>
 				<div class="row">
 					<div class="offset-md-2 col-md-8 col-sm-12 mb-4">
 						<!-- <mat-form-field>
@@ -137,7 +137,7 @@ export interface AddressAutocompleteRetrieveResponse {
 	`,
 	styles: [],
 })
-export class MailingAddressComponent implements OnInit, RegistrationFormStepComponent {
+export class MailingAddressComponent implements OnInit, ScreeningFormStepComponent {
 	form!: FormGroup;
 	addressAutocompleteFields: AddressAutocompleteFindResponse[] = [];
 	matcher = new FormErrorStateMatcher();

@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { FormErrorStateMatcher } from 'projects/shared/src/public-api';
-import { RegistrationFormStepComponent } from '../registration.component';
+import { ScreeningFormStepComponent } from '../screening.component';
 
 @Component({
-	selector: 'app-organization-name',
+	selector: 'app-checklist',
 	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="step">
-				<div class="title mb-5">Please provide us with more organization information:</div>
+				<div class="title mb-5">Checklist</div>
 
-				<div class="row">
+				<!-- <div class="row">
 					<div class="offset-md-2 col-md-8 col-sm-12">
 						<mat-form-field>
 							<mat-label>Organization Name</mat-label>
@@ -26,13 +26,13 @@ import { RegistrationFormStepComponent } from '../registration.component';
 							<mat-error *ngIf="form.get('organizationName')?.hasError('required')">This is required</mat-error>
 						</mat-form-field>
 					</div>
-				</div>
+				</div> -->
 			</div>
 		</form>
 	`,
 	styles: [],
 })
-export class OrganizationNameComponent implements OnInit, RegistrationFormStepComponent {
+export class ChecklistComponent implements OnInit, ScreeningFormStepComponent {
 	form!: FormGroup;
 	matcher = new FormErrorStateMatcher();
 

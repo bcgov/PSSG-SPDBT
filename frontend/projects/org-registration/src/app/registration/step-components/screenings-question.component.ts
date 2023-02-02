@@ -2,10 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { RegistrationFormStepComponent } from '../registration.component';
 
-export class ScreeningsQuestionModel {
-	screeningsCount: string = '';
-}
-
 @Component({
 	selector: 'app-screenings-question',
 	template: `

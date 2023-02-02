@@ -1,22 +1,13 @@
 import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import {
-	CompensationQuestionComponent,
-	CompensationQuestionModel,
-} from '../step-components/compensation-question.component';
-import { FundingQuestionComponent, FundingQuestionModel } from '../step-components/funding-question.component';
-import {
-	OrganizationOptionsComponent,
-	OrganizationOptionsModel,
-} from '../step-components/organization-options.component';
+import { CompensationQuestionComponent } from '../step-components/compensation-question.component';
+import { FundingQuestionComponent } from '../step-components/funding-question.component';
+import { OrganizationOptionsComponent } from '../step-components/organization-options.component';
 import {
 	RegistrationPathSelectionComponent,
 	RegistrationPathSelectionModel,
 } from '../step-components/registration-path-selection.component';
-import {
-	VulnerableSectorQuestionComponent,
-	VulnerableSectorQuestionModel,
-} from '../step-components/vulnerable-sector-question.component';
+import { VulnerableSectorQuestionComponent } from '../step-components/vulnerable-sector-question.component';
 
 @Component({
 	selector: 'app-step-one',
@@ -123,10 +114,6 @@ export class StepOneComponent {
 	showStep6 = false;
 
 	registrationPathSelectionData: RegistrationPathSelectionModel = { registrationTypeCode: '' };
-	organizationOptionsData: OrganizationOptionsModel = { organizationType: '' };
-	fundingQuestionData: FundingQuestionModel = { operatingBudgetFlag: '' };
-	compensationQuestionData: CompensationQuestionModel = { employeeMonetaryCompensationFlag: '' };
-	vulnerableSectorQuestionData: VulnerableSectorQuestionModel = { employeeInteractionFlag: '' };
 
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() selectRegistrationType: EventEmitter<string> = new EventEmitter<string>();
@@ -195,11 +182,11 @@ export class StepOneComponent {
 				isValid = this.organizationOptionsComponent.isFormValid();
 
 				if (isValid) {
-					this.organizationOptionsData = this.organizationOptionsComponent.getDataToSave();
+					const organizationOptionsData = this.organizationOptionsComponent.getDataToSave();
 					if (this.registrationPathSelectionData.registrationTypeCode == 'EMP') {
-						this.showStep2 = this.organizationOptionsData.organizationType == '4' ? true : false;
+						this.showStep2 = organizationOptionsData.organizationType == '4' ? true : false;
 					} else {
-						this.showStep2 = this.organizationOptionsData.organizationType == '16' ? true : false;
+						this.showStep2 = organizationOptionsData.organizationType == '16' ? true : false;
 					}
 				}
 				return isValid;
@@ -207,23 +194,23 @@ export class StepOneComponent {
 				this.fundingQuestionComponent.form.markAllAsTouched();
 				isValid = this.fundingQuestionComponent.isFormValid();
 				if (isValid) {
-					this.fundingQuestionData = this.fundingQuestionComponent.getDataToSave();
-					this.showStep4 = this.fundingQuestionData.operatingBudgetFlag == 'NO' ? true : false;
+					const fundingQuestionData = this.fundingQuestionComponent.getDataToSave();
+					this.showStep4 = fundingQuestionData.operatingBudgetFlag == 'NO' ? true : false;
 				}
 				return isValid;
 			case 3:
 				this.compensationQuestionComponent.form.markAllAsTouched();
 				isValid = this.compensationQuestionComponent.isFormValid();
 				if (isValid) {
-					this.compensationQuestionData = this.compensationQuestionComponent.getDataToSave();
-					this.showStep6 = this.compensationQuestionData.employeeMonetaryCompensationFlag == 'NEITHER' ? true : false;
+					const compensationQuestionData = this.compensationQuestionComponent.getDataToSave();
+					this.showStep6 = compensationQuestionData.employeeMonetaryCompensationFlag == 'NEITHER' ? true : false;
 				}
 				return isValid;
 			case 5:
 				isValid = this.vulnerableSectorQuestionComponent.isFormValid();
 				if (isValid) {
-					this.vulnerableSectorQuestionData = this.vulnerableSectorQuestionComponent.getDataToSave();
-					this.showStep6 = this.vulnerableSectorQuestionData.employeeInteractionFlag == 'NEITHER' ? true : false;
+					const vulnerableSectorQuestionData = this.vulnerableSectorQuestionComponent.getDataToSave();
+					this.showStep6 = vulnerableSectorQuestionData.employeeInteractionFlag == 'NEITHER' ? true : false;
 				}
 				return isValid;
 

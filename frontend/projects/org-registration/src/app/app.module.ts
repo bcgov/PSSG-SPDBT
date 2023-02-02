@@ -13,9 +13,9 @@ import { CoreModule } from './core/core.module';
 import { LandingComponent } from './landing.component';
 import { RegistrationComponent } from './registration/registration.component';
 import { AgreementOfTermsComponent } from './registration/step-components/agreement-of-terms.component';
-import { AuthorizedContactInformationComponent } from './registration/step-components/authorized-contact-information.component';
 import { CompensationQuestionComponent } from './registration/step-components/compensation-question.component';
 import { CompletedComponent } from './registration/step-components/completed.component';
+import { ContactInformationComponent } from './registration/step-components/contact-information.component';
 import { EligibilityProblemComponent } from './registration/step-components/eligibility-problem.component';
 import { FundingProblemComponent } from './registration/step-components/funding-problem.component';
 import { FundingQuestionComponent } from './registration/step-components/funding-question.component';
@@ -54,7 +54,7 @@ export function appInitializer(config: ApiConfiguration): Function {
 		RegistrationOptionsComponent,
 		OrganizationNameComponent,
 		OrganizationInformationComponent,
-		AuthorizedContactInformationComponent,
+		ContactInformationComponent,
 		MailingAddressComponent,
 		PaymentQuestionComponent,
 		ScreeningsQuestionComponent,

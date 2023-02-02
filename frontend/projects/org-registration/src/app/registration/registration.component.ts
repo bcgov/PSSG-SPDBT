@@ -18,7 +18,13 @@ export interface RegistrationFormStepComponent {
 @Component({
 	selector: 'app-registration',
 	template: `
-		<mat-stepper linear labelPosition="bottom" [orientation]="orientation" #stepper>
+		<mat-stepper
+			linear
+			labelPosition="bottom"
+			[orientation]="orientation"
+			(selectionChange)="onStepSelectionChange($event)"
+			#stepper
+		>
 			<mat-step completed="false">
 				<ng-template matStepLabel>Eligibility</ng-template>
 				<app-step-one
@@ -50,6 +56,7 @@ export interface RegistrationFormStepComponent {
 				<app-step-four
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(saveStepperStep)="onSaveStepperStep()"
+					[sendToEmailAddress]="sendToEmailAddress"
 				></app-step-four>
 			</mat-step>
 		</mat-stepper>
@@ -58,6 +65,7 @@ export interface RegistrationFormStepComponent {
 })
 export class RegistrationComponent implements OnInit {
 	registrationTypeCode = '';
+	sendToEmailAddress = '';
 	orientation: StepperOrientation = 'vertical';
 
 	@ViewChild('stepper') stepper!: MatStepper;
@@ -106,13 +114,23 @@ export class RegistrationComponent implements OnInit {
 
 		console.log('onSaveStepperStep', dataToSave);
 
-		// this.spinnerService.show('loaderSpinner');
-		this.weatherForecastService
-			.getWeatherForecast$Json$Response()
-			.pipe()
-			.subscribe((res: any) => {
-				this.stepFourComponent.childStepNext();
-			});
+		// const body: TestCreateRequest = dataToSave;
+		// this.weatherForecastService
+		// 	.weatherForecastPost$Json$Response({ body })
+		// 	.pipe()
+		// 	.subscribe((res: any) => {
+		// 		console.log('post res', res.body);
+		// 		this.stepFourComponent.childStepNext();
+		// 	});
+
+		// this.weatherForecastService
+		// 	.getWeatherForecast$Json$Response()
+		// 	.pipe()
+		// 	.subscribe((res: any) => {
+		// 		console.log('get res', res.body);
+		// 		this.stepFourComponent.childStepNext();
+		// 	});
+		this.stepFourComponent.childStepNext();
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
@@ -132,6 +150,13 @@ export class RegistrationComponent implements OnInit {
 
 		this.stepThreeComponent.clearStepData();
 		this.stepFourComponent.clearStepData();
+	}
+
+	onStepSelectionChange(event: any) {
+		if (event.selectedIndex == 3) {
+			const step3Data = this.stepThreeComponent.getStepData();
+			this.sendToEmailAddress = step3Data.contactEmail;
+		}
 	}
 
 	private breakpointChanged() {
