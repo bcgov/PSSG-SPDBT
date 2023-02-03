@@ -10,4 +10,5 @@ RUN npm run build --project orgRegistration
 
 # run stage
 FROM caddy:alpine
+COPY ./Caddyfile /etc/caddy
 COPY --from=build-stage /usr/src/app/dist/org-registration /usr/share/caddy
