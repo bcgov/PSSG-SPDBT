@@ -1,6 +1,6 @@
-namespace SPD.Common.ViewModels
+namespace SPD.Common.ViewModels.Organization
 {
-    public class TestCreateRequest
+    public class OrganizationResponse
     {
         public bool? AgreeToTermsAndConditions { get; set; }
         public DateTimeOffset? ContactDateOfBirth { get; set; }
