@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SPD.Common.ViewModels.Organization
 {
-    public class OrganizationCreateRequest
+    public class OrgRegistrationCreateRequest
     {
         public bool? AgreeToTermsAndConditions { get; set; }
         public DateTimeOffset? ContactDateOfBirth { get; set; }
@@ -33,9 +33,9 @@ namespace SPD.Common.ViewModels.Organization
         public string ScreeningsCount { get; set; }
     }
 
-    public class OrganizationCreateRequestValidator: AbstractValidator<OrganizationCreateRequest>
+    public class OrgRegistrationCreateRequestValidator : AbstractValidator<OrgRegistrationCreateRequest>
     {
-        public OrganizationCreateRequestValidator() 
+        public OrgRegistrationCreateRequestValidator() 
         {
             RuleFor(r => r.OrganizationName)
                 .NotEmpty();

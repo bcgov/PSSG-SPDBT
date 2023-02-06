@@ -1,5 +1,6 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using MediatR;
 using SPD.Api.ServiceExtensions;
 using SPD.Common.ViewModels;
 using SPD.Common.ViewModels.Organization;
@@ -31,6 +32,7 @@ namespace SPD.Api
             })
             .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<FluentValidationEntry>()); ;
 
+            services.AddMediatR(typeof(SPD.Handlers.MediatREntrypoint).Assembly);
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
