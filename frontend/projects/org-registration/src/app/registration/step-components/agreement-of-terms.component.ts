@@ -7,7 +7,7 @@ import { RegistrationFormStepComponent } from '../registration.component';
 	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="step">
-				<div class="title mb-5">Please review the following terms of agreement:</div>
+				<div class="title mb-5">Review and agree to the following terms of agreement:</div>
 				<div class="row">
 					<div
 						class="offset-md-2 col-md-8 col-sm-12 conditions px-3 mb-3"

@@ -23,6 +23,7 @@ import { PreviousNameComponent } from './screening/step-components/previous-name
 import { SecurityInformationComponent } from './screening/step-components/security-information.component';
 import { SummaryComponent } from './screening/step-components/summary.component';
 import { StepOneComponent } from './screening/steps/step-one.component';
+import { StepThreeComponent } from './screening/steps/step-three.component';
 import { StepTwoComponent } from './screening/steps/step-two.component';
 
 @NgModule({
@@ -32,6 +33,7 @@ import { StepTwoComponent } from './screening/steps/step-two.component';
 		ScreeningComponent,
 		StepOneComponent,
 		StepTwoComponent,
+		StepThreeComponent,
 		ContactInformationComponent,
 		MailingAddressComponent,
 		ChecklistComponent,

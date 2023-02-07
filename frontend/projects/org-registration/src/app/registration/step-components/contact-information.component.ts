@@ -1,20 +1,20 @@
-import { Component, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
+import { Component } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { FormErrorStateMatcher } from 'projects/shared/src/public-api';
 import { RegistrationFormStepComponent } from '../registration.component';
 
 @Component({
 	selector: 'app-contact-information',
 	template: `
-		<form [formGroup]="form" #formDirective="ngForm" novalidate>
+		<form [formGroup]="form" novalidate>
 			<div class="step">
-				<div class="title mb-5">Please provide your work contact information:</div>
+				<div class="title mb-5">Provide your work contact information:</div>
 				<div class="row">
 					<div class="offset-md-2 col-md-4 col-sm-12">
 						<mat-form-field>
 							<mat-label>Given Name</mat-label>
 							<input matInput formControlName="contactGivenName" maxlength="40" [errorStateMatcher]="matcher" />
-							<mat-error *ngIf="contactGivenName.hasError('required')">This is required</mat-error>
+							<mat-error *ngIf="form.get('contactGivenName')?.hasError('required')">This is required</mat-error>
 							<mat-error *ngIf="form.get('contactGivenName')?.hasError('pattern')">
 								Only characters are allowed
 							</mat-error>
@@ -105,8 +105,6 @@ export class ContactInformationComponent implements RegistrationFormStepComponen
 	startDate = new Date(2000, 0, 1);
 	matcher = new FormErrorStateMatcher();
 
-	@ViewChild('formDirective') private formDirective!: NgForm;
-
 	constructor(private formBuilder: FormBuilder) {}
 
 	getDataToSave(): any {
@@ -115,14 +113,6 @@ export class ContactInformationComponent implements RegistrationFormStepComponen
 
 	isFormValid(): boolean {
 		return this.form.valid;
-	}
-
-	get contactGivenName(): FormControl {
-		return this.form.get('contactGivenName') as FormControl;
-	}
-
-	get contactSurname(): FormControl {
-		return this.form.get('contactSurname') as FormControl;
 	}
 
 	clearCurrentData(): void {

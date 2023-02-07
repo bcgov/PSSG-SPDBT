@@ -5,14 +5,11 @@ import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/cor
 	template: `
 		<mat-stepper class="child-stepper" #childstepper>
 			<mat-step>
-				2222
+				<app-log-in-options (clickNext)="onStepNext()"></app-log-in-options>
 
 				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+					<div class="offset-lg-4 col-lg-4 offset-md-4 col-md-4 col-sm-12">
 						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" class="large mb-2" (click)="onStepNext()">Next</button>
 					</div>
 				</div>
 			</mat-step>

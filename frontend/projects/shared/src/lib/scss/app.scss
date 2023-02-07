@@ -9,7 +9,10 @@
 @include mat.core();
 
 html, body { height: 100%; }
-body { margin: 0;}
+body { 
+  margin: 0; 
+  background-color: #f8f9fa;
+}
 
 $spd-blue: (
   50: #e0e7ed,
@@ -105,11 +108,11 @@ $spd-test-theme: mat.define-light-theme((
 
 :root {
 	--color-white: #fff;
-  --color-primary-lightest: #f8f9fb,
-  --color-primary-lighter: #d6ddec,
-  --color-primary-light: #0f48ae,
-  --color-primary: #003366, // BC Gov. Primary
-  --color-primary-dark: #001b4a
+  --color-primary-lightest: #f8f9fb;
+  --color-primary-lighter: #d6ddec;
+  --color-primary-light: #0f48ae;
+  --color-primary: #003366; // BC Gov. Primary
+  --color-primary-dark: #001b4a;
 
 	--color-light-green: #e9f6ee;
 	--color-yellow: #FCBA19;  // BC Gov. Secondary
@@ -144,6 +147,7 @@ $spd-test-theme: mat.define-light-theme((
   font-size: 1.7em;
   font-weight: 400;
   text-align: center;
+  color: var(--color-primary);
 
   &__sub-title {
     font-size: small;
@@ -169,4 +173,11 @@ $spd-test-theme: mat.define-light-theme((
 a {  
   cursor: pointer;
   text-decoration: none;
+}
+
+.step-section {
+  border-radius: 4px;
+  background-color: #fff;
+  border: 1px solid var(--color-grey-lighter);
+  box-shadow: 0 2px 1px -1px #0003, 0 1px 1px #00000024, 0 1px 3px #0000001f;
 }
