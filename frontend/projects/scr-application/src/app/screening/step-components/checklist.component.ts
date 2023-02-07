@@ -6,7 +6,7 @@ import { ScreeningFormStepComponent } from '../screening.component';
 @Component({
 	selector: 'app-checklist',
 	template: `
-		<section class="step-section pt-4 pb-5">
+		<section class="step-section pt-4 pb-5 px-3">
 			<form [formGroup]="form" novalidate>
 				<div class="step">
 					<div class="title mb-5">Checklist</div>

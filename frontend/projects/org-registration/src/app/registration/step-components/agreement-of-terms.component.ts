@@ -69,7 +69,7 @@ import { RegistrationFormStepComponent } from '../registration.component';
 				</div>
 
 				<div class="row my-4">
-					<div class="offset-md-1 col-md-10 col-sm-12">
+					<div class="offset-md-2 col-md-8 col-sm-12">
 						<mat-checkbox formControlName="agreeToTermsAndConditions">
 							On behalf of the above noted organization, I hereby certify that I agree to the terms and conditions for
 							utilizing the CRRP to facilitate criminal record checks on our employees, contractors, or students

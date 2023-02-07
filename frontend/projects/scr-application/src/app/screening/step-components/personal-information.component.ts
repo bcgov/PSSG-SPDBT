@@ -4,11 +4,11 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 @Component({
 	selector: 'app-personal-information',
 	template: `
-		<section class="step-section pt-4 pb-5">
+		<section class="step-section pt-4 pb-5 px-3">
 			<div class="step">
 				<div class="title mb-5">Next, confirm your personal information:</div>
 				<div class="row">
-					<div class="offset-md-2 col-md-4 col-sm-12">
+					<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
 						<mat-form-field>
 							<mat-label>Date of Birth</mat-label>
 							<input matInput [matDatepicker]="picker" formControlName="contactDateOfBirth" />
@@ -17,7 +17,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 							<mat-error *ngIf="form.get('contactDateOfBirth')?.hasError('required')">This is required</mat-error>
 						</mat-form-field>
 					</div>
-					<div class="col-md-4 col-sm-12">
+					<div class="col-lg-4 col-md-6 col-sm-12">
 						<mat-form-field>
 							<mat-label>Birthplace Country</mat-label>
 							<input matInput formControlName="birthplaceCountry" maxlength="40" />
@@ -29,7 +29,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 					</div>
 				</div>
 				<div class="row">
-					<div class="offset-md-2 col-md-4 col-sm-12">
+					<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
 						<mat-form-field>
 							<mat-label>Birthplace City</mat-label>
 							<input matInput formControlName="birthplaceCity" maxlength="40" />
@@ -37,7 +37,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 							<mat-error *ngIf="form.get('birthplaceCity')?.hasError('pattern')">Only characters are allowed</mat-error>
 						</mat-form-field>
 					</div>
-					<div class="col-md-4 col-sm-12">
+					<div class="col-lg-4 col-md-6 col-sm-12">
 						<mat-form-field>
 							<mat-label>Do you have a BC Drivers License? (optional)</mat-label>
 							<input matInput formControlName="driversLicenseNumber" />

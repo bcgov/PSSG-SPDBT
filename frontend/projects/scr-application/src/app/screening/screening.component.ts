@@ -19,12 +19,15 @@ export interface ScreeningFormStepComponent {
 			linear
 			labelPosition="bottom"
 			[orientation]="orientation"
-			(selectionChange)="onSelectionChange($event)"
+			(selectionChange)="onStepSelectionChange($event)"
 			#stepper
 		>
 			<mat-step completed="false">
 				<ng-template matStepLabel>Eligibility</ng-template>
-				<app-step-one (nextStepperStep)="onNextStepperStep(stepper)"></app-step-one>
+				<app-step-one
+					(nextStepperStep)="onNextStepperStep(stepper)"
+					(scrollIntoView)="onScrollIntoView()"
+				></app-step-one>
 			</mat-step>
 
 			<mat-step completed="false">
@@ -32,12 +35,16 @@ export interface ScreeningFormStepComponent {
 				<app-step-two
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
+					(scrollIntoView)="onScrollIntoView()"
 				></app-step-two>
 			</mat-step>
 
 			<mat-step completed="false">
 				<ng-template matStepLabel>Complete</ng-template>
-				<app-step-three (previousStepperStep)="onPreviousStepperStep(stepper)"></app-step-three>
+				<app-step-three
+					(previousStepperStep)="onPreviousStepperStep(stepper)"
+					(scrollIntoView)="onScrollIntoView()"
+				></app-step-three>
 			</mat-step>
 		</mat-stepper>
 	`,
@@ -69,8 +76,8 @@ export class ScreeningComponent implements OnInit {
 			.subscribe(() => this.breakpointChanged());
 	}
 
-	onSelectionChange(event: StepperSelectionEvent): void {
-		const stepIndex = event.selectedIndex;
+	onScrollIntoView(): void {
+		const stepIndex = this.stepper.selectedIndex;
 		const stepId = this.stepper._getStepLabelId(stepIndex);
 		const stepElement = document.getElementById(stepId);
 		if (stepElement) {
@@ -82,6 +89,10 @@ export class ScreeningComponent implements OnInit {
 				});
 			}, 250);
 		}
+	}
+
+	onStepSelectionChange(event: StepperSelectionEvent) {
+		this.onScrollIntoView();
 	}
 
 	onPreviousStepperStep(stepper: MatStepper): void {

@@ -1,9 +1,10 @@
+import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/core';
 
 @Component({
 	selector: 'app-step-one',
 	template: `
-		<mat-stepper class="child-stepper" #childstepper>
+		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-checklist></app-checklist>
 
@@ -33,8 +34,13 @@ import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/cor
 })
 export class StepOneComponent {
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
+	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
 
 	onStepNext(): void {
 		this.nextStepperStep.emit(true);
+	}
+
+	onStepSelectionChange(event: StepperSelectionEvent) {
+		this.scrollIntoView.emit(true);
 	}
 }

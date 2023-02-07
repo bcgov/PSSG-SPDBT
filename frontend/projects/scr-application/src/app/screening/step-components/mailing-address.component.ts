@@ -56,12 +56,12 @@ export interface AddressAutocompleteRetrieveResponse {
 @Component({
 	selector: 'app-mailing-address',
 	template: `
-		<section class="step-section pt-4 pb-5">
+		<section class="step-section pt-4 pb-5 px-3">
 			<form [formGroup]="form" novalidate>
 				<div class="step">
 					<div class="title mb-5">What is your mailing address?</div>
 					<div class="row">
-						<div class="offset-md-2 col-md-8 col-sm-12 mb-4">
+						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12 mb-4">
 							<!-- <mat-form-field>
 							<mat-label>Street Address 1</mat-label>
 							<input matInput formControlName="mailingAddressLine1" />
@@ -98,7 +98,7 @@ export interface AddressAutocompleteRetrieveResponse {
 					</div>
 
 					<div class="row">
-						<div class="offset-md-2 col-md-8 col-sm-12">
+						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
 							<mat-form-field>
 								<mat-label>Street Address 2</mat-label>
 								<input matInput formControlName="mailingAddressLine2" />
@@ -106,13 +106,13 @@ export interface AddressAutocompleteRetrieveResponse {
 						</div>
 					</div>
 					<div class="row">
-						<div class="offset-md-2 col-md-6 col-sm-12">
+						<div class="offset-lg-2 col-lg-5 col-md-7 col-sm-12">
 							<mat-form-field>
 								<mat-label>City</mat-label>
 								<input matInput formControlName="mailingCity" maxlength="30" />
 							</mat-form-field>
 						</div>
-						<div class="col-md-2 col-sm-12">
+						<div class="col-lg-3 col-md-5 col-sm-12">
 							<mat-form-field>
 								<mat-label>Postal Code</mat-label>
 								<input matInput formControlName="mailingPostalCode" />
@@ -120,13 +120,13 @@ export interface AddressAutocompleteRetrieveResponse {
 						</div>
 					</div>
 					<div class="row">
-						<div class="offset-md-2 col-md-4 col-sm-12">
+						<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Province</mat-label>
 								<input matInput formControlName="mailingProvince" />
 							</mat-form-field>
 						</div>
-						<div class="col-md-4 col-sm-12">
+						<div class="col-lg-4 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Country</mat-label>
 								<input matInput formControlName="mailingCountry" />

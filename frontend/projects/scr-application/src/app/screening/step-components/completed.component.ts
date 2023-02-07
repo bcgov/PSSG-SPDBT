@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 @Component({
 	selector: 'app-completed',
 	template: `
-		<section class="step-section pt-4 pb-5">
+		<section class="step-section pt-4 pb-5 px-3">
 			<div class="step">
 				<div class="title mb-5">Application Submitted</div>
 				<div class="title mb-3 col-md-6 col-sm-12 mx-auto" style="font-size: 1.4em;">

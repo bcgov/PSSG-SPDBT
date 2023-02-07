@@ -7,12 +7,12 @@ import { DialogOptions } from 'shared';
 @Component({
 	selector: 'app-previous-name',
 	template: `
-		<section class="step-section pt-4 pb-5">
+		<section class="step-section pt-4 pb-5 px-3">
 			<form [formGroup]="form" novalidate>
 				<div class="step">
 					<div class="title mb-5">Have you ever had a previous name?</div>
 					<div class="row">
-						<div class="offset-md-2 col-md-8 col-sm-12">
+						<div class="offset-lg-1 col-lg-10 col-md-12 col-sm-12">
 							<mat-radio-group
 								class="funding-question__group"
 								aria-label="Select an option"
@@ -64,6 +64,7 @@ import { DialogOptions } from 'shared';
 													<button
 														mat-mini-fab
 														color="warn"
+														class="mb-3"
 														matTooltip="Delete current row"
 														(click)="deleteRow(i)"
 														[disabled]="oneRowExists"
@@ -73,6 +74,7 @@ import { DialogOptions } from 'shared';
 													</button>
 												</div>
 											</div>
+											<hr />
 										</ng-container>
 									</div>
 									<div class="row">
@@ -105,6 +107,10 @@ import { DialogOptions } from 'shared';
 	`,
 	styles: [
 		`
+			hr {
+				color: var(--color-primary-light);
+			}
+
 			.mat-mdc-mini-fab {
 				top: 10px;
 				width: 30px;
@@ -113,7 +119,7 @@ import { DialogOptions } from 'shared';
 
 			.card-section {
 				background-color: #ededed !important;
-				border-left: 3px solid theme-palette(blue);
+				border-left: 3px solid var(--color-primary);
 				border-bottom-width: 1px;
 				border-bottom-style: solid;
 				border-bottom-color: rgba(0, 0, 0, 0.12);

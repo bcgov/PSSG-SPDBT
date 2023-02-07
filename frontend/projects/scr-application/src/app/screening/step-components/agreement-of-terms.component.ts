@@ -5,7 +5,7 @@ import { ScreeningFormStepComponent } from '../screening.component';
 @Component({
 	selector: 'app-agreement-of-terms',
 	template: `
-		<section class="step-section pt-4 pb-5">
+		<section class="step-section pt-4 pb-5 px-3">
 			<form [formGroup]="form" novalidate>
 				<div class="step">
 					<div class="title mb-5">Review the following terms of agreement:</div>

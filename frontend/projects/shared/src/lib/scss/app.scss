@@ -116,6 +116,7 @@ $spd-test-theme: mat.define-light-theme((
 
 	--color-light-green: #e9f6ee;
 	--color-yellow: #FCBA19;  // BC Gov. Secondary
+  --color-yellow-dark: #df9f03;
 	--color-red: #D8292F;
 	--color-green: #2E8540;
   
@@ -180,4 +181,13 @@ a {
   background-color: #fff;
   border: 1px solid var(--color-grey-lighter);
   box-shadow: 0 2px 1px -1px #0003, 0 1px 1px #00000024, 0 1px 3px #0000001f;
+}
+
+@media (max-width: 767px) {
+.step-section {
+  border-radius: none;
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+}
 }

@@ -4,18 +4,18 @@ import { LandingComponent } from './landing.component';
 import { RegistrationComponent } from './registration/registration.component';
 
 const routes: Routes = [
-  {
-    path: '',
-    component: LandingComponent,
-  },
-  {
-    path: 'register',
-    component: RegistrationComponent,
-  },
+	{
+		path: '',
+		component: LandingComponent,
+	},
+	{
+		path: 'register',
+		component: RegistrationComponent,
+	},
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule],
+	imports: [RouterModule.forRoot(routes, { scrollPositionRestoration: 'top' })],
+	exports: [RouterModule],
 })
 export class AppRoutingModule {}

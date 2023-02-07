@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 @Component({
 	selector: 'app-summary',
 	template: `
-		<section class="step-section pt-4 pb-5">
+		<section class="step-section pt-4 pb-5 px-3">
 			<div class="step">
 				<div class="title mb-5">Review the following information:</div>
 				<div class="row">
@@ -11,19 +11,17 @@ import { Component } from '@angular/core';
 						<section class="px-4 py-2 mb-3 card-section">
 							<div class="row mt-2">
 								<div class="col-lg-3">
-									<mat-chip-listbox>
-										<mat-chip selected color="accent" class="p-3">Eligibility </mat-chip>
-									</mat-chip-listbox>
+									<h4>Eligibility</h4>
 								</div>
 								<div class="col-lg-5">
 									<small class="d-block text-muted">Requesting Organization</small>
 									<strong> Sunshine Daycare </strong>
 								</div>
 								<div class="col-lg-3">
-									<small class="d-block text-muted">Organization Phone Number</small>
+									<small class="d-block text-muted mt-2 mt-lg-0">Organization Phone Number</small>
 									<strong> (250) 455-6565 </strong>
 								</div>
-								<div class="col-lg-1">
+								<div class="col-lg-1 text-end">
 									<mat-icon>edit</mat-icon>
 								</div>
 							</div>
@@ -36,7 +34,7 @@ import { Component } from '@angular/core';
 									760 Vernon Ave, Victoria, BC V8X 2W6, Canada
 								</div>
 								<div class="col-lg-4">
-									<small class="d-block text-muted">Job Title</small>
+									<small class="d-block text-muted mt-2 mt-lg-0">Job Title</small>
 									Teacher
 								</div>
 							</div>
@@ -48,19 +46,17 @@ import { Component } from '@angular/core';
 						<section class="px-4 py-2 mb-3 card-section">
 							<div class="row mt-2">
 								<div class="col-lg-3">
-									<mat-chip-listbox>
-										<mat-chip selected color="accent" class="p-3">Contact </mat-chip>
-									</mat-chip-listbox>
+									<h4>Business Information</h4>
 								</div>
 								<div class="col-lg-5">
 									<small class="d-block text-muted">Contact First Name</small>
 									<strong> John </strong>
 								</div>
 								<div class="col-lg-3">
-									<small class="d-block text-muted">Contact Surname</small>
+									<small class="d-block text-muted mt-2 mt-lg-0">Contact Surname</small>
 									<strong> Smith </strong>
 								</div>
-								<div class="col-lg-1">
+								<div class="col-lg-1 text-end">
 									<mat-icon>edit</mat-icon>
 								</div>
 							</div>
@@ -73,7 +69,7 @@ import { Component } from '@angular/core';
 									test@test.com
 								</div>
 								<div class="col-lg-4">
-									<small class="d-block text-muted">Phone Number</small>
+									<small class="d-block text-muted mt-2 mt-lg-0">Phone Number</small>
 									(250) 465-9898
 								</div>
 							</div>
@@ -85,19 +81,17 @@ import { Component } from '@angular/core';
 						<section class="px-4 py-2 mb-3 card-section">
 							<div class="row mt-2">
 								<div class="col-lg-3">
-									<mat-chip-listbox>
-										<mat-chip selected color="accent" class="p-3">Personal </mat-chip>
-									</mat-chip-listbox>
+									<h4>Personal</h4>
 								</div>
 								<div class="col-lg-5">
 									<small class="d-block text-muted">Date of Birth</small>
 									<strong> Jan 4, 2000 </strong>
 								</div>
 								<div class="col-lg-3">
-									<small class="d-block text-muted">Birthplace</small>
+									<small class="d-block text-muted mt-2 mt-lg-0">Birthplace</small>
 									<strong> Victoria, BC, Canada </strong>
 								</div>
-								<div class="col-lg-1">
+								<div class="col-lg-1 text-end">
 									<mat-icon>edit</mat-icon>
 								</div>
 							</div>
@@ -122,8 +116,8 @@ import { Component } from '@angular/core';
 	`,
 	styles: [
 		`
-			.mat-mdc-standard-chip {
-				background-color: var(--color-yellow) !important;
+			h4 {
+				color: var(--color-primary-light);
 			}
 
 			.card-section {

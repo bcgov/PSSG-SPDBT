@@ -1,8 +1,10 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { StepperOrientation } from '@angular/cdk/stepper';
+import { StepperOrientation, StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
+import { Router } from '@angular/router';
 import { distinctUntilChanged } from 'rxjs';
+import { TestCreateRequest } from '../api/models';
 import { WeatherForecastService } from '../api/services';
 import { StepFourComponent } from './steps/step-four.component';
 import { StepOneComponent } from './steps/step-one.component';
@@ -31,6 +33,7 @@ export interface RegistrationFormStepComponent {
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(selectRegistrationType)="onSelectRegistrationType($event)"
 					(clearRegistrationData)="onClearRegistrationData()"
+					(scrollIntoView)="onScrollIntoView()"
 				></app-step-one>
 			</mat-step>
 
@@ -39,6 +42,7 @@ export interface RegistrationFormStepComponent {
 				<app-step-two
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
+					(scrollIntoView)="onScrollIntoView()"
 				></app-step-two>
 			</mat-step>
 
@@ -47,6 +51,7 @@ export interface RegistrationFormStepComponent {
 				<app-step-three
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
+					(scrollIntoView)="onScrollIntoView()"
 					[registrationTypeCode]="registrationTypeCode"
 				></app-step-three>
 			</mat-step>
@@ -56,6 +61,7 @@ export interface RegistrationFormStepComponent {
 				<app-step-four
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(saveStepperStep)="onSaveStepperStep()"
+					(scrollIntoView)="onScrollIntoView()"
 					[sendToEmailAddress]="sendToEmailAddress"
 				></app-step-four>
 			</mat-step>
@@ -82,7 +88,11 @@ export class RegistrationComponent implements OnInit {
 	@ViewChild(StepFourComponent)
 	stepFourComponent!: StepFourComponent;
 
-	constructor(private breakpointObserver: BreakpointObserver, private weatherForecastService: WeatherForecastService) {}
+	constructor(
+		private router: Router,
+		private breakpointObserver: BreakpointObserver,
+		private weatherForecastService: WeatherForecastService
+	) {}
 
 	ngOnInit(): void {
 		this.breakpointObserver
@@ -114,14 +124,14 @@ export class RegistrationComponent implements OnInit {
 
 		console.log('onSaveStepperStep', dataToSave);
 
-		// const body: TestCreateRequest = dataToSave;
-		// this.weatherForecastService
-		// 	.weatherForecastPost$Json$Response({ body })
-		// 	.pipe()
-		// 	.subscribe((res: any) => {
-		// 		console.log('post res', res.body);
-		// 		this.stepFourComponent.childStepNext();
-		// 	});
+		const body: TestCreateRequest = dataToSave;
+		this.weatherForecastService
+			.weatherForecastPost$Json$Response({ body })
+			.pipe()
+			.subscribe((res: any) => {
+				console.log('post res', res.body);
+				this.stepFourComponent.childStepNext();
+			});
 
 		// this.weatherForecastService
 		// 	.getWeatherForecast$Json$Response()
@@ -152,11 +162,28 @@ export class RegistrationComponent implements OnInit {
 		this.stepFourComponent.clearStepData();
 	}
 
-	onStepSelectionChange(event: any) {
+	onScrollIntoView(): void {
+		const stepIndex = this.stepper.selectedIndex;
+		const stepId = this.stepper._getStepLabelId(stepIndex);
+		const stepElement = document.getElementById(stepId);
+		if (stepElement) {
+			setTimeout(() => {
+				stepElement.scrollIntoView({
+					block: 'start',
+					inline: 'nearest',
+					behavior: 'smooth',
+				});
+			}, 250);
+		}
+	}
+
+	onStepSelectionChange(event: StepperSelectionEvent) {
 		if (event.selectedIndex == 3) {
 			const step3Data = this.stepThreeComponent.getStepData();
 			this.sendToEmailAddress = step3Data.contactEmail;
 		}
+
+		this.onScrollIntoView();
 	}
 
 	private breakpointChanged() {
