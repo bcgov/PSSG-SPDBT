@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-export interface TestCreateRequest {
+export interface OrgRegistrationCreateRequest {
   agreeToTermsAndConditions?: null | boolean;
   checkFeePayer?: null | string;
   contactDateOfBirth?: null | string;

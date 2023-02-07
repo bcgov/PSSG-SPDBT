@@ -35,13 +35,53 @@ namespace SPD.Common.ViewModels.Organization
 
     public class OrgRegistrationCreateRequestValidator : AbstractValidator<OrgRegistrationCreateRequest>
     {
-        public OrgRegistrationCreateRequestValidator() 
+        public OrgRegistrationCreateRequestValidator()
         {
+            RuleFor(r => r.RegistrationTypeCode)
+                .NotEmpty();
+            
+            RuleFor(r => r.OrganizationType)
+                .NotEmpty();
+
             RuleFor(r => r.OrganizationName)
                 .NotEmpty();
 
+            RuleFor(r => r.EmployeeInteractionFlag)
+                .NotEmpty();
+
+            RuleFor(r => r.ContactEmail)
+                .NotEmpty();
+
+            RuleFor(r => r.ContactGivenName)
+                .NotEmpty();
+
+            RuleFor(r => r.ContactSurname)
+                .NotEmpty();
+
+            RuleFor(r => r.ContactJobTitle)
+                .NotEmpty();
+
+            RuleFor(r => r.ContactDateOfBirth)
+                .NotEmpty();
+
+            RuleFor(r => r.ContactPhoneNumber)
+                .NotEmpty();
+
+            RuleFor(r => r.HasPhoneOrEmail)
+                .NotEmpty();
+
+            RuleFor(r => r.MailingAddressLine1)
+                .NotEmpty();
+
+            RuleFor(r => r.ScreeningsCount)
+                .NotEmpty();
+
+            RuleFor(r => r.AgreeToTermsAndConditions)
+                .NotEmpty();
+            
             RuleFor(r => r.GenericEmail)
-                .EmailAddress();
+                .EmailAddress()
+                .When(r => !string.IsNullOrWhiteSpace(r.GenericEmail));
 
             RuleFor(r => r.ContactEmail)
                 .EmailAddress();

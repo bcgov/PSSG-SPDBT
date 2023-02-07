@@ -109,7 +109,7 @@ import { RegistrationFormStepComponent } from '../registration.component';
 	`,
 	styles: [
 		`
-			.funding-question {
+			.org-information {
 				%__group {
 					text-align: left;
 				}

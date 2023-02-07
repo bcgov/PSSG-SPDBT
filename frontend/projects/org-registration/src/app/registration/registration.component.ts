@@ -2,10 +2,8 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperOrientation, StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { Router } from '@angular/router';
 import { distinctUntilChanged } from 'rxjs';
-import { TestCreateRequest } from '../api/models';
-import { WeatherForecastService } from '../api/services';
+import { OrgRegistrationService } from '../api/services';
 import { StepFourComponent } from './steps/step-four.component';
 import { StepOneComponent } from './steps/step-one.component';
 import { StepThreeComponent } from './steps/step-three.component';
@@ -88,11 +86,7 @@ export class RegistrationComponent implements OnInit {
 	@ViewChild(StepFourComponent)
 	stepFourComponent!: StepFourComponent;
 
-	constructor(
-		private router: Router,
-		private breakpointObserver: BreakpointObserver,
-		private weatherForecastService: WeatherForecastService
-	) {}
+	constructor(private breakpointObserver: BreakpointObserver, private orgRegistrationService: OrgRegistrationService) {}
 
 	ngOnInit(): void {
 		this.breakpointObserver
@@ -124,23 +118,13 @@ export class RegistrationComponent implements OnInit {
 
 		console.log('onSaveStepperStep', dataToSave);
 
-		const body: TestCreateRequest = dataToSave;
-		this.weatherForecastService
-			.weatherForecastPost$Json$Response({ body })
-			.pipe()
-			.subscribe((res: any) => {
-				console.log('post res', res.body);
-				this.stepFourComponent.childStepNext();
-			});
-
-		// this.weatherForecastService
-		// 	.getWeatherForecast$Json$Response()
+		// const body: OrgRegistrationCreateRequest = dataToSave;
+		// this.orgRegistrationService
+		// 	.apiOrgRegistrationsPost({ body })
 		// 	.pipe()
-		// 	.subscribe((res: any) => {
-		// 		console.log('get res', res.body);
-		// 		this.stepFourComponent.childStepNext();
-		// 	});
+		// 	.subscribe((_res: any) => {
 		this.stepFourComponent.childStepNext();
+		// });
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
