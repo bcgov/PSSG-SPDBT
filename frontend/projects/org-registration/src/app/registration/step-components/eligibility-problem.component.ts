@@ -4,8 +4,12 @@ import { Component } from '@angular/core';
 	selector: 'app-eligibility-problem',
 	template: `
 		<div class="step">
-			<div class="title mb-5">
-				Our program only handles criminal record checks for people who work with children or vulnerable adults
+			<div class="row">
+				<div class="col-md-8 col-sm-12 mx-auto">
+					<div class="title mb-5">
+						Our program only handles criminal record checks for people who work with children or vulnerable adults
+					</div>
+				</div>
 			</div>
 			<div class="row">
 				<div class="offset-md-3 col-md-6 col-sm-12">

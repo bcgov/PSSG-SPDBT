@@ -1,3 +1,4 @@
+import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { CompensationQuestionComponent } from '../step-components/compensation-question.component';
@@ -12,7 +13,7 @@ import { VulnerableSectorQuestionComponent } from '../step-components/vulnerable
 @Component({
 	selector: 'app-step-one',
 	template: `
-		<mat-stepper class="child-stepper" #childstepper>
+		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-registration-path-selection (clearData)="onClearStepData()"></app-registration-path-selection>
 
@@ -118,6 +119,7 @@ export class StepOneComponent {
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() selectRegistrationType: EventEmitter<string> = new EventEmitter<string>();
 	@Output() clearRegistrationData: EventEmitter<boolean> = new EventEmitter<boolean>();
+	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
 
 	@ViewChild(RegistrationPathSelectionComponent)
 	registrationPathSelectionComponent!: RegistrationPathSelectionComponent;
@@ -172,6 +174,10 @@ export class StepOneComponent {
 		this.clearRegistrationData.emit(true);
 	}
 
+	onStepSelectionChange(event: StepperSelectionEvent) {
+		this.scrollIntoView.emit(true);
+	}
+
 	private dirtyForm(step: number): boolean {
 		let isValid: boolean;
 		switch (step) {
@@ -215,7 +221,7 @@ export class StepOneComponent {
 				return isValid;
 
 			default:
-				console.log('Unknown Form', step);
+				console.error('Unknown Form', step);
 		}
 		return false;
 	}

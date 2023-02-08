@@ -1,3 +1,4 @@
+import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { AgreementOfTermsComponent } from '../step-components/agreement-of-terms.component';
@@ -5,7 +6,7 @@ import { AgreementOfTermsComponent } from '../step-components/agreement-of-terms
 @Component({
 	selector: 'app-step-four',
 	template: `
-		<mat-stepper class="child-stepper" #childstepper>
+		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-agreement-of-terms></app-agreement-of-terms>
 
@@ -37,6 +38,7 @@ export class StepFourComponent {
 	@Input() sendToEmailAddress = '';
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() saveStepperStep: EventEmitter<boolean> = new EventEmitter();
+	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
 
 	@ViewChild(AgreementOfTermsComponent)
 	agreementOfTermsComponent!: AgreementOfTermsComponent;
@@ -62,6 +64,10 @@ export class StepFourComponent {
 		const isValid = this.agreementOfTermsComponent.isFormValid();
 		if (!isValid) return;
 		this.saveStepperStep.emit(true);
+	}
+
+	onStepSelectionChange(event: StepperSelectionEvent) {
+		this.scrollIntoView.emit(true);
 	}
 
 	clearStepData(): void {

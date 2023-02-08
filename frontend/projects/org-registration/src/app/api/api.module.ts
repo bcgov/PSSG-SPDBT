@@ -4,7 +4,7 @@ import { NgModule, ModuleWithProviders, SkipSelf, Optional } from '@angular/core
 import { HttpClient } from '@angular/common/http';
 import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 
-import { WeatherForecastService } from './services/weather-forecast.service';
+import { OrgRegistrationService } from './services/org-registration.service';
 
 /**
  * Module that provides all services and configuration.
@@ -14,7 +14,7 @@ import { WeatherForecastService } from './services/weather-forecast.service';
   exports: [],
   declarations: [],
   providers: [
-    WeatherForecastService,
+    OrgRegistrationService,
     ApiConfiguration
   ],
 })

@@ -7,7 +7,7 @@ import { Component, Input } from '@angular/core';
 			<div class="title mb-5">
 				Thank you!
 				<div style="font-size: smaller">
-					Your registration is complete, and a confirmation email has been sent to<br />
+					Your registration is complete and a confirmation email has been sent to<br />
 					{{ sendToEmailAddress }}
 				</div>
 			</div>
@@ -55,7 +55,7 @@ import { Component, Input } from '@angular/core';
 					color: var(--color-green);
 
 					.mat-icon {
-						color: var(--color-primary);
+						color: var(--color-green);
 						font-size: 50px;
 						height: 50px;
 						width: 50px;

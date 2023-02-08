@@ -1,9 +1,11 @@
-import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/core';
+import { StepperSelectionEvent } from '@angular/cdk/stepper';
+import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { MatStepper } from '@angular/material/stepper';
 
 @Component({
 	selector: 'app-step-one',
 	template: `
-		<mat-stepper class="child-stepper" #childstepper>
+		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-checklist></app-checklist>
 
@@ -19,136 +21,24 @@ import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/cor
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+						<button mat-stroked-button color="primary" class="large mb-2" (click)="onInfoNotCorrect()">
+							Information is not correct
+						</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" class="large mb-2" matStepperNext>Next</button>
+						<button mat-raised-button color="primary" class="large mb-2" (click)="onStepNext()">Next</button>
 					</div>
 				</div>
 			</mat-step>
 
 			<mat-step>
-				<app-log-in-options></app-log-in-options>
+				<app-eligibility-problem></app-eligibility-problem>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" class="large mb-2" matStepperNext>Next</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<mat-step>
-				<app-contact-information></app-contact-information>
-
-				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" class="large mb-2" matStepperNext>Next</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<mat-step>
-				<app-personal-information></app-personal-information>
-
-				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" class="large mb-2" matStepperNext>Next</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<mat-step>
-				<app-previous-name></app-previous-name>
-
-				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" class="large mb-2" matStepperNext>Next</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<mat-step>
-				<app-mailing-address></app-mailing-address>
-
-				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" class="large mb-2" matStepperNext>Next</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<mat-step>
-				<app-summary></app-summary>
-
-				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" class="large mb-2" matStepperNext>Next</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<mat-step>
-				<app-declaration></app-declaration>
-
-				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" class="large mb-2" matStepperNext>Next</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<mat-step>
-				<app-agreement-of-terms></app-agreement-of-terms>
-
-				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" class="large mb-2" matStepperNext>Next</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<mat-step>
-				<app-payment></app-payment>
-
-				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" class="large mb-2" matStepperNext>Next</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<mat-step>
-				<app-completed></app-completed>
-
-				<div class="row mt-4">
-					<div class="offset-lg-4 col-lg-4 offset-md-4 col-md-4 col-sm-12">
 						<button mat-raised-button color="primary" class="large mb-2" [routerLink]="'/'">Close</button>
 					</div>
 				</div>
@@ -159,14 +49,20 @@ import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/cor
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepOneComponent {
-	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
-	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
+	@ViewChild('childstepper') childstepper!: MatStepper;
 
-	onStepPrevious(): void {
-		this.previousStepperStep.emit(true);
+	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
+	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+	onInfoNotCorrect(): void {
+		this.childstepper.next();
 	}
 
 	onStepNext(): void {
 		this.nextStepperStep.emit(true);
+	}
+
+	onStepSelectionChange(_event: StepperSelectionEvent) {
+		this.scrollIntoView.emit(true);
 	}
 }
