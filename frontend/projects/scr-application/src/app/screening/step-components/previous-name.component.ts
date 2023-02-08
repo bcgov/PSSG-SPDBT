@@ -41,7 +41,7 @@ import { DialogOptions } from 'shared';
 												</div>
 												<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
 													<mat-form-field>
-														<mat-label>Middle Name (optional)</mat-label>
+														<mat-label>Middle Name <span class="optional-label">(optional)</span></mat-label>
 														<input matInput type="text" formControlName="middleNames" />
 													</mat-form-field>
 												</div>
@@ -74,12 +74,12 @@ import { DialogOptions } from 'shared';
 													</button>
 												</div>
 											</div>
-											<hr />
+											<mat-divider class="name-divider my-3"></mat-divider>
 										</ng-container>
 									</div>
 									<div class="row">
-										<div class="col-lg-6 col-md-8 col-sm-12">
-											<button mat-stroked-button color="primary" (click)="addRow()">
+										<div class="col-lg-4 col-md-6 col-sm-12">
+											<button mat-stroked-button style="color: var(--color-green);" (click)="addRow()">
 												<mat-icon>add_circle</mat-icon>Add Another Name
 											</button>
 										</div>
@@ -107,22 +107,14 @@ import { DialogOptions } from 'shared';
 	`,
 	styles: [
 		`
-			hr {
-				color: var(--color-primary-light);
+			.name-divider {
+				background-color: var(--color-green);
 			}
 
 			.mat-mdc-mini-fab {
 				top: 10px;
 				width: 30px;
 				height: 30px;
-			}
-
-			.card-section {
-				background-color: #ededed !important;
-				border-left: 3px solid var(--color-primary);
-				border-bottom-width: 1px;
-				border-bottom-style: solid;
-				border-bottom-color: rgba(0, 0, 0, 0.12);
 			}
 		`,
 	],

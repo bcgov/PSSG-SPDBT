@@ -21,12 +21,9 @@ import { Component } from '@angular/core';
 									<small class="d-block text-muted mt-2 mt-lg-0">Organization Phone Number</small>
 									<strong> (250) 455-6565 </strong>
 								</div>
-								<div class="col-lg-1 text-end">
-									<mat-icon>edit</mat-icon>
-								</div>
 							</div>
 
-							<hr />
+							<mat-divider class="my-3"></mat-divider>
 
 							<div class="row mb-2">
 								<div class="offset-lg-3 col-lg-5">
@@ -57,11 +54,11 @@ import { Component } from '@angular/core';
 									<strong> Smith </strong>
 								</div>
 								<div class="col-lg-1 text-end">
-									<mat-icon>edit</mat-icon>
+									<mat-icon matTooltip="Edit this data">edit</mat-icon>
 								</div>
 							</div>
 
-							<hr />
+							<mat-divider class="my-3"></mat-divider>
 
 							<div class="row mb-2">
 								<div class="offset-lg-3 col-lg-5">
@@ -92,11 +89,11 @@ import { Component } from '@angular/core';
 									<strong> Victoria, BC, Canada </strong>
 								</div>
 								<div class="col-lg-1 text-end">
-									<mat-icon>edit</mat-icon>
+									<mat-icon matTooltip="Edit this data">edit</mat-icon>
 								</div>
 							</div>
 
-							<hr />
+							<mat-divider class="my-3"></mat-divider>
 
 							<div class="row mb-2">
 								<div class="offset-lg-3 col-lg-5">
@@ -116,7 +113,8 @@ import { Component } from '@angular/core';
 	`,
 	styles: [
 		`
-			h4 {
+			h4,
+			.mat-icon {
 				color: var(--color-primary-light);
 			}
 

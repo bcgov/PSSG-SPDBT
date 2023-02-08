@@ -11,13 +11,11 @@ namespace SPD.Common.ViewModels.Organization
         public string ContactEmail { get; set; }
         public string ContactGivenName { get; set; }
         public string ContactJobTitle { get; set; }
-        public string ContactPhoneExt { get; set; }
         public string ContactPhoneNumber { get; set; }
         public string ContactSurname { get; set; }
         public string EmployeeInteractionFlag { get; set; }
         public string GenericEmail { get; set; }
         public string GenericEmailConfirmation { get; set; }
-        public string GenericPhoneExt { get; set; }
         public string GenericPhoneNumber { get; set; }
         public string HasPhoneOrEmail { get; set; }
         public string MailingAddressLine1 { get; set; }

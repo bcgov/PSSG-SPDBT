@@ -31,7 +31,7 @@ export interface ScreeningFormStepComponent {
 			</mat-step>
 
 			<mat-step completed="false">
-				<ng-template matStepLabel>Business Information</ng-template>
+				<ng-template matStepLabel>Log In</ng-template>
 				<app-step-two
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -40,11 +40,19 @@ export interface ScreeningFormStepComponent {
 			</mat-step>
 
 			<mat-step completed="false">
-				<ng-template matStepLabel>Complete</ng-template>
+				<ng-template matStepLabel>Confirmation</ng-template>
 				<app-step-three
-					(previousStepperStep)="onPreviousStepperStep(stepper)"
+					(nextStepperStep)="onNextStepperStep(stepper)"
 					(scrollIntoView)="onScrollIntoView()"
 				></app-step-three>
+			</mat-step>
+
+			<mat-step completed="false">
+				<ng-template matStepLabel>Complete</ng-template>
+				<app-step-four
+					(previousStepperStep)="onPreviousStepperStep(stepper)"
+					(scrollIntoView)="onScrollIntoView()"
+				></app-step-four>
 			</mat-step>
 		</mat-stepper>
 	`,
@@ -100,7 +108,7 @@ export class ScreeningComponent implements OnInit {
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
-		if (this.stepper && this.stepper.selected) this.stepper.selected.completed = true;
+		if (stepper && stepper.selected) stepper.selected.completed = true;
 		stepper.next();
 	}
 

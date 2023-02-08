@@ -53,7 +53,7 @@ import { RegistrationFormStepComponent } from '../registration.component';
 					</div>
 				</div>
 				<div class="row">
-					<div class="offset-md-2 col-md-2 col-sm-12">
+					<div class="offset-md-2 col-md-4 col-sm-12">
 						<mat-form-field>
 							<mat-label>Date of Birth</mat-label>
 							<input
@@ -67,7 +67,7 @@ import { RegistrationFormStepComponent } from '../registration.component';
 							<mat-error *ngIf="form.get('contactDateOfBirth')?.hasError('required')">This is required</mat-error>
 						</mat-form-field>
 					</div>
-					<div class="col-md-3 col-sm-12">
+					<div class="col-md-4 col-sm-12">
 						<mat-form-field>
 							<mat-label>Direct Phone Number</mat-label>
 							<input
@@ -78,12 +78,6 @@ import { RegistrationFormStepComponent } from '../registration.component';
 								[errorStateMatcher]="matcher"
 							/>
 							<mat-error *ngIf="form.get('contactPhoneNumber')?.hasError('required')">This is required</mat-error>
-						</mat-form-field>
-					</div>
-					<div class="col-md-3 col-sm-12">
-						<mat-form-field>
-							<mat-label>Ext. (optional)</mat-label>
-							<input matInput formControlName="contactPhoneExt" />
 						</mat-form-field>
 					</div>
 				</div>
@@ -100,7 +94,6 @@ export class ContactInformationComponent implements RegistrationFormStepComponen
 		contactEmail: new FormControl('', [Validators.email, Validators.required]),
 		contactDateOfBirth: new FormControl('', [Validators.required]),
 		contactPhoneNumber: new FormControl('', [Validators.required]),
-		contactPhoneExt: new FormControl(''),
 	});
 	startDate = new Date(2000, 0, 1);
 	matcher = new FormErrorStateMatcher();

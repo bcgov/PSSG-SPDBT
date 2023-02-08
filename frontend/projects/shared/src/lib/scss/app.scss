@@ -8,12 +8,6 @@
 // Be sure that you only ever include this mixin once!
 @include mat.core();
 
-html, body { height: 100%; }
-body { 
-  margin: 0; 
-  background-color: #f8f9fa;
-}
-
 $spd-blue: (
   50: #e0e7ed,
   100: #b3c2d1,
@@ -136,6 +130,13 @@ $spd-test-theme: mat.define-light-theme((
 
 @import './material-overrides';
 
+html, body { height: 100%; }
+body { 
+  margin: 0; 
+  background-color: var(--color-primary-lightest);
+}
+
+
 .step {
   width: 100%;
   align-items: center;
@@ -176,6 +177,10 @@ a {
   text-decoration: none;
 }
 
+.optional-label {
+  font-size: 0.8em;
+}
+
 .step-section {
   border-radius: 4px;
   background-color: #fff;
@@ -184,10 +189,10 @@ a {
 }
 
 @media (max-width: 767px) {
-.step-section {
-  border-radius: none;
-  background-color: transparent;
-  border: none;
-  box-shadow: none;
-}
+  .step-section {
+    border-radius: none;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+  }
 }

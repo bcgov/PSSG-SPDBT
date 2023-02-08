@@ -5,25 +5,27 @@ import { Component } from '@angular/core';
 	template: `
 		<section class="step-section pt-4 pb-5 px-3">
 			<div class="step">
-				<div class="title mb-5">Payment Approved</div>
-
-				<div class="title mb-3 col-md-8 col-sm-12 mx-auto" style="font-size: 1.4em;">
-					<div class="alert alert-success d-flex align-items-center" role="alert">
-						<mat-icon>check_circle</mat-icon>
-						<div style="margin-left: 20px">Payment has been successfully received.</div>
+				<div class="row">
+					<div class="col-md-8 col-sm-12 mx-auto">
+						<div class="alert alert-success align-items-center mb-0 alert-layout" role="alert">
+							<mat-icon class="d-none d-md-block alert-icon">paid</mat-icon>
+							<div>
+								<h4 class="alert-heading">Payment Received</h4>
+								<hr />
+								<p class="margin-top: 1.5em;">Payment has been successfully received.</p>
+								<p>
+									Your application will be reviewed shortly and you will be contacted if it is found to be incomplete or
+									inaccurate.
+								</p>
+								<p class="mb-0">An email with a receipt has been sent to: [EMAIL].</p>
+							</div>
+						</div>
 					</div>
 				</div>
-				<div class="title col-8 mx-auto mb-3" style="font-size: 1.5em;">
-					Your application will be reviewed shortly and you will be contacted if it is found to be incomplete or
-					inaccurate.
-				</div>
-				<div class="title col-8 mx-auto mb-5" style="font-size: 1.5em;">
-					An email with a receipt has been sent to: [EMAIL].
-				</div>
 
-				<div class="row">
-					<div class="offset-md-2 col-md-8 col-sm-12">
-						<section class="px-4 py-2 mb-3 card-section">
+				<div class="row mt-4">
+					<div class="col-md-8 col-sm-12 mx-auto">
+						<section class="px-4 py-2 mb-3">
 							<div class="row mt-2">
 								<div class="offset-lg-1 col-lg-3">
 									<small class="d-block text-muted">Contact Email</small>
@@ -39,7 +41,7 @@ import { Component } from '@angular/core';
 								</div>
 							</div>
 
-							<hr />
+							<mat-divider class="my-3"></mat-divider>
 
 							<div class="row mb-2">
 								<div class="offset-lg-1 col-lg-3">
@@ -55,6 +57,8 @@ import { Component } from '@angular/core';
 									<div class="text-data">12345678</div>
 								</div>
 							</div>
+
+							<mat-divider class="my-3"></mat-divider>
 						</section>
 					</div>
 				</div>
@@ -63,12 +67,16 @@ import { Component } from '@angular/core';
 	`,
 	styles: [
 		`
-			.card-section {
-				background-color: #ededed !important;
-				/* border-left: 3px solid var(--color-primary); */
-				border-bottom-width: 1px;
-				border-bottom-style: solid;
-				border-bottom-color: rgba(0, 0, 0, 0.12);
+			.alert-layout {
+				display: inline-flex;
+				gap: 1em;
+			}
+
+			.alert-icon {
+				min-width: 1em;
+				width: 40px;
+				height: 40px;
+				font-size: 40px;
 			}
 
 			.text-data {

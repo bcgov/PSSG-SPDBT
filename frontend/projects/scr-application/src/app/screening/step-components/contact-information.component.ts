@@ -11,7 +11,7 @@ import { ScreeningFormStepComponent } from '../screening.component';
 				<div class="step">
 					<div class="title mb-5">Review and update your contact information:</div>
 					<div class="row">
-						<div class="offset-lg-1 col-lg-3 col-md-4 col-sm-12">
+						<div class="offset-lg-1 col-lg-3 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>First Name</mat-label>
 								<input matInput formControlName="contactGivenName" [errorStateMatcher]="matcher" />
@@ -21,16 +21,16 @@ import { ScreeningFormStepComponent } from '../screening.component';
 								</mat-error>
 							</mat-form-field>
 						</div>
-						<div class="col-lg-3 col-md-4 col-sm-12">
+						<div class="col-lg-3 col-md-6 col-sm-12">
 							<mat-form-field>
-								<mat-label>Middle Name(s) <span>(optional)</span></mat-label>
+								<mat-label>Middle Name(s) <span class="optional-label">(optional)</span></mat-label>
 								<input matInput formControlName="contactMiddleNames" [errorStateMatcher]="matcher" />
 								<mat-error *ngIf="form.get('contactMiddleNames')?.hasError('pattern')">
 									Only characters are allowed
 								</mat-error>
 							</mat-form-field>
 						</div>
-						<div class="col-lg-4 col-md-4 col-sm-12">
+						<div class="col-lg-4 col-md-12 col-sm-12">
 							<mat-form-field>
 								<mat-label>Surname</mat-label>
 								<input matInput formControlName="contactSurname" [errorStateMatcher]="matcher" />

@@ -3,6 +3,7 @@ import { StepperOrientation, StepperSelectionEvent } from '@angular/cdk/stepper'
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { distinctUntilChanged } from 'rxjs';
+import { OrgRegistrationCreateRequest } from '../api/models';
 import { OrgRegistrationService } from '../api/services';
 import { StepFourComponent } from './steps/step-four.component';
 import { StepOneComponent } from './steps/step-one.component';
@@ -118,13 +119,13 @@ export class RegistrationComponent implements OnInit {
 
 		console.log('onSaveStepperStep', dataToSave);
 
-		// const body: OrgRegistrationCreateRequest = dataToSave;
-		// this.orgRegistrationService
-		// 	.apiOrgRegistrationsPost({ body })
-		// 	.pipe()
-		// 	.subscribe((_res: any) => {
-		this.stepFourComponent.childStepNext();
-		// });
+		const body: OrgRegistrationCreateRequest = dataToSave;
+		this.orgRegistrationService
+			.apiOrgRegistrationsPost({ body })
+			.pipe()
+			.subscribe((_res: any) => {
+				this.stepFourComponent.childStepNext();
+			});
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
