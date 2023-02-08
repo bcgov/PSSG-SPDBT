@@ -11,7 +11,7 @@ import { Component } from '@angular/core';
 						<section class="px-4 py-2 mb-3 card-section">
 							<div class="row mt-2">
 								<div class="col-lg-3">
-									<h4>Eligibility</h4>
+									<h4>Organization Information</h4>
 								</div>
 								<div class="col-lg-5">
 									<small class="d-block text-muted">Requesting Organization</small>
@@ -28,11 +28,11 @@ import { Component } from '@angular/core';
 							<div class="row mb-2">
 								<div class="offset-lg-3 col-lg-5">
 									<small class="d-block text-muted">Organization Address</small>
-									760 Vernon Ave, Victoria, BC V8X 2W6, Canada
+									<strong>760 Vernon Ave, Victoria, BC V8X 2W6, Canada</strong>
 								</div>
 								<div class="col-lg-4">
 									<small class="d-block text-muted mt-2 mt-lg-0">Job Title</small>
-									Teacher
+									<strong>Teacher</strong>
 								</div>
 							</div>
 						</section>
@@ -43,7 +43,7 @@ import { Component } from '@angular/core';
 						<section class="px-4 py-2 mb-3 card-section">
 							<div class="row mt-2">
 								<div class="col-lg-3">
-									<h4>Business Information</h4>
+									<h4>Contact Information</h4>
 								</div>
 								<div class="col-lg-5">
 									<small class="d-block text-muted">Contact First Name</small>
@@ -63,47 +63,44 @@ import { Component } from '@angular/core';
 							<div class="row mb-2">
 								<div class="offset-lg-3 col-lg-5">
 									<small class="d-block text-muted">Email</small>
-									test@test.com
+									<strong>test@test.com</strong>
 								</div>
 								<div class="col-lg-4">
 									<small class="d-block text-muted mt-2 mt-lg-0">Phone Number</small>
-									(250) 465-9898
+									<strong>(250) 465-9898</strong>
 								</div>
 							</div>
-						</section>
-					</div>
-				</div>
-				<div class="row">
-					<div class="offset-md-2 col-md-8 col-sm-12">
-						<section class="px-4 py-2 mb-3 card-section">
-							<div class="row mt-2">
-								<div class="col-lg-3">
-									<h4>Personal</h4>
-								</div>
-								<div class="col-lg-5">
-									<small class="d-block text-muted">Date of Birth</small>
-									<strong> Jan 4, 2000 </strong>
-								</div>
-								<div class="col-lg-3">
-									<small class="d-block text-muted mt-2 mt-lg-0">Birthplace</small>
-									<strong> Victoria, BC, Canada </strong>
-								</div>
-								<div class="col-lg-1 text-end">
-									<mat-icon matTooltip="Edit this data">edit</mat-icon>
-								</div>
-							</div>
-
-							<mat-divider class="my-3"></mat-divider>
 
 							<div class="row mb-2">
 								<div class="offset-lg-3 col-lg-5">
-									<small class="d-block text-muted">BC Drivers License</small>
-									9998877
+									<small class="d-block text-muted">Date of Birth</small>
+									<strong> Jan 4, 2000 </strong>
 								</div>
-								<!-- <div class="col-lg-3">
-								<small class="d-block text-muted">Amount due</small>
-								142
-							</div> -->
+								<div class="col-lg-4">
+									<small class="d-block text-muted mt-2 mt-lg-0">Birthplace</small>
+									<strong> Victoria, BC, Canada </strong>
+								</div>
+							</div>
+
+							<div class="row mt-2">
+								<div class="offset-lg-3 col-lg-5">
+									<small class="d-block text-muted">BC Drivers License</small>
+									<strong>9998877</strong>
+								</div>
+							</div>
+
+							<div class="row mt-2">
+								<div class="offset-lg-3 col-lg-8">
+									<small class="d-block text-muted">Previous Names</small>
+									<strong>Norma Jeane Mortenson, Jean Morty</strong>
+								</div>
+							</div>
+
+							<div class="row mt-2">
+								<div class="offset-lg-3 col-lg-8">
+									<small class="d-block text-muted">Mailing Address</small>
+									<strong>755 Caledonia Avenue, Victoria, BC V8T 0C2, Canada</strong>
+								</div>
 							</div>
 						</section>
 					</div>

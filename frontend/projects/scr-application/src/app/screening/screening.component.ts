@@ -31,7 +31,7 @@ export interface ScreeningFormStepComponent {
 			</mat-step>
 
 			<mat-step completed="false">
-				<ng-template matStepLabel>Log In</ng-template>
+				<ng-template matStepLabel>Log In Options</ng-template>
 				<app-step-two
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -40,7 +40,7 @@ export interface ScreeningFormStepComponent {
 			</mat-step>
 
 			<mat-step completed="false">
-				<ng-template matStepLabel>Confirmation</ng-template>
+				<ng-template matStepLabel>Business Information</ng-template>
 				<app-step-three
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(scrollIntoView)="onScrollIntoView()"
