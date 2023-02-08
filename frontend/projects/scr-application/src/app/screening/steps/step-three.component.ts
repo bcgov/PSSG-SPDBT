@@ -1,5 +1,6 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { MatStepper } from '@angular/material/stepper';
 
 @Component({
 	selector: 'app-step-three',
@@ -49,6 +50,19 @@ import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/cor
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
+						<button mat-raised-button color="primary" class="large mb-2" matStepperNext>Next</button>
+					</div>
+				</div>
+			</mat-step>
+
+			<mat-step>
+				<app-summary (reEdit)="onReEdit()"></app-summary>
+
+				<div class="row mt-4">
+					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+					</div>
+					<div class="col-lg-3 col-md-4 col-sm-6">
 						<button mat-raised-button color="primary" class="large mb-2" (click)="onStepNext()">Next</button>
 					</div>
 				</div>
@@ -59,6 +73,8 @@ import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/cor
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepThreeComponent {
+	@ViewChild('childstepper') childstepper!: MatStepper;
+
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
 
@@ -68,5 +84,9 @@ export class StepThreeComponent {
 
 	onStepSelectionChange(event: StepperSelectionEvent) {
 		this.scrollIntoView.emit(true);
+	}
+
+	onReEdit(): void {
+		this.childstepper.selectedIndex = 0;
 	}
 }

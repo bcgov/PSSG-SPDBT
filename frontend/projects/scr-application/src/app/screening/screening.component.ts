@@ -108,6 +108,7 @@ export class ScreeningComponent implements OnInit {
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
+		// complete the current step
 		if (stepper && stepper.selected) stepper.selected.completed = true;
 		stepper.next();
 	}

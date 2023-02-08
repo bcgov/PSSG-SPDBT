@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
 	selector: 'app-summary',
@@ -54,7 +54,7 @@ import { Component } from '@angular/core';
 									<strong> Smith </strong>
 								</div>
 								<div class="col-lg-1 text-end">
-									<mat-icon matTooltip="Edit this data">edit</mat-icon>
+									<mat-icon matTooltip="Edit this data" (click)="onReEditContact()">edit</mat-icon>
 								</div>
 							</div>
 
@@ -125,4 +125,10 @@ import { Component } from '@angular/core';
 		`,
 	],
 })
-export class SummaryComponent {}
+export class SummaryComponent {
+	@Output() reEdit: EventEmitter<boolean> = new EventEmitter();
+
+	onReEditContact(): void {
+		this.reEdit.emit(true);
+	}
+}
