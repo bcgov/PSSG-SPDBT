@@ -1,1 +1,1 @@
-export { WeatherForecastService } from './services/weather-forecast.service';
+export { OrgRegistrationService } from './services/org-registration.service';

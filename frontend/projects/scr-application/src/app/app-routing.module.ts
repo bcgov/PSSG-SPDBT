@@ -4,18 +4,18 @@ import { LandingComponent } from './landing.component';
 import { ScreeningComponent } from './screening/screening.component';
 
 const routes: Routes = [
-  {
-    path: '',
-    component: LandingComponent,
-  },
-  {
-    path: 'screening',
-    component: ScreeningComponent,
-  },
+	{
+		path: '',
+		component: LandingComponent,
+	},
+	{
+		path: 'screening',
+		component: ScreeningComponent,
+	},
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule],
+	imports: [RouterModule.forRoot(routes, { scrollPositionRestoration: 'top' })],
+	exports: [RouterModule],
 })
 export class AppRoutingModule {}

@@ -33,6 +33,10 @@ button.mdc-button {
   background-color: rgba(245, 245, 245);
 }
 
+.mdc-text-field--disabled .mdc-text-field__input {
+  color: rgba(0, 0, 0, 0.68);
+}
+
 .mat-mdc-card-content {  
   text-align: center;
 }
@@ -64,6 +68,10 @@ mat-hint {
   font-size: small;
 }
 
+.mat-stepper-horizontal, .mat-stepper-vertical {
+  background-color: var(--color-primary-lightest);
+}
+
 .mat-horizontal-content-container {
   padding: 0 !important;
 }
@@ -80,4 +88,8 @@ mat-label {
 
 .mat-mdc-form-field-required-marker {
   display: none;
+}
+
+.mat-mdc-dialog-container .mdc-dialog__surface {
+  border: 2px solid var(--color-yellow);
 }

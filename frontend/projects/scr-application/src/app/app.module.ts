@@ -15,6 +15,7 @@ import { ChecklistComponent } from './screening/step-components/checklist.compon
 import { CompletedComponent } from './screening/step-components/completed.component';
 import { ContactInformationComponent } from './screening/step-components/contact-information.component';
 import { DeclarationComponent } from './screening/step-components/declaration.component';
+import { EligibilityProblemComponent } from './screening/step-components/eligibility-problem.component';
 import { LogInOptionsComponent } from './screening/step-components/log-in-options.component';
 import { MailingAddressComponent } from './screening/step-components/mailing-address.component';
 import { PaymentComponent } from './screening/step-components/payment.component';
@@ -22,7 +23,9 @@ import { PersonalInformationComponent } from './screening/step-components/person
 import { PreviousNameComponent } from './screening/step-components/previous-name.component';
 import { SecurityInformationComponent } from './screening/step-components/security-information.component';
 import { SummaryComponent } from './screening/step-components/summary.component';
+import { StepFourComponent } from './screening/steps/step-four.component';
 import { StepOneComponent } from './screening/steps/step-one.component';
+import { StepThreeComponent } from './screening/steps/step-three.component';
 import { StepTwoComponent } from './screening/steps/step-two.component';
 
 @NgModule({
@@ -32,9 +35,12 @@ import { StepTwoComponent } from './screening/steps/step-two.component';
 		ScreeningComponent,
 		StepOneComponent,
 		StepTwoComponent,
+		StepThreeComponent,
+		StepFourComponent,
 		ContactInformationComponent,
 		MailingAddressComponent,
 		ChecklistComponent,
+		EligibilityProblemComponent,
 		LogInOptionsComponent,
 		AgreementOfTermsComponent,
 		PersonalInformationComponent,

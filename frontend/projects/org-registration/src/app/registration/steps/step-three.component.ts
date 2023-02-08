@@ -1,3 +1,4 @@
+import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { ContactInformationComponent } from '../step-components/contact-information.component';
@@ -10,7 +11,7 @@ import { ScreeningsQuestionComponent } from '../step-components/screenings-quest
 @Component({
 	selector: 'app-step-three',
 	template: `
-		<mat-stepper class="child-stepper" #childstepper>
+		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-contact-information></app-contact-information>
 
@@ -107,6 +108,7 @@ export class StepThreeComponent {
 
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
+	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
 
 	@ViewChild(ContactInformationComponent)
 	contactInformationComponent!: ContactInformationComponent;
@@ -160,6 +162,10 @@ export class StepThreeComponent {
 		this.childstepper.next();
 	}
 
+	onStepSelectionChange(event: StepperSelectionEvent) {
+		this.scrollIntoView.emit(true);
+	}
+
 	goToStepNext(formNumber: number): void {
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
@@ -187,7 +193,7 @@ export class StepThreeComponent {
 				this.organizationNameComponent.form.markAllAsTouched();
 				return this.organizationNameComponent.isFormValid();
 			default:
-				console.log('Unknown Form', step);
+				console.error('Unknown Form', step);
 		}
 		return false;
 	}

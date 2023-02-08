@@ -7,7 +7,7 @@ import { RegistrationFormStepComponent } from '../registration.component';
 	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="step">
-				<div class="title mb-5">Please review the following terms of agreement:</div>
+				<div class="title mb-5">Review and agree to the following terms of agreement:</div>
 				<div class="row">
 					<div
 						class="offset-md-2 col-md-8 col-sm-12 conditions px-3 mb-3"
@@ -69,7 +69,7 @@ import { RegistrationFormStepComponent } from '../registration.component';
 				</div>
 
 				<div class="row my-4">
-					<div class="offset-md-1 col-md-10 col-sm-12">
+					<div class="offset-md-2 col-md-8 col-sm-12">
 						<mat-checkbox formControlName="agreeToTermsAndConditions">
 							On behalf of the above noted organization, I hereby certify that I agree to the terms and conditions for
 							utilizing the CRRP to facilitate criminal record checks on our employees, contractors, or students

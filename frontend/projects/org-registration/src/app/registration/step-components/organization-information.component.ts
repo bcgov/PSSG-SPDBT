@@ -22,7 +22,7 @@ import { RegistrationFormStepComponent } from '../registration.component';
 
 							<ng-container *ngIf="hasPhoneOrEmail.value == 'YES'">
 								<div class="row mt-2">
-									<div class="col-md-6 col-sm-12">
+									<div class="col-lg-4 col-md-12 col-sm-12">
 										<mat-form-field>
 											<mat-label>Email Address</mat-label>
 											<input
@@ -40,7 +40,7 @@ import { RegistrationFormStepComponent } from '../registration.component';
 											<mat-error *ngIf="form.get('genericEmail')?.hasError('required')">This is required</mat-error>
 										</mat-form-field>
 									</div>
-									<div class="col-md-6 col-sm-12">
+									<div class="col-lg-4 col-md-12 col-sm-12">
 										<mat-form-field>
 											<mat-label>Confirm Email Address</mat-label>
 											<input
@@ -62,9 +62,7 @@ import { RegistrationFormStepComponent } from '../registration.component';
 											<div *ngIf="isEmailMismatch">Emails must match</div> -->
 										</mat-form-field>
 									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-6 col-sm-12">
+									<div class="col-lg-4 col-md-12 col-sm-12">
 										<mat-form-field>
 											<mat-label>Phone Number</mat-label>
 											<input
@@ -78,12 +76,6 @@ import { RegistrationFormStepComponent } from '../registration.component';
 											<mat-error *ngIf="form.get('genericPhoneNumber')?.hasError('required')"
 												>This is required</mat-error
 											>
-										</mat-form-field>
-									</div>
-									<div class="col-md-6 col-sm-12">
-										<mat-form-field>
-											<mat-label>Ext. (optional)</mat-label>
-											<input matInput formControlName="genericPhoneExt" />
 										</mat-form-field>
 									</div>
 								</div>
@@ -109,7 +101,7 @@ import { RegistrationFormStepComponent } from '../registration.component';
 	`,
 	styles: [
 		`
-			.funding-question {
+			.org-information {
 				%__group {
 					text-align: left;
 				}
@@ -130,7 +122,6 @@ export class OrganizationInformationComponent implements OnInit, RegistrationFor
 				genericEmail: new FormControl('', [Validators.email, Validators.required]),
 				genericEmailConfirmation: new FormControl('', [Validators.email, Validators.required]),
 				genericPhoneNumber: new FormControl('', [Validators.required]),
-				genericPhoneExt: new FormControl(''),
 			}
 			// {
 			// 	validator: (form: FormGroup) => {

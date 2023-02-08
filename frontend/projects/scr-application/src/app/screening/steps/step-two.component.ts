@@ -1,18 +1,16 @@
+import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/core';
 
 @Component({
 	selector: 'app-step-two',
 	template: `
-		<mat-stepper class="child-stepper" #childstepper>
+		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				2222
+				<app-log-in-options (clickNext)="onStepNext()"></app-log-in-options>
 
 				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+					<div class="offset-lg-4 col-lg-4 offset-md-4 col-md-4 col-sm-12">
 						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" class="large mb-2" (click)="onStepNext()">Next</button>
 					</div>
 				</div>
 			</mat-step>
@@ -24,6 +22,7 @@ import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/cor
 export class StepTwoComponent {
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
+	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
 
 	onStepPrevious(): void {
 		this.previousStepperStep.emit(true);
@@ -31,5 +30,9 @@ export class StepTwoComponent {
 
 	onStepNext(): void {
 		this.nextStepperStep.emit(true);
+	}
+
+	onStepSelectionChange(event: StepperSelectionEvent) {
+		this.scrollIntoView.emit(true);
 	}
 }
