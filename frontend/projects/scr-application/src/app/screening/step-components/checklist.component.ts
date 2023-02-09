@@ -1,31 +1,44 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { Component, Input } from '@angular/core';
 import { FormErrorStateMatcher } from 'projects/shared/src/public-api';
-import { ScreeningFormStepComponent } from '../screening.component';
 
 @Component({
 	selector: 'app-checklist',
 	template: `
 		<section class="step-section pt-4 pb-5 px-3">
 			<div class="step">
-				<div class="title mb-5">Checklist</div>
+				<div class="row">
+					<div class="col-md-8 col-sm-12 mx-auto">
+						<div class="title mb-5">To submit a request for a criminal record check, you will need:</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6 col-sm-12 mx-auto">
+						<ul *ngIf="paymentBy == 'APP'">
+							<li>Your BC Services Card (recommended), or other government issued identification.</li>
+							<li>A method of payment (Visa, Mastercard, American Express, Visa Debit, Mastercard Debit)</li>
+							<li>
+								Before you submit a request for a criminal record check, if possible, verify your identity by using your
+								BC Services Card.
+							</li>
+						</ul>
+						<ul *ngIf="paymentBy == 'ORG'">
+							<li>Your BC Services Card (recommended), or other government issued identification.</li>
+							<li>
+								Before you submit a request for a criminal record check, if possible, verify your identity by using your
+								BC Services Card.
+							</li>
+						</ul>
+					</div>
+				</div>
 			</div>
 		</section>
 	`,
 	styles: [],
 })
-export class ChecklistComponent implements OnInit, ScreeningFormStepComponent {
+export class ChecklistComponent {
 	matcher = new FormErrorStateMatcher();
 
-	constructor(private formBuilder: FormBuilder) {}
+	@Input() paymentBy!: 'APP' | 'ORG';
 
-	ngOnInit(): void {}
-
-	getDataToSave(): any {
-		return '';
-	}
-
-	isFormValid(): boolean {
-		return true; //this.form.valid;
-	}
+	constructor() {}
 }

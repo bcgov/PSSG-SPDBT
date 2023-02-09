@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ScreeningFormStepComponent } from '../screening.component';
 
 @Component({
 	selector: 'app-declaration',
@@ -30,10 +31,18 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 	`,
 	styles: [],
 })
-export class DeclarationComponent {
+export class DeclarationComponent implements ScreeningFormStepComponent {
 	form: FormGroup = this.formBuilder.group({
 		agreeToTermsAndConditions: new FormControl('', [Validators.required]),
 	});
 
 	constructor(private formBuilder: FormBuilder) {}
+
+	getDataToSave(): any {
+		return this.form.value;
+	}
+
+	isFormValid(): boolean {
+		return this.form.valid;
+	}
 }

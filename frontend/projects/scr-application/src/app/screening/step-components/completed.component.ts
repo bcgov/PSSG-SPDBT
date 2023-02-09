@@ -14,7 +14,6 @@ import { Component } from '@angular/core';
 								<hr />
 								<p class="margin-top: 1.5em;">Your application was successfully submitted.</p>
 								<p>Thank you for submitting your application to the Criminal Records Review Program.</p>
-								<!-- <hr /> -->
 								<p class="mb-0">
 									Your application will be reviewed shortly. We will contact you if further information is required.
 								</p>
