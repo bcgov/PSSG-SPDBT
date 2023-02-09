@@ -3,6 +3,7 @@ import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@ang
 import { MatDialog } from '@angular/material/dialog';
 import { DialogComponent, FormErrorStateMatcher } from 'projects/shared/src/public-api';
 import { DialogOptions } from 'shared';
+import { ScreeningFormStepComponent } from '../screening.component';
 
 @Component({
 	selector: 'app-previous-name',
@@ -29,14 +30,7 @@ import { DialogOptions } from 'shared';
 												<div class="col-xl-4 col-lg-3 col-md-6 col-sm-12">
 													<mat-form-field>
 														<mat-label>First Name</mat-label>
-														<input
-															matInput
-															type="text"
-															formControlName="firstName"
-															[errorStateMatcher]="matcher"
-															required
-														/>
-														<mat-error *ngIf="group.get('firstName')?.hasError('required')">This is required</mat-error>
+														<input matInput type="text" formControlName="firstName" [errorStateMatcher]="matcher" />
 													</mat-form-field>
 												</div>
 												<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
@@ -119,7 +113,7 @@ import { DialogOptions } from 'shared';
 		`,
 	],
 })
-export class PreviousNameComponent implements OnInit {
+export class PreviousNameComponent implements OnInit, ScreeningFormStepComponent {
 	form!: FormGroup;
 	matcher = new FormErrorStateMatcher();
 
@@ -135,7 +129,7 @@ export class PreviousNameComponent implements OnInit {
 
 	initiateForm(): FormGroup {
 		return this.formBuilder.group({
-			firstName: ['', [Validators.required]],
+			firstName: [''],
 			middleNames: [''],
 			previousSurname: ['', [Validators.required]],
 		});
@@ -189,7 +183,8 @@ export class PreviousNameComponent implements OnInit {
 	}
 
 	isFormValid(): boolean {
-		return this.form.valid;
+		if (!this.previousNameFlag || !this.previousNameFlag.value) return false;
+		return this.previousNameFlag.value == 'YES' ? this.form.valid : true;
 	}
 
 	get previousNameFlag(): FormControl {

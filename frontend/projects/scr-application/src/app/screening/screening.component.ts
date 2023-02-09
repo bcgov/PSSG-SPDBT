@@ -1,11 +1,15 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperOrientation, StepperSelectionEvent } from '@angular/cdk/stepper';
+import { Location } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { distinctUntilChanged } from 'rxjs';
-import { StepOneComponent } from './steps/step-one.component';
-import { StepThreeComponent } from './steps/step-three.component';
-import { StepTwoComponent } from './steps/step-two.component';
+import { StepApplSubmittedComponent } from './steps/step-appl-submitted.component';
+import { StepEligibilityComponent } from './steps/step-eligibility.component';
+import { StepLoginOptionsComponent } from './steps/step-login-options.component';
+import { StepOrganizationInfoComponent } from './steps/step-organization-info.component';
+import { StepPersonalInfoComponent } from './steps/step-personal-info.component';
+import { StepTermsAndCondComponent } from './steps/step-terms-and-cond.component';
 
 export interface ScreeningFormStepComponent {
 	getDataToSave(): any;
@@ -22,37 +26,63 @@ export interface ScreeningFormStepComponent {
 			(selectionChange)="onStepSelectionChange($event)"
 			#stepper
 		>
-			<mat-step completed="false">
-				<ng-template matStepLabel>Eligibility</ng-template>
-				<app-step-one
+			<mat-step completed="false" editable="false">
+				<ng-template matStepLabel>Eligibility Check</ng-template>
+				<app-step-eligibility
+					[paymentBy]="paymentBy"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(scrollIntoView)="onScrollIntoView()"
-				></app-step-one>
+				></app-step-eligibility>
 			</mat-step>
 
-			<mat-step completed="false">
-				<ng-template matStepLabel>Log In Options</ng-template>
-				<app-step-two
+			<mat-step completed="false" editable="false">
+				<ng-template matStepLabel>Organization Information</ng-template>
+				<app-step-organization-info
+					(nextStepperStep)="onNextStepperStep(stepper)"
+					(scrollIntoView)="onScrollIntoView()"
+				></app-step-organization-info>
+			</mat-step>
+
+			<mat-step completed="false" editable="false">
+				<ng-template matStepLabel>Log In Information</ng-template>
+				<app-step-login-options
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(scrollIntoView)="onScrollIntoView()"
-				></app-step-two>
+				></app-step-login-options>
 			</mat-step>
 
-			<mat-step completed="false">
-				<ng-template matStepLabel>Business Information</ng-template>
-				<app-step-three
+			<mat-step completed="false" editable="false">
+				<ng-template matStepLabel>Personal Information</ng-template>
+				<app-step-personal-info
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(scrollIntoView)="onScrollIntoView()"
-				></app-step-three>
+				></app-step-personal-info>
 			</mat-step>
 
-			<mat-step completed="false">
-				<ng-template matStepLabel>Complete</ng-template>
-				<app-step-four
+			<mat-step completed="false" editable="false">
+				<ng-template matStepLabel>Terms and Conditions</ng-template>
+				<app-step-terms-and-cond
+					(previousStepperStep)="onPreviousStepperStep(stepper)"
+					(nextStepperStep)="onNextStepperStep(stepper)"
+					(scrollIntoView)="onScrollIntoView()"
+				></app-step-terms-and-cond>
+			</mat-step>
+
+			<mat-step completed="false" editable="false" *ngIf="paymentBy == 'APP'">
+				<ng-template matStepLabel>Pay for Application</ng-template>
+				<app-step-pay-for-application
+					(nextStepperStep)="onNextStepperStep(stepper)"
+					(scrollIntoView)="onScrollIntoView()"
+				></app-step-pay-for-application>
+			</mat-step>
+
+			<mat-step completed="false" editable="false">
+				<ng-template matStepLabel>Application Submitted</ng-template>
+				<app-step-appl-submitted
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(scrollIntoView)="onScrollIntoView()"
-				></app-step-four>
+				></app-step-appl-submitted>
 			</mat-step>
 		</mat-stepper>
 	`,
@@ -60,21 +90,33 @@ export interface ScreeningFormStepComponent {
 })
 export class ScreeningComponent implements OnInit {
 	orientation: StepperOrientation = 'vertical';
+	paymentBy!: 'APP' | 'ORG';
 
 	@ViewChild('stepper') stepper!: MatStepper;
 
-	@ViewChild(StepOneComponent)
-	stepOneComponent!: StepOneComponent;
+	@ViewChild(StepEligibilityComponent)
+	stepEligibilityComponent!: StepEligibilityComponent;
 
-	@ViewChild(StepTwoComponent)
-	stepTwoComponent!: StepTwoComponent;
+	@ViewChild(StepApplSubmittedComponent)
+	stepApplSubmittedComponent!: StepApplSubmittedComponent;
 
-	@ViewChild(StepThreeComponent)
-	stepThreeComponent!: StepThreeComponent;
+	@ViewChild(StepLoginOptionsComponent)
+	stepLoginOptionsComponent!: StepLoginOptionsComponent;
 
-	constructor(private breakpointObserver: BreakpointObserver) {}
+	@ViewChild(StepOrganizationInfoComponent)
+	stepOrganizationInfoComponent!: StepOrganizationInfoComponent;
+
+	@ViewChild(StepPersonalInfoComponent)
+	stepPersonalInfoComponent!: StepPersonalInfoComponent;
+
+	@ViewChild(StepTermsAndCondComponent)
+	stepTermsAndCondComponent!: StepTermsAndCondComponent;
+
+	constructor(private breakpointObserver: BreakpointObserver, private location: Location) {}
 
 	ngOnInit(): void {
+		this.paymentBy = (this.location.getState() as any).paymentBy;
+
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(
@@ -110,7 +152,21 @@ export class ScreeningComponent implements OnInit {
 	onNextStepperStep(stepper: MatStepper): void {
 		// complete the current step
 		if (stepper && stepper.selected) stepper.selected.completed = true;
-		stepper.next();
+		this.stepper.next();
+	}
+
+	onSaveStepperStep(): void {
+		// let dataToSave = {};
+		// if (this.stepOneComponent) {
+		// 	dataToSave = { ...dataToSave, ...this.stepOneComponent.getStepData() };
+		// }
+		// if (this.stepThreeComponent) {
+		// 	dataToSave = { ...dataToSave, ...this.stepThreeComponent.getStepData() };
+		// }
+		// if (this.stepFourComponent) {
+		// 	dataToSave = { ...dataToSave, ...this.stepFourComponent.getStepData() };
+		// }
+		// console.log('onSaveStepperStep', dataToSave);
 	}
 
 	private breakpointChanged() {

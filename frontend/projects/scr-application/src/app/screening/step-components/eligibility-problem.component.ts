@@ -8,7 +8,7 @@ import { Component } from '@angular/core';
 				<div class="row">
 					<div class="col-md-8 col-sm-12 mx-auto">
 						<div class="title mb-5">
-							If this information is incorrect please reach out to your respective organization for more information.
+							If this information is incorrect, reach out to your respective organization for more information.
 						</div>
 					</div>
 				</div>
@@ -18,8 +18,7 @@ import { Component } from '@angular/core';
 							<mat-icon class="eligibility-problem-icon">warning</mat-icon>
 						</div>
 						<div class="eligibility-problem">
-							Please reach out to “organization email” or if you have any further questions please visit our page linked
-							here.
+							Reach out to “organization email” or if you have any further questions please visit our page linked here.
 						</div>
 					</div>
 				</div>

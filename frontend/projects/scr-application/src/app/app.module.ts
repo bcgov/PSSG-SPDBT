@@ -11,6 +11,7 @@ import { AppComponent } from './app.component';
 import { LandingComponent } from './landing.component';
 import { ScreeningComponent } from './screening/screening.component';
 import { AgreementOfTermsComponent } from './screening/step-components/agreement-of-terms.component';
+import { ApplicationProgressComponent } from './screening/step-components/application-progress.component';
 import { ChecklistComponent } from './screening/step-components/checklist.component';
 import { CompletedComponent } from './screening/step-components/completed.component';
 import { ContactInformationComponent } from './screening/step-components/contact-information.component';
@@ -23,20 +24,26 @@ import { PersonalInformationComponent } from './screening/step-components/person
 import { PreviousNameComponent } from './screening/step-components/previous-name.component';
 import { SecurityInformationComponent } from './screening/step-components/security-information.component';
 import { SummaryComponent } from './screening/step-components/summary.component';
-import { StepFourComponent } from './screening/steps/step-four.component';
-import { StepOneComponent } from './screening/steps/step-one.component';
-import { StepThreeComponent } from './screening/steps/step-three.component';
-import { StepTwoComponent } from './screening/steps/step-two.component';
+import { StepApplSubmittedComponent } from './screening/steps/step-appl-submitted.component';
+import { StepEligibilityComponent } from './screening/steps/step-eligibility.component';
+import { StepLoginOptionsComponent } from './screening/steps/step-login-options.component';
+import { StepOrganizationInfoComponent } from './screening/steps/step-organization-info.component';
+import { StepPayForApplicationComponent } from './screening/steps/step-pay-for-application.component';
+import { StepPersonalInfoComponent } from './screening/steps/step-personal-info.component';
+import { StepTermsAndCondComponent } from './screening/steps/step-terms-and-cond.component';
 
 @NgModule({
 	declarations: [
 		AppComponent,
 		LandingComponent,
 		ScreeningComponent,
-		StepOneComponent,
-		StepTwoComponent,
-		StepThreeComponent,
-		StepFourComponent,
+		StepEligibilityComponent,
+		StepOrganizationInfoComponent,
+		StepLoginOptionsComponent,
+		StepPersonalInfoComponent,
+		StepTermsAndCondComponent,
+		StepPayForApplicationComponent,
+		StepApplSubmittedComponent,
 		ContactInformationComponent,
 		MailingAddressComponent,
 		ChecklistComponent,
@@ -50,6 +57,7 @@ import { StepTwoComponent } from './screening/steps/step-two.component';
 		DeclarationComponent,
 		PaymentComponent,
 		CompletedComponent,
+		ApplicationProgressComponent,
 	],
 	imports: [
 		AppRoutingModule,

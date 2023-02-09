@@ -16,10 +16,10 @@ import { debounceTime, switchMap } from 'rxjs/operators';
 	selector: 'app-address-form-autocomplete',
 	template: `
 		<form [formGroup]="form">
-			<div class="row mb-4">
+			<div class="row">
 				<div class="col-12 pb-2">
 					<mat-form-field>
-						<mat-label>Mailing Address</mat-label>
+						<mat-label>Address autocompleted by Canada Post</mat-label>
 						<input matInput formControlName="autocomplete" type="search" [matAutocomplete]="auto" />
 						<mat-autocomplete #auto="matAutocomplete">
 							<mat-option
@@ -31,10 +31,7 @@ import { debounceTime, switchMap } from 'rxjs/operators';
 							</mat-option>
 						</mat-autocomplete>
 						<mat-icon matSuffix>search</mat-icon>
-						<mat-hint>
-							Start with unit number and street number. Address autocompleted by
-							<a href="https://www.canadapost.ca/pca" target="_blank">Canada Post</a>.
-						</mat-hint>
+						<mat-hint> Start with unit number and street number. </mat-hint>
 					</mat-form-field>
 				</div>
 				<div class="col-12">
@@ -47,10 +44,119 @@ import { debounceTime, switchMap } from 'rxjs/operators';
 })
 export class AddressAutocompleteComponent implements OnInit {
 	@Input() inBc: boolean;
-	@Output() autocompleteAddress: EventEmitter<Address>;
+	@Output() autocompleteAddress: EventEmitter<Address> = new EventEmitter<Address>();
+	@Output() selectAddress: EventEmitter<boolean> = new EventEmitter<boolean>();
 
 	form!: FormGroup;
 	addressAutocompleteFields!: any[];
+
+	data: any[] = [
+		{
+			id: '1',
+			text: '100 Inverness Rd Victoria BC V8X 2S1',
+			highlight: '',
+			cursor: 1,
+			description: '',
+			next: '',
+			line1: '100 Inverness Rd',
+			line2: '',
+			city: 'Victoria',
+			provinceCode: 'BC',
+			postalCode: 'V8X 2H1',
+			countryIso2: 'Canada',
+			language: 'ENG',
+		},
+		{
+			id: '2',
+			text: '1006 Tolmie Ave Victoria BC V8X 2H1',
+			highlight: '',
+			cursor: 2,
+			description: '',
+			next: '',
+			line1: '1006 Tolmie Ave',
+			line2: '',
+			city: 'Victoria',
+			provinceCode: 'BC',
+			postalCode: 'V8X 2H1',
+			countryIso2: 'Canada',
+			language: 'ENG',
+		},
+		{
+			id: '3',
+			text: '1001 Cloverdale Ave Victoria BC V8X 4C9',
+			highlight: '',
+			cursor: 3,
+			description: '',
+			next: '',
+			line1: '1001 Valewood Trail',
+			line2: '',
+			city: 'Victoria',
+			provinceCode: 'BC',
+			postalCode: 'V8X 5G7',
+			countryIso2: 'Canada',
+			language: 'ENG',
+		},
+		{
+			id: '4',
+			text: '1004 Valewood Trail Victoria BC V8X 5G7',
+			highlight: '',
+			cursor: 4,
+			description: '',
+			next: '',
+			line1: '1004 Valewood Trail',
+			line2: '',
+			city: 'Victoria',
+			provinceCode: 'BC',
+			postalCode: 'V8X 5G7',
+			countryIso2: 'Canada',
+			language: 'ENG',
+		},
+		{
+			id: '5',
+			text: '1005 Valewood Trail Victoria BC V8X 5G7',
+			highlight: '',
+			cursor: 5,
+			description: '',
+			next: '',
+			line1: '1005 Valewood Trail',
+			line2: '',
+			city: 'Victoria',
+			provinceCode: 'BC',
+			postalCode: 'V8X 5G7',
+			countryIso2: 'Canada',
+			language: 'ENG',
+		},
+		{
+			id: '6',
+			text: '1008 Valewood Trail Victoria BC V8X 5G7',
+			highlight: '',
+			cursor: 6,
+			description: '',
+			next: '',
+			line1: '1008 Valewood Trail',
+			line2: '',
+			city: 'Victoria',
+			provinceCode: 'BC',
+			postalCode: 'V8X 5G7',
+			countryIso2: 'Canada',
+			language: 'ENG',
+		},
+		{
+			id: '7',
+			text: '200-4420 Chatterton Way Victoria BC V8X 5J2',
+			highlight: '',
+			cursor: 7,
+			description: '',
+			next: '',
+			line1: '4420 Chatterton Way',
+			line2: 'Suite 200',
+			city: 'Victoria',
+			provinceCode: 'BC',
+			postalCode: 'V8X 5J2',
+			countryIso2: 'Canada',
+			language: 'ENG',
+		},
+	];
 
 	constructor(private fb: FormBuilder) {
 		this.autocompleteAddress = new EventEmitter<Address>();
@@ -88,66 +194,7 @@ export class AddressAutocompleteComponent implements OnInit {
 		//     })
 		//   );
 
-		const data: AddressAutocompleteFindResponse[] = [
-			{
-				id: '1',
-				text: '100 Inverness Rd Victoria BC V8X 2S1',
-				highlight: '',
-				cursor: 1,
-				description: '',
-				next: '',
-			},
-			{
-				id: '2',
-				text: '1006 Tolmie Ave Victoria BC V8X 2H1',
-				highlight: '',
-				cursor: 2,
-				description: '',
-				next: '',
-			},
-			{
-				id: '3',
-				text: '1001 Cloverdale Ave Victoria BC V8X 4C9',
-				highlight: '',
-				cursor: 3,
-				description: '',
-				next: '',
-			},
-			{
-				id: '4',
-				text: '1004 Valewood Trail Victoria BC V8X 5G7',
-				highlight: '',
-				cursor: 4,
-				description: '',
-				next: '',
-			},
-			{
-				id: '5',
-				text: '1005 Valewood Trail Victoria BC V8X 5G7',
-				highlight: '',
-				cursor: 5,
-				description: '',
-				next: '',
-			},
-			{
-				id: '6',
-				text: '1008 Valewood Trail Victoria BC V8X 5G7',
-				highlight: '',
-				cursor: 6,
-				description: '',
-				next: '',
-			},
-			{
-				id: '7',
-				text: '100-4420 Chatterton Way Victoria BC V8X 5J2',
-				highlight: '',
-				cursor: 7,
-				description: '',
-				next: '',
-			},
-		];
-
-		return of(data);
+		return of(this.data.filter((item) => item.text?.includes(searchTerm)));
 	}
 
 	public retrieve(id: string): Observable<AddressAutocompleteRetrieveResponse[]> {
@@ -163,18 +210,8 @@ export class AddressAutocompleteComponent implements OnInit {
 		//     })
 		//   );
 
-		const data: Array<AddressAutocompleteRetrieveResponse> = [
-			{
-				id: '7',
-				line1: '4420 Chatterton Way',
-				line2: 'Suite 100',
-				city: 'Victoria',
-				provinceCode: 'BC',
-				postalCode: 'V8X 5J2',
-				countryIso2: 'Canada',
-				language: 'ENG',
-			},
-		];
+		const data = this.data.filter((item) => item.id == id);
+		this.selectAddress.emit(true);
 		return of(data);
 	}
 

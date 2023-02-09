@@ -9,6 +9,10 @@ button.mdc-button {
   }
 }
 
+.mat-step-text-label {
+  white-space: normal;
+}
+
 .mat-step-label-selected .mat-step-text-label {
   color: var(--color-yellow);
   font-weight: bold;
@@ -41,7 +45,11 @@ button.mdc-button {
   text-align: center;
 }
 
-.mat-mdc-form-field, .mat-mdc-radio-button {  
+.mat-mdc-form-field, .mat-mdc-radio-button, .mat-mdc-checkbox {  
+  width: 100%;
+}
+
+.mdc-form-field>label {
   width: 100%;
 }
 

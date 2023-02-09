@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControlValidators } from 'projects/scr-application/src/core/validators/form-control.validators';
+import { FormGroupValidators } from 'projects/scr-application/src/core/validators/form-group.validators';
 import { FormErrorStateMatcher } from 'projects/shared/src/public-api';
 import { ScreeningFormStepComponent } from '../screening.component';
 
@@ -13,10 +15,10 @@ import { ScreeningFormStepComponent } from '../screening.component';
 					<div class="row">
 						<div class="offset-lg-1 col-lg-3 col-md-6 col-sm-12">
 							<mat-form-field>
-								<mat-label>First Name</mat-label>
+								<mat-label>Legal Given Name</mat-label>
 								<input matInput formControlName="contactGivenName" [errorStateMatcher]="matcher" />
-								<mat-error *ngIf="contactGivenName.hasError('required')">This is required</mat-error>
-								<mat-error *ngIf="form.get('contactGivenName')?.hasError('pattern')">
+								<mat-error *ngIf="form.get('contactGivenName')?.hasError('required')">This is required</mat-error>
+								<mat-error *ngIf="form.get('contactGivenName')?.hasError('namealpha')">
 									Only characters are allowed
 								</mat-error>
 							</mat-form-field>
@@ -25,24 +27,24 @@ import { ScreeningFormStepComponent } from '../screening.component';
 							<mat-form-field>
 								<mat-label>Middle Name(s) <span class="optional-label">(optional)</span></mat-label>
 								<input matInput formControlName="contactMiddleNames" [errorStateMatcher]="matcher" />
-								<mat-error *ngIf="form.get('contactMiddleNames')?.hasError('pattern')">
+								<mat-error *ngIf="form.get('contactMiddleNames')?.hasError('namealpha')">
 									Only characters are allowed
 								</mat-error>
 							</mat-form-field>
 						</div>
 						<div class="col-lg-4 col-md-12 col-sm-12">
 							<mat-form-field>
-								<mat-label>Surname</mat-label>
+								<mat-label>Legal Surname</mat-label>
 								<input matInput formControlName="contactSurname" [errorStateMatcher]="matcher" />
-								<mat-error *ngIf="contactGivenName.hasError('required')">This is required</mat-error>
-								<mat-error *ngIf="form.get('contactSurname')?.hasError('pattern')">
+								<mat-error *ngIf="form.get('contactSurname')?.hasError('required')">This is required</mat-error>
+								<mat-error *ngIf="form.get('contactSurname')?.hasError('namealpha')">
 									Only characters are allowed
 								</mat-error>
 							</mat-form-field>
 						</div>
 					</div>
 					<div class="row">
-						<div class="offset-lg-1 col-lg-5 col-md-6 col-sm-12">
+						<div class="offset-lg-1 col-lg-3 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Email Address</mat-label>
 								<input
@@ -51,13 +53,21 @@ import { ScreeningFormStepComponent } from '../screening.component';
 									placeholder="name@domain.com"
 									[errorStateMatcher]="matcher"
 								/>
+								<mat-error *ngIf="form.get('contactEmail')?.hasError('required')">This is required</mat-error>
+								<mat-error *ngIf="form.get('contactEmail')?.hasError('email')">
+									Must be a valid email address
+								</mat-error>
 							</mat-form-field>
 						</div>
-						<div class="col-lg-5 col-md-6 col-sm-12">
+						<div class="col-lg-3 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Phone Number</mat-label>
 								<input matInput formControlName="contactPhoneNumber" mask="(000) 000-0000" [showMaskTyped]="true" />
+								<mat-error *ngIf="form.get('contactPhoneNumber')?.hasError('required')">This is required</mat-error>
 							</mat-form-field>
+						</div>
+						<div class="col-lg-3 col-md-6 col-sm-12">
+							<mat-checkbox class="w-100" formControlName="oneLegalName"> I have one legal name. </mat-checkbox>
 						</div>
 					</div>
 				</div>
@@ -67,13 +77,21 @@ import { ScreeningFormStepComponent } from '../screening.component';
 	styles: [``],
 })
 export class ContactInformationComponent implements ScreeningFormStepComponent {
-	form: FormGroup = this.formBuilder.group({
-		contactGivenName: new FormControl('Pulled From Portal', [Validators.pattern("^[a-zA-Z -']+"), Validators.required]),
-		contactMiddleNames: new FormControl('', [Validators.pattern("^[a-zA-Z -']+")]),
-		contactSurname: new FormControl('Pulled From Portal', [Validators.pattern("^[a-zA-Z -']+"), Validators.required]),
-		contactEmail: new FormControl('Pulled From Portal', [Validators.email, Validators.required]),
-		contactPhoneNumber: new FormControl('6048185356', [Validators.required]),
-	});
+	form: FormGroup = this.formBuilder.group(
+		{
+			contactGivenName: new FormControl('Pulled-From-Portal', [FormControlValidators.namealpha, Validators.required]),
+			contactMiddleNames: new FormControl('', [FormControlValidators.namealpha]),
+			contactSurname: new FormControl('', [FormControlValidators.namealpha]),
+			contactEmail: new FormControl('Pulled@From.Portal', [Validators.email, Validators.required]),
+			contactPhoneNumber: new FormControl('6048185356', [Validators.required]),
+			oneLegalName: new FormControl(false),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalRequiredValidator('contactSurname', (form) => !form.get('oneLegalName')?.value),
+			],
+		}
+	);
 	startDate = new Date(2000, 0, 1);
 	matcher = new FormErrorStateMatcher();
 
@@ -85,13 +103,5 @@ export class ContactInformationComponent implements ScreeningFormStepComponent {
 
 	isFormValid(): boolean {
 		return this.form.valid;
-	}
-
-	get contactGivenName(): FormControl {
-		return this.form.get('contactGivenName') as FormControl;
-	}
-
-	get contactSurname(): FormControl {
-		return this.form.get('contactSurname') as FormControl;
 	}
 }

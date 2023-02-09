@@ -1,21 +1,12 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
+import { SecurityInformationComponent } from '../step-components/security-information.component';
 
 @Component({
-	selector: 'app-step-one',
+	selector: 'app-step-organization-info',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step>
-				<app-checklist></app-checklist>
-
-				<div class="row mt-4">
-					<div class="offset-lg-4 col-lg-4 offset-md-4 col-md-4 col-sm-12">
-						<button mat-raised-button color="primary" class="large mb-2" matStepperNext>Next</button>
-					</div>
-				</div>
-			</mat-step>
-
 			<mat-step>
 				<app-security-information></app-security-information>
 
@@ -48,17 +39,31 @@ import { MatStepper } from '@angular/material/stepper';
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepOneComponent {
+export class StepOrganizationInfoComponent {
 	@ViewChild('childstepper') childstepper!: MatStepper;
 
+	@Input() paymentBy!: 'APP' | 'ORG';
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+	@ViewChild(SecurityInformationComponent)
+	securityInformationComponent!: SecurityInformationComponent;
+
+	getStepData(): any {
+		return {
+			...this.securityInformationComponent.getDataToSave(),
+		};
+	}
 
 	onInfoNotCorrect(): void {
 		this.childstepper.next();
 	}
 
 	onStepNext(): void {
+		this.securityInformationComponent.form.markAllAsTouched();
+		const isValid = this.securityInformationComponent.isFormValid();
+		if (!isValid) return;
+
 		this.nextStepperStep.emit(true);
 	}
 

@@ -25,7 +25,7 @@ export interface RegistrationFormStepComponent {
 			(selectionChange)="onStepSelectionChange($event)"
 			#stepper
 		>
-			<mat-step completed="false">
+			<mat-step completed="false" editable="false">
 				<ng-template matStepLabel>Eligibility</ng-template>
 				<app-step-one
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -35,7 +35,7 @@ export interface RegistrationFormStepComponent {
 				></app-step-one>
 			</mat-step>
 
-			<mat-step completed="false">
+			<mat-step completed="false" editable="false">
 				<ng-template matStepLabel>Log In Options</ng-template>
 				<app-step-two
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -44,7 +44,7 @@ export interface RegistrationFormStepComponent {
 				></app-step-two>
 			</mat-step>
 
-			<mat-step completed="false">
+			<mat-step completed="false" editable="false">
 				<ng-template matStepLabel>Business Information</ng-template>
 				<app-step-three
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -54,7 +54,7 @@ export interface RegistrationFormStepComponent {
 				></app-step-three>
 			</mat-step>
 
-			<mat-step completed="false">
+			<mat-step completed="false" editable="false">
 				<ng-template matStepLabel>Complete</ng-template>
 				<app-step-four
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -125,6 +125,7 @@ export class RegistrationComponent implements OnInit {
 		// 	.subscribe((_res: any) => {
 		// 		this.stepFourComponent.childStepNext();
 		// 	});
+		this.stepFourComponent.childStepNext();
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {

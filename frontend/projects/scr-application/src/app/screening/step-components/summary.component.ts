@@ -3,7 +3,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 @Component({
 	selector: 'app-summary',
 	template: `
-		<section class="step-section pt-4 pb-5 px-3">
+		<section class="step-section pt-4 pb-4 px-3">
 			<div class="step">
 				<div class="title mb-5">Review the following information:</div>
 				<div class="row">
@@ -96,7 +96,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 								</div>
 							</div>
 
-							<div class="row mt-2">
+							<div class="row my-2">
 								<div class="offset-lg-3 col-lg-8">
 									<small class="d-block text-muted">Mailing Address</small>
 									<strong>755 Caledonia Avenue, Victoria, BC V8T 0C2, Canada</strong>

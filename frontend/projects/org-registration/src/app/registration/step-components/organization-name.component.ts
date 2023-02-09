@@ -22,7 +22,6 @@ import { RegistrationFormStepComponent } from '../registration.component';
 								[errorStateMatcher]="matcher"
 							/>
 							<mat-hint>Please enter your 'Doing Business As' name</mat-hint>
-							<img class="icon-size" matPrefix src="/assets/organization-name.png" />
 							<mat-error *ngIf="form.get('organizationName')?.hasError('required')">This is required</mat-error>
 						</mat-form-field>
 					</div>
