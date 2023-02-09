@@ -50,21 +50,13 @@ export interface DialogOptions {
 				color: var(--color-primary) !important;
 				font-weight: 600 !important;
 				line-height: 2em !important;
+			}
 
-				.mat-icon {
-					font-size: 3rem;
-				}
-				.mat-icon {
-					font-size: 30px;
-					margin-right: 10px;
-					width: 30px;
-					height: 30px;
-				}
-				span {
-					border-bottom: 2px solid #eeee;
-					font-size: 1.75rem;
-					line-height: 3rem;
-				}
+			.mat-icon {
+				font-size: 30px;
+				margin-right: 10px;
+				width: 30px;
+				height: 30px;
 			}
 
 			p {
