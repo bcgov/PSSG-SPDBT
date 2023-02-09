@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormGroupValidators } from 'projects/org-registration/src/app/core/validators/form-group.validators';
 import { FormErrorStateMatcher } from 'projects/shared/src/public-api';
 import { RegistrationFormStepComponent } from '../registration.component';
 
@@ -33,7 +34,6 @@ import { RegistrationFormStepComponent } from '../registration.component';
 												required
 												[errorStateMatcher]="matcher"
 											/>
-											<img class="icon-size" matPrefix src="/assets/email.png" />
 											<mat-error *ngIf="form.get('genericEmail')?.hasError('email')">
 												Must be a valid email address
 											</mat-error>
@@ -51,15 +51,15 @@ import { RegistrationFormStepComponent } from '../registration.component';
 												required
 												[errorStateMatcher]="matcher"
 											/>
-											<img class="icon-size" matPrefix src="/assets/email.png" />
 											<mat-error *ngIf="form.get('genericEmailConfirmation')?.hasError('email')">
 												Must be a valid email address
 											</mat-error>
 											<mat-error *ngIf="form.get('genericEmailConfirmation')?.hasError('required')">
 												Required
 											</mat-error>
-											<!-- <mat-error *ngIf="isEmailMismatch">Emails must match</mat-error>
-											<div *ngIf="isEmailMismatch">Emails must match</div> -->
+											<mat-error *ngIf="form.get('genericEmailConfirmation')?.hasError('nomatch')">
+												Emails must match
+											</mat-error>
 										</mat-form-field>
 									</div>
 									<div class="col-lg-4 col-md-12 col-sm-12">
@@ -122,12 +122,10 @@ export class OrganizationInformationComponent implements OnInit, RegistrationFor
 				genericEmail: new FormControl('', [Validators.email, Validators.required]),
 				genericEmailConfirmation: new FormControl('', [Validators.email, Validators.required]),
 				genericPhoneNumber: new FormControl('', [Validators.required]),
+			},
+			{
+				validators: [FormGroupValidators.match('genericEmail', 'genericEmailConfirmation')],
 			}
-			// {
-			// 	validator: (form: FormGroup) => {
-			// 		return form.get('email')?.value !== form.get('emailConfirmation')?.value ? { emailMismatch: true } : null;
-			// 	},
-			// }
 		);
 	}
 

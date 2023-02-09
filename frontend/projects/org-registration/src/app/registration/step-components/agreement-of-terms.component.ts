@@ -120,7 +120,6 @@ export class AgreementOfTermsComponent implements OnInit, RegistrationFormStepCo
 
 	isFormValid(): boolean {
 		this.displayScrollToBottomMessage = !this.hasScrolledToBottom;
-
 		return this.form.valid && this.hasScrolledToBottom ? true : false;
 	}
 

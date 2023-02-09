@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { FormErrorStateMatcher } from 'projects/shared/src/public-api';
+import { ScreeningFormStepComponent } from '../screening.component';
 
 @Component({
 	selector: 'app-personal-information',
@@ -47,15 +48,22 @@ import { FormErrorStateMatcher } from 'projects/shared/src/public-api';
 	`,
 	styles: [],
 })
-export class PersonalInformationComponent {
-	matcher = new FormErrorStateMatcher();
-
+export class PersonalInformationComponent implements ScreeningFormStepComponent {
 	form: FormGroup = this.formBuilder.group({
 		birthplace: new FormControl('', [Validators.required]),
 		driversLicenseNumber: new FormControl(''),
 		contactDateOfBirth: new FormControl('', [Validators.required]),
 	});
 	startDate = new Date(2000, 0, 1);
+	matcher = new FormErrorStateMatcher();
 
 	constructor(private formBuilder: FormBuilder) {}
+
+	getDataToSave(): any {
+		return this.form.value;
+	}
+
+	isFormValid(): boolean {
+		return this.form.valid;
+	}
 }

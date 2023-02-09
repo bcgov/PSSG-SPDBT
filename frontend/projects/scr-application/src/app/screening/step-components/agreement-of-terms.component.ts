@@ -72,17 +72,36 @@ import { ScreeningFormStepComponent } from '../screening.component';
 
 					<div class="row my-4">
 						<div class="offset-md-2 col-md-8 col-sm-12">
-							<mat-checkbox formControlName="agreeToTermsAndConditions">
-								On behalf of the above noted organization, I hereby certify that I agree to the terms and conditions for
-								utilizing the CRRP to facilitate criminal record checks on our employees, contractors, or students
-								(working with children and/or vulnerable adults), including the attached terms and conditions for
-								enrolment in the CRRP online service, as applicable.
+							<mat-checkbox formControlName="agreeToCriminalCheck">
+								I hereby consent to a criminal record check pursuant to the Criminal Records Review Act (CRRA) to
+								determine whether I have a conviction or outstanding charge for any relevant or specified offence(s) as
+								defined under that ACT (CRRA check). I hereby consent to a check of available law enforcement systems as
+								further described below, including any local police records.
 							</mat-checkbox>
 							<mat-error
 								*ngIf="
-									(form.get('agreeToTermsAndConditions')?.dirty || form.get('agreeToTermsAndConditions')?.touched) &&
-									form.get('agreeToTermsAndConditions')?.invalid &&
-									form.get('agreeToTermsAndConditions')?.hasError('required')
+									(form.get('agreeToCriminalCheck')?.dirty || form.get('agreeToCriminalCheck')?.touched) &&
+									form.get('agreeToCriminalCheck')?.invalid &&
+									form.get('agreeToCriminalCheck')?.hasError('required')
+								"
+								>This is required</mat-error
+							>
+						</div>
+					</div>
+
+					<div class="row my-4">
+						<div class="offset-md-2 col-md-8 col-sm-12">
+							<mat-checkbox formControlName="agreeToVulnerableSectorSearch">
+								I hereby consent to a Vulnerable Sector search to check if I have been convicted if I have been
+								convicted of and received a record suspension (formerly known as a pardon) for any sexual offences as
+								per the Criminal Records Act.
+							</mat-checkbox>
+							<mat-error
+								*ngIf="
+									(form.get('agreeToVulnerableSectorSearch')?.dirty ||
+										form.get('agreeToVulnerableSectorSearch')?.touched) &&
+									form.get('agreeToVulnerableSectorSearch')?.invalid &&
+									form.get('agreeToVulnerableSectorSearch')?.hasError('required')
 								"
 								>This is required</mat-error
 							>
@@ -113,7 +132,8 @@ export class AgreementOfTermsComponent implements OnInit, ScreeningFormStepCompo
 
 	ngOnInit(): void {
 		this.form = this.formBuilder.group({
-			agreeToTermsAndConditions: new FormControl('', [Validators.required]),
+			agreeToCriminalCheck: new FormControl('', [Validators.required]),
+			agreeToVulnerableSectorSearch: new FormControl('', [Validators.required]),
 		});
 	}
 

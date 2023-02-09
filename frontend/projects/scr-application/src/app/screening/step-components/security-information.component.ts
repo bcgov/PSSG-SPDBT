@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ScreeningFormStepComponent } from '../screening.component';
 
 @Component({
 	selector: 'app-security-information',
@@ -40,6 +41,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 							<mat-form-field>
 								<mat-label>Job Title</mat-label>
 								<input matInput formControlName="jobTitle" />
+								<mat-error *ngIf="form.get('jobTitle')?.hasError('required')">This is required</mat-error>
 							</mat-form-field>
 						</div>
 						<div class="col-lg-4 col-md-6 col-sm-12">
@@ -55,18 +57,22 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 	`,
 	styles: [],
 })
-export class SecurityInformationComponent {
+export class SecurityInformationComponent implements ScreeningFormStepComponent {
 	form: FormGroup = this.formBuilder.group({
-		organizationName: new FormControl('Sunshine Daycare'),
-		organizationPhoneNumber: new FormControl('2503859988'),
-		organizationAddress: new FormControl('760 Vernon Ave, Victoria, BC V8X 2W6, Canada'),
-		jobTitle: new FormControl('Teacher'),
-		vulnerableSectorCategory: new FormControl('Division Pulled From Organization Type'),
+		organizationName: new FormControl({ value: 'Sunshine Daycare', disabled: true }),
+		organizationPhoneNumber: new FormControl({ value: '2503859988', disabled: true }),
+		organizationAddress: new FormControl({ value: '760 Vernon Ave, Victoria, BC V8X 2W6, Canada', disabled: true }),
+		jobTitle: new FormControl('', [Validators.required]),
+		vulnerableSectorCategory: new FormControl({ value: 'Division Pulled From Organization Type', disabled: true }),
 	});
 
 	constructor(private formBuilder: FormBuilder) {}
 
-	ngOnInit(): void {
-		this.form.disable();
+	getDataToSave(): any {
+		return this.form.value;
+	}
+
+	isFormValid(): boolean {
+		return this.form.valid;
 	}
 }
