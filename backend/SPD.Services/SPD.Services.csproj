@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SPD.Common\SPD.Common.csproj" />
+    <ProjectReference Include="..\SPD.DynamicsProxy\SPD.DynamicsProxy.csproj" />
+  </ItemGroup>
+
 </Project>

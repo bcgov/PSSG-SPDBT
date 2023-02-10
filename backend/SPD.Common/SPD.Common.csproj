@@ -10,7 +10,6 @@
     <Folder Include="Configurations\" />
     <Folder Include="Extensions\" />
     <Folder Include="Mappings\" />
-    <Folder Include="Utilities\" />
   </ItemGroup>
 
   <ItemGroup>
