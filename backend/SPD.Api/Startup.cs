@@ -4,6 +4,8 @@ using MediatR;
 using SPD.Api.ServiceExtensions;
 using SPD.Common.ViewModels;
 using SPD.Common.ViewModels.Organization;
+using SPD.DynamicsProxy;
+using SPD.Services;
 using System;
 using System.Text.Json.Serialization;
 
@@ -33,6 +35,11 @@ namespace SPD.Api
             .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<FluentValidationEntry>()); ;
 
             services.AddMediatR(typeof(SPD.Handlers.MediatREntrypoint).Assembly);
+            services.AddDistributedMemoryCache();
+            services.AddDynamicsProxy(Configuration);
+
+            services.AddSingleton<IOrgRegistrationService, OrgRegistrationService>();
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();

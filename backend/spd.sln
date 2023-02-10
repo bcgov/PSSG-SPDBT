@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SPD.Common", "SPD.Common\SP
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SPD.Services", "SPD.Services\SPD.Services.csproj", "{6F5845B3-FEE9-4352-8FBF-1C1C6E0C2EE2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPD.Handlers", "SPD.Handlers\SPD.Handlers.csproj", "{F9E607E2-7141-4B6A-B096-D5699EBDFC94}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SPD.Handlers", "SPD.Handlers\SPD.Handlers.csproj", "{F9E607E2-7141-4B6A-B096-D5699EBDFC94}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPD.DynamicsProxy", "SPD.DynamicsProxy\SPD.DynamicsProxy.csproj", "{D6F8D63E-CF5F-4C60-BC10-E1A3B0FB8BC7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{F9E607E2-7141-4B6A-B096-D5699EBDFC94}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9E607E2-7141-4B6A-B096-D5699EBDFC94}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9E607E2-7141-4B6A-B096-D5699EBDFC94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6F8D63E-CF5F-4C60-BC10-E1A3B0FB8BC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6F8D63E-CF5F-4C60-BC10-E1A3B0FB8BC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6F8D63E-CF5F-4C60-BC10-E1A3B0FB8BC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6F8D63E-CF5F-4C60-BC10-E1A3B0FB8BC7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
