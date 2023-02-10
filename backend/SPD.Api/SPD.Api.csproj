@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SPD.Common\SPD.Common.csproj" />
+    <ProjectReference Include="..\SPD.DynamicsProxy\SPD.DynamicsProxy.csproj" />
     <ProjectReference Include="..\SPD.Handlers\SPD.Handlers.csproj" />
   </ItemGroup>
 

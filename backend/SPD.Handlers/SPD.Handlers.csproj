@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SPD.Common\SPD.Common.csproj" />
+    <ProjectReference Include="..\SPD.Services\SPD.Services.csproj" />
   </ItemGroup>
 
 </Project>
