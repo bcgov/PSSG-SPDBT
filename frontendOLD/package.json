@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "gen-api-all": "./node_modules/.bin/ng-openapi-gen -i http://localhost:53068/swagger/v1/swagger.json -o ./src/app/api",
-    "gen-api-tags": "./node_modules/.bin/ng-openapi-gen -i http://localhost:53068/swagger/v1/swagger.json -o ./src/app/api --includeTags $TAGS --removeStaleFiles false",
+    "gen-api-all": "./node_modules/.bin/ng-openapi-gen -i http://localhost:53068/swagger/v1/swagger.json -o ./projects/org-registration/src/app/api",
+    "gen-api-tags": "./node_modules/.bin/ng-openapi-gen -i http://localhost:53068/swagger/v1/swagger.json -o ./projects/org-registration/src/app/api --includeTags $TAGS --removeStaleFiles false",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
