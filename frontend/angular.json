@@ -3,46 +3,36 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "orgRegistration": {
+    "frontend": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
-          "style": "scss",
-          "inlineStyle": true,
-          "inlineTemplate": true,
-          "skipTests": true,
-          "flat": true
+          "style": "scss"
         }
       },
-      "root": "projects/org-registration",
-      "sourceRoot": "projects/org-registration/src",
+      "root": "",
+      "sourceRoot": "src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/org-registration",
-            "index": "projects/org-registration/src/index.html",
-            "main": "projects/org-registration/src/main.ts",
+            "outputPath": "dist/frontend",
+            "index": "src/index.html",
+            "main": "src/main.ts",
             "polyfills": [
               "zone.js"
             ],
-            "tsConfig": "projects/org-registration/tsconfig.app.json",
+            "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              "projects/org-registration/src/favicon.ico",
-              "projects/org-registration/src/assets",
-              {
-                "glob": "**/*",
-                "input": "projects/shared/src/lib/assets/",
-                "output": "./assets"
-              }
+              "src/favicon.ico",
+              "src/assets"
             ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/ngx-spinner/animations/square-jelly-box.css",
-              "projects/shared/src/lib/scss/app.scss",
-              "projects/org-registration/src/scss/app.scss"
+              "src/scss/app.scss"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
@@ -80,137 +70,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "orgRegistration:build:production"
+              "browserTarget": "frontend:build:production"
             },
             "development": {
-              "browserTarget": "orgRegistration:build:development"
-            }
-          },
-          "defaultConfiguration": "development",
-          "options": {
-            "browserTarget": "frontend:build",
-            "proxyConfig": "proxy.conf.json"
-          }
-        },
-        "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "browserTarget": "orgRegistration:build"
-          }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ],
-            "tsConfig": "projects/org-registration/tsconfig.spec.json",
-            "inlineStyleLanguage": "scss",
-            "assets": [
-              "projects/org-registration/src/favicon.ico",
-              "projects/org-registration/src/assets",
-              {
-                "glob": "**/*",
-                "input": "projects/shared/src/lib/assets/",
-                "output": "./assets"
-              }
-            ],
-            "styles": [
-              "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "node_modules/ngx-spinner/animations/square-jelly-box.css",
-              "projects/shared/src/lib/scss/app.scss",
-              "projects/org-registration/src/scss/app.scss"
-            ],
-            "scripts": [
-              "node_modules/jquery/dist/jquery.min.js",
-              "node_modules/bootstrap/dist/js/bootstrap.min.js"
-            ]
-          }
-        }
-      }
-    },
-    "scrApplication": {
-      "projectType": "application",
-      "schematics": {
-        "@schematics/angular:component": {
-          "style": "scss",
-          "inlineStyle": true,
-          "inlineTemplate": true,
-          "skipTests": true,
-          "flat": true
-        }
-      },
-      "root": "projects/scr-application",
-      "sourceRoot": "projects/scr-application/src",
-      "prefix": "app",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:browser",
-          "options": {
-            "outputPath": "dist/scr-application",
-            "index": "projects/scr-application/src/index.html",
-            "main": "projects/scr-application/src/main.ts",
-            "polyfills": [
-              "zone.js"
-            ],
-            "tsConfig": "projects/scr-application/tsconfig.app.json",
-            "inlineStyleLanguage": "scss",
-            "assets": [
-              "projects/scr-application/src/favicon.ico",
-              "projects/scr-application/src/assets",
-              {
-                "glob": "**/*",
-                "input": "projects/shared/src/lib/assets/",
-                "output": "./assets"
-              }
-            ],
-            "styles": [
-              "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "node_modules/ngx-spinner/animations/square-jelly-box.css",
-              "projects/shared/src/lib/scss/app.scss",
-              "projects/scr-application/src/scss/app.scss"
-            ],
-            "scripts": [
-              "node_modules/jquery/dist/jquery.min.js",
-              "node_modules/bootstrap/dist/js/bootstrap.min.js"
-            ]
-          },
-          "configurations": {
-            "production": {
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "5mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
-                }
-              ],
-              "outputHashing": "all"
-            },
-            "development": {
-              "buildOptimizer": false,
-              "optimization": false,
-              "vendorChunk": true,
-              "extractLicenses": false,
-              "sourceMap": true,
-              "namedChunks": true
-            }
-          },
-          "defaultConfiguration": "production"
-        },
-        "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
-          "configurations": {
-            "production": {
-              "browserTarget": "scrApplication:build:production"
-            },
-            "development": {
-              "browserTarget": "scrApplication:build:development"
+              "browserTarget": "frontend:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -218,7 +81,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "scrApplication:build"
+            "browserTarget": "frontend:build"
           }
         },
         "test": {
@@ -228,59 +91,20 @@
               "zone.js",
               "zone.js/testing"
             ],
-            "tsConfig": "projects/scr-application/tsconfig.spec.json",
+            "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              "projects/scr-application/src/favicon.ico",
-              "projects/scr-application/src/assets",
-              {
-                "glob": "**/*",
-                "input": "projects/shared/src/lib/assets/",
-                "output": "./assets"
-              }
+              "src/favicon.ico",
+              "src/assets"
             ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/ngx-spinner/animations/square-jelly-box.css",
-              "projects/shared/src/lib/scss/app.scss",
-              "projects/scr-application/src/scss/app.scss"
+              "src/scss/app.scss"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
               "node_modules/bootstrap/dist/js/bootstrap.min.js"
-            ]
-          }
-        }
-      }
-    },
-    "shared": {
-      "projectType": "library",
-      "root": "projects/shared",
-      "sourceRoot": "projects/shared/src",
-      "prefix": "lib",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
-          "options": {
-            "project": "projects/shared/ng-package.json"
-          },
-          "configurations": {
-            "production": {
-              "tsConfig": "projects/shared/tsconfig.lib.prod.json"
-            },
-            "development": {
-              "tsConfig": "projects/shared/tsconfig.lib.json"
-            }
-          },
-          "defaultConfiguration": "production"
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "tsConfig": "projects/shared/tsconfig.spec.json",
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
             ]
           }
         }
