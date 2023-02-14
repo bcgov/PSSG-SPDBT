@@ -1,12 +1,10 @@
-using FluentValidation;
 using FluentValidation.AspNetCore;
 using MediatR;
 using SPD.Api.ServiceExtensions;
 using SPD.Common.ViewModels;
-using SPD.Common.ViewModels.Organization;
 using SPD.DynamicsProxy;
 using SPD.Services;
-using System;
+using SPD.Services.Mappings;
 using System.Text.Json.Serialization;
 
 namespace SPD.Api
@@ -34,6 +32,7 @@ namespace SPD.Api
             })
             .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<FluentValidationEntry>()); ;
 
+            services.AddAutoMapper(typeof(AutoMapperEntrypoint).Assembly);
             services.AddMediatR(typeof(SPD.Handlers.MediatREntrypoint).Assembly);
             services.AddDistributedMemoryCache();
             services.AddDynamicsProxy(Configuration);

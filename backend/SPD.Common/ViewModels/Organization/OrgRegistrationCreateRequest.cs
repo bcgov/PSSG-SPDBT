@@ -5,7 +5,7 @@ namespace SPD.Common.ViewModels.Organization
 {
     public class OrgRegistrationCreateRequest
     {
-        public bool? AgreeToTermsAndConditions { get; set; }
+        public bool? AgreeToTermsAndConditions { get; set; } //map to?
         public DateTimeOffset? ContactDateOfBirth { get; set; }
         public string CheckFeePayer { get; set; }
         public string ContactEmail { get; set; }
@@ -24,7 +24,7 @@ namespace SPD.Common.ViewModels.Organization
         public string MailingCountry { get; set; }
         public string MailingPostalCode { get; set; }
         public string MailingProvince { get; set; }
-        public string OperatingBudgetFlag { get; set; }
+        public string OperatingBudgetFlag { get; set; } //map to ?
         public string OrganizationName { get; set; }
         public string OrganizationType { get; set; }
         public string RegistrationTypeCode { get; set; }
