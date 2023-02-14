@@ -15,7 +15,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 					</div>
 				</div>
 				<div class="row">
-					<div class="offset-lg-4 col-lg-4 offset-md-4 col-md-4 col-sm-12">
+					<div class="offset-md-4 col-md-4 col-sm-12">
 						<mat-radio-group
 							class="funding-question__group"
 							aria-label="Select an option"

@@ -27,7 +27,6 @@ export class VulnerableSectorQuestionModel {
 								<mat-icon class="larger-icon" (click)="onViewHelp1($event)">close</mat-icon>
 							</div>
 							<div class="px-2 pb-3">
-								<!-- <div class="step-container__box__help-wrapper pb-2 px-2  pb-sm-4 px-sm-4"> -->
 								<div class="step-container__box__help-title mb-2">What does child mean?</div>
 								<p>A child is a person who is under the age of 19.</p>
 							</div>
@@ -37,7 +36,7 @@ export class VulnerableSectorQuestionModel {
 								<mat-icon class="larger-icon" (click)="onViewHelp1($event)">help_outline</mat-icon>
 							</div>
 							<div class="px-2 pb-3">
-								<div class="icon-container"><mat-icon>family_restroom</mat-icon></div>
+								<div class="icon-container d-none d-md-block"><mat-icon>family_restroom</mat-icon></div>
 								My employees work with <strong>children</strong>
 							</div>
 						</ng-template>
@@ -64,7 +63,7 @@ export class VulnerableSectorQuestionModel {
 								<mat-icon class="larger-icon" (click)="onViewHelp2($event)">help_outline</mat-icon>
 							</div>
 							<div class="px-2 pb-3">
-								<div class="icon-container"><mat-icon>elderly</mat-icon></div>
+								<div class="icon-container d-none d-md-block"><mat-icon>elderly</mat-icon></div>
 								My employees work with <strong>vulnerable adults</strong>
 							</div>
 						</ng-template>
@@ -77,7 +76,7 @@ export class VulnerableSectorQuestionModel {
 						(click)="onDataChange('CHILDREN_ADULTS')"
 						[ngClass]="{ 'active-selection-whole': employeeInteractionFlag == 'CHILDREN_ADULTS' }"
 					>
-						<div class="icon-container"><mat-icon>diversity_3</mat-icon></div>
+						<div class="icon-container d-none d-md-block"><mat-icon>diversity_3</mat-icon></div>
 						My employees work with <strong>children and vulnerable adults</strong>
 					</div>
 				</div>
@@ -88,7 +87,7 @@ export class VulnerableSectorQuestionModel {
 						(click)="onDataChange('NEITHER')"
 						[ngClass]="{ 'active-selection-whole': employeeInteractionFlag == 'NEITHER' }"
 					>
-						<div class="icon-container"><mat-icon>person_off</mat-icon></div>
+						<div class="icon-container d-none d-md-block"><mat-icon>person_off</mat-icon></div>
 						My employee <strong>do not work</strong> with children or vulnerable adults
 					</div>
 				</div>

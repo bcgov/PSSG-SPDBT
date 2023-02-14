@@ -1,5 +1,4 @@
-import { Component, Input } from '@angular/core';
-import { MatSelectChange } from '@angular/material/select';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { RegistrationFormStepComponent } from '../org-registration.component';
 
 export class OrganizationOptionsModel {
@@ -11,12 +10,15 @@ export class OrganizationOptionsModel {
 	template: `
 		<div class="step">
 			<div class="title mb-5">Select how would you best describe your organization?</div>
-			<div class="d-none d-md-block">
+			<div class="">
 				<div class="step-container row">
-					<div class="col-8 mx-auto">
+					<div class="col-md-8 col-sm-12 mx-auto">
 						<div class="row">
 							<ng-container *ngFor="let option of options; let i = index">
-								<div class="col-lg-4 col-md-4 col-sm-6 mb-3">
+								<div
+									class=" col-md-4 col-sm-6 mb-3"
+									[ngClass]="registrationTypeCode == 'EMP' ? 'col-lg-4' : 'col-lg-3'"
+								>
 									<div
 										class="step-container__box"
 										(click)="onDataChange(option.code)"
@@ -31,11 +33,14 @@ export class OrganizationOptionsModel {
 											</div>
 										</ng-container>
 										<ng-template #noHelp>
-											<div class="step-container__box__info">
-												<mat-icon class="larger-icon" (click)="onViewHelp(option, $event)">help_outline</mat-icon>
+											<div class="step-container__box__info" style="height: 38px">
+												<mat-icon class="larger-icon" *ngIf="option.helpText" (click)="onViewHelp(option, $event)"
+													>help_outline</mat-icon
+												>
 											</div>
+
 											<ng-container *ngIf="organizationType != option.code; else selectedIcon">
-												<div class="card-icon-container">
+												<div class="card-icon-container d-none d-md-block">
 													<img class="card-icon-container__icon" [src]="option.icon" />
 												</div>
 												<div class="px-2 pb-3">
@@ -44,7 +49,7 @@ export class OrganizationOptionsModel {
 											</ng-container>
 
 											<ng-template #selectedIcon>
-												<div class="card-icon-container">
+												<div class="card-icon-container d-none d-md-block">
 													<img class="card-icon-container__icon" [src]="option.selectedIcon" />
 												</div>
 												<div class="px-2 pb-3">
@@ -56,35 +61,24 @@ export class OrganizationOptionsModel {
 								</div>
 							</ng-container>
 						</div>
+
+						<div class="none-apply">
+							<a (click)="onNoneApply()">None of these descriptions apply to my organization</a>
+						</div>
+
+						<mat-error style="text-align: center;" *ngIf="isDirtyAndInvalid">An option must be selected</mat-error>
 					</div>
 				</div>
 			</div>
-			<div class="d-md-none">
-				<div class="row">
-					<div class="offset-md-2 col-md-8 col-sm-12">
-						<mat-form-field>
-							<mat-select [(value)]="organizationType" (selectionChange)="onDataChange2($event)">
-								<ng-container *ngFor="let option of options; let i = index">
-									<mat-option [value]="option.code">{{ option.text }}</mat-option>
-								</ng-container>
-							</mat-select>
-						</mat-form-field>
-						<!--  style="display: inherit;" <div *ngIf="organizationType" style="position: inherit;top: 15px;left: 2px;">
-							<mat-icon class="larger-icon" (click)="onViewHelpForSelection()">help_outline</mat-icon>
-						</div> -->
-					</div>
-				</div>
-				<!-- <div class="row">
-					<div class="offset-md-2 col-md-8 col-sm-12">
-						{{ currentHelpText }}
-					</div>
-				</div> -->
-			</div>
-			<mat-error style="text-align: center;" *ngIf="isDirtyAndInvalid">An option must be selected</mat-error>
 		</div>
 	`,
 	styles: [
 		`
+			.none-apply {
+				text-align: center;
+				color: var(--color-primary-light);
+			}
+
 			.card-icon-container {
 				&__icon {
 					max-width: 4em;
@@ -100,13 +94,13 @@ export class OrganizationOptionsModel {
 })
 export class OrganizationOptionsComponent implements RegistrationFormStepComponent {
 	organizationType = '';
-	// currentHelpText = '';
 	isDirtyAndInvalid = false;
 	selectedIconImages = new Array();
 
 	private _registrationTypeCode!: string;
 	@Input() set registrationTypeCode(value: string) {
 		// Preload the 'selectedIcon' images... prevents flicker when you click on card.
+		this._registrationTypeCode = value;
 		if (value == 'EMP') {
 			this.options = this.options_emp;
 			this.options_emp.forEach((opt) => {
@@ -127,6 +121,8 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 		return this._registrationTypeCode;
 	}
 
+	@Output() noneApply: EventEmitter<boolean> = new EventEmitter<boolean>();
+
 	options: Array<any> = [];
 
 	options_emp = [
@@ -136,8 +132,7 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 			selectedIcon: '/assets/1b.png',
 			text: 'A childcare facility or daycare',
 			showHelp: false,
-			helpText:
-				'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
+			helpText: null,
 		},
 		{
 			code: '2',
@@ -145,8 +140,7 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 			selectedIcon: '/assets/2b.png',
 			text: 'A health board, hospital, or care facility',
 			showHelp: false,
-			helpText:
-				'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+			helpText: null,
 		},
 		{
 			code: '3',
@@ -154,7 +148,7 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 			selectedIcon: '/assets/6b.png',
 			text: 'A school board or education authority',
 			showHelp: false,
-			helpText: 'Sed ut perspiciatis unde omnis iste natus error.',
+			helpText: null,
 		},
 		{
 			code: '4',
@@ -163,7 +157,7 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 			text: 'An organization or person who receives ongoing provincial funding',
 			showHelp: false,
 			helpText:
-				'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
+				'Receives money every year from the provincial government to operate their organization (example: CLBC service providers)',
 		},
 		{
 			code: '5',
@@ -171,7 +165,8 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 			selectedIcon: '/assets/3b.png',
 			text: 'A mainly government-owned corporation (for example, BC Housing)',
 			showHelp: false,
-			helpText: 'At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium.',
+			helpText:
+				'Public sector organizations that report to the provincial government (examples: BC Housing, BC Transit)',
 		},
 		{
 			code: '6',
@@ -179,8 +174,7 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 			selectedIcon: '/assets/4b.png',
 			text: 'A provincial government ministry or related agency',
 			showHelp: false,
-			helpText:
-				'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+			helpText: 'Examples: Ministry of Children and Family Development, BC Corrections',
 		},
 		{
 			code: '7',
@@ -188,7 +182,7 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 			selectedIcon: '/assets/5b.png',
 			text: 'A registered health professional or social worker',
 			showHelp: false,
-			helpText: 'Et harum quidem rerum facilis est et expedita distinctio.',
+			helpText: null,
 		},
 		{
 			code: '8',
@@ -196,7 +190,8 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 			selectedIcon: '/assets/11b.png',
 			text: 'A governing body under the Health Professions Act or the Social Workers Act',
 			showHelp: false,
-			helpText: 'Sed ut perspiciatis unde omnis iste natus error.',
+			helpText:
+				'A governing body in B.C. of a social work or health profession (examples: BC College of Social Workers, BC College of Nurses and Midwives)',
 		},
 		{
 			code: '9',
@@ -204,27 +199,27 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 			selectedIcon: '/assets/9b.png',
 			text: 'An act- or minister-appointed board, commission, or council',
 			showHelp: false,
-			helpText: 'At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium.',
+			helpText:
+				'Legislation or ministers occasionally appoint a board, commission, or council to perform a specific duty (examples: Police Boards or BC Ferries Commission)',
 		},
 	];
 
 	options_vol = [
+		{
+			code: '19',
+			icon: '/assets/5a.png',
+			selectedIcon: '/assets/5b.png',
+			text: 'A registered health professional or social worker',
+			showHelp: false,
+			helpText: null,
+		},
 		{
 			code: '11',
 			icon: '/assets/11a.png',
 			selectedIcon: '/assets/11b.png',
 			text: 'A registered non profit organization',
 			showHelp: false,
-			helpText:
-				'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
-		},
-		{
-			code: '12',
-			icon: '/assets/11a.png',
-			selectedIcon: '/assets/11b.png',
-			text: 'A non profit organization registered with BC Corporate Registries',
-			showHelp: false,
-			helpText: 'Sed ut perspiciatis unde omnis iste natus error.',
+			helpText: null,
 		},
 		{
 			code: '13',
@@ -232,57 +227,57 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 			selectedIcon: '/assets/1b.png',
 			text: 'A childcare facility or daycare',
 			showHelp: false,
-			helpText: 'Sed ut perspiciatis unde omnis iste natus error.',
+			helpText: null,
 		},
 		{
 			code: '14',
 			icon: '/assets/2a.png',
 			selectedIcon: '/assets/2b.png',
-			text: 'A regional health board, public health facility, private hospital, or care facility',
+			text: 'A health board, hospital or care facility',
 			showHelp: false,
-			helpText:
-				'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
+			helpText: null,
 		},
 		{
 			code: '15',
 			icon: '/assets/12a.png',
 			selectedIcon: '/assets/12b.png',
-			text: 'A school board, francophone education authority, or independent school authority',
+			text: 'A school board or education authority',
 			showHelp: false,
-			helpText: 'At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium.',
+			helpText: null,
+		},
+		{
+			code: '12',
+			icon: '/assets/11a.png',
+			selectedIcon: '/assets/11b.png',
+			text: 'A school board or education authority',
+			showHelp: false,
+			helpText: null,
 		},
 		{
 			code: '16',
 			icon: '/assets/8a.png',
 			selectedIcon: '/assets/8b.png',
-			text: 'An individual or business that receives operating funds from the B.C. government',
+			text: 'An organization or person who receives ongoing provincial funding',
 			showHelp: false,
 			helpText:
-				'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+				'Receives money every year from the provincial government to operate their organization (example: CLBC service providers)',
 		},
 		{
 			code: '17',
 			icon: '/assets/3a.png',
 			selectedIcon: '/assets/3b.png',
-			text: 'A mainly government-owned corporation (for example, BC Housing)',
+			text: 'A mainly government-owned corporation',
 			showHelp: false,
-			helpText: 'Et harum quidem rerum facilis est et expedita distinctio.',
+			helpText:
+				'Public sector organizations that report to the provincial government (examples: BC Housing, BC Transit)',
 		},
 		{
 			code: '18',
 			icon: '/assets/12a.png',
 			selectedIcon: '/assets/12b.png',
-			text: 'BC Public Service or a related agency',
+			text: 'A provincial government ministry or related agency',
 			showHelp: false,
-			helpText: 'Sed ut perspiciatis unde omnis iste natus error.',
-		},
-		{
-			code: '19',
-			icon: '/assets/5a.png',
-			selectedIcon: '/assets/5b.png',
-			text: 'A registered health professional or social worker',
-			showHelp: false,
-			helpText: 'At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium.',
+			helpText: 'Examples: Ministry of Children and Family Development, BC Corrections',
 		},
 		{
 			code: '20',
@@ -290,7 +285,7 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 			selectedIcon: '/assets/10b.png',
 			text: 'A municipality',
 			showHelp: false,
-			helpText: 'At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium.',
+			helpText: null,
 		},
 		{
 			code: '21',
@@ -298,7 +293,7 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 			selectedIcon: '/assets/12b.png',
 			text: 'A post-secondary institution',
 			showHelp: false,
-			helpText: 'At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium.',
+			helpText: null,
 		},
 	];
 
@@ -308,18 +303,16 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 		this.isDirtyAndInvalid = !isValid;
 	}
 
-	onDataChange2(_val: MatSelectChange) {
-		this.organizationType = _val.value;
-		const isValid = this.isFormValid();
-		this.isDirtyAndInvalid = !isValid;
-	}
-
 	getDataToSave(): OrganizationOptionsModel {
 		return { organizationType: this.organizationType };
 	}
 
 	isFormValid(): boolean {
-		const isValid = this.organizationType ? true : false;
+		let isValid = this.organizationType ? true : false;
+		if (this.organizationType && this.organizationType == 'NONE') {
+			isValid = false;
+		}
+
 		this.isDirtyAndInvalid = !isValid;
 		return isValid;
 	}
@@ -333,8 +326,8 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 		event.stopPropagation();
 	}
 
-	// onViewHelpForSelection(): void {
-	// 	const currentOption = this.options.find((opt) => opt.code == this.organizationType);
-	// 	this.currentHelpText = currentOption ? currentOption.helpText : '';
-	// }
+	onNoneApply(): void {
+		this.organizationType = 'NONE';
+		this.noneApply.emit(true);
+	}
 }
