@@ -212,10 +212,11 @@ export class StepOneComponent {
 					const organizationOptionsData = this.organizationOptionsComponent.getDataToSave();
 					if (this.registrationPathSelectionData.registrationTypeCode == 'EMP') {
 						this.showStep2 = organizationOptionsData.organizationType == '4' ? true : false;
+						this.showStep3 = false;
 					} else {
 						this.showStep2 = organizationOptionsData.organizationType == '16' ? true : false;
+						this.showStep3 = !this.showStep2;
 					}
-					this.showStep3 = !this.showStep2;
 				}
 				return isValid;
 			case 2:

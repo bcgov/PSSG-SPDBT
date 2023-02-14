@@ -25,7 +25,7 @@ export interface RegistrationFormStepComponent {
 			(selectionChange)="onStepSelectionChange($event)"
 			#stepper
 		>
-			<mat-step completed="false" editable="false">
+			<mat-step completed="false" editable="true">
 				<ng-template matStepLabel>Eligibility</ng-template>
 				<app-step-one
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -163,7 +163,11 @@ export class OrgRegistrationComponent implements OnInit {
 	}
 
 	onStepSelectionChange(event: StepperSelectionEvent) {
-		if (event.selectedIndex == 3) {
+		if (event.selectedIndex == 2) {
+			// after log in, cannot edit Step 1
+			let step = this.stepper.steps.get(0);
+			if (step) step.editable = false;
+		} else if (event.selectedIndex == 3) {
 			const step3Data = this.stepThreeComponent.getStepData();
 			this.sendToEmailAddress = step3Data.contactEmail;
 		}

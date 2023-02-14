@@ -74,7 +74,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 							<div class="row mb-2">
 								<div class="offset-lg-3 col-lg-5">
 									<small class="d-block text-muted">Date of Birth</small>
-									<strong> Jan 4, 2000 </strong>
+									<strong> 2000-Jan-04 </strong>
 								</div>
 								<div class="col-lg-4">
 									<small class="d-block text-muted mt-2 mt-lg-0">Birthplace</small>
