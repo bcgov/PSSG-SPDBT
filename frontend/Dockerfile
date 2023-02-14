@@ -10,4 +10,4 @@ RUN npm run build
 # run stage
 FROM caddy:alpine
 COPY ./Caddyfile /etc/caddy
-COPY --from=build-stage /usr/src/app/dist /usr/share/caddy
+COPY --from=build-stage /usr/src/app/dist/frontend/ /usr/share/caddy
