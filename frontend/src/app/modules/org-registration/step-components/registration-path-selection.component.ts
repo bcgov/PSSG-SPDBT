@@ -35,10 +35,18 @@ export class RegistrationPathSelectionModel {
 								<ul>
 									<li>Regular employees</li>
 									<li>Part-time or auxilliary employees</li>
-									<li>Contractors and sub contractors who have agreements with employers</li>
+									<li>Contractors and sub contractors who have agreements with your organization</li>
 									<li>Registered students completing a practicum component</li>
-									<li>Learn more <a target="_blank" href="http://www.google.ca">here</a></li>
 								</ul>
+								<p>
+									Learn more about
+									<a
+										href="https://www2.gov.bc.ca/gov/content/safety/crime-prevention/criminal-record-check"
+										target="_blank"
+										>who is</a
+									>
+									covered by the Criminal Records Review Act
+								</p>
 							</div>
 						</ng-template>
 					</div>
@@ -66,10 +74,16 @@ export class RegistrationPathSelectionModel {
 								<div class="step-container__box__help-title mb-2">Volunteers Include...</div>
 								<ul>
 									<li>Volunteers provide services to registered specified organizations as defined by the CRRA</li>
-									<li>Must work with or have potential access to children and/or vulnerable adults</li>
-									<li>Cannot receive money for their time</li>
-									<li>Learn more <a target="_blank" href="http://www.google.ca">here</a></li>
 								</ul>
+								<p>
+									Learn more about
+									<a
+										href="https://www2.gov.bc.ca/gov/content/safety/crime-prevention/criminal-record-check"
+										target="_blank"
+										>who is</a
+									>
+									covered by the Criminal Records Review Act
+								</p>
 							</div>
 						</ng-template>
 					</div>

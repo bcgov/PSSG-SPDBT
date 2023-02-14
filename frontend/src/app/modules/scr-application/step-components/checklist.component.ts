@@ -33,7 +33,13 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 			</div>
 		</section>
 	`,
-	styles: [],
+	styles: [
+		`
+			li:not(:last-child) {
+				margin-bottom: 1em;
+			}
+		`,
+	],
 })
 export class ChecklistComponent {
 	matcher = new FormErrorStateMatcher();

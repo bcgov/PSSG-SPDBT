@@ -27,6 +27,7 @@ import { VulnerableSectorQuestionComponent } from '../step-components/vulnerable
 			<mat-step>
 				<app-organization-options
 					[registrationTypeCode]="registrationPathSelectionData.registrationTypeCode"
+					(noneApply)="onNoneApplyToOrganization()"
 				></app-organization-options>
 
 				<div class="row mt-4">
@@ -35,6 +36,19 @@ import { VulnerableSectorQuestionComponent } from '../step-components/vulnerable
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
 						<button mat-raised-button color="primary" class="large mb-2" (click)="onFormValidNextStep(1)">Next</button>
+					</div>
+				</div>
+			</mat-step>
+
+			<mat-step *ngIf="showStep5">
+				<app-organization-problem></app-organization-problem>
+
+				<div class="row mt-4">
+					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+					</div>
+					<div class="col-lg-3 col-md-4 col-sm-6">
+						<button mat-raised-button color="primary" class="large mb-2" [routerLink]="'/'">Close</button>
 					</div>
 				</div>
 			</mat-step>
@@ -112,6 +126,7 @@ export class StepOneComponent {
 	showStep2 = false;
 	showStep3 = false;
 	showStep4 = false;
+	showStep5 = false;
 	showStep6 = false;
 
 	registrationPathSelectionData: RegistrationPathSelectionModel = { registrationTypeCode: '' };
@@ -174,6 +189,11 @@ export class StepOneComponent {
 		this.clearRegistrationData.emit(true);
 	}
 
+	onNoneApplyToOrganization(): void {
+		this.showStep5 = true;
+		this.childstepper.next();
+	}
+
 	onStepSelectionChange(event: StepperSelectionEvent) {
 		this.scrollIntoView.emit(true);
 	}
@@ -185,6 +205,7 @@ export class StepOneComponent {
 				this.registrationPathSelectionData = this.registrationPathSelectionComponent.getDataToSave();
 				return this.registrationPathSelectionComponent.isFormValid();
 			case 1:
+				this.showStep5 = false;
 				isValid = this.organizationOptionsComponent.isFormValid();
 
 				if (isValid) {
@@ -194,6 +215,7 @@ export class StepOneComponent {
 					} else {
 						this.showStep2 = organizationOptionsData.organizationType == '16' ? true : false;
 					}
+					this.showStep3 = !this.showStep2;
 				}
 				return isValid;
 			case 2:

@@ -13,6 +13,7 @@ import { MailingAddressComponent } from './step-components/mailing-address.compo
 import { OrganizationInformationComponent } from './step-components/organization-information.component';
 import { OrganizationNameComponent } from './step-components/organization-name.component';
 import { OrganizationOptionsComponent } from './step-components/organization-options.component';
+import { OrganizationProblemComponent } from './step-components/organization-problem.component';
 import { PaymentQuestionComponent } from './step-components/payment-question.component';
 import { RegistrationOptionsComponent } from './step-components/registration-options.component';
 import { RegistrationPathSelectionComponent } from './step-components/registration-path-selection.component';
@@ -36,6 +37,7 @@ import { StepTwoComponent } from './steps/step-two.component';
 		RegistrationOptionsComponent,
 		OrganizationNameComponent,
 		OrganizationInformationComponent,
+		OrganizationProblemComponent,
 		ContactInformationComponent,
 		MailingAddressComponent,
 		PaymentQuestionComponent,
