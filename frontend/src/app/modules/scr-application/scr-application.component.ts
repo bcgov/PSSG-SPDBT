@@ -26,7 +26,7 @@ export interface ScreeningFormStepComponent {
 			(selectionChange)="onStepSelectionChange($event)"
 			#stepper
 		>
-			<mat-step completed="false" editable="false">
+			<mat-step completed="false" editable="true">
 				<ng-template matStepLabel>Eligibility Check</ng-template>
 				<app-step-eligibility
 					[paymentBy]="paymentBy"
@@ -35,7 +35,7 @@ export interface ScreeningFormStepComponent {
 				></app-step-eligibility>
 			</mat-step>
 
-			<mat-step completed="false" editable="false">
+			<mat-step completed="false" editable="true">
 				<ng-template matStepLabel>Organization Information</ng-template>
 				<app-step-organization-info
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -142,6 +142,14 @@ export class ScrApplicationComponent implements OnInit {
 	}
 
 	onStepSelectionChange(event: StepperSelectionEvent) {
+		if (event.selectedIndex == 3) {
+			// after log in, cannot edit Step 1,2,3
+			let step = this.stepper.steps.get(0);
+			if (step) step.editable = false;
+			step = this.stepper.steps.get(1);
+			if (step) step.editable = false;
+		}
+
 		this.onScrollIntoView();
 	}
 
