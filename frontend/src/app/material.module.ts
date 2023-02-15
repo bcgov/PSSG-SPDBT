@@ -1,11 +1,12 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { formatDate } from '@angular/common';
+import { CUSTOM_ELEMENTS_SCHEMA, Injectable, NgModule } from '@angular/core';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
-import { MatDateFormats, MatNativeDateModule, MAT_DATE_FORMATS, MAT_NATIVE_DATE_FORMATS } from '@angular/material/core';
+import { DateAdapter, MatNativeDateModule, MAT_DATE_FORMATS, NativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -54,29 +55,22 @@ const AngularMaterialModules = [
 	MatAutocompleteModule,
 ];
 
-// export const APP_DATE_FORMAT = 'dd-MMM-yyyy';
-// export const APP_DATE_FORMATS = {
-// 	parse: {
-// 		// Reformat entered date values to this format
-// 		dateInput: APP_DATE_FORMAT,
-// 	},
-// 	display: {
-// 		dateInput: APP_DATE_FORMAT,
-// 		monthYearLabel: 'MMM yyyy',
-// 		dateA11yLabel: APP_DATE_FORMAT,
-// 		monthYearA11yLabel: 'MMM yyyy',
-// 	},
-// };
+export const APP_CONSTANTS = {
+	date: {
+		dateFormat: 'yyyy-MMM-dd',
+		monthYearFormat: 'MMM yyyy',
+	},
+};
 
-export const GRI_DATE_FORMATS: MatDateFormats = {
-	...MAT_NATIVE_DATE_FORMATS,
+export const APP_DATE_FORMATS = {
+	parse: {
+		dateInput: APP_CONSTANTS.date.dateFormat,
+	},
 	display: {
-		...MAT_NATIVE_DATE_FORMATS.display,
-		dateInput: {
-			year: 'numeric',
-			month: 'short',
-			day: 'numeric',
-		} as Intl.DateTimeFormatOptions,
+		dateInput: 'input',
+		monthYearLabel: APP_CONSTANTS.date.monthYearFormat,
+		dateA11yLabel: APP_CONSTANTS.date.dateFormat,
+		monthYearA11yLabel: APP_CONSTANTS.date.monthYearFormat,
 	},
 };
 
@@ -86,6 +80,18 @@ const matFormFieldCustomOptions: MatFormFieldDefaultOptions = {
 	appearance: 'fill',
 };
 
+@Injectable()
+export class SpdDateAdapter extends NativeDateAdapter {
+	override format(date: Date, displayFormat: Object): string {
+		if (displayFormat === 'input') {
+			// Return the format as per your requirement
+			return formatDate(date, APP_CONSTANTS.date.dateFormat, this.locale);
+		} else {
+			return date.toDateString();
+		}
+	}
+}
+
 @NgModule({
 	declarations: [],
 	imports: [...AngularMaterialModules],
@@ -93,7 +99,11 @@ const matFormFieldCustomOptions: MatFormFieldDefaultOptions = {
 	providers: [
 		{
 			provide: MAT_DATE_FORMATS,
-			useValue: GRI_DATE_FORMATS,
+			useValue: APP_DATE_FORMATS,
+		},
+		{
+			provide: DateAdapter,
+			useClass: SpdDateAdapter,
 		},
 		{
 			provide: MAT_RADIO_DEFAULT_OPTIONS,

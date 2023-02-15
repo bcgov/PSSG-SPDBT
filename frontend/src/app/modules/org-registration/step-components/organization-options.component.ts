@@ -163,7 +163,7 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 			code: '5',
 			icon: '/assets/3a.png',
 			selectedIcon: '/assets/3b.png',
-			text: 'A mainly government-owned corporation (for example, BC Housing)',
+			text: 'A mainly government-owned corporation',
 			showHelp: false,
 			helpText:
 				'Public sector organizations that report to the provincial government (examples: BC Housing, BC Transit)',
@@ -215,8 +215,8 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 		},
 		{
 			code: '11',
-			icon: '/assets/11a.png',
-			selectedIcon: '/assets/11b.png',
+			icon: '/assets/7a.png',
+			selectedIcon: '/assets/7b.png',
 			text: 'A registered non profit organization',
 			showHelp: false,
 			helpText: null,
@@ -246,14 +246,6 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 			helpText: null,
 		},
 		{
-			code: '12',
-			icon: '/assets/11a.png',
-			selectedIcon: '/assets/11b.png',
-			text: 'A school board or education authority',
-			showHelp: false,
-			helpText: null,
-		},
-		{
 			code: '16',
 			icon: '/assets/8a.png',
 			selectedIcon: '/assets/8b.png',
@@ -273,8 +265,8 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 		},
 		{
 			code: '18',
-			icon: '/assets/12a.png',
-			selectedIcon: '/assets/12b.png',
+			icon: '/assets/9a.png',
+			selectedIcon: '/assets/9b.png',
 			text: 'A provincial government ministry or related agency',
 			showHelp: false,
 			helpText: 'Examples: Ministry of Children and Family Development, BC Corrections',
