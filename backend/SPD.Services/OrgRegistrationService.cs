@@ -1,46 +1,48 @@
-﻿using SPD.Common.ViewModels.Organization;
+﻿using AutoMapper;
+using Microsoft.Dynamics.CRM;
+using SPD.Common.ViewModels.Organization;
 using SPD.DynamicsProxy;
-using SPD.DynamicsProxy.Entities;
 
 namespace SPD.Services
 {
     public interface IOrgRegistrationService
     {
         Task<bool> CreateOrgRegistrationAsync(OrgRegistrationCreateRequest createRequest, CancellationToken cancellationToken);
-        Task<List<OrgRegistration>> GetAllOrgRegistrations();
+        Task<List<OrgRegistrationResponse>> GetAllOrgRegistrations();
     }
     public class OrgRegistrationService : IOrgRegistrationService
     {
         public readonly DynamicsContext _dynaContext;
-        public OrgRegistrationService(IDynamicsContextFactory ctx)
+        private readonly IMapper _mapper;
+        public OrgRegistrationService(IDynamicsContextFactory ctx, IMapper mapper)
         {
-            _dynaContext = ctx.CreateReadOnly();
+            _dynaContext = ctx.Create();
+            _mapper = mapper;
         }
 
         public async Task<bool> CreateOrgRegistrationAsync(OrgRegistrationCreateRequest createRequest, CancellationToken cancellationToken)
         {
-            //add mapping to map createRequest to OrgRegistration
-            await _dynaContext.AddAsync(new OrgRegistration()
+            var existed = _dynaContext.Spd_orgregistrations.Where(s => s.Spd_organizationname == createRequest.OrganizationName).ToList();
+            if (existed.Count == 0)
             {
-                Id = Guid.NewGuid(),
-                IdentityNumber = "12345678",
-                RegistrationNumber = "987654321",
-                City = "Victoria",
-                Province = "BC",
-                AuthorizedContactPhoneNumber = "230-555-5555",
-                AuthorizedContactBirthDate = new DateTime(1997, 3, 2),
-                OrganizationLegalName = "Peggy Test"
-            }, cancellationToken);
+                Spd_orgregistration orgregistration = _mapper.Map<Spd_orgregistration>(createRequest);
+                _dynaContext.AddToSpd_orgregistrations(orgregistration);
+                await _dynaContext.SaveChangesAsync(cancellationToken);
+            }
+            else
+            {
+                throw new Exception("the organization has been registered.");
+            }
             return true;
-
         }
 
         //todo: change return type to list<orgRegistrationResponse>
-        public async Task<List<OrgRegistration>> GetAllOrgRegistrations()
+        public async Task<List<OrgRegistrationResponse>> GetAllOrgRegistrations()
         {
-            var orgs = await _dynaContext.OrgRegistrations.GetAllPagesAsync();
+            var orgs = await _dynaContext.Spd_orgregistrations.GetAllPagesAsync();
             //todo: add mapping here
-            return orgs.ToList();
+            List<OrgRegistrationResponse> result = new List<OrgRegistrationResponse>();
+            return result;
         }
     }
 }
