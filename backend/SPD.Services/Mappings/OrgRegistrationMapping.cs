@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using SPD.Common.ViewModels.Organization;
+using SPD.Services.DynamicsEnum;
 
 namespace SPD.Services.Mappings
 
@@ -18,6 +19,9 @@ namespace SPD.Services.Mappings
                 .ForMember(d => d.Spd_street2, opt => opt.MapFrom(s => s.MailingAddressLine2))
                 .ForMember(d => d.Spd_organizationname, opt => opt.MapFrom(s => s.OrganizationName))
                 .ForMember(d => d.Spd_orgregistrationid, opt => opt.MapFrom(s => Guid.NewGuid()))
+                .ForMember(d => d.Spd_source, opt => opt.MapFrom(s => SourceOptionSet.Online))
+                .ForMember(d => d.Spd_registrationtype, opt => opt.MapFrom(s => (int)Enum.Parse<RegistrationTypeOptionSet>(s.RegistrationTypeCode.ToString())))
+                .ForMember(d => d.Spd_employerorganizationtype, opt => opt.MapFrom(s => (int)Enum.Parse<EmployerOrganizationTypeOptionSet>(s.EmployerOrganizationTypeCode.ToString())))
             ;
         }
     }

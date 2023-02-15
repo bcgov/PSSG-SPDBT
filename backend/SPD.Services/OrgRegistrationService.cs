@@ -22,11 +22,18 @@ namespace SPD.Services
 
         public async Task<bool> CreateOrgRegistrationAsync(OrgRegistrationCreateRequest createRequest, CancellationToken cancellationToken)
         {
-            Spd_orgregistration orgregistration = _mapper.Map<Spd_orgregistration>(createRequest);
-            _dynaContext.AddToSpd_orgregistrations(orgregistration);
-            await _dynaContext.SaveChangesAsync(cancellationToken);
+            var existed = _dynaContext.Spd_orgregistrations.Where(s => s.Spd_organizationname == createRequest.OrganizationName).ToList();
+            if (existed.Count == 0)
+            {
+                Spd_orgregistration orgregistration = _mapper.Map<Spd_orgregistration>(createRequest);
+                _dynaContext.AddToSpd_orgregistrations(orgregistration);
+                await _dynaContext.SaveChangesAsync(cancellationToken);
+            }
+            else
+            {
+                throw new Exception("the organization has been registered.");
+            }
             return true;
-
         }
 
         //todo: change return type to list<orgRegistrationResponse>
