@@ -1,5 +1,4 @@
 using FluentValidation;
-using System.ComponentModel.DataAnnotations;
 
 namespace SPD.Common.ViewModels.Organization
 {
@@ -27,8 +26,30 @@ namespace SPD.Common.ViewModels.Organization
         public string OperatingBudgetFlag { get; set; } //map to ?
         public string OrganizationName { get; set; }
         public string OrganizationType { get; set; }
-        public string RegistrationTypeCode { get; set; }
+        public EmployerOrganizationTypeCode EmployerOrganizationTypeCode { get; set; }
+        public RegistrationTypeCode RegistrationTypeCode { get; set; }
         public string ScreeningsCount { get; set; }
+    }
+
+    public enum RegistrationTypeCode
+    {
+        Employee,
+        Volunteer
+    }
+
+    public enum EmployerOrganizationTypeCode
+    {
+        Childcare,
+        Healthcare,
+        Education,
+        ProvFunded,
+        CrownCorp,
+        ProvGovt,
+        Registrant,
+        GovnBody,
+        Appointed,
+        Practicum,
+        None
     }
 
     public class OrgRegistrationCreateRequestValidator : AbstractValidator<OrgRegistrationCreateRequest>
@@ -36,8 +57,11 @@ namespace SPD.Common.ViewModels.Organization
         public OrgRegistrationCreateRequestValidator()
         {
             RuleFor(r => r.RegistrationTypeCode)
-                .NotEmpty();
-            
+                .IsInEnum();
+
+            RuleFor(r => r.EmployerOrganizationTypeCode)
+                .IsInEnum();
+
             RuleFor(r => r.OrganizationType)
                 .NotEmpty();
 
@@ -76,7 +100,7 @@ namespace SPD.Common.ViewModels.Organization
 
             RuleFor(r => r.AgreeToTermsAndConditions)
                 .NotEmpty();
-            
+
             RuleFor(r => r.GenericEmail)
                 .EmailAddress()
                 .When(r => !string.IsNullOrWhiteSpace(r.GenericEmail));
