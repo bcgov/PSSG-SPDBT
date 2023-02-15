@@ -8,11 +8,10 @@
 
   <ItemGroup>
     <Folder Include="Configurations\" />
-    <Folder Include="Extensions\" />
-    <Folder Include="Mappings\" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.1.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />

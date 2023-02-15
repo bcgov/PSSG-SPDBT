@@ -27,7 +27,7 @@ namespace SPD.DynamicsProxy
                 // do not send reference properties and null values to Dynamics
                 arg.Entry.Properties = arg.Entry.Properties.Where((prop) => !prop.Name.StartsWith('_') && prop.Value != null);
             });
-            client.BuildingRequest += Client_BuildingRequest;
+            // client.BuildingRequest += Client_BuildingRequest;
             client.SendingRequest2 += Client_SendingRequest2;
         }
 
@@ -36,18 +36,18 @@ namespace SPD.DynamicsProxy
             e.RequestMessage.SetHeader("Authorization", $"Bearer {authToken}");
         }
 
-        private void Client_BuildingRequest(object sender, BuildingRequestEventArgs e)
-        {
-            if (e.RequestUri != null)
-                e.RequestUri = RewriteRequestUri((DataServiceContext)sender, options.EndpointUrl ?? null!, e.RequestUri);
-        }
+        //private void Client_BuildingRequest(object sender, BuildingRequestEventArgs e)
+        //{
+        //    if (e.RequestUri != null)
+        //        e.RequestUri = RewriteRequestUri((DataServiceContext)sender, options.EndpointUrl ?? null!, e.RequestUri);
+        //}
 
 #pragma warning disable S3358 // Ternary operators should not be nested
 
-        private static Uri RewriteRequestUri(DataServiceContext ctx, Uri endpointUri, Uri requestUri) =>
-           requestUri.IsAbsoluteUri
-                 ? new Uri(endpointUri, $"{(endpointUri.AbsolutePath == "/" ? string.Empty : endpointUri.AbsolutePath)}{requestUri.AbsolutePath}{requestUri.Query}")
-                 : new Uri(endpointUri, $"{(endpointUri.AbsolutePath == "/" ? string.Empty : endpointUri.AbsolutePath)}{ctx.BaseUri.AbsolutePath}{requestUri.ToString()}");
+        //private static Uri RewriteRequestUri(DataServiceContext ctx, Uri endpointUri, Uri requestUri) =>
+        //   requestUri.IsAbsoluteUri
+        //         ? new Uri(endpointUri, $"{(endpointUri.AbsolutePath == "/" ? string.Empty : endpointUri.AbsolutePath)}{requestUri.AbsolutePath}{requestUri.Query}")
+        //         : new Uri(endpointUri, $"{(endpointUri.AbsolutePath == "/" ? string.Empty : endpointUri.AbsolutePath)}{ctx.BaseUri.AbsolutePath}{requestUri.ToString()}");
 
 #pragma warning restore S3358 // Ternary operators should not be nested
     }
