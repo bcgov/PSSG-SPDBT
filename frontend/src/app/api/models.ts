@@ -1,3 +1,9 @@
+export { BooleanTypeCode } from './models/boolean-type-code';
+export { CheckFeePayerTypeCode } from './models/check-fee-payer-type-code';
+export { EmployeeInteractionTypeCode } from './models/employee-interaction-type-code';
 export { EmployerOrganizationTypeCode } from './models/employer-organization-type-code';
+export { OperatingBudgetTypeCode } from './models/operating-budget-type-code';
 export { OrgRegistrationCreateRequest } from './models/org-registration-create-request';
 export { RegistrationTypeCode } from './models/registration-type-code';
+export { ScreeningsCountTypeCode } from './models/screenings-count-type-code';
+export { VolunteerOrganizationTypeCode } from './models/volunteer-organization-type-code';
