@@ -41,6 +41,9 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 									Only characters are allowed
 								</mat-error>
 							</mat-form-field>
+							<div class="w-100 mb-2">
+								<mat-checkbox formControlName="oneLegalName"> I have one legal name </mat-checkbox>
+							</div>
 						</div>
 					</div>
 					<div class="row">
@@ -65,9 +68,6 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 								<input matInput formControlName="contactPhoneNumber" mask="(000) 000-0000" [showMaskTyped]="true" />
 								<mat-error *ngIf="form.get('contactPhoneNumber')?.hasError('required')">This is required</mat-error>
 							</mat-form-field>
-						</div>
-						<div class="col-lg-3 col-md-6 col-sm-12">
-							<mat-checkbox class="w-100" formControlName="oneLegalName"> I have one legal name. </mat-checkbox>
 						</div>
 					</div>
 				</div>

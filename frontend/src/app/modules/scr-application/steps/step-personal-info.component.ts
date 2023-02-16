@@ -2,6 +2,7 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { ContactInformationComponent } from '../step-components/contact-information.component';
+import { DeclarationComponent } from '../step-components/declaration.component';
 import { MailingAddressComponent } from '../step-components/mailing-address.component';
 import { PersonalInformationComponent } from '../step-components/personal-information.component';
 import { PreviousNameComponent } from '../step-components/previous-name.component';
@@ -67,7 +68,7 @@ import { PreviousNameComponent } from '../step-components/previous-name.componen
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" class="large mb-2" (click)="goToStepNext()">Next</button>
+						<button mat-raised-button color="primary" class="large mb-2" matStepperNext>Confirm</button>
 					</div>
 				</div>
 			</mat-step>
@@ -77,7 +78,7 @@ import { PreviousNameComponent } from '../step-components/previous-name.componen
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
+						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
 						<button mat-raised-button color="primary" class="large mb-2" (click)="goToStepNext()">Next</button>
@@ -108,12 +109,16 @@ export class StepPersonalInfoComponent {
 	@ViewChild(MailingAddressComponent)
 	mailingAddressComponent!: MailingAddressComponent;
 
+	@ViewChild(DeclarationComponent)
+	declarationComponent!: DeclarationComponent;
+
 	getStepData(): any {
 		return {
 			...this.contactInformationComponent.getDataToSave(),
 			...this.personalInformationComponent.getDataToSave(),
 			...this.previousNameComponent.getDataToSave(),
 			...this.mailingAddressComponent.getDataToSave(),
+			...this.declarationComponent.getDataToSave(),
 		};
 	}
 
@@ -128,6 +133,8 @@ export class StepPersonalInfoComponent {
 	}
 
 	goToStepNext(): void {
+		const isValid = this.dirtyForm(5);
+		if (!isValid) return;
 		this.nextStepperStep.emit(true);
 	}
 
@@ -153,6 +160,9 @@ export class StepPersonalInfoComponent {
 			case 4:
 				this.mailingAddressComponent.form.markAllAsTouched();
 				return this.mailingAddressComponent.isFormValid();
+			case 5:
+				this.declarationComponent.form.markAllAsTouched();
+				return this.declarationComponent.isFormValid();
 
 			default:
 				console.error('Unknown Form', step);

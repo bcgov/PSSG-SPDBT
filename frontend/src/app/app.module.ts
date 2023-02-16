@@ -1,23 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxSpinnerModule } from 'ngx-spinner';
-import { ApiConfiguration } from './api/api-configuration';
+import { ApiModule } from './api/api.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
 import { LandingComponent } from './landing.component';
 import { MaterialModule } from './material.module';
 import { SharedModule } from './shared/shared.module';
-
-export function appInitializer(config: ApiConfiguration): Function {
-	return () => {
-		config.rootUrl = 'https://localhost:53067';
-	};
-}
 
 @NgModule({
 	declarations: [AppComponent, LandingComponent],
@@ -32,16 +26,10 @@ export function appInitializer(config: ApiConfiguration): Function {
 		FormsModule,
 		ReactiveFormsModule,
 		NgxSpinnerModule,
+		ApiModule.forRoot({ rootUrl: '' }),
 		SharedModule,
 	],
-	providers: [
-		{
-			provide: APP_INITIALIZER,
-			useFactory: appInitializer,
-			multi: true,
-			deps: [ApiConfiguration],
-		},
-	],
+	providers: [],
 	bootstrap: [AppComponent],
 })
 export class AppModule {}
