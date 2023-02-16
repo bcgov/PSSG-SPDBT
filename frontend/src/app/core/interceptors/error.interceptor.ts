@@ -14,30 +14,45 @@ export class ErrorInterceptor implements HttpInterceptor {
 			catchError((errorResponse: HttpErrorResponse) => {
 				let title = 'Error';
 				let message = 'An error has occurred';
-				console.error('ErrorInterceptor', errorResponse);
+				console.error('ErrorInterceptor errorResponse', errorResponse);
 
-				if (errorResponse.error?.error) {
-					const currentError = errorResponse.error.error as Error;
-					if (currentError.message) {
-						message = `<p><strong>${currentError.message}</strong></p>`;
-					} else {
-						let thisError = errorResponse.error.error as string;
-						if (typeof thisError === 'string') {
-							message = `<p>Error: <strong>${thisError}</strong></p>`;
-						} else {
-							const { status, statusText, url } = errorResponse;
-
-							if (status === 403) {
-								const httpOperation = request.method.toLowerCase();
-								const operation = `httpMethod.${httpOperation}`;
-								const operationMessage = `httpStatusText.${status}`;
-								title = `${operation} - ${operationMessage}`;
-							}
-
-							message = `<p>Error: <strong>${status} - ${statusText}</strong></p>
-								<p>Url: <strong>${url}</strong></p>`;
-						}
+				if (errorResponse.error) {
+					const currentErrors = JSON.parse(errorResponse.error);
+					if (currentErrors.title) {
+						title = `${currentErrors.title}`;
 					}
+
+					message = '<ul>';
+					Object.keys(currentErrors.errors).forEach((key: any) => {
+						const propVal = currentErrors.errors[key];
+						propVal.forEach((val: any) => {
+							message += `<li>${val}</li>`;
+						});
+					});
+					message += '</ul>';
+
+					// if (errorResponse.error?.error) {
+					// 	const currentError = errorResponse.error.error as Error;
+					// 	if (currentError.message) {
+					// 		message = `<p><strong>${currentError.message}</strong></p>`;
+					// 	} else {
+					// 		let thisError = errorResponse.error.error as string;
+					// 		if (typeof thisError === 'string') {
+					// 			message = `<p>Error: <strong>${thisError}</strong></p>`;
+					// 		} else {
+					// 			const { status, statusText, url } = errorResponse;
+
+					// 			if (status === 403) {
+					// 				const httpOperation = request.method.toLowerCase();
+					// 				const operation = `httpMethod.${httpOperation}`;
+					// 				const operationMessage = `httpStatusText.${status}`;
+					// 				title = `${operation} - ${operationMessage}`;
+					// 			}
+
+					// 			message = `<p>Error: <strong>${status} - ${statusText}</strong></p>
+					// 				<p>Url: <strong>${url}</strong></p>`;
+					// 		}
+					// 	}
 				} else {
 					message = `<p><strong>The request failed to process due to a network error. Please retry.</strong></p>
 						<p>Error Status: ${errorResponse.status}</p>

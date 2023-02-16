@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
+import { EmployeeInteractionTypeCode } from 'src/app/api/models';
 import { RegistrationFormStepComponent } from '../org-registration.component';
 
 export class VulnerableSectorQuestionModel {
-	employeeInteractionFlag: string = '';
+	employeeInteractionFlag: EmployeeInteractionTypeCode | null = null;
 }
 
 @Component({
@@ -19,8 +20,8 @@ export class VulnerableSectorQuestionModel {
 				<div class="col-md-3 col-sm-6 mb-3">
 					<div
 						class="step-container__box"
-						(click)="onDataChange('CHILDREN')"
-						[ngClass]="{ 'active-selection-whole': employeeInteractionFlag == 'CHILDREN' }"
+						(click)="onDataChange(employeeInteractionTypeCodes.Children)"
+						[ngClass]="{ 'active-selection-whole': employeeInteractionFlag == employeeInteractionTypeCodes.Children }"
 					>
 						<ng-container *ngIf="displayHelp1; else noHelp1">
 							<div class="step-container__box__info">
@@ -45,8 +46,8 @@ export class VulnerableSectorQuestionModel {
 				<div class="col-md-3 col-sm-6 mb-3">
 					<div
 						class="step-container__box"
-						(click)="onDataChange('ADULTS')"
-						[ngClass]="{ 'active-selection-whole': employeeInteractionFlag == 'ADULTS' }"
+						(click)="onDataChange(employeeInteractionTypeCodes.Adults)"
+						[ngClass]="{ 'active-selection-whole': employeeInteractionFlag == employeeInteractionTypeCodes.Adults }"
 					>
 						<ng-container *ngIf="displayHelp2; else noHelp2">
 							<div class="step-container__box__info">
@@ -73,8 +74,10 @@ export class VulnerableSectorQuestionModel {
 					<div
 						class="step-container__box px-2 pb-3"
 						style="padding-top: 32px;"
-						(click)="onDataChange('CHILDREN_ADULTS')"
-						[ngClass]="{ 'active-selection-whole': employeeInteractionFlag == 'CHILDREN_ADULTS' }"
+						(click)="onDataChange(employeeInteractionTypeCodes.ChildrenAdults)"
+						[ngClass]="{
+							'active-selection-whole': employeeInteractionFlag == employeeInteractionTypeCodes.ChildrenAdults
+						}"
 					>
 						<div class="icon-container d-none d-md-block"><mat-icon>diversity_3</mat-icon></div>
 						My employees work with <strong>children and vulnerable adults</strong>
@@ -84,8 +87,8 @@ export class VulnerableSectorQuestionModel {
 					<div
 						class="step-container__box px-2 pb-3"
 						style="padding-top: 32px;"
-						(click)="onDataChange('NEITHER')"
-						[ngClass]="{ 'active-selection-whole': employeeInteractionFlag == 'NEITHER' }"
+						(click)="onDataChange(employeeInteractionTypeCodes.Neither)"
+						[ngClass]="{ 'active-selection-whole': employeeInteractionFlag == employeeInteractionTypeCodes.Neither }"
 					>
 						<div class="icon-container d-none d-md-block"><mat-icon>person_off</mat-icon></div>
 						My employee <strong>do not work</strong> with children or vulnerable adults
@@ -112,12 +115,14 @@ export class VulnerableSectorQuestionModel {
 	],
 })
 export class VulnerableSectorQuestionComponent implements RegistrationFormStepComponent {
-	employeeInteractionFlag: string | null = null;
+	employeeInteractionFlag: EmployeeInteractionTypeCode | null = null;
 	isDirtyAndInvalid = false;
 	displayHelp1 = false;
 	displayHelp2 = false;
 
-	onDataChange(_val: string) {
+	employeeInteractionTypeCodes = EmployeeInteractionTypeCode;
+
+	onDataChange(_val: EmployeeInteractionTypeCode) {
 		this.employeeInteractionFlag = _val;
 		const isValid = this.isFormValid();
 		this.isDirtyAndInvalid = !isValid;

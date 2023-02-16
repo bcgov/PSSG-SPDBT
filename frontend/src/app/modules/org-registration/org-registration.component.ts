@@ -98,31 +98,31 @@ export class OrgRegistrationComponent implements OnInit {
 			.subscribe(() => this.breakpointChanged());
 
 		// const body: OrgRegistrationCreateRequest = {
-		// 	agreeToTermsAndConditions: true,
+		// 	agreeToTermsAndConditions: false,
 		// 	contactDateOfBirth: '2023-02-04T00:11:05.865Z',
-		// 	checkFeePayer: 'string',
+		// 	checkFeePayer: CheckFeePayerTypeCode.Applicant,
 		// 	contactEmail: 'a@test.com',
 		// 	contactGivenName: 'string',
 		// 	contactJobTitle: 'string',
 		// 	contactPhoneNumber: '2506648787',
 		// 	contactSurname: 'string',
-		// 	employeeInteractionFlag: 'string',
+		// 	employeeInteractionFlag: EmployeeInteractionTypeCode.Adults,
 		// 	employerOrganizationTypeCode: EmployerOrganizationTypeCode.Appointed,
+		// 	// volunteerOrganizationTypeCode: VolunteerOrganizationTypeCode.Childcare,
 		// 	genericEmail: 'b@con.com',
 		// 	genericEmailConfirmation: 'b@con.com',
 		// 	genericPhoneNumber: '2506648787',
-		// 	hasPhoneOrEmail: 'string',
+		// 	hasPhoneOrEmail: BooleanTypeCode.Yes,
 		// 	mailingAddressLine1: 'string',
 		// 	mailingAddressLine2: 'string',
 		// 	mailingCity: 'string',
 		// 	mailingCountry: 'string',
 		// 	mailingPostalCode: 'string',
 		// 	mailingProvince: 'string',
-		// 	operatingBudgetFlag: 'string',
+		// 	operatingBudgetFlag: OperatingBudgetTypeCode.No,
 		// 	organizationName: 'test',
-		// 	organizationType: 'string',
 		// 	registrationTypeCode: RegistrationTypeCode.Employee,
-		// 	screeningsCount: 'string',
+		// 	screeningsCount: ScreeningsCountTypeCode.Less100,
 		// };
 		// this.orgRegistrationService
 		// 	.apiOrgRegistrationsPost({ body })
