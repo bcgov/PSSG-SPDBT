@@ -22,7 +22,15 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 							<mat-divider class="my-3"></mat-divider>
 							<mat-radio-button [value]="checkFeePayerTypeCodes.Applicant"> The applicant </mat-radio-button>
 						</mat-radio-group>
-						<mat-error *ngIf="form.get('checkFeePayer')?.hasError('required')">An option must be selected</mat-error>
+						<mat-error
+							*ngIf="
+								(form.get('checkFeePayer')?.dirty || form.get('checkFeePayer')?.touched) &&
+								form.get('checkFeePayer')?.invalid &&
+								form.get('checkFeePayer')?.hasError('required')
+							"
+						>
+							An option must be selected
+						</mat-error>
 					</div>
 				</div>
 			</div>
