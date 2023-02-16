@@ -1,6 +1,7 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
+import { EmployerOrganizationTypeCode, RegistrationTypeCode, VolunteerOrganizationTypeCode } from 'src/app/api/models';
 import { CompensationQuestionComponent } from '../step-components/compensation-question.component';
 import { FundingQuestionComponent } from '../step-components/funding-question.component';
 import { OrganizationOptionsComponent } from '../step-components/organization-options.component';
@@ -129,7 +130,7 @@ export class StepOneComponent {
 	showStep5 = false;
 	showStep6 = false;
 
-	registrationPathSelectionData: RegistrationPathSelectionModel = { registrationTypeCode: '' };
+	registrationPathSelectionData: RegistrationPathSelectionModel = { registrationTypeCode: null };
 
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() selectRegistrationType: EventEmitter<string> = new EventEmitter<string>();
@@ -210,11 +211,13 @@ export class StepOneComponent {
 
 				if (isValid) {
 					const organizationOptionsData = this.organizationOptionsComponent.getDataToSave();
-					if (this.registrationPathSelectionData.registrationTypeCode == 'EMP') {
-						this.showStep2 = organizationOptionsData.organizationType == '4' ? true : false;
+					if (this.registrationPathSelectionData.registrationTypeCode == RegistrationTypeCode.Employee) {
+						this.showStep2 =
+							organizationOptionsData.employeeOrganizationType == EmployerOrganizationTypeCode.Funding ? true : false;
 						this.showStep3 = false;
 					} else {
-						this.showStep2 = organizationOptionsData.organizationType == '16' ? true : false;
+						this.showStep2 =
+							organizationOptionsData.volunteerOrganizationType == VolunteerOrganizationTypeCode.Funding ? true : false;
 						this.showStep3 = !this.showStep2;
 					}
 				}

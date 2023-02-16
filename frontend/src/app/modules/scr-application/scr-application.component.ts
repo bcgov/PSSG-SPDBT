@@ -52,7 +52,7 @@ export interface ScreeningFormStepComponent {
 				></app-step-login-options>
 			</mat-step>
 
-			<mat-step completed="false" editable="false">
+			<mat-step completed="false" editable="true">
 				<ng-template matStepLabel>Personal Information</ng-template>
 				<app-step-personal-info
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -60,26 +60,29 @@ export interface ScreeningFormStepComponent {
 				></app-step-personal-info>
 			</mat-step>
 
-			<mat-step completed="false" editable="false">
+			<mat-step completed="false" editable="true">
 				<ng-template matStepLabel>Terms and Conditions</ng-template>
 				<app-step-terms-and-cond
+					[paymentBy]="paymentBy"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(scrollIntoView)="onScrollIntoView()"
 				></app-step-terms-and-cond>
 			</mat-step>
 
-			<mat-step completed="false" editable="false" *ngIf="paymentBy == 'APP'">
+			<!-- PAYMENT PROCESS?
+				 <mat-step completed="false" editable="false" *ngIf="paymentBy == 'APP'">
 				<ng-template matStepLabel>Pay for Application</ng-template>
 				<app-step-pay-for-application
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(scrollIntoView)="onScrollIntoView()"
 				></app-step-pay-for-application>
-			</mat-step>
+			</mat-step> -->
 
 			<mat-step completed="false" editable="false">
 				<ng-template matStepLabel>Application Submitted</ng-template>
 				<app-step-appl-submitted
+					[paymentBy]="paymentBy"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(scrollIntoView)="onScrollIntoView()"
 				></app-step-appl-submitted>
@@ -147,6 +150,12 @@ export class ScrApplicationComponent implements OnInit {
 			let step = this.stepper.steps.get(0);
 			if (step) step.editable = false;
 			step = this.stepper.steps.get(1);
+			if (step) step.editable = false;
+		} else if (event.selectedIndex == 5) {
+			// after log in, cannot edit Step 4,5
+			let step = this.stepper.steps.get(3);
+			if (step) step.editable = false;
+			step = this.stepper.steps.get(4);
 			if (step) step.editable = false;
 		}
 

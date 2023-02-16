@@ -1,12 +1,6 @@
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
 @use '@angular/material' as mat;
-// Plus imports for other components in your app.
-
-// Include the common styles for Angular Material. We include this here so that you only
-// have to load a single css file for Angular Material in your app.
-// Be sure that you only ever include this mixin once!
-@include mat.core();
 
 $spd-blue: (
   50: #e0e7ed,
@@ -74,6 +68,24 @@ $spd-yellow: (
   )
 );
 
+@import "@bcgov/bc-sans/css/BCSans.css";
+
+$fonts: (
+  header: #{"BCSans, Noto Sans, Verdana, Arial, sans-serif"},
+  body: #{"BCSans, Noto Sans, Verdana, Arial, sans-serif"},
+);
+
+@function theme-font($font) {
+  @return map-get($fonts, $font);
+}
+
+$spd-typography: mat.define-typography-config(
+  $font-family: theme-font(body),
+  $body-1: mat.define-typography-level(16px, 28px, 400),
+);
+
+@include mat.core(); 
+
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
@@ -86,19 +98,19 @@ $spd-warn: mat.define-palette(mat.$red-palette);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".
-$spd-test-theme: mat.define-light-theme((
+$spd-theme: mat.define-light-theme((
   color: (
     primary: $spd-primary,
     accent: $spd-accent,
     warn: $spd-warn,
-  )
+  ),
+  typography: $spd-typography,
 ));
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
-@include mat.all-component-themes($spd-test-theme);
-
+@include mat.all-component-themes($spd-theme);
 
 :root {
 	--color-white: #fff;
@@ -144,7 +156,6 @@ body {
 }
 
 .title {
-  // font-size: 1.4em;
   font-size: 1.7em;
   font-weight: 400;
   text-align: center;
@@ -196,7 +207,6 @@ a {
   }
 }
 
-
 .active-selection-main {
   border: 2px solid #286090 !important;
   color: #286090 !important;
@@ -205,15 +215,13 @@ a {
 
 .active-selection-border {
   border: 2px solid var(--color-yellow) !important;
-  // color: var(--color-yellow) !important;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px !important;
-  // box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px !important;
 }
 
 .active-selection-whole {
   border: 2px solid #003366;
   color: var(--color-white) !important;
-  background-color:#286090 !important; //#0f48ae !important; // #003366 !important;
+  background-color:#286090 !important; 
 
   mat-icon {
     color: var(--color-white) !important;
@@ -275,7 +283,6 @@ a {
   &__box:hover {
     color: var(--color-primary-light);
     box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
-    // box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 
     mat-icon {
       color: var(--color-primary-light);

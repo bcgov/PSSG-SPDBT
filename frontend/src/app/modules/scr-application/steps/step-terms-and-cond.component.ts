@@ -1,5 +1,5 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { AgreementOfTermsComponent } from '../step-components/agreement-of-terms.component';
 
@@ -15,7 +15,10 @@ import { AgreementOfTermsComponent } from '../step-components/agreement-of-terms
 						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" class="large mb-2" (click)="onFormValidNextStep()">Pay</button>
+						<button mat-raised-button color="primary" class="large mb-2" (click)="onFormValidNextStep()">
+							<span *ngIf="paymentBy == 'APP'; else noPay">Pay</span>
+							<ng-template #noPay>Submit</ng-template>
+						</button>
 					</div>
 				</div>
 			</mat-step>
@@ -26,6 +29,8 @@ import { AgreementOfTermsComponent } from '../step-components/agreement-of-terms
 })
 export class StepTermsAndCondComponent {
 	@ViewChild('childstepper') childstepper!: MatStepper;
+
+	@Input() paymentBy!: 'APP' | 'ORG';
 
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
