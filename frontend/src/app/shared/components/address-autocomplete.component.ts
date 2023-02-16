@@ -19,7 +19,7 @@ import { debounceTime, switchMap } from 'rxjs/operators';
 			<div class="row">
 				<div class="col-12 pb-2">
 					<mat-form-field>
-						<mat-label>Address autocompleted by Canada Post</mat-label>
+						<mat-label>Address Autocompleted by Canada Post</mat-label>
 						<input matInput formControlName="autocomplete" type="search" [matAutocomplete]="auto" />
 						<mat-autocomplete #auto="matAutocomplete">
 							<mat-option

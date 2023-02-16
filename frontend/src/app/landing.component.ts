@@ -24,7 +24,7 @@ import { Router } from '@angular/router';
 			</div>
 
 			<div class="row mt-4">
-				<div class="offset-md-4 col-md-4 col-sm-12">
+				<div class="col-sm-12 col-md-4 col-lg-3 mx-auto">
 					<mat-radio-group [(ngModel)]="paymentBy">
 						<mat-radio-button value="APP">
 							<strong>Applicant Paying</strong>
