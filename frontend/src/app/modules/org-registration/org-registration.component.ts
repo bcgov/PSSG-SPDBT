@@ -3,6 +3,7 @@ import { StepperOrientation, StepperSelectionEvent } from '@angular/cdk/stepper'
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { distinctUntilChanged } from 'rxjs';
+import { RegistrationTypeCode } from 'src/app/api/models';
 import { OrgRegistrationService } from 'src/app/api/services';
 import { StepFourComponent } from './steps/step-four.component';
 import { StepOneComponent } from './steps/step-one.component';
@@ -68,7 +69,7 @@ export interface RegistrationFormStepComponent {
 	styles: [],
 })
 export class OrgRegistrationComponent implements OnInit {
-	registrationTypeCode = '';
+	registrationTypeCode: RegistrationTypeCode | null = null;
 	sendToEmailAddress = '';
 	orientation: StepperOrientation = 'vertical';
 
@@ -172,7 +173,7 @@ export class OrgRegistrationComponent implements OnInit {
 		stepper.next();
 	}
 
-	onSelectRegistrationType(type: string): void {
+	onSelectRegistrationType(type: RegistrationTypeCode): void {
 		this.registrationTypeCode = type;
 	}
 

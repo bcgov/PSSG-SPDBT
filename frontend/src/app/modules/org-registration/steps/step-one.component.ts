@@ -41,7 +41,7 @@ import { VulnerableSectorQuestionComponent } from '../step-components/vulnerable
 				</div>
 			</mat-step>
 
-			<mat-step *ngIf="showStep5">
+			<mat-step *ngIf="showStepOrganizationProblem">
 				<app-organization-problem></app-organization-problem>
 
 				<div class="row mt-4">
@@ -54,7 +54,7 @@ import { VulnerableSectorQuestionComponent } from '../step-components/vulnerable
 				</div>
 			</mat-step>
 
-			<mat-step *ngIf="showStep2">
+			<mat-step *ngIf="showStepFundingQuestion">
 				<app-funding-question></app-funding-question>
 
 				<div class="row mt-4">
@@ -67,7 +67,7 @@ import { VulnerableSectorQuestionComponent } from '../step-components/vulnerable
 				</div>
 			</mat-step>
 
-			<mat-step *ngIf="showStep4">
+			<mat-step *ngIf="showStepFundingProblem">
 				<app-funding-problem></app-funding-problem>
 
 				<div class="row mt-4">
@@ -80,7 +80,7 @@ import { VulnerableSectorQuestionComponent } from '../step-components/vulnerable
 				</div>
 			</mat-step>
 
-			<mat-step *ngIf="showStep3">
+			<mat-step *ngIf="showStepCompensationQuestion">
 				<app-compensation-question></app-compensation-question>
 
 				<div class="row mt-4">
@@ -124,16 +124,15 @@ import { VulnerableSectorQuestionComponent } from '../step-components/vulnerable
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepOneComponent {
-	showStep2 = false;
-	showStep3 = false;
-	showStep4 = false;
-	showStep5 = false;
-	showStep6 = false;
+	showStepFundingQuestion = false;
+	showStepCompensationQuestion = false;
+	showStepFundingProblem = false;
+	showStepOrganizationProblem = false;
 
 	registrationPathSelectionData: RegistrationPathSelectionModel = { registrationTypeCode: null };
 
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
-	@Output() selectRegistrationType: EventEmitter<string> = new EventEmitter<string>();
+	@Output() selectRegistrationType: EventEmitter<RegistrationTypeCode> = new EventEmitter<RegistrationTypeCode>();
 	@Output() clearRegistrationData: EventEmitter<boolean> = new EventEmitter<boolean>();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
 
@@ -167,12 +166,7 @@ export class StepOneComponent {
 	onStepNext(formNumber: number): void {
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
-
-		if (!this.showStep6) {
-			this.nextStepperStep.emit(true);
-		} else {
-			this.childstepper.next();
-		}
+		this.nextStepperStep.emit(true);
 	}
 
 	onFormValidNextStep(formNumber: number): void {
@@ -191,11 +185,15 @@ export class StepOneComponent {
 	}
 
 	onNoneApplyToOrganization(): void {
-		this.showStep5 = true;
+		this.showStepOrganizationProblem = true;
 		this.childstepper.next();
 	}
 
 	onStepSelectionChange(event: StepperSelectionEvent) {
+		if (event.selectedIndex == 1) {
+			const data = this.registrationPathSelectionComponent.getDataToSave();
+			this.selectRegistrationType.emit(data.registrationTypeCode!);
+		}
 		this.scrollIntoView.emit(true);
 	}
 
@@ -206,19 +204,21 @@ export class StepOneComponent {
 				this.registrationPathSelectionData = this.registrationPathSelectionComponent.getDataToSave();
 				return this.registrationPathSelectionComponent.isFormValid();
 			case 1:
-				this.showStep5 = false;
-				isValid = this.organizationOptionsComponent.isFormValid();
+				this.showStepFundingQuestion = false;
+				this.showStepCompensationQuestion = false;
+				this.showStepFundingProblem = false;
+				this.showStepOrganizationProblem = false;
 
+				isValid = this.organizationOptionsComponent.isFormValid();
 				if (isValid) {
 					const organizationOptionsData = this.organizationOptionsComponent.getDataToSave();
 					if (this.registrationPathSelectionData.registrationTypeCode == RegistrationTypeCode.Employee) {
-						this.showStep2 =
+						this.showStepFundingQuestion =
 							organizationOptionsData.employeeOrganizationType == EmployerOrganizationTypeCode.Funding ? true : false;
-						this.showStep3 = false;
 					} else {
-						this.showStep2 =
+						this.showStepFundingQuestion =
 							organizationOptionsData.volunteerOrganizationType == VolunteerOrganizationTypeCode.Funding ? true : false;
-						this.showStep3 = !this.showStep2;
+						this.showStepCompensationQuestion = !this.showStepFundingQuestion;
 					}
 				}
 				return isValid;
@@ -227,24 +227,14 @@ export class StepOneComponent {
 				isValid = this.fundingQuestionComponent.isFormValid();
 				if (isValid) {
 					const fundingQuestionData = this.fundingQuestionComponent.getDataToSave();
-					this.showStep4 = fundingQuestionData.operatingBudgetFlag == 'NO' ? true : false;
+					this.showStepFundingProblem = fundingQuestionData.operatingBudgetFlag == 'NO' ? true : false;
 				}
 				return isValid;
 			case 3:
 				this.compensationQuestionComponent.form.markAllAsTouched();
-				isValid = this.compensationQuestionComponent.isFormValid();
-				if (isValid) {
-					const compensationQuestionData = this.compensationQuestionComponent.getDataToSave();
-					this.showStep6 = compensationQuestionData.employeeMonetaryCompensationFlag == 'NEITHER' ? true : false;
-				}
-				return isValid;
+				return this.compensationQuestionComponent.isFormValid();
 			case 5:
-				isValid = this.vulnerableSectorQuestionComponent.isFormValid();
-				if (isValid) {
-					const vulnerableSectorQuestionData = this.vulnerableSectorQuestionComponent.getDataToSave();
-					this.showStep6 = vulnerableSectorQuestionData.employeeInteractionFlag == 'NEITHER' ? true : false;
-				}
-				return isValid;
+				return this.vulnerableSectorQuestionComponent.isFormValid();
 
 			default:
 				console.error('Unknown Form', step);

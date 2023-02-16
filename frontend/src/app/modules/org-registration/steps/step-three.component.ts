@@ -1,6 +1,7 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
+import { RegistrationTypeCode } from 'src/app/api/models';
 import { ContactInformationComponent } from '../step-components/contact-information.component';
 import { MailingAddressComponent } from '../step-components/mailing-address.component';
 import { OrganizationInformationComponent } from '../step-components/organization-information.component';
@@ -74,7 +75,7 @@ import { ScreeningsQuestionComponent } from '../step-components/screenings-quest
 				</div>
 			</mat-step>
 
-			<mat-step *ngIf="showStep13">
+			<mat-step *ngIf="showStepPaymentQuestion">
 				<app-payment-question></app-payment-question>
 				<!-- Note: This screen is only shows up when “employees" is selected -->
 
@@ -93,13 +94,14 @@ import { ScreeningsQuestionComponent } from '../step-components/screenings-quest
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepThreeComponent {
-	showStep13: boolean = false;
+	showStepPaymentQuestion: boolean = false;
 
-	private _registrationTypeCode!: string;
-	@Input() set registrationTypeCode(value: string) {
-		this.showStep13 = value == 'EMP' ? true : false;
+	private _registrationTypeCode: RegistrationTypeCode | null = null;
+	@Input() set registrationTypeCode(value: RegistrationTypeCode | null) {
+		this._registrationTypeCode = value;
+		this.showStepPaymentQuestion = value == RegistrationTypeCode.Employee ? true : false;
 	}
-	get registrationTypeCode(): string {
+	get registrationTypeCode(): RegistrationTypeCode | null {
 		return this._registrationTypeCode;
 	}
 
@@ -146,7 +148,7 @@ export class StepThreeComponent {
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 
-		if (!this.showStep13) {
+		if (!this.showStepPaymentQuestion) {
 			this.nextStepperStep.emit(true);
 		} else {
 			this.childstepper.next();

@@ -334,6 +334,9 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 	}
 
 	onNoneApply(): void {
+		this.employeeOrganizationType = null;
+		this.volunteerOrganizationType = null;
+
 		this.noneApply.emit(true);
 	}
 
