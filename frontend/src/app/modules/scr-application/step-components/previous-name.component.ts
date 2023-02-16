@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { BooleanTypeCode } from 'src/app/api/models';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { ScreeningFormStepComponent } from '../scr-application.component';
@@ -19,8 +20,8 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 								aria-label="Select an option"
 								formControlName="previousNameFlag"
 							>
-								<mat-radio-button value="YES"> Yes </mat-radio-button>
-								<ng-container *ngIf="previousNameFlag.value == 'YES'">
+								<mat-radio-button [value]="booleanTypeCodes.Yes"> Yes </mat-radio-button>
+								<ng-container *ngIf="previousNameFlag.value == booleanTypeCodes.Yes">
 									<div class="mt-3">
 										<ng-container
 											formArrayName="tableRows"
@@ -82,7 +83,7 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 
 								<mat-divider class="my-3"></mat-divider>
 
-								<mat-radio-button value="NO"> No </mat-radio-button>
+								<mat-radio-button [value]="booleanTypeCodes.No"> No </mat-radio-button>
 								<mat-error
 									*ngIf="
 										(form.get('previousNameFlag')?.dirty || form.get('previousNameFlag')?.touched) &&
@@ -116,6 +117,8 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 export class PreviousNameComponent implements OnInit, ScreeningFormStepComponent {
 	form!: FormGroup;
 	matcher = new FormErrorStateMatcher();
+
+	booleanTypeCodes = BooleanTypeCode;
 
 	constructor(private formBuilder: FormBuilder, private dialog: MatDialog) {}
 
@@ -184,7 +187,7 @@ export class PreviousNameComponent implements OnInit, ScreeningFormStepComponent
 
 	isFormValid(): boolean {
 		if (!this.previousNameFlag || !this.previousNameFlag.value) return false;
-		return this.previousNameFlag.value == 'YES' ? this.form.valid : true;
+		return this.previousNameFlag.value == BooleanTypeCode.Yes ? this.form.valid : true;
 	}
 
 	get previousNameFlag(): FormControl {

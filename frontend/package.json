@@ -3,9 +3,11 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "gen-api-all": "./node_modules/.bin/ng-openapi-gen -i http://localhost:53068/swagger/v1/swagger.json -o ./src/app/api",
-    "gen-api-tags": "./node_modules/.bin/ng-openapi-gen -i http://localhost:53068/swagger/v1/swagger.json -o ./src/app/api --includeTags $TAGS --removeStaleFiles false",
-    "start": "ng serve",
+    "gen-api": "ng-openapi-gen -i https://frontend-dev.apps.emerald.devops.gov.bc.ca/api/openapi/v1/openapi.json -o ./src/app/api --ignoreUnusedModels false",
+    "gen-api-all-local": "ng-openapi-gen -i http://localhost:53068/swagger/v1/swagger.json -o ./src/app/api",
+    "gen-api-tags-local": "ng-openapi-gen -i http://localhost:53068/swagger/v1/swagger.json -o ./src/app/api --includeTags $TAGS --removeStaleFiles false",
+    "start": "npm run gen-api && ng serve --port 4200 --proxy-config proxy.dev.conf.json",
+    "startlocal": "npm run gen-api-all-local && ng serve --port 4200 --proxy-config proxy.conf.json",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
@@ -22,6 +24,7 @@
     "@angular/platform-browser": "^15.1.0",
     "@angular/platform-browser-dynamic": "^15.1.0",
     "@angular/router": "^15.1.0",
+    "@bcgov/bc-sans": "^1.0.1",
     "@ngneat/until-destroy": "^9.2.3",
     "bootstrap": "^5.2.3",
     "jquery": "^3.6.3",

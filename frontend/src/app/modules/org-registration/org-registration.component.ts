@@ -44,7 +44,7 @@ export interface RegistrationFormStepComponent {
 				></app-step-two>
 			</mat-step>
 
-			<mat-step completed="false" editable="false">
+			<mat-step completed="false" editable="true">
 				<ng-template matStepLabel>Business Information</ng-template>
 				<app-step-three
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -96,6 +96,40 @@ export class OrgRegistrationComponent implements OnInit {
 				distinctUntilChanged()
 			)
 			.subscribe(() => this.breakpointChanged());
+
+		// const body: OrgRegistrationCreateRequest = {
+		// 	agreeToTermsAndConditions: false,
+		// 	contactDateOfBirth: '2023-02-04T00:11:05.865Z',
+		// 	checkFeePayer: CheckFeePayerTypeCode.Applicant,
+		// 	contactEmail: 'a@test.com',
+		// 	contactGivenName: 'string',
+		// 	contactJobTitle: 'string',
+		// 	contactPhoneNumber: '2506648787',
+		// 	contactSurname: 'string',
+		// 	employeeInteractionFlag: EmployeeInteractionTypeCode.Adults,
+		// 	employerOrganizationTypeCode: EmployerOrganizationTypeCode.Appointed,
+		// 	// volunteerOrganizationTypeCode: VolunteerOrganizationTypeCode.Childcare,
+		// 	genericEmail: 'b@con.com',
+		// 	genericEmailConfirmation: 'b@con.com',
+		// 	genericPhoneNumber: '2506648787',
+		// 	hasPhoneOrEmail: BooleanTypeCode.Yes,
+		// 	mailingAddressLine1: 'string',
+		// 	mailingAddressLine2: 'string',
+		// 	mailingCity: 'string',
+		// 	mailingCountry: 'string',
+		// 	mailingPostalCode: 'string',
+		// 	mailingProvince: 'string',
+		// 	operatingBudgetFlag: OperatingBudgetTypeCode.No,
+		// 	organizationName: 'test',
+		// 	registrationTypeCode: RegistrationTypeCode.Employee,
+		// 	screeningsCount: ScreeningsCountTypeCode.Less100,
+		// };
+		// this.orgRegistrationService
+		// 	.apiOrgRegistrationsPost({ body })
+		// 	.pipe()
+		// 	.subscribe((_res: any) => {
+		// 		this.stepFourComponent.childStepNext();
+		// 	});
 	}
 
 	onPreviousStepperStep(stepper: MatStepper): void {
@@ -103,6 +137,10 @@ export class OrgRegistrationComponent implements OnInit {
 	}
 
 	onSaveStepperStep(): void {
+		// Prevent step 3 from being edited
+		let step = this.stepper.steps.get(2);
+		if (step) step.editable = false;
+
 		let dataToSave = {};
 		if (this.stepOneComponent) {
 			dataToSave = { ...dataToSave, ...this.stepOneComponent.getStepData() };

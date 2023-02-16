@@ -1,8 +1,9 @@
 import { Component, EventEmitter, Output } from '@angular/core';
+import { RegistrationTypeCode } from 'src/app/api/models';
 import { RegistrationFormStepComponent } from '../org-registration.component';
 
 export class RegistrationPathSelectionModel {
-	registrationTypeCode: string = '';
+	registrationTypeCode: RegistrationTypeCode | null = null;
 }
 
 @Component({
@@ -14,8 +15,8 @@ export class RegistrationPathSelectionModel {
 				<div class="offset-lg-2 col-lg-4 offset-md-1 col-md-5 col-sm-6 mb-3">
 					<div
 						class="step-container__box"
-						(click)="onDataChange('EMP')"
-						[ngClass]="{ 'active-selection-main': registrationTypeCode == 'EMP' }"
+						(click)="onDataChange(registrationTypeCodes.Employee)"
+						[ngClass]="{ 'active-selection-main': registrationTypeCode == registrationTypeCodes.Employee }"
 					>
 						<ng-container *ngIf="displayHelp; else employeesHelp">
 							<div class="step-container__box__info">
@@ -54,8 +55,8 @@ export class RegistrationPathSelectionModel {
 				<div class="col-lg-4 col-md-5 col-sm-6 mb-3">
 					<div
 						class="step-container__box"
-						(click)="onDataChange('VOL')"
-						[ngClass]="{ 'active-selection-main': registrationTypeCode == 'VOL' }"
+						(click)="onDataChange(registrationTypeCodes.Volunteer)"
+						[ngClass]="{ 'active-selection-main': registrationTypeCode == registrationTypeCodes.Volunteer }"
 					>
 						<ng-container *ngIf="displayHelp; else volunteersHelp">
 							<div class="step-container__box__info">
@@ -104,13 +105,15 @@ export class RegistrationPathSelectionModel {
 	],
 })
 export class RegistrationPathSelectionComponent implements RegistrationFormStepComponent {
-	registrationTypeCode = '';
+	registrationTypeCode: RegistrationTypeCode | null = null;
 	isDirtyAndInvalid = false;
 	displayHelp = true;
 
+	registrationTypeCodes = RegistrationTypeCode;
+
 	@Output() clearData: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-	onDataChange(_val: string) {
+	onDataChange(_val: RegistrationTypeCode) {
 		if (this.registrationTypeCode) {
 			this.clearData.emit(true);
 		}
