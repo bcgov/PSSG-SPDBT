@@ -36,7 +36,13 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 						<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
 							<mat-form-field>
 								<mat-label>Birthplace</mat-label>
-								<input matInput formControlName="birthplace" maxlength="120" [errorStateMatcher]="matcher" />
+								<input
+									matInput
+									formControlName="birthplace"
+									placeholder="City, Country"
+									maxlength="120"
+									[errorStateMatcher]="matcher"
+								/>
 								<mat-error *ngIf="form.get('birthplace')?.hasError('required')">This is required</mat-error>
 								<mat-error *ngIf="form.get('birthplace')?.hasError('pattern')"> Only characters are allowed </mat-error>
 							</mat-form-field>
