@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { ScreeningFormStepComponent } from '../scr-application.component';
 
 @Component({
@@ -40,7 +41,7 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 						<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Job Title</mat-label>
-								<input matInput formControlName="jobTitle" />
+								<input matInput formControlName="jobTitle" [errorStateMatcher]="matcher" />
 								<mat-error *ngIf="form.get('jobTitle')?.hasError('required')">This is required</mat-error>
 							</mat-form-field>
 						</div>
@@ -65,6 +66,7 @@ export class SecurityInformationComponent implements ScreeningFormStepComponent 
 		jobTitle: new FormControl('', [Validators.required]),
 		vulnerableSectorCategory: new FormControl({ value: 'Division Pulled From Organization Type', disabled: true }),
 	});
+	matcher = new FormErrorStateMatcher();
 
 	constructor(private formBuilder: FormBuilder) {}
 

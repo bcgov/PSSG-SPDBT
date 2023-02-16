@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { BooleanTypeCode } from 'src/app/api/models';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { RegistrationFormStepComponent } from '../org-registration.component';
@@ -21,11 +22,11 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 							aria-label="Select an option"
 							formControlName="hasPhoneOrEmail"
 						>
-							<mat-radio-button value="YES">
+							<mat-radio-button [value]="booleanTypeCodes.Yes">
 								<strong>Yes</strong>, we have a team inbox or generic organization email and central team phone number.
 							</mat-radio-button>
 
-							<ng-container *ngIf="hasPhoneOrEmail.value == 'YES'">
+							<ng-container *ngIf="hasPhoneOrEmail.value == booleanTypeCodes.Yes">
 								<div class="row mt-2">
 									<div class="col-lg-4 col-md-12 col-sm-12">
 										<mat-form-field>
@@ -86,7 +87,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 							</ng-container>
 
 							<mat-divider class="my-3"></mat-divider>
-							<mat-radio-button value="NO">
+							<mat-radio-button [value]="booleanTypeCodes.No">
 								<strong>No</strong>, we have a team inbox or generic organization email and central team phone number.
 							</mat-radio-button>
 							<mat-error
@@ -117,6 +118,8 @@ export class OrganizationInformationComponent implements OnInit, RegistrationFor
 	form!: FormGroup;
 	matcher = new FormErrorStateMatcher();
 
+	booleanTypeCodes = BooleanTypeCode;
+
 	constructor(private formBuilder: FormBuilder) {}
 
 	ngOnInit(): void {
@@ -143,7 +146,7 @@ export class OrganizationInformationComponent implements OnInit, RegistrationFor
 
 	isFormValid(): boolean {
 		if (!this.hasPhoneOrEmail || !this.hasPhoneOrEmail.value) return false;
-		return this.hasPhoneOrEmail.value == 'YES' ? this.form.valid : true;
+		return this.hasPhoneOrEmail.value == BooleanTypeCode.Yes ? this.form.valid : true;
 	}
 
 	clearCurrentData(): void {

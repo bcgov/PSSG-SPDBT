@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ScreeningFormStepComponent } from '../scr-application.component';
 
@@ -113,6 +113,10 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 	`,
 	styles: [
 		`
+			li:not(:last-child) {
+				margin-bottom: 1em;
+			}
+
 			.conditions {
 				border: 1px solid var(--color-grey-light);
 				max-height: 300px;
@@ -123,19 +127,15 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 		`,
 	],
 })
-export class AgreementOfTermsComponent implements OnInit, ScreeningFormStepComponent {
-	form!: FormGroup;
+export class AgreementOfTermsComponent implements ScreeningFormStepComponent {
+	form: FormGroup = this.formBuilder.group({
+		agreeToCriminalCheck: new FormControl('', [Validators.required]),
+		agreeToVulnerableSectorSearch: new FormControl('', [Validators.required]),
+	});
 	hasScrolledToBottom = false;
 	displayScrollToBottomMessage = false;
 
 	constructor(private formBuilder: FormBuilder) {}
-
-	ngOnInit(): void {
-		this.form = this.formBuilder.group({
-			agreeToCriminalCheck: new FormControl('', [Validators.required]),
-			agreeToVulnerableSectorSearch: new FormControl('', [Validators.required]),
-		});
-	}
 
 	getDataToSave(): any {
 		return this.form.value;
