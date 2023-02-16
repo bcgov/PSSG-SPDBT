@@ -1,13 +1,14 @@
 /* tslint:disable */
 /* eslint-disable */
-export enum EmployerOrganizationTypeCode {
+export enum VolunteerOrganizationTypeCode {
+  HealthProfessional = 'HEALTH_PROFESSIONAL',
+  NonProfit = 'NON_PROFIT',
   Childcare = 'CHILDCARE',
   Healthcare = 'HEALTHCARE',
   Education = 'EDUCATION',
   Funding = 'FUNDING',
   CrownCorp = 'CROWN_CORP',
   ProvGov = 'PROV_GOV',
-  HealthProfessional = 'HEALTH_PROFESSIONAL',
-  GovnBody = 'GOVN_BODY',
-  Appointed = 'APPOINTED'
+  Municipality = 'MUNICIPALITY',
+  PostSecondary = 'POST_SECONDARY'
 }
