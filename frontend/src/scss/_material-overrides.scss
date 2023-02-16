@@ -2,6 +2,7 @@
 
 button.mdc-button {
   width: 100%;
+  letter-spacing: var(--mdc-typography-button-letter-spacing, 0.02em);
 
   &.large {
     height: 46px;

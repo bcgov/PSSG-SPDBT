@@ -6,28 +6,42 @@ import { Router } from '@angular/router';
 	template: `
 		<mat-toolbar color="primary" class="header">
 			<span>
-				<img src="assets/gov_bc_logo_blue.png" alt="Government of BC Logo" style="padding-bottom: 12px;" />
+				<img
+					src="assets/gov_bc_logo_blue.png"
+					alt="Government of BC Logo"
+					class="gov-bc-logo"
+					(click)="goToLanding()"
+				/>
 			</span>
-			<mat-divider vertical class="mx-3" style="height: 70%; border-right-color: gray;"></mat-divider>
-			<div class="heading pl-3" (click)="goToLanding()">{{ title }}</div>
+			<mat-divider vertical class="header-divider mx-3"></mat-divider>
+			<div class="header-text pl-3" (click)="goToLanding()">{{ title }}</div>
 		</mat-toolbar>
 	`,
 	styles: [
 		`
-			.header {
-				border-bottom: 3px solid var(--color-yellow);
-			}
-
 			.mat-toolbar-row,
 			.mat-toolbar-single-row {
 				height: 74px;
 			}
 
-			.heading {
+			.gov-bc-logo {
+				padding-bottom: 12px;
+				cursor: pointer;
+			}
+
+			.header {
+				border-bottom: 3px solid var(--color-yellow);
+			}
+
+			.header-text {
 				white-space: normal;
 				font-size: 1.3rem;
-				font-weight: 300;
 				cursor: pointer;
+			}
+
+			.header-divider {
+				height: 70%;
+				border-right-color: gray;
 			}
 		`,
 	],

@@ -1,5 +1,5 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { AgreementOfTermsComponent } from '../step-components/agreement-of-terms.component';
 import { DeclarationComponent } from '../step-components/declaration.component';
@@ -8,7 +8,7 @@ import { DeclarationComponent } from '../step-components/declaration.component';
 	selector: 'app-step-appl-submitted',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step>
+			<mat-step *ngIf="paymentBy == 'APP'">
 				<app-payment></app-payment>
 
 				<div class="row mt-4">
@@ -47,6 +47,8 @@ import { DeclarationComponent } from '../step-components/declaration.component';
 })
 export class StepApplSubmittedComponent {
 	@ViewChild('childstepper') childstepper!: MatStepper;
+
+	@Input() paymentBy!: 'APP' | 'ORG';
 
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
