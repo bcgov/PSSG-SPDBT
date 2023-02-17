@@ -10,7 +10,7 @@ on:
 
 jobs:
   build-deploy-organization-registration:
-    uses: ./.github/workflows/ci-workflow.yml
-    with:
-      DOCKER_CONTEXT: frontend
-      DOCKER_FILE: frontend/Dockerfile
+#    uses: ./.github/workflows/ci-workflow.yml
+ #   with:
+  #    DOCKER_CONTEXT: frontend
+   #   DOCKER_FILE: frontend/Dockerfile
