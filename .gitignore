@@ -29,3 +29,4 @@ backend/SPD.Api/Properties/launchSettings.json
 
 
 
+/src/Spd.Utilities.Messaging/Contract/IBus.cs

@@ -1,0 +1,42 @@
+﻿{
+  "ProviderId": "Microsoft.OData.ConnectedService",
+  "Version": "1.0.1.0",
+  "GettingStartedDocument": {
+    "Uri": "http://odata.github.io/odata.net/"
+  },
+  "ExtendedData": {
+    "EnableNamingAlias": true,
+    "IgnoreUnexpectedElementsAndAttributes": true,
+    "IncludeT4File": false,
+    "ExcludedOperationImports": [],
+    "ExcludedBoundOperations": [],
+    "ServiceName": "OData Service",
+    "Endpoint": "https://spd-sparc.dev.jag.gov.bc.ca/api/data/v9.0/$metadata",
+    "EdmxVersion": {
+      "Major": 4,
+      "Minor": 0,
+      "Build": 0,
+      "Revision": 0,
+      "MajorRevision": 0,
+      "MinorRevision": 0
+    },
+    "GeneratedFileNamePrefix": "Reference",
+    "UseNamespacePrefix": false,
+    "NamespacePrefix": null,
+    "UseDataServiceCollection": true,
+    "MakeTypesInternal": false,
+    "OpenGeneratedFilesInIDE": false,
+    "GenerateMultipleFiles": false,
+    "CustomHttpHeaders": "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ims0Y3BkRmdybU0yMHJhcThYVVRxMVlpaXNISSJ9.eyJhdWQiOiJodHRwczovL3NwZC1zcGFyYy5kZXYuamFnLmdvdi5iYy5jYS9hcGkvZGF0YS92OS4wLyIsImlzcyI6Imh0dHA6Ly9zdHN0ZXN0Lmdvdi5iYy5jYS9hZGZzL3NlcnZpY2VzL3RydXN0IiwiaWF0IjoxNjc2NTgyNDc4LCJleHAiOjE2NzY1ODYwNzgsInVwbiI6InNwZF9vc2FkQGdvdi5iYy5jYSIsInVuaXF1ZV9uYW1lIjoiSURJUlxcU1BEX09TQUQiLCJhcHB0eXBlIjoiQ29uZmlkZW50aWFsIiwiYXBwaWQiOiIwMTc0YjIwMy1jZGNmLTQxNjQtODUzMi0wYTRjNGZkZmRmNjIiLCJhdXRobWV0aG9kIjoidXJuOm9hc2lzOm5hbWVzOnRjOlNBTUw6Mi4wOmFjOmNsYXNzZXM6UGFzc3dvcmRQcm90ZWN0ZWRUcmFuc3BvcnQiLCJhdXRoX3RpbWUiOiIyMDIzLTAyLTE2VDIxOjIxOjE4LjIyMVoiLCJ2ZXIiOiIxLjAiLCJzY3AiOiJvcGVuaWQifQ.f62nLegAsi7INXXFL3Wj8GVDloKYho-Zts9k9B3crk1GHrk6golbAFvu_-yDUrzM6AMcj8N6ZCu-s0agJEvbNT5ySomt64K-yOUlBOuU0sd6N8xA5rD_YwSTyLUJtjCtZxSPizu3NgQZJMbOfyPlSNaA52cxqsVF4TT8MOZ6Ae2Eu8vJJcvExxds_2zcdBJZe7smE_rDrFQBQMrvgaOxzFsdx3glOb1KDNKTTm6dJQlsire5iChpsD6Ws4cODlLhjQvtGjTAoE9kfbe-52VFA1vA0h5dFX8YpeaItnFyotDyh4hBlzEw7iI8RSAlWqyOBS8_iR4sK8PqtcfVoBf_DA",
+    "IncludeWebProxy": false,
+    "WebProxyHost": null,
+    "IncludeWebProxyNetworkCredentials": false,
+    "StoreWebProxyNetworkCredentials": false,
+    "WebProxyNetworkCredentialsUsername": null,
+    "WebProxyNetworkCredentialsPassword": null,
+    "WebProxyNetworkCredentialsDomain": null,
+    "IncludeCustomHeaders": true,
+    "StoreCustomHttpHeaders": true,
+    "ExcludedSchemaTypes": []
+  }
+}
