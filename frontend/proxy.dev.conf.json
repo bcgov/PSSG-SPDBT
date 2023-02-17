@@ -1,8 +1,0 @@
-{
-  "/api": {
-    "target": "https://frontend-dev.apps.emerald.devops.gov.bc.ca",
-    "secure": false,
-    "changeOrigin": true,
-    "logLevel": "debug"
-  }
-}
