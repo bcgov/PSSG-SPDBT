@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="ClientApp\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.2.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Spd.Infrastructure.Common\Spd.Infrastructure.Common.csproj" />
+    <ProjectReference Include="..\Spd.Manager.Membership\Spd.Manager.Membership.csproj" />
+    <ProjectReference Include="..\Spd.Utilities.Dynamics\Spd.Utilities.Dynamics.csproj" />
+    <ProjectReference Include="..\Spd.Utilities.Messaging\Spd.Utilities.Messaging.csproj" />
+  </ItemGroup>
+
+</Project>
