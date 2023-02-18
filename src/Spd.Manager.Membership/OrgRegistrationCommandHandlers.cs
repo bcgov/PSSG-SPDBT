@@ -1,17 +1,24 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Spd.Infrastructure.Common;
+﻿using AutoMapper;
 using Spd.Manager.Membership.ViewModels;
+using Spd.Resource.Organizations;
 using Spd.Utilities.Messaging.Contract;
-using SPD.DynamicsProxy;
 
 namespace Spd.Manager.Membership
 {
     public class OrgRegistrationCommandHandlers
     {
-        public async Task Handle(CreateOrgRegistrationCommand createOrgRegistrationCommand, AppExecutionContext ctx)
+        public IOrganizationRepository _organizationRepository;
+        public IMapper _mapper;
+        public OrgRegistrationCommandHandlers(IOrganizationRepository organiztionRepository, IMapper mapper)
         {
-            var crmCtx = ctx.Services.GetRequiredService<IDynamicsContextFactory>().Create();
+            _organizationRepository = organiztionRepository;
+            _mapper = mapper;
+        }
 
+        public async Task Handle(CreateOrgRegistrationCommand createOrgRegistrationCommand, CancellationToken cancellationToken)
+        {
+            var createOrgRegistration = _mapper.Map<CreateRegistrationCmd>(createOrgRegistrationCommand.CreateOrgRegistrationRequest);
+            await _organizationRepository.RegisterAsync(createOrgRegistration, cancellationToken);
         }
     }
     public record CreateOrgRegistrationCommand(OrgRegistrationCreateRequest CreateOrgRegistrationRequest) : Command;
