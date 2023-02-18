@@ -11,6 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.2.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
@@ -18,7 +20,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Spd.Infrastructure.Common\Spd.Infrastructure.Common.csproj" />
     <ProjectReference Include="..\Spd.Manager.Membership\Spd.Manager.Membership.csproj" />
+    <ProjectReference Include="..\Spd.Resource.Organizations\Spd.Resource.Organizations.csproj" />
     <ProjectReference Include="..\Spd.Utilities.Dynamics\Spd.Utilities.Dynamics.csproj" />
+    <ProjectReference Include="..\Spd.Utilities.Hosting\Spd.Utilities.Hosting.csproj" />
     <ProjectReference Include="..\Spd.Utilities.Messaging\Spd.Utilities.Messaging.csproj" />
   </ItemGroup>
 

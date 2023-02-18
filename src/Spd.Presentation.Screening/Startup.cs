@@ -1,24 +1,44 @@
 ﻿using FluentValidation.AspNetCore;
+using Microsoft.Extensions.Configuration;
 using Spd.Infrastructure.Common;
 using Spd.Manager.Membership;
+using Spd.Resource.Organizations;
+using Spd.Utilities.Hosting;
 using Spd.Utilities.Messaging;
 using SPD.DynamicsProxy;
+using System.Reflection;
 using System.Text.Json.Serialization;
 
 namespace Spd.Presentation.Screening
 {
     public class Startup
     {
-        public IConfiguration Configuration { get; }
+        public IConfiguration _configuration { get; }
+        public IWebHostEnvironment _hostEnvironment { get; }
+        public Assembly[] _assemblies { get; }
 
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment hostEnvironment)
         {
-            Configuration = configuration;
+            string assembliesPrefix = "Spd";
+            _configuration = configuration;
+            _hostEnvironment = hostEnvironment;
+#pragma warning disable S3885 // "Assembly.Load" should be used
+            _assemblies = Directory.GetFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty, "*.dll", SearchOption.TopDirectoryOnly)
+                 .Where(assembly =>
+                 {
+                     var assemblyName = Path.GetFileName(assembly);
+                     return !assemblyName.StartsWith("System.") && !assemblyName.StartsWith("Microsoft.") && (string.IsNullOrEmpty(assembliesPrefix) || assemblyName.StartsWith(assembliesPrefix));
+                 })
+                 .Select(assembly => Assembly.LoadFrom(assembly))
+                 .ToArray();
+#pragma warning restore S3885 // "Assembly.Load" should be used
         }
 
         public void RegisterServices(IServiceCollection services)
         {
             // Add services to the container.
+            services.ConfigureCors(_configuration);
+
             services
                 .AddEndpointsApiExplorer()
                 .AddSwaggerGen()
@@ -30,11 +50,15 @@ namespace Spd.Presentation.Screening
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<FluentValidationEntry>());
             ;
 
+            services.AddAutoMapper(typeof(AutoMapperEntrypoint).Assembly);
+            services.AddDistributedMemoryCache();
             services
-              .AddDynamicsProxy(Configuration)
+              .AddDynamicsProxy(_configuration)
               //.AddStorageProxy(builder.Configuration)
               .AddInMemoryBus()
               .AddTransient<AppExecutionContextMiddleware>();
+
+            services.ConfigureComponentServices(_configuration, _hostEnvironment, _assemblies);
 
         }
 
@@ -50,6 +74,8 @@ namespace Spd.Presentation.Screening
 
             app.UseStaticFiles();
             app.UseRouting();
+
+            app.ConfigureComponentPipeline(_configuration, _hostEnvironment, _assemblies);
 
             app.MapControllerRoute(
                 name: "default",
