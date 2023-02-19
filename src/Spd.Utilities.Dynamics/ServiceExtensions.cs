@@ -4,7 +4,7 @@ using Microsoft.OData.Extensions.Client;
 
 namespace SPD.DynamicsProxy
 {
-    public static class ServiceExtension
+    public static class ServiceExtensions
     {
         public static IServiceCollection AddDynamicsProxy(this IServiceCollection services, IConfiguration configuration)
         {
@@ -14,7 +14,7 @@ namespace SPD.DynamicsProxy
 
             services
                 .AddHttpClient("oauth")
-                .SetHandlerLifetime(TimeSpan.FromMinutes(30))
+                .SetHandlerLifetime(TimeSpan.FromMinutes(50))
                ;
 
             services.AddSingleton<ISecurityTokenProvider, OauthSecurityTokenProvider>();
@@ -24,7 +24,7 @@ namespace SPD.DynamicsProxy
                 .AddODataClientHandler<ODataClientHandler>()
                 .AddHttpClient()
                 .ConfigureHttpClient(c => c.Timeout = options.HttpClientTimeout)
-                .SetHandlerLifetime(TimeSpan.FromMinutes(30))
+                .SetHandlerLifetime(TimeSpan.FromMinutes(50))
                 ;
 
             services.AddSingleton<IDynamicsContextFactory, DynamicsContextFactory>();
