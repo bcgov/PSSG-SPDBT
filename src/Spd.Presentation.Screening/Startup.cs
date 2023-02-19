@@ -1,10 +1,7 @@
 ﻿using FluentValidation.AspNetCore;
-using Microsoft.Extensions.Configuration;
-using Spd.Infrastructure.Common;
+using MediatR;
 using Spd.Manager.Membership;
-using Spd.Resource.Organizations;
 using Spd.Utilities.Hosting;
-using Spd.Utilities.Messaging;
 using SPD.DynamicsProxy;
 using System.Reflection;
 using System.Text.Json.Serialization;
@@ -50,22 +47,18 @@ namespace Spd.Presentation.Screening
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<FluentValidationEntry>());
             ;
 
-            services.AddAutoMapper(typeof(AutoMapperEntrypoint).Assembly);
+            services.AddAutoMapper(_assemblies);
+            services.AddMediatR(typeof(Spd.Manager.Membership.MediatREntrypoint).Assembly);
             services.AddDistributedMemoryCache();
             services
-              .AddDynamicsProxy(_configuration)
-              //.AddStorageProxy(builder.Configuration)
-              .AddInMemoryBus()
-              .AddTransient<AppExecutionContextMiddleware>();
+              .AddDynamicsProxy(_configuration);
+            //.AddStorageProxy(builder.Configuration);
 
             services.ConfigureComponentServices(_configuration, _hostEnvironment, _assemblies);
-
         }
 
         public void SetupHttpRequestPipeline(WebApplication app, IWebHostEnvironment env)
         {
-            app.UseMiddleware<AppExecutionContextMiddleware>();
-
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();

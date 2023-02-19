@@ -17,6 +17,7 @@ namespace Spd.Resource.Organizations
         public async Task<bool> RegisterAsync(CreateRegistrationCmd createRegistrationCmd, CancellationToken cancellationToken)
         {
             //need to investigate how to validate the request.
+            //need to move validate to manager.
             var existed = _dynaContext.Spd_orgregistrations.Where(s => s.Spd_organizationname == createRegistrationCmd.OrganizationName).ToList();
             if (existed.Count == 0)
             {
@@ -31,6 +32,7 @@ namespace Spd.Resource.Organizations
             return true;
         }
 
+ 
         public async Task<List<RegistrationResponse>> GetAllOrgRegistrations()
         {
             var orgs = await _dynaContext.Spd_orgregistrations.GetAllPagesAsync();
