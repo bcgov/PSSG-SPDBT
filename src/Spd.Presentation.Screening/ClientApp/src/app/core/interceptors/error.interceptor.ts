@@ -17,19 +17,25 @@ export class ErrorInterceptor implements HttpInterceptor {
 				console.error('ErrorInterceptor errorResponse', errorResponse);
 
 				if (errorResponse.error) {
-					const currentErrors = JSON.parse(errorResponse.error);
-					if (currentErrors.title) {
-						title = `${currentErrors.title}`;
-					}
+					const isJson = this.isJson(errorResponse.error);
+					if (isJson) {
+						const currentErrors = JSON.parse(errorResponse.error);
+						if (currentErrors.title) {
+							title = `${currentErrors.title}`;
+						}
 
-					message = '<ul>';
-					Object.keys(currentErrors.errors).forEach((key: any) => {
-						const propVal = currentErrors.errors[key];
-						propVal.forEach((val: any) => {
-							message += `<li>${val}</li>`;
+						message = '<ul>';
+						Object.keys(currentErrors.errors).forEach((key: any) => {
+							const propVal = currentErrors.errors[key];
+							propVal.forEach((val: any) => {
+								message += `<li>${val}</li>`;
+							});
 						});
-					});
-					message += '</ul>';
+						message += '</ul>';
+					} else {
+						title = errorResponse.statusText;
+						message = errorResponse.message;
+					}
 
 					// if (errorResponse.error?.error) {
 					// 	const currentError = errorResponse.error.error as Error;
@@ -71,5 +77,14 @@ export class ErrorInterceptor implements HttpInterceptor {
 				return throwError(() => new Error(message));
 			})
 		) as Observable<HttpEvent<any>>;
+	}
+
+	private isJson(str: any): boolean {
+		try {
+			JSON.parse(str);
+		} catch (e) {
+			return false;
+		}
+		return true;
 	}
 }
