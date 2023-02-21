@@ -21,12 +21,5 @@ bld/
 .vs/
 
 # .NET Core
-backend/SPD.Api/appsettings.Development.json
-backend/SPD.Api/Properties/launchSettings.json
-
-
-
-
-
-
-/src/Spd.Utilities.Messaging/Contract/IBus.cs
+src/Spd.Presentation.Screening/appsettings.Development.json
+src/Spd.Presentation.Screening/Properties/launchSettings.json
