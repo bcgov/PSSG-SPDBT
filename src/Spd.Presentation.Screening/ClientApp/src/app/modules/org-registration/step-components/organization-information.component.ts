@@ -78,9 +78,12 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 												required
 												[errorStateMatcher]="matcher"
 											/>
-											<mat-error *ngIf="form.get('genericPhoneNumber')?.hasError('required')"
-												>This is required</mat-error
-											>
+											<mat-error *ngIf="form.get('genericPhoneNumber')?.hasError('required')">
+												This is required
+											</mat-error>
+											<mat-error *ngIf="form.get('genericPhoneNumber')?.hasError('mask')">
+												This must be 10 digits
+											</mat-error>
 										</mat-form-field>
 									</div>
 								</div>

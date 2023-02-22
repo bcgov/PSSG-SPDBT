@@ -174,7 +174,7 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 				'Public sector organizations that report to the provincial government (examples: BC Housing, BC Transit)',
 		},
 		{
-			code: EmployerOrganizationTypeCode.ProvGov,
+			code: EmployerOrganizationTypeCode.ProvGovt,
 			icon: '/assets/4a.png',
 			selectedIcon: '/assets/4b.png',
 			text: 'A provincial government ministry or related agency',
@@ -182,7 +182,7 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 			helpText: 'Examples: Ministry of Children and Family Development, BC Corrections',
 		},
 		{
-			code: EmployerOrganizationTypeCode.HealthProfessional,
+			code: EmployerOrganizationTypeCode.Registrant,
 			icon: '/assets/5a.png',
 			selectedIcon: '/assets/5b.png',
 			text: 'A registered health professional or social worker',
@@ -211,7 +211,7 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 
 	options_vol = [
 		{
-			code: VolunteerOrganizationTypeCode.HealthProfessional,
+			code: VolunteerOrganizationTypeCode.Registrant,
 			icon: '/assets/5a.png',
 			selectedIcon: '/assets/5b.png',
 			text: 'A registered health professional or social worker',
@@ -251,7 +251,7 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 			helpText: null,
 		},
 		{
-			code: VolunteerOrganizationTypeCode.Funding,
+			code: VolunteerOrganizationTypeCode.ProvFunded,
 			icon: '/assets/8a.png',
 			selectedIcon: '/assets/8b.png',
 			text: 'An organization or person who receives ongoing provincial funding',
@@ -269,7 +269,7 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 				'Public sector organizations that report to the provincial government (examples: BC Housing, BC Transit)',
 		},
 		{
-			code: VolunteerOrganizationTypeCode.ProvGov,
+			code: VolunteerOrganizationTypeCode.ProvGovt,
 			icon: '/assets/9a.png',
 			selectedIcon: '/assets/9b.png',
 			text: 'A provincial government ministry or related agency',
@@ -285,7 +285,7 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 			helpText: null,
 		},
 		{
-			code: VolunteerOrganizationTypeCode.PostSecondary,
+			code: VolunteerOrganizationTypeCode.PostSec,
 			icon: '/assets/12a.png',
 			selectedIcon: '/assets/12b.png',
 			text: 'A post-secondary institution',

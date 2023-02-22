@@ -27,12 +27,12 @@ namespace Spd.Resource.Organizations
             }
             else
             {
-                throw new Exception("the organization has been registered.");
+                throw new Exception("the organization has already been registered.");
             }
             return true;
         }
 
- 
+
         public async Task<List<RegistrationResponse>> GetAllOrgRegistrations()
         {
             var orgs = await _dynaContext.Spd_orgregistrations.GetAllPagesAsync();
