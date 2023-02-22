@@ -74,9 +74,9 @@ export class VulnerableSectorQuestionModel {
 					<div
 						class="step-container__box px-2 pb-3"
 						style="padding-top: 32px;"
-						(click)="onDataChange(employeeInteractionTypeCodes.ChildrenAdults)"
+						(click)="onDataChange(employeeInteractionTypeCodes.ChildrenAndAdults)"
 						[ngClass]="{
-							'active-selection-whole': employeeInteractionFlag == employeeInteractionTypeCodes.ChildrenAdults
+							'active-selection-whole': employeeInteractionFlag == employeeInteractionTypeCodes.ChildrenAndAdults
 						}"
 					>
 						<div class="icon-container d-none d-md-block"><mat-icon>diversity_3</mat-icon></div>

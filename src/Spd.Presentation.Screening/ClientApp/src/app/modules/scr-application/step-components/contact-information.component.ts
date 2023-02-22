@@ -11,9 +11,12 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 		<section class="step-section pt-4 pb-5 px-3">
 			<form [formGroup]="form" novalidate>
 				<div class="step">
-					<div class="title mb-5">Review and update your contact information:</div>
+					<div class="title mb-5">
+						Confirm your information:
+						<div class="title__sub-title mt-2">Legal name must match your government-issued identification</div>
+					</div>
 					<div class="row">
-						<div class="offset-lg-1 col-lg-3 col-md-6 col-sm-12">
+						<div class="offset-lg-1 col-lg-3 col-md-12 col-sm-12">
 							<mat-form-field>
 								<mat-label>Legal Given Name</mat-label>
 								<input matInput formControlName="contactGivenName" [errorStateMatcher]="matcher" />
@@ -25,14 +28,25 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 						</div>
 						<div class="col-lg-3 col-md-6 col-sm-12">
 							<mat-form-field>
-								<mat-label>Middle Name(s) <span class="optional-label">(optional)</span></mat-label>
-								<input matInput formControlName="contactMiddleNames" [errorStateMatcher]="matcher" />
-								<mat-error *ngIf="form.get('contactMiddleNames')?.hasError('namealpha')">
+								<mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
+								<input matInput formControlName="contactMiddleName1" [errorStateMatcher]="matcher" />
+								<mat-error *ngIf="form.get('contactMiddleName1')?.hasError('namealpha')">
 									Only characters are allowed
 								</mat-error>
 							</mat-form-field>
 						</div>
-						<div class="col-lg-4 col-md-12 col-sm-12">
+						<div class="col-lg-3 col-md-6 col-sm-12">
+							<mat-form-field>
+								<mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
+								<input matInput formControlName="contactMiddleName2" [errorStateMatcher]="matcher" />
+								<mat-error *ngIf="form.get('contactMiddleName2')?.hasError('namealpha')">
+									Only characters are allowed
+								</mat-error>
+							</mat-form-field>
+						</div>
+					</div>
+					<div class="row">
+						<div class="offset-lg-1 col-lg-3 col-md-12 col-sm-12">
 							<mat-form-field>
 								<mat-label>Legal Surname</mat-label>
 								<input matInput formControlName="contactSurname" [errorStateMatcher]="matcher" />
@@ -41,13 +55,11 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 									Only characters are allowed
 								</mat-error>
 							</mat-form-field>
-							<div class="w-100 mb-2">
+							<div class="w-100 mb-4">
 								<mat-checkbox formControlName="oneLegalName"> I have one legal name </mat-checkbox>
 							</div>
 						</div>
-					</div>
-					<div class="row">
-						<div class="offset-lg-1 col-lg-3 col-md-6 col-sm-12">
+						<div class="col-lg-3 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Email Address</mat-label>
 								<input
@@ -67,6 +79,7 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 								<mat-label>Phone Number</mat-label>
 								<input matInput formControlName="contactPhoneNumber" mask="(000) 000-0000" [showMaskTyped]="true" />
 								<mat-error *ngIf="form.get('contactPhoneNumber')?.hasError('required')">This is required</mat-error>
+								<mat-error *ngIf="form.get('contactPhoneNumber')?.hasError('mask')">This must be 10 digits</mat-error>
 							</mat-form-field>
 						</div>
 					</div>
@@ -80,7 +93,8 @@ export class ContactInformationComponent implements ScreeningFormStepComponent {
 	form: FormGroup = this.formBuilder.group(
 		{
 			contactGivenName: new FormControl('Pulled-From-Portal', [FormControlValidators.namealpha, Validators.required]),
-			contactMiddleNames: new FormControl('', [FormControlValidators.namealpha]),
+			contactMiddleName1: new FormControl('', [FormControlValidators.namealpha]),
+			contactMiddleName2: new FormControl('', [FormControlValidators.namealpha]),
 			contactSurname: new FormControl('', [FormControlValidators.namealpha]),
 			contactEmail: new FormControl('Pulled@From.Portal', [Validators.email, Validators.required]),
 			contactPhoneNumber: new FormControl('6048185356', [Validators.required]),
