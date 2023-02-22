@@ -11,9 +11,9 @@ namespace Spd.Manager.Membership
     {
         private readonly IOrganizationRepository _organizationRepository;
         private readonly IMapper _mapper;
-        public OrgRegistrationManager(IOrganizationRepository organiztionRepository, IMapper mapper)
+        public OrgRegistrationManager(IOrganizationRepository organizationRepository, IMapper mapper)
         {
-            _organizationRepository = organiztionRepository;
+            _organizationRepository = organizationRepository;
             _mapper = mapper;
         }
 

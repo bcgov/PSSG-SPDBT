@@ -4,8 +4,8 @@
   "scripts": {
     "ng": "ng",
     "gen-api": "ng-openapi-gen -i https://frontend-dev.apps.emerald.devops.gov.bc.ca/api/openapi/v1/openapi.json -o ./src/app/api --ignoreUnusedModels false",
-    "gen-api-all-local": "ng-openapi-gen -i http://localhost:53068/swagger/v1/swagger.json -o ./src/app/api",
-    "gen-api-tags-local": "ng-openapi-gen -i http://localhost:53068/swagger/v1/swagger.json -o ./src/app/api --includeTags $TAGS --removeStaleFiles false",
+    "gen-api-all-local": "ng-openapi-gen -i http://localhost:5114/swagger/v1/swagger.json -o ./src/app/api",
+    "gen-api-tags-local": "ng-openapi-gen -i http://localhost:5114/swagger/v1/swagger.json -o ./src/app/api --includeTags $TAGS --removeStaleFiles false",
     "start": "npm run gen-api && ng serve --port 4200 --proxy-config proxy.dev.conf.json",
     "startlocal": "npm run gen-api-all-local && ng serve --port 4200 --proxy-config proxy.conf.json",
     "build": "ng build",

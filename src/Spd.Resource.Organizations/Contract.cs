@@ -12,25 +12,26 @@ namespace Spd.Resource.Organizations
     {
         public bool? AgreeToTermsAndConditions { get; set; } //map to?
         public DateTimeOffset? ContactDateOfBirth { get; set; }
-        public CheckFeePayerTypeCode CheckFeePayer { get; set; }
-        public string ContactEmail { get; set; }
-        public string ContactGivenName { get; set; }
-        public string ContactJobTitle { get; set; }
-        public string ContactPhoneNumber { get; set; }
-        public string ContactSurname { get; set; }
+        public PayerPreferenceTypeCode PayerPreference { get; set; }
+        public string? ContactEmail { get; set; }
+        public string? ContactGivenName { get; set; }
+        public string? ContactJobTitle { get; set; }
+        public string? ContactPhoneNumber { get; set; }
+        public string? ContactSurname { get; set; }
         public EmployeeInteractionTypeCode EmployeeInteractionFlag { get; set; }
-        public string GenericEmail { get; set; }
-        public string GenericEmailConfirmation { get; set; }
-        public string GenericPhoneNumber { get; set; }
+        public string? GenericEmail { get; set; }
+        public string? GenericEmailConfirmation { get; set; }
+        public string? GenericPhoneNumber { get; set; }
+        public BooleanTypeCode EmployeeMonetaryCompensationFlag { get; set; }
         public BooleanTypeCode HasPhoneOrEmail { get; set; }
-        public string MailingAddressLine1 { get; set; }
-        public string MailingAddressLine2 { get; set; }
-        public string MailingCity { get; set; }
-        public string MailingCountry { get; set; }
-        public string MailingPostalCode { get; set; }
-        public string MailingProvince { get; set; }
+        public string? MailingAddressLine1 { get; set; }
+        public string? MailingAddressLine2 { get; set; }
+        public string? MailingCity { get; set; }
+        public string? MailingCountry { get; set; }
+        public string? MailingPostalCode { get; set; }
+        public string? MailingProvince { get; set; }
         public OperatingBudgetTypeCode OperatingBudgetFlag { get; set; }
-        public string OrganizationName { get; set; }
+        public string? OrganizationName { get; set; }
         public EmployerOrganizationTypeCode? EmployerOrganizationTypeCode { get; set; }
         public VolunteerOrganizationTypeCode? VolunteerOrganizationTypeCode { get; set; }
         public RegistrationTypeCode RegistrationTypeCode { get; set; }
@@ -40,95 +41,71 @@ namespace Spd.Resource.Organizations
     public enum RegistrationTypeCode
     {
         [Description("Employee")]
-        EMPLOYEE,
+        Employee,
 
         [Description("Volunteer")]
-        VOLUNTEER
+        Volunteer
     }
 
     public enum EmployeeInteractionTypeCode
     {
-        CHILDREN,
-        ADULTS,
-        CHILDREN_ADULTS,
-        NEITHER
+        Children,
+        Adults,
+        ChildrenAndAdults,
+        Neither
     }
 
     public enum ScreeningsCountTypeCode
     {
-        LESS_100,
-
-        HUNDRED_TO_500,
-
-        MORE_500
+        LessThanOneHundred,
+        OneToFiveHundred,
+        MoreThanFiveHundred
     }
 
-    public enum CheckFeePayerTypeCode
+    public enum PayerPreferenceTypeCode
     {
-        ORGANIZATION,
-
-        APPLICANT
+        Organization,
+        Applicant
     }
 
     public enum BooleanTypeCode
     {
-        YES,
-
-        NO
+        Yes,
+        No
     }
 
     public enum OperatingBudgetTypeCode
     {
-        YES,
-
-        NO,
-
-        NOT_SURE
+        Yes,
+        No,
+        NotSure
     }
 
     public enum EmployerOrganizationTypeCode
     {
-
-        CHILDCARE,
-
-        HEALTHCARE,
-
-        EDUCATION,
-
-        FUNDING,
-
-        CROWN_CORP,
-
-        PROV_GOV,
-
-        HEALTH_PROFESSIONAL,
-
-        GOVN_BODY,
-
-        APPOINTED
+        Childcare,
+        Healthcare,
+        Education,
+        Funding,
+        CrownCorp,
+        ProvGovt,
+        Registrant,
+        GovnBody,
+        Appointed
     }
 
     public enum VolunteerOrganizationTypeCode
     {
-        HEALTH_PROFESSIONAL,
-
-        NON_PROFIT,
-
-        CHILDCARE,
-
-        HEALTHCARE,
-
-        EDUCATION,
-
-        FUNDING,
-
-        CROWN_CORP,
-
-        PROV_GOV,
-
-        MUNICIPALITY,
-
-        POST_SECONDARY,
+        NonProfit,
+        Childcare,
+        Healthcare,
+        Education,
+        ProvFunded,
+        CrownCorp,
+        ProvGovt,
+        Registrant,
+        Municipality,
+        PostSec,
     }
     public class RegistrationResponse
     {

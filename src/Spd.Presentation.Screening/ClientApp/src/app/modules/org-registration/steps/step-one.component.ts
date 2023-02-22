@@ -217,7 +217,9 @@ export class StepOneComponent {
 							organizationOptionsData.employeeOrganizationType == EmployerOrganizationTypeCode.Funding ? true : false;
 					} else {
 						this.showStepFundingQuestion =
-							organizationOptionsData.volunteerOrganizationType == VolunteerOrganizationTypeCode.Funding ? true : false;
+							organizationOptionsData.volunteerOrganizationType == VolunteerOrganizationTypeCode.ProvFunded
+								? true
+								: false;
 						this.showStepCompensationQuestion = !this.showStepFundingQuestion;
 					}
 				}
