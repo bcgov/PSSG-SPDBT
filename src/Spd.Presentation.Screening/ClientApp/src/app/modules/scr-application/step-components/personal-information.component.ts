@@ -9,7 +9,10 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 		<section class="step-section pt-4 pb-5 px-3">
 			<form [formGroup]="form" novalidate>
 				<div class="step">
-					<div class="title mb-5">Next, confirm your personal information:</div>
+					<div class="title mb-5">
+						Your personal information:
+						<div class="title__sub-title mt-2">Date of birth must match your government-issued identification</div>
+					</div>
 					<div class="row">
 						<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-12">
 							<mat-form-field>
@@ -28,7 +31,10 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 						<div class="col-lg-3 col-md-4 col-sm-12">
 							<mat-form-field>
 								<mat-label>BC Drivers License # <span class="optional-label">(optional)</span></mat-label>
-								<input matInput formControlName="driversLicenseNumber" />
+								<input matInput formControlName="driversLicenseNumber" mask="00000009" />
+								<mat-error *ngIf="form.get('driversLicenseNumber')?.hasError('mask')">
+									This must be 7 or 8 digits
+								</mat-error>
 							</mat-form-field>
 						</div>
 					</div>

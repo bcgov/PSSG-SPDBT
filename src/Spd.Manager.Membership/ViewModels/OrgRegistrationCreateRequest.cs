@@ -5,27 +5,28 @@ namespace Spd.Manager.Membership.ViewModels
 {
     public class OrgRegistrationCreateRequest
     {
-        public bool? AgreeToTermsAndConditions { get; set; } //map to?
+        public bool? AgreeToTermsAndConditions { get; set; } //do not map
         public DateTimeOffset? ContactDateOfBirth { get; set; }
-        public CheckFeePayerTypeCode CheckFeePayer { get; set; }
-        public string ContactEmail { get; set; }
-        public string ContactGivenName { get; set; }
-        public string ContactJobTitle { get; set; }
-        public string ContactPhoneNumber { get; set; }
-        public string ContactSurname { get; set; }
+        public PayerPreferenceTypeCode PayerPreference { get; set; }
+        public string? ContactEmail { get; set; }
+        public string? ContactGivenName { get; set; }
+        public string? ContactJobTitle { get; set; }
+        public string? ContactPhoneNumber { get; set; }
+        public string? ContactSurname { get; set; }
         public EmployeeInteractionTypeCode EmployeeInteractionFlag { get; set; }
-        public string GenericEmail { get; set; }
-        public string GenericEmailConfirmation { get; set; }
-        public string GenericPhoneNumber { get; set; }
+        public string? GenericEmail { get; set; }
+        public string? GenericEmailConfirmation { get; set; }
+        public string? GenericPhoneNumber { get; set; }
+        public BooleanTypeCode EmployeeMonetaryCompensationFlag { get; set; }
         public BooleanTypeCode HasPhoneOrEmail { get; set; }
-        public string MailingAddressLine1 { get; set; }
-        public string MailingAddressLine2 { get; set; }
-        public string MailingCity { get; set; }
-        public string MailingCountry { get; set; }
-        public string MailingPostalCode { get; set; }
-        public string MailingProvince { get; set; }
+        public string? MailingAddressLine1 { get; set; }
+        public string? MailingAddressLine2 { get; set; }
+        public string? MailingCity { get; set; }
+        public string? MailingCountry { get; set; }
+        public string? MailingPostalCode { get; set; }
+        public string? MailingProvince { get; set; }
         public OperatingBudgetTypeCode OperatingBudgetFlag { get; set; }
-        public string OrganizationName { get; set; }
+        public string? OrganizationName { get; set; }
         public EmployerOrganizationTypeCode? EmployerOrganizationTypeCode { get; set; }
         public VolunteerOrganizationTypeCode? VolunteerOrganizationTypeCode { get; set; }
         public RegistrationTypeCode RegistrationTypeCode { get; set; }
@@ -35,131 +36,131 @@ namespace Spd.Manager.Membership.ViewModels
     public enum RegistrationTypeCode
     {
         [Description("Employee")]
-        EMPLOYEE,
+        Employee,
 
         [Description("Volunteer")]
-        VOLUNTEER
+        Volunteer
     }
 
     public enum EmployeeInteractionTypeCode
     {
         [Description("My employees work with children")]
-        CHILDREN,
+        Children,
 
         [Description("My employees work with vulnerable adults")]
-        ADULTS,
+        Adults,
 
         [Description("My employees work with children and vulnerable adults")]
-        CHILDREN_ADULTS,
+        ChildrenAndAdults,
 
         [Description("Neither")]
-        NEITHER
+        Neither
     }
 
     public enum ScreeningsCountTypeCode
     {
         [Description("0 - 100")]
-        LESS_100,
+        LessThanOneHundred,
 
         [Description("100 - 500")]
-        HUNDRED_TO_500,
+        OneToFiveHundred,
 
         [Description("More than 500")]
-        MORE_500
+        MoreThanFiveHundred
     }
 
-    public enum CheckFeePayerTypeCode
+    public enum PayerPreferenceTypeCode
     {
         [Description("Organization")]
-        ORGANIZATION,
+        Organization,
 
         [Description("Applicant")]
-        APPLICANT
+        Applicant
     }
 
     public enum BooleanTypeCode
     {
         [Description("Yes")]
-        YES,
+        Yes,
 
         [Description("No")]
-        NO
+        No
     }
 
     public enum OperatingBudgetTypeCode
     {
         [Description("Yes")]
-        YES,
+        Yes,
 
         [Description("No")]
-        NO,
+        No,
 
         [Description("Not Sure")]
-        NOT_SURE
+        NotSure
     }
 
     public enum EmployerOrganizationTypeCode
     {
 
         [Description("A childcare facility or daycare")]
-        CHILDCARE,
+        Childcare,
 
         [Description("A health board, hospital, or care facility")]
-        HEALTHCARE,
+        Healthcare,
 
         [Description("A school board or education authority")]
-        EDUCATION,
+        Education,
 
         [Description("An organization or person who receives ongoing provincial funding")]
-        FUNDING,
+        Funding,
 
         [Description("A mainly government-owned corporation")]
-        CROWN_CORP,
+        CrownCorp,
 
         [Description("A provincial government ministry or related agency")]
-        PROV_GOV,
+        ProvGovt,
 
         [Description("A registered health professional or social worker")]
-        HEALTH_PROFESSIONAL,
+        Registrant,
 
         [Description("A governing body under the Health Professions Act or the Social Workers Act")]
-        GOVN_BODY,
+        GovnBody,
 
         [Description("An act- or minister-appointed board, commission, or council")]
-        APPOINTED
+        Appointed
     }
 
     public enum VolunteerOrganizationTypeCode
     {
         [Description("A registered health professional or social worker")]
-        HEALTH_PROFESSIONAL,
+        Registrant,
 
         [Description("A registered non profit organization")]
-        NON_PROFIT,
+        NonProfit,
 
         [Description("A childcare facility or daycare")]
-        CHILDCARE,
+        Childcare,
 
         [Description("A health board, hospital or care facility")]
-        HEALTHCARE,
+        Healthcare,
 
         [Description("A school board or education authority")]
-        EDUCATION,
+        Education,
 
         [Description("An organization or person who receives ongoing provincial funding")]
-        FUNDING,
+        ProvFunded,
 
         [Description("A mainly government-owned corporation")]
-        CROWN_CORP,
+        CrownCorp,
 
         [Description("A provincial government ministry or related agency")]
-        PROV_GOV,
+        ProvGovt,
 
         [Description("A municipality")]
-        MUNICIPALITY,
+        Municipality,
 
         [Description("A post-secondary institution")]
-        POST_SECONDARY,
+        PostSec,
     }
 
     public class OrgRegistrationCreateRequestValidator : AbstractValidator<OrgRegistrationCreateRequest>
@@ -177,14 +178,6 @@ namespace Spd.Manager.Membership.ViewModels
                 .IsInEnum()
                 .When(r => r.VolunteerOrganizationTypeCode.HasValue);
 
-            RuleFor(r => r.EmployerOrganizationTypeCode)
-                .NotEmpty()
-                .When(r => !r.VolunteerOrganizationTypeCode.HasValue);
-
-            RuleFor(r => r.VolunteerOrganizationTypeCode)
-                .NotEmpty()
-                .When(r => !r.EmployerOrganizationTypeCode.HasValue);
-
             RuleFor(r => r)
                 .Must(r => !r.EmployerOrganizationTypeCode.HasValue)
                 .When(r => r.VolunteerOrganizationTypeCode.HasValue).WithMessage("At least one is required (EmployerOrganizationTypeCode, VolunteerOrganizationTypeCode).")
@@ -201,7 +194,7 @@ namespace Spd.Manager.Membership.ViewModels
             RuleFor(r => r.OperatingBudgetFlag)
                 .IsInEnum();
 
-            RuleFor(r => r.CheckFeePayer)
+            RuleFor(r => r.PayerPreference)
                 .IsInEnum();
 
             RuleFor(r => r.ContactEmail)
@@ -225,6 +218,9 @@ namespace Spd.Manager.Membership.ViewModels
                 .MaximumLength(12);
 
             RuleFor(r => r.HasPhoneOrEmail)
+                .IsInEnum();
+
+            RuleFor(r => r.EmployeeMonetaryCompensationFlag)
                 .IsInEnum();
 
             RuleFor(r => r.MailingAddressLine1)
@@ -269,19 +265,19 @@ namespace Spd.Manager.Membership.ViewModels
 
             RuleFor(r => r.GenericEmail)
                 .NotEmpty()
-                .When(r => r.HasPhoneOrEmail == BooleanTypeCode.YES);
+                .When(r => r.HasPhoneOrEmail == BooleanTypeCode.Yes);
 
             RuleFor(r => r.GenericEmailConfirmation)
                 .NotEmpty()
-                .When(r => r.HasPhoneOrEmail == BooleanTypeCode.YES);
+                .When(r => r.HasPhoneOrEmail == BooleanTypeCode.Yes);
 
             RuleFor(r => r.GenericPhoneNumber)
                 .NotEmpty()
-                .When(r => r.HasPhoneOrEmail == BooleanTypeCode.YES);
+                .When(r => r.HasPhoneOrEmail == BooleanTypeCode.Yes);
 
             RuleFor(r => r)
-                .Must(r => r.GenericEmail.Equals(r.GenericEmailConfirmation))
-                .When(r => r.HasPhoneOrEmail == BooleanTypeCode.YES)
+                .Must(r => r.GenericEmail!.Equals(r.GenericEmailConfirmation))
+                .When(r => r.HasPhoneOrEmail == BooleanTypeCode.Yes)
                 .WithMessage("Emails must match");
         }
     }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { CheckFeePayerTypeCode } from 'src/app/api/models';
+import { PayerPreferenceTypeCode } from 'src/app/api/models';
 import { RegistrationFormStepComponent } from '../org-registration.component';
 
 @Component({
@@ -17,16 +17,16 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 				</div>
 				<div class="row">
 					<div class="offset-md-4 col-md-4 col-sm-12">
-						<mat-radio-group aria-label="Select an option" formControlName="checkFeePayer">
-							<mat-radio-button [value]="checkFeePayerTypeCodes.Organization"> My organization </mat-radio-button>
+						<mat-radio-group aria-label="Select an option" formControlName="payerPreference">
+							<mat-radio-button [value]="payerPreferenceTypeCodes.Organization"> My organization </mat-radio-button>
 							<mat-divider class="my-3"></mat-divider>
-							<mat-radio-button [value]="checkFeePayerTypeCodes.Applicant"> The applicant </mat-radio-button>
+							<mat-radio-button [value]="payerPreferenceTypeCodes.Applicant"> The applicant </mat-radio-button>
 						</mat-radio-group>
 						<mat-error
 							*ngIf="
-								(form.get('checkFeePayer')?.dirty || form.get('checkFeePayer')?.touched) &&
-								form.get('checkFeePayer')?.invalid &&
-								form.get('checkFeePayer')?.hasError('required')
+								(form.get('payerPreference')?.dirty || form.get('payerPreference')?.touched) &&
+								form.get('payerPreference')?.invalid &&
+								form.get('payerPreference')?.hasError('required')
 							"
 						>
 							An option must be selected
@@ -41,13 +41,13 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 export class PaymentQuestionComponent implements OnInit, RegistrationFormStepComponent {
 	form!: FormGroup;
 
-	checkFeePayerTypeCodes = CheckFeePayerTypeCode;
+	payerPreferenceTypeCodes = PayerPreferenceTypeCode;
 
 	constructor(private formBuilder: FormBuilder) {}
 
 	ngOnInit(): void {
 		this.form = this.formBuilder.group({
-			checkFeePayer: new FormControl('', [Validators.required]),
+			payerPreference: new FormControl('', [Validators.required]),
 		});
 	}
 
