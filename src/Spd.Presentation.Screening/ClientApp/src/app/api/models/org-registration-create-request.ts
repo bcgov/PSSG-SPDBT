@@ -1,16 +1,15 @@
 /* tslint:disable */
 /* eslint-disable */
 import { BooleanTypeCode } from './boolean-type-code';
-import { CheckFeePayerTypeCode } from './check-fee-payer-type-code';
 import { EmployeeInteractionTypeCode } from './employee-interaction-type-code';
 import { EmployerOrganizationTypeCode } from './employer-organization-type-code';
 import { OperatingBudgetTypeCode } from './operating-budget-type-code';
+import { PayerPreferenceTypeCode } from './payer-preference-type-code';
 import { RegistrationTypeCode } from './registration-type-code';
 import { ScreeningsCountTypeCode } from './screenings-count-type-code';
 import { VolunteerOrganizationTypeCode } from './volunteer-organization-type-code';
 export interface OrgRegistrationCreateRequest {
   agreeToTermsAndConditions?: null | boolean;
-  checkFeePayer?: CheckFeePayerTypeCode;
   contactDateOfBirth?: null | string;
   contactEmail?: null | string;
   contactGivenName?: null | string;
@@ -18,6 +17,7 @@ export interface OrgRegistrationCreateRequest {
   contactPhoneNumber?: null | string;
   contactSurname?: null | string;
   employeeInteractionFlag?: EmployeeInteractionTypeCode;
+  employeeMonetaryCompensationFlag?: BooleanTypeCode;
   employerOrganizationTypeCode?: EmployerOrganizationTypeCode;
   genericEmail?: null | string;
   genericEmailConfirmation?: null | string;
@@ -31,6 +31,7 @@ export interface OrgRegistrationCreateRequest {
   mailingProvince?: null | string;
   operatingBudgetFlag?: OperatingBudgetTypeCode;
   organizationName?: null | string;
+  payerPreference?: PayerPreferenceTypeCode;
   registrationTypeCode?: RegistrationTypeCode;
   screeningsCount?: ScreeningsCountTypeCode;
   volunteerOrganizationTypeCode?: VolunteerOrganizationTypeCode;
