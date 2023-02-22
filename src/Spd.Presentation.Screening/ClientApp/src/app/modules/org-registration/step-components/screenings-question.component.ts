@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ScreeningsCountTypeCode } from 'src/app/api/models';
 import { RegistrationFormStepComponent } from '../org-registration.component';
 
 @Component({
@@ -15,11 +16,13 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 				<div class="row">
 					<div class="offset-md-4 col-md-4 col-sm-12">
 						<mat-radio-group aria-label="Select an option" formControlName="screeningsCount">
-							<mat-radio-button value="LESS_THAN_100"> 0 - 100 </mat-radio-button>
+							<mat-radio-button [value]="screeningsCountTypeCodes.LessThanOneHundred"> 0 - 100 </mat-radio-button>
 							<mat-divider class="my-3"></mat-divider>
-							<mat-radio-button value="100_TO_500"> 100 - 500 </mat-radio-button>
+							<mat-radio-button [value]="screeningsCountTypeCodes.OneToFiveHundred"> 100 - 500 </mat-radio-button>
 							<mat-divider class="my-3"></mat-divider>
-							<mat-radio-button value="MORE_THAN_500"> More than 500 </mat-radio-button>
+							<mat-radio-button [value]="screeningsCountTypeCodes.MoreThanFiveHundred">
+								More than 500
+							</mat-radio-button>
 							<mat-error
 								*ngIf="
 									(form.get('screeningsCount')?.dirty || form.get('screeningsCount')?.touched) &&
@@ -38,6 +41,8 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 })
 export class ScreeningsQuestionComponent implements OnInit, RegistrationFormStepComponent {
 	form!: FormGroup;
+
+	screeningsCountTypeCodes = ScreeningsCountTypeCode;
 
 	constructor(private formBuilder: FormBuilder) {}
 
