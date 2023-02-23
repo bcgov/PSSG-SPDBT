@@ -207,6 +207,11 @@ a {
   }
 }
 
+
+ngx-dropzone-remove-badge {
+  z-index: 9999 !important;
+}
+
 .active-selection-main {
   border: 2px solid #286090 !important;
   color: #286090 !important;

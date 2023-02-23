@@ -26,6 +26,7 @@
     "@angular/router": "^15.1.0",
     "@bcgov/bc-sans": "^1.0.1",
     "@ngneat/until-destroy": "^9.2.3",
+    "angular-oauth2-oidc": "^15.0.1",
     "bootstrap": "^5.2.3",
     "jquery": "^3.6.3",
     "ng-openapi-gen": "^0.23.0",

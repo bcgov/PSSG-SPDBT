@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter, map } from 'rxjs';
+import { AuthenticationService } from './core/services/authentication.service';
 
 @Component({
 	selector: 'app-root',
@@ -23,9 +24,7 @@ import { filter, map } from 'rxjs';
 export class AppComponent {
 	title = 'SPD';
 
-	constructor(private router: Router) {}
-
-	ngOnInit() {
+	constructor(private router: Router, private authenticationService: AuthenticationService) {
 		this.router.events
 			.pipe(
 				filter((event) => event instanceof NavigationEnd),
@@ -45,4 +44,10 @@ export class AppComponent {
 				this.title = title ? title : 'SPD';
 			});
 	}
+
+	// public async ngOnInit(): Promise<void> {
+	// 	const nextUrl = await this.authenticationService.login();
+	// 	console.log('nextUrl', nextUrl);
+	// 	await this.router.navigate([]);
+	// }
 }
