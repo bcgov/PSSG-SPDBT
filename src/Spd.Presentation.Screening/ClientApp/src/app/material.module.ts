@@ -59,6 +59,7 @@ export const APP_CONSTANTS = {
 	date: {
 		dateFormat: 'yyyy-MMM-dd',
 		monthYearFormat: 'MMM yyyy',
+		dateTimeFormat: 'yyyy-MMM-dd HH:mm',
 	},
 };
 

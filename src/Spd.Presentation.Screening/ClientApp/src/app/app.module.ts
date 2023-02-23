@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { OAuthModule } from 'angular-oauth2-oidc';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { ApiModule } from './api/api.module';
 import { AppRoutingModule } from './app-routing.module';
@@ -26,6 +27,12 @@ import { SharedModule } from './shared/shared.module';
 		FormsModule,
 		ReactiveFormsModule,
 		NgxSpinnerModule,
+		OAuthModule.forRoot({
+			resourceServer: {
+				customUrlValidation: (url) => url.startsWith('/api') && !url.endsWith('/configuration'),
+				sendAccessToken: true,
+			},
+		}),
 		ApiModule.forRoot({ rootUrl: '' }),
 		SharedModule,
 	],
