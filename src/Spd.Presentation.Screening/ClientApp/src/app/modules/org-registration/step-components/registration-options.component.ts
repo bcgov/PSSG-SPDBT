@@ -36,7 +36,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 							</table>
 						</div>
 						<div class="step-container__box__footer p-4">
-							<button mat-raised-button (click)="onClickNext()">Register with BCeID</button>
+							<button mat-raised-button (click)="onRegisterWithBCeid()">Register with BCeID</button>
 						</div>
 					</div>
 				</div>
@@ -52,7 +52,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 							approval. We recommend registering with your Business BCeID for easier access.
 						</div>
 						<div class="step-container__box__footer p-4">
-							<button mat-raised-button color="primary" (click)="onClickNext()">Register with BCSC</button>
+							<button mat-raised-button color="primary" (click)="onRegisterWithBCSC()">Register with BCSC</button>
 							<div class="mt-2">
 								<a (click)="onClickNext()" style="font-size: small;">Register without authenticating for now</a>
 							</div>
@@ -103,4 +103,14 @@ export class RegistrationOptionsComponent {
 	onClickNext(): void {
 		this.clickNext.emit(true);
 	}
+
+	onRegisterWithBCeid(): void {}
+
+	// public async ngOnInit(): Promise<void> {
+	// 	const nextUrl = await this.authenticationService.login();
+	// 	console.log('nextUrl', nextUrl);
+	// 	await this.router.navigate([]);
+	// }
+
+	onRegisterWithBCSC(): void {}
 }

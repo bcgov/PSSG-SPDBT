@@ -102,3 +102,50 @@ mat-label {
 .mat-mdc-dialog-container .mdc-dialog__surface {
   border: 2px solid var(--color-yellow);
 }
+
+.mat-sort-header {
+  .mat-sort-header-content {
+    font-weight: 600;
+    font-size: 1.1em;
+  }
+
+  .mat-sort-header-sorted {
+    color: var(--color-green);
+  }
+}
+
+.mat-mdc-row:hover {
+  background-color: var(--color-grey-lightest) !important;
+}
+
+.mobile-label {
+  display: none;
+}
+
+@media(max-width: 575px) {
+  .mobile-label {
+    width: 80px;
+    display: inline-block;
+    font-weight: bold;
+  }
+
+  mat-cell:first-of-type, mat-header-cell:first-of-type, mat-footer-cell:first-of-type {    
+    padding: 0 16px 0 16px !important;
+  }
+
+  .mat-mdc-header-row {
+    display: none;
+  }
+  
+  .mdc-data-table__cell, .mdc-data-table__header-cell {
+     border-bottom-style: none !important; 
+  }
+
+  .mat-mdc-row { 
+    flex-direction: column;
+    align-items: start;
+    padding: 8px 24px;
+    border-bottom-width: 1px !important;
+    border-bottom-style: solid !important; 
+  }
+}
