@@ -7,7 +7,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { APP_CONSTANTS } from 'src/app/material.module';
 
 @Component({
-	selector: 'app-generic-upload',
+	selector: 'app-generic-uploads',
 	template: `
 		<div class="row">
 			<div class="col-sm-12">
@@ -18,7 +18,7 @@ import { APP_CONSTANTS } from 'src/app/material.module';
 		<section class="step-section mt-4">
 			<div class="row m-4">
 				<div class="col-sm-12">
-					<h2 class="mb-2" style="font-weight: 400;">Generic Upload</h2>
+					<h2 class="mb-2" style="font-weight: 400;">Generic Uploads</h2>
 					<ngx-dropzone
 						#fileDropzone
 						(change)="onUploadFile($event)"
@@ -31,7 +31,7 @@ import { APP_CONSTANTS } from 'src/app/material.module';
 						<ngx-dropzone-label>
 							<div class="my-2">
 								<div class="mt-4 mb-2">
-									<mat-icon class="upload-file-icon">upload_file</mat-icon>
+									<mat-icon class="upload-file-icon">cloud_upload</mat-icon>
 								</div>
 								<div class="mb-4">
 									<strong>Drag and Drop your file here or click to browse</strong>
@@ -181,7 +181,7 @@ import { APP_CONSTANTS } from 'src/app/material.module';
 		`,
 	],
 })
-export class GenericUploadComponent implements OnInit, AfterViewInit {
+export class GenericUploadsComponent implements OnInit, AfterViewInit {
 	form: FormGroup = this.formBuilder.group({
 		files: new FormControl('', [Validators.required]),
 	});

@@ -30,7 +30,8 @@ import { Router } from '@angular/router';
 			}
 
 			.header {
-				border-bottom: 3px solid var(--color-yellow);
+				border-bottom: 2px solid var(--color-yellow);
+				box-shadow: 0px 5px 10px 0px rgb(169 169 169);
 			}
 
 			.header-text {
