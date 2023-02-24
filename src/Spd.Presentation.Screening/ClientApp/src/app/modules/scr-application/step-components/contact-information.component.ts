@@ -12,7 +12,7 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 			<form [formGroup]="form" novalidate>
 				<div class="step">
 					<div class="title mb-5">
-						Confirm your information:
+						Confirm your information
 						<div class="title__sub-title mt-2">Legal name must match your government-issued identification</div>
 					</div>
 					<div class="row">
