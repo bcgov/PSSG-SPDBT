@@ -44,10 +44,4 @@ export class AppComponent {
 				this.title = title ? title : 'SPD';
 			});
 	}
-
-	// public async ngOnInit(): Promise<void> {
-	// 	const nextUrl = await this.authenticationService.login();
-	// 	console.log('nextUrl', nextUrl);
-	// 	await this.router.navigate([]);
-	// }
 }
