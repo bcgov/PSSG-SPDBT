@@ -5,9 +5,10 @@ import { OAuthService } from 'angular-oauth2-oidc';
 export class AuthenticationService {
 	constructor(private oauthService: OAuthService) {}
 
-	public async login(): Promise<string | void> {
-		await this.configureOAuthService();
+	public async login(redirectUri: string = window.location.origin): Promise<string | void> {
+		await this.configureOAuthService(redirectUri);
 		const returnRoute = location.pathname.substring(1);
+		console.log('returnRoute', returnRoute);
 		const isLoggedIn = await this.oauthService.loadDiscoveryDocumentAndLogin({
 			state: returnRoute,
 		});
@@ -24,22 +25,12 @@ export class AuthenticationService {
 		return this.oauthService.getAccessToken();
 	}
 
-	// {
-	// 	"confidential-port": 0,
-	// 	"auth-server-url": "https://dev.loginproxy.gov.bc.ca/auth",
-	// 	"realm": "standard",
-	// 	"ssl-required": "external",
-	// 	"public-client": true,
-	// 	"resource": "spd-4592"
-	// }
-	//https://dev.loginproxy.gov.bc.ca/auth/realms/standard/.well-known/openid-configuration
-
-	private async configureOAuthService(): Promise<void> {
+	private async configureOAuthService(redirectUri: string): Promise<void> {
 		// return this.configService.getAuthConfig().then((authConfig) => {
 		this.oauthService.configure({
 			issuer: 'https://dev.loginproxy.gov.bc.ca/auth/realms/standard',
 			clientId: 'spd-4592',
-			redirectUri: window.location.origin + '/',
+			redirectUri: redirectUri,
 			responseType: 'code',
 			scope: 'openid profile email offline_access',
 			showDebugInformation: true,

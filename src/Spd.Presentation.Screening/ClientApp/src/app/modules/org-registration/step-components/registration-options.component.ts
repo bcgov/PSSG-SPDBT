@@ -99,18 +99,15 @@ import { Component, EventEmitter, Output } from '@angular/core';
 })
 export class RegistrationOptionsComponent {
 	@Output() clickNext: EventEmitter<boolean> = new EventEmitter<boolean>();
+	@Output() registerWithBCeid: EventEmitter<boolean> = new EventEmitter<boolean>();
 
 	onClickNext(): void {
 		this.clickNext.emit(true);
 	}
 
-	onRegisterWithBCeid(): void {}
-
-	// public async ngOnInit(): Promise<void> {
-	// 	const nextUrl = await this.authenticationService.login();
-	// 	console.log('nextUrl', nextUrl);
-	// 	await this.router.navigate([]);
-	// }
+	onRegisterWithBCeid(): void {
+		this.registerWithBCeid.emit(true);
+	}
 
 	onRegisterWithBCSC(): void {}
 }
