@@ -11,7 +11,7 @@ export class VulnerableSectorQuestionModel {
 	template: `
 		<div class="step">
 			<div class="title mb-5">
-				Tell us a bit more about your employees:
+				Tell us a bit more about your employees
 				<div class="title__sub-title mt-2">
 					To “Works With” means to have direct or unsupervised access to children and/or vulnerable adults.
 				</div>

@@ -5,7 +5,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 	template: `
 		<section class="step-section pt-4 pb-4 px-3">
 			<div class="step">
-				<div class="title mb-5">Review the following information:</div>
+				<div class="title mb-5">Review the following information</div>
 				<div class="row">
 					<div class="offset-md-2 col-md-8 col-sm-12">
 						<section class="px-4 py-2 mb-3 card-section">

@@ -37,22 +37,23 @@ export class Guid {
 @Component({
 	selector: 'app-org-registration',
 	template: `
-		<mat-stepper
-			linear
-			labelPosition="bottom"
-			[orientation]="orientation"
-			(selectionChange)="onStepSelectionChange($event)"
-			#stepper
-		>
-			<mat-step completed="false" editable="true">
-				<ng-template matStepLabel>Eligibility</ng-template>
-				<app-step-one
-					(nextStepperStep)="onNextStepperStep(stepper)"
-					(selectRegistrationType)="onSelectRegistrationType($event)"
-					(clearRegistrationData)="onClearRegistrationData()"
-					(scrollIntoView)="onScrollIntoView()"
-				></app-step-one>
-			</mat-step>
+		<div class="container">
+			<mat-stepper
+				linear
+				labelPosition="bottom"
+				[orientation]="orientation"
+				(selectionChange)="onStepSelectionChange($event)"
+				#stepper
+			>
+				<mat-step completed="false" editable="true">
+					<ng-template matStepLabel>Eligibility</ng-template>
+					<app-step-one
+						(nextStepperStep)="onNextStepperStep(stepper)"
+						(selectRegistrationType)="onSelectRegistrationType($event)"
+						(clearRegistrationData)="onClearRegistrationData()"
+						(scrollIntoView)="onScrollIntoView()"
+					></app-step-one>
+				</mat-step>
 
 			<mat-step completed="false" editable="false">
 				<ng-template matStepLabel>Log In Options</ng-template>
@@ -64,26 +65,27 @@ export class Guid {
 				></app-step-two>
 			</mat-step>
 
-			<mat-step completed="false" editable="true">
-				<ng-template matStepLabel>Business Information</ng-template>
-				<app-step-three
-					(previousStepperStep)="onPreviousStepperStep(stepper)"
-					(nextStepperStep)="onNextStepperStep(stepper)"
-					(scrollIntoView)="onScrollIntoView()"
-					[registrationTypeCode]="registrationTypeCode"
-				></app-step-three>
-			</mat-step>
+				<mat-step completed="false" editable="true">
+					<ng-template matStepLabel>Business Information</ng-template>
+					<app-step-three
+						(previousStepperStep)="onPreviousStepperStep(stepper)"
+						(nextStepperStep)="onNextStepperStep(stepper)"
+						(scrollIntoView)="onScrollIntoView()"
+						[registrationTypeCode]="registrationTypeCode"
+					></app-step-three>
+				</mat-step>
 
-			<mat-step completed="false" editable="false">
-				<ng-template matStepLabel>Complete</ng-template>
-				<app-step-four
-					(previousStepperStep)="onPreviousStepperStep(stepper)"
-					(saveStepperStep)="onSaveStepperStep()"
-					(scrollIntoView)="onScrollIntoView()"
-					[sendToEmailAddress]="sendToEmailAddress"
-				></app-step-four>
-			</mat-step>
-		</mat-stepper>
+				<mat-step completed="false" editable="false">
+					<ng-template matStepLabel>Complete</ng-template>
+					<app-step-four
+						(previousStepperStep)="onPreviousStepperStep(stepper)"
+						(saveStepperStep)="onSaveStepperStep()"
+						(scrollIntoView)="onScrollIntoView()"
+						[sendToEmailAddress]="sendToEmailAddress"
+					></app-step-four>
+				</mat-step>
+			</mat-stepper>
+		</div>
 	`,
 	styles: [],
 })

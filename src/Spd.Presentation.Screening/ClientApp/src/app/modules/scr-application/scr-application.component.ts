@@ -19,58 +19,59 @@ export interface ScreeningFormStepComponent {
 @Component({
 	selector: 'app-scr-application',
 	template: `
-		<mat-stepper
-			linear
-			labelPosition="bottom"
-			[orientation]="orientation"
-			(selectionChange)="onStepSelectionChange($event)"
-			#stepper
-		>
-			<mat-step completed="false" editable="true">
-				<ng-template matStepLabel>Eligibility Check</ng-template>
-				<app-step-eligibility
-					[paymentBy]="paymentBy"
-					(nextStepperStep)="onNextStepperStep(stepper)"
-					(scrollIntoView)="onScrollIntoView()"
-				></app-step-eligibility>
-			</mat-step>
+		<div class="container">
+			<mat-stepper
+				linear
+				labelPosition="bottom"
+				[orientation]="orientation"
+				(selectionChange)="onStepSelectionChange($event)"
+				#stepper
+			>
+				<mat-step completed="false" editable="true">
+					<ng-template matStepLabel>Eligibility Check</ng-template>
+					<app-step-eligibility
+						[paymentBy]="paymentBy"
+						(nextStepperStep)="onNextStepperStep(stepper)"
+						(scrollIntoView)="onScrollIntoView()"
+					></app-step-eligibility>
+				</mat-step>
 
-			<mat-step completed="false" editable="true">
-				<ng-template matStepLabel>Organization Information</ng-template>
-				<app-step-organization-info
-					(nextStepperStep)="onNextStepperStep(stepper)"
-					(scrollIntoView)="onScrollIntoView()"
-				></app-step-organization-info>
-			</mat-step>
+				<mat-step completed="false" editable="true">
+					<ng-template matStepLabel>Organization Information</ng-template>
+					<app-step-organization-info
+						(nextStepperStep)="onNextStepperStep(stepper)"
+						(scrollIntoView)="onScrollIntoView()"
+					></app-step-organization-info>
+				</mat-step>
 
-			<mat-step completed="false" editable="false">
-				<ng-template matStepLabel>Log In Information</ng-template>
-				<app-step-login-options
-					(previousStepperStep)="onPreviousStepperStep(stepper)"
-					(nextStepperStep)="onNextStepperStep(stepper)"
-					(scrollIntoView)="onScrollIntoView()"
-				></app-step-login-options>
-			</mat-step>
+				<mat-step completed="false" editable="false">
+					<ng-template matStepLabel>Log In Information</ng-template>
+					<app-step-login-options
+						(previousStepperStep)="onPreviousStepperStep(stepper)"
+						(nextStepperStep)="onNextStepperStep(stepper)"
+						(scrollIntoView)="onScrollIntoView()"
+					></app-step-login-options>
+				</mat-step>
 
-			<mat-step completed="false" editable="true">
-				<ng-template matStepLabel>Personal Information</ng-template>
-				<app-step-personal-info
-					(nextStepperStep)="onNextStepperStep(stepper)"
-					(scrollIntoView)="onScrollIntoView()"
-				></app-step-personal-info>
-			</mat-step>
+				<mat-step completed="false" editable="true">
+					<ng-template matStepLabel>Personal Information</ng-template>
+					<app-step-personal-info
+						(nextStepperStep)="onNextStepperStep(stepper)"
+						(scrollIntoView)="onScrollIntoView()"
+					></app-step-personal-info>
+				</mat-step>
 
-			<mat-step completed="false" editable="true">
-				<ng-template matStepLabel>Terms and Conditions</ng-template>
-				<app-step-terms-and-cond
-					[paymentBy]="paymentBy"
-					(previousStepperStep)="onPreviousStepperStep(stepper)"
-					(nextStepperStep)="onNextStepperStep(stepper)"
-					(scrollIntoView)="onScrollIntoView()"
-				></app-step-terms-and-cond>
-			</mat-step>
+				<mat-step completed="false" editable="true">
+					<ng-template matStepLabel>Terms and Conditions</ng-template>
+					<app-step-terms-and-cond
+						[paymentBy]="paymentBy"
+						(previousStepperStep)="onPreviousStepperStep(stepper)"
+						(nextStepperStep)="onNextStepperStep(stepper)"
+						(scrollIntoView)="onScrollIntoView()"
+					></app-step-terms-and-cond>
+				</mat-step>
 
-			<!-- PAYMENT PROCESS?
+				<!-- PAYMENT PROCESS?
 				 <mat-step completed="false" editable="false" *ngIf="paymentBy == 'APP'">
 				<ng-template matStepLabel>Pay for Application</ng-template>
 				<app-step-pay-for-application
@@ -79,15 +80,16 @@ export interface ScreeningFormStepComponent {
 				></app-step-pay-for-application>
 			</mat-step> -->
 
-			<mat-step completed="false" editable="false">
-				<ng-template matStepLabel>Application Submitted</ng-template>
-				<app-step-appl-submitted
-					[paymentBy]="paymentBy"
-					(previousStepperStep)="onPreviousStepperStep(stepper)"
-					(scrollIntoView)="onScrollIntoView()"
-				></app-step-appl-submitted>
-			</mat-step>
-		</mat-stepper>
+				<mat-step completed="false" editable="false">
+					<ng-template matStepLabel>Application Submitted</ng-template>
+					<app-step-appl-submitted
+						[paymentBy]="paymentBy"
+						(previousStepperStep)="onPreviousStepperStep(stepper)"
+						(scrollIntoView)="onScrollIntoView()"
+					></app-step-appl-submitted>
+				</mat-step>
+			</mat-stepper>
+		</div>
 	`,
 	styles: [],
 })
