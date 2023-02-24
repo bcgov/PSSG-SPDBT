@@ -19,7 +19,7 @@ export interface ScreeningFormStepComponent {
 @Component({
 	selector: 'app-scr-application',
 	template: `
-		<div class="container">
+		<div class="container mt-4">
 			<mat-stepper
 				linear
 				labelPosition="bottom"

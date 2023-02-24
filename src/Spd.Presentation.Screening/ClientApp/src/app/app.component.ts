@@ -20,7 +20,7 @@ import { AuthenticationService } from './core/services/authentication.service';
 	styles: [],
 })
 export class AppComponent {
-	title = 'SPD';
+	title = 'Security Programs Division';
 
 	constructor(private router: Router, private authenticationService: AuthenticationService) {
 		this.router.events
@@ -39,7 +39,7 @@ export class AppComponent {
 				})
 			)
 			.subscribe((title: string) => {
-				this.title = title ? title : 'SPD';
+				this.title = title ? title : 'Security Programs Division';
 			});
 	}
 }
