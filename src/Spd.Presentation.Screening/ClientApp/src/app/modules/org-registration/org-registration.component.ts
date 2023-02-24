@@ -37,7 +37,7 @@ export class Guid {
 @Component({
 	selector: 'app-org-registration',
 	template: `
-		<div class="container">
+		<div class="container mt-4">
 			<mat-stepper
 				linear
 				labelPosition="bottom"
@@ -55,15 +55,15 @@ export class Guid {
 					></app-step-one>
 				</mat-step>
 
-			<mat-step completed="false" editable="false">
-				<ng-template matStepLabel>Log In Options</ng-template>
-				<app-step-two
-					(previousStepperStep)="onPreviousStepperStep(stepper)"
-					(nextStepperStep)="onNextStepperStep(stepper)"
-					(scrollIntoView)="onScrollIntoView()"
-					(registerWithBCeid)="onRegisterWithBCeid()"
-				></app-step-two>
-			</mat-step>
+				<mat-step completed="false" editable="false">
+					<ng-template matStepLabel>Log In Options</ng-template>
+					<app-step-two
+						(previousStepperStep)="onPreviousStepperStep(stepper)"
+						(nextStepperStep)="onNextStepperStep(stepper)"
+						(scrollIntoView)="onScrollIntoView()"
+						(registerWithBCeid)="onRegisterWithBCeid()"
+					></app-step-two>
+				</mat-step>
 
 				<mat-step completed="false" editable="true">
 					<ng-template matStepLabel>Business Information</ng-template>

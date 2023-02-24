@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-	selector: 'app-dashboard-home',
+	selector: 'app-authorized-users',
 	template: `
 		<div class="row">
 			<div class="col-sm-12">
@@ -12,11 +12,11 @@ import { Component } from '@angular/core';
 		<section class="step-section mt-4">
 			<div class="row m-4">
 				<div class="col-sm-12">
-					<h2 class="mb-2" style="font-weight: 400;">Dashboard</h2>
+					<h2 class="mb-2" style="font-weight: 400;">Manage Authorized Users</h2>
 				</div>
 			</div>
 		</section>
 	`,
 	styles: [],
 })
-export class DashboardHomeComponent {}
+export class AuthorizedUsersComponent {}
