@@ -10,11 +10,9 @@ import { AuthenticationService } from './core/services/authentication.service';
 			<ngx-spinner name="loaderSpinner" type="square-jelly-box" [fullScreen]="true"></ngx-spinner>
 			<app-header [title]="title"></app-header>
 
-			<div class="container">
-				<router-outlet></router-outlet>
-			</div>
+			<router-outlet></router-outlet>
 
-			<footer class="mt-auto pt-3">
+			<footer class="mt-auto">
 				<app-footer></app-footer>
 			</footer>
 		</body>

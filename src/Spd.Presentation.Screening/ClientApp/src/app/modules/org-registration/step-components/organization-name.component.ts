@@ -8,7 +8,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="step">
-				<div class="title mb-5">Provide us with more organization information:</div>
+				<div class="title mb-5">Provide us with more organization information</div>
 
 				<div class="row">
 					<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
