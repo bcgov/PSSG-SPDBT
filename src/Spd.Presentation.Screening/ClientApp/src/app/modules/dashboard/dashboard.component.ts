@@ -64,17 +64,17 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 							</li>
 							<li class="nav-item w-100">
 								<a
-									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.OUTSTANDING_PAYMENTS)]"
+									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.PAYMENTS)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
 								>
 									<mat-icon>payment</mat-icon>
-									<span class="menu-item ms-2 d-none d-sm-inline text-white">Outstanding Payments</span>
+									<span class="menu-item ms-2 d-none d-sm-inline text-white">Payments</span>
 								</a>
 							</li>
 							<li class="nav-item w-100">
 								<a
-									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.AUTHORIZED_USERS)]"
+									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.USERS)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
 								>

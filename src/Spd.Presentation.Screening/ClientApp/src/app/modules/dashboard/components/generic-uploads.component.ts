@@ -9,16 +9,11 @@ import { APP_CONSTANTS } from 'src/app/material.module';
 @Component({
 	selector: 'app-generic-uploads',
 	template: `
-		<div class="row">
-			<div class="col-sm-12">
-				<h2 class="mx-2" style="font-weight: 300;">Organization Name</h2>
-				<div class="mx-2" style="font-weight: 300;">Security Screening Portal</div>
-			</div>
-		</div>
-		<section class="step-section mt-4">
-			<div class="row m-4">
-				<div class="col-sm-12">
-					<h2 class="mb-2" style="font-weight: 400;">Generic Uploads</h2>
+		<app-dashboard-header title="Organization Name" subtitle="Security Screening Portal"></app-dashboard-header>
+		<section class="step-section my-4 p-md-4 p-sm-0">
+			<div class="row">
+				<div class="col-12">
+					<h2 class="mb-2 fw-normal">Generic Uploads</h2>
 					<ngx-dropzone
 						#fileDropzone
 						(change)="onUploadFile($event)"
@@ -48,21 +43,21 @@ import { APP_CONSTANTS } from 'src/app/material.module';
 						>
 							<ngx-dropzone-label style="width: 100%;">
 								<div class="row">
-									<div class="col-12 p-0" style="text-align: start; text-indent: 1em; color: black; font-weight: 600;">
+									<div class="col-12 p-0 fw-bold" style="text-align: start; text-indent: 1em; color: black;">
 										<img class="file-name-icon" src="/assets/tsv_file.png" />
 										{{ f.name }}
 									</div>
 									<div class="offset-md-1 col-md-10 col-sm-12 mt-2" *ngIf="showErrors">
-										<div class="alert alert-danger alert-layout w-100">
-											<mat-icon class="d-none d-md-block alert-icon">warning</mat-icon>
+										<div class="alert alert-danger d-flex align-items-center" role="alert">
+											<mat-icon class="d-none d-md-block alert-icon me-2">warning</mat-icon>
 											<div>Error on line 1 - 'dateOfBirth'</div>
 										</div>
-										<div class="alert alert-danger alert-layout w-100">
-											<mat-icon class="d-none d-md-block alert-icon">warning</mat-icon>
+										<div class="alert alert-danger d-flex align-items-center">
+											<mat-icon class="d-none d-md-block alert-icon me-2">warning</mat-icon>
 											<div>Error on line 12 - 'province'</div>
 										</div>
-										<div class="alert alert-success alert-layout w-100">
-											<mat-icon class="d-none d-md-block alert-icon">information</mat-icon>
+										<div class="alert alert-success d-flex align-items-center">
+											<mat-icon class="d-none d-md-block alert-icon me-2">information</mat-icon>
 											<div>File was successfully uploaded</div>
 										</div>
 									</div>
@@ -78,25 +73,11 @@ import { APP_CONSTANTS } from 'src/app/material.module';
 				</div>
 			</div>
 		</section>
-		<!-- <div class="row" *ngIf="showErrors">
-      <div class="offset-md-1 col-md-8 col-sm-12">
-        <div class="mt-2">
-          <div class="alert alert-danger align-items-center alert-layout w-100">
-            <mat-icon class="d-none d-md-block alert-icon">warning</mat-icon>
-            <div>Error on line 1 - 'dateOfBirth'</div>
-          </div>
-          <div class="alert alert-danger align-items-center alert-layout w-100">
-            <mat-icon class="d-none d-md-block alert-icon">warning</mat-icon>
-            <div>Error on line 12 - 'province'</div>
-          </div>
-        </div>
-      </div>
-    </div> -->
 
-		<section class="step-section mt-4">
-			<div class="row m-4">
+		<section class="step-section my-4 p-md-4 p-sm-0">
+			<div class="row">
 				<div class="col-md-12 col-sm-12">
-					<h3 style="font-weight: 400;">Previous Uploads</h3>
+					<h3 class="fw-normal">Previous Uploads</h3>
 					<mat-table matSort [dataSource]="dataSource" class="isMobile">
 						<ng-container matColumnDef="uploadedDateTime">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Date/Time Uploaded</mat-header-cell>
@@ -168,11 +149,6 @@ import { APP_CONSTANTS } from 'src/app/material.module';
 				width: 80px !important;
 			}
 
-			.alert-layout {
-				display: inline-flex;
-				gap: 1em;
-			}
-
 			.preview {
 				width: 100%;
 				height: unset !important;
@@ -189,6 +165,8 @@ export class GenericUploadsComponent implements OnInit, AfterViewInit {
 	constants = APP_CONSTANTS;
 	dataSource!: MatTableDataSource<any>;
 	columns!: string[];
+
+	pageSizes = [3, 5, 7];
 
 	multiple: boolean = false;
 	expandable: boolean = true;
@@ -280,8 +258,6 @@ export class GenericUploadsComponent implements OnInit, AfterViewInit {
 			},
 		];
 	}
-
-	pageSizes = [3, 5, 7];
 
 	ngAfterViewInit() {
 		this.sort.sort({ id: 'uploadedDateTime', start: 'desc' } as MatSortable);
