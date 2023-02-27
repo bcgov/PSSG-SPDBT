@@ -70,9 +70,13 @@ $spd-yellow: (
 
 @import "@bcgov/bc-sans/css/BCSans.css";
 
+// $fonts: (
+//   header: #{"BCSans, Noto Sans, Verdana, Arial, sans-serif"},
+//   body: #{"BCSans, Noto Sans, Verdana, Arial, sans-serif"},
+// );
 $fonts: (
-  header: #{"BCSans, Noto Sans, Verdana, Arial, sans-serif"},
-  body: #{"BCSans, Noto Sans, Verdana, Arial, sans-serif"},
+  header: #{"Noto Sans, Verdana, Arial, sans-serif"},
+  body: #{"Noto Sans, Verdana, Arial, sans-serif"},
 );
 
 @function theme-font($font) {
@@ -121,6 +125,7 @@ $spd-theme: mat.define-light-theme((
   --color-primary: #003366; // BC Gov. Primary
   --color-primary-dark: #001b4a;
 
+  --color-card: #f7f7f7;
 	--color-light-green: #e9f6ee;
 	--color-yellow: #FCBA19;  // BC Gov. Secondary
   --color-yellow-dark: #df9f03;

@@ -4,9 +4,19 @@ button.mdc-button {
   width: 100%;
   letter-spacing: var(--mdc-typography-button-letter-spacing, 0.02em);
 
+  &.xlarge {
+    height: 60px;
+    font-size: 1rem;
+  }
+
   &.large {
     height: 46px;
     font-size: 1rem;
+  }
+
+  &.medium {
+    height: 42px;
+    font-size: .9rem;
   }
 }
 
@@ -85,10 +95,10 @@ mat-hint {
   padding: 0 !important;
 }
 
-.mat-mdc-form-field-error {
-  font-size: .75em;
-  font-weight: 400;
-}
+// .mat-mdc-form-field-error {
+//   font-size: .75em;
+//   font-weight: 400;
+// }
 
 mat-label {  
   color: var(--color-grey-dark);
@@ -122,15 +132,20 @@ mat-label {
   display: none;
 }
 
-@media(max-width: 575px) {
+.mat-mdc-dialog-actions {
+  padding: 0 24px 9px !important;
+}
+
+@media(max-width: 767px) {
   .mobile-label {
     width: 80px;
     display: inline-block;
     font-weight: bold;
+    margin-right: 4px;
   }
 
-  mat-cell:first-of-type, mat-header-cell:first-of-type, mat-footer-cell:first-of-type {    
-    padding: 0 16px 0 16px !important;
+  mat-cell, mat-header-cell, mat-footer-celle {    
+    padding: 0 !important;
   }
 
   .mat-mdc-header-row {
