@@ -74,7 +74,7 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 									</div>
 									<div class="row">
 										<div class="col-lg-4 col-md-6 col-sm-12">
-											<button mat-stroked-button style="color: var(--color-green);" (click)="addRow()">
+											<button mat-stroked-button style="color: var(--color-green);" (click)="onAddRow()">
 												<mat-icon>add_circle</mat-icon>Add Another Name
 											</button>
 										</div>
@@ -127,7 +127,7 @@ export class PreviousNameComponent implements OnInit, ScreeningFormStepComponent
 			previousNameFlag: new FormControl('', [Validators.required]),
 			tableRows: this.formBuilder.array([]),
 		});
-		this.addRow();
+		this.onAddRow();
 	}
 
 	initiateForm(): FormGroup {
@@ -138,7 +138,7 @@ export class PreviousNameComponent implements OnInit, ScreeningFormStepComponent
 		});
 	}
 
-	addRow() {
+	onAddRow() {
 		const control = this.form.get('tableRows') as FormArray;
 		control.push(this.initiateForm());
 	}

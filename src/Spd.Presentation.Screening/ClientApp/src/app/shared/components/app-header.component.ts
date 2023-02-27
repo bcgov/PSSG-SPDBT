@@ -38,6 +38,7 @@ import { Router } from '@angular/router';
 				white-space: normal;
 				font-size: 1.3rem;
 				cursor: pointer;
+				line-height: 20px;
 			}
 
 			.header-divider {

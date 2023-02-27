@@ -113,7 +113,7 @@ export class SpdDateAdapter extends NativeDateAdapter {
 		{
 			provide: MAT_DIALOG_DEFAULT_OPTIONS,
 			useValue: {
-				width: '500px',
+				width: '600px',
 				hasBackdrop: true,
 			},
 		},
