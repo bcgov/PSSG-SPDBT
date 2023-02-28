@@ -50,7 +50,6 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 									[errorStateMatcher]="matcher"
 								/>
 								<mat-error *ngIf="form.get('birthplace')?.hasError('required')">This is required</mat-error>
-								<mat-error *ngIf="form.get('birthplace')?.hasError('pattern')"> Only characters are allowed </mat-error>
 							</mat-form-field>
 						</div>
 					</div>
