@@ -5,26 +5,27 @@ import { OAuthService } from 'angular-oauth2-oidc';
 export class AuthenticationService {
 	constructor(private oauthService: OAuthService) {}
 
-	public async tryLogin(): Promise<any> {
-		const isLoggedIn = await this.oauthService.loadDiscoveryDocumentAndTryLogin({
-			onTokenReceived: (token) => console.debug('token', token),
-		});
-		console.log('tryLogin isLoggedIn', isLoggedIn);
+	public async tryLogin(): Promise<{ state: any; loggedIn: boolean }> {
+		await this.oauthService.loadDiscoveryDocumentAndTryLogin();
+		const isLoggedIn = this.oauthService.hasValidAccessToken();
 		if (isLoggedIn) {
-			console.log('tryLogin oauthService.state', this.oauthService.state);
-			return Promise.resolve(this.oauthService.state);
+			return {
+				state: this.oauthService.state || null,
+				loggedIn: isLoggedIn,
+			};
 		}
-		return null;
+		return {
+			state: null,
+			loggedIn: false,
+		};
 	}
 
-	public async login(state: any): Promise<any> {
-		const isLoggedIn = await this.oauthService.loadDiscoveryDocumentAndLogin({
-			state: state,
-		});
-		if (isLoggedIn) {
-			console.log('isLoggedIn oauthService.state', this.oauthService.state);
-			return Promise.resolve(this.oauthService.state || null);
+	public async login(state: any): Promise<boolean> {
+		const isLoggedIn = this.oauthService.hasValidAccessToken();
+		if (!isLoggedIn) {
+			await this.oauthService.loadDiscoveryDocumentAndLogin({ state });
 		}
+		return isLoggedIn;
 	}
 
 	public logout(): void {
@@ -49,5 +50,6 @@ export class AuthenticationService {
 			customQueryParams: { kc_idp_hint: 'bceidboth' },
 		});
 		this.oauthService.setupAutomaticSilentRefresh();
+		await Promise.resolve();
 	}
 }
