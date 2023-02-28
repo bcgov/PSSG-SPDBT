@@ -5,15 +5,25 @@ import { OAuthService } from 'angular-oauth2-oidc';
 export class AuthenticationService {
 	constructor(private oauthService: OAuthService) {}
 
-	public async login(redirectUri: string = window.location.origin): Promise<string | void> {
-		await this.configureOAuthService(redirectUri);
-		const returnRoute = location.pathname.substring(1);
-		console.log('returnRoute', returnRoute);
+	public async tryLogin(): Promise<any> {
+		const isLoggedIn = await this.oauthService.loadDiscoveryDocumentAndTryLogin({
+			onTokenReceived: (token) => console.debug('token', token),
+		});
+		console.log('tryLogin isLoggedIn', isLoggedIn);
+		if (isLoggedIn) {
+			console.log('tryLogin oauthService.state', this.oauthService.state);
+			return Promise.resolve(this.oauthService.state);
+		}
+		return null;
+	}
+
+	public async login(state: any): Promise<any> {
 		const isLoggedIn = await this.oauthService.loadDiscoveryDocumentAndLogin({
-			state: returnRoute,
+			state: state,
 		});
 		if (isLoggedIn) {
-			return Promise.resolve(this.oauthService.state || returnRoute);
+			console.log('isLoggedIn oauthService.state', this.oauthService.state);
+			return Promise.resolve(this.oauthService.state || null);
 		}
 	}
 
@@ -25,7 +35,7 @@ export class AuthenticationService {
 		return this.oauthService.getAccessToken();
 	}
 
-	private async configureOAuthService(redirectUri: string): Promise<void> {
+	public async configureOAuthService(redirectUri: string): Promise<void> {
 		// return this.configService.getAuthConfig().then((authConfig) => {
 		this.oauthService.configure({
 			issuer: 'https://dev.loginproxy.gov.bc.ca/auth/realms/standard',

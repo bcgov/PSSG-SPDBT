@@ -76,7 +76,8 @@ import { APP_CONSTANTS } from 'src/app/material.module';
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Status</mat-header-cell>
 							<mat-cell *matCellDef="let payment">
 								<span class="mobile-label">Status:</span>
-								{{ payment.status == 'NotPaid' ? 'Not Paid' : 'Paid' }}
+								<span *ngIf="payment.status != 'NotPaid'" class="fw-bold" style="color: green;"> Paid </span>
+								<span *ngIf="payment.status == 'NotPaid'" class="fw-bold" style="color: red;"> Not Paid </span>
 							</mat-cell>
 						</ng-container>
 
