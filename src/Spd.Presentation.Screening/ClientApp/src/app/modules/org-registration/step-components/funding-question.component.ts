@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { BooleanTypeCode } from 'src/app/api/models';
+import { FundsFromBcGovtExceedsThresholdCode } from 'src/app/api/models';
 import { RegistrationFormStepComponent } from '../org-registration.component';
 
 @Component({
@@ -22,11 +22,11 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 							aria-label="Select an option"
 							formControlName="operatingBudgetFlag"
 						>
-							<mat-radio-button [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
-							<!-- <mat-divider class="my-3"></mat-divider>
-							<mat-radio-button value="NOTSURE">I'm not sure</mat-radio-button> -->
+							<mat-radio-button [value]="fundsFromBcGovtExceedsThresholdCodes.Yes">Yes</mat-radio-button>
 							<mat-divider class="my-3"></mat-divider>
-							<mat-radio-button [value]="booleanTypeCodes.No">No</mat-radio-button>
+							<mat-radio-button [value]="fundsFromBcGovtExceedsThresholdCodes.NotSure">I'm not sure</mat-radio-button>
+							<mat-divider class="my-3"></mat-divider>
+							<mat-radio-button value="No">No</mat-radio-button>
 						</mat-radio-group>
 						<mat-error
 							*ngIf="
@@ -54,7 +54,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 export class FundingQuestionComponent implements OnInit, RegistrationFormStepComponent {
 	form!: FormGroup;
 
-	booleanTypeCodes = BooleanTypeCode;
+	fundsFromBcGovtExceedsThresholdCodes = FundsFromBcGovtExceedsThresholdCode;
 
 	constructor(private formBuilder: FormBuilder) {}
 

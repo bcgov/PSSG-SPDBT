@@ -1,7 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-export enum OperatingBudgetTypeCode {
+export enum FundsFromBcGovtExceedsThresholdCode {
   Yes = 'Yes',
-  No = 'No',
   NotSure = 'NotSure'
 }
