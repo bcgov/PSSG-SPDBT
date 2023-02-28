@@ -1,9 +1,8 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperOrientation, StepperSelectionEvent } from '@angular/cdk/stepper';
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { ActivatedRoute, ParamMap } from '@angular/router';
-import { distinctUntilChanged, map } from 'rxjs';
+import { distinctUntilChanged } from 'rxjs';
 import { RegistrationTypeCode } from 'src/app/api/models';
 import { OrgRegistrationService } from 'src/app/api/services';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
@@ -16,22 +15,6 @@ export interface RegistrationFormStepComponent {
 	getDataToSave(): any;
 	clearCurrentData(): void;
 	isFormValid(): boolean;
-}
-
-export class Guid {
-	private static _regexGUID = /^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$/;
-
-	static newGuid() {
-		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-			const r = (Math.random() * 16) | 0,
-				v = c == 'x' ? r : (r & 0x3) | 0x8;
-			return v.toString(16);
-		});
-	}
-
-	static isGuid(valueToTest: string): boolean {
-		return this._regexGUID.test(valueToTest);
-	}
 }
 
 @Component({
@@ -89,7 +72,7 @@ export class Guid {
 	`,
 	styles: [],
 })
-export class OrgRegistrationComponent implements OnInit, AfterViewInit {
+export class OrgRegistrationComponent implements OnInit {
 	registrationTypeCode: RegistrationTypeCode | null = null;
 	sendToEmailAddress = '';
 	orientation: StepperOrientation = 'vertical';
@@ -111,41 +94,15 @@ export class OrgRegistrationComponent implements OnInit, AfterViewInit {
 
 	constructor(
 		private breakpointObserver: BreakpointObserver,
-		private route: ActivatedRoute,
 		private authenticationService: AuthenticationService,
 		private orgRegistrationService: OrgRegistrationService
 	) {}
 
-	ngAfterViewInit(): void {
-		this.route.queryParamMap.pipe(map((params: ParamMap) => params.get('postlogin'))).subscribe((param) => {
-			console.log('param guid', param);
-			const stateInfo = sessionStorage.getItem('stateInfo');
-			if (stateInfo) {
-				this.currentStateInfo = JSON.parse(stateInfo);
-				console.log('ngAfterViewInit SessionData', this.currentStateInfo);
-				if (param == this.currentStateInfo.guid) {
-					console.log('is equal');
-					let step = this.stepper.steps.get(0);
-					if (step) {
-						step.completed = true;
-						step.editable = false;
-					}
-					step = this.stepper.steps.get(1);
-					if (step) {
-						step.completed = true;
-						step.editable = false;
-					}
+	async ngOnInit(): Promise<void> {
+		await this.authenticationService.configureOAuthService(window.location.origin + `/org-registration`);
+		const state = await this.authenticationService.tryLogin();
+		console.debug('tryLogin state', state);
 
-					this.stepper.selectedIndex = 2;
-				} else {
-					console.log('is NOT equal');
-				}
-				sessionStorage.removeItem('stateInfo');
-			}
-		});
-	}
-
-	ngOnInit(): void {
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(
@@ -190,15 +147,24 @@ export class OrgRegistrationComponent implements OnInit, AfterViewInit {
 	}
 
 	async onRegisterWithBCeid(): Promise<void> {
-		const guid = Guid.newGuid();
-		const stateInfo = JSON.stringify({ ...this.stepOneComponent.getStepData(), guid: guid });
-		sessionStorage.setItem('stateInfo', stateInfo);
-		console.log('saved SessionData', sessionStorage.getItem('stateInfo'));
+		const stateInfo = JSON.stringify({ ...this.stepOneComponent.getStepData() });
+		// sessionStorage.setItem('stateInfo', stateInfo);
+		// console.log('onRegisterWithBCeid SessionData', sessionStorage.getItem('stateInfo'));
 
-		const redirectUri = window.location.origin + `/org-registration?postlogin=${guid}`;
-		console.log('redirectUri', redirectUri);
-		const nextUrl = await this.authenticationService.login(redirectUri);
-		console.log('nextUrl', nextUrl);
+		const redirectUri = window.location.origin + `/org-registration`; //?postlogin=${guid}
+		console.log('onRegisterWithBCeid RedirectUri', redirectUri);
+		console.log('onRegisterWithBCeid pass stateInfo', stateInfo);
+		const returnStateInfo = await this.authenticationService.login(stateInfo);
+		console.log('onRegisterWithBCeid returnStateInfo', returnStateInfo);
+
+		// this.authenticationService
+		// 	.login(stateInfo)
+		// 	.then((res) => {
+		// 		console.log('onRegisterWithBCeid returnStateInfo', res);
+		// 	})
+		// 	.catch(() => {
+		// 		console.log('onRegisterWithBCeid error');
+		// 	});
 	}
 
 	onPreviousStepperStep(stepper: MatStepper): void {
