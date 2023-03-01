@@ -43,7 +43,7 @@ import { APP_CONSTANTS } from 'src/app/material.module';
 						>
 							<ngx-dropzone-label style="width: 100%;">
 								<div class="row">
-									<div class="col-12 p-0 fw-bold" style="text-align: start; text-indent: 1em; color: black;">
+									<div class="col-12 p-0 fw-bold text-start" style="text-indent: 1em; color: black;">
 										<img class="file-name-icon" src="/assets/tsv_file.png" />
 										{{ f.name }}
 									</div>
@@ -130,12 +130,6 @@ import { APP_CONSTANTS } from 'src/app/material.module';
 		`
 			.file-name-icon {
 				max-width: 3em;
-			}
-
-			.file-name-text {
-				padding-left: 1em !important;
-				text-align: left;
-				text-indent: -1em;
 			}
 
 			.fine-print {
