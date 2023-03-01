@@ -7,12 +7,21 @@ import { MaterialModule } from '../material.module';
 import { AddressAutocompleteComponent } from './components/address-autocomplete.component';
 import { FooterComponent } from './components/app-footer.component';
 import { HeaderComponent } from './components/app-header.component';
+import { BaseFilterComponent } from './components/base-filter.component';
 import { DialogComponent } from './components/dialog.component';
+import { DropdownOverlayComponent } from './components/dropdown-overlay.component';
 
-const SHARED_COMPONENTS = [HeaderComponent, FooterComponent, DialogComponent, AddressAutocompleteComponent];
+const SHARED_COMPONENTS = [
+	HeaderComponent,
+	FooterComponent,
+	DialogComponent,
+	AddressAutocompleteComponent,
+	DropdownOverlayComponent,
+	BaseFilterComponent,
+];
 
 @NgModule({
-	declarations: [...SHARED_COMPONENTS],
+	declarations: [...SHARED_COMPONENTS, BaseFilterComponent],
 	imports: [
 		CommonModule,
 		MaterialModule,

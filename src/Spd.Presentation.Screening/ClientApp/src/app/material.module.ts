@@ -1,3 +1,4 @@
+import { OverlayModule } from '@angular/cdk/overlay';
 import { formatDate } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, Injectable, NgModule } from '@angular/core';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -53,6 +54,7 @@ const AngularMaterialModules = [
 	MatChipsModule,
 	MatNativeDateModule,
 	MatAutocompleteModule,
+	OverlayModule,
 ];
 
 export const APP_CONSTANTS = {
