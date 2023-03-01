@@ -136,9 +136,13 @@ mat-label {
   padding: 0 24px 9px !important;
 }
 
+.cdk-overlay-pane {
+  right: 0;
+}
+
 @media(max-width: 767px) {
   .mobile-label {
-    width: 80px;
+    width: 100px;
     display: inline-block;
     font-weight: bold;
     margin-right: 4px;

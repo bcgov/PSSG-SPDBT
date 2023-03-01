@@ -1,4 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort, MatSortable } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -18,6 +19,7 @@ import { APP_CONSTANTS } from 'src/app/material.module';
 					</div>
 				</div>
 			</div>
+
 			<div class="row">
 				<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
 					<mat-form-field>
@@ -34,17 +36,26 @@ import { APP_CONSTANTS } from 'src/app/material.module';
 						</button>
 					</mat-form-field>
 				</div>
-				<div class="col-xl-3 col-lg-4 col-md-7 col-sm-7">
+				<div class="col-xl-3 col-lg-4 col-md-9 col-sm-9">
 					<button mat-flat-button color="primary" class="xlarge w-100 mb-2">
 						<mat-icon>download</mat-icon>Download Monthly Report
 					</button>
 				</div>
-				<div class="col-xl-1 col-lg-2 col-md-5 col-sm-5" style="text-align: right;">
-					<button mat-flat-button color="primary" class="xlarge w-100 mb-2">
-						<mat-icon>manage_search</mat-icon>Filter
-					</button>
+				<div class="col-xl-1 col-lg-2 col-md-3 col-sm-3" style="text-align: right;">
+					<app-dropdown-overlay
+						[showDropdownOverlay]="showDropdownOverlay"
+						(showDropdownOverlayChange)="onShowDropdownOverlayChange($event)"
+					>
+						<app-payment-filter
+							[formGroup]="formFilter"
+							(filterChange)="onFilterChange($event)"
+							(filterClear)="onFilterClear()"
+							(filterClose)="onFilterClose()"
+						></app-payment-filter>
+					</app-dropdown-overlay>
 				</div>
 			</div>
+
 			<div class="row">
 				<div class="col-12">
 					<mat-table matSort [dataSource]="dataSource" class="isMobile">
@@ -82,7 +93,7 @@ import { APP_CONSTANTS } from 'src/app/material.module';
 						</ng-container>
 
 						<ng-container matColumnDef="actions">
-							<mat-header-cell *matHeaderCellDef mat-sort-header></mat-header-cell>
+							<mat-header-cell *matHeaderCellDef></mat-header-cell>
 							<mat-cell *matCellDef="let payment">
 								<span *ngIf="payment.status != 'NotPaid'" class="w-100 m-md-2 m-sm-0">
 									<button mat-flat-button color="primary" class="medium">
@@ -128,8 +139,18 @@ export class PaymentsComponent {
 
 	pageSizes = [3, 5, 7];
 
+	showDropdownOverlay = false;
+	formFilter: FormGroup = this.formBuilder.group({
+		startDate: new FormControl(''),
+		endDate: new FormControl(''),
+		paid: new FormControl(''),
+		notPaid: new FormControl(''),
+	});
+
 	@ViewChild(MatSort) sort!: MatSort;
 	@ViewChild('paginator') paginator!: MatPaginator;
+
+	constructor(private formBuilder: FormBuilder) {}
 
 	ngOnInit() {
 		this.columns = ['applicantName', 'dateTimeSubmitted', 'dateTimePaid', 'status', 'actions'];
@@ -214,5 +235,21 @@ export class PaymentsComponent {
 		this.sort.sort({ id: 'status', start: 'asc' } as MatSortable);
 		this.dataSource.sort = this.sort;
 		this.dataSource.paginator = this.paginator;
+	}
+
+	onShowDropdownOverlayChange(show: boolean): void {
+		this.showDropdownOverlay = show;
+	}
+
+	onFilterChange(filters: any) {
+		this.onFilterClose();
+	}
+
+	onFilterClear() {
+		this.onFilterClose();
+	}
+
+	onFilterClose() {
+		this.showDropdownOverlay = false;
 	}
 }
