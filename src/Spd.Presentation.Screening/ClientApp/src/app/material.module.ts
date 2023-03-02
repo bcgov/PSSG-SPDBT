@@ -1,3 +1,4 @@
+import { OverlayModule } from '@angular/cdk/overlay';
 import { formatDate } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, Injectable, NgModule } from '@angular/core';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -53,12 +54,14 @@ const AngularMaterialModules = [
 	MatChipsModule,
 	MatNativeDateModule,
 	MatAutocompleteModule,
+	OverlayModule,
 ];
 
 export const APP_CONSTANTS = {
 	date: {
 		dateFormat: 'yyyy-MMM-dd',
 		monthYearFormat: 'MMM yyyy',
+		dateTimeFormat: 'yyyy-MMM-dd HH:mm',
 	},
 };
 
@@ -112,7 +115,7 @@ export class SpdDateAdapter extends NativeDateAdapter {
 		{
 			provide: MAT_DIALOG_DEFAULT_OPTIONS,
 			useValue: {
-				width: '500px',
+				width: '600px',
 				hasBackdrop: true,
 			},
 		},

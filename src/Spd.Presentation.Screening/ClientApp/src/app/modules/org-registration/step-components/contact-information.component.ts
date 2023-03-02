@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { RegistrationFormStepComponent } from '../org-registration.component';
 
@@ -8,15 +9,15 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="step">
-				<div class="title mb-5">Provide your work contact information:</div>
+				<div class="title mb-5">Provide your work contact information</div>
 				<div class="row">
 					<div class="offset-md-2 col-md-4 col-sm-12">
 						<mat-form-field>
 							<mat-label>Given Name</mat-label>
 							<input matInput formControlName="contactGivenName" maxlength="40" [errorStateMatcher]="matcher" />
 							<mat-error *ngIf="form.get('contactGivenName')?.hasError('required')">This is required</mat-error>
-							<mat-error *ngIf="form.get('contactGivenName')?.hasError('pattern')">
-								Only characters are allowed
+							<mat-error *ngIf="form.get('contactGivenName')?.hasError('stringnonumbers')">
+								No numbers are allowed
 							</mat-error>
 						</mat-form-field>
 					</div>
@@ -25,7 +26,9 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 							<mat-label>Surname</mat-label>
 							<input matInput formControlName="contactSurname" maxlength="40" [errorStateMatcher]="matcher" />
 							<mat-error *ngIf="form.get('contactSurname')?.hasError('required')">This is required</mat-error>
-							<mat-error *ngIf="form.get('contactSurname')?.hasError('pattern')">Only characters are allowed</mat-error>
+							<mat-error *ngIf="form.get('contactSurname')?.hasError('stringnonumbers')">
+								No numbers are allowed
+							</mat-error>
 						</mat-form-field>
 					</div>
 				</div>
@@ -89,8 +92,8 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 })
 export class ContactInformationComponent implements RegistrationFormStepComponent {
 	form: FormGroup = this.formBuilder.group({
-		contactGivenName: new FormControl('', [Validators.pattern("^[a-zA-Z -']+"), Validators.required]),
-		contactSurname: new FormControl('', [Validators.pattern("^[a-zA-Z -']+"), Validators.required]),
+		contactGivenName: new FormControl('', [FormControlValidators.stringnonumbers, Validators.required]),
+		contactSurname: new FormControl('', [FormControlValidators.stringnonumbers, Validators.required]),
 		contactJobTitle: new FormControl('', [Validators.required]),
 		contactEmail: new FormControl('', [Validators.email, Validators.required]),
 		contactDateOfBirth: new FormControl('', [Validators.required]),

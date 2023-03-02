@@ -15,9 +15,9 @@ export interface DialogOptions {
 @Component({
 	selector: 'app-spd-dialog',
 	template: `
-		<h2 mat-dialog-title class="d-flex mt-4 align-items-stretch">
+		<h2 mat-dialog-title class="mt-4">
 			<mat-icon *ngIf="data.icon" [color]="data.type">{{ data.icon }}</mat-icon>
-			<strong class="flex-grow-1" *ngIf="data.title">
+			<strong *ngIf="data.title" style="position: relative; top: -10px;">
 				{{ data.title }}
 			</strong>
 		</h2>

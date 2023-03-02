@@ -10,7 +10,7 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 			<form [formGroup]="form" novalidate>
 				<div class="step">
 					<div class="title mb-5">
-						Your personal information:
+						Your personal information
 						<div class="title__sub-title mt-2">Date of birth must match your government-issued identification</div>
 					</div>
 					<div class="row">
@@ -50,7 +50,6 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 									[errorStateMatcher]="matcher"
 								/>
 								<mat-error *ngIf="form.get('birthplace')?.hasError('required')">This is required</mat-error>
-								<mat-error *ngIf="form.get('birthplace')?.hasError('pattern')"> Only characters are allowed </mat-error>
 							</mat-form-field>
 						</div>
 					</div>

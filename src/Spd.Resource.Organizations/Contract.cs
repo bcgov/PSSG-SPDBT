@@ -30,7 +30,7 @@ namespace Spd.Resource.Organizations
         public string? MailingCountry { get; set; }
         public string? MailingPostalCode { get; set; }
         public string? MailingProvince { get; set; }
-        public OperatingBudgetTypeCode OperatingBudgetFlag { get; set; }
+        public FundsFromBcGovtExceedsThresholdCode OperatingBudgetFlag { get; set; }
         public string? OrganizationName { get; set; }
         public EmployerOrganizationTypeCode? EmployerOrganizationTypeCode { get; set; }
         public VolunteerOrganizationTypeCode? VolunteerOrganizationTypeCode { get; set; }
@@ -74,10 +74,9 @@ namespace Spd.Resource.Organizations
         No
     }
 
-    public enum OperatingBudgetTypeCode
+    public enum FundsFromBcGovtExceedsThresholdCode
     {
         Yes,
-        No,
         NotSure
     }
 
