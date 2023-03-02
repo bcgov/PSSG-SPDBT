@@ -1,7 +1,12 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { EmployerOrganizationTypeCode, RegistrationTypeCode, VolunteerOrganizationTypeCode } from 'src/app/api/models';
+import {
+	BooleanTypeCode,
+	EmployerOrganizationTypeCode,
+	RegistrationTypeCode,
+	VolunteerOrganizationTypeCode,
+} from 'src/app/api/models';
 import { CompensationQuestionComponent } from '../step-components/compensation-question.component';
 import { FundingQuestionComponent } from '../step-components/funding-question.component';
 import { OrganizationOptionsComponent } from '../step-components/organization-options.component';
@@ -229,7 +234,7 @@ export class StepOneComponent {
 				isValid = this.fundingQuestionComponent.isFormValid();
 				if (isValid) {
 					const fundingQuestionData = this.fundingQuestionComponent.getDataToSave();
-					this.showStepFundingProblem = fundingQuestionData.operatingBudgetFlag == 'NO' ? true : false;
+					this.showStepFundingProblem = fundingQuestionData.operatingBudgetFlag == BooleanTypeCode.No ? true : false;
 				}
 				return isValid;
 			case 3:

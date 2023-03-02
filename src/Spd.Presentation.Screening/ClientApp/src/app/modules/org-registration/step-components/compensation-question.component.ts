@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { BooleanTypeCode } from 'src/app/api/models';
 import { RegistrationFormStepComponent } from '../org-registration.component';
 
 @Component({
@@ -18,9 +19,9 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 				<div class="row">
 					<div class="offset-md-4 col-md-4 col-sm-12">
 						<mat-radio-group aria-label="Select an option" formControlName="employeeMonetaryCompensationFlag">
-							<mat-radio-button value="NO">No</mat-radio-button>
+							<mat-radio-button [value]="booleanTypeCodes.No">No</mat-radio-button>
 							<mat-divider class="my-3"></mat-divider>
-							<mat-radio-button value="YES">Yes</mat-radio-button>
+							<mat-radio-button [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
 						</mat-radio-group>
 						<mat-error
 							*ngIf="
@@ -40,6 +41,8 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 })
 export class CompensationQuestionComponent implements OnInit, RegistrationFormStepComponent {
 	form!: FormGroup;
+
+	booleanTypeCodes = BooleanTypeCode;
 
 	constructor(private formBuilder: FormBuilder) {}
 

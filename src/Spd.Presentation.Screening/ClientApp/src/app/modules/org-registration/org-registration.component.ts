@@ -5,6 +5,7 @@ import { MatStepper } from '@angular/material/stepper';
 import { distinctUntilChanged } from 'rxjs';
 import { RegistrationTypeCode } from 'src/app/api/models';
 import { OrgRegistrationService } from 'src/app/api/services';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { StepFourComponent } from './steps/step-four.component';
 import { StepOneComponent } from './steps/step-one.component';
 import { StepThreeComponent } from './steps/step-three.component';
@@ -19,59 +20,64 @@ export interface RegistrationFormStepComponent {
 @Component({
 	selector: 'app-org-registration',
 	template: `
-		<mat-stepper
-			linear
-			labelPosition="bottom"
-			[orientation]="orientation"
-			(selectionChange)="onStepSelectionChange($event)"
-			#stepper
-		>
-			<mat-step completed="false" editable="true">
-				<ng-template matStepLabel>Eligibility</ng-template>
-				<app-step-one
-					(nextStepperStep)="onNextStepperStep(stepper)"
-					(selectRegistrationType)="onSelectRegistrationType($event)"
-					(clearRegistrationData)="onClearRegistrationData()"
-					(scrollIntoView)="onScrollIntoView()"
-				></app-step-one>
-			</mat-step>
+		<div class="container mt-4">
+			<mat-stepper
+				linear
+				labelPosition="bottom"
+				[orientation]="orientation"
+				(selectionChange)="onStepSelectionChange($event)"
+				#stepper
+			>
+				<mat-step completed="false" editable="true">
+					<ng-template matStepLabel>Eligibility</ng-template>
+					<app-step-one
+						(nextStepperStep)="onNextStepperStep(stepper)"
+						(selectRegistrationType)="onSelectRegistrationType($event)"
+						(clearRegistrationData)="onClearRegistrationData()"
+						(scrollIntoView)="onScrollIntoView()"
+					></app-step-one>
+				</mat-step>
 
-			<mat-step completed="false" editable="false">
-				<ng-template matStepLabel>Log In Options</ng-template>
-				<app-step-two
-					(previousStepperStep)="onPreviousStepperStep(stepper)"
-					(nextStepperStep)="onNextStepperStep(stepper)"
-					(scrollIntoView)="onScrollIntoView()"
-				></app-step-two>
-			</mat-step>
+				<mat-step completed="false" editable="false">
+					<ng-template matStepLabel>Log In Options</ng-template>
+					<app-step-two
+						(previousStepperStep)="onPreviousStepperStep(stepper)"
+						(nextStepperStep)="onNextStepperStep(stepper)"
+						(scrollIntoView)="onScrollIntoView()"
+						(registerWithBCeid)="onRegisterWithBCeid()"
+					></app-step-two>
+				</mat-step>
 
-			<mat-step completed="false" editable="true">
-				<ng-template matStepLabel>Business Information</ng-template>
-				<app-step-three
-					(previousStepperStep)="onPreviousStepperStep(stepper)"
-					(nextStepperStep)="onNextStepperStep(stepper)"
-					(scrollIntoView)="onScrollIntoView()"
-					[registrationTypeCode]="registrationTypeCode"
-				></app-step-three>
-			</mat-step>
+				<mat-step completed="false" editable="true">
+					<ng-template matStepLabel>Business Information</ng-template>
+					<app-step-three
+						(previousStepperStep)="onPreviousStepperStep(stepper)"
+						(nextStepperStep)="onNextStepperStep(stepper)"
+						(scrollIntoView)="onScrollIntoView()"
+						[registrationTypeCode]="registrationTypeCode"
+					></app-step-three>
+				</mat-step>
 
-			<mat-step completed="false" editable="false">
-				<ng-template matStepLabel>Complete</ng-template>
-				<app-step-four
-					(previousStepperStep)="onPreviousStepperStep(stepper)"
-					(saveStepperStep)="onSaveStepperStep()"
-					(scrollIntoView)="onScrollIntoView()"
-					[sendToEmailAddress]="sendToEmailAddress"
-				></app-step-four>
-			</mat-step>
-		</mat-stepper>
+				<mat-step completed="false" editable="false">
+					<ng-template matStepLabel>Complete</ng-template>
+					<app-step-four
+						(previousStepperStep)="onPreviousStepperStep(stepper)"
+						(saveStepperStep)="onSaveStepperStep()"
+						(scrollIntoView)="onScrollIntoView()"
+						[sendToEmailAddress]="sendToEmailAddress"
+					></app-step-four>
+				</mat-step>
+			</mat-stepper>
+		</div>
 	`,
 	styles: [],
 })
 export class OrgRegistrationComponent implements OnInit {
+	STATE_KEY = 'state';
 	registrationTypeCode: RegistrationTypeCode | null = null;
 	sendToEmailAddress = '';
 	orientation: StepperOrientation = 'vertical';
+	currentStateInfo: any = {};
 
 	@ViewChild('stepper') stepper!: MatStepper;
 
@@ -87,13 +93,40 @@ export class OrgRegistrationComponent implements OnInit {
 	@ViewChild(StepFourComponent)
 	stepFourComponent!: StepFourComponent;
 
-	constructor(private breakpointObserver: BreakpointObserver, private orgRegistrationService: OrgRegistrationService) {}
+	constructor(
+		private breakpointObserver: BreakpointObserver,
+		private authenticationService: AuthenticationService,
+		private orgRegistrationService: OrgRegistrationService
+	) {}
 
-	ngOnInit(): void {
+	async ngOnInit(): Promise<void> {
+		await this.authenticationService.configureOAuthService(window.location.origin + `/org-registration`);
+
+		//auth step 1 - user is not logged in, no state at all
+		//auth step 3 - angular loads again here, KC posts the token, oidc lib reads token and returns state
+		const authInfo = await this.authenticationService.tryLogin();
+		console.debug('[ngOnInit] tryLogin authInfo', authInfo);
+
+		if (authInfo.loggedIn) {
+			if (authInfo.state) {
+				var decodedData = decodeURIComponent(authInfo.state);
+				sessionStorage.setItem(this.STATE_KEY, decodedData);
+
+				// navigate to step 3
+				this.postLoginNavigate(decodedData);
+			} else {
+				const stateInfo = sessionStorage.getItem(this.STATE_KEY);
+
+				if (stateInfo) {
+					this.postLoginNavigate(stateInfo);
+				}
+			}
+		}
+
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(
-				// tap((value) => console.log(value)),
+				// tap((value) => console.debug(value)),
 				distinctUntilChanged()
 			)
 			.subscribe(() => this.breakpointChanged());
@@ -109,7 +142,7 @@ export class OrgRegistrationComponent implements OnInit {
 		// 	contactSurname: '3string',
 		// 	employeeInteractionFlag: EmployeeInteractionTypeCode.Adults,
 		// 	employerOrganizationTypeCode: EmployerOrganizationTypeCode.Appointed,
-		// 	volunteerOrganizationTypeCode: null,
+		// 	// volunteerOrganizationTypeCode: null,
 		// 	genericEmail: 'b@con.com',
 		// 	genericEmailConfirmation: 'b@con.com',
 		// 	genericPhoneNumber: '2506648787',
@@ -120,8 +153,8 @@ export class OrgRegistrationComponent implements OnInit {
 		// 	mailingCountry: '4string',
 		// 	mailingPostalCode: '5string',
 		// 	mailingProvince: '6string',
-		// 	operatingBudgetFlag: OperatingBudgetTypeCode.No,
-		// 	organizationName: 'test4',
+		// 	operatingBudgetFlag: FundsFromBcGovtExceedsThresholdCode.NotSure,
+		// 	organizationName: 'test444',
 		// 	registrationTypeCode: RegistrationTypeCode.Employee,
 		// 	screeningsCount: ScreeningsCountTypeCode.LessThanOneHundred,
 		// };
@@ -133,18 +166,52 @@ export class OrgRegistrationComponent implements OnInit {
 		// 	});
 	}
 
+	postLoginNavigate(step1Data: any): void {
+		let step = this.stepper.steps.get(0);
+		if (step) {
+			step.completed = true;
+			step.editable = false;
+		}
+
+		step = this.stepper.steps.get(1);
+		if (step) {
+			step.completed = true;
+			step.editable = false;
+		}
+
+		this.currentStateInfo = JSON.parse(step1Data);
+		this.stepper.selectedIndex = 2;
+	}
+
+	async onRegisterWithBCeid(): Promise<void> {
+		const stateInfo = JSON.stringify({ ...this.stepOneComponent.getStepData() });
+
+		//auth step 2 - unload angular, redirect to KC
+		const isLoggedIn = await this.authenticationService.login(stateInfo);
+		if (isLoggedIn) {
+			// User is already logged in and clicks Login button.
+			// For example, complete a registration then refresh the page.
+			// Want it to start at the beginning and continue past login page.
+			this.postLoginNavigate(stateInfo);
+		}
+	}
+
 	onPreviousStepperStep(stepper: MatStepper): void {
 		stepper.previous();
 	}
 
 	onSaveStepperStep(): void {
-		// Prevent step 3 from being edited
+		// Prevent step Business Information from being edited
 		let step = this.stepper.steps.get(2);
 		if (step) step.editable = false;
 
 		let dataToSave = {};
 		if (this.stepOneComponent) {
-			dataToSave = { ...dataToSave, ...this.stepOneComponent.getStepData() };
+			if (this.currentStateInfo) {
+				dataToSave = { ...this.currentStateInfo };
+			} else {
+				dataToSave = { ...this.stepOneComponent.getStepData() };
+			}
 		}
 
 		if (this.stepThreeComponent) {
@@ -155,15 +222,17 @@ export class OrgRegistrationComponent implements OnInit {
 			dataToSave = { ...dataToSave, ...this.stepFourComponent.getStepData() };
 		}
 
-		console.log('onSaveStepperStep', dataToSave);
+		console.debug('[onSaveStepperStep] dataToSave', dataToSave);
 
 		// const body: OrgRegistrationCreateRequest = dataToSave;
 		// this.orgRegistrationService
 		// 	.apiOrgRegistrationsPost({ body })
 		// 	.pipe()
 		// 	.subscribe((_res: any) => {
+		// sessionStorage.removeItem(this.STATE_KEY);
 		// 		this.stepFourComponent.childStepNext();
 		// 	});
+		sessionStorage.removeItem(this.STATE_KEY);
 		this.stepFourComponent.childStepNext();
 	}
 
