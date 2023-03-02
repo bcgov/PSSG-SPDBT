@@ -1,0 +1,21 @@
+import { Component, Input } from '@angular/core';
+
+@Component({
+	selector: 'app-dashboard-header',
+	template: `
+		<div class="row">
+			<div class="col-12">
+				<h2 class="mx-2 fw-light" [title]="title" [attr.aria-label]="title">{{ title }}</h2>
+				<div *ngIf="subtitle" class="lead mx-2">{{ subtitle }}</div>
+				<div>
+					<ng-content></ng-content>
+				</div>
+			</div>
+		</div>
+	`,
+	styles: [],
+})
+export class DashboardHeaderComponent {
+	@Input() title = '';
+	@Input() subtitle = '';
+}

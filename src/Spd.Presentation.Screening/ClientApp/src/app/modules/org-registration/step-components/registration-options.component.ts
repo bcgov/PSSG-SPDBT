@@ -4,7 +4,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 	selector: 'app-registration-options',
 	template: `
 		<div class="step">
-			<div class="title mb-5">Select your preferred log in option:</div>
+			<div class="title mb-5">What is your preferred log in option?</div>
 			<div class="step-container row">
 				<div class="offset-xl-2 col-xl-5 col-lg-6 col-md-12 col-sm-12 mb-3">
 					<div class="step-container__box dark">
@@ -36,7 +36,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 							</table>
 						</div>
 						<div class="step-container__box__footer p-4">
-							<button mat-raised-button (click)="onClickNext()">Register with BCeID</button>
+							<button mat-raised-button (click)="onRegisterWithBCeid()">Register with BCeID</button>
 						</div>
 					</div>
 				</div>
@@ -52,7 +52,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 							approval. We recommend registering with your Business BCeID for easier access.
 						</div>
 						<div class="step-container__box__footer p-4">
-							<button mat-raised-button color="primary" (click)="onClickNext()">Register with BCSC</button>
+							<button mat-raised-button color="primary" (click)="onRegisterWithBCSC()">Register with BCSC</button>
 							<div class="mt-2">
 								<a (click)="onClickNext()" style="font-size: small;">Register without authenticating for now</a>
 							</div>
@@ -99,8 +99,15 @@ import { Component, EventEmitter, Output } from '@angular/core';
 })
 export class RegistrationOptionsComponent {
 	@Output() clickNext: EventEmitter<boolean> = new EventEmitter<boolean>();
+	@Output() registerWithBCeid: EventEmitter<boolean> = new EventEmitter<boolean>();
 
 	onClickNext(): void {
 		this.clickNext.emit(true);
 	}
+
+	onRegisterWithBCeid(): void {
+		this.registerWithBCeid.emit(true);
+	}
+
+	onRegisterWithBCSC(): void {}
 }
