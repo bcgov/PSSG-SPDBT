@@ -12,7 +12,7 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 			<form [formGroup]="form" novalidate>
 				<div class="step">
 					<div class="title mb-5">
-						Confirm your information:
+						Confirm your information
 						<div class="title__sub-title mt-2">Legal name must match your government-issued identification</div>
 					</div>
 					<div class="row">
@@ -21,8 +21,8 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 								<mat-label>Legal Given Name</mat-label>
 								<input matInput formControlName="contactGivenName" [errorStateMatcher]="matcher" />
 								<mat-error *ngIf="form.get('contactGivenName')?.hasError('required')">This is required</mat-error>
-								<mat-error *ngIf="form.get('contactGivenName')?.hasError('namealpha')">
-									Only characters are allowed
+								<mat-error *ngIf="form.get('contactGivenName')?.hasError('stringnonumbers')">
+									No numbers are allowed
 								</mat-error>
 							</mat-form-field>
 						</div>
@@ -30,8 +30,8 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 							<mat-form-field>
 								<mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
 								<input matInput formControlName="contactMiddleName1" [errorStateMatcher]="matcher" />
-								<mat-error *ngIf="form.get('contactMiddleName1')?.hasError('namealpha')">
-									Only characters are allowed
+								<mat-error *ngIf="form.get('contactMiddleName1')?.hasError('stringnonumbers')">
+									No numbers are allowed
 								</mat-error>
 							</mat-form-field>
 						</div>
@@ -39,8 +39,8 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 							<mat-form-field>
 								<mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
 								<input matInput formControlName="contactMiddleName2" [errorStateMatcher]="matcher" />
-								<mat-error *ngIf="form.get('contactMiddleName2')?.hasError('namealpha')">
-									Only characters are allowed
+								<mat-error *ngIf="form.get('contactMiddleName2')?.hasError('stringnonumbers')">
+									No numbers are allowed
 								</mat-error>
 							</mat-form-field>
 						</div>
@@ -51,8 +51,8 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 								<mat-label>Legal Surname</mat-label>
 								<input matInput formControlName="contactSurname" [errorStateMatcher]="matcher" />
 								<mat-error *ngIf="form.get('contactSurname')?.hasError('required')">This is required</mat-error>
-								<mat-error *ngIf="form.get('contactSurname')?.hasError('namealpha')">
-									Only characters are allowed
+								<mat-error *ngIf="form.get('contactSurname')?.hasError('stringnonumbers')">
+									No numbers are allowed
 								</mat-error>
 							</mat-form-field>
 							<div class="w-100 mb-4">
@@ -92,10 +92,13 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 export class ContactInformationComponent implements ScreeningFormStepComponent {
 	form: FormGroup = this.formBuilder.group(
 		{
-			contactGivenName: new FormControl('Pulled-From-Portal', [FormControlValidators.namealpha, Validators.required]),
-			contactMiddleName1: new FormControl('', [FormControlValidators.namealpha]),
-			contactMiddleName2: new FormControl('', [FormControlValidators.namealpha]),
-			contactSurname: new FormControl('', [FormControlValidators.namealpha]),
+			contactGivenName: new FormControl('Pulled-From-Portal', [
+				FormControlValidators.stringnonumbers,
+				Validators.required,
+			]),
+			contactMiddleName1: new FormControl('', [FormControlValidators.stringnonumbers]),
+			contactMiddleName2: new FormControl('', [FormControlValidators.stringnonumbers]),
+			contactSurname: new FormControl('', [FormControlValidators.stringnonumbers]),
 			contactEmail: new FormControl('Pulled@From.Portal', [Validators.email, Validators.required]),
 			contactPhoneNumber: new FormControl('6048185356', [Validators.required]),
 			oneLegalName: new FormControl(false),

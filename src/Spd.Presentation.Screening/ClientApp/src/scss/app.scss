@@ -70,9 +70,13 @@ $spd-yellow: (
 
 @import "@bcgov/bc-sans/css/BCSans.css";
 
+// $fonts: (
+//   header: #{"BCSans, Noto Sans, Verdana, Arial, sans-serif"},
+//   body: #{"BCSans, Noto Sans, Verdana, Arial, sans-serif"},
+// );
 $fonts: (
-  header: #{"BCSans, Noto Sans, Verdana, Arial, sans-serif"},
-  body: #{"BCSans, Noto Sans, Verdana, Arial, sans-serif"},
+  header: #{"Noto Sans, Verdana, Arial, sans-serif"},
+  body: #{"Noto Sans, Verdana, Arial, sans-serif"},
 );
 
 @function theme-font($font) {
@@ -117,9 +121,11 @@ $spd-theme: mat.define-light-theme((
   --color-primary-lightest: #f8f9fb;
   --color-primary-lighter: #d6ddec;
   --color-primary-light: #0f48ae;
+  --color-sidebar: #385D8A;
   --color-primary: #003366; // BC Gov. Primary
   --color-primary-dark: #001b4a;
 
+  --color-card: #f7f7f7;
 	--color-light-green: #e9f6ee;
 	--color-yellow: #FCBA19;  // BC Gov. Secondary
   --color-yellow-dark: #df9f03;
@@ -205,6 +211,11 @@ a {
     border: none;
     box-shadow: none;
   }
+}
+
+
+ngx-dropzone-remove-badge {
+  z-index: 9999 !important;
 }
 
 .active-selection-main {

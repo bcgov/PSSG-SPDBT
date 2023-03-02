@@ -3,7 +3,7 @@
 import { BooleanTypeCode } from './boolean-type-code';
 import { EmployeeInteractionTypeCode } from './employee-interaction-type-code';
 import { EmployerOrganizationTypeCode } from './employer-organization-type-code';
-import { OperatingBudgetTypeCode } from './operating-budget-type-code';
+import { FundsFromBcGovtExceedsThresholdCode } from './funds-from-bc-govt-exceeds-threshold-code';
 import { PayerPreferenceTypeCode } from './payer-preference-type-code';
 import { RegistrationTypeCode } from './registration-type-code';
 import { ScreeningsCountTypeCode } from './screenings-count-type-code';
@@ -29,7 +29,7 @@ export interface OrgRegistrationCreateRequest {
   mailingCountry?: null | string;
   mailingPostalCode?: null | string;
   mailingProvince?: null | string;
-  operatingBudgetFlag?: OperatingBudgetTypeCode;
+  operatingBudgetFlag?: FundsFromBcGovtExceedsThresholdCode;
   organizationName?: null | string;
   payerPreference?: PayerPreferenceTypeCode;
   registrationTypeCode?: RegistrationTypeCode;

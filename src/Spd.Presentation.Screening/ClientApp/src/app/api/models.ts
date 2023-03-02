@@ -1,7 +1,7 @@
 export { BooleanTypeCode } from './models/boolean-type-code';
 export { EmployeeInteractionTypeCode } from './models/employee-interaction-type-code';
 export { EmployerOrganizationTypeCode } from './models/employer-organization-type-code';
-export { OperatingBudgetTypeCode } from './models/operating-budget-type-code';
+export { FundsFromBcGovtExceedsThresholdCode } from './models/funds-from-bc-govt-exceeds-threshold-code';
 export { OrgRegistrationCreateRequest } from './models/org-registration-create-request';
 export { PayerPreferenceTypeCode } from './models/payer-preference-type-code';
 export { RegistrationTypeCode } from './models/registration-type-code';

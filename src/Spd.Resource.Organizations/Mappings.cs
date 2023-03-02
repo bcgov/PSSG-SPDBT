@@ -22,7 +22,7 @@ namespace Spd.Resource.Organizations
                 opt.PreCondition(s => s.VolunteerOrganizationTypeCode.HasValue);
                 opt.MapFrom(s => (int)Enum.Parse<VolunteerOrganizationTypeOptionSet>(s.VolunteerOrganizationTypeCode.ToString()));
             })
-            .ForMember(d => d.Spd_receiveoperatingfundsfrombcgovt, opt => opt.MapFrom(s => (int)Enum.Parse<YesNoOptionSet>(s.OperatingBudgetFlag.ToString()))) // Include 'I don't know' ???
+            .ForMember(d => d.Spd_fundsfrombcgovtexceedsthreshold, opt => opt.MapFrom(s => (int)Enum.Parse<FundsFromBcGovtExceedsThresholdOptionSet>(s.OperatingBudgetFlag.ToString())))
             .ForMember(d => d.Spd_workswith, opt => opt.MapFrom(s => (int)Enum.Parse<WorksWithChildrenOptionSet>(s.EmployeeInteractionFlag.ToString())))
             .ForMember(d => d.Spd_estimatedapplicationssubmittedperyear, opt => opt.MapFrom(s => (int)Enum.Parse<EstimatedApplicationsSubmittedPerYearOptionSet>(s.ScreeningsCount.ToString())))
             .ForMember(d => d.Spd_payerpreference, opt => opt.MapFrom(s => (int)Enum.Parse<PayerPreferenceOptionSet>(s.PayerPreference.ToString())))

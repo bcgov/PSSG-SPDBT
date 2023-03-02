@@ -4,13 +4,13 @@ import { Router } from '@angular/router';
 @Component({
 	selector: 'app-landing',
 	template: `
-		<section class="step-section col-5 mx-auto mt-4 p-4" style="margin-top: 8em;">
+		<section class="step-section col-3 mx-auto p-4" style="margin-top: 8em;">
 			<button mat-raised-button color="primary" class="large mb-2" [routerLink]="['/org-registration/']">
 				Organization Registration
 			</button>
 		</section>
 
-		<section class="step-section col-5 mx-auto mt-4 p-4">
+		<section class="step-section col-3 mx-auto mt-4 p-4">
 			<button mat-raised-button color="primary" class="large mb-2" (click)="goToScreening()">
 				Screening Application
 			</button>
@@ -26,8 +26,10 @@ import { Router } from '@angular/router';
 			</mat-radio-group>
 		</section>
 
-		<section class="step-section col-5 mx-auto mt-4 p-4">
-			<button mat-raised-button color="primary" class="large mb-2" [routerLink]="['/dashboard/']">Dashboard</button>
+		<section class="step-section col-3 mx-auto mt-4 p-4">
+			<button mat-raised-button color="primary" class="large mb-2" [routerLink]="['/dashboard/home/']">
+				Dashboard
+			</button>
 		</section>
 	`,
 	styles: [],
