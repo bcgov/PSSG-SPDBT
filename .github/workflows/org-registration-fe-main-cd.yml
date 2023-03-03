@@ -5,14 +5,14 @@ on:
     branches:
       - main
     paths:
-      - frontend/**
+      - src/**
       - .github/workflows/org-registration-fe-main-cd.yml
 
 jobs:
   build-deploy-organization-registration:
-    #uses: ./.github/workflows/cd-workflow.yml
-    #with:
-    #  DOCKER_CONTEXT: frontend
-    # DOCKER_FILE: frontend/Dockerfile
-    # DOCKER_IMAGE_NAME: organization-registration
-    #secrets: inherit
+    uses: ./.github/workflows/cd-workflow.yml
+    with:
+      DOCKER_CONTEXT: frontend
+      DOCKER_FILE: frontend/Dockerfile
+      DOCKER_IMAGE_NAME: organization-registration
+    secrets: inherit
