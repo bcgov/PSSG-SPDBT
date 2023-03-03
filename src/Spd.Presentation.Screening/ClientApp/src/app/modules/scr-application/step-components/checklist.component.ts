@@ -8,7 +8,7 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 			<div class="step">
 				<div class="row">
 					<div class="col-md-8 col-sm-12 mx-auto">
-						<div class="title mb-5">To submit a request for a criminal record check, you will need:</div>
+						<div class="title mb-5">To submit a request for a criminal record check, you will need the following</div>
 					</div>
 				</div>
 				<div class="row">

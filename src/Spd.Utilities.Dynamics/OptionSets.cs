@@ -41,6 +41,12 @@
         MoreThanFiveHundred = 100000002,
     }
 
+    public enum FundsFromBcGovtExceedsThresholdOptionSet
+    {
+        Yes = 100000000,
+        NotSure = 100000001
+    }
+
     public enum YesNoOptionSet
     {
         No = 100000000,

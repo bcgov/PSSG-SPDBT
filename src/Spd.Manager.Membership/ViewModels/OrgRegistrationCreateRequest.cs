@@ -25,7 +25,7 @@ namespace Spd.Manager.Membership.ViewModels
         public string? MailingCountry { get; set; }
         public string? MailingPostalCode { get; set; }
         public string? MailingProvince { get; set; }
-        public OperatingBudgetTypeCode OperatingBudgetFlag { get; set; }
+        public FundsFromBcGovtExceedsThresholdCode OperatingBudgetFlag { get; set; }
         public string? OrganizationName { get; set; }
         public EmployerOrganizationTypeCode? EmployerOrganizationTypeCode { get; set; }
         public VolunteerOrganizationTypeCode? VolunteerOrganizationTypeCode { get; set; }
@@ -87,13 +87,10 @@ namespace Spd.Manager.Membership.ViewModels
         No
     }
 
-    public enum OperatingBudgetTypeCode
+    public enum FundsFromBcGovtExceedsThresholdCode
     {
         [Description("Yes")]
         Yes,
-
-        [Description("No")]
-        No,
 
         [Description("Not Sure")]
         NotSure
