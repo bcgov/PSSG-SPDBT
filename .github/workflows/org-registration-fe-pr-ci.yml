@@ -5,12 +5,12 @@ on:
     branches:
       - main
     paths:
-      - frontend/**
+      - src/**
       - .github/workflows/org-registration-fe-pr-ci.yml
 
 jobs:
   build-deploy-organization-registration:
-#    uses: ./.github/workflows/ci-workflow.yml
- #   with:
-  #    DOCKER_CONTEXT: frontend
-   #   DOCKER_FILE: frontend/Dockerfile
+    uses: ./.github/workflows/ci-workflow.yml
+    with:
+      DOCKER_CONTEXT: src
+      DOCKER_FILE: src/screening-portal.dockerfile
