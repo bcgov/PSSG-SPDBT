@@ -1,0 +1,16 @@
+name: Pull Request - Screening Portal build
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - src/**
+      - .github/workflows/screen-portal-pr-ci.yml
+
+jobs:
+  build-screen-portal-pr:
+    uses: ./.github/workflows/ci-workflow.yml
+    with:
+      DOCKER_CONTEXT: screen-portal
+      DOCKER_FILE: src/screening-portal.dockerfile

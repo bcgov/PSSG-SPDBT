@@ -1,0 +1,18 @@
+name: Screen Portal CI/CD
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - src/**
+      - .github/workflows/screen-portal-main-cd
+
+jobs:
+  build-deploy-screening-portal:
+    uses: ./.github/workflows/cd-workflow.yml
+    with:
+      DOCKER_CONTEXT: screening-portal
+      DOCKER_FILE: screening-portal.dockerfile
+      DOCKER_IMAGE_NAME: screening-portal
+    secrets: inherit
