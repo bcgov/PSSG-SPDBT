@@ -2,6 +2,7 @@ name: Pull Request - Screening Portal build
 
 on:
   pull_request:
+    types: [opened, reopened, edited, synchronize]
     branches:
       - main
     paths:
