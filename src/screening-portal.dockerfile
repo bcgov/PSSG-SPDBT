@@ -7,15 +7,10 @@ RUN dotnet tool install --tool-path /tools dotnet-counters
 RUN dotnet tool install --tool-path /tools dotnet-dump
 
 WORKDIR /src
-COPY ["Spd.Presentation.Screening/Spd.Presentation.Screening.csproj", "ScreeningPortal/"]
-RUN dotnet restore "ScreeningPortal/Spd.Presentation.Screening.csproj"
+COPY ["Spd.Presentation.Screening/Spd.Presentation.Screening.csproj", "Spd.Presentation.Screening/"]
+RUN dotnet restore "Spd.Presentation.Screening/Spd.Presentation.Screening.csproj"
 COPY . .
-WORKDIR "/src/ScreeningPortal"
-RUN dotnet build "Spd.Presentation.Screening.csproj" -c Release -o /app/build
-
-# Publish the main project
-FROM net-builder AS publish
-RUN dotnet publish "Spd.Presentation.Screening.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Spd.Presentation.Screening/Spd.Presentation.Screening.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM docker.io/trion/ng-cli-karma AS ng-builder
 WORKDIR /src
