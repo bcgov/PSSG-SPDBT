@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { APP_CONSTANTS } from 'src/app/core/constants/constants';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { RegistrationFormStepComponent } from '../org-registration.component';
@@ -66,7 +67,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 								[errorStateMatcher]="matcher"
 							/>
 							<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-							<mat-datepicker #picker startView="multi-year" [startAt]="startDate"></mat-datepicker>
+							<mat-datepicker #picker startView="multi-year" [startAt]="startAt"></mat-datepicker>
 							<mat-error *ngIf="form.get('contactDateOfBirth')?.hasError('required')">This is required</mat-error>
 						</mat-form-field>
 					</div>
@@ -99,7 +100,7 @@ export class ContactInformationComponent implements RegistrationFormStepComponen
 		contactDateOfBirth: new FormControl('', [Validators.required]),
 		contactPhoneNumber: new FormControl('', [Validators.required]),
 	});
-	startDate = new Date(2000, 0, 1);
+	startAt = APP_CONSTANTS.date.birthDateStartAt;
 	matcher = new FormErrorStateMatcher();
 
 	constructor(private formBuilder: FormBuilder) {}

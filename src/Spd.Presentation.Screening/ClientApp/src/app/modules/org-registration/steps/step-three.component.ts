@@ -18,7 +18,14 @@ import { ScreeningsQuestionComponent } from '../step-components/screenings-quest
 
 				<div class="row mt-4">
 					<div class="offset-lg-4 col-lg-4 offset-md-4 col-md-4 col-sm-12">
-						<button mat-raised-button color="primary" class="large mb-2" (click)="onFormValidNextStep(10)">Next</button>
+						<button
+							mat-raised-button
+							color="primary"
+							class="large mb-2"
+							(click)="onFormValidNextStep(STEP_CONTACT_INFORMATION)"
+						>
+							Next
+						</button>
 					</div>
 				</div>
 			</mat-step>
@@ -31,7 +38,14 @@ import { ScreeningsQuestionComponent } from '../step-components/screenings-quest
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" class="large mb-2" (click)="onFormValidNextStep(8)">Next</button>
+						<button
+							mat-raised-button
+							color="primary"
+							class="large mb-2"
+							(click)="onFormValidNextStep(STEP_ORGANIZATION_NAME)"
+						>
+							Next
+						</button>
 					</div>
 				</div>
 			</mat-step>
@@ -44,7 +58,14 @@ import { ScreeningsQuestionComponent } from '../step-components/screenings-quest
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" class="large mb-2" (click)="onFormValidNextStep(9)">Next</button>
+						<button
+							mat-raised-button
+							color="primary"
+							class="large mb-2"
+							(click)="onFormValidNextStep(STEP_ORGANIZATION_INFORMATION)"
+						>
+							Next
+						</button>
 					</div>
 				</div>
 			</mat-step>
@@ -57,7 +78,14 @@ import { ScreeningsQuestionComponent } from '../step-components/screenings-quest
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" class="large mb-2" (click)="onFormValidNextStep(11)">Next</button>
+						<button
+							mat-raised-button
+							color="primary"
+							class="large mb-2"
+							(click)="onFormValidNextStep(STEP_MAILING_ADDRESS)"
+						>
+							Next
+						</button>
 					</div>
 				</div>
 			</mat-step>
@@ -70,7 +98,9 @@ import { ScreeningsQuestionComponent } from '../step-components/screenings-quest
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" class="large mb-2" (click)="onStepNext(12)">Next</button>
+						<button mat-raised-button color="primary" class="large mb-2" (click)="onStepNext(STEP_SCREENINGS_QUESTION)">
+							Next
+						</button>
 					</div>
 				</div>
 			</mat-step>
@@ -84,7 +114,9 @@ import { ScreeningsQuestionComponent } from '../step-components/screenings-quest
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" class="large mb-2" (click)="goToStepNext(13)">Next</button>
+						<button mat-raised-button color="primary" class="large mb-2" (click)="goToStepNext(STEP_PAYMENT_QUESTION)">
+							Next
+						</button>
 					</div>
 				</div>
 			</mat-step>
@@ -94,6 +126,13 @@ import { ScreeningsQuestionComponent } from '../step-components/screenings-quest
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepThreeComponent {
+	readonly STEP_ORGANIZATION_NAME = 8;
+	readonly STEP_ORGANIZATION_INFORMATION = 9;
+	readonly STEP_CONTACT_INFORMATION = 10;
+	readonly STEP_MAILING_ADDRESS = 11;
+	readonly STEP_SCREENINGS_QUESTION = 12;
+	readonly STEP_PAYMENT_QUESTION = 13;
+
 	showStepPaymentQuestion: boolean = false;
 
 	private _registrationTypeCode: RegistrationTypeCode | null = null;
@@ -173,22 +212,22 @@ export class StepThreeComponent {
 
 	private dirtyForm(step: number): boolean {
 		switch (step) {
-			case 13:
+			case this.STEP_PAYMENT_QUESTION:
 				this.paymentQuestionComponent.form.markAllAsTouched();
 				return this.paymentQuestionComponent.isFormValid();
-			case 12:
+			case this.STEP_SCREENINGS_QUESTION:
 				this.screeningsQuestionComponent.form.markAllAsTouched();
 				return this.screeningsQuestionComponent.isFormValid();
-			case 11:
+			case this.STEP_MAILING_ADDRESS:
 				this.mailingAddressComponent.form.markAllAsTouched();
 				return this.mailingAddressComponent.isFormValid();
-			case 10:
+			case this.STEP_CONTACT_INFORMATION:
 				this.contactInformationComponent.form.markAllAsTouched();
 				return this.contactInformationComponent.isFormValid();
-			case 9:
+			case this.STEP_ORGANIZATION_INFORMATION:
 				this.organizationInformationComponent.form.markAllAsTouched();
 				return this.organizationInformationComponent.isFormValid();
-			case 8:
+			case this.STEP_ORGANIZATION_NAME:
 				this.organizationNameComponent.form.markAllAsTouched();
 				return this.organizationNameComponent.isFormValid();
 			default:
