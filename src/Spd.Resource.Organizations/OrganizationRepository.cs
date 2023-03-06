@@ -20,15 +20,15 @@ namespace Spd.Resource.Organizations
                 (int)RegistrationTypeOptionSet.Employee :
                 (int)RegistrationTypeOptionSet.Volunteer;
 
+            //refactor: if dynamics team decide to change the schema
+            //if not, need to map the code to name (some name has spaces).
             string spdOrgName = createRegistrationCmd.RegistrationTypeCode == RegistrationTypeCode.Employee ?
                 createRegistrationCmd.EmployerOrganizationTypeCode?.ToString() :
                 createRegistrationCmd.VolunteerOrganizationTypeCode.ToString();
 
-            Spd_orgregistration orgregistration = _mapper.Map<Spd_orgregistration>(createRegistrationCmd);
-           //orgregistration._spd_organizationtypeid_value = _dynaContext.LookupOrganizationType(spdOrgCategory, spdOrgName).Spd_organizationtypeid;
-            _dynaContext.AddToSpd_orgregistrations(orgregistration);
-            //_dynaContext.SetLink(orgregistration, nameof(Spd_orgregistration.Spd_OrganizationTypeId), _dynaContext.LookupOrganizationType(spdOrgCategory, spdOrgName));
-            _dynaContext.AddLink(orgregistration, nameof(Spd_orgregistration.Spd_OrganizationTypeId), _dynaContext.LookupOrganizationType(spdOrgCategory, spdOrgName));
+            spd_orgregistration orgregistration = _mapper.Map<spd_orgregistration>(createRegistrationCmd);
+            _dynaContext.AddTospd_orgregistrations(orgregistration);
+            _dynaContext.SetLink(orgregistration, nameof(spd_orgregistration.spd_OrganizationTypeId), _dynaContext.LookupOrganizationType(spdOrgCategory, spdOrgName));
             await _dynaContext.SaveChangesAsync(cancellationToken);
             return true;
         }
@@ -36,7 +36,7 @@ namespace Spd.Resource.Organizations
 
         public async Task<List<RegistrationResponse>> GetAllOrgRegistrations()
         {
-            var orgs = await _dynaContext.Spd_orgregistrations.GetAllPagesAsync();
+            var orgs = await _dynaContext.spd_orgregistrations.GetAllPagesAsync();
             //todo: add mapping here
             List<RegistrationResponse> result = new List<RegistrationResponse>();
             return result;
