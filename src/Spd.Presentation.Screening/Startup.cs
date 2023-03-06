@@ -1,8 +1,7 @@
 ﻿using FluentValidation.AspNetCore;
-using MediatR;
 using Spd.Manager.Membership;
 using Spd.Utilities.Hosting;
-using SPD.DynamicsProxy;
+using Spd.Utilities.Dynamics;
 using System.Reflection;
 using System.Text.Json.Serialization;
 
