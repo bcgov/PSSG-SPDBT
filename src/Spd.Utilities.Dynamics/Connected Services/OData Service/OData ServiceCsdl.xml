@@ -25664,6 +25664,14 @@
         <Parameter Name="entity" Type="mscrm.spd_alias" Nullable="false" />
         <ReturnType Type="mscrm.spd_GetAliasTitleResponse" Nullable="false" />
       </Action>
+      <ComplexType Name="spd_GetCaseFromApplicationResponse">
+        <Property Name="IsSuccess" Type="Edm.Boolean" />
+        <NavigationProperty Name="CaseLookup" Type="mscrm.incident" Nullable="false" />
+      </ComplexType>
+      <Action Name="spd_GetCaseFromApplication" IsBound="true">
+        <Parameter Name="entity" Type="mscrm.spd_application" Nullable="false" />
+        <ReturnType Type="mscrm.spd_GetCaseFromApplicationResponse" Nullable="false" />
+      </Action>
       <ComplexType Name="spd_GetCaseTitleResponse">
         <Property Name="NewName" Type="Edm.String" Unicode="false" />
       </ComplexType>

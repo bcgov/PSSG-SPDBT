@@ -1,4 +1,4 @@
-﻿{
+{
   "ProviderId": "Microsoft.OData.ConnectedService",
   "Version": "1.0.1.0",
   "GettingStartedDocument": {
@@ -27,7 +27,7 @@
     "MakeTypesInternal": false,
     "OpenGeneratedFilesInIDE": false,
     "GenerateMultipleFiles": false,
-    "CustomHttpHeaders": null,
+    "CustomHttpHeaders": "Authorization: Bearer REMOVED",
     "IncludeWebProxy": false,
     "WebProxyHost": null,
     "IncludeWebProxyNetworkCredentials": false,
