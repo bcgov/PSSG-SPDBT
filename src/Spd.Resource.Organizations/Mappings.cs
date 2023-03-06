@@ -12,16 +12,6 @@ namespace Spd.Resource.Organizations
             .ForMember(d => d.Spd_source, opt => opt.MapFrom(s => SourceOptionSet.Online))
             .ForMember(d => d.Spd_orgregistrationid, opt => opt.MapFrom(s => Guid.NewGuid()))
             .ForMember(d => d.Spd_registrationtype, opt => opt.MapFrom(s => (int)Enum.Parse<RegistrationTypeOptionSet>(s.RegistrationTypeCode.ToString())))
-            .ForMember(d => d.Spd_employerorganizationtype, opt =>
-            {
-                opt.PreCondition(s => s.EmployerOrganizationTypeCode.HasValue);
-                opt.MapFrom(s => (int)Enum.Parse<EmployerOrganizationTypeOptionSet>(s.EmployerOrganizationTypeCode.ToString()));
-            })
-            .ForMember(d => d.Spd_volunteerorganizationtype, opt =>
-            {
-                opt.PreCondition(s => s.VolunteerOrganizationTypeCode.HasValue);
-                opt.MapFrom(s => (int)Enum.Parse<VolunteerOrganizationTypeOptionSet>(s.VolunteerOrganizationTypeCode.ToString()));
-            })
             .ForMember(d => d.Spd_fundsfrombcgovtexceedsthreshold, opt => opt.MapFrom(s => (int)Enum.Parse<FundsFromBcGovtExceedsThresholdOptionSet>(s.OperatingBudgetFlag.ToString())))
             .ForMember(d => d.Spd_workswith, opt => opt.MapFrom(s => (int)Enum.Parse<WorksWithChildrenOptionSet>(s.EmployeeInteractionFlag.ToString())))
             .ForMember(d => d.Spd_estimatedapplicationssubmittedperyear, opt => opt.MapFrom(s => (int)Enum.Parse<EstimatedApplicationsSubmittedPerYearOptionSet>(s.ScreeningsCount.ToString())))

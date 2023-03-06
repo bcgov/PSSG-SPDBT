@@ -2,7 +2,7 @@
 using Microsoft.OData.Client;
 using Microsoft.OData.Extensions.Client;
 
-namespace SPD.DynamicsProxy
+namespace Spd.Utilities.Dynamics
 {
     internal class ODataClientHandler : IODataClientHandler
     {

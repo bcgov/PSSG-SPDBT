@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OData.Extensions.Client;
 
-namespace SPD.DynamicsProxy
+namespace Spd.Utilities.Dynamics
 {
     public static class ServiceExtensions
     {
