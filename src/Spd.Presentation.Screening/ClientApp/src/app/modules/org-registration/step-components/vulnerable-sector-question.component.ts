@@ -128,7 +128,7 @@ export class VulnerableSectorQuestionComponent implements RegistrationFormStepCo
 		this.isDirtyAndInvalid = !isValid;
 	}
 
-	getDataToSave(): any {
+	getDataToSave(): VulnerableSectorQuestionModel {
 		return { employeeInteractionFlag: this.employeeInteractionFlag };
 	}
 

@@ -6,6 +6,7 @@ import { distinctUntilChanged } from 'rxjs';
 import { RegistrationTypeCode } from 'src/app/api/models';
 import { OrgRegistrationService } from 'src/app/api/services';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { OrgRegistrationRoutes } from './org-registration-routing.module';
 import { StepFourComponent } from './steps/step-four.component';
 import { StepOneComponent } from './steps/step-one.component';
 import { StepThreeComponent } from './steps/step-three.component';
@@ -73,7 +74,7 @@ export interface RegistrationFormStepComponent {
 	styles: [],
 })
 export class OrgRegistrationComponent implements OnInit {
-	STATE_KEY = 'state';
+	readonly STATE_KEY = 'state';
 	registrationTypeCode: RegistrationTypeCode | null = null;
 	sendToEmailAddress = '';
 	orientation: StepperOrientation = 'vertical';
@@ -100,7 +101,9 @@ export class OrgRegistrationComponent implements OnInit {
 	) {}
 
 	async ngOnInit(): Promise<void> {
-		await this.authenticationService.configureOAuthService(window.location.origin + `/org-registration`);
+		await this.authenticationService.configureOAuthService(
+			window.location.origin + `/${OrgRegistrationRoutes.ORG_REGISTRATION}`
+		);
 
 		//auth step 1 - user is not logged in, no state at all
 		//auth step 3 - angular loads again here, KC posts the token, oidc lib reads token and returns state

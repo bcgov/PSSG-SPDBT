@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort, MatSortable } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { APP_CONSTANTS } from 'src/app/material.module';
+import { APP_CONSTANTS } from 'src/app/core/constants/constants';
 
 @Component({
 	selector: 'app-payments',

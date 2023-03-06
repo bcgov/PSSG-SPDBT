@@ -27,6 +27,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { APP_CONSTANTS } from './core/constants/constants';
 
 const AngularMaterialModules = [
 	MatToolbarModule,
@@ -56,14 +57,6 @@ const AngularMaterialModules = [
 	MatAutocompleteModule,
 	OverlayModule,
 ];
-
-export const APP_CONSTANTS = {
-	date: {
-		dateFormat: 'yyyy-MMM-dd',
-		monthYearFormat: 'MMM yyyy',
-		dateTimeFormat: 'yyyy-MMM-dd HH:mm',
-	},
-};
 
 export const APP_DATE_FORMATS = {
 	parse: {
