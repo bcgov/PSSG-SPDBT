@@ -28,20 +28,18 @@ export interface DialogOptions {
 		</mat-dialog-content>
 
 		<mat-dialog-actions>
-			<button
-				*ngIf="data.cancelText"
-				mat-stroked-button
-				color="primary"
-				[mat-dialog-close]="false"
-				cdkFocusInitial
-				class="my-2 me-2"
-			>
-				{{ data.cancelText }}
-			</button>
-			<span class="flex-grow-1"></span>
-			<button *ngIf="data.actionText" mat-flat-button color="primary" (click)="onConfirm()" class="my-2 me-1">
-				{{ data.actionText }}
-			</button>
+			<div class="row m-0 p-0 w-100">
+				<div class="col-md-5 col-sm-12 mb-2">
+					<button *ngIf="data.cancelText" mat-stroked-button color="primary" [mat-dialog-close]="false" cdkFocusInitial>
+						{{ data.cancelText }}
+					</button>
+				</div>
+				<div class="offset-md-2 col-md-5 col-sm-12 mb-2">
+					<button *ngIf="data.actionText" mat-flat-button color="primary" (click)="onConfirm()">
+						{{ data.actionText }}
+					</button>
+				</div>
+			</div>
 		</mat-dialog-actions>
 	`,
 	styles: [
@@ -66,10 +64,6 @@ export interface DialogOptions {
 			a {
 				color: var(--color-primary-light);
 				text-decoration: underline;
-			}
-
-			button.mdc-button {
-				width: unset;
 			}
 		`,
 	],

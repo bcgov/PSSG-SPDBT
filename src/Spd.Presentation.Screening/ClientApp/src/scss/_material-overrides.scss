@@ -20,6 +20,15 @@ button.mdc-button {
   }
 }
 
+// STEPPER 
+.mat-stepper-horizontal, .mat-stepper-vertical {
+  background-color: var(--color-primary-lightest);
+}
+
+.mat-horizontal-content-container {
+  padding: 0 !important;
+}
+
 .mat-step-text-label {
   white-space: normal;
 }
@@ -44,16 +53,18 @@ button.mdc-button {
   background-color: unset;// rgba(0, 0, 0, 0.04);
 }
 
+// CARD
+.mat-mdc-card-content {  
+  text-align: center;
+}
+
+// FORM FIELDS
 .mdc-form-field {
   background-color: rgba(245, 245, 245);
 }
 
 .mdc-text-field--disabled .mdc-text-field__input {
   color: rgba(0, 0, 0, 0.68);
-}
-
-.mat-mdc-card-content {  
-  text-align: center;
 }
 
 .mat-mdc-form-field, .mat-mdc-radio-button, .mat-mdc-checkbox {  
@@ -79,26 +90,9 @@ button.mdc-button {
   width: 100%;
 }
 
-// .mdc-form-field {
-//   background-color: inherit; // make radio button without grey background
-// }
-
 mat-hint {
   font-size: small;
 }
-
-.mat-stepper-horizontal, .mat-stepper-vertical {
-  background-color: var(--color-primary-lightest);
-}
-
-.mat-horizontal-content-container {
-  padding: 0 !important;
-}
-
-// .mat-mdc-form-field-error {
-//   font-size: .75em;
-//   font-weight: 400;
-// }
 
 mat-label {  
   color: var(--color-grey-dark);
@@ -109,10 +103,7 @@ mat-label {
   display: none;
 }
 
-.mat-mdc-dialog-container .mdc-dialog__surface {
-  border: 2px solid var(--color-yellow);
-}
-
+// TABLE 
 .mat-sort-header {
   .mat-sort-header-content {
     font-weight: 600;
@@ -132,10 +123,16 @@ mat-label {
   display: none;
 }
 
-.mat-mdc-dialog-actions {
-  padding: 0 24px 9px !important;
+// DIALOG
+.mat-mdc-dialog-container .mdc-dialog__surface {
+  border: 2px solid var(--color-yellow);
 }
 
+.mat-mdc-dialog-actions {
+  padding: 0 8px 9px !important;
+}
+
+// OVERLAY
 .cdk-overlay-pane {
   right: 0;
 }
@@ -169,6 +166,7 @@ mat-label {
   }
 }
 
+// NAVIGATION 
 .nav-link {
   font-weight: 500;
   border-radius: 0 !important;

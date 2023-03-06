@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { APP_CONSTANTS } from 'src/app/core/constants/constants';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
-import { EditUserModalComponent, UserDialogData } from './edit-user-modal.component';
+import { MaintainUserModalComponent, UserDialogData } from './maintain-user-modal.component';
 
 export class UserModel {
 	id: number | null = null;
@@ -118,7 +118,7 @@ export class UserModel {
 })
 export class UsersComponent {
 	appConstants = APP_CONSTANTS;
-	readonly MAX_NUMBER_OF_USERS = 5;
+	readonly MAX_NUMBER_OF_USERS = 6;
 	addAllowed = false;
 
 	users: UserModel[] = [
@@ -211,7 +211,7 @@ export class UsersComponent {
 
 	private userDialog(dialogOptions: UserDialogData): void {
 		this.dialog
-			.open(EditUserModalComponent, {
+			.open(MaintainUserModalComponent, {
 				width: '800px',
 				data: dialogOptions,
 			})
