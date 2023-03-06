@@ -4,11 +4,11 @@ namespace Spd.Utilities.Dynamics
 {
     public static class DynamicsContextLookupHelpers
     {
-        public static Spd_organizationtype? LookupOrganizationType(this DynamicsContext context, int orgCategory, string name)
+        public static spd_organizationtype? LookupOrganizationType(this DynamicsContext context, int orgCategory, string name)
         {
             if (string.IsNullOrWhiteSpace(name)) return null;
-            return context.Spd_organizationtypes
-                .Where(s => s.Spd_organizationcategory == orgCategory && s.Spd_name == name)
+            return context.spd_organizationtypes
+                .Where(s => s.spd_organizationcategory == orgCategory && s.spd_name == name)
                 .FirstOrDefault();
         }
     }
