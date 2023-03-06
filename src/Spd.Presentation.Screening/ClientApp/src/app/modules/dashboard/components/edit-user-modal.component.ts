@@ -1,14 +1,12 @@
 import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { APP_CONSTANTS } from 'src/app/core/constants/constants';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
+import { UserModel } from './users.component';
 
 export interface UserDialogData {
-	id: string;
-	authorizationTypeCode: string;
-	surname: string;
-	givenName: string;
-	email: string;
+	user: UserModel;
 }
 
 @Component({
@@ -21,8 +19,8 @@ export interface UserDialogData {
 					<div class="col-md-6">
 						<mat-form-field>
 							<mat-label>Authorization Type</mat-label>
-							<input matInput formControlName="authorizationTypeCode" [errorStateMatcher]="matcher" />
-							<mat-error *ngIf="form.get('authorizationTypeCode')?.hasError('required')"> This is required </mat-error>
+							<input matInput formControlName="authorizationType" [errorStateMatcher]="matcher" />
+							<mat-error *ngIf="form.get('authorizationType')?.hasError('required')"> This is required </mat-error>
 						</mat-form-field>
 					</div>
 					<div class="col-md-6">
@@ -51,6 +49,41 @@ export interface UserDialogData {
 						</mat-form-field>
 					</div>
 				</div>
+
+				<div class="row">
+					<div class="col-md-6">
+						<mat-form-field>
+							<mat-label>Phone Number</mat-label>
+							<input
+								matInput
+								formControlName="phoneNumber"
+								mask="(000) 000-0000"
+								[showMaskTyped]="true"
+								[errorStateMatcher]="matcher"
+							/>
+							<mat-error *ngIf="form.get('phoneNumber')?.hasError('required')">This is required</mat-error>
+						</mat-form-field>
+					</div>
+					<div class="col-md-6">
+						<mat-form-field>
+							<mat-label>Job Title</mat-label>
+							<input matInput formControlName="jobTitle" [errorStateMatcher]="matcher" />
+							<mat-error *ngIf="form.get('jobTitle')?.hasError('required')">This is required</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-6">
+						<mat-form-field>
+							<mat-label>Date of Birth</mat-label>
+							<input matInput [matDatepicker]="picker" formControlName="dateOfBirth" [errorStateMatcher]="matcher" />
+							<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+							<mat-datepicker #picker startView="multi-year" [startAt]="startAt"></mat-datepicker>
+							<mat-error *ngIf="form.get('dateOfBirth')?.hasError('required')">This is required</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
 			</form>
 		</mat-dialog-content>
 		<mat-dialog-actions>
@@ -69,11 +102,15 @@ export interface UserDialogData {
 export class EditUserModalComponent {
 	title: string = '';
 	form: FormGroup = this.formBuilder.group({
-		authorizationTypeCode: new FormControl('', [Validators.required]),
+		authorizationType: new FormControl('', [Validators.required]),
 		surname: new FormControl('', [Validators.required]),
 		givenName: new FormControl('', [Validators.required]),
 		email: new FormControl('', [Validators.required, Validators.email]),
+		phoneNumber: new FormControl('', [Validators.required]),
+		jobTitle: new FormControl('', [Validators.required]),
+		dateOfBirth: new FormControl('', [Validators.required]),
 	});
+	startAt = APP_CONSTANTS.date.birthDateStartAt;
 	matcher = new FormErrorStateMatcher();
 
 	constructor(
@@ -83,8 +120,8 @@ export class EditUserModalComponent {
 	) {}
 
 	ngOnInit(): void {
-		this.form.patchValue(this.dialogData);
-		this.title = this.dialogData.id ? 'Edit User' : 'Add User';
+		this.form.patchValue(this.dialogData.user);
+		this.title = this.dialogData.user.id ? 'Edit User' : 'Add User';
 	}
 
 	onSave(): void {

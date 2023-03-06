@@ -2,6 +2,11 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { OrgRegistrationComponent } from './org-registration.component';
 
+export class OrgRegistrationRoutes {
+	public static ORG_REGISTRATION = 'org-registration';
+	public static MODULE_PATH = OrgRegistrationRoutes.ORG_REGISTRATION;
+}
+
 const routes: Routes = [
 	{
 		path: '',
@@ -10,7 +15,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-	imports: [RouterModule.forChild(routes)], //, { scrollPositionRestoration: 'top' })],
+	imports: [RouterModule.forChild(routes)],
 	exports: [RouterModule],
 })
 export class OrgRegistrationRoutingModule {}
