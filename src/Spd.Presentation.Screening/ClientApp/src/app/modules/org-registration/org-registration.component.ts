@@ -109,6 +109,9 @@ export class OrgRegistrationComponent implements OnInit {
 			)
 			.subscribe(() => this.breakpointChanged());
 
+		console.debug('[ngOnInit] window.location.origin', window.location.origin);
+		console.debug('[ngOnInit] redirect', window.location.origin + `/${OrgRegistrationRoutes.ORG_REGISTRATION}`);
+
 		await this.authenticationService.configureOAuthService(
 			window.location.origin + `/${OrgRegistrationRoutes.ORG_REGISTRATION}`
 		);
@@ -178,7 +181,8 @@ export class OrgRegistrationComponent implements OnInit {
 
 		let dataToSave = {};
 		if (this.stepOneComponent) {
-			if (this.currentStateInfo) {
+			console.debug('this.currentStateInfo', this.currentStateInfo);
+			if (this.currentStateInfo && this.currentStateInfo.registrationTypeCode) {
 				dataToSave = { ...this.currentStateInfo };
 			} else {
 				dataToSave = { ...this.stepOneComponent.getStepData() };

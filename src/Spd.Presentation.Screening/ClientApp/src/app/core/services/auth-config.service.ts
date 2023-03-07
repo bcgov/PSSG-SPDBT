@@ -28,16 +28,21 @@ export class AuthConfigService {
 	}
 
 	public async getAuthConfig(redirectUri: string): Promise<AuthConfig> {
-		return await this.loadConfig().then((resp) => ({
-			issuer: resp.issuer!,
-			clientId: resp.clientId!,
-			redirectUri,
-			responseType: resp.responseType!,
-			scope: resp.scope!,
-			showDebugInformation: true,
-			postLogoutRedirectUri: resp.postLogoutRedirectUri!,
-			// eslint-disable-next-line @typescript-eslint/naming-convention
-			customQueryParams: { kc_idp_hint: 'bceidboth' },
-		}));
+		console.debug('[getAuthConfig] redirectUri', redirectUri);
+		return await this.loadConfig().then((resp) => {
+			const config = {
+				issuer: resp.issuer!,
+				clientId: resp.clientId!,
+				redirectUri,
+				responseType: resp.responseType!,
+				scope: resp.scope!,
+				showDebugInformation: true,
+				postLogoutRedirectUri: resp.postLogoutRedirectUri!,
+				// eslint-disable-next-line @typescript-eslint/naming-convention
+				customQueryParams: { kc_idp_hint: 'bceidboth' },
+			};
+			console.debug('[getAuthConfig] config', config);
+			return config;
+		});
 	}
 }
