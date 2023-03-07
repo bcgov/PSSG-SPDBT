@@ -55,7 +55,7 @@ import { APP_CONSTANTS } from 'src/app/core/constants/constants';
 				</div>
 
 				<mat-divider class="my-3"></mat-divider>
-				<div class="text-primary fw-semibold mb-2">Organization Address</div>
+				<div class="text-minor-heading fw-semibold mb-2">Organization Address</div>
 				<div class="row">
 					<div class="col-xl-4 col-lg-12">
 						<mat-form-field>
@@ -105,7 +105,7 @@ import { APP_CONSTANTS } from 'src/app/core/constants/constants';
 				</div>
 
 				<mat-divider class="my-3"></mat-divider>
-				<div class="text-primary fw-semibold mb-2">Who pays for screenings?</div>
+				<div class="text-minor-heading fw-semibold mb-2">Who pays for screenings?</div>
 				<div class="mb-2">
 					Set who is responsible for paying the screening fee. You can adjust this when you generate a screening
 					request.
@@ -114,7 +114,6 @@ import { APP_CONSTANTS } from 'src/app/core/constants/constants';
 					<div class="col-xl-4 col-lg-12">
 						<mat-radio-group aria-label="Select an option" formControlName="whoPays">
 							<mat-radio-button [value]="payerPreferenceTypeCode.Organization">Organization Pays</mat-radio-button>
-							<mat-divider class="my-3"></mat-divider>
 							<mat-radio-button [value]="payerPreferenceTypeCode.Applicant">Applicant Pays</mat-radio-button>
 						</mat-radio-group>
 						<mat-error
@@ -129,14 +128,13 @@ import { APP_CONSTANTS } from 'src/app/core/constants/constants';
 				</div>
 
 				<mat-divider class="my-3"></mat-divider>
-				<div class="text-primary fw-semibold mb-2">
+				<div class="text-minor-heading fw-semibold mb-2">
 					Do you work with contractors who need vulnerable sector screenings?
 				</div>
 				<div class="row">
 					<div class="col-xl-4 col-lg-12">
 						<mat-radio-group aria-label="Select an option" formControlName="contractorScreening">
 							<mat-radio-button [value]="booleanTypeCodes.No">No</mat-radio-button>
-							<mat-divider class="my-3"></mat-divider>
 							<mat-radio-button [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
 						</mat-radio-group>
 						<mat-error
@@ -151,14 +149,13 @@ import { APP_CONSTANTS } from 'src/app/core/constants/constants';
 				</div>
 
 				<mat-divider class="my-3"></mat-divider>
-				<div class="text-primary fw-semibold mb-2">
+				<div class="text-minor-heading fw-semibold mb-2">
 					Do you work with licensees who need vulnerable sector screenings?
 				</div>
 				<div class="row">
 					<div class="col-xl-4 col-lg-12">
 						<mat-radio-group aria-label="Select an option" formControlName="licenseeScreening">
-							<mat-radio-button [value]="booleanTypeCodes.No">No</mat-radio-button>
-							<mat-divider class="my-3"></mat-divider>
+							<mat-radio-button [value]="booleanTypeCodes.No" class="mb-2">No</mat-radio-button>
 							<mat-radio-button [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
 						</mat-radio-group>
 						<mat-error
@@ -174,7 +171,13 @@ import { APP_CONSTANTS } from 'src/app/core/constants/constants';
 			</form>
 		</section>
 	`,
-	styles: [],
+	styles: [
+		`
+			.text-minor-heading {
+				color: var(--color-primary-light);
+			}
+		`,
+	],
 })
 export class SettingsComponent {
 	booleanTypeCodes = BooleanTypeCode;
