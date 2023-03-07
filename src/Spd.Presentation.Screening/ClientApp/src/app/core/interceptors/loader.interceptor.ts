@@ -15,10 +15,8 @@ export class LoaderInterceptor implements HttpInterceptor {
 
 		return next.handle(request).pipe(
 			finalize(() => {
-				setTimeout(() => {
-					this.requestsInProgressCount--;
-					if (this.requestsInProgressCount <= 0) this.spinnerService.hide('loaderSpinner');
-				}, 3000);
+				this.requestsInProgressCount--;
+				if (this.requestsInProgressCount <= 0) this.spinnerService.hide('loaderSpinner');
 			})
 		);
 	}
