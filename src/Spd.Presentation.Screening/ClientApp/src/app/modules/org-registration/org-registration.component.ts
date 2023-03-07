@@ -101,6 +101,14 @@ export class OrgRegistrationComponent implements OnInit {
 	) {}
 
 	async ngOnInit(): Promise<void> {
+		this.breakpointObserver
+			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
+			.pipe(
+				// tap((value) => console.debug(value)),
+				distinctUntilChanged()
+			)
+			.subscribe(() => this.breakpointChanged());
+
 		await this.authenticationService.configureOAuthService(
 			window.location.origin + `/${OrgRegistrationRoutes.ORG_REGISTRATION}`
 		);
@@ -112,27 +120,21 @@ export class OrgRegistrationComponent implements OnInit {
 
 		if (authInfo.loggedIn) {
 			if (authInfo.state) {
-				var decodedData = decodeURIComponent(authInfo.state);
+				const decodedData = decodeURIComponent(authInfo.state);
 				sessionStorage.setItem(this.STATE_KEY, decodedData);
+				console.debug('[ngOnInit] authInfo.state', decodedData);
 
 				// navigate to step 3
 				this.postLoginNavigate(decodedData);
 			} else {
 				const stateInfo = sessionStorage.getItem(this.STATE_KEY);
+				console.debug('[ngOnInit] stateInfo', stateInfo);
 
 				if (stateInfo) {
 					this.postLoginNavigate(stateInfo);
 				}
 			}
 		}
-
-		this.breakpointObserver
-			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
-			.pipe(
-				// tap((value) => console.debug(value)),
-				distinctUntilChanged()
-			)
-			.subscribe(() => this.breakpointChanged());
 
 		// const body: OrgRegistrationCreateRequest = {
 		// 	agreeToTermsAndConditions: false,
@@ -157,7 +159,7 @@ export class OrgRegistrationComponent implements OnInit {
 		// 	mailingPostalCode: '5string',
 		// 	mailingProvince: '6string',
 		// 	operatingBudgetFlag: FundsFromBcGovtExceedsThresholdCode.NotSure,
-		// 	organizationName: 'test444',
+		// 	organizationName: 'test4444',
 		// 	registrationTypeCode: RegistrationTypeCode.Employee,
 		// 	screeningsCount: ScreeningsCountTypeCode.LessThanOneHundred,
 		// };
