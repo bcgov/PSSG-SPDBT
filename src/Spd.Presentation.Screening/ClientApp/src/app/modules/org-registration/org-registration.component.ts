@@ -3,7 +3,7 @@ import { StepperOrientation, StepperSelectionEvent } from '@angular/cdk/stepper'
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { distinctUntilChanged } from 'rxjs';
-import { RegistrationTypeCode } from 'src/app/api/models';
+import { OrgRegistrationCreateRequest, RegistrationTypeCode } from 'src/app/api/models';
 import { OrgRegistrationService } from 'src/app/api/services';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { OrgRegistrationRoutes } from './org-registration-routing.module';
@@ -101,6 +101,14 @@ export class OrgRegistrationComponent implements OnInit {
 	) {}
 
 	async ngOnInit(): Promise<void> {
+		this.breakpointObserver
+			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
+			.pipe(
+				// tap((value) => console.debug(value)),
+				distinctUntilChanged()
+			)
+			.subscribe(() => this.breakpointChanged());
+
 		await this.authenticationService.configureOAuthService(
 			window.location.origin + `/${OrgRegistrationRoutes.ORG_REGISTRATION}`
 		);
@@ -112,61 +120,21 @@ export class OrgRegistrationComponent implements OnInit {
 
 		if (authInfo.loggedIn) {
 			if (authInfo.state) {
-				var decodedData = decodeURIComponent(authInfo.state);
+				const decodedData = decodeURIComponent(authInfo.state);
 				sessionStorage.setItem(this.STATE_KEY, decodedData);
+				console.debug('[ngOnInit] authInfo.state', decodedData);
 
 				// navigate to step 3
 				this.postLoginNavigate(decodedData);
 			} else {
 				const stateInfo = sessionStorage.getItem(this.STATE_KEY);
+				console.debug('[ngOnInit] stateInfo', stateInfo);
 
 				if (stateInfo) {
 					this.postLoginNavigate(stateInfo);
 				}
 			}
 		}
-
-		this.breakpointObserver
-			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
-			.pipe(
-				// tap((value) => console.debug(value)),
-				distinctUntilChanged()
-			)
-			.subscribe(() => this.breakpointChanged());
-
-		// const body: OrgRegistrationCreateRequest = {
-		// 	agreeToTermsAndConditions: false,
-		// 	contactDateOfBirth: '2023-02-04T00:11:05.865Z',
-		// 	payerPreference: PayerPreferenceTypeCode.Applicant,
-		// 	contactEmail: 'a@test.com',
-		// 	contactGivenName: '1string',
-		// 	contactJobTitle: '2string',
-		// 	contactPhoneNumber: '2506648787',
-		// 	contactSurname: '3string',
-		// 	employeeInteractionFlag: EmployeeInteractionTypeCode.Adults,
-		// 	employerOrganizationTypeCode: EmployerOrganizationTypeCode.Appointed,
-		// 	// volunteerOrganizationTypeCode: null,
-		// 	genericEmail: 'b@con.com',
-		// 	genericEmailConfirmation: 'b@con.com',
-		// 	genericPhoneNumber: '2506648787',
-		// 	hasPhoneOrEmail: BooleanTypeCode.Yes,
-		// 	mailingAddressLine1: '1string',
-		// 	mailingAddressLine2: '2string',
-		// 	mailingCity: '3string',
-		// 	mailingCountry: '4string',
-		// 	mailingPostalCode: '5string',
-		// 	mailingProvince: '6string',
-		// 	operatingBudgetFlag: FundsFromBcGovtExceedsThresholdCode.NotSure,
-		// 	organizationName: 'test444',
-		// 	registrationTypeCode: RegistrationTypeCode.Employee,
-		// 	screeningsCount: ScreeningsCountTypeCode.LessThanOneHundred,
-		// };
-		// this.orgRegistrationService
-		// 	.apiOrgRegistrationsPost({ body })
-		// 	.pipe()
-		// 	.subscribe((_res: any) => {
-		// 		this.stepFourComponent.childStepNext();
-		// 	});
 	}
 
 	postLoginNavigate(step1Data: any): void {
@@ -227,16 +195,14 @@ export class OrgRegistrationComponent implements OnInit {
 
 		console.debug('[onSaveStepperStep] dataToSave', dataToSave);
 
-		// const body: OrgRegistrationCreateRequest = dataToSave;
-		// this.orgRegistrationService
-		// 	.apiOrgRegistrationsPost({ body })
-		// 	.pipe()
-		// 	.subscribe((_res: any) => {
-		// sessionStorage.removeItem(this.STATE_KEY);
-		// 		this.stepFourComponent.childStepNext();
-		// 	});
-		sessionStorage.removeItem(this.STATE_KEY);
-		this.stepFourComponent.childStepNext();
+		const body: OrgRegistrationCreateRequest = dataToSave;
+		this.orgRegistrationService
+			.apiOrgRegistrationsPost({ body })
+			.pipe()
+			.subscribe((_res: any) => {
+				sessionStorage.removeItem(this.STATE_KEY);
+				this.stepFourComponent.childStepNext();
+			});
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
