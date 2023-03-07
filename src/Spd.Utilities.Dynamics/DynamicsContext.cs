@@ -1,4 +1,4 @@
-﻿namespace SPD.DynamicsProxy
+﻿namespace Spd.Utilities.Dynamics
 {
     public class DynamicsContext : Microsoft.Dynamics.CRM.System
     {
