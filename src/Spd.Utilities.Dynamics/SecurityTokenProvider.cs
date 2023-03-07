@@ -3,7 +3,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 using Spd.Utilities.Cache;
 
-namespace SPD.DynamicsProxy
+namespace Spd.Utilities.Dynamics
 {
     public interface ISecurityTokenProvider
     {
