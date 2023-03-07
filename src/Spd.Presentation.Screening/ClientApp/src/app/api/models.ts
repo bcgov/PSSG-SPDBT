@@ -1,3 +1,4 @@
+export { BCeIdConfigurationResponse } from './models/b-ce-id-configuration-response';
 export { BooleanTypeCode } from './models/boolean-type-code';
 export { EmployeeInteractionTypeCode } from './models/employee-interaction-type-code';
 export { EmployerOrganizationTypeCode } from './models/employer-organization-type-code';

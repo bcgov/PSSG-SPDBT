@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { OAuthService } from 'angular-oauth2-oidc';
+import { AuthConfigService } from './auth-config.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
-	constructor(private oauthService: OAuthService) {}
+	constructor(private oauthService: OAuthService, private authConfigService: AuthConfigService) {}
 
 	public async tryLogin(): Promise<{ state: any; loggedIn: boolean }> {
 		await this.oauthService.loadDiscoveryDocumentAndTryLogin();
@@ -37,19 +38,9 @@ export class AuthenticationService {
 	}
 
 	public async configureOAuthService(redirectUri: string): Promise<void> {
-		// return this.configService.getAuthConfig().then((authConfig) => {
-		this.oauthService.configure({
-			issuer: 'https://dev.loginproxy.gov.bc.ca/auth/realms/standard',
-			clientId: 'spd-4592',
-			redirectUri: redirectUri,
-			responseType: 'code',
-			scope: 'openid profile email offline_access',
-			showDebugInformation: true,
-			postLogoutRedirectUri: 'https://logontest7.gov.bc.ca/clp-cgi/logoff.cgi',
-			// eslint-disable-next-line @typescript-eslint/naming-convention
-			customQueryParams: { kc_idp_hint: 'bceidboth' },
+		return this.authConfigService.getAuthConfig(redirectUri).then((authConfig) => {
+			this.oauthService.configure(authConfig);
+			this.oauthService.setupAutomaticSilentRefresh();
 		});
-		this.oauthService.setupAutomaticSilentRefresh();
-		await Promise.resolve();
 	}
 }
