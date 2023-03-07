@@ -16,19 +16,19 @@ namespace Spd.Resource.Organizations
 
         public async Task<bool> RegisterAsync(CreateRegistrationCmd createRegistrationCmd, CancellationToken cancellationToken)
         {
-            int spdOrgCategory = createRegistrationCmd.RegistrationTypeCode == RegistrationTypeCode.Employee ?
-                (int)RegistrationTypeOptionSet.Employee :
-                (int)RegistrationTypeOptionSet.Volunteer;
-
-            //refactor: if dynamics team decide to change the schema
-            //if not, need to map the code to name (some name has spaces).
-            string spdOrgName = createRegistrationCmd.RegistrationTypeCode == RegistrationTypeCode.Employee ?
-                createRegistrationCmd.EmployerOrganizationTypeCode?.ToString() :
-                createRegistrationCmd.VolunteerOrganizationTypeCode.ToString();
+            string key;
+            if (createRegistrationCmd.RegistrationTypeCode == RegistrationTypeCode.Employee)
+            {
+                key = $"{createRegistrationCmd.RegistrationTypeCode}-{createRegistrationCmd.EmployerOrganizationTypeCode}";
+            }
+            else
+            {
+                key = $"{createRegistrationCmd.RegistrationTypeCode}-{createRegistrationCmd.VolunteerOrganizationTypeCode}";
+            }
 
             spd_orgregistration orgregistration = _mapper.Map<spd_orgregistration>(createRegistrationCmd);
             _dynaContext.AddTospd_orgregistrations(orgregistration);
-            _dynaContext.SetLink(orgregistration, nameof(spd_orgregistration.spd_OrganizationTypeId), _dynaContext.LookupOrganizationType(spdOrgCategory, spdOrgName));
+            _dynaContext.SetLink(orgregistration, nameof(spd_orgregistration.spd_OrganizationTypeId), _dynaContext.LookupOrganizationType(key));
             await _dynaContext.SaveChangesAsync(cancellationToken);
             return true;
         }
