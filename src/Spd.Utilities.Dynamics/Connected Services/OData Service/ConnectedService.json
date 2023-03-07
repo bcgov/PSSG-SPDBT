@@ -5,7 +5,7 @@
     "Uri": "http://odata.github.io/odata.net/"
   },
   "ExtendedData": {
-    "EnableNamingAlias": true,
+    "EnableNamingAlias": false,
     "IgnoreUnexpectedElementsAndAttributes": true,
     "IncludeT4File": false,
     "ExcludedOperationImports": [],
@@ -23,11 +23,11 @@
     "GeneratedFileNamePrefix": "Reference",
     "UseNamespacePrefix": false,
     "NamespacePrefix": null,
-    "UseDataServiceCollection": true,
+    "UseDataServiceCollection": false,
     "MakeTypesInternal": false,
     "OpenGeneratedFilesInIDE": false,
     "GenerateMultipleFiles": false,
-    "CustomHttpHeaders": "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ims0Y3BkRmdybU0yMHJhcThYVVRxMVlpaXNISSJ9.eyJhdWQiOiJodHRwczovL3NwZC1zcGFyYy5kZXYuamFnLmdvdi5iYy5jYS9hcGkvZGF0YS92OS4wLyIsImlzcyI6Imh0dHA6Ly9zdHN0ZXN0Lmdvdi5iYy5jYS9hZGZzL3NlcnZpY2VzL3RydXN0IiwiaWF0IjoxNjc3NjEzMTE2LCJleHAiOjE2Nzc2MTY3MTYsInVwbiI6InNwZF9vc2FkQGdvdi5iYy5jYSIsInVuaXF1ZV9uYW1lIjoiSURJUlxcU1BEX09TQUQiLCJhcHB0eXBlIjoiQ29uZmlkZW50aWFsIiwiYXBwaWQiOiIwMTc0YjIwMy1jZGNmLTQxNjQtODUzMi0wYTRjNGZkZmRmNjIiLCJhdXRobWV0aG9kIjoidXJuOm9hc2lzOm5hbWVzOnRjOlNBTUw6Mi4wOmFjOmNsYXNzZXM6UGFzc3dvcmRQcm90ZWN0ZWRUcmFuc3BvcnQiLCJhdXRoX3RpbWUiOiIyMDIzLTAyLTI4VDE5OjM4OjM2LjI2NloiLCJ2ZXIiOiIxLjAiLCJzY3AiOiJvcGVuaWQifQ.ThtZDMkvR4OiF23_Y4mLv1gOVCU3k9ydMbhR2ftb4nYRHfm-qfs7V3d1i-ksRDcD4BszZVS-UB3iVdY0dtMfgfzI_5wk78BfZ78PMRA3jDWSRw5FVbeJyhzy5Pm-a0QxF_ZqHDcJWXd2fKTv_jZlx8fJE4-NzWCJW5zYNK7O8YD0Y4UhRDkD5wH4SlAmTDDfp8_2R_uZ3P1AxgQiAgoqn8TabICdrs3V90ICGCWk7vR5GxWKPYrlbCyOTqCr6fXBZMfBtIiqhYSSVgapZCZ2BOW0iIshuYasMCh_hGEGpu4hunQA684yINdEu17Tqt7mUYQF4ZfRocXtJrBsYzxJlw",
+    "CustomHttpHeaders": null,
     "IncludeWebProxy": false,
     "WebProxyHost": null,
     "IncludeWebProxyNetworkCredentials": false,
@@ -36,7 +36,7 @@
     "WebProxyNetworkCredentialsPassword": null,
     "WebProxyNetworkCredentialsDomain": null,
     "IncludeCustomHeaders": true,
-    "StoreCustomHttpHeaders": true,
+    "StoreCustomHttpHeaders": false,
     "ExcludedSchemaTypes": []
   }
 }
