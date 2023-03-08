@@ -7,7 +7,7 @@ public interface IAddressAutocompleteClient
     /// https://www.canadapost-postescanada.ca/ac/support/api/addresscomplete-interactive-find/
     /// </summary>
     /// <param name="searchTerm"></param>
-    Task<IEnumerable<AddressAutocompleteFindResponse>> Find(string searchTerm, CancellationToken cancellationToken);
+    Task<IEnumerable<AddressAutocompleteFindResponse>> Find(string searchTerm, string country, CancellationToken cancellationToken);
 
     /// <summary>
     /// Returns the full address details based on the Id.

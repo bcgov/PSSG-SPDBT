@@ -19,7 +19,7 @@ namespace Spd.Manager.Admin
 
         public async Task<IEnumerable<AddressFindResponse>> Handle(FindAddressQuery query, CancellationToken cancellationToken)
         {
-            IEnumerable<AddressAutocompleteFindResponse> result = await this._addressClient.Find(query.SearchTerm, cancellationToken);
+            IEnumerable<AddressAutocompleteFindResponse> result = await this._addressClient.Find(query.SearchTerm, query.Country, cancellationToken);
             return _mapper.Map<IEnumerable<AddressFindResponse>>(result);
         }
 

@@ -23,7 +23,7 @@ public class AddressAutocompleteClient : IAddressAutocompleteClient
         _logger = logger;
     }
 
-    public async Task<IEnumerable<AddressAutocompleteFindResponse>> Find(string searchTerm, CancellationToken cancellationToken)
+    public async Task<IEnumerable<AddressAutocompleteFindResponse>> Find(string searchTerm, string country, CancellationToken cancellationToken)
     {
         try
         {
@@ -33,12 +33,10 @@ public class AddressAutocompleteClient : IAddressAutocompleteClient
                 // See documentation for all available fields
                 Key = _apiKey,
                 SearchTerm = searchTerm,
-                MaxSuggestions = _maxSuggestions
+                MaxSuggestions = _maxSuggestions,
+                Country = country
             };
-            using var request = new HttpRequestMessage(HttpMethod.Get, url.SetQueryParams(queryValues, NullValueHandling.Remove))
-            {
-                Content = null
-            };
+            using var request = new HttpRequestMessage(HttpMethod.Get, url.SetQueryParams(queryValues, NullValueHandling.Remove));
             using var response = await _client.SendAsync(request, cancellationToken);
 
             if (!response.IsSuccessStatusCode)
@@ -84,10 +82,8 @@ public class AddressAutocompleteClient : IAddressAutocompleteClient
                 Key = _apiKey,
                 Id = id
             };
-            using var request = new HttpRequestMessage(HttpMethod.Get, url.SetQueryParams(queryValues, NullValueHandling.Remove))
-            {
-                Content = null
-            };
+            using var request = new HttpRequestMessage(HttpMethod.Get, url.SetQueryParams(queryValues, NullValueHandling.Remove));
+
             using var response = await _client.SendAsync(request, cancellationToken);
 
             if (!response.IsSuccessStatusCode)

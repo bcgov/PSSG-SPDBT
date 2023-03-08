@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Admin;
+using System.ComponentModel.DataAnnotations;
 
 namespace Spd.Presentation.Screening.Controllers
 {
@@ -17,24 +18,29 @@ namespace Spd.Presentation.Screening.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Find addresses matching the search term.
         /// </summary>
-        /// <param name="searchTerm"></param>
+        /// <param name="searchTerm">required</param>
+        /// <param name="country">optional: The ISO 2 or 3 character code for the country to search in. If not specified, default would be CAN.</param>
         /// <returns></returns>
         /// Exp: GET http://localhost:5114/api/address-autocomplete?searchTerm=1
+        /// Exp: GET http://localhost:5114/api/address-autocomplete?searchTerm=1&country=USA
         [Route("api/address-autocomplete")]
         [HttpGet]
-        public async Task<IEnumerable<AddressFindResponse>> Find([FromQuery] string searchTerm)
+        public async Task<IEnumerable<AddressFindResponse>> Find([FromQuery][Required] string searchTerm, string? country)
         {
-            return await _mediator.Send(new FindAddressQuery(searchTerm));
+            if (string.IsNullOrWhiteSpace(country))
+                return await _mediator.Send(new FindAddressQuery(searchTerm));
+            else
+                return await _mediator.Send(new FindAddressQuery(searchTerm, country));
         }
 
         /// <summary>
-        /// 
+        /// To retrieve the address details with Id for the item from Find method.
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">the id from find items, like CAN|1520704</param>
         /// <returns></returns>
-        /// Exp: GET http://localhost:5114/api/address-autocomplete/{}
+        /// Exp: GET http://localhost:5114/api/address-autocomplete/1520704
         [Route("api/address-autocomplete/{id}")]
         [HttpGet]
         public async Task<IEnumerable<AddressRetrieveResponse>> Retrieve([FromRoute] string id)
