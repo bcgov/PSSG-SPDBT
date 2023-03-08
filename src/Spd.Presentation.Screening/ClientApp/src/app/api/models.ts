@@ -5,6 +5,7 @@ export { EmployerOrganizationTypeCode } from './models/employer-organization-typ
 export { FundsFromBcGovtExceedsThresholdCode } from './models/funds-from-bc-govt-exceeds-threshold-code';
 export { OrgRegistrationCreateRequest } from './models/org-registration-create-request';
 export { PayerPreferenceTypeCode } from './models/payer-preference-type-code';
+export { PortalUserIdentityTypeCode } from './models/portal-user-identity-type-code';
 export { RegistrationTypeCode } from './models/registration-type-code';
 export { ScreeningsCountTypeCode } from './models/screenings-count-type-code';
 export { VolunteerOrganizationTypeCode } from './models/volunteer-organization-type-code';
