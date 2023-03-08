@@ -30,7 +30,6 @@ public class AddressAutocompleteClient : IAddressAutocompleteClient
             string url = "Find/v2.10/json3ex.ws";
             var queryValues = new
             {
-                // See documentation for all available fields
                 Key = _apiKey,
                 SearchTerm = searchTerm,
                 MaxSuggestions = _maxSuggestions,
@@ -46,28 +45,22 @@ public class AddressAutocompleteClient : IAddressAutocompleteClient
                     : "";
 
                 _logger.LogWarning($"Did not receive a successful status code. {response.StatusCode}, {responseMessage}");
-                return null;
+                return Enumerable.Empty<AddressAutocompleteFindResponse>();
             }
 
             if (response.Content == null)
             {
-                _logger.LogWarning("Response content was null");
-                return null;
+                _logger.LogInformation("Response content was null");
+                return Enumerable.Empty<AddressAutocompleteFindResponse>();
             }
 
             var deserializationResult = await response.Content.ReadFromJsonAsync<AddressAutocompleteApiResponse<AddressAutocompleteFindResponse>>(cancellationToken: cancellationToken);
-            if (deserializationResult == null)
-            {
-                _logger.LogWarning("Response content was null");
-                return null;
-            }
-
-            return deserializationResult.Items ?? Enumerable.Empty<AddressAutocompleteFindResponse>();
+            return deserializationResult?.Items ?? Enumerable.Empty<AddressAutocompleteFindResponse>();
         }
         catch (Exception exception)
         {
-            _logger.LogWarning(exception.Message);
-            return null;
+            _logger.LogError(exception.Message);
+            return Enumerable.Empty<AddressAutocompleteFindResponse>();
         }
     }
 
@@ -78,7 +71,6 @@ public class AddressAutocompleteClient : IAddressAutocompleteClient
             string url = "Retrieve/v2.11/json3ex.ws";
             var queryValues = new
             {
-                // See documentation for all available fields
                 Key = _apiKey,
                 Id = id
             };
@@ -93,28 +85,22 @@ public class AddressAutocompleteClient : IAddressAutocompleteClient
                     : "";
 
                 _logger.LogWarning($"Did not receive a successful status code. {response.StatusCode}, {responseMessage}");
-                return null;
+                return Enumerable.Empty<AddressAutocompleteRetrieveResponse>();
             }
 
             if (response.Content == null)
             {
-                _logger.LogWarning("Response content was null");
-                return null;
+                _logger.LogInformation("Response content was null");
+                return Enumerable.Empty<AddressAutocompleteRetrieveResponse>();
             }
 
             var deserializationResult = await response.Content.ReadFromJsonAsync<AddressAutocompleteApiResponse<AddressAutocompleteRetrieveResponse>>(cancellationToken: cancellationToken);
-            if (deserializationResult == null)
-            {
-                _logger.LogWarning("Response content was null");
-                return null;
-            }
-
-            return deserializationResult.Items ?? Enumerable.Empty<AddressAutocompleteRetrieveResponse>();
+            return deserializationResult?.Items ?? Enumerable.Empty<AddressAutocompleteRetrieveResponse>();
         }
         catch (Exception exception)
         {
-            _logger.LogWarning(exception.Message);
-            return null;
+            _logger.LogError(exception.Message);
+            return Enumerable.Empty<AddressAutocompleteRetrieveResponse>(); 
         }
     }
 }
