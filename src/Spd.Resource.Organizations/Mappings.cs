@@ -9,7 +9,6 @@ namespace Spd.Resource.Organizations
         public Mappings()
         {
             _ = CreateMap<CreateRegistrationCmd, spd_orgregistration>()
-            .ForMember(d => d.spd_source, opt => opt.MapFrom(s => SourceOptionSet.Online))
             .ForMember(d => d.spd_orgregistrationid, opt => opt.MapFrom(s => Guid.NewGuid()))
             .ForMember(d => d.spd_registrationtype, opt => opt.MapFrom(s => (int)Enum.Parse<RegistrationTypeOptionSet>(s.RegistrationTypeCode.ToString())))
             .ForMember(d => d.spd_fundsfrombcgovtexceedsthreshold, opt => opt.MapFrom(s => (int)Enum.Parse<FundsFromBcGovtExceedsThresholdOptionSet>(s.OperatingBudgetFlag.ToString())))

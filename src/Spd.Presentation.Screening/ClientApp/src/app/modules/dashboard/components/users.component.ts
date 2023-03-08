@@ -72,7 +72,7 @@ export class UserModel {
 							<div class="row mb-2">
 								<div class="col-lg-3 col-md-4">
 									<small class="d-block text-muted">Phone Number</small>
-									<strong>{{ user.phoneNumber | mask : '(000) 000-0000' }}</strong>
+									<strong>{{ user.phoneNumber | mask : appConstants.phone.displayMask }}</strong>
 								</div>
 								<div class="col-lg-3 col-md-4">
 									<small class="d-block text-muted mt-2 mt-md-0">Job Title</small>
