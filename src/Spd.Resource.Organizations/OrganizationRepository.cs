@@ -19,7 +19,7 @@ namespace Spd.Resource.Organizations
             string key;
             if (createRegistrationCmd.RegistrationTypeCode == RegistrationTypeCode.Employee)
             {
-                key = $"{createRegistrationCmd.RegistrationTypeCode}-{createRegistrationCmd.EmployerOrganizationTypeCode}";
+                key = $"{createRegistrationCmd.RegistrationTypeCode}-{createRegistrationCmd.EmployeeOrganizationTypeCode}";
             }
             else
             {

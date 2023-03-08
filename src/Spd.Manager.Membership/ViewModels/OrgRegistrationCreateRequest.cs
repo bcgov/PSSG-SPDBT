@@ -27,7 +27,7 @@ namespace Spd.Manager.Membership.ViewModels
         public string? MailingProvince { get; set; }
         public FundsFromBcGovtExceedsThresholdCode OperatingBudgetFlag { get; set; }
         public string? OrganizationName { get; set; }
-        public EmployerOrganizationTypeCode? EmployerOrganizationTypeCode { get; set; }
+        public EmployeeOrganizationTypeCode? EmployeeOrganizationTypeCode { get; set; }
         public VolunteerOrganizationTypeCode? VolunteerOrganizationTypeCode { get; set; }
         public RegistrationTypeCode RegistrationTypeCode { get; set; }
         public ScreeningsCountTypeCode ScreeningsCount { get; set; }
@@ -96,7 +96,7 @@ namespace Spd.Manager.Membership.ViewModels
         NotSure
     }
 
-    public enum EmployerOrganizationTypeCode
+    public enum EmployeeOrganizationTypeCode
     {
 
         [Description("A childcare facility or daycare")]
@@ -167,15 +167,15 @@ namespace Spd.Manager.Membership.ViewModels
             RuleFor(r => r.RegistrationTypeCode)
                 .IsInEnum();
 
-            RuleFor(r => r.EmployerOrganizationTypeCode)
+            RuleFor(r => r.EmployeeOrganizationTypeCode)
                 .IsInEnum()
-                .When(r => r.EmployerOrganizationTypeCode.HasValue);
+                .When(r => r.EmployeeOrganizationTypeCode.HasValue);
 
             RuleFor(r => r.VolunteerOrganizationTypeCode)
                 .IsInEnum()
                 .When(r => r.VolunteerOrganizationTypeCode.HasValue);
 
-            RuleFor(r => r.EmployerOrganizationTypeCode)
+            RuleFor(r => r.EmployeeOrganizationTypeCode)
                 .NotEmpty()
                 .When(r => r.RegistrationTypeCode == RegistrationTypeCode.Employee);
 

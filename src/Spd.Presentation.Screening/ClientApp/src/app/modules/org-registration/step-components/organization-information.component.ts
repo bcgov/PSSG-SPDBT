@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { NgxMaskPipe } from 'ngx-mask';
 import { BooleanTypeCode } from 'src/app/api/models';
+import { APP_CONSTANTS } from 'src/app/core/constants/constants';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { RegistrationFormStepComponent } from '../org-registration.component';
@@ -73,7 +75,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 											<input
 												matInput
 												formControlName="genericPhoneNumber"
-												mask="(000) 000-0000"
+												[mask]="phoneMask"
 												[showMaskTyped]="true"
 												required
 												[errorStateMatcher]="matcher"
@@ -118,12 +120,13 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 	],
 })
 export class OrganizationInformationComponent implements OnInit, RegistrationFormStepComponent {
+	phoneMask = APP_CONSTANTS.phone.displayMask;
 	form!: FormGroup;
 	matcher = new FormErrorStateMatcher();
 
 	booleanTypeCodes = BooleanTypeCode;
 
-	constructor(private formBuilder: FormBuilder) {}
+	constructor(private formBuilder: FormBuilder, private maskPipe: NgxMaskPipe) {}
 
 	ngOnInit(): void {
 		this.form = this.formBuilder.group(
@@ -144,7 +147,9 @@ export class OrganizationInformationComponent implements OnInit, RegistrationFor
 	}
 
 	getDataToSave(): any {
-		return this.form.value;
+		const data = this.form.value;
+		data.genericPhoneNumber = this.maskPipe.transform(data.genericPhoneNumber, APP_CONSTANTS.phone.backendMask);
+		return data;
 	}
 
 	isFormValid(): boolean {
