@@ -268,10 +268,12 @@ export class StepOneComponent {
 					const organizationOptionsData = this.organizationOptionsComponent.getDataToSave();
 					if (this.registrationPathSelectionData.registrationTypeCode == RegistrationTypeCode.Employee) {
 						this.showStepFundingQuestion =
-							organizationOptionsData.employeeOrganizationType == EmployerOrganizationTypeCode.Funding ? true : false;
+							organizationOptionsData.employeeOrganizationTypeCode == EmployerOrganizationTypeCode.Funding
+								? true
+								: false;
 					} else {
 						this.showStepFundingQuestion =
-							organizationOptionsData.volunteerOrganizationType == VolunteerOrganizationTypeCode.ProvFunded
+							organizationOptionsData.volunteerOrganizationTypeCode == VolunteerOrganizationTypeCode.ProvFunded
 								? true
 								: false;
 						this.showStepCompensationQuestion = !this.showStepFundingQuestion;

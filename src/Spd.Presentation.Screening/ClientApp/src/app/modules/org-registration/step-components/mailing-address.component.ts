@@ -35,10 +35,11 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 				<section *ngIf="form.get('addressSelected')?.value">
 					<div class="row mt-4">
 						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
-							<mat-divider class="my-3"></mat-divider>
+							<mat-divider class="my-3" style="border-top-color: var(--color-primary-light);"></mat-divider>
+							<div class="text-minor-heading fw-semibold mb-2">Address Information</div>
 							<mat-form-field>
 								<mat-label>Street Address 1</mat-label>
-								<input matInput formControlName="mailingAddressLine1" [errorStateMatcher]="matcher" />
+								<input matInput formControlName="mailingAddressLine1" maxlength="100" [errorStateMatcher]="matcher" />
 								<mat-error *ngIf="form.get('mailingAddressLine1')?.hasError('required')">This is required</mat-error>
 							</mat-form-field>
 						</div>
@@ -48,7 +49,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 						<div class="offset-md-2 col-md-8 col-sm-12">
 							<mat-form-field>
 								<mat-label>Street Address 2 <span class="optional-label">(optional)</span></mat-label>
-								<input matInput formControlName="mailingAddressLine2" />
+								<input matInput formControlName="mailingAddressLine2" maxlength="100" />
 							</mat-form-field>
 						</div>
 					</div>
@@ -62,8 +63,8 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 						</div>
 						<div class="col-md-2 col-sm-12">
 							<mat-form-field>
-								<mat-label>Postal Code</mat-label>
-								<input matInput formControlName="mailingPostalCode" />
+								<mat-label>Postal/Zip Code</mat-label>
+								<input matInput formControlName="mailingPostalCode" maxlength="20" />
 								<mat-error *ngIf="form.get('mailingPostalCode')?.hasError('required')">This is required</mat-error>
 							</mat-form-field>
 						</div>
@@ -71,15 +72,15 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 					<div class="row">
 						<div class="offset-md-2 col-md-4 col-sm-12">
 							<mat-form-field>
-								<mat-label>Province</mat-label>
-								<input matInput formControlName="mailingProvince" />
+								<mat-label>Province/State</mat-label>
+								<input matInput formControlName="mailingProvince" maxlength="100" />
 								<mat-error *ngIf="form.get('mailingProvince')?.hasError('required')">This is required</mat-error>
 							</mat-form-field>
 						</div>
 						<div class="col-md-4 col-sm-12">
 							<mat-form-field>
 								<mat-label>Country</mat-label>
-								<input matInput formControlName="mailingCountry" />
+								<input matInput formControlName="mailingCountry" maxlength="100" />
 								<mat-error *ngIf="form.get('mailingCountry')?.hasError('required')">This is required</mat-error>
 							</mat-form-field>
 						</div>
@@ -88,7 +89,13 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 			</div>
 		</form>
 	`,
-	styles: [],
+	styles: [
+		`
+			.text-minor-heading {
+				color: var(--color-primary-light);
+			}
+		`,
+	],
 })
 export class MailingAddressComponent implements OnInit, RegistrationFormStepComponent {
 	form!: FormGroup;
