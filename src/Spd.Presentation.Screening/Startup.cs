@@ -4,6 +4,7 @@ using Spd.Utilities.Hosting;
 using Spd.Utilities.Dynamics;
 using System.Reflection;
 using System.Text.Json.Serialization;
+using Spd.Utilities.Address;
 
 namespace Spd.Presentation.Screening
 {
@@ -50,8 +51,10 @@ namespace Spd.Presentation.Screening
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(Spd.Manager.Membership.MediatREntrypoint).Assembly));
             services.AddDistributedMemoryCache();
             services
-              .AddDynamicsProxy(_configuration);
-            //.AddStorageProxy(builder.Configuration);
+              .AddDynamicsProxy(_configuration)
+            //.AddStorageProxy(builder.Configuration)
+              .AddAddressAutoComplete(_configuration);
+
 
             services.ConfigureComponentServices(_configuration, _hostEnvironment, _assemblies);
         }

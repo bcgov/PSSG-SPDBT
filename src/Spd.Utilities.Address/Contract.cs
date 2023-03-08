@@ -7,14 +7,14 @@ public interface IAddressAutocompleteClient
     /// https://www.canadapost-postescanada.ca/ac/support/api/addresscomplete-interactive-find/
     /// </summary>
     /// <param name="searchTerm"></param>
-    Task<IEnumerable<AddressAutocompleteFindResponse>> Find(string searchTerm);
+    Task<IEnumerable<AddressAutocompleteFindResponse>> Find(string searchTerm, CancellationToken cancellationToken);
 
     /// <summary>
     /// Returns the full address details based on the Id.
     /// https://www.canadapost-postescanada.ca/ac/support/api/addresscomplete-interactive-retrieve/
     /// </summary>
     /// <param name="id"></param>
-    Task<IEnumerable<AddressAutocompleteRetrieveResponse>> Retrieve(string id);
+    ///Task<IEnumerable<AddressAutocompleteRetrieveResponse>> Retrieve(string id);
 }
 
 /// <summary>
