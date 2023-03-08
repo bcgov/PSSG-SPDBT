@@ -10,7 +10,7 @@ export interface UserDialogData {
 }
 
 @Component({
-	selector: 'app-edit-user-modal',
+	selector: 'app-maintain-user-modal',
 	template: `
 		<div mat-dialog-title>{{ title }}</div>
 		<mat-dialog-content>
@@ -50,7 +50,7 @@ export interface UserDialogData {
 					</div>
 				</div>
 
-				<div class="row">
+				<div class="row" *ngIf="isEdit">
 					<div class="col-md-6">
 						<mat-form-field>
 							<mat-label>Phone Number</mat-label>
@@ -73,7 +73,7 @@ export interface UserDialogData {
 					</div>
 				</div>
 
-				<div class="row">
+				<div class="row" *ngIf="isEdit">
 					<div class="col-md-6">
 						<mat-form-field>
 							<mat-label>Date of Birth</mat-label>
@@ -87,11 +87,11 @@ export interface UserDialogData {
 			</form>
 		</mat-dialog-content>
 		<mat-dialog-actions>
-			<div class="row">
-				<div class="col-6">
+			<div class="row m-0 w-100">
+				<div class="col-md-4 col-sm-12 mb-2">
 					<button mat-stroked-button mat-dialog-close color="primary">Cancel</button>
 				</div>
-				<div class="col-6 me-auto">
+				<div class="offset-md-4 col-md-4 col-sm-12 mb-2">
 					<button mat-raised-button color="primary" (click)="onSave()">Save</button>
 				</div>
 			</div>
@@ -99,8 +99,9 @@ export interface UserDialogData {
 	`,
 	styles: [],
 })
-export class EditUserModalComponent {
+export class MaintainUserModalComponent {
 	title: string = '';
+	isEdit = false;
 	form: FormGroup = this.formBuilder.group({
 		authorizationType: new FormControl('', [Validators.required]),
 		surname: new FormControl('', [Validators.required]),
@@ -115,12 +116,13 @@ export class EditUserModalComponent {
 
 	constructor(
 		private formBuilder: FormBuilder,
-		private dialogRef: MatDialogRef<EditUserModalComponent>,
+		private dialogRef: MatDialogRef<MaintainUserModalComponent>,
 		@Inject(MAT_DIALOG_DATA) public dialogData: UserDialogData
 	) {}
 
 	ngOnInit(): void {
 		this.form.patchValue(this.dialogData.user);
+		this.isEdit = this.dialogData.user.id ? true : false;
 		this.title = this.dialogData.user.id ? 'Edit User' : 'Add User';
 	}
 

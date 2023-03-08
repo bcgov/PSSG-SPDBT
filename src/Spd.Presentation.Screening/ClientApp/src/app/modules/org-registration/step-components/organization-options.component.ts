@@ -3,8 +3,8 @@ import { EmployerOrganizationTypeCode, RegistrationTypeCode, VolunteerOrganizati
 import { RegistrationFormStepComponent } from '../org-registration.component';
 
 export class OrganizationOptionsModel {
-	employeeOrganizationType: EmployerOrganizationTypeCode | null = null;
-	volunteerOrganizationType: VolunteerOrganizationTypeCode | null = null;
+	employeeOrganizationTypeCode: EmployerOrganizationTypeCode | null = null;
+	volunteerOrganizationTypeCode: VolunteerOrganizationTypeCode | null = null;
 }
 
 @Component({
@@ -306,8 +306,8 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 
 	getDataToSave(): OrganizationOptionsModel {
 		return {
-			employeeOrganizationType: this.employeeOrganizationType,
-			volunteerOrganizationType: this.volunteerOrganizationType,
+			employeeOrganizationTypeCode: this.employeeOrganizationType,
+			volunteerOrganizationTypeCode: this.volunteerOrganizationType,
 		};
 	}
 

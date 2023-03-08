@@ -2,10 +2,11 @@ import { NgModule } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { DashboardHeaderComponent } from './components/dashboard-header.component';
 import { DashboardHomeComponent } from './components/dashboard-home.component';
-import { EditUserModalComponent } from './components/edit-user-modal.component';
 import { GenericUploadsComponent } from './components/generic-uploads.component';
+import { MaintainUserModalComponent } from './components/maintain-user-modal.component';
 import { PaymentFilterComponent } from './components/payment-filter.component';
 import { PaymentsComponent } from './components/payments.component';
+import { SettingsComponent } from './components/settings.component';
 import { UsersComponent } from './components/users.component';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
@@ -18,8 +19,9 @@ import { DashboardComponent } from './dashboard.component';
 		PaymentsComponent,
 		UsersComponent,
 		DashboardHeaderComponent,
-		EditUserModalComponent,
+		MaintainUserModalComponent,
 		PaymentFilterComponent,
+		SettingsComponent,
 	],
 	imports: [SharedModule, DashboardRoutingModule],
 })

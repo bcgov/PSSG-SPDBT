@@ -17,7 +17,7 @@ import { debounceTime, switchMap } from 'rxjs/operators';
 	template: `
 		<form [formGroup]="form">
 			<div class="row">
-				<div class="col-12 pb-2">
+				<div class="col-xl-9 col-lg-9 col-md-9 pb-2">
 					<mat-form-field>
 						<mat-label>Address Autocompleted by Canada Post</mat-label>
 						<input matInput formControlName="autocomplete" type="search" [matAutocomplete]="auto" />
@@ -32,6 +32,17 @@ import { debounceTime, switchMap } from 'rxjs/operators';
 						</mat-autocomplete>
 						<mat-icon matSuffix>search</mat-icon>
 						<mat-hint> Start with unit number and street number. </mat-hint>
+					</mat-form-field>
+				</div>
+
+				<div class="col-xl-3 col-lg-3 col-md-3 pb-2">
+					<mat-form-field>
+						<mat-label>Country</mat-label>
+						<mat-select formControlName="country">
+							<mat-option value="CAN">Canada</mat-option>
+							<mat-option value="USA">United States</mat-option>
+							<!-- <mat-option *ngFor="let topping of toppingList" [value]="topping">{{topping}}</mat-option> -->
+						</mat-select>
 					</mat-form-field>
 				</div>
 				<div class="col-12">
@@ -62,8 +73,10 @@ export class AddressAutocompleteComponent implements OnInit {
 			line2: '',
 			city: 'Victoria',
 			provinceCode: 'BC',
+			provinceName: 'British Columbia',
 			postalCode: 'V8X 2H1',
-			countryIso2: 'Canada',
+			countryName: 'Canada',
+			countryIso3: 'CAN',
 			language: 'ENG',
 		},
 		{
@@ -77,8 +90,10 @@ export class AddressAutocompleteComponent implements OnInit {
 			line2: '',
 			city: 'Victoria',
 			provinceCode: 'BC',
+			provinceName: 'British Columbia',
 			postalCode: 'V8X 2H1',
-			countryIso2: 'Canada',
+			countryName: 'Canada',
+			countryIso3: 'CAN',
 			language: 'ENG',
 		},
 		{
@@ -92,8 +107,10 @@ export class AddressAutocompleteComponent implements OnInit {
 			line2: '',
 			city: 'Victoria',
 			provinceCode: 'BC',
+			provinceName: 'British Columbia',
 			postalCode: 'V8X 5G7',
-			countryIso2: 'Canada',
+			countryName: 'Canada',
+			countryIso3: 'CAN',
 			language: 'ENG',
 		},
 		{
@@ -107,8 +124,10 @@ export class AddressAutocompleteComponent implements OnInit {
 			line2: '',
 			city: 'Victoria',
 			provinceCode: 'BC',
+			provinceName: 'British Columbia',
 			postalCode: 'V8X 5G7',
-			countryIso2: 'Canada',
+			countryName: 'Canada',
+			countryIso3: 'CAN',
 			language: 'ENG',
 		},
 		{
@@ -122,8 +141,10 @@ export class AddressAutocompleteComponent implements OnInit {
 			line2: '',
 			city: 'Victoria',
 			provinceCode: 'BC',
+			provinceName: 'British Columbia',
 			postalCode: 'V8X 5G7',
-			countryIso2: 'Canada',
+			countryName: 'Canada',
+			countryIso3: 'CAN',
 			language: 'ENG',
 		},
 		{
@@ -137,8 +158,10 @@ export class AddressAutocompleteComponent implements OnInit {
 			line2: '',
 			city: 'Victoria',
 			provinceCode: 'BC',
+			provinceName: 'British Columbia',
 			postalCode: 'V8X 5G7',
-			countryIso2: 'Canada',
+			countryName: 'Canada',
+			countryIso3: 'CAN',
 			language: 'ENG',
 		},
 		{
@@ -152,8 +175,10 @@ export class AddressAutocompleteComponent implements OnInit {
 			line2: 'Suite 200',
 			city: 'Victoria',
 			provinceCode: 'BC',
+			provinceName: 'British Columbia',
 			postalCode: 'V8X 5J2',
-			countryIso2: 'Canada',
+			countryName: 'Canada',
+			countryIso3: 'CAN',
 			language: 'ENG',
 		},
 	];
@@ -164,7 +189,10 @@ export class AddressAutocompleteComponent implements OnInit {
 	}
 
 	public ngOnInit(): void {
-		this.form = this.fb.group({ autocomplete: [''] });
+		this.form = this.fb.group({
+			autocomplete: [''],
+			country: new FormControl('CAN'),
+		});
 
 		this.autocomplete.valueChanges
 			.pipe(
@@ -194,7 +222,11 @@ export class AddressAutocompleteComponent implements OnInit {
 		//     })
 		//   );
 
-		return of(this.data.filter((item) => item.text?.includes(searchTerm)));
+		return of(
+			this.data.filter((item) => {
+				return item.text?.includes(searchTerm);
+			})
+		);
 	}
 
 	public retrieve(id: string): Observable<AddressAutocompleteRetrieveResponse[]> {
@@ -221,8 +253,8 @@ export class AddressAutocompleteComponent implements OnInit {
 
 			if (addressRetrieved) {
 				const address = new Address(
-					addressRetrieved.countryIso2!,
-					addressRetrieved.provinceCode!,
+					addressRetrieved.countryName!,
+					addressRetrieved.provinceName!,
 					addressRetrieved.line1!,
 					addressRetrieved.line2!,
 					addressRetrieved.city!,
