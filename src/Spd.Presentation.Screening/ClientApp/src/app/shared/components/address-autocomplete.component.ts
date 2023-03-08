@@ -224,7 +224,6 @@ export class AddressAutocompleteComponent implements OnInit {
 
 		return of(
 			this.data.filter((item) => {
-				console.log(item, searchTerm);
 				return item.text?.includes(searchTerm);
 			})
 		);

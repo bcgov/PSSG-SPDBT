@@ -218,7 +218,6 @@ export class UsersComponent {
 			.afterClosed()
 			.subscribe((res) => {
 				if (res) {
-					console.log('dialog response', res);
 					this.users.push(res.data);
 					this.setAllowedToAdd();
 				}

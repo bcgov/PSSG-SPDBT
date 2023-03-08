@@ -177,13 +177,11 @@ namespace Spd.Manager.Membership.ViewModels
 
             RuleFor(r => r.EmployerOrganizationTypeCode)
                 .NotEmpty()
-                .When(r => !r.VolunteerOrganizationTypeCode.HasValue)
-                .WithMessage("At least one is required (EmployerOrganizationTypeCode, VolunteerOrganizationTypeCode)");
+                .When(r => r.RegistrationTypeCode == RegistrationTypeCode.Employee);
 
             RuleFor(r => r.VolunteerOrganizationTypeCode)
                 .NotEmpty()
-                .When(r => !r.EmployerOrganizationTypeCode.HasValue)
-                .WithMessage("At least one is required (EmployerOrganizationTypeCode, VolunteerOrganizationTypeCode)");
+                .When(r => r.RegistrationTypeCode == RegistrationTypeCode.Volunteer);
 
             RuleFor(r => r.OrganizationName)
                 .NotEmpty()
