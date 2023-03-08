@@ -46,18 +46,18 @@ import { BaseFilterComponent } from 'src/app/shared/components/base-filter.compo
 	styles: [
 		`
 			.filter-panel {
-				border: 3px solid var(--color-yellow);
+				border: 2px solid var(--color-yellow);
 			}
 
 			.mat-toolbar-single-row {
 				justify-content: space-between;
-				background-color: var(--color-grey-lightest);
+				background-color: var(--color-yellow);
 				color: var(--color-primary);
 			}
 
 			.mat-mdc-card {
 				border-radius: 0;
-				background-color: var(--color-grey-lightest);
+				/* background-color: var(--color-grey-lightest); */
 			}
 
 			.mat-mdc-card-actions {

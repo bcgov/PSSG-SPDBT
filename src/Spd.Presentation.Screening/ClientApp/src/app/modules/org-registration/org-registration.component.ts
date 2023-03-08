@@ -109,9 +109,6 @@ export class OrgRegistrationComponent implements OnInit {
 			)
 			.subscribe(() => this.breakpointChanged());
 
-		console.debug('[ngOnInit] window.location.origin', window.location.origin);
-		console.debug('[ngOnInit] redirect', window.location.origin + `/${OrgRegistrationRoutes.ORG_REGISTRATION}`);
-
 		await this.authenticationService.configureOAuthService(
 			window.location.origin + `/${OrgRegistrationRoutes.ORG_REGISTRATION}`
 		);
@@ -125,13 +122,11 @@ export class OrgRegistrationComponent implements OnInit {
 			if (authInfo.state) {
 				const decodedData = decodeURIComponent(authInfo.state);
 				sessionStorage.setItem(this.STATE_KEY, decodedData);
-				console.debug('[ngOnInit] authInfo.state', decodedData);
 
 				// navigate to step 3
 				this.postLoginNavigate(decodedData);
 			} else {
 				const stateInfo = sessionStorage.getItem(this.STATE_KEY);
-				console.debug('[ngOnInit] stateInfo', stateInfo);
 
 				if (stateInfo) {
 					this.postLoginNavigate(stateInfo);
@@ -181,7 +176,7 @@ export class OrgRegistrationComponent implements OnInit {
 
 		let dataToSave = {};
 		if (this.stepOneComponent) {
-			console.debug('this.currentStateInfo', this.currentStateInfo);
+			console.debug('[onSaveStepperStep] currentStateInfo', this.currentStateInfo);
 			if (this.currentStateInfo && this.currentStateInfo.registrationTypeCode) {
 				dataToSave = { ...this.currentStateInfo };
 			} else {
@@ -197,9 +192,9 @@ export class OrgRegistrationComponent implements OnInit {
 			dataToSave = { ...dataToSave, ...this.stepFourComponent.getStepData() };
 		}
 
-		console.debug('[onSaveStepperStep] dataToSave', dataToSave);
-
 		const body: OrgRegistrationCreateRequest = dataToSave;
+		console.debug('[onSaveStepperStep] body', body);
+
 		this.orgRegistrationService
 			.apiOrgRegistrationsPost({ body })
 			.pipe()

@@ -6,7 +6,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 		<div class="step">
 			<div class="title mb-5">What is your preferred log in option?</div>
 			<div class="step-container row">
-				<div class="offset-xl-2 col-xl-5 col-lg-6 col-md-12 col-sm-12 mb-3">
+				<div class="offset-xl-1 col-xl-5 col-lg-6 col-md-12 col-sm-12 mb-3">
 					<div class="step-container__box dark">
 						<div matBadge="1" class="badge p-2">Preferred Method</div>
 						<div class="step-container__box__title pt-3 pb-0">
