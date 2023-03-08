@@ -48,7 +48,7 @@ namespace Spd.Presentation.Screening
             ;
 
             services.AddAutoMapper(_assemblies);
-            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(Spd.Manager.Membership.MediatREntrypoint).Assembly));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(_assemblies));
             services.AddDistributedMemoryCache();
             services
               .AddDynamicsProxy(_configuration)

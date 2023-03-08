@@ -7,7 +7,6 @@ namespace Spd.Manager.Admin
     {
         public void ConfigureServices(ConfigurationServices configurationServices)
         {
-            configurationServices.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(Spd.Manager.Admin.MediatREntrypoint).Assembly));
             configurationServices.Services.AddTransient<IAdminManager, AdminManager>();
         }
     }
