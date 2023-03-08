@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { APP_CONSTANTS } from 'src/app/core/constants/constants';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { ScreeningFormStepComponent } from '../scr-application.component';
 
@@ -20,12 +21,7 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 						<div class="col-lg-4 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Organization Phone Number</mat-label>
-								<input
-									matInput
-									formControlName="organizationPhoneNumber"
-									mask="(000) 000-0000"
-									[showMaskTyped]="true"
-								/>
+								<input matInput formControlName="organizationPhoneNumber" [mask]="phoneMask" [showMaskTyped]="true" />
 							</mat-form-field>
 						</div>
 					</div>
@@ -59,6 +55,7 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 	styles: [],
 })
 export class SecurityInformationComponent implements ScreeningFormStepComponent {
+	phoneMask = APP_CONSTANTS.phone.displayMask;
 	form: FormGroup = this.formBuilder.group({
 		organizationName: new FormControl({ value: 'Sunshine Daycare', disabled: true }),
 		organizationPhoneNumber: new FormControl({ value: '2503859988', disabled: true }),
