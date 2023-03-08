@@ -1,7 +1,7 @@
 export { BCeIdConfigurationResponse } from './models/b-ce-id-configuration-response';
 export { BooleanTypeCode } from './models/boolean-type-code';
 export { EmployeeInteractionTypeCode } from './models/employee-interaction-type-code';
-export { EmployerOrganizationTypeCode } from './models/employer-organization-type-code';
+export { EmployeeOrganizationTypeCode } from './models/employee-organization-type-code';
 export { FundsFromBcGovtExceedsThresholdCode } from './models/funds-from-bc-govt-exceeds-threshold-code';
 export { OrgRegistrationCreateRequest } from './models/org-registration-create-request';
 export { PayerPreferenceTypeCode } from './models/payer-preference-type-code';
