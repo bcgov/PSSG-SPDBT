@@ -13,7 +13,7 @@ import { APP_CONSTANTS } from 'src/app/core/constants/constants';
 					<h2 class="fw-normal">Organization Information</h2>
 				</div>
 				<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
-					<button mat-flat-button color="primary" (click)="onSave()">Save Information</button>
+					<button mat-flat-button color="primary" class="large" (click)="onSave()">Save Information</button>
 				</div>
 			</div>
 			<form [formGroup]="form" novalidate>

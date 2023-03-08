@@ -175,11 +175,15 @@ namespace Spd.Manager.Membership.ViewModels
                 .IsInEnum()
                 .When(r => r.VolunteerOrganizationTypeCode.HasValue);
 
-            RuleFor(r => r)
-                .Must(r => !r.EmployerOrganizationTypeCode.HasValue)
-                .When(r => r.VolunteerOrganizationTypeCode.HasValue).WithMessage("At least one is required (EmployerOrganizationTypeCode, VolunteerOrganizationTypeCode).")
-                .Must(r => !r.VolunteerOrganizationTypeCode.HasValue)
-                .When(r => r.EmployerOrganizationTypeCode.HasValue).WithMessage("At least one is required (EmployerOrganizationTypeCode, VolunteerOrganizationTypeCode).");
+            RuleFor(r => r.EmployerOrganizationTypeCode)
+                .NotEmpty()
+                .When(r => !r.VolunteerOrganizationTypeCode.HasValue)
+                .WithMessage("At least one is required (EmployerOrganizationTypeCode, VolunteerOrganizationTypeCode)");
+
+            RuleFor(r => r.VolunteerOrganizationTypeCode)
+                .NotEmpty()
+                .When(r => !r.EmployerOrganizationTypeCode.HasValue)
+                .WithMessage("At least one is required (EmployerOrganizationTypeCode, VolunteerOrganizationTypeCode)");
 
             RuleFor(r => r.OrganizationName)
                 .NotEmpty()
@@ -199,13 +203,16 @@ namespace Spd.Manager.Membership.ViewModels
                 .EmailAddress();
 
             RuleFor(r => r.ContactGivenName)
-                .NotEmpty();
+                .NotEmpty()
+                .MaximumLength(40);
 
             RuleFor(r => r.ContactSurname)
-                .NotEmpty();
+                .NotEmpty()
+                .MaximumLength(40);
 
             RuleFor(r => r.ContactJobTitle)
-                .NotEmpty();
+                .NotEmpty()
+                .MaximumLength(100);
 
             RuleFor(r => r.ContactDateOfBirth)
                 .NotEmpty();

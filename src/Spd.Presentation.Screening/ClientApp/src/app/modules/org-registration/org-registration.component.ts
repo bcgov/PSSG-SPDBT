@@ -197,9 +197,9 @@ export class OrgRegistrationComponent implements OnInit {
 			dataToSave = { ...dataToSave, ...this.stepFourComponent.getStepData() };
 		}
 
-		console.debug('[onSaveStepperStep] dataToSave', dataToSave);
-
 		const body: OrgRegistrationCreateRequest = dataToSave;
+		console.debug('[onSaveStepperStep] body', body);
+
 		this.orgRegistrationService
 			.apiOrgRegistrationsPost({ body })
 			.pipe()
