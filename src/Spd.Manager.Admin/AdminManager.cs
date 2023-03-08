@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using MediatR;
 using Spd.Utilities.Address;
-using System.Collections.Generic;
 
 namespace Spd.Manager.Admin
 {
-    public class AdminManager
-        : IRequestHandler<FindAddressQuery, IEnumerable<AddressFindResponse>>,
+    public class AdminManager :
+        IRequestHandler<FindAddressQuery, IEnumerable<AddressFindResponse>>,
+        IRequestHandler<RetrieveAddressByIdQuery, IEnumerable<AddressRetrieveResponse>>,
         IAdminManager
     {
         private readonly IAddressAutocompleteClient _addressClient;
@@ -21,6 +21,12 @@ namespace Spd.Manager.Admin
         {
             IEnumerable<AddressAutocompleteFindResponse> result = await this._addressClient.Find(query.SearchTerm, cancellationToken);
             return _mapper.Map<IEnumerable<AddressFindResponse>>(result);
+        }
+
+        public async Task<IEnumerable<AddressRetrieveResponse>> Handle(RetrieveAddressByIdQuery query, CancellationToken cancellationToken)
+        {
+            IEnumerable<AddressAutocompleteRetrieveResponse> result = await this._addressClient.Retrieve(query.Id, cancellationToken);
+            return _mapper.Map<IEnumerable<AddressRetrieveResponse>>(result);
         }
     }
 }

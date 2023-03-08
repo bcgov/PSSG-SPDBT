@@ -28,5 +28,18 @@ namespace Spd.Presentation.Screening.Controllers
         {
             return await _mediator.Send(new FindAddressQuery(searchTerm));
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// Exp: GET http://localhost:5114/api/address-autocomplete/{}
+        [Route("api/address-autocomplete/{id}")]
+        [HttpGet]
+        public async Task<IEnumerable<AddressRetrieveResponse>> Retrieve([FromRoute] string id)
+        {
+            return await _mediator.Send(new RetrieveAddressByIdQuery(id));
+        }
     }
 }

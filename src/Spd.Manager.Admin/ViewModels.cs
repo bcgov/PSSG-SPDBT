@@ -33,10 +33,6 @@
         public string? Next { get; set; }
     }
 
-    /// <summary>
-    /// The response from the web service is a table containing the elements below. Where no items are found, the response will be empty.
-    /// https://www.canadapost-postescanada.ca/ac/support/api/addresscomplete-interactive-retrieve/
-    /// </summary>
     public class AddressRetrieveResponse
     {
         public string? Id { get; set; }

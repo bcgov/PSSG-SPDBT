@@ -8,6 +8,7 @@ namespace Spd.Manager.Admin
         public Mappings()
         {
             CreateMap<AddressAutocompleteFindResponse, AddressFindResponse>();
+            CreateMap<AddressAutocompleteRetrieveResponse, AddressRetrieveResponse>();
         }
     }
 }

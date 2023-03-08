@@ -14,7 +14,7 @@ public interface IAddressAutocompleteClient
     /// https://www.canadapost-postescanada.ca/ac/support/api/addresscomplete-interactive-retrieve/
     /// </summary>
     /// <param name="id"></param>
-    ///Task<IEnumerable<AddressAutocompleteRetrieveResponse>> Retrieve(string id);
+    Task<IEnumerable<AddressAutocompleteRetrieveResponse>> Retrieve(string id, CancellationToken cancellationToken);
 }
 
 /// <summary>
