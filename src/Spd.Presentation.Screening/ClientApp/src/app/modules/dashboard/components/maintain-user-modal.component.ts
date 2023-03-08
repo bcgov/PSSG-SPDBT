@@ -57,7 +57,7 @@ export interface UserDialogData {
 							<input
 								matInput
 								formControlName="phoneNumber"
-								mask="(000) 000-0000"
+								[mask]="phoneMask"
 								[showMaskTyped]="true"
 								[errorStateMatcher]="matcher"
 							/>
@@ -100,6 +100,7 @@ export interface UserDialogData {
 	styles: [],
 })
 export class MaintainUserModalComponent {
+	phoneMask = APP_CONSTANTS.phone.displayMask;
 	title: string = '';
 	isEdit = false;
 	form: FormGroup = this.formBuilder.group({

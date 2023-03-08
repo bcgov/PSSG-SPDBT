@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { NgxMaskPipe } from 'ngx-mask';
+import { APP_CONSTANTS } from 'src/app/core/constants/constants';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
@@ -77,7 +79,7 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 						<div class="col-lg-3 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Phone Number</mat-label>
-								<input matInput formControlName="contactPhoneNumber" mask="(000) 000-0000" [showMaskTyped]="true" />
+								<input matInput formControlName="contactPhoneNumber" [mask]="phoneMask" [showMaskTyped]="true" />
 								<mat-error *ngIf="form.get('contactPhoneNumber')?.hasError('required')">This is required</mat-error>
 								<mat-error *ngIf="form.get('contactPhoneNumber')?.hasError('mask')">This must be 10 digits</mat-error>
 							</mat-form-field>
@@ -90,6 +92,7 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 	styles: [``],
 })
 export class ContactInformationComponent implements ScreeningFormStepComponent {
+	phoneMask = APP_CONSTANTS.phone.displayMask;
 	form: FormGroup = this.formBuilder.group(
 		{
 			contactGivenName: new FormControl('Pulled-From-Portal', [
@@ -112,10 +115,12 @@ export class ContactInformationComponent implements ScreeningFormStepComponent {
 	startDate = new Date(2000, 0, 1);
 	matcher = new FormErrorStateMatcher();
 
-	constructor(private formBuilder: FormBuilder) {}
+	constructor(private formBuilder: FormBuilder, private maskPipe: NgxMaskPipe) {}
 
 	getDataToSave(): any {
-		return this.form.value;
+		const data = this.form.value;
+		data.contactPhoneNumber = this.maskPipe.transform(data.contactPhoneNumber, APP_CONSTANTS.phone.backendMask);
+		return data;
 	}
 
 	isFormValid(): boolean {

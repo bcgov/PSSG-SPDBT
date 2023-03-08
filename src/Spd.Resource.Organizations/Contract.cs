@@ -32,7 +32,7 @@ namespace Spd.Resource.Organizations
         public string? MailingProvince { get; set; }
         public FundsFromBcGovtExceedsThresholdCode OperatingBudgetFlag { get; set; }
         public string? OrganizationName { get; set; }
-        public EmployerOrganizationTypeCode? EmployerOrganizationTypeCode { get; set; }
+        public EmployeeOrganizationTypeCode? EmployeeOrganizationTypeCode { get; set; }
         public VolunteerOrganizationTypeCode? VolunteerOrganizationTypeCode { get; set; }
         public RegistrationTypeCode RegistrationTypeCode { get; set; }
         public ScreeningsCountTypeCode ScreeningsCount { get; set; }
@@ -80,7 +80,7 @@ namespace Spd.Resource.Organizations
         NotSure
     }
 
-    public enum EmployerOrganizationTypeCode
+    public enum EmployeeOrganizationTypeCode
     {
         Childcare,
         Healthcare,
