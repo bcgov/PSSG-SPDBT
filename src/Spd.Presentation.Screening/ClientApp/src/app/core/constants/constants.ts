@@ -5,4 +5,8 @@ export const APP_CONSTANTS = {
 		monthYearFormat: 'MMM yyyy',
 		dateTimeFormat: 'yyyy-MMM-dd HH:mm',
 	},
+	phone: {
+		displayMask: '(000) 000-0000',
+		backendMask: '000-000-0000',
+	},
 };

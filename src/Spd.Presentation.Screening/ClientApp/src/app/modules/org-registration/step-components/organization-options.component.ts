@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { EmployerOrganizationTypeCode, RegistrationTypeCode, VolunteerOrganizationTypeCode } from 'src/app/api/models';
+import { EmployeeOrganizationTypeCode, RegistrationTypeCode, VolunteerOrganizationTypeCode } from 'src/app/api/models';
 import { RegistrationFormStepComponent } from '../org-registration.component';
 
 export class OrganizationOptionsModel {
-	employeeOrganizationTypeCode: EmployerOrganizationTypeCode | null = null;
+	employeeOrganizationTypeCode: EmployeeOrganizationTypeCode | null = null;
 	volunteerOrganizationTypeCode: VolunteerOrganizationTypeCode | null = null;
 }
 
@@ -95,8 +95,8 @@ export class OrganizationOptionsModel {
 	],
 })
 export class OrganizationOptionsComponent implements RegistrationFormStepComponent {
-	employeeOrganizationType: EmployerOrganizationTypeCode | null = null;
-	volunteerOrganizationType: VolunteerOrganizationTypeCode | null = null;
+	employeeOrganizationTypeCode: EmployeeOrganizationTypeCode | null = null;
+	volunteerOrganizationTypeCode: VolunteerOrganizationTypeCode | null = null;
 	isDirtyAndInvalid = false;
 	selectedIconImages = new Array();
 
@@ -132,7 +132,7 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 
 	options_emp = [
 		{
-			code: EmployerOrganizationTypeCode.Childcare,
+			code: EmployeeOrganizationTypeCode.Childcare,
 			icon: '/assets/1a.png',
 			selectedIcon: '/assets/1b.png',
 			text: 'A childcare facility or daycare',
@@ -140,7 +140,7 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 			helpText: null,
 		},
 		{
-			code: EmployerOrganizationTypeCode.Healthcare,
+			code: EmployeeOrganizationTypeCode.Healthcare,
 			icon: '/assets/2a.png',
 			selectedIcon: '/assets/2b.png',
 			text: 'A health board, hospital, or care facility',
@@ -148,7 +148,7 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 			helpText: null,
 		},
 		{
-			code: EmployerOrganizationTypeCode.Education,
+			code: EmployeeOrganizationTypeCode.Education,
 			icon: '/assets/6a.png',
 			selectedIcon: '/assets/6b.png',
 			text: 'A school board or education authority',
@@ -156,7 +156,7 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 			helpText: null,
 		},
 		{
-			code: EmployerOrganizationTypeCode.Funding,
+			code: EmployeeOrganizationTypeCode.Funding,
 			icon: '/assets/8a.png',
 			selectedIcon: '/assets/8b.png',
 			text: 'An organization or person who receives ongoing provincial funding',
@@ -165,7 +165,7 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 				'Receives money every year from the provincial government to operate their organization (example: CLBC service providers)',
 		},
 		{
-			code: EmployerOrganizationTypeCode.CrownCorp,
+			code: EmployeeOrganizationTypeCode.CrownCorp,
 			icon: '/assets/3a.png',
 			selectedIcon: '/assets/3b.png',
 			text: 'A mainly government-owned corporation',
@@ -174,7 +174,7 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 				'Public sector organizations that report to the provincial government (examples: BC Housing, BC Transit)',
 		},
 		{
-			code: EmployerOrganizationTypeCode.ProvGovt,
+			code: EmployeeOrganizationTypeCode.ProvGovt,
 			icon: '/assets/4a.png',
 			selectedIcon: '/assets/4b.png',
 			text: 'A provincial government ministry or related agency',
@@ -182,7 +182,7 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 			helpText: 'Examples: Ministry of Children and Family Development, BC Corrections',
 		},
 		{
-			code: EmployerOrganizationTypeCode.Registrant,
+			code: EmployeeOrganizationTypeCode.Registrant,
 			icon: '/assets/5a.png',
 			selectedIcon: '/assets/5b.png',
 			text: 'A registered health professional or social worker',
@@ -190,7 +190,7 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 			helpText: null,
 		},
 		{
-			code: EmployerOrganizationTypeCode.GovnBody,
+			code: EmployeeOrganizationTypeCode.GovnBody,
 			icon: '/assets/11a.png',
 			selectedIcon: '/assets/11b.png',
 			text: 'A governing body under the Health Professions Act or the Social Workers Act',
@@ -199,7 +199,7 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 				'A governing body in B.C. of a social work or health profession (examples: BC College of Social Workers, BC College of Nurses and Midwives)',
 		},
 		{
-			code: EmployerOrganizationTypeCode.Appointed,
+			code: EmployeeOrganizationTypeCode.Appointed,
 			icon: '/assets/9a.png',
 			selectedIcon: '/assets/9b.png',
 			text: 'An act- or minister-appointed board, commission, or council',
@@ -294,10 +294,10 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 		},
 	];
 
-	onDataChange(_val: EmployerOrganizationTypeCode | VolunteerOrganizationTypeCode) {
-		this.employeeOrganizationType =
-			this.registrationTypeCode == RegistrationTypeCode.Employee ? (_val as EmployerOrganizationTypeCode) : null;
-		this.volunteerOrganizationType =
+	onDataChange(_val: EmployeeOrganizationTypeCode | VolunteerOrganizationTypeCode) {
+		this.employeeOrganizationTypeCode =
+			this.registrationTypeCode == RegistrationTypeCode.Employee ? (_val as EmployeeOrganizationTypeCode) : null;
+		this.volunteerOrganizationTypeCode =
 			this.registrationTypeCode == RegistrationTypeCode.Volunteer ? (_val as VolunteerOrganizationTypeCode) : null;
 
 		const isValid = this.isFormValid();
@@ -306,17 +306,17 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 
 	getDataToSave(): OrganizationOptionsModel {
 		return {
-			employeeOrganizationTypeCode: this.employeeOrganizationType,
-			volunteerOrganizationTypeCode: this.volunteerOrganizationType,
+			employeeOrganizationTypeCode: this.employeeOrganizationTypeCode,
+			volunteerOrganizationTypeCode: this.volunteerOrganizationTypeCode,
 		};
 	}
 
 	isFormValid(): boolean {
 		let isValid = false;
 		if (this.registrationTypeCode == RegistrationTypeCode.Employee) {
-			isValid = this.employeeOrganizationType ? true : false;
+			isValid = this.employeeOrganizationTypeCode ? true : false;
 		} else {
-			isValid = this.volunteerOrganizationType ? true : false;
+			isValid = this.volunteerOrganizationTypeCode ? true : false;
 		}
 
 		this.isDirtyAndInvalid = !isValid;
@@ -324,8 +324,8 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 	}
 
 	clearCurrentData(): void {
-		this.employeeOrganizationType = null;
-		this.volunteerOrganizationType = null;
+		this.employeeOrganizationTypeCode = null;
+		this.volunteerOrganizationTypeCode = null;
 	}
 
 	onViewHelp(option: any, event: any): void {
@@ -334,15 +334,15 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 	}
 
 	onNoneApply(): void {
-		this.employeeOrganizationType = null;
-		this.volunteerOrganizationType = null;
+		this.employeeOrganizationTypeCode = null;
+		this.volunteerOrganizationTypeCode = null;
 
 		this.noneApply.emit(true);
 	}
 
 	get currentOrganizationTypeCode(): string {
 		return this.registrationTypeCode == RegistrationTypeCode.Employee
-			? (this.employeeOrganizationType as string)
-			: (this.volunteerOrganizationType as string);
+			? (this.employeeOrganizationTypeCode as string)
+			: (this.volunteerOrganizationTypeCode as string);
 	}
 }

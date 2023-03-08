@@ -48,7 +48,7 @@ import { APP_CONSTANTS } from 'src/app/core/constants/constants';
 					<div class="col-xl-4 col-lg-12">
 						<mat-form-field>
 							<mat-label>Organization Phone Number</mat-label>
-							<input matInput formControlName="phoneNumber" mask="(000) 000-0000" [showMaskTyped]="true" />
+							<input matInput formControlName="phoneNumber" [mask]="phoneMask" [showMaskTyped]="true" />
 							<mat-error *ngIf="form.get('phoneNumber')?.hasError('required')">This is required</mat-error>
 						</mat-form-field>
 					</div>
@@ -180,6 +180,7 @@ import { APP_CONSTANTS } from 'src/app/core/constants/constants';
 	],
 })
 export class SettingsComponent {
+	phoneMask = APP_CONSTANTS.phone.displayMask;
 	booleanTypeCodes = BooleanTypeCode;
 	payerPreferenceTypeCode = PayerPreferenceTypeCode;
 	form: FormGroup = this.formBuilder.group({

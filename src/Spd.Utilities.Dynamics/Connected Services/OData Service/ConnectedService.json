@@ -27,7 +27,7 @@
     "MakeTypesInternal": false,
     "OpenGeneratedFilesInIDE": false,
     "GenerateMultipleFiles": false,
-    "CustomHttpHeaders": null,
+    "CustomHttpHeaders": "Authorization: Bearer REMOVED",
     "IncludeWebProxy": false,
     "WebProxyHost": null,
     "IncludeWebProxyNetworkCredentials": false,
@@ -36,7 +36,7 @@
     "WebProxyNetworkCredentialsPassword": null,
     "WebProxyNetworkCredentialsDomain": null,
     "IncludeCustomHeaders": true,
-    "StoreCustomHttpHeaders": false,
+    "StoreCustomHttpHeaders": true,
     "ExcludedSchemaTypes": []
   }
 }
