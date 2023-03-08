@@ -31,7 +31,7 @@ const SHARED_COMPONENTS = [
 		NgxMaskPipe,
 		NgxDropzoneModule,
 	],
-	providers: [provideNgxMask()],
+	providers: [provideNgxMask(), NgxMaskPipe],
 	exports: [
 		CommonModule,
 		MaterialModule,
