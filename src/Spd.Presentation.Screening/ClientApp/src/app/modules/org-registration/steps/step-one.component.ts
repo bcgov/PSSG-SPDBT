@@ -4,7 +4,7 @@ import { MatStepper } from '@angular/material/stepper';
 import {
 	BooleanTypeCode,
 	EmployeeInteractionTypeCode,
-	EmployerOrganizationTypeCode,
+	EmployeeOrganizationTypeCode,
 	RegistrationTypeCode,
 	VolunteerOrganizationTypeCode,
 } from 'src/app/api/models';
@@ -268,7 +268,7 @@ export class StepOneComponent {
 					const organizationOptionsData = this.organizationOptionsComponent.getDataToSave();
 					if (this.registrationPathSelectionData.registrationTypeCode == RegistrationTypeCode.Employee) {
 						this.showStepFundingQuestion =
-							organizationOptionsData.employeeOrganizationTypeCode == EmployerOrganizationTypeCode.Funding
+							organizationOptionsData.employeeOrganizationTypeCode == EmployeeOrganizationTypeCode.Funding
 								? true
 								: false;
 					} else {

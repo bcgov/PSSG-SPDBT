@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-export enum EmployerOrganizationTypeCode {
+export enum EmployeeOrganizationTypeCode {
   Childcare = 'Childcare',
   Healthcare = 'Healthcare',
   Education = 'Education',

@@ -2,7 +2,7 @@
 /* eslint-disable */
 import { BooleanTypeCode } from './boolean-type-code';
 import { EmployeeInteractionTypeCode } from './employee-interaction-type-code';
-import { EmployerOrganizationTypeCode } from './employer-organization-type-code';
+import { EmployeeOrganizationTypeCode } from './employee-organization-type-code';
 import { FundsFromBcGovtExceedsThresholdCode } from './funds-from-bc-govt-exceeds-threshold-code';
 import { PayerPreferenceTypeCode } from './payer-preference-type-code';
 import { PortalUserIdentityTypeCode } from './portal-user-identity-type-code';
@@ -19,7 +19,7 @@ export interface OrgRegistrationCreateRequest {
   contactSurname?: null | string;
   employeeInteractionFlag?: EmployeeInteractionTypeCode;
   employeeMonetaryCompensationFlag?: BooleanTypeCode;
-  employerOrganizationTypeCode?: EmployerOrganizationTypeCode;
+  employeeOrganizationTypeCode?: EmployeeOrganizationTypeCode;
   genericEmail?: null | string;
   genericEmailConfirmation?: null | string;
   genericPhoneNumber?: null | string;
