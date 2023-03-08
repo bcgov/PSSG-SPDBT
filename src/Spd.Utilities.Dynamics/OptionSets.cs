@@ -71,4 +71,11 @@
         Organization = 100000000,
         Applicant = 100000001,
     }
+
+    public enum PortalUserIdentityTypeCode
+    {
+        BusinessBceId = 100000000,
+        BcServicesCard = 100000001,
+        Idir = 100000002
+    }
 }
