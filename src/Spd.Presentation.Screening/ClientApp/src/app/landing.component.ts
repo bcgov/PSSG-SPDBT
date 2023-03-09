@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthenticationService } from './core/services/authentication.service';
+import { DashboardRoutes } from './modules/dashboard/dashboard-routing.module';
 
 @Component({
 	selector: 'app-landing',
@@ -27,8 +29,14 @@ import { Router } from '@angular/router';
 		</section>
 
 		<section class="step-section col-3 mx-auto mt-4 p-4">
+			<button mat-raised-button color="primary" class="large mb-2" (click)="onRegisterWithBCeid()">
+				Dashboard BCeid Log In
+			</button>
+		</section>
+
+		<section class="step-section col-3 mx-auto mt-4 p-4">
 			<button mat-raised-button color="primary" class="large mb-2" [routerLink]="['/dashboard/home/']">
-				Dashboard
+				Dashboard - No Log In
 			</button>
 		</section>
 	`,
@@ -37,9 +45,23 @@ import { Router } from '@angular/router';
 export class LandingComponent {
 	paymentBy: string = 'APP';
 
-	constructor(private router: Router) {}
+	constructor(private router: Router, private authenticationService: AuthenticationService) {}
+
+	async ngOnInit(): Promise<void> {
+		const postLoginRoute = DashboardRoutes.dashboardPath(DashboardRoutes.HOME);
+		await this.authenticationService.configureOAuthService(window.location.origin + `/${postLoginRoute}`);
+	}
 
 	goToScreening(): void {
 		this.router.navigateByUrl('/scr-application', { state: { paymentBy: this.paymentBy } });
+	}
+
+	async onRegisterWithBCeid(): Promise<void> {
+		const isLoggedIn = await this.authenticationService.login(null);
+		console.debug('[onRegisterWithBCeid] isLoggedIn', isLoggedIn);
+		if (isLoggedIn) {
+			const postLoginRoute = DashboardRoutes.dashboardPath(DashboardRoutes.HOME);
+			this.router.navigateByUrl(postLoginRoute);
+		}
 	}
 }

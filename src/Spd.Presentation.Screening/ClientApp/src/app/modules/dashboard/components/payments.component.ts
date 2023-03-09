@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatSort, MatSortable } from '@angular/material/sort';
+import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { APP_CONSTANTS } from 'src/app/core/constants/constants';
 
@@ -58,7 +58,7 @@ import { APP_CONSTANTS } from 'src/app/core/constants/constants';
 
 			<div class="row">
 				<div class="col-12">
-					<mat-table matSort [dataSource]="dataSource" class="isMobile">
+					<mat-table matSort [dataSource]="dataSource" matSortActive="status" matSortDirection="asc" class="isMobile">
 						<ng-container matColumnDef="applicantName">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Applicant Name</mat-header-cell>
 							<mat-cell *matCellDef="let payment">
@@ -232,7 +232,6 @@ export class PaymentsComponent {
 	}
 
 	ngAfterViewInit() {
-		this.sort.sort({ id: 'status', start: 'asc' } as MatSortable);
 		this.dataSource.sort = this.sort;
 		this.dataSource.paginator = this.paginator;
 	}

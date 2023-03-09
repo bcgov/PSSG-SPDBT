@@ -23,7 +23,9 @@ export class AuthenticationService {
 
 	public async login(state: any): Promise<boolean> {
 		const isLoggedIn = this.oauthService.hasValidAccessToken();
+		console.debug('login isLoggedIn', isLoggedIn);
 		if (!isLoggedIn) {
+			console.debug('loadDiscoveryDocumentAndLogin');
 			await this.oauthService.loadDiscoveryDocumentAndLogin({ state });
 		}
 		return isLoggedIn;
