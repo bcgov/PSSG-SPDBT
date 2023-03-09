@@ -26,7 +26,6 @@ export interface OrgRegistrationCreateRequest {
   hasPhoneOrEmail?: BooleanTypeCode;
   loginIdentityGuid?: null | string;
   loginIdentityProvider?: null | string;
-  loginPortalUserIdentityGuid?: PortalUserIdentityTypeCode;
   mailingAddressLine1?: null | string;
   mailingAddressLine2?: null | string;
   mailingCity?: null | string;
@@ -36,6 +35,7 @@ export interface OrgRegistrationCreateRequest {
   operatingBudgetFlag?: FundsFromBcGovtExceedsThresholdCode;
   organizationName?: null | string;
   payerPreference?: PayerPreferenceTypeCode;
+  portalUserIdentityTypeCode?: PortalUserIdentityTypeCode;
   registrationTypeCode?: RegistrationTypeCode;
   screeningsCount?: ScreeningsCountTypeCode;
   volunteerOrganizationTypeCode?: VolunteerOrganizationTypeCode;
