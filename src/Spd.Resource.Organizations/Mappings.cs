@@ -30,7 +30,16 @@ namespace Spd.Resource.Organizations
             .ForMember(d => d.spd_authorizedcontactphonenumber, opt => opt.MapFrom(s => s.ContactPhoneNumber))
             .ForMember(d => d.spd_organizationname, opt => opt.MapFrom(s => s.OrganizationName))
             .ForMember(d => d.spd_email, opt => opt.MapFrom(s => s.GenericEmail))
-            .ForMember(d => d.spd_phonenumber, opt => opt.MapFrom(s => s.GenericPhoneNumber));
+            .ForMember(d => d.spd_phonenumber, opt => opt.MapFrom(s => s.GenericPhoneNumber))
+            .ForMember(d => d.spd_identityguid, opt => opt.MapFrom(s => s.LoginIdentityGuid))
+            .ForMember(d => d.spd_identityprovider, opt => opt.MapFrom(s => s.LoginIdentityProvider))
+            .ForMember(d => d.spd_portaluseridentityguid, opt => opt.MapFrom(s => GetPortalUserIdentityType(s.PortalUserIdentityTypeCode)));
+        }
+
+        private static int? GetPortalUserIdentityType(PortalUserIdentityTypeCode? code)
+        {
+            if (code == null) return null;
+            return (int)Enum.Parse<PortalUserIdentityTypeCode>(code.ToString());
         }
     }
 }
