@@ -31,6 +31,9 @@ namespace Spd.Manager.Membership.ViewModels
         public VolunteerOrganizationTypeCode? VolunteerOrganizationTypeCode { get; set; }
         public RegistrationTypeCode RegistrationTypeCode { get; set; }
         public ScreeningsCountTypeCode ScreeningsCount { get; set; }
+        public string? LoginIdentityGuid { get; set; }
+        public string? LoginIdentityProvider { get; set; }
+        public PortalUserIdentityTypeCode? PortalUserIdentityTypeCode { get; set; }
     }
 
     public enum RegistrationTypeCode
@@ -160,6 +163,18 @@ namespace Spd.Manager.Membership.ViewModels
         PostSec,
     }
 
+    public enum PortalUserIdentityTypeCode
+    {
+        [Description("Business BCeID")]
+        BusinessBceId,
+
+        [Description("BC Services Card")]
+        BcServicesCard,
+
+        [Description("IDIR")]
+        Idir,
+    }
+
     public class OrgRegistrationCreateRequestValidator : AbstractValidator<OrgRegistrationCreateRequest>
     {
         public OrgRegistrationCreateRequestValidator()
@@ -281,6 +296,10 @@ namespace Spd.Manager.Membership.ViewModels
                 .Must(r => r.GenericEmail!.Equals(r.GenericEmailConfirmation))
                 .When(r => r.HasPhoneOrEmail == BooleanTypeCode.Yes)
                 .WithMessage("Emails must match");
+
+            RuleFor(r => r.PortalUserIdentityTypeCode)
+                .IsInEnum()
+                .When(r => r.PortalUserIdentityTypeCode.HasValue);
         }
     }
 
