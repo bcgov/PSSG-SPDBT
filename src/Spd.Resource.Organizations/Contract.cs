@@ -36,6 +36,9 @@ namespace Spd.Resource.Organizations
         public VolunteerOrganizationTypeCode? VolunteerOrganizationTypeCode { get; set; }
         public RegistrationTypeCode RegistrationTypeCode { get; set; }
         public ScreeningsCountTypeCode ScreeningsCount { get; set; }
+        public string? LoginIdentityGuid { get; set; }
+        public string? LoginIdentityProvider { get; set; }
+        public PortalUserIdentityTypeCode? PortalUserIdentityTypeCode { get; set; }
     }
 
     public enum RegistrationTypeCode
@@ -106,6 +109,14 @@ namespace Spd.Resource.Organizations
         Municipality,
         PostSec,
     }
+
+    public enum PortalUserIdentityTypeCode
+    {
+        BusinessBceId,
+        BcServicesCard,
+        Idir,
+    }
+
     public class RegistrationResponse
     {
         public Guid OrgRegistrationId { get; set; }
