@@ -11,7 +11,7 @@ export class OrganizationOptionsModel {
 	selector: 'app-organization-options',
 	template: `
 		<div class="step">
-			<div class="title mb-5">How would you best describe your organization?</div>
+			<app-step-title title="How would you best describe your organization?"></app-step-title>
 			<div class="">
 				<div class="step-container row">
 					<div class="col-md-8 col-sm-12 mx-auto">

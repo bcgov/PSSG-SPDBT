@@ -8,7 +8,7 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 		<section class="step-section pt-4 pb-5 px-3">
 			<form [formGroup]="form" novalidate>
 				<div class="step">
-					<div class="title mb-5">Review the following terms of agreement</div>
+					<app-step-title title="Review the following terms of agreement"></app-step-title>
 					<div class="row">
 						<div
 							class="offset-md-2 col-md-8 col-sm-12 conditions px-3 mb-3"

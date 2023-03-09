@@ -11,8 +11,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="step">
-				<div class="title mb-5">What is your organization's mailing address?</div>
-
+				<app-step-title title="What is your organization's mailing address?"></app-step-title>
 				<div class="row">
 					<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
 						<app-address-form-autocomplete

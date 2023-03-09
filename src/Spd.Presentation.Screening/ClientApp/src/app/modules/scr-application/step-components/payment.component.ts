@@ -6,7 +6,7 @@ import { Component } from '@angular/core';
 		<section class="step-section pt-4 pb-5 px-3">
 			<div class="step">
 				<div class="row">
-					<div class="col-md-8 col-sm-12 mx-auto">
+					<div class="col-lg-8 col-md-10 col-sm-12 mx-auto">
 						<div class="alert alert-success align-items-center mb-0 alert-layout" role="alert">
 							<mat-icon class="d-none d-md-block alert-icon">paid</mat-icon>
 							<div>
@@ -24,20 +24,20 @@ import { Component } from '@angular/core';
 				</div>
 
 				<div class="row mt-4">
-					<div class="col-md-8 col-sm-12 mx-auto">
+					<div class="col-lg-8 col-md-10 col-sm-12 mx-auto">
 						<section class="px-4 py-2 mb-3">
 							<div class="row mt-2">
 								<div class="offset-lg-1 col-lg-3">
-									<small class="d-block text-muted">Contact Email</small>
-									<strong>test@test.com </strong>
+									<div class="text-label d-block text-muted">Contact Email</div>
+									<div class="text-data">test@test.com</div>
 								</div>
 								<div class="col-lg-3">
-									<small class="d-block text-muted mt-2 mt-lg-0">Applicant Paid</small>
-									<strong>Yes </strong>
+									<div class="text-label d-block text-muted mt-2 mt-lg-0">Applicant Paid</div>
+									<div class="text-data">Yes</div>
 								</div>
 								<div class="col-lg-3">
-									<small class="d-block text-muted mt-2 mt-lg-0">Paid For By</small>
-									<strong> Applicant </strong>
+									<div class="text-label d-block text-muted mt-2 mt-lg-0">Paid For By</div>
+									<div class="text-data">Applicant</div>
 								</div>
 							</div>
 
@@ -45,15 +45,15 @@ import { Component } from '@angular/core';
 
 							<div class="row mb-2">
 								<div class="offset-lg-1 col-lg-3">
-									<small class="d-block text-muted">Payment Type</small>
+									<div class="text-label d-block text-muted">Payment Type</div>
 									<div class="text-data">BC Pay</div>
 								</div>
 								<div class="col-lg-3">
-									<small class="d-block text-muted mt-2 mt-lg-0">Amount Paid</small>
+									<div class="text-label d-block text-muted mt-2 mt-lg-0">Amount Paid</div>
 									<div class="text-data">$28.00</div>
 								</div>
 								<div class="col-lg-3">
-									<small class="d-block text-muted mt-2 mt-lg-0">Transaction Number</small>
+									<div class="text-label d-block text-muted mt-2 mt-lg-0">Transaction Number</div>
 									<div class="text-data">12345678</div>
 								</div>
 							</div>
@@ -80,7 +80,11 @@ import { Component } from '@angular/core';
 			}
 
 			.text-data {
-				font-weight: 500;
+				font-weight: 300;
+			}
+
+			.text-label {
+				font-size: diver;
 			}
 		`,
 	],

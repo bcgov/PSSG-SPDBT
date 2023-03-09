@@ -10,6 +10,7 @@ import { HeaderComponent } from './components/app-header.component';
 import { BaseFilterComponent } from './components/base-filter.component';
 import { DialogComponent } from './components/dialog.component';
 import { DropdownOverlayComponent } from './components/dropdown-overlay.component';
+import { StepTitleComponent } from './components/step-title.component';
 
 const SHARED_COMPONENTS = [
 	HeaderComponent,
@@ -18,6 +19,7 @@ const SHARED_COMPONENTS = [
 	AddressAutocompleteComponent,
 	DropdownOverlayComponent,
 	BaseFilterComponent,
+	StepTitleComponent,
 ];
 
 @NgModule({

@@ -8,13 +8,9 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="step">
-				<div class="row">
-					<div class="col-md-8 col-sm-12 mx-auto">
-						<div class="title mb-5">
-							Does your organization receive at least 50% of its operating budget funding from the B.C. Government?
-						</div>
-					</div>
-				</div>
+				<app-step-title
+					title="Does your organization receive at least 50% of its operating budget funding from the B.C. Government?"
+				></app-step-title>
 				<div class="row">
 					<div class="offset-md-4 col-md-4 col-sm-12">
 						<mat-radio-group

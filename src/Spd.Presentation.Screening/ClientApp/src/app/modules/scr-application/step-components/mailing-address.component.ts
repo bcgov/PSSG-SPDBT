@@ -12,8 +12,7 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 		<section class="step-section pt-4 pb-5 px-3">
 			<form [formGroup]="form" novalidate>
 				<div class="step">
-					<div class="title mb-5">What is your mailing address?</div>
-
+					<app-step-title title="What is your mailing address?"></app-step-title>
 					<div class="row">
 						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
 							<app-address-form-autocomplete
@@ -36,7 +35,8 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 					<section *ngIf="form.get('addressSelected')?.value">
 						<div class="row mt-4">
 							<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
-								<mat-divider class="my-3"></mat-divider>
+								<mat-divider class="my-3" style="border-top-color: var(--color-primary-light);"></mat-divider>
+								<div class="text-minor-heading fw-semibold mb-2">Address Information</div>
 								<mat-form-field>
 									<mat-label>Street Address 1</mat-label>
 									<input matInput formControlName="mailingAddressLine1" [errorStateMatcher]="matcher" />
@@ -89,7 +89,13 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 			</form>
 		</section>
 	`,
-	styles: [],
+	styles: [
+		`
+			.text-minor-heading {
+				color: var(--color-primary-light);
+			}
+		`,
+	],
 })
 export class MailingAddressComponent implements OnInit, ScreeningFormStepComponent {
 	form!: FormGroup;

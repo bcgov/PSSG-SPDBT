@@ -12,11 +12,9 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="step">
-				<div class="col-md-8 col-sm-12 mx-auto">
-					<div class="title mb-5">
-						Does your organization have a shared have a shared inbox and/or central phone line?
-					</div>
-				</div>
+				<app-step-title
+					title="Does your organization have a shared have a shared inbox and/or central phone line?"
+				></app-step-title>
 				<div class="row">
 					<div class="offset-md-2 col-md-8 col-sm-12">
 						<mat-radio-group
