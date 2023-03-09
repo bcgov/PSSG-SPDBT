@@ -38,7 +38,7 @@ namespace Spd.Resource.Organizations
         public ScreeningsCountTypeCode ScreeningsCount { get; set; }
         public string? LoginIdentityGuid { get; set; }
         public string? LoginIdentityProvider { get; set; }
-        public PortalUserIdentityTypeCode? LoginPortalUserIdentityGuid { get; set; }
+        public PortalUserIdentityTypeCode? PortalUserIdentityTypeCode { get; set; }
     }
 
     public enum RegistrationTypeCode

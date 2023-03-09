@@ -33,7 +33,7 @@ namespace Spd.Manager.Membership.ViewModels
         public ScreeningsCountTypeCode ScreeningsCount { get; set; }
         public string? LoginIdentityGuid { get; set; }
         public string? LoginIdentityProvider { get; set; }
-        public PortalUserIdentityTypeCode? LoginPortalUserIdentityGuid { get; set; }
+        public PortalUserIdentityTypeCode? PortalUserIdentityTypeCode { get; set; }
     }
 
     public enum RegistrationTypeCode
@@ -297,9 +297,9 @@ namespace Spd.Manager.Membership.ViewModels
                 .When(r => r.HasPhoneOrEmail == BooleanTypeCode.Yes)
                 .WithMessage("Emails must match");
 
-            RuleFor(r => r.LoginPortalUserIdentityGuid)
+            RuleFor(r => r.PortalUserIdentityTypeCode)
                 .IsInEnum()
-                .When(r => r.LoginPortalUserIdentityGuid.HasValue);
+                .When(r => r.PortalUserIdentityTypeCode.HasValue);
         }
     }
 
