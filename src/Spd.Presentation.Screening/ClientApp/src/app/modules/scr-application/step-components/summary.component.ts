@@ -7,7 +7,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 			<div class="step">
 				<app-step-title title="Review the following information"></app-step-title>
 				<div class="row">
-					<div class="offset-md-2 col-md-8 col-sm-12">
+					<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
 						<section class="px-4 py-2 mb-3 card-section">
 							<div class="row mt-2">
 								<div class="col-xl-4 col-lg-4 col-md-12">
@@ -39,7 +39,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 					</div>
 				</div>
 				<div class="row">
-					<div class="offset-md-2 col-md-8 col-sm-12">
+					<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
 						<section class="px-4 py-2 mb-3 card-section">
 							<div class="row mt-2">
 								<div class="col-xl-4 col-lg-4 col-md-12">

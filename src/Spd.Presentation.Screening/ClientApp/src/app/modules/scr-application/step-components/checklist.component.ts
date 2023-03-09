@@ -10,7 +10,7 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 					title="To submit a request for a criminal record check, you will need the following"
 				></app-step-title>
 				<div class="row">
-					<div class="col-md-6 col-sm-12 mx-auto">
+					<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12 mx-auto">
 						<ul *ngIf="paymentBy == 'APP'">
 							<li>Your BC Services Card (recommended), or other government issued identification.</li>
 							<li>A method of payment (Visa, Mastercard, American Express, Visa Debit, Mastercard Debit)</li>

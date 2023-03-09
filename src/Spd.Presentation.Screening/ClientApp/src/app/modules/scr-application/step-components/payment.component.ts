@@ -6,7 +6,7 @@ import { Component } from '@angular/core';
 		<section class="step-section pt-4 pb-5 px-3">
 			<div class="step">
 				<div class="row">
-					<div class="col-lg-8 col-md-10 col-sm-12 mx-auto">
+					<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12 mx-auto">
 						<div class="alert alert-success align-items-center mb-0 alert-layout" role="alert">
 							<mat-icon class="d-none d-md-block alert-icon">paid</mat-icon>
 							<div>
@@ -24,7 +24,7 @@ import { Component } from '@angular/core';
 				</div>
 
 				<div class="row mt-4">
-					<div class="col-lg-8 col-md-10 col-sm-12 mx-auto">
+					<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12 mx-auto">
 						<section class="px-4 py-2 mb-3">
 							<div class="row mt-2">
 								<div class="offset-lg-1 col-lg-3">
