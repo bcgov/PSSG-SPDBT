@@ -12,7 +12,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 					title="Does your organization receive at least 50% of its operating budget funding from the B.C. Government?"
 				></app-step-title>
 				<div class="row">
-					<div class="offset-md-4 col-md-4 col-sm-12">
+					<div class="offset-lg-4 col-lg-4 offset-md-3 col-md-6 col-sm-12">
 						<mat-radio-group
 							class="funding-question__group"
 							aria-label="Select an option"

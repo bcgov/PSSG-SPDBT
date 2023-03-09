@@ -12,7 +12,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 					title="How many screenings do you anticipate your organization requesting per year?"
 				></app-step-title>
 				<div class="row">
-					<div class="offset-md-4 col-md-4 col-sm-12">
+					<div class="offset-lg-4 col-lg-4 offset-md-3 col-md-6 col-sm-12">
 						<mat-radio-group aria-label="Select an option" formControlName="screeningsCount">
 							<mat-radio-button [value]="screeningsCountTypeCodes.LessThanOneHundred"> 0 - 100 </mat-radio-button>
 							<mat-divider class="my-3"></mat-divider>

@@ -45,7 +45,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 					</div>
 
 					<div class="row">
-						<div class="offset-md-2 col-md-8 col-sm-12">
+						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
 							<mat-form-field>
 								<mat-label>Street Address 2 <span class="optional-label">(optional)</span></mat-label>
 								<input matInput formControlName="mailingAddressLine2" maxlength="100" />
@@ -53,14 +53,14 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 						</div>
 					</div>
 					<div class="row">
-						<div class="offset-md-2 col-md-6 col-sm-12">
+						<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>City</mat-label>
 								<input matInput formControlName="mailingCity" maxlength="30" />
 								<mat-error *ngIf="form.get('mailingCity')?.hasError('required')">This is required</mat-error>
 							</mat-form-field>
 						</div>
-						<div class="col-md-2 col-sm-12">
+						<div class="col-lg-4 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Postal/Zip Code</mat-label>
 								<input matInput formControlName="mailingPostalCode" maxlength="20" />
@@ -69,14 +69,14 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 						</div>
 					</div>
 					<div class="row">
-						<div class="offset-md-2 col-md-4 col-sm-12">
+						<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Province/State</mat-label>
 								<input matInput formControlName="mailingProvince" maxlength="100" />
 								<mat-error *ngIf="form.get('mailingProvince')?.hasError('required')">This is required</mat-error>
 							</mat-form-field>
 						</div>
-						<div class="col-md-4 col-sm-12">
+						<div class="col-lg-4 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Country</mat-label>
 								<input matInput formControlName="mailingCountry" maxlength="100" />

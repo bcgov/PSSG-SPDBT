@@ -14,11 +14,11 @@ export class OrganizationOptionsModel {
 			<app-step-title title="How would you best describe your organization?"></app-step-title>
 			<div class="">
 				<div class="step-container row">
-					<div class="col-md-8 col-sm-12 mx-auto">
+					<div class="col-lg-8 col-md-12 col-sm-12 mx-auto">
 						<div class="row">
 							<ng-container *ngFor="let option of options; let i = index">
 								<div
-									class=" col-md-4 col-sm-6 mb-3"
+									class="col-lg-4 col-md-4 col-sm-6 mb-3"
 									[ngClass]="registrationTypeCode == registrationTypeCodes.Employee ? 'col-lg-4' : 'col-lg-3'"
 								>
 									<div

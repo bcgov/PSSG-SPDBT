@@ -14,7 +14,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 						organization portal"
 				></app-step-title>
 				<div class="row">
-					<div class="offset-md-4 col-md-4 col-sm-12">
+					<div class="offset-lg-4 col-lg-4 offset-md-3 col-md-6 col-sm-12">
 						<mat-radio-group aria-label="Select an option" formControlName="payerPreference">
 							<mat-radio-button [value]="payerPreferenceTypeCodes.Organization"> My organization </mat-radio-button>
 							<mat-divider class="my-3"></mat-divider>

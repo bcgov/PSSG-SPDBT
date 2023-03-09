@@ -10,7 +10,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 			<div class="step">
 				<app-step-title title="Provide us with more organization information"></app-step-title>
 				<div class="row">
-					<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
+					<div class="offset-lg-3 col-lg-6 offset-md-1 col-md-10 col-sm-12">
 						<mat-form-field>
 							<mat-label>Organization Name</mat-label>
 							<input
