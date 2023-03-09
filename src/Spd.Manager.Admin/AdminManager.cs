@@ -4,7 +4,7 @@ using Spd.Utilities.Address;
 
 namespace Spd.Manager.Admin
 {
-    public class AdminManager :
+    internal class AdminManager :
         IRequestHandler<FindAddressQuery, IEnumerable<AddressFindResponse>>,
         IRequestHandler<RetrieveAddressByIdQuery, IEnumerable<AddressRetrieveResponse>>,
         IAdminManager

@@ -5,7 +5,7 @@ using System.Net.Http.Json;
 
 namespace Spd.Utilities.Address;
 
-public class AddressAutocompleteClient : IAddressAutocompleteClient
+internal class AddressAutocompleteClient : IAddressAutocompleteClient
 {
     private readonly string _apiKey;
     private readonly int _maxSuggestions;
@@ -78,7 +78,7 @@ public class AddressAutocompleteClient : IAddressAutocompleteClient
         catch (Exception exception)
         {
             _logger.LogError(exception.Message);
-            return Enumerable.Empty<AddressAutocompleteFindResponse>();
+            throw;
         }
     }
 
