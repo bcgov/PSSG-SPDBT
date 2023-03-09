@@ -23,7 +23,25 @@ public class AddressAutocompleteClient : IAddressAutocompleteClient
         _logger = logger;
     }
 
-    public async Task<IEnumerable<AddressAutocompleteFindResponse>> Find(string searchTerm, string country, CancellationToken cancellationToken)
+    public async Task<IEnumerable<AddressQueryResponse>> Query(AddressQuery query, CancellationToken cancellationToken)
+    {
+
+        if (query is AddressSearchQuery searchQuery)
+        {
+            return await Find(searchQuery.SearchTerm, searchQuery.Country, cancellationToken);
+        }
+        
+        if(query is AddressRetrieveQuery retrieveQuery)
+        { 
+            return await Retrieve(retrieveQuery.Id, cancellationToken);
+        }
+
+        return null;
+    }
+
+    ///// Returns addresses matching the search term.
+    ///// https://www.canadapost-postescanada.ca/ac/support/api/addresscomplete-interactive-find/
+    private async Task<IEnumerable<AddressAutocompleteFindResponse>> Find(string searchTerm, string country, CancellationToken cancellationToken)
     {
         try
         {
@@ -64,7 +82,9 @@ public class AddressAutocompleteClient : IAddressAutocompleteClient
         }
     }
 
-    public async Task<IEnumerable<AddressAutocompleteRetrieveResponse>> Retrieve(string id, CancellationToken cancellationToken)
+    ///// Returns the full address details based on the Id.
+    ///// https://www.canadapost-postescanada.ca/ac/support/api/addresscomplete-interactive-retrieve/
+    private async Task<IEnumerable<AddressAutocompleteRetrieveResponse>> Retrieve(string id, CancellationToken cancellationToken)
     {
         try
         {
@@ -102,5 +122,14 @@ public class AddressAutocompleteClient : IAddressAutocompleteClient
             _logger.LogError(exception.Message);
             return Enumerable.Empty<AddressAutocompleteRetrieveResponse>(); 
         }
+    }
+
+    /// <summary>
+    /// The response wrapper for the web service that contains result items.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class AddressAutocompleteApiResponse<T>
+    {
+        public IEnumerable<T>? Items { get; set; }
     }
 }

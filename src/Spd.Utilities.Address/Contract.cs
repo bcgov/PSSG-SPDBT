@@ -2,35 +2,32 @@ namespace Spd.Utilities.Address;
 
 public interface IAddressAutocompleteClient
 {
-    /// <summary>
-    /// Returns addresses matching the search term.
-    /// https://www.canadapost-postescanada.ca/ac/support/api/addresscomplete-interactive-find/
-    /// </summary>
-    /// <param name="searchTerm"></param>
-    Task<IEnumerable<AddressAutocompleteFindResponse>> Find(string searchTerm, string country, CancellationToken cancellationToken);
-
-    /// <summary>
-    /// Returns the full address details based on the Id.
-    /// https://www.canadapost-postescanada.ca/ac/support/api/addresscomplete-interactive-retrieve/
-    /// </summary>
-    /// <param name="id"></param>
-    Task<IEnumerable<AddressAutocompleteRetrieveResponse>> Retrieve(string id, CancellationToken cancellationToken);
+    Task<IEnumerable<AddressQueryResponse>> Query(AddressQuery query, CancellationToken cancellationToken);
 }
 
-/// <summary>
-/// The response wrapper for the web service that contains result items.
-/// </summary>
-/// <typeparam name="T"></typeparam>
-public class AddressAutocompleteApiResponse<T>
+public abstract record AddressQuery;
+
+/// Returns addresses matching the search term.
+public record AddressSearchQuery : AddressQuery
 {
-    public IEnumerable<T>? Items { get; set; }
+    public string SearchTerm { get; set; }
+    public string Country { get; set; }
 }
+
+/// Returns the full address details based on the Id.
+public record AddressRetrieveQuery : AddressQuery
+{
+    public string Id { get; set; }
+}
+
+public abstract record AddressQueryResponse;
+
 
 /// <summary>
 /// The response from the web service is a table containing the elements below. Where no items are found, the response will be empty.
 /// https://www.canadapost-postescanada.ca/ac/support/api/addresscomplete-interactive-find/
 /// </summary>
-public class AddressAutocompleteFindResponse
+public record AddressAutocompleteFindResponse : AddressQueryResponse
 {
     /// <summary>
     /// The Id to use as the SearchTerm with the Find method.
@@ -67,7 +64,7 @@ public class AddressAutocompleteFindResponse
 /// The response from the web service is a table containing the elements below. Where no items are found, the response will be empty.
 /// https://www.canadapost-postescanada.ca/ac/support/api/addresscomplete-interactive-retrieve/
 /// </summary>
-public class AddressAutocompleteRetrieveResponse
+public record AddressAutocompleteRetrieveResponse : AddressQueryResponse
 {
     public string? Id { get; set; }
     public string? DomesticId { get; set; }

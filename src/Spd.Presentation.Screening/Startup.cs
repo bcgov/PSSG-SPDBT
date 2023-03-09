@@ -10,17 +10,17 @@ namespace Spd.Presentation.Screening
 {
     public class Startup
     {
-        public IConfiguration _configuration { get; }
-        public IWebHostEnvironment _hostEnvironment { get; }
-        public Assembly[] _assemblies { get; }
+        public IConfiguration configuration { get; }
+        public IWebHostEnvironment hostEnvironment { get; }
+        public Assembly[] assemblies { get; }
 
         public Startup(IConfiguration configuration, IWebHostEnvironment hostEnvironment)
         {
             string assembliesPrefix = "Spd";
-            _configuration = configuration;
-            _hostEnvironment = hostEnvironment;
+            this.configuration = configuration;
+            this.hostEnvironment = hostEnvironment;
 #pragma warning disable S3885 // "Assembly.Load" should be used
-            _assemblies = Directory.GetFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty, "*.dll", SearchOption.TopDirectoryOnly)
+            this.assemblies = Directory.GetFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty, "*.dll", SearchOption.TopDirectoryOnly)
                  .Where(assembly =>
                  {
                      var assemblyName = Path.GetFileName(assembly);
@@ -34,7 +34,7 @@ namespace Spd.Presentation.Screening
         public void RegisterServices(IServiceCollection services)
         {
             // Add services to the container.
-            services.ConfigureCors(_configuration);
+            services.ConfigureCors(configuration);
 
             services
                 .AddEndpointsApiExplorer()
@@ -47,16 +47,16 @@ namespace Spd.Presentation.Screening
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<FluentValidationEntry>());
             ;
 
-            services.AddAutoMapper(_assemblies);
-            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(_assemblies));
+            services.AddAutoMapper(assemblies);
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies));
             services.AddDistributedMemoryCache();
             services
-              .AddDynamicsProxy(_configuration)
+              .AddDynamicsProxy(configuration)
             //.AddStorageProxy(builder.Configuration)
-              .AddAddressAutoComplete(_configuration);
+              .AddAddressAutoComplete(configuration);
 
 
-            services.ConfigureComponentServices(_configuration, _hostEnvironment, _assemblies);
+            services.ConfigureComponentServices(configuration, hostEnvironment, assemblies);
         }
 
         public void SetupHttpRequestPipeline(WebApplication app, IWebHostEnvironment env)
@@ -70,7 +70,7 @@ namespace Spd.Presentation.Screening
             app.UseStaticFiles();
             app.UseRouting();
 
-            app.ConfigureComponentPipeline(_configuration, _hostEnvironment, _assemblies);
+            app.ConfigureComponentPipeline(configuration, hostEnvironment, assemblies);
 
             app.MapControllerRoute(
                 name: "default",
