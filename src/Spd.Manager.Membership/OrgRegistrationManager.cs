@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using MediatR;
-using Spd.Manager.Membership.ViewModels;
 using Spd.Resource.Organizations;
 
 namespace Spd.Manager.Membership
