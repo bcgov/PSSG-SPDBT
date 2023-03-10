@@ -113,7 +113,21 @@ export class MailingAddressComponent implements OnInit, RegistrationFormStepComp
 		});
 	}
 
-	onAddressAutocomplete({ countryCode, provinceCode, postalCode, line1, line2, city }: Address): void {
+	onAddressAutocomplete(address: Address): void {
+		if (!address) {
+			this.form.patchValue({
+				addressSelected: false,
+				mailingAddressLine1: '',
+				mailingAddressLine2: '',
+				mailingCity: '',
+				mailingPostalCode: '',
+				mailingProvince: '',
+				mailingCountry: '',
+			});
+			return;
+		}
+
+		const { countryCode, provinceCode, postalCode, line1, line2, city } = address;
 		this.form.patchValue({
 			addressSelected: true,
 			mailingAddressLine1: line1,

@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 
 import { AddressAutoCompleteService } from './services/address-auto-complete.service';
-import { BCeIdOauthConfigurationService } from './services/b-ce-id-oauth-configuration.service';
+import { BCeIdConfigurationService } from './services/b-ce-id-configuration.service';
 import { OrgRegistrationService } from './services/org-registration.service';
 
 /**
@@ -17,7 +17,7 @@ import { OrgRegistrationService } from './services/org-registration.service';
   declarations: [],
   providers: [
     AddressAutoCompleteService,
-    BCeIdOauthConfigurationService,
+    BCeIdConfigurationService,
     OrgRegistrationService,
     ApiConfiguration
   ],

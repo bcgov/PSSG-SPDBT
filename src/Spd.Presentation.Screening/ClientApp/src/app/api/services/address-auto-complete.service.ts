@@ -37,6 +37,7 @@ export class AddressAutoCompleteService extends BaseService {
   apiMetadataAddressGet$Response(params: {
     search: string;
     country?: string;
+    lastId?: string;
     context?: HttpContext
   }
 ): Observable<StrictHttpResponse<Array<AddressFindResponse>>> {
@@ -45,6 +46,7 @@ export class AddressAutoCompleteService extends BaseService {
     if (params) {
       rb.query('search', params.search, {});
       rb.query('country', params.country, {});
+      rb.query('lastId', params.lastId, {});
     }
 
     return this.http.request(rb.build({
@@ -68,6 +70,7 @@ export class AddressAutoCompleteService extends BaseService {
   apiMetadataAddressGet(params: {
     search: string;
     country?: string;
+    lastId?: string;
     context?: HttpContext
   }
 ): Observable<Array<AddressFindResponse>> {

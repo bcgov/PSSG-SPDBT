@@ -14,7 +14,7 @@ import { BCeIdConfigurationResponse } from '../models/b-ce-id-configuration-resp
 @Injectable({
   providedIn: 'root',
 })
-export class BCeIdOauthConfigurationService extends BaseService {
+export class BCeIdConfigurationService extends BaseService {
   constructor(
     config: ApiConfiguration,
     http: HttpClient
@@ -38,7 +38,7 @@ export class BCeIdOauthConfigurationService extends BaseService {
   }
 ): Observable<StrictHttpResponse<BCeIdConfigurationResponse>> {
 
-    const rb = new RequestBuilder(this.rootUrl, BCeIdOauthConfigurationService.ApiBceidConfigurationGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, BCeIdConfigurationService.ApiBceidConfigurationGetPath, 'get');
     if (params) {
     }
 
