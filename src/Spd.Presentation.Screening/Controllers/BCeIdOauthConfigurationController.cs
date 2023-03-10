@@ -1,19 +1,19 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Spd.Manager.Membership.ViewModels;
 
 namespace Spd.Presentation.Screening.Controllers
 {
     [ApiController]
-    public class BCeIdOauthConfigurationController : ControllerBase
+    public class BCeIDConfigurationController : ControllerBase
     {
-        private readonly ILogger<BCeIdOauthConfigurationController> _logger;
-        private readonly IMediator _mediator;
+        private readonly ILogger<BCeIDConfigurationController> logger;
+        private readonly IOptions<BCeIDConfiguration> configuration;
 
-        public BCeIdOauthConfigurationController(ILogger<BCeIdOauthConfigurationController> logger, IMediator mediator)
+        public BCeIDConfigurationController(ILogger<BCeIDConfigurationController> logger, IOptions<BCeIDConfiguration> configuration)
         {
-            _logger = logger;
-            _mediator = mediator;
+            this.logger = logger;
+            this.configuration = configuration;
         }
 
 
@@ -24,14 +24,23 @@ namespace Spd.Presentation.Screening.Controllers
         {
             BCeIdConfigurationResponse resp = new BCeIdConfigurationResponse
             {
-                Issuer = "https://dev.loginproxy.gov.bc.ca/auth/realms/standard",
-                ClientId = "spd-4592",
-                ResponseType = "code",
-                Scope = "openid profile email offline_access",
-                PostLogoutRedirectUri = "https://logontest7.gov.bc.ca/clp-cgi/logoff.cgi"
+                Issuer = configuration.Value.Issuer,
+                ClientId = configuration.Value.ClientId,
+                ResponseType = configuration.Value.ResponseType,
+                Scope = configuration.Value.Scope,
+                PostLogoutRedirectUri = configuration.Value.PostLogoutRedirectUri
             };
 
             return await Task.FromResult(resp);
         }
+    }
+
+    public class BCeIDConfiguration
+    {
+        public string Issuer { get; set; } = null!;
+        public string ClientId { get; set; } = null!;
+        public string PostLogoutRedirectUri { get; set; } = null;
+        public string ResponseType { get; set; } = "code";
+        public string Scope { get; set; } = "openid profile email offline_access";
     }
 }

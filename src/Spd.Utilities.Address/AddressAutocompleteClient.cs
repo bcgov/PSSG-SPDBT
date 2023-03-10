@@ -120,7 +120,7 @@ internal class AddressAutocompleteClient : IAddressAutocompleteClient
         catch (Exception exception)
         {
             _logger.LogError(exception.Message);
-            return Enumerable.Empty<AddressAutocompleteRetrieveResponse>(); 
+            throw; 
         }
     }
 
