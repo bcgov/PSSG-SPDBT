@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Admin;
 using System.ComponentModel.DataAnnotations;
@@ -19,21 +19,25 @@ namespace Spd.Presentation.Screening.Controllers
 
         /// <summary>
         /// Find addresses matching the search term.
+        /// If the next step of the search process in returned data is "Find", use the result Id as next Find lastId to do next round search.Or use null.
+        /// If the next step of the search process in returned data is "Retrieve", use the result Id as Retrieve endpoint Id to get final result.
         /// </summary>
         /// <param name="searchTerm">required</param>
         /// <param name="country">optional: The ISO 2 or 3 character code for the country to search in. If not specified, default would be CAN.</param>
+        /// <param name="lastId">optional: The Id from a previous Find.</param>
         /// <returns></returns>
         /// Exp: GET http://localhost:5114/api/metadata/address?search=1
         /// Exp: GET http://localhost:5114/api/metadata/address?search=1&country=USA
+        /// Exp: GET http://localhost:5114/api/metadata/address?search=1&lastId=1520704
         [Route("api/metadata/address")]
         [HttpGet]
         [Produces("application/json")]
-        public async Task<IEnumerable<AddressFindResponse>> Find([FromQuery][Required] string search, string? country)
+        public async Task<IEnumerable<AddressFindResponse>> Find([FromQuery][Required] string search, string? country, string? lastId)
         {
             if (string.IsNullOrWhiteSpace(country))
-                return await _mediator.Send(new FindAddressQuery(search));
+                return await _mediator.Send(new FindAddressQuery(search, LastId: lastId));
             else
-                return await _mediator.Send(new FindAddressQuery(search, country));
+                return await _mediator.Send(new FindAddressQuery(search, country, lastId));
         }
 
         /// <summary>

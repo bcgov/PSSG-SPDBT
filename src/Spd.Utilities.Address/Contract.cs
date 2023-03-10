@@ -12,6 +12,7 @@ public record AddressSearchQuery : AddressQuery
 {
     public string SearchTerm { get; set; }
     public string Country { get; set; }
+    public string? LastId { get; set; }
 }
 
 /// Returns the full address details based on the Id.

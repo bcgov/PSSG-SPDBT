@@ -28,7 +28,7 @@ internal class AddressAutocompleteClient : IAddressAutocompleteClient
 
         if (query is AddressSearchQuery searchQuery)
         {
-            return await Find(searchQuery.SearchTerm, searchQuery.Country, cancellationToken);
+            return await Find(searchQuery.SearchTerm, searchQuery.Country, searchQuery.LastId, cancellationToken);
         }
         
         if(query is AddressRetrieveQuery retrieveQuery)
@@ -41,7 +41,7 @@ internal class AddressAutocompleteClient : IAddressAutocompleteClient
 
     ///// Returns addresses matching the search term.
     ///// https://www.canadapost-postescanada.ca/ac/support/api/addresscomplete-interactive-find/
-    private async Task<IEnumerable<AddressAutocompleteFindResponse>> Find(string searchTerm, string country, CancellationToken cancellationToken)
+    private async Task<IEnumerable<AddressAutocompleteFindResponse>> Find(string searchTerm, string country, string? lastId, CancellationToken cancellationToken)
     {
         try
         {
@@ -51,7 +51,8 @@ internal class AddressAutocompleteClient : IAddressAutocompleteClient
                 Key = _apiKey,
                 SearchTerm = searchTerm,
                 MaxSuggestions = _maxSuggestions,
-                Country = country
+                Country = country,
+                LastId = lastId,
             };
             using var request = new HttpRequestMessage(HttpMethod.Get, url.SetQueryParams(queryValues, NullValueHandling.Remove));
             using var response = await _client.SendAsync(request, cancellationToken);
@@ -120,7 +121,7 @@ internal class AddressAutocompleteClient : IAddressAutocompleteClient
         catch (Exception exception)
         {
             _logger.LogError(exception.Message);
-            return Enumerable.Empty<AddressAutocompleteRetrieveResponse>(); 
+            throw; 
         }
     }
 
