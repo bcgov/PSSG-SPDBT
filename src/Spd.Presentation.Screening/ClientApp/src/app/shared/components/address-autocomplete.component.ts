@@ -123,14 +123,15 @@ export class AddressAutocompleteComponent implements OnInit {
 	// 	return '';
 	// }
 
-	onChange($event: any) {
-		console.log('onChange', $event);
-	}
+	// onChange($event: any) {
+	// 	console.log('onChange', $event);
+	// }
+
 	public async onSearchEnter($event: any) {
-		console.log('onSearchEnter', this.form.getRawValue());
-		// console.log('onSearchEnter', this.addressAutocompleteFields);
-		// const selectedAddress = this.addressComplete.value as AddressRetrieveResponse;
-		// this.onAutocomplete(selectedAddress.id as string);
+		const found = this.addressAutocompleteFields.find((item) => item.text == this.addressComplete.value);
+		if (found) {
+			this.onAutocomplete(found);
+		}
 	}
 
 	public get addressComplete(): FormControl {
