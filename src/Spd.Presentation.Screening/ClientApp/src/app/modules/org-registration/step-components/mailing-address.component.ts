@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { UntilDestroy } from '@ngneat/until-destroy';
-import { Address, AddressAutocompleteFindResponse } from 'src/app/shared/components/address-autocomplete.model';
+import { AddressRetrieveResponse } from 'src/app/api/models';
+import { Address } from 'src/app/shared/components/address-autocomplete.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { RegistrationFormStepComponent } from '../org-registration.component';
 
@@ -14,10 +15,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 				<app-step-title title="What is your organization's mailing address?"></app-step-title>
 				<div class="row">
 					<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
-						<app-address-form-autocomplete
-							(autocompleteAddress)="onAddressAutocomplete($event)"
-							(selectAddress)="onSelectAddress()"
-						>
+						<app-address-form-autocomplete (autocompleteAddress)="onAddressAutocomplete($event)">
 						</app-address-form-autocomplete>
 						<mat-error
 							*ngIf="
@@ -98,7 +96,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 })
 export class MailingAddressComponent implements OnInit, RegistrationFormStepComponent {
 	form!: FormGroup;
-	addressAutocompleteFields: AddressAutocompleteFindResponse[] = [];
+	addressAutocompleteFields: AddressRetrieveResponse[] = [];
 	matcher = new FormErrorStateMatcher();
 
 	constructor(private formBuilder: FormBuilder) {}
@@ -117,6 +115,7 @@ export class MailingAddressComponent implements OnInit, RegistrationFormStepComp
 
 	onAddressAutocomplete({ countryCode, provinceCode, postalCode, line1, line2, city }: Address): void {
 		this.form.patchValue({
+			addressSelected: true,
 			mailingAddressLine1: line1,
 			mailingAddressLine2: line2,
 			mailingCity: city,
@@ -124,10 +123,6 @@ export class MailingAddressComponent implements OnInit, RegistrationFormStepComp
 			mailingProvince: provinceCode,
 			mailingCountry: countryCode,
 		});
-	}
-
-	onSelectAddress(): void {
-		this.form.patchValue({ addressSelected: true });
 	}
 
 	getDataToSave(): any {

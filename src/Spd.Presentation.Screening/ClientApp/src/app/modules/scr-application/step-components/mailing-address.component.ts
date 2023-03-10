@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { UntilDestroy } from '@ngneat/until-destroy';
-import { Address, AddressAutocompleteFindResponse } from 'src/app/shared/components/address-autocomplete.model';
+import { AddressRetrieveResponse } from 'src/app/api/models';
+import { Address } from 'src/app/shared/components/address-autocomplete.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { ScreeningFormStepComponent } from '../scr-application.component';
 
@@ -15,10 +16,7 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 					<app-step-title title="What is your mailing address?"></app-step-title>
 					<div class="row">
 						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
-							<app-address-form-autocomplete
-								(autocompleteAddress)="onAddressAutocomplete($event)"
-								(selectAddress)="onSelectAddress()"
-							>
+							<app-address-form-autocomplete (autocompleteAddress)="onAddressAutocomplete($event)">
 							</app-address-form-autocomplete>
 							<mat-error
 								*ngIf="
@@ -62,7 +60,7 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 							</div>
 							<div class="col-lg-3 col-md-5 col-sm-12">
 								<mat-form-field>
-									<mat-label>Postal Code</mat-label>
+									<mat-label>Postal/Zip Code</mat-label>
 									<input matInput formControlName="mailingPostalCode" [errorStateMatcher]="matcher" />
 									<mat-error *ngIf="form.get('mailingPostalCode')?.hasError('required')">This is required</mat-error>
 								</mat-form-field>
@@ -71,7 +69,7 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 						<div class="row">
 							<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
 								<mat-form-field>
-									<mat-label>Province</mat-label>
+									<mat-label>Province/State</mat-label>
 									<input matInput formControlName="mailingProvince" [errorStateMatcher]="matcher" />
 									<mat-error *ngIf="form.get('mailingProvince')?.hasError('required')">This is required</mat-error>
 								</mat-form-field>
@@ -99,7 +97,7 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 })
 export class MailingAddressComponent implements OnInit, ScreeningFormStepComponent {
 	form!: FormGroup;
-	addressAutocompleteFields: AddressAutocompleteFindResponse[] = [];
+	addressAutocompleteFields: AddressRetrieveResponse[] = [];
 	matcher = new FormErrorStateMatcher();
 
 	constructor(private formBuilder: FormBuilder) {}
@@ -118,6 +116,7 @@ export class MailingAddressComponent implements OnInit, ScreeningFormStepCompone
 
 	onAddressAutocomplete({ countryCode, provinceCode, postalCode, line1, line2, city }: Address): void {
 		this.form.patchValue({
+			addressSelected: true,
 			mailingAddressLine1: line1,
 			mailingAddressLine2: line2,
 			mailingCity: city,
@@ -125,10 +124,6 @@ export class MailingAddressComponent implements OnInit, ScreeningFormStepCompone
 			mailingProvince: provinceCode,
 			mailingCountry: countryCode,
 		});
-	}
-
-	onSelectAddress(): void {
-		this.form.patchValue({ addressSelected: true });
 	}
 
 	getDataToSave(): any {
