@@ -1,0 +1,16 @@
+name: Screening Portal Scheduled Deployment For Test
+
+#every Tuesday and Thursday, 5:30 utc, build and deploy to test.
+on:
+  schedule:
+    - cron: '30 5 * * 2,4'
+
+jobs:
+  build-deploy-screening-portal-to-test:
+    uses: ./.github/workflows/cd-workflow.yml
+    with:
+      DOCKER_CONTEXT: src
+      DOCKER_FILE: src/screening-portal.dockerfile
+      DOCKER_IMAGE_NAME: screening-portal
+      DOCKER_IMAGE_TAG: test
+    secrets: inherit
