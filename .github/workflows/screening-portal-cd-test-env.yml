@@ -1,12 +1,8 @@
 name: Organization Registration FrontEnd CI/CD
 
 on:
-  push:
-    branches:
-      - test
-    paths:
-      - src/**
-      - .github/workflows/screening-portal-cd-test-env.yml
+  schedule:
+    - cron: 0 0 12 ? * TUE,THU 2023,2024
 
 jobs:
   build-deploy-screening-portal-to-test:
