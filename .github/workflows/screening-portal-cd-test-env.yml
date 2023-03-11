@@ -2,7 +2,7 @@ name: Organization Registration FrontEnd CI/CD
 
 on:
   schedule:
-    - cron: 0 0 12 ? * TUE,THU 2023,2024
+    - cron: '0 0 12 ? * TUE,THU 2023,2024'
 
 jobs:
   build-deploy-screening-portal-to-test:
