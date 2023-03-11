@@ -1,0 +1,19 @@
+name: Organization Registration FrontEnd CI/CD
+
+on:
+  push:
+    branches:
+      - test
+    paths:
+      - src/**
+      - .github/workflows/screening-portal-cd-test-env.yml
+
+jobs:
+  build-deploy-screening-portal-to-test:
+    uses: ./.github/workflows/cd-workflow.yml
+    with:
+      DOCKER_CONTEXT: src
+      DOCKER_FILE: src/screening-portal.dockerfile
+      DOCKER_IMAGE_NAME: screening-portal
+      DOCKER_IMAGE_TAG: test
+    secrets: inherit
