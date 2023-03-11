@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgxMaskPipe } from 'ngx-mask';
-import { APP_CONSTANTS } from 'src/app/core/constants/constants';
+import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { RegistrationFormStepComponent } from '../org-registration.component';
@@ -93,7 +93,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 	styles: [],
 })
 export class ContactInformationComponent implements RegistrationFormStepComponent {
-	phoneMask = APP_CONSTANTS.phone.displayMask;
+	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	form: FormGroup = this.formBuilder.group({
 		contactGivenName: new FormControl('', [FormControlValidators.stringnonumbers, Validators.required]),
 		contactSurname: new FormControl('', [FormControlValidators.stringnonumbers, Validators.required]),
@@ -102,14 +102,14 @@ export class ContactInformationComponent implements RegistrationFormStepComponen
 		contactDateOfBirth: new FormControl('', [Validators.required]),
 		contactPhoneNumber: new FormControl('', [Validators.required]),
 	});
-	startAt = APP_CONSTANTS.date.birthDateStartAt;
+	startAt = SPD_CONSTANTS.date.birthDateStartAt;
 	matcher = new FormErrorStateMatcher();
 
 	constructor(private formBuilder: FormBuilder, private maskPipe: NgxMaskPipe) {}
 
 	getDataToSave(): any {
 		const data = this.form.value;
-		data.contactPhoneNumber = this.maskPipe.transform(data.contactPhoneNumber, APP_CONSTANTS.phone.backendMask);
+		data.contactPhoneNumber = this.maskPipe.transform(data.contactPhoneNumber, SPD_CONSTANTS.phone.backendMask);
 		return data;
 	}
 

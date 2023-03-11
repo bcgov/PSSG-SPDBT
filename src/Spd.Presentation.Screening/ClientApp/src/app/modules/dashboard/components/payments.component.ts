@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { APP_CONSTANTS } from 'src/app/core/constants/constants';
+import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 
 @Component({
 	selector: 'app-payments',
@@ -133,7 +133,7 @@ import { APP_CONSTANTS } from 'src/app/core/constants/constants';
 	],
 })
 export class PaymentsComponent {
-	constants = APP_CONSTANTS;
+	constants = SPD_CONSTANTS;
 	dataSource!: MatTableDataSource<any>;
 	columns!: string[];
 

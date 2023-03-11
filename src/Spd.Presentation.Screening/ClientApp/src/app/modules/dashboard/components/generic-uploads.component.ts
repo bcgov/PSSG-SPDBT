@@ -4,7 +4,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { APP_CONSTANTS } from 'src/app/core/constants/constants';
+import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 
 @Component({
 	selector: 'app-generic-uploads',
@@ -162,7 +162,7 @@ export class GenericUploadsComponent implements OnInit, AfterViewInit {
 		files: new FormControl('', [Validators.required]),
 	});
 
-	constants = APP_CONSTANTS;
+	constants = SPD_CONSTANTS;
 	dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
 	columns!: string[];
 

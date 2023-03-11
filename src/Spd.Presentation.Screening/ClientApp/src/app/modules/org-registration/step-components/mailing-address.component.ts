@@ -30,7 +30,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 				</div>
 
 				<section *ngIf="form.get('addressSelected')?.value">
-					<div class="row mt-4">
+					<div class="row">
 						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
 							<mat-divider class="my-3" style="border-top-color: var(--color-primary-light);"></mat-divider>
 							<div class="text-minor-heading fw-semibold mb-2">Address Information</div>
