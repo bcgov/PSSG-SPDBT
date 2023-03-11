@@ -1,4 +1,4 @@
-name: Organization Registration FrontEnd CI/CD
+name: Screening Portal Scheduled Deployment For Test
 
 #every Tuesday and Thursday, 5:30 utc, build and deploy to test.
 on:
