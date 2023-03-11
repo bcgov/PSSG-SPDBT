@@ -1,8 +1,9 @@
 name: Organization Registration FrontEnd CI/CD
 
+#every Tuesday and Thursday, 5:30 utc, build and deploy to test.
 on:
   schedule:
-    - cron: '0 0 12 ? * TUE,THU 2023,2024'
+    - cron: '30 5 * * 2,4'
 
 jobs:
   build-deploy-screening-portal-to-test:
