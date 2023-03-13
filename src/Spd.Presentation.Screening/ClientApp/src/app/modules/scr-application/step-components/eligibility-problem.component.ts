@@ -5,13 +5,9 @@ import { Component } from '@angular/core';
 	template: `
 		<section class="step-section pt-4 pb-4 px-3">
 			<div class="step">
-				<div class="row">
-					<div class="col-md-8 col-sm-12 mx-auto">
-						<div class="title mb-5">
-							If this information is incorrect, reach out to your respective organization for more information
-						</div>
-					</div>
-				</div>
+				<app-step-title
+					title="If this information is incorrect, reach out to your respective organization for more information"
+				></app-step-title>
 				<div class="row">
 					<div class="offset-md-3 col-md-6 col-sm-12">
 						<div style="text-align: center;">

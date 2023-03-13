@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { APP_CONSTANTS } from 'src/app/core/constants/constants';
+import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { UserModel } from './users.component';
 
@@ -100,7 +100,7 @@ export interface UserDialogData {
 	styles: [],
 })
 export class MaintainUserModalComponent {
-	phoneMask = APP_CONSTANTS.phone.displayMask;
+	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	title: string = '';
 	isEdit = false;
 	form: FormGroup = this.formBuilder.group({
@@ -112,7 +112,7 @@ export class MaintainUserModalComponent {
 		jobTitle: new FormControl('', [Validators.required]),
 		dateOfBirth: new FormControl('', [Validators.required]),
 	});
-	startAt = APP_CONSTANTS.date.birthDateStartAt;
+	startAt = SPD_CONSTANTS.date.birthDateStartAt;
 	matcher = new FormErrorStateMatcher();
 
 	constructor(

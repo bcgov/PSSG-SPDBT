@@ -8,15 +8,13 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="step">
-				<div class="title mb-5">
-					Who will pay the criminal record check?
-					<div class="title__sub-title mt-2">
-						Each employee criminal record check is $28. You can adjust who pays once you're registered in the
-						organization portal.
-					</div>
-				</div>
+				<app-step-title
+					title="Who will pay the criminal record check?"
+					subtitle="Each employee criminal record check is $28. You can adjust who pays once you're registered in the
+						organization portal"
+				></app-step-title>
 				<div class="row">
-					<div class="offset-md-4 col-md-4 col-sm-12">
+					<div class="offset-lg-4 col-lg-4 offset-md-3 col-md-6 col-sm-12">
 						<mat-radio-group aria-label="Select an option" formControlName="payerPreference">
 							<mat-radio-button [value]="payerPreferenceTypeCodes.Organization"> My organization </mat-radio-button>
 							<mat-divider class="my-3"></mat-divider>

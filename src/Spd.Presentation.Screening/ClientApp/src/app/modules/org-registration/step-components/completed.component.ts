@@ -4,13 +4,7 @@ import { Component, Input } from '@angular/core';
 	selector: 'app-completed',
 	template: `
 		<div class="step">
-			<div class="title mb-5">
-				Thank you!
-				<div style="font-size: smaller">
-					Your registration is complete and a confirmation email has been sent to<br />
-					{{ sendToEmailAddress }}
-				</div>
-			</div>
+			<app-step-title title="Thank you!" [subheading]="subHeading"></app-step-title>
 			<div class="row">
 				<div class="offset-md-2 col-md-8 col-sm-12">
 					<table class="mb-4">
@@ -76,4 +70,8 @@ import { Component, Input } from '@angular/core';
 })
 export class CompletedComponent {
 	@Input() sendToEmailAddress = '';
+
+	get subHeading(): string {
+		return `Your registration is complete and a confirmation email has been sent to ${this.sendToEmailAddress}`;
+	}
 }

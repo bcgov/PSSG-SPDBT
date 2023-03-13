@@ -3,7 +3,7 @@ import { AuthConfig } from 'angular-oauth2-oidc';
 import { lastValueFrom } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { BCeIdConfigurationResponse } from 'src/app/api/models';
-import { BCeIdOauthConfigurationService } from 'src/app/api/services';
+import { BCeIdConfigurationService } from 'src/app/api/services';
 
 @Injectable({
 	providedIn: 'root',
@@ -11,14 +11,14 @@ import { BCeIdOauthConfigurationService } from 'src/app/api/services';
 export class AuthConfigService {
 	public config: BCeIdConfigurationResponse | null = null;
 
-	constructor(private bceIdOauthConfigurationService: BCeIdOauthConfigurationService) {}
+	constructor(private bceIdConfigurationService: BCeIdConfigurationService) {}
 
 	public async loadConfig(): Promise<BCeIdConfigurationResponse> {
 		if (this.config !== null) {
 			return this.config;
 		}
 
-		const config$ = this.bceIdOauthConfigurationService.apiBceidConfigurationGet().pipe(
+		const config$ = this.bceIdConfigurationService.apiBceidConfigurationGet().pipe(
 			tap((resp: BCeIdConfigurationResponse) => {
 				this.config = { ...resp };
 			})

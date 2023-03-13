@@ -5,7 +5,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 	template: `
 		<section class="step-section pt-4 pb-5 px-3">
 			<div class="step">
-				<div class="title mb-5">What is your preferred log in option?</div>
+				<app-step-title title="What is your preferred log in option?"></app-step-title>
 				<div class="row">
 					<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
 						<button mat-stroked-button class="large mb-2" (click)="onClickNext()">Log In without BCSC</button>

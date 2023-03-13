@@ -6,7 +6,7 @@ import { Component } from '@angular/core';
 		<section class="step-section pt-4 pb-4 px-3">
 			<div class="step">
 				<div class="row">
-					<div class="col-md-8 col-sm-12 mx-auto">
+					<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12 mx-auto">
 						<div class="alert alert-success align-items-center mb-0 alert-layout" role="alert">
 							<mat-icon class="d-none d-md-block alert-icon">schedule</mat-icon>
 							<div>

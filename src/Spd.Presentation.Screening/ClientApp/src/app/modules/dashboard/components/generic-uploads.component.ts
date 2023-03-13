@@ -1,10 +1,10 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatSort, MatSortable } from '@angular/material/sort';
+import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { APP_CONSTANTS } from 'src/app/core/constants/constants';
+import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 
 @Component({
 	selector: 'app-generic-uploads',
@@ -78,7 +78,13 @@ import { APP_CONSTANTS } from 'src/app/core/constants/constants';
 			<div class="row">
 				<div class="col-md-12 col-sm-12">
 					<h3 class="fw-normal">Previous Uploads</h3>
-					<mat-table matSort [dataSource]="dataSource" class="isMobile">
+					<mat-table
+						matSort
+						[dataSource]="dataSource"
+						matSortActive="uploadedDateTime"
+						matSortDirection="desc"
+						class="isMobile"
+					>
 						<ng-container matColumnDef="uploadedDateTime">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Date/Time Uploaded</mat-header-cell>
 							<mat-cell *matCellDef="let upload">
@@ -156,8 +162,8 @@ export class GenericUploadsComponent implements OnInit, AfterViewInit {
 		files: new FormControl('', [Validators.required]),
 	});
 
-	constants = APP_CONSTANTS;
-	dataSource!: MatTableDataSource<any>;
+	constants = SPD_CONSTANTS;
+	dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
 	columns!: string[];
 
 	pageSizes = [3, 5, 7];
@@ -176,7 +182,6 @@ export class GenericUploadsComponent implements OnInit, AfterViewInit {
 
 	ngOnInit() {
 		this.columns = ['uploadedDateTime', 'uploadedBy', 'uploadedFileName', 'uploadedBatchNumber'];
-		this.dataSource = new MatTableDataSource<any>([]);
 		this.dataSource.data = [
 			{
 				uploadedDateTime: '2023-01-14T00:13:05.865Z',
@@ -254,7 +259,6 @@ export class GenericUploadsComponent implements OnInit, AfterViewInit {
 	}
 
 	ngAfterViewInit() {
-		this.sort.sort({ id: 'uploadedDateTime', start: 'desc' } as MatSortable);
 		this.dataSource.sort = this.sort;
 		this.dataSource.paginator = this.paginator;
 	}
