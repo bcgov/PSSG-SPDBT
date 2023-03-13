@@ -4,16 +4,16 @@ import { Component, EventEmitter, Output } from '@angular/core';
 	selector: 'app-registration-options',
 	template: `
 		<div class="step">
-			<div class="title mb-5">What is your preferred log in option?</div>
+			<app-step-title title="What is your preferred log in option?"></app-step-title>
 			<div class="step-container row">
-				<div class="offset-xl-1 col-xl-5 col-lg-6 col-md-12 col-sm-12 mb-3">
+				<div class="offset-xl-2 col-xl-4 col-lg-6 col-md-12 col-sm-12 mb-3">
 					<div class="step-container__box dark">
 						<div matBadge="1" class="badge p-2">Preferred Method</div>
 						<div class="step-container__box__title pt-3 pb-0">
-							<div>Register with Business BCeID</div>
+							<div class="mx-2">Register with Business BCeID</div>
 							<img class="step-container__box__title__image mt-2" src="/assets/BCeID_Card.svg" />
 						</div>
-						<div class="step-container__box__content pt-4 px-4" style="padding-left: 6em!important;">
+						<div class="step-container__box__content pt-4 pe-4" style="padding-left: 4em!important;">
 							<table class="ml-5 mb-5" style="text-align: left;">
 								<tr>
 									<td class="pr-2 pb-2">
@@ -40,11 +40,11 @@ import { Component, EventEmitter, Output } from '@angular/core';
 						</div>
 					</div>
 				</div>
-				<div class="col-xl-5 col-lg-6 col-md-12 col-sm-12 mb-3">
+				<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12 mb-3">
 					<div class="step-container__box">
 						<div style="padding-top: 4px">&nbsp;</div>
 						<div class="step-container__box__title pt-3 pb-0">
-							<div>Register with BC Services Card</div>
+							<div class="mx-2">Register with BC Services Card</div>
 							<img class="step-container__box__title__image mt-2" src="/assets/BCSC_Card.svg" />
 						</div>
 						<div class="step-container__box__content p-4">

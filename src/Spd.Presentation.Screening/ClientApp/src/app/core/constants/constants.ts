@@ -1,4 +1,4 @@
-export const APP_CONSTANTS = {
+export const SPD_CONSTANTS = {
 	date: {
 		birthDateStartAt: new Date(2000, 0, 1),
 		dateFormat: 'yyyy-MMM-dd',

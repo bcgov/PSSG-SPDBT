@@ -4,14 +4,10 @@ import { Component } from '@angular/core';
 	selector: 'app-funding-problem',
 	template: `
 		<div class="step">
-			<div class="row">
-				<div class="col-md-8 col-sm-12 mx-auto">
-					<div class="title mb-5">
-						Our program only handles criminal record checks for organizations that receive at least 50% of their
-						operating budget funding from the B.C. Government
-					</div>
-				</div>
-			</div>
+			<app-step-title
+				title="Our program only handles criminal record checks for organizations that receive at least 50% of their
+						operating budget funding from the B.C. Government"
+			></app-step-title>
 			<div class="row">
 				<div class="offset-md-3 col-md-6 col-sm-12">
 					<div style="text-align: center;">

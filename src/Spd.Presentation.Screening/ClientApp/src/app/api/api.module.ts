@@ -4,7 +4,8 @@ import { NgModule, ModuleWithProviders, SkipSelf, Optional } from '@angular/core
 import { HttpClient } from '@angular/common/http';
 import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 
-import { BCeIdOauthConfigurationService } from './services/b-ce-id-oauth-configuration.service';
+import { AddressAutoCompleteService } from './services/address-auto-complete.service';
+import { BCeIdConfigurationService } from './services/b-ce-id-configuration.service';
 import { OrgRegistrationService } from './services/org-registration.service';
 
 /**
@@ -15,7 +16,8 @@ import { OrgRegistrationService } from './services/org-registration.service';
   exports: [],
   declarations: [],
   providers: [
-    BCeIdOauthConfigurationService,
+    AddressAutoCompleteService,
+    BCeIdConfigurationService,
     OrgRegistrationService,
     ApiConfiguration
   ],

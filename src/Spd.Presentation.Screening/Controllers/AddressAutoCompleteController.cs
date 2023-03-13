@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Admin;
 using System.ComponentModel.DataAnnotations;
@@ -31,6 +31,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// Exp: GET http://localhost:5114/api/metadata/address?search=1&lastId=1520704
         [Route("api/metadata/address")]
         [HttpGet]
+        [Produces("application/json")]
         public async Task<IEnumerable<AddressFindResponse>> Find([FromQuery][Required] string search, string? country, string? lastId)
         {
             if (string.IsNullOrWhiteSpace(country))
@@ -47,6 +48,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// Exp: GET http://localhost:5114/api/metadata/address/1520704
         [Route("api/metadata/address/{id}")]
         [HttpGet]
+        [Produces("application/json")]
         public async Task<IEnumerable<AddressRetrieveResponse>> Retrieve([FromRoute] string id)
         {
             return await _mediator.Send(new RetrieveAddressByIdQuery(id));

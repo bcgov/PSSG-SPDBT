@@ -6,13 +6,11 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 	template: `
 		<section class="step-section pt-4 pb-5 px-3">
 			<div class="step">
+				<app-step-title
+					title="To submit a request for a criminal record check, you will need the following"
+				></app-step-title>
 				<div class="row">
-					<div class="col-md-8 col-sm-12 mx-auto">
-						<div class="title mb-5">To submit a request for a criminal record check, you will need the following</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-6 col-sm-12 mx-auto">
+					<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12 mx-auto">
 						<ul *ngIf="paymentBy == 'APP'">
 							<li>Your BC Services Card (recommended), or other government issued identification.</li>
 							<li>A method of payment (Visa, Mastercard, American Express, Visa Debit, Mastercard Debit)</li>

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgxMaskPipe } from 'ngx-mask';
-import { APP_CONSTANTS } from 'src/app/core/constants/constants';
+import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
@@ -13,10 +13,10 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 		<section class="step-section pt-4 pb-5 px-3">
 			<form [formGroup]="form" novalidate>
 				<div class="step">
-					<div class="title mb-5">
-						Confirm your information
-						<div class="title__sub-title mt-2">Legal name must match your government-issued identification</div>
-					</div>
+					<app-step-title
+						title="Confirm your information"
+						subtitle="Legal name must match your government-issued identification"
+					></app-step-title>
 					<div class="row">
 						<div class="offset-lg-1 col-lg-3 col-md-12 col-sm-12">
 							<mat-form-field>
@@ -92,7 +92,7 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 	styles: [``],
 })
 export class ContactInformationComponent implements ScreeningFormStepComponent {
-	phoneMask = APP_CONSTANTS.phone.displayMask;
+	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	form: FormGroup = this.formBuilder.group(
 		{
 			contactGivenName: new FormControl('Pulled-From-Portal', [
@@ -119,7 +119,7 @@ export class ContactInformationComponent implements ScreeningFormStepComponent {
 
 	getDataToSave(): any {
 		const data = this.form.value;
-		data.contactPhoneNumber = this.maskPipe.transform(data.contactPhoneNumber, APP_CONSTANTS.phone.backendMask);
+		data.contactPhoneNumber = this.maskPipe.transform(data.contactPhoneNumber, SPD_CONSTANTS.phone.backendMask);
 		return data;
 	}
 

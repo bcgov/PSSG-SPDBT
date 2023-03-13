@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgxMaskPipe } from 'ngx-mask';
 import { BooleanTypeCode } from 'src/app/api/models';
-import { APP_CONSTANTS } from 'src/app/core/constants/constants';
+import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { RegistrationFormStepComponent } from '../org-registration.component';
@@ -12,11 +12,9 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="step">
-				<div class="col-md-8 col-sm-12 mx-auto">
-					<div class="title mb-5">
-						Does your organization have a shared have a shared inbox and/or central phone line?
-					</div>
-				</div>
+				<app-step-title
+					title="Does your organization have a shared have a shared inbox and/or central phone line?"
+				></app-step-title>
 				<div class="row">
 					<div class="offset-md-2 col-md-8 col-sm-12">
 						<mat-radio-group
@@ -120,7 +118,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 	],
 })
 export class OrganizationInformationComponent implements OnInit, RegistrationFormStepComponent {
-	phoneMask = APP_CONSTANTS.phone.displayMask;
+	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	form!: FormGroup;
 	matcher = new FormErrorStateMatcher();
 
@@ -148,7 +146,7 @@ export class OrganizationInformationComponent implements OnInit, RegistrationFor
 
 	getDataToSave(): any {
 		const data = this.form.value;
-		data.genericPhoneNumber = this.maskPipe.transform(data.genericPhoneNumber, APP_CONSTANTS.phone.backendMask);
+		data.genericPhoneNumber = this.maskPipe.transform(data.genericPhoneNumber, SPD_CONSTANTS.phone.backendMask);
 		return data;
 	}
 

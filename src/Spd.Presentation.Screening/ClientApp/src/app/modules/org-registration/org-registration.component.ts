@@ -1,6 +1,7 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperOrientation, StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
 import { distinctUntilChanged } from 'rxjs';
 import { OrgRegistrationCreateRequest, RegistrationTypeCode } from 'src/app/api/models';
@@ -97,7 +98,8 @@ export class OrgRegistrationComponent implements OnInit {
 	constructor(
 		private breakpointObserver: BreakpointObserver,
 		private authenticationService: AuthenticationService,
-		private orgRegistrationService: OrgRegistrationService
+		private orgRegistrationService: OrgRegistrationService,
+		private dialog: MatDialog
 	) {}
 
 	async ngOnInit(): Promise<void> {
@@ -195,6 +197,19 @@ export class OrgRegistrationComponent implements OnInit {
 		const body: OrgRegistrationCreateRequest = dataToSave;
 		console.debug('[onSaveStepperStep] body', body);
 
+		// const data: DialogOptions = {
+		// 	icon: 'error_outline',
+		// 	title: 'Potential Duplicate Detected',
+		// 	message: 'A potential duplicate has been found. Are you sure this is a new organization registration request?',
+		// 	actionText: 'Yes, create registration',
+		// 	cancelText: 'Cancel',
+		// };
+
+		// this.dialog
+		// 	.open(DialogComponent, { data })
+		// 	.afterClosed()
+		// 	.subscribe((response: boolean) => {
+		// 		if (response) {
 		this.orgRegistrationService
 			.apiOrgRegistrationsPost({ body })
 			.pipe()
@@ -202,6 +217,8 @@ export class OrgRegistrationComponent implements OnInit {
 				sessionStorage.removeItem(this.STATE_KEY);
 				this.stepFourComponent.childStepNext();
 			});
+		// 	}
+		// });
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {

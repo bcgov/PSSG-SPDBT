@@ -71,6 +71,14 @@ button.mdc-button {
   width: 100%;
 }
 
+.mat-mdc-radio-button .mdc-form-field {
+  padding: 0.5rem !important;
+}
+
+.mat-mdc-checkbox .mdc-form-field {
+  padding: 0.5rem !important;
+}
+
 .mdc-form-field>label {
   width: 100%;
 }

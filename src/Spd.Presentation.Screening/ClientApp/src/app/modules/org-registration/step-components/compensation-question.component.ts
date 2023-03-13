@@ -8,14 +8,10 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="step">
-				<div class="col-md-8 col-sm-12 mx-auto">
-					<div class="title mb-5">
-						Do volunteers with your organization get any money for volunteering?
-						<div class="title__sub-title mt-2">
-							This includes honorarium payments. It does not include gifts, gift cards, or meals.
-						</div>
-					</div>
-				</div>
+				<app-step-title
+					title="Do volunteers with your organization get any money for volunteering?"
+					subtitle="This includes honorarium payments. It does not include gifts, gift cards, or meals."
+				></app-step-title>
 				<div class="row">
 					<div class="offset-md-4 col-md-4 col-sm-12">
 						<mat-radio-group aria-label="Select an option" formControlName="employeeMonetaryCompensationFlag">

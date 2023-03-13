@@ -48,7 +48,7 @@ export class DropdownOverlayButtonComponent {}
 	styles: [],
 })
 export class DropdownOverlayComponent implements OnInit {
-	@Input() dropdownIcon = 'tunes';
+	@Input() dropdownIcon = 'filter_list';
 
 	@Input() closeWhenClickOutside = false;
 	@Input() showDropdownOverlay = false;
