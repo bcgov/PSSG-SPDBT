@@ -12,7 +12,7 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 		<section class="step-section pt-4 pb-5 px-3">
 			<form [formGroup]="form" novalidate>
 				<div class="step">
-					<div class="title mb-5">Have you ever had a previous name?</div>
+					<app-step-title title="Have you ever had a previous name?"></app-step-title>
 					<div class="row">
 						<div class="offset-lg-1 col-lg-10 col-md-12 col-sm-12">
 							<mat-radio-group

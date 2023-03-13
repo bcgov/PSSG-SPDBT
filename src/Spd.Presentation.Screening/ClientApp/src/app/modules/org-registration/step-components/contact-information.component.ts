@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgxMaskPipe } from 'ngx-mask';
-import { APP_CONSTANTS } from 'src/app/core/constants/constants';
+import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { RegistrationFormStepComponent } from '../org-registration.component';
@@ -11,9 +11,9 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="step">
-				<div class="title mb-5">Provide your work contact information</div>
+				<app-step-title title="Provide your work contact information"></app-step-title>
 				<div class="row">
-					<div class="offset-md-2 col-md-4 col-sm-12">
+					<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
 						<mat-form-field>
 							<mat-label>Given Name</mat-label>
 							<input matInput formControlName="contactGivenName" maxlength="40" [errorStateMatcher]="matcher" />
@@ -23,7 +23,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 							</mat-error>
 						</mat-form-field>
 					</div>
-					<div class="col-md-4 col-sm-12">
+					<div class="col-lg-4 col-md-6 col-sm-12">
 						<mat-form-field>
 							<mat-label>Surname</mat-label>
 							<input matInput formControlName="contactSurname" maxlength="40" [errorStateMatcher]="matcher" />
@@ -35,14 +35,14 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 					</div>
 				</div>
 				<div class="row">
-					<div class="offset-md-2 col-md-4 col-sm-12">
+					<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
 						<mat-form-field>
 							<mat-label>Job Title</mat-label>
 							<input matInput formControlName="contactJobTitle" maxlength="100" [errorStateMatcher]="matcher" />
 							<mat-error *ngIf="form.get('contactJobTitle')?.hasError('required')">This is required</mat-error>
 						</mat-form-field>
 					</div>
-					<div class="col-md-4 col-sm-12">
+					<div class="col-lg-4 col-md-6 col-sm-12">
 						<mat-form-field>
 							<mat-label>Your Work Email Address</mat-label>
 							<input
@@ -58,7 +58,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 					</div>
 				</div>
 				<div class="row">
-					<div class="offset-md-2 col-md-4 col-sm-12">
+					<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
 						<mat-form-field>
 							<mat-label>Date of Birth</mat-label>
 							<input
@@ -72,7 +72,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 							<mat-error *ngIf="form.get('contactDateOfBirth')?.hasError('required')">This is required</mat-error>
 						</mat-form-field>
 					</div>
-					<div class="col-md-4 col-sm-12">
+					<div class="col-lg-4 col-md-6 col-sm-12">
 						<mat-form-field>
 							<mat-label>Direct Phone Number</mat-label>
 							<input
@@ -93,7 +93,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 	styles: [],
 })
 export class ContactInformationComponent implements RegistrationFormStepComponent {
-	phoneMask = APP_CONSTANTS.phone.displayMask;
+	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	form: FormGroup = this.formBuilder.group({
 		contactGivenName: new FormControl('', [FormControlValidators.stringnonumbers, Validators.required]),
 		contactSurname: new FormControl('', [FormControlValidators.stringnonumbers, Validators.required]),
@@ -102,14 +102,14 @@ export class ContactInformationComponent implements RegistrationFormStepComponen
 		contactDateOfBirth: new FormControl('', [Validators.required]),
 		contactPhoneNumber: new FormControl('', [Validators.required]),
 	});
-	startAt = APP_CONSTANTS.date.birthDateStartAt;
+	startAt = SPD_CONSTANTS.date.birthDateStartAt;
 	matcher = new FormErrorStateMatcher();
 
 	constructor(private formBuilder: FormBuilder, private maskPipe: NgxMaskPipe) {}
 
 	getDataToSave(): any {
 		const data = this.form.value;
-		data.contactPhoneNumber = this.maskPipe.transform(data.contactPhoneNumber, APP_CONSTANTS.phone.backendMask);
+		data.contactPhoneNumber = this.maskPipe.transform(data.contactPhoneNumber, SPD_CONSTANTS.phone.backendMask);
 		return data;
 	}
 

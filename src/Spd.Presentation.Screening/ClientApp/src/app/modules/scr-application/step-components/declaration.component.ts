@@ -8,9 +8,9 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 		<section class="step-section pt-4 pb-5 px-3">
 			<form [formGroup]="form" novalidate>
 				<div class="step">
-					<div class="title mb-5">Agree to the following declaration</div>
-					<div class="row my-4">
-						<div class="offset-md-2 col-md-8 col-sm-12">
+					<app-step-title title="Agree to the following declaration"></app-step-title>
+					<div class="row">
+						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
 							<mat-checkbox formControlName="agreeToDeclaration">
 								I certify that, to the best of my knowledge, the information I have provided and will provide as
 								necessary is complete and accurate.

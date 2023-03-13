@@ -8,10 +8,10 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 		<section class="step-section pt-4 pb-5 px-3">
 			<form [formGroup]="form" novalidate>
 				<div class="step">
-					<div class="title mb-5">Review the following terms of agreement</div>
+					<app-step-title title="Review the following terms of agreement"></app-step-title>
 					<div class="row">
 						<div
-							class="offset-md-2 col-md-8 col-sm-12 conditions px-3 mb-3"
+							class="offset-lg-2 col-lg-8 col-md-12 col-sm-12 conditions px-3 mb-3"
 							(scroll)="onScrollTermsAndConditions($event)"
 						>
 							<strong>TERMS AND CONDITIONS FOR EMPLOYERS THAT ENROL IN THE CRRP ONLINE SERVICE</strong><br /><br />
@@ -65,13 +65,13 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 					</div>
 
 					<div class="row" *ngIf="displayScrollToBottomMessage">
-						<div class="offset-md-2 col-md-8 col-sm-12 p-0">
+						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
 							<div class="alert alert-warning" role="alert">Please scroll to the bottom</div>
 						</div>
 					</div>
 
 					<div class="row my-4">
-						<div class="offset-md-2 col-md-8 col-sm-12">
+						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
 							<mat-checkbox formControlName="agreeToCriminalCheck">
 								I hereby consent to a criminal record check pursuant to the Criminal Records Review Act (CRRA) to
 								determine whether I have a conviction or outstanding charge for any relevant or specified offence(s) as
@@ -90,7 +90,7 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 					</div>
 
 					<div class="row my-4">
-						<div class="offset-md-2 col-md-8 col-sm-12">
+						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
 							<mat-checkbox formControlName="agreeToVulnerableSectorSearch">
 								I hereby consent to a Vulnerable Sector search to check if I have been convicted if I have been
 								convicted of and received a record suspension (formerly known as a pardon) for any sexual offences as

@@ -9,12 +9,12 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 		<section class="step-section pt-4 pb-5 px-3">
 			<form [formGroup]="form" novalidate>
 				<div class="step">
-					<div class="title mb-5">
-						Your personal information
-						<div class="title__sub-title mt-2">Date of birth must match your government-issued identification</div>
-					</div>
+					<app-step-title
+						title="Your personal information"
+						subtitle="Date of birth must match your government-issued identification"
+					></app-step-title>
 					<div class="row">
-						<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-12">
+						<div class="offset-lg-2 col-lg-4 col-md-12 col-sm-12">
 							<mat-form-field>
 								<mat-label>Date of Birth</mat-label>
 								<input
@@ -28,7 +28,7 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 								<mat-error *ngIf="form.get('contactDateOfBirth')?.hasError('required')">This is required</mat-error>
 							</mat-form-field>
 						</div>
-						<div class="col-lg-3 col-md-4 col-sm-12">
+						<div class="col-lg-4 col-md-12 col-sm-12">
 							<mat-form-field>
 								<mat-label>BC Drivers License # <span class="optional-label">(optional)</span></mat-label>
 								<input matInput formControlName="driversLicenseNumber" mask="00000009" />
@@ -39,7 +39,7 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 						</div>
 					</div>
 					<div class="row">
-						<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
+						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
 							<mat-form-field>
 								<mat-label>Birthplace</mat-label>
 								<input

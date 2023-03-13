@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { APP_CONSTANTS } from 'src/app/core/constants/constants';
+import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { MaintainUserModalComponent, UserDialogData } from './maintain-user-modal.component';
 
@@ -117,7 +117,7 @@ export class UserModel {
 	],
 })
 export class UsersComponent {
-	appConstants = APP_CONSTANTS;
+	appConstants = SPD_CONSTANTS;
 	readonly MAX_NUMBER_OF_USERS = 6;
 	addAllowed = false;
 

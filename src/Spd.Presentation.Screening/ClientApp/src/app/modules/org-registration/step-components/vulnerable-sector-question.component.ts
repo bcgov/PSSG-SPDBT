@@ -10,12 +10,10 @@ export class VulnerableSectorQuestionModel {
 	selector: 'app-vulnerable-sector-question',
 	template: `
 		<div class="step">
-			<div class="title mb-5">
-				Tell us a bit more about your employees
-				<div class="title__sub-title mt-2">
-					To “Works With” means to have direct or unsupervised access to children and/or vulnerable adults.
-				</div>
-			</div>
+			<app-step-title
+				title="Tell us a bit more about your employees"
+				subtitle="To “Works With” means to have direct or unsupervised access to children and/or vulnerable adults."
+			></app-step-title>
 			<div class="step-container row">
 				<div class="col-md-3 col-sm-6 mb-3">
 					<div

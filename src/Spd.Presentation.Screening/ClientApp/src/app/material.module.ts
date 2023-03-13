@@ -27,7 +27,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { APP_CONSTANTS } from './core/constants/constants';
+import { SPD_CONSTANTS } from './core/constants/constants';
 
 const AngularMaterialModules = [
 	MatToolbarModule,
@@ -60,13 +60,13 @@ const AngularMaterialModules = [
 
 export const APP_DATE_FORMATS = {
 	parse: {
-		dateInput: APP_CONSTANTS.date.dateFormat,
+		dateInput: SPD_CONSTANTS.date.dateFormat,
 	},
 	display: {
 		dateInput: 'input',
-		monthYearLabel: APP_CONSTANTS.date.monthYearFormat,
-		dateA11yLabel: APP_CONSTANTS.date.dateFormat,
-		monthYearA11yLabel: APP_CONSTANTS.date.monthYearFormat,
+		monthYearLabel: SPD_CONSTANTS.date.monthYearFormat,
+		dateA11yLabel: SPD_CONSTANTS.date.dateFormat,
+		monthYearA11yLabel: SPD_CONSTANTS.date.monthYearFormat,
 	},
 };
 
@@ -81,7 +81,7 @@ export class SpdDateAdapter extends NativeDateAdapter {
 	override format(date: Date, displayFormat: Object): string {
 		if (displayFormat === 'input') {
 			// Return the format as per your requirement
-			return formatDate(date, APP_CONSTANTS.date.dateFormat, this.locale);
+			return formatDate(date, SPD_CONSTANTS.date.dateFormat, this.locale);
 		} else {
 			return date.toDateString();
 		}

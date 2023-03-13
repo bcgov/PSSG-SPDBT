@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { BooleanTypeCode, PayerPreferenceTypeCode } from 'src/app/api/models';
-import { APP_CONSTANTS } from 'src/app/core/constants/constants';
+import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 
 @Component({
 	selector: 'app-settings',
@@ -180,7 +180,7 @@ import { APP_CONSTANTS } from 'src/app/core/constants/constants';
 	],
 })
 export class SettingsComponent {
-	phoneMask = APP_CONSTANTS.phone.displayMask;
+	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	booleanTypeCodes = BooleanTypeCode;
 	payerPreferenceTypeCode = PayerPreferenceTypeCode;
 	form: FormGroup = this.formBuilder.group({
@@ -198,7 +198,7 @@ export class SettingsComponent {
 		contractorScreening: new FormControl('', [Validators.required]),
 		licenseeScreening: new FormControl('', [Validators.required]),
 	});
-	startAt = APP_CONSTANTS.date.birthDateStartAt;
+	startAt = SPD_CONSTANTS.date.birthDateStartAt;
 
 	constructor(private formBuilder: FormBuilder) {}
 

@@ -5,19 +5,23 @@ import { NgxDropzoneModule } from 'ngx-dropzone';
 import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
 import { MaterialModule } from '../material.module';
 import { AddressAutocompleteComponent } from './components/address-autocomplete.component';
+import { AddressModalComponent } from './components/address-modal.component';
 import { FooterComponent } from './components/app-footer.component';
 import { HeaderComponent } from './components/app-header.component';
 import { BaseFilterComponent } from './components/base-filter.component';
 import { DialogComponent } from './components/dialog.component';
 import { DropdownOverlayComponent } from './components/dropdown-overlay.component';
+import { StepTitleComponent } from './components/step-title.component';
 
 const SHARED_COMPONENTS = [
 	HeaderComponent,
 	FooterComponent,
 	DialogComponent,
 	AddressAutocompleteComponent,
+	AddressModalComponent,
 	DropdownOverlayComponent,
 	BaseFilterComponent,
+	StepTitleComponent,
 ];
 
 @NgModule({

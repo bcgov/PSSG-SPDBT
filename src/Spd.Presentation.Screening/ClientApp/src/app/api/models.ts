@@ -1,3 +1,5 @@
+export { AddressFindResponse } from './models/address-find-response';
+export { AddressRetrieveResponse } from './models/address-retrieve-response';
 export { BCeIdConfigurationResponse } from './models/b-ce-id-configuration-response';
 export { BooleanTypeCode } from './models/boolean-type-code';
 export { EmployeeInteractionTypeCode } from './models/employee-interaction-type-code';
