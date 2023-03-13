@@ -6,14 +6,14 @@ import { DashboardRoutes } from './modules/dashboard/dashboard-routing.module';
 @Component({
 	selector: 'app-landing',
 	template: `
-		<section class="step-section col-3 mx-auto p-4" style="margin-top: 8em;">
-			<button mat-raised-button color="primary" class="large mb-2" [routerLink]="['/org-registration/']">
+		<section class="step-section col-md-3 col-sm-12 mx-auto mt-4 p-4">
+			<button mat-raised-button color="primary" class="large my-4" [routerLink]="['/org-registration/']">
 				Organization Registration
 			</button>
-		</section>
 
-		<section class="step-section col-3 mx-auto mt-4 p-4">
-			<button mat-raised-button color="primary" class="large mb-2" (click)="goToScreening()">
+			<mat-divider class="my-3"></mat-divider>
+
+			<button mat-raised-button color="primary" class="large my-4" (click)="goToScreening()">
 				Screening Application
 			</button>
 
@@ -21,21 +21,20 @@ import { DashboardRoutes } from './modules/dashboard/dashboard-routing.module';
 				<mat-radio-button value="APP">
 					<strong>Applicant Paying</strong>
 				</mat-radio-button>
-				<mat-divider class="my-3"></mat-divider>
 				<mat-radio-button value="ORG">
 					<strong>Organization Paying</strong>
 				</mat-radio-button>
 			</mat-radio-group>
-		</section>
 
-		<section class="step-section col-3 mx-auto mt-4 p-4">
-			<button mat-raised-button color="primary" class="large mb-2" (click)="onRegisterWithBCeid()">
+			<mat-divider class="my-3"></mat-divider>
+
+			<button mat-raised-button color="primary" class="large my-4" (click)="onRegisterWithBCeid()">
 				Dashboard BCeid Log In
 			</button>
-		</section>
 
-		<section class="step-section col-3 mx-auto mt-4 p-4">
-			<button mat-raised-button color="primary" class="large mb-2" [routerLink]="['/dashboard/home/']">
+			<mat-divider class="my-3"></mat-divider>
+
+			<button mat-raised-button color="primary" class="large my-4" [routerLink]="['/dashboard/home/']">
 				Dashboard - No Log In
 			</button>
 		</section>
