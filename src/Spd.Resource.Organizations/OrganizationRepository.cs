@@ -33,13 +33,24 @@ namespace Spd.Resource.Organizations
             return true;
         }
 
-
-        public async Task<List<RegistrationResponse>> GetAllOrgRegistrations()
+        public async Task<bool> AddUserAsync(CreateUserCmd createUserCmd, CancellationToken cancellationToken)
         {
-            var orgs = await _dynaContext.spd_orgregistrations.GetAllPagesAsync();
-            //todo: add mapping here
-            List<RegistrationResponse> result = new List<RegistrationResponse>();
-            return result;
+            var organization = GetOrganizationById(createUserCmd.OrganizationId);
+            spd_portaluser user = _mapper.Map<spd_portaluser>(createUserCmd);
+            _dynaContext.AddTospd_portalusers(user);
+            _dynaContext.SetLink(user, nameof(spd_portaluser.spd_OrganizationId), organization);
+            await _dynaContext.SaveChangesAsync(cancellationToken);
+            return true;
+        }
+
+
+        private account GetOrganizationById(Guid organizationId)
+        {
+            var account = _dynaContext.accounts
+                .Where(a => a.accountid == organizationId)
+                .FirstOrDefault();
+            if (account == null) throw new Exception("cannot find the organization with organizationId.");
+            return account;
         }
 
 
