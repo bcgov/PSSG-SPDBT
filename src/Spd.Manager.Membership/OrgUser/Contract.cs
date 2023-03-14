@@ -1,17 +1,74 @@
 ﻿using MediatR;
+using System.ComponentModel;
 
 namespace Spd.Manager.Membership.OrgUser
 {
     public interface IOrgUserManager
     {
-        public Task<Unit> Handle(CreateOrgUserCommand request, CancellationToken cancellationToken);
+        public Task<OrgUserResponse> Handle(OrgUserCreateCommand request, CancellationToken cancellationToken);
+        public Task<OrgUserResponse> Handle(OrgUserUpdateCommand request, CancellationToken cancellationToken);
     }
-    public record CreateOrgUserCommand(OrgUserCreateRequest CreateOrgUserRequest) : IRequest<Unit>;
+
+    public record OrgUserCreateCommand(OrgUserCreateRequest OrgUserCreateRequest) : IRequest<OrgUserResponse>;
+    public record OrgUserUpdateCommand(Guid userId, OrgUserUpdateRequest OrgUserUpdateRequest) : IRequest<OrgUserResponse>;
+
     public record OrgUserCreateRequest
     {
         public Guid OrganizationId { get; set; }
+        public ContactAuthorizationTypeCode ContactAuthorizationTypeCode { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        //add role and other info here.
+        public string Email { get; set; }
+        public DateTimeOffset? DateOfBirth { get; set; }
+        public string? JobTitle { get; set; }
+        public string? PhoneNumber { get; set; }
+    }
+
+    public record OrgUserUpdateRequest
+    {
+        public Guid Id { get; set; }
+        public Guid OrganizationId { get; set; }
+        public ContactAuthorizationTypeCode ContactAuthorizationTypeCode { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+        public DateTimeOffset? DateOfBirth { get; set; }
+        public string? JobTitle { get; set; }
+        public string? PhoneNumber { get; set; }
+    }
+
+    public class OrgUserResponse
+    {
+        public Guid Id { get; set; }
+        public Guid OrganizationId { get; set; }
+        public ContactAuthorizationTypeCode ContactAuthorizationTypeCode { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+        public DateTimeOffset? DateOfBirth { get; set; }
+        public string? JobTitle { get; set; }
+        public string? PhoneNumber { get; set; }
+    }
+
+    public class OrgUserUpdateResponse
+    {
+        public Guid Id { get; set; }
+        public Guid OrganizationId { get; set; }
+        public ContactAuthorizationTypeCode ContactAuthorizationTypeCode { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+        public DateTimeOffset? DateOfBirth { get; set; }
+        public string? JobTitle { get; set; }
+        public string? PhoneNumber { get; set; }
+    }
+
+    public enum ContactAuthorizationTypeCode
+    {
+        [Description("Primary Authorized Contact")]
+        Primary,
+
+        [Description("Authorized Contact")]
+        Contact
     }
 }

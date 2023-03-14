@@ -33,16 +33,15 @@ namespace Spd.Resource.Organizations
             return true;
         }
 
-        public async Task<bool> AddUserAsync(CreateUserCmd createUserCmd, CancellationToken cancellationToken)
+        public async Task<UserCmdResponse> AddUserAsync(CreateUserCmd createUserCmd, CancellationToken cancellationToken)
         {
             var organization = GetOrganizationById(createUserCmd.OrganizationId);
             spd_portaluser user = _mapper.Map<spd_portaluser>(createUserCmd);
             _dynaContext.AddTospd_portalusers(user);
             _dynaContext.SetLink(user, nameof(spd_portaluser.spd_OrganizationId), organization);
             await _dynaContext.SaveChangesAsync(cancellationToken);
-            return true;
+            return _mapper.Map<UserCmdResponse>(user);
         }
-
 
         private account GetOrganizationById(Guid organizationId)
         {
@@ -52,7 +51,5 @@ namespace Spd.Resource.Organizations
             if (account == null) throw new Exception("cannot find the organization with organizationId.");
             return account;
         }
-
-
     }
 }

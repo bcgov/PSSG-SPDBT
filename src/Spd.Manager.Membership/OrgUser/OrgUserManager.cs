@@ -5,7 +5,7 @@ using Spd.Resource.Organizations;
 namespace Spd.Manager.Membership.OrgUser
 {
     public class OrgUserManager
-        : IRequestHandler<CreateOrgUserCommand, Unit>,
+        : IRequestHandler<OrgUserCreateCommand, OrgUserResponse>,
         IOrgUserManager
     {
         private readonly IOrganizationRepository _organizationRepository;
@@ -16,12 +16,22 @@ namespace Spd.Manager.Membership.OrgUser
             _mapper = mapper;
         }
 
-        public async Task<Unit> Handle(CreateOrgUserCommand request, CancellationToken cancellationToken)
+        public async Task<OrgUserResponse> Handle(OrgUserCreateCommand request, CancellationToken cancellationToken)
         {
-            var createOrgUser = _mapper.Map<CreateUserCmd>(request.CreateOrgUserRequest);
-            await _organizationRepository.AddUserAsync(createOrgUser, cancellationToken);
+            var createOrgUser = _mapper.Map<CreateUserCmd>(request.OrgUserCreateRequest);
+            var response = await _organizationRepository.AddUserAsync(createOrgUser, cancellationToken);
 
-            return default;
+            return _mapper.Map<OrgUserResponse>(response);
+        }
+
+        Task<OrgUserResponse> IOrgUserManager.Handle(OrgUserCreateCommand request, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<OrgUserResponse> IOrgUserManager.Handle(OrgUserUpdateCommand request, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
         }
     }
 }

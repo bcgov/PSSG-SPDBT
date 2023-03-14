@@ -1,25 +1,22 @@
 import { Component } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { ContactAuthorizationTypeCode } from 'src/app/api/models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import {
-	ContactAuthorizationTypeCode,
-	ContactAuthorizationTypes,
-	MaintainUserModalComponent,
-	UserDialogData,
-} from './maintain-user-modal.component';
+import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData } from './maintain-user-modal.component';
 
 export class UserModel {
-	id: number | null = null;
-	authorizationType: string = '';
-	surname: string = '';
-	givenName: string = '';
+	id: string | null = null;
+	organizationId: string = '';
+	contactAuthorizationTypeCode: string = '';
+	lastName: string = '';
+	firstName: string = '';
 	email: string = '';
 	phoneNumber: string = '';
 	jobTitle: string = '';
-	dateOfBirth: string = '';
+	dateOfBirth: string | null = null;
 }
 
 @Component({
@@ -59,17 +56,17 @@ export class UserModel {
 										{{ i + 1 }}
 									</span>
 								</div>
-								<div class="col-lg-3 col-md-3">
+								<div class="col-lg-2 col-md-3">
 									<small class="d-block text-muted">Authorization Type</small>
-									<strong> {{ user.authorizationType }} </strong>
+									<strong> {{ user.contactAuthorizationTypeCode | default }} </strong>
 								</div>
 								<div class="col-lg-3 col-md-3">
 									<small class="d-block text-muted mt-2 mt-md-0">Name</small>
-									<strong> {{ user.givenName }} {{ user.surname }} </strong>
+									<strong> {{ user | fullname | default }} </strong>
 								</div>
-								<div class="col-lg-3 col-md-3">
+								<div class="col-lg-6 col-md-3">
 									<small class="d-block text-muted mt-2 mt-md-0">Email</small>
-									<strong> {{ user.email }} </strong>
+									<strong> {{ user.email | default }} </strong>
 								</div>
 							</div>
 							<mat-divider class="my-3"></mat-divider>
@@ -77,18 +74,18 @@ export class UserModel {
 								<div class="col-lg-1 col-md-1 col-sm-10"></div>
 								<div class="col-lg-2 col-md-3">
 									<small class="d-block text-muted">Phone Number</small>
-									<strong>{{ user.phoneNumber | mask : appConstants.phone.displayMask }}</strong>
+									<strong>{{ user.phoneNumber | mask : appConstants.phone.displayMask | default }}</strong>
 								</div>
-								<div class="col-lg-3 col-md-4">
+								<div class="col-lg-3 col-md-3">
 									<small class="d-block text-muted mt-2 mt-md-0">Job Title</small>
-									<strong>{{ user.jobTitle }}</strong>
+									<strong>{{ user.jobTitle | default }}</strong>
 								</div>
 								<div class="col-lg-2 col-md-4">
 									<small class="d-block text-muted mt-2 mt-md-0">Date of Birth</small>
-									<strong>{{ user.dateOfBirth | date : appConstants.date.dateFormat }}</strong>
+									<strong>{{ user.dateOfBirth | date : appConstants.date.dateFormat | default }}</strong>
 								</div>
 								<div class="col-lg-2 col-md-6">
-									<button mat-stroked-button color="primary" class="large mt-2 mt-lg-0" (click)="onMaintainUser()">
+									<button mat-stroked-button color="primary" class="large mt-2 mt-lg-0" (click)="onMaintainUser(user)">
 										Edit
 									</button>
 								</div>
@@ -138,20 +135,22 @@ export class UsersComponent {
 
 	usersList: UserModel[] = [
 		{
-			id: 1,
-			authorizationType: ContactAuthorizationTypeCode.Primary,
-			surname: 'Surname',
-			givenName: 'Given',
+			id: '1',
+			organizationId: '',
+			contactAuthorizationTypeCode: ContactAuthorizationTypeCode.Primary,
+			lastName: 'Surname',
+			firstName: 'Given',
 			email: 'contact@email.com',
-			phoneNumber: '2506648787',
-			jobTitle: 'Teacher',
-			dateOfBirth: '2002-02-04T00:10:05.865Z',
+			phoneNumber: '',
+			jobTitle: '',
+			dateOfBirth: null,
 		},
 		{
-			id: 2,
-			authorizationType: ContactAuthorizationTypeCode.Contact,
-			surname: 'Surname',
-			givenName: 'Given',
+			id: '2',
+			organizationId: '',
+			contactAuthorizationTypeCode: ContactAuthorizationTypeCode.Contact,
+			lastName: 'Surname',
+			firstName: 'Given',
 			email: 'contact@email.com',
 			phoneNumber: '2508851234',
 			jobTitle: 'Teacher',
@@ -166,40 +165,31 @@ export class UsersComponent {
 	}
 
 	onAddUser(): void {
-		const newUser: UserModel = {
-			id: null,
-			authorizationType: '',
-			surname: '',
-			givenName: '',
-			email: '',
-			phoneNumber: '',
-			jobTitle: '',
-			dateOfBirth: '',
-		};
+		const newUser = new UserModel();
+		//  {
+		// 	id: null,
+		// 	organizationId: '',
+		// 	contactAuthorizationTypeCode: '',
+		// 	lastName: '',
+		// 	firstName: '',
+		// 	email: '',
+		// 	phoneNumber: '',
+		// 	jobTitle: '',
+		// 	dateOfBirth: '',
+		// };
 
 		const dialogOptions: UserDialogData = {
 			user: newUser,
 		};
-		this.userDialog(dialogOptions);
+		this.userDialog(dialogOptions, true);
 	}
 
-	onMaintainUser(): void {
-		const editUser: UserModel = {
-			id: 123,
-			authorizationType: 'Primary Authorized Contact',
-			surname: 'Surname',
-			givenName: 'Given',
-			email: 'contact@email.com',
-			phoneNumber: '2503851535',
-			jobTitle: 'Teacher',
-			dateOfBirth: '2002-07-04T00:10:05.865Z',
-		};
-
+	onMaintainUser(user: UserModel): void {
 		const dialogOptions: UserDialogData = {
-			user: editUser,
+			user,
 		};
 
-		this.userDialog(dialogOptions);
+		this.userDialog(dialogOptions, false);
 	}
 
 	onDeleteUser() {
@@ -224,7 +214,7 @@ export class UsersComponent {
 		this.addAllowed = this.usersList.length >= this.MAX_NUMBER_OF_USERS ? false : true;
 	}
 
-	private userDialog(dialogOptions: UserDialogData): void {
+	private userDialog(dialogOptions: UserDialogData, isCreate: boolean): void {
 		this.dialog
 			.open(MaintainUserModalComponent, {
 				width: '800px',
@@ -233,7 +223,12 @@ export class UsersComponent {
 			.afterClosed()
 			.subscribe((res) => {
 				if (res) {
-					this.usersList.push(res.data);
+					if (isCreate) {
+						// Add new user
+						this.usersList.push(res.data);
+					} else {
+						// Update user info
+					}
 					this.setAllowedToAdd();
 				}
 			});

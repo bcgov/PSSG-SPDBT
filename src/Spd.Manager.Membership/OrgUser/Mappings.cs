@@ -8,6 +8,8 @@ namespace Spd.Manager.Membership.OrgUser
         public Mappings()
         {
             CreateMap<OrgUserCreateRequest, CreateUserCmd>();
+            CreateMap<OrgUserUpdateRequest, UpdateUserCmd>();
+            CreateMap<UserCmdResponse, OrgUserResponse>();
         }
     }
 }

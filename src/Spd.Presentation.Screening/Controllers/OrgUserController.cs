@@ -19,11 +19,23 @@ namespace Spd.Presentation.Screening.Controllers
 
         [Route("api/org-user")]
         [HttpPost]
-        public async Task<ActionResult> Add([FromBody][Required] OrgUserCreateRequest orgUserCreateRequest)
+        [Produces("application/json")]
+        public async Task<OrgUserResponse> Add([FromBody][Required] OrgUserCreateRequest orgUserCreateRequest)
         {
             orgUserCreateRequest.OrganizationId = Guid.Parse("4165bdfe-7cb4-ed11-b83e-00505683fbf4");
-            await _mediator.Send(new CreateOrgUserCommand(orgUserCreateRequest));
-            return Ok();
+            return await _mediator.Send(new OrgUserCreateCommand(orgUserCreateRequest));
+        }
+
+        [Route("api/org-user")]
+        [HttpPut]
+        [Produces("application/json")]
+        public async Task<OrgUserResponse> Put(string userId, [FromBody] OrgUserUpdateRequest orgUserUpdateRequest)
+        {
+            if (!Guid.TryParse(userId, out Guid userIdGuid))
+            {
+                throw new Exception("Invalid User Guid");
+            }
+            return await _mediator.Send(new OrgUserUpdateCommand(userIdGuid, orgUserUpdateRequest));
         }
     }
 }
