@@ -36,7 +36,8 @@ namespace Spd.Presentation.Screening
         {
             // Add services to the container.
             services.ConfigureCors(configuration);
-            services.ConfigureSwagger();
+            var assemblyName = $"{typeof(Startup).GetTypeInfo().Assembly.GetName().Name}";
+            services.ConfigureSwagger(assemblyName);
             services
                 .AddEndpointsApiExplorer()
                 .AddControllers()
@@ -44,7 +45,10 @@ namespace Spd.Presentation.Screening
                 {
                     x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 })
-                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<FluentValidationEntry>());
+                .AddFluentValidation(fv => {
+                    fv.RegisterValidatorsFromAssemblyContaining<FluentValidationEntry>();
+                    fv.ImplicitlyValidateChildProperties = true;
+                });
             ;
 
             services.AddAutoMapper(assemblies);

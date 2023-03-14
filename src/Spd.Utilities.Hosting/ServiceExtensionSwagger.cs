@@ -7,7 +7,7 @@ namespace Spd.Utilities.Hosting
 {
     public static class ServiceExtensionSwagger
     {
-        public static void ConfigureSwagger(this IServiceCollection services)
+        public static void ConfigureSwagger(this IServiceCollection services, string assemblyName)
         {
             services.AddSwaggerGen(c =>
             {
@@ -41,9 +41,9 @@ namespace Spd.Utilities.Hosting
 
                 c.OperationFilter<ProducesResponseTypeFilter>();
                 // Set the comments path for the Swagger JSON and UI.
-                //var xmlFileName = $"{typeof(Startup).GetTypeInfo().Assembly.GetName().Name}.xml";
-                //var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFileName);
-                //c.IncludeXmlComments(xmlPath);
+                var xmlFileName = $"{assemblyName}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFileName);
+                c.IncludeXmlComments(xmlPath);
                 // Provide sample for JsonElement
                 //c.SchemaFilter<ExamplesSchemaFilter>();
                 //c.SchemaFilter<EnumSchemaFilter>(xmlPath);
