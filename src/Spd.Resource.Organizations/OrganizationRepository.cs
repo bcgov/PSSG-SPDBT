@@ -37,19 +37,17 @@ namespace Spd.Resource.Organizations
         {
             var organization = GetOrganizationById(createUserCmd.OrganizationId);
             spd_portaluser user = _mapper.Map<spd_portaluser>(createUserCmd);
+
             _dynaContext.AddTospd_portalusers(user);
             _dynaContext.SetLink(user, nameof(spd_portaluser.spd_OrganizationId), organization);
+            spd_role? role = _dynaContext.LookupRole(createUserCmd.ContactAuthorizationTypeCode.ToString());
+            if (role != null)
+            {
+                _dynaContext.AddLink(role, nameof(role.spd_spd_role_spd_portaluser), user);
+            }
+
             await _dynaContext.SaveChangesAsync(cancellationToken);
             return _mapper.Map<UserCmdResponse>(user);
-        }
-
-        public async Task<bool> RegisterRoleAsync(CreateUserCmd createUserCmd, CancellationToken cancellationToken)
-        {
-            spd_portaluser user = _mapper.Map<spd_portaluser>(createUserCmd);
-            _dynaContext.AddTospd_portalusers(user);
-            _dynaContext.SetLink(user, nameof(spd_portaluser.spd_spd_role_spd_portaluser), _dynaContext.LookupContactAuthorizationTypeGuidDictionary(createUserCmd.ContactAuthorizationTypeCode.ToString()));
-            await _dynaContext.SaveChangesAsync(cancellationToken);
-            return true;
         }
 
         private account GetOrganizationById(Guid organizationId)

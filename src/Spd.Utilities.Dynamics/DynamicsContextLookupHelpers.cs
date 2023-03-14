@@ -35,14 +35,14 @@ namespace Spd.Utilities.Dynamics
                 .FirstOrDefault();
         }
 
-        private static Dictionary<string, Guid> ContactAuthorizationTypeGuidDictionary = new Dictionary<string, Guid>()
+        private static Dictionary<string, Guid> RoleGuidDictionary = new Dictionary<string, Guid>()
         {
             {"Contact", Guid.Parse("47ca4197-12ba-ed11-b83e-00505683fbf4")},
             {"Primary", Guid.Parse("99af5c0a-a1c2-ed11-b840-00505683fbf4")},
         };
-        public static spd_role? LookupContactAuthorizationTypeGuidDictionary(this DynamicsContext context, string key)
+        public static spd_role? LookupRole(this DynamicsContext context, string key)
         {
-            var keyExisted = ContactAuthorizationTypeGuidDictionary.TryGetValue(key, out Guid guid);
+            var keyExisted = RoleGuidDictionary.TryGetValue(key, out Guid guid);
             if (!keyExisted) return null;
             return context.spd_roles
                 .Where(s => s.spd_roleid == guid)

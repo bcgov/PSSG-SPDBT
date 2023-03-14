@@ -3,7 +3,6 @@
     public interface IOrganizationRepository
     {
         Task<bool> RegisterAsync(CreateRegistrationCmd createRegistrationCmd, CancellationToken cancellationToken);
-        Task<bool> RegisterRoleAsync(CreateUserCmd createUserCmd, CancellationToken cancellationToken);
         Task<UserCmdResponse> AddUserAsync(CreateUserCmd createUserCmd, CancellationToken cancellationToken);
     }
 
