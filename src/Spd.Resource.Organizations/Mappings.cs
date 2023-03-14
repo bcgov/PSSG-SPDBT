@@ -34,6 +34,11 @@ namespace Spd.Resource.Organizations
             .ForMember(d => d.spd_identityguid, opt => opt.MapFrom(s => s.LoginIdentityGuid))
             .ForMember(d => d.spd_identityprovider, opt => opt.MapFrom(s => s.LoginIdentityProvider))
             .ForMember(d => d.spd_portaluseridentityguid, opt => opt.MapFrom(s => GetPortalUserIdentityType(s.PortalUserIdentityTypeCode)));
+
+            _ = CreateMap<CreateUserCmd, spd_portaluser>()
+            .ForMember(d => d.organizationid, opt => opt.Ignore())
+            .ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => s.FirstName))
+            .ForMember(d => d.spd_surname, opt => opt.MapFrom(s => s.LastName));
         }
 
         private static int? GetPortalUserIdentityType(PortalUserIdentityTypeCode? code)
