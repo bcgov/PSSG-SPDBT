@@ -2,8 +2,8 @@
 {
     public interface IOrganizationRepository
     {
-        Task<bool> RegisterAsync(CreateRegistrationCmd createRequest, CancellationToken cancellationToken);
-        Task<UserCmdResponse> AddUserAsync(CreateUserCmd createRequest, CancellationToken cancellationToken);
+        Task<bool> RegisterAsync(CreateRegistrationCmd createRegistrationCmd, CancellationToken cancellationToken);
+        Task<UserCmdResponse> AddUserAsync(CreateUserCmd createUserCmd, CancellationToken cancellationToken);
     }
 
     public record CreateRegistrationCmd

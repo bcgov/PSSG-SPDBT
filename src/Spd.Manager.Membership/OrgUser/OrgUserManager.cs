@@ -24,12 +24,7 @@ namespace Spd.Manager.Membership.OrgUser
             return _mapper.Map<OrgUserResponse>(response);
         }
 
-        Task<OrgUserResponse> IOrgUserManager.Handle(OrgUserCreateCommand request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<OrgUserResponse> IOrgUserManager.Handle(OrgUserUpdateCommand request, CancellationToken cancellationToken)
+        public Task<OrgUserResponse> Handle(OrgUserUpdateCommand request, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
