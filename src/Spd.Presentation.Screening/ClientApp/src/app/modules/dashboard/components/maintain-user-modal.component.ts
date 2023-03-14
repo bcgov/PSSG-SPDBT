@@ -5,6 +5,16 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { UserModel } from './users.component';
 
+export const ContactAuthorizationTypes = [
+	{ desc: 'Primary Authorized Contact', code: 'PRIMARY' },
+	{ desc: 'Authorized Contact', code: 'CONTACT' },
+];
+
+export enum ContactAuthorizationTypeCode {
+	Primary = 'PRIMARY',
+	Contact = 'CONTACT',
+}
+
 export interface UserDialogData {
 	user: UserModel;
 }
@@ -19,8 +29,11 @@ export interface UserDialogData {
 					<div class="col-md-6">
 						<mat-form-field>
 							<mat-label>Authorization Type</mat-label>
-							<input matInput formControlName="authorizationType" [errorStateMatcher]="matcher" />
-							<mat-error *ngIf="form.get('authorizationType')?.hasError('required')"> This is required </mat-error>
+							<mat-select formControlName="authorizationType">
+								<mat-option *ngFor="let auth of authorizationTypes" [value]="auth.code">
+									{{ auth.desc }}
+								</mat-option>
+							</mat-select>
 						</mat-form-field>
 					</div>
 					<div class="col-md-6">
@@ -100,6 +113,7 @@ export interface UserDialogData {
 	styles: [],
 })
 export class MaintainUserModalComponent {
+	authorizationTypes = ContactAuthorizationTypes;
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	title: string = '';
 	isEdit = false;

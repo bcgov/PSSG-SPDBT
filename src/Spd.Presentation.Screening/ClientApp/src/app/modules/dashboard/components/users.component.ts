@@ -1,8 +1,15 @@
 import { Component } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
-import { MaintainUserModalComponent, UserDialogData } from './maintain-user-modal.component';
+import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
+import {
+	ContactAuthorizationTypeCode,
+	ContactAuthorizationTypes,
+	MaintainUserModalComponent,
+	UserDialogData,
+} from './maintain-user-modal.component';
 
 export class UserModel {
 	id: number | null = null;
@@ -23,7 +30,7 @@ export class UserModel {
 			<div class="row">
 				<div class="col-lg-8 col-md-7 col-sm-12">
 					<h2 class="mb-2 fw-normal">
-						Manage Authorized Users
+						Manage Authorized Users <mat-icon (click)="manageUsersInfo()">info</mat-icon>
 						<div class="mt-2 fs-5 fw-light">
 							Your organization must have one primary authorized contact, and may have up to five other authorized
 							contacts.
@@ -32,7 +39,7 @@ export class UserModel {
 				</div>
 				<div class="col-lg-3 col-md-4 col-sm-12 my-auto">
 					<ng-container *ngIf="addAllowed; else addNotAllowed">
-						<button mat-flat-button color="primary" class="large w-100 mb-2" (click)="onAddUser()">Add New User</button>
+						<button mat-flat-button color="primary" class="large w-100 mb-2" (click)="onAddUser()">Add User</button>
 					</ng-container>
 					<ng-template #addNotAllowed>
 						<div class="alert alert-warning d-flex align-items-center" role="alert">
@@ -42,11 +49,16 @@ export class UserModel {
 				</div>
 			</div>
 
-			<ng-container *ngFor="let user of users; let i = index">
+			<ng-container *ngFor="let user of usersList; let i = index">
 				<div class="row mt-2 mb-2">
 					<div class="col-md-11 col-sm-12">
 						<section class="px-4 py-2 mb-3 card-section">
 							<div class="row mt-2">
+								<div class="col-lg-1 col-md-1 col-sm-10">
+									<span class="badge rounded-pill bg-success">
+										{{ i + 1 }}
+									</span>
+								</div>
 								<div class="col-lg-3 col-md-3">
 									<small class="d-block text-muted">Authorization Type</small>
 									<strong> {{ user.authorizationType }} </strong>
@@ -59,18 +71,11 @@ export class UserModel {
 									<small class="d-block text-muted mt-2 mt-md-0">Email</small>
 									<strong> {{ user.email }} </strong>
 								</div>
-								<div class="col-lg-3 col-md-12 position-relative">
-									<span
-										class="position-absolute translate-middle badge rounded-pill bg-danger"
-										style="top: -16px;right: -28px;"
-									>
-										{{ i + 1 }}
-									</span>
-								</div>
 							</div>
 							<mat-divider class="my-3"></mat-divider>
 							<div class="row mb-2">
-								<div class="col-lg-3 col-md-4">
+								<div class="col-lg-1 col-md-1 col-sm-10"></div>
+								<div class="col-lg-2 col-md-3">
 									<small class="d-block text-muted">Phone Number</small>
 									<strong>{{ user.phoneNumber | mask : appConstants.phone.displayMask }}</strong>
 								</div>
@@ -87,7 +92,7 @@ export class UserModel {
 										Edit
 									</button>
 								</div>
-								<div class="col-lg-2 col-md-6">
+								<div class="col-lg-2 col-md-6" *ngIf="allowDeleteRow(user)">
 									<button mat-stroked-button color="warn" class="large mt-2 mt-lg-0" (click)="onDeleteUser()">
 										Remove
 									</button>
@@ -117,14 +122,24 @@ export class UserModel {
 	],
 })
 export class UsersComponent {
+	title: string = '';
 	appConstants = SPD_CONSTANTS;
 	readonly MAX_NUMBER_OF_USERS = 6;
-	addAllowed = false;
+	phoneMask = SPD_CONSTANTS.phone.displayMask;
+	authorizationTypes = ContactAuthorizationTypes;
 
-	users: UserModel[] = [
+	addAllowed = false;
+	startAt = SPD_CONSTANTS.date.birthDateStartAt;
+	matcher = new FormErrorStateMatcher();
+
+	form = this.formBuilder.group({
+		users: this.formBuilder.array([]),
+	});
+
+	usersList: UserModel[] = [
 		{
 			id: 1,
-			authorizationType: 'Primary Authorized Contact',
+			authorizationType: ContactAuthorizationTypeCode.Primary,
 			surname: 'Surname',
 			givenName: 'Given',
 			email: 'contact@email.com',
@@ -134,7 +149,7 @@ export class UsersComponent {
 		},
 		{
 			id: 2,
-			authorizationType: 'Primary Authorized Contact',
+			authorizationType: ContactAuthorizationTypeCode.Contact,
 			surname: 'Surname',
 			givenName: 'Given',
 			email: 'contact@email.com',
@@ -144,7 +159,7 @@ export class UsersComponent {
 		},
 	];
 
-	constructor(private dialog: MatDialog) {}
+	constructor(private dialog: MatDialog, private formBuilder: FormBuilder) {}
 
 	ngOnInit(): void {
 		this.setAllowedToAdd();
@@ -206,7 +221,7 @@ export class UsersComponent {
 	}
 
 	private setAllowedToAdd(): void {
-		this.addAllowed = this.users.length >= this.MAX_NUMBER_OF_USERS ? false : true;
+		this.addAllowed = this.usersList.length >= this.MAX_NUMBER_OF_USERS ? false : true;
 	}
 
 	private userDialog(dialogOptions: UserDialogData): void {
@@ -218,9 +233,48 @@ export class UsersComponent {
 			.afterClosed()
 			.subscribe((res) => {
 				if (res) {
-					this.users.push(res.data);
+					this.usersList.push(res.data);
 					this.setAllowedToAdd();
 				}
 			});
+	}
+
+	allowDeleteRow(user: UserModel): boolean {
+		// TODO if row is current user, remove delete
+
+		// TODO if current user is not a Primary Authorized User, prevent delete
+		return true;
+	}
+
+	manageUsersInfo(): void {
+		const title = 'What can authorized users do?';
+		const message = `<strong>Primary Authorized Users</strong>
+		<ul>
+		<li>Add or remove others in their organization from the authorized contact roles</li>		
+		<li>Transfer their primary authority to another additional authorized contact</li>		
+		<li>Edit and update organization information</li>		
+		<li>Initiate new screenings</li>		
+		<li>View screenings statuses</li>		
+		<li>View expiring screenings</li>		
+		<li>View financial information and pay for screenings</li>		
+		</ul>
+		<strong>Authorized Users</strong>
+		<ul>
+		<li>Initiate new screenings</li>
+		<li>View screenings statuses</li>
+		<li>View expiring screenings</li>
+		<li>View financial information and pay for screenings</li>
+		</ul>
+		`;
+
+		const dialogOptions: DialogOptions = {
+			icon: 'info',
+			type: 'info',
+			title,
+			message,
+			cancelText: 'Close',
+		};
+
+		this.dialog.open(DialogComponent, { data: dialogOptions });
 	}
 }

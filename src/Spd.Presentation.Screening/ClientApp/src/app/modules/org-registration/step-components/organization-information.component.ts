@@ -17,11 +17,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 				></app-step-title>
 				<div class="row">
 					<div class="offset-md-2 col-md-8 col-sm-12">
-						<mat-radio-group
-							class="funding-question__group"
-							aria-label="Select an option"
-							formControlName="hasPhoneOrEmail"
-						>
+						<mat-radio-group aria-label="Select an option" formControlName="hasPhoneOrEmail">
 							<mat-radio-button [value]="booleanTypeCodes.Yes">
 								<strong>Yes</strong>, we have a team inbox or generic organization email and central team phone number.
 							</mat-radio-button>
