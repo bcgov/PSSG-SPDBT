@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Models;
+using Spd.Utilities.Hosting.ApiFilters;
 
 namespace Spd.Utilities.Hosting
 {
@@ -35,27 +38,15 @@ namespace Spd.Utilities.Hosting
                     { jwtSecurityScheme, Array.Empty<string>() }
                 });
 
-                //To manually define the Document Post API
-                c.OperationFilter<AddDocumentPostParamTypesFilter>();
-                c.DocumentFilter<CustomModelDocumentFilter<DocumentCreateRequest>>();
 
-                // Manually define the SecureMessaging Post API
-                c.OperationFilter<AddMessagePostParamTypesFilter>();
-                c.DocumentFilter<CustomModelDocumentFilter<SecureMessagingMessageCreateRequest>>();
-
-                // Manually define the VAC Ad-Hoc Invoice Post API
-                c.OperationFilter<AddVacInvoicePostParamTypesFilter>();
-                c.DocumentFilter<CustomModelDocumentFilter<VacInvoiceAdHocCreateRequest>>();
-
-                // Return type ApiResponse<T>
                 c.OperationFilter<ProducesResponseTypeFilter>();
                 // Set the comments path for the Swagger JSON and UI.
-                var xmlFileName = $"{typeof(Startup).GetTypeInfo().Assembly.GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFileName);
-                c.IncludeXmlComments(xmlPath);
+                //var xmlFileName = $"{typeof(Startup).GetTypeInfo().Assembly.GetName().Name}.xml";
+                //var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFileName);
+                //c.IncludeXmlComments(xmlPath);
                 // Provide sample for JsonElement
-                c.SchemaFilter<ExamplesSchemaFilter>();
-                c.SchemaFilter<EnumSchemaFilter>(xmlPath);
+                //c.SchemaFilter<ExamplesSchemaFilter>();
+                //c.SchemaFilter<EnumSchemaFilter>(xmlPath);
             });
         }
     }

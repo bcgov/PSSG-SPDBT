@@ -6,7 +6,6 @@ using System.ComponentModel.DataAnnotations;
 namespace Spd.Presentation.Screening.Controllers
 {
     [ApiController]
-    [Produces("application/json")]
     public class AddressAutoCompleteController : ControllerBase
     {
         private readonly ILogger<AddressAutoCompleteController> _logger;

@@ -36,10 +36,9 @@ namespace Spd.Presentation.Screening
         {
             // Add services to the container.
             services.ConfigureCors(configuration);
-
+            services.ConfigureSwagger();
             services
                 .AddEndpointsApiExplorer()
-                .AddSwaggerGen()
                 .AddControllers()
                 .AddJsonOptions(x =>
                 {
