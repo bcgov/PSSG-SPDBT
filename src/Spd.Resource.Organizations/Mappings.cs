@@ -36,18 +36,23 @@ namespace Spd.Resource.Organizations
             .ForMember(d => d.spd_portaluseridentityguid, opt => opt.MapFrom(s => GetPortalUserIdentityType(s.PortalUserIdentityTypeCode)));
 
             _ = CreateMap<CreateUserCmd, spd_portaluser>()
+            .ForMember(d => d.spd_portaluserid, opt => opt.MapFrom(s => Guid.NewGuid()))
             .ForMember(d => d.organizationid, opt => opt.Ignore())
+            // .ForMember(d => d.spd_spd_role_spd_portaluser, opt => opt.MapFrom(s => s.FirstName))
             .ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => s.FirstName))
             .ForMember(d => d.spd_surname, opt => opt.MapFrom(s => s.LastName))
+            .ForMember(d => d.spd_fullname, opt => opt.MapFrom(s => s.FirstName + ' ' + s.LastName))
             .ForMember(d => d.spd_emailaddress1, opt => opt.MapFrom(s => s.Email))
             .ForMember(d => d.spd_dateofbirth, opt => opt.MapFrom(s => s.DateOfBirth))
             .ForMember(d => d.spd_jobtitle, opt => opt.MapFrom(s => s.JobTitle))
             .ForMember(d => d.spd_phonenumber, opt => opt.MapFrom(s => s.PhoneNumber));
 
             _ = CreateMap<UpdateUserCmd, spd_portaluser>()
-            .ForMember(d => d.organizationid, opt => opt.Ignore())
+            .ForMember(d => d.spd_portaluserid, opt => opt.MapFrom(s => s.Id))
+            .ForMember(d => d.organizationid, opt => opt.MapFrom(s => s.OrganizationId))
             .ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => s.FirstName))
             .ForMember(d => d.spd_surname, opt => opt.MapFrom(s => s.LastName))
+            .ForMember(d => d.spd_fullname, opt => opt.MapFrom(s => s.FirstName + ' ' + s.LastName))
             .ForMember(d => d.spd_emailaddress1, opt => opt.MapFrom(s => s.Email))
             .ForMember(d => d.spd_dateofbirth, opt => opt.MapFrom(s => s.DateOfBirth))
             .ForMember(d => d.spd_jobtitle, opt => opt.MapFrom(s => s.JobTitle))

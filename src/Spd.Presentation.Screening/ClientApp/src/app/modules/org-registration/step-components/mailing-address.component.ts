@@ -15,7 +15,10 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 				<app-step-title title="What is your organization's mailing address?"></app-step-title>
 				<div class="row">
 					<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
-						<app-address-form-autocomplete (autocompleteAddress)="onAddressAutocomplete($event)">
+						<app-address-form-autocomplete
+							(autocompleteAddress)="onAddressAutocomplete($event)"
+							(enterAddressManually)="onEnterAddressManually()"
+						>
 						</app-address-form-autocomplete>
 						<mat-error
 							*ngIf="
@@ -136,6 +139,12 @@ export class MailingAddressComponent implements OnInit, RegistrationFormStepComp
 			mailingPostalCode: postalCode,
 			mailingProvince: provinceCode,
 			mailingCountry: countryCode,
+		});
+	}
+
+	onEnterAddressManually(): void {
+		this.form.patchValue({
+			addressSelected: true,
 		});
 	}
 

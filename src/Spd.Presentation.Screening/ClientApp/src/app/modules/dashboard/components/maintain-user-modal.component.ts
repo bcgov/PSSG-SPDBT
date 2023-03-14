@@ -150,12 +150,8 @@ export class MaintainUserModalComponent {
 		this.form.markAllAsTouched();
 		if (this.form.valid) {
 			const formData = this.form.value;
-			console.log('formData', formData);
-
 			if (this.isEdit) {
 				const body: OrgUserUpdateRequest = { ...formData };
-				console.log('body', body);
-
 				this.orgUserService
 					.apiOrgUserPut({ userId: formData.id, body })
 					.pipe()
@@ -167,8 +163,6 @@ export class MaintainUserModalComponent {
 			} else {
 				const body: OrgUserCreateRequest = { ...formData };
 				body.organizationId = '4165bdfe-7cb4-ed11-b83e-00505683fbf4'; // TODO replace with proper org id
-				console.log('body', body);
-
 				this.orgUserService
 					.apiOrgUserPost({ body })
 					.pipe()

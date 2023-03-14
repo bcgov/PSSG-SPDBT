@@ -43,6 +43,15 @@ namespace Spd.Resource.Organizations
             return _mapper.Map<UserCmdResponse>(user);
         }
 
+        public async Task<bool> RegisterRoleAsync(CreateUserCmd createUserCmd, CancellationToken cancellationToken)
+        {
+            spd_portaluser user = _mapper.Map<spd_portaluser>(createUserCmd);
+            _dynaContext.AddTospd_portalusers(user);
+            _dynaContext.SetLink(user, nameof(spd_portaluser.spd_spd_role_spd_portaluser), _dynaContext.LookupContactAuthorizationTypeGuidDictionary(createUserCmd.ContactAuthorizationTypeCode.ToString()));
+            await _dynaContext.SaveChangesAsync(cancellationToken);
+            return true;
+        }
+
         private account GetOrganizationById(Guid organizationId)
         {
             var account = _dynaContext.accounts
