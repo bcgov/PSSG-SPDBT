@@ -40,7 +40,7 @@ namespace Spd.Presentation.Screening
             services
                 .AddEndpointsApiExplorer()
                 .AddSwaggerGen()
-                .AddControllersWithViews()
+                .AddControllers()
                 .AddJsonOptions(x =>
                 {
                     x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
