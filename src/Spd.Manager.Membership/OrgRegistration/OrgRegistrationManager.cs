@@ -2,7 +2,7 @@
 using MediatR;
 using Spd.Resource.Organizations;
 
-namespace Spd.Manager.Membership
+namespace Spd.Manager.Membership.OrgRegistration
 {
     public class OrgRegistrationManager
         : IRequestHandler<CreateOrgRegistrationCommand, Unit>,

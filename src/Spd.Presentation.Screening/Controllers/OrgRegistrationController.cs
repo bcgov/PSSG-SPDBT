@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Spd.Manager.Membership;
-using Spd.Manager.Membership.ViewModels;
+using Spd.Manager.Membership.OrgRegistration;
 using System.ComponentModel.DataAnnotations;
 
 namespace Spd.Presentation.Screening.Controllers

@@ -1,8 +1,16 @@
 ﻿using FluentValidation;
+using MediatR;
 using System.ComponentModel;
 
-namespace Spd.Manager.Membership.ViewModels
+namespace Spd.Manager.Membership.OrgRegistration
 {
+    public interface IOrgRegistrationManager
+    {
+        public Task<Unit> Handle(CreateOrgRegistrationCommand request, CancellationToken cancellationToken);
+    }
+
+    public record CreateOrgRegistrationCommand(OrgRegistrationCreateRequest CreateOrgRegistrationRequest) : IRequest<Unit>;
+
     public class OrgRegistrationCreateRequest
     {
         public bool? AgreeToTermsAndConditions { get; set; } //do not map
@@ -302,6 +310,8 @@ namespace Spd.Manager.Membership.ViewModels
                 .When(r => r.PortalUserIdentityTypeCode.HasValue);
         }
     }
-
-
+    public class OrgRegistrationResponse
+    {
+        public Guid OrgRegistrationId { get; set; }
+    }
 }

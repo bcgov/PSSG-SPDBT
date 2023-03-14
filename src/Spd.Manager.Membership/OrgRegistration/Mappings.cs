@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using Spd.Manager.Membership.ViewModels;
+using Spd.Resource.Organizations;
 
-namespace Spd.Resource.Organizations
+namespace Spd.Manager.Membership.OrgRegistration
 {
     public class Mappings : Profile
     {

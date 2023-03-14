@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Spd.Manager.Membership.ViewModels;
 
 namespace Spd.Presentation.Screening.Controllers
 {
@@ -42,5 +41,14 @@ namespace Spd.Presentation.Screening.Controllers
         public string PostLogoutRedirectUri { get; set; } = null;
         public string ResponseType { get; set; } = "code";
         public string Scope { get; set; } = "openid profile email offline_access";
+    }
+
+    public class BCeIdConfigurationResponse
+    {
+        public string Issuer { get; set; }
+        public string ClientId { get; set; }
+        public string ResponseType { get; set; }
+        public string Scope { get; set; }
+        public string PostLogoutRedirectUri { get; set; }
     }
 }
