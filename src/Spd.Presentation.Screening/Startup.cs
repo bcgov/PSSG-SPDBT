@@ -51,6 +51,7 @@ namespace Spd.Presentation.Screening
                 });
             ;
 
+            services.ConfigureAuthentication(configuration);
             services.AddAutoMapper(assemblies);
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies));
             services.AddDistributedMemoryCache();
@@ -80,7 +81,9 @@ namespace Spd.Presentation.Screening
 
             app.UseStaticFiles();
             app.UseRouting();
-
+            app.UseAuthentication();
+            app.UseMiddleware<UsersMiddleware>();
+            app.UseAuthorization();
             app.ConfigureComponentPipeline(configuration, hostEnvironment, assemblies);
 
             app.MapControllerRoute(
