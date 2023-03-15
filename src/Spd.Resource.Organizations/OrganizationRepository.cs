@@ -14,7 +14,7 @@ namespace Spd.Resource.Organizations
             _mapper = mapper;
         }
 
-        public async Task<bool> RegisterAsync(CreateRegistrationCmd createRegistrationCmd, CancellationToken cancellationToken)
+        public async Task<bool> AddRegistrationAsync(CreateRegistrationCmd createRegistrationCmd, CancellationToken cancellationToken)
         {
             string key;
             if (createRegistrationCmd.RegistrationTypeCode == RegistrationTypeCode.Employee)
@@ -50,6 +50,39 @@ namespace Spd.Resource.Organizations
             return _mapper.Map<UserCmdResponse>(user);
         }
 
+        public async Task<UserCmdResponse> UpdateUserAsync(UpdateUserCmd updateUserCmd, CancellationToken cancellationToken)
+        {
+            var user = GetUserById(updateUserCmd.Id);
+            //spd_portaluser userUpdated = _mapper.Map<spd_portaluser>(updateUserCmd);
+            user.spd_surname = updateUserCmd.LastName;
+            user.spd_firstname = updateUserCmd.FirstName;
+            //spd_role? role = _dynaContext.LookupRole(updateUserCmd.ContactAuthorizationTypeCode.ToString());
+            //if (role != null)
+            //{
+            //    _dynaContext.SetLink(role, nameof(role.spd_spd_role_spd_portaluser), user);
+            //}
+            _dynaContext.UpdateObject(user);
+            await _dynaContext.SaveChangesAsync(cancellationToken);
+            return _mapper.Map<UserCmdResponse>(user);
+
+
+            //var organization = GetOrganizationById(updateUserCmd.OrganizationId);
+            //spd_portaluser user = _mapper.Map<spd_portaluser>(updateUserCmd);
+
+            //_dynaContext.SetLink(user, nameof(spd_portaluser.spd_OrganizationId), organization);
+            //_dynaContext.UpdateObject(user);
+            //await _dynaContext.SaveChangesAsync(cancellationToken);
+            //return _mapper.Map<UserCmdResponse>(user);
+        }
+
+        public async Task DeleteUserAsync(Guid userId, CancellationToken cancellationToken)
+        {
+            var user = GetUserById(userId);
+            user.statecode = 0;
+            _dynaContext.UpdateObject(user);
+            await _dynaContext.SaveChangesAsync(cancellationToken);
+        }
+
         public async Task<UserCmdResponse> GetUserAsync(Guid userId, CancellationToken cancellationToken)
         {
             var user = GetUserById(userId);
@@ -62,18 +95,12 @@ namespace Spd.Resource.Organizations
             return _mapper.Map<IEnumerable<UserCmdResponse>>(users);
         }
 
-        //public async Task OrgUserDeleteAsync(Guid userId, CancellationToken cancellationToken)
-        //{
-        //    var user = GetUserById(userId);
-        //    user.statuscode = 0;
-        //}
-
         private account GetOrganizationById(Guid organizationId)
         {
             var account = _dynaContext.accounts
                 .Where(a => a.accountid == organizationId)
                 .FirstOrDefault();
-            if (account == null) throw new Exception("cannot find the organization with organizationId.");
+            if (account == null) throw new Exception($"Cannot find the organization with organizationId {organizationId}");
             return account;
         }
         private spd_portaluser GetUserById(Guid userId)
@@ -81,15 +108,15 @@ namespace Spd.Resource.Organizations
             var user = _dynaContext.spd_portalusers
                 .Where(a => a.spd_portaluserid == userId)
                 .FirstOrDefault();
-            if (user == null) throw new Exception("cannot find the user with userId.");
+            if (user == null) throw new Exception($"Cannot find the user with userId {userId}");
             return user;
         }
         private IEnumerable<spd_portaluser> GetUsersById(Guid organizationId)
         {
             var users = _dynaContext.spd_portalusers
-                .Where(a => a._spd_organizationid_value == organizationId)
+                .Where(a => a._spd_organizationid_value == organizationId && a.statecode == 1)
                 .ToList();
-            if (users == null) throw new Exception("cannot find the users with organizationId.");
+            if (users == null) throw new Exception($"Cannot find the users with organizationId {organizationId}");
             return users;
         }
     }

@@ -15,7 +15,7 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 		<app-dashboard-header title="Organization Name" subtitle="Security Screening Portal"></app-dashboard-header>
 		<section class="step-section my-4 p-md-4 p-sm-0">
 			<div class="row">
-				<div class="col-xl-9 col-lg-8 col-md-7 col-sm-12">
+				<div class="col-xl-8 col-lg-8 col-md-7 col-sm-12">
 					<h2 class="mb-2 fw-normal">
 						Manage Authorized Users <mat-icon (click)="manageUsersInfo()">info</mat-icon>
 						<div class="mt-2 fs-5 fw-light">
@@ -24,8 +24,8 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 						</div>
 					</h2>
 				</div>
-				<div class="col-xl-2 col-lg-3 col-md-4 col-sm-12 my-auto">
-					<ng-container *ngIf="addAllowed; else addNotAllowed">
+				<div class="col-xl-3 col-lg-3 col-md-4 col-sm-12 my-auto" *ngIf="addAllowed">
+					<ng-container *ngIf="addAllowed == true; else addNotAllowed">
 						<button mat-flat-button color="primary" class="large w-100 mb-2" (click)="onAddUser()">Add User</button>
 					</ng-container>
 					<ng-template #addNotAllowed>
@@ -65,7 +65,7 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 										<div class="col-lg-1 col-md-1 col-sm-10"></div>
 										<div class="col-lg-3 col-md-3">
 											<small class="d-block text-muted">Phone Number</small>
-											<strong>{{ user.phoneNumber + '' | mask : appConstants.phone.displayMask | default }}</strong>
+											<strong>{{ user.phoneNumber || '' | mask : appConstants.phone.displayMask | default }}</strong>
 										</div>
 										<div class="col-lg-3 col-md-3">
 											<small class="d-block text-muted mt-2 mt-md-0">Job Title</small>
@@ -121,13 +121,13 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 	],
 })
 export class UsersComponent {
+	readonly MAX_NUMBER_OF_USERS = 99; //6;
 	title: string = '';
 	appConstants = SPD_CONSTANTS;
-	readonly MAX_NUMBER_OF_USERS = 6;
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	authorizationTypes = ContactAuthorizationTypes;
 
-	addAllowed = false;
+	addAllowed: boolean | null = null;
 	startAt = SPD_CONSTANTS.date.birthDateStartAt;
 	matcher = new FormErrorStateMatcher();
 
@@ -145,14 +145,7 @@ export class UsersComponent {
 	) {}
 
 	ngOnInit(): void {
-		this.setAllowedToAdd();
-		//TODO replace with proper org id
-		this.orgUserService
-			.apiOrgUsersOrganizationIdGet({ organizationId: '4165bdfe-7cb4-ed11-b83e-00505683fbf4' })
-			.pipe()
-			.subscribe((res: Array<OrgUserResponse>) => {
-				this.usersList = res;
-			});
+		this.loadListOfUsers();
 	}
 
 	onAddUser(): void {
@@ -188,34 +181,12 @@ export class UsersComponent {
 						.apiOrgUserUserIdDelete({ userId: user.id! })
 						.pipe()
 						.subscribe((_res) => {
+							this.usersList.splice(
+								this.usersList.findIndex((item) => item.id == user.id!),
+								1
+							);
 							this.hotToast.success('User was successfully deleted');
 						});
-				}
-			});
-	}
-
-	private setAllowedToAdd(): void {
-		this.addAllowed = this.usersList.length >= this.MAX_NUMBER_OF_USERS ? false : true;
-	}
-
-	private userDialog(dialogOptions: UserDialogData, isCreate: boolean): void {
-		this.dialog
-			.open(MaintainUserModalComponent, {
-				width: '800px',
-				data: dialogOptions,
-			})
-			.afterClosed()
-			.subscribe((res) => {
-				if (res) {
-					if (isCreate) {
-						// Add new user
-						this.usersList.push(res.data);
-						this.hotToast.success('User was successfully added');
-					} else {
-						// Update user info
-						this.hotToast.success('User was successfully updated');
-					}
-					this.setAllowedToAdd();
 				}
 			});
 	}
@@ -229,7 +200,8 @@ export class UsersComponent {
 
 	manageUsersInfo(): void {
 		const title = 'What can authorized users do?';
-		const message = `<strong>Primary Authorized Users</strong>
+		const message = `
+		<strong>Primary Authorized Users</strong>
 		<ul>
 		<li>Add or remove others in their organization from the authorized contact roles</li>		
 		<li>Transfer their primary authority to another additional authorized contact</li>		
@@ -261,8 +233,54 @@ export class UsersComponent {
 
 	getDesc(val: string | undefined): string | null {
 		if (!val) return null;
+
 		const find = this.authorizationTypes.find((element) => element.code == val);
 		if (find) return find.desc;
 		return null;
+	}
+
+	private loadListOfUsers(): void {
+		//TODO replace with proper org id
+		this.orgUserService
+			.apiOrgUsersOrganizationIdGet({ organizationId: '4165bdfe-7cb4-ed11-b83e-00505683fbf4' })
+			.pipe()
+			.subscribe((res: Array<OrgUserResponse>) => {
+				this.usersList = res;
+				this.setAllowedToAdd();
+			});
+	}
+
+	private setAllowedToAdd(): void {
+		this.addAllowed = this.usersList.length >= this.MAX_NUMBER_OF_USERS ? false : true;
+	}
+
+	private userDialog(dialogOptions: UserDialogData, isCreate: boolean): void {
+		this.dialog
+			.open(MaintainUserModalComponent, {
+				width: '800px',
+				data: dialogOptions,
+			})
+			.afterClosed()
+			.subscribe((resp) => {
+				if (resp) {
+					if (isCreate) {
+						// Add new user
+						this.usersList.push(resp.data);
+						this.hotToast.success('User was successfully added');
+					} else {
+						// Update user info
+
+						const userIndex = this.usersList.findIndex((item) => item.id == dialogOptions.user.id!);
+						console.log('userIndex', userIndex);
+						console.log('resp', resp);
+						if (userIndex >= 0) {
+							this.usersList[userIndex] = resp.data;
+						}
+
+						this.hotToast.success('User was successfully updated');
+					}
+					this.setAllowedToAdd();
+				}
+			});
 	}
 }

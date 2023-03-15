@@ -2,11 +2,12 @@
 {
     public interface IOrganizationRepository
     {
-        Task<bool> RegisterAsync(CreateRegistrationCmd createRegistrationCmd, CancellationToken cancellationToken);
+        Task<bool> AddRegistrationAsync(CreateRegistrationCmd createRegistrationCmd, CancellationToken cancellationToken);
         Task<UserCmdResponse> AddUserAsync(CreateUserCmd createUserCmd, CancellationToken cancellationToken);
+        Task<UserCmdResponse> UpdateUserAsync(UpdateUserCmd createUserCmd, CancellationToken cancellationToken);
+        Task DeleteUserAsync(Guid userId, CancellationToken cancellationToken);
         Task<UserCmdResponse> GetUserAsync(Guid userId, CancellationToken cancellationToken);
         Task<IEnumerable<UserCmdResponse>> GetUsersAsync(Guid organizationId, CancellationToken cancellationToken);
-        //Task<Unit> OrgUserDeleteAsync(Guid userId, CancellationToken cancellationToken);
     }
 
     public record CreateRegistrationCmd

@@ -6,7 +6,10 @@ namespace Spd.Manager.Membership.OrgUser
 {
     public class OrgUserManager
         : IRequestHandler<OrgUserCreateCommand, OrgUserResponse>,
+        IRequestHandler<OrgUserUpdateCommand, OrgUserResponse>,
         IRequestHandler<OrgUserGetCommand, OrgUserResponse>,
+        IRequestHandler<OrgUserListCommand, IEnumerable<OrgUserResponse>>,
+        IRequestHandler<OrgUserDeleteCommand, Unit>,
         IOrgUserManager
     {
         private readonly IOrganizationRepository _organizationRepository;
@@ -26,8 +29,8 @@ namespace Spd.Manager.Membership.OrgUser
 
         public async Task<OrgUserResponse> Handle(OrgUserUpdateCommand request, CancellationToken cancellationToken)
         {
-            var updateOrgUser = _mapper.Map<CreateUserCmd>(request.OrgUserUpdateRequest);
-            var response = await _organizationRepository.AddUserAsync(updateOrgUser, cancellationToken);
+            var updateOrgUser = _mapper.Map<UpdateUserCmd>(request.OrgUserUpdateRequest);
+            var response = await _organizationRepository.UpdateUserAsync(updateOrgUser, cancellationToken);
             return _mapper.Map<OrgUserResponse>(response);
         }
 
@@ -39,13 +42,13 @@ namespace Spd.Manager.Membership.OrgUser
 
         public async Task<IEnumerable<OrgUserResponse>> Handle(OrgUserListCommand request, CancellationToken cancellationToken)
         {
-            var response = await _organizationRepository.GetUsersAsync(request.organizationId, cancellationToken);
+            var response = await _organizationRepository.GetUsersAsync(request.OrganizationId, cancellationToken);
             return _mapper.Map<IEnumerable<OrgUserResponse>>(response);
         }
 
         public async Task<Unit> Handle(OrgUserDeleteCommand request, CancellationToken cancellationToken)
         {
-           // await _organizationRepository.OrgUserDeleteAsync(request.userId, cancellationToken);
+            await _organizationRepository.DeleteUserAsync(request.UserId, cancellationToken);
             return default;
         }
     }

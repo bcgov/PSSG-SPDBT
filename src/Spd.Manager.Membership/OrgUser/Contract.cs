@@ -13,10 +13,10 @@ namespace Spd.Manager.Membership.OrgUser
     }
 
     public record OrgUserCreateCommand(OrgUserCreateRequest OrgUserCreateRequest) : IRequest<OrgUserResponse>;
-    public record OrgUserUpdateCommand(Guid userId, OrgUserUpdateRequest OrgUserUpdateRequest) : IRequest<OrgUserResponse>;
+    public record OrgUserUpdateCommand(Guid UserId, OrgUserUpdateRequest OrgUserUpdateRequest) : IRequest<OrgUserResponse>;
     public record OrgUserGetCommand(Guid UserId) : IRequest<OrgUserResponse>;
-    public record OrgUserListCommand(Guid organizationId) : IRequest<IEnumerable<OrgUserResponse>>;
-    public record OrgUserDeleteCommand(Guid userId) : IRequest<Unit>;
+    public record OrgUserListCommand(Guid OrganizationId) : IRequest<IEnumerable<OrgUserResponse>>;
+    public record OrgUserDeleteCommand(Guid UserId) : IRequest<Unit>;
 
     public record OrgUserCreateRequest
     {

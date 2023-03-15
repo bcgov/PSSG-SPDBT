@@ -19,7 +19,7 @@ namespace Spd.Manager.Membership.OrgRegistration
         public async Task<Unit> Handle(CreateOrgRegistrationCommand request, CancellationToken cancellationToken)
         {
             var createOrgRegistration = _mapper.Map<CreateRegistrationCmd>(request.CreateOrgRegistrationRequest);
-            await _organizationRepository.RegisterAsync(createOrgRegistration, cancellationToken);
+            await _organizationRepository.AddRegistrationAsync(createOrgRegistration, cancellationToken);
 
             return default;
         }

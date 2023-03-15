@@ -9,7 +9,7 @@ import { RequestBuilder } from '../request-builder';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
-import { BCeIdConfigurationResponse } from '../models/b-ce-id-configuration-response';
+import { BCeIdConfigurationResponseActionResult } from '../models/b-ce-id-configuration-response-action-result';
 
 @Injectable({
   providedIn: 'root',
@@ -36,7 +36,7 @@ export class BCeIdConfigurationService extends BaseService {
   apiBceidConfigurationGet$Response(params?: {
     context?: HttpContext
   }
-): Observable<StrictHttpResponse<BCeIdConfigurationResponse>> {
+): Observable<StrictHttpResponse<BCeIdConfigurationResponseActionResult>> {
 
     const rb = new RequestBuilder(this.rootUrl, BCeIdConfigurationService.ApiBceidConfigurationGetPath, 'get');
     if (params) {
@@ -49,7 +49,7 @@ export class BCeIdConfigurationService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<BCeIdConfigurationResponse>;
+        return r as StrictHttpResponse<BCeIdConfigurationResponseActionResult>;
       })
     );
   }
@@ -63,10 +63,10 @@ export class BCeIdConfigurationService extends BaseService {
   apiBceidConfigurationGet(params?: {
     context?: HttpContext
   }
-): Observable<BCeIdConfigurationResponse> {
+): Observable<BCeIdConfigurationResponseActionResult> {
 
     return this.apiBceidConfigurationGet$Response(params).pipe(
-      map((r: StrictHttpResponse<BCeIdConfigurationResponse>) => r.body as BCeIdConfigurationResponse)
+      map((r: StrictHttpResponse<BCeIdConfigurationResponseActionResult>) => r.body as BCeIdConfigurationResponseActionResult)
     );
   }
 

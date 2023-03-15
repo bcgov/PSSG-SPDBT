@@ -33,20 +33,20 @@ namespace Spd.Presentation.Screening.Controllers
         {
             if (!Guid.TryParse(userId, out Guid userIdGuid))
             {
-                throw new Exception("Invalid User Guid");
+                throw new Exception("Invalid UserId Guid");
             }
             return await _mediator.Send(new OrgUserUpdateCommand(userIdGuid, orgUserUpdateRequest));
         }
 
         [Route("api/org-user/{userId}")]
         [HttpDelete]
-        public ActionResult Delete(string userId)
+        public async Task<ActionResult> DeleteAsync(string userId)
         {
             if (!Guid.TryParse(userId, out Guid userIdGuid))
             {
-                throw new Exception("Invalid User Guid");
+                throw new Exception("Invalid UserId Guid");
             }
-            //await _mediator.Send(new OrgUserDeleteCommand(userIdGuid));
+            await _mediator.Send(new OrgUserDeleteCommand(userIdGuid));
             return Ok();
         }
 
@@ -57,24 +57,8 @@ namespace Spd.Presentation.Screening.Controllers
         {
             if (!Guid.TryParse(userId, out Guid userIdGuid))
             {
-                throw new Exception("Invalid User Guid");
+                throw new Exception("Invalid UserId Guid");
             }
-            /*
-            var org = new OrgUserResponse
-            {
-                ContactAuthorizationTypeCode = ContactAuthorizationTypeCode.Primary,
-                LastName = "test",
-                FirstName = "jane",
-                Email = "jane@test.com",
-                PhoneNumber = "2501112222",
-                JobTitle = "Teacher",
-                DateOfBirth = new DateTimeOffset(2008, 5, 1, 8, 6, 32, new TimeSpan(1, 0, 0)),
-                Id = Guid.Parse("8a73cf82-47d7-4d9c-9541-88f659705903"),
-                OrganizationId = Guid.Parse("4165bdfe-7cb4-ed11-b83e-00505683fbf4")
-            };
-
-            return org;
-            */
 
             return await _mediator.Send(new OrgUserGetCommand(userIdGuid));
         }
@@ -86,39 +70,8 @@ namespace Spd.Presentation.Screening.Controllers
         {
             if (!Guid.TryParse(organizationId, out Guid organizationIdGuid))
             {
-                throw new Exception("Invalid Organization Guid");
+                throw new Exception("Invalid OrganizationId Guid");
             }
-
-            /*
-            List<OrgUserResponse> orgs = new List<OrgUserResponse>();
-            orgs.Add(new OrgUserResponse
-            {
-                ContactAuthorizationTypeCode = ContactAuthorizationTypeCode.Primary,
-                LastName = "test",
-                FirstName = "jane",
-                Email = "jane@test.com",
-                PhoneNumber = "2501112222",
-                JobTitle = "Teacher",
-                DateOfBirth = new DateTimeOffset(2008, 5, 1, 8, 6, 32, new TimeSpan(1, 0, 0)),
-                Id = Guid.Parse("8a73cf82-47d7-4d9c-9541-88f659705903"),
-                OrganizationId = Guid.Parse("4165bdfe-7cb4-ed11-b83e-00505683fbf4")
-            });
-            orgs.Add(new OrgUserResponse
-            {
-                ContactAuthorizationTypeCode = ContactAuthorizationTypeCode.Contact,
-                LastName = "Test",
-                FirstName = "James",
-                Email = "james@test.com",
-                PhoneNumber = "2504442222",
-                JobTitle = "Teacher",
-                DateOfBirth = new DateTimeOffset(2008, 5, 1, 8, 6, 32, new TimeSpan(1, 0, 0)),
-                Id = Guid.Parse("ebbd09c8-b012-4617-b4a4-ea104283a4ec"),
-                OrganizationId = Guid.Parse("4165bdfe-7cb4-ed11-b83e-00505683fbf4")
-            });
-
-            return orgs;
-            */
-
 
             return await _mediator.Send(new OrgUserListCommand(organizationIdGuid));
         }
