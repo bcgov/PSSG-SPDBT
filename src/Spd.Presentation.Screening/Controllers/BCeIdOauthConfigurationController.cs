@@ -18,7 +18,6 @@ namespace Spd.Presentation.Screening.Controllers
 
         [Route("api/bceid-configuration")]
         [HttpGet]
-        [Produces("application/json")]
         public async Task<ActionResult<BCeIdConfigurationResponse>> Get()
         {
             BCeIdConfigurationResponse resp = new BCeIdConfigurationResponse
