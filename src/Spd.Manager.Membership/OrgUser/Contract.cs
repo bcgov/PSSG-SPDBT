@@ -7,10 +7,16 @@ namespace Spd.Manager.Membership.OrgUser
     {
         public Task<OrgUserResponse> Handle(OrgUserCreateCommand request, CancellationToken cancellationToken);
         public Task<OrgUserResponse> Handle(OrgUserUpdateCommand request, CancellationToken cancellationToken);
+        public Task<OrgUserResponse> Handle(OrgUserGetCommand request, CancellationToken cancellationToken);
+        public Task<IEnumerable<OrgUserResponse>> Handle(OrgUserListCommand request, CancellationToken cancellationToken);
+        public Task<Unit> Handle(OrgUserDeleteCommand request, CancellationToken cancellationToken);
     }
 
     public record OrgUserCreateCommand(OrgUserCreateRequest OrgUserCreateRequest) : IRequest<OrgUserResponse>;
     public record OrgUserUpdateCommand(Guid userId, OrgUserUpdateRequest OrgUserUpdateRequest) : IRequest<OrgUserResponse>;
+    public record OrgUserGetCommand(Guid userId) : IRequest<OrgUserResponse>;
+    public record OrgUserListCommand(Guid organizationId) : IRequest<IEnumerable<OrgUserResponse>>;
+    public record OrgUserDeleteCommand(Guid userId) : IRequest<Unit>;
 
     public record OrgUserCreateRequest
     {

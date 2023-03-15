@@ -4,7 +4,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 	name: 'fullname',
 })
 export class FullnamePipe implements PipeTransform {
-	public transform(model: { firstName: string; lastName: string; [key: string]: any }): string | null {
+	public transform(model: any): string | null {
 		if (!model) {
 			return null;
 		}

@@ -23,9 +23,29 @@ namespace Spd.Manager.Membership.OrgUser
             return _mapper.Map<OrgUserResponse>(response);
         }
 
-        public Task<OrgUserResponse> Handle(OrgUserUpdateCommand request, CancellationToken cancellationToken)
+        public async Task<OrgUserResponse> Handle(OrgUserUpdateCommand request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var updateOrgUser = _mapper.Map<CreateUserCmd>(request.OrgUserUpdateRequest);
+            var response = await _organizationRepository.AddUserAsync(updateOrgUser, cancellationToken);
+            return _mapper.Map<OrgUserResponse>(response);
+        }
+
+        public async Task<OrgUserResponse> Handle(OrgUserGetCommand request, CancellationToken cancellationToken)
+        {
+            var response = await _organizationRepository.GetUserAsync(request.userId, cancellationToken);
+            return _mapper.Map<OrgUserResponse>(response);
+        }
+
+        public async Task<IEnumerable<OrgUserResponse>> Handle(OrgUserListCommand request, CancellationToken cancellationToken)
+        {
+            var response = await _organizationRepository.GetUsersAsync(request.organizationId, cancellationToken);
+            return _mapper.Map<IEnumerable<OrgUserResponse>>(response);
+        }
+
+        public Task<Unit> Handle(OrgUserDeleteCommand request, CancellationToken cancellationToken)
+        {
+            await _organizationRepository.OrgUserDeleteAsync(request.organizationId, cancellationToken);
+            return default;
         }
     }
 }

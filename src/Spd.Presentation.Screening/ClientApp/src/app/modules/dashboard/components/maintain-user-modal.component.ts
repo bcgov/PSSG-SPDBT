@@ -1,16 +1,10 @@
 import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import {
-	ContactAuthorizationTypeCode,
-	OrgUserCreateRequest,
-	OrgUserResponse,
-	OrgUserUpdateRequest,
-} from 'src/app/api/models';
+import { ContactAuthorizationTypeCode, OrgUserResponse, OrgUserUpdateRequest } from 'src/app/api/models';
 import { OrgUserService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
-import { UserModel } from './users.component';
 
 export const ContactAuthorizationTypes = [
 	{ desc: 'Primary Authorized Contact', code: ContactAuthorizationTypeCode.Primary },
@@ -18,7 +12,7 @@ export const ContactAuthorizationTypes = [
 ];
 
 export interface UserDialogData {
-	user: UserModel;
+	user: OrgUserResponse;
 }
 
 @Component({
@@ -150,10 +144,12 @@ export class MaintainUserModalComponent {
 		this.form.markAllAsTouched();
 		if (this.form.valid) {
 			const formData = this.form.value;
+			const body: OrgUserUpdateRequest = { ...formData };
 			if (this.isEdit) {
-				const body: OrgUserUpdateRequest = { ...formData };
+				body.id = this.dialogData.user.id as string;
+				body.organizationId = this.dialogData.user.organizationId;
 				this.orgUserService
-					.apiOrgUserPut({ userId: formData.id, body })
+					.apiOrgUserUserIdPut({ userId: body.id, body })
 					.pipe()
 					.subscribe((resp: OrgUserResponse) => {
 						this.dialogRef.close({
@@ -161,7 +157,6 @@ export class MaintainUserModalComponent {
 						});
 					});
 			} else {
-				const body: OrgUserCreateRequest = { ...formData };
 				body.organizationId = '4165bdfe-7cb4-ed11-b83e-00505683fbf4'; // TODO replace with proper org id
 				this.orgUserService
 					.apiOrgUserPost({ body })

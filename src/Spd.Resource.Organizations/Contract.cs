@@ -4,6 +4,8 @@
     {
         Task<bool> RegisterAsync(CreateRegistrationCmd createRegistrationCmd, CancellationToken cancellationToken);
         Task<UserCmdResponse> AddUserAsync(CreateUserCmd createUserCmd, CancellationToken cancellationToken);
+        Task<UserCmdResponse> GetUserAsync(Guid userId, CancellationToken cancellationToken);
+        Task<IEnumerable<UserCmdResponse>> GetUsersAsync(Guid organizationId, CancellationToken cancellationToken);
     }
 
     public record CreateRegistrationCmd

@@ -50,6 +50,24 @@ namespace Spd.Resource.Organizations
             return _mapper.Map<UserCmdResponse>(user);
         }
 
+        public async Task<UserCmdResponse> GetUserAsync(Guid userId, CancellationToken cancellationToken)
+        {
+            var user = GetUserById(userId);
+            return _mapper.Map<UserCmdResponse>(user);
+        }
+
+        public async Task<IEnumerable<UserCmdResponse>> GetUsersAsync(Guid organizationId, CancellationToken cancellationToken)
+        {
+            var users = GetUsersById(organizationId);
+            return _mapper.Map<IEnumerable<UserCmdResponse>>(users);
+        }
+
+        public async Task OrgUserDeleteAsync(Guid userId, CancellationToken cancellationToken)
+        {
+            var user = GetUserById(userId);
+            user.statuscode = 0;
+        }
+
         private account GetOrganizationById(Guid organizationId)
         {
             var account = _dynaContext.accounts
@@ -57,6 +75,22 @@ namespace Spd.Resource.Organizations
                 .FirstOrDefault();
             if (account == null) throw new Exception("cannot find the organization with organizationId.");
             return account;
+        }
+        private spd_portaluser GetUserById(Guid userId)
+        {
+            var user = _dynaContext.spd_portalusers
+                .Where(a => a.spd_portaluserid == userId)
+                .FirstOrDefault();
+            if (user == null) throw new Exception("cannot find the user with userId.");
+            return user;
+        }
+        private IEnumerable<spd_portaluser> GetUsersById(Guid organizationId)
+        {
+            var users = _dynaContext.spd_portalusers
+                .Where(a => a._spd_organizationid_value == organizationId)
+                .ToList();
+            if (users == null) throw new Exception("cannot find the users with organizationId.");
+            return users;
         }
     }
 }
