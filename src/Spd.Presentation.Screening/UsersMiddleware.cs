@@ -13,6 +13,7 @@ namespace Spd.Presentation.Screening
 
         public async Task InvokeAsync(HttpContext context, IMediator mediator)
         {
+            var isAuthenticated = context.User.Identity.IsAuthenticated;
             var user = context.User;
             await next(context);
         }

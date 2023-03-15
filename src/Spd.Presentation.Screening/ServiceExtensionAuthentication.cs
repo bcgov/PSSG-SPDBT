@@ -15,12 +15,15 @@ namespace Spd.Presentation.Screening
             .GetSection(BCeIDAuthenticationConfiguration.Name)
             .Get<BCeIDAuthenticationConfiguration>();
 
+            if (bceidConfig == null)
+                throw new Exception("bcediAuthentication configuration is not set correctly.");
+
             services.AddAuthentication(options =>
             {
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
             {
-                options.MetadataAddress = "https://dev.loginproxy.gov.bc.ca/auth/realms/standard/.well-known/openid-configuration";
+                options.MetadataAddress = $"{bceidConfig.Authority}/.well-known/openid-configuration";
                 options.Authority= bceidConfig?.Authority;
                 options.RequireHttpsMetadata = true;
                 options.TokenValidationParameters = new TokenValidationParameters
@@ -29,8 +32,8 @@ namespace Spd.Presentation.Screening
                     ValidAudiences = bceidConfig?.Audiences,
                     ValidateIssuer = true,
                     ValidIssuers = new[] { bceidConfig?.Issuer },
-                    //RequireSignedTokens = true,
-                    //RequireAudience = true,
+                    RequireSignedTokens = true,
+                    RequireAudience = true,
                     RequireExpirationTime = true,
                     ValidateLifetime = true,
                     ClockSkew = TimeSpan.FromSeconds(60),
@@ -46,9 +49,9 @@ namespace Spd.Presentation.Screening
                 options.AddPolicy(JwtBearerDefaults.AuthenticationScheme, policy =>
                 {
                     policy.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-                        .RequireAuthenticatedUser()
-                        .RequireClaim("user_role")
-                        .RequireClaim("user_team");
+                        .RequireAuthenticatedUser();
+                        //.RequireClaim("user_role")
+                        //.RequireClaim("user_team");
                 });
                 options.DefaultPolicy = options.GetPolicy(JwtBearerDefaults.AuthenticationScheme) ?? null!;
             });
