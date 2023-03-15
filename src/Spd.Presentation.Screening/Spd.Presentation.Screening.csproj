@@ -11,6 +11,7 @@
 	<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
 	<OutputType>Exe</OutputType>
 	<UserSecretsId>5050035b-d63a-4c6e-a973-fe8e5d35829b</UserSecretsId>
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
