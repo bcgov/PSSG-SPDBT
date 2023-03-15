@@ -6,6 +6,7 @@ namespace Spd.Manager.Membership.OrgUser
 {
     public class OrgUserManager
         : IRequestHandler<OrgUserCreateCommand, OrgUserResponse>,
+        IRequestHandler<OrgUserGetCommand, OrgUserResponse>,
         IOrgUserManager
     {
         private readonly IOrganizationRepository _organizationRepository;
@@ -32,7 +33,7 @@ namespace Spd.Manager.Membership.OrgUser
 
         public async Task<OrgUserResponse> Handle(OrgUserGetCommand request, CancellationToken cancellationToken)
         {
-            var response = await _organizationRepository.GetUserAsync(request.userId, cancellationToken);
+            var response = await _organizationRepository.GetUserAsync(request.UserId, cancellationToken);
             return _mapper.Map<OrgUserResponse>(response);
         }
 
@@ -42,9 +43,9 @@ namespace Spd.Manager.Membership.OrgUser
             return _mapper.Map<IEnumerable<OrgUserResponse>>(response);
         }
 
-        public Task<Unit> Handle(OrgUserDeleteCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(OrgUserDeleteCommand request, CancellationToken cancellationToken)
         {
-            await _organizationRepository.OrgUserDeleteAsync(request.organizationId, cancellationToken);
+           // await _organizationRepository.OrgUserDeleteAsync(request.userId, cancellationToken);
             return default;
         }
     }

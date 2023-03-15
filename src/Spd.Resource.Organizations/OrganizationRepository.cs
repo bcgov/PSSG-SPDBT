@@ -62,11 +62,11 @@ namespace Spd.Resource.Organizations
             return _mapper.Map<IEnumerable<UserCmdResponse>>(users);
         }
 
-        public async Task OrgUserDeleteAsync(Guid userId, CancellationToken cancellationToken)
-        {
-            var user = GetUserById(userId);
-            user.statuscode = 0;
-        }
+        //public async Task OrgUserDeleteAsync(Guid userId, CancellationToken cancellationToken)
+        //{
+        //    var user = GetUserById(userId);
+        //    user.statuscode = 0;
+        //}
 
         private account GetOrganizationById(Guid organizationId)
         {

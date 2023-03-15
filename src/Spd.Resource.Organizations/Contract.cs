@@ -6,6 +6,7 @@
         Task<UserCmdResponse> AddUserAsync(CreateUserCmd createUserCmd, CancellationToken cancellationToken);
         Task<UserCmdResponse> GetUserAsync(Guid userId, CancellationToken cancellationToken);
         Task<IEnumerable<UserCmdResponse>> GetUsersAsync(Guid organizationId, CancellationToken cancellationToken);
+        //Task<Unit> OrgUserDeleteAsync(Guid userId, CancellationToken cancellationToken);
     }
 
     public record CreateRegistrationCmd

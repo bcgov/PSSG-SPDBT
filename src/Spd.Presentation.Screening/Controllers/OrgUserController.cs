@@ -46,7 +46,7 @@ namespace Spd.Presentation.Screening.Controllers
             {
                 throw new Exception("Invalid User Guid");
             }
-            await mediator.Send(new OrgUserDeleteCommand(userIdGuid));
+            //await _mediator.Send(new OrgUserDeleteCommand(userIdGuid));
             return Ok();
         }
 
