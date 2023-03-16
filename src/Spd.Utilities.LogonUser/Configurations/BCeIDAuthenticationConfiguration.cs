@@ -11,7 +11,7 @@ namespace Spd.Utilities.LogonUser.Configurations
         public string Issuer { get; set; }
 
         [Required]
-        public List<string> Audiences { get; set; }
+        public string Audiences { get; set; }
 
         public const string Name = "BCeIDAuthentication";
 
