@@ -6,6 +6,9 @@ using System.Reflection;
 using System.Text.Json.Serialization;
 using Spd.Utilities.Address;
 using Spd.Presentation.Screening.Controllers;
+using Spd.Utilities.LogonUser;
+using System.Security.Principal;
+using Spd.Utilities.LogonUser.Configurations;
 
 namespace Spd.Presentation.Screening
 {
@@ -51,6 +54,10 @@ namespace Spd.Presentation.Screening
                 });
             ;
 
+            services.ConfigureAuthentication(configuration);
+            services.AddHttpContextAccessor();
+            services.AddTransient<IPrincipal>(provider => provider.GetService<IHttpContextAccessor>()?.HttpContext?.User);
+
             services.AddAutoMapper(assemblies);
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies));
             services.AddDistributedMemoryCache();
@@ -58,13 +65,6 @@ namespace Spd.Presentation.Screening
               .AddDynamicsProxy(configuration)
             //.AddStorageProxy(builder.Configuration)
               .AddAddressAutoComplete(configuration);
-
-            //bceid configuration
-            var options = configuration.GetSection("bceid").Get<BCeIDConfiguration>();
-            if (options is null || string.IsNullOrWhiteSpace(options.Issuer) || string.IsNullOrWhiteSpace(options.ClientId) || string.IsNullOrWhiteSpace(options.PostLogoutRedirectUri))
-                throw new Exception("BCeID configuration is not correctly set.");
-
-            services.Configure<BCeIDConfiguration>(opts => configuration.GetSection("bceid").Bind(opts));
 
             //config component services
             services.ConfigureComponentServices(configuration, hostEnvironment, assemblies);
@@ -80,7 +80,9 @@ namespace Spd.Presentation.Screening
 
             app.UseStaticFiles();
             app.UseRouting();
-
+            app.UseAuthentication();
+            app.UseMiddleware<UsersMiddleware>();
+            app.UseAuthorization();
             app.ConfigureComponentPipeline(configuration, hostEnvironment, assemblies);
 
             app.MapControllerRoute(
