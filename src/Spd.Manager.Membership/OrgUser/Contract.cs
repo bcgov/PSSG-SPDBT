@@ -18,7 +18,7 @@ namespace Spd.Manager.Membership.OrgUser
     public record OrgUserListCommand(Guid OrganizationId) : IRequest<OrgUserListResponse>;
     public record OrgUserDeleteCommand(Guid UserId) : IRequest<Unit>;
 
-    public record OrgUserCreateRequest
+    public abstract record OrgUserUpsertRequest
     {
         public Guid OrganizationId { get; set; }
         public ContactAuthorizationTypeCode ContactAuthorizationTypeCode { get; set; }
@@ -29,18 +29,11 @@ namespace Spd.Manager.Membership.OrgUser
         public string? JobTitle { get; set; }
         public string? PhoneNumber { get; set; }
     }
+    public record OrgUserCreateRequest : OrgUserUpsertRequest { }
 
-    public record OrgUserUpdateRequest
+    public record OrgUserUpdateRequest : OrgUserUpsertRequest
     {
         public Guid Id { get; set; }
-        public Guid OrganizationId { get; set; }
-        public ContactAuthorizationTypeCode ContactAuthorizationTypeCode { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
-        public DateTimeOffset? DateOfBirth { get; set; }
-        public string? JobTitle { get; set; }
-        public string? PhoneNumber { get; set; }
     }
 
     public class OrgUserListResponse
@@ -51,19 +44,6 @@ namespace Spd.Manager.Membership.OrgUser
     }
 
     public class OrgUserResponse
-    {
-        public Guid Id { get; set; }
-        public Guid OrganizationId { get; set; }
-        public ContactAuthorizationTypeCode ContactAuthorizationTypeCode { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
-        public DateTimeOffset? DateOfBirth { get; set; }
-        public string? JobTitle { get; set; }
-        public string? PhoneNumber { get; set; }
-    }
-
-    public class OrgUserUpdateResponse
     {
         public Guid Id { get; set; }
         public Guid OrganizationId { get; set; }
