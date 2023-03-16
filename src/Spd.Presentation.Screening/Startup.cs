@@ -66,8 +66,6 @@ namespace Spd.Presentation.Screening
             //.AddStorageProxy(builder.Configuration)
               .AddAddressAutoComplete(configuration);
 
-            services.Configure<BCeIDAuthenticationConfiguration>(opts => configuration.GetSection(BCeIDAuthenticationConfiguration.Name).Bind(opts));
-
             //config component services
             services.ConfigureComponentServices(configuration, hostEnvironment, assemblies);
         }
