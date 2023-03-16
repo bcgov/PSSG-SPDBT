@@ -27,6 +27,7 @@ FROM registry.access.redhat.com/ubi8/dotnet-70-runtime AS final
 WORKDIR /app
 EXPOSE 8080
 ENV ASPNETCORE_URLS=http://*:8080
+ENV ASPNETCORE_ENVIRONMENT Development
 # copy diagnostics tools
 WORKDIR /tools
 COPY --from=net-builder /tools .

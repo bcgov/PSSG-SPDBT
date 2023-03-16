@@ -19279,36 +19279,51 @@
         <Key>
           <PropertyRef Name="spd_findingid" />
         </Key>
+        <Property Name="spd_givenname" Type="Edm.String" Unicode="false" />
         <Property Name="versionnumber" Type="Edm.Int64" />
-        <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
-        <Property Name="_owningteam_value" Type="Edm.Guid" />
+        <Property Name="_owninguser_value" Type="Edm.Guid" />
+        <Property Name="spd_respondentscore" Type="Edm.String" Unicode="false" />
         <Property Name="spd_type" Type="Edm.Int32" />
+        <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
+        <Property Name="spd_location" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_detachment" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_result" Type="Edm.String" Unicode="false" />
+        <Property Name="statuscode" Type="Edm.Int32" />
+        <Property Name="spd_date" Type="Edm.DateTimeOffset" />
+        <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
+        <Property Name="spd_name" Type="Edm.String" Unicode="false" />
+        <Property Name="_modifiedonbehalfby_value" Type="Edm.Guid" />
+        <Property Name="spd_section" Type="Edm.String" Unicode="false" />
+        <Property Name="_spd_contactid_value" Type="Edm.Guid" />
+        <Property Name="spd_birthdate" Type="Edm.DateTimeOffset" />
+        <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
+        <Property Name="spd_lastname" Type="Edm.String" Unicode="false" />
+        <Property Name="_spd_caseid_value" Type="Edm.Guid" />
+        <Property Name="spd_primestatus" Type="Edm.Int32" />
+        <Property Name="_createdby_value" Type="Edm.Guid" />
+        <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
+        <Property Name="_owningteam_value" Type="Edm.Guid" />
+        <Property Name="spd_act" Type="Edm.String" Unicode="false" />
         <Property Name="spd_count" Type="Edm.Int32" />
-        <Property Name="_ownerid_value" Type="Edm.Guid" />
-        <Property Name="spd_csnumber" Type="Edm.String" Unicode="false" />
-        <Property Name="statecode" Type="Edm.Int32" />
-        <Property Name="_modifiedby_value" Type="Edm.Guid" />
         <Property Name="spd_findingid" Type="Edm.Guid" />
         <Property Name="createdon" Type="Edm.DateTimeOffset" />
-        <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
-        <Property Name="_createdby_value" Type="Edm.Guid" />
-        <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
-        <Property Name="_spd_caseid_value" Type="Edm.Guid" />
+        <Property Name="spd_csnumber" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_documenttype" Type="Edm.String" Unicode="false" />
+        <Property Name="_modifiedby_value" Type="Edm.Guid" />
         <Property Name="spd_released" Type="Edm.Int32" />
-        <Property Name="spd_sex" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_givenname" Type="Edm.String" Unicode="false" />
-        <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
-        <Property Name="spd_fps" Type="Edm.String" Unicode="false" />
-        <Property Name="_modifiedonbehalfby_value" Type="Edm.Guid" />
+        <Property Name="spd_lastentry" Type="Edm.DateTimeOffset" />
         <Property Name="_createdonbehalfby_value" Type="Edm.Guid" />
-        <Property Name="spd_name" Type="Edm.String" Unicode="false" />
-        <Property Name="statuscode" Type="Edm.Int32" />
-        <Property Name="_owninguser_value" Type="Edm.Guid" />
-        <Property Name="spd_birthdate" Type="Edm.DateTimeOffset" />
-        <Property Name="_spd_contactid_value" Type="Edm.Guid" />
-        <Property Name="importsequencenumber" Type="Edm.Int32" />
+        <Property Name="spd_description" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_expirydate" Type="Edm.DateTimeOffset" />
+        <Property Name="spd_subsection" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_fps" Type="Edm.String" Unicode="false" />
         <Property Name="_owningbusinessunit_value" Type="Edm.Guid" />
-        <Property Name="spd_lastname" Type="Edm.String" Unicode="false" />
+        <Property Name="importsequencenumber" Type="Edm.Int32" />
+        <Property Name="_ownerid_value" Type="Edm.Guid" />
+        <Property Name="statecode" Type="Edm.Int32" />
+        <Property Name="spd_filelastopened" Type="Edm.DateTimeOffset" />
+        <Property Name="spd_sex" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_filenumber" Type="Edm.String" Unicode="false" />
         <NavigationProperty Name="createdby" Type="mscrm.systemuser" Nullable="false" Partner="lk_spd_finding_createdby">
           <ReferentialConstraint Property="_createdby_value" ReferencedProperty="systemuserid" />
         </NavigationProperty>
@@ -19514,57 +19529,55 @@
         <Key>
           <PropertyRef Name="spd_orgregistrationid" />
         </Key>
-        <Property Name="spd_province" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_country" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_havecontractors" Type="Edm.Int32" />
-        <Property Name="spd_registrationtype" Type="Edm.Int32" />
-        <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
+        <Property Name="_modifiedby_value" Type="Edm.Guid" />
+        <Property Name="spd_email" Type="Edm.String" Unicode="false" />
+        <Property Name="_spd_organizationtypeid_value" Type="Edm.Guid" />
+        <Property Name="spd_deniedreasonemployee" Type="Edm.Int32" />
+        <Property Name="spd_organizationlegalname" Type="Edm.String" Unicode="false" />
+        <Property Name="statuscode" Type="Edm.Int32" />
+        <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
+        <Property Name="spd_authorizedcontactphonenumber" Type="Edm.String" Unicode="false" />
+        <Property Name="_modifiedonbehalfby_value" Type="Edm.Guid" />
+        <Property Name="createdon" Type="Edm.DateTimeOffset" />
         <Property Name="spd_postalcode" Type="Edm.String" Unicode="false" />
-        <Property Name="_owningbusinessunit_value" Type="Edm.Guid" />
-        <Property Name="spd_deniedreasonvolunteer" Type="Edm.Int32" />
-        <Property Name="spd_authorizedcontactemail" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_identityguid" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_province" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_authorizedcontactdateofbirth" Type="Edm.DateTimeOffset" />
+        <Property Name="spd_havelicenseesorregistrants" Type="Edm.Int32" />
+        <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
+        <Property Name="spd_jobtitle" Type="Edm.String" Unicode="false" />
         <Property Name="spd_workswith" Type="Edm.Int32" />
-        <Property Name="_createdby_value" Type="Edm.Guid" />
-        <Property Name="_owninguser_value" Type="Edm.Guid" />
+        <Property Name="spd_portaluseridentityguid" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_authorizedcontactgivenname" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_country" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_payerpreference" Type="Edm.Int32" />
+        <Property Name="spd_street1" Type="Edm.String" Unicode="false" />
+        <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
+        <Property Name="spd_orgregistrationid" Type="Edm.Guid" />
+        <Property Name="statecode" Type="Edm.Int32" />
+        <Property Name="spd_deniedreasonvolunteer" Type="Edm.Int32" />
+        <Property Name="importsequencenumber" Type="Edm.Int32" />
+        <Property Name="spd_street2" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_declaration" Type="Edm.Boolean" />
+        <Property Name="spd_authorizedcontactemail" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_identityprovider" Type="Edm.Int32" />
+        <Property Name="versionnumber" Type="Edm.Int64" />
+        <Property Name="spd_fundsfrombcgovtexceedsthreshold" Type="Edm.Int32" />
+        <Property Name="spd_estimatedapplicationssubmittedperyear" Type="Edm.Int32" />
         <Property Name="_createdonbehalfby_value" Type="Edm.Guid" />
         <Property Name="spd_city" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_street2" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_payerpreference" Type="Edm.Int32" />
-        <Property Name="statuscode" Type="Edm.Int32" />
-        <Property Name="createdon" Type="Edm.DateTimeOffset" />
-        <Property Name="spd_registrationnumber" Type="Edm.String" Unicode="false" />
+        <Property Name="_owningbusinessunit_value" Type="Edm.Guid" />
         <Property Name="spd_receivemoneycompensation" Type="Edm.Int32" />
-        <Property Name="spd_declaration" Type="Edm.Boolean" />
-        <Property Name="spd_deniedreasonemployee" Type="Edm.Int32" />
-        <Property Name="spd_identityprovider" Type="Edm.Int32" />
-        <Property Name="spd_authorizedcontactdateofbirth" Type="Edm.DateTimeOffset" />
-        <Property Name="spd_approved" Type="Edm.Int32" />
-        <Property Name="spd_email" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_phonenumber" Type="Edm.String" Unicode="false" />
-        <Property Name="_ownerid_value" Type="Edm.Guid" />
-        <Property Name="versionnumber" Type="Edm.Int64" />
-        <Property Name="spd_authorizedcontactphonenumber" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_authorizedcontactsurname" Type="Edm.String" Unicode="false" />
-        <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
-        <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
-        <Property Name="spd_organizationlegalname" Type="Edm.String" Unicode="false" />
-        <Property Name="_modifiedonbehalfby_value" Type="Edm.Guid" />
-        <Property Name="spd_identityguid" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_portaluseridentityguid" Type="Edm.String" Unicode="false" />
-        <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
-        <Property Name="spd_authorizedcontactgivenname" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_street1" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_organizationname" Type="Edm.String" Unicode="false" />
-        <Property Name="_modifiedby_value" Type="Edm.Guid" />
-        <Property Name="spd_estimatedapplicationssubmittedperyear" Type="Edm.Int32" />
+        <Property Name="spd_havecontractors" Type="Edm.Int32" />
         <Property Name="_owningteam_value" Type="Edm.Guid" />
-        <Property Name="importsequencenumber" Type="Edm.Int32" />
-        <Property Name="statecode" Type="Edm.Int32" />
-        <Property Name="spd_jobtitle" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_orgregistrationid" Type="Edm.Guid" />
-        <Property Name="spd_havelicenseesorregistrants" Type="Edm.Int32" />
-        <Property Name="spd_fundsfrombcgovtexceedsthreshold" Type="Edm.Int32" />
-        <Property Name="_spd_organizationtypeid_value" Type="Edm.Guid" />
+        <Property Name="_ownerid_value" Type="Edm.Guid" />
+        <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
+        <Property Name="spd_authorizedcontactsurname" Type="Edm.String" Unicode="false" />
+        <Property Name="_createdby_value" Type="Edm.Guid" />
+        <Property Name="_owninguser_value" Type="Edm.Guid" />
+        <Property Name="spd_organizationname" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_phonenumber" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_registrationnumber" Type="Edm.String" Unicode="false" />
         <NavigationProperty Name="createdby" Type="mscrm.systemuser" Nullable="false" Partner="lk_spd_orgregistration_createdby">
           <ReferentialConstraint Property="_createdby_value" ReferencedProperty="systemuserid" />
         </NavigationProperty>
