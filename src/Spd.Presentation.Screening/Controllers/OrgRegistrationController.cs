@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Membership.OrgRegistration;
 using System.ComponentModel.DataAnnotations;
@@ -6,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 namespace Spd.Presentation.Screening.Controllers
 {
     [ApiController]
+    //[Authorize] //temp comment out
     public class OrgRegistrationController : ControllerBase
     {
         private readonly ILogger<OrgRegistrationController> _logger;
