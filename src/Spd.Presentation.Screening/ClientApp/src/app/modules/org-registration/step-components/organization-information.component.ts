@@ -18,9 +18,9 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 				<div class="row">
 					<div class="offset-md-2 col-md-8 col-sm-12">
 						<mat-radio-group aria-label="Select an option" formControlName="hasPhoneOrEmail">
-							<mat-radio-button [value]="booleanTypeCodes.Yes">
-								<strong>Yes</strong>, we have a team inbox or generic organization email and central team phone number.
-							</mat-radio-button>
+							<mat-radio-button [value]="booleanTypeCodes.No">No</mat-radio-button>
+							<mat-divider class="my-3"></mat-divider>
+							<mat-radio-button [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
 
 							<ng-container *ngIf="hasPhoneOrEmail.value == booleanTypeCodes.Yes">
 								<div class="row mt-2">
@@ -84,11 +84,6 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 									</div>
 								</div>
 							</ng-container>
-
-							<mat-divider class="my-3"></mat-divider>
-							<mat-radio-button [value]="booleanTypeCodes.No">
-								<strong>No</strong>, we have a team inbox or generic organization email and central team phone number.
-							</mat-radio-button>
 							<mat-error
 								*ngIf="
 									(form.get('hasPhoneOrEmail')?.dirty || form.get('hasPhoneOrEmail')?.touched) &&

@@ -265,7 +265,8 @@ export class UsersComponent {
 				if (resp) {
 					if (isCreate) {
 						// Add new user
-						this.usersList.push(resp.data);
+						// this.usersList.push(resp.data);
+						this.usersList.unshift(resp.data);
 						this.hotToast.success('User was successfully added');
 					} else {
 						// Update user info
