@@ -31,7 +31,7 @@ namespace Spd.Utilities.LogonUser
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateAudience = true,
-                    ValidAudiences = bceidConfig?.Audiences,
+                    ValidAudiences = new[] { bceidConfig?.Audiences },
                     ValidateIssuer = true,
                     ValidIssuers = new[] { bceidConfig?.Issuer },
                     RequireSignedTokens = true,
