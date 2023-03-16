@@ -6,6 +6,8 @@ using System.Reflection;
 using System.Text.Json.Serialization;
 using Spd.Utilities.Address;
 using Spd.Presentation.Screening.Controllers;
+using Spd.Utilities.LogonUser;
+using System.Security.Principal;
 
 namespace Spd.Presentation.Screening
 {
@@ -52,6 +54,9 @@ namespace Spd.Presentation.Screening
             ;
 
             services.ConfigureAuthentication(configuration);
+            services.AddHttpContextAccessor();
+            services.AddTransient<IPrincipal>(provider => provider.GetService<IHttpContextAccessor>()?.HttpContext?.User);
+
             services.AddAutoMapper(assemblies);
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies));
             services.AddDistributedMemoryCache();

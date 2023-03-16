@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Spd.Presentation.Screening.Configurations
+namespace Spd.Utilities.LogonUser.Configurations
 {
     public class BCeIDAuthenticationConfiguration 
     {

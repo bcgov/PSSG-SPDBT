@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Dynamics.CRM;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using Spd.Presentation.Screening.Configurations;
+using Spd.Utilities.LogonUser.Configurations;
 using System.Security.Claims;
 
-namespace Spd.Presentation.Screening
+namespace Spd.Utilities.LogonUser
 {
     public static class ServiceExtensionAuthentication
     {
@@ -20,11 +20,11 @@ namespace Spd.Presentation.Screening
 
             services.AddAuthentication(options =>
             {
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+                options.DefaultScheme = BCeIDAuthenticationConfiguration.AuthSchemeName;
+            }).AddJwtBearer(BCeIDAuthenticationConfiguration.AuthSchemeName, options =>
             {
                 options.MetadataAddress = $"{bceidConfig.Authority}/.well-known/openid-configuration";
-                options.Authority= bceidConfig?.Authority;
+                options.Authority = bceidConfig?.Authority;
                 options.RequireHttpsMetadata = true;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -46,14 +46,14 @@ namespace Spd.Presentation.Screening
             });
             services.AddAuthorization(options =>
             {
-                options.AddPolicy(JwtBearerDefaults.AuthenticationScheme, policy =>
+                options.AddPolicy(BCeIDAuthenticationConfiguration.AuthSchemeName, policy =>
                 {
-                    policy.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+                    policy.AddAuthenticationSchemes(BCeIDAuthenticationConfiguration.AuthSchemeName)
                         .RequireAuthenticatedUser();
-                        //.RequireClaim("user_role")
-                        //.RequireClaim("user_team");
+                    //.RequireClaim("user_role")
+                    //.RequireClaim("user_team");
                 });
-                options.DefaultPolicy = options.GetPolicy(JwtBearerDefaults.AuthenticationScheme) ?? null!;
+                options.DefaultPolicy = options.GetPolicy(BCeIDAuthenticationConfiguration.AuthSchemeName) ?? null!;
             });
         }
     }
