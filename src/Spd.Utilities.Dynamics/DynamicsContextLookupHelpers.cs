@@ -48,5 +48,14 @@ namespace Spd.Utilities.Dynamics
                 .Where(s => s.spd_roleid == guid)
                 .FirstOrDefault();
         }
+
+        public static string? LookupRoleKeyById(this DynamicsContext context, string value)
+        {
+            var keyExisted = RoleGuidDictionary.(key, out Guid guid);
+            if (!keyExisted) return null;
+            return context.spd_roles
+                .Where(s => s.spd_roleid == guid)
+                .FirstOrDefault();
+        }
     }
 }
