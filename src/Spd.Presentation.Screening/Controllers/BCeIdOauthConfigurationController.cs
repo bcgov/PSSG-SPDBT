@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Spd.Utilities.LogonUser.Configurations;
 
 namespace Spd.Presentation.Screening.Controllers
 {
@@ -7,9 +8,9 @@ namespace Spd.Presentation.Screening.Controllers
     public class BCeIDConfigurationController : ControllerBase
     {
         private readonly ILogger<BCeIDConfigurationController> logger;
-        private readonly IOptions<BCeIDConfiguration> configuration;
+        private readonly IOptions<BCeIDAuthenticationConfiguration> configuration;
 
-        public BCeIDConfigurationController(ILogger<BCeIDConfigurationController> logger, IOptions<BCeIDConfiguration> configuration)
+        public BCeIDConfigurationController(ILogger<BCeIDConfigurationController> logger, IOptions<BCeIDAuthenticationConfiguration> configuration)
         {
             this.logger = logger;
             this.configuration = configuration;
@@ -31,15 +32,6 @@ namespace Spd.Presentation.Screening.Controllers
 
             return await Task.FromResult(resp);
         }
-    }
-
-    public class BCeIDConfiguration
-    {
-        public string Issuer { get; set; } = null!;
-        public string ClientId { get; set; } = null!;
-        public string PostLogoutRedirectUri { get; set; } = null;
-        public string ResponseType { get; set; } = "code";
-        public string Scope { get; set; } = "openid profile email offline_access";
     }
 
     public class BCeIdConfigurationResponse

@@ -16,5 +16,9 @@ namespace Spd.Utilities.LogonUser.Configurations
         public const string Name = "BCeIDAuthentication";
 
         public const string AuthSchemeName = "BCeID";
+        public string ResponseType { get; set; } = "code";
+        public string Scope { get; set; } = "openid profile email offline_access";
+        public string ClientId { get; set; } = null!;
+        public string PostLogoutRedirectUri { get; set; } = null;
     }
 }

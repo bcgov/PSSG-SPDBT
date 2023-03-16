@@ -8,6 +8,7 @@ using Spd.Utilities.Address;
 using Spd.Presentation.Screening.Controllers;
 using Spd.Utilities.LogonUser;
 using System.Security.Principal;
+using Spd.Utilities.LogonUser.Configurations;
 
 namespace Spd.Presentation.Screening
 {
@@ -65,12 +66,7 @@ namespace Spd.Presentation.Screening
             //.AddStorageProxy(builder.Configuration)
               .AddAddressAutoComplete(configuration);
 
-            //bceid configuration
-            var options = configuration.GetSection("bceid").Get<BCeIDConfiguration>();
-            if (options is null || string.IsNullOrWhiteSpace(options.Issuer) || string.IsNullOrWhiteSpace(options.ClientId) || string.IsNullOrWhiteSpace(options.PostLogoutRedirectUri))
-                throw new Exception("BCeID configuration is not correctly set.");
-
-            services.Configure<BCeIDConfiguration>(opts => configuration.GetSection("bceid").Bind(opts));
+            services.Configure<BCeIDAuthenticationConfiguration>(opts => configuration.GetSection(BCeIDAuthenticationConfiguration.Name).Bind(opts));
 
             //config component services
             services.ConfigureComponentServices(configuration, hostEnvironment, assemblies);
