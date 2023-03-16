@@ -11,6 +11,7 @@ import { map, filter } from 'rxjs/operators';
 
 import { ActionResult } from '../models/action-result';
 import { OrgUserCreateRequest } from '../models/org-user-create-request';
+import { OrgUserListResponse } from '../models/org-user-list-response';
 import { OrgUserResponse } from '../models/org-user-response';
 import { OrgUserUpdateRequest } from '../models/org-user-update-request';
 
@@ -247,7 +248,7 @@ export class OrgUserService extends BaseService {
     organizationId: string;
     context?: HttpContext
   }
-): Observable<StrictHttpResponse<Array<OrgUserResponse>>> {
+): Observable<StrictHttpResponse<OrgUserListResponse>> {
 
     const rb = new RequestBuilder(this.rootUrl, OrgUserService.ApiOrgUsersOrganizationIdGetPath, 'get');
     if (params) {
@@ -261,7 +262,7 @@ export class OrgUserService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Array<OrgUserResponse>>;
+        return r as StrictHttpResponse<OrgUserListResponse>;
       })
     );
   }
@@ -276,10 +277,10 @@ export class OrgUserService extends BaseService {
     organizationId: string;
     context?: HttpContext
   }
-): Observable<Array<OrgUserResponse>> {
+): Observable<OrgUserListResponse> {
 
     return this.apiOrgUsersOrganizationIdGet$Response(params).pipe(
-      map((r: StrictHttpResponse<Array<OrgUserResponse>>) => r.body as Array<OrgUserResponse>)
+      map((r: StrictHttpResponse<OrgUserListResponse>) => r.body as OrgUserListResponse)
     );
   }
 

@@ -1,12 +1,10 @@
 import { Component } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { HotToastService } from '@ngneat/hot-toast';
-import { OrgUserResponse } from 'src/app/api/models';
+import { ContactAuthorizationTypeCode, OrgUserListResponse, OrgUserResponse } from 'src/app/api/models';
 import { OrgUserService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
-import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData } from './maintain-user-modal.component';
 
 @Component({
@@ -19,18 +17,21 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 					<h2 class="mb-2 fw-normal">
 						Manage Authorized Users <mat-icon (click)="manageUsersInfo()">info</mat-icon>
 						<div class="mt-2 fs-5 fw-light">
-							Your organization must have one primary authorized contact, and may have up to five other authorized
-							contacts.
+							Your organization may have up to {{ maximumNumberOfPrimaryContacts }} primary authorized contacts and up
+							to {{ maximumNumberOfContacts }} authorized contacts.
 						</div>
 					</h2>
 				</div>
-				<div class="col-xl-3 col-lg-3 col-md-4 col-sm-12 my-auto" *ngIf="addAllowed">
-					<ng-container *ngIf="addAllowed == true; else addNotAllowed">
-						<button mat-flat-button color="primary" class="large w-100 mb-2" (click)="onAddUser()">Add User</button>
+				<div class="col-xl-3 col-lg-3 col-md-4 col-sm-12 my-auto" *ngIf="showAddArea">
+					<ng-container *ngIf="isAllowedAddContact == true; else addNotAllowed">
+						<button mat-flat-button color="primary" class="large w-100 mb-2" (click)="onAddUser()">
+							<mat-icon style="color: var(--color-white);">add</mat-icon>
+							Add User
+						</button>
 					</ng-container>
 					<ng-template #addNotAllowed>
 						<div class="alert alert-warning d-flex align-items-center" role="alert">
-							<div>A maximum of {{ MAX_NUMBER_OF_USERS }} authorized users is allowed</div>
+							<div>The maximum number of authorized users has been reached</div>
 						</div>
 					</ng-template>
 				</div>
@@ -84,6 +85,7 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 										class="large mt-2 mb-2 mt-lg-0"
 										(click)="onMaintainUser(user)"
 									>
+										<mat-icon style="color: var(--color-primary);">edit</mat-icon>
 										Edit
 									</button>
 									<button
@@ -93,6 +95,7 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 										*ngIf="allowDeleteRow(user)"
 										(click)="onDeleteUser(user)"
 									>
+										<mat-icon style="color: var(--color-red);">delete_outline</mat-icon>
 										Remove
 									</button>
 								</div>
@@ -121,28 +124,22 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 	],
 })
 export class UsersComponent {
-	readonly MAX_NUMBER_OF_USERS = 99; //6;
-	title: string = '';
+	readonly DEFAULT_MAX_NUMBER_OF_CONTACTS = 6;
+	readonly DEFAULT_MAX_NUMBER_OF_PRIMARY_CONTACTS = 2;
+
+	maximumNumberOfContacts = this.DEFAULT_MAX_NUMBER_OF_CONTACTS;
+	maximumNumberOfPrimaryContacts = this.DEFAULT_MAX_NUMBER_OF_PRIMARY_CONTACTS;
+
 	appConstants = SPD_CONSTANTS;
-	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	authorizationTypes = ContactAuthorizationTypes;
 
-	addAllowed: boolean | null = null;
-	startAt = SPD_CONSTANTS.date.birthDateStartAt;
-	matcher = new FormErrorStateMatcher();
-
-	form = this.formBuilder.group({
-		users: this.formBuilder.array([]),
-	});
+	showAddArea: boolean = false;
+	isAllowedAddContact: boolean = false;
+	isAllowedAddPrimary: boolean = false;
 
 	usersList: OrgUserResponse[] = [];
 
-	constructor(
-		private dialog: MatDialog,
-		private formBuilder: FormBuilder,
-		private orgUserService: OrgUserService,
-		private hotToast: HotToastService
-	) {}
+	constructor(private dialog: MatDialog, private orgUserService: OrgUserService, private hotToast: HotToastService) {}
 
 	ngOnInit(): void {
 		this.loadListOfUsers();
@@ -152,13 +149,19 @@ export class UsersComponent {
 		const newUser: OrgUserResponse = { dateOfBirth: null };
 		const dialogOptions: UserDialogData = {
 			user: newUser,
+			isAllowedPrimary: this.isAllowedAddPrimary,
 		};
 		this.userDialog(dialogOptions, true);
 	}
 
 	onMaintainUser(user: OrgUserResponse): void {
+		let isAllowedPrimary = this.isAllowedAddPrimary;
+		if (user.contactAuthorizationTypeCode == ContactAuthorizationTypeCode.Primary) {
+			isAllowedPrimary = true;
+		}
 		const dialogOptions: UserDialogData = {
 			user,
+			isAllowedPrimary,
 		};
 		this.userDialog(dialogOptions, false);
 	}
@@ -185,6 +188,7 @@ export class UsersComponent {
 								this.usersList.findIndex((item) => item.id == user.id!),
 								1
 							);
+							this.setFlags();
 							this.hotToast.success('User was successfully deleted');
 						});
 				}
@@ -239,19 +243,42 @@ export class UsersComponent {
 		return null;
 	}
 
+	private sortUsers(): void {
+		this.usersList.sort((a: OrgUserResponse, b: OrgUserResponse) => {
+			const aa = a.contactAuthorizationTypeCode?.toString() ?? '';
+			const bb = b.contactAuthorizationTypeCode?.toString() ?? '';
+			const cc = a.firstName?.toUpperCase() ?? '';
+			const dd = b.firstName?.toUpperCase() ?? '';
+			const ee = a.lastName?.toUpperCase() ?? '';
+			const ff = b.lastName?.toUpperCase() ?? '';
+			return aa.localeCompare(bb) * -1 || cc.localeCompare(dd) || ee.localeCompare(ff);
+		});
+	}
+
 	private loadListOfUsers(): void {
 		//TODO replace with proper org id
 		this.orgUserService
 			.apiOrgUsersOrganizationIdGet({ organizationId: '4165bdfe-7cb4-ed11-b83e-00505683fbf4' })
 			.pipe()
-			.subscribe((res: Array<OrgUserResponse>) => {
-				this.usersList = res;
-				this.setAllowedToAdd();
+			.subscribe((res: OrgUserListResponse) => {
+				this.maximumNumberOfContacts = res.maximumNumberOfAuthorizedContacts ?? this.DEFAULT_MAX_NUMBER_OF_CONTACTS;
+				this.maximumNumberOfPrimaryContacts =
+					res.maximumNumberOfPrimaryAuthorizedContacts ?? this.DEFAULT_MAX_NUMBER_OF_PRIMARY_CONTACTS;
+
+				this.usersList = res.users as Array<OrgUserResponse>;
+				this.sortUsers();
+				this.setFlags();
 			});
 	}
 
-	private setAllowedToAdd(): void {
-		this.addAllowed = this.usersList.length >= this.MAX_NUMBER_OF_USERS ? false : true;
+	private setFlags(): void {
+		this.showAddArea = true;
+		this.isAllowedAddContact = this.usersList.length >= this.maximumNumberOfContacts ? false : true;
+
+		const numberOfPrimary = this.usersList.filter(
+			(user) => user.contactAuthorizationTypeCode == ContactAuthorizationTypeCode.Primary
+		)?.length;
+		this.isAllowedAddPrimary = numberOfPrimary >= this.maximumNumberOfPrimaryContacts ? false : true;
 	}
 
 	private userDialog(dialogOptions: UserDialogData, isCreate: boolean): void {
@@ -265,22 +292,18 @@ export class UsersComponent {
 				if (resp) {
 					if (isCreate) {
 						// Add new user
-						// this.usersList.push(resp.data);
-						this.usersList.unshift(resp.data);
+						this.usersList.push(resp.data);
 						this.hotToast.success('User was successfully added');
 					} else {
 						// Update user info
-
 						const userIndex = this.usersList.findIndex((item) => item.id == dialogOptions.user.id!);
-						console.log('userIndex', userIndex);
-						console.log('resp', resp);
 						if (userIndex >= 0) {
 							this.usersList[userIndex] = resp.data;
 						}
-
 						this.hotToast.success('User was successfully updated');
 					}
-					this.setAllowedToAdd();
+					this.sortUsers();
+					this.setFlags();
 				}
 			});
 	}

@@ -48,7 +48,18 @@ namespace Spd.Resource.Organizations
             }
 
             await _dynaContext.SaveChangesAsync(cancellationToken);
-            return _mapper.Map<UserCmdResponse>(user);
+            var response = _mapper.Map<UserCmdResponse>(user);
+
+            // return the correct contact type
+            if (role != null && role.spd_roleid == Guid.Parse("47ca4197-12ba-ed11-b83e-00505683fbf4"))
+            {
+                response.ContactAuthorizationTypeCode = ContactAuthorizationTypeCode.Contact;
+            }
+            else
+            {
+                response.ContactAuthorizationTypeCode = ContactAuthorizationTypeCode.Primary;
+            }
+            return response;
         }
 
         public async Task<UserCmdResponse> UpdateUserAsync(UpdateUserCmd updateUserCmd, CancellationToken cancellationToken)
@@ -106,11 +117,17 @@ namespace Spd.Resource.Organizations
             return response;
         }
 
-        public async Task<IEnumerable<UserCmdResponse>> GetUsersAsync(Guid organizationId, CancellationToken cancellationToken)
+        public async Task<OrgUserListCmdResponse> GetUserListAsync(Guid organizationId, CancellationToken cancellationToken)
         {
             var users = GetUsersById(organizationId);
-            var responses = _mapper.Map<IEnumerable<UserCmdResponse>>(users);
-            foreach (UserCmdResponse user in responses)
+            var organization = GetOrganizationById(organizationId);
+
+            var response = new OrgUserListCmdResponse();
+            response.MaximumNumberOfAuthorizedContacts = organization.spd_maximumnumberofcontacts ?? 6;
+            response.MaximumNumberOfPrimaryAuthorizedContacts = organization.spd_noofprimaryauthorizedcontacts ?? 2;
+
+            var usersList = _mapper.Map<IEnumerable<UserCmdResponse>>(users);
+            foreach (UserCmdResponse user in usersList)
             {
                 var role = GetRoleByUserId(user.Id);
                 if (role != null && role.spd_roleid == Guid.Parse("47ca4197-12ba-ed11-b83e-00505683fbf4"))
@@ -122,7 +139,8 @@ namespace Spd.Resource.Organizations
                     user.ContactAuthorizationTypeCode = ContactAuthorizationTypeCode.Primary;
                 }
             }
-            return responses;
+            response.Users = usersList;
+            return response;
         }
 
         private account GetOrganizationById(Guid organizationId)

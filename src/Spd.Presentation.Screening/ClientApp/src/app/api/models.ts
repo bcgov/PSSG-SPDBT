@@ -5,11 +5,13 @@ export { BCeIdConfigurationResponse } from './models/b-ce-id-configuration-respo
 export { BCeIdConfigurationResponseActionResult } from './models/b-ce-id-configuration-response-action-result';
 export { BooleanTypeCode } from './models/boolean-type-code';
 export { ContactAuthorizationTypeCode } from './models/contact-authorization-type-code';
+export { CurrentUserInfo } from './models/current-user-info';
 export { EmployeeInteractionTypeCode } from './models/employee-interaction-type-code';
 export { EmployeeOrganizationTypeCode } from './models/employee-organization-type-code';
 export { FundsFromBcGovtExceedsThresholdCode } from './models/funds-from-bc-govt-exceeds-threshold-code';
 export { OrgRegistrationCreateRequest } from './models/org-registration-create-request';
 export { OrgUserCreateRequest } from './models/org-user-create-request';
+export { OrgUserListResponse } from './models/org-user-list-response';
 export { OrgUserResponse } from './models/org-user-response';
 export { OrgUserUpdateRequest } from './models/org-user-update-request';
 export { PayerPreferenceTypeCode } from './models/payer-preference-type-code';

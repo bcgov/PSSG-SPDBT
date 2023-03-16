@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Membership.OrgUser;
 using System.ComponentModel.DataAnnotations;
@@ -68,7 +67,7 @@ namespace Spd.Presentation.Screening.Controllers
         [Route("api/org-users/{organizationId}")]
         [HttpGet]
         [Produces("application/json")]
-        public async Task<IEnumerable<OrgUserResponse>> List(string organizationId)
+        public async Task<OrgUserListResponse> List(string organizationId)
         {
             if (!Guid.TryParse(organizationId, out Guid organizationIdGuid))
             {

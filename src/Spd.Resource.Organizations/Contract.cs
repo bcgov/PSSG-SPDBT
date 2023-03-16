@@ -7,7 +7,7 @@
         Task<UserCmdResponse> UpdateUserAsync(UpdateUserCmd createUserCmd, CancellationToken cancellationToken);
         Task DeleteUserAsync(Guid userId, CancellationToken cancellationToken);
         Task<UserCmdResponse> GetUserAsync(Guid userId, CancellationToken cancellationToken);
-        Task<IEnumerable<UserCmdResponse>> GetUsersAsync(Guid organizationId, CancellationToken cancellationToken);
+        Task<OrgUserListCmdResponse> GetUserListAsync(Guid organizationId, CancellationToken cancellationToken);
     }
 
     public record CreateRegistrationCmd
@@ -76,6 +76,13 @@
         public DateTimeOffset? DateOfBirth { get; set; }
         public string? JobTitle { get; set; }
         public string? PhoneNumber { get; set; }
+    }
+
+    public class OrgUserListCmdResponse
+    {
+        public int? MaximumNumberOfAuthorizedContacts { get; set; }
+        public int? MaximumNumberOfPrimaryAuthorizedContacts { get; set; }
+        public IEnumerable<UserCmdResponse> Users { get; set; }
     }
 
     public enum ContactAuthorizationTypeCode

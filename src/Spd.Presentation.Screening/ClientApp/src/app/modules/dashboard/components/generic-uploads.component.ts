@@ -183,7 +183,7 @@ export class GenericUploadsComponent implements OnInit, AfterViewInit {
 	maxFileSize: number = 104857600; // bytes
 	accept = '.tsv';
 	showErrors = false;
-	// TODO temp code
+	// TODO remove temp code
 	count = 0;
 
 	@ViewChild(MatSort) sort!: MatSort;

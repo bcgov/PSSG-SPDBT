@@ -8,8 +8,8 @@ namespace Spd.Manager.Membership.OrgUser
         : IRequestHandler<OrgUserCreateCommand, OrgUserResponse>,
         IRequestHandler<OrgUserUpdateCommand, OrgUserResponse>,
         IRequestHandler<OrgUserGetCommand, OrgUserResponse>,
-        IRequestHandler<OrgUserListCommand, IEnumerable<OrgUserResponse>>,
         IRequestHandler<OrgUserDeleteCommand, Unit>,
+        IRequestHandler<OrgUserListCommand, OrgUserListResponse>,
         IOrgUserManager
     {
         private readonly IOrganizationRepository _organizationRepository;
@@ -40,16 +40,16 @@ namespace Spd.Manager.Membership.OrgUser
             return _mapper.Map<OrgUserResponse>(response);
         }
 
-        public async Task<IEnumerable<OrgUserResponse>> Handle(OrgUserListCommand request, CancellationToken cancellationToken)
-        {
-            var response = await _organizationRepository.GetUsersAsync(request.OrganizationId, cancellationToken);
-            return _mapper.Map<IEnumerable<OrgUserResponse>>(response);
-        }
-
         public async Task<Unit> Handle(OrgUserDeleteCommand request, CancellationToken cancellationToken)
         {
             await _organizationRepository.DeleteUserAsync(request.UserId, cancellationToken);
             return default;
+        }
+
+        public async Task<OrgUserListResponse> Handle(OrgUserListCommand request, CancellationToken cancellationToken)
+        {
+            var response = await _organizationRepository.GetUserListAsync(request.OrganizationId, cancellationToken);
+            return _mapper.Map<OrgUserListResponse>(response);
         }
     }
 }

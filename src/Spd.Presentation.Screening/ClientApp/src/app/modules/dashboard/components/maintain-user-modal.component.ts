@@ -13,6 +13,7 @@ export const ContactAuthorizationTypes = [
 
 export interface UserDialogData {
 	user: OrgUserResponse;
+	isAllowedPrimary: boolean;
 }
 
 @Component({
@@ -138,6 +139,12 @@ export class MaintainUserModalComponent {
 		this.form.patchValue(this.dialogData.user);
 		this.isEdit = this.dialogData.user.id ? true : false;
 		this.title = this.dialogData.user.id ? 'Edit User' : 'Add User';
+
+		if (!this.dialogData.isAllowedPrimary) {
+			this.authorizationTypes = ContactAuthorizationTypes.filter(
+				(item) => item.code != ContactAuthorizationTypeCode.Primary
+			);
+		}
 	}
 
 	onSave(): void {
@@ -145,6 +152,8 @@ export class MaintainUserModalComponent {
 		if (this.form.valid) {
 			const formData = this.form.value;
 			const body: OrgUserUpdateRequest = { ...formData };
+			// console.log('formData', formData);
+			// console.log('body', body);
 			if (this.isEdit) {
 				body.id = this.dialogData.user.id as string;
 				body.organizationId = this.dialogData.user.organizationId;
