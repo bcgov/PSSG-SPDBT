@@ -8,11 +8,11 @@ namespace Spd.Presentation.Screening.Controllers
     [ApiController]
     public class CurrentUserController : ControllerBase
     {
-        private readonly ILogger<OrgRegistrationController> _logger;
+        private readonly ILogger<CurrentUserController> _logger;
         private readonly IMediator _mediator;
         private readonly IPrincipal _currentUser;
 
-        public CurrentUserController(ILogger<OrgRegistrationController> logger, IMediator mediator, IPrincipal currentUser)
+        public CurrentUserController(ILogger<CurrentUserController> logger, IMediator mediator, IPrincipal currentUser)
         {
             _logger = logger;
             _mediator = mediator;
