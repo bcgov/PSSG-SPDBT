@@ -2,7 +2,6 @@ export { ActionResult } from './models/action-result';
 export { AddressFindResponse } from './models/address-find-response';
 export { AddressRetrieveResponse } from './models/address-retrieve-response';
 export { BCeIdConfigurationResponse } from './models/b-ce-id-configuration-response';
-export { BCeIdConfigurationResponseActionResult } from './models/b-ce-id-configuration-response-action-result';
 export { BooleanTypeCode } from './models/boolean-type-code';
 export { ContactAuthorizationTypeCode } from './models/contact-authorization-type-code';
 export { CurrentUserInfo } from './models/current-user-info';

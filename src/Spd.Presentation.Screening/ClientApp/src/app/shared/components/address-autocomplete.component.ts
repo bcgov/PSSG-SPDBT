@@ -151,8 +151,6 @@ export class AddressAutocompleteComponent implements OnInit {
 				})
 			)
 			.subscribe((response: AddressFindResponse[]) => {
-				console.log('subscribe', response);
-
 				if (lastIdExists) {
 					const dialogOptions: AddressDialogData = {
 						addressAutocompleteFields: response,

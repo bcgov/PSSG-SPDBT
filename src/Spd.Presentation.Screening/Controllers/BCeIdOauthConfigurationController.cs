@@ -19,7 +19,7 @@ namespace Spd.Presentation.Screening.Controllers
 
         [Route("api/bceid-configuration")]
         [HttpGet]
-        public async Task<ActionResult<BCeIdConfigurationResponse>> Get()
+        public async Task<BCeIdConfigurationResponse> Get()
         {
             BCeIdConfigurationResponse resp = new BCeIdConfigurationResponse
             {
