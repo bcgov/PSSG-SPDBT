@@ -5,6 +5,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Spd.Presentation.Screening.Controllers
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [ApiController]
     //[Authorize] //temp comment out
     public class OrgUserController : ControllerBase
@@ -21,33 +24,25 @@ namespace Spd.Presentation.Screening.Controllers
         [Route("api/orgs/{orgId}/users")]
         [HttpPost]
         [Produces("application/json")]
-        public async Task<OrgUserResponse> Add([FromBody][Required] OrgUserCreateRequest orgUserCreateRequest)
+        public async Task<OrgUserResponse> Add([FromBody][Required] OrgUserCreateRequest orgUserCreateRequest, [FromRoute] Guid orgId)
         {
-            orgUserCreateRequest.OrganizationId = Guid.Parse("4165bdfe-7cb4-ed11-b83e-00505683fbf4");
+            orgUserCreateRequest.OrganizationId = orgId;
             return await _mediator.Send(new OrgUserCreateCommand(orgUserCreateRequest));
         }
 
         [Route("api/orgs/{orgId}/users/{userId}")]
         [HttpPut]
         [Produces("application/json")]
-        public async Task<OrgUserResponse> Put(string userId, [FromBody] OrgUserUpdateRequest orgUserUpdateRequest)
+        public async Task<OrgUserResponse> Put([FromRoute] Guid userId, [FromBody] OrgUserUpdateRequest orgUserUpdateRequest, [FromRoute] Guid orgId)
         {
-            if (!Guid.TryParse(userId, out Guid userIdGuid))
-            {
-                throw new Exception("Invalid UserId Guid");
-            }
-            return await _mediator.Send(new OrgUserUpdateCommand(userIdGuid, orgUserUpdateRequest));
+            return await _mediator.Send(new OrgUserUpdateCommand(userId, orgUserUpdateRequest));
         }
 
         [Route("api/orgs/{orgId}/users/{userId}")]
         [HttpDelete]
-        public async Task<ActionResult> DeleteAsync(string userId)
+        public async Task<ActionResult> DeleteAsync([FromRoute] Guid userId, [FromRoute] Guid orgId)
         {
-            if (!Guid.TryParse(userId, out Guid userIdGuid))
-            {
-                throw new Exception("Invalid UserId Guid");
-            }
-            await _mediator.Send(new OrgUserDeleteCommand(userIdGuid));
+            await _mediator.Send(new OrgUserDeleteCommand(userId));
             return Ok();
         }
 
@@ -60,27 +55,22 @@ namespace Spd.Presentation.Screening.Controllers
         [Route("api/orgs/{orgId}/users/{userId}")]
         [HttpGet]
         [Produces("application/json")]
-        public async Task<OrgUserResponse> Get(string userId)
+        public async Task<OrgUserResponse> Get([FromRoute] Guid orgId, Guid userId)
         {
-            if (!Guid.TryParse(userId, out Guid userIdGuid))
-            {
-                throw new Exception("Invalid UserId Guid");
-            }
-
-            return await _mediator.Send(new OrgUserGetCommand(userIdGuid));
+            return await _mediator.Send(new OrgUserGetCommand(userId));
         }
 
-        [Route("api/orgs/{organizationId}/users")]
+        /// <summary>
+        /// return active users belong to the organization.
+        /// </summary>
+        /// <param name="orgId"></param>
+        /// <returns></returns>
+        [Route("api/orgs/{orgId}/users")]
         [HttpGet]
         [Produces("application/json")]
-        public async Task<OrgUserListResponse> GetList(string organizationId)
+        public async Task<OrgUserListResponse> GetList([FromRoute] Guid orgId)
         {
-            if (!Guid.TryParse(organizationId, out Guid organizationIdGuid))
-            {
-                throw new Exception("Invalid OrganizationId Guid");
-            }
-
-            return await _mediator.Send(new OrgUserListCommand(organizationIdGuid));
+            return await _mediator.Send(new OrgUserListCommand(orgId));
         }
     }
 }

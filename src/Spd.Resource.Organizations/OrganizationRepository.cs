@@ -13,7 +13,7 @@ namespace Spd.Resource.Organizations
         private readonly ILogger<OrganizationRepository> _logger;
         public OrganizationRepository(IDynamicsContextFactory ctx, IMapper mapper, ILogger<OrganizationRepository> logger)
         {
-            _dynaContext = ctx.Create();
+            _dynaContext = ctx.CreateChangeOverwrite();
             _mapper = mapper;
             _logger = logger;
         }
@@ -83,9 +83,9 @@ namespace Spd.Resource.Organizations
         {
             var user = GetUserById(userId);
             // Inactivate the user
-            user.statecode = (int)StateCode.InActive;
-            user.statuscode = (int)StatusCode.InActive;
-             _dynaContext.UpdateObject(user);
+            user.statecode = DynamicsConstants.StateCode_Inactive;
+            user.statuscode = DynamicsConstants.StatusCode_Inactive;
+            _dynaContext.UpdateObject(user);
             await _dynaContext.SaveChangesAsync(cancellationToken);
         }
 
@@ -98,7 +98,16 @@ namespace Spd.Resource.Organizations
 
         public async Task<OrgUserListCmdResponse> GetUserListAsync(Guid organizationId, CancellationToken cancellationToken)
         {
-            var users = GetUsersByOrgId(organizationId);
+            var users = _dynaContext.spd_portalusers
+                .Expand(u => u.spd_spd_role_spd_portaluser)
+                .Where(a => a._spd_organizationid_value == organizationId && a.statecode == DynamicsConstants.StateCode_Active)
+                .ToList();
+
+            //todo: investigate why expand does not work here.
+            //use
+
+            if (users == null) throw new UserNotFoundException($"Cannot find the users with organizationId {organizationId}");
+
             var organization = GetOrganizationById(organizationId);
 
             var response = new OrgUserListCmdResponse();
@@ -115,7 +124,9 @@ namespace Spd.Resource.Organizations
             var account = _dynaContext.accounts
                 .Where(a => a.accountid == organizationId)
                 .FirstOrDefault();
-            if (account == null) throw new Exception($"Cannot find the organization with organizationId {organizationId}");
+
+            if (account?.statecode == DynamicsConstants.StateCode_Inactive)
+                throw new UserInactiveException($"Organization {organizationId} is inactive.");
             return account;
         }
         private spd_portaluser GetUserById(Guid userId)
@@ -126,23 +137,16 @@ namespace Spd.Resource.Organizations
                     .Expand(m => m.spd_spd_role_spd_portaluser)
                     .Where(a => a.spd_portaluserid == userId)
                     .FirstOrDefault();
+
+                if (user?.statecode == DynamicsConstants.StateCode_Inactive)
+                    throw new UserInactiveException($"User {userId} is inactive.");
                 return user;
             }
             catch (DataServiceQueryException ex)
             {
                 _logger.LogWarning($"Cannot find the user with userId {userId}");
-                return null;
+                throw new UserNotFoundException(ex.Message, ex.InnerException);
             }
-        }
-
-        private IEnumerable<spd_portaluser> GetUsersByOrgId(Guid organizationId)
-        {
-            var users = _dynaContext.spd_portalusers
-                .Expand(u => u.spd_spd_role_spd_portaluser)
-                .Where(a => a._spd_organizationid_value == organizationId && a.statecode == 0)
-                .ToList();
-            if (users == null) throw new Exception($"Cannot find the users with organizationId {organizationId}");
-            return users;
         }
     }
 }

@@ -9,6 +9,8 @@ namespace Spd.Utilities.Dynamics
         DynamicsContext Create();
 
         DynamicsContext CreateReadOnly();
+
+        DynamicsContext CreateChangeOverwrite();
     }
 
     internal class DynamicsContextFactory : IDynamicsContextFactory
@@ -23,6 +25,8 @@ namespace Spd.Utilities.Dynamics
         }
 
         public DynamicsContext Create() => Create(MergeOption.AppendOnly);
+
+        public DynamicsContext CreateChangeOverwrite() => Create(MergeOption.OverwriteChanges);
 
         public DynamicsContext CreateReadOnly() => Create(MergeOption.NoTracking);
 
