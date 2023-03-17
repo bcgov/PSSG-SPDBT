@@ -59,6 +59,7 @@ namespace Spd.Resource.Organizations
 
             _ = CreateMap<spd_portaluser, UserCmdResponse>()
             .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_portaluserid))
+            .ForMember(d => d.ContactAuthorizationTypeCode, opt => opt.MapFrom(s => GetAuthorizationTypeCode(s.spd_spd_role_spd_portaluser.FirstOrDefault().spd_roleid)))
             .ForMember(d => d.OrganizationId, opt => opt.MapFrom(s => s._spd_organizationid_value))
             .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.spd_firstname))
             .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.spd_surname))
@@ -72,6 +73,15 @@ namespace Spd.Resource.Organizations
         {
             if (code == null) return null;
             return (int)Enum.Parse<PortalUserIdentityTypeCode>(code.ToString());
+        }
+
+        private ContactAuthorizationTypeCode GetAuthorizationTypeCode(Guid? roleId)
+        {
+            if (roleId == null) return ContactAuthorizationTypeCode.Contact;
+            return
+                Enum.Parse<ContactAuthorizationTypeCode>(
+                    DynamicsContextLookupHelpers.RoleGuidDictionary.FirstOrDefault(x => x.Value == roleId).Key);
+
         }
     }
 }

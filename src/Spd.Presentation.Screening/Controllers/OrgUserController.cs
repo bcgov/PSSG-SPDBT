@@ -18,7 +18,7 @@ namespace Spd.Presentation.Screening.Controllers
             _mediator = mediator;
         }
 
-        [Route("api/org-user")]
+        [Route("api/orgs/{orgId}/users")]
         [HttpPost]
         [Produces("application/json")]
         public async Task<OrgUserResponse> Add([FromBody][Required] OrgUserCreateRequest orgUserCreateRequest)
@@ -27,7 +27,7 @@ namespace Spd.Presentation.Screening.Controllers
             return await _mediator.Send(new OrgUserCreateCommand(orgUserCreateRequest));
         }
 
-        [Route("api/org-user/{userId}")]
+        [Route("api/orgs/{orgId}/users/{userId}")]
         [HttpPut]
         [Produces("application/json")]
         public async Task<OrgUserResponse> Put(string userId, [FromBody] OrgUserUpdateRequest orgUserUpdateRequest)
@@ -39,7 +39,7 @@ namespace Spd.Presentation.Screening.Controllers
             return await _mediator.Send(new OrgUserUpdateCommand(userIdGuid, orgUserUpdateRequest));
         }
 
-        [Route("api/org-user/{userId}")]
+        [Route("api/orgs/{orgId}/users/{userId}")]
         [HttpDelete]
         public async Task<ActionResult> DeleteAsync(string userId)
         {
@@ -51,7 +51,13 @@ namespace Spd.Presentation.Screening.Controllers
             return Ok();
         }
 
-        [Route("api/org-user/{userId}")]
+        /// <summary>
+        /// Get Organization Authorized User from its user id
+        /// </summary>
+        /// <param name="userId">Guid of the user</param>
+        /// <returns>OrgUserResponse</returns>
+        /// <exception cref="Exception"></exception>
+        [Route("api/orgs/{orgId}/users/{userId}")]
         [HttpGet]
         [Produces("application/json")]
         public async Task<OrgUserResponse> Get(string userId)
@@ -64,10 +70,10 @@ namespace Spd.Presentation.Screening.Controllers
             return await _mediator.Send(new OrgUserGetCommand(userIdGuid));
         }
 
-        [Route("api/org-users/{organizationId}")]
+        [Route("api/orgs/{organizationId}/users")]
         [HttpGet]
         [Produces("application/json")]
-        public async Task<OrgUserListResponse> List(string organizationId)
+        public async Task<OrgUserListResponse> GetList(string organizationId)
         {
             if (!Guid.TryParse(organizationId, out Guid organizationIdGuid))
             {
