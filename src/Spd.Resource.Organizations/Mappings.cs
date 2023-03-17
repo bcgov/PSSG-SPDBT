@@ -48,7 +48,6 @@ namespace Spd.Resource.Organizations
             _ = CreateMap<UpdateUserCmd, spd_portaluser>()
             .ForMember(d => d.spd_portaluserid, opt => opt.MapFrom(s => s.Id))
             .ForMember(d => d.organizationid, opt => opt.Ignore())
-            //.ForMember(d => d.organizationid, opt => opt.MapFrom(s => s.OrganizationId))
             .ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => s.FirstName))
             .ForMember(d => d.spd_surname, opt => opt.MapFrom(s => s.LastName))
             .ForMember(d => d.spd_fullname, opt => opt.MapFrom(s => s.FirstName + ' ' + s.LastName))

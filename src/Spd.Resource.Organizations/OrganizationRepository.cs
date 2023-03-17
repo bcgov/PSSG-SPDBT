@@ -53,32 +53,31 @@ namespace Spd.Resource.Organizations
             await _dynaContext.SaveChangesAsync(cancellationToken);
 
             user._spd_organizationid_value = createUserCmd.OrganizationId;
-            return _mapper.Map<UserCmdResponse>(user); 
+            return _mapper.Map<UserCmdResponse>(user);
         }
 
         public async Task<UserCmdResponse> UpdateUserAsync(UpdateUserCmd updateUserCmd, CancellationToken cancellationToken)
         {
             var user = GetUserById(updateUserCmd.Id);
+            _mapper.Map(updateUserCmd, user);
 
-            user.spd_surname = updateUserCmd.LastName;
-            user.spd_firstname = updateUserCmd.FirstName;
-            user.spd_fullname = updateUserCmd.FirstName + ' ' + updateUserCmd.LastName;
-            user.spd_emailaddress1 = updateUserCmd.Email;
-            user.spd_dateofbirth = updateUserCmd.DateOfBirth;
-            user.spd_jobtitle = updateUserCmd.JobTitle;
-            user.spd_phonenumber = updateUserCmd.PhoneNumber;
+            spd_role existingRole = user.spd_spd_role_spd_portaluser.First();
+            spd_role newRole = existingRole;
+            string existingRoleName = _dynaContext.LookupRoleKeyById((Guid)existingRole.spd_roleid);
+            if (existingRoleName != updateUserCmd.ContactAuthorizationTypeCode.ToString()) //role changed
+            {
+                _dynaContext.DeleteLink(existingRole, nameof(existingRole.spd_spd_role_spd_portaluser), user);
 
-            //var currentRole = GetRoleByUserId(updateUserCmd.Id);
-            //_dynaContext.DeleteLink(currentRole, nameof(currentRole.spd_spd_role_spd_portaluserid), user);
-
-            //spd_role? role = _dynaContext.LookupRole(updateUserCmd.ContactAuthorizationTypeCode.ToString());
-            //if (role != null)
-            //{
-            //    _dynaContext.AddLink(role, nameof(role.spd_spd_role_spd_portaluser), user);
-            //}
-
+                newRole = _dynaContext.LookupRole(updateUserCmd.ContactAuthorizationTypeCode.ToString());
+                if (newRole != null)
+                {
+                    _dynaContext.AddLink(newRole, nameof(newRole.spd_spd_role_spd_portaluser), user);
+                }
+            }
             _dynaContext.UpdateObject(user);
             await _dynaContext.SaveChangesAsync(cancellationToken);
+
+            user.spd_spd_role_spd_portaluser = new Collection<spd_role> { new spd_role() { spd_roleid = newRole.spd_roleid } };
             return _mapper.Map<UserCmdResponse>(user);
         }
 
@@ -107,7 +106,7 @@ namespace Spd.Resource.Organizations
                 .AsEnumerable();
 
             if (users == null) throw new UserNotFoundException($"Cannot find the users with organizationId {organizationId}");
-            
+
             //todo: investigate why expand does not work here.
             await Parallel.ForEachAsync(users, cancellationToken, async (user, cancellationToken) =>
             {
@@ -115,7 +114,7 @@ namespace Spd.Resource.Organizations
                     .spd_spd_role_spd_portaluserset
                     .Where(r => r.spd_portaluserid == user.spd_portaluserid)
                     .FirstOrDefault();
-                user.spd_spd_role_spd_portaluser = new Collection<spd_role> { new spd_role(){spd_roleid= role.spd_roleid } };
+                user.spd_spd_role_spd_portaluser = new Collection<spd_role> { new spd_role() { spd_roleid = role.spd_roleid } };
             });
 
             var organization = GetOrganizationById(organizationId);

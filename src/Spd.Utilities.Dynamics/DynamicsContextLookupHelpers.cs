@@ -49,7 +49,7 @@ namespace Spd.Utilities.Dynamics
                 .FirstOrDefault();
         }
 
-        public static string? LookupRoleKeyById(this DynamicsContext context, Guid value)
+        public static string LookupRoleKeyById(this DynamicsContext context, Guid value)
         {
             return RoleGuidDictionary.FirstOrDefault(x => x.Value == value).Key;
         }
