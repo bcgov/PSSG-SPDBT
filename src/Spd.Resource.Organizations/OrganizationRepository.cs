@@ -101,12 +101,20 @@ namespace Spd.Resource.Organizations
             var users = _dynaContext.spd_portalusers
                 .Expand(u => u.spd_spd_role_spd_portaluser)
                 .Where(a => a._spd_organizationid_value == organizationId && a.statecode == DynamicsConstants.StateCode_Active)
-                .ToList();
-
-            //todo: investigate why expand does not work here.
-            //use
+                .AsEnumerable();
 
             if (users == null) throw new UserNotFoundException($"Cannot find the users with organizationId {organizationId}");
+            //todo: investigate why expand does not work here.
+            await Parallel.ForEachAsync(users, cancellationToken, async (user, cancellationToken) =>
+            {
+                var role = _dynaContext
+                    .spd_spd_role_spd_portaluserset
+                    .Expand(p=>p.spd_role)
+                    .FirstOrDefault(r => r.spd_portaluserid == user.spd_portaluserid);
+                user.spd_spd_role_spd_portaluser = new List<spd_spd_role_spd_portaluser> { role };
+            });
+
+
 
             var organization = GetOrganizationById(organizationId);
 
@@ -114,8 +122,7 @@ namespace Spd.Resource.Organizations
             response.MaximumNumberOfAuthorizedContacts = organization.spd_maximumnumberofcontacts ?? 6;
             response.MaximumNumberOfPrimaryAuthorizedContacts = organization.spd_noofprimaryauthorizedcontacts ?? 2;
 
-            var usersList = _mapper.Map<IEnumerable<UserCmdResponse>>(users);
-            response.Users = usersList;
+            response.Users = _mapper.Map<IEnumerable<UserCmdResponse>>(users);
             return response;
         }
 
