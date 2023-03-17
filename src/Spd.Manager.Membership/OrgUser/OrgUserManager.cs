@@ -22,6 +22,7 @@ namespace Spd.Manager.Membership.OrgUser
 
         public async Task<OrgUserResponse> Handle(OrgUserCreateCommand request, CancellationToken cancellationToken)
         {
+            //todo: add checking duplicate user here.
             var createOrgUser = _mapper.Map<CreateUserCmd>(request.OrgUserCreateRequest);
             var response = await _organizationRepository.AddUserAsync(createOrgUser, cancellationToken);
             return _mapper.Map<OrgUserResponse>(response);

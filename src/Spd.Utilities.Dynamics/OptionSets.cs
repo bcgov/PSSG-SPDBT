@@ -1,5 +1,15 @@
 ﻿namespace Spd.Utilities.Dynamics
 {
+    public enum StateCode
+    {
+        Active = 0,
+        InActive = 1
+    }
+    public enum StatusCode
+    {
+        Active = 1,
+        InActive = 2
+    }
     public enum WorksWithChildrenOptionSet
     {
         Children = 100000000,
