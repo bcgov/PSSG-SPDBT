@@ -86,7 +86,7 @@ namespace Spd.Resource.Organizations.User
                 .Where(a => a._spd_organizationid_value == organizationId && a.statecode == DynamicsConstants.StateCode_Active)
                 .AsEnumerable();
 
-            if (users == null) throw new UserNotFoundException($"Cannot find the users with organizationId {organizationId}");
+            if (users == null) throw new NotFoundException($"Cannot find the users with organizationId {organizationId}");
 
             //todo: investigate why expand does not work here.
             await Parallel.ForEachAsync(users, cancellationToken, async (user, cancellationToken) =>
@@ -115,7 +115,7 @@ namespace Spd.Resource.Organizations.User
                 .FirstOrDefault();
 
             if (account?.statecode == DynamicsConstants.StateCode_Inactive)
-                throw new UserInactiveException($"Organization {organizationId} is inactive.");
+                throw new InactiveException($"Organization {organizationId} is inactive.");
             return account;
         }
         private spd_portaluser GetUserById(Guid userId)
@@ -128,13 +128,13 @@ namespace Spd.Resource.Organizations.User
                     .FirstOrDefault();
 
                 if (user?.statecode == DynamicsConstants.StateCode_Inactive)
-                    throw new UserInactiveException($"User {userId} is inactive.");
+                    throw new InactiveException($"User {userId} is inactive.");
                 return user;
             }
             catch (DataServiceQueryException ex)
             {
                 _logger.LogWarning($"Cannot find the user with userId {userId}");
-                throw new UserNotFoundException(ex.Message, ex.InnerException);
+                throw new NotFoundException(ex.Message, ex.InnerException);
             }
         }
     }
