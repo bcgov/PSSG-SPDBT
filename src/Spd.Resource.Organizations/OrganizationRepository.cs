@@ -3,6 +3,7 @@ using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
 using Microsoft.OData.Client;
 using Spd.Utilities.Dynamics;
+using System.Collections.ObjectModel;
 
 namespace Spd.Resource.Organizations
 {
@@ -13,7 +14,7 @@ namespace Spd.Resource.Organizations
         private readonly ILogger<OrganizationRepository> _logger;
         public OrganizationRepository(IDynamicsContextFactory ctx, IMapper mapper, ILogger<OrganizationRepository> logger)
         {
-            _dynaContext = ctx.CreateChangeOverwrite();
+            _dynaContext = ctx.Create();
             _mapper = mapper;
             _logger = logger;
         }
@@ -50,7 +51,9 @@ namespace Spd.Resource.Organizations
                 _dynaContext.AddLink(role, nameof(role.spd_spd_role_spd_portaluser), user);
             }
             await _dynaContext.SaveChangesAsync(cancellationToken);
-            return await GetUserAsync((Guid)user.spd_portaluserid, cancellationToken);
+
+            user._spd_organizationid_value = createUserCmd.OrganizationId;
+            return _mapper.Map<UserCmdResponse>(user); 
         }
 
         public async Task<UserCmdResponse> UpdateUserAsync(UpdateUserCmd updateUserCmd, CancellationToken cancellationToken)
@@ -104,17 +107,16 @@ namespace Spd.Resource.Organizations
                 .AsEnumerable();
 
             if (users == null) throw new UserNotFoundException($"Cannot find the users with organizationId {organizationId}");
+            
             //todo: investigate why expand does not work here.
             await Parallel.ForEachAsync(users, cancellationToken, async (user, cancellationToken) =>
             {
                 var role = _dynaContext
                     .spd_spd_role_spd_portaluserset
-                    .Expand(p=>p.spd_role)
-                    .FirstOrDefault(r => r.spd_portaluserid == user.spd_portaluserid);
-                user.spd_spd_role_spd_portaluser = new List<spd_spd_role_spd_portaluser> { role };
+                    .Where(r => r.spd_portaluserid == user.spd_portaluserid)
+                    .FirstOrDefault();
+                user.spd_spd_role_spd_portaluser = new Collection<spd_role> { new spd_role(){spd_roleid= role.spd_roleid } };
             });
-
-
 
             var organization = GetOrganizationById(organizationId);
 
