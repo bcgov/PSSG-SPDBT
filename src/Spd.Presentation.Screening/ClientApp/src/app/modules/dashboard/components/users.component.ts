@@ -181,7 +181,7 @@ export class UsersComponent {
 			.subscribe((response: boolean) => {
 				if (response) {
 					this.orgUserService
-						.apiOrgUserUserIdDelete({ userId: user.id! })
+						.apiOrgsOrgIdUsersUserIdDelete({ userId: user.id!, orgId: user.organizationId! })
 						.pipe()
 						.subscribe((_res) => {
 							this.usersList.splice(
@@ -258,7 +258,7 @@ export class UsersComponent {
 	private loadListOfUsers(): void {
 		//TODO replace with proper org id
 		this.orgUserService
-			.apiOrgUsersOrganizationIdGet({ organizationId: '4165bdfe-7cb4-ed11-b83e-00505683fbf4' })
+			.apiOrgsOrganizationIdUsersGet({ organizationId: '4165bdfe-7cb4-ed11-b83e-00505683fbf4' })
 			.pipe()
 			.subscribe((res: OrgUserListResponse) => {
 				this.maximumNumberOfContacts = res.maximumNumberOfAuthorizedContacts ?? this.DEFAULT_MAX_NUMBER_OF_CONTACTS;

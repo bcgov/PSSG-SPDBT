@@ -158,7 +158,7 @@ export class MaintainUserModalComponent {
 				body.id = this.dialogData.user.id as string;
 				body.organizationId = this.dialogData.user.organizationId;
 				this.orgUserService
-					.apiOrgUserUserIdPut({ userId: body.id, body })
+					.apiOrgsOrgIdUsersUserIdPut({ userId: body.id, orgId: body.organizationId!, body })
 					.pipe()
 					.subscribe((resp: OrgUserResponse) => {
 						this.dialogRef.close({
@@ -168,7 +168,7 @@ export class MaintainUserModalComponent {
 			} else {
 				body.organizationId = '4165bdfe-7cb4-ed11-b83e-00505683fbf4'; // TODO replace with proper org id
 				this.orgUserService
-					.apiOrgUserPost({ body })
+					.apiOrgsOrgIdUsersPost({ orgId: body.organizationId, body })
 					.pipe()
 					.subscribe((resp: OrgUserResponse) => {
 						this.dialogRef.close({
