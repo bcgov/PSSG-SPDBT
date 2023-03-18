@@ -57,7 +57,7 @@ namespace Spd.Presentation.Screening.Controllers
         [Produces("application/json")]
         public async Task<OrgUserResponse> Get([FromRoute] Guid orgId, Guid userId)
         {
-            return await _mediator.Send(new OrgUserGetCommand(userId));
+            return await _mediator.Send(new OrgUserGetQuery(userId));
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace Spd.Presentation.Screening.Controllers
         [Produces("application/json")]
         public async Task<OrgUserListResponse> GetList([FromRoute] Guid orgId)
         {
-            return await _mediator.Send(new OrgUserListCommand(orgId));
+            return await _mediator.Send(new OrgUserListQuery(orgId));
         }
     }
 }

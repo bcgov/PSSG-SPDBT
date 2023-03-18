@@ -7,9 +7,9 @@ namespace Spd.Manager.Membership.OrgUser
     internal class OrgUserManager
         : IRequestHandler<OrgUserCreateCommand, OrgUserResponse>,
         IRequestHandler<OrgUserUpdateCommand, OrgUserResponse>,
-        IRequestHandler<OrgUserGetCommand, OrgUserResponse>,
+        IRequestHandler<OrgUserGetQuery, OrgUserResponse>,
         IRequestHandler<OrgUserDeleteCommand, Unit>,
-        IRequestHandler<OrgUserListCommand, OrgUserListResponse>,
+        IRequestHandler<OrgUserListQuery, OrgUserListResponse>,
         IOrgUserManager
     {
         private readonly IOrgUserRepository _orgUserRepository;
@@ -22,7 +22,13 @@ namespace Spd.Manager.Membership.OrgUser
 
         public async Task<OrgUserResponse> Handle(OrgUserCreateCommand request, CancellationToken cancellationToken)
         {
-            //todo: add checking duplicate user here.
+            //check if email already exists for the user
+            if(await _orgUserRepository.IfUserEmailExistedAsync(request.OrgUserCreateRequest.OrganizationId, request.OrgUserCreateRequest.Email, cancellationToken))
+            {
+                throw 
+            }
+            //check if role is withing the maxium scope
+
             var createOrgUser = _mapper.Map<CreateUserCmd>(request.OrgUserCreateRequest);
             var response = await _orgUserRepository.AddUserAsync(createOrgUser, cancellationToken);
             return _mapper.Map<OrgUserResponse>(response);
@@ -35,7 +41,7 @@ namespace Spd.Manager.Membership.OrgUser
             return _mapper.Map<OrgUserResponse>(response);
         }
 
-        public async Task<OrgUserResponse> Handle(OrgUserGetCommand request, CancellationToken cancellationToken)
+        public async Task<OrgUserResponse> Handle(OrgUserGetQuery request, CancellationToken cancellationToken)
         {
             var response = await _orgUserRepository.GetUserAsync(request.UserId, cancellationToken);
             return _mapper.Map<OrgUserResponse>(response);
@@ -47,7 +53,7 @@ namespace Spd.Manager.Membership.OrgUser
             return default;
         }
 
-        public async Task<OrgUserListResponse> Handle(OrgUserListCommand request, CancellationToken cancellationToken)
+        public async Task<OrgUserListResponse> Handle(OrgUserListQuery request, CancellationToken cancellationToken)
         {
             var response = await _orgUserRepository.GetUserListAsync(request.OrganizationId, cancellationToken);
             return _mapper.Map<OrgUserListResponse>(response);
