@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgxMaskPipe } from 'ngx-mask';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { ScreeningFormStepComponent } from '../scr-application.component';
@@ -23,27 +22,18 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 								<mat-label>Legal Given Name</mat-label>
 								<input matInput formControlName="contactGivenName" [errorStateMatcher]="matcher" />
 								<mat-error *ngIf="form.get('contactGivenName')?.hasError('required')">This is required</mat-error>
-								<mat-error *ngIf="form.get('contactGivenName')?.hasError('stringnonumbers')">
-									No numbers are allowed
-								</mat-error>
 							</mat-form-field>
 						</div>
 						<div class="col-lg-3 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
 								<input matInput formControlName="contactMiddleName1" [errorStateMatcher]="matcher" />
-								<mat-error *ngIf="form.get('contactMiddleName1')?.hasError('stringnonumbers')">
-									No numbers are allowed
-								</mat-error>
 							</mat-form-field>
 						</div>
 						<div class="col-lg-3 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
 								<input matInput formControlName="contactMiddleName2" [errorStateMatcher]="matcher" />
-								<mat-error *ngIf="form.get('contactMiddleName2')?.hasError('stringnonumbers')">
-									No numbers are allowed
-								</mat-error>
 							</mat-form-field>
 						</div>
 					</div>
@@ -53,9 +43,6 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 								<mat-label>Legal Surname</mat-label>
 								<input matInput formControlName="contactSurname" [errorStateMatcher]="matcher" />
 								<mat-error *ngIf="form.get('contactSurname')?.hasError('required')">This is required</mat-error>
-								<mat-error *ngIf="form.get('contactSurname')?.hasError('stringnonumbers')">
-									No numbers are allowed
-								</mat-error>
 							</mat-form-field>
 							<div class="w-100 mb-4">
 								<mat-checkbox formControlName="oneLegalName"> I have one legal name </mat-checkbox>
@@ -95,13 +82,10 @@ export class ContactInformationComponent implements ScreeningFormStepComponent {
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	form: FormGroup = this.formBuilder.group(
 		{
-			contactGivenName: new FormControl('Pulled-From-Portal', [
-				FormControlValidators.stringnonumbers,
-				Validators.required,
-			]),
-			contactMiddleName1: new FormControl('', [FormControlValidators.stringnonumbers]),
-			contactMiddleName2: new FormControl('', [FormControlValidators.stringnonumbers]),
-			contactSurname: new FormControl('', [FormControlValidators.stringnonumbers]),
+			contactGivenName: new FormControl('Pulled-From-Portal', [Validators.required]),
+			contactMiddleName1: new FormControl(''),
+			contactMiddleName2: new FormControl(''),
+			contactSurname: new FormControl(''),
 			contactEmail: new FormControl('Pulled@From.Portal', [Validators.email, Validators.required]),
 			contactPhoneNumber: new FormControl('6048185356', [Validators.required]),
 			oneLegalName: new FormControl(false),

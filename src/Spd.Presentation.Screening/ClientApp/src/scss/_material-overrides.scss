@@ -59,8 +59,25 @@ button.mdc-button {
 }
 
 // FORM FIELDS
-.mdc-form-field {
+.wide-radio .mdc-form-field {
   background-color: rgba(245, 245, 245);
+}
+
+.mdc-radio {
+  background-color: rgba(245, 245, 245);
+}
+
+.mdc-radio--disabled {
+  background-color: transparent;
+}
+
+.mdc-text-field--disabled.mdc-text-field--filled {
+  background-color: transparent;
+  color: var(--color-primary);
+}
+
+.mat-mdc-radio-button.mat-primary .mdc-radio--disabled + label {
+  color: var(--color-primary);
 }
 
 .mdc-text-field--disabled .mdc-text-field__input {

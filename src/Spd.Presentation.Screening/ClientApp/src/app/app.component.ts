@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter, map } from 'rxjs';
-import { AuthenticationService } from './core/services/authentication.service';
 
 @Component({
 	selector: 'app-root',
@@ -22,7 +21,7 @@ import { AuthenticationService } from './core/services/authentication.service';
 export class AppComponent {
 	title = 'Security Programs Division';
 
-	constructor(private router: Router, private authenticationService: AuthenticationService) {
+	constructor(private router: Router) {
 		this.router.events
 			.pipe(
 				filter((event) => event instanceof NavigationEnd),

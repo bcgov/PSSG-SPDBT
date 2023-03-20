@@ -125,7 +125,6 @@
         <Property Name="_createdby_value" Type="Edm.Guid" />
         <Property Name="address2_longitude" Type="Edm.Double" />
         <Property Name="_modifiedby_value" Type="Edm.Guid" />
-        <Property Name="spd_noofauthorizedcontacts" Type="Edm.Int32" />
         <Property Name="yominame" Type="Edm.String" Unicode="false" />
         <Property Name="address2_primarycontactname" Type="Edm.String" Unicode="false" />
         <Property Name="address2_country" Type="Edm.String" Unicode="false" />
@@ -191,6 +190,7 @@
         <Property Name="address1_country" Type="Edm.String" Unicode="false" />
         <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
         <Property Name="address2_line3" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_maximumnumberofcontacts" Type="Edm.Int32" />
         <Property Name="address2_utcoffset" Type="Edm.Int32" />
         <Property Name="spd_allowgenericuploads" Type="Edm.Int32" />
         <Property Name="emailaddress1" Type="Edm.String" Unicode="false" />

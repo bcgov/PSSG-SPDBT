@@ -125,7 +125,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 
 			.card-section {
 				background-color: var(--color-card) !important;
-				border-left: 3px solid var(--color-primary);
+				border-left: 4px solid var(--color-primary);
 				border-bottom-width: 1px;
 				border-bottom-style: solid;
 				border-bottom-color: rgba(0, 0, 0, 0.12);

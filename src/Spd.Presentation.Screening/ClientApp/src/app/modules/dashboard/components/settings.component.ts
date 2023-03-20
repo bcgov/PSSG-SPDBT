@@ -9,11 +9,19 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 		<app-dashboard-header title="Organization Name" subtitle="Security Screening Portal"></app-dashboard-header>
 		<section class="step-section my-4 p-md-4 p-sm-0">
 			<div class="row mb-4">
-				<div class="col-xl-9 col-lg-8 col-md-6 col-sm-12">
+				<div class="col-xl-6 col-lg-4 col-md-12 col-sm-12">
 					<h2 class="fw-normal">Organization Information</h2>
 				</div>
-				<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
-					<button mat-flat-button color="primary" class="large" (click)="onSave()">Save Information</button>
+				<div class="col-xl-3 col-lg-4 col-md-12 col-sm-12">
+					<button mat-stroked-button color="primary" class="large mb-2" *ngIf="!viewOnly" (click)="onCancel()">
+						<i class="fa fa-times mr-2"></i>Cancel
+					</button>
+				</div>
+				<div class="col-xl-3 col-lg-4 col-md-12 col-sm-12">
+					<button mat-flat-button color="primary" class="large mb-2" (click)="onToggleViewOnly()">
+						<span *ngIf="viewOnly; else save">Edit Information </span>
+						<ng-template #save> Save Information </ng-template>
+					</button>
 				</div>
 			</div>
 			<form [formGroup]="form" novalidate>
@@ -36,7 +44,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 
 				<div class="row">
 					<div class="col-xl-4 col-lg-12">
-						<mat-form-field style="font-size: 1.3em;">
+						<mat-form-field>
 							<mat-label>Email Address</mat-label>
 							<input matInput formControlName="emailAddress" placeholder="name@domain.com" />
 							<mat-error *ngIf="form.get('emailAddress')?.hasError('required')"> This is required </mat-error>
@@ -155,7 +163,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 				<div class="row">
 					<div class="col-xl-4 col-lg-12">
 						<mat-radio-group aria-label="Select an option" formControlName="licenseeScreening">
-							<mat-radio-button [value]="booleanTypeCodes.No" class="mb-2">No</mat-radio-button>
+							<mat-radio-button [value]="booleanTypeCodes.No" class="mb-0">No</mat-radio-button>
 							<mat-radio-button [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
 						</mat-radio-group>
 						<mat-error
@@ -180,16 +188,18 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 	],
 })
 export class SettingsComponent {
+	viewOnly: boolean = true;
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	booleanTypeCodes = BooleanTypeCode;
 	payerPreferenceTypeCode = PayerPreferenceTypeCode;
+	initialValues = {};
 	form: FormGroup = this.formBuilder.group({
-		organizationName: new FormControl('', [Validators.required]),
+		organizationName: new FormControl('MacDonalds', [Validators.required]),
 		legalOrganizationName: new FormControl('', [Validators.required]),
 		emailAddress: new FormControl('', [Validators.required, Validators.email]),
 		phoneNumber: new FormControl('', [Validators.required]),
 		addressLine1: new FormControl('', [Validators.required]),
-		addressLine2: new FormControl('', [Validators.required]),
+		addressLine2: new FormControl(''),
 		addressCity: new FormControl('', [Validators.required]),
 		addressPostalCode: new FormControl('', [Validators.required]),
 		addressProvince: new FormControl('', [Validators.required]),
@@ -199,10 +209,62 @@ export class SettingsComponent {
 		licenseeScreening: new FormControl('', [Validators.required]),
 	});
 	startAt = SPD_CONSTANTS.date.birthDateStartAt;
+	formValues = {};
 
 	constructor(private formBuilder: FormBuilder) {}
 
-	onSave(): void {
-		this.form.markAllAsTouched();
+	ngOnInit(): void {
+		this.initialValues = {
+			organizationName: 'MacDonalds',
+			legalOrganizationName: 'MacDonalds Inc.',
+			emailAddress: 'mac@donalds.com',
+			phoneNumber: '2504447788',
+			addressLine1: '',
+			addressLine2: '',
+			addressCity: '',
+			addressPostalCode: '',
+			addressProvince: '',
+			addressCountry: '',
+			whoPays: '',
+			contractorScreening: '',
+			licenseeScreening: '',
+		};
+		this.form.patchValue(this.initialValues);
+		this.setFormView();
+	}
+
+	onCancel(): void {
+		this.viewOnly = true;
+		this.form.reset(this.initialValues);
+		this.form.disable();
+	}
+
+	onEdit(): void {
+		this.viewOnly = false;
+		this.form.enable();
+	}
+
+	onToggleViewOnly() {
+		if (!this.viewOnly) {
+			this.form.markAllAsTouched();
+			console.log('this.form.valid', this.form.valid);
+			if (this.form.valid) {
+				// TODO save changes
+				this.viewOnly = true;
+				this.form.disable();
+				this.initialValues = this.form.value;
+			}
+		} else {
+			this.viewOnly = !this.viewOnly;
+			this.setFormView();
+		}
+	}
+
+	private setFormView(): void {
+		if (this.viewOnly) {
+			this.form.disable();
+		} else {
+			this.form.enable();
+		}
 	}
 }

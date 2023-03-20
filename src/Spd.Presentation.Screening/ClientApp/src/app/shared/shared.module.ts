@@ -12,6 +12,8 @@ import { BaseFilterComponent } from './components/base-filter.component';
 import { DialogComponent } from './components/dialog.component';
 import { DropdownOverlayComponent } from './components/dropdown-overlay.component';
 import { StepTitleComponent } from './components/step-title.component';
+import { DefaultPipe } from './pipes/default.pipe';
+import { FullnamePipe } from './pipes/fullname.pipe';
 
 const SHARED_COMPONENTS = [
 	HeaderComponent,
@@ -22,6 +24,8 @@ const SHARED_COMPONENTS = [
 	DropdownOverlayComponent,
 	BaseFilterComponent,
 	StepTitleComponent,
+	DefaultPipe,
+	FullnamePipe,
 ];
 
 @NgModule({
