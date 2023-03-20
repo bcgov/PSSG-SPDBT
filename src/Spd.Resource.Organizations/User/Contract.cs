@@ -13,7 +13,7 @@ namespace Spd.Resource.Organizations.User
     public abstract record UpsertUserCmd
     {
         public Guid OrganizationId { get; set; }
-        public ContactAuthorizationTypeCode ContactAuthorizationTypeCode { get; set; }
+        public ContactRoleCode ContactAuthorizationTypeCode { get; set; }
         public string LastName { get; set; }
         public string FirstName { get; set; }
         public string Email { get; set; }
@@ -30,7 +30,7 @@ namespace Spd.Resource.Organizations.User
     {
         public Guid Id { get; set; }
         public Guid OrganizationId { get; set; }
-        public ContactAuthorizationTypeCode ContactAuthorizationTypeCode { get; set; }
+        public ContactRoleCode ContactAuthorizationTypeCode { get; set; }
         public string LastName { get; set; }
         public string FirstName { get; set; }
         public string Email { get; set; }
@@ -46,7 +46,7 @@ namespace Spd.Resource.Organizations.User
         public IEnumerable<UserResponse> Users { get; set; }
     }
 
-    public enum ContactAuthorizationTypeCode
+    public enum ContactRoleCode
     {
         Primary,
         Contact

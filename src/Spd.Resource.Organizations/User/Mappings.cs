@@ -42,11 +42,11 @@ namespace Spd.Resource.Organizations.User
             .ForMember(d => d.PhoneNumber, opt => opt.MapFrom(s => s.spd_phonenumber));
         }
 
-        private ContactAuthorizationTypeCode GetAuthorizationTypeCode(Guid? roleId)
+        private ContactRoleCode GetAuthorizationTypeCode(Guid? roleId)
         {
-            if (roleId == null) return ContactAuthorizationTypeCode.Contact;
+            if (roleId == null) return ContactRoleCode.Contact;
             return
-                Enum.Parse<ContactAuthorizationTypeCode>(
+                Enum.Parse<ContactRoleCode>(
                     DynamicsContextLookupHelpers.RoleGuidDictionary.FirstOrDefault(x => x.Value == roleId).Key);
 
         }

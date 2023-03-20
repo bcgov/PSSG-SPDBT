@@ -42,7 +42,7 @@ namespace Spd.Presentation.Screening.Controllers
         [HttpDelete]
         public async Task<ActionResult> DeleteAsync([FromRoute] Guid userId, [FromRoute] Guid orgId)
         {
-            await _mediator.Send(new OrgUserDeleteCommand(userId));
+            await _mediator.Send(new OrgUserDeleteCommand(userId, orgId));
             return Ok();
         }
 

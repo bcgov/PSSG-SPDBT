@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 
 namespace Spd.Resource.Organizations.User
 {
-    public class OrgUserRepository : IOrgUserRepository
+    internal class OrgUserRepository : IOrgUserRepository
     {
         private readonly DynamicsContext _dynaContext;
         private readonly IMapper _mapper;
@@ -110,13 +110,15 @@ namespace Spd.Resource.Organizations.User
 
         public async Task<bool> IfUserEmailExistedAsync(Guid organizationId, string email, CancellationToken cancellationToken)
         {
-            var emailExists = _dynaContext.spd_portalusers
-                .Expand(u => u.spd_spd_role_spd_portaluser)
+            if (string.IsNullOrWhiteSpace(email)) throw new ArgumentNullException("email");
+
+            var user = _dynaContext.spd_portalusers
                 .Where(a => a._spd_organizationid_value == organizationId
                     && a.statecode == DynamicsConstants.StateCode_Active
-                    && email == null ? true : a.spd_emailaddress1 == email)
-                .Any();
-            return emailExists;
+                    && a.spd_emailaddress1 == email)
+                .FirstOrDefault();
+
+            return user !=null;
         }
 
         private account GetOrganizationById(Guid organizationId)

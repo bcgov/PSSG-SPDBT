@@ -10,6 +10,7 @@ namespace Spd.Manager.Membership.OrgUser
             CreateMap<OrgUserCreateRequest, CreateUserCmd>();
             CreateMap<OrgUserUpdateRequest, UpdateUserCmd>();
             CreateMap<UserResponse, OrgUserResponse>();
+            CreateMap<OrgUserCreateRequest, UserResponse>();
             CreateMap<OrgUserListCmdResponse, OrgUserListResponse>();
         }
     }
