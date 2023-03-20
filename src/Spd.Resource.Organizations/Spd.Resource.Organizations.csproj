@@ -16,4 +16,8 @@
     <ProjectReference Include="..\Spd.Utilities.Shared\Spd.Utilities.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Org\" />
+  </ItemGroup>
+
 </Project>

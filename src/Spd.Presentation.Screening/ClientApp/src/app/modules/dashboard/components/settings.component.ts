@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { BooleanTypeCode, PayerPreferenceTypeCode } from 'src/app/api/models';
+import { HotToastService } from '@ngneat/hot-toast';
+import { BooleanTypeCode, OrgResponse, PayerPreferenceTypeCode, UpdateOrgRequest } from 'src/app/api/models';
+import { OrgService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 
 @Component({
@@ -36,8 +38,8 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 					<div class="col-xl-4 col-lg-12">
 						<mat-form-field>
 							<mat-label>Legal Organization Name</mat-label>
-							<input matInput formControlName="legalOrganizationName" />
-							<mat-error *ngIf="form.get('legalOrganizationName')?.hasError('required')">This is required</mat-error>
+							<input matInput formControlName="organizationLegalName" />
+							<mat-error *ngIf="form.get('organizationLegalName')?.hasError('required')">This is required</mat-error>
 						</mat-form-field>
 					</div>
 				</div>
@@ -46,11 +48,9 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 					<div class="col-xl-4 col-lg-12">
 						<mat-form-field>
 							<mat-label>Email Address</mat-label>
-							<input matInput formControlName="emailAddress" placeholder="name@domain.com" />
-							<mat-error *ngIf="form.get('emailAddress')?.hasError('required')"> This is required </mat-error>
-							<mat-error *ngIf="form.get('emailAddress')?.hasError('emailAddress')">
-								Must be a valid email address
-							</mat-error>
+							<input matInput formControlName="email" placeholder="name@domain.com" />
+							<mat-error *ngIf="form.get('email')?.hasError('required')"> This is required </mat-error>
+							<mat-error *ngIf="form.get('email')?.hasError('email')"> Must be a valid email address </mat-error>
 						</mat-form-field>
 					</div>
 					<div class="col-xl-4 col-lg-12">
@@ -67,14 +67,14 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 				<div class="row">
 					<div class="col-xl-4 col-lg-12">
 						<mat-form-field>
-							<mat-label>Street Address #1</mat-label>
+							<mat-label>Street Address 1</mat-label>
 							<input matInput formControlName="addressLine1" />
 							<mat-error *ngIf="form.get('addressLine1')?.hasError('required')"> This is required </mat-error>
 						</mat-form-field>
 					</div>
 					<div class="col-xl-4 col-lg-12">
 						<mat-form-field>
-							<mat-label>Street Address #2</mat-label>
+							<mat-label>Street Address 2 <span class="optional-label">(optional)</span></mat-label>
 							<input matInput formControlName="addressLine2" />
 							<mat-error *ngIf="form.get('addressLine2')?.hasError('required')">This is required</mat-error>
 						</mat-form-field>
@@ -120,15 +120,15 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 				</div>
 				<div class="row">
 					<div class="col-xl-4 col-lg-12">
-						<mat-radio-group aria-label="Select an option" formControlName="whoPays">
+						<mat-radio-group aria-label="Select an option" formControlName="payerPreference">
 							<mat-radio-button [value]="payerPreferenceTypeCode.Organization">Organization Pays</mat-radio-button>
 							<mat-radio-button [value]="payerPreferenceTypeCode.Applicant">Applicant Pays</mat-radio-button>
 						</mat-radio-group>
 						<mat-error
 							*ngIf="
-								(form.get('whoPays')?.dirty || form.get('whoPays')?.touched) &&
-								form.get('whoPays')?.invalid &&
-								form.get('whoPays')?.hasError('required')
+								(form.get('payerPreference')?.dirty || form.get('payerPreference')?.touched) &&
+								form.get('payerPreference')?.invalid &&
+								form.get('payerPreference')?.hasError('required')
 							"
 							>An option must be selected</mat-error
 						>
@@ -141,15 +141,16 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 				</div>
 				<div class="row">
 					<div class="col-xl-4 col-lg-12">
-						<mat-radio-group aria-label="Select an option" formControlName="contractorScreening">
+						<mat-radio-group aria-label="Select an option" formControlName="contractorsNeedVulnerableSectorScreening">
 							<mat-radio-button [value]="booleanTypeCodes.No">No</mat-radio-button>
 							<mat-radio-button [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
 						</mat-radio-group>
 						<mat-error
 							*ngIf="
-								(form.get('contractorScreening')?.dirty || form.get('contractorScreening')?.touched) &&
-								form.get('contractorScreening')?.invalid &&
-								form.get('contractorScreening')?.hasError('required')
+								(form.get('contractorsNeedVulnerableSectorScreening')?.dirty ||
+									form.get('contractorsNeedVulnerableSectorScreening')?.touched) &&
+								form.get('contractorsNeedVulnerableSectorScreening')?.invalid &&
+								form.get('contractorsNeedVulnerableSectorScreening')?.hasError('required')
 							"
 							>An option must be selected</mat-error
 						>
@@ -162,15 +163,16 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 				</div>
 				<div class="row">
 					<div class="col-xl-4 col-lg-12">
-						<mat-radio-group aria-label="Select an option" formControlName="licenseeScreening">
+						<mat-radio-group aria-label="Select an option" formControlName="licenseesNeedVulnerableSectorScreening">
 							<mat-radio-button [value]="booleanTypeCodes.No" class="mb-0">No</mat-radio-button>
 							<mat-radio-button [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
 						</mat-radio-group>
 						<mat-error
 							*ngIf="
-								(form.get('licenseeScreening')?.dirty || form.get('licenseeScreening')?.touched) &&
-								form.get('licenseeScreening')?.invalid &&
-								form.get('licenseeScreening')?.hasError('required')
+								(form.get('licenseesNeedVulnerableSectorScreening')?.dirty ||
+									form.get('licenseesNeedVulnerableSectorScreening')?.touched) &&
+								form.get('licenseesNeedVulnerableSectorScreening')?.invalid &&
+								form.get('licenseesNeedVulnerableSectorScreening')?.hasError('required')
 							"
 							>An option must be selected</mat-error
 						>
@@ -194,9 +196,9 @@ export class SettingsComponent {
 	payerPreferenceTypeCode = PayerPreferenceTypeCode;
 	initialValues = {};
 	form: FormGroup = this.formBuilder.group({
-		organizationName: new FormControl('MacDonalds', [Validators.required]),
-		legalOrganizationName: new FormControl('', [Validators.required]),
-		emailAddress: new FormControl('', [Validators.required, Validators.email]),
+		organizationName: new FormControl('', [Validators.required]),
+		organizationLegalName: new FormControl('', [Validators.required]),
+		email: new FormControl('', [Validators.required, Validators.email]),
 		phoneNumber: new FormControl('', [Validators.required]),
 		addressLine1: new FormControl('', [Validators.required]),
 		addressLine2: new FormControl(''),
@@ -204,33 +206,24 @@ export class SettingsComponent {
 		addressPostalCode: new FormControl('', [Validators.required]),
 		addressProvince: new FormControl('', [Validators.required]),
 		addressCountry: new FormControl('', [Validators.required]),
-		whoPays: new FormControl('', [Validators.required]),
-		contractorScreening: new FormControl('', [Validators.required]),
-		licenseeScreening: new FormControl('', [Validators.required]),
+		payerPreference: new FormControl('', [Validators.required]),
+		contractorsNeedVulnerableSectorScreening: new FormControl('', [Validators.required]),
+		licenseesNeedVulnerableSectorScreening: new FormControl('', [Validators.required]),
 	});
 	startAt = SPD_CONSTANTS.date.birthDateStartAt;
 	formValues = {};
 
-	constructor(private formBuilder: FormBuilder) {}
+	constructor(private formBuilder: FormBuilder, private hotToast: HotToastService, private orgService: OrgService) {}
 
 	ngOnInit(): void {
-		this.initialValues = {
-			organizationName: 'MacDonalds',
-			legalOrganizationName: 'MacDonalds Inc.',
-			emailAddress: 'mac@donalds.com',
-			phoneNumber: '2504447788',
-			addressLine1: '',
-			addressLine2: '',
-			addressCity: '',
-			addressPostalCode: '',
-			addressProvince: '',
-			addressCountry: '',
-			whoPays: '',
-			contractorScreening: '',
-			licenseeScreening: '',
-		};
-		this.form.patchValue(this.initialValues);
-		this.setFormView();
+		//TODO replace with proper org id
+		this.orgService
+			.apiOrgOrgIdGet({ orgId: '4165bdfe-7cb4-ed11-b83e-00505683fbf4' })
+			.pipe()
+			.subscribe((resp: OrgResponse) => {
+				this.form.patchValue(resp);
+				this.setFormView();
+			});
 	}
 
 	onCancel(): void {
@@ -249,10 +242,18 @@ export class SettingsComponent {
 			this.form.markAllAsTouched();
 			console.log('this.form.valid', this.form.valid);
 			if (this.form.valid) {
-				// TODO save changes
-				this.viewOnly = true;
-				this.form.disable();
-				this.initialValues = this.form.value;
+				//TODO replace with proper org id
+				const body: UpdateOrgRequest = { ...this.form.value, id: '4165bdfe-7cb4-ed11-b83e-00505683fbf4' };
+				this.orgService
+					.apiOrgOrgIdPut({ orgId: '4165bdfe-7cb4-ed11-b83e-00505683fbf4', body })
+					.pipe()
+					.subscribe((resp: UpdateOrgRequest) => {
+						this.viewOnly = true;
+						this.form.disable();
+						this.form.patchValue({ ...resp });
+						this.initialValues = this.form.value;
+						this.hotToast.success('Organization Information was successfully updated');
+					});
 			}
 		} else {
 			this.viewOnly = !this.viewOnly;

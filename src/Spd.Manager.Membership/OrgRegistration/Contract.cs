@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using MediatR;
+using Spd.Manager.Membership.Shared;
 using System.ComponentModel;
 
 namespace Spd.Manager.Membership.OrgRegistration
@@ -78,24 +79,6 @@ namespace Spd.Manager.Membership.OrgRegistration
 
         [Description("More than 500")]
         MoreThanFiveHundred
-    }
-
-    public enum PayerPreferenceTypeCode
-    {
-        [Description("Organization")]
-        Organization,
-
-        [Description("Applicant")]
-        Applicant
-    }
-
-    public enum BooleanTypeCode
-    {
-        [Description("Yes")]
-        Yes,
-
-        [Description("No")]
-        No
     }
 
     public enum FundsFromBcGovtExceedsThresholdCode
