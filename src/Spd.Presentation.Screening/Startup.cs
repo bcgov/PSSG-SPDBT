@@ -9,6 +9,7 @@ using Spd.Presentation.Screening.Controllers;
 using Spd.Utilities.LogonUser;
 using System.Security.Principal;
 using Spd.Utilities.LogonUser.Configurations;
+using Spd.Utilities.Shared.Exceptions;
 
 namespace Spd.Presentation.Screening
 {
@@ -43,7 +44,10 @@ namespace Spd.Presentation.Screening
             services.ConfigureSwagger(assemblyName);
             services
                 .AddEndpointsApiExplorer()
-                .AddControllers()
+                .AddControllers(options =>
+                {
+                    options.Filters.Add(new ApiExceptionFilter());
+                })
                 .AddJsonOptions(x =>
                 {
                     x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
@@ -68,6 +72,8 @@ namespace Spd.Presentation.Screening
 
             //config component services
             services.ConfigureComponentServices(configuration, hostEnvironment, assemblies);
+
+            
         }
 
         public void SetupHttpRequestPipeline(WebApplication app, IWebHostEnvironment env)

@@ -1,6 +1,7 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Membership.OrgUser;
+using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
 
 namespace Spd.Presentation.Screening.Controllers
@@ -9,6 +10,7 @@ namespace Spd.Presentation.Screening.Controllers
     /// 
     /// </summary>
     [ApiController]
+    [ApiExceptionFilter]
     //[Authorize] //temp comment out
     public class OrgUserController : ControllerBase
     {
@@ -42,7 +44,7 @@ namespace Spd.Presentation.Screening.Controllers
         [HttpDelete]
         public async Task<ActionResult> DeleteAsync([FromRoute] Guid userId, [FromRoute] Guid orgId)
         {
-            await _mediator.Send(new OrgUserDeleteCommand(userId));
+            await _mediator.Send(new OrgUserDeleteCommand(userId, orgId));
             return Ok();
         }
 
@@ -57,7 +59,7 @@ namespace Spd.Presentation.Screening.Controllers
         [Produces("application/json")]
         public async Task<OrgUserResponse> Get([FromRoute] Guid orgId, Guid userId)
         {
-            return await _mediator.Send(new OrgUserGetCommand(userId));
+            return await _mediator.Send(new OrgUserGetQuery(userId));
         }
 
         /// <summary>
@@ -70,7 +72,7 @@ namespace Spd.Presentation.Screening.Controllers
         [Produces("application/json")]
         public async Task<OrgUserListResponse> GetList([FromRoute] Guid orgId)
         {
-            return await _mediator.Send(new OrgUserListCommand(orgId));
+            return await _mediator.Send(new OrgUserListQuery(orgId));
         }
     }
 }
