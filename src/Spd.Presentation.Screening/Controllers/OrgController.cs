@@ -4,6 +4,7 @@ using Spd.Manager.Membership.Org;
 
 namespace Spd.Presentation.Screening.Controllers
 {
+    [ApiController]
     public class OrgController : Controller
     {
         private readonly ILogger<OrgController> _logger;
