@@ -1,14 +1,11 @@
-﻿using System.ComponentModel;
-
-namespace Spd.Resource.Organizations
+﻿namespace Spd.Resource.Organizations.Registration
 {
-    public interface IOrganizationRepository
+    public interface IOrgRegistrationRepository
     {
-        Task<bool> RegisterAsync(CreateRegistrationCmd createRequest, CancellationToken cancellationToken);
-        Task<bool> AddUserAsync(CreateUserCmd createRequest, CancellationToken cancellationToken);
+        Task<bool> AddRegistrationAsync(CreateRegistrationCmd createRegistrationCmd, CancellationToken cancellationToken);
     }
 
-    public record CreateRegistrationCmd 
+    public record CreateRegistrationCmd
     {
         public bool? AgreeToTermsAndConditions { get; set; } //map to?
         public DateTimeOffset? ContactDateOfBirth { get; set; }
@@ -40,22 +37,10 @@ namespace Spd.Resource.Organizations
         public string? LoginIdentityProvider { get; set; }
         public PortalUserIdentityTypeCode? PortalUserIdentityTypeCode { get; set; }
     }
-    public record CreateUserCmd 
-    {
-        public Guid OrganizationId { get; set; }
-        public string LastName { get; set; }
-        public string FirstName { get; set; }
-
-        //add role and other info here
-    }
-
 
     public enum RegistrationTypeCode
     {
-        [Description("Employee")]
         Employee,
-
-        [Description("Volunteer")]
         Volunteer
     }
 

@@ -43,33 +43,29 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 						>
 							<ngx-dropzone-label style="width: 100%;">
 								<div class="row">
-									<div class="col-12 p-0 fw-bold text-start" style="text-indent: 1em; color: black;">
+									<div class="col-12 d-flex p-0 fw-bold text-start" style="text-indent: 1em; color: black;">
 										<img class="file-name-icon" src="/assets/tsv_file.png" />
-										{{ f.name }}
-									</div>
-									<div class="offset-md-1 col-md-10 col-sm-12 mt-2" *ngIf="showErrors">
-										<div class="alert alert-danger d-flex align-items-center" role="alert">
-											<mat-icon class="d-none d-md-block alert-icon me-2">warning</mat-icon>
-											<div>Error on line 1 - 'dateOfBirth'</div>
+										<div class="w-100" [ngClass]="showErrors ? 'file-upload-error' : 'file-upload-success'">
+											{{ f.name }}
+											<span *ngIf="showErrors">- Upload Failed</span>
+											<span *ngIf="!showErrors">- Upload Succeeded</span>
 										</div>
-										<div class="alert alert-danger d-flex align-items-center">
-											<mat-icon class="d-none d-md-block alert-icon me-2">warning</mat-icon>
-											<div>Error on line 12 - 'province'</div>
-										</div>
-										<div class="alert alert-success d-flex align-items-center">
-											<mat-icon class="d-none d-md-block alert-icon me-2">information</mat-icon>
-											<div>File was successfully uploaded</div>
-										</div>
+										<div style="text-align: center;">Click to upload another file</div>
 									</div>
 								</div>
 							</ngx-dropzone-label>
 						</ngx-dropzone-preview>
 					</ngx-dropzone>
-				</div>
-				<div class="col-md-3 col-sm-12">
-					<button mat-stroked-button color="primary" class="mt-2" (click)="fileDropzone.showFileSelector()">
-						Browse Your Computer
-					</button>
+					<div class="col-md-12 col-sm-12 mt-4" *ngIf="showErrors">
+						<div class="alert alert-danger d-flex align-items-center" role="alert">
+							<mat-icon class="d-none d-md-block alert-icon me-2">warning</mat-icon>
+							<div>Error on line 6: City Name cannot contain numbers</div>
+						</div>
+						<div class="alert alert-danger d-flex align-items-center">
+							<mat-icon class="d-none d-md-block alert-icon me-2">warning</mat-icon>
+							<div>Error on line 9: Postal Code min 5 characters, max 12 characters</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</section>
@@ -152,7 +148,20 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 			.preview {
 				width: 100%;
 				height: unset !important;
+				min-height: unset !important;
 				max-width: unset !important;
+			}
+
+			ngx-dropzone.expandable {
+				min-height: unset;
+			}
+
+			.file-upload-error {
+				border-bottom: 6px solid var(--color-red);
+			}
+
+			.file-upload-success {
+				border-bottom: 6px solid var(--color-green);
 			}
 		`,
 	],
@@ -174,6 +183,8 @@ export class GenericUploadsComponent implements OnInit, AfterViewInit {
 	maxFileSize: number = 104857600; // bytes
 	accept = '.tsv';
 	showErrors = false;
+	// TODO remove temp code
+	count = 0;
 
 	@ViewChild(MatSort) sort!: MatSort;
 	@ViewChild('paginator') paginator!: MatPaginator;
@@ -272,7 +283,10 @@ export class GenericUploadsComponent implements OnInit, AfterViewInit {
 			// this.form.get('files')?.setValue(currentFiles);
 			this.form.get('files')?.setValue(evt.addedFiles);
 			this.spinnerService.hide('loaderSpinner');
-			this.showErrors = true;
+
+			if (this.count % 2 == 0) this.showErrors = true;
+			else this.showErrors = false;
+			this.count++;
 
 			const fileInfo = evt.addedFiles[0];
 			if (fileInfo) {

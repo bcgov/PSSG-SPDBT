@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgxMaskPipe } from 'ngx-mask';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { RegistrationFormStepComponent } from '../org-registration.component';
 
@@ -18,9 +17,6 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 							<mat-label>Given Name</mat-label>
 							<input matInput formControlName="contactGivenName" maxlength="40" [errorStateMatcher]="matcher" />
 							<mat-error *ngIf="form.get('contactGivenName')?.hasError('required')">This is required</mat-error>
-							<mat-error *ngIf="form.get('contactGivenName')?.hasError('stringnonumbers')">
-								No numbers are allowed
-							</mat-error>
 						</mat-form-field>
 					</div>
 					<div class="col-lg-4 col-md-6 col-sm-12">
@@ -28,9 +24,6 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 							<mat-label>Surname</mat-label>
 							<input matInput formControlName="contactSurname" maxlength="40" [errorStateMatcher]="matcher" />
 							<mat-error *ngIf="form.get('contactSurname')?.hasError('required')">This is required</mat-error>
-							<mat-error *ngIf="form.get('contactSurname')?.hasError('stringnonumbers')">
-								No numbers are allowed
-							</mat-error>
 						</mat-form-field>
 					</div>
 				</div>
@@ -95,8 +88,8 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 export class ContactInformationComponent implements RegistrationFormStepComponent {
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	form: FormGroup = this.formBuilder.group({
-		contactGivenName: new FormControl('', [FormControlValidators.stringnonumbers, Validators.required]),
-		contactSurname: new FormControl('', [FormControlValidators.stringnonumbers, Validators.required]),
+		contactGivenName: new FormControl('', [Validators.required]),
+		contactSurname: new FormControl('', [Validators.required]),
 		contactJobTitle: new FormControl('', [Validators.required]),
 		contactEmail: new FormControl('', [Validators.email, Validators.required]),
 		contactDateOfBirth: new FormControl('', [Validators.required]),

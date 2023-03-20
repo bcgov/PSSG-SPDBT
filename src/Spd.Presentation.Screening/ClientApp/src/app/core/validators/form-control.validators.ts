@@ -5,20 +5,6 @@ export class FormControlValidators {
 	 * @description
 	 * Checks the form control value is letters, spaces, hyphens.
 	 */
-	public static stringnonumbers(control: AbstractControl): ValidationErrors | null {
-		if (!control.value) {
-			return null;
-		}
-
-		const regExp = /\d/;
-		const valid = control.valid && !regExp.test(control.value);
-		return valid ? null : { stringnonumbers: true };
-	}
-
-	/**
-	 * @description
-	 * Checks the form control value is letters, spaces, hyphens.
-	 */
 	public static stringalpha(control: AbstractControl): ValidationErrors | null {
 		if (!control.value) {
 			return null;

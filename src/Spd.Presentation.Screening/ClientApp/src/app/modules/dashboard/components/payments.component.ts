@@ -102,7 +102,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 								</span>
 								<span *ngIf="payment.status == 'NotPaid'" class="w-100 m-md-2 m-sm-0">
 									<button mat-flat-button class="payNow medium">
-										<mat-icon class="d-none d-lg-block">paid</mat-icon> Pay Now
+										<mat-icon class="d-none d-lg-block">attach_money</mat-icon> Pay Now
 									</button>
 								</span>
 							</mat-cell>

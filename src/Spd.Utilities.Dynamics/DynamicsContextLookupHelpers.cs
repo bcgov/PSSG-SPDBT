@@ -34,5 +34,24 @@ namespace Spd.Utilities.Dynamics
                 .Where(s => s.spd_organizationtypeid == guid)
                 .FirstOrDefault();
         }
+
+        public static Dictionary<string, Guid> RoleGuidDictionary = new Dictionary<string, Guid>()
+        {
+            {"Contact", Guid.Parse("47ca4197-12ba-ed11-b83e-00505683fbf4")},
+            {"Primary", Guid.Parse("99af5c0a-a1c2-ed11-b840-00505683fbf4")},
+        };
+        public static spd_role? LookupRole(this DynamicsContext context, string key)
+        {
+            var keyExisted = RoleGuidDictionary.TryGetValue(key, out Guid guid);
+            if (!keyExisted) return null;
+            return context.spd_roles
+                .Where(s => s.spd_roleid == guid)
+                .FirstOrDefault();
+        }
+
+        public static string LookupRoleKeyById(this DynamicsContext context, Guid value)
+        {
+            return RoleGuidDictionary.FirstOrDefault(x => x.Value == value).Key;
+        }
     }
 }

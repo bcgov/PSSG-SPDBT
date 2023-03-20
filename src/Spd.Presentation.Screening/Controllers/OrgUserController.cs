@@ -1,11 +1,13 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Membership.OrgUser;
 using System.ComponentModel.DataAnnotations;
 
 namespace Spd.Presentation.Screening.Controllers
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [ApiController]
     //[Authorize] //temp comment out
     public class OrgUserController : ControllerBase
@@ -19,13 +21,56 @@ namespace Spd.Presentation.Screening.Controllers
             _mediator = mediator;
         }
 
-        [Route("api/org-user")]
+        [Route("api/orgs/{orgId}/users")]
         [HttpPost]
-        public async Task<ActionResult> Add([FromBody][Required] OrgUserCreateRequest orgUserCreateRequest)
+        [Produces("application/json")]
+        public async Task<OrgUserResponse> Add([FromBody][Required] OrgUserCreateRequest orgUserCreateRequest, [FromRoute] Guid orgId)
         {
-            orgUserCreateRequest.OrganizationId = Guid.Parse("4165bdfe-7cb4-ed11-b83e-00505683fbf4");
-            await _mediator.Send(new CreateOrgUserCommand(orgUserCreateRequest));
+            orgUserCreateRequest.OrganizationId = orgId;
+            return await _mediator.Send(new OrgUserCreateCommand(orgUserCreateRequest));
+        }
+
+        [Route("api/orgs/{orgId}/users/{userId}")]
+        [HttpPut]
+        [Produces("application/json")]
+        public async Task<OrgUserResponse> Put([FromRoute] Guid userId, [FromBody] OrgUserUpdateRequest orgUserUpdateRequest, [FromRoute] Guid orgId)
+        {
+            return await _mediator.Send(new OrgUserUpdateCommand(userId, orgUserUpdateRequest));
+        }
+
+        [Route("api/orgs/{orgId}/users/{userId}")]
+        [HttpDelete]
+        public async Task<ActionResult> DeleteAsync([FromRoute] Guid userId, [FromRoute] Guid orgId)
+        {
+            await _mediator.Send(new OrgUserDeleteCommand(userId));
             return Ok();
+        }
+
+        /// <summary>
+        /// Get Organization Authorized User from its user id
+        /// </summary>
+        /// <param name="userId">Guid of the user</param>
+        /// <returns>OrgUserResponse</returns>
+        /// <exception cref="Exception"></exception>
+        [Route("api/orgs/{orgId}/users/{userId}")]
+        [HttpGet]
+        [Produces("application/json")]
+        public async Task<OrgUserResponse> Get([FromRoute] Guid orgId, Guid userId)
+        {
+            return await _mediator.Send(new OrgUserGetCommand(userId));
+        }
+
+        /// <summary>
+        /// return active users belong to the organization.
+        /// </summary>
+        /// <param name="orgId"></param>
+        /// <returns></returns>
+        [Route("api/orgs/{orgId}/users")]
+        [HttpGet]
+        [Produces("application/json")]
+        public async Task<OrgUserListResponse> GetList([FromRoute] Guid orgId)
+        {
+            return await _mediator.Send(new OrgUserListCommand(orgId));
         }
     }
 }

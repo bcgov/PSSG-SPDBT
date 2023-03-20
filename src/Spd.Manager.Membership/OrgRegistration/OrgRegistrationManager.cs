@@ -1,25 +1,25 @@
 ﻿using AutoMapper;
 using MediatR;
-using Spd.Resource.Organizations;
+using Spd.Resource.Organizations.Registration;
 
 namespace Spd.Manager.Membership.OrgRegistration
 {
-    public class OrgRegistrationManager
+    internal class OrgRegistrationManager
         : IRequestHandler<CreateOrgRegistrationCommand, Unit>,
         IOrgRegistrationManager
     {
-        private readonly IOrganizationRepository _organizationRepository;
+        private readonly IOrgRegistrationRepository _orgRegRepository;
         private readonly IMapper _mapper;
-        public OrgRegistrationManager(IOrganizationRepository organizationRepository, IMapper mapper)
+        public OrgRegistrationManager(IOrgRegistrationRepository orgRegRepository, IMapper mapper)
         {
-            _organizationRepository = organizationRepository;
+            _orgRegRepository = orgRegRepository;
             _mapper = mapper;
         }
 
         public async Task<Unit> Handle(CreateOrgRegistrationCommand request, CancellationToken cancellationToken)
         {
             var createOrgRegistration = _mapper.Map<CreateRegistrationCmd>(request.CreateOrgRegistrationRequest);
-            await _organizationRepository.RegisterAsync(createOrgRegistration, cancellationToken);
+            await _orgRegRepository.AddRegistrationAsync(createOrgRegistration, cancellationToken);
 
             return default;
         }

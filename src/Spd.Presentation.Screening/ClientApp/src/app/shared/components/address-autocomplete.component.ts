@@ -67,6 +67,18 @@ export class Address {
 						<mat-icon style="padding: 28px 12px 12px 12px;" matSuffix>search</mat-icon>
 						<mat-hint> Start typing a street address or postal code </mat-hint>
 					</mat-form-field>
+
+					<button
+						mat-button
+						type="button"
+						color="primary"
+						class="manual-button"
+						[disabled]="showAddressFields"
+						(click)="onShowManualAddress()"
+					>
+						<mat-icon>add</mat-icon>
+						Add address manually
+					</button>
 				</div>
 
 				<div class="col-xl-5 col-lg-5 col-md-12">
@@ -89,17 +101,23 @@ export class Address {
 			.text-option {
 				color: var(--color-primary-light);
 			}
+
+			.manual-button {
+				width: unset;
+			}
 		`,
 	],
 })
 export class AddressAutocompleteComponent implements OnInit {
 	@Output() autocompleteAddress: EventEmitter<Address> = new EventEmitter<Address>();
+	@Output() enterAddressManually: EventEmitter<boolean> = new EventEmitter<boolean>();
 
 	form!: FormGroup;
 	addressAutocompleteFields!: AddressFindResponse[];
 	data: AddressRetrieveResponse[] = [];
 	lastId = '';
 	countryList = COUNTRIES;
+	showAddressFields = false;
 
 	constructor(
 		private formBuilder: FormBuilder,
@@ -133,8 +151,6 @@ export class AddressAutocompleteComponent implements OnInit {
 				})
 			)
 			.subscribe((response: AddressFindResponse[]) => {
-				console.log('subscribe', response);
-
 				if (lastIdExists) {
 					const dialogOptions: AddressDialogData = {
 						addressAutocompleteFields: response,
@@ -231,5 +247,10 @@ export class AddressAutocompleteComponent implements OnInit {
 					}
 				});
 		}
+	}
+
+	public onShowManualAddress(): void {
+		this.showAddressFields = true;
+		this.enterAddressManually.emit(true);
 	}
 }
