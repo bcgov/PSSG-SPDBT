@@ -7,10 +7,10 @@ namespace Spd.Manager.Membership.OrgRegistration
 {
     public interface IOrgRegistrationManager
     {
-        public Task<Unit> Handle(CreateOrgRegistrationCommand request, CancellationToken cancellationToken);
+        public Task<Unit> Handle(OrgRegistrationCreateCmd request, CancellationToken cancellationToken);
     }
 
-    public record CreateOrgRegistrationCommand(OrgRegistrationCreateRequest CreateOrgRegistrationRequest) : IRequest<Unit>;
+    public record OrgRegistrationCreateCmd(OrgRegistrationCreateRequest CreateOrgRegistrationRequest) : IRequest<Unit>;
 
     public class OrgRegistrationCreateRequest
     {

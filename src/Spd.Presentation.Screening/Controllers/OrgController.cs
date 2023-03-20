@@ -19,9 +19,9 @@ namespace Spd.Presentation.Screening.Controllers
         [Route("api/org/{orgId}")]
         [HttpPut]
         [Produces("application/json")]
-        public async Task<OrgResponse> Put([FromBody] UpdateOrgRequest updateOrgRequest, [FromRoute] Guid orgId)
+        public async Task<OrgResponse> Put([FromBody] OrgUpdateRequest updateOrgRequest, [FromRoute] Guid orgId)
         {
-            return await _mediator.Send(new UpdateOrgCommand(updateOrgRequest, orgId));
+            return await _mediator.Send(new OrgUpdateCommand(updateOrgRequest, orgId));
         }
 
         [Route("api/org/{orgId}")]
@@ -29,7 +29,7 @@ namespace Spd.Presentation.Screening.Controllers
         [Produces("application/json")]
         public async Task<OrgResponse> Get([FromRoute] Guid orgId)
         {
-            return await _mediator.Send(new GetOrgCommand(orgId));
+            return await _mediator.Send(new OrgGetQuery(orgId));
         }
     }
 }

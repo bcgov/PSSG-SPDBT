@@ -2,6 +2,7 @@
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
 using Spd.Utilities.Dynamics;
+using Spd.Utilities.Shared.Exceptions;
 
 namespace Spd.Resource.Organizations.Org
 {
@@ -17,7 +18,7 @@ namespace Spd.Resource.Organizations.Org
             _logger = logger;
         }
 
-        public async Task<OrgCmdResponse> UpdateOrgAsync(OrgUpdateCommand updateOrgCmd, CancellationToken cancellationToken)
+        public async Task<OrgResponse> OrgUpdateAsync(OrgUpdateCommand updateOrgCmd, CancellationToken cancellationToken)
         {
             var org = GetOrgById(updateOrgCmd.Id);
             _mapper.Map(updateOrgCmd, org);
@@ -25,13 +26,13 @@ namespace Spd.Resource.Organizations.Org
             _dynaContext.UpdateObject(org);
             await _dynaContext.SaveChangesAsync(cancellationToken);
 
-            return _mapper.Map<OrgCmdResponse>(org);
+            return _mapper.Map<OrgResponse>(org);
         }
 
-        public async Task<OrgCmdResponse> GetOrgAsync(Guid orgId, CancellationToken cancellationToken)
+        public async Task<OrgResponse> OrgGetAsync(Guid orgId, CancellationToken cancellationToken)
         {
             var org = GetOrgById(orgId);
-            var response = _mapper.Map<OrgCmdResponse>(org);
+            var response = _mapper.Map<OrgResponse>(org);
             return response;
         }
 
@@ -42,7 +43,7 @@ namespace Spd.Resource.Organizations.Org
                 .FirstOrDefault();
 
             if (account?.statecode == DynamicsConstants.StateCode_Inactive)
-                throw new InactiveException($"Organization {organizationId} is inactive.");
+                throw new InactiveException(System.Net.HttpStatusCode.BadRequest, $"Organization {organizationId} is inactive.");
             return account;
         }
     }

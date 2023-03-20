@@ -2,10 +2,10 @@
 {
     public interface IOrgRegistrationRepository
     {
-        Task<bool> AddRegistrationAsync(CreateRegistrationCmd createRegistrationCmd, CancellationToken cancellationToken);
+        Task<bool> AddRegistrationAsync(OrgRegistrationCreateCommand createRegistrationCmd, CancellationToken cancellationToken);
     }
 
-    public record CreateRegistrationCmd
+    public record OrgRegistrationCreateCommand
     {
         public bool? AgreeToTermsAndConditions { get; set; } //map to?
         public DateTimeOffset? ContactDateOfBirth { get; set; }

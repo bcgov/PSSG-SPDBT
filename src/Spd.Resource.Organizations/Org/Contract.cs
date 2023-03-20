@@ -2,8 +2,8 @@
 {
     public interface IOrgRepository
     {
-        Task<OrgCmdResponse> UpdateOrgAsync(OrgUpdateCommand updateOrgCmd, CancellationToken cancellationToken);
-        Task<OrgCmdResponse> GetOrgAsync(Guid orgId, CancellationToken cancellationToken);
+        Task<OrgResponse> OrgUpdateAsync(OrgUpdateCommand orgUpdateCommand, CancellationToken cancellationToken);
+        Task<OrgResponse> OrgGetAsync(Guid orgId, CancellationToken cancellationToken);
     }
     public record OrgUpdateCommand
     {
@@ -22,7 +22,7 @@
         public string? OrganizationName { get; set; }
         public string? OrganizationLegalName { get; set; }
     }
-    public record OrgCmdResponse
+    public record OrgResponse
     {
         public Guid Id { get; set; }
         public PayerPreferenceTypeCode PayerPreference { get; set; }

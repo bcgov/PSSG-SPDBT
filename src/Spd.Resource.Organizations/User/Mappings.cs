@@ -8,7 +8,7 @@ namespace Spd.Resource.Organizations.User
     {
         public Mappings()
         {
-            _ = CreateMap<CreateUserCmd, spd_portaluser>()
+            _ = CreateMap<UserCreateCommand, spd_portaluser>()
             .ForMember(d => d.spd_portaluserid, opt => opt.MapFrom(s => Guid.NewGuid()))
             .ForMember(d => d.organizationid, opt => opt.Ignore())
             .ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => s.FirstName))
@@ -19,7 +19,7 @@ namespace Spd.Resource.Organizations.User
             .ForMember(d => d.spd_jobtitle, opt => opt.MapFrom(s => s.JobTitle))
             .ForMember(d => d.spd_phonenumber, opt => opt.MapFrom(s => s.PhoneNumber));
 
-            _ = CreateMap<UpdateUserCmd, spd_portaluser>()
+            _ = CreateMap<UserUpdateCommand, spd_portaluser>()
             .ForMember(d => d.spd_portaluserid, opt => opt.MapFrom(s => s.Id))
             .ForMember(d => d.organizationid, opt => opt.Ignore())
             .ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => s.FirstName))

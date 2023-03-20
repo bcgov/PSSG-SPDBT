@@ -21,7 +21,7 @@ namespace Spd.Resource.Organizations.User
             _logger = logger;
         }
 
-        public async Task<UserResponse> AddUserAsync(CreateUserCmd createUserCmd, CancellationToken cancellationToken)
+        public async Task<UserResponse> AddUserAsync(UserCreateCommand createUserCmd, CancellationToken cancellationToken)
         {
             var organization = GetOrganizationById(createUserCmd.OrganizationId);
             spd_portaluser user = _mapper.Map<spd_portaluser>(createUserCmd);
@@ -40,7 +40,7 @@ namespace Spd.Resource.Organizations.User
             return _mapper.Map<UserResponse>(user);
         }
 
-        public async Task<UserResponse> UpdateUserAsync(UpdateUserCmd updateUserCmd, CancellationToken cancellationToken)
+        public async Task<UserResponse> UpdateUserAsync(UserUpdateCommand updateUserCmd, CancellationToken cancellationToken)
         {
             var user = GetUserById(updateUserCmd.Id);
             _mapper.Map(updateUserCmd, user);
@@ -82,7 +82,7 @@ namespace Spd.Resource.Organizations.User
             return response;
         }
 
-        public async Task<OrgUserListCmdResponse> GetUserListAsync(Guid organizationId, CancellationToken cancellationToken)
+        public async Task<OrgUsersResponse> GetUserListAsync(Guid organizationId, CancellationToken cancellationToken)
         {
             var users = _dynaContext.spd_portalusers
                 .Expand(u => u.spd_spd_role_spd_portaluser)
@@ -103,7 +103,7 @@ namespace Spd.Resource.Organizations.User
 
             var organization = GetOrganizationById(organizationId);
 
-            var response = new OrgUserListCmdResponse();
+            var response = new OrgUsersResponse();
             response.MaximumNumberOfAuthorizedContacts = organization.spd_maximumnumberofcontacts ?? 6;
             response.MaximumNumberOfPrimaryAuthorizedContacts = organization.spd_noofprimaryauthorizedcontacts ?? 2;
 

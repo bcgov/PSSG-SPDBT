@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Spd.Resource.Organizations.Registration;
 
 namespace Spd.Manager.Membership.OrgRegistration
 {
@@ -7,7 +6,7 @@ namespace Spd.Manager.Membership.OrgRegistration
     {
         public Mappings()
         {
-            CreateMap<OrgRegistrationCreateRequest, CreateRegistrationCmd>();
+            CreateMap<OrgRegistrationCreateRequest, OrgRegistrationCreateCmd>();
         }
     }
 }

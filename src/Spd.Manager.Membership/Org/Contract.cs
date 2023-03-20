@@ -6,14 +6,14 @@ namespace Spd.Manager.Membership.Org
 {
     public interface IOrgManager
     {
-        public Task<OrgResponse> Handle(UpdateOrgCommand request, CancellationToken cancellationToken);
-        public Task<OrgResponse> Handle(GetOrgCommand request, CancellationToken cancellationToken);
+        public Task<OrgResponse> Handle(OrgUpdateCommand request, CancellationToken cancellationToken);
+        public Task<OrgResponse> Handle(OrgGetQuery request, CancellationToken cancellationToken);
     }
 
-    public record UpdateOrgCommand(UpdateOrgRequest UpdateOrgRequest, Guid OrgId) : IRequest<OrgResponse>;
-    public record GetOrgCommand(Guid OrgId) : IRequest<OrgResponse>;
+    public record OrgUpdateCommand(OrgUpdateRequest OrgUpdateRequest, Guid OrgId) : IRequest<OrgResponse>;
+    public record OrgGetQuery(Guid OrgId) : IRequest<OrgResponse>;
 
-    public class UpdateOrgRequest
+    public class OrgUpdateRequest
     {
         public Guid Id { get; set; }
         public PayerPreferenceTypeCode PayerPreference { get; set; }
@@ -49,9 +49,9 @@ namespace Spd.Manager.Membership.Org
         public string? OrganizationLegalName { get; set; }
     }
 
-    public class UpdateOrgRequestValidator : AbstractValidator<UpdateOrgRequest>
+    public class OrgUpdateRequestValidator : AbstractValidator<OrgUpdateRequest>
     {
-        public UpdateOrgRequestValidator()
+        public OrgUpdateRequestValidator()
         {
             RuleFor(r => r.PayerPreference)
                     .IsInEnum();

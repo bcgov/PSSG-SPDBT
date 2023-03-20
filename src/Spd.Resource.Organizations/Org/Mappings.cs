@@ -24,7 +24,7 @@ namespace Spd.Resource.Organizations.Org
             .ForMember(d => d.spd_havecontractors, opt => opt.MapFrom(s => (int)Enum.Parse<YesNoOptionSet>(s.ContractorsNeedVulnerableSectorScreening.ToString())))
             .ForMember(d => d.spd_havelicenseesorregistrants, opt => opt.MapFrom(s => (int)Enum.Parse<YesNoOptionSet>(s.LicenseesNeedVulnerableSectorScreening.ToString())));
 
-            _ = CreateMap<account, OrgCmdResponse>()
+            _ = CreateMap<account, OrgResponse>()
             .ForMember(d => d.Id, opt => opt.MapFrom(s => s.accountid))
             .ForMember(d => d.OrganizationName, opt => opt.MapFrom(s => s.name))
             .ForMember(d => d.OrganizationLegalName, opt => opt.MapFrom(s => s.spd_organizationlegalname))
