@@ -14,7 +14,7 @@ namespace Spd.Resource.Organizations.User
         private readonly ILogger<OrgUserRepository> _logger;
         public OrgUserRepository(IDynamicsContextFactory ctx, IMapper mapper, ILogger<OrgUserRepository> logger)
         {
-            _dynaContext = ctx.Create();
+            _dynaContext = ctx.CreateChangeOverwrite();
             _mapper = mapper;
             _logger = logger;
         }
@@ -34,6 +34,7 @@ namespace Spd.Resource.Organizations.User
             await _dynaContext.SaveChangesAsync(cancellationToken);
 
             user._spd_organizationid_value = createUserCmd.OrganizationId;
+            user.spd_spd_role_spd_portaluser = new Collection<spd_role> { new spd_role() { spd_roleid = role.spd_roleid } };
             return _mapper.Map<UserResponse>(user);
         }
 
@@ -84,7 +85,7 @@ namespace Spd.Resource.Organizations.User
             var users = _dynaContext.spd_portalusers
                 .Expand(u => u.spd_spd_role_spd_portaluser)
                 .Where(a => a._spd_organizationid_value == organizationId && a.statecode == DynamicsConstants.StateCode_Active)
-                .AsEnumerable();
+                .ToList();
 
             if (users == null) throw new NotFoundException($"Cannot find the users with organizationId {organizationId}");
 
@@ -106,19 +107,6 @@ namespace Spd.Resource.Organizations.User
 
             response.Users = _mapper.Map<IEnumerable<UserResponse>>(users);
             return response;
-        }
-
-        public async Task<bool> IfUserEmailExistedAsync(Guid organizationId, string email, CancellationToken cancellationToken)
-        {
-            if (string.IsNullOrWhiteSpace(email)) throw new ArgumentNullException("email");
-
-            var user = _dynaContext.spd_portalusers
-                .Where(a => a._spd_organizationid_value == organizationId
-                    && a.statecode == DynamicsConstants.StateCode_Active
-                    && a.spd_emailaddress1 == email)
-                .FirstOrDefault();
-
-            return user !=null;
         }
 
         private account GetOrganizationById(Guid organizationId)

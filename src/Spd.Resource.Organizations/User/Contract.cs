@@ -7,7 +7,6 @@ namespace Spd.Resource.Organizations.User
         Task DeleteUserAsync(Guid userId, CancellationToken cancellationToken);
         Task<UserResponse> GetUserAsync(Guid userId, CancellationToken cancellationToken);
         Task<OrgUserListCmdResponse> GetUserListAsync(Guid organizationId, CancellationToken cancellationToken);
-        Task<bool> IfUserEmailExistedAsync(Guid organizationId, string email, CancellationToken cancellationToken);
     }
 
     public abstract record UpsertUserCmd

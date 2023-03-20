@@ -30,7 +30,9 @@ namespace Spd.Manager.Membership.OrgUser
             }
 
             //check if role is withing the maxium number scope
-            existingUsers.Users.Append(_mapper.Map<UserResponse>(request.OrgUserCreateRequest));
+            var newlist = existingUsers.Users.ToList();
+            newlist.Add(_mapper.Map<UserResponse>(request.OrgUserCreateRequest));
+            existingUsers.Users = newlist;
             CheckMaxRoleNumberRule(existingUsers);
 
             var createOrgUser = _mapper.Map<CreateUserCmd>(request.OrgUserCreateRequest);
