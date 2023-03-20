@@ -258,7 +258,7 @@ export class UsersComponent {
 	private loadListOfUsers(): void {
 		//TODO replace with proper org id
 		this.orgUserService
-			.apiOrgsOrganizationIdUsersGet({ organizationId: '4165bdfe-7cb4-ed11-b83e-00505683fbf4' })
+			.apiOrgsOrgIdUsersGet({ orgId: '4165bdfe-7cb4-ed11-b83e-00505683fbf4' })
 			.pipe()
 			.subscribe((res: OrgUserListResponse) => {
 				this.maximumNumberOfContacts = res.maximumNumberOfAuthorizedContacts ?? this.DEFAULT_MAX_NUMBER_OF_CONTACTS;

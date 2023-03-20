@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Spd.Resource.Organizations.User;
 
 namespace Spd.Manager.Membership.OrgUser

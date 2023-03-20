@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Membership.OrgUser;
 using System.ComponentModel.DataAnnotations;

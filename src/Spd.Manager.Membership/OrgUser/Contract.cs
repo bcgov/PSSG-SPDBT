@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using System.ComponentModel;
 
 namespace Spd.Manager.Membership.OrgUser
