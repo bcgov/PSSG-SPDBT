@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Membership.OrgUser;
+using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
 
 namespace Spd.Presentation.Screening.Controllers
@@ -9,6 +10,7 @@ namespace Spd.Presentation.Screening.Controllers
     /// 
     /// </summary>
     [ApiController]
+    [ApiExceptionFilter]
     //[Authorize] //temp comment out
     public class OrgUserController : ControllerBase
     {

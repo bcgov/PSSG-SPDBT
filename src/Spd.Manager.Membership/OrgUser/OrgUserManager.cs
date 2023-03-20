@@ -1,6 +1,8 @@
 using AutoMapper;
 using MediatR;
 using Spd.Resource.Organizations.User;
+using Spd.Utilities.Shared.Exceptions;
+using System.Net;
 
 namespace Spd.Manager.Membership.OrgUser
 {
@@ -26,7 +28,7 @@ namespace Spd.Manager.Membership.OrgUser
             //check if email already exists for the user
             if (existingUsers.Users.Any(u => u.Email.Equals(request.OrgUserCreateRequest.Email, StringComparison.InvariantCultureIgnoreCase)))
             {
-                throw new DuplicateException(@"User email {request.OrgUserCreateRequest.Email} has been used by other users.");
+                throw new DuplicateException(HttpStatusCode.BadRequest, $"User email {request.OrgUserCreateRequest.Email} has been used by other users.");
             }
 
             //check if role is withing the maxium number scope
@@ -48,7 +50,7 @@ namespace Spd.Manager.Membership.OrgUser
                 u.Email.Equals(request.OrgUserUpdateRequest.Email, StringComparison.InvariantCultureIgnoreCase) &&
                 u.Id != request.OrgUserUpdateRequest.Id))
             {
-                throw new DuplicateException(@"User email {request.OrgUserCreateRequest.Email} has been used by other users.");
+                throw new DuplicateException(HttpStatusCode.BadRequest, $"User email {request.OrgUserUpdateRequest.Email} has been used by other users.");
             }
 
             //check max role number rule
@@ -92,16 +94,16 @@ namespace Spd.Manager.Membership.OrgUser
             int userNo = userList.Users.Count();
             if (userNo > userList.MaximumNumberOfAuthorizedContacts)
             {
-                throw new OutOfRangeException("There is already maxium number of contacts, could not add more.");
+                throw new OutOfRangeException(HttpStatusCode.BadRequest, "There is already maxium number of contacts, could not add more.");
             }
             int primaryUserNo = userList.Users.Count(u => u.ContactAuthorizationTypeCode == ContactRoleCode.Primary);
             if (primaryUserNo > userList.MaximumNumberOfPrimaryAuthorizedContacts)
             {
-                throw new OutOfRangeException("There is already maxium number of primary contacts, could not add more.");
+                throw new OutOfRangeException(HttpStatusCode.BadRequest, "There is already maxium number of primary contacts, could not add more.");
             }
             if (primaryUserNo < 1)
             {
-                throw new OutOfRangeException("There must be at least one primary user.");
+                throw new OutOfRangeException(HttpStatusCode.BadRequest, "There must be at least one primary user.");
             }
         }
     }

@@ -1,17 +1,19 @@
-﻿public class DuplicateException : Exception
+﻿using System.Net;
+
+namespace Spd.Utilities.Shared.Exceptions
 {
-    public DuplicateException()
+    public class DuplicateException : ApiException
     {
-    }
 
-    public DuplicateException(string message)
-        : base(message)
-    {
-    }
+        public DuplicateException(HttpStatusCode statusCode, string message)
+            : base(statusCode, message)
+        {
+        }
 
-    public DuplicateException(string message, Exception inner)
-        : base(message, inner)
-    {
+        public DuplicateException(HttpStatusCode statusCode, string message, Exception inner)
+            : base(statusCode, message, inner)
+        {
+        }
     }
 }
 
