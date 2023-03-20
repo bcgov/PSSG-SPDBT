@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Spd.Resource.Organizations.User;
 
 namespace Spd.Manager.Membership.OrgUser
@@ -9,7 +9,9 @@ namespace Spd.Manager.Membership.OrgUser
         {
             CreateMap<OrgUserCreateRequest, CreateUserCmd>();
             CreateMap<OrgUserUpdateRequest, UpdateUserCmd>();
-            CreateMap<UserCmdResponse, OrgUserResponse>();
+            CreateMap<UserResponse, OrgUserResponse>();
+            CreateMap<OrgUserCreateRequest, UserResponse>();
+            CreateMap<OrgUserUpdateRequest, UserResponse>();
             CreateMap<OrgUserListCmdResponse, OrgUserListResponse>();
         }
     }
