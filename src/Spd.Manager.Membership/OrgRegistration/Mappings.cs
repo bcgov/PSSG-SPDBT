@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using Spd.Resource.Organizations;
+using Spd.Resource.Organizations.Registration;
 
 namespace Spd.Manager.Membership.OrgRegistration
 {
-    public class Mappings : Profile
+    internal class Mappings : Profile
     {
         public Mappings()
         {

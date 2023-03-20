@@ -9,6 +9,7 @@ import { RequestBuilder } from '../request-builder';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
+import { ActionResult } from '../models/action-result';
 import { OrgRegistrationCreateRequest } from '../models/org-registration-create-request';
 
 @Injectable({
@@ -37,7 +38,7 @@ export class OrgRegistrationService extends BaseService {
     context?: HttpContext
     body: OrgRegistrationCreateRequest
   }
-): Observable<StrictHttpResponse<void>> {
+): Observable<StrictHttpResponse<ActionResult>> {
 
     const rb = new RequestBuilder(this.rootUrl, OrgRegistrationService.ApiOrgRegistrationsPostPath, 'post');
     if (params) {
@@ -45,13 +46,13 @@ export class OrgRegistrationService extends BaseService {
     }
 
     return this.http.request(rb.build({
-      responseType: 'text',
-      accept: '*/*',
+      responseType: 'json',
+      accept: 'application/json',
       context: params?.context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
+        return r as StrictHttpResponse<ActionResult>;
       })
     );
   }
@@ -66,10 +67,10 @@ export class OrgRegistrationService extends BaseService {
     context?: HttpContext
     body: OrgRegistrationCreateRequest
   }
-): Observable<void> {
+): Observable<ActionResult> {
 
     return this.apiOrgRegistrationsPost$Response(params).pipe(
-      map((r: StrictHttpResponse<void>) => r.body as void)
+      map((r: StrictHttpResponse<ActionResult>) => r.body as ActionResult)
     );
   }
 
