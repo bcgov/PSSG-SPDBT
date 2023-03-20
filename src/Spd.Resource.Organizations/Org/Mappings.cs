@@ -8,7 +8,7 @@ namespace Spd.Resource.Organizations.Org
     {
         public Mappings()
         {
-            _ = CreateMap<OrgUpdateCommand, account>()
+            _ = CreateMap<OrgUpdateCmd, account>()
             .ForMember(d => d.accountid, opt => opt.MapFrom(s => s.Id))
             .ForMember(d => d.name, opt => opt.MapFrom(s => s.OrganizationName))
             .ForMember(d => d.spd_organizationlegalname, opt => opt.MapFrom(s => s.OrganizationLegalName))
@@ -24,7 +24,7 @@ namespace Spd.Resource.Organizations.Org
             .ForMember(d => d.spd_havecontractors, opt => opt.MapFrom(s => (int)Enum.Parse<YesNoOptionSet>(s.ContractorsNeedVulnerableSectorScreening.ToString())))
             .ForMember(d => d.spd_havelicenseesorregistrants, opt => opt.MapFrom(s => (int)Enum.Parse<YesNoOptionSet>(s.LicenseesNeedVulnerableSectorScreening.ToString())));
 
-            _ = CreateMap<account, OrgResponse>()
+            _ = CreateMap<account, OrgResp>()
             .ForMember(d => d.Id, opt => opt.MapFrom(s => s.accountid))
             .ForMember(d => d.OrganizationName, opt => opt.MapFrom(s => s.name))
             .ForMember(d => d.OrganizationLegalName, opt => opt.MapFrom(s => s.spd_organizationlegalname))

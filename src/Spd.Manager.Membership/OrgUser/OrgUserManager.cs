@@ -33,11 +33,11 @@ namespace Spd.Manager.Membership.OrgUser
 
             //check if role is withing the maxium number scope
             var newlist = existingUsers.Users.ToList();
-            newlist.Add(_mapper.Map<UserResponse>(request.OrgUserCreateRequest));
+            newlist.Add(_mapper.Map<UserResp>(request.OrgUserCreateRequest));
             existingUsers.Users = newlist;
             CheckMaxRoleNumberRule(existingUsers);
 
-            var createOrgUser = _mapper.Map<UserCreateCommand>(request.OrgUserCreateRequest);
+            var createOrgUser = _mapper.Map<UserCreateCmd>(request.OrgUserCreateRequest);
             var response = await _orgUserRepository.AddUserAsync(createOrgUser, cancellationToken);
             return _mapper.Map<OrgUserResponse>(response);
         }
@@ -58,7 +58,7 @@ namespace Spd.Manager.Membership.OrgUser
             _mapper.Map(request.OrgUserUpdateRequest, existingUser);
             CheckMaxRoleNumberRule(existingUsers);
 
-            var updateOrgUser = _mapper.Map<UserUpdateCommand>(request.OrgUserUpdateRequest);
+            var updateOrgUser = _mapper.Map<UserUpdateCmd>(request.OrgUserUpdateRequest);
             var response = await _orgUserRepository.UpdateUserAsync(updateOrgUser, cancellationToken);
             return _mapper.Map<OrgUserResponse>(response);
         }
@@ -89,7 +89,7 @@ namespace Spd.Manager.Membership.OrgUser
             return _mapper.Map<OrgUserListResponse>(response);
         }
 
-        private void CheckMaxRoleNumberRule(OrgUsersResponse userList)
+        private void CheckMaxRoleNumberRule(OrgUsersResp userList)
         {
             int userNo = userList.Users.Count();
             if (userNo > userList.MaximumNumberOfAuthorizedContacts)

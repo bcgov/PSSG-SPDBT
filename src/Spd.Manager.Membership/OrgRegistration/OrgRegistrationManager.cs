@@ -5,7 +5,7 @@ using Spd.Resource.Organizations.Registration;
 namespace Spd.Manager.Membership.OrgRegistration
 {
     internal class OrgRegistrationManager
-        : IRequestHandler<OrgRegistrationCreateCmd, Unit>,
+        : IRequestHandler<OrgRegistrationCreateCommand, Unit>,
         IOrgRegistrationManager
     {
         private readonly IOrgRegistrationRepository _orgRegRepository;
@@ -16,10 +16,10 @@ namespace Spd.Manager.Membership.OrgRegistration
             _mapper = mapper;
         }
 
-        public async Task<Unit> Handle(OrgRegistrationCreateCmd request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(OrgRegistrationCreateCommand request, CancellationToken cacellationToken)
         {
             var createOrgRegistration = _mapper.Map<OrgRegistrationCreateCmd>(request.CreateOrgRegistrationRequest);
-            await _orgRegRepository.AddRegistrationAsync(createOrgRegistration, cancellationToken);
+            await _orgRegRepository.AddRegistrationAsync(createOrgRegistration, cacellationToken);
 
             return default;
         }

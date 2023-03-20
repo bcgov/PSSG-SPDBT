@@ -2,10 +2,10 @@
 {
     public interface IOrgRegistrationRepository
     {
-        Task<bool> AddRegistrationAsync(OrgRegistrationCreateCommand createRegistrationCmd, CancellationToken cancellationToken);
+        Task<bool> AddRegistrationAsync(OrgRegistrationCreateCmd createRegistrationCmd, CancellationToken cancellationToken);
     }
 
-    public record OrgRegistrationCreateCommand
+    public record OrgRegistrationCreateCmd
     {
         public bool? AgreeToTermsAndConditions { get; set; } //map to?
         public DateTimeOffset? ContactDateOfBirth { get; set; }
@@ -109,10 +109,5 @@
         BusinessBceId,
         BcServicesCard,
         Idir,
-    }
-
-    public class RegistrationResponse
-    {
-        public Guid OrgRegistrationId { get; set; }
     }
 }

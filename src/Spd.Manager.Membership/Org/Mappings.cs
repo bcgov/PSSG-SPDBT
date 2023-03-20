@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Spd.Resource.Organizations.Org;
 
 namespace Spd.Manager.Membership.Org
 {
@@ -7,7 +8,7 @@ namespace Spd.Manager.Membership.Org
         public Mappings()
         {
             CreateMap<OrgUpdateRequest, OrgUpdateCommand>();
-            CreateMap<OrgResponse, OrgResponse>();
+            CreateMap<OrgResp, OrgResponse>();
         }
     }
 }

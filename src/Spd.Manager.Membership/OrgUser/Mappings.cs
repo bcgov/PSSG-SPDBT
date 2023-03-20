@@ -7,12 +7,12 @@ namespace Spd.Manager.Membership.OrgUser
     {
         public Mappings()
         {
-            CreateMap<OrgUserCreateRequest, UserCreateCommand>();
-            CreateMap<OrgUserUpdateRequest, UserUpdateCommand>();
-            CreateMap<UserResponse, OrgUserResponse>();
-            CreateMap<OrgUserCreateRequest, UserResponse>();
-            CreateMap<OrgUserUpdateRequest, UserResponse>();
-            CreateMap<OrgUserListResponse, OrgUserListResponse>();
+            CreateMap<OrgUserCreateRequest, UserCreateCmd>();
+            CreateMap<OrgUserUpdateRequest, UserUpdateCmd>();
+            CreateMap<UserResp, OrgUserResponse>();
+            CreateMap<OrgUserCreateRequest, UserResp>();
+            CreateMap<OrgUserUpdateRequest, UserResp>();
+            CreateMap<OrgUsersResp, OrgUserListResponse>();
         }
     }
 }

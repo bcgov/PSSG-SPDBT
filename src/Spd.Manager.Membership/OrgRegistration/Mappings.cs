@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Spd.Resource.Organizations.Registration;
 
 namespace Spd.Manager.Membership.OrgRegistration
 {

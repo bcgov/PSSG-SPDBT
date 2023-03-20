@@ -18,7 +18,7 @@ namespace Spd.Resource.Organizations.Org
             _logger = logger;
         }
 
-        public async Task<OrgResponse> OrgUpdateAsync(OrgUpdateCommand updateOrgCmd, CancellationToken cancellationToken)
+        public async Task<OrgResp> OrgUpdateAsync(OrgUpdateCmd updateOrgCmd, CancellationToken cancellationToken)
         {
             var org = GetOrgById(updateOrgCmd.Id);
             _mapper.Map(updateOrgCmd, org);
@@ -26,13 +26,13 @@ namespace Spd.Resource.Organizations.Org
             _dynaContext.UpdateObject(org);
             await _dynaContext.SaveChangesAsync(cancellationToken);
 
-            return _mapper.Map<OrgResponse>(org);
+            return _mapper.Map<OrgResp>(org);
         }
 
-        public async Task<OrgResponse> OrgGetAsync(Guid orgId, CancellationToken cancellationToken)
+        public async Task<OrgResp> OrgGetAsync(Guid orgId, CancellationToken cancellationToken)
         {
             var org = GetOrgById(orgId);
-            var response = _mapper.Map<OrgResponse>(org);
+            var response = _mapper.Map<OrgResp>(org);
             return response;
         }
 

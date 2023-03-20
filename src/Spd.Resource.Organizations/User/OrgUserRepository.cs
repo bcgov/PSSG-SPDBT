@@ -21,7 +21,7 @@ namespace Spd.Resource.Organizations.User
             _logger = logger;
         }
 
-        public async Task<UserResponse> AddUserAsync(UserCreateCommand createUserCmd, CancellationToken cancellationToken)
+        public async Task<UserResp> AddUserAsync(UserCreateCmd createUserCmd, CancellationToken cancellationToken)
         {
             var organization = GetOrganizationById(createUserCmd.OrganizationId);
             spd_portaluser user = _mapper.Map<spd_portaluser>(createUserCmd);
@@ -37,10 +37,10 @@ namespace Spd.Resource.Organizations.User
 
             user._spd_organizationid_value = createUserCmd.OrganizationId;
             user.spd_spd_role_spd_portaluser = new Collection<spd_role> { new spd_role() { spd_roleid = role.spd_roleid } };
-            return _mapper.Map<UserResponse>(user);
+            return _mapper.Map<UserResp>(user);
         }
 
-        public async Task<UserResponse> UpdateUserAsync(UserUpdateCommand updateUserCmd, CancellationToken cancellationToken)
+        public async Task<UserResp> UpdateUserAsync(UserUpdateCmd updateUserCmd, CancellationToken cancellationToken)
         {
             var user = GetUserById(updateUserCmd.Id);
             _mapper.Map(updateUserCmd, user);
@@ -62,7 +62,7 @@ namespace Spd.Resource.Organizations.User
             await _dynaContext.SaveChangesAsync(cancellationToken);
 
             user.spd_spd_role_spd_portaluser = new Collection<spd_role> { new spd_role() { spd_roleid = newRole.spd_roleid } };
-            return _mapper.Map<UserResponse>(user);
+            return _mapper.Map<UserResp>(user);
         }
 
         public async Task DeleteUserAsync(Guid userId, CancellationToken cancellationToken)
@@ -75,14 +75,14 @@ namespace Spd.Resource.Organizations.User
             await _dynaContext.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<UserResponse> GetUserAsync(Guid userId, CancellationToken cancellationToken)
+        public async Task<UserResp> GetUserAsync(Guid userId, CancellationToken cancellationToken)
         {
             var user = GetUserById(userId);
-            var response = _mapper.Map<UserResponse>(user);
+            var response = _mapper.Map<UserResp>(user);
             return response;
         }
 
-        public async Task<OrgUsersResponse> GetUserListAsync(Guid organizationId, CancellationToken cancellationToken)
+        public async Task<OrgUsersResp> GetUserListAsync(Guid organizationId, CancellationToken cancellationToken)
         {
             var users = _dynaContext.spd_portalusers
                 .Expand(u => u.spd_spd_role_spd_portaluser)
@@ -103,11 +103,11 @@ namespace Spd.Resource.Organizations.User
 
             var organization = GetOrganizationById(organizationId);
 
-            var response = new OrgUsersResponse();
+            var response = new OrgUsersResp();
             response.MaximumNumberOfAuthorizedContacts = organization.spd_maximumnumberofcontacts ?? 6;
             response.MaximumNumberOfPrimaryAuthorizedContacts = organization.spd_noofprimaryauthorizedcontacts ?? 2;
 
-            response.Users = _mapper.Map<IEnumerable<UserResponse>>(users);
+            response.Users = _mapper.Map<IEnumerable<UserResp>>(users);
             return response;
         }
 

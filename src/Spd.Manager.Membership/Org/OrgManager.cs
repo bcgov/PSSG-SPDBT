@@ -19,7 +19,7 @@ namespace Spd.Manager.Membership.Org
 
         public async Task<OrgResponse> Handle(OrgUpdateCommand request, CancellationToken cancellationToken)
         {
-            var updateOrg = _mapper.Map<OrgUpdateCommand>(request.OrgUpdateRequest);
+            var updateOrg = _mapper.Map<OrgUpdateCmd>(request.OrgUpdateRequest);
             var response = await _orgRepository.OrgUpdateAsync(updateOrg, cancellationToken);
             return _mapper.Map<OrgResponse>(response);
         }
