@@ -222,6 +222,7 @@ export class SettingsComponent {
 			.pipe()
 			.subscribe((resp: OrgResponse) => {
 				this.form.patchValue(resp);
+				this.initialValues = this.form.value;
 				this.setFormView();
 			});
 	}

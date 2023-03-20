@@ -189,7 +189,7 @@ export class UsersComponent {
 								1
 							);
 							this.setFlags();
-							this.hotToast.success('User was successfully deleted');
+							this.hotToast.success('User was successfully removed');
 						});
 				}
 			});

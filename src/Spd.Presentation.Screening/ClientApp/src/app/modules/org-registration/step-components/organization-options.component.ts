@@ -211,18 +211,18 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 
 	options_vol = [
 		{
-			code: VolunteerOrganizationTypeCode.Registrant,
-			icon: '/assets/5a.png',
-			selectedIcon: '/assets/5b.png',
-			text: 'A registered health professional or social worker',
-			showHelp: false,
-			helpText: null,
-		},
-		{
 			code: VolunteerOrganizationTypeCode.NonProfit,
 			icon: '/assets/7a.png',
 			selectedIcon: '/assets/7b.png',
 			text: 'A registered non profit organization',
+			showHelp: false,
+			helpText: null,
+		},
+		{
+			code: VolunteerOrganizationTypeCode.Education,
+			icon: '/assets/12a.png',
+			selectedIcon: '/assets/12b.png',
+			text: 'A school board or education authority',
 			showHelp: false,
 			helpText: null,
 		},
@@ -243,10 +243,10 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 			helpText: null,
 		},
 		{
-			code: VolunteerOrganizationTypeCode.Education,
-			icon: '/assets/12a.png',
-			selectedIcon: '/assets/12b.png',
-			text: 'A school board or education authority',
+			code: VolunteerOrganizationTypeCode.Registrant,
+			icon: '/assets/5a.png',
+			selectedIcon: '/assets/5b.png',
+			text: 'A registered health professional or social worker',
 			showHelp: false,
 			helpText: null,
 		},
