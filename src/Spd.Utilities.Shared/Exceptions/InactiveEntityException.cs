@@ -1,17 +1,19 @@
-﻿public class InactiveException : Exception
+﻿using System.Net;
+
+namespace Spd.Utilities.Shared.Exceptions
 {
-    public InactiveException()
+    public class InactiveException : ApiException
     {
-    }
 
-    public InactiveException(string message)
-    : base(message)
-    {
-    }
+        public InactiveException(HttpStatusCode statusCode, string message)
+            : base(statusCode, message)
+        {
+        }
 
-    public InactiveException(string message, Exception inner)
-        : base(message, inner)
-    {
+        public InactiveException(HttpStatusCode statusCode, string message, Exception inner)
+            : base(statusCode, message, inner)
+        {
+        }
     }
 }
 
