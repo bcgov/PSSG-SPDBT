@@ -1,17 +1,19 @@
-﻿public class NotFoundException : Exception
+﻿using System.Net;
+
+namespace Spd.Utilities.Shared.Exceptions
 {
-    public NotFoundException()
+    public class NotFoundException : ApiException
     {
-    }
 
-    public NotFoundException(string message)
-        : base(message)
-    {
-    }
+        public NotFoundException(HttpStatusCode statusCode, string message)
+                : base(statusCode, message)
+        {
+        }
 
-    public NotFoundException(string message, Exception inner)
-        : base(message, inner)
-    {
+        public NotFoundException(HttpStatusCode statusCode, string message, Exception inner)
+                : base(statusCode, message, inner)
+        {
+        }
     }
 }
 

@@ -1,25 +1,27 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
 using Microsoft.OData.Client;
 using Spd.Utilities.Dynamics;
+using Spd.Utilities.Shared.Exceptions;
 using System.Collections.ObjectModel;
+using System.Net;
 
 namespace Spd.Resource.Organizations.User
 {
-    public class OrgUserRepository : IOrgUserRepository
+    internal class OrgUserRepository : IOrgUserRepository
     {
         private readonly DynamicsContext _dynaContext;
         private readonly IMapper _mapper;
         private readonly ILogger<OrgUserRepository> _logger;
         public OrgUserRepository(IDynamicsContextFactory ctx, IMapper mapper, ILogger<OrgUserRepository> logger)
         {
-            _dynaContext = ctx.Create();
+            _dynaContext = ctx.CreateChangeOverwrite();
             _mapper = mapper;
             _logger = logger;
         }
 
-        public async Task<UserCmdResponse> AddUserAsync(CreateUserCmd createUserCmd, CancellationToken cancellationToken)
+        public async Task<UserResponse> AddUserAsync(CreateUserCmd createUserCmd, CancellationToken cancellationToken)
         {
             var organization = GetOrganizationById(createUserCmd.OrganizationId);
             spd_portaluser user = _mapper.Map<spd_portaluser>(createUserCmd);
@@ -34,10 +36,11 @@ namespace Spd.Resource.Organizations.User
             await _dynaContext.SaveChangesAsync(cancellationToken);
 
             user._spd_organizationid_value = createUserCmd.OrganizationId;
-            return _mapper.Map<UserCmdResponse>(user);
+            user.spd_spd_role_spd_portaluser = new Collection<spd_role> { new spd_role() { spd_roleid = role.spd_roleid } };
+            return _mapper.Map<UserResponse>(user);
         }
 
-        public async Task<UserCmdResponse> UpdateUserAsync(UpdateUserCmd updateUserCmd, CancellationToken cancellationToken)
+        public async Task<UserResponse> UpdateUserAsync(UpdateUserCmd updateUserCmd, CancellationToken cancellationToken)
         {
             var user = GetUserById(updateUserCmd.Id);
             _mapper.Map(updateUserCmd, user);
@@ -59,7 +62,7 @@ namespace Spd.Resource.Organizations.User
             await _dynaContext.SaveChangesAsync(cancellationToken);
 
             user.spd_spd_role_spd_portaluser = new Collection<spd_role> { new spd_role() { spd_roleid = newRole.spd_roleid } };
-            return _mapper.Map<UserCmdResponse>(user);
+            return _mapper.Map<UserResponse>(user);
         }
 
         public async Task DeleteUserAsync(Guid userId, CancellationToken cancellationToken)
@@ -72,10 +75,10 @@ namespace Spd.Resource.Organizations.User
             await _dynaContext.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<UserCmdResponse> GetUserAsync(Guid userId, CancellationToken cancellationToken)
+        public async Task<UserResponse> GetUserAsync(Guid userId, CancellationToken cancellationToken)
         {
             var user = GetUserById(userId);
-            var response = _mapper.Map<UserCmdResponse>(user);
+            var response = _mapper.Map<UserResponse>(user);
             return response;
         }
 
@@ -84,9 +87,9 @@ namespace Spd.Resource.Organizations.User
             var users = _dynaContext.spd_portalusers
                 .Expand(u => u.spd_spd_role_spd_portaluser)
                 .Where(a => a._spd_organizationid_value == organizationId && a.statecode == DynamicsConstants.StateCode_Active)
-                .AsEnumerable();
+                .ToList();
 
-            if (users == null) throw new NotFoundException($"Cannot find the users with organizationId {organizationId}");
+            if (users == null) throw new NotFoundException(HttpStatusCode.BadRequest, $"Cannot find the users with organizationId {organizationId}");
 
             //todo: investigate why expand does not work here.
             await Parallel.ForEachAsync(users, cancellationToken, async (user, cancellationToken) =>
@@ -104,7 +107,7 @@ namespace Spd.Resource.Organizations.User
             response.MaximumNumberOfAuthorizedContacts = organization.spd_maximumnumberofcontacts ?? 6;
             response.MaximumNumberOfPrimaryAuthorizedContacts = organization.spd_noofprimaryauthorizedcontacts ?? 2;
 
-            response.Users = _mapper.Map<IEnumerable<UserCmdResponse>>(users);
+            response.Users = _mapper.Map<IEnumerable<UserResponse>>(users);
             return response;
         }
 
@@ -115,7 +118,7 @@ namespace Spd.Resource.Organizations.User
                 .FirstOrDefault();
 
             if (account?.statecode == DynamicsConstants.StateCode_Inactive)
-                throw new InactiveException($"Organization {organizationId} is inactive.");
+                throw new InactiveException(HttpStatusCode.BadRequest, $"Organization {organizationId} is inactive.");
             return account;
         }
         private spd_portaluser GetUserById(Guid userId)
@@ -128,13 +131,13 @@ namespace Spd.Resource.Organizations.User
                     .FirstOrDefault();
 
                 if (user?.statecode == DynamicsConstants.StateCode_Inactive)
-                    throw new InactiveException($"User {userId} is inactive.");
+                    throw new InactiveException(HttpStatusCode.BadRequest, $"User {userId} is inactive.");
                 return user;
             }
             catch (DataServiceQueryException ex)
             {
                 _logger.LogWarning($"Cannot find the user with userId {userId}");
-                throw new NotFoundException(ex.Message, ex.InnerException);
+                throw;
             }
         }
     }
