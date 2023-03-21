@@ -1,6 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { NgxMaskPipe } from 'ngx-mask';
 import { ContactAuthorizationTypeCode, OrgUserResponse, OrgUserUpdateRequest } from 'src/app/api/models';
 import { OrgUserService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
@@ -38,6 +39,9 @@ export interface UserDialogData {
 							<mat-label>Given Name</mat-label>
 							<input matInput formControlName="firstName" />
 							<mat-error *ngIf="form.get('firstName')?.hasError('required')">This is required</mat-error>
+							<mat-error *ngIf="form.get('firstName')?.hasError('maxlength')">
+								This must be at most 40 characters long
+							</mat-error>
 						</mat-form-field>
 					</div>
 				</div>
@@ -48,6 +52,9 @@ export interface UserDialogData {
 							<mat-label>Surname</mat-label>
 							<input matInput formControlName="lastName" />
 							<mat-error *ngIf="form.get('lastName')?.hasError('required')">This is required</mat-error>
+							<mat-error *ngIf="form.get('lastName')?.hasError('maxlength')">
+								This must be at most 40 characters long
+							</mat-error>
 						</mat-form-field>
 					</div>
 					<div class="col-md-6">
@@ -56,6 +63,9 @@ export interface UserDialogData {
 							<input matInput formControlName="email" placeholder="name@domain.com" />
 							<mat-error *ngIf="form.get('email')?.hasError('email')"> Must be a valid email address </mat-error>
 							<mat-error *ngIf="form.get('email')?.hasError('required')">This is required</mat-error>
+							<mat-error *ngIf="form.get('email')?.hasError('maxlength')">
+								This must be at most 75 characters long
+							</mat-error>
 						</mat-form-field>
 					</div>
 				</div>
@@ -73,6 +83,9 @@ export interface UserDialogData {
 							<mat-label>Job Title</mat-label>
 							<input matInput formControlName="jobTitle" />
 							<mat-error *ngIf="form.get('jobTitle')?.hasError('required')">This is required</mat-error>
+							<mat-error *ngIf="form.get('jobTitle')?.hasError('maxlength')">
+								This must be at most 100 characters long
+							</mat-error>
 						</mat-form-field>
 					</div>
 				</div>
@@ -111,11 +124,11 @@ export class MaintainUserModalComponent {
 	form: FormGroup = this.formBuilder.group(
 		{
 			contactAuthorizationTypeCode: new FormControl('', [Validators.required]),
-			lastName: new FormControl('', [Validators.required]),
-			firstName: new FormControl('', [Validators.required]),
-			email: new FormControl('', [Validators.required, Validators.email]),
+			lastName: new FormControl('', [Validators.required, Validators.maxLength(40)]),
+			firstName: new FormControl('', [Validators.required, Validators.maxLength(40)]),
+			email: new FormControl('', [Validators.required, Validators.email, Validators.maxLength(75)]),
 			phoneNumber: new FormControl('', [Validators.required]),
-			jobTitle: new FormControl('', [Validators.required]),
+			jobTitle: new FormControl('', [Validators.required, Validators.maxLength(100)]),
 			dateOfBirth: new FormControl('', [Validators.required]),
 		},
 		{
@@ -132,6 +145,7 @@ export class MaintainUserModalComponent {
 		private formBuilder: FormBuilder,
 		private dialogRef: MatDialogRef<MaintainUserModalComponent>,
 		private orgUserService: OrgUserService,
+		private maskPipe: NgxMaskPipe,
 		@Inject(MAT_DIALOG_DATA) public dialogData: UserDialogData
 	) {}
 
@@ -151,9 +165,12 @@ export class MaintainUserModalComponent {
 		this.form.markAllAsTouched();
 		if (this.form.valid) {
 			const formData = this.form.value;
+
 			const body: OrgUserUpdateRequest = { ...formData };
-			// console.log('formData', formData);
-			// console.log('body', body);
+			if (body.phoneNumber) {
+				body.phoneNumber = this.maskPipe.transform(body.phoneNumber, SPD_CONSTANTS.phone.backendMask);
+			}
+
 			if (this.isEdit) {
 				body.id = this.dialogData.user.id as string;
 				body.organizationId = this.dialogData.user.organizationId;
@@ -166,7 +183,8 @@ export class MaintainUserModalComponent {
 						});
 					});
 			} else {
-				body.organizationId = '4165bdfe-7cb4-ed11-b83e-00505683fbf4'; // TODO replace with proper org id
+				// TODO replace with proper org id
+				body.organizationId = '4165bdfe-7cb4-ed11-b83e-00505683fbf4';
 				this.orgUserService
 					.apiOrgsOrgIdUsersPost({ orgId: body.organizationId, body })
 					.pipe()

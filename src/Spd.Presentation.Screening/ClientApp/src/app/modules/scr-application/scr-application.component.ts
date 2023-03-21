@@ -27,7 +27,7 @@ export interface ScreeningFormStepComponent {
 				(selectionChange)="onStepSelectionChange($event)"
 				#stepper
 			>
-				<mat-step completed="false" editable="true">
+				<mat-step completed="false">
 					<ng-template matStepLabel>Eligibility Check</ng-template>
 					<app-step-eligibility
 						[paymentBy]="paymentBy"
@@ -36,7 +36,7 @@ export interface ScreeningFormStepComponent {
 					></app-step-eligibility>
 				</mat-step>
 
-				<mat-step completed="false" editable="true">
+				<mat-step completed="false">
 					<ng-template matStepLabel>Organization Information</ng-template>
 					<app-step-organization-info
 						(nextStepperStep)="onNextStepperStep(stepper)"
@@ -44,7 +44,7 @@ export interface ScreeningFormStepComponent {
 					></app-step-organization-info>
 				</mat-step>
 
-				<mat-step completed="false" editable="false">
+				<mat-step completed="false">
 					<ng-template matStepLabel>Log In Information</ng-template>
 					<app-step-login-options
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -53,7 +53,7 @@ export interface ScreeningFormStepComponent {
 					></app-step-login-options>
 				</mat-step>
 
-				<mat-step completed="false" editable="true">
+				<mat-step completed="false">
 					<ng-template matStepLabel>Personal Information</ng-template>
 					<app-step-personal-info
 						(nextStepperStep)="onNextStepperStep(stepper)"
@@ -61,7 +61,7 @@ export interface ScreeningFormStepComponent {
 					></app-step-personal-info>
 				</mat-step>
 
-				<mat-step completed="false" editable="true">
+				<mat-step completed="false">
 					<ng-template matStepLabel>Terms and Conditions</ng-template>
 					<app-step-terms-and-cond
 						[paymentBy]="paymentBy"
@@ -72,7 +72,7 @@ export interface ScreeningFormStepComponent {
 				</mat-step>
 
 				<!-- PAYMENT PROCESS?
-				 <mat-step completed="false" editable="false" *ngIf="paymentBy == 'APP'">
+				 <mat-step completed="false" *ngIf="paymentBy == 'APP'">
 				<ng-template matStepLabel>Pay for Application</ng-template>
 				<app-step-pay-for-application
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -80,7 +80,7 @@ export interface ScreeningFormStepComponent {
 				></app-step-pay-for-application>
 			</mat-step> -->
 
-				<mat-step completed="false" editable="false">
+				<mat-step completed="false">
 					<ng-template matStepLabel>Application Submitted</ng-template>
 					<app-step-appl-submitted
 						[paymentBy]="paymentBy"
@@ -147,20 +147,6 @@ export class ScrApplicationComponent implements OnInit {
 	}
 
 	onStepSelectionChange(event: StepperSelectionEvent) {
-		if (event.selectedIndex == 3) {
-			// after log in, cannot edit Step 1,2,3
-			let step = this.stepper.steps.get(0);
-			if (step) step.editable = false;
-			step = this.stepper.steps.get(1);
-			if (step) step.editable = false;
-		} else if (event.selectedIndex == 5) {
-			// after log in, cannot edit Step 4,5
-			let step = this.stepper.steps.get(3);
-			if (step) step.editable = false;
-			step = this.stepper.steps.get(4);
-			if (step) step.editable = false;
-		}
-
 		this.onScrollIntoView();
 	}
 

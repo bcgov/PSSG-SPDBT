@@ -17,7 +17,7 @@ namespace Spd.Resource.Organizations.Registration
             _logger = logger;
         }
 
-        public async Task<bool> AddRegistrationAsync(CreateRegistrationCmd createRegistrationCmd, CancellationToken cancellationToken)
+        public async Task<bool> AddRegistrationAsync(OrgRegistrationCreateCmd createRegistrationCmd, CancellationToken cancellationToken)
         {
             string key;
             if (createRegistrationCmd.RegistrationTypeCode == RegistrationTypeCode.Employee)

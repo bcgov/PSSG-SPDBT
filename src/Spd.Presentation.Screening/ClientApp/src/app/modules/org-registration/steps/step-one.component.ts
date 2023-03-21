@@ -1,15 +1,8 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import {
-	BooleanTypeCode,
-	EmployeeInteractionTypeCode,
-	EmployeeOrganizationTypeCode,
-	RegistrationTypeCode,
-	VolunteerOrganizationTypeCode,
-} from 'src/app/api/models';
+import { EmployeeInteractionTypeCode, RegistrationTypeCode, VolunteerOrganizationTypeCode } from 'src/app/api/models';
 import { CompensationQuestionComponent } from '../step-components/compensation-question.component';
-import { FundingQuestionComponent } from '../step-components/funding-question.component';
 import { OrganizationOptionsComponent } from '../step-components/organization-options.component';
 import {
 	RegistrationPathSelectionComponent,
@@ -63,39 +56,6 @@ import { VulnerableSectorQuestionComponent } from '../step-components/vulnerable
 
 			<mat-step *ngIf="showStepOrganizationProblem">
 				<app-organization-problem></app-organization-problem>
-
-				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" class="large mb-2" [routerLink]="'/'">Close</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<mat-step *ngIf="showStepFundingQuestion">
-				<app-funding-question></app-funding-question>
-
-				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button
-							mat-raised-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_FUNDING_OPTION)"
-						>
-							Next
-						</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<mat-step *ngIf="showStepFundingProblem">
-				<app-funding-problem></app-funding-problem>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -162,13 +122,10 @@ import { VulnerableSectorQuestionComponent } from '../step-components/vulnerable
 export class StepOneComponent {
 	readonly STEP_REGISTRATION_PATH = 0;
 	readonly STEP_ORGANIZATION_OPTION = 1;
-	readonly STEP_FUNDING_OPTION = 2;
-	readonly STEP_COMPENSATION_OPTION = 3;
-	readonly STEP_VULNERABLE_SECTOR_OPTION = 4;
+	readonly STEP_COMPENSATION_OPTION = 2;
+	readonly STEP_VULNERABLE_SECTOR_OPTION = 3;
 
-	showStepFundingQuestion = false;
 	showStepCompensationQuestion = false;
-	showStepFundingProblem = false;
 	showStepOrganizationProblem = false;
 	showStepEligibilityProblem = false;
 
@@ -185,9 +142,6 @@ export class StepOneComponent {
 	@ViewChild(OrganizationOptionsComponent)
 	organizationOptionsComponent!: OrganizationOptionsComponent;
 
-	@ViewChild(FundingQuestionComponent)
-	fundingQuestionComponent!: FundingQuestionComponent;
-
 	@ViewChild(CompensationQuestionComponent)
 	compensationQuestionComponent!: CompensationQuestionComponent;
 
@@ -200,7 +154,6 @@ export class StepOneComponent {
 		return {
 			...this.registrationPathSelectionComponent.getDataToSave(),
 			...this.organizationOptionsComponent.getDataToSave(),
-			...(this.fundingQuestionComponent ? this.fundingQuestionComponent.getDataToSave() : {}),
 			...(this.compensationQuestionComponent ? this.compensationQuestionComponent.getDataToSave() : {}),
 			...this.vulnerableSectorQuestionComponent.getDataToSave(),
 		};
@@ -230,7 +183,6 @@ export class StepOneComponent {
 
 	onClearStepData(): void {
 		this.organizationOptionsComponent?.clearCurrentData();
-		this.fundingQuestionComponent?.clearCurrentData();
 		this.compensationQuestionComponent?.clearCurrentData();
 		this.vulnerableSectorQuestionComponent?.clearCurrentData();
 
@@ -257,9 +209,7 @@ export class StepOneComponent {
 				this.registrationPathSelectionData = this.registrationPathSelectionComponent.getDataToSave();
 				return this.registrationPathSelectionComponent.isFormValid();
 			case this.STEP_ORGANIZATION_OPTION:
-				this.showStepFundingQuestion = false;
 				this.showStepCompensationQuestion = false;
-				this.showStepFundingProblem = false;
 				this.showStepOrganizationProblem = false;
 				this.showStepEligibilityProblem = false;
 
@@ -267,25 +217,13 @@ export class StepOneComponent {
 				if (isValid) {
 					const organizationOptionsData = this.organizationOptionsComponent.getDataToSave();
 					if (this.registrationPathSelectionData.registrationTypeCode == RegistrationTypeCode.Employee) {
-						this.showStepFundingQuestion =
-							organizationOptionsData.employeeOrganizationTypeCode == EmployeeOrganizationTypeCode.Funding
-								? true
-								: false;
+						this.showStepCompensationQuestion = false;
 					} else {
-						this.showStepFundingQuestion =
+						this.showStepCompensationQuestion =
 							organizationOptionsData.volunteerOrganizationTypeCode == VolunteerOrganizationTypeCode.ProvFunded
-								? true
-								: false;
-						this.showStepCompensationQuestion = !this.showStepFundingQuestion;
+								? false
+								: true;
 					}
-				}
-				return isValid;
-			case this.STEP_FUNDING_OPTION:
-				this.fundingQuestionComponent.form.markAllAsTouched();
-				isValid = this.fundingQuestionComponent.isFormValid();
-				if (isValid) {
-					const fundingQuestionData = this.fundingQuestionComponent.getDataToSave();
-					this.showStepFundingProblem = fundingQuestionData.operatingBudgetFlag == BooleanTypeCode.No ? true : false;
 				}
 				return isValid;
 			case this.STEP_COMPENSATION_OPTION:

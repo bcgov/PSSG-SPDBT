@@ -30,7 +30,7 @@ export interface RegistrationFormStepComponent {
 				(selectionChange)="onStepSelectionChange($event)"
 				#stepper
 			>
-				<mat-step completed="false" editable="true">
+				<mat-step completed="false">
 					<ng-template matStepLabel>Eligibility</ng-template>
 					<app-step-one
 						(nextStepperStep)="onNextStepperStep(stepper)"
@@ -40,7 +40,7 @@ export interface RegistrationFormStepComponent {
 					></app-step-one>
 				</mat-step>
 
-				<mat-step completed="false" editable="false">
+				<mat-step completed="false">
 					<ng-template matStepLabel>Log In Options</ng-template>
 					<app-step-two
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -50,7 +50,7 @@ export interface RegistrationFormStepComponent {
 					></app-step-two>
 				</mat-step>
 
-				<mat-step completed="false" editable="true">
+				<mat-step completed="false">
 					<ng-template matStepLabel>Business Information</ng-template>
 					<app-step-three
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -60,7 +60,7 @@ export interface RegistrationFormStepComponent {
 					></app-step-three>
 				</mat-step>
 
-				<mat-step completed="false" editable="false">
+				<mat-step completed="false">
 					<ng-template matStepLabel>Complete</ng-template>
 					<app-step-four
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -141,13 +141,11 @@ export class OrgRegistrationComponent implements OnInit {
 		let step = this.stepper.steps.get(0);
 		if (step) {
 			step.completed = true;
-			step.editable = false;
 		}
 
 		step = this.stepper.steps.get(1);
 		if (step) {
 			step.completed = true;
-			step.editable = false;
 		}
 
 		this.currentStateInfo = JSON.parse(step1Data);
@@ -172,10 +170,6 @@ export class OrgRegistrationComponent implements OnInit {
 	}
 
 	onSaveStepperStep(): void {
-		// Prevent step Business Information from being edited
-		let step = this.stepper.steps.get(2);
-		if (step) step.editable = false;
-
 		let dataToSave = {};
 		if (this.stepOneComponent) {
 			console.debug('[onSaveStepperStep] currentStateInfo', this.currentStateInfo);
@@ -256,11 +250,7 @@ export class OrgRegistrationComponent implements OnInit {
 	}
 
 	onStepSelectionChange(event: StepperSelectionEvent) {
-		if (event.selectedIndex == 2) {
-			// after log in, cannot edit Step 1
-			let step = this.stepper.steps.get(0);
-			if (step) step.editable = false;
-		} else if (event.selectedIndex == 3) {
+		if (event.selectedIndex == 3) {
 			const step3Data = this.stepThreeComponent.getStepData();
 			this.sendToEmailAddress = step3Data.contactEmail;
 		}
