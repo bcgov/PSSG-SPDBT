@@ -7,9 +7,9 @@ using System.Security.Principal;
 
 namespace Spd.Manager.Membership.OrgRegistration
 {
-    internal class OrgRegistrationManager
-        : IRequestHandler<CreateOrgRegistrationCommand, Unit>,
-        IRequestHandler<CheckOrgRegistrationDuplicateCommand, CheckDuplicateResponse>,
+    internal class OrgRegistrationManager : 
+        IRequestHandler<OrgRegistrationCreateCommand, Unit>,
+        IRequestHandler<CheckOrgRegistrationDuplicateQuery, CheckDuplicateResponse>,
         IOrgRegistrationManager
     {
         private readonly IOrgRegistrationRepository _orgRegRepository;
@@ -24,7 +24,7 @@ namespace Spd.Manager.Membership.OrgRegistration
             _currentUser = currentUser;
         }
 
-        public async Task<Unit> Handle(CreateOrgRegistrationCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(OrgRegistrationCreateCommand request, CancellationToken cancellationToken)
         {
             var createOrgRegistration = _mapper.Map<OrgRegistrationCreateCmd>(request.CreateOrgRegistrationRequest);
             if (_currentUser.IsAuthenticated())
@@ -41,7 +41,7 @@ namespace Spd.Manager.Membership.OrgRegistration
             return default;
         }
 
-        public async Task<CheckDuplicateResponse> Handle(CheckOrgRegistrationDuplicateCommand request, CancellationToken cancellationToken)
+        public async Task<CheckDuplicateResponse> Handle(CheckOrgRegistrationDuplicateQuery request, CancellationToken cancellationToken)
         {
             CheckDuplicateResponse resp = new CheckDuplicateResponse();
 

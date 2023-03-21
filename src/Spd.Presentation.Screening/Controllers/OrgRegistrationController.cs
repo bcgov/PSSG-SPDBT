@@ -24,7 +24,7 @@ namespace Spd.Presentation.Screening.Controllers
         [HttpPost]
         public async Task<ActionResult> Register([FromBody][Required] OrgRegistrationCreateRequest orgRegistrationCreateRequest)
         {
-            await _mediator.Send(new CreateOrgRegistrationCommand(orgRegistrationCreateRequest));
+            await _mediator.Send(new OrgRegistrationCreateCommand(orgRegistrationCreateRequest));
             return Ok();
         }
 
@@ -32,7 +32,7 @@ namespace Spd.Presentation.Screening.Controllers
         [HttpPost]
         public async Task<CheckDuplicateResponse> DetectDuplicate([FromBody][Required] OrgRegistrationCreateRequest orgRegistrationCreateRequest)
         {
-            return await _mediator.Send(new CheckOrgRegistrationDuplicateCommand(orgRegistrationCreateRequest));
+            return await _mediator.Send(new CheckOrgRegistrationDuplicateQuery(orgRegistrationCreateRequest));
         }
     }
 }
