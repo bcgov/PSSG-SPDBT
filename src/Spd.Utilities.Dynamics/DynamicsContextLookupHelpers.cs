@@ -4,7 +4,7 @@ namespace Spd.Utilities.Dynamics
 {
     public static class DynamicsContextLookupHelpers
     {
-        private static Dictionary<string, Guid> OrganizationTypeGuidDictionary = new Dictionary<string, Guid>()
+        public static Dictionary<string, Guid> OrganizationTypeGuidDictionary = new Dictionary<string, Guid>()
         {
             {"Volunteer-NonProfit", Guid.Parse("c2cc6851-56b8-ed11-b83e-00505683fbf4")},
             {"Volunteer-Childcare", Guid.Parse("1b4dbc58-56b8-ed11-b83e-00505683fbf4")},

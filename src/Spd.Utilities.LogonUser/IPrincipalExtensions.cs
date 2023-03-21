@@ -5,10 +5,13 @@ namespace Spd.Utilities.LogonUser
 {
     public static class IPrincipalExtensions
     {
-        public static readonly string BCeID_IDENTITY_PROVIDER = "bceidboth";
-        public static readonly string BCeID_USERNAME = "bceid_username";
-        public static readonly string BCeID_USERGUID = "bceid_user_guid";
-        public static bool IfUserAuthenticated(this IPrincipal principal)
+        public static readonly string[] BCeID_IDENTITY_PROVIDERS = { "bceidboth", "bceidbusiness", "bceidbasic" };
+        public static readonly string BCeID_USER_NAME = "bceid_username";
+        public static readonly string BCeID_USER_GUID = "bceid_user_guid";
+        public static readonly string BCeID_BUSINESS_NAME = "bceid_business_name";
+        public static readonly string BCeID_BUSINESS_GUID = "bceid_business_guid";
+        public static readonly string IDENTITY_PROVIDER = "identity_provider";
+        public static bool IsAuthenticated(this IPrincipal principal)
         {
             var claimPrincipal = ValidatePrincipal(principal);
             return claimPrincipal.Identity?.IsAuthenticated ?? false;
@@ -16,8 +19,8 @@ namespace Spd.Utilities.LogonUser
 
         public static string GetUserName(this IPrincipal principal)
         {
-            if(principal.GetIdentityProvider() == BCeID_IDENTITY_PROVIDER)
-                return ValidatePrincipal(principal).GetClaimValue(BCeID_USERNAME);
+            if(BCeID_IDENTITY_PROVIDERS.Contains(principal.GetIdentityProvider()))
+                return ValidatePrincipal(principal).GetClaimValue(BCeID_USER_NAME);
             return null;
         }
 
@@ -38,17 +41,36 @@ namespace Spd.Utilities.LogonUser
 
         public static Guid GetUserGuid(this IPrincipal principal)
         {
-            if (principal.GetIdentityProvider() == BCeID_IDENTITY_PROVIDER)
+            if (BCeID_IDENTITY_PROVIDERS.Contains(principal.GetIdentityProvider()))
             {
-                var claim = ValidatePrincipal(principal).GetClaimValue(BCeID_USERGUID);
+                var claim = ValidatePrincipal(principal).GetClaimValue(BCeID_USER_GUID);
                 return claim == null ? Guid.Empty : Guid.Parse(claim);
             }
             return Guid.Empty;
         }
 
+        public static string GetBizName(this IPrincipal principal)
+        {
+            if (BCeID_IDENTITY_PROVIDERS.Contains(principal.GetIdentityProvider()))
+            {
+                var claim = ValidatePrincipal(principal).GetClaimValue(BCeID_BUSINESS_NAME);
+                return claim;
+            }
+            return null;
+        }
+
+        public static Guid GetBizGuid(this IPrincipal principal)
+        {
+            if (BCeID_IDENTITY_PROVIDERS.Contains(principal.GetIdentityProvider()))
+            {
+                var claim = ValidatePrincipal(principal).GetClaimValue(BCeID_BUSINESS_GUID);
+                return claim == null ? Guid.Empty : Guid.Parse(claim);
+            }
+            return Guid.Empty;
+        }
         public static string GetIdentityProvider(this IPrincipal principal)
         {
-            var cmsUserClaim = ValidatePrincipal(principal).GetClaimValue("identity_provider");
+            var cmsUserClaim = ValidatePrincipal(principal).GetClaimValue(IDENTITY_PROVIDER);
             return cmsUserClaim == null ? Guid.Empty.ToString() : cmsUserClaim;
         }
 

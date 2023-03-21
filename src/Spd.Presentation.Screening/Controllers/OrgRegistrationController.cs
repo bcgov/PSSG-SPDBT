@@ -1,11 +1,13 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Membership.OrgRegistration;
+using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
 
 namespace Spd.Presentation.Screening.Controllers
 {
     [ApiController]
+    [ApiExceptionFilter]
     //[Authorize] //temp comment out
     public class OrgRegistrationController : ControllerBase
     {
@@ -24,6 +26,13 @@ namespace Spd.Presentation.Screening.Controllers
         {
             await _mediator.Send(new OrgRegistrationCreateCommand(orgRegistrationCreateRequest));
             return Ok();
+        }
+
+        [Route("api/org-registrations/detect-duplicate")]
+        [HttpPost]
+        public async Task<CheckDuplicateResponse> DetectDuplicate([FromBody][Required] OrgRegistrationCreateRequest orgRegistrationCreateRequest)
+        {
+            return await _mediator.Send(new CheckOrgRegistrationDuplicateQuery(orgRegistrationCreateRequest));
         }
     }
 }
