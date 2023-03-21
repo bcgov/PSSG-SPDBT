@@ -1,10 +1,12 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Membership.Org;
+using Spd.Utilities.Shared.Exceptions;
 
 namespace Spd.Presentation.Screening.Controllers
 {
     [ApiController]
+    [ApiExceptionFilter]
     public class OrgController : Controller
     {
         private readonly ILogger<OrgController> _logger;
