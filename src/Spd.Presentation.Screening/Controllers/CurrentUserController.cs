@@ -27,13 +27,15 @@ namespace Spd.Presentation.Screening.Controllers
         {
             CurrentUserInfo userInfo = new CurrentUserInfo
             {
-                IsAuthenticated = _currentUser.IfUserAuthenticated(),
+                IsAuthenticated = _currentUser.IsAuthenticated(),
                 AuthenticatedType = _currentUser.GetIdentityProvider(),
                 Email = _currentUser.GetUserEmail(),
-                FirstName= _currentUser.GetUserFirstName(),
-                LastName= _currentUser.GetUserLastName(),
-                IdentificationGuid = _currentUser.GetUserGuid(),
-                UserName=_currentUser.GetUserName(),
+                FirstName = _currentUser.GetUserFirstName(),
+                LastName = _currentUser.GetUserLastName(),
+                UserGuid = _currentUser.GetUserGuid(),
+                UserName = _currentUser.GetUserName(),
+                BizGuid = _currentUser.GetBizGuid(),
+                BizName = _currentUser.GetBizName(),
             };
             return userInfo;
         }
@@ -47,6 +49,8 @@ namespace Spd.Presentation.Screening.Controllers
         public string LastName { get; set; }
         public string Email { get; set; }
         public string UserName { get; set; }
-        public Guid IdentificationGuid { get; set; }
+        public Guid UserGuid { get; set; }
+        public string BizName { get; set; }
+        public Guid BizGuid { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using MediatR;
 using Spd.Manager.Membership.Shared;
 using System.ComponentModel;
@@ -8,9 +8,11 @@ namespace Spd.Manager.Membership.OrgRegistration
     public interface IOrgRegistrationManager
     {
         public Task<Unit> Handle(OrgRegistrationCreateCommand request, CancellationToken cancellationToken);
+        public Task<CheckDuplicateResponse> Handle(CheckOrgRegistrationDuplicateQuery request, CancellationToken cancellationToken);
     }
 
     public record OrgRegistrationCreateCommand(OrgRegistrationCreateRequest CreateOrgRegistrationRequest) : IRequest<Unit>;
+    public record CheckOrgRegistrationDuplicateQuery(OrgRegistrationCreateRequest CreateOrgRegistrationRequest) : IRequest<CheckDuplicateResponse>;
 
     public class OrgRegistrationCreateRequest
     {
@@ -293,8 +295,17 @@ namespace Spd.Manager.Membership.OrgRegistration
                 .When(r => r.PortalUserIdentityTypeCode.HasValue);
         }
     }
-    public class OrgRegistrationResponse
+    public class CheckDuplicateResponse
     {
-        public Guid OrgRegistrationId { get; set; }
+        public bool HasPotentialDuplicate { get; set; } = false;
+        public OrgProcess? DuplicateFoundIn { get; set; }
+    }
+    public enum OrgProcess
+    {
+        [Description("Org Registration")]
+        Registration,
+
+        [Description("Existing Organization")]
+        ExistingOrganization,
     }
 }
