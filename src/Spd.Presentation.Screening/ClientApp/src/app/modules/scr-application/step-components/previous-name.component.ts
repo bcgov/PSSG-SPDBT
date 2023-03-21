@@ -152,9 +152,9 @@ export class PreviousNameComponent implements OnInit, ScreeningFormStepComponent
 		const data: DialogOptions = {
 			icon: 'error_outline',
 			title: 'Delete Row',
-			message: 'Are you sure you want to permanently remove this row?',
-			actionText: 'Yes, delete this row',
-			cancelText: 'Go back',
+			message: 'Are you sure you want to permanently delete this previous name?',
+			actionText: 'Yes, delete this name',
+			cancelText: 'Cancel',
 		};
 
 		this.dialog

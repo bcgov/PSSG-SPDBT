@@ -76,9 +76,6 @@ export interface UserDialogData {
 							<mat-label>Phone Number</mat-label>
 							<input matInput formControlName="phoneNumber" [mask]="phoneMask" [showMaskTyped]="true" />
 							<mat-error *ngIf="form.get('phoneNumber')?.hasError('required')">This is required</mat-error>
-							<mat-error *ngIf="form.get('phoneNumber')?.hasError('maxlength')">
-								This must be at most 12 characters long
-							</mat-error>
 						</mat-form-field>
 					</div>
 					<div class="col-md-6">
@@ -130,7 +127,7 @@ export class MaintainUserModalComponent {
 			lastName: new FormControl('', [Validators.required, Validators.maxLength(40)]),
 			firstName: new FormControl('', [Validators.required, Validators.maxLength(40)]),
 			email: new FormControl('', [Validators.required, Validators.email, Validators.maxLength(75)]),
-			phoneNumber: new FormControl('', [Validators.required, Validators.maxLength(12)]),
+			phoneNumber: new FormControl('', [Validators.required]),
 			jobTitle: new FormControl('', [Validators.required, Validators.maxLength(100)]),
 			dateOfBirth: new FormControl('', [Validators.required]),
 		},

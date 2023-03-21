@@ -39,6 +39,9 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 								<mat-label>Job Title</mat-label>
 								<input matInput formControlName="jobTitle" [errorStateMatcher]="matcher" />
 								<mat-error *ngIf="form.get('jobTitle')?.hasError('required')">This is required</mat-error>
+								<mat-error *ngIf="form.get('jobTitle')?.hasError('maxlength')">
+									This must be at most 100 characters long
+								</mat-error>
 							</mat-form-field>
 						</div>
 						<div class="col-lg-4 col-md-6 col-sm-12">
@@ -60,7 +63,7 @@ export class SecurityInformationComponent implements ScreeningFormStepComponent 
 		organizationName: new FormControl({ value: 'Sunshine Daycare', disabled: true }),
 		organizationPhoneNumber: new FormControl({ value: '2503859988', disabled: true }),
 		organizationAddress: new FormControl({ value: '760 Vernon Ave, Victoria, BC V8X 2W6, Canada', disabled: true }),
-		jobTitle: new FormControl('', [Validators.required]),
+		jobTitle: new FormControl('', [Validators.required, Validators.maxLength(100)]),
 		vulnerableSectorCategory: new FormControl({ value: 'Division Pulled From Organization Type', disabled: true }),
 	});
 	matcher = new FormErrorStateMatcher();

@@ -15,15 +15,21 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 					<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
 						<mat-form-field>
 							<mat-label>Given Name</mat-label>
-							<input matInput formControlName="contactGivenName" maxlength="40" [errorStateMatcher]="matcher" />
+							<input matInput formControlName="contactGivenName" [errorStateMatcher]="matcher" />
 							<mat-error *ngIf="form.get('contactGivenName')?.hasError('required')">This is required</mat-error>
+							<mat-error *ngIf="form.get('contactGivenName')?.hasError('maxlength')">
+								This must be at most 40 characters long
+							</mat-error>
 						</mat-form-field>
 					</div>
 					<div class="col-lg-4 col-md-6 col-sm-12">
 						<mat-form-field>
 							<mat-label>Surname</mat-label>
-							<input matInput formControlName="contactSurname" maxlength="40" [errorStateMatcher]="matcher" />
+							<input matInput formControlName="contactSurname" [errorStateMatcher]="matcher" />
 							<mat-error *ngIf="form.get('contactSurname')?.hasError('required')">This is required</mat-error>
+							<mat-error *ngIf="form.get('contactSurname')?.hasError('maxlength')">
+								This must be at most 40 characters long
+							</mat-error>
 						</mat-form-field>
 					</div>
 				</div>
@@ -31,8 +37,11 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 					<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
 						<mat-form-field>
 							<mat-label>Job Title</mat-label>
-							<input matInput formControlName="contactJobTitle" maxlength="100" [errorStateMatcher]="matcher" />
+							<input matInput formControlName="contactJobTitle" [errorStateMatcher]="matcher" />
 							<mat-error *ngIf="form.get('contactJobTitle')?.hasError('required')">This is required</mat-error>
+							<mat-error *ngIf="form.get('contactJobTitle')?.hasError('maxlength')">
+								This must be at most 100 characters long
+							</mat-error>
 						</mat-form-field>
 					</div>
 					<div class="col-lg-4 col-md-6 col-sm-12">
@@ -42,11 +51,13 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 								matInput
 								formControlName="contactEmail"
 								placeholder="name@domain.com"
-								maxlength="75"
 								[errorStateMatcher]="matcher"
 							/>
 							<mat-error *ngIf="form.get('contactEmail')?.hasError('email')"> Must be a valid email address </mat-error>
 							<mat-error *ngIf="form.get('contactEmail')?.hasError('required')">This is required</mat-error>
+							<mat-error *ngIf="form.get('contactEmail')?.hasError('maxlength')">
+								This must be at most 75 characters long
+							</mat-error>
 						</mat-form-field>
 					</div>
 				</div>
@@ -88,10 +99,10 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 export class ContactInformationComponent implements RegistrationFormStepComponent {
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	form: FormGroup = this.formBuilder.group({
-		contactGivenName: new FormControl('', [Validators.required]),
-		contactSurname: new FormControl('', [Validators.required]),
-		contactJobTitle: new FormControl('', [Validators.required]),
-		contactEmail: new FormControl('', [Validators.email, Validators.required]),
+		contactGivenName: new FormControl('', [Validators.required, Validators.maxLength(40)]),
+		contactSurname: new FormControl('', [Validators.required, Validators.maxLength(40)]),
+		contactJobTitle: new FormControl('', [Validators.required, Validators.maxLength(100)]),
+		contactEmail: new FormControl('', [Validators.email, Validators.required, Validators.maxLength(75)]),
 		contactDateOfBirth: new FormControl('', [Validators.required]),
 		contactPhoneNumber: new FormControl('', [Validators.required]),
 	});

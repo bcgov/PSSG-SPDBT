@@ -34,6 +34,9 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 							<mat-label>Organization Name</mat-label>
 							<input matInput formControlName="organizationName" />
 							<mat-error *ngIf="form.get('organizationName')?.hasError('required')"> This is required </mat-error>
+							<mat-error *ngIf="form.get('organizationName')?.hasError('maxlength')">
+								This must be at most 160 characters long
+							</mat-error>
 						</mat-form-field>
 					</div>
 					<div class="col-xl-4 col-lg-12">
@@ -41,6 +44,9 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 							<mat-label>Legal Organization Name</mat-label>
 							<input matInput formControlName="organizationLegalName" />
 							<mat-error *ngIf="form.get('organizationLegalName')?.hasError('required')">This is required</mat-error>
+							<mat-error *ngIf="form.get('organizationLegalName')?.hasError('maxlength')">
+								This must be at most 160 characters long
+							</mat-error>
 						</mat-form-field>
 					</div>
 				</div>
@@ -52,6 +58,9 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 							<input matInput formControlName="email" placeholder="name@domain.com" />
 							<mat-error *ngIf="form.get('email')?.hasError('required')"> This is required </mat-error>
 							<mat-error *ngIf="form.get('email')?.hasError('email')"> Must be a valid email address </mat-error>
+							<mat-error *ngIf="form.get('email')?.hasError('maxlength')">
+								This must be at most 75 characters long
+							</mat-error>
 						</mat-form-field>
 					</div>
 					<div class="col-xl-4 col-lg-12">
@@ -71,13 +80,18 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 							<mat-label>Street Address 1</mat-label>
 							<input matInput formControlName="addressLine1" />
 							<mat-error *ngIf="form.get('addressLine1')?.hasError('required')"> This is required </mat-error>
+							<mat-error *ngIf="form.get('addressLine1')?.hasError('maxlength')">
+								This must be at most 100 characters long
+							</mat-error>
 						</mat-form-field>
 					</div>
 					<div class="col-xl-4 col-lg-12">
 						<mat-form-field>
 							<mat-label>Street Address 2 <span class="optional-label">(optional)</span></mat-label>
 							<input matInput formControlName="addressLine2" />
-							<mat-error *ngIf="form.get('addressLine2')?.hasError('required')">This is required</mat-error>
+							<mat-error *ngIf="form.get('addressLine2')?.hasError('maxlength')">
+								This must be at most 100 characters long
+							</mat-error>
 						</mat-form-field>
 					</div>
 					<div class="col-xl-4 col-lg-12">
@@ -85,6 +99,9 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 							<mat-label>City</mat-label>
 							<input matInput formControlName="addressCity" />
 							<mat-error *ngIf="form.get('addressCity')?.hasError('required')">This is required</mat-error>
+							<mat-error *ngIf="form.get('addressCity')?.hasError('maxlength')">
+								This must be at most 100 characters long
+							</mat-error>
 						</mat-form-field>
 					</div>
 				</div>
@@ -93,8 +110,11 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 					<div class="col-xl-4 col-lg-12">
 						<mat-form-field>
 							<mat-label>Postal Code</mat-label>
-							<input matInput formControlName="addressPostalCode" />
+							<input matInput formControlName="addressPostalCode" oninput="this.value = this.value.toUpperCase()" />
 							<mat-error *ngIf="form.get('addressPostalCode')?.hasError('required')"> This is required </mat-error>
+							<mat-error *ngIf="form.get('addressPostalCode')?.hasError('maxlength')">
+								This must be at most 20 characters long
+							</mat-error>
 						</mat-form-field>
 					</div>
 					<div class="col-xl-4 col-lg-12">
@@ -102,6 +122,9 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 							<mat-label>Province</mat-label>
 							<input matInput formControlName="addressProvince" />
 							<mat-error *ngIf="form.get('addressProvince')?.hasError('required')">This is required</mat-error>
+							<mat-error *ngIf="form.get('addressProvince')?.hasError('maxlength')">
+								This must be at most 100 characters long
+							</mat-error>
 						</mat-form-field>
 					</div>
 					<div class="col-xl-4 col-lg-12">
@@ -109,6 +132,9 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 							<mat-label>Country</mat-label>
 							<input matInput formControlName="addressCountry" />
 							<mat-error *ngIf="form.get('addressCountry')?.hasError('required')">This is required</mat-error>
+							<mat-error *ngIf="form.get('addressCountry')?.hasError('maxlength')">
+								This must be at most 100 characters long
+							</mat-error>
 						</mat-form-field>
 					</div>
 				</div>
@@ -197,16 +223,16 @@ export class SettingsComponent {
 	payerPreferenceTypeCode = PayerPreferenceTypeCode;
 	initialValues = {};
 	form: FormGroup = this.formBuilder.group({
-		organizationName: new FormControl('', [Validators.required]),
-		organizationLegalName: new FormControl('', [Validators.required]),
-		email: new FormControl('', [Validators.required, Validators.email]),
+		organizationName: new FormControl('', [Validators.required, Validators.maxLength(160)]),
+		organizationLegalName: new FormControl('', [Validators.required, Validators.maxLength(160)]),
+		email: new FormControl('', [Validators.required, Validators.email, Validators.maxLength(75)]),
 		phoneNumber: new FormControl('', [Validators.required]),
-		addressLine1: new FormControl('', [Validators.required]),
-		addressLine2: new FormControl(''),
-		addressCity: new FormControl('', [Validators.required]),
-		addressPostalCode: new FormControl('', [Validators.required]),
-		addressProvince: new FormControl('', [Validators.required]),
-		addressCountry: new FormControl('', [Validators.required]),
+		addressLine1: new FormControl('', [Validators.required, Validators.maxLength(100)]),
+		addressLine2: new FormControl('', [Validators.maxLength(100)]),
+		addressCity: new FormControl('', [Validators.required, Validators.maxLength(100)]),
+		addressPostalCode: new FormControl('', [Validators.required, Validators.maxLength(20)]),
+		addressProvince: new FormControl('', [Validators.required, Validators.maxLength(100)]),
+		addressCountry: new FormControl('', [Validators.required, Validators.maxLength(100)]),
 		payerPreference: new FormControl('', [Validators.required]),
 		contractorsNeedVulnerableSectorScreening: new FormControl('', [Validators.required]),
 		licenseesNeedVulnerableSectorScreening: new FormControl('', [Validators.required]),

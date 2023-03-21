@@ -46,7 +46,6 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 											matInput
 											formControlName="genericEmail"
 											type="email"
-											maxlength="75"
 											required
 											[errorStateMatcher]="matcher"
 										/>
@@ -54,6 +53,9 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 											Must be a valid email address
 										</mat-error>
 										<mat-error *ngIf="form.get('genericEmail')?.hasError('required')">This is required</mat-error>
+										<mat-error *ngIf="form.get('genericEmail')?.hasError('maxlength')">
+											This must be at most 75 characters long
+										</mat-error>
 									</mat-form-field>
 								</div>
 								<div class="col-lg-4 col-md-12 col-sm-12">
@@ -63,7 +65,6 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 											matInput
 											formControlName="genericEmailConfirmation"
 											type="email"
-											maxlength="75"
 											required
 											[errorStateMatcher]="matcher"
 										/>
@@ -73,6 +74,9 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 										<mat-error *ngIf="form.get('genericEmailConfirmation')?.hasError('required')"> Required </mat-error>
 										<mat-error *ngIf="form.get('genericEmailConfirmation')?.hasError('nomatch')">
 											Emails must match
+										</mat-error>
+										<mat-error *ngIf="form.get('genericEmailConfirmation')?.hasError('maxlength')">
+											This must be at most 75 characters long
 										</mat-error>
 									</mat-form-field>
 								</div>
@@ -117,8 +121,12 @@ export class OrganizationInformationComponent implements OnInit, RegistrationFor
 		this.form = this.formBuilder.group(
 			{
 				hasPhoneOrEmail: new FormControl('', [Validators.required]),
-				genericEmail: new FormControl('', [Validators.email, Validators.required]),
-				genericEmailConfirmation: new FormControl('', [Validators.email, Validators.required]),
+				genericEmail: new FormControl('', [Validators.email, Validators.required, Validators.maxLength(75)]),
+				genericEmailConfirmation: new FormControl('', [
+					Validators.email,
+					Validators.required,
+					Validators.maxLength(75),
+				]),
 				genericPhoneNumber: new FormControl('', [Validators.required]),
 			},
 			{
