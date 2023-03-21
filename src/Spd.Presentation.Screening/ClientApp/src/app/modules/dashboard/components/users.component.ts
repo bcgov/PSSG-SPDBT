@@ -170,9 +170,9 @@ export class UsersComponent {
 		const data: DialogOptions = {
 			icon: 'error_outline',
 			title: 'Delete User',
-			message: 'Are you sure you want to permanently delete this user?',
-			actionText: 'Yes, delete this user',
-			cancelText: 'Go back',
+			message: 'Are you sure you want to permanently remove this user?',
+			actionText: 'Yes, remove this user',
+			cancelText: 'Cancel',
 		};
 
 		this.dialog
@@ -189,7 +189,7 @@ export class UsersComponent {
 								1
 							);
 							this.setFlags();
-							this.hotToast.success('User was successfully deleted');
+							this.hotToast.success('User was successfully removed');
 						});
 				}
 			});

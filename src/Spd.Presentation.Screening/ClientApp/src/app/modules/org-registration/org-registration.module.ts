@@ -7,8 +7,6 @@ import { CompensationQuestionComponent } from './step-components/compensation-qu
 import { CompletedComponent } from './step-components/completed.component';
 import { ContactInformationComponent } from './step-components/contact-information.component';
 import { EligibilityProblemComponent } from './step-components/eligibility-problem.component';
-import { FundingProblemComponent } from './step-components/funding-problem.component';
-import { FundingQuestionComponent } from './step-components/funding-question.component';
 import { MailingAddressComponent } from './step-components/mailing-address.component';
 import { OrganizationInformationComponent } from './step-components/organization-information.component';
 import { OrganizationNameComponent } from './step-components/organization-name.component';
@@ -31,8 +29,6 @@ import { StepTwoComponent } from './steps/step-two.component';
 		OrganizationOptionsComponent,
 		CompensationQuestionComponent,
 		VulnerableSectorQuestionComponent,
-		FundingQuestionComponent,
-		FundingProblemComponent,
 		EligibilityProblemComponent,
 		RegistrationOptionsComponent,
 		OrganizationNameComponent,

@@ -17,36 +17,20 @@ export class ErrorInterceptor implements HttpInterceptor {
 				console.error('ErrorInterceptor errorResponse', errorResponse);
 
 				if (errorResponse.error) {
-					const isJson = this.isJson(errorResponse.error);
-					if (isJson) {
-						const currentErrors = JSON.parse(errorResponse.error);
-						if (currentErrors.title) {
-							title = `${currentErrors.title}`;
-						}
-
+					if (errorResponse.error?.errors) {
+						title = errorResponse.error.title;
 						message = '<ul>';
-						Object.keys(currentErrors.errors).forEach((key: any) => {
-							const propVal = currentErrors.errors[key];
-							propVal.forEach((val: any) => {
+						for (const key in errorResponse.error?.errors) {
+							const value = errorResponse.error?.errors[key];
+							value.forEach((val: any) => {
 								message += `<li>${val}</li>`;
 							});
-						});
+						}
 						message += '</ul>';
 					} else {
 						title = errorResponse.statusText;
 						message = errorResponse.message;
 					}
-
-					// if (errorResponse.error?.error) {
-					// 	const currentError = errorResponse.error.error as Error;
-					// 	if (currentError.message) {
-					// 		message = `<p><strong>${currentError.message}</strong></p>`;
-					// 	} else {
-					// 		let thisError = errorResponse.error.error as string;
-					// 		if (typeof thisError === 'string') {
-					// 			message = `<p>Error: <strong>${thisError}</strong></p>`;
-					// 		} else {
-					// 			const { status, statusText, url } = errorResponse;
 
 					// 			if (status === 403) {
 					// 				const httpOperation = request.method.toLowerCase();
@@ -54,11 +38,6 @@ export class ErrorInterceptor implements HttpInterceptor {
 					// 				const operationMessage = `httpStatusText.${status}`;
 					// 				title = `${operation} - ${operationMessage}`;
 					// 			}
-
-					// 			message = `<p>Error: <strong>${status} - ${statusText}</strong></p>
-					// 				<p>Url: <strong>${url}</strong></p>`;
-					// 		}
-					// 	}
 				} else {
 					message = `<p><strong>The request failed to process due to a network error. Please retry.</strong></p>
 						<p>Error Status: ${errorResponse.status}</p>

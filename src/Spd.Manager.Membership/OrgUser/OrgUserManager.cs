@@ -28,16 +28,16 @@ namespace Spd.Manager.Membership.OrgUser
             //check if email already exists for the user
             if (existingUsers.Users.Any(u => u.Email.Equals(request.OrgUserCreateRequest.Email, StringComparison.InvariantCultureIgnoreCase)))
             {
-                throw new DuplicateException(HttpStatusCode.BadRequest, $"User email {request.OrgUserCreateRequest.Email} has been used by other users.");
+                throw new DuplicateException(HttpStatusCode.BadRequest, $"User email {request.OrgUserCreateRequest.Email} has been used by another user.");
             }
 
             //check if role is withing the maxium number scope
             var newlist = existingUsers.Users.ToList();
-            newlist.Add(_mapper.Map<UserResponse>(request.OrgUserCreateRequest));
+            newlist.Add(_mapper.Map<UserResp>(request.OrgUserCreateRequest));
             existingUsers.Users = newlist;
             CheckMaxRoleNumberRule(existingUsers);
 
-            var createOrgUser = _mapper.Map<CreateUserCmd>(request.OrgUserCreateRequest);
+            var createOrgUser = _mapper.Map<UserCreateCmd>(request.OrgUserCreateRequest);
             var response = await _orgUserRepository.AddUserAsync(createOrgUser, cancellationToken);
             return _mapper.Map<OrgUserResponse>(response);
         }
@@ -50,7 +50,7 @@ namespace Spd.Manager.Membership.OrgUser
                 u.Email.Equals(request.OrgUserUpdateRequest.Email, StringComparison.InvariantCultureIgnoreCase) &&
                 u.Id != request.OrgUserUpdateRequest.Id))
             {
-                throw new DuplicateException(HttpStatusCode.BadRequest, $"User email {request.OrgUserUpdateRequest.Email} has been used by other users.");
+                throw new DuplicateException(HttpStatusCode.BadRequest, $"User email {request.OrgUserUpdateRequest.Email} has been used by another user.");
             }
 
             //check max role number rule
@@ -58,7 +58,7 @@ namespace Spd.Manager.Membership.OrgUser
             _mapper.Map(request.OrgUserUpdateRequest, existingUser);
             CheckMaxRoleNumberRule(existingUsers);
 
-            var updateOrgUser = _mapper.Map<UpdateUserCmd>(request.OrgUserUpdateRequest);
+            var updateOrgUser = _mapper.Map<UserUpdateCmd>(request.OrgUserUpdateRequest);
             var response = await _orgUserRepository.UpdateUserAsync(updateOrgUser, cancellationToken);
             return _mapper.Map<OrgUserResponse>(response);
         }
@@ -89,17 +89,17 @@ namespace Spd.Manager.Membership.OrgUser
             return _mapper.Map<OrgUserListResponse>(response);
         }
 
-        private void CheckMaxRoleNumberRule(OrgUserListCmdResponse userList)
+        private void CheckMaxRoleNumberRule(OrgUsersResp userList)
         {
             int userNo = userList.Users.Count();
             if (userNo > userList.MaximumNumberOfAuthorizedContacts)
             {
-                throw new OutOfRangeException(HttpStatusCode.BadRequest, "There is already maxium number of contacts, could not add more.");
+                throw new OutOfRangeException(HttpStatusCode.BadRequest, $"No more contacts can created. The limit of {userList.MaximumNumberOfAuthorizedContacts} contacts has been reached.");
             }
             int primaryUserNo = userList.Users.Count(u => u.ContactAuthorizationTypeCode == ContactRoleCode.Primary);
             if (primaryUserNo > userList.MaximumNumberOfPrimaryAuthorizedContacts)
             {
-                throw new OutOfRangeException(HttpStatusCode.BadRequest, "There is already maxium number of primary contacts, could not add more.");
+                throw new OutOfRangeException(HttpStatusCode.BadRequest, $"No more primary contacts can created. The limit of {userList.MaximumNumberOfPrimaryAuthorizedContacts} primary contacts has been reached.");
             }
             if (primaryUserNo < 1)
             {

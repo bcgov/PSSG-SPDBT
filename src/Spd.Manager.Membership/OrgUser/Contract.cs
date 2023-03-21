@@ -1,3 +1,4 @@
+using FluentValidation;
 using MediatR;
 using System.ComponentModel;
 
@@ -63,5 +64,49 @@ namespace Spd.Manager.Membership.OrgUser
 
         [Description("Authorized Contact")]
         Contact
+    }
+
+    public class OrgUserCreateRequestValidator<T> : AbstractValidator<T> where T : OrgUserUpsertRequest
+    {
+        public OrgUserCreateRequestValidator()
+        {
+            RuleFor(r => r.ContactAuthorizationTypeCode)
+                        .IsInEnum();
+
+            RuleFor(r => r.FirstName)
+                .NotEmpty()
+                .MaximumLength(40);
+
+            RuleFor(r => r.LastName)
+                .NotEmpty()
+                .MaximumLength(40);
+
+            RuleFor(r => r.Email)
+                .NotEmpty()
+                .EmailAddress()
+                .MaximumLength(75);
+        }
+    }
+
+
+    public class OrgUserUpdateRequestValidator : OrgUserCreateRequestValidator<OrgUserUpdateRequest>
+    {
+        public OrgUserUpdateRequestValidator()
+        {
+
+            RuleFor(r => r.PhoneNumber)
+                .NotEmpty()
+                .MaximumLength(12)
+                .When(r => r.Id != Guid.Empty);
+
+            RuleFor(r => r.DateOfBirth)
+                .NotEmpty()
+                .When(r => r.Id != Guid.Empty);
+
+            RuleFor(r => r.JobTitle)
+                .NotEmpty()
+                .MaximumLength(100)
+                .When(r => r.Id != Guid.Empty);
+        }
     }
 }
