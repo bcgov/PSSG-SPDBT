@@ -18,7 +18,6 @@ namespace Spd.Presentation.Screening.Controllers
 
         [Route("api/org/{orgId}")]
         [HttpPut]
-        [Produces("application/json")]
         public async Task<OrgResponse> Put([FromBody] OrgUpdateRequest updateOrgRequest, [FromRoute] Guid orgId)
         {
             return await _mediator.Send(new OrgUpdateCommand(updateOrgRequest, orgId));
@@ -26,7 +25,6 @@ namespace Spd.Presentation.Screening.Controllers
 
         [Route("api/org/{orgId}")]
         [HttpGet]
-        [Produces("application/json")]
         public async Task<OrgResponse> Get([FromRoute] Guid orgId)
         {
             return await _mediator.Send(new OrgGetQuery(orgId));

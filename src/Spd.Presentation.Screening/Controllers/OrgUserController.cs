@@ -25,7 +25,6 @@ namespace Spd.Presentation.Screening.Controllers
 
         [Route("api/orgs/{orgId}/users")]
         [HttpPost]
-        [Produces("application/json")]
         public async Task<OrgUserResponse> Add([FromBody][Required] OrgUserCreateRequest orgUserCreateRequest, [FromRoute] Guid orgId)
         {
             orgUserCreateRequest.OrganizationId = orgId;
@@ -34,7 +33,6 @@ namespace Spd.Presentation.Screening.Controllers
 
         [Route("api/orgs/{orgId}/users/{userId}")]
         [HttpPut]
-        [Produces("application/json")]
         public async Task<OrgUserResponse> Put([FromRoute] Guid userId, [FromBody] OrgUserUpdateRequest orgUserUpdateRequest, [FromRoute] Guid orgId)
         {
             return await _mediator.Send(new OrgUserUpdateCommand(userId, orgUserUpdateRequest));
@@ -56,7 +54,6 @@ namespace Spd.Presentation.Screening.Controllers
         /// <exception cref="Exception"></exception>
         [Route("api/orgs/{orgId}/users/{userId}")]
         [HttpGet]
-        [Produces("application/json")]
         public async Task<OrgUserResponse> Get([FromRoute] Guid orgId, Guid userId)
         {
             return await _mediator.Send(new OrgUserGetQuery(userId));
@@ -69,7 +66,6 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/orgs/{orgId}/users")]
         [HttpGet]
-        [Produces("application/json")]
         public async Task<OrgUserListResponse> GetList([FromRoute] Guid orgId)
         {
             return await _mediator.Send(new OrgUserListQuery(orgId));
