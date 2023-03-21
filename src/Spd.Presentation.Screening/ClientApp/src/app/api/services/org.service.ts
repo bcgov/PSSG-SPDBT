@@ -10,7 +10,7 @@ import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
 import { OrgResponse } from '../models/org-response';
-import { UpdateOrgRequest } from '../models/update-org-request';
+import { OrgUpdateRequest } from '../models/org-update-request';
 
 @Injectable({
   providedIn: 'root',
@@ -88,7 +88,7 @@ export class OrgService extends BaseService {
   apiOrgOrgIdPut$Response(params: {
     orgId: string;
     context?: HttpContext
-    body?: UpdateOrgRequest
+    body?: OrgUpdateRequest
   }
 ): Observable<StrictHttpResponse<OrgResponse>> {
 
@@ -119,7 +119,7 @@ export class OrgService extends BaseService {
   apiOrgOrgIdPut(params: {
     orgId: string;
     context?: HttpContext
-    body?: UpdateOrgRequest
+    body?: OrgUpdateRequest
   }
 ): Observable<OrgResponse> {
 

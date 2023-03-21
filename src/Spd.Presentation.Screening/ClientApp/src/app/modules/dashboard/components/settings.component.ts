@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { HotToastService } from '@ngneat/hot-toast';
-import { BooleanTypeCode, OrgResponse, PayerPreferenceTypeCode, UpdateOrgRequest } from 'src/app/api/models';
+import { NgxMaskPipe } from 'ngx-mask';
+import { BooleanTypeCode, OrgResponse, OrgUpdateRequest, PayerPreferenceTypeCode } from 'src/app/api/models';
 import { OrgService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 
@@ -213,7 +214,12 @@ export class SettingsComponent {
 	startAt = SPD_CONSTANTS.date.birthDateStartAt;
 	formValues = {};
 
-	constructor(private formBuilder: FormBuilder, private hotToast: HotToastService, private orgService: OrgService) {}
+	constructor(
+		private formBuilder: FormBuilder,
+		private hotToast: HotToastService,
+		private maskPipe: NgxMaskPipe,
+		private orgService: OrgService
+	) {}
 
 	ngOnInit(): void {
 		//TODO replace with proper org id
@@ -244,11 +250,15 @@ export class SettingsComponent {
 			console.log('this.form.valid', this.form.valid);
 			if (this.form.valid) {
 				//TODO replace with proper org id
-				const body: UpdateOrgRequest = { ...this.form.value, id: '4165bdfe-7cb4-ed11-b83e-00505683fbf4' };
+				const body: OrgUpdateRequest = { ...this.form.value, id: '4165bdfe-7cb4-ed11-b83e-00505683fbf4' };
+				if (body.phoneNumber) {
+					body.phoneNumber = this.maskPipe.transform(body.phoneNumber, SPD_CONSTANTS.phone.backendMask);
+				}
+
 				this.orgService
 					.apiOrgOrgIdPut({ orgId: '4165bdfe-7cb4-ed11-b83e-00505683fbf4', body })
 					.pipe()
-					.subscribe((resp: UpdateOrgRequest) => {
+					.subscribe((resp: OrgUpdateRequest) => {
 						this.viewOnly = true;
 						this.form.disable();
 						this.form.patchValue({ ...resp });

@@ -2,7 +2,7 @@
 /* eslint-disable */
 import { BooleanTypeCode } from './boolean-type-code';
 import { PayerPreferenceTypeCode } from './payer-preference-type-code';
-export interface UpdateOrgRequest {
+export interface OrgUpdateRequest {
   addressCity?: null | string;
   addressCountry?: null | string;
   addressLine1?: null | string;

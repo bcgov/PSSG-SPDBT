@@ -10,6 +10,7 @@ export { EmployeeOrganizationTypeCode } from './models/employee-organization-typ
 export { FundsFromBcGovtExceedsThresholdCode } from './models/funds-from-bc-govt-exceeds-threshold-code';
 export { OrgRegistrationCreateRequest } from './models/org-registration-create-request';
 export { OrgResponse } from './models/org-response';
+export { OrgUpdateRequest } from './models/org-update-request';
 export { OrgUserCreateRequest } from './models/org-user-create-request';
 export { OrgUserListResponse } from './models/org-user-list-response';
 export { OrgUserResponse } from './models/org-user-response';
@@ -18,5 +19,4 @@ export { PayerPreferenceTypeCode } from './models/payer-preference-type-code';
 export { PortalUserIdentityTypeCode } from './models/portal-user-identity-type-code';
 export { RegistrationTypeCode } from './models/registration-type-code';
 export { ScreeningsCountTypeCode } from './models/screenings-count-type-code';
-export { UpdateOrgRequest } from './models/update-org-request';
 export { VolunteerOrganizationTypeCode } from './models/volunteer-organization-type-code';
