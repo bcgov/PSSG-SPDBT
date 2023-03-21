@@ -41,18 +41,16 @@ namespace Spd.Resource.Organizations.Org
             .ForMember(d => d.LicenseesNeedVulnerableSectorScreening, opt => opt.MapFrom(s => GetBooleanType(s.spd_havelicenseesorregistrants)));
         }
 
-        private static PayerPreferenceTypeCode? GetPayerPreferenceType(int? code)
+        private static string? GetPayerPreferenceType(int? code)
         {
             if (code == null) return null;
-            if (code == 100000000) return PayerPreferenceTypeCode.Organization;
-            return PayerPreferenceTypeCode.Applicant;
+            return Enum.GetName(typeof(PayerPreferenceOptionSet), code);
         }
 
-        private static BooleanTypeCode? GetBooleanType(int? code)
+        private static string? GetBooleanType(int? code)
         {
             if (code == null) return null;
-            if (code == 100000000) return BooleanTypeCode.No;
-            return BooleanTypeCode.Yes;
+            return Enum.GetName(typeof(YesNoOptionSet), code);
         }
     }
 }

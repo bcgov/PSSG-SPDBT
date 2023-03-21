@@ -7,7 +7,7 @@ namespace Spd.Manager.Membership.Org
     {
         public Mappings()
         {
-            CreateMap<OrgUpdateRequest, OrgUpdateCommand>();
+            CreateMap<OrgUpdateRequest, OrgUpdateCmd>();
             CreateMap<OrgResp, OrgResponse>();
         }
     }

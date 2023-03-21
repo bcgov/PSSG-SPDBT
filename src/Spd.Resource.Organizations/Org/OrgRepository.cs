@@ -36,7 +36,7 @@ namespace Spd.Resource.Organizations.Org
             return response;
         }
 
-        private account GetOrgById(Guid organizationId)
+        private account? GetOrgById(Guid organizationId)
         {
             var account = _dynaContext.accounts
                 .Where(a => a.accountid == organizationId)

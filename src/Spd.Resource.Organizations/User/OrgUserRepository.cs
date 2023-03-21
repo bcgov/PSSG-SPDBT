@@ -111,7 +111,7 @@ namespace Spd.Resource.Organizations.User
             return response;
         }
 
-        private account GetOrganizationById(Guid organizationId)
+        private account? GetOrganizationById(Guid organizationId)
         {
             var account = _dynaContext.accounts
                 .Where(a => a.accountid == organizationId)
@@ -121,7 +121,7 @@ namespace Spd.Resource.Organizations.User
                 throw new InactiveException(HttpStatusCode.BadRequest, $"Organization {organizationId} is inactive.");
             return account;
         }
-        private spd_portaluser GetUserById(Guid userId)
+        private spd_portaluser? GetUserById(Guid userId)
         {
             try
             {
