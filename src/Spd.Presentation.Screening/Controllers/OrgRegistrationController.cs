@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Membership.OrgRegistration;
 using System.ComponentModel.DataAnnotations;
@@ -23,7 +22,7 @@ namespace Spd.Presentation.Screening.Controllers
         [HttpPost]
         public async Task<ActionResult> Register([FromBody][Required] OrgRegistrationCreateRequest orgRegistrationCreateRequest)
         {
-            await _mediator.Send(new CreateOrgRegistrationCommand(orgRegistrationCreateRequest));
+            await _mediator.Send(new OrgRegistrationCreateCommand(orgRegistrationCreateRequest));
             return Ok();
         }
     }

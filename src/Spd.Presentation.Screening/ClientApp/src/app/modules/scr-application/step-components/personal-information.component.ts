@@ -46,10 +46,12 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 									matInput
 									formControlName="birthplace"
 									placeholder="City, Country"
-									maxlength="120"
 									[errorStateMatcher]="matcher"
 								/>
 								<mat-error *ngIf="form.get('birthplace')?.hasError('required')">This is required</mat-error>
+								<mat-error *ngIf="form.get('birthplace')?.hasError('maxlength')">
+									This must be at most 100 characters long
+								</mat-error>
 							</mat-form-field>
 						</div>
 					</div>
@@ -61,7 +63,7 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 })
 export class PersonalInformationComponent implements ScreeningFormStepComponent {
 	form: FormGroup = this.formBuilder.group({
-		birthplace: new FormControl('', [Validators.required]),
+		birthplace: new FormControl('', [Validators.required, Validators.maxLength(100)]),
 		driversLicenseNumber: new FormControl(''),
 		contactDateOfBirth: new FormControl('', [Validators.required]),
 	});

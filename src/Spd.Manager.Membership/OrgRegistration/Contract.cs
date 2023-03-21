@@ -1,15 +1,16 @@
 ﻿using FluentValidation;
 using MediatR;
+using Spd.Manager.Membership.Shared;
 using System.ComponentModel;
 
 namespace Spd.Manager.Membership.OrgRegistration
 {
     public interface IOrgRegistrationManager
     {
-        public Task<Unit> Handle(CreateOrgRegistrationCommand request, CancellationToken cancellationToken);
+        public Task<Unit> Handle(OrgRegistrationCreateCommand request, CancellationToken cancellationToken);
     }
 
-    public record CreateOrgRegistrationCommand(OrgRegistrationCreateRequest CreateOrgRegistrationRequest) : IRequest<Unit>;
+    public record OrgRegistrationCreateCommand(OrgRegistrationCreateRequest CreateOrgRegistrationRequest) : IRequest<Unit>;
 
     public class OrgRegistrationCreateRequest
     {
@@ -78,24 +79,6 @@ namespace Spd.Manager.Membership.OrgRegistration
 
         [Description("More than 500")]
         MoreThanFiveHundred
-    }
-
-    public enum PayerPreferenceTypeCode
-    {
-        [Description("Organization")]
-        Organization,
-
-        [Description("Applicant")]
-        Applicant
-    }
-
-    public enum BooleanTypeCode
-    {
-        [Description("Yes")]
-        Yes,
-
-        [Description("No")]
-        No
     }
 
     public enum FundsFromBcGovtExceedsThresholdCode
