@@ -10,14 +10,14 @@ namespace Spd.Manager.Membership.OrgUser
         public Task<OrgUserResponse> Handle(OrgUserUpdateCommand request, CancellationToken cancellationToken);
         public Task<OrgUserResponse> Handle(OrgUserGetQuery request, CancellationToken cancellationToken);
         public Task<OrgUserListResponse> Handle(OrgUserListQuery request, CancellationToken cancellationToken);
-        public Task<Unit> Handle(OrgUserDeleteQuery request, CancellationToken cancellationToken);
+        public Task<Unit> Handle(OrgUserDeleteCommand request, CancellationToken cancellationToken);
     }
 
     public record OrgUserCreateCommand(OrgUserCreateRequest OrgUserCreateRequest) : IRequest<OrgUserResponse>;
     public record OrgUserUpdateCommand(Guid UserId, OrgUserUpdateRequest OrgUserUpdateRequest) : IRequest<OrgUserResponse>;
     public record OrgUserGetQuery(Guid UserId) : IRequest<OrgUserResponse>;
     public record OrgUserListQuery(Guid OrganizationId) : IRequest<OrgUserListResponse>;
-    public record OrgUserDeleteQuery(Guid UserId, Guid OrganizationId) : IRequest<Unit>;
+    public record OrgUserDeleteCommand(Guid UserId, Guid OrganizationId) : IRequest<Unit>;
 
     public abstract record OrgUserUpsertRequest
     {
@@ -66,9 +66,9 @@ namespace Spd.Manager.Membership.OrgUser
         Contact
     }
 
-    public class OrgUserUpsertRequestBaseValidator<T> : AbstractValidator<T> where T : OrgUserUpsertRequest
+    public class OrgUserCreateRequestValidator<T> : AbstractValidator<T> where T : OrgUserUpsertRequest
     {
-        public OrgUserUpsertRequestBaseValidator()
+        public OrgUserCreateRequestValidator()
         {
             RuleFor(r => r.ContactAuthorizationTypeCode)
                         .IsInEnum();
@@ -89,9 +89,9 @@ namespace Spd.Manager.Membership.OrgUser
     }
 
 
-    public class OrgUserUpdateRequest2Validator : OrgUserUpsertRequestBaseValidator<OrgUserUpdateRequest>
+    public class OrgUserUpdateRequestValidator : OrgUserCreateRequestValidator<OrgUserUpdateRequest>
     {
-        public OrgUserUpdateRequest2Validator()
+        public OrgUserUpdateRequestValidator()
         {
 
             RuleFor(r => r.PhoneNumber)

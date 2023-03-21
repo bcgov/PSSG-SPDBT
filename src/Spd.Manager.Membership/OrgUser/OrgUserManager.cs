@@ -10,7 +10,7 @@ namespace Spd.Manager.Membership.OrgUser
         : IRequestHandler<OrgUserCreateCommand, OrgUserResponse>,
         IRequestHandler<OrgUserUpdateCommand, OrgUserResponse>,
         IRequestHandler<OrgUserGetQuery, OrgUserResponse>,
-        IRequestHandler<OrgUserDeleteQuery, Unit>,
+        IRequestHandler<OrgUserDeleteCommand, Unit>,
         IRequestHandler<OrgUserListQuery, OrgUserListResponse>,
         IOrgUserManager
     {
@@ -69,7 +69,7 @@ namespace Spd.Manager.Membership.OrgUser
             return _mapper.Map<OrgUserResponse>(response);
         }
 
-        public async Task<Unit> Handle(OrgUserDeleteQuery request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(OrgUserDeleteCommand request, CancellationToken cancellationToken)
         {
             //check role max number rule
             var existingUsers = await _orgUserRepository.GetUserListAsync(request.OrganizationId, cancellationToken);
