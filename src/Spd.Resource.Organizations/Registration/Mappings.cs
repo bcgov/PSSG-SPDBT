@@ -30,15 +30,15 @@ namespace Spd.Resource.Organizations.Registration
             .ForMember(d => d.spd_organizationname, opt => opt.MapFrom(s => s.OrganizationName))
             .ForMember(d => d.spd_email, opt => opt.MapFrom(s => s.GenericEmail))
             .ForMember(d => d.spd_phonenumber, opt => opt.MapFrom(s => s.GenericPhoneNumber))
-            .ForMember(d => d.spd_identityguid, opt => opt.MapFrom(s => s.LoginIdentityGuid))
-            .ForMember(d => d.spd_identityprovider, opt => opt.MapFrom(s => s.LoginIdentityProvider))
-            .ForMember(d => d.spd_portaluseridentityguid, opt => opt.MapFrom(s => GetPortalUserIdentityType(s.PortalUserIdentityTypeCode)));
+            .ForMember(d => d.spd_identityguid, opt => opt.MapFrom(s => s.BizIdentityGuid))
+            .ForMember(d => d.spd_identityprovider, opt => opt.MapFrom(s => GetPortalUserIdentityType(s.IdentityProviderTypeCode)))
+            .ForMember(d => d.spd_portaluseridentityguid, opt => opt.MapFrom(s => s.BCeIDUserGuid));
         }
 
-        private static int? GetPortalUserIdentityType(PortalUserIdentityTypeCode? code)
+        private static int? GetPortalUserIdentityType(IdentityProviderTypeCode? code)
         {
             if (code == null) return null;
-            return (int)Enum.Parse<PortalUserIdentityTypeCode>(code.ToString());
+            return (int)Enum.Parse<IdentityProviderTypeCode>(code.ToString());
         }
 
     }

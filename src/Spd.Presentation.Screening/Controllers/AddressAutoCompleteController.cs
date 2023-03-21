@@ -1,11 +1,13 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Admin;
+using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
 
 namespace Spd.Presentation.Screening.Controllers
 {
     [ApiController]
+    [ApiExceptionFilter]
     public class AddressAutoCompleteController : ControllerBase
     {
         private readonly ILogger<AddressAutoCompleteController> _logger;

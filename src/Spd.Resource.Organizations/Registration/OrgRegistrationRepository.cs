@@ -35,5 +35,29 @@ namespace Spd.Resource.Organizations.Registration
             await _dynaContext.SaveChangesAsync(cancellationToken);
             return true;
         }
+
+        public async Task<bool> CheckDuplicateAsync(SearchRegistrationQry searchQry, CancellationToken cancellationToken)
+        {
+            string key;
+            if (searchQry.RegistrationTypeCode == RegistrationTypeCode.Employee)
+            {
+                key = $"{searchQry.RegistrationTypeCode}-{searchQry.EmployeeOrganizationTypeCode}";
+            }
+            else
+            {
+                key = $"{searchQry.RegistrationTypeCode}-{searchQry.VolunteerOrganizationTypeCode}";
+            }
+            DynamicsContextLookupHelpers.OrganizationTypeGuidDictionary.TryGetValue(key, out Guid typeGuid);
+
+            var orgReg = _dynaContext.spd_orgregistrations.Expand(o => o.spd_OrganizationTypeId).Where(o =>
+                o.spd_organizationname.Equals(searchQry.OrganizationName, StringComparison.InvariantCultureIgnoreCase) &&
+                o.spd_postalcode == searchQry.MailingPostalCode &&
+                o.spd_email == searchQry.GenericEmail &&
+                o.spd_OrganizationTypeId.spd_organizationtypeid == typeGuid &&
+                o.statecode != DynamicsConstants.StateCode_Inactive
+            ).FirstOrDefault();
+            return orgReg != null;
+        }
+
     }
 }

@@ -1,8 +1,9 @@
-﻿namespace Spd.Resource.Organizations.Registration
+namespace Spd.Resource.Organizations.Registration
 {
     public interface IOrgRegistrationRepository
     {
         Task<bool> AddRegistrationAsync(OrgRegistrationCreateCmd createRegistrationCmd, CancellationToken cancellationToken);
+        Task<bool> CheckDuplicateAsync(SearchRegistrationQry searchQry, CancellationToken cancellationToken);
     }
 
     public record OrgRegistrationCreateCmd
@@ -33,9 +34,19 @@
         public VolunteerOrganizationTypeCode? VolunteerOrganizationTypeCode { get; set; }
         public RegistrationTypeCode RegistrationTypeCode { get; set; }
         public ScreeningsCountTypeCode ScreeningsCount { get; set; }
-        public string? LoginIdentityGuid { get; set; }
-        public string? LoginIdentityProvider { get; set; }
-        public PortalUserIdentityTypeCode? PortalUserIdentityTypeCode { get; set; }
+        public IdentityProviderTypeCode? IdentityProviderTypeCode { get; set; }
+        public Guid? BizIdentityGuid { get; set; }
+        public Guid? BCeIDUserGuid { get; set; }
+    }
+
+    public record SearchRegistrationQry
+    {
+        public string? GenericEmail { get; set; }
+        public string? MailingPostalCode { get; set; }
+        public string? OrganizationName { get; set; }
+        public EmployeeOrganizationTypeCode? EmployeeOrganizationTypeCode { get; set; }
+        public VolunteerOrganizationTypeCode? VolunteerOrganizationTypeCode { get; set; }
+        public RegistrationTypeCode RegistrationTypeCode { get; set; }
     }
 
     public enum RegistrationTypeCode
@@ -104,7 +115,7 @@
         PostSec,
     }
 
-    public enum PortalUserIdentityTypeCode
+    public enum IdentityProviderTypeCode
     {
         BusinessBceId,
         BcServicesCard,

@@ -1,9 +1,12 @@
-﻿namespace Spd.Resource.Organizations.Org
+﻿using Spd.Resource.Organizations.Registration;
+
+namespace Spd.Resource.Organizations.Org
 {
     public interface IOrgRepository
     {
         Task<OrgResp> OrgUpdateAsync(OrgUpdateCmd orgUpdateCmd, CancellationToken cancellationToken);
         Task<OrgResp> OrgGetAsync(Guid orgId, CancellationToken cancellationToken);
+        Task<bool> CheckDuplicateAsync(SearchOrgQry searchOrgQry, CancellationToken cancellationToken);
     }
     public record OrgUpdateCmd
     {
@@ -38,6 +41,16 @@
         public string? AddressProvince { get; set; }
         public string? OrganizationName { get; set; }
         public string? OrganizationLegalName { get; set; }
+    }
+
+    public record SearchOrgQry
+    {
+        public string? GenericEmail { get; set; }
+        public string? MailingPostalCode { get; set; }
+        public string? OrganizationName { get; set; }
+        public EmployeeOrganizationTypeCode? EmployeeOrganizationTypeCode { get; set; }
+        public VolunteerOrganizationTypeCode? VolunteerOrganizationTypeCode { get; set; }
+        public RegistrationTypeCode RegistrationTypeCode { get; set; }
     }
 
     public enum PayerPreferenceTypeCode
