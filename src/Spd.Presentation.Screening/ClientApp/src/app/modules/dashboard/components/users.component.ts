@@ -15,18 +15,17 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 			<div class="row">
 				<div class="col-xl-8 col-lg-8 col-md-7 col-sm-12">
 					<h2 class="mb-2 fw-normal">
-						Manage Authorized Users <mat-icon (click)="manageUsersInfo()">info</mat-icon>
+						Authorized User Management <mat-icon (click)="manageUsersInfo()">info</mat-icon>
 						<div class="mt-2 fs-5 fw-light">
 							Your organization may have up to {{ maximumNumberOfPrimaryContacts }} primary authorized contacts and up
-							to {{ maximumNumberOfContacts }} authorized contacts.
+							to {{ maximumNumberOfContacts }} authorized contacts
 						</div>
 					</h2>
 				</div>
 				<div class="col-xl-3 col-lg-3 col-md-4 col-sm-12 my-auto" *ngIf="showAddArea">
 					<ng-container *ngIf="isAllowedAddContact == true; else addNotAllowed">
-						<button mat-flat-button color="primary" class="large w-100 mb-2" (click)="onAddUser()">
-							<mat-icon style="color: var(--color-white);">add</mat-icon>
-							Add User
+						<button mat-flat-button class="large w-100 mat-green-button mb-2" (click)="onAddUser()">
+							<mat-icon style="color: var(--color-white);">add</mat-icon>Add User
 						</button>
 					</ng-container>
 					<ng-template #addNotAllowed>
@@ -41,62 +40,62 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 					<div class="col-md-11 col-sm-12">
 						<section class="px-4 py-2 mb-3 card-section">
 							<div class="row mt-2">
-								<div class="col-lg-10 col-sm-12">
+								<div class="col-xl-10 col-lg-10 col-sm-12">
 									<div class="row">
-										<div class="col-lg-1 col-md-1 col-sm-10">
+										<div class="col-xl-1 col-lg-1 col-md-1 col-sm-10">
 											<span class="badge rounded-pill bg-success">
 												{{ i + 1 }}
 											</span>
 										</div>
-										<div class="col-lg-3 col-md-3">
+										<div class="col-xl-4 col-lg-4 col-md-3">
 											<small class="d-block text-muted">Authorization Type</small>
 											<strong> {{ getDesc(user.contactAuthorizationTypeCode) | default }} </strong>
 										</div>
-										<div class="col-lg-3 col-md-3">
+										<div class="col-xl-4 col-lg-4 col-md-3">
 											<small class="d-block text-muted mt-2 mt-md-0">Name</small>
 											<strong> {{ user | fullname | default }} </strong>
 										</div>
-										<div class="col-lg-5 col-md-3">
+										<div class="col-xl-3 col-lg-3 col-md-3">
 											<small class="d-block text-muted mt-2 mt-md-0">Email</small>
 											<strong> {{ user.email | default }} </strong>
 										</div>
 									</div>
 									<mat-divider class="my-3"></mat-divider>
 									<div class="row mb-2">
-										<div class="col-lg-1 col-md-1 col-sm-10"></div>
-										<div class="col-lg-3 col-md-3">
+										<div class="col-xl-1 col-lg-1 col-md-1 col-sm-10"></div>
+										<div class="col-xl-4 col-lg-4 col-md-3">
 											<small class="d-block text-muted">Phone Number</small>
 											<strong>{{ user.phoneNumber || '' | mask : appConstants.phone.displayMask | default }}</strong>
 										</div>
-										<div class="col-lg-3 col-md-3">
+										<div class="col-xl-4 col-lg-4 col-md-3">
 											<small class="d-block text-muted mt-2 mt-md-0">Job Title</small>
 											<strong>{{ user.jobTitle | default }}</strong>
 										</div>
-										<div class="col-lg-3 col-md-4">
+										<div class="col-xl-3 col-lg-3 col-md-4">
 											<small class="d-block text-muted mt-2 mt-md-0">Date of Birth</small>
 											<strong>{{ user.dateOfBirth | date : appConstants.date.dateFormat | default }}</strong>
 										</div>
 									</div>
 								</div>
-								<div class="col-lg-2 col-sm-12">
+								<div class="col-xl-2 col-lg-2 col-sm-12 mx-auto">
 									<button
-										mat-stroked-button
-										color="primary"
-										class="large mt-2 mb-2 mt-lg-0"
+										mat-mini-fab
+										matTooltip="Edit user"
+										class="m-2"
 										(click)="onMaintainUser(user)"
+										aria-label="Edit user"
 									>
-										<mat-icon style="color: var(--color-primary);">edit</mat-icon>
-										Edit
+										<mat-icon>edit</mat-icon>
 									</button>
 									<button
-										mat-stroked-button
-										color="warn"
-										class="large mt-2 mt-lg-0"
+										mat-mini-fab
+										matTooltip="Remove user"
+										class="m-2"
 										*ngIf="allowDeleteRow(user)"
 										(click)="onDeleteUser(user)"
+										aria-label="Remove user"
 									>
-										<mat-icon style="color: var(--color-red);">delete_outline</mat-icon>
-										Remove
+										<mat-icon>delete_outline</mat-icon>
 									</button>
 								</div>
 							</div>
