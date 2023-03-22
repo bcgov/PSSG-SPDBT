@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Membership.OrgRegistration;
 using Spd.Utilities.Shared.Exceptions;
@@ -8,7 +9,6 @@ namespace Spd.Presentation.Screening.Controllers
 {
     [ApiController]
     [ApiExceptionFilter]
-    //[Authorize] //temp comment out
     public class OrgRegistrationController : ControllerBase
     {
         private readonly ILogger<OrgRegistrationController> _logger;
@@ -22,6 +22,7 @@ namespace Spd.Presentation.Screening.Controllers
 
         [Route("api/org-registrations")]
         [HttpPost]
+        //[Authorize]
         public async Task<ActionResult> Register([FromBody][Required] OrgRegistrationCreateRequest orgRegistrationCreateRequest)
         {
             await _mediator.Send(new OrgRegistrationCreateCommand(orgRegistrationCreateRequest));
@@ -30,6 +31,7 @@ namespace Spd.Presentation.Screening.Controllers
 
         [Route("api/org-registrations/detect-duplicate")]
         [HttpPost]
+        //[Authorize]
         public async Task<CheckDuplicateResponse> DetectDuplicate([FromBody][Required] OrgRegistrationCreateRequest orgRegistrationCreateRequest)
         {
             return await _mediator.Send(new CheckOrgRegistrationDuplicateQuery(orgRegistrationCreateRequest));
