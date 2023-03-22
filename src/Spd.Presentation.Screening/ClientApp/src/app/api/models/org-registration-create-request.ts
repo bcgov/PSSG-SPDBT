@@ -24,6 +24,7 @@ export interface OrgRegistrationCreateRequest {
   genericEmailConfirmation?: null | string;
   genericPhoneNumber?: null | string;
   hasPhoneOrEmail?: BooleanTypeCode;
+  hasPotentialDuplicate?: BooleanTypeCode;
   loginIdentityGuid?: null | string;
   loginIdentityProvider?: null | string;
   mailingAddressLine1?: null | string;

@@ -19531,6 +19531,7 @@
           <PropertyRef Name="spd_orgregistrationid" />
         </Key>
         <Property Name="_modifiedby_value" Type="Edm.Guid" />
+        <Property Name="spd_potentialduplicate" Type="Edm.Int32" />
         <Property Name="spd_email" Type="Edm.String" Unicode="false" />
         <Property Name="_spd_organizationtypeid_value" Type="Edm.Guid" />
         <Property Name="spd_deniedreasonemployee" Type="Edm.Int32" />
@@ -19544,6 +19545,7 @@
         <Property Name="spd_identityguid" Type="Edm.String" Unicode="false" />
         <Property Name="spd_province" Type="Edm.String" Unicode="false" />
         <Property Name="spd_authorizedcontactdateofbirth" Type="Edm.DateTimeOffset" />
+        <Property Name="spd_authorizedcontactsurname" Type="Edm.String" Unicode="false" />
         <Property Name="spd_havelicenseesorregistrants" Type="Edm.Int32" />
         <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
         <Property Name="spd_jobtitle" Type="Edm.String" Unicode="false" />
@@ -19572,7 +19574,6 @@
         <Property Name="_owningteam_value" Type="Edm.Guid" />
         <Property Name="_ownerid_value" Type="Edm.Guid" />
         <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
-        <Property Name="spd_authorizedcontactsurname" Type="Edm.String" Unicode="false" />
         <Property Name="_createdby_value" Type="Edm.Guid" />
         <Property Name="_owninguser_value" Type="Edm.Guid" />
         <Property Name="spd_organizationname" Type="Edm.String" Unicode="false" />

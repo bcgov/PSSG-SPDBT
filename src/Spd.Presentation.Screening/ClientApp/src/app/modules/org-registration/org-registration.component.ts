@@ -6,6 +6,7 @@ import { MatStepper } from '@angular/material/stepper';
 import { distinctUntilChanged } from 'rxjs';
 import { CheckDuplicateResponse, OrgRegistrationCreateRequest, RegistrationTypeCode } from 'src/app/api/models';
 import { OrgRegistrationService } from 'src/app/api/services';
+import { BooleanTypeCode } from 'src/app/api/models';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { OrgRegistrationRoutes } from './org-registration-routing.module';
@@ -211,7 +212,8 @@ export class OrgRegistrationComponent implements OnInit {
 						.open(DialogComponent, { data })
 						.afterClosed()
 						.subscribe((response: boolean) => {
-							// Save potential duplicate
+              // Save potential duplicate
+              body.hasPotentialDuplicate = BooleanTypeCode.Yes;
 							if (response) {
 								this.saveRegistration(body);
 							}
