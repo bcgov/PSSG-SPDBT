@@ -45,6 +45,7 @@ namespace Spd.Manager.Membership.OrgRegistration
         public string? LoginIdentityGuid { get; set; }
         public string? LoginIdentityProvider { get; set; }
         public PortalUserIdentityTypeCode? PortalUserIdentityTypeCode { get; set; }
+        public BooleanTypeCode HasPotentialDuplicate { get; set; } = BooleanTypeCode.No;
     }
 
     public enum RegistrationTypeCode

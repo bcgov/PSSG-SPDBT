@@ -31,7 +31,8 @@ namespace Spd.Resource.Organizations.Registration
             .ForMember(d => d.spd_phonenumber, opt => opt.MapFrom(s => s.GenericPhoneNumber))
             .ForMember(d => d.spd_identityguid, opt => opt.MapFrom(s => s.BizIdentityGuid))
             .ForMember(d => d.spd_identityprovider, opt => opt.MapFrom(s => GetPortalUserIdentityType(s.IdentityProviderTypeCode)))
-            .ForMember(d => d.spd_portaluseridentityguid, opt => opt.MapFrom(s => s.BCeIDUserGuid));
+            .ForMember(d => d.spd_portaluseridentityguid, opt => opt.MapFrom(s => s.BCeIDUserGuid))
+            .ForMember(d => d.spd_potentialduplicate, opt => opt.MapFrom(s => (int)Enum.Parse<YesNoOptionSet>(s.HasPotentialDuplicate.ToString())));
         }
 
         private static int? GetPortalUserIdentityType(IdentityProviderTypeCode? code)
