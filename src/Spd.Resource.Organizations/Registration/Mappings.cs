@@ -38,7 +38,7 @@ namespace Spd.Resource.Organizations.Registration
         private static int? GetPortalUserIdentityType(IdentityProviderTypeCode? code)
         {
             if (code == null) return null;
-            return (int)Enum.Parse<IdentityProviderTypeCode>(code.ToString());
+            return (int)Enum.Parse<PortalUserIdentityTypeCode>(code.ToString());
         }
 
     }
