@@ -9,10 +9,7 @@ namespace Spd.Presentation.Screening.Controllers
     /// <summary>
     /// 
     /// </summary>
-    [ApiController]
-    [ApiExceptionFilter]
-    //[Authorize] //temp comment out
-    public class OrgUserController : ControllerBase
+    public class OrgUserController : SpdControllerBase
     {
         private readonly ILogger<OrgRegistrationController> _logger;
         private readonly IMediator _mediator;

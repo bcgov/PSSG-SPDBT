@@ -1,10 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Logging;
 
 namespace Spd.Utilities.Shared.Exceptions
 {
     public class ApiExceptionFilter : ExceptionFilterAttribute
     {
+        private ILogger<ApiExceptionFilter> _Logger;
+
+        public ApiExceptionFilter(ILogger<ApiExceptionFilter> logger)
+        {
+            _Logger = logger;
+        }
+
         public override void OnException(ExceptionContext context)
         {
             ApiError apiError = null;
@@ -32,6 +40,7 @@ namespace Spd.Utilities.Shared.Exceptions
                 apiError.detail = stack;
                 context.HttpContext.Response.StatusCode = 500;
                 // handle logging here
+                _Logger.LogError(context.Exception, "Exception");
             }
 
             // always return a JSON result

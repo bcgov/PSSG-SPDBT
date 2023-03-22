@@ -19,7 +19,7 @@ namespace Spd.Utilities.LogonUser
 
         public static string GetUserName(this IPrincipal principal)
         {
-            if(BCeID_IDENTITY_PROVIDERS.Contains(principal.GetIdentityProvider()))
+            if (BCeID_IDENTITY_PROVIDERS.Contains(principal.GetIdentityProvider()))
                 return ValidatePrincipal(principal).GetClaimValue(BCeID_USER_NAME);
             return null;
         }
@@ -71,7 +71,7 @@ namespace Spd.Utilities.LogonUser
         public static string GetIdentityProvider(this IPrincipal principal)
         {
             var cmsUserClaim = ValidatePrincipal(principal).GetClaimValue(IDENTITY_PROVIDER);
-            return cmsUserClaim == null ? Guid.Empty.ToString() : cmsUserClaim;
+            return cmsUserClaim ?? string.Empty;
         }
 
         private static ClaimsPrincipal ValidatePrincipal(IPrincipal principal)

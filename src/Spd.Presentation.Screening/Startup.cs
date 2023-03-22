@@ -46,7 +46,6 @@ namespace Spd.Presentation.Screening
                 .AddEndpointsApiExplorer()
                 .AddControllers(options =>
                 {
-                    options.Filters.Add(new ApiExceptionFilter());
                 })
                 .AddJsonOptions(x =>
                 {
