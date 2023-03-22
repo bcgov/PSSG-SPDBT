@@ -8929,6 +8929,7 @@
         <Property Name="stageid" Type="Edm.Guid" />
         <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
         <Property Name="_resolvebykpiid_value" Type="Edm.Guid" />
+        <Property Name="spd_cornethitfound" Type="Edm.Int32" />
         <Property Name="_entitlementid_value" Type="Edm.Guid" />
         <Property Name="_accountid_value" Type="Edm.Guid" />
         <Property Name="firstresponseslastatus" Type="Edm.Int32" />
@@ -19562,7 +19563,6 @@
         <Property Name="spd_authorizedcontactemail" Type="Edm.String" Unicode="false" />
         <Property Name="spd_identityprovider" Type="Edm.Int32" />
         <Property Name="versionnumber" Type="Edm.Int64" />
-        <Property Name="spd_fundsfrombcgovtexceedsthreshold" Type="Edm.Int32" />
         <Property Name="spd_estimatedapplicationssubmittedperyear" Type="Edm.Int32" />
         <Property Name="_createdonbehalfby_value" Type="Edm.Guid" />
         <Property Name="spd_city" Type="Edm.String" Unicode="false" />
@@ -19648,6 +19648,7 @@
         <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
         <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
         <Property Name="spd_response" Type="Edm.Int32" />
+        <Property Name="spd_manualpayment" Type="Edm.Boolean" />
         <Property Name="spd_datetimeofpayment" Type="Edm.DateTimeOffset" />
         <Property Name="spd_paymentid" Type="Edm.Guid" />
         <Property Name="spd_transactionid" Type="Edm.String" Unicode="false" />
