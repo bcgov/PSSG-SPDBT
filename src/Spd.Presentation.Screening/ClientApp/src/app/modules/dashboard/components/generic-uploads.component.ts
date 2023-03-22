@@ -10,7 +10,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 	selector: 'app-generic-uploads',
 	template: `
 		<app-dashboard-header title="Organization Name" subtitle="Security Screening Portal"></app-dashboard-header>
-		<section class="step-section my-4 p-md-4 p-sm-0">
+		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-12">
 					<h2 class="mb-2 fw-normal">Generic Uploads</h2>
@@ -70,7 +70,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 			</div>
 		</section>
 
-		<section class="step-section my-4 p-md-4 p-sm-0">
+		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-md-12 col-sm-12">
 					<h3 class="fw-normal">Previous Uploads</h3>

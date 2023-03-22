@@ -5,7 +5,7 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 	selector: 'app-dashboard-home',
 	template: `
 		<app-dashboard-header title="Organization Name" subtitle="Security Screening Portal"></app-dashboard-header>
-		<section class="step-section my-4 p-md-4 p-sm-0">
+		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
 					<div class="alert alert-warning d-flex align-items-center" role="alert">
@@ -24,7 +24,9 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 					<div class="row box-row gy-4">
 						<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
 							<div class="box mx-auto" [routerLink]="[getRoute(dashboardRoutes.NEW_SCREENING)]">
-								<img class="option-image" src="/assets/dashboard/new_screening.png" />
+								<div class="box__image">
+									<img class="box__image__item" src="/assets/dashboard/new_screening.png" />
+								</div>
 								<div class="box__text">
 									<h4>Request a new screening</h4>
 									<div class="d-grid gap-2 d-md-flex justify-content-between">
@@ -36,7 +38,9 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 						</div>
 						<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
 							<div class="box mx-auto" [routerLink]="[getRoute(dashboardRoutes.SCREENING_STATUSES)]">
-								<img class="option-image" src="/assets/dashboard/screening_status.png" />
+								<div class="box__image">
+									<img class="box__image__item" src="/assets/dashboard/screening_status.png" />
+								</div>
 								<div class="box__text">
 									<h4>View a screening status</h4>
 									<div class="d-grid gap-2 d-md-flex justify-content-between">
@@ -48,7 +52,9 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 						</div>
 						<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
 							<div class="box mx-auto" [routerLink]="[getRoute(dashboardRoutes.EXPIRING_SCREENING)]">
-								<img class="option-image" src="/assets/dashboard/expired_screenings.png" />
+								<div class="box__image">
+									<img class="box__image__item" src="/assets/dashboard/expired_screenings.png" />
+								</div>
 								<div class="box__text">
 									<h4>View expiring screenings</h4>
 									<div class="d-grid gap-2 d-md-flex justify-content-between">
@@ -60,7 +66,9 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 						</div>
 						<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
 							<div class="box mx-auto">
-								<img class="option-image" src="/assets/dashboard/outstanding_payments.png" />
+								<div class="box__image">
+									<img class="box__image__item" src="/assets/dashboard/outstanding_payments.png" />
+								</div>
 								<div class="box__text" [routerLink]="[getRoute(dashboardRoutes.PAYMENTS)]">
 									<h4>Outstanding payments</h4>
 									<div class="d-grid gap-2 d-md-flex justify-content-between">
@@ -72,7 +80,9 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 						</div>
 						<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
 							<div class="box mx-auto" [routerLink]="[getRoute(dashboardRoutes.USERS)]">
-								<img class="option-image" src="/assets/dashboard/authorized_users.png" />
+								<div class="box__image">
+									<img class="box__image__item" src="/assets/dashboard/authorized_users.png" />
+								</div>
 								<div class="box__text">
 									<h4>Manage authorized users</h4>
 									<div class="d-grid gap-2 d-md-flex justify-content-between">
@@ -84,7 +94,9 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 						</div>
 						<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
 							<div class="box mx-auto" [routerLink]="[getRoute(dashboardRoutes.IDENTITY_VERIFICATION)]">
-								<img class="option-image" src="/assets/dashboard/applicant_identity.png" />
+								<div class="box__image">
+									<img class="box__image__item" src="/assets/dashboard/applicant_identity.png" />
+								</div>
 								<div class="box__text">
 									<h4>Confirm applicant identity</h4>
 									<div class="d-grid gap-2 d-md-flex justify-content-between">
@@ -199,6 +211,15 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 				&:hover {
 					transform: scale(1.03);
 				}
+				&__image {
+					width: 100%;
+					background-color: #8099b3;
+					max-height: 8em;
+					text-align: center;
+					&__item {
+						height: 8em;
+					}
+				}
 				&__text {
 					margin: 1em 1em 0 1em;
 					&__icon {
@@ -208,12 +229,6 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 				}
 			}
 
-			.option-image {
-				width: 100%;
-				height: 8em;
-				background-color: #8099b3;
-			}
-
 			.data-card {
 				border-width: 2px;
 				border-style: solid;
@@ -221,6 +236,7 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 				height: 100%;
 				&__header {
 					padding: 0.5em;
+					font-size: 0.9em;
 					&__title {
 						font-size: 1em;
 					}

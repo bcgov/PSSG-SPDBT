@@ -1,20 +1,304 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
+import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 
 @Component({
 	selector: 'app-identify-verification',
 	template: `
 		<app-dashboard-header title="Organization Name" subtitle="Security Screening Portal"></app-dashboard-header>
-		<section class="step-section my-4 p-md-4 p-sm-0">
+		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
-				<div class="col-12">
+				<div class="col-xl-11 col-lg-10 col-md-12 col-sm-12">
 					<h2 class="mb-2 fw-normal">
 						Identity Verification
 						<div class="mt-2 fs-5 fw-light">Confirm the applicant's identity</div>
 					</h2>
+					<div class="alert alert-warning d-flex align-items-center" role="alert">
+						<mat-icon class="d-none d-md-block alert-icon me-2">warning</mat-icon>
+						<div>8 applicants require confirmation</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-xl-11 col-lg-10 col-md-10 col-sm-9">
+					<mat-form-field>
+						<input matInput type="search" placeholder="Search" />
+						<button
+							mat-button
+							matSuffix
+							mat-flat-button
+							color="primary"
+							aria-label="search"
+							style="padding: 2.1em 0; border-radius: unset;"
+						>
+							<mat-icon style="top: 8px;font-size: 2.2em;width: 40px;height: 40px;left: 8px;">search</mat-icon>
+						</button>
+					</mat-form-field>
+				</div>
+				<div class="col-xl-1 col-lg-2 col-md-2 col-sm-3" style="text-align: center;">
+					<app-dropdown-overlay
+						[showDropdownOverlay]="showDropdownOverlay"
+						(showDropdownOverlayChange)="onShowDropdownOverlayChange($event)"
+					>
+						<app-verify-filter
+							[formGroup]="formFilter"
+							(filterChange)="onFilterChange($event)"
+							(filterClear)="onFilterClear()"
+							(filterClose)="onFilterClose()"
+						></app-verify-filter>
+					</app-dropdown-overlay>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-12">
+					<mat-table matSort [dataSource]="dataSource" matSortActive="status" matSortDirection="asc" class="isMobile">
+						<ng-container matColumnDef="applicantName">
+							<mat-header-cell *matHeaderCellDef mat-sort-header>Applicant Name</mat-header-cell>
+							<mat-cell *matCellDef="let verify">
+								<span class="mobile-label">Applicant Name:</span>
+								{{ verify.applicantName }}
+							</mat-cell>
+						</ng-container>
+
+						<ng-container matColumnDef="dateOfBirth">
+							<mat-header-cell *matHeaderCellDef mat-sort-header>Date of Birth</mat-header-cell>
+							<mat-cell *matCellDef="let verify">
+								<span class="mobile-label">Date of Birth:</span>
+								{{ verify.dateTimeSubmitted | date : constants.date.dateFormat }}
+							</mat-cell>
+						</ng-container>
+
+						<ng-container matColumnDef="jobTitle">
+							<mat-header-cell *matHeaderCellDef mat-sort-header>Job Title</mat-header-cell>
+							<mat-cell *matCellDef="let verify">
+								<span class="mobile-label">Job Title:</span>
+								{{ verify.jobTitle }}
+							</mat-cell>
+						</ng-container>
+
+						<ng-container matColumnDef="email">
+							<mat-header-cell *matHeaderCellDef mat-sort-header>Email</mat-header-cell>
+							<mat-cell *matCellDef="let verify">
+								<span class="mobile-label">Email:</span>
+								{{ verify.applicantName }}
+							</mat-cell>
+						</ng-container>
+
+						<ng-container matColumnDef="dateTimeSubmitted">
+							<mat-header-cell *matHeaderCellDef mat-sort-header>Submitted</mat-header-cell>
+							<mat-cell *matCellDef="let verify">
+								<span class="mobile-label">Submitted:</span>
+								{{ verify.dateTimeSubmitted | date : constants.date.dateFormat }}
+							</mat-cell>
+						</ng-container>
+
+						<ng-container matColumnDef="status">
+							<mat-header-cell *matHeaderCellDef mat-sort-header>Status</mat-header-cell>
+							<mat-cell *matCellDef="let verify">
+								<span class="mobile-label">Status:</span>
+								<button *ngIf="verify.status == 'Outstanding'" mat-flat-button class="confirm my-2 me-4">
+									Confirm
+								</button>
+								<button *ngIf="verify.status == 'Outstanding'" mat-stroked-button color="primary">Reject</button>
+								<!-- <span *ngIf="verify.status == 'Outstanding'">
+									<span *ngIf="verify.status == 'Outstanding'" class="m-md-2 m-sm-0">
+										<button mat-flat-button class="confirm medium">Confirm</button>
+									</span>
+									<span *ngIf="verify.status == 'Outstanding'" class="m-md-2 m-sm-0">
+										<button mat-stroked-button color="primary" class="medium">Reject</button>
+									</span>
+								</span> -->
+								<span *ngIf="verify.status == 'Rejected'" class="fw-semi-bold" style="color: var(--color-red);">
+									Rejected
+								</span>
+								<span *ngIf="verify.status == 'Confirmed'" class="fw-semi-bold" style="color: var(--color-green);">
+									Confirmed
+								</span>
+							</mat-cell>
+						</ng-container>
+
+						<!-- <ng-container matColumnDef="actions">
+							<mat-header-cell *matHeaderCellDef></mat-header-cell>
+							<mat-cell *matCellDef="let verify">
+								<span *ngIf="verify.status == 'Outstanding'" class="w-100 m-md-2 m-sm-0">
+									<button mat-flat-button class="confirm medium">Confirm</button>
+								</span>
+								<span *ngIf="verify.status == 'Outstanding'" class="w-100 m-md-2 m-sm-0">
+									<button mat-stroked-button color="primary" class="medium">Reject</button>
+								</span>
+							</mat-cell>
+						</ng-container> -->
+
+						<mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
+						<mat-row *matRowDef="let row; columns: columns"></mat-row>
+					</mat-table>
+					<mat-paginator
+						#paginator
+						[length]="100"
+						[pageSize]="10"
+						[pageSizeOptions]="[5, 10, 25, 100]"
+						aria-label="Select page"
+					>
+					</mat-paginator>
 				</div>
 			</div>
 		</section>
 	`,
-	styles: [],
+	styles: [
+		`
+			.confirm {
+				background-color: var(--color-green) !important;
+				color: var(--color-white) !important;
+			}
+		`,
+	],
 })
-export class IdentifyVerificationComponent {}
+export class IdentifyVerificationComponent {
+	constants = SPD_CONSTANTS;
+	dataSource!: MatTableDataSource<any>;
+	columns!: string[];
+
+	pageSizes = [3, 5, 7];
+
+	showDropdownOverlay = false;
+	formFilter: FormGroup = this.formBuilder.group({
+		startDate: new FormControl(''),
+		endDate: new FormControl(''),
+		paid: new FormControl(''),
+		notPaid: new FormControl(''),
+	});
+
+	@ViewChild(MatSort) sort!: MatSort;
+	@ViewChild('paginator') paginator!: MatPaginator;
+
+	constructor(private formBuilder: FormBuilder) {}
+
+	ngOnInit() {
+		this.columns = ['applicantName', 'dateOfBirth', 'jobTitle', 'email', 'dateTimeSubmitted', 'status'];
+		this.dataSource = new MatTableDataSource<any>([]);
+		this.dataSource.data = [
+			{
+				dateTimeSubmitted: '2023-02-04T00:10:05.865Z',
+				applicantName: 'Joe Smith',
+				status: 'Confirmed',
+				email: 'joe@smith.com',
+				jobTitle: 'contractor',
+				dateOfBirth: '2023-02-04T00:10:05.865Z',
+			},
+			{
+				dateTimeSubmitted: '2023-02-04T00:10:05.865Z',
+				applicantName: 'Anne Parker',
+				status: 'Outstanding',
+				email: '',
+				jobTitle: '',
+				dateOfBirth: '2023-02-04T00:10:05.865Z',
+			},
+			{
+				dateTimeSubmitted: '2023-03-24T00:15:05.865Z',
+				applicantName: 'Peter Parker',
+				status: 'Rejected',
+				email: '',
+				jobTitle: '',
+				dateOfBirth: '2023-02-02T00:10:05.865Z',
+			},
+			{
+				dateTimeSubmitted: '2023-01-14T00:13:05.865Z',
+				applicantName: 'Mark Smith',
+				status: 'Confirmed',
+				email: '',
+				jobTitle: '',
+				dateOfBirth: '2023-02-04T00:10:05.865Z',
+			},
+			{
+				dateTimeSubmitted: '2023-02-04T00:10:05.865Z',
+				applicantName: 'Tim Parker',
+				status: 'Outstanding',
+				email: '',
+				jobTitle: '',
+				dateOfBirth: '2023-02-04T00:10:05.865Z',
+			},
+			{
+				dateTimeSubmitted: '2023-03-24T00:15:05.865Z',
+				applicantName: 'Alex Parker',
+				status: 'Outstanding',
+				email: '',
+				jobTitle: '',
+				dateOfBirth: '2023-02-02T00:10:05.865Z',
+			},
+			{
+				dateTimeSubmitted: '2023-01-14T00:13:05.865Z',
+				applicantName: 'Jim Smith',
+				status: 'Confirmed',
+				email: '',
+				jobTitle: '',
+				dateOfBirth: '2023-02-04T00:10:05.865Z',
+			},
+			{
+				dateTimeSubmitted: '2023-02-04T00:10:05.865Z',
+				applicantName: 'Ben Parker',
+				status: 'Rejected',
+				email: '',
+				jobTitle: '',
+				dateOfBirth: '2023-02-04T00:10:05.865Z',
+			},
+			{
+				dateTimeSubmitted: '2023-03-24T00:15:05.865Z',
+				applicantName: 'Cam Parker',
+				status: 'Outstanding',
+				email: '',
+				jobTitle: '',
+				dateOfBirth: '2023-02-02T00:10:05.865Z',
+			},
+			{
+				dateTimeSubmitted: '2022-01-14T00:13:05.865Z',
+				applicantName: 'Paul Smith',
+				status: 'Confirmed',
+				email: '',
+				jobTitle: '',
+				dateOfBirth: '2023-02-04T00:10:05.865Z',
+			},
+			{
+				dateTimeSubmitted: '2022-02-04T00:10:05.865Z',
+				applicantName: 'Cindy Parker',
+				status: 'Rejected',
+				email: '',
+				jobTitle: '',
+				dateOfBirth: '2023-02-04T00:10:05.865Z',
+			},
+			{
+				dateTimeSubmitted: '2022-03-24T00:15:05.865Z',
+				applicantName: 'Dave Parker',
+				status: 'Rejected',
+				email: '',
+				jobTitle: '',
+				dateOfBirth: '2023-02-02T00:10:05.865Z',
+			},
+		];
+	}
+
+	ngAfterViewInit() {
+		this.dataSource.sort = this.sort;
+		this.dataSource.paginator = this.paginator;
+	}
+
+	onShowDropdownOverlayChange(show: boolean): void {
+		this.showDropdownOverlay = show;
+	}
+
+	onFilterChange(filters: any) {
+		this.onFilterClose();
+	}
+
+	onFilterClear() {
+		this.onFilterClose();
+	}
+
+	onFilterClose() {
+		this.showDropdownOverlay = false;
+	}
+}

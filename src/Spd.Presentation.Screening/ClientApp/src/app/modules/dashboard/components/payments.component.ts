@@ -9,9 +9,9 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 	selector: 'app-payments',
 	template: `
 		<app-dashboard-header title="Organization Name" subtitle="Security Screening Portal"></app-dashboard-header>
-		<section class="step-section my-4 p-md-4 p-sm-0">
+		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
-				<div class="col-12">
+				<div class="col-xl-11 col-lg-10 col-md-12 col-sm-12">
 					<h2 class="mb-2 fw-normal">Screening Payments</h2>
 					<div class="alert alert-warning d-flex align-items-center" role="alert">
 						<mat-icon class="d-none d-md-block alert-icon me-2">warning</mat-icon>
@@ -36,12 +36,12 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 						</button>
 					</mat-form-field>
 				</div>
-				<div class="col-xl-3 col-lg-4 col-md-9 col-sm-9">
+				<div class="col-xl-3 col-lg-4 col-md-10 col-sm-9">
 					<button mat-flat-button color="primary" class="xlarge w-100 mb-2">
 						<mat-icon>download</mat-icon>Download Monthly Report
 					</button>
 				</div>
-				<div class="col-xl-1 col-lg-2 col-md-3 col-sm-3" style="text-align: right;">
+				<div class="col-xl-1 col-lg-2 col-md-2 col-sm-3" style="text-align: center;">
 					<app-dropdown-overlay
 						[showDropdownOverlay]="showDropdownOverlay"
 						(showDropdownOverlayChange)="onShowDropdownOverlayChange($event)"
@@ -87,24 +87,38 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Status</mat-header-cell>
 							<mat-cell *matCellDef="let payment">
 								<span class="mobile-label">Status:</span>
-								<span *ngIf="payment.status != 'NotPaid'" class="fw-bold" style="color: green;"> Paid </span>
-								<span *ngIf="payment.status == 'NotPaid'" class="fw-bold" style="color: red;"> Not Paid </span>
+								<span *ngIf="payment.status != 'NotPaid'" class="fw-semi-bold" style="color: var(--color-green);">
+									Paid
+								</span>
+								<span *ngIf="payment.status == 'NotPaid'" class="fw-semi-bold" style="color: var(--color-red);">
+									Not Paid
+								</span>
 							</mat-cell>
 						</ng-container>
 
 						<ng-container matColumnDef="actions">
 							<mat-header-cell *matHeaderCellDef></mat-header-cell>
 							<mat-cell *matCellDef="let payment">
-								<span *ngIf="payment.status != 'NotPaid'" class="w-100 m-md-2 m-sm-0">
-									<button mat-flat-button color="primary" class="medium">
-										<mat-icon class="d-none d-lg-block">download</mat-icon>Download Receipt
-									</button>
-								</span>
-								<span *ngIf="payment.status == 'NotPaid'" class="w-100 m-md-2 m-sm-0">
-									<button mat-flat-button class="payNow medium">
-										<mat-icon class="d-none d-lg-block">attach_money</mat-icon> Pay Now
-									</button>
-								</span>
+								<button
+									mat-mini-fab
+									matTooltip="Download receipt"
+									class="m-2"
+									color="primary"
+									*ngIf="payment.status != 'NotPaid'"
+									aria-label="Download receipt"
+								>
+									<mat-icon>download</mat-icon>
+								</button>
+								<button
+									mat-mini-fab
+									matTooltip="Pay now"
+									class="m-2"
+									style="background-color: var(--color-green);color: var(--color-white);"
+									*ngIf="payment.status == 'NotPaid'"
+									aria-label="Pay now"
+								>
+									<mat-icon>attach_money</mat-icon>
+								</button>
 							</mat-cell>
 						</ng-container>
 

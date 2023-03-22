@@ -64,6 +64,37 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 							</li>
 							<li class="nav-item w-100">
 								<a
+									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.SCREENING_STATUSES)]"
+									routerLinkActive="active"
+									class="nav-link align-middle text-white w-100"
+								>
+									<mat-icon>people</mat-icon>
+									<span class="menu-item ms-2 d-none d-sm-inline text-white">Screening Statuses</span>
+								</a>
+							</li>
+							<li class="nav-item w-100">
+								<a
+									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.EXPIRING_SCREENING)]"
+									routerLinkActive="active"
+									class="nav-link align-middle text-white w-100"
+								>
+									<mat-icon>alarm</mat-icon>
+									<span class="menu-item ms-2 d-none d-sm-inline text-white">Expiring Screening</span>
+								</a>
+							</li>
+							<li class="nav-item w-100">
+								<a
+									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.PAYMENTS)]"
+									routerLinkActive="active"
+									class="nav-link align-middle text-white w-100"
+								>
+									<mat-icon>payment</mat-icon>
+									<span class="menu-item ms-2 d-none d-sm-inline text-white">Screening Payments</span>
+								</a>
+							</li>
+							<hr class="d-none d-sm-inline w-100 text-white" />
+							<li class="nav-item w-100">
+								<a
 									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.IDENTITY_VERIFICATION)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
@@ -90,16 +121,6 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 								>
 									<mat-icon>person</mat-icon>
 									<span class="menu-item ms-2 d-none d-sm-inline text-white">User Management</span>
-								</a>
-							</li>
-							<li class="nav-item w-100">
-								<a
-									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.PAYMENTS)]"
-									routerLinkActive="active"
-									class="nav-link align-middle text-white w-100"
-								>
-									<mat-icon>payment</mat-icon>
-									<span class="menu-item ms-2 d-none d-sm-inline text-white">Screening Payments</span>
 								</a>
 							</li>
 							<li class="nav-item w-100">
