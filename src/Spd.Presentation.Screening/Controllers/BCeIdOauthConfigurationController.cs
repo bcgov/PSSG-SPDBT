@@ -1,13 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Spd.Utilities.LogonUser.Configurations;
-using Spd.Utilities.Shared.Exceptions;
 
 namespace Spd.Presentation.Screening.Controllers
 {
-    [ApiController]
-    [ApiExceptionFilter]
-    public class BCeIDConfigurationController : ControllerBase
+    public class BCeIDConfigurationController : SpdControllerBase
     {
         private readonly ILogger<BCeIDConfigurationController> logger;
         private readonly IOptions<BCeIDAuthenticationConfiguration> configuration;

@@ -1,15 +1,11 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Membership.OrgRegistration;
-using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
 
 namespace Spd.Presentation.Screening.Controllers
 {
-    [ApiController]
-    [ApiExceptionFilter]
-    public class OrgRegistrationController : ControllerBase
+    public class OrgRegistrationController : SpdControllerBase
     {
         private readonly ILogger<OrgRegistrationController> _logger;
         private readonly IMediator _mediator;
