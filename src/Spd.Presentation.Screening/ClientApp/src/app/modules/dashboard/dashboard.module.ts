@@ -10,6 +10,10 @@ import { SettingsComponent } from './components/settings.component';
 import { UsersComponent } from './components/users.component';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
+import { NewScreeningComponent } from './components/new-screening.component';
+import { IdentifyVerificationComponent } from './components/identify-verification.component';
+import { ScreeningStatusesComponent } from './components/screening-statuses.component';
+import { ExpiringScreeningsComponent } from './components/expiring-screenings.component';
 
 @NgModule({
 	declarations: [
@@ -22,6 +26,10 @@ import { DashboardComponent } from './dashboard.component';
 		MaintainUserModalComponent,
 		PaymentFilterComponent,
 		SettingsComponent,
+  NewScreeningComponent,
+  IdentifyVerificationComponent,
+  ScreeningStatusesComponent,
+  ExpiringScreeningsComponent,
 	],
 	imports: [SharedModule, DashboardRoutingModule],
 })
