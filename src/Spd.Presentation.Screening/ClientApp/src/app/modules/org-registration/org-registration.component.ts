@@ -4,9 +4,10 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
 import { distinctUntilChanged } from 'rxjs';
-import { OrgRegistrationCreateRequest, RegistrationTypeCode } from 'src/app/api/models';
+import { CheckDuplicateResponse, OrgRegistrationCreateRequest, RegistrationTypeCode } from 'src/app/api/models';
 import { OrgRegistrationService } from 'src/app/api/services';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { OrgRegistrationRoutes } from './org-registration-routing.module';
 import { StepFourComponent } from './steps/step-four.component';
 import { StepOneComponent } from './steps/step-one.component';
@@ -191,28 +192,35 @@ export class OrgRegistrationComponent implements OnInit {
 		const body: OrgRegistrationCreateRequest = dataToSave;
 		console.debug('[onSaveStepperStep] body', body);
 
-		// const data: DialogOptions = {
-		// 	icon: 'error_outline',
-		// 	title: 'Potential Duplicate Detected',
-		// 	message: 'A potential duplicate has been found. Are you sure this is a new organization registration request?',
-		// 	actionText: 'Yes, create registration',
-		// 	cancelText: 'Cancel',
-		// };
-
-		// this.dialog
-		// 	.open(DialogComponent, { data })
-		// 	.afterClosed()
-		// 	.subscribe((response: boolean) => {
-		// 		if (response) {
+		// Check for potential duplicate
 		this.orgRegistrationService
-			.apiOrgRegistrationsPost({ body })
+			.apiOrgRegistrationsDetectDuplicatePost({ body })
 			.pipe()
-			.subscribe((_res: any) => {
-				sessionStorage.removeItem(this.STATE_KEY);
-				this.stepFourComponent.childStepNext();
+			.subscribe((dupres: CheckDuplicateResponse) => {
+				if (dupres.hasPotentialDuplicate) {
+					const data: DialogOptions = {
+						icon: 'error_outline',
+						title: 'Potential Duplicate Detected',
+						message:
+							'A potential duplicate has been found. Are you sure this is a new organization registration request?',
+						actionText: 'Yes, create registration',
+						cancelText: 'Cancel',
+					};
+
+					this.dialog
+						.open(DialogComponent, { data })
+						.afterClosed()
+						.subscribe((response: boolean) => {
+							// Save potential duplicate
+							if (response) {
+								this.saveRegistration(body);
+							}
+						});
+				} else {
+					// Save registration
+					this.saveRegistration(body);
+				}
 			});
-		// 	}
-		// });
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
@@ -256,6 +264,16 @@ export class OrgRegistrationComponent implements OnInit {
 		}
 
 		this.onScrollIntoView();
+	}
+
+	private saveRegistration(body: OrgRegistrationCreateRequest) {
+		this.orgRegistrationService
+			.apiOrgRegistrationsPost({ body })
+			.pipe()
+			.subscribe((_res: any) => {
+				sessionStorage.removeItem(this.STATE_KEY);
+				this.stepFourComponent.childStepNext();
+			});
 	}
 
 	private breakpointChanged() {

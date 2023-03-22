@@ -6,22 +6,25 @@ import { MatTableDataSource } from '@angular/material/table';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 
 @Component({
-	selector: 'app-payments',
+	selector: 'app-identify-verification',
 	template: `
 		<app-dashboard-header title="Organization Name" subtitle="Security Screening Portal"></app-dashboard-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-xl-11 col-lg-10 col-md-12 col-sm-12">
-					<h2 class="mb-2 fw-normal">Screening Payments</h2>
+					<h2 class="mb-2 fw-normal">
+						Identity Verification
+						<div class="mt-2 fs-5 fw-light">Confirm the applicant's identity</div>
+					</h2>
 					<div class="alert alert-warning d-flex align-items-center" role="alert">
 						<mat-icon class="d-none d-md-block alert-icon me-2">warning</mat-icon>
-						<div>5 outstanding screenings which require payment</div>
+						<div>8 applicants require confirmation</div>
 					</div>
 				</div>
 			</div>
 
 			<div class="row">
-				<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
+				<div class="col-xl-11 col-lg-10 col-md-10 col-sm-9">
 					<mat-form-field>
 						<input matInput type="search" placeholder="Search" />
 						<button
@@ -36,22 +39,17 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 						</button>
 					</mat-form-field>
 				</div>
-				<div class="col-xl-3 col-lg-4 col-md-10 col-sm-9">
-					<button mat-flat-button color="primary" class="xlarge w-100 mb-2">
-						<mat-icon>download</mat-icon>Download Monthly Report
-					</button>
-				</div>
 				<div class="col-xl-1 col-lg-2 col-md-2 col-sm-3" style="text-align: center;">
 					<app-dropdown-overlay
 						[showDropdownOverlay]="showDropdownOverlay"
 						(showDropdownOverlayChange)="onShowDropdownOverlayChange($event)"
 					>
-						<app-payment-filter
+						<app-verify-filter
 							[formGroup]="formFilter"
 							(filterChange)="onFilterChange($event)"
 							(filterClear)="onFilterClear()"
 							(filterClose)="onFilterClose()"
-						></app-payment-filter>
+						></app-verify-filter>
 					</app-dropdown-overlay>
 				</div>
 			</div>
@@ -61,66 +59,80 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 					<mat-table matSort [dataSource]="dataSource" matSortActive="status" matSortDirection="asc" class="isMobile">
 						<ng-container matColumnDef="applicantName">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Applicant Name</mat-header-cell>
-							<mat-cell *matCellDef="let payment">
+							<mat-cell *matCellDef="let verify">
 								<span class="mobile-label">Applicant Name:</span>
-								{{ payment.applicantName }}
+								{{ verify.applicantName }}
+							</mat-cell>
+						</ng-container>
+
+						<ng-container matColumnDef="dateOfBirth">
+							<mat-header-cell *matHeaderCellDef mat-sort-header>Date of Birth</mat-header-cell>
+							<mat-cell *matCellDef="let verify">
+								<span class="mobile-label">Date of Birth:</span>
+								{{ verify.dateTimeSubmitted | date : constants.date.dateFormat }}
+							</mat-cell>
+						</ng-container>
+
+						<ng-container matColumnDef="jobTitle">
+							<mat-header-cell *matHeaderCellDef mat-sort-header>Job Title</mat-header-cell>
+							<mat-cell *matCellDef="let verify">
+								<span class="mobile-label">Job Title:</span>
+								{{ verify.jobTitle }}
+							</mat-cell>
+						</ng-container>
+
+						<ng-container matColumnDef="email">
+							<mat-header-cell *matHeaderCellDef mat-sort-header>Email</mat-header-cell>
+							<mat-cell *matCellDef="let verify">
+								<span class="mobile-label">Email:</span>
+								{{ verify.applicantName }}
 							</mat-cell>
 						</ng-container>
 
 						<ng-container matColumnDef="dateTimeSubmitted">
-							<mat-header-cell *matHeaderCellDef mat-sort-header>Date/Time Submitted</mat-header-cell>
-							<mat-cell *matCellDef="let payment">
-								<span class="mobile-label">Date/Time Submitted:</span>
-								{{ payment.dateTimeSubmitted | date : constants.date.dateTimeFormat }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="dateTimePaid">
-							<mat-header-cell *matHeaderCellDef mat-sort-header>Date/Time Paid</mat-header-cell>
-							<mat-cell *matCellDef="let payment">
-								<span class="mobile-label">Date/Time Paid:</span>
-								{{ payment.dateTimePaid | date : constants.date.dateTimeFormat }}
+							<mat-header-cell *matHeaderCellDef mat-sort-header>Submitted</mat-header-cell>
+							<mat-cell *matCellDef="let verify">
+								<span class="mobile-label">Submitted:</span>
+								{{ verify.dateTimeSubmitted | date : constants.date.dateFormat }}
 							</mat-cell>
 						</ng-container>
 
 						<ng-container matColumnDef="status">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Status</mat-header-cell>
-							<mat-cell *matCellDef="let payment">
+							<mat-cell *matCellDef="let verify">
 								<span class="mobile-label">Status:</span>
-								<span *ngIf="payment.status != 'NotPaid'" class="fw-semi-bold" style="color: var(--color-green);">
-									Paid
+								<button *ngIf="verify.status == 'Outstanding'" mat-flat-button class="confirm my-2 me-4">
+									Confirm
+								</button>
+								<button *ngIf="verify.status == 'Outstanding'" mat-stroked-button color="primary">Reject</button>
+								<!-- <span *ngIf="verify.status == 'Outstanding'">
+									<span *ngIf="verify.status == 'Outstanding'" class="m-md-2 m-sm-0">
+										<button mat-flat-button class="confirm medium">Confirm</button>
+									</span>
+									<span *ngIf="verify.status == 'Outstanding'" class="m-md-2 m-sm-0">
+										<button mat-stroked-button color="primary" class="medium">Reject</button>
+									</span>
+								</span> -->
+								<span *ngIf="verify.status == 'Rejected'" class="fw-semi-bold" style="color: var(--color-red);">
+									Rejected
 								</span>
-								<span *ngIf="payment.status == 'NotPaid'" class="fw-semi-bold" style="color: var(--color-red);">
-									Not Paid
+								<span *ngIf="verify.status == 'Confirmed'" class="fw-semi-bold" style="color: var(--color-green);">
+									Confirmed
 								</span>
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="actions">
+						<!-- <ng-container matColumnDef="actions">
 							<mat-header-cell *matHeaderCellDef></mat-header-cell>
-							<mat-cell *matCellDef="let payment">
-								<button
-									mat-mini-fab
-									matTooltip="Download receipt"
-									class="m-2"
-									color="primary"
-									*ngIf="payment.status != 'NotPaid'"
-									aria-label="Download receipt"
-								>
-									<mat-icon>download</mat-icon>
-								</button>
-								<button
-									mat-mini-fab
-									matTooltip="Pay now"
-									class="m-2"
-									style="background-color: var(--color-green);color: var(--color-white);"
-									*ngIf="payment.status == 'NotPaid'"
-									aria-label="Pay now"
-								>
-									<mat-icon>attach_money</mat-icon>
-								</button>
+							<mat-cell *matCellDef="let verify">
+								<span *ngIf="verify.status == 'Outstanding'" class="w-100 m-md-2 m-sm-0">
+									<button mat-flat-button class="confirm medium">Confirm</button>
+								</span>
+								<span *ngIf="verify.status == 'Outstanding'" class="w-100 m-md-2 m-sm-0">
+									<button mat-stroked-button color="primary" class="medium">Reject</button>
+								</span>
 							</mat-cell>
-						</ng-container>
+						</ng-container> -->
 
 						<mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
 						<mat-row *matRowDef="let row; columns: columns"></mat-row>
@@ -139,14 +151,14 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 	`,
 	styles: [
 		`
-			.payNow {
+			.confirm {
 				background-color: var(--color-green) !important;
 				color: var(--color-white) !important;
 			}
 		`,
 	],
 })
-export class PaymentsComponent {
+export class IdentifyVerificationComponent {
 	constants = SPD_CONSTANTS;
 	dataSource!: MatTableDataSource<any>;
 	columns!: string[];
@@ -167,80 +179,104 @@ export class PaymentsComponent {
 	constructor(private formBuilder: FormBuilder) {}
 
 	ngOnInit() {
-		this.columns = ['applicantName', 'dateTimeSubmitted', 'dateTimePaid', 'status', 'actions'];
+		this.columns = ['applicantName', 'dateOfBirth', 'jobTitle', 'email', 'dateTimeSubmitted', 'status'];
 		this.dataSource = new MatTableDataSource<any>([]);
 		this.dataSource.data = [
 			{
 				dateTimeSubmitted: '2023-02-04T00:10:05.865Z',
 				applicantName: 'Joe Smith',
-				status: 'NotPaid',
-				dateTimePaid: '2023-02-04T00:10:05.865Z',
+				status: 'Confirmed',
+				email: 'joe@smith.com',
+				jobTitle: 'contractor',
+				dateOfBirth: '2023-02-04T00:10:05.865Z',
 			},
 			{
 				dateTimeSubmitted: '2023-02-04T00:10:05.865Z',
 				applicantName: 'Anne Parker',
-				status: 'Paid',
-				dateTimePaid: '2023-02-04T00:10:05.865Z',
+				status: 'Outstanding',
+				email: '',
+				jobTitle: '',
+				dateOfBirth: '2023-02-04T00:10:05.865Z',
 			},
 			{
 				dateTimeSubmitted: '2023-03-24T00:15:05.865Z',
 				applicantName: 'Peter Parker',
-				status: 'Paid',
-				dateTimePaid: '2023-02-02T00:10:05.865Z',
+				status: 'Rejected',
+				email: '',
+				jobTitle: '',
+				dateOfBirth: '2023-02-02T00:10:05.865Z',
 			},
 			{
 				dateTimeSubmitted: '2023-01-14T00:13:05.865Z',
 				applicantName: 'Mark Smith',
-				status: 'NotPaid',
-				dateTimePaid: '2023-02-04T00:10:05.865Z',
+				status: 'Confirmed',
+				email: '',
+				jobTitle: '',
+				dateOfBirth: '2023-02-04T00:10:05.865Z',
 			},
 			{
 				dateTimeSubmitted: '2023-02-04T00:10:05.865Z',
 				applicantName: 'Tim Parker',
-				status: 'Paid',
-				dateTimePaid: '2023-02-04T00:10:05.865Z',
+				status: 'Outstanding',
+				email: '',
+				jobTitle: '',
+				dateOfBirth: '2023-02-04T00:10:05.865Z',
 			},
 			{
 				dateTimeSubmitted: '2023-03-24T00:15:05.865Z',
 				applicantName: 'Alex Parker',
-				status: 'Paid',
-				dateTimePaid: '2023-02-02T00:10:05.865Z',
+				status: 'Outstanding',
+				email: '',
+				jobTitle: '',
+				dateOfBirth: '2023-02-02T00:10:05.865Z',
 			},
 			{
 				dateTimeSubmitted: '2023-01-14T00:13:05.865Z',
 				applicantName: 'Jim Smith',
-				status: 'NotPaid',
-				dateTimePaid: '2023-02-04T00:10:05.865Z',
+				status: 'Confirmed',
+				email: '',
+				jobTitle: '',
+				dateOfBirth: '2023-02-04T00:10:05.865Z',
 			},
 			{
 				dateTimeSubmitted: '2023-02-04T00:10:05.865Z',
 				applicantName: 'Ben Parker',
-				status: 'Paid',
-				dateTimePaid: '2023-02-04T00:10:05.865Z',
+				status: 'Rejected',
+				email: '',
+				jobTitle: '',
+				dateOfBirth: '2023-02-04T00:10:05.865Z',
 			},
 			{
 				dateTimeSubmitted: '2023-03-24T00:15:05.865Z',
 				applicantName: 'Cam Parker',
-				status: 'Paid',
-				dateTimePaid: '2023-02-02T00:10:05.865Z',
+				status: 'Outstanding',
+				email: '',
+				jobTitle: '',
+				dateOfBirth: '2023-02-02T00:10:05.865Z',
 			},
 			{
 				dateTimeSubmitted: '2022-01-14T00:13:05.865Z',
 				applicantName: 'Paul Smith',
-				status: 'NotPaid',
-				dateTimePaid: '2023-02-04T00:10:05.865Z',
+				status: 'Confirmed',
+				email: '',
+				jobTitle: '',
+				dateOfBirth: '2023-02-04T00:10:05.865Z',
 			},
 			{
 				dateTimeSubmitted: '2022-02-04T00:10:05.865Z',
 				applicantName: 'Cindy Parker',
-				status: 'Paid',
-				dateTimePaid: '2023-02-04T00:10:05.865Z',
+				status: 'Rejected',
+				email: '',
+				jobTitle: '',
+				dateOfBirth: '2023-02-04T00:10:05.865Z',
 			},
 			{
 				dateTimeSubmitted: '2022-03-24T00:15:05.865Z',
 				applicantName: 'Dave Parker',
-				status: 'Paid',
-				dateTimePaid: '2023-02-02T00:10:05.865Z',
+				status: 'Rejected',
+				email: '',
+				jobTitle: '',
+				dateOfBirth: '2023-02-02T00:10:05.865Z',
 			},
 		];
 	}

@@ -67,9 +67,9 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 									<div class="col-xl-1 col-lg-1 col-md-6 col-sm-12">
 										<button
 											mat-mini-fab
-											color="warn"
+											style="background-color: var(--color-red);color: var(--color-white);"
 											class="mb-3"
-											matTooltip="Delete current row"
+											matTooltip="Delete previous name"
 											(click)="deleteRow(i)"
 											[disabled]="oneRowExists"
 											aria-label="Delete row"

@@ -31,7 +31,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 	template: `
 		<div class="container-fluid p-0">
 			<div class="row flex-nowrap m-0">
-				<div class="col-auto col-md-3 col-xl-2 px-0" style="background-color: var(--color-sidebar);">
+				<div class="col-auto px-0" style="background-color: var(--color-sidebar);">
 					<div
 						class="d-flex flex-column align-items-sm-start pt-2 text-white "
 						style="min-height: calc(100vh - 138px)!important;"
@@ -54,6 +54,57 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 							</li>
 							<li class="nav-item w-100">
 								<a
+									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.NEW_SCREENING)]"
+									routerLinkActive="active"
+									class="nav-link align-middle text-white w-100"
+								>
+									<mat-icon>post_add</mat-icon>
+									<span class="menu-item ms-2 d-none d-sm-inline text-white">New Screening</span>
+								</a>
+							</li>
+							<li class="nav-item w-100">
+								<a
+									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.SCREENING_STATUSES)]"
+									routerLinkActive="active"
+									class="nav-link align-middle text-white w-100"
+								>
+									<mat-icon>people</mat-icon>
+									<span class="menu-item ms-2 d-none d-sm-inline text-white">Screening Statuses</span>
+								</a>
+							</li>
+							<li class="nav-item w-100">
+								<a
+									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.EXPIRING_SCREENING)]"
+									routerLinkActive="active"
+									class="nav-link align-middle text-white w-100"
+								>
+									<mat-icon>alarm</mat-icon>
+									<span class="menu-item ms-2 d-none d-sm-inline text-white">Expiring Screening</span>
+								</a>
+							</li>
+							<li class="nav-item w-100">
+								<a
+									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.PAYMENTS)]"
+									routerLinkActive="active"
+									class="nav-link align-middle text-white w-100"
+								>
+									<mat-icon>payment</mat-icon>
+									<span class="menu-item ms-2 d-none d-sm-inline text-white">Screening Payments</span>
+								</a>
+							</li>
+							<hr class="d-none d-sm-inline w-100 text-white" />
+							<li class="nav-item w-100">
+								<a
+									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.IDENTITY_VERIFICATION)]"
+									routerLinkActive="active"
+									class="nav-link align-middle text-white w-100"
+								>
+									<mat-icon>post_add</mat-icon>
+									<span class="menu-item ms-2 d-none d-sm-inline text-white">Identity Verification</span>
+								</a>
+							</li>
+							<li class="nav-item w-100">
+								<a
 									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.GENERIC_UPLOADS)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
@@ -69,17 +120,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 									class="nav-link align-middle text-white w-100"
 								>
 									<mat-icon>person</mat-icon>
-									<span class="menu-item ms-2 d-none d-sm-inline text-white">Manage Users</span>
-								</a>
-							</li>
-							<li class="nav-item w-100">
-								<a
-									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.PAYMENTS)]"
-									routerLinkActive="active"
-									class="nav-link align-middle text-white w-100"
-								>
-									<mat-icon>payment</mat-icon>
-									<span class="menu-item ms-2 d-none d-sm-inline text-white">Payments</span>
+									<span class="menu-item ms-2 d-none d-sm-inline text-white">User Management</span>
 								</a>
 							</li>
 							<li class="nav-item w-100">

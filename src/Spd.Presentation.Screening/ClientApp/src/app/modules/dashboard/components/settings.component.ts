@@ -10,7 +10,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 	selector: 'app-settings',
 	template: `
 		<app-dashboard-header title="Organization Name" subtitle="Security Screening Portal"></app-dashboard-header>
-		<section class="step-section my-4 p-md-4 p-sm-0">
+		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row mb-4">
 				<div class="col-xl-6 col-lg-4 col-md-12 col-sm-12">
 					<h2 class="fw-normal">Organization Information</h2>
