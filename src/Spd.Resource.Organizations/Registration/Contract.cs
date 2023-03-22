@@ -37,6 +37,7 @@ namespace Spd.Resource.Organizations.Registration
         public IdentityProviderTypeCode? IdentityProviderTypeCode { get; set; }
         public Guid? BizIdentityGuid { get; set; }
         public Guid? BCeIDUserGuid { get; set; }
+        public BooleanTypeCode HasPotentialDuplicate { get; set; } = BooleanTypeCode.No;
     }
 
     public record SearchRegistrationQry
