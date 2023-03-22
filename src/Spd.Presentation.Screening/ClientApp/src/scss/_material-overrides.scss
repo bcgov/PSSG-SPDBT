@@ -76,6 +76,11 @@ button.mdc-button {
   color: var(--color-primary);
 }
 
+button.mat-green-button {
+  background-color: var(--color-green) !important; 
+  color: var(--color-white) !important;
+}
+
 .mat-mdc-radio-button.mat-primary .mdc-radio--disabled + label {
   color: var(--color-primary);
 }
