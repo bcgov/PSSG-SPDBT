@@ -1,7 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Membership.OrgUser;
-using Spd.Utilities.Shared.Exceptions;
+using Spd.Utilities.Shared;
 using System.ComponentModel.DataAnnotations;
 
 namespace Spd.Presentation.Screening.Controllers

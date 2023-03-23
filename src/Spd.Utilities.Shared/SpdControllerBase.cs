@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Spd.Utilities.Shared.Exceptions;
 
-namespace Spd.Presentation.Screening.Controllers
+namespace Spd.Utilities.Shared
 {
     [ApiController]
     [TypeFilter(typeof(ApiExceptionFilter))]
