@@ -8,14 +8,22 @@
     public abstract record StorageCommand { }
     public record UploadItemCommand : StorageCommand
     {
-        public StorageItem Item { get; set; } = null!;
+        public SpdFile SpdFile { get; set; } = null!;
     }
 
-    public abstract record StorageItem
+    public record SpdFile
     {
-        public string? Id { get; set; }
-        public string Bucket { get; set; } = string.Empty;
+        public byte[] Content { get; set; } = Array.Empty<byte>();
+        public string EntityName { get; set; }
+        public Guid EntityId { get; set; }
+        public string FileName { get; set; }
+        public string ContentType { get; set; }
+        public string Tag1 { get; set; }
+        public string Tag2 { get; set; }
+        public string Tag3 { get; set; }
+        public string? Folder { get; set; }
     }
+
 
     public record DeleteItemCommand : StorageCommand
     {
@@ -23,23 +31,16 @@
         public string Id { get; set; } = null!;
     }
 
-    public record File : StorageItem
-    {
-        public byte[] Content { get; set; } = Array.Empty<byte>();
 
-        public string Name { get; set; } = null!;
-        public string ContentType { get; set; } = null!;
-        public string? Folder { get; set; }
-    }
 
-    public abstract record StorageQuery 
+    public abstract record StorageQuery
     {
         public string Bucket { get; set; } = string.Empty;
     }
 
     public record StorageQueryResults
     {
-        public IEnumerable<StorageItem> Items { get; set; } = Array.Empty<StorageItem>();
+        public IEnumerable<SpdFile> SpdFiles { get; set; } = Array.Empty<SpdFile>();
     }
 
     public record FileQuery : StorageQuery

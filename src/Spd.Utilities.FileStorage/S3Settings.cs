@@ -1,6 +1,6 @@
 ﻿namespace Spd.Utilities.FileStorage
 {
-    public record S3Settings
+    internal record S3Settings
     {
         public string AccessKey { get; set; } = null!;
         public string Secret { get; set; } = null!;
