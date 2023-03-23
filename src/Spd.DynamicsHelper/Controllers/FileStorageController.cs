@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Spd.DynamicsHelper.Models;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared;
-using System.Reflection;
 
 namespace Spd.DynamicsHelper.Controllers
 {
@@ -24,19 +23,34 @@ namespace Spd.DynamicsHelper.Controllers
             return Ok(true);
         }
 
+        /// <summary>
+        /// Upload file
+        /// The maximum file size would be 30M.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        //[HttpPost]
+        //[Route("api/files")]
+        //public async Task<UploadFileResponse> UploadFile([FromForm] UploadFileRequest request)
+        //{
+        //    using var ms = new MemoryStream();
+        //    await request.File.CopyToAsync(ms);
+
+        //    SpdFile spdFile = _mapper.Map<SpdFile>(request);
+        //    spdFile.Content = ms.ToArray();
+
+        //    string id = await _storageService.HandleCommand(new UploadItemCommand { SpdFile = spdFile }, CancellationToken.None);
+
+        //    return new UploadFileResponse { Id = id };
+        //}
+
         [HttpPost]
         [Route("api/files")]
-        public async Task<ActionResult<string>> UploadFile([FromForm]UploadFileRequest request)
+        public async Task<UploadFileResponse> UploadFile([FromBody] UploadFileRequestJson request)
         {
-            using var ms = new MemoryStream();
-            await request.File.CopyToAsync(ms);
-
             SpdFile spdFile = _mapper.Map<SpdFile>(request);
-            spdFile.Content= ms.ToArray();
-
             string id = await _storageService.HandleCommand(new UploadItemCommand { SpdFile = spdFile }, CancellationToken.None);
-
-            return Ok(id);
+            return new UploadFileResponse { Id = id };
         }
     }
 }

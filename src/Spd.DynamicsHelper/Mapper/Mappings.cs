@@ -10,6 +10,9 @@ namespace Spd.DynamicsHelper.Mapper
         {
             CreateMap<UploadFileRequest, SpdFile>()
                 .ForMember(d => d.Content, opt => opt.Ignore());
+
+            CreateMap<UploadFileRequestJson, SpdFile>()
+                .ForMember(d => d.Content, opt => opt.MapFrom(s => Convert.FromBase64String(s.Body)));
         }
     }
 }

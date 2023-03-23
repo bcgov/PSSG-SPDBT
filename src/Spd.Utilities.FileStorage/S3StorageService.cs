@@ -44,7 +44,7 @@ namespace Spd.Utilities.FileStorage
             request.Metadata.Add("tag2", spdFile.Tag2);
             request.Metadata.Add("tag3", spdFile.Tag3);
 
-            var response = await _amazonS3Client.PutObjectAsync(request);
+            var response = await _amazonS3Client.PutObjectAsync(request, cancellationToken);
             response.EnsureSuccess();
 
             return request.Key;
@@ -56,7 +56,8 @@ namespace Spd.Utilities.FileStorage
     {
         public static void EnsureSuccess(this AmazonWebServiceResponse response)
         {
-            if (response.HttpStatusCode != System.Net.HttpStatusCode.OK) throw new InvalidOperationException($"Operation failed with status {response.HttpStatusCode}");
+            if (response.HttpStatusCode != System.Net.HttpStatusCode.OK) 
+                throw new InvalidOperationException($"Operation failed with status {response.HttpStatusCode}");
         }
     }
 }
