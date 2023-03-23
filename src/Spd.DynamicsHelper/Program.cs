@@ -1,6 +1,4 @@
-using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
-using Spd.DynamicsHelper;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Hosting;
 using System.Text.Json.Serialization;
@@ -32,11 +30,6 @@ builder.Services.AddControllers()
     .AddJsonOptions(x =>
     {
         x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    })
-    .AddFluentValidation(fv =>
-    {
-        fv.RegisterValidatorsFromAssemblyContaining<FluentValidationEntry>();
-        fv.ImplicitlyValidateChildProperties = true;
     });
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddFileStorageProxy(builder.Configuration);
