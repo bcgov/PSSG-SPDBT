@@ -1,4 +1,4 @@
-name: Organization Registration FrontEnd CI/CD
+name: Screening Protal CI/CD
 
 on:
   push:
@@ -6,7 +6,9 @@ on:
       - main
     paths:
       - src/**
-      - .github/workflows/org-registration-fe-main-cd.yml
+      - !src/Spd.DynamicsHelper/**
+      - !src/Spd.Utilities.FileStorage/**
+      - .github/workflows/screening-portal-main-cd.yml
 
 jobs:
   build-deploy-organization-registration:

@@ -1,0 +1,21 @@
+name: Dynamics Helper CI/CD
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - src/Spd.DynamicsHelper/**
+      - src/Spd.Utilities.FileStorage/**
+      - src/Spd.Utilities.Shared/**
+      - src/Spd.Utilities.Hosting/**
+      - .github/workflows/dynamics-helper-main-cd.yml
+
+jobs:
+  build-deploy-organization-registration:
+    uses: ./.github/workflows/cd-workflow.yml
+    with:
+      DOCKER_CONTEXT: src
+      DOCKER_FILE: src/dynamics-helper.dockerfile
+      DOCKER_IMAGE_NAME: dynamics-helper
+    secrets: inherit

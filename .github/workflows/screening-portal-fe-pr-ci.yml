@@ -1,4 +1,4 @@
-name: Pull Request - Organization Registration FrontEnd Build
+name: Pull Request - Screening Portal Build
 
 on:
   pull_request:
@@ -6,7 +6,9 @@ on:
       - main
     paths:
       - src/**
-      - .github/workflows/org-registration-fe-pr-ci.yml
+      - !src/Spd.DynamicsHelper/**
+      - !src/Spd.Utilities.FileStorage/**
+      - .github/workflows/screening-portal-pr-ci.yml
 
 jobs:
   build-deploy-organization-registration:
