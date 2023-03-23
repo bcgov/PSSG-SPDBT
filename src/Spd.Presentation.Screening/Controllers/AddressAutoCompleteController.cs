@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Admin;
+using Spd.Utilities.Shared;
 using System.ComponentModel.DataAnnotations;
 
 namespace Spd.Presentation.Screening.Controllers

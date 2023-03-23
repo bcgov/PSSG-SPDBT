@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Utilities.LogonUser;
+using Spd.Utilities.Shared;
 using System.Security.Principal;
 
 namespace Spd.Presentation.Screening.Controllers

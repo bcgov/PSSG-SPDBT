@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Spd.Utilities.LogonUser.Configurations;
+using Spd.Utilities.Shared;
 
 namespace Spd.Presentation.Screening.Controllers
 {

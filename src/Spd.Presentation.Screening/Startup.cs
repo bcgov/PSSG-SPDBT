@@ -1,15 +1,12 @@
 ﻿using FluentValidation.AspNetCore;
 using Spd.Manager.Membership;
-using Spd.Utilities.Hosting;
-using Spd.Utilities.Dynamics;
-using System.Reflection;
-using System.Text.Json.Serialization;
 using Spd.Utilities.Address;
-using Spd.Presentation.Screening.Controllers;
+using Spd.Utilities.Dynamics;
+using Spd.Utilities.Hosting;
 using Spd.Utilities.LogonUser;
+using System.Reflection;
 using System.Security.Principal;
-using Spd.Utilities.LogonUser.Configurations;
-using Spd.Utilities.Shared.Exceptions;
+using System.Text.Json.Serialization;
 
 namespace Spd.Presentation.Screening
 {
@@ -44,14 +41,13 @@ namespace Spd.Presentation.Screening
             services.ConfigureSwagger(assemblyName);
             services
                 .AddEndpointsApiExplorer()
-                .AddControllers(options =>
-                {
-                })
+                .AddControllers()
                 .AddJsonOptions(x =>
                 {
                     x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 })
-                .AddFluentValidation(fv => {
+                .AddFluentValidation(fv =>
+                {
                     fv.RegisterValidatorsFromAssemblyContaining<FluentValidationEntry>();
                     fv.ImplicitlyValidateChildProperties = true;
                 });
@@ -72,7 +68,7 @@ namespace Spd.Presentation.Screening
             //config component services
             services.ConfigureComponentServices(configuration, hostEnvironment, assemblies);
 
-            
+
         }
 
         public void SetupHttpRequestPipeline(WebApplication app, IWebHostEnvironment env)
