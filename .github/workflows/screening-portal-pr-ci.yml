@@ -11,7 +11,7 @@ on:
       - .github/workflows/screening-portal-pr-ci.yml
 
 jobs:
-  build-deploy-organization-registration:
+  build-screening-portal:
     uses: ./.github/workflows/ci-workflow.yml
     with:
       DOCKER_CONTEXT: src

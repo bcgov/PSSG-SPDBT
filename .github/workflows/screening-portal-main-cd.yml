@@ -11,7 +11,7 @@ on:
       - .github/workflows/screening-portal-main-cd.yml
 
 jobs:
-  build-deploy-organization-registration:
+  build-deploy-screening-portal:
     uses: ./.github/workflows/cd-workflow.yml
     with:
       DOCKER_CONTEXT: src
