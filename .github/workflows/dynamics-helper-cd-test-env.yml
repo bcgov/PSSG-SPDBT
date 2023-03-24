@@ -1,0 +1,19 @@
+name: Dynamics Helper Scheduled Deployment For Test
+
+#every Tuesday and Thursday, 5:30 utc, build and deploy to test.
+on:
+  push:
+    branches:
+      - test-release
+  schedule:
+    - cron: '30 5 * * 2,4'
+
+jobs:
+  build-deploy-dynamics-helper-to-test:
+    uses: ./.github/workflows/cd-workflow.yml
+    with:
+      DOCKER_CONTEXT: src
+      DOCKER_FILE: src/dynamics-helper.dockerfile
+      DOCKER_IMAGE_NAME: dynamics-helper
+      DOCKER_IMAGE_TAG: test
+    secrets: inherit
