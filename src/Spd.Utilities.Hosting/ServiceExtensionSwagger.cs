@@ -12,7 +12,7 @@ namespace Spd.Utilities.Hosting
             services.AddSwaggerGen(c =>
             {
                 c.EnableAnnotations();
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Spd.ScreeningPortal.API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = $"{assemblyName}.API", Version = "v1" });
 
                 // Include 'SecurityScheme' to use JWT Authentication
                 var jwtSecurityScheme = new OpenApiSecurityScheme
