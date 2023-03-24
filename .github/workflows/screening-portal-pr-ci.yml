@@ -1,0 +1,18 @@
+name: Pull Request - Screening Portal Build
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      - '!src/Spd.DynamicsHelper/**'
+      - '!src/Spd.Utilities.FileStorage/**'
+      - .github/workflows/screening-portal-pr-ci.yml
+
+jobs:
+  build-screening-portal:
+    uses: ./.github/workflows/ci-workflow.yml
+    with:
+      DOCKER_CONTEXT: src
+      DOCKER_FILE: src/screening-portal.dockerfile

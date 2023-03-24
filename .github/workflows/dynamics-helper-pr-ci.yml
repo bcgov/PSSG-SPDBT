@@ -1,0 +1,19 @@
+name: Pull Request - Dynamics Helper Build
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - src/Spd.DynamicsHelper/**
+      - src/Spd.Utilities.FileStorage/**
+      - src/Spd.Utilities.Shared/**
+      - src/Spd.Utilities.Hosting/**
+      - .github/workflows/dynamics-helper-pr-ci.yml
+
+jobs:
+  build-deploy-organization-registration:
+    uses: ./.github/workflows/ci-workflow.yml
+    with:
+      DOCKER_CONTEXT: src
+      DOCKER_FILE: src/dynamics-helper.dockerfile
