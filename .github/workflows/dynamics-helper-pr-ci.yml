@@ -12,7 +12,7 @@ on:
       - .github/workflows/dynamics-helper-pr-ci.yml
 
 jobs:
-  build-deploy-organization-registration:
+  build-deploy-dynamics-helper:
     uses: ./.github/workflows/ci-workflow.yml
     with:
       DOCKER_CONTEXT: src
