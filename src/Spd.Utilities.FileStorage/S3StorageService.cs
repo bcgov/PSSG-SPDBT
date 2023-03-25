@@ -23,6 +23,16 @@ namespace Spd.Utilities.FileStorage
             };
         }
 
+        public async Task<StorageQueryResults> HandleQuery(StorageQuery query, CancellationToken cancellationToken)
+        {
+            var file = query switch
+            {
+                GetItemByKeyQuery q => await DownloadStorageItem(q.Key, cancellationToken),
+                _ => throw new NotSupportedException($"{query.GetType().Name} is not supported")
+            };
+            return new StorageQueryResults { SpdFile= file };   
+        }
+
         private async Task<string> UploadStorageItem(UploadItemCommand cmd, CancellationToken cancellationToken)
         {
             SpdFile spdFile = cmd.SpdFile;
@@ -49,6 +59,37 @@ namespace Spd.Utilities.FileStorage
 
             return request.Key;
 
+        }
+
+        private async Task<SpdFile> DownloadStorageItem(string key, CancellationToken ct)
+        {
+            var request = new GetObjectRequest
+            {
+                BucketName = _config.Value.Bucket,
+                Key = key,
+            };
+
+            var response = await _amazonS3Client.GetObjectAsync(request, ct);
+            response.EnsureSuccess();
+
+            using var contentStream = response.ResponseStream;
+
+            using var ms = new MemoryStream();
+
+            await contentStream.CopyToAsync(ms);
+            contentStream.Flush();
+            return new SpdFile
+            {
+                Key = key,
+                EntityId = Guid.Parse(response.Metadata["entityid"]),
+                EntityName = response.Metadata["entityname"],
+                FileName = response.Metadata["filename"],
+                ContentType = response.Metadata["contenttype"],
+                Tag1 = response.Metadata["tag1"],
+                Tag2 = response.Metadata["tag2"],
+                Tag3 = response.Metadata["tag3"],
+                Content = ms.ToArray()
+            };
         }
     }
 

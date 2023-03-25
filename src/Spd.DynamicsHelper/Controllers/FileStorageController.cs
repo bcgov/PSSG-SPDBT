@@ -6,10 +6,13 @@ using Spd.Utilities.Shared;
 
 namespace Spd.DynamicsHelper.Controllers
 {
+    /// <summary>
+    /// For upload and download file
+    /// </summary>
     public class FileStorageController : SpdControllerBase
     {
-        private IS3StorageService _storageService;
-        private IMapper _mapper;
+        private readonly IS3StorageService _storageService;
+        private readonly IMapper _mapper;
         public FileStorageController(IS3StorageService storageService, IMapper mapper) : base()
         {
             _storageService = storageService;
@@ -51,6 +54,14 @@ namespace Spd.DynamicsHelper.Controllers
             SpdFile spdFile = _mapper.Map<SpdFile>(request);
             string id = await _storageService.HandleCommand(new UploadItemCommand { SpdFile = spdFile }, CancellationToken.None);
             return new UploadFileResponse { Id = id };
+        }
+
+        [HttpGet]
+        [Route("api/files/{fileId}")]
+        public async Task<DownloadFileResponse> DownloadFile(string fileId)
+        {
+            StorageQueryResults result = await _storageService.HandleQuery(new GetItemByKeyQuery { Key = fileId }, CancellationToken.None);
+            return _mapper.Map<DownloadFileResponse>(result.SpdFile);
         }
     }
 }

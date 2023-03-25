@@ -1,8 +1,11 @@
-﻿namespace Spd.Utilities.FileStorage
+﻿using Amazon.S3.Model;
+
+namespace Spd.Utilities.FileStorage
 {
     public interface IS3StorageService
     {
         Task<string> HandleCommand(StorageCommand cmd, CancellationToken cancellationToken);
+        Task<StorageQueryResults> HandleQuery(StorageQuery query, CancellationToken cancellationToken);
     }
 
     public abstract record StorageCommand { }
@@ -10,9 +13,14 @@
     {
         public SpdFile SpdFile { get; set; } = null!;
     }
+    public record DeleteItemCommand : StorageCommand
+    {
+        public string Id { get; set; } = null!;
+    }
 
     public record SpdFile
     {
+        public string Key { get; set; } = null!;
         public byte[] Content { get; set; } = Array.Empty<byte>();
         public string EntityName { get; set; }
         public Guid EntityId { get; set; }
@@ -25,27 +33,17 @@
     }
 
 
-    public record DeleteItemCommand : StorageCommand
-    {
-        public string Bucket { get; set; } = string.Empty;
-        public string Id { get; set; } = null!;
-    }
-
-
-
     public abstract record StorageQuery
     {
-        public string Bucket { get; set; } = string.Empty;
     }
 
     public record StorageQueryResults
     {
-        public IEnumerable<SpdFile> SpdFiles { get; set; } = Array.Empty<SpdFile>();
+        public SpdFile SpdFile { get; set; }
     }
 
-    public record FileQuery : StorageQuery
+    public record GetItemByKeyQuery : StorageQuery
     {
-        public string? ByKey { get; set; }
-        public string? ByFolder { get; set; }
+        public string Key { get; set; }
     }
 }
