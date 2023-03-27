@@ -52,7 +52,7 @@ namespace Spd.Resource.Organizations.Registration
             var orgReg = _dynaContext.spd_orgregistrations.Expand(o => o.spd_OrganizationTypeId).Where(o =>
                 o.spd_organizationname.Equals(searchQry.OrganizationName, StringComparison.InvariantCultureIgnoreCase) &&
                 o.spd_postalcode == searchQry.MailingPostalCode &&
-                o.spd_email == searchQry.GenericEmail &&
+                (searchQry.GenericEmail != null && o.spd_email == searchQry.GenericEmail) && // only check when front end has a value
                 o.spd_OrganizationTypeId.spd_organizationtypeid == typeGuid &&
                 o.statecode != DynamicsConstants.StateCode_Inactive
             ).FirstOrDefault();
