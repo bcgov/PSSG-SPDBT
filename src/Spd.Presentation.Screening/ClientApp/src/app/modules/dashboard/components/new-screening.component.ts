@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { HotToastService } from '@ngneat/hot-toast';
 import { BooleanTypeCode } from 'src/app/api/models';
-import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 
@@ -27,6 +27,16 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 				</div>
 				<div class="row mt-4">
 					<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+						<div class="alert alert-danger d-flex align-items-center" role="alert" *ngIf="isDuplicateDetected">
+							<mat-icon class="d-none d-md-block alert-icon me-2">warning</mat-icon>
+							<div>
+								Duplicates are not allowed. Update the data associated with the following...
+								<ul>
+									<li>Name: {{ duplicateName }}</li>
+									<li>Email: {{ duplicateEmail }}</li>
+								</ul>
+							</div>
+						</div>
 						<ng-container formArrayName="tableRows" *ngFor="let group of getFormControls.controls; let i = index">
 							<mat-divider class="mb-3"></mat-divider>
 							<div class="row" [formGroupName]="i">
@@ -40,7 +50,7 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 										</mat-error>
 									</mat-form-field>
 								</div>
-								<div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 pe-md-0">
+								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0">
 									<mat-form-field>
 										<mat-label>Surname</mat-label>
 										<input matInput type="text" formControlName="lastName" [errorStateMatcher]="matcher" />
@@ -50,33 +60,13 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 										</mat-error>
 									</mat-form-field>
 								</div>
-								<div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 pe-md-0">
+								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0">
 									<mat-form-field>
 										<mat-label>Email Address</mat-label>
 										<input matInput formControlName="email" type="email" required [errorStateMatcher]="matcher" />
 										<mat-error *ngIf="group.get('email')?.hasError('email')"> Must be a valid email address </mat-error>
 										<mat-error *ngIf="group.get('email')?.hasError('required')">This is required</mat-error>
 										<mat-error *ngIf="group.get('email')?.hasError('maxlength')">
-											This must be at most 75 characters long
-										</mat-error>
-									</mat-form-field>
-								</div>
-								<div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 pe-md-0">
-									<mat-form-field>
-										<mat-label>Confirm Email Address</mat-label>
-										<input
-											matInput
-											formControlName="confirmEmail"
-											type="email"
-											required
-											[errorStateMatcher]="matcher"
-										/>
-										<mat-error *ngIf="group.get('confirmEmail')?.hasError('email')">
-											Must be a valid email address
-										</mat-error>
-										<mat-error *ngIf="group.get('confirmEmail')?.hasError('required')"> Required </mat-error>
-										<mat-error *ngIf="group.get('confirmEmail')?.hasError('nomatch')"> Emails must match </mat-error>
-										<mat-error *ngIf="group.get('confirmEmail')?.hasError('maxlength')">
 											This must be at most 75 characters long
 										</mat-error>
 									</mat-form-field>
@@ -102,6 +92,7 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 										<mat-hint style="white-space: nowrap;">Organization Paying?</mat-hint>
 									</div>
 									<mat-error
+										class="mat-option-error"
 										*ngIf="
 											(group.get('orgPaying')?.dirty || group.get('orgPaying')?.touched) &&
 											group.get('orgPaying')?.invalid &&
@@ -113,11 +104,11 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 								<div class="col-xl-1 col-lg-1 col-md-3 col-sm-12 mb-4 mb-md-0">
 									<button
 										mat-mini-fab
-										style="background-color: var(--color-red);color: var(--color-white);"
-										matTooltip="Delete screening"
+										class="delete-row-button"
+										matTooltip="Delete screening request"
 										(click)="deleteRow(i)"
 										[disabled]="oneRowExists"
-										aria-label="Delete screening"
+										aria-label="Delete screening request"
 									>
 										<mat-icon>delete</mat-icon>
 									</button>
@@ -125,10 +116,10 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 							</div>
 						</ng-container>
 					</div>
-					<div class="row" *ngIf="allowNewRow">
+					<div class="row">
 						<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
-							<button mat-stroked-button style="color: var(--color-green);" (click)="onAddRow()">
-								<mat-icon>add_circle</mat-icon>Add Another Screening
+							<button mat-stroked-button (click)="onAddRow()">
+								<mat-icon class="add-icon">add_circle</mat-icon>Add Another Screening
 							</button>
 						</div>
 					</div>
@@ -151,19 +142,34 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 				width: 30px;
 				height: 30px;
 			}
+
+			.delete-row-button:not([disabled]) {
+				background-color: var(--color-red);
+				color: var(--color-white);
+			}
+
+			.add-icon {
+				color: var(--color-green);
+			}
 		`,
 	],
 })
 export class NewScreeningComponent implements OnInit {
-	readonly MAX_ROW_COUNT = 4;
+	isDuplicateDetected = false;
+	duplicateName = '';
+	duplicateEmail = '';
+
 	form!: FormGroup;
 	matcher = new FormErrorStateMatcher();
 	booleanTypeCodes = BooleanTypeCode;
-	allowNewRow = true;
 
-	constructor(private formBuilder: FormBuilder, private dialog: MatDialog) {}
+	constructor(private formBuilder: FormBuilder, private hotToast: HotToastService, private dialog: MatDialog) {}
 
 	ngOnInit(): void {
+		this.createEmptyForm();
+	}
+
+	createEmptyForm(): void {
 		this.form = this.formBuilder.group({
 			tableRows: this.formBuilder.array([]),
 		});
@@ -171,25 +177,18 @@ export class NewScreeningComponent implements OnInit {
 	}
 
 	initiateForm(): FormGroup {
-		return this.formBuilder.group(
-			{
-				firstName: new FormControl('', [Validators.required, Validators.maxLength(40)]),
-				lastName: new FormControl('', [Validators.required, Validators.maxLength(40)]),
-				email: new FormControl('', [Validators.email, Validators.required, Validators.maxLength(75)]),
-				confirmEmail: new FormControl('', [Validators.email, Validators.required, Validators.maxLength(75)]),
-				jobTitle: new FormControl('', [Validators.required, Validators.maxLength(100)]),
-				orgPaying: new FormControl('', [Validators.required]),
-			},
-			{
-				validators: [FormGroupValidators.match('email', 'confirmEmail')],
-			}
-		);
+		return this.formBuilder.group({
+			firstName: new FormControl('', [Validators.required, Validators.maxLength(40)]),
+			lastName: new FormControl('', [Validators.required, Validators.maxLength(40)]),
+			email: new FormControl('', [Validators.email, Validators.required, Validators.maxLength(75)]),
+			jobTitle: new FormControl('', [Validators.required, Validators.maxLength(100)]),
+			orgPaying: new FormControl('', [Validators.required]),
+		});
 	}
 
 	onAddRow() {
 		const control = this.form.get('tableRows') as FormArray;
 		control.push(this.initiateForm());
-		this.setFlags();
 	}
 
 	deleteRow(index: number) {
@@ -209,8 +208,8 @@ export class NewScreeningComponent implements OnInit {
 		const data: DialogOptions = {
 			icon: 'error_outline',
 			title: 'Delete Row',
-			message: 'Are you sure you want to permanently delete this screening?',
-			actionText: 'Yes, delete this name',
+			message: 'Are you sure you want to permanently delete this screening request?',
+			actionText: 'Yes, delete this row',
 			cancelText: 'Cancel',
 		};
 
@@ -221,18 +220,42 @@ export class NewScreeningComponent implements OnInit {
 				if (response) {
 					const control = this.form.get('tableRows') as FormArray;
 					control.removeAt(index);
-					this.setFlags();
+					this.hotToast.success('Row was successfully deleted');
 				}
 			});
 	}
 
-	setFlags(): void {
-		const control = this.form.get('tableRows') as FormArray;
-		this.allowNewRow = control.length >= this.MAX_ROW_COUNT ? false : true;
-	}
-
 	onSendScreeningRequest(): void {
+		this.isDuplicateDetected = false;
 		this.form.markAllAsTouched();
+		if (this.form.valid) {
+			const control = (this.form.get('tableRows') as FormArray).value;
+			const numberOfRequests = control.length;
+
+			let seen = new Set();
+			let duplicateInfo: any;
+			const hasDuplicates = control.some(function (currentObject: any) {
+				duplicateInfo = currentObject;
+				return seen.size === seen.add(currentObject.email).size;
+			});
+
+			if (hasDuplicates) {
+				this.isDuplicateDetected = true;
+				this.duplicateName = `${duplicateInfo.firstName} ${duplicateInfo.lastName}`;
+				this.duplicateEmail = duplicateInfo.email;
+				return;
+			}
+
+			//TODO Call API to send screening requests
+			// after success clear data and display toast
+
+			// save screening requests
+			this.hotToast.success(
+				`${numberOfRequests} screening request${numberOfRequests > 1 ? 's were' : ' was'} successfully created`
+			);
+			this.form.reset();
+			this.createEmptyForm();
+		}
 	}
 
 	get getFormControls() {

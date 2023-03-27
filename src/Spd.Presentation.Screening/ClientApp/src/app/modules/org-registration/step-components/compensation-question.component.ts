@@ -20,6 +20,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 							<mat-radio-button [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
 						</mat-radio-group>
 						<mat-error
+							class="mat-option-error"
 							*ngIf="
 								(form.get('employeeMonetaryCompensationFlag')?.dirty ||
 									form.get('employeeMonetaryCompensationFlag')?.touched) &&

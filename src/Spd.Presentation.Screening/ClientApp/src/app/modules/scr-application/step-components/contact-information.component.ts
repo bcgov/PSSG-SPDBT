@@ -100,7 +100,7 @@ export class ContactInformationComponent implements ScreeningFormStepComponent {
 			contactGivenName: new FormControl('Pulled-From-Portal', [Validators.required, Validators.maxLength(40)]),
 			contactMiddleName1: new FormControl('', [Validators.maxLength(40)]),
 			contactMiddleName2: new FormControl('', [Validators.maxLength(40)]),
-			contactSurname: new FormControl('', [Validators.maxLength(40)]),
+			contactSurname: new FormControl('', [Validators.required, Validators.maxLength(40)]),
 			contactEmail: new FormControl('Pulled@From.Portal', [
 				Validators.email,
 				Validators.required,
@@ -111,7 +111,10 @@ export class ContactInformationComponent implements ScreeningFormStepComponent {
 		},
 		{
 			validators: [
-				FormGroupValidators.conditionalRequiredValidator('contactSurname', (form) => !form.get('oneLegalName')?.value),
+				FormGroupValidators.conditionalRequiredValidator(
+					'contactGivenName',
+					(form) => !form.get('oneLegalName')?.value
+				),
 			],
 		}
 	);

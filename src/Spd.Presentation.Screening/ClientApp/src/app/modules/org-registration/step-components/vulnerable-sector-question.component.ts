@@ -93,7 +93,9 @@ export class VulnerableSectorQuestionModel {
 					</div>
 				</div>
 			</div>
-			<mat-error style="text-align: center;" *ngIf="isDirtyAndInvalid">An option must be selected</mat-error>
+			<mat-error class="mat-option-error" style="text-align: center;" *ngIf="isDirtyAndInvalid"
+				>An option must be selected</mat-error
+			>
 		</div>
 	`,
 	styles: [
