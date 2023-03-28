@@ -1,4 +1,5 @@
 using AutoMapper;
+using Spd.Resource.Applicants;
 
 namespace Spd.Manager.Cases
 {
@@ -6,7 +7,9 @@ namespace Spd.Manager.Cases
     {
         public Mappings()
         {
-
+            CreateMap<ScreeningInviteCreateCommand, ScreeningInviteCreateCmd>();
+            CreateMap<ScreeningInviteCreateRequest, ScreeningInviteCreateReq>();
+            CreateMap<ScreeningInviteCreateResp, ScreeningInviteCreateResponse>();
         }
     }
 }

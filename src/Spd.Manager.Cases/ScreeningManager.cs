@@ -18,7 +18,11 @@ namespace Spd.Manager.Cases
 
         public async Task<IList<ScreeningInviteCreateResponse>> Handle(ScreeningInviteCreateCommand request, CancellationToken cancellationToken)
         {
-            return null;
+            //todo: duplication check?
+
+            var cmd = _mapper.Map<ScreeningInviteCreateCmd>(request);
+            var resp = await _screeningRepository.AddScreeningInvitesAsync(cmd, cancellationToken);
+            return _mapper.Map<IList<ScreeningInviteCreateResponse>>(resp);
         }
     }
 }

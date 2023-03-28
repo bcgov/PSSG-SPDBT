@@ -9,7 +9,7 @@ namespace Spd.Manager.Cases
 
     }
 
-    public record ScreeningInviteCreateCommand(Guid OrgGuid, IList<ScreeningInviteCreateRequest> ScreeningInviteCreateRequests) : IRequest<IList<ScreeningInviteCreateResponse>>;
+    public record ScreeningInviteCreateCommand(Guid OrgSpdId, IList<ScreeningInviteCreateRequest> ScreeningInviteCreateRequests) : IRequest<IList<ScreeningInviteCreateResponse>>;
 
     public record ScreeningInviteCreateRequest
     {

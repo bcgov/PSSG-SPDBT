@@ -15,5 +15,11 @@ namespace Spd.Resource.Applicants
             _mapper = mapper;
             _logger = logger;
         }
+
+        public async Task<IList<ScreeningInviteCreateResp>> AddScreeningInvitesAsync(ScreeningInviteCreateCmd createInviteCmd, CancellationToken cancellationToken)
+        {
+            //todo
+            return null;
+        }
     }
 }
