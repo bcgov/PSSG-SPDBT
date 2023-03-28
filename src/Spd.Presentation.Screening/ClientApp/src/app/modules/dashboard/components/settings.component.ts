@@ -13,7 +13,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row mb-4">
 				<div class="col-xl-6 col-lg-4 col-md-12 col-sm-12">
-					<h2 class="fw-normal">Organization Information</h2>
+					<h2 class="fw-normal">Organization Profile</h2>
 				</div>
 				<div class="col-xl-3 col-lg-4 col-md-12 col-sm-12">
 					<button mat-stroked-button color="primary" class="large mb-2" *ngIf="!viewOnly" (click)="onCancel()">
@@ -28,6 +28,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 				</div>
 			</div>
 			<form [formGroup]="form" novalidate>
+				<mat-divider class="my-3"></mat-divider>
 				<div class="row">
 					<div class="col-xl-4 col-lg-12">
 						<mat-form-field>

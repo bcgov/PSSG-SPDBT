@@ -2,12 +2,17 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { HotToastService } from '@ngneat/hot-toast';
 import { NgxMaskPipe } from 'ngx-mask';
-import { BooleanTypeCode, PayerPreferenceTypeCode } from 'src/app/api/models';
+import { BooleanTypeCode, EmployeeInteractionTypeCode, PayerPreferenceTypeCode } from 'src/app/api/models';
 import { OrgService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { Address } from 'src/app/shared/components/address-autocomplete.component';
 
+export const EmployeeInteractionTypes = [
+	{ desc: 'Children', code: EmployeeInteractionTypeCode.Children },
+	{ desc: 'Vulnerable Adults', code: EmployeeInteractionTypeCode.Adults },
+	{ desc: 'Children and Vulnerable Adults', code: EmployeeInteractionTypeCode.ChildrenAndAdults },
+];
 @Component({
 	selector: 'app-manual-submissions',
 	template: `
@@ -131,7 +136,11 @@ import { Address } from 'src/app/shared/components/address-autocomplete.componen
 					<div class="col-xl-3 col-lg-6 col-md-12">
 						<mat-form-field>
 							<mat-label>Vulnerable Sector Category</mat-label>
-							<input matInput formControlName="vulnerableSectorCategory" />
+							<mat-select formControlName="vulnerableSectorCategory">
+								<mat-option *ngFor="let interaction of employeeInteractionTypes" [value]="interaction.code">
+									{{ interaction.desc }}
+								</mat-option>
+							</mat-select>
 							<mat-error *ngIf="form.get('vulnerableSectorCategory')?.hasError('required')">This is required</mat-error>
 						</mat-form-field>
 					</div>
@@ -141,8 +150,8 @@ import { Address } from 'src/app/shared/components/address-autocomplete.componen
 				<div class="text-minor-heading fw-semibold mb-2">Has the applicant ever had a previous name?</div>
 				<div class="row">
 					<div class="col-xl-4 col-lg-12">
-						<mat-radio-group aria-label="Select an option" formControlName="previousNameFlag">
-							<mat-radio-button [value]="booleanTypeCodes.No">No</mat-radio-button>
+						<mat-radio-group aria-label="Select an option" formControlName="previousNameFlag" class="d-flex flex-row">
+							<mat-radio-button class="me-4" style="width: initial;" [value]="booleanTypeCodes.No">No</mat-radio-button>
 							<mat-radio-button [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
 						</mat-radio-group>
 						<mat-error
@@ -164,22 +173,28 @@ import { Address } from 'src/app/shared/components/address-autocomplete.componen
 							<div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-2" style="text-align: end;">
 								<span class="badge rounded-pill bg-success"> 1 </span>
 							</div>
-							<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
+							<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
 								<mat-form-field>
-									<mat-label>Alias Given Name 1 <span class="optional-label">(optional)</span></mat-label>
-									<input matInput type="text" formControlName="aliasFirstName1" />
+									<mat-label>Alias Given Name <span class="optional-label">(optional)</span></mat-label>
+									<input matInput type="text" formControlName="alias1FirstName" />
 								</mat-form-field>
 							</div>
-							<div class="col-xl-3 col-lg-3 col-md-12 col-sm-12">
+							<div class="col-xl-3 col-lg-3 col-md-5 col-sm-12">
 								<mat-form-field>
 									<mat-label>Alias Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
-									<input matInput type="text" formControlName="aliasMiddleName1" />
+									<input matInput type="text" formControlName="alias1MiddleName1" />
 								</mat-form-field>
 							</div>
-							<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
+							<div class="col-xl-2 col-lg-2 col-md-6 col-sm-12">
 								<mat-form-field>
-									<mat-label>Alias Surname 1</mat-label>
-									<input matInput type="text" formControlName="aliasLastName1" required />
+									<mat-label>Alias Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
+									<input matInput type="text" formControlName="alias1MiddleName2" />
+								</mat-form-field>
+							</div>
+							<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
+								<mat-form-field>
+									<mat-label>Alias Surname</mat-label>
+									<input matInput type="text" formControlName="alias1LastName" required />
 								</mat-form-field>
 							</div>
 						</div>
@@ -188,22 +203,28 @@ import { Address } from 'src/app/shared/components/address-autocomplete.componen
 							<div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-2" style="text-align: end;">
 								<span class="badge rounded-pill bg-success"> 2 </span>
 							</div>
-							<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
+							<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
 								<mat-form-field>
-									<mat-label>Alias Given Name 2 <span class="optional-label">(optional)</span></mat-label>
-									<input matInput type="text" formControlName="aliasFirstName2" />
+									<mat-label>Alias Given Name <span class="optional-label">(optional)</span></mat-label>
+									<input matInput type="text" formControlName="alias2FirstName" />
 								</mat-form-field>
 							</div>
-							<div class="col-xl-3 col-lg-3 col-md-12 col-sm-12">
+							<div class="col-xl-3 col-lg-3 col-md-5 col-sm-12">
+								<mat-form-field>
+									<mat-label>Alias Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
+									<input matInput type="text" formControlName="alias2MiddleName1" />
+								</mat-form-field>
+							</div>
+							<div class="col-xl-2 col-lg-2 col-md-6 col-sm-12">
 								<mat-form-field>
 									<mat-label>Alias Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
-									<input matInput type="text" formControlName="aliasMiddleName2" />
+									<input matInput type="text" formControlName="alias2MiddleName2" />
 								</mat-form-field>
 							</div>
-							<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
+							<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
 								<mat-form-field>
-									<mat-label>Alias Surname 2</mat-label>
-									<input matInput type="text" formControlName="aliasLastName2" required />
+									<mat-label>Alias Surname</mat-label>
+									<input matInput type="text" formControlName="alias2LastName" required />
 								</mat-form-field>
 							</div>
 						</div>
@@ -212,22 +233,28 @@ import { Address } from 'src/app/shared/components/address-autocomplete.componen
 							<div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-2" style="text-align: end;">
 								<span class="badge rounded-pill bg-success"> 3 </span>
 							</div>
-							<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
+							<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
 								<mat-form-field>
-									<mat-label>Alias Given Name 3 <span class="optional-label">(optional)</span></mat-label>
-									<input matInput type="text" formControlName="aliasFirstName3" />
+									<mat-label>Alias Given Name <span class="optional-label">(optional)</span></mat-label>
+									<input matInput type="text" formControlName="alias3FirstName" />
 								</mat-form-field>
 							</div>
-							<div class="col-xl-3 col-lg-3 col-md-12 col-sm-12">
+							<div class="col-xl-3 col-lg-3 col-md-5 col-sm-12">
 								<mat-form-field>
-									<mat-label>Alias Middle Name 3 <span class="optional-label">(optional)</span></mat-label>
-									<input matInput type="text" formControlName="aliasMiddleName3" />
+									<mat-label>Alias Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
+									<input matInput type="text" formControlName="alias3MiddleName1" />
 								</mat-form-field>
 							</div>
-							<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
+							<div class="col-xl-2 col-lg-2 col-md-6 col-sm-12">
 								<mat-form-field>
-									<mat-label>Alias Surname 3</mat-label>
-									<input matInput type="text" formControlName="aliasLastName3" required />
+									<mat-label>Alias Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
+									<input matInput type="text" formControlName="alias3MiddleName2" />
+								</mat-form-field>
+							</div>
+							<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
+								<mat-form-field>
+									<mat-label>Alias Surname</mat-label>
+									<input matInput type="text" formControlName="alias3LastName" required />
 								</mat-form-field>
 							</div>
 						</div>
@@ -414,6 +441,7 @@ import { Address } from 'src/app/shared/components/address-autocomplete.componen
 	],
 })
 export class ManualSubmissionsComponent {
+	employeeInteractionTypes = EmployeeInteractionTypes;
 	multiple: boolean = false;
 	expandable: boolean = true;
 	disableClick: boolean = false;
@@ -438,15 +466,18 @@ export class ManualSubmissionsComponent {
 			jobTitle: new FormControl('', [Validators.required, Validators.maxLength(100)]),
 			vulnerableSectorCategory: new FormControl('', [Validators.required]),
 			previousNameFlag: new FormControl('', [Validators.required]),
-			aliasFirstName1: new FormControl(''),
-			aliasMiddleName1: new FormControl(''),
-			aliasLastName1: new FormControl(''),
-			aliasFirstName2: new FormControl(''),
-			aliasMiddleName2: new FormControl(''),
-			aliasLastName2: new FormControl(''),
-			aliasFirstName3: new FormControl(''),
-			aliasMiddleName3: new FormControl(''),
-			aliasLastName3: new FormControl(''),
+			alias1FirstName: new FormControl(''),
+			alias1MiddleName1: new FormControl(''),
+			alias1MiddleName2: new FormControl(''),
+			alias1LastName: new FormControl(''),
+			alias2FirstName: new FormControl(''),
+			alias2MiddleName1: new FormControl(''),
+			alias2MiddleName2: new FormControl(''),
+			alias2LastName: new FormControl(''),
+			alias3FirstName: new FormControl(''),
+			alias3MiddleName1: new FormControl(''),
+			alias3MiddleName2: new FormControl(''),
+			alias3LastName: new FormControl(''),
 			addressSelected: new FormControl(false, [Validators.requiredTrue]),
 			mailingAddressLine1: new FormControl('', [Validators.required, Validators.maxLength(100)]),
 			mailingAddressLine2: new FormControl('', [Validators.maxLength(100)]),

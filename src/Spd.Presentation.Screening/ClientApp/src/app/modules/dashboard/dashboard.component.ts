@@ -139,7 +139,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 									class="nav-link align-middle text-white w-100"
 								>
 									<mat-icon>settings</mat-icon>
-									<span class="menu-item ms-2 d-none d-sm-inline text-white">Organization Information</span>
+									<span class="menu-item ms-2 d-none d-sm-inline text-white">Organization Profile</span>
 								</a>
 							</li>
 						</ul>

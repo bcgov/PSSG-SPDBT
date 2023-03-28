@@ -40,7 +40,7 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 								<div class="row" [formGroupName]="i">
 									<div class="col-xl-4 col-lg-3 col-md-6 col-sm-12">
 										<mat-form-field>
-											<mat-label>First Name <span class="optional-label">(optional)</span></mat-label>
+											<mat-label>Given Name <span class="optional-label">(optional)</span></mat-label>
 											<input matInput type="text" formControlName="firstName" [errorStateMatcher]="matcher" />
 										</mat-form-field>
 									</div>
