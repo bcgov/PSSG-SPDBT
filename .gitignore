@@ -23,5 +23,5 @@ bld/
 # .NET Core
 src/Spd.Presentation.Screening/appsettings.Development.json
 src/Spd.Presentation.Screening/Properties/launchSettings.json
-src/Spd.DynamicsHelper/appsettings.Development.json
-src/Spd.DynamicsHelper/Properties/launchSettings.json
+src/Spd.Presentation.Dynamics/appsettings.Development.json
+src/Spd.Presentation.Dynamics/Properties/launchSettings.json

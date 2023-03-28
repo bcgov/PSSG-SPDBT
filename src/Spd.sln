@@ -47,9 +47,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Utilities.LogonUser", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Utilities.Shared", "Spd.Utilities.Shared\Spd.Utilities.Shared.csproj", "{817A7ED1-4E92-4B0B-B567-EAA6A37DDAED}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.DynamicsHelper", "Spd.DynamicsHelper\Spd.DynamicsHelper.csproj", "{7622BB0F-9D2B-4B6D-8D9D-12186797CA3E}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DynamicsHelper", "DynamicsHelper", "{05FD23CB-E67C-493F-AF21-EFF820DAB4D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Presentation.Dynamics", "Spd.Presentation.Dynamics\Spd.Presentation.Dynamics.csproj", "{923E8E8C-E4D6-41E7-A408-174E51BF16A3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -125,10 +123,10 @@ Global
 		{817A7ED1-4E92-4B0B-B567-EAA6A37DDAED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{817A7ED1-4E92-4B0B-B567-EAA6A37DDAED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{817A7ED1-4E92-4B0B-B567-EAA6A37DDAED}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7622BB0F-9D2B-4B6D-8D9D-12186797CA3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7622BB0F-9D2B-4B6D-8D9D-12186797CA3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7622BB0F-9D2B-4B6D-8D9D-12186797CA3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7622BB0F-9D2B-4B6D-8D9D-12186797CA3E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{923E8E8C-E4D6-41E7-A408-174E51BF16A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{923E8E8C-E4D6-41E7-A408-174E51BF16A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{923E8E8C-E4D6-41E7-A408-174E51BF16A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{923E8E8C-E4D6-41E7-A408-174E51BF16A3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -151,7 +149,7 @@ Global
 		{A3DD4324-7558-4FC6-939C-5B7B51A8F698} = {AFA7034A-A8B1-489C-9A24-030B05C5412B}
 		{D7BCD13A-CCC7-4BC8-BF21-98C6FDCA8233} = {744553C0-C41C-4315-9592-92A97938234E}
 		{817A7ED1-4E92-4B0B-B567-EAA6A37DDAED} = {744553C0-C41C-4315-9592-92A97938234E}
-		{7622BB0F-9D2B-4B6D-8D9D-12186797CA3E} = {05FD23CB-E67C-493F-AF21-EFF820DAB4D0}
+		{923E8E8C-E4D6-41E7-A408-174E51BF16A3} = {B5A15349-F339-4FA1-A05D-7EE9866B8B46}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {07609A1C-A62A-4B0C-85C1-40600CB3DC45}

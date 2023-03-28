@@ -1,10 +1,10 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Spd.DynamicsHelper.Models;
+using Spd.Presentation.Dynamics.Models;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared;
 
-namespace Spd.DynamicsHelper.Controllers
+namespace Spd.Presentation.Dynamics.Controllers
 {
     /// <summary>
     /// For upload and download file

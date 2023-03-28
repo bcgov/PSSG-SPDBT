@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
-using Spd.DynamicsHelper.Models;
+using Spd.Presentation.Dynamics.Models;
 using Spd.Utilities.FileStorage;
+using System.Text;
 
-namespace Spd.DynamicsHelper.Mapper
+namespace Spd.Presentation.Dynamics.Mapper
 {
     public class Mappings : Profile
     {
@@ -12,10 +13,10 @@ namespace Spd.DynamicsHelper.Mapper
                 .ForMember(d => d.Content, opt => opt.Ignore());
 
             CreateMap<UploadFileRequestJson, SpdFile>()
-                .ForMember(d => d.Content, opt => opt.MapFrom(s => Convert.FromBase64String(s.Body)));
+                .ForMember(d => d.Content, opt => opt.MapFrom(s => Encoding.ASCII.GetBytes(s.Body)));
 
             CreateMap<SpdFile, DownloadFileResponse>()
-                .ForMember(d => d.Body, opt => opt.MapFrom(s => Convert.ToBase64String(s.Content)))
+                .ForMember(d => d.Body, opt => opt.MapFrom(s => Encoding.ASCII.GetString(s.Content)))
                 .ForMember(d => d.Key, opt => opt.MapFrom(s => s.Key));
         }
     }

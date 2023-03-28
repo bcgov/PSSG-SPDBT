@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Spd.DynamicsHelper.Models
+namespace Spd.Presentation.Dynamics.Models
 {
     public class UploadFileRequest
     {
