@@ -63,7 +63,7 @@ button.mdc-button {
   background-color: rgba(245, 245, 245);
 }
 
-.mdc-radio {
+.mdc-radio, .mdc-checkbox {
   background-color: rgba(245, 245, 245);
 }
 
@@ -94,11 +94,13 @@ button.mat-green-button {
 }
 
 .mat-mdc-radio-button .mdc-form-field {
-  padding: 0.5rem !important;
+  // padding: 0.5rem !important;
+  padding: 0.5rem 0.5rem 0.5rem 0 !important;
 }
 
 .mat-mdc-checkbox .mdc-form-field {
-  padding: 0.5rem !important;
+  // padding: 0.5rem !important;
+  padding: 0.5rem 0.5rem 0.5rem 0 !important;
 }
 
 .mdc-form-field>label {

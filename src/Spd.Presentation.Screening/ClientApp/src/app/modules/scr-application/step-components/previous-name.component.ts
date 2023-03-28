@@ -68,8 +68,7 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 									<div class="col-xl-1 col-lg-1 col-md-6 col-sm-12">
 										<button
 											mat-mini-fab
-											style="background-color: var(--color-red);color: var(--color-white);"
-											class="mb-3"
+											class="delete-row-button mb-3"
 											matTooltip="Delete previous name"
 											(click)="deleteRow(i)"
 											[disabled]="oneRowExists"
@@ -83,8 +82,8 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 						</div>
 						<div class="row">
 							<div class="offset-lg-1 col-lg-4 col-md-6 col-sm-12">
-								<button mat-stroked-button style="color: var(--color-green);" (click)="onAddRow()">
-									<mat-icon>add_circle</mat-icon>Add Another Name
+								<button mat-stroked-button (click)="onAddRow()">
+									<mat-icon class="add-icon">add_circle</mat-icon>Add Another Name
 								</button>
 							</div>
 						</div>
@@ -103,6 +102,15 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 				top: 10px;
 				width: 30px;
 				height: 30px;
+			}
+
+			.delete-row-button:not([disabled]) {
+				background-color: var(--color-red);
+				color: var(--color-white);
+			}
+
+			.add-icon {
+				color: var(--color-green);
 			}
 		`,
 	],
