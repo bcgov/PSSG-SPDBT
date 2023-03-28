@@ -62,13 +62,10 @@ namespace Spd.Presentation.Screening
             services.AddDistributedMemoryCache();
             services
               .AddDynamicsProxy(configuration)
-            //.AddStorageProxy(builder.Configuration)
               .AddAddressAutoComplete(configuration);
 
             //config component services
             services.ConfigureComponentServices(configuration, hostEnvironment, assemblies);
-
-
         }
 
         public void SetupHttpRequestPipeline(WebApplication app, IWebHostEnvironment env)
