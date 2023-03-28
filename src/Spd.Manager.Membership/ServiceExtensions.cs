@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Spd.Manager.Membership.Org;
 using Spd.Manager.Membership.OrgRegistration;
 using Spd.Manager.Membership.OrgUser;
 using Spd.Utilities.Hosting;
@@ -11,6 +12,7 @@ namespace Spd.Manager.Membership
         {
             configurationServices.Services.AddTransient<IOrgRegistrationManager, OrgRegistrationManager>();
             configurationServices.Services.AddTransient<IOrgUserManager, OrgUserManager>();
+            configurationServices.Services.AddTransient<IOrgManager, OrgManager>();
         }
     }
 }
