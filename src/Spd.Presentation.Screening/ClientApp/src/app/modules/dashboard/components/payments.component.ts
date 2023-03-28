@@ -100,24 +100,21 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 							<mat-header-cell *matHeaderCellDef></mat-header-cell>
 							<mat-cell *matCellDef="let payment">
 								<button
-									mat-mini-fab
-									matTooltip="Download receipt"
-									class="m-2"
+									mat-raised-button
+									class="table-button m-2"
 									color="primary"
 									*ngIf="payment.status != 'NotPaid'"
 									aria-label="Download receipt"
 								>
-									<mat-icon>download</mat-icon>
+									Download Receipt
 								</button>
 								<button
-									mat-mini-fab
-									matTooltip="Pay now"
-									class="m-2"
-									style="background-color: var(--color-green);color: var(--color-white);"
+									mat-raised-button
+									class="table-button pay-button m-2"
 									*ngIf="payment.status == 'NotPaid'"
 									aria-label="Pay now"
 								>
-									<mat-icon>attach_money</mat-icon>
+									Pay Now
 								</button>
 							</mat-cell>
 						</ng-container>
@@ -139,7 +136,11 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 	`,
 	styles: [
 		`
-			.payNow {
+			.table-button {
+				max-width: 170px;
+			}
+
+			.pay-button {
 				background-color: var(--color-green) !important;
 				color: var(--color-white) !important;
 			}

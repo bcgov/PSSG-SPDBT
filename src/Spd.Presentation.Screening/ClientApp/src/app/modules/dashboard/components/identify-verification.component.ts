@@ -44,12 +44,12 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 						[showDropdownOverlay]="showDropdownOverlay"
 						(showDropdownOverlayChange)="onShowDropdownOverlayChange($event)"
 					>
-						<app-verify-filter
+						<app-payment-filter
 							[formGroup]="formFilter"
 							(filterChange)="onFilterChange($event)"
 							(filterClear)="onFilterClear()"
 							(filterClose)="onFilterClose()"
-						></app-verify-filter>
+						></app-payment-filter>
 					</app-dropdown-overlay>
 				</div>
 			</div>

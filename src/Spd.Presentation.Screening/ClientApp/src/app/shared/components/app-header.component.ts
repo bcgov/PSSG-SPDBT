@@ -15,6 +15,10 @@ import { Router } from '@angular/router';
 			</span>
 			<mat-divider vertical class="header-divider mx-3"></mat-divider>
 			<div class="header-text pl-3" (click)="goToLanding()">{{ title }}</div>
+			<span style="flex: 1 1 auto;"></span>
+			<div *ngIf="isLoggedInUser">
+				<mat-icon class="logout-button me-2" (click)="onLogout()">logout</mat-icon>Authorized User
+			</div>
 		</mat-toolbar>
 	`,
 	styles: [
@@ -45,10 +49,16 @@ import { Router } from '@angular/router';
 				height: 70%;
 				border-right-color: gray;
 			}
+
+			.logout-button {
+				vertical-align: middle;
+				cursor: pointer;
+			}
 		`,
 	],
 })
 export class HeaderComponent {
+	isLoggedInUser = true;
 	@Input() title = '';
 
 	constructor(protected router: Router) {}
@@ -56,4 +66,6 @@ export class HeaderComponent {
 	goToLanding(): void {
 		this.router.navigate(['/']);
 	}
+
+	onLogout(): void {}
 }

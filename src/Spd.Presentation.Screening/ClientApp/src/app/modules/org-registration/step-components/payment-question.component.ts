@@ -21,6 +21,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 							<mat-radio-button [value]="payerPreferenceTypeCodes.Applicant"> The applicant </mat-radio-button>
 						</mat-radio-group>
 						<mat-error
+							class="mat-option-error"
 							*ngIf="
 								(form.get('payerPreference')?.dirty || form.get('payerPreference')?.touched) &&
 								form.get('payerPreference')?.invalid &&

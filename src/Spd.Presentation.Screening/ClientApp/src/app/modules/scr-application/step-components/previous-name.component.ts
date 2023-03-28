@@ -21,6 +21,7 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 								<mat-radio-button class="wide-radio" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
 							</mat-radio-group>
 							<mat-error
+								class="mat-option-error"
 								*ngIf="
 									(form.get('previousNameFlag')?.dirty || form.get('previousNameFlag')?.touched) &&
 									form.get('previousNameFlag')?.invalid &&

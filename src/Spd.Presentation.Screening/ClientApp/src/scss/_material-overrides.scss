@@ -201,3 +201,76 @@ mat-label {
   font-weight: 500;
   border-radius: 0 !important;
 }
+
+
+// MAT CHIPS
+.mat-chip-green {
+  background-color: rgba(215, 228, 213, 1) !important;
+  .mdc-evolution-chip__text-label {
+    color: #23471F !important;
+  }
+}
+
+.mat-chip-yellow {
+  background-color: rgba(251, 227, 163, 1) !important;
+  .mdc-evolution-chip__text-label {
+    color: #56451B !important;
+  }
+}
+
+.mat-chip-blue {
+  background-color: rgba(211, 220, 229, 1) !important;
+  .mdc-evolution-chip__text-label {
+    color: #013365 !important;
+  }
+}
+
+.mat-chip-grey {
+  background-color: rgba(215, 215, 215, 1) !important;
+  .mdc-evolution-chip__text-label {
+    color: #333333 !important;
+  }
+}
+
+.mat-chip-red {
+  background-color: rgba(242, 222, 223, 1) !important;
+  .mdc-evolution-chip__text-label {
+    color: #910012 !important;
+  }
+}
+
+.mat-mdc-card-header-text {
+  width: 100%;
+  text-align: center;
+}
+
+// MAT CARD
+.mat-card-green {
+  background-color: rgba(215, 228, 213, 1) !important;
+    color: #23471F !important;
+}
+
+.mat-card-yellow {
+  background-color: rgba(251, 227, 163, 1) !important;
+    color: #56451B !important;
+}
+
+.mat-card-blue {
+  background-color: rgba(211, 220, 229, 1) !important;
+    color: #013365 !important;
+}
+
+.mat-card-grey {
+  background-color: rgba(215, 215, 215, 1) !important;
+    color: #333333 !important;
+}
+
+.mat-card-red {
+  background-color: rgba(242, 222, 223, 1) !important;
+    color: #910012 !important;
+}
+
+// MAT ERROR
+.mat-option-error {
+  font-size: .8em;
+}
