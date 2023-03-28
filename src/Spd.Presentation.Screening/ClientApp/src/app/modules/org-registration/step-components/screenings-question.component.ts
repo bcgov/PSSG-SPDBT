@@ -22,6 +22,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 								More than 500
 							</mat-radio-button>
 							<mat-error
+								class="mat-option-error"
 								*ngIf="
 									(form.get('screeningsCount')?.dirty || form.get('screeningsCount')?.touched) &&
 									form.get('screeningsCount')?.invalid &&

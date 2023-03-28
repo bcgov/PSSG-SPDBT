@@ -152,6 +152,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 							<mat-radio-button [value]="payerPreferenceTypeCode.Applicant">Applicant Pays</mat-radio-button>
 						</mat-radio-group>
 						<mat-error
+							class="mat-option-error"
 							*ngIf="
 								(form.get('payerPreference')?.dirty || form.get('payerPreference')?.touched) &&
 								form.get('payerPreference')?.invalid &&
@@ -173,6 +174,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 							<mat-radio-button [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
 						</mat-radio-group>
 						<mat-error
+							class="mat-option-error"
 							*ngIf="
 								(form.get('contractorsNeedVulnerableSectorScreening')?.dirty ||
 									form.get('contractorsNeedVulnerableSectorScreening')?.touched) &&
@@ -195,6 +197,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 							<mat-radio-button [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
 						</mat-radio-group>
 						<mat-error
+							class="mat-option-error"
 							*ngIf="
 								(form.get('licenseesNeedVulnerableSectorScreening')?.dirty ||
 									form.get('licenseesNeedVulnerableSectorScreening')?.touched) &&
