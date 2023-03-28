@@ -7,7 +7,7 @@ namespace Spd.Manager.Cases
     {
         public void ConfigureServices(ConfigurationServices configurationServices)
         {
-            configurationServices.Services.AddTransient<IScreeningManager, ScreeningManager>();
+            configurationServices.Services.AddTransient<IApplicationManager, ApplicationManager>();
         }
     }
 }

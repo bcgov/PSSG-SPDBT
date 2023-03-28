@@ -3,15 +3,15 @@ using MediatR;
 
 namespace Spd.Manager.Cases
 {
-    public interface IScreeningManager
+    public interface IApplicationManager
     {
-        public Task<IList<ScreeningInviteCreateResponse>> Handle(ScreeningInviteCreateCommand request, CancellationToken cancellationToken);
+        public Task<IEnumerable<ApplicationInviteCreateResponse>> Handle(ApplicationInviteCreateCommand request, CancellationToken cancellationToken);
 
     }
 
-    public record ScreeningInviteCreateCommand(Guid OrgSpdId, IList<ScreeningInviteCreateRequest> ScreeningInviteCreateRequests) : IRequest<IList<ScreeningInviteCreateResponse>>;
+    public record ApplicationInviteCreateCommand(Guid OrgSpdId, IEnumerable<ApplicationInviteCreateRequest> ScreeningInviteCreateRequests) : IRequest<IEnumerable<ApplicationInviteCreateResponse>>;
 
-    public record ScreeningInviteCreateRequest
+    public record ApplicationInviteCreateRequest
     {
         //todo: update and add validation.
         public string FirstName { get; set; }
@@ -21,15 +21,15 @@ namespace Spd.Manager.Cases
         public bool OrgPay { get; set; }
     }
 
-    public record ScreeningInviteCreateResponse
+    public record ApplicationInviteCreateResponse
     {
         public bool IsSuccess { get; set; }
         public bool ErrorReason { get; set; }
     }
 
-    public class ScreeningInviteCreateRequestValidator : AbstractValidator<ScreeningInviteCreateRequest>
+    public class ApplicationInviteCreateRequestValidator : AbstractValidator<ApplicationInviteCreateRequest>
     {
-        public ScreeningInviteCreateRequestValidator()
+        public ApplicationInviteCreateRequestValidator()
         {
             //todo: add valiation here. following code is temp.
             RuleFor(r => r.LastName)

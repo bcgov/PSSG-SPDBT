@@ -7,9 +7,9 @@ namespace Spd.Manager.Cases
     {
         public Mappings()
         {
-            CreateMap<ScreeningInviteCreateCommand, ScreeningInviteCreateCmd>();
-            CreateMap<ScreeningInviteCreateRequest, ScreeningInviteCreateReq>();
-            CreateMap<ScreeningInviteCreateResp, ScreeningInviteCreateResponse>();
+            CreateMap<ApplicationInviteCreateCommand, ApplicationInviteCreateCmd>();
+            CreateMap<ApplicationInviteCreateRequest, ApplicationInviteCreateReq>();
+            CreateMap<ApplicationInviteCreateResp, ApplicationInviteCreateResponse>();
         }
     }
 }

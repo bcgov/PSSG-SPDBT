@@ -7,7 +7,7 @@ namespace Spd.Resource.Applicants
     {
         public void ConfigureServices(ConfigurationServices configurationServices)
         {
-            configurationServices.Services.AddTransient<IScreeningRepository, ScreeningRepository>();
+            configurationServices.Services.AddTransient<IApplicationRepository, ApplicationRepository>();
         }
     }
 }

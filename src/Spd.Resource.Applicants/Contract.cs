@@ -1,17 +1,17 @@
 namespace Spd.Resource.Applicants
 {
-    public interface IScreeningRepository
+    public interface IApplicationRepository
     {
-        public Task<IList<ScreeningInviteCreateResp>> AddScreeningInvitesAsync(ScreeningInviteCreateCmd createInviteCmd, CancellationToken cancellationToken);
+        public Task<IEnumerable<ApplicationInviteCreateResp>> AddApplicationInvitesAsync(ApplicationInviteCreateCmd createInviteCmd, CancellationToken cancellationToken);
     }
 
-    public record ScreeningInviteCreateCmd
+    public record ApplicationInviteCreateCmd
     {
         public Guid OrgSpdId { get; set; }
-        public IList<ScreeningInviteCreateReq> ScreeningInviteCreateReqs { get; set; }
+        public IEnumerable<ApplicationInviteCreateReq> ApplicationInviteCreateReqs { get; set; }
     }
 
-    public record ScreeningInviteCreateReq
+    public record ApplicationInviteCreateReq
     {
         //todo: update and add validation.
         public string FirstName { get; set; }
@@ -21,7 +21,7 @@ namespace Spd.Resource.Applicants
         public bool OrgPay { get; set; }
     }
 
-    public record ScreeningInviteCreateResp
+    public record ApplicationInviteCreateResp
     {
         public bool IsSuccess { get; set; }
         public bool ErrorReason { get; set; }
