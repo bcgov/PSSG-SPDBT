@@ -26,7 +26,6 @@ namespace Spd.Manager.Membership.OrgRegistration
         public string? ContactSurname { get; set; }
         public EmployeeInteractionTypeCode EmployeeInteractionFlag { get; set; }
         public string? GenericEmail { get; set; }
-        public string? GenericEmailConfirmation { get; set; }
         public string? GenericPhoneNumber { get; set; }
         public BooleanTypeCode EmployeeMonetaryCompensationFlag { get; set; }
         public BooleanTypeCode HasPhoneOrEmail { get; set; }
@@ -267,10 +266,6 @@ namespace Spd.Manager.Membership.OrgRegistration
                 .EmailAddress()
                 .When(r => !string.IsNullOrWhiteSpace(r.GenericEmail));
 
-            RuleFor(r => r.GenericEmailConfirmation)
-                .EmailAddress()
-                .When(r => !string.IsNullOrWhiteSpace(r.GenericEmailConfirmation));
-
             RuleFor(r => r.GenericPhoneNumber)
                 .MaximumLength(12);
 
@@ -278,18 +273,9 @@ namespace Spd.Manager.Membership.OrgRegistration
                 .NotEmpty()
                 .When(r => r.HasPhoneOrEmail == BooleanTypeCode.Yes);
 
-            RuleFor(r => r.GenericEmailConfirmation)
-                .NotEmpty()
-                .When(r => r.HasPhoneOrEmail == BooleanTypeCode.Yes);
-
             RuleFor(r => r.GenericPhoneNumber)
                 .NotEmpty()
                 .When(r => r.HasPhoneOrEmail == BooleanTypeCode.Yes);
-
-            RuleFor(r => r)
-                .Must(r => r.GenericEmail!.Equals(r.GenericEmailConfirmation))
-                .When(r => r.HasPhoneOrEmail == BooleanTypeCode.Yes)
-                .WithMessage("Emails must match");
 
             RuleFor(r => r.PortalUserIdentityTypeCode)
                 .IsInEnum()
