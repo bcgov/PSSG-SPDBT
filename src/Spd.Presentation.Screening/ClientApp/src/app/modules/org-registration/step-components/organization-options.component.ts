@@ -68,7 +68,9 @@ export class OrganizationOptionsModel {
 							<a (click)="onNoneApply()">None of these descriptions apply to my organization</a>
 						</div>
 
-						<mat-error style="text-align: center;" *ngIf="isDirtyAndInvalid">An option must be selected</mat-error>
+						<mat-error class="mat-option-error" style="text-align: center;" *ngIf="isDirtyAndInvalid"
+							>An option must be selected</mat-error
+						>
 					</div>
 				</div>
 			</div>

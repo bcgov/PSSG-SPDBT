@@ -37,8 +37,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 						style="min-height: calc(100vh - 138px)!important;"
 					>
 						<a href="#" onclick="return false;" class="nav-link d-flex text-white">
-							<!-- <mat-icon>account_circle</mat-icon> -->
-							<span class="d-none d-sm-inline mx-3 mt-2">Authorized User</span>
+							<span class="d-none d-sm-inline mx-3 mt-2">Menu</span>
 						</a>
 						<hr class="d-none d-sm-inline w-100 text-white" />
 						<ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-sm-start w-100">

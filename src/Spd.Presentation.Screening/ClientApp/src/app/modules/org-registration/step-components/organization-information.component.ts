@@ -3,7 +3,6 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { NgxMaskPipe } from 'ngx-mask';
 import { BooleanTypeCode } from 'src/app/api/models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { RegistrationFormStepComponent } from '../org-registration.component';
 
@@ -23,6 +22,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 							<mat-radio-button class="wide-radio" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
 						</mat-radio-group>
 						<mat-error
+							class="mat-option-error"
 							*ngIf="
 								(form.get('hasPhoneOrEmail')?.dirty || form.get('hasPhoneOrEmail')?.touched) &&
 								form.get('hasPhoneOrEmail')?.invalid &&
@@ -39,7 +39,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 						<div class="text-minor-heading fw-semibold mb-2">Shared Inbox Information</div>
 						<ng-container *ngIf="hasPhoneOrEmail.value == booleanTypeCodes.Yes">
 							<div class="row mt-2">
-								<div class="col-lg-4 col-md-12 col-sm-12">
+								<div class="col-lg-6 col-md-12 col-sm-12">
 									<mat-form-field>
 										<mat-label>Email Address</mat-label>
 										<input
@@ -58,29 +58,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 										</mat-error>
 									</mat-form-field>
 								</div>
-								<div class="col-lg-4 col-md-12 col-sm-12">
-									<mat-form-field>
-										<mat-label>Confirm Email Address</mat-label>
-										<input
-											matInput
-											formControlName="genericEmailConfirmation"
-											type="email"
-											required
-											[errorStateMatcher]="matcher"
-										/>
-										<mat-error *ngIf="form.get('genericEmailConfirmation')?.hasError('email')">
-											Must be a valid email address
-										</mat-error>
-										<mat-error *ngIf="form.get('genericEmailConfirmation')?.hasError('required')"> Required </mat-error>
-										<mat-error *ngIf="form.get('genericEmailConfirmation')?.hasError('nomatch')">
-											Emails must match
-										</mat-error>
-										<mat-error *ngIf="form.get('genericEmailConfirmation')?.hasError('maxlength')">
-											This must be at most 75 characters long
-										</mat-error>
-									</mat-form-field>
-								</div>
-								<div class="col-lg-4 col-md-12 col-sm-12">
+								<div class="col-lg-6 col-md-12 col-sm-12">
 									<mat-form-field>
 										<mat-label>Phone Number</mat-label>
 										<input
@@ -118,21 +96,11 @@ export class OrganizationInformationComponent implements OnInit, RegistrationFor
 	constructor(private formBuilder: FormBuilder, private maskPipe: NgxMaskPipe) {}
 
 	ngOnInit(): void {
-		this.form = this.formBuilder.group(
-			{
-				hasPhoneOrEmail: new FormControl('', [Validators.required]),
-				genericEmail: new FormControl('', [Validators.email, Validators.required, Validators.maxLength(75)]),
-				genericEmailConfirmation: new FormControl('', [
-					Validators.email,
-					Validators.required,
-					Validators.maxLength(75),
-				]),
-				genericPhoneNumber: new FormControl('', [Validators.required]),
-			},
-			{
-				validators: [FormGroupValidators.match('genericEmail', 'genericEmailConfirmation')],
-			}
-		);
+		this.form = this.formBuilder.group({
+			hasPhoneOrEmail: new FormControl('', [Validators.required]),
+			genericEmail: new FormControl('', [Validators.email, Validators.required, Validators.maxLength(75)]),
+			genericPhoneNumber: new FormControl('', [Validators.required]),
+		});
 	}
 
 	get isEmailMismatch() {
