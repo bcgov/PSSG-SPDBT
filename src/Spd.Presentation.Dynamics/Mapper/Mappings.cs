@@ -2,6 +2,7 @@
 using Spd.Presentation.Dynamics.Models;
 using Spd.Utilities.FileStorage;
 using System.Text;
+using File = Spd.Utilities.FileStorage.File;
 
 namespace Spd.Presentation.Dynamics.Mapper
 {
@@ -9,15 +10,25 @@ namespace Spd.Presentation.Dynamics.Mapper
     {
         public Mappings()
         {
-            CreateMap<UploadFileRequest, SpdFile>()
-                .ForMember(d => d.Content, opt => opt.Ignore());
+            CreateMap<UploadFileRequest, File>()
+                .ForMember(d => d.Content, opt => opt.Ignore())
+                .ForMember(d => d.Tags, opt => opt.MapFrom(s => GetTags(s)));
 
-            CreateMap<UploadFileRequestJson, SpdFile>()
+            CreateMap<UploadFileRequestJson, File>()
                 .ForMember(d => d.Content, opt => opt.MapFrom(s => Encoding.ASCII.GetBytes(s.Body)));
 
-            CreateMap<SpdFile, DownloadFileResponse>()
+            CreateMap<File, DownloadFileResponse>()
                 .ForMember(d => d.Body, opt => opt.MapFrom(s => Encoding.ASCII.GetString(s.Content)))
                 .ForMember(d => d.Key, opt => opt.MapFrom(s => s.Key));
+        }
+
+        private static IEnumerable<Tag> GetTags(UploadFileRequest request)
+        {
+            List<Tag> tags = new List<Tag>();
+            if (!string.IsNullOrWhiteSpace(request.Tag1)) tags.Add(new Tag { Key = "tag1", Value = request.Tag1 });
+            if (!string.IsNullOrWhiteSpace(request.Tag2)) tags.Add(new Tag { Key = "tag2", Value = request.Tag2 });
+            if (!string.IsNullOrWhiteSpace(request.Tag3)) tags.Add(new Tag { Key = "tag3", Value = request.Tag3 });
+            return tags;
         }
     }
 }

@@ -16,10 +16,10 @@ namespace Spd.Presentation.Dynamics.Models
         [Required(ErrorMessage = "Please specify file content type")]
         public string ContentType { get; set; }
 
+        public string Classification { get; set; }
         public string Tag1 { get; set; }
         public string Tag2 { get; set; }
         public string Tag3 { get; set; }
-
 
         [Required(ErrorMessage = "Please select file")]
         public IFormFile File { get; set; }
