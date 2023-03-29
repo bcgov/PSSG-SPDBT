@@ -1,4 +1,5 @@
-﻿using FluentValidation.AspNetCore;
+﻿using FluentValidation;
+using FluentValidation.AspNetCore;
 using Spd.Manager.Membership;
 using Spd.Utilities.Address;
 using Spd.Utilities.Dynamics;
@@ -53,6 +54,7 @@ namespace Spd.Presentation.Screening
                 });
             ;
 
+            services.AddValidatorsFromAssemblies(assemblies);
             services.ConfigureAuthentication(configuration);
             services.AddHttpContextAccessor();
             services.AddTransient<IPrincipal>(provider => provider.GetService<IHttpContextAccessor>()?.HttpContext?.User);

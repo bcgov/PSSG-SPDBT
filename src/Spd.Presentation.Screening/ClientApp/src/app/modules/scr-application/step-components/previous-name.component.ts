@@ -74,7 +74,7 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 											[disabled]="oneRowExists"
 											aria-label="Delete row"
 										>
-											<mat-icon>delete</mat-icon>
+											<mat-icon>delete_outline</mat-icon>
 										</button>
 									</div>
 								</div>

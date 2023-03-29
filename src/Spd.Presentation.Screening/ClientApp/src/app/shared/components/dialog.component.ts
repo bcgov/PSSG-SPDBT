@@ -35,7 +35,7 @@ export interface DialogOptions {
 					</button>
 				</div>
 				<div class="offset-md-2 col-md-5 col-sm-12 mb-2">
-					<button *ngIf="data.actionText" mat-flat-button color="primary" (click)="onConfirm()">
+					<button *ngIf="data.actionText" mat-raised-button color="primary" (click)="onConfirm()">
 						{{ data.actionText }}
 					</button>
 				</div>

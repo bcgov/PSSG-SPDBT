@@ -24,7 +24,7 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 				</div>
 				<div class="col-xl-3 col-lg-3 col-md-4 col-sm-12 my-auto" *ngIf="showAddArea">
 					<ng-container *ngIf="isAllowedAddContact == true; else addNotAllowed">
-						<button mat-flat-button class="large w-100 mat-green-button mb-2" (click)="onAddUser()">Add User</button>
+						<button mat-raised-button class="large w-100 mat-green-button mb-2" (click)="onAddUser()">Add User</button>
 					</ng-container>
 					<ng-template #addNotAllowed>
 						<div class="alert alert-warning d-flex align-items-center" role="alert">
@@ -38,7 +38,7 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 					<div class="col-md-11 col-sm-12">
 						<section class="px-4 py-2 mb-3 card-section">
 							<div class="row mt-2">
-								<div class="col-xl-10 col-lg-10 col-sm-12">
+								<div class="col-xl-9 col-lg-12 col-md-12 col-sm-12">
 									<div class="row">
 										<div class="col-xl-1 col-lg-1 col-md-1 col-sm-10">
 											<span class="badge rounded-pill bg-success">
@@ -75,20 +75,20 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 										</div>
 									</div>
 								</div>
-								<div class="col-xl-2 col-lg-2 col-sm-12 mx-auto">
+								<div class="col-xl-3 col-lg-12 col-md-12 col-sm-12 mx-auto d-flex flex-row">
 									<button
-										mat-mini-fab
+										mat-stroked-button
 										matTooltip="Edit user"
-										class="m-2"
+										class="table-button m-2"
 										(click)="onMaintainUser(user)"
 										aria-label="Edit user"
 									>
-										<mat-icon>edit</mat-icon>
+										<mat-icon>edit</mat-icon>Edit
 									</button>
 									<button
-										mat-mini-fab
+										mat-icon-button
 										matTooltip="Remove user"
-										class="m-2"
+										class="table-button table-button__remove m-2"
 										*ngIf="allowDeleteRow(user)"
 										(click)="onDeleteUser(user)"
 										aria-label="Remove user"
@@ -108,6 +108,20 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 			h4,
 			.mat-icon {
 				color: var(--color-primary-light);
+			}
+
+			.table-button {
+				min-width: 110px;
+
+				&__remove {
+					top: -8px;
+					min-width: 50px;
+
+					.mat-icon {
+						top: -4px;
+						position: relative;
+					}
+				}
 			}
 
 			.card-section {

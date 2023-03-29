@@ -11,7 +11,9 @@ import { Component, EventEmitter, Output } from '@angular/core';
 						<button mat-stroked-button class="large mb-2" (click)="onClickNext()">Log In without BCSC</button>
 					</div>
 					<div class="col-lg-4 col-md-6  col-sm-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onClickNext()">Log In with BCSC</button>
+						<button mat-raised-button color="primary" class="large mb-2" (click)="onClickNext()">
+							Log In with BCSC
+						</button>
 					</div>
 				</div>
 			</div>

@@ -27,7 +27,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 						<button
 							mat-button
 							matSuffix
-							mat-flat-button
+							mat-raised-button
 							color="primary"
 							aria-label="search"
 							style="padding: 2.1em 0; border-radius: unset;"
@@ -50,7 +50,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 					</app-dropdown-overlay>
 				</div>
 				<div class="col-xl-3 col-lg-4 col-md-10 col-sm-9">
-					<button mat-flat-button color="primary" class="xlarge w-100 mb-2">
+					<button mat-raised-button color="primary" class="xlarge w-100 mb-2">
 						<mat-icon>download</mat-icon>Download Monthly Report
 					</button>
 				</div>
@@ -106,7 +106,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 									*ngIf="payment.status != 'NotPaid'"
 									aria-label="Download receipt"
 								>
-									Download Receipt
+									<mat-icon>file_download</mat-icon>Download Receipt
 								</button>
 								<button
 									mat-raised-button
@@ -114,7 +114,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 									*ngIf="payment.status == 'NotPaid'"
 									aria-label="Pay now"
 								>
-									Pay Now
+									<mat-icon>attach_money</mat-icon>Pay Now
 								</button>
 							</mat-cell>
 						</ng-container>
@@ -137,7 +137,8 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 	styles: [
 		`
 			.table-button {
-				max-width: 170px;
+				max-width: 190px;
+				white-space: nowrap;
 			}
 
 			.pay-button {

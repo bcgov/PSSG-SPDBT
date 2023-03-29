@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { HotToastService } from '@ngneat/hot-toast';
-import { BooleanTypeCode } from 'src/app/api/models';
+import { ApplicationService } from 'src/app/api/services';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 
@@ -13,15 +13,15 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
-					<div class="col-xl-8 col-lg-7 col-md-6 col-sm-12">
+					<div class="col-xxl-9 col-xl-8 col-lg-7 col-md-6 col-sm-12">
 						<h2 class="mb-2 fw-normal">
 							New Screening
 							<div class="mt-2 fs-5 fw-light">Request up to 4 new screenings</div>
 						</h2>
 					</div>
-					<div class="col-xl-4 col-lg-5 col-md-6 col-sm-12 my-auto">
-						<button mat-flat-button class="large w-100 mat-green-button mb-2" (click)="onSendScreeningRequest()">
-							Send Screening Request
+					<div class="col-xxl-3 col-xl-4 col-lg-5 col-md-6 col-sm-12 my-auto">
+						<button mat-raised-button class="large w-100 mat-green-button mb-2" (click)="onSendScreeningRequest()">
+							<mat-icon>send</mat-icon>Send Screening Request
 						</button>
 					</div>
 				</div>
@@ -82,11 +82,9 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 									</mat-form-field>
 								</div>
 								<div class="col-xl-1 col-lg-3 col-md-3 col-sm-12">
-									<mat-button-toggle-group formControlName="orgPaying" aria-label="Organization Paying">
-										<mat-button-toggle class="paying-button-toggle" [value]="booleanTypeCodes.No">No</mat-button-toggle>
-										<mat-button-toggle class="paying-button-toggle" [value]="booleanTypeCodes.Yes"
-											>Yes</mat-button-toggle
-										>
+									<mat-button-toggle-group formControlName="orgPay" aria-label="Organization Paying">
+										<mat-button-toggle class="paying-button-toggle" [value]="false">No</mat-button-toggle>
+										<mat-button-toggle class="paying-button-toggle" [value]="true">Yes</mat-button-toggle>
 									</mat-button-toggle-group>
 									<div>
 										<mat-hint style="white-space: nowrap;">Organization Paying?</mat-hint>
@@ -94,9 +92,9 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 									<mat-error
 										class="mat-option-error"
 										*ngIf="
-											(group.get('orgPaying')?.dirty || group.get('orgPaying')?.touched) &&
-											group.get('orgPaying')?.invalid &&
-											group.get('orgPaying')?.hasError('required')
+											(group.get('orgPay')?.dirty || group.get('orgPay')?.touched) &&
+											group.get('orgPay')?.invalid &&
+											group.get('orgPay')?.hasError('required')
 										"
 										>An option must be selected</mat-error
 									>
@@ -110,7 +108,7 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 										[disabled]="oneRowExists"
 										aria-label="Delete screening request"
 									>
-										<mat-icon>delete</mat-icon>
+										<mat-icon>delete_outline</mat-icon>
 									</button>
 								</div>
 							</div>
@@ -161,9 +159,13 @@ export class NewScreeningComponent implements OnInit {
 
 	form!: FormGroup;
 	matcher = new FormErrorStateMatcher();
-	booleanTypeCodes = BooleanTypeCode;
 
-	constructor(private formBuilder: FormBuilder, private hotToast: HotToastService, private dialog: MatDialog) {}
+	constructor(
+		private formBuilder: FormBuilder,
+		private applicationService: ApplicationService,
+		private hotToast: HotToastService,
+		private dialog: MatDialog
+	) {}
 
 	ngOnInit(): void {
 		this.createEmptyForm();
@@ -182,7 +184,7 @@ export class NewScreeningComponent implements OnInit {
 			lastName: new FormControl('', [Validators.required, Validators.maxLength(40)]),
 			email: new FormControl('', [Validators.email, Validators.required, Validators.maxLength(75)]),
 			jobTitle: new FormControl('', [Validators.required, Validators.maxLength(100)]),
-			orgPaying: new FormControl('', [Validators.required]),
+			orgPay: new FormControl('', [Validators.required]),
 		});
 	}
 
@@ -228,35 +230,34 @@ export class NewScreeningComponent implements OnInit {
 	onSendScreeningRequest(): void {
 		this.isDuplicateDetected = false;
 		this.form.markAllAsTouched();
-		if (this.form.valid) {
-			const control = (this.form.get('tableRows') as FormArray).value;
-			const numberOfRequests = control.length;
+		// if (this.form.valid) {
+		const control = (this.form.get('tableRows') as FormArray).value;
+		const numberOfRequests = control.length;
 
-			const seen = new Set();
-			let duplicateInfo: any;
-			const hasDuplicates = control.some(function (currentObject: any) {
-				duplicateInfo = currentObject;
-				return seen.size === seen.add(currentObject.email).size;
-			});
+		const seen = new Set();
+		let duplicateInfo: any;
+		const hasDuplicates = control.some(function (currentObject: any) {
+			duplicateInfo = currentObject;
+			return seen.size === seen.add(currentObject.email).size;
+		});
 
-			if (hasDuplicates) {
-				this.isDuplicateDetected = true;
-				this.duplicateName = `${duplicateInfo.firstName} ${duplicateInfo.lastName}`;
-				this.duplicateEmail = duplicateInfo.email;
-				return;
-			}
-
-			//TODO Call API to send screening requests
-			// after success clear data and display toast
-			console.log('control', control);
-
-			// save screening requests
-			this.hotToast.success(
-				`${numberOfRequests} screening request${numberOfRequests > 1 ? 's were' : ' was'} successfully created`
-			);
-			this.form.reset();
-			this.createEmptyForm();
+		if (hasDuplicates) {
+			this.isDuplicateDetected = true;
+			this.duplicateName = `${duplicateInfo.firstName} ${duplicateInfo.lastName}`;
+			this.duplicateEmail = duplicateInfo.email;
+			return;
 		}
+
+		//TODO replace with proper org id
+		this.applicationService
+			.apiOrgsOrgIdApplicationInvitesPost({ orgId: '4165bdfe-7cb4-ed11-b83e-00505683fbf4', body: control })
+			.pipe()
+			.subscribe((resp: any) => {
+				// after success clear data and display toast
+				this.hotToast.success(`The screening request${numberOfRequests > 1 ? 's were' : ' was'} successfully created`);
+				this.form.reset();
+				this.createEmptyForm();
+			});
 	}
 
 	get getFormControls() {

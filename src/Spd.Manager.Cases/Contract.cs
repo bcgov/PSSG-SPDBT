@@ -31,11 +31,22 @@ namespace Spd.Manager.Cases
     {
         public ApplicationInviteCreateRequestValidator()
         {
-            //todo: add valiation here. following code is temp.
+            RuleFor(r => r.FirstName)
+                    .NotEmpty()
+                    .MaximumLength(40);
+
             RuleFor(r => r.LastName)
                     .NotEmpty()
-                    .MaximumLength(200);
+                    .MaximumLength(40);
 
+            RuleFor(r => r.Email)
+                .NotEmpty()
+                .EmailAddress()
+                .MaximumLength(75);
+
+            RuleFor(r => r.JobTitle)
+                    .NotEmpty()
+                    .MaximumLength(100);
         }
     }
 }
