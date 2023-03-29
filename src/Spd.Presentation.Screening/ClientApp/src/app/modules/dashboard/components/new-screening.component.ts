@@ -30,9 +30,9 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 						<div class="alert alert-danger d-flex align-items-center" role="alert" *ngIf="isDuplicateDetected">
 							<mat-icon class="d-none d-md-block alert-icon me-2">warning</mat-icon>
 							<div>
-								Duplicates are not allowed. Update the data associated with the following...
+								Duplicates are not allowed. Update the data associated with the following:
 								<ul>
-									<li>Name: {{ duplicateName }}</li>
+									<!-- <li>Name: {{ duplicateName }}</li> -->
 									<li>Email: {{ duplicateEmail }}</li>
 								</ul>
 							</div>
@@ -232,7 +232,7 @@ export class NewScreeningComponent implements OnInit {
 			const control = (this.form.get('tableRows') as FormArray).value;
 			const numberOfRequests = control.length;
 
-			let seen = new Set();
+			const seen = new Set();
 			let duplicateInfo: any;
 			const hasDuplicates = control.some(function (currentObject: any) {
 				duplicateInfo = currentObject;
@@ -248,6 +248,7 @@ export class NewScreeningComponent implements OnInit {
 
 			//TODO Call API to send screening requests
 			// after success clear data and display toast
+			console.log('control', control);
 
 			// save screening requests
 			this.hotToast.success(

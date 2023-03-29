@@ -122,12 +122,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 						</button>
 					</mat-form-field>
 				</div>
-				<div class="col-xl-3 col-lg-4 col-md-10 col-sm-9">
-					<button mat-flat-button color="primary" class="xlarge w-100 mb-2">
-						<mat-icon>download</mat-icon>Download Report
-					</button>
-				</div>
-				<div class="col-xl-1 col-lg-2 col-md-2 col-sm-3" style="text-align: center;">
+				<div class="col-xl-1 col-lg-2 col-md-2 col-sm-3">
 					<app-dropdown-overlay
 						[showDropdownOverlay]="showDropdownOverlay"
 						(showDropdownOverlayChange)="onShowDropdownOverlayChange($event)"
@@ -139,6 +134,11 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 							(filterClose)="onFilterClose()"
 						></app-payment-filter>
 					</app-dropdown-overlay>
+				</div>
+				<div class="col-xl-3 col-lg-4 col-md-10 col-sm-9">
+					<button mat-flat-button color="primary" class="xlarge w-100 mb-2">
+						<mat-icon>download</mat-icon>Download Report
+					</button>
 				</div>
 			</div>
 

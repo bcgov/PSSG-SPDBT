@@ -11,7 +11,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 		<app-dashboard-header title="Organization Name" subtitle="Security Screening Portal"></app-dashboard-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
-				<div class="col-xl-11 col-lg-10 col-md-12 col-sm-12">
+				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
 					<h2 class="mb-2 fw-normal">
 						Identity Verification
 						<div class="mt-2 fs-5 fw-light">Confirm the applicant's identity</div>
@@ -39,7 +39,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 						</button>
 					</mat-form-field>
 				</div>
-				<div class="col-xl-1 col-lg-2 col-md-2 col-sm-3" style="text-align: center;">
+				<div class="col-xl-1 col-lg-2 col-md-2 col-sm-3">
 					<app-dropdown-overlay
 						[showDropdownOverlay]="showDropdownOverlay"
 						(showDropdownOverlayChange)="onShowDropdownOverlayChange($event)"
@@ -56,7 +56,13 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 
 			<div class="row">
 				<div class="col-12">
-					<mat-table matSort [dataSource]="dataSource" matSortActive="status" matSortDirection="asc" class="isMobile">
+					<mat-table
+						matSort
+						[dataSource]="dataSource"
+						matSortActive="dateTimeSubmitted"
+						matSortDirection="asc"
+						class="isMobile"
+					>
 						<ng-container matColumnDef="applicantName">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Applicant Name</mat-header-cell>
 							<mat-cell *matCellDef="let verify">
@@ -98,7 +104,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 						</ng-container>
 
 						<ng-container matColumnDef="status">
-							<mat-header-cell *matHeaderCellDef mat-sort-header>Status</mat-header-cell>
+							<mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
 							<mat-cell *matCellDef="let verify">
 								<span class="mobile-label">Status:</span>
 								<button *ngIf="verify.status == 'Outstanding'" mat-flat-button class="confirm my-2 me-4">
