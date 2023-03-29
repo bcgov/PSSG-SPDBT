@@ -13,7 +13,7 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 						<div>
 							<div>We are currently processing applications that do NOT require follow-up within:</div>
 							<div class="fw-semibold">
-								10 business days for online applications and 20 business days for manual applications.
+								10 business days for online applications and 20 business days for manual applications
 							</div>
 						</div>
 					</div>
