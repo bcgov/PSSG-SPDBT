@@ -6,14 +6,15 @@ namespace Spd.Manager.Cases
     public interface IApplicationManager
     {
         public Task<IEnumerable<ApplicationInviteCreateResponse>> Handle(ApplicationInviteCreateCommand request, CancellationToken cancellationToken);
+        public Task<IEnumerable<CheckApplicationInviteDuplicateResponse>> Handle(CheckApplicationInviteDuplicateQuery request, CancellationToken cancellationToken);
 
     }
 
     public record ApplicationInviteCreateCommand(Guid OrgSpdId, IEnumerable<ApplicationInviteCreateRequest> ScreeningInviteCreateRequests) : IRequest<IEnumerable<ApplicationInviteCreateResponse>>;
+    public record CheckApplicationInviteDuplicateQuery(Guid OrgSpdId, IEnumerable<ApplicationInviteCreateRequest> ScreeningInviteCreateRequests) : IRequest<IEnumerable<CheckApplicationInviteDuplicateResponse>>;
 
     public record ApplicationInviteCreateRequest
     {
-        //todo: update and add validation.
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
@@ -25,6 +26,14 @@ namespace Spd.Manager.Cases
     {
         public bool IsSuccess { get; set; }
         public bool ErrorReason { get; set; }
+    }
+
+    public class CheckApplicationInviteDuplicateResponse
+    {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+        public bool HasPotentialDuplicate { get; set; } = false;
     }
 
     public class ApplicationInviteCreateRequestValidator : AbstractValidator<ApplicationInviteCreateRequest>

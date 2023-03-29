@@ -179,7 +179,7 @@ export class UsersComponent {
 
 	onDeleteUser(user: OrgUserResponse) {
 		const data: DialogOptions = {
-			icon: 'error_outline',
+			icon: 'warning',
 			title: 'Delete User',
 			message: 'Are you sure you want to permanently remove this user?',
 			actionText: 'Yes, remove this user',
@@ -236,7 +236,7 @@ export class UsersComponent {
 		`;
 
 		const dialogOptions: DialogOptions = {
-			icon: 'info',
+			icon: 'info_outline',
 			type: 'info',
 			title,
 			message,

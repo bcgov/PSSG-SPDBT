@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { HotToastService } from '@ngneat/hot-toast';
+import { ApplicationInviteCreateRequest, CheckApplicationInviteDuplicateResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
@@ -103,10 +104,10 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 									<button
 										mat-mini-fab
 										class="delete-row-button"
-										matTooltip="Delete screening request"
+										matTooltip="Remove screening request"
 										(click)="deleteRow(i)"
 										[disabled]="oneRowExists"
-										aria-label="Delete screening request"
+										aria-label="Remove screening request"
 									>
 										<mat-icon>delete_outline</mat-icon>
 									</button>
@@ -197,8 +198,8 @@ export class NewScreeningComponent implements OnInit {
 		const control = this.form.get('tableRows') as FormArray;
 		if (control.length == 1) {
 			const data: DialogOptions = {
-				icon: 'error_outline',
-				title: 'Delete Row',
+				icon: 'warning',
+				title: 'Remove Row',
 				message: 'This row cannot be deleted. At least one row must exist.',
 				cancelText: 'Close',
 			};
@@ -208,9 +209,9 @@ export class NewScreeningComponent implements OnInit {
 		}
 
 		const data: DialogOptions = {
-			icon: 'error_outline',
-			title: 'Delete Row',
-			message: 'Are you sure you want to permanently delete this screening request?',
+			icon: 'warning',
+			title: 'Remove Row',
+			message: 'Are you sure you want to remove this screening request?',
 			actionText: 'Yes, delete this row',
 			cancelText: 'Cancel',
 		};
@@ -222,7 +223,6 @@ export class NewScreeningComponent implements OnInit {
 				if (response) {
 					const control = this.form.get('tableRows') as FormArray;
 					control.removeAt(index);
-					this.hotToast.success('Row was successfully deleted');
 				}
 			});
 	}
@@ -230,9 +230,10 @@ export class NewScreeningComponent implements OnInit {
 	onSendScreeningRequest(): void {
 		this.isDuplicateDetected = false;
 		this.form.markAllAsTouched();
-		// if (this.form.valid) {
+
+		if (!this.form.valid) return;
+
 		const control = (this.form.get('tableRows') as FormArray).value;
-		const numberOfRequests = control.length;
 
 		const seen = new Set();
 		let duplicateInfo: any;
@@ -248,13 +249,109 @@ export class NewScreeningComponent implements OnInit {
 			return;
 		}
 
+		// Check for potential duplicate
 		//TODO replace with proper org id
 		this.applicationService
-			.apiOrgsOrgIdApplicationInvitesPost({ orgId: '4165bdfe-7cb4-ed11-b83e-00505683fbf4', body: control })
+			.apiOrgsOrgIdDetectInviteDuplicatesPost({ orgId: '4165bdfe-7cb4-ed11-b83e-00505683fbf4', body: control })
+			.pipe()
+			.subscribe((dupres: Array<CheckApplicationInviteDuplicateResponse>) => {
+				// At least one potential duplicate has been found
+				if (dupres?.length > 0) {
+					let dupRows = '';
+					dupres.forEach((item) => {
+						dupRows += `<li>${item.firstName} ${item.lastName} (${item.email})</li>`;
+					});
+					const dupMessage = `<ul>${dupRows}</ul>`;
+
+					const data: DialogOptions = {
+						icon: 'warning',
+						title: 'Potential Duplicate Detected',
+						message: `A potential duplicate has been detected from the screening request you have attempted to send. Ensure that the applicant does not currently have a screening application in progress nor have been sent a screening invitation recently.<br/><br/>${dupMessage}Do you still wish to proceed?`,
+						actionText: 'Yes, send request',
+						cancelText: 'Cancel',
+					};
+
+					this.dialog
+						.open(DialogComponent, { data })
+						.afterClosed()
+						.subscribe((response: boolean) => {
+							// Save potential duplicate
+							// body.hasPotentialDuplicate = BooleanTypeCode.Yes;
+							if (response) {
+								this.promptVulnerableSector(control);
+							}
+						});
+				} else {
+					this.promptVulnerableSector(control);
+				}
+			});
+	}
+
+	promptVulnerableSector(body: Array<ApplicationInviteCreateRequest>): void {
+		const data: DialogOptions = {
+			icon: 'info_outline',
+			title: 'Vulnerable Sector',
+			message:
+				'In their roles with your organization, will these individuals work directly with, or potentially have unsupervised access to, children and/or vulnerable adults?',
+			actionText: 'Yes',
+			cancelText: 'No',
+		};
+
+		if (body.length == 1) {
+			data.message =
+				'In their role with your organization, will this person work directly with, or potentially have unsupervised access to, children and/or vulnerable adults?';
+
+			this.dialog
+				.open(DialogComponent, { data })
+				.afterClosed()
+				.subscribe((response: boolean) => {
+					let noMessage = !response
+						? 'If the applicant will not have unsupervised access to children or vulnerable adults in this role, but they require a criminal record check for another reason, please contact your local police detachment'
+						: null;
+					this.saveInviteRequests(body, noMessage);
+				});
+		} else {
+			data.message =
+				'In their roles with your organization, will these individuals work directly with, or potentially have unsupervised access to, children and/or vulnerable adults?';
+
+			this.dialog
+				.open(DialogComponent, { data })
+				.afterClosed()
+				.subscribe((response: boolean) => {
+					let noMessage = !response
+						? 'If the applicants will not have unsupervised access to children or vulnerable adults in this role, but they require a criminal record check for another reason, please contact your local police detachment'
+						: null;
+					this.saveInviteRequests(body, noMessage);
+				});
+		}
+	}
+
+	saveInviteRequests(body: Array<ApplicationInviteCreateRequest>, noMessage: string | null): void {
+		const numberOfRequests = body.length;
+
+		//TODO replace with proper org id
+		this.applicationService
+			.apiOrgsOrgIdApplicationInvitesPost({ orgId: '4165bdfe-7cb4-ed11-b83e-00505683fbf4', body })
 			.pipe()
 			.subscribe((resp: any) => {
 				// after success clear data and display toast
-				this.hotToast.success(`The screening request${numberOfRequests > 1 ? 's were' : ' was'} successfully created`);
+				this.hotToast.success(
+					`The screening request${numberOfRequests > 1 ? 's were' : ' was'} successfully sent to the applicant${
+						numberOfRequests > 1 ? 's' : ''
+					}`
+				);
+
+				if (noMessage) {
+					const dialogOptions: DialogOptions = {
+						icon: 'info_outline',
+						title: 'Vulnerable Sector',
+						message: noMessage,
+						cancelText: 'Close',
+					};
+
+					this.dialog.open(DialogComponent, { data: dialogOptions });
+				}
+
 				this.form.reset();
 				this.createEmptyForm();
 			});

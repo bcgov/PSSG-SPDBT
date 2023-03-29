@@ -5,6 +5,7 @@ export { ApplicationInviteCreateRequest } from './models/application-invite-crea
 export { ApplicationInviteCreateResponse } from './models/application-invite-create-response';
 export { BCeIdConfigurationResponse } from './models/b-ce-id-configuration-response';
 export { BooleanTypeCode } from './models/boolean-type-code';
+export { CheckApplicationInviteDuplicateResponse } from './models/check-application-invite-duplicate-response';
 export { CheckDuplicateResponse } from './models/check-duplicate-response';
 export { ContactAuthorizationTypeCode } from './models/contact-authorization-type-code';
 export { CurrentUserInfo } from './models/current-user-info';

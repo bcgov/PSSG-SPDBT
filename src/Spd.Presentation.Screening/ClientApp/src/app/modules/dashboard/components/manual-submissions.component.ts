@@ -517,7 +517,7 @@ export class ManualSubmissionsComponent {
 			// .subscribe((dupres: CheckDuplicateResponse) => {
 			//   if (dupres.hasPotentialDuplicate) {
 			//     const data: DialogOptions = {
-			//       icon: 'error_outline',
+			//       icon: 'warning',
 			//       title: 'Potential Duplicate Detected',
 			//       message:
 			//         'A potential duplicate has been found. Are you sure this is a new organization registration request?',
