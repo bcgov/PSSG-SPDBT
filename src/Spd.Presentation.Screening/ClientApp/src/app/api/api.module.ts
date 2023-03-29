@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 
 import { AddressAutoCompleteService } from './services/address-auto-complete.service';
+import { ApplicationService } from './services/application.service';
 import { BCeIdConfigurationService } from './services/b-ce-id-configuration.service';
 import { CurrentUserService } from './services/current-user.service';
 import { OrgService } from './services/org.service';
@@ -20,6 +21,7 @@ import { OrgUserService } from './services/org-user.service';
   declarations: [],
   providers: [
     AddressAutoCompleteService,
+    ApplicationService,
     BCeIdConfigurationService,
     CurrentUserService,
     OrgService,

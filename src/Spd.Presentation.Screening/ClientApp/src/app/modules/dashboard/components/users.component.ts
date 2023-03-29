@@ -15,7 +15,7 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 			<div class="row">
 				<div class="col-xl-8 col-lg-8 col-md-7 col-sm-12">
 					<h2 class="mb-2 fw-normal">
-						Authorized User Management <mat-icon (click)="manageUsersInfo()">info</mat-icon>
+						User Management <mat-icon (click)="manageUsersInfo()">info</mat-icon>
 						<div class="mt-2 fs-5 fw-light">
 							Your organization may have up to {{ maximumNumberOfPrimaryContacts }} primary authorized contacts and up
 							to {{ maximumNumberOfContacts }} authorized contacts

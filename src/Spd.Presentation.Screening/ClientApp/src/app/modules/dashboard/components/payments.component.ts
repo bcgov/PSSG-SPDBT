@@ -11,7 +11,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 		<app-dashboard-header title="Organization Name" subtitle="Security Screening Portal"></app-dashboard-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
-				<div class="col-xl-11 col-lg-10 col-md-12 col-sm-12">
+				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
 					<h2 class="mb-2 fw-normal">Screening Payments</h2>
 					<div class="alert alert-warning d-flex align-items-center" role="alert">
 						<mat-icon class="d-none d-md-block alert-icon me-2">warning</mat-icon>
@@ -36,12 +36,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 						</button>
 					</mat-form-field>
 				</div>
-				<div class="col-xl-3 col-lg-4 col-md-10 col-sm-9">
-					<button mat-flat-button color="primary" class="xlarge w-100 mb-2">
-						<mat-icon>download</mat-icon>Download Monthly Report
-					</button>
-				</div>
-				<div class="col-xl-1 col-lg-2 col-md-2 col-sm-3" style="text-align: center;">
+				<div class="col-xl-1 col-lg-2 col-md-2 col-sm-3">
 					<app-dropdown-overlay
 						[showDropdownOverlay]="showDropdownOverlay"
 						(showDropdownOverlayChange)="onShowDropdownOverlayChange($event)"
@@ -53,6 +48,11 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 							(filterClose)="onFilterClose()"
 						></app-payment-filter>
 					</app-dropdown-overlay>
+				</div>
+				<div class="col-xl-3 col-lg-4 col-md-10 col-sm-9">
+					<button mat-flat-button color="primary" class="xlarge w-100 mb-2">
+						<mat-icon>download</mat-icon>Download Monthly Report
+					</button>
 				</div>
 			</div>
 

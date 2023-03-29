@@ -14,6 +14,7 @@ import { NewScreeningComponent } from './components/new-screening.component';
 import { IdentifyVerificationComponent } from './components/identify-verification.component';
 import { ScreeningStatusesComponent } from './components/screening-statuses.component';
 import { ExpiringScreeningsComponent } from './components/expiring-screenings.component';
+import { ManualSubmissionsComponent } from './components/manual-submissions.component';
 
 @NgModule({
 	declarations: [
@@ -30,6 +31,7 @@ import { ExpiringScreeningsComponent } from './components/expiring-screenings.co
   IdentifyVerificationComponent,
   ScreeningStatusesComponent,
   ExpiringScreeningsComponent,
+  ManualSubmissionsComponent,
 	],
 	imports: [SharedModule, DashboardRoutingModule],
 })
