@@ -98,8 +98,18 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
 								>
-									<mat-icon>post_add</mat-icon>
+									<mat-icon>fingerprint</mat-icon>
 									<span class="menu-item ms-2 d-none d-sm-inline text-white">Identity Verification</span>
+								</a>
+							</li>
+							<li class="nav-item w-100">
+								<a
+									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.MANUAL_SUBMISSIONS)]"
+									routerLinkActive="active"
+									class="nav-link align-middle text-white w-100"
+								>
+									<mat-icon>post_add</mat-icon>
+									<span class="menu-item ms-2 d-none d-sm-inline text-white">Manual Submissions</span>
 								</a>
 							</li>
 							<li class="nav-item w-100">
@@ -129,7 +139,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 									class="nav-link align-middle text-white w-100"
 								>
 									<mat-icon>settings</mat-icon>
-									<span class="menu-item ms-2 d-none d-sm-inline text-white">Organization Information</span>
+									<span class="menu-item ms-2 d-none d-sm-inline text-white">Organization Profile</span>
 								</a>
 							</li>
 						</ul>

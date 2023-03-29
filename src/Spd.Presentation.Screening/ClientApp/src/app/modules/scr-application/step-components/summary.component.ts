@@ -46,7 +46,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 									<h4>Contact Information</h4>
 								</div>
 								<div class="col-xl-4 col-lg-4 col-md-12">
-									<div class="text-label d-block text-muted">Contact First Name</div>
+									<div class="text-label d-block text-muted">Contact Given Name</div>
 									<div class="text-data">John</div>
 								</div>
 								<div class="col-xl-3 col-lg-3 col-md-12">

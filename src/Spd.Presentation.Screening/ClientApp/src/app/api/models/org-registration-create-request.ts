@@ -21,7 +21,6 @@ export interface OrgRegistrationCreateRequest {
   employeeMonetaryCompensationFlag?: BooleanTypeCode;
   employeeOrganizationTypeCode?: EmployeeOrganizationTypeCode;
   genericEmail?: null | string;
-  genericEmailConfirmation?: null | string;
   genericPhoneNumber?: null | string;
   hasPhoneOrEmail?: BooleanTypeCode;
   hasPotentialDuplicate?: BooleanTypeCode;

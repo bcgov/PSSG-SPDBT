@@ -1,6 +1,8 @@
 export { ActionResult } from './models/action-result';
 export { AddressFindResponse } from './models/address-find-response';
 export { AddressRetrieveResponse } from './models/address-retrieve-response';
+export { ApplicationInviteCreateRequest } from './models/application-invite-create-request';
+export { ApplicationInviteCreateResponse } from './models/application-invite-create-response';
 export { BCeIdConfigurationResponse } from './models/b-ce-id-configuration-response';
 export { BooleanTypeCode } from './models/boolean-type-code';
 export { CheckDuplicateResponse } from './models/check-duplicate-response';
