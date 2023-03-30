@@ -25,7 +25,7 @@ namespace Spd.Utilities.FileStorage
             var client = new AmazonS3Client(new BasicAWSCredentials(options.AccessKey, options.Secret), config);
 
             services.AddSingleton(client);
-            services.AddTransient<IS3StorageService, S3StorageService>();
+            services.AddTransient<IFileStorageService, FileStorageService>();
 
             return services;
         }

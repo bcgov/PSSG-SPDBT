@@ -5,17 +5,17 @@ on:
     branches:
       - main
     paths:
-      - src/Spd.DynamicsHelper/**
+      - src/Spd.Presentation.Dynamics/**
       - src/Spd.Utilities.FileStorage/**
       - src/Spd.Utilities.Shared/**
       - src/Spd.Utilities.Hosting/**
-      - .github/workflows/dynamics-helper-main-cd.yml
+      - .github/workflows/dynamics-main-cd.yml
 
 jobs:
   build-deploy-dynamics-helper:
     uses: ./.github/workflows/cd-workflow.yml
     with:
       DOCKER_CONTEXT: src
-      DOCKER_FILE: src/dynamics-helper.dockerfile
+      DOCKER_FILE: src/dynamics.dockerfile
       DOCKER_IMAGE_NAME: dynamics-helper
     secrets: inherit
