@@ -10,8 +10,8 @@ import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
 import { ApplicationInviteCreateRequest } from '../models/application-invite-create-request';
-import { ApplicationInviteCreateResponse } from '../models/application-invite-create-response';
 import { CheckApplicationInviteDuplicateResponse } from '../models/check-application-invite-duplicate-response';
+import { Unit } from '../models/unit';
 
 @Injectable({
   providedIn: 'root',
@@ -40,7 +40,7 @@ export class ApplicationService extends BaseService {
     context?: HttpContext
     body: Array<ApplicationInviteCreateRequest>
   }
-): Observable<StrictHttpResponse<Array<ApplicationInviteCreateResponse>>> {
+): Observable<StrictHttpResponse<Unit>> {
 
     const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdApplicationInvitesPostPath, 'post');
     if (params) {
@@ -55,7 +55,7 @@ export class ApplicationService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Array<ApplicationInviteCreateResponse>>;
+        return r as StrictHttpResponse<Unit>;
       })
     );
   }
@@ -71,10 +71,10 @@ export class ApplicationService extends BaseService {
     context?: HttpContext
     body: Array<ApplicationInviteCreateRequest>
   }
-): Observable<Array<ApplicationInviteCreateResponse>> {
+): Observable<Unit> {
 
     return this.apiOrgsOrgIdApplicationInvitesPost$Response(params).pipe(
-      map((r: StrictHttpResponse<Array<ApplicationInviteCreateResponse>>) => r.body as Array<ApplicationInviteCreateResponse>)
+      map((r: StrictHttpResponse<Unit>) => r.body as Unit)
     );
   }
 

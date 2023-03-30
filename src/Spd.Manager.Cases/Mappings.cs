@@ -7,9 +7,17 @@ namespace Spd.Manager.Cases
     {
         public Mappings()
         {
-            CreateMap<ApplicationInviteCreateCommand, ApplicationInviteCreateCmd>();
+            //CreateMap<ApplicationInviteCreateCommand, ApplicationInviteCreateCmd>();
+
+
+            _ = CreateMap<ApplicationInviteCreateCommand, ApplicationInviteCreateCmd>()
+            .ForMember(d => d.OrgSpdId, opt => opt.MapFrom(s => s.OrgSpdId))
+            .ForMember(d => d.ApplicationInviteCreateReqs, opt => opt.MapFrom(s => s.ApplicationInviteCreateRequests));
+
+
             CreateMap<ApplicationInviteCreateRequest, ApplicationInviteCreateReq>();
             CreateMap<ApplicationInviteCreateResp, ApplicationInviteCreateResponse>();
+            CreateMap<ApplicationInviteCreateRequest, SearchInvitationQry>();
         }
     }
 }

@@ -5,13 +5,13 @@ namespace Spd.Manager.Cases
 {
     public interface IApplicationManager
     {
-        public Task<IEnumerable<ApplicationInviteCreateResponse>> Handle(ApplicationInviteCreateCommand request, CancellationToken cancellationToken);
+        public Task<Unit> Handle(ApplicationInviteCreateCommand request, CancellationToken cancellationToken);
         public Task<IEnumerable<CheckApplicationInviteDuplicateResponse>> Handle(CheckApplicationInviteDuplicateQuery request, CancellationToken cancellationToken);
 
     }
 
-    public record ApplicationInviteCreateCommand(Guid OrgSpdId, IEnumerable<ApplicationInviteCreateRequest> ScreeningInviteCreateRequests) : IRequest<IEnumerable<ApplicationInviteCreateResponse>>;
-    public record CheckApplicationInviteDuplicateQuery(Guid OrgSpdId, IEnumerable<ApplicationInviteCreateRequest> ScreeningInviteCreateRequests) : IRequest<IEnumerable<CheckApplicationInviteDuplicateResponse>>;
+    public record ApplicationInviteCreateCommand(Guid OrgSpdId, IEnumerable<ApplicationInviteCreateRequest> ApplicationInviteCreateRequests) : IRequest<Unit>;
+    public record CheckApplicationInviteDuplicateQuery(Guid OrgSpdId, IEnumerable<ApplicationInviteCreateRequest> ApplicationInviteCreateRequests) : IRequest<IEnumerable<CheckApplicationInviteDuplicateResponse>>;
 
     public record ApplicationInviteCreateRequest
     {
@@ -30,6 +30,7 @@ namespace Spd.Manager.Cases
 
     public class CheckApplicationInviteDuplicateResponse
     {
+        public Guid OrgSpdId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }

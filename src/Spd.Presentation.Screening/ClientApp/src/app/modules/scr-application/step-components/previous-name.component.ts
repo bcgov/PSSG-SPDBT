@@ -162,7 +162,7 @@ export class PreviousNameComponent implements OnInit, ScreeningFormStepComponent
 			icon: 'warning',
 			title: 'Remove Row',
 			message: 'Are you sure you want to remove this previous name?',
-			actionText: 'Yes, delete this name',
+			actionText: 'Yes, remove this name',
 			cancelText: 'Cancel',
 		};
 

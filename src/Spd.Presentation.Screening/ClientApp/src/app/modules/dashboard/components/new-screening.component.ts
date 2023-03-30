@@ -200,7 +200,7 @@ export class NewScreeningComponent implements OnInit {
 			const data: DialogOptions = {
 				icon: 'warning',
 				title: 'Remove Row',
-				message: 'This row cannot be deleted. At least one row must exist.',
+				message: 'This row cannot be removed. At least one row must exist.',
 				cancelText: 'Close',
 			};
 
@@ -212,7 +212,7 @@ export class NewScreeningComponent implements OnInit {
 			icon: 'warning',
 			title: 'Remove Row',
 			message: 'Are you sure you want to remove this screening request?',
-			actionText: 'Yes, delete this row',
+			actionText: 'Yes, remove this row',
 			cancelText: 'Cancel',
 		};
 
@@ -263,11 +263,25 @@ export class NewScreeningComponent implements OnInit {
 					});
 					const dupMessage = `<ul>${dupRows}</ul>`;
 
+					let dialogTitle = '';
+					let dialogMessage = '';
+					let dialogAction = '';
+
+					if (dupres?.length > 1) {
+						dialogTitle = 'Potential Duplicates Detected';
+						dialogMessage = `Potential duplicates have been detected from the screening request you have attempted to send. Ensure that the applicants do not currently have a screening application in progress nor have been sent a screening invitation recently.<br/><br/>${dupMessage}Do you still wish to proceed?`;
+						dialogAction = 'Yes, send requests';
+					} else {
+						dialogTitle = 'Potential Duplicate Detected';
+						dialogMessage = `A potential duplicate has been detected from the screening request you have attempted to send. Ensure that the applicant does not currently have a screening application in progress nor have been sent a screening invitation recently.<br/><br/>${dupMessage}Do you still wish to proceed?`;
+						dialogAction = 'Yes, send request';
+					}
+
 					const data: DialogOptions = {
 						icon: 'warning',
-						title: 'Potential Duplicate Detected',
-						message: `A potential duplicate has been detected from the screening request you have attempted to send. Ensure that the applicant does not currently have a screening application in progress nor have been sent a screening invitation recently.<br/><br/>${dupMessage}Do you still wish to proceed?`,
-						actionText: 'Yes, send request',
+						title: dialogTitle,
+						message: dialogMessage,
+						actionText: dialogAction,
 						cancelText: 'Cancel',
 					};
 
@@ -275,8 +289,6 @@ export class NewScreeningComponent implements OnInit {
 						.open(DialogComponent, { data })
 						.afterClosed()
 						.subscribe((response: boolean) => {
-							// Save potential duplicate
-							// body.hasPotentialDuplicate = BooleanTypeCode.Yes;
 							if (response) {
 								this.promptVulnerableSector(control);
 							}
@@ -291,8 +303,7 @@ export class NewScreeningComponent implements OnInit {
 		const data: DialogOptions = {
 			icon: 'info_outline',
 			title: 'Vulnerable Sector',
-			message:
-				'In their roles with your organization, will these individuals work directly with, or potentially have unsupervised access to, children and/or vulnerable adults?',
+			message: '',
 			actionText: 'Yes',
 			cancelText: 'No',
 		};
@@ -333,7 +344,7 @@ export class NewScreeningComponent implements OnInit {
 		this.applicationService
 			.apiOrgsOrgIdApplicationInvitesPost({ orgId: '4165bdfe-7cb4-ed11-b83e-00505683fbf4', body })
 			.pipe()
-			.subscribe((resp: any) => {
+			.subscribe((_resp: any) => {
 				// after success clear data and display toast
 				this.hotToast.success(
 					`The screening request${numberOfRequests > 1 ? 's were' : ' was'} successfully sent to the applicant${
