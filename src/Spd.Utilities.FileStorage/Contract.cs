@@ -7,11 +7,11 @@
     }
 
     public abstract record StorageCommand { }
-    public record UploadItemCommand : StorageCommand
+    public record UploadFileCommand : StorageCommand
     {
         public File File { get; set; } = null!;
     }
-    public record DeleteItemCommand : StorageCommand
+    public record DeleteFileCommand : StorageCommand
     {
         public string Id { get; set; } = null!;
     }
@@ -47,7 +47,7 @@
         public File File { get; set; }
     }
 
-    public record GetItemByKeyQuery : StorageQuery
+    public record FileQuery : StorageQuery
     {
         public string Key { get; set; }
     }

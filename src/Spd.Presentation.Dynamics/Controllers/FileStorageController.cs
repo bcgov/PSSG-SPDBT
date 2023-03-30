@@ -20,13 +20,6 @@ namespace Spd.Presentation.Dynamics.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet]
-        [Route("api/health")]
-        public ActionResult<bool> HealthCheck()
-        {
-            return Ok(true);
-        }
-
         /// <summary>
         /// Upload file
         /// The maximum file size would be 30M.
@@ -43,7 +36,7 @@ namespace Spd.Presentation.Dynamics.Controllers
             File spdFile = _mapper.Map<File>(request);
             spdFile.Content = ms.ToArray();
 
-            string id = await _storageService.HandleCommand(new UploadItemCommand { File = spdFile }, CancellationToken.None);
+            string id = await _storageService.HandleCommand(new UploadFileCommand { File = spdFile }, CancellationToken.None);
 
             return new UploadFileResponse { Id = id };
         }
@@ -69,7 +62,7 @@ namespace Spd.Presentation.Dynamics.Controllers
         [Route("api/files/{fileId}")]
         public async Task<IActionResult> DownloadFile(string fileId)
         {
-            StorageQueryResults result = await _storageService.HandleQuery(new GetItemByKeyQuery { Key = fileId }, CancellationToken.None);
+            StorageQueryResults result = await _storageService.HandleQuery(new FileQuery { Key = fileId }, CancellationToken.None);
 
             var content = new System.IO.MemoryStream(result.File.Content);
             var contentType = result.File.ContentType;

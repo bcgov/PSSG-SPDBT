@@ -18,7 +18,7 @@ namespace Spd.Utilities.FileStorage
         {
             return cmd switch
             {
-                UploadItemCommand c => await UploadStorageItem(c, cancellationToken),
+                UploadFileCommand c => await UploadStorageItem(c, cancellationToken),
                 _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
             };
         }
@@ -27,13 +27,13 @@ namespace Spd.Utilities.FileStorage
         {
             var file = query switch
             {
-                GetItemByKeyQuery q => await DownloadStorageItem(q.Key, cancellationToken),
+                FileQuery q => await DownloadStorageItem(q.Key, cancellationToken),
                 _ => throw new NotSupportedException($"{query.GetType().Name} is not supported")
             };
             return new StorageQueryResults { File = file };
         }
 
-        private async Task<string> UploadStorageItem(UploadItemCommand cmd, CancellationToken cancellationToken)
+        private async Task<string> UploadStorageItem(UploadFileCommand cmd, CancellationToken cancellationToken)
         {
             File file = cmd.File;
             var folder = file.Folder == null ? "" : $"{file.Folder}/";
