@@ -21,7 +21,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 					</button>
 				</div>
 				<div class="col-xl-3 col-lg-4 col-md-12 col-sm-12">
-					<button mat-flat-button color="primary" class="large mb-2" (click)="onToggleViewOnly()">
+					<button mat-raised-button color="primary" class="large mb-2" (click)="onToggleViewOnly()">
 						<span *ngIf="viewOnly; else save">Edit Information </span>
 						<ng-template #save> Save Information </ng-template>
 					</button>
@@ -148,7 +148,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 				</div>
 				<div class="row">
 					<div class="col-xl-4 col-lg-12">
-						<mat-radio-group aria-label="Select an option" formControlName="payerPreference">
+						<mat-radio-group aria-label="Select an option" formControlName="payerPreference" class="d-flex flex-row">
 							<mat-radio-button [value]="payerPreferenceTypeCode.Organization">Organization Pays</mat-radio-button>
 							<mat-radio-button [value]="payerPreferenceTypeCode.Applicant">Applicant Pays</mat-radio-button>
 						</mat-radio-group>
@@ -170,7 +170,11 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 				</div>
 				<div class="row">
 					<div class="col-xl-4 col-lg-12">
-						<mat-radio-group aria-label="Select an option" formControlName="contractorsNeedVulnerableSectorScreening">
+						<mat-radio-group
+							aria-label="Select an option"
+							formControlName="contractorsNeedVulnerableSectorScreening"
+							class="d-flex flex-row"
+						>
 							<mat-radio-button [value]="booleanTypeCodes.No">No</mat-radio-button>
 							<mat-radio-button [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
 						</mat-radio-group>
@@ -193,7 +197,11 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 				</div>
 				<div class="row">
 					<div class="col-xl-4 col-lg-12">
-						<mat-radio-group aria-label="Select an option" formControlName="licenseesNeedVulnerableSectorScreening">
+						<mat-radio-group
+							aria-label="Select an option"
+							formControlName="licenseesNeedVulnerableSectorScreening"
+							class="d-flex flex-row"
+						>
 							<mat-radio-button [value]="booleanTypeCodes.No" class="mb-0">No</mat-radio-button>
 							<mat-radio-button [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
 						</mat-radio-group>

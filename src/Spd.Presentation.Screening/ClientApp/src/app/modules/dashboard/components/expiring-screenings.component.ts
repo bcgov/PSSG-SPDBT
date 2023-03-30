@@ -30,7 +30,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 						<button
 							mat-button
 							matSuffix
-							mat-flat-button
+							mat-raised-button
 							color="primary"
 							aria-label="search"
 							style="padding: 2.1em 0; border-radius: unset;"
@@ -53,7 +53,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 					</app-dropdown-overlay>
 				</div>
 				<div class="col-xl-3 col-lg-4 col-md-10 col-sm-9">
-					<button mat-flat-button color="primary" class="xlarge w-100 mb-2">
+					<button mat-raised-button color="primary" class="xlarge w-100 mb-2">
 						<mat-icon>download</mat-icon>Download Report
 					</button>
 				</div>
@@ -119,7 +119,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 									color="primary"
 									aria-label="Download Clearance Letter"
 								>
-									Download
+									<mat-icon>file_download</mat-icon>Download
 								</button>
 							</mat-cell>
 						</ng-container>
@@ -128,7 +128,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 							<mat-header-cell *matHeaderCellDef></mat-header-cell>
 							<mat-cell *matCellDef="let screening">
 								<button mat-raised-button class="table-button request-button m-2" aria-label="Send Request">
-									Send Request
+									<mat-icon>send</mat-icon>Send Request
 								</button>
 							</mat-cell>
 						</ng-container>
@@ -136,7 +136,9 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 						<ng-container matColumnDef="status3">
 							<mat-header-cell *matHeaderCellDef></mat-header-cell>
 							<mat-cell *matCellDef="let screening">
-								<button mat-raised-button class="table-button pay-button m-2" aria-label="Remove">Remove</button>
+								<button mat-icon-button class="table-button m-2" aria-label="Remove" matTooltip="Remove">
+									<mat-icon>delete_outline</mat-icon>
+								</button>
 							</mat-cell>
 						</ng-container>
 
@@ -169,6 +171,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 
 			.table-button {
 				max-width: 170px;
+				white-space: nowrap;
 			}
 
 			.request-button {

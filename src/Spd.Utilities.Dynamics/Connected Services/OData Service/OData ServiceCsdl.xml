@@ -36,7 +36,6 @@
         <Property Name="lastusedincampaign" Type="Edm.DateTimeOffset" />
         <Property Name="address1_name" Type="Edm.String" Unicode="false" />
         <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
-        <Property Name="industrycode" Type="Edm.Int32" />
         <Property Name="_owningbusinessunit_value" Type="Edm.Guid" />
         <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
         <Property Name="entityimageid" Type="Edm.Guid" />
@@ -60,6 +59,7 @@
         <Property Name="opendeals" Type="Edm.Int32" />
         <Property Name="opendeals_state" Type="Edm.Int32" />
         <Property Name="address1_addressid" Type="Edm.Guid" />
+        <Property Name="_transactioncurrencyid_value" Type="Edm.Guid" />
         <Property Name="address2_telephone1" Type="Edm.String" Unicode="false" />
         <Property Name="address1_primarycontactname" Type="Edm.String" Unicode="false" />
         <Property Name="address1_fax" Type="Edm.String" Unicode="false" />
@@ -93,7 +93,6 @@
         <Property Name="merged" Type="Edm.Boolean" />
         <Property Name="address1_shippingmethodcode" Type="Edm.Int32" />
         <Property Name="description" Type="Edm.String" Unicode="false" />
-        <Property Name="_transactioncurrencyid_value" Type="Edm.Guid" />
         <Property Name="address1_stateorprovince" Type="Edm.String" Unicode="false" />
         <Property Name="preferredappointmentdaycode" Type="Edm.Int32" />
         <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
@@ -109,6 +108,7 @@
         <Property Name="_spd_organizationtypeid_value" Type="Edm.Guid" />
         <Property Name="openrevenue" Type="Edm.Decimal" Scale="Variable" />
         <Property Name="statecode" Type="Edm.Int32" />
+        <Property Name="spd_orgguid" Type="Edm.String" Unicode="false" />
         <Property Name="donotfax" Type="Edm.Boolean" />
         <Property Name="address1_county" Type="Edm.String" Unicode="false" />
         <Property Name="address2_postofficebox" Type="Edm.String" Unicode="false" />
@@ -200,7 +200,7 @@
         <Property Name="emailaddress2" Type="Edm.String" Unicode="false" />
         <Property Name="marketcap_base" Type="Edm.Decimal" Scale="Variable" />
         <Property Name="importsequencenumber" Type="Edm.Int32" />
-        <Property Name="spd_registrationtype" Type="Edm.Int32" />
+        <Property Name="industrycode" Type="Edm.Int32" />
         <Property Name="spd_figaroid" Type="Edm.String" Unicode="false" />
         <Property Name="address1_telephone3" Type="Edm.String" Unicode="false" />
         <Property Name="accountcategorycode" Type="Edm.Int32" />
@@ -747,6 +747,9 @@
         </NavigationProperty>
         <NavigationProperty Name="regardingobjectid_spd_orgregistration" Type="mscrm.spd_orgregistration" Nullable="false" Partner="spd_orgregistration_ActivityPointers">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_orgregistrationid" />
+        </NavigationProperty>
+        <NavigationProperty Name="regardingobjectid_spd_portalinvitation" Type="mscrm.spd_portalinvitation" Nullable="false" Partner="spd_portalinvitation_ActivityPointers">
+          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_portalinvitationid" />
         </NavigationProperty>
         <NavigationProperty Name="regardingobjectid_account" Type="mscrm.account" Nullable="false" Partner="Account_ActivityPointers">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="accountid" />
@@ -1334,6 +1337,7 @@
         <NavigationProperty Name="regardingobjectid_msdyn_postalbum_appointment" Type="mscrm.msdyn_postalbum" Nullable="false" Partner="msdyn_postalbum_Appointments" />
         <NavigationProperty Name="bcgov_appointment_bcgov_documenturl" Type="Collection(mscrm.bcgov_documenturl)" Partner="bcgov_AppointmentId" />
         <NavigationProperty Name="regardingobjectid_spd_orgregistration_appointment" Type="mscrm.spd_orgregistration" Nullable="false" Partner="spd_orgregistration_Appointments" />
+        <NavigationProperty Name="regardingobjectid_spd_portalinvitation_appointment" Type="mscrm.spd_portalinvitation" Nullable="false" Partner="spd_portalinvitation_Appointments" />
         <NavigationProperty Name="Appointment_QueueItem" Type="Collection(mscrm.queueitem)" Partner="objectid_appointment" />
         <NavigationProperty Name="Appointment_Annotation" Type="Collection(mscrm.annotation)" Partner="objectid_appointment" />
         <NavigationProperty Name="Appointment_SyncErrors" Type="Collection(mscrm.syncerror)" Partner="regardingobjectid_appointment_syncerror" />
@@ -7213,6 +7217,7 @@
         <NavigationProperty Name="regardingobjectid_msdyn_postalbum_email" Type="mscrm.msdyn_postalbum" Nullable="false" Partner="msdyn_postalbum_Emails" />
         <NavigationProperty Name="bcgov_email_bcgov_documenturl" Type="Collection(mscrm.bcgov_documenturl)" Partner="bcgov_EmailId" />
         <NavigationProperty Name="regardingobjectid_spd_orgregistration_email" Type="mscrm.spd_orgregistration" Nullable="false" Partner="spd_orgregistration_Emails" />
+        <NavigationProperty Name="regardingobjectid_spd_portalinvitation_email" Type="mscrm.spd_portalinvitation" Nullable="false" Partner="spd_portalinvitation_Emails" />
         <NavigationProperty Name="Email_SyncErrors" Type="Collection(mscrm.syncerror)" Partner="regardingobjectid_email_syncerror" />
         <NavigationProperty Name="transactioncurrencyid_email" Type="mscrm.transactioncurrency" Nullable="false" Partner="TransactionCurrency_Email" />
         <NavigationProperty Name="regardingobjectid_asyncoperation" Type="mscrm.asyncoperation" Nullable="false" Partner="AsyncOperation_Emails" />
@@ -7976,6 +7981,7 @@
         <NavigationProperty Name="regardingobjectid_msdyn_postalbum_fax" Type="mscrm.msdyn_postalbum" Nullable="false" Partner="msdyn_postalbum_Faxes" />
         <NavigationProperty Name="bcgov_fax_bcgov_documenturl" Type="Collection(mscrm.bcgov_documenturl)" Partner="bcgov_FaxId" />
         <NavigationProperty Name="regardingobjectid_spd_orgregistration_fax" Type="mscrm.spd_orgregistration" Nullable="false" Partner="spd_orgregistration_Faxes" />
+        <NavigationProperty Name="regardingobjectid_spd_portalinvitation_fax" Type="mscrm.spd_portalinvitation" Nullable="false" Partner="spd_portalinvitation_Faxes" />
         <NavigationProperty Name="Fax_BulkDeleteFailures" Type="Collection(mscrm.bulkdeletefailure)" Partner="regardingobjectid_fax" />
         <NavigationProperty Name="stageid_processstage" Type="mscrm.processstage" Nullable="false" Partner="processstage_faxes" />
         <NavigationProperty Name="owningbusinessunit_fax" Type="mscrm.businessunit" Nullable="false" Partner="business_unit_fax_activities" />
@@ -10508,6 +10514,7 @@
         <NavigationProperty Name="regardingobjectid_msdyn_postalbum_letter" Type="mscrm.msdyn_postalbum" Nullable="false" Partner="msdyn_postalbum_Letters" />
         <NavigationProperty Name="bcgov_letter_bcgov_documenturl" Type="Collection(mscrm.bcgov_documenturl)" Partner="bcgov_LetterId" />
         <NavigationProperty Name="regardingobjectid_spd_orgregistration_letter" Type="mscrm.spd_orgregistration" Nullable="false" Partner="spd_orgregistration_Letters" />
+        <NavigationProperty Name="regardingobjectid_spd_portalinvitation_letter" Type="mscrm.spd_portalinvitation" Nullable="false" Partner="spd_portalinvitation_Letters" />
         <NavigationProperty Name="letter_actioncard" Type="Collection(mscrm.actioncard)" Partner="regardingobjectid_letter_actioncard" />
         <NavigationProperty Name="letter_principalobjectattributeaccess" Type="Collection(mscrm.principalobjectattributeaccess)" Partner="objectid_letter" />
         <NavigationProperty Name="slakpiinstance_letter" Type="Collection(mscrm.slakpiinstance)" Partner="regarding_letter" />
@@ -13496,6 +13503,7 @@
         <NavigationProperty Name="regardingobjectid_msdyn_postalbum_phonecall" Type="mscrm.msdyn_postalbum" Nullable="false" Partner="msdyn_postalbum_PhoneCalls" />
         <NavigationProperty Name="bcgov_phonecall_bcgov_documenturl" Type="Collection(mscrm.bcgov_documenturl)" Partner="bcgov_PhoneCallId" />
         <NavigationProperty Name="regardingobjectid_spd_orgregistration_phonecall" Type="mscrm.spd_orgregistration" Nullable="false" Partner="spd_orgregistration_PhoneCalls" />
+        <NavigationProperty Name="regardingobjectid_spd_portalinvitation_phonecall" Type="mscrm.spd_portalinvitation" Nullable="false" Partner="spd_portalinvitation_PhoneCalls" />
         <NavigationProperty Name="phonecall_actioncard" Type="Collection(mscrm.actioncard)" Partner="regardingobjectid_phonecall_actioncard" />
         <NavigationProperty Name="transactioncurrencyid_phonecall" Type="mscrm.transactioncurrency" Nullable="false" Partner="TransactionCurrency_PhoneCall" />
         <NavigationProperty Name="regardingobjectid_contact_phonecall" Type="mscrm.contact" Nullable="false" Partner="Contact_Phonecalls" />
@@ -16584,6 +16592,7 @@
         <NavigationProperty Name="regardingobjectid_salesorder_recurringappointmentmaster" Type="mscrm.salesorder" Nullable="false" Partner="SalesOrder_RecurringAppointmentMasters" />
         <NavigationProperty Name="regardingobjectid_msdyn_postalbum_recurringappointmentmaster" Type="mscrm.msdyn_postalbum" Nullable="false" Partner="msdyn_postalbum_RecurringAppointmentMasters" />
         <NavigationProperty Name="regardingobjectid_spd_orgregistration_recurringappointmentmaster" Type="mscrm.spd_orgregistration" Nullable="false" Partner="spd_orgregistration_RecurringAppointmentMasters" />
+        <NavigationProperty Name="regardingobjectid_spd_portalinvitation_recurringappointmentmaster" Type="mscrm.spd_portalinvitation" Nullable="false" Partner="spd_portalinvitation_RecurringAppointmentMasters" />
         <NavigationProperty Name="RecurringAppointmentMaster_BulkDeleteFailures" Type="Collection(mscrm.bulkdeletefailure)" Partner="regardingobjectid_recurringappointmentmaster" />
         <NavigationProperty Name="RecurringAppointmentMaster_AsyncOperations" Type="Collection(mscrm.asyncoperation)" Partner="regardingobjectid_recurringappointmentmaster" />
         <NavigationProperty Name="RecurringAppointmentMaster_DuplicateBaseRecord" Type="Collection(mscrm.duplicaterecord)" Partner="baserecordid_recurringappointmentmaster" />
@@ -17964,6 +17973,7 @@
         <NavigationProperty Name="regardingobjectid_salesorder_serviceappointment" Type="mscrm.salesorder" Nullable="false" Partner="SalesOrder_ServiceAppointments" />
         <NavigationProperty Name="regardingobjectid_msdyn_postalbum_serviceappointment" Type="mscrm.msdyn_postalbum" Nullable="false" Partner="msdyn_postalbum_ServiceAppointments" />
         <NavigationProperty Name="regardingobjectid_spd_orgregistration_serviceappointment" Type="mscrm.spd_orgregistration" Nullable="false" Partner="spd_orgregistration_ServiceAppointments" />
+        <NavigationProperty Name="regardingobjectid_spd_portalinvitation_serviceappointment" Type="mscrm.spd_portalinvitation" Nullable="false" Partner="spd_portalinvitation_ServiceAppointments" />
       </EntityType>
       <EntityType Name="servicecontractcontacts" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -18794,6 +18804,7 @@
         <NavigationProperty Name="regardingobjectid_salesorder_socialactivity" Type="mscrm.salesorder" Nullable="false" Partner="SalesOrder_SocialActivities" />
         <NavigationProperty Name="regardingobjectid_msdyn_postalbum_socialactivity" Type="mscrm.msdyn_postalbum" Nullable="false" Partner="msdyn_postalbum_SocialActivities" />
         <NavigationProperty Name="regardingobjectid_spd_orgregistration_socialactivity" Type="mscrm.spd_orgregistration" Nullable="false" Partner="spd_orgregistration_SocialActivities" />
+        <NavigationProperty Name="regardingobjectid_spd_portalinvitation_socialactivity" Type="mscrm.spd_portalinvitation" Nullable="false" Partner="spd_portalinvitation_SocialActivities" />
         <NavigationProperty Name="socialactivity_connections2" Type="Collection(mscrm.connection)" Partner="record2id_socialactivity" />
         <NavigationProperty Name="modifiedonbehalfby_socialactivity" Type="mscrm.systemuser" Nullable="false" Partner="lk_socialactivitybase_modifiedonbehalfby" />
         <NavigationProperty Name="regardingobjectid_contact_socialactivity" Type="mscrm.contact" Nullable="false" Partner="Contact_SocialActivities" />
@@ -19708,24 +19719,29 @@
         <Key>
           <PropertyRef Name="spd_portalinvitationid" />
         </Key>
-        <Property Name="importsequencenumber" Type="Edm.Int32" />
-        <Property Name="versionnumber" Type="Edm.Int64" />
-        <Property Name="_organizationid_value" Type="Edm.Guid" />
-        <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
-        <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
-        <Property Name="statuscode" Type="Edm.Int32" />
-        <Property Name="_modifiedby_value" Type="Edm.Guid" />
-        <Property Name="createdon" Type="Edm.DateTimeOffset" />
-        <Property Name="statecode" Type="Edm.Int32" />
-        <Property Name="_createdby_value" Type="Edm.Guid" />
         <Property Name="_spd_portaluserid_value" Type="Edm.Guid" />
-        <Property Name="spd_invitationlink" Type="Edm.String" Unicode="false" />
         <Property Name="_spd_organizationid_value" Type="Edm.Guid" />
-        <Property Name="spd_portalinvitationid" Type="Edm.Guid" />
+        <Property Name="importsequencenumber" Type="Edm.Int32" />
+        <Property Name="spd_firstname" Type="Edm.String" Unicode="false" />
+        <Property Name="_createdby_value" Type="Edm.Guid" />
         <Property Name="_modifiedonbehalfby_value" Type="Edm.Guid" />
-        <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
+        <Property Name="_organizationid_value" Type="Edm.Guid" />
+        <Property Name="statuscode" Type="Edm.Int32" />
+        <Property Name="spd_email" Type="Edm.String" Unicode="false" />
+        <Property Name="_modifiedby_value" Type="Edm.Guid" />
         <Property Name="spd_invitationnumber" Type="Edm.String" Unicode="false" />
+        <Property Name="statecode" Type="Edm.Int32" />
+        <Property Name="spd_invitationlink" Type="Edm.String" Unicode="false" />
+        <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
         <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
+        <Property Name="spd_portalinvitationid" Type="Edm.Guid" />
+        <Property Name="versionnumber" Type="Edm.Int64" />
+        <Property Name="spd_payeetype" Type="Edm.Int32" />
+        <Property Name="spd_surname" Type="Edm.String" Unicode="false" />
+        <Property Name="createdon" Type="Edm.DateTimeOffset" />
+        <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
+        <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
+        <Property Name="spd_jobtitle" Type="Edm.String" Unicode="false" />
         <Property Name="_createdonbehalfby_value" Type="Edm.Guid" />
         <NavigationProperty Name="createdby" Type="mscrm.systemuser" Nullable="false" Partner="lk_spd_portalinvitation_createdby">
           <ReferentialConstraint Property="_createdby_value" ReferencedProperty="systemuserid" />
@@ -19756,6 +19772,16 @@
         <NavigationProperty Name="spd_OrganizationId" Type="mscrm.account" Nullable="false" Partner="spd_orgagnization_spd_portalinvitation">
           <ReferentialConstraint Property="_spd_organizationid_value" ReferencedProperty="accountid" />
         </NavigationProperty>
+        <NavigationProperty Name="spd_portalinvitation_ActivityPointers" Type="Collection(mscrm.activitypointer)" Partner="regardingobjectid_spd_portalinvitation" />
+        <NavigationProperty Name="spd_portalinvitation_Appointments" Type="Collection(mscrm.appointment)" Partner="regardingobjectid_spd_portalinvitation_appointment" />
+        <NavigationProperty Name="spd_portalinvitation_Emails" Type="Collection(mscrm.email)" Partner="regardingobjectid_spd_portalinvitation_email" />
+        <NavigationProperty Name="spd_portalinvitation_Faxes" Type="Collection(mscrm.fax)" Partner="regardingobjectid_spd_portalinvitation_fax" />
+        <NavigationProperty Name="spd_portalinvitation_Letters" Type="Collection(mscrm.letter)" Partner="regardingobjectid_spd_portalinvitation_letter" />
+        <NavigationProperty Name="spd_portalinvitation_PhoneCalls" Type="Collection(mscrm.phonecall)" Partner="regardingobjectid_spd_portalinvitation_phonecall" />
+        <NavigationProperty Name="spd_portalinvitation_Tasks" Type="Collection(mscrm.task)" Partner="regardingobjectid_spd_portalinvitation_task" />
+        <NavigationProperty Name="spd_portalinvitation_RecurringAppointmentMasters" Type="Collection(mscrm.recurringappointmentmaster)" Partner="regardingobjectid_spd_portalinvitation_recurringappointmentmaster" />
+        <NavigationProperty Name="spd_portalinvitation_SocialActivities" Type="Collection(mscrm.socialactivity)" Partner="regardingobjectid_spd_portalinvitation_socialactivity" />
+        <NavigationProperty Name="spd_portalinvitation_ServiceAppointments" Type="Collection(mscrm.serviceappointment)" Partner="regardingobjectid_spd_portalinvitation_serviceappointment" />
       </EntityType>
       <EntityType Name="spd_portaluser" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -22094,6 +22120,7 @@
         <NavigationProperty Name="regardingobjectid_msdyn_postalbum_task" Type="mscrm.msdyn_postalbum" Nullable="false" Partner="msdyn_postalbum_Tasks" />
         <NavigationProperty Name="bcgov_task_bcgov_documenturl" Type="Collection(mscrm.bcgov_documenturl)" Partner="bcgov_TaskId" />
         <NavigationProperty Name="regardingobjectid_spd_orgregistration_task" Type="mscrm.spd_orgregistration" Nullable="false" Partner="spd_orgregistration_Tasks" />
+        <NavigationProperty Name="regardingobjectid_spd_portalinvitation_task" Type="mscrm.spd_portalinvitation" Nullable="false" Partner="spd_portalinvitation_Tasks" />
         <NavigationProperty Name="task_connections2" Type="Collection(mscrm.connection)" Partner="record2id_task" />
         <NavigationProperty Name="sla_task_sla" Type="mscrm.sla" Nullable="false" Partner="manualsla_task" />
         <NavigationProperty Name="Task_DuplicateBaseRecord" Type="Collection(mscrm.duplicaterecord)" Partner="baserecordid_task" />
@@ -28958,6 +28985,7 @@
           <NavigationPropertyBinding Path="regardingobjectid_salesorder" Target="salesorders" />
           <NavigationPropertyBinding Path="regardingobjectid_msdyn_postalbum" Target="msdyn_postalbums" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_orgregistration" Target="spd_orgregistrations" />
+          <NavigationPropertyBinding Path="regardingobjectid_spd_portalinvitation" Target="spd_portalinvitations" />
           <NavigationPropertyBinding Path="regardingobjectid_account" Target="accounts" />
           <NavigationPropertyBinding Path="createdby" Target="systemusers" />
           <NavigationPropertyBinding Path="regardingobjectid_contact" Target="contacts" />
@@ -29140,6 +29168,7 @@
           <NavigationPropertyBinding Path="regardingobjectid_msdyn_postalbum_appointment" Target="msdyn_postalbums" />
           <NavigationPropertyBinding Path="bcgov_appointment_bcgov_documenturl" Target="bcgov_documenturls" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_orgregistration_appointment" Target="spd_orgregistrations" />
+          <NavigationPropertyBinding Path="regardingobjectid_spd_portalinvitation_appointment" Target="spd_portalinvitations" />
           <NavigationPropertyBinding Path="Appointment_QueueItem" Target="queueitems" />
           <NavigationPropertyBinding Path="Appointment_Annotation" Target="annotations" />
           <NavigationPropertyBinding Path="Appointment_SyncErrors" Target="syncerrors" />
@@ -31090,6 +31119,7 @@
           <NavigationPropertyBinding Path="regardingobjectid_msdyn_postalbum_email" Target="msdyn_postalbums" />
           <NavigationPropertyBinding Path="bcgov_email_bcgov_documenturl" Target="bcgov_documenturls" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_orgregistration_email" Target="spd_orgregistrations" />
+          <NavigationPropertyBinding Path="regardingobjectid_spd_portalinvitation_email" Target="spd_portalinvitations" />
           <NavigationPropertyBinding Path="Email_SyncErrors" Target="syncerrors" />
           <NavigationPropertyBinding Path="transactioncurrencyid_email" Target="transactioncurrencies" />
           <NavigationPropertyBinding Path="regardingobjectid_asyncoperation" Target="asyncoperations" />
@@ -31359,6 +31389,7 @@
           <NavigationPropertyBinding Path="regardingobjectid_msdyn_postalbum_fax" Target="msdyn_postalbums" />
           <NavigationPropertyBinding Path="bcgov_fax_bcgov_documenturl" Target="bcgov_documenturls" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_orgregistration_fax" Target="spd_orgregistrations" />
+          <NavigationPropertyBinding Path="regardingobjectid_spd_portalinvitation_fax" Target="spd_portalinvitations" />
           <NavigationPropertyBinding Path="Fax_BulkDeleteFailures" Target="bulkdeletefailures" />
           <NavigationPropertyBinding Path="stageid_processstage" Target="processstages" />
           <NavigationPropertyBinding Path="owningbusinessunit_fax" Target="businessunits" />
@@ -32096,6 +32127,7 @@
           <NavigationPropertyBinding Path="regardingobjectid_msdyn_postalbum_letter" Target="msdyn_postalbums" />
           <NavigationPropertyBinding Path="bcgov_letter_bcgov_documenturl" Target="bcgov_documenturls" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_orgregistration_letter" Target="spd_orgregistrations" />
+          <NavigationPropertyBinding Path="regardingobjectid_spd_portalinvitation_letter" Target="spd_portalinvitations" />
           <NavigationPropertyBinding Path="letter_actioncard" Target="actioncards" />
           <NavigationPropertyBinding Path="letter_principalobjectattributeaccess" Target="principalobjectattributeaccessset" />
           <NavigationPropertyBinding Path="slakpiinstance_letter" Target="slakpiinstances" />
@@ -32937,6 +32969,7 @@
           <NavigationPropertyBinding Path="regardingobjectid_msdyn_postalbum_phonecall" Target="msdyn_postalbums" />
           <NavigationPropertyBinding Path="bcgov_phonecall_bcgov_documenturl" Target="bcgov_documenturls" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_orgregistration_phonecall" Target="spd_orgregistrations" />
+          <NavigationPropertyBinding Path="regardingobjectid_spd_portalinvitation_phonecall" Target="spd_portalinvitations" />
           <NavigationPropertyBinding Path="phonecall_actioncard" Target="actioncards" />
           <NavigationPropertyBinding Path="transactioncurrencyid_phonecall" Target="transactioncurrencies" />
           <NavigationPropertyBinding Path="regardingobjectid_contact_phonecall" Target="contacts" />
@@ -33893,6 +33926,7 @@
           <NavigationPropertyBinding Path="regardingobjectid_salesorder_recurringappointmentmaster" Target="salesorders" />
           <NavigationPropertyBinding Path="regardingobjectid_msdyn_postalbum_recurringappointmentmaster" Target="msdyn_postalbums" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_orgregistration_recurringappointmentmaster" Target="spd_orgregistrations" />
+          <NavigationPropertyBinding Path="regardingobjectid_spd_portalinvitation_recurringappointmentmaster" Target="spd_portalinvitations" />
           <NavigationPropertyBinding Path="RecurringAppointmentMaster_BulkDeleteFailures" Target="bulkdeletefailures" />
           <NavigationPropertyBinding Path="RecurringAppointmentMaster_AsyncOperations" Target="asyncoperations" />
           <NavigationPropertyBinding Path="RecurringAppointmentMaster_DuplicateBaseRecord" Target="duplicaterecords" />
@@ -34271,6 +34305,7 @@
           <NavigationPropertyBinding Path="regardingobjectid_salesorder_serviceappointment" Target="salesorders" />
           <NavigationPropertyBinding Path="regardingobjectid_msdyn_postalbum_serviceappointment" Target="msdyn_postalbums" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_orgregistration_serviceappointment" Target="spd_orgregistrations" />
+          <NavigationPropertyBinding Path="regardingobjectid_spd_portalinvitation_serviceappointment" Target="spd_portalinvitations" />
         </EntitySet>
         <EntitySet Name="servicecontractcontactscollection" EntityType="Microsoft.Dynamics.CRM.servicecontractcontacts">
           <NavigationPropertyBinding Path="servicecontractcontacts_AsyncOperations" Target="asyncoperations" />
@@ -34542,6 +34577,7 @@
           <NavigationPropertyBinding Path="regardingobjectid_salesorder_socialactivity" Target="salesorders" />
           <NavigationPropertyBinding Path="regardingobjectid_msdyn_postalbum_socialactivity" Target="msdyn_postalbums" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_orgregistration_socialactivity" Target="spd_orgregistrations" />
+          <NavigationPropertyBinding Path="regardingobjectid_spd_portalinvitation_socialactivity" Target="spd_portalinvitations" />
           <NavigationPropertyBinding Path="socialactivity_connections2" Target="connections" />
           <NavigationPropertyBinding Path="modifiedonbehalfby_socialactivity" Target="systemusers" />
           <NavigationPropertyBinding Path="regardingobjectid_contact_socialactivity" Target="contacts" />
@@ -34835,6 +34871,16 @@
           <NavigationPropertyBinding Path="spd_portalinvitation_PrincipalObjectAttributeAccesses" Target="principalobjectattributeaccessset" />
           <NavigationPropertyBinding Path="spd_PortalUserId" Target="spd_portalusers" />
           <NavigationPropertyBinding Path="spd_OrganizationId" Target="accounts" />
+          <NavigationPropertyBinding Path="spd_portalinvitation_ActivityPointers" Target="activitypointers" />
+          <NavigationPropertyBinding Path="spd_portalinvitation_Appointments" Target="appointments" />
+          <NavigationPropertyBinding Path="spd_portalinvitation_Emails" Target="emails" />
+          <NavigationPropertyBinding Path="spd_portalinvitation_Faxes" Target="faxes" />
+          <NavigationPropertyBinding Path="spd_portalinvitation_Letters" Target="letters" />
+          <NavigationPropertyBinding Path="spd_portalinvitation_PhoneCalls" Target="phonecalls" />
+          <NavigationPropertyBinding Path="spd_portalinvitation_Tasks" Target="tasks" />
+          <NavigationPropertyBinding Path="spd_portalinvitation_RecurringAppointmentMasters" Target="recurringappointmentmasters" />
+          <NavigationPropertyBinding Path="spd_portalinvitation_SocialActivities" Target="socialactivities" />
+          <NavigationPropertyBinding Path="spd_portalinvitation_ServiceAppointments" Target="serviceappointments" />
         </EntitySet>
         <EntitySet Name="spd_portalusers" EntityType="Microsoft.Dynamics.CRM.spd_portaluser">
           <NavigationPropertyBinding Path="createdby" Target="systemusers" />
@@ -36266,6 +36312,7 @@
           <NavigationPropertyBinding Path="regardingobjectid_msdyn_postalbum_task" Target="msdyn_postalbums" />
           <NavigationPropertyBinding Path="bcgov_task_bcgov_documenturl" Target="bcgov_documenturls" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_orgregistration_task" Target="spd_orgregistrations" />
+          <NavigationPropertyBinding Path="regardingobjectid_spd_portalinvitation_task" Target="spd_portalinvitations" />
           <NavigationPropertyBinding Path="task_connections2" Target="connections" />
           <NavigationPropertyBinding Path="sla_task_sla" Target="slas" />
           <NavigationPropertyBinding Path="Task_DuplicateBaseRecord" Target="duplicaterecords" />

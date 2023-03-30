@@ -113,7 +113,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 						<button
 							mat-button
 							matSuffix
-							mat-flat-button
+							mat-raised-button
 							color="primary"
 							aria-label="search"
 							style="padding: 2.1em 0; border-radius: unset;"
@@ -136,7 +136,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 					</app-dropdown-overlay>
 				</div>
 				<div class="col-xl-3 col-lg-4 col-md-10 col-sm-9">
-					<button mat-flat-button color="primary" class="xlarge w-100 mb-2">
+					<button mat-raised-button color="primary" class="xlarge w-100 mb-2">
 						<mat-icon>download</mat-icon>Download Report
 					</button>
 				</div>

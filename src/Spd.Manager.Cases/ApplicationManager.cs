@@ -4,25 +4,50 @@ using Spd.Resource.Applicants;
 
 namespace Spd.Manager.Cases
 {
-    internal class ApplicationManager
-        : IRequestHandler<ApplicationInviteCreateCommand, IEnumerable<ApplicationInviteCreateResponse>>,
+    internal class ApplicationManager :
+        IRequestHandler<ApplicationInviteCreateCommand, Unit>,
+        IRequestHandler<CheckApplicationInviteDuplicateQuery, IEnumerable<CheckApplicationInviteDuplicateResponse>>,
         IApplicationManager
     {
-        private readonly IApplicationRepository _screeningRepository;
+        private readonly IApplicationRepository _applicationRepository;
         private readonly IMapper _mapper;
-        public ApplicationManager(IApplicationRepository screeningRepository, IMapper mapper)
+
+        public ApplicationManager(IApplicationRepository applicationRepository, IMapper mapper)
         {
-            _screeningRepository = screeningRepository;
+            _applicationRepository = applicationRepository;
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<ApplicationInviteCreateResponse>> Handle(ApplicationInviteCreateCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(ApplicationInviteCreateCommand request, CancellationToken cancellationToken)
         {
-            //todo: duplication check?
-
             var cmd = _mapper.Map<ApplicationInviteCreateCmd>(request);
-            var resp = await _screeningRepository.AddApplicationInvitesAsync(cmd, cancellationToken);
-            return _mapper.Map<IEnumerable<ApplicationInviteCreateResponse>>(resp);
+            //todo: after logon seq is done, we need to add userId here.
+            await _applicationRepository.AddApplicationInvitesAsync(cmd, cancellationToken);
+            return default;
+        }
+
+        public async Task<IEnumerable<CheckApplicationInviteDuplicateResponse>> Handle(CheckApplicationInviteDuplicateQuery request, CancellationToken cancellationToken)
+        {
+            List<CheckApplicationInviteDuplicateResponse> resp = new List<CheckApplicationInviteDuplicateResponse>();
+            foreach (var item in request.ApplicationInviteCreateRequests)
+            {
+                var searchInvitationQry = _mapper.Map<SearchInvitationQry>(item);
+                searchInvitationQry.OrgId = request.OrgId;
+
+                bool hasDuplicate = await _applicationRepository.CheckInviteDuplicateAsync(searchInvitationQry, cancellationToken);
+                if (hasDuplicate)
+                {
+                    CheckApplicationInviteDuplicateResponse dupResp = new CheckApplicationInviteDuplicateResponse();
+                    dupResp.HasPotentialDuplicate = true;
+                    dupResp.OrgId = request.OrgId;
+                    dupResp.FirstName = item.FirstName;
+                    dupResp.LastName = item.LastName;
+                    dupResp.Email = item.Email;
+                    resp.Add(dupResp);
+                }
+            }
+
+            return resp;
         }
     }
 }

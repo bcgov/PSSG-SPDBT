@@ -30,7 +30,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 						<button
 							mat-button
 							matSuffix
-							mat-flat-button
+							mat-raised-button
 							color="primary"
 							aria-label="search"
 							style="padding: 2.1em 0; border-radius: unset;"
@@ -107,13 +107,15 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 							<mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
 							<mat-cell *matCellDef="let verify">
 								<span class="mobile-label">Status:</span>
-								<button *ngIf="verify.status == 'Outstanding'" mat-flat-button class="confirm my-2 me-4">
-									Confirm
+								<button *ngIf="verify.status == 'Outstanding'" mat-raised-button class="confirm my-2 me-4">
+									<mat-icon>check</mat-icon>Confirm
 								</button>
-								<button *ngIf="verify.status == 'Outstanding'" mat-stroked-button color="primary">Reject</button>
+								<button *ngIf="verify.status == 'Outstanding'" mat-stroked-button color="primary">
+									<mat-icon>clear</mat-icon>Reject
+								</button>
 								<!-- <span *ngIf="verify.status == 'Outstanding'">
 									<span *ngIf="verify.status == 'Outstanding'" class="m-md-2 m-sm-0">
-										<button mat-flat-button class="confirm medium">Confirm</button>
+										<button mat-raised-button class="confirm medium">Confirm</button>
 									</span>
 									<span *ngIf="verify.status == 'Outstanding'" class="m-md-2 m-sm-0">
 										<button mat-stroked-button color="primary" class="medium">Reject</button>
@@ -132,7 +134,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 							<mat-header-cell *matHeaderCellDef></mat-header-cell>
 							<mat-cell *matCellDef="let verify">
 								<span *ngIf="verify.status == 'Outstanding'" class="w-100 m-md-2 m-sm-0">
-									<button mat-flat-button class="confirm medium">Confirm</button>
+									<button mat-raised-button class="confirm medium">Confirm</button>
 								</span>
 								<span *ngIf="verify.status == 'Outstanding'" class="w-100 m-md-2 m-sm-0">
 									<button mat-stroked-button color="primary" class="medium">Reject</button>
