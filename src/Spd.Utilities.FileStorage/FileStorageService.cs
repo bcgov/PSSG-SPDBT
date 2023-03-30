@@ -45,7 +45,7 @@ namespace Spd.Utilities.FileStorage
                 ContentType = cmd.File.ContentType,
                 InputStream = new MemoryStream(file.Content),
                 BucketName = _config.Value.Bucket,
-                //TagSet = GetTagSet(cmd.File.Tags), //todo: enable it when we have the permission.
+                TagSet = GetTagSet(cmd.File.Tags), 
             };
             request.Metadata.Add("contenttype", file.ContentType);
             request.Metadata.Add("filename", file.FileName);
