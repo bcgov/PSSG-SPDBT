@@ -7,10 +7,10 @@ RUN dotnet tool install --tool-path /tools dotnet-counters
 RUN dotnet tool install --tool-path /tools dotnet-dump
 
 WORKDIR /src
-COPY ["Spd.DynamicsHelper/Spd.DynamicsHelper.csproj", "Spd.DynamicsHelper/"]
-RUN dotnet restore "Spd.DynamicsHelper/Spd.DynamicsHelper.csproj"
+COPY ["Spd.Presentation.Dynamics/Spd.Presentation.Dynamics.csproj", "Spd.Presentation.Dynamics/"]
+RUN dotnet restore "Spd.Presentation.Dynamics/Spd.Presentation.Dynamics.csproj"
 COPY . .
-RUN dotnet publish "Spd.DynamicsHelper/Spd.DynamicsHelper.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Spd.Presentation.Dynamics/Spd.Presentation.Dynamics.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 # FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
 FROM registry.access.redhat.com/ubi8/dotnet-70-runtime AS final
@@ -24,4 +24,4 @@ COPY --from=net-builder /tools .
 # copy app
 WORKDIR /app
 COPY --from=net-builder /app/publish .
-ENTRYPOINT ["dotnet", "Spd.DynamicsHelper.dll"]
+ENTRYPOINT ["dotnet", "Spd.Presentation.Dynamics.dll"]
