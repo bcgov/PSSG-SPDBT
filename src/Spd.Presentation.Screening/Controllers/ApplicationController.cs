@@ -30,5 +30,21 @@ namespace Spd.Presentation.Screening.Controllers
         {
             return await _mediator.Send(new CheckApplicationInviteDuplicateQuery(orgId, inviteCreateRequests));
         }
+
+        [Route("api/orgs/{orgId}/manual-submission")]
+        [HttpPost]
+        public async Task<Unit> Add([FromBody][Required] ApplicationManualSubmissionCreateRequest manualSubmissionCreateRequest, [FromRoute] Guid orgId)
+        {
+            manualSubmissionCreateRequest.OrganizationId = orgId;
+            return await _mediator.Send(new ApplicationManualSubmissionCreateCommand(manualSubmissionCreateRequest));
+        }
+
+        [Route("api/orgs/{orgId}/detect-manual-submission-duplicate")]
+        [HttpPost]
+        public async Task<CheckManualSubmissionDuplicateResponse> DetectDuplicate([FromBody][Required] ApplicationManualSubmissionCreateRequest manualSubmissionCreateRequest, [FromRoute] Guid orgId)
+        {
+            manualSubmissionCreateRequest.OrganizationId = orgId;
+            return await _mediator.Send(new CheckManualSubmissionDuplicateQuery(manualSubmissionCreateRequest));
+        }
     }
 }

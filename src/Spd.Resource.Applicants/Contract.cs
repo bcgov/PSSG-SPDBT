@@ -4,6 +4,7 @@ namespace Spd.Resource.Applicants
     {
         public Task<bool> AddApplicationInvitesAsync(ApplicationInviteCreateCmd createInviteCmd, CancellationToken cancellationToken);
         Task<bool> CheckInviteDuplicateAsync(SearchInvitationQry searchInvitationQry, CancellationToken cancellationToken);
+        public Task<bool> AddApplicationManualSubmissionAsync(ApplicationManualSubmissionCreateCmd createManualSubmissionCmd, CancellationToken cancellationToken);
     }
 
     public record ApplicationInviteCreateCmd
@@ -36,4 +37,40 @@ namespace Spd.Resource.Applicants
         public string Email { get; set; }
     }
 
+    public record ApplicationManualSubmissionCreateCmd
+    {
+        public Guid OrganizationId { get; set; }
+        public string GivenName { get; set; }
+        public string MiddleName1 { get; set; }
+        public string MiddleName2 { get; set; }
+        public string Surname { get; set; }
+        public string EmailAddress { get; set; }
+        public string PhoneNumber { get; set; }
+        public string DriversLicense { get; set; }
+        public DateTimeOffset? DateOfBirth { get; set; }
+        public string BirthPlace { get; set; }
+        public string JobTitle { get; set; }
+
+        //vulnerableSectorCategory
+        public string Alias1GivenName { get; set; }
+        public string Alias1MiddleName1 { get; set; }
+        public string Alias1MiddleName2 { get; set; }
+        public string Alias1Surname { get; set; }
+        public string Alias2GivenName { get; set; }
+        public string Alias2MiddleName1 { get; set; }
+        public string Alias2MiddleName2 { get; set; }
+        public string Alias2Surname { get; set; }
+        public string Alias3GivenName { get; set; }
+        public string Alias3MiddleName1 { get; set; }
+        public string Alias3MiddleName2 { get; set; }
+        public string Alias3Surname { get; set; }
+        public string AddressLine1 { get; set; }
+        public string AddressLine2 { get; set; }
+        public string City { get; set; }
+        public string PostalCode { get; set; }
+        public string Province { get; set; }
+        public string Country { get; set; }
+        //	agreeToCompleteAndAccurate
+        //	haveVerifiedIdentity
+    }
 }

@@ -69,5 +69,13 @@ namespace Spd.Resource.Applicants
             return user;
 
         }
+
+        public async Task<bool> AddApplicationManualSubmissionAsync(ApplicationManualSubmissionCreateCmd createManualSubmissionCmd, CancellationToken cancellationToken)
+        {
+            spd_application application = _mapper.Map<spd_application>(createManualSubmissionCmd);
+            _dynaContext.AddTospd_applications(application);
+            await _dynaContext.SaveChangesAsync(cancellationToken);
+            return true;
+        }
     }
 }
