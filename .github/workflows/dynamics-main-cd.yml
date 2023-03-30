@@ -17,5 +17,5 @@ jobs:
     with:
       DOCKER_CONTEXT: src
       DOCKER_FILE: src/dynamics.dockerfile
-      DOCKER_IMAGE_NAME: dynamics
+      DOCKER_IMAGE_NAME: dynamics-helper
     secrets: inherit
