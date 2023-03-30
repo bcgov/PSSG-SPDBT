@@ -10,8 +10,8 @@ namespace Spd.Manager.Cases
 
     }
 
-    public record ApplicationInviteCreateCommand(Guid OrgSpdId, IEnumerable<ApplicationInviteCreateRequest> ApplicationInviteCreateRequests) : IRequest<Unit>;
-    public record CheckApplicationInviteDuplicateQuery(Guid OrgSpdId, IEnumerable<ApplicationInviteCreateRequest> ApplicationInviteCreateRequests) : IRequest<IEnumerable<CheckApplicationInviteDuplicateResponse>>;
+    public record ApplicationInviteCreateCommand(Guid OrgId, IEnumerable<ApplicationInviteCreateRequest> ApplicationInviteCreateRequests) : IRequest<Unit>;
+    public record CheckApplicationInviteDuplicateQuery(Guid OrgId, IEnumerable<ApplicationInviteCreateRequest> ApplicationInviteCreateRequests) : IRequest<IEnumerable<CheckApplicationInviteDuplicateResponse>>;
 
     public record ApplicationInviteCreateRequest
     {
@@ -30,7 +30,7 @@ namespace Spd.Manager.Cases
 
     public class CheckApplicationInviteDuplicateResponse
     {
-        public Guid OrgSpdId { get; set; }
+        public Guid OrgId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }

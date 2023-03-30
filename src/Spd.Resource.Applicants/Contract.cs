@@ -8,7 +8,8 @@ namespace Spd.Resource.Applicants
 
     public record ApplicationInviteCreateCmd
     {
-        public Guid OrgSpdId { get; set; }
+        public Guid OrgId { get; set; }
+        public Guid CreatedByUserId { get; set; }
         public IEnumerable<ApplicationInviteCreateReq> ApplicationInviteCreateReqs { get; set; }
     }
 
@@ -29,7 +30,7 @@ namespace Spd.Resource.Applicants
 
     public record SearchInvitationQry
     {
-        public Guid OrgSpdId { get; set; }
+        public Guid OrgId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }

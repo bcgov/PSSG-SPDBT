@@ -21,6 +21,7 @@ namespace Spd.Manager.Cases
         public async Task<Unit> Handle(ApplicationInviteCreateCommand request, CancellationToken cancellationToken)
         {
             var cmd = _mapper.Map<ApplicationInviteCreateCmd>(request);
+            //todo: after logon seq is done, we need to add userId here.
             await _applicationRepository.AddApplicationInvitesAsync(cmd, cancellationToken);
             return default;
         }
@@ -31,14 +32,14 @@ namespace Spd.Manager.Cases
             foreach (var item in request.ApplicationInviteCreateRequests)
             {
                 var searchInvitationQry = _mapper.Map<SearchInvitationQry>(item);
-                searchInvitationQry.OrgSpdId = request.OrgSpdId;
+                searchInvitationQry.OrgId = request.OrgId;
 
                 bool hasDuplicate = await _applicationRepository.CheckInviteDuplicateAsync(searchInvitationQry, cancellationToken);
                 if (hasDuplicate)
                 {
                     CheckApplicationInviteDuplicateResponse dupResp = new CheckApplicationInviteDuplicateResponse();
                     dupResp.HasPotentialDuplicate = true;
-                    dupResp.OrgSpdId = request.OrgSpdId;
+                    dupResp.OrgId = request.OrgId;
                     dupResp.FirstName = item.FirstName;
                     dupResp.LastName = item.LastName;
                     dupResp.Email = item.Email;
