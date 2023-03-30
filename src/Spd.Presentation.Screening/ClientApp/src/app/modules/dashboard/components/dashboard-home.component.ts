@@ -124,9 +124,9 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 								<mat-card-content class="data-card__content">
 									<p>16 screenings require payment</p>
 								</mat-card-content>
-								<mat-card-actions>
-									<button mat-flat-button color="primary" [routerLink]="[getRoute(dashboardRoutes.PAYMENTS)]">
-										Pay Now
+								<mat-card-actions class="mt-4">
+									<button mat-raised-button color="primary" [routerLink]="[getRoute(dashboardRoutes.PAYMENTS)]">
+										<mat-icon>attach_money</mat-icon>Pay Now
 									</button>
 								</mat-card-actions>
 							</mat-card>
@@ -139,13 +139,13 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 								<mat-card-content class="data-card__content">
 									<p>23 screenings require ID verification</p>
 								</mat-card-content>
-								<mat-card-actions>
+								<mat-card-actions class="mt-4">
 									<button
-										mat-flat-button
+										mat-raised-button
 										color="accent"
 										[routerLink]="[getRoute(dashboardRoutes.IDENTITY_VERIFICATION)]"
 									>
-										Verify Now
+										<mat-icon>send</mat-icon>Verify Now
 									</button>
 								</mat-card-actions>
 							</mat-card>
@@ -161,13 +161,13 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 								<mat-card-content class="data-card__content">
 									<p>8 screening applications were cleared in the last week</p>
 								</mat-card-content>
-								<mat-card-actions>
+								<mat-card-actions class="mt-4">
 									<button
-										mat-flat-button
+										mat-raised-button
 										[routerLink]="[getRoute(dashboardRoutes.SCREENING_STATUSES)]"
 										style="background-color: var(--color-green);color: var(--color-white);"
 									>
-										Review
+										<mat-icon>preview</mat-icon>Review
 									</button>
 								</mat-card-actions>
 							</mat-card>
@@ -183,13 +183,13 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 								<mat-card-content class="data-card__content">
 									<p>0 screening applications were found at risk in the last week</p>
 								</mat-card-content>
-								<mat-card-actions>
+								<mat-card-actions class="mt-4">
 									<button
-										mat-flat-button
+										mat-raised-button
 										[routerLink]="[getRoute(dashboardRoutes.SCREENING_STATUSES)]"
 										style="background-color: var(--color-red);color: var(--color-white);"
 									>
-										Review
+										<mat-icon>preview</mat-icon>Review
 									</button>
 								</mat-card-actions>
 							</mat-card>

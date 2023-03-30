@@ -19,9 +19,16 @@ namespace Spd.Presentation.Screening.Controllers
 
         [Route("api/orgs/{orgId}/application-invites")]
         [HttpPost]
-        public async Task<IEnumerable<ApplicationInviteCreateResponse>> Add([FromBody][Required] IEnumerable<ApplicationInviteCreateRequest> inviteCreateRequests, [FromRoute] Guid orgId)
+        public async Task<Unit> Add([FromBody][Required] IEnumerable<ApplicationInviteCreateRequest> inviteCreateRequests, [FromRoute] Guid orgId)
         {
             return await _mediator.Send(new ApplicationInviteCreateCommand(orgId, inviteCreateRequests));
+        }
+
+        [Route("api/orgs/{orgId}/detect-invite-duplicates")]
+        [HttpPost]
+        public async Task<IEnumerable<CheckApplicationInviteDuplicateResponse>> DetectDuplicates([FromBody][Required] IEnumerable<ApplicationInviteCreateRequest> inviteCreateRequests, [FromRoute] Guid orgId)
+        {
+            return await _mediator.Send(new CheckApplicationInviteDuplicateQuery(orgId, inviteCreateRequests));
         }
     }
 }

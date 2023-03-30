@@ -69,12 +69,12 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 										<button
 											mat-mini-fab
 											class="delete-row-button mb-3"
-											matTooltip="Delete previous name"
+											matTooltip="Remove previous name"
 											(click)="deleteRow(i)"
 											[disabled]="oneRowExists"
-											aria-label="Delete row"
+											aria-label="Remove row"
 										>
-											<mat-icon>delete</mat-icon>
+											<mat-icon>delete_outline</mat-icon>
 										</button>
 									</div>
 								</div>
@@ -148,9 +148,9 @@ export class PreviousNameComponent implements OnInit, ScreeningFormStepComponent
 		const control = this.form.get('tableRows') as FormArray;
 		if (control.length == 1) {
 			const data: DialogOptions = {
-				icon: 'error_outline',
-				title: 'Delete Row',
-				message: 'This row cannot be deleted. At least one row must exist.',
+				icon: 'warning',
+				title: 'Remove Row',
+				message: 'This row cannot be removed. At least one row must exist.',
 				cancelText: 'Close',
 			};
 
@@ -159,10 +159,10 @@ export class PreviousNameComponent implements OnInit, ScreeningFormStepComponent
 		}
 
 		const data: DialogOptions = {
-			icon: 'error_outline',
-			title: 'Delete Row',
-			message: 'Are you sure you want to permanently delete this previous name?',
-			actionText: 'Yes, delete this name',
+			icon: 'warning',
+			title: 'Remove Row',
+			message: 'Are you sure you want to remove this previous name?',
+			actionText: 'Yes, remove this name',
 			cancelText: 'Cancel',
 		};
 

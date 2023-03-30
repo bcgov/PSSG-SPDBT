@@ -33,7 +33,7 @@ export const EmployeeInteractionTypes = [
 					</button>
 				</div>
 				<div class="col-xl-2 col-lg-3 col-md-6 col-sm-12">
-					<button mat-flat-button color="primary" class="large mb-2" (click)="onSubmit()">Submit</button>
+					<button mat-raised-button color="primary" class="large mb-2" (click)="onSubmit()">Submit</button>
 				</div>
 			</div>
 			<form [formGroup]="form" novalidate>
@@ -517,7 +517,7 @@ export class ManualSubmissionsComponent {
 			// .subscribe((dupres: CheckDuplicateResponse) => {
 			//   if (dupres.hasPotentialDuplicate) {
 			//     const data: DialogOptions = {
-			//       icon: 'error_outline',
+			//       icon: 'warning',
 			//       title: 'Potential Duplicate Detected',
 			//       message:
 			//         'A potential duplicate has been found. Are you sure this is a new organization registration request?',

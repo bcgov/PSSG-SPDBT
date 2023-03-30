@@ -2,18 +2,19 @@ namespace Spd.Resource.Applicants
 {
     public interface IApplicationRepository
     {
-        public Task<IEnumerable<ApplicationInviteCreateResp>> AddApplicationInvitesAsync(ApplicationInviteCreateCmd createInviteCmd, CancellationToken cancellationToken);
+        public Task<bool> AddApplicationInvitesAsync(ApplicationInviteCreateCmd createInviteCmd, CancellationToken cancellationToken);
+        Task<bool> CheckInviteDuplicateAsync(SearchInvitationQry searchInvitationQry, CancellationToken cancellationToken);
     }
 
     public record ApplicationInviteCreateCmd
     {
-        public Guid OrgSpdId { get; set; }
+        public Guid OrgId { get; set; }
+        public Guid CreatedByUserId { get; set; }
         public IEnumerable<ApplicationInviteCreateReq> ApplicationInviteCreateReqs { get; set; }
     }
 
     public record ApplicationInviteCreateReq
     {
-        //todo: update and add validation.
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
@@ -25,6 +26,14 @@ namespace Spd.Resource.Applicants
     {
         public bool IsSuccess { get; set; }
         public bool ErrorReason { get; set; }
+    }
+
+    public record SearchInvitationQry
+    {
+        public Guid OrgId { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
     }
 
 }
