@@ -20,13 +20,11 @@
     {
         public string Key { get; set; } = null!;
         public byte[] Content { get; set; } = Array.Empty<byte>();
-        public string EntityName { get; set; }
-        public Guid EntityId { get; set; }
-        public string FileName { get; set; }
         public string ContentType { get; set; }
+        public string FileName { get; set; }
+        public Metadata[] Metadata { get; set; }
         public Tag[] Tags { get; set; }
         public string? Folder { get; set; }
-        public string Classification { get; set; }
     }
 
     public record Tag
@@ -35,6 +33,11 @@
         public string Value { get; set; }
     }
 
+    public record Metadata
+    {
+        public string Key { get; set; }
+        public string Value { get; set; }
+    }
     public abstract record StorageQuery
     {
     }

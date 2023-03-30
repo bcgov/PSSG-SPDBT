@@ -4,16 +4,16 @@ namespace Spd.Presentation.Dynamics.Models
 {
     public class UploadFileRequest
     {
-        [Required(ErrorMessage = "Please enter file name")]
+        [Required(ErrorMessage = "Entity name is required")]
         public string EntityName { get; set; }
 
-        [Required(ErrorMessage = "Please enter Entity Guid")]
+        [Required(ErrorMessage = "Entity Guid is required.")]
         public Guid EntityId { get; set; }
 
         [Required(ErrorMessage = "Please enter file name")]
         public string FileName { get; set; }
 
-        [Required(ErrorMessage = "Please specify file content type")]
+        [Required(ErrorMessage = "Content type is required")]
         public string ContentType { get; set; }
 
         public string Classification { get; set; }

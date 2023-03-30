@@ -12,6 +12,7 @@ namespace Spd.Presentation.Dynamics.Mapper
         {
             CreateMap<UploadFileRequest, File>()
                 .ForMember(d => d.Content, opt => opt.Ignore())
+                .ForMember(d => d.Metadata, opt => opt.MapFrom(s => GetMetadata(s)))
                 .ForMember(d => d.Tags, opt => opt.MapFrom(s => GetTags(s)));
 
             CreateMap<UploadFileRequestJson, File>()
@@ -29,6 +30,16 @@ namespace Spd.Presentation.Dynamics.Mapper
             if (!string.IsNullOrWhiteSpace(request.Tag2)) tags.Add(new Tag { Key = "tag2", Value = request.Tag2 });
             if (!string.IsNullOrWhiteSpace(request.Tag3)) tags.Add(new Tag { Key = "tag3", Value = request.Tag3 });
             return tags;
+        }
+        private static IEnumerable<Metadata> GetMetadata(UploadFileRequest request)
+        {
+            List<Metadata> metadata = new List<Metadata>
+            {
+                new Metadata{ Key = "entityId", Value = request.EntityId.ToString() },
+                new Metadata{ Key = "entityName", Value = request.EntityName},
+                new Metadata{ Key = "classification", Value= request.Classification}
+            };
+            return metadata.AsEnumerable();
         }
     }
 }

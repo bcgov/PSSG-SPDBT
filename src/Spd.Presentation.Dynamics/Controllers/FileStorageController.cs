@@ -35,7 +35,7 @@ namespace Spd.Presentation.Dynamics.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("api/files")]
-        public async Task<UploadFileResponse> UploadFile([FromForm] UploadFileRequest request)
+        public async Task<UploadFileResponse> UploadFile([FromForm]UploadFileRequest request)
         {
             using var ms = new MemoryStream();
             await request.File.CopyToAsync(ms);
@@ -57,12 +57,24 @@ namespace Spd.Presentation.Dynamics.Controllers
         //    return new UploadFileResponse { Id = id };
         //}
 
+        //[HttpGet]
+        //[Route("api/files/{fileId}")]
+        //public async Task<DownloadFileResponse> DownloadFile(string fileId)
+        //{
+        //    StorageQueryResults result = await _storageService.HandleQuery(new GetItemByKeyQuery { Key = fileId }, CancellationToken.None);
+        //    return _mapper.Map<DownloadFileResponse>(result.File);
+        //}
+
         [HttpGet]
         [Route("api/files/{fileId}")]
-        public async Task<DownloadFileResponse> DownloadFile(string fileId)
+        public async Task<IActionResult> DownloadFile(string fileId)
         {
             StorageQueryResults result = await _storageService.HandleQuery(new GetItemByKeyQuery { Key = fileId }, CancellationToken.None);
-            return _mapper.Map<DownloadFileResponse>(result.File);
+
+            var content = new System.IO.MemoryStream(result.File.Content);
+            var contentType = result.File.ContentType;
+            var fileName = result.File.FileName;
+            return File(content, contentType, fileName);
         }
     }
 }

@@ -35,23 +35,25 @@ namespace Spd.Utilities.FileStorage
 
         private async Task<string> UploadStorageItem(UploadItemCommand cmd, CancellationToken cancellationToken)
         {
-            File spdFile = cmd.File;
-            var folder = spdFile.Folder == null ? "" : $"{spdFile.Folder}/";
-            var key = $"{spdFile.EntityName}-{Guid.NewGuid()}";
+            File file = cmd.File;
+            var folder = file.Folder == null ? "" : $"{file.Folder}/";
+            var key = $"{folder}{Guid.NewGuid()}";
 
             var request = new PutObjectRequest
             {
                 Key = key,
                 ContentType = cmd.File.ContentType,
-                InputStream = new MemoryStream(spdFile.Content),
+                InputStream = new MemoryStream(file.Content),
                 BucketName = _config.Value.Bucket,
                 //TagSet = GetTagSet(cmd.File.Tags), //todo: enable it when we have the permission.
             };
-            request.Metadata.Add("contenttype", spdFile.ContentType);
-            request.Metadata.Add("filename", spdFile.FileName);
-            request.Metadata.Add("entityname", spdFile.EntityName);
-            request.Metadata.Add("entityid", spdFile.EntityId.ToString());
-            request.Metadata.Add("classification", spdFile.Classification);
+            request.Metadata.Add("contenttype", file.ContentType);
+            request.Metadata.Add("filename", file.FileName);
+            if (file.Metadata != null)
+            {
+                foreach (Metadata md in file.Metadata)
+                    request.Metadata.Add(md.Key, md.Value);
+            }
 
             var response = await _amazonS3Client.PutObjectAsync(request, cancellationToken);
             response.EnsureSuccess();
@@ -78,13 +80,10 @@ namespace Spd.Utilities.FileStorage
             return new File
             {
                 Key = key,
-                EntityId = Guid.Parse(response.Metadata["entityid"]),
-                EntityName = response.Metadata["entityname"],
+                ContentType = response.Metadata["contentType"],
                 FileName = response.Metadata["filename"],
-                ContentType = response.Metadata["contenttype"],
-                Classification = response.Metadata["classification"],
                 Content = ms.ToArray(),
-                //Tags: todo: need to read tags too.
+                Metadata = GetMetadata(response).ToArray(),
             };
         }
 
@@ -100,6 +99,20 @@ namespace Spd.Utilities.FileStorage
                 return taglist;
             }
             return null;
+        }
+
+        private List<Metadata> GetMetadata(GetObjectResponse response)
+        {
+            var metadata = new List<Metadata>();
+            MetadataCollection mc = response.Metadata;
+            foreach (var key in mc.Keys)
+            {
+                if (key != "contentType" && key != "fileName")
+                {
+                    metadata.Add(new Metadata { Key = key, Value = mc[key] });
+                }
+            }
+            return metadata;
         }
     }
 
