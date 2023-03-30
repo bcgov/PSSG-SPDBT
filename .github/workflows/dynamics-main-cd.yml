@@ -9,7 +9,7 @@ on:
       - src/Spd.Utilities.FileStorage/**
       - src/Spd.Utilities.Shared/**
       - src/Spd.Utilities.Hosting/**
-      - .github/workflows/dynamics-helper-main-cd.yml
+      - .github/workflows/dynamics-main-cd.yml
 
 jobs:
   build-deploy-dynamics-helper:
