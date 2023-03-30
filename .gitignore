@@ -19,9 +19,3 @@ bld/
 
 # Visual Studio 2022 cache/options directory
 .vs/
-
-# .NET Core
-src/Spd.Presentation.Screening/appsettings.Development.json
-src/Spd.Presentation.Screening/Properties/launchSettings.json
-src/Spd.DynamicsHelper/appsettings.Development.json
-src/Spd.DynamicsHelper/Properties/launchSettings.json
