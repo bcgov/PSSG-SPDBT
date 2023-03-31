@@ -11,44 +11,44 @@
     {
         public File File { get; set; } = null!;
     }
-    public record DeleteFileCommand : StorageCommand
-    {
-        public string Id { get; set; } = null!;
-    }
 
     public record File
     {
         public string Key { get; set; } = null!;
         public byte[] Content { get; set; } = Array.Empty<byte>();
-        public string ContentType { get; set; }
-        public string FileName { get; set; }
-        public Metadata[] Metadata { get; set; }
-        public Tag[] Tags { get; set; }
+        public string ContentType { get; set; }= null!;
+        public string FileName { get; set; } = null!;
+        public Metadata[] Metadata { get; set; } = null!;
+        public Tag[] Tags { get; set; } = null!;
         public string? Folder { get; set; }
     }
 
     public record Tag
     {
-        public string Key { get; set; }
-        public string Value { get; set; }
+        public string Key { get; set; } = null!;
+        public string Value { get; set; } = null!;
     }
 
     public record Metadata
     {
-        public string Key { get; set; }
-        public string Value { get; set; }
+        public string Key { get; set; } = null!;
+        public string Value { get; set; } = null!;
     }
+
     public abstract record StorageQuery
     {
+        public string Key { get; set; } = null!;
+        public string? Folder { get; set; }
     }
-
-    public record StorageQueryResults
+    public record FileQuery : StorageQuery { }
+    public record FileExistsQuery : StorageQuery { }
+    public record StorageQueryResults { }
+    public record FileQueryResult : StorageQueryResults
     {
-        public File File { get; set; }
+        public File File { get; set; } = null!;
     }
-
-    public record FileQuery : StorageQuery
+    public record FileExistsQueryResult : StorageQueryResults
     {
-        public string Key { get; set; }
+        public bool FileExists { get; set; }
     }
 }
