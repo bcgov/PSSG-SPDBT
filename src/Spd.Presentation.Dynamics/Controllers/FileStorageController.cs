@@ -69,7 +69,7 @@ public class FileStorageController : SpdControllerBase
             //upload file
             using var ms = new MemoryStream();
             await request.File.CopyToAsync(ms);
-            File file = new ()
+            File file = new()
             {
                 Key = fileId.ToString(),
                 FileName = request.File.FileName,
@@ -80,20 +80,19 @@ public class FileStorageController : SpdControllerBase
             };
             await _storageService.HandleCommand(new UploadFileCommand { File = file }, CancellationToken.None);
 
-            if (queryResult.FileExists)
-            {
-                return Ok();
-            }
-            else
-            {
-                return StatusCode(StatusCodes.Status201Created);
-            }
+            return queryResult.FileExists ? Ok() : StatusCode(StatusCodes.Status201Created);
         }
 
-
+        /// <summary>
+        /// Download the file with fileId and folder name. 
+        /// If a file is expected to be in a folder, the client must pass the correct folder name in the request header, 
+        /// otherwise no file will found; the default header value is the root folder /
+        /// </summary>
+        /// <param name="fileId"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("api/files/{fileId}")]
-        public async Task<IActionResult> DownloadFile(string fileId)
+        public async Task<FileStreamResult> DownloadFile(string fileId)
         {
             var headers = this.Request.Headers;
             FileQueryResult result = (FileQueryResult)await _storageService.HandleQuery(
@@ -103,15 +102,24 @@ public class FileStorageController : SpdControllerBase
             var content = new MemoryStream(result.File.Content);
             var contentType = result.File.ContentType;
             var fileName = result.File.FileName;
-            return File(content, contentType, fileName);
+            HttpContext.Response.Headers.Add(HEADER_FILE_CLASSIFICATION,
+                result.File.Tags.FirstOrDefault(t => t.Key == "classification")?.Value);
+
+            if (!string.IsNullOrWhiteSpace(headers[HEADER_FILE_FOLDER]))
+                HttpContext.Response.Headers.Add(HEADER_FILE_FOLDER, headers[HEADER_FILE_FOLDER]);
+
+            string tagStr = GetStrFromTags(result.File.Tags);
+            if (!string.IsNullOrWhiteSpace(tagStr))
+                HttpContext.Response.Headers.Add(HEADER_FILE_TAG, tagStr);
+
+            return new FileStreamResult(content, contentType);
         }
 
         private Tag[] GetTags(string? tagStr, string classification)
         {
             try
             {
-                List<Tag> taglist = new List<Tag>();
-                taglist.Add(new Tag { Key = "classification", Value = classification });
+                List<Tag> taglist = new() { new Tag { Key = "classification", Value = classification } };
 
                 if (!string.IsNullOrWhiteSpace(tagStr))
                 {
@@ -135,6 +143,17 @@ public class FileStorageController : SpdControllerBase
             {
                 throw new ApiException(HttpStatusCode.BadRequest, $"Invalid {HEADER_FILE_TAG} string");
             }
+        }
+
+        private string GetStrFromTags(Tag[] tags)
+        {
+            List<string> tagStrlist = new();
+            foreach (Tag t in tags)
+            {
+                if (t.Key != "classification")
+                    tagStrlist.Add($"{t.Key}={t.Value}");
+            }
+            return string.Join(",", tagStrlist);
         }
     }
 }

@@ -65,21 +65,29 @@ namespace Spd.Utilities.FileStorage
         {
             var dir = folder == null ? "" : $"{folder}/";
             var requestKey = $"{dir}{key}";
+
+            //get object
             var request = new GetObjectRequest
             {
                 BucketName = _config.Value.Bucket,
                 Key = requestKey,
             };
-
             var response = await _amazonS3Client.GetObjectAsync(request, ct);
             response.EnsureSuccess();
-
             using var contentStream = response.ResponseStream;
-
             using var ms = new MemoryStream();
-
             await contentStream.CopyToAsync(ms);
             contentStream.Flush();
+
+            //get tagging
+            var tagResponse = await _amazonS3Client.GetObjectTaggingAsync(
+                new GetObjectTaggingRequest
+                {
+                    BucketName = _config.Value.Bucket,
+                    Key = requestKey,
+                }, ct);
+            tagResponse.EnsureSuccess();
+
             return new FileQueryResult
             {
                 File = new File
@@ -89,6 +97,7 @@ namespace Spd.Utilities.FileStorage
                     FileName = response.Metadata["filename"],
                     Content = ms.ToArray(),
                     Metadata = GetMetadata(response).ToArray(),
+                    Tags = GetTags(tagResponse.Tagging).ToArray()
                 }
             };
         }
@@ -119,16 +128,15 @@ namespace Spd.Utilities.FileStorage
 
         private List<Amazon.S3.Model.Tag> GetTagSet(Tag[] tags)
         {
+            var taglist = new List<Amazon.S3.Model.Tag>();
             if (tags != null && tags.Any())
             {
-                var taglist = new List<Amazon.S3.Model.Tag>();
                 foreach (Tag tag in tags)
                 {
                     taglist.Add(new Amazon.S3.Model.Tag() { Key = tag.Key, Value = tag.Value });
                 }
-                return taglist;
             }
-            return null;
+            return taglist;
         }
 
         private List<Metadata> GetMetadata(GetObjectResponse response)
@@ -143,6 +151,19 @@ namespace Spd.Utilities.FileStorage
                 }
             }
             return metadata;
+        }
+
+        private List<Tag> GetTags(List<Amazon.S3.Model.Tag> tags)
+        {
+            var taglist = new List<Tag>();
+            if (tags != null && tags.Any())
+            {
+                foreach (Amazon.S3.Model.Tag tag in tags)
+                {
+                    taglist.Add(new Tag() { Key = tag.Key, Value = tag.Value });
+                }
+            }
+            return taglist;
         }
     }
 
