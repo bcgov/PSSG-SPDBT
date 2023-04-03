@@ -1,13 +1,9 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
 using Spd.Presentation.Dynamics.Models;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using File = Spd.Utilities.FileStorage.File;
 
 namespace Spd.Presentation.Dynamics.Controllers;
@@ -15,7 +11,7 @@ namespace Spd.Presentation.Dynamics.Controllers;
 /// <summary>
 /// For upload and download file
 /// </summary>
-[Authorize]
+//[Authorize]
 public class FileStorageController : SpdControllerBase
 {
     private readonly IFileStorageService _storageService;
@@ -125,7 +121,14 @@ public class FileStorageController : SpdControllerBase
             new CancellationToken());
         if (queryResult.FileExists)
         {
-
+            File file = new()
+            {
+                Key = fileId.ToString(),
+                Tags = GetTagsFromStr(headers[HEADER_FILE_TAG], classification),
+                Folder = headers[HEADER_FILE_FOLDER]
+            };
+            await _storageService.HandleCommand(new UpdateTagsCommand { File = file }, CancellationToken.None);
+            return Ok();
         }
         else
         {

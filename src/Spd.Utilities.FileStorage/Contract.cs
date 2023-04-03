@@ -16,8 +16,8 @@
     {
         public string Key { get; set; } = null!;
         public byte[] Content { get; set; } = Array.Empty<byte>();
-        public string ContentType { get; set; }= null!;
-        public string FileName { get; set; } = null!;
+        public string? ContentType { get; set; }
+        public string? FileName { get; set; }
         public Metadata[] Metadata { get; set; } = null!;
         public Tag[] Tags { get; set; } = null!;
         public string? Folder { get; set; }

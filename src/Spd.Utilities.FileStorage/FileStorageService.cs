@@ -19,6 +19,7 @@ namespace Spd.Utilities.FileStorage
             return cmd switch
             {
                 UploadFileCommand c => await UploadStorageItem(c, cancellationToken),
+                UpdateTagsCommand c => await UpdateTags(c, cancellationToken),
                 _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
             };
         }
@@ -56,6 +57,25 @@ namespace Spd.Utilities.FileStorage
             }
 
             var response = await _amazonS3Client.PutObjectAsync(request, cancellationToken);
+            response.EnsureSuccess();
+
+            return cmd.File.Key;
+        }
+
+        private async Task<string> UpdateTags(UpdateTagsCommand cmd, CancellationToken cancellationToken)
+        {
+            File file = cmd.File;
+            var folder = file.Folder == null ? "" : $"{file.Folder}/";
+            var key = $"{folder}{cmd.File.Key}";
+
+            var request = new PutObjectTaggingRequest
+            {
+                Key = key,
+                BucketName = _config.Value.Bucket,
+                Tagging = new Tagging { TagSet = GetTagSet(cmd.File.Tags) }
+            };
+
+            var response = await _amazonS3Client.PutObjectTaggingAsync(request, cancellationToken);
             response.EnsureSuccess();
 
             return cmd.File.Key;
