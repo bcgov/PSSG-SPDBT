@@ -1,6 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
-export interface ApplicationManualSubmissionCreateRequest {
+import { ApplicationOriginTypeCode } from './application-origin-type-code';
+export interface ApplicationSubmissionCreateRequest {
   addressLine1?: null | string;
   addressLine2?: null | string;
   alias1GivenName?: null | string;
@@ -26,6 +27,7 @@ export interface ApplicationManualSubmissionCreateRequest {
   middleName1?: null | string;
   middleName2?: null | string;
   organizationId?: string;
+  originTypeCode?: ApplicationOriginTypeCode;
   phoneNumber?: null | string;
   postalCode?: null | string;
   province?: null | string;

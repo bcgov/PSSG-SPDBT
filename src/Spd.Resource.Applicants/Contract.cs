@@ -5,7 +5,7 @@ namespace Spd.Resource.Applicants
         public Task<bool> AddApplicationInvitesAsync(ApplicationInviteCreateCmd createInviteCmd, CancellationToken cancellationToken);
         Task<bool> CheckInviteInvitationDuplicateAsync(SearchInvitationQry searchInvitationQry, CancellationToken cancellationToken);
         Task<bool> CheckInviteApplicationDuplicateAsync(SearchInvitationQry searchInvitationQry, CancellationToken cancellationToken);
-        public Task<bool> AddApplicationManualSubmissionAsync(ApplicationManualSubmissionCreateCmd createManualSubmissionCmd, CancellationToken cancellationToken);
+        public Task<bool> AddApplicationSubmissionAsync(ApplicationSubmissionCreateCmd createSubmissionCmd, CancellationToken cancellationToken);
     }
 
     public record ApplicationInviteCreateCmd
@@ -38,9 +38,10 @@ namespace Spd.Resource.Applicants
         public string Email { get; set; }
     }
 
-    public record ApplicationManualSubmissionCreateCmd
+    public record ApplicationSubmissionCreateCmd
     {
         public Guid OrganizationId { get; set; }
+        public ApplicationOriginTypeCode OriginTypeCode { get; set; }
         public string GivenName { get; set; }
         public string MiddleName1 { get; set; }
         public string MiddleName2 { get; set; }
@@ -73,5 +74,16 @@ namespace Spd.Resource.Applicants
         public string Country { get; set; }
         //	agreeToCompleteAndAccurate
         //	haveVerifiedIdentity
+    }
+
+    public enum ApplicationOriginTypeCode
+    {
+        Portal,
+        Email,
+        WebForm,
+        Mail,
+        Fax,
+        GenericUpload,
+        OrganizationSubmitted
     }
 }

@@ -7,8 +7,8 @@ namespace Spd.Manager.Cases
     internal class ApplicationManager :
         IRequestHandler<ApplicationInviteCreateCommand, Unit>,
         IRequestHandler<CheckApplicationInviteDuplicateQuery, IEnumerable<CheckApplicationInviteDuplicateResponse>>,
-        IRequestHandler<ApplicationManualSubmissionCreateCommand, Unit>,
-        IRequestHandler<CheckManualSubmissionDuplicateQuery, CheckManualSubmissionDuplicateResponse>,
+        IRequestHandler<ApplicationSubmissionCreateCommand, Unit>,
+        IRequestHandler<CheckApplicationSubmissionDuplicateQuery, CheckApplicationSubmissionDuplicateResponse>,
         IApplicationManager
     {
         private readonly IApplicationRepository _applicationRepository;
@@ -69,30 +69,30 @@ namespace Spd.Manager.Cases
             return resp;
         }
 
-        public async Task<Unit> Handle(ApplicationManualSubmissionCreateCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(ApplicationSubmissionCreateCommand request, CancellationToken cancellationToken)
         {
-            var cmd = _mapper.Map<ApplicationManualSubmissionCreateCmd>(request.ApplicationManualSubmissionCreateRequest);
-            await _applicationRepository.AddApplicationManualSubmissionAsync(cmd, cancellationToken);
+            var cmd = _mapper.Map<ApplicationSubmissionCreateCmd>(request.ApplicationSubmissionCreateRequest);
+            await _applicationRepository.AddApplicationSubmissionAsync(cmd, cancellationToken);
             return default;
         }
 
-        public async Task<CheckManualSubmissionDuplicateResponse> Handle(CheckManualSubmissionDuplicateQuery request, CancellationToken cancellationToken)
+        public async Task<CheckApplicationSubmissionDuplicateResponse> Handle(CheckApplicationSubmissionDuplicateQuery request, CancellationToken cancellationToken)
         {
-            CheckManualSubmissionDuplicateResponse resp = new CheckManualSubmissionDuplicateResponse();
+            CheckApplicationSubmissionDuplicateResponse resp = new CheckApplicationSubmissionDuplicateResponse();
 
             //duplicated in organization
             //var searchOrgQry = _mapper.Map<SearchOrgQry>(request.CreateOrgRegistrationRequest);
-            //bool hasDuplicate = await _applicationRepository.CheckManualSubmissionDuplicateAsync(searchOrgQry, cancellationToken);
+            //bool hasDuplicate = await _applicationRepository.CheckApplicationSubmissionDuplicateAsync(searchOrgQry, cancellationToken);
             //if (hasDuplicate)
             //{
             //    resp.HasPotentialDuplicate = true;
             //    return resp;
             //}
 
-            resp.OrgSpdId = request.ApplicationManualSubmissionCreateRequest.OrganizationId;
-            resp.GivenName = request.ApplicationManualSubmissionCreateRequest.GivenName;
-            resp.Surname = request.ApplicationManualSubmissionCreateRequest.Surname;
-            resp.EmailAddress = request.ApplicationManualSubmissionCreateRequest.EmailAddress;
+            resp.OrgSpdId = request.ApplicationSubmissionCreateRequest.OrganizationId;
+            resp.GivenName = request.ApplicationSubmissionCreateRequest.GivenName;
+            resp.Surname = request.ApplicationSubmissionCreateRequest.Surname;
+            resp.EmailAddress = request.ApplicationSubmissionCreateRequest.EmailAddress;
             resp.HasPotentialDuplicate = true;
 
             return resp;

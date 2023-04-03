@@ -13,7 +13,7 @@ namespace Spd.Manager.Cases
             CreateMap<ApplicationInviteCreateRequest, ApplicationInviteCreateReq>();
             CreateMap<ApplicationInviteCreateResp, ApplicationInviteCreateResponse>();
             CreateMap<ApplicationInviteCreateRequest, SearchInvitationQry>();
-            CreateMap<ApplicationManualSubmissionCreateRequest, ApplicationManualSubmissionCreateCmd>();
+            CreateMap<ApplicationSubmissionCreateRequest, ApplicationSubmissionCreateCmd>();
         }
     }
 }

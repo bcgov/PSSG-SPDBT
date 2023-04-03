@@ -31,20 +31,20 @@ namespace Spd.Presentation.Screening.Controllers
             return await _mediator.Send(new CheckApplicationInviteDuplicateQuery(orgId, inviteCreateRequests));
         }
 
-        [Route("api/orgs/{orgId}/manual-submission")]
+        [Route("api/orgs/{orgId}/application-submission")]
         [HttpPost]
-        public async Task<Unit> Add([FromBody][Required] ApplicationManualSubmissionCreateRequest manualSubmissionCreateRequest, [FromRoute] Guid orgId)
+        public async Task<Unit> Add([FromBody][Required] ApplicationSubmissionCreateRequest submissionCreateRequest, [FromRoute] Guid orgId)
         {
-            manualSubmissionCreateRequest.OrganizationId = orgId;
-            return await _mediator.Send(new ApplicationManualSubmissionCreateCommand(manualSubmissionCreateRequest));
+            submissionCreateRequest.OrganizationId = orgId;
+            return await _mediator.Send(new ApplicationSubmissionCreateCommand(submissionCreateRequest));
         }
 
-        [Route("api/orgs/{orgId}/detect-manual-submission-duplicate")]
+        [Route("api/orgs/{orgId}/detect-application-duplicate")]
         [HttpPost]
-        public async Task<CheckManualSubmissionDuplicateResponse> DetectDuplicate([FromBody][Required] ApplicationManualSubmissionCreateRequest manualSubmissionCreateRequest, [FromRoute] Guid orgId)
+        public async Task<CheckApplicationSubmissionDuplicateResponse> DetectDuplicate([FromBody][Required] ApplicationSubmissionCreateRequest submissionCreateRequest, [FromRoute] Guid orgId)
         {
-            manualSubmissionCreateRequest.OrganizationId = orgId;
-            return await _mediator.Send(new CheckManualSubmissionDuplicateQuery(manualSubmissionCreateRequest));
+            submissionCreateRequest.OrganizationId = orgId;
+            return await _mediator.Send(new CheckApplicationSubmissionDuplicateQuery(submissionCreateRequest));
         }
     }
 }

@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
+using Spd.Utilities.Dynamics;
 
 namespace Spd.Resource.Applicants
 {
@@ -14,8 +15,9 @@ namespace Spd.Resource.Applicants
             .ForMember(d => d.spd_email, opt => opt.MapFrom(s => s.Email))
             .ForMember(d => d.spd_jobtitle, opt => opt.MapFrom(s => s.JobTitle));
 
-            _ = CreateMap<ApplicationManualSubmissionCreateCmd, spd_application>()
+            _ = CreateMap<ApplicationSubmissionCreateCmd, spd_application>()
             .ForMember(d => d.spd_applicationid, opt => opt.MapFrom(s => Guid.NewGuid()))
+            .ForMember(d => d.spd_origin, opt => opt.MapFrom(s => (int)Enum.Parse<ApplicationOriginOptionSet>(s.OriginTypeCode.ToString())))
             //.ForMember(d => d._spd_organizationid_value, opt => opt.MapFrom(s => s.OrganizationId))
             .ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => s.GivenName))
             .ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => s.MiddleName1))

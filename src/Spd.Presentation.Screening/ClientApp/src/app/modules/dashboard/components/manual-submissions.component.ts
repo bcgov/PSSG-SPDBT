@@ -4,9 +4,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { HotToastService } from '@ngneat/hot-toast';
 import { NgxMaskPipe } from 'ngx-mask';
 import {
-	ApplicationManualSubmissionCreateRequest,
+	ApplicationOriginTypeCode,
+	ApplicationSubmissionCreateRequest,
 	BooleanTypeCode,
-	CheckManualSubmissionDuplicateResponse,
+	CheckApplicationSubmissionDuplicateResponse,
 	EmployeeInteractionTypeCode,
 	PayerPreferenceTypeCode,
 } from 'src/app/api/models';
@@ -518,14 +519,15 @@ export class ManualSubmissionsComponent {
 		this.form.markAllAsTouched();
 		if (this.form.valid) {
 			console.log('form', this.form.value);
-			const body: ApplicationManualSubmissionCreateRequest = { ...this.form.value };
+			const body: ApplicationSubmissionCreateRequest = { ...this.form.value };
+			body.originTypeCode = ApplicationOriginTypeCode.Portal;
 
 			//TODO replace with proper org id
 			// Check for potential duplicate
 			this.applicationService
-				.apiOrgsOrgIdDetectManualSubmissionDuplicatePost({ orgId: '4165bdfe-7cb4-ed11-b83e-00505683fbf4', body })
+				.apiOrgsOrgIdDetectApplicationDuplicatePost({ orgId: '4165bdfe-7cb4-ed11-b83e-00505683fbf4', body })
 				.pipe()
-				.subscribe((dupres: CheckManualSubmissionDuplicateResponse) => {
+				.subscribe((dupres: CheckApplicationSubmissionDuplicateResponse) => {
 					if (dupres.hasPotentialDuplicate) {
 						const data: DialogOptions = {
 							icon: 'warning',
@@ -549,14 +551,14 @@ export class ManualSubmissionsComponent {
 		}
 	}
 
-	saveManualSubmission(body: ApplicationManualSubmissionCreateRequest): void {
+	saveManualSubmission(body: ApplicationSubmissionCreateRequest): void {
 		if (body.phoneNumber) {
 			body.phoneNumber = this.maskPipe.transform(body.phoneNumber, SPD_CONSTANTS.phone.backendMask);
 		}
 
 		//TODO replace with proper org id
 		this.applicationService
-			.apiOrgsOrgIdManualSubmissionPost({
+			.apiOrgsOrgIdApplicationSubmissionPost({
 				orgId: '4165bdfe-7cb4-ed11-b83e-00505683fbf4',
 				body,
 			})

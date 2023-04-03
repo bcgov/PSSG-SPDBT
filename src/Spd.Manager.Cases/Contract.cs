@@ -1,5 +1,6 @@
 using FluentValidation;
 using MediatR;
+using System.ComponentModel;
 
 namespace Spd.Manager.Cases
 {
@@ -7,14 +8,14 @@ namespace Spd.Manager.Cases
     {
         public Task<Unit> Handle(ApplicationInviteCreateCommand request, CancellationToken cancellationToken);
         public Task<IEnumerable<CheckApplicationInviteDuplicateResponse>> Handle(CheckApplicationInviteDuplicateQuery request, CancellationToken cancellationToken);
-        public Task<Unit> Handle(ApplicationManualSubmissionCreateCommand request, CancellationToken cancellationToken);
+        public Task<Unit> Handle(ApplicationSubmissionCreateCommand request, CancellationToken cancellationToken);
 
     }
 
     public record ApplicationInviteCreateCommand(Guid OrgId, IEnumerable<ApplicationInviteCreateRequest> ApplicationInviteCreateRequests) : IRequest<Unit>;
     public record CheckApplicationInviteDuplicateQuery(Guid OrgId, IEnumerable<ApplicationInviteCreateRequest> ApplicationInviteCreateRequests) : IRequest<IEnumerable<CheckApplicationInviteDuplicateResponse>>;
-    public record ApplicationManualSubmissionCreateCommand(ApplicationManualSubmissionCreateRequest ApplicationManualSubmissionCreateRequest) : IRequest<Unit>;
-    public record CheckManualSubmissionDuplicateQuery(ApplicationManualSubmissionCreateRequest ApplicationManualSubmissionCreateRequest) : IRequest<CheckManualSubmissionDuplicateResponse>;
+    public record ApplicationSubmissionCreateCommand(ApplicationSubmissionCreateRequest ApplicationSubmissionCreateRequest) : IRequest<Unit>;
+    public record CheckApplicationSubmissionDuplicateQuery(ApplicationSubmissionCreateRequest ApplicationSubmissionCreateRequest) : IRequest<CheckApplicationSubmissionDuplicateResponse>;
 
     public record ApplicationInviteCreateRequest
     {
@@ -39,9 +40,10 @@ namespace Spd.Manager.Cases
         public string Email { get; set; }
         public bool HasPotentialDuplicate { get; set; } = false;
     }
-    public record ApplicationManualSubmissionCreateRequest
+    public record ApplicationSubmissionCreateRequest
     {
         public Guid OrganizationId { get; set; }
+        public ApplicationOriginTypeCode OriginTypeCode { get; set; }
         public string GivenName { get; set; }
         public string MiddleName1 { get; set; }
         public string MiddleName2 { get; set; }
@@ -76,13 +78,37 @@ namespace Spd.Manager.Cases
         //	haveVerifiedIdentity
     }
 
-    public class CheckManualSubmissionDuplicateResponse
+    public class CheckApplicationSubmissionDuplicateResponse
     {
         public Guid OrgSpdId { get; set; }
         public string GivenName { get; set; }
         public string Surname { get; set; }
         public string EmailAddress { get; set; }
         public bool HasPotentialDuplicate { get; set; } = false;
+    }
+
+    public enum ApplicationOriginTypeCode
+    {
+        [Description("Portal")]
+        Portal,
+
+        [Description("Email")]
+        Email,
+
+        [Description("Web Form")]
+        WebForm,
+
+        [Description("Mail")]
+        Mail,
+
+        [Description("Fax")]
+        Fax,
+
+        [Description("Generic Upload")]
+        GenericUpload,
+
+        [Description("Organization Submitted")]
+        OrganizationSubmitted
     }
 
     public class ApplicationInviteCreateRequestValidator : AbstractValidator<ApplicationInviteCreateRequest>
@@ -108,10 +134,13 @@ namespace Spd.Manager.Cases
         }
     }
 
-    public class ApplicationManualSubmissionCreateRequestValidator : AbstractValidator<ApplicationManualSubmissionCreateRequest>
+    public class ApplicationSubmissionCreateRequestValidator : AbstractValidator<ApplicationSubmissionCreateRequest>
     {
-        public ApplicationManualSubmissionCreateRequestValidator()
+        public ApplicationSubmissionCreateRequestValidator()
         {
+            RuleFor(r => r.OriginTypeCode)
+                .IsInEnum();
+
             RuleFor(r => r.GivenName)
                     .NotEmpty()
                     .MaximumLength(40);
