@@ -75,7 +75,7 @@ public class FileStorageController : SpdControllerBase
                 FileName = request.File.FileName,
                 ContentType = request.File.ContentType,
                 Content = ms.ToArray(),
-                Tags = GetTags(headers[HEADER_FILE_TAG], classification),
+                Tags = GetTagsFromStr(headers[HEADER_FILE_TAG], classification),
                 Folder = headers[HEADER_FILE_FOLDER]
             };
             await _storageService.HandleCommand(new UploadFileCommand { File = file }, CancellationToken.None);
@@ -101,7 +101,7 @@ public class FileStorageController : SpdControllerBase
 
             var content = new MemoryStream(result.File.Content);
             var contentType = result.File.ContentType;
-            var fileName = result.File.FileName;
+
             HttpContext.Response.Headers.Add(HEADER_FILE_CLASSIFICATION,
                 result.File.Tags.FirstOrDefault(t => t.Key == "classification")?.Value);
 
@@ -115,7 +115,7 @@ public class FileStorageController : SpdControllerBase
             return new FileStreamResult(content, contentType);
         }
 
-        private Tag[] GetTags(string? tagStr, string classification)
+        private Tag[] GetTagsFromStr(string? tagStr, string classification)
         {
             try
             {
