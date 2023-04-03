@@ -5,7 +5,7 @@ namespace Spd.Resource.Applicants
         public Task<bool> AddApplicationInvitesAsync(ApplicationInviteCreateCmd createInviteCmd, CancellationToken cancellationToken);
         Task<bool> CheckInviteInvitationDuplicateAsync(SearchInvitationQry searchInvitationQry, CancellationToken cancellationToken);
         Task<bool> CheckInviteApplicationDuplicateAsync(SearchInvitationQry searchInvitationQry, CancellationToken cancellationToken);
-        public Task<bool> AddApplicationSubmissionAsync(ApplicationSubmissionCreateCmd createSubmissionCmd, CancellationToken cancellationToken);
+        public Task<bool> AddApplicationAsync(ApplicationCreateCmd createApplicationCmd, CancellationToken cancellationToken);
     }
 
     public record ApplicationInviteCreateCmd
@@ -38,7 +38,7 @@ namespace Spd.Resource.Applicants
         public string Email { get; set; }
     }
 
-    public record ApplicationSubmissionCreateCmd
+    public record ApplicationCreateCmd
     {
         public Guid OrganizationId { get; set; }
         public ApplicationOriginTypeCode OriginTypeCode { get; set; }

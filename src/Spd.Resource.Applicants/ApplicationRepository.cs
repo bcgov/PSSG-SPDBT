@@ -57,9 +57,9 @@ namespace Spd.Resource.Applicants
             return orginvitation != null;
         }
 
-        public async Task<bool> AddApplicationSubmissionAsync(ApplicationSubmissionCreateCmd createSubmissionCmd, CancellationToken cancellationToken)
+        public async Task<bool> AddApplicationAsync(ApplicationCreateCmd createApplicationCmd, CancellationToken cancellationToken)
         {
-            spd_application application = _mapper.Map<spd_application>(createSubmissionCmd);
+            spd_application application = _mapper.Map<spd_application>(createApplicationCmd);
             _dynaContext.AddTospd_applications(application);
             await _dynaContext.SaveChangesAsync(cancellationToken);
             return true;

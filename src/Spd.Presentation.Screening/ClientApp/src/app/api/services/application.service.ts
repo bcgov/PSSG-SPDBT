@@ -9,10 +9,10 @@ import { RequestBuilder } from '../request-builder';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
+import { ApplicationCreateRequest } from '../models/application-create-request';
 import { ApplicationInviteCreateRequest } from '../models/application-invite-create-request';
-import { ApplicationSubmissionCreateRequest } from '../models/application-submission-create-request';
+import { CheckApplicationDuplicateResponse } from '../models/check-application-duplicate-response';
 import { CheckApplicationInviteDuplicateResponse } from '../models/check-application-invite-duplicate-response';
-import { CheckApplicationSubmissionDuplicateResponse } from '../models/check-application-submission-duplicate-response';
 import { Unit } from '../models/unit';
 
 @Injectable({
@@ -135,24 +135,24 @@ export class ApplicationService extends BaseService {
   }
 
   /**
-   * Path part for operation apiOrgsOrgIdApplicationSubmissionPost
+   * Path part for operation apiOrgsOrgIdApplicationPost
    */
-  static readonly ApiOrgsOrgIdApplicationSubmissionPostPath = '/api/orgs/{orgId}/application-submission';
+  static readonly ApiOrgsOrgIdApplicationPostPath = '/api/orgs/{orgId}/application';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiOrgsOrgIdApplicationSubmissionPost()` instead.
+   * To access only the response body, use `apiOrgsOrgIdApplicationPost()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiOrgsOrgIdApplicationSubmissionPost$Response(params: {
+  apiOrgsOrgIdApplicationPost$Response(params: {
     orgId: string;
     context?: HttpContext
-    body: ApplicationSubmissionCreateRequest
+    body: ApplicationCreateRequest
   }
 ): Observable<StrictHttpResponse<Unit>> {
 
-    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdApplicationSubmissionPostPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdApplicationPostPath, 'post');
     if (params) {
       rb.path('orgId', params.orgId, {});
       rb.body(params.body, 'application/*+json');
@@ -172,18 +172,18 @@ export class ApplicationService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiOrgsOrgIdApplicationSubmissionPost$Response()` instead.
+   * To access the full response (for headers, for example), `apiOrgsOrgIdApplicationPost$Response()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiOrgsOrgIdApplicationSubmissionPost(params: {
+  apiOrgsOrgIdApplicationPost(params: {
     orgId: string;
     context?: HttpContext
-    body: ApplicationSubmissionCreateRequest
+    body: ApplicationCreateRequest
   }
 ): Observable<Unit> {
 
-    return this.apiOrgsOrgIdApplicationSubmissionPost$Response(params).pipe(
+    return this.apiOrgsOrgIdApplicationPost$Response(params).pipe(
       map((r: StrictHttpResponse<Unit>) => r.body as Unit)
     );
   }
@@ -202,9 +202,9 @@ export class ApplicationService extends BaseService {
   apiOrgsOrgIdDetectApplicationDuplicatePost$Response(params: {
     orgId: string;
     context?: HttpContext
-    body: ApplicationSubmissionCreateRequest
+    body: ApplicationCreateRequest
   }
-): Observable<StrictHttpResponse<CheckApplicationSubmissionDuplicateResponse>> {
+): Observable<StrictHttpResponse<CheckApplicationDuplicateResponse>> {
 
     const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdDetectApplicationDuplicatePostPath, 'post');
     if (params) {
@@ -219,7 +219,7 @@ export class ApplicationService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<CheckApplicationSubmissionDuplicateResponse>;
+        return r as StrictHttpResponse<CheckApplicationDuplicateResponse>;
       })
     );
   }
@@ -233,12 +233,12 @@ export class ApplicationService extends BaseService {
   apiOrgsOrgIdDetectApplicationDuplicatePost(params: {
     orgId: string;
     context?: HttpContext
-    body: ApplicationSubmissionCreateRequest
+    body: ApplicationCreateRequest
   }
-): Observable<CheckApplicationSubmissionDuplicateResponse> {
+): Observable<CheckApplicationDuplicateResponse> {
 
     return this.apiOrgsOrgIdDetectApplicationDuplicatePost$Response(params).pipe(
-      map((r: StrictHttpResponse<CheckApplicationSubmissionDuplicateResponse>) => r.body as CheckApplicationSubmissionDuplicateResponse)
+      map((r: StrictHttpResponse<CheckApplicationDuplicateResponse>) => r.body as CheckApplicationDuplicateResponse)
     );
   }
 

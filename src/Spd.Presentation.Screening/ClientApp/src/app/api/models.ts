@@ -1,13 +1,13 @@
 export { ActionResult } from './models/action-result';
 export { AddressFindResponse } from './models/address-find-response';
 export { AddressRetrieveResponse } from './models/address-retrieve-response';
+export { ApplicationCreateRequest } from './models/application-create-request';
 export { ApplicationInviteCreateRequest } from './models/application-invite-create-request';
 export { ApplicationOriginTypeCode } from './models/application-origin-type-code';
-export { ApplicationSubmissionCreateRequest } from './models/application-submission-create-request';
 export { BCeIdConfigurationResponse } from './models/b-ce-id-configuration-response';
 export { BooleanTypeCode } from './models/boolean-type-code';
+export { CheckApplicationDuplicateResponse } from './models/check-application-duplicate-response';
 export { CheckApplicationInviteDuplicateResponse } from './models/check-application-invite-duplicate-response';
-export { CheckApplicationSubmissionDuplicateResponse } from './models/check-application-submission-duplicate-response';
 export { CheckDuplicateResponse } from './models/check-duplicate-response';
 export { ContactAuthorizationTypeCode } from './models/contact-authorization-type-code';
 export { CurrentUserInfo } from './models/current-user-info';

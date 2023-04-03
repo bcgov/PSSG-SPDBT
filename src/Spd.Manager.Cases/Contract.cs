@@ -8,14 +8,14 @@ namespace Spd.Manager.Cases
     {
         public Task<Unit> Handle(ApplicationInviteCreateCommand request, CancellationToken cancellationToken);
         public Task<IEnumerable<CheckApplicationInviteDuplicateResponse>> Handle(CheckApplicationInviteDuplicateQuery request, CancellationToken cancellationToken);
-        public Task<Unit> Handle(ApplicationSubmissionCreateCommand request, CancellationToken cancellationToken);
+        public Task<Unit> Handle(ApplicationCreateCommand request, CancellationToken cancellationToken);
 
     }
 
     public record ApplicationInviteCreateCommand(Guid OrgId, IEnumerable<ApplicationInviteCreateRequest> ApplicationInviteCreateRequests) : IRequest<Unit>;
     public record CheckApplicationInviteDuplicateQuery(Guid OrgId, IEnumerable<ApplicationInviteCreateRequest> ApplicationInviteCreateRequests) : IRequest<IEnumerable<CheckApplicationInviteDuplicateResponse>>;
-    public record ApplicationSubmissionCreateCommand(ApplicationSubmissionCreateRequest ApplicationSubmissionCreateRequest) : IRequest<Unit>;
-    public record CheckApplicationSubmissionDuplicateQuery(ApplicationSubmissionCreateRequest ApplicationSubmissionCreateRequest) : IRequest<CheckApplicationSubmissionDuplicateResponse>;
+    public record ApplicationCreateCommand(ApplicationCreateRequest ApplicationCreateRequest) : IRequest<Unit>;
+    public record CheckApplicationDuplicateQuery(ApplicationCreateRequest ApplicationCreateRequest) : IRequest<CheckApplicationDuplicateResponse>;
 
     public record ApplicationInviteCreateRequest
     {
@@ -40,7 +40,7 @@ namespace Spd.Manager.Cases
         public string Email { get; set; }
         public bool HasPotentialDuplicate { get; set; } = false;
     }
-    public record ApplicationSubmissionCreateRequest
+    public record ApplicationCreateRequest
     {
         public Guid OrganizationId { get; set; }
         public ApplicationOriginTypeCode OriginTypeCode { get; set; }
@@ -78,7 +78,7 @@ namespace Spd.Manager.Cases
         //	haveVerifiedIdentity
     }
 
-    public class CheckApplicationSubmissionDuplicateResponse
+    public class CheckApplicationDuplicateResponse
     {
         public Guid OrgSpdId { get; set; }
         public string GivenName { get; set; }
@@ -134,9 +134,9 @@ namespace Spd.Manager.Cases
         }
     }
 
-    public class ApplicationSubmissionCreateRequestValidator : AbstractValidator<ApplicationSubmissionCreateRequest>
+    public class ApplicationCreateRequestValidator : AbstractValidator<ApplicationCreateRequest>
     {
-        public ApplicationSubmissionCreateRequestValidator()
+        public ApplicationCreateRequestValidator()
         {
             RuleFor(r => r.OriginTypeCode)
                 .IsInEnum();

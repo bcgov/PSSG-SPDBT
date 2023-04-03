@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-export interface CheckApplicationSubmissionDuplicateResponse {
+export interface CheckApplicationDuplicateResponse {
   emailAddress?: null | string;
   givenName?: null | string;
   hasPotentialDuplicate?: boolean;

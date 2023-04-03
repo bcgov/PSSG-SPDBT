@@ -1,7 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import { ApplicationOriginTypeCode } from './application-origin-type-code';
-export interface ApplicationSubmissionCreateRequest {
+export interface ApplicationCreateRequest {
   addressLine1?: null | string;
   addressLine2?: null | string;
   alias1GivenName?: null | string;
