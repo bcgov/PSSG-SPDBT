@@ -6,12 +6,12 @@
         Task<StorageQueryResults> HandleQuery(StorageQuery query, CancellationToken cancellationToken);
     }
 
-    public abstract record StorageCommand { }
-    public record UploadFileCommand : StorageCommand
+    public abstract record StorageCommand 
     {
         public File File { get; set; } = null!;
     }
-
+    public record UploadFileCommand : StorageCommand {}
+    public record UpdateTagsCommand : StorageCommand {}
     public record File
     {
         public string Key { get; set; } = null!;
