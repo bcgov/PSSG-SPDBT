@@ -36,8 +36,9 @@ namespace Spd.Manager.Cases
                 var searchInvitationQry = _mapper.Map<SearchInvitationQry>(item);
                 searchInvitationQry.OrgId = request.OrgId;
 
-                bool hasDuplicate = await _applicationRepository.CheckInviteDuplicateAsync(searchInvitationQry, cancellationToken);
-                if (hasDuplicate)
+                //duplicated in portal invitation
+                bool hasDuplicateInvitation = await _applicationRepository.CheckInviteInvitationDuplicateAsync(searchInvitationQry, cancellationToken);
+                if (hasDuplicateInvitation)
                 {
                     CheckApplicationInviteDuplicateResponse dupResp = new CheckApplicationInviteDuplicateResponse();
                     dupResp.HasPotentialDuplicate = true;
@@ -46,6 +47,22 @@ namespace Spd.Manager.Cases
                     dupResp.LastName = item.LastName;
                     dupResp.Email = item.Email;
                     resp.Add(dupResp);
+                }
+
+                if (!hasDuplicateInvitation)
+                {
+                    //duplicated in application
+                    bool hasDuplicateApplication = await _applicationRepository.CheckInviteApplicationDuplicateAsync(searchInvitationQry, cancellationToken);
+                    if (hasDuplicateApplication)
+                    {
+                        CheckApplicationInviteDuplicateResponse dupResp = new CheckApplicationInviteDuplicateResponse();
+                        dupResp.HasPotentialDuplicate = true;
+                        dupResp.OrgId = request.OrgId;
+                        dupResp.FirstName = item.FirstName;
+                        dupResp.LastName = item.LastName;
+                        dupResp.Email = item.Email;
+                        resp.Add(dupResp);
+                    }
                 }
             }
 

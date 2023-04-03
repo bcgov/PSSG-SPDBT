@@ -35,15 +35,34 @@ namespace Spd.Resource.Applicants
             return true;
         }
 
-        public async Task<bool> CheckInviteDuplicateAsync(SearchInvitationQry searchInvitationQry, CancellationToken cancellationToken)
+        public async Task<bool> CheckInviteInvitationDuplicateAsync(SearchInvitationQry searchInvitationQry, CancellationToken cancellationToken)
         {
             var orginvitation = _dynaContext.spd_portalinvitations.Where(o =>
                 o.spd_OrganizationId.accountid == searchInvitationQry.OrgId &&
-                o.spd_firstname == searchInvitationQry.FirstName &&
-                o.spd_surname == searchInvitationQry.LastName &&
+                o.spd_firstname.Equals(searchInvitationQry.FirstName, StringComparison.InvariantCultureIgnoreCase) &&
+                o.spd_surname.Equals(searchInvitationQry.LastName, StringComparison.InvariantCultureIgnoreCase) &&
                 o.statecode != DynamicsConstants.StateCode_Inactive
             ).FirstOrDefault();
             return orginvitation != null;
+        }
+
+        public async Task<bool> CheckInviteApplicationDuplicateAsync(SearchInvitationQry searchInvitationQry, CancellationToken cancellationToken)
+        {
+            var orginvitation = _dynaContext.spd_applications.Where(o =>
+                o.spd_OrganizationId.accountid == searchInvitationQry.OrgId &&
+                o.spd_firstname.Equals(searchInvitationQry.FirstName, StringComparison.InvariantCultureIgnoreCase) &&
+                o.spd_lastname.Equals(searchInvitationQry.LastName, StringComparison.InvariantCultureIgnoreCase) &&
+                o.statecode != DynamicsConstants.StateCode_Inactive
+            ).FirstOrDefault();
+            return orginvitation != null;
+        }
+
+        public async Task<bool> AddApplicationManualSubmissionAsync(ApplicationManualSubmissionCreateCmd createManualSubmissionCmd, CancellationToken cancellationToken)
+        {
+            spd_application application = _mapper.Map<spd_application>(createManualSubmissionCmd);
+            _dynaContext.AddTospd_applications(application);
+            await _dynaContext.SaveChangesAsync(cancellationToken);
+            return true;
         }
 
         private account? GetOrgById(Guid organizationId)
@@ -57,6 +76,7 @@ namespace Spd.Resource.Applicants
                 throw new InactiveException(HttpStatusCode.BadRequest, $"Organization {organizationId} is inactive.");
             return account;
         }
+
         private spd_portaluser? GetUserById(Guid userId)
         {
             var user = _dynaContext.spd_portalusers
@@ -68,14 +88,6 @@ namespace Spd.Resource.Applicants
                 throw new InactiveException(HttpStatusCode.BadRequest, $"User {userId} is inactive.");
             return user;
 
-        }
-
-        public async Task<bool> AddApplicationManualSubmissionAsync(ApplicationManualSubmissionCreateCmd createManualSubmissionCmd, CancellationToken cancellationToken)
-        {
-            spd_application application = _mapper.Map<spd_application>(createManualSubmissionCmd);
-            _dynaContext.AddTospd_applications(application);
-            await _dynaContext.SaveChangesAsync(cancellationToken);
-            return true;
         }
     }
 }
