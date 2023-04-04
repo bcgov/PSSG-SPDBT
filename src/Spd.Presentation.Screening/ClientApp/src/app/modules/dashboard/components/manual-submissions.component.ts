@@ -54,50 +54,35 @@ export const EmployeeInteractionTypes = [
 					<div class="col-xl-3 col-lg-6 col-md-12">
 						<mat-form-field>
 							<mat-label>Legal Given Name</mat-label>
-							<input matInput formControlName="givenName" [errorStateMatcher]="matcher" />
+							<input matInput formControlName="givenName" [errorStateMatcher]="matcher" maxlength="40" />
 							<mat-error *ngIf="form.get('givenName')?.hasError('required')"> This is required </mat-error>
-							<mat-error *ngIf="form.get('givenName')?.hasError('maxlength')">
-								This must be at most 40 characters long
-							</mat-error>
 						</mat-form-field>
 					</div>
 					<div class="col-xl-3 col-lg-6 col-md-12">
 						<mat-form-field>
 							<mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
-							<input matInput formControlName="middleName1" />
-							<mat-error *ngIf="form.get('middleName1')?.hasError('maxlength')">
-								This must be at most 40 characters long
-							</mat-error>
+							<input matInput formControlName="middleName1" maxlength="40" />
 						</mat-form-field>
 					</div>
 					<div class="col-xl-3 col-lg-6 col-md-12">
 						<mat-form-field>
 							<mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
-							<input matInput formControlName="middleName2" />
-							<mat-error *ngIf="form.get('middleName2')?.hasError('maxlength')">
-								This must be at most 40 characters long
-							</mat-error>
+							<input matInput formControlName="middleName2" maxlength="40" />
 						</mat-form-field>
 					</div>
 					<div class="col-xl-3 col-lg-6 col-md-12">
 						<mat-form-field>
 							<mat-label>Legal Surname</mat-label>
-							<input matInput formControlName="surname" [errorStateMatcher]="matcher" />
+							<input matInput formControlName="surname" [errorStateMatcher]="matcher" maxlength="40" />
 							<mat-error *ngIf="form.get('surname')?.hasError('required')"> This is required </mat-error>
-							<mat-error *ngIf="form.get('surname')?.hasError('maxlength')">
-								This must be at most 40 characters long
-							</mat-error>
 						</mat-form-field>
 					</div>
 
 					<div class="col-xl-3 col-lg-6 col-md-12">
 						<mat-form-field>
 							<mat-label>Email Address</mat-label>
-							<input matInput formControlName="emailAddress" [errorStateMatcher]="matcher" />
+							<input matInput formControlName="emailAddress" [errorStateMatcher]="matcher" maxlength="75" />
 							<mat-error *ngIf="form.get('emailAddress')?.hasError('required')"> This is required </mat-error>
-							<mat-error *ngIf="form.get('emailAddress')?.hasError('maxlength')">
-								This must be at most 75 characters long
-							</mat-error>
 						</mat-form-field>
 					</div>
 					<div class="col-xl-3 col-lg-6 col-md-12">
@@ -122,11 +107,8 @@ export const EmployeeInteractionTypes = [
 					<div class="col-xl-3 col-lg-6 col-md-12">
 						<mat-form-field>
 							<mat-label>Birth Place</mat-label>
-							<input matInput formControlName="birthPlace" [errorStateMatcher]="matcher" />
+							<input matInput formControlName="birthPlace" [errorStateMatcher]="matcher" maxlength="100" />
 							<mat-error *ngIf="form.get('birthPlace')?.hasError('required')"> This is required </mat-error>
-							<mat-error *ngIf="form.get('birthPlace')?.hasError('maxlength')">
-								This must be at most 100 characters long
-							</mat-error>
 						</mat-form-field>
 					</div>
 
@@ -142,22 +124,8 @@ export const EmployeeInteractionTypes = [
 					<div class="col-xl-3 col-lg-6 col-md-12">
 						<mat-form-field>
 							<mat-label>Job Title</mat-label>
-							<input matInput formControlName="jobTitle" [errorStateMatcher]="matcher" />
+							<input matInput formControlName="jobTitle" [errorStateMatcher]="matcher" maxlength="100" />
 							<mat-error *ngIf="form.get('jobTitle')?.hasError('required')">This is required</mat-error>
-							<mat-error *ngIf="form.get('jobTitle')?.hasError('maxlength')">
-								This must be at most 100 characters long
-							</mat-error>
-						</mat-form-field>
-					</div>
-					<div class="col-xl-3 col-lg-6 col-md-12">
-						<mat-form-field>
-							<mat-label>Vulnerable Sector Category</mat-label>
-							<mat-select formControlName="vulnerableSectorCategory" [errorStateMatcher]="matcher">
-								<mat-option *ngFor="let interaction of employeeInteractionTypes" [value]="interaction.code">
-									{{ interaction.desc }}
-								</mat-option>
-							</mat-select>
-							<mat-error *ngIf="form.get('vulnerableSectorCategory')?.hasError('required')">This is required</mat-error>
 						</mat-form-field>
 					</div>
 				</div>
@@ -189,25 +157,32 @@ export const EmployeeInteractionTypes = [
 							<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
 								<mat-form-field>
 									<mat-label>Given Name <span class="optional-label">(optional)</span></mat-label>
-									<input matInput type="text" formControlName="givenName" />
+									<input matInput type="text" formControlName="givenName" maxlength="40" />
 								</mat-form-field>
 							</div>
 							<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
 								<mat-form-field>
 									<mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
-									<input matInput type="text" formControlName="middleName1" />
+									<input matInput type="text" formControlName="middleName1" maxlength="40" />
 								</mat-form-field>
 							</div>
 							<div class="col-xl-2 col-lg-2 col-md-6 col-sm-12">
 								<mat-form-field>
 									<mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
-									<input matInput type="text" formControlName="middleName2" />
+									<input matInput type="text" formControlName="middleName2" maxlength="40" />
 								</mat-form-field>
 							</div>
 							<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
 								<mat-form-field>
 									<mat-label>Surname</mat-label>
-									<input matInput type="text" formControlName="surname" required [errorStateMatcher]="matcher" />
+									<input
+										matInput
+										type="text"
+										formControlName="surname"
+										required
+										[errorStateMatcher]="matcher"
+										maxlength="40"
+									/>
 									<mat-error *ngIf="group.get('surname')?.hasError('required')"> This is required </mat-error>
 								</mat-form-field>
 							</div>
@@ -262,11 +237,8 @@ export const EmployeeInteractionTypes = [
 							<div class="text-minor-heading fw-semibold mb-2">Address Information</div>
 							<mat-form-field>
 								<mat-label>Street Address 1</mat-label>
-								<input matInput formControlName="addressLine1" />
+								<input matInput formControlName="addressLine1" maxlength="100" />
 								<mat-error *ngIf="form.get('addressLine1')?.hasError('required')">This is required</mat-error>
-								<mat-error *ngIf="form.get('addressLine1')?.hasError('maxlength')">
-									This must be at most 100 characters long
-								</mat-error>
 							</mat-form-field>
 						</div>
 					</div>
@@ -274,10 +246,7 @@ export const EmployeeInteractionTypes = [
 						<div class="col-lg-8 col-md-12 col-sm-12">
 							<mat-form-field>
 								<mat-label>Street Address 2 <span class="optional-label">(optional)</span></mat-label>
-								<input matInput formControlName="addressLine2" />
-								<mat-error *ngIf="form.get('addressLine2')?.hasError('maxlength')">
-									This must be at most 100 characters long
-								</mat-error>
+								<input matInput formControlName="addressLine2" maxlength="100" />
 							</mat-form-field>
 						</div>
 					</div>
@@ -285,21 +254,20 @@ export const EmployeeInteractionTypes = [
 						<div class="col-lg-4 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>City</mat-label>
-								<input matInput formControlName="city" />
+								<input matInput formControlName="city" maxlength="100" />
 								<mat-error *ngIf="form.get('city')?.hasError('required')">This is required</mat-error>
-								<mat-error *ngIf="form.get('city')?.hasError('maxlength')">
-									This must be at most 100 characters long
-								</mat-error>
 							</mat-form-field>
 						</div>
 						<div class="col-lg-4 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Postal/Zip Code</mat-label>
-								<input matInput formControlName="postalCode" oninput="this.value = this.value.toUpperCase()" />
+								<input
+									matInput
+									formControlName="postalCode"
+									oninput="this.value = this.value.toUpperCase()"
+									maxlength="20"
+								/>
 								<mat-error *ngIf="form.get('postalCode')?.hasError('required')">This is required</mat-error>
-								<mat-error *ngIf="form.get('postalCode')?.hasError('maxlength')">
-									This must be at most 20 characters long
-								</mat-error>
 							</mat-form-field>
 						</div>
 					</div>
@@ -307,21 +275,15 @@ export const EmployeeInteractionTypes = [
 						<div class="col-lg-4 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Province/State</mat-label>
-								<input matInput formControlName="province" />
+								<input matInput formControlName="province" maxlength="100" />
 								<mat-error *ngIf="form.get('province')?.hasError('required')">This is required</mat-error>
-								<mat-error *ngIf="form.get('province')?.hasError('maxlength')">
-									This must be at most 100 characters long
-								</mat-error>
 							</mat-form-field>
 						</div>
 						<div class="col-lg-4 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Country</mat-label>
-								<input matInput formControlName="country" />
+								<input matInput formControlName="country" maxlength="100" />
 								<mat-error *ngIf="form.get('country')?.hasError('required')">This is required</mat-error>
-								<mat-error *ngIf="form.get('country')?.hasError('maxlength')">
-									This must be at most 100 characters long
-								</mat-error>
 							</mat-form-field>
 						</div>
 					</div>
@@ -349,15 +311,6 @@ export const EmployeeInteractionTypes = [
 						<mat-checkbox formControlName="haveVerifiedIdentity">
 							I confirm that I have verified the identity of the applicant for this security screening
 						</mat-checkbox>
-						<mat-error
-							class="mat-option-error"
-							*ngIf="
-								(form.get('haveVerifiedIdentity')?.dirty || form.get('haveVerifiedIdentity')?.touched) &&
-								form.get('haveVerifiedIdentity')?.invalid &&
-								form.get('haveVerifiedIdentity')?.hasError('required')
-							"
-							>This is required</mat-error
-						>
 					</div>
 				</div>
 
@@ -427,28 +380,27 @@ export class ManualSubmissionsComponent {
 	payerPreferenceTypeCode = PayerPreferenceTypeCode;
 	form: FormGroup = this.formBuilder.group(
 		{
-			givenName: new FormControl('', [Validators.required, Validators.maxLength(40)]),
-			middleName1: new FormControl('', [Validators.maxLength(40)]),
-			middleName2: new FormControl('', [Validators.maxLength(40)]),
-			surname: new FormControl('', [Validators.required, Validators.maxLength(40)]),
+			givenName: new FormControl('', [Validators.required]),
+			middleName1: new FormControl(''),
+			middleName2: new FormControl(''),
+			surname: new FormControl('', [Validators.required]),
 			oneLegalName: new FormControl(false),
-			emailAddress: new FormControl('', [Validators.required, Validators.email, Validators.maxLength(75)]),
+			emailAddress: new FormControl('', [Validators.required, Validators.email]),
 			phoneNumber: new FormControl('', [Validators.required]),
 			driversLicense: new FormControl(''),
 			dateOfBirth: new FormControl(null, [Validators.required]),
-			birthPlace: new FormControl('', [Validators.required, Validators.maxLength(100)]),
-			jobTitle: new FormControl('', [Validators.required, Validators.maxLength(100)]),
-			vulnerableSectorCategory: new FormControl('', [Validators.required]),
+			birthPlace: new FormControl('', [Validators.required]),
+			jobTitle: new FormControl('', [Validators.required]),
 			previousNameFlag: new FormControl('', [Validators.required]),
 			addressSelected: new FormControl(false, [Validators.requiredTrue]),
-			addressLine1: new FormControl('', [Validators.required, Validators.maxLength(100)]),
-			addressLine2: new FormControl('', [Validators.maxLength(100)]),
-			city: new FormControl('', [Validators.required, Validators.maxLength(100)]),
-			postalCode: new FormControl('', [Validators.required, Validators.maxLength(20)]),
-			province: new FormControl('', [Validators.required, Validators.maxLength(100)]),
-			country: new FormControl('', [Validators.required, Validators.maxLength(100)]),
+			addressLine1: new FormControl('', [Validators.required]),
+			addressLine2: new FormControl(''),
+			city: new FormControl('', [Validators.required]),
+			postalCode: new FormControl('', [Validators.required]),
+			province: new FormControl('', [Validators.required]),
+			country: new FormControl('', [Validators.required]),
 			agreeToCompleteAndAccurate: new FormControl('', [Validators.required]),
-			haveVerifiedIdentity: new FormControl('', [Validators.required]),
+			haveVerifiedIdentity: new FormControl(false),
 			aliases: this.formBuilder.array([]),
 		},
 		{
@@ -490,7 +442,8 @@ export class ManualSubmissionsComponent {
 						const data: DialogOptions = {
 							icon: 'warning',
 							title: 'Potential Duplicate Detected',
-							message: 'A potential duplicate has been found. Are you sure this is a new application?',
+							message:
+								'An in-progress application already exists for this applicant, with your organization for this screening type. How would you like to proceed?',
 							actionText: 'Yes, create application',
 							cancelText: 'Cancel',
 						};
@@ -623,10 +576,10 @@ export class ManualSubmissionsComponent {
 
 	private newAliasRow(): FormGroup {
 		return this.formBuilder.group({
-			givenName: ['', [Validators.maxLength(40)]],
-			middleName1: ['', [Validators.maxLength(40)]],
-			middleName2: ['', [Validators.maxLength(40)]],
-			surname: ['', [Validators.required, Validators.maxLength(40)]],
+			givenName: [''],
+			middleName1: [''],
+			middleName2: [''],
+			surname: ['', [Validators.required]],
 		});
 	}
 }

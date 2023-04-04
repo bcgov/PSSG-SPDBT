@@ -37,11 +37,8 @@ export interface UserDialogData {
 					<div class="col-md-6">
 						<mat-form-field>
 							<mat-label>Given Name</mat-label>
-							<input matInput formControlName="firstName" />
+							<input matInput formControlName="firstName" maxlength="40" />
 							<mat-error *ngIf="form.get('firstName')?.hasError('required')">This is required</mat-error>
-							<mat-error *ngIf="form.get('firstName')?.hasError('maxlength')">
-								This must be at most 40 characters long
-							</mat-error>
 						</mat-form-field>
 					</div>
 				</div>
@@ -50,22 +47,16 @@ export interface UserDialogData {
 					<div class="col-md-6">
 						<mat-form-field>
 							<mat-label>Surname</mat-label>
-							<input matInput formControlName="lastName" />
+							<input matInput formControlName="lastName" maxlength="40" />
 							<mat-error *ngIf="form.get('lastName')?.hasError('required')">This is required</mat-error>
-							<mat-error *ngIf="form.get('lastName')?.hasError('maxlength')">
-								This must be at most 40 characters long
-							</mat-error>
 						</mat-form-field>
 					</div>
 					<div class="col-md-6">
 						<mat-form-field>
 							<mat-label>Email Address</mat-label>
-							<input matInput formControlName="email" placeholder="name@domain.com" />
+							<input matInput formControlName="email" placeholder="name@domain.com" maxlength="75" />
 							<mat-error *ngIf="form.get('email')?.hasError('email')"> Must be a valid email address </mat-error>
 							<mat-error *ngIf="form.get('email')?.hasError('required')">This is required</mat-error>
-							<mat-error *ngIf="form.get('email')?.hasError('maxlength')">
-								This must be at most 75 characters long
-							</mat-error>
 						</mat-form-field>
 					</div>
 				</div>
@@ -81,11 +72,8 @@ export interface UserDialogData {
 					<div class="col-md-6">
 						<mat-form-field>
 							<mat-label>Job Title</mat-label>
-							<input matInput formControlName="jobTitle" />
+							<input matInput formControlName="jobTitle" maxlength="100" />
 							<mat-error *ngIf="form.get('jobTitle')?.hasError('required')">This is required</mat-error>
-							<mat-error *ngIf="form.get('jobTitle')?.hasError('maxlength')">
-								This must be at most 100 characters long
-							</mat-error>
 						</mat-form-field>
 					</div>
 				</div>
@@ -112,11 +100,11 @@ export class MaintainUserModalComponent {
 	form: FormGroup = this.formBuilder.group(
 		{
 			contactAuthorizationTypeCode: new FormControl('', [Validators.required]),
-			lastName: new FormControl('', [Validators.required, Validators.maxLength(40)]),
-			firstName: new FormControl('', [Validators.required, Validators.maxLength(40)]),
-			email: new FormControl('', [Validators.required, Validators.email, Validators.maxLength(75)]),
+			lastName: new FormControl('', [Validators.required]),
+			firstName: new FormControl('', [Validators.required]),
+			email: new FormControl('', [Validators.required, Validators.email]),
 			phoneNumber: new FormControl('', [Validators.required]),
-			jobTitle: new FormControl('', [Validators.required, Validators.maxLength(100)]),
+			jobTitle: new FormControl('', [Validators.required]),
 		},
 		{
 			validators: [

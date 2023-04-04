@@ -46,14 +46,12 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 											type="email"
 											required
 											[errorStateMatcher]="matcher"
+											maxlength="75"
 										/>
 										<mat-error *ngIf="form.get('genericEmail')?.hasError('email')">
 											Must be a valid email address
 										</mat-error>
 										<mat-error *ngIf="form.get('genericEmail')?.hasError('required')">This is required</mat-error>
-										<mat-error *ngIf="form.get('genericEmail')?.hasError('maxlength')">
-											This must be at most 75 characters long
-										</mat-error>
 									</mat-form-field>
 								</div>
 								<div class="col-lg-6 col-md-12 col-sm-12">
@@ -96,7 +94,7 @@ export class OrganizationInformationComponent implements OnInit, RegistrationFor
 	ngOnInit(): void {
 		this.form = this.formBuilder.group({
 			hasPhoneOrEmail: new FormControl('', [Validators.required]),
-			genericEmail: new FormControl('', [Validators.email, Validators.required, Validators.maxLength(75)]),
+			genericEmail: new FormControl('', [Validators.email, Validators.required]),
 			genericPhoneNumber: new FormControl('', [Validators.required]),
 		});
 	}

@@ -86,7 +86,7 @@ namespace Spd.Manager.Cases
             if (hasDuplicateApplication)
             {
                 CheckApplicationDuplicateResponse dupResp = new CheckApplicationDuplicateResponse();
-                resp.OrgSpdId = request.ApplicationCreateRequest.OrgId;
+                resp.OrgId = request.ApplicationCreateRequest.OrgId;
                 resp.GivenName = request.ApplicationCreateRequest.GivenName;
                 resp.Surname = request.ApplicationCreateRequest.Surname;
                 resp.EmailAddress = request.ApplicationCreateRequest.EmailAddress;

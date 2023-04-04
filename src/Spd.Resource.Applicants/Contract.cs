@@ -18,11 +18,11 @@ namespace Spd.Resource.Applicants
 
     public record ApplicationInviteCreateReq
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
-        public string JobTitle { get; set; }
-        public bool OrgPay { get; set; }
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public string? Email { get; set; }
+        public string? JobTitle { get; set; }
+        public bool? OrgPay { get; set; }
     }
 
     public record ApplicationInviteCreateResp
@@ -48,24 +48,24 @@ namespace Spd.Resource.Applicants
 
     public record ApplicationCreateCmd
     {
-        public Guid OrganizationId { get; set; }
+        public Guid OrgId { get; set; }
         public ApplicationOriginTypeCode OriginTypeCode { get; set; }
-        public string GivenName { get; set; }
-        public string MiddleName1 { get; set; }
-        public string MiddleName2 { get; set; }
-        public string Surname { get; set; }
-        public string EmailAddress { get; set; }
-        public string PhoneNumber { get; set; }
-        public string DriversLicense { get; set; }
+        public string? GivenName { get; set; }
+        public string? MiddleName1 { get; set; }
+        public string? MiddleName2 { get; set; }
+        public string? Surname { get; set; }
+        public string? EmailAddress { get; set; }
+        public string? PhoneNumber { get; set; }
+        public string? DriversLicense { get; set; }
         public DateTimeOffset? DateOfBirth { get; set; }
-        public string BirthPlace { get; set; }
-        public string JobTitle { get; set; }
-        public string AddressLine1 { get; set; }
-        public string AddressLine2 { get; set; }
-        public string City { get; set; }
-        public string PostalCode { get; set; }
-        public string Province { get; set; }
-        public string Country { get; set; }
+        public string? BirthPlace { get; set; }
+        public string? JobTitle { get; set; }
+        public string? AddressLine1 { get; set; }
+        public string? AddressLine2 { get; set; }
+        public string? City { get; set; }
+        public string? PostalCode { get; set; }
+        public string? Province { get; set; }
+        public string? Country { get; set; }
         public bool? AgreeToCompleteAndAccurate { get; set; }
         public bool? HaveVerifiedIdentity { get; set; }
         public List<AliasCreateCmd> Aliases { get; set; }
@@ -73,10 +73,10 @@ namespace Spd.Resource.Applicants
 
     public record AliasCreateCmd
     {
-        public string GivenName { get; set; }
-        public string MiddleName1 { get; set; }
-        public string MiddleName2 { get; set; }
-        public string Surname { get; set; }
+        public string? GivenName { get; set; }
+        public string? MiddleName1 { get; set; }
+        public string? MiddleName2 { get; set; }
+        public string? Surname { get; set; }
 
     }
 

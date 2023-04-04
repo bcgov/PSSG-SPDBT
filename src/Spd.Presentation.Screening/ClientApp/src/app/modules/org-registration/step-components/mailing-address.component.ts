@@ -39,11 +39,8 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 							<div class="text-minor-heading fw-semibold mb-2">Address Information</div>
 							<mat-form-field>
 								<mat-label>Street Address 1</mat-label>
-								<input matInput formControlName="mailingAddressLine1" [errorStateMatcher]="matcher" />
+								<input matInput formControlName="mailingAddressLine1" [errorStateMatcher]="matcher" maxlength="100" />
 								<mat-error *ngIf="form.get('mailingAddressLine1')?.hasError('required')">This is required</mat-error>
-								<mat-error *ngIf="form.get('mailingAddressLine1')?.hasError('maxlength')">
-									This must be at most 100 characters long
-								</mat-error>
 							</mat-form-field>
 						</div>
 					</div>
@@ -52,10 +49,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
 							<mat-form-field>
 								<mat-label>Street Address 2 <span class="optional-label">(optional)</span></mat-label>
-								<input matInput formControlName="mailingAddressLine2" />
-								<mat-error *ngIf="form.get('mailingAddressLine2')?.hasError('maxlength')">
-									This must be at most 100 characters long
-								</mat-error>
+								<input matInput formControlName="mailingAddressLine2" maxlength="100" />
 							</mat-form-field>
 						</div>
 					</div>
@@ -63,21 +57,20 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 						<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>City</mat-label>
-								<input matInput formControlName="mailingCity" />
+								<input matInput formControlName="mailingCity" maxlength="100" />
 								<mat-error *ngIf="form.get('mailingCity')?.hasError('required')">This is required</mat-error>
-								<mat-error *ngIf="form.get('mailingCity')?.hasError('maxlength')">
-									This must be at most 100 characters long
-								</mat-error>
 							</mat-form-field>
 						</div>
 						<div class="col-lg-4 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Postal/Zip Code</mat-label>
-								<input matInput formControlName="mailingPostalCode" oninput="this.value = this.value.toUpperCase()" />
+								<input
+									matInput
+									formControlName="mailingPostalCode"
+									oninput="this.value = this.value.toUpperCase()"
+									maxlength="20"
+								/>
 								<mat-error *ngIf="form.get('mailingPostalCode')?.hasError('required')">This is required</mat-error>
-								<mat-error *ngIf="form.get('mailingPostalCode')?.hasError('maxlength')">
-									This must be at most 20 characters long
-								</mat-error>
 							</mat-form-field>
 						</div>
 					</div>
@@ -85,21 +78,15 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 						<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Province/State</mat-label>
-								<input matInput formControlName="mailingProvince" />
+								<input matInput formControlName="mailingProvince" maxlength="100" />
 								<mat-error *ngIf="form.get('mailingProvince')?.hasError('required')">This is required</mat-error>
-								<mat-error *ngIf="form.get('mailingProvince')?.hasError('maxlength')">
-									This must be at most 100 characters long
-								</mat-error>
 							</mat-form-field>
 						</div>
 						<div class="col-lg-4 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Country</mat-label>
-								<input matInput formControlName="mailingCountry" />
+								<input matInput formControlName="mailingCountry" maxlength="100" />
 								<mat-error *ngIf="form.get('mailingCountry')?.hasError('required')">This is required</mat-error>
-								<mat-error *ngIf="form.get('mailingCountry')?.hasError('maxlength')">
-									This must be at most 100 characters long
-								</mat-error>
 							</mat-form-field>
 						</div>
 					</div>
@@ -125,12 +112,12 @@ export class MailingAddressComponent implements OnInit, RegistrationFormStepComp
 	ngOnInit(): void {
 		this.form = this.formBuilder.group({
 			addressSelected: new FormControl(false, [Validators.requiredTrue]),
-			mailingAddressLine1: new FormControl('', [Validators.required, Validators.maxLength(100)]),
-			mailingAddressLine2: new FormControl('', [Validators.maxLength(100)]),
-			mailingCity: new FormControl('', [Validators.required, Validators.maxLength(100)]),
-			mailingPostalCode: new FormControl('', [Validators.required, Validators.maxLength(20)]),
-			mailingProvince: new FormControl('', [Validators.required, Validators.maxLength(100)]),
-			mailingCountry: new FormControl('', [Validators.required, Validators.maxLength(100)]),
+			mailingAddressLine1: new FormControl('', [Validators.required]),
+			mailingAddressLine2: new FormControl(''),
+			mailingCity: new FormControl('', [Validators.required]),
+			mailingPostalCode: new FormControl('', [Validators.required]),
+			mailingProvince: new FormControl('', [Validators.required]),
+			mailingCountry: new FormControl('', [Validators.required]),
 		});
 	}
 
