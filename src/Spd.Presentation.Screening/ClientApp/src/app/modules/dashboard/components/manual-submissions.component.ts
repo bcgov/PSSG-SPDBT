@@ -623,10 +623,10 @@ export class ManualSubmissionsComponent {
 
 	private newAliasRow(): FormGroup {
 		return this.formBuilder.group({
-			givenName: [''],
-			middleName1: [''],
-			middleName2: [''],
-			surname: ['', [Validators.required]],
+			givenName: ['', [Validators.maxLength(40)]],
+			middleName1: ['', [Validators.maxLength(40)]],
+			middleName2: ['', [Validators.maxLength(40)]],
+			surname: ['', [Validators.required, Validators.maxLength(40)]],
 		});
 	}
 }

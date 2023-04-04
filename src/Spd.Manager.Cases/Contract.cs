@@ -142,6 +142,12 @@ namespace Spd.Manager.Cases
                     .NotEmpty()
                     .MaximumLength(40);
 
+            RuleFor(r => r.MiddleName1)
+                    .MaximumLength(40);
+
+            RuleFor(r => r.MiddleName2)
+                    .MaximumLength(40);
+
             RuleFor(r => r.Surname)
                     .NotEmpty()
                     .MaximumLength(40);
@@ -196,6 +202,15 @@ namespace Spd.Manager.Cases
 
             RuleForEach(x => x.Aliases).ChildRules(order =>
             {
+                RuleFor(r => r.GivenName)
+                        .MaximumLength(40);
+
+                RuleFor(r => r.MiddleName1)
+                        .MaximumLength(40);
+
+                RuleFor(r => r.MiddleName2)
+                        .MaximumLength(40);
+
                 RuleFor(r => r.Surname)
                         .NotEmpty()
                         .MaximumLength(40);
