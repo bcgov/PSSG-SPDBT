@@ -5,5 +5,5 @@ export interface CheckApplicationInviteDuplicateResponse {
   firstName?: null | string;
   hasPotentialDuplicate?: boolean;
   lastName?: null | string;
-  orgSpdId?: string;
+  orgId?: string;
 }
