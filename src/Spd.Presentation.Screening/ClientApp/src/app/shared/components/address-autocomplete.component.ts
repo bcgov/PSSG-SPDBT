@@ -164,6 +164,10 @@ export class AddressAutocompleteComponent implements OnInit {
 			});
 	}
 
+	public onClearData(): void {
+		this.form.reset();
+	}
+
 	private addressDialog(dialogOptions: AddressDialogData): void {
 		this.dialog
 			.open(AddressModalComponent, {

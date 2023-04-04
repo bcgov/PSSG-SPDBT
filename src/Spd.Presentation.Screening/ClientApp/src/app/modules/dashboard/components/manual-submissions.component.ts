@@ -1,12 +1,21 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { HotToastService } from '@ngneat/hot-toast';
 import { NgxMaskPipe } from 'ngx-mask';
-import { BooleanTypeCode, EmployeeInteractionTypeCode, PayerPreferenceTypeCode } from 'src/app/api/models';
-import { OrgService } from 'src/app/api/services';
+import {
+	ApplicationCreateRequest,
+	ApplicationOriginTypeCode,
+	BooleanTypeCode,
+	CheckApplicationDuplicateResponse,
+	EmployeeInteractionTypeCode,
+	PayerPreferenceTypeCode,
+} from 'src/app/api/models';
+import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
-import { Address } from 'src/app/shared/components/address-autocomplete.component';
+import { Address, AddressAutocompleteComponent } from 'src/app/shared/components/address-autocomplete.component';
+import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 
 export const EmployeeInteractionTypes = [
 	{ desc: 'Children', code: EmployeeInteractionTypeCode.Children },
@@ -44,9 +53,9 @@ export const EmployeeInteractionTypes = [
 					<div class="col-xl-3 col-lg-6 col-md-12">
 						<mat-form-field>
 							<mat-label>Legal Given Name</mat-label>
-							<input matInput formControlName="firstName" />
-							<mat-error *ngIf="form.get('firstName')?.hasError('required')"> This is required </mat-error>
-							<mat-error *ngIf="form.get('firstName')?.hasError('maxlength')">
+							<input matInput formControlName="givenName" />
+							<mat-error *ngIf="form.get('givenName')?.hasError('required')"> This is required </mat-error>
+							<mat-error *ngIf="form.get('givenName')?.hasError('maxlength')">
 								This must be at most 40 characters long
 							</mat-error>
 						</mat-form-field>
@@ -72,9 +81,9 @@ export const EmployeeInteractionTypes = [
 					<div class="col-xl-3 col-lg-6 col-md-12">
 						<mat-form-field>
 							<mat-label>Legal Surname</mat-label>
-							<input matInput formControlName="lastName" />
-							<mat-error *ngIf="form.get('lastName')?.hasError('required')"> This is required </mat-error>
-							<mat-error *ngIf="form.get('lastName')?.hasError('maxlength')">
+							<input matInput formControlName="surname" />
+							<mat-error *ngIf="form.get('surname')?.hasError('required')"> This is required </mat-error>
+							<mat-error *ngIf="form.get('surname')?.hasError('maxlength')">
 								This must be at most 40 characters long
 							</mat-error>
 						</mat-form-field>
@@ -106,9 +115,9 @@ export const EmployeeInteractionTypes = [
 					<div class="col-xl-3 col-lg-6 col-md-12">
 						<mat-form-field>
 							<mat-label>Birth Place</mat-label>
-							<input matInput formControlName="birthplace" />
-							<mat-error *ngIf="form.get('birthplace')?.hasError('required')"> This is required </mat-error>
-							<mat-error *ngIf="form.get('birthplace')?.hasError('maxlength')">
+							<input matInput formControlName="birthPlace" />
+							<mat-error *ngIf="form.get('birthPlace')?.hasError('required')"> This is required </mat-error>
+							<mat-error *ngIf="form.get('birthPlace')?.hasError('maxlength')">
 								This must be at most 100 characters long
 							</mat-error>
 						</mat-form-field>
@@ -176,7 +185,7 @@ export const EmployeeInteractionTypes = [
 							<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
 								<mat-form-field>
 									<mat-label>Alias Given Name <span class="optional-label">(optional)</span></mat-label>
-									<input matInput type="text" formControlName="alias1FirstName" />
+									<input matInput type="text" formControlName="alias1GivenName" />
 								</mat-form-field>
 							</div>
 							<div class="col-xl-3 col-lg-3 col-md-5 col-sm-12">
@@ -194,7 +203,7 @@ export const EmployeeInteractionTypes = [
 							<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
 								<mat-form-field>
 									<mat-label>Alias Surname</mat-label>
-									<input matInput type="text" formControlName="alias1LastName" required />
+									<input matInput type="text" formControlName="alias1Surname" required />
 								</mat-form-field>
 							</div>
 						</div>
@@ -206,7 +215,7 @@ export const EmployeeInteractionTypes = [
 							<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
 								<mat-form-field>
 									<mat-label>Alias Given Name <span class="optional-label">(optional)</span></mat-label>
-									<input matInput type="text" formControlName="alias2FirstName" />
+									<input matInput type="text" formControlName="alias2GivenName" />
 								</mat-form-field>
 							</div>
 							<div class="col-xl-3 col-lg-3 col-md-5 col-sm-12">
@@ -224,7 +233,7 @@ export const EmployeeInteractionTypes = [
 							<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
 								<mat-form-field>
 									<mat-label>Alias Surname</mat-label>
-									<input matInput type="text" formControlName="alias2LastName" required />
+									<input matInput type="text" formControlName="alias2Surname" required />
 								</mat-form-field>
 							</div>
 						</div>
@@ -236,7 +245,7 @@ export const EmployeeInteractionTypes = [
 							<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
 								<mat-form-field>
 									<mat-label>Alias Given Name <span class="optional-label">(optional)</span></mat-label>
-									<input matInput type="text" formControlName="alias3FirstName" />
+									<input matInput type="text" formControlName="alias3GivenName" />
 								</mat-form-field>
 							</div>
 							<div class="col-xl-3 col-lg-3 col-md-5 col-sm-12">
@@ -254,7 +263,7 @@ export const EmployeeInteractionTypes = [
 							<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
 								<mat-form-field>
 									<mat-label>Alias Surname</mat-label>
-									<input matInput type="text" formControlName="alias3LastName" required />
+									<input matInput type="text" formControlName="alias3Surname" required />
 								</mat-form-field>
 							</div>
 						</div>
@@ -289,9 +298,9 @@ export const EmployeeInteractionTypes = [
 							<div class="text-minor-heading fw-semibold mb-2">Address Information</div>
 							<mat-form-field>
 								<mat-label>Street Address 1</mat-label>
-								<input matInput formControlName="mailingAddressLine1" />
-								<mat-error *ngIf="form.get('mailingAddressLine1')?.hasError('required')">This is required</mat-error>
-								<mat-error *ngIf="form.get('mailingAddressLine1')?.hasError('maxlength')">
+								<input matInput formControlName="addressLine1" />
+								<mat-error *ngIf="form.get('addressLine1')?.hasError('required')">This is required</mat-error>
+								<mat-error *ngIf="form.get('addressLine1')?.hasError('maxlength')">
 									This must be at most 100 characters long
 								</mat-error>
 							</mat-form-field>
@@ -301,8 +310,8 @@ export const EmployeeInteractionTypes = [
 						<div class="col-lg-8 col-md-12 col-sm-12">
 							<mat-form-field>
 								<mat-label>Street Address 2 <span class="optional-label">(optional)</span></mat-label>
-								<input matInput formControlName="mailingAddressLine2" />
-								<mat-error *ngIf="form.get('mailingAddressLine2')?.hasError('maxlength')">
+								<input matInput formControlName="addressLine2" />
+								<mat-error *ngIf="form.get('addressLine2')?.hasError('maxlength')">
 									This must be at most 100 characters long
 								</mat-error>
 							</mat-form-field>
@@ -312,9 +321,9 @@ export const EmployeeInteractionTypes = [
 						<div class="col-lg-4 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>City</mat-label>
-								<input matInput formControlName="mailingCity" />
-								<mat-error *ngIf="form.get('mailingCity')?.hasError('required')">This is required</mat-error>
-								<mat-error *ngIf="form.get('mailingCity')?.hasError('maxlength')">
+								<input matInput formControlName="city" />
+								<mat-error *ngIf="form.get('city')?.hasError('required')">This is required</mat-error>
+								<mat-error *ngIf="form.get('city')?.hasError('maxlength')">
 									This must be at most 100 characters long
 								</mat-error>
 							</mat-form-field>
@@ -322,9 +331,9 @@ export const EmployeeInteractionTypes = [
 						<div class="col-lg-4 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Postal/Zip Code</mat-label>
-								<input matInput formControlName="mailingPostalCode" oninput="this.value = this.value.toUpperCase()" />
-								<mat-error *ngIf="form.get('mailingPostalCode')?.hasError('required')">This is required</mat-error>
-								<mat-error *ngIf="form.get('mailingPostalCode')?.hasError('maxlength')">
+								<input matInput formControlName="postalCode" oninput="this.value = this.value.toUpperCase()" />
+								<mat-error *ngIf="form.get('postalCode')?.hasError('required')">This is required</mat-error>
+								<mat-error *ngIf="form.get('postalCode')?.hasError('maxlength')">
 									This must be at most 20 characters long
 								</mat-error>
 							</mat-form-field>
@@ -334,9 +343,9 @@ export const EmployeeInteractionTypes = [
 						<div class="col-lg-4 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Province/State</mat-label>
-								<input matInput formControlName="mailingProvince" />
-								<mat-error *ngIf="form.get('mailingProvince')?.hasError('required')">This is required</mat-error>
-								<mat-error *ngIf="form.get('mailingProvince')?.hasError('maxlength')">
+								<input matInput formControlName="province" />
+								<mat-error *ngIf="form.get('province')?.hasError('required')">This is required</mat-error>
+								<mat-error *ngIf="form.get('province')?.hasError('maxlength')">
 									This must be at most 100 characters long
 								</mat-error>
 							</mat-form-field>
@@ -344,9 +353,9 @@ export const EmployeeInteractionTypes = [
 						<div class="col-lg-4 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Country</mat-label>
-								<input matInput formControlName="mailingCountry" />
-								<mat-error *ngIf="form.get('mailingCountry')?.hasError('required')">This is required</mat-error>
-								<mat-error *ngIf="form.get('mailingCountry')?.hasError('maxlength')">
+								<input matInput formControlName="country" />
+								<mat-error *ngIf="form.get('country')?.hasError('required')">This is required</mat-error>
+								<mat-error *ngIf="form.get('country')?.hasError('maxlength')">
 									This must be at most 100 characters long
 								</mat-error>
 							</mat-form-field>
@@ -400,7 +409,6 @@ export const EmployeeInteractionTypes = [
 						[maxFileSize]="maxFileSize"
 						[disableClick]="disableClick"
 						[expandable]="expandable"
-						[accept]="accept"
 					>
 						<ngx-dropzone-label>
 							<div class="my-2">
@@ -441,56 +449,57 @@ export const EmployeeInteractionTypes = [
 	],
 })
 export class ManualSubmissionsComponent {
+	@ViewChild(AddressAutocompleteComponent) addressAutocompleteComponent!: AddressAutocompleteComponent;
+
 	employeeInteractionTypes = EmployeeInteractionTypes;
 	multiple: boolean = false;
 	expandable: boolean = true;
 	disableClick: boolean = false;
 	maxFileSize: number = 104857600; // bytes
-	accept = '.tsv';
 
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	booleanTypeCodes = BooleanTypeCode;
 	payerPreferenceTypeCode = PayerPreferenceTypeCode;
 	form: FormGroup = this.formBuilder.group(
 		{
-			firstName: new FormControl('', [Validators.required, Validators.maxLength(40)]),
+			givenName: new FormControl('', [Validators.required, Validators.maxLength(40)]),
 			middleName1: new FormControl('', [Validators.maxLength(40)]),
 			middleName2: new FormControl('', [Validators.maxLength(40)]),
-			lastName: new FormControl('', [Validators.required, Validators.maxLength(40)]),
+			surname: new FormControl('', [Validators.required, Validators.maxLength(40)]),
 			oneLegalName: new FormControl(false),
 			emailAddress: new FormControl('', [Validators.required, Validators.email, Validators.maxLength(75)]),
 			phoneNumber: new FormControl('', [Validators.required]),
 			driversLicense: new FormControl(''),
-			dateOfBirth: new FormControl('', [Validators.required]),
-			birthplace: new FormControl('', [Validators.required, Validators.maxLength(100)]),
+			dateOfBirth: new FormControl(null, [Validators.required]),
+			birthPlace: new FormControl('', [Validators.required, Validators.maxLength(100)]),
 			jobTitle: new FormControl('', [Validators.required, Validators.maxLength(100)]),
 			vulnerableSectorCategory: new FormControl('', [Validators.required]),
 			previousNameFlag: new FormControl('', [Validators.required]),
-			alias1FirstName: new FormControl(''),
+			alias1GivenName: new FormControl(''),
 			alias1MiddleName1: new FormControl(''),
 			alias1MiddleName2: new FormControl(''),
-			alias1LastName: new FormControl(''),
-			alias2FirstName: new FormControl(''),
+			alias1Surname: new FormControl(''),
+			alias2GivenName: new FormControl(''),
 			alias2MiddleName1: new FormControl(''),
 			alias2MiddleName2: new FormControl(''),
-			alias2LastName: new FormControl(''),
-			alias3FirstName: new FormControl(''),
+			alias2Surname: new FormControl(''),
+			alias3GivenName: new FormControl(''),
 			alias3MiddleName1: new FormControl(''),
 			alias3MiddleName2: new FormControl(''),
-			alias3LastName: new FormControl(''),
+			alias3Surname: new FormControl(''),
 			addressSelected: new FormControl(false, [Validators.requiredTrue]),
-			mailingAddressLine1: new FormControl('', [Validators.required, Validators.maxLength(100)]),
-			mailingAddressLine2: new FormControl('', [Validators.maxLength(100)]),
-			mailingCity: new FormControl('', [Validators.required, Validators.maxLength(100)]),
-			mailingPostalCode: new FormControl('', [Validators.required, Validators.maxLength(20)]),
-			mailingProvince: new FormControl('', [Validators.required, Validators.maxLength(100)]),
-			mailingCountry: new FormControl('', [Validators.required, Validators.maxLength(100)]),
+			addressLine1: new FormControl('', [Validators.required, Validators.maxLength(100)]),
+			addressLine2: new FormControl('', [Validators.maxLength(100)]),
+			city: new FormControl('', [Validators.required, Validators.maxLength(100)]),
+			postalCode: new FormControl('', [Validators.required, Validators.maxLength(20)]),
+			province: new FormControl('', [Validators.required, Validators.maxLength(100)]),
+			country: new FormControl('', [Validators.required, Validators.maxLength(100)]),
 			agreeToCompleteAndAccurate: new FormControl('', [Validators.required]),
 			haveVerifiedIdentity: new FormControl('', [Validators.required]),
 		},
 		{
 			validators: [
-				FormGroupValidators.conditionalRequiredValidator('firstName', (form) => !form.get('oneLegalName')?.value),
+				FormGroupValidators.conditionalRequiredValidator('givenName', (form) => !form.get('oneLegalName')?.value),
 			],
 		}
 	);
@@ -498,60 +507,79 @@ export class ManualSubmissionsComponent {
 
 	constructor(
 		private formBuilder: FormBuilder,
+		private applicationService: ApplicationService,
 		private hotToast: HotToastService,
 		private maskPipe: NgxMaskPipe,
-		private orgService: OrgService
+		private dialog: MatDialog
 	) {}
-
-	ngOnInit(): void {}
 
 	onCancel(): void {}
 
 	onSubmit() {
 		this.form.markAllAsTouched();
 		if (this.form.valid) {
+			console.log('form', this.form.value);
+			const body: ApplicationCreateRequest = { ...this.form.value };
+			body.originTypeCode = ApplicationOriginTypeCode.Portal;
+
+			//TODO replace with proper org id
 			// Check for potential duplicate
-			// this.orgRegistrationService
-			// .apiOrgRegistrationsDetectDuplicatePost({ body })
-			// .pipe()
-			// .subscribe((dupres: CheckDuplicateResponse) => {
-			//   if (dupres.hasPotentialDuplicate) {
-			//     const data: DialogOptions = {
-			//       icon: 'warning',
-			//       title: 'Potential Duplicate Detected',
-			//       message:
-			//         'A potential duplicate has been found. Are you sure this is a new organization registration request?',
-			//       actionText: 'Yes, create registration',
-			//       cancelText: 'Cancel',
-			//     };
-			//     this.dialog
-			//       .open(DialogComponent, { data })
-			//       .afterClosed()
-			//       .subscribe((response: boolean) => {
-			//         // Save potential duplicate
-			//         body.hasPotentialDuplicate = BooleanTypeCode.Yes;
-			//         if (response) {
-			//           this.saveRegistration(body);
-			//         }
-			//       });
-			//   } else {
-			//     // Save registration
-			//     this.saveRegistration(body);
-			//   }
-			// });
+			this.applicationService
+				.apiOrgsOrgIdDetectApplicationDuplicatePost({ orgId: '4165bdfe-7cb4-ed11-b83e-00505683fbf4', body })
+				.pipe()
+				.subscribe((dupres: CheckApplicationDuplicateResponse) => {
+					if (dupres.hasPotentialDuplicate) {
+						const data: DialogOptions = {
+							icon: 'warning',
+							title: 'Potential Duplicate Detected',
+							message: 'A potential duplicate has been found. Are you sure this is a new application?',
+							actionText: 'Yes, create application',
+							cancelText: 'Cancel',
+						};
+						this.dialog
+							.open(DialogComponent, { data })
+							.afterClosed()
+							.subscribe((response: boolean) => {
+								if (response) {
+									this.saveManualSubmission(body);
+								}
+							});
+					} else {
+						this.saveManualSubmission(body);
+					}
+				});
 		}
+	}
+
+	saveManualSubmission(body: ApplicationCreateRequest): void {
+		if (body.phoneNumber) {
+			body.phoneNumber = this.maskPipe.transform(body.phoneNumber, SPD_CONSTANTS.phone.backendMask);
+		}
+
+		//TODO replace with proper org id
+		this.applicationService
+			.apiOrgsOrgIdApplicationPost({
+				orgId: '4165bdfe-7cb4-ed11-b83e-00505683fbf4',
+				body,
+			})
+			.pipe()
+			.subscribe((_resp: any) => {
+				this.hotToast.success('The application was successfully created');
+				this.addressAutocompleteComponent.onClearData();
+				this.form.reset();
+			});
 	}
 
 	onAddressAutocomplete(address: Address): void {
 		if (!address) {
 			this.form.patchValue({
 				addressSelected: false,
-				mailingAddressLine1: '',
-				mailingAddressLine2: '',
-				mailingCity: '',
-				mailingPostalCode: '',
-				mailingProvince: '',
-				mailingCountry: '',
+				addressLine1: '',
+				addressLine2: '',
+				city: '',
+				postalCode: '',
+				province: '',
+				country: '',
 			});
 			return;
 		}
@@ -559,12 +587,12 @@ export class ManualSubmissionsComponent {
 		const { countryCode, provinceCode, postalCode, line1, line2, city } = address;
 		this.form.patchValue({
 			addressSelected: true,
-			mailingAddressLine1: line1,
-			mailingAddressLine2: line2,
-			mailingCity: city,
-			mailingPostalCode: postalCode,
-			mailingProvince: provinceCode,
-			mailingCountry: countryCode,
+			addressLine1: line1,
+			addressLine2: line2,
+			city: city,
+			postalCode: postalCode,
+			province: provinceCode,
+			country: countryCode,
 		});
 	}
 
