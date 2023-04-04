@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Spd.Resource.Organizations.Registration;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
@@ -50,14 +51,28 @@ namespace Spd.Resource.Organizations.Org
             }
             DynamicsContextLookupHelpers.OrganizationTypeGuidDictionary.TryGetValue(key, out Guid typeGuid);
 
-            var org = _dynaContext.accounts.Expand(o => o.spd_OrganizationTypeId).Where(a =>
-                a.name.Equals(searchQry.OrganizationName, StringComparison.InvariantCultureIgnoreCase) &&
-                a.address1_postalcode == searchQry.MailingPostalCode &&
-                a.emailaddress1 == searchQry.GenericEmail &&
-                a.spd_OrganizationTypeId.spd_organizationtypeid == typeGuid &&
-                a.statecode != DynamicsConstants.StateCode_Inactive
-            ).FirstOrDefault();
-            return org != null;
+            if (searchQry.GenericEmail.IsNullOrEmpty())
+            {
+                var org = _dynaContext.accounts.Expand(o => o.spd_OrganizationTypeId).Where(a =>
+                    a.name.Equals(searchQry.OrganizationName, StringComparison.InvariantCultureIgnoreCase) &&
+                    a.address1_postalcode.Equals(searchQry.MailingPostalCode, StringComparison.InvariantCultureIgnoreCase) &&
+                    a.spd_OrganizationTypeId.spd_organizationtypeid == typeGuid &&
+                    a.statecode != DynamicsConstants.StateCode_Inactive
+                ).FirstOrDefault();
+                return org != null;
+            }
+            else
+            {
+                // use email in the check
+                var org = _dynaContext.accounts.Expand(o => o.spd_OrganizationTypeId).Where(a =>
+                    a.name.Equals(searchQry.OrganizationName, StringComparison.InvariantCultureIgnoreCase) &&
+                    a.address1_postalcode.Equals(searchQry.MailingPostalCode, StringComparison.InvariantCultureIgnoreCase) &&
+                    a.emailaddress1.Equals(searchQry.GenericEmail, StringComparison.InvariantCultureIgnoreCase) &&
+                    a.spd_OrganizationTypeId.spd_organizationtypeid == typeGuid &&
+                    a.statecode != DynamicsConstants.StateCode_Inactive
+                ).FirstOrDefault();
+                return org != null;
+            }
         }
 
         private account? GetOrgById(Guid organizationId)

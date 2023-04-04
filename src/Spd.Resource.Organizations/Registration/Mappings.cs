@@ -9,7 +9,7 @@ namespace Spd.Resource.Organizations.Registration
         public Mappings()
         {
             _ = CreateMap<OrgRegistrationCreateCmd, spd_orgregistration>()
-            .ForMember(d => d.spd_orgregistrationid, opt => opt.MapFrom(s => Guid.NewGuid()))           
+            .ForMember(d => d.spd_orgregistrationid, opt => opt.MapFrom(s => Guid.NewGuid()))
             .ForMember(d => d.spd_workswith, opt => opt.MapFrom(s => (int)Enum.Parse<WorksWithChildrenOptionSet>(s.EmployeeInteractionFlag.ToString())))
             .ForMember(d => d.spd_estimatedapplicationssubmittedperyear, opt => opt.MapFrom(s => (int)Enum.Parse<EstimatedApplicationsSubmittedPerYearOptionSet>(s.ScreeningsCount.ToString())))
             .ForMember(d => d.spd_payerpreference, opt => opt.MapFrom(s => (int)Enum.Parse<PayerPreferenceOptionSet>(s.PayerPreference.ToString())))
@@ -38,7 +38,7 @@ namespace Spd.Resource.Organizations.Registration
         private static int? GetPortalUserIdentityType(IdentityProviderTypeCode? code)
         {
             if (code == null) return null;
-            return (int)Enum.Parse<PortalUserIdentityTypeCode>(code.ToString());
+            return (int)Enum.Parse<PortalUserIdentityOptionSet>(code.ToString());
         }
 
     }

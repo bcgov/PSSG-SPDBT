@@ -45,10 +45,21 @@
         Applicant = 100000001,
     }
 
-    public enum PortalUserIdentityTypeCode
+    public enum PortalUserIdentityOptionSet
     {
         BusinessBceId = 100000000,
         BcServicesCard = 100000001,
         Idir = 100000002
+    }
+
+    public enum ApplicationOriginOptionSet
+    {
+        Portal = 1,
+        Email = 2,
+        WebForm = 3,
+        Mail = 2483,
+        Fax = 3986,
+        GenericUpload = 100000000,
+        OrganizationSubmitted = 100000001
     }
 }
