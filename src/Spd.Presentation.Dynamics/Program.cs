@@ -22,24 +22,24 @@ builder.Services.AddControllers()
     });
 builder.Services.AddFileStorageProxy(builder.Configuration);
 
-//builder.Services.AddAuthentication(options =>
-//{
-//    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-//}).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
-//{
-//    builder.Configuration.GetSection("authentication:jwt").Bind(options);
-//    options.Validate();
-//});
-//builder.Services.AddAuthorization(options =>
-//{
-//    options.AddPolicy(JwtBearerDefaults.AuthenticationScheme, policy =>
-//    {
-//        policy
-//            .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-//            .RequireAuthenticatedUser();
-//    });
-//    options.DefaultPolicy = options.GetPolicy(JwtBearerDefaults.AuthenticationScheme)!;
-//});
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+{
+    builder.Configuration.GetSection("authentication:jwt").Bind(options);
+    options.Validate();
+});
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(JwtBearerDefaults.AuthenticationScheme, policy =>
+    {
+        policy
+            .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+            .RequireAuthenticatedUser();
+    });
+    options.DefaultPolicy = options.GetPolicy(JwtBearerDefaults.AuthenticationScheme)!;
+});
 
 var app = builder.Build();
 
