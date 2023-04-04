@@ -61,8 +61,40 @@ namespace Spd.Resource.Applicants
         {
             spd_application application = _mapper.Map<spd_application>(createApplicationCmd);
             _dynaContext.AddTospd_applications(application);
+
+            contact contact = GetContactByName(createApplicationCmd.GivenName, createApplicationCmd.Surname);
+            // create a new contact
+            if (contact == null)
+            {
+                contact = _mapper.Map<contact>(createApplicationCmd);
+                _dynaContext.AddTocontacts(contact);
+            }
+
+            // associate contact to application
+            application.spd_applicationid = contact.contactid;
+
+            // create the Aliases
+            foreach (var item in createApplicationCmd.Aliases)
+            {
+                spd_alias alias = _mapper.Map<spd_alias>(item);
+                alias._spd_contactid_value = contact.contactid;
+                _dynaContext.AddTospd_aliases(alias);
+            }
+
             await _dynaContext.SaveChangesAsync(cancellationToken);
             return true;
+        }
+
+
+        public async Task<bool> CheckApplicationDuplicateAsync(SearchApplicationQry searchApplicationQry, CancellationToken cancellationToken)
+        {
+            var orginvitation = _dynaContext.spd_applications.Where(o =>
+                o.spd_OrganizationId.accountid == searchApplicationQry.OrgId &&
+                o.spd_firstname.Equals(searchApplicationQry.GivenName, StringComparison.InvariantCultureIgnoreCase) &&
+                o.spd_lastname.Equals(searchApplicationQry.Surname, StringComparison.InvariantCultureIgnoreCase) &&
+                o.statecode != DynamicsConstants.StateCode_Inactive
+            ).FirstOrDefault();
+            return orginvitation != null;
         }
 
         private account? GetOrgById(Guid organizationId)
@@ -87,6 +119,18 @@ namespace Spd.Resource.Applicants
             if (user?.statecode == DynamicsConstants.StateCode_Inactive)
                 throw new InactiveException(HttpStatusCode.BadRequest, $"User {userId} is inactive.");
             return user;
+
+        }
+
+        private contact? GetContactByName(string givenName, string surname)
+        {
+            var contact = _dynaContext.contacts
+                .Where(o =>
+                o.firstname.Equals(givenName, StringComparison.InvariantCultureIgnoreCase) &&
+                o.lastname.Equals(surname, StringComparison.InvariantCultureIgnoreCase) &&
+                o.statecode != DynamicsConstants.StateCode_Inactive
+            ).FirstOrDefault();
+            return contact;
 
         }
     }

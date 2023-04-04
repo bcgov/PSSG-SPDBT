@@ -64,20 +64,6 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 				<div class="row">
 					<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
 						<mat-form-field>
-							<mat-label>Date of Birth</mat-label>
-							<input
-								matInput
-								[matDatepicker]="picker"
-								formControlName="contactDateOfBirth"
-								[errorStateMatcher]="matcher"
-							/>
-							<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-							<mat-datepicker #picker startView="multi-year" [startAt]="startAt"></mat-datepicker>
-							<mat-error *ngIf="form.get('contactDateOfBirth')?.hasError('required')">This is required</mat-error>
-						</mat-form-field>
-					</div>
-					<div class="col-lg-4 col-md-6 col-sm-12">
-						<mat-form-field>
 							<mat-label>Direct Phone Number</mat-label>
 							<input
 								matInput
@@ -103,7 +89,6 @@ export class ContactInformationComponent implements RegistrationFormStepComponen
 		contactSurname: new FormControl('', [Validators.required, Validators.maxLength(40)]),
 		contactJobTitle: new FormControl('', [Validators.required, Validators.maxLength(100)]),
 		contactEmail: new FormControl('', [Validators.email, Validators.required, Validators.maxLength(75)]),
-		contactDateOfBirth: new FormControl('', [Validators.required]),
 		contactPhoneNumber: new FormControl('', [Validators.required]),
 	});
 	startAt = SPD_CONSTANTS.date.birthDateStartAt;

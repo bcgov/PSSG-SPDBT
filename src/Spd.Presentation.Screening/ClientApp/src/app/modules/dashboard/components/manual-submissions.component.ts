@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { HotToastService } from '@ngneat/hot-toast';
 import { NgxMaskPipe } from 'ngx-mask';
@@ -16,6 +16,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { Address, AddressAutocompleteComponent } from 'src/app/shared/components/address-autocomplete.component';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
+import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 
 export const EmployeeInteractionTypes = [
 	{ desc: 'Children', code: EmployeeInteractionTypeCode.Children },
@@ -32,7 +33,7 @@ export const EmployeeInteractionTypes = [
 					<h2 class="fw-normal">
 						Manual Submissions
 						<div class="mt-2 fs-5 fw-light">
-							Enter the applicant's information and upload their completed consent form
+							Enter the applicant's information, upload their consent form, and then pay the screening fee
 						</div>
 					</h2>
 				</div>
@@ -53,7 +54,7 @@ export const EmployeeInteractionTypes = [
 					<div class="col-xl-3 col-lg-6 col-md-12">
 						<mat-form-field>
 							<mat-label>Legal Given Name</mat-label>
-							<input matInput formControlName="givenName" />
+							<input matInput formControlName="givenName" [errorStateMatcher]="matcher" />
 							<mat-error *ngIf="form.get('givenName')?.hasError('required')"> This is required </mat-error>
 							<mat-error *ngIf="form.get('givenName')?.hasError('maxlength')">
 								This must be at most 40 characters long
@@ -81,7 +82,7 @@ export const EmployeeInteractionTypes = [
 					<div class="col-xl-3 col-lg-6 col-md-12">
 						<mat-form-field>
 							<mat-label>Legal Surname</mat-label>
-							<input matInput formControlName="surname" />
+							<input matInput formControlName="surname" [errorStateMatcher]="matcher" />
 							<mat-error *ngIf="form.get('surname')?.hasError('required')"> This is required </mat-error>
 							<mat-error *ngIf="form.get('surname')?.hasError('maxlength')">
 								This must be at most 40 characters long
@@ -92,7 +93,7 @@ export const EmployeeInteractionTypes = [
 					<div class="col-xl-3 col-lg-6 col-md-12">
 						<mat-form-field>
 							<mat-label>Email Address</mat-label>
-							<input matInput formControlName="emailAddress" />
+							<input matInput formControlName="emailAddress" [errorStateMatcher]="matcher" />
 							<mat-error *ngIf="form.get('emailAddress')?.hasError('required')"> This is required </mat-error>
 							<mat-error *ngIf="form.get('emailAddress')?.hasError('maxlength')">
 								This must be at most 75 characters long
@@ -102,7 +103,13 @@ export const EmployeeInteractionTypes = [
 					<div class="col-xl-3 col-lg-6 col-md-12">
 						<mat-form-field>
 							<mat-label>Phone Number</mat-label>
-							<input matInput formControlName="phoneNumber" [mask]="phoneMask" [showMaskTyped]="true" />
+							<input
+								matInput
+								formControlName="phoneNumber"
+								[mask]="phoneMask"
+								[showMaskTyped]="true"
+								[errorStateMatcher]="matcher"
+							/>
 							<mat-error *ngIf="form.get('phoneNumber')?.hasError('required')"> This is required </mat-error>
 						</mat-form-field>
 					</div>
@@ -115,7 +122,7 @@ export const EmployeeInteractionTypes = [
 					<div class="col-xl-3 col-lg-6 col-md-12">
 						<mat-form-field>
 							<mat-label>Birth Place</mat-label>
-							<input matInput formControlName="birthPlace" />
+							<input matInput formControlName="birthPlace" [errorStateMatcher]="matcher" />
 							<mat-error *ngIf="form.get('birthPlace')?.hasError('required')"> This is required </mat-error>
 							<mat-error *ngIf="form.get('birthPlace')?.hasError('maxlength')">
 								This must be at most 100 characters long
@@ -126,7 +133,7 @@ export const EmployeeInteractionTypes = [
 					<div class="col-xl-3 col-lg-6 col-md-12">
 						<mat-form-field>
 							<mat-label>Date of Birth</mat-label>
-							<input matInput [matDatepicker]="picker" formControlName="dateOfBirth" />
+							<input matInput [matDatepicker]="picker" formControlName="dateOfBirth" [errorStateMatcher]="matcher" />
 							<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
 							<mat-datepicker #picker startView="multi-year" [startAt]="startAt"></mat-datepicker>
 							<mat-error *ngIf="form.get('dateOfBirth')?.hasError('required')">This is required</mat-error>
@@ -135,7 +142,7 @@ export const EmployeeInteractionTypes = [
 					<div class="col-xl-3 col-lg-6 col-md-12">
 						<mat-form-field>
 							<mat-label>Job Title</mat-label>
-							<input matInput formControlName="jobTitle" />
+							<input matInput formControlName="jobTitle" [errorStateMatcher]="matcher" />
 							<mat-error *ngIf="form.get('jobTitle')?.hasError('required')">This is required</mat-error>
 							<mat-error *ngIf="form.get('jobTitle')?.hasError('maxlength')">
 								This must be at most 100 characters long
@@ -145,7 +152,7 @@ export const EmployeeInteractionTypes = [
 					<div class="col-xl-3 col-lg-6 col-md-12">
 						<mat-form-field>
 							<mat-label>Vulnerable Sector Category</mat-label>
-							<mat-select formControlName="vulnerableSectorCategory">
+							<mat-select formControlName="vulnerableSectorCategory" [errorStateMatcher]="matcher">
 								<mat-option *ngFor="let interaction of employeeInteractionTypes" [value]="interaction.code">
 									{{ interaction.desc }}
 								</mat-option>
@@ -156,7 +163,7 @@ export const EmployeeInteractionTypes = [
 				</div>
 
 				<mat-divider class="my-3"></mat-divider>
-				<div class="text-minor-heading fw-semibold mb-2">Has the applicant ever had a previous name?</div>
+				<div class="text-minor-heading fw-semibold mb-2">Does the applicant have a previous name?</div>
 				<div class="row">
 					<div class="col-xl-4 col-lg-12">
 						<mat-radio-group aria-label="Select an option" formControlName="previousNameFlag" class="d-flex flex-row">
@@ -175,97 +182,54 @@ export const EmployeeInteractionTypes = [
 					</div>
 				</div>
 
-				<div class="row mt-2" *ngIf="previousNameFlag.value == booleanTypeCodes.Yes">
-					<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-						<div class="text-minor-heading fw-semibold mb-2">Aliases</div>
-						<div class="row">
-							<div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-2" style="text-align: end;">
-								<span class="badge rounded-pill bg-success"> 1 </span>
+				<div *ngIf="previousNameFlag.value == booleanTypeCodes.Yes">
+					<div class="text-minor-heading fw-semibold mb-2">Previous Names</div>
+					<ng-container formArrayName="aliases" *ngFor="let group of getFormControls.controls; let i = index">
+						<div class="row" [formGroupName]="i">
+							<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
+								<mat-form-field>
+									<mat-label>Given Name <span class="optional-label">(optional)</span></mat-label>
+									<input matInput type="text" formControlName="givenName" />
+								</mat-form-field>
 							</div>
 							<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
 								<mat-form-field>
-									<mat-label>Alias Given Name <span class="optional-label">(optional)</span></mat-label>
-									<input matInput type="text" formControlName="alias1GivenName" />
-								</mat-form-field>
-							</div>
-							<div class="col-xl-3 col-lg-3 col-md-5 col-sm-12">
-								<mat-form-field>
-									<mat-label>Alias Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
-									<input matInput type="text" formControlName="alias1MiddleName1" />
+									<mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
+									<input matInput type="text" formControlName="middleName1" />
 								</mat-form-field>
 							</div>
 							<div class="col-xl-2 col-lg-2 col-md-6 col-sm-12">
 								<mat-form-field>
-									<mat-label>Alias Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
-									<input matInput type="text" formControlName="alias1MiddleName2" />
+									<mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
+									<input matInput type="text" formControlName="middleName2" />
 								</mat-form-field>
 							</div>
 							<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
 								<mat-form-field>
-									<mat-label>Alias Surname</mat-label>
-									<input matInput type="text" formControlName="alias1Surname" required />
+									<mat-label>Surname</mat-label>
+									<input matInput type="text" formControlName="surname" required [errorStateMatcher]="matcher" />
+									<mat-error *ngIf="group.get('surname')?.hasError('required')"> This is required </mat-error>
 								</mat-form-field>
+							</div>
+							<div class="col-xl-1 col-lg-1 col-md-6 col-sm-12">
+								<button
+									mat-mini-fab
+									class="delete-row-button mb-3"
+									matTooltip="Remove previous name"
+									(click)="deleteRow(i)"
+									[disabled]="oneRowExists"
+									aria-label="Remove row"
+								>
+									<mat-icon>delete_outline</mat-icon>
+								</button>
 							</div>
 						</div>
-
-						<div class="row">
-							<div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-2" style="text-align: end;">
-								<span class="badge rounded-pill bg-success"> 2 </span>
-							</div>
-							<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
-								<mat-form-field>
-									<mat-label>Alias Given Name <span class="optional-label">(optional)</span></mat-label>
-									<input matInput type="text" formControlName="alias2GivenName" />
-								</mat-form-field>
-							</div>
-							<div class="col-xl-3 col-lg-3 col-md-5 col-sm-12">
-								<mat-form-field>
-									<mat-label>Alias Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
-									<input matInput type="text" formControlName="alias2MiddleName1" />
-								</mat-form-field>
-							</div>
-							<div class="col-xl-2 col-lg-2 col-md-6 col-sm-12">
-								<mat-form-field>
-									<mat-label>Alias Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
-									<input matInput type="text" formControlName="alias2MiddleName2" />
-								</mat-form-field>
-							</div>
-							<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
-								<mat-form-field>
-									<mat-label>Alias Surname</mat-label>
-									<input matInput type="text" formControlName="alias2Surname" required />
-								</mat-form-field>
-							</div>
-						</div>
-
-						<div class="row">
-							<div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-2" style="text-align: end;">
-								<span class="badge rounded-pill bg-success"> 3 </span>
-							</div>
-							<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
-								<mat-form-field>
-									<mat-label>Alias Given Name <span class="optional-label">(optional)</span></mat-label>
-									<input matInput type="text" formControlName="alias3GivenName" />
-								</mat-form-field>
-							</div>
-							<div class="col-xl-3 col-lg-3 col-md-5 col-sm-12">
-								<mat-form-field>
-									<mat-label>Alias Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
-									<input matInput type="text" formControlName="alias3MiddleName1" />
-								</mat-form-field>
-							</div>
-							<div class="col-xl-2 col-lg-2 col-md-6 col-sm-12">
-								<mat-form-field>
-									<mat-label>Alias Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
-									<input matInput type="text" formControlName="alias3MiddleName2" />
-								</mat-form-field>
-							</div>
-							<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
-								<mat-form-field>
-									<mat-label>Alias Surname</mat-label>
-									<input matInput type="text" formControlName="alias3Surname" required />
-								</mat-form-field>
-							</div>
+					</ng-container>
+					<div class="row">
+						<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+							<button mat-stroked-button (click)="onAddRow()">
+								<mat-icon class="add-icon">add_circle</mat-icon>Add Another Name
+							</button>
 						</div>
 					</div>
 				</div>
@@ -450,6 +414,7 @@ export const EmployeeInteractionTypes = [
 })
 export class ManualSubmissionsComponent {
 	@ViewChild(AddressAutocompleteComponent) addressAutocompleteComponent!: AddressAutocompleteComponent;
+	matcher = new FormErrorStateMatcher();
 
 	employeeInteractionTypes = EmployeeInteractionTypes;
 	multiple: boolean = false;
@@ -475,18 +440,6 @@ export class ManualSubmissionsComponent {
 			jobTitle: new FormControl('', [Validators.required, Validators.maxLength(100)]),
 			vulnerableSectorCategory: new FormControl('', [Validators.required]),
 			previousNameFlag: new FormControl('', [Validators.required]),
-			alias1GivenName: new FormControl(''),
-			alias1MiddleName1: new FormControl(''),
-			alias1MiddleName2: new FormControl(''),
-			alias1Surname: new FormControl(''),
-			alias2GivenName: new FormControl(''),
-			alias2MiddleName1: new FormControl(''),
-			alias2MiddleName2: new FormControl(''),
-			alias2Surname: new FormControl(''),
-			alias3GivenName: new FormControl(''),
-			alias3MiddleName1: new FormControl(''),
-			alias3MiddleName2: new FormControl(''),
-			alias3Surname: new FormControl(''),
 			addressSelected: new FormControl(false, [Validators.requiredTrue]),
 			addressLine1: new FormControl('', [Validators.required, Validators.maxLength(100)]),
 			addressLine2: new FormControl('', [Validators.maxLength(100)]),
@@ -496,6 +449,7 @@ export class ManualSubmissionsComponent {
 			country: new FormControl('', [Validators.required, Validators.maxLength(100)]),
 			agreeToCompleteAndAccurate: new FormControl('', [Validators.required]),
 			haveVerifiedIdentity: new FormControl('', [Validators.required]),
+			aliases: this.formBuilder.array([]),
 		},
 		{
 			validators: [
@@ -512,6 +466,10 @@ export class ManualSubmissionsComponent {
 		private maskPipe: NgxMaskPipe,
 		private dialog: MatDialog
 	) {}
+
+	ngOnInit(): void {
+		this.resetForm();
+	}
 
 	onCancel(): void {}
 
@@ -551,6 +509,11 @@ export class ManualSubmissionsComponent {
 		}
 	}
 
+	resetForm(): void {
+		this.form.reset();
+		this.onAddRow();
+	}
+
 	saveManualSubmission(body: ApplicationCreateRequest): void {
 		if (body.phoneNumber) {
 			body.phoneNumber = this.maskPipe.transform(body.phoneNumber, SPD_CONSTANTS.phone.backendMask);
@@ -566,7 +529,7 @@ export class ManualSubmissionsComponent {
 			.subscribe((_resp: any) => {
 				this.hotToast.success('The application was successfully created');
 				this.addressAutocompleteComponent.onClearData();
-				this.form.reset();
+				this.resetForm();
 			});
 	}
 
@@ -606,7 +569,64 @@ export class ManualSubmissionsComponent {
 
 	onRemoveFile(evt: any) {}
 
+	onAddRow() {
+		const control = this.form.get('aliases') as FormArray;
+		control.push(this.newAliasRow());
+	}
+
+	deleteRow(index: number) {
+		const control = this.form.get('aliases') as FormArray;
+		if (control.length == 1) {
+			const data: DialogOptions = {
+				icon: 'warning',
+				title: 'Remove Row',
+				message: 'This row cannot be removed. At least one row must exist.',
+				cancelText: 'Close',
+			};
+
+			this.dialog.open(DialogComponent, { data });
+			return;
+		}
+
+		const data: DialogOptions = {
+			icon: 'warning',
+			title: 'Remove Row',
+			message: 'Are you sure you want to remove this previous name?',
+			actionText: 'Yes, remove this name',
+			cancelText: 'Cancel',
+		};
+
+		this.dialog
+			.open(DialogComponent, { data })
+			.afterClosed()
+			.subscribe((response: boolean) => {
+				if (response) {
+					const control = this.form.get('aliases') as FormArray;
+					control.removeAt(index);
+				}
+			});
+	}
+
+	get getFormControls() {
+		const control = this.form.get('aliases') as FormArray;
+		return control;
+	}
+
 	get previousNameFlag(): FormControl {
 		return this.form.get('previousNameFlag') as FormControl;
+	}
+
+	get oneRowExists(): boolean {
+		const control = this.form.get('aliases') as FormArray;
+		return control.length > 1 ? false : true;
+	}
+
+	private newAliasRow(): FormGroup {
+		return this.formBuilder.group({
+			givenName: [''],
+			middleName1: [''],
+			middleName2: [''],
+			surname: ['', [Validators.required]],
+		});
 	}
 }

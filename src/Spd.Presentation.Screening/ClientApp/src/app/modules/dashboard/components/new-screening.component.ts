@@ -300,6 +300,16 @@ export class NewScreeningComponent implements OnInit {
 	}
 
 	promptVulnerableSector(body: Array<ApplicationInviteCreateRequest>): void {
+		const vulnerableQuestionSingular =
+			'In their role with your organization, will this person work directly with, or potentially have unsupervised access to, children and/or vulnerable adults?';
+		const vulnerableQuestionMultiple =
+			'In their roles with your organization, will these individuals work directly with, or potentially have unsupervised access to, children and/or vulnerable adults?';
+
+		const criminalRecordCheckMessageSingular =
+			'If the applicant will not have unsupervised access to children or vulnerable adults in this role, but they require a criminal record check for another reason, please contact your local police or private agency';
+		const criminalRecordCheckMessageMultiple =
+			'If the applicants will not have unsupervised access to children or vulnerable adults in this role, but they require a criminal record check for another reason, please contact your local police or private agency';
+
 		const data: DialogOptions = {
 			icon: 'info_outline',
 			title: 'Vulnerable Sector',
@@ -309,29 +319,23 @@ export class NewScreeningComponent implements OnInit {
 		};
 
 		if (body.length == 1) {
-			data.message =
-				'In their role with your organization, will this person work directly with, or potentially have unsupervised access to, children and/or vulnerable adults?';
+			data.message = vulnerableQuestionSingular;
 
 			this.dialog
 				.open(DialogComponent, { data })
 				.afterClosed()
 				.subscribe((response: boolean) => {
-					let noMessage = !response
-						? 'If the applicant will not have unsupervised access to children or vulnerable adults in this role, but they require a criminal record check for another reason, please contact your local police detachment'
-						: null;
+					let noMessage = !response ? criminalRecordCheckMessageSingular : null;
 					this.saveInviteRequests(body, noMessage);
 				});
 		} else {
-			data.message =
-				'In their roles with your organization, will these individuals work directly with, or potentially have unsupervised access to, children and/or vulnerable adults?';
+			data.message = vulnerableQuestionMultiple;
 
 			this.dialog
 				.open(DialogComponent, { data })
 				.afterClosed()
 				.subscribe((response: boolean) => {
-					let noMessage = !response
-						? 'If the applicants will not have unsupervised access to children or vulnerable adults in this role, but they require a criminal record check for another reason, please contact your local police detachment'
-						: null;
+					let noMessage = !response ? criminalRecordCheckMessageMultiple : null;
 					this.saveInviteRequests(body, noMessage);
 				});
 		}

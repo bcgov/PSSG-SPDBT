@@ -79,21 +79,19 @@ namespace Spd.Manager.Cases
         public async Task<CheckApplicationDuplicateResponse> Handle(CheckApplicationDuplicateQuery request, CancellationToken cancellationToken)
         {
             CheckApplicationDuplicateResponse resp = new CheckApplicationDuplicateResponse();
+            var searchApplicationQry = _mapper.Map<SearchApplicationQry>(request.ApplicationCreateRequest);
 
-            //duplicated in organization
-            //var searchOrgQry = _mapper.Map<SearchOrgQry>(request.CreateOrgRegistrationRequest);
-            //bool hasDuplicate = await _applicationRepository.CheckApplicationDuplicateAsync(searchOrgQry, cancellationToken);
-            //if (hasDuplicate)
-            //{
-            //    resp.HasPotentialDuplicate = true;
-            //    return resp;
-            //}
-
-            resp.OrgSpdId = request.ApplicationCreateRequest.OrganizationId;
-            resp.GivenName = request.ApplicationCreateRequest.GivenName;
-            resp.Surname = request.ApplicationCreateRequest.Surname;
-            resp.EmailAddress = request.ApplicationCreateRequest.EmailAddress;
-            resp.HasPotentialDuplicate = true;
+            //check if duplicate in application
+            bool hasDuplicateApplication = await _applicationRepository.CheckApplicationDuplicateAsync(searchApplicationQry, cancellationToken);
+            if (hasDuplicateApplication)
+            {
+                CheckApplicationDuplicateResponse dupResp = new CheckApplicationDuplicateResponse();
+                resp.OrgSpdId = request.ApplicationCreateRequest.OrgId;
+                resp.GivenName = request.ApplicationCreateRequest.GivenName;
+                resp.Surname = request.ApplicationCreateRequest.Surname;
+                resp.EmailAddress = request.ApplicationCreateRequest.EmailAddress;
+                resp.HasPotentialDuplicate = true;
+            }
 
             return resp;
         }

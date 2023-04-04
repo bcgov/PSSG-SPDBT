@@ -45,33 +45,28 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 												{{ i + 1 }}
 											</span>
 										</div>
-										<div class="col-xl-4 col-lg-4 col-md-3">
+										<div class="col-xl-4 col-lg-4 col-md-5">
 											<small class="d-block text-muted">Authorization Type</small>
 											<strong> {{ getDesc(user.contactAuthorizationTypeCode) | default }} </strong>
 										</div>
-										<div class="col-xl-4 col-lg-4 col-md-3">
+										<div class="col-xl-7 col-lg-7 col-md-6">
 											<small class="d-block text-muted mt-2 mt-md-0">Name</small>
 											<strong> {{ user | fullname | default }} </strong>
 										</div>
-										<div class="col-xl-3 col-lg-3 col-md-3">
+									</div>
+									<div class="row my-2">
+										<div class="col-xl-1 col-lg-1 col-md-1 col-sm-10"></div>
+										<div class="col-xl-4 col-lg-4 col-md-4">
 											<small class="d-block text-muted mt-2 mt-md-0">Email</small>
 											<strong> {{ user.email | default }} </strong>
 										</div>
-									</div>
-									<mat-divider class="my-3"></mat-divider>
-									<div class="row mb-2">
-										<div class="col-xl-1 col-lg-1 col-md-1 col-sm-10"></div>
-										<div class="col-xl-4 col-lg-4 col-md-3">
+										<div class="col-xl-3 col-lg-3 col-md-3">
 											<small class="d-block text-muted">Phone Number</small>
 											<strong>{{ user.phoneNumber || '' | mask : appConstants.phone.displayMask | default }}</strong>
 										</div>
-										<div class="col-xl-4 col-lg-4 col-md-3">
+										<div class="col-xl-4 col-lg-4 col-md-4">
 											<small class="d-block text-muted mt-2 mt-md-0">Job Title</small>
 											<strong>{{ user.jobTitle | default }}</strong>
-										</div>
-										<div class="col-xl-3 col-lg-3 col-md-4">
-											<small class="d-block text-muted mt-2 mt-md-0">Date of Birth</small>
-											<strong>{{ user.dateOfBirth | date : appConstants.date.dateFormat | default }}</strong>
 										</div>
 									</div>
 								</div>
@@ -157,7 +152,7 @@ export class UsersComponent {
 	}
 
 	onAddUser(): void {
-		const newUser: OrgUserResponse = { dateOfBirth: null };
+		const newUser: OrgUserResponse = {};
 		const dialogOptions: UserDialogData = {
 			user: newUser,
 			isAllowedPrimary: this.isAllowedAddPrimary,

@@ -89,18 +89,6 @@ export interface UserDialogData {
 						</mat-form-field>
 					</div>
 				</div>
-
-				<div class="row" *ngIf="isEdit">
-					<div class="col-md-6">
-						<mat-form-field>
-							<mat-label>Date of Birth</mat-label>
-							<input matInput [matDatepicker]="picker" formControlName="dateOfBirth" />
-							<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-							<mat-datepicker #picker startView="multi-year" [startAt]="startAt"></mat-datepicker>
-							<mat-error *ngIf="form.get('dateOfBirth')?.hasError('required')">This is required</mat-error>
-						</mat-form-field>
-					</div>
-				</div>
 			</form>
 		</mat-dialog-content>
 		<mat-dialog-actions>
@@ -129,13 +117,11 @@ export class MaintainUserModalComponent {
 			email: new FormControl('', [Validators.required, Validators.email, Validators.maxLength(75)]),
 			phoneNumber: new FormControl('', [Validators.required]),
 			jobTitle: new FormControl('', [Validators.required, Validators.maxLength(100)]),
-			dateOfBirth: new FormControl('', [Validators.required]),
 		},
 		{
 			validators: [
 				FormGroupValidators.conditionalRequiredValidator('phoneNumber', () => this.isEdit),
 				FormGroupValidators.conditionalRequiredValidator('jobTitle', () => this.isEdit),
-				FormGroupValidators.conditionalRequiredValidator('dateOfBirth', () => this.isEdit),
 			],
 		}
 	);
