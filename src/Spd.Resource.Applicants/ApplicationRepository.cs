@@ -99,6 +99,7 @@ namespace Spd.Resource.Applicants
                 o.spd_OrganizationId.accountid == searchApplicationQry.OrgId &&
                 o.spd_firstname.Equals(searchApplicationQry.GivenName, StringComparison.InvariantCultureIgnoreCase) &&
                 o.spd_lastname.Equals(searchApplicationQry.Surname, StringComparison.InvariantCultureIgnoreCase) &&
+                o.spd_dateofbirth == new Microsoft.OData.Edm.Date(searchApplicationQry.DateOfBirth.Value.Year, searchApplicationQry.DateOfBirth.Value.Month, searchApplicationQry.DateOfBirth.Value.Day) &&
                 o.statecode != DynamicsConstants.StateCode_Inactive
             ).FirstOrDefault();
             return application != null;
