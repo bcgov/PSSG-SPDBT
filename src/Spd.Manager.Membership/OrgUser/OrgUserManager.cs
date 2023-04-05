@@ -6,7 +6,7 @@ using System.Net;
 
 namespace Spd.Manager.Membership.OrgUser
 {
-    internal class OrgUserManager
+    internal class UserManager
         : IRequestHandler<OrgUserCreateCommand, OrgUserResponse>,
         IRequestHandler<OrgUserUpdateCommand, OrgUserResponse>,
         IRequestHandler<OrgUserGetQuery, OrgUserResponse>,
@@ -16,7 +16,7 @@ namespace Spd.Manager.Membership.OrgUser
     {
         private readonly IOrgUserRepository _orgUserRepository;
         private readonly IMapper _mapper;
-        public OrgUserManager(IOrgUserRepository orgUserRepository, IMapper mapper)
+        public UserManager(IOrgUserRepository orgUserRepository, IMapper mapper)
         {
             _orgUserRepository = orgUserRepository;
             _mapper = mapper;

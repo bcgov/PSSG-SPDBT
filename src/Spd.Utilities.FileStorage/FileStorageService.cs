@@ -37,8 +37,8 @@ namespace Spd.Utilities.FileStorage
         private async Task<string> UploadStorageItem(UploadFileCommand cmd, CancellationToken cancellationToken)
         {
             File file = cmd.File;
-            var folder = file.Folder == null ? "" : $"{file.Folder}/";
-            var key = $"{folder}{cmd.File.Key}";
+            var folder = cmd.Folder == null ? "" : $"{cmd.Folder}/";
+            var key = $"{folder}{cmd.Key}";
 
             var request = new PutObjectRequest
             {
@@ -46,7 +46,7 @@ namespace Spd.Utilities.FileStorage
                 ContentType = cmd.File.ContentType,
                 InputStream = new MemoryStream(file.Content),
                 BucketName = _config.Value.Bucket,
-                TagSet = GetTagSet(cmd.File.Tags),
+                TagSet = GetTagSet(cmd.FileTag?.Tags),
             };
             request.Metadata.Add("contenttype", file.ContentType);
             request.Metadata.Add("filename", file.FileName);
@@ -59,26 +59,25 @@ namespace Spd.Utilities.FileStorage
             var response = await _amazonS3Client.PutObjectAsync(request, cancellationToken);
             response.EnsureSuccess();
 
-            return cmd.File.Key;
+            return cmd.Key;
         }
 
         private async Task<string> UpdateTags(UpdateTagsCommand cmd, CancellationToken cancellationToken)
         {
-            FileTag file = cmd.FileTag;
-            var folder = file.Folder == null ? "" : $"{file.Folder}/";
-            var key = $"{folder}{cmd.FileTag.Key}";
+            var folder = cmd.Folder == null ? "" : $"{cmd.Folder}/";
+            var key = $"{folder}{cmd.Key}";
 
             var request = new PutObjectTaggingRequest
             {
                 Key = key,
                 BucketName = _config.Value.Bucket,
-                Tagging = new Tagging { TagSet = GetTagSet(cmd.FileTag.Tags) }
+                Tagging = new Tagging { TagSet = GetTagSet(cmd.FileTag?.Tags) }
             };
 
             var response = await _amazonS3Client.PutObjectTaggingAsync(request, cancellationToken);
             response.EnsureSuccess();
 
-            return cmd.FileTag.Key;
+            return cmd.Key;
         }
 
         private async Task<FileQueryResult> DownloadStorageItem(string key, string? folder, CancellationToken ct)
@@ -109,17 +108,21 @@ namespace Spd.Utilities.FileStorage
             tagResponse.EnsureSuccess();
 
             return new FileQueryResult
-            {
-                File = new File
+            (
+                key,
+                folder,
+                new File
                 {
-                    Key = key,
                     ContentType = response.Metadata["contentType"],
                     FileName = response.Metadata["filename"],
                     Content = ms.ToArray(),
                     Metadata = GetMetadata(response.Metadata).AsEnumerable(),
+                },
+                new FileTag 
+                { 
                     Tags = GetTags(tagResponse.Tagging).AsEnumerable()
                 }
-            };
+            );
         }
 
         private async Task<FileMetadataQueryResult> GetStorageMetaData(string key, string? folder, CancellationToken cancellationToken)
@@ -134,7 +137,7 @@ namespace Spd.Utilities.FileStorage
                     BucketName = _config.Value.Bucket,
                     Key = requestKey,
                 }, cancellationToken);
-                return new FileMetadataQueryResult { Metadata = GetMetadata(response.Metadata) };
+                return new FileMetadataQueryResult(GetMetadata(response.Metadata));
             }
             catch (AmazonS3Exception ex)
             {
@@ -146,7 +149,7 @@ namespace Spd.Utilities.FileStorage
             }
         }
 
-        private List<Amazon.S3.Model.Tag> GetTagSet(IEnumerable<Tag> tags)
+        private List<Amazon.S3.Model.Tag> GetTagSet(IEnumerable<Tag>? tags)
         {
             var taglist = new List<Amazon.S3.Model.Tag>();
             if (tags != null && tags.Any())
@@ -166,7 +169,7 @@ namespace Spd.Utilities.FileStorage
             {
                 if (key != "contentType" && key != "fileName")
                 {
-                    metadata.Add(new Metadata { Key = key, Value = mc[key] });
+                    metadata.Add(new Metadata(key, mc[key]));
                 }
             }
             return metadata;
@@ -179,7 +182,7 @@ namespace Spd.Utilities.FileStorage
             {
                 foreach (Amazon.S3.Model.Tag tag in tags)
                 {
-                    taglist.Add(new Tag() { Key = tag.Key, Value = tag.Value });
+                    taglist.Add(new Tag(tag.Key, tag.Value));
                 }
             }
             return taglist;
