@@ -11,7 +11,7 @@ namespace Spd.Manager.Membership
         public void ConfigureServices(ConfigurationServices configurationServices)
         {
             configurationServices.Services.AddTransient<IOrgRegistrationManager, OrgRegistrationManager>();
-            configurationServices.Services.AddTransient<IOrgUserManager, UserManager>();
+            configurationServices.Services.AddTransient<IOrgUserManager, OrgUserManager>();
             configurationServices.Services.AddTransient<IOrgManager, OrgManager>();
         }
     }
