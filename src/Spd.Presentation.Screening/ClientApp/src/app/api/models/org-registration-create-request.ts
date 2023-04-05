@@ -11,7 +11,6 @@ import { ScreeningsCountTypeCode } from './screenings-count-type-code';
 import { VolunteerOrganizationTypeCode } from './volunteer-organization-type-code';
 export interface OrgRegistrationCreateRequest {
   agreeToTermsAndConditions?: null | boolean;
-  contactDateOfBirth?: null | string;
   contactEmail?: null | string;
   contactGivenName?: null | string;
   contactJobTitle?: null | string;

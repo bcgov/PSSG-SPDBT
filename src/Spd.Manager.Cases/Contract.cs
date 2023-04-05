@@ -9,6 +9,7 @@ namespace Spd.Manager.Cases
         public Task<Unit> Handle(ApplicationInviteCreateCommand request, CancellationToken cancellationToken);
         public Task<IEnumerable<CheckApplicationInviteDuplicateResponse>> Handle(CheckApplicationInviteDuplicateQuery request, CancellationToken cancellationToken);
         public Task<Unit> Handle(ApplicationCreateCommand request, CancellationToken cancellationToken);
+        public Task<CheckApplicationDuplicateResponse> Handle(CheckApplicationDuplicateQuery request, CancellationToken cancellationToken);
 
     }
 
@@ -19,11 +20,11 @@ namespace Spd.Manager.Cases
 
     public record ApplicationInviteCreateRequest
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
-        public string JobTitle { get; set; }
-        public bool OrgPay { get; set; }
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public string? Email { get; set; }
+        public string? JobTitle { get; set; }
+        public bool? OrgPay { get; set; }
     }
 
     public record ApplicationInviteCreateResponse
@@ -42,45 +43,42 @@ namespace Spd.Manager.Cases
     }
     public record ApplicationCreateRequest
     {
-        public Guid OrganizationId { get; set; }
+        public Guid OrgId { get; set; }
         public ApplicationOriginTypeCode OriginTypeCode { get; set; }
-        public string GivenName { get; set; }
-        public string MiddleName1 { get; set; }
-        public string MiddleName2 { get; set; }
-        public string Surname { get; set; }
-        public string EmailAddress { get; set; }
-        public string PhoneNumber { get; set; }
-        public string DriversLicense { get; set; }
+        public string? GivenName { get; set; }
+        public string? MiddleName1 { get; set; }
+        public string? MiddleName2 { get; set; }
+        public string? Surname { get; set; }
+        public string? EmailAddress { get; set; }
+        public string? PhoneNumber { get; set; }
+        public string? DriversLicense { get; set; }
         public DateTimeOffset? DateOfBirth { get; set; }
-        public string BirthPlace { get; set; }
-        public string JobTitle { get; set; }
+        public string? BirthPlace { get; set; }
+        public string? JobTitle { get; set; }
+        public string? AddressLine1 { get; set; }
+        public string? AddressLine2 { get; set; }
+        public string? City { get; set; }
+        public string? PostalCode { get; set; }
+        public string? Province { get; set; }
+        public string? Country { get; set; }
+        public bool? OneLegalName { get; set; }
+        public bool? AgreeToCompleteAndAccurate { get; set; }
+        public bool? HaveVerifiedIdentity { get; set; }
+        public List<AliasCreateRequest> Aliases { get; set; }
+    }
 
-        //vulnerableSectorCategory
-        public string Alias1GivenName { get; set; }
-        public string Alias1MiddleName1 { get; set; }
-        public string Alias1MiddleName2 { get; set; }
-        public string Alias1Surname { get; set; }
-        public string Alias2GivenName { get; set; }
-        public string Alias2MiddleName1 { get; set; }
-        public string Alias2MiddleName2 { get; set; }
-        public string Alias2Surname { get; set; }
-        public string Alias3GivenName { get; set; }
-        public string Alias3MiddleName1 { get; set; }
-        public string Alias3MiddleName2 { get; set; }
-        public string Alias3Surname { get; set; }
-        public string AddressLine1 { get; set; }
-        public string AddressLine2 { get; set; }
-        public string City { get; set; }
-        public string PostalCode { get; set; }
-        public string Province { get; set; }
-        public string Country { get; set; }
-        //	agreeToCompleteAndAccurate
-        //	haveVerifiedIdentity
+    public record AliasCreateRequest
+    {
+        public string? GivenName { get; set; }
+        public string? MiddleName1 { get; set; }
+        public string? MiddleName2 { get; set; }
+        public string? Surname { get; set; }
+
     }
 
     public class CheckApplicationDuplicateResponse
     {
-        public Guid OrgSpdId { get; set; }
+        public Guid OrgId { get; set; }
         public string GivenName { get; set; }
         public string Surname { get; set; }
         public string EmailAddress { get; set; }
@@ -131,6 +129,28 @@ namespace Spd.Manager.Cases
             RuleFor(r => r.JobTitle)
                     .NotEmpty()
                     .MaximumLength(100);
+
+            RuleFor(r => r.OrgPay)
+                .NotNull();
+        }
+    }
+
+    public class AliasCreateRequestValidator : AbstractValidator<AliasCreateRequest>
+    {
+        public AliasCreateRequestValidator()
+        {
+            RuleFor(r => r.GivenName)
+                    .MaximumLength(40);
+
+            RuleFor(r => r.MiddleName1)
+                    .MaximumLength(40);
+
+            RuleFor(r => r.MiddleName2)
+                    .MaximumLength(40);
+
+            RuleFor(r => r.Surname)
+                    .NotEmpty()
+                    .MaximumLength(40);
         }
     }
 
@@ -142,7 +162,16 @@ namespace Spd.Manager.Cases
                 .IsInEnum();
 
             RuleFor(r => r.GivenName)
+                    .MaximumLength(40);
+
+            RuleFor(r => r.GivenName)
                     .NotEmpty()
+                    .When(r => r.OneLegalName != true);
+
+            RuleFor(r => r.MiddleName1)
+                    .MaximumLength(40);
+
+            RuleFor(r => r.MiddleName2)
                     .MaximumLength(40);
 
             RuleFor(r => r.Surname)
@@ -189,6 +218,13 @@ namespace Spd.Manager.Cases
             RuleFor(r => r.Country)
                     .NotEmpty()
                     .MaximumLength(100);
+
+            RuleFor(r => r.AgreeToCompleteAndAccurate)
+                .NotEmpty()
+                .Equal(true);
+
+            RuleFor(r => r.HaveVerifiedIdentity)
+                .NotNull(); // Must be true or false
         }
     }
 }

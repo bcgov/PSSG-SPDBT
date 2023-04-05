@@ -20,29 +20,20 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 						<div class="offset-lg-1 col-lg-3 col-md-12 col-sm-12">
 							<mat-form-field>
 								<mat-label>Legal Given Name</mat-label>
-								<input matInput formControlName="contactGivenName" [errorStateMatcher]="matcher" />
+								<input matInput formControlName="contactGivenName" [errorStateMatcher]="matcher" maxlength="40" />
 								<mat-error *ngIf="form.get('contactGivenName')?.hasError('required')">This is required</mat-error>
-								<mat-error *ngIf="form.get('contactGivenName')?.hasError('maxlength')">
-									This must be at most 40 characters long
-								</mat-error>
 							</mat-form-field>
 						</div>
 						<div class="col-lg-3 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
-								<input matInput formControlName="contactMiddleName1" [errorStateMatcher]="matcher" />
-								<mat-error *ngIf="form.get('contactMiddleName1')?.hasError('maxlength')">
-									This must be at most 40 characters long
-								</mat-error>
+								<input matInput formControlName="contactMiddleName1" [errorStateMatcher]="matcher" maxlength="40" />
 							</mat-form-field>
 						</div>
 						<div class="col-lg-3 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
-								<input matInput formControlName="contactMiddleName2" [errorStateMatcher]="matcher" />
-								<mat-error *ngIf="form.get('contactMiddleName2')?.hasError('maxlength')">
-									This must be at most 40 characters long
-								</mat-error>
+								<input matInput formControlName="contactMiddleName2" [errorStateMatcher]="matcher" maxlength="40" />
 							</mat-form-field>
 						</div>
 					</div>
@@ -50,11 +41,8 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 						<div class="offset-lg-1 col-lg-3 col-md-12 col-sm-12">
 							<mat-form-field>
 								<mat-label>Legal Surname</mat-label>
-								<input matInput formControlName="contactSurname" [errorStateMatcher]="matcher" />
+								<input matInput formControlName="contactSurname" [errorStateMatcher]="matcher" maxlength="40" />
 								<mat-error *ngIf="form.get('contactSurname')?.hasError('required')">This is required</mat-error>
-								<mat-error *ngIf="form.get('contactSurname')?.hasError('maxlength')">
-									This must be at most 40 characters long
-								</mat-error>
 							</mat-form-field>
 							<div class="w-100 mb-4">
 								<mat-checkbox formControlName="oneLegalName"> I have one legal name </mat-checkbox>
@@ -68,13 +56,11 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 									formControlName="contactEmail"
 									placeholder="name@domain.com"
 									[errorStateMatcher]="matcher"
+									maxlength="75"
 								/>
 								<mat-error *ngIf="form.get('contactEmail')?.hasError('required')">This is required</mat-error>
 								<mat-error *ngIf="form.get('contactEmail')?.hasError('email')">
 									Must be a valid email address
-								</mat-error>
-								<mat-error *ngIf="form.get('contactEmail')?.hasError('maxlength')">
-									This must be at most 75 characters long
 								</mat-error>
 							</mat-form-field>
 						</div>
@@ -97,16 +83,12 @@ export class ContactInformationComponent implements ScreeningFormStepComponent {
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	form: FormGroup = this.formBuilder.group(
 		{
-			contactGivenName: new FormControl('Pulled-From-Portal', [Validators.required, Validators.maxLength(40)]),
-			contactMiddleName1: new FormControl('', [Validators.maxLength(40)]),
-			contactMiddleName2: new FormControl('', [Validators.maxLength(40)]),
-			contactSurname: new FormControl('', [Validators.required, Validators.maxLength(40)]),
-			contactEmail: new FormControl('Pulled@From.Portal', [
-				Validators.email,
-				Validators.required,
-				Validators.maxLength(75),
-			]),
-			contactPhoneNumber: new FormControl('6048185356', [Validators.required]),
+			contactGivenName: new FormControl('', [Validators.required]),
+			contactMiddleName1: new FormControl(''),
+			contactMiddleName2: new FormControl(''),
+			contactSurname: new FormControl('', [Validators.required]),
+			contactEmail: new FormControl('', [Validators.email, Validators.required]),
+			contactPhoneNumber: new FormControl('', [Validators.required]),
 			oneLegalName: new FormControl(false),
 		},
 		{

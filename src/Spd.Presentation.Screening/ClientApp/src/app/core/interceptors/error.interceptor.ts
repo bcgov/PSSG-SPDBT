@@ -27,6 +27,8 @@ export class ErrorInterceptor implements HttpInterceptor {
 							});
 						}
 						message += '</ul>';
+					} else if (errorResponse.error?.message) {
+						message = errorResponse.error?.message;
 					} else {
 						title = errorResponse.statusText;
 						message = errorResponse.message;

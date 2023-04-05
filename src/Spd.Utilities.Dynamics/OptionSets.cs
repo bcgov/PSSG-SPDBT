@@ -62,4 +62,13 @@
         GenericUpload = 100000000,
         OrganizationSubmitted = 100000001
     }
+
+    public enum AliasTypeOptionSet
+    {
+        LegalName = 100000000,
+        BirthName = 100000001,
+        FormerName = 100000002,
+        PrimeAlias = 100000003,
+        CornetAlias = 100000004
+    }
 }

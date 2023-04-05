@@ -20,7 +20,6 @@ namespace Spd.Resource.Organizations.Registration
             .ForMember(d => d.spd_province, opt => opt.MapFrom(s => s.MailingProvince))
             .ForMember(d => d.spd_street1, opt => opt.MapFrom(s => s.MailingAddressLine1))
             .ForMember(d => d.spd_street2, opt => opt.MapFrom(s => s.MailingAddressLine2))
-            .ForMember(d => d.spd_authorizedcontactdateofbirth, opt => opt.MapFrom(s => s.ContactDateOfBirth))
             .ForMember(d => d.spd_authorizedcontactemail, opt => opt.MapFrom(s => s.ContactEmail))
             .ForMember(d => d.spd_authorizedcontactgivenname, opt => opt.MapFrom(s => s.ContactGivenName))
             .ForMember(d => d.spd_authorizedcontactsurname, opt => opt.MapFrom(s => s.ContactSurname))
