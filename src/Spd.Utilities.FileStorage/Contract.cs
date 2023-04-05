@@ -6,23 +6,18 @@
         Task<StorageQueryResults> HandleQuery(StorageQuery query, CancellationToken cancellationToken);
     }
 
-    public abstract record StorageCommand {}
-    public record UploadFileCommand : StorageCommand 
-    {
-        public File File { get; set; } = null!;
-    }
-    public record UpdateTagsCommand : StorageCommand 
-    { 
-        public FileTag FileTag { get; set; } = null!;
-    }
+    public abstract record StorageCommand(string Key, string? Folder);
+
+    public record UploadFileCommand(string Key, string? Folder, File File, FileTag FileTag) : StorageCommand(Key, Folder);
+
+    public record UpdateTagsCommand(string Key, string? Folder, FileTag? FileTag) : StorageCommand(Key, Folder);
 
     public record FileTag
     {
-        public string Key { get; set; } = null!;
         public IEnumerable<Tag> Tags { get; set; } = Array.Empty<Tag>();
-        public string? Folder { get; set; }
+
     }
-    public record File : FileTag
+    public record File
     {
         public byte[] Content { get; set; } = Array.Empty<byte>();
         public string? ContentType { get; set; }
@@ -30,17 +25,8 @@
         public IEnumerable<Metadata> Metadata { get; set; } = Array.Empty<Metadata>();
     }
 
-    public record Tag
-    {
-        public string Key { get; set; } = null!;
-        public string Value { get; set; } = null!;
-    }
-
-    public record Metadata
-    {
-        public string Key { get; set; } = null!;
-        public string Value { get; set; } = null!;
-    }
+    public record Tag(string Key, string Value);
+    public record Metadata(string Key, string Value);
 
     public abstract record StorageQuery
     {
@@ -49,13 +35,8 @@
     }
     public record FileQuery : StorageQuery { }
     public record FileMetadataQuery : StorageQuery { }
-    public record StorageQueryResults { }
-    public record FileQueryResult : StorageQueryResults
-    {
-        public File File { get; set; } = null!;
-    }
-    public record FileMetadataQueryResult : StorageQueryResults
-    {
-        public IEnumerable<Metadata> Metadata { get; set; }
-    }
+    public record StorageQueryResults(string Key, string? Folder) { }
+    public record FileQueryResult(string Key, string? Folder, File File, FileTag? FileTag) : StorageQueryResults(Key, Folder);
+    public record FileMetadataQueryResult(string Key, string? Folder, IEnumerable<Metadata>? Metadata) : StorageQueryResults(Key, Folder);
+
 }
