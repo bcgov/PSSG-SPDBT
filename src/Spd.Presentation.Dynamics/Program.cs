@@ -20,7 +20,6 @@ builder.Services.AddControllers()
     {
         x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
-builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddFileStorageProxy(builder.Configuration);
 
 builder.Services.AddAuthentication(options =>
