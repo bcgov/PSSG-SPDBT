@@ -9,7 +9,6 @@ namespace Spd.Resource.Organizations.Registration
     public record OrgRegistrationCreateCmd
     {
         public bool? AgreeToTermsAndConditions { get; set; } //map to?
-        public DateTimeOffset? ContactDateOfBirth { get; set; }
         public PayerPreferenceTypeCode PayerPreference { get; set; }
         public string? ContactEmail { get; set; }
         public string? ContactGivenName { get; set; }

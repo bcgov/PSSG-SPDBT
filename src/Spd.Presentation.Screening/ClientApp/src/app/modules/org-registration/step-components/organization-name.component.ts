@@ -13,12 +13,15 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 					<div class="offset-lg-3 col-lg-6 offset-md-1 col-md-10 col-sm-12">
 						<mat-form-field>
 							<mat-label>Organization Name</mat-label>
-							<input matInput formControlName="organizationName" required [errorStateMatcher]="matcher" />
+							<input
+								matInput
+								formControlName="organizationName"
+								required
+								[errorStateMatcher]="matcher"
+								maxlength="160"
+							/>
 							<mat-hint>Please enter your 'Doing Business As' name</mat-hint>
 							<mat-error *ngIf="form.get('organizationName')?.hasError('required')">This is required</mat-error>
-							<mat-error *ngIf="form.get('organizationName')?.hasError('maxlength')">
-								This must be at most 160 characters long
-							</mat-error>
 						</mat-form-field>
 					</div>
 				</div>
@@ -35,7 +38,7 @@ export class OrganizationNameComponent implements OnInit, RegistrationFormStepCo
 
 	ngOnInit(): void {
 		this.form = this.formBuilder.group({
-			organizationName: new FormControl('', [Validators.required, Validators.maxLength(160)]),
+			organizationName: new FormControl('', [Validators.required]),
 		});
 	}
 

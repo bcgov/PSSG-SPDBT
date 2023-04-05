@@ -44,42 +44,49 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 								<div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 pe-md-0">
 									<mat-form-field>
 										<mat-label>Given Name</mat-label>
-										<input matInput type="text" formControlName="firstName" [errorStateMatcher]="matcher" />
+										<input
+											matInput
+											type="text"
+											formControlName="firstName"
+											[errorStateMatcher]="matcher"
+											maxlength="40"
+										/>
 										<mat-error *ngIf="group.get('firstName')?.hasError('required')">This is required</mat-error>
-										<mat-error *ngIf="group.get('firstName')?.hasError('maxlength')">
-											This must be at most 40 characters long
-										</mat-error>
 									</mat-form-field>
 								</div>
 								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0">
 									<mat-form-field>
 										<mat-label>Surname</mat-label>
-										<input matInput type="text" formControlName="lastName" [errorStateMatcher]="matcher" />
+										<input
+											matInput
+											type="text"
+											formControlName="lastName"
+											[errorStateMatcher]="matcher"
+											maxlength="40"
+										/>
 										<mat-error *ngIf="group.get('lastName')?.hasError('required')">This is required</mat-error>
-										<mat-error *ngIf="group.get('lastName')?.hasError('maxlength')">
-											This must be at most 40 characters long
-										</mat-error>
 									</mat-form-field>
 								</div>
 								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0">
 									<mat-form-field>
 										<mat-label>Email Address</mat-label>
-										<input matInput formControlName="email" type="email" required [errorStateMatcher]="matcher" />
+										<input
+											matInput
+											formControlName="email"
+											type="email"
+											required
+											[errorStateMatcher]="matcher"
+											maxlength="75"
+										/>
 										<mat-error *ngIf="group.get('email')?.hasError('email')"> Must be a valid email address </mat-error>
 										<mat-error *ngIf="group.get('email')?.hasError('required')">This is required</mat-error>
-										<mat-error *ngIf="group.get('email')?.hasError('maxlength')">
-											This must be at most 75 characters long
-										</mat-error>
 									</mat-form-field>
 								</div>
 								<div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 pe-md-0">
 									<mat-form-field>
 										<mat-label>Job Title</mat-label>
-										<input matInput formControlName="jobTitle" [errorStateMatcher]="matcher" />
+										<input matInput formControlName="jobTitle" [errorStateMatcher]="matcher" maxlength="100" />
 										<mat-error *ngIf="group.get('jobTitle')?.hasError('required')">This is required</mat-error>
-										<mat-error *ngIf="group.get('jobTitle')?.hasError('maxlength')">
-											This must be at most 100 characters long
-										</mat-error>
 									</mat-form-field>
 								</div>
 								<div class="col-xl-1 col-lg-3 col-md-3 col-sm-12">
@@ -181,10 +188,10 @@ export class NewScreeningComponent implements OnInit {
 
 	initiateForm(): FormGroup {
 		return this.formBuilder.group({
-			firstName: new FormControl('', [Validators.required, Validators.maxLength(40)]),
-			lastName: new FormControl('', [Validators.required, Validators.maxLength(40)]),
-			email: new FormControl('', [Validators.email, Validators.required, Validators.maxLength(75)]),
-			jobTitle: new FormControl('', [Validators.required, Validators.maxLength(100)]),
+			firstName: new FormControl('', [Validators.required]),
+			lastName: new FormControl('', [Validators.required]),
+			email: new FormControl('', [Validators.email, Validators.required]),
+			jobTitle: new FormControl('', [Validators.required]),
 			orgPay: new FormControl('', [Validators.required]),
 		});
 	}
@@ -300,6 +307,16 @@ export class NewScreeningComponent implements OnInit {
 	}
 
 	promptVulnerableSector(body: Array<ApplicationInviteCreateRequest>): void {
+		const vulnerableQuestionSingular =
+			'In their role with your organization, will this person work directly with, or potentially have unsupervised access to, children and/or vulnerable adults?';
+		const vulnerableQuestionMultiple =
+			'In their roles with your organization, will these individuals work directly with, or potentially have unsupervised access to, children and/or vulnerable adults?';
+
+		const criminalRecordCheckMessageSingular =
+			'If the applicant will not have unsupervised access to children or vulnerable adults in this role, but they require a criminal record check for another reason, please contact your local police or private agency';
+		const criminalRecordCheckMessageMultiple =
+			'If the applicants will not have unsupervised access to children or vulnerable adults in this role, but they require a criminal record check for another reason, please contact your local police or private agency';
+
 		const data: DialogOptions = {
 			icon: 'info_outline',
 			title: 'Vulnerable Sector',
@@ -309,29 +326,23 @@ export class NewScreeningComponent implements OnInit {
 		};
 
 		if (body.length == 1) {
-			data.message =
-				'In their role with your organization, will this person work directly with, or potentially have unsupervised access to, children and/or vulnerable adults?';
+			data.message = vulnerableQuestionSingular;
 
 			this.dialog
 				.open(DialogComponent, { data })
 				.afterClosed()
 				.subscribe((response: boolean) => {
-					let noMessage = !response
-						? 'If the applicant will not have unsupervised access to children or vulnerable adults in this role, but they require a criminal record check for another reason, please contact your local police detachment'
-						: null;
+					let noMessage = !response ? criminalRecordCheckMessageSingular : null;
 					this.saveInviteRequests(body, noMessage);
 				});
 		} else {
-			data.message =
-				'In their roles with your organization, will these individuals work directly with, or potentially have unsupervised access to, children and/or vulnerable adults?';
+			data.message = vulnerableQuestionMultiple;
 
 			this.dialog
 				.open(DialogComponent, { data })
 				.afterClosed()
 				.subscribe((response: boolean) => {
-					let noMessage = !response
-						? 'If the applicants will not have unsupervised access to children or vulnerable adults in this role, but they require a criminal record check for another reason, please contact your local police detachment'
-						: null;
+					let noMessage = !response ? criminalRecordCheckMessageMultiple : null;
 					this.saveInviteRequests(body, noMessage);
 				});
 		}

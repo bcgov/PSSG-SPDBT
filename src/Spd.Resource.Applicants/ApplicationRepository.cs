@@ -60,9 +60,48 @@ namespace Spd.Resource.Applicants
         public async Task<bool> AddApplicationAsync(ApplicationCreateCmd createApplicationCmd, CancellationToken cancellationToken)
         {
             spd_application application = _mapper.Map<spd_application>(createApplicationCmd);
+            account org = GetOrgById(createApplicationCmd.OrgId);
             _dynaContext.AddTospd_applications(application);
+            _dynaContext.SetLink(application, nameof(spd_application.spd_OrganizationId), org);
+
+            contact contact = GetContact(createApplicationCmd);
+            // if not found, create new contact
+            if (contact == null)
+            {
+                contact = _mapper.Map<contact>(createApplicationCmd);
+                _dynaContext.AddTocontacts(contact);
+            }
+
+            // associate contact to application
+            _dynaContext.SetLink(application, nameof(application.spd_ApplicantId_contact), contact);
+
+            // create the aliases
+            foreach (var item in createApplicationCmd.Aliases)
+            {
+                spd_alias matchingAlias = GetAlias(item);
+                // if not found, create new alias
+                if (matchingAlias == null)
+                {
+                    spd_alias alias = _mapper.Map<spd_alias>(item);
+                    _dynaContext.AddTospd_aliases(alias);
+                    // associate alias to contact
+                    _dynaContext.SetLink(alias, nameof(alias.spd_ContactId), contact);
+                }
+            }
+
             await _dynaContext.SaveChangesAsync(cancellationToken);
             return true;
+        }
+
+        public async Task<bool> CheckApplicationDuplicateAsync(SearchApplicationQry searchApplicationQry, CancellationToken cancellationToken)
+        {
+            var application = _dynaContext.spd_applications.Where(o =>
+                o.spd_OrganizationId.accountid == searchApplicationQry.OrgId &&
+                o.spd_firstname.Equals(searchApplicationQry.GivenName, StringComparison.InvariantCultureIgnoreCase) &&
+                o.spd_lastname.Equals(searchApplicationQry.Surname, StringComparison.InvariantCultureIgnoreCase) &&
+                o.statecode != DynamicsConstants.StateCode_Inactive
+            ).FirstOrDefault();
+            return application != null;
         }
 
         private account? GetOrgById(Guid organizationId)
@@ -87,6 +126,31 @@ namespace Spd.Resource.Applicants
             if (user?.statecode == DynamicsConstants.StateCode_Inactive)
                 throw new InactiveException(HttpStatusCode.BadRequest, $"User {userId} is inactive.");
             return user;
+
+        }
+
+        private spd_alias? GetAlias(AliasCreateCmd aliasCreateCmd)
+        {
+            var matchingAlias = _dynaContext.spd_aliases.Where(o =>
+               o.spd_firstname.Equals(aliasCreateCmd.GivenName, StringComparison.InvariantCultureIgnoreCase) &&
+               o.spd_middlename1.Equals(aliasCreateCmd.MiddleName1, StringComparison.InvariantCultureIgnoreCase) &&
+               o.spd_middlename2.Equals(aliasCreateCmd.MiddleName2, StringComparison.InvariantCultureIgnoreCase) &&
+               o.spd_surname.Equals(aliasCreateCmd.Surname, StringComparison.InvariantCultureIgnoreCase) &&
+               o.statecode != DynamicsConstants.StateCode_Inactive
+           ).FirstOrDefault();
+            return matchingAlias;
+        }
+
+        private contact? GetContact(ApplicationCreateCmd createApplicationCmd)
+        {
+            var contact = _dynaContext.contacts
+                .Where(o =>
+                o.firstname.Equals(createApplicationCmd.GivenName, StringComparison.InvariantCultureIgnoreCase) &&
+                o.lastname.Equals(createApplicationCmd.Surname, StringComparison.InvariantCultureIgnoreCase) &&
+                o.emailaddress1.Equals(createApplicationCmd.EmailAddress, StringComparison.InvariantCultureIgnoreCase) &&
+                o.statecode != DynamicsConstants.StateCode_Inactive
+            ).FirstOrDefault();
+            return contact;
 
         }
     }

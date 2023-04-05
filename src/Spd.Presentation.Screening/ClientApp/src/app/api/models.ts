@@ -1,6 +1,7 @@
 export { ActionResult } from './models/action-result';
 export { AddressFindResponse } from './models/address-find-response';
 export { AddressRetrieveResponse } from './models/address-retrieve-response';
+export { AliasCreateRequest } from './models/alias-create-request';
 export { ApplicationCreateRequest } from './models/application-create-request';
 export { ApplicationInviteCreateRequest } from './models/application-invite-create-request';
 export { ApplicationOriginTypeCode } from './models/application-origin-type-code';
