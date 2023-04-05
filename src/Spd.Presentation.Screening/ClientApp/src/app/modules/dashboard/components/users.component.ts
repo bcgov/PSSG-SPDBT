@@ -37,7 +37,7 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 				<div class="row mt-2 mb-2">
 					<div class="col-xxl-10 col-xl-10 col-lg-12 col-md-12 col-sm-12">
 						<section class="px-4 py-2 mb-3 card-section">
-							<div class="row mt-2">
+							<div class="row my-2">
 								<div class="col-xl-9 col-lg-12 col-md-12 col-sm-12">
 									<div class="row">
 										<div class="col-xl-1 col-lg-1 col-md-1 col-sm-10">
@@ -45,25 +45,25 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 												{{ i + 1 }}
 											</span>
 										</div>
-										<div class="col-xl-5 col-lg-5 col-md-12">
+										<div class="col-xl-5 col-lg-5 col-md-12 mt-2 mt-lg-0">
 											<small class="d-block text-muted">Authorization Type</small>
 											<strong> {{ getDesc(user.contactAuthorizationTypeCode) | default }} </strong>
 										</div>
 										<div class="col-xl-6 col-lg-6 col-md-12">
-											<small class="d-block text-muted mt-2 mt-md-0">Name</small>
+											<small class="d-block text-muted">Name</small>
 											<strong> {{ user | fullname | default }} </strong>
 										</div>
 										<div class="col-xl-1 col-lg-1 col-md-1 col-sm-10"></div>
-										<div class="col-xl-5 col-lg-5 col-md-12">
-											<small class="d-block text-muted mt-2 mt-md-0">Email</small>
+										<div class="col-xl-5 col-lg-5 col-md-12 mt-0 mt-lg-2">
+											<small class="d-block text-muted">Email</small>
 											<strong> {{ user.email | default }} </strong>
 										</div>
-										<div class="col-xl-3 col-lg-3  col-md-12">
+										<div class="col-xl-3 col-lg-3 col-md-12 mt-0 mt-lg-2">
 											<small class="d-block text-muted">Phone Number</small>
 											<strong>{{ user.phoneNumber || '' | mask : appConstants.phone.displayMask | default }}</strong>
 										</div>
-										<div class="col-xl-3 col-lg-3  col-md-12">
-											<small class="d-block text-muted mt-2 mt-md-0">Job Title</small>
+										<div class="col-xl-3 col-lg-3 col-md-12 mt-0 mt-lg-2">
+											<small class="d-block text-muted">Job Title</small>
 											<strong>{{ user.jobTitle | default }}</strong>
 										</div>
 									</div>
