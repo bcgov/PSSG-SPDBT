@@ -5,5 +5,5 @@ export interface ApplicationInviteCreateRequest {
   firstName?: null | string;
   jobTitle?: null | string;
   lastName?: null | string;
-  orgPay?: boolean;
+  orgPay?: null | boolean;
 }

@@ -35,7 +35,7 @@ namespace Spd.Presentation.Screening.Controllers
         [HttpPost]
         public async Task<Unit> Add([FromBody][Required] ApplicationCreateRequest applicationCreateRequest, [FromRoute] Guid orgId)
         {
-            applicationCreateRequest.OrganizationId = orgId;
+            applicationCreateRequest.OrgId = orgId;
             return await _mediator.Send(new ApplicationCreateCommand(applicationCreateRequest));
         }
 
@@ -43,7 +43,7 @@ namespace Spd.Presentation.Screening.Controllers
         [HttpPost]
         public async Task<CheckApplicationDuplicateResponse> DetectDuplicate([FromBody][Required] ApplicationCreateRequest applicationCreateRequest, [FromRoute] Guid orgId)
         {
-            applicationCreateRequest.OrganizationId = orgId;
+            applicationCreateRequest.OrgId = orgId;
             return await _mediator.Send(new CheckApplicationDuplicateQuery(applicationCreateRequest));
         }
     }

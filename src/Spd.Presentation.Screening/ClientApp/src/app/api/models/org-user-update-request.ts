@@ -3,7 +3,6 @@
 import { ContactAuthorizationTypeCode } from './contact-authorization-type-code';
 export interface OrgUserUpdateRequest {
   contactAuthorizationTypeCode?: ContactAuthorizationTypeCode;
-  dateOfBirth?: null | string;
   email?: null | string;
   firstName?: null | string;
   id?: string;

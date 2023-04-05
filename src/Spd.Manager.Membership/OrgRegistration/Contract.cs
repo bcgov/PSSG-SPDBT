@@ -17,7 +17,6 @@ namespace Spd.Manager.Membership.OrgRegistration
     public class OrgRegistrationCreateRequest
     {
         public bool? AgreeToTermsAndConditions { get; set; } //do not map
-        public DateTimeOffset? ContactDateOfBirth { get; set; }
         public PayerPreferenceTypeCode PayerPreference { get; set; }
         public string? ContactEmail { get; set; }
         public string? ContactGivenName { get; set; }
@@ -220,9 +219,6 @@ namespace Spd.Manager.Membership.OrgRegistration
                 .NotEmpty()
                 .MaximumLength(100);
 
-            RuleFor(r => r.ContactDateOfBirth)
-                .NotEmpty();
-
             RuleFor(r => r.ContactPhoneNumber)
                 .NotEmpty()
                 .MaximumLength(12);
@@ -260,7 +256,8 @@ namespace Spd.Manager.Membership.OrgRegistration
                 .IsInEnum();
 
             RuleFor(r => r.AgreeToTermsAndConditions)
-                .NotEmpty();
+                .NotEmpty()
+                .Equal(true);
 
             RuleFor(r => r.GenericEmail)
                 .EmailAddress()

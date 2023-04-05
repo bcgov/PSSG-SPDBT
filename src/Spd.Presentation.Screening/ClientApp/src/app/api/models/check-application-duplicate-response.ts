@@ -4,6 +4,6 @@ export interface CheckApplicationDuplicateResponse {
   emailAddress?: null | string;
   givenName?: null | string;
   hasPotentialDuplicate?: boolean;
-  orgSpdId?: string;
+  orgId?: string;
   surname?: null | string;
 }
