@@ -44,22 +44,26 @@ public class FileStorageController : SpdControllerBase
         FileMetadataQueryResult queryResult = (FileMetadataQueryResult)await _storageService.HandleQuery(
             new FileMetadataQuery { Key = fileId.ToString(), Folder = headers[SpdHeaderNames.HEADER_FILE_FOLDER] },
             ct);
+        bool fileExists = queryResult != null;
 
         //upload file
         using var ms = new MemoryStream();
         await request.File.CopyToAsync(ms, ct);
         File file = new()
         {
-            Key = fileId.ToString(),
             FileName = request.File.FileName,
             ContentType = request.File.ContentType,
-            Content = ms.ToArray(),
-            Tags = GetTagsFromStr(headers[SpdHeaderNames.HEADER_FILE_TAG], classification),
-            Folder = headers[SpdHeaderNames.HEADER_FILE_FOLDER]
+            Content = ms.ToArray()
         };
-        await _storageService.HandleCommand(new UploadFileCommand { File = file }, ct);
+        FileTag fileTag = new()
+        {
+            Tags = GetTagsFromStr(headers[SpdHeaderNames.HEADER_FILE_TAG], classification)
+        };
+        await _storageService.HandleCommand(
+            new UploadFileCommand(fileId.ToString(), headers[SpdHeaderNames.HEADER_FILE_FOLDER], file, fileTag),
+            ct);
 
-        return queryResult != null ? Ok() : StatusCode(StatusCodes.Status201Created);
+        return fileExists ? Ok() : StatusCode(StatusCodes.Status201Created);
     }
 
     /// <summary>
@@ -80,17 +84,20 @@ public class FileStorageController : SpdControllerBase
             ct);
 
         var content = new MemoryStream(result.File.Content);
-        var contentType = result.File.ContentType;
+        var contentType = result.File.ContentType ?? "application/octet-stream";
 
-        HttpContext.Response.Headers.Add(SpdHeaderNames.HEADER_FILE_CLASSIFICATION,
-            result.File.Tags.FirstOrDefault(t => t.Key == SpdHeaderNames.HEADER_FILE_CLASSIFICATION)?.Value);
+        if (result.FileTag != null)
+        {
+            HttpContext.Response.Headers.Add(SpdHeaderNames.HEADER_FILE_CLASSIFICATION,
+                result.FileTag.Tags.SingleOrDefault(t => t.Key == SpdHeaderNames.HEADER_FILE_CLASSIFICATION)?.Value);
+
+            string tagStr = GetStrFromTags(result.FileTag.Tags);
+            if (!string.IsNullOrWhiteSpace(tagStr))
+                HttpContext.Response.Headers.Add(SpdHeaderNames.HEADER_FILE_TAG, tagStr);
+        }
 
         if (!string.IsNullOrWhiteSpace(headers[SpdHeaderNames.HEADER_FILE_FOLDER]))
             HttpContext.Response.Headers.Add(SpdHeaderNames.HEADER_FILE_FOLDER, headers[SpdHeaderNames.HEADER_FILE_FOLDER]);
-
-        string tagStr = GetStrFromTags(result.File.Tags);
-        if (!string.IsNullOrWhiteSpace(tagStr))
-            HttpContext.Response.Headers.Add(SpdHeaderNames.HEADER_FILE_TAG, tagStr);
 
         return new FileStreamResult(content, contentType);
     }
@@ -119,20 +126,21 @@ public class FileStorageController : SpdControllerBase
         var queryResult = (FileMetadataQueryResult)await _storageService.HandleQuery(
             new FileMetadataQuery { Key = fileId.ToString(), Folder = headers[SpdHeaderNames.HEADER_FILE_FOLDER] },
             ct);
-        if (queryResult != null)
+        bool fileExists = queryResult != null;
+        if (!fileExists)
         {
-            FileTag fileTag = new()
-            {
-                Key = fileId.ToString(),
-                Tags = GetTagsFromStr(headers[SpdHeaderNames.HEADER_FILE_TAG], classification),
-                Folder = headers[SpdHeaderNames.HEADER_FILE_FOLDER]
-            };
-            await _storageService.HandleCommand(new UpdateTagsCommand { FileTag = fileTag }, ct);
-            return Ok();
+            return NotFound();
         }
         else
         {
-            return NotFound();
+            FileTag fileTag = new()
+            {
+                Tags = GetTagsFromStr(headers[SpdHeaderNames.HEADER_FILE_TAG], classification),
+            };
+            await _storageService.HandleCommand(
+                new UpdateTagsCommand(fileId.ToString(), headers[SpdHeaderNames.HEADER_FILE_FOLDER], fileTag),
+                ct);
+            return Ok();
         }
     }
 
@@ -140,7 +148,7 @@ public class FileStorageController : SpdControllerBase
     {
         try
         {
-            List<Tag> taglist = new() { new Tag { Key = SpdHeaderNames.HEADER_FILE_CLASSIFICATION, Value = classification } };
+            List<Tag> taglist = new() { new Tag(SpdHeaderNames.HEADER_FILE_CLASSIFICATION, classification) };
 
             if (!string.IsNullOrWhiteSpace(tagStr))
             {
@@ -150,11 +158,7 @@ public class FileStorageController : SpdControllerBase
                     string[] strs = tag.Split('=');
                     if (strs.Length != 2) throw new OutOfRangeException(HttpStatusCode.BadRequest, $"Invalid {SpdHeaderNames.HEADER_FILE_TAG} string");
                     taglist.Add(
-                        new Tag()
-                        {
-                            Key = strs[0],
-                            Value = strs[1]
-                        }
+                        new Tag(strs[0], strs[1])
                     );
                 }
             }
