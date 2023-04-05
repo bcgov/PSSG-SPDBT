@@ -312,10 +312,8 @@ export class NewScreeningComponent implements OnInit {
 		const vulnerableQuestionMultiple =
 			'In their roles with your organization, will these individuals work directly with, or potentially have unsupervised access to, children and/or vulnerable adults?';
 
-		const criminalRecordCheckMessageSingular =
-			'If the applicant will not have unsupervised access to children or vulnerable adults in this role, but they require a criminal record check for another reason, please contact your local police or private agency';
-		const criminalRecordCheckMessageMultiple =
-			'If the applicants will not have unsupervised access to children or vulnerable adults in this role, but they require a criminal record check for another reason, please contact your local police or private agency';
+		const criminalRecordCheckMessageSingular = `If the applicant will not have unsupervised access to children or vulnerable adults in this role, but they require a criminal record check for another reason, please <a href="https://www2.gov.bc.ca/gov/content/safety/crime-prevention/criminal-record-check" target="_blank"> contact your local police or private agency</a>`;
+		const criminalRecordCheckMessageMultiple = `If the applicants will not have unsupervised access to children or vulnerable adults in this role, but they require a criminal record check for another reason, please <a href="https://www2.gov.bc.ca/gov/content/safety/crime-prevention/criminal-record-check" target="_blank"> contact your local police or private agency</a>`;
 
 		const data: DialogOptions = {
 			icon: 'info_outline',
