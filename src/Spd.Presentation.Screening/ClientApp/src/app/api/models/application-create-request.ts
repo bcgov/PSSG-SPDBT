@@ -18,6 +18,7 @@ export interface ApplicationCreateRequest {
   jobTitle?: null | string;
   middleName1?: null | string;
   middleName2?: null | string;
+  oneLegalName?: null | boolean;
   orgId?: string;
   originTypeCode?: ApplicationOriginTypeCode;
   phoneNumber?: null | string;
