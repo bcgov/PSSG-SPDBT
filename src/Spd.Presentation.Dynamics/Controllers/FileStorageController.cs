@@ -1,9 +1,10 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Presentation.Dynamics.Models;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared;
+using Spd.Utilities.Shared.Exceptions;
+using System.Net;
 using File = Spd.Utilities.FileStorage.File;
 
 namespace Spd.Presentation.Dynamics.Controllers;
@@ -15,61 +16,164 @@ namespace Spd.Presentation.Dynamics.Controllers;
 public class FileStorageController : SpdControllerBase
 {
     private readonly IFileStorageService _storageService;
-    private readonly IMapper _mapper;
-
-    public FileStorageController(IFileStorageService storageService, IMapper mapper) : base()
+    public FileStorageController(IFileStorageService storageService) : base()
     {
         _storageService = storageService;
-        _mapper = mapper;
     }
 
     /// <summary>
-    /// Upload file
+    /// Upload  or overwrite file
     /// The maximum file size would be 30M.
     /// </summary>
     /// <param name="request"></param>
+    /// <param name="fileId"></param>
+    /// <param name="ct"></param>
     /// <returns></returns>
     [HttpPost]
-    [Route("api/files")]
-    public async Task<UploadFileResponse> UploadFile([FromForm] UploadFileRequest request)
+    [Route("api/files/{fileId}")]
+    public async Task<IActionResult> UploadFileAsync([FromForm] UploadFileRequest request, [FromRoute] Guid fileId, CancellationToken ct)
     {
+        var headers = this.Request.Headers;
+        string? classification = headers[SpdHeaderNames.HEADER_FILE_CLASSIFICATION];
+        if (string.IsNullOrWhiteSpace(classification))
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, $"{SpdHeaderNames.HEADER_FILE_CLASSIFICATION} header is mandatory");
+        }
+
+        //check if file already exists
+        FileMetadataQueryResult queryResult = (FileMetadataQueryResult)await _storageService.HandleQuery(
+            new FileMetadataQuery { Key = fileId.ToString(), Folder = headers[SpdHeaderNames.HEADER_FILE_FOLDER] },
+            ct);
+
+        //upload file
         using var ms = new MemoryStream();
-        await request.File.CopyToAsync(ms);
+        await request.File.CopyToAsync(ms, ct);
+        File file = new()
+        {
+            Key = fileId.ToString(),
+            FileName = request.File.FileName,
+            ContentType = request.File.ContentType,
+            Content = ms.ToArray(),
+            Tags = GetTagsFromStr(headers[SpdHeaderNames.HEADER_FILE_TAG], classification),
+            Folder = headers[SpdHeaderNames.HEADER_FILE_FOLDER]
+        };
+        await _storageService.HandleCommand(new UploadFileCommand { File = file }, ct);
 
-        File spdFile = _mapper.Map<File>(request);
-        spdFile.Content = ms.ToArray();
-
-        string id = await _storageService.HandleCommand(new UploadFileCommand { File = spdFile }, CancellationToken.None);
-
-        return new UploadFileResponse { Id = id };
+        return queryResult != null ? Ok() : StatusCode(StatusCodes.Status201Created);
     }
 
-    //[HttpPost]
-    //[Route("api/files")]
-    //public async Task<UploadFileResponse> UploadFile([FromBody] UploadFileRequestJson request)
-    //{
-    //    File file = _mapper.Map<File>(request);
-    //    string id = await _storageService.HandleCommand(new UploadItemCommand { File = file }, CancellationToken.None);
-    //    return new UploadFileResponse { Id = id };
-    //}
-
-    //[HttpGet]
-    //[Route("api/files/{fileId}")]
-    //public async Task<DownloadFileResponse> DownloadFile(string fileId)
-    //{
-    //    StorageQueryResults result = await _storageService.HandleQuery(new GetItemByKeyQuery { Key = fileId }, CancellationToken.None);
-    //    return _mapper.Map<DownloadFileResponse>(result.File);
-    //}
-
+    /// <summary>
+    /// Download the file with fileId and folder name. 
+    /// If a file is expected to be in a folder, the client must pass the correct folder name in the request header, 
+    /// otherwise no file will found; the default header value is the root folder /
+    /// </summary>
+    /// <param name="fileId"></param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
     [HttpGet]
     [Route("api/files/{fileId}")]
-    public async Task<IActionResult> DownloadFile(string fileId)
+    public async Task<FileStreamResult> DownloadFileAsync(Guid fileId, CancellationToken ct)
     {
-        StorageQueryResults result = await _storageService.HandleQuery(new FileQuery { Key = fileId }, CancellationToken.None);
+        var headers = this.Request.Headers;
+        FileQueryResult result = (FileQueryResult)await _storageService.HandleQuery(
+            new FileQuery { Key = fileId.ToString(), Folder = headers[SpdHeaderNames.HEADER_FILE_FOLDER] },
+            ct);
 
-        var content = new System.IO.MemoryStream(result.File.Content);
+        var content = new MemoryStream(result.File.Content);
         var contentType = result.File.ContentType;
-        var fileName = result.File.FileName;
-        return File(content, contentType, fileName);
+
+        HttpContext.Response.Headers.Add(SpdHeaderNames.HEADER_FILE_CLASSIFICATION,
+            result.File.Tags.FirstOrDefault(t => t.Key == SpdHeaderNames.HEADER_FILE_CLASSIFICATION)?.Value);
+
+        if (!string.IsNullOrWhiteSpace(headers[SpdHeaderNames.HEADER_FILE_FOLDER]))
+            HttpContext.Response.Headers.Add(SpdHeaderNames.HEADER_FILE_FOLDER, headers[SpdHeaderNames.HEADER_FILE_FOLDER]);
+
+        string tagStr = GetStrFromTags(result.File.Tags);
+        if (!string.IsNullOrWhiteSpace(tagStr))
+            HttpContext.Response.Headers.Add(SpdHeaderNames.HEADER_FILE_TAG, tagStr);
+
+        return new FileStreamResult(content, contentType);
+    }
+
+    /// <summary>
+    /// Only updates the tags passed in the header and will not affect the content of the file
+    /// any tags not present in the request will be deleted
+    /// tags must be in the form key=value, key must contain only alphanumeric characters(i.e.tag1= value1)
+    ///classification must contain only alphanumeric characters(i.e.confidential/internal/public)
+    /// </summary>
+    /// <param name="fileId"></param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
+    [HttpPost]
+    [Route("api/files/{fileId}/tags")]
+    public async Task<IActionResult> UpdateTagsAsync(Guid fileId, CancellationToken ct)
+    {
+        var headers = this.Request.Headers;
+        string? classification = headers[SpdHeaderNames.HEADER_FILE_CLASSIFICATION];
+        if (string.IsNullOrWhiteSpace(classification))
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, $"{SpdHeaderNames.HEADER_FILE_CLASSIFICATION} header is mandatory");
+        }
+
+        //check if file already exists
+        var queryResult = (FileMetadataQueryResult)await _storageService.HandleQuery(
+            new FileMetadataQuery { Key = fileId.ToString(), Folder = headers[SpdHeaderNames.HEADER_FILE_FOLDER] },
+            ct);
+        if (queryResult != null)
+        {
+            FileTag fileTag = new()
+            {
+                Key = fileId.ToString(),
+                Tags = GetTagsFromStr(headers[SpdHeaderNames.HEADER_FILE_TAG], classification),
+                Folder = headers[SpdHeaderNames.HEADER_FILE_FOLDER]
+            };
+            await _storageService.HandleCommand(new UpdateTagsCommand { FileTag = fileTag }, ct);
+            return Ok();
+        }
+        else
+        {
+            return NotFound();
+        }
+    }
+
+    private Tag[] GetTagsFromStr(string? tagStr, string classification)
+    {
+        try
+        {
+            List<Tag> taglist = new() { new Tag { Key = SpdHeaderNames.HEADER_FILE_CLASSIFICATION, Value = classification } };
+
+            if (!string.IsNullOrWhiteSpace(tagStr))
+            {
+                string[] tags = tagStr.Split(',');
+                foreach (string tag in tags)
+                {
+                    string[] strs = tag.Split('=');
+                    if (strs.Length != 2) throw new OutOfRangeException(HttpStatusCode.BadRequest, $"Invalid {SpdHeaderNames.HEADER_FILE_TAG} string");
+                    taglist.Add(
+                        new Tag()
+                        {
+                            Key = strs[0],
+                            Value = strs[1]
+                        }
+                    );
+                }
+            }
+            return taglist.ToArray();
+        }
+        catch
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, $"Invalid {SpdHeaderNames.HEADER_FILE_TAG} string");
+        }
+    }
+
+    private string GetStrFromTags(IEnumerable<Tag> tags)
+    {
+        List<string> tagStrlist = new();
+        foreach (Tag t in tags)
+        {
+            if (t.Key != SpdHeaderNames.HEADER_FILE_CLASSIFICATION)
+                tagStrlist.Add($"{t.Key}={t.Value}");
+        }
+        return string.Join(",", tagStrlist);
     }
 }
