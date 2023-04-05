@@ -137,7 +137,7 @@ namespace Spd.Utilities.FileStorage
                     BucketName = _config.Value.Bucket,
                     Key = requestKey,
                 }, cancellationToken);
-                return new FileMetadataQueryResult(GetMetadata(response.Metadata));
+                return new FileMetadataQueryResult(key, folder, GetMetadata(response.Metadata));
             }
             catch (AmazonS3Exception ex)
             {
