@@ -6,21 +6,28 @@
         Task<StorageQueryResults> HandleQuery(StorageQuery query, CancellationToken cancellationToken);
     }
 
-    public abstract record StorageCommand 
+    public abstract record StorageCommand {}
+    public record UploadFileCommand : StorageCommand 
     {
         public File File { get; set; } = null!;
     }
-    public record UploadFileCommand : StorageCommand {}
-    public record UpdateTagsCommand : StorageCommand {}
-    public record File
+    public record UpdateTagsCommand : StorageCommand 
+    { 
+        public FileTag FileTag { get; set; } = null!;
+    }
+
+    public record FileTag
     {
         public string Key { get; set; } = null!;
+        public IEnumerable<Tag> Tags { get; set; } = Array.Empty<Tag>();
+        public string? Folder { get; set; }
+    }
+    public record File : FileTag
+    {
         public byte[] Content { get; set; } = Array.Empty<byte>();
         public string? ContentType { get; set; }
         public string? FileName { get; set; }
-        public Metadata[] Metadata { get; set; } = null!;
-        public Tag[] Tags { get; set; } = null!;
-        public string? Folder { get; set; }
+        public IEnumerable<Metadata> Metadata { get; set; } = Array.Empty<Metadata>();
     }
 
     public record Tag
@@ -41,14 +48,14 @@
         public string? Folder { get; set; }
     }
     public record FileQuery : StorageQuery { }
-    public record FileExistsQuery : StorageQuery { }
+    public record FileMetadataQuery : StorageQuery { }
     public record StorageQueryResults { }
     public record FileQueryResult : StorageQueryResults
     {
         public File File { get; set; } = null!;
     }
-    public record FileExistsQueryResult : StorageQueryResults
+    public record FileMetadataQueryResult : StorageQueryResults
     {
-        public bool FileExists { get; set; }
+        public IEnumerable<Metadata> Metadata { get; set; }
     }
 }
