@@ -19188,7 +19188,7 @@
         <Property Name="_createdby_value" Type="Edm.Guid" />
         <Property Name="spd_firstname" Type="Edm.String" Unicode="false" />
         <Property Name="_spd_servicetypeid_value" Type="Edm.Guid" />
-        <Property Name="spd_dateofbirth" Type="Edm.DateTimeOffset" />
+        <Property Name="spd_dateofbirth" Type="Edm.Date" />
         <Property Name="_spd_applicantid_value" Type="Edm.Guid" />
         <Property Name="_owninguser_value" Type="Edm.Guid" />
         <Property Name="spd_bcdriverslicense" Type="Edm.String" Unicode="false" />

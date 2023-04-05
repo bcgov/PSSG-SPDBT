@@ -23,7 +23,7 @@ namespace Spd.Resource.Applicants
             .ForMember(d => d.spd_middlename2, opt => opt.MapFrom(s => s.MiddleName2))
             .ForMember(d => d.spd_lastname, opt => opt.MapFrom(s => s.Surname))
             .ForMember(d => d.spd_emailaddress1, opt => opt.MapFrom(s => s.EmailAddress))
-            .ForMember(d => d.spd_dateofbirth, opt => opt.MapFrom(s => s.DateOfBirth))
+            .ForMember(d => d.spd_dateofbirth, opt => opt.MapFrom(s => new Microsoft.OData.Edm.Date(s.DateOfBirth.Value.Year, s.DateOfBirth.Value.Month, s.DateOfBirth.Value.Day)))
             .ForMember(d => d.spd_phonenumber, opt => opt.MapFrom(s => s.PhoneNumber))
             .ForMember(d => d.spd_bcdriverslicense, opt => opt.MapFrom(s => s.DriversLicense))
             .ForMember(d => d.spd_birthplace, opt => opt.MapFrom(s => s.BirthPlace))
@@ -55,7 +55,7 @@ namespace Spd.Resource.Applicants
             .ForMember(d => d.lastname, opt => opt.MapFrom(s => s.Surname))
             .ForMember(d => d.emailaddress1, opt => opt.MapFrom(s => s.EmailAddress))
             .ForMember(d => d.jobtitle, opt => opt.MapFrom(s => s.JobTitle))
-            // .ForMember(d => d.birthdate, opt => opt.MapFrom(s => s.DateOfBirth)) // todo datatype issue
+            .ForMember(d => d.birthdate, opt => opt.MapFrom(s => new Microsoft.OData.Edm.Date(s.DateOfBirth.Value.Year, s.DateOfBirth.Value.Month, s.DateOfBirth.Value.Day)))
             .ForMember(d => d.telephone1, opt => opt.MapFrom(s => s.PhoneNumber))
             .ForMember(d => d.spd_bcdriverslicense, opt => opt.MapFrom(s => s.DriversLicense))
             .ForMember(d => d.spd_birthplace, opt => opt.MapFrom(s => s.BirthPlace))
