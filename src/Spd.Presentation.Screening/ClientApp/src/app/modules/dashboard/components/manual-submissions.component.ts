@@ -107,7 +107,13 @@ export const EmployeeInteractionTypes = [
 					<div class="col-xl-3 col-lg-6 col-md-12">
 						<mat-form-field>
 							<mat-label>Birth Place</mat-label>
-							<input matInput formControlName="birthPlace" [errorStateMatcher]="matcher" maxlength="100" />
+							<input
+								matInput
+								formControlName="birthPlace"
+								placeholder="City, Country"
+								[errorStateMatcher]="matcher"
+								maxlength="100"
+							/>
 							<mat-error *ngIf="form.get('birthPlace')?.hasError('required')"> This is required </mat-error>
 						</mat-form-field>
 					</div>
@@ -221,7 +227,7 @@ export const EmployeeInteractionTypes = [
 						<mat-error
 							class="mat-option-error"
 							*ngIf="
-								(form.dirty || form.touched) &&
+								(form.get('addressSelected')?.dirty || form.get('addressSelected')?.touched) &&
 								form.get('addressSelected')?.invalid &&
 								form.get('addressSelected')?.hasError('required')
 							"
@@ -400,7 +406,7 @@ export class ManualSubmissionsComponent {
 			province: new FormControl('', [Validators.required]),
 			country: new FormControl('', [Validators.required]),
 			agreeToCompleteAndAccurate: new FormControl('', [Validators.required]),
-			haveVerifiedIdentity: new FormControl(false),
+			haveVerifiedIdentity: new FormControl(''),
 			aliases: this.formBuilder.array([]),
 		},
 		{
@@ -427,10 +433,15 @@ export class ManualSubmissionsComponent {
 
 	onSubmit() {
 		this.form.markAllAsTouched();
+
+		if (this.previousNameFlag.value != BooleanTypeCode.Yes) {
+			this.aliases.clear();
+		}
+
 		if (this.form.valid) {
-			console.log('form', this.form.value);
 			const body: ApplicationCreateRequest = { ...this.form.value };
 			body.originTypeCode = ApplicationOriginTypeCode.Portal;
+			body.haveVerifiedIdentity = body.haveVerifiedIdentity == true ? true : false;
 
 			//TODO replace with proper org id
 			// Check for potential duplicate
@@ -464,6 +475,7 @@ export class ManualSubmissionsComponent {
 
 	resetForm(): void {
 		this.form.reset();
+		this.aliases.clear();
 		this.onAddRow();
 	}
 
@@ -565,13 +577,16 @@ export class ManualSubmissionsComponent {
 		return control;
 	}
 
+	get aliases(): FormArray {
+		return this.form.get('aliases') as FormArray;
+	}
+
 	get previousNameFlag(): FormControl {
 		return this.form.get('previousNameFlag') as FormControl;
 	}
 
 	get oneRowExists(): boolean {
-		const control = this.form.get('aliases') as FormArray;
-		return control.length > 1 ? false : true;
+		return this.aliases.length > 1 ? false : true;
 	}
 
 	private newAliasRow(): FormGroup {

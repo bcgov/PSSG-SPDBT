@@ -61,6 +61,7 @@ namespace Spd.Manager.Cases
         public string? PostalCode { get; set; }
         public string? Province { get; set; }
         public string? Country { get; set; }
+        public bool? OneLegalName { get; set; }
         public bool? AgreeToCompleteAndAccurate { get; set; }
         public bool? HaveVerifiedIdentity { get; set; }
         public List<AliasCreateRequest> Aliases { get; set; }
@@ -161,8 +162,11 @@ namespace Spd.Manager.Cases
                 .IsInEnum();
 
             RuleFor(r => r.GivenName)
-                    .NotEmpty()
                     .MaximumLength(40);
+
+            RuleFor(r => r.GivenName)
+                    .NotEmpty()
+                    .When(r => r.OneLegalName != true);
 
             RuleFor(r => r.MiddleName1)
                     .MaximumLength(40);

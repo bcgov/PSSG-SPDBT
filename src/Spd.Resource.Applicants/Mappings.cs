@@ -35,6 +35,7 @@ namespace Spd.Resource.Applicants
             .ForMember(d => d.spd_province, opt => opt.MapFrom(s => s.Province))
             .ForMember(d => d.spd_country, opt => opt.MapFrom(s => s.Country))
             .ForMember(d => d.spd_declaration, opt => opt.MapFrom(s => s.AgreeToCompleteAndAccurate))
+            .ForMember(d => d.spd_declarationdate, opt => opt.MapFrom(s => DateTime.Now))
             .ForMember(d => d.spd_identityconfirmed, opt => opt.MapFrom(s => s.HaveVerifiedIdentity));
 
             _ = CreateMap<AliasCreateCmd, spd_alias>()
@@ -54,7 +55,7 @@ namespace Spd.Resource.Applicants
             .ForMember(d => d.lastname, opt => opt.MapFrom(s => s.Surname))
             .ForMember(d => d.emailaddress1, opt => opt.MapFrom(s => s.EmailAddress))
             .ForMember(d => d.jobtitle, opt => opt.MapFrom(s => s.JobTitle))
-            //.ForMember(d => d.birthdate, opt => opt.MapFrom(s => s.DateOfBirth)) // todo cbc Datatype issue
+            // .ForMember(d => d.birthdate, opt => opt.MapFrom(s => s.DateOfBirth)) // todo datatype issue
             .ForMember(d => d.telephone1, opt => opt.MapFrom(s => s.PhoneNumber))
             .ForMember(d => d.spd_bcdriverslicense, opt => opt.MapFrom(s => s.DriversLicense))
             .ForMember(d => d.spd_birthplace, opt => opt.MapFrom(s => s.BirthPlace))

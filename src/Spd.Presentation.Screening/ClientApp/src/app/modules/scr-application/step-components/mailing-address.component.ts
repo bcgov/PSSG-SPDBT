@@ -23,7 +23,7 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 							</app-address-form-autocomplete>
 							<mat-error
 								*ngIf="
-									(form.dirty || form.touched) &&
+									(form.get('addressSelected')?.dirty || form.get('addressSelected')?.touched) &&
 									form.get('addressSelected')?.invalid &&
 									form.get('addressSelected')?.hasError('required')
 								"
