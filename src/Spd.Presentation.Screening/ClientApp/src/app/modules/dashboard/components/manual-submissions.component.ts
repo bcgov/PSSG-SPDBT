@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { HotToastService } from '@ngneat/hot-toast';
@@ -29,21 +29,13 @@ export const EmployeeInteractionTypes = [
 		<app-dashboard-header title="Organization Name" subtitle="Security Screening Portal"></app-dashboard-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row mb-4">
-				<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
+				<div class="col-xl-10 col-lg-10 col-md-12 col-sm-12">
 					<h2 class="fw-normal">
 						Manual Submissions
 						<div class="mt-2 fs-5 fw-light">
 							Enter the applicant's information, upload their consent form, and then pay the screening fee
 						</div>
 					</h2>
-				</div>
-				<div class="col-xl-2 col-lg-3 col-md-6 col-sm-12">
-					<button mat-stroked-button color="primary" class="large mb-2" (click)="onCancel()">
-						<i class="fa fa-times mr-2"></i>Cancel
-					</button>
-				</div>
-				<div class="col-xl-2 col-lg-3 col-md-6 col-sm-12">
-					<button mat-raised-button color="primary" class="large mb-2" (click)="onSubmit()">Submit</button>
 				</div>
 			</div>
 			<form [formGroup]="form" novalidate>
@@ -361,6 +353,16 @@ export const EmployeeInteractionTypes = [
 					</ngx-dropzone>
 				</div>
 			</form>
+			<div class="row mb-4">
+				<div class="offset-xl-8 offset-lg-6 col-xl-2 col-lg-3 col-md-6 col-sm-12">
+					<button mat-stroked-button color="primary" class="large mb-2" (click)="onCancel()">
+						<i class="fa fa-times mr-2"></i>Cancel
+					</button>
+				</div>
+				<div class="col-xl-2 col-lg-3 col-md-6 col-sm-12">
+					<button mat-raised-button color="primary" class="large mb-2" (click)="onSubmit()">Submit</button>
+				</div>
+			</div>
 		</section>
 	`,
 	styles: [
@@ -371,7 +373,7 @@ export const EmployeeInteractionTypes = [
 		`,
 	],
 })
-export class ManualSubmissionsComponent {
+export class ManualSubmissionsComponent implements OnInit {
 	@ViewChild(AddressAutocompleteComponent) addressAutocompleteComponent!: AddressAutocompleteComponent;
 	matcher = new FormErrorStateMatcher();
 
@@ -429,7 +431,9 @@ export class ManualSubmissionsComponent {
 		this.resetForm();
 	}
 
-	onCancel(): void {}
+	onCancel(): void {
+		this.resetForm();
+	}
 
 	onSubmit() {
 		this.form.markAllAsTouched();

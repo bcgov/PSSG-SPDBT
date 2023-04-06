@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { AddressFindResponse } from 'src/app/api/models';
@@ -46,7 +46,7 @@ export interface AddressDialogData {
 	`,
 	styles: [],
 })
-export class AddressModalComponent {
+export class AddressModalComponent implements OnInit {
 	dataSource!: MatTableDataSource<any>;
 	columns!: string[];
 	title: string = 'Address Selection';

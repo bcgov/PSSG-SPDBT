@@ -46,5 +46,17 @@ namespace Spd.Presentation.Screening.Controllers
             applicationCreateRequest.OrgId = orgId;
             return await _mediator.Send(new CheckApplicationDuplicateQuery(applicationCreateRequest));
         }
+
+        /// <summary>
+        /// return active applications belong to the organization.
+        /// </summary>
+        /// <param name="orgId"></param>
+        /// <returns></returns>
+        [Route("api/orgs/{orgId}/applications")]
+        [HttpGet]
+        public async Task<ApplicationListResponse> GetList([FromRoute] Guid orgId)
+        {
+            return await _mediator.Send(new ApplicationListQuery(orgId));
+        }
     }
 }
