@@ -4,6 +4,7 @@ using Spd.Presentation.Dynamics.Models;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 using File = Spd.Utilities.FileStorage.File;
 
@@ -27,18 +28,18 @@ public class FileStorageController : SpdControllerBase
     /// </summary>
     /// <param name="request"></param>
     /// <param name="fileId"></param>
+    /// <param name="classification"></param>
     /// <param name="ct"></param>
     /// <returns></returns>
     [HttpPost]
     [Route("api/files/{fileId}")]
-    public async Task<IActionResult> UploadFileAsync([FromForm] UploadFileRequest request, [FromRoute] Guid fileId, CancellationToken ct)
+    public async Task<IActionResult> UploadFileAsync(
+        [FromForm] UploadFileRequest request, 
+        [FromRoute] Guid fileId,
+        [FromHeader(Name = "file-classification")][Required] string classification,
+        CancellationToken ct)
     {
         var headers = this.Request.Headers;
-        string? classification = headers[SpdHeaderNames.HEADER_FILE_CLASSIFICATION];
-        if (string.IsNullOrWhiteSpace(classification))
-        {
-            throw new ApiException(HttpStatusCode.BadRequest, $"{SpdHeaderNames.HEADER_FILE_CLASSIFICATION} header is mandatory");
-        }
 
         //check if file already exists
         FileMetadataQueryResult queryResult = (FileMetadataQueryResult)await _storageService.HandleQuery(
@@ -106,21 +107,20 @@ public class FileStorageController : SpdControllerBase
     /// Only updates the tags passed in the header and will not affect the content of the file
     /// any tags not present in the request will be deleted
     /// tags must be in the form key=value, key must contain only alphanumeric characters(i.e.tag1= value1)
-    ///classification must contain only alphanumeric characters(i.e.confidential/internal/public)
+    /// classification must contain only alphanumeric characters(i.e.confidential/internal/public)
     /// </summary>
     /// <param name="fileId"></param>
+    /// <param name="classification"></param>
     /// <param name="ct"></param>
     /// <returns></returns>
     [HttpPost]
     [Route("api/files/{fileId}/tags")]
-    public async Task<IActionResult> UpdateTagsAsync(Guid fileId, CancellationToken ct)
+    public async Task<IActionResult> UpdateTagsAsync(
+        [FromRoute]Guid fileId, 
+        [FromHeader(Name = "file-classification")][Required] string classification, 
+        CancellationToken ct)
     {
         var headers = this.Request.Headers;
-        string? classification = headers[SpdHeaderNames.HEADER_FILE_CLASSIFICATION];
-        if (string.IsNullOrWhiteSpace(classification))
-        {
-            throw new ApiException(HttpStatusCode.BadRequest, $"{SpdHeaderNames.HEADER_FILE_CLASSIFICATION} header is mandatory");
-        }
 
         //check if file already exists
         var queryResult = (FileMetadataQueryResult)await _storageService.HandleQuery(
