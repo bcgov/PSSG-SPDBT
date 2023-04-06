@@ -29,21 +29,23 @@ public class FileStorageController : SpdControllerBase
     /// <param name="request"></param>
     /// <param name="fileId"></param>
     /// <param name="classification"></param>
+    /// <param name="tags">multi tags should be like: tag1=a,tag2=b</param>
+    /// <param name="folder"></param>
     /// <param name="ct"></param>
     /// <returns></returns>
     [HttpPost]
     [Route("api/files/{fileId}")]
     public async Task<IActionResult> UploadFileAsync(
-        [FromForm] UploadFileRequest request, 
+        [FromForm] UploadFileRequest request,
         [FromRoute] Guid fileId,
         [FromHeader(Name = "file-classification")][Required] string classification,
+        [FromHeader(Name = "file-tag")] string? tags,
+        [FromHeader(Name = "file-folder")] string? folder,
         CancellationToken ct)
     {
-        var headers = this.Request.Headers;
-
         //check if file already exists
         FileMetadataQueryResult queryResult = (FileMetadataQueryResult)await _storageService.HandleQuery(
-            new FileMetadataQuery { Key = fileId.ToString(), Folder = headers[SpdHeaderNames.HEADER_FILE_FOLDER] },
+            new FileMetadataQuery { Key = fileId.ToString(), Folder = folder },
             ct);
         bool fileExists = queryResult != null;
 
@@ -58,10 +60,10 @@ public class FileStorageController : SpdControllerBase
         };
         FileTag fileTag = new()
         {
-            Tags = GetTagsFromStr(headers[SpdHeaderNames.HEADER_FILE_TAG], classification)
+            Tags = GetTagsFromStr(tags, classification)
         };
         await _storageService.HandleCommand(
-            new UploadFileCommand(fileId.ToString(), headers[SpdHeaderNames.HEADER_FILE_FOLDER], file, fileTag),
+            new UploadFileCommand(fileId.ToString(), folder, file, fileTag),
             ct);
 
         return fileExists ? Ok() : StatusCode(StatusCodes.Status201Created);
@@ -73,15 +75,18 @@ public class FileStorageController : SpdControllerBase
     /// otherwise no file will found; the default header value is the root folder /
     /// </summary>
     /// <param name="fileId"></param>
+    /// <param name="folder"></param>
     /// <param name="ct"></param>
     /// <returns></returns>
     [HttpGet]
     [Route("api/files/{fileId}")]
-    public async Task<FileStreamResult> DownloadFileAsync(Guid fileId, CancellationToken ct)
+    public async Task<FileStreamResult> DownloadFileAsync(
+        Guid fileId, 
+        [FromHeader(Name = "file-folder")] string? folder, 
+        CancellationToken ct)
     {
-        var headers = this.Request.Headers;
         FileQueryResult result = (FileQueryResult)await _storageService.HandleQuery(
-            new FileQuery { Key = fileId.ToString(), Folder = headers[SpdHeaderNames.HEADER_FILE_FOLDER] },
+            new FileQuery { Key = fileId.ToString(), Folder = folder },
             ct);
 
         var content = new MemoryStream(result.File.Content);
@@ -97,8 +102,8 @@ public class FileStorageController : SpdControllerBase
                 HttpContext.Response.Headers.Add(SpdHeaderNames.HEADER_FILE_TAG, tagStr);
         }
 
-        if (!string.IsNullOrWhiteSpace(headers[SpdHeaderNames.HEADER_FILE_FOLDER]))
-            HttpContext.Response.Headers.Add(SpdHeaderNames.HEADER_FILE_FOLDER, headers[SpdHeaderNames.HEADER_FILE_FOLDER]);
+        if (!string.IsNullOrWhiteSpace(folder))
+            HttpContext.Response.Headers.Add(SpdHeaderNames.HEADER_FILE_FOLDER, folder);
 
         return new FileStreamResult(content, contentType);
     }
@@ -111,20 +116,22 @@ public class FileStorageController : SpdControllerBase
     /// </summary>
     /// <param name="fileId"></param>
     /// <param name="classification"></param>
+    /// <param name="tags">multi tags should be like: tag1=a,tag2=b</param>
+    /// <param name="folder"></param>
     /// <param name="ct"></param>
     /// <returns></returns>
     [HttpPost]
     [Route("api/files/{fileId}/tags")]
     public async Task<IActionResult> UpdateTagsAsync(
-        [FromRoute]Guid fileId, 
-        [FromHeader(Name = "file-classification")][Required] string classification, 
+        [FromRoute] Guid fileId,
+        [FromHeader(Name = "file-classification")][Required] string classification,
+        [FromHeader(Name = "file-tag")] string? tags,
+        [FromHeader(Name = "file-folder")] string? folder,
         CancellationToken ct)
     {
-        var headers = this.Request.Headers;
-
         //check if file already exists
         var queryResult = (FileMetadataQueryResult)await _storageService.HandleQuery(
-            new FileMetadataQuery { Key = fileId.ToString(), Folder = headers[SpdHeaderNames.HEADER_FILE_FOLDER] },
+            new FileMetadataQuery { Key = fileId.ToString(), Folder = folder },
             ct);
         bool fileExists = queryResult != null;
         if (!fileExists)
@@ -135,10 +142,10 @@ public class FileStorageController : SpdControllerBase
         {
             FileTag fileTag = new()
             {
-                Tags = GetTagsFromStr(headers[SpdHeaderNames.HEADER_FILE_TAG], classification),
+                Tags = GetTagsFromStr(tags, classification),
             };
             await _storageService.HandleCommand(
-                new UpdateTagsCommand(fileId.ToString(), headers[SpdHeaderNames.HEADER_FILE_FOLDER], fileTag),
+                new UpdateTagsCommand(fileId.ToString(), folder, fileTag),
                 ct);
             return Ok();
         }
