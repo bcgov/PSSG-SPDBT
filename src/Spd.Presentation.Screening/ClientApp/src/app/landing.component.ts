@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthenticationService } from './core/services/authentication.service';
 import { DashboardRoutes } from './modules/dashboard/dashboard-routing.module';
+import { CaptchaResponse } from './shared/components/captcha-v2.component';
 
 @Component({
 	selector: 'app-landing',
@@ -37,6 +38,10 @@ import { DashboardRoutes } from './modules/dashboard/dashboard-routing.module';
 			<button mat-raised-button color="primary" class="large my-4" [routerLink]="['/dashboard/home/']">
 				Dashboard - No Log In
 			</button>
+
+			<div class="mt-2">
+				<app-captcha-v2 (captchaResponse)="onTokenResponse($event)"></app-captcha-v2>
+			</div>
 		</section>
 	`,
 	styles: [],
@@ -62,5 +67,11 @@ export class LandingComponent {
 			const postLoginRoute = DashboardRoutes.dashboardPath(DashboardRoutes.HOME);
 			this.router.navigateByUrl(postLoginRoute);
 		}
+	}
+
+	onTokenResponse($event: CaptchaResponse) {
+		console.log('onTokenResponse', $event);
+		// @Output() captchaPassed = new EventEmitter<CaptchaResponse>();
+		// this.captchaPassed.emit($event);
 	}
 }

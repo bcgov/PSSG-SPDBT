@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { CaptchaResponse } from 'src/app/shared/components/captcha-v2.component';
 import { RegistrationFormStepComponent } from '../org-registration.component';
 
 @Component({
@@ -68,7 +69,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 					</div>
 				</div>
 
-				<div class="row my-4">
+				<div class="row mt-4">
 					<div class="offset-md-2 col-md-8 col-sm-12">
 						<mat-checkbox formControlName="agreeToTermsAndConditions">
 							On behalf of the above noted organization, I hereby certify that I agree to the terms and conditions for
@@ -84,6 +85,12 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 							"
 							>This is required</mat-error
 						>
+					</div>
+				</div>
+
+				<div class="row my-4">
+					<div class="offset-md-2 col-md-8 col-sm-12">
+						<app-captcha-v2 (captchaResponse)="onTokenResponse($event)"></app-captcha-v2>
 					</div>
 				</div>
 			</div>
@@ -136,5 +143,11 @@ export class AgreementOfTermsComponent implements OnInit, RegistrationFormStepCo
 		if (e.target.scrollHeight < e.target.scrollTop + e.target.offsetHeight) {
 			this.hasScrolledToBottom = true;
 		}
+	}
+
+	onTokenResponse($event: CaptchaResponse) {
+		console.log('onTokenResponse', $event);
+		// @Output() captchaPassed = new EventEmitter<CaptchaResponse>();
+		// this.captchaPassed.emit($event);
 	}
 }
