@@ -132,6 +132,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 									<span class="menu-item ms-2 d-none d-sm-inline text-white">User Management</span>
 								</a>
 							</li>
+							<hr class="d-none d-sm-inline w-100 text-white" />
 							<li class="nav-item w-100">
 								<a
 									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.SETTINGS)]"

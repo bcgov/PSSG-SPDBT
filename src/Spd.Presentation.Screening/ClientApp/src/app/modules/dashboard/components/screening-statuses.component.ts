@@ -1,8 +1,10 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { ApplicationListResponse, ApplicationResponse } from 'src/app/api/models';
+import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 
 @Component({
@@ -14,8 +16,11 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
 					<h2 class="mb-2 fw-normal">Screening Statuses</h2>
 					<div class="alert alert-warning d-flex align-items-center" role="alert">
-						<mat-icon class="d-none d-md-block alert-icon me-2">warning</mat-icon>
-						<div>We are currently processing applications that do not require follow-up in up to 10 business days</div>
+						<mat-icon class="d-none d-lg-block alert-icon me-2">schedule</mat-icon>
+						<div>
+							We are currently processing applications that do NOT require follow-up within:
+							<span class="fw-semibold">{{ followUpBusinessDays }} business days</span>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -25,7 +30,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 				<div class="d-flex flex-wrap justify-content-start">
 					<mat-card class="statistic-card mat-card-green m-2">
 						<mat-card-header>
-							<mat-card-title>67</mat-card-title>
+							<mat-card-title>??</mat-card-title>
 						</mat-card-header>
 						<mat-card-content>
 							<p>Completed No Risk</p>
@@ -33,7 +38,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 					</mat-card>
 					<mat-card class="statistic-card mat-card-green m-2">
 						<mat-card-header>
-							<mat-card-title>13</mat-card-title>
+							<mat-card-title>??</mat-card-title>
 						</mat-card-header>
 						<mat-card-content>
 							<p>In Progress</p>
@@ -41,7 +46,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 					</mat-card>
 					<mat-card class="statistic-card mat-card-yellow m-2">
 						<mat-card-header>
-							<mat-card-title>5</mat-card-title>
+							<mat-card-title>??</mat-card-title>
 						</mat-card-header>
 						<mat-card-content>
 							<p>Awaiting Payment</p>
@@ -49,7 +54,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 					</mat-card>
 					<mat-card class="statistic-card mat-card-yellow m-2">
 						<mat-card-header>
-							<mat-card-title>12</mat-card-title>
+							<mat-card-title>??</mat-card-title>
 						</mat-card-header>
 						<mat-card-content>
 							<p>Awaiting 3rd Party</p>
@@ -57,7 +62,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 					</mat-card>
 					<mat-card class="statistic-card mat-card-yellow m-2">
 						<mat-card-header>
-							<mat-card-title>7</mat-card-title>
+							<mat-card-title>??</mat-card-title>
 						</mat-card-header>
 						<mat-card-content>
 							<p>Awaiting Applicant</p>
@@ -65,7 +70,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 					</mat-card>
 					<mat-card class="statistic-card mat-card-blue m-2">
 						<mat-card-header>
-							<mat-card-title>9</mat-card-title>
+							<mat-card-title>??</mat-card-title>
 						</mat-card-header>
 						<mat-card-content>
 							<p>Under Assessment</p>
@@ -73,7 +78,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 					</mat-card>
 					<mat-card class="statistic-card mat-card-grey m-2">
 						<mat-card-header>
-							<mat-card-title>11</mat-card-title>
+							<mat-card-title>??</mat-card-title>
 						</mat-card-header>
 						<mat-card-content>
 							<p>Cancelled by Organization</p>
@@ -81,7 +86,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 					</mat-card>
 					<mat-card class="statistic-card mat-card-grey m-2">
 						<mat-card-header>
-							<mat-card-title>45</mat-card-title>
+							<mat-card-title>??</mat-card-title>
 						</mat-card-header>
 						<mat-card-content>
 							<p>Missing Information</p>
@@ -89,7 +94,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 					</mat-card>
 					<mat-card class="statistic-card mat-card-red m-2">
 						<mat-card-header>
-							<mat-card-title>3</mat-card-title>
+							<mat-card-title>??</mat-card-title>
 						</mat-card-header>
 						<mat-card-content>
 							<p>Closed</p>
@@ -97,7 +102,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 					</mat-card>
 					<mat-card class="statistic-card mat-card-red m-2">
 						<mat-card-header>
-							<mat-card-title>4</mat-card-title>
+							<mat-card-title>??</mat-card-title>
 						</mat-card-header>
 						<mat-card-content>
 							<p>Risk Found</p>
@@ -142,36 +147,32 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 				</div>
 			</div>
 
+			<!-- TODO  matSortActive="createdOn"
+						matSortDirection="desc" -->
 			<div class="row">
 				<div class="col-12">
-					<mat-table
-						matSort
-						[dataSource]="dataSource"
-						matSortActive="dateSentOn"
-						matSortDirection="desc"
-						class="isMobile"
-					>
+					<mat-table matSort [dataSource]="dataSource" class="isMobile">
 						<ng-container matColumnDef="applicantName">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Applicant Name</mat-header-cell>
 							<mat-cell *matCellDef="let screening">
 								<span class="mobile-label">Applicant Name:</span>
-								{{ screening.applicantName }}
+								{{ screening.givenName }} {{ screening.surname }}
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="email">
+						<ng-container matColumnDef="emailAddress">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Email</mat-header-cell>
 							<mat-cell *matCellDef="let screening">
 								<span class="mobile-label">Email:</span>
-								{{ screening.email }}
+								{{ screening.emailAddress }}
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="dateSentOn">
+						<ng-container matColumnDef="createdOn">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Sent On</mat-header-cell>
 							<mat-cell *matCellDef="let screening">
 								<span class="mobile-label">Sent On:</span>
-								{{ screening.dateSentOn | date : constants.date.dateFormat }}
+								{{ screening.createdOn | date : constants.date.dateFormat }}
 							</mat-cell>
 						</ng-container>
 
@@ -179,15 +180,16 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Who Paid</mat-header-cell>
 							<mat-cell *matCellDef="let screening">
 								<span class="mobile-label">Who Paid:</span>
-								{{ screening.whoPaid }}
+								??
+								<!-- {{ screening.whoPaid }} -->
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="screeningNumber">
+						<ng-container matColumnDef="applicationNumber">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Screening Number</mat-header-cell>
 							<mat-cell *matCellDef="let screening">
 								<span class="mobile-label">Screening Number:</span>
-								{{ screening.screeningNumber }}
+								{{ screening.applicationNumber }}
 							</mat-cell>
 						</ng-container>
 
@@ -195,7 +197,8 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Company / Facility Name</mat-header-cell>
 							<mat-cell *matCellDef="let screening">
 								<span class="mobile-label">Company / Facility Name:</span>
-								{{ screening.companyName }}
+								??
+								<!-- {{ screening.companyName }} -->
 							</mat-cell>
 						</ng-container>
 
@@ -203,7 +206,8 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Status</mat-header-cell>
 							<mat-cell *matCellDef="let screening">
 								<span class="mobile-label">Status:</span>
-								<mat-chip-listbox aria-label="Status">
+								??
+								<!-- <mat-chip-listbox aria-label="Status">
 									<mat-chip-option class="mat-chip-green" *ngIf="screening.status == '1'">In Progress</mat-chip-option>
 									<mat-chip-option class="mat-chip-green" *ngIf="screening.status == '2'">
 										Complete - No Risk
@@ -228,7 +232,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 								</a>
 								<a (click)="onPayNow()" *ngIf="screening.status == '10'">
 									Verify Applicant <mat-icon style="vertical-align: middle;">chevron_right</mat-icon>
-								</a>
+								</a> -->
 							</mat-cell>
 						</ng-container>
 
@@ -268,10 +272,11 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 		`,
 	],
 })
-export class ScreeningStatusesComponent {
+export class ScreeningStatusesComponent implements OnInit {
 	constants = SPD_CONSTANTS;
-	dataSource!: MatTableDataSource<any>;
+	dataSource!: MatTableDataSource<ApplicationResponse>;
 	columns!: string[];
+	followUpBusinessDays = '';
 
 	pageSizes = [3, 5, 7];
 
@@ -286,126 +291,24 @@ export class ScreeningStatusesComponent {
 	@ViewChild(MatSort) sort!: MatSort;
 	@ViewChild('paginator') paginator!: MatPaginator;
 
-	constructor(private formBuilder: FormBuilder) {}
+	constructor(private formBuilder: FormBuilder, private applicationService: ApplicationService) {}
 
 	ngOnInit() {
-		this.columns = ['applicantName', 'email', 'dateSentOn', 'whoPaid', 'screeningNumber', 'companyName', 'status'];
-		this.dataSource = new MatTableDataSource<any>([]);
-		this.dataSource.data = [
-			{
-				dateSentOn: '2023-02-04T00:10:05.865Z',
-				applicantName: 'Joe Smith',
-				status: '1',
-				email: '',
-				whoPaid: '',
-				screeningNumber: '',
-				companyName: '',
-			},
-			{
-				dateSentOn: '2023-02-04T00:10:05.865Z',
-				applicantName: 'Anne Parker',
-				status: '9',
-				email: '',
-				whoPaid: '',
-				screeningNumber: '',
-				companyName: '',
-			},
-			{
-				dateSentOn: '2023-03-24T00:15:05.865Z',
-				applicantName: 'Peter Parker',
-				status: '10',
-				email: '',
-				whoPaid: '',
-				screeningNumber: '',
-				companyName: '',
-			},
-			{
-				dateSentOn: '2023-01-14T00:13:05.865Z',
-				applicantName: 'Mark Smith',
-				status: '2',
-				email: '',
-				whoPaid: '',
-				screeningNumber: '',
-				companyName: '',
-			},
-			{
-				dateSentOn: '2023-02-04T00:10:05.865Z',
-				applicantName: 'Tim Parker',
-				status: '3',
-				email: '',
-				whoPaid: '',
-				screeningNumber: '',
-				companyName: '',
-			},
-			{
-				dateSentOn: '2023-03-24T00:15:05.865Z',
-				applicantName: 'Alex Parker',
-				status: '4',
-				email: '',
-				whoPaid: '',
-				screeningNumber: '',
-				companyName: '',
-			},
-			{
-				dateSentOn: '2023-01-14T00:13:05.865Z',
-				applicantName: 'Jim Smith',
-				status: '5',
-				email: '',
-				whoPaid: '',
-				screeningNumber: '',
-				companyName: '',
-			},
-			{
-				dateSentOn: '2023-02-04T00:10:05.865Z',
-				applicantName: 'Ben Parker',
-				status: '6',
-				email: '',
-				whoPaid: '',
-				screeningNumber: '',
-				companyName: '',
-			},
-			{
-				dateSentOn: '2023-03-24T00:15:05.865Z',
-				applicantName: 'Cam Parker',
-				status: '7',
-				email: '',
-				whoPaid: '',
-				screeningNumber: '',
-				companyName: '',
-			},
-			{
-				dateSentOn: '2022-01-14T00:13:05.865Z',
-				applicantName: 'Paul Smith',
-				status: '8',
-				email: '',
-				whoPaid: '',
-				screeningNumber: '',
-				companyName: '',
-			},
-			{
-				dateSentOn: '2022-02-04T00:10:05.865Z',
-				applicantName: 'Cindy Parker',
-				status: '1',
-				email: '',
-				whoPaid: '',
-				screeningNumber: '',
-				companyName: '',
-			},
-			{
-				dateSentOn: '2022-03-24T00:15:05.865Z',
-				applicantName: 'Dave Parker',
-				status: '2',
-				email: '',
-				whoPaid: '',
-				screeningNumber: '',
-				companyName: '',
-			},
+		this.columns = [
+			'applicantName',
+			'emailAddress',
+			'createdOn',
+			'whoPaid',
+			'applicationNumber',
+			'companyName',
+			'status',
 		];
+		this.loadList();
 	}
 
 	ngAfterViewInit() {
-		this.dataSource.sort = this.sort;
-		this.dataSource.paginator = this.paginator;
+		// this.dataSource.sort = this.sort;
+		// this.dataSource.paginator = this.paginator;
 	}
 
 	onPayNow(): void {}
@@ -424,5 +327,17 @@ export class ScreeningStatusesComponent {
 
 	onFilterClose() {
 		this.showDropdownOverlay = false;
+	}
+
+	private loadList(): void {
+		//TODO replace with proper org id
+		this.applicationService
+			.apiOrgsOrgIdApplicationsGet({ orgId: '4165bdfe-7cb4-ed11-b83e-00505683fbf4' })
+			.pipe()
+			.subscribe((res: ApplicationListResponse) => {
+				this.followUpBusinessDays = res.followUpBusinessDays ? String(res.followUpBusinessDays) : '';
+				this.dataSource = new MatTableDataSource<ApplicationResponse>([]);
+				this.dataSource.data = res.applications as Array<ApplicationResponse>;
+			});
 	}
 }

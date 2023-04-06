@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -18,7 +18,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 					</h2>
 					<div class="alert alert-warning d-flex align-items-center" role="alert">
 						<mat-icon class="d-none d-md-block alert-icon me-2">warning</mat-icon>
-						<div>8 applicants require confirmation</div>
+						<div>There are 8 applicants which require confirmation</div>
 					</div>
 				</div>
 			</div>
@@ -166,7 +166,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 		`,
 	],
 })
-export class IdentifyVerificationComponent {
+export class IdentifyVerificationComponent implements OnInit {
 	constants = SPD_CONSTANTS;
 	dataSource!: MatTableDataSource<any>;
 	columns!: string[];

@@ -16,6 +16,8 @@ namespace Spd.Manager.Cases
             CreateMap<ApplicationCreateRequest, SearchApplicationQry>();
             CreateMap<ApplicationCreateRequest, ApplicationCreateCmd>();
             CreateMap<AliasCreateRequest, AliasCreateCmd>();
+            CreateMap<ApplicationResp, ApplicationResponse>();
+            CreateMap<ApplicationListResp, ApplicationListResponse>();
         }
     }
 }

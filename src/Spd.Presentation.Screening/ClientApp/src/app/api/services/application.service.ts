@@ -11,6 +11,7 @@ import { map, filter } from 'rxjs/operators';
 
 import { ApplicationCreateRequest } from '../models/application-create-request';
 import { ApplicationInviteCreateRequest } from '../models/application-invite-create-request';
+import { ApplicationListResponse } from '../models/application-list-response';
 import { CheckApplicationDuplicateResponse } from '../models/check-application-duplicate-response';
 import { CheckApplicationInviteDuplicateResponse } from '../models/check-application-invite-duplicate-response';
 import { Unit } from '../models/unit';
@@ -239,6 +240,65 @@ export class ApplicationService extends BaseService {
 
     return this.apiOrgsOrgIdDetectApplicationDuplicatePost$Response(params).pipe(
       map((r: StrictHttpResponse<CheckApplicationDuplicateResponse>) => r.body as CheckApplicationDuplicateResponse)
+    );
+  }
+
+  /**
+   * Path part for operation apiOrgsOrgIdApplicationsGet
+   */
+  static readonly ApiOrgsOrgIdApplicationsGetPath = '/api/orgs/{orgId}/applications';
+
+  /**
+   * return active applications belong to the organization.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiOrgsOrgIdApplicationsGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiOrgsOrgIdApplicationsGet$Response(params: {
+    orgId: string;
+    context?: HttpContext
+  }
+): Observable<StrictHttpResponse<ApplicationListResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdApplicationsGetPath, 'get');
+    if (params) {
+      rb.path('orgId', params.orgId, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: params?.context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<ApplicationListResponse>;
+      })
+    );
+  }
+
+  /**
+   * return active applications belong to the organization.
+   *
+   *
+   *
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `apiOrgsOrgIdApplicationsGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiOrgsOrgIdApplicationsGet(params: {
+    orgId: string;
+    context?: HttpContext
+  }
+): Observable<ApplicationListResponse> {
+
+    return this.apiOrgsOrgIdApplicationsGet$Response(params).pipe(
+      map((r: StrictHttpResponse<ApplicationListResponse>) => r.body as ApplicationListResponse)
     );
   }
 

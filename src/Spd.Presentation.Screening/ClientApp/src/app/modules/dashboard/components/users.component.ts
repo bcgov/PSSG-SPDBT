@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { HotToastService } from '@ngneat/hot-toast';
 import { ContactAuthorizationTypeCode, OrgUserListResponse, OrgUserResponse } from 'src/app/api/models';
@@ -127,7 +127,7 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 		`,
 	],
 })
-export class UsersComponent {
+export class UsersComponent implements OnInit {
 	readonly DEFAULT_MAX_NUMBER_OF_CONTACTS = 6;
 	readonly DEFAULT_MAX_NUMBER_OF_PRIMARY_CONTACTS = 2;
 

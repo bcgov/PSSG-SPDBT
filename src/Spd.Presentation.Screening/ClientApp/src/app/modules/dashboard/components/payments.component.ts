@@ -1,8 +1,10 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { ApplicationListResponse, ApplicationResponse } from 'src/app/api/models';
+import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 
 @Component({
@@ -15,7 +17,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 					<h2 class="mb-2 fw-normal">Screening Payments</h2>
 					<div class="alert alert-warning d-flex align-items-center" role="alert">
 						<mat-icon class="d-none d-md-block alert-icon me-2">warning</mat-icon>
-						<div>5 outstanding screenings which require payment</div>
+						<div>There are 5 outstanding screenings which require payment</div>
 					</div>
 				</div>
 			</div>
@@ -41,12 +43,12 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 						[showDropdownOverlay]="showDropdownOverlay"
 						(showDropdownOverlayChange)="onShowDropdownOverlayChange($event)"
 					>
-						<app-payment-filter
+						<app-screening-filter
 							[formGroup]="formFilter"
 							(filterChange)="onFilterChange($event)"
 							(filterClear)="onFilterClear()"
 							(filterClose)="onFilterClose()"
-						></app-payment-filter>
+						></app-screening-filter>
 					</app-dropdown-overlay>
 				</div>
 				<div class="col-xl-3 col-lg-4 col-md-10 col-sm-9">
@@ -56,54 +58,57 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 				</div>
 			</div>
 
+			<!-- TODO 
+		 matSortActive="status" matSortDirection="asc"
+		-->
 			<div class="row">
 				<div class="col-12">
-					<mat-table matSort [dataSource]="dataSource" matSortActive="status" matSortDirection="asc" class="isMobile">
+					<mat-table matSort [dataSource]="dataSource" class="isMobile">
 						<ng-container matColumnDef="applicantName">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Applicant Name</mat-header-cell>
-							<mat-cell *matCellDef="let payment">
+							<mat-cell *matCellDef="let screening">
 								<span class="mobile-label">Applicant Name:</span>
-								{{ payment.applicantName }}
+								{{ screening.givenName }} {{ screening.surname }}
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="dateTimeSubmitted">
+						<ng-container matColumnDef="createdOn">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Date/Time Submitted</mat-header-cell>
-							<mat-cell *matCellDef="let payment">
+							<mat-cell *matCellDef="let screening">
 								<span class="mobile-label">Date/Time Submitted:</span>
-								{{ payment.dateTimeSubmitted | date : constants.date.dateTimeFormat }}
+								{{ screening.createdOn | date : constants.date.dateTimeFormat }}
 							</mat-cell>
 						</ng-container>
 
 						<ng-container matColumnDef="dateTimePaid">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Date/Time Paid</mat-header-cell>
-							<mat-cell *matCellDef="let payment">
+							<mat-cell *matCellDef="let screening">
 								<span class="mobile-label">Date/Time Paid:</span>
-								{{ payment.dateTimePaid | date : constants.date.dateTimeFormat }}
+								??<!-- {{ screening.dateTimePaid | date : constants.date.dateTimeFormat }} -->
 							</mat-cell>
 						</ng-container>
 
 						<ng-container matColumnDef="status">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Status</mat-header-cell>
-							<mat-cell *matCellDef="let payment">
+							<mat-cell *matCellDef="let screening">
 								<span class="mobile-label">Status:</span>
-								<span *ngIf="payment.status != 'NotPaid'" class="fw-semi-bold" style="color: var(--color-green);">
+								??<!-- <span *ngIf="screening.status != 'NotPaid'" class="fw-semi-bold" style="color: var(--color-green);">
 									Paid
 								</span>
-								<span *ngIf="payment.status == 'NotPaid'" class="fw-semi-bold" style="color: var(--color-red);">
+								<span *ngIf="screening.status == 'NotPaid'" class="fw-semi-bold" style="color: var(--color-red);">
 									Not Paid
-								</span>
+								</span> -->
 							</mat-cell>
 						</ng-container>
 
 						<ng-container matColumnDef="actions">
 							<mat-header-cell *matHeaderCellDef></mat-header-cell>
-							<mat-cell *matCellDef="let payment">
+							<mat-cell *matCellDef="let screening">
 								<button
 									mat-raised-button
 									class="table-button m-2"
 									color="primary"
-									*ngIf="payment.status != 'NotPaid'"
+									*ngIf="screening.status != 'NotPaid'"
 									aria-label="Download receipt"
 								>
 									<mat-icon>file_download</mat-icon>Download Receipt
@@ -111,7 +116,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 								<button
 									mat-raised-button
 									class="table-button pay-button m-2"
-									*ngIf="payment.status == 'NotPaid'"
+									*ngIf="screening.status == 'NotPaid'"
 									aria-label="Pay now"
 								>
 									<mat-icon>attach_money</mat-icon>Pay Now
@@ -148,9 +153,9 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 		`,
 	],
 })
-export class PaymentsComponent {
+export class PaymentsComponent implements OnInit {
 	constants = SPD_CONSTANTS;
-	dataSource!: MatTableDataSource<any>;
+	dataSource!: MatTableDataSource<ApplicationResponse>;
 	columns!: string[];
 
 	pageSizes = [3, 5, 7];
@@ -166,90 +171,16 @@ export class PaymentsComponent {
 	@ViewChild(MatSort) sort!: MatSort;
 	@ViewChild('paginator') paginator!: MatPaginator;
 
-	constructor(private formBuilder: FormBuilder) {}
+	constructor(private formBuilder: FormBuilder, private applicationService: ApplicationService) {}
 
 	ngOnInit() {
-		this.columns = ['applicantName', 'dateTimeSubmitted', 'dateTimePaid', 'status', 'actions'];
-		this.dataSource = new MatTableDataSource<any>([]);
-		this.dataSource.data = [
-			{
-				dateTimeSubmitted: '2023-02-04T00:10:05.865Z',
-				applicantName: 'Joe Smith',
-				status: 'NotPaid',
-				dateTimePaid: '2023-02-04T00:10:05.865Z',
-			},
-			{
-				dateTimeSubmitted: '2023-02-04T00:10:05.865Z',
-				applicantName: 'Anne Parker',
-				status: 'Paid',
-				dateTimePaid: '2023-02-04T00:10:05.865Z',
-			},
-			{
-				dateTimeSubmitted: '2023-03-24T00:15:05.865Z',
-				applicantName: 'Peter Parker',
-				status: 'Paid',
-				dateTimePaid: '2023-02-02T00:10:05.865Z',
-			},
-			{
-				dateTimeSubmitted: '2023-01-14T00:13:05.865Z',
-				applicantName: 'Mark Smith',
-				status: 'NotPaid',
-				dateTimePaid: '2023-02-04T00:10:05.865Z',
-			},
-			{
-				dateTimeSubmitted: '2023-02-04T00:10:05.865Z',
-				applicantName: 'Tim Parker',
-				status: 'Paid',
-				dateTimePaid: '2023-02-04T00:10:05.865Z',
-			},
-			{
-				dateTimeSubmitted: '2023-03-24T00:15:05.865Z',
-				applicantName: 'Alex Parker',
-				status: 'Paid',
-				dateTimePaid: '2023-02-02T00:10:05.865Z',
-			},
-			{
-				dateTimeSubmitted: '2023-01-14T00:13:05.865Z',
-				applicantName: 'Jim Smith',
-				status: 'NotPaid',
-				dateTimePaid: '2023-02-04T00:10:05.865Z',
-			},
-			{
-				dateTimeSubmitted: '2023-02-04T00:10:05.865Z',
-				applicantName: 'Ben Parker',
-				status: 'Paid',
-				dateTimePaid: '2023-02-04T00:10:05.865Z',
-			},
-			{
-				dateTimeSubmitted: '2023-03-24T00:15:05.865Z',
-				applicantName: 'Cam Parker',
-				status: 'Paid',
-				dateTimePaid: '2023-02-02T00:10:05.865Z',
-			},
-			{
-				dateTimeSubmitted: '2022-01-14T00:13:05.865Z',
-				applicantName: 'Paul Smith',
-				status: 'NotPaid',
-				dateTimePaid: '2023-02-04T00:10:05.865Z',
-			},
-			{
-				dateTimeSubmitted: '2022-02-04T00:10:05.865Z',
-				applicantName: 'Cindy Parker',
-				status: 'Paid',
-				dateTimePaid: '2023-02-04T00:10:05.865Z',
-			},
-			{
-				dateTimeSubmitted: '2022-03-24T00:15:05.865Z',
-				applicantName: 'Dave Parker',
-				status: 'Paid',
-				dateTimePaid: '2023-02-02T00:10:05.865Z',
-			},
-		];
+		this.columns = ['applicantName', 'createdOn', 'dateTimePaid', 'status', 'actions'];
+		this.loadList();
 	}
 
 	ngAfterViewInit() {
-		this.dataSource.sort = this.sort;
-		this.dataSource.paginator = this.paginator;
+		// this.dataSource.sort = this.sort;
+		// this.dataSource.paginator = this.paginator;
 	}
 
 	onShowDropdownOverlayChange(show: boolean): void {
@@ -266,5 +197,16 @@ export class PaymentsComponent {
 
 	onFilterClose() {
 		this.showDropdownOverlay = false;
+	}
+
+	private loadList(): void {
+		//TODO replace with proper org id
+		this.applicationService
+			.apiOrgsOrgIdApplicationsGet({ orgId: '4165bdfe-7cb4-ed11-b83e-00505683fbf4' })
+			.pipe()
+			.subscribe((res: ApplicationListResponse) => {
+				this.dataSource = new MatTableDataSource<ApplicationResponse>([]);
+				this.dataSource.data = res.applications as Array<ApplicationResponse>;
+			});
 	}
 }

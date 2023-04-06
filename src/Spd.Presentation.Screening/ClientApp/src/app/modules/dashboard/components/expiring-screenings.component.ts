@@ -1,8 +1,10 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { ApplicationListResponse, ApplicationResponse } from 'src/app/api/models';
+import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 
 @Component({
@@ -13,11 +15,11 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
 					<h2 class="mb-2 fw-normal">Expiring Screenings</h2>
-					<div class="alert alert-warning d-flex align-items-center" role="alert">
+					<div class="alert alert-warning d-flex align-items-center" role="alert" *ngIf="followUpBusinessDays">
 						<mat-icon class="d-none d-lg-block alert-icon me-2">schedule</mat-icon>
 						<div>
-							<div>We are currently processing applications that do NOT require follow-up within:</div>
-							<div class="fw-semibold">10 business days</div>
+							We are currently processing applications that do NOT require follow-up within:
+							<span class="fw-semibold">{{ followUpBusinessDays }} business days</span>
 						</div>
 					</div>
 				</div>
@@ -59,28 +61,27 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 				</div>
 			</div>
 
-			<div class="row">
-				<div class="col-12">
-					<mat-table
-						matSort
-						[dataSource]="dataSource"
+			<!-- 
+				TODO
 						matSortActive="dateExpiringOn"
 						matSortDirection="desc"
-						class="isMobile"
-					>
+			-->
+			<div class="row">
+				<div class="col-12">
+					<mat-table matSort [dataSource]="dataSource" class="isMobile">
 						<ng-container matColumnDef="applicantName">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Applicant Name</mat-header-cell>
 							<mat-cell *matCellDef="let screening">
 								<span class="mobile-label">Applicant Name:</span>
-								{{ screening.applicantName }}
+								{{ screening.givenName }} {{ screening.surname }}
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="email">
+						<ng-container matColumnDef="emailAddress">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Email</mat-header-cell>
 							<mat-cell *matCellDef="let screening">
 								<span class="mobile-label">Email:</span>
-								{{ screening.email }}
+								{{ screening.emailAddress }}
 							</mat-cell>
 						</ng-container>
 
@@ -88,7 +89,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Expiring On</mat-header-cell>
 							<mat-cell *matCellDef="let screening">
 								<span class="mobile-label">Sent On:</span>
-								{{ screening.dateExpiringOn | date : constants.date.dateFormat }}
+								{{ screening.createdOn | date : constants.date.dateFormat }}
 							</mat-cell>
 						</ng-container>
 
@@ -96,9 +97,9 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Days Remaining</mat-header-cell>
 							<mat-cell *matCellDef="let screening">
 								<span class="mobile-label">Days Remaining:</span>
-								<span [ngClass]="getDaysRemainingColorClass(screening.daysRemaining)" class="fw-semibold">{{
+								??<!-- <span [ngClass]="getDaysRemainingColorClass(screening.daysRemaining)" class="fw-semibold">{{
 									getDaysRemainingValue(screening.daysRemaining)
-								}}</span>
+								}}</span> -->
 							</mat-cell>
 						</ng-container>
 
@@ -106,7 +107,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Company / Facility Name</mat-header-cell>
 							<mat-cell *matCellDef="let screening">
 								<span class="mobile-label">Company / Facility Name:</span>
-								{{ screening.companyName }}
+								??<!-- {{ screening.companyName }} -->
 							</mat-cell>
 						</ng-container>
 
@@ -170,7 +171,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 			}
 
 			.table-button {
-				max-width: 170px;
+				width: 280px;
 				white-space: nowrap;
 			}
 
@@ -181,10 +182,11 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 		`,
 	],
 })
-export class ExpiringScreeningsComponent {
+export class ExpiringScreeningsComponent implements OnInit {
 	constants = SPD_CONSTANTS;
-	dataSource!: MatTableDataSource<any>;
+	dataSource!: MatTableDataSource<ApplicationResponse>;
 	columns!: string[];
+	followUpBusinessDays = '';
 
 	pageSizes = [3, 5, 7];
 
@@ -199,12 +201,12 @@ export class ExpiringScreeningsComponent {
 	@ViewChild(MatSort) sort!: MatSort;
 	@ViewChild('paginator') paginator!: MatPaginator;
 
-	constructor(private formBuilder: FormBuilder) {}
+	constructor(private formBuilder: FormBuilder, private applicationService: ApplicationService) {}
 
 	ngOnInit() {
 		this.columns = [
 			'applicantName',
-			'email',
+			'emailAddress',
 			'dateExpiringOn',
 			'daysRemaining',
 			'companyName',
@@ -212,110 +214,12 @@ export class ExpiringScreeningsComponent {
 			'status2',
 			'status3',
 		];
-		this.dataSource = new MatTableDataSource<any>([]);
-		this.dataSource.data = [
-			{
-				dateExpiringOn: '2023-02-04T00:10:05.865Z',
-				applicantName: 'Joe Smith',
-				status: '1',
-				email: '',
-				daysRemaining: '0',
-				companyName: 'Organization',
-			},
-			{
-				dateExpiringOn: '2023-02-04T00:10:05.865Z',
-				applicantName: 'Anne Parker',
-				status: '9',
-				email: '',
-				daysRemaining: '7',
-				companyName: 'Organization',
-			},
-			{
-				dateExpiringOn: '2023-03-24T00:15:05.865Z',
-				applicantName: 'Peter Parker',
-				status: '10',
-				email: '',
-				daysRemaining: '8',
-				companyName: 'Organization',
-			},
-			{
-				dateExpiringOn: '2023-01-14T00:13:05.865Z',
-				applicantName: 'Mark Smith',
-				status: '2',
-				email: '',
-				daysRemaining: '17',
-				companyName: 'Organization',
-			},
-			{
-				dateExpiringOn: '2023-02-04T00:10:05.865Z',
-				applicantName: 'Tim Parker',
-				status: '3',
-				email: '',
-				daysRemaining: '31',
-				companyName: 'Organization',
-			},
-			{
-				dateExpiringOn: '2023-03-24T00:15:05.865Z',
-				applicantName: 'Alex Parker',
-				status: '4',
-				email: '',
-				daysRemaining: '72',
-				companyName: 'Organization',
-			},
-			{
-				dateExpiringOn: '2023-01-14T00:13:05.865Z',
-				applicantName: 'Jim Smith',
-				status: '5',
-				email: '',
-				daysRemaining: '89',
-				companyName: 'Organization',
-			},
-			{
-				dateExpiringOn: '2023-02-04T00:10:05.865Z',
-				applicantName: 'Ben Parker',
-				status: '6',
-				email: '',
-				daysRemaining: '89',
-				companyName: 'Organization',
-			},
-			{
-				dateExpiringOn: '2023-03-24T00:15:05.865Z',
-				applicantName: 'Cam Parker',
-				status: '7',
-				email: '',
-				daysRemaining: '89',
-				companyName: 'Organization',
-			},
-			{
-				dateExpiringOn: '2022-01-14T00:13:05.865Z',
-				applicantName: 'Paul Smith',
-				status: '8',
-				email: '',
-				daysRemaining: '89',
-				companyName: 'Organization',
-			},
-			{
-				dateExpiringOn: '2022-02-04T00:10:05.865Z',
-				applicantName: 'Cindy Parker',
-				status: '1',
-				email: '',
-				daysRemaining: '89',
-				companyName: 'Organization',
-			},
-			{
-				dateExpiringOn: '2022-03-24T00:15:05.865Z',
-				applicantName: 'Dave Parker',
-				status: '2',
-				email: '',
-				daysRemaining: '89',
-				companyName: 'Organization',
-			},
-		];
+		this.loadList();
 	}
 
 	ngAfterViewInit() {
-		this.dataSource.sort = this.sort;
-		this.dataSource.paginator = this.paginator;
+		// this.dataSource.sort = this.sort;
+		// this.dataSource.paginator = this.paginator;
 	}
 
 	onPayNow(): void {}
@@ -358,5 +262,17 @@ export class ExpiringScreeningsComponent {
 		} else {
 			return [`${daysRemaining} Days`, 'days-remaining-green'];
 		}
+	}
+
+	private loadList(): void {
+		//TODO replace with proper org id
+		this.applicationService
+			.apiOrgsOrgIdApplicationsGet({ orgId: '4165bdfe-7cb4-ed11-b83e-00505683fbf4' })
+			.pipe()
+			.subscribe((res: ApplicationListResponse) => {
+				this.followUpBusinessDays = res.followUpBusinessDays ? String(res.followUpBusinessDays) : '';
+				this.dataSource = new MatTableDataSource<ApplicationResponse>([]);
+				this.dataSource.data = res.applications as Array<ApplicationResponse>;
+			});
 	}
 }
