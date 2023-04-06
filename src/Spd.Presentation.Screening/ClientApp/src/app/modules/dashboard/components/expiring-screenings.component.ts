@@ -6,6 +6,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ApplicationListResponse, ApplicationResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import { UtilService } from 'src/app/core/services/util.service';
 
 @Component({
 	selector: 'app-expiring-screenings',
@@ -61,63 +62,64 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 				</div>
 			</div>
 
-			<!-- 
-				TODO
-						matSortActive="dateExpiringOn"
-						matSortDirection="desc"
-			-->
 			<div class="row">
 				<div class="col-12">
-					<mat-table matSort [dataSource]="dataSource" class="isMobile">
+					<mat-table
+						matSort
+						[dataSource]="dataSource"
+						matSortActive="createdOn"
+						matSortDirection="desc"
+						class="isMobile"
+					>
 						<ng-container matColumnDef="applicantName">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Applicant Name</mat-header-cell>
-							<mat-cell *matCellDef="let screening">
+							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Applicant Name:</span>
-								{{ screening.givenName }} {{ screening.surname }}
+								{{ utilService.getFullName(application.givenName, application.surname) }}
 							</mat-cell>
 						</ng-container>
 
 						<ng-container matColumnDef="emailAddress">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Email</mat-header-cell>
-							<mat-cell *matCellDef="let screening">
+							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Email:</span>
-								{{ screening.emailAddress }}
+								{{ application.emailAddress }}
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="dateExpiringOn">
+						<ng-container matColumnDef="createdOn">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Expiring On</mat-header-cell>
-							<mat-cell *matCellDef="let screening">
+							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Sent On:</span>
-								{{ screening.createdOn | date : constants.date.dateFormat }}
+								{{ application.createdOn | date : constants.date.dateFormat }}
 							</mat-cell>
 						</ng-container>
 
 						<ng-container matColumnDef="daysRemaining">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Days Remaining</mat-header-cell>
-							<mat-cell *matCellDef="let screening">
+							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Days Remaining:</span>
-								??<!-- <span [ngClass]="getDaysRemainingColorClass(screening.daysRemaining)" class="fw-semibold">{{
-									getDaysRemainingValue(screening.daysRemaining)
+								??<!-- <span [ngClass]="getDaysRemainingColorClass(application.daysRemaining)" class="fw-semibold">{{
+									getDaysRemainingValue(application.daysRemaining)
 								}}</span> -->
 							</mat-cell>
 						</ng-container>
 
 						<ng-container matColumnDef="companyName">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Company / Facility Name</mat-header-cell>
-							<mat-cell *matCellDef="let screening">
+							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Company / Facility Name:</span>
-								??<!-- {{ screening.companyName }} -->
+								??<!-- {{ application.companyName }} -->
 							</mat-cell>
 						</ng-container>
 
 						<ng-container matColumnDef="status1">
 							<mat-header-cell *matHeaderCellDef>Download Clearance Letter</mat-header-cell>
-							<mat-cell *matCellDef="let screening">
+							<mat-cell *matCellDef="let application">
 								<button
-									mat-raised-button
-									class="table-button m-2"
-									color="primary"
+									mat-flat-button
+									class="m-2"
+									style="color: var(--color-primary-light);"
 									aria-label="Download Clearance Letter"
 								>
 									<mat-icon>file_download</mat-icon>Download
@@ -126,18 +128,18 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 						</ng-container>
 
 						<ng-container matColumnDef="status2">
-							<mat-header-cell *matHeaderCellDef></mat-header-cell>
-							<mat-cell *matCellDef="let screening">
-								<button mat-raised-button class="table-button request-button m-2" aria-label="Send Request">
-									<mat-icon>send</mat-icon>Send Request
+							<mat-header-cell *matHeaderCellDef>Send Request</mat-header-cell>
+							<mat-cell *matCellDef="let application">
+								<button mat-flat-button class="m-2" style="color: var(--color-green);" aria-label="Send Request">
+									<mat-icon>send</mat-icon>Request
 								</button>
 							</mat-cell>
 						</ng-container>
 
 						<ng-container matColumnDef="status3">
-							<mat-header-cell *matHeaderCellDef></mat-header-cell>
-							<mat-cell *matCellDef="let screening">
-								<button mat-icon-button class="table-button m-2" aria-label="Remove" matTooltip="Remove">
+							<mat-header-cell *matHeaderCellDef>Remove</mat-header-cell>
+							<mat-cell *matCellDef="let application">
+								<button mat-icon-button class="m-2" style="color: var(--color-red);" aria-label="Remove">
 									<mat-icon>delete_outline</mat-icon>
 								</button>
 							</mat-cell>
@@ -170,14 +172,14 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 				color: var(--color-green);
 			}
 
-			.table-button {
-				width: 280px;
-				white-space: nowrap;
+			.mat-column-status1 {
+				min-width: 190px;
+				text-align: center !important;
 			}
 
-			.request-button {
-				background-color: var(--color-green) !important;
-				color: var(--color-white) !important;
+			.mat-column-status2 {
+				min-width: 220px;
+				justify-content: center !important;
 			}
 		`,
 	],
@@ -201,13 +203,17 @@ export class ExpiringScreeningsComponent implements OnInit {
 	@ViewChild(MatSort) sort!: MatSort;
 	@ViewChild('paginator') paginator!: MatPaginator;
 
-	constructor(private formBuilder: FormBuilder, private applicationService: ApplicationService) {}
+	constructor(
+		protected utilService: UtilService,
+		private formBuilder: FormBuilder,
+		private applicationService: ApplicationService
+	) {}
 
 	ngOnInit() {
 		this.columns = [
 			'applicantName',
 			'emailAddress',
-			'dateExpiringOn',
+			'createdOn',
 			'daysRemaining',
 			'companyName',
 			'status1',
@@ -215,11 +221,6 @@ export class ExpiringScreeningsComponent implements OnInit {
 			'status3',
 		];
 		this.loadList();
-	}
-
-	ngAfterViewInit() {
-		// this.dataSource.sort = this.sort;
-		// this.dataSource.paginator = this.paginator;
 	}
 
 	onPayNow(): void {}
@@ -273,6 +274,8 @@ export class ExpiringScreeningsComponent implements OnInit {
 				this.followUpBusinessDays = res.followUpBusinessDays ? String(res.followUpBusinessDays) : '';
 				this.dataSource = new MatTableDataSource<ApplicationResponse>([]);
 				this.dataSource.data = res.applications as Array<ApplicationResponse>;
+				this.dataSource.sort = this.sort;
+				this.dataSource.paginator = this.paginator;
 			});
 	}
 }

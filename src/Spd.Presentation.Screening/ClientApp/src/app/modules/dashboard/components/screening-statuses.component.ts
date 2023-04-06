@@ -6,6 +6,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ApplicationListResponse, ApplicationResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import { UtilService } from 'src/app/core/services/util.service';
 
 @Component({
 	selector: 'app-screening-statuses',
@@ -147,16 +148,20 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 				</div>
 			</div>
 
-			<!-- TODO  matSortActive="createdOn"
-						matSortDirection="desc" -->
 			<div class="row">
 				<div class="col-12">
-					<mat-table matSort [dataSource]="dataSource" class="isMobile">
+					<mat-table
+						matSort
+						[dataSource]="dataSource"
+						matSortActive="createdOn"
+						matSortDirection="desc"
+						class="isMobile"
+					>
 						<ng-container matColumnDef="applicantName">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Applicant Name</mat-header-cell>
 							<mat-cell *matCellDef="let screening">
 								<span class="mobile-label">Applicant Name:</span>
-								{{ screening.givenName }} {{ screening.surname }}
+								{{ utilService.getFullName(screening.givenName, screening.surname) }}
 							</mat-cell>
 						</ng-container>
 
@@ -203,10 +208,11 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 						</ng-container>
 
 						<ng-container matColumnDef="status">
-							<mat-header-cell *matHeaderCellDef mat-sort-header>Status</mat-header-cell>
+							<mat-header-cell *matHeaderCellDef mat-sort-header>Status / Action</mat-header-cell>
 							<mat-cell *matCellDef="let screening">
 								<span class="mobile-label">Status:</span>
 								??
+
 								<!-- <mat-chip-listbox aria-label="Status">
 									<mat-chip-option class="mat-chip-green" *ngIf="screening.status == '1'">In Progress</mat-chip-option>
 									<mat-chip-option class="mat-chip-green" *ngIf="screening.status == '2'">
@@ -227,11 +233,26 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 									<mat-chip-option class="mat-chip-red" *ngIf="screening.status == '7'">Closed</mat-chip-option>
 									<mat-chip-option class="mat-chip-red" *ngIf="screening.status == '8'">Risk Found</mat-chip-option>
 								</mat-chip-listbox>
-								<a (click)="onPayNow()" *ngIf="screening.status == '9'">
-									Pay Now <mat-icon style="vertical-align: middle;">chevron_right</mat-icon>
-								</a>
-								<a (click)="onPayNow()" *ngIf="screening.status == '10'">
-									Verify Applicant <mat-icon style="vertical-align: middle;">chevron_right</mat-icon>
+							 -->
+
+								<!-- <a
+									mat-flat-button
+									(click)="onPayNow()"
+									class="m-2"
+									style="color: var(--color-primary-light);"
+									aria-label="Pay now"
+								>
+									Pay Now <mat-icon iconPositionEnd>chevron_right</mat-icon>
+								</a> -->
+
+								<!-- <a
+									mat-flat-button
+									(click)="onPayNow()"
+									class="m-2"
+									style="color: var(--color-green);"
+									aria-label="Verify Applicant"
+								>
+									Verify Applicant <mat-icon iconPositionEnd>chevron_right</mat-icon>
 								</a> -->
 							</mat-cell>
 						</ng-container>
@@ -253,13 +274,9 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 	`,
 	styles: [
 		`
-			.table-button {
-				max-width: 170px;
-			}
-
-			.pay-button {
-				background-color: var(--color-green) !important;
-				color: var(--color-white) !important;
+			.mat-column-status {
+				min-width: 240px;
+				justify-content: center !important;
 			}
 
 			.statistic-card {
@@ -291,7 +308,11 @@ export class ScreeningStatusesComponent implements OnInit {
 	@ViewChild(MatSort) sort!: MatSort;
 	@ViewChild('paginator') paginator!: MatPaginator;
 
-	constructor(private formBuilder: FormBuilder, private applicationService: ApplicationService) {}
+	constructor(
+		protected utilService: UtilService,
+		private formBuilder: FormBuilder,
+		private applicationService: ApplicationService
+	) {}
 
 	ngOnInit() {
 		this.columns = [
@@ -304,11 +325,6 @@ export class ScreeningStatusesComponent implements OnInit {
 			'status',
 		];
 		this.loadList();
-	}
-
-	ngAfterViewInit() {
-		// this.dataSource.sort = this.sort;
-		// this.dataSource.paginator = this.paginator;
 	}
 
 	onPayNow(): void {}
@@ -338,6 +354,8 @@ export class ScreeningStatusesComponent implements OnInit {
 				this.followUpBusinessDays = res.followUpBusinessDays ? String(res.followUpBusinessDays) : '';
 				this.dataSource = new MatTableDataSource<ApplicationResponse>([]);
 				this.dataSource.data = res.applications as Array<ApplicationResponse>;
+				this.dataSource.sort = this.sort;
+				this.dataSource.paginator = this.paginator;
 			});
 	}
 }

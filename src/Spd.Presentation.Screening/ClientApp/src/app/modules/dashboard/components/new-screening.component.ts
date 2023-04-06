@@ -109,7 +109,7 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 								</div>
 								<div class="col-xl-1 col-lg-1 col-md-3 col-sm-12 mb-4 mb-md-0">
 									<button
-										mat-mini-fab
+										mat-icon-button
 										class="delete-row-button"
 										matTooltip="Remove screening request"
 										(click)="deleteRow(i)"
@@ -150,8 +150,7 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 			}
 
 			.delete-row-button:not([disabled]) {
-				background-color: var(--color-red);
-				color: var(--color-white);
+				color: var(--color-red);
 			}
 
 			.add-icon {

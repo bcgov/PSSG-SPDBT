@@ -6,6 +6,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ApplicationListResponse, ApplicationResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import { UtilService } from 'src/app/core/services/util.service';
 
 @Component({
 	selector: 'app-payments',
@@ -58,17 +59,20 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 				</div>
 			</div>
 
-			<!-- TODO 
-		 matSortActive="status" matSortDirection="asc"
-		-->
 			<div class="row">
 				<div class="col-12">
-					<mat-table matSort [dataSource]="dataSource" class="isMobile">
+					<mat-table
+						matSort
+						[dataSource]="dataSource"
+						matSortActive="createdOn"
+						matSortDirection="asc"
+						class="isMobile"
+					>
 						<ng-container matColumnDef="applicantName">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Applicant Name</mat-header-cell>
 							<mat-cell *matCellDef="let screening">
 								<span class="mobile-label">Applicant Name:</span>
-								{{ screening.givenName }} {{ screening.surname }}
+								{{ utilService.getFullName(screening.givenName, screening.surname) }}
 							</mat-cell>
 						</ng-container>
 
@@ -102,20 +106,22 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 						</ng-container>
 
 						<ng-container matColumnDef="actions">
-							<mat-header-cell *matHeaderCellDef></mat-header-cell>
+							<mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
 							<mat-cell *matCellDef="let screening">
 								<button
-									mat-raised-button
-									class="table-button m-2"
-									color="primary"
+									mat-flat-button
+									class="m-2"
+									style="color: var(--color-primary-light);"
 									*ngIf="screening.status != 'NotPaid'"
-									aria-label="Download receipt"
+									aria-label="Download Clearance Letter"
 								>
 									<mat-icon>file_download</mat-icon>Download Receipt
 								</button>
+
 								<button
-									mat-raised-button
-									class="table-button pay-button m-2"
+									mat-flat-button
+									class="m-2"
+									style="color: var(--color-green);"
 									*ngIf="screening.status == 'NotPaid'"
 									aria-label="Pay now"
 								>
@@ -141,14 +147,9 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 	`,
 	styles: [
 		`
-			.table-button {
-				max-width: 190px;
-				white-space: nowrap;
-			}
-
-			.pay-button {
-				background-color: var(--color-green) !important;
-				color: var(--color-white) !important;
+			.mat-column-actions {
+				min-width: 300px;
+				justify-content: center !important;
 			}
 		`,
 	],
@@ -171,16 +172,15 @@ export class PaymentsComponent implements OnInit {
 	@ViewChild(MatSort) sort!: MatSort;
 	@ViewChild('paginator') paginator!: MatPaginator;
 
-	constructor(private formBuilder: FormBuilder, private applicationService: ApplicationService) {}
+	constructor(
+		protected utilService: UtilService,
+		private formBuilder: FormBuilder,
+		private applicationService: ApplicationService
+	) {}
 
 	ngOnInit() {
 		this.columns = ['applicantName', 'createdOn', 'dateTimePaid', 'status', 'actions'];
 		this.loadList();
-	}
-
-	ngAfterViewInit() {
-		// this.dataSource.sort = this.sort;
-		// this.dataSource.paginator = this.paginator;
 	}
 
 	onShowDropdownOverlayChange(show: boolean): void {
@@ -207,6 +207,8 @@ export class PaymentsComponent implements OnInit {
 			.subscribe((res: ApplicationListResponse) => {
 				this.dataSource = new MatTableDataSource<ApplicationResponse>([]);
 				this.dataSource.data = res.applications as Array<ApplicationResponse>;
+				this.dataSource.sort = this.sort;
+				this.dataSource.paginator = this.paginator;
 			});
 	}
 }
