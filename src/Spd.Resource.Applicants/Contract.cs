@@ -7,6 +7,7 @@ namespace Spd.Resource.Applicants
         Task<bool> CheckInviteApplicationDuplicateAsync(SearchInvitationQry searchInvitationQry, CancellationToken cancellationToken);
         public Task<bool> AddApplicationAsync(ApplicationCreateCmd createApplicationCmd, CancellationToken cancellationToken);
         Task<bool> CheckApplicationDuplicateAsync(SearchApplicationQry searchApplicationQry, CancellationToken cancellationToken);
+        Task<ApplicationListResp> GetApplicationListAsync(Guid orgId, CancellationToken cancellationToken);
     }
 
     public record ApplicationInviteCreateCmd
@@ -78,6 +79,26 @@ namespace Spd.Resource.Applicants
         public string? MiddleName2 { get; set; }
         public string? Surname { get; set; }
 
+    }
+
+    public record ApplicationResp
+    {
+        public Guid Id { get; set; }
+        public Guid OrgId { get; set; }
+        public string? ApplicationNumber { get; set; }
+        public string? GivenName { get; set; }
+        public string? MiddleName1 { get; set; }
+        public string? MiddleName2 { get; set; }
+        public string? Surname { get; set; }
+        public string? EmailAddress { get; set; }
+        public bool? HaveVerifiedIdentity { get; set; }
+        public DateTimeOffset? CreatedOn { get; set; }
+    }
+
+    public class ApplicationListResp
+    {
+        public int? FollowUpBusinessDays { get; set; }
+        public IEnumerable<ApplicationResp> Applications { get; set; }
     }
 
     public enum ApplicationOriginTypeCode

@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NgxMaskPipe } from 'ngx-mask';
@@ -92,7 +92,7 @@ export interface UserDialogData {
 	`,
 	styles: [],
 })
-export class MaintainUserModalComponent {
+export class MaintainUserModalComponent implements OnInit {
 	authorizationTypes = ContactAuthorizationTypes;
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	title: string = '';

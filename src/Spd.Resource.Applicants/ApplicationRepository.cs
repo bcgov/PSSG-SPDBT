@@ -93,6 +93,21 @@ namespace Spd.Resource.Applicants
             return true;
         }
 
+        public async Task<ApplicationListResp> GetApplicationListAsync(Guid orgId, CancellationToken cancellationToken)
+        {
+            var applications = _dynaContext.spd_applications
+                .Where(a => a._spd_organizationid_value == orgId && a.statecode == DynamicsConstants.StateCode_Active)
+                .ToList();
+
+            var response = new ApplicationListResp();
+
+            //response.FollowUpBusinessDays = organization.spd_followupbusinessdays ?? 6; // todo - update to use value from dynamics
+            response.FollowUpBusinessDays = 9;
+
+            response.Applications = _mapper.Map<IEnumerable<ApplicationResp>>(applications);
+            return response;
+        }
+
         public async Task<bool> CheckApplicationDuplicateAsync(SearchApplicationQry searchApplicationQry, CancellationToken cancellationToken)
         {
             var application = _dynaContext.spd_applications.Where(o =>
