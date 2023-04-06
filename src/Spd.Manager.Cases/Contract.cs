@@ -10,6 +10,7 @@ namespace Spd.Manager.Cases
         public Task<IEnumerable<CheckApplicationInviteDuplicateResponse>> Handle(CheckApplicationInviteDuplicateQuery request, CancellationToken cancellationToken);
         public Task<Unit> Handle(ApplicationCreateCommand request, CancellationToken cancellationToken);
         public Task<CheckApplicationDuplicateResponse> Handle(CheckApplicationDuplicateQuery request, CancellationToken cancellationToken);
+        public Task<ApplicationListResponse> Handle(ApplicationListQuery request, CancellationToken cancellationToken);
 
     }
 
@@ -17,6 +18,7 @@ namespace Spd.Manager.Cases
     public record CheckApplicationInviteDuplicateQuery(Guid OrgId, IEnumerable<ApplicationInviteCreateRequest> ApplicationInviteCreateRequests) : IRequest<IEnumerable<CheckApplicationInviteDuplicateResponse>>;
     public record ApplicationCreateCommand(ApplicationCreateRequest ApplicationCreateRequest) : IRequest<Unit>;
     public record CheckApplicationDuplicateQuery(ApplicationCreateRequest ApplicationCreateRequest) : IRequest<CheckApplicationDuplicateResponse>;
+    public record ApplicationListQuery(Guid OrgId) : IRequest<ApplicationListResponse>;
 
     public record ApplicationInviteCreateRequest
     {
@@ -41,6 +43,7 @@ namespace Spd.Manager.Cases
         public string Email { get; set; }
         public bool HasPotentialDuplicate { get; set; } = false;
     }
+
     public record ApplicationCreateRequest
     {
         public Guid OrgId { get; set; }
@@ -66,7 +69,6 @@ namespace Spd.Manager.Cases
         public bool? HaveVerifiedIdentity { get; set; }
         public List<AliasCreateRequest> Aliases { get; set; }
     }
-
     public record AliasCreateRequest
     {
         public string? GivenName { get; set; }
@@ -75,7 +77,6 @@ namespace Spd.Manager.Cases
         public string? Surname { get; set; }
 
     }
-
     public class CheckApplicationDuplicateResponse
     {
         public Guid OrgId { get; set; }
@@ -83,6 +84,26 @@ namespace Spd.Manager.Cases
         public string Surname { get; set; }
         public string EmailAddress { get; set; }
         public bool HasPotentialDuplicate { get; set; } = false;
+    }
+
+    public class ApplicationListResponse
+    {
+        public int? FollowUpBusinessDays { get; set; }
+        public IEnumerable<ApplicationResponse> Applications { get; set; }
+    }
+
+    public record ApplicationResponse
+    {
+        public Guid Id { get; set; }
+        public Guid OrgId { get; set; }
+        public string? ApplicationNumber { get; set; }
+        public string? GivenName { get; set; }
+        public string? MiddleName1 { get; set; }
+        public string? MiddleName2 { get; set; }
+        public string? Surname { get; set; }
+        public string? EmailAddress { get; set; }
+        public bool? HaveVerifiedIdentity { get; set; }
+        public DateTimeOffset? CreatedOn { get; set; }
     }
 
     public enum ApplicationOriginTypeCode

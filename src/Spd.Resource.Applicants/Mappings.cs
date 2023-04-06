@@ -65,6 +65,18 @@ namespace Spd.Resource.Applicants
             .ForMember(d => d.address1_postalcode, opt => opt.MapFrom(s => s.PostalCode))
             .ForMember(d => d.address1_stateorprovince, opt => opt.MapFrom(s => s.Province))
             .ForMember(d => d.address1_country, opt => opt.MapFrom(s => s.Country));
+
+            _ = CreateMap<spd_application, ApplicationResp>()
+            .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_applicationid))
+            .ForMember(d => d.OrgId, opt => opt.MapFrom(s => s._spd_organizationid_value))
+            .ForMember(d => d.ApplicationNumber, opt => opt.MapFrom(s => s.spd_name))
+            .ForMember(d => d.GivenName, opt => opt.MapFrom(s => s.spd_firstname))
+            .ForMember(d => d.MiddleName1, opt => opt.MapFrom(s => s.spd_middlename1))
+            .ForMember(d => d.MiddleName2, opt => opt.MapFrom(s => s.spd_middlename2))
+            .ForMember(d => d.Surname, opt => opt.MapFrom(s => s.spd_lastname))
+            .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.spd_emailaddress1))
+            .ForMember(d => d.CreatedOn, opt => opt.MapFrom(s => s.createdon))
+            .ForMember(d => d.HaveVerifiedIdentity, opt => opt.MapFrom(s => s.spd_identityconfirmed));
         }
     }
 }
