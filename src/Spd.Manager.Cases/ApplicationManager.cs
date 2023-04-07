@@ -9,6 +9,7 @@ namespace Spd.Manager.Cases
         IRequestHandler<CheckApplicationInviteDuplicateQuery, IEnumerable<CheckApplicationInviteDuplicateResponse>>,
         IRequestHandler<ApplicationCreateCommand, Unit>,
         IRequestHandler<CheckApplicationDuplicateQuery, CheckApplicationDuplicateResponse>,
+        IRequestHandler<ApplicationListQuery, ApplicationListResponse>,
         IApplicationManager
     {
         private readonly IApplicationRepository _applicationRepository;
@@ -96,6 +97,12 @@ namespace Spd.Manager.Cases
             }
 
             return resp;
+        }
+
+        public async Task<ApplicationListResponse> Handle(ApplicationListQuery request, CancellationToken cancellationToken)
+        {
+            var response = await _applicationRepository.GetApplicationListAsync(request.OrgId, cancellationToken);
+            return _mapper.Map<ApplicationListResponse>(response);
         }
     }
 }
