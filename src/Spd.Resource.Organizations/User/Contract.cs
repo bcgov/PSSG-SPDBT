@@ -2,54 +2,38 @@ namespace Spd.Resource.Organizations.User
 {
     public interface IOrgUserRepository
     {
-        Task<UserResp> AddUserAsync(UserCreateCmd createUserCmd, CancellationToken cancellationToken);
-        Task<UserResp> UpdateUserAsync(UserUpdateCmd createUserCmd, CancellationToken cancellationToken);
-        Task DeleteUserAsync(Guid userId, CancellationToken cancellationToken);
-        Task<UserResp> GetUserAsync(Guid userId, CancellationToken cancellationToken);
-        Task<OrgUsersResp> GetUserListAsync(Guid organizationId, CancellationToken cancellationToken);
+        Task<OrgUserQryResult> QueryOrgUserAsync(OrgUserQry qry, CancellationToken ct);
+        Task<OrgUserManageResult> ManageOrgUserAsync(OrgUserCmd cmd, CancellationToken ct);
     }
 
-    public record UserCreateCmd
+    public abstract record OrgUserCmd;
+    public record UserCreateCmd(UserInfo UserInfo) : OrgUserCmd;
+    public record UserUpdateCmd(Guid Id, UserInfo UserInfo) : OrgUserCmd;
+    public record UserDeleteCmd(Guid Id) : OrgUserCmd;
+
+    public record OrgUserManageResult(UserInfoResult UserInfoResult) { }
+    public record UserInfo
     {
-        public Guid OrganizationId { get; set; }
+        public Guid? OrganizationId { get; set; }
         public ContactRoleCode ContactAuthorizationTypeCode { get; set; }
-        public string LastName { get; set; }
-        public string FirstName { get; set; }
-        public string Email { get; set; }
+        public string LastName { get; set; } = null!;
+        public string FirstName { get; set; } = null!;
+        public string Email { get; set; } = null!;
         public string? JobTitle { get; set; }
         public string? PhoneNumber { get; set; }
     }
-
-    public record UserUpdateCmd
+    public record UserInfoResult() : UserInfo()
     {
-        public Guid Id { get; set; }
-        public Guid OrganizationId { get; set; }
-        public ContactRoleCode ContactAuthorizationTypeCode { get; set; }
-        public string LastName { get; set; }
-        public string FirstName { get; set; }
-        public string Email { get; set; }
-        public string? JobTitle { get; set; }
-        public string? PhoneNumber { get; set; }
-    }
-
-    public record UserResp
-    {
-        public Guid Id { get; set; }
-        public Guid OrganizationId { get; set; }
-        public ContactRoleCode ContactAuthorizationTypeCode { get; set; }
-        public string LastName { get; set; }
-        public string FirstName { get; set; }
-        public string Email { get; set; }
-        public string? JobTitle { get; set; }
-        public string? PhoneNumber { get; set; }
-    }
-
-    public class OrgUsersResp
-    {
-        public int? MaximumNumberOfAuthorizedContacts { get; set; }
-        public int? MaximumNumberOfPrimaryAuthorizedContacts { get; set; }
-        public IEnumerable<UserResp> Users { get; set; }
-    }
+        public Guid Id { get; set;}
+        public Guid? OrgRegistrationId { get; set; }
+    };    
+    public abstract record OrgUserQry;
+    public record OrgUserByIdQry(Guid UserId) : OrgUserQry;
+    public record OrgUsersByOrgIdQry(Guid OrgId) : OrgUserQry;
+    public record OrgUsersByIdentityIdQry(Guid IdentityId) : OrgUserQry;
+    public abstract record OrgUserQryResult;
+    public record OrgUserResult(UserInfoResult UserInfoResult) : OrgUserQryResult;
+    public record OrgUsersResult(IEnumerable<UserInfoResult> UserInfoResults) : OrgUserQryResult;
 
     public enum ContactRoleCode
     {

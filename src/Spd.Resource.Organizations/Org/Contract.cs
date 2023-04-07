@@ -4,11 +4,13 @@ namespace Spd.Resource.Organizations.Org
 {
     public interface IOrgRepository
     {
-        Task<OrgResp> OrgUpdateAsync(OrgUpdateCmd orgUpdateCmd, CancellationToken cancellationToken);
-        Task<OrgResp> OrgGetAsync(Guid orgId, CancellationToken cancellationToken);
         Task<bool> CheckDuplicateAsync(SearchOrgQry searchOrgQry, CancellationToken cancellationToken);
+        Task<OrgQryResult> QueryOrgAsync(OrgQry orgQry, CancellationToken ct);
+        Task<OrgManageResult> ManageOrgAsync(OrgCmd orgCmd, CancellationToken ct);
     }
-    public record OrgUpdateCmd
+    public abstract record OrgCmd;
+    public record OrgManageResult(Org Org);
+    public record Org
     {
         public Guid Id { get; set; }
         public PayerPreferenceTypeCode PayerPreference { get; set; }
@@ -25,25 +27,11 @@ namespace Spd.Resource.Organizations.Org
         public string? OrganizationName { get; set; }
         public string? OrganizationLegalName { get; set; }
     }
-    public record OrgResp
-    {
-        public Guid Id { get; set; }
-        public PayerPreferenceTypeCode PayerPreference { get; set; }
-        public BooleanTypeCode ContractorsNeedVulnerableSectorScreening { get; set; }
-        public BooleanTypeCode LicenseesNeedVulnerableSectorScreening { get; set; }
-        public string? Email { get; set; }
-        public string? PhoneNumber { get; set; }
-        public string? AddressLine1 { get; set; }
-        public string? AddressLine2 { get; set; }
-        public string? AddressCity { get; set; }
-        public string? AddressCountry { get; set; }
-        public string? AddressPostalCode { get; set; }
-        public string? AddressProvince { get; set; }
-        public string? OrganizationName { get; set; }
-        public string? OrganizationLegalName { get; set; }
-    }
-
-    public record SearchOrgQry
+    public record OrgUpdateCmd(Org Org) : OrgCmd;
+    public abstract record OrgQry;
+    public record OrgByOrgGuidQry(Guid OrgGuid): OrgQry;
+    public record OrgByIdQry(Guid OrgId): OrgQry;
+    public record SearchOrgQry : OrgQry
     {
         public string? GenericEmail { get; set; }
         public string? MailingPostalCode { get; set; }
@@ -51,6 +39,13 @@ namespace Spd.Resource.Organizations.Org
         public EmployeeOrganizationTypeCode? EmployeeOrganizationTypeCode { get; set; }
         public VolunteerOrganizationTypeCode? VolunteerOrganizationTypeCode { get; set; }
         public RegistrationTypeCode RegistrationTypeCode { get; set; }
+    }
+    public record OrgQryResult(OrgQryInfo OrgQryInfo) {}
+
+    public record OrgQryInfo : Org
+    {
+        public int MaxContacts { get; } = 6;
+        public int MaxPrimaryContacts { get; } = 2;
     }
 
     public enum PayerPreferenceTypeCode

@@ -21,38 +21,85 @@ namespace Spd.Resource.Organizations.User
             _logger = logger;
         }
 
-        public async Task<UserResp> AddUserAsync(UserCreateCmd createUserCmd, CancellationToken cancellationToken)
+        public async Task<OrgUserQryResult> QueryOrgUserAsync(OrgUserQry query, CancellationToken ct)
         {
-            var organization = GetOrganizationById(createUserCmd.OrganizationId);
-            spd_portaluser user = _mapper.Map<spd_portaluser>(createUserCmd);
+            return query switch
+            {
+                OrgUserByIdQry q => await GetUserAsync(q.UserId, ct),
+                OrgUsersByIdentityIdQry q => await GetUsersByIdentityIdAsync(q.IdentityId, ct),
+                OrgUsersByOrgIdQry q => await GetUsersByOrgIdAsync(q.OrgId, ct),
+                _ => throw new NotSupportedException($"{query.GetType().Name} is not supported")
+            };
+        }
+
+        public async Task<OrgUserManageResult> ManageOrgUserAsync(OrgUserCmd cmd, CancellationToken ct)
+        {
+            return cmd switch
+            {
+                UserCreateCmd c => await AddUserAsync(c, ct),
+                UserUpdateCmd c => await UpdateUserAsync(c, ct),
+                UserDeleteCmd c => await DeleteUserAsync(c.Id, ct),
+                _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
+            };
+        }
+
+        private async Task<OrgUsersResult> GetUsersByIdentityIdAsync(Guid identityId, CancellationToken ct)
+        {
+            var users = _dynaContext.spd_portalusers
+                .Where(a => a._spd_identityid_value == identityId && a.statecode == DynamicsConstants.StateCode_Active)
+                .ToList();
+
+            if (users == null) throw new NotFoundException(HttpStatusCode.BadRequest, $"Cannot find the users with identityId {identityId}");
+
+            //todo: investigate why expand does not work here.
+            await Parallel.ForEachAsync(users, ct, async (user, cancellationToken) =>
+            {
+                var role = _dynaContext
+                    .spd_spd_role_spd_portaluserset
+                    .Where(r => r.spd_portaluserid == user.spd_portaluserid)
+                    .FirstOrDefault();
+                if (role != null)
+                {
+                    user.spd_spd_role_spd_portaluser = new Collection<spd_role> { new spd_role() { spd_roleid = role.spd_roleid } };
+                }
+            });
+
+            return new OrgUsersResult(_mapper.Map<IEnumerable<UserInfoResult>>(users));
+        }
+
+        private async Task<OrgUserManageResult> AddUserAsync(UserCreateCmd createUserCmd, CancellationToken cancellationToken)
+        {
+            var organization = GetOrganizationById((Guid)createUserCmd.UserInfo.OrganizationId);
+            spd_portaluser user = _mapper.Map<spd_portaluser>(createUserCmd.UserInfo);
+            user.spd_portaluserid = Guid.NewGuid();  
 
             _dynaContext.AddTospd_portalusers(user);
             _dynaContext.SetLink(user, nameof(spd_portaluser.spd_OrganizationId), organization);
-            spd_role? role = _dynaContext.LookupRole(createUserCmd.ContactAuthorizationTypeCode.ToString());
+            spd_role? role = _dynaContext.LookupRole(createUserCmd.UserInfo.ContactAuthorizationTypeCode.ToString());
             if (role != null)
             {
                 _dynaContext.AddLink(role, nameof(role.spd_spd_role_spd_portaluser), user);
             }
             await _dynaContext.SaveChangesAsync(cancellationToken);
 
-            user._spd_organizationid_value = createUserCmd.OrganizationId;
+            user._spd_organizationid_value = createUserCmd.UserInfo.OrganizationId;
             user.spd_spd_role_spd_portaluser = new Collection<spd_role> { new spd_role() { spd_roleid = role.spd_roleid } };
-            return _mapper.Map<UserResp>(user);
+            return new OrgUserManageResult(_mapper.Map<UserInfoResult>(user));
         }
 
-        public async Task<UserResp> UpdateUserAsync(UserUpdateCmd updateUserCmd, CancellationToken cancellationToken)
+        private async Task<OrgUserManageResult> UpdateUserAsync(UserUpdateCmd updateUserCmd, CancellationToken cancellationToken)
         {
             var user = GetUserById(updateUserCmd.Id);
-            _mapper.Map(updateUserCmd, user);
+            _mapper.Map(updateUserCmd.UserInfo, user);
 
             spd_role existingRole = user.spd_spd_role_spd_portaluser.First();
             spd_role newRole = existingRole;
             string existingRoleName = _dynaContext.LookupRoleKeyById((Guid)existingRole.spd_roleid);
-            if (existingRoleName != updateUserCmd.ContactAuthorizationTypeCode.ToString()) //role changed
+            if (existingRoleName != updateUserCmd.UserInfo.ContactAuthorizationTypeCode.ToString()) //role changed
             {
                 _dynaContext.DeleteLink(existingRole, nameof(existingRole.spd_spd_role_spd_portaluser), user);
 
-                newRole = _dynaContext.LookupRole(updateUserCmd.ContactAuthorizationTypeCode.ToString());
+                newRole = _dynaContext.LookupRole(updateUserCmd.UserInfo.ContactAuthorizationTypeCode.ToString());
                 if (newRole != null)
                 {
                     _dynaContext.AddLink(newRole, nameof(newRole.spd_spd_role_spd_portaluser), user);
@@ -62,10 +109,10 @@ namespace Spd.Resource.Organizations.User
             await _dynaContext.SaveChangesAsync(cancellationToken);
 
             user.spd_spd_role_spd_portaluser = new Collection<spd_role> { new spd_role() { spd_roleid = newRole.spd_roleid } };
-            return _mapper.Map<UserResp>(user);
+            return new OrgUserManageResult(_mapper.Map<UserInfoResult>(user));
         }
 
-        public async Task DeleteUserAsync(Guid userId, CancellationToken cancellationToken)
+        private async Task<OrgUserManageResult> DeleteUserAsync(Guid userId, CancellationToken cancellationToken)
         {
             var user = GetUserById(userId);
             // Inactivate the user
@@ -73,16 +120,16 @@ namespace Spd.Resource.Organizations.User
             user.statuscode = DynamicsConstants.StatusCode_Inactive;
             _dynaContext.UpdateObject(user);
             await _dynaContext.SaveChangesAsync(cancellationToken);
+            return new OrgUserManageResult(null);
         }
 
-        public async Task<UserResp> GetUserAsync(Guid userId, CancellationToken cancellationToken)
+        private async Task<OrgUserResult> GetUserAsync(Guid userId, CancellationToken ct)
         {
             var user = GetUserById(userId);
-            var response = _mapper.Map<UserResp>(user);
-            return response;
+            return new OrgUserResult(_mapper.Map<UserInfoResult>(user));
         }
 
-        public async Task<OrgUsersResp> GetUserListAsync(Guid organizationId, CancellationToken cancellationToken)
+        private async Task<OrgUsersResult> GetUsersByOrgIdAsync(Guid organizationId, CancellationToken cancellationToken)
         {
             var users = _dynaContext.spd_portalusers
                 .Expand(u => u.spd_spd_role_spd_portaluser)
@@ -98,17 +145,11 @@ namespace Spd.Resource.Organizations.User
                     .spd_spd_role_spd_portaluserset
                     .Where(r => r.spd_portaluserid == user.spd_portaluserid)
                     .FirstOrDefault();
-                user.spd_spd_role_spd_portaluser = new Collection<spd_role> { new spd_role() { spd_roleid = role.spd_roleid } };
+                if (role != null)
+                    user.spd_spd_role_spd_portaluser = new Collection<spd_role> { new spd_role() { spd_roleid = role.spd_roleid } };
             });
 
-            var organization = GetOrganizationById(organizationId);
-
-            var response = new OrgUsersResp();
-            response.MaximumNumberOfAuthorizedContacts = organization.spd_maximumnumberofcontacts ?? 6;
-            response.MaximumNumberOfPrimaryAuthorizedContacts = organization.spd_noofprimaryauthorizedcontacts ?? 2;
-
-            response.Users = _mapper.Map<IEnumerable<UserResp>>(users);
-            return response;
+            return new OrgUsersResult(_mapper.Map<IEnumerable<UserInfoResult>>(users));
         }
 
         private account? GetOrganizationById(Guid organizationId)
@@ -121,7 +162,7 @@ namespace Spd.Resource.Organizations.User
                 throw new InactiveException(HttpStatusCode.BadRequest, $"Organization {organizationId} is inactive.");
             return account;
         }
-        private spd_portaluser? GetUserById(Guid userId)
+        private spd_portaluser GetUserById(Guid userId)
         {
             try
             {
@@ -132,7 +173,11 @@ namespace Spd.Resource.Organizations.User
 
                 if (user?.statecode == DynamicsConstants.StateCode_Inactive)
                     throw new InactiveException(HttpStatusCode.BadRequest, $"User {userId} is inactive.");
-                return user;
+
+                if (user != null)
+                    return user;
+                else
+                    throw new NotFoundException(HttpStatusCode.BadRequest, $"Cannot find the user with userId {userId}");
             }
             catch (DataServiceQueryException ex)
             {

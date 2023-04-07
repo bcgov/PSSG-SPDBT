@@ -9,10 +9,12 @@ namespace Spd.Manager.Membership.OrgUser
         {
             CreateMap<OrgUserCreateRequest, UserCreateCmd>();
             CreateMap<OrgUserUpdateRequest, UserUpdateCmd>();
-            CreateMap<UserResp, OrgUserResponse>();
-            CreateMap<OrgUserCreateRequest, UserResp>();
-            CreateMap<OrgUserUpdateRequest, UserResp>();
-            CreateMap<OrgUsersResp, OrgUserListResponse>();
+            CreateMap<UserInfoResult, OrgUserResponse>();
+            CreateMap<OrgUserCreateRequest, UserInfo>();
+            CreateMap<OrgUserCreateRequest, UserInfoResult>()
+               .ForMember(d => d.Id, opt => opt.Ignore())
+               .IncludeBase<OrgUserCreateRequest, UserInfo>();
+            CreateMap<OrgUserUpdateRequest, UserInfo>();
         }
     }
 }
