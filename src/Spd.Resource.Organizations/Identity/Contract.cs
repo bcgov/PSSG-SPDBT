@@ -2,14 +2,16 @@
 {
     public interface IIdentityRepository
     {
-        Task<IdentityQueryResult> QueryIdentity(IdentityQuery query, CancellationToken ct);
+        Task<IdentityQueryResult?> QueryIdentity(IdentityQuery query, CancellationToken ct);
     }
 
-    public abstract record IdentityQuery();
-    //public record IdentityByOrgGuidQuery(Guid OrgGuid): IdentityQuery;
+    //query
+    public abstract record IdentityQuery;
     public record IdentityByUserGuidOrgGuidQuery(Guid UserGuid, Guid OrgGuid) : IdentityQuery;
-    public record IdentityQueryResult(IdentityInfo IdentityInfo);
-    public record IdentityInfo
+    public record IdentityQueryResult(Identity Identity);
+
+    //shared content
+    public record Identity
     {
         public string? OrgId { get; set; }
         public string? IdentityNumber { get; set; }

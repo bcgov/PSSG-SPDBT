@@ -8,7 +8,7 @@ namespace Spd.Resource.Organizations.User
     {
         public Mappings()
         {
-            _ = CreateMap<UserInfo, spd_portaluser>()
+            _ = CreateMap<User, spd_portaluser>()
             .ForMember(d => d.spd_portaluserid, opt => opt.Ignore())
             .ForMember(d => d.organizationid, opt => opt.Ignore())
             .ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => s.FirstName))
@@ -22,8 +22,8 @@ namespace Spd.Resource.Organizations.User
             .ForMember(d => d.ContactAuthorizationTypeCode, opt => opt.MapFrom(s => GetAuthorizationTypeCode(s.spd_spd_role_spd_portaluser.FirstOrDefault().spd_roleid)))
             .ForMember(d => d.OrganizationId, opt => opt.MapFrom(s => s._spd_organizationid_value));
 
-            _ = CreateMap<spd_portaluser, UserInfoResult>()
-            .IncludeBase<spd_portaluser, UserInfo>()
+            _ = CreateMap<spd_portaluser, UserResult>()
+            .IncludeBase<spd_portaluser, User>()
             .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_portaluserid))
             .ForMember(d => d.OrgRegistrationId, opt => opt.MapFrom(s => s._spd_orgregistrationid_value));
         }

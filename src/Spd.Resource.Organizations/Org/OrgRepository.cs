@@ -12,12 +12,10 @@ namespace Spd.Resource.Organizations.Org
     {
         private readonly DynamicsContext _dynaContext;
         private readonly IMapper _mapper;
-        private readonly ILogger<OrgRepository> _logger;
         public OrgRepository(IDynamicsContextFactory ctx, IMapper mapper, ILogger<OrgRepository> logger)
         {
             _dynaContext = ctx.Create();
             _mapper = mapper;
-            _logger = logger;
         }
         public async Task<OrgQryResult?> QueryOrgAsync(OrgQry query, CancellationToken ct)
         {
@@ -93,13 +91,13 @@ namespace Spd.Resource.Organizations.Org
                 .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
                 .FirstOrDefault();
             if (account == null) return null;
-            return new OrgQryResult(_mapper.Map<OrgQryInfo>(account));
+            return new OrgQryResult(_mapper.Map<OrgResult>(account));
         }
 
         private async Task<OrgQryResult?> GetOrgByOrgIdAsync(OrgByIdQry query, CancellationToken ct)
         {
             var org = GetOrgById(query.OrgId);
-            var response = _mapper.Map<OrgQryInfo>(org);
+            var response = _mapper.Map<OrgResult>(org);
             return new OrgQryResult(response);
         }
 

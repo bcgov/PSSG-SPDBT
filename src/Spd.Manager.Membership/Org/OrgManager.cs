@@ -27,7 +27,7 @@ namespace Spd.Manager.Membership.Org
         public async Task<OrgResponse> Handle(OrgGetQuery request, CancellationToken cancellationToken)
         {
             var result = await _orgRepository.QueryOrgAsync(new OrgByIdQry(request.OrgId), cancellationToken);
-            return _mapper.Map<OrgResponse>(result.OrgQryInfo);
+            return _mapper.Map<OrgResponse>(result.OrgResult);
         }
     }
 }

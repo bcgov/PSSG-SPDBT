@@ -21,14 +21,14 @@ namespace Spd.Resource.Organizations.User
             _logger = logger;
         }
 
-        public async Task<OrgUserQryResult> QueryOrgUserAsync(OrgUserQry query, CancellationToken ct)
+        public async Task<OrgUserQryResult> QueryOrgUserAsync(OrgUserQry qry, CancellationToken ct)
         {
-            return query switch
+            return qry switch
             {
                 OrgUserByIdQry q => await GetUserAsync(q.UserId, ct),
                 OrgUsersByIdentityIdQry q => await GetUsersByIdentityIdAsync(q.IdentityId, ct),
                 OrgUsersByOrgIdQry q => await GetUsersByOrgIdAsync(q.OrgId, ct),
-                _ => throw new NotSupportedException($"{query.GetType().Name} is not supported")
+                _ => throw new NotSupportedException($"{qry.GetType().Name} is not supported")
             };
         }
 
@@ -64,42 +64,45 @@ namespace Spd.Resource.Organizations.User
                 }
             });
 
-            return new OrgUsersResult(_mapper.Map<IEnumerable<UserInfoResult>>(users));
+            return new OrgUsersResult(_mapper.Map<IEnumerable<UserResult>>(users));
         }
 
         private async Task<OrgUserManageResult> AddUserAsync(UserCreateCmd createUserCmd, CancellationToken cancellationToken)
         {
-            var organization = GetOrganizationById((Guid)createUserCmd.UserInfo.OrganizationId);
-            spd_portaluser user = _mapper.Map<spd_portaluser>(createUserCmd.UserInfo);
-            user.spd_portaluserid = Guid.NewGuid();  
+            if (createUserCmd.User.OrganizationId == null)
+                throw new ApiException(HttpStatusCode.BadRequest, "Organization cannot be null");
+
+            var organization = GetOrganizationById((Guid)createUserCmd.User.OrganizationId);
+            spd_portaluser user = _mapper.Map<spd_portaluser>(createUserCmd.User);
+            user.spd_portaluserid = Guid.NewGuid();
 
             _dynaContext.AddTospd_portalusers(user);
             _dynaContext.SetLink(user, nameof(spd_portaluser.spd_OrganizationId), organization);
-            spd_role? role = _dynaContext.LookupRole(createUserCmd.UserInfo.ContactAuthorizationTypeCode.ToString());
+            spd_role? role = _dynaContext.LookupRole(createUserCmd.User.ContactAuthorizationTypeCode.ToString());
             if (role != null)
             {
                 _dynaContext.AddLink(role, nameof(role.spd_spd_role_spd_portaluser), user);
             }
             await _dynaContext.SaveChangesAsync(cancellationToken);
 
-            user._spd_organizationid_value = createUserCmd.UserInfo.OrganizationId;
+            user._spd_organizationid_value = createUserCmd.User.OrganizationId;
             user.spd_spd_role_spd_portaluser = new Collection<spd_role> { new spd_role() { spd_roleid = role.spd_roleid } };
-            return new OrgUserManageResult(_mapper.Map<UserInfoResult>(user));
+            return new OrgUserManageResult(_mapper.Map<UserResult>(user));
         }
 
         private async Task<OrgUserManageResult> UpdateUserAsync(UserUpdateCmd updateUserCmd, CancellationToken cancellationToken)
         {
             var user = GetUserById(updateUserCmd.Id);
-            _mapper.Map(updateUserCmd.UserInfo, user);
+            _mapper.Map(updateUserCmd.User, user);
 
             spd_role existingRole = user.spd_spd_role_spd_portaluser.First();
             spd_role newRole = existingRole;
             string existingRoleName = _dynaContext.LookupRoleKeyById((Guid)existingRole.spd_roleid);
-            if (existingRoleName != updateUserCmd.UserInfo.ContactAuthorizationTypeCode.ToString()) //role changed
+            if (existingRoleName != updateUserCmd.User.ContactAuthorizationTypeCode.ToString()) //role changed
             {
                 _dynaContext.DeleteLink(existingRole, nameof(existingRole.spd_spd_role_spd_portaluser), user);
 
-                newRole = _dynaContext.LookupRole(updateUserCmd.UserInfo.ContactAuthorizationTypeCode.ToString());
+                newRole = _dynaContext.LookupRole(updateUserCmd.User.ContactAuthorizationTypeCode.ToString());
                 if (newRole != null)
                 {
                     _dynaContext.AddLink(newRole, nameof(newRole.spd_spd_role_spd_portaluser), user);
@@ -109,7 +112,7 @@ namespace Spd.Resource.Organizations.User
             await _dynaContext.SaveChangesAsync(cancellationToken);
 
             user.spd_spd_role_spd_portaluser = new Collection<spd_role> { new spd_role() { spd_roleid = newRole.spd_roleid } };
-            return new OrgUserManageResult(_mapper.Map<UserInfoResult>(user));
+            return new OrgUserManageResult(_mapper.Map<UserResult>(user));
         }
 
         private async Task<OrgUserManageResult> DeleteUserAsync(Guid userId, CancellationToken cancellationToken)
@@ -126,7 +129,7 @@ namespace Spd.Resource.Organizations.User
         private async Task<OrgUserResult> GetUserAsync(Guid userId, CancellationToken ct)
         {
             var user = GetUserById(userId);
-            return new OrgUserResult(_mapper.Map<UserInfoResult>(user));
+            return new OrgUserResult(_mapper.Map<UserResult>(user));
         }
 
         private async Task<OrgUsersResult> GetUsersByOrgIdAsync(Guid organizationId, CancellationToken cancellationToken)
@@ -149,7 +152,7 @@ namespace Spd.Resource.Organizations.User
                     user.spd_spd_role_spd_portaluser = new Collection<spd_role> { new spd_role() { spd_roleid = role.spd_roleid } };
             });
 
-            return new OrgUsersResult(_mapper.Map<IEnumerable<UserInfoResult>>(users));
+            return new OrgUsersResult(_mapper.Map<IEnumerable<UserResult>>(users));
         }
 
         private account? GetOrganizationById(Guid organizationId)

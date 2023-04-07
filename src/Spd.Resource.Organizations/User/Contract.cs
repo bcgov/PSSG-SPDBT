@@ -6,13 +6,24 @@ namespace Spd.Resource.Organizations.User
         Task<OrgUserManageResult> ManageOrgUserAsync(OrgUserCmd cmd, CancellationToken ct);
     }
 
+    //command
     public abstract record OrgUserCmd;
-    public record UserCreateCmd(UserInfo UserInfo) : OrgUserCmd;
-    public record UserUpdateCmd(Guid Id, UserInfo UserInfo) : OrgUserCmd;
+    public record UserCreateCmd(User User) : OrgUserCmd;
+    public record UserUpdateCmd(Guid Id, User User) : OrgUserCmd;
     public record UserDeleteCmd(Guid Id) : OrgUserCmd;
+    public record OrgUserManageResult(UserResult UserResult);
 
-    public record OrgUserManageResult(UserInfoResult UserInfoResult) { }
-    public record UserInfo
+    //query
+    public abstract record OrgUserQry;
+    public record OrgUserByIdQry(Guid UserId) : OrgUserQry;
+    public record OrgUsersByOrgIdQry(Guid OrgId) : OrgUserQry;
+    public record OrgUsersByIdentityIdQry(Guid IdentityId) : OrgUserQry;
+    public abstract record OrgUserQryResult;
+    public record OrgUserResult(UserResult UserResult) : OrgUserQryResult;
+    public record OrgUsersResult(IEnumerable<UserResult> UserResults) : OrgUserQryResult;
+
+    //shared content
+    public record User
     {
         public Guid? OrganizationId { get; set; }
         public ContactRoleCode ContactAuthorizationTypeCode { get; set; }
@@ -22,19 +33,11 @@ namespace Spd.Resource.Organizations.User
         public string? JobTitle { get; set; }
         public string? PhoneNumber { get; set; }
     }
-    public record UserInfoResult() : UserInfo()
+    public record UserResult() : User()
     {
         public Guid Id { get; set;}
         public Guid? OrgRegistrationId { get; set; }
     };    
-    public abstract record OrgUserQry;
-    public record OrgUserByIdQry(Guid UserId) : OrgUserQry;
-    public record OrgUsersByOrgIdQry(Guid OrgId) : OrgUserQry;
-    public record OrgUsersByIdentityIdQry(Guid IdentityId) : OrgUserQry;
-    public abstract record OrgUserQryResult;
-    public record OrgUserResult(UserInfoResult UserInfoResult) : OrgUserQryResult;
-    public record OrgUsersResult(IEnumerable<UserInfoResult> UserInfoResults) : OrgUserQryResult;
-
     public enum ContactRoleCode
     {
         Primary,

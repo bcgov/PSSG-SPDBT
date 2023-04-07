@@ -35,10 +35,10 @@ namespace Spd.Manager.Membership.UserProfile
             var identityResult = await _idRepository.QueryIdentity(
                 new IdentityByUserGuidOrgGuidQuery(_currentUser.GetUserGuid(), _currentUser.GetBizGuid()),
                 ct);
-            if (identityResult?.IdentityInfo != null)
+            if (identityResult?.Identity != null)
             {
-                var result = (OrgUsersResult)await _orgUserRepository.QueryOrgUserAsync(new OrgUsersByIdentityIdQry(identityResult.IdentityInfo.Id), ct);
-                foreach (UserInfoResult u in result.UserInfoResults)
+                var result = (OrgUsersResult)await _orgUserRepository.QueryOrgUserAsync(new OrgUsersByIdentityIdQry(identityResult.Identity.Id), ct);
+                foreach (UserResult u in result.UserResults)
                 {
                     SpdUserInfo ui = new();
                     ui.UserId = u.Id;
@@ -52,7 +52,7 @@ namespace Spd.Manager.Membership.UserProfile
                     {
                         ui.OrgStatusCode = OrgStatusCode.Valid;
                         var orgResult = await _orgRepository.QueryOrgAsync(new OrgByIdQry((Guid)u.OrganizationId), ct);
-                        ui.OrgName = orgResult.OrgQryInfo.OrganizationName;
+                        ui.OrgName = orgResult.OrgResult.OrganizationName;
                     }
 
                     ui.ContactRoleCode = u.ContactAuthorizationTypeCode;

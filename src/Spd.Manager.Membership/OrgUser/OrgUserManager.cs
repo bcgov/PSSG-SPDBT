@@ -32,21 +32,21 @@ namespace Spd.Manager.Membership.OrgUser
                 ct);
 
             //check if email already exists for the user
-            if (existingUsersResult.UserInfoResults.Any(u => u.Email.Equals(request.OrgUserCreateRequest.Email, StringComparison.InvariantCultureIgnoreCase)))
+            if (existingUsersResult.UserResults.Any(u => u.Email.Equals(request.OrgUserCreateRequest.Email, StringComparison.InvariantCultureIgnoreCase)))
             {
                 throw new DuplicateException(HttpStatusCode.BadRequest, $"User email {request.OrgUserCreateRequest.Email} has been used by another user.");
             }
 
             //check if role is withing the maxium number scope
-            var newlist = existingUsersResult.UserInfoResults.ToList();
-            newlist.Add(_mapper.Map<UserInfoResult>(request.OrgUserCreateRequest));
+            var newlist = existingUsersResult.UserResults.ToList();
+            newlist.Add(_mapper.Map<UserResult>(request.OrgUserCreateRequest));
             await CheckMaxRoleNumberRuleAsync(newlist, request.OrgUserCreateRequest.OrganizationId, ct);
 
-            var userInfo = _mapper.Map<UserInfo>(request.OrgUserCreateRequest);
+            var user = _mapper.Map<User>(request.OrgUserCreateRequest);
             var response = await _orgUserRepository.ManageOrgUserAsync(
-                new UserCreateCmd(userInfo),
+                new UserCreateCmd(user),
                 ct);
-            return _mapper.Map<OrgUserResponse>(response.UserInfoResult);
+            return _mapper.Map<OrgUserResponse>(response.UserResult);
         }
 
         public async Task<OrgUserResponse> Handle(OrgUserUpdateCommand request, CancellationToken ct)
@@ -55,7 +55,7 @@ namespace Spd.Manager.Membership.OrgUser
                 new OrgUsersByOrgIdQry(request.OrgUserUpdateRequest.OrganizationId),
                 ct);            //check email rule
 
-            if (existingUsersResult.UserInfoResults.Any(u =>
+            if (existingUsersResult.UserResults.Any(u =>
                 u.Email.Equals(request.OrgUserUpdateRequest.Email, StringComparison.InvariantCultureIgnoreCase) &&
                 u.Id != request.OrgUserUpdateRequest.Id))
             {
@@ -63,18 +63,18 @@ namespace Spd.Manager.Membership.OrgUser
             }
 
             //check max role number rule
-            var existingUser = existingUsersResult.UserInfoResults.FirstOrDefault(u => u.Id == request.OrgUserUpdateRequest.Id);
+            var existingUser = existingUsersResult.UserResults.FirstOrDefault(u => u.Id == request.OrgUserUpdateRequest.Id);
             _mapper.Map(request.OrgUserUpdateRequest, existingUser);
             await CheckMaxRoleNumberRuleAsync(
-                existingUsersResult.UserInfoResults.ToList(),
+                existingUsersResult.UserResults.ToList(),
                 request.OrgUserUpdateRequest.OrganizationId,
                 ct);
 
-            var userInfo = _mapper.Map<UserInfo>(request.OrgUserUpdateRequest);
+            var user = _mapper.Map<User>(request.OrgUserUpdateRequest);
             var response = await _orgUserRepository.ManageOrgUserAsync(
-                new UserUpdateCmd(request.OrgUserUpdateRequest.Id, userInfo),
+                new UserUpdateCmd(request.OrgUserUpdateRequest.Id, user),
                 ct);
-            return _mapper.Map<OrgUserResponse>(response.UserInfoResult);
+            return _mapper.Map<OrgUserResponse>(response.UserResult);
         }
 
         public async Task<OrgUserResponse> Handle(OrgUserGetQuery request, CancellationToken ct)
@@ -82,7 +82,7 @@ namespace Spd.Manager.Membership.OrgUser
             var response = (OrgUserResult)await _orgUserRepository.QueryOrgUserAsync(
                 new OrgUserByIdQry(request.UserId),
                 ct);
-            return _mapper.Map<OrgUserResponse>(response.UserInfoResult);
+            return _mapper.Map<OrgUserResponse>(response.UserResult);
         }
 
         public async Task<Unit> Handle(OrgUserDeleteCommand request, CancellationToken ct)
@@ -91,8 +91,8 @@ namespace Spd.Manager.Membership.OrgUser
             var existingUsersResult = (OrgUsersResult)await _orgUserRepository.QueryOrgUserAsync(
                 new OrgUsersByOrgIdQry(request.OrganizationId),
                 ct);
-            var toDeleteUser = existingUsersResult.UserInfoResults.FirstOrDefault(u => u.Id == request.UserId);
-            var newUsers = existingUsersResult.UserInfoResults.ToList();
+            var toDeleteUser = existingUsersResult.UserResults.FirstOrDefault(u => u.Id == request.UserId);
+            var newUsers = existingUsersResult.UserResults.ToList();
             if (toDeleteUser == null) return default;
             newUsers.Remove(toDeleteUser);
             await CheckMaxRoleNumberRuleAsync(newUsers, request.OrganizationId, ct);
@@ -109,21 +109,21 @@ namespace Spd.Manager.Membership.OrgUser
                 new OrgUsersByOrgIdQry(request.OrganizationId),
                 ct);
 
-            var userResps = _mapper.Map<IEnumerable<OrgUserResponse>>(existingUsersResult.UserInfoResults);
+            var userResps = _mapper.Map<IEnumerable<OrgUserResponse>>(existingUsersResult.UserResults);
             var org = await _orgRepository.QueryOrgAsync(new OrgByIdQry(request.OrganizationId), ct);
             return new OrgUserListResponse
             {
-                MaximumNumberOfAuthorizedContacts = org.OrgQryInfo.MaxContacts,
-                MaximumNumberOfPrimaryAuthorizedContacts = org.OrgQryInfo.MaxPrimaryContacts,
+                MaximumNumberOfAuthorizedContacts = org.OrgResult.MaxContacts,
+                MaximumNumberOfPrimaryAuthorizedContacts = org.OrgResult.MaxPrimaryContacts,
                 Users = userResps
             };
         }
 
-        private async Task CheckMaxRoleNumberRuleAsync(List<UserInfoResult> userList, Guid orgId, CancellationToken ct)
+        private async Task CheckMaxRoleNumberRuleAsync(List<UserResult> userList, Guid orgId, CancellationToken ct)
         {
             var org = await _orgRepository.QueryOrgAsync(new OrgByIdQry(orgId), ct);
-            int maxContacts = org.OrgQryInfo.MaxContacts;
-            int maxPrimaryContacts = org.OrgQryInfo.MaxPrimaryContacts;
+            int maxContacts = org.OrgResult.MaxContacts;
+            int maxPrimaryContacts = org.OrgResult.MaxPrimaryContacts;
             int userNo = userList.Count;
             if (userNo > maxContacts)
             {

@@ -9,12 +9,11 @@ namespace Spd.Resource.Organizations.Identity
     {
         private readonly DynamicsContext _dynaContext;
         private readonly IMapper _mapper;
-        private readonly ILogger<IdentityRepository> _logger;
+
         public IdentityRepository(IDynamicsContextFactory ctx, IMapper mapper, ILogger<IdentityRepository> logger)
         {
             _dynaContext = ctx.Create();
             _mapper = mapper;
-            _logger = logger;
         }
 
         public async Task<IdentityQueryResult?> QueryIdentity(IdentityQuery query, CancellationToken ct)
@@ -32,7 +31,7 @@ namespace Spd.Resource.Organizations.Identity
                 .Where(i => i.statecode != DynamicsConstants.StateCode_Inactive)
                 .FirstOrDefault();
             if (identity == null) return null;
-            return new IdentityQueryResult(_mapper.Map<IdentityInfo>(identity));
+            return new IdentityQueryResult(_mapper.Map<Identity>(identity));
         }
     }
 }
