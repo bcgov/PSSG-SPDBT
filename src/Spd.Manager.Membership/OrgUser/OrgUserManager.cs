@@ -1,5 +1,6 @@
 using AutoMapper;
 using MediatR;
+using Spd.Resource.Organizations.Org;
 using Spd.Resource.Organizations.User;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
@@ -16,37 +17,45 @@ namespace Spd.Manager.Membership.OrgUser
     {
         private readonly IOrgUserRepository _orgUserRepository;
         private readonly IMapper _mapper;
-        public OrgUserManager(IOrgUserRepository orgUserRepository, IMapper mapper)
+        private readonly IOrgRepository _orgRepository;
+        public OrgUserManager(IOrgUserRepository orgUserRepository, IMapper mapper, IOrgRepository orgRepository)
         {
             _orgUserRepository = orgUserRepository;
             _mapper = mapper;
+            _orgRepository = orgRepository;
         }
 
-        public async Task<OrgUserResponse> Handle(OrgUserCreateCommand request, CancellationToken cancellationToken)
+        public async Task<OrgUserResponse> Handle(OrgUserCreateCommand request, CancellationToken ct)
         {
-            var existingUsers = await _orgUserRepository.GetUserListAsync(request.OrgUserCreateRequest.OrganizationId, cancellationToken);
+            var existingUsersResult = (OrgUsersResult)await _orgUserRepository.QueryOrgUserAsync(
+                new OrgUsersByOrgIdQry(request.OrgUserCreateRequest.OrganizationId),
+                ct);
+
             //check if email already exists for the user
-            if (existingUsers.Users.Any(u => u.Email.Equals(request.OrgUserCreateRequest.Email, StringComparison.InvariantCultureIgnoreCase)))
+            if (existingUsersResult.UserResults.Any(u => u.Email.Equals(request.OrgUserCreateRequest.Email, StringComparison.InvariantCultureIgnoreCase)))
             {
                 throw new DuplicateException(HttpStatusCode.BadRequest, $"User email {request.OrgUserCreateRequest.Email} has been used by another user.");
             }
 
             //check if role is withing the maxium number scope
-            var newlist = existingUsers.Users.ToList();
-            newlist.Add(_mapper.Map<UserResp>(request.OrgUserCreateRequest));
-            existingUsers.Users = newlist;
-            CheckMaxRoleNumberRule(existingUsers);
+            var newlist = existingUsersResult.UserResults.ToList();
+            newlist.Add(_mapper.Map<UserResult>(request.OrgUserCreateRequest));
+            await CheckMaxRoleNumberRuleAsync(newlist, request.OrgUserCreateRequest.OrganizationId, ct);
 
-            var createOrgUser = _mapper.Map<UserCreateCmd>(request.OrgUserCreateRequest);
-            var response = await _orgUserRepository.AddUserAsync(createOrgUser, cancellationToken);
-            return _mapper.Map<OrgUserResponse>(response);
+            var user = _mapper.Map<User>(request.OrgUserCreateRequest);
+            var response = await _orgUserRepository.ManageOrgUserAsync(
+                new UserCreateCmd(user),
+                ct);
+            return _mapper.Map<OrgUserResponse>(response.UserResult);
         }
 
-        public async Task<OrgUserResponse> Handle(OrgUserUpdateCommand request, CancellationToken cancellationToken)
+        public async Task<OrgUserResponse> Handle(OrgUserUpdateCommand request, CancellationToken ct)
         {
-            var existingUsers = await _orgUserRepository.GetUserListAsync(request.OrgUserUpdateRequest.OrganizationId, cancellationToken);
-            //check email rule
-            if (existingUsers.Users.Any(u =>
+            var existingUsersResult = (OrgUsersResult)await _orgUserRepository.QueryOrgUserAsync(
+                new OrgUsersByOrgIdQry(request.OrgUserUpdateRequest.OrganizationId),
+                ct);            //check email rule
+
+            if (existingUsersResult.UserResults.Any(u =>
                 u.Email.Equals(request.OrgUserUpdateRequest.Email, StringComparison.InvariantCultureIgnoreCase) &&
                 u.Id != request.OrgUserUpdateRequest.Id))
             {
@@ -54,52 +63,76 @@ namespace Spd.Manager.Membership.OrgUser
             }
 
             //check max role number rule
-            var existingUser = existingUsers.Users.FirstOrDefault(u => u.Id == request.OrgUserUpdateRequest.Id);
+            var existingUser = existingUsersResult.UserResults.FirstOrDefault(u => u.Id == request.OrgUserUpdateRequest.Id);
             _mapper.Map(request.OrgUserUpdateRequest, existingUser);
-            CheckMaxRoleNumberRule(existingUsers);
+            await CheckMaxRoleNumberRuleAsync(
+                existingUsersResult.UserResults.ToList(),
+                request.OrgUserUpdateRequest.OrganizationId,
+                ct);
 
-            var updateOrgUser = _mapper.Map<UserUpdateCmd>(request.OrgUserUpdateRequest);
-            var response = await _orgUserRepository.UpdateUserAsync(updateOrgUser, cancellationToken);
-            return _mapper.Map<OrgUserResponse>(response);
+            var user = _mapper.Map<User>(request.OrgUserUpdateRequest);
+            var response = await _orgUserRepository.ManageOrgUserAsync(
+                new UserUpdateCmd(request.OrgUserUpdateRequest.Id, user),
+                ct);
+            return _mapper.Map<OrgUserResponse>(response.UserResult);
         }
 
-        public async Task<OrgUserResponse> Handle(OrgUserGetQuery request, CancellationToken cancellationToken)
+        public async Task<OrgUserResponse> Handle(OrgUserGetQuery request, CancellationToken ct)
         {
-            var response = await _orgUserRepository.GetUserAsync(request.UserId, cancellationToken);
-            return _mapper.Map<OrgUserResponse>(response);
+            var response = (OrgUserResult)await _orgUserRepository.QueryOrgUserAsync(
+                new OrgUserByIdQry(request.UserId),
+                ct);
+            return _mapper.Map<OrgUserResponse>(response.UserResult);
         }
 
-        public async Task<Unit> Handle(OrgUserDeleteCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(OrgUserDeleteCommand request, CancellationToken ct)
         {
             //check role max number rule
-            var existingUsers = await _orgUserRepository.GetUserListAsync(request.OrganizationId, cancellationToken);
-            var toDeleteUser = existingUsers.Users.FirstOrDefault(u => u.Id == request.UserId);
-            var newUsers = existingUsers.Users.ToList();
+            var existingUsersResult = (OrgUsersResult)await _orgUserRepository.QueryOrgUserAsync(
+                new OrgUsersByOrgIdQry(request.OrganizationId),
+                ct);
+            var toDeleteUser = existingUsersResult.UserResults.FirstOrDefault(u => u.Id == request.UserId);
+            var newUsers = existingUsersResult.UserResults.ToList();
+            if (toDeleteUser == null) return default;
             newUsers.Remove(toDeleteUser);
-            existingUsers.Users = newUsers;
-            CheckMaxRoleNumberRule(existingUsers);
+            await CheckMaxRoleNumberRuleAsync(newUsers, request.OrganizationId, ct);
 
-            await _orgUserRepository.DeleteUserAsync(request.UserId, cancellationToken);
+            await _orgUserRepository.ManageOrgUserAsync(
+                new UserDeleteCmd(request.UserId),
+                ct);
             return default;
         }
 
-        public async Task<OrgUserListResponse> Handle(OrgUserListQuery request, CancellationToken cancellationToken)
+        public async Task<OrgUserListResponse> Handle(OrgUserListQuery request, CancellationToken ct)
         {
-            var response = await _orgUserRepository.GetUserListAsync(request.OrganizationId, cancellationToken);
-            return _mapper.Map<OrgUserListResponse>(response);
+            var existingUsersResult = (OrgUsersResult)await _orgUserRepository.QueryOrgUserAsync(
+                new OrgUsersByOrgIdQry(request.OrganizationId),
+                ct);
+
+            var userResps = _mapper.Map<IEnumerable<OrgUserResponse>>(existingUsersResult.UserResults);
+            var org = await _orgRepository.QueryOrgAsync(new OrgByIdQry(request.OrganizationId), ct);
+            return new OrgUserListResponse
+            {
+                MaximumNumberOfAuthorizedContacts = org.OrgResult.MaxContacts,
+                MaximumNumberOfPrimaryAuthorizedContacts = org.OrgResult.MaxPrimaryContacts,
+                Users = userResps
+            };
         }
 
-        private void CheckMaxRoleNumberRule(OrgUsersResp userList)
+        private async Task CheckMaxRoleNumberRuleAsync(List<UserResult> userList, Guid orgId, CancellationToken ct)
         {
-            int userNo = userList.Users.Count();
-            if (userNo > userList.MaximumNumberOfAuthorizedContacts)
+            var org = await _orgRepository.QueryOrgAsync(new OrgByIdQry(orgId), ct);
+            int maxContacts = org.OrgResult.MaxContacts;
+            int maxPrimaryContacts = org.OrgResult.MaxPrimaryContacts;
+            int userNo = userList.Count;
+            if (userNo > maxContacts)
             {
-                throw new OutOfRangeException(HttpStatusCode.BadRequest, $"No more contacts can created. The limit of {userList.MaximumNumberOfAuthorizedContacts} contacts has been reached.");
+                throw new OutOfRangeException(HttpStatusCode.BadRequest, $"No more contacts can created. The limit of {maxContacts} contacts has been reached.");
             }
-            int primaryUserNo = userList.Users.Count(u => u.ContactAuthorizationTypeCode == ContactRoleCode.Primary);
-            if (primaryUserNo > userList.MaximumNumberOfPrimaryAuthorizedContacts)
+            int primaryUserNo = userList.Count(u => u.ContactAuthorizationTypeCode == ContactRoleCode.Primary);
+            if (primaryUserNo > maxPrimaryContacts)
             {
-                throw new OutOfRangeException(HttpStatusCode.BadRequest, $"No more primary contacts can created. The limit of {userList.MaximumNumberOfPrimaryAuthorizedContacts} primary contacts has been reached.");
+                throw new OutOfRangeException(HttpStatusCode.BadRequest, $"No more primary contacts can created. The limit of {maxPrimaryContacts} primary contacts has been reached.");
             }
             if (primaryUserNo < 1)
             {

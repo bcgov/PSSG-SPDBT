@@ -6,11 +6,11 @@ namespace Spd.Manager.Membership.OrgUser
 {
     public interface IOrgUserManager
     {
-        public Task<OrgUserResponse> Handle(OrgUserCreateCommand request, CancellationToken cancellationToken);
-        public Task<OrgUserResponse> Handle(OrgUserUpdateCommand request, CancellationToken cancellationToken);
-        public Task<OrgUserResponse> Handle(OrgUserGetQuery request, CancellationToken cancellationToken);
-        public Task<OrgUserListResponse> Handle(OrgUserListQuery request, CancellationToken cancellationToken);
-        public Task<Unit> Handle(OrgUserDeleteCommand request, CancellationToken cancellationToken);
+        public Task<OrgUserResponse> Handle(OrgUserCreateCommand request, CancellationToken ct);
+        public Task<OrgUserResponse> Handle(OrgUserUpdateCommand request, CancellationToken ct);
+        public Task<OrgUserResponse> Handle(OrgUserGetQuery request, CancellationToken ct);
+        public Task<OrgUserListResponse> Handle(OrgUserListQuery request, CancellationToken ct);
+        public Task<Unit> Handle(OrgUserDeleteCommand request, CancellationToken ct);
     }
 
     public record OrgUserCreateCommand(OrgUserCreateRequest OrgUserCreateRequest) : IRequest<OrgUserResponse>;
@@ -23,9 +23,9 @@ namespace Spd.Manager.Membership.OrgUser
     {
         public Guid OrganizationId { get; set; }
         public ContactAuthorizationTypeCode ContactAuthorizationTypeCode { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; }= string.Empty;
+        public string Email { get; set; } = string.Empty;
         public string? JobTitle { get; set; }
         public string? PhoneNumber { get; set; }
     }
@@ -40,7 +40,7 @@ namespace Spd.Manager.Membership.OrgUser
     {
         public int? MaximumNumberOfAuthorizedContacts { get; set; }
         public int? MaximumNumberOfPrimaryAuthorizedContacts { get; set; }
-        public IEnumerable<OrgUserResponse> Users { get; set; }
+        public IEnumerable<OrgUserResponse> Users { get; set; }=Array.Empty<OrgUserResponse>();
     }
 
     public class OrgUserResponse
@@ -48,9 +48,9 @@ namespace Spd.Manager.Membership.OrgUser
         public Guid Id { get; set; }
         public Guid OrganizationId { get; set; }
         public ContactAuthorizationTypeCode ContactAuthorizationTypeCode { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
         public string? JobTitle { get; set; }
         public string? PhoneNumber { get; set; }
     }

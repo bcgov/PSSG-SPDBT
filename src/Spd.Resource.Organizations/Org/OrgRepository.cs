@@ -12,30 +12,39 @@ namespace Spd.Resource.Organizations.Org
     {
         private readonly DynamicsContext _dynaContext;
         private readonly IMapper _mapper;
-        private readonly ILogger<OrgRepository> _logger;
         public OrgRepository(IDynamicsContextFactory ctx, IMapper mapper, ILogger<OrgRepository> logger)
         {
             _dynaContext = ctx.Create();
             _mapper = mapper;
-            _logger = logger;
+        }
+        public async Task<OrgQryResult?> QueryOrgAsync(OrgQry query, CancellationToken ct)
+        {
+            return query switch
+            {
+                OrgByOrgGuidQry q => await GetOrgByOrgGuidAsync(q, ct),
+                OrgByIdQry q => await GetOrgByOrgIdAsync(q, ct),
+                _ => throw new NotSupportedException($"{query.GetType().Name} is not supported")
+            };
         }
 
-        public async Task<OrgResp> OrgUpdateAsync(OrgUpdateCmd updateOrgCmd, CancellationToken cancellationToken)
+        public async Task<OrgManageResult?> ManageOrgAsync(OrgCmd cmd, CancellationToken ct)
         {
-            var org = GetOrgById(updateOrgCmd.Id);
-            _mapper.Map(updateOrgCmd, org);
+            return cmd switch
+            {
+                OrgUpdateCmd c => await OrgUpdateAsync(c, ct),
+                _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
+            };
+        }
+
+        private async Task<OrgManageResult?> OrgUpdateAsync(OrgUpdateCmd updateOrgCmd, CancellationToken ct)
+        {
+            var org = GetOrgById(updateOrgCmd.Org.Id);
+            _mapper.Map(updateOrgCmd.Org, org);
 
             _dynaContext.UpdateObject(org);
-            await _dynaContext.SaveChangesAsync(cancellationToken);
+            await _dynaContext.SaveChangesAsync(ct);
 
-            return _mapper.Map<OrgResp>(org);
-        }
-
-        public async Task<OrgResp> OrgGetAsync(Guid orgId, CancellationToken cancellationToken)
-        {
-            var org = GetOrgById(orgId);
-            var response = _mapper.Map<OrgResp>(org);
-            return response;
+            return new OrgManageResult(_mapper.Map<Org>(org));
         }
 
         public async Task<bool> CheckDuplicateAsync(SearchOrgQry searchQry, CancellationToken cancellationToken)
@@ -73,6 +82,23 @@ namespace Spd.Resource.Organizations.Org
                 ).FirstOrDefault();
                 return org != null;
             }
+        }
+
+        private async Task<OrgQryResult?> GetOrgByOrgGuidAsync(OrgByOrgGuidQry query, CancellationToken ct)
+        {
+            var account = _dynaContext.accounts
+                .Where(a => a.spd_orgguid == query.OrgGuid.ToString())
+                .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
+                .FirstOrDefault();
+            if (account == null) return null;
+            return new OrgQryResult(_mapper.Map<OrgResult>(account));
+        }
+
+        private async Task<OrgQryResult?> GetOrgByOrgIdAsync(OrgByIdQry query, CancellationToken ct)
+        {
+            var org = GetOrgById(query.OrgId);
+            var response = _mapper.Map<OrgResult>(org);
+            return new OrgQryResult(response);
         }
 
         private account? GetOrgById(Guid organizationId)
