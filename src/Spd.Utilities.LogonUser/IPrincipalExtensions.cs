@@ -7,6 +7,7 @@ namespace Spd.Utilities.LogonUser
     {
         public static readonly string[] BCeID_IDENTITY_PROVIDERS = { "bceidboth", "bceidbusiness", "bceidbasic" };
         public static readonly string BCeID_USER_NAME = "bceid_username";
+        public static readonly string BCeID_DISPLAY_USER_NAME = "display_name";
         public static readonly string BCeID_USER_GUID = "bceid_user_guid";
         public static readonly string BCeID_BUSINESS_NAME = "bceid_business_name";
         public static readonly string BCeID_BUSINESS_GUID = "bceid_business_guid";
@@ -22,6 +23,11 @@ namespace Spd.Utilities.LogonUser
             if (BCeID_IDENTITY_PROVIDERS.Contains(principal.GetIdentityProvider()))
                 return ValidatePrincipal(principal).GetClaimValue(BCeID_USER_NAME);
             return null;
+        }
+
+        public static string GetUserDisplayName(this IPrincipal principal)
+        {
+            return ValidatePrincipal(principal).GetClaimValue(BCeID_DISPLAY_USER_NAME);
         }
 
         public static string GetUserFirstName(this IPrincipal principal)
