@@ -12,8 +12,7 @@ namespace Spd.Manager.Membership.Org
 
     public record OrgUpdateCommand(OrgUpdateRequest OrgUpdateRequest, Guid OrgId) : IRequest<OrgResponse>;
     public record OrgGetQuery(Guid OrgId) : IRequest<OrgResponse>;
-
-    public class OrgUpdateRequest
+    public record OrgInfo
     {
         public Guid Id { get; set; }
         public PayerPreferenceTypeCode PayerPreference { get; set; }
@@ -30,25 +29,8 @@ namespace Spd.Manager.Membership.Org
         public string? OrganizationName { get; set; }
         public string? OrganizationLegalName { get; set; }
     }
-
-    public class OrgResponse
-    {
-        public Guid Id { get; set; }
-        public PayerPreferenceTypeCode PayerPreference { get; set; }
-        public BooleanTypeCode ContractorsNeedVulnerableSectorScreening { get; set; }
-        public BooleanTypeCode LicenseesNeedVulnerableSectorScreening { get; set; }
-        public string? Email { get; set; }
-        public string? PhoneNumber { get; set; }
-        public string? AddressLine1 { get; set; }
-        public string? AddressLine2 { get; set; }
-        public string? AddressCity { get; set; }
-        public string? AddressCountry { get; set; }
-        public string? AddressPostalCode { get; set; }
-        public string? AddressProvince { get; set; }
-        public string? OrganizationName { get; set; }
-        public string? OrganizationLegalName { get; set; }
-    }
-
+    public record OrgUpdateRequest:OrgInfo;
+    public record OrgResponse : OrgInfo;
     public class OrgUpdateRequestValidator : AbstractValidator<OrgUpdateRequest>
     {
         public OrgUpdateRequestValidator()

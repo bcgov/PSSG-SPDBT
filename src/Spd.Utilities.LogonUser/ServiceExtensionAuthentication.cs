@@ -2,6 +2,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Spd.Utilities.LogonUser.Configurations;
+using System.Configuration;
 using System.Security.Claims;
 
 namespace Spd.Utilities.LogonUser
@@ -18,7 +19,7 @@ namespace Spd.Utilities.LogonUser
             .Get<BCeIDAuthenticationConfiguration>();
 
             if (bceidConfig == null)
-                throw new Exception("bcediAuthentication configuration is not set correctly.");
+                throw new ConfigurationErrorsException("bcediAuthentication configuration is not set correctly.");
 
             services.AddAuthentication(options =>
             {
