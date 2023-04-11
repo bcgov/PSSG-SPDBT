@@ -13,7 +13,7 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 		<app-dashboard-header title="Organization Name" subtitle="Security Screening Portal"></app-dashboard-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
-				<div class="col-xxl-8 col-xl-7 col-lg-9 col-md-8 col-sm-12">
+				<div class="col-xxl-7 col-xl-7 col-lg-9 col-md-8 col-sm-12">
 					<h2 class="mb-2 fw-normal">
 						User Management <mat-icon (click)="manageUsersInfo()">info</mat-icon>
 						<div class="mt-2 fs-5 fw-light">
@@ -35,25 +35,21 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 			</div>
 			<ng-container *ngFor="let user of usersList; let i = index">
 				<div class="row mt-2 mb-2">
-					<div class="col-xxl-10 col-xl-10 col-lg-12 col-md-12 col-sm-12">
+					<div class="col-xxl-9 col-xl-10 col-lg-12 col-md-12 col-sm-12">
 						<section class="px-4 py-2 mb-3 card-section">
 							<div class="row my-2">
 								<div class="col-xl-9 col-lg-12 col-md-12 col-sm-12">
+									<div class="badge rounded-pill bg-success mb-2">User #{{ i + 1 }} - Active</div>
 									<div class="row">
-										<div class="col-xl-1 col-lg-1 col-md-1 col-sm-10">
-											<span class="badge rounded-pill bg-success">
-												{{ i + 1 }}
-											</span>
-										</div>
 										<div class="col-xl-5 col-lg-5 col-md-12 mt-2 mt-lg-0">
 											<small class="d-block text-muted">Authorization Type</small>
 											<strong> {{ getDesc(user.contactAuthorizationTypeCode) | default }} </strong>
 										</div>
-										<div class="col-xl-6 col-lg-6 col-md-12">
+										<div class="col-xl-7 col-lg-6 col-md-12">
 											<small class="d-block text-muted">Name</small>
 											<strong> {{ user | fullname | default }} </strong>
 										</div>
-										<div class="col-xl-1 col-lg-1 col-md-1 col-sm-10"></div>
+
 										<div class="col-xl-5 col-lg-5 col-md-12 mt-0 mt-lg-2">
 											<small class="d-block text-muted">Email</small>
 											<strong> {{ user.email | default }} </strong>
@@ -62,7 +58,7 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 											<small class="d-block text-muted">Phone Number</small>
 											<strong>{{ user.phoneNumber || '' | mask : appConstants.phone.displayMask | default }}</strong>
 										</div>
-										<div class="col-xl-3 col-lg-3 col-md-12 mt-0 mt-lg-2">
+										<div class="col-xl-4 col-lg-3 col-md-12 mt-0 mt-lg-2">
 											<small class="d-block text-muted">Job Title</small>
 											<strong>{{ user.jobTitle | default }}</strong>
 										</div>
@@ -72,7 +68,7 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 									<button
 										mat-stroked-button
 										matTooltip="Edit user"
-										class="table-button m-2"
+										class="table-button my-2"
 										(click)="onMaintainUser(user)"
 										aria-label="Edit user"
 									>
@@ -81,7 +77,7 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 									<button
 										mat-icon-button
 										matTooltip="Remove user"
-										class="table-button table-button__remove m-2"
+										class="table-button table-button__remove my-2"
 										*ngIf="allowDeleteRow(user)"
 										(click)="onDeleteUser(user)"
 										aria-label="Remove user"
@@ -123,6 +119,18 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 				border-bottom-width: 1px;
 				border-bottom-style: solid;
 				border-bottom-color: rgba(0, 0, 0, 0.12);
+			}
+
+			.active-user {
+				color: var(--color-green);
+				top: -5px;
+				position: relative;
+			}
+
+			.pending-user {
+				color: var(--color-orange);
+				top: -5px;
+				position: relative;
 			}
 		`,
 	],
