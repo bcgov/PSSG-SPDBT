@@ -8,13 +8,13 @@ import { CaptchaResponse } from './shared/components/captcha-v2.component';
 	selector: 'app-landing',
 	template: `
 		<section class="step-section col-md-3 col-sm-12 mx-auto mt-4 p-4">
-			<button mat-raised-button color="primary" class="large my-4" [routerLink]="['/org-registration/']">
+			<button mat-raised-button color="primary" class="large my-2" [routerLink]="['/org-registration/']">
 				Organization Registration
 			</button>
 
 			<mat-divider class="my-3"></mat-divider>
 
-			<button mat-raised-button color="primary" class="large my-4" (click)="goToScreening()">
+			<button mat-raised-button color="primary" class="large my-2" (click)="goToScreening()">
 				Screening Application
 			</button>
 
@@ -29,15 +29,15 @@ import { CaptchaResponse } from './shared/components/captcha-v2.component';
 
 			<mat-divider class="my-3"></mat-divider>
 
-			<button mat-raised-button color="primary" class="large my-4" (click)="onRegisterWithBCeid()">
+			<button mat-raised-button color="primary" class="large my-2" (click)="onRegisterWithBCeid()">
 				Dashboard BCeid Log In
 			</button>
 
-			<mat-divider class="my-3"></mat-divider>
-
-			<button mat-raised-button color="primary" class="large my-4" [routerLink]="['/dashboard/home/']">
+			<button mat-raised-button color="primary" class="large my-2" [routerLink]="['/dashboard/home/']">
 				Dashboard - No Log In
 			</button>
+
+			<mat-divider class="my-3"></mat-divider>
 
 			<div class="mt-2">
 				<app-captcha-v2 (captchaResponse)="onTokenResponse($event)"></app-captcha-v2>
