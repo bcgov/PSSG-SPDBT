@@ -80,6 +80,10 @@ export class OrgService extends BaseService {
   static readonly ApiOrgOrgIdPutPath = '/api/org/{orgId}';
 
   /**
+   * Updating existing organization profile.
+   *
+   *
+   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `apiOrgOrgIdPut()` instead.
    *
@@ -111,6 +115,10 @@ export class OrgService extends BaseService {
   }
 
   /**
+   * Updating existing organization profile.
+   *
+   *
+   *
    * This method provides access to only to the response body.
    * To access the full response (for headers, for example), `apiOrgOrgIdPut$Response()` instead.
    *

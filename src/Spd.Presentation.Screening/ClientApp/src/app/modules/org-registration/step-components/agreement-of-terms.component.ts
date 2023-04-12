@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { CaptchaResponse, CaptchaResponseType } from 'src/app/shared/components/captcha-v2.component';
 import { RegistrationFormStepComponent } from '../org-registration.component';
 
 @Component({
@@ -62,13 +63,13 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 					</div>
 				</div>
 
-				<div class="row" *ngIf="displayScrollToBottomMessage">
+				<div class="row" *ngIf="displayValidationErrors && !hasScrolledToBottom">
 					<div class="offset-md-2 col-md-8 col-sm-12 p-0">
 						<div class="alert alert-warning" role="alert">Please scroll to the bottom</div>
 					</div>
 				</div>
 
-				<div class="row my-4">
+				<div class="row mt-4">
 					<div class="offset-md-2 col-md-8 col-sm-12">
 						<mat-checkbox formControlName="agreeToTermsAndConditions">
 							On behalf of the above noted organization, I hereby certify that I agree to the terms and conditions for
@@ -84,6 +85,13 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 							"
 							>This is required</mat-error
 						>
+					</div>
+				</div>
+
+				<div class="row my-4">
+					<div class="offset-md-2 col-md-8 col-sm-12">
+						<app-captcha-v2 (captchaResponse)="onTokenResponse($event)"></app-captcha-v2>
+						<mat-error *ngIf="displayValidationErrors && !captchaPassed"> This is required </mat-error>
 					</div>
 				</div>
 			</div>
@@ -108,7 +116,10 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 export class AgreementOfTermsComponent implements OnInit, RegistrationFormStepComponent {
 	form!: FormGroup;
 	hasScrolledToBottom = false;
-	displayScrollToBottomMessage = false;
+	displayValidationErrors = false;
+
+	captchaPassed = false;
+	captchaResponse: CaptchaResponse | null = null;
 
 	constructor(private formBuilder: FormBuilder) {}
 
@@ -123,8 +134,8 @@ export class AgreementOfTermsComponent implements OnInit, RegistrationFormStepCo
 	}
 
 	isFormValid(): boolean {
-		this.displayScrollToBottomMessage = !this.hasScrolledToBottom;
-		return this.form.valid && this.hasScrolledToBottom ? true : false;
+		this.displayValidationErrors = !this.hasScrolledToBottom || !this.captchaPassed;
+		return this.form.valid && this.hasScrolledToBottom && this.captchaPassed ? true : false;
 	}
 
 	clearCurrentData(): void {
@@ -132,9 +143,18 @@ export class AgreementOfTermsComponent implements OnInit, RegistrationFormStepCo
 	}
 
 	onScrollTermsAndConditions(e: any) {
-		this.displayScrollToBottomMessage = false;
 		if (e.target.scrollHeight < e.target.scrollTop + e.target.offsetHeight) {
 			this.hasScrolledToBottom = true;
+		}
+	}
+
+	onTokenResponse($event: CaptchaResponse) {
+		console.debug('onTokenResponse', $event);
+		this.captchaResponse = $event;
+		if ($event.type === CaptchaResponseType.success) {
+			this.captchaPassed = true;
+		} else {
+			this.captchaPassed = false;
 		}
 	}
 }

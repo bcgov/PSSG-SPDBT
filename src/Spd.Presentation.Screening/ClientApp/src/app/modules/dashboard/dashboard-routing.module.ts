@@ -7,6 +7,7 @@ import { IdentifyVerificationComponent } from './components/identify-verificatio
 import { ManualSubmissionsComponent } from './components/manual-submissions.component';
 import { NewScreeningComponent } from './components/new-screening.component';
 import { PaymentsComponent } from './components/payments.component';
+import { ReportsComponent } from './components/reports.component';
 import { ScreeningStatusesComponent } from './components/screening-statuses.component';
 import { SettingsComponent } from './components/settings.component';
 import { UsersComponent } from './components/users.component';
@@ -22,6 +23,7 @@ export class DashboardRoutes {
 	public static IDENTITY_VERIFICATION = 'identity-verification';
 	public static MANUAL_SUBMISSIONS = 'manual-submissions';
 	public static PAYMENTS = 'payments';
+	public static REPORTS = 'reports';
 	public static SETTINGS = 'settings';
 	public static USERS = 'users';
 
@@ -46,6 +48,7 @@ const routes: Routes = [
 			{ path: 'payments', component: PaymentsComponent },
 			{ path: 'manual-submissions', component: ManualSubmissionsComponent },
 			{ path: 'settings', component: SettingsComponent },
+			{ path: 'reports', component: ReportsComponent },
 			{ path: 'users', component: UsersComponent },
 		],
 	},
