@@ -28,7 +28,7 @@ export class AuthConfigService {
 	}
 
 	public async getAuthConfig(redirectUri: string): Promise<AuthConfig> {
-		console.debug('[getAuthConfig] redirectUri', redirectUri);
+		console.debug('[AuthConfigService.getAuthConfig] redirectUri', redirectUri);
 		return await this.loadConfig().then((resp) => {
 			const config = {
 				issuer: resp.issuer!,
@@ -41,7 +41,7 @@ export class AuthConfigService {
 				// eslint-disable-next-line @typescript-eslint/naming-convention
 				customQueryParams: { kc_idp_hint: 'bceidboth' },
 			};
-			console.debug('[getAuthConfig] config', config);
+			console.debug('[AuthConfigService.getAuthConfig] config', config);
 			return config;
 		});
 	}

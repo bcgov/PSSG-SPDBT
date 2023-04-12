@@ -62,7 +62,7 @@ export class LandingComponent {
 
 	async onRegisterWithBCeid(): Promise<void> {
 		const isLoggedIn = await this.authenticationService.login(null);
-		console.debug('[onRegisterWithBCeid] isLoggedIn', isLoggedIn);
+		console.debug('[LandingComponent.onRegisterWithBCeid] isLoggedIn', isLoggedIn);
 		if (isLoggedIn) {
 			const postLoginRoute = DashboardRoutes.dashboardPath(DashboardRoutes.HOME);
 			this.router.navigateByUrl(postLoginRoute);
