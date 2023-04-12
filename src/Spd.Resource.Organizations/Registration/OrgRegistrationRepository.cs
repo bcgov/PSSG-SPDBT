@@ -31,6 +31,11 @@ namespace Spd.Resource.Organizations.Registration
 
             spd_orgregistration orgregistration = _mapper.Map<spd_orgregistration>(createRegistrationCmd);
             _dynaContext.AddTospd_orgregistrations(orgregistration);
+
+            Guid teamGuid = Guid.Parse(DynamicsConstants.Client_Service_Team_Guid);
+            var serviceTeam = _dynaContext.teams.Where(t => t.teamid == teamGuid).FirstOrDefault();
+            _dynaContext.SetLink(orgregistration, nameof(spd_orgregistration.ownerid), serviceTeam);
+
             _dynaContext.SetLink(orgregistration, nameof(spd_orgregistration.spd_OrganizationTypeId), _dynaContext.LookupOrganizationType(key));
             await _dynaContext.SaveChangesAsync(cancellationToken);
             return true;
