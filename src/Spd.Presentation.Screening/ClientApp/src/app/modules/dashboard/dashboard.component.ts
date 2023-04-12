@@ -58,7 +58,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 									class="nav-link align-middle text-white w-100"
 								>
 									<mat-icon>post_add</mat-icon>
-									<span class="menu-item ms-2 d-none d-sm-inline text-white">New Screening</span>
+									<span class="menu-item ms-2 d-none d-sm-inline text-white">Screening Requests</span>
 								</a>
 							</li>
 							<li class="nav-item w-100">
@@ -94,6 +94,16 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 							<hr class="d-none d-sm-inline w-100 text-white" />
 							<li class="nav-item w-100">
 								<a
+									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.GENERIC_UPLOADS)]"
+									routerLinkActive="active"
+									class="nav-link align-middle text-white w-100"
+								>
+									<mat-icon>cloud_upload</mat-icon>
+									<span class="menu-item ms-2 d-none d-sm-inline text-white">Generic Uploads</span>
+								</a>
+							</li>
+							<li class="nav-item w-100">
+								<a
 									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.IDENTITY_VERIFICATION)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
@@ -114,12 +124,12 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 							</li>
 							<li class="nav-item w-100">
 								<a
-									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.GENERIC_UPLOADS)]"
+									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.REPORTS)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
 								>
-									<mat-icon>cloud_upload</mat-icon>
-									<span class="menu-item ms-2 d-none d-sm-inline text-white">Generic Uploads</span>
+									<mat-icon>article</mat-icon>
+									<span class="menu-item ms-2 d-none d-sm-inline text-white">Reports</span>
 								</a>
 							</li>
 							<li class="nav-item w-100">

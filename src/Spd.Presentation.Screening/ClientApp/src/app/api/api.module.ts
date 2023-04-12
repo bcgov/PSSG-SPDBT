@@ -7,10 +7,10 @@ import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 import { AddressAutoCompleteService } from './services/address-auto-complete.service';
 import { ApplicationService } from './services/application.service';
 import { BCeIdConfigurationService } from './services/b-ce-id-configuration.service';
-import { CurrentUserService } from './services/current-user.service';
 import { OrgService } from './services/org.service';
 import { OrgRegistrationService } from './services/org-registration.service';
 import { OrgUserService } from './services/org-user.service';
+import { UserProfileService } from './services/user-profile.service';
 
 /**
  * Module that provides all services and configuration.
@@ -23,10 +23,10 @@ import { OrgUserService } from './services/org-user.service';
     AddressAutoCompleteService,
     ApplicationService,
     BCeIdConfigurationService,
-    CurrentUserService,
     OrgService,
     OrgRegistrationService,
     OrgUserService,
+    UserProfileService,
     ApiConfiguration
   ],
 })
