@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RecaptchaFormsModule, RecaptchaModule } from 'ng-recaptcha';
 import { NgxDropzoneModule } from 'ngx-dropzone';
 import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
 import { MaterialModule } from '../material.module';
@@ -9,6 +10,7 @@ import { AddressModalComponent } from './components/address-modal.component';
 import { FooterComponent } from './components/app-footer.component';
 import { HeaderComponent } from './components/app-header.component';
 import { BaseFilterComponent } from './components/base-filter.component';
+import { CaptchaV2Component } from './components/captcha-v2.component';
 import { DialogComponent } from './components/dialog.component';
 import { DropdownOverlayComponent } from './components/dropdown-overlay.component';
 import { StepTitleComponent } from './components/step-title.component';
@@ -26,6 +28,7 @@ const SHARED_COMPONENTS = [
 	StepTitleComponent,
 	DefaultPipe,
 	FullnamePipe,
+	CaptchaV2Component,
 ];
 
 @NgModule({
@@ -38,6 +41,8 @@ const SHARED_COMPONENTS = [
 		NgxMaskDirective,
 		NgxMaskPipe,
 		NgxDropzoneModule,
+		RecaptchaFormsModule,
+		RecaptchaModule,
 	],
 	providers: [provideNgxMask(), NgxMaskPipe],
 	exports: [

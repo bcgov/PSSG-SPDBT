@@ -190,7 +190,7 @@ export const EmployeeInteractionTypes = [
 									class="delete-row-button mb-3"
 									matTooltip="Remove previous name"
 									(click)="deleteRow(i)"
-									[disabled]="oneRowExists"
+									[disabled]="moreThanOneAlias"
 									aria-label="Remove row"
 								>
 									<mat-icon>delete_outline</mat-icon>
@@ -198,7 +198,7 @@ export const EmployeeInteractionTypes = [
 							</div>
 						</div>
 					</ng-container>
-					<div class="row">
+					<div class="row" *ngIf="isMaxAliasCount">
 						<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
 							<button mat-stroked-button (click)="onAddRow()">
 								<mat-icon class="add-icon">add_circle</mat-icon>Add Another Name
@@ -589,8 +589,12 @@ export class ManualSubmissionsComponent implements OnInit {
 		return this.form.get('previousNameFlag') as FormControl;
 	}
 
-	get oneRowExists(): boolean {
+	get moreThanOneAlias(): boolean {
 		return this.aliases.length > 1 ? false : true;
+	}
+
+	get isMaxAliasCount(): boolean {
+		return this.aliases.length >= 3 ? false : true;
 	}
 
 	private newAliasRow(): FormGroup {

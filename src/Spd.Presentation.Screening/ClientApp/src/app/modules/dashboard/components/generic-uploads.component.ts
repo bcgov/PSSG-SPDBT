@@ -116,14 +116,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 						<mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
 						<mat-row *matRowDef="let row; columns: columns"></mat-row>
 					</mat-table>
-					<mat-paginator
-						#paginator
-						[length]="100"
-						[pageSize]="10"
-						[pageSizeOptions]="[5, 10, 25, 100]"
-						aria-label="Select page"
-					>
-					</mat-paginator>
+					<mat-paginator #paginator [length]="100" [pageSize]="10" aria-label="Select page"> </mat-paginator>
 				</div>
 			</div>
 		</section>
