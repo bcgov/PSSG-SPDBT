@@ -8,7 +8,9 @@ namespace Spd.Manager.Membership.Org
         public Mappings()
         {
             CreateMap<OrgUpdateRequest, Spd.Resource.Organizations.Org.Org>();
-            CreateMap<OrgResult, OrgResponse>();
+            CreateMap<Spd.Resource.Organizations.Org.Org, OrgResponse>();
+            CreateMap<OrgResult, OrgResponse>()
+                .IncludeBase<Spd.Resource.Organizations.Org.Org, OrgResponse>();
         }
     }
 }
