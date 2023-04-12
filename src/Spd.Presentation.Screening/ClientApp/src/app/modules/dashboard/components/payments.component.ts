@@ -188,7 +188,6 @@ export class PaymentsComponent implements OnInit {
 
 	ngOnInit(): void {
 		const caseId = (this.location.getState() as any).caseId;
-		console.log('caseId', caseId);
 		this.formFilter.patchValue({ search: caseId });
 
 		this.columns = ['applicantName', 'createdOn', 'dateTimePaid', 'status', 'actions'];

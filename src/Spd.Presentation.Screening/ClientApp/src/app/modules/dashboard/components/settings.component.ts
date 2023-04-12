@@ -257,66 +257,32 @@ export class SettingsComponent implements OnInit {
 	onEdit(): void {
 		this.viewOnly = false;
 		this.form.enable();
-
-		// this.form.get('organizationName')!.disable({ emitEvent: false });
-
-		// const orgName = this.form.get('organizationName') as FormControl;
-		// orgName.disable();
 	}
 
 	onEditView() {
-		if (!this.viewOnly) {
-			this.form.markAllAsTouched();
-			console.log('this.form.valid', this.form.valid);
-			if (this.form.valid) {
-				//TODO replace with proper org id
-				const body: OrgUpdateRequest = { ...this.form.value, id: '4165bdfe-7cb4-ed11-b83e-00505683fbf4' };
-				if (body.phoneNumber) {
-					body.phoneNumber = this.maskPipe.transform(body.phoneNumber, SPD_CONSTANTS.phone.backendMask);
-				}
-
-				this.orgService
-					.apiOrgOrgIdPut({ orgId: '4165bdfe-7cb4-ed11-b83e-00505683fbf4', body })
-					.pipe()
-					.subscribe((resp: OrgUpdateRequest) => {
-						this.viewOnly = true;
-						this.form.disable();
-						this.form.patchValue({ ...resp });
-						this.initialValues = this.form.value;
-						this.hotToast.success('Organization Information was successfully updated');
-					});
-			}
-		} else {
-			this.viewOnly = !this.viewOnly;
-			this.setFormView();
-		}
+		this.viewOnly = !this.viewOnly;
+		this.setFormView();
 	}
 
 	onSave() {
-		if (!this.viewOnly) {
-			this.form.markAllAsTouched();
-			console.log('this.form.valid', this.form.valid);
-			if (this.form.valid) {
-				//TODO replace with proper org id
-				const body: OrgUpdateRequest = { ...this.form.value, id: '4165bdfe-7cb4-ed11-b83e-00505683fbf4' };
-				if (body.phoneNumber) {
-					body.phoneNumber = this.maskPipe.transform(body.phoneNumber, SPD_CONSTANTS.phone.backendMask);
-				}
-
-				this.orgService
-					.apiOrgOrgIdPut({ orgId: '4165bdfe-7cb4-ed11-b83e-00505683fbf4', body })
-					.pipe()
-					.subscribe((resp: OrgUpdateRequest) => {
-						this.viewOnly = true;
-						this.form.disable();
-						this.form.patchValue({ ...resp });
-						this.initialValues = this.form.value;
-						this.hotToast.success('Organization Information was successfully updated');
-					});
+		this.form.markAllAsTouched();
+		if (this.form.valid) {
+			//TODO replace with proper org id
+			const body: OrgUpdateRequest = { ...this.form.value, id: '4165bdfe-7cb4-ed11-b83e-00505683fbf4' };
+			if (body.phoneNumber) {
+				body.phoneNumber = this.maskPipe.transform(body.phoneNumber, SPD_CONSTANTS.phone.backendMask);
 			}
-		} else {
-			this.viewOnly = !this.viewOnly;
-			this.setFormView();
+
+			this.orgService
+				.apiOrgOrgIdPut({ orgId: '4165bdfe-7cb4-ed11-b83e-00505683fbf4', body })
+				.pipe()
+				.subscribe((resp: OrgUpdateRequest) => {
+					this.viewOnly = true;
+					this.form.disable();
+					this.form.patchValue({ ...resp });
+					this.initialValues = this.form.value;
+					this.hotToast.success('Organization Information was successfully updated');
+				});
 		}
 	}
 

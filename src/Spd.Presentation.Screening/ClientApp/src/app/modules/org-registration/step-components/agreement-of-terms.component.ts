@@ -149,7 +149,7 @@ export class AgreementOfTermsComponent implements OnInit, RegistrationFormStepCo
 	}
 
 	onTokenResponse($event: CaptchaResponse) {
-		console.log('onTokenResponse', $event);
+		console.debug('onTokenResponse', $event);
 		this.captchaResponse = $event;
 		if ($event.type === CaptchaResponseType.success) {
 			this.captchaPassed = true;

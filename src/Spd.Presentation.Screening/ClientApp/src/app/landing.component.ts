@@ -70,7 +70,7 @@ export class LandingComponent {
 	}
 
 	onTokenResponse($event: CaptchaResponse) {
-		console.log('onTokenResponse', $event);
+		console.debug('onTokenResponse', $event);
 		// @Output() captchaPassed = new EventEmitter<CaptchaResponse>();
 		// this.captchaPassed.emit($event);
 	}
