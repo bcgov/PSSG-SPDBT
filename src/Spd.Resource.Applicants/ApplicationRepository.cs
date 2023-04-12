@@ -75,7 +75,7 @@ namespace Spd.Resource.Applicants
             // associate contact to application
             _dynaContext.SetLink(application, nameof(application.spd_ApplicantId_contact), contact);
 
-            // create the aliases
+            //create the aliases
             foreach (var item in createApplicationCmd.Aliases)
             {
                 spd_alias matchingAlias = GetAlias(item);
