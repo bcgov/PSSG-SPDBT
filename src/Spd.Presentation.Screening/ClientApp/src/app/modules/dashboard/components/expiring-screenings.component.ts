@@ -26,10 +26,15 @@ import { UtilService } from 'src/app/core/services/util.service';
 				</div>
 			</div>
 
-			<div class="row">
+			<div class="row" [formGroup]="formFilter">
 				<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
 					<mat-form-field>
-						<input matInput type="search" placeholder="Search" />
+						<input
+							matInput
+							type="search"
+							formControlName="search"
+							placeholder="Search applicant's name or email or case id"
+						/>
 						<button
 							mat-button
 							matSuffix
@@ -55,11 +60,11 @@ import { UtilService } from 'src/app/core/services/util.service';
 						></app-payment-filter>
 					</app-dropdown-overlay>
 				</div>
-				<div class="col-xl-3 col-lg-4 col-md-10 col-sm-9">
+				<!-- <div class="col-xl-3 col-lg-4 col-md-10 col-sm-9">
 					<button mat-raised-button color="primary" class="xlarge w-100 mb-2">
 						<mat-icon>download</mat-icon>Download Report
 					</button>
-				</div>
+				</div> -->
 			</div>
 
 			<div class="row">
@@ -90,7 +95,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 						<ng-container matColumnDef="createdOn">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Expiring On</mat-header-cell>
 							<mat-cell *matCellDef="let application">
-								<span class="mobile-label">Sent On:</span>
+								<span class="mobile-label">Expiring On:</span>
 								{{ application.createdOn | date : constants.date.dateFormat }}
 							</mat-cell>
 						</ng-container>
@@ -194,6 +199,7 @@ export class ExpiringScreeningsComponent implements OnInit {
 
 	showDropdownOverlay = false;
 	formFilter: FormGroup = this.formBuilder.group({
+		search: new FormControl(''),
 		startDate: new FormControl(''),
 		endDate: new FormControl(''),
 		paid: new FormControl(''),

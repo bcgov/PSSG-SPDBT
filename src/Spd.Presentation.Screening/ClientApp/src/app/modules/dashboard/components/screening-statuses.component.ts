@@ -3,10 +3,12 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
 import { ApplicationListResponse, ApplicationResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { UtilService } from 'src/app/core/services/util.service';
+import { DashboardRoutes } from '../dashboard-routing.module';
 
 @Component({
 	selector: 'app-screening-statuses',
@@ -27,7 +29,6 @@ import { UtilService } from 'src/app/core/services/util.service';
 			</div>
 
 			<div class="mb-4">
-				Screening statistics for January 2023:
 				<div class="d-flex flex-wrap justify-content-start">
 					<mat-card class="statistic-card mat-card-green m-2">
 						<mat-card-header>
@@ -112,10 +113,15 @@ import { UtilService } from 'src/app/core/services/util.service';
 				</div>
 			</div>
 
-			<div class="row">
+			<div class="row" [formGroup]="formFilter">
 				<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
 					<mat-form-field>
-						<input matInput type="search" placeholder="Search" />
+						<input
+							matInput
+							type="search"
+							formControlName="search"
+							placeholder="Search applicant's name or email or case id"
+						/>
 						<button
 							mat-button
 							matSuffix
@@ -141,11 +147,11 @@ import { UtilService } from 'src/app/core/services/util.service';
 						></app-payment-filter>
 					</app-dropdown-overlay>
 				</div>
-				<div class="col-xl-3 col-lg-4 col-md-10 col-sm-9">
+				<!-- <div class="col-xl-3 col-lg-4 col-md-10 col-sm-9">
 					<button mat-raised-button color="primary" class="xlarge w-100 mb-2">
 						<mat-icon>download</mat-icon>Download Report
 					</button>
-				</div>
+				</div> -->
 			</div>
 
 			<div class="row">
@@ -174,9 +180,9 @@ import { UtilService } from 'src/app/core/services/util.service';
 						</ng-container>
 
 						<ng-container matColumnDef="createdOn">
-							<mat-header-cell *matHeaderCellDef mat-sort-header>Sent On</mat-header-cell>
+							<mat-header-cell *matHeaderCellDef mat-sort-header>Submitted On</mat-header-cell>
 							<mat-cell *matCellDef="let screening">
-								<span class="mobile-label">Sent On:</span>
+								<span class="mobile-label">Submitted On:</span>
 								{{ screening.createdOn | date : constants.date.dateFormat }}
 							</mat-cell>
 						</ng-container>
@@ -209,9 +215,8 @@ import { UtilService } from 'src/app/core/services/util.service';
 
 						<ng-container matColumnDef="status">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Status / Action</mat-header-cell>
-							<mat-cell *matCellDef="let screening">
+							<mat-cell *matCellDef="let screening; let i = index">
 								<span class="mobile-label">Status:</span>
-								??
 
 								<!-- <mat-chip-listbox aria-label="Status">
 									<mat-chip-option class="mat-chip-green" *ngIf="screening.status == '1'">In Progress</mat-chip-option>
@@ -234,26 +239,32 @@ import { UtilService } from 'src/app/core/services/util.service';
 									<mat-chip-option class="mat-chip-red" *ngIf="screening.status == '8'">Risk Found</mat-chip-option>
 								</mat-chip-listbox>
 							 -->
+								<mat-chip-listbox aria-label="Status" class="ms-3" *ngIf="i % 4 == 0 || i % 4 == 3">
+									<mat-chip-option class="mat-chip-green" *ngIf="i % 4 == 0">In Progress</mat-chip-option>
+									<mat-chip-option class="mat-chip-yellow" *ngIf="i % 4 == 3"> Awaiting Applicant </mat-chip-option>
+								</mat-chip-listbox>
 
-								<!-- <a
+								<a
 									mat-flat-button
-									(click)="onPayNow()"
+									(click)="onPayNow(screening)"
 									class="m-2"
 									style="color: var(--color-primary-light);"
 									aria-label="Pay now"
+									*ngIf="i % 4 == 1"
 								>
 									Pay Now <mat-icon iconPositionEnd>chevron_right</mat-icon>
-								</a> -->
+								</a>
 
-								<!-- <a
+								<a
 									mat-flat-button
-									(click)="onPayNow()"
+									(click)="onVerifyApplicant(screening)"
 									class="m-2"
 									style="color: var(--color-green);"
 									aria-label="Verify Applicant"
+									*ngIf="i % 4 == 2"
 								>
 									Verify Applicant <mat-icon iconPositionEnd>chevron_right</mat-icon>
-								</a> -->
+								</a>
 							</mat-cell>
 						</ng-container>
 
@@ -276,7 +287,6 @@ import { UtilService } from 'src/app/core/services/util.service';
 		`
 			.mat-column-status {
 				min-width: 240px;
-				justify-content: center !important;
 			}
 
 			.statistic-card {
@@ -299,6 +309,7 @@ export class ScreeningStatusesComponent implements OnInit {
 
 	showDropdownOverlay = false;
 	formFilter: FormGroup = this.formBuilder.group({
+		search: new FormControl(''),
 		startDate: new FormControl(''),
 		endDate: new FormControl(''),
 		paid: new FormControl(''),
@@ -309,6 +320,7 @@ export class ScreeningStatusesComponent implements OnInit {
 	@ViewChild('paginator') paginator!: MatPaginator;
 
 	constructor(
+		private router: Router,
 		protected utilService: UtilService,
 		private formBuilder: FormBuilder,
 		private applicationService: ApplicationService
@@ -327,7 +339,17 @@ export class ScreeningStatusesComponent implements OnInit {
 		this.loadList();
 	}
 
-	onPayNow(): void {}
+	onPayNow(screening: ApplicationResponse): void {
+		this.router.navigateByUrl(DashboardRoutes.dashboardPath(DashboardRoutes.PAYMENTS), {
+			state: { caseId: screening.applicationNumber },
+		});
+	}
+
+	onVerifyApplicant(screening: ApplicationResponse): void {
+		this.router.navigateByUrl(DashboardRoutes.dashboardPath(DashboardRoutes.IDENTITY_VERIFICATION), {
+			state: { caseId: screening.applicationNumber },
+		});
+	}
 
 	onShowDropdownOverlayChange(show: boolean): void {
 		this.showDropdownOverlay = show;

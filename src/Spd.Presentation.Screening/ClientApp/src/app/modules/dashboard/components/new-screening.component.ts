@@ -15,7 +15,10 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xxl-9 col-xl-8 col-lg-7 col-md-6 col-sm-12">
-						<h2 class="mb-2 fw-normal">Screening Invitations</h2>
+						<h2 class="mb-2 fw-normal">
+							New Screening Requests
+							<div class="mt-2 fs-5 fw-light">Create new screening requests</div>
+						</h2>
 					</div>
 					<div class="col-xxl-3 col-xl-4 col-lg-5 col-md-6 col-sm-12 my-auto">
 						<button mat-raised-button class="large w-100 mat-green-button mb-2" (click)="onSendScreeningRequest()">
@@ -128,6 +131,16 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 					</div>
 				</div>
 			</form>
+		</section>
+		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
+			<div class="row">
+				<div class="col-xxl-9 col-xl-8 col-lg-7 col-md-6 col-sm-12">
+					<h2 class="mb-2 fw-normal">
+						View Screening Requests
+						<div class="mt-2 fs-5 fw-light">View existing screening requests</div>
+					</h2>
+				</div>
+			</div>
 		</section>
 	`,
 	styles: [

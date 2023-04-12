@@ -58,7 +58,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 									class="nav-link align-middle text-white w-100"
 								>
 									<mat-icon>post_add</mat-icon>
-									<span class="menu-item ms-2 d-none d-sm-inline text-white">Screening Invitations</span>
+									<span class="menu-item ms-2 d-none d-sm-inline text-white">Screening Requests</span>
 								</a>
 							</li>
 							<li class="nav-item w-100">

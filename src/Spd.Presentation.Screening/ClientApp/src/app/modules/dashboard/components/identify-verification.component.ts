@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
@@ -24,10 +25,15 @@ import { UtilService } from 'src/app/core/services/util.service';
 				</div>
 			</div>
 
-			<div class="row">
+			<div class="row" [formGroup]="formFilter">
 				<div class="col-xl-11 col-lg-10 col-md-10 col-sm-9">
 					<mat-form-field>
-						<input matInput type="search" placeholder="Search" />
+						<input
+							matInput
+							type="search"
+							formControlName="search"
+							placeholder="Search applicant's name or email or case id"
+						/>
 						<button
 							mat-button
 							matSuffix
@@ -183,6 +189,7 @@ export class IdentifyVerificationComponent implements OnInit {
 
 	showDropdownOverlay = false;
 	formFilter: FormGroup = this.formBuilder.group({
+		search: new FormControl(''),
 		startDate: new FormControl(''),
 		endDate: new FormControl(''),
 		paid: new FormControl(''),
@@ -192,9 +199,13 @@ export class IdentifyVerificationComponent implements OnInit {
 	@ViewChild(MatSort) sort!: MatSort;
 	@ViewChild('paginator') paginator!: MatPaginator;
 
-	constructor(protected utilService: UtilService, private formBuilder: FormBuilder) {}
+	constructor(protected utilService: UtilService, private formBuilder: FormBuilder, private location: Location) {}
 
 	ngOnInit() {
+		const caseId = (this.location.getState() as any).caseId;
+		console.log('caseId', caseId);
+		this.formFilter.patchValue({ search: caseId });
+
 		this.columns = ['applicantName', 'dateOfBirth', 'jobTitle', 'email', 'dateTimeSubmitted', 'status', 'actions'];
 		this.dataSource = new MatTableDataSource<any>([]);
 		this.dataSource.data = [

@@ -12,37 +12,26 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 		<app-dashboard-header title="Organization Name" subtitle="Security Screening Portal"></app-dashboard-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row mb-4">
-				<div class="col-xl-6 col-lg-4 col-md-12 col-sm-12">
+				<div class="col-xl-9 col-lg-8 col-md-12 col-sm-12">
 					<h2 class="fw-normal">Organization Profile</h2>
 				</div>
-				<div class="col-xl-3 col-lg-4 col-md-12 col-sm-12">
-					<button mat-stroked-button color="primary" class="large mb-2" *ngIf="!viewOnly" (click)="onCancel()">
-						<i class="fa fa-times mr-2"></i>Cancel
-					</button>
-				</div>
-				<div class="col-xl-3 col-lg-4 col-md-12 col-sm-12">
-					<button mat-raised-button color="primary" class="large mb-2" (click)="onToggleViewOnly()">
-						<span *ngIf="viewOnly; else save">Edit Information </span>
-						<ng-template #save> Save Information </ng-template>
-					</button>
+				<div class="col-xl-3 col-lg-4 col-md-12 col-sm-12" *ngIf="viewOnly">
+					<button mat-raised-button color="primary" class="large mb-2" (click)="onEditView()">Edit Information</button>
 				</div>
 			</div>
 			<form [formGroup]="form" novalidate>
-				<mat-divider class="my-3"></mat-divider>
 				<div class="row">
 					<div class="col-xl-4 col-lg-12">
-						<mat-form-field>
-							<mat-label>Organization Name</mat-label>
-							<input matInput formControlName="organizationName" maxlength="160" />
-							<mat-error *ngIf="form.get('organizationName')?.hasError('required')"> This is required </mat-error>
-						</mat-form-field>
+						<div class="ms-3 mb-2">
+							<div class="text-minor-heading fw-semibold">Organization Name</div>
+							<div class="fw-bold">{{ organizationName.value }}</div>
+						</div>
 					</div>
 					<div class="col-xl-4 col-lg-12">
-						<mat-form-field>
-							<mat-label>Legal Organization Name</mat-label>
-							<input matInput formControlName="organizationLegalName" maxlength="160" />
-							<mat-error *ngIf="form.get('organizationLegalName')?.hasError('required')">This is required</mat-error>
-						</mat-form-field>
+						<div class="ms-3 mb-2">
+							<div class="text-minor-heading fw-semibold">Legal Organization Name</div>
+							<div class="fw-bold">{{ organizationLegalName.value }}</div>
+						</div>
 					</div>
 				</div>
 
@@ -196,6 +185,16 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 					</div>
 				</div>
 			</form>
+			<div class="row mb-4" *ngIf="!viewOnly">
+				<div class="offset-xl-8 offset-lg-6 col-xl-2 col-lg-3 col-md-6 col-sm-12">
+					<button mat-stroked-button color="primary" class="large mb-2" (click)="onCancel()">
+						<i class="fa fa-times mr-2"></i>Cancel
+					</button>
+				</div>
+				<div class="col-xl-2 col-lg-3 col-md-6 col-sm-12">
+					<button mat-raised-button color="primary" class="large mb-2" (click)="onSave()">Submit</button>
+				</div>
+			</div>
 		</section>
 	`,
 	styles: [
@@ -213,8 +212,8 @@ export class SettingsComponent implements OnInit {
 	payerPreferenceTypeCode = PayerPreferenceTypeCode;
 	initialValues = {};
 	form: FormGroup = this.formBuilder.group({
-		organizationName: new FormControl('', [Validators.required]),
-		organizationLegalName: new FormControl('', [Validators.required]),
+		organizationName: new FormControl(''),
+		organizationLegalName: new FormControl(''),
 		email: new FormControl('', [Validators.required, Validators.email]),
 		phoneNumber: new FormControl('', [Validators.required]),
 		addressLine1: new FormControl('', [Validators.required]),
@@ -258,9 +257,42 @@ export class SettingsComponent implements OnInit {
 	onEdit(): void {
 		this.viewOnly = false;
 		this.form.enable();
+
+		// this.form.get('organizationName')!.disable({ emitEvent: false });
+
+		// const orgName = this.form.get('organizationName') as FormControl;
+		// orgName.disable();
 	}
 
-	onToggleViewOnly() {
+	onEditView() {
+		if (!this.viewOnly) {
+			this.form.markAllAsTouched();
+			console.log('this.form.valid', this.form.valid);
+			if (this.form.valid) {
+				//TODO replace with proper org id
+				const body: OrgUpdateRequest = { ...this.form.value, id: '4165bdfe-7cb4-ed11-b83e-00505683fbf4' };
+				if (body.phoneNumber) {
+					body.phoneNumber = this.maskPipe.transform(body.phoneNumber, SPD_CONSTANTS.phone.backendMask);
+				}
+
+				this.orgService
+					.apiOrgOrgIdPut({ orgId: '4165bdfe-7cb4-ed11-b83e-00505683fbf4', body })
+					.pipe()
+					.subscribe((resp: OrgUpdateRequest) => {
+						this.viewOnly = true;
+						this.form.disable();
+						this.form.patchValue({ ...resp });
+						this.initialValues = this.form.value;
+						this.hotToast.success('Organization Information was successfully updated');
+					});
+			}
+		} else {
+			this.viewOnly = !this.viewOnly;
+			this.setFormView();
+		}
+	}
+
+	onSave() {
 		if (!this.viewOnly) {
 			this.form.markAllAsTouched();
 			console.log('this.form.valid', this.form.valid);
@@ -294,5 +326,13 @@ export class SettingsComponent implements OnInit {
 		} else {
 			this.form.enable();
 		}
+	}
+
+	get organizationName(): FormControl {
+		return this.form.get('organizationName') as FormControl;
+	}
+
+	get organizationLegalName(): FormControl {
+		return this.form.get('organizationLegalName') as FormControl;
 	}
 }
