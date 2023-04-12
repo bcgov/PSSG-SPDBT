@@ -5,6 +5,9 @@ using Spd.Utilities.Shared;
 
 namespace Spd.Presentation.Screening.Controllers
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class OrgController : SpdControllerBase
     {
         private readonly ILogger<OrgController> _logger;
@@ -16,6 +19,12 @@ namespace Spd.Presentation.Screening.Controllers
             _mediator = mediator;
         }
 
+        /// <summary>
+        /// Updating existing organization profile
+        /// </summary>
+        /// <param name="updateOrgRequest"></param>
+        /// <param name="orgId"></param>
+        /// <returns></returns>
         [Route("api/org/{orgId}")]
         [HttpPut]
         public async Task<OrgResponse> Put([FromBody] OrgUpdateRequest updateOrgRequest, [FromRoute] Guid orgId)
