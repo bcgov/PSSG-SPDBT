@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthenticationService } from './core/services/authentication.service';
 import { DashboardRoutes } from './modules/dashboard/dashboard-routing.module';
-import { CaptchaResponse } from './shared/components/captcha-v2.component';
 
 @Component({
 	selector: 'app-landing',
@@ -29,19 +28,7 @@ import { CaptchaResponse } from './shared/components/captcha-v2.component';
 
 			<mat-divider class="my-3"></mat-divider>
 
-			<button mat-raised-button color="primary" class="large my-2" (click)="onRegisterWithBCeid()">
-				Dashboard BCeid Log In
-			</button>
-
-			<button mat-raised-button color="primary" class="large my-2" [routerLink]="['/dashboard/home/']">
-				Dashboard - No Log In
-			</button>
-
-			<mat-divider class="my-3"></mat-divider>
-
-			<div class="mt-2">
-				<app-captcha-v2 (captchaResponse)="onTokenResponse($event)"></app-captcha-v2>
-			</div>
+			<button mat-raised-button color="primary" class="large my-2" (click)="onRegisterWithBCeid()">CRRP Portal</button>
 		</section>
 	`,
 	styles: [],
@@ -67,11 +54,5 @@ export class LandingComponent {
 			const postLoginRoute = DashboardRoutes.dashboardPath(DashboardRoutes.HOME);
 			this.router.navigateByUrl(postLoginRoute);
 		}
-	}
-
-	onTokenResponse($event: CaptchaResponse) {
-		console.debug('onTokenResponse', $event);
-		// @Output() captchaPassed = new EventEmitter<CaptchaResponse>();
-		// this.captchaPassed.emit($event);
 	}
 }
