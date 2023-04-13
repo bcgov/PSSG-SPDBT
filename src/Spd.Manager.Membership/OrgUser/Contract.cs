@@ -24,7 +24,7 @@ namespace Spd.Manager.Membership.OrgUser
         public Guid OrganizationId { get; set; }
         public ContactAuthorizationTypeCode ContactAuthorizationTypeCode { get; set; }
         public string FirstName { get; set; } = string.Empty;
-        public string LastName { get; set; }= string.Empty;
+        public string LastName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string? JobTitle { get; set; }
         public string? PhoneNumber { get; set; }
@@ -40,7 +40,7 @@ namespace Spd.Manager.Membership.OrgUser
     {
         public int? MaximumNumberOfAuthorizedContacts { get; set; }
         public int? MaximumNumberOfPrimaryAuthorizedContacts { get; set; }
-        public IEnumerable<OrgUserResponse> Users { get; set; }=Array.Empty<OrgUserResponse>();
+        public IEnumerable<OrgUserResponse> Users { get; set; } = Array.Empty<OrgUserResponse>();
     }
 
     public class OrgUserResponse
@@ -53,6 +53,8 @@ namespace Spd.Manager.Membership.OrgUser
         public string Email { get; set; } = string.Empty;
         public string? JobTitle { get; set; }
         public string? PhoneNumber { get; set; }
+        public bool IsActive { get; set; }
+        public bool IsInvitationExpired { get; set; }
     }
 
     public enum ContactAuthorizationTypeCode

@@ -124,7 +124,7 @@ export class OrgRegistrationComponent implements OnInit {
 		//auth step 1 - user is not logged in, no state at all
 		//auth step 3 - angular loads again here, KC posts the token, oidc lib reads token and returns state
 		const authInfo = await this.authenticationService.tryLogin();
-		console.debug('[ngOnInit] tryLogin authInfo', authInfo);
+		console.debug('[OrgRegistrationComponent.ngOnInit] tryLogin authInfo', authInfo);
 
 		if (authInfo.loggedIn) {
 			if (authInfo.state) {
@@ -135,7 +135,6 @@ export class OrgRegistrationComponent implements OnInit {
 				this.postLoginNavigate(decodedData);
 			} else {
 				const stateInfo = sessionStorage.getItem(this.STATE_KEY);
-
 				if (stateInfo) {
 					this.postLoginNavigate(stateInfo);
 				}
