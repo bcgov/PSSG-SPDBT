@@ -39,7 +39,18 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 						<section class="px-4 py-2 mb-3 card-section">
 							<div class="row my-2">
 								<div class="col-xl-9 col-lg-12 col-md-12 col-sm-12">
-									<div class="badge rounded-pill bg-success mb-2">User #{{ i + 1 }} - Active</div>
+									<ng-container *ngIf="user.isActive; else notactive">
+										<div class="badge rounded-pill bg-success mb-2">Active</div>
+									</ng-container>
+									<ng-template #notactive>
+										<ng-container *ngIf="user.isInvitationExpired; else notexpired">
+											<div class="badge rounded-pill text-bg-danger mb-2">Expired Invitation</div>
+										</ng-container>
+									</ng-template>
+									<ng-template #notexpired>
+										<div class="badge rounded-pill text-bg-secondary mb-2">Pending</div>
+									</ng-template>
+
 									<div class="row">
 										<div class="col-xl-5 col-lg-5 col-md-12 mt-2 mt-lg-0">
 											<small class="d-block text-muted">Authorization Type</small>
@@ -64,26 +75,55 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 										</div>
 									</div>
 								</div>
-								<div class="col-xl-3 col-lg-12 col-md-12 col-sm-12 mx-auto d-flex flex-row">
-									<button
-										mat-stroked-button
-										matTooltip="Edit user"
-										class="table-button my-2"
-										(click)="onMaintainUser(user)"
-										aria-label="Edit user"
-									>
-										<mat-icon>edit</mat-icon>Edit
-									</button>
-									<button
-										mat-icon-button
-										matTooltip="Remove user"
-										class="table-button table-button__remove my-2"
-										*ngIf="allowDeleteRow(user)"
-										(click)="onDeleteUser(user)"
-										aria-label="Remove user"
-									>
-										<mat-icon>delete_outline</mat-icon>
-									</button>
+								<div
+									class="col-xl-3 col-lg-12 col-md-12 col-sm-12 mx-auto d-flex flex-row"
+									style="justify-content: end;"
+								>
+									<ng-container *ngIf="user.isActive; else notactiveactions">
+										<button
+											mat-stroked-button
+											matTooltip="Edit user"
+											class="table-button my-2"
+											(click)="onMaintainUser(user)"
+											aria-label="Edit user"
+										>
+											<mat-icon>edit</mat-icon>Edit
+										</button>
+										<button
+											mat-icon-button
+											matTooltip="Remove user"
+											class="table-button table-button__remove my-2"
+											*ngIf="allowDeleteRow(user)"
+											(click)="onDeleteUser(user)"
+											aria-label="Remove user"
+										>
+											<mat-icon>delete_outline</mat-icon>
+										</button>
+									</ng-container>
+									<ng-template #notactiveactions>
+										<ng-container *ngIf="user.isInvitationExpired; else notexpiredactions">
+											<button
+												mat-icon-button
+												matTooltip="Removed expired invitation"
+												class="table-button table-button__remove my-2"
+												(click)="onExpireInvitation(user)"
+												aria-label="Remove expired invitation"
+											>
+												<mat-icon>delete_outline</mat-icon>
+											</button>
+										</ng-container>
+									</ng-template>
+									<ng-template #notexpiredactions>
+										<button
+											mat-icon-button
+											matTooltip="Cancel invitation"
+											class="table-button table-button__remove my-2"
+											(click)="onCancelInvitation(user)"
+											aria-label="Cancel invitation"
+										>
+											<mat-icon>clear</mat-icon>
+										</button>
+									</ng-template>
 								</div>
 							</div>
 						</section>
@@ -119,18 +159,6 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 				border-bottom-width: 1px;
 				border-bottom-style: solid;
 				border-bottom-color: rgba(0, 0, 0, 0.12);
-			}
-
-			.active-user {
-				color: var(--color-green);
-				top: -5px;
-				position: relative;
-			}
-
-			.pending-user {
-				color: var(--color-orange);
-				top: -5px;
-				position: relative;
 			}
 		`,
 	],
@@ -206,6 +234,9 @@ export class UsersComponent implements OnInit {
 				}
 			});
 	}
+	onCancelInvitation(user: OrgUserResponse) {}
+
+	onExpireInvitation(user: OrgUserResponse) {}
 
 	allowDeleteRow(user: OrgUserResponse): boolean {
 		// TODO if row is current user, remove delete
@@ -257,13 +288,15 @@ export class UsersComponent implements OnInit {
 
 	private sortUsers(): void {
 		this.usersList.sort((a: OrgUserResponse, b: OrgUserResponse) => {
-			const aa = a.contactAuthorizationTypeCode?.toString() ?? '';
-			const bb = b.contactAuthorizationTypeCode?.toString() ?? '';
-			const cc = a.firstName?.toUpperCase() ?? '';
-			const dd = b.firstName?.toUpperCase() ?? '';
-			const ee = a.lastName?.toUpperCase() ?? '';
-			const ff = b.lastName?.toUpperCase() ?? '';
-			return aa.localeCompare(bb) * -1 || cc.localeCompare(dd) || ee.localeCompare(ff);
+			const a1 = a.isActive ? 'a' : a.isInvitationExpired ? 'c' : 'b';
+			const b1 = b.isActive ? 'a' : b.isInvitationExpired ? 'c' : 'b';
+			const a2 = a.contactAuthorizationTypeCode?.toString() ?? '';
+			const b2 = b.contactAuthorizationTypeCode?.toString() ?? '';
+			const a3 = a.firstName?.toUpperCase() ?? '';
+			const b3 = b.firstName?.toUpperCase() ?? '';
+			const a4 = a.lastName?.toUpperCase() ?? '';
+			const b4 = b.lastName?.toUpperCase() ?? '';
+			return a1.localeCompare(b1) || a2.localeCompare(b2) * -1 || a3.localeCompare(b3) || a4.localeCompare(b4);
 		});
 	}
 

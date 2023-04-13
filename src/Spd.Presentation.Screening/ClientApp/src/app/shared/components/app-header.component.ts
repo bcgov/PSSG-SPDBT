@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
 
 @Component({
 	selector: 'app-header',
@@ -16,8 +17,8 @@ import { Router } from '@angular/router';
 			<mat-divider vertical class="header-divider mx-3"></mat-divider>
 			<div class="header-text pl-3" (click)="goToLanding()">{{ title }}</div>
 			<span style="flex: 1 1 auto;"></span>
-			<div *ngIf="isLoggedInUser">
-				<mat-icon class="logout-button me-2" (click)="onLogout()">logout</mat-icon>Authorized User
+			<div *ngIf="loggedInUserDisplay">
+				<mat-icon class="logout-button me-2" (click)="onLogout()">logout</mat-icon>{{ loggedInUserDisplay }}
 			</div>
 		</mat-toolbar>
 	`,
@@ -58,14 +59,27 @@ import { Router } from '@angular/router';
 	],
 })
 export class HeaderComponent {
-	isLoggedInUser = true;
 	@Input() title = '';
+	loggedInUserDisplay: string | null = null;
 
-	constructor(protected router: Router) {}
+	constructor(protected router: Router, private authenticationService: AuthenticationService) {}
+
+	ngOnInit(): void {
+		this.authenticationService.isLoginSubject$.subscribe((subjectData: any) => {
+			this.getUserInfo();
+		});
+	}
 
 	goToLanding(): void {
 		this.router.navigate(['/']);
 	}
 
-	onLogout(): void {}
+	onLogout(): void {
+		this.authenticationService.logout();
+	}
+
+	private getUserInfo(): void {
+		const loggedInUserData = this.authenticationService.loggedInUserData;
+		this.loggedInUserDisplay = loggedInUserData ? loggedInUserData.display_name : null;
+	}
 }

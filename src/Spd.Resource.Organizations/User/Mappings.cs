@@ -25,7 +25,17 @@ namespace Spd.Resource.Organizations.User
             _ = CreateMap<spd_portaluser, UserResult>()
             .IncludeBase<spd_portaluser, User>()
             .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_portaluserid))
-            .ForMember(d => d.OrgRegistrationId, opt => opt.MapFrom(s => s._spd_orgregistrationid_value));
+            .ForMember(d => d.OrgRegistrationId, opt => opt.MapFrom(s => s._spd_orgregistrationid_value))
+            .ForMember(d => d.IsActive, opt => opt.MapFrom(s => s._spd_identityid_value.HasValue))
+            .ForMember(d => d.IsInvitationExpired, opt => opt.MapFrom(s => (DateTimeOffset.Now - s.createdon).GetValueOrDefault().Days > 7));
+
+            _ = CreateMap<User, spd_portalinvitation>()
+            .ForMember(d => d.spd_portalinvitationid, opt => opt.Ignore())
+            .ForMember(d => d.organizationid, opt => opt.Ignore())
+            .ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => s.FirstName))
+            .ForMember(d => d.spd_surname, opt => opt.MapFrom(s => s.LastName))
+            .ForMember(d => d.spd_email, opt => opt.MapFrom(s => s.Email))
+            .ForMember(d => d.spd_jobtitle, opt => opt.MapFrom(s => s.JobTitle));
         }
 
         private ContactRoleCode GetAuthorizationTypeCode(Guid? roleId)

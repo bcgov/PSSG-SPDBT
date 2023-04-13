@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { IsActiveMatchOptions, QueryParamsHandling } from '@angular/router';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { DashboardRoutes } from './dashboard-routing.module';
 
 // export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
@@ -173,4 +174,14 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 })
 export class DashboardComponent {
 	dashboardRoutes = DashboardRoutes;
+
+	constructor(private authenticationService: AuthenticationService) {}
+
+	async ngOnInit(): Promise<void> {
+		await this.authenticationService.configureOAuthService(
+			window.location.origin + `/${DashboardRoutes.dashboardPath(DashboardRoutes.HOME)}`
+		);
+
+		const authInfo = await this.authenticationService.tryLogin();
+	}
 }

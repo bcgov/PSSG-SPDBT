@@ -73,9 +73,10 @@ namespace Spd.Resource.Organizations.User
                 throw new ApiException(HttpStatusCode.BadRequest, "Organization cannot be null");
 
             var organization = GetOrganizationById((Guid)createUserCmd.User.OrganizationId);
+
+            // create user 
             spd_portaluser user = _mapper.Map<spd_portaluser>(createUserCmd.User);
             user.spd_portaluserid = Guid.NewGuid();
-
             _dynaContext.AddTospd_portalusers(user);
             _dynaContext.SetLink(user, nameof(spd_portaluser.spd_OrganizationId), organization);
             spd_role? role = _dynaContext.LookupRole(createUserCmd.User.ContactAuthorizationTypeCode.ToString());
@@ -83,6 +84,14 @@ namespace Spd.Resource.Organizations.User
             {
                 _dynaContext.AddLink(role, nameof(role.spd_spd_role_spd_portaluser), user);
             }
+
+            // create portal invitation
+            spd_portalinvitation invitation = _mapper.Map<spd_portalinvitation>(createUserCmd.User);
+            invitation.spd_portalinvitationid = Guid.NewGuid();
+            _dynaContext.AddTospd_portalinvitations(invitation);
+            _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_OrganizationId), organization);
+            _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_PortalUserId), user);
+
             await _dynaContext.SaveChangesAsync(cancellationToken);
 
             user._spd_organizationid_value = createUserCmd.User.OrganizationId;
