@@ -1,7 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { UtilService } from 'src/app/core/services/util.service';
 
 @Component({
 	selector: 'app-header',
@@ -62,17 +61,11 @@ import { UtilService } from 'src/app/core/services/util.service';
 export class HeaderComponent {
 	@Input() title = '';
 	loggedInUserDisplay: string | null = null;
-	loggedInUserData: any = null;
 
-	constructor(
-		protected router: Router,
-		private utilService: UtilService,
-		private authenticationService: AuthenticationService
-	) {}
+	constructor(protected router: Router, private authenticationService: AuthenticationService) {}
 
 	ngOnInit(): void {
 		this.authenticationService.isLoginSubject$.subscribe((subjectData: any) => {
-			console.log('[HeaderComponent.ngOnInit] isLoginSubject', subjectData);
 			this.getUserInfo();
 		});
 	}
@@ -86,19 +79,7 @@ export class HeaderComponent {
 	}
 
 	private getUserInfo(): void {
-		let loggedInUserData = null;
-		let loggedInUserDisplay = null;
-
-		const token = this.authenticationService.getToken();
-		if (token) {
-			const decoded = this.utilService.getDecodedAccessToken(token);
-			console.debug('[HeaderComponent.getUserInfo] decoded', decoded);
-
-			loggedInUserData = decoded;
-			loggedInUserDisplay = decoded.display_name;
-		}
-
-		this.loggedInUserData = loggedInUserData;
-		this.loggedInUserDisplay = loggedInUserDisplay;
+		const loggedInUserData = this.authenticationService.loggedInUserData;
+		this.loggedInUserDisplay = loggedInUserData ? loggedInUserData.display_name : null;
 	}
 }

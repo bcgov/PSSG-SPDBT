@@ -183,6 +183,5 @@ export class DashboardComponent {
 		);
 
 		const authInfo = await this.authenticationService.tryLogin();
-		console.debug('[DashboardHomeComponent.ngOnInit] tryLogin authInfo', authInfo);
 	}
 }

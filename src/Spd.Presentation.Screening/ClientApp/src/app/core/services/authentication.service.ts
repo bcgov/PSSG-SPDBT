@@ -2,12 +2,18 @@ import { Injectable } from '@angular/core';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { BehaviorSubject } from 'rxjs';
 import { AuthConfigService } from './auth-config.service';
+import { UtilService } from './util.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
 	isLoginSubject$ = new BehaviorSubject<boolean>(false);
+	loggedInUserData: any = null;
 
-	constructor(private oauthService: OAuthService, private authConfigService: AuthConfigService) {}
+	constructor(
+		private oauthService: OAuthService,
+		private utilService: UtilService,
+		private authConfigService: AuthConfigService
+	) {}
 
 	public async tryLogin(): Promise<{ state: any; loggedIn: boolean }> {
 		await this.oauthService.loadDiscoveryDocumentAndTryLogin();
@@ -21,6 +27,7 @@ export class AuthenticationService {
 			loggedIn = isLoggedIn;
 		}
 
+		this.setDecodedToken();
 		this.isLoginSubject$.next(true);
 		return {
 			state,
@@ -37,12 +44,14 @@ export class AuthenticationService {
 			await this.oauthService.loadDiscoveryDocumentAndLogin({ state });
 		}
 
+		this.setDecodedToken();
 		this.isLoginSubject$.next(true);
 		return isLoggedIn;
 	}
 
 	public logout(): void {
 		this.oauthService.logOut();
+		this.setDecodedToken();
 		this.isLoginSubject$.next(true);
 	}
 
@@ -55,5 +64,17 @@ export class AuthenticationService {
 			this.oauthService.configure(authConfig);
 			this.oauthService.setupAutomaticSilentRefresh();
 		});
+	}
+
+	private setDecodedToken(): void {
+		const token = this.getToken();
+		if (!token) {
+			this.loggedInUserData = null;
+			return;
+		}
+
+		const decodedToken = this.utilService.getDecodedAccessToken(token);
+		console.debug('[AuthenticationService.setDecodedToken] decodedToken', decodedToken);
+		this.loggedInUserData = decodedToken;
 	}
 }
