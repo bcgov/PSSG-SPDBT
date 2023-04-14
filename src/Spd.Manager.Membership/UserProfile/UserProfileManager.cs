@@ -1,3 +1,4 @@
+using AutoMapper;
 using MediatR;
 using Spd.Resource.Organizations.Identity;
 using Spd.Resource.Organizations.Org;
@@ -14,70 +15,62 @@ namespace Spd.Manager.Membership.UserProfile
         private readonly IOrgUserRepository _orgUserRepository;
         private readonly IIdentityRepository _idRepository;
         private readonly IOrgRepository _orgRepository;
+        private readonly IMapper _mapper;
         private readonly IPrincipal _currentUser;
 
         public UserProfileManager(
             IOrgUserRepository orgUserRepository,
             IIdentityRepository idRepository,
             IPrincipal currentUser,
-            IOrgRepository orgRepository)
+            IOrgRepository orgRepository,
+            IMapper mapper)
         {
             _orgUserRepository = orgUserRepository;
             _currentUser = currentUser;
             _idRepository = idRepository;
             _orgRepository = orgRepository;
+            _mapper = mapper;
         }
 
         public async Task<UserProfileResponse> Handle(GetCurrentUserProfileQuery request, CancellationToken ct)
         {
-            List<SpdUserInfo> spdUserInfos = new();
+            List<UserInfo> userInfos = new();
 
             var identityResult = await _idRepository.QueryIdentity(
-                new IdentityByUserGuidOrgGuidQuery(_currentUser.GetUserGuid(), _currentUser.GetBizGuid()),
+                new IdentityByUserGuidQuery(_currentUser.GetUserGuid()),
                 ct);
-            if (identityResult?.Identity != null)
+            if (identityResult?.Identities != null)
             {
-                var result = (OrgUsersResult)await _orgUserRepository.QueryOrgUserAsync(new OrgUsersByIdentityIdQry(identityResult.Identity.Id), ct);
-                foreach (UserResult u in result.UserResults)
+                foreach (Identity id in identityResult.Identities)
                 {
-                    SpdUserInfo ui = new();
-                    ui.UserId = u.Id;
-                    ui.OrgId = u.OrganizationId;
-                    if (u.OrganizationId == null) //org does not exists, but orgRegistration should exists
+                    var result = (OrgUsersResult)await _orgUserRepository.QueryOrgUserAsync(new OrgUsersByIdentityIdQry(id.Id), ct);
+                    foreach (UserResult u in result.UserResults)
                     {
-                        if(u.OrgRegistrationId!= null)
-                            ui.OrgStatusCode = OrgStatusCode.InRegistration;
+                        UserInfo ui = _mapper.Map<UserInfo>(u);
+                        if (u.OrganizationId == null) //org does not exists, but orgRegistration should exists
+                        {
+                            ui.OrgSettings = null;
+                            if (u.OrgRegistrationId != null)
+                                ui.OrgStatusCode = OrgStatusCode.InRegistration;
+                        }
+                        else
+                        {
+                            ui.OrgStatusCode = OrgStatusCode.Valid;
+                            var orgResult = await _orgRepository.QueryOrgAsync(new OrgByIdQry((Guid)u.OrganizationId), ct);
+                            ui.OrgName = orgResult.OrgResult.OrganizationName;
+                            ui.OrgSettings = _mapper.Map<OrgSettings>(orgResult.OrgResult);
+                        }
+                        userInfos.Add(ui);
                     }
-                    else
-                    {
-                        ui.OrgStatusCode = OrgStatusCode.Valid;
-                        var orgResult = await _orgRepository.QueryOrgAsync(new OrgByIdQry((Guid)u.OrganizationId), ct);
-                        ui.OrgName = orgResult.OrgResult.OrganizationName;
-                    }
-
-                    ui.ContactRoleCode = u.ContactAuthorizationTypeCode;
-                    spdUserInfos.Add(ui);
                 }
-            }
-            else
-            {
-                //check if in org-registration
-                SpdUserInfo ui = new();
-                spdUserInfos.Add(ui);
-            }
+            };
 
             UserProfileResponse response = new()
             {
-                IsAuthenticated = _currentUser.IsAuthenticated(),
                 IdentityProvider = _currentUser.GetIdentityProvider(), //bceidboth
                 UserDisplayName = _currentUser.GetUserDisplayName(),
-                OrgGuid = _currentUser.GetBizGuid(),
-                OrgLegalName = _currentUser.GetBizName(),
-                UserFirstName = _currentUser.GetUserFirstName(),
-                UserLastName = _currentUser.GetUserLastName(),
-                UserEmail = _currentUser.GetUserEmail(),
                 UserGuid = _currentUser.GetUserGuid(),
-                SpdUserInfos = spdUserInfos
+                UserInfos = userInfos
             };
             return response;
         }

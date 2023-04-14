@@ -8,7 +8,8 @@
     //query
     public abstract record IdentityQuery;
     public record IdentityByUserGuidOrgGuidQuery(Guid UserGuid, Guid OrgGuid) : IdentityQuery;
-    public record IdentityQueryResult(Identity Identity);
+    public record IdentityByUserGuidQuery(Guid UserGuid) : IdentityQuery;
+    public record IdentityQueryResult(IEnumerable<Identity> Identities);
 
     //shared content
     public record Identity

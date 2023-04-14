@@ -21,7 +21,7 @@ namespace Spd.Presentation.Screening.Controllers
             _mediator = mediator;
         }
 
-        [Route("api/user-profile/whoami")]
+        [Route("api/user")]
         [HttpGet]
         public async Task<UserProfileResponse> Whoami()
         {
