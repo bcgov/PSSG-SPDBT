@@ -30,7 +30,7 @@ namespace Spd.Resource.Organizations.Identity
                 .Where(i => i.spd_userguid == queryRequest.UserGuid.ToString() && i.spd_orgguid == queryRequest.OrgGuid.ToString())
                 .Where(i => i.statecode != DynamicsConstants.StateCode_Inactive)
                 .AsEnumerable();
-            if (identity == null) return null;
+            if (identities == null) return null;
             return new IdentityQueryResult(_mapper.Map<IEnumerable<Identity>>(identities));
         }
 

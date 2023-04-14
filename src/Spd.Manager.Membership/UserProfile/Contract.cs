@@ -30,8 +30,8 @@ namespace Spd.Manager.Membership.UserProfile
         public ContactAuthorizationTypeCode? ContactAuthorizationTypeCode { get; set; } = null;//from spd
         public OrgSettings? OrgSettings { get; set; }
         public Guid? OrgId { get; set; }
+        public Guid? OrgRegistrationId { get; set; }
         public string? OrgName { get; set; }
-        public OrgStatusCode OrgStatusCode { get; set; } = OrgStatusCode.Valid;//from spd
     }
 
     public record OrgSettings
@@ -39,11 +39,5 @@ namespace Spd.Manager.Membership.UserProfile
         public PayerPreferenceTypeCode PayerPreference { get; set; }
         public BooleanTypeCode ContractorsNeedVulnerableSectorScreening { get; set; }
         public BooleanTypeCode LicenseesNeedVulnerableSectorScreening { get; set; }        
-    }
-
-    public enum OrgStatusCode
-    {
-        Valid,
-        InRegistration,
     }
 }

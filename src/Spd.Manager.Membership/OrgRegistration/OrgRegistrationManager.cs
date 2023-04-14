@@ -26,18 +26,18 @@ namespace Spd.Manager.Membership.OrgRegistration
 
         public async Task<Unit> Handle(OrgRegistrationCreateCommand request, CancellationToken cancellationToken)
         {
-            var createOrgRegistration = _mapper.Map<OrgRegistrationCreateCmd>(request.CreateOrgRegistrationRequest);
+            var orgRegistration = _mapper.Map<Spd.Resource.Organizations.Registration.OrgRegistration>(request.CreateOrgRegistrationRequest);
             if (_currentUser.IsAuthenticated())
             {
-                createOrgRegistration.IdentityProviderTypeCode = _currentUser.GetIdentityProvider() switch
+                orgRegistration.IdentityProviderTypeCode = _currentUser.GetIdentityProvider() switch
                 {
                     "bceidboth" or "bceidbusiness" or "bceidbasic" => IdentityProviderTypeCode.BusinessBceId,
                     _ => null
                 };
-                createOrgRegistration.BCeIDUserGuid = _currentUser.GetUserGuid();
-                createOrgRegistration.BizIdentityGuid = _currentUser.GetBizGuid();
+                orgRegistration.BCeIDUserGuid = _currentUser.GetUserGuid();
+                orgRegistration.BizIdentityGuid = _currentUser.GetBizGuid();
             }
-            await _orgRegRepository.AddRegistrationAsync(createOrgRegistration, cancellationToken);
+            await _orgRegRepository.AddRegistrationAsync(new OrgRegistrationCreateCmd(orgRegistration), cancellationToken);
 
             return default;
         }

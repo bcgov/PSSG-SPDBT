@@ -17,19 +17,27 @@ namespace Spd.Resource.Organizations.Registration
             _logger = logger;
         }
 
-        public async Task<bool> AddRegistrationAsync(OrgRegistrationCreateCmd createRegistrationCmd, CancellationToken cancellationToken)
+        public async Task<OrgRegistrationQueryResult?> QueryOrgRegistration(OrgRegistrationQuery query, CancellationToken ct)
+        {
+            return query switch
+            {
+                OrgRegistrationQueryByUserGuid q => await QueryByUserGuidAsync(q, ct),
+                _ => throw new NotSupportedException($"{query.GetType().Name} is not supported")
+            };
+        }
+        public async Task<bool> AddRegistrationAsync(OrgRegistrationCreateCmd createRegistrationCmd, CancellationToken ct)
         {
             string key;
-            if (createRegistrationCmd.RegistrationTypeCode == RegistrationTypeCode.Employee)
+            if (createRegistrationCmd.OrgRegistration.RegistrationTypeCode == RegistrationTypeCode.Employee)
             {
-                key = $"{createRegistrationCmd.RegistrationTypeCode}-{createRegistrationCmd.EmployeeOrganizationTypeCode}";
+                key = $"{createRegistrationCmd.OrgRegistration.RegistrationTypeCode}-{createRegistrationCmd.OrgRegistration.EmployeeOrganizationTypeCode}";
             }
             else
             {
-                key = $"{createRegistrationCmd.RegistrationTypeCode}-{createRegistrationCmd.VolunteerOrganizationTypeCode}";
+                key = $"{createRegistrationCmd.OrgRegistration.RegistrationTypeCode}-{createRegistrationCmd.OrgRegistration.VolunteerOrganizationTypeCode}";
             }
 
-            spd_orgregistration orgregistration = _mapper.Map<spd_orgregistration>(createRegistrationCmd);
+            spd_orgregistration orgregistration = _mapper.Map<spd_orgregistration>(createRegistrationCmd.OrgRegistration);
             _dynaContext.AddTospd_orgregistrations(orgregistration);
 
             Guid teamGuid = Guid.Parse(DynamicsConstants.Client_Service_Team_Guid);
@@ -37,11 +45,11 @@ namespace Spd.Resource.Organizations.Registration
             _dynaContext.SetLink(orgregistration, nameof(spd_orgregistration.ownerid), serviceTeam);
 
             _dynaContext.SetLink(orgregistration, nameof(spd_orgregistration.spd_OrganizationTypeId), _dynaContext.LookupOrganizationType(key));
-            await _dynaContext.SaveChangesAsync(cancellationToken);
+            await _dynaContext.SaveChangesAsync(ct);
             return true;
         }
 
-        public async Task<bool> CheckDuplicateAsync(SearchRegistrationQry searchQry, CancellationToken cancellationToken)
+        public async Task<bool> CheckDuplicateAsync(SearchRegistrationQry searchQry, CancellationToken ct)
         {
             string key;
             if (searchQry.RegistrationTypeCode == RegistrationTypeCode.Employee)
@@ -76,6 +84,15 @@ namespace Spd.Resource.Organizations.Registration
                 ).FirstOrDefault();
                 return orgReg != null;
             }
+        }
+
+        private async Task<OrgRegistrationQueryResult> QueryByUserGuidAsync(OrgRegistrationQueryByUserGuid query, CancellationToken ct)
+        {
+            IEnumerable<spd_orgregistration> results = _dynaContext.spd_orgregistrations.Where(o =>
+                   o.spd_portaluseridentityguid==query.UserGuid.ToString() &&
+                   o.statecode != DynamicsConstants.StateCode_Inactive
+               ).AsEnumerable();
+            return new OrgRegistrationQueryResult(_mapper.Map<IEnumerable<OrgRegistrationResult>>(results));
         }
     }
 }

@@ -11,7 +11,6 @@ namespace Spd.Manager.Membership.UserProfile
             CreateMap<OrgResult, OrgSettings>();
             CreateMap<UserResult, UserInfo>()
                .ForMember(d => d.OrgName, opt => opt.Ignore())
-               .ForMember(d => d.OrgStatusCode, opt => opt.Ignore())
                .ForMember(d => d.OrgSettings, opt => opt.Ignore())
                .ForMember(d => d.UserId, opt => opt.MapFrom(s => s.Id))
                .ForMember(d => d.OrgId, opt => opt.MapFrom(s => s.OrganizationId));
