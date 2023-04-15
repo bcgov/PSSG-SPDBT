@@ -1,19 +1,35 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HotToastModule } from '@ngneat/hot-toast';
 import { OAuthModule } from 'angular-oauth2-oidc';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { forkJoin, tap } from 'rxjs';
 import { ApiModule } from './api/api.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
+import { AuthConfigService } from './core/services/auth-config.service';
 import { LandingComponent } from './landing.component';
 import { MaterialModule } from './material.module';
 import { SharedModule } from './shared/shared.module';
+
+export function appInitializer(authConfigService: AuthConfigService) {
+	return () => {
+		return forkJoin({
+			config1: authConfigService.getRecaptchaConfig(),
+			config2: authConfigService.getBceidConfig(),
+		}).pipe(
+			tap(({ config1, config2 }) => {
+				console.debug('[appInitializer] captchaConfig', config1);
+				console.debug('[appInitializer] bceidConfig', config2);
+			})
+		);
+	};
+}
 
 @NgModule({
 	declarations: [AppComponent, LandingComponent],
@@ -38,7 +54,14 @@ import { SharedModule } from './shared/shared.module';
 		ApiModule.forRoot({ rootUrl: '' }),
 		SharedModule,
 	],
-	providers: [],
+	providers: [
+		{
+			provide: APP_INITIALIZER,
+			useFactory: appInitializer,
+			deps: [AuthConfigService],
+			multi: true,
+		},
+	],
 	bootstrap: [AppComponent],
 })
 export class AppModule {}

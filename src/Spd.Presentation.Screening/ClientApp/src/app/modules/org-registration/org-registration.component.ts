@@ -5,9 +5,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
 import { distinctUntilChanged } from 'rxjs';
 import {
+	AnonymousOrgRegistrationCreateRequest,
 	BooleanTypeCode,
 	CheckDuplicateResponse,
-	OrgRegistrationCreateRequest,
 	RegistrationTypeCode,
 } from 'src/app/api/models';
 import { OrgRegistrationService } from 'src/app/api/services';
@@ -190,11 +190,12 @@ export class OrgRegistrationComponent implements OnInit {
 		}
 
 		if (this.stepFourComponent) {
+			const step4Data = this.stepFourComponent.getStepData();
 			dataToSave = { ...dataToSave, ...this.stepFourComponent.getStepData() };
 		}
 
-		const body: OrgRegistrationCreateRequest = dataToSave;
-		console.debug('[onSaveStepperStep] body', body);
+		const body: AnonymousOrgRegistrationCreateRequest = dataToSave;
+		console.debug('[onSaveStepperStep] dataToSave', body);
 
 		// Check for potential duplicate
 		this.orgRegistrationService
@@ -204,7 +205,7 @@ export class OrgRegistrationComponent implements OnInit {
 				if (dupres.hasPotentialDuplicate) {
 					const data: DialogOptions = {
 						icon: 'warning',
-						title: 'Potential Duplicate Detected',
+						title: 'Potential duplicate detected',
 						message:
 							'A potential duplicate has been found. Are you sure this is a new organization registration request?',
 						actionText: 'Yes, create registration',
@@ -271,14 +272,24 @@ export class OrgRegistrationComponent implements OnInit {
 		this.onScrollIntoView();
 	}
 
-	private saveRegistration(body: OrgRegistrationCreateRequest) {
-		this.orgRegistrationService
-			.apiOrgRegistrationsPost({ body })
-			.pipe()
-			.subscribe((_res: any) => {
-				sessionStorage.removeItem(this.STATE_KEY);
-				this.stepFourComponent.childStepNext();
-			});
+	private saveRegistration(body: AnonymousOrgRegistrationCreateRequest) {
+		if (this.authenticationService.isLoggedIn()) {
+			this.orgRegistrationService
+				.apiOrgRegistrationsPost({ body })
+				.pipe()
+				.subscribe((_res: any) => {
+					sessionStorage.removeItem(this.STATE_KEY);
+					this.stepFourComponent.childStepNext();
+				});
+		} else {
+			this.orgRegistrationService
+				.apiAnonymousOrgRegistrationsPost({ body })
+				.pipe()
+				.subscribe((_res: any) => {
+					sessionStorage.removeItem(this.STATE_KEY);
+					this.stepFourComponent.childStepNext();
+				});
+		}
 	}
 
 	private breakpointChanged() {

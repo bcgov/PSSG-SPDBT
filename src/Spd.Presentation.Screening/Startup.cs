@@ -5,6 +5,7 @@ using Spd.Utilities.Address;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Hosting;
 using Spd.Utilities.LogonUser;
+using Spd.Utilities.Recaptcha;
 using System.Reflection;
 using System.Security.Principal;
 using System.Text.Json.Serialization;
@@ -54,6 +55,7 @@ namespace Spd.Presentation.Screening
                 });
             ;
 
+            services.AddGoogleRecaptcha(configuration);
             services.AddValidatorsFromAssemblies(assemblies);
             services.ConfigureAuthentication(configuration);
             services.AddHttpContextAccessor();
