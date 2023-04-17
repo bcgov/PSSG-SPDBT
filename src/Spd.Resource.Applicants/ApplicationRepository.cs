@@ -93,10 +93,12 @@ namespace Spd.Resource.Applicants
             return true;
         }
 
-        public async Task<ApplicationListResp> GetApplicationListAsync(Guid orgId, CancellationToken cancellationToken)
+        public async Task<ApplicationListResp> GetApplicationListAsync(Guid orgId, int page, int recordsPerPage, CancellationToken cancellationToken)
         {
             var applications = _dynaContext.spd_applications
                 .Where(a => a._spd_organizationid_value == orgId && a.statecode == DynamicsConstants.StateCode_Active)
+                .Skip((page-1)* recordsPerPage)
+                .Take(recordsPerPage)
                 .ToList();
 
             var response = new ApplicationListResp();

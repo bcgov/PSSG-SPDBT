@@ -37,7 +37,7 @@ namespace Spd.Utilities.Shared.Exceptions
                 var msg = context.Exception.GetBaseException().Message;
                 string stack = context.Exception.StackTrace;
                 apiError = new ApiError(msg);
-                apiError.detail = stack;
+                apiError.detail = context.Exception.InnerException.Message+";"+stack;
                 context.HttpContext.Response.StatusCode = 500;
                 // handle logging here
                 _Logger.LogError(context.Exception, "Exception");

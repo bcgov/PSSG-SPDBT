@@ -7,7 +7,7 @@ namespace Spd.Resource.Applicants
         Task<bool> CheckInviteApplicationDuplicateAsync(SearchInvitationQry searchInvitationQry, CancellationToken cancellationToken);
         public Task<bool> AddApplicationAsync(ApplicationCreateCmd createApplicationCmd, CancellationToken cancellationToken);
         Task<bool> CheckApplicationDuplicateAsync(SearchApplicationQry searchApplicationQry, CancellationToken cancellationToken);
-        Task<ApplicationListResp> GetApplicationListAsync(Guid orgId, CancellationToken cancellationToken);
+        Task<ApplicationListResp> GetApplicationListAsync(Guid orgId, int page, int recordsPerPage, CancellationToken cancellationToken);
     }
 
     public record ApplicationInviteCreateCmd

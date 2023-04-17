@@ -1,6 +1,7 @@
 using AutoMapper;
 using MediatR;
 using Spd.Resource.Applicants;
+using Spd.Utilities.Shared.Exceptions;
 
 namespace Spd.Manager.Cases
 {
@@ -101,7 +102,9 @@ namespace Spd.Manager.Cases
 
         public async Task<ApplicationListResponse> Handle(ApplicationListQuery request, CancellationToken cancellationToken)
         {
-            var response = await _applicationRepository.GetApplicationListAsync(request.OrgId, cancellationToken);
+            if (request.Page < 1) throw new ApiException(System.Net.HttpStatusCode.BadRequest, "incorrect page number.");
+            if (request.recordsPerPage < 1) throw new ApiException(System.Net.HttpStatusCode.BadRequest, "incorrect page size.");
+            var response = await _applicationRepository.GetApplicationListAsync(request.OrgId, request.Page, request.recordsPerPage, cancellationToken);
             return _mapper.Map<ApplicationListResponse>(response);
         }
     }

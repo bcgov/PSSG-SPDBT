@@ -51,12 +51,17 @@ namespace Spd.Presentation.Screening.Controllers
         /// return active applications belong to the organization.
         /// </summary>
         /// <param name="orgId"></param>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
         /// <returns></returns>
         [Route("api/orgs/{orgId}/applications")]
         [HttpGet]
-        public async Task<ApplicationListResponse> GetList([FromRoute] Guid orgId)
+        public async Task<ApplicationListResponse> GetList([FromRoute] Guid orgId, [FromQuery]int? page, [FromQuery] int? pageSize)
         {
-            return await _mediator.Send(new ApplicationListQuery(orgId));
+            page = page ?? 1;
+            pageSize= pageSize ?? 10;
+            return await _mediator.Send(new ApplicationListQuery(orgId, (int)page, (int)pageSize));
         }
     }
 }
+
