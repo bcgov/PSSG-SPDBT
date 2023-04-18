@@ -2,9 +2,9 @@ namespace Spd.Resource.Organizations.Registration
 {
     public interface IOrgRegistrationRepository
     {
-        Task<bool> AddRegistrationAsync(OrgRegistrationCreateCmd createRegistrationCmd, CancellationToken ct);
+        Task<bool> AddRegistrationAsync(CreateOrganizationRegistrationCommand createRegistrationCmd, CancellationToken ct);
         Task<bool> CheckDuplicateAsync(SearchRegistrationQry searchQry, CancellationToken ct);
-        Task<OrgRegistrationQueryResult?> QueryOrgRegistration(OrgRegistrationQuery query, CancellationToken ct);
+        Task<OrgRegistrationQueryResult?> Query(OrgRegistrationQuery query, CancellationToken ct);
     }
 
     //queries
@@ -22,7 +22,7 @@ namespace Spd.Resource.Organizations.Registration
     public record OrgRegistrationQueryResult(IEnumerable<OrgRegistrationResult> OrgRegistrationResults);
 
     //commands
-    public record OrgRegistrationCreateCmd(OrgRegistration OrgRegistration);
+    public record CreateOrganizationRegistrationCommand(OrgRegistration OrgRegistration);
 
     //shared contents
     public record OrgRegistration

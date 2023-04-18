@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
 using Spd.Utilities.Dynamics;
 
@@ -15,32 +16,31 @@ namespace Spd.Resource.Organizations.Identity
             _mapper = mapper;
         }
 
-        public async Task<IdentityQueryResult?> QueryIdentity(IdentityQuery query, CancellationToken ct)
+        public async Task<IdentityQueryResult?> Query(IdentityQuery query, CancellationToken ct)
         {
             return query switch
             {
-                IdentityByUserGuidOrgGuidQuery q => await HandleQuery(q, ct),
-                IdentityByUserGuidQuery q => await HandleQuery(q, ct),
+                IdentityQuery q => await HandleQuery(q, ct),
                 _ => throw new NotSupportedException($"{query.GetType().Name} is not supported")
             };
         }
-        private async Task<IdentityQueryResult?> HandleQuery(IdentityByUserGuidOrgGuidQuery queryRequest, CancellationToken ct)
+        private async Task<IdentityQueryResult?> HandleQuery(IdentityQuery queryRequest, CancellationToken ct)
         {
-            var identities = _dynaContext.spd_identities
-                .Where(i => i.spd_userguid == queryRequest.UserGuid.ToString() && i.spd_orgguid == queryRequest.OrgGuid.ToString())
-                .Where(i => i.statecode != DynamicsConstants.StateCode_Inactive)
-                .AsEnumerable();
-            if (identities == null) return null;
-            return new IdentityQueryResult(_mapper.Map<IEnumerable<Identity>>(identities));
-        }
-
-        private async Task<IdentityQueryResult?> HandleQuery(IdentityByUserGuidQuery queryRequest, CancellationToken ct)
-        {
-            var identities = _dynaContext.spd_identities
-                .Where(i => i.spd_userguid == queryRequest.UserGuid.ToString())
-                .Where(i => i.statecode != DynamicsConstants.StateCode_Inactive)
-                .AsEnumerable();
-            if (identities == null) return null;
+            IEnumerable<spd_identity> identities= Array.Empty<spd_identity>();
+            if (queryRequest.UserGuid != null && queryRequest.OrgGuid != null)
+            {
+                identities = _dynaContext.spd_identities
+                    .Where(i => i.spd_userguid == queryRequest.UserGuid.ToString() && i.spd_orgguid == queryRequest.OrgGuid.ToString())
+                    .Where(i => i.statecode != DynamicsConstants.StateCode_Inactive)
+                    .AsEnumerable();
+            }
+            if (queryRequest.UserGuid != null && queryRequest.OrgGuid == null)
+            {
+                identities = _dynaContext.spd_identities
+                    .Where(i => i.spd_userguid == queryRequest.UserGuid.ToString())
+                    .Where(i => i.statecode != DynamicsConstants.StateCode_Inactive)
+                    .AsEnumerable();
+            }
             return new IdentityQueryResult(_mapper.Map<IEnumerable<Identity>>(identities));
         }
     }

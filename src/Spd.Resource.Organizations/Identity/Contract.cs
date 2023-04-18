@@ -2,13 +2,11 @@
 {
     public interface IIdentityRepository
     {
-        Task<IdentityQueryResult?> QueryIdentity(IdentityQuery query, CancellationToken ct);
+        Task<IdentityQueryResult?> Query(IdentityQuery query, CancellationToken ct);
     }
 
     //query
-    public abstract record IdentityQuery;
-    public record IdentityByUserGuidOrgGuidQuery(Guid UserGuid, Guid OrgGuid) : IdentityQuery;
-    public record IdentityByUserGuidQuery(Guid UserGuid) : IdentityQuery;
+    public record IdentityQuery(Guid UserGuid, Guid? OrgGuid);
     public record IdentityQueryResult(IEnumerable<Identity> Identities);
 
     //shared content

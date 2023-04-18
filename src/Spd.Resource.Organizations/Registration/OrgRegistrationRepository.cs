@@ -17,7 +17,7 @@ namespace Spd.Resource.Organizations.Registration
             _logger = logger;
         }
 
-        public async Task<OrgRegistrationQueryResult?> QueryOrgRegistration(OrgRegistrationQuery query, CancellationToken ct)
+        public async Task<OrgRegistrationQueryResult?> Query(OrgRegistrationQuery query, CancellationToken ct)
         {
             return query switch
             {
@@ -25,7 +25,7 @@ namespace Spd.Resource.Organizations.Registration
                 _ => throw new NotSupportedException($"{query.GetType().Name} is not supported")
             };
         }
-        public async Task<bool> AddRegistrationAsync(OrgRegistrationCreateCmd createRegistrationCmd, CancellationToken ct)
+        public async Task<bool> AddRegistrationAsync(CreateOrganizationRegistrationCommand createRegistrationCmd, CancellationToken ct)
         {
             string key;
             if (createRegistrationCmd.OrgRegistration.RegistrationTypeCode == RegistrationTypeCode.Employee)

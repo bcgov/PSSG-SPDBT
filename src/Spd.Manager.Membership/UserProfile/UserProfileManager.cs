@@ -42,8 +42,8 @@ namespace Spd.Manager.Membership.UserProfile
             List<UserInfo> userInfos = new();
 
             //check registration
-            var orgRegResult = await _orgRegistrationRepository.QueryOrgRegistration(new OrgRegistrationQueryByUserGuid(userGuid), ct);
-            if (orgRegResult?.OrgRegistrationResults != null)
+            var orgRegResult = await _orgRegistrationRepository.Query(new OrgRegistrationQueryByUserGuid(userGuid), ct);
+            if (orgRegResult != null)
             {
                 foreach(OrgRegistrationResult reg in orgRegResult.OrgRegistrationResults)
                 {
@@ -55,8 +55,8 @@ namespace Spd.Manager.Membership.UserProfile
             }
 
             //check org portal user
-            var identityResult = await _idRepository.QueryIdentity(
-                new IdentityByUserGuidQuery(userGuid),
+            var identityResult = await _idRepository.Query(
+                new IdentityQuery(userGuid, null),
                 ct);
             if (identityResult?.Identities != null)
             {
