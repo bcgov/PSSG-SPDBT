@@ -9,6 +9,7 @@ namespace Spd.Utilities.Dynamics
         private readonly DynamicsSettings options;
         private readonly ISecurityTokenProvider tokenProvider;
         private string? authToken;
+        private int pageSize = 10;
 
         public ODataClientHandler(IOptions<DynamicsSettings> options, ISecurityTokenProvider tokenProvider)
         {
@@ -27,20 +28,47 @@ namespace Spd.Utilities.Dynamics
                 // do not send reference properties and null values to Dynamics
                 arg.Entry.Properties = arg.Entry.Properties.Where((prop) => !prop.Name.StartsWith('_') && prop.Value != null);
             });
-            // client.BuildingRequest += Client_BuildingRequest;
+            client.BuildingRequest += Client_BuildingRequest;
             client.SendingRequest2 += Client_SendingRequest2;
         }
 
         private void Client_SendingRequest2(object sender, SendingRequest2EventArgs e)
         {
             e.RequestMessage.SetHeader("Authorization", $"Bearer {authToken}");
+            if (e.RequestMessage.Method == "GET")
+            {
+                e.RequestMessage.SetHeader("Prefer", $"odata.maxpagesize={pageSize}");
+            }
         }
 
-        //private void Client_BuildingRequest(object sender, BuildingRequestEventArgs e)
-        //{
-        //    if (e.RequestUri != null)
-        //        e.RequestUri = RewriteRequestUri((DataServiceContext)sender, options.EndpointUrl ?? null!, e.RequestUri);
-        //}
+        private void Client_BuildingRequest(object sender, BuildingRequestEventArgs e)
+        {
+            string query = e.RequestUri.Query;
+            if (!string.IsNullOrWhiteSpace(query))
+            {
+                int page = 1;
+                List<string> queries = query.Split('&').ToList();
+                string? top = queries.FirstOrDefault(q => q.StartsWith("$top="));
+                if (!string.IsNullOrWhiteSpace(top))
+                {
+                    var strs = top.Split("=");
+                    this.pageSize = Int32.Parse(strs[1]);
+                    string? skip = queries.FirstOrDefault(q => q.StartsWith("$skip="));
+                    if (!string.IsNullOrWhiteSpace(skip))
+                    {
+                        var skipValue = skip.Split("=");
+                        var skipRecordsNumber = Int32.Parse(skipValue[1]);
+                        page = skipRecordsNumber / pageSize + 1;
+                        //when api use skip and take, it needs rewrite the http request as following.
+                        queries.Remove(skip);
+                        queries.Remove(top);
+                        queries.Add($"$skiptoken=<cookie pagenumber='{page}'/>");
+                        string str = $"{e.RequestUri.Scheme}://{e.RequestUri.Host}{e.RequestUri.AbsolutePath}{string.Join("&", queries)}";
+                        e.RequestUri = new Uri(str);
+                    }
+                }
+            }
+        }
 
 #pragma warning disable S3358 // Ternary operators should not be nested
 
