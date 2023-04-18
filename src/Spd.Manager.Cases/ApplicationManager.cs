@@ -100,11 +100,19 @@ namespace Spd.Manager.Cases
             return resp;
         }
 
-        public async Task<ApplicationListResponse> Handle(ApplicationListQuery request, CancellationToken cancellationToken)
+        public async Task<ApplicationListResponse> Handle(ApplicationListQuery request, CancellationToken ct)
         {
             if (request.Page < 1) throw new ApiException(System.Net.HttpStatusCode.BadRequest, "incorrect page number.");
             if (request.PageSize < 1) throw new ApiException(System.Net.HttpStatusCode.BadRequest, "incorrect page size.");
-            var response = await _applicationRepository.GetApplicationListAsync(request.OrgId, request.Page, request.PageSize, cancellationToken);
+
+            var response = await _applicationRepository.QueryAsync(
+                new ApplicationQuery
+                {
+                    FilterBy = new FilterBy(request.OrgId, null),
+                    SortBy = new SortBy(true, null),
+                    Paging = new Paging(request.Page, request.PageSize)
+                },
+                ct);
             return _mapper.Map<ApplicationListResponse>(response);
         }
     }

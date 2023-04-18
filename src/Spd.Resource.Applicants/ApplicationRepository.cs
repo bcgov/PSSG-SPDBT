@@ -93,20 +93,38 @@ namespace Spd.Resource.Applicants
             return true;
         }
 
-        public async Task<ApplicationListResp> GetApplicationListAsync(Guid orgId, int page, int pageSize, CancellationToken cancellationToken)
+        public async Task<ApplicationListResp> QueryAsync(ApplicationQuery query, CancellationToken cancellationToken)
         {
-            var applications = _dynaContext.spd_applications
-                .Where(a => a._spd_organizationid_value == orgId && a.statecode == DynamicsConstants.StateCode_Active)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
+            if (query == null || query.FilterBy?.OrgId == null)
+                throw new ArgumentNullException("Must query applications by orgnization id.");
 
+            var applications = _dynaContext.spd_applications
+                    .Where(a => a._spd_organizationid_value == query.FilterBy.OrgId && a.statecode == DynamicsConstants.StateCode_Active);
+
+            //todo: add more filter and sorting here.
+            //if (!string.IsNullOrWhiteSpace(query.FilterBy?.ApplicationStatus))
+            //    applications = applications.Where(a => a.statecode == "InProgress");
+
+            if (query.SortBy == null)
+                applications = applications.OrderByDescending(a => a.createdon);
+
+            if (query.SortBy != null && query.SortBy.SubmittedDateDesc !=null && (bool)query.SortBy.SubmittedDateDesc)
+                applications = applications.OrderByDescending(a => a.createdon);
+            if (query.SortBy != null && query.SortBy.SubmittedDateDesc != null && !(bool)query.SortBy.SubmittedDateDesc)
+                applications = applications.OrderBy(a => a.createdon);
+
+            if (query.Paging != null)
+                applications = applications
+                    .Skip((query.Paging.Page - 1) * query.Paging.PageSize)
+                    .Take(query.Paging.PageSize);
+
+            var result = applications.AsEnumerable();
             var response = new ApplicationListResp();
 
             //response.FollowUpBusinessDays = organization.spd_followupbusinessdays ?? 6; // todo - update to use value from dynamics
             response.FollowUpBusinessDays = 9;
 
-            response.Applications = _mapper.Map<IEnumerable<ApplicationResp>>(applications);
+            response.Applications = _mapper.Map<IEnumerable<ApplicationResp>>(result);
             return response;
         }
 

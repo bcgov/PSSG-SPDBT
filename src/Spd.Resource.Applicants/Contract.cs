@@ -7,8 +7,18 @@ namespace Spd.Resource.Applicants
         Task<bool> CheckInviteApplicationDuplicateAsync(SearchInvitationQry searchInvitationQry, CancellationToken cancellationToken);
         public Task<bool> AddApplicationAsync(ApplicationCreateCmd createApplicationCmd, CancellationToken cancellationToken);
         Task<bool> CheckApplicationDuplicateAsync(SearchApplicationQry searchApplicationQry, CancellationToken cancellationToken);
-        Task<ApplicationListResp> GetApplicationListAsync(Guid orgId, int page, int pageSize, CancellationToken cancellationToken);
+        Task<ApplicationListResp> QueryAsync(ApplicationQuery query, CancellationToken cancellationToken);
     }
+
+    public record ApplicationQuery
+    {
+        public FilterBy FilterBy { get; set; } //null means no filter
+        public SortBy? SortBy { get; set; } //null means no sorting
+        public Paging Paging { get; set; }
+    }
+    public record FilterBy(Guid OrgId, String? ApplicationStatus);
+    public record SortBy(bool? SubmittedDateDesc, bool? FirstNameDesc);
+    public record Paging(int Page, int PageSize);
 
     public record ApplicationInviteCreateCmd
     {
