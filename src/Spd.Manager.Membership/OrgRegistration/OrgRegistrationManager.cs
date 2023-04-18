@@ -8,7 +8,7 @@ using System.Security.Principal;
 namespace Spd.Manager.Membership.OrgRegistration
 {
     internal class OrgRegistrationManager : 
-        IRequestHandler<OrgRegistrationCreateCommand, Unit>,
+        IRequestHandler<RegisterOrganizationCommand, Unit>,
         IRequestHandler<CheckOrgRegistrationDuplicateQuery, CheckDuplicateResponse>,
         IOrgRegistrationManager
     {
@@ -24,20 +24,20 @@ namespace Spd.Manager.Membership.OrgRegistration
             _currentUser = currentUser;
         }
 
-        public async Task<Unit> Handle(OrgRegistrationCreateCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(RegisterOrganizationCommand request, CancellationToken cancellationToken)
         {
-            var createOrgRegistration = _mapper.Map<OrgRegistrationCreateCmd>(request.CreateOrgRegistrationRequest);
+            var orgRegistration = _mapper.Map<Spd.Resource.Organizations.Registration.OrgRegistration>(request.CreateOrgRegistrationRequest);
             if (_currentUser.IsAuthenticated())
             {
-                createOrgRegistration.IdentityProviderTypeCode = _currentUser.GetIdentityProvider() switch
+                orgRegistration.IdentityProviderTypeCode = _currentUser.GetIdentityProvider() switch
                 {
                     "bceidboth" or "bceidbusiness" or "bceidbasic" => IdentityProviderTypeCode.BusinessBceId,
                     _ => null
                 };
-                createOrgRegistration.BCeIDUserGuid = _currentUser.GetUserGuid();
-                createOrgRegistration.BizIdentityGuid = _currentUser.GetBizGuid();
+                orgRegistration.BCeIDUserGuid = _currentUser.GetUserGuid();
+                orgRegistration.BizIdentityGuid = _currentUser.GetBizGuid();
             }
-            await _orgRegRepository.AddRegistrationAsync(createOrgRegistration, cancellationToken);
+            await _orgRegRepository.AddRegistrationAsync(new CreateOrganizationRegistrationCommand(orgRegistration), cancellationToken);
 
             return default;
         }

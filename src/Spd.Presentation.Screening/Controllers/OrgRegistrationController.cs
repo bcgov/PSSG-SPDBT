@@ -22,7 +22,7 @@ namespace Spd.Presentation.Screening.Controllers
         //[Authorize]
         public async Task<ActionResult> Register([FromBody][Required] OrgRegistrationCreateRequest orgRegistrationCreateRequest)
         {
-            await _mediator.Send(new OrgRegistrationCreateCommand(orgRegistrationCreateRequest));
+            await _mediator.Send(new RegisterOrganizationCommand(orgRegistrationCreateRequest));
             return Ok();
         }
 

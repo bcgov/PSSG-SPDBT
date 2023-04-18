@@ -7,11 +7,11 @@ namespace Spd.Manager.Membership.OrgRegistration
 {
     public interface IOrgRegistrationManager
     {
-        public Task<Unit> Handle(OrgRegistrationCreateCommand request, CancellationToken cancellationToken);
+        public Task<Unit> Handle(RegisterOrganizationCommand request, CancellationToken cancellationToken);
         public Task<CheckDuplicateResponse> Handle(CheckOrgRegistrationDuplicateQuery request, CancellationToken cancellationToken);
     }
 
-    public record OrgRegistrationCreateCommand(OrgRegistrationCreateRequest CreateOrgRegistrationRequest) : IRequest<Unit>;
+    public record RegisterOrganizationCommand(OrgRegistrationCreateRequest CreateOrgRegistrationRequest) : IRequest<Unit>;
     public record CheckOrgRegistrationDuplicateQuery(OrgRegistrationCreateRequest CreateOrgRegistrationRequest) : IRequest<CheckDuplicateResponse>;
 
     public class OrgRegistrationCreateRequest

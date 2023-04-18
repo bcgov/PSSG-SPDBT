@@ -2,11 +2,30 @@ namespace Spd.Resource.Organizations.Registration
 {
     public interface IOrgRegistrationRepository
     {
-        Task<bool> AddRegistrationAsync(OrgRegistrationCreateCmd createRegistrationCmd, CancellationToken cancellationToken);
-        Task<bool> CheckDuplicateAsync(SearchRegistrationQry searchQry, CancellationToken cancellationToken);
+        Task<bool> AddRegistrationAsync(CreateOrganizationRegistrationCommand createRegistrationCmd, CancellationToken ct);
+        Task<bool> CheckDuplicateAsync(SearchRegistrationQry searchQry, CancellationToken ct);
+        Task<OrgRegistrationQueryResult?> Query(OrgRegistrationQuery query, CancellationToken ct);
     }
 
-    public record OrgRegistrationCreateCmd
+    //queries
+    public abstract record OrgRegistrationQuery;
+    public record OrgRegistrationQueryByUserGuid(Guid UserGuid) : OrgRegistrationQuery;
+    public record SearchRegistrationQry() 
+    {
+        public string? GenericEmail { get; set; }
+        public string? MailingPostalCode { get; set; }
+        public string? OrganizationName { get; set; }
+        public EmployeeOrganizationTypeCode? EmployeeOrganizationTypeCode { get; set; }
+        public VolunteerOrganizationTypeCode? VolunteerOrganizationTypeCode { get; set; }
+        public RegistrationTypeCode RegistrationTypeCode { get; set; }
+    }
+    public record OrgRegistrationQueryResult(IEnumerable<OrgRegistrationResult> OrgRegistrationResults);
+
+    //commands
+    public record CreateOrganizationRegistrationCommand(OrgRegistration OrgRegistration);
+
+    //shared contents
+    public record OrgRegistration
     {
         public bool? AgreeToTermsAndConditions { get; set; } //map to?
         public PayerPreferenceTypeCode PayerPreference { get; set; }
@@ -38,15 +57,10 @@ namespace Spd.Resource.Organizations.Registration
         public BooleanTypeCode HasPotentialDuplicate { get; set; } = BooleanTypeCode.No;
     }
 
-    public record SearchRegistrationQry
+    public record OrgRegistrationResult : OrgRegistration
     {
-        public string? GenericEmail { get; set; }
-        public string? MailingPostalCode { get; set; }
-        public string? OrganizationName { get; set; }
-        public EmployeeOrganizationTypeCode? EmployeeOrganizationTypeCode { get; set; }
-        public VolunteerOrganizationTypeCode? VolunteerOrganizationTypeCode { get; set; }
-        public RegistrationTypeCode RegistrationTypeCode { get; set; }
-    }
+        public Guid OrgRegistrationId { get; set; }
+    };
 
     public enum RegistrationTypeCode
     {
