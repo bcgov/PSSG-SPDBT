@@ -126,6 +126,7 @@ namespace Spd.Resource.Organizations.User
 
         private async Task<OrgUserManageResult> DeleteUserAsync(Guid userId, CancellationToken cancellationToken)
         {
+            //TODO need to be able to handle: delete user, cancel invitation and remove expired invitation
             var user = GetUserById(userId);
             // Inactivate the user
             user.statecode = DynamicsConstants.StateCode_Inactive;

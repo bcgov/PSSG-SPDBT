@@ -26,7 +26,7 @@ export const EmployeeInteractionTypes = [
 @Component({
 	selector: 'app-manual-submissions',
 	template: `
-		<app-dashboard-header title="Organization Name" subtitle="Security Screening Portal"></app-dashboard-header>
+		<app-dashboard-header subtitle="Security Screening Portal"></app-dashboard-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row mb-4">
 				<div class="col-xl-10 col-lg-10 col-md-12 col-sm-12">
@@ -456,7 +456,7 @@ export class ManualSubmissionsComponent implements OnInit {
 					if (dupres.hasPotentialDuplicate) {
 						const data: DialogOptions = {
 							icon: 'warning',
-							title: 'Potential Duplicate Detected',
+							title: 'Potential duplicate detected',
 							message:
 								'An in-progress application already exists for this applicant, with your organization for this screening type. How would you like to proceed?',
 							actionText: 'Yes, create application',
@@ -548,7 +548,7 @@ export class ManualSubmissionsComponent implements OnInit {
 		if (control.length == 1) {
 			const data: DialogOptions = {
 				icon: 'warning',
-				title: 'Remove Row',
+				title: 'Remove row',
 				message: 'This row cannot be removed. At least one row must exist.',
 				cancelText: 'Close',
 			};
@@ -559,7 +559,7 @@ export class ManualSubmissionsComponent implements OnInit {
 
 		const data: DialogOptions = {
 			icon: 'warning',
-			title: 'Remove Row',
+			title: 'Remove row',
 			message: 'Are you sure you want to remove this previous name?',
 			actionText: 'Yes, remove this name',
 			cancelText: 'Cancel',

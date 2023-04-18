@@ -26,8 +26,7 @@ namespace Spd.Resource.Organizations.User
             .IncludeBase<spd_portaluser, User>()
             .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_portaluserid))
             .ForMember(d => d.OrgRegistrationId, opt => opt.MapFrom(s => s._spd_orgregistrationid_value))
-            .ForMember(d => d.IsActive, opt => opt.MapFrom(s => s._spd_identityid_value.HasValue))
-            .ForMember(d => d.IsInvitationExpired, opt => opt.MapFrom(s => (DateTimeOffset.Now - s.createdon).GetValueOrDefault().Days > 7));
+            .ForMember(d => d.IsActive, opt => opt.MapFrom(s => s._spd_identityid_value.HasValue));
 
             _ = CreateMap<User, spd_portalinvitation>()
             .ForMember(d => d.spd_portalinvitationid, opt => opt.Ignore())

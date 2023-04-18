@@ -38,7 +38,6 @@ namespace Spd.Resource.Organizations.User
         public Guid Id { get; set; }
         public Guid? OrgRegistrationId { get; set; }
         public bool IsActive { get; set; }
-        public bool IsInvitationExpired { get; set; }
     };
     public enum ContactRoleCode
     {

@@ -6,7 +6,7 @@ import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 
 import { AddressAutoCompleteService } from './services/address-auto-complete.service';
 import { ApplicationService } from './services/application.service';
-import { BCeIdConfigurationService } from './services/b-ce-id-configuration.service';
+import { ConfigurationService } from './services/configuration.service';
 import { OrgService } from './services/org.service';
 import { OrgRegistrationService } from './services/org-registration.service';
 import { OrgUserService } from './services/org-user.service';
@@ -22,7 +22,7 @@ import { UserProfileService } from './services/user-profile.service';
   providers: [
     AddressAutoCompleteService,
     ApplicationService,
-    BCeIdConfigurationService,
+    ConfigurationService,
     OrgService,
     OrgRegistrationService,
     OrgUserService,

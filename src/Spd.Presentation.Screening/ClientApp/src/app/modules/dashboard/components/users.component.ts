@@ -10,7 +10,7 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 @Component({
 	selector: 'app-users',
 	template: `
-		<app-dashboard-header title="Organization Name" subtitle="Security Screening Portal"></app-dashboard-header>
+		<app-dashboard-header subtitle="Security Screening Portal"></app-dashboard-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-xxl-7 col-xl-7 col-lg-9 col-md-8 col-sm-12">
@@ -43,11 +43,6 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 										<div class="badge rounded-pill bg-success mb-2">Active</div>
 									</ng-container>
 									<ng-template #notactive>
-										<ng-container *ngIf="user.isInvitationExpired; else notexpired">
-											<div class="badge rounded-pill text-bg-danger mb-2">Expired Invitation</div>
-										</ng-container>
-									</ng-template>
-									<ng-template #notexpired>
 										<div class="badge rounded-pill text-bg-secondary mb-2">Pending</div>
 									</ng-template>
 
@@ -101,19 +96,6 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 										</button>
 									</ng-container>
 									<ng-template #notactiveactions>
-										<ng-container *ngIf="user.isInvitationExpired; else notexpiredactions">
-											<button
-												mat-icon-button
-												matTooltip="Removed expired invitation"
-												class="table-button table-button__remove my-2"
-												(click)="onExpireInvitation(user)"
-												aria-label="Remove expired invitation"
-											>
-												<mat-icon>delete_outline</mat-icon>
-											</button>
-										</ng-container>
-									</ng-template>
-									<ng-template #notexpiredactions>
 										<button
 											mat-icon-button
 											matTooltip="Cancel invitation"
@@ -207,36 +189,24 @@ export class UsersComponent implements OnInit {
 	}
 
 	onDeleteUser(user: OrgUserResponse) {
-		const data: DialogOptions = {
-			icon: 'warning',
-			title: 'Delete User',
+		this.deleteUser({
+			user,
+			title: 'Delete user',
 			message: 'Are you sure you want to permanently remove this user?',
-			actionText: 'Yes, remove this user',
-			cancelText: 'Cancel',
-		};
-
-		this.dialog
-			.open(DialogComponent, { data })
-			.afterClosed()
-			.subscribe((response: boolean) => {
-				if (response) {
-					this.orgUserService
-						.apiOrgsOrgIdUsersUserIdDelete({ userId: user.id!, orgId: user.organizationId! })
-						.pipe()
-						.subscribe((_res) => {
-							this.usersList.splice(
-								this.usersList.findIndex((item) => item.id == user.id!),
-								1
-							);
-							this.setFlags();
-							this.hotToast.success('User was successfully removed');
-						});
-				}
-			});
+			actionText: 'Yes, remove',
+			success: 'User was successfully removed',
+		});
 	}
-	onCancelInvitation(user: OrgUserResponse) {}
 
-	onExpireInvitation(user: OrgUserResponse) {}
+	onCancelInvitation(user: OrgUserResponse) {
+		this.deleteUser({
+			user,
+			title: 'Cancel invitation',
+			message: 'Are you sure you want to cancel this invitation?',
+			actionText: 'Yes, cancel',
+			success: 'Invitation was successfully cancelled',
+		});
+	}
 
 	allowDeleteRow(user: OrgUserResponse): boolean {
 		// TODO if row is current user, remove delete
@@ -288,8 +258,8 @@ export class UsersComponent implements OnInit {
 
 	private sortUsers(): void {
 		this.usersList.sort((a: OrgUserResponse, b: OrgUserResponse) => {
-			const a1 = a.isActive ? 'a' : a.isInvitationExpired ? 'c' : 'b';
-			const b1 = b.isActive ? 'a' : b.isInvitationExpired ? 'c' : 'b';
+			const a1 = a.isActive ? 'a' : 'b';
+			const b1 = b.isActive ? 'a' : 'b';
 			const a2 = a.contactAuthorizationTypeCode?.toString() ?? '';
 			const b2 = b.contactAuthorizationTypeCode?.toString() ?? '';
 			const a3 = a.firstName?.toUpperCase() ?? '';
@@ -298,6 +268,41 @@ export class UsersComponent implements OnInit {
 			const b4 = b.lastName?.toUpperCase() ?? '';
 			return a1.localeCompare(b1) || a2.localeCompare(b2) * -1 || a3.localeCompare(b3) || a4.localeCompare(b4);
 		});
+	}
+
+	private deleteUser(params: {
+		user: OrgUserResponse;
+		title: string;
+		message: string;
+		actionText: string;
+		success: string;
+	}) {
+		const data: DialogOptions = {
+			icon: 'warning',
+			title: params.title,
+			message: params.message,
+			actionText: params.actionText,
+			cancelText: 'Cancel',
+		};
+
+		this.dialog
+			.open(DialogComponent, { data })
+			.afterClosed()
+			.subscribe((response: boolean) => {
+				if (response) {
+					this.orgUserService
+						.apiOrgsOrgIdUsersUserIdDelete({ userId: params.user.id!, orgId: params.user.organizationId! })
+						.pipe()
+						.subscribe((_res) => {
+							this.usersList.splice(
+								this.usersList.findIndex((item) => item.id == params.user.id!),
+								1
+							);
+							this.setFlags();
+							this.hotToast.success(params.success);
+						});
+				}
+			});
 	}
 
 	private loadListOfUsers(): void {

@@ -7,7 +7,6 @@ export interface OrgUserResponse {
   firstName?: null | string;
   id?: string;
   isActive?: boolean;
-  isInvitationExpired?: boolean;
   jobTitle?: null | string;
   lastName?: null | string;
   organizationId?: string;

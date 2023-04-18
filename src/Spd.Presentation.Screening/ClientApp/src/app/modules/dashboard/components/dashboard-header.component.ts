@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
 
 @Component({
 	selector: 'app-dashboard-header',
@@ -6,8 +7,8 @@ import { Component, Input } from '@angular/core';
 		<div class="row">
 			<div class="col-12">
 				<div class="d-flex justify-content-between">
-					<h3 class="mx-2 fw-light" [title]="title" [attr.aria-label]="title">
-						{{ title }}
+					<h3 class="mx-2 fw-light" [title]="loggedInOrgDisplay" [attr.aria-label]="loggedInOrgDisplay">
+						{{ loggedInOrgDisplay }}
 					</h3>
 				</div>
 				<div *ngIf="subtitle" class="lead mx-2">{{ subtitle }}</div>
@@ -28,7 +29,18 @@ import { Component, Input } from '@angular/core';
 		`,
 	],
 })
-export class DashboardHeaderComponent {
-	@Input() title = '';
+export class DashboardHeaderComponent implements OnInit {
+	loggedInOrgDisplay: string | null = null;
 	@Input() subtitle = '';
+
+	constructor(private authenticationService: AuthenticationService) {}
+
+	ngOnInit(): void {
+		this.authenticationService.isLoginSubject$.subscribe((_subjectData: any) => {
+			if (_subjectData) {
+				const loggedInUserData = this.authenticationService.loggedInUserData;
+				this.loggedInOrgDisplay = loggedInUserData.bceid_business_name;
+			}
+		});
+	}
 }
