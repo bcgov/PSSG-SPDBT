@@ -8,7 +8,7 @@ namespace Spd.Manager.Membership.OrgRegistration
     {
         public Mappings()
         {
-            CreateMap<OrgRegistrationCreateRequest, OrgRegistrationCreateCmd>();
+            CreateMap<OrgRegistrationCreateRequest, Spd.Resource.Organizations.Registration.OrgRegistration>();
             CreateMap<OrgRegistrationCreateRequest, SearchRegistrationQry>();
             CreateMap<OrgRegistrationCreateRequest, SearchOrgQry>();
         }
