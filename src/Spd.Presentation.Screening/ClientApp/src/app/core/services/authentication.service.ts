@@ -59,6 +59,10 @@ export class AuthenticationService {
 		return this.oauthService.getAccessToken();
 	}
 
+	public isLoggedIn(): boolean {
+		return this.oauthService.hasValidAccessToken();
+	}
+
 	public async configureOAuthService(redirectUri: string): Promise<void> {
 		return this.authConfigService.getAuthConfig(redirectUri).then((authConfig) => {
 			this.oauthService.configure(authConfig);

@@ -1,7 +1,7 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { AgreementOfTermsComponent } from '../step-components/agreement-of-terms.component';
+import { AgreementOfTermsComponent, AgreementOfTermsModel } from '../step-components/agreement-of-terms.component';
 
 @Component({
 	selector: 'app-step-four',
@@ -45,7 +45,7 @@ export class StepFourComponent {
 
 	@ViewChild('childstepper') private childstepper!: MatStepper;
 
-	getStepData(): any {
+	getStepData(): AgreementOfTermsModel {
 		return {
 			...this.agreementOfTermsComponent.getDataToSave(),
 		};

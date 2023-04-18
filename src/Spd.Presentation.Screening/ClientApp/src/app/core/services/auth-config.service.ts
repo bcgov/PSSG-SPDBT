@@ -1,48 +1,58 @@
 import { Injectable } from '@angular/core';
 import { AuthConfig } from 'angular-oauth2-oidc';
-import { lastValueFrom } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { BCeIdConfigurationResponse } from 'src/app/api/models';
-import { BCeIdConfigurationService } from 'src/app/api/services';
+import { BCeIdConfigurationResponse, RecaptchaConfigurationResponse } from 'src/app/api/models';
+import { ConfigurationService } from 'src/app/api/services';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class AuthConfigService {
-	public config: BCeIdConfigurationResponse | null = null;
+	public bceIdConfig: BCeIdConfigurationResponse | null = null;
+	public recaptchaConfig: RecaptchaConfigurationResponse | null = null;
 
-	constructor(private bceIdConfigurationService: BCeIdConfigurationService) {}
-
-	public async loadConfig(): Promise<BCeIdConfigurationResponse> {
-		if (this.config !== null) {
-			return this.config;
-		}
-
-		const config$ = this.bceIdConfigurationService.apiBceidConfigurationGet().pipe(
-			tap((resp: BCeIdConfigurationResponse) => {
-				this.config = { ...resp };
-			})
-		);
-
-		return lastValueFrom(config$);
-	}
+	constructor(private configurationService: ConfigurationService) {}
 
 	public async getAuthConfig(redirectUri: string): Promise<AuthConfig> {
-		console.debug('[AuthConfigService.getAuthConfig] redirectUri', redirectUri);
-		return await this.loadConfig().then((resp) => {
-			const config = {
-				issuer: resp.issuer!,
-				clientId: resp.clientId!,
-				redirectUri,
-				responseType: resp.responseType!,
-				scope: resp.scope!,
-				showDebugInformation: true,
-				postLogoutRedirectUri: resp.postLogoutRedirectUri!,
-				// eslint-disable-next-line @typescript-eslint/naming-convention
-				customQueryParams: { kc_idp_hint: 'bceidboth' },
-			};
-			console.debug('[AuthConfigService.getAuthConfig] config', config);
-			return config;
-		});
+		const resp = this.bceIdConfig!;
+		const bceIdConfig = {
+			issuer: resp.issuer!,
+			clientId: resp.clientId!,
+			redirectUri,
+			responseType: resp.responseType!,
+			scope: resp.scope!,
+			showDebugInformation: true,
+			postLogoutRedirectUri: resp.postLogoutRedirectUri!,
+			customQueryParams: { kc_idp_hint: 'bceidboth' },
+		};
+		console.debug('[getAuthConfig] bceIdConfig', bceIdConfig, 'redirectUri', redirectUri);
+		return bceIdConfig;
+	}
+
+	public getBceidConfig(): Observable<BCeIdConfigurationResponse> {
+		if (this.bceIdConfig) {
+			return of(this.bceIdConfig);
+		}
+
+		return this.configurationService.apiBceidConfigurationGet().pipe(
+			tap((resp: BCeIdConfigurationResponse) => {
+				this.bceIdConfig = { ...resp };
+				return resp;
+			})
+		);
+	}
+
+	public getRecaptchaConfig(): Observable<RecaptchaConfigurationResponse> {
+		if (this.recaptchaConfig) {
+			return of(this.recaptchaConfig);
+		}
+
+		return this.configurationService.apiRecaptchaConfigurationGet().pipe(
+			tap((resp: RecaptchaConfigurationResponse) => {
+				this.recaptchaConfig = { ...resp };
+				return resp;
+			})
+		);
 	}
 }
