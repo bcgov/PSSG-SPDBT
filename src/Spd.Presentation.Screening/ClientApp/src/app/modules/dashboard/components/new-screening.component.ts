@@ -10,7 +10,7 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 @Component({
 	selector: 'app-new-screening',
 	template: `
-		<app-dashboard-header title="Organization Name" subtitle="Security Screening Portal"></app-dashboard-header>
+		<app-dashboard-header subtitle="Security Screening Portal"></app-dashboard-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
@@ -215,7 +215,7 @@ export class NewScreeningComponent implements OnInit {
 		if (control.length == 1) {
 			const data: DialogOptions = {
 				icon: 'warning',
-				title: 'Remove Row',
+				title: 'Remove row',
 				message: 'This row cannot be removed. At least one row must exist.',
 				cancelText: 'Close',
 			};
@@ -226,7 +226,7 @@ export class NewScreeningComponent implements OnInit {
 
 		const data: DialogOptions = {
 			icon: 'warning',
-			title: 'Remove Row',
+			title: 'Remove row',
 			message: 'Are you sure you want to remove this screening request?',
 			actionText: 'Yes, remove this row',
 			cancelText: 'Cancel',
@@ -284,11 +284,11 @@ export class NewScreeningComponent implements OnInit {
 					let dialogAction = '';
 
 					if (dupres?.length > 1) {
-						dialogTitle = 'Potential Duplicates Detected';
+						dialogTitle = 'Potential duplicates detected';
 						dialogMessage = `Potential duplicates have been detected from the screening request you have attempted to send. Ensure that the applicants do not currently have a screening application in progress nor have been sent a screening invitation recently.<br/><br/>${dupMessage}Do you still wish to proceed?`;
 						dialogAction = 'Yes, send requests';
 					} else {
-						dialogTitle = 'Potential Duplicate Detected';
+						dialogTitle = 'Potential duplicate detected';
 						dialogMessage = `A potential duplicate has been detected from the screening request you have attempted to send. Ensure that the applicant does not currently have a screening application in progress nor have been sent a screening invitation recently.<br/><br/>${dupMessage}Do you still wish to proceed?`;
 						dialogAction = 'Yes, send request';
 					}
@@ -326,7 +326,7 @@ export class NewScreeningComponent implements OnInit {
 
 		const data: DialogOptions = {
 			icon: 'info_outline',
-			title: 'Vulnerable Sector',
+			title: 'Vulnerable sector',
 			message: '',
 			actionText: 'Yes',
 			cancelText: 'No',
@@ -373,7 +373,7 @@ export class NewScreeningComponent implements OnInit {
 				if (noMessage) {
 					const dialogOptions: DialogOptions = {
 						icon: 'info_outline',
-						title: 'Vulnerable Sector',
+						title: 'Vulnerable sector',
 						message: noMessage,
 						cancelText: 'Close',
 					};

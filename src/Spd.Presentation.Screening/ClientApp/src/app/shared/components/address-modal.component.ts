@@ -49,7 +49,7 @@ export interface AddressDialogData {
 export class AddressModalComponent implements OnInit {
 	dataSource!: MatTableDataSource<any>;
 	columns!: string[];
-	title: string = 'Address Selection';
+	title: string = 'Address selection';
 
 	constructor(
 		private dialogRef: MatDialogRef<AddressModalComponent>,

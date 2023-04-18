@@ -149,7 +149,7 @@ export class PreviousNameComponent implements OnInit, ScreeningFormStepComponent
 		if (control.length == 1) {
 			const data: DialogOptions = {
 				icon: 'warning',
-				title: 'Remove Row',
+				title: 'Remove row',
 				message: 'This row cannot be removed. At least one row must exist.',
 				cancelText: 'Close',
 			};
@@ -160,7 +160,7 @@ export class PreviousNameComponent implements OnInit, ScreeningFormStepComponent
 
 		const data: DialogOptions = {
 			icon: 'warning',
-			title: 'Remove Row',
+			title: 'Remove row',
 			message: 'Are you sure you want to remove this previous name?',
 			actionText: 'Yes, remove this name',
 			cancelText: 'Cancel',

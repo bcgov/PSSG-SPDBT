@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AuthConfigService } from 'src/app/core/services/auth-config.service';
 
 @Component({
 	selector: 'app-captcha-v2',
@@ -25,11 +26,10 @@ export class CaptchaV2Component {
 	captchaForm: FormGroup = new FormGroup({
 		token: new FormControl('', Validators.required),
 	});
-	siteKey: string = '6LeU62UlAAAAAD1RkSydHX6_7_zekmvxTSJpy9qw';
+	siteKey: string = '';
 
-	constructor() {
-		//private configService: ConfigService) {
-		// this.captchaKey = this.configService?.configuration?.captcha?.key;
+	constructor(private authConfigService: AuthConfigService) {
+		this.siteKey = this.authConfigService.recaptchaConfig?.key!;
 	}
 
 	resolved($event: string) {

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 
@@ -18,7 +18,8 @@ import { AuthenticationService } from 'src/app/core/services/authentication.serv
 			<div class="header-text pl-3" (click)="goToLanding()">{{ title }}</div>
 			<span style="flex: 1 1 auto;"></span>
 			<div *ngIf="loggedInUserDisplay">
-				<mat-icon class="logout-button me-2" (click)="onLogout()">logout</mat-icon>{{ loggedInUserDisplay }}
+				<mat-icon matTooltip="Logout" class="logout-button me-2" (click)="onLogout()">logout</mat-icon
+				>{{ loggedInUserDisplay }}
 			</div>
 		</mat-toolbar>
 	`,
@@ -58,15 +59,17 @@ import { AuthenticationService } from 'src/app/core/services/authentication.serv
 		`,
 	],
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
 	@Input() title = '';
 	loggedInUserDisplay: string | null = null;
 
 	constructor(protected router: Router, private authenticationService: AuthenticationService) {}
 
 	ngOnInit(): void {
-		this.authenticationService.isLoginSubject$.subscribe((subjectData: any) => {
-			this.getUserInfo();
+		this.authenticationService.isLoginSubject$.subscribe((_subjectData: any) => {
+			if (_subjectData) {
+				this.getUserInfo();
+			}
 		});
 	}
 

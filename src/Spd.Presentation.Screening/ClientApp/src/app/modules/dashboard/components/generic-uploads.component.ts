@@ -9,7 +9,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 @Component({
 	selector: 'app-generic-uploads',
 	template: `
-		<app-dashboard-header title="Organization Name" subtitle="Security Screening Portal"></app-dashboard-header>
+		<app-dashboard-header subtitle="Security Screening Portal"></app-dashboard-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-12">

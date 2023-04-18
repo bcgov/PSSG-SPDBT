@@ -12,7 +12,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 @Component({
 	selector: 'app-payments',
 	template: `
-		<app-dashboard-header title="Organization Name" subtitle="Security Screening Portal"></app-dashboard-header>
+		<app-dashboard-header subtitle="Security Screening Portal"></app-dashboard-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">

@@ -1,7 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { CaptchaResponse, CaptchaResponseType } from 'src/app/shared/components/captcha-v2.component';
 import { RegistrationFormStepComponent } from '../org-registration.component';
+
+export class AgreementOfTermsModel {
+	agreeToTermsAndConditions: string = '';
+	recaptcha: string | null = null;
+}
 
 @Component({
 	selector: 'app-agreement-of-terms',
@@ -88,7 +94,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 					</div>
 				</div>
 
-				<div class="row my-4">
+				<div class="row my-4" *ngIf="displayCaptcha">
 					<div class="offset-md-2 col-md-8 col-sm-12">
 						<app-captcha-v2 (captchaResponse)="onTokenResponse($event)"></app-captcha-v2>
 						<mat-error *ngIf="displayValidationErrors && !captchaPassed"> This is required </mat-error>
@@ -118,28 +124,40 @@ export class AgreementOfTermsComponent implements OnInit, RegistrationFormStepCo
 	hasScrolledToBottom = false;
 	displayValidationErrors = false;
 
+	displayCaptcha = false;
 	captchaPassed = false;
 	captchaResponse: CaptchaResponse | null = null;
 
-	constructor(private formBuilder: FormBuilder) {}
+	constructor(private formBuilder: FormBuilder, private authenticationService: AuthenticationService) {}
 
 	ngOnInit(): void {
 		this.form = this.formBuilder.group({
 			agreeToTermsAndConditions: new FormControl('', [Validators.required]),
 		});
+
+		this.authenticationService.isLoginSubject$.subscribe((_subjectData: any) => {
+			const isLoggedIn = this.authenticationService.isLoggedIn();
+			this.displayCaptcha = !isLoggedIn;
+		});
 	}
 
-	getDataToSave(): any {
-		return this.form.value;
+	getDataToSave(): AgreementOfTermsModel {
+		return { ...this.form.value, recaptcha: this.displayCaptcha ? this.captchaResponse?.resolved : null };
 	}
 
 	isFormValid(): boolean {
 		this.displayValidationErrors = !this.hasScrolledToBottom || !this.captchaPassed;
-		return this.form.valid && this.hasScrolledToBottom && this.captchaPassed ? true : false;
+		return this.form.valid &&
+			this.hasScrolledToBottom &&
+			((this.displayCaptcha && this.captchaPassed) || !this.displayCaptcha)
+			? true
+			: false;
 	}
 
 	clearCurrentData(): void {
 		this.form.reset();
+		this.captchaPassed = false;
+		this.captchaResponse = null;
 	}
 
 	onScrollTermsAndConditions(e: any) {
