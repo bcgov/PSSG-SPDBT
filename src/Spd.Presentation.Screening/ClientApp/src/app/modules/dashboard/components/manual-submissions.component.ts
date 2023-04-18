@@ -9,7 +9,6 @@ import {
 	BooleanTypeCode,
 	CheckApplicationDuplicateResponse,
 	EmployeeInteractionTypeCode,
-	PayerPreferenceTypeCode,
 } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
@@ -385,7 +384,6 @@ export class ManualSubmissionsComponent implements OnInit {
 
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	booleanTypeCodes = BooleanTypeCode;
-	payerPreferenceTypeCode = PayerPreferenceTypeCode;
 	form: FormGroup = this.formBuilder.group(
 		{
 			givenName: new FormControl('', [Validators.required]),
@@ -458,7 +456,7 @@ export class ManualSubmissionsComponent implements OnInit {
 							icon: 'warning',
 							title: 'Potential duplicate detected',
 							message:
-								'An in-progress application already exists for this applicant, with your organization for this screening type. How would you like to proceed?',
+								'Your organization has submitted a criminal record check for this applicant within the last 30 days. How would you like to proceed?',
 							actionText: 'Yes, create application',
 							cancelText: 'Cancel',
 						};

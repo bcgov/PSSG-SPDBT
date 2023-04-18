@@ -26,7 +26,7 @@ namespace Spd.Manager.Cases
         public string? LastName { get; set; }
         public string? Email { get; set; }
         public string? JobTitle { get; set; }
-        public bool? OrgPay { get; set; }
+        public PayeePreferenceTypeCode PayeeType { get; set; }
     }
 
     public record ApplicationInviteCreateResponse
@@ -130,6 +130,15 @@ namespace Spd.Manager.Cases
         OrganizationSubmitted
     }
 
+    public enum PayeePreferenceTypeCode
+    {
+        [Description("Organization")]
+        Organization,
+
+        [Description("Applicant")]
+        Applicant
+    }
+
     public class ApplicationInviteCreateRequestValidator : AbstractValidator<ApplicationInviteCreateRequest>
     {
         public ApplicationInviteCreateRequestValidator()
@@ -151,8 +160,8 @@ namespace Spd.Manager.Cases
                     .NotEmpty()
                     .MaximumLength(100);
 
-            RuleFor(r => r.OrgPay)
-                .NotNull();
+            RuleFor(r => r.PayeeType)
+                .IsInEnum();
         }
     }
 

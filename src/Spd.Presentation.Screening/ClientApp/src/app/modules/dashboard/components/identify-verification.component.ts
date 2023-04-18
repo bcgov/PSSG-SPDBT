@@ -178,8 +178,6 @@ export class IdentifyVerificationComponent implements OnInit {
 	dataSource!: MatTableDataSource<any>;
 	columns!: string[];
 
-	pageSizes = [3, 5, 7];
-
 	showDropdownOverlay = false;
 	formFilter: FormGroup = this.formBuilder.group({
 		search: new FormControl(''),
