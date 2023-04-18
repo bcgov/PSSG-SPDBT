@@ -8,7 +8,7 @@ namespace Spd.Resource.Organizations.Registration
     {
         public Mappings()
         {
-            _ = CreateMap<OrgRegistrationCreateCmd, spd_orgregistration>()
+            _ = CreateMap<OrgRegistration, spd_orgregistration>()
             .ForMember(d => d.spd_orgregistrationid, opt => opt.MapFrom(s => Guid.NewGuid()))
             .ForMember(d => d.spd_workswith, opt => opt.MapFrom(s => (int)Enum.Parse<WorksWithChildrenOptionSet>(s.EmployeeInteractionFlag.ToString())))
             .ForMember(d => d.spd_estimatedapplicationssubmittedperyear, opt => opt.MapFrom(s => (int)Enum.Parse<EstimatedApplicationsSubmittedPerYearOptionSet>(s.ScreeningsCount.ToString())))
@@ -31,7 +31,12 @@ namespace Spd.Resource.Organizations.Registration
             .ForMember(d => d.spd_identityguid, opt => opt.MapFrom(s => s.BizIdentityGuid))
             .ForMember(d => d.spd_identityprovider, opt => opt.MapFrom(s => GetPortalUserIdentityType(s.IdentityProviderTypeCode)))
             .ForMember(d => d.spd_portaluseridentityguid, opt => opt.MapFrom(s => s.BCeIDUserGuid))
-            .ForMember(d => d.spd_potentialduplicate, opt => opt.MapFrom(s => (int)Enum.Parse<YesNoOptionSet>(s.HasPotentialDuplicate.ToString())));
+            .ForMember(d => d.spd_potentialduplicate, opt => opt.MapFrom(s => (int)Enum.Parse<YesNoOptionSet>(s.HasPotentialDuplicate.ToString())))
+            .ReverseMap();
+
+            _ = CreateMap<spd_orgregistration, OrgRegistrationResult>()
+            .IncludeBase<spd_orgregistration, OrgRegistration>()
+            .ForMember(d => d.OrgRegistrationId, opt => opt.MapFrom(s => s.spd_orgregistrationid));
         }
 
         private static int? GetPortalUserIdentityType(IdentityProviderTypeCode? code)

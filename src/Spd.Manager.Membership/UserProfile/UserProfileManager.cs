@@ -1,6 +1,8 @@
+using AutoMapper;
 using MediatR;
 using Spd.Resource.Organizations.Identity;
 using Spd.Resource.Organizations.Org;
+using Spd.Resource.Organizations.Registration;
 using Spd.Resource.Organizations.User;
 using Spd.Utilities.LogonUser;
 using System.Security.Principal;
@@ -14,70 +16,70 @@ namespace Spd.Manager.Membership.UserProfile
         private readonly IOrgUserRepository _orgUserRepository;
         private readonly IIdentityRepository _idRepository;
         private readonly IOrgRepository _orgRepository;
+        private readonly IOrgRegistrationRepository _orgRegistrationRepository;
+        private readonly IMapper _mapper;
         private readonly IPrincipal _currentUser;
 
         public UserProfileManager(
             IOrgUserRepository orgUserRepository,
             IIdentityRepository idRepository,
             IPrincipal currentUser,
-            IOrgRepository orgRepository)
+            IOrgRepository orgRepository,
+            IOrgRegistrationRepository orgRegistrationRepository,
+            IMapper mapper)
         {
             _orgUserRepository = orgUserRepository;
             _currentUser = currentUser;
             _idRepository = idRepository;
             _orgRepository = orgRepository;
+            _mapper = mapper;
+            _orgRegistrationRepository = orgRegistrationRepository;
         }
 
         public async Task<UserProfileResponse> Handle(GetCurrentUserProfileQuery request, CancellationToken ct)
         {
-            List<SpdUserInfo> spdUserInfos = new();
+            Guid userGuid = _currentUser.GetUserGuid();
+            List<UserInfo> userInfos = new();
 
-            var identityResult = await _idRepository.QueryIdentity(
-                new IdentityByUserGuidOrgGuidQuery(_currentUser.GetUserGuid(), _currentUser.GetBizGuid()),
-                ct);
-            if (identityResult?.Identity != null)
+            //check registration
+            var orgRegResult = await _orgRegistrationRepository.Query(new OrgRegistrationQueryByUserGuid(userGuid), ct);
+            if (orgRegResult != null)
             {
-                var result = (OrgUsersResult)await _orgUserRepository.QueryOrgUserAsync(new OrgUsersByIdentityIdQry(identityResult.Identity.Id), ct);
-                foreach (UserResult u in result.UserResults)
+                foreach(OrgRegistrationResult reg in orgRegResult.OrgRegistrationResults)
                 {
-                    SpdUserInfo ui = new();
-                    ui.UserId = u.Id;
-                    ui.OrgId = u.OrganizationId;
-                    if (u.OrganizationId == null) //org does not exists, but orgRegistration should exists
-                    {
-                        if(u.OrgRegistrationId!= null)
-                            ui.OrgStatusCode = OrgStatusCode.InRegistration;
-                    }
-                    else
-                    {
-                        ui.OrgStatusCode = OrgStatusCode.Valid;
-                        var orgResult = await _orgRepository.QueryOrgAsync(new OrgByIdQry((Guid)u.OrganizationId), ct);
-                        ui.OrgName = orgResult.OrgResult.OrganizationName;
-                    }
-
-                    ui.ContactRoleCode = u.ContactAuthorizationTypeCode;
-                    spdUserInfos.Add(ui);
+                    UserInfo ui = new UserInfo();
+                    ui.OrgRegistrationId = reg.OrgRegistrationId;
+                    ui.OrgName = reg.OrganizationName;
+                    userInfos.Add(ui);
                 }
             }
-            else
+
+            //check org portal user
+            var identityResult = await _idRepository.Query(
+                new IdentityQuery(userGuid, null),
+                ct);
+            if (identityResult?.Identities != null)
             {
-                //check if in org-registration
-                SpdUserInfo ui = new();
-                spdUserInfos.Add(ui);
-            }
+                foreach (Identity id in identityResult.Identities)
+                {
+                    var result = (OrgUsersResult)await _orgUserRepository.QueryOrgUserAsync(new OrgUsersByIdentityIdQry(id.Id), ct);
+                    foreach (UserResult u in result.UserResults)
+                    {
+                        UserInfo ui = _mapper.Map<UserInfo>(u);                
+                        var orgResult = await _orgRepository.QueryOrgAsync(new OrgByIdQry((Guid)u.OrganizationId), ct);
+                        ui.OrgName = orgResult.OrgResult.OrganizationName;
+                        ui.OrgSettings = _mapper.Map<OrgSettings>(orgResult.OrgResult);
+                        userInfos.Add(ui);
+                    }
+                }
+            };
 
             UserProfileResponse response = new()
             {
-                IsAuthenticated = _currentUser.IsAuthenticated(),
                 IdentityProvider = _currentUser.GetIdentityProvider(), //bceidboth
                 UserDisplayName = _currentUser.GetUserDisplayName(),
-                OrgGuid = _currentUser.GetBizGuid(),
-                OrgLegalName = _currentUser.GetBizName(),
-                UserFirstName = _currentUser.GetUserFirstName(),
-                UserLastName = _currentUser.GetUserLastName(),
-                UserEmail = _currentUser.GetUserEmail(),
                 UserGuid = _currentUser.GetUserGuid(),
-                SpdUserInfos = spdUserInfos
+                UserInfos = userInfos
             };
             return response;
         }
