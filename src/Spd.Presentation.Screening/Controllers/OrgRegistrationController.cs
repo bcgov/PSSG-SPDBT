@@ -37,7 +37,7 @@ namespace Spd.Presentation.Screening.Controllers
             {
                 throw new ApiException(HttpStatusCode.BadRequest, "Invalid recaptcha");
             }
-            await _mediator.Send(new OrgRegistrationCreateCommand(anonymOrgRegRequest));
+            await _mediator.Send(new RegisterOrganizationCommand(anonymOrgRegRequest));
             return Ok();
         }
 
@@ -58,4 +58,13 @@ namespace Spd.Presentation.Screening.Controllers
             return await _mediator.Send(new CheckOrgRegistrationDuplicateQuery(orgRegistrationCreateRequest));
         }
     }
+
+    /// <summary>
+    /// for Anonymous OrgRegistration
+    /// </summary>
+    public class AnonymousOrgRegistrationCreateRequest : OrgRegistrationCreateRequest
+    {
+        public string Recaptcha { get; set; } = null!;
+    }
 }
+

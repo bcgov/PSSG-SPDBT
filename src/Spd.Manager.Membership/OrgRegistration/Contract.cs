@@ -46,11 +46,6 @@ namespace Spd.Manager.Membership.OrgRegistration
         public BooleanTypeCode HasPotentialDuplicate { get; set; } = BooleanTypeCode.No;
     }
 
-    public class AnonymousOrgRegistrationCreateRequest : OrgRegistrationCreateRequest
-    {
-        public string Recaptcha { get; set; } = null!;
-    }
-
     public enum RegistrationTypeCode
     {
         [Description("Employee")]
