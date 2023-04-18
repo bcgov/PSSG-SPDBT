@@ -103,8 +103,8 @@ namespace Spd.Manager.Cases
         public async Task<ApplicationListResponse> Handle(ApplicationListQuery request, CancellationToken cancellationToken)
         {
             if (request.Page < 1) throw new ApiException(System.Net.HttpStatusCode.BadRequest, "incorrect page number.");
-            if (request.recordsPerPage < 1) throw new ApiException(System.Net.HttpStatusCode.BadRequest, "incorrect page size.");
-            var response = await _applicationRepository.GetApplicationListAsync(request.OrgId, request.Page, request.recordsPerPage, cancellationToken);
+            if (request.PageSize < 1) throw new ApiException(System.Net.HttpStatusCode.BadRequest, "incorrect page size.");
+            var response = await _applicationRepository.GetApplicationListAsync(request.OrgId, request.Page, request.PageSize, cancellationToken);
             return _mapper.Map<ApplicationListResponse>(response);
         }
     }

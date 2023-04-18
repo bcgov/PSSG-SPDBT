@@ -8,12 +8,10 @@ namespace Spd.Presentation.Screening.Controllers
 {
     public class ApplicationController : SpdControllerBase
     {
-        private readonly ILogger<OrgController> _logger;
         private readonly IMediator _mediator;
 
         public ApplicationController(ILogger<OrgController> logger, IMediator mediator)
         {
-            _logger = logger;
             _mediator = mediator;
         }
 
@@ -56,10 +54,10 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/orgs/{orgId}/applications")]
         [HttpGet]
-        public async Task<ApplicationListResponse> GetList([FromRoute] Guid orgId, [FromQuery]int? page, [FromQuery] int? pageSize)
+        public async Task<ApplicationListResponse> GetList([FromRoute] Guid orgId, [FromQuery] uint? page, [FromQuery] uint? pageSize)
         {
-            page = page ?? 1;
-            pageSize= pageSize ?? 10;
+            page = (page == null || page == 0) ? 1 : page;
+            pageSize = (pageSize == null || pageSize == 0 || pageSize > 100) ? 10 : pageSize;
             return await _mediator.Send(new ApplicationListQuery(orgId, (int)page, (int)pageSize));
         }
     }
