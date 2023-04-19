@@ -60,7 +60,7 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 											<small class="d-block text-muted">Name</small>
 											<strong> {{ user | fullname | default }} </strong>
 										</div>
-										<div class="col-xl-4 col-lg-6 col-md-12 d-none d-xl-block" style="text-align: end;">
+										<div class="col-xl-4 col-lg-6 col-md-12 d-none d-xl-inline-flex" style="text-align: end; ">
 											<ng-container *ngTemplateOutlet="actions"></ng-container>
 										</div>
 									</div>
@@ -115,13 +115,13 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 					</ng-container>
 					<ng-template #notactiveactions>
 						<button
-							mat-icon-button
+							mat-stroked-button
 							matTooltip="Cancel invitation"
-							class="table-button table-button__remove my-2"
+							class="table-button my-2 me-4"
 							(click)="onCancelInvitation(user)"
 							aria-label="Cancel invitation"
 						>
-							<mat-icon>clear</mat-icon>
+							<mat-icon>clear</mat-icon>Cancel invitation
 						</button>
 					</ng-template>
 				</ng-template>
@@ -137,7 +137,6 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 
 			.table-button {
 				vertical-align: text-top;
-				max-width: 100px;
 
 				&__remove {
 					top: -8px;
