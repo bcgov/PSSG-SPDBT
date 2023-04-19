@@ -110,6 +110,7 @@ export class SpdDateAdapter extends NativeDateAdapter {
 			useValue: {
 				width: '600px',
 				hasBackdrop: true,
+				disableClose: true,
 			},
 		},
 		{

@@ -8,6 +8,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 import { ApplicationListResponse, ApplicationResponse, OrgUserResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { NewScreeningDialogData, NewScreeningModalComponent } from './new-screening-modal.component';
 
@@ -139,6 +140,7 @@ export class NewScreeningComponent implements OnInit {
 		private formBuilder: FormBuilder,
 		private dialog: MatDialog,
 		private applicationService: ApplicationService,
+		private authenticationService: AuthenticationService,
 		private hotToast: HotToastService
 	) {}
 
@@ -148,9 +150,8 @@ export class NewScreeningComponent implements OnInit {
 	}
 
 	private loadList(): void {
-		//TODO replace with proper org id
 		this.applicationService
-			.apiOrgsOrgIdApplicationsGet({ orgId: '4165bdfe-7cb4-ed11-b83e-00505683fbf4' })
+			.apiOrgsOrgIdApplicationsGet({ orgId: this.authenticationService.loggedInOrgId! })
 			.pipe()
 			.subscribe((res: ApplicationListResponse) => {
 				this.dataSource = new MatTableDataSource<ApplicationResponse>([]);

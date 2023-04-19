@@ -8,6 +8,7 @@ import {
 	PayeePreferenceTypeCode,
 } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 
@@ -179,6 +180,7 @@ export class NewScreeningModalComponent implements OnInit {
 		private formBuilder: FormBuilder,
 		private dialogRef: MatDialogRef<NewScreeningModalComponent>,
 		private applicationService: ApplicationService,
+		private authenticationService: AuthenticationService,
 		private dialog: MatDialog,
 		@Inject(MAT_DIALOG_DATA) public dialogData: NewScreeningDialogData
 	) {}
@@ -261,9 +263,8 @@ export class NewScreeningModalComponent implements OnInit {
 		}
 
 		// Check for potential duplicate
-		//TODO replace with proper org id
 		this.applicationService
-			.apiOrgsOrgIdDetectInviteDuplicatesPost({ orgId: '4165bdfe-7cb4-ed11-b83e-00505683fbf4', body: control })
+			.apiOrgsOrgIdDetectInviteDuplicatesPost({ orgId: this.authenticationService.loggedInOrgId!, body: control })
 			.pipe()
 			.subscribe((dupres: Array<CheckApplicationInviteDuplicateResponse>) => {
 				// At least one potential duplicate has been found
@@ -391,9 +392,8 @@ export class NewScreeningModalComponent implements OnInit {
 	}
 
 	saveInviteRequests(body: Array<ApplicationInviteCreateRequest>, message: string): void {
-		//TODO replace with proper org id
 		this.applicationService
-			.apiOrgsOrgIdApplicationInvitesPost({ orgId: '4165bdfe-7cb4-ed11-b83e-00505683fbf4', body })
+			.apiOrgsOrgIdApplicationInvitesPost({ orgId: this.authenticationService.loggedInOrgId!, body })
 			.pipe()
 			.subscribe((_resp: any) => {
 				this.dialogRef.close({

@@ -4,6 +4,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 import { ContactAuthorizationTypeCode, OrgUserListResponse, OrgUserResponse } from 'src/app/api/models';
 import { OrgUserService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData } from './maintain-user-modal.component';
 
@@ -175,7 +176,12 @@ export class UsersComponent implements OnInit {
 
 	usersList: OrgUserResponse[] = [];
 
-	constructor(private dialog: MatDialog, private orgUserService: OrgUserService, private hotToast: HotToastService) {}
+	constructor(
+		private dialog: MatDialog,
+		private orgUserService: OrgUserService,
+		private authenticationService: AuthenticationService,
+		private hotToast: HotToastService
+	) {}
 
 	ngOnInit(): void {
 		this.loadListOfUsers();
@@ -320,9 +326,8 @@ export class UsersComponent implements OnInit {
 	}
 
 	private loadListOfUsers(): void {
-		//TODO replace with proper org id
 		this.orgUserService
-			.apiOrgsOrgIdUsersGet({ orgId: '4165bdfe-7cb4-ed11-b83e-00505683fbf4' })
+			.apiOrgsOrgIdUsersGet({ orgId: this.authenticationService.loggedInOrgId! })
 			.pipe()
 			.subscribe((res: OrgUserListResponse) => {
 				this.maximumNumberOfContacts = res.maximumNumberOfAuthorizedContacts ?? this.DEFAULT_MAX_NUMBER_OF_CONTACTS;
