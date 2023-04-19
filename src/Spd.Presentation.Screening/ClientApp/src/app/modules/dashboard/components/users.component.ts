@@ -17,8 +17,13 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 					<h2 class="mb-2 fw-normal">
 						User Management <mat-icon (click)="manageUsersInfo()">info</mat-icon>
 						<div class="mt-2 fs-5 fw-light">
-							Your organization may have up to {{ maximumNumberOfPrimaryContacts }} primary authorized contacts and up
-							to {{ maximumNumberOfContacts }} authorized contacts
+							<ul>
+								<li>
+									Your organization may have up to {{ maximumNumberOfPrimaryContacts }} primary authorized contacts and
+									up to {{ maximumNumberOfContacts }} authorized contacts
+								</li>
+								<li>Portal invitations will expire 7 days after being sent</li>
+							</ul>
 						</div>
 					</h2>
 				</div>
@@ -38,7 +43,7 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 					<div class="col-xxl-9 col-xl-10 col-lg-12 col-md-12 col-sm-12">
 						<section class="px-4 py-2 mb-3 card-section">
 							<div class="row my-2">
-								<div class="col-xl-9 col-lg-12 col-md-12 col-sm-12">
+								<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
 									<ng-container *ngIf="user.isActive; else notactive">
 										<div class="badge rounded-pill bg-success mb-2">Active</div>
 									</ng-container>
@@ -47,70 +52,79 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 									</ng-template>
 
 									<div class="row">
-										<div class="col-xl-5 col-lg-5 col-md-12 mt-2 mt-lg-0">
+										<div class="col-xl-4 col-lg-6 col-md-12 mt-2 mt-lg-0">
 											<small class="d-block text-muted">Authorization Type</small>
 											<strong> {{ getDesc(user.contactAuthorizationTypeCode) | default }} </strong>
 										</div>
-										<div class="col-xl-7 col-lg-6 col-md-12">
+										<div class="col-xl-4 col-lg-6 col-md-12">
 											<small class="d-block text-muted">Name</small>
 											<strong> {{ user | fullname | default }} </strong>
 										</div>
+										<div class="col-xl-4 col-lg-6 col-md-12 d-none d-xl-inline-flex" style="text-align: end; ">
+											<ng-container *ngTemplateOutlet="actions"></ng-container>
+										</div>
+									</div>
 
-										<div class="col-xl-5 col-lg-5 col-md-12 mt-0 mt-lg-2">
+									<div class="row">
+										<div class="col-xl-4 col-lg-6 col-md-12 mt-0 mt-lg-2">
 											<small class="d-block text-muted">Email</small>
 											<strong> {{ user.email | default }} </strong>
 										</div>
-										<div class="col-xl-3 col-lg-3 col-md-12 mt-0 mt-lg-2">
+										<div class="col-xl-4 col-lg-6 col-md-12 mt-0 mt-lg-2">
 											<small class="d-block text-muted">Phone Number</small>
 											<strong>{{ user.phoneNumber || '' | mask : appConstants.phone.displayMask | default }}</strong>
 										</div>
-										<div class="col-xl-4 col-lg-3 col-md-12 mt-0 mt-lg-2">
+										<div class="col-xl-4 col-lg-6 col-md-12 mt-0 mt-lg-2">
 											<small class="d-block text-muted">Job Title</small>
 											<strong>{{ user.jobTitle | default }}</strong>
 										</div>
 									</div>
 								</div>
 								<div
-									class="col-xl-3 col-lg-12 col-md-12 col-sm-12 mx-auto d-flex flex-row"
+									class="col-lg-12 col-md-12 col-sm-12 mx-auto d-flex flex-row d-xl-none"
 									style="justify-content: end;"
 								>
-									<ng-container *ngIf="user.isActive; else notactiveactions">
-										<button
-											mat-stroked-button
-											matTooltip="Edit user"
-											class="table-button my-2"
-											(click)="onMaintainUser(user)"
-											aria-label="Edit user"
-										>
-											<mat-icon>edit</mat-icon>Edit
-										</button>
-										<button
-											mat-icon-button
-											matTooltip="Remove user"
-											class="table-button table-button__remove my-2"
-											*ngIf="allowDeleteRow(user)"
-											(click)="onDeleteUser(user)"
-											aria-label="Remove user"
-										>
-											<mat-icon>delete_outline</mat-icon>
-										</button>
-									</ng-container>
-									<ng-template #notactiveactions>
-										<button
-											mat-icon-button
-											matTooltip="Cancel invitation"
-											class="table-button table-button__remove my-2"
-											(click)="onCancelInvitation(user)"
-											aria-label="Cancel invitation"
-										>
-											<mat-icon>clear</mat-icon>
-										</button>
-									</ng-template>
+									<ng-container *ngTemplateOutlet="actions"></ng-container>
 								</div>
 							</div>
 						</section>
 					</div>
 				</div>
+
+				<ng-template #actions>
+					<ng-container *ngIf="user.isActive; else notactiveactions">
+						<button
+							mat-stroked-button
+							matTooltip="Edit user"
+							class="table-button my-2 me-4"
+							(click)="onMaintainUser(user)"
+							aria-label="Edit user"
+						>
+							<mat-icon>edit</mat-icon>Edit
+						</button>
+						<button
+							mat-icon-button
+							matTooltip="Remove user"
+							class="table-button table-button__remove my-2"
+							*ngIf="allowDeleteRow(user)"
+							(click)="onDeleteUser(user)"
+							aria-label="Remove user"
+						>
+							<mat-icon>delete_outline</mat-icon>
+						</button>
+					</ng-container>
+					<ng-template #notactiveactions>
+						<button
+							mat-stroked-button
+							matTooltip="Cancel invitation"
+							class="table-button my-2 me-4"
+							(click)="onCancelInvitation(user)"
+							aria-label="Cancel invitation"
+						>
+							<mat-icon>clear</mat-icon>Cancel invitation
+						</button>
+					</ng-template>
+				</ng-template>
 			</ng-container>
 		</section>
 	`,
@@ -122,7 +136,7 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 			}
 
 			.table-button {
-				min-width: 110px;
+				vertical-align: text-top;
 
 				&__remove {
 					top: -8px;

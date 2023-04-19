@@ -14,7 +14,7 @@ namespace Spd.Resource.Applicants
             .ForMember(d => d.spd_surname, opt => opt.MapFrom(s => s.LastName))
             .ForMember(d => d.spd_email, opt => opt.MapFrom(s => s.Email))
             .ForMember(d => d.spd_jobtitle, opt => opt.MapFrom(s => s.JobTitle))
-            .ForMember(d => d.spd_payeetype, opt => opt.MapFrom(s => s.OrgPay ?? false ? PayerPreferenceOptionSet.Organization : PayerPreferenceOptionSet.Applicant));
+            .ForMember(d => d.spd_payeetype, opt => opt.MapFrom(s => (int)Enum.Parse<PayerPreferenceOptionSet>(s.PayeeType.ToString())));
 
             _ = CreateMap<ApplicationCreateCmd, spd_application>()
             .ForMember(d => d.spd_applicationid, opt => opt.MapFrom(s => Guid.NewGuid()))

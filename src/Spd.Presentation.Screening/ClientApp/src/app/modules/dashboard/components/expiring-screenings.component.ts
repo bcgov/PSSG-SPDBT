@@ -188,8 +188,6 @@ export class ExpiringScreeningsComponent implements OnInit {
 	columns!: string[];
 	followUpBusinessDays = '';
 
-	pageSizes = [3, 5, 7];
-
 	showDropdownOverlay = false;
 	formFilter: FormGroup = this.formBuilder.group({
 		search: new FormControl(''),

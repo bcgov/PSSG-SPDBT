@@ -33,7 +33,7 @@ namespace Spd.Resource.Applicants
         public string? LastName { get; set; }
         public string? Email { get; set; }
         public string? JobTitle { get; set; }
-        public bool? OrgPay { get; set; }
+        public PayerPreferenceTypeCode PayeeType { get; set; }
     }
 
     public record ApplicationInviteCreateResp
@@ -120,5 +120,11 @@ namespace Spd.Resource.Applicants
         Fax,
         GenericUpload,
         OrganizationSubmitted
+    }
+
+    public enum PayerPreferenceTypeCode
+    {
+        Organization,
+        Applicant
     }
 }

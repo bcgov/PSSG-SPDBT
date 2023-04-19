@@ -249,10 +249,6 @@ export class ApplicationService extends BaseService {
   static readonly ApiOrgsOrgIdApplicationsGetPath = '/api/orgs/{orgId}/applications';
 
   /**
-   * return active applications belong to the organization.
-   *
-   *
-   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `apiOrgsOrgIdApplicationsGet()` instead.
    *
@@ -260,6 +256,10 @@ export class ApplicationService extends BaseService {
    */
   apiOrgsOrgIdApplicationsGet$Response(params: {
     orgId: string;
+    filters?: string;
+    sorts?: string;
+    page?: number;
+    pageSize?: number;
     context?: HttpContext
   }
 ): Observable<StrictHttpResponse<ApplicationListResponse>> {
@@ -267,6 +267,10 @@ export class ApplicationService extends BaseService {
     const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdApplicationsGetPath, 'get');
     if (params) {
       rb.path('orgId', params.orgId, {});
+      rb.query('filters', params.filters, {});
+      rb.query('sorts', params.sorts, {});
+      rb.query('page', params.page, {});
+      rb.query('pageSize', params.pageSize, {});
     }
 
     return this.http.request(rb.build({
@@ -282,10 +286,6 @@ export class ApplicationService extends BaseService {
   }
 
   /**
-   * return active applications belong to the organization.
-   *
-   *
-   *
    * This method provides access to only to the response body.
    * To access the full response (for headers, for example), `apiOrgsOrgIdApplicationsGet$Response()` instead.
    *
@@ -293,6 +293,10 @@ export class ApplicationService extends BaseService {
    */
   apiOrgsOrgIdApplicationsGet(params: {
     orgId: string;
+    filters?: string;
+    sorts?: string;
+    page?: number;
+    pageSize?: number;
     context?: HttpContext
   }
 ): Observable<ApplicationListResponse> {

@@ -151,7 +151,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 									style="color: var(--color-red);"
 									aria-label="Reject"
 								>
-									<mat-icon>clear</mat-icon>Reject
+									<mat-icon>cancel</mat-icon>Reject
 								</button>
 							</mat-cell>
 						</ng-container>
@@ -177,8 +177,6 @@ export class IdentifyVerificationComponent implements OnInit {
 	constants = SPD_CONSTANTS;
 	dataSource!: MatTableDataSource<any>;
 	columns!: string[];
-
-	pageSizes = [3, 5, 7];
 
 	showDropdownOverlay = false;
 	formFilter: FormGroup = this.formBuilder.group({

@@ -27,6 +27,7 @@ export { OrgUserCreateRequest } from './models/org-user-create-request';
 export { OrgUserListResponse } from './models/org-user-list-response';
 export { OrgUserResponse } from './models/org-user-response';
 export { OrgUserUpdateRequest } from './models/org-user-update-request';
+export { PayeePreferenceTypeCode } from './models/payee-preference-type-code';
 export { PayerPreferenceTypeCode } from './models/payer-preference-type-code';
 export { PortalUserIdentityTypeCode } from './models/portal-user-identity-type-code';
 export { RecaptchaConfiguration } from './models/recaptcha-configuration';
