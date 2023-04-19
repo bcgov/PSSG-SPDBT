@@ -1,12 +1,12 @@
 name: Screening Portal Scheduled Deployment For Test
 
-#every Tuesday and Thursday, 5:30 utc, build and deploy to test.
+#every day, 5:30 am utc, build and deploy to test.
 on:
   push:
     branches:
       - test-release
   schedule:
-    - cron: '30 5 * * 2,4'
+    - cron: '30 5 * * *'
 
 jobs:
   build-deploy-screening-portal-to-test:
