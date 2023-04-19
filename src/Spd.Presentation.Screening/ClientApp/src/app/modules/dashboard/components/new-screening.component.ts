@@ -174,7 +174,7 @@ export class NewScreeningComponent implements OnInit {
 
 		this.dialog
 			.open(NewScreeningModalComponent, {
-				width: '1300px',
+				width: '1400px',
 				data: dialogOptions,
 			})
 			.afterClosed()

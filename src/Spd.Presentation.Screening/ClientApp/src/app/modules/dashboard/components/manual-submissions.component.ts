@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
 import { NgxMaskPipe } from 'ngx-mask';
 import {
@@ -16,6 +17,7 @@ import { FormGroupValidators } from 'src/app/core/validators/form-group.validato
 import { Address, AddressAutocompleteComponent } from 'src/app/shared/components/address-autocomplete.component';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
+import { DashboardRoutes } from '../dashboard-routing.module';
 
 export const EmployeeInteractionTypes = [
 	{ desc: 'Children', code: EmployeeInteractionTypeCode.Children },
@@ -418,6 +420,7 @@ export class ManualSubmissionsComponent implements OnInit {
 	startAt = SPD_CONSTANTS.date.birthDateStartAt;
 
 	constructor(
+		private router: Router,
 		private formBuilder: FormBuilder,
 		private applicationService: ApplicationService,
 		private hotToast: HotToastService,
@@ -494,9 +497,8 @@ export class ManualSubmissionsComponent implements OnInit {
 			})
 			.pipe()
 			.subscribe((_resp: any) => {
-				this.hotToast.success('The application was successfully created');
-				this.addressAutocompleteComponent.onClearData();
-				this.resetForm();
+				this.hotToast.success('The manual submission was successfully saved');
+				this.router.navigateByUrl(DashboardRoutes.dashboardPath(DashboardRoutes.SCREENING_STATUSES));
 			});
 	}
 

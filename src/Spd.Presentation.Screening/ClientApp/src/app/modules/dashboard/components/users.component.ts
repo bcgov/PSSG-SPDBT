@@ -17,8 +17,13 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 					<h2 class="mb-2 fw-normal">
 						User Management <mat-icon (click)="manageUsersInfo()">info</mat-icon>
 						<div class="mt-2 fs-5 fw-light">
-							Your organization may have up to {{ maximumNumberOfPrimaryContacts }} primary authorized contacts and up
-							to {{ maximumNumberOfContacts }} authorized contacts
+							<ul>
+								<li>
+									Your organization may have up to {{ maximumNumberOfPrimaryContacts }} primary authorized contacts and
+									up to {{ maximumNumberOfContacts }} authorized contacts
+								</li>
+								<li>Portal invitations will expire 7 days after being sent</li>
+							</ul>
 						</div>
 					</h2>
 				</div>

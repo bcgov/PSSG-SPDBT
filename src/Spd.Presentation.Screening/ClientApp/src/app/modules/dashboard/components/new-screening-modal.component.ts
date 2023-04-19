@@ -142,7 +142,7 @@ export interface NewScreeningDialogData {
 					<button mat-stroked-button mat-dialog-close color="primary">Cancel</button>
 				</div>
 				<div class="offset-lg-6 col-lg-3 offset-md-4 col-md-4 col-sm-12 mb-2">
-					<button mat-raised-button color="primary" (click)="onSendScreeningRequest()">Save</button>
+					<button mat-raised-button color="primary" (click)="onSendScreeningRequest()">Send Screening Request</button>
 				</div>
 			</div>
 		</mat-dialog-actions>
@@ -278,12 +278,12 @@ export class NewScreeningModalComponent implements OnInit {
 
 					if (dupres?.length > 1) {
 						dialogTitle = 'Potential duplicates detected';
-						dialogMessage = `Potential duplicates have been detected from the screening request you have attempted to send. Ensure that the applicants do not currently have a screening application in progress nor have been sent a screening invitation recently.<br/><br/>${dupMessage}Do you still wish to proceed?`;
-						dialogAction = 'Yes, send requests';
+						dialogMessage = `Your organization has submitted a criminal record check for these applicants within the last 30 days.<br/><br/>${dupMessage}How would you like to proceed?`;
+						dialogAction = 'Yes, continue save';
 					} else {
 						dialogTitle = 'Potential duplicate detected';
-						dialogMessage = `A potential duplicate has been detected from the screening request you have attempted to send. Ensure that the applicant does not currently have a screening application in progress nor have been sent a screening invitation recently.<br/><br/>${dupMessage}Do you still wish to proceed?`;
-						dialogAction = 'Yes, send request';
+						dialogMessage = `Your organization has submitted a criminal record check for this applicant within the last 30 days.<br/><br/>${dupMessage}How would you like to proceed?`;
+						dialogAction = 'Yes, continue save';
 					}
 
 					const data: DialogOptions = {
