@@ -9,7 +9,6 @@ namespace Spd.Utilities.Dynamics
         private readonly DynamicsSettings options;
         private readonly ISecurityTokenProvider tokenProvider;
         private string? authToken;
-        private int pageSize = 10;
 
         public ODataClientHandler(IOptions<DynamicsSettings> options, ISecurityTokenProvider tokenProvider)
         {
@@ -48,14 +47,14 @@ namespace Spd.Utilities.Dynamics
                 if (!string.IsNullOrWhiteSpace(top))
                 {
                     var strs = top.Split("=");
-                    this.pageSize = Int32.Parse(strs[1]);
+                    var pageSize = Int32.Parse(strs[1]);
                     string? skip = queries.FirstOrDefault(q => q.StartsWith("$skip="));
                     if (!string.IsNullOrWhiteSpace(skip))
                     {
                         var skipValue = skip.Split("=");
                         var skipRecordsNumber = Int32.Parse(skipValue[1]);
                         page = skipRecordsNumber / pageSize + 1;
-                        //when api use skip and take, it needs rewrite the http request as following.
+                        //when api use skip, it needs rewrite the http request as following.
                         queries.Remove(skip);
                         queries.Add($"$skiptoken=<cookie pagenumber='{page}'/>");
                         string str = $"{e.RequestUri.Scheme}://{e.RequestUri.Host}{e.RequestUri.AbsolutePath}{string.Join("&", queries)}";
