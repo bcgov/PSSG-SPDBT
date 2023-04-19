@@ -94,10 +94,6 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 	`,
 	styles: [
 		`
-			.name-divider {
-				background-color: var(--color-green);
-			}
-
 			.mat-mdc-mini-fab {
 				top: 10px;
 				width: 30px;

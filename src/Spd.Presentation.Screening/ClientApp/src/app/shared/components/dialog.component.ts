@@ -15,7 +15,7 @@ export interface DialogOptions {
 @Component({
 	selector: 'app-spd-dialog',
 	template: `
-		<h2 mat-dialog-title class="mt-4">
+		<h2 mat-dialog-title class="mt-4" *ngIf="data.icon || data.title">
 			<mat-icon *ngIf="data.icon" [color]="data.type">{{ data.icon }}</mat-icon>
 			<strong *ngIf="data.title" style="position: relative; top: -10px;">
 				{{ data.title }}

@@ -22,6 +22,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 						[disableClick]="disableClick"
 						[expandable]="expandable"
 						[accept]="accept"
+						class="mt-4"
 					>
 						<ngx-dropzone-label>
 							<div class="my-2">
@@ -68,10 +69,8 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 					</div>
 				</div>
 			</div>
-		</section>
 
-		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
-			<div class="row">
+			<div class="row mt-4">
 				<div class="col-md-12 col-sm-12">
 					<h3 class="fw-normal">Previous Uploads</h3>
 					<mat-table
@@ -167,8 +166,6 @@ export class GenericUploadsComponent implements OnInit, AfterViewInit {
 	constants = SPD_CONSTANTS;
 	dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
 	columns!: string[];
-
-	pageSizes = [3, 5, 7];
 
 	multiple: boolean = false;
 	expandable: boolean = true;

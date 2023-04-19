@@ -158,8 +158,6 @@ export class PaymentsComponent implements OnInit {
 	dataSource!: MatTableDataSource<ApplicationResponse>;
 	columns!: string[];
 
-	pageSizes = [3, 5, 7];
-
 	showDropdownOverlay = false;
 	formFilter: FormGroup = this.formBuilder.group({
 		search: new FormControl(''),
