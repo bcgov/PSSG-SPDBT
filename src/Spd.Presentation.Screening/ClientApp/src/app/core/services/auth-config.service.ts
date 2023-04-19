@@ -2,20 +2,19 @@ import { Injectable } from '@angular/core';
 import { AuthConfig } from 'angular-oauth2-oidc';
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { BCeIdConfigurationResponse, RecaptchaConfigurationResponse } from 'src/app/api/models';
+import { ConfigurationResponse } from 'src/app/api/models';
 import { ConfigurationService } from 'src/app/api/services';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class AuthConfigService {
-	public bceIdConfig: BCeIdConfigurationResponse | null = null;
-	public recaptchaConfig: RecaptchaConfigurationResponse | null = null;
+	public configs: ConfigurationResponse | null = null;
 
 	constructor(private configurationService: ConfigurationService) {}
 
 	public async getAuthConfig(redirectUri: string): Promise<AuthConfig> {
-		const resp = this.bceIdConfig!;
+		const resp = this.configs?.oidcConfiguration!;
 		const bceIdConfig = {
 			issuer: resp.issuer!,
 			clientId: resp.clientId!,
@@ -30,27 +29,14 @@ export class AuthConfigService {
 		return bceIdConfig;
 	}
 
-	public getBceidConfig(): Observable<BCeIdConfigurationResponse> {
-		if (this.bceIdConfig) {
-			return of(this.bceIdConfig);
+	public getConfigs(): Observable<ConfigurationResponse> {
+		if (this.configs) {
+			return of(this.configs);
 		}
 
-		return this.configurationService.apiBceidConfigurationGet().pipe(
-			tap((resp: BCeIdConfigurationResponse) => {
-				this.bceIdConfig = { ...resp };
-				return resp;
-			})
-		);
-	}
-
-	public getRecaptchaConfig(): Observable<RecaptchaConfigurationResponse> {
-		if (this.recaptchaConfig) {
-			return of(this.recaptchaConfig);
-		}
-
-		return this.configurationService.apiRecaptchaConfigurationGet().pipe(
-			tap((resp: RecaptchaConfigurationResponse) => {
-				this.recaptchaConfig = { ...resp };
+		return this.configurationService.apiConfigurationGet().pipe(
+			tap((resp: ConfigurationResponse) => {
+				this.configs = { ...resp };
 				return resp;
 			})
 		);
