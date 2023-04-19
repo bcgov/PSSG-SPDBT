@@ -100,13 +100,8 @@ import { NewScreeningDialogData, NewScreeningModalComponent } from './new-screen
 						<ng-container matColumnDef="action">
 							<mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
 							<mat-cell *matCellDef="let application">
-								<button
-									mat-flat-button
-									class="m-2"
-									style="color: var(--color-red); white-space: nowrap;"
-									aria-label="Cancel Request"
-								>
-									<mat-icon>clear</mat-icon>Cancel Request
+								<button mat-flat-button class="m-2" style="white-space: nowrap;" aria-label="Cancel Request">
+									<mat-icon>cancel</mat-icon>Cancel Request
 								</button>
 							</mat-cell>
 						</ng-container>

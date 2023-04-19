@@ -151,7 +151,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 									style="color: var(--color-red);"
 									aria-label="Reject"
 								>
-									<mat-icon>clear</mat-icon>Reject
+									<mat-icon>cancel</mat-icon>Reject
 								</button>
 							</mat-cell>
 						</ng-container>

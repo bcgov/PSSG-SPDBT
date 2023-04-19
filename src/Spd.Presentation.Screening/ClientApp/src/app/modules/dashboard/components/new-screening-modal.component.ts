@@ -209,8 +209,8 @@ export class NewScreeningModalComponent implements OnInit {
 		const control = this.form.get('tableRows') as FormArray;
 		if (control.length == 1) {
 			const data: DialogOptions = {
-				// icon: 'warning',
-				// title: 'Remove row',
+				icon: 'warning',
+				title: 'Remove row',
 				message: 'This row cannot be removed. At least one row must exist.',
 				cancelText: 'Close',
 			};
@@ -220,8 +220,8 @@ export class NewScreeningModalComponent implements OnInit {
 		}
 
 		const data: DialogOptions = {
-			// icon: 'warning',
-			// title: 'Remove row',
+			icon: 'warning',
+			title: 'Remove row',
 			message: 'Are you sure you want to remove this screening request?',
 			actionText: 'Yes, remove this row',
 			cancelText: 'Cancel',
@@ -289,8 +289,8 @@ export class NewScreeningModalComponent implements OnInit {
 					}
 
 					const data: DialogOptions = {
-						// icon: 'warning',
-						// title: dialogTitle,
+						icon: 'warning',
+						title: dialogTitle,
 						message: dialogMessage,
 						actionText: dialogAction,
 						cancelText: 'Cancel',
@@ -317,8 +317,8 @@ export class NewScreeningModalComponent implements OnInit {
 			'In their roles with your organization, will these individuals work directly with, or potentially have unsupervised access to, children and/or vulnerable adults?';
 
 		const data: DialogOptions = {
-			// icon: 'info_outline',
-			// title: 'Vulnerable sector',
+			icon: 'info_outline',
+			title: 'Vulnerable sector',
 			message: '',
 			actionText: 'Yes',
 			cancelText: 'No',
@@ -358,8 +358,8 @@ export class NewScreeningModalComponent implements OnInit {
 		const vulnerableQuestionMultiple = `If the applicants will not have unsupervised access to children or vulnerable adults in this role, but they require a criminal record check for another reason, please <a href="https://www2.gov.bc.ca/gov/content/safety/crime-prevention/criminal-record-check" target="_blank"> contact your local police detachment</a>`;
 
 		const data: DialogOptions = {
-			// icon: 'info_outline',
-			// title: 'Criminal record check',
+			icon: 'info_outline',
+			title: 'Criminal record check',
 			message: '',
 			actionText: 'Close',
 			cancelText: 'Previous',
@@ -372,9 +372,7 @@ export class NewScreeningModalComponent implements OnInit {
 				.open(DialogComponent, { data })
 				.afterClosed()
 				.subscribe((response: boolean) => {
-					if (response) {
-						this.saveInviteRequests(body, this.yesMessageSingular);
-					} else {
+					if (!response) {
 						this.promptVulnerableSector(body);
 					}
 				});
@@ -385,9 +383,7 @@ export class NewScreeningModalComponent implements OnInit {
 				.open(DialogComponent, { data })
 				.afterClosed()
 				.subscribe((response: boolean) => {
-					if (response) {
-						this.saveInviteRequests(body, this.yesMessageMultiple);
-					} else {
+					if (!response) {
 						this.promptVulnerableSector(body);
 					}
 				});
