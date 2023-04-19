@@ -37,7 +37,7 @@ import { BaseFilterComponent } from 'src/app/shared/components/base-filter.compo
 					<mat-divider class="my-3"></mat-divider>
 					<mat-card-actions>
 						<button mat-stroked-button class="action-button" (click)="emitFilterClear()">Clear</button>
-						<button mat-raised-button class="action-button" color="accent" (click)="emitFilterChange()">Search</button>
+						<button mat-raised-button class="action-button" color="primary" (click)="emitFilterChange()">Search</button>
 					</mat-card-actions>
 				</mat-card>
 			</form>
@@ -46,13 +46,13 @@ import { BaseFilterComponent } from 'src/app/shared/components/base-filter.compo
 	styles: [
 		`
 			.filter-panel {
-				border: 2px solid var(--color-yellow);
+				border: 2px solid var(--color-sidebar);
 			}
 
 			.mat-toolbar-single-row {
 				justify-content: space-between;
-				background-color: var(--color-yellow);
-				color: var(--color-primary);
+				background-color: var(--color-sidebar);
+				color: var(--color-white);
 			}
 
 			.mat-mdc-card {

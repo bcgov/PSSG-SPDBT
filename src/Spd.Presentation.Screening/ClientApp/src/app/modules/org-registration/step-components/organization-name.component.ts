@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { RegistrationFormStepComponent } from '../org-registration.component';
 
@@ -34,11 +35,21 @@ export class OrganizationNameComponent implements OnInit, RegistrationFormStepCo
 	form!: FormGroup;
 	matcher = new FormErrorStateMatcher();
 
-	constructor(private formBuilder: FormBuilder) {}
+	constructor(private formBuilder: FormBuilder, private authenticationService: AuthenticationService) {}
 
 	ngOnInit(): void {
 		this.form = this.formBuilder.group({
 			organizationName: new FormControl('', [Validators.required]),
+		});
+
+		this.authenticationService.isLoginSubject$.subscribe((subjectData: any) => {
+			const currOrgName = this.organizationName.value;
+			if (!currOrgName) {
+				const loggedInUserData = this.authenticationService.loggedInUserData;
+				if (loggedInUserData) {
+					this.form.patchValue({ organizationName: loggedInUserData.bceid_business_name });
+				}
+			}
 		});
 	}
 
@@ -52,5 +63,9 @@ export class OrganizationNameComponent implements OnInit, RegistrationFormStepCo
 
 	clearCurrentData(): void {
 		this.form.reset();
+	}
+
+	get organizationName(): FormControl {
+		return this.form.get('organizationName') as FormControl;
 	}
 }
