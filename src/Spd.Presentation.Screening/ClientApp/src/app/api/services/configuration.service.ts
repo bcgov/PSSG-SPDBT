@@ -9,8 +9,7 @@ import { RequestBuilder } from '../request-builder';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
-import { BCeIdConfigurationResponse } from '../models/b-ce-id-configuration-response';
-import { RecaptchaConfigurationResponse } from '../models/recaptcha-configuration-response';
+import { ConfigurationResponse } from '../models/configuration-response';
 
 @Injectable({
   providedIn: 'root',
@@ -24,22 +23,22 @@ export class ConfigurationService extends BaseService {
   }
 
   /**
-   * Path part for operation apiBceidConfigurationGet
+   * Path part for operation apiConfigurationGet
    */
-  static readonly ApiBceidConfigurationGetPath = '/api/bceid-configuration';
+  static readonly ApiConfigurationGetPath = '/api/configuration';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiBceidConfigurationGet()` instead.
+   * To access only the response body, use `apiConfigurationGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiBceidConfigurationGet$Response(params?: {
+  apiConfigurationGet$Response(params?: {
     context?: HttpContext
   }
-): Observable<StrictHttpResponse<BCeIdConfigurationResponse>> {
+): Observable<StrictHttpResponse<ConfigurationResponse>> {
 
-    const rb = new RequestBuilder(this.rootUrl, ConfigurationService.ApiBceidConfigurationGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, ConfigurationService.ApiConfigurationGetPath, 'get');
     if (params) {
     }
 
@@ -50,72 +49,24 @@ export class ConfigurationService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<BCeIdConfigurationResponse>;
+        return r as StrictHttpResponse<ConfigurationResponse>;
       })
     );
   }
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiBceidConfigurationGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiConfigurationGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiBceidConfigurationGet(params?: {
+  apiConfigurationGet(params?: {
     context?: HttpContext
   }
-): Observable<BCeIdConfigurationResponse> {
+): Observable<ConfigurationResponse> {
 
-    return this.apiBceidConfigurationGet$Response(params).pipe(
-      map((r: StrictHttpResponse<BCeIdConfigurationResponse>) => r.body as BCeIdConfigurationResponse)
-    );
-  }
-
-  /**
-   * Path part for operation apiRecaptchaConfigurationGet
-   */
-  static readonly ApiRecaptchaConfigurationGetPath = '/api/recaptcha-configuration';
-
-  /**
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiRecaptchaConfigurationGet()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiRecaptchaConfigurationGet$Response(params?: {
-    context?: HttpContext
-  }
-): Observable<StrictHttpResponse<RecaptchaConfigurationResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, ConfigurationService.ApiRecaptchaConfigurationGetPath, 'get');
-    if (params) {
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: params?.context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<RecaptchaConfigurationResponse>;
-      })
-    );
-  }
-
-  /**
-   * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiRecaptchaConfigurationGet$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiRecaptchaConfigurationGet(params?: {
-    context?: HttpContext
-  }
-): Observable<RecaptchaConfigurationResponse> {
-
-    return this.apiRecaptchaConfigurationGet$Response(params).pipe(
-      map((r: StrictHttpResponse<RecaptchaConfigurationResponse>) => r.body as RecaptchaConfigurationResponse)
+    return this.apiConfigurationGet$Response(params).pipe(
+      map((r: StrictHttpResponse<ConfigurationResponse>) => r.body as ConfigurationResponse)
     );
   }
 

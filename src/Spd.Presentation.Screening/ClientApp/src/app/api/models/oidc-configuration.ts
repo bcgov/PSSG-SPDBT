@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-export interface BCeIdConfigurationResponse {
+export interface OidcConfiguration {
   clientId?: null | string;
   issuer?: null | string;
   postLogoutRedirectUri?: null | string;

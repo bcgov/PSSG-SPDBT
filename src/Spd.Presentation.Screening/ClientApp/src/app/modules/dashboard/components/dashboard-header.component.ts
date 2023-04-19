@@ -39,7 +39,7 @@ export class DashboardHeaderComponent implements OnInit {
 		this.authenticationService.isLoginSubject$.subscribe((_subjectData: any) => {
 			if (_subjectData) {
 				const loggedInUserData = this.authenticationService.loggedInUserData;
-				this.loggedInOrgDisplay = loggedInUserData.bceid_business_name;
+				this.loggedInOrgDisplay = loggedInUserData ? loggedInUserData.bceid_business_name : '';
 			}
 		});
 	}
