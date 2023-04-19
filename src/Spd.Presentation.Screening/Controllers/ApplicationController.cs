@@ -58,7 +58,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/orgs/{orgId}/applications")]
         [HttpGet]
-        public async Task<ApplicationListResponse> GetList([FromRoute] Guid orgId,[FromQuery]string filters, [FromQuery]string sorts, [FromQuery] uint? page, [FromQuery] uint? pageSize)
+        public async Task<ApplicationListResponse> GetList([FromRoute] Guid orgId,[FromQuery]string? filters, [FromQuery]string? sorts, [FromQuery] uint? page, [FromQuery] uint? pageSize)
         {
             //todo, when we do filtering and sorting, will complete this.
             string f = filters;
