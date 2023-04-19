@@ -35,10 +35,6 @@ namespace Spd.Utilities.Dynamics
         private void Client_SendingRequest2(object sender, SendingRequest2EventArgs e)
         {
             e.RequestMessage.SetHeader("Authorization", $"Bearer {authToken}");
-            if (e.RequestMessage.Method == "GET")
-            {
-                e.RequestMessage.SetHeader("Prefer", $"odata.maxpagesize={pageSize}");
-            }
         }
 
         private void Client_BuildingRequest(object sender, BuildingRequestEventArgs e)
@@ -61,7 +57,6 @@ namespace Spd.Utilities.Dynamics
                         page = skipRecordsNumber / pageSize + 1;
                         //when api use skip and take, it needs rewrite the http request as following.
                         queries.Remove(skip);
-                        queries.Remove(top);
                         queries.Add($"$skiptoken=<cookie pagenumber='{page}'/>");
                         string str = $"{e.RequestUri.Scheme}://{e.RequestUri.Host}{e.RequestUri.AbsolutePath}{string.Join("&", queries)}";
                         e.RequestUri = new Uri(str);
