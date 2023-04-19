@@ -27,7 +27,7 @@ namespace Spd.Utilities.Dynamics
                 // do not send reference properties and null values to Dynamics
                 arg.Entry.Properties = arg.Entry.Properties.Where((prop) => !prop.Name.StartsWith('_') && prop.Value != null);
             });
-            // client.BuildingRequest += Client_BuildingRequest;
+            client.BuildingRequest += Client_BuildingRequest;
             client.SendingRequest2 += Client_SendingRequest2;
         }
 
@@ -36,11 +36,33 @@ namespace Spd.Utilities.Dynamics
             e.RequestMessage.SetHeader("Authorization", $"Bearer {authToken}");
         }
 
-        //private void Client_BuildingRequest(object sender, BuildingRequestEventArgs e)
-        //{
-        //    if (e.RequestUri != null)
-        //        e.RequestUri = RewriteRequestUri((DataServiceContext)sender, options.EndpointUrl ?? null!, e.RequestUri);
-        //}
+        private void Client_BuildingRequest(object sender, BuildingRequestEventArgs e)
+        {
+            string query = e.RequestUri.Query;
+            if (!string.IsNullOrWhiteSpace(query))
+            {
+                int page = 1;
+                List<string> queries = query.Split('&').ToList();
+                string? top = queries.FirstOrDefault(q => q.StartsWith("$top="));
+                if (!string.IsNullOrWhiteSpace(top))
+                {
+                    var strs = top.Split("=");
+                    var pageSize = Int32.Parse(strs[1]);
+                    string? skip = queries.FirstOrDefault(q => q.StartsWith("$skip="));
+                    if (!string.IsNullOrWhiteSpace(skip))
+                    {
+                        var skipValue = skip.Split("=");
+                        var skipRecordsNumber = Int32.Parse(skipValue[1]);
+                        page = skipRecordsNumber / pageSize + 1;
+                        //when api use skip, it needs rewrite the http request as following.
+                        queries.Remove(skip);
+                        queries.Add($"$skiptoken=<cookie pagenumber='{page}'/>");
+                        string str = $"{e.RequestUri.Scheme}://{e.RequestUri.Host}{e.RequestUri.AbsolutePath}{string.Join("&", queries)}";
+                        e.RequestUri = new Uri(str);
+                    }
+                }
+            }
+        }
 
 #pragma warning disable S3358 // Ternary operators should not be nested
 
