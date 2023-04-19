@@ -23,22 +23,22 @@ export class UserProfileService extends BaseService {
   }
 
   /**
-   * Path part for operation apiUserProfileWhoamiGet
+   * Path part for operation apiUserGet
    */
-  static readonly ApiUserProfileWhoamiGetPath = '/api/user-profile/whoami';
+  static readonly ApiUserGetPath = '/api/user';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiUserProfileWhoamiGet()` instead.
+   * To access only the response body, use `apiUserGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiUserProfileWhoamiGet$Response(params?: {
+  apiUserGet$Response(params?: {
     context?: HttpContext
   }
 ): Observable<StrictHttpResponse<UserProfileResponse>> {
 
-    const rb = new RequestBuilder(this.rootUrl, UserProfileService.ApiUserProfileWhoamiGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, UserProfileService.ApiUserGetPath, 'get');
     if (params) {
     }
 
@@ -56,16 +56,16 @@ export class UserProfileService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiUserProfileWhoamiGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiUserGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiUserProfileWhoamiGet(params?: {
+  apiUserGet(params?: {
     context?: HttpContext
   }
 ): Observable<UserProfileResponse> {
 
-    return this.apiUserProfileWhoamiGet$Response(params).pipe(
+    return this.apiUserGet$Response(params).pipe(
       map((r: StrictHttpResponse<UserProfileResponse>) => r.body as UserProfileResponse)
     );
   }

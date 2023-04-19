@@ -29,7 +29,7 @@ export class CaptchaV2Component {
 	siteKey: string = '';
 
 	constructor(private authConfigService: AuthConfigService) {
-		this.siteKey = this.authConfigService.recaptchaConfig?.key!;
+		this.siteKey = this.authConfigService.configs?.recaptchaConfiguration?.key!;
 	}
 
 	resolved($event: string) {

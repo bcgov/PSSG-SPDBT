@@ -1,5 +1,5 @@
 /* tslint:disable */
 /* eslint-disable */
-export interface RecaptchaConfigurationResponse {
+export interface RecaptchaConfiguration {
   key?: null | string;
 }

@@ -7,7 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HotToastModule } from '@ngneat/hot-toast';
 import { OAuthModule } from 'angular-oauth2-oidc';
 import { NgxSpinnerModule } from 'ngx-spinner';
-import { forkJoin, tap } from 'rxjs';
+import { tap } from 'rxjs';
 import { ApiModule } from './api/api.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -19,13 +19,9 @@ import { SharedModule } from './shared/shared.module';
 
 export function appInitializer(authConfigService: AuthConfigService) {
 	return () => {
-		return forkJoin({
-			config1: authConfigService.getRecaptchaConfig(),
-			config2: authConfigService.getBceidConfig(),
-		}).pipe(
-			tap(({ config1, config2 }) => {
-				console.debug('[appInitializer] captchaConfig', config1);
-				console.debug('[appInitializer] bceidConfig', config2);
+		return authConfigService.getConfigs().pipe(
+			tap((configs) => {
+				console.debug('[appInitializer] configs', configs);
 			})
 		);
 	};

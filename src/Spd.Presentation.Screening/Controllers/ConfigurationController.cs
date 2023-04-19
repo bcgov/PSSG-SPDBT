@@ -19,11 +19,11 @@ namespace Spd.Presentation.Screening.Controllers
         }
 
 
-        [Route("api/bceid-configuration")]
+        [Route("api/configuration")]
         [HttpGet]
-        public async Task<BCeIdConfigurationResponse> Get()
+        public async Task<ConfigurationResponse> Get()
         {
-            BCeIdConfigurationResponse resp = new BCeIdConfigurationResponse
+            OidcConfiguration bceidResp = new OidcConfiguration
             {
                 Issuer = _bceidOption.Value.Issuer,
                 ClientId = _bceidOption.Value.ClientId,
@@ -32,26 +32,25 @@ namespace Spd.Presentation.Screening.Controllers
                 PostLogoutRedirectUri = _bceidOption.Value.PostLogoutRedirectUri
             };
 
-            return await Task.FromResult(resp);
-        }
-
-        [Route("api/recaptcha-configuration")]
-        [HttpGet]
-        public async Task<RecaptchaConfigurationResponse> GetRecaptchaConfiguration()
-        {
-            RecaptchaConfigurationResponse resp = new RecaptchaConfigurationResponse(_captchaOption.Value.ClientKey);
-            return await Task.FromResult(resp);
+            RecaptchaConfiguration recaptchaResp = new RecaptchaConfiguration(_captchaOption.Value.ClientKey);
+            return await Task.FromResult(new ConfigurationResponse() { OidcConfiguration= bceidResp , RecaptchaConfiguration = recaptchaResp });
         }
     }
 
-    public record BCeIdConfigurationResponse
+    public record ConfigurationResponse
     {
-        public string Issuer { get; set; } 
+        public OidcConfiguration OidcConfiguration { get; set; } = null!;
+        public RecaptchaConfiguration RecaptchaConfiguration { get; set; } = null!;
+    }
+
+    public record OidcConfiguration
+    {
+        public string Issuer { get; set; }
         public string ClientId { get; set; }
         public string ResponseType { get; set; }
         public string Scope { get; set; }
         public string PostLogoutRedirectUri { get; set; }
     }
 
-    public record RecaptchaConfigurationResponse(string Key);
+    public record RecaptchaConfiguration(string Key);
 }
