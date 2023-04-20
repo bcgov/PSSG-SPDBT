@@ -13,6 +13,8 @@ import {
 } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { Address, AddressAutocompleteComponent } from 'src/app/shared/components/address-autocomplete.component';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
@@ -393,7 +395,7 @@ export class ManualSubmissionsComponent implements OnInit {
 			middleName2: new FormControl(''),
 			surname: new FormControl('', [Validators.required]),
 			oneLegalName: new FormControl(false),
-			emailAddress: new FormControl('', [Validators.required, Validators.email]),
+			emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
 			phoneNumber: new FormControl('', [Validators.required]),
 			driversLicense: new FormControl(''),
 			dateOfBirth: new FormControl(null, [Validators.required]),
@@ -423,6 +425,7 @@ export class ManualSubmissionsComponent implements OnInit {
 		private router: Router,
 		private formBuilder: FormBuilder,
 		private applicationService: ApplicationService,
+		private authenticationService: AuthenticationService,
 		private hotToast: HotToastService,
 		private maskPipe: NgxMaskPipe,
 		private dialog: MatDialog
@@ -448,10 +451,9 @@ export class ManualSubmissionsComponent implements OnInit {
 			body.originTypeCode = ApplicationOriginTypeCode.Portal;
 			body.haveVerifiedIdentity = body.haveVerifiedIdentity == true ? true : false;
 
-			//TODO replace with proper org id
 			// Check for potential duplicate
 			this.applicationService
-				.apiOrgsOrgIdDetectApplicationDuplicatePost({ orgId: '4165bdfe-7cb4-ed11-b83e-00505683fbf4', body })
+				.apiOrgsOrgIdDetectApplicationDuplicatePost({ orgId: this.authenticationService.loggedInOrgId!, body })
 				.pipe()
 				.subscribe((dupres: CheckApplicationDuplicateResponse) => {
 					if (dupres.hasPotentialDuplicate) {
@@ -489,10 +491,9 @@ export class ManualSubmissionsComponent implements OnInit {
 			body.phoneNumber = this.maskPipe.transform(body.phoneNumber, SPD_CONSTANTS.phone.backendMask);
 		}
 
-		//TODO replace with proper org id
 		this.applicationService
 			.apiOrgsOrgIdApplicationPost({
-				orgId: '4165bdfe-7cb4-ed11-b83e-00505683fbf4',
+				orgId: this.authenticationService.loggedInOrgId!,
 				body,
 			})
 			.pipe()

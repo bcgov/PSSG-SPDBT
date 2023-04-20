@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { ApplicationListResponse, ApplicationResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { DashboardRoutes } from '../dashboard-routing.module';
 
@@ -29,21 +30,18 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 			</div>
 
 			<div class="mb-4">
+				Active Screenings: (Last updated April 10, 11:59pm)
 				<div class="d-flex flex-wrap justify-content-start">
-					<mat-card class="statistic-card mat-card-green m-2">
+					<!-- <div class="mat-card-yellow m-2" style="display: inline-flex;">
+						<div class="fs-6 fw-700 m-3">??</div>
+						<div class="m-3">Verify Identity</div>
+					</div> -->
+					<mat-card class="statistic-card mat-card-yellow m-2">
 						<mat-card-header>
 							<mat-card-title>??</mat-card-title>
 						</mat-card-header>
 						<mat-card-content>
-							<p>Completed No Risk</p>
-						</mat-card-content>
-					</mat-card>
-					<mat-card class="statistic-card mat-card-green m-2">
-						<mat-card-header>
-							<mat-card-title>??</mat-card-title>
-						</mat-card-header>
-						<mat-card-content>
-							<p>In Progress</p>
+							<p>Verify Identity</p>
 						</mat-card-content>
 					</mat-card>
 					<mat-card class="statistic-card mat-card-yellow m-2">
@@ -52,6 +50,14 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 						</mat-card-header>
 						<mat-card-content>
 							<p>Awaiting Payment</p>
+						</mat-card-content>
+					</mat-card>
+					<mat-card class="statistic-card mat-card-green m-2">
+						<mat-card-header>
+							<mat-card-title>??</mat-card-title>
+						</mat-card-header>
+						<mat-card-content>
+							<p>In Progress</p>
 						</mat-card-content>
 					</mat-card>
 					<mat-card class="statistic-card mat-card-yellow m-2">
@@ -78,36 +84,58 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 							<p>Under Assessment</p>
 						</mat-card-content>
 					</mat-card>
-					<mat-card class="statistic-card mat-card-grey m-2">
+					<mat-card class="statistic-card mat-card-blue m-2">
 						<mat-card-header>
 							<mat-card-title>??</mat-card-title>
 						</mat-card-header>
 						<mat-card-content>
-							<p>Cancelled by Organization</p>
+							<p>Incomplete</p>
 						</mat-card-content>
 					</mat-card>
-					<mat-card class="statistic-card mat-card-grey m-2">
-						<mat-card-header>
-							<mat-card-title>??</mat-card-title>
-						</mat-card-header>
-						<mat-card-content>
-							<p>Missing Information</p>
-						</mat-card-content>
-					</mat-card>
-					<mat-card class="statistic-card mat-card-red m-2">
-						<mat-card-header>
-							<mat-card-title>??</mat-card-title>
-						</mat-card-header>
-						<mat-card-content>
-							<p>Closed</p>
-						</mat-card-content>
-					</mat-card>
+				</div>
+			</div>
+
+			<div class="mb-4">
+				Completed screenings (completed, closed, or cancelled since April 14, 2022)
+				<div class="d-flex flex-wrap justify-content-start">
 					<mat-card class="statistic-card mat-card-red m-2">
 						<mat-card-header>
 							<mat-card-title>??</mat-card-title>
 						</mat-card-header>
 						<mat-card-content>
 							<p>Risk Found</p>
+						</mat-card-content>
+					</mat-card>
+					<mat-card class="statistic-card mat-card-grey m-2">
+						<mat-card-header>
+							<mat-card-title>??</mat-card-title>
+						</mat-card-header>
+						<mat-card-content>
+							<p>Closed: Judicial Review</p>
+						</mat-card-content>
+					</mat-card>
+					<mat-card class="statistic-card mat-card-grey m-2">
+						<mat-card-header>
+							<mat-card-title>??</mat-card-title>
+						</mat-card-header>
+						<mat-card-content>
+							<p>Closed: No Response</p>
+						</mat-card-content>
+					</mat-card>
+					<mat-card class="statistic-card mat-card-grey m-2">
+						<mat-card-header>
+							<mat-card-title>??</mat-card-title>
+						</mat-card-header>
+						<mat-card-content>
+							<p>Closed: No Consent</p>
+						</mat-card-content>
+					</mat-card>
+					<mat-card class="statistic-card mat-card-grey m-2">
+						<mat-card-header>
+							<mat-card-title>??</mat-card-title>
+						</mat-card-header>
+						<mat-card-content>
+							<p>Cancelled: By Applicant</p>
 						</mat-card-content>
 					</mat-card>
 				</div>
@@ -314,7 +342,8 @@ export class ScreeningStatusesComponent implements OnInit {
 		private router: Router,
 		protected utilService: UtilService,
 		private formBuilder: FormBuilder,
-		private applicationService: ApplicationService
+		private applicationService: ApplicationService,
+		private authenticationService: AuthenticationService
 	) {}
 
 	ngOnInit() {
@@ -359,9 +388,8 @@ export class ScreeningStatusesComponent implements OnInit {
 	}
 
 	private loadList(): void {
-		//TODO replace with proper org id
 		this.applicationService
-			.apiOrgsOrgIdApplicationsGet({ orgId: '4165bdfe-7cb4-ed11-b83e-00505683fbf4' })
+			.apiOrgsOrgIdApplicationsGet({ orgId: this.authenticationService.loggedInOrgId! })
 			.pipe()
 			.subscribe((res: ApplicationListResponse) => {
 				this.followUpBusinessDays = res.followUpBusinessDays ? String(res.followUpBusinessDays) : '';

@@ -6,6 +6,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ApplicationListResponse, ApplicationResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
 
 @Component({
@@ -203,7 +204,8 @@ export class ExpiringScreeningsComponent implements OnInit {
 	constructor(
 		protected utilService: UtilService,
 		private formBuilder: FormBuilder,
-		private applicationService: ApplicationService
+		private applicationService: ApplicationService,
+		private authenticationService: AuthenticationService
 	) {}
 
 	ngOnInit() {
@@ -263,9 +265,8 @@ export class ExpiringScreeningsComponent implements OnInit {
 	}
 
 	private loadList(): void {
-		//TODO replace with proper org id
 		this.applicationService
-			.apiOrgsOrgIdApplicationsGet({ orgId: '4165bdfe-7cb4-ed11-b83e-00505683fbf4' })
+			.apiOrgsOrgIdApplicationsGet({ orgId: this.authenticationService.loggedInOrgId! })
 			.pipe()
 			.subscribe((res: ApplicationListResponse) => {
 				this.followUpBusinessDays = res.followUpBusinessDays ? String(res.followUpBusinessDays) : '';

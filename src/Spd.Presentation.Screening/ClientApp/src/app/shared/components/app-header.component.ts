@@ -67,9 +67,7 @@ export class HeaderComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.authenticationService.isLoginSubject$.subscribe((_subjectData: any) => {
-			if (_subjectData) {
-				this.getUserInfo();
-			}
+			this.getUserInfo();
 		});
 	}
 

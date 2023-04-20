@@ -5,6 +5,8 @@ import { NgxMaskPipe } from 'ngx-mask';
 import { ContactAuthorizationTypeCode, OrgUserResponse, OrgUserUpdateRequest } from 'src/app/api/models';
 import { OrgUserService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 
 export const ContactAuthorizationTypes = [
@@ -102,7 +104,7 @@ export class MaintainUserModalComponent implements OnInit {
 			contactAuthorizationTypeCode: new FormControl('', [Validators.required]),
 			lastName: new FormControl('', [Validators.required]),
 			firstName: new FormControl('', [Validators.required]),
-			email: new FormControl('', [Validators.required, Validators.email]),
+			email: new FormControl('', [Validators.required, FormControlValidators.email]),
 			phoneNumber: new FormControl('', [Validators.required]),
 			jobTitle: new FormControl('', [Validators.required]),
 		},
@@ -120,6 +122,7 @@ export class MaintainUserModalComponent implements OnInit {
 		private dialogRef: MatDialogRef<MaintainUserModalComponent>,
 		private orgUserService: OrgUserService,
 		private maskPipe: NgxMaskPipe,
+		private authenticationService: AuthenticationService,
 		@Inject(MAT_DIALOG_DATA) public dialogData: UserDialogData
 	) {}
 
@@ -157,8 +160,7 @@ export class MaintainUserModalComponent implements OnInit {
 						});
 					});
 			} else {
-				// TODO replace with proper org id
-				body.organizationId = '4165bdfe-7cb4-ed11-b83e-00505683fbf4';
+				body.organizationId = this.authenticationService.loggedInOrgId!;
 				this.orgUserService
 					.apiOrgsOrgIdUsersPost({ orgId: body.organizationId, body })
 					.pipe()

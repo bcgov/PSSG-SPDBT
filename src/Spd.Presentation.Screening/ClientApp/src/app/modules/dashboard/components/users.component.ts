@@ -4,6 +4,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 import { ContactAuthorizationTypeCode, OrgUserListResponse, OrgUserResponse } from 'src/app/api/models';
 import { OrgUserService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData } from './maintain-user-modal.component';
 
@@ -95,7 +96,6 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 					<ng-container *ngIf="user.isActive; else notactiveactions">
 						<button
 							mat-stroked-button
-							matTooltip="Edit user"
 							class="table-button my-2 me-4"
 							(click)="onMaintainUser(user)"
 							aria-label="Edit user"
@@ -116,7 +116,6 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 					<ng-template #notactiveactions>
 						<button
 							mat-stroked-button
-							matTooltip="Cancel invitation"
 							class="table-button my-2 me-4"
 							(click)="onCancelInvitation(user)"
 							aria-label="Cancel invitation"
@@ -175,7 +174,12 @@ export class UsersComponent implements OnInit {
 
 	usersList: OrgUserResponse[] = [];
 
-	constructor(private dialog: MatDialog, private orgUserService: OrgUserService, private hotToast: HotToastService) {}
+	constructor(
+		private dialog: MatDialog,
+		private orgUserService: OrgUserService,
+		private authenticationService: AuthenticationService,
+		private hotToast: HotToastService
+	) {}
 
 	ngOnInit(): void {
 		this.loadListOfUsers();
@@ -223,10 +227,17 @@ export class UsersComponent implements OnInit {
 	}
 
 	allowDeleteRow(user: OrgUserResponse): boolean {
-		// TODO if row is current user, remove delete
+		if (this.usersList.length <= 1) {
+			return false;
+		}
 
-		// TODO if current user is not a Primary Authorized User, prevent delete
-		return true;
+		// if row is current user, remove delete
+		if (this.authenticationService.loggedInUserId == user.id) {
+			return false;
+		}
+
+		// if current user is not a Primary Authorized User, prevent delete
+		return this.isUserPrimaryAuthorizedUser();
 	}
 
 	manageUsersInfo(): void {
@@ -320,9 +331,8 @@ export class UsersComponent implements OnInit {
 	}
 
 	private loadListOfUsers(): void {
-		//TODO replace with proper org id
 		this.orgUserService
-			.apiOrgsOrgIdUsersGet({ orgId: '4165bdfe-7cb4-ed11-b83e-00505683fbf4' })
+			.apiOrgsOrgIdUsersGet({ orgId: this.authenticationService.loggedInOrgId! })
 			.pipe()
 			.subscribe((res: OrgUserListResponse) => {
 				this.maximumNumberOfContacts = res.maximumNumberOfAuthorizedContacts ?? this.DEFAULT_MAX_NUMBER_OF_CONTACTS;
@@ -336,7 +346,7 @@ export class UsersComponent implements OnInit {
 	}
 
 	private setFlags(): void {
-		this.showAddArea = true;
+		this.showAddArea = this.isUserPrimaryAuthorizedUser();
 		this.isAllowedAddContact = this.usersList.length >= this.maximumNumberOfContacts ? false : true;
 
 		const numberOfPrimary = this.usersList.filter(
@@ -370,5 +380,14 @@ export class UsersComponent implements OnInit {
 					this.setFlags();
 				}
 			});
+	}
+
+	private isUserPrimaryAuthorizedUser(): boolean {
+		if (!this.usersList) {
+			return false;
+		}
+
+		const currUser = this.usersList.find((item) => item.id == this.authenticationService.loggedInUserId);
+		return currUser ? currUser.contactAuthorizationTypeCode == ContactAuthorizationTypeCode.Primary : false;
 	}
 }

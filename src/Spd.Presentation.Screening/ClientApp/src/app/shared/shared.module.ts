@@ -13,6 +13,7 @@ import { BaseFilterComponent } from './components/base-filter.component';
 import { CaptchaV2Component } from './components/captcha-v2.component';
 import { DialogComponent } from './components/dialog.component';
 import { DropdownOverlayComponent } from './components/dropdown-overlay.component';
+import { OrgSelectionModalComponent } from './components/org-selection-modal.component';
 import { StepTitleComponent } from './components/step-title.component';
 import { DefaultPipe } from './pipes/default.pipe';
 import { FullnamePipe } from './pipes/fullname.pipe';
@@ -23,6 +24,7 @@ const SHARED_COMPONENTS = [
 	DialogComponent,
 	AddressAutocompleteComponent,
 	AddressModalComponent,
+	OrgSelectionModalComponent,
 	DropdownOverlayComponent,
 	BaseFilterComponent,
 	StepTitleComponent,
