@@ -35,9 +35,13 @@ namespace Spd.Utilities.Shared.Exceptions
             {
                 // Unhandled errors
                 var msg = context.Exception.GetBaseException().Message;
-                string stack = context.Exception.StackTrace;
+                string? stack = context.Exception?.StackTrace;
                 apiError = new ApiError(msg);
-                apiError.detail = context.Exception.InnerException.Message+";"+stack;
+                string? innerExpMsg = context.Exception?.InnerException?.Message;
+                if (innerExpMsg == null)
+                    apiError.detail = stack ?? string.Empty;
+                else
+                    apiError.detail = innerExpMsg + ";" + stack;
                 context.HttpContext.Response.StatusCode = 500;
                 // handle logging here
                 _Logger.LogError(context.Exception, "Exception");
