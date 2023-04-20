@@ -1,22 +1,65 @@
 import { Injectable } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { BehaviorSubject } from 'rxjs';
+import { UserInfo, UserProfileResponse } from 'src/app/api/models';
+import { UserProfileService } from 'src/app/api/services';
+import {
+	OrgSelectionDialogData,
+	OrgSelectionModalComponent,
+	OrgSelectionResponseData,
+} from 'src/app/shared/components/org-selection-modal.component';
 import { AuthConfigService } from './auth-config.service';
 import { UtilService } from './util.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
 	isLoginSubject$ = new BehaviorSubject<boolean>(false);
+
+	private _isLoginSuccessfulSubject$ = new BehaviorSubject<boolean>(false);
+	isLoginSuccessful$ = this._isLoginSuccessfulSubject$.asObservable();
+
 	loggedInUserData: any = null;
+	// loggedInUserProfile: UserProfileResponse | null = null;
+	loggedInUserId: string | null = null;
+	loggedInOrgId: string | null = null;
+	loggedInOrgName: string | null = null;
 
 	constructor(
 		private oauthService: OAuthService,
+		private userService: UserProfileService,
 		private utilService: UtilService,
+		private dialog: MatDialog,
 		private authConfigService: AuthConfigService
 	) {}
 
 	public async tryLogin(): Promise<{ state: any; loggedIn: boolean }> {
-		await this.oauthService.loadDiscoveryDocumentAndTryLogin();
+		await this.oauthService.loadDiscoveryDocumentAndTryLogin().then((isLoggedIn) => {
+			if (isLoggedIn) {
+				this.userService.apiUserGet().subscribe({
+					next: (resp: UserProfileResponse) => {
+						// this.loggedInUserProfile = resp;
+						const userInfosList = resp.userInfos?.filter((info) => info.orgId);
+						const userInfos = userInfosList ? userInfosList : [];
+
+						if (userInfos.length > 1) {
+							this.orgSelection(resp.userGuid!, userInfos);
+						} else {
+							this.loggedInOrgId = userInfos[0].orgId!;
+							this.loggedInOrgName = userInfos[0].orgName!;
+							this.loggedInUserId = userInfos[0].userId!;
+							this.notify(true);
+						}
+					},
+					error: (err) => {
+						console.error('[AuthenticationService] loadDiscoveryDocumentAndTryLogin Error', err);
+					},
+				});
+			} else {
+				this.notify(false);
+			}
+		});
+
 		const isLoggedIn = this.oauthService.hasValidAccessToken();
 
 		let state = null;
@@ -27,8 +70,6 @@ export class AuthenticationService {
 			loggedIn = isLoggedIn;
 		}
 
-		this.setDecodedToken();
-		this.isLoginSubject$.next(true);
 		return {
 			state,
 			loggedIn,
@@ -37,22 +78,17 @@ export class AuthenticationService {
 
 	public async login(state: any): Promise<boolean> {
 		const isLoggedIn = this.oauthService.hasValidAccessToken();
-		console.debug('[AuthenticationService.login] isLoggedIn', isLoggedIn);
-
 		if (!isLoggedIn) {
-			console.debug('[AuthenticationService.login] loadDiscoveryDocumentAndLogin');
 			await this.oauthService.loadDiscoveryDocumentAndLogin({ state });
 		}
 
-		this.setDecodedToken();
-		this.isLoginSubject$.next(true);
+		this.notify(isLoggedIn);
 		return isLoggedIn;
 	}
 
 	public logout(): void {
 		this.oauthService.logOut();
-		this.setDecodedToken();
-		this.isLoginSubject$.next(true);
+		this.notify(false);
 	}
 
 	public getToken(): string {
@@ -70,15 +106,43 @@ export class AuthenticationService {
 		});
 	}
 
-	private setDecodedToken(): void {
+	private orgSelection(userGuid: string, userInfos: Array<UserInfo>): void {
+		const dialogOptions: OrgSelectionDialogData = {
+			userInfos: userInfos,
+		};
+
+		this.dialog
+			.open(OrgSelectionModalComponent, {
+				width: '500px',
+				data: dialogOptions,
+			})
+			.afterClosed()
+			.subscribe((res: OrgSelectionResponseData) => {
+				if (res) {
+					this.loggedInOrgId = res.orgId;
+					this.loggedInOrgName = res.orgName;
+					this.loggedInUserId = res.userId;
+					this.notify(true);
+				}
+			});
+	}
+
+	private notify(isLoggedIn: boolean): void {
 		const token = this.getToken();
 		if (!token) {
 			this.loggedInUserData = null;
+			// this.loggedInUserProfile = null;
+			this.loggedInOrgId = null;
+			this.loggedInOrgName = null;
+			this.loggedInUserId = null;
 			return;
+		} else {
+			const decodedToken = this.utilService.getDecodedAccessToken(token);
+			console.debug('[AuthenticationService.setDecodedToken] decodedToken', decodedToken);
+			this.loggedInUserData = decodedToken;
 		}
 
-		const decodedToken = this.utilService.getDecodedAccessToken(token);
-		console.debug('[AuthenticationService.setDecodedToken] decodedToken', decodedToken);
-		this.loggedInUserData = decodedToken;
+		this.isLoginSubject$.next(true);
+		this._isLoginSuccessfulSubject$.next(isLoggedIn);
 	}
 }

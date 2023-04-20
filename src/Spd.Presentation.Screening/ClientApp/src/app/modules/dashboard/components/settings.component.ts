@@ -5,6 +5,8 @@ import { NgxMaskPipe } from 'ngx-mask';
 import { BooleanTypeCode, OrgResponse, OrgUpdateRequest, PayerPreferenceTypeCode } from 'src/app/api/models';
 import { OrgService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 
 @Component({
 	selector: 'app-settings',
@@ -214,7 +216,7 @@ export class SettingsComponent implements OnInit {
 	form: FormGroup = this.formBuilder.group({
 		organizationName: new FormControl(''),
 		organizationLegalName: new FormControl(''),
-		email: new FormControl('', [Validators.required, Validators.email]),
+		email: new FormControl('', [Validators.required, FormControlValidators.email]),
 		phoneNumber: new FormControl('', [Validators.required]),
 		addressLine1: new FormControl('', [Validators.required]),
 		addressLine2: new FormControl(''),
@@ -233,13 +235,13 @@ export class SettingsComponent implements OnInit {
 		private formBuilder: FormBuilder,
 		private hotToast: HotToastService,
 		private maskPipe: NgxMaskPipe,
-		private orgService: OrgService
+		private orgService: OrgService,
+		private authenticationService: AuthenticationService
 	) {}
 
 	ngOnInit(): void {
-		//TODO replace with proper org id
 		this.orgService
-			.apiOrgOrgIdGet({ orgId: '4165bdfe-7cb4-ed11-b83e-00505683fbf4' })
+			.apiOrgOrgIdGet({ orgId: this.authenticationService.loggedInOrgId! })
 			.pipe()
 			.subscribe((resp: OrgResponse) => {
 				this.form.patchValue(resp);
@@ -267,14 +269,13 @@ export class SettingsComponent implements OnInit {
 	onSave() {
 		this.form.markAllAsTouched();
 		if (this.form.valid) {
-			//TODO replace with proper org id
-			const body: OrgUpdateRequest = { ...this.form.value, id: '4165bdfe-7cb4-ed11-b83e-00505683fbf4' };
+			const body: OrgUpdateRequest = { ...this.form.value, id: this.authenticationService.loggedInOrgId! };
 			if (body.phoneNumber) {
 				body.phoneNumber = this.maskPipe.transform(body.phoneNumber, SPD_CONSTANTS.phone.backendMask);
 			}
 
 			this.orgService
-				.apiOrgOrgIdPut({ orgId: '4165bdfe-7cb4-ed11-b83e-00505683fbf4', body })
+				.apiOrgOrgIdPut({ orgId: this.authenticationService.loggedInOrgId!, body })
 				.pipe()
 				.subscribe((resp: OrgUpdateRequest) => {
 					this.viewOnly = true;

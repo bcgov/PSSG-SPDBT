@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgxMaskPipe } from 'ngx-mask';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { RegistrationFormStepComponent } from '../org-registration.component';
 
@@ -77,7 +78,7 @@ export class ContactInformationComponent implements RegistrationFormStepComponen
 		contactGivenName: new FormControl('', [Validators.required]),
 		contactSurname: new FormControl('', [Validators.required]),
 		contactJobTitle: new FormControl('', [Validators.required]),
-		contactEmail: new FormControl('', [Validators.email, Validators.required]),
+		contactEmail: new FormControl('', [Validators.required, FormControlValidators.email]),
 		contactPhoneNumber: new FormControl('', [Validators.required]),
 	});
 	startAt = SPD_CONSTANTS.date.birthDateStartAt;
