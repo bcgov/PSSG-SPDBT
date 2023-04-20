@@ -6,6 +6,7 @@ import { ContactAuthorizationTypeCode, OrgUserResponse, OrgUserUpdateRequest } f
 import { OrgUserService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 
 export const ContactAuthorizationTypes = [
@@ -103,7 +104,7 @@ export class MaintainUserModalComponent implements OnInit {
 			contactAuthorizationTypeCode: new FormControl('', [Validators.required]),
 			lastName: new FormControl('', [Validators.required]),
 			firstName: new FormControl('', [Validators.required]),
-			email: new FormControl('', [Validators.required, Validators.email]),
+			email: new FormControl('', [Validators.required, FormControlValidators.email]),
 			phoneNumber: new FormControl('', [Validators.required]),
 			jobTitle: new FormControl('', [Validators.required]),
 		},

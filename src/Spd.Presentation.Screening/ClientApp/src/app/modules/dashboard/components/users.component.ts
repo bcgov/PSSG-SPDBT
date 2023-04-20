@@ -229,7 +229,14 @@ export class UsersComponent implements OnInit {
 	}
 
 	allowDeleteRow(user: OrgUserResponse): boolean {
-		// TODO if row is current user, remove delete
+		if (this.usersList.length <= 1) {
+			return false;
+		}
+
+		// if row is current user, remove delete
+		if (this.authenticationService.loggedInUserId == user.id) {
+			return false;
+		}
 
 		// TODO if current user is not a Primary Authorized User, prevent delete
 		return true;

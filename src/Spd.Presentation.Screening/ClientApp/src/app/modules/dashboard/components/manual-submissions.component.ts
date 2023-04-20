@@ -14,6 +14,7 @@ import {
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { Address, AddressAutocompleteComponent } from 'src/app/shared/components/address-autocomplete.component';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
@@ -394,7 +395,7 @@ export class ManualSubmissionsComponent implements OnInit {
 			middleName2: new FormControl(''),
 			surname: new FormControl('', [Validators.required]),
 			oneLegalName: new FormControl(false),
-			emailAddress: new FormControl('', [Validators.required, Validators.email]),
+			emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
 			phoneNumber: new FormControl('', [Validators.required]),
 			driversLicense: new FormControl(''),
 			dateOfBirth: new FormControl(null, [Validators.required]),

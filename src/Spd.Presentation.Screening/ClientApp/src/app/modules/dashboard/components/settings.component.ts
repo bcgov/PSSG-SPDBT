@@ -6,6 +6,7 @@ import { BooleanTypeCode, OrgResponse, OrgUpdateRequest, PayerPreferenceTypeCode
 import { OrgService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 
 @Component({
 	selector: 'app-settings',
@@ -215,7 +216,7 @@ export class SettingsComponent implements OnInit {
 	form: FormGroup = this.formBuilder.group({
 		organizationName: new FormControl(''),
 		organizationLegalName: new FormControl(''),
-		email: new FormControl('', [Validators.required, Validators.email]),
+		email: new FormControl('', [Validators.required, FormControlValidators.email]),
 		phoneNumber: new FormControl('', [Validators.required]),
 		addressLine1: new FormControl('', [Validators.required]),
 		addressLine2: new FormControl(''),

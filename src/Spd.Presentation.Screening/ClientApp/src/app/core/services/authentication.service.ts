@@ -19,7 +19,8 @@ export class AuthenticationService {
 	isLoginSuccessful$ = this._isLoginSuccessfulSubject$.asObservable();
 
 	loggedInUserData: any = null;
-	loggedInUserProfile: UserProfileResponse | null = null;
+	// loggedInUserProfile: UserProfileResponse | null = null;
+	loggedInUserId: string | null = null;
 	loggedInOrgId: string | null = null;
 	loggedInOrgName: string | null = null;
 
@@ -36,15 +37,16 @@ export class AuthenticationService {
 			if (isLoggedIn) {
 				this.userService.apiUserGet().subscribe({
 					next: (resp: UserProfileResponse) => {
-						this.loggedInUserProfile = resp;
+						// this.loggedInUserProfile = resp;
 						const userInfosList = resp.userInfos?.filter((info) => info.orgId);
 						const userInfos = userInfosList ? userInfosList : [];
 
 						if (userInfos.length > 1) {
-							this.orgSelection(userInfos);
+							this.orgSelection(resp.userGuid!, userInfos);
 						} else {
 							this.loggedInOrgId = userInfos[0].orgId!;
 							this.loggedInOrgName = userInfos[0].orgName!;
+							this.loggedInUserId = resp.userGuid!;
 							this.notify(true);
 						}
 					},
@@ -103,7 +105,7 @@ export class AuthenticationService {
 		});
 	}
 
-	private orgSelection(userInfos: Array<UserInfo>): void {
+	private orgSelection(userGuid: string, userInfos: Array<UserInfo>): void {
 		const dialogOptions: OrgSelectionDialogData = {
 			userInfos: userInfos,
 		};
@@ -118,6 +120,7 @@ export class AuthenticationService {
 				if (res) {
 					this.loggedInOrgId = res.orgId;
 					this.loggedInOrgName = res.orgName;
+					this.loggedInUserId = userGuid;
 					this.notify(true);
 				}
 			});
@@ -127,7 +130,10 @@ export class AuthenticationService {
 		const token = this.getToken();
 		if (!token) {
 			this.loggedInUserData = null;
-			this.loggedInUserProfile = null;
+			// this.loggedInUserProfile = null;
+			this.loggedInOrgId = null;
+			this.loggedInOrgName = null;
+			this.loggedInUserId = null;
 			return;
 		} else {
 			const decodedToken = this.utilService.getDecodedAccessToken(token);

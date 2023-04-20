@@ -9,6 +9,7 @@ import {
 } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 
@@ -196,7 +197,7 @@ export class NewScreeningModalComponent implements OnInit {
 		return this.formBuilder.group({
 			firstName: new FormControl('', [Validators.required]),
 			lastName: new FormControl('', [Validators.required]),
-			email: new FormControl('', [Validators.email, Validators.required]),
+			email: new FormControl('', [Validators.required, FormControlValidators.email]),
 			jobTitle: new FormControl('', [Validators.required]),
 			payeeType: new FormControl('', [Validators.required]),
 		});

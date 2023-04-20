@@ -10,6 +10,7 @@ export interface OrgSelectionDialogData {
 	selector: 'app-org-selection-modal',
 	template: `
 		<div mat-dialog-title>{{ title }}</div>
+		<mat-divider></mat-divider>
 		<mat-dialog-content>
 			<mat-radio-group [(ngModel)]="selectedOrg">
 				<ng-container *ngFor="let user of userInfos; let i = index">
