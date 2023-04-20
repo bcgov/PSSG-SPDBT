@@ -10,12 +10,10 @@ namespace Spd.Presentation.Screening.Controllers
     /// </summary>
     public class OrgController : SpdControllerBase
     {
-        private readonly ILogger<OrgController> _logger;
         private readonly IMediator _mediator;
 
         public OrgController(ILogger<OrgController> logger, IMediator mediator)
         {
-            _logger = logger;
             _mediator = mediator;
         }
 
