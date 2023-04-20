@@ -30,7 +30,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 @Component({
 	selector: 'app-dashboard',
 	template: `
-		<div class="container-fluid p-0">
+		<div class="container-fluid p-0" *ngIf="isAuthenticated | async">
 			<div class="row flex-nowrap m-0">
 				<div class="col-auto px-0" style="background-color: var(--color-sidebar);">
 					<div
@@ -173,6 +173,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 	],
 })
 export class DashboardComponent {
+	isAuthenticated = this.authenticationService.isLoginSuccessful$;
 	dashboardRoutes = DashboardRoutes;
 
 	constructor(private authenticationService: AuthenticationService) {}

@@ -37,10 +37,8 @@ export class DashboardHeaderComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.authenticationService.isLoginSubject$.subscribe((_subjectData: any) => {
-			if (_subjectData) {
-				const loggedInUserData = this.authenticationService.loggedInUserData;
-				this.loggedInOrgDisplay = loggedInUserData ? loggedInUserData.bceid_business_name : '';
-			}
+			const loggedInOrgName = this.authenticationService.loggedInOrgName;
+			this.loggedInOrgDisplay = loggedInOrgName ? loggedInOrgName : '';
 		});
 	}
 }

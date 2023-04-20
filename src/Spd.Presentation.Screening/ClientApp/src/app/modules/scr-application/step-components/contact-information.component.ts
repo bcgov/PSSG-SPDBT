@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgxMaskPipe } from 'ngx-mask';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { ScreeningFormStepComponent } from '../scr-application.component';
@@ -87,7 +88,7 @@ export class ContactInformationComponent implements ScreeningFormStepComponent {
 			contactMiddleName1: new FormControl(''),
 			contactMiddleName2: new FormControl(''),
 			contactSurname: new FormControl('', [Validators.required]),
-			contactEmail: new FormControl('', [Validators.email, Validators.required]),
+			contactEmail: new FormControl('', [Validators.required, FormControlValidators.email]),
 			contactPhoneNumber: new FormControl('', [Validators.required]),
 			oneLegalName: new FormControl(false),
 		},
