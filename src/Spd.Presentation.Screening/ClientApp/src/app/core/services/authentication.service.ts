@@ -82,7 +82,7 @@ export class AuthenticationService {
 			await this.oauthService.loadDiscoveryDocumentAndLogin({ state });
 		}
 
-		// this.notify(isLoggedIn);
+		this.notify(isLoggedIn);
 		return isLoggedIn;
 	}
 

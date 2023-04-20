@@ -11,8 +11,11 @@ import { Component, Input } from '@angular/core';
 						<tr>
 							<td class="point__icon"><mat-icon>find_in_page</mat-icon></td>
 							<td class="px-4">
-								Your application will be reviewed by our security screening staff. If we need any more information,
-								we'll contact you.
+								<div class="fs-5 mb-2">Application submitted</div>
+								<p>
+									Your application will be reviewed by our security screening staff. If we need any more information,
+									we'll contact you.
+								</p>
 							</td>
 						</tr>
 						<tr>
@@ -22,7 +25,10 @@ import { Component, Input } from '@angular/core';
 						</tr>
 						<tr>
 							<td class="point__icon"><mat-icon>task_alt</mat-icon></td>
-							<td class="px-4">Check on your application status and get updates on progress.</td>
+							<td class="px-4">
+								<div class="fs-5 mb-2">In progress</div>
+								<p>Check on your application status and get updates on progress.</p>
+							</td>
 						</tr>
 						<tr>
 							<td colspan="2">
@@ -32,8 +38,11 @@ import { Component, Input } from '@angular/core';
 						<tr>
 							<td class="point__icon"><mat-icon>connect_without_contact</mat-icon></td>
 							<td class="px-4">
-								If your registration is approved, we'll send a link to the organization portal for you to manage all of
-								your screenings.
+								<div class="fs-5 mb-2">Complete</div>
+								<p>
+									If your registration is approved, we'll send a link to the organization portal for you to manage all
+									of your screenings.
+								</p>
 							</td>
 						</tr>
 					</table>
