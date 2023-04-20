@@ -5,12 +5,12 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { HotToastService } from '@ngneat/hot-toast';
-import { ApplicationListResponse, ApplicationResponse, OrgUserResponse } from 'src/app/api/models';
+import { ApplicationListResponse, ApplicationResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
-import { NewScreeningDialogData, NewScreeningModalComponent } from './new-screening-modal.component';
+import { NewScreeningModalComponent } from './new-screening-modal.component';
 
 @Component({
 	selector: 'app-new-screening',
@@ -162,16 +162,9 @@ export class NewScreeningComponent implements OnInit {
 	}
 
 	onAddScreeningRequest(): void {
-		const newUser: OrgUserResponse = {};
-		const dialogOptions: NewScreeningDialogData = {
-			user: newUser,
-			isAllowedPrimary: false,
-		};
-
 		this.dialog
 			.open(NewScreeningModalComponent, {
 				width: '1400px',
-				data: dialogOptions,
 			})
 			.afterClosed()
 			.subscribe((resp) => {

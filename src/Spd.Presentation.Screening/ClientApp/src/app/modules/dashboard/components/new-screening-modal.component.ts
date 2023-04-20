@@ -1,10 +1,9 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import {
 	ApplicationInviteCreateRequest,
 	CheckApplicationInviteDuplicateResponse,
-	OrgUserResponse,
 	PayeePreferenceTypeCode,
 } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
@@ -12,11 +11,6 @@ import { AuthenticationService } from 'src/app/core/services/authentication.serv
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-
-export interface NewScreeningDialogData {
-	user: OrgUserResponse;
-	isAllowedPrimary: boolean;
-}
 
 @Component({
 	selector: 'app-new-screening-modal',
@@ -182,8 +176,7 @@ export class NewScreeningModalComponent implements OnInit {
 		private dialogRef: MatDialogRef<NewScreeningModalComponent>,
 		private applicationService: ApplicationService,
 		private authenticationService: AuthenticationService,
-		private dialog: MatDialog,
-		@Inject(MAT_DIALOG_DATA) public dialogData: NewScreeningDialogData
+		private dialog: MatDialog
 	) {}
 
 	ngOnInit(): void {
@@ -283,11 +276,11 @@ export class NewScreeningModalComponent implements OnInit {
 					if (dupres?.length > 1) {
 						dialogTitle = 'Potential duplicates detected';
 						dialogMessage = `Your organization has submitted a criminal record check for these applicants within the last 30 days.<br/><br/>${dupMessage}How would you like to proceed?`;
-						dialogAction = 'Yes, continue save';
+						dialogAction = 'Yes, continue submission';
 					} else {
 						dialogTitle = 'Potential duplicate detected';
 						dialogMessage = `Your organization has submitted a criminal record check for this applicant within the last 30 days.<br/><br/>${dupMessage}How would you like to proceed?`;
-						dialogAction = 'Yes, continue save';
+						dialogAction = 'Yes, continue submission';
 					}
 
 					const data: DialogOptions = {
@@ -363,7 +356,7 @@ export class NewScreeningModalComponent implements OnInit {
 			icon: 'info_outline',
 			title: 'Criminal record check',
 			message: '',
-			actionText: 'Close',
+			actionText: 'Cancel screening request',
 			cancelText: 'Previous',
 		};
 
@@ -376,6 +369,10 @@ export class NewScreeningModalComponent implements OnInit {
 				.subscribe((response: boolean) => {
 					if (!response) {
 						this.promptVulnerableSector(body);
+					} else {
+						this.dialogRef.close({
+							success: false,
+						});
 					}
 				});
 		} else {
@@ -387,6 +384,10 @@ export class NewScreeningModalComponent implements OnInit {
 				.subscribe((response: boolean) => {
 					if (!response) {
 						this.promptVulnerableSector(body);
+					} else {
+						this.dialogRef.close({
+							success: false,
+						});
 					}
 				});
 		}

@@ -6,6 +6,12 @@ export interface OrgSelectionDialogData {
 	userInfos: Array<UserInfo>;
 }
 
+export interface OrgSelectionResponseData {
+	orgId: string | null;
+	orgName: string | null;
+	userId: string | null;
+}
+
 @Component({
 	selector: 'app-org-selection-modal',
 	template: `
@@ -51,13 +57,21 @@ export class OrgSelectionModalComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		this.userInfos = this.dialogData.userInfos;
+		const infos = this.dialogData.userInfos;
+		infos.sort((a: UserInfo, b: UserInfo) => {
+			const a1 = a.orgName?.toUpperCase() ?? '';
+			const b1 = b.orgName?.toUpperCase() ?? '';
+			return a1.localeCompare(b1);
+		});
+		this.userInfos = infos;
 	}
 
 	onSaveOrg() {
+		const userinfo = this.userInfos.find((item) => item.orgId == this.selectedOrg);
 		this.dialogRef.close({
-			orgId: this.selectedOrg,
-			orgName: this.userInfos.find((item) => item.orgId == this.selectedOrg)?.orgName,
+			orgId: userinfo ? userinfo.orgId : null,
+			orgName: userinfo ? userinfo.orgName : null,
+			userId: userinfo ? userinfo.userId : null,
 		});
 	}
 }

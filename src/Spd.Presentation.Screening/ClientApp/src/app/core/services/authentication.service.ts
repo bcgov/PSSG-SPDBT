@@ -7,6 +7,7 @@ import { UserProfileService } from 'src/app/api/services';
 import {
 	OrgSelectionDialogData,
 	OrgSelectionModalComponent,
+	OrgSelectionResponseData,
 } from 'src/app/shared/components/org-selection-modal.component';
 import { AuthConfigService } from './auth-config.service';
 import { UtilService } from './util.service';
@@ -46,7 +47,7 @@ export class AuthenticationService {
 						} else {
 							this.loggedInOrgId = userInfos[0].orgId!;
 							this.loggedInOrgName = userInfos[0].orgName!;
-							this.loggedInUserId = resp.userGuid!;
+							this.loggedInUserId = userInfos[0].userId!;
 							this.notify(true);
 						}
 					},
@@ -81,7 +82,7 @@ export class AuthenticationService {
 			await this.oauthService.loadDiscoveryDocumentAndLogin({ state });
 		}
 
-		this.notify(isLoggedIn);
+		// this.notify(isLoggedIn);
 		return isLoggedIn;
 	}
 
@@ -116,11 +117,11 @@ export class AuthenticationService {
 				data: dialogOptions,
 			})
 			.afterClosed()
-			.subscribe((res) => {
+			.subscribe((res: OrgSelectionResponseData) => {
 				if (res) {
 					this.loggedInOrgId = res.orgId;
 					this.loggedInOrgName = res.orgName;
-					this.loggedInUserId = userGuid;
+					this.loggedInUserId = res.userId;
 					this.notify(true);
 				}
 			});
