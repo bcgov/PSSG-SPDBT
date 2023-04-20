@@ -41,7 +41,6 @@ public class OrgRegistrationScenarios : ScenarioContextBase
         await Host.Scenario(_ =>
         {
             _.Post.Json<OrgRegistrationCreateRequest>(request).ToUrl($"/api/anonymous-org-registrations");
-            //todo: should be success, 
             _.StatusCodeShouldBe(HttpStatusCode.BadRequest);
         });
     }
