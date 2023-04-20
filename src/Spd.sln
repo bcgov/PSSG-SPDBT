@@ -58,7 +58,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\.editorconfig = ..\.editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spd.Utilities.Recaptcha", "Spd.Utilities.Recaptcha\Spd.Utilities.Recaptcha.csproj", "{0427917A-E353-474B-9AC9-1816277FDED5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Utilities.Recaptcha", "Spd.Utilities.Recaptcha\Spd.Utilities.Recaptcha.csproj", "{0427917A-E353-474B-9AC9-1816277FDED5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spd.Tests.Presentation.Screening", "Spd.Tests.Presentation.Screening\Spd.Tests.Presentation.Screening.csproj", "{4024BBBE-212C-47B4-BEFD-BA956DFEFC77}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -146,6 +148,10 @@ Global
 		{0427917A-E353-474B-9AC9-1816277FDED5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0427917A-E353-474B-9AC9-1816277FDED5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0427917A-E353-474B-9AC9-1816277FDED5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4024BBBE-212C-47B4-BEFD-BA956DFEFC77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4024BBBE-212C-47B4-BEFD-BA956DFEFC77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4024BBBE-212C-47B4-BEFD-BA956DFEFC77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4024BBBE-212C-47B4-BEFD-BA956DFEFC77}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -171,6 +177,7 @@ Global
 		{923E8E8C-E4D6-41E7-A408-174E51BF16A3} = {B5A15349-F339-4FA1-A05D-7EE9866B8B46}
 		{DC7A40EF-3210-4343-ACAB-84C885539377} = {44CEC402-28D1-4A94-B18A-F3147AD4CCCE}
 		{0427917A-E353-474B-9AC9-1816277FDED5} = {744553C0-C41C-4315-9592-92A97938234E}
+		{4024BBBE-212C-47B4-BEFD-BA956DFEFC77} = {44CEC402-28D1-4A94-B18A-F3147AD4CCCE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {07609A1C-A62A-4B0C-85C1-40600CB3DC45}
