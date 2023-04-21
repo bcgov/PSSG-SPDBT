@@ -6,6 +6,9 @@ using Spd.Utilities.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var secretsFile = Environment.GetEnvironmentVariable($"SECRETS_FILE");
+if (!string.IsNullOrEmpty(secretsFile)) builder.Configuration.AddJsonFile(secretsFile, true, true);
+
 builder.Services.Configure<KestrelServerOptions>(options =>
 {
     options.Limits.MaxRequestBodySize = int.MaxValue; // if don't set default value is: 30 MB
