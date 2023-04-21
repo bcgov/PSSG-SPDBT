@@ -34,16 +34,28 @@ export class AuthenticationService {
 	) {}
 
 	public async tryLogin(): Promise<{ state: any; loggedIn: boolean }> {
+		this.isLoginSubject$.next(false);
+		this._isLoginSuccessfulSubject$.next(false);
+
 		await this.oauthService.loadDiscoveryDocumentAndTryLogin().then((isLoggedIn) => {
-			if (isLoggedIn) {
+			const hasValidAccessToken = this.oauthService.hasValidAccessToken();
+			console.debug(
+				'[AuthenticationService.tryLogin] isLoggedIn',
+				isLoggedIn,
+				'hasValidAccessToken',
+				hasValidAccessToken
+			);
+			if (hasValidAccessToken) {
 				this.userService.apiUserGet().subscribe({
 					next: (resp: UserProfileResponse) => {
 						// this.loggedInUserProfile = resp;
 						const userInfosList = resp.userInfos?.filter((info) => info.orgId);
 						const userInfos = userInfosList ? userInfosList : [];
 
-						if (userInfos.length > 1) {
-							this.orgSelection(resp.userGuid!, userInfos);
+						if (userInfos.length == 0) {
+							console.error('User does not have any organizations');
+						} else if (userInfos.length > 1) {
+							this.orgSelection(userInfos);
 						} else {
 							this.loggedInOrgId = userInfos[0].orgId!;
 							this.loggedInOrgName = userInfos[0].orgName!;
@@ -106,7 +118,7 @@ export class AuthenticationService {
 		});
 	}
 
-	private orgSelection(userGuid: string, userInfos: Array<UserInfo>): void {
+	private orgSelection(userInfos: Array<UserInfo>): void {
 		const dialogOptions: OrgSelectionDialogData = {
 			userInfos: userInfos,
 		};
