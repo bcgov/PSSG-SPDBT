@@ -238,7 +238,7 @@ export class OrgRegistrationComponent implements OnInit {
 
 			const stateInfo = JSON.stringify({ ...this.stepOneComponent.getStepData() });
 			this.currentStateInfo = JSON.parse(stateInfo);
-			sessionStorage.setItem(this.STATE_KEY, stateInfo);
+			this.utilService.setOrgRegState(stateInfo);
 
 			// Go to Step 3
 			this.stepper.selectedIndex = 2;
