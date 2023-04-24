@@ -11,7 +11,7 @@ namespace Spd.Resource.Organizations.Org
     //command
     public abstract record OrgCmd;
     public record OrgUpdateCmd(Org Org) : OrgCmd;
-    public record OrgManageResult(Org Org);
+    public record OrgManageResult(OrgResult Org);
 
     //query
     public abstract record OrgQry;
@@ -43,14 +43,14 @@ namespace Spd.Resource.Organizations.Org
         public string? AddressCountry { get; set; }
         public string? AddressPostalCode { get; set; }
         public string? AddressProvince { get; set; }
-        public string? OrganizationName { get; set; }
-        public string? OrganizationLegalName { get; set; }
     }
     public record OrgResult : Org
     {
         public int MaxContacts { get; } = 6;
         public int MaxPrimaryContacts { get; } = 2;
         public string? AccessCode { get; set; }
+        public string? OrganizationName { get; set; }
+        public string? OrganizationLegalName { get; set; }
     }
 
     public enum PayerPreferenceTypeCode

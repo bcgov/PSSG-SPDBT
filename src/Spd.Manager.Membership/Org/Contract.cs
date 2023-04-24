@@ -26,13 +26,13 @@ namespace Spd.Manager.Membership.Org
         public string? AddressCountry { get; set; }
         public string? AddressPostalCode { get; set; }
         public string? AddressProvince { get; set; }
-        public string? OrganizationName { get; set; }
-        public string? OrganizationLegalName { get; set; }
     }
     public record OrgUpdateRequest : OrgInfo;
     public record OrgResponse : OrgInfo
     {
         public string? AccessCode { get; set; }
+        public string? OrganizationName { get; set; }
+        public string? OrganizationLegalName { get; set; }
     }
     public class OrgUpdateRequestValidator : AbstractValidator<OrgUpdateRequest>
     {
@@ -46,14 +46,6 @@ namespace Spd.Manager.Membership.Org
 
             RuleFor(r => r.LicenseesNeedVulnerableSectorScreening)
                     .IsInEnum();
-
-            RuleFor(r => r.OrganizationName)
-                .NotEmpty()
-                .MaximumLength(160);
-
-            RuleFor(r => r.OrganizationLegalName)
-                .NotEmpty()
-                .MaximumLength(160);
 
             RuleFor(r => r.Email)
                 .NotEmpty()
