@@ -111,11 +111,11 @@ import { UtilService } from 'src/app/core/services/util.service';
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="companyName">
+						<ng-container matColumnDef="contractedCompanyName">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Company / Facility Name</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Company / Facility Name:</span>
-								??<!-- {{ application.companyName }} -->
+								{{ application.contractedCompanyName }}
 							</mat-cell>
 						</ng-container>
 
@@ -214,7 +214,7 @@ export class ExpiringScreeningsComponent implements OnInit {
 			'emailAddress',
 			'createdOn',
 			'daysRemaining',
-			'companyName',
+			'contractedCompanyName',
 			'status1',
 			'status2',
 			'status3',

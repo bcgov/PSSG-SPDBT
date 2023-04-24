@@ -28,6 +28,7 @@ namespace Spd.Resource.Applicants
             .ForMember(d => d.spd_phonenumber, opt => opt.MapFrom(s => s.PhoneNumber))
             .ForMember(d => d.spd_bcdriverslicense, opt => opt.MapFrom(s => s.DriversLicense))
             .ForMember(d => d.spd_birthplace, opt => opt.MapFrom(s => s.BirthPlace))
+            .ForMember(d => d.spd_contractedcompanyname, opt => opt.MapFrom(s => s.ContractedCompanyName))
             .ForMember(d => d.spd_applicantsposition, opt => opt.MapFrom(s => s.JobTitle))
             .ForMember(d => d.spd_addressline1, opt => opt.MapFrom(s => s.AddressLine1))
             .ForMember(d => d.spd_addressline2, opt => opt.MapFrom(s => s.AddressLine2))
@@ -76,6 +77,7 @@ namespace Spd.Resource.Applicants
             .ForMember(d => d.MiddleName2, opt => opt.MapFrom(s => s.spd_middlename2))
             .ForMember(d => d.Surname, opt => opt.MapFrom(s => s.spd_lastname))
             .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.spd_emailaddress1))
+            .ForMember(d => d.ContractedCompanyName, opt => opt.MapFrom(s => s.spd_contractedcompanyname))
             .ForMember(d => d.CreatedOn, opt => opt.MapFrom(s => s.createdon))
             .ForMember(d => d.HaveVerifiedIdentity, opt => opt.MapFrom(s => s.spd_identityconfirmed));
         }

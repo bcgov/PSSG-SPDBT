@@ -10,8 +10,6 @@ namespace Spd.Resource.Organizations.Org
         {
             _ = CreateMap<Org, account>()
             .ForMember(d => d.accountid, opt => opt.MapFrom(s => s.Id))
-            .ForMember(d => d.name, opt => opt.MapFrom(s => s.OrganizationName))
-            .ForMember(d => d.spd_organizationlegalname, opt => opt.MapFrom(s => s.OrganizationLegalName))
             .ForMember(d => d.address1_city, opt => opt.MapFrom(s => s.AddressCity))
             .ForMember(d => d.address1_country, opt => opt.MapFrom(s => s.AddressCountry))
             .ForMember(d => d.address1_postalcode, opt => opt.MapFrom(s => s.AddressPostalCode))
@@ -30,8 +28,11 @@ namespace Spd.Resource.Organizations.Org
 
             _ = CreateMap<account, OrgResult>()
             .IncludeBase<account, Org>()
+            .ForMember(d => d.OrganizationName, opt => opt.MapFrom(s => s.name))
+            .ForMember(d => d.OrganizationLegalName, opt => opt.MapFrom(s => s.spd_organizationlegalname))
             .ForMember(d => d.MaxContacts, opt => opt.MapFrom(s => s.spd_maximumnumberofcontacts))
-            .ForMember(d => d.MaxPrimaryContacts, opt => opt.MapFrom(s => s.spd_noofprimaryauthorizedcontacts));
+            .ForMember(d => d.MaxPrimaryContacts, opt => opt.MapFrom(s => s.spd_noofprimaryauthorizedcontacts))
+            .ForMember(d => d.AccessCode, opt => opt.MapFrom(s => s.spd_accesscode));
         }
 
         private static string? GetPayerPreferenceType(int? code)

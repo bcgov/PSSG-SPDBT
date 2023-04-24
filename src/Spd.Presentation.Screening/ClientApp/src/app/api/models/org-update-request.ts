@@ -13,8 +13,6 @@ export interface OrgUpdateRequest {
   email?: null | string;
   id?: string;
   licenseesNeedVulnerableSectorScreening?: BooleanTypeCode;
-  organizationLegalName?: null | string;
-  organizationName?: null | string;
   payerPreference?: PayerPreferenceTypeCode;
   phoneNumber?: null | string;
 }

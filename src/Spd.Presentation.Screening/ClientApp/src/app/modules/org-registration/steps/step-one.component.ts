@@ -1,7 +1,7 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { EmployeeInteractionTypeCode, RegistrationTypeCode, VolunteerOrganizationTypeCode } from 'src/app/api/models';
+import { EmployeeInteractionTypeCode, RegistrationTypeCode } from 'src/app/api/models';
 import { CompensationQuestionComponent } from '../step-components/compensation-question.component';
 import { OrganizationOptionsComponent } from '../step-components/organization-options.component';
 import {
@@ -125,7 +125,7 @@ export class StepOneComponent {
 	readonly STEP_COMPENSATION_OPTION = 2;
 	readonly STEP_VULNERABLE_SECTOR_OPTION = 3;
 
-	showStepCompensationQuestion = false;
+	showStepCompensationQuestion = true;
 	showStepOrganizationProblem = false;
 	showStepEligibilityProblem = false;
 
@@ -202,6 +202,29 @@ export class StepOneComponent {
 		this.scrollIntoView.emit(true);
 	}
 
+	navigateToLastStep(currentStateInfo: any): void {
+		// setup components with data in session
+		this.registrationPathSelectionComponent.registrationTypeCode = currentStateInfo.registrationTypeCode;
+		this.registrationPathSelectionData.registrationTypeCode = currentStateInfo.registrationTypeCode;
+		this.organizationOptionsComponent.registrationTypeCode = currentStateInfo.registrationTypeCode;
+
+		if (currentStateInfo.employeeOrganizationTypeCode) {
+			this.organizationOptionsComponent.employeeOrganizationTypeCode = currentStateInfo.employeeOrganizationTypeCode;
+		}
+		if (currentStateInfo.volunteerOrganizationTypeCode) {
+			this.organizationOptionsComponent.volunteerOrganizationTypeCode = currentStateInfo.volunteerOrganizationTypeCode;
+		}
+
+		this.setShowStepCompensationQuestionFlag();
+		if (this.compensationQuestionComponent) {
+			this.compensationQuestionComponent.employeeMonetaryCompensationFlag =
+				currentStateInfo.employeeMonetaryCompensationFlag ? currentStateInfo.employeeMonetaryCompensationFlag : null;
+		}
+		this.vulnerableSectorQuestionComponent.employeeInteractionFlag = currentStateInfo.employeeInteractionFlag;
+
+		this.childstepper.selectedIndex = this.showStepCompensationQuestion ? 3 : 2;
+	}
+
 	private dirtyForm(step: number): boolean {
 		let isValid: boolean;
 		switch (step) {
@@ -215,19 +238,10 @@ export class StepOneComponent {
 
 				isValid = this.organizationOptionsComponent.isFormValid();
 				if (isValid) {
-					const organizationOptionsData = this.organizationOptionsComponent.getDataToSave();
-					if (this.registrationPathSelectionData.registrationTypeCode == RegistrationTypeCode.Employee) {
-						this.showStepCompensationQuestion = false;
-					} else {
-						this.showStepCompensationQuestion =
-							organizationOptionsData.volunteerOrganizationTypeCode == VolunteerOrganizationTypeCode.ProvFunded
-								? false
-								: true;
-					}
+					this.setShowStepCompensationQuestionFlag();
 				}
 				return isValid;
 			case this.STEP_COMPENSATION_OPTION:
-				this.compensationQuestionComponent.form.markAllAsTouched();
 				return this.compensationQuestionComponent.isFormValid();
 			case this.STEP_VULNERABLE_SECTOR_OPTION:
 				isValid = this.vulnerableSectorQuestionComponent.isFormValid();
@@ -242,5 +256,10 @@ export class StepOneComponent {
 				console.error('Unknown Form', step);
 		}
 		return false;
+	}
+
+	setShowStepCompensationQuestionFlag(): void {
+		this.showStepCompensationQuestion =
+			this.registrationPathSelectionData.registrationTypeCode == RegistrationTypeCode.Employee ? false : true;
 	}
 }

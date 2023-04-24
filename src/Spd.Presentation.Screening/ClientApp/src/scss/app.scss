@@ -231,7 +231,7 @@ ngx-dropzone-remove-badge {
 }
 
 .active-selection-whole {
-  border: 2px solid #003366;
+  border: 2px solid var(--color-primary);
   color: var(--color-white) !important;
   background-color:#286090 !important; 
 
