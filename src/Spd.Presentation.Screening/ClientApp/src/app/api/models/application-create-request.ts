@@ -2,6 +2,7 @@
 /* eslint-disable */
 import { AliasCreateRequest } from './alias-create-request';
 import { ApplicationOriginTypeCode } from './application-origin-type-code';
+import { ScreeningTypeCode } from './screening-type-code';
 export interface ApplicationCreateRequest {
   addressLine1?: null | string;
   addressLine2?: null | string;
@@ -9,6 +10,7 @@ export interface ApplicationCreateRequest {
   aliases?: null | Array<AliasCreateRequest>;
   birthPlace?: null | string;
   city?: null | string;
+  contractedCompanyName?: null | string;
   country?: null | string;
   dateOfBirth?: null | string;
   driversLicense?: null | string;
@@ -24,5 +26,6 @@ export interface ApplicationCreateRequest {
   phoneNumber?: null | string;
   postalCode?: null | string;
   province?: null | string;
+  screeningTypeCode?: ScreeningTypeCode;
   surname?: null | string;
 }

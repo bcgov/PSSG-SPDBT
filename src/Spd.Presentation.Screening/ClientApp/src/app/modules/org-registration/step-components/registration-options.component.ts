@@ -9,53 +9,79 @@ import { Component, EventEmitter, Output } from '@angular/core';
 				<div class="offset-xl-2 col-xl-4 col-lg-6 col-md-12 col-sm-12 mb-3">
 					<div class="step-container__box dark">
 						<div matBadge="1" class="badge p-2">Preferred Method</div>
-						<div class="step-container__box__title pt-3 pb-0">
-							<div class="mx-2">Register with Business BCeID</div>
-							<img class="step-container__box__title__image mt-2" src="/assets/BCeID_Card.svg" />
+						<div class="step-container__box__title pt-3 pb-4">
+							<div class="mx-2">Register <span class="fw-bold">with</span> Business BCeID</div>
 						</div>
 						<div class="step-container__box__content pt-4 pe-4" style="padding-left: 4em!important;">
 							<table class="ml-5 mb-5" style="text-align: left;">
-								<tr>
+								<tr class="mb-2">
 									<td class="pr-2 pb-2">
 										<img class="step-container__box__title__checkbox" src="/assets/checkbox.svg" />
 									</td>
-									<td>Full access to the portal</td>
+									<td>Get full access to the portal</td>
 								</tr>
 								<tr>
 									<td class="pr-2 pb-2">
 										<img class="step-container__box__title__checkbox" src="/assets/checkbox.svg" />
 									</td>
-									<td>Record keeping of all screen checks</td>
+									<td>Send out new screening requests</td>
 								</tr>
 								<tr>
 									<td class="pr-2 pb-2">
 										<img class="step-container__box__title__checkbox" src="/assets/checkbox.svg" />
 									</td>
-									<td>Grant access for other employees</td>
+									<td>See status of record checks</td>
+								</tr>
+								<tr>
+									<td class="pr-2 pb-2">
+										<img class="step-container__box__title__checkbox" src="/assets/checkbox.svg" />
+									</td>
+									<td>Grant access to other employees</td>
+								</tr>
+								<tr>
+									<td class="pr-2 pb-2">
+										<img class="step-container__box__title__checkbox" src="/assets/checkbox.svg" />
+									</td>
+									<td>Manage expiring screenings</td>
 								</tr>
 							</table>
 						</div>
 						<div class="step-container__box__footer p-4">
-							<button mat-raised-button (click)="onRegisterWithBCeid()">Register with BCeID</button>
+							<button mat-raised-button class="large" (click)="onRegisterWithBCeid()">
+								<span style="vertical-align: text-bottom;">
+									Register with
+									<span
+										style="font-family:'TimesNewRomanPSMT', 'Times New Roman', sans-serif;font-style:normal;font-size:27px;color:#003366;"
+										>BC</span
+									><span
+										style="font-family:'TimesNewRomanPS-ItalicMT', 'Times New Roman Italic', 'Times New Roman', sans-serif;font-style:italic;font-size:27px;color:#FDB90F;"
+										>e</span
+									><span
+										style="font-family:'TimesNewRomanPSMT', 'Times New Roman', sans-serif;font-style:normal;font-size:27px;color:#003366;"
+										>ID</span
+									>
+								</span>
+							</button>
 						</div>
 					</div>
 				</div>
 				<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12 mb-3">
 					<div class="step-container__box">
 						<div style="padding-top: 4px">&nbsp;</div>
-						<div class="step-container__box__title pt-3 pb-0">
-							<div class="mx-2">Register with BC Services Card</div>
-							<img class="step-container__box__title__image mt-2" src="/assets/BCSC_Card.svg" />
+						<div class="step-container__box__title pt-3 pb-4">
+							<div class="mx-2">Register <span class="fw-bold">without</span> Business BCeID</div>
 						</div>
 						<div class="step-container__box__content p-4">
-							You can still register your organization, but you will have limited access to the organization portal upon
-							approval. We recommend registering with your Business BCeID for easier access.
+							<p>If you don't have a Business BCeID you can still register without one.</p>
+							<p>
+								<strong>Important:</strong> By selecting this option, you will not have access to features available to
+								registered users.
+							</p>
 						</div>
-						<div class="step-container__box__footer p-4">
-							<button mat-raised-button color="primary" (click)="onRegisterWithBCSC()">Register with BCSC</button>
-							<div class="mt-2">
-								<a (click)="onClickNext()" style="font-size: small;">Register without authenticating for now</a>
-							</div>
+						<div class="step-container__box__footer p-4" style="padding-top: 4.5rem!important;">
+							<button mat-raised-button color="primary" class="large" (click)="onClickNext()">
+								Continue without Business BCeID
+							</button>
 						</div>
 					</div>
 				</div>
@@ -79,7 +105,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 				.dark {
 					border: 2px solid #4d7094;
 					color: var(--color-white) !important;
-					background-color: #003366 !important;
+					background-color: var(--color-primary) !important;
 				}
 
 				&__box {
@@ -90,6 +116,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 
 						&__checkbox {
 							max-width: 1.5em;
+							margin-right: 0.5em;
 						}
 					}
 				}
@@ -108,6 +135,4 @@ export class RegistrationOptionsComponent {
 	onRegisterWithBCeid(): void {
 		this.registerWithBCeid.emit(true);
 	}
-
-	onRegisterWithBCSC(): void {}
 }
