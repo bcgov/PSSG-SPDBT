@@ -37,7 +37,7 @@ namespace Spd.Manager.Membership.OrgRegistration
                 }
             }
 
-            if(response == null)
+            if (response == null)
                 response = new OrgRegistrationCreateResponse();
 
             var orgRegistration = _mapper.Map<Spd.Resource.Organizations.Registration.OrgRegistration>(request.CreateOrgRegistrationRequest);
@@ -61,6 +61,16 @@ namespace Spd.Manager.Membership.OrgRegistration
             OrgRegistrationCreateResponse resp = new OrgRegistrationCreateResponse();
 
             //duplicated in organization
+            if (_currentUser.IsAuthenticated())
+            {
+                var org = await _orgRepository.QueryOrgAsync(new OrgByOrgGuidQry(_currentUser.GetBizGuid()), cancellationToken);
+                if(org != null)
+                {
+                    resp.HasPotentialDuplicate = true;
+                    resp.DuplicateFoundIn = OrgProcess.ExistingOrganization;
+                    return resp;
+                }
+            }
             var searchOrgQry = _mapper.Map<SearchOrgQry>(request);
             bool hasDuplicateInOrg = await _orgRepository.CheckDuplicateAsync(searchOrgQry, cancellationToken);
             if (hasDuplicateInOrg)
@@ -71,6 +81,16 @@ namespace Spd.Manager.Membership.OrgRegistration
             }
 
             //duplicated in org registration
+            if (_currentUser.IsAuthenticated())
+            {
+                var orgReg = await _orgRegRepository.Query(new OrgRegistrationQuery(null, _currentUser.GetBizGuid()), cancellationToken);
+                if (orgReg != null)
+                {
+                    resp.HasPotentialDuplicate = true;
+                    resp.DuplicateFoundIn = OrgProcess.Registration;
+                    return resp;
+                }
+            }
             var searchQry = _mapper.Map<SearchRegistrationQry>(request);
             bool hasDuplicateInOrgReg = await _orgRegRepository.CheckDuplicateAsync(searchQry, cancellationToken);
             if (hasDuplicateInOrgReg)
