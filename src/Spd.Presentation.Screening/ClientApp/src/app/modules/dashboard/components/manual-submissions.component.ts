@@ -483,6 +483,8 @@ export class ManualSubmissionsComponent implements OnInit {
 			const body: ApplicationCreateRequest = { ...this.form.value };
 			body.originTypeCode = ApplicationOriginTypeCode.Portal;
 			body.haveVerifiedIdentity = body.haveVerifiedIdentity == true ? true : false;
+			body.contractedCompanyName =
+				body.screeningTypeCode == ScreeningTypeCode.Contractor ? body.contractedCompanyName : '';
 
 			// Check for potential duplicate
 			this.applicationService

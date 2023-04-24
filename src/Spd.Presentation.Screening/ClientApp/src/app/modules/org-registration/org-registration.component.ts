@@ -171,12 +171,13 @@ export class OrgRegistrationComponent implements OnInit {
 	}
 
 	onPreviousStepperStep(stepper: MatStepper): void {
-		// const stepIndex = this.stepper.selectedIndex;
-		// if (stepIndex == 2 && this.authenticationService.isLoggedIn()) {
-		// 	// Go to Step 1
-		// 	this.stepper.selectedIndex = 0;
-		// 	return;
-		// }
+		const stepIndex = this.stepper.selectedIndex;
+		if (stepIndex == 2 && this.authenticationService.isLoggedIn()) {
+			// Go to Step 1
+			this.stepper.selectedIndex = 0;
+			this.stepOneComponent.navigateToLastStep(this.currentStateInfo);
+			return;
+		}
 
 		stepper.previous();
 	}
@@ -247,6 +248,10 @@ export class OrgRegistrationComponent implements OnInit {
 			if (stepLogin) {
 				stepLogin.completed = true;
 			}
+
+			const stateInfo = JSON.stringify({ ...this.stepOneComponent.getStepData() });
+			this.currentStateInfo = JSON.parse(stateInfo);
+			sessionStorage.setItem(this.STATE_KEY, stateInfo);
 
 			// Go to Step 3
 			this.stepper.selectedIndex = 2;

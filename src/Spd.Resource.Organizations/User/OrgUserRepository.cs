@@ -136,10 +136,11 @@ namespace Spd.Resource.Organizations.User
             }
             else
             {
-                // Delete user and invitation
-                _dynaContext.DeleteObject(user);
                 var invition = GetPortalInvitationByUserId(userId);
                 _dynaContext.DeleteObject(invition);
+
+                // Delete user and invitation
+                _dynaContext.DeleteObject(user);
             }
 
             await _dynaContext.SaveChangesAsync(cancellationToken);
