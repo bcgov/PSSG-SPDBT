@@ -11,7 +11,6 @@ export { ApplicationResponse } from './models/application-response';
 export { BooleanTypeCode } from './models/boolean-type-code';
 export { CheckApplicationDuplicateResponse } from './models/check-application-duplicate-response';
 export { CheckApplicationInviteDuplicateResponse } from './models/check-application-invite-duplicate-response';
-export { CheckDuplicateResponse } from './models/check-duplicate-response';
 export { ConfigurationResponse } from './models/configuration-response';
 export { ContactAuthorizationTypeCode } from './models/contact-authorization-type-code';
 export { EmployeeInteractionTypeCode } from './models/employee-interaction-type-code';
@@ -20,6 +19,7 @@ export { FundsFromBcGovtExceedsThresholdCode } from './models/funds-from-bc-govt
 export { OidcConfiguration } from './models/oidc-configuration';
 export { OrgProcess } from './models/org-process';
 export { OrgRegistrationCreateRequest } from './models/org-registration-create-request';
+export { OrgRegistrationCreateResponse } from './models/org-registration-create-response';
 export { OrgResponse } from './models/org-response';
 export { OrgSettings } from './models/org-settings';
 export { OrgUpdateRequest } from './models/org-update-request';

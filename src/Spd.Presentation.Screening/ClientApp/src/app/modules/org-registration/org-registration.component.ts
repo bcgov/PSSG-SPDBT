@@ -7,11 +7,12 @@ import { distinctUntilChanged } from 'rxjs';
 import {
 	AnonymousOrgRegistrationCreateRequest,
 	BooleanTypeCode,
-	CheckDuplicateResponse,
+	OrgRegistrationCreateResponse,
 	RegistrationTypeCode,
 } from 'src/app/api/models';
 import { OrgRegistrationService } from 'src/app/api/services';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { UtilService } from 'src/app/core/services/util.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { OrgRegistrationRoutes } from './org-registration-routing.module';
 import { StepFourComponent } from './steps/step-four.component';
@@ -81,7 +82,6 @@ export interface RegistrationFormStepComponent {
 	styles: [],
 })
 export class OrgRegistrationComponent implements OnInit {
-	readonly STATE_KEY = 'state';
 	registrationTypeCode: RegistrationTypeCode | null = null;
 	sendToEmailAddress = '';
 	orientation: StepperOrientation = 'vertical';
@@ -105,6 +105,7 @@ export class OrgRegistrationComponent implements OnInit {
 		private breakpointObserver: BreakpointObserver,
 		private authenticationService: AuthenticationService,
 		private orgRegistrationService: OrgRegistrationService,
+		private utilService: UtilService,
 		private dialog: MatDialog
 	) {}
 
@@ -129,12 +130,12 @@ export class OrgRegistrationComponent implements OnInit {
 		if (authInfo.loggedIn) {
 			if (authInfo.state) {
 				const decodedData = decodeURIComponent(authInfo.state);
-				sessionStorage.setItem(this.STATE_KEY, decodedData);
+				this.utilService.setOrgRegState(decodedData);
 
 				// navigate to step 3
 				this.postLoginNavigate(decodedData);
 			} else {
-				const stateInfo = sessionStorage.getItem(this.STATE_KEY);
+				const stateInfo = this.utilService.getOrgRegState();
 				if (stateInfo) {
 					this.postLoginNavigate(stateInfo);
 				}
@@ -195,38 +196,24 @@ export class OrgRegistrationComponent implements OnInit {
 		}
 
 		const body: AnonymousOrgRegistrationCreateRequest = dataToSave;
+		body.requireDuplicateCheck = true;
 		console.debug('[onSaveStepperStep] dataToSave', body);
 
-		// Check for potential duplicate
-		this.orgRegistrationService
-			.apiOrgRegistrationsDetectDuplicatePost({ body })
-			.pipe()
-			.subscribe((dupres: CheckDuplicateResponse) => {
-				if (dupres.hasPotentialDuplicate) {
-					const data: DialogOptions = {
-						icon: 'warning',
-						title: 'Potential duplicate detected',
-						message:
-							'A potential duplicate has been found. Are you sure this is a new organization registration request?',
-						actionText: 'Yes, create registration',
-						cancelText: 'Cancel',
-					};
-
-					this.dialog
-						.open(DialogComponent, { data })
-						.afterClosed()
-						.subscribe((response: boolean) => {
-							// Save potential duplicate
-							body.hasPotentialDuplicate = BooleanTypeCode.Yes;
-							if (response) {
-								this.saveRegistration(body);
-							}
-						});
-				} else {
-					// Save registration
-					this.saveRegistration(body);
-				}
-			});
+		if (this.authenticationService.isLoggedIn()) {
+			this.orgRegistrationService
+				.apiOrgRegistrationsPost({ body })
+				.pipe()
+				.subscribe((dupres: OrgRegistrationCreateResponse) => {
+					this.displayDuplicateCheck(body, dupres);
+				});
+		} else {
+			this.orgRegistrationService
+				.apiAnonymousOrgRegistrationsPost({ body })
+				.pipe()
+				.subscribe((dupres: OrgRegistrationCreateResponse) => {
+					this.displayDuplicateCheck(body, dupres);
+				});
+		}
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
@@ -272,13 +259,43 @@ export class OrgRegistrationComponent implements OnInit {
 		this.onScrollIntoView();
 	}
 
-	private saveRegistration(body: AnonymousOrgRegistrationCreateRequest) {
+	private displayDuplicateCheck(
+		body: AnonymousOrgRegistrationCreateRequest,
+		dupres: OrgRegistrationCreateResponse
+	): void {
+		if (dupres.hasPotentialDuplicate) {
+			const data: DialogOptions = {
+				icon: 'warning',
+				title: 'Potential duplicate detected',
+				message: 'A potential duplicate has been found. Are you sure this is a new organization registration request?',
+				actionText: 'Yes, create registration',
+				cancelText: 'Cancel',
+			};
+
+			this.dialog
+				.open(DialogComponent, { data })
+				.afterClosed()
+				.subscribe((response: boolean) => {
+					if (response) {
+						this.saveRegistration(body, BooleanTypeCode.Yes);
+					}
+				});
+		} else {
+			// Save registration
+			this.saveRegistration(body, BooleanTypeCode.No);
+		}
+	}
+
+	private saveRegistration(body: AnonymousOrgRegistrationCreateRequest, hasPotentialDuplicate: BooleanTypeCode) {
+		body.hasPotentialDuplicate = hasPotentialDuplicate;
+		body.requireDuplicateCheck = false;
+
 		if (this.authenticationService.isLoggedIn()) {
 			this.orgRegistrationService
 				.apiOrgRegistrationsPost({ body })
 				.pipe()
 				.subscribe((_res: any) => {
-					sessionStorage.removeItem(this.STATE_KEY);
+					this.utilService.clearOrgRegState();
 					this.stepFourComponent.childStepNext();
 				});
 		} else {
@@ -286,7 +303,7 @@ export class OrgRegistrationComponent implements OnInit {
 				.apiAnonymousOrgRegistrationsPost({ body })
 				.pipe()
 				.subscribe((_res: any) => {
-					sessionStorage.removeItem(this.STATE_KEY);
+					this.utilService.clearOrgRegState();
 					this.stepFourComponent.childStepNext();
 				});
 		}
