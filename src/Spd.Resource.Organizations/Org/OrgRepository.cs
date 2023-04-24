@@ -44,7 +44,7 @@ namespace Spd.Resource.Organizations.Org
             _dynaContext.UpdateObject(org);
             await _dynaContext.SaveChangesAsync(ct);
 
-            return new OrgManageResult(_mapper.Map<Org>(org));
+            return new OrgManageResult(_mapper.Map<OrgResult>(org));
         }
 
         public async Task<bool> CheckDuplicateAsync(SearchOrgQry searchQry, CancellationToken cancellationToken)

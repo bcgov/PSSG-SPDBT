@@ -32,6 +32,7 @@ export { PayerPreferenceTypeCode } from './models/payer-preference-type-code';
 export { PortalUserIdentityTypeCode } from './models/portal-user-identity-type-code';
 export { RecaptchaConfiguration } from './models/recaptcha-configuration';
 export { RegistrationTypeCode } from './models/registration-type-code';
+export { ScreeningTypeCode } from './models/screening-type-code';
 export { ScreeningsCountTypeCode } from './models/screenings-count-type-code';
 export { Unit } from './models/unit';
 export { UserInfo } from './models/user-info';

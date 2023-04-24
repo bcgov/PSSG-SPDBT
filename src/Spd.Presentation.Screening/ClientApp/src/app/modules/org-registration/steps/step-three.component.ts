@@ -17,7 +17,10 @@ import { ScreeningsQuestionComponent } from '../step-components/screenings-quest
 				<app-contact-information></app-contact-information>
 
 				<div class="row mt-4">
-					<div class="offset-lg-4 col-lg-4 offset-md-4 col-md-4 col-sm-12">
+					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
+					</div>
+					<div class="col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-raised-button
 							color="primary"

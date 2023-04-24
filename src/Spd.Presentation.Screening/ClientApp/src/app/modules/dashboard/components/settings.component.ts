@@ -35,6 +35,12 @@ import { FormControlValidators } from 'src/app/core/validators/form-control.vali
 							<div class="fw-bold">{{ organizationLegalName.value }}</div>
 						</div>
 					</div>
+					<div class="col-xl-4 col-lg-12">
+						<div class="ms-3 mb-2">
+							<div class="text-minor-heading fw-semibold">Access Code</div>
+							<div class="fw-bold">{{ accessCode.value }}</div>
+						</div>
+					</div>
 				</div>
 
 				<div class="row">
@@ -216,6 +222,7 @@ export class SettingsComponent implements OnInit {
 	form: FormGroup = this.formBuilder.group({
 		organizationName: new FormControl(''),
 		organizationLegalName: new FormControl(''),
+		accessCode: new FormControl(''),
 		email: new FormControl('', [Validators.required, FormControlValidators.email]),
 		phoneNumber: new FormControl('', [Validators.required]),
 		addressLine1: new FormControl('', [Validators.required]),
@@ -301,5 +308,9 @@ export class SettingsComponent implements OnInit {
 
 	get organizationLegalName(): FormControl {
 		return this.form.get('organizationLegalName') as FormControl;
+	}
+
+	get accessCode(): FormControl {
+		return this.form.get('accessCode') as FormControl;
 	}
 }
