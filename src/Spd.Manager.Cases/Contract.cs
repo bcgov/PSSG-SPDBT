@@ -41,7 +41,7 @@ namespace Spd.Manager.Cases
         public bool CheckDuplicate { get; set; }
         public bool IsSuccess { get; set; }
         public string? ErrorReason { get; set; }
-        IEnumerable<ApplicationInviteDuplicateResponse> ApplicationInviteDuplicateResponses { get; set; }
+        public IEnumerable<ApplicationInviteDuplicateResponse> DuplicateResponses { get; set; } = Array.Empty<ApplicationInviteDuplicateResponse>();
     }
     public record ApplicationInviteDuplicateResponse : ApplicationInvite
     {
