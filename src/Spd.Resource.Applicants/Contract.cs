@@ -24,6 +24,7 @@ namespace Spd.Resource.Applicants
     {
         public Guid OrgId { get; set; }
         public Guid CreatedByUserId { get; set; }
+        public bool CheckDuplicate { get; set; }
         public IEnumerable<ApplicationInviteCreateReq> ApplicationInviteCreateReqs { get; set; }
     }
 

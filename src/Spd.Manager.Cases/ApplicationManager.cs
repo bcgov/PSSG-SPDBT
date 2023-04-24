@@ -6,8 +6,7 @@ using Spd.Utilities.Shared.Exceptions;
 namespace Spd.Manager.Cases
 {
     internal class ApplicationManager :
-        IRequestHandler<ApplicationInviteCreateCommand, Unit>,
-        IRequestHandler<CheckApplicationInviteDuplicateQuery, IEnumerable<CheckApplicationInviteDuplicateResponse>>,
+        IRequestHandler<ApplicationInviteCreateCommand, ApplicationInvitesCreateResponse>,
         IRequestHandler<ApplicationCreateCommand, Unit>,
         IRequestHandler<CheckApplicationDuplicateQuery, CheckApplicationDuplicateResponse>,
         IRequestHandler<ApplicationListQuery, ApplicationListResponse>,
@@ -22,15 +21,20 @@ namespace Spd.Manager.Cases
             _mapper = mapper;
         }
 
-        public async Task<Unit> Handle(ApplicationInviteCreateCommand request, CancellationToken cancellationToken)
+        public async Task<ApplicationInvitesCreateResponse> Handle(ApplicationInviteCreateCommand createCmd, CancellationToken cancellationToken)
         {
-            var cmd = _mapper.Map<ApplicationInviteCreateCmd>(request);
+            if(createCmd.ApplicationInvitesCreateRequest.CheckDuplicate)
+            {
+                //check duplicates
+            }
+            var cmd = _mapper.Map<ApplicationInviteCreateCmd>(createCmd.ApplicationInvitesCreateRequest);
+            cmd.OrgId= createCmd.OrgId;
             //todo: after logon seq is done, we need to add userId here.
             await _applicationRepository.AddApplicationInvitesAsync(cmd, cancellationToken);
             return default;
         }
 
-        public async Task<IEnumerable<CheckApplicationInviteDuplicateResponse>> Handle(CheckApplicationInviteDuplicateQuery request, CancellationToken cancellationToken)
+        private async Task<IEnumerable<ApplicationInviteDuplicateResponse>> Handle(ApplicationInviteDuplicateQuery request, CancellationToken cancellationToken)
         {
             List<CheckApplicationInviteDuplicateResponse> resp = new List<CheckApplicationInviteDuplicateResponse>();
             foreach (var item in request.ApplicationInviteCreateRequests)
