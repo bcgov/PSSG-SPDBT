@@ -31,7 +31,8 @@ namespace Spd.Resource.Organizations.Org
             _ = CreateMap<account, OrgResult>()
             .IncludeBase<account, Org>()
             .ForMember(d => d.MaxContacts, opt => opt.MapFrom(s => s.spd_maximumnumberofcontacts))
-            .ForMember(d => d.MaxPrimaryContacts, opt => opt.MapFrom(s => s.spd_noofprimaryauthorizedcontacts));
+            .ForMember(d => d.MaxPrimaryContacts, opt => opt.MapFrom(s => s.spd_noofprimaryauthorizedcontacts))
+            .ForMember(d => d.AccessCode, opt => opt.MapFrom(s => s.spd_accesscode));
         }
 
         private static string? GetPayerPreferenceType(int? code)

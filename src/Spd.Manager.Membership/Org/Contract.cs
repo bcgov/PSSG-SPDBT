@@ -29,8 +29,11 @@ namespace Spd.Manager.Membership.Org
         public string? OrganizationName { get; set; }
         public string? OrganizationLegalName { get; set; }
     }
-    public record OrgUpdateRequest:OrgInfo;
-    public record OrgResponse : OrgInfo;
+    public record OrgUpdateRequest : OrgInfo;
+    public record OrgResponse : OrgInfo
+    {
+        public string? AccessCode { get; set; }
+    }
     public class OrgUpdateRequestValidator : AbstractValidator<OrgUpdateRequest>
     {
         public OrgUpdateRequestValidator()

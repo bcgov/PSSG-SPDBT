@@ -15,8 +15,8 @@ namespace Spd.Resource.Organizations.Org
 
     //query
     public abstract record OrgQry;
-    public record OrgByOrgGuidQry(Guid OrgGuid): OrgQry;
-    public record OrgByIdQry(Guid OrgId): OrgQry;
+    public record OrgByOrgGuidQry(Guid OrgGuid) : OrgQry;
+    public record OrgByIdQry(Guid OrgId) : OrgQry;
     public record SearchOrgQry : OrgQry
     {
         public string? GenericEmail { get; set; }
@@ -26,7 +26,7 @@ namespace Spd.Resource.Organizations.Org
         public VolunteerOrganizationTypeCode? VolunteerOrganizationTypeCode { get; set; }
         public RegistrationTypeCode RegistrationTypeCode { get; set; }
     }
-    public record OrgQryResult(OrgResult OrgResult) {}
+    public record OrgQryResult(OrgResult OrgResult) { }
 
     //shared content
     public record Org
@@ -50,6 +50,7 @@ namespace Spd.Resource.Organizations.Org
     {
         public int MaxContacts { get; } = 6;
         public int MaxPrimaryContacts { get; } = 2;
+        public string? AccessCode { get; set; }
     }
 
     public enum PayerPreferenceTypeCode

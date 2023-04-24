@@ -171,6 +171,13 @@ export class OrgRegistrationComponent implements OnInit {
 	}
 
 	onPreviousStepperStep(stepper: MatStepper): void {
+		// const stepIndex = this.stepper.selectedIndex;
+		// if (stepIndex == 2 && this.authenticationService.isLoggedIn()) {
+		// 	// Go to Step 1
+		// 	this.stepper.selectedIndex = 0;
+		// 	return;
+		// }
+
 		stepper.previous();
 	}
 
@@ -232,6 +239,20 @@ export class OrgRegistrationComponent implements OnInit {
 	onNextStepperStep(stepper: MatStepper): void {
 		// complete the current step
 		if (this.stepper && this.stepper.selected) this.stepper.selected.completed = true;
+
+		const stepIndex = this.stepper.selectedIndex;
+		if (stepIndex == 0 && this.authenticationService.isLoggedIn()) {
+			// Mark Step 2 (Log In) as complete
+			const stepLogin = this.stepper.steps.get(1);
+			if (stepLogin) {
+				stepLogin.completed = true;
+			}
+
+			// Go to Step 3
+			this.stepper.selectedIndex = 2;
+			return;
+		}
+
 		stepper.next();
 	}
 

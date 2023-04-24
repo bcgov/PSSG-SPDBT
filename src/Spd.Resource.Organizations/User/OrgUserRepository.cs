@@ -126,12 +126,22 @@ namespace Spd.Resource.Organizations.User
 
         private async Task<OrgUserManageResult> DeleteUserAsync(Guid userId, CancellationToken cancellationToken)
         {
-            //TODO need to be able to handle: delete user, cancel invitation and remove expired invitation
             var user = GetUserById(userId);
-            // Inactivate the user
-            user.statecode = DynamicsConstants.StateCode_Inactive;
-            user.statuscode = DynamicsConstants.StatusCode_Inactive;
-            _dynaContext.UpdateObject(user);
+            if (user._spd_identityid_value.HasValue)
+            {
+                // Inactivate the user
+                user.statecode = DynamicsConstants.StateCode_Inactive;
+                user.statuscode = DynamicsConstants.StatusCode_Inactive;
+                _dynaContext.UpdateObject(user);
+            }
+            else
+            {
+                // Delete user and invitation
+                _dynaContext.DeleteObject(user);
+                var invition = GetPortalInvitationByUserId(userId);
+                _dynaContext.DeleteObject(invition);
+            }
+
             await _dynaContext.SaveChangesAsync(cancellationToken);
             return new OrgUserManageResult(null);
         }
@@ -175,6 +185,16 @@ namespace Spd.Resource.Organizations.User
                 throw new InactiveException(HttpStatusCode.BadRequest, $"Organization {organizationId} is inactive.");
             return account;
         }
+
+        private spd_portalinvitation? GetPortalInvitationByUserId(Guid userId)
+        {
+            var spd_portalinvitation = _dynaContext.spd_portalinvitations
+                .Where(a => a._spd_portaluserid_value == userId)
+                .FirstOrDefault();
+
+            return spd_portalinvitation;
+        }
+
         private spd_portaluser GetUserById(Guid userId)
         {
             try

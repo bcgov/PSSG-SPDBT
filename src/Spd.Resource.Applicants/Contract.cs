@@ -71,6 +71,7 @@ namespace Spd.Resource.Applicants
         public DateTimeOffset? DateOfBirth { get; set; }
         public string? BirthPlace { get; set; }
         public string? JobTitle { get; set; }
+        public string? ContractedCompanyName { get; set; }
         public string? AddressLine1 { get; set; }
         public string? AddressLine2 { get; set; }
         public string? City { get; set; }
@@ -101,6 +102,7 @@ namespace Spd.Resource.Applicants
         public string? MiddleName2 { get; set; }
         public string? Surname { get; set; }
         public string? EmailAddress { get; set; }
+        public string? ContractedCompanyName { get; set; }
         public bool? HaveVerifiedIdentity { get; set; }
         public DateTimeOffset? CreatedOn { get; set; }
     }

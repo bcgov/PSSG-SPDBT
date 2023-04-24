@@ -10,6 +10,7 @@ import {
 	BooleanTypeCode,
 	CheckApplicationDuplicateResponse,
 	EmployeeInteractionTypeCode,
+	ScreeningTypeCode,
 } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
@@ -26,6 +27,12 @@ export const EmployeeInteractionTypes = [
 	{ desc: 'Vulnerable Adults', code: EmployeeInteractionTypeCode.Adults },
 	{ desc: 'Children and Vulnerable Adults', code: EmployeeInteractionTypeCode.ChildrenAndAdults },
 ];
+
+export const ScreeningTypeCodes = [
+	{ desc: 'Staff', code: ScreeningTypeCode.Staff },
+	{ desc: 'Contractor/Licensee', code: ScreeningTypeCode.Contractor },
+];
+
 @Component({
 	selector: 'app-manual-submissions',
 	template: `
@@ -127,6 +134,24 @@ export const EmployeeInteractionTypes = [
 							<mat-label>Job Title</mat-label>
 							<input matInput formControlName="jobTitle" [errorStateMatcher]="matcher" maxlength="100" />
 							<mat-error *ngIf="form.get('jobTitle')?.hasError('required')">This is required</mat-error>
+						</mat-form-field>
+					</div>
+					<div class="col-xl-3 col-lg-6 col-md-12">
+						<mat-form-field>
+							<mat-label>Screening Type</mat-label>
+							<mat-select formControlName="screeningTypeCode">
+								<mat-option *ngFor="let scr of screeningTypes" [value]="scr.code">
+									{{ scr.desc }}
+								</mat-option>
+							</mat-select>
+							<mat-error *ngIf="form.get('screeningTypeCode')?.hasError('required')">This is required</mat-error>
+						</mat-form-field>
+					</div>
+					<div class="col-xl-3 col-lg-6 col-md-12" *ngIf="screeningTypeCode.value == screeningTypeCodes.Contractor">
+						<mat-form-field>
+							<mat-label>Company / Facility Name</mat-label>
+							<input matInput formControlName="contractedCompanyName" [errorStateMatcher]="matcher" maxlength="100" />
+							<mat-error *ngIf="form.get('contractedCompanyName')?.hasError('required')">This is required</mat-error>
 						</mat-form-field>
 					</div>
 				</div>
@@ -380,6 +405,7 @@ export class ManualSubmissionsComponent implements OnInit {
 	@ViewChild(AddressAutocompleteComponent) addressAutocompleteComponent!: AddressAutocompleteComponent;
 	matcher = new FormErrorStateMatcher();
 
+	screeningTypes = ScreeningTypeCodes;
 	employeeInteractionTypes = EmployeeInteractionTypes;
 	multiple: boolean = false;
 	expandable: boolean = true;
@@ -388,6 +414,7 @@ export class ManualSubmissionsComponent implements OnInit {
 
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	booleanTypeCodes = BooleanTypeCode;
+	screeningTypeCodes = ScreeningTypeCode;
 	form: FormGroup = this.formBuilder.group(
 		{
 			givenName: new FormControl('', [Validators.required]),
@@ -401,6 +428,8 @@ export class ManualSubmissionsComponent implements OnInit {
 			dateOfBirth: new FormControl(null, [Validators.required]),
 			birthPlace: new FormControl('', [Validators.required]),
 			jobTitle: new FormControl('', [Validators.required]),
+			screeningTypeCode: new FormControl('', [Validators.required]),
+			contractedCompanyName: new FormControl(''),
 			previousNameFlag: new FormControl('', [Validators.required]),
 			addressSelected: new FormControl(false, [Validators.requiredTrue]),
 			addressLine1: new FormControl('', [Validators.required]),
@@ -416,6 +445,10 @@ export class ManualSubmissionsComponent implements OnInit {
 		{
 			validators: [
 				FormGroupValidators.conditionalRequiredValidator('givenName', (form) => !form.get('oneLegalName')?.value),
+				FormGroupValidators.conditionalRequiredValidator(
+					'contractedCompanyName',
+					(form) => form.get('screeningTypeCode')?.value == this.screeningTypeCodes.Contractor
+				),
 			],
 		}
 	);
@@ -588,6 +621,10 @@ export class ManualSubmissionsComponent implements OnInit {
 
 	get previousNameFlag(): FormControl {
 		return this.form.get('previousNameFlag') as FormControl;
+	}
+
+	get screeningTypeCode(): FormControl {
+		return this.form.get('screeningTypeCode') as FormControl;
 	}
 
 	get moreThanOneAlias(): boolean {
