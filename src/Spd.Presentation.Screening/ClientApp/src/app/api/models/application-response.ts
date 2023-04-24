@@ -2,6 +2,7 @@
 /* eslint-disable */
 export interface ApplicationResponse {
   applicationNumber?: null | string;
+  contractedCompanyName?: null | string;
   createdOn?: null | string;
   emailAddress?: null | string;
   givenName?: null | string;

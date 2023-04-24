@@ -232,12 +232,11 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="companyName">
+						<ng-container matColumnDef="contractedCompanyName">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Company / Facility Name</mat-header-cell>
 							<mat-cell *matCellDef="let screening">
 								<span class="mobile-label">Company / Facility Name:</span>
-								??
-								<!-- {{ screening.companyName }} -->
+								{{ screening.contractedCompanyName }}
 							</mat-cell>
 						</ng-container>
 
@@ -353,7 +352,7 @@ export class ScreeningStatusesComponent implements OnInit {
 			'createdOn',
 			'whoPaid',
 			'applicationNumber',
-			'companyName',
+			'contractedCompanyName',
 			'status',
 		];
 		this.loadList();

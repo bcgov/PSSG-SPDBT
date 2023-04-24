@@ -58,6 +58,8 @@ namespace Spd.Manager.Cases
         public DateTimeOffset? DateOfBirth { get; set; }
         public string? BirthPlace { get; set; }
         public string? JobTitle { get; set; }
+        public ScreeningTypeCode? ScreeningTypeCode { get; set; }
+        public string? ContractedCompanyName { get; set; }
         public string? AddressLine1 { get; set; }
         public string? AddressLine2 { get; set; }
         public string? City { get; set; }
@@ -102,6 +104,7 @@ namespace Spd.Manager.Cases
         public string? MiddleName2 { get; set; }
         public string? Surname { get; set; }
         public string? EmailAddress { get; set; }
+        public string? ContractedCompanyName { get; set; }
         public bool? HaveVerifiedIdentity { get; set; }
         public DateTimeOffset? CreatedOn { get; set; }
     }
@@ -137,6 +140,15 @@ namespace Spd.Manager.Cases
 
         [Description("Applicant")]
         Applicant
+    }
+
+    public enum ScreeningTypeCode
+    {
+        [Description("Staff")]
+        Staff,
+
+        [Description("Contractor/Licensee")]
+        Contractor
     }
 
     public class ApplicationInviteCreateRequestValidator : AbstractValidator<ApplicationInviteCreateRequest>
@@ -225,6 +237,13 @@ namespace Spd.Manager.Cases
             RuleFor(r => r.JobTitle)
                     .NotEmpty()
                     .MaximumLength(100);
+
+            RuleFor(r => r.ScreeningTypeCode)
+                    .IsInEnum();
+
+            RuleFor(r => r.ContractedCompanyName)
+                    .NotEmpty()
+                    .When(r => r.ScreeningTypeCode == ScreeningTypeCode.Contractor);
 
             RuleFor(r => r.AddressLine1)
                     .NotEmpty()
