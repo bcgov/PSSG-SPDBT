@@ -24,6 +24,13 @@ namespace Spd.Presentation.Screening.Controllers
             _verificationService = verificationService;
         }
 
+        /// <summary>
+        /// User not login, use this endpoint with googleRecaptcha as security check.
+        /// </summary>
+        /// <param name="anonymOrgRegRequest"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        /// <exception cref="ApiException"></exception>
         [Route("api/anonymous-org-registrations")]
         [HttpPost]
         [AllowAnonymous]
