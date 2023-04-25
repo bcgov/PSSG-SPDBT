@@ -29,7 +29,9 @@ export interface OrgSelectionResponseData {
 		<mat-dialog-actions>
 			<div class="row m-0 w-100">
 				<div class="offset-lg-9 col-lg-3 offset-md-8 col-md-4 col-sm-12 mb-2">
-					<button mat-raised-button color="primary" class="large" (click)="onSaveOrg()">Select</button>
+					<button mat-raised-button color="primary" *ngIf="selectedOrg" class="large" (click)="onSaveOrg()">
+						Select
+					</button>
 				</div>
 			</div>
 		</mat-dialog-actions>
@@ -47,7 +49,7 @@ export interface OrgSelectionResponseData {
 	],
 })
 export class OrgSelectionModalComponent implements OnInit {
-	selectedOrg: any;
+	selectedOrg: any = null;
 	userInfos: Array<UserInfo> = [];
 	title: string = 'Organization Selection';
 

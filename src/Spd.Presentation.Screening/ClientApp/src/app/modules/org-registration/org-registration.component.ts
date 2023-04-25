@@ -322,27 +322,6 @@ export class OrgRegistrationComponent implements OnInit {
 						this.resetRecaptcha.next(); // reset the recaptcha
 					}
 				});
-		} else if (isAnonymous) {
-			const data: OrgRegDuplicateDialogData = {
-				title: 'Registration data check',
-				message: 'Registration data is valid and complete. Continue with creation?',
-				actionText: 'Yes, create registration',
-				cancelText: 'Cancel',
-				displayCaptcha: isAnonymous,
-			};
-
-			this.dialog
-				.open(OrgRegDuplicateModalComponent, { data })
-				.afterClosed()
-				.subscribe((response: OrgRegDuplicateDialogResponse) => {
-					if (response.success) {
-						this.saveRegistration(body, BooleanTypeCode.No);
-					} else {
-						this.resetRecaptcha.next(); // reset the recaptcha
-					}
-				});
-		} else {
-			this.saveRegistration(body, BooleanTypeCode.No);
 		}
 	}
 
