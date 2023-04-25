@@ -1,6 +1,7 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
+import { Subject } from 'rxjs';
 import { AgreementOfTermsComponent, AgreementOfTermsModel } from '../step-components/agreement-of-terms.component';
 
 @Component({
@@ -8,7 +9,7 @@ import { AgreementOfTermsComponent, AgreementOfTermsModel } from '../step-compon
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-agreement-of-terms></app-agreement-of-terms>
+				<app-agreement-of-terms [resetRecaptcha]="resetRecaptcha"></app-agreement-of-terms>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -36,6 +37,7 @@ import { AgreementOfTermsComponent, AgreementOfTermsModel } from '../step-compon
 })
 export class StepFourComponent {
 	@Input() sendToEmailAddress = '';
+	@Input() resetRecaptcha: Subject<void> = new Subject<void>();
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() saveStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();

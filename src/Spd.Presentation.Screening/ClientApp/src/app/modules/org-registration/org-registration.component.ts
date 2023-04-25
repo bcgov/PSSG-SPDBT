@@ -3,16 +3,22 @@ import { StepperOrientation, StepperSelectionEvent } from '@angular/cdk/stepper'
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
-import { distinctUntilChanged } from 'rxjs';
+import { HotToastService } from '@ngneat/hot-toast';
+import { distinctUntilChanged, Subject } from 'rxjs';
 import {
 	AnonymousOrgRegistrationCreateRequest,
 	BooleanTypeCode,
-	CheckDuplicateResponse,
+	OrgRegistrationCreateResponse,
 	RegistrationTypeCode,
 } from 'src/app/api/models';
 import { OrgRegistrationService } from 'src/app/api/services';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
+import { UtilService } from 'src/app/core/services/util.service';
+import {
+	OrgRegDuplicateDialogData,
+	OrgRegDuplicateDialogResponse,
+	OrgRegDuplicateModalComponent,
+} from './org-reg-duplicate-modal.component';
 import { OrgRegistrationRoutes } from './org-registration-routing.module';
 import { StepFourComponent } from './steps/step-four.component';
 import { StepOneComponent } from './steps/step-one.component';
@@ -72,6 +78,7 @@ export interface RegistrationFormStepComponent {
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
 						(saveStepperStep)="onSaveStepperStep()"
 						(scrollIntoView)="onScrollIntoView()"
+						[resetRecaptcha]="resetRecaptcha"
 						[sendToEmailAddress]="sendToEmailAddress"
 					></app-step-four>
 				</mat-step>
@@ -81,8 +88,8 @@ export interface RegistrationFormStepComponent {
 	styles: [],
 })
 export class OrgRegistrationComponent implements OnInit {
-	readonly STATE_KEY = 'state';
 	registrationTypeCode: RegistrationTypeCode | null = null;
+	resetRecaptcha: Subject<void> = new Subject<void>();
 	sendToEmailAddress = '';
 	orientation: StepperOrientation = 'vertical';
 	currentStateInfo: any = {};
@@ -105,6 +112,8 @@ export class OrgRegistrationComponent implements OnInit {
 		private breakpointObserver: BreakpointObserver,
 		private authenticationService: AuthenticationService,
 		private orgRegistrationService: OrgRegistrationService,
+		private hotToast: HotToastService,
+		private utilService: UtilService,
 		private dialog: MatDialog
 	) {}
 
@@ -129,12 +138,12 @@ export class OrgRegistrationComponent implements OnInit {
 		if (authInfo.loggedIn) {
 			if (authInfo.state) {
 				const decodedData = decodeURIComponent(authInfo.state);
-				sessionStorage.setItem(this.STATE_KEY, decodedData);
+				this.utilService.setOrgRegState(decodedData);
 
 				// navigate to step 3
 				this.postLoginNavigate(decodedData);
 			} else {
-				const stateInfo = sessionStorage.getItem(this.STATE_KEY);
+				const stateInfo = this.utilService.getOrgRegState();
 				if (stateInfo) {
 					this.postLoginNavigate(stateInfo);
 				}
@@ -198,43 +207,28 @@ export class OrgRegistrationComponent implements OnInit {
 		}
 
 		if (this.stepFourComponent) {
-			const step4Data = this.stepFourComponent.getStepData();
 			dataToSave = { ...dataToSave, ...this.stepFourComponent.getStepData() };
 		}
 
 		const body: AnonymousOrgRegistrationCreateRequest = dataToSave;
+		body.requireDuplicateCheck = true;
 		console.debug('[onSaveStepperStep] dataToSave', body);
 
-		// Check for potential duplicate
-		this.orgRegistrationService
-			.apiOrgRegistrationsDetectDuplicatePost({ body })
-			.pipe()
-			.subscribe((dupres: CheckDuplicateResponse) => {
-				if (dupres.hasPotentialDuplicate) {
-					const data: DialogOptions = {
-						icon: 'warning',
-						title: 'Potential duplicate detected',
-						message:
-							'A potential duplicate has been found. Are you sure this is a new organization registration request?',
-						actionText: 'Yes, create registration',
-						cancelText: 'Cancel',
-					};
-
-					this.dialog
-						.open(DialogComponent, { data })
-						.afterClosed()
-						.subscribe((response: boolean) => {
-							// Save potential duplicate
-							body.hasPotentialDuplicate = BooleanTypeCode.Yes;
-							if (response) {
-								this.saveRegistration(body);
-							}
-						});
-				} else {
-					// Save registration
-					this.saveRegistration(body);
-				}
-			});
+		if (this.authenticationService.isLoggedIn()) {
+			this.orgRegistrationService
+				.apiOrgRegistrationsPost({ body })
+				.pipe()
+				.subscribe((dupres: OrgRegistrationCreateResponse) => {
+					this.displayDataValidationMessage(body, dupres, false);
+				});
+		} else {
+			this.orgRegistrationService
+				.apiAnonymousOrgRegistrationsPost({ body })
+				.pipe()
+				.subscribe((dupres: OrgRegistrationCreateResponse) => {
+					this.displayDataValidationMessage(body, dupres, true);
+				});
+		}
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
@@ -251,7 +245,7 @@ export class OrgRegistrationComponent implements OnInit {
 
 			const stateInfo = JSON.stringify({ ...this.stepOneComponent.getStepData() });
 			this.currentStateInfo = JSON.parse(stateInfo);
-			sessionStorage.setItem(this.STATE_KEY, stateInfo);
+			this.utilService.setOrgRegState(stateInfo);
 
 			// Go to Step 3
 			this.stepper.selectedIndex = 2;
@@ -298,22 +292,56 @@ export class OrgRegistrationComponent implements OnInit {
 		this.onScrollIntoView();
 	}
 
-	private saveRegistration(body: AnonymousOrgRegistrationCreateRequest) {
+	private displayDataValidationMessage(
+		body: AnonymousOrgRegistrationCreateRequest,
+		dupres: OrgRegistrationCreateResponse,
+		isAnonymous: boolean
+	): void {
+		if (dupres.createSuccess) {
+			this.handleSaveSuccess();
+			return;
+		}
+
+		if (dupres.hasPotentialDuplicate == true) {
+			const data: OrgRegDuplicateDialogData = {
+				title: 'Potential duplicate detected',
+				message: 'A potential duplicate has been found. Are you sure this is a new organization registration request?',
+				actionText: 'Yes, create registration',
+				cancelText: 'Cancel',
+				displayCaptcha: isAnonymous,
+			};
+
+			this.dialog
+				.open(OrgRegDuplicateModalComponent, { data })
+				.afterClosed()
+				.subscribe((response: OrgRegDuplicateDialogResponse) => {
+					if (response.success) {
+						body.recaptcha = isAnonymous ? response.captchaResponse?.resolved : null;
+						this.saveRegistration(body, BooleanTypeCode.Yes);
+					} else if (isAnonymous) {
+						this.resetRecaptcha.next(); // reset the recaptcha
+					}
+				});
+		}
+	}
+
+	private saveRegistration(body: AnonymousOrgRegistrationCreateRequest, hasPotentialDuplicate: BooleanTypeCode) {
+		body.hasPotentialDuplicate = hasPotentialDuplicate;
+		body.requireDuplicateCheck = false;
+
 		if (this.authenticationService.isLoggedIn()) {
 			this.orgRegistrationService
 				.apiOrgRegistrationsPost({ body })
 				.pipe()
 				.subscribe((_res: any) => {
-					sessionStorage.removeItem(this.STATE_KEY);
-					this.stepFourComponent.childStepNext();
+					this.handleSaveSuccess();
 				});
 		} else {
 			this.orgRegistrationService
 				.apiAnonymousOrgRegistrationsPost({ body })
 				.pipe()
 				.subscribe((_res: any) => {
-					sessionStorage.removeItem(this.STATE_KEY);
-					this.stepFourComponent.childStepNext();
+					this.handleSaveSuccess();
 				});
 		}
 	}
@@ -324,5 +352,11 @@ export class OrgRegistrationComponent implements OnInit {
 		} else {
 			this.orientation = 'vertical';
 		}
+	}
+
+	private handleSaveSuccess(): void {
+		this.hotToast.success('The application was successfully submitted');
+		this.utilService.clearOrgRegState();
+		this.stepFourComponent.childStepNext();
 	}
 }

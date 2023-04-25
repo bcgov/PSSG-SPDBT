@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { OrgRegDuplicateModalComponent } from './org-reg-duplicate-modal.component';
 import { OrgRegistrationRoutingModule } from './org-registration-routing.module';
 import { OrgRegistrationComponent } from './org-registration.component';
 import { AgreementOfTermsComponent } from './step-components/agreement-of-terms.component';
@@ -25,6 +26,7 @@ import { StepTwoComponent } from './steps/step-two.component';
 @NgModule({
 	declarations: [
 		OrgRegistrationComponent,
+		OrgRegDuplicateModalComponent,
 		RegistrationPathSelectionComponent,
 		OrganizationOptionsComponent,
 		CompensationQuestionComponent,

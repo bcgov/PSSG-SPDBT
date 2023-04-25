@@ -8,9 +8,8 @@ namespace Spd.Resource.Organizations.Registration
     }
 
     //queries
-    public abstract record OrgRegistrationQuery;
-    public record OrgRegistrationQueryByUserGuid(Guid UserGuid) : OrgRegistrationQuery;
-    public record SearchRegistrationQry() 
+    public record OrgRegistrationQuery(Guid? UserGuid, Guid? OrgGuid);
+    public record SearchRegistrationQry()
     {
         public string? GenericEmail { get; set; }
         public string? MailingPostalCode { get; set; }
