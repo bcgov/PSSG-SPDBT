@@ -3,6 +3,7 @@ import { StepperOrientation, StepperSelectionEvent } from '@angular/cdk/stepper'
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
+import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged, Subject } from 'rxjs';
 import {
 	AnonymousOrgRegistrationCreateRequest,
@@ -111,6 +112,7 @@ export class OrgRegistrationComponent implements OnInit {
 		private breakpointObserver: BreakpointObserver,
 		private authenticationService: AuthenticationService,
 		private orgRegistrationService: OrgRegistrationService,
+		private hotToast: HotToastService,
 		private utilService: UtilService,
 		private dialog: MatDialog
 	) {}
@@ -295,7 +297,12 @@ export class OrgRegistrationComponent implements OnInit {
 		dupres: OrgRegistrationCreateResponse,
 		isAnonymous: boolean
 	): void {
-		if (dupres.hasPotentialDuplicate) {
+		if (dupres.createSuccess) {
+			this.handleSaveSuccess();
+			return;
+		}
+
+		if (dupres.hasPotentialDuplicate == true) {
 			const data: OrgRegDuplicateDialogData = {
 				title: 'Potential duplicate detected',
 				message: 'A potential duplicate has been found. Are you sure this is a new organization registration request?',
@@ -348,16 +355,14 @@ export class OrgRegistrationComponent implements OnInit {
 				.apiOrgRegistrationsPost({ body })
 				.pipe()
 				.subscribe((_res: any) => {
-					this.utilService.clearOrgRegState();
-					this.stepFourComponent.childStepNext();
+					this.handleSaveSuccess();
 				});
 		} else {
 			this.orgRegistrationService
 				.apiAnonymousOrgRegistrationsPost({ body })
 				.pipe()
 				.subscribe((_res: any) => {
-					this.utilService.clearOrgRegState();
-					this.stepFourComponent.childStepNext();
+					this.handleSaveSuccess();
 				});
 		}
 	}
@@ -368,5 +373,11 @@ export class OrgRegistrationComponent implements OnInit {
 		} else {
 			this.orientation = 'vertical';
 		}
+	}
+
+	private handleSaveSuccess(): void {
+		this.hotToast.success('The application was successfully submitted');
+		this.utilService.clearOrgRegState();
+		this.stepFourComponent.childStepNext();
 	}
 }
