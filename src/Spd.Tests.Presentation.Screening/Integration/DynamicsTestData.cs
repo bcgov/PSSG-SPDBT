@@ -13,16 +13,27 @@ namespace Spd.Tests.Presentation.Screening
             _context = factory.Create();
         }
 
-        public async Task CreateOrg(Guid orgId, string orgName)
+        public async Task<account> CreateOrg(string orgName)
         {
-            _context.AddToaccounts(new account
+            var existing=_context.accounts
+                .Where(a => a.spd_organizationlegalname == $"{testPrefix}{orgName}")
+                .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
+                .FirstOrDefault();
+            if (existing != null) return existing;
+            else
             {
-                accountid = orgId,
-                name = $"{testPrefix}{orgName}",
-                spd_organizationlegalname = $"{testPrefix}{orgName}",
-                address1_city = "victoria",
-            });
-            await _context.SaveChangesAsync();
+                Guid orgId= Guid.NewGuid();
+                account newOne = new account
+                {
+                    accountid = orgId,
+                    name = $"{testPrefix}{orgName}",
+                    spd_organizationlegalname = $"{testPrefix}{orgName}",
+                    address1_city = "victoria",
+                };
+                _context.AddToaccounts(newOne);
+                await _context.SaveChangesAsync();
+                return newOne;
+            }          
         }
 
 

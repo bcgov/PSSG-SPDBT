@@ -11,15 +11,13 @@ namespace Spd.Resource.Applicants
     {
         private readonly DynamicsContext _dynaContext;
         private readonly IMapper _mapper;
-        private readonly ILogger<ApplicationRepository> _logger;
         public ApplicationRepository(IDynamicsContextFactory ctx, IMapper mapper, ILogger<ApplicationRepository> logger)
         {
             _dynaContext = ctx.CreateChangeOverwrite();
             _mapper = mapper;
-            _logger = logger;
         }
 
-        public async Task<bool> AddApplicationInvitesAsync(ApplicationInviteCreateCmd createInviteCmd, CancellationToken cancellationToken)
+        public async Task AddApplicationInvitesAsync(ApplicationInviteCreateCmd createInviteCmd, CancellationToken cancellationToken)
         {
             account org = GetOrgById(createInviteCmd.OrgId);
             //spd_portaluser user = GetUserById(createInviteCmd.CreatedByUserId); //todo
@@ -32,7 +30,7 @@ namespace Spd.Resource.Applicants
                 //_dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_PortalUserId), user); //todo
             }
             await _dynaContext.SaveChangesAsync(cancellationToken);
-            return true;
+            return;
         }
 
         public async Task<bool> CheckInviteInvitationDuplicateAsync(SearchInvitationQry searchInvitationQry, CancellationToken cancellationToken)
