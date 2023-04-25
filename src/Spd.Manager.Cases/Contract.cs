@@ -21,7 +21,7 @@ namespace Spd.Manager.Cases
     //application invites
     public record ApplicationInvitesCreateRequest
     {
-        public bool CheckDuplicate { get; set; }
+        public bool RequireDuplicateCheck { get; set; }
         public IEnumerable<ApplicationInviteCreateRequest> ApplicationInviteCreateRequests { get; set; } = Array.Empty<ApplicationInviteCreateRequest>();
     }
     public abstract record ApplicationInvite
@@ -35,10 +35,10 @@ namespace Spd.Manager.Cases
         public string? JobTitle { get; set; }
         public PayeePreferenceTypeCode PayeeType { get; set; }
     }
-    public record ApplicationInvitesCreateResponse(Guid OrgId) 
+    public record ApplicationInvitesCreateResponse(Guid OrgId)
     {
-        public bool CheckDuplicate { get; set; }
-        public bool IsSuccess { get; set; }
+        public bool IsDuplicateCheckRequired { get; set; }
+        public bool CreateSuccess { get; set; }
         public string? ErrorReason { get; set; }
         public IEnumerable<ApplicationInviteDuplicateResponse> DuplicateResponses { get; set; } = Array.Empty<ApplicationInviteDuplicateResponse>();
     }

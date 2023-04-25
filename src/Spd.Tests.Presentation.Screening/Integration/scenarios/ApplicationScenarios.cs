@@ -30,7 +30,7 @@ public class ApplicationScenarios : ScenarioContextBase
     {
         return new ApplicationInvitesCreateRequest
         {
-            CheckDuplicate = true,
+            RequireDuplicateCheck = true,
             ApplicationInviteCreateRequests = new List<ApplicationInviteCreateRequest>
             {
                 new ApplicationInviteCreateRequest

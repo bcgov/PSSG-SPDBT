@@ -24,14 +24,14 @@ namespace Spd.Manager.Cases
         public async Task<ApplicationInvitesCreateResponse> Handle(ApplicationInviteCreateCommand createCmd, CancellationToken cancellationToken)
         {
             ApplicationInvitesCreateResponse resp = new(createCmd.OrgId);
-            if (createCmd.ApplicationInvitesCreateRequest.CheckDuplicate)
+            if (createCmd.ApplicationInvitesCreateRequest.RequireDuplicateCheck)
             {
                 var duplicateResp = await CheckDuplicates(createCmd.ApplicationInvitesCreateRequest, createCmd.OrgId, cancellationToken);
-                resp.CheckDuplicate = createCmd.ApplicationInvitesCreateRequest.CheckDuplicate;
+                resp.IsDuplicateCheckRequired = createCmd.ApplicationInvitesCreateRequest.RequireDuplicateCheck;
                 resp.DuplicateResponses = duplicateResp;
                 if (duplicateResp.Any())
                 {
-                    resp.IsSuccess = false;
+                    resp.CreateSuccess = false;
                     return resp;
                 }
             }
@@ -39,7 +39,7 @@ namespace Spd.Manager.Cases
             cmd.OrgId = createCmd.OrgId;
             //todo: after logon seq is done, we need to add userId here.
             await _applicationRepository.AddApplicationInvitesAsync(cmd, cancellationToken);
-            resp.IsSuccess = true;
+            resp.CreateSuccess = true;
             return resp;
         }
 
