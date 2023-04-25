@@ -3,7 +3,7 @@ import { StepperOrientation, StepperSelectionEvent } from '@angular/cdk/stepper'
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
-import { distinctUntilChanged } from 'rxjs';
+import { distinctUntilChanged, Subject } from 'rxjs';
 import {
 	AnonymousOrgRegistrationCreateRequest,
 	BooleanTypeCode,
@@ -13,7 +13,11 @@ import {
 import { OrgRegistrationService } from 'src/app/api/services';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
-import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
+import {
+	OrgRegDuplicateDialogData,
+	OrgRegDuplicateDialogResponse,
+	OrgRegDuplicateModalComponent,
+} from './org-reg-duplicate-modal.component';
 import { OrgRegistrationRoutes } from './org-registration-routing.module';
 import { StepFourComponent } from './steps/step-four.component';
 import { StepOneComponent } from './steps/step-one.component';
@@ -73,6 +77,7 @@ export interface RegistrationFormStepComponent {
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
 						(saveStepperStep)="onSaveStepperStep()"
 						(scrollIntoView)="onScrollIntoView()"
+						[resetRecaptcha]="resetRecaptcha"
 						[sendToEmailAddress]="sendToEmailAddress"
 					></app-step-four>
 				</mat-step>
@@ -83,6 +88,7 @@ export interface RegistrationFormStepComponent {
 })
 export class OrgRegistrationComponent implements OnInit {
 	registrationTypeCode: RegistrationTypeCode | null = null;
+	resetRecaptcha: Subject<void> = new Subject<void>();
 	sendToEmailAddress = '';
 	orientation: StepperOrientation = 'vertical';
 	currentStateInfo: any = {};
@@ -199,7 +205,6 @@ export class OrgRegistrationComponent implements OnInit {
 		}
 
 		if (this.stepFourComponent) {
-			const step4Data = this.stepFourComponent.getStepData();
 			dataToSave = { ...dataToSave, ...this.stepFourComponent.getStepData() };
 		}
 
@@ -212,14 +217,14 @@ export class OrgRegistrationComponent implements OnInit {
 				.apiOrgRegistrationsPost({ body })
 				.pipe()
 				.subscribe((dupres: OrgRegistrationCreateResponse) => {
-					this.displayDuplicateCheck(body, dupres);
+					this.displayDataValidationMessage(body, dupres, false);
 				});
 		} else {
 			this.orgRegistrationService
 				.apiAnonymousOrgRegistrationsPost({ body })
 				.pipe()
 				.subscribe((dupres: OrgRegistrationCreateResponse) => {
-					this.displayDuplicateCheck(body, dupres);
+					this.displayDataValidationMessage(body, dupres, true);
 				});
 		}
 	}
@@ -285,29 +290,51 @@ export class OrgRegistrationComponent implements OnInit {
 		this.onScrollIntoView();
 	}
 
-	private displayDuplicateCheck(
+	private displayDataValidationMessage(
 		body: AnonymousOrgRegistrationCreateRequest,
-		dupres: OrgRegistrationCreateResponse
+		dupres: OrgRegistrationCreateResponse,
+		isAnonymous: boolean
 	): void {
 		if (dupres.hasPotentialDuplicate) {
-			const data: DialogOptions = {
-				icon: 'warning',
+			const data: OrgRegDuplicateDialogData = {
 				title: 'Potential duplicate detected',
 				message: 'A potential duplicate has been found. Are you sure this is a new organization registration request?',
 				actionText: 'Yes, create registration',
 				cancelText: 'Cancel',
+				displayCaptcha: isAnonymous,
 			};
 
 			this.dialog
-				.open(DialogComponent, { data })
+				.open(OrgRegDuplicateModalComponent, { data })
 				.afterClosed()
-				.subscribe((response: boolean) => {
-					if (response) {
+				.subscribe((response: OrgRegDuplicateDialogResponse) => {
+					if (response.success) {
+						body.recaptcha = isAnonymous ? response.captchaResponse?.resolved : null;
 						this.saveRegistration(body, BooleanTypeCode.Yes);
+					} else if (isAnonymous) {
+						this.resetRecaptcha.next(); // reset the recaptcha
+					}
+				});
+		} else if (isAnonymous) {
+			const data: OrgRegDuplicateDialogData = {
+				title: 'Registration data check',
+				message: 'Registration data is valid and complete. Continue with creation?',
+				actionText: 'Yes, create registration',
+				cancelText: 'Cancel',
+				displayCaptcha: isAnonymous,
+			};
+
+			this.dialog
+				.open(OrgRegDuplicateModalComponent, { data })
+				.afterClosed()
+				.subscribe((response: OrgRegDuplicateDialogResponse) => {
+					if (response.success) {
+						this.saveRegistration(body, BooleanTypeCode.No);
+					} else {
+						this.resetRecaptcha.next(); // reset the recaptcha
 					}
 				});
 		} else {
-			// Save registration
 			this.saveRegistration(body, BooleanTypeCode.No);
 		}
 	}
