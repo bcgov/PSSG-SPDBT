@@ -36,6 +36,7 @@ export interface OrgRegistrationCreateRequest {
   payerPreference?: PayerPreferenceTypeCode;
   portalUserIdentityTypeCode?: PortalUserIdentityTypeCode;
   registrationTypeCode?: RegistrationTypeCode;
+  requireDuplicateCheck?: boolean;
   screeningsCount?: ScreeningsCountTypeCode;
   volunteerOrganizationTypeCode?: VolunteerOrganizationTypeCode;
 }

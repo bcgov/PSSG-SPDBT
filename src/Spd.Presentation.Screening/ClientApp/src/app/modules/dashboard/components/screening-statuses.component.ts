@@ -216,9 +216,9 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 						</ng-container>
 
 						<ng-container matColumnDef="whoPaid">
-							<mat-header-cell *matHeaderCellDef mat-sort-header>Who Paid</mat-header-cell>
+							<mat-header-cell *matHeaderCellDef mat-sort-header>Paid By</mat-header-cell>
 							<mat-cell *matCellDef="let screening">
-								<span class="mobile-label">Who Paid:</span>
+								<span class="mobile-label">Paid By:</span>
 								??
 								<!-- {{ screening.whoPaid }} -->
 							</mat-cell>

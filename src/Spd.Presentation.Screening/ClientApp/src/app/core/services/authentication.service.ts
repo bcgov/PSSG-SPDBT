@@ -100,6 +100,7 @@ export class AuthenticationService {
 
 	public logout(): void {
 		this.oauthService.logOut();
+		this.utilService.clearOrgRegState();
 		this.notify(false);
 	}
 

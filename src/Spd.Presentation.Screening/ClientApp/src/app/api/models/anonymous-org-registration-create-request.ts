@@ -41,6 +41,7 @@ export interface AnonymousOrgRegistrationCreateRequest {
   portalUserIdentityTypeCode?: PortalUserIdentityTypeCode;
   recaptcha?: null | string;
   registrationTypeCode?: RegistrationTypeCode;
+  requireDuplicateCheck?: boolean;
   screeningsCount?: ScreeningsCountTypeCode;
   volunteerOrganizationTypeCode?: VolunteerOrganizationTypeCode;
 }
