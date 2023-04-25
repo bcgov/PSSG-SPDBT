@@ -14,12 +14,11 @@ public class OrgScenarios : ScenarioContextBase
     [Fact]
     public async Task GetOrgFromId_NoAuth_Unauthorized()
     {
-        Guid orgId = Guid.NewGuid();
-        await fixture.testData.CreateOrg(orgId, "org1");
+        var org = await fixture.testData.CreateOrg("org1");
 
         await Host.Scenario(_ =>
         {
-            _.Get.Url($"/api/org/{orgId}");
+            _.Get.Url($"/api/orgs/{org.accountid}");
             //todo, once we know how to make pkce auth working, uncomment following code.
             //_.StatusCodeShouldBe(HttpStatusCode.Unauthorized);
             _.StatusCodeShouldBeOk();
@@ -29,13 +28,12 @@ public class OrgScenarios : ScenarioContextBase
     [Fact]
     public async Task GetOrgFromId_WithCorrectAuth_Success()
     {
-        Guid orgId = Guid.NewGuid();
-        await fixture.testData.CreateOrg(orgId, "org1");
+        var org = await fixture.testData.CreateOrg("org1");
 
         await Host.Scenario(_ =>
         {
-            _.Get.Url($"/api/org/{orgId}");
-            _.ContentShouldContain(orgId.ToString());
+            _.Get.Url($"/api/orgs/{org.accountid}");
+            _.ContentShouldContain(org.accountid.ToString());
             _.StatusCodeShouldBeOk();
         });
     }
@@ -43,13 +41,12 @@ public class OrgScenarios : ScenarioContextBase
     [Fact]
     public async Task UpdateOrg_WithCorrectAuth_Success()
     {
-        Guid orgId = Guid.NewGuid();
-        await fixture.testData.CreateOrg(orgId, "org1");
+        var org = await fixture.testData.CreateOrg("org1");
 
         await Host.Scenario(_ =>
         {
-            _.Put.Json(Create_OrgUpdateRequest(orgId)).ToUrl($"/api/org/{orgId}");
-            _.ContentShouldContain(orgId.ToString());
+            _.Put.Json(Create_OrgUpdateRequest((Guid)org.accountid)).ToUrl($"/api/orgs/{org.accountid}");
+            _.ContentShouldContain(org.accountid.ToString());
             _.StatusCodeShouldBeOk();
         });
     }

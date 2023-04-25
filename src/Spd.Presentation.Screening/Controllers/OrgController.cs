@@ -23,14 +23,14 @@ namespace Spd.Presentation.Screening.Controllers
         /// <param name="updateOrgRequest"></param>
         /// <param name="orgId"></param>
         /// <returns></returns>
-        [Route("api/org/{orgId}")]
+        [Route("api/orgs/{orgId}")]
         [HttpPut]
         public async Task<OrgResponse> Put([FromBody] OrgUpdateRequest updateOrgRequest, [FromRoute] Guid orgId)
         {
             return await _mediator.Send(new OrgUpdateCommand(updateOrgRequest, orgId));
         }
 
-        [Route("api/org/{orgId}")]
+        [Route("api/orgs/{orgId}")]
         [HttpGet]
         public async Task<OrgResponse> Get([FromRoute] Guid orgId)
         {

@@ -248,7 +248,7 @@ export class SettingsComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.orgService
-			.apiOrgOrgIdGet({ orgId: this.authenticationService.loggedInOrgId! })
+			.apiOrgsOrgIdGet({ orgId: this.authenticationService.loggedInOrgId! })
 			.pipe()
 			.subscribe((resp: OrgResponse) => {
 				this.form.patchValue(resp);
@@ -282,7 +282,7 @@ export class SettingsComponent implements OnInit {
 			}
 
 			this.orgService
-				.apiOrgOrgIdPut({ orgId: this.authenticationService.loggedInOrgId!, body })
+				.apiOrgsOrgIdPut({ orgId: this.authenticationService.loggedInOrgId!, body })
 				.pipe()
 				.subscribe((resp: OrgUpdateRequest) => {
 					this.viewOnly = true;
