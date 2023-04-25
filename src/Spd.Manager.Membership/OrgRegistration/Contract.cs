@@ -7,12 +7,10 @@ namespace Spd.Manager.Membership.OrgRegistration
 {
     public interface IOrgRegistrationManager
     {
-        public Task<Unit> Handle(RegisterOrganizationCommand request, CancellationToken cancellationToken);
-        public Task<CheckDuplicateResponse> Handle(CheckOrgRegistrationDuplicateQuery request, CancellationToken cancellationToken);
+        public Task<OrgRegistrationCreateResponse> Handle(RegisterOrganizationCommand request, CancellationToken cancellationToken);
     }
 
-    public record RegisterOrganizationCommand(OrgRegistrationCreateRequest CreateOrgRegistrationRequest) : IRequest<Unit>;
-    public record CheckOrgRegistrationDuplicateQuery(OrgRegistrationCreateRequest CreateOrgRegistrationRequest) : IRequest<CheckDuplicateResponse>;
+    public record RegisterOrganizationCommand(OrgRegistrationCreateRequest CreateOrgRegistrationRequest) : IRequest<OrgRegistrationCreateResponse>;
 
     public class OrgRegistrationCreateRequest
     {
@@ -44,6 +42,7 @@ namespace Spd.Manager.Membership.OrgRegistration
         public string? LoginIdentityProvider { get; set; }
         public PortalUserIdentityTypeCode? PortalUserIdentityTypeCode { get; set; }
         public BooleanTypeCode HasPotentialDuplicate { get; set; } = BooleanTypeCode.No;
+        public bool RequireDuplicateCheck { get; set; } = true;
     }
 
     public enum RegistrationTypeCode
@@ -279,10 +278,12 @@ namespace Spd.Manager.Membership.OrgRegistration
                 .When(r => r.PortalUserIdentityTypeCode.HasValue);
         }
     }
-    public class CheckDuplicateResponse
+    public class OrgRegistrationCreateResponse
     {
-        public bool HasPotentialDuplicate { get; set; } = false;
-        public OrgProcess? DuplicateFoundIn { get; set; }
+        public bool IsDuplicateCheckRequired { get; set; } = false;
+        public bool CreateSuccess { get; set; }
+        public bool? HasPotentialDuplicate { get; set; } = null;
+        public OrgProcess? DuplicateFoundIn { get; set; } = null;
     }
     public enum OrgProcess
     {

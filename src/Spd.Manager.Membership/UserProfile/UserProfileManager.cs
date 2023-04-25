@@ -42,10 +42,10 @@ namespace Spd.Manager.Membership.UserProfile
             List<UserInfo> userInfos = new();
 
             //check registration
-            var orgRegResult = await _orgRegistrationRepository.Query(new OrgRegistrationQueryByUserGuid(userGuid), ct);
+            var orgRegResult = await _orgRegistrationRepository.Query(new OrgRegistrationQuery(userGuid, null), ct);
             if (orgRegResult != null)
             {
-                foreach(OrgRegistrationResult reg in orgRegResult.OrgRegistrationResults)
+                foreach (OrgRegistrationResult reg in orgRegResult.OrgRegistrationResults)
                 {
                     UserInfo ui = new UserInfo();
                     ui.OrgRegistrationId = reg.OrgRegistrationId;
@@ -65,7 +65,7 @@ namespace Spd.Manager.Membership.UserProfile
                     var result = (OrgUsersResult)await _orgUserRepository.QueryOrgUserAsync(new OrgUsersByIdentityIdQry(id.Id), ct);
                     foreach (UserResult u in result.UserResults)
                     {
-                        UserInfo ui = _mapper.Map<UserInfo>(u);                
+                        UserInfo ui = _mapper.Map<UserInfo>(u);
                         var orgResult = await _orgRepository.QueryOrgAsync(new OrgByIdQry((Guid)u.OrganizationId), ct);
                         ui.OrgName = orgResult.OrgResult.OrganizationName;
                         ui.OrgSettings = _mapper.Map<OrgSettings>(orgResult.OrgResult);

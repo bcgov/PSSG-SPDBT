@@ -22,6 +22,7 @@ export { FundsFromBcGovtExceedsThresholdCode } from './models/funds-from-bc-govt
 export { OidcConfiguration } from './models/oidc-configuration';
 export { OrgProcess } from './models/org-process';
 export { OrgRegistrationCreateRequest } from './models/org-registration-create-request';
+export { OrgRegistrationCreateResponse } from './models/org-registration-create-response';
 export { OrgResponse } from './models/org-response';
 export { OrgSettings } from './models/org-settings';
 export { OrgUpdateRequest } from './models/org-update-request';

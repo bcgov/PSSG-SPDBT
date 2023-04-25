@@ -81,7 +81,6 @@ export class ContactInformationComponent implements RegistrationFormStepComponen
 		contactEmail: new FormControl('', [Validators.required, FormControlValidators.email]),
 		contactPhoneNumber: new FormControl('', [Validators.required]),
 	});
-	startAt = SPD_CONSTANTS.date.birthDateStartAt;
 	matcher = new FormErrorStateMatcher();
 
 	constructor(private formBuilder: FormBuilder, private maskPipe: NgxMaskPipe) {}

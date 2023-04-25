@@ -9,7 +9,7 @@ import { Component, Input } from '@angular/core';
 				<div class="offset-md-2 col-md-8 col-sm-12">
 					<table class="mb-4">
 						<tr>
-							<td class="point__icon"><mat-icon>find_in_page</mat-icon></td>
+							<td class="point__green-icon"><mat-icon>find_in_page</mat-icon></td>
 							<td class="px-4">
 								<div class="fs-5 mb-2">Application submitted</div>
 								<p>
@@ -53,17 +53,29 @@ import { Component, Input } from '@angular/core';
 	styles: [
 		`
 			.point {
-				&__icon {
+				&__green-icon {
 					display: inline-block;
 					color: var(--color-green);
 
 					.mat-icon {
 						color: var(--color-green);
-						font-size: 50px;
-						height: 50px;
-						width: 50px;
 					}
 				}
+
+				&__icon {
+					display: inline-block;
+					color: var(--color-grey-light);
+
+					.mat-icon {
+						color: var(--color-grey-light);
+					}
+				}
+			}
+
+			.mat-icon {
+				font-size: 50px;
+				height: 50px;
+				width: 50px;
 			}
 
 			.divider {
