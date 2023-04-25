@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Subject } from 'rxjs';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { CaptchaResponse, CaptchaResponseType } from 'src/app/shared/components/captcha-v2.component';
 import { RegistrationFormStepComponent } from '../org-registration.component';
@@ -96,7 +97,10 @@ export class AgreementOfTermsModel {
 
 				<div class="row my-4" *ngIf="displayCaptcha">
 					<div class="offset-md-2 col-md-8 col-sm-12">
-						<app-captcha-v2 (captchaResponse)="onTokenResponse($event)"></app-captcha-v2>
+						<app-captcha-v2
+							(captchaResponse)="onTokenResponse($event)"
+							[resetControl]="resetRecaptcha"
+						></app-captcha-v2>
 						<mat-error *ngIf="displayValidationErrors && !captchaPassed"> This is required </mat-error>
 					</div>
 				</div>
@@ -120,6 +124,8 @@ export class AgreementOfTermsModel {
 	],
 })
 export class AgreementOfTermsComponent implements OnInit, RegistrationFormStepComponent {
+	@Input() resetRecaptcha: Subject<void> = new Subject<void>();
+
 	form!: FormGroup;
 	hasScrolledToBottom = false;
 	displayValidationErrors = false;
@@ -139,10 +145,15 @@ export class AgreementOfTermsComponent implements OnInit, RegistrationFormStepCo
 			const isLoggedIn = this.authenticationService.isLoggedIn();
 			this.displayCaptcha = !isLoggedIn;
 		});
+
+		this.resetRecaptcha.subscribe(() => this.onResetRecaptcha());
 	}
 
 	getDataToSave(): AgreementOfTermsModel {
-		return { ...this.form.value, recaptcha: this.displayCaptcha ? this.captchaResponse?.resolved : null };
+		return {
+			...this.form.value,
+			recaptcha: this.displayCaptcha && this.captchaPassed ? this.captchaResponse?.resolved : null,
+		};
 	}
 
 	isFormValid(): boolean {
@@ -160,6 +171,11 @@ export class AgreementOfTermsComponent implements OnInit, RegistrationFormStepCo
 		this.captchaResponse = null;
 	}
 
+	onResetRecaptcha(): void {
+		this.captchaPassed = false;
+		this.captchaResponse = null;
+	}
+
 	onScrollTermsAndConditions(e: any) {
 		if (e.target.scrollHeight < e.target.scrollTop + e.target.offsetHeight) {
 			this.hasScrolledToBottom = true;
@@ -167,9 +183,8 @@ export class AgreementOfTermsComponent implements OnInit, RegistrationFormStepCo
 	}
 
 	onTokenResponse($event: CaptchaResponse) {
-		console.debug('onTokenResponse', $event);
 		this.captchaResponse = $event;
-		if ($event.type === CaptchaResponseType.success) {
+		if ($event.type === CaptchaResponseType.success && this.captchaResponse?.resolved) {
 			this.captchaPassed = true;
 		} else {
 			this.captchaPassed = false;

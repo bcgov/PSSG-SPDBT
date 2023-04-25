@@ -24,12 +24,20 @@ namespace Spd.Presentation.Screening.Controllers
             _verificationService = verificationService;
         }
 
+        /// <summary>
+        /// User not login, use this endpoint with googleRecaptcha as security check.
+        /// </summary>
+        /// <param name="anonymOrgRegRequest"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        /// <exception cref="ApiException"></exception>
         [Route("api/anonymous-org-registrations")]
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ActionResult> AnonymousRegister([FromBody][Required]AnonymousOrgRegistrationCreateRequest anonymOrgRegRequest, CancellationToken ct)
+        public async Task<OrgRegistrationCreateResponse> AnonymousRegister([FromBody][Required] AnonymousOrgRegistrationCreateRequest anonymOrgRegRequest, CancellationToken ct)
         {
-            if (anonymOrgRegRequest == null) return BadRequest();
+            if (anonymOrgRegRequest == null)
+                throw new ApiException(HttpStatusCode.BadRequest, "request cannot be null.");
 
             var isValid = await _verificationService.VerifyAsync(anonymOrgRegRequest.Recaptcha, ct);
 
@@ -37,25 +45,15 @@ namespace Spd.Presentation.Screening.Controllers
             {
                 throw new ApiException(HttpStatusCode.BadRequest, "Invalid recaptcha");
             }
-            await _mediator.Send(new RegisterOrganizationCommand(anonymOrgRegRequest));
-            return Ok();
+            return await _mediator.Send(new RegisterOrganizationCommand(anonymOrgRegRequest));
         }
 
         [Route("api/org-registrations")]
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult> Register([FromBody][Required] OrgRegistrationCreateRequest orgRegistrationCreateRequest)
+        public async Task<OrgRegistrationCreateResponse> Register([FromBody][Required] OrgRegistrationCreateRequest orgRegistrationCreateRequest)
         {
-            await _mediator.Send(new RegisterOrganizationCommand(orgRegistrationCreateRequest));
-            return Ok();
-        }
-
-        [Route("api/org-registrations/detect-duplicate")]
-        [HttpPost]
-        [AllowAnonymous]
-        public async Task<CheckDuplicateResponse> DetectDuplicate([FromBody][Required] OrgRegistrationCreateRequest orgRegistrationCreateRequest)
-        {
-            return await _mediator.Send(new CheckOrgRegistrationDuplicateQuery(orgRegistrationCreateRequest));
+            return await _mediator.Send(new RegisterOrganizationCommand(orgRegistrationCreateRequest));
         }
     }
 
