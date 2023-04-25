@@ -30,18 +30,10 @@ namespace Spd.Presentation.Screening.Controllers
 
         [Route("api/orgs/{orgId}/application")]
         [HttpPost]
-        public async Task<Unit> Add([FromBody][Required] ApplicationCreateRequest applicationCreateRequest, [FromRoute] Guid orgId)
+        public async Task<ApplicationCreateResponse> Add([FromBody][Required] ApplicationCreateRequest applicationCreateRequest, [FromRoute] Guid orgId)
         {
             applicationCreateRequest.OrgId = orgId;
             return await _mediator.Send(new ApplicationCreateCommand(applicationCreateRequest));
-        }
-
-        [Route("api/orgs/{orgId}/detect-application-duplicate")]
-        [HttpPost]
-        public async Task<CheckApplicationDuplicateResponse> DetectDuplicate([FromBody][Required] ApplicationCreateRequest applicationCreateRequest, [FromRoute] Guid orgId)
-        {
-            applicationCreateRequest.OrgId = orgId;
-            return await _mediator.Send(new CheckApplicationDuplicateQuery(applicationCreateRequest));
         }
 
         /// <summary>
