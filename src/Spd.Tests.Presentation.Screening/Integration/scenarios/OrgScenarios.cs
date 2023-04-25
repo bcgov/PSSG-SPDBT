@@ -61,8 +61,6 @@ public class OrgScenarios : ScenarioContextBase
             Id = orgId,
             AddressCity = "city",
             Email = "test@test.com",
-            OrganizationName = "org2",
-            OrganizationLegalName = "legalorg2",
             PayerPreference = Manager.Membership.Shared.PayerPreferenceTypeCode.Applicant,
             PhoneNumber = "111-111-1111",
             AddressLine1 = "line1",
