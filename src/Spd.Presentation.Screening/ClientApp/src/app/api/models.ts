@@ -13,7 +13,6 @@ export { ApplicationOriginTypeCode } from './models/application-origin-type-code
 export { ApplicationResponse } from './models/application-response';
 export { BooleanTypeCode } from './models/boolean-type-code';
 export { CheckApplicationDuplicateResponse } from './models/check-application-duplicate-response';
-export { CheckDuplicateResponse } from './models/check-duplicate-response';
 export { ConfigurationResponse } from './models/configuration-response';
 export { ContactAuthorizationTypeCode } from './models/contact-authorization-type-code';
 export { EmployeeInteractionTypeCode } from './models/employee-interaction-type-code';
