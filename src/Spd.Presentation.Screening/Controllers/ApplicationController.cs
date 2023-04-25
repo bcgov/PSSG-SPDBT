@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Cases;
-using Spd.Resource.Applicants;
 using Spd.Utilities.Shared;
 using System.ComponentModel.DataAnnotations;
 
@@ -11,23 +10,22 @@ namespace Spd.Presentation.Screening.Controllers
     {
         private readonly IMediator _mediator;
 
-        public ApplicationController(ILogger<OrgController> logger, IMediator mediator)
+        public ApplicationController(IMediator mediator)
         {
             _mediator = mediator;
         }
 
+        /// <summary>
+        /// create more than one application invites. if checkDuplicate is true, the implementation will check if there is existing duplicated applicants or invites.
+        /// </summary>
+        /// <param name="invitesCreateRequest"></param>
+        /// <param name="orgId"></param>
+        /// <returns></returns>
         [Route("api/orgs/{orgId}/application-invites")]
         [HttpPost]
-        public async Task<Unit> Add([FromBody][Required] IEnumerable<ApplicationInviteCreateRequest> inviteCreateRequests, [FromRoute] Guid orgId)
+        public async Task<ApplicationInvitesCreateResponse> Add([FromBody][Required]ApplicationInvitesCreateRequest invitesCreateRequest, [FromRoute] Guid orgId)
         {
-            return await _mediator.Send(new ApplicationInviteCreateCommand(orgId, inviteCreateRequests));
-        }
-
-        [Route("api/orgs/{orgId}/detect-invite-duplicates")]
-        [HttpPost]
-        public async Task<IEnumerable<CheckApplicationInviteDuplicateResponse>> DetectDuplicates([FromBody][Required] IEnumerable<ApplicationInviteCreateRequest> inviteCreateRequests, [FromRoute] Guid orgId)
-        {
-            return await _mediator.Send(new CheckApplicationInviteDuplicateQuery(orgId, inviteCreateRequests));
+            return await _mediator.Send(new ApplicationInviteCreateCommand(invitesCreateRequest, orgId));
         }
 
         [Route("api/orgs/{orgId}/application")]
@@ -58,7 +56,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/orgs/{orgId}/applications")]
         [HttpGet]
-        public async Task<ApplicationListResponse> GetList([FromRoute] Guid orgId,[FromQuery]string? filters, [FromQuery]string? sorts, [FromQuery] uint? page, [FromQuery] uint? pageSize)
+        public async Task<ApplicationListResponse> GetList([FromRoute] Guid orgId, [FromQuery] string? filters, [FromQuery] string? sorts, [FromQuery] uint? page, [FromQuery] uint? pageSize)
         {
             //todo, when we do filtering and sorting, will complete this.
             string f = filters;

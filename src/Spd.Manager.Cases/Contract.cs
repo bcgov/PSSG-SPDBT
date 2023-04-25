@@ -6,44 +6,48 @@ namespace Spd.Manager.Cases
 {
     public interface IApplicationManager
     {
-        public Task<Unit> Handle(ApplicationInviteCreateCommand request, CancellationToken cancellationToken);
-        public Task<IEnumerable<CheckApplicationInviteDuplicateResponse>> Handle(CheckApplicationInviteDuplicateQuery request, CancellationToken cancellationToken);
+        public Task<ApplicationInvitesCreateResponse> Handle(ApplicationInviteCreateCommand request, CancellationToken cancellationToken);
         public Task<Unit> Handle(ApplicationCreateCommand request, CancellationToken cancellationToken);
         public Task<CheckApplicationDuplicateResponse> Handle(CheckApplicationDuplicateQuery request, CancellationToken cancellationToken);
         public Task<ApplicationListResponse> Handle(ApplicationListQuery request, CancellationToken cancellationToken);
 
     }
 
-    public record ApplicationInviteCreateCommand(Guid OrgId, IEnumerable<ApplicationInviteCreateRequest> ApplicationInviteCreateRequests) : IRequest<Unit>;
-    public record CheckApplicationInviteDuplicateQuery(Guid OrgId, IEnumerable<ApplicationInviteCreateRequest> ApplicationInviteCreateRequests) : IRequest<IEnumerable<CheckApplicationInviteDuplicateResponse>>;
+    public record ApplicationInviteCreateCommand(ApplicationInvitesCreateRequest ApplicationInvitesCreateRequest, Guid OrgId) : IRequest<ApplicationInvitesCreateResponse>;
     public record ApplicationCreateCommand(ApplicationCreateRequest ApplicationCreateRequest) : IRequest<Unit>;
     public record CheckApplicationDuplicateQuery(ApplicationCreateRequest ApplicationCreateRequest) : IRequest<CheckApplicationDuplicateResponse>;
     public record ApplicationListQuery(Guid OrgId, int Page, int PageSize) : IRequest<ApplicationListResponse>;
 
-    public record ApplicationInviteCreateRequest
+    //application invites
+    public record ApplicationInvitesCreateRequest
     {
-        public string? FirstName { get; set; }
-        public string? LastName { get; set; }
-        public string? Email { get; set; }
+        public bool RequireDuplicateCheck { get; set; }
+        public IEnumerable<ApplicationInviteCreateRequest> ApplicationInviteCreateRequests { get; set; } = Array.Empty<ApplicationInviteCreateRequest>();
+    }
+    public abstract record ApplicationInvite
+    {
+        public string FirstName { get; set; } = null!;
+        public string LastName { get; set; } = null!;
+        public string Email { get; set; } = null!;
+    }
+    public record ApplicationInviteCreateRequest : ApplicationInvite
+    {
         public string? JobTitle { get; set; }
         public PayeePreferenceTypeCode PayeeType { get; set; }
     }
-
-    public record ApplicationInviteCreateResponse
+    public record ApplicationInvitesCreateResponse(Guid OrgId)
     {
-        public bool IsSuccess { get; set; }
-        public bool ErrorReason { get; set; }
+        public bool IsDuplicateCheckRequired { get; set; }
+        public bool CreateSuccess { get; set; }
+        public string? ErrorReason { get; set; }
+        public IEnumerable<ApplicationInviteDuplicateResponse> DuplicateResponses { get; set; } = Array.Empty<ApplicationInviteDuplicateResponse>();
     }
-
-    public class CheckApplicationInviteDuplicateResponse
+    public record ApplicationInviteDuplicateResponse : ApplicationInvite
     {
-        public Guid OrgId { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
         public bool HasPotentialDuplicate { get; set; } = false;
     }
 
+    //application
     public record ApplicationCreateRequest
     {
         public Guid OrgId { get; set; }

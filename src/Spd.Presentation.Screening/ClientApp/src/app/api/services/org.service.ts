@@ -24,23 +24,23 @@ export class OrgService extends BaseService {
   }
 
   /**
-   * Path part for operation apiOrgOrgIdGet
+   * Path part for operation apiOrgsOrgIdGet
    */
-  static readonly ApiOrgOrgIdGetPath = '/api/org/{orgId}';
+  static readonly ApiOrgsOrgIdGetPath = '/api/orgs/{orgId}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiOrgOrgIdGet()` instead.
+   * To access only the response body, use `apiOrgsOrgIdGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiOrgOrgIdGet$Response(params: {
+  apiOrgsOrgIdGet$Response(params: {
     orgId: string;
     context?: HttpContext
   }
 ): Observable<StrictHttpResponse<OrgResponse>> {
 
-    const rb = new RequestBuilder(this.rootUrl, OrgService.ApiOrgOrgIdGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, OrgService.ApiOrgsOrgIdGetPath, 'get');
     if (params) {
       rb.path('orgId', params.orgId, {});
     }
@@ -59,25 +59,25 @@ export class OrgService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiOrgOrgIdGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiOrgsOrgIdGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiOrgOrgIdGet(params: {
+  apiOrgsOrgIdGet(params: {
     orgId: string;
     context?: HttpContext
   }
 ): Observable<OrgResponse> {
 
-    return this.apiOrgOrgIdGet$Response(params).pipe(
+    return this.apiOrgsOrgIdGet$Response(params).pipe(
       map((r: StrictHttpResponse<OrgResponse>) => r.body as OrgResponse)
     );
   }
 
   /**
-   * Path part for operation apiOrgOrgIdPut
+   * Path part for operation apiOrgsOrgIdPut
    */
-  static readonly ApiOrgOrgIdPutPath = '/api/org/{orgId}';
+  static readonly ApiOrgsOrgIdPutPath = '/api/orgs/{orgId}';
 
   /**
    * Updating existing organization profile.
@@ -85,18 +85,18 @@ export class OrgService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiOrgOrgIdPut()` instead.
+   * To access only the response body, use `apiOrgsOrgIdPut()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiOrgOrgIdPut$Response(params: {
+  apiOrgsOrgIdPut$Response(params: {
     orgId: string;
     context?: HttpContext
     body?: OrgUpdateRequest
   }
 ): Observable<StrictHttpResponse<OrgResponse>> {
 
-    const rb = new RequestBuilder(this.rootUrl, OrgService.ApiOrgOrgIdPutPath, 'put');
+    const rb = new RequestBuilder(this.rootUrl, OrgService.ApiOrgsOrgIdPutPath, 'put');
     if (params) {
       rb.path('orgId', params.orgId, {});
       rb.body(params.body, 'application/*+json');
@@ -120,18 +120,18 @@ export class OrgService extends BaseService {
    *
    *
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiOrgOrgIdPut$Response()` instead.
+   * To access the full response (for headers, for example), `apiOrgsOrgIdPut$Response()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiOrgOrgIdPut(params: {
+  apiOrgsOrgIdPut(params: {
     orgId: string;
     context?: HttpContext
     body?: OrgUpdateRequest
   }
 ): Observable<OrgResponse> {
 
-    return this.apiOrgOrgIdPut$Response(params).pipe(
+    return this.apiOrgsOrgIdPut$Response(params).pipe(
       map((r: StrictHttpResponse<OrgResponse>) => r.body as OrgResponse)
     );
   }

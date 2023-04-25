@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import {
-	ApplicationInviteCreateRequest,
-	CheckApplicationInviteDuplicateResponse,
+	ApplicationInvitesCreateRequest,
+	ApplicationInvitesCreateResponse,
 	PayeePreferenceTypeCode,
 } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
@@ -256,15 +256,93 @@ export class NewScreeningModalComponent implements OnInit {
 			return;
 		}
 
+		// Vulnerable sector check
+		const body: ApplicationInvitesCreateRequest = {
+			applicationInviteCreateRequests: control,
+			requireDuplicateCheck: true,
+		};
+		this.promptVulnerableSector(body);
+	}
+
+	promptVulnerableSector(body: ApplicationInvitesCreateRequest): void {
+		const vulnerableQuestionSingular =
+			'In their role with your organization, will this person work directly with, or potentially have unsupervised access to, children and/or vulnerable adults?';
+		const vulnerableQuestionMultiple =
+			'In their roles with your organization, will these individuals work directly with, or potentially have unsupervised access to, children and/or vulnerable adults?';
+
+		const data: DialogOptions = {
+			icon: 'info_outline',
+			title: 'Vulnerable sector',
+			message: '',
+			actionText: 'Yes',
+			cancelText: 'No',
+		};
+
+		data.message =
+			body.applicationInviteCreateRequests?.length == 1 ? vulnerableQuestionSingular : vulnerableQuestionMultiple;
+
+		this.dialog
+			.open(DialogComponent, { data })
+			.afterClosed()
+			.subscribe((response: boolean) => {
+				if (response) {
+					this.checkForDuplicates(body);
+				} else {
+					this.promptVulnerableSectorNo(body);
+				}
+			});
+	}
+
+	promptVulnerableSectorNo(body: ApplicationInvitesCreateRequest): void {
+		const vulnerableQuestionSingular = `If the applicant will not have unsupervised access to children or vulnerable adults in this role, but they require a criminal record check for another reason, please <a href="https://www2.gov.bc.ca/gov/content/safety/crime-prevention/criminal-record-check" target="_blank"> contact your local police detachment</a>`;
+		const vulnerableQuestionMultiple = `If the applicants will not have unsupervised access to children or vulnerable adults in this role, but they require a criminal record check for another reason, please <a href="https://www2.gov.bc.ca/gov/content/safety/crime-prevention/criminal-record-check" target="_blank"> contact your local police detachment</a>`;
+
+		const data: DialogOptions = {
+			icon: 'info_outline',
+			title: 'Criminal record check',
+			message: '',
+			actionText: 'Cancel screening request',
+			cancelText: 'Previous',
+		};
+
+		data.message =
+			body.applicationInviteCreateRequests?.length == 1 ? vulnerableQuestionSingular : vulnerableQuestionMultiple;
+
+		this.dialog
+			.open(DialogComponent, { data })
+			.afterClosed()
+			.subscribe((response: boolean) => {
+				if (!response) {
+					this.promptVulnerableSector(body);
+				} else {
+					this.dialogRef.close({
+						success: false,
+					});
+				}
+			});
+	}
+
+	private checkForDuplicates(body: ApplicationInvitesCreateRequest): void {
 		// Check for potential duplicate
+		body.requireDuplicateCheck = true;
+
+		const message =
+			body.applicationInviteCreateRequests?.length == 1 ? this.yesMessageSingular : this.yesMessageMultiple;
+
 		this.applicationService
-			.apiOrgsOrgIdDetectInviteDuplicatesPost({ orgId: this.authenticationService.loggedInOrgId!, body: control })
+			.apiOrgsOrgIdApplicationInvitesPost({ orgId: this.authenticationService.loggedInOrgId!, body })
 			.pipe()
-			.subscribe((dupres: Array<CheckApplicationInviteDuplicateResponse>) => {
+			.subscribe((dupres: ApplicationInvitesCreateResponse) => {
+				if (dupres.createSuccess) {
+					this.handleSaveSuccess(message);
+					return;
+				}
+
+				const duplicateResponses = dupres.duplicateResponses ? dupres.duplicateResponses : [];
 				// At least one potential duplicate has been found
-				if (dupres?.length > 0) {
+				if (duplicateResponses.length > 0) {
 					let dupRows = '';
-					dupres.forEach((item) => {
+					duplicateResponses.forEach((item) => {
 						dupRows += `<li>${item.firstName} ${item.lastName} (${item.email})</li>`;
 					});
 					const dupMessage = `<ul>${dupRows}</ul>`;
@@ -273,7 +351,7 @@ export class NewScreeningModalComponent implements OnInit {
 					let dialogMessage = '';
 					let dialogAction = '';
 
-					if (dupres?.length > 1) {
+					if (duplicateResponses.length > 1) {
 						dialogTitle = 'Potential duplicates detected';
 						dialogMessage = `Your organization has submitted a criminal record check for these applicants within the last 30 days.<br/><br/>${dupMessage}How would you like to proceed?`;
 						dialogAction = 'Yes, continue submission';
@@ -296,113 +374,30 @@ export class NewScreeningModalComponent implements OnInit {
 						.afterClosed()
 						.subscribe((response: boolean) => {
 							if (response) {
-								this.promptVulnerableSector(control);
+								this.handleSaveSuccess(message);
 							}
 						});
 				} else {
-					this.promptVulnerableSector(control);
+					this.handleSaveSuccess(message);
 				}
 			});
 	}
 
-	promptVulnerableSector(body: Array<ApplicationInviteCreateRequest>): void {
-		const vulnerableQuestionSingular =
-			'In their role with your organization, will this person work directly with, or potentially have unsupervised access to, children and/or vulnerable adults?';
-		const vulnerableQuestionMultiple =
-			'In their roles with your organization, will these individuals work directly with, or potentially have unsupervised access to, children and/or vulnerable adults?';
-
-		const data: DialogOptions = {
-			icon: 'info_outline',
-			title: 'Vulnerable sector',
-			message: '',
-			actionText: 'Yes',
-			cancelText: 'No',
-		};
-
-		if (body.length == 1) {
-			data.message = vulnerableQuestionSingular;
-
-			this.dialog
-				.open(DialogComponent, { data })
-				.afterClosed()
-				.subscribe((response: boolean) => {
-					if (response) {
-						this.saveInviteRequests(body, this.yesMessageSingular);
-					} else {
-						this.promptVulnerableSectorNo(body);
-					}
-				});
-		} else {
-			data.message = vulnerableQuestionMultiple;
-
-			this.dialog
-				.open(DialogComponent, { data })
-				.afterClosed()
-				.subscribe((response: boolean) => {
-					if (response) {
-						this.saveInviteRequests(body, this.yesMessageMultiple);
-					} else {
-						this.promptVulnerableSectorNo(body);
-					}
-				});
-		}
-	}
-
-	promptVulnerableSectorNo(body: Array<ApplicationInviteCreateRequest>): void {
-		const vulnerableQuestionSingular = `If the applicant will not have unsupervised access to children or vulnerable adults in this role, but they require a criminal record check for another reason, please <a href="https://www2.gov.bc.ca/gov/content/safety/crime-prevention/criminal-record-check" target="_blank"> contact your local police detachment</a>`;
-		const vulnerableQuestionMultiple = `If the applicants will not have unsupervised access to children or vulnerable adults in this role, but they require a criminal record check for another reason, please <a href="https://www2.gov.bc.ca/gov/content/safety/crime-prevention/criminal-record-check" target="_blank"> contact your local police detachment</a>`;
-
-		const data: DialogOptions = {
-			icon: 'info_outline',
-			title: 'Criminal record check',
-			message: '',
-			actionText: 'Cancel screening request',
-			cancelText: 'Previous',
-		};
-
-		if (body.length == 1) {
-			data.message = vulnerableQuestionSingular;
-
-			this.dialog
-				.open(DialogComponent, { data })
-				.afterClosed()
-				.subscribe((response: boolean) => {
-					if (!response) {
-						this.promptVulnerableSector(body);
-					} else {
-						this.dialogRef.close({
-							success: false,
-						});
-					}
-				});
-		} else {
-			data.message = vulnerableQuestionMultiple;
-
-			this.dialog
-				.open(DialogComponent, { data })
-				.afterClosed()
-				.subscribe((response: boolean) => {
-					if (!response) {
-						this.promptVulnerableSector(body);
-					} else {
-						this.dialogRef.close({
-							success: false,
-						});
-					}
-				});
-		}
-	}
-
-	saveInviteRequests(body: Array<ApplicationInviteCreateRequest>, message: string): void {
+	saveInviteRequests(body: ApplicationInvitesCreateRequest, message: string): void {
+		body.requireDuplicateCheck = false;
 		this.applicationService
 			.apiOrgsOrgIdApplicationInvitesPost({ orgId: this.authenticationService.loggedInOrgId!, body })
 			.pipe()
 			.subscribe((_resp: any) => {
-				this.dialogRef.close({
-					success: true,
-					message,
-				});
+				this.handleSaveSuccess(message);
 			});
+	}
+
+	private handleSaveSuccess(message: string): void {
+		this.dialogRef.close({
+			success: true,
+			message,
+		});
 	}
 
 	get getFormControls() {
