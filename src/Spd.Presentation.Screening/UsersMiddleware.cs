@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MediatR;
+using Microsoft.AspNetCore.Http;
+using Spd.Utilities.Shared.Exceptions;
 
 namespace Spd.Utilities.LogonUser
 {
@@ -12,7 +14,7 @@ namespace Spd.Utilities.LogonUser
             this.next = next;
         }
 
-        public async Task InvokeAsync(HttpContext context)
+        public async Task InvokeAsync(HttpContext context, IMediator mediator)
         {
             if (NoUserMiddlewareProcessNeededEndpoints(context) ||
                 context.User.Identity == null ||
@@ -22,6 +24,14 @@ namespace Spd.Utilities.LogonUser
                 return;
             }
 
+            if(context.Request.Headers.TryGetValue("organization", out var orgStr))
+            {
+                ProcessUser(context, mediator, orgStr);
+            }
+            else
+            {
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "missing organization in the header.");
+            }
             await next(context);
         }
 
@@ -47,6 +57,15 @@ namespace Spd.Utilities.LogonUser
             }
 
             return false;
+        }
+
+        private async Task ProcessUser(HttpContext context, IMediator mediator, string orgId)
+        {
+            if (!Guid.TryParse(orgId, out Guid organizationId))
+            {
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "organization is not a valid guid");
+            }
+
         }
 
     }
