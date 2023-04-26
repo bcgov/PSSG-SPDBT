@@ -23,14 +23,14 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/orgs/{orgId}/application-invites")]
         [HttpPost]
-        public async Task<ApplicationInvitesCreateResponse> Add([FromBody][Required]ApplicationInvitesCreateRequest invitesCreateRequest, [FromRoute] Guid orgId)
+        public async Task<ApplicationInvitesCreateResponse> AddApplicationInvites([FromBody][Required]ApplicationInvitesCreateRequest invitesCreateRequest, [FromRoute] Guid orgId)
         {
             return await _mediator.Send(new ApplicationInviteCreateCommand(invitesCreateRequest, orgId));
         }
 
         [Route("api/orgs/{orgId}/application")]
         [HttpPost]
-        public async Task<ApplicationCreateResponse> Add([FromBody][Required] ApplicationCreateRequest applicationCreateRequest, [FromRoute] Guid orgId)
+        public async Task<ApplicationCreateResponse> AddApplication([FromBody][Required] ApplicationCreateRequest applicationCreateRequest, [FromRoute] Guid orgId)
         {
             applicationCreateRequest.OrgId = orgId;
             return await _mediator.Send(new ApplicationCreateCommand(applicationCreateRequest));
