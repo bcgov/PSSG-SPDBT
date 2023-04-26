@@ -12,7 +12,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 import { DashboardRoutes } from '../dashboard-routing.module';
 
 @Component({
-	selector: 'app-screening-statuses',
+	selector: 'app-application-statuses',
 	template: `
 		<app-dashboard-header subtitle="Criminal Record Check Portal"></app-dashboard-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
@@ -139,77 +139,77 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 					<mat-table matSort [dataSource]="dataSource" matSortActive="createdOn" matSortDirection="desc">
 						<ng-container matColumnDef="applicantName">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Applicant Name</mat-header-cell>
-							<mat-cell *matCellDef="let screening">
+							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Applicant Name:</span>
-								{{ utilService.getFullName(screening.givenName, screening.surname) }}
+								{{ utilService.getFullName(application.givenName, application.surname) }}
 							</mat-cell>
 						</ng-container>
 
 						<ng-container matColumnDef="emailAddress">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Email</mat-header-cell>
-							<mat-cell *matCellDef="let screening">
+							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Email:</span>
-								{{ screening.emailAddress }}
+								{{ application.emailAddress }}
 							</mat-cell>
 						</ng-container>
 
 						<ng-container matColumnDef="createdOn">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Submitted On</mat-header-cell>
-							<mat-cell *matCellDef="let screening">
+							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Submitted On:</span>
-								{{ screening.createdOn | date : constants.date.dateFormat }}
+								{{ application.createdOn | date : constants.date.dateFormat }}
 							</mat-cell>
 						</ng-container>
 
 						<ng-container matColumnDef="whoPaid">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Paid By</mat-header-cell>
-							<mat-cell *matCellDef="let screening">
+							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Paid By:</span>
 								??
-								<!-- {{ screening.whoPaid }} -->
+								<!-- {{ application.whoPaid }} -->
 							</mat-cell>
 						</ng-container>
 
 						<ng-container matColumnDef="applicationNumber">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Case ID</mat-header-cell>
-							<mat-cell *matCellDef="let screening">
+							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Case ID:</span>
-								{{ screening.applicationNumber }}
+								{{ application.applicationNumber }}
 							</mat-cell>
 						</ng-container>
 
 						<ng-container matColumnDef="contractedCompanyName">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Company / Facility Name</mat-header-cell>
-							<mat-cell *matCellDef="let screening">
+							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Company / Facility Name:</span>
-								{{ screening.contractedCompanyName }}
+								{{ application.contractedCompanyName }}
 							</mat-cell>
 						</ng-container>
 
 						<ng-container matColumnDef="status">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Status / Action</mat-header-cell>
-							<mat-cell *matCellDef="let screening; let i = index">
+							<mat-cell *matCellDef="let application; let i = index">
 								<span class="mobile-label">Status:</span>
 
 								<!-- <mat-chip-listbox aria-label="Status">
-									<mat-chip-option class="mat-chip-green" *ngIf="screening.status == '1'">In Progress</mat-chip-option>
-									<mat-chip-option class="mat-chip-green" *ngIf="screening.status == '2'">
+									<mat-chip-option class="mat-chip-green" *ngIf="application.status == '1'">In Progress</mat-chip-option>
+									<mat-chip-option class="mat-chip-green" *ngIf="application.status == '2'">
 										Complete - No Risk
 									</mat-chip-option>
-									<mat-chip-option class="mat-chip-yellow" *ngIf="screening.status == '3'">
+									<mat-chip-option class="mat-chip-yellow" *ngIf="application.status == '3'">
 										Awaiting Applicant
 									</mat-chip-option>
-									<mat-chip-option class="mat-chip-blue" *ngIf="screening.status == '4'">
+									<mat-chip-option class="mat-chip-blue" *ngIf="application.status == '4'">
 										Under Assessment
 									</mat-chip-option>
-									<mat-chip-option class="mat-chip-grey" *ngIf="screening.status == '5'">
+									<mat-chip-option class="mat-chip-grey" *ngIf="application.status == '5'">
 										Missing Information
 									</mat-chip-option>
-									<mat-chip-option class="mat-chip-grey" *ngIf="screening.status == '6'">
+									<mat-chip-option class="mat-chip-grey" *ngIf="application.status == '6'">
 										Cancelled By Organization
 									</mat-chip-option>
-									<mat-chip-option class="mat-chip-red" *ngIf="screening.status == '7'">Closed</mat-chip-option>
-									<mat-chip-option class="mat-chip-red" *ngIf="screening.status == '8'">Risk Found</mat-chip-option>
+									<mat-chip-option class="mat-chip-red" *ngIf="application.status == '7'">Closed</mat-chip-option>
+									<mat-chip-option class="mat-chip-red" *ngIf="application.status == '8'">Risk Found</mat-chip-option>
 								</mat-chip-listbox>
 							 -->
 								<mat-chip-listbox aria-label="Status" class="ms-3" *ngIf="i % 4 == 0 || i % 4 == 3">
@@ -219,7 +219,7 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 
 								<a
 									mat-flat-button
-									(click)="onPayNow(screening)"
+									(click)="onPayNow(application)"
 									class="m-2"
 									style="color: var(--color-primary-light);"
 									aria-label="Pay now"
@@ -230,7 +230,7 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 
 								<a
 									mat-flat-button
-									(click)="onVerifyApplicant(screening)"
+									(click)="onVerifyApplicant(application)"
 									class="m-2"
 									style="color: var(--color-green);"
 									aria-label="Verify Applicant"
@@ -265,7 +265,7 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 		`,
 	],
 })
-export class ScreeningStatusesComponent implements OnInit {
+export class ApplicationStatusesComponent implements OnInit {
 	constants = SPD_CONSTANTS;
 	dataSource!: MatTableDataSource<ApplicationResponse>;
 	columns!: string[];
@@ -304,15 +304,15 @@ export class ScreeningStatusesComponent implements OnInit {
 		this.loadList();
 	}
 
-	onPayNow(screening: ApplicationResponse): void {
+	onPayNow(application: ApplicationResponse): void {
 		this.router.navigateByUrl(DashboardRoutes.dashboardPath(DashboardRoutes.PAYMENTS), {
-			state: { caseId: screening.applicationNumber },
+			state: { caseId: application.applicationNumber },
 		});
 	}
 
-	onVerifyApplicant(screening: ApplicationResponse): void {
+	onVerifyApplicant(application: ApplicationResponse): void {
 		this.router.navigateByUrl(DashboardRoutes.dashboardPath(DashboardRoutes.IDENTITY_VERIFICATION), {
-			state: { caseId: screening.applicationNumber },
+			state: { caseId: application.applicationNumber },
 		});
 	}
 

@@ -1,30 +1,30 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { ApplicationStatusesComponent } from './components/application-statuses.component';
+import { CriminalRecordChecksComponent } from './components/criminal-record-checks.component';
 import { DashboardHomeComponent } from './components/dashboard-home.component';
-import { ExpiringScreeningsComponent } from './components/expiring-screenings.component';
+import { ExpiringChecksComponent } from './components/expiring-checks.component';
 import { GenericUploadsComponent } from './components/generic-uploads.component';
 import { IdentifyVerificationComponent } from './components/identify-verification.component';
 import { ManualSubmissionsComponent } from './components/manual-submissions.component';
-import { NewScreeningComponent } from './components/new-screening.component';
+import { OrganizationProfileComponent } from './components/organization-profile.component';
 import { PaymentsComponent } from './components/payments.component';
 import { ReportsComponent } from './components/reports.component';
-import { ScreeningStatusesComponent } from './components/screening-statuses.component';
-import { SettingsComponent } from './components/settings.component';
 import { UsersComponent } from './components/users.component';
 import { DashboardComponent } from './dashboard.component';
 
 export class DashboardRoutes {
 	public static DASHBOARD = 'dashboard';
 	public static HOME = 'home';
-	public static CRIMINAL_RECORD_CHECKS = 'new-screening';
-	public static APPLICATION_STATUSES = 'screening-statuses';
-	public static EXPIRING_CHECKS = 'expiring-screening';
+	public static CRIMINAL_RECORD_CHECKS = 'criminal-record-checks';
+	public static APPLICATION_STATUSES = 'application-statuses';
+	public static EXPIRING_CHECKS = 'expiring-checks';
 	public static GENERIC_UPLOADS = 'generic-uploads';
 	public static IDENTITY_VERIFICATION = 'identity-verification';
 	public static MANUAL_SUBMISSIONS = 'manual-submissions';
+	public static ORGANIZATION_PROFILE = 'organization-profile';
 	public static PAYMENTS = 'payments';
 	public static REPORTS = 'reports';
-	public static SETTINGS = 'settings';
 	public static USERS = 'users';
 
 	public static MODULE_PATH = DashboardRoutes.DASHBOARD;
@@ -40,14 +40,14 @@ const routes: Routes = [
 		component: DashboardComponent,
 		children: [
 			{ path: 'home', component: DashboardHomeComponent },
-			{ path: 'new-screening', component: NewScreeningComponent },
-			{ path: 'screening-statuses', component: ScreeningStatusesComponent },
-			{ path: 'expiring-screening', component: ExpiringScreeningsComponent },
+			{ path: 'criminal-record-checks', component: CriminalRecordChecksComponent },
+			{ path: 'application-statuses', component: ApplicationStatusesComponent },
+			{ path: 'expiring-checks', component: ExpiringChecksComponent },
 			{ path: 'generic-uploads', component: GenericUploadsComponent },
 			{ path: 'identity-verification', component: IdentifyVerificationComponent },
 			{ path: 'payments', component: PaymentsComponent },
 			{ path: 'manual-submissions', component: ManualSubmissionsComponent },
-			{ path: 'settings', component: SettingsComponent },
+			{ path: 'organization-profile', component: OrganizationProfileComponent },
 			{ path: 'reports', component: ReportsComponent },
 			{ path: 'users', component: UsersComponent },
 		],

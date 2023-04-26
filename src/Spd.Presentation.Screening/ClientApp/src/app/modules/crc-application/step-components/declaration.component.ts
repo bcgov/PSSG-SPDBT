@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ScreeningFormStepComponent } from '../scr-application.component';
+import { CrcFormStepComponent } from '../crc-application.component';
 
 @Component({
 	selector: 'app-declaration',
@@ -31,7 +31,7 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 	`,
 	styles: [],
 })
-export class DeclarationComponent implements ScreeningFormStepComponent {
+export class DeclarationComponent implements CrcFormStepComponent {
 	form: FormGroup = this.formBuilder.group({
 		agreeToDeclaration: new FormControl('', [Validators.required]),
 	});

@@ -13,7 +13,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
-	selector: 'app-new-screening-modal',
+	selector: 'app-crc-add-modal',
 	template: `
 		<div mat-dialog-title>{{ title }}</div>
 		<mat-dialog-content>
@@ -157,7 +157,7 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 		`,
 	],
 })
-export class NewScreeningModalComponent implements OnInit {
+export class CrcAddModalComponent implements OnInit {
 	isDuplicateDetected = false;
 	duplicateName = '';
 	duplicateEmail = '';
@@ -168,12 +168,12 @@ export class NewScreeningModalComponent implements OnInit {
 	matcher = new FormErrorStateMatcher();
 	payeePreferenceTypeCodes = PayeePreferenceTypeCode;
 
-	title: string = 'New Criminal Record Check';
+	title: string = 'Add Criminal Record Check';
 	form!: FormGroup;
 
 	constructor(
 		private formBuilder: FormBuilder,
-		private dialogRef: MatDialogRef<NewScreeningModalComponent>,
+		private dialogRef: MatDialogRef<CrcAddModalComponent>,
 		private applicationService: ApplicationService,
 		private authenticationService: AuthenticationService,
 		private dialog: MatDialog
@@ -301,7 +301,7 @@ export class NewScreeningModalComponent implements OnInit {
 			icon: 'info_outline',
 			title: 'Criminal record check',
 			message: '',
-			actionText: 'Cancel screening request',
+			actionText: 'Cancel request',
 			cancelText: 'Previous',
 		};
 

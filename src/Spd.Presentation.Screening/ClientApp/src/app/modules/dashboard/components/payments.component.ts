@@ -44,12 +44,12 @@ import { UtilService } from 'src/app/core/services/util.service';
 						[showDropdownOverlay]="showDropdownOverlay"
 						(showDropdownOverlayChange)="onShowDropdownOverlayChange($event)"
 					>
-						<app-screening-filter
+						<app-payment-filter
 							[formGroup]="formFilter"
 							(filterChange)="onFilterChange($event)"
 							(filterClear)="onFilterClear()"
 							(filterClose)="onFilterClose()"
-						></app-screening-filter>
+						></app-payment-filter>
 					</app-dropdown-overlay>
 				</div>
 				<!-- <div class="col-xl-3 col-lg-4 col-md-10 col-sm-9">
@@ -64,36 +64,36 @@ import { UtilService } from 'src/app/core/services/util.service';
 					<mat-table matSort [dataSource]="dataSource" matSortActive="createdOn" matSortDirection="asc">
 						<ng-container matColumnDef="applicantName">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Applicant Name</mat-header-cell>
-							<mat-cell *matCellDef="let screening">
+							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Applicant Name:</span>
-								{{ utilService.getFullName(screening.givenName, screening.surname) }}
+								{{ utilService.getFullName(application.givenName, application.surname) }}
 							</mat-cell>
 						</ng-container>
 
 						<ng-container matColumnDef="createdOn">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Date/Time Submitted</mat-header-cell>
-							<mat-cell *matCellDef="let screening">
+							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Date/Time Submitted:</span>
-								{{ screening.createdOn | date : constants.date.dateTimeFormat }}
+								{{ application.createdOn | date : constants.date.dateTimeFormat }}
 							</mat-cell>
 						</ng-container>
 
 						<ng-container matColumnDef="dateTimePaid">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Date/Time Paid</mat-header-cell>
-							<mat-cell *matCellDef="let screening">
+							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Date/Time Paid:</span>
-								??<!-- {{ screening.dateTimePaid | date : constants.date.dateTimeFormat }} -->
+								??<!-- {{ application.dateTimePaid | date : constants.date.dateTimeFormat }} -->
 							</mat-cell>
 						</ng-container>
 
 						<ng-container matColumnDef="status">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Status</mat-header-cell>
-							<mat-cell *matCellDef="let screening">
+							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Status:</span>
-								??<!-- <span *ngIf="screening.status != 'NotPaid'" class="fw-semi-bold" style="color: var(--color-green);">
+								??<!-- <span *ngIf="application.status != 'NotPaid'" class="fw-semi-bold" style="color: var(--color-green);">
 									Paid
 								</span>
-								<span *ngIf="screening.status == 'NotPaid'" class="fw-semi-bold" style="color: var(--color-red);">
+								<span *ngIf="application.status == 'NotPaid'" class="fw-semi-bold" style="color: var(--color-red);">
 									Not Paid
 								</span> -->
 							</mat-cell>
@@ -101,12 +101,12 @@ import { UtilService } from 'src/app/core/services/util.service';
 
 						<ng-container matColumnDef="actions">
 							<mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
-							<mat-cell *matCellDef="let screening">
+							<mat-cell *matCellDef="let application">
 								<button
 									mat-flat-button
 									class="m-2"
 									style="color: var(--color-primary-light);"
-									*ngIf="screening.status != 'NotPaid'"
+									*ngIf="application.status != 'NotPaid'"
 									aria-label="Download Clearance Letter"
 								>
 									<mat-icon>file_download</mat-icon>Download Receipt
@@ -116,7 +116,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 									mat-flat-button
 									class="m-2"
 									style="color: var(--color-green);"
-									*ngIf="screening.status == 'NotPaid'"
+									*ngIf="application.status == 'NotPaid'"
 									aria-label="Pay now"
 								>
 									<mat-icon>attach_money</mat-icon>Pay Now
@@ -167,7 +167,7 @@ export class PaymentsComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		const caseId = (this.location.getState() as any).caseId;
+		const caseId = (this.location.getState() as any)?.caseId;
 		this.formFilter.patchValue({ search: caseId });
 
 		this.columns = ['applicantName', 'createdOn', 'dateTimePaid', 'status', 'actions'];

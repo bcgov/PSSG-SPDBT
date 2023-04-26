@@ -10,7 +10,7 @@ import { AuthenticationService } from 'src/app/core/services/authentication.serv
 import { UtilService } from 'src/app/core/services/util.service';
 
 @Component({
-	selector: 'app-expiring-screenings',
+	selector: 'app-expiring-checks',
 	template: `
 		<app-dashboard-header subtitle="Criminal Record Check Portal"></app-dashboard-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
@@ -152,7 +152,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 		`,
 	],
 })
-export class ExpiringScreeningsComponent implements OnInit {
+export class ExpiringChecksComponent implements OnInit {
 	constants = SPD_CONSTANTS;
 	dataSource!: MatTableDataSource<ApplicationResponse>;
 	columns!: string[];

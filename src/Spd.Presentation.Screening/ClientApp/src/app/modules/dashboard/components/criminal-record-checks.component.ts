@@ -11,10 +11,10 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
-import { NewScreeningModalComponent } from './new-screening-modal.component';
+import { CrcAddModalComponent } from './crc-add-modal.component';
 
 @Component({
-	selector: 'app-new-screening',
+	selector: 'app-criminal-record-checks',
 	template: `
 		<app-dashboard-header subtitle="Criminal Record Check Portal"></app-dashboard-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
@@ -52,7 +52,7 @@ import { NewScreeningModalComponent } from './new-screening-modal.component';
 								<span class="mobile-label">Applicant Name:</span>
 								<!-- <mat-icon
 									class="error-icon"
-									matTooltip="The screening request was not delivered:<br/> Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+									matTooltip="The criminal record check request was not delivered:<br/> Lorem ipsum dolor sit amet, consectetur adipiscing elit"
 									matTooltipClass="error-tooltip"
 									matTooltipHideDelay="300000"
 								>
@@ -146,7 +146,7 @@ import { NewScreeningModalComponent } from './new-screening-modal.component';
 	],
 	encapsulation: ViewEncapsulation.None,
 })
-export class NewScreeningComponent implements OnInit {
+export class CriminalRecordChecksComponent implements OnInit {
 	constants = SPD_CONSTANTS;
 	dataSource!: MatTableDataSource<ApplicationResponse>;
 	columns!: string[];
@@ -173,7 +173,7 @@ export class NewScreeningComponent implements OnInit {
 
 	onAddScreeningRequest(): void {
 		this.dialog
-			.open(NewScreeningModalComponent, {
+			.open(CrcAddModalComponent, {
 				width: '1400px',
 			})
 			.afterClosed()

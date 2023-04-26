@@ -9,7 +9,7 @@ import { AuthenticationService } from 'src/app/core/services/authentication.serv
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 
 @Component({
-	selector: 'app-settings',
+	selector: 'app-organization-profile',
 	template: `
 		<app-dashboard-header subtitle="Criminal Record Check Portal"></app-dashboard-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
@@ -213,7 +213,7 @@ import { FormControlValidators } from 'src/app/core/validators/form-control.vali
 		`,
 	],
 })
-export class SettingsComponent implements OnInit {
+export class OrganizationProfileComponent implements OnInit {
 	viewOnly: boolean = true;
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	booleanTypeCodes = BooleanTypeCode;
