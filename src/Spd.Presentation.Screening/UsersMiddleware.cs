@@ -42,6 +42,7 @@ namespace Spd.Utilities.LogonUser
             {
                 ("GET", "api/health"),
                 ("GET", "api/user"),
+                ("GET", "api/configuration"),
                 ("POST", "api/anonymous-org-registrations"),
                 ("POST", "api/org-registrations")
             };
