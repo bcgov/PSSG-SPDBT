@@ -388,7 +388,7 @@ export const ScreeningTypeCodes = [
 					</button>
 				</div>
 				<div class="col-xl-2 col-lg-3 col-md-6 col-sm-12">
-					<button mat-raised-button color="primary" class="large mb-2" (click)="onSubmit()">Submit</button>
+					<button mat-flat-button color="primary" class="large mb-2" (click)="onSubmit()">Submit</button>
 				</div>
 			</div>
 		</section>

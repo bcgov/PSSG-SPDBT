@@ -114,7 +114,7 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 							formControlName="search"
 							placeholder="Search applicant's name or email or case id"
 						/>
-						<button mat-button matSuffix mat-raised-button aria-label="search" class="search-icon-button">
+						<button mat-button matSuffix mat-flat-button aria-label="search" class="search-icon-button">
 							<mat-icon>search</mat-icon>
 						</button>
 					</mat-form-field>

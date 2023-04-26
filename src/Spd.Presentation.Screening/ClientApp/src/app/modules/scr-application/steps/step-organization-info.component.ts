@@ -11,13 +11,14 @@ import { SecurityInformationComponent } from '../step-components/security-inform
 				<app-security-information></app-security-information>
 
 				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" (click)="onInfoNotCorrect()">
-							Information is not correct
-						</button>
+					<div class="col-lg-2 col-md-4 col-sm-12">
+						<button mat-stroked-button color="warn" class="large mb-2" (click)="onCancel()">Cancel</button>
 					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" class="large mb-2" (click)="onStepNext()">Next</button>
+					<div class="offset-lg-2 col-lg-2 col-md-4 col-sm-12">
+						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
+					</div>
+					<div class="col-lg-2 col-md-4 col-sm-12">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext()">Next</button>
 					</div>
 				</div>
 			</mat-step>
@@ -30,7 +31,7 @@ import { SecurityInformationComponent } from '../step-components/security-inform
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" class="large mb-2" [routerLink]="'/'">Close</button>
+						<button mat-flat-button color="primary" class="large mb-2" [routerLink]="'/'">Close</button>
 					</div>
 				</div>
 			</mat-step>
@@ -43,6 +44,7 @@ export class StepOrganizationInfoComponent {
 	@ViewChild('childstepper') childstepper!: MatStepper;
 
 	@Input() paymentBy!: 'APP' | 'ORG';
+	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
 
@@ -55,8 +57,12 @@ export class StepOrganizationInfoComponent {
 		};
 	}
 
-	onInfoNotCorrect(): void {
+	onCancel(): void {
 		this.childstepper.next();
+	}
+
+	onStepPrevious(): void {
+		this.previousStepperStep.emit(true);
 	}
 
 	onStepNext(): void {

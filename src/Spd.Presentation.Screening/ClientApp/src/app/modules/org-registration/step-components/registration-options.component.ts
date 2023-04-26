@@ -47,7 +47,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 							</table>
 						</div>
 						<div class="step-container__box__footer p-4">
-							<button mat-raised-button class="large" (click)="onRegisterWithBCeid()">
+							<button mat-flat-button class="large" (click)="onRegisterWithBCeid()">
 								<span style="vertical-align: text-bottom;">
 									Register with
 									<span
@@ -79,7 +79,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 							</p>
 						</div>
 						<div class="step-container__box__footer p-4" style="padding-top: 5.5rem!important;">
-							<button mat-raised-button color="primary" class="large" (click)="onClickNext()">
+							<button mat-flat-button color="primary" class="large" (click)="onClickNext()">
 								Continue without Business BCeID
 							</button>
 						</div>

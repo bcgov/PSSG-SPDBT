@@ -34,7 +34,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 							formControlName="search"
 							placeholder="Search applicant's name or email or case id"
 						/>
-						<button mat-button matSuffix mat-raised-button aria-label="search" class="search-icon-button">
+						<button mat-button matSuffix mat-flat-button aria-label="search" class="search-icon-button">
 							<mat-icon>search</mat-icon>
 						</button>
 					</mat-form-field>
@@ -53,7 +53,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 					</app-dropdown-overlay>
 				</div>
 				<!-- <div class="col-xl-3 col-lg-4 col-md-10 col-sm-9">
-					<button mat-raised-button color="primary" class="xlarge w-100 mb-2">
+					<button mat-flat-button color="primary" class="xlarge w-100 mb-2">
 						<mat-icon>download</mat-icon>Download Monthly Report
 					</button>
 				</div> -->

@@ -15,7 +15,7 @@ import { AgreementOfTermsComponent } from '../step-components/agreement-of-terms
 						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" class="large mb-2" (click)="onFormValidNextStep()">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep()">
 							<span *ngIf="paymentBy == 'APP'; else noPay">Pay</span>
 							<ng-template #noPay>Submit</ng-template>
 						</button>

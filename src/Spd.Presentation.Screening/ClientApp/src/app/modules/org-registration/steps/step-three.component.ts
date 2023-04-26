@@ -22,7 +22,7 @@ import { ScreeningsQuestionComponent } from '../step-components/screenings-quest
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
 						<button
-							mat-raised-button
+							mat-flat-button
 							color="primary"
 							class="large mb-2"
 							(click)="onFormValidNextStep(STEP_CONTACT_INFORMATION)"
@@ -42,7 +42,7 @@ import { ScreeningsQuestionComponent } from '../step-components/screenings-quest
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
 						<button
-							mat-raised-button
+							mat-flat-button
 							color="primary"
 							class="large mb-2"
 							(click)="onFormValidNextStep(STEP_ORGANIZATION_NAME)"
@@ -62,7 +62,7 @@ import { ScreeningsQuestionComponent } from '../step-components/screenings-quest
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
 						<button
-							mat-raised-button
+							mat-flat-button
 							color="primary"
 							class="large mb-2"
 							(click)="onFormValidNextStep(STEP_ORGANIZATION_INFORMATION)"
@@ -82,7 +82,7 @@ import { ScreeningsQuestionComponent } from '../step-components/screenings-quest
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
 						<button
-							mat-raised-button
+							mat-flat-button
 							color="primary"
 							class="large mb-2"
 							(click)="onFormValidNextStep(STEP_MAILING_ADDRESS)"
@@ -101,7 +101,7 @@ import { ScreeningsQuestionComponent } from '../step-components/screenings-quest
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" class="large mb-2" (click)="onStepNext(STEP_SCREENINGS_QUESTION)">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_SCREENINGS_QUESTION)">
 							Next
 						</button>
 					</div>
@@ -117,7 +117,7 @@ import { ScreeningsQuestionComponent } from '../step-components/screenings-quest
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" class="large mb-2" (click)="goToStepNext(STEP_PAYMENT_QUESTION)">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="goToStepNext(STEP_PAYMENT_QUESTION)">
 							Next
 						</button>
 					</div>

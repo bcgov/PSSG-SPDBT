@@ -125,7 +125,7 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 									<p>16 applications require payment</p>
 								</mat-card-content>
 								<mat-card-actions class="mt-4">
-									<button mat-raised-button color="primary" [routerLink]="[getRoute(dashboardRoutes.PAYMENTS)]">
+									<button mat-flat-button color="primary" [routerLink]="[getRoute(dashboardRoutes.PAYMENTS)]">
 										<mat-icon>attach_money</mat-icon>Pay Now
 									</button>
 								</mat-card-actions>
@@ -141,7 +141,7 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 								</mat-card-content>
 								<mat-card-actions class="mt-4">
 									<button
-										mat-raised-button
+										mat-flat-button
 										color="accent"
 										[routerLink]="[getRoute(dashboardRoutes.IDENTITY_VERIFICATION)]"
 									>
@@ -163,7 +163,7 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 								</mat-card-content>
 								<mat-card-actions class="mt-4">
 									<button
-										mat-raised-button
+										mat-flat-button
 										[routerLink]="[getRoute(dashboardRoutes.APPLICATION_STATUSES)]"
 										style="background-color: var(--color-green);color: var(--color-white);"
 									>
@@ -185,7 +185,7 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 								</mat-card-content>
 								<mat-card-actions class="mt-4">
 									<button
-										mat-raised-button
+										mat-flat-button
 										[routerLink]="[getRoute(dashboardRoutes.APPLICATION_STATUSES)]"
 										style="background-color: var(--color-red);color: var(--color-white);"
 									>

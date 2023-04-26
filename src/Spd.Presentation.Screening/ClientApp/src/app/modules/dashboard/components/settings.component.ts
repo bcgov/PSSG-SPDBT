@@ -18,7 +18,7 @@ import { FormControlValidators } from 'src/app/core/validators/form-control.vali
 					<h2 class="fw-normal">Organization Profile</h2>
 				</div>
 				<div class="col-xl-3 col-lg-4 col-md-12 col-sm-12" *ngIf="viewOnly">
-					<button mat-raised-button color="primary" class="large mb-2" (click)="onEditView()">Edit Information</button>
+					<button mat-flat-button color="primary" class="large mb-2" (click)="onEditView()">Edit Information</button>
 				</div>
 			</div>
 			<form [formGroup]="form" novalidate>
@@ -200,7 +200,7 @@ import { FormControlValidators } from 'src/app/core/validators/form-control.vali
 					</button>
 				</div>
 				<div class="col-xl-2 col-lg-3 col-md-6 col-sm-12">
-					<button mat-raised-button color="primary" class="large mb-2" (click)="onSave()">Submit</button>
+					<button mat-flat-button color="primary" class="large mb-2" (click)="onSave()">Submit</button>
 				</div>
 			</div>
 		</section>

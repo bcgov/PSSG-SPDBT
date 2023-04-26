@@ -16,7 +16,7 @@ import { DeclarationComponent } from '../step-components/declaration.component';
 						<button mat-stroked-button style="color: var(--color-green);" class="large mb-2">Download Receipt</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" class="large mb-2" matStepperNext>Next</button>
+						<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 					</div>
 				</div>
 			</mat-step>
@@ -26,7 +26,7 @@ import { DeclarationComponent } from '../step-components/declaration.component';
 
 				<div class="row mt-4">
 					<div class="offset-lg-4 col-lg-4 offset-md-4 col-md-4 col-sm-12">
-						<button mat-raised-button color="primary" class="large mb-2" matStepperNext>Next</button>
+						<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 					</div>
 				</div>
 			</mat-step>
@@ -36,7 +36,7 @@ import { DeclarationComponent } from '../step-components/declaration.component';
 
 				<div class="row mt-4">
 					<div class="offset-lg-4 col-lg-4 offset-md-4 col-md-4 col-sm-12">
-						<button mat-raised-button color="primary" class="large mb-2" [routerLink]="'/'">Close</button>
+						<button mat-flat-button color="primary" class="large mb-2" [routerLink]="'/'">Close</button>
 					</div>
 				</div>
 			</mat-step>

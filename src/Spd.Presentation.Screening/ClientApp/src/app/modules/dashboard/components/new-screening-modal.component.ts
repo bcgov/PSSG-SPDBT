@@ -138,7 +138,7 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 					<button mat-stroked-button mat-dialog-close class="large" color="primary">Cancel</button>
 				</div>
 				<div class="offset-lg-6 col-lg-3 offset-md-4 col-md-4 col-sm-12 mb-2">
-					<button mat-raised-button color="primary" class="large" (click)="onSendScreeningRequest()">
+					<button mat-flat-button color="primary" class="large" (click)="onSendScreeningRequest()">
 						Send Criminal Record Check
 					</button>
 				</div>

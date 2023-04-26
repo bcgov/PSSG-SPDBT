@@ -30,7 +30,7 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 				</div>
 				<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-12 my-auto" *ngIf="showAddArea">
 					<ng-container *ngIf="isAllowedAddContact == true; else addNotAllowed">
-						<button mat-raised-button class="large w-100 mat-green-button mb-2" (click)="onAddUser()">Add User</button>
+						<button mat-flat-button class="large w-100 mat-green-button mb-2" (click)="onAddUser()">Add User</button>
 					</ng-container>
 					<ng-template #addNotAllowed>
 						<div class="alert alert-warning d-flex align-items-center" role="alert">

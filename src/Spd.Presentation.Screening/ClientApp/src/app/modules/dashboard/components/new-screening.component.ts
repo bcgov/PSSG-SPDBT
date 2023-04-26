@@ -26,7 +26,7 @@ import { NewScreeningModalComponent } from './new-screening-modal.component';
 					</h2>
 				</div>
 				<div class="col-xxl-3 col-xl-4 col-lg-5 col-md-6 col-sm-12 my-auto">
-					<button mat-raised-button class="large w-100 mat-green-button mb-2" (click)="onAddScreeningRequest()">
+					<button mat-flat-button class="large w-100 mat-green-button mb-2" (click)="onAddScreeningRequest()">
 						Add Criminal Record Check
 					</button>
 				</div>
@@ -36,7 +36,7 @@ import { NewScreeningModalComponent } from './new-screening-modal.component';
 				<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
 					<mat-form-field>
 						<input matInput type="search" formControlName="search" placeholder="Search applicant's name or email" />
-						<button mat-button matSuffix mat-raised-button aria-label="search" class="search-icon-button">
+						<button mat-button matSuffix mat-flat-button aria-label="search" class="search-icon-button">
 							<mat-icon>search</mat-icon>
 						</button>
 					</mat-form-field>
