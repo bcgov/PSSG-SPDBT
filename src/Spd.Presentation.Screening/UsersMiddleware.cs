@@ -71,12 +71,12 @@ namespace Spd.Utilities.LogonUser
             UserProfileResponse userProfile = await mediator.Send(new GetCurrentUserProfileQuery());
             if (userProfile?.UserInfos == null)
             {
-                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "invalid user");
+                throw new ApiException(System.Net.HttpStatusCode.Unauthorized, "invalid user");
             }
             UserInfo ui = userProfile.UserInfos.FirstOrDefault(ui => ui.UserGuid == user.GetUserGuid() && ui.OrgId == orgId);
             if (ui == null)
             {
-                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "invalid user or organization");
+                throw new ApiException(System.Net.HttpStatusCode.Unauthorized, "invalid user or organization");
             }
             //add ui to claims
             user.UpdateUserClaims(ui.UserId.ToString(), orgId.ToString());

@@ -26,7 +26,21 @@ public class OrgScenarios : ScenarioContextBase
     }
 
     [Fact]
-    public async Task GetOrgFromId_WithCorrectAuth_Success()
+    public async Task GetOrgFromId_WithCorrectAuthAndHeader_Success()
+    {
+        var org = await fixture.testData.CreateOrg("org1");
+
+        await Host.Scenario(_ =>
+        {
+            _.WithRequestHeader("organization", org.accountid.ToString());
+            _.Get.Url($"/api/orgs/{org.accountid}");
+            _.ContentShouldContain(org.accountid.ToString());
+            _.StatusCodeShouldBeOk();
+        });
+    }
+
+    [Fact]
+    public async Task GetOrgFromId_WithCorrectAuthWithoutHeader_Fail()
     {
         var org = await fixture.testData.CreateOrg("org1");
 
