@@ -32,6 +32,7 @@ namespace Spd.Manager.Membership.UserProfile
         public Guid? OrgId { get; set; }
         public Guid? OrgRegistrationId { get; set; }
         public string? OrgName { get; set; }
+        public Guid? UserGuid { get; set; }
     }
 
     public record OrgSettings

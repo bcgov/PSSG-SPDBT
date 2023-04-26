@@ -12,6 +12,8 @@ namespace Spd.Utilities.LogonUser
         public static readonly string BCeID_BUSINESS_NAME = "bceid_business_name";
         public static readonly string BCeID_BUSINESS_GUID = "bceid_business_guid";
         public static readonly string IDENTITY_PROVIDER = "identity_provider";
+        public static readonly string SPD_USERID = "spd_userid";
+        public static readonly string SPD_ORGID = "spd_orgid";
         public static bool IsAuthenticated(this IPrincipal principal)
         {
             var claimPrincipal = ValidatePrincipal(principal);

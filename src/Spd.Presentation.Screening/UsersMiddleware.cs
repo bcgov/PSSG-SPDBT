@@ -1,12 +1,10 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Http;
-using Spd.Manager.Membership.OrgUser;
+using Spd.Manager.Membership.UserProfile;
 using Spd.Utilities.Shared.Exceptions;
-using System.Security.Principal;
+using System.Security.Claims;
 
 namespace Spd.Utilities.LogonUser
 {
-    //this middleware has no function yet. Leave it here for future use.
     public class UsersMiddleware
     {
         private readonly RequestDelegate next;
@@ -26,9 +24,9 @@ namespace Spd.Utilities.LogonUser
                 return;
             }
 
-            if(context.Request.Headers.TryGetValue("organization", out var orgStr))
+            if (context.Request.Headers.TryGetValue("organization", out var orgIdStr))
             {
-                ProcessUser(context.User, mediator, orgStr);
+                await ProcessUser(context.User, mediator, orgIdStr);
             }
             else
             {
@@ -63,13 +61,25 @@ namespace Spd.Utilities.LogonUser
             return false;
         }
 
-        private async Task ProcessUser(IPrincipal user, IMediator mediator, string orgStr)
+        private async Task ProcessUser(ClaimsPrincipal user, IMediator mediator, string? orgIdStr)
         {
-            if (!Guid.TryParse(orgStr, out Guid orgId))
+            if (!Guid.TryParse(orgIdStr, out Guid orgId))
             {
                 throw new ApiException(System.Net.HttpStatusCode.BadRequest, "organization is not a valid guid");
             }
-            var users = await mediator.Send(new OrgUserListQuery(orgId));
+            //will add to check cache here.
+            UserProfileResponse userProfile = await mediator.Send(new GetCurrentUserProfileQuery());
+            if (userProfile?.UserInfos == null)
+            {
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "invalid user");
+            }
+            UserInfo ui = userProfile.UserInfos.FirstOrDefault(ui => ui.UserGuid == user.GetUserGuid() && ui.OrgId == orgId);
+            if (ui == null)
+            {
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "invalid user or organization");
+            }
+            //add ui to claims
+            user.UpdateUserClaims(ui.UserId.ToString(), orgId.ToString());
         }
 
     }
