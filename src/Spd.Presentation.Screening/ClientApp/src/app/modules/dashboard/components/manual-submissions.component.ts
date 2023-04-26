@@ -6,9 +6,9 @@ import { HotToastService } from '@ngneat/hot-toast';
 import { NgxMaskPipe } from 'ngx-mask';
 import {
 	ApplicationCreateRequest,
+	ApplicationCreateResponse,
 	ApplicationOriginTypeCode,
 	BooleanTypeCode,
-	CheckApplicationDuplicateResponse,
 	EmployeeInteractionTypeCode,
 	ScreeningTypeCode,
 } from 'src/app/api/models';
@@ -485,32 +485,14 @@ export class ManualSubmissionsComponent implements OnInit {
 			body.haveVerifiedIdentity = body.haveVerifiedIdentity == true ? true : false;
 			body.contractedCompanyName =
 				body.screeningTypeCode == ScreeningTypeCode.Contractor ? body.contractedCompanyName : '';
+			body.requireDuplicateCheck = true;
 
 			// Check for potential duplicate
 			this.applicationService
-				.apiOrgsOrgIdDetectApplicationDuplicatePost({ orgId: this.authenticationService.loggedInOrgId!, body })
+				.apiOrgsOrgIdApplicationPost({ orgId: this.authenticationService.loggedInOrgId!, body })
 				.pipe()
-				.subscribe((dupres: CheckApplicationDuplicateResponse) => {
-					if (dupres.hasPotentialDuplicate) {
-						const data: DialogOptions = {
-							icon: 'warning',
-							title: 'Potential duplicate detected',
-							message:
-								'Your organization has submitted a criminal record check for this applicant within the last 30 days. How would you like to proceed?',
-							actionText: 'Yes, create application',
-							cancelText: 'Cancel',
-						};
-						this.dialog
-							.open(DialogComponent, { data })
-							.afterClosed()
-							.subscribe((response: boolean) => {
-								if (response) {
-									this.saveManualSubmission(body);
-								}
-							});
-					} else {
-						this.saveManualSubmission(body);
-					}
+				.subscribe((dupres: ApplicationCreateResponse) => {
+					this.displayDataValidationMessage(body, dupres);
 				});
 		}
 	}
@@ -519,23 +501,6 @@ export class ManualSubmissionsComponent implements OnInit {
 		this.form.reset();
 		this.aliases.clear();
 		this.onAddRow();
-	}
-
-	saveManualSubmission(body: ApplicationCreateRequest): void {
-		if (body.phoneNumber) {
-			body.phoneNumber = this.maskPipe.transform(body.phoneNumber, SPD_CONSTANTS.phone.backendMask);
-		}
-
-		this.applicationService
-			.apiOrgsOrgIdApplicationPost({
-				orgId: this.authenticationService.loggedInOrgId!,
-				body,
-			})
-			.pipe()
-			.subscribe((_resp: any) => {
-				this.hotToast.success('The manual submission was successfully saved');
-				this.router.navigateByUrl(DashboardRoutes.dashboardPath(DashboardRoutes.SCREENING_STATUSES));
-			});
 	}
 
 	onAddressAutocomplete(address: Address): void {
@@ -644,5 +609,55 @@ export class ManualSubmissionsComponent implements OnInit {
 			middleName2: [''],
 			surname: ['', [Validators.required]],
 		});
+	}
+
+	private displayDataValidationMessage(body: ApplicationCreateRequest, dupres: ApplicationCreateResponse): void {
+		if (dupres.createSuccess) {
+			this.handleSaveSuccess();
+			return;
+		}
+
+		if (dupres.hasPotentialDuplicate) {
+			const data: DialogOptions = {
+				icon: 'warning',
+				title: 'Potential duplicate detected',
+				message:
+					'An in-progress application already exists for this applicant, with your organization for this screening type. How would you like to proceed?',
+				actionText: 'Submit application',
+				cancelText: 'Cancel',
+			};
+			this.dialog
+				.open(DialogComponent, { data })
+				.afterClosed()
+				.subscribe((response: boolean) => {
+					if (response) {
+						this.saveManualSubmission(body);
+					}
+				});
+		} else {
+			this.saveManualSubmission(body);
+		}
+	}
+
+	private saveManualSubmission(body: ApplicationCreateRequest): void {
+		body.requireDuplicateCheck = false;
+		if (body.phoneNumber) {
+			body.phoneNumber = this.maskPipe.transform(body.phoneNumber, SPD_CONSTANTS.phone.backendMask);
+		}
+
+		this.applicationService
+			.apiOrgsOrgIdApplicationPost({
+				orgId: this.authenticationService.loggedInOrgId!,
+				body,
+			})
+			.pipe()
+			.subscribe((_resp: any) => {
+				this.handleSaveSuccess();
+			});
+	}
+
+	private handleSaveSuccess(): void {
+		this.hotToast.success('The manual submission was successfully saved');
+		this.router.navigateByUrl(DashboardRoutes.dashboardPath(DashboardRoutes.SCREENING_STATUSES));
 	}
 }

@@ -7,15 +7,13 @@ namespace Spd.Manager.Cases
     public interface IApplicationManager
     {
         public Task<ApplicationInvitesCreateResponse> Handle(ApplicationInviteCreateCommand request, CancellationToken cancellationToken);
-        public Task<Unit> Handle(ApplicationCreateCommand request, CancellationToken cancellationToken);
-        public Task<CheckApplicationDuplicateResponse> Handle(CheckApplicationDuplicateQuery request, CancellationToken cancellationToken);
+        public Task<ApplicationCreateResponse> Handle(ApplicationCreateCommand request, CancellationToken cancellationToken);
         public Task<ApplicationListResponse> Handle(ApplicationListQuery request, CancellationToken cancellationToken);
 
     }
 
     public record ApplicationInviteCreateCommand(ApplicationInvitesCreateRequest ApplicationInvitesCreateRequest, Guid OrgId) : IRequest<ApplicationInvitesCreateResponse>;
-    public record ApplicationCreateCommand(ApplicationCreateRequest ApplicationCreateRequest) : IRequest<Unit>;
-    public record CheckApplicationDuplicateQuery(ApplicationCreateRequest ApplicationCreateRequest) : IRequest<CheckApplicationDuplicateResponse>;
+    public record ApplicationCreateCommand(ApplicationCreateRequest ApplicationCreateRequest) : IRequest<ApplicationCreateResponse>;
     public record ApplicationListQuery(Guid OrgId, int Page, int PageSize) : IRequest<ApplicationListResponse>;
 
     //application invites
@@ -73,7 +71,8 @@ namespace Spd.Manager.Cases
         public bool? OneLegalName { get; set; }
         public bool? AgreeToCompleteAndAccurate { get; set; }
         public bool? HaveVerifiedIdentity { get; set; }
-        public List<AliasCreateRequest> Aliases { get; set; }
+        public IEnumerable<AliasCreateRequest> Aliases { get; set; } = Array.Empty<AliasCreateRequest>();
+        public bool RequireDuplicateCheck { get; set; } = false;
     }
     public record AliasCreateRequest
     {
@@ -83,12 +82,11 @@ namespace Spd.Manager.Cases
         public string? Surname { get; set; }
 
     }
-    public class CheckApplicationDuplicateResponse
+    public class ApplicationCreateResponse
     {
-        public Guid OrgId { get; set; }
-        public string GivenName { get; set; }
-        public string Surname { get; set; }
-        public string EmailAddress { get; set; }
+        public bool IsDuplicateCheckRequired { get; set; } = false;
+        public bool CreateSuccess { get; set; } = false;
+        public Guid? applicationId { get; set; } = null;
         public bool HasPotentialDuplicate { get; set; } = false;
     }
 

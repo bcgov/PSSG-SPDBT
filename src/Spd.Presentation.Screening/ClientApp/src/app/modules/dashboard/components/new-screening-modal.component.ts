@@ -264,7 +264,7 @@ export class NewScreeningModalComponent implements OnInit {
 		this.promptVulnerableSector(body);
 	}
 
-	promptVulnerableSector(body: ApplicationInvitesCreateRequest): void {
+	private promptVulnerableSector(body: ApplicationInvitesCreateRequest): void {
 		const vulnerableQuestionSingular =
 			'In their role with your organization, will this person work directly with, or potentially have unsupervised access to, children and/or vulnerable adults?';
 		const vulnerableQuestionMultiple =
@@ -293,7 +293,7 @@ export class NewScreeningModalComponent implements OnInit {
 			});
 	}
 
-	promptVulnerableSectorNo(body: ApplicationInvitesCreateRequest): void {
+	private promptVulnerableSectorNo(body: ApplicationInvitesCreateRequest): void {
 		const vulnerableQuestionSingular = `If the applicant will not have unsupervised access to children or vulnerable adults in this role, but they require a criminal record check for another reason, please <a href="https://www2.gov.bc.ca/gov/content/safety/crime-prevention/criminal-record-check" target="_blank"> contact your local police detachment</a>`;
 		const vulnerableQuestionMultiple = `If the applicants will not have unsupervised access to children or vulnerable adults in this role, but they require a criminal record check for another reason, please <a href="https://www2.gov.bc.ca/gov/content/safety/crime-prevention/criminal-record-check" target="_blank"> contact your local police detachment</a>`;
 
@@ -325,7 +325,6 @@ export class NewScreeningModalComponent implements OnInit {
 	private checkForDuplicates(body: ApplicationInvitesCreateRequest): void {
 		// Check for potential duplicate
 		body.requireDuplicateCheck = true;
-
 		const message =
 			body.applicationInviteCreateRequests?.length == 1 ? this.yesMessageSingular : this.yesMessageMultiple;
 
@@ -338,9 +337,9 @@ export class NewScreeningModalComponent implements OnInit {
 					return;
 				}
 
-				const duplicateResponses = dupres.duplicateResponses ? dupres.duplicateResponses : [];
-				// At least one potential duplicate has been found
-				if (duplicateResponses.length > 0) {
+				if (dupres.duplicateResponses && dupres.duplicateResponses.length > 0) {
+					const duplicateResponses = dupres.duplicateResponses ? dupres.duplicateResponses : [];
+					// At least one potential duplicate has been found
 					let dupRows = '';
 					duplicateResponses.forEach((item) => {
 						dupRows += `<li>${item.firstName} ${item.lastName} (${item.email})</li>`;
@@ -354,12 +353,11 @@ export class NewScreeningModalComponent implements OnInit {
 					if (duplicateResponses.length > 1) {
 						dialogTitle = 'Potential duplicates detected';
 						dialogMessage = `Your organization has submitted a criminal record check for these applicants within the last 30 days.<br/><br/>${dupMessage}How would you like to proceed?`;
-						dialogAction = 'Yes, continue submission';
 					} else {
 						dialogTitle = 'Potential duplicate detected';
 						dialogMessage = `Your organization has submitted a criminal record check for this applicant within the last 30 days.<br/><br/>${dupMessage}How would you like to proceed?`;
-						dialogAction = 'Yes, continue submission';
 					}
+					dialogAction = 'Submit';
 
 					const data: DialogOptions = {
 						icon: 'warning',
@@ -374,16 +372,14 @@ export class NewScreeningModalComponent implements OnInit {
 						.afterClosed()
 						.subscribe((response: boolean) => {
 							if (response) {
-								this.handleSaveSuccess(message);
+								this.saveInviteRequests(body, message);
 							}
 						});
-				} else {
-					this.handleSaveSuccess(message);
 				}
 			});
 	}
 
-	saveInviteRequests(body: ApplicationInvitesCreateRequest, message: string): void {
+	private saveInviteRequests(body: ApplicationInvitesCreateRequest, message: string): void {
 		body.requireDuplicateCheck = false;
 		this.applicationService
 			.apiOrgsOrgIdApplicationInvitesPost({ orgId: this.authenticationService.loggedInOrgId!, body })

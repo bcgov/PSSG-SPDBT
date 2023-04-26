@@ -55,7 +55,7 @@ namespace Spd.Resource.Applicants
             return orginvitation != null;
         }
 
-        public async Task<bool> AddApplicationAsync(ApplicationCreateCmd createApplicationCmd, CancellationToken cancellationToken)
+        public async Task<Guid?> AddApplicationAsync(ApplicationCreateCmd createApplicationCmd, CancellationToken cancellationToken)
         {
             spd_application application = _mapper.Map<spd_application>(createApplicationCmd);
             account org = GetOrgById(createApplicationCmd.OrgId);
@@ -88,7 +88,7 @@ namespace Spd.Resource.Applicants
             }
 
             await _dynaContext.SaveChangesAsync(cancellationToken);
-            return true;
+            return application.spd_applicationid;
         }
 
         public async Task<ApplicationListResp> QueryAsync(ApplicationQuery query, CancellationToken cancellationToken)
