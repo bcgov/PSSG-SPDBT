@@ -72,7 +72,7 @@ namespace Spd.Manager.Cases
         public bool? AgreeToCompleteAndAccurate { get; set; }
         public bool? HaveVerifiedIdentity { get; set; }
         public IEnumerable<AliasCreateRequest> Aliases { get; set; } = Array.Empty<AliasCreateRequest>();
-        public bool CheckDuplicate { get; set; } = false;
+        public bool RequireDuplicateCheck { get; set; } = false;
     }
     public record AliasCreateRequest
     {

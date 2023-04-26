@@ -45,7 +45,7 @@ namespace Spd.Manager.Cases
         public async Task<ApplicationCreateResponse> Handle(ApplicationCreateCommand request, CancellationToken ct)
         {
             ApplicationCreateResponse result = new();
-            if(request.ApplicationCreateRequest.CheckDuplicate)
+            if(request.ApplicationCreateRequest.RequireDuplicateCheck)
             {
                 result = await CheckDuplicate(request.ApplicationCreateRequest, ct);
                 result.IsDuplicateCheckRequired = true;

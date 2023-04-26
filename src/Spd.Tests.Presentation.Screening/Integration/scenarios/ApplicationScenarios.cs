@@ -72,7 +72,7 @@ public class ApplicationScenarios : ScenarioContextBase
             EmailAddress = "email@test.com",
             Surname = "surname",
             JobTitle = "qa",
-            CheckDuplicate = false,
+            RequireDuplicateCheck = false,
             City="city",
             PhoneNumber="12345678",
             DateOfBirth=new DateTime(2000,1,1),
