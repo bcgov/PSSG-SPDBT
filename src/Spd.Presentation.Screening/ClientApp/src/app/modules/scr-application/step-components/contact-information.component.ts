@@ -68,7 +68,13 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 						<div class="col-lg-3 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Phone Number</mat-label>
-								<input matInput formControlName="contactPhoneNumber" [mask]="phoneMask" [showMaskTyped]="true" />
+								<input
+									matInput
+									formControlName="contactPhoneNumber"
+									[errorStateMatcher]="matcher"
+									[mask]="phoneMask"
+									[showMaskTyped]="true"
+								/>
 								<mat-error *ngIf="form.get('contactPhoneNumber')?.hasError('required')">This is required</mat-error>
 								<mat-error *ngIf="form.get('contactPhoneNumber')?.hasError('mask')">This must be 10 digits</mat-error>
 							</mat-form-field>

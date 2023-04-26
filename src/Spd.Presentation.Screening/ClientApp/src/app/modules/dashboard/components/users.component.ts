@@ -11,7 +11,7 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 @Component({
 	selector: 'app-users',
 	template: `
-		<app-dashboard-header subtitle="Security Screening Portal"></app-dashboard-header>
+		<app-dashboard-header subtitle="Criminal Record Check Portal"></app-dashboard-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-xxl-6 col-xl-7 col-lg-9 col-md-8 col-sm-12">
@@ -30,7 +30,7 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 				</div>
 				<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-12 my-auto" *ngIf="showAddArea">
 					<ng-container *ngIf="isAllowedAddContact == true; else addNotAllowed">
-						<button mat-raised-button class="large w-100 mat-green-button mb-2" (click)="onAddUser()">Add User</button>
+						<button mat-flat-button class="large w-100 mat-green-button mb-2" (click)="onAddUser()">Add User</button>
 					</ng-container>
 					<ng-template #addNotAllowed>
 						<div class="alert alert-warning d-flex align-items-center" role="alert">

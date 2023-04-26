@@ -9,7 +9,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 @Component({
 	selector: 'app-generic-uploads',
 	template: `
-		<app-dashboard-header subtitle="Security Screening Portal"></app-dashboard-header>
+		<app-dashboard-header subtitle="Criminal Record Check Portal"></app-dashboard-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-12">
@@ -73,13 +73,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 			<div class="row mt-4">
 				<div class="col-md-12 col-sm-12">
 					<h3 class="fw-normal">Previous Uploads</h3>
-					<mat-table
-						matSort
-						[dataSource]="dataSource"
-						matSortActive="uploadedDateTime"
-						matSortDirection="desc"
-						class="isMobile"
-					>
+					<mat-table matSort [dataSource]="dataSource" matSortActive="uploadedDateTime" matSortDirection="desc">
 						<ng-container matColumnDef="uploadedDateTime">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Date/Time Uploaded</mat-header-cell>
 							<mat-cell *matCellDef="let upload">

@@ -16,9 +16,9 @@ import { DashboardComponent } from './dashboard.component';
 export class DashboardRoutes {
 	public static DASHBOARD = 'dashboard';
 	public static HOME = 'home';
-	public static NEW_SCREENING = 'new-screening';
-	public static SCREENING_STATUSES = 'screening-statuses';
-	public static EXPIRING_SCREENING = 'expiring-screening';
+	public static CRIMINAL_RECORD_CHECKS = 'new-screening';
+	public static APPLICATION_STATUSES = 'screening-statuses';
+	public static EXPIRING_CHECKS = 'expiring-screening';
 	public static GENERIC_UPLOADS = 'generic-uploads';
 	public static IDENTITY_VERIFICATION = 'identity-verification';
 	public static MANUAL_SUBMISSIONS = 'manual-submissions';

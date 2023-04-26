@@ -18,35 +18,14 @@ export interface OrgSelectionResponseData {
 		<div mat-dialog-title>{{ title }}</div>
 		<mat-divider></mat-divider>
 		<mat-dialog-content>
-			<mat-radio-group [(ngModel)]="selectedOrg">
-				<ng-container *ngFor="let user of userInfos; let i = index">
-					<mat-radio-button [value]="user.orgId" [name]="user.orgId!">
-						<strong>{{ user.orgName }}</strong>
-					</mat-radio-button>
-				</ng-container>
-			</mat-radio-group>
+			<ng-container *ngFor="let userinfo of userInfos; let i = index">
+				<button mat-stroked-button color="primary" class="my-2" (click)="onSelectOrg(userinfo)">
+					{{ userinfo.orgName }}
+				</button>
+			</ng-container>
 		</mat-dialog-content>
-		<mat-dialog-actions>
-			<div class="row m-0 w-100">
-				<div class="offset-lg-9 col-lg-3 offset-md-8 col-md-4 col-sm-12 mb-2">
-					<button mat-raised-button color="primary" *ngIf="selectedOrg" class="large" (click)="onSaveOrg()">
-						Select
-					</button>
-				</div>
-			</div>
-		</mat-dialog-actions>
 	`,
-	styles: [
-		`
-			.button-toggle {
-				width: 130px;
-			}
-
-			.delete-row-button:not([disabled]) {
-				color: var(--color-red);
-			}
-		`,
-	],
+	styles: [],
 })
 export class OrgSelectionModalComponent implements OnInit {
 	selectedOrg: any = null;
@@ -68,8 +47,7 @@ export class OrgSelectionModalComponent implements OnInit {
 		this.userInfos = infos;
 	}
 
-	onSaveOrg() {
-		const userinfo = this.userInfos.find((item) => item.orgId == this.selectedOrg);
+	onSelectOrg(userinfo: UserInfo) {
 		this.dialogRef.close({
 			orgId: userinfo ? userinfo.orgId : null,
 			orgName: userinfo ? userinfo.orgName : null,

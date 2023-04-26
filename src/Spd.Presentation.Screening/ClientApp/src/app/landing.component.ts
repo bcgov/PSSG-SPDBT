@@ -7,14 +7,14 @@ import { DashboardRoutes } from './modules/dashboard/dashboard-routing.module';
 	selector: 'app-landing',
 	template: `
 		<section class="step-section col-md-3 col-sm-12 mx-auto mt-4 p-4">
-			<button mat-raised-button color="primary" class="large my-2" [routerLink]="['/org-registration/']">
+			<button mat-flat-button color="primary" class="large my-2" [routerLink]="['/org-registration/']">
 				Organization Registration
 			</button>
 
 			<mat-divider class="my-3"></mat-divider>
 
-			<button mat-raised-button color="primary" class="large my-2" (click)="goToScreening()">
-				Screening Application
+			<button mat-flat-button color="primary" class="large my-2" (click)="goToScreening()">
+				Criminal Record Check Application
 			</button>
 
 			<mat-radio-group [(ngModel)]="paymentBy">
@@ -28,7 +28,7 @@ import { DashboardRoutes } from './modules/dashboard/dashboard-routing.module';
 
 			<mat-divider class="my-3"></mat-divider>
 
-			<button mat-raised-button color="primary" class="large my-2" (click)="onRegisterWithBCeid()">CRRP Portal</button>
+			<button mat-flat-button color="primary" class="large my-2" (click)="onRegisterWithBCeid()">CRRP Portal</button>
 		</section>
 	`,
 	styles: [],

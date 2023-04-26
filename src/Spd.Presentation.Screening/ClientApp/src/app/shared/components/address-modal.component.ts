@@ -19,7 +19,6 @@ export interface AddressDialogData {
 						[dataSource]="dataSource"
 						matSortActive="status"
 						matSortDirection="asc"
-						class="isMobile"
 						style="max-height: 70vh;"
 					>
 						<ng-container matColumnDef="addrDescription">
