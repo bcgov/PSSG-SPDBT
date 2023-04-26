@@ -5,7 +5,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { ScreeningFormStepComponent } from '../scr-application.component';
+import { CrcFormStepComponent } from '../crc-application.component';
 
 @Component({
 	selector: 'app-contact-information',
@@ -86,7 +86,7 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 	`,
 	styles: [``],
 })
-export class ContactInformationComponent implements ScreeningFormStepComponent {
+export class ContactInformationComponent implements CrcFormStepComponent {
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	form: FormGroup = this.formBuilder.group(
 		{

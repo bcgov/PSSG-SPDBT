@@ -41,7 +41,7 @@ import { Component, Input } from '@angular/core';
 								<div class="fs-5 mb-2">Complete</div>
 								<p>
 									If your registration is approved, we'll send a link to the organization portal for you to manage all
-									of your screenings.
+									of your applications.
 								</p>
 							</td>
 						</tr>

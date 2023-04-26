@@ -42,7 +42,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 									<td class="pr-2 pb-2">
 										<img class="step-container__box__title__checkbox" src="/assets/checkbox.svg" />
 									</td>
-									<td>Manage expiring screenings</td>
+									<td>Manage expiring checks</td>
 								</tr>
 							</table>
 						</div>

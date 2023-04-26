@@ -1,19 +1,19 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { ApplicationStatusesComponent } from './components/application-statuses.component';
+import { CrcAddModalComponent } from './components/crc-add-modal.component';
+import { CriminalRecordChecksComponent } from './components/criminal-record-checks.component';
 import { DashboardHeaderComponent } from './components/dashboard-header.component';
 import { DashboardHomeComponent } from './components/dashboard-home.component';
-import { ExpiringScreeningsComponent } from './components/expiring-screenings.component';
+import { ExpiringChecksComponent } from './components/expiring-checks.component';
 import { GenericUploadsComponent } from './components/generic-uploads.component';
 import { IdentifyVerificationComponent } from './components/identify-verification.component';
-import { MaintainUserModalComponent } from './components/maintain-user-modal.component';
 import { ManualSubmissionsComponent } from './components/manual-submissions.component';
-import { NewScreeningModalComponent } from './components/new-screening-modal.component';
-import { NewScreeningComponent } from './components/new-screening.component';
+import { OrganizationProfileComponent } from './components/organization-profile.component';
 import { PaymentFilterComponent } from './components/payment-filter.component';
 import { PaymentsComponent } from './components/payments.component';
 import { ReportsComponent } from './components/reports.component';
-import { ScreeningStatusesComponent } from './components/screening-statuses.component';
-import { SettingsComponent } from './components/settings.component';
+import { UserEditModalComponent } from './components/user-edit-modal.component';
 import { UsersComponent } from './components/users.component';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
@@ -26,14 +26,14 @@ import { DashboardComponent } from './dashboard.component';
 		PaymentsComponent,
 		UsersComponent,
 		DashboardHeaderComponent,
-		MaintainUserModalComponent,
+		UserEditModalComponent,
 		PaymentFilterComponent,
-		SettingsComponent,
-		NewScreeningComponent,
-		NewScreeningModalComponent,
+		OrganizationProfileComponent,
+		CriminalRecordChecksComponent,
+		CrcAddModalComponent,
 		IdentifyVerificationComponent,
-		ScreeningStatusesComponent,
-		ExpiringScreeningsComponent,
+		ApplicationStatusesComponent,
+		ExpiringChecksComponent,
 		ManualSubmissionsComponent,
 		ReportsComponent,
 	],

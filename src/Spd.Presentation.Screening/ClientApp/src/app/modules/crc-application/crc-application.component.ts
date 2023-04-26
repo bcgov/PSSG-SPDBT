@@ -11,13 +11,13 @@ import { StepOrganizationInfoComponent } from './steps/step-organization-info.co
 import { StepPersonalInfoComponent } from './steps/step-personal-info.component';
 import { StepTermsAndCondComponent } from './steps/step-terms-and-cond.component';
 
-export interface ScreeningFormStepComponent {
+export interface CrcFormStepComponent {
 	getDataToSave(): any;
 	isFormValid(): boolean;
 }
 
 @Component({
-	selector: 'app-scr-application',
+	selector: 'app-crc-application',
 	template: `
 		<div class="container mt-4">
 			<mat-stepper
@@ -95,7 +95,7 @@ export interface ScreeningFormStepComponent {
 	`,
 	styles: [],
 })
-export class ScrApplicationComponent implements OnInit {
+export class CrcApplicationComponent implements OnInit {
 	orientation: StepperOrientation = 'vertical';
 	paymentBy!: 'APP' | 'ORG';
 
