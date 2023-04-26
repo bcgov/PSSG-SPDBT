@@ -23,25 +23,23 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/orgs/{orgId}/application-invites")]
         [HttpPost]
-        public async Task<ApplicationInvitesCreateResponse> Add([FromBody][Required]ApplicationInvitesCreateRequest invitesCreateRequest, [FromRoute] Guid orgId)
+        public async Task<ApplicationInvitesCreateResponse> AddApplicationInvites([FromBody][Required]ApplicationInvitesCreateRequest invitesCreateRequest, [FromRoute] Guid orgId)
         {
             return await _mediator.Send(new ApplicationInviteCreateCommand(invitesCreateRequest, orgId));
         }
 
+        /// <summary>
+        /// create application. if checkDuplicate is true, it will check if there is existing duplicated applications 
+        /// </summary>
+        /// <param name="applicationCreateRequest"></param>
+        /// <param name="orgId">organizationId</param>
+        /// <returns></returns>
         [Route("api/orgs/{orgId}/application")]
         [HttpPost]
-        public async Task<Unit> Add([FromBody][Required] ApplicationCreateRequest applicationCreateRequest, [FromRoute] Guid orgId)
+        public async Task<ApplicationCreateResponse> AddApplication([FromBody][Required] ApplicationCreateRequest applicationCreateRequest, [FromRoute] Guid orgId)
         {
             applicationCreateRequest.OrgId = orgId;
             return await _mediator.Send(new ApplicationCreateCommand(applicationCreateRequest));
-        }
-
-        [Route("api/orgs/{orgId}/detect-application-duplicate")]
-        [HttpPost]
-        public async Task<CheckApplicationDuplicateResponse> DetectDuplicate([FromBody][Required] ApplicationCreateRequest applicationCreateRequest, [FromRoute] Guid orgId)
-        {
-            applicationCreateRequest.OrgId = orgId;
-            return await _mediator.Send(new CheckApplicationDuplicateQuery(applicationCreateRequest));
         }
 
         /// <summary>
