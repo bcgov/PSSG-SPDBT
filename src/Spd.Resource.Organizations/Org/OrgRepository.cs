@@ -63,8 +63,8 @@ namespace Spd.Resource.Organizations.Org
             if (searchQry.GenericEmail.IsNullOrEmpty())
             {
                 var org = _dynaContext.accounts.Expand(o => o.spd_OrganizationTypeId).Where(a =>
-                    a.name.Equals(searchQry.OrganizationName, StringComparison.InvariantCultureIgnoreCase) &&
-                    a.address1_postalcode.Equals(searchQry.MailingPostalCode, StringComparison.InvariantCultureIgnoreCase) &&
+                    a.name == searchQry.OrganizationName &&
+                    a.address1_postalcode == searchQry.MailingPostalCode &&
                     a.spd_OrganizationTypeId.spd_organizationtypeid == typeGuid &&
                     a.statecode != DynamicsConstants.StateCode_Inactive
                 ).FirstOrDefault();
@@ -74,9 +74,9 @@ namespace Spd.Resource.Organizations.Org
             {
                 // use email in the check
                 var org = _dynaContext.accounts.Expand(o => o.spd_OrganizationTypeId).Where(a =>
-                    a.name.Equals(searchQry.OrganizationName, StringComparison.InvariantCultureIgnoreCase) &&
-                    a.address1_postalcode.Equals(searchQry.MailingPostalCode, StringComparison.InvariantCultureIgnoreCase) &&
-                    a.emailaddress1.Equals(searchQry.GenericEmail, StringComparison.InvariantCultureIgnoreCase) &&
+                    a.name == searchQry.OrganizationName &&
+                    a.address1_postalcode == searchQry.MailingPostalCode &&
+                    a.emailaddress1 == searchQry.GenericEmail &&
                     a.spd_OrganizationTypeId.spd_organizationtypeid == typeGuid &&
                     a.statecode != DynamicsConstants.StateCode_Inactive
                 ).FirstOrDefault();
