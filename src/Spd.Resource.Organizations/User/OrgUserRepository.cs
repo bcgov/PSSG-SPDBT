@@ -27,7 +27,7 @@ namespace Spd.Resource.Organizations.User
             {
                 OrgUserByIdQry q => await GetUserAsync(q.UserId, ct),
                 OrgUsersByIdentityIdQry q => await GetUsersByIdentityIdAsync(q.IdentityId, ct),
-                OrgUsersByOrgIdQry q => await GetUsersByOrgIdAsync(q.OrgId, ct),
+                OrgUsersByOrgIdQry q => await GetUsersByOrgIdAsync(q.OrgId, q.UserGuid, ct),
                 _ => throw new NotSupportedException($"{qry.GetType().Name} is not supported")
             };
         }
@@ -153,14 +153,23 @@ namespace Spd.Resource.Organizations.User
             return new OrgUserResult(_mapper.Map<UserResult>(user));
         }
 
-        private async Task<OrgUsersResult> GetUsersByOrgIdAsync(Guid organizationId, CancellationToken cancellationToken)
+        private async Task<OrgUsersResult> GetUsersByOrgIdAsync(Guid organizationId, Guid? userGuid, CancellationToken cancellationToken)
         {
-            var users = _dynaContext.spd_portalusers
-                .Expand(u => u.spd_spd_role_spd_portaluser)
-                .Where(a => a._spd_organizationid_value == organizationId && a.statecode == DynamicsConstants.StateCode_Active)
-                .ToList();
+            userGuid = Guid.Parse("846597a7-0224-4ba0-884b-dc3ac8cb21b5");
+            DataServiceQuery<spd_portaluser> query = _dynaContext.spd_portalusers
+                .Expand(u => u.spd_spd_role_spd_portaluser);
 
-            if (users == null) throw new NotFoundException(HttpStatusCode.BadRequest, $"Cannot find the users with organizationId {organizationId}");
+            if (userGuid != null)
+            {
+                query = query.Expand(u => u.spd_IdentityId);
+            }
+
+            query = (DataServiceQuery<spd_portaluser>)query.Where(a => a._spd_organizationid_value == organizationId && a.statecode == DynamicsConstants.StateCode_Active);
+            var users = query.ToList();
+            if (userGuid != null)
+            {
+                users = users.Where(u => u.spd_IdentityId.spd_userguid == userGuid.ToString()).ToList();
+            }
 
             //todo: investigate why expand does not work here.
             await Parallel.ForEachAsync(users, cancellationToken, async (user, cancellationToken) =>

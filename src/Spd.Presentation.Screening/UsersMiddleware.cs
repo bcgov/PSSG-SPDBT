@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
+using Spd.Manager.Membership.OrgUser;
 using Spd.Utilities.Shared.Exceptions;
+using System.Security.Principal;
 
 namespace Spd.Utilities.LogonUser
 {
@@ -26,7 +28,7 @@ namespace Spd.Utilities.LogonUser
 
             if(context.Request.Headers.TryGetValue("organization", out var orgStr))
             {
-                ProcessUser(context, mediator, orgStr);
+                ProcessUser(context.User, mediator, orgStr);
             }
             else
             {
@@ -40,9 +42,11 @@ namespace Spd.Utilities.LogonUser
         {
             var Endpoints = new List<(string method, string path)>
             {
-                ("GET", "api/health")
+                ("GET", "api/health"),
+                ("GET", "api/user"),
+                ("POST", "api/anonymous-org-registrations"),
+                ("POST", "api/org-registrations")
             };
-
 
             if (context.Request.Path.HasValue)
             {
@@ -59,13 +63,13 @@ namespace Spd.Utilities.LogonUser
             return false;
         }
 
-        private async Task ProcessUser(HttpContext context, IMediator mediator, string orgId)
+        private async Task ProcessUser(IPrincipal user, IMediator mediator, string orgStr)
         {
-            if (!Guid.TryParse(orgId, out Guid organizationId))
+            if (!Guid.TryParse(orgStr, out Guid orgId))
             {
                 throw new ApiException(System.Net.HttpStatusCode.BadRequest, "organization is not a valid guid");
             }
-
+            var users = await mediator.Send(new OrgUserListQuery(orgId));
         }
 
     }
