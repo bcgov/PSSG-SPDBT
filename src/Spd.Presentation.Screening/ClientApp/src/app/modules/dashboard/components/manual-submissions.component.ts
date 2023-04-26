@@ -36,14 +36,14 @@ export const ScreeningTypeCodes = [
 @Component({
 	selector: 'app-manual-submissions',
 	template: `
-		<app-dashboard-header subtitle="Security Screening Portal"></app-dashboard-header>
+		<app-dashboard-header subtitle="Criminal Record Check Portal"></app-dashboard-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row mb-4">
 				<div class="col-xl-10 col-lg-10 col-md-12 col-sm-12">
 					<h2 class="fw-normal">
 						Manual Submissions
 						<div class="mt-2 fs-5 fw-light">
-							Enter the applicant's information, upload their consent form, and then pay the screening fee
+							Enter the applicant's information, upload their consent form, and then pay the criminal record check fee
 						</div>
 					</h2>
 				</div>
@@ -138,7 +138,7 @@ export const ScreeningTypeCodes = [
 					</div>
 					<div class="col-xl-3 col-lg-6 col-md-12">
 						<mat-form-field>
-							<mat-label>Screening Type</mat-label>
+							<mat-label>Application Type</mat-label>
 							<mat-select formControlName="screeningTypeCode">
 								<mat-option *ngFor="let scr of screeningTypes" [value]="scr.code">
 									{{ scr.desc }}
@@ -335,7 +335,7 @@ export const ScreeningTypeCodes = [
 					</div>
 					<div class="col-md-12 col-sm-12">
 						<mat-checkbox formControlName="haveVerifiedIdentity">
-							I confirm that I have verified the identity of the applicant for this security screening
+							I confirm that I have verified the identity of the applicant for this criminal record check
 						</mat-checkbox>
 					</div>
 				</div>
@@ -658,6 +658,6 @@ export class ManualSubmissionsComponent implements OnInit {
 
 	private handleSaveSuccess(): void {
 		this.hotToast.success('The manual submission was successfully saved');
-		this.router.navigateByUrl(DashboardRoutes.dashboardPath(DashboardRoutes.SCREENING_STATUSES));
+		this.router.navigateByUrl(DashboardRoutes.dashboardPath(DashboardRoutes.APPLICATION_STATUSES));
 	}
 }

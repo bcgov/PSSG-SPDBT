@@ -24,7 +24,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 									<td class="pr-2 pb-2">
 										<img class="step-container__box__title__checkbox" src="/assets/checkbox.svg" />
 									</td>
-									<td>Send out new screening requests</td>
+									<td>Send out new criminal record checks</td>
 								</tr>
 								<tr>
 									<td class="pr-2 pb-2">
@@ -78,7 +78,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 								registered users.
 							</p>
 						</div>
-						<div class="step-container__box__footer p-4" style="padding-top: 4.5rem!important;">
+						<div class="step-container__box__footer p-4" style="padding-top: 5.5rem!important;">
 							<button mat-raised-button color="primary" class="large" (click)="onClickNext()">
 								Continue without Business BCeID
 							</button>

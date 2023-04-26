@@ -11,7 +11,10 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="step">
-				<app-step-title title="Does your organization have a shared inbox and/or central phone line?"></app-step-title>
+				<app-step-title
+					title="Does your organization have a shared inbox and/or central phone line?"
+					subtitle="This is where criminal record check results will be returned to"
+				></app-step-title>
 				<div class="row">
 					<div class="offset-md-4 col-md-4 col-sm-12">
 						<mat-radio-group aria-label="Select an option" formControlName="hasPhoneOrEmail">

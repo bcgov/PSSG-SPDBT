@@ -106,10 +106,10 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 									<button
 										mat-icon-button
 										class="delete-row-button"
-										matTooltip="Remove screening request"
+										matTooltip="Remove criminal record check"
 										(click)="deleteRow(i)"
 										[disabled]="oneRowExists"
-										aria-label="Remove screening request"
+										aria-label="Remove criminal record check"
 									>
 										<mat-icon>delete_outline</mat-icon>
 									</button>
@@ -139,7 +139,7 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 				</div>
 				<div class="offset-lg-6 col-lg-3 offset-md-4 col-md-4 col-sm-12 mb-2">
 					<button mat-raised-button color="primary" class="large" (click)="onSendScreeningRequest()">
-						Send Screening Request
+						Send Criminal Record Check
 					</button>
 				</div>
 			</div>
@@ -162,13 +162,13 @@ export class NewScreeningModalComponent implements OnInit {
 	duplicateName = '';
 	duplicateEmail = '';
 
-	readonly yesMessageSingular = 'Your screening request has been sent to the applicant';
-	readonly yesMessageMultiple = 'Your screening requests have been sent to the applicants';
+	readonly yesMessageSingular = 'Your criminal record check has been sent to the applicant';
+	readonly yesMessageMultiple = 'Your criminal record checks have been sent to the applicants';
 
 	matcher = new FormErrorStateMatcher();
 	payeePreferenceTypeCodes = PayeePreferenceTypeCode;
 
-	title: string = 'New Screening Request';
+	title: string = 'New Criminal Record Check';
 	form!: FormGroup;
 
 	constructor(
@@ -218,7 +218,7 @@ export class NewScreeningModalComponent implements OnInit {
 		const data: DialogOptions = {
 			icon: 'warning',
 			title: 'Remove row',
-			message: 'Are you sure you want to remove this screening request?',
+			message: 'Are you sure you want to remove this criminal record check?',
 			actionText: 'Yes, remove this row',
 			cancelText: 'Cancel',
 		};

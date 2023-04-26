@@ -11,7 +11,7 @@ import { FormControlValidators } from 'src/app/core/validators/form-control.vali
 @Component({
 	selector: 'app-settings',
 	template: `
-		<app-dashboard-header subtitle="Security Screening Portal"></app-dashboard-header>
+		<app-dashboard-header subtitle="Criminal Record Check Portal"></app-dashboard-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row mb-4">
 				<div class="col-xl-9 col-lg-8 col-md-12 col-sm-12">
@@ -116,9 +116,9 @@ import { FormControlValidators } from 'src/app/core/validators/form-control.vali
 				</div>
 
 				<mat-divider class="my-3"></mat-divider>
-				<div class="text-minor-heading fw-semibold mb-2">Who pays for screenings?</div>
+				<div class="text-minor-heading fw-semibold mb-2">Who pays for the criminal record checks?</div>
 				<div class="mb-2">
-					Set who is responsible for paying the screening fee. You can adjust this when you generate a screening
+					Set who is responsible for paying the fee. You can adjust this when you generate a new criminal record check
 					request.
 				</div>
 				<div class="row">
@@ -141,7 +141,7 @@ import { FormControlValidators } from 'src/app/core/validators/form-control.vali
 
 				<mat-divider class="my-3"></mat-divider>
 				<div class="text-minor-heading fw-semibold mb-2">
-					Do you work with contractors who need vulnerable sector screenings?
+					Do you work with contractors who need vulnerable sector checks?
 				</div>
 				<div class="row">
 					<div class="col-xl-4 col-lg-12">
@@ -168,7 +168,7 @@ import { FormControlValidators } from 'src/app/core/validators/form-control.vali
 
 				<mat-divider class="my-3"></mat-divider>
 				<div class="text-minor-heading fw-semibold mb-2">
-					Do you work with licensees who need vulnerable sector screenings?
+					Do you work with licensees who need vulnerable sector checks?
 				</div>
 				<div class="row">
 					<div class="col-xl-4 col-lg-12">

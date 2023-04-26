@@ -14,7 +14,7 @@ import { DashboardRoutes } from './modules/dashboard/dashboard-routing.module';
 			<mat-divider class="my-3"></mat-divider>
 
 			<button mat-raised-button color="primary" class="large my-2" (click)="goToScreening()">
-				Screening Application
+				Criminal Record Check Application
 			</button>
 
 			<mat-radio-group [(ngModel)]="paymentBy">

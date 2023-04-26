@@ -13,14 +13,14 @@ import { UtilService } from 'src/app/core/services/util.service';
 @Component({
 	selector: 'app-payments',
 	template: `
-		<app-dashboard-header subtitle="Security Screening Portal"></app-dashboard-header>
+		<app-dashboard-header subtitle="Criminal Record Check Portal"></app-dashboard-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
-					<h2 class="mb-2 fw-normal">Screening Payments</h2>
+					<h2 class="mb-2 fw-normal">Outstanding Payments</h2>
 					<div class="alert alert-warning d-flex align-items-center" role="alert">
 						<mat-icon class="d-none d-md-block alert-icon me-2">warning</mat-icon>
-						<div>There are 5 outstanding screenings which require payment</div>
+						<div>There are 5 outstanding applications which require payment</div>
 					</div>
 				</div>
 			</div>
@@ -34,15 +34,8 @@ import { UtilService } from 'src/app/core/services/util.service';
 							formControlName="search"
 							placeholder="Search applicant's name or email or case id"
 						/>
-						<button
-							mat-button
-							matSuffix
-							mat-raised-button
-							color="primary"
-							aria-label="search"
-							style="padding: 2.1em 0; border-radius: unset;"
-						>
-							<mat-icon style="top: 8px;font-size: 2.2em;width: 40px;height: 40px;left: 8px;">search</mat-icon>
+						<button mat-button matSuffix mat-raised-button aria-label="search" class="search-icon-button">
+							<mat-icon>search</mat-icon>
 						</button>
 					</mat-form-field>
 				</div>
@@ -68,13 +61,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 
 			<div class="row">
 				<div class="col-12">
-					<mat-table
-						matSort
-						[dataSource]="dataSource"
-						matSortActive="createdOn"
-						matSortDirection="asc"
-						class="isMobile"
-					>
+					<mat-table matSort [dataSource]="dataSource" matSortActive="createdOn" matSortDirection="asc">
 						<ng-container matColumnDef="applicantName">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Applicant Name</mat-header-cell>
 							<mat-cell *matCellDef="let screening">

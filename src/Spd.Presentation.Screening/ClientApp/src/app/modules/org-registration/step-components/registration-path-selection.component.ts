@@ -10,7 +10,7 @@ export class RegistrationPathSelectionModel {
 	selector: 'app-registration-path-selection',
 	template: `
 		<div class="step">
-			<app-step-title title="Who are you requesting security screenings for?"></app-step-title>
+			<app-step-title title="Who are you requesting criminal record checks for?"></app-step-title>
 			<div class="step-container row">
 				<div class="offset-xl-3 col-xl-3 offset-lg-2 col-lg-4 offset-md-1 col-md-5 col-sm-6 mb-3">
 					<div

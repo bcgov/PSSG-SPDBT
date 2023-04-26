@@ -56,6 +56,7 @@ export interface ScreeningFormStepComponent {
 				<mat-step completed="false">
 					<ng-template matStepLabel>Personal Information</ng-template>
 					<app-step-personal-info
+						(previousStepperStep)="onPreviousStepperStep(stepper)"
 						(nextStepperStep)="onNextStepperStep(stepper)"
 						(scrollIntoView)="onScrollIntoView()"
 					></app-step-personal-info>

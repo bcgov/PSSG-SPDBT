@@ -11,7 +11,7 @@ import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData }
 @Component({
 	selector: 'app-users',
 	template: `
-		<app-dashboard-header subtitle="Security Screening Portal"></app-dashboard-header>
+		<app-dashboard-header subtitle="Criminal Record Check Portal"></app-dashboard-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-xxl-6 col-xl-7 col-lg-9 col-md-8 col-sm-12">

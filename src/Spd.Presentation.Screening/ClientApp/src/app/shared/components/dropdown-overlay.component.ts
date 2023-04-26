@@ -49,14 +49,14 @@ export class DropdownOverlayButtonComponent {}
 				position: relative;
 				top: -3px;
 				left: -6px;
-				font-size: 48px;
-				height: 48px;
-				width: 48px;
+				font-size: 40px;
+				height: 40px;
+				width: 40px;
 			}
 
 			.mat-mdc-icon-button.mat-mdc-button-base {
-				width: 60px;
-				height: 60px;
+				width: 52px;
+				height: 52px;
 			}
 		`,
 	],
