@@ -20,7 +20,7 @@ import { VulnerableSectorQuestionComponent } from '../step-components/vulnerable
 				<div class="row mt-4">
 					<div class="offset-lg-4 col-lg-4 offset-md-4 col-md-4 col-sm-12">
 						<button
-							mat-raised-button
+							mat-flat-button
 							color="primary"
 							class="large mb-2"
 							(click)="onFormValidNextStep(STEP_REGISTRATION_PATH)"
@@ -43,7 +43,7 @@ import { VulnerableSectorQuestionComponent } from '../step-components/vulnerable
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
 						<button
-							mat-raised-button
+							mat-flat-button
 							color="primary"
 							class="large mb-2"
 							(click)="onFormValidNextStep(STEP_ORGANIZATION_OPTION)"
@@ -62,7 +62,7 @@ import { VulnerableSectorQuestionComponent } from '../step-components/vulnerable
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" class="large mb-2" [routerLink]="'/'">Close</button>
+						<button mat-flat-button color="primary" class="large mb-2" [routerLink]="'/'">Close</button>
 					</div>
 				</div>
 			</mat-step>
@@ -76,7 +76,7 @@ import { VulnerableSectorQuestionComponent } from '../step-components/vulnerable
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
 						<button
-							mat-raised-button
+							mat-flat-button
 							color="primary"
 							class="large mb-2"
 							(click)="onFormValidNextStep(STEP_COMPENSATION_OPTION)"
@@ -95,7 +95,7 @@ import { VulnerableSectorQuestionComponent } from '../step-components/vulnerable
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" class="large mb-2" (click)="onVulnerableSectorQuestionNext()">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onVulnerableSectorQuestionNext()">
 							Next
 						</button>
 					</div>
@@ -110,7 +110,7 @@ import { VulnerableSectorQuestionComponent } from '../step-components/vulnerable
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" class="large mb-2" [routerLink]="'/'">Close</button>
+						<button mat-flat-button color="primary" class="large mb-2" [routerLink]="'/'">Close</button>
 					</div>
 				</div>
 			</mat-step>

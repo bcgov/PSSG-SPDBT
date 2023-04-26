@@ -9,7 +9,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 		<form [formGroup]="form" novalidate>
 			<div class="step">
 				<app-step-title
-					title="How many screenings do you anticipate your organization requesting per year?"
+					title="How many criminal record checks do you anticipate your organization requesting per year?"
 				></app-step-title>
 				<div class="row">
 					<div class="offset-lg-4 col-lg-4 offset-md-3 col-md-6 col-sm-12">

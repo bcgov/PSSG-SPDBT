@@ -54,32 +54,32 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 							</li>
 							<li class="nav-item w-100">
 								<a
-									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.NEW_SCREENING)]"
+									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.CRIMINAL_RECORD_CHECKS)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
 								>
 									<mat-icon>post_add</mat-icon>
-									<span class="menu-item ms-2 d-none d-sm-inline text-white">Screening Requests</span>
+									<span class="menu-item ms-2 d-none d-sm-inline text-white">Criminal Record Checks</span>
 								</a>
 							</li>
 							<li class="nav-item w-100">
 								<a
-									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.SCREENING_STATUSES)]"
+									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.APPLICATION_STATUSES)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
 								>
 									<mat-icon>people</mat-icon>
-									<span class="menu-item ms-2 d-none d-sm-inline text-white">Screening Statuses</span>
+									<span class="menu-item ms-2 d-none d-sm-inline text-white">Application Statuses</span>
 								</a>
 							</li>
 							<li class="nav-item w-100">
 								<a
-									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.EXPIRING_SCREENING)]"
+									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.EXPIRING_CHECKS)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
 								>
 									<mat-icon>alarm</mat-icon>
-									<span class="menu-item ms-2 d-none d-sm-inline text-white">Expiring Screening</span>
+									<span class="menu-item ms-2 d-none d-sm-inline text-white">Expiring Checks</span>
 								</a>
 							</li>
 							<li class="nav-item w-100">
@@ -89,7 +89,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 									class="nav-link align-middle text-white w-100"
 								>
 									<mat-icon>payment</mat-icon>
-									<span class="menu-item ms-2 d-none d-sm-inline text-white">Screening Payments</span>
+									<span class="menu-item ms-2 d-none d-sm-inline text-white">Outstanding Payments</span>
 								</a>
 							</li>
 							<hr class="d-none d-sm-inline w-100 text-white" />

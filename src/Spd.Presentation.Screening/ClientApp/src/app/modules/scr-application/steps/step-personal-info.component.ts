@@ -15,8 +15,11 @@ import { PreviousNameComponent } from '../step-components/previous-name.componen
 				<app-contact-information></app-contact-information>
 
 				<div class="row mt-4">
-					<div class="offset-lg-4 col-lg-4 offset-md-4 col-md-4 col-sm-12">
-						<button mat-raised-button color="primary" class="large mb-2" (click)="onFormValidNextStep(1)">Next</button>
+					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
+					</div>
+					<div class="col-lg-3 col-md-4 col-sm-6">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(1)">Next</button>
 					</div>
 				</div>
 			</mat-step>
@@ -29,7 +32,7 @@ import { PreviousNameComponent } from '../step-components/previous-name.componen
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" class="large mb-2" (click)="onFormValidNextStep(2)">Next</button>
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(2)">Next</button>
 					</div>
 				</div>
 			</mat-step>
@@ -42,7 +45,7 @@ import { PreviousNameComponent } from '../step-components/previous-name.componen
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" class="large mb-2" (click)="onFormValidNextStep(3)">Next</button>
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(3)">Next</button>
 					</div>
 				</div>
 			</mat-step>
@@ -55,7 +58,7 @@ import { PreviousNameComponent } from '../step-components/previous-name.componen
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" class="large mb-2" (click)="onFormValidNextStep(4)">Next</button>
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(4)">Next</button>
 					</div>
 				</div>
 			</mat-step>
@@ -68,7 +71,7 @@ import { PreviousNameComponent } from '../step-components/previous-name.componen
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" class="large mb-2" matStepperNext>Confirm</button>
+						<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Confirm</button>
 					</div>
 				</div>
 			</mat-step>
@@ -81,7 +84,7 @@ import { PreviousNameComponent } from '../step-components/previous-name.componen
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-raised-button color="primary" class="large mb-2" (click)="goToStepNext()">Next</button>
+						<button mat-flat-button color="primary" class="large mb-2" (click)="goToStepNext()">Next</button>
 					</div>
 				</div>
 			</mat-step>

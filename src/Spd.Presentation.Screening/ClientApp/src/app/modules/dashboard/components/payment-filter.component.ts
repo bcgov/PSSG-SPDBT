@@ -37,7 +37,7 @@ import { BaseFilterComponent } from 'src/app/shared/components/base-filter.compo
 					<mat-divider class="my-3"></mat-divider>
 					<mat-card-actions>
 						<button mat-stroked-button class="action-button" (click)="emitFilterClear()">Clear</button>
-						<button mat-raised-button class="action-button" color="primary" (click)="emitFilterChange()">Search</button>
+						<button mat-flat-button class="action-button" color="primary" (click)="emitFilterChange()">Search</button>
 					</mat-card-actions>
 				</mat-card>
 			</form>

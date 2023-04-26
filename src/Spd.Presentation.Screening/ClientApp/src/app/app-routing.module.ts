@@ -16,7 +16,7 @@ const routes: Routes = [
 	{
 		path: 'scr-application',
 		loadChildren: () => import('./modules/scr-application/scr-application.module').then((m) => m.ScrApplicationModule),
-		data: { title: 'Screening Application' },
+		data: { title: 'Criminal Record Check Application' },
 	},
 	{
 		path: 'dashboard',

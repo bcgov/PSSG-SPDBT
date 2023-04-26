@@ -11,7 +11,7 @@ import { MatStepper } from '@angular/material/stepper';
 
 				<div class="row mt-4">
 					<div class="offset-lg-4 col-lg-4 offset-md-4 col-md-4 col-sm-12">
-						<button mat-raised-button color="primary" class="large mb-2" (click)="onStepNext()">Start</button>
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext()">Start</button>
 					</div>
 				</div>
 			</mat-step>
