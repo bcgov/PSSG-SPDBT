@@ -20,7 +20,7 @@ export interface UserDialogData {
 }
 
 @Component({
-	selector: 'app-maintain-user-modal',
+	selector: 'app-user-edit-modal',
 	template: `
 		<div mat-dialog-title>{{ title }}</div>
 		<mat-dialog-content>
@@ -94,7 +94,7 @@ export interface UserDialogData {
 	`,
 	styles: [],
 })
-export class MaintainUserModalComponent implements OnInit {
+export class UserEditModalComponent implements OnInit {
 	authorizationTypes = ContactAuthorizationTypes;
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	title: string = '';
@@ -119,7 +119,7 @@ export class MaintainUserModalComponent implements OnInit {
 
 	constructor(
 		private formBuilder: FormBuilder,
-		private dialogRef: MatDialogRef<MaintainUserModalComponent>,
+		private dialogRef: MatDialogRef<UserEditModalComponent>,
 		private orgUserService: OrgUserService,
 		private maskPipe: NgxMaskPipe,
 		private authenticationService: AuthenticationService,

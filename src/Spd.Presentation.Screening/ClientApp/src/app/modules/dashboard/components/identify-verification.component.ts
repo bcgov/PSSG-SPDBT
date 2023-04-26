@@ -180,7 +180,7 @@ export class IdentifyVerificationComponent implements OnInit {
 	constructor(protected utilService: UtilService, private formBuilder: FormBuilder, private location: Location) {}
 
 	ngOnInit() {
-		const caseId = (this.location.getState() as any).caseId;
+		const caseId = (this.location.getState() as any)?.caseId;
 		this.formFilter.patchValue({ search: caseId });
 
 		this.columns = ['applicantName', 'dateOfBirth', 'jobTitle', 'email', 'dateTimeSubmitted', 'status', 'actions'];

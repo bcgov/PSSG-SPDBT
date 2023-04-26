@@ -4,7 +4,7 @@ import { UntilDestroy } from '@ngneat/until-destroy';
 import { AddressRetrieveResponse } from 'src/app/api/models';
 import { Address } from 'src/app/shared/components/address-autocomplete.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { ScreeningFormStepComponent } from '../scr-application.component';
+import { CrcFormStepComponent } from '../crc-application.component';
 
 @UntilDestroy({ checkProperties: true })
 @Component({
@@ -104,7 +104,7 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 		`,
 	],
 })
-export class MailingAddressComponent implements OnInit, ScreeningFormStepComponent {
+export class MailingAddressComponent implements OnInit, CrcFormStepComponent {
 	form!: FormGroup;
 	addressAutocompleteFields: AddressRetrieveResponse[] = [];
 	matcher = new FormErrorStateMatcher();

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { ScreeningFormStepComponent } from '../scr-application.component';
+import { CrcFormStepComponent } from '../crc-application.component';
 
 @Component({
 	selector: 'app-personal-information',
@@ -59,7 +59,7 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 	`,
 	styles: [],
 })
-export class PersonalInformationComponent implements ScreeningFormStepComponent {
+export class PersonalInformationComponent implements CrcFormStepComponent {
 	form: FormGroup = this.formBuilder.group({
 		birthplace: new FormControl('', [Validators.required]),
 		driversLicenseNumber: new FormControl(''),

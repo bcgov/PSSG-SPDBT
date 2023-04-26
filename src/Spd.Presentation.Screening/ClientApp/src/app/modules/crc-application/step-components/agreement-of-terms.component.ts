@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ScreeningFormStepComponent } from '../scr-application.component';
+import { CrcFormStepComponent } from '../crc-application.component';
 
 @Component({
 	selector: 'app-agreement-of-terms',
@@ -127,7 +127,7 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 		`,
 	],
 })
-export class AgreementOfTermsComponent implements ScreeningFormStepComponent {
+export class AgreementOfTermsComponent implements CrcFormStepComponent {
 	form: FormGroup = this.formBuilder.group({
 		agreeToCriminalCheck: new FormControl('', [Validators.required]),
 		agreeToVulnerableSectorSearch: new FormControl('', [Validators.required]),
