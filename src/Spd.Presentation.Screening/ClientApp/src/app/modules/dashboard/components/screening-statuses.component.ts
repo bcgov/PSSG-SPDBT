@@ -14,11 +14,11 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 @Component({
 	selector: 'app-screening-statuses',
 	template: `
-		<app-dashboard-header subtitle="Security Screening Portal"></app-dashboard-header>
+		<app-dashboard-header subtitle="Criminal Record Check Portal"></app-dashboard-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
-					<h2 class="mb-2 fw-normal">Screening Statuses</h2>
+					<h2 class="mb-2 fw-normal">Application Statuses</h2>
 					<div class="alert alert-warning d-flex align-items-center" role="alert">
 						<mat-icon class="d-none d-lg-block alert-icon me-2">schedule</mat-icon>
 						<div>
@@ -30,114 +30,78 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 			</div>
 
 			<div class="mb-4">
-				Active Screenings: (Last updated April 10, 11:59pm)
+				Active applications: (Last updated April 10, 11:59pm)
 				<div class="d-flex flex-wrap justify-content-start">
-					<!-- <div class="mat-card-yellow m-2" style="display: inline-flex;">
-						<div class="fs-6 fw-700 m-3">??</div>
-						<div class="m-3">Verify Identity</div>
-					</div> -->
-					<mat-card class="statistic-card mat-card-yellow m-2">
-						<mat-card-header>
-							<mat-card-title>??</mat-card-title>
-						</mat-card-header>
-						<mat-card-content>
-							<p>Verify Identity</p>
-						</mat-card-content>
-					</mat-card>
-					<mat-card class="statistic-card mat-card-yellow m-2">
-						<mat-card-header>
-							<mat-card-title>??</mat-card-title>
-						</mat-card-header>
-						<mat-card-content>
-							<p>Awaiting Payment</p>
-						</mat-card-content>
-					</mat-card>
-					<mat-card class="statistic-card mat-card-green m-2">
-						<mat-card-header>
-							<mat-card-title>??</mat-card-title>
-						</mat-card-header>
-						<mat-card-content>
-							<p>In Progress</p>
-						</mat-card-content>
-					</mat-card>
-					<mat-card class="statistic-card mat-card-yellow m-2">
-						<mat-card-header>
-							<mat-card-title>??</mat-card-title>
-						</mat-card-header>
-						<mat-card-content>
-							<p>Awaiting 3rd Party</p>
-						</mat-card-content>
-					</mat-card>
-					<mat-card class="statistic-card mat-card-yellow m-2">
-						<mat-card-header>
-							<mat-card-title>??</mat-card-title>
-						</mat-card-header>
-						<mat-card-content>
-							<p>Awaiting Applicant</p>
-						</mat-card-content>
-					</mat-card>
-					<mat-card class="statistic-card mat-card-blue m-2">
-						<mat-card-header>
-							<mat-card-title>??</mat-card-title>
-						</mat-card-header>
-						<mat-card-content>
-							<p>Under Assessment</p>
-						</mat-card-content>
-					</mat-card>
-					<mat-card class="statistic-card mat-card-blue m-2">
-						<mat-card-header>
-							<mat-card-title>??</mat-card-title>
-						</mat-card-header>
-						<mat-card-content>
-							<p>Incomplete</p>
-						</mat-card-content>
-					</mat-card>
+					<div class="d-flex flex-row statistic-card area-yellow align-items-center m-2">
+						<div class="fw-bold fs-4 m-2">??</div>
+						<div class="fw-semibold fs-6 m-2">Verify Identity</div>
+					</div>
+					<div class="d-flex flex-row statistic-card area-yellow align-items-center m-2">
+						<div class="fw-bold fs-4 m-2">??</div>
+						<div class="fw-semibold fs-6 m-2">Awaiting Payment</div>
+					</div>
+					<div class="d-flex flex-row statistic-card area-green align-items-center m-2">
+						<div class="fw-bold fs-4 m-2">??</div>
+						<div class="fw-semibold fs-6 m-2">In Progress</div>
+					</div>
+					<div class="d-flex flex-row statistic-card area-yellow align-items-center m-2">
+						<div class="fw-bold fs-4 m-2">??</div>
+						<div class="fw-semibold fs-6 m-2">Awaiting 3rd Party</div>
+					</div>
+					<div class="d-flex flex-row statistic-card area-yellow align-items-center m-2">
+						<div class="fw-bold fs-4 m-2">??</div>
+						<div class="fw-semibold fs-6 m-2">Awaiting Applicant</div>
+					</div>
+					<div class="d-flex flex-row statistic-card area-blue align-items-center m-2">
+						<div class="fw-bold fs-4 m-2">??</div>
+						<div class="fw-semibold fs-6 m-2">Under Assessment</div>
+					</div>
+					<div class="d-flex flex-row statistic-card area-blue align-items-center m-2">
+						<div class="fw-bold fs-4 m-2">??</div>
+						<div class="fw-semibold fs-6 m-2">Incomplete</div>
+					</div>
 				</div>
 			</div>
 
 			<div class="mb-4">
-				Completed screenings (completed, closed, or cancelled since April 14, 2022)
+				Completed applications (completed, closed, or cancelled since April 14, 2022)
 				<div class="d-flex flex-wrap justify-content-start">
-					<mat-card class="statistic-card mat-card-red m-2">
-						<mat-card-header>
-							<mat-card-title>??</mat-card-title>
-						</mat-card-header>
-						<mat-card-content>
-							<p>Risk Found</p>
-						</mat-card-content>
-					</mat-card>
-					<mat-card class="statistic-card mat-card-grey m-2">
-						<mat-card-header>
-							<mat-card-title>??</mat-card-title>
-						</mat-card-header>
-						<mat-card-content>
-							<p>Closed: Judicial Review</p>
-						</mat-card-content>
-					</mat-card>
-					<mat-card class="statistic-card mat-card-grey m-2">
-						<mat-card-header>
-							<mat-card-title>??</mat-card-title>
-						</mat-card-header>
-						<mat-card-content>
-							<p>Closed: No Response</p>
-						</mat-card-content>
-					</mat-card>
-					<mat-card class="statistic-card mat-card-grey m-2">
-						<mat-card-header>
-							<mat-card-title>??</mat-card-title>
-						</mat-card-header>
-						<mat-card-content>
-							<p>Closed: No Consent</p>
-						</mat-card-content>
-					</mat-card>
-					<mat-card class="statistic-card mat-card-grey m-2">
-						<mat-card-header>
-							<mat-card-title>??</mat-card-title>
-						</mat-card-header>
-						<mat-card-content>
-							<p>Cancelled: By Applicant</p>
-						</mat-card-content>
-					</mat-card>
+					<div class="d-flex flex-row statistic-card area-red align-items-center m-2">
+						<div class="fw-bold fs-4 m-2">??</div>
+						<div class="fw-semibold fs-6 m-2">Risk Found</div>
+					</div>
+					<div class="d-flex flex-row statistic-card area-grey align-items-center m-2">
+						<div class="fw-bold fs-4 m-2">??</div>
+						<div class="fw-semibold fs-6 m-2">Risk Found</div>
+					</div>
+					<div class="d-flex flex-row statistic-card area-grey align-items-center m-2">
+						<div class="fw-bold fs-4 m-2">??</div>
+						<div class="fw-semibold fs-6 m-2">
+							Closed:<br />
+							Judicial Review
+						</div>
+					</div>
+					<div class="d-flex flex-row statistic-card area-grey align-items-center m-2">
+						<div class="fw-bold fs-4 m-2">??</div>
+						<div class="fw-semibold fs-6 m-2">
+							Closed:<br />
+							No Response
+						</div>
+					</div>
+					<div class="d-flex flex-row statistic-card area-grey align-items-center m-2">
+						<div class="fw-bold fs-4 m-2">??</div>
+						<div class="fw-semibold fs-6 m-2">
+							Closed:<br />
+							No Consent
+						</div>
+					</div>
+					<div class="d-flex flex-row statistic-card area-grey align-items-center m-2">
+						<div class="fw-bold fs-4 m-2">??</div>
+						<div class="fw-semibold fs-6 m-2">
+							Cancelled:<br />
+							By Applicant
+						</div>
+					</div>
 				</div>
 			</div>
 
@@ -150,15 +114,8 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 							formControlName="search"
 							placeholder="Search applicant's name or email or case id"
 						/>
-						<button
-							mat-button
-							matSuffix
-							mat-raised-button
-							color="primary"
-							aria-label="search"
-							style="padding: 2.1em 0; border-radius: unset;"
-						>
-							<mat-icon style="top: 8px;font-size: 2.2em;width: 40px;height: 40px;left: 8px;">search</mat-icon>
+						<button mat-button matSuffix mat-flat-button aria-label="search" class="search-icon-button">
+							<mat-icon>search</mat-icon>
 						</button>
 					</mat-form-field>
 				</div>
@@ -175,22 +132,11 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 						></app-payment-filter>
 					</app-dropdown-overlay>
 				</div>
-				<!-- <div class="col-xl-3 col-lg-4 col-md-10 col-sm-9">
-					<button mat-raised-button color="primary" class="xlarge w-100 mb-2">
-						<mat-icon>download</mat-icon>Download Report
-					</button>
-				</div> -->
 			</div>
 
 			<div class="row">
 				<div class="col-12">
-					<mat-table
-						matSort
-						[dataSource]="dataSource"
-						matSortActive="createdOn"
-						matSortDirection="desc"
-						class="isMobile"
-					>
+					<mat-table matSort [dataSource]="dataSource" matSortActive="createdOn" matSortDirection="desc">
 						<ng-container matColumnDef="applicantName">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Applicant Name</mat-header-cell>
 							<mat-cell *matCellDef="let screening">
@@ -225,9 +171,9 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 						</ng-container>
 
 						<ng-container matColumnDef="applicationNumber">
-							<mat-header-cell *matHeaderCellDef mat-sort-header>Screening Number</mat-header-cell>
+							<mat-header-cell *matHeaderCellDef mat-sort-header>Case ID</mat-header-cell>
 							<mat-cell *matCellDef="let screening">
-								<span class="mobile-label">Screening Number:</span>
+								<span class="mobile-label">Case ID:</span>
 								{{ screening.applicationNumber }}
 							</mat-cell>
 						</ng-container>
@@ -310,11 +256,11 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 			}
 
 			.statistic-card {
-				width: 8.5em;
 				cursor: default;
-				.mat-mdc-card-title {
-					font-weight: 600;
-				}
+				height: 4em;
+				width: 10.5em;
+				box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14),
+					0px 1px 3px 0px rgba(0, 0, 0, 0.12);
 			}
 		`,
 	],

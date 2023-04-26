@@ -10,7 +10,9 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 		<section class="step-section pt-4 pb-5 px-3">
 			<form [formGroup]="form" novalidate>
 				<div class="step">
-					<app-step-title title="Confirm the following information related to your security screening"></app-step-title>
+					<app-step-title
+						title="Confirm the following information related to your criminal record check"
+					></app-step-title>
 					<div class="row">
 						<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
 							<mat-form-field>

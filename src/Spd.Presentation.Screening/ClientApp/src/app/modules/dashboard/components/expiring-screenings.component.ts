@@ -12,11 +12,11 @@ import { UtilService } from 'src/app/core/services/util.service';
 @Component({
 	selector: 'app-expiring-screenings',
 	template: `
-		<app-dashboard-header subtitle="Security Screening Portal"></app-dashboard-header>
+		<app-dashboard-header subtitle="Criminal Record Check Portal"></app-dashboard-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
-					<h2 class="mb-2 fw-normal">Expiring Screenings</h2>
+					<h2 class="mb-2 fw-normal">Expiring Criminal Record Checks</h2>
 					<div class="alert alert-warning d-flex align-items-center" role="alert" *ngIf="followUpBusinessDays">
 						<mat-icon class="d-none d-lg-block alert-icon me-2">schedule</mat-icon>
 						<div>
@@ -36,47 +36,16 @@ import { UtilService } from 'src/app/core/services/util.service';
 							formControlName="search"
 							placeholder="Search applicant's name or email or case id"
 						/>
-						<button
-							mat-button
-							matSuffix
-							mat-raised-button
-							color="primary"
-							aria-label="search"
-							style="padding: 2.1em 0; border-radius: unset;"
-						>
-							<mat-icon style="top: 8px;font-size: 2.2em;width: 40px;height: 40px;left: 8px;">search</mat-icon>
+						<button mat-button matSuffix mat-flat-button aria-label="search" class="search-icon-button">
+							<mat-icon>search</mat-icon>
 						</button>
 					</mat-form-field>
 				</div>
-				<div class="col-xl-1 col-lg-2 col-md-2 col-sm-3">
-					<app-dropdown-overlay
-						[showDropdownOverlay]="showDropdownOverlay"
-						(showDropdownOverlayChange)="onShowDropdownOverlayChange($event)"
-					>
-						<app-payment-filter
-							[formGroup]="formFilter"
-							(filterChange)="onFilterChange($event)"
-							(filterClear)="onFilterClear()"
-							(filterClose)="onFilterClose()"
-						></app-payment-filter>
-					</app-dropdown-overlay>
-				</div>
-				<!-- <div class="col-xl-3 col-lg-4 col-md-10 col-sm-9">
-					<button mat-raised-button color="primary" class="xlarge w-100 mb-2">
-						<mat-icon>download</mat-icon>Download Report
-					</button>
-				</div> -->
 			</div>
 
 			<div class="row">
 				<div class="col-12">
-					<mat-table
-						matSort
-						[dataSource]="dataSource"
-						matSortActive="createdOn"
-						matSortDirection="desc"
-						class="isMobile"
-					>
+					<mat-table matSort [dataSource]="dataSource" matSortActive="createdOn" matSortDirection="desc">
 						<ng-container matColumnDef="applicantName">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Applicant Name</mat-header-cell>
 							<mat-cell *matCellDef="let application">
@@ -189,13 +158,8 @@ export class ExpiringScreeningsComponent implements OnInit {
 	columns!: string[];
 	followUpBusinessDays = '';
 
-	showDropdownOverlay = false;
 	formFilter: FormGroup = this.formBuilder.group({
 		search: new FormControl(''),
-		startDate: new FormControl(''),
-		endDate: new FormControl(''),
-		paid: new FormControl(''),
-		notPaid: new FormControl(''),
 	});
 
 	@ViewChild(MatSort) sort!: MatSort;
@@ -223,22 +187,6 @@ export class ExpiringScreeningsComponent implements OnInit {
 	}
 
 	onPayNow(): void {}
-
-	onShowDropdownOverlayChange(show: boolean): void {
-		this.showDropdownOverlay = show;
-	}
-
-	onFilterChange(filters: any) {
-		this.onFilterClose();
-	}
-
-	onFilterClear() {
-		this.onFilterClose();
-	}
-
-	onFilterClose() {
-		this.showDropdownOverlay = false;
-	}
 
 	getDaysRemainingValue(daysRemaining: number): string {
 		const [value, _color] = this.formatDaysRemaining(daysRemaining);

@@ -10,8 +10,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 			<div class="step">
 				<app-step-title
 					title="Who will pay the criminal record check?"
-					subtitle="Each employee criminal record check is $28. You can adjust who pays once you're registered in the
-						organization portal"
+					subtitle="Each employee criminal record check is $28. You can make changes to who pays when you register using BCeID."
 				></app-step-title>
 				<div class="row">
 					<div class="offset-lg-4 col-lg-4 offset-md-3 col-md-6 col-sm-12">

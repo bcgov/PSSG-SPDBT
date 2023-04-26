@@ -184,6 +184,46 @@ body {
   text-align: center;
 }
 
+.search-icon-button {
+  color: var(--color-white) !important;
+  background-color: var(--color-sidebar) !important; 
+  padding: 2.1em 0 !important; 
+  border-radius: unset !important;
+
+  .mat-icon {
+    top: 8px !important;
+    font-size: 2.2em !important;
+    width: 40px !important;
+    height: 40px !important;
+    left: 8px !important;
+  }
+}
+
+.area-green {
+  background-color: rgba(215, 228, 213, 1) !important;
+    color: #23471F !important;
+}
+
+.area-yellow {
+  background-color: rgba(251, 227, 163, 1) !important;
+    color: #56451B !important;
+}
+
+.area-blue {
+  background-color: rgba(211, 220, 229, 1) !important;
+    color: #013365 !important;
+}
+
+.area-grey {
+  background-color: rgba(215, 215, 215, 1) !important;
+    color: #333333 !important;
+}
+
+.area-red {
+  background-color: rgba(242, 222, 223, 1) !important;
+    color: #910012 !important;
+}
+
 .icon-size {
   max-width: 2em;
   margin: 6px;
