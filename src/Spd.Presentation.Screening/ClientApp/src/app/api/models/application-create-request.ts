@@ -26,6 +26,7 @@ export interface ApplicationCreateRequest {
   phoneNumber?: null | string;
   postalCode?: null | string;
   province?: null | string;
+  requireDuplicateCheck?: boolean;
   screeningTypeCode?: ScreeningTypeCode;
   surname?: null | string;
 }
