@@ -146,7 +146,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 							<hr class="d-none d-sm-inline w-100 text-white" />
 							<li class="nav-item w-100">
 								<a
-									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.SETTINGS)]"
+									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.ORGANIZATION_PROFILE)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
 								>

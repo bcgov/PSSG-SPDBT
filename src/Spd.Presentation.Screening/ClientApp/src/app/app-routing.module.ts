@@ -14,8 +14,8 @@ const routes: Routes = [
 		data: { title: 'Organization Registration' },
 	},
 	{
-		path: 'scr-application',
-		loadChildren: () => import('./modules/scr-application/scr-application.module').then((m) => m.ScrApplicationModule),
+		path: 'crc-application',
+		loadChildren: () => import('./modules/crc-application/crc-application.module').then((m) => m.CrcApplicationModule),
 		data: { title: 'Criminal Record Check Application' },
 	},
 	{

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { ScreeningFormStepComponent } from '../scr-application.component';
+import { CrcFormStepComponent } from '../crc-application.component';
 
 @Component({
 	selector: 'app-security-information',
@@ -56,7 +56,7 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 	`,
 	styles: [],
 })
-export class SecurityInformationComponent implements ScreeningFormStepComponent {
+export class SecurityInformationComponent implements CrcFormStepComponent {
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	form: FormGroup = this.formBuilder.group({
 		organizationName: new FormControl({ value: 'Sunshine Daycare', disabled: true }),

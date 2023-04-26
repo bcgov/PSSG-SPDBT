@@ -6,7 +6,7 @@ import { OrgUserService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
-import { ContactAuthorizationTypes, MaintainUserModalComponent, UserDialogData } from './maintain-user-modal.component';
+import { ContactAuthorizationTypes, UserDialogData, UserEditModalComponent } from './user-edit-modal.component';
 
 @Component({
 	selector: 'app-users',
@@ -360,7 +360,7 @@ export class UsersComponent implements OnInit {
 
 	private userDialog(dialogOptions: UserDialogData, isCreate: boolean): void {
 		this.dialog
-			.open(MaintainUserModalComponent, {
+			.open(UserEditModalComponent, {
 				width: '800px',
 				data: dialogOptions,
 			})

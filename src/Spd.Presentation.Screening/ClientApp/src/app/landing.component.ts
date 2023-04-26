@@ -44,7 +44,7 @@ export class LandingComponent {
 	}
 
 	goToScreening(): void {
-		this.router.navigateByUrl('/scr-application', { state: { paymentBy: this.paymentBy } });
+		this.router.navigateByUrl('/crc-application', { state: { paymentBy: this.paymentBy } });
 	}
 
 	async onRegisterWithBCeid(): Promise<void> {

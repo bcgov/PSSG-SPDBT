@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { BooleanTypeCode } from 'src/app/api/models';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { ScreeningFormStepComponent } from '../scr-application.component';
+import { CrcFormStepComponent } from '../crc-application.component';
 
 @Component({
 	selector: 'app-previous-name',
@@ -111,7 +111,7 @@ import { ScreeningFormStepComponent } from '../scr-application.component';
 		`,
 	],
 })
-export class PreviousNameComponent implements OnInit, ScreeningFormStepComponent {
+export class PreviousNameComponent implements OnInit, CrcFormStepComponent {
 	form!: FormGroup;
 	matcher = new FormErrorStateMatcher();
 
