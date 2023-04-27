@@ -25,7 +25,8 @@ namespace Spd.Manager.Cases
             _mapper = mapper;
         }
 
-        public async Task<ApplicationInvitesCreateResponse> Handle(ApplicationInviteCreateCommand createCmd, CancellationToken cancellationToken)
+        //application-invites
+        public async Task<ApplicationInvitesCreateResponse> Handle(ApplicationInviteCreateCommand createCmd, CancellationToken ct)
         {
             ApplicationInvitesCreateResponse resp = new(createCmd.OrgId);
             if (createCmd.ApplicationInvitesCreateRequest.RequireDuplicateCheck)
@@ -46,7 +47,22 @@ namespace Spd.Manager.Cases
             resp.CreateSuccess = true;
             return resp;
         }
+        public async Task<ApplicationInviteListResponse> Handle(ApplicationInviteListQuery request, CancellationToken ct)
+        {
+            if (request.Page < 0) throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Incorrect page number");
+            if (request.PageSize < 1) throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Incorrect page size");
+            var response = await _applicationInviteRepository.QueryAsync(
+                new ApplicationInviteQuery
+                {
+                    FilterBy = new AppInviteFilterBy(request.OrgId, null),
+                    SortBy = new AppInviteSortBy(true, null),
+                    Paging = new Paging(request.Page, request.PageSize)
+                },
+                ct);
+            return _mapper.Map<ApplicationInviteListResponse>(response);
+        }
 
+        //application
         public async Task<ApplicationCreateResponse> Handle(ApplicationCreateCommand request, CancellationToken ct)
         {
             ApplicationCreateResponse result = new();
@@ -85,21 +101,6 @@ namespace Spd.Manager.Cases
                 ct);
 
             return _mapper.Map<ApplicationListResponse>(response);
-        }
-
-        public async Task<ApplicationInviteListResponse> Handle(ApplicationInviteListQuery request, CancellationToken ct)
-        {
-            if (request.Page < 0) throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Incorrect page number");
-            if (request.PageSize < 1) throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Incorrect page size");
-            var response = await _applicationInviteRepository.QueryAsync(
-                new ApplicationInviteQuery
-                {
-                    FilterBy = new AppInviteFilterBy(request.OrgId, null),
-                    SortBy = new AppInviteSortBy(true, null),
-                    Paging = new Paging(request.Page, request.PageSize)
-                },
-                ct);
-            return _mapper.Map<ApplicationInviteListResponse>(response);
         }
 
         private async Task<IEnumerable<ApplicationInviteDuplicateResponse>> CheckDuplicates(ApplicationInvitesCreateRequest request, Guid orgId, CancellationToken cancellationToken)
