@@ -13,8 +13,8 @@ import { Component, Input } from '@angular/core';
 							<td class="px-4">
 								<div class="fs-5 mb-2">Application submitted</div>
 								<p>
-									Your application will be reviewed by our security screening staff. If we need any more information,
-									we'll contact you.
+									Your registration application will be reviewed shortly. We will contact you if we need any more
+									information.
 								</p>
 							</td>
 						</tr>
@@ -40,8 +40,8 @@ import { Component, Input } from '@angular/core';
 							<td class="px-4">
 								<div class="fs-5 mb-2">Complete</div>
 								<p>
-									If your registration is approved, we'll send a link to the organization portal for you to manage all
-									of your applications.
+									If your registration is approved, we'll send a link to the organization online service for you to
+									manage all of your criminal record checks.
 								</p>
 							</td>
 						</tr>
