@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
@@ -37,8 +38,8 @@ namespace Spd.Resource.Applicants
         {
             var orginvitation = _dynaContext.spd_portalinvitations.Where(o =>
                 o.spd_OrganizationId.accountid == searchInvitationQry.OrgId &&
-                o.spd_firstname.Equals(searchInvitationQry.FirstName, StringComparison.InvariantCultureIgnoreCase) &&
-                o.spd_surname.Equals(searchInvitationQry.LastName, StringComparison.InvariantCultureIgnoreCase) &&
+                o.spd_firstname == searchInvitationQry.FirstName &&
+                o.spd_surname == searchInvitationQry.LastName &&
                 o.statecode != DynamicsConstants.StateCode_Inactive
             ).FirstOrDefault();
             return orginvitation != null;
@@ -48,8 +49,8 @@ namespace Spd.Resource.Applicants
         {
             var orginvitation = _dynaContext.spd_applications.Where(o =>
                 o.spd_OrganizationId.accountid == searchInvitationQry.OrgId &&
-                o.spd_firstname.Equals(searchInvitationQry.FirstName, StringComparison.InvariantCultureIgnoreCase) &&
-                o.spd_lastname.Equals(searchInvitationQry.LastName, StringComparison.InvariantCultureIgnoreCase) &&
+                o.spd_firstname == searchInvitationQry.FirstName &&
+                o.spd_lastname == searchInvitationQry.LastName &&
                 o.statecode != DynamicsConstants.StateCode_Inactive
             ).FirstOrDefault();
             return orginvitation != null;
@@ -106,7 +107,7 @@ namespace Spd.Resource.Applicants
             if (query.SortBy == null)
                 applications = applications.OrderByDescending(a => a.createdon);
 
-            if (query.SortBy != null && query.SortBy.SubmittedDateDesc !=null && (bool)query.SortBy.SubmittedDateDesc)
+            if (query.SortBy != null && query.SortBy.SubmittedDateDesc != null && (bool)query.SortBy.SubmittedDateDesc)
                 applications = applications.OrderByDescending(a => a.createdon);
             if (query.SortBy != null && query.SortBy.SubmittedDateDesc != null && !(bool)query.SortBy.SubmittedDateDesc)
                 applications = applications.OrderBy(a => a.createdon);
@@ -130,8 +131,8 @@ namespace Spd.Resource.Applicants
         {
             var application = _dynaContext.spd_applications.Where(o =>
                 o.spd_OrganizationId.accountid == searchApplicationQry.OrgId &&
-                o.spd_firstname.Equals(searchApplicationQry.GivenName, StringComparison.InvariantCultureIgnoreCase) &&
-                o.spd_lastname.Equals(searchApplicationQry.Surname, StringComparison.InvariantCultureIgnoreCase) &&
+                o.spd_firstname == searchApplicationQry.GivenName &&
+                o.spd_lastname == searchApplicationQry.Surname &&
                 o.spd_dateofbirth == new Microsoft.OData.Edm.Date(searchApplicationQry.DateOfBirth.Value.Year, searchApplicationQry.DateOfBirth.Value.Month, searchApplicationQry.DateOfBirth.Value.Day) &&
                 o.statecode != DynamicsConstants.StateCode_Inactive
             ).FirstOrDefault();
@@ -166,10 +167,10 @@ namespace Spd.Resource.Applicants
         private spd_alias? GetAlias(AliasCreateCmd aliasCreateCmd)
         {
             var matchingAlias = _dynaContext.spd_aliases.Where(o =>
-               o.spd_firstname.Equals(aliasCreateCmd.GivenName, StringComparison.InvariantCultureIgnoreCase) &&
-               o.spd_middlename1.Equals(aliasCreateCmd.MiddleName1, StringComparison.InvariantCultureIgnoreCase) &&
-               o.spd_middlename2.Equals(aliasCreateCmd.MiddleName2, StringComparison.InvariantCultureIgnoreCase) &&
-               o.spd_surname.Equals(aliasCreateCmd.Surname, StringComparison.InvariantCultureIgnoreCase) &&
+               o.spd_firstname == aliasCreateCmd.GivenName &&
+               o.spd_middlename1 == aliasCreateCmd.MiddleName1 &&
+               o.spd_middlename2 == aliasCreateCmd.MiddleName2 &&
+               o.spd_surname == aliasCreateCmd.Surname &&
                o.statecode != DynamicsConstants.StateCode_Inactive
            ).FirstOrDefault();
             return matchingAlias;
@@ -177,15 +178,27 @@ namespace Spd.Resource.Applicants
 
         private contact? GetContact(ApplicationCreateCmd createApplicationCmd)
         {
-            var contact = _dynaContext.contacts
+            if (createApplicationCmd.DriversLicense == null || createApplicationCmd.DriversLicense.IsNullOrEmpty())
+            {
+                var contact = _dynaContext.contacts
                 .Where(o =>
-                o.firstname.Equals(createApplicationCmd.GivenName, StringComparison.InvariantCultureIgnoreCase) &&
-                o.lastname.Equals(createApplicationCmd.Surname, StringComparison.InvariantCultureIgnoreCase) &&
-                o.emailaddress1.Equals(createApplicationCmd.EmailAddress, StringComparison.InvariantCultureIgnoreCase) &&
-                o.statecode != DynamicsConstants.StateCode_Inactive
-            ).FirstOrDefault();
-            return contact;
-
+                o.firstname == createApplicationCmd.GivenName &&
+                o.lastname == createApplicationCmd.Surname &&
+                o.birthdate == new Microsoft.OData.Edm.Date(createApplicationCmd.DateOfBirth.Value.Year, createApplicationCmd.DateOfBirth.Value.Month, createApplicationCmd.DateOfBirth.Value.Day) &&
+                o.statecode != DynamicsConstants.StateCode_Inactive).FirstOrDefault();
+                return contact;
+            }
+            else
+            {
+                var contact = _dynaContext.contacts
+                .Where(o =>
+                o.firstname == createApplicationCmd.GivenName &&
+                o.lastname == createApplicationCmd.Surname &&
+                (o.spd_bcdriverslicense == null || o.spd_bcdriverslicense == createApplicationCmd.DriversLicense) &&
+                o.birthdate == new Microsoft.OData.Edm.Date(createApplicationCmd.DateOfBirth.Value.Year, createApplicationCmd.DateOfBirth.Value.Month, createApplicationCmd.DateOfBirth.Value.Day) &&
+                o.statecode != DynamicsConstants.StateCode_Inactive).FirstOrDefault();
+                return contact;
+            }
         }
     }
 }

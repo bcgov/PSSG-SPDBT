@@ -251,17 +251,17 @@ export class UsersComponent implements OnInit {
 		<li>Add or remove others in their organization from the authorized contact roles</li>		
 		<li>Transfer their primary authority to another additional authorized contact</li>		
 		<li>Edit and update organization information</li>		
-		<li>Initiate new screenings</li>		
-		<li>View screenings statuses</li>		
-		<li>View expiring screenings</li>		
-		<li>View financial information and pay for screenings</li>		
+		<li>Initiate new criminal record checks</li>		
+		<li>View application statuses</li>		
+		<li>View expiring criminal record checks</li>		
+		<li>View financial information and pay for criminal record checks</li>		
 		</ul>
 		<strong>Authorized Users</strong>
 		<ul>
-		<li>Initiate new screenings</li>
-		<li>View screenings statuses</li>
-		<li>View expiring screenings</li>
-		<li>View financial information and pay for screenings</li>
+		<li>Initiate new criminal record checks</li>
+		<li>View application statuses</li>
+		<li>View expiring criminal record checks</li>
+		<li>View financial information and pay for criminal record checks</li>
 		</ul>
 		`;
 
