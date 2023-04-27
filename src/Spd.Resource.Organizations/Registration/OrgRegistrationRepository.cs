@@ -68,7 +68,7 @@ namespace Spd.Resource.Organizations.Registration
             {
                 // Do not check using email if there is no value
                 var orgReg = _dynaContext.spd_orgregistrations.Expand(o => o.spd_OrganizationTypeId).Where(o =>
-                    o.spd_organizationname.Equals(searchQry.OrganizationName, StringComparison.InvariantCultureIgnoreCase) &&
+                    o.spd_organizationname == searchQry.OrganizationName &&
                     o.spd_postalcode == searchQry.MailingPostalCode &&
                     o.spd_OrganizationTypeId.spd_organizationtypeid == typeGuid &&
                     o.statecode != DynamicsConstants.StateCode_Inactive
@@ -78,7 +78,7 @@ namespace Spd.Resource.Organizations.Registration
             else
             {
                 var orgReg = _dynaContext.spd_orgregistrations.Expand(o => o.spd_OrganizationTypeId).Where(o =>
-                    o.spd_organizationname.Equals(searchQry.OrganizationName, StringComparison.InvariantCultureIgnoreCase) &&
+                    o.spd_organizationname == searchQry.OrganizationName &&
                     o.spd_postalcode == searchQry.MailingPostalCode &&
                     o.spd_email == searchQry.GenericEmail &&
                     o.spd_OrganizationTypeId.spd_organizationtypeid == typeGuid &&
