@@ -19223,6 +19223,7 @@
         <Property Name="_spd_applicantid_value" Type="Edm.Guid" />
         <Property Name="_owninguser_value" Type="Edm.Guid" />
         <Property Name="spd_bcdriverslicense" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_fullname" Type="Edm.String" Unicode="false" />
         <Property Name="_modifiedby_value" Type="Edm.Guid" />
         <Property Name="importsequencenumber" Type="Edm.Int32" />
         <Property Name="_createdonbehalfby_value" Type="Edm.Guid" />
@@ -19248,15 +19249,17 @@
         <Property Name="spd_contractedcompanyname" Type="Edm.String" Unicode="false" />
         <Property Name="spd_applicantsposition" Type="Edm.String" Unicode="false" />
         <Property Name="_spd_organizationid_value" Type="Edm.Guid" />
-        <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
         <Property Name="spd_emailaddress1" Type="Edm.String" Unicode="false" />
         <Property Name="_owningteam_value" Type="Edm.Guid" />
         <Property Name="spd_declarationdate" Type="Edm.DateTimeOffset" />
+        <Property Name="spd_submittedon" Type="Edm.DateTimeOffset" />
+        <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
         <Property Name="_owningbusinessunit_value" Type="Edm.Guid" />
         <Property Name="spd_dateofbirth" Type="Edm.Date" />
         <Property Name="_spd_ministry_value" Type="Edm.Guid" />
         <Property Name="_ownerid_value" Type="Edm.Guid" />
         <Property Name="spd_name" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_casestatus" Type="Edm.String" Unicode="false" />
         <Property Name="spd_phonenumber" Type="Edm.String" Unicode="false" />
         <Property Name="spd_employeeid" Type="Edm.String" Unicode="false" />
         <Property Name="spd_middlename2" Type="Edm.String" Unicode="false" />
@@ -19364,26 +19367,30 @@
         <Key>
           <PropertyRef Name="spd_cpicbatchid" />
         </Key>
-        <Property Name="statuscode" Type="Edm.Int32" />
-        <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
-        <Property Name="_owninguser_value" Type="Edm.Guid" />
-        <Property Name="versionnumber" Type="Edm.Int64" />
-        <Property Name="spd_name" Type="Edm.String" Unicode="false" />
-        <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
+        <Property Name="createdon" Type="Edm.DateTimeOffset" />
+        <Property Name="importsequencenumber" Type="Edm.Int32" />
         <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
         <Property Name="_owningbusinessunit_value" Type="Edm.Guid" />
-        <Property Name="importsequencenumber" Type="Edm.Int32" />
-        <Property Name="_modifiedby_value" Type="Edm.Guid" />
         <Property Name="_modifiedonbehalfby_value" Type="Edm.Guid" />
-        <Property Name="statecode" Type="Edm.Int32" />
-        <Property Name="_createdby_value" Type="Edm.Guid" />
-        <Property Name="_ownerid_value" Type="Edm.Guid" />
-        <Property Name="createdon" Type="Edm.DateTimeOffset" />
-        <Property Name="_owningteam_value" Type="Edm.Guid" />
+        <Property Name="_owninguser_value" Type="Edm.Guid" />
+        <Property Name="statuscode" Type="Edm.Int32" />
+        <Property Name="spd_error" Type="Edm.String" Unicode="false" />
+        <Property Name="_modifiedby_value" Type="Edm.Guid" />
+        <Property Name="spd_inputfile" Type="Edm.String" Unicode="false" />
+        <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
         <Property Name="spd_cpicbatchid" Type="Edm.Guid" />
-        <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
+        <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
+        <Property Name="_ownerid_value" Type="Edm.Guid" />
+        <Property Name="_createdby_value" Type="Edm.Guid" />
+        <Property Name="_spd_servicetypeid_value" Type="Edm.Guid" />
+        <Property Name="spd_count" Type="Edm.Int32" />
+        <Property Name="spd_name" Type="Edm.String" Unicode="false" />
+        <Property Name="statecode" Type="Edm.Int32" />
+        <Property Name="_owningteam_value" Type="Edm.Guid" />
+        <Property Name="versionnumber" Type="Edm.Int64" />
         <Property Name="_createdonbehalfby_value" Type="Edm.Guid" />
         <Property Name="spd_cpiccaseid" Type="Edm.String" Unicode="false" />
+        <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
         <NavigationProperty Name="createdby" Type="mscrm.systemuser" Nullable="false" Partner="lk_spd_cpicbatch_createdby">
           <ReferentialConstraint Property="_createdby_value" ReferencedProperty="systemuserid" />
         </NavigationProperty>
@@ -19414,6 +19421,9 @@
         <NavigationProperty Name="spd_cpicbatch_ProcessSession" Type="Collection(mscrm.processsession)" Partner="regardingobjectid_spd_cpicbatch" />
         <NavigationProperty Name="spd_cpicbatch_BulkDeleteFailures" Type="Collection(mscrm.bulkdeletefailure)" Partner="regardingobjectid_spd_cpicbatch" />
         <NavigationProperty Name="spd_cpicbatch_PrincipalObjectAttributeAccesses" Type="Collection(mscrm.principalobjectattributeaccess)" Partner="objectid_spd_cpicbatch" />
+        <NavigationProperty Name="spd_ServiceTypeId" Type="mscrm.spd_servicetype" Nullable="false" Partner="spd_servicetype_spd_cpicbatch">
+          <ReferentialConstraint Property="_spd_servicetypeid_value" ReferencedProperty="spd_servicetypeid" />
+        </NavigationProperty>
       </EntityType>
       <EntityType Name="spd_finding" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -20252,6 +20262,7 @@
         <NavigationProperty Name="spd_spd_servicetype_spd_application_ServiceTypeId" Type="Collection(mscrm.spd_application)" Partner="spd_ServiceTypeId" />
         <NavigationProperty Name="spd_spd_servicetype_spd_submission_ServiceTypeId" Type="Collection(mscrm.spd_submission)" Partner="spd_ServiceTypeId" />
         <NavigationProperty Name="spd_spd_servicetype_incident" Type="Collection(mscrm.incident)" Partner="spd_ServiceTypeId" />
+        <NavigationProperty Name="spd_servicetype_spd_cpicbatch" Type="Collection(mscrm.spd_cpicbatch)" Partner="spd_ServiceTypeId" />
       </EntityType>
       <EntityType Name="spd_spd_role_spd_portaluser" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -35027,6 +35038,7 @@
           <NavigationPropertyBinding Path="spd_cpicbatch_ProcessSession" Target="processsessions" />
           <NavigationPropertyBinding Path="spd_cpicbatch_BulkDeleteFailures" Target="bulkdeletefailures" />
           <NavigationPropertyBinding Path="spd_cpicbatch_PrincipalObjectAttributeAccesses" Target="principalobjectattributeaccessset" />
+          <NavigationPropertyBinding Path="spd_ServiceTypeId" Target="spd_servicetypes" />
         </EntitySet>
         <EntitySet Name="spd_findings" EntityType="Microsoft.Dynamics.CRM.spd_finding">
           <NavigationPropertyBinding Path="createdby" Target="systemusers" />
@@ -35289,6 +35301,7 @@
           <NavigationPropertyBinding Path="spd_spd_servicetype_spd_application_ServiceTypeId" Target="spd_applications" />
           <NavigationPropertyBinding Path="spd_spd_servicetype_spd_submission_ServiceTypeId" Target="spd_submissions" />
           <NavigationPropertyBinding Path="spd_spd_servicetype_incident" Target="incidents" />
+          <NavigationPropertyBinding Path="spd_servicetype_spd_cpicbatch" Target="spd_cpicbatchs" />
         </EntitySet>
         <EntitySet Name="spd_spd_role_spd_portaluserset" EntityType="Microsoft.Dynamics.CRM.spd_spd_role_spd_portaluser" />
         <EntitySet Name="spd_submissions" EntityType="Microsoft.Dynamics.CRM.spd_submission">

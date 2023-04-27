@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ApplicationListResponse, ApplicationResponse } from 'src/app/api/models';
@@ -123,7 +123,15 @@ import { UtilService } from 'src/app/core/services/util.service';
 						<mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
 						<mat-row *matRowDef="let row; columns: columns"></mat-row>
 					</mat-table>
-					<mat-paginator #paginator [length]="100" [pageSize]="10" aria-label="Select page"> </mat-paginator>
+					<mat-paginator
+						[showFirstLastButtons]="true"
+						[pageIndex]="(tableConfig.paginator.pageIndex || 1) - 1"
+						[pageSize]="tableConfig.paginator.pageSize"
+						[length]="tableConfig.paginator.length"
+						(page)="onPageChanged($event)"
+						aria-label="Select page"
+					>
+					</mat-paginator>
 				</div>
 			</div>
 		</section>
@@ -154,7 +162,9 @@ import { UtilService } from 'src/app/core/services/util.service';
 })
 export class ExpiringChecksComponent implements OnInit {
 	constants = SPD_CONSTANTS;
-	dataSource!: MatTableDataSource<ApplicationResponse>;
+
+	dataSource: MatTableDataSource<ApplicationResponse> = new MatTableDataSource<ApplicationResponse>([]);
+	tableConfig = this.utilService.getDefaultTableConfig();
 	columns!: string[];
 	followUpBusinessDays = '';
 
@@ -212,16 +222,30 @@ export class ExpiringChecksComponent implements OnInit {
 		}
 	}
 
-	private loadList(): void {
+	onPageChanged(page: PageEvent): void {
+		this.loadList(page.pageIndex);
+	}
+
+	private loadList(pageIndex: number = 0): void {
 		this.applicationService
-			.apiOrgsOrgIdApplicationsGet({ orgId: this.authenticationService.loggedInOrgId! })
+			.apiOrgsOrgIdApplicationsGet({
+				orgId: this.authenticationService.loggedInOrgId!,
+				page: pageIndex,
+				pageSize: this.tableConfig.paginator.pageSize,
+			})
 			.pipe()
 			.subscribe((res: ApplicationListResponse) => {
 				this.followUpBusinessDays = res.followUpBusinessDays ? String(res.followUpBusinessDays) : '';
-				this.dataSource = new MatTableDataSource<ApplicationResponse>([]);
 				this.dataSource.data = res.applications as Array<ApplicationResponse>;
 				this.dataSource.sort = this.sort;
-				this.dataSource.paginator = this.paginator;
+				this.tableConfig = {
+					...this.tableConfig,
+					paginator: {
+						pageIndex: res.pagination?.pageIndex ?? 0,
+						pageSize: res.pagination?.pageSize ?? 0,
+						length: res.pagination?.length ?? 0,
+					},
+				};
 			});
 	}
 }

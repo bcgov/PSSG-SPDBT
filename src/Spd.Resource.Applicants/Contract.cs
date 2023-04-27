@@ -98,20 +98,32 @@ namespace Spd.Resource.Applicants
         public Guid Id { get; set; }
         public Guid OrgId { get; set; }
         public string? ApplicationNumber { get; set; }
+        public string? CaseNumber { get; set; }
         public string? GivenName { get; set; }
         public string? MiddleName1 { get; set; }
         public string? MiddleName2 { get; set; }
         public string? Surname { get; set; }
         public string? EmailAddress { get; set; }
+        public string? JobTitle { get; set; }
+        public string? PaidBy { get; set; }
         public string? ContractedCompanyName { get; set; }
         public bool? HaveVerifiedIdentity { get; set; }
         public DateTimeOffset? CreatedOn { get; set; }
+        public bool? HasBeenDelivered { get; set; }
+    }
+
+    public record PaginationResp
+    {
+        public int PageSize { get; set; }
+        public int PageIndex { get; set; }
+        public int Length { get; set; }
     }
 
     public class ApplicationListResp
     {
         public int? FollowUpBusinessDays { get; set; }
         public IEnumerable<ApplicationResp> Applications { get; set; }
+        public PaginationResp Pagination { get; set; }
     }
 
     public enum ApplicationOriginTypeCode
