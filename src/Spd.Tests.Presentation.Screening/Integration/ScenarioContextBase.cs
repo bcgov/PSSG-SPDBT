@@ -1,18 +1,30 @@
 ﻿using Alba;
+using Alba.Security;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Spd.Utilities.Dynamics;
+using System.IdentityModel.Tokens.Jwt;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace Spd.Tests.Presentation.Screening.Integration;
 public class WebAppFixture
 {
+    public static readonly Guid LOGON_USER_GUID = Guid.Parse("946597A702244BA0884BDC3AC8CB21B6");
+    public static readonly Guid LOGON_ORG_GUID = Guid.Parse("EBB1709425324FD8BEFCB6BBCD679DF2");
     public IAlbaHost albaHost = null!;
     public DynamicsTestData testData { get; set; } = null!;
     public async Task<IAlbaHost> CreateHost(ITestOutputHelper output, IConfiguration configuration)
     {
-        albaHost = await Alba.AlbaHost.For<Program>();
+        var bceidStub = new AuthenticationStub()
+            .With("bceid_user_guid", LOGON_USER_GUID.ToString())
+            .With("bceid_username", "VictoriaCharity")
+            .With("bceid_business_guid", LOGON_ORG_GUID.ToString())
+            .With("identity_provider", "bceidboth")
+            .With(JwtRegisteredClaimNames.Email, "guy@company.com")
+            .WithName("SPD_TEST");
+
+        albaHost = await Alba.AlbaHost.For<Program>(bceidStub);
         return albaHost;
     }
     public async Task CreateDynamicsData()

@@ -1,7 +1,6 @@
-﻿using MediatR;
+using MediatR;
 using Spd.Manager.Membership.UserProfile;
-using Spd.Utilities.Shared.Exceptions;
-using System.Security.Claims;
+using System.Net;
 
 namespace Spd.Utilities.LogonUser
 {
@@ -26,11 +25,12 @@ namespace Spd.Utilities.LogonUser
 
             if (context.Request.Headers.TryGetValue("organization", out var orgIdStr))
             {
-                await ProcessUser(context.User, mediator, orgIdStr);
+                await ProcessUser(context, mediator, orgIdStr);
             }
             else
             {
-                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "missing organization in the header.");
+                ReturnUnauthorized(context, "missing organization in the header.");
+                return;
             }
             await next(context);
         }
@@ -62,26 +62,35 @@ namespace Spd.Utilities.LogonUser
             return false;
         }
 
-        private async Task ProcessUser(ClaimsPrincipal user, IMediator mediator, string? orgIdStr)
+        private async Task ProcessUser(HttpContext context, IMediator mediator, string? orgIdStr)
         {
             if (!Guid.TryParse(orgIdStr, out Guid orgId))
             {
-                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "organization is not a valid guid");
+                await ReturnUnauthorized(context, "organization is not a valid guid");
+                return;
             }
             //will add to check cache here.
             UserProfileResponse userProfile = await mediator.Send(new GetCurrentUserProfileQuery());
             if (userProfile?.UserInfos == null)
             {
-                throw new ApiException(System.Net.HttpStatusCode.Unauthorized, "invalid user");
+                await ReturnUnauthorized(context, "invalid user");
+                return;
             }
-            UserInfo ui = userProfile.UserInfos.FirstOrDefault(ui => ui.UserGuid == user.GetUserGuid() && ui.OrgId == orgId);
+            UserInfo ui = userProfile.UserInfos.FirstOrDefault(ui => ui.UserGuid == context.User.GetUserGuid() && ui.OrgId == orgId);
             if (ui == null)
             {
-                throw new ApiException(System.Net.HttpStatusCode.Unauthorized, "invalid user or organization");
+                await ReturnUnauthorized(context, "invalid user or organization");
+                return;
             }
             //add ui to claims
-            user.UpdateUserClaims(ui.UserId.ToString(), orgId.ToString());
+            context.User.UpdateUserClaims(ui.UserId.ToString(), orgId.ToString());
         }
 
+        private async Task ReturnUnauthorized(HttpContext context, string msg)
+        {
+            context.Response.Clear();
+            context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+            await context.Response.WriteAsync(msg);
+        }
     }
 }
