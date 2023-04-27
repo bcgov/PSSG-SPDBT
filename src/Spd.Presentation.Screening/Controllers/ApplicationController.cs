@@ -28,6 +28,18 @@ namespace Spd.Presentation.Screening.Controllers
             return await _mediator.Send(new ApplicationInviteCreateCommand(invitesCreateRequest, orgId));
         }
 
+        [Route("api/orgs/{orgId}/application-invites")]
+        [HttpGet]
+        public async Task<ApplicationListResponse> GetInvitesList([FromRoute] Guid orgId, [FromQuery] string? filter, [FromQuery] string? sort, [FromQuery] uint? page, [FromQuery] uint? pageSize)
+        {
+            //todo, when we do filtering and sorting, will complete this.
+            string f = filters;
+            string s = sorts;
+
+            page = (page == null || page == 0) ? 1 : page;
+            pageSize = (pageSize == null || pageSize == 0 || pageSize > 100) ? 10 : pageSize;
+            return await _mediator.Send(new ApplicationListQuery(orgId, (int)page, (int)pageSize));
+        }
         /// <summary>
         /// create application. if checkDuplicate is true, it will check if there is existing duplicated applications 
         /// </summary>
