@@ -10,12 +10,10 @@ namespace Spd.Presentation.Screening.Controllers
     /// </summary>
     public class UserProfileController : SpdControllerBase
     {
-        private readonly ILogger<UserProfileController> _logger;
         private readonly IMediator _mediator;
 
         public UserProfileController(ILogger<UserProfileController> logger, IMediator mediator)
         {
-            _logger = logger;
             _mediator = mediator;
         }
 
