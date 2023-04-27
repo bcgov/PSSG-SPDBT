@@ -60,7 +60,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Utilities.Recaptcha", "Spd.Utilities.Recaptcha\Spd.Utilities.Recaptcha.csproj", "{0427917A-E353-474B-9AC9-1816277FDED5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spd.Tests.Presentation.Screening", "Spd.Tests.Presentation.Screening\Spd.Tests.Presentation.Screening.csproj", "{4024BBBE-212C-47B4-BEFD-BA956DFEFC77}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Tests.Presentation.Screening", "Spd.Tests.Presentation.Screening\Spd.Tests.Presentation.Screening.csproj", "{4024BBBE-212C-47B4-BEFD-BA956DFEFC77}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

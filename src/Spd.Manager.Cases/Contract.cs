@@ -6,13 +6,15 @@ namespace Spd.Manager.Cases
 {
     public interface IApplicationManager
     {
-        public Task<ApplicationInvitesCreateResponse> Handle(ApplicationInviteCreateCommand request, CancellationToken cancellationToken);
-        public Task<ApplicationCreateResponse> Handle(ApplicationCreateCommand request, CancellationToken cancellationToken);
-        public Task<ApplicationListResponse> Handle(ApplicationListQuery request, CancellationToken cancellationToken);
+        public Task<ApplicationInvitesCreateResponse> Handle(ApplicationInviteCreateCommand request, CancellationToken ct);
+        public Task<ApplicationListResponse> Handle(ApplicationListQuery request, CancellationToken ct);
+        public Task<ApplicationCreateResponse> Handle(ApplicationCreateCommand request, CancellationToken ct);
+        public Task<ApplicationInviteListResponse> Handle(ApplicationInviteListQuery request, CancellationToken ct);
 
     }
 
     public record ApplicationInviteCreateCommand(ApplicationInvitesCreateRequest ApplicationInvitesCreateRequest, Guid OrgId) : IRequest<ApplicationInvitesCreateResponse>;
+    public record ApplicationInviteListQuery(Guid OrgId, int Page, int PageSize) : IRequest<ApplicationInviteListResponse>;
     public record ApplicationCreateCommand(ApplicationCreateRequest ApplicationCreateRequest) : IRequest<ApplicationCreateResponse>;
     public record ApplicationListQuery(Guid OrgId, int Page, int PageSize) : IRequest<ApplicationListResponse>;
 
@@ -27,12 +29,10 @@ namespace Spd.Manager.Cases
         public string FirstName { get; set; } = null!;
         public string LastName { get; set; } = null!;
         public string Email { get; set; } = null!;
-    }
-    public record ApplicationInviteCreateRequest : ApplicationInvite
-    {
         public string? JobTitle { get; set; }
         public PayeePreferenceTypeCode PayeeType { get; set; }
     }
+    public record ApplicationInviteCreateRequest : ApplicationInvite;
     public record ApplicationInvitesCreateResponse(Guid OrgId)
     {
         public bool IsDuplicateCheckRequired { get; set; }
@@ -43,6 +43,18 @@ namespace Spd.Manager.Cases
     public record ApplicationInviteDuplicateResponse : ApplicationInvite
     {
         public bool HasPotentialDuplicate { get; set; } = false;
+    }
+    public record ApplicationInviteListResponse
+    {
+        public IEnumerable<ApplicationInviteResponse> ApplicationInvites { get; set; } = Array.Empty<ApplicationInviteResponse>();
+        public PaginationResponse Pagination { get; set; } = null!;
+    }
+    public record ApplicationInviteResponse : ApplicationInvite
+    {
+        public Guid Id { get; set; }
+        public DateTimeOffset CreatedOn { get; set; }
+        public string Status { get; set; } = null!;
+        public string? ErrorMsg { get; set; }
     }
 
     //application
@@ -89,19 +101,11 @@ namespace Spd.Manager.Cases
         public Guid? applicationId { get; set; } = null;
         public bool HasPotentialDuplicate { get; set; } = false;
     }
-
-    public record PaginationResponse
-    {
-        public int PageSize { get; set; }
-        public int PageIndex { get; set; }
-        public int Length { get; set; }
-    }
-
     public class ApplicationListResponse
     {
         public int? FollowUpBusinessDays { get; set; }
-        public IEnumerable<ApplicationResponse> Applications { get; set; }
-        public PaginationResponse Pagination { get; set; }
+        public IEnumerable<ApplicationResponse> Applications { get; set; } = Array.Empty<ApplicationResponse>();
+        public PaginationResponse Pagination { get; set; } = null!;
     }
 
     public record ApplicationResponse
@@ -289,5 +293,13 @@ namespace Spd.Manager.Cases
             RuleFor(r => r.HaveVerifiedIdentity)
                 .NotNull(); // Must be true or false
         }
+    }
+
+    //shared
+    public record PaginationResponse
+    {
+        public int PageSize { get; set; }
+        public int PageIndex { get; set; }
+        public int Length { get; set; }
     }
 }
