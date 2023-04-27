@@ -23,7 +23,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/orgs/{orgId}/application-invites")]
         [HttpPost]
-        public async Task<ApplicationInvitesCreateResponse> AddApplicationInvites([FromBody][Required]ApplicationInvitesCreateRequest invitesCreateRequest, [FromRoute] Guid orgId)
+        public async Task<ApplicationInvitesCreateResponse> AddApplicationInvites([FromBody][Required] ApplicationInvitesCreateRequest invitesCreateRequest, [FromRoute] Guid orgId)
         {
             return await _mediator.Send(new ApplicationInviteCreateCommand(invitesCreateRequest, orgId));
         }
@@ -60,7 +60,7 @@ namespace Spd.Presentation.Screening.Controllers
             string f = filters;
             string s = sorts;
 
-            page = (page == null || page == 0) ? 1 : page;
+            page = (page == null || page < 0) ? 0 : page;
             pageSize = (pageSize == null || pageSize == 0 || pageSize > 100) ? 10 : pageSize;
             return await _mediator.Send(new ApplicationListQuery(orgId, (int)page, (int)pageSize));
         }

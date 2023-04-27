@@ -1,12 +1,24 @@
 import { Injectable } from '@angular/core';
 import jwt_decode from 'jwt-decode';
+import { SPD_CONSTANTS, TableConfig } from '../constants/constants';
 
 @Injectable({ providedIn: 'root' })
 export class UtilService {
-	readonly ORG_REG_STATE_KEY = 'state';
+	readonly ORG_REG_STATE_KEY = SPD_CONSTANTS.sessionStorage.organizationRegStateKey;
 
 	getFullName(firstName: string | null, lastName: string | null): string {
 		return `${firstName ?? ''} ${lastName ?? ''}`;
+	}
+
+	getDefaultTableConfig(): TableConfig {
+		const defaultTableConfig: TableConfig = {
+			paginator: {
+				pageSize: SPD_CONSTANTS.list.defaultPageSize,
+				pageIndex: 0,
+				length: 0,
+			},
+		};
+		return defaultTableConfig;
 	}
 
 	getDecodedAccessToken(token: string): any {

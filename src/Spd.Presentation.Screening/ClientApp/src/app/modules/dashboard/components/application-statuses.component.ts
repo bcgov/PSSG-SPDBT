@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
@@ -28,7 +28,7 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 					</div>
 				</div>
 			</div>
-
+			<!-- 
 			<div class="mb-4">
 				Active applications: (Last updated April 10, 11:59pm)
 				<div class="d-flex flex-wrap justify-content-start">
@@ -103,7 +103,7 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 						</div>
 					</div>
 				</div>
-			</div>
+			</div> -->
 
 			<div class="row" [formGroup]="formFilter">
 				<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
@@ -112,7 +112,7 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 							matInput
 							type="search"
 							formControlName="search"
-							placeholder="Search applicant's name or email or case id"
+							placeholder="Search applicant's name or email or case ID"
 						/>
 						<button mat-button matSuffix mat-flat-button aria-label="search" class="search-icon-button">
 							<mat-icon>search</mat-icon>
@@ -124,12 +124,12 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 						[showDropdownOverlay]="showDropdownOverlay"
 						(showDropdownOverlayChange)="onShowDropdownOverlayChange($event)"
 					>
-						<app-payment-filter
+						<app-application-statuses-filter
 							[formGroup]="formFilter"
 							(filterChange)="onFilterChange($event)"
 							(filterClear)="onFilterClear()"
 							(filterClose)="onFilterClose()"
-						></app-payment-filter>
+						></app-application-statuses-filter>
 					</app-dropdown-overlay>
 				</div>
 			</div>
@@ -146,7 +146,7 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 						</ng-container>
 
 						<ng-container matColumnDef="emailAddress">
-							<mat-header-cell *matHeaderCellDef mat-sort-header>Email</mat-header-cell>
+							<mat-header-cell *matHeaderCellDef>Email</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Email:</span>
 								{{ application.emailAddress }}
@@ -162,19 +162,18 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 						</ng-container>
 
 						<ng-container matColumnDef="whoPaid">
-							<mat-header-cell *matHeaderCellDef mat-sort-header>Paid By</mat-header-cell>
+							<mat-header-cell *matHeaderCellDef>Paid By</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Paid By:</span>
-								??
-								<!-- {{ application.whoPaid }} -->
+								{{ application.paidBy }}
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="applicationNumber">
-							<mat-header-cell *matHeaderCellDef mat-sort-header>Case ID</mat-header-cell>
+						<ng-container matColumnDef="caseNumber">
+							<mat-header-cell *matHeaderCellDef>Case ID</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Case ID:</span>
-								{{ application.applicationNumber }}
+								{{ application.caseNumber }}
 							</mat-cell>
 						</ng-container>
 
@@ -187,8 +186,8 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 						</ng-container>
 
 						<ng-container matColumnDef="status">
-							<mat-header-cell *matHeaderCellDef mat-sort-header>Status / Action</mat-header-cell>
-							<mat-cell *matCellDef="let application; let i = index">
+							<mat-header-cell *matHeaderCellDef>Status / Action</mat-header-cell>
+							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Status:</span>
 
 								<!-- <mat-chip-listbox aria-label="Status">
@@ -212,11 +211,17 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 									<mat-chip-option class="mat-chip-red" *ngIf="application.status == '8'">Risk Found</mat-chip-option>
 								</mat-chip-listbox>
 							 -->
-								<mat-chip-listbox aria-label="Status" class="ms-3" *ngIf="i % 4 == 0 || i % 4 == 3">
-									<mat-chip-option class="mat-chip-green" *ngIf="i % 4 == 0">In Progress</mat-chip-option>
-									<mat-chip-option class="mat-chip-yellow" *ngIf="i % 4 == 3"> Awaiting Applicant </mat-chip-option>
+								<mat-chip-listbox aria-label="Status" class="ms-3">
+									<mat-chip-option class="mat-chip-green">In Progress</mat-chip-option>
+									<!-- <mat-chip-option class="mat-chip-yellow"> Awaiting Applicant </mat-chip-option> -->
 								</mat-chip-listbox>
+							</mat-cell>
+						</ng-container>
 
+						<ng-container matColumnDef="actions">
+							<mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
+							<mat-cell *matCellDef="let application; let i = index">
+								<span class="mobile-label">Action:</span>
 								<a
 									mat-flat-button
 									(click)="onPayNow(application)"
@@ -244,14 +249,22 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 						<mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
 						<mat-row *matRowDef="let row; columns: columns"></mat-row>
 					</mat-table>
-					<mat-paginator #paginator [length]="100" [pageSize]="10" aria-label="Select page"> </mat-paginator>
+					<mat-paginator
+						[showFirstLastButtons]="true"
+						[pageIndex]="(tableConfig.paginator.pageIndex || 1) - 1"
+						[pageSize]="tableConfig.paginator.pageSize"
+						[length]="tableConfig.paginator.length"
+						(page)="onPageChanged($event)"
+						aria-label="Select page"
+					>
+					</mat-paginator>
 				</div>
 			</div>
 		</section>
 	`,
 	styles: [
 		`
-			.mat-column-status {
+			.mat-column-actions {
 				min-width: 240px;
 			}
 
@@ -267,17 +280,29 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 })
 export class ApplicationStatusesComponent implements OnInit {
 	constants = SPD_CONSTANTS;
-	dataSource!: MatTableDataSource<ApplicationResponse>;
+
+	dataSource: MatTableDataSource<ApplicationResponse> = new MatTableDataSource<ApplicationResponse>([]);
+	tableConfig = this.utilService.getDefaultTableConfig();
 	columns!: string[];
 	followUpBusinessDays = '';
 
 	showDropdownOverlay = false;
 	formFilter: FormGroup = this.formBuilder.group({
 		search: new FormControl(''),
-		startDate: new FormControl(''),
-		endDate: new FormControl(''),
-		paid: new FormControl(''),
-		notPaid: new FormControl(''),
+		verifyIdentity: new FormControl(''),
+		inProgress: new FormControl(''),
+		// payNow: new FormControl(''),
+		// awaitingThirdParty: new FormControl(''),
+		// awaitingApplicant: new FormControl(''),
+		// underAssessment: new FormControl(''),
+		// incomplete: new FormControl(''),
+		// cleared: new FormControl(''),
+		// riskFound: new FormControl(''),
+		// judicialReview: new FormControl(''),
+		// noResponse: new FormControl(''),
+		// noApplicantConsent: new FormControl(''),
+		// cancelledByOrg: new FormControl(''),
+		// cancelledByAppl: new FormControl(''),
 	});
 
 	@ViewChild(MatSort) sort!: MatSort;
@@ -297,22 +322,23 @@ export class ApplicationStatusesComponent implements OnInit {
 			'emailAddress',
 			'createdOn',
 			'whoPaid',
-			'applicationNumber',
+			'caseNumber',
 			'contractedCompanyName',
 			'status',
+			'actions',
 		];
 		this.loadList();
 	}
 
 	onPayNow(application: ApplicationResponse): void {
 		this.router.navigateByUrl(DashboardRoutes.dashboardPath(DashboardRoutes.PAYMENTS), {
-			state: { caseId: application.applicationNumber },
+			state: { caseId: application.caseNumber },
 		});
 	}
 
 	onVerifyApplicant(application: ApplicationResponse): void {
 		this.router.navigateByUrl(DashboardRoutes.dashboardPath(DashboardRoutes.IDENTITY_VERIFICATION), {
-			state: { caseId: application.applicationNumber },
+			state: { caseId: application.caseNumber },
 		});
 	}
 
@@ -332,16 +358,31 @@ export class ApplicationStatusesComponent implements OnInit {
 		this.showDropdownOverlay = false;
 	}
 
-	private loadList(): void {
+	onPageChanged(page: PageEvent): void {
+		this.loadList(page.pageIndex);
+	}
+
+	private loadList(pageIndex: number = 0): void {
 		this.applicationService
-			.apiOrgsOrgIdApplicationsGet({ orgId: this.authenticationService.loggedInOrgId! })
+			.apiOrgsOrgIdApplicationsGet({
+				orgId: this.authenticationService.loggedInOrgId!,
+				page: pageIndex,
+				pageSize: this.tableConfig.paginator.pageSize,
+			})
 			.pipe()
 			.subscribe((res: ApplicationListResponse) => {
 				this.followUpBusinessDays = res.followUpBusinessDays ? String(res.followUpBusinessDays) : '';
-				this.dataSource = new MatTableDataSource<ApplicationResponse>([]);
 				this.dataSource.data = res.applications as Array<ApplicationResponse>;
 				this.dataSource.sort = this.sort;
-				this.dataSource.paginator = this.paginator;
+
+				this.tableConfig = {
+					...this.tableConfig,
+					paginator: {
+						pageIndex: res.pagination?.pageIndex ?? 0,
+						pageSize: res.pagination?.pageSize ?? 0,
+						length: res.pagination?.length ?? 0,
+					},
+				};
 			});
 	}
 }

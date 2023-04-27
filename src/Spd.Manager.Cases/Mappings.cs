@@ -17,6 +17,7 @@ namespace Spd.Manager.Cases
             CreateMap<AliasCreateRequest, AliasCreateCmd>();
             CreateMap<ApplicationResp, ApplicationResponse>();
             CreateMap<ApplicationListResp, ApplicationListResponse>();
+            CreateMap<PaginationResp, PaginationResponse>();
         }
     }
 }

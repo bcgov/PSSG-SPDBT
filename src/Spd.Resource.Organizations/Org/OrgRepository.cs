@@ -108,7 +108,7 @@ namespace Spd.Resource.Organizations.Org
                 .FirstOrDefault();
 
             if (account?.statecode == DynamicsConstants.StateCode_Inactive)
-                throw new InactiveException(System.Net.HttpStatusCode.BadRequest, $"Organization {organizationId} is inactive.");
+                throw new InactiveException(System.Net.HttpStatusCode.BadRequest, $"Organization {organizationId} is inactive");
             return account;
         }
     }
