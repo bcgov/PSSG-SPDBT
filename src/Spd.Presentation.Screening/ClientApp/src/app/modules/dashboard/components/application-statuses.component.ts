@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
+import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { ApplicationListResponse, ApplicationResponse } from 'src/app/api/models';
@@ -10,6 +10,12 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { DashboardRoutes } from '../dashboard-routing.module';
+import {
+	ApplicationStatusesFilterComponent,
+	ApplicationStatusFilter,
+	ApplicationStatusFilterMap,
+	ApplicationStatusFiltersTypes,
+} from './application-statuses-filter.component';
 
 @Component({
 	selector: 'app-application-statuses',
@@ -19,7 +25,7 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
 					<h2 class="mb-2 fw-normal">Application Statuses</h2>
-					<div class="alert alert-warning d-flex align-items-center" role="alert">
+					<div class="alert alert-info d-flex align-items-center" role="alert">
 						<mat-icon class="d-none d-lg-block alert-icon me-2">schedule</mat-icon>
 						<div>
 							We are currently processing applications that do NOT require follow-up within:
@@ -28,115 +34,149 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 					</div>
 				</div>
 			</div>
-			<!-- 
 			<div class="mb-4">
-				Active applications: (Last updated April 10, 11:59pm)
+				<div class="fw-semibold">
+					Active applications: <span class="fw-normal">(Last updated April 10, 11:59pm)</span>
+				</div>
 				<div class="d-flex flex-wrap justify-content-start">
-					<div class="d-flex flex-row statistic-card area-yellow align-items-center m-2">
-						<div class="fw-bold fs-4 m-2">??</div>
-						<div class="fw-semibold fs-6 m-2">Verify Identity</div>
+					<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
+						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
+						<div class="m-2">Verify Identity</div>
 					</div>
-					<div class="d-flex flex-row statistic-card area-yellow align-items-center m-2">
-						<div class="fw-bold fs-4 m-2">??</div>
-						<div class="fw-semibold fs-6 m-2">Awaiting Payment</div>
+					<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
+						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
+						<div class="m-2">Awaiting Payment</div>
 					</div>
-					<div class="d-flex flex-row statistic-card area-green align-items-center m-2">
-						<div class="fw-bold fs-4 m-2">??</div>
-						<div class="fw-semibold fs-6 m-2">In Progress</div>
+					<div class="d-flex flex-row statistic-card area-green align-items-center mt-2 me-2">
+						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
+						<div class="m-2">In Progress</div>
 					</div>
-					<div class="d-flex flex-row statistic-card area-yellow align-items-center m-2">
-						<div class="fw-bold fs-4 m-2">??</div>
-						<div class="fw-semibold fs-6 m-2">Awaiting 3rd Party</div>
+					<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
+						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
+						<div class="m-2">Awaiting 3rd Party</div>
 					</div>
-					<div class="d-flex flex-row statistic-card area-yellow align-items-center m-2">
-						<div class="fw-bold fs-4 m-2">??</div>
-						<div class="fw-semibold fs-6 m-2">Awaiting Applicant</div>
+					<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
+						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
+						<div class="m-2">Awaiting Applicant</div>
 					</div>
-					<div class="d-flex flex-row statistic-card area-blue align-items-center m-2">
-						<div class="fw-bold fs-4 m-2">??</div>
-						<div class="fw-semibold fs-6 m-2">Under Assessment</div>
+					<div class="d-flex flex-row statistic-card area-blue align-items-center mt-2 me-2">
+						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
+						<div class="m-2">Under Assessment</div>
 					</div>
-					<div class="d-flex flex-row statistic-card area-blue align-items-center m-2">
-						<div class="fw-bold fs-4 m-2">??</div>
-						<div class="fw-semibold fs-6 m-2">Incomplete</div>
+					<div class="d-flex flex-row statistic-card area-blue align-items-center mt-2 me-2">
+						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
+						<div class="m-2">Incomplete</div>
 					</div>
 				</div>
 			</div>
 
 			<div class="mb-4">
-				Completed applications (completed, closed, or cancelled since April 14, 2022)
+				<div class="fw-semibold">
+					Completed applications <span class="fw-normal">(completed, closed, or cancelled since April 14, 2022)</span>
+				</div>
 				<div class="d-flex flex-wrap justify-content-start">
-					<div class="d-flex flex-row statistic-card area-red align-items-center m-2">
-						<div class="fw-bold fs-4 m-2">??</div>
-						<div class="fw-semibold fs-6 m-2">Risk Found</div>
+					<div class="d-flex flex-row statistic-card area-red align-items-center mt-2 me-2">
+						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
+						<div class="m-2">Risk Found</div>
 					</div>
-					<div class="d-flex flex-row statistic-card area-grey align-items-center m-2">
-						<div class="fw-bold fs-4 m-2">??</div>
-						<div class="fw-semibold fs-6 m-2">Risk Found</div>
+					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
+						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
+						<div class="m-2">Risk Found</div>
 					</div>
-					<div class="d-flex flex-row statistic-card area-grey align-items-center m-2">
-						<div class="fw-bold fs-4 m-2">??</div>
-						<div class="fw-semibold fs-6 m-2">
+					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
+						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
+						<div class="m-2">
 							Closed:<br />
 							Judicial Review
 						</div>
 					</div>
-					<div class="d-flex flex-row statistic-card area-grey align-items-center m-2">
-						<div class="fw-bold fs-4 m-2">??</div>
-						<div class="fw-semibold fs-6 m-2">
+					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
+						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
+						<div class="m-2">
 							Closed:<br />
 							No Response
 						</div>
 					</div>
-					<div class="d-flex flex-row statistic-card area-grey align-items-center m-2">
-						<div class="fw-bold fs-4 m-2">??</div>
-						<div class="fw-semibold fs-6 m-2">
+					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
+						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
+						<div class="m-2">
 							Closed:<br />
 							No Consent
 						</div>
 					</div>
-					<div class="d-flex flex-row statistic-card area-grey align-items-center m-2">
-						<div class="fw-bold fs-4 m-2">??</div>
-						<div class="fw-semibold fs-6 m-2">
+					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
+						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
+						<div class="m-2">
 							Cancelled:<br />
 							By Applicant
 						</div>
 					</div>
 				</div>
-			</div> -->
+			</div>
 
-			<div class="row" [formGroup]="formFilter">
-				<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
-					<mat-form-field>
-						<input
-							matInput
-							type="search"
-							formControlName="search"
-							placeholder="Search applicant's name or email or case ID"
-						/>
-						<button mat-button matSuffix mat-flat-button aria-label="search" class="search-icon-button">
-							<mat-icon>search</mat-icon>
-						</button>
-					</mat-form-field>
+			<div [formGroup]="formFilter">
+				<div class="row">
+					<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
+						<mat-form-field>
+							<input
+								matInput
+								type="search"
+								formControlName="search"
+								placeholder="Search applicant's name or email or case ID"
+								(keydown.enter)="onSearchKeyDown($event)"
+							/>
+							<button
+								mat-button
+								matSuffix
+								mat-flat-button
+								aria-label="search"
+								(click)="onSearch()"
+								class="search-icon-button"
+							>
+								<mat-icon>search</mat-icon>
+							</button>
+						</mat-form-field>
+					</div>
+					<div class="col-xl-1 col-lg-2 col-md-2 col-sm-3">
+						<app-dropdown-overlay
+							[showDropdownOverlay]="showDropdownOverlay"
+							(showDropdownOverlayChange)="onShowDropdownOverlayChange($event)"
+							[matBadgeShow]="filterCriteriaExists"
+						>
+							<app-application-statuses-filter
+								[formGroup]="formFilter"
+								(filterChange)="onFilterChange($event)"
+								(filterClear)="onFilterClear()"
+								(filterClose)="onFilterClose()"
+							></app-application-statuses-filter>
+						</app-dropdown-overlay>
+					</div>
 				</div>
-				<div class="col-xl-1 col-lg-2 col-md-2 col-sm-3">
-					<app-dropdown-overlay
-						[showDropdownOverlay]="showDropdownOverlay"
-						(showDropdownOverlayChange)="onShowDropdownOverlayChange($event)"
-					>
-						<app-application-statuses-filter
-							[formGroup]="formFilter"
-							(filterChange)="onFilterChange($event)"
-							(filterClear)="onFilterClear()"
-							(filterClose)="onFilterClose()"
-						></app-application-statuses-filter>
-					</app-dropdown-overlay>
+				<div class="row">
+					<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
+						<mat-chip
+							*ngFor="let status of currentStatuses"
+							[removable]="true"
+							(removed)="onItemRemoved(status)"
+							class="me-2 mb-2"
+							selected
+						>
+							{{ getStatusDesc(status) }}
+							<mat-icon matChipRemove>cancel</mat-icon>
+						</mat-chip>
+					</div>
 				</div>
 			</div>
 
 			<div class="row">
 				<div class="col-12">
-					<mat-table matSort [dataSource]="dataSource" matSortActive="createdOn" matSortDirection="desc">
+					<mat-table
+						[dataSource]="dataSource"
+						matSort
+						(matSortChange)="onSortChange($event)"
+						matSortActive="createdOn"
+						matSortDirection="desc"
+					>
 						<ng-container matColumnDef="applicantName">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Applicant Name</mat-header-cell>
 							<mat-cell *matCellDef="let application">
@@ -169,11 +209,11 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="caseNumber">
+						<ng-container matColumnDef="applicationNumber">
 							<mat-header-cell *matHeaderCellDef>Case ID</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Case ID:</span>
-								{{ application.caseNumber }}
+								{{ application.applicationNumber }}
 							</mat-cell>
 						</ng-container>
 
@@ -186,7 +226,7 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 						</ng-container>
 
 						<ng-container matColumnDef="status">
-							<mat-header-cell *matHeaderCellDef>Status / Action</mat-header-cell>
+							<mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Status:</span>
 
@@ -211,7 +251,7 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 									<mat-chip-option class="mat-chip-red" *ngIf="application.status == '8'">Risk Found</mat-chip-option>
 								</mat-chip-listbox>
 							 -->
-								<mat-chip-listbox aria-label="Status" class="ms-3">
+								<mat-chip-listbox aria-label="Status">
 									<mat-chip-option class="mat-chip-green">In Progress</mat-chip-option>
 									<!-- <mat-chip-option class="mat-chip-yellow"> Awaiting Applicant </mat-chip-option> -->
 								</mat-chip-listbox>
@@ -271,42 +311,48 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 			.statistic-card {
 				cursor: default;
 				height: 4em;
-				width: 10.5em;
+				width: 10.7em;
 				box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14),
 					0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+			}
+
+			.status-filter .mdc-text-field {
+				background-color: transparent;
 			}
 		`,
 	],
 })
 export class ApplicationStatusesComponent implements OnInit {
+	currentStatuses: any[] = [];
+	private currentFilters = '';
+	private currentSearch = '';
+
 	constants = SPD_CONSTANTS;
+	applicationStatusFiltersTypes = ApplicationStatusFiltersTypes;
+	filterCriteriaExists = false;
+	queryParams: any = this.defaultQueryParams(); // { page: 0, pageSize: 3 }; // SPD_CONSTANTS.list.defaultPageSize };
 
 	dataSource: MatTableDataSource<ApplicationResponse> = new MatTableDataSource<ApplicationResponse>([]);
 	tableConfig = this.utilService.getDefaultTableConfig();
-	columns!: string[];
+	columns: string[] = [
+		'applicantName',
+		'emailAddress',
+		'createdOn',
+		'whoPaid',
+		'applicationNumber',
+		'contractedCompanyName',
+		'status',
+		'actions',
+	];
 	followUpBusinessDays = '';
 
 	showDropdownOverlay = false;
-	formFilter: FormGroup = this.formBuilder.group({
-		search: new FormControl(''),
-		verifyIdentity: new FormControl(''),
-		inProgress: new FormControl(''),
-		// payNow: new FormControl(''),
-		// awaitingThirdParty: new FormControl(''),
-		// awaitingApplicant: new FormControl(''),
-		// underAssessment: new FormControl(''),
-		// incomplete: new FormControl(''),
-		// cleared: new FormControl(''),
-		// riskFound: new FormControl(''),
-		// judicialReview: new FormControl(''),
-		// noResponse: new FormControl(''),
-		// noApplicantConsent: new FormControl(''),
-		// cancelledByOrg: new FormControl(''),
-		// cancelledByAppl: new FormControl(''),
-	});
+	formFilter: FormGroup = this.formBuilder.group(new ApplicationStatusFilter());
 
 	@ViewChild(MatSort) sort!: MatSort;
 	@ViewChild('paginator') paginator!: MatPaginator;
+	@ViewChild(ApplicationStatusesFilterComponent)
+	applicationStatusesFilterComponent!: ApplicationStatusesFilterComponent;
 
 	constructor(
 		private router: Router,
@@ -317,28 +363,18 @@ export class ApplicationStatusesComponent implements OnInit {
 	) {}
 
 	ngOnInit() {
-		this.columns = [
-			'applicantName',
-			'emailAddress',
-			'createdOn',
-			'whoPaid',
-			'caseNumber',
-			'contractedCompanyName',
-			'status',
-			'actions',
-		];
 		this.loadList();
 	}
 
 	onPayNow(application: ApplicationResponse): void {
 		this.router.navigateByUrl(DashboardRoutes.dashboardPath(DashboardRoutes.PAYMENTS), {
-			state: { caseId: application.caseNumber },
+			state: { caseId: application.applicationNumber },
 		});
 	}
 
 	onVerifyApplicant(application: ApplicationResponse): void {
 		this.router.navigateByUrl(DashboardRoutes.dashboardPath(DashboardRoutes.IDENTITY_VERIFICATION), {
-			state: { caseId: application.caseNumber },
+			state: { caseId: application.applicationNumber },
 		});
 	}
 
@@ -346,12 +382,35 @@ export class ApplicationStatusesComponent implements OnInit {
 		this.showDropdownOverlay = show;
 	}
 
+	onSearchKeyDown(searchEvent: any): void {
+		const searchString = searchEvent.target.value;
+		this.performSearch(searchString);
+	}
+
+	onSearch(): void {
+		this.performSearch(this.formFilter.value.search);
+	}
+
 	onFilterChange(filters: any) {
+		this.currentStatuses = this.statuses.value?.length > 0 ? [...this.statuses.value] : [];
+		this.currentFilters = filters;
+		this.queryParams.page = 0;
+		this.queryParams.filters = this.buildQueryParamsFilterString();
+		this.filterCriteriaExists = filters ? true : false;
 		this.onFilterClose();
+
+		this.loadList();
 	}
 
 	onFilterClear() {
+		this.currentStatuses = [];
+		this.currentFilters = '';
+		this.currentSearch = '';
+		this.queryParams = this.defaultQueryParams();
+		this.filterCriteriaExists = false;
 		this.onFilterClose();
+
+		this.loadList();
 	}
 
 	onFilterClose() {
@@ -359,15 +418,52 @@ export class ApplicationStatusesComponent implements OnInit {
 	}
 
 	onPageChanged(page: PageEvent): void {
-		this.loadList(page.pageIndex);
+		this.queryParams.page = page.pageIndex;
+		this.loadList();
 	}
 
-	private loadList(pageIndex: number = 0): void {
+	onSortChange(sortParameters: Sort) {
+		const currentSort = `${sortParameters.direction === 'desc' ? '-' : ''}${
+			ApplicationStatusFilterMap[sortParameters.active as keyof ApplicationStatusFilter]
+		}`;
+		this.queryParams.page = 0;
+		this.queryParams.sorts = currentSort;
+
+		this.loadList();
+	}
+
+	onItemRemoved(item: string) {
+		const items = [...this.statuses.value] as string[];
+		this.utilService.removeFirst(items, item);
+		this.statuses.setValue(items); // To trigger change detection
+
+		this.applicationStatusesFilterComponent.emitFilterChange();
+	}
+
+	getStatusDesc(code: string): string {
+		return this.applicationStatusesFilterComponent.getStatusDesc(code);
+	}
+
+	private performSearch(searchString: string): void {
+		this.currentSearch = searchString ? `${ApplicationStatusFilterMap['search']}@=${searchString}` : '';
+		this.queryParams.filters = this.buildQueryParamsFilterString();
+
+		this.loadList();
+	}
+
+	private buildQueryParamsFilterString(): string {
+		return this.currentFilters + (this.currentFilters ? ',' : '') + this.currentSearch;
+	}
+
+	private defaultQueryParams(): any {
+		return { page: 0, pageSize: SPD_CONSTANTS.list.defaultPageSize };
+	}
+
+	private loadList(): void {
 		this.applicationService
 			.apiOrgsOrgIdApplicationsGet({
 				orgId: this.authenticationService.loggedInOrgId!,
-				page: pageIndex,
-				pageSize: this.tableConfig.paginator.pageSize,
+				...this.queryParams,
 			})
 			.pipe()
 			.subscribe((res: ApplicationListResponse) => {
@@ -384,5 +480,9 @@ export class ApplicationStatusesComponent implements OnInit {
 					},
 				};
 			});
+	}
+
+	get statuses(): FormControl {
+		return this.formFilter.get('statuses') as FormControl;
 	}
 }

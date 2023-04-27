@@ -23,7 +23,14 @@ export class DropdownOverlayButtonComponent {}
 		<button mat-icon-button (click)="toggleOverlay()" type="button" cdkOverlayOrigin #trigger="cdkOverlayOrigin">
 			<!-- This is the default button to be rendered if custom content is not provided -->
 			<ng-template #defaultOverlayButton>
-				<mat-icon [title]="label" [attr.aria-label]="label" class="filter-button">{{ dropdownIcon }}</mat-icon>
+				<mat-icon
+					[matBadge]="matBadgeShow ? '!' : ''"
+					matBadgeColor="warn"
+					[title]="label"
+					[attr.aria-label]="label"
+					class="filter-button"
+					>{{ dropdownIcon }}</mat-icon
+				>
 			</ng-template>
 
 			<ng-template #customOverlayButton>
@@ -63,6 +70,7 @@ export class DropdownOverlayButtonComponent {}
 })
 export class DropdownOverlayComponent implements OnInit {
 	@Input() dropdownIcon = 'filter_list';
+	@Input() matBadgeShow = false;
 
 	@Input() closeWhenClickOutside = false;
 	@Input() showDropdownOverlay = false;

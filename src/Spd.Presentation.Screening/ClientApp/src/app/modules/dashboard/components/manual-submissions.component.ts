@@ -482,6 +482,9 @@ export class ManualSubmissionsComponent implements OnInit {
 		if (this.form.valid) {
 			const body: ApplicationCreateRequest = { ...this.form.value };
 			body.originTypeCode = ApplicationOriginTypeCode.Portal;
+			body.phoneNumber = body.phoneNumber
+				? this.maskPipe.transform(body.phoneNumber, SPD_CONSTANTS.phone.backendMask)
+				: '';
 			body.haveVerifiedIdentity = body.haveVerifiedIdentity == true ? true : false;
 			body.contractedCompanyName =
 				body.screeningTypeCode == ScreeningTypeCode.Contractor ? body.contractedCompanyName : '';
