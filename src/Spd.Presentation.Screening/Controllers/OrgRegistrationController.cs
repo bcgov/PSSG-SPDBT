@@ -37,13 +37,13 @@ namespace Spd.Presentation.Screening.Controllers
         public async Task<OrgRegistrationCreateResponse> AnonymousRegister([FromBody][Required] AnonymousOrgRegistrationCreateRequest anonymOrgRegRequest, CancellationToken ct)
         {
             if (anonymOrgRegRequest == null)
-                throw new ApiException(HttpStatusCode.BadRequest, "request cannot be null.");
+                throw new ApiException(HttpStatusCode.BadRequest, "Request cannot be null");
 
             var isValid = await _verificationService.VerifyAsync(anonymOrgRegRequest.Recaptcha, ct);
 
             if (!isValid)
             {
-                throw new ApiException(HttpStatusCode.BadRequest, "Invalid recaptcha");
+                throw new ApiException(HttpStatusCode.BadRequest, "Invalid recaptcha value");
             }
             return await _mediator.Send(new RegisterOrganizationCommand(anonymOrgRegRequest));
         }

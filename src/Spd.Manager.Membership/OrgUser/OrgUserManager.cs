@@ -34,7 +34,7 @@ namespace Spd.Manager.Membership.OrgUser
             //check if email already exists for the user
             if (existingUsersResult.UserResults.Any(u => u.Email.Equals(request.OrgUserCreateRequest.Email, StringComparison.InvariantCultureIgnoreCase)))
             {
-                throw new DuplicateException(HttpStatusCode.BadRequest, $"User email {request.OrgUserCreateRequest.Email} has been used by another user.");
+                throw new DuplicateException(HttpStatusCode.BadRequest, $"User email {request.OrgUserCreateRequest.Email} has been used by another user");
             }
 
             //check if role is withing the maxium number scope
@@ -59,7 +59,7 @@ namespace Spd.Manager.Membership.OrgUser
                 u.Email.Equals(request.OrgUserUpdateRequest.Email, StringComparison.InvariantCultureIgnoreCase) &&
                 u.Id != request.OrgUserUpdateRequest.Id))
             {
-                throw new DuplicateException(HttpStatusCode.BadRequest, $"User email {request.OrgUserUpdateRequest.Email} has been used by another user.");
+                throw new DuplicateException(HttpStatusCode.BadRequest, $"User email {request.OrgUserUpdateRequest.Email} has been used by another user");
             }
 
             //check max role number rule
@@ -136,7 +136,7 @@ namespace Spd.Manager.Membership.OrgUser
             }
             if (primaryUserNo < 1)
             {
-                throw new OutOfRangeException(HttpStatusCode.BadRequest, "There must be at least one primary user.");
+                throw new OutOfRangeException(HttpStatusCode.BadRequest, "There must be at least one primary user");
             }
         }
     }
