@@ -100,6 +100,8 @@ namespace Spd.Resource.Applicants
             var applications = _dynaContext.spd_applications
                     .Where(a => a._spd_organizationid_value == query.FilterBy.OrgId && a.statecode == DynamicsConstants.StateCode_Active);
 
+            var count = applications.AsEnumerable().Count();
+
             //todo: add more filter and sorting here.
             //if (!string.IsNullOrWhiteSpace(query.FilterBy?.ApplicationStatus))
             //    applications = applications.Where(a => a.statecode == "InProgress");
@@ -113,9 +115,11 @@ namespace Spd.Resource.Applicants
                 applications = applications.OrderBy(a => a.createdon);
 
             if (query.Paging != null)
+            {
                 applications = applications
-                    .Skip((query.Paging.Page - 1) * query.Paging.PageSize)
+                    .Skip((query.Paging.Page) * query.Paging.PageSize)
                     .Take(query.Paging.PageSize);
+            }
 
             var result = applications.AsEnumerable();
             var response = new ApplicationListResp();
@@ -124,6 +128,15 @@ namespace Spd.Resource.Applicants
             response.FollowUpBusinessDays = 9;
 
             response.Applications = _mapper.Map<IEnumerable<ApplicationResp>>(result);
+
+            if (query.Paging != null)
+            {
+                response.Pagination = new PaginationResp();
+                response.Pagination.PageSize = query.Paging.PageSize;
+                response.Pagination.PageIndex = query.Paging.Page;
+                response.Pagination.Length = count;
+            }
+
             return response;
         }
 
@@ -145,9 +158,9 @@ namespace Spd.Resource.Applicants
                 .Where(a => a.accountid == organizationId)
                 .FirstOrDefault();
             if (account == null)
-                throw new NotFoundException(HttpStatusCode.BadRequest, $"Organization {organizationId} is not found.");
+                throw new NotFoundException(HttpStatusCode.BadRequest, $"Organization {organizationId} is not found");
             if (account?.statecode == DynamicsConstants.StateCode_Inactive)
-                throw new InactiveException(HttpStatusCode.BadRequest, $"Organization {organizationId} is inactive.");
+                throw new InactiveException(HttpStatusCode.BadRequest, $"Organization {organizationId} is inactive");
             return account;
         }
 
@@ -157,9 +170,9 @@ namespace Spd.Resource.Applicants
                 .Where(a => a.spd_portaluserid == userId)
                 .FirstOrDefault();
             if (user == null)
-                throw new NotFoundException(HttpStatusCode.BadRequest, $"User {userId} is not found.");
+                throw new NotFoundException(HttpStatusCode.BadRequest, $"User {userId} is not found");
             if (user?.statecode == DynamicsConstants.StateCode_Inactive)
-                throw new InactiveException(HttpStatusCode.BadRequest, $"User {userId} is inactive.");
+                throw new InactiveException(HttpStatusCode.BadRequest, $"User {userId} is inactive");
             return user;
 
         }

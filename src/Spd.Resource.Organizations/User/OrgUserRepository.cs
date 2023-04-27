@@ -183,7 +183,7 @@ namespace Spd.Resource.Organizations.User
                 .FirstOrDefault();
 
             if (account?.statecode == DynamicsConstants.StateCode_Inactive)
-                throw new InactiveException(HttpStatusCode.BadRequest, $"Organization {organizationId} is inactive.");
+                throw new InactiveException(HttpStatusCode.BadRequest, $"Organization {organizationId} is inactive");
             return account;
         }
 
@@ -206,7 +206,7 @@ namespace Spd.Resource.Organizations.User
                     .FirstOrDefault();
 
                 if (user?.statecode == DynamicsConstants.StateCode_Inactive)
-                    throw new InactiveException(HttpStatusCode.BadRequest, $"User {userId} is inactive.");
+                    throw new InactiveException(HttpStatusCode.BadRequest, $"User {userId} is inactive");
 
                 if (user != null)
                     return user;

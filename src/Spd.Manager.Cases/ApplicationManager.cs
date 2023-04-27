@@ -45,7 +45,7 @@ namespace Spd.Manager.Cases
         public async Task<ApplicationCreateResponse> Handle(ApplicationCreateCommand request, CancellationToken ct)
         {
             ApplicationCreateResponse result = new();
-            if(request.ApplicationCreateRequest.RequireDuplicateCheck)
+            if (request.ApplicationCreateRequest.RequireDuplicateCheck)
             {
                 result = await CheckDuplicate(request.ApplicationCreateRequest, ct);
                 result.IsDuplicateCheckRequired = true;
@@ -57,18 +57,18 @@ namespace Spd.Manager.Cases
 
             var cmd = _mapper.Map<ApplicationCreateCmd>(request.ApplicationCreateRequest);
             Guid? applicationId = await _applicationRepository.AddApplicationAsync(cmd, ct);
-            if(applicationId.HasValue)
+            if (applicationId.HasValue)
             {
                 result.applicationId = applicationId.Value;
-                result.CreateSuccess= true;
+                result.CreateSuccess = true;
             }
             return result;
         }
 
         public async Task<ApplicationListResponse> Handle(ApplicationListQuery request, CancellationToken ct)
         {
-            if (request.Page < 1) throw new ApiException(System.Net.HttpStatusCode.BadRequest, "incorrect page number.");
-            if (request.PageSize < 1) throw new ApiException(System.Net.HttpStatusCode.BadRequest, "incorrect page size.");
+            if (request.Page < 0) throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Incorrect page number");
+            if (request.PageSize < 1) throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Incorrect page size");
 
             var response = await _applicationRepository.QueryAsync(
                 new ApplicationQuery
@@ -78,6 +78,7 @@ namespace Spd.Manager.Cases
                     Paging = new Paging(request.Page, request.PageSize)
                 },
                 ct);
+
             return _mapper.Map<ApplicationListResponse>(response);
         }
 

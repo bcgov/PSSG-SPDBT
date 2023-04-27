@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { ApplicationStatusesFilterComponent } from './components/application-statuses-filter.component';
 import { ApplicationStatusesComponent } from './components/application-statuses.component';
 import { CrcAddModalComponent } from './components/crc-add-modal.component';
 import { CriminalRecordChecksComponent } from './components/criminal-record-checks.component';
@@ -22,17 +23,18 @@ import { DashboardComponent } from './dashboard.component';
 	declarations: [
 		DashboardComponent,
 		GenericUploadsComponent,
-		DashboardHomeComponent,
-		PaymentsComponent,
-		UsersComponent,
 		DashboardHeaderComponent,
-		UserEditModalComponent,
+		DashboardHomeComponent,
+		ApplicationStatusesComponent,
+		ApplicationStatusesFilterComponent,
+		PaymentsComponent,
 		PaymentFilterComponent,
+		UsersComponent,
+		UserEditModalComponent,
 		OrganizationProfileComponent,
 		CriminalRecordChecksComponent,
 		CrcAddModalComponent,
 		IdentifyVerificationComponent,
-		ApplicationStatusesComponent,
 		ExpiringChecksComponent,
 		ManualSubmissionsComponent,
 		ReportsComponent,
