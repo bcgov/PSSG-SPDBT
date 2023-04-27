@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Membership.Org;
 using Spd.Utilities.Shared;
@@ -8,6 +9,7 @@ namespace Spd.Presentation.Screening.Controllers
     /// <summary>
     /// 
     /// </summary>
+    [Authorize]
     public class OrgController : SpdControllerBase
     {
         private readonly IMediator _mediator;

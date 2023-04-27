@@ -12,7 +12,7 @@ namespace Spd.Presentation.Screening.Controllers
     {
         private readonly IMediator _mediator;
 
-        public UserProfileController(ILogger<UserProfileController> logger, IMediator mediator)
+        public UserProfileController(IMediator mediator)
         {
             _mediator = mediator;
         }
