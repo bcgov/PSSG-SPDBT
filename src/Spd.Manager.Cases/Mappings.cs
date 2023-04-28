@@ -16,7 +16,8 @@ namespace Spd.Manager.Cases
             CreateMap<ApplicationInviteCreateRequest, SearchInvitationQry>();
             CreateMap<ApplicationInviteCreateRequest, ApplicationInviteDuplicateResponse>();
             CreateMap<ApplicationInviteListResp, ApplicationInviteListResponse>();
-            CreateMap<ApplicationInviteResult, ApplicationInviteResponse>();
+            CreateMap<ApplicationInviteResult, ApplicationInviteResponse>()
+               .ForMember(d => d.Status, opt => opt.MapFrom(s => Enum.Parse<ApplicationInviteStatusCode>(s.Status)));
             CreateMap<ApplicationCreateRequest, SearchApplicationQry>();
             CreateMap<ApplicationCreateRequest, ApplicationCreateCmd>();
             CreateMap<AliasCreateRequest, AliasCreateCmd>();
