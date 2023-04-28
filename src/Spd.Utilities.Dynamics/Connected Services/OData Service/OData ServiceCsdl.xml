@@ -19922,6 +19922,7 @@
         <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
         <Property Name="spd_email" Type="Edm.String" Unicode="false" />
         <Property Name="spd_invitationtype" Type="Edm.Int32" />
+        <Property Name="spd_errormessage" Type="Edm.String" Unicode="false" />
         <Property Name="_modifiedby_value" Type="Edm.Guid" />
         <Property Name="_createdonbehalfby_value" Type="Edm.Guid" />
         <Property Name="_spd_portaluserid_value" Type="Edm.Guid" />
