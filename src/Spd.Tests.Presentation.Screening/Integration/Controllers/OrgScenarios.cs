@@ -1,9 +1,8 @@
 ﻿using Alba;
 using Spd.Manager.Membership.Org;
-using Xunit;
 using Xunit.Abstractions;
 
-namespace Spd.Tests.Presentation.Screening.Integration.scenarios;
+namespace Spd.Tests.Presentation.Screening.Integration.Controllers;
 
 public class OrgScenarios : ScenarioContextBase
 {

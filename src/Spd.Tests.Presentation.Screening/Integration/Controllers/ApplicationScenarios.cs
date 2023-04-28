@@ -1,9 +1,8 @@
 ﻿using Alba;
 using Spd.Manager.Cases;
-using Xunit;
 using Xunit.Abstractions;
 
-namespace Spd.Tests.Presentation.Screening.Integration.scenarios;
+namespace Spd.Tests.Presentation.Screening.Integration.Controllers;
 
 public class ApplicationScenarios : ScenarioContextBase
 {
@@ -75,17 +74,17 @@ public class ApplicationScenarios : ScenarioContextBase
             Surname = "surname",
             JobTitle = "qa",
             RequireDuplicateCheck = false,
-            City="city",
-            PhoneNumber="12345678",
-            DateOfBirth=new DateTime(2000,1,1),
-            AddressLine1="address1",
-            PostalCode="121212",
-            Province="bc",
-            Country="canada",
-            AgreeToCompleteAndAccurate=true,
-            HaveVerifiedIdentity=true,
-            ScreeningTypeCode=ScreeningTypeCode.Staff,
-            BirthPlace="place"
+            City = "city",
+            PhoneNumber = "12345678",
+            DateOfBirth = new DateTime(2000, 1, 1),
+            AddressLine1 = "address1",
+            PostalCode = "121212",
+            Province = "bc",
+            Country = "canada",
+            AgreeToCompleteAndAccurate = true,
+            HaveVerifiedIdentity = true,
+            ScreeningTypeCode = ScreeningTypeCode.Staff,
+            BirthPlace = "place"
         };
     }
 }

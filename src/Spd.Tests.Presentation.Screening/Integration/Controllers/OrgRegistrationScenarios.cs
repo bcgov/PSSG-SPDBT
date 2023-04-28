@@ -2,10 +2,9 @@
 using Spd.Manager.Membership.OrgRegistration;
 using Spd.Presentation.Screening.Controllers;
 using System.Net;
-using Xunit;
 using Xunit.Abstractions;
 
-namespace Spd.Tests.Presentation.Screening.Integration.scenarios;
+namespace Spd.Tests.Presentation.Screening.Integration.Controllers;
 
 public class OrgRegistrationScenarios : ScenarioContextBase
 {
@@ -28,7 +27,7 @@ public class OrgRegistrationScenarios : ScenarioContextBase
     {
         await Host.Scenario(_ =>
         {
-            _.Post.Json(Create_OrgRegistrationCreateRequest()).ToUrl($"/api/org-registrations"); 
+            _.Post.Json(Create_OrgRegistrationCreateRequest()).ToUrl($"/api/org-registrations");
             _.StatusCodeShouldBeOk();
         });
     }
@@ -60,8 +59,8 @@ public class OrgRegistrationScenarios : ScenarioContextBase
             MailingAddressLine1 = "address1",
             MailingCity = "victoria",
             MailingPostalCode = "abcedf",
-            MailingCountry="test",
-            MailingProvince= "bc",
+            MailingCountry = "test",
+            MailingProvince = "bc",
             GenericEmail = "test@email.com",
             GenericPhoneNumber = "111-222-2222",
             AgreeToTermsAndConditions = true,

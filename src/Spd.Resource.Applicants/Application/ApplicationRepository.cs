@@ -1,18 +1,13 @@
-using System.Net;
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
+using System.Net;
 
-<<<<<<< HEAD:src/Spd.Resource.Applicants/ApplicationRepository.cs
-namespace Spd.Resource.Applicants;
-
+namespace Spd.Resource.Applicants.Application;
 internal class ApplicationRepository : IApplicationRepository
-=======
-namespace Spd.Resource.Applicants.Application
->>>>>>> main:src/Spd.Resource.Applicants/Application/ApplicationRepository.cs
 {
     private readonly DynamicsContext _context;
     private readonly IMapper _mapper;
@@ -23,53 +18,14 @@ namespace Spd.Resource.Applicants.Application
         _mapper = mapper;
     }
 
-    public async Task AddApplicationInvitesAsync(ApplicationInviteCreateCmd createInviteCmd, CancellationToken cancellationToken)
-    {
-        account org = GetOrgById(createInviteCmd.OrgId);
-        //spd_portaluser user = GetUserById(createInviteCmd.CreatedByUserId); //todo
-
-        foreach (var item in createInviteCmd.ApplicationInviteCreateReqs)
-        {
-            spd_portalinvitation invitation = _mapper.Map<spd_portalinvitation>(item);
-            _context.AddTospd_portalinvitations(invitation);
-            _context.SetLink(invitation, nameof(spd_portalinvitation.spd_OrganizationId), org);
-            //_dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_PortalUserId), user); //todo
-        }
-        await _context.SaveChangesAsync(cancellationToken);
-        return;
-    }
-
-<<<<<<< HEAD:src/Spd.Resource.Applicants/ApplicationRepository.cs
-    public async Task<bool> CheckInviteInvitationDuplicateAsync(SearchInvitationQry searchInvitationQry, CancellationToken cancellationToken)
-    {
-        var orginvitation = _context.spd_portalinvitations.Where(o =>
-            o.spd_OrganizationId.accountid == searchInvitationQry.OrgId &&
-            o.spd_firstname == searchInvitationQry.FirstName &&
-            o.spd_surname == searchInvitationQry.LastName &&
-            o.statecode != DynamicsConstants.StateCode_Inactive
-        ).FirstOrDefault();
-        return orginvitation != null;
-    }
-
-    public async Task<bool> CheckInviteApplicationDuplicateAsync(SearchInvitationQry searchInvitationQry, CancellationToken cancellationToken)
-    {
-        var orginvitation = _context.spd_applications.Where(o =>
-            o.spd_OrganizationId.accountid == searchInvitationQry.OrgId &&
-            o.spd_firstname == searchInvitationQry.FirstName &&
-            o.spd_lastname == searchInvitationQry.LastName &&
-            o.statecode != DynamicsConstants.StateCode_Inactive
-        ).FirstOrDefault();
-        return orginvitation != null;
-    }
-
     public async Task<Guid?> AddApplicationAsync(ApplicationCreateCmd createApplicationCmd, CancellationToken cancellationToken)
     {
         spd_application application = _mapper.Map<spd_application>(createApplicationCmd);
-        account org = GetOrgById(createApplicationCmd.OrgId);
+        account? org = GetOrgById(createApplicationCmd.OrgId);
         _context.AddTospd_applications(application);
         _context.SetLink(application, nameof(spd_application.spd_OrganizationId), org);
 
-        contact contact = GetContact(createApplicationCmd);
+        contact? contact = GetContact(createApplicationCmd);
         // if not found, create new contact
         if (contact == null)
         {
@@ -82,11 +38,8 @@ namespace Spd.Resource.Applicants.Application
 
         //create the aliases
         foreach (var item in createApplicationCmd.Aliases)
-=======
-        public async Task<Guid?> AddApplicationAsync(ApplicationCreateCmd createApplicationCmd, CancellationToken cancellationToken)
->>>>>>> main:src/Spd.Resource.Applicants/Application/ApplicationRepository.cs
         {
-            spd_alias matchingAlias = GetAlias(item);
+            spd_alias? matchingAlias = GetAlias(item);
             // if not found, create new alias
             if (matchingAlias == null)
             {
@@ -115,17 +68,8 @@ namespace Spd.Resource.Applicants.Application
         //if (!string.IsNullOrWhiteSpace(query.FilterBy?.ApplicationStatus))
         //    applications = applications.Where(a => a.statecode == "InProgress");
 
-<<<<<<< HEAD:src/Spd.Resource.Applicants/ApplicationRepository.cs
         if (query.SortBy == null)
             applications = applications.OrderByDescending(a => a.createdon);
-=======
-            if (query.Paging != null)
-            {
-                applications = applications
-                    .Skip(query.Paging.Page * query.Paging.PageSize)
-                    .Take(query.Paging.PageSize);
-            }
->>>>>>> main:src/Spd.Resource.Applicants/Application/ApplicationRepository.cs
 
         if (query.SortBy != null && query.SortBy.SubmittedDateDesc != null && (bool)query.SortBy.SubmittedDateDesc)
             applications = applications.OrderByDescending(a => a.createdon);
@@ -158,7 +102,28 @@ namespace Spd.Resource.Applicants.Application
         return response;
     }
 
-<<<<<<< HEAD:src/Spd.Resource.Applicants/ApplicationRepository.cs
+    public async Task<ApplicationStatisticsQueryResponse> QueryAsync(ApplicationStatisticsQuery query, CancellationToken ct)
+    {
+        var organization = await GetOrganizationById(query.OrganizationId);
+        if (organization == null) return new ApplicationStatisticsQueryResponse();
+        var organizationStatistics = await organization.spd_GetOrganizationStatistics().GetValueAsync(ct);
+        var statisticsDictionary = new Dictionary<ApplicationsStatisticsCode, int>();
+        if (organizationStatistics.AwaitingApplicant.HasValue) statisticsDictionary.Add(ApplicationsStatisticsCode.AwaitingApplicant, organizationStatistics.AwaitingApplicant.Value);
+        if (organizationStatistics.AwaitingPayment.HasValue) statisticsDictionary.Add(ApplicationsStatisticsCode.AwaitingPayment, organizationStatistics.AwaitingPayment.Value);
+        if (organizationStatistics.AwaitingThirdParty.HasValue) statisticsDictionary.Add(ApplicationsStatisticsCode.AwaitingThirdParty, organizationStatistics.AwaitingThirdParty.Value);
+        if (organizationStatistics.CancelledByApplicant.HasValue) statisticsDictionary.Add(ApplicationsStatisticsCode.CancelledByApplicant, organizationStatistics.CancelledByApplicant.Value);
+        if (organizationStatistics.ClosedJudicialReview.HasValue) statisticsDictionary.Add(ApplicationsStatisticsCode.ClosedJudicialReview, organizationStatistics.ClosedJudicialReview.Value);
+        if (organizationStatistics.ClosedNoConsent.HasValue) statisticsDictionary.Add(ApplicationsStatisticsCode.ClosedNoConsent, organizationStatistics.ClosedNoConsent.Value);
+        if (organizationStatistics.ClosedNoResponse.HasValue) statisticsDictionary.Add(ApplicationsStatisticsCode.ClosedNoResponse, organizationStatistics.ClosedNoResponse.Value);
+        if (organizationStatistics.Incomplete.HasValue) statisticsDictionary.Add(ApplicationsStatisticsCode.Incomplete, organizationStatistics.Incomplete.Value);
+        if (organizationStatistics.InProgress.HasValue) statisticsDictionary.Add(ApplicationsStatisticsCode.InProgress, organizationStatistics.InProgress.Value);
+        if (organizationStatistics.RiskFound.HasValue) statisticsDictionary.Add(ApplicationsStatisticsCode.RiskFound, organizationStatistics.RiskFound.Value);
+        if (organizationStatistics.UnderAssessment.HasValue) statisticsDictionary.Add(ApplicationsStatisticsCode.UnderAssessment, organizationStatistics.UnderAssessment.Value);
+        if (organizationStatistics.VerifyIdentity.HasValue) statisticsDictionary.Add(ApplicationsStatisticsCode.VerifyIdentity, organizationStatistics.VerifyIdentity.Value);
+
+        return new ApplicationStatisticsQueryResponse { Statistics = statisticsDictionary };
+    }
+
     public async Task<bool> CheckApplicationDuplicateAsync(SearchApplicationQry searchApplicationQry, CancellationToken cancellationToken)
     {
         var application = _context.spd_applications.Where(o =>
@@ -183,18 +148,6 @@ namespace Spd.Resource.Applicants.Application
         return account;
     }
 
-    private spd_portaluser? GetUserById(Guid userId)
-    {
-        var user = _context.spd_portalusers
-            .Where(a => a.spd_portaluserid == userId)
-            .FirstOrDefault();
-        if (user == null)
-            throw new NotFoundException(HttpStatusCode.BadRequest, $"User {userId} is not found");
-        if (user?.statecode == DynamicsConstants.StateCode_Inactive)
-            throw new InactiveException(HttpStatusCode.BadRequest, $"User {userId} is inactive");
-        return user;
-    }
-
     private spd_alias? GetAlias(AliasCreateCmd aliasCreateCmd)
     {
         var matchingAlias = _context.spd_aliases.Where(o =>
@@ -210,9 +163,6 @@ namespace Spd.Resource.Applicants.Application
     private contact? GetContact(ApplicationCreateCmd createApplicationCmd)
     {
         if (createApplicationCmd.DriversLicense == null || createApplicationCmd.DriversLicense.IsNullOrEmpty())
-=======
-        private spd_alias? GetAlias(AliasCreateCmd aliasCreateCmd)
->>>>>>> main:src/Spd.Resource.Applicants/Application/ApplicationRepository.cs
         {
             var contact = _context.contacts
             .Where(o =>
@@ -234,28 +184,6 @@ namespace Spd.Resource.Applicants.Application
             return contact;
         }
     }
-
-    public async Task<ApplicationStatisticsQueryResponse> QueryAsync(ApplicationStatisticsQuery query, CancellationToken ct)
-    {
-        var organization = await GetOrganizationById(query.OrganizationId);
-        if (organization == null) return new ApplicationStatisticsQueryResponse();
-        var organizationStatistics = await organization.spd_GetOrganizationStatistics().GetValueAsync(ct);
-        var statisticsDictionary = new Dictionary<ApplicationsStatisticsCode, int>();
-        if (organizationStatistics.AwaitingApplicant.HasValue) statisticsDictionary.Add(ApplicationsStatisticsCode.AwaitingApplicant, organizationStatistics.AwaitingApplicant.Value);
-        if (organizationStatistics.AwaitingPayment.HasValue) statisticsDictionary.Add(ApplicationsStatisticsCode.AwaitingPayment, organizationStatistics.AwaitingPayment.Value);
-        if (organizationStatistics.AwaitingThirdParty.HasValue) statisticsDictionary.Add(ApplicationsStatisticsCode.AwaitingThirdParty, organizationStatistics.AwaitingThirdParty.Value);
-        if (organizationStatistics.CancelledByApplicant.HasValue) statisticsDictionary.Add(ApplicationsStatisticsCode.CancelledByApplicant, organizationStatistics.CancelledByApplicant.Value);
-        if (organizationStatistics.ClosedJudicialReview.HasValue) statisticsDictionary.Add(ApplicationsStatisticsCode.ClosedJudicialReview, organizationStatistics.ClosedJudicialReview.Value);
-        if (organizationStatistics.ClosedNoConsent.HasValue) statisticsDictionary.Add(ApplicationsStatisticsCode.ClosedNoConsent, organizationStatistics.ClosedNoConsent.Value);
-        if (organizationStatistics.ClosedNoResponse.HasValue) statisticsDictionary.Add(ApplicationsStatisticsCode.ClosedNoResponse, organizationStatistics.ClosedNoResponse.Value);
-        if (organizationStatistics.Incomplete.HasValue) statisticsDictionary.Add(ApplicationsStatisticsCode.Incomplete, organizationStatistics.Incomplete.Value);
-        if (organizationStatistics.InProgress.HasValue) statisticsDictionary.Add(ApplicationsStatisticsCode.InProgress, organizationStatistics.InProgress.Value);
-        if (organizationStatistics.RiskFound.HasValue) statisticsDictionary.Add(ApplicationsStatisticsCode.RiskFound, organizationStatistics.RiskFound.Value);
-        if (organizationStatistics.UnderAssessment.HasValue) statisticsDictionary.Add(ApplicationsStatisticsCode.UnderAssessment, organizationStatistics.UnderAssessment.Value);
-        if (organizationStatistics.VerifyIdentity.HasValue) statisticsDictionary.Add(ApplicationsStatisticsCode.VerifyIdentity, organizationStatistics.VerifyIdentity.Value);
-
-        return new ApplicationStatisticsQueryResponse { Statistics = statisticsDictionary };
-    }
-
-    private async Task<account?> GetOrganizationById(Guid organizationId) => await _context.accounts.Where(a => a.accountid == organizationId).SingleOrDefaultAsync();
+    private async Task<account?> GetOrganizationById(Guid organizationId)
+        => await _context.accounts.Where(a => a.accountid == organizationId).SingleOrDefaultAsync();
 }
