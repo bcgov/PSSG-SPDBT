@@ -81,7 +81,7 @@ namespace Spd.Manager.Cases
             Guid? applicationId = await _applicationRepository.AddApplicationAsync(cmd, ct);
             if (applicationId.HasValue)
             {
-                result.applicationId = applicationId.Value;
+                result.ApplicationId = applicationId.Value;
                 result.CreateSuccess = true;
             }
             return result;
