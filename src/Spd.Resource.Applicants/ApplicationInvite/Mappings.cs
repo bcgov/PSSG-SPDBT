@@ -22,6 +22,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             .IncludeBase<spd_portalinvitation, ApplicationInvite>()
             .ForMember(d => d.PayeeType, opt => opt.MapFrom(s => s.spd_payeetype == null ? PayerPreferenceTypeCode.Organization : Enum.Parse<PayerPreferenceTypeCode>(((PayerPreferenceOptionSet)s.spd_payeetype).ToString())))
             .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_portalinvitationid))
+            .ForMember(d => d.ErrorMsg, opt => opt.MapFrom(s => s.spd_errormessage))
             .ForMember(d => d.Status, opt => opt.MapFrom(s => s.statuscode == null ? string.Empty : ((InvitationActiveStatus)s.statuscode).ToString()))
             ;
         }

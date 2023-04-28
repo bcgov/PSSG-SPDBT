@@ -52,18 +52,10 @@ namespace Spd.Manager.Cases
             if (request.Page < 0) throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Incorrect page number");
             if (request.PageSize < 1) throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Incorrect page size");
 
-            string? filterValue = null;
-            if(!string.IsNullOrWhiteSpace(request.FilterStr))
-            {
-                var strs = request.FilterStr.Split("==");
-                if(strs[0].Equals( "emailOrNameContains", StringComparison.InvariantCultureIgnoreCase)) 
-                    filterValue = strs[1];
-            }
-
             var response = await _applicationInviteRepository.QueryAsync(
                 new ApplicationInviteQuery
                 {
-                    FilterBy = new AppInviteFilterBy(request.OrgId, EmailOrNameContains: filterValue),
+                    FilterBy = new AppInviteFilterBy(request.OrgId, EmailOrNameContains: request.SearchContains),
                     SortBy = new AppInviteSortBy(SubmittedDateDesc : true),
                     Paging = new Paging(request.Page, request.PageSize)
                 },

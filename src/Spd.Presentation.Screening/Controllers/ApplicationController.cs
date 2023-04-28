@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Cases;
 using Spd.Utilities.Shared;
+using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
 
 namespace Spd.Presentation.Screening.Controllers
@@ -31,7 +32,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <summary>
         /// get the active application invites list.
         /// support wildcard search for email and name
-        /// sample: /application-invites?filter=emailOrNameContains==str
+        /// sample: /application-invites?filter=searchContains==str
         /// </summary>
         /// <param name="orgId"></param>
         /// <param name="filters"></param>
@@ -44,7 +45,21 @@ namespace Spd.Presentation.Screening.Controllers
         {
             page = (page == null || page < 0) ? 0 : page;
             pageSize = (pageSize == null || pageSize == 0 || pageSize > 100) ? 10 : pageSize;
-            return await _mediator.Send(new ApplicationInviteListQuery(orgId, filters, (int)page, (int)pageSize));
+            string? filterValue = null;
+            if (!string.IsNullOrWhiteSpace(filters))
+            {
+                try
+                {
+                    var strs = filters.Split("==");
+                    if (strs[0].Equals("searchContains", StringComparison.InvariantCultureIgnoreCase))
+                        filterValue = strs[1];
+                }
+                catch
+                {
+                    throw new ApiException(System.Net.HttpStatusCode.BadRequest, "invalid filtering string.");
+                }
+            }
+            return await _mediator.Send(new ApplicationInviteListQuery(orgId, SearchContains: filterValue, (int)page, (int)pageSize));
         }
         /// <summary>
         /// create application. if checkDuplicate is true, it will check if there is existing duplicated applications 
