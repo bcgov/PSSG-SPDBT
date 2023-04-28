@@ -26,23 +26,26 @@ namespace Spd.Resource.Applicants.ApplicationInvite
                     .Where(i => i.spd_invitationtype != null && i.spd_invitationtype == (int)InvitationTypeOptionSet.ScreeningRequest)
                     .Where(i => i._spd_organizationid_value == query.FilterBy.OrgId && i.statecode == DynamicsConstants.StateCode_Active);
 
-            int count = invites.AsEnumerable().Count();
-
+            string? filterValue = query.FilterBy.EmailOrNameContains;
+            if (!string.IsNullOrWhiteSpace(filterValue))
+                invites = invites.Where(i => i.spd_firstname.Contains(filterValue) || i.spd_surname.Contains(filterValue) || i.spd_email.Contains(filterValue));
+            
             if (query.SortBy == null)
                 invites = invites.OrderByDescending(a => a.createdon);
-
             if (query.SortBy != null && query.SortBy.SubmittedDateDesc != null && (bool)query.SortBy.SubmittedDateDesc)
                 invites = invites.OrderByDescending(a => a.createdon);
             if (query.SortBy != null && query.SortBy.SubmittedDateDesc != null && !(bool)query.SortBy.SubmittedDateDesc)
                 invites = invites.OrderBy(a => a.createdon);
-            
+
+            int count = invites.AsEnumerable().Count();
+
             if (query.Paging != null)
             {
                 invites = invites
                     .Skip(query.Paging.Page * query.Paging.PageSize)
                     .Take(query.Paging.PageSize);
             }
-            var temp = invites.ToList();
+
             var response = new ApplicationInviteListResp();
 
             response.ApplicationInvites = _mapper.Map<IEnumerable<ApplicationInviteResult>>(invites);

@@ -28,17 +28,23 @@ namespace Spd.Presentation.Screening.Controllers
             return await _mediator.Send(new ApplicationInviteCreateCommand(invitesCreateRequest, orgId));
         }
 
+        /// <summary>
+        /// get the active application invites list.
+        /// support wildcard search for email and name
+        /// sample: /application-invites?filter=emailOrNameContains==str
+        /// </summary>
+        /// <param name="orgId"></param>
+        /// <param name="filters"></param>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
         [Route("api/orgs/{orgId}/application-invites")]
         [HttpGet]
-        public async Task<ApplicationInviteListResponse> GetInvitesList([FromRoute] Guid orgId, [FromQuery] string? filter, [FromQuery] string? sort, [FromQuery] uint? page, [FromQuery] uint? pageSize)
+        public async Task<ApplicationInviteListResponse> GetInvitesList([FromRoute] Guid orgId, [FromQuery] string? filters, [FromQuery] uint? page, [FromQuery] uint? pageSize)
         {
-            //todo, when we do filtering and sorting, will complete this.
-            string f = filter;
-            string s = sort;
-
             page = (page == null || page < 0) ? 0 : page;
             pageSize = (pageSize == null || pageSize == 0 || pageSize > 100) ? 10 : pageSize;
-            return await _mediator.Send(new ApplicationInviteListQuery(orgId, (int)page, (int)pageSize));
+            return await _mediator.Send(new ApplicationInviteListQuery(orgId, filters, (int)page, (int)pageSize));
         }
         /// <summary>
         /// create application. if checkDuplicate is true, it will check if there is existing duplicated applications 

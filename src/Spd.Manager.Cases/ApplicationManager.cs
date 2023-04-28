@@ -31,7 +31,7 @@ namespace Spd.Manager.Cases
             ApplicationInvitesCreateResponse resp = new(createCmd.OrgId);
             if (createCmd.ApplicationInvitesCreateRequest.RequireDuplicateCheck)
             {
-                var duplicateResp = await CheckDuplicates(createCmd.ApplicationInvitesCreateRequest, createCmd.OrgId, cancellationToken);
+                var duplicateResp = await CheckDuplicates(createCmd.ApplicationInvitesCreateRequest, createCmd.OrgId, ct);
                 resp.IsDuplicateCheckRequired = createCmd.ApplicationInvitesCreateRequest.RequireDuplicateCheck;
                 resp.DuplicateResponses = duplicateResp;
                 if (duplicateResp.Any())
@@ -43,7 +43,7 @@ namespace Spd.Manager.Cases
             var cmd = _mapper.Map<ApplicationInvitesCreateCmd>(createCmd.ApplicationInvitesCreateRequest);
             cmd.OrgId = createCmd.OrgId;
             //todo: after logon seq is done, we need to add userId here.
-            await _applicationInviteRepository.AddApplicationInvitesAsync(cmd, cancellationToken);
+            await _applicationInviteRepository.AddApplicationInvitesAsync(cmd, ct);
             resp.CreateSuccess = true;
             return resp;
         }
@@ -51,11 +51,20 @@ namespace Spd.Manager.Cases
         {
             if (request.Page < 0) throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Incorrect page number");
             if (request.PageSize < 1) throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Incorrect page size");
+
+            string? filterValue = null;
+            if(!string.IsNullOrWhiteSpace(request.FilterStr))
+            {
+                var strs = request.FilterStr.Split("==");
+                if(strs[0].Equals( "emailOrNameContains", StringComparison.InvariantCultureIgnoreCase)) 
+                    filterValue = strs[1];
+            }
+
             var response = await _applicationInviteRepository.QueryAsync(
                 new ApplicationInviteQuery
                 {
-                    FilterBy = new AppInviteFilterBy(request.OrgId, null),
-                    SortBy = new AppInviteSortBy(true, null),
+                    FilterBy = new AppInviteFilterBy(request.OrgId, EmailOrNameContains: filterValue),
+                    SortBy = new AppInviteSortBy(SubmittedDateDesc : true),
                     Paging = new Paging(request.Page, request.PageSize)
                 },
                 ct);
