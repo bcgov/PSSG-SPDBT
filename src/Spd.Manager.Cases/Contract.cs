@@ -99,7 +99,7 @@ namespace Spd.Manager.Cases
     {
         public bool IsDuplicateCheckRequired { get; set; } = false;
         public bool CreateSuccess { get; set; } = false;
-        public Guid? applicationId { get; set; } = null;
+        public Guid? ApplicationId { get; set; } = null;
         public bool HasPotentialDuplicate { get; set; } = false;
     }
     public class ApplicationListResponse
