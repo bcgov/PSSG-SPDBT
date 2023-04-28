@@ -1,4 +1,4 @@
-﻿using Alba;
+using Alba;
 using Alba.Security;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,6 +8,7 @@ using Xunit;
 using Xunit.Abstractions;
 
 namespace Spd.Tests.Presentation.Screening.Integration;
+
 public class WebAppFixture
 {
     public static readonly Guid LOGON_USER_GUID = Guid.Parse("946597A702244BA0884BDC3AC8CB21B6");
@@ -15,6 +16,7 @@ public class WebAppFixture
     public IAlbaHost albaHost = null!;
     public IAlbaHost albaNoAuthMockHost = null!;
     public DynamicsTestData testData { get; set; } = null!;
+
     public async Task<IAlbaHost> CreateHost(ITestOutputHelper output, IConfiguration configuration)
     {
         var bceidStub = new JwtSecurityStub()
@@ -49,10 +51,9 @@ public class ScenarioCollection : ICollectionFixture<WebAppFixture>
 [Collection("WebAppScenario")]
 public abstract class ScenarioContextBase : IAsyncLifetime
 {
-    private readonly ITestOutputHelper output;
+    protected readonly ITestOutputHelper output;
     protected readonly WebAppFixture fixture;
     private readonly IConfiguration configuration;
-
 
     protected IAlbaHost Host { get; private set; } = null!;
     protected IAlbaHost NoMockAuthHost { get; private set; } = null!;

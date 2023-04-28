@@ -1,4 +1,4 @@
-﻿using Microsoft.Dynamics.CRM;
+using Microsoft.Dynamics.CRM;
 using Spd.Utilities.Dynamics;
 
 namespace Spd.Tests.Presentation.Screening.Integration;
