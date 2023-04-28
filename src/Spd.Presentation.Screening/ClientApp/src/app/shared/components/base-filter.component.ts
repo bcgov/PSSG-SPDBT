@@ -49,11 +49,4 @@ export class BaseFilterComponent {
 			.map((filter) => `${filter.key}${FILTER_OPERATORS[filter.operator]}${filter.value}`)
 			.join(FILTER_QUERY_DELIMITER);
 	}
-
-	// clearOptions(options: Required<SelectOptions>[]) {
-	// 	return options.map((option) => ({
-	// 		...option,
-	// 		selected: false,
-	// 	}));
-	// }
 }

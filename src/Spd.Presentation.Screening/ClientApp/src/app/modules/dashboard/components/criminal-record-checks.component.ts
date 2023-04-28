@@ -128,7 +128,7 @@ import { CrcAddModalComponent } from './crc-add-modal.component';
 		`
 			.mat-column-actions {
 				min-width: 300px;
-				justify-content: center !important;
+				/* justify-content: center !important; */
 			}
 
 			.error-icon {

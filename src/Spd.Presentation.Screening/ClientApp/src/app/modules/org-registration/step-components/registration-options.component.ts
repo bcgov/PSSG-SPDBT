@@ -8,7 +8,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 			<div class="step-container row">
 				<div class="offset-xl-2 col-xl-4 col-lg-6 col-md-12 col-sm-12 mb-3">
 					<div class="step-container__box dark">
-						<div matBadge="1" class="badge p-2">Preferred Method</div>
+						<div class="badge p-2">Preferred Method</div>
 						<div class="step-container__box__title pt-3 pb-4">
 							<div class="mx-2">Register <span class="fw-bold">with</span> Business BCeID</div>
 						</div>

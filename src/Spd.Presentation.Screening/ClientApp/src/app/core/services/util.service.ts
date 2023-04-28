@@ -40,4 +40,12 @@ export class UtilService {
 	clearOrgRegState(): void {
 		sessionStorage.removeItem(this.ORG_REG_STATE_KEY);
 	}
+
+	removeFirst<T>(array: T[], toRemove: T): void {
+		const index = array.indexOf(toRemove);
+
+		if (index !== -1) {
+			array.splice(index, 1);
+		}
+	}
 }
