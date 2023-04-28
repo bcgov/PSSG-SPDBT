@@ -93,7 +93,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 							<mat-cell *matCellDef="let application">
 								<button
 									mat-flat-button
-									class="m-2"
+									class="table-button m-2"
 									style="color: var(--color-primary-light);"
 									aria-label="Download Clearance Letter"
 								>
@@ -105,7 +105,12 @@ import { UtilService } from 'src/app/core/services/util.service';
 						<ng-container matColumnDef="status2">
 							<mat-header-cell *matHeaderCellDef>Send Request</mat-header-cell>
 							<mat-cell *matCellDef="let application">
-								<button mat-flat-button class="m-2" style="color: var(--color-green);" aria-label="Send Request">
+								<button
+									mat-flat-button
+									class="table-button m-2"
+									style="color: var(--color-green);"
+									aria-label="Send Request"
+								>
 									<mat-icon>send</mat-icon>Request
 								</button>
 							</mat-cell>
@@ -114,7 +119,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 						<ng-container matColumnDef="status3">
 							<mat-header-cell *matHeaderCellDef>Remove</mat-header-cell>
 							<mat-cell *matCellDef="let application">
-								<button mat-icon-button class="m-2" style="color: var(--color-red);" aria-label="Remove">
+								<button mat-icon-button class="table-button m-2" style="color: var(--color-red);" aria-label="Remove">
 									<mat-icon>delete_outline</mat-icon>
 								</button>
 							</mat-cell>

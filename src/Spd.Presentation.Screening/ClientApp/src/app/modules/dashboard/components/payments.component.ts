@@ -104,7 +104,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 							<mat-cell *matCellDef="let application">
 								<button
 									mat-flat-button
-									class="m-2"
+									class="table-button m-2"
 									style="color: var(--color-primary-light);"
 									*ngIf="application.status != 'NotPaid'"
 									aria-label="Download Clearance Letter"
@@ -114,7 +114,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 
 								<button
 									mat-flat-button
-									class="m-2"
+									class="table-button m-2"
 									style="color: var(--color-green);"
 									*ngIf="application.status == 'NotPaid'"
 									aria-label="Pay now"

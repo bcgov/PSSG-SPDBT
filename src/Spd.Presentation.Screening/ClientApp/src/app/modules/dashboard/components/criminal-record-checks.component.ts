@@ -114,12 +114,20 @@ export const CriminalRecordCheckFilterMap: Record<keyof CriminalRecordCheckFilte
 							</mat-cell>
 						</ng-container>
 
+						<ng-container matColumnDef="viewed">
+							<mat-header-cell *matHeaderCellDef>Viewed</mat-header-cell>
+							<mat-cell *matCellDef="let application">
+								<span class="mobile-label">Viewed:</span>
+								??
+							</mat-cell>
+						</ng-container>
+
 						<ng-container matColumnDef="actions">
 							<mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<button
 									mat-flat-button
-									class="m-2"
+									class="table-button m-2"
 									style="white-space: nowrap;"
 									aria-label="Cancel Request"
 									(click)="OnCancelRequest(application)"
@@ -199,7 +207,7 @@ export class CriminalRecordChecksComponent implements OnInit {
 	) {}
 
 	ngOnInit() {
-		this.columns = ['applicantName', 'emailAddress', 'jobTitle', 'paidBy', 'createdOn', 'actions'];
+		this.columns = ['applicantName', 'emailAddress', 'jobTitle', 'paidBy', 'createdOn', 'viewed', 'actions'];
 		this.loadList();
 	}
 

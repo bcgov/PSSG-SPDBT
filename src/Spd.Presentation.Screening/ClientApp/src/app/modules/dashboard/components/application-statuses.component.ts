@@ -35,17 +35,11 @@ import {
 				</div>
 			</div>
 			<div class="mb-4">
-				<div class="fw-semibold">
-					Active applications: <span class="fw-normal">(Last updated April 10, 11:59pm)</span>
-				</div>
+				<div class="fw-semibold">Active applications:</div>
 				<div class="d-flex flex-wrap justify-content-start">
 					<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
 						<div class="m-2">Verify Identity</div>
-					</div>
-					<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
-						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
-						<div class="m-2">Awaiting Payment</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-green align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
@@ -53,7 +47,11 @@ import {
 					</div>
 					<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
-						<div class="m-2">Awaiting 3rd Party</div>
+						<div class="m-2">Pay Now</div>
+					</div>
+					<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
+						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
+						<div class="m-2">Awaiting<br />Third Party</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
@@ -61,54 +59,55 @@ import {
 					</div>
 					<div class="d-flex flex-row statistic-card area-blue align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
-						<div class="m-2">Under Assessment</div>
-					</div>
-					<div class="d-flex flex-row statistic-card area-blue align-items-center mt-2 me-2">
-						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
-						<div class="m-2">Incomplete</div>
+						<div class="m-2">Under<br />Assessment</div>
 					</div>
 				</div>
 			</div>
 
 			<div class="mb-4">
-				<div class="fw-semibold">
-					Completed applications <span class="fw-normal">(completed, closed, or cancelled since April 14, 2022)</span>
-				</div>
+				<div class="fw-semibold">Completed applications</div>
 				<div class="d-flex flex-wrap justify-content-start">
 					<div class="d-flex flex-row statistic-card area-red align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
-						<div class="m-2">Risk Found</div>
+						<div class="m-2">Completed - <br />Cleared</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
-						<div class="m-2">Risk Found</div>
+						<div class="m-2">Completed - <br />Risk Found</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
 						<div class="m-2">
-							Closed:<br />
+							Closed - <br />
 							Judicial Review
 						</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
 						<div class="m-2">
-							Closed:<br />
+							Closed - <br />
 							No Response
 						</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
 						<div class="m-2">
-							Closed:<br />
-							No Consent
+							Closed - No<br />
+							Applicant Consent
 						</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
 						<div class="m-2">
-							Cancelled:<br />
-							By Applicant
+							Cancelled - By<br />
+							Organization
+						</div>
+					</div>
+					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
+						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
+						<div class="m-2">
+							Cancelled - By<br />
+							Applicant
 						</div>
 					</div>
 				</div>
@@ -311,7 +310,7 @@ import {
 			.statistic-card {
 				cursor: default;
 				height: 4em;
-				width: 10.7em;
+				width: 12em;
 				box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14),
 					0px 1px 3px 0px rgba(0, 0, 0, 0.12);
 			}
