@@ -1,11 +1,14 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Cases;
 using Spd.Utilities.Shared;
+using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
 
 namespace Spd.Presentation.Screening.Controllers
 {
+    [Authorize]
     public class ApplicationController : SpdControllerBase
     {
         private readonly IMediator _mediator;
@@ -28,6 +31,38 @@ namespace Spd.Presentation.Screening.Controllers
             return await _mediator.Send(new ApplicationInviteCreateCommand(invitesCreateRequest, orgId));
         }
 
+        /// <summary>
+        /// get the active application invites list.
+        /// support wildcard search for email and name
+        /// sample: /application-invites?filter=searchContains==str
+        /// </summary>
+        /// <param name="orgId"></param>
+        /// <param name="filters"></param>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        [Route("api/orgs/{orgId}/application-invites")]
+        [HttpGet]
+        public async Task<ApplicationInviteListResponse> GetInvitesList([FromRoute] Guid orgId, [FromQuery] string? filters, [FromQuery] uint? page, [FromQuery] uint? pageSize)
+        {
+            page = (page == null || page < 0) ? 0 : page;
+            pageSize = (pageSize == null || pageSize == 0 || pageSize > 100) ? 10 : pageSize;
+            string? filterValue = null;
+            if (!string.IsNullOrWhiteSpace(filters))
+            {
+                try
+                {
+                    var strs = filters.Split("==");
+                    if (strs[0].Equals("searchContains", StringComparison.InvariantCultureIgnoreCase))
+                        filterValue = strs[1];
+                }
+                catch
+                {
+                    throw new ApiException(System.Net.HttpStatusCode.BadRequest, "invalid filtering string.");
+                }
+            }
+            return await _mediator.Send(new ApplicationInviteListQuery(orgId, SearchContains: filterValue, (int)page, (int)pageSize));
+        }
         /// <summary>
         /// create application. if checkDuplicate is true, it will check if there is existing duplicated applications 
         /// </summary>

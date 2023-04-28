@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Admin;
 using Spd.Utilities.Shared;
@@ -6,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Spd.Presentation.Screening.Controllers
 {
+    [Authorize]
     public class AddressAutoCompleteController : SpdControllerBase
     {
         private readonly ILogger<AddressAutoCompleteController> _logger;

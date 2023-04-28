@@ -13,10 +13,11 @@ public class ApplicationScenarios : ScenarioContextBase
     [Fact]
     public async Task CreateApplicationInvites_WithCorrectAuth_Success()
     {
-        var org = await fixture.testData.CreateOrg("org1");
+        var org = await fixture.testData.CreateOrgWithLogonUser("org1");
 
         await Host.Scenario(_ =>
         {
+            _.WithRequestHeader("organization", org.accountid.ToString());
             _.Post.Json(Create_ApplicationInvitesCreateRequest()).ToUrl($"/api/orgs/{org.accountid}/application-invites");
             if (org != null && org.accountid != null)
             {
@@ -27,13 +28,14 @@ public class ApplicationScenarios : ScenarioContextBase
     }
 
     [Fact]
-    public async Task CreateApplication_WithCorrectAuth_Success()
+    public async Task CreateApplication_WithCorrectAuthAndHeader_Success()
     {
-        var org = await fixture.testData.CreateOrg("org1");
+        var org = await fixture.testData.CreateOrgWithLogonUser("org1");
 
         var result = await Host.Scenario(_ =>
         {
-            var result = _.Post.Json(Create_ApplicationCreateRequest()).ToUrl($"/api/orgs/{org.accountid}/application");
+            _.WithRequestHeader("organization", org.accountid.ToString());
+            _.Post.Json(Create_ApplicationCreateRequest()).ToUrl($"/api/orgs/{org.accountid}/application");
             if (org != null && org.accountid != null)
             {
                 _.StatusCodeShouldBeOk();

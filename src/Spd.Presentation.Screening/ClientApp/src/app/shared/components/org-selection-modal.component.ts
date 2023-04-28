@@ -19,7 +19,7 @@ export interface OrgSelectionResponseData {
 		<mat-divider></mat-divider>
 		<mat-dialog-content>
 			<ng-container *ngFor="let userinfo of userInfos; let i = index">
-				<button mat-stroked-button color="primary" class="my-2" (click)="onSelectOrg(userinfo)">
+				<button mat-stroked-button color="primary" class="large my-2" (click)="onSelectOrg(userinfo)">
 					{{ userinfo.orgName }}
 				</button>
 			</ng-container>

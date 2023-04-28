@@ -2,6 +2,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { formatDate } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, Injectable, NgModule } from '@angular/core';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
@@ -55,6 +56,7 @@ const AngularMaterialModules = [
 	MatChipsModule,
 	MatNativeDateModule,
 	MatAutocompleteModule,
+	MatBadgeModule,
 	OverlayModule,
 ];
 
