@@ -28,6 +28,21 @@ public class ApplicationScenarios : ScenarioContextBase
     }
 
     [Fact]
+    public async Task ListApplicationInvites_WithCorrectAuth_Success()
+    {
+        var org = await fixture.testData.CreateOrgWithLogonUser("org1");
+
+        await Host.Scenario(_ =>
+        {
+            _.WithRequestHeader("organization", org.accountid.ToString());
+            _.Get.Url($"/api/orgs/{org.accountid}/application-invites?page=0&filters=searchText@=str");
+            if (org != null && org.accountid != null)
+            { 
+                _.StatusCodeShouldBeOk();
+            }
+        });
+    }
+    [Fact]
     public async Task CreateApplication_WithCorrectAuthAndHeader_Success()
     {
         var org = await fixture.testData.CreateOrgWithLogonUser("org1");
