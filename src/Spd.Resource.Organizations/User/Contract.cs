@@ -16,7 +16,7 @@ namespace Spd.Resource.Organizations.User
     //query
     public abstract record OrgUserQry();
     public record OrgUserByIdQry(Guid UserId) : OrgUserQry;
-    public record OrgUsersSearch(Guid? OrgId, Guid? IdentityId) : OrgUserQry;
+    public record OrgUsersSearch(Guid? OrgId = null, Guid? IdentityId = null) : OrgUserQry;
     public abstract record OrgUserQryResult;
     public record OrgUserResult(UserResult UserResult) : OrgUserQryResult;
     public record OrgUsersResult(IEnumerable<UserResult> UserResults) : OrgUserQryResult;
