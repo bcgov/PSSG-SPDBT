@@ -10,6 +10,10 @@ export class UtilService {
 		return `${firstName ?? ''} ${lastName ?? ''}`;
 	}
 
+	getDefaultQueryParams(): any {
+		return { page: 0, pageSize: SPD_CONSTANTS.list.defaultPageSize };
+	}
+
 	getDefaultTableConfig(): TableConfig {
 		const defaultTableConfig: TableConfig = {
 			paginator: {

@@ -4,13 +4,21 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { HotToastService } from '@ngneat/hot-toast';
-import { ApplicationListResponse, ApplicationResponse } from 'src/app/api/models';
+import { ApplicationInviteListResponse, ApplicationInviteResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { CrcAddModalComponent } from './crc-add-modal.component';
+
+export class CriminalRecordCheckFilter {
+	search: string = '';
+}
+
+export const CriminalRecordCheckFilterMap: Record<keyof CriminalRecordCheckFilter, string> = {
+	search: 'searchContains',
+};
 
 @Component({
 	selector: 'app-criminal-record-checks',
@@ -34,8 +42,21 @@ import { CrcAddModalComponent } from './crc-add-modal.component';
 			<div class="row mt-3" [formGroup]="formFilter">
 				<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
 					<mat-form-field>
-						<input matInput type="search" formControlName="search" placeholder="Search applicant's name or email" />
-						<button mat-button matSuffix mat-flat-button aria-label="search" class="search-icon-button">
+						<input
+							matInput
+							type="search"
+							formControlName="search"
+							placeholder="Search applicant's name or email"
+							(keydown.enter)="onSearchKeyDown($event)"
+						/>
+						<button
+							mat-button
+							matSuffix
+							mat-flat-button
+							aria-label="search"
+							(click)="onSearch()"
+							class="search-icon-button"
+						>
 							<mat-icon>search</mat-icon>
 						</button>
 					</mat-form-field>
@@ -57,7 +78,7 @@ import { CrcAddModalComponent } from './crc-add-modal.component';
 								>
 									error
 								</mat-icon> -->
-								{{ utilService.getFullName(application.givenName, application.surname) }}
+								{{ utilService.getFullName(application.firstName, application.lastName) }}
 							</mat-cell>
 						</ng-container>
 
@@ -65,7 +86,7 @@ import { CrcAddModalComponent } from './crc-add-modal.component';
 							<mat-header-cell *matHeaderCellDef>Email</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Email:</span>
-								{{ application.emailAddress }}
+								{{ application.email }}
 							</mat-cell>
 						</ng-container>
 
@@ -81,7 +102,7 @@ import { CrcAddModalComponent } from './crc-add-modal.component';
 							<mat-header-cell *matHeaderCellDef>To Be Paid By</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">To Be Paid By:</span>
-								{{ application.paidBy }}
+								{{ application.payeeType }}
 							</mat-cell>
 						</ng-container>
 
@@ -156,12 +177,15 @@ import { CrcAddModalComponent } from './crc-add-modal.component';
 export class CriminalRecordChecksComponent implements OnInit {
 	constants = SPD_CONSTANTS;
 
-	dataSource: MatTableDataSource<ApplicationResponse> = new MatTableDataSource<ApplicationResponse>([]);
+	dataSource: MatTableDataSource<ApplicationInviteResponse> = new MatTableDataSource<ApplicationInviteResponse>([]);
 	tableConfig = this.utilService.getDefaultTableConfig();
 	columns!: string[];
 	formFilter: FormGroup = this.formBuilder.group({
 		search: new FormControl(''),
 	});
+
+	private queryParams: any = this.utilService.getDefaultQueryParams();
+	private currentSearch = '';
 
 	@ViewChild('paginator') paginator!: MatPaginator;
 
@@ -193,11 +217,11 @@ export class CriminalRecordChecksComponent implements OnInit {
 			});
 	}
 
-	OnCancelRequest(application: ApplicationResponse) {
+	OnCancelRequest(application: ApplicationInviteResponse) {
 		const data: DialogOptions = {
 			icon: 'warning',
 			title: 'Cancel request',
-			message: `Are you sure you want to cancel the request for ${application.givenName} ${application.surname}?`,
+			message: `Are you sure you want to cancel the request for ${application.firstName} ${application.lastName}?`,
 			actionText: 'Yes, cancel request',
 			cancelText: 'Cancel',
 		};
@@ -213,19 +237,37 @@ export class CriminalRecordChecksComponent implements OnInit {
 	}
 
 	onPageChanged(page: PageEvent): void {
-		this.loadList(page.pageIndex);
+		this.queryParams.page = page.pageIndex;
+		this.loadList();
 	}
 
-	private loadList(pageIndex: number = 0): void {
+	onSearchKeyDown(searchEvent: any): void {
+		const searchString = searchEvent.target.value;
+		this.performSearch(searchString);
+	}
+
+	onSearch(): void {
+		this.performSearch(this.formFilter.value.search);
+	}
+
+	private performSearch(searchString: string): void {
+		this.currentSearch = searchString ? `${CriminalRecordCheckFilterMap['search']}@=${searchString}` : '';
+		this.queryParams.page = 0;
+		this.queryParams.filters = this.currentSearch;
+
+		this.loadList();
+	}
+
+	private loadList(): void {
 		this.applicationService
-			.apiOrgsOrgIdApplicationsGet({
+			.apiOrgsOrgIdApplicationInvitesGet({
 				orgId: this.authenticationService.loggedInOrgId!,
-				page: pageIndex,
-				pageSize: this.tableConfig.paginator.pageSize,
+				...this.queryParams,
 			})
 			.pipe()
-			.subscribe((res: ApplicationListResponse) => {
-				this.dataSource.data = res.applications as Array<ApplicationResponse>;
+			.subscribe((res: ApplicationInviteListResponse) => {
+				this.dataSource.data = res.applicationInvites as Array<ApplicationInviteResponse>;
+
 				this.tableConfig = {
 					...this.tableConfig,
 					paginator: {

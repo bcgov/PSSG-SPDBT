@@ -326,11 +326,11 @@ export class ApplicationStatusesComponent implements OnInit {
 	currentStatuses: any[] = [];
 	private currentFilters = '';
 	private currentSearch = '';
+	private queryParams: any = this.utilService.getDefaultQueryParams();
 
 	constants = SPD_CONSTANTS;
 	applicationStatusFiltersTypes = ApplicationStatusFiltersTypes;
 	filterCriteriaExists = false;
-	queryParams: any = this.defaultQueryParams(); // { page: 0, pageSize: 3 }; // SPD_CONSTANTS.list.defaultPageSize };
 
 	dataSource: MatTableDataSource<ApplicationResponse> = new MatTableDataSource<ApplicationResponse>([]);
 	tableConfig = this.utilService.getDefaultTableConfig();
@@ -406,7 +406,7 @@ export class ApplicationStatusesComponent implements OnInit {
 		this.currentStatuses = [];
 		this.currentFilters = '';
 		this.currentSearch = '';
-		this.queryParams = this.defaultQueryParams();
+		this.queryParams = this.utilService.getDefaultQueryParams();
 		this.filterCriteriaExists = false;
 		this.onFilterClose();
 
@@ -446,6 +446,7 @@ export class ApplicationStatusesComponent implements OnInit {
 
 	private performSearch(searchString: string): void {
 		this.currentSearch = searchString ? `${ApplicationStatusFilterMap['search']}@=${searchString}` : '';
+		this.queryParams.page = 0;
 		this.queryParams.filters = this.buildQueryParamsFilterString();
 
 		this.loadList();
@@ -453,10 +454,6 @@ export class ApplicationStatusesComponent implements OnInit {
 
 	private buildQueryParamsFilterString(): string {
 		return this.currentFilters + (this.currentFilters ? ',' : '') + this.currentSearch;
-	}
-
-	private defaultQueryParams(): any {
-		return { page: 0, pageSize: SPD_CONSTANTS.list.defaultPageSize };
 	}
 
 	private loadList(): void {

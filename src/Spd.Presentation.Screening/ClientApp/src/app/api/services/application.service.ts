@@ -11,6 +11,7 @@ import { map, filter } from 'rxjs/operators';
 
 import { ApplicationCreateRequest } from '../models/application-create-request';
 import { ApplicationCreateResponse } from '../models/application-create-response';
+import { ApplicationInviteListResponse } from '../models/application-invite-list-response';
 import { ApplicationInvitesCreateRequest } from '../models/application-invites-create-request';
 import { ApplicationInvitesCreateResponse } from '../models/application-invites-create-response';
 import { ApplicationListResponse } from '../models/application-list-response';
@@ -24,6 +25,78 @@ export class ApplicationService extends BaseService {
     http: HttpClient
   ) {
     super(config, http);
+  }
+
+  /**
+   * Path part for operation apiOrgsOrgIdApplicationInvitesGet
+   */
+  static readonly ApiOrgsOrgIdApplicationInvitesGetPath = '/api/orgs/{orgId}/application-invites';
+
+  /**
+   * get the active application invites list.
+   * support wildcard search for email and name
+   * sample: /application-invites?filter=searchContains==str.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiOrgsOrgIdApplicationInvitesGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiOrgsOrgIdApplicationInvitesGet$Response(params: {
+    orgId: string;
+    filters?: string;
+    page?: number;
+    pageSize?: number;
+    context?: HttpContext
+  }
+): Observable<StrictHttpResponse<ApplicationInviteListResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdApplicationInvitesGetPath, 'get');
+    if (params) {
+      rb.path('orgId', params.orgId, {});
+      rb.query('filters', params.filters, {});
+      rb.query('page', params.page, {});
+      rb.query('pageSize', params.pageSize, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: params?.context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<ApplicationInviteListResponse>;
+      })
+    );
+  }
+
+  /**
+   * get the active application invites list.
+   * support wildcard search for email and name
+   * sample: /application-invites?filter=searchContains==str.
+   *
+   *
+   *
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `apiOrgsOrgIdApplicationInvitesGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiOrgsOrgIdApplicationInvitesGet(params: {
+    orgId: string;
+    filters?: string;
+    page?: number;
+    pageSize?: number;
+    context?: HttpContext
+  }
+): Observable<ApplicationInviteListResponse> {
+
+    return this.apiOrgsOrgIdApplicationInvitesGet$Response(params).pipe(
+      map((r: StrictHttpResponse<ApplicationInviteListResponse>) => r.body as ApplicationInviteListResponse)
+    );
   }
 
   /**
