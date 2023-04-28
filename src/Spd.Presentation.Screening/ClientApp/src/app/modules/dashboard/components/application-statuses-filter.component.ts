@@ -150,7 +150,7 @@ export class ApplicationStatusesFilterComponent extends BaseFilterComponent {
 		if (formGroupValue.statuses?.length > 0) {
 			filterList.push({
 				key: ApplicationStatusFilterMap['statuses'],
-				operator: 'caseInsensitiveStringContains',
+				operator: 'contains',
 				value: formGroupValue.statuses.join('|'),
 			});
 		}
