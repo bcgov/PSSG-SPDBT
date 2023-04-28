@@ -54,7 +54,7 @@ namespace Spd.Manager.Cases
     {
         public Guid Id { get; set; }
         public DateTimeOffset CreatedOn { get; set; }
-        public string Status { get; set; } = null!;
+        public ApplicationInviteStatusCode Status { get; set; }
         public string? ErrorMsg { get; set; }
     }
 
@@ -126,6 +126,16 @@ namespace Spd.Manager.Cases
         public bool? HaveVerifiedIdentity { get; set; }
         public DateTimeOffset? CreatedOn { get; set; }
         public bool? HasBeenDelivered { get; set; }
+    }
+
+    public enum ApplicationInviteStatusCode
+    {
+        Draft,
+        Sent,
+        Failed,
+        Completed, //inactive status code, no use
+        Cancelled,//inactive status code, no use
+        Expired //inactive status code, no use
     }
 
     public enum ApplicationOriginTypeCode
