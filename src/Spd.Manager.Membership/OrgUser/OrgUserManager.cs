@@ -28,7 +28,7 @@ namespace Spd.Manager.Membership.OrgUser
         public async Task<OrgUserResponse> Handle(OrgUserCreateCommand request, CancellationToken ct)
         {
             var existingUsersResult = (OrgUsersResult)await _orgUserRepository.QueryOrgUserAsync(
-                new OrgUsersByOrgIdQry(request.OrgUserCreateRequest.OrganizationId),
+                new OrgUsersSearch(request.OrgUserCreateRequest.OrganizationId, null),
                 ct);
 
             //check if email already exists for the user
@@ -52,7 +52,7 @@ namespace Spd.Manager.Membership.OrgUser
         public async Task<OrgUserResponse> Handle(OrgUserUpdateCommand request, CancellationToken ct)
         {
             var existingUsersResult = (OrgUsersResult)await _orgUserRepository.QueryOrgUserAsync(
-                new OrgUsersByOrgIdQry(request.OrgUserUpdateRequest.OrganizationId),
+                new OrgUsersSearch(request.OrgUserUpdateRequest.OrganizationId, null),
                 ct);            //check email rule
 
             if (existingUsersResult.UserResults.Any(u =>
@@ -89,7 +89,7 @@ namespace Spd.Manager.Membership.OrgUser
         {
             //check role max number rule
             var existingUsersResult = (OrgUsersResult)await _orgUserRepository.QueryOrgUserAsync(
-                new OrgUsersByOrgIdQry(request.OrganizationId),
+                new OrgUsersSearch(request.OrganizationId, null),
                 ct);
             var toDeleteUser = existingUsersResult.UserResults.FirstOrDefault(u => u.Id == request.UserId);
             var newUsers = existingUsersResult.UserResults.ToList();
@@ -106,7 +106,7 @@ namespace Spd.Manager.Membership.OrgUser
         public async Task<OrgUserListResponse> Handle(OrgUserListQuery request, CancellationToken ct)
         {
             var existingUsersResult = (OrgUsersResult)await _orgUserRepository.QueryOrgUserAsync(
-                new OrgUsersByOrgIdQry(request.OrganizationId),
+                new OrgUsersSearch(request.OrganizationId, null),
                 ct);
 
             var userResps = _mapper.Map<IEnumerable<OrgUserResponse>>(existingUsersResult.UserResults);

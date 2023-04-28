@@ -26,8 +26,7 @@ namespace Spd.Resource.Organizations.User
             return qry switch
             {
                 OrgUserByIdQry q => await GetUserAsync(q.UserId, ct),
-                OrgUsersByIdentityIdQry q => await GetUsersByIdentityIdAsync(q.IdentityId, ct),
-                OrgUsersByOrgIdQry q => await GetUsersByOrgIdAsync(q.OrgId, ct),
+                OrgUsersSearch q => await SearchUsers(q.OrgId, q.IdentityId, ct),
                 _ => throw new NotSupportedException($"{qry.GetType().Name} is not supported")
             };
         }
@@ -41,30 +40,6 @@ namespace Spd.Resource.Organizations.User
                 UserDeleteCmd c => await DeleteUserAsync(c.Id, ct),
                 _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
             };
-        }
-
-        private async Task<OrgUsersResult> GetUsersByIdentityIdAsync(Guid identityId, CancellationToken ct)
-        {
-            var users = _dynaContext.spd_portalusers
-                .Where(a => a._spd_identityid_value == identityId && a.statecode == DynamicsConstants.StateCode_Active)
-                .ToList();
-
-            if (users == null) throw new NotFoundException(HttpStatusCode.BadRequest, $"Cannot find the users with identityId {identityId}");
-
-            //todo: investigate why expand does not work here.
-            await Parallel.ForEachAsync(users, ct, async (user, cancellationToken) =>
-            {
-                var role = _dynaContext
-                    .spd_spd_role_spd_portaluserset
-                    .Where(r => r.spd_portaluserid == user.spd_portaluserid)
-                    .FirstOrDefault();
-                if (role != null)
-                {
-                    user.spd_spd_role_spd_portaluser = new Collection<spd_role> { new spd_role() { spd_roleid = role.spd_roleid } };
-                }
-            });
-
-            return new OrgUsersResult(_mapper.Map<IEnumerable<UserResult>>(users));
         }
 
         private async Task<OrgUserManageResult> AddUserAsync(UserCreateCmd createUserCmd, CancellationToken cancellationToken)
@@ -153,16 +128,18 @@ namespace Spd.Resource.Organizations.User
             return new OrgUserResult(_mapper.Map<UserResult>(user));
         }
 
-        private async Task<OrgUsersResult> GetUsersByOrgIdAsync(Guid organizationId, CancellationToken cancellationToken)
+        private async Task<OrgUsersResult> SearchUsers(Guid? organizationId, Guid? identityId, CancellationToken cancellationToken)
         {
-            var users = _dynaContext.spd_portalusers
+            IQueryable<spd_portaluser> users = _dynaContext.spd_portalusers
                 .Expand(u => u.spd_spd_role_spd_portaluser)
-                .Where(a => a._spd_organizationid_value == organizationId && a.statecode == DynamicsConstants.StateCode_Active)
-                .ToList();
+                .Expand(u => u.spd_IdentityId)
+                .Where(u=>u.statecode==DynamicsConstants.StateCode_Active);
 
-            if (users == null) throw new NotFoundException(HttpStatusCode.BadRequest, $"Cannot find the users with organizationId {organizationId}");
+            if(organizationId != null)
+                users = users.Where(u => u._spd_organizationid_value == organizationId);
+            if (identityId != null)
+                users = users.Where(a => a._spd_identityid_value == identityId);
 
-            //todo: investigate why expand does not work here.
             await Parallel.ForEachAsync(users, cancellationToken, async (user, cancellationToken) =>
             {
                 var role = _dynaContext
@@ -202,6 +179,7 @@ namespace Spd.Resource.Organizations.User
             {
                 var user = _dynaContext.spd_portalusers
                     .Expand(m => m.spd_spd_role_spd_portaluser)
+                    .Expand(m => m.spd_IdentityId)
                     .Where(a => a.spd_portaluserid == userId)
                     .FirstOrDefault();
 

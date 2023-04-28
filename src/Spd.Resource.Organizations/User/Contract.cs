@@ -14,10 +14,9 @@ namespace Spd.Resource.Organizations.User
     public record OrgUserManageResult(UserResult UserResult);
 
     //query
-    public abstract record OrgUserQry;
+    public abstract record OrgUserQry();
     public record OrgUserByIdQry(Guid UserId) : OrgUserQry;
-    public record OrgUsersByOrgIdQry(Guid OrgId) : OrgUserQry;
-    public record OrgUsersByIdentityIdQry(Guid IdentityId) : OrgUserQry;
+    public record OrgUsersSearch(Guid? OrgId, Guid? IdentityId) : OrgUserQry;
     public abstract record OrgUserQryResult;
     public record OrgUserResult(UserResult UserResult) : OrgUserQryResult;
     public record OrgUsersResult(IEnumerable<UserResult> UserResults) : OrgUserQryResult;
@@ -37,6 +36,7 @@ namespace Spd.Resource.Organizations.User
     {
         public Guid Id { get; set; }
         public Guid? OrgRegistrationId { get; set; }
+        public Guid? UserGuid { get; set; }
         public bool IsActive { get; set; }
     };
     public enum ContactRoleCode
