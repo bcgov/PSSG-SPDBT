@@ -71,4 +71,17 @@
         PrimeAlias = 100000003,
         CornetAlias = 100000004
     }
+
+    public enum InvitationTypeOptionSet
+    {
+        PortalUser = 100000000,
+        ScreeningRequest = 100000001,
+    }
+
+    public enum InvitationActiveStatus
+    {
+        Draft = 1,
+        Sent = 100000000,
+        Failed = 100000001
+    }
 }
