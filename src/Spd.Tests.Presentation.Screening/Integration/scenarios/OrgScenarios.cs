@@ -12,26 +12,26 @@ public class OrgScenarios : ScenarioContextBase
 
 
     [Fact]
-    public async Task GetOrgFromId_NoAuth_Unauthorized()
+    public async Task GetOrgFromId_WithoutHeader_Unauthorized()
     {
-        var org = await fixture.testData.CreateOrg("org1");
+        var org = await fixture.testData.CreateOrgWithLogonUser("org1");
 
         await Host.Scenario(_ =>
         {
             _.Get.Url($"/api/orgs/{org.accountid}");
             //todo, once we know how to make pkce auth working, uncomment following code.
-            //_.StatusCodeShouldBe(HttpStatusCode.Unauthorized);
-            _.StatusCodeShouldBeOk();
+            _.StatusCodeShouldBe(401);
         });
     }
 
     [Fact]
-    public async Task GetOrgFromId_WithCorrectAuth_Success()
+    public async Task GetOrgFromId_WithCorrectAuthAndHeader_Success()
     {
-        var org = await fixture.testData.CreateOrg("org1");
+        var org = await fixture.testData.CreateOrgWithLogonUser("org1");
 
         await Host.Scenario(_ =>
         {
+            _.WithRequestHeader("organization", org.accountid.ToString());
             _.Get.Url($"/api/orgs/{org.accountid}");
             _.ContentShouldContain(org.accountid.ToString());
             _.StatusCodeShouldBeOk();
@@ -39,12 +39,24 @@ public class OrgScenarios : ScenarioContextBase
     }
 
     [Fact]
-    public async Task UpdateOrg_WithCorrectAuth_Success()
+    public async Task GetOrgFromId_WithCorrectAuth_WithoutHeader_Fail()
     {
-        var org = await fixture.testData.CreateOrg("org1");
+        var org = await fixture.testData.CreateOrgWithLogonUser("org1");
 
         await Host.Scenario(_ =>
         {
+            _.Get.Url($"/api/orgs/{org.accountid}");
+            _.StatusCodeShouldBe(401);
+        });
+    }
+
+    [Fact]
+    public async Task UpdateOrg_With_Header_Success()
+    {
+        var org = await fixture.testData.CreateOrgWithLogonUser("org1");
+        await Host.Scenario(_ =>
+        {
+            _.WithRequestHeader("organization", org.accountid.ToString());
             _.Put.Json(Create_OrgUpdateRequest((Guid)org.accountid)).ToUrl($"/api/orgs/{org.accountid}");
             _.ContentShouldContain(org.accountid.ToString());
             _.StatusCodeShouldBeOk();

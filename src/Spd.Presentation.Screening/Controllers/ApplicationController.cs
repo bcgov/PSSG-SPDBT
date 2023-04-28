@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Cases;
 using Spd.Utilities.Shared;
@@ -7,6 +8,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Spd.Presentation.Screening.Controllers
 {
+    [Authorize]
     public class ApplicationController : SpdControllerBase
     {
         private readonly IMediator _mediator;
@@ -31,8 +33,8 @@ namespace Spd.Presentation.Screening.Controllers
 
         /// <summary>
         /// get the active application invites list.
-        /// support wildcard search for email and name
-        /// sample: /application-invites?filter=searchContains==str
+        /// support wildcard search for email and name, it will search email or name contains str.
+        /// sample: /application-invites?filter=searchText@=str
         /// </summary>
         /// <param name="orgId"></param>
         /// <param name="filters"></param>
@@ -50,8 +52,8 @@ namespace Spd.Presentation.Screening.Controllers
             {
                 try
                 {
-                    var strs = filters.Split("==");
-                    if (strs[0].Equals("searchContains", StringComparison.InvariantCultureIgnoreCase))
+                    var strs = filters.Split("@=");
+                    if (strs[0].Equals("searchText", StringComparison.InvariantCultureIgnoreCase))
                         filterValue = strs[1];
                 }
                 catch
