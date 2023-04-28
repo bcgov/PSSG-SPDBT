@@ -1,0 +1,26 @@
+﻿using System.Security.Claims;
+
+namespace Spd.Utilities.LogonUser;
+public static class ClaimsPrincipleExtension
+{
+    public static void UpdateUserClaims(this ClaimsPrincipal claimsPrincipal, string userId, string orgId)
+    {
+        AddUpdateClaim(claimsPrincipal, IPrincipalExtensions.SPD_USERID, userId);
+        AddUpdateClaim(claimsPrincipal, IPrincipalExtensions.SPD_ORGID, orgId);
+    }
+
+    public static void AddUpdateClaim(this ClaimsPrincipal claimsPrincipal, string key, string value)
+    {
+        var identity = claimsPrincipal.Identity as ClaimsIdentity;
+        if (identity == null)
+            return;
+
+        // check for existing claim and remove it
+        var existingClaim = identity.FindFirst(key);
+        if (existingClaim != null)
+            identity.RemoveClaim(existingClaim);
+
+        // add new claim
+        identity.AddClaim(new Claim(key, value));
+    }
+}
