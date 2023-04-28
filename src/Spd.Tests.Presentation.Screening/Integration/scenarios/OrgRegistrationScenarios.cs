@@ -16,7 +16,7 @@ public class OrgRegistrationScenarios : ScenarioContextBase
     [Fact]
     public async Task RegisterOrg_NoAuth_Unauthorized()
     {
-        await Host.Scenario(_ =>
+        await NoMockAuthHost.Scenario(_ =>
         {
             _.Post.Json(Create_OrgRegistrationCreateRequest()).ToUrl($"/api/org-registrations");
             _.StatusCodeShouldBe(HttpStatusCode.Unauthorized);
@@ -28,9 +28,8 @@ public class OrgRegistrationScenarios : ScenarioContextBase
     {
         await Host.Scenario(_ =>
         {
-            _.Post.Json(Create_OrgRegistrationCreateRequest()).ToUrl($"/api/org-registrations");
-            //todo: should be success, 
-            _.StatusCodeShouldBe(HttpStatusCode.Unauthorized);
+            _.Post.Json(Create_OrgRegistrationCreateRequest()).ToUrl($"/api/org-registrations"); 
+            _.StatusCodeShouldBeOk();
         });
     }
 
@@ -40,7 +39,7 @@ public class OrgRegistrationScenarios : ScenarioContextBase
         //we use google test client key and secrets in app for integration test.
         AnonymousOrgRegistrationCreateRequest request = Create_AnonymousOrgRegistrationCreateRequest();
 
-        await Host.Scenario(_ =>
+        await NoMockAuthHost.Scenario(_ =>
         {
             _.Post.Json<OrgRegistrationCreateRequest>(request).ToUrl($"/api/anonymous-org-registrations");
             _.StatusCodeShouldBeOk();
@@ -61,6 +60,8 @@ public class OrgRegistrationScenarios : ScenarioContextBase
             MailingAddressLine1 = "address1",
             MailingCity = "victoria",
             MailingPostalCode = "abcedf",
+            MailingCountry="test",
+            MailingProvince= "bc",
             GenericEmail = "test@email.com",
             GenericPhoneNumber = "111-222-2222",
             AgreeToTermsAndConditions = true,

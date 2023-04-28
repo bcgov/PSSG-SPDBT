@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Membership.OrgUser;
 using Spd.Utilities.Shared;
@@ -9,6 +10,7 @@ namespace Spd.Presentation.Screening.Controllers
     /// <summary>
     /// 
     /// </summary>
+    [Authorize]
     public class OrgUserController : SpdControllerBase
     {
         private readonly ILogger<OrgRegistrationController> _logger;

@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Membership.UserProfile;
 using Spd.Utilities.Shared;
@@ -9,15 +8,12 @@ namespace Spd.Presentation.Screening.Controllers
     /// <summary>
     /// 
     /// </summary>
-    [Authorize]
     public class UserProfileController : SpdControllerBase
     {
-        private readonly ILogger<UserProfileController> _logger;
         private readonly IMediator _mediator;
 
-        public UserProfileController(ILogger<UserProfileController> logger, IMediator mediator)
+        public UserProfileController(IMediator mediator)
         {
-            _logger = logger;
             _mediator = mediator;
         }
 

@@ -62,7 +62,7 @@ namespace Spd.Manager.Membership.UserProfile
             {
                 foreach (Identity id in identityResult.Identities)
                 {
-                    var result = (OrgUsersResult)await _orgUserRepository.QueryOrgUserAsync(new OrgUsersByIdentityIdQry(id.Id), ct);
+                    var result = (OrgUsersResult)await _orgUserRepository.QueryOrgUserAsync(new OrgUsersSearch(null, id.Id), ct);
                     foreach (UserResult u in result.UserResults)
                     {
                         UserInfo ui = _mapper.Map<UserInfo>(u);
