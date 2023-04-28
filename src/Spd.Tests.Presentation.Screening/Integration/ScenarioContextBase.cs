@@ -6,15 +6,18 @@ using Xunit;
 using Xunit.Abstractions;
 
 namespace Spd.Tests.Presentation.Screening.Integration;
+
 public class WebAppFixture
 {
     public IAlbaHost albaHost = null!;
     public DynamicsTestData testData { get; set; } = null!;
+
     public async Task<IAlbaHost> CreateHost(ITestOutputHelper output, IConfiguration configuration)
     {
         albaHost = await Alba.AlbaHost.For<Program>();
         return albaHost;
     }
+
     public async Task CreateDynamicsData()
     {
         testData = new DynamicsTestData(albaHost.Services.CreateScope().ServiceProvider.GetRequiredService<IDynamicsContextFactory>());
@@ -29,10 +32,9 @@ public class ScenarioCollection : ICollectionFixture<WebAppFixture>
 [Collection("WebAppScenario")]
 public abstract class ScenarioContextBase : IAsyncLifetime
 {
-    private readonly ITestOutputHelper output;
+    protected readonly ITestOutputHelper output;
     protected readonly WebAppFixture fixture;
     private readonly IConfiguration configuration;
-
 
     protected IAlbaHost Host { get; private set; } = null!;
 
