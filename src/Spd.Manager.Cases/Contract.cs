@@ -8,14 +8,15 @@ namespace Spd.Manager.Cases
     {
         public Task<ApplicationInvitesCreateResponse> Handle(ApplicationInviteCreateCommand request, CancellationToken ct);
         public Task<ApplicationInviteListResponse> Handle(ApplicationInviteListQuery request, CancellationToken ct);
-
+        public Task<Unit> Handle(ApplicationInviteDeleteCommand request, CancellationToken ct);
         public Task<ApplicationListResponse> Handle(ApplicationListQuery request, CancellationToken ct);
         public Task<ApplicationCreateResponse> Handle(ApplicationCreateCommand request, CancellationToken ct);
 
     }
 
     public record ApplicationInviteCreateCommand(ApplicationInvitesCreateRequest ApplicationInvitesCreateRequest, Guid OrgId) : IRequest<ApplicationInvitesCreateResponse>;
-    public record ApplicationInviteListQuery(Guid OrgId, string? SearchContains = null, int Page = 1, int PageSize = 10) : IRequest<ApplicationInviteListResponse>;
+    public record ApplicationInviteListQuery(Guid OrgId, string? SearchContains = null, int Page = 0, int PageSize = 10) : IRequest<ApplicationInviteListResponse>;
+    public record ApplicationInviteDeleteCommand(Guid OrgId, Guid ApplicationInviteId) : IRequest<Unit>;
     public record ApplicationCreateCommand(ApplicationCreateRequest ApplicationCreateRequest) : IRequest<ApplicationCreateResponse>;
     public record ApplicationListQuery(Guid OrgId, int Page, int PageSize) : IRequest<ApplicationListResponse>;
 

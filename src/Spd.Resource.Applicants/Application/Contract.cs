@@ -59,6 +59,7 @@ namespace Spd.Resource.Applicants.Application
 
     }
 
+
     public record ApplicationResp
     {
         public Guid Id { get; set; }

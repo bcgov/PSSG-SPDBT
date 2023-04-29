@@ -1,5 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
+import { ApplicationInviteStatusCode } from './application-invite-status-code';
 import { PayeePreferenceTypeCode } from './payee-preference-type-code';
 export interface ApplicationInviteResponse {
   createdOn?: string;
@@ -10,5 +11,5 @@ export interface ApplicationInviteResponse {
   jobTitle?: null | string;
   lastName?: null | string;
   payeeType?: PayeePreferenceTypeCode;
-  status?: null | string;
+  status?: ApplicationInviteStatusCode;
 }

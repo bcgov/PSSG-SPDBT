@@ -12,6 +12,7 @@ namespace Spd.Manager.Cases
         IRequestHandler<ApplicationCreateCommand, ApplicationCreateResponse>,
         IRequestHandler<ApplicationListQuery, ApplicationListResponse>,
         IRequestHandler<ApplicationInviteListQuery, ApplicationInviteListResponse>,
+        IRequestHandler<ApplicationInviteDeleteCommand, Unit>,
         IApplicationManager
     {
         private readonly IApplicationRepository _applicationRepository;
@@ -56,11 +57,19 @@ namespace Spd.Manager.Cases
                 new ApplicationInviteQuery
                 {
                     FilterBy = new AppInviteFilterBy(request.OrgId, EmailOrNameContains: request.SearchContains),
-                    SortBy = new AppInviteSortBy(SubmittedDateDesc : true),
+                    SortBy = new AppInviteSortBy(SubmittedDateDesc: true),
                     Paging = new Paging(request.Page, request.PageSize)
                 },
                 ct);
             return _mapper.Map<ApplicationInviteListResponse>(response);
+        }
+        public async Task<Unit> Handle(ApplicationInviteDeleteCommand request, CancellationToken ct)
+        {
+            var temp = new ApplicationInviteDeleteCmd();
+            temp.OrgId = request.OrgId;
+            temp.ApplicationInviteId = request.ApplicationInviteId;
+            await _applicationInviteRepository.DeleteApplicationInvitesAsync(temp, ct);
+            return default;
         }
 
         //application

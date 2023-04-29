@@ -9,6 +9,7 @@ import { RequestBuilder } from '../request-builder';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
+import { ActionResult } from '../models/action-result';
 import { ApplicationCreateRequest } from '../models/application-create-request';
 import { ApplicationCreateResponse } from '../models/application-create-response';
 import { ApplicationInviteListResponse } from '../models/application-invite-list-response';
@@ -34,8 +35,8 @@ export class ApplicationService extends BaseService {
 
   /**
    * get the active application invites list.
-   * support wildcard search for email and name
-   * sample: /application-invites?filter=searchContains==str.
+   * support wildcard search for email and name, it will search email or name contains str.
+   * sample: /application-invites?filter=searchText@=str.
    *
    *
    *
@@ -75,8 +76,8 @@ export class ApplicationService extends BaseService {
 
   /**
    * get the active application invites list.
-   * support wildcard search for email and name
-   * sample: /application-invites?filter=searchContains==str.
+   * support wildcard search for email and name, it will search email or name contains str.
+   * sample: /application-invites?filter=searchText@=str.
    *
    *
    *
@@ -158,6 +159,60 @@ export class ApplicationService extends BaseService {
 
     return this.apiOrgsOrgIdApplicationInvitesPost$Response(params).pipe(
       map((r: StrictHttpResponse<ApplicationInvitesCreateResponse>) => r.body as ApplicationInvitesCreateResponse)
+    );
+  }
+
+  /**
+   * Path part for operation apiOrgsOrgIdApplicationInvitesApplicationInviteIdDelete
+   */
+  static readonly ApiOrgsOrgIdApplicationInvitesApplicationInviteIdDeletePath = '/api/orgs/{orgId}/application-invites/{applicationInviteId}';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiOrgsOrgIdApplicationInvitesApplicationInviteIdDelete()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiOrgsOrgIdApplicationInvitesApplicationInviteIdDelete$Response(params: {
+    applicationInviteId: string;
+    orgId: string;
+    context?: HttpContext
+  }
+): Observable<StrictHttpResponse<ActionResult>> {
+
+    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdApplicationInvitesApplicationInviteIdDeletePath, 'delete');
+    if (params) {
+      rb.path('applicationInviteId', params.applicationInviteId, {});
+      rb.path('orgId', params.orgId, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: params?.context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<ActionResult>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `apiOrgsOrgIdApplicationInvitesApplicationInviteIdDelete$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiOrgsOrgIdApplicationInvitesApplicationInviteIdDelete(params: {
+    applicationInviteId: string;
+    orgId: string;
+    context?: HttpContext
+  }
+): Observable<ActionResult> {
+
+    return this.apiOrgsOrgIdApplicationInvitesApplicationInviteIdDelete$Response(params).pipe(
+      map((r: StrictHttpResponse<ActionResult>) => r.body as ActionResult)
     );
   }
 

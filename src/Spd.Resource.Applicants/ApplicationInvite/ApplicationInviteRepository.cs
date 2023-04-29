@@ -29,7 +29,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             string? filterValue = query.FilterBy.EmailOrNameContains;
             if (!string.IsNullOrWhiteSpace(filterValue))
                 invites = invites.Where(i => i.spd_firstname.Contains(filterValue) || i.spd_surname.Contains(filterValue) || i.spd_email.Contains(filterValue));
-            
+
             if (query.SortBy == null)
                 invites = invites.OrderByDescending(a => a.createdon);
             if (query.SortBy != null && query.SortBy.SubmittedDateDesc != null && (bool)query.SortBy.SubmittedDateDesc)
@@ -77,6 +77,19 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             return;
         }
 
+        public async Task DeleteApplicationInvitesAsync(ApplicationInviteDeleteCmd applicationInviteDeleteCmd, CancellationToken cancellationToken)
+        {
+            spd_portalinvitation invite = GetPortalInvitationById(applicationInviteDeleteCmd.OrgId, applicationInviteDeleteCmd.ApplicationInviteId);
+
+            // Inactivate the invite
+            invite.statecode = DynamicsConstants.StateCode_Inactive;
+            invite.statuscode = DynamicsConstants.StatusCode_Inactive;
+            _dynaContext.UpdateObject(invite);
+
+            await _dynaContext.SaveChangesAsync(cancellationToken);
+            return;
+        }
+
         public async Task<bool> CheckInviteInvitationDuplicateAsync(SearchInvitationQry searchInvitationQry, CancellationToken cancellationToken)
         {
             var orginvitation = _dynaContext.spd_portalinvitations.Where(o =>
@@ -99,8 +112,6 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             return orginvitation != null;
         }
 
-
-
         private account? GetOrgById(Guid organizationId)
         {
             var account = _dynaContext.accounts
@@ -113,5 +124,17 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             return account;
         }
 
+        private spd_portalinvitation? GetPortalInvitationById(Guid organizationId, Guid portalInvitationId)
+        {
+            var spd_portalinvitation = _dynaContext.spd_portalinvitations
+                .Where(a => a.spd_portalinvitationid == portalInvitationId && a._spd_organizationid_value == organizationId)
+                .FirstOrDefault();
+            if (spd_portalinvitation == null)
+                throw new NotFoundException(HttpStatusCode.BadRequest, $"Organization {organizationId} with Portal Invitation {portalInvitationId} is not found");
+            if (spd_portalinvitation?.statecode == DynamicsConstants.StateCode_Inactive)
+                throw new InactiveException(HttpStatusCode.BadRequest, $"Organization {organizationId} with Portal Invitation {portalInvitationId} is inactive");
+
+            return spd_portalinvitation;
+        }
     }
 }

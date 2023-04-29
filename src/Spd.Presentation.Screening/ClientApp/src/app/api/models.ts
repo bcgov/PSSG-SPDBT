@@ -9,6 +9,7 @@ export { ApplicationInviteCreateRequest } from './models/application-invite-crea
 export { ApplicationInviteDuplicateResponse } from './models/application-invite-duplicate-response';
 export { ApplicationInviteListResponse } from './models/application-invite-list-response';
 export { ApplicationInviteResponse } from './models/application-invite-response';
+export { ApplicationInviteStatusCode } from './models/application-invite-status-code';
 export { ApplicationInvitesCreateRequest } from './models/application-invites-create-request';
 export { ApplicationInvitesCreateResponse } from './models/application-invites-create-response';
 export { ApplicationListResponse } from './models/application-list-response';

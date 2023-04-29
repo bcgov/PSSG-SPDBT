@@ -4,7 +4,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { HotToastService } from '@ngneat/hot-toast';
-import { ApplicationInviteListResponse, ApplicationInviteResponse } from 'src/app/api/models';
+import {
+	ApplicationInviteListResponse,
+	ApplicationInviteResponse,
+	ApplicationInviteStatusCode,
+} from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
@@ -17,7 +21,7 @@ export class CriminalRecordCheckFilter {
 }
 
 export const CriminalRecordCheckFilterMap: Record<keyof CriminalRecordCheckFilter, string> = {
-	search: 'searchContains',
+	search: 'searchText',
 };
 
 @Component({
@@ -70,6 +74,14 @@ export const CriminalRecordCheckFilterMap: Record<keyof CriminalRecordCheckFilte
 							<mat-header-cell *matHeaderCellDef>Applicant Name</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Applicant Name:</span>
+								<mat-icon
+									class="error-icon"
+									[matTooltip]="application.errorMsg"
+									matTooltipClass="error-tooltip"
+									*ngIf="application.status == applicationInviteStatusCodes.Failed"
+								>
+									error
+								</mat-icon>
 								<!-- <mat-icon
 									class="error-icon"
 									matTooltip="The criminal record check request was not delivered:<br/> Lorem ipsum dolor sit amet, consectetur adipiscing elit"
@@ -166,7 +178,7 @@ export const CriminalRecordCheckFilterMap: Record<keyof CriminalRecordCheckFilte
 				margin-right: 0.5rem;
 			}
 
-			/* .error-tooltip {
+			.error-tooltip {
 				border: 2px solid red;
 				border-radius: 6px;
 
@@ -177,13 +189,14 @@ export const CriminalRecordCheckFilterMap: Record<keyof CriminalRecordCheckFilte
 						font-size: 0.9em !important;
 					}
 				}
-			} */
+			}
 		`,
 	],
 	encapsulation: ViewEncapsulation.None,
 })
 export class CriminalRecordChecksComponent implements OnInit {
 	constants = SPD_CONSTANTS;
+	applicationInviteStatusCodes = ApplicationInviteStatusCode;
 
 	dataSource: MatTableDataSource<ApplicationInviteResponse> = new MatTableDataSource<ApplicationInviteResponse>([]);
 	tableConfig = this.utilService.getDefaultTableConfig();
@@ -239,7 +252,16 @@ export class CriminalRecordChecksComponent implements OnInit {
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
-					this.loadList();
+					this.applicationService
+						.apiOrgsOrgIdApplicationInvitesApplicationInviteIdDelete({
+							applicationInviteId: application.id!,
+							orgId: this.authenticationService.loggedInOrgId!,
+						})
+						.pipe()
+						.subscribe((_res) => {
+							this.hotToast.success('The request was successfully cancelled');
+							this.loadList();
+						});
 				}
 			});
 	}
