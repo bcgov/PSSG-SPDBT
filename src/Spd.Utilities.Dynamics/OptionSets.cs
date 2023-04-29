@@ -84,4 +84,15 @@
         Sent = 100000000,
         Failed = 100000001
     }
+
+    public enum ApplicationStatus
+    {
+        Draft = 1,
+        PaymentPending = 100000000,
+        Incomplete = 100000001,
+        ApplicationVerification= 100000003,
+        Submitted=2,
+        Cancelled= 100000002
+    }
+
 }

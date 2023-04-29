@@ -17,7 +17,7 @@ namespace Spd.Manager.Cases
     public record ApplicationInviteCreateCommand(ApplicationInvitesCreateRequest ApplicationInvitesCreateRequest, Guid OrgId) : IRequest<ApplicationInvitesCreateResponse>;
     public record ApplicationInviteListQuery(Guid OrgId, string? SearchContains = null, int Page = 1, int PageSize = 10) : IRequest<ApplicationInviteListResponse>;
     public record ApplicationCreateCommand(ApplicationCreateRequest ApplicationCreateRequest) : IRequest<ApplicationCreateResponse>;
-    public record ApplicationListQuery(Guid OrgId, int Page, int PageSize) : IRequest<ApplicationListResponse>;
+    public record ApplicationListQuery(Guid OrgId, int Page, int PageSize, IEnumerable<ApplicationPortalStatusCode> StatusCodes, string? SearchContains, string Sortby) : IRequest<ApplicationListResponse>;
 
     //application invites
     public record ApplicationInvitesCreateRequest
@@ -59,22 +59,26 @@ namespace Spd.Manager.Cases
     }
 
     //application
-    public record ApplicationCreateRequest
+    public abstract record Application
     {
         public Guid OrgId { get; set; }
-        public ApplicationOriginTypeCode OriginTypeCode { get; set; }
         public string? GivenName { get; set; }
         public string? MiddleName1 { get; set; }
         public string? MiddleName2 { get; set; }
         public string? Surname { get; set; }
         public string? EmailAddress { get; set; }
+        public string? JobTitle { get; set; }
+        public string? ContractedCompanyName { get; set; }
+        public PayeePreferenceTypeCode PayeeType { get; set; }
+    }
+    public record ApplicationCreateRequest : Application
+    {
+        public ApplicationOriginTypeCode OriginTypeCode { get; set; }
         public string? PhoneNumber { get; set; }
         public string? DriversLicense { get; set; }
         public DateTimeOffset? DateOfBirth { get; set; }
         public string? BirthPlace { get; set; }
-        public string? JobTitle { get; set; }
         public ScreeningTypeCode? ScreeningTypeCode { get; set; }
-        public string? ContractedCompanyName { get; set; }
         public string? AddressLine1 { get; set; }
         public string? AddressLine2 { get; set; }
         public string? City { get; set; }
@@ -109,23 +113,32 @@ namespace Spd.Manager.Cases
         public PaginationResponse Pagination { get; set; } = null!;
     }
 
-    public record ApplicationResponse
+    public record ApplicationResponse : Application
     {
         public Guid Id { get; set; }
-        public Guid OrgId { get; set; }
         public string? ApplicationNumber { get; set; }
-        public string? CaseNumber { get; set; }
-        public string? GivenName { get; set; }
-        public string? MiddleName1 { get; set; }
-        public string? MiddleName2 { get; set; }
-        public string? Surname { get; set; }
-        public string? EmailAddress { get; set; }
-        public string? JobTitle { get; set; }
         public string? PaidBy { get; set; }
-        public string? ContractedCompanyName { get; set; }
         public bool? HaveVerifiedIdentity { get; set; }
         public DateTimeOffset? CreatedOn { get; set; }
-        public bool? HasBeenDelivered { get; set; }
+        public ApplicationPortalStatusCode Status { get; set; }
+    }
+
+    public enum ApplicationPortalStatusCode
+    {
+        AwaitingPayment,
+        InProgress,
+        VerifyIdentity,
+        AwaitingThirdParty,
+        AwaitingApplicant,
+        UnderAssessment,
+        Incomplete,
+        CompletedCleared,
+        CompletedRiskFound,
+        ClosedJudicalReview,
+        ClosedNoResponse,
+        ClosedNoApplicantConsent,
+        CancelledByOrg,
+        CancelledByApplicant
     }
 
     public enum ApplicationInviteStatusCode

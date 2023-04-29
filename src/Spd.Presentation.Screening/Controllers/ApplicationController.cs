@@ -78,7 +78,10 @@ namespace Spd.Presentation.Screening.Controllers
         }
 
         /// <summary>
-        /// return active applications belong to the organization.
+        /// return all applications belong to the organization.
+        /// sort: submittedon, firstname and lastname, companyname 
+        /// filters: status 
+        /// search:wild card search in name, email and caseID
         /// sample: api/orgs/4165bdfe-7cb4-ed11-b83e-00505683fbf4/applications?filters=status=Pending|completed&sorts=firstname&page=1&pageSize=15
         /// </summary>
         /// <param name="orgId"></param>
@@ -97,7 +100,10 @@ namespace Spd.Presentation.Screening.Controllers
 
             page = (page == null || page < 0) ? 0 : page;
             pageSize = (pageSize == null || pageSize == 0 || pageSize > 100) ? 10 : pageSize;
-            return await _mediator.Send(new ApplicationListQuery(orgId, (int)page, (int)pageSize));
+            List<ApplicationPortalStatusCode> statusCodes = new() { ApplicationPortalStatusCode.AwaitingPayment, ApplicationPortalStatusCode.InProgress };
+            string searchtext = "str";
+            string sortby = "submittedon";
+            return await _mediator.Send(new ApplicationListQuery(orgId, (int)page, (int)pageSize, statusCodes.AsEnumerable(), SearchContains: searchtext, sortby));
         }
     }
 }

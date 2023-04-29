@@ -4,19 +4,20 @@ public interface IApplicationRepository
 {
     public Task<Guid?> AddApplicationAsync(ApplicationCreateCmd createApplicationCmd, CancellationToken cancellationToken);
     Task<bool> CheckApplicationDuplicateAsync(SearchApplicationQry searchApplicationQry, CancellationToken cancellationToken);
-    Task<ApplicationListResp> QueryAsync(ApplicationQuery query, CancellationToken cancellationToken);
+    Task<ApplicationListResp> QueryAsync(ApplicationListQry query, CancellationToken cancellationToken);
     Task<ApplicationStatisticsQueryResponse> QueryAsync(ApplicationStatisticsQuery query, CancellationToken cancellationToken);
 }
 
 //application list
-public record ApplicationQuery
+public record ApplicationListQry
 {
-    public AppFilterBy FilterBy { get; set; } //null means no filter
+    public AppFilterBy? FilterBy { get; set; } //null means no filter
     public AppSortBy? SortBy { get; set; } //null means no sorting
-    public Paging Paging { get; set; }
+    public Paging Paging { get; set; } = null!;
 }
-public record AppFilterBy(Guid OrgId, string? ApplicationStatus);
-public record AppSortBy(bool? SubmittedDateDesc, bool? FirstNameDesc);
+public record AppFilterBy(Guid OrgId, IEnumerable<StatusFilter> ApplicationStatus, string? NameOrEmailOrAppIdContains = null);
+public record AppSortBy(bool? SubmittedDateDesc = true, bool? NameDesc = null, bool? CompanyNameDesc = null);
+public record StatusFilter(string appStatus, string? caseStatus, string? caseSubStatus);
 
 public record SearchApplicationQry
 {
@@ -51,6 +52,7 @@ public record ApplicationCreateCmd
     public bool? AgreeToCompleteAndAccurate { get; set; }
     public bool? HaveVerifiedIdentity { get; set; }
     public List<AliasCreateCmd> Aliases { get; set; }
+    public PayerPreferenceTypeCode PayeeType { get; set; }
 }
 public record AliasCreateCmd
 {
@@ -60,12 +62,11 @@ public record AliasCreateCmd
     public string? Surname { get; set; }
 
 }
-public record ApplicationResp
+public record ApplicationResult
 {
     public Guid Id { get; set; }
     public Guid OrgId { get; set; }
     public string? ApplicationNumber { get; set; }
-    public string? CaseNumber { get; set; }
     public string? GivenName { get; set; }
     public string? MiddleName1 { get; set; }
     public string? MiddleName2 { get; set; }
@@ -74,14 +75,16 @@ public record ApplicationResp
     public string? JobTitle { get; set; }
     public string? PaidBy { get; set; }
     public string? ContractedCompanyName { get; set; }
+    public string ApplicationStatus { get; set; } = null!;
+    public string? CaseStatus { get; set; }
+    public string? CaseSubStatus { get; set; }
     public bool? HaveVerifiedIdentity { get; set; }
     public DateTimeOffset? CreatedOn { get; set; }
-    public bool? HasBeenDelivered { get; set; }
 }
 public class ApplicationListResp
 {
     public int? FollowUpBusinessDays { get; set; }
-    public IEnumerable<ApplicationResp> Applications { get; set; } = Array.Empty<ApplicationResp>();
+    public IEnumerable<ApplicationResult> Applications { get; set; } = Array.Empty<ApplicationResult>();
     public PaginationResp Pagination { get; set; } = null!;
 }
 public enum ApplicationOriginTypeCode
@@ -116,3 +119,4 @@ public enum ApplicationsStatisticsCode
     UnderAssessment,
     VerifyIdentity
 }
+

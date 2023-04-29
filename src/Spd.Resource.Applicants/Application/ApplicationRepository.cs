@@ -54,7 +54,7 @@ internal class ApplicationRepository : IApplicationRepository
         return application.spd_applicationid;
     }
 
-    public async Task<ApplicationListResp> QueryAsync(ApplicationQuery query, CancellationToken cancellationToken)
+    public async Task<ApplicationListResp> QueryAsync(ApplicationListQry query, CancellationToken cancellationToken)
     {
         if (query == null || query.FilterBy?.OrgId == null)
             throw new ArgumentNullException("Must query applications by orgnization id.");
@@ -86,10 +86,7 @@ internal class ApplicationRepository : IApplicationRepository
         var result = applications.AsEnumerable();
         var response = new ApplicationListResp();
 
-        //response.FollowUpBusinessDays = organization.spd_followupbusinessdays ?? 6; // todo - update to use value from dynamics
-        response.FollowUpBusinessDays = 9;
-
-        response.Applications = _mapper.Map<IEnumerable<ApplicationResp>>(result);
+        response.Applications = _mapper.Map<IEnumerable<ApplicationResult>>(result);
 
         if (query.Paging != null)
         {
