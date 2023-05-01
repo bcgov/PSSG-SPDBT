@@ -59,6 +59,7 @@ namespace Spd.Manager.Cases
         public DateTimeOffset CreatedOn { get; set; }
         public ApplicationInviteStatusCode Status { get; set; }
         public string? ErrorMsg { get; set; }
+        public bool? Viewed { get; set; }
     }
 
     //application

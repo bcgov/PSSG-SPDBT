@@ -12,4 +12,5 @@ export interface ApplicationInviteResponse {
   lastName?: null | string;
   payeeType?: PayeePreferenceTypeCode;
   status?: ApplicationInviteStatusCode;
+  viewed?: null | boolean;
 }
