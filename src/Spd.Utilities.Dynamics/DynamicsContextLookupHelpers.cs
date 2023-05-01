@@ -53,5 +53,10 @@ namespace Spd.Utilities.Dynamics
         {
             return RoleGuidDictionary.FirstOrDefault(x => x.Value == value).Key;
         }
+        public static async Task<spd_portaluser?> GetUserById(this DynamicsContext context, Guid userId, CancellationToken ct)
+            => await context.spd_portalusers.Where(a => a.spd_portaluserid == userId).SingleOrDefaultAsync(ct);
+
+        public static async Task<account?> GetOrgById(this DynamicsContext context, Guid organizationId, CancellationToken ct)
+           => await context.accounts.Where(a => a.accountid == organizationId).SingleOrDefaultAsync(ct);
     }
 }

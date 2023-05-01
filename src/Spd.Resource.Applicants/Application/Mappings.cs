@@ -29,6 +29,7 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.spd_postalcode, opt => opt.MapFrom(s => s.PostalCode))
             .ForMember(d => d.spd_province, opt => opt.MapFrom(s => s.Province))
             .ForMember(d => d.spd_country, opt => opt.MapFrom(s => s.Country))
+            .ForMember(d => d.spd_submittedon, opt => opt.MapFrom(s => DateTimeOffset.UtcNow))
             .ForMember(d => d.spd_declaration, opt => opt.MapFrom(s => s.AgreeToCompleteAndAccurate))
             .ForMember(d => d.spd_payer, opt => opt.MapFrom(s => (int)Enum.Parse<PayerPreferenceOptionSet>(s.PayeeType.ToString())))
             .ForMember(d => d.spd_declarationdate, opt => opt.MapFrom(s => DateTime.Now))

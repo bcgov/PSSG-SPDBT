@@ -52,7 +52,7 @@ public record ApplicationCreateCmd
     public bool? AgreeToCompleteAndAccurate { get; set; }
     public bool? HaveVerifiedIdentity { get; set; }
     public List<AliasCreateCmd> Aliases { get; set; }
-    public PayerPreferenceTypeCode PayeeType { get; set; }
+    public Guid CreatedByUserId { get; set; }
 }
 public record AliasCreateCmd
 {
