@@ -72,7 +72,7 @@ export class Address {
 						mat-button
 						type="button"
 						color="primary"
-						class="manual-button"
+						class="w-auto"
 						[disabled]="showAddressFields"
 						(click)="onShowManualAddress()"
 					>
@@ -100,10 +100,6 @@ export class Address {
 		`
 			.text-option {
 				color: var(--color-primary-light);
-			}
-
-			.manual-button {
-				width: unset;
 			}
 		`,
 	],

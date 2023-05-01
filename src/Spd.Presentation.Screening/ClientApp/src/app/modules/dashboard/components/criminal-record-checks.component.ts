@@ -4,13 +4,25 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { HotToastService } from '@ngneat/hot-toast';
-import { ApplicationListResponse, ApplicationResponse } from 'src/app/api/models';
+import {
+	ApplicationInviteListResponse,
+	ApplicationInviteResponse,
+	ApplicationInviteStatusCode,
+} from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { CrcAddModalComponent } from './crc-add-modal.component';
+
+export class CriminalRecordCheckFilter {
+	search: string = '';
+}
+
+export const CriminalRecordCheckFilterMap: Record<keyof CriminalRecordCheckFilter, string> = {
+	search: 'searchText',
+};
 
 @Component({
 	selector: 'app-criminal-record-checks',
@@ -34,8 +46,21 @@ import { CrcAddModalComponent } from './crc-add-modal.component';
 			<div class="row mt-3" [formGroup]="formFilter">
 				<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
 					<mat-form-field>
-						<input matInput type="search" formControlName="search" placeholder="Search applicant's name or email" />
-						<button mat-button matSuffix mat-flat-button aria-label="search" class="search-icon-button">
+						<input
+							matInput
+							type="search"
+							formControlName="search"
+							placeholder="Search applicant's name or email"
+							(keydown.enter)="onSearchKeyDown($event)"
+						/>
+						<button
+							mat-button
+							matSuffix
+							mat-flat-button
+							aria-label="search"
+							(click)="onSearch()"
+							class="search-icon-button"
+						>
 							<mat-icon>search</mat-icon>
 						</button>
 					</mat-form-field>
@@ -49,6 +74,14 @@ import { CrcAddModalComponent } from './crc-add-modal.component';
 							<mat-header-cell *matHeaderCellDef>Applicant Name</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Applicant Name:</span>
+								<mat-icon
+									class="error-icon"
+									[matTooltip]="application.errorMsg"
+									matTooltipClass="error-tooltip"
+									*ngIf="application.status == applicationInviteStatusCodes.Failed"
+								>
+									error
+								</mat-icon>
 								<!-- <mat-icon
 									class="error-icon"
 									matTooltip="The criminal record check request was not delivered:<br/> Lorem ipsum dolor sit amet, consectetur adipiscing elit"
@@ -57,7 +90,7 @@ import { CrcAddModalComponent } from './crc-add-modal.component';
 								>
 									error
 								</mat-icon> -->
-								{{ utilService.getFullName(application.givenName, application.surname) }}
+								{{ utilService.getFullName(application.firstName, application.lastName) }}
 							</mat-cell>
 						</ng-container>
 
@@ -65,7 +98,7 @@ import { CrcAddModalComponent } from './crc-add-modal.component';
 							<mat-header-cell *matHeaderCellDef>Email</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Email:</span>
-								{{ application.emailAddress }}
+								{{ application.email }}
 							</mat-cell>
 						</ng-container>
 
@@ -81,15 +114,23 @@ import { CrcAddModalComponent } from './crc-add-modal.component';
 							<mat-header-cell *matHeaderCellDef>To Be Paid By</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">To Be Paid By:</span>
-								{{ application.paidBy }}
+								{{ application.payeeType }}
 							</mat-cell>
 						</ng-container>
 
 						<ng-container matColumnDef="createdOn">
-							<mat-header-cell *matHeaderCellDef>Date Request Sent</mat-header-cell>
+							<mat-header-cell *matHeaderCellDef>Request Sent</mat-header-cell>
 							<mat-cell *matCellDef="let application">
-								<span class="mobile-label">Date Request Sent:</span>
+								<span class="mobile-label">Request Sent:</span>
 								{{ application.createdOn | date : constants.date.dateFormat }}
+							</mat-cell>
+						</ng-container>
+
+						<ng-container matColumnDef="viewed">
+							<mat-header-cell *matHeaderCellDef>Viewed</mat-header-cell>
+							<mat-cell *matCellDef="let application">
+								<span class="mobile-label">Viewed:</span>
+								??
 							</mat-cell>
 						</ng-container>
 
@@ -98,7 +139,7 @@ import { CrcAddModalComponent } from './crc-add-modal.component';
 							<mat-cell *matCellDef="let application">
 								<button
 									mat-flat-button
-									class="m-2"
+									class="table-button w-auto m-2"
 									style="white-space: nowrap;"
 									aria-label="Cancel Request"
 									(click)="OnCancelRequest(application)"
@@ -113,9 +154,10 @@ import { CrcAddModalComponent } from './crc-add-modal.component';
 					</mat-table>
 					<mat-paginator
 						[showFirstLastButtons]="true"
-						[pageIndex]="(tableConfig.paginator.pageIndex || 1) - 1"
-						[pageSize]="tableConfig.paginator.pageSize"
-						[length]="tableConfig.paginator.length"
+						[hidePageSize]="true"
+						[pageIndex]="tablePaginator.pageIndex"
+						[pageSize]="tablePaginator.pageSize"
+						[length]="tablePaginator.length"
 						(page)="onPageChanged($event)"
 						aria-label="Select page"
 					>
@@ -137,7 +179,7 @@ import { CrcAddModalComponent } from './crc-add-modal.component';
 				margin-right: 0.5rem;
 			}
 
-			/* .error-tooltip {
+			.error-tooltip {
 				border: 2px solid red;
 				border-radius: 6px;
 
@@ -148,20 +190,24 @@ import { CrcAddModalComponent } from './crc-add-modal.component';
 						font-size: 0.9em !important;
 					}
 				}
-			} */
+			}
 		`,
 	],
 	encapsulation: ViewEncapsulation.None,
 })
 export class CriminalRecordChecksComponent implements OnInit {
 	constants = SPD_CONSTANTS;
+	applicationInviteStatusCodes = ApplicationInviteStatusCode;
 
-	dataSource: MatTableDataSource<ApplicationResponse> = new MatTableDataSource<ApplicationResponse>([]);
-	tableConfig = this.utilService.getDefaultTableConfig();
+	dataSource: MatTableDataSource<ApplicationInviteResponse> = new MatTableDataSource<ApplicationInviteResponse>([]);
+	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
 	columns!: string[];
 	formFilter: FormGroup = this.formBuilder.group({
 		search: new FormControl(''),
 	});
+
+	private queryParams: any = this.utilService.getDefaultQueryParams();
+	private currentSearch = '';
 
 	@ViewChild('paginator') paginator!: MatPaginator;
 
@@ -175,7 +221,7 @@ export class CriminalRecordChecksComponent implements OnInit {
 	) {}
 
 	ngOnInit() {
-		this.columns = ['applicantName', 'emailAddress', 'jobTitle', 'paidBy', 'createdOn', 'actions'];
+		this.columns = ['applicantName', 'emailAddress', 'jobTitle', 'paidBy', 'createdOn', 'viewed', 'actions'];
 		this.loadList();
 	}
 
@@ -193,11 +239,11 @@ export class CriminalRecordChecksComponent implements OnInit {
 			});
 	}
 
-	OnCancelRequest(application: ApplicationResponse) {
+	OnCancelRequest(application: ApplicationInviteResponse) {
 		const data: DialogOptions = {
 			icon: 'warning',
 			title: 'Cancel request',
-			message: `Are you sure you want to cancel the request for ${application.givenName} ${application.surname}?`,
+			message: `Are you sure you want to cancel the request for ${application.firstName} ${application.lastName}?`,
 			actionText: 'Yes, cancel request',
 			cancelText: 'Cancel',
 		};
@@ -207,33 +253,52 @@ export class CriminalRecordChecksComponent implements OnInit {
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
-					this.loadList();
+					this.applicationService
+						.apiOrgsOrgIdApplicationInvitesApplicationInviteIdDelete({
+							applicationInviteId: application.id!,
+							orgId: this.authenticationService.loggedInOrgId!,
+						})
+						.pipe()
+						.subscribe((_res) => {
+							this.hotToast.success('The request was successfully cancelled');
+							this.loadList();
+						});
 				}
 			});
 	}
 
 	onPageChanged(page: PageEvent): void {
-		this.loadList(page.pageIndex);
+		this.queryParams.page = page.pageIndex;
+		this.loadList();
 	}
 
-	private loadList(pageIndex: number = 0): void {
+	onSearchKeyDown(searchEvent: any): void {
+		const searchString = searchEvent.target.value;
+		this.performSearch(searchString);
+	}
+
+	onSearch(): void {
+		this.performSearch(this.formFilter.value.search);
+	}
+
+	private performSearch(searchString: string): void {
+		this.currentSearch = searchString ? `${CriminalRecordCheckFilterMap['search']}@=${searchString}` : '';
+		this.queryParams.page = 0;
+		this.queryParams.filters = this.currentSearch;
+
+		this.loadList();
+	}
+
+	private loadList(): void {
 		this.applicationService
-			.apiOrgsOrgIdApplicationsGet({
+			.apiOrgsOrgIdApplicationInvitesGet({
 				orgId: this.authenticationService.loggedInOrgId!,
-				page: pageIndex,
-				pageSize: this.tableConfig.paginator.pageSize,
+				...this.queryParams,
 			})
 			.pipe()
-			.subscribe((res: ApplicationListResponse) => {
-				this.dataSource.data = res.applications as Array<ApplicationResponse>;
-				this.tableConfig = {
-					...this.tableConfig,
-					paginator: {
-						pageIndex: res.pagination?.pageIndex ?? 0,
-						pageSize: res.pagination?.pageSize ?? 0,
-						length: res.pagination?.length ?? 0,
-					},
-				};
+			.subscribe((res: ApplicationInviteListResponse) => {
+				this.dataSource = new MatTableDataSource(res.applicationInvites as Array<ApplicationInviteResponse>);
+				this.tablePaginator = { ...res.pagination };
 			});
 	}
 }

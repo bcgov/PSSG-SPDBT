@@ -4,9 +4,14 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { ApplicationListResponse, ApplicationResponse } from 'src/app/api/models';
+import { ApplicationListResponse, ApplicationResponse, ApplicationStatusCode } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import {
+	ApplicationStatusCodes,
+	ApplicationStatusFiltersTypes,
+	SelectOptions,
+} from 'src/app/core/constants/model-desc';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { DashboardRoutes } from '../dashboard-routing.module';
@@ -14,7 +19,6 @@ import {
 	ApplicationStatusesFilterComponent,
 	ApplicationStatusFilter,
 	ApplicationStatusFilterMap,
-	ApplicationStatusFiltersTypes,
 } from './application-statuses-filter.component';
 
 @Component({
@@ -35,17 +39,11 @@ import {
 				</div>
 			</div>
 			<div class="mb-4">
-				<div class="fw-semibold">
-					Active applications: <span class="fw-normal">(Last updated April 10, 11:59pm)</span>
-				</div>
+				<div class="fw-semibold">Active applications <span class="fw-normal">(for the last 365 days)</span></div>
 				<div class="d-flex flex-wrap justify-content-start">
 					<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
 						<div class="m-2">Verify Identity</div>
-					</div>
-					<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
-						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
-						<div class="m-2">Awaiting Payment</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-green align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
@@ -53,7 +51,11 @@ import {
 					</div>
 					<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
-						<div class="m-2">Awaiting 3rd Party</div>
+						<div class="m-2">Pay Now</div>
+					</div>
+					<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
+						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
+						<div class="m-2">Awaiting<br />Third Party</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
@@ -61,54 +63,44 @@ import {
 					</div>
 					<div class="d-flex flex-row statistic-card area-blue align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
-						<div class="m-2">Under Assessment</div>
-					</div>
-					<div class="d-flex flex-row statistic-card area-blue align-items-center mt-2 me-2">
-						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
-						<div class="m-2">Incomplete</div>
+						<div class="m-2">Under<br />Assessment</div>
 					</div>
 				</div>
 			</div>
 
 			<div class="mb-4">
-				<div class="fw-semibold">
-					Completed applications <span class="fw-normal">(completed, closed, or cancelled since April 14, 2022)</span>
-				</div>
+				<div class="fw-semibold">Completed applications <span class="fw-normal">(for the last 365 days)</span></div>
 				<div class="d-flex flex-wrap justify-content-start">
-					<div class="d-flex flex-row statistic-card area-red align-items-center mt-2 me-2">
-						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
-						<div class="m-2">Risk Found</div>
-					</div>
 					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
-						<div class="m-2">Risk Found</div>
+						<div class="m-2">Completed - <br />Risk Found</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
 						<div class="m-2">
-							Closed:<br />
+							Closed - <br />
 							Judicial Review
 						</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
 						<div class="m-2">
-							Closed:<br />
+							Closed - <br />
 							No Response
 						</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
 						<div class="m-2">
-							Closed:<br />
-							No Consent
+							Closed - No<br />
+							Applicant Consent
 						</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
 						<div class="m-2">
-							Cancelled:<br />
-							By Applicant
+							Cancelled - By<br />
+							Applicant
 						</div>
 					</div>
 				</div>
@@ -161,7 +153,7 @@ import {
 							class="me-2 mb-2"
 							selected
 						>
-							{{ getStatusDesc(status) }}
+							{{ getFilterStatusDesc(status) }}
 							<mat-icon matChipRemove>cancel</mat-icon>
 						</mat-chip>
 					</div>
@@ -229,31 +221,10 @@ import {
 							<mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Status:</span>
-
-								<!-- <mat-chip-listbox aria-label="Status">
-									<mat-chip-option class="mat-chip-green" *ngIf="application.status == '1'">In Progress</mat-chip-option>
-									<mat-chip-option class="mat-chip-green" *ngIf="application.status == '2'">
-										Complete - No Risk
-									</mat-chip-option>
-									<mat-chip-option class="mat-chip-yellow" *ngIf="application.status == '3'">
-										Awaiting Applicant
-									</mat-chip-option>
-									<mat-chip-option class="mat-chip-blue" *ngIf="application.status == '4'">
-										Under Assessment
-									</mat-chip-option>
-									<mat-chip-option class="mat-chip-grey" *ngIf="application.status == '5'">
-										Missing Information
-									</mat-chip-option>
-									<mat-chip-option class="mat-chip-grey" *ngIf="application.status == '6'">
-										Cancelled By Organization
-									</mat-chip-option>
-									<mat-chip-option class="mat-chip-red" *ngIf="application.status == '7'">Closed</mat-chip-option>
-									<mat-chip-option class="mat-chip-red" *ngIf="application.status == '8'">Risk Found</mat-chip-option>
-								</mat-chip-listbox>
-							 -->
 								<mat-chip-listbox aria-label="Status">
-									<mat-chip-option class="mat-chip-green">In Progress</mat-chip-option>
-									<!-- <mat-chip-option class="mat-chip-yellow"> Awaiting Applicant </mat-chip-option> -->
+									<mat-chip-option [ngClass]="getStatusClass(application.status)">
+										{{ getStatusDesc(application.status) }}
+									</mat-chip-option>
 								</mat-chip-listbox>
 							</mat-cell>
 						</ng-container>
@@ -266,9 +237,9 @@ import {
 									mat-flat-button
 									(click)="onPayNow(application)"
 									class="m-2"
-									style="color: var(--color-primary-light);"
+									style="color: var(--color-green);"
 									aria-label="Pay now"
-									*ngIf="i % 4 == 1"
+									*ngIf="application.status == applicationStatusCodeAll.PaymentPending"
 								>
 									Pay Now <mat-icon iconPositionEnd>chevron_right</mat-icon>
 								</a>
@@ -277,9 +248,9 @@ import {
 									mat-flat-button
 									(click)="onVerifyApplicant(application)"
 									class="m-2"
-									style="color: var(--color-green);"
+									style="color: var(--color-primary-light);"
 									aria-label="Verify Applicant"
-									*ngIf="i % 4 == 2"
+									*ngIf="application.status == applicationStatusCodeAll.ApplicantVerification"
 								>
 									Verify Applicant <mat-icon iconPositionEnd>chevron_right</mat-icon>
 								</a>
@@ -291,9 +262,9 @@ import {
 					</mat-table>
 					<mat-paginator
 						[showFirstLastButtons]="true"
-						[pageIndex]="(tableConfig.paginator.pageIndex || 1) - 1"
-						[pageSize]="tableConfig.paginator.pageSize"
-						[length]="tableConfig.paginator.length"
+						[pageIndex]="tablePaginator.pageIndex"
+						[pageSize]="tablePaginator.pageSize"
+						[length]="tablePaginator.length"
 						(page)="onPageChanged($event)"
 						aria-label="Select page"
 					>
@@ -311,7 +282,7 @@ import {
 			.statistic-card {
 				cursor: default;
 				height: 4em;
-				width: 10.7em;
+				width: 12em;
 				box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14),
 					0px 1px 3px 0px rgba(0, 0, 0, 0.12);
 			}
@@ -326,14 +297,16 @@ export class ApplicationStatusesComponent implements OnInit {
 	currentStatuses: any[] = [];
 	private currentFilters = '';
 	private currentSearch = '';
+	private queryParams: any = this.utilService.getDefaultQueryParams();
 
 	constants = SPD_CONSTANTS;
 	applicationStatusFiltersTypes = ApplicationStatusFiltersTypes;
+	applicationStatusCodes = ApplicationStatusCodes;
+	applicationStatusCodeAll = ApplicationStatusCode;
 	filterCriteriaExists = false;
-	queryParams: any = this.defaultQueryParams(); // { page: 0, pageSize: 3 }; // SPD_CONSTANTS.list.defaultPageSize };
 
 	dataSource: MatTableDataSource<ApplicationResponse> = new MatTableDataSource<ApplicationResponse>([]);
-	tableConfig = this.utilService.getDefaultTableConfig();
+	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
 	columns: string[] = [
 		'applicantName',
 		'emailAddress',
@@ -406,7 +379,7 @@ export class ApplicationStatusesComponent implements OnInit {
 		this.currentStatuses = [];
 		this.currentFilters = '';
 		this.currentSearch = '';
-		this.queryParams = this.defaultQueryParams();
+		this.queryParams = this.utilService.getDefaultQueryParams();
 		this.filterCriteriaExists = false;
 		this.onFilterClose();
 
@@ -440,12 +413,32 @@ export class ApplicationStatusesComponent implements OnInit {
 		this.applicationStatusesFilterComponent.emitFilterChange();
 	}
 
+	getStatusClass(code: string): any {
+		switch (code) {
+			case ApplicationStatusCode.Draft:
+				return { 'mat-chip-green': true };
+			case ApplicationStatusCode.PaymentPending:
+				return { 'mat-chip-yellow': true };
+			case ApplicationStatusCode.Incomplete:
+				return { 'mat-chip-blue': true };
+			case ApplicationStatusCode.ApplicantVerification:
+				return { 'mat-chip-yellow': true };
+		}
+
+		return { 'mat-chip-grey': true };
+	}
+
 	getStatusDesc(code: string): string {
-		return this.applicationStatusesFilterComponent.getStatusDesc(code);
+		return (this.applicationStatusCodes.find((item: SelectOptions) => item.code == code)?.desc as string) ?? '';
+	}
+
+	getFilterStatusDesc(code: string): string {
+		return this.applicationStatusesFilterComponent.getFilterStatusDesc(code);
 	}
 
 	private performSearch(searchString: string): void {
 		this.currentSearch = searchString ? `${ApplicationStatusFilterMap['search']}@=${searchString}` : '';
+		this.queryParams.page = 0;
 		this.queryParams.filters = this.buildQueryParamsFilterString();
 
 		this.loadList();
@@ -453,10 +446,6 @@ export class ApplicationStatusesComponent implements OnInit {
 
 	private buildQueryParamsFilterString(): string {
 		return this.currentFilters + (this.currentFilters ? ',' : '') + this.currentSearch;
-	}
-
-	private defaultQueryParams(): any {
-		return { page: 0, pageSize: SPD_CONSTANTS.list.defaultPageSize };
 	}
 
 	private loadList(): void {
@@ -470,15 +459,7 @@ export class ApplicationStatusesComponent implements OnInit {
 				this.followUpBusinessDays = res.followUpBusinessDays ? String(res.followUpBusinessDays) : '';
 				this.dataSource.data = res.applications as Array<ApplicationResponse>;
 				this.dataSource.sort = this.sort;
-
-				this.tableConfig = {
-					...this.tableConfig,
-					paginator: {
-						pageIndex: res.pagination?.pageIndex ?? 0,
-						pageSize: res.pagination?.pageSize ?? 0,
-						length: res.pagination?.length ?? 0,
-					},
-				};
+				this.tablePaginator = { ...res.pagination };
 			});
 	}
 

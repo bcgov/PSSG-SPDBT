@@ -124,7 +124,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 								<button
 									*ngIf="application.status == 'Outstanding'"
 									mat-flat-button
-									class="m-2"
+									class="table-button m-2"
 									style="color: var(--color-green);"
 									aria-label="Confirm"
 								>
@@ -134,7 +134,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 								<button
 									*ngIf="application.status == 'Outstanding'"
 									mat-flat-button
-									class="m-2"
+									class="table-button m-2"
 									style="color: var(--color-red);"
 									aria-label="Reject"
 								>

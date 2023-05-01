@@ -12,6 +12,7 @@ namespace Spd.Manager.Cases
         IRequestHandler<ApplicationCreateCommand, ApplicationCreateResponse>,
         IRequestHandler<ApplicationListQuery, ApplicationListResponse>,
         IRequestHandler<ApplicationInviteListQuery, ApplicationInviteListResponse>,
+        IRequestHandler<ApplicationInviteDeleteCommand, Unit>,
         IApplicationManager
     {
         private readonly IApplicationRepository _applicationRepository;
@@ -61,6 +62,12 @@ namespace Spd.Manager.Cases
                 },
                 ct);
             return _mapper.Map<ApplicationInviteListResponse>(response);
+        }
+        public async Task<Unit> Handle(ApplicationInviteDeleteCommand request, CancellationToken ct)
+        {
+            var cmd = _mapper.Map<ApplicationInviteDeleteCmd>(request);
+            await _applicationInviteRepository.DeleteApplicationInvitesAsync(cmd, ct);
+            return default;
         }
 
         //application

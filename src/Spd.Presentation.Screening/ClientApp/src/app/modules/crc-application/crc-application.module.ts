@@ -8,7 +8,6 @@ import { ChecklistComponent } from './step-components/checklist.component';
 import { CompletedComponent } from './step-components/completed.component';
 import { ContactInformationComponent } from './step-components/contact-information.component';
 import { DeclarationComponent } from './step-components/declaration.component';
-import { EligibilityProblemComponent } from './step-components/eligibility-problem.component';
 import { LogInOptionsComponent } from './step-components/log-in-options.component';
 import { MailingAddressComponent } from './step-components/mailing-address.component';
 import { PaymentComponent } from './step-components/payment.component';
@@ -37,7 +36,6 @@ import { StepTermsAndCondComponent } from './steps/step-terms-and-cond.component
 		ContactInformationComponent,
 		MailingAddressComponent,
 		ChecklistComponent,
-		EligibilityProblemComponent,
 		LogInOptionsComponent,
 		AgreementOfTermsComponent,
 		PersonalInformationComponent,
