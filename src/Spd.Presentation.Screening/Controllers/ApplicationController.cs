@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Cases;
+using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
@@ -28,7 +29,9 @@ namespace Spd.Presentation.Screening.Controllers
         [HttpPost]
         public async Task<ApplicationInvitesCreateResponse> AddApplicationInvites([FromBody][Required] ApplicationInvitesCreateRequest invitesCreateRequest, [FromRoute] Guid orgId)
         {
-            return await _mediator.Send(new ApplicationInviteCreateCommand(invitesCreateRequest, orgId));
+            var userId = this.HttpContext.User.GetUserId();
+            if (userId == null) throw new ApiException(System.Net.HttpStatusCode.Unauthorized);
+            return await _mediator.Send(new ApplicationInviteCreateCommand(invitesCreateRequest, orgId, Guid.Parse(userId)));
         }
 
         /// <summary>
