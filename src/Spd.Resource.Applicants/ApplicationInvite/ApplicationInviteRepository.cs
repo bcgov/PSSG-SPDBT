@@ -18,7 +18,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
         public async Task<ApplicationInviteListResp> QueryAsync(ApplicationInviteQuery query, CancellationToken cancellationToken)
         {
             if (query == null || query.FilterBy?.OrgId == null)
-                throw new ArgumentNullException("query.FilterBy.OrgId", "Must query applications by orgnization id.");
+                throw new ArgumentNullException("query.FilterBy.OrgId", "Must query applications by organization id.");
 
             var invites = _dynaContext.spd_portalinvitations
                     .Where(i => i.spd_invitationtype != null && i.spd_invitationtype == (int)InvitationTypeOptionSet.ScreeningRequest)

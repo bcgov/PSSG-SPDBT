@@ -57,7 +57,7 @@ internal class ApplicationRepository : IApplicationRepository
     public async Task<ApplicationListResp> QueryAsync(ApplicationQuery query, CancellationToken cancellationToken)
     {
         if (query == null || query.FilterBy?.OrgId == null)
-            throw new ArgumentNullException("Must query applications by orgnization id.");
+            throw new ArgumentNullException("query.FilterBy.OrgId", "Must query applications by organization id.");
 
         var applications = _context.spd_applications
                 .Where(a => a._spd_organizationid_value == query.FilterBy.OrgId && a.statecode == DynamicsConstants.StateCode_Active);
