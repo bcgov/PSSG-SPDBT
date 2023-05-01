@@ -16,11 +16,3 @@ export const SPD_CONSTANTS = {
 		organizationRegStateKey: 'state',
 	},
 };
-
-export interface TableConfig {
-	paginator: {
-		pageIndex: number;
-		pageSize: number;
-		length: number;
-	};
-}

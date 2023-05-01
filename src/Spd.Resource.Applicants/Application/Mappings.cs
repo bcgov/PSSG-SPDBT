@@ -66,18 +66,22 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_applicationid))
             .ForMember(d => d.OrgId, opt => opt.MapFrom(s => s._spd_organizationid_value))
             .ForMember(d => d.ApplicationNumber, opt => opt.MapFrom(s => s.spd_name))
-            .ForMember(d => d.CaseNumber, opt => opt.Ignore()) //todo
             .ForMember(d => d.GivenName, opt => opt.MapFrom(s => s.spd_firstname))
             .ForMember(d => d.MiddleName1, opt => opt.MapFrom(s => s.spd_middlename1))
             .ForMember(d => d.MiddleName2, opt => opt.MapFrom(s => s.spd_middlename2))
             .ForMember(d => d.Surname, opt => opt.MapFrom(s => s.spd_lastname))
             .ForMember(d => d.JobTitle, opt => opt.MapFrom(s => s.spd_applicantsposition))
-            .ForMember(d => d.PaidBy, opt => opt.Ignore()) //todo
-            .ForMember(d => d.HasBeenDelivered, opt => opt.Ignore()) //todo
+            .ForMember(d => d.PaidBy, opt => opt.MapFrom(s => GetPaidBy(s.spd_payer)))
             .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.spd_emailaddress1))
             .ForMember(d => d.ContractedCompanyName, opt => opt.MapFrom(s => s.spd_contractedcompanyname))
             .ForMember(d => d.CreatedOn, opt => opt.MapFrom(s => s.createdon))
-            .ForMember(d => d.HaveVerifiedIdentity, opt => opt.MapFrom(s => s.spd_identityconfirmed));
+            .ForMember(d => d.HaveVerifiedIdentity, opt => opt.MapFrom(s => s.spd_identityconfirmed))
+            .ForMember(d => d.Status, opt => opt.MapFrom(s => s.statuscode == null ? string.Empty : ((ApplicationActiveStatus)s.statuscode).ToString()));
+        }
+        private static string? GetPaidBy(int? code)
+        {
+            if (code == null) return null;
+            return Enum.GetName(typeof(PayerPreferenceOptionSet), code);
         }
     }
 }

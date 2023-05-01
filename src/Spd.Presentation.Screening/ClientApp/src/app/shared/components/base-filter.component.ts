@@ -1,22 +1,22 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 
 const FILTER_OPERATORS = {
-	equals: '==',
-	notEquals: '!=',
-	greaterThan: '>',
-	lessThan: '<',
-	greaterThanOrEqualTo: '>=',
-	lessThanOrEqualTo: '<=',
+	// equals: '==',
+	// notEquals: '!=',
+	// greaterThan: '>',
+	// lessThan: '<',
+	// greaterThanOrEqualTo: '>=',
+	// lessThanOrEqualTo: '<=',
 	contains: '@=',
-	startsWith: '_=',
-	doesNotContains: '!@=',
-	doesNotStartsWith: '!_=',
-	caseInsensitiveStringContains: '@=*',
-	caseInsensitiveStringStartsWith: '_=*',
-	caseInsensitiveStringEquals: '==*',
-	caseInsensitiveStringNotEquals: '!=*',
-	caseInsensitiveStringDoesNotContains: '!@=*',
-	caseInsensitiveStringDoesNotStartsWith: '!_=*',
+	// startsWith: '_=',
+	// doesNotContains: '!@=',
+	// doesNotStartsWith: '!_=',
+	// caseInsensitiveStringContains: '@=*',
+	// caseInsensitiveStringStartsWith: '_=*',
+	// caseInsensitiveStringEquals: '==*',
+	// caseInsensitiveStringNotEquals: '!=*',
+	// caseInsensitiveStringDoesNotContains: '!@=*',
+	// caseInsensitiveStringDoesNotStartsWith: '!_=*',
 };
 
 export interface FilterQueryList {
