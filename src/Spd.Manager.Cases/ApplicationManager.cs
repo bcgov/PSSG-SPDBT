@@ -42,7 +42,7 @@ namespace Spd.Manager.Cases
             }
             var cmd = _mapper.Map<ApplicationInvitesCreateCmd>(createCmd.ApplicationInvitesCreateRequest);
             cmd.OrgId = createCmd.OrgId;
-            //todo: after logon seq is done, we need to add userId here.
+            cmd.CreatedByUserId = createCmd.UserId;
             await _applicationInviteRepository.AddApplicationInvitesAsync(cmd, ct);
             resp.CreateSuccess = true;
             return resp;
