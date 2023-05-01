@@ -2,6 +2,8 @@ using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
 using Spd.Utilities.Dynamics;
+using Spd.Utilities.Shared.Exceptions;
+using System.Net;
 
 namespace Spd.Resource.Applicants.ApplicationInvite
 {
@@ -76,7 +78,10 @@ namespace Spd.Resource.Applicants.ApplicationInvite
 
         public async Task DeleteApplicationInvitesAsync(ApplicationInviteDeleteCmd applicationInviteDeleteCmd, CancellationToken cancellationToken)
         {
-            spd_portalinvitation invite = await GetPortalInvitationById(applicationInviteDeleteCmd.OrgId, applicationInviteDeleteCmd.ApplicationInviteId);
+            spd_portalinvitation? invite = await GetPortalInvitationById(applicationInviteDeleteCmd.OrgId, applicationInviteDeleteCmd.ApplicationInviteId);
+
+            if (invite == null)
+                throw new ApiException(HttpStatusCode.BadRequest, "invalid orgid or invite id.");
 
             // Inactivate the invite
             invite.statecode = DynamicsConstants.StateCode_Inactive;
@@ -84,7 +89,6 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             _dynaContext.UpdateObject(invite);
 
             await _dynaContext.SaveChangesAsync(cancellationToken);
-            return;
         }
 
         public async Task<bool> CheckInviteInvitationDuplicateAsync(SearchInvitationQry searchInvitationQry, CancellationToken cancellationToken)
@@ -108,12 +112,6 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             ).FirstOrDefaultAsync(cancellationToken);
             return orginvitation != null;
         }
-
-        private async Task<spd_portaluser?> GetUserById(Guid userId)
-          => await _dynaContext.spd_portalusers.Where(a => a.spd_portaluserid == userId).SingleOrDefaultAsync();
-
-        private async Task<account?> GetOrgById(Guid organizationId)
-           => await _dynaContext.accounts.Where(a => a.accountid == organizationId).SingleOrDefaultAsync();
 
         private async Task<spd_portalinvitation?> GetPortalInvitationById(Guid organizationId, Guid portalInvitationId)
            => await _dynaContext.spd_portalinvitations
