@@ -11,7 +11,7 @@ namespace Spd.Resource.Organizations.User
     public record UserCreateCmd(User User) : OrgUserCmd;
     public record UserUpdateCmd(Guid Id, User User) : OrgUserCmd;
     public record UserDeleteCmd(Guid Id) : OrgUserCmd;
-    public record OrgUserManageResult(UserResult UserResult);
+    public record OrgUserManageResult(UserResult? UserResult = null);
 
     //query
     public abstract record OrgUserQry();
