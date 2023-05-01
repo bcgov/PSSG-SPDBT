@@ -1,3 +1,5 @@
+using Spd.Utilities.Dynamics;
+
 namespace Spd.Resource.Applicants.Application;
 
 public interface IApplicationRepository
@@ -77,7 +79,7 @@ public record ApplicationResult
     public string? Surname { get; set; }
     public string? EmailAddress { get; set; }
     public string? JobTitle { get; set; }
-    public string? PaidBy { get; set; }
+    public PayerPreferenceTypeCode? PaidBy { get; set; }
     public string? ContractedCompanyName { get; set; }
     public string ApplicationStatus { get; set; } = null!;
     public string? CaseStatus { get; set; }

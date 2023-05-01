@@ -3,9 +3,10 @@ namespace Spd.Resource.Applicants.ApplicationInvite
     public interface IApplicationInviteRepository
     {
         public Task AddApplicationInvitesAsync(ApplicationInvitesCreateCmd createInviteCmd, CancellationToken cancellationToken);
-        Task<bool> CheckInviteInvitationDuplicateAsync(SearchInvitationQry searchInvitationQry, CancellationToken cancellationToken);
-        Task<bool> CheckInviteApplicationDuplicateAsync(SearchInvitationQry searchInvitationQry, CancellationToken cancellationToken);
-        Task<ApplicationInviteListResp> QueryAsync(ApplicationInviteQuery query, CancellationToken cancellationToken);
+        public Task<bool> CheckInviteInvitationDuplicateAsync(SearchInvitationQry searchInvitationQry, CancellationToken cancellationToken);
+        public Task<bool> CheckInviteApplicationDuplicateAsync(SearchInvitationQry searchInvitationQry, CancellationToken cancellationToken);
+        public Task<ApplicationInviteListResp> QueryAsync(ApplicationInviteQuery query, CancellationToken cancellationToken);
+        public Task DeleteApplicationInvitesAsync(ApplicationInviteDeleteCmd applicationInviteDeleteCmd, CancellationToken cancellationToken);
     }
 
     public record ApplicationInviteQuery
@@ -42,7 +43,13 @@ namespace Spd.Resource.Applicants.ApplicationInvite
         public string? LastName { get; set; }
         public string? Email { get; set; }
         public string? JobTitle { get; set; }
-        public PayerPreferenceTypeCode PayeeType { get; set; }
+        public PayerPreferenceTypeCode? PayeeType { get; set; }
+    }
+
+    public record ApplicationInviteDeleteCmd
+    {
+        public Guid OrgId { get; set; }
+        public Guid ApplicationInviteId { get; set; }
     }
 
     public record ApplicationInviteCreateResp

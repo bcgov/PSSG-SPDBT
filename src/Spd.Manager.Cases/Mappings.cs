@@ -25,13 +25,8 @@ namespace Spd.Manager.Cases
                 .ForMember(d => d.Status, opt => opt.MapFrom(s => GetApplicationPortalStatus(s.ApplicationStatus, s.CaseStatus, s.CaseSubStatus)));
             CreateMap<ApplicationListResp, ApplicationListResponse>();
             CreateMap<PaginationResp, PaginationResponse>();
-        } 
-        
+            CreateMap<ApplicationInviteDeleteCommand, ApplicationInviteDeleteCmd>();
 
-        private ApplicationPortalStatusCode GetApplicationPortalStatus(string appStatus, string? caseStatus, string? caseSubStatus)
-        {
-            //todo: add mapping to portal status according to 3 input status.
-            return ApplicationPortalStatusCode.AwaitingPayment;
         }
     }
 }

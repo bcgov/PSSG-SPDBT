@@ -2,6 +2,8 @@ using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
 using Spd.Utilities.Dynamics;
+using Spd.Utilities.Shared.Exceptions;
+using System.Net;
 
 namespace Spd.Resource.Applicants.ApplicationInvite
 {
@@ -74,6 +76,21 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             await _dynaContext.SaveChangesAsync(ct);
         }
 
+        public async Task DeleteApplicationInvitesAsync(ApplicationInviteDeleteCmd applicationInviteDeleteCmd, CancellationToken cancellationToken)
+        {
+            spd_portalinvitation? invite = await GetPortalInvitationById(applicationInviteDeleteCmd.OrgId, applicationInviteDeleteCmd.ApplicationInviteId);
+
+            if (invite == null)
+                throw new ApiException(HttpStatusCode.BadRequest, "invalid orgid or invite id.");
+
+            // Inactivate the invite
+            invite.statecode = DynamicsConstants.StateCode_Inactive;
+            invite.statuscode = DynamicsConstants.StatusCode_Inactive;
+            _dynaContext.UpdateObject(invite);
+
+            await _dynaContext.SaveChangesAsync(cancellationToken);
+        }
+
         public async Task<bool> CheckInviteInvitationDuplicateAsync(SearchInvitationQry searchInvitationQry, CancellationToken cancellationToken)
         {
             var orginvitation = await _dynaContext.spd_portalinvitations.Where(o =>
@@ -96,5 +113,8 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             return orginvitation != null;
         }
 
+        private async Task<spd_portalinvitation?> GetPortalInvitationById(Guid organizationId, Guid portalInvitationId)
+           => await _dynaContext.spd_portalinvitations
+                .Where(a => a.spd_portalinvitationid == portalInvitationId && a._spd_organizationid_value == organizationId).SingleOrDefaultAsync();
     }
 }

@@ -101,7 +101,7 @@ internal class ApplicationRepository : IApplicationRepository
 
     public async Task<ApplicationStatisticsQueryResponse> QueryAsync(ApplicationStatisticsQuery query, CancellationToken ct)
     {
-        var organization = await GetOrganizationById(query.OrganizationId);
+        var organization = await _context.GetOrgById(query.OrganizationId, ct);
         if (organization == null) return new ApplicationStatisticsQueryResponse();
         var organizationStatistics = await organization.spd_GetOrganizationStatistics().GetValueAsync(ct);
         var statisticsDictionary = new Dictionary<ApplicationsStatisticsCode, int>();
@@ -169,6 +169,5 @@ internal class ApplicationRepository : IApplicationRepository
             return contact;
         }
     }
-    private async Task<account?> GetOrganizationById(Guid organizationId)
-        => await _context.accounts.Where(a => a.accountid == organizationId).SingleOrDefaultAsync();
+
 }

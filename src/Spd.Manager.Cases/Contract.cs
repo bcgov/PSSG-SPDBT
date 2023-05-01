@@ -8,7 +8,7 @@ namespace Spd.Manager.Cases
     {
         public Task<ApplicationInvitesCreateResponse> Handle(ApplicationInviteCreateCommand request, CancellationToken ct);
         public Task<ApplicationInviteListResponse> Handle(ApplicationInviteListQuery request, CancellationToken ct);
-
+        public Task<Unit> Handle(ApplicationInviteDeleteCommand request, CancellationToken ct);
         public Task<ApplicationListResponse> Handle(ApplicationListQuery request, CancellationToken ct);
         public Task<ApplicationCreateResponse> Handle(ApplicationCreateCommand request, CancellationToken ct);
 
@@ -16,6 +16,7 @@ namespace Spd.Manager.Cases
 
     public record ApplicationInviteCreateCommand(ApplicationInvitesCreateRequest ApplicationInvitesCreateRequest, Guid OrgId, Guid UserId) : IRequest<ApplicationInvitesCreateResponse>;
     public record ApplicationInviteListQuery(Guid OrgId, string? Filters = null, int Page = 1, int PageSize = 10) : IRequest<ApplicationInviteListResponse>;
+    public record ApplicationInviteDeleteCommand(Guid OrgId, Guid ApplicationInviteId) : IRequest<Unit>;
     public record ApplicationCreateCommand(ApplicationCreateRequest ApplicationCreateRequest, Guid OrgId, Guid UserId) : IRequest<ApplicationCreateResponse>;
     public record ApplicationListQuery(Guid OrgId, int Page, int PageSize, string? Filters, string? SearchContains, string? Sorts) : IRequest<ApplicationListResponse>;
 
@@ -117,8 +118,8 @@ namespace Spd.Manager.Cases
     {
         public Guid Id { get; set; }
         public string? ApplicationNumber { get; set; }
-        public string? PaidBy { get; set; }
         public bool? HaveVerifiedIdentity { get; set; }
+        public PayeePreferenceTypeCode? PaidBy { get; set; }
         public DateTimeOffset? CreatedOn { get; set; }
         public ApplicationPortalStatusCode Status { get; set; }
     }
@@ -173,6 +174,14 @@ namespace Spd.Manager.Cases
 
         [Description("Organization Submitted")]
         OrganizationSubmitted
+    }
+
+    public enum ApplicationStatusCode
+    {
+        Draft,
+        PaymentPending,
+        Incomplete,
+        ApplicantVerification
     }
 
     public enum PayeePreferenceTypeCode

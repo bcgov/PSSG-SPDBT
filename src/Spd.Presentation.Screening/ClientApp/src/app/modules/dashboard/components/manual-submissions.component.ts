@@ -9,11 +9,11 @@ import {
 	ApplicationCreateResponse,
 	ApplicationOriginTypeCode,
 	BooleanTypeCode,
-	EmployeeInteractionTypeCode,
 	ScreeningTypeCode,
 } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import { EmployeeInteractionTypes, ScreeningTypeCodes } from 'src/app/core/constants/model-desc';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
@@ -21,17 +21,6 @@ import { Address, AddressAutocompleteComponent } from 'src/app/shared/components
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { DashboardRoutes } from '../dashboard-routing.module';
-
-export const EmployeeInteractionTypes = [
-	{ desc: 'Children', code: EmployeeInteractionTypeCode.Children },
-	{ desc: 'Vulnerable Adults', code: EmployeeInteractionTypeCode.Adults },
-	{ desc: 'Children and Vulnerable Adults', code: EmployeeInteractionTypeCode.ChildrenAndAdults },
-];
-
-export const ScreeningTypeCodes = [
-	{ desc: 'Staff', code: ScreeningTypeCode.Staff },
-	{ desc: 'Contractor/Licensee', code: ScreeningTypeCode.Contractor },
-];
 
 @Component({
 	selector: 'app-manual-submissions',
