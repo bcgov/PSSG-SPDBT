@@ -54,7 +54,7 @@ internal class ApplicationRepository : IApplicationRepository
         return application.spd_applicationid;
     }
 
-    public async Task<ApplicationListResp> QueryAsync(ApplicationQuery query, CancellationToken cancellationToken)
+    public async Task<ApplicationListResp> QueryAsync(ApplicationQry query, CancellationToken cancellationToken)
     {
         if (query == null || query.FilterBy?.OrgId == null)
             throw new ArgumentNullException("query.FilterBy.OrgId", "Must query applications by organization id.");
@@ -102,10 +102,10 @@ internal class ApplicationRepository : IApplicationRepository
         return response;
     }
 
-    public async Task<ApplicationStatisticsQueryResponse> QueryAsync(ApplicationStatisticsQuery query, CancellationToken ct)
+    public async Task<ApplicationStatisticsResp> QueryApplicationStatisticsAsync(ApplicationStatisticsQry query, CancellationToken ct)
     {
         var organization = await _context.GetOrgById(query.OrganizationId, ct);
-        if (organization == null) return new ApplicationStatisticsQueryResponse();
+        if (organization == null) return new ApplicationStatisticsResp();
         var organizationStatistics = await organization.spd_GetOrganizationStatistics().GetValueAsync(ct);
         var statisticsDictionary = new Dictionary<ApplicationsStatisticsCode, int>();
         if (organizationStatistics.AwaitingApplicant.HasValue) statisticsDictionary.Add(ApplicationsStatisticsCode.AwaitingApplicant, organizationStatistics.AwaitingApplicant.Value);
@@ -121,7 +121,7 @@ internal class ApplicationRepository : IApplicationRepository
         if (organizationStatistics.UnderAssessment.HasValue) statisticsDictionary.Add(ApplicationsStatisticsCode.UnderAssessment, organizationStatistics.UnderAssessment.Value);
         if (organizationStatistics.VerifyIdentity.HasValue) statisticsDictionary.Add(ApplicationsStatisticsCode.VerifyIdentity, organizationStatistics.VerifyIdentity.Value);
 
-        return new ApplicationStatisticsQueryResponse { Statistics = statisticsDictionary };
+        return new ApplicationStatisticsResp { Statistics = statisticsDictionary };
     }
 
     public async Task<bool> CheckApplicationDuplicateAsync(SearchApplicationQry searchApplicationQry, CancellationToken cancellationToken)

@@ -4,7 +4,13 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { ApplicationListResponse, ApplicationResponse, ApplicationStatusCode } from 'src/app/api/models';
+import { tap } from 'rxjs/operators';
+import {
+	ApplicationListResponse,
+	ApplicationResponse,
+	ApplicationStatisticsResponse,
+	ApplicationStatusCode,
+} from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import {
@@ -38,73 +44,76 @@ import {
 					</div>
 				</div>
 			</div>
-			<div class="mb-4">
-				<div class="fw-semibold">Active applications <span class="fw-normal">(for the last 365 days)</span></div>
-				<div class="d-flex flex-wrap justify-content-start">
-					<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
-						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
-						<div class="m-2">Verify Identity</div>
-					</div>
-					<div class="d-flex flex-row statistic-card area-green align-items-center mt-2 me-2">
-						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
-						<div class="m-2">In Progress</div>
-					</div>
-					<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
-						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
-						<div class="m-2">Pay Now</div>
-					</div>
-					<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
-						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
-						<div class="m-2">Awaiting<br />Third Party</div>
-					</div>
-					<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
-						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
-						<div class="m-2">Awaiting Applicant</div>
-					</div>
-					<div class="d-flex flex-row statistic-card area-blue align-items-center mt-2 me-2">
-						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
-						<div class="m-2">Under<br />Assessment</div>
-					</div>
-				</div>
-			</div>
 
-			<div class="mb-4">
-				<div class="fw-semibold">Completed applications <span class="fw-normal">(for the last 365 days)</span></div>
-				<div class="d-flex flex-wrap justify-content-start">
-					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
-						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
-						<div class="m-2">Completed - <br />Risk Found</div>
-					</div>
-					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
-						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
-						<div class="m-2">
-							Closed - <br />
-							Judicial Review
+			<ng-container *ngIf="applicationStatistics$ | async">
+				<div class="mb-4">
+					<div class="fw-semibold">Active applications <span class="fw-normal">(for the last 365 days)</span></div>
+					<div class="d-flex flex-wrap justify-content-start">
+						<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
+							<div class="fw-semibold fs-4 m-2 ms-3">{{ applicationStatistics['VerifyIdentity'] }}</div>
+							<div class="m-2">Verify Identity</div>
 						</div>
-					</div>
-					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
-						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
-						<div class="m-2">
-							Closed - <br />
-							No Response
+						<div class="d-flex flex-row statistic-card area-green align-items-center mt-2 me-2">
+							<div class="fw-semibold fs-4 m-2 ms-3">{{ applicationStatistics['InProgress'] }}</div>
+							<div class="m-2">In Progress</div>
 						</div>
-					</div>
-					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
-						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
-						<div class="m-2">
-							Closed - No<br />
-							Applicant Consent
+						<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
+							<div class="fw-semibold fs-4 m-2 ms-3">{{ applicationStatistics['AwaitingPayment'] }}</div>
+							<div class="m-2">Pay Now</div>
 						</div>
-					</div>
-					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
-						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
-						<div class="m-2">
-							Cancelled - By<br />
-							Applicant
+						<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
+							<div class="fw-semibold fs-4 m-2 ms-3">{{ applicationStatistics['AwaitingThirdParty'] }}</div>
+							<div class="m-2">Awaiting<br />Third Party</div>
+						</div>
+						<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
+							<div class="fw-semibold fs-4 m-2 ms-3">{{ applicationStatistics['AwaitingApplicant'] }}</div>
+							<div class="m-2">Awaiting Applicant</div>
+						</div>
+						<div class="d-flex flex-row statistic-card area-blue align-items-center mt-2 me-2">
+							<div class="fw-semibold fs-4 m-2 ms-3">{{ applicationStatistics['UnderAssessment'] }}</div>
+							<div class="m-2">Under<br />Assessment</div>
 						</div>
 					</div>
 				</div>
-			</div>
+
+				<div class="mb-4">
+					<div class="fw-semibold">Completed applications <span class="fw-normal">(for the last 365 days)</span></div>
+					<div class="d-flex flex-wrap justify-content-start">
+						<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
+							<div class="fw-semibold fs-4 m-2 ms-3">{{ applicationStatistics['RiskFound'] }}</div>
+							<div class="m-2">Completed - <br />Risk Found</div>
+						</div>
+						<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
+							<div class="fw-semibold fs-4 m-2 ms-3">{{ applicationStatistics['ClosedJudicialReview'] }}</div>
+							<div class="m-2">
+								Closed - <br />
+								Judicial Review
+							</div>
+						</div>
+						<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
+							<div class="fw-semibold fs-4 m-2 ms-3">{{ applicationStatistics['ClosedNoResponse'] }}</div>
+							<div class="m-2">
+								Closed - <br />
+								No Response
+							</div>
+						</div>
+						<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
+							<div class="fw-semibold fs-4 m-2 ms-3">{{ applicationStatistics['ClosedNoConsent'] }}</div>
+							<div class="m-2">
+								Closed - No<br />
+								Applicant Consent
+							</div>
+						</div>
+						<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
+							<div class="fw-semibold fs-4 m-2 ms-3">{{ applicationStatistics['CancelledByApplicant'] }}</div>
+							<div class="m-2">
+								Cancelled - By<br />
+								Applicant
+							</div>
+						</div>
+					</div>
+				</div>
+			</ng-container>
 
 			<div [formGroup]="formFilter">
 				<div class="row">
@@ -241,7 +250,7 @@ import {
 									aria-label="Pay now"
 									*ngIf="application.status == applicationStatusCodeAll.PaymentPending"
 								>
-									Pay Now <mat-icon iconPositionEnd>chevron_right</mat-icon>
+									<mat-icon>send</mat-icon>Pay Now
 								</a>
 
 								<a
@@ -252,7 +261,7 @@ import {
 									aria-label="Verify Applicant"
 									*ngIf="application.status == applicationStatusCodeAll.ApplicantVerification"
 								>
-									Verify Applicant <mat-icon iconPositionEnd>chevron_right</mat-icon>
+									<mat-icon>send</mat-icon>Verify Applicant
 								</a>
 							</mat-cell>
 						</ng-container>
@@ -334,6 +343,17 @@ export class ApplicationStatusesComponent implements OnInit {
 		private applicationService: ApplicationService,
 		private authenticationService: AuthenticationService
 	) {}
+
+	applicationStatistics!: { [key: string]: number };
+	applicationStatistics$ = this.applicationService
+		.apiOrgsOrgIdApplicationStatisticsGet({
+			orgId: this.authenticationService.loggedInOrgId!,
+		})
+		.pipe(
+			tap((res: ApplicationStatisticsResponse) => {
+				this.applicationStatistics = res.statistics ?? {};
+			})
+		);
 
 	ngOnInit() {
 		this.loadList();
