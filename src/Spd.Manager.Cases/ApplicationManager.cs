@@ -63,6 +63,7 @@ namespace Spd.Manager.Cases
                     throw new ApiException(System.Net.HttpStatusCode.BadRequest, "invalid filtering string.");
                 }
             }
+
             var response = await _applicationInviteRepository.QueryAsync(
                 new ApplicationInviteQuery
                 {
@@ -135,14 +136,14 @@ namespace Spd.Manager.Cases
         }
         public async Task<ApplicationListResponse> Handle(ApplicationListQuery request, CancellationToken ct)
         {
-            if (request.Page < 0) throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Incorrect page number");
-            if (request.PageSize < 1) throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Incorrect page size");
+            AppFilterBy filterBy = GetAppFilterBy(request.Filters, request.OrgId);
+            AppSortBy sortBy = GetAppSortBy(request.Sorts);
 
             var response = await _applicationRepository.QueryAsync(
                 new ApplicationListQry
                 {
-                    FilterBy = new AppFilterBy(request.OrgId, ),
-                    SortBy = new AppSortBy(true, null),
+                    FilterBy = filterBy,
+                    SortBy = sortBy,
                     Paging = new Paging(request.Page, request.PageSize)
                 },
                 ct);
@@ -166,6 +167,46 @@ namespace Spd.Manager.Cases
             return resp;
         }
 
+        private AppFilterBy GetAppFilterBy(string? filters, Guid orgId)
+        {
+            AppFilterBy appFilterBy = new AppFilterBy(orgId);
+            if(string.IsNullOrWhiteSpace(filters)) return appFilterBy;
 
+            //filters string should be like status==AwaitingPayment|AwaitingApplicant,searchText@=str
+            string[] items = filters.Split(',');
+            foreach (string item in items)
+            {
+                string[] strs= item.Split("==");
+                if(strs.Length== 2)
+                {
+                    if (strs[0] == "status")
+                    {
+                        //todo:
+                       // appFilterBy.ApplicationStatus = new List<ApplicationPortalStatusCode> { ApplicationPortalStatusCode.AwaitingApplicant, ApplicationPortalStatusCode.AwaitingPayment};
+                    }
+                }
+                else
+                {
+                    if(strs.Length== 1)
+                    {
+                        string[] s = strs[0].Split("@=");
+                        if(s.Length== 2 && s[0]=="searchText")
+                        {
+                            appFilterBy.NameOrEmailOrAppIdContains = s[1];
+                        }
+                    }
+                }
+            }
+            return appFilterBy;
+        }
+
+        private AppSortBy GetAppSortBy(string? sortby)
+        {
+            AppSortBy appSortBy = new AppSortBy();
+            if (string.IsNullOrWhiteSpace(sortby)) return appSortBy;
+
+ 
+            return appSortBy;
+        }
     }
 }

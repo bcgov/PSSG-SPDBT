@@ -15,7 +15,11 @@ public record ApplicationListQry
     public AppSortBy? SortBy { get; set; } //null means no sorting
     public Paging Paging { get; set; } = null!;
 }
-public record AppFilterBy(Guid OrgId, IEnumerable<StatusFilter> ApplicationStatus, string? NameOrEmailOrAppIdContains = null);
+public record AppFilterBy(Guid OrgId)
+{
+    public IEnumerable<StatusFilter>? ApplicationStatus { get; set; }
+    public string? NameOrEmailOrAppIdContains { get; set; }
+}
 public record AppSortBy(bool? SubmittedDateDesc = true, bool? NameDesc = null, bool? CompanyNameDesc = null);
 public record StatusFilter(string appStatus, string? caseStatus, string? caseSubStatus);
 
