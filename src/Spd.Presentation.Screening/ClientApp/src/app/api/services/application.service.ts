@@ -16,6 +16,7 @@ import { ApplicationInviteListResponse } from '../models/application-invite-list
 import { ApplicationInvitesCreateRequest } from '../models/application-invites-create-request';
 import { ApplicationInvitesCreateResponse } from '../models/application-invites-create-response';
 import { ApplicationListResponse } from '../models/application-list-response';
+import { ApplicationStatisticsResponse } from '../models/application-statistics-response';
 
 @Injectable({
   providedIn: 'root',
@@ -168,6 +169,10 @@ export class ApplicationService extends BaseService {
   static readonly ApiOrgsOrgIdApplicationInvitesApplicationInviteIdDeletePath = '/api/orgs/{orgId}/application-invites/{applicationInviteId}';
 
   /**
+   * remove the invitation for a organization.
+   *
+   *
+   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `apiOrgsOrgIdApplicationInvitesApplicationInviteIdDelete()` instead.
    *
@@ -199,6 +204,10 @@ export class ApplicationService extends BaseService {
   }
 
   /**
+   * remove the invitation for a organization.
+   *
+   *
+   *
    * This method provides access to only to the response body.
    * To access the full response (for headers, for example), `apiOrgsOrgIdApplicationInvitesApplicationInviteIdDelete$Response()` instead.
    *
@@ -346,6 +355,65 @@ export class ApplicationService extends BaseService {
 
     return this.apiOrgsOrgIdApplicationsGet$Response(params).pipe(
       map((r: StrictHttpResponse<ApplicationListResponse>) => r.body as ApplicationListResponse)
+    );
+  }
+
+  /**
+   * Path part for operation apiOrgsOrgIdApplicationStatisticsGet
+   */
+  static readonly ApiOrgsOrgIdApplicationStatisticsGetPath = '/api/orgs/{orgId}/application-statistics';
+
+  /**
+   * return the application statistics for a particular organization.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiOrgsOrgIdApplicationStatisticsGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiOrgsOrgIdApplicationStatisticsGet$Response(params: {
+    orgId: string;
+    context?: HttpContext
+  }
+): Observable<StrictHttpResponse<ApplicationStatisticsResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdApplicationStatisticsGetPath, 'get');
+    if (params) {
+      rb.path('orgId', params.orgId, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: params?.context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<ApplicationStatisticsResponse>;
+      })
+    );
+  }
+
+  /**
+   * return the application statistics for a particular organization.
+   *
+   *
+   *
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `apiOrgsOrgIdApplicationStatisticsGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiOrgsOrgIdApplicationStatisticsGet(params: {
+    orgId: string;
+    context?: HttpContext
+  }
+): Observable<ApplicationStatisticsResponse> {
+
+    return this.apiOrgsOrgIdApplicationStatisticsGet$Response(params).pipe(
+      map((r: StrictHttpResponse<ApplicationStatisticsResponse>) => r.body as ApplicationStatisticsResponse)
     );
   }
 

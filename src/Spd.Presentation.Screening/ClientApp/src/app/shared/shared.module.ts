@@ -17,6 +17,7 @@ import { OrgSelectionModalComponent } from './components/org-selection-modal.com
 import { StepTitleComponent } from './components/step-title.component';
 import { DefaultPipe } from './pipes/default.pipe';
 import { FullnamePipe } from './pipes/fullname.pipe';
+import { YesNoPipe } from './pipes/yes-no.pipe';
 
 const SHARED_COMPONENTS = [
 	HeaderComponent,
@@ -30,6 +31,7 @@ const SHARED_COMPONENTS = [
 	StepTitleComponent,
 	DefaultPipe,
 	FullnamePipe,
+	YesNoPipe,
 	CaptchaV2Component,
 ];
 

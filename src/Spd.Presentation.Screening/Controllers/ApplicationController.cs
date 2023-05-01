@@ -67,7 +67,12 @@ namespace Spd.Presentation.Screening.Controllers
             return await _mediator.Send(new ApplicationInviteListQuery(orgId, SearchContains: filterValue, (int)page, (int)pageSize));
         }
 
-
+        /// <summary>
+        /// remove the invitation for a organization
+        /// </summary>
+        /// <param name="applicationInviteId"></param>
+        /// <param name="orgId"></param>
+        /// <returns></returns>
         [Route("api/orgs/{orgId}/application-invites/{applicationInviteId}")]
         [HttpDelete]
         public async Task<ActionResult> DeleteAsync([FromRoute] Guid applicationInviteId, [FromRoute] Guid orgId)
@@ -112,6 +117,18 @@ namespace Spd.Presentation.Screening.Controllers
             page = (page == null || page < 0) ? 0 : page;
             pageSize = (pageSize == null || pageSize == 0 || pageSize > 100) ? 10 : pageSize;
             return await _mediator.Send(new ApplicationListQuery(orgId, (int)page, (int)pageSize));
+        }
+
+        /// <summary>
+        /// return the application statistics for a particular organization.
+        /// </summary>
+        /// <param name="orgId"></param>
+        /// <returns></returns>
+        [Route("api/orgs/{orgId}/application-statistics")]
+        [HttpGet]
+        public async Task<ApplicationStatisticsResponse> GetAppStatsList([FromRoute] Guid orgId)
+        {
+            return await _mediator.Send(new ApplicationStatisticsRequest(orgId));
         }
     }
 }
