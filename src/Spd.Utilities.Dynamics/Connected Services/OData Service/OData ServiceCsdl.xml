@@ -19213,56 +19213,57 @@
         <Key>
           <PropertyRef Name="spd_applicationid" />
         </Key>
+        <Property Name="spd_phonenumber" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_name" Type="Edm.String" Unicode="false" />
+        <Property Name="_spd_submittedby_value" Type="Edm.Guid" />
+        <Property Name="_owningteam_value" Type="Edm.Guid" />
+        <Property Name="spd_lastname" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_consent" Type="Edm.Boolean" />
+        <Property Name="spd_addressline2" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_emailaddress1" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_middlename2" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_bcdriverslicense" Type="Edm.String" Unicode="false" />
+        <Property Name="statuscode" Type="Edm.Int32" />
+        <Property Name="spd_middlename1" Type="Edm.String" Unicode="false" />
+        <Property Name="_spd_servicetypeid_value" Type="Edm.Guid" />
+        <Property Name="spd_province" Type="Edm.String" Unicode="false" />
+        <Property Name="_ownerid_value" Type="Edm.Guid" />
+        <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
+        <Property Name="spd_declaration" Type="Edm.Boolean" />
+        <Property Name="spd_dateofbirth" Type="Edm.Date" />
+        <Property Name="spd_declarationdate" Type="Edm.DateTimeOffset" />
         <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
         <Property Name="spd_postalcode" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_province" Type="Edm.String" Unicode="false" />
-        <Property Name="_createdby_value" Type="Edm.Guid" />
-        <Property Name="spd_firstname" Type="Edm.String" Unicode="false" />
-        <Property Name="_spd_servicetypeid_value" Type="Edm.Guid" />
-        <Property Name="spd_consent" Type="Edm.Boolean" />
-        <Property Name="_spd_applicantid_value" Type="Edm.Guid" />
-        <Property Name="_owninguser_value" Type="Edm.Guid" />
-        <Property Name="spd_bcdriverslicense" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_fullname" Type="Edm.String" Unicode="false" />
-        <Property Name="_modifiedby_value" Type="Edm.Guid" />
-        <Property Name="importsequencenumber" Type="Edm.Int32" />
-        <Property Name="_createdonbehalfby_value" Type="Edm.Guid" />
+        <Property Name="spd_submittedon" Type="Edm.DateTimeOffset" />
         <Property Name="spd_city" Type="Edm.String" Unicode="false" />
-        <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
-        <Property Name="createdon" Type="Edm.DateTimeOffset" />
-        <Property Name="statuscode" Type="Edm.Int32" />
-        <Property Name="spd_addressline2" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_lastname" Type="Edm.String" Unicode="false" />
-        <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
-        <Property Name="spd_country" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_identityconfirmed" Type="Edm.Boolean" />
-        <Property Name="spd_applicationid" Type="Edm.Guid" />
-        <Property Name="spd_birthplace" Type="Edm.String" Unicode="false" />
-        <Property Name="_modifiedonbehalfby_value" Type="Edm.Guid" />
-        <Property Name="spd_middlename1" Type="Edm.String" Unicode="false" />
-        <Property Name="statecode" Type="Edm.Int32" />
+        <Property Name="_createdby_value" Type="Edm.Guid" />
         <Property Name="versionnumber" Type="Edm.Int64" />
-        <Property Name="spd_declaration" Type="Edm.Boolean" />
-        <Property Name="spd_payer" Type="Edm.Int32" />
-        <Property Name="spd_origin" Type="Edm.Int32" />
-        <Property Name="spd_addressline1" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_contractedcompanyname" Type="Edm.String" Unicode="false" />
+        <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
+        <Property Name="spd_casestatus" Type="Edm.String" Unicode="false" />
+        <Property Name="createdon" Type="Edm.DateTimeOffset" />
+        <Property Name="_modifiedby_value" Type="Edm.Guid" />
+        <Property Name="spd_fullname" Type="Edm.String" Unicode="false" />
         <Property Name="spd_applicantsposition" Type="Edm.String" Unicode="false" />
         <Property Name="_spd_organizationid_value" Type="Edm.Guid" />
-        <Property Name="spd_emailaddress1" Type="Edm.String" Unicode="false" />
-        <Property Name="_owningteam_value" Type="Edm.Guid" />
-        <Property Name="spd_declarationdate" Type="Edm.DateTimeOffset" />
-        <Property Name="spd_submittedon" Type="Edm.DateTimeOffset" />
-        <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
-        <Property Name="_owningbusinessunit_value" Type="Edm.Guid" />
-        <Property Name="spd_dateofbirth" Type="Edm.Date" />
-        <Property Name="_spd_ministry_value" Type="Edm.Guid" />
-        <Property Name="_ownerid_value" Type="Edm.Guid" />
-        <Property Name="spd_name" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_casestatus" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_phonenumber" Type="Edm.String" Unicode="false" />
         <Property Name="spd_employeeid" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_middlename2" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_birthplace" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_identityconfirmed" Type="Edm.Boolean" />
+        <Property Name="_owningbusinessunit_value" Type="Edm.Guid" />
+        <Property Name="_spd_ministry_value" Type="Edm.Guid" />
+        <Property Name="spd_addressline1" Type="Edm.String" Unicode="false" />
+        <Property Name="_createdonbehalfby_value" Type="Edm.Guid" />
+        <Property Name="_owninguser_value" Type="Edm.Guid" />
+        <Property Name="spd_country" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_payer" Type="Edm.Int32" />
+        <Property Name="statecode" Type="Edm.Int32" />
+        <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
+        <Property Name="spd_applicationid" Type="Edm.Guid" />
+        <Property Name="_spd_applicantid_value" Type="Edm.Guid" />
+        <Property Name="spd_origin" Type="Edm.Int32" />
+        <Property Name="importsequencenumber" Type="Edm.Int32" />
+        <Property Name="spd_contractedcompanyname" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_firstname" Type="Edm.String" Unicode="false" />
+        <Property Name="_modifiedonbehalfby_value" Type="Edm.Guid" />
         <NavigationProperty Name="createdby" Type="mscrm.systemuser" Nullable="false" Partner="lk_spd_application_createdby">
           <ReferentialConstraint Property="_createdby_value" ReferencedProperty="systemuserid" />
         </NavigationProperty>
@@ -19312,6 +19313,9 @@
         <NavigationProperty Name="spd_spd_application_spd_payment" Type="Collection(mscrm.spd_payment)" Partner="spd_ApplicationId" />
         <NavigationProperty Name="spd_Ministry" Type="mscrm.spd_ministry" Nullable="false" Partner="spd_Application_Ministry">
           <ReferentialConstraint Property="_spd_ministry_value" ReferencedProperty="spd_ministryid" />
+        </NavigationProperty>
+        <NavigationProperty Name="spd_SubmittedBy" Type="mscrm.spd_portaluser" Nullable="false" Partner="spd_PortalUser_Application_SubmittedBy">
+          <ReferentialConstraint Property="_spd_submittedby_value" ReferencedProperty="spd_portaluserid" />
         </NavigationProperty>
       </EntityType>
       <EntityType Name="spd_cornetnotification" BaseType="mscrm.crmbaseentity">
@@ -20034,6 +20038,7 @@
         </NavigationProperty>
         <NavigationProperty Name="spd_PortalUser_GenericUpload_UploadedBy" Type="Collection(mscrm.spd_genericupload)" Partner="spd_UploadedBy" />
         <NavigationProperty Name="spd_spd_role_spd_portaluser" Type="Collection(mscrm.spd_role)" Partner="spd_spd_role_spd_portaluser" />
+        <NavigationProperty Name="spd_PortalUser_Application_SubmittedBy" Type="Collection(mscrm.spd_application)" Partner="spd_SubmittedBy" />
       </EntityType>
       <EntityType Name="spd_primebatch" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -35010,6 +35015,7 @@
           <NavigationPropertyBinding Path="spd_ServiceTypeId" Target="spd_servicetypes" />
           <NavigationPropertyBinding Path="spd_spd_application_spd_payment" Target="spd_payments" />
           <NavigationPropertyBinding Path="spd_Ministry" Target="spd_ministries" />
+          <NavigationPropertyBinding Path="spd_SubmittedBy" Target="spd_portalusers" />
         </EntitySet>
         <EntitySet Name="spd_cornetnotifications" EntityType="Microsoft.Dynamics.CRM.spd_cornetnotification">
           <NavigationPropertyBinding Path="createdby" Target="systemusers" />
@@ -35231,6 +35237,7 @@
           <NavigationPropertyBinding Path="spd_IdentityId" Target="spd_identities" />
           <NavigationPropertyBinding Path="spd_PortalUser_GenericUpload_UploadedBy" Target="spd_genericuploads" />
           <NavigationPropertyBinding Path="spd_spd_role_spd_portaluser" Target="spd_roles" />
+          <NavigationPropertyBinding Path="spd_PortalUser_Application_SubmittedBy" Target="spd_applications" />
         </EntitySet>
         <EntitySet Name="spd_primebatchs" EntityType="Microsoft.Dynamics.CRM.spd_primebatch">
           <NavigationPropertyBinding Path="createdby" Target="systemusers" />

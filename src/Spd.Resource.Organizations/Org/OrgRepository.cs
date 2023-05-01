@@ -38,7 +38,7 @@ namespace Spd.Resource.Organizations.Org
 
         private async Task<OrgManageResult?> OrgUpdateAsync(OrgUpdateCmd updateOrgCmd, CancellationToken ct)
         {
-            var org = GetOrgById(updateOrgCmd.Org.Id);
+            var org = await _dynaContext.GetOrgById(updateOrgCmd.Org.Id, ct);
             _mapper.Map(updateOrgCmd.Org, org);
 
             _dynaContext.UpdateObject(org);
@@ -86,30 +86,21 @@ namespace Spd.Resource.Organizations.Org
 
         private async Task<OrgQryResult?> GetOrgByOrgGuidAsync(OrgByOrgGuidQry query, CancellationToken ct)
         {
-            var account = _dynaContext.accounts
+            var account = await _dynaContext.accounts
                 .Where(a => a.spd_orgguid == query.OrgGuid.ToString())
                 .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync(ct);
             if (account == null) return null;
             return new OrgQryResult(_mapper.Map<OrgResult>(account));
         }
 
         private async Task<OrgQryResult?> GetOrgByOrgIdAsync(OrgByIdQry query, CancellationToken ct)
         {
-            var org = GetOrgById(query.OrgId);
+            var org = await _dynaContext.GetOrgById(query.OrgId, ct);
+            if (org?.statecode == DynamicsConstants.StateCode_Inactive)
+                throw new InactiveException(System.Net.HttpStatusCode.BadRequest, $"Organization {query.OrgId} is inactive");
             var response = _mapper.Map<OrgResult>(org);
             return new OrgQryResult(response);
-        }
-
-        private account? GetOrgById(Guid organizationId)
-        {
-            var account = _dynaContext.accounts
-                .Where(a => a.accountid == organizationId)
-                .FirstOrDefault();
-
-            if (account?.statecode == DynamicsConstants.StateCode_Inactive)
-                throw new InactiveException(System.Net.HttpStatusCode.BadRequest, $"Organization {organizationId} is inactive");
-            return account;
         }
     }
 }
