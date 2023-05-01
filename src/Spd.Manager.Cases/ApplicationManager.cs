@@ -49,19 +49,31 @@ namespace Spd.Manager.Cases
         }
         public async Task<ApplicationInviteListResponse> Handle(ApplicationInviteListQuery request, CancellationToken ct)
         {
-            if (request.Page < 0) throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Incorrect page number");
-            if (request.PageSize < 1) throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Incorrect page size");
-
+            string? filterValue = null;
+            if (!string.IsNullOrWhiteSpace(request.Filters))
+            {
+                try
+                {
+                    var strs = request.Filters.Split("@=");
+                    if (strs[0].Equals("searchText", StringComparison.InvariantCultureIgnoreCase))
+                        filterValue = strs[1];
+                }
+                catch
+                {
+                    throw new ApiException(System.Net.HttpStatusCode.BadRequest, "invalid filtering string.");
+                }
+            }
             var response = await _applicationInviteRepository.QueryAsync(
                 new ApplicationInviteQuery
                 {
-                    FilterBy = new AppInviteFilterBy(request.OrgId, EmailOrNameContains: request.SearchContains),
-                    SortBy = new AppInviteSortBy(SubmittedDateDesc : true),
+                    FilterBy = new AppInviteFilterBy(request.OrgId, EmailOrNameContains: filterValue),
+                    SortBy = new AppInviteSortBy(SubmittedDateDesc: true),
                     Paging = new Paging(request.Page, request.PageSize)
                 },
                 ct);
             return _mapper.Map<ApplicationInviteListResponse>(response);
         }
+
         private async Task<IEnumerable<ApplicationInviteDuplicateResponse>> CheckDuplicateAppInvite(ApplicationInvitesCreateRequest request, Guid orgId, CancellationToken cancellationToken)
         {
             List<ApplicationInviteDuplicateResponse> resp = new List<ApplicationInviteDuplicateResponse>();

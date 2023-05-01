@@ -37,7 +37,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <summary>
         /// get the active application invites list.
         /// support wildcard search for email and name, it will search email or name contains str.
-        /// sample: /application-invites?filter=searchText@=str
+        /// sample: /application-invites?filters=searchText@=str
         /// </summary>
         /// <param name="orgId"></param>
         /// <param name="filters"></param>
@@ -50,21 +50,8 @@ namespace Spd.Presentation.Screening.Controllers
         {
             page = (page == null || page < 0) ? 0 : page;
             pageSize = (pageSize == null || pageSize == 0 || pageSize > 100) ? 10 : pageSize;
-            string? filterValue = null;
-            if (!string.IsNullOrWhiteSpace(filters))
-            {
-                try
-                {
-                    var strs = filters.Split("@=");
-                    if (strs[0].Equals("searchText", StringComparison.InvariantCultureIgnoreCase))
-                        filterValue = strs[1];
-                }
-                catch
-                {
-                    throw new ApiException(System.Net.HttpStatusCode.BadRequest, "invalid filtering string.");
-                }
-            }
-            return await _mediator.Send(new ApplicationInviteListQuery(orgId, SearchContains: filterValue, (int)page, (int)pageSize));
+
+            return await _mediator.Send(new ApplicationInviteListQuery(orgId, Filters: filters, (int)page, (int)pageSize));
         }
         /// <summary>
         /// create application. if checkDuplicate is true, it will check if there is existing duplicated applications 
@@ -82,10 +69,10 @@ namespace Spd.Presentation.Screening.Controllers
 
         /// <summary>
         /// return all applications belong to the organization.
-        /// sort: submittedon, firstname and lastname, companyname 
-        /// filters: status 
+        /// sort: submittedon, firstname and lastname, companyname , add - in front of name means descending.
+        /// filters: status, use | to filter multiple status : if no filters specified, endpoint returns all applications.
         /// search:wild card search in name, email and caseID
-        /// sample: api/orgs/4165bdfe-7cb4-ed11-b83e-00505683fbf4/applications?filters=status=Pending|completed&sorts=firstname&page=1&pageSize=15
+        /// sample: api/orgs/4165bdfe-7cb4-ed11-b83e-00505683fbf4/applications?filters=status==AwaitingPayment|AwaitingApplicant,searchText@=str&sorts=firstname,-submittedOn&page=1&pageSize=15
         /// </summary>
         /// <param name="orgId"></param>
         /// <param name="filters"></param>
@@ -97,16 +84,15 @@ namespace Spd.Presentation.Screening.Controllers
         [HttpGet]
         public async Task<ApplicationListResponse> GetList([FromRoute] Guid orgId, [FromQuery] string? filters, [FromQuery] string? sorts, [FromQuery] uint? page, [FromQuery] uint? pageSize)
         {
-            //todo, when we do filtering and sorting, will complete this.
-            string f = filters;
-            string s = sorts;
-
             page = (page == null || page < 0) ? 0 : page;
             pageSize = (pageSize == null || pageSize == 0 || pageSize > 100) ? 10 : pageSize;
-            List<ApplicationPortalStatusCode> statusCodes = new() { ApplicationPortalStatusCode.AwaitingPayment, ApplicationPortalStatusCode.InProgress };
-            string searchtext = "str";
-            string sortby = "submittedon";
-            return await _mediator.Send(new ApplicationListQuery(orgId, (int)page, (int)pageSize, statusCodes.AsEnumerable(), SearchContains: searchtext, sortby));
+            if (string.IsNullOrWhiteSpace(sorts)) sorts = "-submittedOn";
+            return await _mediator.Send(
+                new ApplicationListQuery(OrgId: orgId, 
+                    Page: (int)page, 
+                    PageSize: (int)pageSize,
+                    Filters: filters, 
+                    Sorts: sorts));
         }
     }
 }
