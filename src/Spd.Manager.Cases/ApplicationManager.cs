@@ -74,6 +74,7 @@ namespace Spd.Manager.Cases
         public async Task<ApplicationCreateResponse> Handle(ApplicationCreateCommand request, CancellationToken ct)
         {
             ApplicationCreateResponse result = new();
+            request.ApplicationCreateRequest.OrgId = request.OrgId;
             if (request.ApplicationCreateRequest.RequireDuplicateCheck)
             {
                 result = await CheckDuplicate(request.ApplicationCreateRequest, ct);
@@ -85,6 +86,8 @@ namespace Spd.Manager.Cases
             }
 
             var cmd = _mapper.Map<ApplicationCreateCmd>(request.ApplicationCreateRequest);
+            cmd.OrgId = request.OrgId;
+            cmd.CreatedByUserId = request.UserId;
             Guid? applicationId = await _applicationRepository.AddApplicationAsync(cmd, ct);
             if (applicationId.HasValue)
             {

@@ -86,8 +86,9 @@ namespace Spd.Presentation.Screening.Controllers
         [HttpPost]
         public async Task<ApplicationCreateResponse> AddApplication([FromBody][Required] ApplicationCreateRequest applicationCreateRequest, [FromRoute] Guid orgId)
         {
-            applicationCreateRequest.OrgId = orgId;
-            return await _mediator.Send(new ApplicationCreateCommand(applicationCreateRequest));
+            var userId = this.HttpContext.User.GetUserId();
+            if (userId == null) throw new ApiException(System.Net.HttpStatusCode.Unauthorized);
+            return await _mediator.Send(new ApplicationCreateCommand(applicationCreateRequest, orgId, Guid.Parse(userId)));
         }
 
         /// <summary>
