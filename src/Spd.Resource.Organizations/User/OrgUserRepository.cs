@@ -47,7 +47,7 @@ namespace Spd.Resource.Organizations.User
             if (createUserCmd.User.OrganizationId == null)
                 throw new ApiException(HttpStatusCode.BadRequest, "Organization cannot be null");
 
-            var organization = GetOrganizationById((Guid)createUserCmd.User.OrganizationId);
+            var organization = _dynaContext.GetOrgById((Guid)createUserCmd.User.OrganizationId, cancellationToken);
 
             // create user 
             spd_portaluser user = _mapper.Map<spd_portaluser>(createUserCmd.User);
@@ -76,7 +76,7 @@ namespace Spd.Resource.Organizations.User
 
         private async Task<OrgUserManageResult> UpdateUserAsync(UserUpdateCmd updateUserCmd, CancellationToken cancellationToken)
         {
-            var user = GetUserById(updateUserCmd.Id);
+            var user = await GetUserById(updateUserCmd.Id, cancellationToken);
             _mapper.Map(updateUserCmd.User, user);
 
             spd_role existingRole = user.spd_spd_role_spd_portaluser.First();
@@ -101,7 +101,7 @@ namespace Spd.Resource.Organizations.User
 
         private async Task<OrgUserManageResult> DeleteUserAsync(Guid userId, CancellationToken cancellationToken)
         {
-            var user = GetUserById(userId);
+            var user = await GetUserById(userId, cancellationToken);
             if (user._spd_identityid_value.HasValue)
             {
                 // Inactivate the user
@@ -119,12 +119,12 @@ namespace Spd.Resource.Organizations.User
             }
 
             await _dynaContext.SaveChangesAsync(cancellationToken);
-            return new OrgUserManageResult(null);
+            return new OrgUserManageResult();
         }
 
         private async Task<OrgUserResult> GetUserAsync(Guid userId, CancellationToken ct)
         {
-            var user = GetUserById(userId);
+            var user = await GetUserById(userId, ct); 
             return new OrgUserResult(_mapper.Map<UserResult>(user));
         }
 
@@ -133,9 +133,9 @@ namespace Spd.Resource.Organizations.User
             IQueryable<spd_portaluser> users = _dynaContext.spd_portalusers
                 .Expand(u => u.spd_spd_role_spd_portaluser)
                 .Expand(u => u.spd_IdentityId)
-                .Where(u=>u.statecode==DynamicsConstants.StateCode_Active);
+                .Where(u => u.statecode == DynamicsConstants.StateCode_Active);
 
-            if(organizationId != null)
+            if (organizationId != null)
                 users = users.Where(u => u._spd_organizationid_value == organizationId);
             if (identityId != null)
                 users = users.Where(a => a._spd_identityid_value == identityId);
@@ -153,17 +153,6 @@ namespace Spd.Resource.Organizations.User
             return new OrgUsersResult(_mapper.Map<IEnumerable<UserResult>>(users));
         }
 
-        private account? GetOrganizationById(Guid organizationId)
-        {
-            var account = _dynaContext.accounts
-                .Where(a => a.accountid == organizationId)
-                .FirstOrDefault();
-
-            if (account?.statecode == DynamicsConstants.StateCode_Inactive)
-                throw new InactiveException(HttpStatusCode.BadRequest, $"Organization {organizationId} is inactive");
-            return account;
-        }
-
         private spd_portalinvitation? GetPortalInvitationByUserId(Guid userId)
         {
             var spd_portalinvitation = _dynaContext.spd_portalinvitations
@@ -173,15 +162,15 @@ namespace Spd.Resource.Organizations.User
             return spd_portalinvitation;
         }
 
-        private spd_portaluser GetUserById(Guid userId)
+        private async Task<spd_portaluser> GetUserById(Guid userId, CancellationToken ct)
         {
             try
             {
-                var user = _dynaContext.spd_portalusers
+                var user = await _dynaContext.spd_portalusers
                     .Expand(m => m.spd_spd_role_spd_portaluser)
                     .Expand(m => m.spd_IdentityId)
                     .Where(a => a.spd_portaluserid == userId)
-                    .FirstOrDefault();
+                    .FirstOrDefaultAsync(ct);
 
                 if (user?.statecode == DynamicsConstants.StateCode_Inactive)
                     throw new InactiveException(HttpStatusCode.BadRequest, $"User {userId} is inactive");
