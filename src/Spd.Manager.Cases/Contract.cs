@@ -18,7 +18,7 @@ namespace Spd.Manager.Cases
     public record ApplicationInviteListQuery(Guid OrgId, string? Filters = null, int Page = 1, int PageSize = 10) : IRequest<ApplicationInviteListResponse>;
     public record ApplicationInviteDeleteCommand(Guid OrgId, Guid ApplicationInviteId) : IRequest<Unit>;
     public record ApplicationCreateCommand(ApplicationCreateRequest ApplicationCreateRequest, Guid OrgId, Guid UserId) : IRequest<ApplicationCreateResponse>;
-    public record ApplicationListQuery(Guid OrgId, int Page, int PageSize, string? Filters, string? SearchContains, string? Sorts) : IRequest<ApplicationListResponse>;
+    public record ApplicationListQuery(Guid OrgId, int Page, int PageSize, string? Filters, string? Sorts) : IRequest<ApplicationListResponse>;
 
     //application invites
     public record ApplicationInvitesCreateRequest

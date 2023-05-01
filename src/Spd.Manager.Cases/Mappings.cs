@@ -22,7 +22,7 @@ namespace Spd.Manager.Cases
             CreateMap<ApplicationCreateRequest, ApplicationCreateCmd>();
             CreateMap<AliasCreateRequest, AliasCreateCmd>();
             CreateMap<ApplicationResult, ApplicationResponse>()
-                .ForMember(d => d.Status, opt => opt.MapFrom(s => GetApplicationPortalStatus(s.ApplicationStatus, s.CaseStatus, s.CaseSubStatus)));
+                .ForMember(d => d.Status, opt => opt.MapFrom(s => s.ApplicationPortalStatus));
             CreateMap<ApplicationListResp, ApplicationListResponse>();
             CreateMap<PaginationResp, PaginationResponse>();
             CreateMap<ApplicationInviteDeleteCommand, ApplicationInviteDeleteCmd>();

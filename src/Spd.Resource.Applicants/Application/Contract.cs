@@ -59,6 +59,7 @@ public record ApplicationCreateCmd
     public bool? HaveVerifiedIdentity { get; set; }
     public List<AliasCreateCmd> Aliases { get; set; }
     public Guid CreatedByUserId { get; set; }
+    public PayerPreferenceTypeCode PayeeType { get; set; }
 }
 public record AliasCreateCmd
 {
@@ -81,7 +82,7 @@ public record ApplicationResult
     public string? JobTitle { get; set; }
     public PayerPreferenceTypeCode? PaidBy { get; set; }
     public string? ContractedCompanyName { get; set; }
-    public string ApplicationStatus { get; set; } = null!;
+    public string ApplicationPortalStatus { get; set; } = null!;
     public string? CaseStatus { get; set; }
     public string? CaseSubStatus { get; set; }
     public bool? HaveVerifiedIdentity { get; set; }

@@ -67,9 +67,7 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_applicationid))
             .ForMember(d => d.OrgId, opt => opt.MapFrom(s => s._spd_organizationid_value))
             .ForMember(d => d.ApplicationNumber, opt => opt.MapFrom(s => s.spd_name))
-            .ForMember(d => d.ApplicationStatus, opt => opt.MapFrom(s => s.statuscode == null ? string.Empty : ((ApplicationStatus)s.statuscode).ToString()))
-            .ForMember(d => d.CaseStatus, opt => opt.MapFrom(s => s.spd_casestatus))
-            //.ForMember(d => d.CaseSubStatus, opt => opt.MapFrom(s => s.spd_casesubstatus)) //todo: add when dynamics is ready.
+            .ForMember(d => d.ApplicationPortalStatus, opt => opt.MapFrom(s => s.statuscode == null ? string.Empty : ((ApplicationStatus)s.statuscode).ToString()))
             .ForMember(d => d.GivenName, opt => opt.MapFrom(s => s.spd_firstname))
             .ForMember(d => d.MiddleName1, opt => opt.MapFrom(s => s.spd_middlename1))
             .ForMember(d => d.MiddleName2, opt => opt.MapFrom(s => s.spd_middlename2))
@@ -79,8 +77,7 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.spd_emailaddress1))
             .ForMember(d => d.ContractedCompanyName, opt => opt.MapFrom(s => s.spd_contractedcompanyname))
             .ForMember(d => d.CreatedOn, opt => opt.MapFrom(s => s.createdon))
-            .ForMember(d => d.HaveVerifiedIdentity, opt => opt.MapFrom(s => s.spd_identityconfirmed))
-            .ForMember(d => d.Status, opt => opt.MapFrom(s => s.statuscode == null ? string.Empty : ((ApplicationActiveStatus)s.statuscode).ToString()));
+            .ForMember(d => d.HaveVerifiedIdentity, opt => opt.MapFrom(s => s.spd_identityconfirmed));
         }
         private static string? GetPaidBy(int? code)
         {
