@@ -1,5 +1,6 @@
 using FluentValidation;
 using MediatR;
+using Spd.Resource.Applicants.Application;
 using System.ComponentModel;
 
 namespace Spd.Manager.Cases
@@ -11,6 +12,7 @@ namespace Spd.Manager.Cases
         public Task<Unit> Handle(ApplicationInviteDeleteCommand request, CancellationToken ct);
         public Task<ApplicationListResponse> Handle(ApplicationListQuery request, CancellationToken ct);
         public Task<ApplicationCreateResponse> Handle(ApplicationCreateCommand request, CancellationToken ct);
+        public Task<ApplicationStatisticsResponse> Handle(ApplicationStatisticsRequest request, CancellationToken ct);
 
     }
 
@@ -57,6 +59,7 @@ namespace Spd.Manager.Cases
         public DateTimeOffset CreatedOn { get; set; }
         public ApplicationInviteStatusCode Status { get; set; }
         public string? ErrorMsg { get; set; }
+        public bool? Viewed { get; set; }
     }
 
     //application
@@ -98,7 +101,6 @@ namespace Spd.Manager.Cases
         public string? MiddleName1 { get; set; }
         public string? MiddleName2 { get; set; }
         public string? Surname { get; set; }
-
     }
     public class ApplicationCreateResponse
     {
@@ -112,6 +114,11 @@ namespace Spd.Manager.Cases
         public int? FollowUpBusinessDays { get; set; }
         public IEnumerable<ApplicationResponse> Applications { get; set; } = Array.Empty<ApplicationResponse>();
         public PaginationResponse Pagination { get; set; } = null!;
+    }
+    public record ApplicationStatisticsRequest(Guid OrganizationId) : IRequest<ApplicationStatisticsResponse>;
+    public record ApplicationStatisticsResponse
+    {
+        public IReadOnlyDictionary<ApplicationsStatisticsCode, int> Statistics { get; set; } = new Dictionary<ApplicationsStatisticsCode, int>();
     }
 
     public record ApplicationResponse : Application

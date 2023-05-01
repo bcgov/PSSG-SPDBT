@@ -13,6 +13,7 @@ namespace Spd.Manager.Cases
         IRequestHandler<ApplicationListQuery, ApplicationListResponse>,
         IRequestHandler<ApplicationInviteListQuery, ApplicationInviteListResponse>,
         IRequestHandler<ApplicationInviteDeleteCommand, Unit>,
+        IRequestHandler<ApplicationStatisticsRequest, ApplicationStatisticsResponse>,
         IApplicationManager
     {
         private readonly IApplicationRepository _applicationRepository;
@@ -157,7 +158,16 @@ namespace Spd.Manager.Cases
 
             return _mapper.Map<ApplicationListResponse>(response);
         }
-        private async Task<ApplicationCreateResponse> CheckDuplicateApp(ApplicationCreateRequest request, CancellationToken ct)
+
+        public async Task<ApplicationStatisticsResponse> Handle(ApplicationStatisticsRequest request, CancellationToken ct)
+        {
+            var qry = _mapper.Map<ApplicationStatisticsQry>(request);
+            var response = await _applicationRepository.QueryApplicationStatisticsAsync(qry, ct);
+
+            return _mapper.Map<ApplicationStatisticsResponse>(response);
+        }
+
+        private async Task<IEnumerable<ApplicationInviteDuplicateResponse>> CheckDuplicates(ApplicationInvitesCreateRequest request, Guid orgId, CancellationToken cancellationToken)
         {
             ApplicationCreateResponse resp = new ApplicationCreateResponse();
 
@@ -172,48 +182,6 @@ namespace Spd.Manager.Cases
             }
 
             return resp;
-        }
-
-        private AppFilterBy GetAppFilterBy(string? filters, Guid orgId)
-        {
-            AppFilterBy appFilterBy = new AppFilterBy(orgId);
-            if(string.IsNullOrWhiteSpace(filters)) return appFilterBy;
-
-            //filters string should be like status==AwaitingPayment|AwaitingApplicant,searchText@=str
-            string[] items = filters.Split(',');
-            foreach (string item in items)
-            {
-                string[] strs= item.Split("==");
-                if(strs.Length== 2)
-                {
-                    if (strs[0] == "status")
-                    {
-                        //todo:
-                       // appFilterBy.ApplicationStatus = new List<ApplicationPortalStatusCode> { ApplicationPortalStatusCode.AwaitingApplicant, ApplicationPortalStatusCode.AwaitingPayment};
-                    }
-                }
-                else
-                {
-                    if(strs.Length== 1)
-                    {
-                        string[] s = strs[0].Split("@=");
-                        if(s.Length== 2 && s[0]=="searchText")
-                        {
-                            appFilterBy.NameOrEmailOrAppIdContains = s[1];
-                        }
-                    }
-                }
-            }
-            return appFilterBy;
-        }
-
-        private AppSortBy GetAppSortBy(string? sortby)
-        {
-            AppSortBy appSortBy = new AppSortBy();
-            if (string.IsNullOrWhiteSpace(sortby)) return appSortBy;
-
- 
-            return appSortBy;
         }
     }
 }

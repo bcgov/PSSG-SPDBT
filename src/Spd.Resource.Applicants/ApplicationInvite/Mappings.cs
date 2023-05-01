@@ -24,7 +24,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_portalinvitationid))
             .ForMember(d => d.ErrorMsg, opt => opt.MapFrom(s => s.spd_errormessage))
             .ForMember(d => d.Status, opt => opt.MapFrom(s => s.statuscode == null ? string.Empty : ((InvitationActiveStatus)s.statuscode).ToString()))
-            ;
+            .ForMember(d => d.Viewed, opt => opt.MapFrom(s => false)); //todo
         }
         private static string? GetPayeeType(int? code)
         {

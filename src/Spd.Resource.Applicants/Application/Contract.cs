@@ -7,7 +7,7 @@ public interface IApplicationRepository
     public Task<Guid?> AddApplicationAsync(ApplicationCreateCmd createApplicationCmd, CancellationToken cancellationToken);
     Task<bool> CheckApplicationDuplicateAsync(SearchApplicationQry searchApplicationQry, CancellationToken cancellationToken);
     Task<ApplicationListResp> QueryAsync(ApplicationListQry query, CancellationToken cancellationToken);
-    Task<ApplicationStatisticsQueryResponse> QueryAsync(ApplicationStatisticsQuery query, CancellationToken cancellationToken);
+    Task<ApplicationStatisticsResp> QueryApplicationStatisticsAsync(ApplicationStatisticsQry query, CancellationToken cancellationToken);
 }
 
 //application list
@@ -106,8 +106,8 @@ public enum ApplicationOriginTypeCode
 }
 
 //application statistics
-public record ApplicationStatisticsQuery(Guid OrganizationId);
-public record ApplicationStatisticsQueryResponse
+public record ApplicationStatisticsQry(Guid OrganizationId);
+public record ApplicationStatisticsResp
 {
     public IReadOnlyDictionary<ApplicationsStatisticsCode, int> Statistics { get; set; } = new Dictionary<ApplicationsStatisticsCode, int>();
 }

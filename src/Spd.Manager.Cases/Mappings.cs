@@ -26,6 +26,8 @@ namespace Spd.Manager.Cases
             CreateMap<ApplicationListResp, ApplicationListResponse>();
             CreateMap<PaginationResp, PaginationResponse>();
             CreateMap<ApplicationInviteDeleteCommand, ApplicationInviteDeleteCmd>();
+            CreateMap<ApplicationStatisticsRequest, ApplicationStatisticsQry>();
+            CreateMap<ApplicationStatisticsResp, ApplicationStatisticsResponse>();
 
         }
     }

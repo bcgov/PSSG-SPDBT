@@ -28,6 +28,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
         public DateTimeOffset CreatedOn { get; set; }
         public string Status { get; set; } = null!;
         public string? ErrorMsg { get; set; }
+        public bool? Viewed { get; set; }
     }
 
     public record ApplicationInvitesCreateCmd
