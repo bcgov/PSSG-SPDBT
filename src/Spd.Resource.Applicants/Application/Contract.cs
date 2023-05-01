@@ -65,7 +65,6 @@ namespace Spd.Resource.Applicants.Application
         public Guid Id { get; set; }
         public Guid OrgId { get; set; }
         public string? ApplicationNumber { get; set; }
-        public string? CaseNumber { get; set; }
         public string? GivenName { get; set; }
         public string? MiddleName1 { get; set; }
         public string? MiddleName2 { get; set; }
@@ -76,7 +75,7 @@ namespace Spd.Resource.Applicants.Application
         public string? ContractedCompanyName { get; set; }
         public bool? HaveVerifiedIdentity { get; set; }
         public DateTimeOffset? CreatedOn { get; set; }
-        public bool? HasBeenDelivered { get; set; }
+        public string? Status { get; set; }
     }
 
 

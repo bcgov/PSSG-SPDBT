@@ -119,9 +119,9 @@ export const CriminalRecordCheckFilterMap: Record<keyof CriminalRecordCheckFilte
 						</ng-container>
 
 						<ng-container matColumnDef="createdOn">
-							<mat-header-cell *matHeaderCellDef>Date Request Sent</mat-header-cell>
+							<mat-header-cell *matHeaderCellDef>Request Sent</mat-header-cell>
 							<mat-cell *matCellDef="let application">
-								<span class="mobile-label">Date Request Sent:</span>
+								<span class="mobile-label">Request Sent:</span>
 								{{ application.createdOn | date : constants.date.dateFormat }}
 							</mat-cell>
 						</ng-container>
@@ -139,7 +139,7 @@ export const CriminalRecordCheckFilterMap: Record<keyof CriminalRecordCheckFilte
 							<mat-cell *matCellDef="let application">
 								<button
 									mat-flat-button
-									class="table-button m-2"
+									class="table-button w-auto m-2"
 									style="white-space: nowrap;"
 									aria-label="Cancel Request"
 									(click)="OnCancelRequest(application)"

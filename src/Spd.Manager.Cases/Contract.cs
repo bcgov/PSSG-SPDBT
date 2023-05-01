@@ -115,7 +115,6 @@ namespace Spd.Manager.Cases
         public Guid Id { get; set; }
         public Guid OrgId { get; set; }
         public string? ApplicationNumber { get; set; }
-        public string? CaseNumber { get; set; }
         public string? GivenName { get; set; }
         public string? MiddleName1 { get; set; }
         public string? MiddleName2 { get; set; }
@@ -124,9 +123,8 @@ namespace Spd.Manager.Cases
         public string? JobTitle { get; set; }
         public string? PaidBy { get; set; }
         public string? ContractedCompanyName { get; set; }
-        public bool? HaveVerifiedIdentity { get; set; }
         public DateTimeOffset? CreatedOn { get; set; }
-        public bool? HasBeenDelivered { get; set; }
+        public ApplicationStatusCode? Status { get; set; }
     }
 
     public enum ApplicationInviteStatusCode
@@ -161,6 +159,14 @@ namespace Spd.Manager.Cases
 
         [Description("Organization Submitted")]
         OrganizationSubmitted
+    }
+
+    public enum ApplicationStatusCode
+    {
+        Draft,
+        PaymentPending,
+        Incomplete,
+        ApplicantVerification
     }
 
     public enum PayeePreferenceTypeCode

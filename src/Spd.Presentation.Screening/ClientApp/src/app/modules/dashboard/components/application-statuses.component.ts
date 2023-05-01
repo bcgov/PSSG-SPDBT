@@ -4,9 +4,14 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { ApplicationListResponse, ApplicationResponse } from 'src/app/api/models';
+import { ApplicationListResponse, ApplicationResponse, ApplicationStatusCode } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import {
+	ApplicationStatusCodes,
+	ApplicationStatusFiltersTypes,
+	SelectOptions,
+} from 'src/app/core/constants/model-desc';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { DashboardRoutes } from '../dashboard-routing.module';
@@ -14,8 +19,11 @@ import {
 	ApplicationStatusesFilterComponent,
 	ApplicationStatusFilter,
 	ApplicationStatusFilterMap,
-	ApplicationStatusFiltersTypes,
 } from './application-statuses-filter.component';
+
+// interface IDictionary {
+// 	[index: string]: string;
+// }
 
 @Component({
 	selector: 'app-application-statuses',
@@ -35,7 +43,7 @@ import {
 				</div>
 			</div>
 			<div class="mb-4">
-				<div class="fw-semibold">Active applications:</div>
+				<div class="fw-semibold">Active applications <span class="fw-normal">(for the last 365 days)</span></div>
 				<div class="d-flex flex-wrap justify-content-start">
 					<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
@@ -65,12 +73,8 @@ import {
 			</div>
 
 			<div class="mb-4">
-				<div class="fw-semibold">Completed applications</div>
+				<div class="fw-semibold">Completed applications <span class="fw-normal">(for the last 365 days)</span></div>
 				<div class="d-flex flex-wrap justify-content-start">
-					<div class="d-flex flex-row statistic-card area-red align-items-center mt-2 me-2">
-						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
-						<div class="m-2">Completed - <br />Cleared</div>
-					</div>
 					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
 						<div class="m-2">Completed - <br />Risk Found</div>
@@ -94,13 +98,6 @@ import {
 						<div class="m-2">
 							Closed - No<br />
 							Applicant Consent
-						</div>
-					</div>
-					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
-						<div class="fw-semibold fs-4 m-2 ms-3">??</div>
-						<div class="m-2">
-							Cancelled - By<br />
-							Organization
 						</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
@@ -160,7 +157,7 @@ import {
 							class="me-2 mb-2"
 							selected
 						>
-							{{ getStatusDesc(status) }}
+							{{ getFilterStatusDesc(status) }}
 							<mat-icon matChipRemove>cancel</mat-icon>
 						</mat-chip>
 					</div>
@@ -230,7 +227,7 @@ import {
 								<span class="mobile-label">Status:</span>
 
 								<!-- <mat-chip-listbox aria-label="Status">
-									<mat-chip-option class="mat-chip-green" *ngIf="application.status == '1'">In Progress</mat-chip-option>
+									<mat-chip-option class="mat-chip-green" *ngIf="application.status == applicationStatusCodes.PaymentPending">In Progress</mat-chip-option>
 									<mat-chip-option class="mat-chip-green" *ngIf="application.status == '2'">
 										Complete - No Risk
 									</mat-chip-option>
@@ -249,10 +246,14 @@ import {
 									<mat-chip-option class="mat-chip-red" *ngIf="application.status == '7'">Closed</mat-chip-option>
 									<mat-chip-option class="mat-chip-red" *ngIf="application.status == '8'">Risk Found</mat-chip-option>
 								</mat-chip-listbox>
-							 -->
+								 [ngStyle]="{ 'background-color': colorStatus[application.status] }"
+							  -->
 								<mat-chip-listbox aria-label="Status">
-									<mat-chip-option class="mat-chip-green">In Progress</mat-chip-option>
-									<!-- <mat-chip-option class="mat-chip-yellow"> Awaiting Applicant </mat-chip-option> -->
+									<mat-chip-option>{{ getStatusDesc(application.status) }}</mat-chip-option>
+
+									<mat-chip-option>
+										{{ getStatusDesc(application.status) }}
+									</mat-chip-option>
 								</mat-chip-listbox>
 							</mat-cell>
 						</ng-container>
@@ -265,9 +266,9 @@ import {
 									mat-flat-button
 									(click)="onPayNow(application)"
 									class="m-2"
-									style="color: var(--color-primary-light);"
+									style="color: var(--color-green);"
 									aria-label="Pay now"
-									*ngIf="i % 4 == 1"
+									*ngIf="application.status == applicationStatusCodeAll.PaymentPending"
 								>
 									Pay Now <mat-icon iconPositionEnd>chevron_right</mat-icon>
 								</a>
@@ -276,9 +277,9 @@ import {
 									mat-flat-button
 									(click)="onVerifyApplicant(application)"
 									class="m-2"
-									style="color: var(--color-green);"
+									style="color: var(--color-primary-light);"
 									aria-label="Verify Applicant"
-									*ngIf="i % 4 == 2"
+									*ngIf="application.status == applicationStatusCodeAll.ApplicantVerification"
 								>
 									Verify Applicant <mat-icon iconPositionEnd>chevron_right</mat-icon>
 								</a>
@@ -327,8 +328,12 @@ export class ApplicationStatusesComponent implements OnInit {
 	private currentSearch = '';
 	private queryParams: any = this.utilService.getDefaultQueryParams();
 
+	// colorStatus = {} as IDictionary;
+
 	constants = SPD_CONSTANTS;
 	applicationStatusFiltersTypes = ApplicationStatusFiltersTypes;
+	applicationStatusCodes = ApplicationStatusCodes;
+	applicationStatusCodeAll = ApplicationStatusCode;
 	filterCriteriaExists = false;
 
 	dataSource: MatTableDataSource<ApplicationResponse> = new MatTableDataSource<ApplicationResponse>([]);
@@ -362,6 +367,11 @@ export class ApplicationStatusesComponent implements OnInit {
 	) {}
 
 	ngOnInit() {
+		// this.colorStatus[this.applicationStatusCodeAll.Draft] = 'white';
+		// this.colorStatus[this.applicationStatusCodeAll.ApplicantVerification] = 'green';
+		// this.colorStatus[this.applicationStatusCodeAll.Incomplete] = 'yellow';
+		// this.colorStatus[this.applicationStatusCodeAll.PaymentPending] = 'red';
+
 		this.loadList();
 	}
 
@@ -440,7 +450,11 @@ export class ApplicationStatusesComponent implements OnInit {
 	}
 
 	getStatusDesc(code: string): string {
-		return this.applicationStatusesFilterComponent.getStatusDesc(code);
+		return (this.applicationStatusCodes.find((item: SelectOptions) => item.code == code)?.desc as string) ?? '';
+	}
+
+	getFilterStatusDesc(code: string): string {
+		return this.applicationStatusesFilterComponent.getFilterStatusDesc(code);
 	}
 
 	private performSearch(searchString: string): void {

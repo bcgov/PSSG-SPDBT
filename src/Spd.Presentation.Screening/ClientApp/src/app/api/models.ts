@@ -15,6 +15,7 @@ export { ApplicationInvitesCreateResponse } from './models/application-invites-c
 export { ApplicationListResponse } from './models/application-list-response';
 export { ApplicationOriginTypeCode } from './models/application-origin-type-code';
 export { ApplicationResponse } from './models/application-response';
+export { ApplicationStatusCode } from './models/application-status-code';
 export { BooleanTypeCode } from './models/boolean-type-code';
 export { ConfigurationResponse } from './models/configuration-response';
 export { ContactAuthorizationTypeCode } from './models/contact-authorization-type-code';

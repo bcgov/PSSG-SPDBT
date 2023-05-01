@@ -4,9 +4,10 @@ import { HotToastService } from '@ngneat/hot-toast';
 import { ContactAuthorizationTypeCode, OrgUserListResponse, OrgUserResponse } from 'src/app/api/models';
 import { OrgUserService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import { ContactAuthorizationTypes, SelectOptions } from 'src/app/core/constants/model-desc';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
-import { ContactAuthorizationTypes, UserDialogData, UserEditModalComponent } from './user-edit-modal.component';
+import { UserDialogData, UserEditModalComponent } from './user-edit-modal.component';
 
 @Component({
 	selector: 'app-users',
@@ -279,8 +280,8 @@ export class UsersComponent implements OnInit {
 	getDesc(val: string | undefined): string | null {
 		if (!val) return null;
 
-		const find = this.authorizationTypes.find((element) => element.code == val);
-		if (find) return find.desc;
+		const find = this.authorizationTypes.find((element: SelectOptions) => element.code == val);
+		if (find) return find.desc as string;
 		return null;
 	}
 
