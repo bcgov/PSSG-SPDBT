@@ -130,7 +130,7 @@ export const CriminalRecordCheckFilterMap: Record<keyof CriminalRecordCheckFilte
 							<mat-header-cell *matHeaderCellDef>Viewed</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Viewed:</span>
-								??
+								{{ application.viewed | yesNo }}
 							</mat-cell>
 						</ng-container>
 

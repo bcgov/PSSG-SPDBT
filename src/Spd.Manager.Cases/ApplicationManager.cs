@@ -13,6 +13,7 @@ namespace Spd.Manager.Cases
         IRequestHandler<ApplicationListQuery, ApplicationListResponse>,
         IRequestHandler<ApplicationInviteListQuery, ApplicationInviteListResponse>,
         IRequestHandler<ApplicationInviteDeleteCommand, Unit>,
+        IRequestHandler<ApplicationStatisticsRequest, ApplicationStatisticsResponse>,
         IApplicationManager
     {
         private readonly IApplicationRepository _applicationRepository;
@@ -103,7 +104,7 @@ namespace Spd.Manager.Cases
             if (request.PageSize < 1) throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Incorrect page size");
 
             var response = await _applicationRepository.QueryAsync(
-                new ApplicationQuery
+                new ApplicationQry
                 {
                     FilterBy = new AppFilterBy(request.OrgId, null),
                     SortBy = new AppSortBy(true, null),
@@ -112,6 +113,14 @@ namespace Spd.Manager.Cases
                 ct);
 
             return _mapper.Map<ApplicationListResponse>(response);
+        }
+
+        public async Task<ApplicationStatisticsResponse> Handle(ApplicationStatisticsRequest request, CancellationToken ct)
+        {
+            var qry = _mapper.Map<ApplicationStatisticsQry>(request);
+            var response = await _applicationRepository.QueryApplicationStatisticsAsync(qry, ct);
+
+            return _mapper.Map<ApplicationStatisticsResponse>(response);
         }
 
         private async Task<IEnumerable<ApplicationInviteDuplicateResponse>> CheckDuplicates(ApplicationInvitesCreateRequest request, Guid orgId, CancellationToken cancellationToken)
@@ -163,7 +172,5 @@ namespace Spd.Manager.Cases
 
             return resp;
         }
-
-
     }
 }

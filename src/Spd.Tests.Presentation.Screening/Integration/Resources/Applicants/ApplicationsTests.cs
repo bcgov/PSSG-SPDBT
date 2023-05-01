@@ -16,7 +16,7 @@ public class ApplicationsTests : ScenarioContextBase
     {
         var applicationRepository = Host.Services.GetRequiredService<IApplicationRepository>();
         var org = await fixture.testData.CreateOrg("org1");
-        var stats = await applicationRepository.QueryAsync(new ApplicationStatisticsQuery(org.accountid!.Value), CancellationToken.None);
+        var stats = await applicationRepository.QueryApplicationStatisticsAsync(new ApplicationStatisticsQry(org.accountid!.Value), CancellationToken.None);
         stats.Statistics.ShouldNotBeEmpty();
     }
 }
