@@ -3,8 +3,6 @@ using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Spd.Utilities.Dynamics;
-using Spd.Utilities.Shared.Exceptions;
-using System.Net;
 
 namespace Spd.Resource.Applicants.Application;
 internal class ApplicationRepository : IApplicationRepository
@@ -18,12 +16,14 @@ internal class ApplicationRepository : IApplicationRepository
         _mapper = mapper;
     }
 
-    public async Task<Guid?> AddApplicationAsync(ApplicationCreateCmd createApplicationCmd, CancellationToken cancellationToken)
+    public async Task<Guid?> AddApplicationAsync(ApplicationCreateCmd createApplicationCmd, CancellationToken ct)
     {
         spd_application application = _mapper.Map<spd_application>(createApplicationCmd);
-        account? org = GetOrgById(createApplicationCmd.OrgId);
+        account? org = await _context.GetOrgById(createApplicationCmd.OrgId, ct);
+        spd_portaluser? user = await _context.GetUserById(createApplicationCmd.CreatedByUserId, ct);
         _context.AddTospd_applications(application);
         _context.SetLink(application, nameof(spd_application.spd_OrganizationId), org);
+        _context.SetLink(application, nameof(spd_application.spd_SubmittedBy), user);
 
         contact? contact = GetContact(createApplicationCmd);
         // if not found, create new contact
@@ -50,7 +50,7 @@ internal class ApplicationRepository : IApplicationRepository
             }
         }
 
-        await _context.SaveChangesAsync(cancellationToken);
+        await _context.SaveChangesAsync(ct);
         return application.spd_applicationid;
     }
 
@@ -134,18 +134,6 @@ internal class ApplicationRepository : IApplicationRepository
             o.statecode != DynamicsConstants.StateCode_Inactive
         ).FirstOrDefault();
         return application != null;
-    }
-
-    private account? GetOrgById(Guid organizationId)
-    {
-        var account = _context.accounts
-            .Where(a => a.accountid == organizationId)
-            .FirstOrDefault();
-        if (account == null)
-            throw new NotFoundException(HttpStatusCode.BadRequest, $"Organization {organizationId} is not found");
-        if (account?.statecode == DynamicsConstants.StateCode_Inactive)
-            throw new InactiveException(HttpStatusCode.BadRequest, $"Organization {organizationId} is inactive");
-        return account;
     }
 
     private spd_alias? GetAlias(AliasCreateCmd aliasCreateCmd)
