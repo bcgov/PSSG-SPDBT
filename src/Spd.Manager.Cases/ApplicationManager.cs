@@ -183,5 +183,47 @@ namespace Spd.Manager.Cases
 
             return resp;
         }
+
+        private AppFilterBy GetAppFilterBy(string? filters, Guid orgId)
+        {
+            AppFilterBy appFilterBy = new AppFilterBy(orgId);
+            if (string.IsNullOrWhiteSpace(filters)) return appFilterBy;
+
+            //filters string should be like status==AwaitingPayment|AwaitingApplicant,searchText@=str
+            string[] items = filters.Split(',');
+            foreach (string item in items)
+            {
+                string[] strs = item.Split("==");
+                if (strs.Length == 2)
+                {
+                    if (strs[0] == "status")
+                    {
+                        //todo:
+                        // appFilterBy.ApplicationStatus = new List<ApplicationPortalStatusCode> { ApplicationPortalStatusCode.AwaitingApplicant, ApplicationPortalStatusCode.AwaitingPayment};
+                    }
+                }
+                else
+                {
+                    if (strs.Length == 1)
+                    {
+                        string[] s = strs[0].Split("@=");
+                        if (s.Length == 2 && s[0] == "searchText")
+                        {
+                            appFilterBy.NameOrEmailOrAppIdContains = s[1];
+                        }
+                    }
+                }
+            }
+            return appFilterBy;
+        }
+
+        private AppSortBy GetAppSortBy(string? sortby)
+        {
+            AppSortBy appSortBy = new AppSortBy();
+            if (string.IsNullOrWhiteSpace(sortby)) return appSortBy;
+
+
+            return appSortBy;
+        }
     }
 }
