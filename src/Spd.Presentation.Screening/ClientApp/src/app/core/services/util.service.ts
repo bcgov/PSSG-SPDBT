@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import jwt_decode from 'jwt-decode';
-import { SPD_CONSTANTS, TableConfig } from '../constants/constants';
+import { PaginationResponse } from 'src/app/api/models';
+import { SPD_CONSTANTS } from '../constants/constants';
 
 @Injectable({ providedIn: 'root' })
 export class UtilService {
@@ -14,13 +15,11 @@ export class UtilService {
 		return { page: 0, pageSize: SPD_CONSTANTS.list.defaultPageSize };
 	}
 
-	getDefaultTableConfig(): TableConfig {
-		const defaultTableConfig: TableConfig = {
-			paginator: {
-				pageSize: SPD_CONSTANTS.list.defaultPageSize,
-				pageIndex: 0,
-				length: 0,
-			},
+	getDefaultTablePaginatorConfig(): PaginationResponse {
+		const defaultTableConfig: PaginationResponse = {
+			pageSize: SPD_CONSTANTS.list.defaultPageSize,
+			pageIndex: 0,
+			length: 0,
 		};
 		return defaultTableConfig;
 	}

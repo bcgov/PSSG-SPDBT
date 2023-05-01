@@ -129,9 +129,9 @@ import { UtilService } from 'src/app/core/services/util.service';
 					</mat-table>
 					<mat-paginator
 						[showFirstLastButtons]="true"
-						[pageIndex]="(tableConfig.paginator.pageIndex || 1) - 1"
-						[pageSize]="tableConfig.paginator.pageSize"
-						[length]="tableConfig.paginator.length"
+						[pageIndex]="tablePaginator.pageIndex"
+						[pageSize]="tablePaginator.pageSize"
+						[length]="tablePaginator.length"
 						(page)="onPageChanged($event)"
 						aria-label="Select page"
 					>
@@ -153,7 +153,7 @@ export class PaymentsComponent implements OnInit {
 	constants = SPD_CONSTANTS;
 
 	dataSource: MatTableDataSource<ApplicationResponse> = new MatTableDataSource<ApplicationResponse>([]);
-	tableConfig = this.utilService.getDefaultTableConfig();
+	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
 	columns!: string[];
 
 	showDropdownOverlay = false;
@@ -209,20 +209,13 @@ export class PaymentsComponent implements OnInit {
 			.apiOrgsOrgIdApplicationsGet({
 				orgId: this.authenticationService.loggedInOrgId!,
 				page: pageIndex,
-				pageSize: this.tableConfig.paginator.pageSize,
+				pageSize: this.tablePaginator.pageSize,
 			})
 			.pipe()
 			.subscribe((res: ApplicationListResponse) => {
-				this.dataSource.data = res.applications as Array<ApplicationResponse>;
+				this.dataSource = new MatTableDataSource(res.applications as Array<ApplicationResponse>);
 				this.dataSource.sort = this.sort;
-				this.tableConfig = {
-					...this.tableConfig,
-					paginator: {
-						pageIndex: res.pagination?.pageIndex ?? 0,
-						pageSize: res.pagination?.pageSize ?? 0,
-						length: res.pagination?.length ?? 0,
-					},
-				};
+				this.tablePaginator = { ...res.pagination };
 			});
 	}
 }

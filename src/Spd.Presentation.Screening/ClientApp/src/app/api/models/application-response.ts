@@ -1,6 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import { ApplicationStatusCode } from './application-status-code';
+import { PayeePreferenceTypeCode } from './payee-preference-type-code';
 export interface ApplicationResponse {
   applicationNumber?: null | string;
   contractedCompanyName?: null | string;
@@ -12,7 +13,7 @@ export interface ApplicationResponse {
   middleName1?: null | string;
   middleName2?: null | string;
   orgId?: string;
-  paidBy?: null | string;
+  paidBy?: PayeePreferenceTypeCode;
   status?: ApplicationStatusCode;
   surname?: null | string;
 }

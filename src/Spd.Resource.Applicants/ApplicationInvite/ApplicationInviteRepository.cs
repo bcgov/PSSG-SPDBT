@@ -76,7 +76,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
 
         public async Task DeleteApplicationInvitesAsync(ApplicationInviteDeleteCmd applicationInviteDeleteCmd, CancellationToken cancellationToken)
         {
-            spd_portalinvitation invite = GetPortalInvitationById(applicationInviteDeleteCmd.OrgId, applicationInviteDeleteCmd.ApplicationInviteId);
+            spd_portalinvitation invite = await GetPortalInvitationById(applicationInviteDeleteCmd.OrgId, applicationInviteDeleteCmd.ApplicationInviteId);
 
             // Inactivate the invite
             invite.statecode = DynamicsConstants.StateCode_Inactive;
@@ -115,29 +115,8 @@ namespace Spd.Resource.Applicants.ApplicationInvite
         private async Task<account?> GetOrgById(Guid organizationId)
            => await _dynaContext.accounts.Where(a => a.accountid == organizationId).SingleOrDefaultAsync();
 
-        private account? GetOrgById(Guid organizationId)
-        {
-            var account = _dynaContext.accounts
-                .Where(a => a.accountid == organizationId)
-                .FirstOrDefault();
-            if (account == null)
-                throw new NotFoundException(HttpStatusCode.BadRequest, $"Organization {organizationId} is not found");
-            if (account?.statecode == DynamicsConstants.StateCode_Inactive)
-                throw new InactiveException(HttpStatusCode.BadRequest, $"Organization {organizationId} is inactive");
-            return account;
-        }
-
-        private spd_portalinvitation? GetPortalInvitationById(Guid organizationId, Guid portalInvitationId)
-        {
-            var spd_portalinvitation = _dynaContext.spd_portalinvitations
-                .Where(a => a.spd_portalinvitationid == portalInvitationId && a._spd_organizationid_value == organizationId)
-                .FirstOrDefault();
-            if (spd_portalinvitation == null)
-                throw new NotFoundException(HttpStatusCode.BadRequest, $"Organization {organizationId} with Portal Invitation {portalInvitationId} is not found");
-            if (spd_portalinvitation?.statecode == DynamicsConstants.StateCode_Inactive)
-                throw new InactiveException(HttpStatusCode.BadRequest, $"Organization {organizationId} with Portal Invitation {portalInvitationId} is inactive");
-
-            return spd_portalinvitation;
-        }
+        private async Task<spd_portalinvitation?> GetPortalInvitationById(Guid organizationId, Guid portalInvitationId)
+           => await _dynaContext.spd_portalinvitations
+                .Where(a => a.spd_portalinvitationid == portalInvitationId && a._spd_organizationid_value == organizationId).SingleOrDefaultAsync();
     }
 }

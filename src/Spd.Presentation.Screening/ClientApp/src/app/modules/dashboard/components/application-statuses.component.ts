@@ -21,10 +21,6 @@ import {
 	ApplicationStatusFilterMap,
 } from './application-statuses-filter.component';
 
-// interface IDictionary {
-// 	[index: string]: string;
-// }
-
 @Component({
 	selector: 'app-application-statuses',
 	template: `
@@ -225,33 +221,8 @@ import {
 							<mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Status:</span>
-
-								<!-- <mat-chip-listbox aria-label="Status">
-									<mat-chip-option class="mat-chip-green" *ngIf="application.status == applicationStatusCodes.PaymentPending">In Progress</mat-chip-option>
-									<mat-chip-option class="mat-chip-green" *ngIf="application.status == '2'">
-										Complete - No Risk
-									</mat-chip-option>
-									<mat-chip-option class="mat-chip-yellow" *ngIf="application.status == '3'">
-										Awaiting Applicant
-									</mat-chip-option>
-									<mat-chip-option class="mat-chip-blue" *ngIf="application.status == '4'">
-										Under Assessment
-									</mat-chip-option>
-									<mat-chip-option class="mat-chip-grey" *ngIf="application.status == '5'">
-										Missing Information
-									</mat-chip-option>
-									<mat-chip-option class="mat-chip-grey" *ngIf="application.status == '6'">
-										Cancelled By Organization
-									</mat-chip-option>
-									<mat-chip-option class="mat-chip-red" *ngIf="application.status == '7'">Closed</mat-chip-option>
-									<mat-chip-option class="mat-chip-red" *ngIf="application.status == '8'">Risk Found</mat-chip-option>
-								</mat-chip-listbox>
-								 [ngStyle]="{ 'background-color': colorStatus[application.status] }"
-							  -->
 								<mat-chip-listbox aria-label="Status">
-									<mat-chip-option>{{ getStatusDesc(application.status) }}</mat-chip-option>
-
-									<mat-chip-option>
+									<mat-chip-option [ngClass]="getStatusClass(application.status)">
 										{{ getStatusDesc(application.status) }}
 									</mat-chip-option>
 								</mat-chip-listbox>
@@ -291,9 +262,9 @@ import {
 					</mat-table>
 					<mat-paginator
 						[showFirstLastButtons]="true"
-						[pageIndex]="(tableConfig.paginator.pageIndex || 1) - 1"
-						[pageSize]="tableConfig.paginator.pageSize"
-						[length]="tableConfig.paginator.length"
+						[pageIndex]="tablePaginator.pageIndex"
+						[pageSize]="tablePaginator.pageSize"
+						[length]="tablePaginator.length"
 						(page)="onPageChanged($event)"
 						aria-label="Select page"
 					>
@@ -328,8 +299,6 @@ export class ApplicationStatusesComponent implements OnInit {
 	private currentSearch = '';
 	private queryParams: any = this.utilService.getDefaultQueryParams();
 
-	// colorStatus = {} as IDictionary;
-
 	constants = SPD_CONSTANTS;
 	applicationStatusFiltersTypes = ApplicationStatusFiltersTypes;
 	applicationStatusCodes = ApplicationStatusCodes;
@@ -337,7 +306,7 @@ export class ApplicationStatusesComponent implements OnInit {
 	filterCriteriaExists = false;
 
 	dataSource: MatTableDataSource<ApplicationResponse> = new MatTableDataSource<ApplicationResponse>([]);
-	tableConfig = this.utilService.getDefaultTableConfig();
+	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
 	columns: string[] = [
 		'applicantName',
 		'emailAddress',
@@ -367,11 +336,6 @@ export class ApplicationStatusesComponent implements OnInit {
 	) {}
 
 	ngOnInit() {
-		// this.colorStatus[this.applicationStatusCodeAll.Draft] = 'white';
-		// this.colorStatus[this.applicationStatusCodeAll.ApplicantVerification] = 'green';
-		// this.colorStatus[this.applicationStatusCodeAll.Incomplete] = 'yellow';
-		// this.colorStatus[this.applicationStatusCodeAll.PaymentPending] = 'red';
-
 		this.loadList();
 	}
 
@@ -449,6 +413,21 @@ export class ApplicationStatusesComponent implements OnInit {
 		this.applicationStatusesFilterComponent.emitFilterChange();
 	}
 
+	getStatusClass(code: string): any {
+		switch (code) {
+			case ApplicationStatusCode.Draft:
+				return { 'mat-chip-green': true };
+			case ApplicationStatusCode.PaymentPending:
+				return { 'mat-chip-yellow': true };
+			case ApplicationStatusCode.Incomplete:
+				return { 'mat-chip-blue': true };
+			case ApplicationStatusCode.ApplicantVerification:
+				return { 'mat-chip-yellow': true };
+		}
+
+		return { 'mat-chip-grey': true };
+	}
+
 	getStatusDesc(code: string): string {
 		return (this.applicationStatusCodes.find((item: SelectOptions) => item.code == code)?.desc as string) ?? '';
 	}
@@ -480,15 +459,7 @@ export class ApplicationStatusesComponent implements OnInit {
 				this.followUpBusinessDays = res.followUpBusinessDays ? String(res.followUpBusinessDays) : '';
 				this.dataSource.data = res.applications as Array<ApplicationResponse>;
 				this.dataSource.sort = this.sort;
-
-				this.tableConfig = {
-					...this.tableConfig,
-					paginator: {
-						pageIndex: res.pagination?.pageIndex ?? 0,
-						pageSize: res.pagination?.pageSize ?? 0,
-						length: res.pagination?.length ?? 0,
-					},
-				};
+				this.tablePaginator = { ...res.pagination };
 			});
 	}
 

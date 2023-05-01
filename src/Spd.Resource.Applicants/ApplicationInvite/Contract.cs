@@ -43,7 +43,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
         public string? LastName { get; set; }
         public string? Email { get; set; }
         public string? JobTitle { get; set; }
-        public PayerPreferenceTypeCode PayeeType { get; set; }
+        public PayerPreferenceTypeCode? PayeeType { get; set; }
     }
 
     public record ApplicationInviteDeleteCmd

@@ -14,7 +14,7 @@ namespace Spd.Manager.Cases
 
     }
 
-    public record ApplicationInviteCreateCommand(ApplicationInvitesCreateRequest ApplicationInvitesCreateRequest, Guid OrgId) : IRequest<ApplicationInvitesCreateResponse>;
+    public record ApplicationInviteCreateCommand(ApplicationInvitesCreateRequest ApplicationInvitesCreateRequest, Guid OrgId, Guid UserId) : IRequest<ApplicationInvitesCreateResponse>;
     public record ApplicationInviteListQuery(Guid OrgId, string? SearchContains = null, int Page = 0, int PageSize = 10) : IRequest<ApplicationInviteListResponse>;
     public record ApplicationInviteDeleteCommand(Guid OrgId, Guid ApplicationInviteId) : IRequest<Unit>;
     public record ApplicationCreateCommand(ApplicationCreateRequest ApplicationCreateRequest) : IRequest<ApplicationCreateResponse>;
@@ -121,7 +121,7 @@ namespace Spd.Manager.Cases
         public string? Surname { get; set; }
         public string? EmailAddress { get; set; }
         public string? JobTitle { get; set; }
-        public string? PaidBy { get; set; }
+        public PayeePreferenceTypeCode? PaidBy { get; set; }
         public string? ContractedCompanyName { get; set; }
         public DateTimeOffset? CreatedOn { get; set; }
         public ApplicationStatusCode? Status { get; set; }

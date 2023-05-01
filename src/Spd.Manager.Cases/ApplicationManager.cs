@@ -65,10 +65,8 @@ namespace Spd.Manager.Cases
         }
         public async Task<Unit> Handle(ApplicationInviteDeleteCommand request, CancellationToken ct)
         {
-            var temp = new ApplicationInviteDeleteCmd();
-            temp.OrgId = request.OrgId;
-            temp.ApplicationInviteId = request.ApplicationInviteId;
-            await _applicationInviteRepository.DeleteApplicationInvitesAsync(temp, ct);
+            var cmd = _mapper.Map<ApplicationInviteDeleteCmd>(request);
+            await _applicationInviteRepository.DeleteApplicationInvitesAsync(cmd, ct);
             return default;
         }
 

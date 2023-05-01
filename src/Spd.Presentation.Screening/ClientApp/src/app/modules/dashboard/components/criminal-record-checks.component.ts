@@ -154,9 +154,10 @@ export const CriminalRecordCheckFilterMap: Record<keyof CriminalRecordCheckFilte
 					</mat-table>
 					<mat-paginator
 						[showFirstLastButtons]="true"
-						[pageIndex]="(tableConfig.paginator.pageIndex || 1) - 1"
-						[pageSize]="tableConfig.paginator.pageSize"
-						[length]="tableConfig.paginator.length"
+						[hidePageSize]="true"
+						[pageIndex]="tablePaginator.pageIndex"
+						[pageSize]="tablePaginator.pageSize"
+						[length]="tablePaginator.length"
 						(page)="onPageChanged($event)"
 						aria-label="Select page"
 					>
@@ -199,7 +200,7 @@ export class CriminalRecordChecksComponent implements OnInit {
 	applicationInviteStatusCodes = ApplicationInviteStatusCode;
 
 	dataSource: MatTableDataSource<ApplicationInviteResponse> = new MatTableDataSource<ApplicationInviteResponse>([]);
-	tableConfig = this.utilService.getDefaultTableConfig();
+	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
 	columns!: string[];
 	formFilter: FormGroup = this.formBuilder.group({
 		search: new FormControl(''),
@@ -296,16 +297,8 @@ export class CriminalRecordChecksComponent implements OnInit {
 			})
 			.pipe()
 			.subscribe((res: ApplicationInviteListResponse) => {
-				this.dataSource.data = res.applicationInvites as Array<ApplicationInviteResponse>;
-
-				this.tableConfig = {
-					...this.tableConfig,
-					paginator: {
-						pageIndex: res.pagination?.pageIndex ?? 0,
-						pageSize: res.pagination?.pageSize ?? 0,
-						length: res.pagination?.length ?? 0,
-					},
-				};
+				this.dataSource = new MatTableDataSource(res.applicationInvites as Array<ApplicationInviteResponse>);
+				this.tablePaginator = { ...res.pagination };
 			});
 	}
 }
