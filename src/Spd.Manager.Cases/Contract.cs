@@ -8,14 +8,15 @@ namespace Spd.Manager.Cases
     {
         public Task<ApplicationInvitesCreateResponse> Handle(ApplicationInviteCreateCommand request, CancellationToken ct);
         public Task<ApplicationInviteListResponse> Handle(ApplicationInviteListQuery request, CancellationToken ct);
-
+        public Task<Unit> Handle(ApplicationInviteDeleteCommand request, CancellationToken ct);
         public Task<ApplicationListResponse> Handle(ApplicationListQuery request, CancellationToken ct);
         public Task<ApplicationCreateResponse> Handle(ApplicationCreateCommand request, CancellationToken ct);
 
     }
 
     public record ApplicationInviteCreateCommand(ApplicationInvitesCreateRequest ApplicationInvitesCreateRequest, Guid OrgId, Guid UserId) : IRequest<ApplicationInvitesCreateResponse>;
-    public record ApplicationInviteListQuery(Guid OrgId, string? SearchContains = null, int Page = 1, int PageSize = 10) : IRequest<ApplicationInviteListResponse>;
+    public record ApplicationInviteListQuery(Guid OrgId, string? SearchContains = null, int Page = 0, int PageSize = 10) : IRequest<ApplicationInviteListResponse>;
+    public record ApplicationInviteDeleteCommand(Guid OrgId, Guid ApplicationInviteId) : IRequest<Unit>;
     public record ApplicationCreateCommand(ApplicationCreateRequest ApplicationCreateRequest, Guid OrgId, Guid UserId) : IRequest<ApplicationCreateResponse>;
     public record ApplicationListQuery(Guid OrgId, int Page, int PageSize) : IRequest<ApplicationListResponse>;
 
@@ -114,18 +115,16 @@ namespace Spd.Manager.Cases
         public Guid Id { get; set; }
         public Guid OrgId { get; set; }
         public string? ApplicationNumber { get; set; }
-        public string? CaseNumber { get; set; }
         public string? GivenName { get; set; }
         public string? MiddleName1 { get; set; }
         public string? MiddleName2 { get; set; }
         public string? Surname { get; set; }
         public string? EmailAddress { get; set; }
         public string? JobTitle { get; set; }
-        public string? PaidBy { get; set; }
+        public PayeePreferenceTypeCode? PaidBy { get; set; }
         public string? ContractedCompanyName { get; set; }
-        public bool? HaveVerifiedIdentity { get; set; }
         public DateTimeOffset? CreatedOn { get; set; }
-        public bool? HasBeenDelivered { get; set; }
+        public ApplicationStatusCode? Status { get; set; }
     }
 
     public enum ApplicationInviteStatusCode
@@ -160,6 +159,14 @@ namespace Spd.Manager.Cases
 
         [Description("Organization Submitted")]
         OrganizationSubmitted
+    }
+
+    public enum ApplicationStatusCode
+    {
+        Draft,
+        PaymentPending,
+        Incomplete,
+        ApplicantVerification
     }
 
     public enum PayeePreferenceTypeCode

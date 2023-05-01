@@ -36,8 +36,8 @@ import { BaseFilterComponent } from 'src/app/shared/components/base-filter.compo
 					</mat-card-content>
 					<mat-divider class="my-3"></mat-divider>
 					<mat-card-actions>
-						<button mat-stroked-button class="action-button" (click)="emitFilterClear()">Clear</button>
-						<button mat-flat-button class="action-button" color="primary" (click)="emitFilterChange()">Search</button>
+						<button mat-stroked-button class="w-auto" (click)="emitFilterClear()">Clear</button>
+						<button mat-flat-button class="w-auto" color="primary" (click)="emitFilterChange()">Search</button>
 					</mat-card-actions>
 				</mat-card>
 			</form>
@@ -64,10 +64,6 @@ import { BaseFilterComponent } from 'src/app/shared/components/base-filter.compo
 				padding: 0 16px 16px 16px;
 				display: flex;
 				justify-content: space-between;
-			}
-
-			.action-button {
-				width: unset;
 			}
 		`,
 	],

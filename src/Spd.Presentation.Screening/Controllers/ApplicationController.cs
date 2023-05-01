@@ -66,6 +66,16 @@ namespace Spd.Presentation.Screening.Controllers
             }
             return await _mediator.Send(new ApplicationInviteListQuery(orgId, SearchContains: filterValue, (int)page, (int)pageSize));
         }
+
+
+        [Route("api/orgs/{orgId}/application-invites/{applicationInviteId}")]
+        [HttpDelete]
+        public async Task<ActionResult> DeleteAsync([FromRoute] Guid applicationInviteId, [FromRoute] Guid orgId)
+        {
+            await _mediator.Send(new ApplicationInviteDeleteCommand(orgId, applicationInviteId));
+            return Ok();
+        }
+
         /// <summary>
         /// create application. if checkDuplicate is true, it will check if there is existing duplicated applications 
         /// </summary>

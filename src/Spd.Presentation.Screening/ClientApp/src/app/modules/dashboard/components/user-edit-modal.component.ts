@@ -5,14 +5,10 @@ import { NgxMaskPipe } from 'ngx-mask';
 import { ContactAuthorizationTypeCode, OrgUserResponse, OrgUserUpdateRequest } from 'src/app/api/models';
 import { OrgUserService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import { ContactAuthorizationTypes } from 'src/app/core/constants/model-desc';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
-
-export const ContactAuthorizationTypes = [
-	{ desc: 'Primary Authorized Contact', code: ContactAuthorizationTypeCode.Primary },
-	{ desc: 'Authorized Contact', code: ContactAuthorizationTypeCode.Contact },
-];
 
 export interface UserDialogData {
 	user: OrgUserResponse;
