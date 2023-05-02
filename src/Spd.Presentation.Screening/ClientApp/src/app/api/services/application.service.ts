@@ -37,7 +37,7 @@ export class ApplicationService extends BaseService {
   /**
    * get the active application invites list.
    * support wildcard search for email and name, it will search email or name contains str.
-   * sample: /application-invites?filter=searchText@=str.
+   * sample: /application-invites?filters=searchText@=str.
    *
    *
    *
@@ -78,7 +78,7 @@ export class ApplicationService extends BaseService {
   /**
    * get the active application invites list.
    * support wildcard search for email and name, it will search email or name contains str.
-   * sample: /application-invites?filter=searchText@=str.
+   * sample: /application-invites?filters=searchText@=str.
    *
    *
    *

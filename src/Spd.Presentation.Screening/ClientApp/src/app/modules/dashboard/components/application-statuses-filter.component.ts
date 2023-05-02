@@ -14,10 +14,10 @@ export class ApplicationStatusFilter {
 
 export const ApplicationStatusFilterMap: Record<keyof ApplicationStatusFilter, string> = {
 	search: 'searchText',
-	statuses: 'statusCodeBe',
-	applicantName: 'applicantNameBe',
-	createdOn: 'createdOn',
-	contractedCompanyName: 'contractedCompanyName',
+	statuses: 'status',
+	applicantName: 'name',
+	createdOn: 'submittedon',
+	contractedCompanyName: 'companyname',
 };
 
 @Component({
@@ -89,7 +89,9 @@ export const ApplicationStatusFilterMap: Record<keyof ApplicationStatusFilter, s
 export class ApplicationStatusesFilterComponent extends BaseFilterComponent {
 	applicationStatusFiltersTypes = ApplicationStatusFiltersTypes;
 
-	@Input() formGroup!: FormGroup;
+	@Input() formGroup: FormGroup = this.formBuilder.group({
+		// statuses: new FormControl(''),
+	});
 
 	constructor(private formBuilder: FormBuilder, private utilService: UtilService) {
 		super();
@@ -116,11 +118,12 @@ export class ApplicationStatusesFilterComponent extends BaseFilterComponent {
 
 	private constructFilterList(formGroupValue: ApplicationStatusFilter): FilterQueryList[] {
 		let filterList: FilterQueryList[] = [];
+		console.log('formGroupValue.statuses', formGroupValue.statuses);
 
 		if (formGroupValue.statuses?.length > 0) {
 			filterList.push({
 				key: ApplicationStatusFilterMap['statuses'],
-				operator: 'contains',
+				operator: 'equals',
 				value: formGroupValue.statuses.join('|'),
 			});
 		}

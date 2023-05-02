@@ -1,5 +1,5 @@
 import {
-	ApplicationStatusCode,
+	ApplicationPortalStatusCode,
 	ContactAuthorizationTypeCode,
 	EmployeeInteractionTypeCode,
 	ScreeningTypeCode,
@@ -11,20 +11,20 @@ export interface SelectOptions<k = string | number | boolean> {
 }
 
 export const ApplicationStatusFiltersTypes: SelectOptions[] = [
-	{ desc: 'Verify Identity', code: 'verifyIdentity' },
-	{ desc: 'In Progress', code: 'inProgress' },
-	{ desc: 'Pay Now', code: 'payNow' },
-	{ desc: 'Awaiting Third Party', code: 'awaitingThirdParty' },
-	{ desc: 'Awaiting Applicant', code: 'awaitingApplicant' },
-	{ desc: 'Under Assessment', code: 'underAssessment' },
-	{ desc: 'Incomplete', code: 'incomplete' },
-	{ desc: 'Completed - Cleared', code: 'cleared' },
-	{ desc: 'Completed - Risk Found', code: 'riskFound' },
-	{ desc: 'Closed - Judicial Review', code: 'judicialReview' },
-	{ desc: 'Closed - No Response', code: 'noResponse' },
-	{ desc: 'Closed - No Applicant Consent', code: 'noApplicantConsent' },
-	{ desc: 'Cancelled by Organization', code: 'cancelledByOrg' },
-	{ desc: 'Cancelled by Applicant', code: 'cancelledByAppl' },
+	{ desc: 'Verify Identity', code: ApplicationPortalStatusCode.VerifyIdentity },
+	{ desc: 'In Progress', code: ApplicationPortalStatusCode.InProgress },
+	{ desc: 'Pay Now', code: ApplicationPortalStatusCode.AwaitingPayment },
+	{ desc: 'Awaiting Third Party', code: ApplicationPortalStatusCode.AwaitingThirdParty },
+	{ desc: 'Awaiting Applicant', code: ApplicationPortalStatusCode.AwaitingApplicant },
+	{ desc: 'Under Assessment', code: ApplicationPortalStatusCode.UnderAssessment },
+	{ desc: 'Incomplete', code: ApplicationPortalStatusCode.Incomplete },
+	{ desc: 'Completed - Cleared', code: ApplicationPortalStatusCode.CompletedCleared },
+	{ desc: 'Completed - Risk Found', code: ApplicationPortalStatusCode.RiskFound },
+	{ desc: 'Closed - Judicial Review', code: ApplicationPortalStatusCode.ClosedJudicialReview },
+	{ desc: 'Closed - No Response', code: ApplicationPortalStatusCode.ClosedNoResponse },
+	{ desc: 'Closed - No Applicant Consent', code: ApplicationPortalStatusCode.ClosedNoConsent },
+	{ desc: 'Cancelled by Organization', code: ApplicationPortalStatusCode.CancelledByOrganization },
+	{ desc: 'Cancelled by Applicant', code: ApplicationPortalStatusCode.CancelledByApplicant },
 ];
 
 export const EmployeeInteractionTypes: SelectOptions[] = [
@@ -43,9 +43,19 @@ export const ContactAuthorizationTypes: SelectOptions[] = [
 	{ desc: 'Authorized Contact', code: ContactAuthorizationTypeCode.Contact },
 ];
 
-export const ApplicationStatusCodes: SelectOptions[] = [
-	{ desc: 'Draft', code: ApplicationStatusCode.Draft },
-	{ desc: 'Payment Pending', code: ApplicationStatusCode.PaymentPending },
-	{ desc: 'Incomplete', code: ApplicationStatusCode.Incomplete },
-	{ desc: 'Applicant Verification', code: ApplicationStatusCode.ApplicantVerification },
+export const ApplicationPortalStatusCodes: SelectOptions[] = [
+	{ desc: 'In Progress', code: ApplicationPortalStatusCode.InProgress },
+	{ desc: 'Payment Pending', code: ApplicationPortalStatusCode.AwaitingPayment },
+	{ desc: 'Incomplete', code: ApplicationPortalStatusCode.Incomplete },
+	{ desc: 'Verify Identity', code: ApplicationPortalStatusCode.VerifyIdentity },
+	{ desc: 'Awaiting Third Party', code: ApplicationPortalStatusCode.AwaitingThirdParty },
+	{ desc: 'Awaiting Applicant', code: ApplicationPortalStatusCode.AwaitingApplicant },
+	{ desc: 'Under Assessment', code: ApplicationPortalStatusCode.UnderAssessment },
+	{ desc: 'Completed Cleared', code: ApplicationPortalStatusCode.CompletedCleared },
+	{ desc: 'Risk Found', code: ApplicationPortalStatusCode.RiskFound },
+	{ desc: 'Closed Judicial Review', code: ApplicationPortalStatusCode.ClosedJudicialReview },
+	{ desc: 'Closed No Response', code: ApplicationPortalStatusCode.ClosedNoResponse },
+	{ desc: 'Closed No Consent', code: ApplicationPortalStatusCode.ClosedNoConsent },
+	{ desc: 'Cancelled By Applicant', code: ApplicationPortalStatusCode.CancelledByApplicant },
+	{ desc: 'Cancelled By Organization', code: ApplicationPortalStatusCode.CancelledByOrganization },
 ];
