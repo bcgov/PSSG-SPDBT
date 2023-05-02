@@ -67,7 +67,7 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_applicationid))
             .ForMember(d => d.OrgId, opt => opt.MapFrom(s => s._spd_organizationid_value))
             .ForMember(d => d.ApplicationNumber, opt => opt.MapFrom(s => s.spd_name))
-            .ForMember(d => d.ApplicationPortalStatus, opt => opt.MapFrom(s => s.statuscode == null ? string.Empty : ((ApplicationStatus)s.statuscode).ToString()))
+            .ForMember(d => d.ApplicationPortalStatus, opt => opt.MapFrom(s => s.spd_portalstatus == null ? null : ((ApplicationPortalStatus)s.spd_portalstatus.Value).ToString()))
             .ForMember(d => d.GivenName, opt => opt.MapFrom(s => s.spd_firstname))
             .ForMember(d => d.MiddleName1, opt => opt.MapFrom(s => s.spd_middlename1))
             .ForMember(d => d.MiddleName2, opt => opt.MapFrom(s => s.spd_middlename2))

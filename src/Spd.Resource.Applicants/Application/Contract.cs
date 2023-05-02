@@ -19,12 +19,10 @@ public record ApplicationListQry
 }
 public record AppFilterBy(Guid OrgId)
 {
-    public IEnumerable<StatusFilter>? ApplicationStatus { get; set; }
+    public IEnumerable<ApplicationPortalStatusCd>? ApplicationPortalStatus { get; set; }
     public string? NameOrEmailOrAppIdContains { get; set; }
 }
 public record AppSortBy(bool? SubmittedDateDesc = true, bool? NameDesc = null, bool? CompanyNameDesc = null);
-public record StatusFilter(string appStatus, string? caseStatus, string? caseSubStatus);
-
 public record SearchApplicationQry
 {
     public Guid OrgId { get; set; }
@@ -109,9 +107,10 @@ public enum ApplicationOriginTypeCode
 public record ApplicationStatisticsQry(Guid OrganizationId);
 public record ApplicationStatisticsResp
 {
-    public IReadOnlyDictionary<ApplicationsStatisticsCode, int> Statistics { get; set; } = new Dictionary<ApplicationsStatisticsCode, int>();
+    public IReadOnlyDictionary<ApplicationPortalStatusCd, int> Statistics { get; set; } = new Dictionary<ApplicationPortalStatusCd, int>();
 }
-public enum ApplicationsStatisticsCode
+
+public enum ApplicationPortalStatusCd
 {
     AwaitingApplicant,
     AwaitingPayment,
@@ -124,6 +123,9 @@ public enum ApplicationsStatisticsCode
     InProgress,
     RiskFound,
     UnderAssessment,
-    VerifyIdentity
+    VerifyIdentity,
+    CompletedCleared,
+    CancelledByOrganization
 }
+
 

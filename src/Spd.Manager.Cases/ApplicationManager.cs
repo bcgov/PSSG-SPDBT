@@ -167,7 +167,7 @@ namespace Spd.Manager.Cases
             return _mapper.Map<ApplicationStatisticsResponse>(response);
         }
 
-        private async Task<IEnumerable<ApplicationInviteDuplicateResponse>> CheckDuplicates(ApplicationInvitesCreateRequest request, Guid orgId, CancellationToken cancellationToken)
+        private async Task<ApplicationCreateResponse> CheckDuplicateApp(ApplicationCreateRequest request, CancellationToken ct)
         {
             ApplicationCreateResponse resp = new ApplicationCreateResponse();
 
@@ -189,41 +189,53 @@ namespace Spd.Manager.Cases
             AppFilterBy appFilterBy = new AppFilterBy(orgId);
             if (string.IsNullOrWhiteSpace(filters)) return appFilterBy;
 
-            //filters string should be like status==AwaitingPayment|AwaitingApplicant,searchText@=str
-            string[] items = filters.Split(',');
-            foreach (string item in items)
+            try
             {
-                string[] strs = item.Split("==");
-                if (strs.Length == 2)
+                //filters string should be like status==AwaitingPayment|AwaitingApplicant,searchText@=str
+                string[] items = filters.Split(',');
+                foreach (string item in items)
                 {
-                    if (strs[0] == "status")
+                    string[] strs = item.Split("==");
+                    if (strs.Length == 2)
                     {
-                        //todo:
-                        // appFilterBy.ApplicationStatus = new List<ApplicationPortalStatusCode> { ApplicationPortalStatusCode.AwaitingApplicant, ApplicationPortalStatusCode.AwaitingPayment};
-                    }
-                }
-                else
-                {
-                    if (strs.Length == 1)
-                    {
-                        string[] s = strs[0].Split("@=");
-                        if (s.Length == 2 && s[0] == "searchText")
+                        if (strs[0] == "status")
                         {
-                            appFilterBy.NameOrEmailOrAppIdContains = s[1];
+                            string[] status = strs[1].Split("|");
+                            appFilterBy.ApplicationPortalStatus = status.Select(s => Enum.Parse<ApplicationPortalStatusCd>(s)).AsEnumerable();
+                        }
+                    }
+                    else
+                    {
+                        if (strs.Length == 1)
+                        {
+                            string[] s = strs[0].Split("@=");
+                            if (s.Length == 2 && s[0] == "searchText")
+                            {
+                                appFilterBy.NameOrEmailOrAppIdContains = s[1];
+                            }
                         }
                     }
                 }
+            } catch {
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Invalid filter string.");
             }
             return appFilterBy;
         }
 
         private AppSortBy GetAppSortBy(string? sortby)
         {
-            AppSortBy appSortBy = new AppSortBy();
-            if (string.IsNullOrWhiteSpace(sortby)) return appSortBy;
-
-
-            return appSortBy;
+            //sorts string should be like: sorts=-submittedOn or sorts=name
+            return sortby switch
+            {
+                null => new AppSortBy(),
+                "submittedon" => new AppSortBy(false),
+                "-submittedon" => new AppSortBy(true),
+                "name" => new AppSortBy(null, false),
+                "-name" => new AppSortBy(null, true),
+                "companyname" => new AppSortBy(null, null, false),
+                "-companyname" => new AppSortBy(null, null, true),
+                _ => new AppSortBy()
+            } ;
         }
     }
 }

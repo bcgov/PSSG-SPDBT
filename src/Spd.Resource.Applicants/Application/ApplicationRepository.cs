@@ -58,36 +58,26 @@ internal class ApplicationRepository : IApplicationRepository
     {
         if (query == null || query.FilterBy?.OrgId == null)
             throw new ArgumentNullException("query.FilterBy.OrgId", "Must query applications by organization id.");
-
+        string filterStr = GetFilterString(query.FilterBy);
+        string sortStr = GetSortString(query.SortBy);
         var applications = _context.spd_applications
-                .Where(a => a._spd_organizationid_value == query.FilterBy.OrgId && a.statecode == DynamicsConstants.StateCode_Active);
+            .AddQueryOption("$filter", $"{filterStr}")
+            .AddQueryOption("$orderby", $"{sortStr}");
 
         var count = applications.AsEnumerable().Count();
 
-        //todo: add more filter and sorting here.
-        //if (!string.IsNullOrWhiteSpace(query.FilterBy?.ApplicationStatus))
-        //    applications = applications.Where(a => a.statecode == "InProgress");
-
-        if (query.SortBy == null)
-            applications = applications.OrderByDescending(a => a.createdon);
-
-        if (query.SortBy != null && query.SortBy.SubmittedDateDesc != null && (bool)query.SortBy.SubmittedDateDesc)
-            applications = applications.OrderByDescending(a => a.createdon);
-        if (query.SortBy != null && query.SortBy.SubmittedDateDesc != null && !(bool)query.SortBy.SubmittedDateDesc)
-            applications = applications.OrderBy(a => a.createdon);
-
         if (query.Paging != null)
         {
+            int skip = query.Paging.Page * query.Paging.PageSize;
             applications = applications
-                .Skip((query.Paging.Page) * query.Paging.PageSize)
-                .Take(query.Paging.PageSize);
+                .AddQueryOption("$skip", $"{skip}")
+                .AddQueryOption("$top", $"{query.Paging.PageSize}");
         }
 
         var result = applications.AsEnumerable();
+
         var response = new ApplicationListResp();
-
         response.Applications = _mapper.Map<IEnumerable<ApplicationResult>>(result);
-
         if (query.Paging != null)
         {
             response.Pagination = new PaginationResp();
@@ -104,19 +94,19 @@ internal class ApplicationRepository : IApplicationRepository
         var organization = await _context.GetOrgById(query.OrganizationId, ct);
         if (organization == null) return new ApplicationStatisticsResp();
         var organizationStatistics = await organization.spd_GetOrganizationStatistics().GetValueAsync(ct);
-        var statisticsDictionary = new Dictionary<ApplicationsStatisticsCode, int>();
-        if (organizationStatistics.AwaitingApplicant.HasValue) statisticsDictionary.Add(ApplicationsStatisticsCode.AwaitingApplicant, organizationStatistics.AwaitingApplicant.Value);
-        if (organizationStatistics.AwaitingPayment.HasValue) statisticsDictionary.Add(ApplicationsStatisticsCode.AwaitingPayment, organizationStatistics.AwaitingPayment.Value);
-        if (organizationStatistics.AwaitingThirdParty.HasValue) statisticsDictionary.Add(ApplicationsStatisticsCode.AwaitingThirdParty, organizationStatistics.AwaitingThirdParty.Value);
-        if (organizationStatistics.CancelledByApplicant.HasValue) statisticsDictionary.Add(ApplicationsStatisticsCode.CancelledByApplicant, organizationStatistics.CancelledByApplicant.Value);
-        if (organizationStatistics.ClosedJudicialReview.HasValue) statisticsDictionary.Add(ApplicationsStatisticsCode.ClosedJudicialReview, organizationStatistics.ClosedJudicialReview.Value);
-        if (organizationStatistics.ClosedNoConsent.HasValue) statisticsDictionary.Add(ApplicationsStatisticsCode.ClosedNoConsent, organizationStatistics.ClosedNoConsent.Value);
-        if (organizationStatistics.ClosedNoResponse.HasValue) statisticsDictionary.Add(ApplicationsStatisticsCode.ClosedNoResponse, organizationStatistics.ClosedNoResponse.Value);
-        if (organizationStatistics.Incomplete.HasValue) statisticsDictionary.Add(ApplicationsStatisticsCode.Incomplete, organizationStatistics.Incomplete.Value);
-        if (organizationStatistics.InProgress.HasValue) statisticsDictionary.Add(ApplicationsStatisticsCode.InProgress, organizationStatistics.InProgress.Value);
-        if (organizationStatistics.RiskFound.HasValue) statisticsDictionary.Add(ApplicationsStatisticsCode.RiskFound, organizationStatistics.RiskFound.Value);
-        if (organizationStatistics.UnderAssessment.HasValue) statisticsDictionary.Add(ApplicationsStatisticsCode.UnderAssessment, organizationStatistics.UnderAssessment.Value);
-        if (organizationStatistics.VerifyIdentity.HasValue) statisticsDictionary.Add(ApplicationsStatisticsCode.VerifyIdentity, organizationStatistics.VerifyIdentity.Value);
+        var statisticsDictionary = new Dictionary<ApplicationPortalStatusCd, int>();
+        if (organizationStatistics.AwaitingApplicant.HasValue) statisticsDictionary.Add(ApplicationPortalStatusCd.AwaitingApplicant, organizationStatistics.AwaitingApplicant.Value);
+        if (organizationStatistics.AwaitingPayment.HasValue) statisticsDictionary.Add(ApplicationPortalStatusCd.AwaitingPayment, organizationStatistics.AwaitingPayment.Value);
+        if (organizationStatistics.AwaitingThirdParty.HasValue) statisticsDictionary.Add(ApplicationPortalStatusCd.AwaitingThirdParty, organizationStatistics.AwaitingThirdParty.Value);
+        if (organizationStatistics.CancelledByApplicant.HasValue) statisticsDictionary.Add(ApplicationPortalStatusCd.CancelledByApplicant, organizationStatistics.CancelledByApplicant.Value);
+        if (organizationStatistics.ClosedJudicialReview.HasValue) statisticsDictionary.Add(ApplicationPortalStatusCd.ClosedJudicialReview, organizationStatistics.ClosedJudicialReview.Value);
+        if (organizationStatistics.ClosedNoConsent.HasValue) statisticsDictionary.Add(ApplicationPortalStatusCd.ClosedNoConsent, organizationStatistics.ClosedNoConsent.Value);
+        if (organizationStatistics.ClosedNoResponse.HasValue) statisticsDictionary.Add(ApplicationPortalStatusCd.ClosedNoResponse, organizationStatistics.ClosedNoResponse.Value);
+        if (organizationStatistics.Incomplete.HasValue) statisticsDictionary.Add(ApplicationPortalStatusCd.Incomplete, organizationStatistics.Incomplete.Value);
+        if (organizationStatistics.InProgress.HasValue) statisticsDictionary.Add(ApplicationPortalStatusCd.InProgress, organizationStatistics.InProgress.Value);
+        if (organizationStatistics.RiskFound.HasValue) statisticsDictionary.Add(ApplicationPortalStatusCd.RiskFound, organizationStatistics.RiskFound.Value);
+        if (organizationStatistics.UnderAssessment.HasValue) statisticsDictionary.Add(ApplicationPortalStatusCd.UnderAssessment, organizationStatistics.UnderAssessment.Value);
+        if (organizationStatistics.VerifyIdentity.HasValue) statisticsDictionary.Add(ApplicationPortalStatusCd.VerifyIdentity, organizationStatistics.VerifyIdentity.Value);
 
         return new ApplicationStatisticsResp { Statistics = statisticsDictionary };
     }
@@ -147,27 +137,79 @@ internal class ApplicationRepository : IApplicationRepository
 
     private contact? GetContact(ApplicationCreateCmd createApplicationCmd)
     {
-        if (createApplicationCmd.DriversLicense == null || createApplicationCmd.DriversLicense.IsNullOrEmpty())
-        {
-            var contact = _context.contacts
+        var contacts = _context.contacts
             .Where(o =>
             o.firstname == createApplicationCmd.GivenName &&
             o.lastname == createApplicationCmd.Surname &&
             o.birthdate == new Microsoft.OData.Edm.Date(createApplicationCmd.DateOfBirth.Value.Year, createApplicationCmd.DateOfBirth.Value.Month, createApplicationCmd.DateOfBirth.Value.Day) &&
-            o.statecode != DynamicsConstants.StateCode_Inactive).FirstOrDefault();
-            return contact;
+            o.statecode != DynamicsConstants.StateCode_Inactive);
+
+        if (createApplicationCmd.DriversLicense == null || createApplicationCmd.DriversLicense.IsNullOrEmpty())
+        {
+            return contacts.FirstOrDefault();
         }
         else
         {
-            var contact = _context.contacts
-            .Where(o =>
-            o.firstname == createApplicationCmd.GivenName &&
-            o.lastname == createApplicationCmd.Surname &&
-            (o.spd_bcdriverslicense == null || o.spd_bcdriverslicense == createApplicationCmd.DriversLicense) &&
-            o.birthdate == new Microsoft.OData.Edm.Date(createApplicationCmd.DateOfBirth.Value.Year, createApplicationCmd.DateOfBirth.Value.Month, createApplicationCmd.DateOfBirth.Value.Day) &&
-            o.statecode != DynamicsConstants.StateCode_Inactive).FirstOrDefault();
-            return contact;
+            contacts = contacts
+            .Where(o => o.spd_bcdriverslicense == null || o.spd_bcdriverslicense == createApplicationCmd.DriversLicense);
+            return contacts.FirstOrDefault();
         }
     }
 
+    private string GetFilterString(AppFilterBy appFilterBy)
+    {
+        string orgFilter = $"_spd_organizationid_value eq {appFilterBy.OrgId}";
+        string? portalStatusFilter = null;
+        if (appFilterBy.ApplicationPortalStatus != null && appFilterBy.ApplicationPortalStatus.Any())
+        {
+            List<string> strs = new List<string>();
+            foreach (ApplicationPortalStatusCd cd in appFilterBy.ApplicationPortalStatus)
+            {
+                var status = Enum.Parse<ApplicationPortalStatus>(cd.ToString());
+                strs.Add($"spd_portalstatus eq {(int)status}");
+            }
+            portalStatusFilter = $"({string.Join(" or ", strs)})";
+        }
+        string? contains = null;
+        if (!string.IsNullOrWhiteSpace(appFilterBy.NameOrEmailOrAppIdContains))
+        {
+            contains = $"(contains(spd_firstname,'{appFilterBy.NameOrEmailOrAppIdContains}') or contains(spd_lastname,'{appFilterBy.NameOrEmailOrAppIdContains}') or contains(spd_emailaddress1,'{appFilterBy.NameOrEmailOrAppIdContains}') or contains(spd_name,'{appFilterBy.NameOrEmailOrAppIdContains}'))";
+        }
+        string result = $"{orgFilter}";
+        if (portalStatusFilter != null)
+        {
+            result += $" and {portalStatusFilter}";
+        }
+        if (contains != null)
+        {
+            result += $" and {contains}";
+        }
+        return result;
+    }
+
+    private string GetSortString(AppSortBy? appSortBy)
+    {
+        if (appSortBy == null
+            || (appSortBy.SubmittedDateDesc != null && (bool)appSortBy.SubmittedDateDesc))
+            return "createdon desc";
+
+        if (appSortBy.SubmittedDateDesc != null && !(bool)appSortBy.SubmittedDateDesc)
+            return "createdon";
+
+        if (appSortBy.NameDesc != null && (bool)appSortBy.NameDesc)
+            return "spd_firstname desc, spd_lastname desc";
+
+        if (appSortBy.NameDesc != null && !(bool)appSortBy.NameDesc)
+            return "spd_firstname, spd_lastname";
+
+        if (appSortBy.CompanyNameDesc != null && (bool)appSortBy.CompanyNameDesc)
+            return "spd_contractedcompanyname desc";
+
+        if (appSortBy.CompanyNameDesc != null && !(bool)appSortBy.CompanyNameDesc)
+            return "spd_contractedcompanyname";
+
+        return "createdon desc";
+    }
 }
+
+

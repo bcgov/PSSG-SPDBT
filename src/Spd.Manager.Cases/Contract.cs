@@ -118,7 +118,7 @@ namespace Spd.Manager.Cases
     public record ApplicationStatisticsRequest(Guid OrganizationId) : IRequest<ApplicationStatisticsResponse>;
     public record ApplicationStatisticsResponse
     {
-        public IReadOnlyDictionary<ApplicationsStatisticsCode, int> Statistics { get; set; } = new Dictionary<ApplicationsStatisticsCode, int>();
+        public IReadOnlyDictionary<ApplicationPortalStatusCode, int> Statistics { get; set; } = new Dictionary<ApplicationPortalStatusCode, int>();
     }
 
     public record ApplicationResponse : Application

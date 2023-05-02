@@ -85,10 +85,10 @@ namespace Spd.Presentation.Screening.Controllers
 
         /// <summary>
         /// return all applications belong to the organization.
-        /// sort: submittedon, firstname and lastname, companyname , add - in front of name means descending.
+        /// sort: submittedon, name, companyname , add - in front of name means descending.
         /// filters: status, use | to filter multiple status : if no filters specified, endpoint returns all applications.
-        /// search:wild card search in name, email and caseID
-        /// sample: api/orgs/4165bdfe-7cb4-ed11-b83e-00505683fbf4/applications?filters=status==AwaitingPayment|AwaitingApplicant,searchText@=str&sorts=firstname,-submittedOn&page=1&pageSize=15
+        /// search:wild card search in name, email and caseID, such as searchText@=test
+        /// sample: api/orgs/4165bdfe-7cb4-ed11-b83e-00505683fbf4/applications?filters=status==AwaitingPayment|AwaitingApplicant,searchText@=str&sorts=name&page=1&pageSize=15
         /// </summary>
         /// <param name="orgId"></param>
         /// <param name="filters"></param>

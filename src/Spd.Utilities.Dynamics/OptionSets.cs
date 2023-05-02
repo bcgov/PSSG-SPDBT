@@ -93,14 +93,23 @@
         Failed = 100000001
     }
 
-    public enum ApplicationStatus
+    public enum ApplicationPortalStatus
     {
-        Draft = 1,
-        PaymentPending = 100000000,
-        Incomplete = 100000001,
-        ApplicationVerification= 100000003,
-        Submitted=2,
-        Cancelled= 100000002
+        Draft= 100000000,
+        VerifyIdentity = 100000001,
+        InProgress = 100000002,
+        AwaitingPayment= 100000003,
+        AwaitingThirdParty= 100000004,
+        AwaitingApplicant = 100000005,
+        UnderAssessment = 100000006,
+        Incomplete = 100000007,
+        CompletedCleared = 100000008,
+        RiskFound = 100000009,
+        ClosedJudicialReview = 100000010,
+        ClosedNoResponse = 100000011,
+        ClosedNoConsent = 100000012,
+        CancelledByApplicant = 100000014,
+        CancelledByOrganization = 100000013 
     }
 
 }
