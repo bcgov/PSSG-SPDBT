@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
-using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Spd.Resource.Organizations.Registration;
 using Spd.Utilities.Dynamics;
-using Spd.Utilities.Shared.Exceptions;
 
 namespace Spd.Resource.Organizations.Org
 {
@@ -97,8 +95,8 @@ namespace Spd.Resource.Organizations.Org
         private async Task<OrgQryResult?> GetOrgByOrgIdAsync(OrgByIdQry query, CancellationToken ct)
         {
             var org = await _dynaContext.GetOrgById(query.OrgId, ct);
-            if (org?.statecode == DynamicsConstants.StateCode_Inactive)
-                throw new InactiveException(System.Net.HttpStatusCode.BadRequest, $"Organization {query.OrgId} is inactive");
+            if (org?.statecode == DynamicsConstants.StateCode_Inactive) return null;
+
             var response = _mapper.Map<OrgResult>(org);
             return new OrgQryResult(response);
         }

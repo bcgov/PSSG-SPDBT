@@ -47,7 +47,7 @@ namespace Spd.Resource.Organizations.User
             if (createUserCmd.User.OrganizationId == null)
                 throw new ApiException(HttpStatusCode.BadRequest, "Organization cannot be null");
 
-            var organization = _dynaContext.GetOrgById((Guid)createUserCmd.User.OrganizationId, cancellationToken);
+            var organization = await _dynaContext.GetOrgById((Guid)createUserCmd.User.OrganizationId, cancellationToken);
 
             // create user 
             spd_portaluser user = _mapper.Map<spd_portaluser>(createUserCmd.User);
@@ -124,7 +124,7 @@ namespace Spd.Resource.Organizations.User
 
         private async Task<OrgUserResult> GetUserAsync(Guid userId, CancellationToken ct)
         {
-            var user = await GetUserById(userId, ct); 
+            var user = await GetUserById(userId, ct);
             return new OrgUserResult(_mapper.Map<UserResult>(user));
         }
 
