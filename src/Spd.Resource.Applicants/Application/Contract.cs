@@ -112,19 +112,19 @@ public record ApplicationStatisticsResp
 
 public enum ApplicationPortalStatusCd
 {
-    AwaitingApplicant,
+    VerifyIdentity,
+    InProgress,
     AwaitingPayment,
     AwaitingThirdParty,
-    CancelledByApplicant,
-    ClosedJudicialReview,
-    ClosedNoConsent,
-    ClosedNoResponse,
-    Incomplete,
-    InProgress,
-    RiskFound,
+    AwaitingApplicant,
     UnderAssessment,
-    VerifyIdentity,
+    Incomplete,
     CompletedCleared,
+    RiskFound,
+    ClosedJudicialReview,
+    ClosedNoResponse,
+    ClosedNoConsent,
+    CancelledByApplicant,
     CancelledByOrganization
 }
 

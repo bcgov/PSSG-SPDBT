@@ -133,20 +133,20 @@ namespace Spd.Manager.Cases
 
     public enum ApplicationPortalStatusCode
     {
-        AwaitingPayment,
-        InProgress,
         VerifyIdentity,
+        InProgress,
+        AwaitingPayment,
         AwaitingThirdParty,
         AwaitingApplicant,
         UnderAssessment,
         Incomplete,
         CompletedCleared,
-        CompletedRiskFound,
-        ClosedJudicalReview,
+        RiskFound,
+        ClosedJudicialReview,
         ClosedNoResponse,
-        ClosedNoApplicantConsent,
-        CancelledByOrg,
-        CancelledByApplicant
+        ClosedNoConsent,
+        CancelledByApplicant,
+        CancelledByOrganization
     }
 
     public enum ApplicationInviteStatusCode
