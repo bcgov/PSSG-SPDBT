@@ -140,8 +140,8 @@ namespace Spd.Resource.Organizations.User
             if (identityId != null)
                 users = users.Where(a => a._spd_identityid_value == identityId);
 
-            var temp = users.ToList();
-            await Parallel.ForEachAsync(users, cancellationToken, async (user, cancellationToken) =>
+            var userList = users.ToList();
+            await Parallel.ForEachAsync(userList, cancellationToken, async (user, cancellationToken) =>
             {
                 var role = _dynaContext
                     .spd_spd_role_spd_portaluserset
@@ -151,7 +151,7 @@ namespace Spd.Resource.Organizations.User
                     user.spd_spd_role_spd_portaluser = new Collection<spd_role> { new spd_role() { spd_roleid = role.spd_roleid } };
             });
 
-            return new OrgUsersResult(_mapper.Map<IEnumerable<UserResult>>(users));
+            return new OrgUsersResult(_mapper.Map<IEnumerable<UserResult>>(userList));
         }
 
         private spd_portalinvitation? GetPortalInvitationByUserId(Guid userId)

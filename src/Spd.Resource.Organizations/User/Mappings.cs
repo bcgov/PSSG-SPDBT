@@ -40,9 +40,7 @@ namespace Spd.Resource.Organizations.User
 
         private ContactRoleCode GetAuthorizationTypeCode(ICollection<spd_role> roles)
         {
-            if (!roles.Any())
-                return ContactRoleCode.Contact;
-            Guid? roleId = roles?.FirstOrDefault().spd_roleid;
+            Guid? roleId = roles?.FirstOrDefault()?.spd_roleid;
             if (roleId == null) return ContactRoleCode.Contact;
             return
                 Enum.Parse<ContactRoleCode>(
