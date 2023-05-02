@@ -128,12 +128,12 @@ namespace Spd.Manager.Membership.OrgUser
             int userNo = userList.Count;
             if (userNo > maxContacts)
             {
-                throw new OutOfRangeException(HttpStatusCode.BadRequest, $"No more contacts can created. The limit of {maxContacts} contacts has been reached.");
+                throw new OutOfRangeException(HttpStatusCode.BadRequest, $"No more contacts can be created. The limit of {maxContacts} contacts has been reached.");
             }
             int primaryUserNo = userList.Count(u => u.ContactAuthorizationTypeCode == ContactRoleCode.Primary);
             if (primaryUserNo > maxPrimaryContacts)
             {
-                throw new OutOfRangeException(HttpStatusCode.BadRequest, $"No more primary contacts can created. The limit of {maxPrimaryContacts} primary contacts has been reached.");
+                throw new OutOfRangeException(HttpStatusCode.BadRequest, $"No more primary contacts can be created. The limit of {maxPrimaryContacts} primary contacts has been reached.");
             }
             if (primaryUserNo < 1)
             {
