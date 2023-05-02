@@ -1,6 +1,5 @@
 using FluentValidation;
 using MediatR;
-using Spd.Resource.Applicants.Application;
 using System.ComponentModel;
 
 namespace Spd.Manager.Cases
@@ -12,17 +11,21 @@ namespace Spd.Manager.Cases
         public Task<Unit> Handle(ApplicationInviteDeleteCommand request, CancellationToken ct);
         public Task<ApplicationListResponse> Handle(ApplicationListQuery request, CancellationToken ct);
         public Task<ApplicationCreateResponse> Handle(ApplicationCreateCommand request, CancellationToken ct);
-        public Task<ApplicationStatisticsResponse> Handle(ApplicationStatisticsRequest request, CancellationToken ct);
+        public Task<ApplicationStatisticsResponse> Handle(ApplicationStatisticsQuery request, CancellationToken ct);
 
     }
 
+    #region application invites
     public record ApplicationInviteCreateCommand(ApplicationInvitesCreateRequest ApplicationInvitesCreateRequest, Guid OrgId, Guid UserId) : IRequest<ApplicationInvitesCreateResponse>;
-    public record ApplicationInviteListQuery(Guid OrgId, string? Filters = null, int Page = 1, int PageSize = 10) : IRequest<ApplicationInviteListResponse>;
+    public record ApplicationInviteListQuery() : IRequest<ApplicationInviteListResponse>
+    {
+        public AppInviteListFilterBy? FilterBy { get; set; }
+        public AppInviteListSortBy? SortBy { get; set; }
+        public PaginationRequest Paging { get; set; } = null!;
+    };
     public record ApplicationInviteDeleteCommand(Guid OrgId, Guid ApplicationInviteId) : IRequest<Unit>;
-    public record ApplicationCreateCommand(ApplicationCreateRequest ApplicationCreateRequest, Guid OrgId, Guid UserId) : IRequest<ApplicationCreateResponse>;
-    public record ApplicationListQuery(Guid OrgId, int Page, int PageSize, string? Filters, string? Sorts) : IRequest<ApplicationListResponse>;
-
-    //application invites
+    public record AppInviteListFilterBy(Guid OrgId, string? EmailOrNameContains);
+    public record AppInviteListSortBy(bool? SubmittedDateDesc);
     public record ApplicationInvitesCreateRequest
     {
         public bool RequireDuplicateCheck { get; set; }
@@ -61,8 +64,32 @@ namespace Spd.Manager.Cases
         public string? ErrorMsg { get; set; }
         public bool? Viewed { get; set; }
     }
+    public enum ApplicationInviteStatusCode
+    {
+        Draft,
+        Sent,
+        Failed,
+        Completed, //inactive status code, no use
+        Cancelled,//inactive status code, no use
+        Expired //inactive status code, no use
+    }
+    #endregion
 
-    //application
+    #region application
+    public record ApplicationCreateCommand(ApplicationCreateRequest ApplicationCreateRequest, Guid OrgId, Guid UserId) : IRequest<ApplicationCreateResponse>;
+    public record ApplicationListQuery : IRequest<ApplicationListResponse>
+    {
+        public AppListFilterBy? FilterBy { get; set; } //null means no filter
+        public AppListSortBy? SortBy { get; set; } //null means no sorting
+        public PaginationRequest Paging { get; set; } = null!;
+    };
+    public record ApplicationStatisticsQuery(Guid OrganizationId) : IRequest<ApplicationStatisticsResponse>;
+    public record AppListFilterBy(Guid OrgId)
+    {
+        public IEnumerable<ApplicationPortalStatusCode>? ApplicationPortalStatus { get; set; }
+        public string? NameOrEmailOrAppIdContains { get; set; }
+    }
+    public record AppListSortBy(bool? SubmittedDateDesc = true, bool? NameDesc = null, bool? CompanyNameDesc = null);
     public abstract record Application
     {
         public Guid OrgId { get; set; }
@@ -115,7 +142,7 @@ namespace Spd.Manager.Cases
         public IEnumerable<ApplicationResponse> Applications { get; set; } = Array.Empty<ApplicationResponse>();
         public PaginationResponse Pagination { get; set; } = null!;
     }
-    public record ApplicationStatisticsRequest(Guid OrganizationId) : IRequest<ApplicationStatisticsResponse>;
+
     public record ApplicationStatisticsResponse
     {
         public IReadOnlyDictionary<ApplicationPortalStatusCode, int> Statistics { get; set; } = new Dictionary<ApplicationPortalStatusCode, int>();
@@ -148,17 +175,6 @@ namespace Spd.Manager.Cases
         CancelledByApplicant,
         CancelledByOrganization
     }
-
-    public enum ApplicationInviteStatusCode
-    {
-        Draft,
-        Sent,
-        Failed,
-        Completed, //inactive status code, no use
-        Cancelled,//inactive status code, no use
-        Expired //inactive status code, no use
-    }
-
     public enum ApplicationOriginTypeCode
     {
         [Description("Portal")]
@@ -208,7 +224,9 @@ namespace Spd.Manager.Cases
         [Description("Contractor/Licensee")]
         Contractor
     }
+    #endregion
 
+    #region validator
     public class ApplicationInviteCreateRequestValidator : AbstractValidator<ApplicationInviteCreateRequest>
     {
         public ApplicationInviteCreateRequestValidator()
@@ -334,12 +352,15 @@ namespace Spd.Manager.Cases
                 .NotNull(); // Must be true or false
         }
     }
+    #endregion
 
-    //shared
+    #region shared
+    public record PaginationRequest(int Page, int PageSize);
     public record PaginationResponse
     {
         public int PageSize { get; set; }
         public int PageIndex { get; set; }
         public int Length { get; set; }
     }
+    #endregion
 }

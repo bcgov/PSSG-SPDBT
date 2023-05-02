@@ -50,8 +50,30 @@ namespace Spd.Presentation.Screening.Controllers
         {
             page = (page == null || page < 0) ? 0 : page;
             pageSize = (pageSize == null || pageSize == 0 || pageSize > 100) ? 10 : pageSize;
+            PaginationRequest pagination = new PaginationRequest((int)page, (int)pageSize);
 
-            return await _mediator.Send(new ApplicationInviteListQuery(orgId, Filters: filters, (int)page, (int)pageSize));
+            string? filterValue = null;
+            if (!string.IsNullOrWhiteSpace(filters))
+            {
+                try
+                {
+                    var strs = filters.Split("@=");
+                    if (strs[0].Equals("searchText", StringComparison.InvariantCultureIgnoreCase))
+                        filterValue = strs[1];
+                }
+                catch
+                {
+                    throw new ApiException(System.Net.HttpStatusCode.BadRequest, "invalid filtering string.");
+                }
+            }
+            AppInviteListFilterBy filterBy = new AppInviteListFilterBy(orgId, EmailOrNameContains: filterValue);
+            AppInviteListSortBy sortBy = new AppInviteListSortBy(SubmittedDateDesc: true);
+            return await _mediator.Send(new ApplicationInviteListQuery()
+            {
+                FilterBy = filterBy,
+                SortBy = sortBy,
+                Paging = pagination
+            });
         }
 
         /// <summary>
@@ -98,17 +120,21 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/orgs/{orgId}/applications")]
         [HttpGet]
-        public async Task<ApplicationListResponse> GetList([FromRoute] Guid orgId, [FromQuery] string? filters, [FromQuery] string? sorts, [FromQuery] uint? page, [FromQuery] uint? pageSize)
+        public async Task<ApplicationListResponse> GetList([FromRoute] Guid orgId, [FromQuery] string? filters, [FromQuery] string? sorts, [FromQuery] int? page, [FromQuery] int? pageSize)
         {
             page = (page == null || page < 0) ? 0 : page;
             pageSize = (pageSize == null || pageSize == 0 || pageSize > 100) ? 10 : pageSize;
             if (string.IsNullOrWhiteSpace(sorts)) sorts = "-submittedOn";
+            PaginationRequest pagination = new PaginationRequest((int)page, (int)pageSize);
+            AppListFilterBy filterBy = GetAppListFilterBy(filters, orgId);
+            AppListSortBy sortBy = GetAppSortBy(sorts);
             return await _mediator.Send(
-                new ApplicationListQuery(OrgId: orgId, 
-                    Page: (int)page, 
-                    PageSize: (int)pageSize,
-                    Filters: filters, 
-                    Sorts: sorts));
+                new ApplicationListQuery
+                {
+                    FilterBy = filterBy,
+                    SortBy = sortBy,
+                    Paging = pagination
+                });
         }
 
         /// <summary>
@@ -120,7 +146,63 @@ namespace Spd.Presentation.Screening.Controllers
         [HttpGet]
         public async Task<ApplicationStatisticsResponse> GetAppStatsList([FromRoute] Guid orgId)
         {
-            return await _mediator.Send(new ApplicationStatisticsRequest(orgId));
+            return await _mediator.Send(new ApplicationStatisticsQuery(orgId));
+        }
+
+        private AppListFilterBy GetAppListFilterBy(string? filters, Guid orgId)
+        {
+            AppListFilterBy appListFilterBy = new AppListFilterBy(orgId);
+            if (string.IsNullOrWhiteSpace(filters)) return appListFilterBy;
+
+            try
+            {
+                //filters string should be like status==AwaitingPayment|AwaitingApplicant,searchText@=str
+                string[] items = filters.Split(',');
+                foreach (string item in items)
+                {
+                    string[] strs = item.Split("==");
+                    if (strs.Length == 2)
+                    {
+                        if (strs[0] == "status")
+                        {
+                            string[] status = strs[1].Split("|");
+                            appListFilterBy.ApplicationPortalStatus = status.Select(s => Enum.Parse<ApplicationPortalStatusCode>(s)).AsEnumerable();
+                        }
+                    }
+                    else
+                    {
+                        if (strs.Length == 1)
+                        {
+                            string[] s = strs[0].Split("@=");
+                            if (s.Length == 2 && s[0] == "searchText")
+                            {
+                                appListFilterBy.NameOrEmailOrAppIdContains = s[1];
+                            }
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Invalid filter string.");
+            }
+            return appListFilterBy;
+        }
+
+        private AppListSortBy GetAppSortBy(string? sortby)
+        {
+            //sorts string should be like: sorts=-submittedOn or sorts=name
+            return sortby switch
+            {
+                null => new AppListSortBy(),
+                "submittedon" => new AppListSortBy(false),
+                "-submittedon" => new AppListSortBy(true),
+                "name" => new AppListSortBy(null, false),
+                "-name" => new AppListSortBy(null, true),
+                "companyname" => new AppListSortBy(null, null, false),
+                "-companyname" => new AppListSortBy(null, null, true),
+                _ => new AppListSortBy()
+            };
         }
     }
 }

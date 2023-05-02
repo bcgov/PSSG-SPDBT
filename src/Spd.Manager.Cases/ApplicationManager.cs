@@ -13,7 +13,7 @@ namespace Spd.Manager.Cases
         IRequestHandler<ApplicationListQuery, ApplicationListResponse>,
         IRequestHandler<ApplicationInviteListQuery, ApplicationInviteListResponse>,
         IRequestHandler<ApplicationInviteDeleteCommand, Unit>,
-        IRequestHandler<ApplicationStatisticsRequest, ApplicationStatisticsResponse>,
+        IRequestHandler<ApplicationStatisticsQuery, ApplicationStatisticsResponse>,
         IApplicationManager
     {
         private readonly IApplicationRepository _applicationRepository;
@@ -51,28 +51,9 @@ namespace Spd.Manager.Cases
         }
         public async Task<ApplicationInviteListResponse> Handle(ApplicationInviteListQuery request, CancellationToken ct)
         {
-            string? filterValue = null;
-            if (!string.IsNullOrWhiteSpace(request.Filters))
-            {
-                try
-                {
-                    var strs = request.Filters.Split("@=");
-                    if (strs[0].Equals("searchText", StringComparison.InvariantCultureIgnoreCase))
-                        filterValue = strs[1];
-                }
-                catch
-                {
-                    throw new ApiException(System.Net.HttpStatusCode.BadRequest, "invalid filtering string.");
-                }
-            }
-
+            ApplicationInviteQuery query = _mapper.Map<ApplicationInviteQuery>(request);
             var response = await _applicationInviteRepository.QueryAsync(
-                new ApplicationInviteQuery
-                {
-                    FilterBy = new AppInviteFilterBy(request.OrgId, EmailOrNameContains: filterValue),
-                    SortBy = new AppInviteSortBy(SubmittedDateDesc: true),
-                    Paging = new Paging(request.Page, request.PageSize)
-                },
+                query,
                 ct);
             return _mapper.Map<ApplicationInviteListResponse>(response);
         }
@@ -144,22 +125,23 @@ namespace Spd.Manager.Cases
         }
         public async Task<ApplicationListResponse> Handle(ApplicationListQuery request, CancellationToken ct)
         {
-            AppFilterBy filterBy = GetAppFilterBy(request.Filters, request.OrgId);
-            AppSortBy sortBy = GetAppSortBy(request.Sorts);
+            AppFilterBy filterBy = _mapper.Map<AppFilterBy>(request.FilterBy);
+            AppSortBy sortBy = _mapper.Map<AppSortBy>(request.SortBy);
+            Paging paging = _mapper.Map<Paging>(request.Paging);
 
             var response = await _applicationRepository.QueryAsync(
                 new ApplicationListQry
                 {
                     FilterBy = filterBy,
                     SortBy = sortBy,
-                    Paging = new Paging(request.Page, request.PageSize)
+                    Paging = paging
                 },
                 ct);
 
             return _mapper.Map<ApplicationListResponse>(response);
         }
 
-        public async Task<ApplicationStatisticsResponse> Handle(ApplicationStatisticsRequest request, CancellationToken ct)
+        public async Task<ApplicationStatisticsResponse> Handle(ApplicationStatisticsQuery request, CancellationToken ct)
         {
             var qry = _mapper.Map<ApplicationStatisticsQry>(request);
             var response = await _applicationRepository.QueryApplicationStatisticsAsync(qry, ct);
@@ -184,58 +166,6 @@ namespace Spd.Manager.Cases
             return resp;
         }
 
-        private AppFilterBy GetAppFilterBy(string? filters, Guid orgId)
-        {
-            AppFilterBy appFilterBy = new AppFilterBy(orgId);
-            if (string.IsNullOrWhiteSpace(filters)) return appFilterBy;
 
-            try
-            {
-                //filters string should be like status==AwaitingPayment|AwaitingApplicant,searchText@=str
-                string[] items = filters.Split(',');
-                foreach (string item in items)
-                {
-                    string[] strs = item.Split("==");
-                    if (strs.Length == 2)
-                    {
-                        if (strs[0] == "status")
-                        {
-                            string[] status = strs[1].Split("|");
-                            appFilterBy.ApplicationPortalStatus = status.Select(s => Enum.Parse<ApplicationPortalStatusCd>(s)).AsEnumerable();
-                        }
-                    }
-                    else
-                    {
-                        if (strs.Length == 1)
-                        {
-                            string[] s = strs[0].Split("@=");
-                            if (s.Length == 2 && s[0] == "searchText")
-                            {
-                                appFilterBy.NameOrEmailOrAppIdContains = s[1];
-                            }
-                        }
-                    }
-                }
-            } catch {
-                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Invalid filter string.");
-            }
-            return appFilterBy;
-        }
-
-        private AppSortBy GetAppSortBy(string? sortby)
-        {
-            //sorts string should be like: sorts=-submittedOn or sorts=name
-            return sortby switch
-            {
-                null => new AppSortBy(),
-                "submittedon" => new AppSortBy(false),
-                "-submittedon" => new AppSortBy(true),
-                "name" => new AppSortBy(null, false),
-                "-name" => new AppSortBy(null, true),
-                "companyname" => new AppSortBy(null, null, false),
-                "-companyname" => new AppSortBy(null, null, true),
-                _ => new AppSortBy()
-            } ;
-        }
     }
 }
