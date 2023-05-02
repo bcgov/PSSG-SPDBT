@@ -19215,7 +19215,7 @@
         </Key>
         <Property Name="spd_phonenumber" Type="Edm.String" Unicode="false" />
         <Property Name="spd_name" Type="Edm.String" Unicode="false" />
-        <Property Name="_spd_submittedby_value" Type="Edm.Guid" />
+        <Property Name="spd_portalstatus" Type="Edm.Int32" />
         <Property Name="_owningteam_value" Type="Edm.Guid" />
         <Property Name="spd_lastname" Type="Edm.String" Unicode="false" />
         <Property Name="spd_consent" Type="Edm.Boolean" />
@@ -19239,6 +19239,7 @@
         <Property Name="_createdby_value" Type="Edm.Guid" />
         <Property Name="versionnumber" Type="Edm.Int64" />
         <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
+        <Property Name="_spd_submittedby_value" Type="Edm.Guid" />
         <Property Name="spd_casestatus" Type="Edm.String" Unicode="false" />
         <Property Name="createdon" Type="Edm.DateTimeOffset" />
         <Property Name="_modifiedby_value" Type="Edm.Guid" />
@@ -19846,6 +19847,7 @@
         <Property Name="createdon" Type="Edm.DateTimeOffset" />
         <Property Name="statuscode" Type="Edm.Int32" />
         <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
+        <Property Name="spd_errordescription" Type="Edm.String" Unicode="false" />
         <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
         <Property Name="spd_response" Type="Edm.Int32" />
         <Property Name="spd_manualpayment" Type="Edm.Boolean" />
