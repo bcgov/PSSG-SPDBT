@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Spd.Resource.Organizations.Registration;

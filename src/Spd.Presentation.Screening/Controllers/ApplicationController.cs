@@ -37,7 +37,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <summary>
         /// get the active application invites list.
         /// support wildcard search for email and name, it will search email or name contains str.
-        /// sample: /application-invites?filter=searchText@=str
+        /// sample: /application-invites?filters=searchText@=str
         /// </summary>
         /// <param name="orgId"></param>
         /// <param name="filters"></param>
@@ -50,6 +50,8 @@ namespace Spd.Presentation.Screening.Controllers
         {
             page = (page == null || page < 0) ? 0 : page;
             pageSize = (pageSize == null || pageSize == 0 || pageSize > 100) ? 10 : pageSize;
+            PaginationRequest pagination = new PaginationRequest((int)page, (int)pageSize);
+
             string? filterValue = null;
             if (!string.IsNullOrWhiteSpace(filters))
             {
@@ -64,7 +66,14 @@ namespace Spd.Presentation.Screening.Controllers
                     throw new ApiException(System.Net.HttpStatusCode.BadRequest, "invalid filtering string.");
                 }
             }
-            return await _mediator.Send(new ApplicationInviteListQuery(orgId, SearchContains: filterValue, (int)page, (int)pageSize));
+            AppInviteListFilterBy filterBy = new AppInviteListFilterBy(orgId, EmailOrNameContains: filterValue);
+            AppInviteListSortBy sortBy = new AppInviteListSortBy(SubmittedDateDesc: true);
+            return await _mediator.Send(new ApplicationInviteListQuery()
+            {
+                FilterBy = filterBy,
+                SortBy = sortBy,
+                Paging = pagination
+            });
         }
 
         /// <summary>
@@ -97,8 +106,11 @@ namespace Spd.Presentation.Screening.Controllers
         }
 
         /// <summary>
-        /// return active applications belong to the organization.
-        /// sample: api/orgs/4165bdfe-7cb4-ed11-b83e-00505683fbf4/applications?filters=status=Pending|completed&sorts=firstname&page=1&pageSize=15
+        /// return all applications belong to the organization.
+        /// sort: submittedon, name, companyname , add - in front of name means descending.
+        /// filters: status, use | to filter multiple status : if no filters specified, endpoint returns all applications.
+        /// search:wild card search in name, email and caseID, such as searchText@=test
+        /// sample: api/orgs/4165bdfe-7cb4-ed11-b83e-00505683fbf4/applications?filters=status==AwaitingPayment|AwaitingApplicant,searchText@=str&sorts=name&page=1&pageSize=15
         /// </summary>
         /// <param name="orgId"></param>
         /// <param name="filters"></param>
@@ -108,15 +120,21 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/orgs/{orgId}/applications")]
         [HttpGet]
-        public async Task<ApplicationListResponse> GetList([FromRoute] Guid orgId, [FromQuery] string? filters, [FromQuery] string? sorts, [FromQuery] uint? page, [FromQuery] uint? pageSize)
+        public async Task<ApplicationListResponse> GetList([FromRoute] Guid orgId, [FromQuery] string? filters, [FromQuery] string? sorts, [FromQuery] int? page, [FromQuery] int? pageSize)
         {
-            //todo, when we do filtering and sorting, will complete this.
-            string f = filters;
-            string s = sorts;
-
             page = (page == null || page < 0) ? 0 : page;
             pageSize = (pageSize == null || pageSize == 0 || pageSize > 100) ? 10 : pageSize;
-            return await _mediator.Send(new ApplicationListQuery(orgId, (int)page, (int)pageSize));
+            if (string.IsNullOrWhiteSpace(sorts)) sorts = "-submittedOn";
+            PaginationRequest pagination = new PaginationRequest((int)page, (int)pageSize);
+            AppListFilterBy filterBy = GetAppListFilterBy(filters, orgId);
+            AppListSortBy sortBy = GetAppSortBy(sorts);
+            return await _mediator.Send(
+                new ApplicationListQuery
+                {
+                    FilterBy = filterBy,
+                    SortBy = sortBy,
+                    Paging = pagination
+                });
         }
 
         /// <summary>
@@ -128,7 +146,63 @@ namespace Spd.Presentation.Screening.Controllers
         [HttpGet]
         public async Task<ApplicationStatisticsResponse> GetAppStatsList([FromRoute] Guid orgId)
         {
-            return await _mediator.Send(new ApplicationStatisticsRequest(orgId));
+            return await _mediator.Send(new ApplicationStatisticsQuery(orgId));
+        }
+
+        private AppListFilterBy GetAppListFilterBy(string? filters, Guid orgId)
+        {
+            AppListFilterBy appListFilterBy = new AppListFilterBy(orgId);
+            if (string.IsNullOrWhiteSpace(filters)) return appListFilterBy;
+
+            try
+            {
+                //filters string should be like status==AwaitingPayment|AwaitingApplicant,searchText@=str
+                string[] items = filters.Split(',');
+                foreach (string item in items)
+                {
+                    string[] strs = item.Split("==");
+                    if (strs.Length == 2)
+                    {
+                        if (strs[0] == "status")
+                        {
+                            string[] status = strs[1].Split("|");
+                            appListFilterBy.ApplicationPortalStatus = status.Select(s => Enum.Parse<ApplicationPortalStatusCode>(s)).AsEnumerable();
+                        }
+                    }
+                    else
+                    {
+                        if (strs.Length == 1)
+                        {
+                            string[] s = strs[0].Split("@=");
+                            if (s.Length == 2 && s[0] == "searchText")
+                            {
+                                appListFilterBy.NameOrEmailOrAppIdContains = s[1];
+                            }
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Invalid filter string.");
+            }
+            return appListFilterBy;
+        }
+
+        private AppListSortBy GetAppSortBy(string? sortby)
+        {
+            //sorts string should be like: sorts=-submittedOn or sorts=name
+            return sortby switch
+            {
+                null => new AppListSortBy(),
+                "submittedon" => new AppListSortBy(false),
+                "-submittedon" => new AppListSortBy(true),
+                "name" => new AppListSortBy(null, false),
+                "-name" => new AppListSortBy(null, true),
+                "companyname" => new AppListSortBy(null, null, false),
+                "-companyname" => new AppListSortBy(null, null, true),
+                _ => new AppListSortBy()
+            };
         }
     }
 }
