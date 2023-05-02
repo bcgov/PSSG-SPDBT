@@ -13,7 +13,7 @@ namespace Spd.Manager.Cases
         IRequestHandler<ApplicationListQuery, ApplicationListResponse>,
         IRequestHandler<ApplicationInviteListQuery, ApplicationInviteListResponse>,
         IRequestHandler<ApplicationInviteDeleteCommand, Unit>,
-        IRequestHandler<ApplicationStatisticsRequest, ApplicationStatisticsResponse>,
+        IRequestHandler<ApplicationStatisticsQuery, ApplicationStatisticsResponse>,
         IApplicationManager
     {
         private readonly IApplicationRepository _applicationRepository;
@@ -33,7 +33,7 @@ namespace Spd.Manager.Cases
             ApplicationInvitesCreateResponse resp = new(createCmd.OrgId);
             if (createCmd.ApplicationInvitesCreateRequest.RequireDuplicateCheck)
             {
-                var duplicateResp = await CheckDuplicates(createCmd.ApplicationInvitesCreateRequest, createCmd.OrgId, ct);
+                var duplicateResp = await CheckDuplicateAppInvite(createCmd.ApplicationInvitesCreateRequest, createCmd.OrgId, ct);
                 resp.IsDuplicateCheckRequired = createCmd.ApplicationInvitesCreateRequest.RequireDuplicateCheck;
                 resp.DuplicateResponses = duplicateResp;
                 if (duplicateResp.Any())
@@ -51,16 +51,9 @@ namespace Spd.Manager.Cases
         }
         public async Task<ApplicationInviteListResponse> Handle(ApplicationInviteListQuery request, CancellationToken ct)
         {
-            if (request.Page < 0) throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Incorrect page number");
-            if (request.PageSize < 1) throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Incorrect page size");
-
+            ApplicationInviteQuery query = _mapper.Map<ApplicationInviteQuery>(request);
             var response = await _applicationInviteRepository.QueryAsync(
-                new ApplicationInviteQuery
-                {
-                    FilterBy = new AppInviteFilterBy(request.OrgId, EmailOrNameContains: request.SearchContains),
-                    SortBy = new AppInviteSortBy(SubmittedDateDesc: true),
-                    Paging = new Paging(request.Page, request.PageSize)
-                },
+                query,
                 ct);
             return _mapper.Map<ApplicationInviteListResponse>(response);
         }
@@ -71,59 +64,7 @@ namespace Spd.Manager.Cases
             return default;
         }
 
-        //application
-        public async Task<ApplicationCreateResponse> Handle(ApplicationCreateCommand request, CancellationToken ct)
-        {
-            ApplicationCreateResponse result = new();
-            request.ApplicationCreateRequest.OrgId = request.OrgId;
-            if (request.ApplicationCreateRequest.RequireDuplicateCheck)
-            {
-                result = await CheckDuplicate(request.ApplicationCreateRequest, ct);
-                result.IsDuplicateCheckRequired = true;
-                if (result.HasPotentialDuplicate)
-                {
-                    return result;
-                }
-            }
-
-            var cmd = _mapper.Map<ApplicationCreateCmd>(request.ApplicationCreateRequest);
-            cmd.OrgId = request.OrgId;
-            cmd.CreatedByUserId = request.UserId;
-            Guid? applicationId = await _applicationRepository.AddApplicationAsync(cmd, ct);
-            if (applicationId.HasValue)
-            {
-                result.ApplicationId = applicationId.Value;
-                result.CreateSuccess = true;
-            }
-            return result;
-        }
-
-        public async Task<ApplicationListResponse> Handle(ApplicationListQuery request, CancellationToken ct)
-        {
-            if (request.Page < 0) throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Incorrect page number");
-            if (request.PageSize < 1) throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Incorrect page size");
-
-            var response = await _applicationRepository.QueryAsync(
-                new ApplicationQry
-                {
-                    FilterBy = new AppFilterBy(request.OrgId, null),
-                    SortBy = new AppSortBy(true, null),
-                    Paging = new Paging(request.Page, request.PageSize)
-                },
-                ct);
-
-            return _mapper.Map<ApplicationListResponse>(response);
-        }
-
-        public async Task<ApplicationStatisticsResponse> Handle(ApplicationStatisticsRequest request, CancellationToken ct)
-        {
-            var qry = _mapper.Map<ApplicationStatisticsQry>(request);
-            var response = await _applicationRepository.QueryApplicationStatisticsAsync(qry, ct);
-
-            return _mapper.Map<ApplicationStatisticsResponse>(response);
-        }
-
-        private async Task<IEnumerable<ApplicationInviteDuplicateResponse>> CheckDuplicates(ApplicationInvitesCreateRequest request, Guid orgId, CancellationToken cancellationToken)
+        private async Task<IEnumerable<ApplicationInviteDuplicateResponse>> CheckDuplicateAppInvite(ApplicationInvitesCreateRequest request, Guid orgId, CancellationToken cancellationToken)
         {
             List<ApplicationInviteDuplicateResponse> resp = new List<ApplicationInviteDuplicateResponse>();
             foreach (var item in request.ApplicationInviteCreateRequests)
@@ -156,7 +97,59 @@ namespace Spd.Manager.Cases
             return resp;
         }
 
-        private async Task<ApplicationCreateResponse> CheckDuplicate(ApplicationCreateRequest request, CancellationToken ct)
+        //application
+        public async Task<ApplicationCreateResponse> Handle(ApplicationCreateCommand request, CancellationToken ct)
+        {
+            ApplicationCreateResponse result = new();
+            request.ApplicationCreateRequest.OrgId = request.OrgId;
+            if (request.ApplicationCreateRequest.RequireDuplicateCheck)
+            {
+                result = await CheckDuplicateApp(request.ApplicationCreateRequest, ct);
+                result.IsDuplicateCheckRequired = true;
+                if (result.HasPotentialDuplicate)
+                {
+                    return result;
+                }
+            }
+
+            var cmd = _mapper.Map<ApplicationCreateCmd>(request.ApplicationCreateRequest);
+            cmd.OrgId = request.OrgId;
+            cmd.CreatedByUserId = request.UserId;
+            Guid? applicationId = await _applicationRepository.AddApplicationAsync(cmd, ct);
+            if (applicationId.HasValue)
+            {
+                result.ApplicationId = applicationId.Value;
+                result.CreateSuccess = true;
+            }
+            return result;
+        }
+        public async Task<ApplicationListResponse> Handle(ApplicationListQuery request, CancellationToken ct)
+        {
+            AppFilterBy filterBy = _mapper.Map<AppFilterBy>(request.FilterBy);
+            AppSortBy sortBy = _mapper.Map<AppSortBy>(request.SortBy);
+            Paging paging = _mapper.Map<Paging>(request.Paging);
+
+            var response = await _applicationRepository.QueryAsync(
+                new ApplicationListQry
+                {
+                    FilterBy = filterBy,
+                    SortBy = sortBy,
+                    Paging = paging
+                },
+                ct);
+
+            return _mapper.Map<ApplicationListResponse>(response);
+        }
+
+        public async Task<ApplicationStatisticsResponse> Handle(ApplicationStatisticsQuery request, CancellationToken ct)
+        {
+            var qry = _mapper.Map<ApplicationStatisticsQry>(request);
+            var response = await _applicationRepository.QueryApplicationStatisticsAsync(qry, ct);
+
+            return _mapper.Map<ApplicationStatisticsResponse>(response);
+        }
+
+        private async Task<ApplicationCreateResponse> CheckDuplicateApp(ApplicationCreateRequest request, CancellationToken ct)
         {
             ApplicationCreateResponse resp = new ApplicationCreateResponse();
 
@@ -172,5 +165,7 @@ namespace Spd.Manager.Cases
 
             return resp;
         }
+
+
     }
 }

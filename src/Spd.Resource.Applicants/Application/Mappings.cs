@@ -31,6 +31,7 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.spd_country, opt => opt.MapFrom(s => s.Country))
             .ForMember(d => d.spd_submittedon, opt => opt.MapFrom(s => DateTimeOffset.UtcNow))
             .ForMember(d => d.spd_declaration, opt => opt.MapFrom(s => s.AgreeToCompleteAndAccurate))
+            .ForMember(d => d.spd_payer, opt => opt.MapFrom(s => (int)Enum.Parse<PayerPreferenceOptionSet>(s.PayeeType.ToString())))
             .ForMember(d => d.spd_declarationdate, opt => opt.MapFrom(s => DateTime.Now))
             .ForMember(d => d.spd_identityconfirmed, opt => opt.MapFrom(s => s.HaveVerifiedIdentity));
 
@@ -62,10 +63,11 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.address1_stateorprovince, opt => opt.MapFrom(s => s.Province))
             .ForMember(d => d.address1_country, opt => opt.MapFrom(s => s.Country));
 
-            _ = CreateMap<spd_application, ApplicationResp>()
+            _ = CreateMap<spd_application, ApplicationResult>()
             .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_applicationid))
             .ForMember(d => d.OrgId, opt => opt.MapFrom(s => s._spd_organizationid_value))
             .ForMember(d => d.ApplicationNumber, opt => opt.MapFrom(s => s.spd_name))
+            .ForMember(d => d.ApplicationPortalStatus, opt => opt.MapFrom(s => s.spd_portalstatus == null ? null : ((ApplicationPortalStatus)s.spd_portalstatus.Value).ToString()))
             .ForMember(d => d.GivenName, opt => opt.MapFrom(s => s.spd_firstname))
             .ForMember(d => d.MiddleName1, opt => opt.MapFrom(s => s.spd_middlename1))
             .ForMember(d => d.MiddleName2, opt => opt.MapFrom(s => s.spd_middlename2))
@@ -75,8 +77,7 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.spd_emailaddress1))
             .ForMember(d => d.ContractedCompanyName, opt => opt.MapFrom(s => s.spd_contractedcompanyname))
             .ForMember(d => d.CreatedOn, opt => opt.MapFrom(s => s.createdon))
-            .ForMember(d => d.HaveVerifiedIdentity, opt => opt.MapFrom(s => s.spd_identityconfirmed))
-            .ForMember(d => d.Status, opt => opt.MapFrom(s => s.statuscode == null ? string.Empty : ((ApplicationActiveStatus)s.statuscode).ToString()));
+            .ForMember(d => d.HaveVerifiedIdentity, opt => opt.MapFrom(s => s.spd_identityconfirmed));
         }
         private static string? GetPaidBy(int? code)
         {
