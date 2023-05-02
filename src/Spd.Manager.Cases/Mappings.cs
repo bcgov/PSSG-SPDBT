@@ -25,7 +25,7 @@ namespace Spd.Manager.Cases
             CreateMap<ApplicationCreateRequest, ApplicationCreateCmd>();
             CreateMap<AliasCreateRequest, AliasCreateCmd>();
             CreateMap<ApplicationResult, ApplicationResponse>()
-                .ForMember(d => d.Status, opt => opt.MapFrom(s => s.ApplicationPortalStatus));
+                .ForMember(d => d.Status, opt => opt.MapFrom(s => s.ApplicationPortalStatus == null ? null : Enum.Parse<ApplicationPortalStatusCode>(s.ApplicationPortalStatus).ToString()));
             CreateMap<ApplicationListResp, ApplicationListResponse>();
             CreateMap<AppListFilterBy, AppFilterBy>();
             CreateMap<AppListSortBy, AppSortBy>();
