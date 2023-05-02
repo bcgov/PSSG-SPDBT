@@ -98,7 +98,7 @@ namespace Spd.Resource.Organizations.Org
         {
             var org = await _dynaContext.GetOrgById(query.OrgId, ct);
             if (org?.statecode == DynamicsConstants.StateCode_Inactive)
-                throw new InactiveException(System.Net.HttpStatusCode.BadRequest, $"Organization {query.OrgId} is inactive");
+                return null;
             var response = _mapper.Map<OrgResult>(org);
             return new OrgQryResult(response);
         }
