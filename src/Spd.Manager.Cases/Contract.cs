@@ -155,7 +155,7 @@ namespace Spd.Manager.Cases
         public bool? HaveVerifiedIdentity { get; set; }
         public PayeePreferenceTypeCode? PaidBy { get; set; }
         public DateTimeOffset? CreatedOn { get; set; }
-        public ApplicationPortalStatusCode Status { get; set; }
+        public ApplicationPortalStatusCode? Status { get; set; }
     }
 
     public enum ApplicationPortalStatusCode
