@@ -140,6 +140,7 @@ namespace Spd.Resource.Organizations.User
             if (identityId != null)
                 users = users.Where(a => a._spd_identityid_value == identityId);
 
+            var temp = users.ToList();
             await Parallel.ForEachAsync(users, cancellationToken, async (user, cancellationToken) =>
             {
                 var role = _dynaContext
