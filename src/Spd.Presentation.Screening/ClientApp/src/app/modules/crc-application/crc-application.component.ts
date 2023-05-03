@@ -60,6 +60,7 @@ export interface CrcFormStepComponent {
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
 						(nextStepperStep)="onNextStepperStep(stepper)"
 						(scrollIntoView)="onScrollIntoView()"
+						(reEditCrcData)="onReEditCrcData()"
 					></app-step-personal-info>
 				</mat-step>
 
@@ -148,6 +149,11 @@ export class CrcApplicationComponent implements OnInit {
 		}
 	}
 
+	onReEditCrcData(): void {
+		this.stepper.selectedIndex = 1;
+		this.stepPersonalInfoComponent.childstepper.selectedIndex = 0;
+	}
+
 	onStepSelectionChange(event: StepperSelectionEvent) {
 		this.onScrollIntoView();
 	}
@@ -160,6 +166,17 @@ export class CrcApplicationComponent implements OnInit {
 		// complete the current step
 		if (stepper && stepper.selected) stepper.selected.completed = true;
 		this.stepper.next();
+
+		// make these steps uneditable...
+		// so that after payment, user cannot navigate to any of these steps
+		if (stepper.selectedIndex == 5) {
+			for (let i = 0; i < 5; i++) {
+				let step = this.stepper.steps.get(i);
+				if (step) {
+					step.editable = false;
+				}
+			}
+		}
 	}
 
 	onSaveStepperStep(): void {

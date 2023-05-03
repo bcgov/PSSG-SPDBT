@@ -3,14 +3,14 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { CrcApplicationRoutingModule } from './crc-application-routing.module';
 import { CrcApplicationComponent } from './crc-application.component';
 import { AgreementOfTermsComponent } from './step-components/agreement-of-terms.component';
-import { ApplicationProgressComponent } from './step-components/application-progress.component';
+import { ApplicationSubmittedComponent } from './step-components/application-submitted.component';
 import { ChecklistComponent } from './step-components/checklist.component';
-import { CompletedComponent } from './step-components/completed.component';
 import { ContactInformationComponent } from './step-components/contact-information.component';
 import { DeclarationComponent } from './step-components/declaration.component';
 import { LogInOptionsComponent } from './step-components/log-in-options.component';
 import { MailingAddressComponent } from './step-components/mailing-address.component';
-import { PaymentComponent } from './step-components/payment.component';
+import { PaymentFailureComponent } from './step-components/payment-failure.component';
+import { PaymentSuccessComponent } from './step-components/payment-success.component';
 import { PersonalInformationComponent } from './step-components/personal-information.component';
 import { PreviousNameComponent } from './step-components/previous-name.component';
 import { SecurityInformationComponent } from './step-components/security-information.component';
@@ -43,9 +43,9 @@ import { StepTermsAndCondComponent } from './steps/step-terms-and-cond.component
 		SummaryComponent,
 		SecurityInformationComponent,
 		DeclarationComponent,
-		PaymentComponent,
-		CompletedComponent,
-		ApplicationProgressComponent,
+		PaymentSuccessComponent,
+		PaymentFailureComponent,
+		ApplicationSubmittedComponent,
 	],
 	imports: [SharedModule, CrcApplicationRoutingModule],
 	providers: [],

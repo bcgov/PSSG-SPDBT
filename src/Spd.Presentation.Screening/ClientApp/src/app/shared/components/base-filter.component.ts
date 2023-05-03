@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 
 const FILTER_OPERATORS = {
-	// equals: '==',
+	equals: '==',
 	// notEquals: '!=',
 	// greaterThan: '>',
 	// lessThan: '<',

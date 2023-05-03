@@ -67,7 +67,7 @@ namespace Spd.Manager.Membership.UserProfile
                     {
                         UserInfo ui = _mapper.Map<UserInfo>(u);
                         var orgResult = await _orgRepository.QueryOrgAsync(new OrgByIdQry((Guid)u.OrganizationId), ct);
-                        if (orgResult != null)
+                        if (orgResult != null) // do not add an inactive organization
                         {
                             ui.OrgName = orgResult.OrgResult.OrganizationName;
                             ui.OrgSettings = _mapper.Map<OrgSettings>(orgResult.OrgResult);

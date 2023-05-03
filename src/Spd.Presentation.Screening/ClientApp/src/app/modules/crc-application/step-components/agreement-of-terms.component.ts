@@ -1,5 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Subject } from 'rxjs';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { CaptchaResponse, CaptchaResponseType } from 'src/app/shared/components/captcha-v2.component';
 import { CrcFormStepComponent } from '../crc-application.component';
 
 @Component({
@@ -64,13 +67,13 @@ import { CrcFormStepComponent } from '../crc-application.component';
 						</div>
 					</div>
 
-					<div class="row" *ngIf="displayScrollToBottomMessage">
+					<div class="row" *ngIf="displayValidationErrors && !hasScrolledToBottom">
 						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
 							<div class="alert alert-warning" role="alert">Please scroll to the bottom</div>
 						</div>
 					</div>
 
-					<div class="row my-4">
+					<div class="row">
 						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
 							<mat-checkbox formControlName="agreeToCriminalCheck">
 								I hereby consent to a criminal record check pursuant to the Criminal Records Review Act (CRRA) to
@@ -89,7 +92,7 @@ import { CrcFormStepComponent } from '../crc-application.component';
 						</div>
 					</div>
 
-					<div class="row my-4">
+					<div class="row">
 						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
 							<mat-checkbox formControlName="agreeToVulnerableSectorSearch">
 								I hereby consent to a Vulnerable Sector search to check if I have been convicted if I have been
@@ -105,6 +108,16 @@ import { CrcFormStepComponent } from '../crc-application.component';
 								"
 								>This is required</mat-error
 							>
+						</div>
+					</div>
+
+					<div class="row" *ngIf="displayCaptcha">
+						<div class="offset-md-2 col-md-8 col-sm-12">
+							<app-captcha-v2
+								(captchaResponse)="onTokenResponse($event)"
+								[resetControl]="resetRecaptcha"
+							></app-captcha-v2>
+							<mat-error *ngIf="displayValidationErrors && !captchaPassed"> This is required </mat-error>
 						</div>
 					</div>
 				</div>
@@ -127,30 +140,64 @@ import { CrcFormStepComponent } from '../crc-application.component';
 		`,
 	],
 })
-export class AgreementOfTermsComponent implements CrcFormStepComponent {
+export class AgreementOfTermsComponent implements OnInit, CrcFormStepComponent {
+	@Input() resetRecaptcha: Subject<void> = new Subject<void>();
+
 	form: FormGroup = this.formBuilder.group({
 		agreeToCriminalCheck: new FormControl('', [Validators.required]),
 		agreeToVulnerableSectorSearch: new FormControl('', [Validators.required]),
 	});
 	hasScrolledToBottom = false;
-	displayScrollToBottomMessage = false;
+	displayValidationErrors = false;
 
-	constructor(private formBuilder: FormBuilder) {}
+	displayCaptcha = false;
+	captchaPassed = false;
+	captchaResponse: CaptchaResponse | null = null;
+
+	constructor(private formBuilder: FormBuilder, private authenticationService: AuthenticationService) {}
+
+	ngOnInit(): void {
+		this.authenticationService.isLoginSubject$.subscribe((_subjectData: any) => {
+			const isLoggedIn = this.authenticationService.isLoggedIn();
+			this.displayCaptcha = !isLoggedIn;
+		});
+
+		this.resetRecaptcha.subscribe(() => this.onResetRecaptcha());
+	}
 
 	getDataToSave(): any {
-		return this.form.value;
+		return {
+			...this.form.value,
+			recaptcha: this.displayCaptcha && this.captchaPassed ? this.captchaResponse?.resolved : null,
+		};
 	}
 
 	isFormValid(): boolean {
-		this.displayScrollToBottomMessage = !this.hasScrolledToBottom;
+		this.displayValidationErrors = !this.hasScrolledToBottom || !this.captchaPassed;
+		return this.form.valid &&
+			this.hasScrolledToBottom &&
+			((this.displayCaptcha && this.captchaPassed) || !this.displayCaptcha)
+			? true
+			: false;
+	}
 
-		return this.form.valid && this.hasScrolledToBottom ? true : false;
+	onResetRecaptcha(): void {
+		this.captchaPassed = false;
+		this.captchaResponse = null;
 	}
 
 	onScrollTermsAndConditions(e: any) {
-		this.displayScrollToBottomMessage = false;
 		if (e.target.scrollHeight < e.target.scrollTop + e.target.offsetHeight) {
 			this.hasScrolledToBottom = true;
+		}
+	}
+
+	onTokenResponse($event: CaptchaResponse) {
+		this.captchaResponse = $event;
+		if ($event.type === CaptchaResponseType.success && this.captchaResponse?.resolved) {
+			this.captchaPassed = true;
+		} else {
+			this.captchaPassed = false;
 		}
 	}
 }

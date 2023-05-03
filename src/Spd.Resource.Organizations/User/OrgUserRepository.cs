@@ -47,7 +47,7 @@ namespace Spd.Resource.Organizations.User
             if (createUserCmd.User.OrganizationId == null)
                 throw new ApiException(HttpStatusCode.BadRequest, "Organization cannot be null");
 
-            var organization = _dynaContext.GetOrgById((Guid)createUserCmd.User.OrganizationId, cancellationToken);
+            var organization = await _dynaContext.GetOrgById((Guid)createUserCmd.User.OrganizationId, cancellationToken);
 
             // create user 
             spd_portaluser user = _mapper.Map<spd_portaluser>(createUserCmd.User);
@@ -124,7 +124,7 @@ namespace Spd.Resource.Organizations.User
 
         private async Task<OrgUserResult> GetUserAsync(Guid userId, CancellationToken ct)
         {
-            var user = await GetUserById(userId, ct); 
+            var user = await GetUserById(userId, ct);
             return new OrgUserResult(_mapper.Map<UserResult>(user));
         }
 
@@ -140,7 +140,8 @@ namespace Spd.Resource.Organizations.User
             if (identityId != null)
                 users = users.Where(a => a._spd_identityid_value == identityId);
 
-            await Parallel.ForEachAsync(users, cancellationToken, async (user, cancellationToken) =>
+            var userList = users.ToList();
+            await Parallel.ForEachAsync(userList, cancellationToken, async (user, cancellationToken) =>
             {
                 var role = _dynaContext
                     .spd_spd_role_spd_portaluserset
@@ -150,7 +151,7 @@ namespace Spd.Resource.Organizations.User
                     user.spd_spd_role_spd_portaluser = new Collection<spd_role> { new spd_role() { spd_roleid = role.spd_roleid } };
             });
 
-            return new OrgUsersResult(_mapper.Map<IEnumerable<UserResult>>(users));
+            return new OrgUsersResult(_mapper.Map<IEnumerable<UserResult>>(userList));
         }
 
         private spd_portalinvitation? GetPortalInvitationByUserId(Guid userId)
