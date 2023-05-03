@@ -10,8 +10,8 @@ import { Component, EventEmitter, Output } from '@angular/core';
 					<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
 						<section class="px-4 py-2 mb-3 card-section">
 							<div class="row mt-2">
-								<div class="col-xl-4 col-lg-4 col-md-12">
-									<h4>Organization Information</h4>
+								<div class="col-xl-3 col-lg-4 col-md-12">
+									<h4>Organization<br />Information</h4>
 								</div>
 								<div class="col-xl-4 col-lg-4 col-md-12">
 									<div class="text-label d-block text-muted">Requesting Organization</div>
@@ -21,12 +21,15 @@ import { Component, EventEmitter, Output } from '@angular/core';
 									<div class="text-label d-block text-muted mt-2 mt-lg-0">Organization Phone Number</div>
 									<div class="text-data">(250) 455-6565</div>
 								</div>
+								<div class="col-xl-1 col-lg-1 col-md-12 text-end">
+									<mat-icon matTooltip="Edit this data" (click)="onReEditOrg()">edit</mat-icon>
+								</div>
 							</div>
 
 							<mat-divider class="my-3"></mat-divider>
 
 							<div class="row mb-2">
-								<div class="offset-xl-4 col-xl-4 offset-lg-4 col-lg-4 col-md-12">
+								<div class="offset-xl-3 col-xl-4 offset-lg-4 col-lg-4 col-md-12">
 									<div class="text-label d-block text-muted">Organization Address</div>
 									<div class="text-data">760 Vernon Ave, Victoria, BC V8X 2W6, Canada</div>
 								</div>
@@ -42,14 +45,14 @@ import { Component, EventEmitter, Output } from '@angular/core';
 					<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
 						<section class="px-4 py-2 mb-3 card-section">
 							<div class="row mt-2">
-								<div class="col-xl-4 col-lg-4 col-md-12">
-									<h4>Contact Information</h4>
+								<div class="col-xl-3 col-lg-4 col-md-12">
+									<h4>Contact<br />Information</h4>
 								</div>
 								<div class="col-xl-4 col-lg-4 col-md-12">
 									<div class="text-label d-block text-muted">Contact Given Name</div>
 									<div class="text-data">John</div>
 								</div>
-								<div class="col-xl-3 col-lg-3 col-md-12">
+								<div class="col-xl-4 col-lg-3 col-md-12">
 									<div class="text-label d-block text-muted mt-2 mt-lg-0">Contact Surname</div>
 									<div class="text-data">Smith</div>
 								</div>
@@ -61,7 +64,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 							<mat-divider class="my-3"></mat-divider>
 
 							<div class="row mb-2">
-								<div class="offset-xl-4 col-xl-4 offset-lg-4 col-lg-4 col-md-12">
+								<div class="offset-xl-3 col-xl-4 offset-lg-4 col-lg-4 col-md-12">
 									<div class="text-label d-block text-muted">Email</div>
 									<div class="text-data">test@test.com</div>
 								</div>
@@ -72,7 +75,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 							</div>
 
 							<div class="row mb-2">
-								<div class="offset-xl-4 col-xl-4 offset-lg-4 col-lg-4 col-md-12">
+								<div class="offset-xl-3 col-xl-4 offset-lg-4 col-lg-4 col-md-12">
 									<div class="text-label d-block text-muted">Date of Birth</div>
 									<div class="text-data">2000-Jan-04</div>
 								</div>
@@ -83,21 +86,21 @@ import { Component, EventEmitter, Output } from '@angular/core';
 							</div>
 
 							<div class="row mt-2">
-								<div class="offset-xl-4 col-xl-8 offset-lg-4 col-lg-8 col-md-12">
+								<div class="offset-xl-3 col-xl-8 offset-lg-4 col-lg-8 col-md-12">
 									<div class="text-label d-block text-muted">BC Drivers License</div>
 									<div class="text-data">9998877</div>
 								</div>
 							</div>
 
 							<div class="row mt-2">
-								<div class="offset-xl-4 col-xl-8 offset-lg-4 col-lg-8 col-md-12">
+								<div class="offset-xl-3 col-xl-8 offset-lg-4 col-lg-8 col-md-12">
 									<div class="text-label d-block text-muted">Previous Names</div>
 									<div class="text-data">Norma Jeane Mortenson, Jean Morty</div>
 								</div>
 							</div>
 
 							<div class="row my-2">
-								<div class="offset-xl-4 col-xl-8 offset-lg-4 col-lg-8 col-md-12">
+								<div class="offset-xl-3 col-xl-8 offset-lg-4 col-lg-8 col-md-12">
 									<div class="text-label d-block text-muted">Mailing Address</div>
 									<div class="text-data">755 Caledonia Avenue, Victoria, BC V8T 0C2, Canada</div>
 								</div>
@@ -134,9 +137,14 @@ import { Component, EventEmitter, Output } from '@angular/core';
 	],
 })
 export class SummaryComponent {
-	@Output() reEdit: EventEmitter<boolean> = new EventEmitter();
+	@Output() reEditPersonalInformation: EventEmitter<boolean> = new EventEmitter();
+	@Output() reEditCrcInformation: EventEmitter<boolean> = new EventEmitter();
+
+	onReEditOrg(): void {
+		this.reEditCrcInformation.emit(true);
+	}
 
 	onReEditContact(): void {
-		this.reEdit.emit(true);
+		this.reEditPersonalInformation.emit(true);
 	}
 }

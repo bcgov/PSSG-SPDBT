@@ -111,10 +111,11 @@ namespace Spd.Manager.Membership.OrgUser
 
             var userResps = _mapper.Map<IEnumerable<OrgUserResponse>>(existingUsersResult.UserResults);
             var org = await _orgRepository.QueryOrgAsync(new OrgByIdQry(request.OrganizationId), ct);
+
             return new OrgUserListResponse
             {
-                MaximumNumberOfAuthorizedContacts = org.OrgResult.MaxContacts,
-                MaximumNumberOfPrimaryAuthorizedContacts = org.OrgResult.MaxPrimaryContacts,
+                MaximumNumberOfAuthorizedContacts = org != null ? org.OrgResult.MaxContacts : 0,
+                MaximumNumberOfPrimaryAuthorizedContacts = org != null ? org.OrgResult.MaxPrimaryContacts : 0,
                 Users = userResps
             };
         }
@@ -122,17 +123,17 @@ namespace Spd.Manager.Membership.OrgUser
         private async Task CheckMaxRoleNumberRuleAsync(List<UserResult> userList, Guid orgId, CancellationToken ct)
         {
             var org = await _orgRepository.QueryOrgAsync(new OrgByIdQry(orgId), ct);
-            int maxContacts = org.OrgResult.MaxContacts;
-            int maxPrimaryContacts = org.OrgResult.MaxPrimaryContacts;
+            int maxContacts = org != null ? org.OrgResult.MaxContacts : 0;
+            int maxPrimaryContacts = org != null ? org.OrgResult.MaxPrimaryContacts : 0;
             int userNo = userList.Count;
             if (userNo > maxContacts)
             {
-                throw new OutOfRangeException(HttpStatusCode.BadRequest, $"No more contacts can created. The limit of {maxContacts} contacts has been reached.");
+                throw new OutOfRangeException(HttpStatusCode.BadRequest, $"No more contacts can be created. The limit of {maxContacts} contacts has been reached.");
             }
             int primaryUserNo = userList.Count(u => u.ContactAuthorizationTypeCode == ContactRoleCode.Primary);
             if (primaryUserNo > maxPrimaryContacts)
             {
-                throw new OutOfRangeException(HttpStatusCode.BadRequest, $"No more primary contacts can created. The limit of {maxPrimaryContacts} primary contacts has been reached.");
+                throw new OutOfRangeException(HttpStatusCode.BadRequest, $"No more primary contacts can be created. The limit of {maxPrimaryContacts} primary contacts has been reached.");
             }
             if (primaryUserNo < 1)
             {

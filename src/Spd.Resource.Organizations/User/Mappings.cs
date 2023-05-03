@@ -19,7 +19,7 @@ namespace Spd.Resource.Organizations.User
             .ForMember(d => d.spd_phonenumber, opt => opt.MapFrom(s => s.PhoneNumber))
             .ReverseMap()
             .ForMember(d => d.OrganizationId, opt => opt.MapFrom(s => s._spd_organizationid_value))
-            .ForMember(d => d.ContactAuthorizationTypeCode, opt => opt.MapFrom(s => GetAuthorizationTypeCode(s.spd_spd_role_spd_portaluser.FirstOrDefault().spd_roleid)))
+            .ForMember(d => d.ContactAuthorizationTypeCode, opt => opt.MapFrom(s => GetAuthorizationTypeCode(s.spd_spd_role_spd_portaluser)))
             .ForMember(d => d.OrganizationId, opt => opt.MapFrom(s => s._spd_organizationid_value));
 
             _ = CreateMap<spd_portaluser, UserResult>()
@@ -38,8 +38,9 @@ namespace Spd.Resource.Organizations.User
             .ForMember(d => d.spd_jobtitle, opt => opt.MapFrom(s => s.JobTitle));
         }
 
-        private ContactRoleCode GetAuthorizationTypeCode(Guid? roleId)
+        private ContactRoleCode GetAuthorizationTypeCode(ICollection<spd_role> roles)
         {
+            Guid? roleId = roles?.FirstOrDefault()?.spd_roleid;
             if (roleId == null) return ContactRoleCode.Contact;
             return
                 Enum.Parse<ContactRoleCode>(

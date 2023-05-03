@@ -14,9 +14,9 @@ export { ApplicationInvitesCreateRequest } from './models/application-invites-cr
 export { ApplicationInvitesCreateResponse } from './models/application-invites-create-response';
 export { ApplicationListResponse } from './models/application-list-response';
 export { ApplicationOriginTypeCode } from './models/application-origin-type-code';
+export { ApplicationPortalStatusCode } from './models/application-portal-status-code';
 export { ApplicationResponse } from './models/application-response';
 export { ApplicationStatisticsResponse } from './models/application-statistics-response';
-export { ApplicationStatusCode } from './models/application-status-code';
 export { BooleanTypeCode } from './models/boolean-type-code';
 export { ConfigurationResponse } from './models/configuration-response';
 export { ContactAuthorizationTypeCode } from './models/contact-authorization-type-code';
