@@ -17,14 +17,14 @@ export interface PaymentResponse extends ApplicationResponse {
 @Component({
 	selector: 'app-payments',
 	template: `
-		<app-dashboard-header subtitle="Criminal Record Check Portal"></app-dashboard-header>
+		<app-dashboard-header subtitle="Criminal Record Checks"></app-dashboard-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
 					<h2 class="mb-2 fw-normal">Outstanding Payments</h2>
 					<div class="alert alert-warning d-flex align-items-center" role="alert">
 						<mat-icon class="d-none d-md-block alert-icon me-2">warning</mat-icon>
-						<div>There are 5 outstanding applications which require payment</div>
+						<div>There are 5 applications which require payment</div>
 					</div>
 				</div>
 			</div>

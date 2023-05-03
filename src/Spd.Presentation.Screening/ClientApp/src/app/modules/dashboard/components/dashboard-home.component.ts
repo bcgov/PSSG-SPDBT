@@ -4,7 +4,7 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 @Component({
 	selector: 'app-dashboard-home',
 	template: `
-		<app-dashboard-header subtitle="Criminal Record Check Portal"></app-dashboard-header>
+		<app-dashboard-header subtitle="Criminal Record Checks"></app-dashboard-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
@@ -28,7 +28,7 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 									<img class="box__image__item" src="/assets/dashboard/new_screening.png" />
 								</div>
 								<div class="box__text">
-									<h4>Request a criminal record check</h4>
+									<h4>Request a new criminal record check</h4>
 									<div class="d-grid gap-2 d-md-flex justify-content-between">
 										<p>Start a new check for one or more applicants</p>
 										<mat-icon class="ms-auto box__text__icon">arrow_forward_ios</mat-icon>
