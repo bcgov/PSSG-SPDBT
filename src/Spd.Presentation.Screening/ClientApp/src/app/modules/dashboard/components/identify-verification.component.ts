@@ -108,10 +108,9 @@ import { ApplicationStatusFilterMap } from './application-statuses-filter.compon
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="actions">
-							<mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
+						<ng-container matColumnDef="action1">
+							<mat-header-cell *matHeaderCellDef></mat-header-cell>
 							<mat-cell *matCellDef="let application">
-								<span class="mobile-label">Action:</span>
 								<button
 									mat-flat-button
 									class="table-button m-2"
@@ -121,7 +120,12 @@ import { ApplicationStatusFilterMap } from './application-statuses-filter.compon
 								>
 									<mat-icon>check</mat-icon>Confirm
 								</button>
+							</mat-cell>
+						</ng-container>
 
+						<ng-container matColumnDef="action2">
+							<mat-header-cell *matHeaderCellDef></mat-header-cell>
+							<mat-cell *matCellDef="let application">
 								<button
 									mat-flat-button
 									class="table-button m-2"
@@ -152,9 +156,12 @@ import { ApplicationStatusFilterMap } from './application-statuses-filter.compon
 	`,
 	styles: [
 		`
-			.mat-column-actions {
-				min-width: 300px;
-				justify-content: center !important;
+			.mat-column-action1 {
+				min-width: 150px;
+			}
+
+			.mat-column-action2 {
+				min-width: 150px;
 			}
 		`,
 	],
@@ -166,7 +173,15 @@ export class IdentifyVerificationComponent implements OnInit {
 	constants = SPD_CONSTANTS;
 	dataSource: MatTableDataSource<ApplicationResponse> = new MatTableDataSource<ApplicationResponse>([]);
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
-	columns: string[] = ['applicantName', 'emailAddress', 'dateOfBirth', 'createdOn', 'applicationNumber', 'actions'];
+	columns: string[] = [
+		'applicantName',
+		'emailAddress',
+		'dateOfBirth',
+		'createdOn',
+		'applicationNumber',
+		'action1',
+		'action2',
+	];
 
 	formFilter: FormGroup = this.formBuilder.group({
 		search: new FormControl(''),
@@ -233,8 +248,8 @@ export class IdentifyVerificationComponent implements OnInit {
 	onReject(application: ApplicationResponse) {
 		const data: DialogOptions = {
 			icon: 'info',
-			title: 'Criminal record check',
-			message: 'Would you like to send a new criminal record check request for this individual?',
+			title: 'Confirmation',
+			message: 'Would you like to send a new criminal record check request for this individual from your organization?',
 			actionText: 'Yes, send new request',
 			cancelText: 'No, reject',
 		};
