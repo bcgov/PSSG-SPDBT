@@ -19,6 +19,7 @@ public class DynamicsTestData
         var usr = await CreateUserInOrg("lastName", "firstName", org, identity);
         return org;
     }
+
     public async Task<account> CreateOrg(string orgName)
     {
         var existing = _context.accounts
@@ -37,6 +38,29 @@ public class DynamicsTestData
                 address1_city = "victoria",
             };
             _context.AddToaccounts(newOne);
+            await _context.SaveChangesAsync();
+            return newOne;
+        }
+    }
+
+    public async Task<spd_portalinvitation> CreatePortalInvitationInOrg(string surName, string givenName, account org)
+    {
+        var existing = _context.spd_portalinvitations
+            .Where(a => a.spd_surname == surName && a.spd_firstname == givenName && a._spd_organizationid_value == org.accountid)
+            .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
+            .FirstOrDefault();
+        if (existing != null) return existing;
+        else
+        {
+            Guid portalInvitationId = Guid.NewGuid();
+            spd_portalinvitation newOne = new spd_portalinvitation
+            {
+                spd_portalinvitationid = portalInvitationId,
+                spd_firstname = givenName,
+                spd_surname = surName
+            };
+            _context.AddTospd_portalinvitations(newOne);
+            _context.SetLink(newOne, nameof(spd_portaluser.spd_OrganizationId), org);
             await _context.SaveChangesAsync();
             return newOne;
         }
@@ -66,6 +90,7 @@ public class DynamicsTestData
             return newOne;
         }
     }
+
     public async Task<spd_identity> CreateIdentity(string userGuid, string orgGuid)
     {
         var existing = _context.spd_identities
@@ -87,6 +112,5 @@ public class DynamicsTestData
             return newOne;
         }
     }
-
 }
 
