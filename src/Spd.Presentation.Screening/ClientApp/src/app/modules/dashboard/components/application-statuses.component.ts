@@ -7,14 +7,14 @@ import { Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
 import {
 	ApplicationListResponse,
+	ApplicationPortalStatusCode,
 	ApplicationResponse,
 	ApplicationStatisticsResponse,
-	ApplicationStatusCode,
 } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import {
-	ApplicationStatusCodes,
+	ApplicationPortalStatusCodes,
 	ApplicationStatusFiltersTypes,
 	SelectOptions,
 } from 'src/app/core/constants/model-desc';
@@ -230,8 +230,8 @@ import {
 							<mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Status:</span>
-								<mat-chip-listbox aria-label="Status">
-									<mat-chip-option [ngClass]="getStatusClass(application.status)">
+								<mat-chip-listbox aria-label="Status" *ngIf="application.status">
+									<mat-chip-option [selectable]="false" [ngClass]="getStatusClass(application.status)">
 										{{ getStatusDesc(application.status) }}
 									</mat-chip-option>
 								</mat-chip-listbox>
@@ -248,7 +248,7 @@ import {
 									class="m-2"
 									style="color: var(--color-green);"
 									aria-label="Pay now"
-									*ngIf="application.status == applicationStatusCodeAll.PaymentPending"
+									*ngIf="application.status == applicationPortalStatusCodes.AwaitingPayment"
 								>
 									<mat-icon>send</mat-icon>Pay Now
 								</a>
@@ -259,7 +259,7 @@ import {
 									class="m-2"
 									style="color: var(--color-primary-light);"
 									aria-label="Verify Applicant"
-									*ngIf="application.status == applicationStatusCodeAll.ApplicantVerification"
+									*ngIf="application.status == applicationPortalStatusCodes.VerifyIdentity"
 								>
 									<mat-icon>send</mat-icon>Verify Applicant
 								</a>
@@ -310,8 +310,8 @@ export class ApplicationStatusesComponent implements OnInit {
 
 	constants = SPD_CONSTANTS;
 	applicationStatusFiltersTypes = ApplicationStatusFiltersTypes;
-	applicationStatusCodes = ApplicationStatusCodes;
-	applicationStatusCodeAll = ApplicationStatusCode;
+	applicationPortalStatusCodes = ApplicationPortalStatusCode;
+	applicationPortalStatusCodeAll = ApplicationPortalStatusCodes;
 	filterCriteriaExists = false;
 
 	dataSource: MatTableDataSource<ApplicationResponse> = new MatTableDataSource<ApplicationResponse>([]);
@@ -435,21 +435,25 @@ export class ApplicationStatusesComponent implements OnInit {
 
 	getStatusClass(code: string): any {
 		switch (code) {
-			case ApplicationStatusCode.Draft:
+			case ApplicationPortalStatusCode.InProgress:
 				return { 'mat-chip-green': true };
-			case ApplicationStatusCode.PaymentPending:
+			case ApplicationPortalStatusCode.VerifyIdentity:
+			case ApplicationPortalStatusCode.AwaitingPayment:
+			case ApplicationPortalStatusCode.AwaitingThirdParty:
+			case ApplicationPortalStatusCode.AwaitingApplicant:
 				return { 'mat-chip-yellow': true };
-			case ApplicationStatusCode.Incomplete:
+			case ApplicationPortalStatusCode.RiskFound:
+				return { 'mat-chip-red': true };
+			case ApplicationPortalStatusCode.Incomplete:
+			case ApplicationPortalStatusCode.UnderAssessment:
 				return { 'mat-chip-blue': true };
-			case ApplicationStatusCode.ApplicantVerification:
-				return { 'mat-chip-yellow': true };
 		}
 
 		return { 'mat-chip-grey': true };
 	}
 
 	getStatusDesc(code: string): string {
-		return (this.applicationStatusCodes.find((item: SelectOptions) => item.code == code)?.desc as string) ?? '';
+		return (this.applicationPortalStatusCodeAll.find((item: SelectOptions) => item.code == code)?.desc as string) ?? '';
 	}
 
 	getFilterStatusDesc(code: string): string {

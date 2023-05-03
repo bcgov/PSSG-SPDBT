@@ -64,7 +64,10 @@ import { PreviousNameComponent } from '../step-components/previous-name.componen
 			</mat-step>
 
 			<mat-step>
-				<app-summary (reEdit)="onReEdit()"></app-summary>
+				<app-summary
+					(reEditPersonalInformation)="onReEditPersonalInformation()"
+					(reEditCrcInformation)="onReEditCrcInformation()"
+				></app-summary>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -99,6 +102,7 @@ export class StepPersonalInfoComponent {
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
+	@Output() reEditCrcData: EventEmitter<boolean> = new EventEmitter();
 
 	@ViewChild(ContactInformationComponent)
 	contactInformationComponent!: ContactInformationComponent;
@@ -145,8 +149,12 @@ export class StepPersonalInfoComponent {
 		this.scrollIntoView.emit(true);
 	}
 
-	onReEdit(): void {
+	onReEditPersonalInformation(): void {
 		this.childstepper.selectedIndex = 0;
+	}
+
+	onReEditCrcInformation(): void {
+		this.reEditCrcData.emit(true);
 	}
 
 	private dirtyForm(step: number): boolean {

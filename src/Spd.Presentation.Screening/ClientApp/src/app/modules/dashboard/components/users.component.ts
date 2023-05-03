@@ -17,7 +17,7 @@ import { UserDialogData, UserEditModalComponent } from './user-edit-modal.compon
 			<div class="row">
 				<div class="col-xxl-6 col-xl-7 col-lg-9 col-md-8 col-sm-12">
 					<h2 class="mb-2 fw-normal">
-						User Management <mat-icon (click)="manageUsersInfo()">info</mat-icon>
+						User Management <mat-icon class="info-icon" (click)="onManageUsersInfo()">info</mat-icon>
 						<div class="mt-2 fs-5 fw-light">
 							<ul>
 								<li>
@@ -133,9 +133,9 @@ import { UserDialogData, UserEditModalComponent } from './user-edit-modal.compon
 	`,
 	styles: [
 		`
-			h4,
-			.mat-icon {
+			.info-icon {
 				color: var(--color-primary-light);
+				cursor: pointer;
 			}
 
 			.table-button {
@@ -244,7 +244,7 @@ export class UsersComponent implements OnInit {
 		return this.isUserPrimaryAuthorizedUser();
 	}
 
-	manageUsersInfo(): void {
+	onManageUsersInfo(): void {
 		const title = 'What can authorized users do?';
 		const message = `
 		<strong>Primary Authorized Users</strong>

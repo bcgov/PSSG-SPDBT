@@ -8,8 +8,9 @@ import { DeclarationComponent } from '../step-components/declaration.component';
 	selector: 'app-step-appl-submitted',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step *ngIf="paymentBy == 'APP'">
-				<app-payment></app-payment>
+			<!--  *ngIf="paymentBy == 'APP'" -->
+			<mat-step>
+				<app-payment-success></app-payment-success>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -22,17 +23,17 @@ import { DeclarationComponent } from '../step-components/declaration.component';
 			</mat-step>
 
 			<mat-step>
-				<app-completed></app-completed>
+				<app-payment-failure></app-payment-failure>
 
 				<div class="row mt-4">
 					<div class="offset-lg-4 col-lg-4 offset-md-4 col-md-4 col-sm-12">
-						<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
+						<button mat-stroked-button color="primary" class="large mb-2" matStepperNext>Close</button>
 					</div>
 				</div>
 			</mat-step>
 
 			<mat-step>
-				<app-application-progress></app-application-progress>
+				<app-application-submitted></app-application-submitted>
 
 				<div class="row mt-4">
 					<div class="offset-lg-4 col-lg-4 offset-md-4 col-md-4 col-sm-12">
