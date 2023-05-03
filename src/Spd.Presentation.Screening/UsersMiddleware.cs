@@ -1,5 +1,7 @@
 using MediatR;
+using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Membership.UserProfile;
+using Spd.Utilities.Cache;
 using System.Net;
 
 namespace Spd.Utilities.LogonUser
@@ -7,10 +9,12 @@ namespace Spd.Utilities.LogonUser
     public class UsersMiddleware
     {
         private readonly RequestDelegate next;
+        private readonly IDistributedCache cache;
 
-        public UsersMiddleware(RequestDelegate next)
+        public UsersMiddleware(RequestDelegate next, IDistributedCache cache)
         {
             this.next = next;
+            this.cache = cache;
         }
 
         public async Task InvokeAsync(HttpContext context, IMediator mediator)
@@ -29,7 +33,7 @@ namespace Spd.Utilities.LogonUser
             }
             else
             {
-                ReturnUnauthorized(context, "missing organization in the header.");
+                await ReturnUnauthorized(context, "missing organization in the header.");
                 return;
             }
             await next(context);
@@ -44,7 +48,8 @@ namespace Spd.Utilities.LogonUser
                 ("GET", "api/user"),
                 ("GET", "api/configuration"),
                 ("POST", "api/anonymous-org-registrations"),
-                ("POST", "api/org-registrations")
+                ("POST", "api/org-registrations"),
+                ("GET", "api/metadata/address")
             };
 
             if (context.Request.Path.HasValue)
@@ -69,14 +74,19 @@ namespace Spd.Utilities.LogonUser
                 await ReturnUnauthorized(context, "organization is not a valid guid");
                 return;
             }
-            //will add to check cache here.
-            UserProfileResponse userProfile = await mediator.Send(new GetCurrentUserProfileQuery());
+            UserProfileResponse? userProfile = await cache.Get<UserProfileResponse>($"user-{context.User.GetUserGuid()}");
+            if( userProfile == null )
+            {
+                userProfile = await mediator.Send(new GetCurrentUserProfileQuery());
+                await cache.Set<UserProfileResponse>($"user-{context.User.GetUserGuid()}", userProfile, new TimeSpan(0, 30, 0));
+            }
+
             if (userProfile?.UserInfos == null)
             {
                 await ReturnUnauthorized(context, "invalid user");
                 return;
             }
-            UserInfo ui = userProfile.UserInfos.FirstOrDefault(ui => ui.UserGuid == context.User.GetUserGuid() && ui.OrgId == orgId);
+            UserInfo? ui = userProfile.UserInfos.FirstOrDefault(ui => ui.UserGuid == context.User.GetUserGuid() && ui.OrgId == orgId);
             if (ui == null)
             {
                 await ReturnUnauthorized(context, "invalid user or organization");
