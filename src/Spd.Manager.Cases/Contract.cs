@@ -1,6 +1,8 @@
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Spd.Manager.Cases
 {
@@ -121,6 +123,7 @@ namespace Spd.Manager.Cases
         public bool? HaveVerifiedIdentity { get; set; }
         public IEnumerable<AliasCreateRequest> Aliases { get; set; } = Array.Empty<AliasCreateRequest>();
         public bool RequireDuplicateCheck { get; set; } = false;
+        public IFormFile ConsentFormFile { get; set; }
     }
     public record AliasCreateRequest
     {

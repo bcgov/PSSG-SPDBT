@@ -62,6 +62,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Utilities.Recaptcha", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Tests.Presentation.Screening", "Spd.Tests.Presentation.Screening\Spd.Tests.Presentation.Screening.csproj", "{4024BBBE-212C-47B4-BEFD-BA956DFEFC77}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spd.Utilities.TempFileStorage", "Spd.Utilities.TempFileStorage\Spd.Utilities.TempFileStorage.csproj", "{06A54D78-7D9D-4F9E-A584-9EFED4DD4B81}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -152,6 +154,10 @@ Global
 		{4024BBBE-212C-47B4-BEFD-BA956DFEFC77}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4024BBBE-212C-47B4-BEFD-BA956DFEFC77}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4024BBBE-212C-47B4-BEFD-BA956DFEFC77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06A54D78-7D9D-4F9E-A584-9EFED4DD4B81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06A54D78-7D9D-4F9E-A584-9EFED4DD4B81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06A54D78-7D9D-4F9E-A584-9EFED4DD4B81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06A54D78-7D9D-4F9E-A584-9EFED4DD4B81}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -178,6 +184,7 @@ Global
 		{DC7A40EF-3210-4343-ACAB-84C885539377} = {44CEC402-28D1-4A94-B18A-F3147AD4CCCE}
 		{0427917A-E353-474B-9AC9-1816277FDED5} = {744553C0-C41C-4315-9592-92A97938234E}
 		{4024BBBE-212C-47B4-BEFD-BA956DFEFC77} = {44CEC402-28D1-4A94-B18A-F3147AD4CCCE}
+		{06A54D78-7D9D-4F9E-A584-9EFED4DD4B81} = {744553C0-C41C-4315-9592-92A97938234E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {07609A1C-A62A-4B0C-85C1-40600CB3DC45}
