@@ -10,6 +10,10 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
 
+export interface PaymentResponse extends ApplicationResponse {
+	applicationPortalStatusClass: string;
+	applicationPortalStatusText: string;
+}
 @Component({
 	selector: 'app-payments',
 	template: `
@@ -52,11 +56,6 @@ import { UtilService } from 'src/app/core/services/util.service';
 						></app-payment-filter>
 					</app-dropdown-overlay>
 				</div>
-				<!-- <div class="col-xl-3 col-lg-4 col-md-10 col-sm-9">
-					<button mat-flat-button color="primary" class="xlarge w-100 mb-2">
-						<mat-icon>download</mat-icon>Download Monthly Report
-					</button>
-				</div> -->
 			</div>
 
 			<div class="row">
@@ -71,36 +70,45 @@ import { UtilService } from 'src/app/core/services/util.service';
 						</ng-container>
 
 						<ng-container matColumnDef="createdOn">
-							<mat-header-cell *matHeaderCellDef mat-sort-header>Date/Time Submitted</mat-header-cell>
+							<mat-header-cell *matHeaderCellDef mat-sort-header>Submitted On</mat-header-cell>
 							<mat-cell *matCellDef="let application">
-								<span class="mobile-label">Date/Time Submitted:</span>
+								<span class="mobile-label">Submitted On:</span>
 								{{ application.createdOn | date : constants.date.dateTimeFormat }}
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="dateTimePaid">
-							<mat-header-cell *matHeaderCellDef mat-sort-header>Date/Time Paid</mat-header-cell>
+						<ng-container matColumnDef="paidOn">
+							<mat-header-cell *matHeaderCellDef mat-sort-header>Paid On</mat-header-cell>
 							<mat-cell *matCellDef="let application">
-								<span class="mobile-label">Date/Time Paid:</span>
-								??<!-- {{ application.dateTimePaid | date : constants.date.dateTimeFormat }} -->
+								<span class="mobile-label">Paid On:</span>
+								??<!-- {{ application.paidOn | date : constants.date.dateTimeFormat }} -->
+							</mat-cell>
+						</ng-container>
+
+						<ng-container matColumnDef="applicationNumber">
+							<mat-header-cell *matHeaderCellDef>Case ID</mat-header-cell>
+							<mat-cell *matCellDef="let application">
+								<span class="mobile-label">Case ID:</span>
+								{{ application.applicationNumber }}
 							</mat-cell>
 						</ng-container>
 
 						<ng-container matColumnDef="status">
-							<mat-header-cell *matHeaderCellDef mat-sort-header>Status</mat-header-cell>
+							<mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Status:</span>
-								??<!-- <span *ngIf="application.status != 'NotPaid'" class="fw-semi-bold" style="color: var(--color-green);">
-									Paid
-								</span>
-								<span *ngIf="application.status == 'NotPaid'" class="fw-semi-bold" style="color: var(--color-red);">
-									Not Paid
-								</span> -->
+								<mat-chip-listbox aria-label="Status" *ngIf="application.status">
+									<mat-chip-listbox aria-label="Status" *ngIf="application.status">
+										<mat-chip-option [selectable]="false" [ngClass]="application.applicationPortalStatusClass">
+											{{ application.applicationPortalStatusText }}
+										</mat-chip-option>
+									</mat-chip-listbox>
+								</mat-chip-listbox>
 							</mat-cell>
 						</ng-container>
 
 						<ng-container matColumnDef="actions">
-							<mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
+							<mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<button
 									mat-flat-button
@@ -152,7 +160,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 export class PaymentsComponent implements OnInit {
 	constants = SPD_CONSTANTS;
 
-	dataSource: MatTableDataSource<ApplicationResponse> = new MatTableDataSource<ApplicationResponse>([]);
+	dataSource: MatTableDataSource<PaymentResponse> = new MatTableDataSource<PaymentResponse>([]);
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
 	columns!: string[];
 
@@ -180,7 +188,7 @@ export class PaymentsComponent implements OnInit {
 		const caseId = (this.location.getState() as any)?.caseId;
 		this.formFilter.patchValue({ search: caseId });
 
-		this.columns = ['applicantName', 'createdOn', 'dateTimePaid', 'status', 'actions'];
+		this.columns = ['applicantName', 'createdOn', 'paidOn', 'applicationNumber', 'status', 'actions'];
 		this.loadList();
 	}
 
@@ -213,7 +221,14 @@ export class PaymentsComponent implements OnInit {
 			})
 			.pipe()
 			.subscribe((res: ApplicationListResponse) => {
-				this.dataSource = new MatTableDataSource(res.applications as Array<ApplicationResponse>);
+				const applications = res.applications as Array<PaymentResponse>;
+				applications.forEach((app: PaymentResponse) => {
+					const [itemText, itemClass] = this.utilService.getApplicationPortalStatus(app.status);
+					app.applicationPortalStatusText = itemText;
+					app.applicationPortalStatusClass = itemClass;
+				});
+
+				this.dataSource = new MatTableDataSource(applications);
 				this.dataSource.sort = this.sort;
 				this.tablePaginator = { ...res.pagination };
 			});

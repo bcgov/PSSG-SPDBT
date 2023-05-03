@@ -13,11 +13,7 @@ import {
 } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import {
-	ApplicationPortalStatusCodes,
-	ApplicationStatusFiltersTypes,
-	SelectOptions,
-} from 'src/app/core/constants/model-desc';
+import { ApplicationStatusFiltersTypes } from 'src/app/core/constants/model-desc';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { DashboardRoutes } from '../dashboard-routing.module';
@@ -26,6 +22,11 @@ import {
 	ApplicationStatusFilter,
 	ApplicationStatusFilterMap,
 } from './application-statuses-filter.component';
+
+export interface ApplicationStatusResponse extends ApplicationResponse {
+	applicationPortalStatusClass: string;
+	applicationPortalStatusText: string;
+}
 
 @Component({
 	selector: 'app-application-statuses',
@@ -51,27 +52,27 @@ import {
 					<div class="d-flex flex-wrap justify-content-start">
 						<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
 							<div class="fw-semibold fs-4 m-2 ms-3">{{ applicationStatistics['VerifyIdentity'] }}</div>
-							<div class="m-2">Verify Identity</div>
+							<div class="fs-7 m-2">Verify Identity</div>
 						</div>
 						<div class="d-flex flex-row statistic-card area-green align-items-center mt-2 me-2">
 							<div class="fw-semibold fs-4 m-2 ms-3">{{ applicationStatistics['InProgress'] }}</div>
-							<div class="m-2">In Progress</div>
+							<div class="fs-7 m-2">In Progress</div>
 						</div>
 						<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
 							<div class="fw-semibold fs-4 m-2 ms-3">{{ applicationStatistics['AwaitingPayment'] }}</div>
-							<div class="m-2">Pay Now</div>
+							<div class="fs-7 m-2">Pay Now</div>
 						</div>
 						<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
 							<div class="fw-semibold fs-4 m-2 ms-3">{{ applicationStatistics['AwaitingThirdParty'] }}</div>
-							<div class="m-2">Awaiting<br />Third Party</div>
+							<div class="fs-7 m-2">Awaiting<br />Third Party</div>
 						</div>
 						<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
 							<div class="fw-semibold fs-4 m-2 ms-3">{{ applicationStatistics['AwaitingApplicant'] }}</div>
-							<div class="m-2">Awaiting Applicant</div>
+							<div class="fs-7 m-2">Awaiting<br />Applicant</div>
 						</div>
 						<div class="d-flex flex-row statistic-card area-blue align-items-center mt-2 me-2">
 							<div class="fw-semibold fs-4 m-2 ms-3">{{ applicationStatistics['UnderAssessment'] }}</div>
-							<div class="m-2">Under<br />Assessment</div>
+							<div class="fs-7 m-2">Under<br />Assessment</div>
 						</div>
 					</div>
 				</div>
@@ -81,32 +82,32 @@ import {
 					<div class="d-flex flex-wrap justify-content-start">
 						<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
 							<div class="fw-semibold fs-4 m-2 ms-3">{{ applicationStatistics['RiskFound'] }}</div>
-							<div class="m-2">Completed - <br />Risk Found</div>
+							<div class="fs-7 m-2">Completed - <br />Risk Found</div>
 						</div>
 						<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
 							<div class="fw-semibold fs-4 m-2 ms-3">{{ applicationStatistics['ClosedJudicialReview'] }}</div>
-							<div class="m-2">
+							<div class="fs-7 m-2">
 								Closed - <br />
 								Judicial Review
 							</div>
 						</div>
 						<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
 							<div class="fw-semibold fs-4 m-2 ms-3">{{ applicationStatistics['ClosedNoResponse'] }}</div>
-							<div class="m-2">
+							<div class="fs-7 m-2">
 								Closed - <br />
 								No Response
 							</div>
 						</div>
 						<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
 							<div class="fw-semibold fs-4 m-2 ms-3">{{ applicationStatistics['ClosedNoConsent'] }}</div>
-							<div class="m-2">
+							<div class="fs-7 m-2">
 								Closed - No<br />
-								Applicant Consent
+								Consent
 							</div>
 						</div>
 						<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
 							<div class="fw-semibold fs-4 m-2 ms-3">{{ applicationStatistics['CancelledByApplicant'] }}</div>
-							<div class="m-2">
+							<div class="fs-7 m-2">
 								Cancelled - By<br />
 								Applicant
 							</div>
@@ -231,8 +232,8 @@ import {
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Status:</span>
 								<mat-chip-listbox aria-label="Status" *ngIf="application.status">
-									<mat-chip-option [selectable]="false" [ngClass]="getStatusClass(application.status)">
-										{{ getStatusDesc(application.status) }}
+									<mat-chip-option [selectable]="false" [ngClass]="application.applicationPortalStatusClass">
+										{{ application.applicationPortalStatusText }}
 									</mat-chip-option>
 								</mat-chip-listbox>
 							</mat-cell>
@@ -291,7 +292,7 @@ import {
 			.statistic-card {
 				cursor: default;
 				height: 4em;
-				width: 12em;
+				width: 10.5em;
 				box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14),
 					0px 1px 3px 0px rgba(0, 0, 0, 0.12);
 			}
@@ -311,10 +312,9 @@ export class ApplicationStatusesComponent implements OnInit {
 	constants = SPD_CONSTANTS;
 	applicationStatusFiltersTypes = ApplicationStatusFiltersTypes;
 	applicationPortalStatusCodes = ApplicationPortalStatusCode;
-	applicationPortalStatusCodeAll = ApplicationPortalStatusCodes;
 	filterCriteriaExists = false;
 
-	dataSource: MatTableDataSource<ApplicationResponse> = new MatTableDataSource<ApplicationResponse>([]);
+	dataSource: MatTableDataSource<ApplicationStatusResponse> = new MatTableDataSource<ApplicationStatusResponse>([]);
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
 	columns: string[] = [
 		'applicantName',
@@ -359,13 +359,13 @@ export class ApplicationStatusesComponent implements OnInit {
 		this.loadList();
 	}
 
-	onPayNow(application: ApplicationResponse): void {
+	onPayNow(application: ApplicationStatusResponse): void {
 		this.router.navigateByUrl(DashboardRoutes.dashboardPath(DashboardRoutes.PAYMENTS), {
 			state: { caseId: application.applicationNumber },
 		});
 	}
 
-	onVerifyApplicant(application: ApplicationResponse): void {
+	onVerifyApplicant(application: ApplicationStatusResponse): void {
 		this.router.navigateByUrl(DashboardRoutes.dashboardPath(DashboardRoutes.IDENTITY_VERIFICATION), {
 			state: { caseId: application.applicationNumber },
 		});
@@ -427,33 +427,10 @@ export class ApplicationStatusesComponent implements OnInit {
 
 	onItemRemoved(item: string) {
 		const items = [...this.statuses.value] as string[];
-		this.utilService.removeFirst(items, item);
+		this.utilService.removeFirstFromArray(items, item);
 		this.statuses.setValue(items); // To trigger change detection
 
 		this.applicationStatusesFilterComponent.emitFilterChange();
-	}
-
-	getStatusClass(code: string): any {
-		switch (code) {
-			case ApplicationPortalStatusCode.InProgress:
-				return { 'mat-chip-green': true };
-			case ApplicationPortalStatusCode.VerifyIdentity:
-			case ApplicationPortalStatusCode.AwaitingPayment:
-			case ApplicationPortalStatusCode.AwaitingThirdParty:
-			case ApplicationPortalStatusCode.AwaitingApplicant:
-				return { 'mat-chip-yellow': true };
-			case ApplicationPortalStatusCode.RiskFound:
-				return { 'mat-chip-red': true };
-			case ApplicationPortalStatusCode.Incomplete:
-			case ApplicationPortalStatusCode.UnderAssessment:
-				return { 'mat-chip-blue': true };
-		}
-
-		return { 'mat-chip-grey': true };
-	}
-
-	getStatusDesc(code: string): string {
-		return (this.applicationPortalStatusCodeAll.find((item: SelectOptions) => item.code == code)?.desc as string) ?? '';
 	}
 
 	getFilterStatusDesc(code: string): string {
@@ -481,7 +458,15 @@ export class ApplicationStatusesComponent implements OnInit {
 			.pipe()
 			.subscribe((res: ApplicationListResponse) => {
 				this.followUpBusinessDays = res.followUpBusinessDays ? String(res.followUpBusinessDays) : '';
-				this.dataSource.data = res.applications as Array<ApplicationResponse>;
+
+				const applications = res.applications as Array<ApplicationStatusResponse>;
+				applications.forEach((app: ApplicationStatusResponse) => {
+					const [itemText, itemClass] = this.utilService.getApplicationPortalStatus(app.status);
+					app.applicationPortalStatusText = itemText;
+					app.applicationPortalStatusClass = itemClass;
+				});
+
+				this.dataSource.data = applications;
 				this.dataSource.sort = this.sort;
 				this.tablePaginator = { ...res.pagination };
 			});
