@@ -17,7 +17,7 @@ export interface ExpiredChecksResponse extends ApplicationResponse {
 @Component({
 	selector: 'app-expiring-checks',
 	template: `
-		<app-dashboard-header subtitle="Criminal Record Check Portal"></app-dashboard-header>
+		<app-dashboard-header subtitle="Criminal Record Checks"></app-dashboard-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
@@ -60,7 +60,7 @@ export interface ExpiredChecksResponse extends ApplicationResponse {
 						</ng-container>
 
 						<ng-container matColumnDef="emailAddress">
-							<mat-header-cell *matHeaderCellDef mat-sort-header>Email</mat-header-cell>
+							<mat-header-cell *matHeaderCellDef>Email</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Email:</span>
 								{{ application.emailAddress }}
@@ -68,7 +68,7 @@ export interface ExpiredChecksResponse extends ApplicationResponse {
 						</ng-container>
 
 						<ng-container matColumnDef="createdOn">
-							<mat-header-cell *matHeaderCellDef mat-sort-header>Expiring On</mat-header-cell>
+							<mat-header-cell *matHeaderCellDef>Expiring On</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Expiring On:</span>
 								{{ application.createdOn | date : constants.date.dateFormat }}
