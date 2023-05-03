@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import jwt_decode from 'jwt-decode';
-import { PaginationResponse } from 'src/app/api/models';
+import { ApplicationPortalStatusCode, PaginationResponse } from 'src/app/api/models';
 import { SPD_CONSTANTS } from '../constants/constants';
+import { ApplicationPortalStatusCodes, SelectOptions } from '../constants/model-desc';
 
 @Injectable({ providedIn: 'root' })
 export class UtilService {
 	readonly ORG_REG_STATE_KEY = SPD_CONSTANTS.sessionStorage.organizationRegStateKey;
 
 	getFullName(firstName: string | null, lastName: string | null): string {
-		return `${firstName ?? ''} ${lastName ?? ''}`;
+		return `${firstName ?? ''} ${lastName ?? ''}`.trim();
 	}
 
 	getDefaultQueryParams(): any {
@@ -44,11 +45,41 @@ export class UtilService {
 		sessionStorage.removeItem(this.ORG_REG_STATE_KEY);
 	}
 
-	removeFirst<T>(array: T[], toRemove: T): void {
+	removeFirstFromArray<T>(array: T[], toRemove: T): void {
 		const index = array.indexOf(toRemove);
 
 		if (index !== -1) {
 			array.splice(index, 1);
 		}
+	}
+
+	getApplicationPortalStatus(code: string | null | undefined): [string, string] {
+		if (!code) {
+			return ['', ''];
+		}
+
+		let currClass = 'mat-chip-grey';
+
+		switch (code) {
+			case ApplicationPortalStatusCode.InProgress:
+				currClass = 'mat-chip-green';
+				break;
+			case ApplicationPortalStatusCode.VerifyIdentity:
+			case ApplicationPortalStatusCode.AwaitingPayment:
+			case ApplicationPortalStatusCode.AwaitingThirdParty:
+			case ApplicationPortalStatusCode.AwaitingApplicant:
+				currClass = 'mat-chip-yellow';
+				break;
+			case ApplicationPortalStatusCode.RiskFound:
+				currClass = 'mat-chip-red';
+				break;
+			case ApplicationPortalStatusCode.Incomplete:
+			case ApplicationPortalStatusCode.UnderAssessment:
+				currClass = 'mat-chip-blue';
+				break;
+		}
+
+		const desc = (ApplicationPortalStatusCodes.find((item: SelectOptions) => item.code == code)?.desc as string) ?? '';
+		return [desc, currClass];
 	}
 }

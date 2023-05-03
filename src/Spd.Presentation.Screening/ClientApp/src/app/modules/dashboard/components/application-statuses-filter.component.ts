@@ -99,7 +99,7 @@ export class ApplicationStatusesFilterComponent extends BaseFilterComponent {
 
 	onItemRemoved(item: string) {
 		const items = [...this.statuses.value] as string[];
-		this.utilService.removeFirst(items, item);
+		this.utilService.removeFirstFromArray(items, item);
 		this.statuses.setValue(items); // To trigger change detection
 	}
 

@@ -197,10 +197,10 @@ internal class ApplicationRepository : IApplicationRepository
             return "createdon";
 
         if (appSortBy.NameDesc != null && (bool)appSortBy.NameDesc)
-            return "spd_firstname desc, spd_lastname desc";
+            return "spd_fullname desc";
 
         if (appSortBy.NameDesc != null && !(bool)appSortBy.NameDesc)
-            return "spd_firstname, spd_lastname";
+            return "spd_fullname";
 
         if (appSortBy.CompanyNameDesc != null && (bool)appSortBy.CompanyNameDesc)
             return "spd_contractedcompanyname desc";
