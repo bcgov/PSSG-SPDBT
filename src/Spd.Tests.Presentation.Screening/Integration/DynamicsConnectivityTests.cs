@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using Spd.Utilities.Dynamics;
-using Xunit;
 using Xunit.Abstractions;
 
 namespace Spd.Tests.Presentation.Screening.Integration;
