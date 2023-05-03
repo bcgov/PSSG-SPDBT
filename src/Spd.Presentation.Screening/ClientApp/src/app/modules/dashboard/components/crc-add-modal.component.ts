@@ -217,7 +217,7 @@ export class CrcAddModalComponent implements OnInit {
 
 		const data: DialogOptions = {
 			icon: 'warning',
-			title: 'Remove row',
+			title: 'Confirmation',
 			message: 'Are you sure you want to remove this criminal record check?',
 			actionText: 'Yes, remove this row',
 			cancelText: 'Cancel',
