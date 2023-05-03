@@ -11,38 +11,33 @@ import { Component, EventEmitter, Output } from '@angular/core';
 						<div class="badge p-2">Preferred Method</div>
 						<div class="step-container__box__title pt-3 pb-4">
 							<div class="mx-2">Register <span class="fw-bold">with</span> Business BCeID</div>
+							<div class="mx-2">and get full access to online services</div>
 						</div>
 						<div class="step-container__box__content pt-4 pe-4" style="padding-left: 4em!important;">
 							<table class="ml-5 mb-5" style="text-align: left;">
-								<tr class="mb-2">
+								<tr>
 									<td class="pr-2 pb-2">
 										<img class="step-container__box__title__checkbox" src="/assets/checkbox.svg" />
 									</td>
-									<td>Get full access to the portal</td>
+									<td>Send out new criminal record check requests</td>
 								</tr>
 								<tr>
 									<td class="pr-2 pb-2">
 										<img class="step-container__box__title__checkbox" src="/assets/checkbox.svg" />
 									</td>
-									<td>Send out new criminal record checks</td>
+									<td>See application statuses</td>
 								</tr>
 								<tr>
 									<td class="pr-2 pb-2">
 										<img class="step-container__box__title__checkbox" src="/assets/checkbox.svg" />
 									</td>
-									<td>See status of record checks</td>
+									<td>Grant access to other users in your organization</td>
 								</tr>
 								<tr>
 									<td class="pr-2 pb-2">
 										<img class="step-container__box__title__checkbox" src="/assets/checkbox.svg" />
 									</td>
-									<td>Grant access to other employees</td>
-								</tr>
-								<tr>
-									<td class="pr-2 pb-2">
-										<img class="step-container__box__title__checkbox" src="/assets/checkbox.svg" />
-									</td>
-									<td>Manage expiring checks</td>
+									<td>Easily manage expiring criminal record checks</td>
 								</tr>
 							</table>
 						</div>
@@ -70,6 +65,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 						<div style="padding-top: 4px">&nbsp;</div>
 						<div class="step-container__box__title pt-3 pb-4">
 							<div class="mx-2">Register <span class="fw-bold">without</span> Business BCeID</div>
+							<div class="mx-2">&nbsp;</div>
 						</div>
 						<div class="step-container__box__content p-4">
 							<p>If you don't have a Business BCeID you can still register without one.</p>
@@ -78,7 +74,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 								registered users.
 							</p>
 						</div>
-						<div class="step-container__box__footer p-4" style="padding-top: 5.5rem!important;">
+						<div class="step-container__box__footer p-4" style="padding-top: 5.3rem!important;">
 							<button mat-flat-button color="primary" class="large" (click)="onClickNext()">
 								Continue without Business BCeID
 							</button>
