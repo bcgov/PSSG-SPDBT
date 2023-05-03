@@ -90,7 +90,7 @@ export class ApplicationStatusesFilterComponent extends BaseFilterComponent {
 	applicationStatusFiltersTypes = ApplicationStatusFiltersTypes;
 
 	@Input() formGroup: FormGroup = this.formBuilder.group({
-		// statuses: new FormControl(''),
+		statuses: new FormControl(),
 	});
 
 	constructor(private formBuilder: FormBuilder, private utilService: UtilService) {

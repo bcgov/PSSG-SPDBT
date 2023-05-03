@@ -230,7 +230,7 @@ import {
 							<mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Status:</span>
-								<mat-chip-listbox aria-label="Status">
+								<mat-chip-listbox aria-label="Status" *ngIf="application.status">
 									<mat-chip-option [selectable]="false" [ngClass]="getStatusClass(application.status)">
 										{{ getStatusDesc(application.status) }}
 									</mat-chip-option>
