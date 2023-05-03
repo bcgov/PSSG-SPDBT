@@ -81,7 +81,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             spd_portalinvitation? invite = await GetPortalInvitationById(applicationInviteDeleteCmd.OrgId, applicationInviteDeleteCmd.ApplicationInviteId);
 
             if (invite == null)
-                throw new ApiException(HttpStatusCode.BadRequest, "invalid orgid or invite id.");
+                throw new ApiException(HttpStatusCode.BadRequest, "Invalid OrgId or ApplicationInviteId");
 
             // Inactivate the invite
             invite.statecode = DynamicsConstants.StateCode_Inactive;
