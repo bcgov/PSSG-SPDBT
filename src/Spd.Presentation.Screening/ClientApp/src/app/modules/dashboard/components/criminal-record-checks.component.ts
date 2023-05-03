@@ -82,14 +82,6 @@ export const CriminalRecordCheckFilterMap: Record<keyof CriminalRecordCheckFilte
 								>
 									error
 								</mat-icon>
-								<!-- <mat-icon
-									class="error-icon"
-									matTooltip="The criminal record check request was not delivered:<br/> Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-									matTooltipClass="error-tooltip"
-									matTooltipHideDelay="300000"
-								>
-									error
-								</mat-icon> -->
 								{{ utilService.getFullName(application.firstName, application.lastName) }}
 							</mat-cell>
 						</ng-container>
@@ -135,11 +127,11 @@ export const CriminalRecordCheckFilterMap: Record<keyof CriminalRecordCheckFilte
 						</ng-container>
 
 						<ng-container matColumnDef="actions">
-							<mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+							<mat-header-cell *matHeaderCellDef></mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<button
 									mat-flat-button
-									class="table-button w-auto m-2"
+									class="table-button m-2"
 									style="white-space: nowrap;"
 									aria-label="Cancel Request"
 									(click)="OnCancelRequest(application)"
@@ -170,7 +162,6 @@ export const CriminalRecordCheckFilterMap: Record<keyof CriminalRecordCheckFilte
 		`
 			.mat-column-actions {
 				min-width: 300px;
-				/* justify-content: center !important; */
 			}
 
 			.error-icon {
@@ -242,7 +233,7 @@ export class CriminalRecordChecksComponent implements OnInit {
 	OnCancelRequest(application: ApplicationInviteResponse) {
 		const data: DialogOptions = {
 			icon: 'warning',
-			title: 'Cancel request',
+			title: 'Confirmation',
 			message: `Are you sure you want to cancel the request for ${application.firstName} ${application.lastName}?`,
 			actionText: 'Yes, cancel request',
 			cancelText: 'Cancel',

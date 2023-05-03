@@ -4,7 +4,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { ApplicationListResponse, ApplicationResponse } from 'src/app/api/models';
+import { ApplicationListResponse, ApplicationPortalStatusCode, ApplicationResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
@@ -98,23 +98,21 @@ export interface PaymentResponse extends ApplicationResponse {
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Status:</span>
 								<mat-chip-listbox aria-label="Status" *ngIf="application.status">
-									<mat-chip-listbox aria-label="Status" *ngIf="application.status">
-										<mat-chip-option [selectable]="false" [ngClass]="application.applicationPortalStatusClass">
-											{{ application.applicationPortalStatusText }}
-										</mat-chip-option>
-									</mat-chip-listbox>
+									<mat-chip-option [selectable]="false" [ngClass]="application.applicationPortalStatusClass">
+										{{ application.applicationPortalStatusText }}
+									</mat-chip-option>
 								</mat-chip-listbox>
 							</mat-cell>
 						</ng-container>
 
 						<ng-container matColumnDef="actions">
-							<mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+							<mat-header-cell *matHeaderCellDef></mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<button
 									mat-flat-button
 									class="table-button m-2"
 									style="color: var(--color-primary-light);"
-									*ngIf="application.status != 'NotPaid'"
+									*ngIf="application.status != applicationPortalStatusCodes.AwaitingPayment"
 									aria-label="Download Clearance Letter"
 								>
 									<mat-icon>file_download</mat-icon>Download Receipt
@@ -124,7 +122,7 @@ export interface PaymentResponse extends ApplicationResponse {
 									mat-flat-button
 									class="table-button m-2"
 									style="color: var(--color-green);"
-									*ngIf="application.status == 'NotPaid'"
+									*ngIf="application.status == applicationPortalStatusCodes.AwaitingPayment"
 									aria-label="Pay now"
 								>
 									<mat-icon>attach_money</mat-icon>Pay Now
@@ -150,8 +148,12 @@ export interface PaymentResponse extends ApplicationResponse {
 	`,
 	styles: [
 		`
+			.mat-column-status {
+				min-width: 190px;
+			}
+
 			.mat-column-actions {
-				min-width: 300px;
+				min-width: 250px;
 				justify-content: center !important;
 			}
 		`,
@@ -159,6 +161,7 @@ export interface PaymentResponse extends ApplicationResponse {
 })
 export class PaymentsComponent implements OnInit {
 	constants = SPD_CONSTANTS;
+	applicationPortalStatusCodes = ApplicationPortalStatusCode;
 
 	dataSource: MatTableDataSource<PaymentResponse> = new MatTableDataSource<PaymentResponse>([]);
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();

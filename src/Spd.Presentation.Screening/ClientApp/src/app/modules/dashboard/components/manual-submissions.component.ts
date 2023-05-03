@@ -552,7 +552,7 @@ export class ManualSubmissionsComponent implements OnInit {
 
 		const data: DialogOptions = {
 			icon: 'warning',
-			title: 'Remove row',
+			title: 'Confirmation',
 			message: 'Are you sure you want to remove this previous name?',
 			actionText: 'Yes, remove this name',
 			cancelText: 'Cancel',

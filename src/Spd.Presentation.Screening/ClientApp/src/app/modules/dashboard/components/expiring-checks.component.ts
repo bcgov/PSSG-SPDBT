@@ -1,13 +1,17 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
 import { ApplicationListResponse, ApplicationResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
+import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
+import { DashboardRoutes } from '../dashboard-routing.module';
 
 export interface ExpiredChecksResponse extends ApplicationResponse {
 	daysRemainingText: string;
@@ -93,7 +97,7 @@ export interface ExpiredChecksResponse extends ApplicationResponse {
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="status1">
+						<ng-container matColumnDef="action1">
 							<mat-header-cell *matHeaderCellDef>Download Clearance Letter</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<button
@@ -107,25 +111,32 @@ export interface ExpiredChecksResponse extends ApplicationResponse {
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="status2">
-							<mat-header-cell *matHeaderCellDef>Send Request</mat-header-cell>
+						<ng-container matColumnDef="action2">
+							<mat-header-cell *matHeaderCellDef></mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<button
 									mat-flat-button
 									class="table-button m-2"
 									style="color: var(--color-green);"
 									aria-label="Send Request"
+									(click)="onSendRequest(application)"
 								>
 									<mat-icon>send</mat-icon>Request
 								</button>
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="status3">
-							<mat-header-cell *matHeaderCellDef>Remove</mat-header-cell>
+						<ng-container matColumnDef="action3">
+							<mat-header-cell *matHeaderCellDef></mat-header-cell>
 							<mat-cell *matCellDef="let application">
-								<button mat-icon-button class="table-button m-2" style="color: var(--color-red);" aria-label="Remove">
-									<mat-icon>delete_outline</mat-icon>
+								<button
+									mat-flat-button
+									class="table-button m-2"
+									style="color: var(--color-red);"
+									aria-label="Remove"
+									(click)="onRemove(application)"
+								>
+									<mat-icon>delete_outline</mat-icon>Remove
 								</button>
 							</mat-cell>
 						</ng-container>
@@ -158,14 +169,16 @@ export interface ExpiredChecksResponse extends ApplicationResponse {
 				color: var(--color-green);
 			}
 
-			.mat-column-status1 {
+			.mat-column-action1 {
 				min-width: 190px;
-				text-align: center !important;
 			}
 
-			.mat-column-status2 {
-				min-width: 220px;
-				justify-content: center !important;
+			.mat-column-action2 {
+				min-width: 160px;
+			}
+
+			.mat-column-action3 {
+				min-width: 160px;
 			}
 		`,
 	],
@@ -186,10 +199,12 @@ export class ExpiringChecksComponent implements OnInit {
 	@ViewChild('paginator') paginator!: MatPaginator;
 
 	constructor(
+		private router: Router,
 		protected utilService: UtilService,
 		private formBuilder: FormBuilder,
 		private applicationService: ApplicationService,
-		private authenticationService: AuthenticationService
+		private authenticationService: AuthenticationService,
+		private dialog: MatDialog
 	) {}
 
 	ngOnInit() {
@@ -199,9 +214,9 @@ export class ExpiringChecksComponent implements OnInit {
 			'createdOn',
 			'daysRemaining',
 			'contractedCompanyName',
-			'status1',
-			'status2',
-			'status3',
+			'action1',
+			'action2',
+			'action3',
 		];
 		this.loadList();
 	}
@@ -210,6 +225,48 @@ export class ExpiringChecksComponent implements OnInit {
 
 	onPageChanged(page: PageEvent): void {
 		this.loadList(page.pageIndex);
+	}
+
+	onSendRequest(application: ExpiredChecksResponse) {
+		const data: DialogOptions = {
+			icon: 'info',
+			title: 'Confirmation',
+			message: 'Would you like to send a new criminal record check request for this individual from your organization?',
+			actionText: 'Yes, send new request',
+			cancelText: 'Cancel',
+		};
+
+		this.dialog
+			.open(DialogComponent, { data })
+			.afterClosed()
+			.subscribe((response: boolean) => {
+				if (response) {
+					this.router.navigateByUrl(DashboardRoutes.dashboardPath(DashboardRoutes.CRIMINAL_RECORD_CHECKS));
+				} else {
+					// todo REJECT
+				}
+			});
+	}
+
+	onRemove(application: ExpiredChecksResponse) {
+		const data: DialogOptions = {
+			icon: 'info',
+			title: 'Confirmation',
+			message: 'Would you like to remove this individual from your organization?',
+			actionText: 'Yes, remove',
+			cancelText: 'Cancel',
+		};
+
+		this.dialog
+			.open(DialogComponent, { data })
+			.afterClosed()
+			.subscribe((response: boolean) => {
+				if (response) {
+					this.router.navigateByUrl(DashboardRoutes.dashboardPath(DashboardRoutes.CRIMINAL_RECORD_CHECKS));
+				} else {
+					// todo REJECT
+				}
+			});
 	}
 
 	private loadList(pageIndex: number = 0): void {

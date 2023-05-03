@@ -240,9 +240,9 @@ export interface ApplicationStatusResponse extends ApplicationResponse {
 						</ng-container>
 
 						<ng-container matColumnDef="actions">
-							<mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
-							<mat-cell *matCellDef="let application; let i = index">
-								<span class="mobile-label">Action:</span>
+							<mat-header-cell *matHeaderCellDef></mat-header-cell>
+							<mat-cell *matCellDef="let application">
+								<span class="mobile-label"></span>
 								<a
 									mat-flat-button
 									(click)="onPayNow(application)"
@@ -285,6 +285,10 @@ export interface ApplicationStatusResponse extends ApplicationResponse {
 	`,
 	styles: [
 		`
+			.mat-column-status {
+				min-width: 190px;
+			}
+
 			.mat-column-actions {
 				min-width: 240px;
 			}
