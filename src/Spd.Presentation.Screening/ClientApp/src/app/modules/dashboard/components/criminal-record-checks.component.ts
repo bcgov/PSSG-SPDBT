@@ -27,18 +27,18 @@ export const CriminalRecordCheckFilterMap: Record<keyof CriminalRecordCheckFilte
 @Component({
 	selector: 'app-criminal-record-checks',
 	template: `
-		<app-dashboard-header subtitle="Criminal Record Check Portal"></app-dashboard-header>
+		<app-dashboard-header subtitle="Criminal Record Checks"></app-dashboard-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-xxl-9 col-xl-8 col-lg-7 col-md-6 col-sm-12">
 					<h2 class="mb-2 fw-normal">
-						Criminal Record Checks
-						<div class="mt-2 fs-5 fw-light">View active criminal record checks</div>
+						Criminal Record Check Requests
+						<div class="mt-2 fs-5 fw-light">View active criminal record check requests</div>
 					</h2>
 				</div>
 				<div class="col-xxl-3 col-xl-4 col-lg-5 col-md-6 col-sm-12 my-auto">
 					<button mat-flat-button class="large w-100 mat-green-button mb-2" (click)="onAddScreeningRequest()">
-						Add Criminal Record Check
+						Add Request
 					</button>
 				</div>
 			</div>

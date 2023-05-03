@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
 
 @Component({
 	selector: 'app-completed',
@@ -27,7 +28,7 @@ import { Component, Input } from '@angular/core';
 							<td class="point__icon"><mat-icon>task_alt</mat-icon></td>
 							<td class="px-4">
 								<div class="fs-5 mb-2">In progress</div>
-								<p>Check on your application status and get updates on progress.</p>
+								<p *ngIf="isLoggedIn">Check on your application status and get updates on progress.</p>
 							</td>
 						</tr>
 						<tr>
@@ -91,8 +92,16 @@ import { Component, Input } from '@angular/core';
 })
 export class CompletedComponent {
 	@Input() sendToEmailAddress = '';
+	isLoggedIn!: boolean;
 
 	get subHeading(): string {
 		return `Your registration is complete and a confirmation email has been sent to ${this.sendToEmailAddress}`;
+	}
+	constructor(private authenticationService: AuthenticationService) {}
+
+	ngOnInit(): void {
+		this.authenticationService.isLoginSubject$.subscribe((_subjectData: any) => {
+			this.isLoggedIn = this.authenticationService.isLoggedIn();
+		});
 	}
 }

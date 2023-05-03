@@ -25,7 +25,7 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 @Component({
 	selector: 'app-manual-submissions',
 	template: `
-		<app-dashboard-header subtitle="Criminal Record Check Portal"></app-dashboard-header>
+		<app-dashboard-header subtitle="Criminal Record Checks"></app-dashboard-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row mb-4">
 				<div class="col-xl-10 col-lg-10 col-md-12 col-sm-12">
