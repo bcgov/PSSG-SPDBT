@@ -213,7 +213,7 @@ export class UsersComponent implements OnInit {
 	onDeleteUser(user: OrgUserResponse) {
 		this.deleteUser({
 			user,
-			title: 'Delete user',
+			title: 'Confirmation',
 			message: 'Are you sure you want to permanently remove this user?',
 			actionText: 'Yes, remove',
 			success: 'User was successfully removed',
@@ -223,7 +223,7 @@ export class UsersComponent implements OnInit {
 	onCancelInvitation(user: OrgUserResponse) {
 		this.deleteUser({
 			user,
-			title: 'Cancel invitation',
+			title: 'Confirmation',
 			message: 'Are you sure you want to cancel this invitation?',
 			actionText: 'Yes, cancel',
 			success: 'Invitation was successfully cancelled',

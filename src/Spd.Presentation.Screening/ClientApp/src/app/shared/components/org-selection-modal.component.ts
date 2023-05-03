@@ -30,7 +30,7 @@ export interface OrgSelectionResponseData {
 export class OrgSelectionModalComponent implements OnInit {
 	selectedOrg: any = null;
 	userInfos: Array<UserInfo> = [];
-	title: string = 'Organization Selection';
+	title: string = 'Organization selection';
 
 	constructor(
 		private dialogRef: MatDialogRef<OrgSelectionModalComponent>,
