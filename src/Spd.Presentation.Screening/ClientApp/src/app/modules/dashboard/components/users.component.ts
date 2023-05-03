@@ -12,7 +12,7 @@ import { UserDialogData, UserEditModalComponent } from './user-edit-modal.compon
 @Component({
 	selector: 'app-users',
 	template: `
-		<app-dashboard-header subtitle="Criminal Record Check Portal"></app-dashboard-header>
+		<app-dashboard-header subtitle="Criminal Record Checks"></app-dashboard-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-xxl-6 col-xl-7 col-lg-9 col-md-8 col-sm-12">
@@ -24,7 +24,7 @@ import { UserDialogData, UserEditModalComponent } from './user-edit-modal.compon
 									Your organization may have up to {{ maximumNumberOfPrimaryContacts }} primary authorized contacts and
 									up to {{ maximumNumberOfContacts }} authorized contacts
 								</li>
-								<li>Portal invitations will expire 7 days after being sent</li>
+								<li>Invitations will expire 7 days after being sent</li>
 							</ul>
 						</div>
 					</h2>

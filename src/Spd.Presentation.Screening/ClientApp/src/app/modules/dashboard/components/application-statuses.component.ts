@@ -31,7 +31,7 @@ export interface ApplicationStatusResponse extends ApplicationResponse {
 @Component({
 	selector: 'app-application-statuses',
 	template: `
-		<app-dashboard-header subtitle="Criminal Record Check Portal"></app-dashboard-header>
+		<app-dashboard-header subtitle="Criminal Record Checks"></app-dashboard-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">

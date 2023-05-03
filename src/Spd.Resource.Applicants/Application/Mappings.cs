@@ -8,7 +8,6 @@ namespace Spd.Resource.Applicants.Application
     {
         public Mappings()
         {
-
             _ = CreateMap<ApplicationCreateCmd, spd_application>()
             .ForMember(d => d.spd_applicationid, opt => opt.MapFrom(s => Guid.NewGuid()))
             .ForMember(d => d.spd_origin, opt => opt.MapFrom(s => (int)Enum.Parse<ApplicationOriginOptionSet>(s.OriginTypeCode.ToString())))
@@ -33,7 +32,8 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.spd_declaration, opt => opt.MapFrom(s => s.AgreeToCompleteAndAccurate))
             .ForMember(d => d.spd_payer, opt => opt.MapFrom(s => (int)Enum.Parse<PayerPreferenceOptionSet>(s.PayeeType.ToString())))
             .ForMember(d => d.spd_declarationdate, opt => opt.MapFrom(s => DateTime.Now))
-            .ForMember(d => d.spd_identityconfirmed, opt => opt.MapFrom(s => s.HaveVerifiedIdentity));
+            .ForMember(d => d.spd_identityconfirmed, opt => opt.MapFrom(s => s.HaveVerifiedIdentity))
+            .ForMember(d => d.statuscode, opt => opt.MapFrom(s => ApplicationActiveStatus.PaymentPending));
 
             _ = CreateMap<AliasCreateCmd, spd_alias>()
             .ForMember(d => d.spd_aliasid, opt => opt.MapFrom(s => Guid.NewGuid()))
