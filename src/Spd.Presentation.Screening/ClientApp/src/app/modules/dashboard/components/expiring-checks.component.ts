@@ -9,6 +9,11 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
 
+export interface ExpiredChecksResponse extends ApplicationResponse {
+	daysRemainingText: string;
+	daysRemainingClass: string;
+}
+
 @Component({
 	selector: 'app-expiring-checks',
 	template: `
@@ -74,9 +79,9 @@ import { UtilService } from 'src/app/core/services/util.service';
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Days Remaining</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Days Remaining:</span>
-								??<!-- <span [ngClass]="getDaysRemainingColorClass(application.daysRemaining)" class="fw-semibold">{{
-									getDaysRemainingValue(application.daysRemaining)
-								}}</span> -->
+								<span [ngClass]="application.daysRemainingClass">
+									{{ application.daysRemainingText }}
+								</span>
 							</mat-cell>
 						</ng-container>
 
@@ -168,7 +173,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 export class ExpiringChecksComponent implements OnInit {
 	constants = SPD_CONSTANTS;
 
-	dataSource: MatTableDataSource<ApplicationResponse> = new MatTableDataSource<ApplicationResponse>([]);
+	dataSource: MatTableDataSource<ExpiredChecksResponse> = new MatTableDataSource<ExpiredChecksResponse>([]);
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
 	columns!: string[];
 	followUpBusinessDays = '';
@@ -203,30 +208,6 @@ export class ExpiringChecksComponent implements OnInit {
 
 	onPayNow(): void {}
 
-	getDaysRemainingValue(daysRemaining: number): string {
-		const [value, _color] = this.formatDaysRemaining(daysRemaining);
-		return value;
-	}
-
-	getDaysRemainingColorClass(daysRemaining: number): string {
-		const [_value, color] = this.formatDaysRemaining(daysRemaining);
-		return color;
-	}
-
-	private formatDaysRemaining(daysRemaining: number): [string, string] {
-		if (daysRemaining <= 0) {
-			return ['Expired', 'days-remaining-red'];
-		} else if (daysRemaining == 1) {
-			return [`${daysRemaining} Day`, 'days-remaining-red'];
-		} else if (daysRemaining <= 30) {
-			return [`${daysRemaining} Days`, 'days-remaining-red'];
-		} else if (daysRemaining <= 41) {
-			return [`${daysRemaining} Days`, 'days-remaining-orange'];
-		} else {
-			return [`${daysRemaining} Days`, 'days-remaining-green'];
-		}
-	}
-
 	onPageChanged(page: PageEvent): void {
 		this.loadList(page.pageIndex);
 	}
@@ -241,9 +222,40 @@ export class ExpiringChecksComponent implements OnInit {
 			.pipe()
 			.subscribe((res: ApplicationListResponse) => {
 				this.followUpBusinessDays = res.followUpBusinessDays ? String(res.followUpBusinessDays) : '';
-				this.dataSource = new MatTableDataSource(res.applications as Array<ApplicationResponse>);
+
+				const applications = res.applications as Array<ExpiredChecksResponse>;
+				applications.forEach((app: ExpiredChecksResponse) => {
+					const [itemText, itemClass] = this.getDaysRemaining(app.createdOn);
+					app.daysRemainingText = itemText;
+					app.daysRemainingClass = itemClass;
+				});
+
+				this.dataSource = new MatTableDataSource(applications);
 				this.dataSource.sort = this.sort;
 				this.tablePaginator = { ...res.pagination };
 			});
+	}
+
+	private getDaysRemaining(expiringOn: string | null | undefined): [string, string] {
+		if (!expiringOn) {
+			return ['', ''];
+		}
+
+		const expiringOnDate = new Date(expiringOn);
+		const todayDate = new Date();
+		var diff = Math.abs(todayDate.getTime() - expiringOnDate.getTime());
+		var diffDays = Math.ceil(diff / (1000 * 3600 * 24));
+
+		if (diffDays <= 0) {
+			return ['Expired', 'days-remaining-red'];
+		} else if (diffDays == 1) {
+			return [`${diffDays} day`, 'days-remaining-red'];
+		} else if (diffDays <= 30) {
+			return [`${diffDays} days`, 'days-remaining-red'];
+		} else if (diffDays <= 41) {
+			return [`${diffDays} days`, 'days-remaining-orange'];
+		} else {
+			return [`${diffDays} days`, 'days-remaining-green'];
+		}
 	}
 }

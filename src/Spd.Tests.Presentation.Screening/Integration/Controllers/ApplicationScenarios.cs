@@ -36,7 +36,24 @@ public class ApplicationScenarios : ScenarioContextBase
             _.WithRequestHeader("organization", org.accountid.ToString());
             _.Get.Url($"/api/orgs/{org.accountid}/application-invites?page=0&filters=searchText@=str");
             if (org != null && org.accountid != null)
-            { 
+            {
+                _.StatusCodeShouldBeOk();
+            }
+        });
+    }
+
+    [Fact]
+    public async Task DeleteApplicationInvite_WithCorrectAuth_Success()
+    {
+        var org = await fixture.testData.CreateOrgWithLogonUser("org1");
+        var invite = await fixture.testData.CreatePortalInvitationInOrg("first1", "last1", org);
+
+        await Host.Scenario(_ =>
+        {
+            _.WithRequestHeader("organization", org.accountid.ToString());
+            _.Delete.Url($"/api/orgs/{org.accountid}/application-invites/{invite.spd_portalinvitationid}");
+            if (org != null && org.accountid != null)
+            {
                 _.StatusCodeShouldBeOk();
             }
         });
@@ -76,6 +93,23 @@ public class ApplicationScenarios : ScenarioContextBase
             }
         });
     }
+
+    [Fact]
+    public async Task ApplicationStatistics_WithCorrectAuth_Success()
+    {
+        var org = await fixture.testData.CreateOrgWithLogonUser("org1");
+
+        await Host.Scenario(_ =>
+        {
+            _.WithRequestHeader("organization", org.accountid.ToString());
+            _.Get.Url($"/api/orgs/{org.accountid}/application-statistics");
+            if (org != null && org.accountid != null)
+            {
+                _.StatusCodeShouldBeOk();
+            }
+        });
+    }
+
     private ApplicationInvitesCreateRequest Create_ApplicationInvitesCreateRequest()
     {
         return new ApplicationInvitesCreateRequest
