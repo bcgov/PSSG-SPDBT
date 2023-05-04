@@ -6,7 +6,7 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { ApplicationListResponse, ApplicationResponse } from 'src/app/api/models';
+import { ApplicationListResponse, ApplicationPortalStatusCode, ApplicationResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
@@ -22,14 +22,8 @@ import { ApplicationStatusFilterMap } from './application-statuses-filter.compon
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
-					<h2 class="mb-2 fw-normal">
-						Identity Verification
-						<div class="mt-2 fs-5 fw-light">Confirm the applicant's identity</div>
-					</h2>
-					<div class="alert alert-warning d-flex align-items-center" role="alert">
-						<mat-icon class="d-none d-md-block alert-icon me-2">warning</mat-icon>
-						<div>There are 8 applicants which require confirmation</div>
-					</div>
+					<h2 class="mb-2 fw-normal">Identity Verification</h2>
+					<app-banner></app-banner>
 				</div>
 			</div>
 
@@ -64,7 +58,7 @@ import { ApplicationStatusFilterMap } from './application-statuses-filter.compon
 							<mat-header-cell *matHeaderCellDef>Applicant Name</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Applicant Name:</span>
-								{{ utilService.getFullName(application.givenName, application.surname) }}
+								{{ application | fullname }}
 							</mat-cell>
 						</ng-container>
 
@@ -72,7 +66,7 @@ import { ApplicationStatusFilterMap } from './application-statuses-filter.compon
 							<mat-header-cell *matHeaderCellDef>Date of Birth</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Date of Birth:</span>
-								{{ application.createdOn | date : constants.date.dateFormat }}
+								{{ application.dateOfBirth | date : constants.date.dateFormat : 'UTC' | default }}
 							</mat-cell>
 						</ng-container>
 
@@ -80,7 +74,7 @@ import { ApplicationStatusFilterMap } from './application-statuses-filter.compon
 							<mat-header-cell *matHeaderCellDef>Job Title</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Job Title:</span>
-								{{ application.jobTitle }}
+								{{ application.jobTitle | default }}
 							</mat-cell>
 						</ng-container>
 
@@ -88,7 +82,7 @@ import { ApplicationStatusFilterMap } from './application-statuses-filter.compon
 							<mat-header-cell *matHeaderCellDef>Email</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Email:</span>
-								{{ application.emailAddress }}
+								{{ application.emailAddress | default }}
 							</mat-cell>
 						</ng-container>
 
@@ -96,7 +90,7 @@ import { ApplicationStatusFilterMap } from './application-statuses-filter.compon
 							<mat-header-cell *matHeaderCellDef>Submitted On</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Submitted On:</span>
-								{{ application.createdOn | date : constants.date.dateFormat }}
+								{{ application.createdOn | date : constants.date.dateFormat : 'UTC' }}
 							</mat-cell>
 						</ng-container>
 
@@ -158,10 +152,14 @@ import { ApplicationStatusFilterMap } from './application-statuses-filter.compon
 		`
 			.mat-column-action1 {
 				min-width: 150px;
+				padding-right: 4px !important;
+				padding-left: 4px !important;
 			}
 
 			.mat-column-action2 {
 				min-width: 150px;
+				padding-right: 4px !important;
+				padding-left: 4px !important;
 			}
 		`,
 	],
@@ -171,12 +169,14 @@ export class IdentifyVerificationComponent implements OnInit {
 	private queryParams: any = this.utilService.getDefaultQueryParams();
 
 	constants = SPD_CONSTANTS;
+	count = 0;
 	dataSource: MatTableDataSource<ApplicationResponse> = new MatTableDataSource<ApplicationResponse>([]);
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
 	columns: string[] = [
 		'applicantName',
-		'emailAddress',
 		'dateOfBirth',
+		'jobTitle',
+		'emailAddress',
 		'createdOn',
 		'applicationNumber',
 		'action1',
@@ -192,7 +192,7 @@ export class IdentifyVerificationComponent implements OnInit {
 
 	constructor(
 		private router: Router,
-		protected utilService: UtilService,
+		private utilService: UtilService,
 		private formBuilder: FormBuilder,
 		private location: Location,
 		private authenticationService: AuthenticationService,
@@ -269,16 +269,17 @@ export class IdentifyVerificationComponent implements OnInit {
 	private performSearch(searchString: string): void {
 		this.currentSearch = searchString ? `${ApplicationStatusFilterMap['search']}@=${searchString}` : '';
 		this.queryParams.page = 0;
-		this.queryParams.filters = this.buildQueryParamsFilterString();
 
 		this.loadList();
 	}
 
 	private buildQueryParamsFilterString(): string {
-		return this.currentSearch;
+		return `status==${ApplicationPortalStatusCode.VerifyIdentity},` + this.currentSearch;
 	}
 
 	private loadList(): void {
+		this.queryParams.filters = this.buildQueryParamsFilterString();
+
 		this.applicationService
 			.apiOrgsOrgIdApplicationsGet({
 				orgId: this.authenticationService.loggedInOrgId!,
@@ -286,9 +287,12 @@ export class IdentifyVerificationComponent implements OnInit {
 			})
 			.pipe()
 			.subscribe((res: ApplicationListResponse) => {
-				this.dataSource.data = res.applications as Array<ApplicationResponse>;
+				const applications = res.applications ?? [];
+				this.dataSource.data = applications;
 				this.dataSource.sort = this.sort;
 				this.tablePaginator = { ...res.pagination };
+
+				this.count = applications.length;
 			});
 	}
 }

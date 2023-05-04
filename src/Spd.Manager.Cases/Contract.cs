@@ -99,6 +99,7 @@ namespace Spd.Manager.Cases
         public string? Surname { get; set; }
         public string? EmailAddress { get; set; }
         public string? JobTitle { get; set; }
+        public DateTimeOffset? DateOfBirth { get; set; }
         public string? ContractedCompanyName { get; set; }
         public PayeePreferenceTypeCode PayeeType { get; set; }
     }
@@ -107,7 +108,6 @@ namespace Spd.Manager.Cases
         public ApplicationOriginTypeCode OriginTypeCode { get; set; }
         public string? PhoneNumber { get; set; }
         public string? DriversLicense { get; set; }
-        public DateTimeOffset? DateOfBirth { get; set; }
         public string? BirthPlace { get; set; }
         public ScreeningTypeCode? ScreeningTypeCode { get; set; }
         public string? AddressLine1 { get; set; }

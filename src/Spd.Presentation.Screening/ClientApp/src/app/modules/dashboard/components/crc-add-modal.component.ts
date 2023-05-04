@@ -125,7 +125,7 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 								style="color: var(--color-green);"
 								(click)="onAddRow()"
 							>
-								<mat-icon class="add-icon">add_circle</mat-icon>Add Another Screening
+								<mat-icon class="add-icon">add_circle</mat-icon>Add Another Request
 							</button>
 						</div>
 					</div>

@@ -26,17 +26,11 @@ export interface ExpiredChecksResponse extends ApplicationResponse {
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
 					<h2 class="mb-2 fw-normal">Expiring Criminal Record Checks</h2>
-					<div class="alert alert-warning d-flex align-items-center" role="alert" *ngIf="followUpBusinessDays">
-						<mat-icon class="d-none d-lg-block alert-icon me-2">schedule</mat-icon>
-						<div>
-							We are currently processing applications that do NOT require follow-up within:
-							<span class="fw-semibold">{{ followUpBusinessDays }} business days</span>
-						</div>
-					</div>
+					<app-banner></app-banner>
 				</div>
 			</div>
 
-			<div class="row" [formGroup]="formFilter">
+			<div class="row mt-2" [formGroup]="formFilter">
 				<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
 					<mat-form-field>
 						<input
@@ -59,7 +53,7 @@ export interface ExpiredChecksResponse extends ApplicationResponse {
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Applicant Name</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Applicant Name:</span>
-								{{ utilService.getFullName(application.givenName, application.surname) }}
+								{{ application | fullname }}
 							</mat-cell>
 						</ng-container>
 
@@ -75,7 +69,7 @@ export interface ExpiredChecksResponse extends ApplicationResponse {
 							<mat-header-cell *matHeaderCellDef>Expiring On</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Expiring On:</span>
-								{{ application.createdOn | date : constants.date.dateFormat }}
+								{{ application.createdOn | date : constants.date.dateFormat : 'UTC' }}
 							</mat-cell>
 						</ng-container>
 
@@ -93,20 +87,21 @@ export interface ExpiredChecksResponse extends ApplicationResponse {
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Company / Facility Name</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Company / Facility Name:</span>
-								{{ application.contractedCompanyName }}
+								{{ application.contractedCompanyName | default }}
 							</mat-cell>
 						</ng-container>
 
 						<ng-container matColumnDef="action1">
-							<mat-header-cell *matHeaderCellDef>Download Clearance Letter</mat-header-cell>
+							<mat-header-cell *matHeaderCellDef></mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<button
 									mat-flat-button
 									class="table-button m-2"
 									style="color: var(--color-primary-light);"
 									aria-label="Download Clearance Letter"
+									matTooltip="Download Clearance Letter"
 								>
-									<mat-icon>file_download</mat-icon>Download
+									<mat-icon>file_download</mat-icon>Clearance Letter
 								</button>
 							</mat-cell>
 						</ng-container>
@@ -162,23 +157,31 @@ export interface ExpiredChecksResponse extends ApplicationResponse {
 			.days-remaining-red {
 				color: var(--color-red);
 			}
+
 			.days-remaining-orange {
 				color: var(--color-orange);
 			}
+
 			.days-remaining-green {
 				color: var(--color-green);
 			}
 
 			.mat-column-action1 {
-				min-width: 190px;
+				min-width: 220px;
+				padding-right: 4px !important;
+				padding-left: 4px !important;
 			}
 
 			.mat-column-action2 {
 				min-width: 160px;
+				padding-right: 4px !important;
+				padding-left: 4px !important;
 			}
 
 			.mat-column-action3 {
 				min-width: 160px;
+				padding-right: 4px !important;
+				padding-left: 4px !important;
 			}
 		`,
 	],
@@ -189,7 +192,6 @@ export class ExpiringChecksComponent implements OnInit {
 	dataSource: MatTableDataSource<ExpiredChecksResponse> = new MatTableDataSource<ExpiredChecksResponse>([]);
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
 	columns!: string[];
-	followUpBusinessDays = '';
 
 	formFilter: FormGroup = this.formBuilder.group({
 		search: new FormControl(''),
@@ -200,7 +202,7 @@ export class ExpiringChecksComponent implements OnInit {
 
 	constructor(
 		private router: Router,
-		protected utilService: UtilService,
+		private utilService: UtilService,
 		private formBuilder: FormBuilder,
 		private applicationService: ApplicationService,
 		private authenticationService: AuthenticationService,
@@ -278,8 +280,6 @@ export class ExpiringChecksComponent implements OnInit {
 			})
 			.pipe()
 			.subscribe((res: ApplicationListResponse) => {
-				this.followUpBusinessDays = res.followUpBusinessDays ? String(res.followUpBusinessDays) : '';
-
 				const applications = res.applications as Array<ExpiredChecksResponse>;
 				applications.forEach((app: ExpiredChecksResponse) => {
 					const [itemText, itemClass] = this.getDaysRemaining(app.createdOn);

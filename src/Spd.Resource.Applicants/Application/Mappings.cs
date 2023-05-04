@@ -33,7 +33,7 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.spd_payer, opt => opt.MapFrom(s => (int)Enum.Parse<PayerPreferenceOptionSet>(s.PayeeType.ToString())))
             .ForMember(d => d.spd_declarationdate, opt => opt.MapFrom(s => DateTime.Now))
             .ForMember(d => d.spd_identityconfirmed, opt => opt.MapFrom(s => s.HaveVerifiedIdentity))
-            .ForMember(d => d.statuscode, opt => opt.MapFrom(s => ApplicationActiveStatus.PaymentPending));
+            .ForMember(d => d.statuscode, opt => opt.MapFrom(s => s.HaveVerifiedIdentity == true ? ApplicationActiveStatus.PaymentPending : ApplicationActiveStatus.ApplicantVerification));
 
             _ = CreateMap<AliasCreateCmd, spd_alias>()
             .ForMember(d => d.spd_aliasid, opt => opt.MapFrom(s => Guid.NewGuid()))
@@ -76,6 +76,7 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.PaidBy, opt => opt.MapFrom(s => GetPaidBy(s.spd_payer)))
             .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.spd_emailaddress1))
             .ForMember(d => d.ContractedCompanyName, opt => opt.MapFrom(s => s.spd_contractedcompanyname))
+            .ForMember(d => d.DateOfBirth, opt => opt.MapFrom(s => new DateTimeOffset(s.spd_dateofbirth.Value.Year, s.spd_dateofbirth.Value.Month, s.spd_dateofbirth.Value.Day, 0, 0, 0, TimeSpan.Zero)))
             .ForMember(d => d.CreatedOn, opt => opt.MapFrom(s => s.createdon))
             .ForMember(d => d.HaveVerifiedIdentity, opt => opt.MapFrom(s => s.spd_identityconfirmed));
         }
