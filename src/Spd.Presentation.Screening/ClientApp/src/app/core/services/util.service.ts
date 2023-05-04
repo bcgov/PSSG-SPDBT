@@ -6,9 +6,9 @@ import { ApplicationPortalStatusCodes, SelectOptions } from '../constants/model-
 
 @Injectable({ providedIn: 'root' })
 export class UtilService {
+	//------------------------------------
 	// Session storage
 	readonly ORG_REG_STATE_KEY: string = SPD_CONSTANTS.sessionStorage.organizationRegStateKey;
-	readonly BANNER_MESSAGE_KEY: string = SPD_CONSTANTS.sessionStorage.bannerMessageKey;
 
 	setSessionData(key: string, data: any): void {
 		sessionStorage.setItem(key, data);
@@ -24,9 +24,9 @@ export class UtilService {
 
 	clearAllSessionData(): void {
 		this.clearSessionData(this.ORG_REG_STATE_KEY);
-		this.clearSessionData(this.BANNER_MESSAGE_KEY);
 	}
 
+	//------------------------------------
 	// Table config
 	getDefaultQueryParams(): any {
 		return { page: 0, pageSize: SPD_CONSTANTS.list.defaultPageSize };
@@ -41,7 +41,8 @@ export class UtilService {
 		return defaultTableConfig;
 	}
 
-	// Misc
+	//------------------------------------
+	// Generic
 	getFullName(firstName: string | null, lastName: string | null): string {
 		return `${firstName ?? ''} ${lastName ?? ''}`.trim();
 	}
@@ -62,7 +63,8 @@ export class UtilService {
 		}
 	}
 
-	// Specific
+	//------------------------------------
+	// Misc
 	getApplicationPortalStatus(code: string | null | undefined): [string, string] {
 		if (!code) {
 			return ['', ''];
