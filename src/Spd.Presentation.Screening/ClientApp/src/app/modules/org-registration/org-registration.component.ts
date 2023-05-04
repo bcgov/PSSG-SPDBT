@@ -138,12 +138,12 @@ export class OrgRegistrationComponent implements OnInit {
 		if (authInfo.loggedIn) {
 			if (authInfo.state) {
 				const decodedData = decodeURIComponent(authInfo.state);
-				this.utilService.setOrgRegState(decodedData);
+				this.utilService.setSessionData(this.utilService.ORG_REG_STATE_KEY, decodedData);
 
 				// navigate to step 3
 				this.postLoginNavigate(decodedData);
 			} else {
-				const stateInfo = this.utilService.getOrgRegState();
+				const stateInfo = this.utilService.getSessionData(this.utilService.ORG_REG_STATE_KEY);
 				if (stateInfo) {
 					this.postLoginNavigate(stateInfo);
 				}
@@ -245,7 +245,7 @@ export class OrgRegistrationComponent implements OnInit {
 
 			const stateInfo = JSON.stringify({ ...this.stepOneComponent.getStepData() });
 			this.currentStateInfo = JSON.parse(stateInfo);
-			this.utilService.setOrgRegState(stateInfo);
+			this.utilService.setSessionData(this.utilService.ORG_REG_STATE_KEY, stateInfo);
 
 			// Go to Step 3
 			this.stepper.selectedIndex = 2;
@@ -356,7 +356,7 @@ export class OrgRegistrationComponent implements OnInit {
 
 	private handleSaveSuccess(): void {
 		this.hotToast.success('The application was successfully submitted');
-		this.utilService.clearOrgRegState();
+		this.utilService.clearSessionData(this.utilService.ORG_REG_STATE_KEY);
 		this.stepFourComponent.childStepNext();
 	}
 }

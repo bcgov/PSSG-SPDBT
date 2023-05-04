@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {
+	ApplicationInviteCreateRequest,
 	ApplicationInvitesCreateRequest,
 	ApplicationInvitesCreateResponse,
 	PayeePreferenceTypeCode,
@@ -11,6 +12,10 @@ import { AuthenticationService } from 'src/app/core/services/authentication.serv
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
+
+export interface CrcDialogData {
+	inviteDefault: ApplicationInviteCreateRequest | undefined;
+}
 
 @Component({
 	selector: 'app-crc-add-modal',
@@ -176,24 +181,34 @@ export class CrcAddModalComponent implements OnInit {
 		private dialogRef: MatDialogRef<CrcAddModalComponent>,
 		private applicationService: ApplicationService,
 		private authenticationService: AuthenticationService,
-		private dialog: MatDialog
+		private dialog: MatDialog,
+		@Inject(MAT_DIALOG_DATA) public dialogData: CrcDialogData
 	) {}
 
 	ngOnInit(): void {
 		this.form = this.formBuilder.group({
 			tableRows: this.formBuilder.array([]),
 		});
-		this.onAddRow();
+
+		this.addFirstRow(this.dialogData?.inviteDefault ?? undefined);
 	}
 
-	initiateForm(): FormGroup {
+	initiateForm(inviteDefault?: ApplicationInviteCreateRequest): FormGroup {
 		return this.formBuilder.group({
-			firstName: new FormControl('', [Validators.required]),
-			lastName: new FormControl('', [Validators.required]),
-			email: new FormControl('', [Validators.required, FormControlValidators.email]),
-			jobTitle: new FormControl('', [Validators.required]),
-			payeeType: new FormControl('', [Validators.required]),
+			firstName: new FormControl(inviteDefault ? inviteDefault.firstName : '', [Validators.required]),
+			lastName: new FormControl(inviteDefault ? inviteDefault.lastName : '', [Validators.required]),
+			email: new FormControl(inviteDefault ? inviteDefault.email : '', [
+				Validators.required,
+				FormControlValidators.email,
+			]),
+			jobTitle: new FormControl(inviteDefault ? inviteDefault.jobTitle : '', [Validators.required]),
+			payeeType: new FormControl(inviteDefault ? inviteDefault.payeeType : '', [Validators.required]),
 		});
+	}
+
+	addFirstRow(inviteDefault?: ApplicationInviteCreateRequest) {
+		const control = this.form.get('tableRows') as FormArray;
+		control.push(this.initiateForm(inviteDefault));
 	}
 
 	onAddRow() {

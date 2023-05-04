@@ -6,14 +6,16 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { ApplicationListResponse, ApplicationPortalStatusCode, ApplicationResponse } from 'src/app/api/models';
+import { HotToastService } from '@ngneat/hot-toast';
+import { ApplicationInviteCreateRequest, ApplicationListResponse, ApplicationResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
-import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
+import { DialogCloseCode, DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { DashboardRoutes } from '../dashboard-routing.module';
 import { ApplicationStatusFilterMap } from './application-statuses-filter.component';
+import { CrcAddModalComponent, CrcDialogData } from './crc-add-modal.component';
 
 @Component({
 	selector: 'app-identify-verification',
@@ -197,6 +199,7 @@ export class IdentifyVerificationComponent implements OnInit {
 		private location: Location,
 		private authenticationService: AuthenticationService,
 		private applicationService: ApplicationService,
+		private hotToast: HotToastService,
 		private dialog: MatDialog
 	) {}
 
@@ -250,18 +253,49 @@ export class IdentifyVerificationComponent implements OnInit {
 			icon: 'info',
 			title: 'Confirmation',
 			message: 'Would you like to send a new criminal record check request for this individual from your organization?',
-			actionText: 'Yes, send new request',
-			cancelText: 'No, reject',
+			actionText: 'Yes, create new request',
+			altOptionText: 'No, reject',
+			cancelText: 'Cancel',
 		};
 
 		this.dialog
-			.open(DialogComponent, { data })
+			.open(DialogComponent, { width: '800px', data })
 			.afterClosed()
-			.subscribe((response: boolean) => {
-				if (response) {
-					this.router.navigateByUrl(DashboardRoutes.dashboardPath(DashboardRoutes.CRIMINAL_RECORD_CHECKS));
-				} else {
+			.subscribe((response: DialogCloseCode) => {
+				if (response == DialogCloseCode.Action) {
+					this.sendRequest(application);
+				} else if (response == DialogCloseCode.AltAction) {
 					// todo REJECT
+					this.hotToast.success('Verification was successfully rejected');
+				}
+			});
+	}
+
+	private sendRequest(application: ApplicationResponse) {
+		const inviteDefault: ApplicationInviteCreateRequest = {
+			firstName: application.givenName,
+			lastName: application.surname,
+			email: application.emailAddress,
+			jobTitle: application.jobTitle,
+			payeeType: application.payeeType,
+		};
+
+		const dialogOptions: CrcDialogData = {
+			inviteDefault,
+		};
+
+		this.dialog
+			.open(CrcAddModalComponent, {
+				width: '1400px',
+				data: dialogOptions,
+			})
+			.afterClosed()
+			.subscribe((resp) => {
+				if (resp.success) {
+					this.hotToast.success('Verification was successfully rejected');
+					this.hotToast.success(resp.message);
+
+					this.router.navigateByUrl(DashboardRoutes.dashboardPath(DashboardRoutes.CRIMINAL_RECORD_CHECKS));
 				}
 			});
 	}
@@ -274,7 +308,8 @@ export class IdentifyVerificationComponent implements OnInit {
 	}
 
 	private buildQueryParamsFilterString(): string {
-		return `status==${ApplicationPortalStatusCode.VerifyIdentity},` + this.currentSearch;
+		return this.currentSearch;
+		// return `status==${ApplicationPortalStatusCode.VerifyIdentity},` + this.currentSearch;
 	}
 
 	private loadList(): void {

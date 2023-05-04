@@ -39,9 +39,7 @@ export const CriminalRecordCheckFilterMap: Record<keyof CriminalRecordCheckFilte
 					</h2>
 				</div>
 				<div class="col-xxl-3 col-xl-4 col-lg-5 col-md-6 col-sm-12 my-auto">
-					<button mat-flat-button class="large w-100 mat-green-button mb-2" (click)="onAddScreeningRequest()">
-						Add Request
-					</button>
+					<button mat-flat-button class="large w-100 mat-green-button mb-2" (click)="onAddCRCs()">Add Request</button>
 				</div>
 			</div>
 
@@ -217,7 +215,7 @@ export class CriminalRecordChecksComponent implements OnInit {
 		this.loadList();
 	}
 
-	onAddScreeningRequest(): void {
+	onAddCRCs(): void {
 		this.dialog
 			.open(CrcAddModalComponent, {
 				width: '1400px',
