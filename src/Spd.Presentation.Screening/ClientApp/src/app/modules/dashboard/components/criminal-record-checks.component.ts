@@ -33,7 +33,9 @@ export const CriminalRecordCheckFilterMap: Record<keyof CriminalRecordCheckFilte
 				<div class="col-xxl-9 col-xl-8 col-lg-7 col-md-6 col-sm-12">
 					<h2 class="mb-2 fw-normal">
 						Criminal Record Check Requests
-						<div class="mt-2 fs-5 fw-light">View active criminal record check requests</div>
+						<div class="mt-2 fs-5 fw-light">
+							Criminal record check request links will expire 14 days after being sent
+						</div>
 					</h2>
 				</div>
 				<div class="col-xxl-3 col-xl-4 col-lg-5 col-md-6 col-sm-12 my-auto">
@@ -43,7 +45,7 @@ export const CriminalRecordCheckFilterMap: Record<keyof CriminalRecordCheckFilte
 				</div>
 			</div>
 
-			<div class="row mt-3" [formGroup]="formFilter">
+			<div class="row mt-2" [formGroup]="formFilter">
 				<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
 					<mat-form-field>
 						<input
@@ -82,7 +84,7 @@ export const CriminalRecordCheckFilterMap: Record<keyof CriminalRecordCheckFilte
 								>
 									error
 								</mat-icon>
-								{{ utilService.getFullName(application.firstName, application.lastName) }}
+								{{ application | fullname }}
 							</mat-cell>
 						</ng-container>
 
@@ -90,7 +92,7 @@ export const CriminalRecordCheckFilterMap: Record<keyof CriminalRecordCheckFilte
 							<mat-header-cell *matHeaderCellDef>Email</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Email:</span>
-								{{ application.email }}
+								{{ application.email | default }}
 							</mat-cell>
 						</ng-container>
 
@@ -98,7 +100,7 @@ export const CriminalRecordCheckFilterMap: Record<keyof CriminalRecordCheckFilte
 							<mat-header-cell *matHeaderCellDef>Job Title</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Job Title:</span>
-								{{ application.jobTitle }}
+								{{ application.jobTitle | default }}
 							</mat-cell>
 						</ng-container>
 
@@ -106,7 +108,7 @@ export const CriminalRecordCheckFilterMap: Record<keyof CriminalRecordCheckFilte
 							<mat-header-cell *matHeaderCellDef>To Be Paid By</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">To Be Paid By:</span>
-								{{ application.payeeType }}
+								{{ application.payeeType | default }}
 							</mat-cell>
 						</ng-container>
 
@@ -114,7 +116,7 @@ export const CriminalRecordCheckFilterMap: Record<keyof CriminalRecordCheckFilte
 							<mat-header-cell *matHeaderCellDef>Request Sent</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Request Sent:</span>
-								{{ application.createdOn | date : constants.date.dateFormat }}
+								{{ application.createdOn | date : constants.date.dateFormat : 'UTC' }}
 							</mat-cell>
 						</ng-container>
 
@@ -192,7 +194,7 @@ export class CriminalRecordChecksComponent implements OnInit {
 
 	dataSource: MatTableDataSource<ApplicationInviteResponse> = new MatTableDataSource<ApplicationInviteResponse>([]);
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
-	columns!: string[];
+	columns: string[] = ['applicantName', 'emailAddress', 'jobTitle', 'paidBy', 'createdOn', 'viewed', 'actions'];
 	formFilter: FormGroup = this.formBuilder.group({
 		search: new FormControl(''),
 	});
@@ -203,7 +205,7 @@ export class CriminalRecordChecksComponent implements OnInit {
 	@ViewChild('paginator') paginator!: MatPaginator;
 
 	constructor(
-		protected utilService: UtilService,
+		private utilService: UtilService,
 		private formBuilder: FormBuilder,
 		private dialog: MatDialog,
 		private applicationService: ApplicationService,
@@ -212,7 +214,6 @@ export class CriminalRecordChecksComponent implements OnInit {
 	) {}
 
 	ngOnInit() {
-		this.columns = ['applicantName', 'emailAddress', 'jobTitle', 'paidBy', 'createdOn', 'viewed', 'actions'];
 		this.loadList();
 	}
 
@@ -288,7 +289,7 @@ export class CriminalRecordChecksComponent implements OnInit {
 			})
 			.pipe()
 			.subscribe((res: ApplicationInviteListResponse) => {
-				this.dataSource = new MatTableDataSource(res.applicationInvites as Array<ApplicationInviteResponse>);
+				this.dataSource = new MatTableDataSource(res.applicationInvites ?? []);
 				this.tablePaginator = { ...res.pagination };
 			});
 	}
