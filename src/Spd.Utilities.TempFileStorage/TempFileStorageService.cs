@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
-using Spd.Utilities.Cache;
 
 namespace Spd.Utilities.TempFileStorage;
 internal class TempFileStorageService : ITempFileStorageService
@@ -18,7 +17,7 @@ internal class TempFileStorageService : ITempFileStorageService
         };
     }
 
-    public async Task<TempFile?> HandleQuery(TempFileQuery query, CancellationToken cancellationToken)
+    public async Task<byte[]?> HandleQuery(TempFileQuery query, CancellationToken cancellationToken)
     {
         return query switch
         {
@@ -32,18 +31,12 @@ internal class TempFileStorageService : ITempFileStorageService
         string fileKey = $"file-{Guid.NewGuid()}";
         using var ms = new MemoryStream();
         await cmd.File.CopyToAsync(ms, ct);
-        TempFile file = new()
-        {
-            Content = ms.ToArray(),
-            FileName = cmd.File.FileName,
-            ContentType = cmd.File.ContentType,
-        };
-        await _cache.Set<TempFile>(fileKey, file, new TimeSpan(0, 20, 0)); //20 mins
+        _cache.Set(fileKey, ms.ToArray(), new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = new TimeSpan(0, 10, 0) }); //10 mins
         return fileKey;
     }
 
-    private async Task<TempFile?> GetTempFile(string fileKey, CancellationToken ct)
+    private async Task<byte[]?> GetTempFile(string fileKey, CancellationToken ct)
     {
-        return await _cache.Get<TempFile>(fileKey); 
+        return await _cache.GetAsync(fileKey, ct);
     }
 }

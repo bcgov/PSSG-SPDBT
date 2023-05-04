@@ -6,6 +6,7 @@ using Spd.Utilities.Dynamics;
 using Spd.Utilities.Hosting;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Recaptcha;
+using Spd.Utilities.TempFileStorage;
 using System.Reflection;
 using System.Security.Principal;
 using System.Text.Json.Serialization;
@@ -64,6 +65,7 @@ namespace Spd.Presentation.Screening
             services.AddAutoMapper(assemblies);
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies));
             services.AddDistributedMemoryCache();
+            services.AddTempFileStorageService();
             services
               .AddDynamicsProxy(configuration)
               .AddAddressAutoComplete(configuration);

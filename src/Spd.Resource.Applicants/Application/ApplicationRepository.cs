@@ -1,23 +1,32 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Spd.Utilities.Dynamics;
+using Spd.Utilities.FileStorage;
+using Spd.Utilities.TempFileStorage;
 
 namespace Spd.Resource.Applicants.Application;
 internal class ApplicationRepository : IApplicationRepository
 {
     private readonly DynamicsContext _context;
     private readonly IMapper _mapper;
+    private readonly ITempFileStorageService _tempFile;
+    private readonly IFileStorageService _fileStorage;
 
-    public ApplicationRepository(IDynamicsContextFactory ctx, IMapper mapper, ILogger<ApplicationRepository> logger)
+    public ApplicationRepository(IDynamicsContextFactory ctx, IMapper mapper, ITempFileStorageService tempFile, IFileStorageService fileStorage)
     {
         _context = ctx.CreateChangeOverwrite();
         _mapper = mapper;
+        _tempFile = tempFile;
+        _fileStorage = fileStorage;
     }
 
     public async Task<Guid?> AddApplicationAsync(ApplicationCreateCmd createApplicationCmd, CancellationToken ct)
     {
+        //upload file to s3
+        string s3FileKey = await UploadFileAsync(createApplicationCmd, ct);
+
+        //create application
         spd_application application = _mapper.Map<spd_application>(createApplicationCmd);
         account? org = await _context.GetOrgById(createApplicationCmd.OrgId, ct);
         spd_portaluser? user = await _context.GetUserById(createApplicationCmd.CreatedByUserId, ct);
@@ -49,6 +58,14 @@ internal class ApplicationRepository : IApplicationRepository
                 _context.SetLink(alias, nameof(alias.spd_ContactId), contact);
             }
         }
+
+        //create bcgov_documenturl
+        bcgov_documenturl documenturl= new bcgov_documenturl();
+        documenturl.bcgov_documenturlid = Guid.NewGuid();
+        documenturl.bcgov_filename = createApplicationCmd.ConsentFormTempFile.FileName;
+        documenturl.bcgov_filesize = createApplicationCmd.ConsentFormTempFile.FileSize.ToString();
+        //documenturl.bcgov_origincode = 
+        _context.SetLink(documenturl, nameof(documenturl.spd_ApplicationId), application);
 
         await _context.SaveChangesAsync(ct);
         return application.spd_applicationid;
@@ -209,6 +226,28 @@ internal class ApplicationRepository : IApplicationRepository
             return "spd_contractedcompanyname";
 
         return "createdon desc";
+    }
+
+    private async Task<string?> UploadFileAsync(ApplicationCreateCmd cmd, CancellationToken ct)
+    {
+        byte[]? consentFileContent = await _tempFile.HandleQuery(
+            new GetTempFileQuery(cmd.ConsentFormTempFile.TempFileKey), ct);
+
+        if (consentFileContent == null) return null;
+        string s3FileKey = Guid.NewGuid().ToString();
+        Utilities.FileStorage.File file = new()
+        {
+            Content = consentFileContent,
+            ContentType = cmd.ConsentFormTempFile.ContentType,
+            FileName = cmd.ConsentFormTempFile.FileName,
+        };
+        await _fileStorage.HandleCommand(new UploadFileCommand(
+            Key: s3FileKey,
+            Folder: "application",
+            File: file,
+            FileTag: new FileTag()
+            ), ct);
+        return s3FileKey;
     }
 }
 

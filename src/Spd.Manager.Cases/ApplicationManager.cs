@@ -114,10 +114,17 @@ namespace Spd.Manager.Cases
             }
 
             string fileKey = await _tempFile.HandleCommand(new SaveTempFileCommand(request.ApplicationCreateRequest.ConsentFormFile), ct);
+            SpdTempFile spdTempFile = new ()
+            {
+                TempFileKey = fileKey,
+                ContentType = request.ApplicationCreateRequest.ConsentFormFile.ContentType,
+                FileName = request.ApplicationCreateRequest.ConsentFormFile.FileName,
+                FileSize = request.ApplicationCreateRequest.ConsentFormFile.Length,
+            };
             var cmd = _mapper.Map<ApplicationCreateCmd>(request.ApplicationCreateRequest);
             cmd.OrgId = request.OrgId;
             cmd.CreatedByUserId = request.UserId;
-            cmd.ConsentFormTempFileKey = fileKey;
+            cmd.ConsentFormTempFile = spdTempFile;
             Guid? applicationId = await _applicationRepository.AddApplicationAsync(cmd, ct);
             if (applicationId.HasValue)
             {
