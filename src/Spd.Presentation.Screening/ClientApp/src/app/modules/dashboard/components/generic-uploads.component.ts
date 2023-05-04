@@ -190,66 +190,6 @@ export class GenericUploadsComponent implements OnInit, AfterViewInit {
 				uploadedFileName: 'one-two-three.tsv',
 				uploadedBatchNumber: '10030-56',
 			},
-			{
-				uploadedDateTime: '2023-03-24T00:15:05.865Z',
-				uploadedBy: 'Peter Parker',
-				uploadedFileName: 'four-five.tsv',
-				uploadedBatchNumber: '10400-99',
-			},
-			{
-				uploadedDateTime: '2023-01-14T00:13:05.865Z',
-				uploadedBy: 'Mark Smith',
-				uploadedFileName: 'test.tsv',
-				uploadedBatchNumber: '10001-23',
-			},
-			{
-				uploadedDateTime: '2023-02-04T00:10:05.865Z',
-				uploadedBy: 'Tim Parker',
-				uploadedFileName: 'one-two-three.tsv',
-				uploadedBatchNumber: '10030-56',
-			},
-			{
-				uploadedDateTime: '2023-03-24T00:15:05.865Z',
-				uploadedBy: 'Alex Parker',
-				uploadedFileName: 'four-five.tsv',
-				uploadedBatchNumber: '10400-99',
-			},
-			{
-				uploadedDateTime: '2023-01-14T00:13:05.865Z',
-				uploadedBy: 'Jim Smith',
-				uploadedFileName: 'test.tsv',
-				uploadedBatchNumber: '10001-23',
-			},
-			{
-				uploadedDateTime: '2023-02-04T00:10:05.865Z',
-				uploadedBy: 'Ben Parker',
-				uploadedFileName: 'one-two-three.tsv',
-				uploadedBatchNumber: '10030-56',
-			},
-			{
-				uploadedDateTime: '2023-03-24T00:15:05.865Z',
-				uploadedBy: 'Cam Parker',
-				uploadedFileName: 'four-five.tsv',
-				uploadedBatchNumber: '10400-99',
-			},
-			{
-				uploadedDateTime: '2022-01-14T00:13:05.865Z',
-				uploadedBy: 'Paul Smith',
-				uploadedFileName: 'test.tsv',
-				uploadedBatchNumber: '10001-23',
-			},
-			{
-				uploadedDateTime: '2022-02-04T00:10:05.865Z',
-				uploadedBy: 'Cindy Parker',
-				uploadedFileName: 'one-two-three.tsv',
-				uploadedBatchNumber: '10030-56',
-			},
-			{
-				uploadedDateTime: '2022-03-24T00:15:05.865Z',
-				uploadedBy: 'Dave Parker',
-				uploadedFileName: 'four-five.tsv',
-				uploadedBatchNumber: '10400-99',
-			},
 		];
 	}
 

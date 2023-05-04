@@ -65,7 +65,7 @@ export interface PaymentResponse extends ApplicationResponse {
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Applicant Name</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Applicant Name:</span>
-								{{ utilService.getFullName(application.givenName, application.surname) }}
+								{{ application | fullname }}
 							</mat-cell>
 						</ng-container>
 
@@ -73,7 +73,7 @@ export interface PaymentResponse extends ApplicationResponse {
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Submitted On</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Submitted On:</span>
-								{{ application.createdOn | date : constants.date.dateTimeFormat }}
+								{{ application.createdOn | date : constants.date.dateFormat : 'UTC' }}
 							</mat-cell>
 						</ng-container>
 
@@ -113,9 +113,10 @@ export interface PaymentResponse extends ApplicationResponse {
 									class="table-button m-2"
 									style="color: var(--color-primary-light);"
 									*ngIf="application.status != applicationPortalStatusCodes.AwaitingPayment"
-									aria-label="Download Clearance Letter"
+									aria-label="Download Receipt"
+									matTooltip="Download Receipt"
 								>
-									<mat-icon>file_download</mat-icon>Download Receipt
+									<mat-icon>file_download</mat-icon>Receipt
 								</button>
 
 								<button
@@ -150,11 +151,14 @@ export interface PaymentResponse extends ApplicationResponse {
 		`
 			.mat-column-status {
 				min-width: 190px;
+				padding-right: 4px !important;
+				padding-left: 4px !important;
 			}
 
 			.mat-column-actions {
-				min-width: 250px;
-				justify-content: center !important;
+				min-width: 150px;
+				padding-right: 4px !important;
+				padding-left: 4px !important;
 			}
 		`,
 	],
@@ -180,7 +184,7 @@ export class PaymentsComponent implements OnInit {
 	@ViewChild('paginator') paginator!: MatPaginator;
 
 	constructor(
-		protected utilService: UtilService,
+		private utilService: UtilService,
 		private formBuilder: FormBuilder,
 		private applicationService: ApplicationService,
 		private authenticationService: AuthenticationService,

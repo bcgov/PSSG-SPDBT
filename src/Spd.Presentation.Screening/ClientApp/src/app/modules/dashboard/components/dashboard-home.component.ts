@@ -8,15 +8,7 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
-					<div class="alert alert-warning d-flex align-items-center" role="alert">
-						<mat-icon class="d-none d-lg-block alert-icon me-2">schedule</mat-icon>
-						<div>
-							<div>We are currently processing applications that do NOT require follow-up within:</div>
-							<div class="fw-semibold">
-								10 business days for online applications and 20 business days for manual applications
-							</div>
-						</div>
-					</div>
+					<app-banner></app-banner>
 				</div>
 			</div>
 			<div class="row">

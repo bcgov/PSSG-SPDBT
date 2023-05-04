@@ -23,7 +23,7 @@ export class AuthConfigService {
 			scope: resp.scope!,
 			showDebugInformation: true,
 			postLogoutRedirectUri: resp.postLogoutRedirectUri!,
-			customQueryParams: { kc_idp_hint: 'bceidboth' },
+			customQueryParams: { kc_idp_hint: 'bceidbusiness' },
 		};
 		console.debug('[getAuthConfig] bceIdConfig', bceIdConfig, 'redirectUri', redirectUri);
 		return bceIdConfig;

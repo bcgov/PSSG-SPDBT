@@ -6,6 +6,7 @@ export interface ApplicationResponse {
   applicationNumber?: null | string;
   contractedCompanyName?: null | string;
   createdOn?: null | string;
+  dateOfBirth?: null | string;
   emailAddress?: null | string;
   givenName?: null | string;
   haveVerifiedIdentity?: null | boolean;
