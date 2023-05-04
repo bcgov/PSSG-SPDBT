@@ -25,7 +25,15 @@ import { CrcAddModalComponent, CrcDialogData } from './crc-add-modal.component';
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
 					<h2 class="mb-2 fw-normal">Identity Verification</h2>
-					<app-banner></app-banner>
+					<div class="alert alert-warning d-flex align-items-center" role="alert" *ngIf="count > 0">
+						<mat-icon class="d-none d-md-block alert-icon me-2">warning</mat-icon>
+						<ng-container *ngIf="count == 1; else moreThanOne">
+							<div>There is 1 applicant which requires confirmation</div>
+						</ng-container>
+						<ng-template #moreThanOne>
+							<div>There are {{ count }} applicants which require confirmation</div>
+						</ng-template>
+					</div>
 				</div>
 			</div>
 
@@ -327,7 +335,7 @@ export class IdentifyVerificationComponent implements OnInit {
 				this.dataSource.sort = this.sort;
 				this.tablePaginator = { ...res.pagination };
 
-				this.count = applications.length;
+				this.count = res.pagination?.length ?? 0;
 			});
 	}
 }

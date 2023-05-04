@@ -22,9 +22,14 @@ export interface PaymentResponse extends ApplicationResponse {
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
 					<h2 class="mb-2 fw-normal">Outstanding Payments</h2>
-					<div class="alert alert-warning d-flex align-items-center" role="alert">
+					<div class="alert alert-warning d-flex align-items-center" role="alert" *ngIf="count > 0">
 						<mat-icon class="d-none d-md-block alert-icon me-2">warning</mat-icon>
-						<div>There are 5 applications which require payment</div>
+						<ng-container *ngIf="count == 1; else moreThanOne">
+							<div>There is 1 application which requires payment</div>
+						</ng-container>
+						<ng-template #moreThanOne>
+							<div>There are {{ count }} applications which require payment</div>
+						</ng-template>
 					</div>
 				</div>
 			</div>
@@ -170,6 +175,7 @@ export class PaymentsComponent implements OnInit {
 	dataSource: MatTableDataSource<PaymentResponse> = new MatTableDataSource<PaymentResponse>([]);
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
 	columns!: string[];
+	count = 0;
 
 	showDropdownOverlay = false;
 	formFilter: FormGroup = this.formBuilder.group({
@@ -238,6 +244,8 @@ export class PaymentsComponent implements OnInit {
 				this.dataSource = new MatTableDataSource(applications);
 				this.dataSource.sort = this.sort;
 				this.tablePaginator = { ...res.pagination };
+
+				this.count = res.pagination?.length ?? 0;
 			});
 	}
 }
