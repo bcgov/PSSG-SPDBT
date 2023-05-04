@@ -98,7 +98,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/orgs/{orgId}/application")]
         [HttpPost]
-        public async Task<ApplicationCreateResponse> AddApplication([FromBody][Required] ApplicationCreateRequest applicationCreateRequest, [FromRoute] Guid orgId)
+        public async Task<ApplicationCreateResponse> AddApplication([FromForm][Required] ApplicationCreateRequest applicationCreateRequest, [FromRoute] Guid orgId)
         {
             var userId = this.HttpContext.User.GetUserId();
             if (userId == null) throw new ApiException(System.Net.HttpStatusCode.Unauthorized);

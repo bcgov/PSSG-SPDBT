@@ -23,9 +23,6 @@ internal class ApplicationRepository : IApplicationRepository
 
     public async Task<Guid?> AddApplicationAsync(ApplicationCreateCmd createApplicationCmd, CancellationToken ct)
     {
-        //upload file to s3
-        string s3FileKey = await UploadFileAsync(createApplicationCmd, ct);
-
         //create application
         spd_application application = _mapper.Map<spd_application>(createApplicationCmd);
         account? org = await _context.GetOrgById(createApplicationCmd.OrgId, ct);
@@ -59,12 +56,13 @@ internal class ApplicationRepository : IApplicationRepository
             }
         }
 
+        //upload file to s3
+        string? s3FileKey = await UploadFileAsync(createApplicationCmd, application.spd_applicationid, ct);
+
         //create bcgov_documenturl
-        bcgov_documenturl documenturl= new bcgov_documenturl();
-        documenturl.bcgov_documenturlid = Guid.NewGuid();
-        documenturl.bcgov_filename = createApplicationCmd.ConsentFormTempFile.FileName;
-        documenturl.bcgov_filesize = createApplicationCmd.ConsentFormTempFile.FileSize.ToString();
-        //documenturl.bcgov_origincode = 
+        bcgov_documenturl documenturl = _mapper.Map<bcgov_documenturl>(createApplicationCmd.ConsentFormTempFile);
+        documenturl.bcgov_url = $"{s3FileKey}";
+        _context.AddTobcgov_documenturls(documenturl);
         _context.SetLink(documenturl, nameof(documenturl.spd_ApplicationId), application);
 
         await _context.SaveChangesAsync(ct);
@@ -92,7 +90,6 @@ internal class ApplicationRepository : IApplicationRepository
         }
 
         var result = applications.AsEnumerable();
-
         var response = new ApplicationListResp();
         response.Applications = _mapper.Map<IEnumerable<ApplicationResult>>(result);
         if (query.Paging != null)
@@ -228,8 +225,9 @@ internal class ApplicationRepository : IApplicationRepository
         return "createdon desc";
     }
 
-    private async Task<string?> UploadFileAsync(ApplicationCreateCmd cmd, CancellationToken ct)
+    private async Task<string?> UploadFileAsync(ApplicationCreateCmd cmd, Guid? applicationId, CancellationToken ct)
     {
+        if (applicationId == null) return null;
         byte[]? consentFileContent = await _tempFile.HandleQuery(
             new GetTempFileQuery(cmd.ConsentFormTempFile.TempFileKey), ct);
 
@@ -241,11 +239,19 @@ internal class ApplicationRepository : IApplicationRepository
             ContentType = cmd.ConsentFormTempFile.ContentType,
             FileName = cmd.ConsentFormTempFile.FileName,
         };
+        FileTag fileTag = new FileTag()
+        {
+            Tags = new List<Tag>
+            {
+                new Tag("file-classification", "Unclassified"),
+                new Tag("","")
+            }
+        };
         await _fileStorage.HandleCommand(new UploadFileCommand(
             Key: s3FileKey,
-            Folder: "application",
+            Folder: $"spd_application/{applicationId}",
             File: file,
-            FileTag: new FileTag()
+            FileTag: fileTag
             ), ct);
         return s3FileKey;
     }
