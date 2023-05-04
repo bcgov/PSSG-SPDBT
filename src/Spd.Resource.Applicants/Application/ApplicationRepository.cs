@@ -56,14 +56,15 @@ internal class ApplicationRepository : IApplicationRepository
             }
         }
 
-        //upload file to s3
-        string? s3FileKey = await UploadFileAsync(createApplicationCmd, application.spd_applicationid, ct);
-
         //create bcgov_documenturl
         bcgov_documenturl documenturl = _mapper.Map<bcgov_documenturl>(createApplicationCmd.ConsentFormTempFile);
-        documenturl.bcgov_url = $"{s3FileKey}";
+        var tag = _context.LookupTag(DynamicsContextLookupHelpers.AppConsentForm);
         _context.AddTobcgov_documenturls(documenturl);
         _context.SetLink(documenturl, nameof(documenturl.spd_ApplicationId), application);
+        _context.SetLink(documenturl, nameof(documenturl.bcgov_Tag1Id), tag);
+
+        //upload file to s3
+        await UploadFileAsync(createApplicationCmd, application.spd_applicationid, documenturl.bcgov_documenturlid, ct);
 
         await _context.SaveChangesAsync(ct);
         return application.spd_applicationid;
@@ -225,14 +226,14 @@ internal class ApplicationRepository : IApplicationRepository
         return "createdon desc";
     }
 
-    private async Task<string?> UploadFileAsync(ApplicationCreateCmd cmd, Guid? applicationId, CancellationToken ct)
+    private async Task UploadFileAsync(ApplicationCreateCmd cmd, Guid? applicationId, Guid? docUrlId, CancellationToken ct)
     {
-        if (applicationId == null) return null;
+        if (applicationId == null) return;
+        if (docUrlId == null) return;
         byte[]? consentFileContent = await _tempFile.HandleQuery(
             new GetTempFileQuery(cmd.ConsentFormTempFile.TempFileKey), ct);
+        if (consentFileContent == null) return;
 
-        if (consentFileContent == null) return null;
-        string s3FileKey = Guid.NewGuid().ToString();
         Utilities.FileStorage.File file = new()
         {
             Content = consentFileContent,
@@ -244,16 +245,15 @@ internal class ApplicationRepository : IApplicationRepository
             Tags = new List<Tag>
             {
                 new Tag("file-classification", "Unclassified"),
-                new Tag("","")
+                new Tag("file-tag",DynamicsContextLookupHelpers.AppConsentForm)
             }
         };
         await _fileStorage.HandleCommand(new UploadFileCommand(
-            Key: s3FileKey,
+            Key: ((Guid)docUrlId).ToString(),
             Folder: $"spd_application/{applicationId}",
             File: file,
             FileTag: fileTag
             ), ct);
-        return s3FileKey;
     }
 }
 
