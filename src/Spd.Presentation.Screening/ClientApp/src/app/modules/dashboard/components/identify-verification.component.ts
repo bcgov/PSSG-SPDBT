@@ -64,7 +64,7 @@ import { ApplicationStatusFilterMap } from './application-statuses-filter.compon
 							<mat-header-cell *matHeaderCellDef>Applicant Name</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Applicant Name:</span>
-								{{ utilService.getFullName(application.givenName, application.surname) }}
+								{{ application | fullname }}
 							</mat-cell>
 						</ng-container>
 
@@ -72,7 +72,7 @@ import { ApplicationStatusFilterMap } from './application-statuses-filter.compon
 							<mat-header-cell *matHeaderCellDef>Date of Birth</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Date of Birth:</span>
-								{{ application.createdOn | date : constants.date.dateFormat }}
+								{{ application.dateOfBirth | date : constants.date.dateFormat : 'UTC' | default }}
 							</mat-cell>
 						</ng-container>
 
@@ -80,7 +80,7 @@ import { ApplicationStatusFilterMap } from './application-statuses-filter.compon
 							<mat-header-cell *matHeaderCellDef>Job Title</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Job Title:</span>
-								{{ application.jobTitle }}
+								{{ application.jobTitle | default }}
 							</mat-cell>
 						</ng-container>
 
@@ -88,7 +88,7 @@ import { ApplicationStatusFilterMap } from './application-statuses-filter.compon
 							<mat-header-cell *matHeaderCellDef>Email</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Email:</span>
-								{{ application.emailAddress }}
+								{{ application.emailAddress | default }}
 							</mat-cell>
 						</ng-container>
 
@@ -96,7 +96,7 @@ import { ApplicationStatusFilterMap } from './application-statuses-filter.compon
 							<mat-header-cell *matHeaderCellDef>Submitted On</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Submitted On:</span>
-								{{ application.createdOn | date : constants.date.dateFormat }}
+								{{ application.createdOn | date : constants.date.dateFormat : 'UTC' }}
 							</mat-cell>
 						</ng-container>
 
@@ -158,10 +158,14 @@ import { ApplicationStatusFilterMap } from './application-statuses-filter.compon
 		`
 			.mat-column-action1 {
 				min-width: 150px;
+				padding-right: 4px !important;
+				padding-left: 4px !important;
 			}
 
 			.mat-column-action2 {
 				min-width: 150px;
+				padding-right: 4px !important;
+				padding-left: 4px !important;
 			}
 		`,
 	],
@@ -175,8 +179,9 @@ export class IdentifyVerificationComponent implements OnInit {
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
 	columns: string[] = [
 		'applicantName',
-		'emailAddress',
 		'dateOfBirth',
+		'jobTitle',
+		'emailAddress',
 		'createdOn',
 		'applicationNumber',
 		'action1',
@@ -192,7 +197,7 @@ export class IdentifyVerificationComponent implements OnInit {
 
 	constructor(
 		private router: Router,
-		protected utilService: UtilService,
+		private utilService: UtilService,
 		private formBuilder: FormBuilder,
 		private location: Location,
 		private authenticationService: AuthenticationService,
@@ -286,7 +291,7 @@ export class IdentifyVerificationComponent implements OnInit {
 			})
 			.pipe()
 			.subscribe((res: ApplicationListResponse) => {
-				this.dataSource.data = res.applications as Array<ApplicationResponse>;
+				this.dataSource.data = res.applications ?? [];
 				this.dataSource.sort = this.sort;
 				this.tablePaginator = { ...res.pagination };
 			});
