@@ -33,7 +33,9 @@ export const CriminalRecordCheckFilterMap: Record<keyof CriminalRecordCheckFilte
 				<div class="col-xxl-9 col-xl-8 col-lg-7 col-md-6 col-sm-12">
 					<h2 class="mb-2 fw-normal">
 						Criminal Record Check Requests
-						<div class="mt-2 fs-5 fw-light">View active criminal record check requests</div>
+						<div class="mt-2 fs-5 fw-light">
+							Criminal record check request links will expire 14 days after being sent
+						</div>
 					</h2>
 				</div>
 				<div class="col-xxl-3 col-xl-4 col-lg-5 col-md-6 col-sm-12 my-auto">

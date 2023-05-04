@@ -25,19 +25,8 @@ export interface ExpiredChecksResponse extends ApplicationResponse {
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
-					<h2 class="mb-2 fw-normal">
-						Expiring Criminal Record Checks
-						<div class="mt-2 fs-5 fw-light">
-							View criminal record check requests that have expired or will expire soon
-						</div>
-					</h2>
-					<div class="alert alert-warning d-flex align-items-center" role="alert" *ngIf="followUpBusinessDays">
-						<mat-icon class="d-none d-lg-block alert-icon me-2">schedule</mat-icon>
-						<div>
-							We are currently processing applications that do NOT require follow-up within:
-							<span class="fw-semibold">{{ followUpBusinessDays }} business days</span>
-						</div>
-					</div>
+					<h2 class="mb-2 fw-normal">Expiring Criminal Record Checks</h2>
+					<app-banner></app-banner>
 				</div>
 			</div>
 
@@ -203,7 +192,6 @@ export class ExpiringChecksComponent implements OnInit {
 	dataSource: MatTableDataSource<ExpiredChecksResponse> = new MatTableDataSource<ExpiredChecksResponse>([]);
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
 	columns!: string[];
-	followUpBusinessDays = '';
 
 	formFilter: FormGroup = this.formBuilder.group({
 		search: new FormControl(''),
@@ -292,8 +280,6 @@ export class ExpiringChecksComponent implements OnInit {
 			})
 			.pipe()
 			.subscribe((res: ApplicationListResponse) => {
-				this.followUpBusinessDays = res.followUpBusinessDays ? String(res.followUpBusinessDays) : '';
-
 				const applications = res.applications as Array<ExpiredChecksResponse>;
 				applications.forEach((app: ExpiredChecksResponse) => {
 					const [itemText, itemClass] = this.getDaysRemaining(app.createdOn);

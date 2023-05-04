@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { ApplicationStatusesFilterComponent } from './components/application-statuses-filter.component';
 import { ApplicationStatusesComponent } from './components/application-statuses.component';
+import { BannerComponent } from './components/banner.component';
 import { CrcAddModalComponent } from './components/crc-add-modal.component';
 import { CriminalRecordChecksComponent } from './components/criminal-record-checks.component';
 import { DashboardHeaderComponent } from './components/dashboard-header.component';
@@ -38,6 +39,7 @@ import { DashboardComponent } from './dashboard.component';
 		ExpiringChecksComponent,
 		ManualSubmissionsComponent,
 		ReportsComponent,
+		BannerComponent,
 	],
 	imports: [SharedModule, DashboardRoutingModule],
 })

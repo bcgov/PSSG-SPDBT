@@ -36,13 +36,7 @@ export interface ApplicationStatusResponse extends ApplicationResponse {
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
 					<h2 class="mb-2 fw-normal">Application Statuses</h2>
-					<div class="alert alert-info d-flex align-items-center" role="alert">
-						<mat-icon class="d-none d-lg-block alert-icon me-2">schedule</mat-icon>
-						<div>
-							We are currently processing applications that do NOT require follow-up within:
-							<span class="fw-semibold">{{ followUpBusinessDays }} business days</span>
-						</div>
-					</div>
+					<app-banner></app-banner>
 				</div>
 			</div>
 
@@ -334,7 +328,6 @@ export class ApplicationStatusesComponent implements OnInit {
 		'status',
 		'actions',
 	];
-	followUpBusinessDays = '';
 
 	showDropdownOverlay = false;
 	formFilter: FormGroup = this.formBuilder.group(new ApplicationStatusFilter());
@@ -396,7 +389,6 @@ export class ApplicationStatusesComponent implements OnInit {
 		this.currentStatuses = this.statuses.value?.length > 0 ? [...this.statuses.value] : [];
 		this.currentFilters = filters;
 		this.queryParams.page = 0;
-		this.queryParams.filters = this.buildQueryParamsFilterString();
 		this.filterCriteriaExists = filters ? true : false;
 		this.onFilterClose();
 
@@ -448,7 +440,6 @@ export class ApplicationStatusesComponent implements OnInit {
 	private performSearch(searchString: string): void {
 		this.currentSearch = searchString ? `${ApplicationStatusFilterMap['search']}@=${searchString}` : '';
 		this.queryParams.page = 0;
-		this.queryParams.filters = this.buildQueryParamsFilterString();
 
 		this.loadList();
 	}
@@ -458,6 +449,8 @@ export class ApplicationStatusesComponent implements OnInit {
 	}
 
 	private loadList(): void {
+		this.queryParams.filters = this.buildQueryParamsFilterString();
+
 		this.applicationService
 			.apiOrgsOrgIdApplicationsGet({
 				orgId: this.authenticationService.loggedInOrgId!,
@@ -465,8 +458,6 @@ export class ApplicationStatusesComponent implements OnInit {
 			})
 			.pipe()
 			.subscribe((res: ApplicationListResponse) => {
-				this.followUpBusinessDays = res.followUpBusinessDays ? String(res.followUpBusinessDays) : '';
-
 				const applications = res.applications as Array<ApplicationStatusResponse>;
 				applications.forEach((app: ApplicationStatusResponse) => {
 					const [itemText, itemClass] = this.utilService.getApplicationPortalStatus(app.status);

@@ -22,14 +22,8 @@ import { ApplicationStatusFilterMap } from './application-statuses-filter.compon
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
-					<h2 class="mb-2 fw-normal">
-						Identity Verification
-						<div class="mt-2 fs-5 fw-light">Confirm the applicant's identity</div>
-					</h2>
-					<div class="alert alert-warning d-flex align-items-center" role="alert">
-						<mat-icon class="d-none d-md-block alert-icon me-2">warning</mat-icon>
-						<div>There are 8 applicants which require confirmation</div>
-					</div>
+					<h2 class="mb-2 fw-normal">Identity Verification</h2>
+					<app-banner></app-banner>
 				</div>
 			</div>
 
@@ -175,6 +169,7 @@ export class IdentifyVerificationComponent implements OnInit {
 	private queryParams: any = this.utilService.getDefaultQueryParams();
 
 	constants = SPD_CONSTANTS;
+	count = 0;
 	dataSource: MatTableDataSource<ApplicationResponse> = new MatTableDataSource<ApplicationResponse>([]);
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
 	columns: string[] = [
@@ -274,16 +269,17 @@ export class IdentifyVerificationComponent implements OnInit {
 	private performSearch(searchString: string): void {
 		this.currentSearch = searchString ? `${ApplicationStatusFilterMap['search']}@=${searchString}` : '';
 		this.queryParams.page = 0;
-		this.queryParams.filters = this.buildQueryParamsFilterString();
 
 		this.loadList();
 	}
 
 	private buildQueryParamsFilterString(): string {
-		return this.currentSearch;
+		return 'status==VerifyIdentity,' + this.currentSearch;
 	}
 
 	private loadList(): void {
+		this.queryParams.filters = this.buildQueryParamsFilterString();
+
 		this.applicationService
 			.apiOrgsOrgIdApplicationsGet({
 				orgId: this.authenticationService.loggedInOrgId!,
@@ -291,9 +287,12 @@ export class IdentifyVerificationComponent implements OnInit {
 			})
 			.pipe()
 			.subscribe((res: ApplicationListResponse) => {
-				this.dataSource.data = res.applications ?? [];
+				const applications = res.applications ?? [];
+				this.dataSource.data = applications;
 				this.dataSource.sort = this.sort;
 				this.tablePaginator = { ...res.pagination };
+
+				this.count = applications.length;
 			});
 	}
 }
