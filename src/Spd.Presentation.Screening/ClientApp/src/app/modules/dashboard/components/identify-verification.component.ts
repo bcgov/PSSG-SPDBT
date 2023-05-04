@@ -6,7 +6,7 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { ApplicationListResponse, ApplicationResponse } from 'src/app/api/models';
+import { ApplicationListResponse, ApplicationPortalStatusCode, ApplicationResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
@@ -274,7 +274,7 @@ export class IdentifyVerificationComponent implements OnInit {
 	}
 
 	private buildQueryParamsFilterString(): string {
-		return 'status==VerifyIdentity,' + this.currentSearch;
+		return `status==${ApplicationPortalStatusCode.VerifyIdentity},` + this.currentSearch;
 	}
 
 	private loadList(): void {
