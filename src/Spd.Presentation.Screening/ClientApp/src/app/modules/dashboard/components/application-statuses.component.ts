@@ -361,18 +361,6 @@ export class ApplicationStatusesComponent implements OnInit {
 		.pipe(
 			tap((res: ApplicationStatisticsResponse) => {
 				this.applicationStatistics = res.statistics ?? {};
-
-				Object.entries(this.applicationStatistics).forEach(([key, value]) => {
-					console.log(key, value);
-					// const [itemText] = this.utilService.getApplicationPortalStatus(key);
-					// app.applicationPortalStatusText = itemText;
-				});
-
-				// applicationStatistics.forEach((app: ApplicationStatusResponse) => {
-				// 	const [itemText, itemClass] = this.utilService.getApplicationPortalStatus(app.status);
-				// 	app.applicationPortalStatusText = itemText;
-				// 	app.applicationPortalStatusClass = itemClass;
-				// });
 			})
 		);
 
