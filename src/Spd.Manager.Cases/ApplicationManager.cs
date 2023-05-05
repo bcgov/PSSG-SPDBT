@@ -1,5 +1,6 @@
 using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Spd.Resource.Applicants;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.ApplicationInvite;
@@ -113,13 +114,13 @@ namespace Spd.Manager.Cases
                 }
             }
 
-            string fileKey = await _tempFile.HandleCommand(new SaveTempFileCommand(request.ApplicationCreateRequest.ConsentFormFile), ct);
-            SpdTempFile spdTempFile = new ()
+            string fileKey = await _tempFile.HandleCommand(new SaveTempFileCommand(request.ConsentFormFile), ct);
+            SpdTempFile spdTempFile = new()
             {
                 TempFileKey = fileKey,
-                ContentType = request.ApplicationCreateRequest.ConsentFormFile.ContentType,
-                FileName = request.ApplicationCreateRequest.ConsentFormFile.FileName,
-                FileSize = request.ApplicationCreateRequest.ConsentFormFile.Length,
+                ContentType = request.ConsentFormFile.ContentType,
+                FileName = request.ConsentFormFile.FileName,
+                FileSize = request.ConsentFormFile.Length,
             };
             var cmd = _mapper.Map<ApplicationCreateCmd>(request.ApplicationCreateRequest);
             cmd.OrgId = request.OrgId;

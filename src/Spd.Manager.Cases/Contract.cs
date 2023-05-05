@@ -78,7 +78,7 @@ namespace Spd.Manager.Cases
     #endregion
 
     #region application
-    public record ApplicationCreateCommand(ApplicationCreateRequest ApplicationCreateRequest, Guid OrgId, Guid UserId) : IRequest<ApplicationCreateResponse>;
+    public record ApplicationCreateCommand(ApplicationCreateRequest ApplicationCreateRequest, Guid OrgId, Guid UserId, IFormFile ConsentFormFile) : IRequest<ApplicationCreateResponse>;
     public record ApplicationListQuery : IRequest<ApplicationListResponse>
     {
         public AppListFilterBy? FilterBy { get; set; } //null means no filter
@@ -123,7 +123,6 @@ namespace Spd.Manager.Cases
         public bool? HaveVerifiedIdentity { get; set; }
         public IEnumerable<AliasCreateRequest> Aliases { get; set; } = Array.Empty<AliasCreateRequest>();
         public bool RequireDuplicateCheck { get; set; } = false;
-        public IFormFile ConsentFormFile { get; set; }
     }
     public record AliasCreateRequest
     {
