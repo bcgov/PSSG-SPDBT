@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OData.Client;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
+using Spd.Utilities.Shared.Tools;
 using System.Collections.ObjectModel;
 using System.Net;
 
@@ -62,7 +63,9 @@ namespace Spd.Resource.Organizations.User
 
             // create portal invitation
             spd_portalinvitation invitation = _mapper.Map<spd_portalinvitation>(createUserCmd.User);
-            invitation.spd_portalinvitationid = Guid.NewGuid();
+            Guid inviteId = Guid.NewGuid();
+            invitation.spd_portalinvitationid = inviteId;
+            invitation.spd_invitationlink = $"{createUserCmd.HostUrl}invitations/{Encription.Sha256Hash(inviteId.ToString())}";
             _dynaContext.AddTospd_portalinvitations(invitation);
             _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_OrganizationId), organization);
             _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_PortalUserId), user);

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Membership.OrgUser;
 using Spd.Utilities.Shared;
 using System.ComponentModel.DataAnnotations;
+using System.Configuration;
 
 namespace Spd.Presentation.Screening.Controllers
 {
@@ -15,19 +16,32 @@ namespace Spd.Presentation.Screening.Controllers
     {
         private readonly ILogger<OrgRegistrationController> _logger;
         private readonly IMediator _mediator;
+        private readonly IConfiguration _configuration;
 
-        public OrgUserController(ILogger<OrgRegistrationController> logger, IMediator mediator)
+        public OrgUserController(ILogger<OrgRegistrationController> logger, IMediator mediator, IConfiguration configuration)
         {
             _logger = logger;
             _mediator = mediator;
+            _configuration = configuration;
         }
+
+        //[Route("api/invitations")]
+        //[HttpPost]
+        //public async Task<OrgUserResponse> VerifyUserInvitation([FromBody][Required] InvitationRequest orgUserInvitationRequest)
+        //{
+        //    return await _mediator.Send(new VerifyUserInvitations(orgUserInvitationRequest));
+        //}
 
         [Route("api/orgs/{orgId}/users")]
         [HttpPost]
         public async Task<OrgUserResponse> Add([FromBody][Required] OrgUserCreateRequest orgUserCreateRequest, [FromRoute] Guid orgId)
         {
             orgUserCreateRequest.OrganizationId = orgId;
-            return await _mediator.Send(new OrgUserCreateCommand(orgUserCreateRequest));
+            
+            string? hostUrl = _configuration.GetValue<string>("HostUrl");
+            if (hostUrl == null)
+                throw new ConfigurationErrorsException("HostUrl is not set correctly in configuration.");
+            return await _mediator.Send(new OrgUserCreateCommand(orgUserCreateRequest, hostUrl));
         }
 
         [Route("api/orgs/{orgId}/users/{userId}")]
@@ -69,5 +83,11 @@ namespace Spd.Presentation.Screening.Controllers
         {
             return await _mediator.Send(new OrgUserListQuery(orgId));
         }
+    }
+
+    public class InvitationRequest
+    {
+        //base64 encode spd_portalInvitation id
+        public string InviteId { get; set; } = null!;
     }
 }
