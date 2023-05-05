@@ -41,9 +41,17 @@ export interface PaymentResponse extends ApplicationResponse {
 							matInput
 							type="search"
 							formControlName="search"
-							placeholder="Search applicant's name or email or case id"
+							placeholder="Search applicant's name or email or case ID"
+							(keydown.enter)="onSearchKeyDown($event)"
 						/>
-						<button mat-button matSuffix mat-flat-button aria-label="search" class="search-icon-button">
+						<button
+							mat-button
+							matSuffix
+							mat-flat-button
+							aria-label="search"
+							(click)="onSearch()"
+							class="search-icon-button"
+						>
 							<mat-icon>search</mat-icon>
 						</button>
 					</mat-form-field>
@@ -169,12 +177,14 @@ export interface PaymentResponse extends ApplicationResponse {
 	],
 })
 export class PaymentsComponent implements OnInit {
+	private queryParams: any = this.utilService.getDefaultQueryParams();
+
 	constants = SPD_CONSTANTS;
 	applicationPortalStatusCodes = ApplicationPortalStatusCode;
 
 	dataSource: MatTableDataSource<PaymentResponse> = new MatTableDataSource<PaymentResponse>([]);
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
-	columns!: string[];
+	columns: string[] = ['applicantName', 'createdOn', 'paidOn', 'applicationNumber', 'status', 'actions'];
 	count = 0;
 
 	showDropdownOverlay = false;
@@ -201,7 +211,6 @@ export class PaymentsComponent implements OnInit {
 		const caseId = (this.location.getState() as any)?.caseId;
 		this.formFilter.patchValue({ search: caseId });
 
-		this.columns = ['applicantName', 'createdOn', 'paidOn', 'applicationNumber', 'status', 'actions'];
 		this.loadList();
 	}
 
@@ -209,12 +218,30 @@ export class PaymentsComponent implements OnInit {
 		this.showDropdownOverlay = show;
 	}
 
+	onSearchKeyDown(searchEvent: any): void {
+		const searchString = searchEvent.target.value;
+		this.performSearch(searchString);
+	}
+
+	onSearch(): void {
+		this.performSearch(this.formFilter.value.search);
+	}
+
 	onFilterChange(filters: any) {
+		// this.currentFilters = filters;
+		this.queryParams.page = 0;
 		this.onFilterClose();
+
+		this.loadList();
 	}
 
 	onFilterClear() {
+		// this.currentFilters = '';
+		// this.currentSearch = '';
+		this.queryParams = this.utilService.getDefaultQueryParams();
 		this.onFilterClose();
+
+		this.loadList();
 	}
 
 	onFilterClose() {
@@ -222,15 +249,28 @@ export class PaymentsComponent implements OnInit {
 	}
 
 	onPageChanged(page: PageEvent): void {
-		this.loadList(page.pageIndex);
+		this.queryParams.page = page.pageIndex;
+		this.loadList();
 	}
 
-	private loadList(pageIndex: number = 0): void {
+	private performSearch(searchString: string): void {
+		// this.currentSearch = searchString ? `${ApplicationStatusFilterMap['search']}@=${searchString}` : '';
+		this.queryParams.page = 0;
+
+		this.loadList();
+	}
+
+	private buildQueryParamsFilterString(): string {
+		return `status==${ApplicationPortalStatusCode.AwaitingPayment}`;
+	}
+
+	private loadList(): void {
+		this.queryParams.filters = this.buildQueryParamsFilterString();
+
 		this.applicationService
 			.apiOrgsOrgIdApplicationsGet({
 				orgId: this.authenticationService.loggedInOrgId!,
-				page: pageIndex,
-				pageSize: this.tablePaginator.pageSize,
+				...this.queryParams,
 			})
 			.pipe()
 			.subscribe((res: ApplicationListResponse) => {

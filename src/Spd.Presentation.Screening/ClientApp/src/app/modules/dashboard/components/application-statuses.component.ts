@@ -13,7 +13,6 @@ import {
 } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { ApplicationStatusFiltersTypes } from 'src/app/core/constants/model-desc';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { DashboardRoutes } from '../dashboard-routing.module';
@@ -45,28 +44,40 @@ export interface ApplicationStatusResponse extends ApplicationResponse {
 					<div class="fw-semibold">Active applications <span class="fw-normal">(for the last 365 days)</span></div>
 					<div class="d-flex flex-wrap justify-content-start">
 						<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
-							<div class="fw-semibold fs-4 m-2 ms-3">{{ applicationStatistics['VerifyIdentity'] }}</div>
-							<div class="fs-7 m-2">Verify Identity</div>
+							<div class="fw-semibold fs-4 m-2 ms-3">
+								{{ applicationStatistics[applicationPortalStatusCodes.VerifyIdentity] }}
+							</div>
+							<div class="fs-7 m-2">{{ getStatusDesc(applicationPortalStatusCodes.VerifyIdentity) }}</div>
 						</div>
 						<div class="d-flex flex-row statistic-card area-green align-items-center mt-2 me-2">
-							<div class="fw-semibold fs-4 m-2 ms-3">{{ applicationStatistics['InProgress'] }}</div>
-							<div class="fs-7 m-2">In Progress</div>
+							<div class="fw-semibold fs-4 m-2 ms-3">
+								{{ applicationStatistics[applicationPortalStatusCodes.InProgress] }}
+							</div>
+							<div class="fs-7 m-2">{{ getStatusDesc(applicationPortalStatusCodes.InProgress) }}</div>
 						</div>
 						<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
-							<div class="fw-semibold fs-4 m-2 ms-3">{{ applicationStatistics['AwaitingPayment'] }}</div>
-							<div class="fs-7 m-2">Pay Now</div>
+							<div class="fw-semibold fs-4 m-2 ms-3">
+								{{ applicationStatistics[applicationPortalStatusCodes.AwaitingPayment] }}
+							</div>
+							<div class="fs-7 m-2">{{ getStatusDesc(applicationPortalStatusCodes.AwaitingPayment) }}</div>
 						</div>
 						<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
-							<div class="fw-semibold fs-4 m-2 ms-3">{{ applicationStatistics['AwaitingThirdParty'] }}</div>
-							<div class="fs-7 m-2">Awaiting<br />Third Party</div>
+							<div class="fw-semibold fs-4 m-2 ms-3">
+								{{ applicationStatistics[applicationPortalStatusCodes.AwaitingThirdParty] }}
+							</div>
+							<div class="fs-7 m-2">{{ getStatusDesc(applicationPortalStatusCodes.AwaitingThirdParty) }}</div>
 						</div>
 						<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
-							<div class="fw-semibold fs-4 m-2 ms-3">{{ applicationStatistics['AwaitingApplicant'] }}</div>
-							<div class="fs-7 m-2">Awaiting<br />Applicant</div>
+							<div class="fw-semibold fs-4 m-2 ms-3">
+								{{ applicationStatistics[applicationPortalStatusCodes.AwaitingApplicant] }}
+							</div>
+							<div class="fs-7 m-2">{{ getStatusDesc(applicationPortalStatusCodes.AwaitingApplicant) }}</div>
 						</div>
 						<div class="d-flex flex-row statistic-card area-blue align-items-center mt-2 me-2">
-							<div class="fw-semibold fs-4 m-2 ms-3">{{ applicationStatistics['UnderAssessment'] }}</div>
-							<div class="fs-7 m-2">Under<br />Assessment</div>
+							<div class="fw-semibold fs-4 m-2 ms-3">
+								{{ applicationStatistics[applicationPortalStatusCodes.UnderAssessment] }}
+							</div>
+							<div class="fs-7 m-2">{{ getStatusDesc(applicationPortalStatusCodes.UnderAssessment) }}</div>
 						</div>
 					</div>
 				</div>
@@ -75,36 +86,34 @@ export interface ApplicationStatusResponse extends ApplicationResponse {
 					<div class="fw-semibold">Completed applications <span class="fw-normal">(for the last 365 days)</span></div>
 					<div class="d-flex flex-wrap justify-content-start">
 						<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
-							<div class="fw-semibold fs-4 m-2 ms-3">{{ applicationStatistics['RiskFound'] }}</div>
-							<div class="fs-7 m-2">Completed - <br />Risk Found</div>
+							<div class="fw-semibold fs-4 m-2 ms-3">
+								{{ applicationStatistics[applicationPortalStatusCodes.RiskFound] }}
+							</div>
+							<div class="fs-7 m-2">{{ getStatusDesc(applicationPortalStatusCodes.RiskFound) }}</div>
 						</div>
 						<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
-							<div class="fw-semibold fs-4 m-2 ms-3">{{ applicationStatistics['ClosedJudicialReview'] }}</div>
-							<div class="fs-7 m-2">
-								Closed - <br />
-								Judicial Review
+							<div class="fw-semibold fs-4 m-2 ms-3">
+								{{ applicationStatistics[applicationPortalStatusCodes.ClosedJudicialReview] }}
 							</div>
+							<div class="fs-7 m-2">{{ getStatusDesc(applicationPortalStatusCodes.ClosedJudicialReview) }}</div>
 						</div>
 						<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
-							<div class="fw-semibold fs-4 m-2 ms-3">{{ applicationStatistics['ClosedNoResponse'] }}</div>
-							<div class="fs-7 m-2">
-								Closed - <br />
-								No Response
+							<div class="fw-semibold fs-4 m-2 ms-3">
+								{{ applicationStatistics[applicationPortalStatusCodes.ClosedNoResponse] }}
 							</div>
+							<div class="fs-7 m-2">{{ getStatusDesc(applicationPortalStatusCodes.ClosedNoResponse) }}</div>
 						</div>
 						<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
-							<div class="fw-semibold fs-4 m-2 ms-3">{{ applicationStatistics['ClosedNoConsent'] }}</div>
-							<div class="fs-7 m-2">
-								Closed - No<br />
-								Consent
+							<div class="fw-semibold fs-4 m-2 ms-3">
+								{{ applicationStatistics[applicationPortalStatusCodes.ClosedNoConsent] }}
 							</div>
+							<div class="fs-7 m-2">{{ getStatusDesc(applicationPortalStatusCodes.ClosedNoConsent) }}</div>
 						</div>
 						<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
-							<div class="fw-semibold fs-4 m-2 ms-3">{{ applicationStatistics['CancelledByApplicant'] }}</div>
-							<div class="fs-7 m-2">
-								Cancelled - By<br />
-								Applicant
+							<div class="fw-semibold fs-4 m-2 ms-3">
+								{{ applicationStatistics[applicationPortalStatusCodes.CancelledByApplicant] }}
 							</div>
+							<div class="fs-7 m-2">{{ getStatusDesc(applicationPortalStatusCodes.CancelledByApplicant) }}</div>
 						</div>
 					</div>
 				</div>
@@ -157,7 +166,7 @@ export interface ApplicationStatusResponse extends ApplicationResponse {
 							class="me-2 mb-2"
 							selected
 						>
-							{{ getFilterStatusDesc(status) }}
+							{{ getStatusDesc(status) }}
 							<mat-icon matChipRemove>cancel</mat-icon>
 						</mat-chip>
 					</div>
@@ -312,7 +321,6 @@ export class ApplicationStatusesComponent implements OnInit {
 	private queryParams: any = this.utilService.getDefaultQueryParams();
 
 	constants = SPD_CONSTANTS;
-	applicationStatusFiltersTypes = ApplicationStatusFiltersTypes;
 	applicationPortalStatusCodes = ApplicationPortalStatusCode;
 	filterCriteriaExists = false;
 
@@ -353,6 +361,18 @@ export class ApplicationStatusesComponent implements OnInit {
 		.pipe(
 			tap((res: ApplicationStatisticsResponse) => {
 				this.applicationStatistics = res.statistics ?? {};
+
+				Object.entries(this.applicationStatistics).forEach(([key, value]) => {
+					console.log(key, value);
+					// const [itemText] = this.utilService.getApplicationPortalStatus(key);
+					// app.applicationPortalStatusText = itemText;
+				});
+
+				// applicationStatistics.forEach((app: ApplicationStatusResponse) => {
+				// 	const [itemText, itemClass] = this.utilService.getApplicationPortalStatus(app.status);
+				// 	app.applicationPortalStatusText = itemText;
+				// 	app.applicationPortalStatusClass = itemClass;
+				// });
 			})
 		);
 
@@ -433,7 +453,7 @@ export class ApplicationStatusesComponent implements OnInit {
 		this.applicationStatusesFilterComponent.emitFilterChange();
 	}
 
-	getFilterStatusDesc(code: string): string {
+	getStatusDesc(code: string): string {
 		return this.applicationStatusesFilterComponent.getFilterStatusDesc(code);
 	}
 

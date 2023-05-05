@@ -223,11 +223,6 @@ export class IdentifyVerificationComponent implements OnInit {
 		this.loadList();
 	}
 
-	ngAfterViewInit() {
-		this.dataSource.sort = this.sort;
-		this.dataSource.paginator = this.paginator;
-	}
-
 	onSearchKeyDown(searchEvent: any): void {
 		const searchString = searchEvent.target.value;
 		this.performSearch(searchString);
@@ -256,6 +251,7 @@ export class IdentifyVerificationComponent implements OnInit {
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
+					this.hotToast.success('Identity was successfully confirmed');
 					this.loadList();
 				}
 			});
@@ -279,7 +275,7 @@ export class IdentifyVerificationComponent implements OnInit {
 					this.sendRequest(application);
 				} else if (response == DialogCloseCode.AltAction) {
 					// todo REJECT
-					this.hotToast.success('Verification was successfully rejected');
+					this.hotToast.success('Identity was successfully rejected');
 				}
 			});
 	}
@@ -305,7 +301,7 @@ export class IdentifyVerificationComponent implements OnInit {
 			.afterClosed()
 			.subscribe((resp) => {
 				if (resp.success) {
-					this.hotToast.success('Verification was successfully rejected');
+					this.hotToast.success('Identity was successfully rejected');
 					this.hotToast.success(resp.message);
 
 					this.router.navigateByUrl(DashboardRoutes.dashboardPath(DashboardRoutes.CRIMINAL_RECORD_CHECKS));

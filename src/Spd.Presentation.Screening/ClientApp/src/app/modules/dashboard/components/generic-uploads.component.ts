@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -152,7 +152,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 		`,
 	],
 })
-export class GenericUploadsComponent implements OnInit, AfterViewInit {
+export class GenericUploadsComponent implements OnInit {
 	form: FormGroup = this.formBuilder.group({
 		files: new FormControl('', [Validators.required]),
 	});
@@ -191,11 +191,6 @@ export class GenericUploadsComponent implements OnInit, AfterViewInit {
 				uploadedBatchNumber: '10030-56',
 			},
 		];
-	}
-
-	ngAfterViewInit() {
-		this.dataSource.sort = this.sort;
-		this.dataSource.paginator = this.paginator;
 	}
 
 	onUploadFile(evt: any) {

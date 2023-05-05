@@ -85,6 +85,7 @@ export class UtilService {
 			case ApplicationPortalStatusCode.RiskFound:
 				currClass = 'mat-chip-red';
 				break;
+			case ApplicationPortalStatusCode.Draft:
 			case ApplicationPortalStatusCode.Incomplete:
 			case ApplicationPortalStatusCode.UnderAssessment:
 				currClass = 'mat-chip-blue';
