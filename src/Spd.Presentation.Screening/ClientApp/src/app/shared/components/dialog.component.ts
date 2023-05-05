@@ -36,17 +36,24 @@ export enum DialogCloseCode {
 		<mat-dialog-actions>
 			<div class="row m-0 p-0 w-100">
 				<div class="col-md-3 col-sm-12 mb-2">
-					<button *ngIf="data.cancelText" mat-stroked-button color="primary" [mat-dialog-close]="false" cdkFocusInitial>
+					<button
+						*ngIf="data.cancelText"
+						mat-stroked-button
+						color="primary"
+						class="large"
+						[mat-dialog-close]="false"
+						cdkFocusInitial
+					>
 						{{ data.cancelText }}
 					</button>
 				</div>
 				<div class="offset-md-1 col-md-3 col-sm-12 mb-2">
-					<button *ngIf="data.altOptionText" mat-flat-button color="primary" (click)="onAltConfirm()">
+					<button *ngIf="data.altOptionText" mat-flat-button color="primary" class="large" (click)="onAltConfirm()">
 						{{ data.altOptionText }}
 					</button>
 				</div>
 				<div class="col-md-5 col-sm-12 mb-2">
-					<button *ngIf="data.actionText" mat-flat-button color="primary" (click)="onConfirm()">
+					<button *ngIf="data.actionText" mat-flat-button color="primary" class="large" (click)="onConfirm()">
 						{{ data.actionText }}
 					</button>
 				</div>

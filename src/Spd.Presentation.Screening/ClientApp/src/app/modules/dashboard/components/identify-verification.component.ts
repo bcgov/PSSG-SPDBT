@@ -7,7 +7,12 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
-import { ApplicationInviteCreateRequest, ApplicationListResponse, ApplicationResponse } from 'src/app/api/models';
+import {
+	ApplicationInviteCreateRequest,
+	ApplicationListResponse,
+	ApplicationPortalStatusCode,
+	ApplicationResponse,
+} from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
@@ -316,8 +321,7 @@ export class IdentifyVerificationComponent implements OnInit {
 	}
 
 	private buildQueryParamsFilterString(): string {
-		return this.currentSearch;
-		// return `status==${ApplicationPortalStatusCode.VerifyIdentity},` + this.currentSearch;
+		return `status==${ApplicationPortalStatusCode.VerifyIdentity},` + this.currentSearch;
 	}
 
 	private loadList(): void {
