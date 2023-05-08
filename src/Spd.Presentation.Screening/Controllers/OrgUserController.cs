@@ -2,9 +2,11 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Membership.OrgUser;
+using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
+using System.Security.Principal;
 
 namespace Spd.Presentation.Screening.Controllers
 {
@@ -14,23 +16,31 @@ namespace Spd.Presentation.Screening.Controllers
     [Authorize]
     public class OrgUserController : SpdControllerBase
     {
-        private readonly ILogger<OrgRegistrationController> _logger;
+        private readonly ILogger<OrgUserController> _logger;
         private readonly IMediator _mediator;
         private readonly IConfiguration _configuration;
+        private readonly IPrincipal _currentUser;
 
-        public OrgUserController(ILogger<OrgRegistrationController> logger, IMediator mediator, IConfiguration configuration)
+        public OrgUserController(ILogger<OrgUserController> logger, IMediator mediator, IConfiguration configuration, IPrincipal currentUser)
         {
             _logger = logger;
             _mediator = mediator;
             _configuration = configuration;
+            _currentUser = currentUser;
         }
 
-        //[Route("api/invitations")]
-        //[HttpPost]
-        //public async Task<OrgUserResponse> VerifyUserInvitation([FromBody][Required] InvitationRequest orgUserInvitationRequest)
-        //{
-        //    return await _mediator.Send(new VerifyUserInvitations(orgUserInvitationRequest));
-        //}
+        /// <summary>
+        /// Verify if the current invite and login user are correct.
+        /// </summary>
+        /// <param name="orgUserInvitationRequest">which include InviteHashCode</param>
+        /// <returns></returns>
+        [Route("api/invitations")]
+        [HttpPost]
+        public async Task<ActionResult> VerifyUserInvitation([FromBody][Required]InvitationRequest orgUserInvitationRequest)
+        {
+            await _mediator.Send(new VerifyUserInvitation(orgUserInvitationRequest, _currentUser.GetBizGuid()));
+            return Ok();
+        }
 
         [Route("api/orgs/{orgId}/users")]
         [HttpPost]
@@ -83,11 +93,5 @@ namespace Spd.Presentation.Screening.Controllers
         {
             return await _mediator.Send(new OrgUserListQuery(orgId));
         }
-    }
-
-    public class InvitationRequest
-    {
-        //base64 encode spd_portalInvitation id
-        public string InviteId { get; set; } = null!;
     }
 }

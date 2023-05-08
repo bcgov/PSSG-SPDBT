@@ -15,6 +15,7 @@ namespace Spd.Resource.Organizations.User
         private readonly DynamicsContext _dynaContext;
         private readonly IMapper _mapper;
         private readonly ILogger<OrgUserRepository> _logger;
+        private readonly string encriptionKey = "ed94c630e5824a78";
         public OrgUserRepository(IDynamicsContextFactory ctx, IMapper mapper, ILogger<OrgUserRepository> logger)
         {
             _dynaContext = ctx.CreateChangeOverwrite();
@@ -43,6 +44,19 @@ namespace Spd.Resource.Organizations.User
             };
         }
 
+        public async Task<OrgUserInviteResult> QueryOrgUserInvitationAsync(OrgUserInvitationQry qry, CancellationToken ct)
+        {
+            string inviteId = Encription.DecryptString(encriptionKey, qry.InviteIdEncryptedCode);
+            var invite = await _dynaContext.spd_portalinvitations
+                .Expand(i => i.spd_OrganizationId)
+                .Where(i => i.spd_portalinvitationid.ToString() == inviteId)
+                .Where(i => i.spd_invitationtype == (int)InvitationTypeOptionSet.PortalUser)
+                .Where(i => i.statecode != DynamicsConstants.StateCode_Inactive)
+                .FirstOrDefaultAsync(ct);
+            if (invite == null)
+                throw new ApiException(HttpStatusCode.Unauthorized, "invite link is not valid anymore.");
+            return _mapper.Map<OrgUserInviteResult>(invite);
+        }
         private async Task<OrgUserManageResult> AddUserAsync(UserCreateCmd createUserCmd, CancellationToken cancellationToken)
         {
             if (createUserCmd.User.OrganizationId == null)
@@ -65,7 +79,7 @@ namespace Spd.Resource.Organizations.User
             spd_portalinvitation invitation = _mapper.Map<spd_portalinvitation>(createUserCmd.User);
             Guid inviteId = Guid.NewGuid();
             invitation.spd_portalinvitationid = inviteId;
-            invitation.spd_invitationlink = $"{createUserCmd.HostUrl}invitations/{Encription.Sha256Hash(inviteId.ToString())}";
+            invitation.spd_invitationlink = $"{createUserCmd.HostUrl}invitations/{Encription.EncryptString(encriptionKey, inviteId.ToString())}";
             _dynaContext.AddTospd_portalinvitations(invitation);
             _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_OrganizationId), organization);
             _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_PortalUserId), user);

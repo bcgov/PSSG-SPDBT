@@ -4,6 +4,7 @@ namespace Spd.Resource.Organizations.User
     {
         Task<OrgUserQryResult> QueryOrgUserAsync(OrgUserQry qry, CancellationToken ct);
         Task<OrgUserManageResult> ManageOrgUserAsync(OrgUserCmd cmd, CancellationToken ct);
+        Task<OrgUserInviteResult> QueryOrgUserInvitationAsync(OrgUserInvitationQry qry, CancellationToken ct);
     }
 
     //command
@@ -20,6 +21,19 @@ namespace Spd.Resource.Organizations.User
     public abstract record OrgUserQryResult;
     public record OrgUserResult(UserResult UserResult) : OrgUserQryResult;
     public record OrgUsersResult(IEnumerable<UserResult> UserResults) : OrgUserQryResult;
+    public record OrgUserInvitationQry(string InviteIdEncryptedCode);
+    public record OrgUserInviteResult
+    {
+        public Guid UserId { get; set; }
+        public Guid Id { get; set; }
+        public Guid OrgId { get; set; }
+        public Guid OrgGuid { get; set; }
+        public string LastName { get; set; } = null!;
+        public string FirstName { get; set; } = null!;
+        public string Email { get; set; } = null!;
+        public string? JobTitle { get; set; }
+        public string? PhoneNumber { get; set; }
+    }
 
     //shared content
     public record User
@@ -39,6 +53,7 @@ namespace Spd.Resource.Organizations.User
         public Guid? UserGuid { get; set; }
         public bool IsActive { get; set; }
     };
+
     public enum ContactRoleCode
     {
         Primary,
