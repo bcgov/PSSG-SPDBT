@@ -13,6 +13,7 @@ namespace Spd.Manager.Membership.OrgUser
         IRequestHandler<OrgUserGetQuery, OrgUserResponse>,
         IRequestHandler<OrgUserDeleteCommand, Unit>,
         IRequestHandler<OrgUserListQuery, OrgUserListResponse>,
+        IRequestHandler<VerifyUserInvitation, Unit>,
         IOrgUserManager
     {
         private readonly IOrgUserRepository _orgUserRepository;
@@ -122,16 +123,10 @@ namespace Spd.Manager.Membership.OrgUser
 
         public async Task<Unit> Handle(VerifyUserInvitation request, CancellationToken ct)
         {
-           //check if request.InvitationRequest.HashCode is correct.
-           //check if it is still valid (not expired)
-           //check if the orgGuid is the same as user login OrgGuid.
-           //if all meeting, create identity and link it to portal user.
-           //If any of it not meeting, return 401.
-            var invite = (OrgUserInviteResult)await _orgUserRepository.QueryOrgUserInvitationAsync(
-                new OrgUserInvitationQry(request.InvitationRequest.InviteEncryptedCode),
+           await _orgUserRepository.VerifyOrgUserInvitationAsync(
+                new OrgUserInvitationVerify(request.InvitationRequest.InviteEncryptedCode, request.OrgGuid, request.UserGuid),
                 ct);
-
-            return default;
+           return default;
         }
         private async Task CheckMaxRoleNumberRuleAsync(List<UserResult> userList, Guid orgId, CancellationToken ct)
         {
