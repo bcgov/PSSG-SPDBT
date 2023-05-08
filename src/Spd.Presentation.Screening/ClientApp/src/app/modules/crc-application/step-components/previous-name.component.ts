@@ -158,7 +158,7 @@ export class PreviousNameComponent implements OnInit, CrcFormStepComponent {
 			icon: 'warning',
 			title: 'Confirmation',
 			message: 'Are you sure you want to remove this previous name?',
-			actionText: 'Yes, remove this name',
+			actionText: 'Yes, remove name',
 			cancelText: 'Cancel',
 		};
 

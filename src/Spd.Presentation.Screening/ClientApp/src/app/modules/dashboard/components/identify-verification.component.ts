@@ -7,11 +7,13 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
+import { Observable, tap } from 'rxjs';
 import {
 	ApplicationInviteCreateRequest,
 	ApplicationListResponse,
 	ApplicationPortalStatusCode,
 	ApplicationResponse,
+	ApplicationStatisticsResponse,
 } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
@@ -34,15 +36,18 @@ export interface IdentityVerificationResponse extends ApplicationResponse {
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
 					<h2 class="mb-2 fw-normal">Identity Verification</h2>
-					<div class="alert alert-warning d-flex align-items-center" role="alert" *ngIf="count > 0">
-						<mat-icon class="d-none d-md-block alert-icon me-2">warning</mat-icon>
-						<ng-container *ngIf="count == 1; else moreThanOne">
-							<div>There is 1 applicant which requires confirmation</div>
-						</ng-container>
-						<ng-template #moreThanOne>
-							<div>There are {{ count }} applicants which require confirmation</div>
-						</ng-template>
-					</div>
+
+					<ng-container *ngIf="applicationStatistics$ | async">
+						<div class="alert alert-warning d-flex align-items-center" role="alert">
+							<mat-icon class="d-none d-md-block alert-icon me-2">warning</mat-icon>
+							<ng-container *ngIf="count == 1; else notOne">
+								<div>There is 1 applicant which requires confirmation</div>
+							</ng-container>
+							<ng-template #notOne>
+								<div>There are {{ count }} applicants which require confirmation</div>
+							</ng-template>
+						</div>
+					</ng-container>
 				</div>
 			</div>
 
@@ -189,8 +194,8 @@ export class IdentifyVerificationComponent implements OnInit {
 	private currentSearch = '';
 	private queryParams: any = this.utilService.getDefaultQueryParams();
 
-	constants = SPD_CONSTANTS;
 	count = 0;
+	constants = SPD_CONSTANTS;
 	dataSource: MatTableDataSource<IdentityVerificationResponse> = new MatTableDataSource<IdentityVerificationResponse>(
 		[]
 	);
@@ -210,6 +215,8 @@ export class IdentifyVerificationComponent implements OnInit {
 		search: new FormControl(''),
 	});
 
+	applicationStatistics$!: Observable<ApplicationStatisticsResponse>;
+
 	@ViewChild(MatSort) sort!: MatSort;
 	@ViewChild('paginator') paginator!: MatPaginator;
 
@@ -222,7 +229,9 @@ export class IdentifyVerificationComponent implements OnInit {
 		private applicationService: ApplicationService,
 		private hotToast: HotToastService,
 		private dialog: MatDialog
-	) {}
+	) {
+		this.refreshStats();
+	}
 
 	ngOnInit() {
 		const caseId = (this.location.getState() as any)?.caseId;
@@ -335,8 +344,6 @@ export class IdentifyVerificationComponent implements OnInit {
 				this.dataSource.data = applications as Array<IdentityVerificationResponse>;
 				this.dataSource.sort = this.sort;
 				this.tablePaginator = { ...res.pagination };
-
-				this.count = res.pagination?.length ?? 0;
 			});
 	}
 
@@ -388,5 +395,19 @@ export class IdentifyVerificationComponent implements OnInit {
 
 	private removeActionsFromView(application: IdentityVerificationResponse) {
 		application.hideActions = true;
+		this.refreshStats();
+	}
+
+	private refreshStats(): void {
+		this.applicationStatistics$ = this.applicationService
+			.apiOrgsOrgIdApplicationStatisticsGet({
+				orgId: this.authenticationService.loggedInOrgId!,
+			})
+			.pipe(
+				tap((res: ApplicationStatisticsResponse) => {
+					const applicationStatistics = res.statistics ?? {};
+					this.count = applicationStatistics[ApplicationPortalStatusCode.VerifyIdentity];
+				})
+			);
 	}
 }

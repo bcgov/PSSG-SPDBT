@@ -3,7 +3,13 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { ApplicationListResponse, ApplicationPortalStatusCode, ApplicationResponse } from 'src/app/api/models';
+import { Observable, tap } from 'rxjs';
+import {
+	ApplicationListResponse,
+	ApplicationPortalStatusCode,
+	ApplicationResponse,
+	ApplicationStatisticsResponse,
+} from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
@@ -23,15 +29,20 @@ export interface PaymentResponse extends ApplicationResponse {
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
 					<h2 class="mb-2 fw-normal">Payments</h2>
-					<div class="alert alert-warning d-flex align-items-center" role="alert" *ngIf="count > 0">
-						<mat-icon class="d-none d-md-block alert-icon me-2">warning</mat-icon>
-						<ng-container *ngIf="count == 1; else moreThanOne">
-							<div>There is 1 application which requires payment</div>
-						</ng-container>
-						<ng-template #moreThanOne>
-							<div>There are {{ count }} applications which require payment</div>
-						</ng-template>
-					</div>
+
+					<ng-container *ngIf="applicationStatistics$ | async">
+						<div class="alert alert-warning d-flex align-items-center" role="alert">
+							<mat-icon class="d-none d-md-block alert-icon me-2">warning</mat-icon>
+							<ng-container *ngIf="count > 0">
+								<ng-container *ngIf="count == 1; else moreThanOne">
+									<div>There is 1 application which requires payment</div>
+								</ng-container>
+								<ng-template #moreThanOne>
+									<div>There are {{ count }} applications which require payment</div>
+								</ng-template>
+							</ng-container>
+						</div>
+					</ng-container>
 				</div>
 			</div>
 
@@ -185,6 +196,7 @@ export interface PaymentResponse extends ApplicationResponse {
 export class PaymentsComponent implements OnInit {
 	private queryParams: any = this.utilService.getDefaultQueryParams();
 
+	count = 0;
 	constants = SPD_CONSTANTS;
 	applicationPortalStatusCodes = ApplicationPortalStatusCode;
 	currentFilters = '';
@@ -193,10 +205,11 @@ export class PaymentsComponent implements OnInit {
 	dataSource: MatTableDataSource<PaymentResponse> = new MatTableDataSource<PaymentResponse>([]);
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
 	columns: string[] = ['applicantName', 'createdOn', 'paidOn', 'applicationNumber', 'status', 'actions'];
-	count = 0;
 
 	showDropdownOverlay = false;
 	formFilter: FormGroup = this.formBuilder.group(new PaymentFilter());
+
+	applicationStatistics$!: Observable<ApplicationStatisticsResponse>;
 
 	@ViewChild('paginator') paginator!: MatPaginator;
 
@@ -206,7 +219,9 @@ export class PaymentsComponent implements OnInit {
 		private applicationService: ApplicationService,
 		private authenticationService: AuthenticationService,
 		private location: Location
-	) {}
+	) {
+		this.refreshStats();
+	}
 
 	ngOnInit(): void {
 		const caseId = (this.location.getState() as any)?.caseId;
@@ -287,8 +302,19 @@ export class PaymentsComponent implements OnInit {
 
 				this.dataSource = new MatTableDataSource(applications);
 				this.tablePaginator = { ...res.pagination };
-
-				this.count = res.pagination?.length ?? 0;
 			});
+	}
+
+	private refreshStats(): void {
+		this.applicationStatistics$ = this.applicationService
+			.apiOrgsOrgIdApplicationStatisticsGet({
+				orgId: this.authenticationService.loggedInOrgId!,
+			})
+			.pipe(
+				tap((res: ApplicationStatisticsResponse) => {
+					const applicationStatistics = res.statistics ?? {};
+					this.count = applicationStatistics[ApplicationPortalStatusCode.AwaitingPayment];
+				})
+			);
 	}
 }
