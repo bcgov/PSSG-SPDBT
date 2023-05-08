@@ -12,6 +12,7 @@ namespace Spd.Manager.Cases
         public Task<ApplicationListResponse> Handle(ApplicationListQuery request, CancellationToken ct);
         public Task<ApplicationCreateResponse> Handle(ApplicationCreateCommand request, CancellationToken ct);
         public Task<ApplicationStatisticsResponse> Handle(ApplicationStatisticsQuery request, CancellationToken ct);
+        public Task<bool> Handle(IdentityCommand request, CancellationToken ct);
 
     }
 
@@ -26,6 +27,7 @@ namespace Spd.Manager.Cases
     public record ApplicationInviteDeleteCommand(Guid OrgId, Guid ApplicationInviteId) : IRequest<Unit>;
     public record AppInviteListFilterBy(Guid OrgId, string? EmailOrNameContains);
     public record AppInviteListSortBy(bool? SubmittedDateDesc);
+    public record IdentityCommand(Guid OrgId, Guid ApplicationId, bool verify) : IRequest<bool>;
     public record ApplicationInvitesCreateRequest
     {
         public bool RequireDuplicateCheck { get; set; }
@@ -205,7 +207,9 @@ namespace Spd.Manager.Cases
         Draft,
         PaymentPending,
         Incomplete,
-        ApplicantVerification
+        ApplicantVerification,
+        Submitted,
+        Cancelled,
     }
 
     public enum PayeePreferenceTypeCode

@@ -149,6 +149,32 @@ namespace Spd.Presentation.Screening.Controllers
             return await _mediator.Send(new ApplicationStatisticsQuery(orgId));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="applicationId"></param>
+        /// <param name="orgId"></param>
+        /// <returns></returns>
+        [Route("api/orgs/{orgId}/verifyidentity/{applicationId}")]
+        [HttpPut]
+        public async Task<bool> PutVerify([FromRoute] Guid applicationId, [FromRoute] Guid orgId)
+        {
+            return await _mediator.Send(new IdentityCommand(orgId, applicationId, true));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="applicationId"></param>
+        /// <param name="orgId"></param>
+        /// <returns></returns>
+        [Route("api/orgs/{orgId}/rejectidentity/{applicationId}")]
+        [HttpPut]
+        public async Task<bool> PutReject([FromRoute] Guid applicationId, [FromRoute] Guid orgId)
+        {
+            return await _mediator.Send(new IdentityCommand(orgId, applicationId, false));
+        }
+
         private AppListFilterBy GetAppListFilterBy(string? filters, Guid orgId)
         {
             AppListFilterBy appListFilterBy = new AppListFilterBy(orgId);

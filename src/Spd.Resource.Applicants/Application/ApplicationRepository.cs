@@ -89,6 +89,36 @@ internal class ApplicationRepository : IApplicationRepository
         return response;
     }
 
+    public async Task<bool> IdentityAsync(IdentityCmd identityCmd, CancellationToken cancellationToken)
+    {
+        spd_application? app = await _context.GetApplicationById(identityCmd.ApplicationId, cancellationToken);
+        if (app == null) { return false; }
+
+        if (identityCmd.Verify == true)
+        {
+            var paid = app.statuscode == DynamicsConstants.StateCode_Inactive ? true : false;
+            if (paid)
+            {
+                app.statuscode = (int?)ApplicationActiveStatus.PaymentPending;
+                app.statecode = DynamicsConstants.StateCode_Active;
+            }
+            else
+            {
+                app.statuscode = (int?)ApplicationActiveStatus.Submitted;
+                app.statecode = DynamicsConstants.StateCode_Inactive;
+            }
+        }
+        else
+        {
+            app.statuscode = (int?)ApplicationActiveStatus.Cancelled;
+            app.statecode = DynamicsConstants.StateCode_Inactive;
+        }
+
+        _context.UpdateObject(app);
+        await _context.SaveChangesAsync(cancellationToken);
+        return true;
+    }
+
     public async Task<ApplicationStatisticsResp> QueryApplicationStatisticsAsync(ApplicationStatisticsQry query, CancellationToken ct)
     {
         var organization = await _context.GetOrgById(query.OrganizationId, ct);

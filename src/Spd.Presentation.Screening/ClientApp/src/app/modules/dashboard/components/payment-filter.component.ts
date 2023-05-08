@@ -1,6 +1,28 @@
 import { Component, Input } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { BaseFilterComponent } from 'src/app/shared/components/base-filter.component';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { BaseFilterComponent, FilterQueryList } from 'src/app/shared/components/base-filter.component';
+
+export class PaymentFilter {
+	search: string = '';
+	startDate: string = '';
+	endDate: string = '';
+	paid: string = '';
+	notPaid: string = '';
+	applicantName: string = '';
+	createdOn: string = '';
+	contractedCompanyName: string = '';
+}
+
+export const PaymentFilterMap: Record<keyof PaymentFilter, string> = {
+	search: 'searchText',
+	startDate: 'startDate',
+	endDate: 'endDate',
+	paid: 'paid',
+	notPaid: 'notpaid',
+	applicantName: 'name',
+	createdOn: 'submittedon',
+	contractedCompanyName: 'companyname',
+};
 
 @Component({
 	selector: 'app-payment-filter',
@@ -57,7 +79,6 @@ import { BaseFilterComponent } from 'src/app/shared/components/base-filter.compo
 
 			.mat-mdc-card {
 				border-radius: 0;
-				/* background-color: var(--color-grey-lightest); */
 			}
 
 			.mat-mdc-card-actions {
@@ -69,18 +90,70 @@ import { BaseFilterComponent } from 'src/app/shared/components/base-filter.compo
 	],
 })
 export class PaymentFilterComponent extends BaseFilterComponent {
-	@Input() formGroup!: FormGroup;
+	@Input() formGroup: FormGroup = this.formBuilder.group({
+		search: new FormControl(''),
+		startDate: new FormControl(''),
+		endDate: new FormControl(''),
+		paid: new FormControl(''),
+		notPaid: new FormControl(''),
+	});
 
 	constructor(private formBuilder: FormBuilder) {
 		super();
 	}
 
 	emitFilterChange() {
-		this.filterChange.emit();
+		this.filterChange.emit(this.constructFilterString(this.constructFilterList(this.formGroup.value)));
 	}
 
 	override emitFilterClear() {
 		this.formGroup.reset();
 		this.filterClear.emit();
+	}
+
+	private constructFilterList(formGroupValue: PaymentFilter): FilterQueryList[] {
+		let filterList: FilterQueryList[] = [];
+
+		if (formGroupValue.startDate) {
+			// set time portion to midnight
+			const date = new Date(formGroupValue.startDate);
+			date.setHours(0, 0, 0);
+
+			filterList.push({
+				key: PaymentFilterMap['startDate'],
+				operator: 'greaterThanOrEqualTo',
+				value: date,
+			});
+		}
+
+		if (formGroupValue.endDate) {
+			// set time portion just before midnight
+			const date = new Date(formGroupValue.endDate);
+			date.setHours(23, 59, 59);
+
+			filterList.push({
+				key: PaymentFilterMap['endDate'],
+				operator: 'lessThanOrEqualTo',
+				value: date,
+			});
+		}
+
+		if (formGroupValue.paid) {
+			filterList.push({
+				key: PaymentFilterMap['paid'],
+				operator: 'equals',
+				value: formGroupValue.paid,
+			});
+		}
+
+		if (formGroupValue.notPaid) {
+			filterList.push({
+				key: PaymentFilterMap['notPaid'],
+				operator: 'equals',
+				value: formGroupValue.notPaid,
+			});
+		}
+
+		return filterList;
 	}
 }

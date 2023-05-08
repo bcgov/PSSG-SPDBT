@@ -91,7 +91,7 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 					</div>
 					<div class="col-xl-3 col-lg-6 col-md-12">
 						<mat-form-field>
-							<mat-label>BC Drivers License <span class="optional-label">(optional)</span></mat-label>
+							<mat-label>BC Drivers Licence <span class="optional-label">(optional)</span></mat-label>
 							<input matInput formControlName="driversLicense" />
 						</mat-form-field>
 					</div>

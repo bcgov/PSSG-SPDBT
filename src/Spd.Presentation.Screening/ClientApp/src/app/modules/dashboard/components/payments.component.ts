@@ -1,14 +1,15 @@
 import { Location } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ApplicationListResponse, ApplicationPortalStatusCode, ApplicationResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
+import { ApplicationStatusFilterMap } from './application-statuses-filter.component';
+import { PaymentFilter } from './payment-filter.component';
 
 export interface PaymentResponse extends ApplicationResponse {
 	applicationPortalStatusClass: string;
@@ -21,7 +22,7 @@ export interface PaymentResponse extends ApplicationResponse {
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
-					<h2 class="mb-2 fw-normal">Outstanding Payments</h2>
+					<h2 class="mb-2 fw-normal">Payments</h2>
 					<div class="alert alert-warning d-flex align-items-center" role="alert" *ngIf="count > 0">
 						<mat-icon class="d-none d-md-block alert-icon me-2">warning</mat-icon>
 						<ng-container *ngIf="count == 1; else moreThanOne">
@@ -41,7 +42,7 @@ export interface PaymentResponse extends ApplicationResponse {
 							matInput
 							type="search"
 							formControlName="search"
-							placeholder="Search applicant's name or email or case ID"
+							placeholder="Search applicant's name or case ID"
 							(keydown.enter)="onSearchKeyDown($event)"
 						/>
 						<button
@@ -73,9 +74,9 @@ export interface PaymentResponse extends ApplicationResponse {
 
 			<div class="row">
 				<div class="col-12">
-					<mat-table matSort [dataSource]="dataSource" matSortActive="createdOn" matSortDirection="asc">
+					<mat-table [dataSource]="dataSource">
 						<ng-container matColumnDef="applicantName">
-							<mat-header-cell *matHeaderCellDef mat-sort-header>Applicant Name</mat-header-cell>
+							<mat-header-cell *matHeaderCellDef>Applicant Name</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Applicant Name:</span>
 								{{ application | fullname }}
@@ -83,7 +84,7 @@ export interface PaymentResponse extends ApplicationResponse {
 						</ng-container>
 
 						<ng-container matColumnDef="createdOn">
-							<mat-header-cell *matHeaderCellDef mat-sort-header>Submitted On</mat-header-cell>
+							<mat-header-cell *matHeaderCellDef>Submitted On</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Submitted On:</span>
 								{{ application.createdOn | date : constants.date.dateFormat : 'UTC' }}
@@ -91,7 +92,7 @@ export interface PaymentResponse extends ApplicationResponse {
 						</ng-container>
 
 						<ng-container matColumnDef="paidOn">
-							<mat-header-cell *matHeaderCellDef mat-sort-header>Paid On</mat-header-cell>
+							<mat-header-cell *matHeaderCellDef>Paid On</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Paid On:</span>
 								??<!-- {{ application.paidOn | date : constants.date.dateTimeFormat }} -->
@@ -111,9 +112,14 @@ export interface PaymentResponse extends ApplicationResponse {
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Status:</span>
 								<mat-chip-listbox aria-label="Status" *ngIf="application.status">
-									<mat-chip-option [selectable]="false" [ngClass]="application.applicationPortalStatusClass">
-										{{ application.applicationPortalStatusText }}
-									</mat-chip-option>
+									<ng-container
+										*ngIf="application.status != applicationPortalStatusCodes.AwaitingPayment; else notpaid"
+									>
+										<mat-chip-option [selectable]="false" class="mat-chip-green"> Paid </mat-chip-option>
+									</ng-container>
+									<ng-template #notpaid>
+										<mat-chip-option [selectable]="false" class="mat-chip-yellow"> Not Paid </mat-chip-option>
+									</ng-template>
 								</mat-chip-listbox>
 							</mat-cell>
 						</ng-container>
@@ -181,6 +187,8 @@ export class PaymentsComponent implements OnInit {
 
 	constants = SPD_CONSTANTS;
 	applicationPortalStatusCodes = ApplicationPortalStatusCode;
+	currentFilters = '';
+	currentSearch = '';
 
 	dataSource: MatTableDataSource<PaymentResponse> = new MatTableDataSource<PaymentResponse>([]);
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
@@ -188,15 +196,8 @@ export class PaymentsComponent implements OnInit {
 	count = 0;
 
 	showDropdownOverlay = false;
-	formFilter: FormGroup = this.formBuilder.group({
-		search: new FormControl(''),
-		startDate: new FormControl(''),
-		endDate: new FormControl(''),
-		paid: new FormControl(''),
-		notPaid: new FormControl(''),
-	});
+	formFilter: FormGroup = this.formBuilder.group(new PaymentFilter());
 
-	@ViewChild(MatSort) sort!: MatSort;
 	@ViewChild('paginator') paginator!: MatPaginator;
 
 	constructor(
@@ -211,7 +212,7 @@ export class PaymentsComponent implements OnInit {
 		const caseId = (this.location.getState() as any)?.caseId;
 		this.formFilter.patchValue({ search: caseId });
 
-		this.loadList();
+		this.performSearch(caseId);
 	}
 
 	onShowDropdownOverlayChange(show: boolean): void {
@@ -228,7 +229,7 @@ export class PaymentsComponent implements OnInit {
 	}
 
 	onFilterChange(filters: any) {
-		// this.currentFilters = filters;
+		this.currentFilters = filters;
 		this.queryParams.page = 0;
 		this.onFilterClose();
 
@@ -236,8 +237,8 @@ export class PaymentsComponent implements OnInit {
 	}
 
 	onFilterClear() {
-		// this.currentFilters = '';
-		// this.currentSearch = '';
+		this.currentFilters = '';
+		this.currentSearch = '';
 		this.queryParams = this.utilService.getDefaultQueryParams();
 		this.onFilterClose();
 
@@ -254,14 +255,17 @@ export class PaymentsComponent implements OnInit {
 	}
 
 	private performSearch(searchString: string): void {
-		// this.currentSearch = searchString ? `${ApplicationStatusFilterMap['search']}@=${searchString}` : '';
+		this.currentSearch = searchString ? `${ApplicationStatusFilterMap['search']}@=${searchString}` : '';
 		this.queryParams.page = 0;
 
 		this.loadList();
 	}
 
 	private buildQueryParamsFilterString(): string {
-		return `status==${ApplicationPortalStatusCode.AwaitingPayment}`;
+		return (
+			// `status==${ApplicationPortalStatusCode.AwaitingPayment},` +
+			this.currentFilters + (this.currentFilters ? ',' : '') + this.currentSearch
+		);
 	}
 
 	private loadList(): void {
@@ -282,7 +286,6 @@ export class PaymentsComponent implements OnInit {
 				});
 
 				this.dataSource = new MatTableDataSource(applications);
-				this.dataSource.sort = this.sort;
 				this.tablePaginator = { ...res.pagination };
 
 				this.count = res.pagination?.length ?? 0;

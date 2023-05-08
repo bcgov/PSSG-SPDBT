@@ -3,7 +3,6 @@ using MediatR;
 using Spd.Resource.Applicants;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.ApplicationInvite;
-using Spd.Utilities.Shared.Exceptions;
 
 namespace Spd.Manager.Cases
 {
@@ -14,6 +13,7 @@ namespace Spd.Manager.Cases
         IRequestHandler<ApplicationInviteListQuery, ApplicationInviteListResponse>,
         IRequestHandler<ApplicationInviteDeleteCommand, Unit>,
         IRequestHandler<ApplicationStatisticsQuery, ApplicationStatisticsResponse>,
+        IRequestHandler<IdentityCommand, bool>,
         IApplicationManager
     {
         private readonly IApplicationRepository _applicationRepository;
@@ -166,6 +166,10 @@ namespace Spd.Manager.Cases
             return resp;
         }
 
-
+        public async Task<bool> Handle(IdentityCommand request, CancellationToken ct)
+        {
+            var cmd = _mapper.Map<IdentityCmd>(request);
+            return await _applicationRepository.IdentityAsync(cmd, ct);
+        }
     }
 }

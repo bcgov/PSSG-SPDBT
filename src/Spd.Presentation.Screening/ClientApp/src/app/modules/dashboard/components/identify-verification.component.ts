@@ -22,6 +22,10 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 import { ApplicationStatusFilterMap } from './application-statuses-filter.component';
 import { CrcAddModalComponent, CrcDialogData } from './crc-add-modal.component';
 
+export interface IdentityVerificationResponse extends ApplicationResponse {
+	hideActions: boolean;
+}
+
 @Component({
 	selector: 'app-identify-verification',
 	template: `
@@ -125,6 +129,7 @@ import { CrcAddModalComponent, CrcDialogData } from './crc-add-modal.component';
 									class="table-button m-2"
 									style="color: var(--color-green);"
 									aria-label="Confirm"
+									*ngIf="!application.hideActions"
 									(click)="onConfirm(application)"
 								>
 									<mat-icon>check</mat-icon>Confirm
@@ -140,6 +145,7 @@ import { CrcAddModalComponent, CrcDialogData } from './crc-add-modal.component';
 									class="table-button m-2"
 									style="color: var(--color-red);"
 									aria-label="Reject"
+									*ngIf="!application.hideActions"
 									(click)="onReject(application)"
 								>
 									<mat-icon>cancel</mat-icon>Reject
@@ -185,7 +191,9 @@ export class IdentifyVerificationComponent implements OnInit {
 
 	constants = SPD_CONSTANTS;
 	count = 0;
-	dataSource: MatTableDataSource<ApplicationResponse> = new MatTableDataSource<ApplicationResponse>([]);
+	dataSource: MatTableDataSource<IdentityVerificationResponse> = new MatTableDataSource<IdentityVerificationResponse>(
+		[]
+	);
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
 	columns: string[] = [
 		'applicantName',
@@ -220,7 +228,7 @@ export class IdentifyVerificationComponent implements OnInit {
 		const caseId = (this.location.getState() as any)?.caseId;
 		this.formFilter.patchValue({ search: caseId });
 
-		this.loadList();
+		this.performSearch(caseId);
 	}
 
 	onSearchKeyDown(searchEvent: any): void {
@@ -237,7 +245,7 @@ export class IdentifyVerificationComponent implements OnInit {
 		this.loadList();
 	}
 
-	onConfirm(application: ApplicationResponse) {
+	onConfirm(application: IdentityVerificationResponse) {
 		const data: DialogOptions = {
 			icon: 'warning',
 			title: 'Confirmation',
@@ -251,36 +259,31 @@ export class IdentifyVerificationComponent implements OnInit {
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
-					this.hotToast.success('Identity was successfully confirmed');
-					this.loadList();
+					this.verifyIdentity(application);
 				}
 			});
 	}
 
-	onReject(application: ApplicationResponse) {
+	onReject(application: IdentityVerificationResponse) {
 		const data: DialogOptions = {
 			icon: 'info',
 			title: 'Confirmation',
-			message: 'Would you like to send a new criminal record check request for this individual from your organization?',
-			actionText: 'Yes, create new request',
-			altOptionText: 'No, reject',
+			message: 'Are you sure you would like to remove this individual from your organization?',
+			actionText: 'Yes, remove',
 			cancelText: 'Cancel',
 		};
 
 		this.dialog
-			.open(DialogComponent, { width: '800px', data })
+			.open(DialogComponent, { data })
 			.afterClosed()
 			.subscribe((response: DialogCloseCode) => {
-				if (response == DialogCloseCode.Action) {
-					this.sendRequest(application);
-				} else if (response == DialogCloseCode.AltAction) {
-					// todo REJECT
-					this.hotToast.success('Identity was successfully rejected');
+				if (response) {
+					this.rejectIdentity(application);
 				}
 			});
 	}
 
-	private sendRequest(application: ApplicationResponse) {
+	private sendRequest(application: IdentityVerificationResponse) {
 		const inviteDefault: ApplicationInviteCreateRequest = {
 			firstName: application.givenName,
 			lastName: application.surname,
@@ -301,9 +304,7 @@ export class IdentifyVerificationComponent implements OnInit {
 			.afterClosed()
 			.subscribe((resp) => {
 				if (resp.success) {
-					this.hotToast.success('Identity was successfully rejected');
 					this.hotToast.success(resp.message);
-
 					this.router.navigateByUrl(DashboardRoutes.dashboardPath(DashboardRoutes.CRIMINAL_RECORD_CHECKS));
 				}
 			});
@@ -331,11 +332,61 @@ export class IdentifyVerificationComponent implements OnInit {
 			.pipe()
 			.subscribe((res: ApplicationListResponse) => {
 				const applications = res.applications ?? [];
-				this.dataSource.data = applications;
+				this.dataSource.data = applications as Array<IdentityVerificationResponse>;
 				this.dataSource.sort = this.sort;
 				this.tablePaginator = { ...res.pagination };
 
 				this.count = res.pagination?.length ?? 0;
 			});
+	}
+
+	private verifyIdentity(application: IdentityVerificationResponse) {
+		this.applicationService
+			.apiOrgsOrgIdVerifyidentityApplicationIdPut({
+				orgId: this.authenticationService.loggedInOrgId!,
+				applicationId: application.id!,
+			})
+			.pipe()
+			.subscribe(() => {
+				this.hotToast.success('Identity was successfully confirmed');
+				this.removeActionsFromView(application);
+			});
+	}
+
+	private rejectIdentity(application: IdentityVerificationResponse) {
+		this.applicationService
+			.apiOrgsOrgIdRejectidentityApplicationIdPut({
+				orgId: this.authenticationService.loggedInOrgId!,
+				applicationId: application.id!,
+			})
+			.pipe()
+			.subscribe(() => {
+				this.hotToast.success('Identity was successfully rejected');
+				this.removeActionsFromView(application);
+				this.postReject(application);
+			});
+	}
+
+	private postReject(application: IdentityVerificationResponse) {
+		const data: DialogOptions = {
+			icon: 'info',
+			title: 'Confirmation',
+			message: 'Would you like to send a new criminal record check request for this individual from your organization?',
+			actionText: 'Yes, create request',
+			cancelText: 'Close',
+		};
+
+		this.dialog
+			.open(DialogComponent, { data })
+			.afterClosed()
+			.subscribe((response: DialogCloseCode) => {
+				if (response) {
+					this.sendRequest(application);
+				}
+			});
+	}
+
+	private removeActionsFromView(application: IdentityVerificationResponse) {
+		application.hideActions = true;
 	}
 }
