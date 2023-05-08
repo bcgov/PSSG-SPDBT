@@ -242,7 +242,7 @@ export class ExpiringChecksComponent implements OnInit {
 		};
 
 		this.dialog
-			.open(DialogComponent, { data })
+			.open(DialogComponent, { width: '700px', data })
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
