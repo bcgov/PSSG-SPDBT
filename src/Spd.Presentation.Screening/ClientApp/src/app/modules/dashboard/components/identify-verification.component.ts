@@ -6,14 +6,21 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { ApplicationListResponse, ApplicationPortalStatusCode, ApplicationResponse } from 'src/app/api/models';
+import { HotToastService } from '@ngneat/hot-toast';
+import {
+	ApplicationInviteCreateRequest,
+	ApplicationListResponse,
+	ApplicationPortalStatusCode,
+	ApplicationResponse,
+} from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
-import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
+import { DialogCloseCode, DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { DashboardRoutes } from '../dashboard-routing.module';
 import { ApplicationStatusFilterMap } from './application-statuses-filter.component';
+import { CrcAddModalComponent, CrcDialogData } from './crc-add-modal.component';
 
 @Component({
 	selector: 'app-identify-verification',
@@ -23,7 +30,15 @@ import { ApplicationStatusFilterMap } from './application-statuses-filter.compon
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
 					<h2 class="mb-2 fw-normal">Identity Verification</h2>
-					<app-banner></app-banner>
+					<div class="alert alert-warning d-flex align-items-center" role="alert" *ngIf="count > 0">
+						<mat-icon class="d-none d-md-block alert-icon me-2">warning</mat-icon>
+						<ng-container *ngIf="count == 1; else moreThanOne">
+							<div>There is 1 applicant which requires confirmation</div>
+						</ng-container>
+						<ng-template #moreThanOne>
+							<div>There are {{ count }} applicants which require confirmation</div>
+						</ng-template>
+					</div>
 				</div>
 			</div>
 
@@ -197,6 +212,7 @@ export class IdentifyVerificationComponent implements OnInit {
 		private location: Location,
 		private authenticationService: AuthenticationService,
 		private applicationService: ApplicationService,
+		private hotToast: HotToastService,
 		private dialog: MatDialog
 	) {}
 
@@ -205,11 +221,6 @@ export class IdentifyVerificationComponent implements OnInit {
 		this.formFilter.patchValue({ search: caseId });
 
 		this.loadList();
-	}
-
-	ngAfterViewInit() {
-		this.dataSource.sort = this.sort;
-		this.dataSource.paginator = this.paginator;
 	}
 
 	onSearchKeyDown(searchEvent: any): void {
@@ -240,6 +251,7 @@ export class IdentifyVerificationComponent implements OnInit {
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
+					this.hotToast.success('Identity was successfully confirmed');
 					this.loadList();
 				}
 			});
@@ -250,18 +262,49 @@ export class IdentifyVerificationComponent implements OnInit {
 			icon: 'info',
 			title: 'Confirmation',
 			message: 'Would you like to send a new criminal record check request for this individual from your organization?',
-			actionText: 'Yes, send new request',
-			cancelText: 'No, reject',
+			actionText: 'Yes, create new request',
+			altOptionText: 'No, reject',
+			cancelText: 'Cancel',
 		};
 
 		this.dialog
-			.open(DialogComponent, { data })
+			.open(DialogComponent, { width: '800px', data })
 			.afterClosed()
-			.subscribe((response: boolean) => {
-				if (response) {
-					this.router.navigateByUrl(DashboardRoutes.dashboardPath(DashboardRoutes.CRIMINAL_RECORD_CHECKS));
-				} else {
+			.subscribe((response: DialogCloseCode) => {
+				if (response == DialogCloseCode.Action) {
+					this.sendRequest(application);
+				} else if (response == DialogCloseCode.AltAction) {
 					// todo REJECT
+					this.hotToast.success('Identity was successfully rejected');
+				}
+			});
+	}
+
+	private sendRequest(application: ApplicationResponse) {
+		const inviteDefault: ApplicationInviteCreateRequest = {
+			firstName: application.givenName,
+			lastName: application.surname,
+			email: application.emailAddress,
+			jobTitle: application.jobTitle,
+			payeeType: application.payeeType,
+		};
+
+		const dialogOptions: CrcDialogData = {
+			inviteDefault,
+		};
+
+		this.dialog
+			.open(CrcAddModalComponent, {
+				width: '1400px',
+				data: dialogOptions,
+			})
+			.afterClosed()
+			.subscribe((resp) => {
+				if (resp.success) {
+					this.hotToast.success('Identity was successfully rejected');
+					this.hotToast.success(resp.message);
+
+					this.router.navigateByUrl(DashboardRoutes.dashboardPath(DashboardRoutes.CRIMINAL_RECORD_CHECKS));
 				}
 			});
 	}
@@ -292,7 +335,7 @@ export class IdentifyVerificationComponent implements OnInit {
 				this.dataSource.sort = this.sort;
 				this.tablePaginator = { ...res.pagination };
 
-				this.count = applications.length;
+				this.count = res.pagination?.length ?? 0;
 			});
 	}
 }

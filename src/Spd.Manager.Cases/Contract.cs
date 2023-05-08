@@ -160,6 +160,7 @@ namespace Spd.Manager.Cases
 
     public enum ApplicationPortalStatusCode
     {
+        Draft,
         VerifyIdentity,
         InProgress,
         AwaitingPayment,

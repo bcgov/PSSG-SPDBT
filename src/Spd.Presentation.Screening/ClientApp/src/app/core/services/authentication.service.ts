@@ -9,7 +9,7 @@ import {
 	OrgSelectionModalComponent,
 	OrgSelectionResponseData,
 } from 'src/app/shared/components/org-selection-modal.component';
-import { AuthConfigService } from './auth-config.service';
+import { ConfigService } from './config.service';
 import { UtilService } from './util.service';
 
 @Injectable({ providedIn: 'root' })
@@ -30,7 +30,7 @@ export class AuthenticationService {
 		private userService: UserProfileService,
 		private utilService: UtilService,
 		private dialog: MatDialog,
-		private authConfigService: AuthConfigService
+		private configService: ConfigService
 	) {}
 
 	public async tryLogin(): Promise<{ state: any; loggedIn: boolean }> {
@@ -100,7 +100,7 @@ export class AuthenticationService {
 
 	public logout(): void {
 		this.oauthService.logOut();
-		this.utilService.clearOrgRegState();
+		this.utilService.clearAllSessionData();
 		this.notify(false);
 	}
 
@@ -113,8 +113,8 @@ export class AuthenticationService {
 	}
 
 	public async configureOAuthService(redirectUri: string): Promise<void> {
-		return this.authConfigService.getAuthConfig(redirectUri).then((authConfig) => {
-			this.oauthService.configure(authConfig);
+		return this.configService.getAuthConfig(redirectUri).then((config) => {
+			this.oauthService.configure(config);
 			this.oauthService.setupAutomaticSilentRefresh();
 		});
 	}
