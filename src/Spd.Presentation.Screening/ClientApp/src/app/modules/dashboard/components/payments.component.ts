@@ -34,10 +34,10 @@ export interface PaymentResponse extends ApplicationResponse {
 						<div class="alert alert-warning d-flex align-items-center" role="alert">
 							<mat-icon class="d-none d-md-block alert-icon me-2">warning</mat-icon>
 							<ng-container *ngIf="count > 0">
-								<ng-container *ngIf="count == 1; else moreThanOne">
+								<ng-container *ngIf="count == 1; else notOne">
 									<div>There is 1 application which requires payment</div>
 								</ng-container>
-								<ng-template #moreThanOne>
+								<ng-template #notOne>
 									<div>There are {{ count }} applications which require payment</div>
 								</ng-template>
 							</ng-container>
