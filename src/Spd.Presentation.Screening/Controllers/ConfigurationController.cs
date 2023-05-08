@@ -33,7 +33,9 @@ namespace Spd.Presentation.Screening.Controllers
             };
 
             RecaptchaConfiguration recaptchaResp = new RecaptchaConfiguration(_captchaOption.Value.ClientKey);
-            return await Task.FromResult(new ConfigurationResponse() { OidcConfiguration= bceidResp , RecaptchaConfiguration = recaptchaResp });
+            var bannerMessage = "10 business days for online applications and 20 business days for manual applications"; //TODO get from dynamics
+
+            return await Task.FromResult(new ConfigurationResponse() { OidcConfiguration = bceidResp, RecaptchaConfiguration = recaptchaResp, BannerMessage = bannerMessage });
         }
     }
 
@@ -41,6 +43,7 @@ namespace Spd.Presentation.Screening.Controllers
     {
         public OidcConfiguration OidcConfiguration { get; set; } = null!;
         public RecaptchaConfiguration RecaptchaConfiguration { get; set; } = null!;
+        public string BannerMessage { get; set; }
     }
 
     public record OidcConfiguration

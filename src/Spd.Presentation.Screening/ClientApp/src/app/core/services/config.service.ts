@@ -8,7 +8,7 @@ import { ConfigurationService } from 'src/app/api/services';
 @Injectable({
 	providedIn: 'root',
 })
-export class AuthConfigService {
+export class ConfigService {
 	public configs: ConfigurationResponse | null = null;
 
 	constructor(private configurationService: ConfigurationService) {}

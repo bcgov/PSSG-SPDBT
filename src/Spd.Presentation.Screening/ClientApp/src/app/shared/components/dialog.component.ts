@@ -12,6 +12,12 @@ export interface DialogOptions {
 	data?: { [key: string]: any };
 }
 
+export enum DialogCloseCode {
+	Action = 'Action',
+	AltAction = 'AltAction',
+	Cancel = 'Cancel',
+}
+
 @Component({
 	selector: 'app-spd-dialog',
 	template: `
@@ -29,13 +35,25 @@ export interface DialogOptions {
 
 		<mat-dialog-actions>
 			<div class="row m-0 p-0 w-100">
-				<div class="col-md-5 col-sm-12 mb-2">
-					<button *ngIf="data.cancelText" mat-stroked-button color="primary" [mat-dialog-close]="false" cdkFocusInitial>
+				<div class="col-md-3 col-sm-12 mb-2">
+					<button
+						*ngIf="data.cancelText"
+						mat-stroked-button
+						color="primary"
+						class="large"
+						[mat-dialog-close]="false"
+						cdkFocusInitial
+					>
 						{{ data.cancelText }}
 					</button>
 				</div>
-				<div class="offset-md-2 col-md-5 col-sm-12 mb-2">
-					<button *ngIf="data.actionText" mat-flat-button color="primary" (click)="onConfirm()">
+				<div class="offset-md-1 col-md-3 col-sm-12 mb-2">
+					<button *ngIf="data.altOptionText" mat-flat-button color="primary" class="large" (click)="onAltConfirm()">
+						{{ data.altOptionText }}
+					</button>
+				</div>
+				<div class="col-md-5 col-sm-12 mb-2">
+					<button *ngIf="data.actionText" mat-flat-button color="primary" class="large" (click)="onConfirm()">
 						{{ data.actionText }}
 					</button>
 				</div>
@@ -72,6 +90,9 @@ export class DialogComponent {
 	constructor(public dialogRef: MatDialogRef<DialogComponent>, @Inject(MAT_DIALOG_DATA) public data: DialogOptions) {}
 
 	public onConfirm(): void {
-		this.dialogRef.close(true);
+		this.dialogRef.close(this.data.altOptionText ? DialogCloseCode.Action : true);
+	}
+	public onAltConfirm(): void {
+		this.dialogRef.close(DialogCloseCode.AltAction);
 	}
 }

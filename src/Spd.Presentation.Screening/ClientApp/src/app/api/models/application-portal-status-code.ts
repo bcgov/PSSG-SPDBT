@@ -1,6 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export enum ApplicationPortalStatusCode {
+  Draft = 'Draft',
   VerifyIdentity = 'VerifyIdentity',
   InProgress = 'InProgress',
   AwaitingPayment = 'AwaitingPayment',

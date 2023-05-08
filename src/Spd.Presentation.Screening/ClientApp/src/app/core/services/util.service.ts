@@ -6,12 +6,28 @@ import { ApplicationPortalStatusCodes, SelectOptions } from '../constants/model-
 
 @Injectable({ providedIn: 'root' })
 export class UtilService {
-	readonly ORG_REG_STATE_KEY = SPD_CONSTANTS.sessionStorage.organizationRegStateKey;
+	//------------------------------------
+	// Session storage
+	readonly ORG_REG_STATE_KEY: string = SPD_CONSTANTS.sessionStorage.organizationRegStateKey;
 
-	getFullName(firstName: string | null, lastName: string | null): string {
-		return `${firstName ?? ''} ${lastName ?? ''}`.trim();
+	setSessionData(key: string, data: any): void {
+		sessionStorage.setItem(key, data);
 	}
 
+	getSessionData(key: string): any {
+		return sessionStorage.getItem(key);
+	}
+
+	clearSessionData(key: string): void {
+		sessionStorage.removeItem(key);
+	}
+
+	clearAllSessionData(): void {
+		this.clearSessionData(this.ORG_REG_STATE_KEY);
+	}
+
+	//------------------------------------
+	// Table config
 	getDefaultQueryParams(): any {
 		return { page: 0, pageSize: SPD_CONSTANTS.list.defaultPageSize };
 	}
@@ -25,24 +41,10 @@ export class UtilService {
 		return defaultTableConfig;
 	}
 
-	getDecodedAccessToken(token: string): any {
-		try {
-			return jwt_decode(token);
-		} catch (Error) {
-			return null;
-		}
-	}
-
-	setOrgRegState(data: any): void {
-		sessionStorage.setItem(this.ORG_REG_STATE_KEY, data);
-	}
-
-	getOrgRegState(): any {
-		return sessionStorage.getItem(this.ORG_REG_STATE_KEY);
-	}
-
-	clearOrgRegState(): void {
-		sessionStorage.removeItem(this.ORG_REG_STATE_KEY);
+	//------------------------------------
+	// Generic
+	getFullName(firstName: string | null, lastName: string | null): string {
+		return `${firstName ?? ''} ${lastName ?? ''}`.trim();
 	}
 
 	removeFirstFromArray<T>(array: T[], toRemove: T): void {
@@ -53,6 +55,16 @@ export class UtilService {
 		}
 	}
 
+	getDecodedAccessToken(token: string): any {
+		try {
+			return jwt_decode(token);
+		} catch (Error) {
+			return null;
+		}
+	}
+
+	//------------------------------------
+	// Misc
 	getApplicationPortalStatus(code: string | null | undefined): [string, string] {
 		if (!code) {
 			return ['', ''];
@@ -73,6 +85,7 @@ export class UtilService {
 			case ApplicationPortalStatusCode.RiskFound:
 				currClass = 'mat-chip-red';
 				break;
+			case ApplicationPortalStatusCode.Draft:
 			case ApplicationPortalStatusCode.Incomplete:
 			case ApplicationPortalStatusCode.UnderAssessment:
 				currClass = 'mat-chip-blue';

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ConfigService } from 'src/app/core/services/config.service';
 
 @Component({
 	selector: 'app-banner',
@@ -8,11 +9,17 @@ import { Component } from '@angular/core';
 			<div>
 				<div>We are currently processing applications that do NOT require follow-up within:</div>
 				<div class="fw-semibold">
-					10 business days for online applications and 20 business days for manual applications
+					{{ bannerMessage }}
 				</div>
 			</div>
 		</div>
 	`,
 	styles: [],
 })
-export class BannerComponent {}
+export class BannerComponent {
+	bannerMessage = '';
+
+	constructor(private configService: ConfigService) {
+		this.bannerMessage = this.configService.configs?.bannerMessage!;
+	}
+}
