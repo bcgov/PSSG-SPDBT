@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { ApplicationStatusFiltersTypes, SelectOptions } from 'src/app/core/constants/model-desc';
+import { ApplicationPortalStatusCodes, SelectOptions } from 'src/app/core/constants/model-desc';
 import { UtilService } from 'src/app/core/services/util.service';
 import { BaseFilterComponent, FilterQueryList } from 'src/app/shared/components/base-filter.component';
 
@@ -50,7 +50,7 @@ export const ApplicationStatusFilterMap: Record<keyof ApplicationStatusFilter, s
 									</mat-chip-listbox>
 								</mat-select-trigger>
 
-								<mat-option *ngFor="let status of applicationStatusFiltersTypes" [value]="status.code">
+								<mat-option *ngFor="let status of applicationPortalStatusCodes" [value]="status.code">
 									{{ status.desc }}
 								</mat-option>
 							</mat-select>
@@ -87,7 +87,7 @@ export const ApplicationStatusFilterMap: Record<keyof ApplicationStatusFilter, s
 	],
 })
 export class ApplicationStatusesFilterComponent extends BaseFilterComponent {
-	applicationStatusFiltersTypes = ApplicationStatusFiltersTypes;
+	applicationPortalStatusCodes = ApplicationPortalStatusCodes;
 
 	@Input() formGroup: FormGroup = this.formBuilder.group({
 		statuses: new FormControl(),
@@ -113,7 +113,7 @@ export class ApplicationStatusesFilterComponent extends BaseFilterComponent {
 	}
 
 	getFilterStatusDesc(code: string): string {
-		return (ApplicationStatusFiltersTypes.find((item: SelectOptions) => item.code == code)?.desc as string) ?? '';
+		return (ApplicationPortalStatusCodes.find((item: SelectOptions) => item.code == code)?.desc as string) ?? '';
 	}
 
 	private constructFilterList(formGroupValue: ApplicationStatusFilter): FilterQueryList[] {

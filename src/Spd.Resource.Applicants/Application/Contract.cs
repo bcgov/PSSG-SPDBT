@@ -124,6 +124,7 @@ public record ApplicationStatisticsResp
 
 public enum ApplicationPortalStatusCd
 {
+    Draft,
     VerifyIdentity,
     InProgress,
     AwaitingPayment,

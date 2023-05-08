@@ -12,14 +12,14 @@ import { ApiModule } from './api/api.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
-import { AuthConfigService } from './core/services/auth-config.service';
+import { ConfigService } from './core/services/config.service';
 import { LandingComponent } from './landing.component';
 import { MaterialModule } from './material.module';
 import { SharedModule } from './shared/shared.module';
 
-export function appInitializer(authConfigService: AuthConfigService) {
+export function appInitializer(configService: ConfigService) {
 	return () => {
-		return authConfigService.getConfigs().pipe(
+		return configService.getConfigs().pipe(
 			tap((configs) => {
 				console.debug('[appInitializer] configs', configs);
 			})
@@ -54,7 +54,7 @@ export function appInitializer(authConfigService: AuthConfigService) {
 		{
 			provide: APP_INITIALIZER,
 			useFactory: appInitializer,
-			deps: [AuthConfigService],
+			deps: [ConfigService],
 			multi: true,
 		},
 	],

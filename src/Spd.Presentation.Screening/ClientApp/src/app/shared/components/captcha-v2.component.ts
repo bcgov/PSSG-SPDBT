@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { Subject } from 'rxjs';
-import { AuthConfigService } from 'src/app/core/services/auth-config.service';
+import { ConfigService } from 'src/app/core/services/config.service';
 @UntilDestroy({ checkProperties: true })
 @Component({
 	selector: 'app-captcha-v2',
@@ -31,8 +31,8 @@ export class CaptchaV2Component implements OnInit {
 	});
 	siteKey: string = '';
 
-	constructor(private authConfigService: AuthConfigService) {
-		this.siteKey = this.authConfigService.configs?.recaptchaConfiguration?.key!;
+	constructor(private configService: ConfigService) {
+		this.siteKey = this.configService.configs?.recaptchaConfiguration?.key!;
 	}
 
 	ngOnInit() {
