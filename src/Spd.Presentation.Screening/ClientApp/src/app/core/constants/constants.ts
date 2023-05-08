@@ -14,5 +14,6 @@ export const SPD_CONSTANTS = {
 	},
 	sessionStorage: {
 		organizationRegStateKey: 'state',
+		bannerMessageKey: 'banner-message',
 	},
 };

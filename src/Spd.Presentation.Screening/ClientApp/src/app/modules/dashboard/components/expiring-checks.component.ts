@@ -5,13 +5,15 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { ApplicationListResponse, ApplicationResponse } from 'src/app/api/models';
+import { HotToastService } from '@ngneat/hot-toast';
+import { ApplicationInviteCreateRequest, ApplicationListResponse, ApplicationResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { DashboardRoutes } from '../dashboard-routing.module';
+import { CrcAddModalComponent, CrcDialogData } from './crc-add-modal.component';
 
 export interface ExpiredChecksResponse extends ApplicationResponse {
 	daysRemainingText: string;
@@ -206,6 +208,7 @@ export class ExpiringChecksComponent implements OnInit {
 		private formBuilder: FormBuilder,
 		private applicationService: ApplicationService,
 		private authenticationService: AuthenticationService,
+		private hotToast: HotToastService,
 		private dialog: MatDialog
 	) {}
 
@@ -234,18 +237,41 @@ export class ExpiringChecksComponent implements OnInit {
 			icon: 'info',
 			title: 'Confirmation',
 			message: 'Would you like to send a new criminal record check request for this individual from your organization?',
-			actionText: 'Yes, send new request',
+			actionText: 'Yes, create new request',
 			cancelText: 'Cancel',
 		};
 
 		this.dialog
-			.open(DialogComponent, { data })
+			.open(DialogComponent, { width: '700px', data })
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
-					this.router.navigateByUrl(DashboardRoutes.dashboardPath(DashboardRoutes.CRIMINAL_RECORD_CHECKS));
-				} else {
-					// todo REJECT
+					const inviteDefault: ApplicationInviteCreateRequest = {
+						firstName: application.givenName,
+						lastName: application.surname,
+						email: application.emailAddress,
+						jobTitle: application.jobTitle,
+						payeeType: application.payeeType,
+					};
+
+					const dialogOptions: CrcDialogData = {
+						inviteDefault,
+					};
+
+					this.dialog
+						.open(CrcAddModalComponent, {
+							width: '1400px',
+							data: dialogOptions,
+						})
+						.afterClosed()
+						.subscribe((resp) => {
+							if (resp.success) {
+								this.hotToast.success('Expired check was successfully removed');
+								this.hotToast.success(resp.message);
+
+								this.router.navigateByUrl(DashboardRoutes.dashboardPath(DashboardRoutes.CRIMINAL_RECORD_CHECKS));
+							}
+						});
 				}
 			});
 	}
@@ -264,9 +290,8 @@ export class ExpiringChecksComponent implements OnInit {
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
-					this.router.navigateByUrl(DashboardRoutes.dashboardPath(DashboardRoutes.CRIMINAL_RECORD_CHECKS));
-				} else {
-					// todo REJECT
+					//TODO remove
+					this.hotToast.success('Individual was successfully removed');
 				}
 			});
 	}
@@ -300,8 +325,8 @@ export class ExpiringChecksComponent implements OnInit {
 
 		const expiringOnDate = new Date(expiringOn);
 		const todayDate = new Date();
-		var diff = Math.abs(todayDate.getTime() - expiringOnDate.getTime());
-		var diffDays = Math.ceil(diff / (1000 * 3600 * 24));
+		const diff = Math.abs(todayDate.getTime() - expiringOnDate.getTime());
+		const diffDays = Math.ceil(diff / (1000 * 3600 * 24));
 
 		if (diffDays <= 0) {
 			return ['Expired', 'days-remaining-red'];
