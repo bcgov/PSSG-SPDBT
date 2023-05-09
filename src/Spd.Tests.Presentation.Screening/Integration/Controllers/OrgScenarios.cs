@@ -13,7 +13,7 @@ public class OrgScenarios : ScenarioContextBase
     [Fact]
     public async Task GetOrgFromId_WithoutHeader_Unauthorized()
     {
-        var org = await fixture.testData.CreateOrgWithLogonUser("org1");
+        var (org, user) = await fixture.testData.CreateOrgWithLogonUser("org1");
 
         await Host.Scenario(_ =>
         {
@@ -26,7 +26,7 @@ public class OrgScenarios : ScenarioContextBase
     [Fact]
     public async Task GetOrgFromId_WithCorrectAuthAndHeader_Success()
     {
-        var org = await fixture.testData.CreateOrgWithLogonUser("org1");
+        var (org, user) = await fixture.testData.CreateOrgWithLogonUser("org1");
 
         await Host.Scenario(_ =>
         {
@@ -40,7 +40,7 @@ public class OrgScenarios : ScenarioContextBase
     [Fact]
     public async Task GetOrgFromId_WithCorrectAuth_WithoutHeader_Fail()
     {
-        var org = await fixture.testData.CreateOrgWithLogonUser("org1");
+        var (org, user) = await fixture.testData.CreateOrgWithLogonUser("org1");
 
         await Host.Scenario(_ =>
         {
@@ -52,7 +52,7 @@ public class OrgScenarios : ScenarioContextBase
     [Fact]
     public async Task UpdateOrg_With_Header_Success()
     {
-        var org = await fixture.testData.CreateOrgWithLogonUser("org1");
+        var (org, user) = await fixture.testData.CreateOrgWithLogonUser("org1");
         await Host.Scenario(_ =>
         {
             _.WithRequestHeader("organization", org.accountid.ToString());

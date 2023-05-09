@@ -1,4 +1,5 @@
 using Microsoft.Dynamics.CRM;
+using Spd.Resource.Organizations.User;
 using Spd.Utilities.Dynamics;
 
 namespace Spd.Tests.Presentation.Screening.Integration;
@@ -12,12 +13,12 @@ public class DynamicsTestData
         _context = factory.Create();
     }
 
-    public async Task<account> CreateOrgWithLogonUser(string orgName)
+    public async Task<(account,spd_portaluser)> CreateOrgWithLogonUser(string orgName)
     {
-        var org = await CreateOrg("org1");
+        var org = await CreateOrg(orgName);
         var identity = await CreateIdentity(WebAppFixture.LOGON_USER_GUID.ToString(), WebAppFixture.LOGON_ORG_GUID.ToString());
-        var usr = await CreateUserInOrg("lastName", "firstName", org, identity);
-        return org;
+        var user = await CreateUserInOrg("lastName", "firstName", org, identity);
+        return (org,user);
     }
 
     public async Task<account> CreateOrg(string orgName)
@@ -36,6 +37,7 @@ public class DynamicsTestData
                 name = $"{testPrefix}{orgName}",
                 spd_organizationlegalname = $"{testPrefix}{orgName}",
                 address1_city = "victoria",
+                spd_orgguid = WebAppFixture.LOGON_ORG_GUID.ToString()
             };
             _context.AddToaccounts(newOne);
             await _context.SaveChangesAsync();
@@ -43,7 +45,7 @@ public class DynamicsTestData
         }
     }
 
-    public async Task<spd_portalinvitation> CreatePortalInvitationInOrg(string surName, string givenName, account org)
+    public async Task<spd_portalinvitation> CreatePortalInvitationInOrg(string surName, string givenName, account org, InvitationTypeOptionSet inviteType = InvitationTypeOptionSet.ScreeningRequest)
     {
         var existing = _context.spd_portalinvitations
             .Where(a => a.spd_surname == surName && a.spd_firstname == givenName && a._spd_organizationid_value == org.accountid)
@@ -57,10 +59,11 @@ public class DynamicsTestData
             {
                 spd_portalinvitationid = portalInvitationId,
                 spd_firstname = givenName,
-                spd_surname = surName
+                spd_surname = surName,
+                spd_invitationtype = (int)inviteType,
             };
             _context.AddTospd_portalinvitations(newOne);
-            _context.SetLink(newOne, nameof(spd_portaluser.spd_OrganizationId), org);
+            _context.SetLink(newOne, nameof(newOne.spd_OrganizationId), org);
             await _context.SaveChangesAsync();
             return newOne;
         }
@@ -81,12 +84,49 @@ public class DynamicsTestData
             {
                 spd_portaluserid = portalUserId,
                 spd_firstname = givenName,
-                spd_surname = surName
+                spd_surname = surName,
+                spd_emailaddress1 = $"test{givenName}@{surName}.com",
             };
             _context.AddTospd_portalusers(newOne);
             _context.SetLink(newOne, nameof(spd_portaluser.spd_OrganizationId), org);
             _context.SetLink(newOne, nameof(spd_portaluser.spd_IdentityId), identity);
+            spd_role? role = _context.LookupRole("Primary");
+            if (role != null)
+            {
+                _context.AddLink(role, nameof(role.spd_spd_role_spd_portaluser), newOne);
+            }
             await _context.SaveChangesAsync();
+            return newOne;
+        }
+    }
+
+    public async Task<spd_portaluser> CreateTempUserInOrg(string surName, string givenName, account org)
+    {
+        var existing = _context.spd_portalusers
+            .Where(a => a.spd_surname == surName && a.spd_firstname == givenName && a._spd_organizationid_value == org.accountid)
+            .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
+            .FirstOrDefault();
+        if (existing != null) return existing;
+        else
+        {
+            Guid portalUserId = Guid.NewGuid();
+            spd_portaluser newOne = new spd_portaluser
+            {
+                spd_portaluserid = portalUserId,
+                spd_firstname = givenName,
+                spd_surname = surName,
+                spd_emailaddress1 = $"test{givenName}@{surName}.com",
+            };
+            _context.AddTospd_portalusers(newOne);
+            _context.SetLink(newOne, nameof(spd_portaluser.spd_OrganizationId), org);
+            spd_role? role = _context.LookupRole("Primary");
+            if (role != null)
+            {
+                _context.AddLink(role, nameof(role.spd_spd_role_spd_portaluser), newOne);
+            }
+            await _context.SaveChangesAsync();
+            spd_portalinvitation invite = await CreatePortalInvitationInOrg(surName, givenName, org, InvitationTypeOptionSet.PortalUser);
+            _context.SetLink(invite, nameof(spd_portalinvitation.spd_PortalUserId), newOne);
             return newOne;
         }
     }
