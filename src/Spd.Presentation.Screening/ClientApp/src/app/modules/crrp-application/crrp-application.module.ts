@@ -17,12 +17,12 @@ import { PaymentsComponent } from './components/payments.component';
 import { ReportsComponent } from './components/reports.component';
 import { UserEditModalComponent } from './components/user-edit-modal.component';
 import { UsersComponent } from './components/users.component';
-import { DashboardRoutingModule } from './dashboard-routing.module';
-import { DashboardComponent } from './dashboard.component';
+import { CrrpRoutingModule } from './crrp-routing.module';
+import { CrrpComponent } from './crrp.component';
 
 @NgModule({
 	declarations: [
-		DashboardComponent,
+		CrrpComponent,
 		GenericUploadsComponent,
 		DashboardHeaderComponent,
 		DashboardHomeComponent,
@@ -41,6 +41,6 @@ import { DashboardComponent } from './dashboard.component';
 		ReportsComponent,
 		BannerComponent,
 	],
-	imports: [SharedModule, DashboardRoutingModule],
+	imports: [SharedModule, CrrpRoutingModule],
 })
-export class DashboardModule {}
+export class CrrpApplicationModule {}

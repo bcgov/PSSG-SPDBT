@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { IsActiveMatchOptions, QueryParamsHandling } from '@angular/router';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { DashboardRoutes } from './dashboard-routing.module';
+import { CrrpRoutes } from './crrp-routing.module';
 
 // export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 // 	matrixParams: 'ignored',
@@ -28,7 +28,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 };
 
 @Component({
-	selector: 'app-dashboard',
+	selector: 'app-crrp',
 	template: `
 		<div class="container-fluid p-0" *ngIf="isAuthenticated | async">
 			<div class="row flex-nowrap m-0">
@@ -37,17 +37,14 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 						class="d-flex flex-column align-items-sm-start pt-2 text-white "
 						style="min-height: calc(100vh - 138px)!important;"
 					>
-						<a
-							[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.HOME)]"
-							class="nav-link d-flex text-white w-100"
-						>
+						<a [routerLink]="[dashboardRoutes.crrpPath(dashboardRoutes.HOME)]" class="nav-link d-flex text-white w-100">
 							<span class="d-none d-sm-inline mx-3 mt-2">CRRP</span>
 						</a>
 						<hr class="d-none d-sm-inline w-100 text-white" />
 						<ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-sm-start w-100">
 							<li class="nav-item w-100">
 								<a
-									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.HOME)]"
+									[routerLink]="[dashboardRoutes.crrpPath(dashboardRoutes.HOME)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
 								>
@@ -57,7 +54,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 							</li>
 							<li class="nav-item w-100">
 								<a
-									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.CRIMINAL_RECORD_CHECKS)]"
+									[routerLink]="[dashboardRoutes.crrpPath(dashboardRoutes.CRIMINAL_RECORD_CHECKS)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
 								>
@@ -67,7 +64,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 							</li>
 							<li class="nav-item w-100">
 								<a
-									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.APPLICATION_STATUSES)]"
+									[routerLink]="[dashboardRoutes.crrpPath(dashboardRoutes.APPLICATION_STATUSES)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
 								>
@@ -77,7 +74,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 							</li>
 							<li class="nav-item w-100">
 								<a
-									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.EXPIRING_CHECKS)]"
+									[routerLink]="[dashboardRoutes.crrpPath(dashboardRoutes.EXPIRING_CHECKS)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
 								>
@@ -87,7 +84,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 							</li>
 							<li class="nav-item w-100">
 								<a
-									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.PAYMENTS)]"
+									[routerLink]="[dashboardRoutes.crrpPath(dashboardRoutes.PAYMENTS)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
 								>
@@ -98,7 +95,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 							<hr class="d-none d-sm-inline w-100 text-white" />
 							<li class="nav-item w-100">
 								<a
-									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.GENERIC_UPLOADS)]"
+									[routerLink]="[dashboardRoutes.crrpPath(dashboardRoutes.GENERIC_UPLOADS)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
 								>
@@ -108,7 +105,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 							</li>
 							<li class="nav-item w-100">
 								<a
-									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.IDENTITY_VERIFICATION)]"
+									[routerLink]="[dashboardRoutes.crrpPath(dashboardRoutes.IDENTITY_VERIFICATION)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
 								>
@@ -118,7 +115,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 							</li>
 							<li class="nav-item w-100">
 								<a
-									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.MANUAL_SUBMISSIONS)]"
+									[routerLink]="[dashboardRoutes.crrpPath(dashboardRoutes.MANUAL_SUBMISSIONS)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
 								>
@@ -128,7 +125,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 							</li>
 							<li class="nav-item w-100">
 								<a
-									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.REPORTS)]"
+									[routerLink]="[dashboardRoutes.crrpPath(dashboardRoutes.REPORTS)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
 								>
@@ -138,7 +135,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 							</li>
 							<li class="nav-item w-100">
 								<a
-									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.USERS)]"
+									[routerLink]="[dashboardRoutes.crrpPath(dashboardRoutes.USERS)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
 								>
@@ -149,7 +146,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 							<hr class="d-none d-sm-inline w-100 text-white" />
 							<li class="nav-item w-100">
 								<a
-									[routerLink]="[dashboardRoutes.dashboardPath(dashboardRoutes.ORGANIZATION_PROFILE)]"
+									[routerLink]="[dashboardRoutes.crrpPath(dashboardRoutes.ORGANIZATION_PROFILE)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
 								>
@@ -175,15 +172,15 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 		`,
 	],
 })
-export class DashboardComponent {
+export class CrrpComponent {
 	isAuthenticated = this.authenticationService.isLoginSuccessful$;
-	dashboardRoutes = DashboardRoutes;
+	dashboardRoutes = CrrpRoutes;
 
 	constructor(private authenticationService: AuthenticationService) {}
 
 	async ngOnInit(): Promise<void> {
 		await this.authenticationService.configureOAuthService(
-			window.location.origin + `/${DashboardRoutes.dashboardPath(DashboardRoutes.HOME)}`
+			window.location.origin + `/${CrrpRoutes.crrpPath(CrrpRoutes.HOME)}`
 		);
 
 		const authInfo = await this.authenticationService.tryLogin();

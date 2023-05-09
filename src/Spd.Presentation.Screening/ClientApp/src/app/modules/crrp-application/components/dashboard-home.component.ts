@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { DashboardRoutes } from '../dashboard-routing.module';
+import { CrrpRoutes } from '../crrp-routing.module';
 
 @Component({
 	selector: 'app-dashboard-home',
 	template: `
-		<app-dashboard-header subtitle="Criminal Record Checks"></app-dashboard-header>
+		<app-dashboard-header></app-dashboard-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
@@ -241,9 +241,9 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 	],
 })
 export class DashboardHomeComponent {
-	dashboardRoutes = DashboardRoutes;
+	dashboardRoutes = CrrpRoutes;
 
 	getRoute(route: string): string {
-		return DashboardRoutes.dashboardPath(route);
+		return CrrpRoutes.crrpPath(route);
 	}
 }
