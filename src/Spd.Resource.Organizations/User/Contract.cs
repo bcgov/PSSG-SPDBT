@@ -8,18 +8,20 @@ namespace Spd.Resource.Organizations.User
 
     //command
     public abstract record OrgUserCmd;
-    public record UserCreateCmd(User User) : OrgUserCmd;
+    public record UserCreateCmd(User User, string HostUrl) : OrgUserCmd;
     public record UserUpdateCmd(Guid Id, User User) : OrgUserCmd;
     public record UserDeleteCmd(Guid Id) : OrgUserCmd;
+    public record UserInvitationVerify(string InviteIdEncryptedCode, Guid OrgGuid, Guid UserGuid): OrgUserCmd;
     public record OrgUserManageResult(UserResult? UserResult = null);
 
     //query
-    public abstract record OrgUserQry();
+    public abstract record OrgUserQry;
     public record OrgUserByIdQry(Guid UserId) : OrgUserQry;
     public record OrgUsersSearch(Guid? OrgId = null, Guid? IdentityId = null) : OrgUserQry;
     public abstract record OrgUserQryResult;
     public record OrgUserResult(UserResult UserResult) : OrgUserQryResult;
     public record OrgUsersResult(IEnumerable<UserResult> UserResults) : OrgUserQryResult;
+
 
     //shared content
     public record User
@@ -39,6 +41,7 @@ namespace Spd.Resource.Organizations.User
         public Guid? UserGuid { get; set; }
         public bool IsActive { get; set; }
     };
+
     public enum ContactRoleCode
     {
         Primary,
