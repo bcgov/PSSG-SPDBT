@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Cases;
@@ -6,6 +7,8 @@ using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Spd.Presentation.Screening.Controllers
 {
@@ -13,10 +16,12 @@ namespace Spd.Presentation.Screening.Controllers
     public class ApplicationController : SpdControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly IValidator<ApplicationCreateRequest> _appCreateRequestValidator;
 
-        public ApplicationController(IMediator mediator)
+        public ApplicationController(IMediator mediator, IValidator<ApplicationCreateRequest> appCreateRequestValidator)
         {
             _mediator = mediator;
+            _appCreateRequestValidator = appCreateRequestValidator;
         }
 
         /// <summary>
@@ -93,16 +98,26 @@ namespace Spd.Presentation.Screening.Controllers
         /// <summary>
         /// create application. if checkDuplicate is true, it will check if there is existing duplicated applications 
         /// </summary>
-        /// <param name="applicationCreateRequest"></param>
+        /// <param name="createApplication"></param>
         /// <param name="orgId">organizationId</param>
         /// <returns></returns>
         [Route("api/orgs/{orgId}/application")]
         [HttpPost]
-        public async Task<ApplicationCreateResponse> AddApplication([FromBody][Required] ApplicationCreateRequest applicationCreateRequest, [FromRoute] Guid orgId)
+        public async Task<ApplicationCreateResponse> AddApplication([FromForm][Required] CreateApplication createApplication, [FromRoute] Guid orgId)
         {
             var userId = this.HttpContext.User.GetUserId();
             if (userId == null) throw new ApiException(System.Net.HttpStatusCode.Unauthorized);
-            return await _mediator.Send(new ApplicationCreateCommand(applicationCreateRequest, orgId, Guid.Parse(userId)));
+
+            var options = new JsonSerializerOptions();
+            options.Converters.Add(new JsonStringEnumConverter());
+            ApplicationCreateRequest? appCreateRequest = JsonSerializer.Deserialize<ApplicationCreateRequest>(createApplication.ApplicationCreateRequestJson, options);
+            if (appCreateRequest == null)
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "ApplicationCreateRequestJson is invalid.");
+            var result = await _appCreateRequestValidator.ValidateAsync(appCreateRequest);
+            if(!result.IsValid)
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, JsonSerializer.Serialize(result.Errors));
+
+            return await _mediator.Send(new ApplicationCreateCommand(appCreateRequest, orgId, Guid.Parse(userId), createApplication.ConsentFormFile));
         }
 
         /// <summary>
@@ -204,6 +219,12 @@ namespace Spd.Presentation.Screening.Controllers
                 _ => new AppListSortBy()
             };
         }
+    }
+
+    public record CreateApplication
+    {
+        public IFormFile ConsentFormFile { get; set; } = null!;
+        public string ApplicationCreateRequestJson { get; set; } = null!;
     }
 }
 
