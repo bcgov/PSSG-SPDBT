@@ -13,7 +13,7 @@ import { UserDialogData, UserEditModalComponent } from './user-edit-modal.compon
 @Component({
 	selector: 'app-users',
 	template: `
-		<app-dashboard-header subtitle="Criminal Record Checks"></app-dashboard-header>
+		<app-dashboard-header></app-dashboard-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-xxl-10 col-xl-9 col-lg-9 col-md-8 col-sm-12">

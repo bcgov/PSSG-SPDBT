@@ -20,7 +20,7 @@ import { Address, AddressAutocompleteComponent } from 'src/app/shared/components
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { DashboardRoutes } from '../dashboard-routing.module';
+import { CrrpRoutes } from '../crrp-routing.module';
 
 export interface AliasCreateRequest {
 	givenName?: null | string;
@@ -61,7 +61,7 @@ export interface ApplicationCreateRequest {
 @Component({
 	selector: 'app-manual-submissions',
 	template: `
-		<app-dashboard-header subtitle="Criminal Record Checks"></app-dashboard-header>
+		<app-dashboard-header></app-dashboard-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row mb-4">
 				<div class="col-xl-10 col-lg-10 col-md-12 col-sm-12">
@@ -668,6 +668,6 @@ export class ManualSubmissionsComponent implements OnInit {
 
 	private handleSaveSuccess(): void {
 		this.hotToast.success('The manual submission was successfully saved');
-		this.router.navigateByUrl(DashboardRoutes.dashboardPath(DashboardRoutes.APPLICATION_STATUSES));
+		this.router.navigateByUrl(CrrpRoutes.crrpPath(CrrpRoutes.APPLICATION_STATUSES));
 	}
 }

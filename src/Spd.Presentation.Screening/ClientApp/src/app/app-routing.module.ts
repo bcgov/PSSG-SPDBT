@@ -19,8 +19,16 @@ const routes: Routes = [
 		data: { title: 'Criminal Record Check Application' },
 	},
 	{
-		path: 'dashboard',
-		loadChildren: () => import('./modules/dashboard/dashboard.module').then((m) => m.DashboardModule),
+		path: 'crrp-application',
+		loadChildren: () =>
+			import('./modules/crrp-application/crrp-application.module').then((m) => m.CrrpApplicationModule),
+		data: { title: 'Criminal Records Review Program' },
+	},
+	{
+		path: 'psso-application',
+		loadChildren: () =>
+			import('./modules/psso-application/psso-application.module').then((m) => m.PssoApplicationModule),
+		data: { title: 'Personnel Security Screening Office' },
 	},
 ];
 
