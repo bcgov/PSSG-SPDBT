@@ -1,4 +1,4 @@
-﻿namespace Spd.Utilities.Dynamics
+namespace Spd.Utilities.Dynamics
 {
     public enum WorksWithChildrenOptionSet
     {
@@ -112,6 +112,11 @@
         ClosedNoConsent = 100000012,
         CancelledByApplicant = 100000014,
         CancelledByOrganization = 100000013
+    }
+
+    public enum BcGovOriginCode
+    {
+        Web = 931490000
     }
 
 }

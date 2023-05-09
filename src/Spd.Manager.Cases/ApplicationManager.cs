@@ -3,6 +3,7 @@ using MediatR;
 using Spd.Resource.Applicants;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.ApplicationInvite;
+using Spd.Utilities.TempFileStorage;
 
 namespace Spd.Manager.Cases
 {
@@ -19,11 +20,13 @@ namespace Spd.Manager.Cases
         private readonly IApplicationRepository _applicationRepository;
         private readonly IApplicationInviteRepository _applicationInviteRepository;
         private readonly IMapper _mapper;
+        private readonly ITempFileStorageService _tempFile;
 
-        public ApplicationManager(IApplicationRepository applicationRepository, IApplicationInviteRepository applicationInviteRepository, IMapper mapper)
+        public ApplicationManager(IApplicationRepository applicationRepository, IApplicationInviteRepository applicationInviteRepository, IMapper mapper, ITempFileStorageService tempFile)
         {
             _applicationRepository = applicationRepository;
             _applicationInviteRepository = applicationInviteRepository;
+            _tempFile = tempFile;
             _mapper = mapper;
         }
 
@@ -63,7 +66,6 @@ namespace Spd.Manager.Cases
             await _applicationInviteRepository.DeleteApplicationInvitesAsync(cmd, ct);
             return default;
         }
-
         private async Task<IEnumerable<ApplicationInviteDuplicateResponse>> CheckDuplicateAppInvite(ApplicationInvitesCreateRequest request, Guid orgId, CancellationToken cancellationToken)
         {
             List<ApplicationInviteDuplicateResponse> resp = new List<ApplicationInviteDuplicateResponse>();
@@ -112,9 +114,18 @@ namespace Spd.Manager.Cases
                 }
             }
 
+            string fileKey = await _tempFile.HandleCommand(new SaveTempFileCommand(request.ConsentFormFile), ct);
+            SpdTempFile spdTempFile = new()
+            {
+                TempFileKey = fileKey,
+                ContentType = request.ConsentFormFile.ContentType,
+                FileName = request.ConsentFormFile.FileName,
+                FileSize = request.ConsentFormFile.Length,
+            };
             var cmd = _mapper.Map<ApplicationCreateCmd>(request.ApplicationCreateRequest);
             cmd.OrgId = request.OrgId;
             cmd.CreatedByUserId = request.UserId;
+            cmd.ConsentFormTempFile = spdTempFile;
             Guid? applicationId = await _applicationRepository.AddApplicationAsync(cmd, ct);
             if (applicationId.HasValue)
             {
@@ -149,6 +160,12 @@ namespace Spd.Manager.Cases
             return _mapper.Map<ApplicationStatisticsResponse>(response);
         }
 
+        public async Task<bool> Handle(IdentityCommand request, CancellationToken ct)
+        {
+            var cmd = _mapper.Map<IdentityCmd>(request);
+            return await _applicationRepository.IdentityAsync(cmd, ct);
+        }
+
         private async Task<ApplicationCreateResponse> CheckDuplicateApp(ApplicationCreateRequest request, CancellationToken ct)
         {
             ApplicationCreateResponse resp = new ApplicationCreateResponse();
@@ -164,12 +181,6 @@ namespace Spd.Manager.Cases
             }
 
             return resp;
-        }
-
-        public async Task<bool> Handle(IdentityCommand request, CancellationToken ct)
-        {
-            var cmd = _mapper.Map<IdentityCmd>(request);
-            return await _applicationRepository.IdentityAsync(cmd, ct);
         }
     }
 }

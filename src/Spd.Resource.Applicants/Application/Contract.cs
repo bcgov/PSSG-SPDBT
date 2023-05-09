@@ -54,9 +54,10 @@ public record ApplicationCreateCmd
     public string? Country { get; set; }
     public bool? AgreeToCompleteAndAccurate { get; set; }
     public bool? HaveVerifiedIdentity { get; set; }
-    public List<AliasCreateCmd> Aliases { get; set; }
+    public IEnumerable<AliasCreateCmd> Aliases { get; set; } = Array.Empty<AliasCreateCmd>();
     public Guid CreatedByUserId { get; set; }
     public PayerPreferenceTypeCode PayeeType { get; set; }
+    public SpdTempFile ConsentFormTempFile { get; set; } = null!;
 }
 public record AliasCreateCmd
 {
@@ -71,6 +72,13 @@ public record IdentityCmd
     public Guid OrgId { get; set; }
     public Guid ApplicationId { get; set; }
     public bool Verify { get; set; }
+}
+public record SpdTempFile
+{
+    public string TempFileKey { get; set; } = null!;
+    public string ContentType { get; set; } = null!;
+    public string FileName { get; set; } = null!;
+    public long FileSize { get; set; } = 0;
 }
 public record ApplicationResult
 {
@@ -107,6 +115,11 @@ public enum ApplicationOriginTypeCode
     Fax,
     GenericUpload,
     OrganizationSubmitted
+}
+
+public enum FileCategoryCode
+{
+    ConsentForm,
 }
 
 //application statistics

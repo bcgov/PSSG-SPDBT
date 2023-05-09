@@ -1,23 +1,29 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Spd.Utilities.Dynamics;
+using Spd.Utilities.FileStorage;
+using Spd.Utilities.TempFileStorage;
 
 namespace Spd.Resource.Applicants.Application;
 internal class ApplicationRepository : IApplicationRepository
 {
     private readonly DynamicsContext _context;
     private readonly IMapper _mapper;
+    private readonly ITempFileStorageService _tempFile;
+    private readonly IFileStorageService _fileStorage;
 
-    public ApplicationRepository(IDynamicsContextFactory ctx, IMapper mapper, ILogger<ApplicationRepository> logger)
+    public ApplicationRepository(IDynamicsContextFactory ctx, IMapper mapper, ITempFileStorageService tempFile, IFileStorageService fileStorage)
     {
         _context = ctx.CreateChangeOverwrite();
         _mapper = mapper;
+        _tempFile = tempFile;
+        _fileStorage = fileStorage;
     }
 
     public async Task<Guid?> AddApplicationAsync(ApplicationCreateCmd createApplicationCmd, CancellationToken ct)
     {
+        //create application
         spd_application application = _mapper.Map<spd_application>(createApplicationCmd);
         account? org = await _context.GetOrgById(createApplicationCmd.OrgId, ct);
         spd_portaluser? user = await _context.GetUserById(createApplicationCmd.CreatedByUserId, ct);
@@ -50,6 +56,16 @@ internal class ApplicationRepository : IApplicationRepository
             }
         }
 
+        //create bcgov_documenturl
+        bcgov_documenturl documenturl = _mapper.Map<bcgov_documenturl>(createApplicationCmd.ConsentFormTempFile);
+        var tag = _context.LookupTag(DynamicsContextLookupHelpers.AppConsentForm);
+        _context.AddTobcgov_documenturls(documenturl);
+        _context.SetLink(documenturl, nameof(documenturl.spd_ApplicationId), application);
+        _context.SetLink(documenturl, nameof(documenturl.bcgov_Tag1Id), tag);
+
+        //upload file to s3
+        await UploadFileAsync(createApplicationCmd, application.spd_applicationid, documenturl.bcgov_documenturlid, ct);
+
         await _context.SaveChangesAsync(ct);
         return application.spd_applicationid;
     }
@@ -75,7 +91,6 @@ internal class ApplicationRepository : IApplicationRepository
         }
 
         var result = applications.AsEnumerable();
-
         var response = new ApplicationListResp();
         response.Applications = _mapper.Map<IEnumerable<ApplicationResult>>(result);
         if (query.Paging != null)
@@ -239,6 +254,36 @@ internal class ApplicationRepository : IApplicationRepository
             return "spd_contractedcompanyname";
 
         return "createdon desc";
+    }
+
+    private async Task UploadFileAsync(ApplicationCreateCmd cmd, Guid? applicationId, Guid? docUrlId, CancellationToken ct)
+    {
+        if (applicationId == null) return;
+        if (docUrlId == null) return;
+        byte[]? consentFileContent = await _tempFile.HandleQuery(
+            new GetTempFileQuery(cmd.ConsentFormTempFile.TempFileKey), ct);
+        if (consentFileContent == null) return;
+
+        Utilities.FileStorage.File file = new()
+        {
+            Content = consentFileContent,
+            ContentType = cmd.ConsentFormTempFile.ContentType,
+            FileName = cmd.ConsentFormTempFile.FileName,
+        };
+        FileTag fileTag = new FileTag()
+        {
+            Tags = new List<Tag>
+            {
+                new Tag("file-classification", "Unclassified"),
+                new Tag("file-tag",DynamicsContextLookupHelpers.AppConsentForm)
+            }
+        };
+        await _fileStorage.HandleCommand(new UploadFileCommand(
+            Key: ((Guid)docUrlId).ToString(),
+            Folder: $"spd_application/{applicationId}",
+            File: file,
+            FileTag: fileTag
+            ), ct);
     }
 }
 
