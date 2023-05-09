@@ -4,28 +4,64 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
 import { NgxMaskPipe } from 'ngx-mask';
-import {
-	ApplicationCreateRequest,
-	ApplicationCreateResponse,
-	ApplicationOriginTypeCode,
-	BooleanTypeCode,
-	ScreeningTypeCode,
-} from 'src/app/api/models';
+import { ApplicationCreateResponse, BooleanTypeCode, PayeePreferenceTypeCode } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { EmployeeInteractionTypes, ScreeningTypeCodes } from 'src/app/core/constants/model-desc';
+import {
+	ApplicationOriginTypeCode,
+	EmployeeInteractionTypes,
+	ScreeningTypeCode,
+	ScreeningTypeCodes,
+} from 'src/app/core/constants/model-desc';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { Address, AddressAutocompleteComponent } from 'src/app/shared/components/address-autocomplete.component';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
+import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { DashboardRoutes } from '../dashboard-routing.module';
+import { CrrpRoutes } from '../crrp-routing.module';
+
+export interface AliasCreateRequest {
+	givenName?: null | string;
+	middleName1?: null | string;
+	middleName2?: null | string;
+	surname?: null | string;
+}
+
+export interface ApplicationCreateRequest {
+	addressLine1?: null | string;
+	addressLine2?: null | string;
+	agreeToCompleteAndAccurate?: null | boolean;
+	aliases?: null | Array<AliasCreateRequest>;
+	birthPlace?: null | string;
+	city?: null | string;
+	contractedCompanyName?: null | string;
+	country?: null | string;
+	dateOfBirth?: null | string;
+	driversLicense?: null | string;
+	emailAddress?: null | string;
+	givenName?: null | string;
+	haveVerifiedIdentity?: null | boolean;
+	jobTitle?: null | string;
+	middleName1?: null | string;
+	middleName2?: null | string;
+	oneLegalName?: null | boolean;
+	orgId?: string;
+	originTypeCode?: ApplicationOriginTypeCode;
+	payeeType?: PayeePreferenceTypeCode;
+	phoneNumber?: null | string;
+	postalCode?: null | string;
+	province?: null | string;
+	requireDuplicateCheck?: boolean;
+	screeningTypeCode?: ScreeningTypeCode;
+	surname?: null | string;
+}
 
 @Component({
 	selector: 'app-manual-submissions',
 	template: `
-		<app-dashboard-header subtitle="Criminal Record Checks"></app-dashboard-header>
+		<app-dashboard-header></app-dashboard-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row mb-4">
 				<div class="col-xl-10 col-lg-10 col-md-12 col-sm-12">
@@ -206,7 +242,7 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 									mat-mini-fab
 									class="delete-row-button mb-3"
 									matTooltip="Remove previous name"
-									(click)="deleteRow(i)"
+									(click)="onDeleteRow(i)"
 									[disabled]="moreThanOneAlias"
 									aria-label="Remove row"
 								>
@@ -334,40 +370,16 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 					Upload the copy of signed consent form sent by the applicant
 				</div>
 				<div class="my-4">
-					<ngx-dropzone
-						#fileDropzone
-						(change)="onUploadFile($event)"
-						[multiple]="multiple"
-						[maxFileSize]="maxFileSize"
-						[disableClick]="disableClick"
-						[expandable]="expandable"
+					<app-file-upload [maxNumberOfFiles]="1"></app-file-upload>
+					<mat-error
+						class="mat-option-error"
+						*ngIf="
+							(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+							form.get('attachments')?.invalid &&
+							form.get('attachments')?.hasError('required')
+						"
+						>This is required</mat-error
 					>
-						<ngx-dropzone-label>
-							<div class="my-2">
-								<div class="mt-4 mb-2">
-									<mat-icon class="upload-file-icon">cloud_upload</mat-icon>
-								</div>
-								<div class="mb-4">
-									<strong>Drag and Drop your file here or click to browse</strong>
-								</div>
-							</div>
-						</ngx-dropzone-label>
-
-						<ngx-dropzone-preview
-							class="preview"
-							*ngFor="let f of form.get('files')?.value"
-							[removable]="true"
-							(removed)="onRemoveFile(f)"
-						>
-							<ngx-dropzone-label style="width: 100%;">
-								<div class="row">
-									<div class="col-12 d-flex p-0 fw-bold text-start" style="text-indent: 1em; color: black;">
-										<!-- <img class="file-name-icon" src="/assets/tsv_file.png" /> -->
-									</div>
-								</div>
-							</ngx-dropzone-label>
-						</ngx-dropzone-preview>
-					</ngx-dropzone>
 				</div>
 			</form>
 			<div class="row mb-4">
@@ -396,10 +408,6 @@ export class ManualSubmissionsComponent implements OnInit {
 
 	screeningTypes = ScreeningTypeCodes;
 	employeeInteractionTypes = EmployeeInteractionTypes;
-	multiple: boolean = false;
-	expandable: boolean = true;
-	disableClick: boolean = false;
-	maxFileSize: number = 104857600; // bytes
 
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	booleanTypeCodes = BooleanTypeCode;
@@ -430,6 +438,7 @@ export class ManualSubmissionsComponent implements OnInit {
 			agreeToCompleteAndAccurate: new FormControl('', [Validators.required]),
 			haveVerifiedIdentity: new FormControl(''),
 			aliases: this.formBuilder.array([]),
+			attachments: new FormControl('', [Validators.required]),
 		},
 		{
 			validators: [
@@ -442,6 +451,8 @@ export class ManualSubmissionsComponent implements OnInit {
 		}
 	);
 	startAt = SPD_CONSTANTS.date.birthDateStartAt;
+
+	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
 	constructor(
 		private router: Router,
@@ -462,6 +473,12 @@ export class ManualSubmissionsComponent implements OnInit {
 	}
 
 	onSubmit() {
+		const attachments =
+			this.fileUploadComponent.files && this.fileUploadComponent.files.length > 0
+				? this.fileUploadComponent.files[0]
+				: '';
+		this.form.controls['attachments'].setValue(attachments);
+
 		this.form.markAllAsTouched();
 
 		if (this.previousNameFlag.value != BooleanTypeCode.Yes) {
@@ -469,15 +486,20 @@ export class ManualSubmissionsComponent implements OnInit {
 		}
 
 		if (this.form.valid) {
-			const body: ApplicationCreateRequest = { ...this.form.value };
-			body.originTypeCode = ApplicationOriginTypeCode.Portal;
-			body.phoneNumber = body.phoneNumber
-				? this.maskPipe.transform(body.phoneNumber, SPD_CONSTANTS.phone.backendMask)
+			const createRequest: ApplicationCreateRequest = { ...this.form.value };
+			createRequest.originTypeCode = ApplicationOriginTypeCode.Portal;
+			createRequest.phoneNumber = createRequest.phoneNumber
+				? this.maskPipe.transform(createRequest.phoneNumber, SPD_CONSTANTS.phone.backendMask)
 				: '';
-			body.haveVerifiedIdentity = body.haveVerifiedIdentity == true ? true : false;
-			body.contractedCompanyName =
-				body.screeningTypeCode == ScreeningTypeCode.Contractor ? body.contractedCompanyName : '';
-			body.requireDuplicateCheck = true;
+			createRequest.haveVerifiedIdentity = createRequest.haveVerifiedIdentity == true ? true : false;
+			createRequest.contractedCompanyName =
+				createRequest.screeningTypeCode == ScreeningTypeCode.Contractor ? createRequest.contractedCompanyName : '';
+			createRequest.requireDuplicateCheck = true;
+
+			const body = {
+				ConsentFormFile: this.fileUploadComponent.files[0],
+				ApplicationCreateRequestJson: createRequest as string,
+			};
 
 			// Check for potential duplicate
 			this.applicationService
@@ -487,12 +509,6 @@ export class ManualSubmissionsComponent implements OnInit {
 					this.displayDataValidationMessage(body, dupres);
 				});
 		}
-	}
-
-	resetForm(): void {
-		this.form.reset();
-		this.aliases.clear();
-		this.onAddRow();
 	}
 
 	onAddressAutocomplete(address: Address): void {
@@ -527,16 +543,12 @@ export class ManualSubmissionsComponent implements OnInit {
 		});
 	}
 
-	onUploadFile(evt: any) {}
-
-	onRemoveFile(evt: any) {}
-
 	onAddRow() {
 		const control = this.form.get('aliases') as FormArray;
 		control.push(this.newAliasRow());
 	}
 
-	deleteRow(index: number) {
+	onDeleteRow(index: number) {
 		const control = this.form.get('aliases') as FormArray;
 		if (control.length == 1) {
 			const data: DialogOptions = {
@@ -594,6 +606,12 @@ export class ManualSubmissionsComponent implements OnInit {
 		return this.aliases.length >= 3 ? false : true;
 	}
 
+	private resetForm(): void {
+		this.form.reset();
+		this.aliases.clear();
+		this.onAddRow();
+	}
+
 	private newAliasRow(): FormGroup {
 		return this.formBuilder.group({
 			givenName: [''],
@@ -603,7 +621,7 @@ export class ManualSubmissionsComponent implements OnInit {
 		});
 	}
 
-	private displayDataValidationMessage(body: ApplicationCreateRequest, dupres: ApplicationCreateResponse): void {
+	private displayDataValidationMessage(body: any, dupres: ApplicationCreateResponse): void {
 		if (dupres.createSuccess) {
 			this.handleSaveSuccess();
 			return;
@@ -631,7 +649,7 @@ export class ManualSubmissionsComponent implements OnInit {
 		}
 	}
 
-	private saveManualSubmission(body: ApplicationCreateRequest): void {
+	private saveManualSubmission(body: any): void {
 		body.requireDuplicateCheck = false;
 		if (body.phoneNumber) {
 			body.phoneNumber = this.maskPipe.transform(body.phoneNumber, SPD_CONSTANTS.phone.backendMask);
@@ -650,6 +668,6 @@ export class ManualSubmissionsComponent implements OnInit {
 
 	private handleSaveSuccess(): void {
 		this.hotToast.success('The manual submission was successfully saved');
-		this.router.navigateByUrl(DashboardRoutes.dashboardPath(DashboardRoutes.APPLICATION_STATUSES));
+		this.router.navigateByUrl(CrrpRoutes.crrpPath(CrrpRoutes.APPLICATION_STATUSES));
 	}
 }

@@ -2,8 +2,22 @@ import {
 	ApplicationPortalStatusCode,
 	ContactAuthorizationTypeCode,
 	EmployeeInteractionTypeCode,
-	ScreeningTypeCode,
 } from 'src/app/api/models';
+
+export enum ScreeningTypeCode {
+	Staff = 'Staff',
+	Contractor = 'Contractor',
+}
+
+export enum ApplicationOriginTypeCode {
+	Portal = 'Portal',
+	Email = 'Email',
+	WebForm = 'WebForm',
+	Mail = 'Mail',
+	Fax = 'Fax',
+	GenericUpload = 'GenericUpload',
+	OrganizationSubmitted = 'OrganizationSubmitted',
+}
 
 export interface SelectOptions<k = string | number | boolean> {
 	code: k;

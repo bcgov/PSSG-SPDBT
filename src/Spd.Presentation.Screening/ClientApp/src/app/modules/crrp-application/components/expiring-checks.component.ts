@@ -12,7 +12,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
-import { DashboardRoutes } from '../dashboard-routing.module';
+import { CrrpRoutes } from '../crrp-routing.module';
 import { CrcAddModalComponent, CrcDialogData } from './crc-add-modal.component';
 
 export interface ExpiredChecksResponse extends ApplicationResponse {
@@ -23,7 +23,7 @@ export interface ExpiredChecksResponse extends ApplicationResponse {
 @Component({
 	selector: 'app-expiring-checks',
 	template: `
-		<app-dashboard-header subtitle="Criminal Record Checks"></app-dashboard-header>
+		<app-dashboard-header></app-dashboard-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
@@ -264,7 +264,7 @@ export class ExpiringChecksComponent implements OnInit {
 								this.hotToast.success('Expired check was successfully removed');
 								this.hotToast.success(resp.message);
 
-								this.router.navigateByUrl(DashboardRoutes.dashboardPath(DashboardRoutes.CRIMINAL_RECORD_CHECKS));
+								this.router.navigateByUrl(CrrpRoutes.crrpPath(CrrpRoutes.CRIMINAL_RECORD_CHECKS));
 							}
 						});
 				}

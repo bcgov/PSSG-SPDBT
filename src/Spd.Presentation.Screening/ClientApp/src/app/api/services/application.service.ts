@@ -10,7 +10,6 @@ import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
 import { ActionResult } from '../models/action-result';
-import { ApplicationCreateRequest } from '../models/application-create-request';
 import { ApplicationCreateResponse } from '../models/application-create-response';
 import { ApplicationInviteListResponse } from '../models/application-invite-list-response';
 import { ApplicationInvitesCreateRequest } from '../models/application-invites-create-request';
@@ -238,7 +237,7 @@ export class ApplicationService extends BaseService {
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `apiOrgsOrgIdApplicationPost()` instead.
    *
-   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
   apiOrgsOrgIdApplicationPost$Response(params: {
 
@@ -247,14 +246,17 @@ export class ApplicationService extends BaseService {
      */
     orgId: string;
     context?: HttpContext
-    body: ApplicationCreateRequest
+    body?: {
+'ConsentFormFile'?: Blob;
+'ApplicationCreateRequestJson'?: string;
+}
   }
 ): Observable<StrictHttpResponse<ApplicationCreateResponse>> {
 
     const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdApplicationPostPath, 'post');
     if (params) {
       rb.path('orgId', params.orgId, {});
-      rb.body(params.body, 'application/*+json');
+      rb.body(params.body, 'multipart/form-data');
     }
 
     return this.http.request(rb.build({
@@ -277,7 +279,7 @@ export class ApplicationService extends BaseService {
    * This method provides access to only to the response body.
    * To access the full response (for headers, for example), `apiOrgsOrgIdApplicationPost$Response()` instead.
    *
-   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
   apiOrgsOrgIdApplicationPost(params: {
 
@@ -286,7 +288,10 @@ export class ApplicationService extends BaseService {
      */
     orgId: string;
     context?: HttpContext
-    body: ApplicationCreateRequest
+    body?: {
+'ConsentFormFile'?: Blob;
+'ApplicationCreateRequestJson'?: string;
+}
   }
 ): Observable<ApplicationCreateResponse> {
 

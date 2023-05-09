@@ -1,9 +1,7 @@
 export { ActionResult } from './models/action-result';
 export { AddressFindResponse } from './models/address-find-response';
 export { AddressRetrieveResponse } from './models/address-retrieve-response';
-export { AliasCreateRequest } from './models/alias-create-request';
 export { AnonymousOrgRegistrationCreateRequest } from './models/anonymous-org-registration-create-request';
-export { ApplicationCreateRequest } from './models/application-create-request';
 export { ApplicationCreateResponse } from './models/application-create-response';
 export { ApplicationInviteCreateRequest } from './models/application-invite-create-request';
 export { ApplicationInviteDuplicateResponse } from './models/application-invite-duplicate-response';
@@ -13,7 +11,6 @@ export { ApplicationInviteStatusCode } from './models/application-invite-status-
 export { ApplicationInvitesCreateRequest } from './models/application-invites-create-request';
 export { ApplicationInvitesCreateResponse } from './models/application-invites-create-response';
 export { ApplicationListResponse } from './models/application-list-response';
-export { ApplicationOriginTypeCode } from './models/application-origin-type-code';
 export { ApplicationPortalStatusCode } from './models/application-portal-status-code';
 export { ApplicationResponse } from './models/application-response';
 export { ApplicationStatisticsResponse } from './models/application-statistics-response';
@@ -40,7 +37,6 @@ export { PayerPreferenceTypeCode } from './models/payer-preference-type-code';
 export { PortalUserIdentityTypeCode } from './models/portal-user-identity-type-code';
 export { RecaptchaConfiguration } from './models/recaptcha-configuration';
 export { RegistrationTypeCode } from './models/registration-type-code';
-export { ScreeningTypeCode } from './models/screening-type-code';
 export { ScreeningsCountTypeCode } from './models/screenings-count-type-code';
 export { UserInfo } from './models/user-info';
 export { UserProfileResponse } from './models/user-profile-response';

@@ -11,10 +11,10 @@ import { OrganizationProfileComponent } from './components/organization-profile.
 import { PaymentsComponent } from './components/payments.component';
 import { ReportsComponent } from './components/reports.component';
 import { UsersComponent } from './components/users.component';
-import { DashboardComponent } from './dashboard.component';
+import { CrrpComponent } from './crrp.component';
 
-export class DashboardRoutes {
-	public static DASHBOARD = 'dashboard';
+export class CrrpRoutes {
+	public static DASHBOARD = 'crrp-application';
 	public static HOME = 'home';
 	public static CRIMINAL_RECORD_CHECKS = 'criminal-record-checks';
 	public static APPLICATION_STATUSES = 'application-statuses';
@@ -27,17 +27,17 @@ export class DashboardRoutes {
 	public static REPORTS = 'reports';
 	public static USERS = 'users';
 
-	public static MODULE_PATH = DashboardRoutes.DASHBOARD;
+	public static MODULE_PATH = CrrpRoutes.DASHBOARD;
 
-	public static dashboardPath(route: string): string {
-		return `/${DashboardRoutes.MODULE_PATH}/${route}`;
+	public static crrpPath(route: string): string {
+		return `/${CrrpRoutes.MODULE_PATH}/${route}`;
 	}
 }
 
 const routes: Routes = [
 	{
 		path: '',
-		component: DashboardComponent,
+		component: CrrpComponent,
 		children: [
 			{ path: 'home', component: DashboardHomeComponent },
 			{ path: 'criminal-record-checks', component: CriminalRecordChecksComponent },
@@ -58,4 +58,4 @@ const routes: Routes = [
 	imports: [RouterModule.forChild(routes)],
 	exports: [RouterModule],
 })
-export class DashboardRoutingModule {}
+export class CrrpRoutingModule {}
