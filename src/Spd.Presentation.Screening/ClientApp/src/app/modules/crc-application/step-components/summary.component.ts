@@ -87,7 +87,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 
 							<div class="row mt-2">
 								<div class="offset-xl-3 col-xl-8 offset-lg-4 col-lg-8 col-md-12">
-									<div class="text-label d-block text-muted">BC Drivers License</div>
+									<div class="text-label d-block text-muted">BC Drivers Licence</div>
 									<div class="text-data">9998877</div>
 								</div>
 							</div>

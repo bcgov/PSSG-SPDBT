@@ -234,7 +234,7 @@ export class CrcAddModalComponent implements OnInit {
 			icon: 'warning',
 			title: 'Confirmation',
 			message: 'Are you sure you want to remove this criminal record check?',
-			actionText: 'Yes, remove this row',
+			actionText: 'Yes, remove row',
 			cancelText: 'Cancel',
 		};
 

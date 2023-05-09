@@ -1,6 +1,5 @@
 using AutoMapper;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Spd.Resource.Applicants;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.ApplicationInvite;
@@ -15,6 +14,7 @@ namespace Spd.Manager.Cases
         IRequestHandler<ApplicationInviteListQuery, ApplicationInviteListResponse>,
         IRequestHandler<ApplicationInviteDeleteCommand, Unit>,
         IRequestHandler<ApplicationStatisticsQuery, ApplicationStatisticsResponse>,
+        IRequestHandler<IdentityCommand, bool>,
         IApplicationManager
     {
         private readonly IApplicationRepository _applicationRepository;
@@ -160,6 +160,12 @@ namespace Spd.Manager.Cases
             return _mapper.Map<ApplicationStatisticsResponse>(response);
         }
 
+        public async Task<bool> Handle(IdentityCommand request, CancellationToken ct)
+        {
+            var cmd = _mapper.Map<IdentityCmd>(request);
+            return await _applicationRepository.IdentityAsync(cmd, ct);
+        }
+
         private async Task<ApplicationCreateResponse> CheckDuplicateApp(ApplicationCreateRequest request, CancellationToken ct)
         {
             ApplicationCreateResponse resp = new ApplicationCreateResponse();
@@ -177,6 +183,4 @@ namespace Spd.Manager.Cases
             return resp;
         }
     }
-
-
 }
