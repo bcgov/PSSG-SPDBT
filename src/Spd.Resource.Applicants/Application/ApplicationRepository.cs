@@ -111,7 +111,7 @@ internal class ApplicationRepository : IApplicationRepository
 
         if (identityCmd.Verify == true)
         {
-            var paid = app.statuscode == DynamicsConstants.StateCode_Inactive ? true : false;
+            var paid = app.statecode == DynamicsConstants.StateCode_Inactive ? true : false;
             if (paid)
             {
                 app.statuscode = (int?)ApplicationActiveStatus.PaymentPending;
