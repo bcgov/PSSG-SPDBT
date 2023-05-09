@@ -138,7 +138,6 @@ namespace Spd.Manager.Cases
     }
     public class ApplicationListResponse
     {
-        public int? FollowUpBusinessDays { get; set; }
         public IEnumerable<ApplicationResponse> Applications { get; set; } = Array.Empty<ApplicationResponse>();
         public PaginationResponse Pagination { get; set; } = null!;
     }
@@ -173,7 +172,8 @@ namespace Spd.Manager.Cases
         ClosedNoResponse,
         ClosedNoConsent,
         CancelledByApplicant,
-        CancelledByOrganization
+        CancelledByOrganization,
+        Draft
     }
     public enum ApplicationOriginTypeCode
     {

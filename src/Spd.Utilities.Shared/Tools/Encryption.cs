@@ -2,7 +2,7 @@
 using System.Text;
 
 namespace Spd.Utilities.Shared.Tools;
-public static class Encription
+public static class Encryption
 {
     //not use, as sha256 is irreversible
     public static string Sha256Hash(string rawData)

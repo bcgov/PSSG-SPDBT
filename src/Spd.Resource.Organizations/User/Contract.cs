@@ -4,7 +4,6 @@ namespace Spd.Resource.Organizations.User
     {
         Task<OrgUserQryResult> QueryOrgUserAsync(OrgUserQry qry, CancellationToken ct);
         Task<OrgUserManageResult> ManageOrgUserAsync(OrgUserCmd cmd, CancellationToken ct);
-        Task VerifyOrgUserInvitationAsync(OrgUserInvitationVerify qry, CancellationToken ct);
     }
 
     //command
@@ -12,6 +11,7 @@ namespace Spd.Resource.Organizations.User
     public record UserCreateCmd(User User, string HostUrl) : OrgUserCmd;
     public record UserUpdateCmd(Guid Id, User User) : OrgUserCmd;
     public record UserDeleteCmd(Guid Id) : OrgUserCmd;
+    public record UserInvitationVerify(string InviteIdEncryptedCode, Guid OrgGuid, Guid UserGuid): OrgUserCmd;
     public record OrgUserManageResult(UserResult? UserResult = null);
 
     //query
@@ -21,7 +21,7 @@ namespace Spd.Resource.Organizations.User
     public abstract record OrgUserQryResult;
     public record OrgUserResult(UserResult UserResult) : OrgUserQryResult;
     public record OrgUsersResult(IEnumerable<UserResult> UserResults) : OrgUserQryResult;
-    public record OrgUserInvitationVerify(string InviteIdEncryptedCode, Guid OrgGuid, Guid UserGuid);
+
 
     //shared content
     public record User

@@ -33,7 +33,7 @@ namespace Spd.Manager.Membership.OrgUser
                 ct);
 
             //check if email already exists for the user
-            if (existingUsersResult.UserResults.Any(u => u.Email.Equals(request.OrgUserCreateRequest.Email, StringComparison.InvariantCultureIgnoreCase)))
+            if (existingUsersResult.UserResults.Any(u => u.Email != null && u.Email.Equals(request.OrgUserCreateRequest.Email, StringComparison.InvariantCultureIgnoreCase)))
             {
                 throw new DuplicateException(HttpStatusCode.BadRequest, $"User email {request.OrgUserCreateRequest.Email} has been used by another user");
             }
@@ -123,8 +123,8 @@ namespace Spd.Manager.Membership.OrgUser
 
         public async Task<Unit> Handle(VerifyUserInvitation request, CancellationToken ct)
         {
-           await _orgUserRepository.VerifyOrgUserInvitationAsync(
-                new OrgUserInvitationVerify(request.InvitationRequest.InviteEncryptedCode, request.OrgGuid, request.UserGuid),
+           await _orgUserRepository.ManageOrgUserAsync(
+                new UserInvitationVerify(request.InvitationRequest.InviteEncryptedCode, request.OrgGuid, request.UserGuid),
                 ct);
            return default;
         }
