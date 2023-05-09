@@ -2,7 +2,6 @@ using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 
 namespace Spd.Manager.Cases
 {
@@ -142,7 +141,6 @@ namespace Spd.Manager.Cases
     }
     public class ApplicationListResponse
     {
-        public int? FollowUpBusinessDays { get; set; }
         public IEnumerable<ApplicationResponse> Applications { get; set; } = Array.Empty<ApplicationResponse>();
         public PaginationResponse Pagination { get; set; } = null!;
     }
