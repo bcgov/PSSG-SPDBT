@@ -2,7 +2,6 @@
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using System.Reflection.Metadata;
 
 namespace Rsvp.Cms.Api.Filters
 {
@@ -49,89 +48,275 @@ namespace Rsvp.Cms.Api.Filters
                                             "orgId",
                                             new OpenApiSchema
                                             {
-                                                Type = "string"
+                                                Type = "string",
+                                                Format="uuid"
                                             }
                                         },
                                         {
                                             "GivenName",
                                             new OpenApiSchema
                                             {
-                                                Type = "string"
+                                                Type = "string",
+                                                Nullable= true
                                             }
                                         },
                                         {
                                             "MiddleName1",
                                             new OpenApiSchema
                                             {
-                                                Type = "string"
+                                                Type = "string",
+                                                Nullable= true
                                             }
                                         },
                                         {
                                             "MiddleName2",
                                             new OpenApiSchema
                                             {
-                                                Type = "string"
+                                                Type = "string",
+                                                Nullable= true
                                             }
                                         },
                                         {
                                             "Surname",
                                             new OpenApiSchema
                                             {
-                                                Type = "string"
+                                                Type = "string",
+                                                Nullable= true
                                             }
                                         },
                                         {
                                             "EmailAddress",
                                             new OpenApiSchema
                                             {
-                                                Type = "string"
+                                                Type = "string",
+                                                Nullable= true,
                                             }
                                         },
                                         {
                                             "JobTitle",
                                             new OpenApiSchema
                                             {
-                                                Type = "string"
+                                                Type = "string",
+                                                Nullable= true,
                                             }
                                         },
                                         {
                                             "DateOfBirth",
                                             new OpenApiSchema
                                             {
-                                                Type = "string"
+                                                Type = "string",
+                                                Format="date-time",
+                                                Nullable= true,
+                                            }
+                                        },
+                                        {
+                                            "contractedCompanyName",
+                                            new OpenApiSchema
+                                            {
+                                                Type = "string",
+                                                Nullable= true,
+                                            }
+                                        },
+                                        {
+                                            "phoneNumber",
+                                            new OpenApiSchema
+                                            {
+                                                Type = "string",
+                                                Nullable= true,
+                                            }
+                                        },
+                                        {
+                                            "driversLicense",
+                                            new OpenApiSchema
+                                            {
+                                                Type = "string",
+                                                Nullable= true,
+                                            }
+                                        },
+                                        {
+                                            "birthPlace",
+                                            new OpenApiSchema
+                                            {
+                                                Type = "string",
+                                                Nullable= true,
+                                            }
+                                        },
+                                        {
+                                            "addressLine1",
+                                            new OpenApiSchema
+                                            {
+                                                Type = "string",
+                                                Nullable= true,
+                                            }
+                                        },
+                                        {
+                                            "addressLine2",
+                                            new OpenApiSchema
+                                            {
+                                                Type = "string",
+                                                Nullable= true,
+                                            }
+                                        },
+                                        {
+                                            "city",
+                                            new OpenApiSchema
+                                            {
+                                                Type = "string",
+                                                Nullable= true,
+                                            }
+                                        },
+                                        {
+                                            "postalCode",
+                                            new OpenApiSchema
+                                            {
+                                                Type = "string",
+                                                Nullable= true,
+                                            }
+                                        },
+                                        {
+                                            "province",
+                                            new OpenApiSchema
+                                            {
+                                                Type = "string",
+                                                Nullable= true,
+                                            }
+                                        },
+                                        {
+                                            "country",
+                                            new OpenApiSchema
+                                            {
+                                                Type = "string",
+                                                Nullable= true,
+                                            }
+                                        },
+                                        {
+                                            "oneLegalName",
+                                            new OpenApiSchema
+                                            {
+                                                Type = "boolean",
+                                                Nullable= true,
+                                            }
+                                        },
+                                        {
+                                            "agreeToCompleteAndAccurate",
+                                            new OpenApiSchema
+                                            {
+                                                Type = "boolean",
+                                                Nullable= true,
+                                            }
+                                        },
+                                        {
+                                            "haveVerifiedIdentity",
+                                            new OpenApiSchema
+                                            {
+                                                Type = "boolean",
+                                                Nullable= true,
+                                            }
+                                        },
+                                        {
+                                            "requireDuplicateCheck",
+                                            new OpenApiSchema
+                                            {
+                                                Type = "boolean",
+                                            }
+                                        },
+                                        {
+                                            "aliases",
+                                            new OpenApiSchema
+                                            {
+                                                Type = "array",
+                                                Items = new OpenApiSchema
+                                                {
+                                                    Type = "AliasCreateRequest",
+                                                    Properties = {
+                                                        {
+                                                            "GivenName",
+                                                            new OpenApiSchema
+                                                            {
+                                                                Type = "string",
+                                                                Nullable= true,
+                                                            }
+                                                        },
+                                                        {
+                                                            "MiddleName1",
+                                                            new OpenApiSchema
+                                                            {
+                                                                Type = "string",
+                                                                Nullable= true,
+                                                            }
+                                                        },
+                                                        {
+                                                            "MiddleName2",
+                                                            new OpenApiSchema
+                                                            {
+                                                                Type = "string",
+                                                                Nullable= true,
+                                                            }
+                                                        },
+                                                        {
+                                                            "Surname",
+                                                            new OpenApiSchema
+                                                            {
+                                                                Type = "string",
+                                                                Nullable= true,
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "OriginTypeCode",
+                                            new OpenApiSchema
+                                            {
+                                                Type = "string",
+                                            }
+                                        },
+                                        {
+                                            "payeeType",
+                                            new OpenApiSchema
+                                            {
+                                                Type = "string",
+                                            }
+                                        },
+                                        {
+                                            "screeningTypeCode",
+                                            new OpenApiSchema
+                                            {
+                                                Type = "string",
                                             }
                                         }
                                     },
                                     Example = new OpenApiString(
-@"{
-	""OriginTypeCode"": ""Portal"",
-	""PhoneNumber"": ""1234567890"",
-	""DriversLicense"": ""dl02398403"",
-	""DateOfBirth"": ""2001-01-10"",
-	""BirthPlace"": ""hh"",
-	""ScreeningTypeCode"": ""Staff"",
-	""AddressLine1"": ""address 1"",
-	""AddressLine2"": null,
-	""City"": ""city"",
-	""PostalCode"": ""postalcode"",
-	""Province"": ""bc"",
-	""Country"": ""canada"",
-	""OneLegalName"": true,
-	""AgreeToCompleteAndAccurate"": true,
-	""HaveVerifiedIdentity"": true,
-	""Aliases"": [],
-	""RequireDuplicateCheck"": false,
-	""ConsentFormFile"": null,
-	""OrgId"": ""00000000-0000-0000-0000-000000000000"",
-	""GivenName"": ""given name"",
-	""MiddleName1"": null,
-	""MiddleName2"": null,
-	""Surname"": ""value"",
-	""EmailAddress"": ""test@test.com"",
-	""JobTitle"": ""teacher"",
-	""ContractedCompanyName"": ""standard company"",
-	""PayeeType"": ""Organization""
-}")
+                                        @"{
+	                                        ""OriginTypeCode"": ""Portal"",
+	                                        ""PhoneNumber"": ""1234567890"",
+	                                        ""DriversLicense"": ""dl02398403"",
+	                                        ""DateOfBirth"": ""2001-01-10"",
+	                                        ""BirthPlace"": ""hh"",
+	                                        ""ScreeningTypeCode"": ""Staff"",
+	                                        ""AddressLine1"": ""address 1"",
+	                                        ""AddressLine2"": null,
+	                                        ""City"": ""city"",
+	                                        ""PostalCode"": ""postalcode"",
+	                                        ""Province"": ""bc"",
+	                                        ""Country"": ""canada"",
+	                                        ""OneLegalName"": true,
+	                                        ""AgreeToCompleteAndAccurate"": true,
+	                                        ""HaveVerifiedIdentity"": true,
+	                                        ""Aliases"": [],
+	                                        ""RequireDuplicateCheck"": false,
+	                                        ""ConsentFormFile"": null,
+	                                        ""OrgId"": ""00000000-0000-0000-0000-000000000000"",
+	                                        ""GivenName"": ""given name"",
+	                                        ""MiddleName1"": null,
+	                                        ""MiddleName2"": null,
+	                                        ""Surname"": ""value"",
+	                                        ""EmailAddress"": ""test@test.com"",
+	                                        ""JobTitle"": ""teacher"",
+	                                        ""ContractedCompanyName"": ""standard company"",
+	                                        ""PayeeType"": ""Organization""
+                                        }")
                                 }
                             }
                         }
