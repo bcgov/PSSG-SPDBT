@@ -1,4 +1,4 @@
-﻿using Alba;
+using Alba;
 using Spd.Manager.Cases;
 using System.Net.Http.Json;
 using System.Net.Mime;
@@ -16,7 +16,7 @@ public class ApplicationScenarios : ScenarioContextBase
     [Fact]
     public async Task CreateApplicationInvites_WithCorrectAuth_Success()
     {
-        var org = await fixture.testData.CreateOrgWithLogonUser("org1");
+        var (org, user) = await fixture.testData.CreateOrgWithLogonUser("org1");
 
         await Host.Scenario(_ =>
         {
@@ -33,7 +33,7 @@ public class ApplicationScenarios : ScenarioContextBase
     [Fact]
     public async Task ListApplicationInvites_WithCorrectAuth_Success()
     {
-        var org = await fixture.testData.CreateOrgWithLogonUser("org1");
+        var (org, user) = await fixture.testData.CreateOrgWithLogonUser("org1");
 
         await Host.Scenario(_ =>
         {
@@ -49,7 +49,7 @@ public class ApplicationScenarios : ScenarioContextBase
     [Fact]
     public async Task DeleteApplicationInvite_WithCorrectAuth_Success()
     {
-        var org = await fixture.testData.CreateOrgWithLogonUser("org1");
+        var (org, user) = await fixture.testData.CreateOrgWithLogonUser("org1");
         var invite = await fixture.testData.CreatePortalInvitationInOrg("first1", "last1", org);
 
         await Host.Scenario(_ =>
@@ -66,8 +66,7 @@ public class ApplicationScenarios : ScenarioContextBase
     [Fact]
     public async Task CreateApplication_WithCorrectAuthAndHeader_Success()
     {
-        var org = await fixture.testData.CreateOrgWithLogonUser("org1");
-        MultipartFormDataContent multipartContent = CreateMultipartFormData("test", "test.txt");
+        var (org, user) = await fixture.testData.CreateOrgWithLogonUser("org1");
 
         var result = await Host.Scenario(_ =>
         {
@@ -86,7 +85,7 @@ public class ApplicationScenarios : ScenarioContextBase
     [Fact]
     public async Task ListApplications_WithCorrectAuth_Success()
     {
-        var org = await fixture.testData.CreateOrgWithLogonUser("org1");
+        var (org, user) = await fixture.testData.CreateOrgWithLogonUser("org1");
 
         await Host.Scenario(_ =>
         {
@@ -102,7 +101,7 @@ public class ApplicationScenarios : ScenarioContextBase
     [Fact]
     public async Task ApplicationStatistics_WithCorrectAuth_Success()
     {
-        var org = await fixture.testData.CreateOrgWithLogonUser("org1");
+        var (org, user) = await fixture.testData.CreateOrgWithLogonUser("org1");
 
         await Host.Scenario(_ =>
         {

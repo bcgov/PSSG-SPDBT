@@ -49,7 +49,8 @@ namespace Spd.Utilities.LogonUser
                 ("GET", "api/configuration"),
                 ("POST", "api/anonymous-org-registrations"),
                 ("POST", "api/org-registrations"),
-                ("GET", "api/metadata/address")
+                ("GET", "api/metadata/address"),
+                ("POST","api/invitations")
             };
 
             if (context.Request.Path.HasValue)
@@ -75,7 +76,7 @@ namespace Spd.Utilities.LogonUser
                 return;
             }
             UserProfileResponse? userProfile = await cache.Get<UserProfileResponse>($"user-{context.User.GetUserGuid()}");
-            if( userProfile == null )
+            if (userProfile == null)
             {
                 userProfile = await mediator.Send(new GetCurrentUserProfileQuery());
                 await cache.Set<UserProfileResponse>($"user-{context.User.GetUserGuid()}", userProfile, new TimeSpan(0, 30, 0));

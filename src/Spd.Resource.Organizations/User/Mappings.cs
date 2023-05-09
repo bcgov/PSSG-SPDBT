@@ -35,7 +35,8 @@ namespace Spd.Resource.Organizations.User
             .ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => s.FirstName))
             .ForMember(d => d.spd_surname, opt => opt.MapFrom(s => s.LastName))
             .ForMember(d => d.spd_email, opt => opt.MapFrom(s => s.Email))
-            .ForMember(d => d.spd_jobtitle, opt => opt.MapFrom(s => s.JobTitle));
+            .ForMember(d => d.spd_jobtitle, opt => opt.MapFrom(s => s.JobTitle))
+            .ForMember(d => d.spd_invitationtype, opt => opt.MapFrom(s => InvitationTypeOptionSet.PortalUser));
         }
 
         private ContactRoleCode GetAuthorizationTypeCode(ICollection<spd_role> roles)
