@@ -1,4 +1,4 @@
-﻿namespace Spd.Utilities.Dynamics
+namespace Spd.Utilities.Dynamics
 {
     public enum WorksWithChildrenOptionSet
     {
@@ -68,7 +68,9 @@
         Draft = 1,
         PaymentPending = 100000000,
         Incomplete = 100000001,
-        ApplicantVerification = 100000003
+        ApplicantVerification = 100000003,
+        Submitted = 2,
+        Cancelled = 100000002,
     }
 
     public enum AliasTypeOptionSet

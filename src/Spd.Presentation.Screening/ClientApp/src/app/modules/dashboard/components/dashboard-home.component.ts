@@ -62,7 +62,7 @@ import { DashboardRoutes } from '../dashboard-routing.module';
 									<img class="box__image__item" src="/assets/dashboard/outstanding_payments.png" />
 								</div>
 								<div class="box__text" [routerLink]="[getRoute(dashboardRoutes.PAYMENTS)]">
-									<h4>Outstanding payments</h4>
+									<h4>Payments</h4>
 									<div class="d-grid gap-2 d-md-flex justify-content-between">
 										<p>Manage and view payments</p>
 										<mat-icon class="ms-auto box__text__icon">arrow_forward_ios</mat-icon>

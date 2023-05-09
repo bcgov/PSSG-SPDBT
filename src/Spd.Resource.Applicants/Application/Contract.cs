@@ -3,9 +3,10 @@ namespace Spd.Resource.Applicants.Application;
 public interface IApplicationRepository
 {
     public Task<Guid?> AddApplicationAsync(ApplicationCreateCmd createApplicationCmd, CancellationToken cancellationToken);
-    Task<bool> CheckApplicationDuplicateAsync(SearchApplicationQry searchApplicationQry, CancellationToken cancellationToken);
-    Task<ApplicationListResp> QueryAsync(ApplicationListQry query, CancellationToken cancellationToken);
-    Task<ApplicationStatisticsResp> QueryApplicationStatisticsAsync(ApplicationStatisticsQry query, CancellationToken cancellationToken);
+    public Task<bool> CheckApplicationDuplicateAsync(SearchApplicationQry searchApplicationQry, CancellationToken cancellationToken);
+    public Task<ApplicationListResp> QueryAsync(ApplicationListQry query, CancellationToken cancellationToken);
+    public Task<ApplicationStatisticsResp> QueryApplicationStatisticsAsync(ApplicationStatisticsQry query, CancellationToken cancellationToken);
+    public Task<bool> IdentityAsync(IdentityCmd cmd, CancellationToken ct);
 }
 
 //application list
@@ -65,6 +66,12 @@ public record AliasCreateCmd
     public string? MiddleName2 { get; set; }
     public string? Surname { get; set; }
 
+}
+public record IdentityCmd
+{
+    public Guid OrgId { get; set; }
+    public Guid ApplicationId { get; set; }
+    public bool Verify { get; set; }
 }
 public record SpdTempFile
 {

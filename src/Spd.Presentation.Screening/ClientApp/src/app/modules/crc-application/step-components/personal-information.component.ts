@@ -30,7 +30,7 @@ import { CrcFormStepComponent } from '../crc-application.component';
 						</div>
 						<div class="col-lg-4 col-md-12 col-sm-12">
 							<mat-form-field>
-								<mat-label>BC Drivers License # <span class="optional-label">(optional)</span></mat-label>
+								<mat-label>BC Drivers Licence # <span class="optional-label">(optional)</span></mat-label>
 								<input matInput formControlName="driversLicenseNumber" mask="00000009" />
 								<mat-error *ngIf="form.get('driversLicenseNumber')?.hasError('mask')">
 									This must be 7 or 8 digits
