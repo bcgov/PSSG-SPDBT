@@ -2108,6 +2108,7 @@
         <Property Name="_modifiedonbehalfby_value" Type="Edm.Guid" />
         <Property Name="_bcgov_tag2id_value" Type="Edm.Guid" />
         <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
+        <Property Name="_spd_applicationid_value" Type="Edm.Guid" />
         <Property Name="_bcgov_tag1id_value" Type="Edm.Guid" />
         <Property Name="versionnumber" Type="Edm.Int64" />
         <Property Name="_bcgov_tag3id_value" Type="Edm.Guid" />
@@ -2171,6 +2172,9 @@
           <ReferentialConstraint Property="_bcgov_tag3id_value" ReferencedProperty="bcgov_tagid" />
         </NavigationProperty>
         <NavigationProperty Name="bcgov_TaskId" Type="mscrm.task" Nullable="false" Partner="bcgov_task_bcgov_documenturl" />
+        <NavigationProperty Name="spd_ApplicationId" Type="mscrm.spd_application" Nullable="false" Partner="spd_application_bcgov_documenturl">
+          <ReferentialConstraint Property="_spd_applicationid_value" ReferencedProperty="spd_applicationid" />
+        </NavigationProperty>
       </EntityType>
       <EntityType Name="bcgov_field" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -8962,6 +8966,7 @@
         <Property Name="_owningteam_value" Type="Edm.Guid" />
         <Property Name="_spd_organizationid_value" Type="Edm.Guid" />
         <Property Name="_accountid_value" Type="Edm.Guid" />
+        <Property Name="_subjectid_value" Type="Edm.Guid" />
         <Property Name="prioritycode" Type="Edm.Int32" />
         <Property Name="spd_substatusreasondetail" Type="Edm.Int32" />
         <Property Name="routecase" Type="Edm.Boolean" />
@@ -8998,7 +9003,6 @@
         <Property Name="spd_hitfound" Type="Edm.Int32" />
         <Property Name="_modifiedby_value" Type="Edm.Guid" />
         <Property Name="_createdonbehalfby_value" Type="Edm.Guid" />
-        <Property Name="_subjectid_value" Type="Edm.Guid" />
         <Property Name="entityimage_timestamp" Type="Edm.Int64" />
         <Property Name="statecode" Type="Edm.Int32" />
         <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
@@ -9014,6 +9018,7 @@
         <Property Name="statuscode" Type="Edm.Int32" />
         <Property Name="spd_cpiccheckcompleted" Type="Edm.Boolean" />
         <Property Name="_masterid_value" Type="Edm.Guid" />
+        <Property Name="_spd_cpicbatchid_value" Type="Edm.Guid" />
         <Property Name="_slainvokedid_value" Type="Edm.Guid" />
         <Property Name="_contractdetailid_value" Type="Edm.Guid" />
         <Property Name="traversedpath" Type="Edm.String" Unicode="false" />
@@ -9187,6 +9192,9 @@
         <NavigationProperty Name="spd_incident_spd_finding" Type="Collection(mscrm.spd_finding)" Partner="spd_CaseId" />
         <NavigationProperty Name="spd_Ministry" Type="mscrm.spd_ministry" Nullable="false" Partner="spd_Incident_Ministry">
           <ReferentialConstraint Property="_spd_ministry_value" ReferencedProperty="spd_ministryid" />
+        </NavigationProperty>
+        <NavigationProperty Name="spd_CPICBatchId" Type="mscrm.spd_cpicbatch" Nullable="false" Partner="spd_cpicbatch_incident">
+          <ReferentialConstraint Property="_spd_cpicbatchid_value" ReferencedProperty="spd_cpicbatchid" />
         </NavigationProperty>
       </EntityType>
       <EntityType Name="interactionforemail" BaseType="mscrm.crmbaseentity">
@@ -19318,6 +19326,7 @@
         <NavigationProperty Name="spd_SubmittedBy" Type="mscrm.spd_portaluser" Nullable="false" Partner="spd_PortalUser_Application_SubmittedBy">
           <ReferentialConstraint Property="_spd_submittedby_value" ReferencedProperty="spd_portaluserid" />
         </NavigationProperty>
+        <NavigationProperty Name="spd_application_bcgov_documenturl" Type="Collection(mscrm.bcgov_documenturl)" Partner="spd_ApplicationId" />
       </EntityType>
       <EntityType Name="spd_cornetnotification" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -19429,6 +19438,7 @@
         <NavigationProperty Name="spd_ServiceTypeId" Type="mscrm.spd_servicetype" Nullable="false" Partner="spd_servicetype_spd_cpicbatch">
           <ReferentialConstraint Property="_spd_servicetypeid_value" ReferencedProperty="spd_servicetypeid" />
         </NavigationProperty>
+        <NavigationProperty Name="spd_cpicbatch_incident" Type="Collection(mscrm.incident)" Partner="spd_CPICBatchId" />
       </EntityType>
       <EntityType Name="spd_finding" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -19906,6 +19916,7 @@
         <Key>
           <PropertyRef Name="spd_portalinvitationid" />
         </Key>
+        <Property Name="spd_views" Type="Edm.Int32" />
         <Property Name="_modifiedonbehalfby_value" Type="Edm.Guid" />
         <Property Name="spd_firstname" Type="Edm.String" Unicode="false" />
         <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
@@ -29738,6 +29749,7 @@
           <NavigationPropertyBinding Path="bcgov_Tag2Id" Target="bcgov_tags" />
           <NavigationPropertyBinding Path="bcgov_Tag3Id" Target="bcgov_tags" />
           <NavigationPropertyBinding Path="bcgov_TaskId" Target="tasks" />
+          <NavigationPropertyBinding Path="spd_ApplicationId" Target="spd_applications" />
         </EntitySet>
         <EntitySet Name="bcgov_fields" EntityType="Microsoft.Dynamics.CRM.bcgov_field">
           <NavigationPropertyBinding Path="createdby" Target="systemusers" />
@@ -32022,6 +32034,7 @@
           <NavigationPropertyBinding Path="spd_ServiceTypeId" Target="spd_servicetypes" />
           <NavigationPropertyBinding Path="spd_incident_spd_finding" Target="spd_findings" />
           <NavigationPropertyBinding Path="spd_Ministry" Target="spd_ministries" />
+          <NavigationPropertyBinding Path="spd_CPICBatchId" Target="spd_cpicbatchs" />
         </EntitySet>
         <EntitySet Name="interactionforemails" EntityType="Microsoft.Dynamics.CRM.interactionforemail">
           <NavigationPropertyBinding Path="createdbyname" Target="systemusers" />
@@ -35018,6 +35031,7 @@
           <NavigationPropertyBinding Path="spd_spd_application_spd_payment" Target="spd_payments" />
           <NavigationPropertyBinding Path="spd_Ministry" Target="spd_ministries" />
           <NavigationPropertyBinding Path="spd_SubmittedBy" Target="spd_portalusers" />
+          <NavigationPropertyBinding Path="spd_application_bcgov_documenturl" Target="bcgov_documenturls" />
         </EntitySet>
         <EntitySet Name="spd_cornetnotifications" EntityType="Microsoft.Dynamics.CRM.spd_cornetnotification">
           <NavigationPropertyBinding Path="createdby" Target="systemusers" />
@@ -35048,6 +35062,7 @@
           <NavigationPropertyBinding Path="spd_cpicbatch_BulkDeleteFailures" Target="bulkdeletefailures" />
           <NavigationPropertyBinding Path="spd_cpicbatch_PrincipalObjectAttributeAccesses" Target="principalobjectattributeaccessset" />
           <NavigationPropertyBinding Path="spd_ServiceTypeId" Target="spd_servicetypes" />
+          <NavigationPropertyBinding Path="spd_cpicbatch_incident" Target="incidents" />
         </EntitySet>
         <EntitySet Name="spd_findings" EntityType="Microsoft.Dynamics.CRM.spd_finding">
           <NavigationPropertyBinding Path="createdby" Target="systemusers" />

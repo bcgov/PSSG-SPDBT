@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Spd.Resource.Applicants\Spd.Resource.Applicants.csproj" />
+    <ProjectReference Include="..\Spd.Utilities.TempFileStorage\Spd.Utilities.TempFileStorage.csproj" />
   </ItemGroup>
 
 </Project>
