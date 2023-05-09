@@ -74,7 +74,7 @@ public class OrgUserScenarios : ScenarioContextBase
         {
             OrganizationId = orgId,
             ContactAuthorizationTypeCode = ContactAuthorizationTypeCode.Contact,
-            Email = "test@test.com",
+            Email = $"test{Guid.NewGuid()}@test.com",
             FirstName = "firstname",
             LastName = "lastname",
             JobTitle = "qa",
