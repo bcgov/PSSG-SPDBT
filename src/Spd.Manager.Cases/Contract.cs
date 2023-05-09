@@ -2,7 +2,6 @@ using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 
 namespace Spd.Manager.Cases
 {
@@ -177,8 +176,7 @@ namespace Spd.Manager.Cases
         ClosedNoResponse,
         ClosedNoConsent,
         CancelledByApplicant,
-        CancelledByOrganization,
-        Draft
+        CancelledByOrganization
     }
     public enum ApplicationOriginTypeCode
     {

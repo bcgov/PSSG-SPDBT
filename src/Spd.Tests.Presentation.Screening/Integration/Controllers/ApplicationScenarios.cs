@@ -71,7 +71,7 @@ public class ApplicationScenarios : ScenarioContextBase
         var result = await Host.Scenario(_ =>
         {
             _.WithRequestHeader("organization", org.accountid.ToString());
-            _.Post.MultipartFormData(multipartContent).ToUrl($"/api/orgs/{org.accountid}/application");
+            _.Post.MultipartFormData(CreateMultipartFormData("test", "test.txt")).ToUrl($"/api/orgs/{org.accountid}/application");
             if (org != null && org.accountid != null)
             {
                 _.StatusCodeShouldBeOk();
