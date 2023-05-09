@@ -15,7 +15,7 @@ import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
-import { DashboardRoutes } from '../dashboard-routing.module';
+import { CrrpRoutes } from '../crrp-routing.module';
 import {
 	ApplicationStatusesFilterComponent,
 	ApplicationStatusFilter,
@@ -30,7 +30,7 @@ export interface ApplicationStatusResponse extends ApplicationResponse {
 @Component({
 	selector: 'app-application-statuses',
 	template: `
-		<app-dashboard-header subtitle="Criminal Record Checks"></app-dashboard-header>
+		<app-dashboard-header></app-dashboard-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
@@ -374,13 +374,13 @@ export class ApplicationStatusesComponent implements OnInit {
 	}
 
 	onPayNow(application: ApplicationStatusResponse): void {
-		this.router.navigateByUrl(DashboardRoutes.dashboardPath(DashboardRoutes.PAYMENTS), {
+		this.router.navigateByUrl(CrrpRoutes.crrpPath(CrrpRoutes.PAYMENTS), {
 			state: { caseId: application.applicationNumber },
 		});
 	}
 
 	onVerifyApplicant(application: ApplicationStatusResponse): void {
-		this.router.navigateByUrl(DashboardRoutes.dashboardPath(DashboardRoutes.IDENTITY_VERIFICATION), {
+		this.router.navigateByUrl(CrrpRoutes.crrpPath(CrrpRoutes.IDENTITY_VERIFICATION), {
 			state: { caseId: application.applicationNumber },
 		});
 	}

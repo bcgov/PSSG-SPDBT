@@ -108,13 +108,13 @@ namespace Spd.Presentation.Screening.Controllers
             var userId = this.HttpContext.User.GetUserId();
             if (userId == null) throw new ApiException(System.Net.HttpStatusCode.Unauthorized);
 
-            var options = new JsonSerializerOptions();
+            var options = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
             options.Converters.Add(new JsonStringEnumConverter());
             ApplicationCreateRequest? appCreateRequest = JsonSerializer.Deserialize<ApplicationCreateRequest>(createApplication.ApplicationCreateRequestJson, options);
             if (appCreateRequest == null)
                 throw new ApiException(System.Net.HttpStatusCode.BadRequest, "ApplicationCreateRequestJson is invalid.");
             var result = await _appCreateRequestValidator.ValidateAsync(appCreateRequest);
-            if(!result.IsValid)
+            if (!result.IsValid)
                 throw new ApiException(System.Net.HttpStatusCode.BadRequest, JsonSerializer.Serialize(result.Errors));
 
             return await _mediator.Send(new ApplicationCreateCommand(appCreateRequest, orgId, Guid.Parse(userId), createApplication.ConsentFormFile));

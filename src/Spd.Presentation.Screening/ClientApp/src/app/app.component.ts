@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
 import { filter, map } from 'rxjs';
 
 @Component({
@@ -26,13 +26,13 @@ export class AppComponent {
 			.pipe(
 				filter((event) => event instanceof NavigationEnd),
 				map(() => {
-					let route: ActivatedRoute = this.router.routerState.root;
+					let route: ActivatedRouteSnapshot = this.router.routerState.root.snapshot;
 					let routeTitle = '';
-					while (route.firstChild) {
+					if (route.firstChild) {
 						route = route.firstChild;
 					}
-					if (route.snapshot.data['title']) {
-						routeTitle = route.snapshot.data['title'];
+					if (route.data['title']) {
+						routeTitle = route.data['title'];
 					}
 					return routeTitle;
 				})
