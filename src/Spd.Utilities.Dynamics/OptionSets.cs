@@ -95,11 +95,11 @@
 
     public enum ApplicationPortalStatus
     {
-        Draft= 100000000,
+        Draft = 100000000,
         VerifyIdentity = 100000001,
         InProgress = 100000002,
-        AwaitingPayment= 100000003,
-        AwaitingThirdParty= 100000004,
+        AwaitingPayment = 100000003,
+        AwaitingThirdParty = 100000004,
         AwaitingApplicant = 100000005,
         UnderAssessment = 100000006,
         Incomplete = 100000007,
@@ -109,7 +109,12 @@
         ClosedNoResponse = 100000011,
         ClosedNoConsent = 100000012,
         CancelledByApplicant = 100000014,
-        CancelledByOrganization = 100000013 
+        CancelledByOrganization = 100000013
+    }
+
+    public enum BcGovOriginCode
+    {
+        Web = 931490000
     }
 
 }

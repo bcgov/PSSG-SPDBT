@@ -1,5 +1,9 @@
 ﻿using Alba;
 using Spd.Manager.Cases;
+using System.Net.Http.Json;
+using System.Net.Mime;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Xunit.Abstractions;
 
 namespace Spd.Tests.Presentation.Screening.Integration.Controllers;
@@ -63,11 +67,12 @@ public class ApplicationScenarios : ScenarioContextBase
     public async Task CreateApplication_WithCorrectAuthAndHeader_Success()
     {
         var org = await fixture.testData.CreateOrgWithLogonUser("org1");
+        MultipartFormDataContent multipartContent = CreateMultipartFormData("test", "test.txt");
 
         var result = await Host.Scenario(_ =>
         {
             _.WithRequestHeader("organization", org.accountid.ToString());
-            _.Post.Json(Create_ApplicationCreateRequest()).ToUrl($"/api/orgs/{org.accountid}/application");
+            _.Post.MultipartFormData(multipartContent).ToUrl($"/api/orgs/{org.accountid}/application");
             if (org != null && org.accountid != null)
             {
                 _.StatusCodeShouldBeOk();
@@ -127,6 +132,26 @@ public class ApplicationScenarios : ScenarioContextBase
                 }
             }
         };
+    }
+
+    private MultipartFormDataContent CreateMultipartFormData(string content, string fileName)
+    {
+        MultipartFormDataContent multipartContent = new();
+        var stream = new MemoryStream();
+        var writer = new StreamWriter(stream);
+        writer.Write(content);
+        writer.Flush();
+        stream.Position = 0;
+        var streamContent = new StreamContent(stream);
+        streamContent.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse(MediaTypeNames.Text.Plain);
+        multipartContent.Add(streamContent, "ConsentFormFile", fileName);
+
+        var applicationCreateRequest = Create_ApplicationCreateRequest();
+        var options = new JsonSerializerOptions();
+        options.Converters.Add(new JsonStringEnumConverter());
+        var jsonContent = JsonContent.Create(applicationCreateRequest, typeof(ApplicationCreateRequest), options: options);
+        multipartContent.Add(jsonContent, "ApplicationCreateRequestJson");
+        return multipartContent;
     }
 
     private ApplicationCreateRequest Create_ApplicationCreateRequest()
