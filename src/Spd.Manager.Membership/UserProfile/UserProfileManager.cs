@@ -73,9 +73,9 @@ namespace Spd.Manager.Membership.UserProfile
                             {
                                 ui.OrgName = orgResult.OrgResult.OrganizationName;
                                 ui.OrgSettings = _mapper.Map<OrgSettings>(orgResult.OrgResult);
+                                userInfos.Add(ui);
                             }
                         }
-                        userInfos.Add(ui);
                     }
                 }
             };
