@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OData.Client;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.TempFileStorage;
@@ -78,9 +79,8 @@ internal class ApplicationRepository : IApplicationRepository
         string sortStr = GetSortString(query.SortBy);
         var applications = _context.spd_applications
             .AddQueryOption("$filter", $"{filterStr}")
-            .AddQueryOption("$orderby", $"{sortStr}");
-
-        var count = applications.AsEnumerable().Count();
+            .AddQueryOption("$orderby", $"{sortStr}")
+            .IncludeCount();
 
         if (query.Paging != null)
         {
@@ -90,7 +90,8 @@ internal class ApplicationRepository : IApplicationRepository
                 .AddQueryOption("$top", $"{query.Paging.PageSize}");
         }
 
-        var result = applications.AsEnumerable();
+        var result = (QueryOperationResponse<spd_application>)await applications.ExecuteAsync(cancellationToken);
+
         var response = new ApplicationListResp();
         response.Applications = _mapper.Map<IEnumerable<ApplicationResult>>(result);
         if (query.Paging != null)
@@ -98,7 +99,7 @@ internal class ApplicationRepository : IApplicationRepository
             response.Pagination = new PaginationResp();
             response.Pagination.PageSize = query.Paging.PageSize;
             response.Pagination.PageIndex = query.Paging.Page;
-            response.Pagination.Length = count;
+            response.Pagination.Length = (int) result.Count;
         }
 
         return response;
