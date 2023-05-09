@@ -35,12 +35,7 @@ export interface ExpiredChecksResponse extends ApplicationResponse {
 			<div class="row mt-2" [formGroup]="formFilter">
 				<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
 					<mat-form-field>
-						<input
-							matInput
-							type="search"
-							formControlName="search"
-							placeholder="Search applicant's name or email or case id"
-						/>
+						<input matInput type="search" formControlName="search" placeholder="Search applicant's name or email" />
 						<button mat-button matSuffix mat-flat-button aria-label="search" class="search-icon-button">
 							<mat-icon>search</mat-icon>
 						</button>
@@ -237,12 +232,12 @@ export class ExpiringChecksComponent implements OnInit {
 			icon: 'info',
 			title: 'Confirmation',
 			message: 'Would you like to send a new criminal record check request for this individual from your organization?',
-			actionText: 'Yes, create new request',
+			actionText: 'Yes, create request',
 			cancelText: 'Cancel',
 		};
 
 		this.dialog
-			.open(DialogComponent, { width: '700px', data })
+			.open(DialogComponent, { data })
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {

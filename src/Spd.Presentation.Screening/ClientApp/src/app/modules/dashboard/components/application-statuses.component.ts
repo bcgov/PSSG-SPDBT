@@ -234,11 +234,16 @@ export interface ApplicationStatusResponse extends ApplicationResponse {
 							<mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Status:</span>
-								<mat-chip-listbox aria-label="Status" *ngIf="application.status">
-									<mat-chip-option [selectable]="false" [ngClass]="application.applicationPortalStatusClass">
-										{{ application.applicationPortalStatusText }}
-									</mat-chip-option>
-								</mat-chip-listbox>
+								<ng-container *ngIf="application.status; else noStatus">
+									<mat-chip-listbox aria-label="Status" *ngIf="application.status">
+										<mat-chip-option [selectable]="false" [ngClass]="application.applicationPortalStatusClass">
+											{{ application.applicationPortalStatusText }}
+										</mat-chip-option>
+									</mat-chip-listbox>
+								</ng-container>
+								<ng-template #noStatus>
+									<mat-icon>schedule</mat-icon>
+								</ng-template>
 							</mat-cell>
 						</ng-container>
 

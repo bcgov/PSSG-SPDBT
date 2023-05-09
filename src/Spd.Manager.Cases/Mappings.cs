@@ -34,6 +34,7 @@ namespace Spd.Manager.Cases
             CreateMap<ApplicationInviteDeleteCommand, ApplicationInviteDeleteCmd>();
             CreateMap<ApplicationStatisticsQuery, ApplicationStatisticsQry>();
             CreateMap<ApplicationStatisticsResp, ApplicationStatisticsResponse>();
+            CreateMap<IdentityCommand, IdentityCmd>();
 
         }
     }

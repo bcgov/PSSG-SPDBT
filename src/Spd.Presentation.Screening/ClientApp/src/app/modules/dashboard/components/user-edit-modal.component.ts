@@ -59,7 +59,7 @@ export interface UserDialogData {
 					</div>
 				</div>
 
-				<div class="row" *ngIf="isEdit">
+				<div class="row">
 					<div class="col-md-6">
 						<mat-form-field>
 							<mat-label>Phone Number</mat-label>
