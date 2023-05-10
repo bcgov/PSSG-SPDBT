@@ -30,7 +30,7 @@ export class CrrpRoutes {
 	public static MODULE_PATH = CrrpRoutes.CRRP;
 
 	public static crrpPath(route: string): string {
-		return `/${CrrpRoutes.MODULE_PATH}/${route}`;
+		return `${CrrpRoutes.MODULE_PATH}/${route}`;
 	}
 }
 
@@ -50,6 +50,11 @@ const routes: Routes = [
 			{ path: 'organization-profile', component: OrganizationProfileComponent },
 			{ path: 'reports', component: ReportsComponent },
 			{ path: 'users', component: UsersComponent },
+			// {
+			// 	path: 'invitations/:id',
+			// 	component: CrrpHomeComponent,
+			// 	canActivate: [InvitationGuard],
+			// },
 		],
 	},
 ];

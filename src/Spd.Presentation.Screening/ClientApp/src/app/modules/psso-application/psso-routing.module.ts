@@ -18,7 +18,7 @@ export class PssoRoutes {
 	// 	public static USERS = 'users';
 	public static MODULE_PATH = PssoRoutes.PSSO;
 	public static pssoPath(route: string): string {
-		return `/${PssoRoutes.MODULE_PATH}/${route}`;
+		return `${PssoRoutes.MODULE_PATH}/${route}`;
 	}
 }
 
