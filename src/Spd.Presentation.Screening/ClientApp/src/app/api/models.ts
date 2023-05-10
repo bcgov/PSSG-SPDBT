@@ -20,6 +20,7 @@ export { ContactAuthorizationTypeCode } from './models/contact-authorization-typ
 export { EmployeeInteractionTypeCode } from './models/employee-interaction-type-code';
 export { EmployeeOrganizationTypeCode } from './models/employee-organization-type-code';
 export { FundsFromBcGovtExceedsThresholdCode } from './models/funds-from-bc-govt-exceeds-threshold-code';
+export { InvitationRequest } from './models/invitation-request';
 export { OidcConfiguration } from './models/oidc-configuration';
 export { OrgProcess } from './models/org-process';
 export { OrgRegistrationCreateRequest } from './models/org-registration-create-request';

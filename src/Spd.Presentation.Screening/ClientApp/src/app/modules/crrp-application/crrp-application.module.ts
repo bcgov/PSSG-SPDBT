@@ -5,8 +5,8 @@ import { ApplicationStatusesComponent } from './components/application-statuses.
 import { BannerComponent } from './components/banner.component';
 import { CrcAddModalComponent } from './components/crc-add-modal.component';
 import { CriminalRecordChecksComponent } from './components/criminal-record-checks.component';
-import { DashboardHeaderComponent } from './components/dashboard-header.component';
-import { DashboardHomeComponent } from './components/dashboard-home.component';
+import { CrrpHeaderComponent } from './components/crrp-header.component';
+import { CrrpHomeComponent } from './components/crrp-home.component';
 import { ExpiringChecksComponent } from './components/expiring-checks.component';
 import { GenericUploadsComponent } from './components/generic-uploads.component';
 import { IdentifyVerificationComponent } from './components/identify-verification.component';
@@ -24,8 +24,8 @@ import { CrrpComponent } from './crrp.component';
 	declarations: [
 		CrrpComponent,
 		GenericUploadsComponent,
-		DashboardHeaderComponent,
-		DashboardHomeComponent,
+		CrrpHeaderComponent,
+		CrrpHomeComponent,
 		ApplicationStatusesComponent,
 		ApplicationStatusesFilterComponent,
 		PaymentsComponent,

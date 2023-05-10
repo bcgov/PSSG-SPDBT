@@ -246,9 +246,49 @@ export class ApplicationService extends BaseService {
      */
     orgId: string;
     context?: HttpContext
-    body?: {
+    body: {
+
+/**
+ * PDF, Microsoft Word .docx/.doc files only
+ */
 'ConsentFormFile'?: Blob;
-'ApplicationCreateRequestJson'?: string;
+
+/**
+ * See ApplicationCreateRequest schema
+ */
+'ApplicationCreateRequestJson'?: {
+'orgId'?: string;
+'givenName'?: string | null;
+'middleName1'?: string | null;
+'middleName2'?: string | null;
+'surname'?: string | null;
+'emailAddress'?: string | null;
+'jobTitle'?: string | null;
+'dateOfBirth'?: string | null;
+'contractedCompanyName'?: string | null;
+'phoneNumber'?: string | null;
+'driversLicense'?: string | null;
+'birthPlace'?: string | null;
+'addressLine1'?: string | null;
+'addressLine2'?: string | null;
+'city'?: string | null;
+'postalCode'?: string | null;
+'province'?: string | null;
+'country'?: string | null;
+'oneLegalName'?: boolean | null;
+'agreeToCompleteAndAccurate'?: boolean | null;
+'haveVerifiedIdentity'?: boolean | null;
+'requireDuplicateCheck'?: boolean;
+'aliases'?: Array<{
+'givenName'?: string | null;
+'middleName1'?: string | null;
+'middleName2'?: string | null;
+'surname'?: string | null;
+}>;
+'OriginTypeCode'?: string;
+'payeeType'?: string;
+'screeningTypeCode'?: string;
+};
 }
   }
 ): Observable<StrictHttpResponse<ApplicationCreateResponse>> {
@@ -288,9 +328,49 @@ export class ApplicationService extends BaseService {
      */
     orgId: string;
     context?: HttpContext
-    body?: {
+    body: {
+
+/**
+ * PDF, Microsoft Word .docx/.doc files only
+ */
 'ConsentFormFile'?: Blob;
-'ApplicationCreateRequestJson'?: string;
+
+/**
+ * See ApplicationCreateRequest schema
+ */
+'ApplicationCreateRequestJson'?: {
+'orgId'?: string;
+'givenName'?: string | null;
+'middleName1'?: string | null;
+'middleName2'?: string | null;
+'surname'?: string | null;
+'emailAddress'?: string | null;
+'jobTitle'?: string | null;
+'dateOfBirth'?: string | null;
+'contractedCompanyName'?: string | null;
+'phoneNumber'?: string | null;
+'driversLicense'?: string | null;
+'birthPlace'?: string | null;
+'addressLine1'?: string | null;
+'addressLine2'?: string | null;
+'city'?: string | null;
+'postalCode'?: string | null;
+'province'?: string | null;
+'country'?: string | null;
+'oneLegalName'?: boolean | null;
+'agreeToCompleteAndAccurate'?: boolean | null;
+'haveVerifiedIdentity'?: boolean | null;
+'requireDuplicateCheck'?: boolean;
+'aliases'?: Array<{
+'givenName'?: string | null;
+'middleName1'?: string | null;
+'middleName2'?: string | null;
+'surname'?: string | null;
+}>;
+'OriginTypeCode'?: string;
+'payeeType'?: string;
+'screeningTypeCode'?: string;
+};
 }
   }
 ): Observable<ApplicationCreateResponse> {

@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 @Component({
 	selector: 'app-reports',
 	template: `
-		<app-dashboard-header></app-dashboard-header>
+		<app-crrp-header></app-crrp-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
