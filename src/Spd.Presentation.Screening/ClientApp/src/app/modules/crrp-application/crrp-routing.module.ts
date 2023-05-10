@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ApplicationStatusesComponent } from './components/application-statuses.component';
 import { CriminalRecordChecksComponent } from './components/criminal-record-checks.component';
-import { DashboardHomeComponent } from './components/dashboard-home.component';
+import { CrrpHomeComponent } from './components/crrp-home.component';
 import { ExpiringChecksComponent } from './components/expiring-checks.component';
 import { GenericUploadsComponent } from './components/generic-uploads.component';
 import { IdentifyVerificationComponent } from './components/identify-verification.component';
@@ -39,7 +39,7 @@ const routes: Routes = [
 		path: '',
 		component: CrrpComponent,
 		children: [
-			{ path: 'home', component: DashboardHomeComponent },
+			{ path: 'home', component: CrrpHomeComponent },
 			{ path: 'criminal-record-checks', component: CriminalRecordChecksComponent },
 			{ path: 'application-statuses', component: ApplicationStatusesComponent },
 			{ path: 'expiring-checks', component: ExpiringChecksComponent },

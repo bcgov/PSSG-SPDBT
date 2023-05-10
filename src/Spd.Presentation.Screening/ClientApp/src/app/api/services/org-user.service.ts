@@ -10,6 +10,7 @@ import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
 import { ActionResult } from '../models/action-result';
+import { InvitationRequest } from '../models/invitation-request';
 import { OrgUserCreateRequest } from '../models/org-user-create-request';
 import { OrgUserListResponse } from '../models/org-user-list-response';
 import { OrgUserResponse } from '../models/org-user-response';
@@ -24,6 +25,73 @@ export class OrgUserService extends BaseService {
     http: HttpClient
   ) {
     super(config, http);
+  }
+
+  /**
+   * Path part for operation apiInvitationsPost
+   */
+  static readonly ApiInvitationsPostPath = '/api/invitations';
+
+  /**
+   * Verify if the current invite and login user are correct.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiInvitationsPost()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiInvitationsPost$Response(params: {
+    context?: HttpContext
+
+    /**
+     * which include InviteHashCode
+     */
+    body: InvitationRequest
+  }
+): Observable<StrictHttpResponse<ActionResult>> {
+
+    const rb = new RequestBuilder(this.rootUrl, OrgUserService.ApiInvitationsPostPath, 'post');
+    if (params) {
+      rb.body(params.body, 'application/*+json');
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: params?.context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<ActionResult>;
+      })
+    );
+  }
+
+  /**
+   * Verify if the current invite and login user are correct.
+   *
+   *
+   *
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `apiInvitationsPost$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiInvitationsPost(params: {
+    context?: HttpContext
+
+    /**
+     * which include InviteHashCode
+     */
+    body: InvitationRequest
+  }
+): Observable<ActionResult> {
+
+    return this.apiInvitationsPost$Response(params).pipe(
+      map((r: StrictHttpResponse<ActionResult>) => r.body as ActionResult)
+    );
   }
 
   /**
