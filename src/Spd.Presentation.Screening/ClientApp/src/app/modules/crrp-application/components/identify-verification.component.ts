@@ -17,6 +17,7 @@ import {
 } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import { ApplicationPortalStatisticsCode } from 'src/app/core/constants/model-desc';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { DialogCloseCode, DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
@@ -406,7 +407,7 @@ export class IdentifyVerificationComponent implements OnInit {
 			.pipe(
 				tap((res: ApplicationStatisticsResponse) => {
 					const applicationStatistics = res.statistics ?? {};
-					this.count = applicationStatistics[ApplicationPortalStatusCode.VerifyIdentity];
+					this.count = applicationStatistics[ApplicationPortalStatisticsCode.VerifyIdentity];
 				})
 			);
 	}

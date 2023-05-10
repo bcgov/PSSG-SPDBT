@@ -12,6 +12,7 @@ import {
 } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import { ApplicationPortalStatisticsCode } from 'src/app/core/constants/model-desc';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { ApplicationStatusFilterMap } from './application-statuses-filter.component';
@@ -313,7 +314,7 @@ export class PaymentsComponent implements OnInit {
 			.pipe(
 				tap((res: ApplicationStatisticsResponse) => {
 					const applicationStatistics = res.statistics ?? {};
-					this.count = applicationStatistics[ApplicationPortalStatusCode.AwaitingPayment];
+					this.count = applicationStatistics[ApplicationPortalStatisticsCode.AwaitingPayment];
 				})
 			);
 	}

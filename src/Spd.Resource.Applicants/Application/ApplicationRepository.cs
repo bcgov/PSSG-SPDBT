@@ -99,7 +99,7 @@ internal class ApplicationRepository : IApplicationRepository
             response.Pagination = new PaginationResp();
             response.Pagination.PageSize = query.Paging.PageSize;
             response.Pagination.PageIndex = query.Paging.Page;
-            response.Pagination.Length = (int) result.Count;
+            response.Pagination.Length = (int)result.Count;
         }
 
         return response;
@@ -140,19 +140,21 @@ internal class ApplicationRepository : IApplicationRepository
         var organization = await _context.GetOrgById(query.OrganizationId, ct);
         if (organization == null) return new ApplicationStatisticsResp();
         var organizationStatistics = await organization.spd_GetOrganizationStatistics().GetValueAsync(ct);
-        var statisticsDictionary = new Dictionary<ApplicationPortalStatusCd, int>();
-        if (organizationStatistics.AwaitingApplicant.HasValue) statisticsDictionary.Add(ApplicationPortalStatusCd.AwaitingApplicant, organizationStatistics.AwaitingApplicant.Value);
-        if (organizationStatistics.AwaitingPayment.HasValue) statisticsDictionary.Add(ApplicationPortalStatusCd.AwaitingPayment, organizationStatistics.AwaitingPayment.Value);
-        if (organizationStatistics.AwaitingThirdParty.HasValue) statisticsDictionary.Add(ApplicationPortalStatusCd.AwaitingThirdParty, organizationStatistics.AwaitingThirdParty.Value);
-        if (organizationStatistics.CancelledByApplicant.HasValue) statisticsDictionary.Add(ApplicationPortalStatusCd.CancelledByApplicant, organizationStatistics.CancelledByApplicant.Value);
-        if (organizationStatistics.ClosedJudicialReview.HasValue) statisticsDictionary.Add(ApplicationPortalStatusCd.ClosedJudicialReview, organizationStatistics.ClosedJudicialReview.Value);
-        if (organizationStatistics.ClosedNoConsent.HasValue) statisticsDictionary.Add(ApplicationPortalStatusCd.ClosedNoConsent, organizationStatistics.ClosedNoConsent.Value);
-        if (organizationStatistics.ClosedNoResponse.HasValue) statisticsDictionary.Add(ApplicationPortalStatusCd.ClosedNoResponse, organizationStatistics.ClosedNoResponse.Value);
-        if (organizationStatistics.Incomplete.HasValue) statisticsDictionary.Add(ApplicationPortalStatusCd.Incomplete, organizationStatistics.Incomplete.Value);
-        if (organizationStatistics.InProgress.HasValue) statisticsDictionary.Add(ApplicationPortalStatusCd.InProgress, organizationStatistics.InProgress.Value);
-        if (organizationStatistics.RiskFound.HasValue) statisticsDictionary.Add(ApplicationPortalStatusCd.RiskFound, organizationStatistics.RiskFound.Value);
-        if (organizationStatistics.UnderAssessment.HasValue) statisticsDictionary.Add(ApplicationPortalStatusCd.UnderAssessment, organizationStatistics.UnderAssessment.Value);
-        if (organizationStatistics.VerifyIdentity.HasValue) statisticsDictionary.Add(ApplicationPortalStatusCd.VerifyIdentity, organizationStatistics.VerifyIdentity.Value);
+        var statisticsDictionary = new Dictionary<ApplicationPortalStatisticsCd, int>();
+        if (organizationStatistics.AwaitingApplicant.HasValue) statisticsDictionary.Add(ApplicationPortalStatisticsCd.AwaitingApplicant, organizationStatistics.AwaitingApplicant.Value);
+        if (organizationStatistics.AwaitingPayment.HasValue) statisticsDictionary.Add(ApplicationPortalStatisticsCd.AwaitingPayment, organizationStatistics.AwaitingPayment.Value);
+        if (organizationStatistics.AwaitingThirdParty.HasValue) statisticsDictionary.Add(ApplicationPortalStatisticsCd.AwaitingThirdParty, organizationStatistics.AwaitingThirdParty.Value);
+        if (organizationStatistics.CancelledByApplicant.HasValue) statisticsDictionary.Add(ApplicationPortalStatisticsCd.CancelledByApplicant, organizationStatistics.CancelledByApplicant.Value);
+        if (organizationStatistics.ClosedJudicialReview.HasValue) statisticsDictionary.Add(ApplicationPortalStatisticsCd.ClosedJudicialReview, organizationStatistics.ClosedJudicialReview.Value);
+        if (organizationStatistics.ClosedNoConsent.HasValue) statisticsDictionary.Add(ApplicationPortalStatisticsCd.ClosedNoConsent, organizationStatistics.ClosedNoConsent.Value);
+        if (organizationStatistics.ClosedNoResponse.HasValue) statisticsDictionary.Add(ApplicationPortalStatisticsCd.ClosedNoResponse, organizationStatistics.ClosedNoResponse.Value);
+        if (organizationStatistics.Incomplete.HasValue) statisticsDictionary.Add(ApplicationPortalStatisticsCd.Incomplete, organizationStatistics.Incomplete.Value);
+        if (organizationStatistics.InProgress.HasValue) statisticsDictionary.Add(ApplicationPortalStatisticsCd.InProgress, organizationStatistics.InProgress.Value);
+        if (organizationStatistics.RiskFound.HasValue) statisticsDictionary.Add(ApplicationPortalStatisticsCd.RiskFound, organizationStatistics.RiskFound.Value);
+        if (organizationStatistics.UnderAssessment.HasValue) statisticsDictionary.Add(ApplicationPortalStatisticsCd.UnderAssessment, organizationStatistics.UnderAssessment.Value);
+        if (organizationStatistics.VerifyIdentity.HasValue) statisticsDictionary.Add(ApplicationPortalStatisticsCd.VerifyIdentity, organizationStatistics.VerifyIdentity.Value);
+        if (organizationStatistics.ClearedLastSevenDays.HasValue) statisticsDictionary.Add(ApplicationPortalStatisticsCd.ClearedLastSevenDays, organizationStatistics.ClearedLastSevenDays.Value);
+        if (organizationStatistics.NotClearedLastSevenDays.HasValue) statisticsDictionary.Add(ApplicationPortalStatisticsCd.NotClearedLastSevenDays, organizationStatistics.NotClearedLastSevenDays.Value);
 
         return new ApplicationStatisticsResp { Statistics = statisticsDictionary };
     }
