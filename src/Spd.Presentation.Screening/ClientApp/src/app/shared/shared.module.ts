@@ -5,6 +5,7 @@ import { RecaptchaFormsModule, RecaptchaModule } from 'ng-recaptcha';
 import { NgxDropzoneModule } from 'ngx-dropzone';
 import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
 import { MaterialModule } from '../material.module';
+import { AccessDeniedComponent } from './components/access-denied.component';
 import { AddressAutocompleteComponent } from './components/address-autocomplete.component';
 import { AddressModalComponent } from './components/address-modal.component';
 import { FooterComponent } from './components/app-footer.component';
@@ -35,6 +36,7 @@ const SHARED_COMPONENTS = [
 	YesNoPipe,
 	CaptchaV2Component,
 	FileUploadComponent,
+	AccessDeniedComponent,
 ];
 
 @NgModule({

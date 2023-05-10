@@ -1,4 +1,8 @@
 import { Component } from '@angular/core';
+import { tap } from 'rxjs';
+import { ApplicationPortalStatusCode, ApplicationStatisticsResponse } from 'src/app/api/models';
+import { ApplicationService } from 'src/app/api/services';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { CrrpRoutes } from '../crrp-routing.module';
 
 @Component({
@@ -15,7 +19,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
 					<div class="row box-row gy-4">
 						<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
-							<div class="box mx-auto" [routerLink]="[getRoute(dashboardRoutes.CRIMINAL_RECORD_CHECKS)]">
+							<div class="box mx-auto" [routerLink]="[getRoute(crrpRoutes.CRIMINAL_RECORD_CHECKS)]">
 								<div class="box__image">
 									<img class="box__image__item" src="/assets/dashboard/new_screening.png" />
 								</div>
@@ -29,7 +33,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 							</div>
 						</div>
 						<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
-							<div class="box mx-auto" [routerLink]="[getRoute(dashboardRoutes.APPLICATION_STATUSES)]">
+							<div class="box mx-auto" [routerLink]="[getRoute(crrpRoutes.APPLICATION_STATUSES)]">
 								<div class="box__image">
 									<img class="box__image__item" src="/assets/dashboard/screening_status.png" />
 								</div>
@@ -43,7 +47,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 							</div>
 						</div>
 						<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
-							<div class="box mx-auto" [routerLink]="[getRoute(dashboardRoutes.EXPIRING_CHECKS)]">
+							<div class="box mx-auto" [routerLink]="[getRoute(crrpRoutes.EXPIRING_CHECKS)]">
 								<div class="box__image">
 									<img class="box__image__item" src="/assets/dashboard/expired_screenings.png" />
 								</div>
@@ -61,7 +65,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 								<div class="box__image">
 									<img class="box__image__item" src="/assets/dashboard/outstanding_payments.png" />
 								</div>
-								<div class="box__text" [routerLink]="[getRoute(dashboardRoutes.PAYMENTS)]">
+								<div class="box__text" [routerLink]="[getRoute(crrpRoutes.PAYMENTS)]">
 									<h4>Payments</h4>
 									<div class="d-grid gap-2 d-md-flex justify-content-between">
 										<p>Manage and view payments</p>
@@ -71,7 +75,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 							</div>
 						</div>
 						<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
-							<div class="box mx-auto" [routerLink]="[getRoute(dashboardRoutes.USERS)]">
+							<div class="box mx-auto" [routerLink]="[getRoute(crrpRoutes.USERS)]">
 								<div class="box__image">
 									<img class="box__image__item" src="/assets/dashboard/authorized_users.png" />
 								</div>
@@ -85,7 +89,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 							</div>
 						</div>
 						<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
-							<div class="box mx-auto" [routerLink]="[getRoute(dashboardRoutes.IDENTITY_VERIFICATION)]">
+							<div class="box mx-auto" [routerLink]="[getRoute(crrpRoutes.IDENTITY_VERIFICATION)]">
 								<div class="box__image">
 									<img class="box__image__item" src="/assets/dashboard/applicant_identity.png" />
 								</div>
@@ -101,94 +105,93 @@ import { CrrpRoutes } from '../crrp-routing.module';
 					</div>
 				</div>
 			</div>
-			<div class="row mt-4">
-				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
-					<h4>To Do</h4>
-					<div class="row gy-4">
-						<div class="col-xl-3 col-lg-6 col-md-12 col-sm-12">
-							<mat-card class="data-card" style="border-color: var(--color-primary);">
-								<mat-card-header
-									class="data-card__header mb-2"
-									style="background-color: var(--color-primary); color: white;"
-								>
-									<mat-card-title class="data-card__header__title">Payment Required</mat-card-title>
-								</mat-card-header>
-								<mat-card-content class="data-card__content">
-									<p>16 applications require payment</p>
-								</mat-card-content>
-								<mat-card-actions class="mt-4">
-									<button mat-flat-button color="primary" [routerLink]="[getRoute(dashboardRoutes.PAYMENTS)]">
-										<mat-icon>attach_money</mat-icon>Pay Now
-									</button>
-								</mat-card-actions>
-							</mat-card>
-						</div>
-						<div class="col-xl-3 col-lg-6 col-md-12 col-sm-12">
-							<mat-card class="data-card" style="border-color: var(--color-yellow);">
-								<mat-card-header class="data-card__header mb-2" style="background-color: var(--color-yellow);">
-									<mat-card-title class="data-card__header__title">Verification Required</mat-card-title>
-								</mat-card-header>
-								<mat-card-content class="data-card__content">
-									<p>23 applications require ID verification</p>
-								</mat-card-content>
-								<mat-card-actions class="mt-4">
-									<button
-										mat-flat-button
-										color="accent"
-										[routerLink]="[getRoute(dashboardRoutes.IDENTITY_VERIFICATION)]"
+
+			<ng-container *ngIf="applicationStatistics$ | async">
+				<div class="row mt-4">
+					<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
+						<h4>To Do</h4>
+						<div class="row gy-4">
+							<div class="col-xl-3 col-lg-6 col-md-12 col-sm-12">
+								<mat-card class="data-card" style="border-color: var(--color-primary);">
+									<mat-card-header
+										class="data-card__header mb-2"
+										style="background-color: var(--color-primary); color: white;"
 									>
-										<mat-icon>send</mat-icon>Verify Now
-									</button>
-								</mat-card-actions>
-							</mat-card>
-						</div>
-						<div class="col-xl-3 col-lg-6 col-md-12 col-sm-12">
-							<mat-card class="data-card" style="border-color: var(--color-green); ">
-								<mat-card-header
-									class="data-card__header mb-2"
-									style="background-color: var(--color-green); color: white;"
-								>
-									<mat-card-title class="data-card__header__title">Applications Cleared</mat-card-title>
-								</mat-card-header>
-								<mat-card-content class="data-card__content">
-									<p>8 applications were cleared in the last week</p>
-								</mat-card-content>
-								<mat-card-actions class="mt-4">
-									<button
-										mat-flat-button
-										[routerLink]="[getRoute(dashboardRoutes.APPLICATION_STATUSES)]"
-										style="background-color: var(--color-green);color: var(--color-white);"
+										<mat-card-title class="data-card__header__title">Payment Required</mat-card-title>
+									</mat-card-header>
+									<mat-card-content class="data-card__content">
+										<p>{{ awaitingPaymentCount }} applications require payment</p>
+									</mat-card-content>
+									<mat-card-actions class="mt-4">
+										<button mat-flat-button color="primary" [routerLink]="[getRoute(crrpRoutes.PAYMENTS)]">
+											<mat-icon>attach_money</mat-icon>Pay Now
+										</button>
+									</mat-card-actions>
+								</mat-card>
+							</div>
+							<div class="col-xl-3 col-lg-6 col-md-12 col-sm-12">
+								<mat-card class="data-card" style="border-color: var(--color-yellow);">
+									<mat-card-header class="data-card__header mb-2" style="background-color: var(--color-yellow);">
+										<mat-card-title class="data-card__header__title">Verification Required</mat-card-title>
+									</mat-card-header>
+									<mat-card-content class="data-card__content">
+										<p>{{ verifyIdentityCount }} applications require ID verification</p>
+									</mat-card-content>
+									<mat-card-actions class="mt-4">
+										<button mat-flat-button color="accent" [routerLink]="[getRoute(crrpRoutes.IDENTITY_VERIFICATION)]">
+											<mat-icon>send</mat-icon>Verify Now
+										</button>
+									</mat-card-actions>
+								</mat-card>
+							</div>
+							<div class="col-xl-3 col-lg-6 col-md-12 col-sm-12">
+								<mat-card class="data-card" style="border-color: var(--color-green); ">
+									<mat-card-header
+										class="data-card__header mb-2"
+										style="background-color: var(--color-green); color: white;"
 									>
-										<mat-icon>preview</mat-icon>Review
-									</button>
-								</mat-card-actions>
-							</mat-card>
-						</div>
-						<div class="col-xl-3 col-lg-6 col-md-12 col-sm-12">
-							<mat-card class="data-card" style="border-color: var(--color-red);">
-								<mat-card-header
-									class="data-card__header mb-2"
-									style="background-color: var(--color-red); color: white;"
-								>
-									<mat-card-title class="data-card__header__title">Applications Not Cleared</mat-card-title>
-								</mat-card-header>
-								<mat-card-content class="data-card__content">
-									<p>0 applications were found at risk in the last week</p>
-								</mat-card-content>
-								<mat-card-actions class="mt-4">
-									<button
-										mat-flat-button
-										[routerLink]="[getRoute(dashboardRoutes.APPLICATION_STATUSES)]"
-										style="background-color: var(--color-red);color: var(--color-white);"
+										<mat-card-title class="data-card__header__title">Applications Cleared</mat-card-title>
+									</mat-card-header>
+									<mat-card-content class="data-card__content">
+										<p>{{ completedClearedCount }} applications were cleared in the last week</p>
+									</mat-card-content>
+									<mat-card-actions class="mt-4">
+										<button
+											mat-flat-button
+											[routerLink]="[getRoute(crrpRoutes.APPLICATION_STATUSES)]"
+											style="background-color: var(--color-green);color: var(--color-white);"
+										>
+											<mat-icon>preview</mat-icon>Review
+										</button>
+									</mat-card-actions>
+								</mat-card>
+							</div>
+							<div class="col-xl-3 col-lg-6 col-md-12 col-sm-12">
+								<mat-card class="data-card" style="border-color: var(--color-red);">
+									<mat-card-header
+										class="data-card__header mb-2"
+										style="background-color: var(--color-red); color: white;"
 									>
-										<mat-icon>preview</mat-icon>Review
-									</button>
-								</mat-card-actions>
-							</mat-card>
+										<mat-card-title class="data-card__header__title">Applications Not Cleared</mat-card-title>
+									</mat-card-header>
+									<mat-card-content class="data-card__content">
+										<p>{{ riskFoundCount }} applications were found at risk in the last week</p>
+									</mat-card-content>
+									<mat-card-actions class="mt-4">
+										<button
+											mat-flat-button
+											[routerLink]="[getRoute(crrpRoutes.APPLICATION_STATUSES)]"
+											style="background-color: var(--color-red);color: var(--color-white);"
+										>
+											<mat-icon>preview</mat-icon>Review
+										</button>
+									</mat-card-actions>
+								</mat-card>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
+			</ng-container>
 		</section>
 	`,
 	styles: [
@@ -241,7 +244,28 @@ import { CrrpRoutes } from '../crrp-routing.module';
 	],
 })
 export class CrrpHomeComponent {
-	dashboardRoutes = CrrpRoutes;
+	crrpRoutes = CrrpRoutes;
+
+	awaitingPaymentCount: number = 0;
+	verifyIdentityCount: number = 0;
+	completedClearedCount: number = 0;
+	riskFoundCount: number = 0;
+
+	applicationStatistics$ = this.applicationService
+		.apiOrgsOrgIdApplicationStatisticsGet({
+			orgId: this.authenticationService.loggedInOrgId!,
+		})
+		.pipe(
+			tap((res: ApplicationStatisticsResponse) => {
+				const applicationStatistics = res.statistics ?? {};
+				this.awaitingPaymentCount = applicationStatistics[ApplicationPortalStatusCode.AwaitingPayment] ?? 0;
+				this.verifyIdentityCount = applicationStatistics[ApplicationPortalStatusCode.VerifyIdentity] ?? 0;
+				this.completedClearedCount = applicationStatistics[ApplicationPortalStatusCode.CompletedCleared] ?? 0;
+				this.riskFoundCount = applicationStatistics[ApplicationPortalStatusCode.RiskFound] ?? 0;
+			})
+		);
+
+	constructor(private applicationService: ApplicationService, private authenticationService: AuthenticationService) {}
 
 	getRoute(route: string): string {
 		return CrrpRoutes.crrpPath(route);
