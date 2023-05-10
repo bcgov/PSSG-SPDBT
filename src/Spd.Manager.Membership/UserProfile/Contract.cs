@@ -46,11 +46,8 @@ namespace Spd.Manager.Membership.UserProfile
 
     public enum OrgRegistrationStatusCode
     {
-        New,
+        ApplicationSubmitted,
         InProgress,
-        AwaitingOrganization,
-        Approved,
-        NoJurisdiction,
-        Cancelled
+        Complete
     }
 }

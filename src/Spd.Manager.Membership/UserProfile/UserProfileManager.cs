@@ -50,7 +50,13 @@ namespace Spd.Manager.Membership.UserProfile
                     UserInfo ui = new UserInfo();
                     ui.OrgRegistrationId = reg.OrgRegistrationId;
                     ui.OrgName = reg.OrganizationName;
-                    ui.OrgRegistrationStatusCode = Enum.Parse<OrgRegistrationStatusCode>(reg.OrgRegistrationStatusStr);
+                    ui.OrgRegistrationStatusCode = reg.OrgRegistrationStatusStr switch
+                    {
+                        "New" => OrgRegistrationStatusCode.ApplicationSubmitted,
+                        "InProgress" => OrgRegistrationStatusCode.InProgress,
+                        "AwaitingOrganization" => OrgRegistrationStatusCode.InProgress,
+                        _ => OrgRegistrationStatusCode.Complete,
+                    };
                     userInfos.Add(ui);
                 }
             }
