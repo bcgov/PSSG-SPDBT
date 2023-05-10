@@ -406,7 +406,7 @@ export class ManualSubmissionsComponent implements OnInit {
 			postalCode: new FormControl('', [Validators.required]),
 			province: new FormControl('', [Validators.required]),
 			country: new FormControl('', [Validators.required]),
-			agreeToCompleteAndAccurate: new FormControl('', [Validators.required]),
+			agreeToCompleteAndAccurate: new FormControl('', [Validators.requiredTrue]),
 			haveVerifiedIdentity: new FormControl(''),
 			aliases: this.formBuilder.array([]),
 			attachments: new FormControl('', [Validators.required]),

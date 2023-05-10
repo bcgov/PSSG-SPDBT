@@ -147,7 +147,7 @@ namespace Spd.Manager.Cases
 
     public record ApplicationStatisticsResponse
     {
-        public IReadOnlyDictionary<ApplicationPortalStatusCode, int> Statistics { get; set; } = new Dictionary<ApplicationPortalStatusCode, int>();
+        public IReadOnlyDictionary<ApplicationPortalStatisticsCode, int> Statistics { get; set; } = new Dictionary<ApplicationPortalStatisticsCode, int>();
     }
 
     public record ApplicationResponse : Application
@@ -178,6 +178,28 @@ namespace Spd.Manager.Cases
         CancelledByApplicant,
         CancelledByOrganization
     }
+
+    public enum ApplicationPortalStatisticsCode
+    {
+        Draft,
+        VerifyIdentity,
+        InProgress,
+        AwaitingPayment,
+        AwaitingThirdParty,
+        AwaitingApplicant,
+        UnderAssessment,
+        Incomplete,
+        CompletedCleared,
+        RiskFound,
+        ClosedJudicialReview,
+        ClosedNoResponse,
+        ClosedNoConsent,
+        CancelledByApplicant,
+        CancelledByOrganization,
+        ClearedLastSevenDays,
+        NotClearedLastSevenDays
+    }
+
     public enum ApplicationOriginTypeCode
     {
         [Description("Portal")]
@@ -201,7 +223,6 @@ namespace Spd.Manager.Cases
         [Description("Organization Submitted")]
         OrganizationSubmitted
     }
-
     public enum ApplicationStatusCode
     {
         Draft,
