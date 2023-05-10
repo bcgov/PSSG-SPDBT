@@ -11,7 +11,7 @@ import { FormControlValidators } from 'src/app/core/validators/form-control.vali
 @Component({
 	selector: 'app-organization-profile',
 	template: `
-		<app-dashboard-header></app-dashboard-header>
+		<app-crrp-header></app-crrp-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row mb-4">
 				<div class="col-xl-9 col-lg-8 col-md-12 col-sm-12">

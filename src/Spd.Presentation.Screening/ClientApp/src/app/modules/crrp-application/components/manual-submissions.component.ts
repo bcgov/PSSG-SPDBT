@@ -61,7 +61,7 @@ export interface ApplicationCreateRequest {
 @Component({
 	selector: 'app-manual-submissions',
 	template: `
-		<app-dashboard-header></app-dashboard-header>
+		<app-crrp-header></app-crrp-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row mb-4">
 				<div class="col-xl-10 col-lg-10 col-md-12 col-sm-12">
@@ -486,7 +486,7 @@ export class ManualSubmissionsComponent implements OnInit {
 		}
 
 		if (this.form.valid) {
-			const createRequest: ApplicationCreateRequest = { ...this.form.value };
+			const createRequest: any = { ...this.form.value };
 			createRequest.originTypeCode = ApplicationOriginTypeCode.Portal;
 			createRequest.phoneNumber = createRequest.phoneNumber
 				? this.maskPipe.transform(createRequest.phoneNumber, SPD_CONSTANTS.phone.backendMask)
@@ -498,7 +498,7 @@ export class ManualSubmissionsComponent implements OnInit {
 
 			const body = {
 				ConsentFormFile: this.fileUploadComponent.files[0],
-				ApplicationCreateRequestJson: createRequest as string,
+				ApplicationCreateRequestJson: createRequest,
 			};
 
 			// Check for potential duplicate

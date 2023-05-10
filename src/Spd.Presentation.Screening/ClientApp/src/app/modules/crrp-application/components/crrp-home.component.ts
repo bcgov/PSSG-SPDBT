@@ -2,9 +2,9 @@ import { Component } from '@angular/core';
 import { CrrpRoutes } from '../crrp-routing.module';
 
 @Component({
-	selector: 'app-dashboard-home',
+	selector: 'app-crrp-home',
 	template: `
-		<app-dashboard-header></app-dashboard-header>
+		<app-crrp-header></app-crrp-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
@@ -240,7 +240,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 		`,
 	],
 })
-export class DashboardHomeComponent {
+export class CrrpHomeComponent {
 	dashboardRoutes = CrrpRoutes;
 
 	getRoute(route: string): string {
