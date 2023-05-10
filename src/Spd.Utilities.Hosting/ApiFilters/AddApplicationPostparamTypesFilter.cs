@@ -53,7 +53,7 @@ namespace Rsvp.Cms.Api.Filters
                                             }
                                         },
                                         {
-                                            "GivenName",
+                                            "givenName",
                                             new OpenApiSchema
                                             {
                                                 Type = "string",
@@ -61,7 +61,7 @@ namespace Rsvp.Cms.Api.Filters
                                             }
                                         },
                                         {
-                                            "MiddleName1",
+                                            "middleName1",
                                             new OpenApiSchema
                                             {
                                                 Type = "string",
@@ -69,7 +69,7 @@ namespace Rsvp.Cms.Api.Filters
                                             }
                                         },
                                         {
-                                            "MiddleName2",
+                                            "middleName2",
                                             new OpenApiSchema
                                             {
                                                 Type = "string",
@@ -77,7 +77,7 @@ namespace Rsvp.Cms.Api.Filters
                                             }
                                         },
                                         {
-                                            "Surname",
+                                            "surname",
                                             new OpenApiSchema
                                             {
                                                 Type = "string",
@@ -85,7 +85,7 @@ namespace Rsvp.Cms.Api.Filters
                                             }
                                         },
                                         {
-                                            "EmailAddress",
+                                            "emailAddress",
                                             new OpenApiSchema
                                             {
                                                 Type = "string",
@@ -93,7 +93,7 @@ namespace Rsvp.Cms.Api.Filters
                                             }
                                         },
                                         {
-                                            "JobTitle",
+                                            "jobTitle",
                                             new OpenApiSchema
                                             {
                                                 Type = "string",
@@ -101,7 +101,7 @@ namespace Rsvp.Cms.Api.Filters
                                             }
                                         },
                                         {
-                                            "DateOfBirth",
+                                            "dateOfBirth",
                                             new OpenApiSchema
                                             {
                                                 Type = "string",
@@ -230,7 +230,7 @@ namespace Rsvp.Cms.Api.Filters
                                                     Type = "AliasCreateRequest",
                                                     Properties = {
                                                         {
-                                                            "GivenName",
+                                                            "givenName",
                                                             new OpenApiSchema
                                                             {
                                                                 Type = "string",
@@ -238,7 +238,7 @@ namespace Rsvp.Cms.Api.Filters
                                                             }
                                                         },
                                                         {
-                                                            "MiddleName1",
+                                                            "middleName1",
                                                             new OpenApiSchema
                                                             {
                                                                 Type = "string",
@@ -246,7 +246,7 @@ namespace Rsvp.Cms.Api.Filters
                                                             }
                                                         },
                                                         {
-                                                            "MiddleName2",
+                                                            "middleName2",
                                                             new OpenApiSchema
                                                             {
                                                                 Type = "string",
@@ -254,7 +254,7 @@ namespace Rsvp.Cms.Api.Filters
                                                             }
                                                         },
                                                         {
-                                                            "Surname",
+                                                            "surname",
                                                             new OpenApiSchema
                                                             {
                                                                 Type = "string",

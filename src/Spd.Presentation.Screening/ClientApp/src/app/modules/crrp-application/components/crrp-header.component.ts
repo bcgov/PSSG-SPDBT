@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 
 @Component({
-	selector: 'app-dashboard-header',
+	selector: 'app-crrp-header',
 	template: `
 		<div class="row">
 			<div class="col-12">
@@ -29,7 +29,7 @@ import { AuthenticationService } from 'src/app/core/services/authentication.serv
 		`,
 	],
 })
-export class DashboardHeaderComponent implements OnInit {
+export class CrrpHeaderComponent implements OnInit {
 	loggedInOrgDisplay: string | null = null;
 	@Input() subtitle = '';
 
