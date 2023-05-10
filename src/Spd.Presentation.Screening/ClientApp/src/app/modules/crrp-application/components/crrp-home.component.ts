@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { tap } from 'rxjs';
-import { ApplicationPortalStatusCode, ApplicationStatisticsResponse } from 'src/app/api/models';
+import { ApplicationStatisticsResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
+import { ApplicationPortalStatisticsCode } from 'src/app/core/constants/model-desc';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { CrrpRoutes } from '../crrp-routing.module';
 
@@ -258,10 +259,10 @@ export class CrrpHomeComponent {
 		.pipe(
 			tap((res: ApplicationStatisticsResponse) => {
 				const applicationStatistics = res.statistics ?? {};
-				this.awaitingPaymentCount = applicationStatistics[ApplicationPortalStatusCode.AwaitingPayment] ?? 0;
-				this.verifyIdentityCount = applicationStatistics[ApplicationPortalStatusCode.VerifyIdentity] ?? 0;
-				this.completedClearedCount = applicationStatistics[ApplicationPortalStatusCode.CompletedCleared] ?? 0;
-				this.riskFoundCount = applicationStatistics[ApplicationPortalStatusCode.RiskFound] ?? 0;
+				this.awaitingPaymentCount = applicationStatistics[ApplicationPortalStatisticsCode.AwaitingPayment] ?? 0;
+				this.verifyIdentityCount = applicationStatistics[ApplicationPortalStatisticsCode.VerifyIdentity] ?? 0;
+				this.completedClearedCount = applicationStatistics[ApplicationPortalStatisticsCode.ClearedLastSevenDays] ?? 0;
+				this.riskFoundCount = applicationStatistics[ApplicationPortalStatisticsCode.NotClearedLastSevenDays] ?? 0;
 			})
 		);
 
