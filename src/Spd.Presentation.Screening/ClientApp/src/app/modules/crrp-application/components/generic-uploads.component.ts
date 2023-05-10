@@ -3,7 +3,6 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 
 @Component({
@@ -14,6 +13,21 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 			<div class="row">
 				<div class="col-12">
 					<h2 class="mb-2 fw-normal">Generic Uploads</h2>
+
+					<div class="my-4">
+						<app-file-upload accept=".tsv"></app-file-upload>
+						<mat-error
+							class="mat-option-error"
+							*ngIf="
+								(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+								form.get('attachments')?.invalid &&
+								form.get('attachments')?.hasError('required')
+							"
+							>This is required</mat-error
+						>
+					</div>
+
+					<!-- 				
 					<ngx-dropzone
 						#fileDropzone
 						(change)="onUploadFile($event)"
@@ -56,7 +70,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 								</div>
 							</ngx-dropzone-label>
 						</ngx-dropzone-preview>
-					</ngx-dropzone>
+					</ngx-dropzone> -->
 					<div class="col-md-12 col-sm-12 mt-4" *ngIf="showErrors">
 						<div class="alert alert-danger d-flex align-items-center" role="alert">
 							<mat-icon class="d-none d-md-block alert-icon me-2">warning</mat-icon>
@@ -154,26 +168,19 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 })
 export class GenericUploadsComponent implements OnInit {
 	form: FormGroup = this.formBuilder.group({
-		files: new FormControl('', [Validators.required]),
+		attachments: new FormControl('', [Validators.required]),
 	});
 
 	constants = SPD_CONSTANTS;
 	dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
 	columns!: string[];
 
-	multiple: boolean = false;
-	expandable: boolean = true;
-	disableClick: boolean = false;
-	maxFileSize: number = 104857600; // bytes
-	accept = '.tsv';
 	showErrors = false;
-	// TODO remove temp code
-	count = 0;
 
 	@ViewChild(MatSort) sort!: MatSort;
 	@ViewChild('paginator') paginator!: MatPaginator;
 
-	constructor(private formBuilder: FormBuilder, private spinnerService: NgxSpinnerService) {}
+	constructor(private formBuilder: FormBuilder) {}
 
 	ngOnInit() {
 		this.columns = ['uploadedDateTime', 'uploadedBy', 'uploadedFileName', 'uploadedBatchNumber'];
@@ -194,34 +201,35 @@ export class GenericUploadsComponent implements OnInit {
 	}
 
 	onUploadFile(evt: any) {
-		this.spinnerService.show('loaderSpinner');
+		// const attachments =
+		// 	this.fileUploadComponent.files && this.fileUploadComponent.files.length > 0
+		// 		? this.fileUploadComponent.files[0]
+		// 		: '';
+		// this.form.controls['attachments'].setValue(attachments);
 
-		setTimeout(() => {
-			// const currentFiles = [...this.form.get('files')?.value];
-			// currentFiles.push(...evt.addedFiles);
-			// this.form.get('files')?.setValue(currentFiles);
-			this.form.get('files')?.setValue(evt.addedFiles);
-			this.spinnerService.hide('loaderSpinner');
+		// const currentFiles = [...this.form.get('files')?.value];
+		// currentFiles.push(...evt.addedFiles);
+		// this.form.get('files')?.setValue(currentFiles);
+		this.form.get('attachments')?.setValue(evt.addedFiles);
 
-			if (this.count % 2 == 0) this.showErrors = true;
-			else this.showErrors = false;
-			this.count++;
+		// if (this.count % 2 == 0) this.showErrors = true;
+		// else this.showErrors = false;
+		// this.count++;
 
-			const fileInfo = evt.addedFiles[0];
-			if (fileInfo) {
-				const currList = this.dataSource.data;
+		const fileInfo = evt.addedFiles[0];
+		if (fileInfo) {
+			const currList = this.dataSource.data;
 
-				this.dataSource.data = [
-					{
-						uploadedDateTime: new Date(),
-						uploadedBy: 'CURRENT USER',
-						uploadedFileName: fileInfo.name,
-						uploadedBatchNumber: 'UNKNOWN',
-					},
-					...currList,
-				];
-			}
-		}, 2000);
+			this.dataSource.data = [
+				{
+					uploadedDateTime: new Date(),
+					uploadedBy: 'CURRENT USER',
+					uploadedFileName: fileInfo.name,
+					uploadedBatchNumber: 'UNKNOWN',
+				},
+				...currList,
+			];
+		}
 	}
 
 	onRemoveFile(evt: any) {
