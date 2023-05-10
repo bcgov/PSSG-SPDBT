@@ -39,7 +39,7 @@ namespace Spd.Utilities.Hosting
                     { jwtSecurityScheme, Array.Empty<string>() }
                 });
 
-                c.OperationFilter<AddRequiredHeaderParameter>();
+                //c.OperationFilter<AddRequiredHeaderParameter>();
                 c.OperationFilter<ProducesResponseTypeFilter>();
                 c.OperationFilter<AddApplicationPostParamTypesFilter>();
                 // Set the comments path for the Swagger JSON and UI.
