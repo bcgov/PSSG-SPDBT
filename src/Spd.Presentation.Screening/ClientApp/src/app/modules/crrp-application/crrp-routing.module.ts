@@ -30,7 +30,7 @@ export class CrrpRoutes {
 	public static MODULE_PATH = CrrpRoutes.CRRP;
 
 	public static crrpPath(route: string): string {
-		return `${CrrpRoutes.MODULE_PATH}/${route}`;
+		return `/${CrrpRoutes.MODULE_PATH}/${route}`;
 	}
 }
 
@@ -39,17 +39,17 @@ const routes: Routes = [
 		path: '',
 		component: CrrpComponent,
 		children: [
-			{ path: 'home', component: CrrpHomeComponent },
-			{ path: 'criminal-record-checks', component: CriminalRecordChecksComponent },
-			{ path: 'application-statuses', component: ApplicationStatusesComponent },
-			{ path: 'expiring-checks', component: ExpiringChecksComponent },
-			{ path: 'generic-uploads', component: GenericUploadsComponent },
-			{ path: 'identity-verification', component: IdentifyVerificationComponent },
-			{ path: 'payments', component: PaymentsComponent },
-			{ path: 'manual-submissions', component: ManualSubmissionsComponent },
-			{ path: 'organization-profile', component: OrganizationProfileComponent },
-			{ path: 'reports', component: ReportsComponent },
-			{ path: 'users', component: UsersComponent },
+			{ path: CrrpRoutes.HOME, component: CrrpHomeComponent },
+			{ path: CrrpRoutes.CRIMINAL_RECORD_CHECKS, component: CriminalRecordChecksComponent },
+			{ path: CrrpRoutes.APPLICATION_STATUSES, component: ApplicationStatusesComponent },
+			{ path: CrrpRoutes.EXPIRING_CHECKS, component: ExpiringChecksComponent },
+			{ path: CrrpRoutes.GENERIC_UPLOADS, component: GenericUploadsComponent },
+			{ path: CrrpRoutes.IDENTITY_VERIFICATION, component: IdentifyVerificationComponent },
+			{ path: CrrpRoutes.PAYMENTS, component: PaymentsComponent },
+			{ path: CrrpRoutes.MANUAL_SUBMISSIONS, component: ManualSubmissionsComponent },
+			{ path: CrrpRoutes.ORGANIZATION_PROFILE, component: OrganizationProfileComponent },
+			{ path: CrrpRoutes.REPORTS, component: ReportsComponent },
+			{ path: CrrpRoutes.USERS, component: UsersComponent },
 			// {
 			// 	path: 'invitations/:id',
 			// 	component: CrrpHomeComponent,
