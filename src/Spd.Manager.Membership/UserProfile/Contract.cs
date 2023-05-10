@@ -3,6 +3,7 @@ using Spd.Manager.Membership.Org;
 using Spd.Manager.Membership.OrgUser;
 using Spd.Manager.Membership.Shared;
 using Spd.Resource.Organizations.User;
+using System.ComponentModel;
 
 namespace Spd.Manager.Membership.UserProfile
 {
@@ -31,6 +32,7 @@ namespace Spd.Manager.Membership.UserProfile
         public OrgSettings? OrgSettings { get; set; }
         public Guid? OrgId { get; set; }
         public Guid? OrgRegistrationId { get; set; }
+        public OrgRegistrationStatusCode OrgRegistrationStatusCode { get; set; }
         public string? OrgName { get; set; }
         public Guid? UserGuid { get; set; }
     }
@@ -40,5 +42,15 @@ namespace Spd.Manager.Membership.UserProfile
         public PayerPreferenceTypeCode PayerPreference { get; set; }
         public BooleanTypeCode ContractorsNeedVulnerableSectorScreening { get; set; }
         public BooleanTypeCode LicenseesNeedVulnerableSectorScreening { get; set; }        
+    }
+
+    public enum OrgRegistrationStatusCode
+    {
+        New,
+        InProgress,
+        AwaitingOrganization,
+        Approved,
+        NoJurisdiction,
+        Cancelled
     }
 }

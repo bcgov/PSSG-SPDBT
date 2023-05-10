@@ -50,6 +50,7 @@ namespace Spd.Manager.Membership.UserProfile
                     UserInfo ui = new UserInfo();
                     ui.OrgRegistrationId = reg.OrgRegistrationId;
                     ui.OrgName = reg.OrganizationName;
+                    ui.OrgRegistrationStatusCode = Enum.Parse<OrgRegistrationStatusCode>(reg.OrgRegistrationStatusStr);
                     userInfos.Add(ui);
                 }
             }
