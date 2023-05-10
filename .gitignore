@@ -19,3 +19,5 @@ bld/
 
 # Visual Studio 2022 cache/options directory
 .vs/
+
+src/Spd.Presentation.Screening/key-*.xml
