@@ -14,7 +14,7 @@ import { UsersComponent } from './components/users.component';
 import { CrrpComponent } from './crrp.component';
 
 export class CrrpRoutes {
-	public static DASHBOARD = 'crrp-application';
+	public static CRRP = 'crrp-application';
 	public static HOME = 'home';
 	public static CRIMINAL_RECORD_CHECKS = 'criminal-record-checks';
 	public static APPLICATION_STATUSES = 'application-statuses';
@@ -27,7 +27,7 @@ export class CrrpRoutes {
 	public static REPORTS = 'reports';
 	public static USERS = 'users';
 
-	public static MODULE_PATH = CrrpRoutes.DASHBOARD;
+	public static MODULE_PATH = CrrpRoutes.CRRP;
 
 	public static crrpPath(route: string): string {
 		return `/${CrrpRoutes.MODULE_PATH}/${route}`;
