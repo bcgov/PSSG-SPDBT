@@ -71,6 +71,10 @@ namespace Spd.Resource.Organizations.User
             if (invite.spd_OrganizationId.spd_orgguid != verify.OrgGuid.ToString())
                 throw new ApiException(HttpStatusCode.Unauthorized, "organization mismatch with bceid organization.");
 
+            //set invite views
+            invite.spd_views = invite.spd_views ?? 0 + 1;
+            _dynaContext.UpdateObject(invite);
+
             //verified, now add/link identity to user.
             spd_identity? identity = await _dynaContext.spd_identities
                 .Where(i => i.spd_userguid == verify.UserGuid.ToString() && i.spd_orgguid == verify.OrgGuid.ToString())
@@ -116,7 +120,7 @@ namespace Spd.Resource.Organizations.User
             spd_portalinvitation invitation = _mapper.Map<spd_portalinvitation>(createUserCmd.User);
             Guid inviteId = Guid.NewGuid();
             invitation.spd_portalinvitationid = inviteId;
-            var encryptedInviteId = WebUtility.UrlEncode(_dataProtector.Protect(inviteId.ToString(), DateTimeOffset.UtcNow.AddMinutes(2)));
+            var encryptedInviteId = WebUtility.UrlEncode(_dataProtector.Protect(inviteId.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.USER_INVITE_VALID_DAYS)));
             invitation.spd_invitationlink = $"{createUserCmd.HostUrl}invitations/{encryptedInviteId}";
             _dynaContext.AddTospd_portalinvitations(invitation);
             _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_OrganizationId), organization);
