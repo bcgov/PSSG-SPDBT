@@ -126,7 +126,7 @@ public enum FileCategoryCode
 public record ApplicationStatisticsQry(Guid OrganizationId);
 public record ApplicationStatisticsResp
 {
-    public IReadOnlyDictionary<ApplicationPortalStatusCd, int> Statistics { get; set; } = new Dictionary<ApplicationPortalStatusCd, int>();
+    public IReadOnlyDictionary<ApplicationPortalStatisticsCd, int> Statistics { get; set; } = new Dictionary<ApplicationPortalStatisticsCd, int>();
 }
 
 public enum ApplicationPortalStatusCd
@@ -145,7 +145,26 @@ public enum ApplicationPortalStatusCd
     ClosedNoResponse,
     ClosedNoConsent,
     CancelledByApplicant,
-    CancelledByOrganization
+    CancelledByOrganization,
 }
 
-
+public enum ApplicationPortalStatisticsCd
+{
+    Draft,
+    VerifyIdentity,
+    InProgress,
+    AwaitingPayment,
+    AwaitingThirdParty,
+    AwaitingApplicant,
+    UnderAssessment,
+    Incomplete,
+    CompletedCleared,
+    RiskFound,
+    ClosedJudicialReview,
+    ClosedNoResponse,
+    ClosedNoConsent,
+    CancelledByApplicant,
+    CancelledByOrganization,
+    ClearedLastSevenDays,
+    NotClearedLastSevenDays
+}

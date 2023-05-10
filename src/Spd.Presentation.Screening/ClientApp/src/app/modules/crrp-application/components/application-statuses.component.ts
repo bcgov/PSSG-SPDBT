@@ -5,14 +5,10 @@ import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
-import {
-	ApplicationListResponse,
-	ApplicationPortalStatusCode,
-	ApplicationResponse,
-	ApplicationStatisticsResponse,
-} from 'src/app/api/models';
+import { ApplicationListResponse, ApplicationResponse, ApplicationStatisticsResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import { ApplicationPortalStatisticsCode } from 'src/app/core/constants/model-desc';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { CrrpRoutes } from '../crrp-routing.module';
@@ -45,39 +41,39 @@ export interface ApplicationStatusResponse extends ApplicationResponse {
 					<div class="d-flex flex-wrap justify-content-start">
 						<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
 							<div class="fw-semibold fs-4 m-2 ms-3">
-								{{ applicationStatistics[applicationPortalStatusCodes.VerifyIdentity] }}
+								{{ applicationStatistics[statisticsCode.VerifyIdentity] }}
 							</div>
-							<div class="fs-7 m-2">{{ getStatusDesc(applicationPortalStatusCodes.VerifyIdentity) }}</div>
+							<div class="fs-7 m-2">{{ getStatusDesc(statisticsCode.VerifyIdentity) }}</div>
 						</div>
 						<div class="d-flex flex-row statistic-card area-green align-items-center mt-2 me-2">
 							<div class="fw-semibold fs-4 m-2 ms-3">
-								{{ applicationStatistics[applicationPortalStatusCodes.InProgress] }}
+								{{ applicationStatistics[statisticsCode.InProgress] }}
 							</div>
-							<div class="fs-7 m-2">{{ getStatusDesc(applicationPortalStatusCodes.InProgress) }}</div>
+							<div class="fs-7 m-2">{{ getStatusDesc(statisticsCode.InProgress) }}</div>
 						</div>
 						<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
 							<div class="fw-semibold fs-4 m-2 ms-3">
-								{{ applicationStatistics[applicationPortalStatusCodes.AwaitingPayment] }}
+								{{ applicationStatistics[statisticsCode.AwaitingPayment] }}
 							</div>
-							<div class="fs-7 m-2">{{ getStatusDesc(applicationPortalStatusCodes.AwaitingPayment) }}</div>
+							<div class="fs-7 m-2">{{ getStatusDesc(statisticsCode.AwaitingPayment) }}</div>
 						</div>
 						<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
 							<div class="fw-semibold fs-4 m-2 ms-3">
-								{{ applicationStatistics[applicationPortalStatusCodes.AwaitingThirdParty] }}
+								{{ applicationStatistics[statisticsCode.AwaitingThirdParty] }}
 							</div>
-							<div class="fs-7 m-2">{{ getStatusDesc(applicationPortalStatusCodes.AwaitingThirdParty) }}</div>
+							<div class="fs-7 m-2">{{ getStatusDesc(statisticsCode.AwaitingThirdParty) }}</div>
 						</div>
 						<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
 							<div class="fw-semibold fs-4 m-2 ms-3">
-								{{ applicationStatistics[applicationPortalStatusCodes.AwaitingApplicant] }}
+								{{ applicationStatistics[statisticsCode.AwaitingApplicant] }}
 							</div>
-							<div class="fs-7 m-2">{{ getStatusDesc(applicationPortalStatusCodes.AwaitingApplicant) }}</div>
+							<div class="fs-7 m-2">{{ getStatusDesc(statisticsCode.AwaitingApplicant) }}</div>
 						</div>
 						<div class="d-flex flex-row statistic-card area-blue align-items-center mt-2 me-2">
 							<div class="fw-semibold fs-4 m-2 ms-3">
-								{{ applicationStatistics[applicationPortalStatusCodes.UnderAssessment] }}
+								{{ applicationStatistics[statisticsCode.UnderAssessment] }}
 							</div>
-							<div class="fs-7 m-2">{{ getStatusDesc(applicationPortalStatusCodes.UnderAssessment) }}</div>
+							<div class="fs-7 m-2">{{ getStatusDesc(statisticsCode.UnderAssessment) }}</div>
 						</div>
 					</div>
 				</div>
@@ -87,33 +83,33 @@ export interface ApplicationStatusResponse extends ApplicationResponse {
 					<div class="d-flex flex-wrap justify-content-start">
 						<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
 							<div class="fw-semibold fs-4 m-2 ms-3">
-								{{ applicationStatistics[applicationPortalStatusCodes.RiskFound] }}
+								{{ applicationStatistics[statisticsCode.RiskFound] }}
 							</div>
-							<div class="fs-7 m-2">{{ getStatusDesc(applicationPortalStatusCodes.RiskFound) }}</div>
+							<div class="fs-7 m-2">{{ getStatusDesc(statisticsCode.RiskFound) }}</div>
 						</div>
 						<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
 							<div class="fw-semibold fs-4 m-2 ms-3">
-								{{ applicationStatistics[applicationPortalStatusCodes.ClosedJudicialReview] }}
+								{{ applicationStatistics[statisticsCode.ClosedJudicialReview] }}
 							</div>
-							<div class="fs-7 m-2">{{ getStatusDesc(applicationPortalStatusCodes.ClosedJudicialReview) }}</div>
+							<div class="fs-7 m-2">{{ getStatusDesc(statisticsCode.ClosedJudicialReview) }}</div>
 						</div>
 						<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
 							<div class="fw-semibold fs-4 m-2 ms-3">
-								{{ applicationStatistics[applicationPortalStatusCodes.ClosedNoResponse] }}
+								{{ applicationStatistics[statisticsCode.ClosedNoResponse] }}
 							</div>
-							<div class="fs-7 m-2">{{ getStatusDesc(applicationPortalStatusCodes.ClosedNoResponse) }}</div>
+							<div class="fs-7 m-2">{{ getStatusDesc(statisticsCode.ClosedNoResponse) }}</div>
 						</div>
 						<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
 							<div class="fw-semibold fs-4 m-2 ms-3">
-								{{ applicationStatistics[applicationPortalStatusCodes.ClosedNoConsent] }}
+								{{ applicationStatistics[statisticsCode.ClosedNoConsent] }}
 							</div>
-							<div class="fs-7 m-2">{{ getStatusDesc(applicationPortalStatusCodes.ClosedNoConsent) }}</div>
+							<div class="fs-7 m-2">{{ getStatusDesc(statisticsCode.ClosedNoConsent) }}</div>
 						</div>
 						<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
 							<div class="fw-semibold fs-4 m-2 ms-3">
-								{{ applicationStatistics[applicationPortalStatusCodes.CancelledByApplicant] }}
+								{{ applicationStatistics[statisticsCode.CancelledByApplicant] }}
 							</div>
-							<div class="fs-7 m-2">{{ getStatusDesc(applicationPortalStatusCodes.CancelledByApplicant) }}</div>
+							<div class="fs-7 m-2">{{ getStatusDesc(statisticsCode.CancelledByApplicant) }}</div>
 						</div>
 					</div>
 				</div>
@@ -257,7 +253,7 @@ export interface ApplicationStatusResponse extends ApplicationResponse {
 									class="m-2"
 									style="color: var(--color-green);"
 									aria-label="Pay now"
-									*ngIf="application.status == applicationPortalStatusCodes.AwaitingPayment"
+									*ngIf="application.status == statisticsCode.AwaitingPayment"
 								>
 									<mat-icon>send</mat-icon>Pay Now
 								</a>
@@ -268,7 +264,7 @@ export interface ApplicationStatusResponse extends ApplicationResponse {
 									class="m-2"
 									style="color: var(--color-primary-light);"
 									aria-label="Verify Applicant"
-									*ngIf="application.status == applicationPortalStatusCodes.VerifyIdentity"
+									*ngIf="application.status == statisticsCode.VerifyIdentity"
 								>
 									<mat-icon>send</mat-icon>Verify Applicant
 								</a>
@@ -326,7 +322,7 @@ export class ApplicationStatusesComponent implements OnInit {
 	private queryParams: any = this.utilService.getDefaultQueryParams();
 
 	constants = SPD_CONSTANTS;
-	applicationPortalStatusCodes = ApplicationPortalStatusCode;
+	statisticsCode = ApplicationPortalStatisticsCode;
 	filterCriteriaExists = false;
 
 	dataSource: MatTableDataSource<ApplicationStatusResponse> = new MatTableDataSource<ApplicationStatusResponse>([]);
