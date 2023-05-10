@@ -15,6 +15,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             .ForMember(d => d.spd_email, opt => opt.MapFrom(s => s.Email))
             .ForMember(d => d.spd_jobtitle, opt => opt.MapFrom(s => s.JobTitle))
             .ForMember(d => d.spd_invitationtype, opt => opt.MapFrom(s => InvitationTypeOptionSet.ScreeningRequest))
+            .ForMember(d => d.spd_views, opt => opt.MapFrom(s => 0))
             .ForMember(d => d.spd_payeetype, opt => opt.MapFrom(s => (int)Enum.Parse<PayerPreferenceOptionSet>(s.PayeeType.ToString())))
             .ReverseMap();
 
@@ -24,7 +25,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_portalinvitationid))
             .ForMember(d => d.ErrorMsg, opt => opt.MapFrom(s => s.spd_errormessage))
             .ForMember(d => d.Status, opt => opt.MapFrom(s => s.statuscode == null ? string.Empty : ((InvitationActiveStatus)s.statuscode).ToString()))
-            .ForMember(d => d.Viewed, opt => opt.MapFrom(s => false)); //todo
+            .ForMember(d => d.Viewed, opt => opt.MapFrom(s => s.spd_views != null && s.spd_views > 0)); 
         }
         private static string? GetPayeeType(int? code)
         {
