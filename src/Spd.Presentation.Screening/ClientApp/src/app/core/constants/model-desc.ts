@@ -19,6 +19,26 @@ export enum ApplicationOriginTypeCode {
 	OrganizationSubmitted = 'OrganizationSubmitted',
 }
 
+export enum ApplicationPortalStatisticsCode {
+	Draft = 'Draft',
+	VerifyIdentity = 'VerifyIdentity',
+	InProgress = 'InProgress',
+	AwaitingPayment = 'AwaitingPayment',
+	AwaitingThirdParty = 'AwaitingThirdParty',
+	AwaitingApplicant = 'AwaitingApplicant',
+	UnderAssessment = 'UnderAssessment',
+	Incomplete = 'Incomplete',
+	CompletedCleared = 'CompletedCleared',
+	RiskFound = 'RiskFound',
+	ClosedJudicialReview = 'ClosedJudicialReview',
+	ClosedNoResponse = 'ClosedNoResponse',
+	ClosedNoConsent = 'ClosedNoConsent',
+	CancelledByApplicant = 'CancelledByApplicant',
+	CancelledByOrganization = 'CancelledByOrganization',
+	ClearedLastSevenDays = 'ClearedLastSevenDays',
+	NotClearedLastSevenDays = 'NotClearedLastSevenDays',
+}
+
 export interface SelectOptions<k = string | number | boolean> {
 	code: k;
 	desc: string | number | boolean;
