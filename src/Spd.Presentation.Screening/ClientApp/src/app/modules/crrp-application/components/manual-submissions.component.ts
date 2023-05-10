@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
 import { NgxMaskPipe } from 'ngx-mask';
-import { ApplicationCreateResponse, BooleanTypeCode, PayeePreferenceTypeCode } from 'src/app/api/models';
+import { ApplicationCreateResponse, BooleanTypeCode } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import {
@@ -26,35 +26,6 @@ export interface AliasCreateRequest {
 	givenName?: null | string;
 	middleName1?: null | string;
 	middleName2?: null | string;
-	surname?: null | string;
-}
-
-export interface ApplicationCreateRequest {
-	addressLine1?: null | string;
-	addressLine2?: null | string;
-	agreeToCompleteAndAccurate?: null | boolean;
-	aliases?: null | Array<AliasCreateRequest>;
-	birthPlace?: null | string;
-	city?: null | string;
-	contractedCompanyName?: null | string;
-	country?: null | string;
-	dateOfBirth?: null | string;
-	driversLicense?: null | string;
-	emailAddress?: null | string;
-	givenName?: null | string;
-	haveVerifiedIdentity?: null | boolean;
-	jobTitle?: null | string;
-	middleName1?: null | string;
-	middleName2?: null | string;
-	oneLegalName?: null | boolean;
-	orgId?: string;
-	originTypeCode?: ApplicationOriginTypeCode;
-	payeeType?: PayeePreferenceTypeCode;
-	phoneNumber?: null | string;
-	postalCode?: null | string;
-	province?: null | string;
-	requireDuplicateCheck?: boolean;
-	screeningTypeCode?: ScreeningTypeCode;
 	surname?: null | string;
 }
 
@@ -486,7 +457,10 @@ export class ManualSubmissionsComponent implements OnInit {
 		}
 
 		if (this.form.valid) {
-			const createRequest: any = { ...this.form.value };
+			const createRequest: any = { ...this.form.value } as Parameters<
+				ApplicationService['apiOrgsOrgIdApplicationPost']
+			>[0]['body']['ApplicationCreateRequestJson'];
+
 			createRequest.originTypeCode = ApplicationOriginTypeCode.Portal;
 			createRequest.phoneNumber = createRequest.phoneNumber
 				? this.maskPipe.transform(createRequest.phoneNumber, SPD_CONSTANTS.phone.backendMask)
