@@ -49,8 +49,17 @@ namespace Spd.Resource.Organizations.User
 
         private async Task<OrgUserManageResult> VerifyOrgUserInvitationAsync(UserInvitationVerify verify, CancellationToken ct)
         {
-            string inviteIdStr = _dataProtector.Unprotect(WebUtility.UrlDecode(verify.InviteIdEncryptedCode));
-            Guid inviteId = Guid.Parse(inviteIdStr);
+            Guid inviteId;
+            try
+            {
+                string inviteIdStr = _dataProtector.Unprotect(WebUtility.UrlDecode(verify.InviteIdEncryptedCode));
+                inviteId = Guid.Parse(inviteIdStr);
+            }
+            catch
+            {
+                throw new ApiException(HttpStatusCode.Unauthorized, "invite link is not valid anymore.");
+            }
+
             var invite = await _dynaContext.spd_portalinvitations
                 .Expand(i => i.spd_OrganizationId)
                 .Where(i => i.spd_portalinvitationid == inviteId)
@@ -107,7 +116,7 @@ namespace Spd.Resource.Organizations.User
             spd_portalinvitation invitation = _mapper.Map<spd_portalinvitation>(createUserCmd.User);
             Guid inviteId = Guid.NewGuid();
             invitation.spd_portalinvitationid = inviteId;
-            var encryptedInviteId = WebUtility.UrlEncode(_dataProtector.Protect(inviteId.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.USER_INVITE_VALID_DAYS)));
+            var encryptedInviteId = WebUtility.UrlEncode(_dataProtector.Protect(inviteId.ToString(), DateTimeOffset.UtcNow.AddMinutes(2)));
             invitation.spd_invitationlink = $"{createUserCmd.HostUrl}invitations/{encryptedInviteId}";
             _dynaContext.AddTospd_portalinvitations(invitation);
             _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_OrganizationId), organization);
