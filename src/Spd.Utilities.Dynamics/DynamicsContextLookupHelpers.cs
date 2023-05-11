@@ -36,6 +36,11 @@ namespace Spd.Utilities.Dynamics
                 .Where(s => s.spd_organizationtypeid == guid)
                 .FirstOrDefault();
         }
+
+        public static string LookupOrganizationTypeKey(Guid typeId)
+        {
+            return OrganizationTypeGuidDictionary.FirstOrDefault(s => s.Value == typeId).Key;
+        }
         #endregion
 
         #region role

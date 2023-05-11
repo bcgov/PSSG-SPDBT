@@ -52,6 +52,8 @@ namespace Spd.Resource.Organizations.Org
         public string? OrganizationName { get; set; }
         public string? OrganizationLegalName { get; set; }
         public bool GenericUploadEnabled { get; set; }
+        public string? EmployeeOrganizationTypeCode { get; set; }
+        public string? VolunteerOrganizationTypeCode { get; set; }
     }
 
     public enum PayerPreferenceTypeCode
