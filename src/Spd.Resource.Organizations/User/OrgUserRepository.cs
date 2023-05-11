@@ -1,10 +1,11 @@
 using AutoMapper;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
 using Microsoft.OData.Client;
 using Spd.Utilities.Dynamics;
+using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
-using Spd.Utilities.Shared.Tools;
 using System.Collections.ObjectModel;
 using System.Net;
 
@@ -15,12 +16,13 @@ namespace Spd.Resource.Organizations.User
         private readonly DynamicsContext _dynaContext;
         private readonly IMapper _mapper;
         private readonly ILogger<OrgUserRepository> _logger;
-        private readonly string encriptionKey = "ed94c630e5824a78";
-        public OrgUserRepository(IDynamicsContextFactory ctx, IMapper mapper, ILogger<OrgUserRepository> logger)
+        private readonly ITimeLimitedDataProtector _dataProtector;
+        public OrgUserRepository(IDynamicsContextFactory ctx, IMapper mapper, ILogger<OrgUserRepository> logger, IDataProtectionProvider dpProvider)
         {
             _dynaContext = ctx.CreateChangeOverwrite();
             _mapper = mapper;
             _logger = logger;
+            _dataProtector = dpProvider.CreateProtector(nameof(UserCreateCmd)).ToTimeLimitedDataProtector();
         }
 
         public async Task<OrgUserQryResult> QueryOrgUserAsync(OrgUserQry qry, CancellationToken ct)
@@ -47,8 +49,17 @@ namespace Spd.Resource.Organizations.User
 
         private async Task<OrgUserManageResult> VerifyOrgUserInvitationAsync(UserInvitationVerify verify, CancellationToken ct)
         {
-            string inviteIdStr = Encryption.DecryptString(encriptionKey, verify.InviteIdEncryptedCode);
-            Guid inviteId = Guid.Parse(inviteIdStr);
+            Guid inviteId;
+            try
+            {
+                string inviteIdStr = _dataProtector.Unprotect(WebUtility.UrlDecode(verify.InviteIdEncryptedCode));
+                inviteId = Guid.Parse(inviteIdStr);
+            }
+            catch
+            {
+                throw new ApiException(HttpStatusCode.Unauthorized, "invite link is not valid anymore.");
+            }
+
             var invite = await _dynaContext.spd_portalinvitations
                 .Expand(i => i.spd_OrganizationId)
                 .Where(i => i.spd_portalinvitationid == inviteId)
@@ -59,6 +70,10 @@ namespace Spd.Resource.Organizations.User
                 throw new ApiException(HttpStatusCode.Unauthorized, "invite link is not valid anymore.");
             if (invite.spd_OrganizationId.spd_orgguid != verify.OrgGuid.ToString())
                 throw new ApiException(HttpStatusCode.Unauthorized, "organization mismatch with bceid organization.");
+
+            //set invite views
+            invite.spd_views = invite.spd_views ?? 0 + 1;
+            _dynaContext.UpdateObject(invite);
 
             //verified, now add/link identity to user.
             spd_identity? identity = await _dynaContext.spd_identities
@@ -105,7 +120,8 @@ namespace Spd.Resource.Organizations.User
             spd_portalinvitation invitation = _mapper.Map<spd_portalinvitation>(createUserCmd.User);
             Guid inviteId = Guid.NewGuid();
             invitation.spd_portalinvitationid = inviteId;
-            invitation.spd_invitationlink = $"{createUserCmd.HostUrl}invitations/{Encryption.EncryptString(encriptionKey, inviteId.ToString())}";
+            var encryptedInviteId = WebUtility.UrlEncode(_dataProtector.Protect(inviteId.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.USER_INVITE_VALID_DAYS)));
+            invitation.spd_invitationlink = $"{createUserCmd.HostUrl}invitations/{encryptedInviteId}";
             _dynaContext.AddTospd_portalinvitations(invitation);
             _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_OrganizationId), organization);
             _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_PortalUserId), user);
