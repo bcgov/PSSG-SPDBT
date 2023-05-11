@@ -119,4 +119,13 @@ namespace Spd.Utilities.Dynamics
         Web = 931490000
     }
 
+    public enum OrgRegistrationStatus
+    {
+        New = 100000000,
+        InProgress = 100000001,
+        AwaitingOrganization = 100000002,
+        Approved = 100000003,
+        NoJurisdiction = 100000004,
+        Cancelled = 100000005
+    }
 }
