@@ -11,7 +11,7 @@ namespace Spd.Manager.Membership.OrgUser
         public Task<OrgUserResponse> Handle(OrgUserGetQuery request, CancellationToken ct);
         public Task<OrgUserListResponse> Handle(OrgUserListQuery request, CancellationToken ct);
         public Task<Unit> Handle(OrgUserDeleteCommand request, CancellationToken ct);
-        public Task<Unit> Handle(VerifyUserInvitation request, CancellationToken ct);
+        public Task<InvitationResponse> Handle(VerifyUserInvitation request, CancellationToken ct);
     }
 
     public record OrgUserCreateCommand(OrgUserCreateRequest OrgUserCreateRequest, string HostUrl) : IRequest<OrgUserResponse>;
@@ -19,7 +19,7 @@ namespace Spd.Manager.Membership.OrgUser
     public record OrgUserGetQuery(Guid UserId) : IRequest<OrgUserResponse>;
     public record OrgUserListQuery(Guid OrganizationId) : IRequest<OrgUserListResponse>;
     public record OrgUserDeleteCommand(Guid UserId, Guid OrganizationId) : IRequest<Unit>;
-    public record VerifyUserInvitation(InvitationRequest InvitationRequest, Guid OrgGuid, Guid UserGuid):IRequest<Unit>;
+    public record VerifyUserInvitation(InvitationRequest InvitationRequest, Guid OrgGuid, Guid UserGuid) : IRequest<InvitationResponse>;
 
     public abstract record OrgUserUpsertRequest
     {
@@ -59,6 +59,7 @@ namespace Spd.Manager.Membership.OrgUser
     }
 
     public record InvitationRequest(string InviteEncryptedCode);
+    public record InvitationResponse(Guid OrgId);
 
     public enum ContactAuthorizationTypeCode
     {

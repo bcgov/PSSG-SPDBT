@@ -13,6 +13,7 @@ namespace Spd.Manager.Membership.UserProfile
                .ForMember(d => d.OrgName, opt => opt.Ignore())
                .ForMember(d => d.OrgSettings, opt => opt.Ignore())
                .ForMember(d => d.UserId, opt => opt.MapFrom(s => s.Id))
+               .ForMember(d => d.OrgRegistrationId, opt => opt.Ignore())
                .ForMember(d => d.OrgId, opt => opt.MapFrom(s => s.OrganizationId));
         }
     }

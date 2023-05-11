@@ -13,7 +13,7 @@ namespace Spd.Manager.Membership.OrgUser
         IRequestHandler<OrgUserGetQuery, OrgUserResponse>,
         IRequestHandler<OrgUserDeleteCommand, Unit>,
         IRequestHandler<OrgUserListQuery, OrgUserListResponse>,
-        IRequestHandler<VerifyUserInvitation, Unit>,
+        IRequestHandler<VerifyUserInvitation, InvitationResponse>,
         IOrgUserManager
     {
         private readonly IOrgUserRepository _orgUserRepository;
@@ -121,12 +121,14 @@ namespace Spd.Manager.Membership.OrgUser
             };
         }
 
-        public async Task<Unit> Handle(VerifyUserInvitation request, CancellationToken ct)
+        public async Task<InvitationResponse?> Handle(VerifyUserInvitation request, CancellationToken ct)
         {
-           await _orgUserRepository.ManageOrgUserAsync(
+           var result = await _orgUserRepository.ManageOrgUserAsync(
                 new UserInvitationVerify(request.InvitationRequest.InviteEncryptedCode, request.OrgGuid, request.UserGuid),
                 ct);
-           return default;
+            if (result.UserResult?.OrganizationId == null)
+                return null;
+           return new InvitationResponse((Guid)result.UserResult.OrganizationId);
         }
         private async Task CheckMaxRoleNumberRuleAsync(List<UserResult> userList, Guid orgId, CancellationToken ct)
         {
