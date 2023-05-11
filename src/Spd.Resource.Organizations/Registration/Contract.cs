@@ -59,6 +59,7 @@ namespace Spd.Resource.Organizations.Registration
     public record OrgRegistrationResult : OrgRegistration
     {
         public Guid OrgRegistrationId { get; set; }
+        public string OrgRegistrationStatusStr { get; set; } = null!;
     };
 
     public enum RegistrationTypeCode

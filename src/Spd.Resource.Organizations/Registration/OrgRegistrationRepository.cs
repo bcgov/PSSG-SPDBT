@@ -27,6 +27,7 @@ namespace Spd.Resource.Organizations.Registration
             IEnumerable<spd_orgregistration> results = orgRegs.AsEnumerable();
             return new OrgRegistrationQueryResult(_mapper.Map<IEnumerable<OrgRegistrationResult>>(results));
         }
+
         public async Task<bool> AddRegistrationAsync(CreateOrganizationRegistrationCommand createRegistrationCmd, CancellationToken ct)
         {
             string key;
