@@ -28,6 +28,7 @@ namespace Spd.Resource.Organizations.Org
 
             _ = CreateMap<account, OrgResult>()
             .IncludeBase<account, Org>()
+            .ForMember(d => d.GenericUploadEnabled, opt => opt.MapFrom(s => s.spd_allowgenericuploads != null && s.spd_allowgenericuploads == (int)YesNoOptionSet.Yes))
             .ForMember(d => d.OrganizationName, opt => opt.MapFrom(s => s.name))
             .ForMember(d => d.OrganizationLegalName, opt => opt.MapFrom(s => s.spd_organizationlegalname))
             .ForMember(d => d.MaxContacts, opt => opt.MapFrom(s => s.spd_maximumnumberofcontacts))
