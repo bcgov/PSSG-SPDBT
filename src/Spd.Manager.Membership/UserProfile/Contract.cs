@@ -41,7 +41,8 @@ namespace Spd.Manager.Membership.UserProfile
     {
         public PayerPreferenceTypeCode PayerPreference { get; set; }
         public BooleanTypeCode ContractorsNeedVulnerableSectorScreening { get; set; }
-        public BooleanTypeCode LicenseesNeedVulnerableSectorScreening { get; set; }        
+        public BooleanTypeCode LicenseesNeedVulnerableSectorScreening { get; set; }   
+        public bool GenericUploadEnabled { get; set; }
     }
 
     public enum OrgRegistrationStatusCode
