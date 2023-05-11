@@ -33,6 +33,7 @@ namespace Spd.Manager.Membership.Org
         public string? AccessCode { get; set; }
         public string? OrganizationName { get; set; }
         public string? OrganizationLegalName { get; set; }
+        public bool GenericUploadEnabled { get; set; } = false;
     }
     public class OrgUpdateRequestValidator : AbstractValidator<OrgUpdateRequest>
     {
