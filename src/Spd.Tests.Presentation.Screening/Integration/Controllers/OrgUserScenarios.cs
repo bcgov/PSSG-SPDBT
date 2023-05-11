@@ -1,6 +1,7 @@
 ﻿using Alba;
 using Microsoft.Dynamics.CRM;
 using Spd.Manager.Membership.OrgUser;
+using Spd.Resource.Applicants.ApplicationInvite;
 using Spd.Utilities.Dynamics;
 using Xunit.Abstractions;
 
@@ -64,6 +65,22 @@ public class OrgUserScenarios : ScenarioContextBase
         {
             _.WithRequestHeader("organization", org.accountid.ToString());
             _.Delete.Url($"/api/orgs/{org.accountid}/users/{user1.spd_portaluserid}");
+            _.StatusCodeShouldBeOk();
+        });
+    }
+
+    [Fact]
+    public async Task VerifyUser_WithCorrectAuth_Success()
+    {
+        Guid userGuid = Guid.NewGuid();
+        var (org, user) = await fixture.testData.CreateOrgWithPrimaryUser("org3", userGuid, WebAppFixture.LOGON_ORG_GUID);
+
+        var (user1, invite) = await fixture.testData.CreateTempUserInOrg("contactSur", "contactGiven", org);
+        //get invitation link
+        string encyptedCode = invite.spd_invitationlink.Substring(invite.spd_invitationlink.LastIndexOf("/")+1, invite.spd_invitationlink.Length- invite.spd_invitationlink.LastIndexOf("/")-1);
+        await Host.Scenario(_ =>
+        {
+            _.Post.Json(new InvitationRequest(encyptedCode)).ToUrl($"/api/invitations");
             _.StatusCodeShouldBeOk();
         });
     }
