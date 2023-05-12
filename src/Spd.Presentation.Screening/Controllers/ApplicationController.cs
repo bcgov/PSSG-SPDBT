@@ -197,7 +197,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/orgs/{orgId}/bulk/history")]
         [HttpGet]
-        public async Task<ApplicationStatisticsResponse> GetBulkUploadHistoryList([FromRoute] Guid orgId)
+        public async Task<BulkUploadHistoryListResponse> GetBulkUploadHistoryList([FromRoute] Guid orgId)
         {
             return await _mediator.Send(new GetBulkUploadHistoryQuery(orgId));
         }
