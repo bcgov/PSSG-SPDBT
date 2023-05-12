@@ -31,8 +31,8 @@ namespace Spd.Manager.Membership.UserProfile
         public ContactAuthorizationTypeCode? ContactAuthorizationTypeCode { get; set; } = null;//from spd
         public OrgSettings? OrgSettings { get; set; }
         public Guid? OrgId { get; set; }
-        public Guid? OrgRegistrationId { get; set; }
-        public OrgRegistrationStatusCode OrgRegistrationStatusCode { get; set; }
+        public Guid? OrgRegistrationId { get; set; } = null;
+        public OrgRegistrationStatusCode? OrgRegistrationStatusCode { get; set; } = null;
         public string? OrgName { get; set; }
         public Guid? UserGuid { get; set; }
     }

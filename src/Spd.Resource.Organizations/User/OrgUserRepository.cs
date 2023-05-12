@@ -71,10 +71,6 @@ namespace Spd.Resource.Organizations.User
             if (invite.spd_OrganizationId.spd_orgguid != verify.OrgGuid.ToString())
                 throw new ApiException(HttpStatusCode.Unauthorized, "organization mismatch with bceid organization.");
 
-            //set invite views
-            invite.spd_views = invite.spd_views ?? 0 + 1;
-            _dynaContext.UpdateObject(invite);
-
             //verified, now add/link identity to user.
             spd_identity? identity = await _dynaContext.spd_identities
                 .Where(i => i.spd_userguid == verify.UserGuid.ToString() && i.spd_orgguid == verify.OrgGuid.ToString())
@@ -90,12 +86,29 @@ namespace Spd.Resource.Organizations.User
                 };
                 _dynaContext.AddTospd_identities(identity);
             }
+            else //the user already has identity in the system, probably used by other org.
+            {
+                //check if current org already has the same user
+                spd_portaluser? dupUser = await _dynaContext.spd_portalusers
+                    .Where(u => u._spd_identityid_value == identity.spd_identityid)
+                    .Where(u => u.statecode == DynamicsConstants.StateCode_Active)
+                    .Where(u => u._spd_organizationid_value == invite._spd_organizationid_value)
+                    .Where(u => u.spd_portaluserid != invite._spd_portaluserid_value)
+                    .FirstOrDefaultAsync(ct);
+                if (dupUser != null)
+                    throw new ApiException(HttpStatusCode.Unauthorized, "the user already exists in current org");
+            }
 
             Guid userId = invite._spd_portaluserid_value ?? Guid.Empty;
             var user = await _dynaContext.GetUserById(userId, ct);
             _dynaContext.SetLink(user, nameof(user.spd_IdentityId), identity);
+
+            //set invite views
+            invite.spd_views = (invite.spd_views ?? 0) + 1;
+            _dynaContext.UpdateObject(invite);
+ 
             await _dynaContext.SaveChangesAsync(ct);
-            return new OrgUserManageResult();
+            return new OrgUserManageResult(new UserResult() { OrganizationId= invite._spd_organizationid_value});
         }
 
         private async Task<OrgUserManageResult> AddUserAsync(UserCreateCmd createUserCmd, CancellationToken cancellationToken)
