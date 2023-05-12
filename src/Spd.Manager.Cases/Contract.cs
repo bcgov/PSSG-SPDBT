@@ -1,6 +1,7 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Spd.Resource.Applicants.BulkHistory;
 using System.ComponentModel;
 
 namespace Spd.Manager.Cases
@@ -14,7 +15,7 @@ namespace Spd.Manager.Cases
         public Task<ApplicationCreateResponse> Handle(ApplicationCreateCommand request, CancellationToken ct);
         public Task<ApplicationStatisticsResponse> Handle(ApplicationStatisticsQuery request, CancellationToken ct);
         public Task<bool> Handle(IdentityCommand request, CancellationToken ct);
-        public Task<BulkUploadHistoryListResponse> Handle(GetBulkUploadHistoryQuery request, CancellationToken ct);
+        public Task<BulkHistoryListResponse> Handle(GetBulkUploadHistoryQuery request, CancellationToken ct);
     }
 
     #region application invites
@@ -253,18 +254,21 @@ namespace Spd.Manager.Cases
     #endregion
 
     #region bulk upload
-    public record GetBulkUploadHistoryQuery(Guid OrgId) : IRequest<BulkUploadHistoryListResponse>;
-    public record BulkUploadHistoryListResponse
+    public record GetBulkUploadHistoryQuery(Guid OrgId): IRequest<BulkHistoryListResponse>
     {
-        public IEnumerable<BulkUploadHistoryResponse> BulkUploadHistorys { get; set; } = Array.Empty<BulkUploadHistoryResponse>();
+        public string? SortBy { get; set; } //null means no sorting
+        public PaginationRequest Paging { get; set; } = null!;
+    };
+    public record BulkHistoryListResponse
+    {
+        public IEnumerable<BulkHistoryResponse> BulkUploadHistorys { get; set; } = Array.Empty<BulkHistoryResponse>();
         public PaginationResponse Pagination { get; set; } = null!;
     }
-    public record BulkUploadHistoryResponse
+    public record BulkHistoryResponse
     {
         public Guid Id { get; set; }
         public string BatchNumber { get; set; } = null!;
         public string FileName { get; set; }=null!;
-        public Guid UploadedByUserId { get; set; } = Guid.Empty;
         public string UploadedByUserFullName { get; set; } = null!;
         public DateTimeOffset UploadedDateTime { get; set; }
     }

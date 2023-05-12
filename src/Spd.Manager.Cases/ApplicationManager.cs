@@ -3,6 +3,7 @@ using MediatR;
 using Spd.Resource.Applicants;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.ApplicationInvite;
+using Spd.Resource.Applicants.BulkHistory;
 using Spd.Utilities.TempFileStorage;
 
 namespace Spd.Manager.Cases
@@ -15,23 +16,29 @@ namespace Spd.Manager.Cases
         IRequestHandler<ApplicationInviteDeleteCommand, Unit>,
         IRequestHandler<ApplicationStatisticsQuery, ApplicationStatisticsResponse>,
         IRequestHandler<IdentityCommand, bool>,
-        IRequestHandler<GetBulkUploadHistoryQuery, BulkUploadHistoryListResponse>,
+        IRequestHandler<GetBulkUploadHistoryQuery, BulkHistoryListResponse>,
         IApplicationManager
     {
         private readonly IApplicationRepository _applicationRepository;
         private readonly IApplicationInviteRepository _applicationInviteRepository;
         private readonly IMapper _mapper;
+        private readonly IBulkHistoryRepository _bulkHistoryRepository;
         private readonly ITempFileStorageService _tempFile;
 
-        public ApplicationManager(IApplicationRepository applicationRepository, IApplicationInviteRepository applicationInviteRepository, IMapper mapper, ITempFileStorageService tempFile)
+        public ApplicationManager(IApplicationRepository applicationRepository,
+            IApplicationInviteRepository applicationInviteRepository,
+            IBulkHistoryRepository bulkHistoryRepository,
+            IMapper mapper,
+            ITempFileStorageService tempFile)
         {
             _applicationRepository = applicationRepository;
             _applicationInviteRepository = applicationInviteRepository;
             _tempFile = tempFile;
             _mapper = mapper;
+            _bulkHistoryRepository = bulkHistoryRepository;
         }
 
-        //application-invites
+        #region application-invite
         public async Task<ApplicationInvitesCreateResponse> Handle(ApplicationInviteCreateCommand createCmd, CancellationToken ct)
         {
             ApplicationInvitesCreateResponse resp = new(createCmd.OrgId);
@@ -99,8 +106,9 @@ namespace Spd.Manager.Cases
 
             return resp;
         }
+        #endregion
 
-        //application
+        #region application
         public async Task<ApplicationCreateResponse> Handle(ApplicationCreateCommand request, CancellationToken ct)
         {
             ApplicationCreateResponse result = new();
@@ -184,10 +192,22 @@ namespace Spd.Manager.Cases
             return resp;
         }
 
-        //bulk upload
-        public Task<BulkUploadHistoryListResponse> Handle(GetBulkUploadHistoryQuery request, CancellationToken ct)
+        #endregion
+
+        #region bulk upload
+        public async Task<BulkHistoryListResponse> Handle(GetBulkUploadHistoryQuery request, CancellationToken ct)
         {
-            return null;
+            Paging paging = _mapper.Map<Paging>(request.Paging);
+            var result = await _bulkHistoryRepository.QueryAsync(
+                new BulkHistoryListQry()
+                {
+                    OrgId = request.OrgId,
+                    SortBy= new BulkHistorySortBy(request.SortBy==null ||request.SortBy.Equals("-submittedOn", StringComparison.InvariantCultureIgnoreCase)),
+                    Paging = paging
+                },
+                ct);
+            return _mapper.Map<BulkHistoryListResponse>(result);
         }
+        #endregion
     }
 }

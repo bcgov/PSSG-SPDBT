@@ -24,7 +24,6 @@ public record BulkHistoryResp
     public Guid Id { get; set; }
     public string BatchNumber { get; set; } = null!;
     public string FileName { get; set; } = null!;
-    public Guid UploadedByUserId { get; set; } = Guid.Empty;
     public string UploadedByUserFullName { get; set; } = null!;
     public DateTimeOffset UploadedDateTime { get; set; }
 }
