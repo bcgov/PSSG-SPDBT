@@ -36,10 +36,9 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/invitations")]
         [HttpPost]
-        public async Task<ActionResult> VerifyUserInvitation([FromBody][Required]InvitationRequest orgUserInvitationRequest)
+        public async Task<InvitationResponse> VerifyUserInvitation([FromBody][Required]InvitationRequest orgUserInvitationRequest)
         {
-            await _mediator.Send(new VerifyUserInvitation(orgUserInvitationRequest, _currentUser.GetBizGuid(), _currentUser.GetUserGuid()));
-            return Ok();
+            return await _mediator.Send(new VerifyUserInvitation(orgUserInvitationRequest, _currentUser.GetBizGuid(), _currentUser.GetUserGuid()));
         }
 
         [Route("api/orgs/{orgId}/users")]
