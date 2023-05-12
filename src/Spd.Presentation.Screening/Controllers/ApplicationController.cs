@@ -194,7 +194,6 @@ namespace Spd.Presentation.Screening.Controllers
         /// <summary>
         /// return all bulk upload history belong to the organization.
         /// sort: submittedon, default will be desc
-        /// sample: api/orgs/4165bdfe-7cb4-ed11-b83e-00505683fbf4/applications?filters=status==AwaitingPayment|AwaitingApplicant,searchText@=str&sorts=name&page=1&pageSize=15
         /// </summary>
         /// <param name="orgId"></param>
         /// <param name="sorts"></param>
