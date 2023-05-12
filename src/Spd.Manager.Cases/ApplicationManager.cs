@@ -15,6 +15,7 @@ namespace Spd.Manager.Cases
         IRequestHandler<ApplicationInviteDeleteCommand, Unit>,
         IRequestHandler<ApplicationStatisticsQuery, ApplicationStatisticsResponse>,
         IRequestHandler<IdentityCommand, bool>,
+        IRequestHandler<GetBulkUploadHistoryQuery, BulkUploadHistoryListResponse>,
         IApplicationManager
     {
         private readonly IApplicationRepository _applicationRepository;
@@ -181,6 +182,12 @@ namespace Spd.Manager.Cases
             }
 
             return resp;
+        }
+
+        //bulk upload
+        public Task<BulkUploadHistoryListResponse> Handle(GetBulkUploadHistoryQuery request, CancellationToken ct)
+        {
+            return null;
         }
     }
 }

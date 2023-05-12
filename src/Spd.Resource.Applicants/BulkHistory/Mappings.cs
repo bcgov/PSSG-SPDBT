@@ -1,0 +1,92 @@
+using AutoMapper;
+
+namespace Spd.Resource.Applicants.BulkHistory
+{
+    internal class Mappings : Profile
+    {
+        public Mappings()
+        {
+            //_ = CreateMap<ApplicationCreateCmd, spd_application>()
+            //.ForMember(d => d.spd_applicationid, opt => opt.MapFrom(s => Guid.NewGuid()))
+            //.ForMember(d => d.spd_origin, opt => opt.MapFrom(s => (int)Enum.Parse<ApplicationOriginOptionSet>(s.OriginTypeCode.ToString())))
+            //.ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => s.GivenName))
+            //.ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => s.MiddleName1))
+            //.ForMember(d => d.spd_middlename2, opt => opt.MapFrom(s => s.MiddleName2))
+            //.ForMember(d => d.spd_lastname, opt => opt.MapFrom(s => s.Surname))
+            //.ForMember(d => d.spd_emailaddress1, opt => opt.MapFrom(s => s.EmailAddress))
+            //.ForMember(d => d.spd_dateofbirth, opt => opt.MapFrom(s => new Microsoft.OData.Edm.Date(s.DateOfBirth.Value.Year, s.DateOfBirth.Value.Month, s.DateOfBirth.Value.Day)))
+            //.ForMember(d => d.spd_phonenumber, opt => opt.MapFrom(s => s.PhoneNumber))
+            //.ForMember(d => d.spd_bcdriverslicense, opt => opt.MapFrom(s => s.DriversLicense))
+            //.ForMember(d => d.spd_birthplace, opt => opt.MapFrom(s => s.BirthPlace))
+            //.ForMember(d => d.spd_contractedcompanyname, opt => opt.MapFrom(s => s.ContractedCompanyName))
+            //.ForMember(d => d.spd_applicantsposition, opt => opt.MapFrom(s => s.JobTitle))
+            //.ForMember(d => d.spd_addressline1, opt => opt.MapFrom(s => s.AddressLine1))
+            //.ForMember(d => d.spd_addressline2, opt => opt.MapFrom(s => s.AddressLine2))
+            //.ForMember(d => d.spd_city, opt => opt.MapFrom(s => s.City))
+            //.ForMember(d => d.spd_postalcode, opt => opt.MapFrom(s => s.PostalCode))
+            //.ForMember(d => d.spd_province, opt => opt.MapFrom(s => s.Province))
+            //.ForMember(d => d.spd_country, opt => opt.MapFrom(s => s.Country))
+            //.ForMember(d => d.spd_submittedon, opt => opt.MapFrom(s => DateTimeOffset.UtcNow))
+            //.ForMember(d => d.spd_declaration, opt => opt.MapFrom(s => s.AgreeToCompleteAndAccurate))
+            //.ForMember(d => d.spd_payer, opt => opt.MapFrom(s => (int)Enum.Parse<PayerPreferenceOptionSet>(s.PayeeType.ToString())))
+            //.ForMember(d => d.spd_declarationdate, opt => opt.MapFrom(s => DateTime.Now))
+            //.ForMember(d => d.spd_identityconfirmed, opt => opt.MapFrom(s => s.HaveVerifiedIdentity))
+            //.ForMember(d => d.statuscode, opt => opt.MapFrom(s => s.HaveVerifiedIdentity == true ? ApplicationActiveStatus.PaymentPending : ApplicationActiveStatus.ApplicantVerification));
+
+            //_ = CreateMap<AliasCreateCmd, spd_alias>()
+            //.ForMember(d => d.spd_aliasid, opt => opt.MapFrom(s => Guid.NewGuid()))
+            //.ForMember(d => d.spd_aliastype, opt => opt.MapFrom(s => AliasTypeOptionSet.FormerName))
+            //.ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => s.GivenName))
+            //.ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => s.MiddleName1))
+            //.ForMember(d => d.spd_middlename2, opt => opt.MapFrom(s => s.MiddleName2))
+            //.ForMember(d => d.spd_surname, opt => opt.MapFrom(s => s.Surname))
+            //.ForMember(d => d.spd_fullname, opt => opt.MapFrom(s => s.Surname + ", " + s.GivenName + " " + s.MiddleName1 + " " + s.MiddleName2));
+
+            //_ = CreateMap<ApplicationCreateCmd, contact>()
+            //.ForMember(d => d.contactid, opt => opt.MapFrom(s => Guid.NewGuid()))
+            //.ForMember(d => d.firstname, opt => opt.MapFrom(s => s.GivenName))
+            //.ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => s.MiddleName1))
+            //.ForMember(d => d.spd_middlename2, opt => opt.MapFrom(s => s.MiddleName2))
+            //.ForMember(d => d.lastname, opt => opt.MapFrom(s => s.Surname))
+            //.ForMember(d => d.emailaddress1, opt => opt.MapFrom(s => s.EmailAddress))
+            //.ForMember(d => d.jobtitle, opt => opt.MapFrom(s => s.JobTitle))
+            //.ForMember(d => d.birthdate, opt => opt.MapFrom(s => new Microsoft.OData.Edm.Date(s.DateOfBirth.Value.Year, s.DateOfBirth.Value.Month, s.DateOfBirth.Value.Day)))
+            //.ForMember(d => d.telephone1, opt => opt.MapFrom(s => s.PhoneNumber))
+            //.ForMember(d => d.spd_bcdriverslicense, opt => opt.MapFrom(s => s.DriversLicense))
+            //.ForMember(d => d.spd_birthplace, opt => opt.MapFrom(s => s.BirthPlace))
+            //.ForMember(d => d.address1_line1, opt => opt.MapFrom(s => s.AddressLine1))
+            //.ForMember(d => d.address1_line2, opt => opt.MapFrom(s => s.AddressLine2))
+            //.ForMember(d => d.address1_city, opt => opt.MapFrom(s => s.City))
+            //.ForMember(d => d.address1_postalcode, opt => opt.MapFrom(s => s.PostalCode))
+            //.ForMember(d => d.address1_stateorprovince, opt => opt.MapFrom(s => s.Province))
+            //.ForMember(d => d.address1_country, opt => opt.MapFrom(s => s.Country));
+
+            //_ = CreateMap<SpdTempFile, bcgov_documenturl>()
+            //.ForMember(d => d.bcgov_documenturlid, opt => opt.MapFrom(s => Guid.NewGuid()))
+            //.ForMember(d => d.bcgov_filename, opt => opt.MapFrom(s => s.FileName))
+            //.ForMember(d => d.bcgov_filesize, opt => opt.MapFrom(s => $"{Math.Round((decimal)s.FileSize / 1024, 2)} KB"))
+            //.ForMember(d => d.bcgov_origincode, opt => opt.MapFrom(s => BcGovOriginCode.Web))
+            //.ForMember(d => d.bcgov_receiveddate, opt => opt.MapFrom(s => DateTimeOffset.UtcNow))
+            //.ForMember(d => d.bcgov_fileextension, opt => opt.MapFrom(s => GetFileExtension(s.FileName)))
+            //;
+
+            //_ = CreateMap<spd_application, ApplicationResult>()
+            //.ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_applicationid))
+            //.ForMember(d => d.OrgId, opt => opt.MapFrom(s => s._spd_organizationid_value))
+            //.ForMember(d => d.ApplicationNumber, opt => opt.MapFrom(s => s.spd_name))
+            //.ForMember(d => d.ApplicationPortalStatus, opt => opt.MapFrom(s => s.spd_portalstatus == null ? null : ((ApplicationPortalStatus)s.spd_portalstatus.Value).ToString()))
+            //.ForMember(d => d.GivenName, opt => opt.MapFrom(s => s.spd_firstname))
+            //.ForMember(d => d.MiddleName1, opt => opt.MapFrom(s => s.spd_middlename1))
+            //.ForMember(d => d.MiddleName2, opt => opt.MapFrom(s => s.spd_middlename2))
+            //.ForMember(d => d.Surname, opt => opt.MapFrom(s => s.spd_lastname))
+            //.ForMember(d => d.JobTitle, opt => opt.MapFrom(s => s.spd_applicantsposition))
+            //.ForMember(d => d.PaidBy, opt => opt.MapFrom(s => GetPaidBy(s.spd_payer)))
+            //.ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.spd_emailaddress1))
+            //.ForMember(d => d.ContractedCompanyName, opt => opt.MapFrom(s => s.spd_contractedcompanyname))
+            //.ForMember(d => d.DateOfBirth, opt => opt.MapFrom(s => new DateTimeOffset(s.spd_dateofbirth.Value.Year, s.spd_dateofbirth.Value.Month, s.spd_dateofbirth.Value.Day, 0, 0, 0, TimeSpan.Zero)))
+            //.ForMember(d => d.CreatedOn, opt => opt.MapFrom(s => s.createdon))
+            //.ForMember(d => d.HaveVerifiedIdentity, opt => opt.MapFrom(s => s.spd_identityconfirmed));
+        }
+
+    }
+}

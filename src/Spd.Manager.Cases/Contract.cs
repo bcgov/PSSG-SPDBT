@@ -14,7 +14,7 @@ namespace Spd.Manager.Cases
         public Task<ApplicationCreateResponse> Handle(ApplicationCreateCommand request, CancellationToken ct);
         public Task<ApplicationStatisticsResponse> Handle(ApplicationStatisticsQuery request, CancellationToken ct);
         public Task<bool> Handle(IdentityCommand request, CancellationToken ct);
-
+        public Task<BulkUploadHistoryListResponse> Handle(GetBulkUploadHistoryQuery request, CancellationToken ct);
     }
 
     #region application invites
@@ -252,6 +252,24 @@ namespace Spd.Manager.Cases
     }
     #endregion
 
+    #region bulk upload
+    public record GetBulkUploadHistoryQuery(Guid OrgId) : IRequest<BulkUploadHistoryListResponse>;
+    public record BulkUploadHistoryListResponse
+    {
+        public IEnumerable<BulkUploadHistoryResponse> BulkUploadHistorys { get; set; } = Array.Empty<BulkUploadHistoryResponse>();
+        public PaginationResponse Pagination { get; set; } = null!;
+    }
+    public record BulkUploadHistoryResponse
+    {
+        public Guid Id { get; set; }
+        public string BatchNumber { get; set; } = null!;
+        public string FileName { get; set; }=null!;
+        public Guid UploadedByUserId { get; set; } = Guid.Empty;
+        public string UploadedByUserFullName { get; set; } = null!;
+        public DateTimeOffset UploadedDateTime { get; set; }
+    }
+    #endregion
+
     #region validator
     public class ApplicationInviteCreateRequestValidator : AbstractValidator<ApplicationInviteCreateRequest>
     {
@@ -379,6 +397,8 @@ namespace Spd.Manager.Cases
         }
     }
     #endregion
+
+
 
     #region shared
     public record PaginationRequest(int Page, int PageSize);

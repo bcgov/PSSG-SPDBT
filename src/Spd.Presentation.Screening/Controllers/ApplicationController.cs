@@ -190,6 +190,19 @@ namespace Spd.Presentation.Screening.Controllers
             return await _mediator.Send(new IdentityCommand(orgId, applicationId, false));
         }
 
+        /// <summary>
+        /// return the application statistics for a particular organization.
+        /// </summary>
+        /// <param name="orgId"></param>
+        /// <returns></returns>
+        [Route("api/orgs/{orgId}/bulk/history")]
+        [HttpGet]
+        public async Task<ApplicationStatisticsResponse> GetBulkUploadHistoryList([FromRoute] Guid orgId)
+        {
+            return await _mediator.Send(new GetBulkUploadHistoryQuery(orgId));
+        }
+
+
         private AppListFilterBy GetAppListFilterBy(string? filters, Guid orgId)
         {
             AppListFilterBy appListFilterBy = new AppListFilterBy(orgId);
