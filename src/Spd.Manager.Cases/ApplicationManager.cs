@@ -15,6 +15,8 @@ namespace Spd.Manager.Cases
         IRequestHandler<ApplicationInviteDeleteCommand, Unit>,
         IRequestHandler<ApplicationStatisticsQuery, ApplicationStatisticsResponse>,
         IRequestHandler<IdentityCommand, bool>,
+        IRequestHandler<GetBulkUploadHistoryQuery, BulkHistoryListResponse>,
+        IRequestHandler<BulkUploadCreateCommand, Unit>,
         IApplicationManager
     {
         private readonly IApplicationRepository _applicationRepository;
@@ -182,5 +184,28 @@ namespace Spd.Manager.Cases
 
             return resp;
         }
+
+        #endregion
+
+        #region bulk upload
+        public async Task<BulkHistoryListResponse> Handle(GetBulkUploadHistoryQuery request, CancellationToken ct)
+        {
+            Paging paging = _mapper.Map<Paging>(request.Paging);
+            var result = await _bulkHistoryRepository.QueryAsync(
+                new BulkHistoryListQry()
+                {
+                    OrgId = request.OrgId,
+                    SortBy = new BulkHistorySortBy(request.SortBy == null || request.SortBy.Equals("-submittedOn", StringComparison.InvariantCultureIgnoreCase)),
+                    Paging = paging
+                },
+                ct);
+            return _mapper.Map<BulkHistoryListResponse>(result);
+        }
+
+        public async Task<Unit> Handle(BulkUploadCreateCommand cmd, CancellationToken ct)
+        {
+            return default;
+        }
+        #endregion
     }
 }

@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +7,8 @@ using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -190,6 +192,61 @@ namespace Spd.Presentation.Screening.Controllers
             return await _mediator.Send(new IdentityCommand(orgId, applicationId, false));
         }
 
+        /// <summary>
+        /// return all bulk upload history belong to the organization.
+        /// sort: submittedon, default will be desc
+        /// </summary>
+        /// <param name="orgId"></param>
+        /// <param name="sorts"></param>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        [Route("api/orgs/{orgId}/applications/bulk/history")]
+        [HttpGet]
+        public async Task<BulkHistoryListResponse> GetBulkUploadHistoryList([FromRoute] Guid orgId, [FromQuery] string? sorts, [FromQuery] int? page, [FromQuery] int? pageSize)
+        {
+            page = (page == null || page < 0) ? 0 : page;
+            pageSize = (pageSize == null || pageSize == 0 || pageSize > 100) ? 10 : pageSize;
+            if (string.IsNullOrWhiteSpace(sorts)) sorts = "-submittedOn";
+            PaginationRequest pagination = new PaginationRequest((int)page, (int)pageSize);
+            return await _mediator.Send(new GetBulkUploadHistoryQuery(orgId)
+            {
+                SortBy = sorts,
+                Paging = pagination
+            });
+        }
+
+        /// <summary>
+        /// create more than one application invites. if checkDuplicate is true, the implementation will check if there is existing duplicated applicants or invites.
+        /// </summary>
+        /// <param name="bulkUploadRequest"></param>
+        /// <param name="orgId"></param>
+        /// <returns></returns>
+        [Route("api/orgs/{orgId}/application/bulk")]
+        [HttpPost]
+        public async Task<ActionResult> BulkUpload([FromForm][Required] BulkUploadRequest bulkUploadRequest, [FromRoute] Guid orgId)
+        {
+            var userId = this.HttpContext.User.GetUserId();
+            if (userId == null) throw new ApiException(System.Net.HttpStatusCode.Unauthorized);
+
+            //validation file
+            if (!bulkUploadRequest.File.FileName.EndsWith(SpdConstants.BULK_APP_UPLOAD_FILE_EXTENSTION, StringComparison.InvariantCultureIgnoreCase))
+            {
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"only {SpdConstants.BULK_APP_UPLOAD_FILE_EXTENSTION} file supported.");
+            }
+            if (bulkUploadRequest.File.Length > SpdConstants.UPLOAD_FILE_MAX_SIZE)
+            {
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"max supported file size is {SpdConstants.UPLOAD_FILE_MAX_SIZE}.");
+            }
+
+            //parse file
+            var applications = ParseBulkUploadFile(bulkUploadRequest.File);
+            IEnumerable<ApplicationCreateRequestWithLine> requests = Array.Empty<ApplicationCreateRequestWithLine>();
+            await _mediator.Send(new BulkUploadCreateCommand(requests, orgId, Guid.Parse(userId)));
+            return Ok();
+        }
+
+
         private AppListFilterBy GetAppListFilterBy(string? filters, Guid orgId)
         {
             AppListFilterBy appListFilterBy = new AppListFilterBy(orgId);
@@ -245,6 +302,71 @@ namespace Spd.Presentation.Screening.Controllers
                 _ => new AppListSortBy()
             };
         }
+
+        private IEnumerable<ApplicationCreateRequestWithLine> ParseBulkUploadFile(IFormFile bulkFile)
+        {
+            IList<ValidationErr> errors = new List<ValidationErr>();
+            IList<ApplicationCreateRequestWithLine> list = new List<ApplicationCreateRequestWithLine>();
+            if (bulkFile.Length > 0)
+            {
+                using (var ms = new MemoryStream())
+                {
+                    bulkFile.CopyTo(ms);
+                    var fileBytes = ms.ToArray();
+                    string s = Encoding.UTF8.GetString(fileBytes);
+                    var lines = s.Split('\n');
+                    int lineNo = 1;
+                    foreach (string line in lines)
+                    {
+                        if(string.IsNullOrWhiteSpace(line)) continue;
+                        ApplicationCreateRequestWithLine oneRequest = new ApplicationCreateRequestWithLine();
+                        oneRequest.LineNumber = lineNo;
+                        try
+                        {
+                            string[] data = line.Split(SpdConstants.BULK_APP_UPLOAD_COL_SEPERATOR);
+                            oneRequest.Surname = CleanString(data[0]);
+                            oneRequest.GivenName = CleanString(data[1]);
+                            oneRequest.MiddleName1 = CleanString(data[2]);
+                            oneRequest.AddressLine1 = CleanString(data[12]);
+                            oneRequest.AddressLine2 = CleanString(data[13]);
+                            oneRequest.City = CleanString(data[14]);
+                            oneRequest.Province = CleanString(data[15]);
+                            oneRequest.Country = CleanString(data[16]);
+                            oneRequest.PostalCode = CleanString(data[17]);
+                            oneRequest.PhoneNumber = CleanString(data[18]);
+                            oneRequest.BirthPlace = CleanString(data[19]);
+                            string? birthDateStr = CleanString(data[20]);
+                            if (string.IsNullOrEmpty(birthDateStr))
+                                oneRequest.DateOfBirth = null;
+                            else
+                                oneRequest.DateOfBirth = DateTimeOffset.ParseExact(birthDateStr, SpdConstants.BULK_APP_UPLOAD_BIRTHDATE_FORMAT, CultureInfo.InvariantCulture);
+                            string? genderStr = CleanString(data[21]);
+                            oneRequest.GenderCode = string.IsNullOrEmpty(genderStr) ? null : Enum.Parse<GenderCode>(genderStr);
+                            oneRequest.LicenceNo = data[22];
+                            oneRequest.DriversLicense = data[23];
+                            list.Add(oneRequest);
+                        }
+                        catch(Exception ex)
+                        {
+                            ValidationErr err = new ValidationErr(lineNo, ex.Message);
+                            errors.Add(err);
+                        }
+                        lineNo++;
+                    }
+                }
+            }
+            if (errors.Any())
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Please correct errors in the file", errors);
+
+            return list.AsEnumerable();
+        }
+
+        private string? CleanString(string? str)
+        {
+            if (str == null) return null;
+            return str.Replace("\"", string.Empty).Trim();
+        }
+
     }
 
     public record CreateApplication
@@ -252,5 +374,7 @@ namespace Spd.Presentation.Screening.Controllers
         public IFormFile ConsentFormFile { get; set; } = null!;
         public string ApplicationCreateRequestJson { get; set; } = null!;
     }
+
+
 }
 

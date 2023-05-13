@@ -14,7 +14,8 @@ namespace Spd.Manager.Cases
         public Task<ApplicationCreateResponse> Handle(ApplicationCreateCommand request, CancellationToken ct);
         public Task<ApplicationStatisticsResponse> Handle(ApplicationStatisticsQuery request, CancellationToken ct);
         public Task<bool> Handle(IdentityCommand request, CancellationToken ct);
-
+        public Task<BulkHistoryListResponse> Handle(GetBulkUploadHistoryQuery request, CancellationToken ct);
+        public Task<Unit> Handle(BulkUploadCreateCommand cmd, CancellationToken ct);
     }
 
     #region application invites
@@ -252,6 +253,40 @@ namespace Spd.Manager.Cases
     }
     #endregion
 
+    #region bulk upload
+    public record GetBulkUploadHistoryQuery(Guid OrgId) : IRequest<BulkHistoryListResponse>
+    {
+        public string? SortBy { get; set; } //null means no sorting
+        public PaginationRequest Paging { get; set; } = null!;
+    };
+    public record BulkHistoryListResponse
+    {
+        public IEnumerable<BulkHistoryResponse> BulkUploadHistorys { get; set; } = Array.Empty<BulkHistoryResponse>();
+        public PaginationResponse Pagination { get; set; } = null!;
+    }
+    public record BulkHistoryResponse
+    {
+        public Guid Id { get; set; }
+        public string BatchNumber { get; set; } = null!;
+        public string FileName { get; set; } = null!;
+        public string UploadedByUserFullName { get; set; } = null!;
+        public DateTimeOffset UploadedDateTime { get; set; }
+    }
+    public record BulkUploadCreateCommand(IEnumerable<ApplicationCreateRequestWithLine> ApplicationCreateRequests, Guid OrgId, Guid UserId) : IRequest<Unit>;
+    public record ApplicationCreateRequestWithLine : ApplicationCreateRequest
+    {
+        public int LineNumber { get; set; }
+        public GenderCode? GenderCode { get; set; }
+        public string? LicenceNo { get; set; }
+    }
+    public record BulkUploadRequest(IFormFile File);
+    public record BulkUploadValidationErr
+    {
+        public IEnumerable<ValidationErr> ValidationErrs { get; set; } = Array.Empty<ValidationErr>();
+    }
+    public record ValidationErr(int LineNumber, string Error);
+    #endregion
+
     #region validator
     public class ApplicationInviteCreateRequestValidator : AbstractValidator<ApplicationInviteCreateRequest>
     {
@@ -387,6 +422,12 @@ namespace Spd.Manager.Cases
         public int PageSize { get; set; }
         public int PageIndex { get; set; }
         public int Length { get; set; }
+    }
+    public enum GenderCode
+    {
+        M,
+        F,
+        X
     }
     #endregion
 }

@@ -16,15 +16,16 @@ namespace Spd.Utilities.Shared.Exceptions
         public override void OnException(ExceptionContext context)
         {
             ApiError apiError = null;
-            if (context.Exception != null && context.Exception is ApiException)
+            if (context.Exception is ApiException)
             {
+                
                 // handle explicit 'known' API errors
                 var ex = context.Exception as ApiException;
                 context.Exception = null;
-                apiError = new ApiError(ex.Message);
+                apiError = new ApiError(ex.Message, ex.ErrorDetails);                
                 context.HttpContext.Response.StatusCode = (int)ex.StatusCode;
             }
-            else if (context.Exception != null && context.Exception is UnauthorizedAccessException)
+            else if (context.Exception is UnauthorizedAccessException)
             {
                 apiError = new ApiError("Unauthorized Access");
                 context.HttpContext.Response.StatusCode = 401;
