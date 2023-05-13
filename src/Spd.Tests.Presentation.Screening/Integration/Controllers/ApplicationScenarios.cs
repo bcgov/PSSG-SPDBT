@@ -114,6 +114,22 @@ public class ApplicationScenarios : ScenarioContextBase
         });
     }
 
+    [Fact]
+    public async Task ListBulkUploadHistory_WithCorrectAuth_Success()
+    {
+        var (org, user) = await fixture.testData.CreateOrgWithLogonUser("org1");
+
+        await Host.Scenario(_ =>
+        {
+            _.WithRequestHeader("organization", org.accountid.ToString());
+            _.Get.Url($"/api/orgs/{org.accountid}/applications/bulk/history");
+            if (org != null && org.accountid != null)
+            {
+                _.StatusCodeShouldBeOk();
+            }
+        });
+    }
+
     private ApplicationInvitesCreateRequest Create_ApplicationInvitesCreateRequest()
     {
         return new ApplicationInvitesCreateRequest
