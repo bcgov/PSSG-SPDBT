@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Amazon.S3.Model;
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -189,6 +190,31 @@ namespace Spd.Presentation.Screening.Controllers
         {
             return await _mediator.Send(new IdentityCommand(orgId, applicationId, false));
         }
+
+        /// <summary>
+        /// return all bulk upload history belong to the organization.
+        /// sort: submittedon, default will be desc
+        /// </summary>
+        /// <param name="orgId"></param>
+        /// <param name="sorts"></param>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        [Route("api/orgs/{orgId}/applications/bulk/history")]
+        [HttpGet]
+        public async Task<BulkHistoryListResponse> GetBulkUploadHistoryList([FromRoute] Guid orgId, [FromQuery] string? sorts, [FromQuery] int? page, [FromQuery] int? pageSize)
+        {
+            page = (page == null || page < 0) ? 0 : page;
+            pageSize = (pageSize == null || pageSize == 0 || pageSize > 100) ? 10 : pageSize;
+            if (string.IsNullOrWhiteSpace(sorts)) sorts = "-submittedOn";
+            PaginationRequest pagination = new PaginationRequest((int)page, (int)pageSize);
+            return await _mediator.Send(new GetBulkUploadHistoryQuery(orgId)
+            {
+                SortBy= sorts,
+                Paging= pagination
+            });
+        }
+
 
         private AppListFilterBy GetAppListFilterBy(string? filters, Guid orgId)
         {
