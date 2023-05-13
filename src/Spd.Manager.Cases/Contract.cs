@@ -1,6 +1,7 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Spd.Resource.Applicants.BulkHistory;
 using System.ComponentModel;
 
 namespace Spd.Manager.Cases
@@ -414,6 +415,8 @@ namespace Spd.Manager.Cases
         }
     }
     #endregion
+
+
 
     #region shared
     public record PaginationRequest(int Page, int PageSize);

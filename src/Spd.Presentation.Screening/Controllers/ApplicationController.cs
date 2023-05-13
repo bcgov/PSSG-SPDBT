@@ -1,3 +1,4 @@
+using Amazon.S3.Model;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

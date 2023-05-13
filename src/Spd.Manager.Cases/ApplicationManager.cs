@@ -3,6 +3,7 @@ using MediatR;
 using Spd.Resource.Applicants;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.ApplicationInvite;
+using Spd.Resource.Applicants.BulkHistory;
 using Spd.Utilities.TempFileStorage;
 
 namespace Spd.Manager.Cases
@@ -22,17 +23,23 @@ namespace Spd.Manager.Cases
         private readonly IApplicationRepository _applicationRepository;
         private readonly IApplicationInviteRepository _applicationInviteRepository;
         private readonly IMapper _mapper;
+        private readonly IBulkHistoryRepository _bulkHistoryRepository;
         private readonly ITempFileStorageService _tempFile;
 
-        public ApplicationManager(IApplicationRepository applicationRepository, IApplicationInviteRepository applicationInviteRepository, IMapper mapper, ITempFileStorageService tempFile)
+        public ApplicationManager(IApplicationRepository applicationRepository,
+            IApplicationInviteRepository applicationInviteRepository,
+            IBulkHistoryRepository bulkHistoryRepository,
+            IMapper mapper,
+            ITempFileStorageService tempFile)
         {
             _applicationRepository = applicationRepository;
             _applicationInviteRepository = applicationInviteRepository;
             _tempFile = tempFile;
             _mapper = mapper;
+            _bulkHistoryRepository = bulkHistoryRepository;
         }
 
-        //application-invites
+        #region application-invite
         public async Task<ApplicationInvitesCreateResponse> Handle(ApplicationInviteCreateCommand createCmd, CancellationToken ct)
         {
             ApplicationInvitesCreateResponse resp = new(createCmd.OrgId);
@@ -100,8 +107,9 @@ namespace Spd.Manager.Cases
 
             return resp;
         }
+        #endregion
 
-        //application
+        #region application
         public async Task<ApplicationCreateResponse> Handle(ApplicationCreateCommand request, CancellationToken ct)
         {
             ApplicationCreateResponse result = new();

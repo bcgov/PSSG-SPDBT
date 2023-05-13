@@ -2,6 +2,7 @@ using AutoMapper;
 using Spd.Resource.Applicants;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.ApplicationInvite;
+using Spd.Resource.Applicants.BulkHistory;
 
 namespace Spd.Manager.Cases
 {
@@ -35,6 +36,8 @@ namespace Spd.Manager.Cases
             CreateMap<ApplicationStatisticsQuery, ApplicationStatisticsQry>();
             CreateMap<ApplicationStatisticsResp, ApplicationStatisticsResponse>();
             CreateMap<IdentityCommand, IdentityCmd>();
+            CreateMap<BulkHistoryListResp, BulkHistoryListResponse>();
+            CreateMap<BulkHistoryResp, BulkHistoryResponse>();
 
         }
     }
