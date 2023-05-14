@@ -258,7 +258,7 @@ export class UsersComponent implements OnInit {
 		}
 
 		// if row is current user, remove delete
-		if (this.authenticationService.loggedInUserId == user.id) {
+		if (this.authenticationService.loggedInUserInfo?.userId == user.id) {
 			return false;
 		}
 
@@ -359,7 +359,7 @@ export class UsersComponent implements OnInit {
 
 	private loadList(): void {
 		this.orgUserService
-			.apiOrgsOrgIdUsersGet({ orgId: this.authenticationService.loggedInOrgId! })
+			.apiOrgsOrgIdUsersGet({ orgId: this.authenticationService.loggedInUserInfo?.orgId! })
 			.pipe()
 			.subscribe((res: OrgUserListResponse) => {
 				this.maximumNumberOfContacts = res.maximumNumberOfAuthorizedContacts ?? this.DEFAULT_MAX_NUMBER_OF_CONTACTS;
@@ -416,7 +416,7 @@ export class UsersComponent implements OnInit {
 			return false;
 		}
 
-		const currUser = this.usersList.find((item) => item.id == this.authenticationService.loggedInUserId);
+		const currUser = this.usersList.find((item) => item.id == this.authenticationService.loggedInUserInfo?.userId);
 		return currUser ? currUser.contactAuthorizationTypeCode == ContactAuthorizationTypeCode.Primary : false;
 	}
 }

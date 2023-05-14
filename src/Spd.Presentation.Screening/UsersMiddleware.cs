@@ -47,10 +47,10 @@ namespace Spd.Utilities.LogonUser
                 ("GET", "api/health"),
                 ("GET", "api/user"),
                 ("GET", "api/configuration"),
+                ("GET", "api/metadata/address"),
                 ("POST", "api/anonymous-org-registrations"),
                 ("POST", "api/org-registrations"),
-                ("GET", "api/metadata/address"),
-                ("POST","api/invitations")
+                ("POST", "api/invitation")
             };
 
             if (context.Request.Path.HasValue)

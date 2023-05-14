@@ -37,7 +37,7 @@ export class CrrpHeaderComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.authenticationService.isLoginSubject$.subscribe((_subjectData: any) => {
-			const loggedInOrgName = this.authenticationService.loggedInOrgName;
+			const loggedInOrgName = this.authenticationService.loggedInUserInfo?.orgName;
 			this.loggedInOrgDisplay = loggedInOrgName ? loggedInOrgName : '';
 		});
 	}

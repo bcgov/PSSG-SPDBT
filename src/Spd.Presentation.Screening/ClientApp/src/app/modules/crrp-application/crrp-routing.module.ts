@@ -1,11 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { GenericUploadsGuard } from 'src/app/core/guards/generic-uploads.guard';
 import { ApplicationStatusesComponent } from './components/application-statuses.component';
 import { CriminalRecordChecksComponent } from './components/criminal-record-checks.component';
 import { CrrpHomeComponent } from './components/crrp-home.component';
 import { ExpiringChecksComponent } from './components/expiring-checks.component';
 import { GenericUploadsComponent } from './components/generic-uploads.component';
 import { IdentifyVerificationComponent } from './components/identify-verification.component';
+import { InvitationComponent } from './components/invitation.component';
 import { ManualSubmissionsComponent } from './components/manual-submissions.component';
 import { OrganizationProfileComponent } from './components/organization-profile.component';
 import { PaymentsComponent } from './components/payments.component';
@@ -24,6 +26,7 @@ export class CrrpRoutes {
 	public static MANUAL_SUBMISSIONS = 'manual-submissions';
 	public static ORGANIZATION_PROFILE = 'organization-profile';
 	public static PAYMENTS = 'payments';
+	public static INVITATION = 'invitation';
 	public static REPORTS = 'reports';
 	public static USERS = 'users';
 
@@ -43,18 +46,21 @@ const routes: Routes = [
 			{ path: CrrpRoutes.CRIMINAL_RECORD_CHECKS, component: CriminalRecordChecksComponent },
 			{ path: CrrpRoutes.APPLICATION_STATUSES, component: ApplicationStatusesComponent },
 			{ path: CrrpRoutes.EXPIRING_CHECKS, component: ExpiringChecksComponent },
-			{ path: CrrpRoutes.GENERIC_UPLOADS, component: GenericUploadsComponent },
+			{ path: CrrpRoutes.GENERIC_UPLOADS, component: GenericUploadsComponent, canActivate: [GenericUploadsGuard] },
 			{ path: CrrpRoutes.IDENTITY_VERIFICATION, component: IdentifyVerificationComponent },
 			{ path: CrrpRoutes.PAYMENTS, component: PaymentsComponent },
 			{ path: CrrpRoutes.MANUAL_SUBMISSIONS, component: ManualSubmissionsComponent },
 			{ path: CrrpRoutes.ORGANIZATION_PROFILE, component: OrganizationProfileComponent },
 			{ path: CrrpRoutes.REPORTS, component: ReportsComponent },
 			{ path: CrrpRoutes.USERS, component: UsersComponent },
-			// {
-			// 	path: 'invitations/:id',
-			// 	component: CrrpHomeComponent,
-			// 	canActivate: [InvitationGuard],
-			// },
+			{
+				path: 'invitation/:id',
+				component: InvitationComponent,
+			},
+			{
+				path: '**',
+				component: CrrpHomeComponent,
+			},
 		],
 	},
 ];

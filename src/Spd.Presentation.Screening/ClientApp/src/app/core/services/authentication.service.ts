@@ -1,29 +1,26 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { OAuthService } from 'angular-oauth2-oidc';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, lastValueFrom, Subject } from 'rxjs';
 import { UserInfo, UserProfileResponse } from 'src/app/api/models';
 import { UserProfileService } from 'src/app/api/services';
 import {
 	OrgSelectionDialogData,
 	OrgSelectionModalComponent,
-	OrgSelectionResponseData,
 } from 'src/app/shared/components/org-selection-modal.component';
 import { ConfigService } from './config.service';
 import { UtilService } from './util.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
-	isLoginSubject$ = new BehaviorSubject<boolean>(false);
+	isLoginSubject$: Subject<boolean> = new Subject<boolean>();
 
 	private _isLoginSuccessfulSubject$ = new BehaviorSubject<boolean>(false);
 	isLoginSuccessful$ = this._isLoginSuccessfulSubject$.asObservable();
 
-	loggedInUserData: any = null;
-	// loggedInUserProfile: UserProfileResponse | null = null;
-	loggedInUserId: string | null = null;
-	loggedInOrgId: string | null = null;
-	loggedInOrgName: string | null = null;
+	loggedInUserTokenData: any = null;
+	loggedInUserInfo: UserInfo | null = null;
+	allowGenericUploads: boolean = false;
 
 	constructor(
 		private oauthService: OAuthService,
@@ -34,8 +31,15 @@ export class AuthenticationService {
 	) {}
 
 	public async tryLogin(): Promise<{ state: any; loggedIn: boolean }> {
-		this.isLoginSubject$.next(false);
-		this._isLoginSuccessfulSubject$.next(false);
+		// const isSuccess = await this.oauthService.loadDiscoveryDocumentAndTryLogin();
+		// console.log('isSuccess', isSuccess);
+		// const hasValidAccessToken = this.oauthService.hasValidAccessToken();
+		// console.debug('[AuthenticationService.tryLogin] isLoggedIn', isSuccess, 'hasValidAccessToken', hasValidAccessToken);
+		// if (hasValidAccessToken) {
+		// 	await this.setOrganization();
+		// } else {
+		// 	this.notify(false);
+		// }
 
 		await this.oauthService.loadDiscoveryDocumentAndTryLogin().then((isLoggedIn) => {
 			const hasValidAccessToken = this.oauthService.hasValidAccessToken();
@@ -45,10 +49,10 @@ export class AuthenticationService {
 				'hasValidAccessToken',
 				hasValidAccessToken
 			);
+
 			if (hasValidAccessToken) {
 				this.userService.apiUserGet().subscribe({
 					next: (resp: UserProfileResponse) => {
-						// this.loggedInUserProfile = resp;
 						const userInfosList = resp.userInfos?.filter((info) => info.orgId);
 						const userInfos = userInfosList ? userInfosList : [];
 
@@ -57,9 +61,7 @@ export class AuthenticationService {
 						} else if (userInfos.length > 1) {
 							this.orgSelection(userInfos);
 						} else {
-							this.loggedInOrgId = userInfos[0].orgId!;
-							this.loggedInOrgName = userInfos[0].orgName!;
-							this.loggedInUserId = userInfos[0].userId!;
+							this.loggedInUserInfo = userInfos[0];
 							this.notify(true);
 						}
 					},
@@ -73,6 +75,7 @@ export class AuthenticationService {
 		});
 
 		const isLoggedIn = this.oauthService.hasValidAccessToken();
+		console.log('isLoggedIn', isLoggedIn);
 
 		let state = null;
 		let loggedIn = false;
@@ -88,14 +91,26 @@ export class AuthenticationService {
 		};
 	}
 
-	public async login(state: any): Promise<boolean> {
-		const isLoggedIn = this.oauthService.hasValidAccessToken();
-		if (!isLoggedIn) {
-			await this.oauthService.loadDiscoveryDocumentAndLogin({ state });
-		}
+	public async login(returnComponentRoute: string | undefined = undefined): Promise<string | null> {
+		const authConfig = await this.configService.getAuthConfig(window.location.origin + returnComponentRoute);
+		this.oauthService.configure(authConfig);
 
-		this.notify(isLoggedIn);
-		return isLoggedIn;
+		const returnRoute = location.pathname.substring(1);
+		console.debug('[AuthenticationService] login', authConfig.redirectUri, returnComponentRoute, returnRoute);
+
+		const isLoggedIn = await this.oauthService.loadDiscoveryDocumentAndLogin({
+			state: returnRoute,
+		});
+
+		if (isLoggedIn) {
+			await this.setOrganization();
+
+			this.notify(true);
+			return Promise.resolve(this.oauthService.state || returnRoute);
+		} else {
+			this.notify(isLoggedIn);
+			return Promise.resolve(null);
+		}
 	}
 
 	public logout(): void {
@@ -113,10 +128,64 @@ export class AuthenticationService {
 	}
 
 	public async configureOAuthService(redirectUri: string): Promise<void> {
+		console.debug('configureOAuthService', redirectUri);
 		return this.configService.getAuthConfig(redirectUri).then((config) => {
+			console.debug('configureOAuthService config', config);
 			this.oauthService.configure(config);
 			this.oauthService.setupAutomaticSilentRefresh();
 		});
+	}
+
+	private async setOrganization(): Promise<any> {
+		const resp: UserProfileResponse = await lastValueFrom(this.userService.apiUserGet());
+		console.log('resp', resp);
+
+		if (resp) {
+			const userInfosList = resp.userInfos?.filter((info) => info.orgId);
+			const userInfos = userInfosList ? userInfosList : [];
+			console.log('userInfosList', userInfosList);
+			console.log('userInfos', userInfos);
+
+			if (userInfos.length == 0) {
+				console.error('User does not have any organizations');
+				return Promise.resolve(false);
+			} else {
+				if (userInfos.length > 1) {
+					const result = await this.orgSelectionAsync(userInfos);
+					console.log('result', result);
+					this.loggedInUserInfo = result;
+				} else {
+					this.loggedInUserInfo = userInfos[0];
+				}
+				this.notify(true);
+				return Promise.resolve(true);
+			}
+			// 	const result = await this.orgSelectionAsync(userInfos);
+			// 	console.log('result', result);
+			// 	this.loggedInUserInfo = result;
+			// 	this.notify(true);
+			// 	return Promise.resolve(true);
+			// } else {
+			// 	this.loggedInUserInfo = userInfos[0];
+			// 	this.notify(true);
+			// 	return Promise.resolve(true);
+			// }
+		}
+	}
+
+	private orgSelectionAsync(userInfos: Array<UserInfo>): Promise<any> {
+		const dialogOptions: OrgSelectionDialogData = {
+			userInfos: userInfos,
+		};
+
+		return lastValueFrom(
+			this.dialog
+				.open(OrgSelectionModalComponent, {
+					width: '500px',
+					data: dialogOptions,
+				})
+				.afterClosed()
+		);
 	}
 
 	private orgSelection(userInfos: Array<UserInfo>): void {
@@ -130,11 +199,10 @@ export class AuthenticationService {
 				data: dialogOptions,
 			})
 			.afterClosed()
-			.subscribe((res: OrgSelectionResponseData) => {
+			.subscribe((res: UserInfo) => {
 				if (res) {
-					this.loggedInOrgId = res.orgId;
-					this.loggedInOrgName = res.orgName;
-					this.loggedInUserId = res.userId;
+					console.debug('selectedUserInfo', res);
+					this.loggedInUserInfo = res;
 					this.notify(true);
 				}
 			});
@@ -142,17 +210,17 @@ export class AuthenticationService {
 
 	private notify(isLoggedIn: boolean): void {
 		const token = this.getToken();
+		console.log('token', token);
+		console.log('isLoggedIn', isLoggedIn);
+
 		if (!token) {
-			this.loggedInUserData = null;
-			// this.loggedInUserProfile = null;
-			this.loggedInOrgId = null;
-			this.loggedInOrgName = null;
-			this.loggedInUserId = null;
+			this.loggedInUserTokenData = null;
+			this.loggedInUserInfo = null;
 			return;
 		} else {
 			const decodedToken = this.utilService.getDecodedAccessToken(token);
 			console.debug('[AuthenticationService.setDecodedToken] decodedToken', decodedToken);
-			this.loggedInUserData = decodedToken;
+			this.loggedInUserTokenData = decodedToken;
 		}
 
 		this.isLoginSubject$.next(true);

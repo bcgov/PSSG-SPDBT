@@ -45,7 +45,7 @@ export class OrganizationNameComponent implements OnInit, RegistrationFormStepCo
 		this.authenticationService.isLoginSubject$.subscribe((_subjectData: any) => {
 			const currOrgName = this.organizationName.value;
 			if (!currOrgName) {
-				const loggedInOrgName = this.authenticationService.loggedInOrgName;
+				const loggedInOrgName = this.authenticationService.loggedInUserInfo?.orgName;
 				if (loggedInOrgName) {
 					this.form.patchValue({ organizationName: loggedInOrgName });
 				}

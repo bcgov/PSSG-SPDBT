@@ -28,9 +28,9 @@ export class OrgUserService extends BaseService {
   }
 
   /**
-   * Path part for operation apiInvitationsPost
+   * Path part for operation apiInvitationPost
    */
-  static readonly ApiInvitationsPostPath = '/api/invitations';
+  static readonly ApiInvitationPostPath = '/api/invitation';
 
   /**
    * Verify if the current invite and login user are correct.
@@ -38,11 +38,11 @@ export class OrgUserService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiInvitationsPost()` instead.
+   * To access only the response body, use `apiInvitationPost()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiInvitationsPost$Response(params: {
+  apiInvitationPost$Response(params: {
     context?: HttpContext
 
     /**
@@ -52,7 +52,7 @@ export class OrgUserService extends BaseService {
   }
 ): Observable<StrictHttpResponse<ActionResult>> {
 
-    const rb = new RequestBuilder(this.rootUrl, OrgUserService.ApiInvitationsPostPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, OrgUserService.ApiInvitationPostPath, 'post');
     if (params) {
       rb.body(params.body, 'application/*+json');
     }
@@ -75,11 +75,11 @@ export class OrgUserService extends BaseService {
    *
    *
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiInvitationsPost$Response()` instead.
+   * To access the full response (for headers, for example), `apiInvitationPost$Response()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiInvitationsPost(params: {
+  apiInvitationPost(params: {
     context?: HttpContext
 
     /**
@@ -89,7 +89,7 @@ export class OrgUserService extends BaseService {
   }
 ): Observable<ActionResult> {
 
-    return this.apiInvitationsPost$Response(params).pipe(
+    return this.apiInvitationPost$Response(params).pipe(
       map((r: StrictHttpResponse<ActionResult>) => r.body as ActionResult)
     );
   }

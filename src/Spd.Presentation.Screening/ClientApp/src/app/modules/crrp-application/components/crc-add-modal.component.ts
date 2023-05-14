@@ -344,7 +344,7 @@ export class CrcAddModalComponent implements OnInit {
 			body.applicationInviteCreateRequests?.length == 1 ? this.yesMessageSingular : this.yesMessageMultiple;
 
 		this.applicationService
-			.apiOrgsOrgIdApplicationInvitesPost({ orgId: this.authenticationService.loggedInOrgId!, body })
+			.apiOrgsOrgIdApplicationInvitesPost({ orgId: this.authenticationService.loggedInUserInfo?.orgId!, body })
 			.pipe()
 			.subscribe((dupres: ApplicationInvitesCreateResponse) => {
 				if (dupres.createSuccess) {
@@ -397,7 +397,7 @@ export class CrcAddModalComponent implements OnInit {
 	private saveInviteRequests(body: ApplicationInvitesCreateRequest, message: string): void {
 		body.requireDuplicateCheck = false;
 		this.applicationService
-			.apiOrgsOrgIdApplicationInvitesPost({ orgId: this.authenticationService.loggedInOrgId!, body })
+			.apiOrgsOrgIdApplicationInvitesPost({ orgId: this.authenticationService.loggedInUserInfo?.orgId!, body })
 			.pipe()
 			.subscribe((_resp: any) => {
 				this.handleSaveSuccess(message);

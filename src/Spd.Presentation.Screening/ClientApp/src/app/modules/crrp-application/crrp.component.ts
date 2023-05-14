@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IsActiveMatchOptions, QueryParamsHandling } from '@angular/router';
+import { IsActiveMatchOptions, QueryParamsHandling, Router } from '@angular/router';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { CrrpRoutes } from './crrp-routing.module';
 
@@ -32,7 +32,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 	template: `
 		<div class="container-fluid p-0" *ngIf="isAuthenticated | async">
 			<div class="row flex-nowrap m-0">
-				<div class="col-auto px-0" style="background-color: var(--color-sidebar);">
+				<div class="col-auto px-0" style="background-color: var(--color-sidebar);" *ngIf="showNavigation">
 					<div
 						class="d-flex flex-column align-items-sm-start pt-2 text-white "
 						style="min-height: calc(100vh - 138px)!important;"
@@ -93,6 +93,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 								</a>
 							</li>
 							<hr class="d-none d-sm-inline w-100 text-white" />
+							<!--  *ngIf="authenticationService.allowGenericUploads" -->
 							<li class="nav-item w-100">
 								<a
 									[routerLink]="[crrpRoutes.crrpPath(crrpRoutes.GENERIC_UPLOADS)]"
@@ -173,16 +174,19 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 	],
 })
 export class CrrpComponent {
+	showNavigation = true;
 	isAuthenticated = this.authenticationService.isLoginSuccessful$;
 	crrpRoutes = CrrpRoutes;
 
-	constructor(private authenticationService: AuthenticationService) {}
+	constructor(protected authenticationService: AuthenticationService, private router: Router) {}
 
 	async ngOnInit(): Promise<void> {
-		await this.authenticationService.configureOAuthService(
-			window.location.origin + `/${CrrpRoutes.crrpPath(CrrpRoutes.HOME)}`
-		);
-
-		const authInfo = await this.authenticationService.tryLogin();
+		const nextUrl = await this.authenticationService.login('/crrp-application');
+		console.debug('nextUrl', nextUrl);
+		if (nextUrl) {
+			const nextRoute = decodeURIComponent(nextUrl);
+			console.debug('nextRoute', nextRoute);
+			await this.router.navigate([nextRoute]);
+		}
 	}
 }

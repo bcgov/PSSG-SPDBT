@@ -4,6 +4,7 @@ import { BooleanTypeCode } from './boolean-type-code';
 import { PayerPreferenceTypeCode } from './payer-preference-type-code';
 export interface OrgSettings {
   contractorsNeedVulnerableSectorScreening?: BooleanTypeCode;
+  genericUploadEnabled?: boolean;
   licenseesNeedVulnerableSectorScreening?: BooleanTypeCode;
   payerPreference?: PayerPreferenceTypeCode;
 }

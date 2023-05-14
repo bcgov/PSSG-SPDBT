@@ -28,8 +28,8 @@ export class AuthTokenInterceptor implements HttpInterceptor {
 
 		const header = 'Bearer ' + token;
 		let headers = req.headers.set('Authorization', header);
-		if (this.authenticationService.loggedInOrgId) {
-			headers = req.headers.set('organization', this.authenticationService.loggedInOrgId);
+		if (this.authenticationService.loggedInUserInfo?.orgId) {
+			headers = req.headers.set('organization', this.authenticationService.loggedInUserInfo?.orgId);
 		}
 
 		req = req.clone({ headers });

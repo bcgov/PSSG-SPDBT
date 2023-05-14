@@ -32,7 +32,6 @@ const routes: Routes = [
 		loadChildren: () =>
 			import('./modules/crrp-application/crrp-application.module').then((m) => m.CrrpApplicationModule),
 		data: { title: 'Criminal Records Review Program' },
-		// canActivate: [AuthGuard],
 	},
 	{
 		path: AppRoutes.PSSO_APPLICATION,

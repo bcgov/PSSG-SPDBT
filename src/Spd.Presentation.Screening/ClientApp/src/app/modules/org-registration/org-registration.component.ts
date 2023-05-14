@@ -136,18 +136,19 @@ export class OrgRegistrationComponent implements OnInit {
 		console.debug('[OrgRegistrationComponent.ngOnInit] tryLogin authInfo', authInfo);
 
 		if (authInfo.loggedIn) {
-			if (authInfo.state) {
-				const decodedData = decodeURIComponent(authInfo.state);
-				this.utilService.setSessionData(this.utilService.ORG_REG_STATE_KEY, decodedData);
+			// if (authInfo.state) {
+			// 	const decodedData = decodeURIComponent(authInfo.state);
+			// 	this.utilService.setSessionData(this.utilService.ORG_REG_STATE_KEY, decodedData);
 
-				// navigate to step 3
-				this.postLoginNavigate(decodedData);
-			} else {
-				const stateInfo = this.utilService.getSessionData(this.utilService.ORG_REG_STATE_KEY);
-				if (stateInfo) {
-					this.postLoginNavigate(stateInfo);
-				}
+			// 	// navigate to step 3
+			// this.postLoginNavigate(decodedData);
+			// } else {
+			const stateInfo = this.utilService.getSessionData(this.utilService.ORG_REG_STATE_KEY);
+			console.debug('[OrgRegistrationComponent.ngOnInit] stateInfo', stateInfo);
+			if (stateInfo) {
+				this.postLoginNavigate(stateInfo);
 			}
+			// }
 		}
 	}
 
@@ -170,7 +171,9 @@ export class OrgRegistrationComponent implements OnInit {
 		const stateInfo = JSON.stringify({ ...this.stepOneComponent.getStepData() });
 
 		//auth step 2 - unload angular, redirect to KC
-		const isLoggedIn = await this.authenticationService.login(stateInfo);
+		// const decodedData = decodeURIComponent(authInfo.state);
+		this.utilService.setSessionData(this.utilService.ORG_REG_STATE_KEY, stateInfo);
+		const isLoggedIn = await this.authenticationService.login('/org-registration'); //stateInfo);
 		if (isLoggedIn) {
 			// User is already logged in and clicks Login button.
 			// For example, complete a registration then refresh the page.

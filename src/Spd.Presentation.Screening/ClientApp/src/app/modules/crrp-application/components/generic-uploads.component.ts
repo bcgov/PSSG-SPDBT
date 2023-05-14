@@ -1,9 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { ApplicationListResponse, ApplicationResponse } from 'src/app/api/models';
+import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { UtilService } from 'src/app/core/services/util.service';
 
 @Component({
 	selector: 'app-generic-uploads',
@@ -15,7 +18,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 					<h2 class="mb-2 fw-normal">Generic Uploads</h2>
 
 					<div class="my-4">
-						<app-file-upload accept=".tsv"></app-file-upload>
+						<app-file-upload accept=".tsv" message="Text files ending in '.TSV' only"></app-file-upload>
 						<mat-error
 							class="mat-option-error"
 							*ngIf="
@@ -27,28 +30,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 						>
 					</div>
 
-					<!-- 				
-					<ngx-dropzone
-						#fileDropzone
-						(change)="onUploadFile($event)"
-						[multiple]="multiple"
-						[maxFileSize]="maxFileSize"
-						[disableClick]="disableClick"
-						[expandable]="expandable"
-						[accept]="accept"
-						class="mt-4"
-					>
-						<ngx-dropzone-label>
-							<div class="my-2">
-								<div class="mt-4 mb-2">
-									<mat-icon class="upload-file-icon">cloud_upload</mat-icon>
-								</div>
-								<div class="mb-4">
-									<strong>Drag and Drop your file here or click to browse</strong>
-								</div>
-								<div class="fine-print mb-4">Text files ending in ".TSV” only</div>
-							</div>
-						</ngx-dropzone-label>
+					<!-- 			
 
 						<ngx-dropzone-preview
 							class="preview"
@@ -69,8 +51,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 									</div>
 								</div>
 							</ngx-dropzone-label>
-						</ngx-dropzone-preview>
-					</ngx-dropzone> -->
+						 -->
 					<div class="col-md-12 col-sm-12 mt-4" *ngIf="showErrors">
 						<div class="alert alert-danger d-flex align-items-center" role="alert">
 							<mat-icon class="d-none d-md-block alert-icon me-2">warning</mat-icon>
@@ -87,62 +68,59 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 			<div class="row mt-4">
 				<div class="col-md-12 col-sm-12">
 					<h3 class="fw-normal">Previous Uploads</h3>
-					<mat-table matSort [dataSource]="dataSource" matSortActive="uploadedDateTime" matSortDirection="desc">
+					<mat-table [dataSource]="dataSource">
 						<ng-container matColumnDef="uploadedDateTime">
-							<mat-header-cell *matHeaderCellDef mat-sort-header>Date/Time Uploaded</mat-header-cell>
-							<mat-cell *matCellDef="let upload">
-								<span class="mobile-label">Date/Time Uploaded:</span>
-								{{ upload.uploadedDateTime | date : constants.date.dateTimeFormat }}
+							<mat-header-cell *matHeaderCellDef>Uploaded On</mat-header-cell>
+							<mat-cell *matCellDef="let application">
+								<span class="mobile-label">Uploaded On:</span>
+								{{ application.createdOn | date : constants.date.dateTimeFormat }}
 							</mat-cell>
 						</ng-container>
 
 						<ng-container matColumnDef="uploadedBy">
-							<mat-header-cell *matHeaderCellDef mat-sort-header>Who Uploaded</mat-header-cell>
-							<mat-cell *matCellDef="let upload">
-								<span class="mobile-label">Who Uploaded:</span>
-								{{ upload.uploadedBy }}
+							<mat-header-cell *matHeaderCellDef>Uploaded By</mat-header-cell>
+							<mat-cell *matCellDef="let application">
+								<span class="mobile-label">Uploaded By:</span>
+								{{ application | fullname }}
 							</mat-cell>
 						</ng-container>
 
 						<ng-container matColumnDef="uploadedFileName">
-							<mat-header-cell *matHeaderCellDef mat-sort-header>File Name</mat-header-cell>
-							<mat-cell *matCellDef="let upload">
+							<mat-header-cell *matHeaderCellDef>File Name</mat-header-cell>
+							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">File Name:</span>
-								{{ upload.uploadedFileName }}
+								{{ application.applicationNumber }}
 							</mat-cell>
 						</ng-container>
 
 						<ng-container matColumnDef="uploadedBatchNumber">
-							<mat-header-cell *matHeaderCellDef mat-sort-header>Batch Number</mat-header-cell>
-							<mat-cell *matCellDef="let upload">
+							<mat-header-cell *matHeaderCellDef>Batch Number</mat-header-cell>
+							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Batch Number:</span>
-								{{ upload.uploadedBatchNumber }}
+								{{ application.applicationNumber }}
 							</mat-cell>
 						</ng-container>
 
 						<mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
 						<mat-row *matRowDef="let row; columns: columns"></mat-row>
 					</mat-table>
-					<mat-paginator #paginator [length]="100" [pageSize]="10" aria-label="Select page"> </mat-paginator>
+					<mat-paginator
+						[showFirstLastButtons]="true"
+						[pageIndex]="tablePaginator.pageIndex"
+						[pageSize]="tablePaginator.pageSize"
+						[length]="tablePaginator.length"
+						(page)="onPageChanged($event)"
+						aria-label="Select page"
+					>
+					</mat-paginator>
 				</div>
 			</div>
 		</section>
 	`,
 	styles: [
 		`
-			.file-name-icon {
+			/* .file-name-icon {
 				max-width: 3em;
-			}
-
-			.fine-print {
-				font-size: var(--font-size-small);
-			}
-
-			.upload-file-icon {
-				color: var(--color-primary-light);
-				font-size: 80px !important;
-				height: 80px !important;
-				width: 80px !important;
 			}
 
 			.preview {
@@ -162,42 +140,36 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 
 			.file-upload-success {
 				border-bottom: 6px solid var(--color-green);
-			}
+			} */
 		`,
 	],
 })
 export class GenericUploadsComponent implements OnInit {
+	private queryParams: any = this.utilService.getDefaultQueryParams();
+
+	constants = SPD_CONSTANTS;
+
+	dataSource: MatTableDataSource<ApplicationResponse> = new MatTableDataSource<ApplicationResponse>([]);
+	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
+	columns: string[] = ['uploadedDateTime', 'uploadedBy', 'uploadedFileName', 'uploadedBatchNumber'];
+
 	form: FormGroup = this.formBuilder.group({
 		attachments: new FormControl('', [Validators.required]),
 	});
 
-	constants = SPD_CONSTANTS;
-	dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
-	columns!: string[];
-
 	showErrors = false;
 
-	@ViewChild(MatSort) sort!: MatSort;
 	@ViewChild('paginator') paginator!: MatPaginator;
 
-	constructor(private formBuilder: FormBuilder) {}
+	constructor(
+		private formBuilder: FormBuilder,
+		private authenticationService: AuthenticationService,
+		private applicationService: ApplicationService,
+		private utilService: UtilService
+	) {}
 
 	ngOnInit() {
-		this.columns = ['uploadedDateTime', 'uploadedBy', 'uploadedFileName', 'uploadedBatchNumber'];
-		this.dataSource.data = [
-			{
-				uploadedDateTime: '2023-01-14T00:13:05.865Z',
-				uploadedBy: 'Joe Smith',
-				uploadedFileName: 'test.tsv',
-				uploadedBatchNumber: '10001-23',
-			},
-			{
-				uploadedDateTime: '2023-02-04T00:10:05.865Z',
-				uploadedBy: 'Anne Parker',
-				uploadedFileName: 'one-two-three.tsv',
-				uploadedBatchNumber: '10030-56',
-			},
-		];
+		this.loadList();
 	}
 
 	onUploadFile(evt: any) {
@@ -220,15 +192,15 @@ export class GenericUploadsComponent implements OnInit {
 		if (fileInfo) {
 			const currList = this.dataSource.data;
 
-			this.dataSource.data = [
-				{
-					uploadedDateTime: new Date(),
-					uploadedBy: 'CURRENT USER',
-					uploadedFileName: fileInfo.name,
-					uploadedBatchNumber: 'UNKNOWN',
-				},
-				...currList,
-			];
+			// this.dataSource.data = [
+			// 	{
+			// 		uploadedDateTime: new Date(),
+			// 		uploadedBy: 'CURRENT USER',
+			// 		uploadedFileName: fileInfo.name,
+			// 		uploadedBatchNumber: 'UNKNOWN',
+			// 	},
+			// 	...currList,
+			// ];
 		}
 	}
 
@@ -239,5 +211,23 @@ export class GenericUploadsComponent implements OnInit {
 		// currentFilesCopy.splice(currentFiles.indexOf(evt), 1);
 		// this.form.get('files')?.setValue(currentFilesCopy);
 		this.form.reset();
+	}
+
+	onPageChanged(page: PageEvent): void {
+		this.queryParams.page = page.pageIndex;
+		this.loadList();
+	}
+
+	private loadList(): void {
+		this.applicationService
+			.apiOrgsOrgIdApplicationsGet({
+				orgId: this.authenticationService.loggedInUserInfo?.orgId!,
+				...this.queryParams,
+			})
+			.pipe()
+			.subscribe((res: ApplicationListResponse) => {
+				this.dataSource.data = res.applications as Array<ApplicationResponse>;
+				this.tablePaginator = { ...res.pagination };
+			});
 	}
 }
