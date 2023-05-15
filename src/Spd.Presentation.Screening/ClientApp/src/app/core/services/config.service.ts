@@ -13,7 +13,7 @@ export class ConfigService {
 
 	constructor(private configurationService: ConfigurationService) {}
 
-	public async getAuthConfig(redirectUri: string): Promise<AuthConfig> {
+	public async getAuthConfig(redirectUri?: string): Promise<AuthConfig> {
 		const resp = this.configs?.oidcConfiguration!;
 		const bceIdConfig = {
 			issuer: resp.issuer!,

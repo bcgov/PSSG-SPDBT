@@ -34,7 +34,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// </summary>
         /// <param name="orgUserInvitationRequest">which include InviteHashCode</param>
         /// <returns></returns>
-        [Route("api/invitations")]
+        [Route("api/invitation")]
         [HttpPost]
         public async Task<InvitationResponse> VerifyUserInvitation([FromBody][Required]InvitationRequest orgUserInvitationRequest)
         {
@@ -46,7 +46,7 @@ namespace Spd.Presentation.Screening.Controllers
         public async Task<OrgUserResponse> Add([FromBody][Required] OrgUserCreateRequest orgUserCreateRequest, [FromRoute] Guid orgId)
         {
             orgUserCreateRequest.OrganizationId = orgId;
-            
+
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
             if (hostUrl == null)
                 throw new ConfigurationErrorsException("HostUrl is not set correctly in configuration.");

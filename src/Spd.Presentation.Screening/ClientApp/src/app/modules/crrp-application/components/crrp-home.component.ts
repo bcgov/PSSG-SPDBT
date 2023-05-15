@@ -254,7 +254,7 @@ export class CrrpHomeComponent {
 
 	applicationStatistics$ = this.applicationService
 		.apiOrgsOrgIdApplicationStatisticsGet({
-			orgId: this.authenticationService.loggedInOrgId!,
+			orgId: this.authenticationService.loggedInUserInfo?.orgId!,
 		})
 		.pipe(
 			tap((res: ApplicationStatisticsResponse) => {

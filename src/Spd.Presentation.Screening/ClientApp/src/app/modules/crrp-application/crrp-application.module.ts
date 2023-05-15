@@ -10,6 +10,7 @@ import { CrrpHomeComponent } from './components/crrp-home.component';
 import { ExpiringChecksComponent } from './components/expiring-checks.component';
 import { GenericUploadsComponent } from './components/generic-uploads.component';
 import { IdentifyVerificationComponent } from './components/identify-verification.component';
+import { InvitationComponent } from './components/invitation.component';
 import { ManualSubmissionsComponent } from './components/manual-submissions.component';
 import { OrganizationProfileComponent } from './components/organization-profile.component';
 import { PaymentFilterComponent } from './components/payment-filter.component';
@@ -40,6 +41,7 @@ import { CrrpComponent } from './crrp.component';
 		ManualSubmissionsComponent,
 		ReportsComponent,
 		BannerComponent,
+		InvitationComponent,
 	],
 	imports: [SharedModule, CrrpRoutingModule],
 })
