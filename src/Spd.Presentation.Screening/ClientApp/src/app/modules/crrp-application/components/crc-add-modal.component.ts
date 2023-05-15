@@ -113,7 +113,7 @@ export interface CrcDialogData {
 										class="delete-row-button"
 										matTooltip="Remove criminal record check"
 										(click)="deleteRow(i)"
-										[disabled]="oneRowExists"
+										*ngIf="rowsExist"
 										aria-label="Remove criminal record check"
 									>
 										<mat-icon>delete_outline</mat-icon>
@@ -416,8 +416,8 @@ export class CrcAddModalComponent implements OnInit {
 		return control;
 	}
 
-	get oneRowExists(): boolean {
+	get rowsExist(): boolean {
 		const control = this.form.get('tableRows') as FormArray;
-		return control.length > 1 ? false : true;
+		return control.length > 1 ? true : false;
 	}
 }

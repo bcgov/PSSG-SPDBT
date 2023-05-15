@@ -16,12 +16,7 @@ import { CrrpRoutes } from './modules/crrp-application/crrp-routing.module';
 			<button mat-flat-button color="primary" class="large my-2" (click)="onRegisterWithBCeid()">
 				Business BCeID Account
 			</button>
-			<button
-				mat-stroked-button
-				color="primary"
-				class="large my-2"
-				[routerLink]="['/psso-application/screening-statuses/']"
-			>
+			<button mat-stroked-button color="primary" class="large my-2" [routerLink]="['/psso/screening-statuses/']">
 				IDIR Account
 			</button>
 			<p class="mt-4 mb-0">Need access to the Criminal Records Review Program?</p>

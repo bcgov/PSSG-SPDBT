@@ -16,7 +16,6 @@ import { UsersComponent } from './components/users.component';
 import { CrrpComponent } from './crrp.component';
 
 export class CrrpRoutes {
-	public static CRRP = 'crrp-application';
 	public static HOME = 'home';
 	public static CRIMINAL_RECORD_CHECKS = 'criminal-record-checks';
 	public static APPLICATION_STATUSES = 'application-statuses';
@@ -30,7 +29,7 @@ export class CrrpRoutes {
 	public static REPORTS = 'reports';
 	public static USERS = 'users';
 
-	public static MODULE_PATH = CrrpRoutes.CRRP;
+	public static MODULE_PATH = 'crrp';
 
 	public static crrpPath(route: string): string {
 		return `/${CrrpRoutes.MODULE_PATH}/${route}`;
@@ -56,10 +55,6 @@ const routes: Routes = [
 			{
 				path: 'invitation/:id',
 				component: InvitationComponent,
-			},
-			{
-				path: '**',
-				component: CrrpHomeComponent,
 			},
 		],
 	},

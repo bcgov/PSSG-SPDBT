@@ -102,12 +102,4 @@ export class PssoComponent {
 	pssoRoutes = PssoRoutes;
 
 	constructor(private authenticationService: AuthenticationService) {}
-
-	// async ngOnInit(): Promise<void> {
-	// 	await this.authenticationService.configureOAuthService(
-	// 		window.location.origin + `/${PssoRoutes.pssoPath(PssoRoutes.SCREENING_STATUSES)}`
-	// 	);
-
-	// 	const authInfo = await this.authenticationService.tryLogin();
-	// }
 }

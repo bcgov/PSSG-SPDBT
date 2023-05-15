@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IsActiveMatchOptions, QueryParamsHandling, Router } from '@angular/router';
+import { ActivatedRoute, IsActiveMatchOptions, QueryParamsHandling, Router } from '@angular/router';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { CrrpRoutes } from './crrp-routing.module';
 
@@ -156,6 +156,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 								</a>
 							</li>
 						</ul>
+						wikipagesiewpage.action
 					</div>
 				</div>
 				<div class="col py-3">
@@ -178,15 +179,30 @@ export class CrrpComponent {
 	isAuthenticated = this.authenticationService.isLoginSuccessful$;
 	crrpRoutes = CrrpRoutes;
 
-	constructor(protected authenticationService: AuthenticationService, private router: Router) {}
+	constructor(
+		protected authenticationService: AuthenticationService,
+		private route: ActivatedRoute,
+		private router: Router
+	) {}
 
 	async ngOnInit(): Promise<void> {
-		const nextUrl = await this.authenticationService.login('/crrp-application');
-		console.debug('nextUrl', nextUrl);
+		this.route.queryParams.subscribe((params) => {
+			this.showNavigation = params['showMenu'] ?? true;
+		});
+
+		const nextUrl = await this.authenticationService.login(`/${CrrpRoutes.MODULE_PATH}`);
+		// console.debug('nextUrl', nextUrl);
+
 		if (nextUrl) {
 			const nextRoute = decodeURIComponent(nextUrl);
-			console.debug('nextRoute', nextRoute);
-			await this.router.navigate([nextRoute]);
+			// console.debug('nextRoute', nextRoute);
+
+			if (nextRoute.includes(`${CrrpRoutes.MODULE_PATH}/${CrrpRoutes.INVITATION}`)) {
+				await this.router.navigate([nextRoute]);
+				this.showNavigation = false;
+			} else {
+				await this.router.navigateByUrl(CrrpRoutes.crrpPath(CrrpRoutes.HOME));
+			}
 		}
 	}
 }
