@@ -14,6 +14,10 @@ export class AppRoutes {
 	public static PSSO_APPLICATION = PssoRoutes.MODULE_PATH;
 	public static ACCESS_DENIED = 'access-denied';
 	public static INVITATION_DENIED = 'invitation-denied';
+
+	public static appPath(route: string): string {
+		return `/${route}`;
+	}
 }
 
 const routes: Routes = [

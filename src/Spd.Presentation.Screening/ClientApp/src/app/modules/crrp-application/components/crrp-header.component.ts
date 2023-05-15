@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 
 @Component({
@@ -29,16 +29,9 @@ import { AuthenticationService } from 'src/app/core/services/authentication.serv
 		`,
 	],
 })
-export class CrrpHeaderComponent implements OnInit {
-	loggedInOrgDisplay: string | null = null;
+export class CrrpHeaderComponent {
+	loggedInOrgDisplay: string | null | undefined = this.authenticationService.loggedInUserInfo?.orgName;
 	@Input() subtitle = '';
 
 	constructor(private authenticationService: AuthenticationService) {}
-
-	ngOnInit(): void {
-		this.authenticationService.isLoginSubject$.subscribe((_subjectData: any) => {
-			const loggedInOrgName = this.authenticationService.loggedInUserInfo?.orgName;
-			this.loggedInOrgDisplay = loggedInOrgName ? loggedInOrgName : '';
-		});
-	}
 }

@@ -131,7 +131,7 @@ export class OrgRegistrationComponent implements OnInit {
 		//auth step 1 - user is not logged in, no state at all
 		//auth step 3 - angular loads again here, KC posts the token, oidc lib reads token and returns state
 		const authInfo = await this.authenticationService.tryLogin(
-			window.location.origin + `/${OrgRegistrationRoutes.ORG_REGISTRATION}`
+			window.location.origin + OrgRegistrationRoutes.orgRegPath(OrgRegistrationRoutes.ORG_REGISTRATION)
 		);
 
 		if (authInfo.loggedIn) {
@@ -168,7 +168,9 @@ export class OrgRegistrationComponent implements OnInit {
 		//auth step 2 - unload angular, redirect to KC
 		// const decodedData = decodeURIComponent(authInfo.state);
 		this.utilService.setSessionData(this.utilService.ORG_REG_STATE_KEY, stateInfo);
-		const nextUrl = await this.authenticationService.login(`/${OrgRegistrationRoutes.MODULE_PATH}`);
+		const nextUrl = await this.authenticationService.login(
+			OrgRegistrationRoutes.orgRegPath(OrgRegistrationRoutes.ORG_REGISTRATION)
+		);
 		if (nextUrl) {
 			// User is already logged in and clicks Login button.
 			// For example, complete a registration then refresh the page.

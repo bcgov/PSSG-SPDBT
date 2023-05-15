@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { InvitationRequest } from 'src/app/api/models';
 import { OrgUserService } from 'src/app/api/services';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { CrrpRoutes } from '../crrp-routing.module';
 
 @Component({
@@ -30,7 +31,12 @@ import { CrrpRoutes } from '../crrp-routing.module';
 export class InvitationComponent {
 	message = '';
 
-	constructor(private route: ActivatedRoute, private router: Router, private orgUserService: OrgUserService) {}
+	constructor(
+		private route: ActivatedRoute,
+		private router: Router,
+		private authenticationService: AuthenticationService,
+		private orgUserService: OrgUserService
+	) {}
 
 	async ngOnInit(): Promise<void> {
 		const id = this.route.snapshot.paramMap.get('id');
@@ -43,8 +49,10 @@ export class InvitationComponent {
 				if (resp && resp.isError) {
 					this.message = resp.message;
 				} else {
-					this.router.navigate([CrrpRoutes.crrpPath(CrrpRoutes.HOME)], {
-						queryParams: { showMenu: true },
+					this.authenticationService.login(CrrpRoutes.crrpPath()).then((_resp) => {
+						this.router.navigate([CrrpRoutes.crrpPath(CrrpRoutes.HOME)], {
+							queryParams: { showMenu: true },
+						});
 					});
 				}
 			});

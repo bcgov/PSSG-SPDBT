@@ -20,7 +20,7 @@ export class AuthenticationService {
 
 	loggedInUserTokenData: any = null;
 	loggedInUserInfo: UserInfo | null = null;
-	allowGenericUploads: boolean = false;
+	genericUploadEnabled: boolean = false;
 
 	constructor(
 		private oauthService: OAuthService,
@@ -53,7 +53,7 @@ export class AuthenticationService {
 						} else if (userInfos.length > 1) {
 							this.orgSelection(userInfos);
 						} else {
-							this.loggedInUserInfo = userInfos[0];
+							this.setUserInfo(userInfos[0]);
 							this.notify(true);
 						}
 					},
@@ -128,18 +128,19 @@ export class AuthenticationService {
 		const resp: UserProfileResponse = await lastValueFrom(this.userService.apiUserGet());
 
 		if (resp) {
-			const userInfosList = resp.userInfos?.filter((info) => info.orgId);
-			const userInfos = userInfosList ? userInfosList : [];
+			const uniqueUserInfoList = [
+				...new Map(resp.userInfos?.filter((info) => info.orgId).map((item) => [item['orgId'], item])).values(),
+			];
 
-			if (userInfos.length == 0) {
+			if (uniqueUserInfoList.length == 0) {
 				console.error('User does not have any organizations');
 				return Promise.resolve(false);
 			} else {
-				if (userInfos.length > 1) {
-					const result = await this.orgSelectionAsync(userInfos);
-					this.loggedInUserInfo = result;
+				if (uniqueUserInfoList.length > 1) {
+					const result = await this.orgSelectionAsync(uniqueUserInfoList);
+					this.setUserInfo(result);
 				} else {
-					this.loggedInUserInfo = userInfos[0];
+					this.setUserInfo(uniqueUserInfoList[0]);
 				}
 				this.notify(true);
 				return Promise.resolve(true);
@@ -175,11 +176,16 @@ export class AuthenticationService {
 			.afterClosed()
 			.subscribe((res: UserInfo) => {
 				if (res) {
-					console.debug('selectedUserInfo', res);
-					this.loggedInUserInfo = res;
+					this.setUserInfo(res);
 					this.notify(true);
 				}
 			});
+	}
+
+	private setUserInfo(userInfo: UserInfo) {
+		console.log('setUserInfo', userInfo);
+		this.loggedInUserInfo = userInfo;
+		this.genericUploadEnabled = userInfo.orgSettings?.genericUploadEnabled ?? false;
 	}
 
 	private notify(isLoggedIn: boolean): void {

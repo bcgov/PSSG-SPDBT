@@ -96,7 +96,7 @@ namespace Spd.Resource.Organizations.User
                     .Where(u => u.spd_portaluserid != invite._spd_portaluserid_value)
                     .FirstOrDefaultAsync(ct);
                 if (dupUser != null)
-                    throw new ApiException(HttpStatusCode.Accepted, "You already exist in this organization.");
+                    throw new ApiException(HttpStatusCode.Accepted, "Your BCeID is already associated to a user in this organization.");
             }
 
             Guid userId = invite._spd_portaluserid_value ?? Guid.Empty;

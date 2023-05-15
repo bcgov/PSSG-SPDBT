@@ -93,8 +93,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 								</a>
 							</li>
 							<hr class="d-none d-sm-inline w-100 text-white" />
-							<!--  *ngIf="authenticationService.allowGenericUploads" -->
-							<li class="nav-item w-100">
+							<li class="nav-item w-100" *ngIf="authenticationService.genericUploadEnabled">
 								<a
 									[routerLink]="[crrpRoutes.crrpPath(crrpRoutes.GENERIC_UPLOADS)]"
 									routerLinkActive="active"
@@ -156,7 +155,6 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 								</a>
 							</li>
 						</ul>
-						wikipagesiewpage.action
 					</div>
 				</div>
 				<div class="col py-3">
@@ -190,7 +188,7 @@ export class CrrpComponent {
 			this.showNavigation = params['showMenu'] ?? true;
 		});
 
-		const nextUrl = await this.authenticationService.login(`/${CrrpRoutes.MODULE_PATH}`);
+		const nextUrl = await this.authenticationService.login(CrrpRoutes.crrpPath());
 		// console.debug('nextUrl', nextUrl);
 
 		if (nextUrl) {
