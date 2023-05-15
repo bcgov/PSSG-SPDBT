@@ -78,6 +78,7 @@ export class FileUploadHelper {
 					<div class="mb-4">
 						<strong>Drag and Drop your file here or click to browse</strong>
 					</div>
+					<div class="fine-print mb-4">{{ message }}</div>
 				</div>
 			</ngx-dropzone-label>
 
@@ -111,12 +112,17 @@ export class FileUploadHelper {
 				vertical-align: bottom;
 				color: #1288cc;
 			}
+
+			.fine-print {
+				font-size: var(--font-size-small);
+			}
 		`,
 	],
 })
 export class FileUploadComponent {
 	files: Array<File> = [];
 
+	@Input() message: string = '';
 	@Input() multiple: boolean = false;
 	@Input() expandable: boolean = true;
 	@Input() disableClick: boolean = false;

@@ -80,7 +80,7 @@ export class HeaderComponent implements OnInit {
 	}
 
 	private getUserInfo(): void {
-		const loggedInUserData = this.authenticationService.loggedInUserData;
+		const loggedInUserData = this.authenticationService.loggedInUserTokenData;
 		this.loggedInUserDisplay = loggedInUserData ? loggedInUserData.display_name : null;
 	}
 }

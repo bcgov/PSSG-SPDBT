@@ -11,6 +11,7 @@ import { map, filter } from 'rxjs/operators';
 
 import { ActionResult } from '../models/action-result';
 import { InvitationRequest } from '../models/invitation-request';
+import { InvitationResponse } from '../models/invitation-response';
 import { OrgUserCreateRequest } from '../models/org-user-create-request';
 import { OrgUserListResponse } from '../models/org-user-list-response';
 import { OrgUserResponse } from '../models/org-user-response';
@@ -28,9 +29,9 @@ export class OrgUserService extends BaseService {
   }
 
   /**
-   * Path part for operation apiInvitationsPost
+   * Path part for operation apiInvitationPost
    */
-  static readonly ApiInvitationsPostPath = '/api/invitations';
+  static readonly ApiInvitationPostPath = '/api/invitation';
 
   /**
    * Verify if the current invite and login user are correct.
@@ -38,11 +39,11 @@ export class OrgUserService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiInvitationsPost()` instead.
+   * To access only the response body, use `apiInvitationPost()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiInvitationsPost$Response(params: {
+  apiInvitationPost$Response(params: {
     context?: HttpContext
 
     /**
@@ -50,9 +51,9 @@ export class OrgUserService extends BaseService {
      */
     body: InvitationRequest
   }
-): Observable<StrictHttpResponse<ActionResult>> {
+): Observable<StrictHttpResponse<InvitationResponse>> {
 
-    const rb = new RequestBuilder(this.rootUrl, OrgUserService.ApiInvitationsPostPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, OrgUserService.ApiInvitationPostPath, 'post');
     if (params) {
       rb.body(params.body, 'application/*+json');
     }
@@ -64,7 +65,7 @@ export class OrgUserService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<ActionResult>;
+        return r as StrictHttpResponse<InvitationResponse>;
       })
     );
   }
@@ -75,11 +76,11 @@ export class OrgUserService extends BaseService {
    *
    *
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiInvitationsPost$Response()` instead.
+   * To access the full response (for headers, for example), `apiInvitationPost$Response()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiInvitationsPost(params: {
+  apiInvitationPost(params: {
     context?: HttpContext
 
     /**
@@ -87,10 +88,10 @@ export class OrgUserService extends BaseService {
      */
     body: InvitationRequest
   }
-): Observable<ActionResult> {
+): Observable<InvitationResponse> {
 
-    return this.apiInvitationsPost$Response(params).pipe(
-      map((r: StrictHttpResponse<ActionResult>) => r.body as ActionResult)
+    return this.apiInvitationPost$Response(params).pipe(
+      map((r: StrictHttpResponse<InvitationResponse>) => r.body as InvitationResponse)
     );
   }
 

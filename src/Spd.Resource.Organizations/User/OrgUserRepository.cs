@@ -57,7 +57,7 @@ namespace Spd.Resource.Organizations.User
             }
             catch
             {
-                throw new ApiException(HttpStatusCode.Unauthorized, "invite link is not valid anymore.");
+                throw new ApiException(HttpStatusCode.Accepted, "The invitation link is no longer valid.");
             }
 
             var invite = await _dynaContext.spd_portalinvitations
@@ -67,9 +67,9 @@ namespace Spd.Resource.Organizations.User
                 .Where(i => i.statecode != DynamicsConstants.StateCode_Inactive)
                 .FirstOrDefaultAsync(ct);
             if (invite == null)
-                throw new ApiException(HttpStatusCode.Unauthorized, "invite link is not valid anymore.");
+                throw new ApiException(HttpStatusCode.Accepted, "The invitation link is no longer valid.");
             if (invite.spd_OrganizationId.spd_orgguid != verify.OrgGuid.ToString())
-                throw new ApiException(HttpStatusCode.Unauthorized, "organization mismatch with bceid organization.");
+                throw new ApiException(HttpStatusCode.Accepted, "There is a mismatch between the invite organization and your bceid organization.");
 
             //verified, now add/link identity to user.
             spd_identity? identity = await _dynaContext.spd_identities
@@ -96,7 +96,7 @@ namespace Spd.Resource.Organizations.User
                     .Where(u => u.spd_portaluserid != invite._spd_portaluserid_value)
                     .FirstOrDefaultAsync(ct);
                 if (dupUser != null)
-                    throw new ApiException(HttpStatusCode.Unauthorized, "the user already exists in current org");
+                    throw new ApiException(HttpStatusCode.Accepted, "Your BCeID is already associated to a user in this organization.");
             }
 
             Guid userId = invite._spd_portaluserid_value ?? Guid.Empty;
@@ -106,9 +106,9 @@ namespace Spd.Resource.Organizations.User
             //set invite views
             invite.spd_views = (invite.spd_views ?? 0) + 1;
             _dynaContext.UpdateObject(invite);
- 
+
             await _dynaContext.SaveChangesAsync(ct);
-            return new OrgUserManageResult(new UserResult() { OrganizationId= invite._spd_organizationid_value});
+            return new OrgUserManageResult(new UserResult() { OrganizationId = invite._spd_organizationid_value });
         }
 
         private async Task<OrgUserManageResult> AddUserAsync(UserCreateCmd createUserCmd, CancellationToken cancellationToken)
@@ -134,7 +134,7 @@ namespace Spd.Resource.Organizations.User
             Guid inviteId = Guid.NewGuid();
             invitation.spd_portalinvitationid = inviteId;
             var encryptedInviteId = WebUtility.UrlEncode(_dataProtector.Protect(inviteId.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.USER_INVITE_VALID_DAYS)));
-            invitation.spd_invitationlink = $"{createUserCmd.HostUrl}invitations/{encryptedInviteId}";
+            invitation.spd_invitationlink = $"{createUserCmd.HostUrl}crrp/invitation/{encryptedInviteId}";
             _dynaContext.AddTospd_portalinvitations(invitation);
             _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_OrganizationId), organization);
             _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_PortalUserId), user);

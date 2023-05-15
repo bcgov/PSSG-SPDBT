@@ -357,7 +357,7 @@ export class ApplicationStatusesComponent implements OnInit {
 	applicationStatistics!: { [key: string]: number };
 	applicationStatistics$ = this.applicationService
 		.apiOrgsOrgIdApplicationStatisticsGet({
-			orgId: this.authenticationService.loggedInOrgId!,
+			orgId: this.authenticationService.loggedInUserInfo?.orgId!,
 		})
 		.pipe(
 			tap((res: ApplicationStatisticsResponse) => {
@@ -462,7 +462,7 @@ export class ApplicationStatusesComponent implements OnInit {
 
 		this.applicationService
 			.apiOrgsOrgIdApplicationsGet({
-				orgId: this.authenticationService.loggedInOrgId!,
+				orgId: this.authenticationService.loggedInUserInfo?.orgId!,
 				...this.queryParams,
 			})
 			.pipe()

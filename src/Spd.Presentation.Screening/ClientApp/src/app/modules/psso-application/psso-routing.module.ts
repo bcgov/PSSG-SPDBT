@@ -4,12 +4,12 @@ import { ScreeningStatusesComponent } from './components/screening-statuses.comp
 import { PssoComponent } from './psso.component';
 
 export class PssoRoutes {
-	public static PSSO = 'psso-application';
 	// 	public static NEW_SCREENING = 'new-screening';
 	public static SCREENING_STATUSES = 'screening-statuses';
 	// 	public static IDENTITY_VERIFICATION = 'identity-verification';
 	// 	public static MANUAL_SUBMISSIONS = 'manual-submissions';
-	public static MODULE_PATH = PssoRoutes.PSSO;
+	public static MODULE_PATH = 'psso';
+
 	public static pssoPath(route: string): string {
 		return `/${PssoRoutes.MODULE_PATH}/${route}`;
 	}

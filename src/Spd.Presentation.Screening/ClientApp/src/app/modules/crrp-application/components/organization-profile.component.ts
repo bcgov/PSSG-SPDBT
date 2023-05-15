@@ -248,7 +248,7 @@ export class OrganizationProfileComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.orgService
-			.apiOrgsOrgIdGet({ orgId: this.authenticationService.loggedInOrgId! })
+			.apiOrgsOrgIdGet({ orgId: this.authenticationService.loggedInUserInfo?.orgId! })
 			.pipe()
 			.subscribe((resp: OrgResponse) => {
 				this.form.patchValue(resp);
@@ -276,13 +276,13 @@ export class OrganizationProfileComponent implements OnInit {
 	onSave() {
 		this.form.markAllAsTouched();
 		if (this.form.valid) {
-			const body: OrgUpdateRequest = { ...this.form.value, id: this.authenticationService.loggedInOrgId! };
+			const body: OrgUpdateRequest = { ...this.form.value, id: this.authenticationService.loggedInUserInfo?.orgId! };
 			if (body.phoneNumber) {
 				body.phoneNumber = this.maskPipe.transform(body.phoneNumber, SPD_CONSTANTS.phone.backendMask);
 			}
 
 			this.orgService
-				.apiOrgsOrgIdPut({ orgId: this.authenticationService.loggedInOrgId!, body })
+				.apiOrgsOrgIdPut({ orgId: this.authenticationService.loggedInUserInfo?.orgId!, body })
 				.pipe()
 				.subscribe((resp: OrgUpdateRequest) => {
 					this.viewOnly = true;

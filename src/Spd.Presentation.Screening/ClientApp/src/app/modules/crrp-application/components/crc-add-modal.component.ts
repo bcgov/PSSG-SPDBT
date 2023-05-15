@@ -113,7 +113,7 @@ export interface CrcDialogData {
 										class="delete-row-button"
 										matTooltip="Remove criminal record check"
 										(click)="deleteRow(i)"
-										[disabled]="oneRowExists"
+										*ngIf="rowsExist"
 										aria-label="Remove criminal record check"
 									>
 										<mat-icon>delete_outline</mat-icon>
@@ -344,7 +344,7 @@ export class CrcAddModalComponent implements OnInit {
 			body.applicationInviteCreateRequests?.length == 1 ? this.yesMessageSingular : this.yesMessageMultiple;
 
 		this.applicationService
-			.apiOrgsOrgIdApplicationInvitesPost({ orgId: this.authenticationService.loggedInOrgId!, body })
+			.apiOrgsOrgIdApplicationInvitesPost({ orgId: this.authenticationService.loggedInUserInfo?.orgId!, body })
 			.pipe()
 			.subscribe((dupres: ApplicationInvitesCreateResponse) => {
 				if (dupres.createSuccess) {
@@ -397,7 +397,7 @@ export class CrcAddModalComponent implements OnInit {
 	private saveInviteRequests(body: ApplicationInvitesCreateRequest, message: string): void {
 		body.requireDuplicateCheck = false;
 		this.applicationService
-			.apiOrgsOrgIdApplicationInvitesPost({ orgId: this.authenticationService.loggedInOrgId!, body })
+			.apiOrgsOrgIdApplicationInvitesPost({ orgId: this.authenticationService.loggedInUserInfo?.orgId!, body })
 			.pipe()
 			.subscribe((_resp: any) => {
 				this.handleSaveSuccess(message);
@@ -416,8 +416,8 @@ export class CrcAddModalComponent implements OnInit {
 		return control;
 	}
 
-	get oneRowExists(): boolean {
+	get rowsExist(): boolean {
 		const control = this.form.get('tableRows') as FormArray;
-		return control.length > 1 ? false : true;
+		return control.length > 1 ? true : false;
 	}
 }

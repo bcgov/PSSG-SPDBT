@@ -246,7 +246,7 @@ export class CriminalRecordChecksComponent implements OnInit {
 					this.applicationService
 						.apiOrgsOrgIdApplicationInvitesApplicationInviteIdDelete({
 							applicationInviteId: application.id!,
-							orgId: this.authenticationService.loggedInOrgId!,
+							orgId: this.authenticationService.loggedInUserInfo?.orgId!,
 						})
 						.pipe()
 						.subscribe((_res) => {
@@ -282,7 +282,7 @@ export class CriminalRecordChecksComponent implements OnInit {
 	private loadList(): void {
 		this.applicationService
 			.apiOrgsOrgIdApplicationInvitesGet({
-				orgId: this.authenticationService.loggedInOrgId!,
+				orgId: this.authenticationService.loggedInUserInfo?.orgId!,
 				...this.queryParams,
 			})
 			.pipe()
