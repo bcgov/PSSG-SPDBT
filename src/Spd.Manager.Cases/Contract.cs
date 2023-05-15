@@ -273,14 +273,14 @@ namespace Spd.Manager.Cases
         public DateTimeOffset UploadedDateTime { get; set; }
     }
     public record BulkUploadCreateCommand(BulkUploadCreateRequest BulkUploadCreateRequest, Guid OrgId, Guid UserId) : IRequest<Unit>;
-    public record BulkUploadCreateRequest(string FileName, long FileSize, IEnumerable<ApplicationCreateRequestWithLine> ApplicationCreateRequests);    
+    public record BulkUploadCreateRequest(string FileName, long FileSize, IEnumerable<ApplicationCreateRequestWithLine> ApplicationCreateRequests);
     public record ApplicationCreateRequestWithLine : ApplicationCreateRequest
     {
         public int LineNumber { get; set; }
         public GenderCode? GenderCode { get; set; }
         public string? LicenceNo { get; set; }
     }
-    public record BulkUploadRequest(IFormFile File);
+    public record BulkUploadRequest(IFormFile File, bool RequireDuplicateCheck = false);
     public record BulkUploadValidationErr
     {
         public IEnumerable<ValidationErr> ValidationErrs { get; set; } = Array.Empty<ValidationErr>();

@@ -1,4 +1,5 @@
 using AutoMapper;
+using Spd.Engine.Validation;
 using Spd.Resource.Applicants;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.ApplicationInvite;
@@ -38,6 +39,8 @@ namespace Spd.Manager.Cases
             CreateMap<IdentityCommand, IdentityCmd>();
             CreateMap<BulkHistoryListResp, BulkHistoryListResponse>();
             CreateMap<BulkHistoryResp, BulkHistoryResponse>();
+            CreateMap<ApplicationCreateRequestWithLine, AppBulkDuplicateCheck>()
+                .IncludeBase<ApplicationCreateRequest, AppDuplicateCheck>();
 
         }
     }

@@ -224,7 +224,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/orgs/{orgId}/application/bulk")]
         [HttpPost]
-        public async Task<ActionResult> BulkUpload([FromForm][Required] BulkUploadRequest bulkUploadRequest, [FromRoute] Guid orgId)
+        public async Task<ActionResult> BulkUpload([FromForm][Required] BulkUploadRequest bulkUploadRequest, [FromRoute] Guid orgId, CancellationToken ct)
         {
             var userId = this.HttpContext.User.GetUserId();
             if (userId == null) throw new ApiException(System.Net.HttpStatusCode.Unauthorized);
@@ -242,7 +242,7 @@ namespace Spd.Presentation.Screening.Controllers
             }
 
             //parse file
-            var applications = ParseBulkUploadFile(bulkUploadRequest.File);
+            var applications = await ParseBulkUploadFileAsync(bulkUploadRequest.File, ct);
             await _mediator.Send(new BulkUploadCreateCommand(
                 new BulkUploadCreateRequest(fileName, fileSize, applications)
                 , orgId, Guid.Parse(userId)));
@@ -305,8 +305,8 @@ namespace Spd.Presentation.Screening.Controllers
                 _ => new AppListSortBy()
             };
         }
-
-        private IEnumerable<ApplicationCreateRequestWithLine> ParseBulkUploadFile(IFormFile bulkFile)
+        
+        private async Task<IEnumerable<ApplicationCreateRequestWithLine>> ParseBulkUploadFileAsync(IFormFile bulkFile, CancellationToken ct)
         {
             IList<ValidationErr> errors = new List<ValidationErr>();
             IList<ApplicationCreateRequestWithLine> list = new List<ApplicationCreateRequestWithLine>();
@@ -347,6 +347,13 @@ namespace Spd.Presentation.Screening.Controllers
                             oneRequest.GenderCode = string.IsNullOrEmpty(genderStr) ? null : Enum.Parse<GenderCode>(genderStr);
                             oneRequest.LicenceNo = data[22];
                             oneRequest.DriversLicense = data[23];
+
+                            var validateResult = await _appCreateRequestValidator.ValidateAsync(oneRequest, ct);
+                            if(!validateResult.IsValid)
+                            {
+                                ValidationErr err = new ValidationErr(lineNo, JsonSerializer.Serialize(validateResult.Errors));
+                                errors.Add(err);
+                            }
 
                             list.Add(oneRequest);
                         }

@@ -110,7 +110,7 @@ internal class ApplicationRepository : IApplicationRepository
         spd_application? app = await _context.GetApplicationById(identityCmd.ApplicationId, cancellationToken);
         if (app == null) { return false; }
 
-        if (identityCmd.Verify == true)
+        if (identityCmd.Verify)
         {
             var paid = app.statecode == DynamicsConstants.StateCode_Inactive ? true : false;
             if (paid)
@@ -120,13 +120,13 @@ internal class ApplicationRepository : IApplicationRepository
             }
             else
             {
-                app.statuscode = (int?)ApplicationActiveStatus.Submitted;
+                app.statuscode = (int?)ApplicationInactiveStatus.Submitted;
                 app.statecode = DynamicsConstants.StateCode_Inactive;
             }
         }
         else
         {
-            app.statuscode = (int?)ApplicationActiveStatus.Cancelled;
+            app.statuscode = (int?)ApplicationInactiveStatus.Cancelled;
             app.statecode = DynamicsConstants.StateCode_Inactive;
         }
 

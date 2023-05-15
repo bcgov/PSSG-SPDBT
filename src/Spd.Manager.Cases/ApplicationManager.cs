@@ -1,5 +1,6 @@
 using AutoMapper;
 using MediatR;
+using Spd.Engine.Validation;
 using Spd.Resource.Applicants;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.ApplicationInvite;
@@ -25,18 +26,21 @@ namespace Spd.Manager.Cases
         private readonly IMapper _mapper;
         private readonly IBulkHistoryRepository _bulkHistoryRepository;
         private readonly ITempFileStorageService _tempFile;
+        private readonly IDuplicateCheckEngine _duplicateCheckEngine;
 
         public ApplicationManager(IApplicationRepository applicationRepository,
             IApplicationInviteRepository applicationInviteRepository,
             IBulkHistoryRepository bulkHistoryRepository,
             IMapper mapper,
-            ITempFileStorageService tempFile)
+            ITempFileStorageService tempFile,
+            IDuplicateCheckEngine duplicateCheckEngine)
         {
             _applicationRepository = applicationRepository;
             _applicationInviteRepository = applicationInviteRepository;
             _tempFile = tempFile;
             _mapper = mapper;
             _bulkHistoryRepository = bulkHistoryRepository;
+            _duplicateCheckEngine = duplicateCheckEngine;
         }
 
         #region application-invite
@@ -212,6 +216,8 @@ namespace Spd.Manager.Cases
 
         public async Task<Unit> Handle(BulkUploadCreateCommand cmd, CancellationToken ct)
         {
+            var checks = _mapper.Map<IEnumerable<AppBulkDuplicateCheck>>(cmd.BulkUploadCreateRequest.ApplicationCreateRequests);
+            await _duplicateCheckEngine.DuplicateCheckAsync(new BulkUploadAppDuplicateCheckRequest(checks), ct);
             return default;
         }
         #endregion

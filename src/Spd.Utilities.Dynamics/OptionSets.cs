@@ -68,9 +68,13 @@ namespace Spd.Utilities.Dynamics
         Draft = 1,
         PaymentPending = 100000000,
         Incomplete = 100000001,
-        ApplicantVerification = 100000003,
+        ApplicantVerification = 100000003
+    }
+
+    public enum ApplicationInactiveStatus
+    {
         Submitted = 2,
-        Cancelled = 100000002,
+        Cancelled = 100000002
     }
 
     public enum AliasTypeOptionSet
