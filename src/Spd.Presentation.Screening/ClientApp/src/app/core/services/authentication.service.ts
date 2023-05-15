@@ -1,29 +1,26 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { OAuthService } from 'angular-oauth2-oidc';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, lastValueFrom, Subject } from 'rxjs';
 import { UserInfo, UserProfileResponse } from 'src/app/api/models';
 import { UserProfileService } from 'src/app/api/services';
 import {
 	OrgSelectionDialogData,
 	OrgSelectionModalComponent,
-	OrgSelectionResponseData,
 } from 'src/app/shared/components/org-selection-modal.component';
 import { ConfigService } from './config.service';
 import { UtilService } from './util.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
-	isLoginSubject$ = new BehaviorSubject<boolean>(false);
+	isLoginSubject$: Subject<boolean> = new Subject<boolean>();
 
 	private _isLoginSuccessfulSubject$ = new BehaviorSubject<boolean>(false);
 	isLoginSuccessful$ = this._isLoginSuccessfulSubject$.asObservable();
 
-	loggedInUserData: any = null;
-	// loggedInUserProfile: UserProfileResponse | null = null;
-	loggedInUserId: string | null = null;
-	loggedInOrgId: string | null = null;
-	loggedInOrgName: string | null = null;
+	loggedInUserTokenData: any = null;
+	loggedInUserInfo: UserInfo | null = null;
+	genericUploadEnabled: boolean = false;
 
 	constructor(
 		private oauthService: OAuthService,
@@ -33,9 +30,8 @@ export class AuthenticationService {
 		private configService: ConfigService
 	) {}
 
-	public async tryLogin(): Promise<{ state: any; loggedIn: boolean }> {
-		this.isLoginSubject$.next(false);
-		this._isLoginSuccessfulSubject$.next(false);
+	public async tryLogin(returnComponentRoute: string): Promise<{ state: any; loggedIn: boolean }> {
+		await this.configureOAuthService(returnComponentRoute);
 
 		await this.oauthService.loadDiscoveryDocumentAndTryLogin().then((isLoggedIn) => {
 			const hasValidAccessToken = this.oauthService.hasValidAccessToken();
@@ -45,10 +41,10 @@ export class AuthenticationService {
 				'hasValidAccessToken',
 				hasValidAccessToken
 			);
+
 			if (hasValidAccessToken) {
 				this.userService.apiUserGet().subscribe({
 					next: (resp: UserProfileResponse) => {
-						// this.loggedInUserProfile = resp;
 						const userInfosList = resp.userInfos?.filter((info) => info.orgId);
 						const userInfos = userInfosList ? userInfosList : [];
 
@@ -57,9 +53,7 @@ export class AuthenticationService {
 						} else if (userInfos.length > 1) {
 							this.orgSelection(userInfos);
 						} else {
-							this.loggedInOrgId = userInfos[0].orgId!;
-							this.loggedInOrgName = userInfos[0].orgName!;
-							this.loggedInUserId = userInfos[0].userId!;
+							this.setUserInfo(userInfos[0]);
 							this.notify(true);
 						}
 					},
@@ -88,14 +82,25 @@ export class AuthenticationService {
 		};
 	}
 
-	public async login(state: any): Promise<boolean> {
-		const isLoggedIn = this.oauthService.hasValidAccessToken();
-		if (!isLoggedIn) {
-			await this.oauthService.loadDiscoveryDocumentAndLogin({ state });
-		}
+	public async login(returnComponentRoute: string | undefined = undefined): Promise<string | null> {
+		await this.configureOAuthService(window.location.origin + returnComponentRoute);
 
-		this.notify(isLoggedIn);
-		return isLoggedIn;
+		const returnRoute = location.pathname.substring(1);
+		console.debug('[AuthenticationService] login', returnComponentRoute, returnRoute);
+
+		const isLoggedIn = await this.oauthService.loadDiscoveryDocumentAndLogin({
+			state: returnRoute,
+		});
+
+		if (isLoggedIn) {
+			await this.setOrganization();
+
+			this.notify(true);
+			return Promise.resolve(this.oauthService.state || returnRoute);
+		} else {
+			this.notify(isLoggedIn);
+			return Promise.resolve(null);
+		}
 	}
 
 	public logout(): void {
@@ -119,6 +124,45 @@ export class AuthenticationService {
 		});
 	}
 
+	private async setOrganization(): Promise<any> {
+		const resp: UserProfileResponse = await lastValueFrom(this.userService.apiUserGet());
+
+		if (resp) {
+			const uniqueUserInfoList = [
+				...new Map(resp.userInfos?.filter((info) => info.orgId).map((item) => [item['orgId'], item])).values(),
+			];
+
+			if (uniqueUserInfoList.length == 0) {
+				console.error('User does not have any organizations');
+				return Promise.resolve(false);
+			} else {
+				if (uniqueUserInfoList.length > 1) {
+					const result = await this.orgSelectionAsync(uniqueUserInfoList);
+					this.setUserInfo(result);
+				} else {
+					this.setUserInfo(uniqueUserInfoList[0]);
+				}
+				this.notify(true);
+				return Promise.resolve(true);
+			}
+		}
+	}
+
+	private orgSelectionAsync(userInfos: Array<UserInfo>): Promise<any> {
+		const dialogOptions: OrgSelectionDialogData = {
+			userInfos: userInfos,
+		};
+
+		return lastValueFrom(
+			this.dialog
+				.open(OrgSelectionModalComponent, {
+					width: '500px',
+					data: dialogOptions,
+				})
+				.afterClosed()
+		);
+	}
+
 	private orgSelection(userInfos: Array<UserInfo>): void {
 		const dialogOptions: OrgSelectionDialogData = {
 			userInfos: userInfos,
@@ -130,29 +174,32 @@ export class AuthenticationService {
 				data: dialogOptions,
 			})
 			.afterClosed()
-			.subscribe((res: OrgSelectionResponseData) => {
+			.subscribe((res: UserInfo) => {
 				if (res) {
-					this.loggedInOrgId = res.orgId;
-					this.loggedInOrgName = res.orgName;
-					this.loggedInUserId = res.userId;
+					this.setUserInfo(res);
 					this.notify(true);
 				}
 			});
 	}
 
+	private setUserInfo(userInfo: UserInfo) {
+		console.log('setUserInfo', userInfo);
+		this.loggedInUserInfo = userInfo;
+		this.genericUploadEnabled = userInfo.orgSettings?.genericUploadEnabled ?? false;
+	}
+
 	private notify(isLoggedIn: boolean): void {
 		const token = this.getToken();
+
 		if (!token) {
-			this.loggedInUserData = null;
-			// this.loggedInUserProfile = null;
-			this.loggedInOrgId = null;
-			this.loggedInOrgName = null;
-			this.loggedInUserId = null;
+			this.loggedInUserTokenData = null;
+			this.loggedInUserInfo = null;
 			return;
 		} else {
 			const decodedToken = this.utilService.getDecodedAccessToken(token);
 			console.debug('[AuthenticationService.setDecodedToken] decodedToken', decodedToken);
-			this.loggedInUserData = decodedToken;
+
+			this.loggedInUserTokenData = decodedToken;
 		}
 
 		this.isLoginSubject$.next(true);

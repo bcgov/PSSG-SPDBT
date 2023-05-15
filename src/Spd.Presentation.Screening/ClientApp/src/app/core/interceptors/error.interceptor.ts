@@ -1,13 +1,15 @@
 import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { AppRoutes } from 'src/app/app-routing.module';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
-	constructor(private dialog: MatDialog) {}
+	constructor(private router: Router, private dialog: MatDialog) {}
 
 	intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 		return next.handle(request).pipe(
@@ -17,6 +19,10 @@ export class ErrorInterceptor implements HttpInterceptor {
 				console.error('ErrorInterceptor errorResponse', errorResponse);
 
 				if (errorResponse.error) {
+					if (errorResponse.error.status == 403) {
+						this.router.navigate([AppRoutes.ACCESS_DENIED]);
+					}
+
 					if (errorResponse.error?.errors) {
 						title = errorResponse.error.title;
 						message = '<ul>';

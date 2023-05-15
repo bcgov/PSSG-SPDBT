@@ -336,7 +336,7 @@ export class IdentifyVerificationComponent implements OnInit {
 
 		this.applicationService
 			.apiOrgsOrgIdApplicationsGet({
-				orgId: this.authenticationService.loggedInOrgId!,
+				orgId: this.authenticationService.loggedInUserInfo?.orgId!,
 				...this.queryParams,
 			})
 			.pipe()
@@ -351,7 +351,7 @@ export class IdentifyVerificationComponent implements OnInit {
 	private verifyIdentity(application: IdentityVerificationResponse) {
 		this.applicationService
 			.apiOrgsOrgIdVerifyidentityApplicationIdPut({
-				orgId: this.authenticationService.loggedInOrgId!,
+				orgId: this.authenticationService.loggedInUserInfo?.orgId!,
 				applicationId: application.id!,
 			})
 			.pipe()
@@ -364,7 +364,7 @@ export class IdentifyVerificationComponent implements OnInit {
 	private rejectIdentity(application: IdentityVerificationResponse) {
 		this.applicationService
 			.apiOrgsOrgIdRejectidentityApplicationIdPut({
-				orgId: this.authenticationService.loggedInOrgId!,
+				orgId: this.authenticationService.loggedInUserInfo?.orgId!,
 				applicationId: application.id!,
 			})
 			.pipe()
@@ -402,7 +402,7 @@ export class IdentifyVerificationComponent implements OnInit {
 	private refreshStats(): void {
 		this.applicationStatistics$ = this.applicationService
 			.apiOrgsOrgIdApplicationStatisticsGet({
-				orgId: this.authenticationService.loggedInOrgId!,
+				orgId: this.authenticationService.loggedInUserInfo?.orgId!,
 			})
 			.pipe(
 				tap((res: ApplicationStatisticsResponse) => {

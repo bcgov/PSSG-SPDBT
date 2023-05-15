@@ -477,7 +477,7 @@ export class ManualSubmissionsComponent implements OnInit {
 
 			// Check for potential duplicate
 			this.applicationService
-				.apiOrgsOrgIdApplicationPost({ orgId: this.authenticationService.loggedInOrgId!, body })
+				.apiOrgsOrgIdApplicationPost({ orgId: this.authenticationService.loggedInUserInfo?.orgId!, body })
 				.pipe()
 				.subscribe((dupres: ApplicationCreateResponse) => {
 					this.displayDataValidationMessage(body, dupres);
@@ -631,7 +631,7 @@ export class ManualSubmissionsComponent implements OnInit {
 
 		this.applicationService
 			.apiOrgsOrgIdApplicationPost({
-				orgId: this.authenticationService.loggedInOrgId!,
+				orgId: this.authenticationService.loggedInUserInfo?.orgId!,
 				body,
 			})
 			.pipe()

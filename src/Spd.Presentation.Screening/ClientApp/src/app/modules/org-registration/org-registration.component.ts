@@ -3,6 +3,7 @@ import { StepperOrientation, StepperSelectionEvent } from '@angular/cdk/stepper'
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
+import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged, Subject } from 'rxjs';
 import {
@@ -109,6 +110,7 @@ export class OrgRegistrationComponent implements OnInit {
 	stepFourComponent!: StepFourComponent;
 
 	constructor(
+		private router: Router,
 		private breakpointObserver: BreakpointObserver,
 		private authenticationService: AuthenticationService,
 		private orgRegistrationService: OrgRegistrationService,
@@ -126,27 +128,21 @@ export class OrgRegistrationComponent implements OnInit {
 			)
 			.subscribe(() => this.breakpointChanged());
 
-		await this.authenticationService.configureOAuthService(
-			window.location.origin + `/${OrgRegistrationRoutes.ORG_REGISTRATION}`
-		);
-
 		//auth step 1 - user is not logged in, no state at all
 		//auth step 3 - angular loads again here, KC posts the token, oidc lib reads token and returns state
-		const authInfo = await this.authenticationService.tryLogin();
-		console.debug('[OrgRegistrationComponent.ngOnInit] tryLogin authInfo', authInfo);
+		const authInfo = await this.authenticationService.tryLogin(
+			window.location.origin + OrgRegistrationRoutes.orgRegPath(OrgRegistrationRoutes.ORG_REGISTRATION)
+		);
 
 		if (authInfo.loggedIn) {
 			if (authInfo.state) {
-				const decodedData = decodeURIComponent(authInfo.state);
-				this.utilService.setSessionData(this.utilService.ORG_REG_STATE_KEY, decodedData);
-
-				// navigate to step 3
-				this.postLoginNavigate(decodedData);
-			} else {
 				const stateInfo = this.utilService.getSessionData(this.utilService.ORG_REG_STATE_KEY);
+				console.debug('[OrgRegistrationComponent.ngOnInit] stateInfo', stateInfo);
 				if (stateInfo) {
 					this.postLoginNavigate(stateInfo);
 				}
+			} else {
+				this.router.navigate([OrgRegistrationRoutes.ORG_REGISTRATION]);
 			}
 		}
 	}
@@ -170,8 +166,12 @@ export class OrgRegistrationComponent implements OnInit {
 		const stateInfo = JSON.stringify({ ...this.stepOneComponent.getStepData() });
 
 		//auth step 2 - unload angular, redirect to KC
-		const isLoggedIn = await this.authenticationService.login(stateInfo);
-		if (isLoggedIn) {
+		// const decodedData = decodeURIComponent(authInfo.state);
+		this.utilService.setSessionData(this.utilService.ORG_REG_STATE_KEY, stateInfo);
+		const nextUrl = await this.authenticationService.login(
+			OrgRegistrationRoutes.orgRegPath(OrgRegistrationRoutes.ORG_REGISTRATION)
+		);
+		if (nextUrl) {
 			// User is already logged in and clicks Login button.
 			// For example, complete a registration then refresh the page.
 			// Want it to start at the beginning and continue past login page.

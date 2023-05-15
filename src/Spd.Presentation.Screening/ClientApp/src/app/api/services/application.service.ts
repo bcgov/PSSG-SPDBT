@@ -16,6 +16,7 @@ import { ApplicationInvitesCreateRequest } from '../models/application-invites-c
 import { ApplicationInvitesCreateResponse } from '../models/application-invites-create-response';
 import { ApplicationListResponse } from '../models/application-list-response';
 import { ApplicationStatisticsResponse } from '../models/application-statistics-response';
+import { BulkHistoryListResponse } from '../models/bulk-history-list-response';
 
 @Injectable({
   providedIn: 'root',
@@ -607,6 +608,76 @@ export class ApplicationService extends BaseService {
 
     return this.apiOrgsOrgIdRejectidentityApplicationIdPut$Response(params).pipe(
       map((r: StrictHttpResponse<boolean>) => r.body as boolean)
+    );
+  }
+
+  /**
+   * Path part for operation apiOrgsOrgIdApplicationsBulkHistoryGet
+   */
+  static readonly ApiOrgsOrgIdApplicationsBulkHistoryGetPath = '/api/orgs/{orgId}/applications/bulk/history';
+
+  /**
+   * return all bulk upload history belong to the organization.
+   * sort: submittedon, default will be desc.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiOrgsOrgIdApplicationsBulkHistoryGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiOrgsOrgIdApplicationsBulkHistoryGet$Response(params: {
+    orgId: string;
+    sorts?: string;
+    page?: number;
+    pageSize?: number;
+    context?: HttpContext
+  }
+): Observable<StrictHttpResponse<BulkHistoryListResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdApplicationsBulkHistoryGetPath, 'get');
+    if (params) {
+      rb.path('orgId', params.orgId, {});
+      rb.query('sorts', params.sorts, {});
+      rb.query('page', params.page, {});
+      rb.query('pageSize', params.pageSize, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: params?.context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<BulkHistoryListResponse>;
+      })
+    );
+  }
+
+  /**
+   * return all bulk upload history belong to the organization.
+   * sort: submittedon, default will be desc.
+   *
+   *
+   *
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `apiOrgsOrgIdApplicationsBulkHistoryGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiOrgsOrgIdApplicationsBulkHistoryGet(params: {
+    orgId: string;
+    sorts?: string;
+    page?: number;
+    pageSize?: number;
+    context?: HttpContext
+  }
+): Observable<BulkHistoryListResponse> {
+
+    return this.apiOrgsOrgIdApplicationsBulkHistoryGet$Response(params).pipe(
+      map((r: StrictHttpResponse<BulkHistoryListResponse>) => r.body as BulkHistoryListResponse)
     );
   }
 
