@@ -8,13 +8,24 @@ import { CrrpRoutes } from '../crrp-routing.module';
 	selector: 'app-invitation',
 	template: `
 		<div class="container-fluid text-center mt-4" *ngIf="message">
+			<mat-icon>no_accounts</mat-icon>
 			<h1>Invite Denied</h1>
-			<p class="mt-4">
-				<strong> {{ message }} </strong>
-			</p>
+			<h4 class="mt-4">
+				{{ message }}
+			</h4>
 		</div>
 	`,
-	styles: [],
+	styles: [
+		`
+			.mat-icon {
+				font-size: 50px;
+				width: 50px;
+				height: 50px;
+				vertical-align: bottom;
+				margin-right: 4px;
+			}
+		`,
+	],
 })
 export class InvitationComponent {
 	message = '';
