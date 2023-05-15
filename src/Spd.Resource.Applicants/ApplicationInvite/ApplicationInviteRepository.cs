@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
+using Microsoft.OData.Client;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
@@ -25,37 +26,32 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             var invites = _dynaContext.spd_portalinvitations
                     .Where(i => i.spd_invitationtype != null && i.spd_invitationtype == (int)InvitationTypeOptionSet.ScreeningRequest)
                     .Where(i => i._spd_organizationid_value == query.FilterBy.OrgId && i.statecode == DynamicsConstants.StateCode_Active);
-
             string? filterValue = query.FilterBy.EmailOrNameContains;
             if (!string.IsNullOrWhiteSpace(filterValue))
                 invites = invites.Where(i => i.spd_firstname.Contains(filterValue) || i.spd_surname.Contains(filterValue) || i.spd_email.Contains(filterValue));
-
             if (query.SortBy == null)
                 invites = invites.OrderByDescending(a => a.createdon);
             if (query.SortBy != null && query.SortBy.SubmittedDateDesc != null && (bool)query.SortBy.SubmittedDateDesc)
                 invites = invites.OrderByDescending(a => a.createdon);
             if (query.SortBy != null && query.SortBy.SubmittedDateDesc != null && !(bool)query.SortBy.SubmittedDateDesc)
                 invites = invites.OrderBy(a => a.createdon);
-
-            int count = invites.AsEnumerable().Count();
-
             if (query.Paging != null)
             {
                 invites = invites
                     .Skip(query.Paging.Page * query.Paging.PageSize)
                     .Take(query.Paging.PageSize);
             }
-
+            var q = ((DataServiceQuery<spd_portalinvitation>)invites).IncludeCount();
+            var result = (QueryOperationResponse<spd_portalinvitation>)await q.ExecuteAsync(cancellationToken);
             var response = new ApplicationInviteListResp();
-
-            response.ApplicationInvites = _mapper.Map<IEnumerable<ApplicationInviteResult>>(invites);
+            response.ApplicationInvites = _mapper.Map<IEnumerable<ApplicationInviteResult>>(result);
 
             if (query.Paging != null)
             {
                 response.Pagination = new PaginationResp();
                 response.Pagination.PageSize = query.Paging.PageSize;
                 response.Pagination.PageIndex = query.Paging.Page;
-                response.Pagination.Length = count;
+                response.Pagination.Length = (int)result.Count;
             }
 
             return response;

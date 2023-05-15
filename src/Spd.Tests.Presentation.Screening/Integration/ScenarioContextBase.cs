@@ -1,5 +1,6 @@
 using Alba;
 using Alba.Security;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Spd.Utilities.Dynamics;
@@ -39,7 +40,8 @@ public class WebAppFixture
 
     public async Task CreateDynamicsData()
     {
-        testData = new DynamicsTestData(albaHost.Services.CreateScope().ServiceProvider.GetRequiredService<IDynamicsContextFactory>());
+        testData = new DynamicsTestData(albaHost.Services.CreateScope().ServiceProvider.GetRequiredService<IDynamicsContextFactory>(),
+            albaHost.Services.CreateScope().ServiceProvider.GetRequiredService<IDataProtectionProvider>());
     }
 }
 
