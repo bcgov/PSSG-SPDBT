@@ -11,6 +11,7 @@ import { map, filter } from 'rxjs/operators';
 
 import { ActionResult } from '../models/action-result';
 import { InvitationRequest } from '../models/invitation-request';
+import { InvitationResponse } from '../models/invitation-response';
 import { OrgUserCreateRequest } from '../models/org-user-create-request';
 import { OrgUserListResponse } from '../models/org-user-list-response';
 import { OrgUserResponse } from '../models/org-user-response';
@@ -50,7 +51,7 @@ export class OrgUserService extends BaseService {
      */
     body: InvitationRequest
   }
-): Observable<StrictHttpResponse<ActionResult>> {
+): Observable<StrictHttpResponse<InvitationResponse>> {
 
     const rb = new RequestBuilder(this.rootUrl, OrgUserService.ApiInvitationPostPath, 'post');
     if (params) {
@@ -64,7 +65,7 @@ export class OrgUserService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<ActionResult>;
+        return r as StrictHttpResponse<InvitationResponse>;
       })
     );
   }
@@ -87,10 +88,10 @@ export class OrgUserService extends BaseService {
      */
     body: InvitationRequest
   }
-): Observable<ActionResult> {
+): Observable<InvitationResponse> {
 
     return this.apiInvitationPost$Response(params).pipe(
-      map((r: StrictHttpResponse<ActionResult>) => r.body as ActionResult)
+      map((r: StrictHttpResponse<InvitationResponse>) => r.body as InvitationResponse)
     );
   }
 

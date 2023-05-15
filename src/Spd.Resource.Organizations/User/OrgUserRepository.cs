@@ -96,7 +96,7 @@ namespace Spd.Resource.Organizations.User
                     .Where(u => u.spd_portaluserid != invite._spd_portaluserid_value)
                     .FirstOrDefaultAsync(ct);
                 if (dupUser != null)
-                    throw new ApiException(HttpStatusCode.Unauthorized, "the user already exists in current org");
+                    throw new ApiException(HttpStatusCode.Accepted, "You already exist in the organization.");
             }
 
             Guid userId = invite._spd_portaluserid_value ?? Guid.Empty;
@@ -106,9 +106,9 @@ namespace Spd.Resource.Organizations.User
             //set invite views
             invite.spd_views = (invite.spd_views ?? 0) + 1;
             _dynaContext.UpdateObject(invite);
- 
+
             await _dynaContext.SaveChangesAsync(ct);
-            return new OrgUserManageResult(new UserResult() { OrganizationId= invite._spd_organizationid_value});
+            return new OrgUserManageResult(new UserResult() { OrganizationId = invite._spd_organizationid_value });
         }
 
         private async Task<OrgUserManageResult> AddUserAsync(UserCreateCmd createUserCmd, CancellationToken cancellationToken)

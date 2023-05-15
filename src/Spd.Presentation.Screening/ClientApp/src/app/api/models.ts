@@ -15,12 +15,15 @@ export { ApplicationPortalStatusCode } from './models/application-portal-status-
 export { ApplicationResponse } from './models/application-response';
 export { ApplicationStatisticsResponse } from './models/application-statistics-response';
 export { BooleanTypeCode } from './models/boolean-type-code';
+export { BulkHistoryListResponse } from './models/bulk-history-list-response';
+export { BulkHistoryResponse } from './models/bulk-history-response';
 export { ConfigurationResponse } from './models/configuration-response';
 export { ContactAuthorizationTypeCode } from './models/contact-authorization-type-code';
 export { EmployeeInteractionTypeCode } from './models/employee-interaction-type-code';
 export { EmployeeOrganizationTypeCode } from './models/employee-organization-type-code';
 export { FundsFromBcGovtExceedsThresholdCode } from './models/funds-from-bc-govt-exceeds-threshold-code';
 export { InvitationRequest } from './models/invitation-request';
+export { InvitationResponse } from './models/invitation-response';
 export { OidcConfiguration } from './models/oidc-configuration';
 export { OrgProcess } from './models/org-process';
 export { OrgRegistrationCreateRequest } from './models/org-registration-create-request';
