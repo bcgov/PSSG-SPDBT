@@ -1,4 +1,3 @@
-using Amazon.S3.Model;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -242,8 +241,7 @@ namespace Spd.Presentation.Screening.Controllers
 
             //parse file
             var applications = ParseBulkUploadFile(bulkUploadRequest.File);
-            IEnumerable<ApplicationCreateRequestWithLine> requests = Array.Empty<ApplicationCreateRequestWithLine>();
-            await _mediator.Send(new BulkUploadCreateCommand(requests, orgId, Guid.Parse(userId)));
+            await _mediator.Send(new BulkUploadCreateCommand(applications, orgId, Guid.Parse(userId)));
             return Ok();
         }
 
@@ -319,7 +317,7 @@ namespace Spd.Presentation.Screening.Controllers
                     int lineNo = 1;
                     foreach (string line in lines)
                     {
-                        if(string.IsNullOrWhiteSpace(line)) continue;
+                        if (string.IsNullOrWhiteSpace(line)) continue;
                         ApplicationCreateRequestWithLine oneRequest = new ApplicationCreateRequestWithLine();
                         oneRequest.LineNumber = lineNo;
                         try
@@ -345,9 +343,10 @@ namespace Spd.Presentation.Screening.Controllers
                             oneRequest.GenderCode = string.IsNullOrEmpty(genderStr) ? null : Enum.Parse<GenderCode>(genderStr);
                             oneRequest.LicenceNo = data[22];
                             oneRequest.DriversLicense = data[23];
+
                             list.Add(oneRequest);
                         }
-                        catch(Exception ex)
+                        catch (Exception ex)
                         {
                             ValidationErr err = new ValidationErr(lineNo, ex.Message);
                             errors.Add(err);
