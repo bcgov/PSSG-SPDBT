@@ -1,7 +1,6 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using Spd.Resource.Applicants.BulkHistory;
 using System.ComponentModel;
 
 namespace Spd.Manager.Cases
@@ -273,7 +272,8 @@ namespace Spd.Manager.Cases
         public string UploadedByUserFullName { get; set; } = null!;
         public DateTimeOffset UploadedDateTime { get; set; }
     }
-    public record BulkUploadCreateCommand(IEnumerable<ApplicationCreateRequestWithLine> ApplicationCreateRequests, Guid OrgId, Guid UserId) : IRequest<Unit>;
+    public record BulkUploadCreateCommand(BulkUploadCreateRequest BulkUploadCreateRequest, Guid OrgId, Guid UserId) : IRequest<Unit>;
+    public record BulkUploadCreateRequest(string FileName, long FileSize, IEnumerable<ApplicationCreateRequestWithLine> ApplicationCreateRequests);    
     public record ApplicationCreateRequestWithLine : ApplicationCreateRequest
     {
         public int LineNumber { get; set; }

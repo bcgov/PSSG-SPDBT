@@ -230,18 +230,22 @@ namespace Spd.Presentation.Screening.Controllers
             if (userId == null) throw new ApiException(System.Net.HttpStatusCode.Unauthorized);
 
             //validation file
-            if (!bulkUploadRequest.File.FileName.EndsWith(SpdConstants.BULK_APP_UPLOAD_FILE_EXTENSTION, StringComparison.InvariantCultureIgnoreCase))
+            string fileName = bulkUploadRequest.File.FileName;
+            if (!fileName.EndsWith(SpdConstants.BULK_APP_UPLOAD_FILE_EXTENSTION, StringComparison.InvariantCultureIgnoreCase))
             {
                 throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"only {SpdConstants.BULK_APP_UPLOAD_FILE_EXTENSTION} file supported.");
             }
-            if (bulkUploadRequest.File.Length > SpdConstants.UPLOAD_FILE_MAX_SIZE)
+            long fileSize = bulkUploadRequest.File.Length;
+            if (fileSize > SpdConstants.UPLOAD_FILE_MAX_SIZE)
             {
                 throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"max supported file size is {SpdConstants.UPLOAD_FILE_MAX_SIZE}.");
             }
 
             //parse file
             var applications = ParseBulkUploadFile(bulkUploadRequest.File);
-            await _mediator.Send(new BulkUploadCreateCommand(applications, orgId, Guid.Parse(userId)));
+            await _mediator.Send(new BulkUploadCreateCommand(
+                new BulkUploadCreateRequest(fileName, fileSize, applications)
+                , orgId, Guid.Parse(userId)));
             return Ok();
         }
 
