@@ -12,16 +12,11 @@ import { CrrpRoutes } from './modules/crrp-application/crrp-routing.module';
 
 			<mat-divider class="my-4"></mat-divider>
 
-			<p>Select your log in method:</p>
+			<div>Select your log in method:</div>
 			<button mat-flat-button color="primary" class="large my-2" (click)="onRegisterWithBCeid()">
 				Business BCeID Account
 			</button>
-			<button
-				mat-stroked-button
-				color="primary"
-				class="large my-2"
-				[routerLink]="['/psso-application/screening-statuses/']"
-			>
+			<button mat-stroked-button color="primary" class="large my-2" [routerLink]="['/psso/screening-statuses/']">
 				IDIR Account
 			</button>
 			<p class="mt-4 mb-0">Need access to the Criminal Records Review Program?</p>
@@ -30,7 +25,7 @@ import { CrrpRoutes } from './modules/crrp-application/crrp-routing.module';
 
 		<section class="step-section col-xxl-4 col-xl-4 col-lg-5 col-md-6 col-sm-12 mx-auto mt-4 p-4">
 			Temporary section
-			<button mat-flat-button color="primary" class="large my-2" (click)="goToScreening()">
+			<button mat-stroked-button color="primary" class="large my-2" (click)="goToScreening()">
 				Criminal Record Check Application
 			</button>
 
@@ -51,21 +46,11 @@ export class LandingComponent {
 
 	constructor(private router: Router, private authenticationService: AuthenticationService) {}
 
-	async ngOnInit(): Promise<void> {
-		const postLoginRoute = CrrpRoutes.crrpPath(CrrpRoutes.HOME);
-		await this.authenticationService.configureOAuthService(window.location.origin + `/${postLoginRoute}`);
-	}
-
 	goToScreening(): void {
 		this.router.navigateByUrl('/crc-application', { state: { paymentBy: this.paymentBy } });
 	}
 
-	async onRegisterWithBCeid(): Promise<void> {
-		const isLoggedIn = await this.authenticationService.login(null);
-		console.debug('[LandingComponent.onRegisterWithBCeid] isLoggedIn', isLoggedIn);
-		if (isLoggedIn) {
-			const postLoginRoute = CrrpRoutes.crrpPath(CrrpRoutes.HOME);
-			this.router.navigateByUrl(postLoginRoute);
-		}
+	onRegisterWithBCeid(): void {
+		this.router.navigateByUrl(CrrpRoutes.crrpPath(CrrpRoutes.HOME));
 	}
 }

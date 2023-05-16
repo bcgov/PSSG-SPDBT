@@ -5,13 +5,6 @@ import { UserInfo } from 'src/app/api/models';
 export interface OrgSelectionDialogData {
 	userInfos: Array<UserInfo>;
 }
-
-export interface OrgSelectionResponseData {
-	orgId: string | null;
-	orgName: string | null;
-	userId: string | null;
-}
-
 @Component({
 	selector: 'app-org-selection-modal',
 	template: `
@@ -49,10 +42,6 @@ export class OrgSelectionModalComponent implements OnInit {
 	}
 
 	onSelectOrg(userinfo: UserInfo) {
-		this.dialogRef.close({
-			orgId: userinfo ? userinfo.orgId : null,
-			orgName: userinfo ? userinfo.orgName : null,
-			userId: userinfo ? userinfo.userId : null,
-		});
+		this.dialogRef.close({ ...userinfo });
 	}
 }

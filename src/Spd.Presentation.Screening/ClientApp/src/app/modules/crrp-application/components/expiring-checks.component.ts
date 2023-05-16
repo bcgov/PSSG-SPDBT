@@ -294,7 +294,7 @@ export class ExpiringChecksComponent implements OnInit {
 	private loadList(pageIndex: number = 0): void {
 		this.applicationService
 			.apiOrgsOrgIdApplicationsGet({
-				orgId: this.authenticationService.loggedInOrgId!,
+				orgId: this.authenticationService.loggedInUserInfo?.orgId!,
 				page: pageIndex,
 				pageSize: this.tablePaginator.pageSize,
 			})
