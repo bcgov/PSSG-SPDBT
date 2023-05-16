@@ -37,10 +37,11 @@ namespace Spd.Resource.Organizations.Org
             .ForMember(d => d.EmployeeOrganizationTypeCode, opt => opt.MapFrom(s => GetTypeFromTypeId(s._spd_organizationtypeid_value).Item1))
             .ForMember(d => d.VolunteerOrganizationTypeCode, opt => opt.MapFrom(s => GetTypeFromTypeId(s._spd_organizationtypeid_value).Item2));
         }
-        private static string? GetLicenseesNeedVulnerableSectorScreening(BooleanTypeCode? code)
+
+        private static int? GetLicenseesNeedVulnerableSectorScreening(BooleanTypeCode? code)
         {
             if (code == null) return null;
-            return Enum.GetName(typeof(YesNoOptionSet), code);
+            return (int)Enum.Parse<YesNoOptionSet>(code.ToString());
         }
 
         private static string? GetPayerPreferenceType(int? code)
