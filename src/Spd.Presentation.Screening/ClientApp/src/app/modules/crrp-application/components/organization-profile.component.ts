@@ -2,11 +2,19 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { HotToastService } from '@ngneat/hot-toast';
 import { NgxMaskPipe } from 'ngx-mask';
-import { BooleanTypeCode, OrgResponse, OrgUpdateRequest, PayerPreferenceTypeCode } from 'src/app/api/models';
+import {
+	BooleanTypeCode,
+	EmployeeOrganizationTypeCode,
+	OrgResponse,
+	OrgUpdateRequest,
+	PayerPreferenceTypeCode,
+	VolunteerOrganizationTypeCode,
+} from 'src/app/api/models';
 import { OrgService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
+import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 
 @Component({
 	selector: 'app-organization-profile',
@@ -166,32 +174,34 @@ import { FormControlValidators } from 'src/app/core/validators/form-control.vali
 					</div>
 				</div>
 
-				<mat-divider class="my-3"></mat-divider>
-				<div class="text-minor-heading fw-semibold mb-2">
-					Do you work with licensees who need vulnerable sector checks?
-				</div>
-				<div class="row">
-					<div class="col-xl-4 col-lg-12">
-						<mat-radio-group
-							aria-label="Select an option"
-							formControlName="licenseesNeedVulnerableSectorScreening"
-							class="d-flex flex-row"
-						>
-							<mat-radio-button [value]="booleanTypeCodes.No" class="mb-0">No</mat-radio-button>
-							<mat-radio-button [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
-						</mat-radio-group>
-						<mat-error
-							class="mat-option-error"
-							*ngIf="
-								(form.get('licenseesNeedVulnerableSectorScreening')?.dirty ||
-									form.get('licenseesNeedVulnerableSectorScreening')?.touched) &&
-								form.get('licenseesNeedVulnerableSectorScreening')?.invalid &&
-								form.get('licenseesNeedVulnerableSectorScreening')?.hasError('required')
-							"
-							>An option must be selected</mat-error
-						>
+				<ng-container *ngIf="displayLicenseesQuestion">
+					<mat-divider class="my-3"></mat-divider>
+					<div class="text-minor-heading fw-semibold mb-2">
+						Do you work with licensees who need vulnerable sector checks?
 					</div>
-				</div>
+					<div class="row">
+						<div class="col-xl-4 col-lg-12">
+							<mat-radio-group
+								aria-label="Select an option"
+								formControlName="licenseesNeedVulnerableSectorScreening"
+								class="d-flex flex-row"
+							>
+								<mat-radio-button [value]="booleanTypeCodes.No" class="mb-0">No</mat-radio-button>
+								<mat-radio-button [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
+							</mat-radio-group>
+							<mat-error
+								class="mat-option-error"
+								*ngIf="
+									(form.get('licenseesNeedVulnerableSectorScreening')?.dirty ||
+										form.get('licenseesNeedVulnerableSectorScreening')?.touched) &&
+									form.get('licenseesNeedVulnerableSectorScreening')?.invalid &&
+									form.get('licenseesNeedVulnerableSectorScreening')?.hasError('required')
+								"
+								>An option must be selected</mat-error
+							>
+						</div>
+					</div>
+				</ng-container>
 			</form>
 			<div class="row mb-4" *ngIf="!viewOnly">
 				<div class="offset-xl-8 offset-lg-6 col-xl-2 col-lg-3 col-md-6 col-sm-12">
@@ -215,26 +225,37 @@ import { FormControlValidators } from 'src/app/core/validators/form-control.vali
 })
 export class OrganizationProfileComponent implements OnInit {
 	viewOnly: boolean = true;
+	displayLicenseesQuestion: boolean = true;
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	booleanTypeCodes = BooleanTypeCode;
 	payerPreferenceTypeCode = PayerPreferenceTypeCode;
 	initialValues = {};
-	form: FormGroup = this.formBuilder.group({
-		organizationName: new FormControl(''),
-		organizationLegalName: new FormControl(''),
-		accessCode: new FormControl(''),
-		email: new FormControl('', [Validators.required, FormControlValidators.email]),
-		phoneNumber: new FormControl('', [Validators.required]),
-		addressLine1: new FormControl('', [Validators.required]),
-		addressLine2: new FormControl(''),
-		addressCity: new FormControl('', [Validators.required]),
-		addressPostalCode: new FormControl('', [Validators.required]),
-		addressProvince: new FormControl('', [Validators.required]),
-		addressCountry: new FormControl('', [Validators.required]),
-		payerPreference: new FormControl('', [Validators.required]),
-		contractorsNeedVulnerableSectorScreening: new FormControl('', [Validators.required]),
-		licenseesNeedVulnerableSectorScreening: new FormControl('', [Validators.required]),
-	});
+	form: FormGroup = this.formBuilder.group(
+		{
+			organizationName: new FormControl(''),
+			organizationLegalName: new FormControl(''),
+			accessCode: new FormControl(''),
+			email: new FormControl('', [Validators.required, FormControlValidators.email]),
+			phoneNumber: new FormControl('', [Validators.required]),
+			addressLine1: new FormControl('', [Validators.required]),
+			addressLine2: new FormControl(''),
+			addressCity: new FormControl('', [Validators.required]),
+			addressPostalCode: new FormControl('', [Validators.required]),
+			addressProvince: new FormControl('', [Validators.required]),
+			addressCountry: new FormControl('', [Validators.required]),
+			payerPreference: new FormControl('', [Validators.required]),
+			contractorsNeedVulnerableSectorScreening: new FormControl('', [Validators.required]),
+			licenseesNeedVulnerableSectorScreening: new FormControl(''),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalRequiredValidator(
+					'licenseesNeedVulnerableSectorScreening',
+					() => this.displayLicenseesQuestion
+				),
+			],
+		}
+	);
 	startAt = SPD_CONSTANTS.date.birthDateStartAt;
 	formValues = {};
 
@@ -253,6 +274,23 @@ export class OrganizationProfileComponent implements OnInit {
 			.subscribe((resp: OrgResponse) => {
 				this.form.patchValue(resp);
 				this.initialValues = this.form.value;
+
+				// SPDBT-876 - work with licensees – only visible if Employer Org type or Volunteer Org Type equals:
+				// "Childcare" "Healthcare" "Govn Body" (only employee) "Prov Govt"
+				if (resp.employeeOrganizationTypeCode) {
+					this.displayLicenseesQuestion = [
+						EmployeeOrganizationTypeCode.Childcare,
+						EmployeeOrganizationTypeCode.Healthcare,
+						EmployeeOrganizationTypeCode.GovnBody,
+						EmployeeOrganizationTypeCode.ProvGovt,
+					].includes(resp.employeeOrganizationTypeCode);
+				} else if (resp.volunteerOrganizationTypeCode) {
+					this.displayLicenseesQuestion = [
+						VolunteerOrganizationTypeCode.Childcare,
+						VolunteerOrganizationTypeCode.Healthcare,
+						VolunteerOrganizationTypeCode.ProvGovt,
+					].includes(resp.volunteerOrganizationTypeCode);
+				}
 				this.setFormView();
 			});
 	}
@@ -279,6 +317,9 @@ export class OrganizationProfileComponent implements OnInit {
 			const body: OrgUpdateRequest = { ...this.form.value, id: this.authenticationService.loggedInUserInfo?.orgId! };
 			if (body.phoneNumber) {
 				body.phoneNumber = this.maskPipe.transform(body.phoneNumber, SPD_CONSTANTS.phone.backendMask);
+			}
+			if (!this.displayLicenseesQuestion) {
+				body.licenseesNeedVulnerableSectorScreening = undefined;
 			}
 
 			this.orgService
