@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { GenericUploadsGuard } from 'src/app/core/guards/generic-uploads.guard';
 import { ApplicationStatusesComponent } from './components/application-statuses.component';
 import { CriminalRecordChecksComponent } from './components/criminal-record-checks.component';
 import { CrrpHomeComponent } from './components/crrp-home.component';
@@ -45,7 +44,7 @@ const routes: Routes = [
 			{ path: CrrpRoutes.CRIMINAL_RECORD_CHECKS, component: CriminalRecordChecksComponent },
 			{ path: CrrpRoutes.APPLICATION_STATUSES, component: ApplicationStatusesComponent },
 			{ path: CrrpRoutes.EXPIRING_CHECKS, component: ExpiringChecksComponent },
-			{ path: CrrpRoutes.GENERIC_UPLOADS, component: GenericUploadsComponent, canActivate: [GenericUploadsGuard] },
+			{ path: CrrpRoutes.GENERIC_UPLOADS, component: GenericUploadsComponent },
 			{ path: CrrpRoutes.IDENTITY_VERIFICATION, component: IdentifyVerificationComponent },
 			{ path: CrrpRoutes.PAYMENTS, component: PaymentsComponent },
 			{ path: CrrpRoutes.MANUAL_SUBMISSIONS, component: ManualSubmissionsComponent },

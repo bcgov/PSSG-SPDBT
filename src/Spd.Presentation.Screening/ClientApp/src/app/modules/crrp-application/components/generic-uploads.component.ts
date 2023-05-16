@@ -2,11 +2,13 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { ApplicationListResponse, ApplicationResponse } from 'src/app/api/models';
+import { Router } from '@angular/router';
+import { BulkHistoryListResponse, BulkHistoryResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
+import { CrrpRoutes } from '../crrp-routing.module';
 
 @Component({
 	selector: 'app-generic-uploads',
@@ -77,7 +79,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="uploadedBy">
+						<ng-container matColumnDef="uploadedByUserFullName">
 							<mat-header-cell *matHeaderCellDef>Uploaded By</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Uploaded By:</span>
@@ -85,7 +87,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="uploadedFileName">
+						<ng-container matColumnDef="fileName">
 							<mat-header-cell *matHeaderCellDef>File Name</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">File Name:</span>
@@ -93,7 +95,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="uploadedBatchNumber">
+						<ng-container matColumnDef="batchNumber">
 							<mat-header-cell *matHeaderCellDef>Batch Number</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Batch Number:</span>
@@ -148,10 +150,9 @@ export class GenericUploadsComponent implements OnInit {
 	private queryParams: any = this.utilService.getDefaultQueryParams();
 
 	constants = SPD_CONSTANTS;
-
-	dataSource: MatTableDataSource<ApplicationResponse> = new MatTableDataSource<ApplicationResponse>([]);
+	dataSource: MatTableDataSource<BulkHistoryResponse> = new MatTableDataSource<BulkHistoryResponse>([]);
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
-	columns: string[] = ['uploadedDateTime', 'uploadedBy', 'uploadedFileName', 'uploadedBatchNumber'];
+	columns: string[] = ['uploadedDateTime', 'uploadedByUserFullName', 'fileName', 'batchNumber'];
 
 	form: FormGroup = this.formBuilder.group({
 		attachments: new FormControl('', [Validators.required]),
@@ -162,6 +163,7 @@ export class GenericUploadsComponent implements OnInit {
 	@ViewChild('paginator') paginator!: MatPaginator;
 
 	constructor(
+		private router: Router,
 		private formBuilder: FormBuilder,
 		private authenticationService: AuthenticationService,
 		private applicationService: ApplicationService,
@@ -169,6 +171,14 @@ export class GenericUploadsComponent implements OnInit {
 	) {}
 
 	ngOnInit() {
+		this.authenticationService.waitUntilAuthentication$.subscribe((_subjectData: any) => {
+			const genericUploadEnabled = this.authenticationService.genericUploadEnabled;
+			if (!genericUploadEnabled) {
+				this.router.navigate([CrrpRoutes.crrpPath(CrrpRoutes.HOME)]);
+				// this.router.navigate([AppRoutes.appPath(AppRoutes.ACCESS_DENIED)]);
+			}
+		});
+
 		this.loadList();
 	}
 
@@ -183,25 +193,6 @@ export class GenericUploadsComponent implements OnInit {
 		// currentFiles.push(...evt.addedFiles);
 		// this.form.get('files')?.setValue(currentFiles);
 		this.form.get('attachments')?.setValue(evt.addedFiles);
-
-		// if (this.count % 2 == 0) this.showErrors = true;
-		// else this.showErrors = false;
-		// this.count++;
-
-		const fileInfo = evt.addedFiles[0];
-		if (fileInfo) {
-			const currList = this.dataSource.data;
-
-			// this.dataSource.data = [
-			// 	{
-			// 		uploadedDateTime: new Date(),
-			// 		uploadedBy: 'CURRENT USER',
-			// 		uploadedFileName: fileInfo.name,
-			// 		uploadedBatchNumber: 'UNKNOWN',
-			// 	},
-			// 	...currList,
-			// ];
-		}
 	}
 
 	onRemoveFile(evt: any) {
@@ -220,13 +211,13 @@ export class GenericUploadsComponent implements OnInit {
 
 	private loadList(): void {
 		this.applicationService
-			.apiOrgsOrgIdApplicationsGet({
+			.apiOrgsOrgIdApplicationsBulkHistoryGet({
 				orgId: this.authenticationService.loggedInUserInfo?.orgId!,
 				...this.queryParams,
 			})
 			.pipe()
-			.subscribe((res: ApplicationListResponse) => {
-				this.dataSource.data = res.applications as Array<ApplicationResponse>;
+			.subscribe((res: BulkHistoryListResponse) => {
+				this.dataSource.data = res.bulkUploadHistorys as Array<BulkHistoryResponse>;
 				this.tablePaginator = { ...res.pagination };
 			});
 	}
