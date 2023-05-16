@@ -98,7 +98,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 	],
 })
 export class PssoComponent {
-	isAuthenticated = this.authenticationService.isLoginSuccessful$;
+	isAuthenticated = this.authenticationService.waitUntilAuthentication$;
 	pssoRoutes = PssoRoutes;
 
 	constructor(private authenticationService: AuthenticationService) {}

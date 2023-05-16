@@ -15,8 +15,8 @@ import { UtilService } from './util.service';
 export class AuthenticationService {
 	isLoginSubject$: Subject<boolean> = new Subject<boolean>();
 
-	private _isLoginSuccessfulSubject$ = new BehaviorSubject<boolean>(false);
-	isLoginSuccessful$ = this._isLoginSuccessfulSubject$.asObservable();
+	private _waitUntilAuthentication$ = new BehaviorSubject<boolean>(false);
+	waitUntilAuthentication$ = this._waitUntilAuthentication$.asObservable();
 
 	loggedInUserTokenData: any = null;
 	loggedInUserInfo: UserInfo | null = null;
@@ -203,6 +203,6 @@ export class AuthenticationService {
 		}
 
 		this.isLoginSubject$.next(true);
-		this._isLoginSuccessfulSubject$.next(isLoggedIn);
+		this._waitUntilAuthentication$.next(isLoggedIn);
 	}
 }

@@ -12,7 +12,6 @@ import { ApiModule } from './api/api.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
-import { GenericUploadsGuard } from './core/guards/generic-uploads.guard';
 import { ConfigService } from './core/services/config.service';
 import { LandingComponent } from './landing.component';
 import { MaterialModule } from './material.module';
@@ -58,7 +57,6 @@ export function appInitializer(configService: ConfigService) {
 			deps: [ConfigService],
 			multi: true,
 		},
-		GenericUploadsGuard,
 	],
 	bootstrap: [AppComponent],
 })
