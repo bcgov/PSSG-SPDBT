@@ -174,7 +174,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 })
 export class CrrpComponent {
 	showNavigation = true;
-	isAuthenticated = this.authenticationService.isLoginSuccessful$;
+	isAuthenticated = this.authenticationService.waitUntilAuthentication$;
 	crrpRoutes = CrrpRoutes;
 
 	constructor(
@@ -196,11 +196,9 @@ export class CrrpComponent {
 			// console.debug('nextRoute', nextRoute);
 
 			if (nextRoute.includes(`${CrrpRoutes.MODULE_PATH}/${CrrpRoutes.INVITATION}`)) {
-				await this.router.navigate([nextRoute]);
 				this.showNavigation = false;
-			} else {
-				await this.router.navigateByUrl(CrrpRoutes.crrpPath(CrrpRoutes.HOME));
 			}
+			await this.router.navigate([nextRoute]);
 		}
 	}
 }

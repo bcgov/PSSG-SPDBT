@@ -20,7 +20,7 @@ namespace Spd.Resource.Organizations.Org
             .ForMember(d => d.address1_telephone1, opt => opt.MapFrom(s => s.PhoneNumber))
             .ForMember(d => d.spd_payerpreference, opt => opt.MapFrom(s => (int)Enum.Parse<PayerPreferenceOptionSet>(s.PayerPreference.ToString())))
             .ForMember(d => d.spd_havecontractors, opt => opt.MapFrom(s => (int)Enum.Parse<YesNoOptionSet>(s.ContractorsNeedVulnerableSectorScreening.ToString())))
-            .ForMember(d => d.spd_havelicenseesorregistrants, opt => opt.MapFrom(s => (int)Enum.Parse<YesNoOptionSet>(s.LicenseesNeedVulnerableSectorScreening.ToString())))
+            .ForMember(d => d.spd_havelicenseesorregistrants, opt => opt.MapFrom(s => GetLicenseesNeedVulnerableSectorScreening(s.LicenseesNeedVulnerableSectorScreening)))
             .ReverseMap()
             .ForMember(d => d.PayerPreference, opt => opt.MapFrom(s => GetPayerPreferenceType(s.spd_payerpreference)))
             .ForMember(d => d.ContractorsNeedVulnerableSectorScreening, opt => opt.MapFrom(s => GetBooleanType(s.spd_havecontractors)))
@@ -36,6 +36,11 @@ namespace Spd.Resource.Organizations.Org
             .ForMember(d => d.AccessCode, opt => opt.MapFrom(s => s.spd_accesscode))
             .ForMember(d => d.EmployeeOrganizationTypeCode, opt => opt.MapFrom(s => GetTypeFromTypeId(s._spd_organizationtypeid_value).Item1))
             .ForMember(d => d.VolunteerOrganizationTypeCode, opt => opt.MapFrom(s => GetTypeFromTypeId(s._spd_organizationtypeid_value).Item2));
+        }
+        private static string? GetLicenseesNeedVulnerableSectorScreening(BooleanTypeCode? code)
+        {
+            if (code == null) return null;
+            return Enum.GetName(typeof(YesNoOptionSet), code);
         }
 
         private static string? GetPayerPreferenceType(int? code)
@@ -56,7 +61,7 @@ namespace Spd.Resource.Organizations.Org
             if (orgTypeId == null) return (null, null);
             string key = DynamicsContextLookupHelpers.LookupOrganizationTypeKey((Guid)orgTypeId);
             var str = key.Split("-");
-            if (str.Length == 0 || str.Length>2) return (null, null);
+            if (str.Length == 0 || str.Length > 2) return (null, null);
             if (str[0].Equals("Volunteer", StringComparison.InvariantCultureIgnoreCase))
             {
                 return (null, str[1]);
