@@ -25,7 +25,7 @@ namespace Spd.Engine.Validation
     public record AppBulkDuplicateCheckResult : AppDuplicateCheckResult
     {
         public int LineNumber { get; set; }
-        public string Msg { get; set; }
+        public string? Msg { get; set; } = null;
     }
     public record AppDuplicateCheckResult
     {
