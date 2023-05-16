@@ -244,8 +244,9 @@ namespace Spd.Presentation.Screening.Controllers
             //parse file
             var applications = await ParseBulkUploadFileAsync(bulkUploadRequest.File, ct);
             await _mediator.Send(new BulkUploadCreateCommand(
-                new BulkUploadCreateRequest(fileName, fileSize, applications)
-                , orgId, Guid.Parse(userId)));
+                new BulkUploadCreateRequest(fileName, fileSize, applications, bulkUploadRequest.RequireDuplicateCheck), 
+                orgId, 
+                Guid.Parse(userId)));
             return Ok();
         }
 

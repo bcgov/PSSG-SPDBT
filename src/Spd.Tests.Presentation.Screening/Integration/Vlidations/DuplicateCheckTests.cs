@@ -10,7 +10,7 @@ public class DuplicateCheckTests : ScenarioContextBase
     }
 
     [Fact]
-    public async Task CanGetStatistics()
+    public async Task CanCheckDuplicateInTsvAndDb()
     {
         var duplicateCheckEngine = Host.Services.GetRequiredService<IDuplicateCheckEngine>();
         var org = await fixture.testData.CreateOrg("org1");

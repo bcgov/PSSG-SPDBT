@@ -7,7 +7,7 @@ namespace Spd.Engine.Validation
 
     public abstract record DuplicateCheckRequest;
     public abstract record DuplicateCheckResponse;
-    public record BulkUploadAppDuplicateCheckRequest(IEnumerable<AppBulkDuplicateCheck> BulkDuplicateChecks): DuplicateCheckRequest;
+    public record BulkUploadAppDuplicateCheckRequest(IEnumerable<AppBulkDuplicateCheck> BulkDuplicateChecks) : DuplicateCheckRequest;
     public record AppBulkDuplicateCheck : AppDuplicateCheck
     {
         public int LineNumber { get; set; }
@@ -25,6 +25,7 @@ namespace Spd.Engine.Validation
     public record AppBulkDuplicateCheckResult : AppDuplicateCheckResult
     {
         public int LineNumber { get; set; }
+        public string Msg { get; set; }
     }
     public record AppDuplicateCheckResult
     {

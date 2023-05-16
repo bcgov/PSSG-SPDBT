@@ -273,7 +273,7 @@ namespace Spd.Manager.Cases
         public DateTimeOffset UploadedDateTime { get; set; }
     }
     public record BulkUploadCreateCommand(BulkUploadCreateRequest BulkUploadCreateRequest, Guid OrgId, Guid UserId) : IRequest<Unit>;
-    public record BulkUploadCreateRequest(string FileName, long FileSize, IEnumerable<ApplicationCreateRequestWithLine> ApplicationCreateRequests);
+    public record BulkUploadCreateRequest(string FileName, long FileSize, IEnumerable<ApplicationCreateRequestWithLine> ApplicationCreateRequests, bool RequireDuplicateCheck);
     public record ApplicationCreateRequestWithLine : ApplicationCreateRequest
     {
         public int LineNumber { get; set; }

@@ -216,8 +216,11 @@ namespace Spd.Manager.Cases
 
         public async Task<Unit> Handle(BulkUploadCreateCommand cmd, CancellationToken ct)
         {
-            var checks = _mapper.Map<IEnumerable<AppBulkDuplicateCheck>>(cmd.BulkUploadCreateRequest.ApplicationCreateRequests);
-            await _duplicateCheckEngine.DuplicateCheckAsync(new BulkUploadAppDuplicateCheckRequest(checks), ct);
+            if (cmd.BulkUploadCreateRequest.RequireDuplicateCheck)
+            {
+                var checks = _mapper.Map<IEnumerable<AppBulkDuplicateCheck>>(cmd.BulkUploadCreateRequest.ApplicationCreateRequests);
+                await _duplicateCheckEngine.DuplicateCheckAsync(new BulkUploadAppDuplicateCheckRequest(checks), ct);
+            }
             return default;
         }
         #endregion

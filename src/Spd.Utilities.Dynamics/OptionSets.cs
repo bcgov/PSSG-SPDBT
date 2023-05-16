@@ -77,6 +77,20 @@ namespace Spd.Utilities.Dynamics
         Cancelled = 100000002
     }
 
+    public enum CaseStatusCode
+    {
+        New = 1,
+        InProgress = 2,
+        WaitingForDetails = 3,
+        OnHold = 4,
+        UnderReview = 100000000,
+        Incomplete = 100000001,
+        Completed = 5,
+        InformationProvided = 1000,
+        Cancelled = 6,
+        Merged = 2000
+    }
+
     public enum AliasTypeOptionSet
     {
         LegalName = 100000000,
