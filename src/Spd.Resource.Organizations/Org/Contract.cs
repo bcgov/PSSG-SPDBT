@@ -34,7 +34,7 @@ namespace Spd.Resource.Organizations.Org
         public Guid Id { get; set; }
         public PayerPreferenceTypeCode PayerPreference { get; set; }
         public BooleanTypeCode ContractorsNeedVulnerableSectorScreening { get; set; }
-        public BooleanTypeCode LicenseesNeedVulnerableSectorScreening { get; set; }
+        public BooleanTypeCode? LicenseesNeedVulnerableSectorScreening { get; set; }
         public string? Email { get; set; }
         public string? PhoneNumber { get; set; }
         public string? AddressLine1 { get; set; }

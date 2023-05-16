@@ -3,6 +3,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Spd.Resource.Organizations.Registration;
 using Spd.Utilities.Dynamics;
+using Spd.Utilities.Shared.Exceptions;
+using System.Net;
 
 namespace Spd.Resource.Organizations.Org
 {
@@ -37,6 +39,29 @@ namespace Spd.Resource.Organizations.Org
         private async Task<OrgManageResult?> OrgUpdateAsync(OrgUpdateCmd updateOrgCmd, CancellationToken ct)
         {
             var org = await _dynaContext.GetOrgById(updateOrgCmd.Org.Id, ct);
+            var response = _mapper.Map<OrgResult>(org);
+
+            if (updateOrgCmd.Org.LicenseesNeedVulnerableSectorScreening == null)
+            {
+                var licenseeIsRequired = false;
+                if (response.EmployeeOrganizationTypeCode != null)
+                {
+                    String[] employeeTypes = new string[] { EmployeeOrganizationTypeCode.Childcare.ToString(), EmployeeOrganizationTypeCode.Healthcare.ToString(), EmployeeOrganizationTypeCode.GovnBody.ToString(), EmployeeOrganizationTypeCode.ProvGovt.ToString() };
+                    licenseeIsRequired = employeeTypes.Contains(response.EmployeeOrganizationTypeCode);
+
+                }
+                else if (response.VolunteerOrganizationTypeCode != null)
+                {
+                    String[] volunteerTypes = new string[] { VolunteerOrganizationTypeCode.Childcare.ToString(), VolunteerOrganizationTypeCode.Healthcare.ToString(), VolunteerOrganizationTypeCode.ProvGovt.ToString() };
+                    licenseeIsRequired = volunteerTypes.Contains(response.VolunteerOrganizationTypeCode);
+                }
+
+                if (licenseeIsRequired == true)
+                {
+                    throw new ApiException(HttpStatusCode.BadRequest, "'Licensees Need Vulnerable Sector Screening' is required.");
+                }
+            }
+
             _mapper.Map(updateOrgCmd.Org, org);
 
             _dynaContext.UpdateObject(org);

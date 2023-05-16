@@ -18,7 +18,7 @@ namespace Spd.Manager.Membership.Org
         public Guid Id { get; set; }
         public PayerPreferenceTypeCode PayerPreference { get; set; }
         public BooleanTypeCode ContractorsNeedVulnerableSectorScreening { get; set; }
-        public BooleanTypeCode LicenseesNeedVulnerableSectorScreening { get; set; }
+        public BooleanTypeCode? LicenseesNeedVulnerableSectorScreening { get; set; }
         public string? Email { get; set; }
         public string? PhoneNumber { get; set; }
         public string? AddressLine1 { get; set; }
@@ -49,7 +49,8 @@ namespace Spd.Manager.Membership.Org
                     .IsInEnum();
 
             RuleFor(r => r.LicenseesNeedVulnerableSectorScreening)
-                    .IsInEnum();
+              .IsInEnum()
+              .When(r => r.LicenseesNeedVulnerableSectorScreening != null);
 
             RuleFor(r => r.Email)
                 .NotEmpty()
