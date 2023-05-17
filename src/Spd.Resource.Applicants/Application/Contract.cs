@@ -7,6 +7,7 @@ public interface IApplicationRepository
     public Task<ApplicationListResp> QueryAsync(ApplicationListQry query, CancellationToken cancellationToken);
     public Task<ApplicationStatisticsResp> QueryApplicationStatisticsAsync(ApplicationStatisticsQry query, CancellationToken cancellationToken);
     public Task<bool> IdentityAsync(IdentityCmd cmd, CancellationToken ct);
+    public Task<ClearanceListResp> QueryAsync(ClearanceListQry clearanceListQry, CancellationToken ct);
 }
 
 //application list
@@ -127,6 +128,34 @@ public record ApplicationStatisticsQry(Guid OrganizationId);
 public record ApplicationStatisticsResp
 {
     public IReadOnlyDictionary<ApplicationPortalStatisticsCd, int> Statistics { get; set; } = new Dictionary<ApplicationPortalStatisticsCd, int>();
+}
+
+public record ClearanceListQry
+{
+    public Guid OrgId { get; set; }
+    public ClearanceFilterBy? FilterBy { get; set; } //null means no filter
+    public ClearanceSortBy? SortBy { get; set; } //null means no sorting
+    public Paging Paging { get; set; } = null!;
+}
+public record ClearanceFilterBy(Guid OrgId)
+{
+    public string? NameOrEmailContains { get; set; }
+}
+public record ClearanceSortBy(bool? ExpiresOn = true, bool? NameDesc = null, bool? CompanyNameDesc = null);
+public record ClearanceListResp
+{
+    public IEnumerable<ClearanceResp> Clearances { get; set; } = Array.Empty<ClearanceResp>();
+    public PaginationResp Pagination { get; set; } = null!;
+}
+public record ClearanceResp
+{
+    public Guid Id { get; set; }
+    public string FirstName { get; set; } = null!;
+    public string LastName { get; set; } = null!;
+    public string Email { get; set; } = null!;
+    public DateTimeOffset? ExpiresOn { get; set; } = null!;
+    public string Facility { get; set; } = null!;
+    public string Status { get; set; } = null!;
 }
 
 public enum ApplicationPortalStatusCd

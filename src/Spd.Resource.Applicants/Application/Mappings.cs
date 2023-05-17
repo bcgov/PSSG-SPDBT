@@ -88,6 +88,14 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.DateOfBirth, opt => opt.MapFrom(s => new DateTimeOffset(s.spd_dateofbirth.Value.Year, s.spd_dateofbirth.Value.Month, s.spd_dateofbirth.Value.Day, 0, 0, 0, TimeSpan.Zero)))
             .ForMember(d => d.CreatedOn, opt => opt.MapFrom(s => s.createdon))
             .ForMember(d => d.HaveVerifiedIdentity, opt => opt.MapFrom(s => s.spd_identityconfirmed));
+
+            _ = CreateMap<spd_clearanceaccess, ClearanceResp>()
+            .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_clearanceaccessid))
+            .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.spd_clearanceaccessnumber))
+            .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.spd_clearanceaccessnumber))
+            .ForMember(d => d.Facility, opt => opt.MapFrom(s => s.spd_clearanceaccessnumber))
+            .ForMember(d => d.Email, opt => opt.MapFrom(s => "test@test.com"))
+            .ForMember(d => d.ExpiresOn, opt => opt.MapFrom(s => s.createdon));
         }
         private static string? GetPaidBy(int? code)
         {
@@ -97,7 +105,7 @@ namespace Spd.Resource.Applicants.Application
 
         private string? GetFileExtension(string fileName)
         {
-            int dot=fileName.LastIndexOf('.');
+            int dot = fileName.LastIndexOf('.');
             if (dot > 0)
             {
                 return fileName.Substring(dot, fileName.Length - dot);

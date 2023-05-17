@@ -19,6 +19,7 @@ namespace Spd.Manager.Cases
         IRequestHandler<IdentityCommand, bool>,
         IRequestHandler<GetBulkUploadHistoryQuery, BulkHistoryListResponse>,
         IRequestHandler<BulkUploadCreateCommand, Unit>,
+        IRequestHandler<ClearanceListQuery, ClearanceListResponse>,
         IApplicationManager
     {
         private readonly IApplicationRepository _applicationRepository;
@@ -222,6 +223,27 @@ namespace Spd.Manager.Cases
                 await _duplicateCheckEngine.DuplicateCheckAsync(new BulkUploadAppDuplicateCheckRequest(checks), ct);
             }
             return default;
+        }
+        #endregion
+
+        #region clearances
+        public async Task<ClearanceListResponse> Handle(ClearanceListQuery request, CancellationToken ct)
+        {
+            ClearanceFilterBy filterBy = _mapper.Map<ClearanceFilterBy>(request.FilterBy);
+            ClearanceSortBy sortBy = _mapper.Map<ClearanceSortBy>(request.SortBy);
+            Paging paging = _mapper.Map<Paging>(request.Paging);
+
+            var response = await _applicationRepository.QueryAsync(
+                new ClearanceListQry
+                {
+                    FilterBy = filterBy,
+                    SortBy = sortBy,
+                    Paging = paging
+                },
+                ct);
+
+            return _mapper.Map<ClearanceListResponse>(response);
+
         }
         #endregion
     }

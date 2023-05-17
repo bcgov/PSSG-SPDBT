@@ -17,6 +17,8 @@ export { ApplicationStatisticsResponse } from './models/application-statistics-r
 export { BooleanTypeCode } from './models/boolean-type-code';
 export { BulkHistoryListResponse } from './models/bulk-history-list-response';
 export { BulkHistoryResponse } from './models/bulk-history-response';
+export { ClearanceListResponse } from './models/clearance-list-response';
+export { ClearanceResponse } from './models/clearance-response';
 export { ConfigurationResponse } from './models/configuration-response';
 export { ContactAuthorizationTypeCode } from './models/contact-authorization-type-code';
 export { EmployeeInteractionTypeCode } from './models/employee-interaction-type-code';
