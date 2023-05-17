@@ -45,11 +45,11 @@ public class DuplicateCheckTests : ScenarioContextBase
                 },
                 new AppBulkDuplicateCheck()
                 {
-                    DateOfBirth = new DateTime(2000,5,10),
-                    GivenName = "test 5",
-                    SurName = "Five 5",
+                    DateOfBirth = DateTimeOffset.UtcNow,
+                    GivenName = "fn",
+                    SurName = "ln",
                     LineNumber = 4,
-                    OrgId = Guid.Parse("dc1746ef-63ce-ed11-b841-00505683fbf4")
+                    OrgId =  (Guid)org.accountid
                 }
             };
             var results = (BulkUploadAppDuplicateCheckResponse)await duplicateCheckEngine.DuplicateCheckAsync(
