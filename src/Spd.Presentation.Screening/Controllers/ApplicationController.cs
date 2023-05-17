@@ -244,7 +244,7 @@ namespace Spd.Presentation.Screening.Controllers
             }
 
             //parse file
-            var applications = await ParseBulkUploadFileAsync(bulkUploadRequest.File, ct);
+            var applications = await ParseBulkUploadFileAsync(bulkUploadRequest.File, orgId, ct);
             await _mediator.Send(new BulkUploadCreateCommand(
                 new BulkUploadCreateRequest(fileName, fileSize, applications, bulkUploadRequest.RequireDuplicateCheck),
                 orgId,
@@ -309,7 +309,7 @@ namespace Spd.Presentation.Screening.Controllers
             };
         }
 
-        private async Task<IEnumerable<ApplicationCreateRequestFromBulk>> ParseBulkUploadFileAsync(IFormFile bulkFile, CancellationToken ct)
+        private async Task<IEnumerable<ApplicationCreateRequestFromBulk>> ParseBulkUploadFileAsync(IFormFile bulkFile, Guid orgId, CancellationToken ct)
         {
             IList<ValidationErr> errors = new List<ValidationErr>();
             IList<ApplicationCreateRequestFromBulk> list = new List<ApplicationCreateRequestFromBulk>();
@@ -331,13 +331,14 @@ namespace Spd.Presentation.Screening.Controllers
                         try
                         {
                             string[] data = line.Split(SpdConstants.BULK_APP_UPLOAD_COL_SEPERATOR);
+                            oneRequest.OrgId = orgId;
                             oneRequest.Surname = CleanString(data[0]);
                             oneRequest.GivenName = CleanString(data[1]);
                             oneRequest.MiddleName1 = CleanString(data[2]);
                             aliases[0] = new AliasCreateRequest();
-                            aliases[0].Surname= CleanString(data[3]);
+                            aliases[0].Surname = CleanString(data[3]);
                             aliases[0].GivenName = CleanString(data[4]);
-                            aliases[0].MiddleName1= CleanString(data[5]);
+                            aliases[0].MiddleName1 = CleanString(data[5]);
                             aliases[1] = new AliasCreateRequest();
                             aliases[1].Surname = CleanString(data[6]);
                             aliases[1].GivenName = CleanString(data[7]);
@@ -368,11 +369,11 @@ namespace Spd.Presentation.Screening.Controllers
                             oneRequest.OriginTypeCode = ApplicationOriginTypeCode.GenericUpload;
                             oneRequest.PayeeType = PayeePreferenceTypeCode.Organization;
                             List<AliasCreateRequest> aliasCreates = new List<AliasCreateRequest>();
-                            foreach(AliasCreateRequest a in aliases)
+                            foreach (AliasCreateRequest a in aliases)
                             {
                                 if (!string.IsNullOrWhiteSpace(a.Surname))
                                     aliasCreates.Add(a);
-                            };                            
+                            };
                             oneRequest.Aliases = aliasCreates.AsEnumerable();
                             var validateResult = await _appCreateRequestFromBulkValidator.ValidateAsync(oneRequest, ct);
                             if (!validateResult.IsValid)

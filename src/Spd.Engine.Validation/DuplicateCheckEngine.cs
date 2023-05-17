@@ -27,7 +27,7 @@ namespace Spd.Engine.Validation
         public async Task<BulkUploadAppDuplicateCheckResponse> BulkUploadAppDuplicateCheckAsync(BulkUploadAppDuplicateCheckRequest bulkCheckRequest, CancellationToken ct)
         {
             List<AppBulkDuplicateCheckResult> results = new List<AppBulkDuplicateCheckResult>();
-            IList<DataServiceRequest> queries = new List<DataServiceRequest>();
+            List<DataServiceRequest> queries = new List<DataServiceRequest>();
             foreach (var check in bulkCheckRequest.BulkDuplicateChecks)
             {
                 //check duplicates in tsv
@@ -50,27 +50,40 @@ namespace Spd.Engine.Validation
                 queries.Add(GetAppDuplicateCheckQuery(check));
             }
 
-            DataServiceResponse checkAppResponse = await _context.ExecuteBatchAsync(queries.ToArray());
-            int lineNumber = 1;
-            if (checkAppResponse.BatchStatusCode == (int)HttpStatusCode.OK)
+            //check duplicates in existing apps
+            int begin = 0;
+            int oneBatchMaxQuery = 100; // A maximum number of '100' query operations and change sets are allowed in a batch message
+            while (begin < queries.Count)
             {
-                foreach (OperationResponse r in checkAppResponse)
+                int len = queries.Count - begin;
+                if (len > oneBatchMaxQuery)
+                    len = oneBatchMaxQuery;
+                List<DataServiceRequest> exeQueries = queries.GetRange(begin, len);
+
+                DataServiceResponse checkAppResponse = await _context.ExecuteBatchAsync(exeQueries.ToArray());
+                int lineNumber = begin + 1;
+                if (checkAppResponse.BatchStatusCode == (int)HttpStatusCode.OK)
                 {
-                    QueryOperationResponse<spd_application>? app = r as QueryOperationResponse<spd_application>;
-                    var list = app.ToList();
-                    if (list != null && list.Any() && MeetDuplicateStatusCriteria(list))
+                    foreach (OperationResponse r in checkAppResponse)
                     {
-                        //if duplicate
-                        var temp = results.FirstOrDefault(r => r.LineNumber == lineNumber);
-                        if (temp != null)
+                        QueryOperationResponse<spd_application>? apps = r as QueryOperationResponse<spd_application>;
+                        var list = apps.ToList();
+                        if (list != null && list.Any() && MeetDuplicateStatusCriteria(list))
                         {
-                            temp.HasPotentialDuplicate = true;
-                            temp.Msg = $"{temp.Msg}there is potential duplicates in existing application.";
+                            //if duplicate
+                            var temp = results.FirstOrDefault(r => r.LineNumber == lineNumber);
+                            if (temp != null)
+                            {
+                                temp.HasPotentialDuplicate = true;
+                                temp.Msg = $"{temp.Msg}there is potential duplicates in existing application.";
+                            }
                         }
+                        lineNumber++;
                     }
-                    lineNumber++;
                 }
+                begin += len;
             }
+
             return new BulkUploadAppDuplicateCheckResponse(results);
         }
 
@@ -92,7 +105,7 @@ namespace Spd.Engine.Validation
             {
                 _context.LoadPropertyAsync(app, nameof(spd_application.spd_spd_application_incident));
                 var relatedCases = app.spd_spd_application_incident.ToList();
-                if (relatedCases.Any(c => c.statecode == DynamicsConstants.StateCode_Active || 
+                if (relatedCases.Any(c => c.statecode == DynamicsConstants.StateCode_Active ||
                         (c.modifiedon > completedAppCutOffTime && (c.statuscode == (int)CaseStatusCode.Cancelled || c.statuscode == (int)CaseStatusCode.Completed))))
                     return true;
             }
