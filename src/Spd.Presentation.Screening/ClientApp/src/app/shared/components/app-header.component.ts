@@ -7,15 +7,10 @@ import { AuthenticationService } from 'src/app/core/services/authentication.serv
 	template: `
 		<mat-toolbar color="primary" class="header">
 			<span>
-				<img
-					src="assets/gov_bc_logo_blue.png"
-					alt="Government of BC Logo"
-					class="gov-bc-logo"
-					(click)="goToLanding()"
-				/>
+				<img src="assets/gov_bc_logo_blue.png" alt="Government of BC Logo" class="gov-bc-logo" />
 			</span>
 			<mat-divider vertical class="header-divider mx-3"></mat-divider>
-			<div class="header-text pl-3" (click)="goToLanding()">{{ title }}</div>
+			<div class="header-text pl-3">{{ title }}</div>
 			<span style="flex: 1 1 auto;"></span>
 			<div *ngIf="loggedInUserDisplay">
 				<mat-icon matTooltip="Logout" class="logout-button me-2" (click)="onLogout()">logout</mat-icon
@@ -69,10 +64,6 @@ export class HeaderComponent implements OnInit {
 		this.authenticationService.isLoginSubject$.subscribe((_subjectData: any) => {
 			this.getUserInfo();
 		});
-	}
-
-	goToLanding(): void {
-		this.router.navigate(['/']);
 	}
 
 	onLogout(): void {
