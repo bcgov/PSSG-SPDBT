@@ -8986,6 +8986,7 @@
         <Key>
           <PropertyRef Name="incidentid" />
         </Key>
+        <Property Name="emailaddress" Type="Edm.String" Unicode="false" />
         <Property Name="_resolvebykpiid_value" Type="Edm.Guid" />
         <Property Name="blockedprofile" Type="Edm.Boolean" />
         <Property Name="casetypecode" Type="Edm.Int32" />
@@ -9011,7 +9012,7 @@
         <Property Name="decremententitlementterm" Type="Edm.Boolean" />
         <Property Name="spd_fingerprints" Type="Edm.Int32" />
         <Property Name="resolveby" Type="Edm.DateTimeOffset" />
-        <Property Name="emailaddress" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_recommendationcompleted" Type="Edm.Int32" />
         <Property Name="spd_risklevel" Type="Edm.Int32" />
         <Property Name="contractservicelevelcode" Type="Edm.Int32" />
         <Property Name="entityimage" Type="Edm.Binary" />
@@ -9055,6 +9056,7 @@
         <Property Name="responseby" Type="Edm.DateTimeOffset" />
         <Property Name="_transactioncurrencyid_value" Type="Edm.Guid" />
         <Property Name="sentimentvalue" Type="Edm.Double" />
+        <Property Name="spd_applicantsdateofbirth" Type="Edm.DateTimeOffset" />
         <Property Name="_slaid_value" Type="Edm.Guid" />
         <Property Name="influencescore" Type="Edm.Double" />
         <Property Name="_firstresponsebykpiid_value" Type="Edm.Guid" />
@@ -21308,7 +21310,7 @@
         <Property Name="address2_longitude" Type="Edm.Double" />
         <Property Name="versionnumber" Type="Edm.Int64" />
         <Property Name="address2_fax" Type="Edm.String" Unicode="false" />
-        <Property Name="address1_telephone3" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_signaturename" Type="Edm.String" Unicode="false" />
         <Property Name="mobilephone" Type="Edm.String" Unicode="false" />
         <Property Name="_queueid_value" Type="Edm.Guid" />
         <Property Name="preferredaddresscode" Type="Edm.Int32" />
@@ -21376,6 +21378,8 @@
         <Property Name="address1_line2" Type="Edm.String" Unicode="false" />
         <Property Name="address2_upszone" Type="Edm.String" Unicode="false" />
         <Property Name="address1_city" Type="Edm.String" Unicode="false" />
+        <Property Name="address1_telephone3" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_signature" Type="Edm.String" Unicode="false" />
         <Property Name="address1_composite" Type="Edm.String" Unicode="false" />
         <Property Name="_positionid_value" Type="Edm.Guid" />
         <Property Name="accessmode" Type="Edm.Int32" />
@@ -26365,6 +26369,13 @@
       <Action Name="spd_GetOrganizationStatistics" IsBound="true">
         <Parameter Name="entity" Type="mscrm.account" Nullable="false" />
         <ReturnType Type="mscrm.spd_GetOrganizationStatisticsResponse" Nullable="false" />
+      </Action>
+      <ComplexType Name="spd_HasHitsResponse">
+        <Property Name="HasHit" Type="Edm.Boolean" />
+      </ComplexType>
+      <Action Name="spd_HasHits" IsBound="true">
+        <Parameter Name="entity" Type="mscrm.contact" Nullable="false" />
+        <ReturnType Type="mscrm.spd_HasHitsResponse" Nullable="false" />
       </Action>
       <Action Name="UnlockInvoicePricing">
         <Parameter Name="InvoiceId" Type="Edm.Guid" Nullable="false" />

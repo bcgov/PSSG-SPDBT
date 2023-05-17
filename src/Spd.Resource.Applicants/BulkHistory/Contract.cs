@@ -15,7 +15,7 @@ public record BulkHistoryListQry
 
 public record BulkHistorySortBy(bool? SubmittedDateDesc = true);
 public record BulkHistoryListResp
-{ 
+{
     public IEnumerable<BulkHistoryResp> BulkUploadHistorys { get; set; } = Array.Empty<BulkHistoryResp>();
     public PaginationResp Pagination { get; set; } = null!;
 }

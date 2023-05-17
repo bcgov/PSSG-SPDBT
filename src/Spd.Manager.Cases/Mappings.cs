@@ -38,6 +38,10 @@ namespace Spd.Manager.Cases
             CreateMap<IdentityCommand, IdentityCmd>();
             CreateMap<BulkHistoryListResp, BulkHistoryListResponse>();
             CreateMap<BulkHistoryResp, BulkHistoryResponse>();
+            CreateMap<ClearanceResp, ClearanceResponse>();
+            CreateMap<ClearanceListResp, ClearanceListResponse>();
+            CreateMap<ClearanceListFilterBy, ClearanceFilterBy>();
+            CreateMap<ClearanceListSortBy, ClearanceSortBy>();
 
         }
     }

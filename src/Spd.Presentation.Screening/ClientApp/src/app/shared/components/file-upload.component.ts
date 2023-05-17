@@ -130,23 +130,25 @@ export class FileUploadComponent {
 	@Input() maxNumberOfFiles: number = SPD_CONSTANTS.document.maxNumberOfFiles; // 0 or any number less than 0 means unlimited files
 	@Input() accept: string = SPD_CONSTANTS.document.acceptedFileTypes.join(', '); // Files types to accept
 
-	@Output() uploadedFiles = new EventEmitter<any>();
+	@Output() uploadedFile = new EventEmitter<any>();
 
 	maxFileSize: number = SPD_CONSTANTS.document.maxFileSize; // bytes
 
 	constructor(private dialog: MatDialog) {}
 
 	onUploadFile(evt: any) {
-		if (this.maxNumberOfFiles !== 0 && this.files.length >= this.maxNumberOfFiles) {
-			return;
-		}
-
 		if (this.maxNumberOfFiles == 1) {
 			this.files = [];
 		}
 
+		if (this.maxNumberOfFiles !== 0 && this.files.length >= this.maxNumberOfFiles) {
+			return;
+		}
+
 		if (evt.addedFiles.length > 0) {
 			this.files.push(...evt.addedFiles);
+
+			this.uploadedFile.emit(evt.addedFiles);
 		}
 
 		if (evt.rejectedFiles.length > 0) {

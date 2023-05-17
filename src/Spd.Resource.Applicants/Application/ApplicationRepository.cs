@@ -75,8 +75,8 @@ internal class ApplicationRepository : IApplicationRepository
     {
         if (query == null || query.FilterBy?.OrgId == null)
             throw new ArgumentNullException("query.FilterBy.OrgId", "Must query applications by organization id.");
-        string filterStr = GetFilterString(query.FilterBy);
-        string sortStr = GetSortString(query.SortBy);
+        string filterStr = GetAppFilterString(query.FilterBy);
+        string sortStr = GetAppSortString(query.SortBy);
         var applications = _context.spd_applications
             .AddQueryOption("$filter", $"{filterStr}")
             .AddQueryOption("$orderby", $"{sortStr}")
@@ -171,6 +171,41 @@ internal class ApplicationRepository : IApplicationRepository
         return application != null;
     }
 
+    public async Task<ClearanceListResp> QueryAsync(ClearanceListQry query, CancellationToken ct)
+    {
+        if (query == null || query.FilterBy?.OrgId == null)
+            throw new ArgumentNullException("query.FilterBy.OrgId", "Must query clearances by organization id.");
+
+        string filterStr = GetClearanceFilterString(query.FilterBy);
+        string sortStr = GetClearanceSortBy(query.SortBy);
+        var clearanceaccesses = _context.spd_clearanceaccesses
+            .AddQueryOption("$filter", $"{filterStr}")
+            .AddQueryOption("$orderby", $"{sortStr}")
+            .IncludeCount();
+
+        if (query.Paging != null)
+        {
+            int skip = query.Paging.Page * query.Paging.PageSize;
+            clearanceaccesses = clearanceaccesses
+                .AddQueryOption("$skip", $"{skip}")
+                .AddQueryOption("$top", $"{query.Paging.PageSize}");
+        }
+
+        var result = (QueryOperationResponse<spd_clearanceaccess>)await clearanceaccesses.ExecuteAsync(ct);
+
+        var response = new ClearanceListResp();
+        response.Clearances = _mapper.Map<IEnumerable<ClearanceResp>>(result);
+        if (query.Paging != null)
+        {
+            response.Pagination = new PaginationResp();
+            response.Pagination.PageSize = query.Paging.PageSize;
+            response.Pagination.PageIndex = query.Paging.Page;
+            response.Pagination.Length = (int)result.Count;
+        }
+
+        return response;
+    }
+
     private spd_alias? GetAlias(AliasCreateCmd aliasCreateCmd)
     {
         var matchingAlias = _context.spd_aliases.Where(o =>
@@ -204,7 +239,7 @@ internal class ApplicationRepository : IApplicationRepository
         }
     }
 
-    private string GetFilterString(AppFilterBy appFilterBy)
+    private string GetAppFilterString(AppFilterBy appFilterBy)
     {
         string orgFilter = $"_spd_organizationid_value eq {appFilterBy.OrgId}";
         string? portalStatusFilter = null;
@@ -235,7 +270,7 @@ internal class ApplicationRepository : IApplicationRepository
         return result;
     }
 
-    private string GetSortString(AppSortBy? appSortBy)
+    private string GetAppSortString(AppSortBy? appSortBy)
     {
         if (appSortBy == null
             || (appSortBy.SubmittedDateDesc != null && (bool)appSortBy.SubmittedDateDesc))
@@ -255,6 +290,50 @@ internal class ApplicationRepository : IApplicationRepository
 
         if (appSortBy.CompanyNameDesc != null && !(bool)appSortBy.CompanyNameDesc)
             return "spd_contractedcompanyname";
+
+        return "createdon desc";
+    }
+
+
+    private string GetClearanceFilterString(ClearanceFilterBy clearanceFilterBy)
+    {
+        string orgFilter = $"_spd_organization_value eq {clearanceFilterBy.OrgId}";
+        string stateFilter = $"statecode eq {DynamicsConstants.StateCode_Active}";
+
+        string? contains = null;
+        if (!string.IsNullOrWhiteSpace(clearanceFilterBy.NameOrEmailContains))
+        {
+            contains = $"(contains(spd_firstname,'{clearanceFilterBy.NameOrEmailContains}') or contains(spd_lastname,'{clearanceFilterBy.NameOrEmailContains}') or contains(spd_emailaddress1,'{clearanceFilterBy.NameOrEmailContains}'))";
+        }
+        string result = $"{orgFilter}";
+        result += $" and {stateFilter}";
+        if (contains != null)
+        {
+            result += $" and {contains}";
+        }
+        return result;
+    }
+
+    private string GetClearanceSortBy(ClearanceSortBy? clearanceSortBy)
+    {
+        //if (clearanceSortBy == null
+        //    || (clearanceSortBy.ExpiresOn != null && (bool)clearanceSortBy.ExpiresOn))
+        //    return "createdon";
+
+        //if (clearanceSortBy.ExpiresOn != null && !(bool)clearanceSortBy.ExpiresOn)
+        //    return "createdon desc";
+
+        //if (clearanceSortBy.NameDesc != null && (bool)clearanceSortBy.NameDesc)
+        //    return "spd_fullname desc";
+
+        //if (clearanceSortBy.NameDesc != null && !(bool)clearanceSortBy.NameDesc)
+        //    return "spd_fullname";
+
+        //if (clearanceSortBy.CompanyNameDesc != null && (bool)clearanceSortBy.CompanyNameDesc)
+        //    return "spd_contractedcompanyname desc";
+
+        //if (clearanceSortBy.CompanyNameDesc != null && !(bool)clearanceSortBy.CompanyNameDesc)
+        //    return "spd_contractedcompanyname";
 
         return "createdon desc";
     }

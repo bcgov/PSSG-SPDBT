@@ -1,7 +1,6 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using Spd.Resource.Applicants.BulkHistory;
 using System.ComponentModel;
 
 namespace Spd.Manager.Cases
@@ -16,6 +15,7 @@ namespace Spd.Manager.Cases
         public Task<ApplicationStatisticsResponse> Handle(ApplicationStatisticsQuery request, CancellationToken ct);
         public Task<bool> Handle(IdentityCommand request, CancellationToken ct);
         public Task<BulkHistoryListResponse> Handle(GetBulkUploadHistoryQuery request, CancellationToken ct);
+        public Task<ClearanceListResponse> Handle(ClearanceListQuery request, CancellationToken ct);
     }
 
     #region application invites
@@ -254,7 +254,7 @@ namespace Spd.Manager.Cases
     #endregion
 
     #region bulk upload
-    public record GetBulkUploadHistoryQuery(Guid OrgId): IRequest<BulkHistoryListResponse>
+    public record GetBulkUploadHistoryQuery(Guid OrgId) : IRequest<BulkHistoryListResponse>
     {
         public string? SortBy { get; set; } //null means no sorting
         public PaginationRequest Paging { get; set; } = null!;
@@ -268,11 +268,41 @@ namespace Spd.Manager.Cases
     {
         public Guid Id { get; set; }
         public string BatchNumber { get; set; } = null!;
-        public string FileName { get; set; }=null!;
+        public string FileName { get; set; } = null!;
         public string UploadedByUserFullName { get; set; } = null!;
         public DateTimeOffset UploadedDateTime { get; set; }
     }
     #endregion
+
+    #region clearances
+    public record ClearanceListQuery : IRequest<ClearanceListResponse>
+    {
+        public ClearanceListFilterBy? FilterBy { get; set; } //null means no filter
+        public ClearanceListSortBy? SortBy { get; set; } //null means no sorting
+        public PaginationRequest Paging { get; set; } = null!;
+    }
+    public record ClearanceListFilterBy(Guid OrgId)
+    {
+        public string? NameOrEmailContains { get; set; }
+    }
+    public record ClearanceListSortBy(bool? ExpiresOn = true, bool? NameDesc = null, bool? CompanyNameDesc = null);
+    public record ClearanceListResponse
+    {
+        public IEnumerable<ClearanceResponse> Clearances { get; set; } = Array.Empty<ClearanceResponse>();
+        public PaginationResponse Pagination { get; set; } = null!;
+    }
+    public record ClearanceResponse
+    {
+        public Guid Id { get; set; }
+        public string FirstName { get; set; } = null!;
+        public string LastName { get; set; } = null!;
+        public string Email { get; set; } = null!;
+        public DateTimeOffset? ExpiresOn { get; set; } = null!;
+        public string Facility { get; set; } = null!;
+        public string Status { get; set; } = null!;
+    }
+    #endregion
+
 
     #region validator
     public class ApplicationInviteCreateRequestValidator : AbstractValidator<ApplicationInviteCreateRequest>

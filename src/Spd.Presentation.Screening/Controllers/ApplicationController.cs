@@ -1,5 +1,4 @@
-﻿using Amazon.S3.Model;
-using FluentValidation;
+﻿using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,6 +23,46 @@ namespace Spd.Presentation.Screening.Controllers
             _mediator = mediator;
             _appCreateRequestValidator = appCreateRequestValidator;
         }
+
+        /// <summary>
+        /// return the application statistics for a particular organization.
+        /// </summary>
+        /// <param name="orgId"></param>
+        /// <returns></returns>
+        [Route("api/orgs/{orgId}/application-statistics")]
+        [HttpGet]
+        public async Task<ApplicationStatisticsResponse> GetAppStatsList([FromRoute] Guid orgId)
+        {
+            return await _mediator.Send(new ApplicationStatisticsQuery(orgId));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="applicationId"></param>
+        /// <param name="orgId"></param>
+        /// <returns></returns>
+        [Route("api/orgs/{orgId}/verifyidentity/{applicationId}")]
+        [HttpPut]
+        public async Task<bool> PutVerify([FromRoute] Guid applicationId, [FromRoute] Guid orgId)
+        {
+            return await _mediator.Send(new IdentityCommand(orgId, applicationId, true));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="applicationId"></param>
+        /// <param name="orgId"></param>
+        /// <returns></returns>
+        [Route("api/orgs/{orgId}/rejectidentity/{applicationId}")]
+        [HttpPut]
+        public async Task<bool> PutReject([FromRoute] Guid applicationId, [FromRoute] Guid orgId)
+        {
+            return await _mediator.Send(new IdentityCommand(orgId, applicationId, false));
+        }
+
+        #region application-invites
 
         /// <summary>
         /// create more than one application invites. if checkDuplicate is true, the implementation will check if there is existing duplicated applicants or invites.
@@ -96,6 +135,38 @@ namespace Spd.Presentation.Screening.Controllers
             return Ok();
         }
 
+        #endregion
+
+        #region bulk-upload
+
+        /// <summary>
+        /// return all bulk upload history belong to the organization.
+        /// sort: submittedon, default will be desc
+        /// </summary>
+        /// <param name="orgId"></param>
+        /// <param name="sorts"></param>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        [Route("api/orgs/{orgId}/applications/bulk/history")]
+        [HttpGet]
+        public async Task<BulkHistoryListResponse> GetBulkUploadHistoryList([FromRoute] Guid orgId, [FromQuery] string? sorts, [FromQuery] int? page, [FromQuery] int? pageSize)
+        {
+            page = (page == null || page < 0) ? 0 : page;
+            pageSize = (pageSize == null || pageSize == 0 || pageSize > 100) ? 10 : pageSize;
+            if (string.IsNullOrWhiteSpace(sorts)) sorts = "-submittedOn";
+            PaginationRequest pagination = new PaginationRequest((int)page, (int)pageSize);
+            return await _mediator.Send(new GetBulkUploadHistoryQuery(orgId)
+            {
+                SortBy = sorts,
+                Paging = pagination
+            });
+        }
+
+        #endregion 
+
+        #region application
+
         /// <summary>
         /// create application. if checkDuplicate is true, it will check if there is existing duplicated applications 
         /// </summary>
@@ -153,69 +224,6 @@ namespace Spd.Presentation.Screening.Controllers
                 });
         }
 
-        /// <summary>
-        /// return the application statistics for a particular organization.
-        /// </summary>
-        /// <param name="orgId"></param>
-        /// <returns></returns>
-        [Route("api/orgs/{orgId}/application-statistics")]
-        [HttpGet]
-        public async Task<ApplicationStatisticsResponse> GetAppStatsList([FromRoute] Guid orgId)
-        {
-            return await _mediator.Send(new ApplicationStatisticsQuery(orgId));
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="applicationId"></param>
-        /// <param name="orgId"></param>
-        /// <returns></returns>
-        [Route("api/orgs/{orgId}/verifyidentity/{applicationId}")]
-        [HttpPut]
-        public async Task<bool> PutVerify([FromRoute] Guid applicationId, [FromRoute] Guid orgId)
-        {
-            return await _mediator.Send(new IdentityCommand(orgId, applicationId, true));
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="applicationId"></param>
-        /// <param name="orgId"></param>
-        /// <returns></returns>
-        [Route("api/orgs/{orgId}/rejectidentity/{applicationId}")]
-        [HttpPut]
-        public async Task<bool> PutReject([FromRoute] Guid applicationId, [FromRoute] Guid orgId)
-        {
-            return await _mediator.Send(new IdentityCommand(orgId, applicationId, false));
-        }
-
-        /// <summary>
-        /// return all bulk upload history belong to the organization.
-        /// sort: submittedon, default will be desc
-        /// </summary>
-        /// <param name="orgId"></param>
-        /// <param name="sorts"></param>
-        /// <param name="page"></param>
-        /// <param name="pageSize"></param>
-        /// <returns></returns>
-        [Route("api/orgs/{orgId}/applications/bulk/history")]
-        [HttpGet]
-        public async Task<BulkHistoryListResponse> GetBulkUploadHistoryList([FromRoute] Guid orgId, [FromQuery] string? sorts, [FromQuery] int? page, [FromQuery] int? pageSize)
-        {
-            page = (page == null || page < 0) ? 0 : page;
-            pageSize = (pageSize == null || pageSize == 0 || pageSize > 100) ? 10 : pageSize;
-            if (string.IsNullOrWhiteSpace(sorts)) sorts = "-submittedOn";
-            PaginationRequest pagination = new PaginationRequest((int)page, (int)pageSize);
-            return await _mediator.Send(new GetBulkUploadHistoryQuery(orgId)
-            {
-                SortBy= sorts,
-                Paging= pagination
-            });
-        }
-
-
         private AppListFilterBy GetAppListFilterBy(string? filters, Guid orgId)
         {
             AppListFilterBy appListFilterBy = new AppListFilterBy(orgId);
@@ -271,12 +279,92 @@ namespace Spd.Presentation.Screening.Controllers
                 _ => new AppListSortBy()
             };
         }
-    }
+        #endregion 
 
-    public record CreateApplication
-    {
-        public IFormFile ConsentFormFile { get; set; } = null!;
-        public string ApplicationCreateRequestJson { get; set; } = null!;
+        #region clearances
+
+        /// <summary>
+        /// return 
+        /// sort: expiresOn, default will be asc. Applicant Name, Email
+        /// </summary>
+        /// <param name="orgId"></param>
+        /// <param name="sorts"></param>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        [Route("api/orgs/{orgId}/expired-clearances")]
+        [HttpGet]
+        public async Task<ClearanceListResponse> GetExpiredClearancesList([FromRoute] Guid orgId, [FromQuery] string? filters, [FromQuery] string? sorts, [FromQuery] int? page, [FromQuery] int? pageSize)
+        {
+            page = (page == null || page < 0) ? 0 : page;
+            pageSize = (pageSize == null || pageSize == 0 || pageSize > 100) ? 10 : pageSize;
+            if (string.IsNullOrWhiteSpace(sorts)) sorts = "expireOn";
+            PaginationRequest pagination = new PaginationRequest((int)page, (int)pageSize);
+            ClearanceListFilterBy filterBy = GetClearanceListFilterBy(filters, orgId);
+            ClearanceListSortBy sortBy = GetClearanceSortBy(sorts);
+            return await _mediator.Send(
+                new ClearanceListQuery
+                {
+                    FilterBy = filterBy,
+                    SortBy = sortBy,
+                    Paging = pagination
+                });
+        }
+
+        private ClearanceListFilterBy GetClearanceListFilterBy(string? filters, Guid orgId)
+        {
+            ClearanceListFilterBy clearanceListFilterBy = new ClearanceListFilterBy(orgId);
+            //if (string.IsNullOrWhiteSpace(filters)) return clearanceListFilterBy;
+
+            //try
+            //{
+            //    //filters string should be like status==AwaitingPayment|AwaitingApplicant,searchText@=str
+            //    string[] items = filters.Split(',');
+            //    foreach (string item in items)
+            //    {
+            //        string[] strs = item.Split("==");
+
+            //        if (strs.Length == 1)
+            //        {
+            //            string[] s = strs[0].Split("@=");
+            //            if (s.Length == 2 && s[0] == "searchText")
+            //            {
+            //                clearanceListFilterBy.NameOrEmailContains = s[1];
+            //            }
+            //        }
+            //    }
+            //}
+            //catch
+            //{
+            //    throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Invalid filter string.");
+            //}
+            return clearanceListFilterBy;
+        }
+
+        private ClearanceListSortBy GetClearanceSortBy(string? sortby)
+        {
+            return new ClearanceListSortBy();
+
+            //sorts string should be like: sorts=-submittedOn or sorts=name
+            //return sortby switch
+            //{
+            //    null => new ClearanceListSortBy(),
+            //    "expireson" => new ClearanceListSortBy(false),
+            //    "-expireson" => new ClearanceListSortBy(true),
+            //    "name" => new ClearanceListSortBy(null, false),
+            //    "-name" => new ClearanceListSortBy(null, true),
+            //    "companyname" => new ClearanceListSortBy(null, null, false),
+            //    "-companyname" => new ClearanceListSortBy(null, null, true),
+            //    _ => new ClearanceListSortBy()
+            //};
+        }
+        #endregion 
     }
+}
+
+public record CreateApplication
+{
+    public IFormFile ConsentFormFile { get; set; } = null!;
+    public string ApplicationCreateRequestJson { get; set; } = null!;
 }
 

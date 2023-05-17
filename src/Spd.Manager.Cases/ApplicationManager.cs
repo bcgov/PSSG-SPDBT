@@ -17,6 +17,7 @@ namespace Spd.Manager.Cases
         IRequestHandler<ApplicationStatisticsQuery, ApplicationStatisticsResponse>,
         IRequestHandler<IdentityCommand, bool>,
         IRequestHandler<GetBulkUploadHistoryQuery, BulkHistoryListResponse>,
+        IRequestHandler<ClearanceListQuery, ClearanceListResponse>,
         IApplicationManager
     {
         private readonly IApplicationRepository _applicationRepository;
@@ -202,11 +203,32 @@ namespace Spd.Manager.Cases
                 new BulkHistoryListQry()
                 {
                     OrgId = request.OrgId,
-                    SortBy= new BulkHistorySortBy(request.SortBy==null ||request.SortBy.Equals("-submittedOn", StringComparison.InvariantCultureIgnoreCase)),
+                    SortBy = new BulkHistorySortBy(request.SortBy == null || request.SortBy.Equals("-submittedOn", StringComparison.InvariantCultureIgnoreCase)),
                     Paging = paging
                 },
                 ct);
             return _mapper.Map<BulkHistoryListResponse>(result);
+        }
+        #endregion
+
+        #region clearances
+        public async Task<ClearanceListResponse> Handle(ClearanceListQuery request, CancellationToken ct)
+        {
+            ClearanceFilterBy filterBy = _mapper.Map<ClearanceFilterBy>(request.FilterBy);
+            ClearanceSortBy sortBy = _mapper.Map<ClearanceSortBy>(request.SortBy);
+            Paging paging = _mapper.Map<Paging>(request.Paging);
+
+            var response = await _applicationRepository.QueryAsync(
+                new ClearanceListQry
+                {
+                    FilterBy = filterBy,
+                    SortBy = sortBy,
+                    Paging = paging
+                },
+                ct);
+
+            return _mapper.Map<ClearanceListResponse>(response);
+
         }
         #endregion
     }

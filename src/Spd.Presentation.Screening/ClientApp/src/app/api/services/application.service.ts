@@ -17,6 +17,7 @@ import { ApplicationInvitesCreateResponse } from '../models/application-invites-
 import { ApplicationListResponse } from '../models/application-list-response';
 import { ApplicationStatisticsResponse } from '../models/application-statistics-response';
 import { BulkHistoryListResponse } from '../models/bulk-history-list-response';
+import { ClearanceListResponse } from '../models/clearance-list-response';
 
 @Injectable({
   providedIn: 'root',
@@ -678,6 +679,76 @@ export class ApplicationService extends BaseService {
 
     return this.apiOrgsOrgIdApplicationsBulkHistoryGet$Response(params).pipe(
       map((r: StrictHttpResponse<BulkHistoryListResponse>) => r.body as BulkHistoryListResponse)
+    );
+  }
+
+  /**
+   * Path part for operation apiOrgsOrgIdExpiredClearancesGet
+   */
+  static readonly ApiOrgsOrgIdExpiredClearancesGetPath = '/api/orgs/{orgId}/expired-clearances';
+
+  /**
+   * return 
+   * sort: expiresOn, default will be desc. Applicant Name, Email.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiOrgsOrgIdExpiredClearancesGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiOrgsOrgIdExpiredClearancesGet$Response(params: {
+    orgId: string;
+    sorts?: string;
+    page?: number;
+    pageSize?: number;
+    context?: HttpContext
+  }
+): Observable<StrictHttpResponse<ClearanceListResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdExpiredClearancesGetPath, 'get');
+    if (params) {
+      rb.path('orgId', params.orgId, {});
+      rb.query('sorts', params.sorts, {});
+      rb.query('page', params.page, {});
+      rb.query('pageSize', params.pageSize, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: params?.context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<ClearanceListResponse>;
+      })
+    );
+  }
+
+  /**
+   * return 
+   * sort: expiresOn, default will be desc. Applicant Name, Email.
+   *
+   *
+   *
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `apiOrgsOrgIdExpiredClearancesGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiOrgsOrgIdExpiredClearancesGet(params: {
+    orgId: string;
+    sorts?: string;
+    page?: number;
+    pageSize?: number;
+    context?: HttpContext
+  }
+): Observable<ClearanceListResponse> {
+
+    return this.apiOrgsOrgIdExpiredClearancesGet$Response(params).pipe(
+      map((r: StrictHttpResponse<ClearanceListResponse>) => r.body as ClearanceListResponse)
     );
   }
 
