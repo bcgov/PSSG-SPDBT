@@ -15,6 +15,7 @@ namespace Spd.Manager.Cases
         public Task<ApplicationStatisticsResponse> Handle(ApplicationStatisticsQuery request, CancellationToken ct);
         public Task<bool> Handle(IdentityCommand request, CancellationToken ct);
         public Task<BulkHistoryListResponse> Handle(GetBulkUploadHistoryQuery request, CancellationToken ct);
+        public Task<Unit> Handle(BulkUploadCreateCommand cmd, CancellationToken ct);
         public Task<ClearanceListResponse> Handle(ClearanceListQuery request, CancellationToken ct);
     }
 
@@ -272,6 +273,20 @@ namespace Spd.Manager.Cases
         public string UploadedByUserFullName { get; set; } = null!;
         public DateTimeOffset UploadedDateTime { get; set; }
     }
+    public record BulkUploadCreateCommand(BulkUploadCreateRequest BulkUploadCreateRequest, Guid OrgId, Guid UserId) : IRequest<Unit>;
+    public record BulkUploadCreateRequest(string FileName, long FileSize, IEnumerable<ApplicationCreateRequestFromBulk> ApplicationCreateRequests, bool RequireDuplicateCheck);
+    public record ApplicationCreateRequestFromBulk : ApplicationCreateRequest
+    {
+        public int LineNumber { get; set; }
+        public GenderCode? GenderCode { get; set; }
+        public string? LicenceNo { get; set; }
+    }
+    public record BulkUploadRequest(IFormFile File, bool RequireDuplicateCheck = false);
+    public record BulkUploadValidationErr
+    {
+        public IEnumerable<ValidationErr> ValidationErrs { get; set; } = Array.Empty<ValidationErr>();
+    }
+    public record ValidationErr(int LineNumber, string Error);
     #endregion
 
     #region clearances
@@ -347,6 +362,81 @@ namespace Spd.Manager.Cases
             RuleFor(r => r.Surname)
                     .NotEmpty()
                     .MaximumLength(40);
+        }
+    }
+
+    public class ApplicationCreateRequestFromBulkValidator : AbstractValidator<ApplicationCreateRequestFromBulk>
+    {
+        public ApplicationCreateRequestFromBulkValidator()
+        {
+            RuleFor(r => r.OriginTypeCode)
+                .IsInEnum();
+
+            RuleFor(r => r.GivenName)
+             .MaximumLength(40)
+             .NotEmpty();
+
+            RuleFor(r => r.MiddleName1)
+                    .MaximumLength(40);
+
+            RuleFor(r => r.MiddleName2)
+                    .MaximumLength(40);
+
+            RuleFor(r => r.Surname)
+                    .NotEmpty()
+                    .MaximumLength(40);
+
+            RuleFor(r => r.EmailAddress)
+                .EmailAddress()
+                .MaximumLength(75);
+
+            RuleFor(r => r.PhoneNumber)
+                 .MaximumLength(15)
+                 .NotEmpty();
+
+            RuleFor(r => r.DateOfBirth)
+                .NotEmpty()
+                .Must(birth => birth.Value.AddYears(13) < DateTimeOffset.UtcNow)
+                .NotNull();
+
+            RuleFor(r => r.BirthPlace)
+                    .NotEmpty();
+
+            RuleFor(r => r.AddressLine1)
+                    .NotEmpty()
+                    .MaximumLength(100);
+
+            RuleFor(r => r.AddressLine2)
+                    .MaximumLength(100);
+
+            RuleFor(r => r.City)
+                    .NotEmpty()
+                    .MaximumLength(100);
+
+            RuleFor(r => r.PostalCode)
+                    .NotEmpty()
+                    //.MinimumLength(5)
+                    .MaximumLength(20);
+
+            RuleFor(r => r.Province)
+                    .MaximumLength(100);
+
+            RuleFor(r => r.Country)
+                    .NotEmpty()
+                    .MaximumLength(100);
+
+            RuleFor(r => r.AgreeToCompleteAndAccurate)
+                .NotEmpty()
+                .Equal(true);
+
+            RuleFor(r => r.HaveVerifiedIdentity)
+                .Equal(true); // Must be true or false
+
+            RuleFor(r => r.DriversLicense)
+                .MaximumLength(15);
+
+            RuleFor(r => r.LicenceNo)
+                .MaximumLength(25);
         }
     }
 
@@ -441,6 +531,12 @@ namespace Spd.Manager.Cases
         public int PageSize { get; set; }
         public int PageIndex { get; set; }
         public int Length { get; set; }
+    }
+    public enum GenderCode
+    {
+        M,
+        F,
+        X
     }
     #endregion
 }

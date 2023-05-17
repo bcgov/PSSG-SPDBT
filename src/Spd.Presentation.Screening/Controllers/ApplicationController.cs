@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +7,8 @@ using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -17,11 +19,13 @@ namespace Spd.Presentation.Screening.Controllers
     {
         private readonly IMediator _mediator;
         private readonly IValidator<ApplicationCreateRequest> _appCreateRequestValidator;
+        private readonly IValidator<ApplicationCreateRequestFromBulk> _appCreateRequestFromBulkValidator;
 
-        public ApplicationController(IMediator mediator, IValidator<ApplicationCreateRequest> appCreateRequestValidator)
+        public ApplicationController(IMediator mediator, IValidator<ApplicationCreateRequest> appCreateRequestValidator, IValidator<ApplicationCreateRequestFromBulk> appCreateRequestFromBulkValidator)
         {
             _mediator = mediator;
             _appCreateRequestValidator = appCreateRequestValidator;
+            _appCreateRequestFromBulkValidator = appCreateRequestFromBulkValidator;
         }
 
         /// <summary>
@@ -163,6 +167,119 @@ namespace Spd.Presentation.Screening.Controllers
             });
         }
 
+        private async Task<IEnumerable<ApplicationCreateRequestFromBulk>> ParseBulkUploadFileAsync(IFormFile bulkFile, Guid orgId, CancellationToken ct)
+        {
+            IList<ValidationErr> errors = new List<ValidationErr>();
+            IList<ApplicationCreateRequestFromBulk> list = new List<ApplicationCreateRequestFromBulk>();
+            if (bulkFile.Length > 0)
+            {
+                using (var ms = new MemoryStream())
+                {
+                    bulkFile.CopyTo(ms);
+                    var fileBytes = ms.ToArray();
+                    string s = Encoding.UTF8.GetString(fileBytes);
+                    var lines = s.Split('\n');
+                    int lineNo = 1;
+                    foreach (string line in lines)
+                    {
+                        if (string.IsNullOrWhiteSpace(line)) continue;
+                        ApplicationCreateRequestFromBulk oneRequest = new ApplicationCreateRequestFromBulk();
+                        AliasCreateRequest[] aliases = new AliasCreateRequest[3];
+                        oneRequest.LineNumber = lineNo;
+                        try
+                        {
+                            string[] data = line.Split(SpdConstants.BULK_APP_UPLOAD_COL_SEPERATOR);
+                            oneRequest.OrgId = orgId;
+                            oneRequest.Surname = CleanString(data[0]);
+                            oneRequest.GivenName = CleanString(data[1]);
+                            oneRequest.MiddleName1 = CleanString(data[2]);
+                            aliases[0] = new AliasCreateRequest();
+                            aliases[0].Surname = CleanString(data[3]);
+                            aliases[0].GivenName = CleanString(data[4]);
+                            aliases[0].MiddleName1 = CleanString(data[5]);
+                            aliases[1] = new AliasCreateRequest();
+                            aliases[1].Surname = CleanString(data[6]);
+                            aliases[1].GivenName = CleanString(data[7]);
+                            aliases[1].MiddleName1 = CleanString(data[8]);
+                            aliases[2] = new AliasCreateRequest();
+                            aliases[2].Surname = CleanString(data[9]);
+                            aliases[2].GivenName = CleanString(data[10]);
+                            aliases[2].MiddleName1 = CleanString(data[11]);
+                            oneRequest.AddressLine1 = CleanString(data[12]);
+                            oneRequest.AddressLine2 = CleanString(data[13]);
+                            oneRequest.City = CleanString(data[14]);
+                            oneRequest.Province = CleanString(data[15]);
+                            oneRequest.Country = CleanString(data[16]);
+                            oneRequest.PostalCode = PostalCodeCleanup(CleanString(data[17]));
+                            oneRequest.PhoneNumber = PhoneNumberCleanup(CleanString(data[18]));
+                            oneRequest.BirthPlace = CleanString(data[19]);
+                            string? birthDateStr = CleanString(data[20]);
+                            if (string.IsNullOrEmpty(birthDateStr))
+                                oneRequest.DateOfBirth = null;
+                            else
+                                oneRequest.DateOfBirth = DateTimeOffset.ParseExact(birthDateStr, SpdConstants.BULK_APP_UPLOAD_BIRTHDATE_FORMAT, CultureInfo.InvariantCulture);
+                            string? genderStr = CleanString(data[21]);
+                            oneRequest.GenderCode = string.IsNullOrEmpty(genderStr) ? null : Enum.Parse<GenderCode>(genderStr);
+                            oneRequest.LicenceNo = data[22];
+                            oneRequest.DriversLicense = data[23];
+                            oneRequest.AgreeToCompleteAndAccurate = true;
+                            oneRequest.HaveVerifiedIdentity = true;
+                            oneRequest.OriginTypeCode = ApplicationOriginTypeCode.GenericUpload;
+                            oneRequest.PayeeType = PayeePreferenceTypeCode.Organization;
+                            List<AliasCreateRequest> aliasCreates = new List<AliasCreateRequest>();
+                            foreach (AliasCreateRequest a in aliases)
+                            {
+                                if (!string.IsNullOrWhiteSpace(a.Surname))
+                                    aliasCreates.Add(a);
+                            };
+                            oneRequest.Aliases = aliasCreates.AsEnumerable();
+                            var validateResult = await _appCreateRequestFromBulkValidator.ValidateAsync(oneRequest, ct);
+                            if (!validateResult.IsValid)
+                            {
+                                ValidationErr err = new ValidationErr(lineNo, JsonSerializer.Serialize(validateResult.Errors));
+                                errors.Add(err);
+                            }
+
+                            list.Add(oneRequest);
+                        }
+                        catch (Exception ex)
+                        {
+                            ValidationErr err = new ValidationErr(lineNo, ex.Message);
+                            errors.Add(err);
+                        }
+                        lineNo++;
+                    }
+                }
+            }
+            if (errors.Any())
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Please correct errors in the file", errors);
+
+            return list.AsEnumerable();
+        }
+
+        private string? CleanString(string? str)
+        {
+            if (str == null) return null;
+            return str.Replace("\"", string.Empty).Trim();
+        }
+
+        private string? PhoneNumberCleanup(string? str)
+        {
+            if (str == null) return null;
+            return str.Replace(",", string.Empty)
+               .Replace("-", string.Empty)
+               .Replace("(", string.Empty)
+               .Replace(")", string.Empty)
+               .Replace(" ", string.Empty);
+        }
+
+        private string? PostalCodeCleanup(string? str)
+        {
+            if (str == null) return null;
+            return str.Replace("-", string.Empty)
+               .Replace(" ", string.Empty);
+        }
+
         #endregion 
 
         #region application
@@ -224,6 +341,41 @@ namespace Spd.Presentation.Screening.Controllers
                 });
         }
 
+        /// <summary>
+        /// create more than one application invites. if checkDuplicate is true, the implementation will check if there is existing duplicated applicants or invites.
+        /// </summary>
+        /// <param name="bulkUploadRequest"></param>
+        /// <param name="orgId"></param>
+        /// <returns></returns>
+        [Route("api/orgs/{orgId}/application/bulk")]
+        [HttpPost]
+        public async Task<ActionResult> BulkUpload([FromForm][Required] BulkUploadRequest bulkUploadRequest, [FromRoute] Guid orgId, CancellationToken ct)
+        {
+            var userId = this.HttpContext.User.GetUserId();
+            if (userId == null) throw new ApiException(System.Net.HttpStatusCode.Unauthorized);
+
+            //validation file
+            string fileName = bulkUploadRequest.File.FileName;
+            if (!fileName.EndsWith(SpdConstants.BULK_APP_UPLOAD_FILE_EXTENSTION, StringComparison.InvariantCultureIgnoreCase))
+            {
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"only {SpdConstants.BULK_APP_UPLOAD_FILE_EXTENSTION} file supported.");
+            }
+            long fileSize = bulkUploadRequest.File.Length;
+            if (fileSize > SpdConstants.UPLOAD_FILE_MAX_SIZE)
+            {
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"max supported file size is {SpdConstants.UPLOAD_FILE_MAX_SIZE}.");
+            }
+
+            //parse file
+            var applications = await ParseBulkUploadFileAsync(bulkUploadRequest.File, orgId, ct);
+            await _mediator.Send(new BulkUploadCreateCommand(
+                new BulkUploadCreateRequest(fileName, fileSize, applications, bulkUploadRequest.RequireDuplicateCheck),
+                orgId,
+                Guid.Parse(userId)));
+            return Ok();
+        }
+
+
         private AppListFilterBy GetAppListFilterBy(string? filters, Guid orgId)
         {
             AppListFilterBy appListFilterBy = new AppListFilterBy(orgId);
@@ -279,7 +431,8 @@ namespace Spd.Presentation.Screening.Controllers
                 _ => new AppListSortBy()
             };
         }
-        #endregion 
+        #endregion
+
 
         #region clearances
 
@@ -358,7 +511,7 @@ namespace Spd.Presentation.Screening.Controllers
             //    _ => new ClearanceListSortBy()
             //};
         }
-        #endregion 
+        #endregion
     }
 }
 
