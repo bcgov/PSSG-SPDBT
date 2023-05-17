@@ -29,6 +29,46 @@ namespace Spd.Presentation.Screening.Controllers
         }
 
         /// <summary>
+        /// return the application statistics for a particular organization.
+        /// </summary>
+        /// <param name="orgId"></param>
+        /// <returns></returns>
+        [Route("api/orgs/{orgId}/application-statistics")]
+        [HttpGet]
+        public async Task<ApplicationStatisticsResponse> GetAppStatsList([FromRoute] Guid orgId)
+        {
+            return await _mediator.Send(new ApplicationStatisticsQuery(orgId));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="applicationId"></param>
+        /// <param name="orgId"></param>
+        /// <returns></returns>
+        [Route("api/orgs/{orgId}/verifyidentity/{applicationId}")]
+        [HttpPut]
+        public async Task<bool> PutVerify([FromRoute] Guid applicationId, [FromRoute] Guid orgId)
+        {
+            return await _mediator.Send(new IdentityCommand(orgId, applicationId, true));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="applicationId"></param>
+        /// <param name="orgId"></param>
+        /// <returns></returns>
+        [Route("api/orgs/{orgId}/rejectidentity/{applicationId}")]
+        [HttpPut]
+        public async Task<bool> PutReject([FromRoute] Guid applicationId, [FromRoute] Guid orgId)
+        {
+            return await _mediator.Send(new IdentityCommand(orgId, applicationId, false));
+        }
+
+        #region application-invites
+
+        /// <summary>
         /// create more than one application invites. if checkDuplicate is true, the implementation will check if there is existing duplicated applicants or invites.
         /// </summary>
         /// <param name="invitesCreateRequest"></param>
@@ -99,100 +139,9 @@ namespace Spd.Presentation.Screening.Controllers
             return Ok();
         }
 
-        /// <summary>
-        /// create application. if checkDuplicate is true, it will check if there is existing duplicated applications 
-        /// </summary>
-        /// <param name="createApplication"></param>
-        /// <param name="orgId">organizationId</param>
-        /// <returns></returns>
-        [Route("api/orgs/{orgId}/application")]
-        [HttpPost]
-        public async Task<ApplicationCreateResponse> AddApplication([FromForm][Required] CreateApplication createApplication, [FromRoute] Guid orgId)
-        {
-            var userId = this.HttpContext.User.GetUserId();
-            if (userId == null) throw new ApiException(System.Net.HttpStatusCode.Unauthorized);
+        #endregion
 
-            var options = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
-            options.Converters.Add(new JsonStringEnumConverter());
-            ApplicationCreateRequest? appCreateRequest = JsonSerializer.Deserialize<ApplicationCreateRequest>(createApplication.ApplicationCreateRequestJson, options);
-            if (appCreateRequest == null)
-                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "ApplicationCreateRequestJson is invalid.");
-            var result = await _appCreateRequestValidator.ValidateAsync(appCreateRequest);
-            if (!result.IsValid)
-                throw new ApiException(System.Net.HttpStatusCode.BadRequest, JsonSerializer.Serialize(result.Errors));
-
-            return await _mediator.Send(new ApplicationCreateCommand(appCreateRequest, orgId, Guid.Parse(userId), createApplication.ConsentFormFile));
-        }
-
-        /// <summary>
-        /// return all applications belong to the organization.
-        /// sort: submittedon, name, companyname , add - in front of name means descending.
-        /// filters: status, use | to filter multiple status : if no filters specified, endpoint returns all applications.
-        /// search:wild card search in name, email and caseID, such as searchText@=test
-        /// sample: api/orgs/4165bdfe-7cb4-ed11-b83e-00505683fbf4/applications?filters=status==AwaitingPayment|AwaitingApplicant,searchText@=str&sorts=name&page=1&pageSize=15
-        /// </summary>
-        /// <param name="orgId"></param>
-        /// <param name="filters"></param>
-        /// <param name="sorts"></param>
-        /// <param name="page"></param>
-        /// <param name="pageSize"></param>
-        /// <returns></returns>
-        [Route("api/orgs/{orgId}/applications")]
-        [HttpGet]
-        public async Task<ApplicationListResponse> GetList([FromRoute] Guid orgId, [FromQuery] string? filters, [FromQuery] string? sorts, [FromQuery] int? page, [FromQuery] int? pageSize)
-        {
-            page = (page == null || page < 0) ? 0 : page;
-            pageSize = (pageSize == null || pageSize == 0 || pageSize > 100) ? 10 : pageSize;
-            if (string.IsNullOrWhiteSpace(sorts)) sorts = "-submittedOn";
-            PaginationRequest pagination = new PaginationRequest((int)page, (int)pageSize);
-            AppListFilterBy filterBy = GetAppListFilterBy(filters, orgId);
-            AppListSortBy sortBy = GetAppSortBy(sorts);
-            return await _mediator.Send(
-                new ApplicationListQuery
-                {
-                    FilterBy = filterBy,
-                    SortBy = sortBy,
-                    Paging = pagination
-                });
-        }
-
-        /// <summary>
-        /// return the application statistics for a particular organization.
-        /// </summary>
-        /// <param name="orgId"></param>
-        /// <returns></returns>
-        [Route("api/orgs/{orgId}/application-statistics")]
-        [HttpGet]
-        public async Task<ApplicationStatisticsResponse> GetAppStatsList([FromRoute] Guid orgId)
-        {
-            return await _mediator.Send(new ApplicationStatisticsQuery(orgId));
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="applicationId"></param>
-        /// <param name="orgId"></param>
-        /// <returns></returns>
-        [Route("api/orgs/{orgId}/verifyidentity/{applicationId}")]
-        [HttpPut]
-        public async Task<bool> PutVerify([FromRoute] Guid applicationId, [FromRoute] Guid orgId)
-        {
-            return await _mediator.Send(new IdentityCommand(orgId, applicationId, true));
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="applicationId"></param>
-        /// <param name="orgId"></param>
-        /// <returns></returns>
-        [Route("api/orgs/{orgId}/rejectidentity/{applicationId}")]
-        [HttpPut]
-        public async Task<bool> PutReject([FromRoute] Guid applicationId, [FromRoute] Guid orgId)
-        {
-            return await _mediator.Send(new IdentityCommand(orgId, applicationId, false));
-        }
+        #region bulk-upload
 
         /// <summary>
         /// return all bulk upload history belong to the organization.
@@ -216,97 +165,6 @@ namespace Spd.Presentation.Screening.Controllers
                 SortBy = sorts,
                 Paging = pagination
             });
-        }
-
-        /// <summary>
-        /// create more than one application invites. if checkDuplicate is true, the implementation will check if there is existing duplicated applicants or invites.
-        /// </summary>
-        /// <param name="bulkUploadRequest"></param>
-        /// <param name="orgId"></param>
-        /// <returns></returns>
-        [Route("api/orgs/{orgId}/application/bulk")]
-        [HttpPost]
-        public async Task<ActionResult> BulkUpload([FromForm][Required] BulkUploadRequest bulkUploadRequest, [FromRoute] Guid orgId, CancellationToken ct)
-        {
-            var userId = this.HttpContext.User.GetUserId();
-            if (userId == null) throw new ApiException(System.Net.HttpStatusCode.Unauthorized);
-
-            //validation file
-            string fileName = bulkUploadRequest.File.FileName;
-            if (!fileName.EndsWith(SpdConstants.BULK_APP_UPLOAD_FILE_EXTENSTION, StringComparison.InvariantCultureIgnoreCase))
-            {
-                throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"only {SpdConstants.BULK_APP_UPLOAD_FILE_EXTENSTION} file supported.");
-            }
-            long fileSize = bulkUploadRequest.File.Length;
-            if (fileSize > SpdConstants.UPLOAD_FILE_MAX_SIZE)
-            {
-                throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"max supported file size is {SpdConstants.UPLOAD_FILE_MAX_SIZE}.");
-            }
-
-            //parse file
-            var applications = await ParseBulkUploadFileAsync(bulkUploadRequest.File, orgId, ct);
-            await _mediator.Send(new BulkUploadCreateCommand(
-                new BulkUploadCreateRequest(fileName, fileSize, applications, bulkUploadRequest.RequireDuplicateCheck),
-                orgId,
-                Guid.Parse(userId)));
-            return Ok();
-        }
-
-
-        private AppListFilterBy GetAppListFilterBy(string? filters, Guid orgId)
-        {
-            AppListFilterBy appListFilterBy = new AppListFilterBy(orgId);
-            if (string.IsNullOrWhiteSpace(filters)) return appListFilterBy;
-
-            try
-            {
-                //filters string should be like status==AwaitingPayment|AwaitingApplicant,searchText@=str
-                string[] items = filters.Split(',');
-                foreach (string item in items)
-                {
-                    string[] strs = item.Split("==");
-                    if (strs.Length == 2)
-                    {
-                        if (strs[0] == "status")
-                        {
-                            string[] status = strs[1].Split("|");
-                            appListFilterBy.ApplicationPortalStatus = status.Select(s => Enum.Parse<ApplicationPortalStatusCode>(s)).AsEnumerable();
-                        }
-                    }
-                    else
-                    {
-                        if (strs.Length == 1)
-                        {
-                            string[] s = strs[0].Split("@=");
-                            if (s.Length == 2 && s[0] == "searchText")
-                            {
-                                appListFilterBy.NameOrEmailOrAppIdContains = s[1];
-                            }
-                        }
-                    }
-                }
-            }
-            catch
-            {
-                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Invalid filter string.");
-            }
-            return appListFilterBy;
-        }
-
-        private AppListSortBy GetAppSortBy(string? sortby)
-        {
-            //sorts string should be like: sorts=-submittedOn or sorts=name
-            return sortby switch
-            {
-                null => new AppListSortBy(),
-                "submittedon" => new AppListSortBy(false),
-                "-submittedon" => new AppListSortBy(true),
-                "name" => new AppListSortBy(null, false),
-                "-name" => new AppListSortBy(null, true),
-                "companyname" => new AppListSortBy(null, null, false),
-                "-companyname" => new AppListSortBy(null, null, true),
-                _ => new AppListSortBy()
-            };
         }
 
         private async Task<IEnumerable<ApplicationCreateRequestFromBulk>> ParseBulkUploadFileAsync(IFormFile bulkFile, Guid orgId, CancellationToken ct)
@@ -421,14 +279,245 @@ namespace Spd.Presentation.Screening.Controllers
             return str.Replace("-", string.Empty)
                .Replace(" ", string.Empty);
         }
+
+        #endregion 
+
+        #region application
+
+        /// <summary>
+        /// create application. if checkDuplicate is true, it will check if there is existing duplicated applications 
+        /// </summary>
+        /// <param name="createApplication"></param>
+        /// <param name="orgId">organizationId</param>
+        /// <returns></returns>
+        [Route("api/orgs/{orgId}/application")]
+        [HttpPost]
+        public async Task<ApplicationCreateResponse> AddApplication([FromForm][Required] CreateApplication createApplication, [FromRoute] Guid orgId)
+        {
+            var userId = this.HttpContext.User.GetUserId();
+            if (userId == null) throw new ApiException(System.Net.HttpStatusCode.Unauthorized);
+
+            var options = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+            options.Converters.Add(new JsonStringEnumConverter());
+            ApplicationCreateRequest? appCreateRequest = JsonSerializer.Deserialize<ApplicationCreateRequest>(createApplication.ApplicationCreateRequestJson, options);
+            if (appCreateRequest == null)
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "ApplicationCreateRequestJson is invalid.");
+            var result = await _appCreateRequestValidator.ValidateAsync(appCreateRequest);
+            if (!result.IsValid)
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, JsonSerializer.Serialize(result.Errors));
+
+            return await _mediator.Send(new ApplicationCreateCommand(appCreateRequest, orgId, Guid.Parse(userId), createApplication.ConsentFormFile));
+        }
+
+        /// <summary>
+        /// return all applications belong to the organization.
+        /// sort: submittedon, name, companyname , add - in front of name means descending.
+        /// filters: status, use | to filter multiple status : if no filters specified, endpoint returns all applications.
+        /// search:wild card search in name, email and caseID, such as searchText@=test
+        /// sample: api/orgs/4165bdfe-7cb4-ed11-b83e-00505683fbf4/applications?filters=status==AwaitingPayment|AwaitingApplicant,searchText@=str&sorts=name&page=1&pageSize=15
+        /// </summary>
+        /// <param name="orgId"></param>
+        /// <param name="filters"></param>
+        /// <param name="sorts"></param>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        [Route("api/orgs/{orgId}/applications")]
+        [HttpGet]
+        public async Task<ApplicationListResponse> GetList([FromRoute] Guid orgId, [FromQuery] string? filters, [FromQuery] string? sorts, [FromQuery] int? page, [FromQuery] int? pageSize)
+        {
+            page = (page == null || page < 0) ? 0 : page;
+            pageSize = (pageSize == null || pageSize == 0 || pageSize > 100) ? 10 : pageSize;
+            if (string.IsNullOrWhiteSpace(sorts)) sorts = "-submittedOn";
+            PaginationRequest pagination = new PaginationRequest((int)page, (int)pageSize);
+            AppListFilterBy filterBy = GetAppListFilterBy(filters, orgId);
+            AppListSortBy sortBy = GetAppSortBy(sorts);
+            return await _mediator.Send(
+                new ApplicationListQuery
+                {
+                    FilterBy = filterBy,
+                    SortBy = sortBy,
+                    Paging = pagination
+                });
+        }
+
+        /// <summary>
+        /// create more than one application invites. if checkDuplicate is true, the implementation will check if there is existing duplicated applicants or invites.
+        /// </summary>
+        /// <param name="bulkUploadRequest"></param>
+        /// <param name="orgId"></param>
+        /// <returns></returns>
+        [Route("api/orgs/{orgId}/application/bulk")]
+        [HttpPost]
+        public async Task<ActionResult> BulkUpload([FromForm][Required] BulkUploadRequest bulkUploadRequest, [FromRoute] Guid orgId, CancellationToken ct)
+        {
+            var userId = this.HttpContext.User.GetUserId();
+            if (userId == null) throw new ApiException(System.Net.HttpStatusCode.Unauthorized);
+
+            //validation file
+            string fileName = bulkUploadRequest.File.FileName;
+            if (!fileName.EndsWith(SpdConstants.BULK_APP_UPLOAD_FILE_EXTENSTION, StringComparison.InvariantCultureIgnoreCase))
+            {
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"only {SpdConstants.BULK_APP_UPLOAD_FILE_EXTENSTION} file supported.");
+            }
+            long fileSize = bulkUploadRequest.File.Length;
+            if (fileSize > SpdConstants.UPLOAD_FILE_MAX_SIZE)
+            {
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"max supported file size is {SpdConstants.UPLOAD_FILE_MAX_SIZE}.");
+            }
+
+            //parse file
+            var applications = await ParseBulkUploadFileAsync(bulkUploadRequest.File, orgId, ct);
+            await _mediator.Send(new BulkUploadCreateCommand(
+                new BulkUploadCreateRequest(fileName, fileSize, applications, bulkUploadRequest.RequireDuplicateCheck),
+                orgId,
+                Guid.Parse(userId)));
+            return Ok();
+        }
+
+
+        private AppListFilterBy GetAppListFilterBy(string? filters, Guid orgId)
+        {
+            AppListFilterBy appListFilterBy = new AppListFilterBy(orgId);
+            if (string.IsNullOrWhiteSpace(filters)) return appListFilterBy;
+
+            try
+            {
+                //filters string should be like status==AwaitingPayment|AwaitingApplicant,searchText@=str
+                string[] items = filters.Split(',');
+                foreach (string item in items)
+                {
+                    string[] strs = item.Split("==");
+                    if (strs.Length == 2)
+                    {
+                        if (strs[0] == "status")
+                        {
+                            string[] status = strs[1].Split("|");
+                            appListFilterBy.ApplicationPortalStatus = status.Select(s => Enum.Parse<ApplicationPortalStatusCode>(s)).AsEnumerable();
+                        }
+                    }
+                    else
+                    {
+                        if (strs.Length == 1)
+                        {
+                            string[] s = strs[0].Split("@=");
+                            if (s.Length == 2 && s[0] == "searchText")
+                            {
+                                appListFilterBy.NameOrEmailOrAppIdContains = s[1];
+                            }
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Invalid filter string.");
+            }
+            return appListFilterBy;
+        }
+
+        private AppListSortBy GetAppSortBy(string? sortby)
+        {
+            //sorts string should be like: sorts=-submittedOn or sorts=name
+            return sortby switch
+            {
+                null => new AppListSortBy(),
+                "submittedon" => new AppListSortBy(false),
+                "-submittedon" => new AppListSortBy(true),
+                "name" => new AppListSortBy(null, false),
+                "-name" => new AppListSortBy(null, true),
+                "companyname" => new AppListSortBy(null, null, false),
+                "-companyname" => new AppListSortBy(null, null, true),
+                _ => new AppListSortBy()
+            };
+        }
+        #endregion
+
+
+        #region clearances
+
+        /// <summary>
+        /// return 
+        /// sort: expiresOn, default will be asc. Applicant Name, Email
+        /// </summary>
+        /// <param name="orgId"></param>
+        /// <param name="sorts"></param>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        [Route("api/orgs/{orgId}/expired-clearances")]
+        [HttpGet]
+        public async Task<ClearanceListResponse> GetExpiredClearancesList([FromRoute] Guid orgId, [FromQuery] string? filters, [FromQuery] string? sorts, [FromQuery] int? page, [FromQuery] int? pageSize)
+        {
+            page = (page == null || page < 0) ? 0 : page;
+            pageSize = (pageSize == null || pageSize == 0 || pageSize > 100) ? 10 : pageSize;
+            if (string.IsNullOrWhiteSpace(sorts)) sorts = "expireOn";
+            PaginationRequest pagination = new PaginationRequest((int)page, (int)pageSize);
+            ClearanceListFilterBy filterBy = GetClearanceListFilterBy(filters, orgId);
+            ClearanceListSortBy sortBy = GetClearanceSortBy(sorts);
+            return await _mediator.Send(
+                new ClearanceListQuery
+                {
+                    FilterBy = filterBy,
+                    SortBy = sortBy,
+                    Paging = pagination
+                });
+        }
+
+        private ClearanceListFilterBy GetClearanceListFilterBy(string? filters, Guid orgId)
+        {
+            ClearanceListFilterBy clearanceListFilterBy = new ClearanceListFilterBy(orgId);
+            //if (string.IsNullOrWhiteSpace(filters)) return clearanceListFilterBy;
+
+            //try
+            //{
+            //    //filters string should be like status==AwaitingPayment|AwaitingApplicant,searchText@=str
+            //    string[] items = filters.Split(',');
+            //    foreach (string item in items)
+            //    {
+            //        string[] strs = item.Split("==");
+
+            //        if (strs.Length == 1)
+            //        {
+            //            string[] s = strs[0].Split("@=");
+            //            if (s.Length == 2 && s[0] == "searchText")
+            //            {
+            //                clearanceListFilterBy.NameOrEmailContains = s[1];
+            //            }
+            //        }
+            //    }
+            //}
+            //catch
+            //{
+            //    throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Invalid filter string.");
+            //}
+            return clearanceListFilterBy;
+        }
+
+        private ClearanceListSortBy GetClearanceSortBy(string? sortby)
+        {
+            return new ClearanceListSortBy();
+
+            //sorts string should be like: sorts=-submittedOn or sorts=name
+            //return sortby switch
+            //{
+            //    null => new ClearanceListSortBy(),
+            //    "expireson" => new ClearanceListSortBy(false),
+            //    "-expireson" => new ClearanceListSortBy(true),
+            //    "name" => new ClearanceListSortBy(null, false),
+            //    "-name" => new ClearanceListSortBy(null, true),
+            //    "companyname" => new ClearanceListSortBy(null, null, false),
+            //    "-companyname" => new ClearanceListSortBy(null, null, true),
+            //    _ => new ClearanceListSortBy()
+            //};
+        }
+        #endregion
     }
+}
 
-    public record CreateApplication
-    {
-        public IFormFile ConsentFormFile { get; set; } = null!;
-        public string ApplicationCreateRequestJson { get; set; } = null!;
-    }
-
-
+public record CreateApplication
+{
+    public IFormFile ConsentFormFile { get; set; } = null!;
+    public string ApplicationCreateRequestJson { get; set; } = null!;
 }
 

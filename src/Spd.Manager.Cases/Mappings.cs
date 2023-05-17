@@ -42,6 +42,10 @@ namespace Spd.Manager.Cases
             CreateMap<ApplicationCreateRequest, AppDuplicateCheck>();
             CreateMap<ApplicationCreateRequestFromBulk, AppBulkDuplicateCheck>()
                 .IncludeBase<ApplicationCreateRequest, AppDuplicateCheck>();
+            CreateMap<ClearanceResp, ClearanceResponse>();
+            CreateMap<ClearanceListResp, ClearanceListResponse>();
+            CreateMap<ClearanceListFilterBy, ClearanceFilterBy>();
+            CreateMap<ClearanceListSortBy, ClearanceSortBy>();
 
         }
     }

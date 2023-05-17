@@ -6,16 +6,14 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
-import { ApplicationInviteCreateRequest, ApplicationListResponse, ApplicationResponse } from 'src/app/api/models';
+import { ClearanceListResponse, ClearanceResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
-import { CrrpRoutes } from '../crrp-routing.module';
-import { CrcAddModalComponent, CrcDialogData } from './crc-add-modal.component';
 
-export interface ExpiredChecksResponse extends ApplicationResponse {
+export interface ExpiredClearanceResponse extends ClearanceResponse {
 	daysRemainingText: string;
 	daysRemainingClass: string;
 }
@@ -45,7 +43,7 @@ export interface ExpiredChecksResponse extends ApplicationResponse {
 
 			<div class="row">
 				<div class="col-12">
-					<mat-table matSort [dataSource]="dataSource" matSortActive="createdOn" matSortDirection="desc">
+					<mat-table matSort [dataSource]="dataSource" matSortActive="expiresOn" matSortDirection="asc">
 						<ng-container matColumnDef="applicantName">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Applicant Name</mat-header-cell>
 							<mat-cell *matCellDef="let application">
@@ -54,24 +52,24 @@ export interface ExpiredChecksResponse extends ApplicationResponse {
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="emailAddress">
+						<ng-container matColumnDef="email">
 							<mat-header-cell *matHeaderCellDef>Email</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Email:</span>
-								{{ application.emailAddress }}
+								{{ application.email }}
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="createdOn">
-							<mat-header-cell *matHeaderCellDef>Expiring On</mat-header-cell>
+						<ng-container matColumnDef="expiresOn">
+							<mat-header-cell *matHeaderCellDef mat-sort-header>Expiring On</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Expiring On:</span>
-								{{ application.createdOn | date : constants.date.dateFormat : 'UTC' }}
+								{{ application.expiresOn | date : constants.date.dateFormat : 'UTC' }}
 							</mat-cell>
 						</ng-container>
 
 						<ng-container matColumnDef="daysRemaining">
-							<mat-header-cell *matHeaderCellDef mat-sort-header>Days Remaining</mat-header-cell>
+							<mat-header-cell *matHeaderCellDef>Days Remaining</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Days Remaining:</span>
 								<span [ngClass]="application.daysRemainingClass">
@@ -80,11 +78,11 @@ export interface ExpiredChecksResponse extends ApplicationResponse {
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="contractedCompanyName">
+						<ng-container matColumnDef="facility">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Company / Facility Name</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Company / Facility Name:</span>
-								{{ application.contractedCompanyName | default }}
+								{{ application.facility | default }}
 							</mat-cell>
 						</ng-container>
 
@@ -186,7 +184,7 @@ export interface ExpiredChecksResponse extends ApplicationResponse {
 export class ExpiringChecksComponent implements OnInit {
 	constants = SPD_CONSTANTS;
 
-	dataSource: MatTableDataSource<ExpiredChecksResponse> = new MatTableDataSource<ExpiredChecksResponse>([]);
+	dataSource: MatTableDataSource<ExpiredClearanceResponse> = new MatTableDataSource<ExpiredClearanceResponse>([]);
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
 	columns!: string[];
 
@@ -210,10 +208,10 @@ export class ExpiringChecksComponent implements OnInit {
 	ngOnInit() {
 		this.columns = [
 			'applicantName',
-			'emailAddress',
-			'createdOn',
+			'email',
+			'expiresOn',
 			'daysRemaining',
-			'contractedCompanyName',
+			'facility',
 			'action1',
 			'action2',
 			'action3',
@@ -227,7 +225,7 @@ export class ExpiringChecksComponent implements OnInit {
 		this.loadList(page.pageIndex);
 	}
 
-	onSendRequest(application: ExpiredChecksResponse) {
+	onSendRequest(application: ExpiredClearanceResponse) {
 		const data: DialogOptions = {
 			icon: 'info',
 			title: 'Confirmation',
@@ -236,42 +234,42 @@ export class ExpiringChecksComponent implements OnInit {
 			cancelText: 'Cancel',
 		};
 
-		this.dialog
-			.open(DialogComponent, { data })
-			.afterClosed()
-			.subscribe((response: boolean) => {
-				if (response) {
-					const inviteDefault: ApplicationInviteCreateRequest = {
-						firstName: application.givenName,
-						lastName: application.surname,
-						email: application.emailAddress,
-						jobTitle: application.jobTitle,
-						payeeType: application.payeeType,
-					};
+		// this.dialog
+		// 	.open(DialogComponent, { data })
+		// 	.afterClosed()
+		// 	.subscribe((response: boolean) => {
+		// 		if (response) {
+		// 			const inviteDefault: ApplicationInviteCreateRequest = {
+		// 				firstName: application.givenName,
+		// 				lastName: application.surname,
+		// 				email: application.email,
+		// 				jobTitle: application.jobTitle,
+		// 				payeeType: application.payeeType,
+		// 			};
 
-					const dialogOptions: CrcDialogData = {
-						inviteDefault,
-					};
+		// 			const dialogOptions: CrcDialogData = {
+		// 				inviteDefault,
+		// 			};
 
-					this.dialog
-						.open(CrcAddModalComponent, {
-							width: '1400px',
-							data: dialogOptions,
-						})
-						.afterClosed()
-						.subscribe((resp) => {
-							if (resp.success) {
-								this.hotToast.success('Expired check was successfully removed');
-								this.hotToast.success(resp.message);
+		// 			this.dialog
+		// 				.open(CrcAddModalComponent, {
+		// 					width: '1400px',
+		// 					data: dialogOptions,
+		// 				})
+		// 				.afterClosed()
+		// 				.subscribe((resp) => {
+		// 					if (resp.success) {
+		// 						this.hotToast.success('Expired check was successfully removed');
+		// 						this.hotToast.success(resp.message);
 
-								this.router.navigateByUrl(CrrpRoutes.crrpPath(CrrpRoutes.CRIMINAL_RECORD_CHECKS));
-							}
-						});
-				}
-			});
+		// 						this.router.navigateByUrl(CrrpRoutes.crrpPath(CrrpRoutes.CRIMINAL_RECORD_CHECKS));
+		// 					}
+		// 				});
+		// 		}
+		// 	});
 	}
 
-	onRemove(application: ExpiredChecksResponse) {
+	onRemove(application: ExpiredClearanceResponse) {
 		const data: DialogOptions = {
 			icon: 'info',
 			title: 'Confirmation',
@@ -293,16 +291,16 @@ export class ExpiringChecksComponent implements OnInit {
 
 	private loadList(pageIndex: number = 0): void {
 		this.applicationService
-			.apiOrgsOrgIdApplicationsGet({
+			.apiOrgsOrgIdExpiredClearancesGet({
 				orgId: this.authenticationService.loggedInUserInfo?.orgId!,
 				page: pageIndex,
 				pageSize: this.tablePaginator.pageSize,
 			})
 			.pipe()
-			.subscribe((res: ApplicationListResponse) => {
-				const applications = res.applications as Array<ExpiredChecksResponse>;
-				applications.forEach((app: ExpiredChecksResponse) => {
-					const [itemText, itemClass] = this.getDaysRemaining(app.createdOn);
+			.subscribe((res: ClearanceListResponse) => {
+				const applications = res.clearances as Array<ExpiredClearanceResponse>;
+				applications.forEach((app: ExpiredClearanceResponse) => {
+					const [itemText, itemClass] = this.getDaysRemaining(app.expiresOn);
 					app.daysRemainingText = itemText;
 					app.daysRemainingClass = itemClass;
 				});
