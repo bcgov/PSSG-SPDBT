@@ -6,12 +6,14 @@ namespace Spd.Utilities.Shared.Exceptions
     {
         public string message { get; set; }
         public bool isError { get; set; }
-        public string detail { get; set; }
+        public object? detail { get; set; } = null;
+        //public object? errorDetails { get; set; } = null;
 
-        public ApiError(string message)
+        public ApiError(string message, object? errorDetails = null)
         {
-            this.message = message;
             isError = true;
+            this.message = message;
+            this.detail = errorDetails;
         }
 
         public ApiError(ModelStateDictionary modelState)
