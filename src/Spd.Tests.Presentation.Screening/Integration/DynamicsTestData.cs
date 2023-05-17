@@ -158,5 +158,22 @@ public class DynamicsTestData
             return newOne;
         }
     }
+
+    public async Task<spd_application> CreateAppInOrg(string surName, string givenName, DateTimeOffset birthdate, account org)
+    {
+        Guid id = Guid.NewGuid();
+        spd_application newOne = new spd_application
+        {
+            spd_applicationid = id,
+            spd_firstname = givenName,
+            spd_lastname = surName,
+            spd_dateofbirth = new Microsoft.OData.Edm.Date(birthdate.Year, birthdate.Month, birthdate.Day),
+            statecode= DynamicsConstants.StatusCode_Active,            
+        };
+        _context.AddTospd_applications(newOne);
+        _context.SetLink(newOne, nameof(newOne.spd_OrganizationId), org);
+        await _context.SaveChangesAsync();
+        return newOne;
+    }
 }
 
