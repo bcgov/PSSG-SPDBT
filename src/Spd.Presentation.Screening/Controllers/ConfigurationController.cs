@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Spd.Manager.Admin;
 using Spd.Utilities.LogonUser.Configurations;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared;
@@ -10,12 +12,14 @@ namespace Spd.Presentation.Screening.Controllers
     {
         private readonly IOptions<BCeIDAuthenticationConfiguration> _bceidOption;
         private readonly IOptions<GoogleReCaptchaConfiguration> _captchaOption;
+        private readonly IMediator _mediator;
 
         public ConfigurationController(IOptions<BCeIDAuthenticationConfiguration> bceidConfiguration,
-            IOptions<GoogleReCaptchaConfiguration> captchaOption)
+            IOptions<GoogleReCaptchaConfiguration> captchaOption, IMediator mediator)
         {
             _bceidOption = bceidConfiguration;
             _captchaOption = captchaOption;
+            _mediator = mediator;
         }
 
 
@@ -33,7 +37,7 @@ namespace Spd.Presentation.Screening.Controllers
             };
 
             RecaptchaConfiguration recaptchaResp = new RecaptchaConfiguration(_captchaOption.Value.ClientKey);
-            var bannerMessage = "10 business days for online applications and 20 business days for manual applications"; //TODO get from dynamics
+            var bannerMessage = await _mediator.Send(new GetBannerMsgQuery());
 
             return await Task.FromResult(new ConfigurationResponse() { OidcConfiguration = bceidResp, RecaptchaConfiguration = recaptchaResp, BannerMessage = bannerMessage });
         }
