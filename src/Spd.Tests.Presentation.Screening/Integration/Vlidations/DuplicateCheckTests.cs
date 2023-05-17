@@ -23,7 +23,7 @@ public class DuplicateCheckTests : ScenarioContextBase
                 {
                     DateOfBirth = new DateTime(2000,1,1),
                     GivenName = "given",
-                    SurName = "sur",
+                    Surname = "sur",
                     LineNumber = 1,
                     OrgId = (Guid)org.accountid
                 },
@@ -31,7 +31,7 @@ public class DuplicateCheckTests : ScenarioContextBase
                 {
                     DateOfBirth = new DateTime(2000,1,1),
                     GivenName = "given",
-                    SurName = "sur",
+                    Surname = "sur",
                     LineNumber = 2,
                     OrgId = (Guid)org.accountid
                 },
@@ -39,7 +39,7 @@ public class DuplicateCheckTests : ScenarioContextBase
                 {
                     DateOfBirth = new DateTime(2000,1,1),
                     GivenName = "given3",
-                    SurName = "sur3",
+                    Surname = "sur3",
                     LineNumber = 3,
                     OrgId = (Guid)org.accountid
                 },
@@ -47,7 +47,7 @@ public class DuplicateCheckTests : ScenarioContextBase
                 {
                     DateOfBirth = DateTimeOffset.UtcNow,
                     GivenName = "fn",
-                    SurName = "ln",
+                    Surname = "ln",
                     LineNumber = 4,
                     OrgId =  (Guid)org.accountid
                 }

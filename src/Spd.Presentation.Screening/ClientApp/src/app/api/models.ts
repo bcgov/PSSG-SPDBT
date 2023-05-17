@@ -17,10 +17,12 @@ export { ApplicationStatisticsResponse } from './models/application-statistics-r
 export { BooleanTypeCode } from './models/boolean-type-code';
 export { BulkHistoryListResponse } from './models/bulk-history-list-response';
 export { BulkHistoryResponse } from './models/bulk-history-response';
+export { BulkUploadCreateResponse } from './models/bulk-upload-create-response';
 export { ClearanceListResponse } from './models/clearance-list-response';
 export { ClearanceResponse } from './models/clearance-response';
 export { ConfigurationResponse } from './models/configuration-response';
 export { ContactAuthorizationTypeCode } from './models/contact-authorization-type-code';
+export { DuplicateCheckResult } from './models/duplicate-check-result';
 export { EmployeeInteractionTypeCode } from './models/employee-interaction-type-code';
 export { EmployeeOrganizationTypeCode } from './models/employee-organization-type-code';
 export { FundsFromBcGovtExceedsThresholdCode } from './models/funds-from-bc-govt-exceeds-threshold-code';
@@ -47,4 +49,5 @@ export { RegistrationTypeCode } from './models/registration-type-code';
 export { ScreeningsCountTypeCode } from './models/screenings-count-type-code';
 export { UserInfo } from './models/user-info';
 export { UserProfileResponse } from './models/user-profile-response';
+export { ValidationErr } from './models/validation-err';
 export { VolunteerOrganizationTypeCode } from './models/volunteer-organization-type-code';

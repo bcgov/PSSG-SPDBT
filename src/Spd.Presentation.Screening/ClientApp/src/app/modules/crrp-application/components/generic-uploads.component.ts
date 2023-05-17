@@ -1,13 +1,19 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { BulkHistoryListResponse, BulkHistoryResponse } from 'src/app/api/models';
+import {
+	BulkHistoryListResponse,
+	BulkHistoryResponse,
+	BulkUploadCreateResponse,
+	ValidationErr,
+} from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
+import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { CrrpRoutes } from '../crrp-routing.module';
 
 @Component({
@@ -22,36 +28,36 @@ import { CrrpRoutes } from '../crrp-routing.module';
 						accept=".tsv"
 						[maxNumberOfFiles]="1"
 						(uploadedFile)="onUploadFile($event)"
+						(removeFile)="onRemoveFile($event)"
 						message="Text files ending in '.TSV' only"
 					></app-file-upload>
-					<mat-error
-						class="mat-option-error"
-						*ngIf="
-							(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-							form.get('attachments')?.invalid &&
-							form.get('attachments')?.hasError('required')
-						"
-						>This is required</mat-error
-					>
-					<!--   *ngIf="showErrors"-->
-				</div>
-				<div class="col-md-6 col-sm-12 my-4">
-					<div class="alert alert-warning d-flex" role="alert">
-						<mat-icon class="d-none d-xl-block alert-icon mt-2 me-2">error</mat-icon>
-						<div class="mt-2 ms-2">
-							File upload failed
-							<ul class="mb-0 me-4">
-								<li class="my-2">Error on line 6: City Name cannot contain numbers</li>
-								<li class="my-2">Error on line 9: Postal Code min 5 characters, max 12 characters</li>
-							</ul>
-						</div>
-					</div>
-					<div class="alert alert-success d-flex" role="alert">
-						<mat-icon class="d-none d-xl-block alert-icon me-2">check_circle</mat-icon>
-						File upload succeeded
-					</div>
 				</div>
 			</div>
+			<ng-container *ngIf="showResult">
+				<div class="row" *ngIf="validationErrs.length > 0">
+					<div class="col-12">
+						<div class="alert alert-danger d-flex" role="alert">
+							<mat-icon class="d-none d-xl-block alert-icon mt-2 me-2">error</mat-icon>
+							<div class="mt-2 ms-2">
+								File upload failed
+								<ul class="mb-0 me-2">
+									<li *ngFor="let err of validationErrs; let i = index" class="my-2">
+										Error on line {{ err.lineNumber }}: {{ err.error }}
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row" *ngIf="validationErrs.length == 0">
+					<div class="col-md-6 col-sm-12">
+						<div class="alert alert-success d-flex" role="alert">
+							<mat-icon class="d-none d-xl-block alert-icon me-2">check_circle</mat-icon>
+							File upload succeeded
+						</div>
+					</div>
+				</div>
+			</ng-container>
 
 			<div class="row mt-4">
 				<div class="col-md-12 col-sm-12">
@@ -105,7 +111,13 @@ import { CrrpRoutes } from '../crrp-routing.module';
 			</div>
 		</section>
 	`,
-	styles: [],
+	styles: [
+		`
+			.mat-icon {
+				min-width: 25px;
+			}
+		`,
+	],
 })
 export class GenericUploadsComponent implements OnInit {
 	private queryParams: any = this.utilService.getDefaultQueryParams();
@@ -114,21 +126,17 @@ export class GenericUploadsComponent implements OnInit {
 	dataSource: MatTableDataSource<BulkHistoryResponse> = new MatTableDataSource<BulkHistoryResponse>([]);
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
 	columns: string[] = ['uploadedDateTime', 'uploadedByUserFullName', 'fileName', 'batchNumber'];
-
-	form: FormGroup = this.formBuilder.group({
-		attachments: new FormControl('', [Validators.required]),
-	});
-
-	showErrors = false;
+	showResult = false;
+	validationErrs: Array<ValidationErr> = [];
 
 	@ViewChild('paginator') paginator!: MatPaginator;
 
 	constructor(
 		private router: Router,
-		private formBuilder: FormBuilder,
 		private authenticationService: AuthenticationService,
 		private applicationService: ApplicationService,
-		private utilService: UtilService
+		private utilService: UtilService,
+		private dialog: MatDialog
 	) {}
 
 	ngOnInit() {
@@ -142,24 +150,80 @@ export class GenericUploadsComponent implements OnInit {
 		this.loadList();
 	}
 
-	onUploadFile(evt: any) {
-		console.log('onUploadFile', evt);
-		this.showErrors = true;
-		// const attachments =
-		// 	this.fileUploadComponent.files && this.fileUploadComponent.files.length > 0
-		// 		? this.fileUploadComponent.files[0]
-		// 		: '';
-		// this.form.controls['attachments'].setValue(attachments);
+	onUploadFile(files: any) {
+		const body = {
+			File: files[0],
+			RequireDuplicateCheck: true,
+		};
 
-		// const currentFiles = [...this.form.get('files')?.value];
-		// currentFiles.push(...evt.addedFiles);
-		// this.form.get('files')?.setValue(currentFiles);
-		this.form.get('attachments')?.setValue(evt.addedFiles);
+		// Check for potential duplicate
+		this.applicationService
+			.apiOrgsOrgIdApplicationBulkPost({ orgId: this.authenticationService.loggedInUserInfo?.orgId!, body })
+			.pipe()
+			.subscribe((resp: BulkUploadCreateResponse) => {
+				this.validationErrs = resp.validationErrs ?? [];
+
+				const duplicateCheckResponses = resp.duplicateCheckResponses ?? [];
+				if (!duplicateCheckResponses) {
+					this.showResult = true;
+				} else {
+					let dupRows = '';
+					duplicateCheckResponses
+						.filter((item) => item.hasPotentialDuplicate)
+						.forEach((item) => {
+							dupRows += `<li>Line: ${item.lineNumber} - ${item.firstName} ${item.lastName}</li>`;
+						});
+					const dupMessage = `<ul>${dupRows}</ul>`;
+
+					let dialogTitle = '';
+					let dialogMessage = '';
+
+					if (duplicateCheckResponses.length > 1) {
+						dialogTitle = 'Potential duplicates detected';
+						dialogMessage = `The following potential duplicates have been found:<br/><br/>${dupMessage}How would you like to proceed?`;
+					} else {
+						dialogTitle = 'Potential duplicate detected';
+						dialogMessage = `The following potential duplicate has been found:<br/><br/>${dupMessage}How would you like to proceed?`;
+					}
+
+					const data: DialogOptions = {
+						title: dialogTitle,
+						message: dialogMessage,
+						actionText: 'Submit',
+						cancelText: 'Cancel',
+					};
+
+					this.dialog
+						.open(DialogComponent, { data })
+						.afterClosed()
+						.subscribe((response: boolean) => {
+							if (response) {
+								this.saveBulkUpload(files[0]);
+							}
+						});
+				}
+			});
+	}
+
+	onRemoveFile(files: any) {
+		this.showResult = false;
 	}
 
 	onPageChanged(page: PageEvent): void {
 		this.queryParams.page = page.pageIndex;
 		this.loadList();
+	}
+
+	private saveBulkUpload(file: any): void {
+		const body = {
+			File: file,
+			RequireDuplicateCheck: false,
+		};
+
+		this.applicationService
+			.apiOrgsOrgIdApplicationBulkPost({ orgId: this.authenticationService.loggedInUserInfo?.orgId!, body })
+			.pipe()
+			.subscribe(); // should be no errors since this file has already been processed
 	}
 
 	private loadList(): void {

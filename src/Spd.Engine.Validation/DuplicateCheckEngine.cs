@@ -33,7 +33,7 @@ namespace Spd.Engine.Validation
                 //check duplicates in tsv
                 var duplicatedInTsv = bulkCheckRequest.BulkDuplicateChecks
                     .FirstOrDefault(c => c.GivenName == check.GivenName &&
-                        c.SurName == check.SurName &&
+                        c.Surname == check.Surname &&
                         c.DateOfBirth == check.DateOfBirth &&
                         c.OrgId == check.OrgId &&
                         c.LineNumber != check.LineNumber);
@@ -92,7 +92,7 @@ namespace Spd.Engine.Validation
             return (DataServiceQuery<spd_application>)_context.spd_applications.Where(a =>
                     a.spd_OrganizationId.accountid == check.OrgId &&
                     a.spd_firstname == check.GivenName &&
-                    a.spd_lastname == check.SurName &&
+                    a.spd_lastname == check.Surname &&
                     a.spd_dateofbirth == new Microsoft.OData.Edm.Date(check.DateOfBirth.Year, check.DateOfBirth.Month, check.DateOfBirth.Day));
         }
 

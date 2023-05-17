@@ -182,9 +182,9 @@ namespace Spd.Presentation.Screening.Controllers
 
             //validation file
             string fileName = bulkUploadRequest.File.FileName;
-            if (!fileName.EndsWith(SpdConstants.BULK_APP_UPLOAD_FILE_EXTENSTION, StringComparison.InvariantCultureIgnoreCase))
+            if (!fileName.EndsWith(SpdConstants.BULK_APP_UPLOAD_FILE_EXTENSION, StringComparison.InvariantCultureIgnoreCase))
             {
-                throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"only {SpdConstants.BULK_APP_UPLOAD_FILE_EXTENSTION} file supported.");
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"only {SpdConstants.BULK_APP_UPLOAD_FILE_EXTENSION} file supported.");
             }
             long fileSize = bulkUploadRequest.File.Length;
             if (fileSize > SpdConstants.UPLOAD_FILE_MAX_SIZE)
@@ -226,7 +226,7 @@ namespace Spd.Presentation.Screening.Controllers
                         oneRequest.LineNumber = lineNo;
                         try
                         {
-                            string[] data = line.Split(SpdConstants.BULK_APP_UPLOAD_COL_SEPERATOR);
+                            string[] data = line.Split(SpdConstants.BULK_APP_UPLOAD_COL_SEPARATOR);
                             oneRequest.OrgId = orgId;
                             oneRequest.Surname = CleanString(data[0]);
                             oneRequest.GivenName = CleanString(data[1]);

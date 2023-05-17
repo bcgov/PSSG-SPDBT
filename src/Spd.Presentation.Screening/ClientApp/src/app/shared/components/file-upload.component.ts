@@ -131,6 +131,7 @@ export class FileUploadComponent {
 	@Input() accept: string = SPD_CONSTANTS.document.acceptedFileTypes.join(', '); // Files types to accept
 
 	@Output() uploadedFile = new EventEmitter<any>();
+	@Output() removeFile = new EventEmitter<any>();
 
 	maxFileSize: number = SPD_CONSTANTS.document.maxFileSize; // bytes
 
@@ -180,16 +181,9 @@ export class FileUploadComponent {
 
 	onRemoveFile(evt: any) {
 		let currentFiles = [...this.files];
-
-		// if (evt.id) {
-		// 	// if id exists then delete from database
-		// 	currentFiles.forEach((file: any) => {
-		// 		if (file.id === evt.id) file.isDeleted = true;
-		// 	});
-		// } else {
-		// else its not yet uploaded to database so just remove locally
+		this.removeFile.emit(this.files.indexOf(evt));
 		currentFiles.splice(this.files.indexOf(evt));
-		// }
+
 		this.files = currentFiles;
 	}
 
