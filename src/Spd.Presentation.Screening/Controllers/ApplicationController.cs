@@ -274,7 +274,8 @@ namespace Spd.Presentation.Screening.Controllers
                             var validateResult = await _appCreateRequestFromBulkValidator.ValidateAsync(oneRequest, ct);
                             if (!validateResult.IsValid)
                             {
-                                ValidationErr err = new ValidationErr(lineNo, JsonSerializer.Serialize(validateResult.Errors));
+                                ValidationErr err = new ValidationErr(lineNo,
+                                    string.Join(";", validateResult.Errors.Select(e => e.ErrorMessage)));
                                 errors.Add(err);
                             }
 
