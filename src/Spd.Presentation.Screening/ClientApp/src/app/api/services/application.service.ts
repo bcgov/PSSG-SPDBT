@@ -683,6 +683,74 @@ export class ApplicationService extends BaseService {
   }
 
   /**
+   * Path part for operation apiOrgsOrgIdApplicationBulkPost
+   */
+  static readonly ApiOrgsOrgIdApplicationBulkPostPath = '/api/orgs/{orgId}/application/bulk';
+
+  /**
+   * create more than one application invites. if checkDuplicate is true, the implementation will check if there is existing duplicated applicants or invites.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiOrgsOrgIdApplicationBulkPost()` instead.
+   *
+   * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
+   */
+  apiOrgsOrgIdApplicationBulkPost$Response(params: {
+    orgId: string;
+    context?: HttpContext
+    body?: {
+'File'?: Blob;
+'RequireDuplicateCheck'?: boolean;
+}
+  }
+): Observable<StrictHttpResponse<ActionResult>> {
+
+    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdApplicationBulkPostPath, 'post');
+    if (params) {
+      rb.path('orgId', params.orgId, {});
+      rb.body(params.body, 'multipart/form-data');
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: params?.context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<ActionResult>;
+      })
+    );
+  }
+
+  /**
+   * create more than one application invites. if checkDuplicate is true, the implementation will check if there is existing duplicated applicants or invites.
+   *
+   *
+   *
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `apiOrgsOrgIdApplicationBulkPost$Response()` instead.
+   *
+   * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
+   */
+  apiOrgsOrgIdApplicationBulkPost(params: {
+    orgId: string;
+    context?: HttpContext
+    body?: {
+'File'?: Blob;
+'RequireDuplicateCheck'?: boolean;
+}
+  }
+): Observable<ActionResult> {
+
+    return this.apiOrgsOrgIdApplicationBulkPost$Response(params).pipe(
+      map((r: StrictHttpResponse<ActionResult>) => r.body as ActionResult)
+    );
+  }
+
+  /**
    * Path part for operation apiOrgsOrgIdExpiredClearancesGet
    */
   static readonly ApiOrgsOrgIdExpiredClearancesGetPath = '/api/orgs/{orgId}/expired-clearances';
