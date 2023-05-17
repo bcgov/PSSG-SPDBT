@@ -1,6 +1,7 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Spd.Engine.Validation;
 using System.ComponentModel;
 
 namespace Spd.Manager.Cases
@@ -15,7 +16,7 @@ namespace Spd.Manager.Cases
         public Task<ApplicationStatisticsResponse> Handle(ApplicationStatisticsQuery request, CancellationToken ct);
         public Task<bool> Handle(IdentityCommand request, CancellationToken ct);
         public Task<BulkHistoryListResponse> Handle(GetBulkUploadHistoryQuery request, CancellationToken ct);
-        public Task<Unit> Handle(BulkUploadCreateCommand cmd, CancellationToken ct);
+        public Task<BulkUploadCreateResponse> Handle(BulkUploadCreateCommand cmd, CancellationToken ct);
         public Task<ClearanceListResponse> Handle(ClearanceListQuery request, CancellationToken ct);
     }
 
@@ -273,7 +274,7 @@ namespace Spd.Manager.Cases
         public string UploadedByUserFullName { get; set; } = null!;
         public DateTimeOffset UploadedDateTime { get; set; }
     }
-    public record BulkUploadCreateCommand(BulkUploadCreateRequest BulkUploadCreateRequest, Guid OrgId, Guid UserId) : IRequest<Unit>;
+    public record BulkUploadCreateCommand(BulkUploadCreateRequest BulkUploadCreateRequest, Guid OrgId, Guid UserId) : IRequest<BulkUploadCreateResponse>;
     public record BulkUploadCreateRequest(string FileName, long FileSize, IEnumerable<ApplicationCreateRequestFromBulk> ApplicationCreateRequests, bool RequireDuplicateCheck);
     public record ApplicationCreateRequestFromBulk : ApplicationCreateRequest
     {
@@ -282,11 +283,21 @@ namespace Spd.Manager.Cases
         public string? LicenceNo { get; set; }
     }
     public record BulkUploadRequest(IFormFile File, bool RequireDuplicateCheck = false);
-    public record BulkUploadValidationErr
+
+    public record BulkUploadCreateResponse()
     {
-        public IEnumerable<ValidationErr> ValidationErrs { get; set; } = Array.Empty<ValidationErr>();
+        public IEnumerable<ValidationErr> ValidationErrs { get; set; }=Array.Empty<ValidationErr>();
+        public IEnumerable<DuplicateCheckResult> DuplicateCheckResponses { get; set; } = Array.Empty<DuplicateCheckResult>();
     }
     public record ValidationErr(int LineNumber, string Error);
+    public record DuplicateCheckResult()
+    {
+        public bool HasPotentialDuplicate { get; set; } = false;
+        public string? FirstName { get; set; }
+        public string LastName { get; set; } = null!;
+        public int LineNumber { get; set; }
+        public string? Msg { get; set; } = null;
+    }
     #endregion
 
     #region clearances
