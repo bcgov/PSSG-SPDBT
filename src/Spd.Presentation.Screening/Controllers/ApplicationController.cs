@@ -19,11 +19,13 @@ namespace Spd.Presentation.Screening.Controllers
     {
         private readonly IMediator _mediator;
         private readonly IValidator<ApplicationCreateRequest> _appCreateRequestValidator;
+        private readonly IValidator<ApplicationCreateRequestFromBulk> _appCreateRequestFromBulkValidator;
 
-        public ApplicationController(IMediator mediator, IValidator<ApplicationCreateRequest> appCreateRequestValidator)
+        public ApplicationController(IMediator mediator, IValidator<ApplicationCreateRequest> appCreateRequestValidator, IValidator<ApplicationCreateRequestFromBulk> appCreateRequestFromBulkValidator)
         {
             _mediator = mediator;
             _appCreateRequestValidator = appCreateRequestValidator;
+            _appCreateRequestFromBulkValidator = appCreateRequestFromBulkValidator;
         }
 
         /// <summary>
@@ -244,8 +246,8 @@ namespace Spd.Presentation.Screening.Controllers
             //parse file
             var applications = await ParseBulkUploadFileAsync(bulkUploadRequest.File, ct);
             await _mediator.Send(new BulkUploadCreateCommand(
-                new BulkUploadCreateRequest(fileName, fileSize, applications, bulkUploadRequest.RequireDuplicateCheck), 
-                orgId, 
+                new BulkUploadCreateRequest(fileName, fileSize, applications, bulkUploadRequest.RequireDuplicateCheck),
+                orgId,
                 Guid.Parse(userId)));
             return Ok();
         }
@@ -306,11 +308,11 @@ namespace Spd.Presentation.Screening.Controllers
                 _ => new AppListSortBy()
             };
         }
-        
-        private async Task<IEnumerable<ApplicationCreateRequestWithLine>> ParseBulkUploadFileAsync(IFormFile bulkFile, CancellationToken ct)
+
+        private async Task<IEnumerable<ApplicationCreateRequestFromBulk>> ParseBulkUploadFileAsync(IFormFile bulkFile, CancellationToken ct)
         {
             IList<ValidationErr> errors = new List<ValidationErr>();
-            IList<ApplicationCreateRequestWithLine> list = new List<ApplicationCreateRequestWithLine>();
+            IList<ApplicationCreateRequestFromBulk> list = new List<ApplicationCreateRequestFromBulk>();
             if (bulkFile.Length > 0)
             {
                 using (var ms = new MemoryStream())
@@ -323,7 +325,8 @@ namespace Spd.Presentation.Screening.Controllers
                     foreach (string line in lines)
                     {
                         if (string.IsNullOrWhiteSpace(line)) continue;
-                        ApplicationCreateRequestWithLine oneRequest = new ApplicationCreateRequestWithLine();
+                        ApplicationCreateRequestFromBulk oneRequest = new ApplicationCreateRequestFromBulk();
+                        AliasCreateRequest[] aliases = new AliasCreateRequest[3];
                         oneRequest.LineNumber = lineNo;
                         try
                         {
@@ -331,13 +334,25 @@ namespace Spd.Presentation.Screening.Controllers
                             oneRequest.Surname = CleanString(data[0]);
                             oneRequest.GivenName = CleanString(data[1]);
                             oneRequest.MiddleName1 = CleanString(data[2]);
+                            aliases[0] = new AliasCreateRequest();
+                            aliases[0].Surname= CleanString(data[3]);
+                            aliases[0].GivenName = CleanString(data[4]);
+                            aliases[0].MiddleName1= CleanString(data[5]);
+                            aliases[1] = new AliasCreateRequest();
+                            aliases[1].Surname = CleanString(data[6]);
+                            aliases[1].GivenName = CleanString(data[7]);
+                            aliases[1].MiddleName1 = CleanString(data[8]);
+                            aliases[2] = new AliasCreateRequest();
+                            aliases[2].Surname = CleanString(data[9]);
+                            aliases[2].GivenName = CleanString(data[10]);
+                            aliases[2].MiddleName1 = CleanString(data[11]);
                             oneRequest.AddressLine1 = CleanString(data[12]);
                             oneRequest.AddressLine2 = CleanString(data[13]);
                             oneRequest.City = CleanString(data[14]);
                             oneRequest.Province = CleanString(data[15]);
                             oneRequest.Country = CleanString(data[16]);
-                            oneRequest.PostalCode = CleanString(data[17]);
-                            oneRequest.PhoneNumber = CleanString(data[18]);
+                            oneRequest.PostalCode = PostalCodeCleanup(CleanString(data[17]));
+                            oneRequest.PhoneNumber = PhoneNumberCleanup(CleanString(data[18]));
                             oneRequest.BirthPlace = CleanString(data[19]);
                             string? birthDateStr = CleanString(data[20]);
                             if (string.IsNullOrEmpty(birthDateStr))
@@ -348,9 +363,19 @@ namespace Spd.Presentation.Screening.Controllers
                             oneRequest.GenderCode = string.IsNullOrEmpty(genderStr) ? null : Enum.Parse<GenderCode>(genderStr);
                             oneRequest.LicenceNo = data[22];
                             oneRequest.DriversLicense = data[23];
-
-                            var validateResult = await _appCreateRequestValidator.ValidateAsync(oneRequest, ct);
-                            if(!validateResult.IsValid)
+                            oneRequest.AgreeToCompleteAndAccurate = true;
+                            oneRequest.HaveVerifiedIdentity = true;
+                            oneRequest.OriginTypeCode = ApplicationOriginTypeCode.GenericUpload;
+                            oneRequest.PayeeType = PayeePreferenceTypeCode.Organization;
+                            List<AliasCreateRequest> aliasCreates = new List<AliasCreateRequest>();
+                            foreach(AliasCreateRequest a in aliases)
+                            {
+                                if (!string.IsNullOrWhiteSpace(a.Surname))
+                                    aliasCreates.Add(a);
+                            };                            
+                            oneRequest.Aliases = aliasCreates.AsEnumerable();
+                            var validateResult = await _appCreateRequestFromBulkValidator.ValidateAsync(oneRequest, ct);
+                            if (!validateResult.IsValid)
                             {
                                 ValidationErr err = new ValidationErr(lineNo, JsonSerializer.Serialize(validateResult.Errors));
                                 errors.Add(err);
@@ -379,6 +404,22 @@ namespace Spd.Presentation.Screening.Controllers
             return str.Replace("\"", string.Empty).Trim();
         }
 
+        private string? PhoneNumberCleanup(string? str)
+        {
+            if (str == null) return null;
+            return str.Replace(",", string.Empty)
+               .Replace("-", string.Empty)
+               .Replace("(", string.Empty)
+               .Replace(")", string.Empty)
+               .Replace(" ", string.Empty);
+        }
+
+        private string? PostalCodeCleanup(string? str)
+        {
+            if (str == null) return null;
+            return str.Replace("-", string.Empty)
+               .Replace(" ", string.Empty);
+        }
     }
 
     public record CreateApplication

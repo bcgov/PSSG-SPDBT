@@ -40,7 +40,7 @@ namespace Spd.Manager.Cases
             CreateMap<BulkHistoryListResp, BulkHistoryListResponse>();
             CreateMap<BulkHistoryResp, BulkHistoryResponse>();
             CreateMap<ApplicationCreateRequest, AppDuplicateCheck>();
-            CreateMap<ApplicationCreateRequestWithLine, AppBulkDuplicateCheck>()
+            CreateMap<ApplicationCreateRequestFromBulk, AppBulkDuplicateCheck>()
                 .IncludeBase<ApplicationCreateRequest, AppDuplicateCheck>();
 
         }
