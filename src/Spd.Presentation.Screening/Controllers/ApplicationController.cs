@@ -167,7 +167,45 @@ namespace Spd.Presentation.Screening.Controllers
             });
         }
 
-        private async Task<IEnumerable<ApplicationCreateRequestFromBulk>> ParseBulkUploadFileAsync(IFormFile bulkFile, Guid orgId, CancellationToken ct)
+        /// <summary>
+        /// create more than one application invites. if checkDuplicate is true, the implementation will check if there is existing duplicated applicants or invites.
+        /// </summary>
+        /// <param name="bulkUploadRequest"></param>
+        /// <param name="orgId"></param>
+        /// <returns></returns>
+        [Route("api/orgs/{orgId}/application/bulk")]
+        [HttpPost]
+        public async Task<BulkUploadCreateResponse> BulkUpload([FromForm][Required] BulkUploadRequest bulkUploadRequest, [FromRoute] Guid orgId, CancellationToken ct)
+        {
+            var userId = this.HttpContext.User.GetUserId();
+            if (userId == null) throw new ApiException(System.Net.HttpStatusCode.Unauthorized);
+
+            //validation file
+            string fileName = bulkUploadRequest.File.FileName;
+            if (!fileName.EndsWith(SpdConstants.BULK_APP_UPLOAD_FILE_EXTENSTION, StringComparison.InvariantCultureIgnoreCase))
+            {
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"only {SpdConstants.BULK_APP_UPLOAD_FILE_EXTENSTION} file supported.");
+            }
+            long fileSize = bulkUploadRequest.File.Length;
+            if (fileSize > SpdConstants.UPLOAD_FILE_MAX_SIZE)
+            {
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"max supported file size is {SpdConstants.UPLOAD_FILE_MAX_SIZE}.");
+            }
+
+            //parse file
+            var (applications, validationErrs) = await ParseBulkUploadFileAsync(bulkUploadRequest.File, orgId, ct);
+            if (validationErrs.Any())
+            {
+                return new BulkUploadCreateResponse() { ValidationErrs = validationErrs };
+            }
+
+            var result = await _mediator.Send(new BulkUploadCreateCommand(
+                new BulkUploadCreateRequest(fileName, fileSize, applications, bulkUploadRequest.RequireDuplicateCheck),
+                orgId,
+                Guid.Parse(userId)));
+            return result;
+        }
+        private async Task<(IEnumerable<ApplicationCreateRequestFromBulk>, IEnumerable<ValidationErr>)> ParseBulkUploadFileAsync(IFormFile bulkFile, Guid orgId, CancellationToken ct)
         {
             IList<ValidationErr> errors = new List<ValidationErr>();
             IList<ApplicationCreateRequestFromBulk> list = new List<ApplicationCreateRequestFromBulk>();
@@ -251,10 +289,8 @@ namespace Spd.Presentation.Screening.Controllers
                     }
                 }
             }
-            if (errors.Any())
-                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Please correct errors in the file", errors);
 
-            return list.AsEnumerable();
+            return (list.AsEnumerable(), errors);
         }
 
         private string? CleanString(string? str)
@@ -340,41 +376,6 @@ namespace Spd.Presentation.Screening.Controllers
                     Paging = pagination
                 });
         }
-
-        /// <summary>
-        /// create more than one application invites. if checkDuplicate is true, the implementation will check if there is existing duplicated applicants or invites.
-        /// </summary>
-        /// <param name="bulkUploadRequest"></param>
-        /// <param name="orgId"></param>
-        /// <returns></returns>
-        [Route("api/orgs/{orgId}/application/bulk")]
-        [HttpPost]
-        public async Task<ActionResult> BulkUpload([FromForm][Required] BulkUploadRequest bulkUploadRequest, [FromRoute] Guid orgId, CancellationToken ct)
-        {
-            var userId = this.HttpContext.User.GetUserId();
-            if (userId == null) throw new ApiException(System.Net.HttpStatusCode.Unauthorized);
-
-            //validation file
-            string fileName = bulkUploadRequest.File.FileName;
-            if (!fileName.EndsWith(SpdConstants.BULK_APP_UPLOAD_FILE_EXTENSTION, StringComparison.InvariantCultureIgnoreCase))
-            {
-                throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"only {SpdConstants.BULK_APP_UPLOAD_FILE_EXTENSTION} file supported.");
-            }
-            long fileSize = bulkUploadRequest.File.Length;
-            if (fileSize > SpdConstants.UPLOAD_FILE_MAX_SIZE)
-            {
-                throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"max supported file size is {SpdConstants.UPLOAD_FILE_MAX_SIZE}.");
-            }
-
-            //parse file
-            var applications = await ParseBulkUploadFileAsync(bulkUploadRequest.File, orgId, ct);
-            await _mediator.Send(new BulkUploadCreateCommand(
-                new BulkUploadCreateRequest(fileName, fileSize, applications, bulkUploadRequest.RequireDuplicateCheck),
-                orgId,
-                Guid.Parse(userId)));
-            return Ok();
-        }
-
 
         private AppListFilterBy GetAppListFilterBy(string? filters, Guid orgId)
         {
