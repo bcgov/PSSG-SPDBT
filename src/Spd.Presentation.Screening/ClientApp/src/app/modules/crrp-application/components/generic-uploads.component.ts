@@ -16,53 +16,39 @@ import { CrrpRoutes } from '../crrp-routing.module';
 		<app-crrp-header></app-crrp-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
-				<div class="col-12">
-					<h2 class="mb-2 fw-normal">Generic Uploads</h2>
-
-					<div class="my-4">
-						<app-file-upload accept=".tsv" message="Text files ending in '.TSV' only"></app-file-upload>
-						<mat-error
-							class="mat-option-error"
-							*ngIf="
-								(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-								form.get('attachments')?.invalid &&
-								form.get('attachments')?.hasError('required')
-							"
-							>This is required</mat-error
-						>
+				<h2 class="mb-2 fw-normal">Generic Uploads</h2>
+				<div class="col-md-6 col-sm-12 my-4">
+					<app-file-upload
+						accept=".tsv"
+						[maxNumberOfFiles]="1"
+						(uploadedFile)="onUploadFile($event)"
+						message="Text files ending in '.TSV' only"
+					></app-file-upload>
+					<mat-error
+						class="mat-option-error"
+						*ngIf="
+							(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+							form.get('attachments')?.invalid &&
+							form.get('attachments')?.hasError('required')
+						"
+						>This is required</mat-error
+					>
+					<!--   *ngIf="showErrors"-->
+				</div>
+				<div class="col-md-6 col-sm-12 my-4">
+					<div class="alert alert-warning d-flex" role="alert">
+						<mat-icon class="d-none d-xl-block alert-icon mt-2 me-2">error</mat-icon>
+						<div class="mt-2 ms-2">
+							File upload failed
+							<ul class="mb-0 me-4">
+								<li class="my-2">Error on line 6: City Name cannot contain numbers</li>
+								<li class="my-2">Error on line 9: Postal Code min 5 characters, max 12 characters</li>
+							</ul>
+						</div>
 					</div>
-
-					<!-- 			
-
-						<ngx-dropzone-preview
-							class="preview"
-							*ngFor="let f of form.get('files')?.value"
-							[removable]="true"
-							(removed)="onRemoveFile(f)"
-						>
-							<ngx-dropzone-label style="width: 100%;">
-								<div class="row">
-									<div class="col-12 d-flex p-0 fw-bold text-start" style="text-indent: 1em; color: black;">
-										<img class="file-name-icon" src="/assets/tsv_file.png" />
-										<div class="w-100" [ngClass]="showErrors ? 'file-upload-error' : 'file-upload-success'">
-											{{ f.name }}
-											<span *ngIf="showErrors">- Upload Failed</span>
-											<span *ngIf="!showErrors">- Upload Succeeded</span>
-										</div>
-										<div style="text-align: center;">Click to upload another file</div>
-									</div>
-								</div>
-							</ngx-dropzone-label>
-						 -->
-					<div class="col-md-12 col-sm-12 mt-4" *ngIf="showErrors">
-						<div class="alert alert-danger d-flex align-items-center" role="alert">
-							<mat-icon class="d-none d-md-block alert-icon me-2">warning</mat-icon>
-							<div>Error on line 6: City Name cannot contain numbers</div>
-						</div>
-						<div class="alert alert-danger d-flex align-items-center">
-							<mat-icon class="d-none d-md-block alert-icon me-2">warning</mat-icon>
-							<div>Error on line 9: Postal Code min 5 characters, max 12 characters</div>
-						</div>
+					<div class="alert alert-success d-flex" role="alert">
+						<mat-icon class="d-none d-xl-block alert-icon me-2">check_circle</mat-icon>
+						File upload succeeded
 					</div>
 				</div>
 			</div>
@@ -119,32 +105,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 			</div>
 		</section>
 	`,
-	styles: [
-		`
-			/* .file-name-icon {
-				max-width: 3em;
-			}
-
-			.preview {
-				width: 100%;
-				height: unset !important;
-				min-height: unset !important;
-				max-width: unset !important;
-			}
-
-			ngx-dropzone.expandable {
-				min-height: unset;
-			}
-
-			.file-upload-error {
-				border-bottom: 6px solid var(--color-red);
-			}
-
-			.file-upload-success {
-				border-bottom: 6px solid var(--color-green);
-			} */
-		`,
-	],
+	styles: [],
 })
 export class GenericUploadsComponent implements OnInit {
 	private queryParams: any = this.utilService.getDefaultQueryParams();
@@ -175,7 +136,6 @@ export class GenericUploadsComponent implements OnInit {
 			const genericUploadEnabled = this.authenticationService.genericUploadEnabled;
 			if (!genericUploadEnabled) {
 				this.router.navigate([CrrpRoutes.crrpPath(CrrpRoutes.HOME)]);
-				// this.router.navigate([AppRoutes.appPath(AppRoutes.ACCESS_DENIED)]);
 			}
 		});
 
@@ -183,6 +143,8 @@ export class GenericUploadsComponent implements OnInit {
 	}
 
 	onUploadFile(evt: any) {
+		console.log('onUploadFile', evt);
+		this.showErrors = true;
 		// const attachments =
 		// 	this.fileUploadComponent.files && this.fileUploadComponent.files.length > 0
 		// 		? this.fileUploadComponent.files[0]
@@ -193,15 +155,6 @@ export class GenericUploadsComponent implements OnInit {
 		// currentFiles.push(...evt.addedFiles);
 		// this.form.get('files')?.setValue(currentFiles);
 		this.form.get('attachments')?.setValue(evt.addedFiles);
-	}
-
-	onRemoveFile(evt: any) {
-		this.showErrors = false;
-		// const currentFiles = this.form.get('files')?.value;
-		// const currentFilesCopy = [...currentFiles];
-		// currentFilesCopy.splice(currentFiles.indexOf(evt), 1);
-		// this.form.get('files')?.setValue(currentFilesCopy);
-		this.form.reset();
 	}
 
 	onPageChanged(page: PageEvent): void {

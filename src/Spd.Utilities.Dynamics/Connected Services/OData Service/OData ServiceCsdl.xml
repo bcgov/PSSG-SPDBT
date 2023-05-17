@@ -2100,6 +2100,7 @@
         <Property Name="bcgov_origincode" Type="Edm.Int32" />
         <Property Name="createdon" Type="Edm.DateTimeOffset" />
         <Property Name="_bcgov_faxid_value" Type="Edm.Guid" />
+        <Property Name="_spd_clearanceid_value" Type="Edm.Guid" />
         <Property Name="bcgov_filename" Type="Edm.String" Unicode="false" />
         <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
         <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
@@ -2181,6 +2182,9 @@
         <NavigationProperty Name="bcgov_TaskId" Type="mscrm.task" Nullable="false" Partner="bcgov_task_bcgov_documenturl" />
         <NavigationProperty Name="spd_ApplicationId" Type="mscrm.spd_application" Nullable="false" Partner="spd_application_bcgov_documenturl">
           <ReferentialConstraint Property="_spd_applicationid_value" ReferencedProperty="spd_applicationid" />
+        </NavigationProperty>
+        <NavigationProperty Name="spd_ClearanceId" Type="mscrm.spd_clearance" Nullable="false" Partner="spd_clearance_bcgov_documenturl">
+          <ReferentialConstraint Property="_spd_clearanceid_value" ReferencedProperty="spd_clearanceid" />
         </NavigationProperty>
       </EntityType>
       <EntityType Name="bcgov_field" BaseType="mscrm.crmbaseentity">
@@ -19518,6 +19522,7 @@
           <ReferentialConstraint Property="_spd_contactid_value" ReferencedProperty="contactid" />
         </NavigationProperty>
         <NavigationProperty Name="spd_clearance_spd_clearanceaccess" Type="Collection(mscrm.spd_clearanceaccess)" Partner="spd_Clearance" />
+        <NavigationProperty Name="spd_clearance_bcgov_documenturl" Type="Collection(mscrm.bcgov_documenturl)" Partner="spd_ClearanceId" />
       </EntityType>
       <EntityType Name="spd_cornetnotification" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -26370,6 +26375,13 @@
         <Parameter Name="entity" Type="mscrm.account" Nullable="false" />
         <ReturnType Type="mscrm.spd_GetOrganizationStatisticsResponse" Nullable="false" />
       </Action>
+      <ComplexType Name="spd_HasHitsResponse">
+        <Property Name="HasHit" Type="Edm.Boolean" />
+      </ComplexType>
+      <Action Name="spd_HasHits" IsBound="true">
+        <Parameter Name="entity" Type="mscrm.contact" Nullable="false" />
+        <ReturnType Type="mscrm.spd_HasHitsResponse" Nullable="false" />
+      </Action>
       <Action Name="UnlockInvoicePricing">
         <Parameter Name="InvoiceId" Type="Edm.Guid" Nullable="false" />
       </Action>
@@ -29967,6 +29979,7 @@
           <NavigationPropertyBinding Path="bcgov_Tag3Id" Target="bcgov_tags" />
           <NavigationPropertyBinding Path="bcgov_TaskId" Target="tasks" />
           <NavigationPropertyBinding Path="spd_ApplicationId" Target="spd_applications" />
+          <NavigationPropertyBinding Path="spd_ClearanceId" Target="spd_clearances" />
         </EntitySet>
         <EntitySet Name="bcgov_fields" EntityType="Microsoft.Dynamics.CRM.bcgov_field">
           <NavigationPropertyBinding Path="createdby" Target="systemusers" />
@@ -35307,6 +35320,7 @@
           <NavigationPropertyBinding Path="spd_CaseID" Target="incidents" />
           <NavigationPropertyBinding Path="spd_ContactID" Target="contacts" />
           <NavigationPropertyBinding Path="spd_clearance_spd_clearanceaccess" Target="spd_clearanceaccesses" />
+          <NavigationPropertyBinding Path="spd_clearance_bcgov_documenturl" Target="bcgov_documenturls" />
         </EntitySet>
         <EntitySet Name="spd_cornetnotifications" EntityType="Microsoft.Dynamics.CRM.spd_cornetnotification">
           <NavigationPropertyBinding Path="createdby" Target="systemusers" />

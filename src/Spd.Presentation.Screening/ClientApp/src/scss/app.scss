@@ -275,8 +275,11 @@ a {
 }
 
 
+// ngx-dropzone-remove-badge {
+//   z-index: 9999 !important;
+// }
 ngx-dropzone-remove-badge {
-  z-index: 9999 !important;
+  opacity: 1 !important;
 }
 
 .active-selection-main {
