@@ -61,7 +61,7 @@ export interface ExpiredClearanceResponse extends ClearanceResponse {
 						</ng-container>
 
 						<ng-container matColumnDef="expiresOn">
-							<mat-header-cell *matHeaderCellDef>Expiring On</mat-header-cell>
+							<mat-header-cell *matHeaderCellDef mat-sort-header>Expiring On</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Expiring On:</span>
 								{{ application.expiresOn | date : constants.date.dateFormat : 'UTC' }}
@@ -69,7 +69,7 @@ export interface ExpiredClearanceResponse extends ClearanceResponse {
 						</ng-container>
 
 						<ng-container matColumnDef="daysRemaining">
-							<mat-header-cell *matHeaderCellDef mat-sort-header>Days Remaining</mat-header-cell>
+							<mat-header-cell *matHeaderCellDef>Days Remaining</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Days Remaining:</span>
 								<span [ngClass]="application.daysRemainingClass">
