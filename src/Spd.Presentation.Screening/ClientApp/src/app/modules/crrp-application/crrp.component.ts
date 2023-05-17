@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, IsActiveMatchOptions, QueryParamsHandling, Router } from '@angular/router';
+import { ActivatedRoute, IsActiveMatchOptions, NavigationEnd, QueryParamsHandling, Router } from '@angular/router';
+import { filter } from 'rxjs';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { CrrpRoutes } from './crrp-routing.module';
 
@@ -184,8 +185,8 @@ export class CrrpComponent {
 	) {}
 
 	async ngOnInit(): Promise<void> {
-		this.route.queryParams.subscribe((params) => {
-			this.showNavigation = params['showMenu'] ?? true;
+		this.router.events.pipe(filter((evt) => evt instanceof NavigationEnd)).subscribe((evt) => {
+			this.setShowNavigationFlag((evt as NavigationEnd).url);
 		});
 
 		const nextUrl = await this.authenticationService.login(CrrpRoutes.crrpPath());
@@ -195,10 +196,12 @@ export class CrrpComponent {
 			const nextRoute = decodeURIComponent(nextUrl);
 			// console.debug('nextRoute', nextRoute);
 
-			if (nextRoute.includes(`${CrrpRoutes.MODULE_PATH}/${CrrpRoutes.INVITATION}`)) {
-				this.showNavigation = false;
-			}
+			this.setShowNavigationFlag(nextRoute);
 			await this.router.navigate([nextRoute]);
 		}
+	}
+
+	private setShowNavigationFlag(url: string): void {
+		this.showNavigation = !url.includes(`${CrrpRoutes.MODULE_PATH}/${CrrpRoutes.INVITATION}`);
 	}
 }
