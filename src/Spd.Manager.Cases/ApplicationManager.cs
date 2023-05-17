@@ -18,7 +18,7 @@ namespace Spd.Manager.Cases
         IRequestHandler<ApplicationStatisticsQuery, ApplicationStatisticsResponse>,
         IRequestHandler<IdentityCommand, bool>,
         IRequestHandler<GetBulkUploadHistoryQuery, BulkHistoryListResponse>,
-        IRequestHandler<BulkUploadCreateCommand, Unit>,
+        IRequestHandler<BulkUploadCreateCommand, BulkUploadCreateResponse>,
         IRequestHandler<ClearanceListQuery, ClearanceListResponse>,
         IApplicationManager
     {
@@ -215,14 +215,16 @@ namespace Spd.Manager.Cases
             return _mapper.Map<BulkHistoryListResponse>(result);
         }
 
-        public async Task<Unit> Handle(BulkUploadCreateCommand cmd, CancellationToken ct)
+        public async Task<BulkUploadCreateResponse> Handle(BulkUploadCreateCommand cmd, CancellationToken ct)
         {
+            BulkUploadCreateResponse response= new BulkUploadCreateResponse();
             if (cmd.BulkUploadCreateRequest.RequireDuplicateCheck)
             {
                 var checks = _mapper.Map<IEnumerable<AppBulkDuplicateCheck>>(cmd.BulkUploadCreateRequest.ApplicationCreateRequests);
-                await _duplicateCheckEngine.DuplicateCheckAsync(new BulkUploadAppDuplicateCheckRequest(checks), ct);
+                var dupResults =(BulkUploadAppDuplicateCheckResponse)await _duplicateCheckEngine.DuplicateCheckAsync(new BulkUploadAppDuplicateCheckRequest(checks), ct);
+                response.DuplicateCheckResponses = _mapper.Map<IEnumerable<DuplicateCheckResult>>(dupResults.BulkDuplicateChecks);
             }
-            return default;
+            return response;
         }
         #endregion
 
