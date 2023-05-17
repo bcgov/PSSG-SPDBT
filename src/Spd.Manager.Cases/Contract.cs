@@ -426,7 +426,7 @@ namespace Spd.Manager.Cases
 
             RuleFor(r => r.PostalCode)
                     .NotEmpty()
-                    //.MinimumLength(5)
+                    .MinimumLength(5)
                     .MaximumLength(20);
 
             RuleFor(r => r.Province)
