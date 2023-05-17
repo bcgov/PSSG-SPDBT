@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Spd.Resource.Organizations\Spd.Resource.Organizations.csproj" />
     <ProjectReference Include="..\Spd.Utilities.Address\Spd.Utilities.Address.csproj" />
     <ProjectReference Include="..\Spd.Utilities.Hosting\Spd.Utilities.Hosting.csproj" />
   </ItemGroup>
