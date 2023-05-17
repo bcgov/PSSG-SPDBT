@@ -16,19 +16,19 @@ public class DynamicsTestData
         _dataProtector = protectProvider.CreateProtector(nameof(UserCreateCmd)).ToTimeLimitedDataProtector();
     }
 
-    public async Task<(account,spd_portaluser)> CreateOrgWithLogonUser(string orgName)
+    public async Task<(account, spd_portaluser)> CreateOrgWithLogonUser(string orgName)
     {
         var org = await CreateOrg(orgName);
         var identity = await CreateIdentity(WebAppFixture.LOGON_USER_GUID.ToString(), WebAppFixture.LOGON_ORG_GUID.ToString());
         var user = await CreateUserInOrg("lastName", "firstName", org, identity);
-        return (org,user);
+        return (org, user);
     }
 
     public async Task<(account, spd_portaluser)> CreateOrgWithPrimaryUser(string orgName, Guid userGuid, Guid orgGuid)
     {
         var org = await CreateOrg(orgName);
         var identity = await CreateIdentity(userGuid.ToString(), orgGuid.ToString());
-        var user = await CreateUserInOrg($"ln{userGuid.ToString().Substring(0,10)}", "firstName", org, identity);
+        var user = await CreateUserInOrg($"ln{userGuid.ToString().Substring(0, 10)}", "firstName", org, identity);
         return (org, user);
     }
 
@@ -56,10 +56,10 @@ public class DynamicsTestData
         }
     }
 
-    public async Task<spd_portalinvitation> CreatePortalInvitationInOrg(string surName, string givenName, account org, InvitationTypeOptionSet inviteType = InvitationTypeOptionSet.ScreeningRequest)
+    public async Task<spd_portalinvitation> CreatePortalInvitationInOrg(string surname, string givenName, account org, InvitationTypeOptionSet inviteType = InvitationTypeOptionSet.ScreeningRequest)
     {
         var existing = _context.spd_portalinvitations
-            .Where(a => a.spd_surname == surName && a.spd_firstname == givenName && a._spd_organizationid_value == org.accountid)
+            .Where(a => a.spd_surname == surname && a.spd_firstname == givenName && a._spd_organizationid_value == org.accountid)
             .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
             .FirstOrDefault();
         if (existing != null) return existing;
@@ -71,7 +71,7 @@ public class DynamicsTestData
             {
                 spd_portalinvitationid = portalInvitationId,
                 spd_firstname = givenName,
-                spd_surname = surName,
+                spd_surname = surname,
                 spd_invitationtype = (int)inviteType,
                 spd_invitationlink = $"http://localhost/invitations/{encryptedId}"
             };
@@ -82,10 +82,10 @@ public class DynamicsTestData
         }
     }
 
-    public async Task<spd_portaluser> CreateUserInOrg(string surName, string givenName, account org, spd_identity identity)
+    public async Task<spd_portaluser> CreateUserInOrg(string surname, string givenName, account org, spd_identity identity)
     {
         var existing = _context.spd_portalusers
-            .Where(a => a.spd_surname == surName && a.spd_firstname == givenName && a._spd_organizationid_value == org.accountid)
+            .Where(a => a.spd_surname == surname && a.spd_firstname == givenName && a._spd_organizationid_value == org.accountid)
             .Where(a => a._spd_identityid_value == identity.spd_identityid)
             .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
             .FirstOrDefault();
@@ -97,8 +97,8 @@ public class DynamicsTestData
             {
                 spd_portaluserid = portalUserId,
                 spd_firstname = givenName,
-                spd_surname = surName,
-                spd_emailaddress1 = $"test{givenName}@{surName}.com",
+                spd_surname = surname,
+                spd_emailaddress1 = $"test{givenName}@{surname}.com",
             };
             _context.AddTospd_portalusers(newOne);
             _context.SetLink(newOne, nameof(spd_portaluser.spd_OrganizationId), org);
@@ -113,15 +113,15 @@ public class DynamicsTestData
         }
     }
 
-    public async Task<(spd_portaluser, spd_portalinvitation)> CreateTempUserInOrg(string surName, string givenName, account org)
+    public async Task<(spd_portaluser, spd_portalinvitation)> CreateTempUserInOrg(string surname, string givenName, account org)
     {
         Guid portalUserId = Guid.NewGuid();
         spd_portaluser newOne = new spd_portaluser
         {
             spd_portaluserid = portalUserId,
             spd_firstname = givenName,
-            spd_surname = surName,
-            spd_emailaddress1 = $"test{givenName}@{surName}.com",
+            spd_surname = surname,
+            spd_emailaddress1 = $"test{givenName}@{surname}.com",
         };
         _context.AddTospd_portalusers(newOne);
         _context.SetLink(newOne, nameof(spd_portaluser.spd_OrganizationId), org);
@@ -130,7 +130,7 @@ public class DynamicsTestData
         {
             _context.AddLink(role, nameof(role.spd_spd_role_spd_portaluser), newOne);
         }
-        spd_portalinvitation invite = await CreatePortalInvitationInOrg(surName, givenName, org, InvitationTypeOptionSet.PortalUser);
+        spd_portalinvitation invite = await CreatePortalInvitationInOrg(surname, givenName, org, InvitationTypeOptionSet.PortalUser);
         _context.SetLink(invite, nameof(spd_portalinvitation.spd_PortalUserId), newOne);
         await _context.SaveChangesAsync();
 
@@ -159,16 +159,16 @@ public class DynamicsTestData
         }
     }
 
-    public async Task<spd_application> CreateAppInOrg(string surName, string givenName, DateTimeOffset birthdate, account org)
+    public async Task<spd_application> CreateAppInOrg(string surname, string givenName, DateTimeOffset birthdate, account org)
     {
         Guid id = Guid.NewGuid();
         spd_application newOne = new spd_application
         {
             spd_applicationid = id,
             spd_firstname = givenName,
-            spd_lastname = surName,
+            spd_lastname = surname,
             spd_dateofbirth = new Microsoft.OData.Edm.Date(birthdate.Year, birthdate.Month, birthdate.Day),
-            statecode= DynamicsConstants.StatusCode_Active,            
+            statecode = DynamicsConstants.StatusCode_Active,
         };
         _context.AddTospd_applications(newOne);
         _context.SetLink(newOne, nameof(newOne.spd_OrganizationId), org);

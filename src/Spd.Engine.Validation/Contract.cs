@@ -16,7 +16,7 @@ namespace Spd.Engine.Validation
     {
         public Guid OrgId { get; set; }
         public string? GivenName { get; set; }
-        public string SurName { get; set; } = null!;
+        public string Surname { get; set; } = null!;
         public DateTimeOffset DateOfBirth { get; set; }
     }
 

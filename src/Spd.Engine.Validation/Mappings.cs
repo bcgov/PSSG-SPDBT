@@ -7,6 +7,6 @@ internal class Mappings : Profile
     {
         _ = CreateMap<AppBulkDuplicateCheck, AppBulkDuplicateCheckResult>()
             .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName))
-            .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.SurName)); 
+            .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.Surname)); 
     }
 }
