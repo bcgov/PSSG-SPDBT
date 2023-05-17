@@ -162,50 +162,51 @@ export class GenericUploadsComponent implements OnInit {
 			.pipe()
 			.subscribe((resp: BulkUploadCreateResponse) => {
 				this.validationErrs = resp.validationErrs ?? [];
+				const duplicateCheckResponses =
+					resp.duplicateCheckResponses?.filter((item) => item.hasPotentialDuplicate) ?? [];
 
-				const duplicateCheckResponses = resp.duplicateCheckResponses ?? [];
-				if (!duplicateCheckResponses) {
+				// if validation error or not a duplicate, show result of error messages or success message
+				if (this.validationErrs.length > 0 || duplicateCheckResponses.length == 0) {
 					this.showResult = true;
-				} else {
-					let dupRows = '';
-					duplicateCheckResponses
-						.filter((item) => item.hasPotentialDuplicate)
-						.forEach((item) => {
-							dupRows += `<li>Line: ${item.lineNumber} - ${item.firstName} ${item.lastName}</li>`;
-						});
-					const dupMessage = `<ul>${dupRows}</ul>`;
-
-					let dialogTitle = '';
-					let dialogMessage = '';
-
-					if (duplicateCheckResponses.length > 1) {
-						dialogTitle = 'Potential duplicates detected';
-						dialogMessage = `The following potential duplicates have been found:<br/><br/>${dupMessage}How would you like to proceed?`;
-					} else {
-						dialogTitle = 'Potential duplicate detected';
-						dialogMessage = `The following potential duplicate has been found:<br/><br/>${dupMessage}How would you like to proceed?`;
-					}
-
-					const data: DialogOptions = {
-						title: dialogTitle,
-						message: dialogMessage,
-						actionText: 'Submit',
-						cancelText: 'Cancel',
-					};
-
-					this.dialog
-						.open(DialogComponent, { data })
-						.afterClosed()
-						.subscribe((response: boolean) => {
-							if (response) {
-								this.saveBulkUpload(files[0]);
-							}
-						});
+					return;
 				}
+
+				let dupRows = '';
+				duplicateCheckResponses.forEach((item) => {
+					dupRows += `<li>Line: ${item.lineNumber} - ${item.firstName} ${item.lastName}</li>`;
+				});
+				const dupMessage = `<ul>${dupRows}</ul>`;
+
+				let dialogTitle = '';
+				let dialogMessage = '';
+
+				if (duplicateCheckResponses.length > 1) {
+					dialogTitle = 'Potential duplicates detected';
+					dialogMessage = `The following potential duplicates have been found:<br/><br/>${dupMessage}How would you like to proceed?`;
+				} else {
+					dialogTitle = 'Potential duplicate detected';
+					dialogMessage = `The following potential duplicate has been found:<br/><br/>${dupMessage}How would you like to proceed?`;
+				}
+
+				const data: DialogOptions = {
+					title: dialogTitle,
+					message: dialogMessage,
+					actionText: 'Submit',
+					cancelText: 'Cancel',
+				};
+
+				this.dialog
+					.open(DialogComponent, { data })
+					.afterClosed()
+					.subscribe((response: boolean) => {
+						if (response) {
+							this.saveBulkUpload(files[0]);
+						}
+					});
 			});
 	}
 
-	onRemoveFile(files: any) {
+	onRemoveFile(_files: any) {
 		this.showResult = false;
 	}
 
