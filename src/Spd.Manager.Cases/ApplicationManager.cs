@@ -225,6 +225,16 @@ namespace Spd.Manager.Cases
             bool hasDuplicates = response.DuplicateCheckResponses.Any(r => r.HasPotentialDuplicate);
             if (!hasDuplicates || !cmd.BulkUploadCreateRequest.RequireDuplicateCheck)
             {
+                var cmds = _mapper.Map<IEnumerable<ApplicationCreateCmd>>(cmd.BulkUploadCreateRequest.ApplicationCreateRequests);
+                await _applicationRepository.AddBulkAppsAsync(
+                    new BulkAppsCreateCmd
+                    {
+                        CreateApps = cmds,
+                        FileName = cmd.BulkUploadCreateRequest.FileName,
+                        FileSize = cmd.BulkUploadCreateRequest.FileSize,
+                        UserId = cmd.UserId,
+                        OrgId = cmd.OrgId
+                    }, ct);
             }
             return response;
         }

@@ -8,7 +8,7 @@ public interface IApplicationRepository
     public Task<ApplicationStatisticsResp> QueryApplicationStatisticsAsync(ApplicationStatisticsQry query, CancellationToken cancellationToken);
     public Task<bool> IdentityAsync(IdentityCmd cmd, CancellationToken ct);
     public Task<ClearanceListResp> QueryAsync(ClearanceListQry clearanceListQry, CancellationToken ct);
-    public Task<Guid?> AddApplicationsInBatchAsync(IEnumerable<ApplicationCreateCmd> createApplicationCmds, CancellationToken cancellationToken);
+    public Task<Guid?> AddBulkAppsAsync(BulkAppsCreateCmd createApplicationCmds, CancellationToken cancellationToken);
     public Task<BulkHistoryListResp> QueryBulkHistoryAsync(BulkHistoryListQry query, CancellationToken cancellationToken);
 }
 
@@ -181,6 +181,14 @@ public record BulkHistoryResp
     public string FileName { get; set; } = null!;
     public string UploadedByUserFullName { get; set; } = null!;
     public DateTimeOffset UploadedDateTime { get; set; }
+}
+public record BulkAppsCreateCmd
+{
+    public IEnumerable<ApplicationCreateCmd> CreateApps { get; set; } = Array.Empty<ApplicationCreateCmd>();
+    public string FileName { get; set; } = null!;
+    public long FileSize { get; set; }
+    public Guid UserId { get; set; }
+    public Guid OrgId { get; set; }
 }
 #endregion
 public enum ApplicationPortalStatusCd
