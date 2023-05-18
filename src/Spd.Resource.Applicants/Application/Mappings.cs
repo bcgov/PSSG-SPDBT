@@ -96,6 +96,13 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.Facility, opt => opt.MapFrom(s => s.spd_clearanceaccessnumber))
             .ForMember(d => d.Email, opt => opt.MapFrom(s => "test@test.com"))
             .ForMember(d => d.ExpiresOn, opt => opt.MapFrom(s => s.createdon));
+
+            _ = CreateMap<spd_genericupload, BulkHistoryResp>()
+            .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_genericuploadid))
+            .ForMember(d => d.BatchNumber, opt => opt.MapFrom(s => s.spd_batchnumber))
+            .ForMember(d => d.FileName, opt => opt.MapFrom(s => s.spd_filename))
+            .ForMember(d => d.UploadedDateTime, opt => opt.MapFrom(s => s.spd_datetimeuploaded))
+            .ForMember(d => d.UploadedByUserFullName, opt => opt.MapFrom(s => s.spd_UploadedBy.spd_fullname));
         }
         private static string? GetPaidBy(int? code)
         {
