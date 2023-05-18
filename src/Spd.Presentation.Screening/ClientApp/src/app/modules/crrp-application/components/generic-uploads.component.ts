@@ -23,7 +23,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<h2 class="mb-2 fw-normal">Generic Uploads</h2>
-				<div class="col-md-6 col-sm-12 my-4">
+				<div class="col-lg-10 col-md-12 col-sm-12 my-4">
 					<app-file-upload
 						accept=".tsv"
 						[maxNumberOfFiles]="1"
@@ -35,7 +35,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 			</div>
 			<ng-container *ngIf="showResult">
 				<div class="row" *ngIf="validationErrs.length > 0">
-					<div class="col-12">
+					<div class="col-lg-10 col-md-12 col-sm-12">
 						<div class="alert alert-danger d-flex" role="alert">
 							<mat-icon class="d-none d-xl-block alert-icon mt-2 me-2">error</mat-icon>
 							<div class="mt-2 ms-2">
@@ -50,7 +50,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 					</div>
 				</div>
 				<div class="row" *ngIf="validationErrs.length == 0">
-					<div class="col-md-6 col-sm-12">
+					<div class="col-lg-10 col-md-12 col-sm-12">
 						<div class="alert alert-success d-flex" role="alert">
 							<mat-icon class="d-none d-xl-block alert-icon me-2">check_circle</mat-icon>
 							File upload succeeded
