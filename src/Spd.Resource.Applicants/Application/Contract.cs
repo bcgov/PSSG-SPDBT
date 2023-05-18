@@ -8,6 +8,8 @@ public interface IApplicationRepository
     public Task<ApplicationStatisticsResp> QueryApplicationStatisticsAsync(ApplicationStatisticsQry query, CancellationToken cancellationToken);
     public Task<bool> IdentityAsync(IdentityCmd cmd, CancellationToken ct);
     public Task<ClearanceListResp> QueryAsync(ClearanceListQry clearanceListQry, CancellationToken ct);
+    public Task<Guid?> AddApplicationsInBatchAsync(IEnumerable<ApplicationCreateCmd> createApplicationCmds, CancellationToken cancellationToken);
+    public Task<BulkHistoryListResp> QueryBulkHistoryAsync(BulkHistoryListQry query, CancellationToken cancellationToken);
 }
 
 //application list
@@ -158,6 +160,29 @@ public record ClearanceResp
     public string Status { get; set; } = null!;
 }
 
+#region bulk upload
+public record BulkHistoryListQry
+{
+    public Guid OrgId { get; set; }
+    public BulkHistorySortBy? SortBy { get; set; } //null means no sorting
+    public Paging Paging { get; set; } = null!;
+}
+
+public record BulkHistorySortBy(bool? SubmittedDateDesc = true);
+public record BulkHistoryListResp
+{
+    public IEnumerable<BulkHistoryResp> BulkUploadHistorys { get; set; } = Array.Empty<BulkHistoryResp>();
+    public PaginationResp Pagination { get; set; } = null!;
+}
+public record BulkHistoryResp
+{
+    public Guid Id { get; set; }
+    public string BatchNumber { get; set; } = null!;
+    public string FileName { get; set; } = null!;
+    public string UploadedByUserFullName { get; set; } = null!;
+    public DateTimeOffset UploadedDateTime { get; set; }
+}
+#endregion
 public enum ApplicationPortalStatusCd
 {
     Draft,

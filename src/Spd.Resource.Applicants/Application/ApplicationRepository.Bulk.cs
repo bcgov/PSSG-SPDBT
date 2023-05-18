@@ -1,22 +1,11 @@
-using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.OData.Client;
 using Spd.Utilities.Dynamics;
 
-namespace Spd.Resource.Applicants.BulkHistory;
-internal class BulkHistoryRepository : IBulkHistoryRepository
+namespace Spd.Resource.Applicants.Application;
+internal partial class ApplicationRepository : IApplicationRepository
 {
-    private readonly DynamicsContext _context;
-    private readonly IMapper _mapper;
-
-
-    public BulkHistoryRepository(IDynamicsContextFactory ctx, IMapper mapper)
-    {
-        _context = ctx.CreateChangeOverwrite();
-        _mapper = mapper;
-    }
-
-    public async Task<BulkHistoryListResp> QueryAsync(BulkHistoryListQry query, CancellationToken ct)
+    public async Task<BulkHistoryListResp> QueryBulkHistoryAsync(BulkHistoryListQry query, CancellationToken ct)
     {
         IQueryable<spd_genericupload> uploads = _context.spd_genericuploads
             .Expand(u => u.spd_UploadedBy)
@@ -52,7 +41,10 @@ internal class BulkHistoryRepository : IBulkHistoryRepository
         return response;
     }
 
-
+    public async Task<Guid?> AddApplicationsInBatchAsync(IEnumerable<ApplicationCreateCmd> createApplicationCmds, CancellationToken cancellationToken)
+    {
+        return null;
+    }
 }
 
 

@@ -3,7 +3,6 @@ using Spd.Engine.Validation;
 using Spd.Resource.Applicants;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.ApplicationInvite;
-using Spd.Resource.Applicants.BulkHistory;
 
 namespace Spd.Manager.Cases
 {
