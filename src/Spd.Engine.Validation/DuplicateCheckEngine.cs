@@ -41,6 +41,7 @@ namespace Spd.Engine.Validation
                 var result = _mapper.Map<AppBulkDuplicateCheckResult>(check);
                 if (duplicatedInTsv != null)
                 {
+                    result.HasPotentialDuplicateInTsv = true;
                     result.HasPotentialDuplicate = true;
                     result.Msg = $"this is duplicate to line {duplicatedInTsv.LineNumber}; ";
                 }
@@ -75,6 +76,7 @@ namespace Spd.Engine.Validation
                             if (temp != null)
                             {
                                 temp.HasPotentialDuplicate = true;
+                                temp.HasPotentialDuplicateInDb = true;
                                 temp.Msg = $"{temp.Msg}there is potential duplicates in existing application.";
                             }
                         }
@@ -84,7 +86,7 @@ namespace Spd.Engine.Validation
                 begin += len;
             }
 
-            return new BulkUploadAppDuplicateCheckResponse(results);
+            return new BulkUploadAppDuplicateCheckResponse(results.Where(r => r.HasPotentialDuplicate).ToList());
         }
 
         private DataServiceQuery<spd_application> GetAppDuplicateCheckQuery(AppDuplicateCheck check)

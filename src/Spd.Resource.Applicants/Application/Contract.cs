@@ -122,10 +122,9 @@ public enum ApplicationOriginTypeCode
 }
 public enum GenderCode
 {
-    Male,
-    Female,
-    NonBinary,
-    Unspecified
+    M,
+    F,
+    X
 }
 
 public enum FileCategoryCode
