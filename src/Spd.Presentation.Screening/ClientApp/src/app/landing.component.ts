@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthenticationService } from './core/services/authentication.service';
+import { CrcApplicationRoutes } from './modules/crc-application/crc-application-routing.module';
 import { CrrpRoutes } from './modules/crrp-application/crrp-routing.module';
 
 @Component({
@@ -44,10 +44,10 @@ import { CrrpRoutes } from './modules/crrp-application/crrp-routing.module';
 export class LandingComponent {
 	paymentBy: string = 'APP';
 
-	constructor(private router: Router, private authenticationService: AuthenticationService) {}
+	constructor(private router: Router) {}
 
 	goToScreening(): void {
-		this.router.navigateByUrl('/crc-application', { state: { paymentBy: this.paymentBy } });
+		this.router.navigateByUrl(`/${CrcApplicationRoutes.MODULE_PATH}`, { state: { paymentBy: this.paymentBy } });
 	}
 
 	onRegisterWithBCeid(): void {
