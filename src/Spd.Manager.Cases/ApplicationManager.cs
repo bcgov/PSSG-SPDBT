@@ -224,6 +224,12 @@ namespace Spd.Manager.Cases
                 var dupResults =(BulkUploadAppDuplicateCheckResponse)await _duplicateCheckEngine.DuplicateCheckAsync(new BulkUploadAppDuplicateCheckRequest(checks), ct);
                 response.DuplicateCheckResponses = _mapper.Map<IEnumerable<DuplicateCheckResult>>(dupResults.BulkDuplicateChecks);
             }
+
+            //if no duplicate found or no need to check
+            bool hasDuplicates = response.DuplicateCheckResponses.Any(r => r.HasPotentialDuplicate);
+            if(!hasDuplicates || !cmd.BulkUploadCreateRequest.RequireDuplicateCheck)
+            {
+            }
             return response;
         }
         #endregion
