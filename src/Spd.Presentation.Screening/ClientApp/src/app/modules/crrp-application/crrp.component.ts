@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, IsActiveMatchOptions, NavigationEnd, QueryParamsHandling, Router } from '@angular/router';
+import { IsActiveMatchOptions, NavigationEnd, QueryParamsHandling, Router } from '@angular/router';
 import { filter } from 'rxjs';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { CrrpRoutes } from './crrp-routing.module';
@@ -178,11 +178,7 @@ export class CrrpComponent {
 	isAuthenticated = this.authenticationService.waitUntilAuthentication$;
 	crrpRoutes = CrrpRoutes;
 
-	constructor(
-		protected authenticationService: AuthenticationService,
-		private route: ActivatedRoute,
-		private router: Router
-	) {}
+	constructor(protected authenticationService: AuthenticationService, private router: Router) {}
 
 	async ngOnInit(): Promise<void> {
 		this.router.events.pipe(filter((evt) => evt instanceof NavigationEnd)).subscribe((evt) => {

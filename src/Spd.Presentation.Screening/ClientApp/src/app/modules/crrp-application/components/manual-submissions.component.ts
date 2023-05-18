@@ -10,6 +10,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import {
 	ApplicationOriginTypeCode,
 	EmployeeInteractionTypes,
+	GenderCodes,
 	ScreeningTypeCode,
 	ScreeningTypeCodes,
 } from 'src/app/core/constants/model-desc';
@@ -98,8 +99,11 @@ export interface AliasCreateRequest {
 					</div>
 					<div class="col-xl-3 col-lg-6 col-md-12">
 						<mat-form-field>
-							<mat-label>BC Drivers Licence <span class="optional-label">(optional)</span></mat-label>
-							<input matInput formControlName="driversLicense" />
+							<mat-label>Date of Birth</mat-label>
+							<input matInput [matDatepicker]="picker" formControlName="dateOfBirth" [errorStateMatcher]="matcher" />
+							<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+							<mat-datepicker #picker startView="multi-year" [startAt]="startAt"></mat-datepicker>
+							<mat-error *ngIf="form.get('dateOfBirth')?.hasError('required')">This is required</mat-error>
 						</mat-form-field>
 					</div>
 					<div class="col-xl-3 col-lg-6 col-md-12">
@@ -115,14 +119,20 @@ export interface AliasCreateRequest {
 							<mat-error *ngIf="form.get('birthPlace')?.hasError('required')"> This is required </mat-error>
 						</mat-form-field>
 					</div>
-
 					<div class="col-xl-3 col-lg-6 col-md-12">
 						<mat-form-field>
-							<mat-label>Date of Birth</mat-label>
-							<input matInput [matDatepicker]="picker" formControlName="dateOfBirth" [errorStateMatcher]="matcher" />
-							<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-							<mat-datepicker #picker startView="multi-year" [startAt]="startAt"></mat-datepicker>
-							<mat-error *ngIf="form.get('dateOfBirth')?.hasError('required')">This is required</mat-error>
+							<mat-label>BC Drivers Licence <span class="optional-label">(optional)</span></mat-label>
+							<input matInput formControlName="driversLicense" />
+						</mat-form-field>
+					</div>
+					<div class="col-xl-3 col-lg-6 col-md-12">
+						<mat-form-field>
+							<mat-label>Gender <span class="optional-label">(optional)</span></mat-label>
+							<mat-select formControlName="genderCode">
+								<mat-option *ngFor="let gdr of genderCodes" [value]="gdr.code">
+									{{ gdr.desc }}
+								</mat-option>
+							</mat-select>
 						</mat-form-field>
 					</div>
 					<div class="col-xl-3 col-lg-6 col-md-12">
@@ -378,6 +388,7 @@ export class ManualSubmissionsComponent implements OnInit {
 	matcher = new FormErrorStateMatcher();
 
 	screeningTypes = ScreeningTypeCodes;
+	genderCodes = GenderCodes;
 	employeeInteractionTypes = EmployeeInteractionTypes;
 
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
@@ -393,6 +404,7 @@ export class ManualSubmissionsComponent implements OnInit {
 			emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
 			phoneNumber: new FormControl('', [Validators.required]),
 			driversLicense: new FormControl(''),
+			genderCode: new FormControl(''),
 			dateOfBirth: new FormControl(null, [Validators.required]),
 			birthPlace: new FormControl('', [Validators.required]),
 			jobTitle: new FormControl('', [Validators.required]),

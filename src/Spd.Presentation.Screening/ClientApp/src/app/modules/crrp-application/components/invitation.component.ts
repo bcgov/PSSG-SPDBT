@@ -51,9 +51,7 @@ export class InvitationComponent {
 					this.message = resp.message;
 				} else {
 					this.authenticationService.login(CrrpRoutes.crrpPath()).then((_resp) => {
-						this.router.navigate([CrrpRoutes.crrpPath(CrrpRoutes.HOME)], {
-							queryParams: { showMenu: true },
-						});
+						this.router.navigate([CrrpRoutes.crrpPath(CrrpRoutes.HOME)]);
 					});
 				}
 			});
