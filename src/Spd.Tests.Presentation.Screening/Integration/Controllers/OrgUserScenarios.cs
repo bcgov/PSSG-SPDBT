@@ -1,22 +1,23 @@
 ﻿using Alba;
 using Microsoft.Dynamics.CRM;
 using Spd.Manager.Membership.OrgUser;
-using Spd.Resource.Applicants.ApplicationInvite;
-using Spd.Utilities.Dynamics;
 using Xunit.Abstractions;
 
 namespace Spd.Tests.Presentation.Screening.Integration.Controllers;
 
 public class OrgUserScenarios : ScenarioContextBase
 {
+    public Random rnd;
     public OrgUserScenarios(ITestOutputHelper output, WebAppFixture fixture) : base(output, fixture)
-    { }
+    {
+        rnd = new Random();
+    }
 
 
     [Fact]
     public async Task CreateUser_WithCorrectAuthAndHeader_Success()
     {
-        var (org, user) = await fixture.testData.CreateOrgWithLogonUser("org2");
+        var (org, user) = await fixture.testData.CreateOrgWithLogonUser($"org{rnd.Next(1,999)}");
 
         await Host.Scenario(_ =>
         {
@@ -30,7 +31,7 @@ public class OrgUserScenarios : ScenarioContextBase
     [Fact]
     public async Task UpdateUser_WithCorrectAuthAndHeader_Success()
     {
-        var (org, user) = await fixture.testData.CreateOrgWithLogonUser("org2");
+        var (org, user) = await fixture.testData.CreateOrgWithLogonUser($"org{rnd.Next(1, 999)}");
 
         await Host.Scenario(_ =>
         {
@@ -43,7 +44,7 @@ public class OrgUserScenarios : ScenarioContextBase
     [Fact]
     public async Task GetUser_WithCorrectAuthAndHeader_Success()
     {
-        var (org, user) = await fixture.testData.CreateOrgWithLogonUser("org2");
+        var (org, user) = await fixture.testData.CreateOrgWithLogonUser($"org{rnd.Next(1, 999)}");
 
         await Host.Scenario(_ =>
         {
@@ -56,7 +57,7 @@ public class OrgUserScenarios : ScenarioContextBase
     [Fact]
     public async Task DeleteUser_WithCorrectAuthAndHeader_Success()
     {
-        var (org, user) = await fixture.testData.CreateOrgWithLogonUser("org2");
+        var (org, user) = await fixture.testData.CreateOrgWithLogonUser($"org{rnd.Next(1, 999)}");
         Guid userGuid = Guid.NewGuid();
         spd_identity id = await fixture.testData.CreateIdentity(userGuid.ToString(), org.spd_orgguid.ToString());
         spd_portaluser user1 = await fixture.testData.CreateUserInOrg("contactSur", "contactGiven", org, id);
@@ -73,11 +74,11 @@ public class OrgUserScenarios : ScenarioContextBase
     public async Task VerifyUser_WithCorrectAuth_Success()
     {
         Guid userGuid = Guid.NewGuid();
-        var (org, user) = await fixture.testData.CreateOrgWithPrimaryUser("org3", userGuid, WebAppFixture.LOGON_ORG_GUID);
+        var (org, user) = await fixture.testData.CreateOrgWithPrimaryUser($"org3", userGuid, WebAppFixture.LOGON_ORG_GUID);
 
         var (user1, invite) = await fixture.testData.CreateTempUserInOrg("contactSur", "contactGiven", org);
         //get invitation link
-        string encyptedCode = invite.spd_invitationlink.Substring(invite.spd_invitationlink.LastIndexOf("/")+1, invite.spd_invitationlink.Length- invite.spd_invitationlink.LastIndexOf("/")-1);
+        string encyptedCode = invite.spd_invitationlink.Substring(invite.spd_invitationlink.LastIndexOf("/") + 1, invite.spd_invitationlink.Length - invite.spd_invitationlink.LastIndexOf("/") - 1);
         await Host.Scenario(_ =>
         {
             _.Post.Json(new InvitationRequest(encyptedCode)).ToUrl($"/api/invitations");

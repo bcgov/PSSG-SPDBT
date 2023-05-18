@@ -4,7 +4,6 @@ using Spd.Engine.Validation;
 using Spd.Resource.Applicants;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.ApplicationInvite;
-using Spd.Resource.Applicants.BulkHistory;
 using Spd.Utilities.TempFileStorage;
 
 namespace Spd.Manager.Cases
@@ -25,13 +24,11 @@ namespace Spd.Manager.Cases
         private readonly IApplicationRepository _applicationRepository;
         private readonly IApplicationInviteRepository _applicationInviteRepository;
         private readonly IMapper _mapper;
-        private readonly IBulkHistoryRepository _bulkHistoryRepository;
         private readonly ITempFileStorageService _tempFile;
         private readonly IDuplicateCheckEngine _duplicateCheckEngine;
 
         public ApplicationManager(IApplicationRepository applicationRepository,
             IApplicationInviteRepository applicationInviteRepository,
-            IBulkHistoryRepository bulkHistoryRepository,
             IMapper mapper,
             ITempFileStorageService tempFile,
             IDuplicateCheckEngine duplicateCheckEngine)
@@ -40,7 +37,6 @@ namespace Spd.Manager.Cases
             _applicationInviteRepository = applicationInviteRepository;
             _tempFile = tempFile;
             _mapper = mapper;
-            _bulkHistoryRepository = bulkHistoryRepository;
             _duplicateCheckEngine = duplicateCheckEngine;
         }
 
@@ -204,7 +200,7 @@ namespace Spd.Manager.Cases
         public async Task<BulkHistoryListResponse> Handle(GetBulkUploadHistoryQuery request, CancellationToken ct)
         {
             Paging paging = _mapper.Map<Paging>(request.Paging);
-            var result = await _bulkHistoryRepository.QueryAsync(
+            var result = await _applicationRepository.QueryBulkHistoryAsync(
                 new BulkHistoryListQry()
                 {
                     OrgId = request.OrgId,
@@ -217,12 +213,18 @@ namespace Spd.Manager.Cases
 
         public async Task<BulkUploadCreateResponse> Handle(BulkUploadCreateCommand cmd, CancellationToken ct)
         {
-            BulkUploadCreateResponse response= new BulkUploadCreateResponse();
+            BulkUploadCreateResponse response = new BulkUploadCreateResponse();
             if (cmd.BulkUploadCreateRequest.RequireDuplicateCheck)
             {
                 var checks = _mapper.Map<IEnumerable<AppBulkDuplicateCheck>>(cmd.BulkUploadCreateRequest.ApplicationCreateRequests);
-                var dupResults =(BulkUploadAppDuplicateCheckResponse)await _duplicateCheckEngine.DuplicateCheckAsync(new BulkUploadAppDuplicateCheckRequest(checks), ct);
+                var dupResults = (BulkUploadAppDuplicateCheckResponse)await _duplicateCheckEngine.DuplicateCheckAsync(new BulkUploadAppDuplicateCheckRequest(checks), ct);
                 response.DuplicateCheckResponses = _mapper.Map<IEnumerable<DuplicateCheckResult>>(dupResults.BulkDuplicateChecks);
+            }
+
+            //if no duplicate found or no need to check
+            bool hasDuplicates = response.DuplicateCheckResponses.Any(r => r.HasPotentialDuplicate);
+            if (!hasDuplicates || !cmd.BulkUploadCreateRequest.RequireDuplicateCheck)
+            {
             }
             return response;
         }
