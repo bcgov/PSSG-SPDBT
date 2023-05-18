@@ -546,7 +546,7 @@ namespace Spd.Manager.Cases
     {
         [Description("Male")]
         M,
-        [Description("Femake")]
+        [Description("Female")]
         F,
         [Description("Non-Binary")]
         X
