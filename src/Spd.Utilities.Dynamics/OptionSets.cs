@@ -26,6 +26,13 @@ namespace Spd.Utilities.Dynamics
         Yes = 100000001,
     }
 
+    public enum GenderOptionSet
+    {
+        M = 100000000,
+        F = 100000001,
+        X = 100000002,
+    }
+
     public enum SourceOptionSet
     {
         Online = 100000000,

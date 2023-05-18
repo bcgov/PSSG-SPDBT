@@ -101,6 +101,14 @@ namespace Rsvp.Cms.Api.Filters
                                             }
                                         },
                                         {
+                                            "genderCode",
+                                            new OpenApiSchema
+                                            {
+                                                Type = "string",
+                                                Nullable= true,
+                                            }
+                                        },
+                                        {
                                             "dateOfBirth",
                                             new OpenApiSchema
                                             {
@@ -314,6 +322,7 @@ namespace Rsvp.Cms.Api.Filters
 	                                        ""Surname"": ""value"",
 	                                        ""EmailAddress"": ""test@test.com"",
 	                                        ""JobTitle"": ""teacher"",
+	                                        ""GenderCode"": ""M"",
 	                                        ""ContractedCompanyName"": ""standard company"",
 	                                        ""PayeeType"": ""Organization""
                                         }")

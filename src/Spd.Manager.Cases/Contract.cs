@@ -1,7 +1,6 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using Spd.Engine.Validation;
 using System.ComponentModel;
 
 namespace Spd.Manager.Cases
@@ -115,6 +114,7 @@ namespace Spd.Manager.Cases
         public string? PhoneNumber { get; set; }
         public string? DriversLicense { get; set; }
         public string? BirthPlace { get; set; }
+        public GenderCode? GenderCode { get; set; }
         public ScreeningTypeCode? ScreeningTypeCode { get; set; }
         public string? AddressLine1 { get; set; }
         public string? AddressLine2 { get; set; }
@@ -279,14 +279,13 @@ namespace Spd.Manager.Cases
     public record ApplicationCreateRequestFromBulk : ApplicationCreateRequest
     {
         public int LineNumber { get; set; }
-        public GenderCode? GenderCode { get; set; }
         public string? LicenceNo { get; set; }
     }
     public record BulkUploadRequest(IFormFile File, bool RequireDuplicateCheck = false);
 
     public record BulkUploadCreateResponse()
     {
-        public IEnumerable<ValidationErr> ValidationErrs { get; set; }=Array.Empty<ValidationErr>();
+        public IEnumerable<ValidationErr> ValidationErrs { get; set; } = Array.Empty<ValidationErr>();
         public IEnumerable<DuplicateCheckResult> DuplicateCheckResponses { get; set; } = Array.Empty<DuplicateCheckResult>();
     }
     public record ValidationErr(int LineNumber, string Error);
@@ -545,8 +544,11 @@ namespace Spd.Manager.Cases
     }
     public enum GenderCode
     {
+        [Description("Male")]
         M,
+        [Description("Femake")]
         F,
+        [Description("Non-Binary")]
         X
     }
     #endregion
