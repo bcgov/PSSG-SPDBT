@@ -10,9 +10,9 @@ export enum ScreeningTypeCode {
 }
 
 export enum GenderCode {
-	M = 'M',
-	F = 'F',
-	X = 'X',
+	Male = 'Male',
+	Female = 'Female',
+	NonBinary = 'NonBinary',
 }
 
 export enum ApplicationOriginTypeCode {
@@ -62,9 +62,9 @@ export const ScreeningTypeCodes: SelectOptions[] = [
 ];
 
 export const GenderCodes: SelectOptions[] = [
-	{ desc: 'Male', code: GenderCode.M },
-	{ desc: 'Female', code: GenderCode.F },
-	{ desc: 'Non-Binary', code: GenderCode.X },
+	{ desc: 'Male', code: GenderCode.Male },
+	{ desc: 'Female', code: GenderCode.Female },
+	{ desc: 'Non-Binary', code: GenderCode.NonBinary },
 ];
 
 export const ContactAuthorizationTypes: SelectOptions[] = [

@@ -545,11 +545,13 @@ namespace Spd.Manager.Cases
     public enum GenderCode
     {
         [Description("Male")]
-        M,
+        Male,
         [Description("Female")]
-        F,
+        Female,
         [Description("Non-Binary")]
-        X
+        NonBinary,
+        [Description("Unspecified")]
+        Unspecified
     }
     #endregion
 }

@@ -28,9 +28,10 @@ namespace Spd.Utilities.Dynamics
 
     public enum GenderOptionSet
     {
-        M = 100000000,
-        F = 100000001,
-        X = 100000002,
+        Male = 100000000,
+        Female = 100000001,
+        NonBinary = 100000002,
+        Unspecified = 100000003,
     }
 
     public enum SourceOptionSet
