@@ -14,6 +14,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 			<h4 class="mt-4">
 				{{ message }}
 			</h4>
+			<p class="mt-4">Please contact your primary authorized user for assistance.</p>
 		</div>
 	`,
 	styles: [

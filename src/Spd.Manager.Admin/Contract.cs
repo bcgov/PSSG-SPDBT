@@ -6,7 +6,10 @@ namespace Spd.Manager.Admin
     {
         public Task<IEnumerable<AddressFindResponse>> Handle(FindAddressQuery request, CancellationToken cancellationToken);
         public Task<IEnumerable<AddressRetrieveResponse>> Handle(RetrieveAddressByIdQuery request, CancellationToken cancellationToken);
+        public Task<string> Handle(GetBannerMsgQuery request, CancellationToken cancellationToken);
     }
+
+    public record GetBannerMsgQuery : IRequest<string>;
 
     public record FindAddressQuery(string SearchTerm, string Country = "CAN", string? LastId = null) : IRequest<IEnumerable<AddressFindResponse>>;
 
