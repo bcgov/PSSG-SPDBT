@@ -52,6 +52,7 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.lastname, opt => opt.MapFrom(s => s.Surname))
             .ForMember(d => d.emailaddress1, opt => opt.MapFrom(s => s.EmailAddress))
             .ForMember(d => d.jobtitle, opt => opt.MapFrom(s => s.JobTitle))
+            .ForMember(d => d.spd_sex, opt => opt.MapFrom(s => GetGender(s.GenderCode)))
             .ForMember(d => d.birthdate, opt => opt.MapFrom(s => new Microsoft.OData.Edm.Date(s.DateOfBirth.Value.Year, s.DateOfBirth.Value.Month, s.DateOfBirth.Value.Day)))
             .ForMember(d => d.telephone1, opt => opt.MapFrom(s => s.PhoneNumber))
             .ForMember(d => d.spd_bcdriverslicense, opt => opt.MapFrom(s => s.DriversLicense))
@@ -108,6 +109,11 @@ namespace Spd.Resource.Applicants.Application
         {
             if (code == null) return null;
             return Enum.GetName(typeof(PayerPreferenceOptionSet), code);
+        }
+        private static int? GetGender(GenderCode? code)
+        {
+            if (code == null) return (int)Enum.Parse<GenderOptionSet>(GenderOptionSet.Unspecified.ToString());
+            return (int)Enum.Parse<GenderOptionSet>(code.ToString());
         }
 
         private string? GetFileExtension(string fileName)

@@ -572,6 +572,7 @@ export class ApplicationService extends BaseService {
 'surname'?: string | null;
 'emailAddress'?: string | null;
 'jobTitle'?: string | null;
+'genderCode'?: string | null;
 'dateOfBirth'?: string | null;
 'contractedCompanyName'?: string | null;
 'phoneNumber'?: string | null;
@@ -654,6 +655,7 @@ export class ApplicationService extends BaseService {
 'surname'?: string | null;
 'emailAddress'?: string | null;
 'jobTitle'?: string | null;
+'genderCode'?: string | null;
 'dateOfBirth'?: string | null;
 'contractedCompanyName'?: string | null;
 'phoneNumber'?: string | null;
