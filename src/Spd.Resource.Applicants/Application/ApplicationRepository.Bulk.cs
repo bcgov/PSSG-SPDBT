@@ -108,6 +108,7 @@ internal partial class ApplicationRepository : IApplicationRepository
                 spd_genericuploadid = Guid.NewGuid(),
                 spd_filename = cmd.FileName,
                 spd_datetimeuploaded = DateTimeOffset.UtcNow,
+                spd_batchnumber = DateTime.Now.Ticks.ToString() //waiting for dynamics decision on format
             };
             _context.AddTospd_genericuploads(bulkInfo);
             _context.SetLink(bulkInfo, nameof(bulkInfo.spd_UploadedBy), user);
