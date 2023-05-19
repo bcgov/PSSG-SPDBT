@@ -299,6 +299,8 @@ namespace Spd.Manager.Cases
         public string LastName { get; set; } = null!;
         public int LineNumber { get; set; }
         public string? Msg { get; set; } = null;
+        public bool HasPotentialDuplicateInTsv { get; set; } = false;
+        public bool HasPotentialDuplicateInDb { get; set; } = false;
     }
     public record BulkAppsCreateResponse
     {
@@ -565,13 +567,11 @@ namespace Spd.Manager.Cases
     public enum GenderCode
     {
         [Description("Male")]
-        Male,
+        M,
         [Description("Female")]
-        Female,
+        F,
         [Description("Non-Binary")]
-        NonBinary,
-        [Description("Unspecified")]
-        Unspecified
+        X
     }
     #endregion
 }

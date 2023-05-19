@@ -23,7 +23,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<h2 class="mb-2 fw-normal">Generic Uploads</h2>
-				<div class="col-lg-10 col-md-12 col-sm-12 my-4">
+				<div class="col-lg-8 col-md-12 col-sm-12 my-4">
 					<app-file-upload
 						accept=".tsv"
 						[maxNumberOfFiles]="1"
@@ -35,7 +35,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 			</div>
 			<ng-container *ngIf="showResult">
 				<div class="row" *ngIf="validationErrs.length > 0">
-					<div class="col-lg-10 col-md-12 col-sm-12">
+					<div class="col-lg-8 col-md-12 col-sm-12">
 						<div class="alert alert-danger d-flex" role="alert">
 							<mat-icon class="d-none d-xl-block alert-icon mt-2 me-2">error</mat-icon>
 							<div class="mt-2 ms-2">
@@ -50,7 +50,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 					</div>
 				</div>
 				<div class="row" *ngIf="validationErrs.length == 0">
-					<div class="col-lg-10 col-md-12 col-sm-12">
+					<div class="col-lg-8 col-md-12 col-sm-12">
 						<div class="alert alert-success d-flex" role="alert">
 							<mat-icon class="d-none d-xl-block alert-icon me-2">check_circle</mat-icon>
 							File upload succeeded
@@ -151,6 +151,8 @@ export class GenericUploadsComponent implements OnInit {
 	}
 
 	onUploadFile(files: any) {
+		this.showResult = false;
+
 		const body = {
 			File: files[0],
 			RequireDuplicateCheck: true,
@@ -165,28 +167,49 @@ export class GenericUploadsComponent implements OnInit {
 				const duplicateCheckResponses =
 					resp.duplicateCheckResponses?.filter((item) => item.hasPotentialDuplicate) ?? [];
 
-				// if validation error or not a duplicate, show result of error messages or success message
+				// if validation errors or not a duplicate, show result of error messages or success message
 				if (this.validationErrs.length > 0 || duplicateCheckResponses.length == 0) {
 					this.showResult = true;
 					return;
 				}
 
-				let dupRows = '';
-				duplicateCheckResponses.forEach((item) => {
-					dupRows += `<li>Line: ${item.lineNumber} - ${item.firstName} ${item.lastName}</li>`;
-				});
-				const dupMessage = `<ul>${dupRows}</ul>`;
+				let dupMessage = '';
+				const potentialDuplicateInTsvList =
+					duplicateCheckResponses.filter((item) => item.hasPotentialDuplicateInTsv) ?? [];
+
+				if (potentialDuplicateInTsvList.length > 0) {
+					let dupRows = '';
+					potentialDuplicateInTsvList.forEach((item) => {
+						dupRows += `<li>Line: ${item.lineNumber} - ${item.firstName} ${item.lastName}</li>`;
+					});
+
+					if (potentialDuplicateInTsvList.length == 1) {
+						dupMessage += `A duplicate entry for the following individual was found in this file:<br/><ul>${dupRows}</ul>`;
+					} else {
+						dupMessage += `Duplicate entries for the following individuals were found in this file:<br/><ul>${dupRows}</ul>`;
+					}
+				}
+
+				const potentialDuplicateInDbList =
+					duplicateCheckResponses.filter((item) => item.hasPotentialDuplicateInDb) ?? [];
+				if (potentialDuplicateInDbList.length > 0) {
+					let dupRows = '';
+					potentialDuplicateInDbList.forEach((item) => {
+						dupRows += `<li>Line: ${item.lineNumber} - ${item.firstName} ${item.lastName}</li>`;
+					});
+
+					if (potentialDuplicateInDbList.length == 1) {
+						dupMessage += `This individual already has an active record in our database:<br/><ul>${dupRows}</ul>`;
+					} else {
+						dupMessage += `The following individuals already have an active record in our database:<br/><ul>${dupRows}</ul>`;
+					}
+				}
 
 				let dialogTitle = '';
 				let dialogMessage = '';
 
-				if (duplicateCheckResponses.length > 1) {
-					dialogTitle = 'Potential duplicates detected';
-					dialogMessage = `The following potential duplicates have been found:<br/><br/>${dupMessage}How would you like to proceed?`;
-				} else {
-					dialogTitle = 'Potential duplicate detected';
-					dialogMessage = `The following potential duplicate has been found:<br/><br/>${dupMessage}How would you like to proceed?`;
-				}
+				dialogTitle = `Potential duplicate${duplicateCheckResponses.length > 1 ? 's' : ''} detected`;
+				dialogMessage = `${dupMessage}How would you like to proceed?`;
 
 				const data: DialogOptions = {
 					title: dialogTitle,
@@ -224,7 +247,9 @@ export class GenericUploadsComponent implements OnInit {
 		this.applicationService
 			.apiOrgsOrgIdApplicationBulkPost({ orgId: this.authenticationService.loggedInUserInfo?.orgId!, body })
 			.pipe()
-			.subscribe(); // should be no errors since this file has already been processed
+			.subscribe((_resp) => {
+				this.showResult = true;
+			}); // should be no errors since this file has already been processed
 	}
 
 	private loadList(): void {

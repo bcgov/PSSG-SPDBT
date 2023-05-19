@@ -112,7 +112,7 @@ namespace Spd.Resource.Applicants.Application
         }
         private static int? GetGender(GenderCode? code)
         {
-            if (code == null) return (int)Enum.Parse<GenderOptionSet>(GenderOptionSet.Unspecified.ToString());
+            if (code == null) return (int)GenderOptionSet.Unspecified;
             return (int)Enum.Parse<GenderOptionSet>(code.ToString());
         }
 
