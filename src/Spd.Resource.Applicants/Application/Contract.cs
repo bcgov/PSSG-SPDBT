@@ -8,10 +8,11 @@ public interface IApplicationRepository
     public Task<ApplicationStatisticsResp> QueryApplicationStatisticsAsync(ApplicationStatisticsQry query, CancellationToken cancellationToken);
     public Task<bool> IdentityAsync(IdentityCmd cmd, CancellationToken ct);
     public Task<ClearanceListResp> QueryAsync(ClearanceListQry clearanceListQry, CancellationToken ct);
-    public Task<Guid?> AddBulkAppsAsync(BulkAppsCreateCmd createApplicationCmds, CancellationToken cancellationToken);
+    public Task<BulkAppsCreateResp> AddBulkAppsAsync(BulkAppsCreateCmd createApplicationCmds, CancellationToken cancellationToken);
     public Task<BulkHistoryListResp> QueryBulkHistoryAsync(BulkHistoryListQry query, CancellationToken cancellationToken);
 }
 
+#region application
 //application list
 public record ApplicationListQry
 {
@@ -131,7 +132,9 @@ public record ApplicationStatisticsResp
 {
     public IReadOnlyDictionary<ApplicationPortalStatisticsCd, int> Statistics { get; set; } = new Dictionary<ApplicationPortalStatisticsCd, int>();
 }
+#endregion
 
+#region clearance
 public record ClearanceListQry
 {
     public Guid OrgId { get; set; }
@@ -159,6 +162,7 @@ public record ClearanceResp
     public string Facility { get; set; } = null!;
     public string Status { get; set; } = null!;
 }
+#endregion
 
 #region bulk upload
 public record BulkHistoryListQry
@@ -190,6 +194,23 @@ public record BulkAppsCreateCmd
     public Guid UserId { get; set; }
     public Guid OrgId { get; set; }
 }
+public record BulkAppsCreateResp
+{ 
+    public IEnumerable<ApplicationCreateRslt> CreateAppResults { get; set; } = Array.Empty<ApplicationCreateRslt>();
+    public BulkAppsCreateResultCd BulkAppsCreateCode { get;set; } = BulkAppsCreateResultCd.Success;
+}
+public enum BulkAppsCreateResultCd
+{ 
+    Success,
+    PartiallySuccess,
+    Failed,
+}
+public record ApplicationCreateRslt ()
+{
+    public int LineNumber { get; set; }
+    public Guid ApplicationId { get; set; }
+    public bool CreateSuccess { get; set; } = false;
+};
 #endregion
 public enum ApplicationPortalStatusCd
 {

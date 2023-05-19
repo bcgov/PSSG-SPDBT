@@ -226,7 +226,7 @@ namespace Spd.Manager.Cases
             if (!hasDuplicates || !cmd.BulkUploadCreateRequest.RequireDuplicateCheck)
             {
                 var cmds = _mapper.Map<IEnumerable<ApplicationCreateCmd>>(cmd.BulkUploadCreateRequest.ApplicationCreateRequests);
-                await _applicationRepository.AddBulkAppsAsync(
+                var createResp = await _applicationRepository.AddBulkAppsAsync(
                     new BulkAppsCreateCmd
                     {
                         CreateApps = cmds,
@@ -235,6 +235,7 @@ namespace Spd.Manager.Cases
                         UserId = cmd.UserId,
                         OrgId = cmd.OrgId
                     }, ct);
+                response.CreateResponse = _mapper.Map<BulkAppsCreateResponse>(createResp);
             }
             return response;
         }

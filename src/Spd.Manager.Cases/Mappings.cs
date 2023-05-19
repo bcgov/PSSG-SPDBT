@@ -40,6 +40,8 @@ namespace Spd.Manager.Cases
             CreateMap<IdentityCommand, IdentityCmd>();
             CreateMap<BulkHistoryListResp, BulkHistoryListResponse>();
             CreateMap<BulkHistoryResp, BulkHistoryResponse>();
+            CreateMap<BulkAppsCreateResp, BulkAppsCreateResponse>();
+            CreateMap<ApplicationCreateRslt, ApplicationCreateResult>();
             CreateMap<ApplicationCreateRequest, AppDuplicateCheck>();
             CreateMap<AppBulkDuplicateCheckResult, DuplicateCheckResult>();
             CreateMap<ApplicationCreateRequestFromBulk, AppBulkDuplicateCheck>()
