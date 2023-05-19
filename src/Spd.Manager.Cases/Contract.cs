@@ -1,6 +1,8 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Spd.Engine.Validation;
+using Spd.Resource.Applicants.Application;
 using System.ComponentModel;
 
 namespace Spd.Manager.Cases
@@ -287,6 +289,7 @@ namespace Spd.Manager.Cases
     {
         public IEnumerable<ValidationErr> ValidationErrs { get; set; } = Array.Empty<ValidationErr>();
         public IEnumerable<DuplicateCheckResult> DuplicateCheckResponses { get; set; } = Array.Empty<DuplicateCheckResult>();
+        public BulkAppsCreateResponse CreateResponse { get; set; }
     }
     public record ValidationErr(int LineNumber, string Error);
     public record DuplicateCheckResult()
@@ -299,6 +302,23 @@ namespace Spd.Manager.Cases
         public bool HasPotentialDuplicateInTsv { get; set; } = false;
         public bool HasPotentialDuplicateInDb { get; set; } = false;
     }
+    public record BulkAppsCreateResponse
+    {
+        public IEnumerable<ApplicationCreateResult> CreateAppResults { get; set; } = Array.Empty<ApplicationCreateResult>();
+        public BulkAppsCreateResultCode BulkAppsCreateCode { get; set; } = BulkAppsCreateResultCode.Success;
+    }
+    public enum BulkAppsCreateResultCode
+    {
+        Success,
+        PartiallySuccess,
+        Failed,
+    }
+    public record ApplicationCreateResult()
+    {
+        public int LineNumber { get; set; }
+        public Guid ApplicationId { get; set; }
+        public bool CreateSuccess { get; set; } = false;
+    };
     #endregion
 
     #region clearances

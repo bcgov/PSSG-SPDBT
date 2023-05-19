@@ -11,50 +11,28 @@ internal partial class ApplicationRepository : IApplicationRepository
     public async Task<Guid?> AddApplicationAsync(ApplicationCreateCmd createApplicationCmd, CancellationToken ct)
     {
         //create application
-        spd_application application = _mapper.Map<spd_application>(createApplicationCmd);
+        spd_application? application = null;
         account? org = await _context.GetOrgById(createApplicationCmd.OrgId, ct);
         spd_portaluser? user = await _context.GetUserById(createApplicationCmd.CreatedByUserId, ct);
-        _context.AddTospd_applications(application);
-        _context.SetLink(application, nameof(spd_application.spd_OrganizationId), org);
-        _context.SetLink(application, nameof(spd_application.spd_SubmittedBy), user);
+        if (org != null && user != null)
+            application = await CreateAppAsync(createApplicationCmd, org, user);
 
-        contact? contact = GetContact(createApplicationCmd);
-        // if not found, create new contact
-        if (contact == null)
+        if (application != null)
         {
-            contact = _mapper.Map<contact>(createApplicationCmd);
-            _context.AddTocontacts(contact);
+            //create bcgov_documenturl
+            bcgov_documenturl documenturl = _mapper.Map<bcgov_documenturl>(createApplicationCmd.ConsentFormTempFile);
+            var tag = _context.LookupTag(DynamicsContextLookupHelpers.AppConsentForm);
+            _context.AddTobcgov_documenturls(documenturl);
+            _context.SetLink(documenturl, nameof(documenturl.spd_ApplicationId), application);
+            _context.SetLink(documenturl, nameof(documenturl.bcgov_Tag1Id), tag);
+
+            //upload file to s3
+            await UploadFileAsync(createApplicationCmd, application.spd_applicationid, documenturl.bcgov_documenturlid, ct);
+
+            await _context.SaveChangesAsync(ct);
+            return application.spd_applicationid;
         }
-
-        // associate contact to application
-        _context.SetLink(application, nameof(application.spd_ApplicantId_contact), contact);
-
-        //create the aliases
-        foreach (var item in createApplicationCmd.Aliases)
-        {
-            spd_alias? matchingAlias = GetAlias(item);
-            // if not found, create new alias
-            if (matchingAlias == null)
-            {
-                spd_alias alias = _mapper.Map<spd_alias>(item);
-                _context.AddTospd_aliases(alias);
-                // associate alias to contact
-                _context.SetLink(alias, nameof(alias.spd_ContactId), contact);
-            }
-        }
-
-        //create bcgov_documenturl
-        bcgov_documenturl documenturl = _mapper.Map<bcgov_documenturl>(createApplicationCmd.ConsentFormTempFile);
-        var tag = _context.LookupTag(DynamicsContextLookupHelpers.AppConsentForm);
-        _context.AddTobcgov_documenturls(documenturl);
-        _context.SetLink(documenturl, nameof(documenturl.spd_ApplicationId), application);
-        _context.SetLink(documenturl, nameof(documenturl.bcgov_Tag1Id), tag);
-
-        //upload file to s3
-        await UploadFileAsync(createApplicationCmd, application.spd_applicationid, documenturl.bcgov_documenturlid, ct);
-
-        await _context.SaveChangesAsync(ct);
-        return application.spd_applicationid;
+        return null;
     }
 
     public async Task<ApplicationListResp> QueryAsync(ApplicationListQry query, CancellationToken cancellationToken)
@@ -249,6 +227,40 @@ internal partial class ApplicationRepository : IApplicationRepository
             File: file,
             FileTag: fileTag
             ), ct);
+    }
+
+    private async Task<spd_application> CreateAppAsync(ApplicationCreateCmd createApplicationCmd, account org, spd_portaluser user)
+    {
+        spd_application app = _mapper.Map<spd_application>(createApplicationCmd);
+        _context.AddTospd_applications(app);
+        _context.SetLink(app, nameof(spd_application.spd_OrganizationId), org);
+        _context.SetLink(app, nameof(spd_application.spd_SubmittedBy), user);
+
+        contact? contact = GetContact(createApplicationCmd);
+        // if not found, create new contact
+        if (contact == null)
+        {
+            contact = _mapper.Map<contact>(createApplicationCmd);
+            _context.AddTocontacts(contact);
+        }
+
+        // associate contact to application
+        _context.SetLink(app, nameof(app.spd_ApplicantId_contact), contact);
+
+        //create the aliases
+        foreach (var item in createApplicationCmd.Aliases)
+        {
+            spd_alias? matchingAlias = GetAlias(item);
+            // if not found, create new alias
+            if (matchingAlias == null)
+            {
+                spd_alias alias = _mapper.Map<spd_alias>(item);
+                _context.AddTospd_aliases(alias);
+                // associate alias to contact
+                _context.SetLink(alias, nameof(alias.spd_ContactId), contact);
+            }
+        }
+        return app;
     }
 }
 
