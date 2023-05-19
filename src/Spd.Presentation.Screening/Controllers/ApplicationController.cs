@@ -173,7 +173,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <param name="bulkUploadRequest"></param>
         /// <param name="orgId"></param>
         /// <returns></returns>
-        [Route("api/orgs/{orgId}/application/bulk")]
+        [Route("api/orgs/{orgId}/applications/bulk")]
         [HttpPost]
         public async Task<BulkUploadCreateResponse> BulkUpload([FromForm][Required] BulkUploadRequest bulkUploadRequest, [FromRoute] Guid orgId, CancellationToken ct)
         {

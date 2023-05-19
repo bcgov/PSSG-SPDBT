@@ -51,7 +51,12 @@ internal partial class ApplicationRepository : IApplicationRepository
 
         //create applications
         List<ApplicationCreateCmd> createApps = cmd.CreateApps.ToList();
-        List<ApplicationCreateRslt> results = new List<ApplicationCreateRslt>();
+        List<ApplicationCreateRslt> results =new List<ApplicationCreateRslt>();
+        for(int i=0; i<createApps.Count; i++)
+        {
+            results.Add(new ApplicationCreateRslt { LineNumber = i + 1 });
+        }
+
         int begin = 0;
         //dynamics constraints: A maximum number of '1000' operations are allowed in a change set.
         //for each app create request, there is max 12 operations
@@ -64,12 +69,7 @@ internal partial class ApplicationRepository : IApplicationRepository
             for (int index = begin; index < begin + len; index++)
             {
                 var app = await CreateAppAsync(createApps[index], org, user);
-                results.Add(new ApplicationCreateRslt
-                {
-                    LineNumber = index + 1,
-                    ApplicationId = (Guid)app.spd_applicationid,
-                    CreateSuccess = false
-                });
+                results[index].ApplicationId = (Guid)app.spd_applicationid;
             }
             await _context.SaveChangesAsync(SaveChangesOptions.BatchWithSingleChangeset, ct);
             results.ForEach(r =>
@@ -82,7 +82,7 @@ internal partial class ApplicationRepository : IApplicationRepository
             begin += len;
         }
 
-        //add info to bulk history
+        //return result
         int bulkSize = createApps.Count;
         int successCount = results.Count(r => r.CreateSuccess);
 
@@ -98,6 +98,21 @@ internal partial class ApplicationRepository : IApplicationRepository
         else
         {
             bulkResult = BulkAppsCreateResultCd.PartiallySuccess;
+        }
+
+        //add history
+        if(bulkResult != BulkAppsCreateResultCd.Failed)
+        {
+            spd_genericupload bulkInfo = new spd_genericupload
+            {
+                spd_genericuploadid = Guid.NewGuid(),
+                spd_filename = cmd.FileName,
+                spd_datetimeuploaded = DateTimeOffset.UtcNow,
+            };
+            _context.AddTospd_genericuploads(bulkInfo);
+            _context.SetLink(bulkInfo, nameof(bulkInfo.spd_UploadedBy), user);
+            _context.SetLink(bulkInfo, nameof(bulkInfo.spd_OrganizationId), org);
+            await _context.SaveChangesAsync(ct);
         }
 
         return new BulkAppsCreateResp { CreateAppResults = results, BulkAppsCreateCode = bulkResult };
