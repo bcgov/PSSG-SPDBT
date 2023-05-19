@@ -262,7 +262,7 @@
         <NavigationProperty Name="spd_OrganizationTypeId" Type="mscrm.spd_organizationtype" Nullable="false" Partner="spd_spd_organizationtype_account">
           <ReferentialConstraint Property="_spd_organizationtypeid_value" ReferencedProperty="spd_organizationtypeid" />
         </NavigationProperty>
-        <NavigationProperty Name="spd_account_spd_clearanceaccess" Type="Collection(mscrm.spd_clearanceaccess)" Partner="spd_Organization" />
+        <NavigationProperty Name="spd_account_spd_clearanceaccess" Type="Collection(mscrm.spd_clearanceaccess)" Partner="spd_OrganizationId" />
         <NavigationProperty Name="ownerid" Type="mscrm.principal" Nullable="false" Partner="owner_accounts">
           <ReferentialConstraint Property="_ownerid_value" ReferencedProperty="ownerid" />
         </NavigationProperty>
@@ -9064,6 +9064,7 @@
         <Property Name="_slaid_value" Type="Edm.Guid" />
         <Property Name="influencescore" Type="Edm.Double" />
         <Property Name="_firstresponsebykpiid_value" Type="Edm.Guid" />
+        <Property Name="spd_applicationsubmittedondate" Type="Edm.DateTimeOffset" />
         <Property Name="actualserviceunits" Type="Edm.Int32" />
         <Property Name="_parentcaseid_value" Type="Edm.Guid" />
         <Property Name="numberofchildincidents" Type="Edm.Int32" />
@@ -19390,26 +19391,30 @@
         <Key>
           <PropertyRef Name="spd_clearanceaccessid" />
         </Key>
-        <Property Name="_spd_organization_value" Type="Edm.Guid" />
         <Property Name="_owningteam_value" Type="Edm.Guid" />
         <Property Name="_owningbusinessunit_value" Type="Edm.Guid" />
-        <Property Name="_ownerid_value" Type="Edm.Guid" />
+        <Property Name="spd_applicantname" Type="Edm.String" Unicode="false" />
         <Property Name="spd_clearanceaccessid" Type="Edm.Guid" />
+        <Property Name="_spd_organizationid_value" Type="Edm.Guid" />
         <Property Name="_createdonbehalfby_value" Type="Edm.Guid" />
+        <Property Name="spd_contractedcompanyname" Type="Edm.String" Unicode="false" />
+        <Property Name="statuscode" Type="Edm.Int32" />
+        <Property Name="spd_emailaddress1" Type="Edm.String" Unicode="false" />
         <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
         <Property Name="spd_clearanceaccessnumber" Type="Edm.String" Unicode="false" />
         <Property Name="_modifiedonbehalfby_value" Type="Edm.Guid" />
         <Property Name="_owninguser_value" Type="Edm.Guid" />
         <Property Name="_modifiedby_value" Type="Edm.Guid" />
         <Property Name="_createdby_value" Type="Edm.Guid" />
-        <Property Name="statuscode" Type="Edm.Int32" />
+        <Property Name="_spd_clearanceid_value" Type="Edm.Guid" />
         <Property Name="importsequencenumber" Type="Edm.Int32" />
         <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
         <Property Name="versionnumber" Type="Edm.Int64" />
+        <Property Name="spd_expirydate" Type="Edm.DateTimeOffset" />
+        <Property Name="_ownerid_value" Type="Edm.Guid" />
         <Property Name="createdon" Type="Edm.DateTimeOffset" />
         <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
         <Property Name="statecode" Type="Edm.Int32" />
-        <Property Name="_spd_clearance_value" Type="Edm.Guid" />
         <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
         <NavigationProperty Name="createdby" Type="mscrm.systemuser" Nullable="false" Partner="lk_spd_clearanceaccess_createdby">
           <ReferentialConstraint Property="_createdby_value" ReferencedProperty="systemuserid" />
@@ -19443,11 +19448,11 @@
         <NavigationProperty Name="spd_clearanceaccess_ProcessSession" Type="Collection(mscrm.processsession)" Partner="regardingobjectid_spd_clearanceaccess" />
         <NavigationProperty Name="spd_clearanceaccess_BulkDeleteFailures" Type="Collection(mscrm.bulkdeletefailure)" Partner="regardingobjectid_spd_clearanceaccess" />
         <NavigationProperty Name="spd_clearanceaccess_PrincipalObjectAttributeAccesses" Type="Collection(mscrm.principalobjectattributeaccess)" Partner="objectid_spd_clearanceaccess" />
-        <NavigationProperty Name="spd_Clearance" Type="mscrm.spd_clearance" Nullable="false" Partner="spd_clearance_spd_clearanceaccess">
-          <ReferentialConstraint Property="_spd_clearance_value" ReferencedProperty="spd_clearanceid" />
+        <NavigationProperty Name="spd_ClearanceId" Type="mscrm.spd_clearance" Nullable="false" Partner="spd_clearance_spd_clearanceaccess">
+          <ReferentialConstraint Property="_spd_clearanceid_value" ReferencedProperty="spd_clearanceid" />
         </NavigationProperty>
-        <NavigationProperty Name="spd_Organization" Type="mscrm.account" Nullable="false" Partner="spd_account_spd_clearanceaccess">
-          <ReferentialConstraint Property="_spd_organization_value" ReferencedProperty="accountid" />
+        <NavigationProperty Name="spd_OrganizationId" Type="mscrm.account" Nullable="false" Partner="spd_account_spd_clearanceaccess">
+          <ReferentialConstraint Property="_spd_organizationid_value" ReferencedProperty="accountid" />
         </NavigationProperty>
       </EntityType>
       <EntityType Name="spd_clearance" BaseType="mscrm.crmbaseentity">
@@ -19521,8 +19526,8 @@
         <NavigationProperty Name="spd_ContactID" Type="mscrm.contact" Nullable="false" Partner="spd_contact_spd_clearance">
           <ReferentialConstraint Property="_spd_contactid_value" ReferencedProperty="contactid" />
         </NavigationProperty>
-        <NavigationProperty Name="spd_clearance_spd_clearanceaccess" Type="Collection(mscrm.spd_clearanceaccess)" Partner="spd_Clearance" />
         <NavigationProperty Name="spd_clearance_bcgov_documenturl" Type="Collection(mscrm.bcgov_documenturl)" Partner="spd_ClearanceId" />
+        <NavigationProperty Name="spd_clearance_spd_clearanceaccess" Type="Collection(mscrm.spd_clearanceaccess)" Partner="spd_ClearanceId" />
       </EntityType>
       <EntityType Name="spd_cornetnotification" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -19939,11 +19944,12 @@
         </Key>
         <Property Name="_modifiedby_value" Type="Edm.Guid" />
         <Property Name="spd_potentialduplicate" Type="Edm.Int32" />
-        <Property Name="spd_email" Type="Edm.String" Unicode="false" />
         <Property Name="_spd_organizationtypeid_value" Type="Edm.Guid" />
         <Property Name="spd_deniedreasonemployee" Type="Edm.Int32" />
         <Property Name="spd_organizationlegalname" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_preregistrationlink" Type="Edm.String" Unicode="false" />
         <Property Name="statuscode" Type="Edm.Int32" />
+        <Property Name="spd_payerpreference" Type="Edm.Int32" />
         <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
         <Property Name="spd_authorizedcontactphonenumber" Type="Edm.String" Unicode="false" />
         <Property Name="_modifiedonbehalfby_value" Type="Edm.Guid" />
@@ -19960,7 +19966,7 @@
         <Property Name="spd_portaluseridentityguid" Type="Edm.String" Unicode="false" />
         <Property Name="spd_authorizedcontactgivenname" Type="Edm.String" Unicode="false" />
         <Property Name="spd_country" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_payerpreference" Type="Edm.Int32" />
+        <Property Name="spd_email" Type="Edm.String" Unicode="false" />
         <Property Name="spd_street1" Type="Edm.String" Unicode="false" />
         <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
         <Property Name="spd_orgregistrationid" Type="Edm.Guid" />
@@ -35296,8 +35302,8 @@
           <NavigationPropertyBinding Path="spd_clearanceaccess_ProcessSession" Target="processsessions" />
           <NavigationPropertyBinding Path="spd_clearanceaccess_BulkDeleteFailures" Target="bulkdeletefailures" />
           <NavigationPropertyBinding Path="spd_clearanceaccess_PrincipalObjectAttributeAccesses" Target="principalobjectattributeaccessset" />
-          <NavigationPropertyBinding Path="spd_Clearance" Target="spd_clearances" />
-          <NavigationPropertyBinding Path="spd_Organization" Target="accounts" />
+          <NavigationPropertyBinding Path="spd_ClearanceId" Target="spd_clearances" />
+          <NavigationPropertyBinding Path="spd_OrganizationId" Target="accounts" />
         </EntitySet>
         <EntitySet Name="spd_clearances" EntityType="Microsoft.Dynamics.CRM.spd_clearance">
           <NavigationPropertyBinding Path="createdby" Target="systemusers" />
@@ -35319,8 +35325,8 @@
           <NavigationPropertyBinding Path="spd_ServiceType" Target="spd_servicetypes" />
           <NavigationPropertyBinding Path="spd_CaseID" Target="incidents" />
           <NavigationPropertyBinding Path="spd_ContactID" Target="contacts" />
-          <NavigationPropertyBinding Path="spd_clearance_spd_clearanceaccess" Target="spd_clearanceaccesses" />
           <NavigationPropertyBinding Path="spd_clearance_bcgov_documenturl" Target="bcgov_documenturls" />
+          <NavigationPropertyBinding Path="spd_clearance_spd_clearanceaccess" Target="spd_clearanceaccesses" />
         </EntitySet>
         <EntitySet Name="spd_cornetnotifications" EntityType="Microsoft.Dynamics.CRM.spd_cornetnotification">
           <NavigationPropertyBinding Path="createdby" Target="systemusers" />
