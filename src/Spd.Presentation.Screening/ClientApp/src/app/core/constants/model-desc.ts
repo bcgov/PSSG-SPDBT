@@ -9,6 +9,12 @@ export enum ScreeningTypeCode {
 	Contractor = 'Contractor',
 }
 
+export enum GenderCode {
+	Male = 'Male',
+	Female = 'Female',
+	NonBinary = 'NonBinary',
+}
+
 export enum ApplicationOriginTypeCode {
 	Portal = 'Portal',
 	Email = 'Email',
@@ -53,6 +59,12 @@ export const EmployeeInteractionTypes: SelectOptions[] = [
 export const ScreeningTypeCodes: SelectOptions[] = [
 	{ desc: 'Staff', code: ScreeningTypeCode.Staff },
 	{ desc: 'Contractor/Licensee', code: ScreeningTypeCode.Contractor },
+];
+
+export const GenderCodes: SelectOptions[] = [
+	{ desc: 'Male', code: GenderCode.Male },
+	{ desc: 'Female', code: GenderCode.Female },
+	{ desc: 'Non-Binary', code: GenderCode.NonBinary },
 ];
 
 export const ContactAuthorizationTypes: SelectOptions[] = [

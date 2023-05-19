@@ -48,6 +48,7 @@ public record ApplicationCreateCmd
     public string? DriversLicense { get; set; }
     public DateTimeOffset? DateOfBirth { get; set; }
     public string? BirthPlace { get; set; }
+    public GenderCode? GenderCode { get; set; }
     public string? JobTitle { get; set; }
     public string? ContractedCompanyName { get; set; }
     public string? AddressLine1 { get; set; }
@@ -119,6 +120,13 @@ public enum ApplicationOriginTypeCode
     Fax,
     GenericUpload,
     OrganizationSubmitted
+}
+public enum GenderCode
+{
+    Male,
+    Female,
+    NonBinary,
+    Unspecified
 }
 
 public enum FileCategoryCode

@@ -34,7 +34,7 @@ export enum DialogCloseCode {
 		</mat-dialog-content>
 
 		<mat-dialog-actions>
-			<div class="row m-0 p-0 w-100">
+			<div class="row m-0 p-0 w-100 mt-2">
 				<div class="col-md-3 col-sm-12 mb-2">
 					<button
 						*ngIf="data.cancelText"

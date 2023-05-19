@@ -116,6 +116,7 @@ namespace Spd.Manager.Cases
         public string? PhoneNumber { get; set; }
         public string? DriversLicense { get; set; }
         public string? BirthPlace { get; set; }
+        public GenderCode? GenderCode { get; set; }
         public ScreeningTypeCode? ScreeningTypeCode { get; set; }
         public string? AddressLine1 { get; set; }
         public string? AddressLine2 { get; set; }
@@ -280,14 +281,13 @@ namespace Spd.Manager.Cases
     public record ApplicationCreateRequestFromBulk : ApplicationCreateRequest
     {
         public int LineNumber { get; set; }
-        public GenderCode? GenderCode { get; set; }
         public string? LicenceNo { get; set; }
     }
     public record BulkUploadRequest(IFormFile File, bool RequireDuplicateCheck = false);
 
     public record BulkUploadCreateResponse()
     {
-        public IEnumerable<ValidationErr> ValidationErrs { get; set; }=Array.Empty<ValidationErr>();
+        public IEnumerable<ValidationErr> ValidationErrs { get; set; } = Array.Empty<ValidationErr>();
         public IEnumerable<DuplicateCheckResult> DuplicateCheckResponses { get; set; } = Array.Empty<DuplicateCheckResult>();
         public BulkAppsCreateResponse CreateResponse { get; set; }
     }
@@ -564,9 +564,14 @@ namespace Spd.Manager.Cases
     }
     public enum GenderCode
     {
-        M,
-        F,
-        X
+        [Description("Male")]
+        Male,
+        [Description("Female")]
+        Female,
+        [Description("Non-Binary")]
+        NonBinary,
+        [Description("Unspecified")]
+        Unspecified
     }
     #endregion
 }
