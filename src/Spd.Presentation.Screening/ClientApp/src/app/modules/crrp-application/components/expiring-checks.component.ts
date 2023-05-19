@@ -2,21 +2,37 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
+import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
-import { ClearanceListResponse, ClearanceResponse } from 'src/app/api/models';
+import { ApplicationInviteCreateRequest, ClearanceListResponse, ClearanceResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
+import { CrrpRoutes } from '../crrp-routing.module';
+import { CrcAddModalComponent, CrcDialogData } from './crc-add-modal.component';
 
 export interface ExpiredClearanceResponse extends ClearanceResponse {
 	daysRemainingText: string;
 	daysRemainingClass: string;
 }
+
+export class ExpiringChecksFilter {
+	search: string = '';
+	applicantName: string = '';
+	expiresOn: string = '';
+	contractedCompanyName: string = '';
+}
+
+export const ExpiringChecksFilterMap: Record<keyof ExpiringChecksFilter, string> = {
+	search: 'searchText',
+	applicantName: 'name',
+	expiresOn: 'expiresOn',
+	contractedCompanyName: 'companyname',
+};
 
 @Component({
 	selector: 'app-expiring-checks',
@@ -33,8 +49,21 @@ export interface ExpiredClearanceResponse extends ClearanceResponse {
 			<div class="row mt-2" [formGroup]="formFilter">
 				<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
 					<mat-form-field>
-						<input matInput type="search" formControlName="search" placeholder="Search applicant's name or email" />
-						<button mat-button matSuffix mat-flat-button aria-label="search" class="search-icon-button">
+						<input
+							matInput
+							type="search"
+							formControlName="search"
+							placeholder="Search applicant's name or email"
+							(keydown.enter)="onSearchKeyDown($event)"
+						/>
+						<button
+							mat-button
+							matSuffix
+							mat-flat-button
+							aria-label="search"
+							(click)="onSearch()"
+							class="search-icon-button"
+						>
 							<mat-icon>search</mat-icon>
 						</button>
 					</mat-form-field>
@@ -43,7 +72,13 @@ export interface ExpiredClearanceResponse extends ClearanceResponse {
 
 			<div class="row">
 				<div class="col-12">
-					<mat-table matSort [dataSource]="dataSource" matSortActive="expiresOn" matSortDirection="asc">
+					<mat-table
+						matSort
+						[dataSource]="dataSource"
+						(matSortChange)="onSortChange($event)"
+						matSortActive="expiresOn"
+						matSortDirection="asc"
+					>
 						<ng-container matColumnDef="applicantName">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Applicant Name</mat-header-cell>
 							<mat-cell *matCellDef="let application">
@@ -183,6 +218,9 @@ export interface ExpiredClearanceResponse extends ClearanceResponse {
 })
 export class ExpiringChecksComponent implements OnInit {
 	constants = SPD_CONSTANTS;
+	private currentFilters = '';
+	private currentSearch = '';
+	private queryParams: any = this.utilService.getDefaultQueryParams();
 
 	dataSource: MatTableDataSource<ExpiredClearanceResponse> = new MatTableDataSource<ExpiredClearanceResponse>([]);
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
@@ -221,8 +259,28 @@ export class ExpiringChecksComponent implements OnInit {
 
 	onPayNow(): void {}
 
+	onSearchKeyDown(searchEvent: any): void {
+		const searchString = searchEvent.target.value;
+		this.performSearch(searchString);
+	}
+
+	onSearch(): void {
+		this.performSearch(this.formFilter.value.search);
+	}
+
 	onPageChanged(page: PageEvent): void {
-		this.loadList(page.pageIndex);
+		this.queryParams.page = page.pageIndex;
+		this.loadList();
+	}
+
+	onSortChange(sortParameters: Sort) {
+		const currentSort = `${sortParameters.direction === 'desc' ? '-' : ''}${
+			ExpiringChecksFilterMap[sortParameters.active as keyof ExpiringChecksFilter]
+		}`;
+		this.queryParams.page = 0;
+		this.queryParams.sorts = currentSort;
+
+		this.loadList();
 	}
 
 	onSendRequest(application: ExpiredClearanceResponse) {
@@ -234,39 +292,39 @@ export class ExpiringChecksComponent implements OnInit {
 			cancelText: 'Cancel',
 		};
 
-		// this.dialog
-		// 	.open(DialogComponent, { data })
-		// 	.afterClosed()
-		// 	.subscribe((response: boolean) => {
-		// 		if (response) {
-		// 			const inviteDefault: ApplicationInviteCreateRequest = {
-		// 				firstName: application.givenName,
-		// 				lastName: application.surname,
-		// 				email: application.email,
-		// 				jobTitle: application.jobTitle,
-		// 				payeeType: application.payeeType,
-		// 			};
+		this.dialog
+			.open(DialogComponent, { data })
+			.afterClosed()
+			.subscribe((response: boolean) => {
+				if (response) {
+					const inviteDefault: ApplicationInviteCreateRequest = {
+						firstName: application.firstName,
+						lastName: application.lastName,
+						email: application.email,
+						jobTitle: '',
+						payeeType: undefined,
+					};
 
-		// 			const dialogOptions: CrcDialogData = {
-		// 				inviteDefault,
-		// 			};
+					const dialogOptions: CrcDialogData = {
+						inviteDefault,
+					};
 
-		// 			this.dialog
-		// 				.open(CrcAddModalComponent, {
-		// 					width: '1400px',
-		// 					data: dialogOptions,
-		// 				})
-		// 				.afterClosed()
-		// 				.subscribe((resp) => {
-		// 					if (resp.success) {
-		// 						this.hotToast.success('Expired check was successfully removed');
-		// 						this.hotToast.success(resp.message);
+					this.dialog
+						.open(CrcAddModalComponent, {
+							width: '1400px',
+							data: dialogOptions,
+						})
+						.afterClosed()
+						.subscribe((resp) => {
+							if (resp.success) {
+								this.hotToast.success('Expired check was successfully removed');
+								this.hotToast.success(resp.message);
 
-		// 						this.router.navigateByUrl(CrrpRoutes.crrpPath(CrrpRoutes.CRIMINAL_RECORD_CHECKS));
-		// 					}
-		// 				});
-		// 		}
-		// 	});
+								this.router.navigateByUrl(CrrpRoutes.crrpPath(CrrpRoutes.CRIMINAL_RECORD_CHECKS));
+							}
+						});
+				}
+			});
 	}
 
 	onRemove(application: ExpiredClearanceResponse) {
@@ -289,12 +347,24 @@ export class ExpiringChecksComponent implements OnInit {
 			});
 	}
 
-	private loadList(pageIndex: number = 0): void {
+	private performSearch(searchString: string): void {
+		this.currentSearch = searchString ? `${ExpiringChecksFilterMap['search']}@=${searchString}` : '';
+		this.queryParams.page = 0;
+
+		this.loadList();
+	}
+
+	private buildQueryParamsFilterString(): string {
+		return this.currentFilters + (this.currentFilters ? ',' : '') + this.currentSearch;
+	}
+
+	private loadList(): void {
+		this.queryParams.filters = this.buildQueryParamsFilterString();
+
 		this.applicationService
 			.apiOrgsOrgIdExpiredClearancesGet({
 				orgId: this.authenticationService.loggedInUserInfo?.orgId!,
-				page: pageIndex,
-				pageSize: this.tablePaginator.pageSize,
+				...this.queryParams,
 			})
 			.pipe()
 			.subscribe((res: ClearanceListResponse) => {
@@ -305,7 +375,7 @@ export class ExpiringChecksComponent implements OnInit {
 					app.daysRemainingClass = itemClass;
 				});
 
-				this.dataSource = new MatTableDataSource(applications);
+				this.dataSource.data = applications;
 				this.dataSource.sort = this.sort;
 				this.tablePaginator = { ...res.pagination };
 			});
@@ -318,7 +388,7 @@ export class ExpiringChecksComponent implements OnInit {
 
 		const expiringOnDate = new Date(expiringOn);
 		const todayDate = new Date();
-		const diff = Math.abs(todayDate.getTime() - expiringOnDate.getTime());
+		const diff = expiringOnDate.getTime() - todayDate.getTime();
 		const diffDays = Math.ceil(diff / (1000 * 3600 * 24));
 
 		if (diffDays <= 0) {

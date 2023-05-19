@@ -42,13 +42,13 @@ internal partial class ApplicationRepository : IApplicationRepository
 
     private string GetClearanceFilterString(ClearanceFilterBy clearanceFilterBy)
     {
-        string orgFilter = $"_spd_organization_value eq {clearanceFilterBy.OrgId}";
+        string orgFilter = $"_spd_organizationid_value eq {clearanceFilterBy.OrgId}";
         string stateFilter = $"statecode eq {DynamicsConstants.StateCode_Active}";
 
         string? contains = null;
         if (!string.IsNullOrWhiteSpace(clearanceFilterBy.NameOrEmailContains))
         {
-            contains = $"(contains(spd_firstname,'{clearanceFilterBy.NameOrEmailContains}') or contains(spd_lastname,'{clearanceFilterBy.NameOrEmailContains}') or contains(spd_emailaddress1,'{clearanceFilterBy.NameOrEmailContains}'))";
+            contains = $"(contains(spd_applicantname,'{clearanceFilterBy.NameOrEmailContains}') or contains(spd_emailaddress1,'{clearanceFilterBy.NameOrEmailContains}'))";
         }
         string result = $"{orgFilter}";
         result += $" and {stateFilter}";
@@ -61,24 +61,24 @@ internal partial class ApplicationRepository : IApplicationRepository
 
     private string GetClearanceSortBy(ClearanceSortBy? clearanceSortBy)
     {
-        //if (clearanceSortBy == null
-        //    || (clearanceSortBy.ExpiresOn != null && (bool)clearanceSortBy.ExpiresOn))
-        //    return "createdon";
+        if (clearanceSortBy == null
+            || (clearanceSortBy.ExpiresOn != null && (bool)clearanceSortBy.ExpiresOn))
+            return "spd_expirydate";
 
-        //if (clearanceSortBy.ExpiresOn != null && !(bool)clearanceSortBy.ExpiresOn)
-        //    return "createdon desc";
+        if (clearanceSortBy.ExpiresOn != null && !(bool)clearanceSortBy.ExpiresOn)
+            return "spd_expirydate desc";
 
-        //if (clearanceSortBy.NameDesc != null && (bool)clearanceSortBy.NameDesc)
-        //    return "spd_fullname desc";
+        if (clearanceSortBy.NameDesc != null && (bool)clearanceSortBy.NameDesc)
+            return "spd_applicantname desc";
 
-        //if (clearanceSortBy.NameDesc != null && !(bool)clearanceSortBy.NameDesc)
-        //    return "spd_fullname";
+        if (clearanceSortBy.NameDesc != null && !(bool)clearanceSortBy.NameDesc)
+            return "spd_applicantname";
 
-        //if (clearanceSortBy.CompanyNameDesc != null && (bool)clearanceSortBy.CompanyNameDesc)
-        //    return "spd_contractedcompanyname desc";
+        if (clearanceSortBy.CompanyNameDesc != null && (bool)clearanceSortBy.CompanyNameDesc)
+            return "spd_contractedcompanyname desc";
 
-        //if (clearanceSortBy.CompanyNameDesc != null && !(bool)clearanceSortBy.CompanyNameDesc)
-        //    return "spd_contractedcompanyname";
+        if (clearanceSortBy.CompanyNameDesc != null && !(bool)clearanceSortBy.CompanyNameDesc)
+            return "spd_contractedcompanyname";
 
         return "createdon desc";
     }

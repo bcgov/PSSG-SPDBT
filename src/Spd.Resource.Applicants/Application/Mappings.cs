@@ -92,11 +92,11 @@ namespace Spd.Resource.Applicants.Application
 
             _ = CreateMap<spd_clearanceaccess, ClearanceResp>()
             .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_clearanceaccessid))
-            .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.spd_clearanceaccessnumber))
-            .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.spd_clearanceaccessnumber))
-            .ForMember(d => d.Facility, opt => opt.MapFrom(s => s.spd_clearanceaccessnumber))
-            .ForMember(d => d.Email, opt => opt.MapFrom(s => "test@test.com"))
-            .ForMember(d => d.ExpiresOn, opt => opt.MapFrom(s => s.createdon));
+            .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.spd_applicantname))
+            .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.spd_applicantname))
+            .ForMember(d => d.Facility, opt => opt.MapFrom(s => s.spd_contractedcompanyname))
+            .ForMember(d => d.Email, opt => opt.MapFrom(s => s.spd_emailaddress1))
+            .ForMember(d => d.ExpiresOn, opt => opt.MapFrom(s => s.spd_expirydate));
 
             _ = CreateMap<spd_genericupload, BulkHistoryResp>()
             .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_genericuploadid))

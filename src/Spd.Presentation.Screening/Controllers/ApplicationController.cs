@@ -424,8 +424,8 @@ namespace Spd.Presentation.Screening.Controllers
             return sortby switch
             {
                 null => new AppListSortBy(),
-                "submittedon" => new AppListSortBy(false),
-                "-submittedon" => new AppListSortBy(true),
+                "expiresOn" => new AppListSortBy(false),
+                "-expiresOn" => new AppListSortBy(true),
                 "name" => new AppListSortBy(null, false),
                 "-name" => new AppListSortBy(null, true),
                 "companyname" => new AppListSortBy(null, null, false),
@@ -469,49 +469,47 @@ namespace Spd.Presentation.Screening.Controllers
         private ClearanceListFilterBy GetClearanceListFilterBy(string? filters, Guid orgId)
         {
             ClearanceListFilterBy clearanceListFilterBy = new ClearanceListFilterBy(orgId);
-            //if (string.IsNullOrWhiteSpace(filters)) return clearanceListFilterBy;
+            if (string.IsNullOrWhiteSpace(filters)) return clearanceListFilterBy;
 
-            //try
-            //{
-            //    //filters string should be like status==AwaitingPayment|AwaitingApplicant,searchText@=str
-            //    string[] items = filters.Split(',');
-            //    foreach (string item in items)
-            //    {
-            //        string[] strs = item.Split("==");
+            try
+            {
+                //filters string should be like status==AwaitingPayment|AwaitingApplicant,searchText@=str
+                string[] items = filters.Split(',');
+                foreach (string item in items)
+                {
+                    string[] strs = item.Split("==");
 
-            //        if (strs.Length == 1)
-            //        {
-            //            string[] s = strs[0].Split("@=");
-            //            if (s.Length == 2 && s[0] == "searchText")
-            //            {
-            //                clearanceListFilterBy.NameOrEmailContains = s[1];
-            //            }
-            //        }
-            //    }
-            //}
-            //catch
-            //{
-            //    throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Invalid filter string.");
-            //}
+                    if (strs.Length == 1)
+                    {
+                        string[] s = strs[0].Split("@=");
+                        if (s.Length == 2 && s[0] == "searchText")
+                        {
+                            clearanceListFilterBy.NameOrEmailContains = s[1];
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Invalid filter string.");
+            }
             return clearanceListFilterBy;
         }
 
         private ClearanceListSortBy GetClearanceSortBy(string? sortby)
         {
-            return new ClearanceListSortBy();
-
-            //sorts string should be like: sorts=-submittedOn or sorts=name
-            //return sortby switch
-            //{
-            //    null => new ClearanceListSortBy(),
-            //    "expireson" => new ClearanceListSortBy(false),
-            //    "-expireson" => new ClearanceListSortBy(true),
-            //    "name" => new ClearanceListSortBy(null, false),
-            //    "-name" => new ClearanceListSortBy(null, true),
-            //    "companyname" => new ClearanceListSortBy(null, null, false),
-            //    "-companyname" => new ClearanceListSortBy(null, null, true),
-            //    _ => new ClearanceListSortBy()
-            //};
+            //sorts string should be like: sorts = -submittedOn or sorts = name
+            return sortby switch
+            {
+                null => new ClearanceListSortBy(),
+                "expireson" => new ClearanceListSortBy(false),
+                "-expireson" => new ClearanceListSortBy(true),
+                "name" => new ClearanceListSortBy(null, false),
+                "-name" => new ClearanceListSortBy(null, true),
+                "companyname" => new ClearanceListSortBy(null, null, false),
+                "-companyname" => new ClearanceListSortBy(null, null, true),
+                _ => new ClearanceListSortBy()
+            };
         }
         #endregion
     }
