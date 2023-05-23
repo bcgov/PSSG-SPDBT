@@ -15,7 +15,7 @@ namespace Spd.Manager.Cases
         IRequestHandler<ApplicationCreateCommand, ApplicationCreateResponse>,
         IRequestHandler<ApplicationListQuery, ApplicationListResponse>,
         IRequestHandler<ApplicationStatisticsQuery, ApplicationStatisticsResponse>,
-        IRequestHandler<IdentityCommand, bool>,
+        IRequestHandler<IdentityCommand, Unit>,
         IRequestHandler<GetBulkUploadHistoryQuery, BulkHistoryListResponse>,
         IRequestHandler<BulkUploadCreateCommand, BulkUploadCreateResponse>,
         IRequestHandler<ClearanceListQuery, ClearanceListResponse>,
@@ -172,10 +172,11 @@ namespace Spd.Manager.Cases
             return _mapper.Map<ApplicationStatisticsResponse>(response);
         }
 
-        public async Task<bool> Handle(IdentityCommand request, CancellationToken ct)
+        public async Task<Unit> Handle(IdentityCommand request, CancellationToken ct)
         {
             var cmd = _mapper.Map<IdentityCmd>(request);
-            return await _applicationRepository.IdentityAsync(cmd, ct);
+            await _applicationRepository.IdentityAsync(cmd, ct);
+            return default;
         }
 
         private async Task<ApplicationCreateResponse> CheckDuplicateApp(ApplicationCreateRequest request, CancellationToken ct)

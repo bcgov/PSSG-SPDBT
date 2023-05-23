@@ -6,7 +6,7 @@ public interface IApplicationRepository
     public Task<bool> CheckApplicationDuplicateAsync(SearchApplicationQry searchApplicationQry, CancellationToken cancellationToken);
     public Task<ApplicationListResp> QueryAsync(ApplicationListQry query, CancellationToken cancellationToken);
     public Task<ApplicationStatisticsResp> QueryApplicationStatisticsAsync(ApplicationStatisticsQry query, CancellationToken cancellationToken);
-    public Task<bool> IdentityAsync(IdentityCmd cmd, CancellationToken ct);
+    public Task IdentityAsync(IdentityCmd cmd, CancellationToken ct);
     public Task<BulkAppsCreateResp> AddBulkAppsAsync(BulkAppsCreateCmd createApplicationCmds, CancellationToken cancellationToken);
     public Task<BulkHistoryListResp> QueryBulkHistoryAsync(BulkHistoryListQry query, CancellationToken cancellationToken);
     public Task<ClearanceListResp> QueryAsync(ClearanceListQry clearanceListQry, CancellationToken ct);
@@ -77,7 +77,7 @@ public record IdentityCmd
 {
     public Guid OrgId { get; set; }
     public Guid ApplicationId { get; set; }
-    public bool Verify { get; set; }
+    public IdentityStatusCode Status { get; set; }
 }
 public record SpdTempFile
 {
@@ -127,6 +127,11 @@ public enum GenderCode
     M,
     F,
     X
+}
+public enum IdentityStatusCode
+{
+    Verified,
+    Rejected
 }
 
 public enum FileCategoryCode

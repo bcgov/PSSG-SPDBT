@@ -342,7 +342,7 @@ export class ExpiringChecksComponent implements OnInit {
 			.subscribe((response: boolean) => {
 				if (response) {
 					this.applicationService
-						.apiOrgsOrgIdClearanceAccessClearanceAccessIdDelete({
+						.apiOrgsOrgIdClearancesExpiredClearanceAccessIdDelete({
 							clearanceAccessId: clearance.id!,
 							orgId: this.authenticationService.loggedInUserInfo?.orgId!,
 						})
@@ -370,7 +370,7 @@ export class ExpiringChecksComponent implements OnInit {
 		this.queryParams.filters = this.buildQueryParamsFilterString();
 
 		this.applicationService
-			.apiOrgsOrgIdExpiredClearancesGet({
+			.apiOrgsOrgIdClearancesExpiredGet({
 				orgId: this.authenticationService.loggedInUserInfo?.orgId!,
 				...this.queryParams,
 			})
