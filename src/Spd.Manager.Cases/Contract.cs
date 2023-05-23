@@ -13,7 +13,7 @@ namespace Spd.Manager.Cases
         public Task<ApplicationListResponse> Handle(ApplicationListQuery request, CancellationToken ct);
         public Task<ApplicationCreateResponse> Handle(ApplicationCreateCommand request, CancellationToken ct);
         public Task<ApplicationStatisticsResponse> Handle(ApplicationStatisticsQuery request, CancellationToken ct);
-        public Task<bool> Handle(IdentityCommand request, CancellationToken ct);
+        public Task<Unit> Handle(IdentityCommand request, CancellationToken ct);
         public Task<BulkHistoryListResponse> Handle(GetBulkUploadHistoryQuery request, CancellationToken ct);
         public Task<BulkUploadCreateResponse> Handle(BulkUploadCreateCommand cmd, CancellationToken ct);
         public Task<ClearanceListResponse> Handle(ClearanceListQuery request, CancellationToken ct);
@@ -31,7 +31,7 @@ namespace Spd.Manager.Cases
     public record ApplicationInviteDeleteCommand(Guid OrgId, Guid ApplicationInviteId) : IRequest<Unit>;
     public record AppInviteListFilterBy(Guid OrgId, string? EmailOrNameContains);
     public record AppInviteListSortBy(bool? SubmittedDateDesc);
-    public record IdentityCommand(Guid OrgId, Guid ApplicationId, bool verify) : IRequest<bool>;
+    public record IdentityCommand(Guid OrgId, Guid ApplicationId, IdentityStatusCode Status) : IRequest<Unit>;
     public record ApplicationInvitesCreateRequest
     {
         public bool RequireDuplicateCheck { get; set; }
@@ -75,9 +75,9 @@ namespace Spd.Manager.Cases
         Draft,
         Sent,
         Failed,
-        Completed, //inactive status code, no use
-        Cancelled,//inactive status code, no use
-        Expired //inactive status code, no use
+        Completed, //inactive Status code, no use
+        Cancelled,//inactive Status code, no use
+        Expired //inactive Status code, no use
     }
     #endregion
 
@@ -254,6 +254,11 @@ namespace Spd.Manager.Cases
 
         [Description("Contractor/Licensee")]
         Contractor
+    }
+    public enum IdentityStatusCode
+    {
+        Verified,
+        Rejected
     }
     #endregion
 

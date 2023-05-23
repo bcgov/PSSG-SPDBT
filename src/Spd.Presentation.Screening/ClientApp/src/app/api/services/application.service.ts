@@ -19,6 +19,7 @@ import { ApplicationStatisticsResponse } from '../models/application-statistics-
 import { BulkHistoryListResponse } from '../models/bulk-history-list-response';
 import { BulkUploadCreateResponse } from '../models/bulk-upload-create-response';
 import { ClearanceListResponse } from '../models/clearance-list-response';
+import { IdentityStatusCode } from '../models/identity-status-code';
 
 @Injectable({
   providedIn: 'root',
@@ -29,173 +30,6 @@ export class ApplicationService extends BaseService {
     http: HttpClient
   ) {
     super(config, http);
-  }
-
-  /**
-   * Path part for operation apiOrgsOrgIdApplicationStatisticsGet
-   */
-  static readonly ApiOrgsOrgIdApplicationStatisticsGetPath = '/api/orgs/{orgId}/application-statistics';
-
-  /**
-   * return the application statistics for a particular organization.
-   *
-   *
-   *
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiOrgsOrgIdApplicationStatisticsGet()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiOrgsOrgIdApplicationStatisticsGet$Response(params: {
-    orgId: string;
-    context?: HttpContext
-  }
-): Observable<StrictHttpResponse<ApplicationStatisticsResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdApplicationStatisticsGetPath, 'get');
-    if (params) {
-      rb.path('orgId', params.orgId, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: params?.context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<ApplicationStatisticsResponse>;
-      })
-    );
-  }
-
-  /**
-   * return the application statistics for a particular organization.
-   *
-   *
-   *
-   * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiOrgsOrgIdApplicationStatisticsGet$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiOrgsOrgIdApplicationStatisticsGet(params: {
-    orgId: string;
-    context?: HttpContext
-  }
-): Observable<ApplicationStatisticsResponse> {
-
-    return this.apiOrgsOrgIdApplicationStatisticsGet$Response(params).pipe(
-      map((r: StrictHttpResponse<ApplicationStatisticsResponse>) => r.body as ApplicationStatisticsResponse)
-    );
-  }
-
-  /**
-   * Path part for operation apiOrgsOrgIdVerifyidentityApplicationIdPut
-   */
-  static readonly ApiOrgsOrgIdVerifyidentityApplicationIdPutPath = '/api/orgs/{orgId}/verifyidentity/{applicationId}';
-
-  /**
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiOrgsOrgIdVerifyidentityApplicationIdPut()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiOrgsOrgIdVerifyidentityApplicationIdPut$Response(params: {
-    applicationId: string;
-    orgId: string;
-    context?: HttpContext
-  }
-): Observable<StrictHttpResponse<boolean>> {
-
-    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdVerifyidentityApplicationIdPutPath, 'put');
-    if (params) {
-      rb.path('applicationId', params.applicationId, {});
-      rb.path('orgId', params.orgId, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: params?.context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return (r as HttpResponse<any>).clone({ body: String((r as HttpResponse<any>).body) === 'true' }) as StrictHttpResponse<boolean>;
-      })
-    );
-  }
-
-  /**
-   * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiOrgsOrgIdVerifyidentityApplicationIdPut$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiOrgsOrgIdVerifyidentityApplicationIdPut(params: {
-    applicationId: string;
-    orgId: string;
-    context?: HttpContext
-  }
-): Observable<boolean> {
-
-    return this.apiOrgsOrgIdVerifyidentityApplicationIdPut$Response(params).pipe(
-      map((r: StrictHttpResponse<boolean>) => r.body as boolean)
-    );
-  }
-
-  /**
-   * Path part for operation apiOrgsOrgIdRejectidentityApplicationIdPut
-   */
-  static readonly ApiOrgsOrgIdRejectidentityApplicationIdPutPath = '/api/orgs/{orgId}/rejectidentity/{applicationId}';
-
-  /**
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiOrgsOrgIdRejectidentityApplicationIdPut()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiOrgsOrgIdRejectidentityApplicationIdPut$Response(params: {
-    applicationId: string;
-    orgId: string;
-    context?: HttpContext
-  }
-): Observable<StrictHttpResponse<boolean>> {
-
-    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdRejectidentityApplicationIdPutPath, 'put');
-    if (params) {
-      rb.path('applicationId', params.applicationId, {});
-      rb.path('orgId', params.orgId, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: params?.context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return (r as HttpResponse<any>).clone({ body: String((r as HttpResponse<any>).body) === 'true' }) as StrictHttpResponse<boolean>;
-      })
-    );
-  }
-
-  /**
-   * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiOrgsOrgIdRejectidentityApplicationIdPut$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiOrgsOrgIdRejectidentityApplicationIdPut(params: {
-    applicationId: string;
-    orgId: string;
-    context?: HttpContext
-  }
-): Observable<boolean> {
-
-    return this.apiOrgsOrgIdRejectidentityApplicationIdPut$Response(params).pipe(
-      map((r: StrictHttpResponse<boolean>) => r.body as boolean)
-    );
   }
 
   /**
@@ -533,6 +367,122 @@ export class ApplicationService extends BaseService {
   }
 
   /**
+   * Path part for operation apiOrgsOrgIdApplicationStatisticsGet
+   */
+  static readonly ApiOrgsOrgIdApplicationStatisticsGetPath = '/api/orgs/{orgId}/application-statistics';
+
+  /**
+   * return the application statistics for a particular organization.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiOrgsOrgIdApplicationStatisticsGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiOrgsOrgIdApplicationStatisticsGet$Response(params: {
+    orgId: string;
+    context?: HttpContext
+  }
+): Observable<StrictHttpResponse<ApplicationStatisticsResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdApplicationStatisticsGetPath, 'get');
+    if (params) {
+      rb.path('orgId', params.orgId, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: params?.context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<ApplicationStatisticsResponse>;
+      })
+    );
+  }
+
+  /**
+   * return the application statistics for a particular organization.
+   *
+   *
+   *
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `apiOrgsOrgIdApplicationStatisticsGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiOrgsOrgIdApplicationStatisticsGet(params: {
+    orgId: string;
+    context?: HttpContext
+  }
+): Observable<ApplicationStatisticsResponse> {
+
+    return this.apiOrgsOrgIdApplicationStatisticsGet$Response(params).pipe(
+      map((r: StrictHttpResponse<ApplicationStatisticsResponse>) => r.body as ApplicationStatisticsResponse)
+    );
+  }
+
+  /**
+   * Path part for operation apiOrgsOrgIdIdentityApplicationIdPut
+   */
+  static readonly ApiOrgsOrgIdIdentityApplicationIdPutPath = '/api/orgs/{orgId}/identity/{applicationId}';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiOrgsOrgIdIdentityApplicationIdPut()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiOrgsOrgIdIdentityApplicationIdPut$Response(params: {
+    applicationId: string;
+    orgId: string;
+    status?: IdentityStatusCode;
+    context?: HttpContext
+  }
+): Observable<StrictHttpResponse<ActionResult>> {
+
+    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdIdentityApplicationIdPutPath, 'put');
+    if (params) {
+      rb.path('applicationId', params.applicationId, {});
+      rb.path('orgId', params.orgId, {});
+      rb.query('status', params.status, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: params?.context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<ActionResult>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `apiOrgsOrgIdIdentityApplicationIdPut$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiOrgsOrgIdIdentityApplicationIdPut(params: {
+    applicationId: string;
+    orgId: string;
+    status?: IdentityStatusCode;
+    context?: HttpContext
+  }
+): Observable<ActionResult> {
+
+    return this.apiOrgsOrgIdIdentityApplicationIdPut$Response(params).pipe(
+      map((r: StrictHttpResponse<ActionResult>) => r.body as ActionResult)
+    );
+  }
+
+  /**
    * Path part for operation apiOrgsOrgIdApplicationPost
    */
   static readonly ApiOrgsOrgIdApplicationPostPath = '/api/orgs/{orgId}/application';
@@ -754,9 +704,9 @@ export class ApplicationService extends BaseService {
   }
 
   /**
-   * Path part for operation apiOrgsOrgIdExpiredClearancesGet
+   * Path part for operation apiOrgsOrgIdClearancesExpiredGet
    */
-  static readonly ApiOrgsOrgIdExpiredClearancesGetPath = '/api/orgs/{orgId}/expired-clearances';
+  static readonly ApiOrgsOrgIdClearancesExpiredGetPath = '/api/orgs/{orgId}/clearances/expired';
 
   /**
    * return 
@@ -765,11 +715,11 @@ export class ApplicationService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiOrgsOrgIdExpiredClearancesGet()` instead.
+   * To access only the response body, use `apiOrgsOrgIdClearancesExpiredGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdExpiredClearancesGet$Response(params: {
+  apiOrgsOrgIdClearancesExpiredGet$Response(params: {
     orgId: string;
     filters?: string;
     sorts?: string;
@@ -779,7 +729,7 @@ export class ApplicationService extends BaseService {
   }
 ): Observable<StrictHttpResponse<ClearanceListResponse>> {
 
-    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdExpiredClearancesGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdClearancesExpiredGetPath, 'get');
     if (params) {
       rb.path('orgId', params.orgId, {});
       rb.query('filters', params.filters, {});
@@ -807,11 +757,11 @@ export class ApplicationService extends BaseService {
    *
    *
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiOrgsOrgIdExpiredClearancesGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiOrgsOrgIdClearancesExpiredGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdExpiredClearancesGet(params: {
+  apiOrgsOrgIdClearancesExpiredGet(params: {
     orgId: string;
     filters?: string;
     sorts?: string;
@@ -821,15 +771,15 @@ export class ApplicationService extends BaseService {
   }
 ): Observable<ClearanceListResponse> {
 
-    return this.apiOrgsOrgIdExpiredClearancesGet$Response(params).pipe(
+    return this.apiOrgsOrgIdClearancesExpiredGet$Response(params).pipe(
       map((r: StrictHttpResponse<ClearanceListResponse>) => r.body as ClearanceListResponse)
     );
   }
 
   /**
-   * Path part for operation apiOrgsOrgIdClearanceAccessClearanceAccessIdDelete
+   * Path part for operation apiOrgsOrgIdClearancesExpiredClearanceAccessIdDelete
    */
-  static readonly ApiOrgsOrgIdClearanceAccessClearanceAccessIdDeletePath = '/api/orgs/{orgId}/clearance-access/{clearanceAccessId}';
+  static readonly ApiOrgsOrgIdClearancesExpiredClearanceAccessIdDeletePath = '/api/orgs/{orgId}/clearances/expired/{clearanceAccessId}';
 
   /**
    * Mark the clearance access record as inactive.
@@ -837,18 +787,18 @@ export class ApplicationService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiOrgsOrgIdClearanceAccessClearanceAccessIdDelete()` instead.
+   * To access only the response body, use `apiOrgsOrgIdClearancesExpiredClearanceAccessIdDelete()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdClearanceAccessClearanceAccessIdDelete$Response(params: {
+  apiOrgsOrgIdClearancesExpiredClearanceAccessIdDelete$Response(params: {
     clearanceAccessId: string;
     orgId: string;
     context?: HttpContext
   }
 ): Observable<StrictHttpResponse<ActionResult>> {
 
-    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdClearanceAccessClearanceAccessIdDeletePath, 'delete');
+    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdClearancesExpiredClearanceAccessIdDeletePath, 'delete');
     if (params) {
       rb.path('clearanceAccessId', params.clearanceAccessId, {});
       rb.path('orgId', params.orgId, {});
@@ -872,18 +822,18 @@ export class ApplicationService extends BaseService {
    *
    *
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiOrgsOrgIdClearanceAccessClearanceAccessIdDelete$Response()` instead.
+   * To access the full response (for headers, for example), `apiOrgsOrgIdClearancesExpiredClearanceAccessIdDelete$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdClearanceAccessClearanceAccessIdDelete(params: {
+  apiOrgsOrgIdClearancesExpiredClearanceAccessIdDelete(params: {
     clearanceAccessId: string;
     orgId: string;
     context?: HttpContext
   }
 ): Observable<ActionResult> {
 
-    return this.apiOrgsOrgIdClearanceAccessClearanceAccessIdDelete$Response(params).pipe(
+    return this.apiOrgsOrgIdClearancesExpiredClearanceAccessIdDelete$Response(params).pipe(
       map((r: StrictHttpResponse<ActionResult>) => r.body as ActionResult)
     );
   }

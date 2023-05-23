@@ -28,44 +28,6 @@ namespace Spd.Presentation.Screening.Controllers
             _appCreateRequestFromBulkValidator = appCreateRequestFromBulkValidator;
         }
 
-        /// <summary>
-        /// return the application statistics for a particular organization.
-        /// </summary>
-        /// <param name="orgId"></param>
-        /// <returns></returns>
-        [Route("api/orgs/{orgId}/application-statistics")]
-        [HttpGet]
-        public async Task<ApplicationStatisticsResponse> GetAppStatsList([FromRoute] Guid orgId)
-        {
-            return await _mediator.Send(new ApplicationStatisticsQuery(orgId));
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="applicationId"></param>
-        /// <param name="orgId"></param>
-        /// <returns></returns>
-        [Route("api/orgs/{orgId}/verifyidentity/{applicationId}")]
-        [HttpPut]
-        public async Task<bool> PutVerify([FromRoute] Guid applicationId, [FromRoute] Guid orgId)
-        {
-            return await _mediator.Send(new IdentityCommand(orgId, applicationId, true));
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="applicationId"></param>
-        /// <param name="orgId"></param>
-        /// <returns></returns>
-        [Route("api/orgs/{orgId}/rejectidentity/{applicationId}")]
-        [HttpPut]
-        public async Task<bool> PutReject([FromRoute] Guid applicationId, [FromRoute] Guid orgId)
-        {
-            return await _mediator.Send(new IdentityCommand(orgId, applicationId, false));
-        }
-
         #region application-invites
 
         /// <summary>
@@ -317,9 +279,35 @@ namespace Spd.Presentation.Screening.Controllers
                .Replace(" ", string.Empty);
         }
 
-        #endregion 
+        #endregion
 
         #region application
+
+        /// <summary>
+        /// return the application statistics for a particular organization.
+        /// </summary>
+        /// <param name="orgId"></param>
+        /// <returns></returns>
+        [Route("api/orgs/{orgId}/application-statistics")]
+        [HttpGet]
+        public async Task<ApplicationStatisticsResponse> GetAppStatsList([FromRoute] Guid orgId)
+        {
+            return await _mediator.Send(new ApplicationStatisticsQuery(orgId));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="applicationId"></param>
+        /// <param name="orgId"></param>
+        /// <returns></returns>
+        [Route("api/orgs/{orgId}/identity/{applicationId}")]
+        [HttpPut]
+        public async Task<ActionResult> Verify([FromRoute] Guid applicationId, [FromRoute] Guid orgId, [FromQuery] IdentityStatusCode status)
+        {
+            await _mediator.Send(new IdentityCommand(orgId, applicationId, status));
+            return Ok();
+        }
 
         /// <summary>
         /// create application. if checkDuplicate is true, it will check if there is existing duplicated applications 
@@ -435,7 +423,6 @@ namespace Spd.Presentation.Screening.Controllers
         }
         #endregion
 
-
         #region clearances
 
         /// <summary>
@@ -447,7 +434,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <param name="page"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        [Route("api/orgs/{orgId}/expired-clearances")]
+        [Route("api/orgs/{orgId}/clearances/expired")]
         [HttpGet]
         public async Task<ClearanceListResponse> GetExpiredClearancesList([FromRoute] Guid orgId, [FromQuery] string? filters, [FromQuery] string? sorts, [FromQuery] int? page, [FromQuery] int? pageSize)
         {
@@ -472,7 +459,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <param name="clearanceAccessId"></param>
         /// <param name="orgId"></param>
         /// <returns></returns>
-        [Route("api/orgs/{orgId}/clearance-access/{clearanceAccessId}")]
+        [Route("api/orgs/{orgId}/clearances/expired/{clearanceAccessId}")]
         [HttpDelete]
         public async Task<ActionResult> ClearanceAccessDeleteAsync([FromRoute] Guid clearanceAccessId, [FromRoute] Guid orgId)
         {
