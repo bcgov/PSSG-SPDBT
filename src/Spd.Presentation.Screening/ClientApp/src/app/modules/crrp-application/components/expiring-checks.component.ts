@@ -81,49 +81,49 @@ export const ExpiringChecksFilterMap: Record<keyof ExpiringChecksFilter, string>
 					>
 						<ng-container matColumnDef="applicantName">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Applicant Name</mat-header-cell>
-							<mat-cell *matCellDef="let application">
+							<mat-cell *matCellDef="let clearance">
 								<span class="mobile-label">Applicant Name:</span>
-								{{ application | fullname }}
+								{{ clearance | fullname }}
 							</mat-cell>
 						</ng-container>
 
 						<ng-container matColumnDef="email">
 							<mat-header-cell *matHeaderCellDef>Email</mat-header-cell>
-							<mat-cell *matCellDef="let application">
+							<mat-cell *matCellDef="let clearance">
 								<span class="mobile-label">Email:</span>
-								{{ application.email }}
+								{{ clearance.email }}
 							</mat-cell>
 						</ng-container>
 
 						<ng-container matColumnDef="expiresOn">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Expiring On</mat-header-cell>
-							<mat-cell *matCellDef="let application">
+							<mat-cell *matCellDef="let clearance">
 								<span class="mobile-label">Expiring On:</span>
-								{{ application.expiresOn | date : constants.date.dateFormat : 'UTC' }}
+								{{ clearance.expiresOn | date : constants.date.dateFormat : 'UTC' }}
 							</mat-cell>
 						</ng-container>
 
 						<ng-container matColumnDef="daysRemaining">
 							<mat-header-cell *matHeaderCellDef>Days Remaining</mat-header-cell>
-							<mat-cell *matCellDef="let application">
+							<mat-cell *matCellDef="let clearance">
 								<span class="mobile-label">Days Remaining:</span>
-								<span [ngClass]="application.daysRemainingClass">
-									{{ application.daysRemainingText }}
+								<span [ngClass]="clearance.daysRemainingClass">
+									{{ clearance.daysRemainingText }}
 								</span>
 							</mat-cell>
 						</ng-container>
 
 						<ng-container matColumnDef="facility">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Company / Facility Name</mat-header-cell>
-							<mat-cell *matCellDef="let application">
+							<mat-cell *matCellDef="let clearance">
 								<span class="mobile-label">Company / Facility Name:</span>
-								{{ application.facility | default }}
+								{{ clearance.facility | default }}
 							</mat-cell>
 						</ng-container>
 
 						<ng-container matColumnDef="action1">
 							<mat-header-cell *matHeaderCellDef></mat-header-cell>
-							<mat-cell *matCellDef="let application">
+							<mat-cell *matCellDef="let clearance">
 								<button
 									mat-flat-button
 									class="table-button m-2"
@@ -138,13 +138,13 @@ export const ExpiringChecksFilterMap: Record<keyof ExpiringChecksFilter, string>
 
 						<ng-container matColumnDef="action2">
 							<mat-header-cell *matHeaderCellDef></mat-header-cell>
-							<mat-cell *matCellDef="let application">
+							<mat-cell *matCellDef="let clearance">
 								<button
 									mat-flat-button
 									class="table-button m-2"
 									style="color: var(--color-green);"
 									aria-label="Send Request"
-									(click)="onSendRequest(application)"
+									(click)="onSendRequest(clearance)"
 								>
 									<mat-icon>send</mat-icon>Request
 								</button>
@@ -153,15 +153,15 @@ export const ExpiringChecksFilterMap: Record<keyof ExpiringChecksFilter, string>
 
 						<ng-container matColumnDef="action3">
 							<mat-header-cell *matHeaderCellDef></mat-header-cell>
-							<mat-cell *matCellDef="let application">
+							<mat-cell *matCellDef="let clearance">
 								<button
 									mat-flat-button
 									class="table-button m-2"
 									style="color: var(--color-red);"
-									aria-label="Remove"
-									(click)="onRemove(application)"
+									aria-label="Cancel"
+									(click)="onCancel(clearance)"
 								>
-									<mat-icon>delete_outline</mat-icon>Remove
+									<mat-icon>cancel</mat-icon>Cancel
 								</button>
 							</mat-cell>
 						</ng-container>
@@ -283,7 +283,7 @@ export class ExpiringChecksComponent implements OnInit {
 		this.loadList();
 	}
 
-	onSendRequest(application: ExpiredClearanceResponse) {
+	onSendRequest(clearance: ExpiredClearanceResponse) {
 		const data: DialogOptions = {
 			icon: 'info',
 			title: 'Confirmation',
@@ -298,9 +298,9 @@ export class ExpiringChecksComponent implements OnInit {
 			.subscribe((response: boolean) => {
 				if (response) {
 					const inviteDefault: ApplicationInviteCreateRequest = {
-						firstName: application.firstName,
-						lastName: application.lastName,
-						email: application.email,
+						firstName: clearance.firstName,
+						lastName: clearance.lastName,
+						email: clearance.email,
 						jobTitle: '',
 						payeeType: undefined,
 					};
@@ -327,12 +327,12 @@ export class ExpiringChecksComponent implements OnInit {
 			});
 	}
 
-	onRemove(application: ExpiredClearanceResponse) {
+	onCancel(clearance: ExpiredClearanceResponse) {
 		const data: DialogOptions = {
 			icon: 'info',
 			title: 'Confirmation',
-			message: 'Would you like to remove this individual from your organization?',
-			actionText: 'Yes, remove',
+			message: `Are you sure you want to cancel the request for ${clearance.firstName} ${clearance.lastName}?`,
+			actionText: 'Yes, cancel',
 			cancelText: 'Cancel',
 		};
 
@@ -341,8 +341,16 @@ export class ExpiringChecksComponent implements OnInit {
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
-					//TODO remove
-					this.hotToast.success('Individual was successfully removed');
+					this.applicationService
+						.apiOrgsOrgIdClearanceAccessClearanceIdDelete({
+							clearanceId: clearance.id!,
+							orgId: this.authenticationService.loggedInUserInfo?.orgId!,
+						})
+						.pipe()
+						.subscribe((_res) => {
+							this.hotToast.success('The request was successfully cancelled');
+							this.loadList();
+						});
 				}
 			});
 	}

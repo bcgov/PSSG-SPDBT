@@ -466,6 +466,14 @@ namespace Spd.Presentation.Screening.Controllers
                 });
         }
 
+        [Route("api/orgs/{orgId}/clearance-access/{clearanceId}")]
+        [HttpDelete]
+        public async Task<ActionResult> ClearanceAccessDeleteAsync([FromRoute] Guid clearanceId, [FromRoute] Guid orgId)
+        {
+            await _mediator.Send(new ClearanceAccessDeleteCommand(clearanceId, orgId));
+            return Ok();
+        }
+
         private ClearanceListFilterBy GetClearanceListFilterBy(string? filters, Guid orgId)
         {
             ClearanceListFilterBy clearanceListFilterBy = new ClearanceListFilterBy(orgId);

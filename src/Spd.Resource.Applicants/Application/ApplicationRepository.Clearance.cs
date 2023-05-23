@@ -1,6 +1,8 @@
 using Microsoft.Dynamics.CRM;
 using Microsoft.OData.Client;
 using Spd.Utilities.Dynamics;
+using Spd.Utilities.Shared.Exceptions;
+using System.Net;
 
 namespace Spd.Resource.Applicants.Application;
 internal partial class ApplicationRepository : IApplicationRepository
@@ -40,6 +42,21 @@ internal partial class ApplicationRepository : IApplicationRepository
         return response;
     }
 
+    public async Task DeleteClearanceAccessAsync(ClearanceAccessDeleteCmd clearanceAccessDeleteCmd, CancellationToken cancellationToken)
+    {
+        var clearance = await GetClearanceAccessById(clearanceAccessDeleteCmd.ClearanceAccessId, clearanceAccessDeleteCmd.OrgId);
+
+        if (clearance == null)
+            throw new ApiException(HttpStatusCode.BadRequest, "Invalid OrgId or ClearanceAccessId");
+
+        clearance.statecode = DynamicsConstants.StateCode_Inactive;
+        clearance.statuscode = DynamicsConstants.StatusCode_Inactive;
+
+        _context.UpdateObject(clearance);
+
+        await _context.SaveChangesAsync(cancellationToken);
+    }
+
     private string GetClearanceFilterString(ClearanceFilterBy clearanceFilterBy)
     {
         string orgFilter = $"_spd_organizationid_value eq {clearanceFilterBy.OrgId}";
@@ -48,7 +65,7 @@ internal partial class ApplicationRepository : IApplicationRepository
         string? contains = null;
         if (!string.IsNullOrWhiteSpace(clearanceFilterBy.NameOrEmailContains))
         {
-            contains = $"(contains(spd_applicantname,'{clearanceFilterBy.NameOrEmailContains}') or contains(spd_emailaddress1,'{clearanceFilterBy.NameOrEmailContains}'))";
+            contains = $"(contains(spd_applicantfullname,'{clearanceFilterBy.NameOrEmailContains}') or contains(spd_emailaddress1,'{clearanceFilterBy.NameOrEmailContains}'))";
         }
         string result = $"{orgFilter}";
         result += $" and {stateFilter}";
@@ -69,10 +86,10 @@ internal partial class ApplicationRepository : IApplicationRepository
             return "spd_expirydate desc";
 
         if (clearanceSortBy.NameDesc != null && (bool)clearanceSortBy.NameDesc)
-            return "spd_applicantname desc";
+            return "spd_applicantfullname desc";
 
         if (clearanceSortBy.NameDesc != null && !(bool)clearanceSortBy.NameDesc)
-            return "spd_applicantname";
+            return "spd_applicantfullname";
 
         if (clearanceSortBy.CompanyNameDesc != null && (bool)clearanceSortBy.CompanyNameDesc)
             return "spd_contractedcompanyname desc";
@@ -82,6 +99,10 @@ internal partial class ApplicationRepository : IApplicationRepository
 
         return "createdon desc";
     }
+
+    private async Task<spd_clearanceaccess?> GetClearanceAccessById(Guid clearanceAccessId, Guid organizationId)
+       => await _context.spd_clearanceaccesses
+            .Where(a => a.spd_clearanceaccessid == clearanceAccessId && a._spd_organizationid_value == organizationId).SingleOrDefaultAsync();
 }
 
 

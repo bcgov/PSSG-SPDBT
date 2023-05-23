@@ -10,15 +10,16 @@ namespace Spd.Manager.Cases
 {
     internal class ApplicationManager :
         IRequestHandler<ApplicationInviteCreateCommand, ApplicationInvitesCreateResponse>,
-        IRequestHandler<ApplicationCreateCommand, ApplicationCreateResponse>,
-        IRequestHandler<ApplicationListQuery, ApplicationListResponse>,
         IRequestHandler<ApplicationInviteListQuery, ApplicationInviteListResponse>,
         IRequestHandler<ApplicationInviteDeleteCommand, Unit>,
+        IRequestHandler<ApplicationCreateCommand, ApplicationCreateResponse>,
+        IRequestHandler<ApplicationListQuery, ApplicationListResponse>,
         IRequestHandler<ApplicationStatisticsQuery, ApplicationStatisticsResponse>,
         IRequestHandler<IdentityCommand, bool>,
         IRequestHandler<GetBulkUploadHistoryQuery, BulkHistoryListResponse>,
         IRequestHandler<BulkUploadCreateCommand, BulkUploadCreateResponse>,
         IRequestHandler<ClearanceListQuery, ClearanceListResponse>,
+        IRequestHandler<ClearanceAccessDeleteCommand, Unit>,
         IApplicationManager
     {
         private readonly IApplicationRepository _applicationRepository;
@@ -259,6 +260,13 @@ namespace Spd.Manager.Cases
 
             return _mapper.Map<ClearanceListResponse>(response);
 
+        }
+
+        public async Task<Unit> Handle(ClearanceAccessDeleteCommand request, CancellationToken ct)
+        {
+            var cmd = _mapper.Map<ClearanceAccessDeleteCmd>(request);
+            await _applicationRepository.DeleteClearanceAccessAsync(cmd, ct);
+            return default;
         }
         #endregion
     }
