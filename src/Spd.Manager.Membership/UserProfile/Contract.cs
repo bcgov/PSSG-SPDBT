@@ -1,9 +1,7 @@
 using MediatR;
-using Spd.Manager.Membership.Org;
+using Spd.Manager.Membership.OrgRegistration;
 using Spd.Manager.Membership.OrgUser;
 using Spd.Manager.Membership.Shared;
-using Spd.Resource.Organizations.User;
-using System.ComponentModel;
 
 namespace Spd.Manager.Membership.UserProfile
 {
@@ -41,14 +39,9 @@ namespace Spd.Manager.Membership.UserProfile
     {
         public PayerPreferenceTypeCode PayerPreference { get; set; }
         public BooleanTypeCode ContractorsNeedVulnerableSectorScreening { get; set; }
-        public BooleanTypeCode LicenseesNeedVulnerableSectorScreening { get; set; }   
+        public BooleanTypeCode LicenseesNeedVulnerableSectorScreening { get; set; }
         public bool GenericUploadEnabled { get; set; }
     }
 
-    public enum OrgRegistrationStatusCode
-    {
-        ApplicationSubmitted,
-        InProgress,
-        Complete
-    }
+
 }

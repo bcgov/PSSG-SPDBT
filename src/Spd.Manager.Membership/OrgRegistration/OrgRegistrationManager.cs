@@ -3,6 +3,8 @@ using MediatR;
 using Spd.Resource.Organizations.Org;
 using Spd.Resource.Organizations.Registration;
 using Spd.Utilities.LogonUser;
+using Spd.Utilities.Shared.Exceptions;
+using System.Net;
 using System.Security.Principal;
 
 namespace Spd.Manager.Membership.OrgRegistration
@@ -51,9 +53,24 @@ namespace Spd.Manager.Membership.OrgRegistration
                 orgRegistration.BCeIDUserGuid = _currentUser.GetUserGuid();
                 orgRegistration.BizIdentityGuid = _currentUser.GetBizGuid();
             }
-            await _orgRegRepository.AddRegistrationAsync(new CreateOrganizationRegistrationCommand(orgRegistration), cancellationToken);
+            await _orgRegRepository.AddRegistrationAsync(new CreateOrganizationRegistrationCommand(orgRegistration, request.HostUrl), cancellationToken);
             response.CreateSuccess = true;
             return response;
+        }
+
+        public async Task<OrgRegistrationPortalStatusResponse> Handle(GetOrgRegistrationStatusQuery query, CancellationToken cancellationToken)
+        {
+            var result = await _orgRegRepository.Query(new OrgRegistrationQuery(null,null, query.RegistrationNumber), cancellationToken);
+            if (result == null || !result.OrgRegistrationResults.Any())
+                throw new ApiException(HttpStatusCode.BadRequest, "Cannot find registration with the registration number.");
+            var statusCode = result.OrgRegistrationResults.First().OrgRegistrationStatusStr switch
+            {
+                "New" => OrgRegistrationStatusCode.ApplicationSubmitted,
+                "InProgress" => OrgRegistrationStatusCode.InProgress,
+                "AwaitingOrganization" => OrgRegistrationStatusCode.InProgress,
+                _ => OrgRegistrationStatusCode.Complete,
+            };
+            return new OrgRegistrationPortalStatusResponse(statusCode);
         }
 
         private async Task<OrgRegistrationCreateResponse> CheckDuplicate(OrgRegistrationCreateRequest request, CancellationToken cancellationToken)

@@ -1,6 +1,7 @@
 using FluentValidation;
 using MediatR;
 using Spd.Manager.Membership.Shared;
+using Spd.Utilities.Dynamics;
 using System.ComponentModel;
 
 namespace Spd.Manager.Membership.OrgRegistration
@@ -8,9 +9,13 @@ namespace Spd.Manager.Membership.OrgRegistration
     public interface IOrgRegistrationManager
     {
         public Task<OrgRegistrationCreateResponse> Handle(RegisterOrganizationCommand request, CancellationToken cancellationToken);
+        public Task<OrgRegistrationPortalStatusResponse> Handle(GetOrgRegistrationStatusQuery query, CancellationToken cancellationToken);
     }
 
-    public record RegisterOrganizationCommand(OrgRegistrationCreateRequest CreateOrgRegistrationRequest) : IRequest<OrgRegistrationCreateResponse>;
+    public record RegisterOrganizationCommand(OrgRegistrationCreateRequest CreateOrgRegistrationRequest, string HostUrl) : IRequest<OrgRegistrationCreateResponse>;
+    public record GetOrgRegistrationStatusQuery(string RegistrationNumber) : IRequest<OrgRegistrationPortalStatusResponse>;
+
+    public record OrgRegistrationPortalStatusResponse(OrgRegistrationStatusCode Status);
 
     public class OrgRegistrationCreateRequest
     {
@@ -292,5 +297,11 @@ namespace Spd.Manager.Membership.OrgRegistration
 
         [Description("Existing Organization")]
         ExistingOrganization,
+    }
+    public enum OrgRegistrationStatusCode
+    {
+        ApplicationSubmitted,
+        InProgress,
+        Complete
     }
 }
