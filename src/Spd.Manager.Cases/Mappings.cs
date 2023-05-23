@@ -50,6 +50,7 @@ namespace Spd.Manager.Cases
             CreateMap<ClearanceListResp, ClearanceListResponse>();
             CreateMap<ClearanceListFilterBy, ClearanceFilterBy>();
             CreateMap<ClearanceListSortBy, ClearanceSortBy>();
+            CreateMap<ClearanceAccessDeleteCommand, ClearanceAccessDeleteCmd>();
 
         }
     }

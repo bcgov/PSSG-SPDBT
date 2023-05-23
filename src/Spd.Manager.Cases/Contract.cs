@@ -1,8 +1,6 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using Spd.Engine.Validation;
-using Spd.Resource.Applicants.Application;
 using System.ComponentModel;
 
 namespace Spd.Manager.Cases
@@ -19,6 +17,7 @@ namespace Spd.Manager.Cases
         public Task<BulkHistoryListResponse> Handle(GetBulkUploadHistoryQuery request, CancellationToken ct);
         public Task<BulkUploadCreateResponse> Handle(BulkUploadCreateCommand cmd, CancellationToken ct);
         public Task<ClearanceListResponse> Handle(ClearanceListQuery request, CancellationToken ct);
+        public Task<Unit> Handle(ClearanceAccessDeleteCommand request, CancellationToken ct);
     }
 
     #region application invites
@@ -164,6 +163,7 @@ namespace Spd.Manager.Cases
         public DateTimeOffset? CreatedOn { get; set; }
         public ApplicationPortalStatusCode? Status { get; set; }
     }
+    public record ClearanceAccessDeleteCommand(Guid ClearanceAccessId, Guid OrgId) : IRequest<Unit>;
 
     public enum ApplicationPortalStatusCode
     {
