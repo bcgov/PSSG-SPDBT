@@ -22,6 +22,7 @@ import { StepFourComponent } from './steps/step-four.component';
 import { StepOneComponent } from './steps/step-one.component';
 import { StepThreeComponent } from './steps/step-three.component';
 import { StepTwoComponent } from './steps/step-two.component';
+import { PreRegistrationComponent } from './pre-registration.component';
 
 @NgModule({
 	declarations: [
@@ -46,6 +47,7 @@ import { StepTwoComponent } from './steps/step-two.component';
 		StepTwoComponent,
 		StepThreeComponent,
 		StepFourComponent,
+  PreRegistrationComponent,
 	],
 	imports: [SharedModule, OrgRegistrationRoutingModule],
 	providers: [],

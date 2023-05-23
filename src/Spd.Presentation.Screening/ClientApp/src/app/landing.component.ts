@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { ApplicantPortalRoutes } from './modules/applicant-portal/applicant-portal-routing.module';
 import { CrcApplicationRoutes } from './modules/crc-application/crc-application-routing.module';
 import { CrrpRoutes } from './modules/crrp-application/crrp-routing.module';
 
@@ -25,10 +26,13 @@ import { CrrpRoutes } from './modules/crrp-application/crrp-routing.module';
 
 		<section class="step-section col-xxl-4 col-xl-4 col-lg-5 col-md-6 col-sm-12 mx-auto mt-4 p-4">
 			Temporary section
+			<button mat-stroked-button color="primary" class="large my-2" (click)="goToApplicant()">Applicant Portal</button>
+
+			<mat-divider class="my-4"></mat-divider>
+
 			<button mat-stroked-button color="primary" class="large my-2" (click)="goToScreening()">
 				Criminal Record Check Application
 			</button>
-
 			<mat-radio-group [(ngModel)]="paymentBy">
 				<mat-radio-button value="APP">
 					<strong>Applicant Paying</strong>
@@ -48,6 +52,10 @@ export class LandingComponent {
 
 	goToScreening(): void {
 		this.router.navigateByUrl(`/${CrcApplicationRoutes.MODULE_PATH}`, { state: { paymentBy: this.paymentBy } });
+	}
+
+	goToApplicant(): void {
+		this.router.navigateByUrl(ApplicantPortalRoutes.path(ApplicantPortalRoutes.CRC_LIST));
 	}
 
 	onRegisterWithBCeid(): void {

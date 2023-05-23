@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LandingComponent } from './landing.component';
+import { ApplicantPortalRoutes } from './modules/applicant-portal/applicant-portal-routing.module';
 import { CrcApplicationRoutes } from './modules/crc-application/crc-application-routing.module';
 import { CrrpRoutes } from './modules/crrp-application/crrp-routing.module';
 import { OrgRegistrationRoutes } from './modules/org-registration/org-registration-routing.module';
@@ -12,6 +13,7 @@ export class AppRoutes {
 	public static CRC_APPLICATION = CrcApplicationRoutes.MODULE_PATH;
 	public static CRRP_APPLICATION = CrrpRoutes.MODULE_PATH;
 	public static PSSO_APPLICATION = PssoRoutes.MODULE_PATH;
+	public static APPLICANT_PORTAL = ApplicantPortalRoutes.MODULE_PATH;
 	public static ACCESS_DENIED = 'access-denied';
 	public static INVITATION_DENIED = 'invitation-denied';
 
@@ -47,6 +49,12 @@ const routes: Routes = [
 		loadChildren: () =>
 			import('./modules/psso-application/psso-application.module').then((m) => m.PssoApplicationModule),
 		data: { title: 'Personnel Security Screening Office' },
+	},
+	{
+		path: AppRoutes.APPLICANT_PORTAL,
+		loadChildren: () =>
+			import('./modules/applicant-portal/applicant-portal.module').then((m) => m.ApplicantPortalModule),
+		data: { title: 'Security Screening Portal' },
 	},
 	{
 		path: AppRoutes.ACCESS_DENIED,

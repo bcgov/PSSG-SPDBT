@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { OrgRegistrationComponent } from './org-registration.component';
+import { PreRegistrationComponent } from './pre-registration.component';
 
 export class OrgRegistrationRoutes {
 	public static ORG_REGISTRATION = 'org-registration';
@@ -15,6 +16,10 @@ const routes: Routes = [
 	{
 		path: '',
 		component: OrgRegistrationComponent,
+	},
+	{
+		path: 'registration/:id',
+		component: PreRegistrationComponent,
 	},
 ];
 
