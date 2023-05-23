@@ -466,6 +466,12 @@ namespace Spd.Presentation.Screening.Controllers
                 });
         }
 
+        /// <summary>
+        /// Mark the clearance access record as inactive
+        /// </summary>
+        /// <param name="clearanceId"></param>
+        /// <param name="orgId"></param>
+        /// <returns></returns>
         [Route("api/orgs/{orgId}/clearance-access/{clearanceId}")]
         [HttpDelete]
         public async Task<ActionResult> ClearanceAccessDeleteAsync([FromRoute] Guid clearanceId, [FromRoute] Guid orgId)
