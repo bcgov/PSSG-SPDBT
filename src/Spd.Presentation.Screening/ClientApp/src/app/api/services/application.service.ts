@@ -465,9 +465,9 @@ export class ApplicationService extends BaseService {
   }
 
   /**
-   * Path part for operation apiOrgsOrgIdApplicationBulkPost
+   * Path part for operation apiOrgsOrgIdApplicationsBulkPost
    */
-  static readonly ApiOrgsOrgIdApplicationBulkPostPath = '/api/orgs/{orgId}/application/bulk';
+  static readonly ApiOrgsOrgIdApplicationsBulkPostPath = '/api/orgs/{orgId}/applications/bulk';
 
   /**
    * create more than one application invites. if checkDuplicate is true, the implementation will check if there is existing duplicated applicants or invites.
@@ -475,11 +475,11 @@ export class ApplicationService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiOrgsOrgIdApplicationBulkPost()` instead.
+   * To access only the response body, use `apiOrgsOrgIdApplicationsBulkPost()` instead.
    *
    * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
-  apiOrgsOrgIdApplicationBulkPost$Response(params: {
+  apiOrgsOrgIdApplicationsBulkPost$Response(params: {
     orgId: string;
     context?: HttpContext
     body?: {
@@ -489,7 +489,7 @@ export class ApplicationService extends BaseService {
   }
 ): Observable<StrictHttpResponse<BulkUploadCreateResponse>> {
 
-    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdApplicationBulkPostPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdApplicationsBulkPostPath, 'post');
     if (params) {
       rb.path('orgId', params.orgId, {});
       rb.body(params.body, 'multipart/form-data');
@@ -513,11 +513,11 @@ export class ApplicationService extends BaseService {
    *
    *
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiOrgsOrgIdApplicationBulkPost$Response()` instead.
+   * To access the full response (for headers, for example), `apiOrgsOrgIdApplicationsBulkPost$Response()` instead.
    *
    * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
-  apiOrgsOrgIdApplicationBulkPost(params: {
+  apiOrgsOrgIdApplicationsBulkPost(params: {
     orgId: string;
     context?: HttpContext
     body?: {
@@ -527,7 +527,7 @@ export class ApplicationService extends BaseService {
   }
 ): Observable<BulkUploadCreateResponse> {
 
-    return this.apiOrgsOrgIdApplicationBulkPost$Response(params).pipe(
+    return this.apiOrgsOrgIdApplicationsBulkPost$Response(params).pipe(
       map((r: StrictHttpResponse<BulkUploadCreateResponse>) => r.body as BulkUploadCreateResponse)
     );
   }

@@ -160,7 +160,7 @@ export class GenericUploadsComponent implements OnInit {
 
 		// Check for potential duplicate
 		this.applicationService
-			.apiOrgsOrgIdApplicationBulkPost({ orgId: this.authenticationService.loggedInUserInfo?.orgId!, body })
+			.apiOrgsOrgIdApplicationsBulkPost({ orgId: this.authenticationService.loggedInUserInfo?.orgId!, body })
 			.pipe()
 			.subscribe((resp: BulkUploadCreateResponse) => {
 				this.validationErrs = resp.validationErrs ?? [];
@@ -245,9 +245,9 @@ export class GenericUploadsComponent implements OnInit {
 		};
 
 		this.applicationService
-			.apiOrgsOrgIdApplicationBulkPost({ orgId: this.authenticationService.loggedInUserInfo?.orgId!, body })
+			.apiOrgsOrgIdApplicationsBulkPost({ orgId: this.authenticationService.loggedInUserInfo?.orgId!, body })
 			.pipe()
-			.subscribe((_resp) => {
+			.subscribe((_resp: BulkUploadCreateResponse) => {
 				this.showResult = true;
 			}); // should be no errors since this file has already been processed
 	}
