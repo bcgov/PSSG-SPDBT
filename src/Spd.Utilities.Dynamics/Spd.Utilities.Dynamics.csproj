@@ -21,7 +21,7 @@
     <PackageReference Include="Microsoft.OData.Core" Version="7.15.0" />
     <PackageReference Include="Microsoft.OData.Edm" Version="7.16.0" />
     <PackageReference Include="Microsoft.OData.Extensions.Client" Version="1.0.6" />
-    <PackageReference Include="Microsoft.Spatial" Version="7.15.0" />
+    <PackageReference Include="Microsoft.Spatial" Version="7.16.0" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
     <PackageReference Include="System.Text.Json" Version="7.0.2" />
   </ItemGroup>
