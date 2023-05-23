@@ -6,6 +6,7 @@ using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
+using System.Configuration;
 using System.Net;
 
 namespace Spd.Presentation.Screening.Controllers
@@ -17,11 +18,13 @@ namespace Spd.Presentation.Screening.Controllers
     {
         private readonly IMediator _mediator;
         private readonly IRecaptchaVerificationService _verificationService;
+        private readonly IConfiguration _configuration;
 
-        public OrgRegistrationController(IMediator mediator, IRecaptchaVerificationService verificationService)
+        public OrgRegistrationController(IMediator mediator, IRecaptchaVerificationService verificationService, IConfiguration configuration)
         {
             _mediator = mediator;
             _verificationService = verificationService;
+            _configuration = configuration;
         }
 
         /// <summary>
@@ -45,15 +48,39 @@ namespace Spd.Presentation.Screening.Controllers
             {
                 throw new ApiException(HttpStatusCode.BadRequest, "Invalid recaptcha value");
             }
-            return await _mediator.Send(new RegisterOrganizationCommand(anonymOrgRegRequest));
+            string? hostUrl = _configuration.GetValue<string>("HostUrl");
+            if (hostUrl == null)
+                throw new ConfigurationErrorsException("HostUrl is not set correctly in configuration.");
+            return await _mediator.Send(new RegisterOrganizationCommand(anonymOrgRegRequest, hostUrl));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="orgRegistrationCreateRequest"></param>
+        /// <returns></returns>
+        /// <exception cref="ConfigurationErrorsException"></exception>
         [Route("api/org-registrations")]
         [HttpPost]
         [Authorize]
         public async Task<OrgRegistrationCreateResponse> Register([FromBody][Required] OrgRegistrationCreateRequest orgRegistrationCreateRequest)
         {
-            return await _mediator.Send(new RegisterOrganizationCommand(orgRegistrationCreateRequest));
+            string? hostUrl = _configuration.GetValue<string>("HostUrl");
+            if (hostUrl == null)
+                throw new ConfigurationErrorsException("HostUrl is not set correctly in configuration.");
+            return await _mediator.Send(new RegisterOrganizationCommand(orgRegistrationCreateRequest, hostUrl));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="registrationNumber"></param>
+        /// <returns></returns>
+        [Route("api/org-registrations/{registrationNumber}/status")]
+        [HttpGet]
+        public async Task<OrgRegistrationPortalStatusResponse> Status([FromRoute]string registrationNumber)
+        {
+            return await _mediator.Send(new GetOrgRegistrationStatusQuery(registrationNumber));
         }
     }
 

@@ -11,7 +11,7 @@ namespace Spd.Resource.Organizations.Registration
         private readonly IMapper _mapper;
         public OrgRegistrationRepository(IDynamicsContextFactory ctx, IMapper mapper, ILogger<OrgRegistrationRepository> logger)
         {
-            _dynaContext = ctx.Create();
+            _dynaContext = ctx.CreateChangeOverwrite();
             _mapper = mapper;
         }
 
@@ -23,8 +23,10 @@ namespace Spd.Resource.Organizations.Registration
                 orgRegs = orgRegs.Where(o => o.spd_portaluseridentityguid == query.UserGuid.ToString());
             if (query.OrgGuid != null)
                 orgRegs = orgRegs.Where(o => o.spd_identityguid == query.OrgGuid.ToString());
+            if (query.RegistrationNumber != null)
+                orgRegs = orgRegs.Where(o => o.spd_registrationnumber == query.RegistrationNumber);
 
-            IEnumerable<spd_orgregistration> results = orgRegs.AsEnumerable();
+            IEnumerable<spd_orgregistration> results = await orgRegs.GetAllPagesAsync(ct);
             return new OrgRegistrationQueryResult(_mapper.Map<IEnumerable<OrgRegistrationResult>>(results));
         }
 
@@ -46,8 +48,13 @@ namespace Spd.Resource.Organizations.Registration
             Guid teamGuid = Guid.Parse(DynamicsConstants.Client_Service_Team_Guid);
             var serviceTeam = _dynaContext.teams.Where(t => t.teamid == teamGuid).FirstOrDefault();
             _dynaContext.SetLink(orgregistration, nameof(spd_orgregistration.ownerid), serviceTeam);
-
             _dynaContext.SetLink(orgregistration, nameof(spd_orgregistration.spd_OrganizationTypeId), _dynaContext.LookupOrganizationType(key));
+            await _dynaContext.SaveChangesAsync(ct);
+
+            spd_orgregistration? orgReg = await _dynaContext.spd_orgregistrations.Where(o => o.spd_orgregistrationid == orgregistration.spd_orgregistrationid).FirstOrDefaultAsync(ct);
+            if (orgReg != null)
+                orgReg.spd_preregistrationlink = $"{createRegistrationCmd.HostUrl}org-registration/registration/{orgReg.spd_registrationnumber}";
+            _dynaContext.UpdateObject(orgReg);
             await _dynaContext.SaveChangesAsync(ct);
             return true;
         }
