@@ -827,26 +827,30 @@ export class ApplicationService extends BaseService {
   }
 
   /**
-   * Path part for operation apiOrgsOrgIdClearanceAccessClearanceIdDelete
+   * Path part for operation apiOrgsOrgIdClearanceAccessClearanceAccessIdDelete
    */
-  static readonly ApiOrgsOrgIdClearanceAccessClearanceIdDeletePath = '/api/orgs/{orgId}/clearance-access/{clearanceId}';
+  static readonly ApiOrgsOrgIdClearanceAccessClearanceAccessIdDeletePath = '/api/orgs/{orgId}/clearance-access/{clearanceAccessId}';
 
   /**
+   * Mark the clearance access record as inactive.
+   *
+   *
+   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiOrgsOrgIdClearanceAccessClearanceIdDelete()` instead.
+   * To access only the response body, use `apiOrgsOrgIdClearanceAccessClearanceAccessIdDelete()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdClearanceAccessClearanceIdDelete$Response(params: {
-    clearanceId: string;
+  apiOrgsOrgIdClearanceAccessClearanceAccessIdDelete$Response(params: {
+    clearanceAccessId: string;
     orgId: string;
     context?: HttpContext
   }
 ): Observable<StrictHttpResponse<ActionResult>> {
 
-    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdClearanceAccessClearanceIdDeletePath, 'delete');
+    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdClearanceAccessClearanceAccessIdDeletePath, 'delete');
     if (params) {
-      rb.path('clearanceId', params.clearanceId, {});
+      rb.path('clearanceAccessId', params.clearanceAccessId, {});
       rb.path('orgId', params.orgId, {});
     }
 
@@ -863,19 +867,23 @@ export class ApplicationService extends BaseService {
   }
 
   /**
+   * Mark the clearance access record as inactive.
+   *
+   *
+   *
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiOrgsOrgIdClearanceAccessClearanceIdDelete$Response()` instead.
+   * To access the full response (for headers, for example), `apiOrgsOrgIdClearanceAccessClearanceAccessIdDelete$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdClearanceAccessClearanceIdDelete(params: {
-    clearanceId: string;
+  apiOrgsOrgIdClearanceAccessClearanceAccessIdDelete(params: {
+    clearanceAccessId: string;
     orgId: string;
     context?: HttpContext
   }
 ): Observable<ActionResult> {
 
-    return this.apiOrgsOrgIdClearanceAccessClearanceIdDelete$Response(params).pipe(
+    return this.apiOrgsOrgIdClearanceAccessClearanceAccessIdDelete$Response(params).pipe(
       map((r: StrictHttpResponse<ActionResult>) => r.body as ActionResult)
     );
   }
