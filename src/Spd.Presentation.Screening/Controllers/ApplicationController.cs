@@ -469,14 +469,14 @@ namespace Spd.Presentation.Screening.Controllers
         /// <summary>
         /// Mark the clearance access record as inactive
         /// </summary>
-        /// <param name="clearanceId"></param>
+        /// <param name="clearanceAccessId"></param>
         /// <param name="orgId"></param>
         /// <returns></returns>
-        [Route("api/orgs/{orgId}/clearance-access/{clearanceId}")]
+        [Route("api/orgs/{orgId}/clearance-access/{clearanceAccessId}")]
         [HttpDelete]
-        public async Task<ActionResult> ClearanceAccessDeleteAsync([FromRoute] Guid clearanceId, [FromRoute] Guid orgId)
+        public async Task<ActionResult> ClearanceAccessDeleteAsync([FromRoute] Guid clearanceAccessId, [FromRoute] Guid orgId)
         {
-            await _mediator.Send(new ClearanceAccessDeleteCommand(clearanceId, orgId));
+            await _mediator.Send(new ClearanceAccessDeleteCommand(clearanceAccessId, orgId));
             return Ok();
         }
 
