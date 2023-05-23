@@ -4,11 +4,11 @@ namespace Spd.Resource.Organizations.Registration
     {
         Task<bool> AddRegistrationAsync(CreateOrganizationRegistrationCommand createRegistrationCmd, CancellationToken ct);
         Task<bool> CheckDuplicateAsync(SearchRegistrationQry searchQry, CancellationToken ct);
-        Task<OrgRegistrationQueryResult?> Query(OrgRegistrationQuery query, CancellationToken ct);
+        Task<OrgRegistrationQueryResult> Query(OrgRegistrationQuery query, CancellationToken ct);
     }
 
     //queries
-    public record OrgRegistrationQuery(Guid? UserGuid, Guid? OrgGuid);
+    public record OrgRegistrationQuery(Guid? UserGuid, Guid? OrgGuid, string? RegistrationNumber=null);
     public record SearchRegistrationQry()
     {
         public string? GenericEmail { get; set; }
@@ -21,7 +21,7 @@ namespace Spd.Resource.Organizations.Registration
     public record OrgRegistrationQueryResult(IEnumerable<OrgRegistrationResult> OrgRegistrationResults);
 
     //commands
-    public record CreateOrganizationRegistrationCommand(OrgRegistration OrgRegistration);
+    public record CreateOrganizationRegistrationCommand(OrgRegistration OrgRegistration, string HostUrl);
 
     //shared contents
     public record OrgRegistration
