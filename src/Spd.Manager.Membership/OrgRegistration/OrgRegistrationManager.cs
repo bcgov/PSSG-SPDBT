@@ -11,6 +11,7 @@ namespace Spd.Manager.Membership.OrgRegistration
 {
     internal class OrgRegistrationManager :
         IRequestHandler<RegisterOrganizationCommand, OrgRegistrationCreateResponse>,
+        IRequestHandler<GetOrgRegistrationStatusQuery, OrgRegistrationPortalStatusResponse>,
         IOrgRegistrationManager
     {
         private readonly IOrgRegistrationRepository _orgRegRepository;

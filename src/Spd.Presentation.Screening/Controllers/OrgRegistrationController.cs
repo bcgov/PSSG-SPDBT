@@ -76,7 +76,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// </summary>
         /// <param name="registrationNumber"></param>
         /// <returns></returns>
-        [Route("api/org-registrations-status/{registrationNumber}")]
+        [Route("api/org-registrations/{registrationNumber}/status")]
         [HttpGet]
         public async Task<OrgRegistrationPortalStatusResponse> Status([FromRoute]string registrationNumber)
         {
