@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ValidationErr } from 'src/app/api/models';
@@ -9,28 +10,30 @@ import { UtilService } from 'src/app/core/services/util.service';
 	selector: 'app-crc-list',
 	template: `
 		<div class="p-2">
-			<div class="alert alert-warning d-flex align-items-center" role="alert">
+			<div class="alert alert-danger d-flex align-items-center" role="alert">
 				<mat-icon class="d-none d-lg-block alert-icon me-2">warning</mat-icon>
 				<div>
 					<div class="fw-semibold">Fingerprint information required on 2 applications</div>
 				</div>
 			</div>
 
-			<div class="alert alert-warning d-flex align-items-center" role="alert">
+			<div class="alert alert-danger d-flex align-items-center" role="alert">
 				<mat-icon class="d-none d-lg-block alert-icon me-2">warning</mat-icon>
 				<div>
 					<div class="fw-semibold">1 application requires additional information</div>
 				</div>
 			</div>
 
-			<div class="row mt-4">
-				<div class="col-12">
-					<h3 class="fw-normal">John Doe Criminal Record Check History</h3>
-					<mat-button-toggle-group formControlName="payeeType" aria-label="Paid By">
-						<mat-button-toggle class="button-toggle" value="ACTIVE"> Active Screenings </mat-button-toggle>
-						<mat-button-toggle class="button-toggle" value="ALL"> All Screenings </mat-button-toggle>
-					</mat-button-toggle-group>
-				</div>
+			<div class="d-flex flex-row justify-content-between pt-4">
+				<h3 class="fw-normal">John Doe Criminal Record Check History</h3>
+				<mat-button-toggle-group
+					[(ngModel)]="screeningFilter"
+					(change)="onFilterChange($event)"
+					aria-label="Screening Filter"
+				>
+					<mat-button-toggle class="button-toggle" value="ACTIVE"> Active Screenings </mat-button-toggle>
+					<mat-button-toggle class="button-toggle" value="ALL"> All Screenings </mat-button-toggle>
+				</mat-button-toggle-group>
 			</div>
 
 			<div class="row mt-4">
@@ -40,7 +43,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 							<mat-header-cell *matHeaderCellDef>Organization Name</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Organization Name:</span>
-								{{ application.uploadedDateTime | date : constants.date.dateTimeFormat }}
+								{{ application.organizationName }}
 							</mat-cell>
 						</ng-container>
 
@@ -48,7 +51,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 							<mat-header-cell *matHeaderCellDef>Submitted On</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Submitted On:</span>
-								{{ application.uploadedDateTime | date : constants.date.dateTimeFormat }}
+								{{ application.uploadedDateTime | date : constants.date.dateFormat }}
 							</mat-cell>
 						</ng-container>
 
@@ -107,6 +110,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 	styles: [],
 })
 export class CrcListComponent implements OnInit {
+	screeningFilter: string = 'ACTIVE';
 	private queryParams: any = this.utilService.getDefaultQueryParams();
 
 	constants = SPD_CONSTANTS;
@@ -127,6 +131,10 @@ export class CrcListComponent implements OnInit {
 	onPageChanged(page: PageEvent): void {
 		this.queryParams.page = page.pageIndex;
 		this.loadList();
+	}
+
+	onFilterChange(event: MatButtonToggleChange) {
+		console.log('onFilterChange', event.value);
 	}
 
 	private loadList(): void {

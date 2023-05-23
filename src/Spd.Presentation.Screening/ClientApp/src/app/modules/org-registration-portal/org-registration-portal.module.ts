@@ -3,6 +3,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { OrgRegDuplicateModalComponent } from './org-reg-duplicate-modal.component';
 import { OrgRegistrationRoutingModule } from './org-registration-routing.module';
 import { OrgRegistrationComponent } from './org-registration.component';
+import { PreRegistrationComponent } from './pre-registration.component';
 import { AgreementOfTermsComponent } from './step-components/agreement-of-terms.component';
 import { CompensationQuestionComponent } from './step-components/compensation-question.component';
 import { CompletedComponent } from './step-components/completed.component';
@@ -22,7 +23,6 @@ import { StepFourComponent } from './steps/step-four.component';
 import { StepOneComponent } from './steps/step-one.component';
 import { StepThreeComponent } from './steps/step-three.component';
 import { StepTwoComponent } from './steps/step-two.component';
-import { PreRegistrationComponent } from './pre-registration.component';
 
 @NgModule({
 	declarations: [
@@ -47,9 +47,9 @@ import { PreRegistrationComponent } from './pre-registration.component';
 		StepTwoComponent,
 		StepThreeComponent,
 		StepFourComponent,
-  PreRegistrationComponent,
+		PreRegistrationComponent,
 	],
 	imports: [SharedModule, OrgRegistrationRoutingModule],
 	providers: [],
 })
-export class OrgRegistrationModule {}
+export class OrgRegistrationPortalModule {}

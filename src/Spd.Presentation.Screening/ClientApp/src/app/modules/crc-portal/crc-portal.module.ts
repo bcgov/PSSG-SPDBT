@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { CrcApplicationRoutingModule } from './crc-application-routing.module';
-import { CrcApplicationComponent } from './crc-application.component';
+import { CrcApplicationRoutingModule } from './crc-routing.module';
+import { CrcComponent } from './crc.component';
 import { AgreementOfTermsComponent } from './step-components/agreement-of-terms.component';
 import { ApplicationSubmittedComponent } from './step-components/application-submitted.component';
 import { ChecklistComponent } from './step-components/checklist.component';
@@ -25,7 +25,7 @@ import { StepTermsAndCondComponent } from './steps/step-terms-and-cond.component
 
 @NgModule({
 	declarations: [
-		CrcApplicationComponent,
+		CrcComponent,
 		StepEligibilityComponent,
 		StepOrganizationInfoComponent,
 		StepLoginOptionsComponent,
@@ -50,4 +50,4 @@ import { StepTermsAndCondComponent } from './steps/step-terms-and-cond.component
 	imports: [SharedModule, CrcApplicationRoutingModule],
 	providers: [],
 })
-export class CrcApplicationModule {}
+export class CrcPortalModule {}

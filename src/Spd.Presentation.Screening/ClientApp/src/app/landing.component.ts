@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { ApplicantPortalRoutes } from './modules/applicant-portal/applicant-portal-routing.module';
-import { CrcApplicationRoutes } from './modules/crc-application/crc-application-routing.module';
-import { CrrpRoutes } from './modules/crrp-application/crrp-routing.module';
+import { ApplicantRoutes } from './modules/applicant-portal/applicant-routing.module';
+import { CrcRoutes } from './modules/crc-portal/crc-routing.module';
+import { CrrpRoutes } from './modules/crrp-portal/crrp-routing.module';
 
 @Component({
 	selector: 'app-landing',
@@ -51,11 +51,11 @@ export class LandingComponent {
 	constructor(private router: Router) {}
 
 	goToScreening(): void {
-		this.router.navigateByUrl(`/${CrcApplicationRoutes.MODULE_PATH}`, { state: { paymentBy: this.paymentBy } });
+		this.router.navigateByUrl(`/${CrcRoutes.MODULE_PATH}`, { state: { paymentBy: this.paymentBy } });
 	}
 
 	goToApplicant(): void {
-		this.router.navigateByUrl(ApplicantPortalRoutes.path(ApplicantPortalRoutes.CRC_LIST));
+		this.router.navigateByUrl(ApplicantRoutes.path(ApplicantRoutes.CRC_LIST));
 	}
 
 	onRegisterWithBCeid(): void {

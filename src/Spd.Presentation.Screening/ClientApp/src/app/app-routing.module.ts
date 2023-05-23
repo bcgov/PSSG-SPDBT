@@ -1,19 +1,19 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LandingComponent } from './landing.component';
-import { ApplicantPortalRoutes } from './modules/applicant-portal/applicant-portal-routing.module';
-import { CrcApplicationRoutes } from './modules/crc-application/crc-application-routing.module';
-import { CrrpRoutes } from './modules/crrp-application/crrp-routing.module';
-import { OrgRegistrationRoutes } from './modules/org-registration/org-registration-routing.module';
-import { PssoRoutes } from './modules/psso-application/psso-routing.module';
+import { ApplicantRoutes } from './modules/applicant-portal/applicant-routing.module';
+import { CrcRoutes } from './modules/crc-portal/crc-routing.module';
+import { CrrpRoutes } from './modules/crrp-portal/crrp-routing.module';
+import { OrgRegistrationRoutes } from './modules/org-registration-portal/org-registration-routing.module';
+import { PssoRoutes } from './modules/psso-portal/psso-routing.module';
 import { AccessDeniedComponent } from './shared/components/access-denied.component';
 
 export class AppRoutes {
 	public static ORG_REGISTRATION = OrgRegistrationRoutes.MODULE_PATH;
-	public static CRC_APPLICATION = CrcApplicationRoutes.MODULE_PATH;
+	public static CRC_APPLICATION = CrcRoutes.MODULE_PATH;
 	public static CRRP_APPLICATION = CrrpRoutes.MODULE_PATH;
 	public static PSSO_APPLICATION = PssoRoutes.MODULE_PATH;
-	public static APPLICANT_PORTAL = ApplicantPortalRoutes.MODULE_PATH;
+	public static APPLICANT_PORTAL = ApplicantRoutes.MODULE_PATH;
 	public static ACCESS_DENIED = 'access-denied';
 	public static INVITATION_DENIED = 'invitation-denied';
 
@@ -30,31 +30,31 @@ const routes: Routes = [
 	{
 		path: AppRoutes.ORG_REGISTRATION,
 		loadChildren: () =>
-			import('./modules/org-registration/org-registration.module').then((m) => m.OrgRegistrationModule),
+			import('./modules/org-registration-portal/org-registration-portal.module').then(
+				(m) => m.OrgRegistrationPortalModule
+			),
 		data: { title: 'Organization Registration' },
 	},
 	{
 		path: AppRoutes.CRC_APPLICATION,
-		loadChildren: () => import('./modules/crc-application/crc-application.module').then((m) => m.CrcApplicationModule),
+		loadChildren: () => import('./modules/crc-portal/crc-portal.module').then((m) => m.CrcPortalModule),
 		data: { title: 'Criminal Record Check Application' },
 	},
 	{
 		path: AppRoutes.CRRP_APPLICATION,
-		loadChildren: () =>
-			import('./modules/crrp-application/crrp-application.module').then((m) => m.CrrpApplicationModule),
+		loadChildren: () => import('./modules/crrp-portal/crrp-portal.module').then((m) => m.CrrpPortalModule),
 		data: { title: 'Criminal Records Review Program' },
 	},
 	{
 		path: AppRoutes.PSSO_APPLICATION,
-		loadChildren: () =>
-			import('./modules/psso-application/psso-application.module').then((m) => m.PssoApplicationModule),
+		loadChildren: () => import('./modules/psso-portal/psso-portal.module').then((m) => m.PssoPortalModule),
 		data: { title: 'Personnel Security Screening Office' },
 	},
 	{
 		path: AppRoutes.APPLICANT_PORTAL,
 		loadChildren: () =>
 			import('./modules/applicant-portal/applicant-portal.module').then((m) => m.ApplicantPortalModule),
-		data: { title: 'Security Screening Portal' },
+		data: { title: 'Security Screening' },
 	},
 	{
 		path: AppRoutes.ACCESS_DENIED,

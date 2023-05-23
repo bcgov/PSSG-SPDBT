@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { ApplicantPortalRoutingModule } from './applicant-portal-routing.module';
-import { ApplicantPortalComponent } from './applicant-portal.component';
-import { CrcListComponent } from './components/crc-list.component';
+import { ApplicantRoutingModule } from './applicant-routing.module';
+import { ApplicantComponent } from './applicant.component';
 import { CrcDetailComponent } from './components/crc-detail.component';
+import { CrcListComponent } from './components/crc-list.component';
 
 @NgModule({
-	declarations: [ApplicantPortalComponent, CrcListComponent, CrcDetailComponent],
-	imports: [SharedModule, ApplicantPortalRoutingModule],
+	declarations: [ApplicantComponent, CrcListComponent, CrcDetailComponent],
+	imports: [SharedModule, ApplicantRoutingModule],
 })
 export class ApplicantPortalModule {}
