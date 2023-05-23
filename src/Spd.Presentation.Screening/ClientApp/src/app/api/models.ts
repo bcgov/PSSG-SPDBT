@@ -3,6 +3,7 @@ export { AddressFindResponse } from './models/address-find-response';
 export { AddressRetrieveResponse } from './models/address-retrieve-response';
 export { AnonymousOrgRegistrationCreateRequest } from './models/anonymous-org-registration-create-request';
 export { ApplicationCreateResponse } from './models/application-create-response';
+export { ApplicationCreateResult } from './models/application-create-result';
 export { ApplicationInviteCreateRequest } from './models/application-invite-create-request';
 export { ApplicationInviteDuplicateResponse } from './models/application-invite-duplicate-response';
 export { ApplicationInviteListResponse } from './models/application-invite-list-response';
@@ -15,6 +16,8 @@ export { ApplicationPortalStatusCode } from './models/application-portal-status-
 export { ApplicationResponse } from './models/application-response';
 export { ApplicationStatisticsResponse } from './models/application-statistics-response';
 export { BooleanTypeCode } from './models/boolean-type-code';
+export { BulkAppsCreateResponse } from './models/bulk-apps-create-response';
+export { BulkAppsCreateResultCode } from './models/bulk-apps-create-result-code';
 export { BulkHistoryListResponse } from './models/bulk-history-list-response';
 export { BulkHistoryResponse } from './models/bulk-history-response';
 export { BulkUploadCreateResponse } from './models/bulk-upload-create-response';

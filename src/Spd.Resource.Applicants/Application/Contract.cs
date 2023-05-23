@@ -7,9 +7,10 @@ public interface IApplicationRepository
     public Task<ApplicationListResp> QueryAsync(ApplicationListQry query, CancellationToken cancellationToken);
     public Task<ApplicationStatisticsResp> QueryApplicationStatisticsAsync(ApplicationStatisticsQry query, CancellationToken cancellationToken);
     public Task<bool> IdentityAsync(IdentityCmd cmd, CancellationToken ct);
-    public Task<ClearanceListResp> QueryAsync(ClearanceListQry clearanceListQry, CancellationToken ct);
     public Task<BulkAppsCreateResp> AddBulkAppsAsync(BulkAppsCreateCmd createApplicationCmds, CancellationToken cancellationToken);
     public Task<BulkHistoryListResp> QueryBulkHistoryAsync(BulkHistoryListQry query, CancellationToken cancellationToken);
+    public Task<ClearanceListResp> QueryAsync(ClearanceListQry clearanceListQry, CancellationToken ct);
+    public Task DeleteClearanceAccessAsync(ClearanceAccessDeleteCmd clearanceAccessDeleteCmd, CancellationToken cancellationToken);
 }
 
 #region application
@@ -169,6 +170,11 @@ public record ClearanceResp
     public string Facility { get; set; } = null!;
     public string Status { get; set; } = null!;
 }
+public record ClearanceAccessDeleteCmd
+{
+    public Guid ClearanceAccessId { get; set; }
+    public Guid OrgId { get; set; }
+}
 #endregion
 
 #region bulk upload
@@ -202,17 +208,17 @@ public record BulkAppsCreateCmd
     public Guid OrgId { get; set; }
 }
 public record BulkAppsCreateResp
-{ 
+{
     public IEnumerable<ApplicationCreateRslt> CreateAppResults { get; set; } = Array.Empty<ApplicationCreateRslt>();
-    public BulkAppsCreateResultCd BulkAppsCreateCode { get;set; } = BulkAppsCreateResultCd.Success;
+    public BulkAppsCreateResultCd BulkAppsCreateCode { get; set; } = BulkAppsCreateResultCd.Success;
 }
 public enum BulkAppsCreateResultCd
-{ 
+{
     Success,
     PartiallySuccess,
     Failed,
 }
-public record ApplicationCreateRslt ()
+public record ApplicationCreateRslt()
 {
     public int LineNumber { get; set; }
     public Guid ApplicationId { get; set; }

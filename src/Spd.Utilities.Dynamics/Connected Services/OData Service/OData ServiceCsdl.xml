@@ -19391,31 +19391,33 @@
         <Key>
           <PropertyRef Name="spd_clearanceaccessid" />
         </Key>
-        <Property Name="_owningteam_value" Type="Edm.Guid" />
-        <Property Name="_owningbusinessunit_value" Type="Edm.Guid" />
-        <Property Name="spd_applicantname" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_clearanceaccessid" Type="Edm.Guid" />
-        <Property Name="_spd_organizationid_value" Type="Edm.Guid" />
-        <Property Name="_createdonbehalfby_value" Type="Edm.Guid" />
-        <Property Name="spd_contractedcompanyname" Type="Edm.String" Unicode="false" />
-        <Property Name="statuscode" Type="Edm.Int32" />
-        <Property Name="spd_emailaddress1" Type="Edm.String" Unicode="false" />
-        <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
-        <Property Name="spd_clearanceaccessnumber" Type="Edm.String" Unicode="false" />
-        <Property Name="_modifiedonbehalfby_value" Type="Edm.Guid" />
-        <Property Name="_owninguser_value" Type="Edm.Guid" />
-        <Property Name="_modifiedby_value" Type="Edm.Guid" />
         <Property Name="_createdby_value" Type="Edm.Guid" />
         <Property Name="_spd_clearanceid_value" Type="Edm.Guid" />
-        <Property Name="importsequencenumber" Type="Edm.Int32" />
-        <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
-        <Property Name="versionnumber" Type="Edm.Int64" />
-        <Property Name="spd_expirydate" Type="Edm.DateTimeOffset" />
-        <Property Name="_ownerid_value" Type="Edm.Guid" />
-        <Property Name="createdon" Type="Edm.DateTimeOffset" />
-        <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
-        <Property Name="statecode" Type="Edm.Int32" />
+        <Property Name="statuscode" Type="Edm.Int32" />
+        <Property Name="spd_clearanceaccessnumber" Type="Edm.String" Unicode="false" />
         <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
+        <Property Name="importsequencenumber" Type="Edm.Int32" />
+        <Property Name="_createdonbehalfby_value" Type="Edm.Guid" />
+        <Property Name="spd_emailaddress1" Type="Edm.String" Unicode="false" />
+        <Property Name="_owningbusinessunit_value" Type="Edm.Guid" />
+        <Property Name="spd_applicantlastname" Type="Edm.String" Unicode="false" />
+        <Property Name="_ownerid_value" Type="Edm.Guid" />
+        <Property Name="spd_clearanceaccessid" Type="Edm.Guid" />
+        <Property Name="versionnumber" Type="Edm.Int64" />
+        <Property Name="spd_contractedcompanyname" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_expirydate" Type="Edm.DateTimeOffset" />
+        <Property Name="statecode" Type="Edm.Int32" />
+        <Property Name="createdon" Type="Edm.DateTimeOffset" />
+        <Property Name="spd_applicantfullname" Type="Edm.String" Unicode="false" />
+        <Property Name="_spd_organizationid_value" Type="Edm.Guid" />
+        <Property Name="_owningteam_value" Type="Edm.Guid" />
+        <Property Name="_owninguser_value" Type="Edm.Guid" />
+        <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
+        <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
+        <Property Name="spd_applicantfirstname" Type="Edm.String" Unicode="false" />
+        <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
+        <Property Name="_modifiedonbehalfby_value" Type="Edm.Guid" />
+        <Property Name="_modifiedby_value" Type="Edm.Guid" />
         <NavigationProperty Name="createdby" Type="mscrm.systemuser" Nullable="false" Partner="lk_spd_clearanceaccess_createdby">
           <ReferentialConstraint Property="_createdby_value" ReferencedProperty="systemuserid" />
         </NavigationProperty>

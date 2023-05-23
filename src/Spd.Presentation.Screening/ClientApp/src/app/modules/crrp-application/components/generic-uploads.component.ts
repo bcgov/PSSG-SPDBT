@@ -67,7 +67,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 							<mat-header-cell *matHeaderCellDef>Uploaded On</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Uploaded On:</span>
-								{{ application.createdOn | date : constants.date.dateTimeFormat }}
+								{{ application.uploadedDateTime | date : constants.date.dateTimeFormat }}
 							</mat-cell>
 						</ng-container>
 
@@ -83,7 +83,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 							<mat-header-cell *matHeaderCellDef>File Name</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">File Name:</span>
-								{{ application.applicationNumber }}
+								{{ application.fileName }}
 							</mat-cell>
 						</ng-container>
 
@@ -91,7 +91,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 							<mat-header-cell *matHeaderCellDef>Batch Number</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Batch Number:</span>
-								{{ application.applicationNumber }}
+								{{ application.batchNumber }}
 							</mat-cell>
 						</ng-container>
 
@@ -160,7 +160,7 @@ export class GenericUploadsComponent implements OnInit {
 
 		// Check for potential duplicate
 		this.applicationService
-			.apiOrgsOrgIdApplicationBulkPost({ orgId: this.authenticationService.loggedInUserInfo?.orgId!, body })
+			.apiOrgsOrgIdApplicationsBulkPost({ orgId: this.authenticationService.loggedInUserInfo?.orgId!, body })
 			.pipe()
 			.subscribe((resp: BulkUploadCreateResponse) => {
 				this.validationErrs = resp.validationErrs ?? [];
@@ -245,9 +245,9 @@ export class GenericUploadsComponent implements OnInit {
 		};
 
 		this.applicationService
-			.apiOrgsOrgIdApplicationBulkPost({ orgId: this.authenticationService.loggedInUserInfo?.orgId!, body })
+			.apiOrgsOrgIdApplicationsBulkPost({ orgId: this.authenticationService.loggedInUserInfo?.orgId!, body })
 			.pipe()
-			.subscribe((_resp) => {
+			.subscribe((_resp: BulkUploadCreateResponse) => {
 				this.showResult = true;
 			}); // should be no errors since this file has already been processed
 	}
