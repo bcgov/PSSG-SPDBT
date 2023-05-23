@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.Dynamics.CRM;
+using Spd.Resource.Organizations.Registration;
 using Spd.Resource.Organizations.User;
 using Spd.Utilities.Dynamics;
 
@@ -12,7 +14,7 @@ public class DynamicsTestData
 
     public DynamicsTestData(IDynamicsContextFactory factory, IDataProtectionProvider protectProvider)
     {
-        _context = factory.Create();
+        _context = factory.CreateChangeOverwrite();
         _dataProtector = protectProvider.CreateProtector(nameof(UserCreateCmd)).ToTimeLimitedDataProtector();
     }
 
@@ -174,6 +176,30 @@ public class DynamicsTestData
         _context.SetLink(newOne, nameof(newOne.spd_OrganizationId), org);
         await _context.SaveChangesAsync();
         return newOne;
+    }
+
+    public async Task<spd_orgregistration?> CreateOrgRegistration(string orgName)
+    {
+        var existing = _context.spd_orgregistrations
+            .Where(a => a.spd_organizationname == orgName)
+            .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
+            .FirstOrDefault();
+        if (existing != null) return existing;
+        else
+        {
+            Guid id = Guid.NewGuid();
+            spd_orgregistration newOne = new spd_orgregistration
+            {
+                spd_orgregistrationid = id,
+                spd_organizationname = orgName,
+                spd_email = "testorgReg@orgreg.com"              
+            };
+            _context.AddTospd_orgregistrations(newOne);
+            _context.SetLink(newOne, nameof(spd_orgregistration.spd_OrganizationTypeId), _context.LookupOrganizationType("Volunteer-Registrant"));
+            await _context.SaveChangesAsync();
+            spd_orgregistration? orgReg = _context.spd_orgregistrations.Where(o => o.spd_orgregistrationid == newOne.spd_orgregistrationid).FirstOrDefault();
+            return orgReg;
+        }
     }
 }
 

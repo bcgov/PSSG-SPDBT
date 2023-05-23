@@ -1,5 +1,6 @@
 using AutoMapper;
 using MediatR;
+using Spd.Manager.Membership.OrgRegistration;
 using Spd.Resource.Organizations.Identity;
 using Spd.Resource.Organizations.Org;
 using Spd.Resource.Organizations.Registration;

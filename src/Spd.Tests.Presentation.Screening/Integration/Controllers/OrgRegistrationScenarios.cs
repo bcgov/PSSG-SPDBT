@@ -1,4 +1,5 @@
 ﻿using Alba;
+using Microsoft.Dynamics.CRM;
 using Spd.Manager.Membership.OrgRegistration;
 using Spd.Presentation.Screening.Controllers;
 using System.Net;
@@ -45,6 +46,16 @@ public class OrgRegistrationScenarios : ScenarioContextBase
         });
     }
 
+    [Fact]
+    public async Task GetRegisterOrgStatus_NoAuth_Success()
+    {
+        spd_orgregistration reg = await fixture.testData.CreateOrgRegistration("orgReg");
+        await NoMockAuthHost.Scenario(_ =>
+        {
+            _.Get.Url($"/api/org-registrations/{reg.spd_registrationnumber}/status");
+            _.StatusCodeShouldBe(HttpStatusCode.OK);
+        }) ;
+    }
     private AnonymousOrgRegistrationCreateRequest Create_AnonymousOrgRegistrationCreateRequest() =>
         new AnonymousOrgRegistrationCreateRequest
         {
