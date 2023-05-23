@@ -3,7 +3,9 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OData.Client;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.FileStorage;
+using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.TempFileStorage;
+using System.Net;
 
 namespace Spd.Resource.Applicants.Application;
 internal partial class ApplicationRepository : IApplicationRepository
@@ -69,12 +71,13 @@ internal partial class ApplicationRepository : IApplicationRepository
         return response;
     }
 
-    public async Task<bool> IdentityAsync(IdentityCmd identityCmd, CancellationToken cancellationToken)
+    public async Task IdentityAsync(IdentityCmd identityCmd, CancellationToken cancellationToken)
     {
         spd_application? app = await _context.GetApplicationById(identityCmd.ApplicationId, cancellationToken);
-        if (app == null) { return false; }
+        if (app == null)
+            throw new ApiException(HttpStatusCode.BadRequest, "Invalid ApplicationId");
 
-        if (identityCmd.Verify)
+        if (identityCmd.Status == IdentityStatusCode.Verified)
         {
             var paid = app.statecode == DynamicsConstants.StateCode_Inactive ? true : false;
             if (paid)
@@ -96,7 +99,6 @@ internal partial class ApplicationRepository : IApplicationRepository
 
         _context.UpdateObject(app);
         await _context.SaveChangesAsync(cancellationToken);
-        return true;
     }
 
     public async Task<bool> CheckApplicationDuplicateAsync(SearchApplicationQry searchApplicationQry, CancellationToken cancellationToken)

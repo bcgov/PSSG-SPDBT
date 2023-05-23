@@ -29,6 +29,7 @@ export { DuplicateCheckResult } from './models/duplicate-check-result';
 export { EmployeeInteractionTypeCode } from './models/employee-interaction-type-code';
 export { EmployeeOrganizationTypeCode } from './models/employee-organization-type-code';
 export { FundsFromBcGovtExceedsThresholdCode } from './models/funds-from-bc-govt-exceeds-threshold-code';
+export { IdentityStatusCode } from './models/identity-status-code';
 export { InvitationRequest } from './models/invitation-request';
 export { InvitationResponse } from './models/invitation-response';
 export { OidcConfiguration } from './models/oidc-configuration';

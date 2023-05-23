@@ -14,6 +14,7 @@ import {
 	ApplicationPortalStatusCode,
 	ApplicationResponse,
 	ApplicationStatisticsResponse,
+	IdentityStatusCode,
 } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
@@ -350,9 +351,10 @@ export class IdentifyVerificationComponent implements OnInit {
 
 	private verifyIdentity(application: IdentityVerificationResponse) {
 		this.applicationService
-			.apiOrgsOrgIdVerifyidentityApplicationIdPut({
+			.apiOrgsOrgIdIdentityApplicationIdPut({
 				orgId: this.authenticationService.loggedInUserInfo?.orgId!,
 				applicationId: application.id!,
+				status: IdentityStatusCode.Verified,
 			})
 			.pipe()
 			.subscribe(() => {
@@ -363,9 +365,10 @@ export class IdentifyVerificationComponent implements OnInit {
 
 	private rejectIdentity(application: IdentityVerificationResponse) {
 		this.applicationService
-			.apiOrgsOrgIdRejectidentityApplicationIdPut({
+			.apiOrgsOrgIdIdentityApplicationIdPut({
 				orgId: this.authenticationService.loggedInUserInfo?.orgId!,
 				applicationId: application.id!,
+				status: IdentityStatusCode.Rejected,
 			})
 			.pipe()
 			.subscribe(() => {
