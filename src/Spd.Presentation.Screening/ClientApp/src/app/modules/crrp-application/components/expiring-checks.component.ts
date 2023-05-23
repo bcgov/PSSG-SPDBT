@@ -342,8 +342,8 @@ export class ExpiringChecksComponent implements OnInit {
 			.subscribe((response: boolean) => {
 				if (response) {
 					this.applicationService
-						.apiOrgsOrgIdClearanceAccessClearanceIdDelete({
-							clearanceId: clearance.id!,
+						.apiOrgsOrgIdClearanceAccessClearanceAccessIdDelete({
+							clearanceAccessId: clearance.id!,
 							orgId: this.authenticationService.loggedInUserInfo?.orgId!,
 						})
 						.pipe()
