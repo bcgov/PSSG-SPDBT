@@ -130,6 +130,23 @@ public class ApplicationScenarios : ScenarioContextBase
         });
     }
 
+    [Fact]
+    public async Task CreateBulkAppUpload_WithCorrectAuth_Success()
+    {
+        var (org, user) = await fixture.testData.CreateOrgWithLogonUser("org1");
+
+        await Host.Scenario(_ =>
+        {
+            _.WithRequestHeader("organization", org.accountid.ToString());
+            _.Post.MultipartFormData(CreateBulkUploadMultipartFormData(
+                "\"TEST\"\t\"TEST\"\t\"TEST\"\t\"TEST\"\t\"TEST\"\t\"TEST\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"123456 TEST ROAD\"\t\"\"\t\"CITY\"\t\"BC\"\t\"CANADA\"\t\"V1V 1V1\"\t\"111-222-3333\"\t\"ADDRESS CANADA\"\t\"1990-01-01\"\t\"F\"\t\"9999999\"\t\"1111111\"", "test.tsv")).ToUrl($"/api/orgs/{org.accountid}/applications/bulk");
+            if (org != null && org.accountid != null)
+            {
+                _.StatusCodeShouldBeOk();
+            }
+        });
+    }
+
     private ApplicationInvitesCreateRequest Create_ApplicationInvitesCreateRequest()
     {
         return new ApplicationInvitesCreateRequest
@@ -191,5 +208,21 @@ public class ApplicationScenarios : ScenarioContextBase
             ScreeningTypeCode = ScreeningTypeCode.Staff,
             BirthPlace = "place"
         };
+    }
+
+    private MultipartFormDataContent CreateBulkUploadMultipartFormData(string content, string fileName)
+    {
+        MultipartFormDataContent multipartContent = new();
+        var stream = new MemoryStream();
+        var writer = new StreamWriter(stream);
+        writer.Write(content);
+        writer.Flush();
+        stream.Position = 0;
+        var streamContent = new StreamContent(stream);
+        streamContent.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse(MediaTypeNames.Text.Plain);
+        multipartContent.Add(streamContent, "File", fileName);
+
+        multipartContent.Add(new StringContent("false"), "RequireDuplicateCheck");
+        return multipartContent;
     }
 }

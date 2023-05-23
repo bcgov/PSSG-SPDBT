@@ -53,6 +53,7 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.emailaddress1, opt => opt.MapFrom(s => s.EmailAddress))
             .ForMember(d => d.jobtitle, opt => opt.MapFrom(s => s.JobTitle))
             .ForMember(d => d.spd_sex, opt => opt.MapFrom(s => GetGender(s.GenderCode)))
+            .ForMember(d => d.gendercode, opt => opt.Ignore())
             .ForMember(d => d.birthdate, opt => opt.MapFrom(s => new Microsoft.OData.Edm.Date(s.DateOfBirth.Value.Year, s.DateOfBirth.Value.Month, s.DateOfBirth.Value.Day)))
             .ForMember(d => d.telephone1, opt => opt.MapFrom(s => s.PhoneNumber))
             .ForMember(d => d.spd_bcdriverslicense, opt => opt.MapFrom(s => s.DriversLicense))
