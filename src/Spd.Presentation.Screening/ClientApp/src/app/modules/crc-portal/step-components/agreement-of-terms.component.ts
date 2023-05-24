@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { Subject } from 'rxjs';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { CaptchaResponse, CaptchaResponseType } from 'src/app/shared/components/captcha-v2.component';
-import { CrcFormStepComponent } from '../crc-application.component';
+import { CrcFormStepComponent } from '../crc.component';
 
 @Component({
 	selector: 'app-agreement-of-terms',

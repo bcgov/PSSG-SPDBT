@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { CrcFormStepComponent } from '../crc-application.component';
+import { CrcFormStepComponent } from '../crc.component';
 
 @Component({
 	selector: 'app-declaration',

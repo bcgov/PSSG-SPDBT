@@ -1,16 +1,16 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { CrcApplicationComponent } from './crc-application.component';
+import { CrcComponent } from './crc.component';
 
-export class CrcApplicationRoutes {
+export class CrcRoutes {
 	public static CRC_APPLICATION = 'crc';
-	public static MODULE_PATH = CrcApplicationRoutes.CRC_APPLICATION;
+	public static MODULE_PATH = CrcRoutes.CRC_APPLICATION;
 }
 
 const routes: Routes = [
 	{
 		path: '',
-		component: CrcApplicationComponent,
+		component: CrcComponent,
 	},
 ];
 

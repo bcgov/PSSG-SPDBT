@@ -36,6 +36,7 @@ export { OidcConfiguration } from './models/oidc-configuration';
 export { OrgProcess } from './models/org-process';
 export { OrgRegistrationCreateRequest } from './models/org-registration-create-request';
 export { OrgRegistrationCreateResponse } from './models/org-registration-create-response';
+export { OrgRegistrationPortalStatusResponse } from './models/org-registration-portal-status-response';
 export { OrgRegistrationStatusCode } from './models/org-registration-status-code';
 export { OrgResponse } from './models/org-response';
 export { OrgSettings } from './models/org-settings';

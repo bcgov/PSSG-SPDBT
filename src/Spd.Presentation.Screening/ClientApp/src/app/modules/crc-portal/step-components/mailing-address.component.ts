@@ -4,7 +4,7 @@ import { UntilDestroy } from '@ngneat/until-destroy';
 import { AddressRetrieveResponse } from 'src/app/api/models';
 import { Address } from 'src/app/shared/components/address-autocomplete.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { CrcFormStepComponent } from '../crc-application.component';
+import { CrcFormStepComponent } from '../crc.component';
 
 @UntilDestroy({ checkProperties: true })
 @Component({

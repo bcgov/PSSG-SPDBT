@@ -75,7 +75,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 							<mat-header-cell *matHeaderCellDef>Uploaded By</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Uploaded By:</span>
-								{{ application | fullname }}
+								{{ application.uploadedByUserFullName }}
 							</mat-cell>
 						</ng-container>
 

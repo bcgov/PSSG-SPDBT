@@ -45,4 +45,4 @@ import { CrrpComponent } from './crrp.component';
 	],
 	imports: [SharedModule, CrrpRoutingModule],
 })
-export class CrrpApplicationModule {}
+export class CrrpPortalModule {}
