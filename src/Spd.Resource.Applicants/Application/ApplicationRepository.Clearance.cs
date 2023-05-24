@@ -1,45 +1,64 @@
 using Microsoft.Dynamics.CRM;
 using Microsoft.OData.Client;
 using Spd.Utilities.Dynamics;
+using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
 
 namespace Spd.Resource.Applicants.Application;
 internal partial class ApplicationRepository : IApplicationRepository
 {
-    public async Task<ClearanceListResp> QueryAsync(ClearanceListQry query, CancellationToken ct)
+    public async Task<ClearanceListResp> QueryAsync(ClearanceListQry clearanceListQry, CancellationToken ct)
     {
-        if (query == null || query.FilterBy?.OrgId == null)
-            throw new ArgumentNullException("query.FilterBy.OrgId", "Must query clearances by organization id.");
+        if (clearanceListQry == null || clearanceListQry.FilterBy?.OrgId == null)
+            throw new ArgumentNullException("clearanceListQry.FilterBy.OrgId", "Must query clearances by organization id.");
 
-        string filterStr = GetClearanceFilterString(query.FilterBy);
-        string sortStr = GetClearanceSortBy(query.SortBy);
+        string filterStr = GetClearanceFilterString(clearanceListQry.FilterBy);
+        string sortStr = GetClearanceSortBy(clearanceListQry.SortBy);
         var clearanceaccesses = _context.spd_clearanceaccesses
             .AddQueryOption("$filter", $"{filterStr}")
             .AddQueryOption("$orderby", $"{sortStr}")
             .IncludeCount();
 
-        if (query.Paging != null)
+        if (clearanceListQry.Paging != null)
         {
-            int skip = query.Paging.Page * query.Paging.PageSize;
+            int skip = clearanceListQry.Paging.Page * clearanceListQry.Paging.PageSize;
             clearanceaccesses = clearanceaccesses
                 .AddQueryOption("$skip", $"{skip}")
-                .AddQueryOption("$top", $"{query.Paging.PageSize}");
+                .AddQueryOption("$top", $"{clearanceListQry.Paging.PageSize}");
         }
 
         var result = (QueryOperationResponse<spd_clearanceaccess>)await clearanceaccesses.ExecuteAsync(ct);
 
         var response = new ClearanceListResp();
         response.Clearances = _mapper.Map<IEnumerable<ClearanceResp>>(result);
-        if (query.Paging != null)
+        if (clearanceListQry.Paging != null)
         {
             response.Pagination = new PaginationResp();
-            response.Pagination.PageSize = query.Paging.PageSize;
-            response.Pagination.PageIndex = query.Paging.Page;
+            response.Pagination.PageSize = clearanceListQry.Paging.PageSize;
+            response.Pagination.PageIndex = clearanceListQry.Paging.Page;
             response.Pagination.Length = (int)result.Count;
         }
 
         return response;
+    }
+
+    public async Task<ClearanceLetterResp> QueryLetterAsync(ClearanceLetterQry clearanceLetterQry, CancellationToken ct)
+    {
+        var docUrl = await _context.bcgov_documenturls.Where(d => d._spd_clearanceid_value == clearanceLetterQry.ClearanceId)
+            .OrderByDescending(d => d.createdon).FirstOrDefaultAsync(ct);
+
+        if (docUrl == null || docUrl.bcgov_documenturlid == null)
+            return new ClearanceLetterResp(); // no clearance letter yet
+
+        FileQueryResult fileResult = (FileQueryResult)await _fileStorage.HandleQuery(
+            new FileQuery { Key = docUrl.bcgov_documenturlid.ToString(), Folder = $"spd_clearance/{docUrl._spd_clearanceid_value}" },
+            ct);
+        return new ClearanceLetterResp()
+        {
+            Content = fileResult.File.Content,
+            ContentType = fileResult.File.ContentType
+        };
     }
 
     public async Task DeleteClearanceAccessAsync(ClearanceAccessDeleteCmd clearanceAccessDeleteCmd, CancellationToken cancellationToken)

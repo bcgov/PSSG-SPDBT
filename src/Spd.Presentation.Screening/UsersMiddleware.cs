@@ -29,14 +29,16 @@ namespace Spd.Utilities.LogonUser
 
             if (context.Request.Headers.TryGetValue("organization", out var orgIdStr))
             {
-                await ProcessUser(context, mediator, orgIdStr);
+                bool isSuccess = await ProcessUser(context, mediator, orgIdStr);
+                if (isSuccess)
+                {
+                    await next(context);
+                }
             }
             else
             {
                 await ReturnUnauthorized(context, "missing organization in the header.");
-                return;
             }
-            await next(context);
         }
 
         //endpoints that no authentication needed  
@@ -52,6 +54,7 @@ namespace Spd.Utilities.LogonUser
                 ("POST", "api/org-registrations"),
                 ("POST", "api/invitation"),
                 ("GET", "api/org-registrations"),
+                //("GET", "api/orgs"), //temp
             };
 
             if (context.Request.Path.HasValue)
@@ -69,12 +72,12 @@ namespace Spd.Utilities.LogonUser
             return false;
         }
 
-        private async Task ProcessUser(HttpContext context, IMediator mediator, string? orgIdStr)
+        private async Task<bool> ProcessUser(HttpContext context, IMediator mediator, string? orgIdStr)
         {
             if (!Guid.TryParse(orgIdStr, out Guid orgId))
             {
                 await ReturnUnauthorized(context, "organization is not a valid guid");
-                return;
+                return false;
             }
             UserProfileResponse? userProfile = await cache.Get<UserProfileResponse>($"user-{context.User.GetUserGuid()}");
             if (userProfile == null)
@@ -86,16 +89,17 @@ namespace Spd.Utilities.LogonUser
             if (userProfile?.UserInfos == null)
             {
                 await ReturnUnauthorized(context, "invalid user");
-                return;
+                return false;
             }
             UserInfo? ui = userProfile.UserInfos.FirstOrDefault(ui => ui.UserGuid == context.User.GetUserGuid() && ui.OrgId == orgId);
             if (ui == null)
             {
                 await ReturnUnauthorized(context, "invalid user or organization");
-                return;
+                return false;
             }
             //add ui to claims
             context.User.UpdateUserClaims(ui.UserId.ToString(), orgId.ToString());
+            return true;
         }
 
         private async Task ReturnUnauthorized(HttpContext context, string msg)

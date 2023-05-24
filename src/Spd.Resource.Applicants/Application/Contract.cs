@@ -11,6 +11,7 @@ public interface IApplicationRepository
     public Task<BulkHistoryListResp> QueryBulkHistoryAsync(BulkHistoryListQry query, CancellationToken cancellationToken);
     public Task<ClearanceListResp> QueryAsync(ClearanceListQry clearanceListQry, CancellationToken ct);
     public Task DeleteClearanceAccessAsync(ClearanceAccessDeleteCmd clearanceAccessDeleteCmd, CancellationToken cancellationToken);
+    public Task<ClearanceLetterResp> QueryLetterAsync(ClearanceLetterQry clearanceLetterQry, CancellationToken ct);
 }
 
 #region application
@@ -180,6 +181,13 @@ public record ClearanceAccessDeleteCmd
     public Guid ClearanceAccessId { get; set; }
     public Guid OrgId { get; set; }
 }
+public record ClearanceLetterQry(Guid ClearanceId);
+public record ClearanceLetterResp
+{
+    public string? ContentType { get; set; } = null!;
+    public byte[] Content { get; set; } = Array.Empty<byte>();
+}
+
 #endregion
 
 #region bulk upload

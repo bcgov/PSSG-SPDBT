@@ -20,6 +20,7 @@ namespace Spd.Manager.Cases
         IRequestHandler<BulkUploadCreateCommand, BulkUploadCreateResponse>,
         IRequestHandler<ClearanceListQuery, ClearanceListResponse>,
         IRequestHandler<ClearanceAccessDeleteCommand, Unit>,
+        IRequestHandler<ClearanceLetterQuery, ClearanceLetterResponse>,
         IApplicationManager
     {
         private readonly IApplicationRepository _applicationRepository;
@@ -268,6 +269,12 @@ namespace Spd.Manager.Cases
             var cmd = _mapper.Map<ClearanceAccessDeleteCmd>(request);
             await _applicationRepository.DeleteClearanceAccessAsync(cmd, ct);
             return default;
+        }
+
+        public async Task<ClearanceLetterResponse> Handle(ClearanceLetterQuery query, CancellationToken ct) 
+        {
+            ClearanceLetterResp letter = await _applicationRepository.QueryLetterAsync(new ClearanceLetterQry(query.ClearanceId), ct);
+            return _mapper.Map<ClearanceLetterResponse>(letter); 
         }
         #endregion
     }
