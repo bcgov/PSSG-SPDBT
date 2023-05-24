@@ -54,8 +54,9 @@ export class ApplicationService extends BaseService {
     filters?: string;
     page?: number;
     pageSize?: number;
-    context?: HttpContext
-  }
+  },
+  context?: HttpContext
+
 ): Observable<StrictHttpResponse<ApplicationInviteListResponse>> {
 
     const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdApplicationInvitesGetPath, 'get');
@@ -69,7 +70,7 @@ export class ApplicationService extends BaseService {
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json',
-      context: params?.context
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -85,7 +86,7 @@ export class ApplicationService extends BaseService {
    *
    *
    *
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiOrgsOrgIdApplicationInvitesGet$Response()` instead.
    *
    * This method doesn't expect any request body.
@@ -95,11 +96,12 @@ export class ApplicationService extends BaseService {
     filters?: string;
     page?: number;
     pageSize?: number;
-    context?: HttpContext
-  }
+  },
+  context?: HttpContext
+
 ): Observable<ApplicationInviteListResponse> {
 
-    return this.apiOrgsOrgIdApplicationInvitesGet$Response(params).pipe(
+    return this.apiOrgsOrgIdApplicationInvitesGet$Response(params,context).pipe(
       map((r: StrictHttpResponse<ApplicationInviteListResponse>) => r.body as ApplicationInviteListResponse)
     );
   }
@@ -121,9 +123,10 @@ export class ApplicationService extends BaseService {
    */
   apiOrgsOrgIdApplicationInvitesPost$Response(params: {
     orgId: string;
-    context?: HttpContext
     body: ApplicationInvitesCreateRequest
-  }
+  },
+  context?: HttpContext
+
 ): Observable<StrictHttpResponse<ApplicationInvitesCreateResponse>> {
 
     const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdApplicationInvitesPostPath, 'post');
@@ -135,7 +138,7 @@ export class ApplicationService extends BaseService {
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json',
-      context: params?.context
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -149,19 +152,20 @@ export class ApplicationService extends BaseService {
    *
    *
    *
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiOrgsOrgIdApplicationInvitesPost$Response()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   apiOrgsOrgIdApplicationInvitesPost(params: {
     orgId: string;
-    context?: HttpContext
     body: ApplicationInvitesCreateRequest
-  }
+  },
+  context?: HttpContext
+
 ): Observable<ApplicationInvitesCreateResponse> {
 
-    return this.apiOrgsOrgIdApplicationInvitesPost$Response(params).pipe(
+    return this.apiOrgsOrgIdApplicationInvitesPost$Response(params,context).pipe(
       map((r: StrictHttpResponse<ApplicationInvitesCreateResponse>) => r.body as ApplicationInvitesCreateResponse)
     );
   }
@@ -184,8 +188,9 @@ export class ApplicationService extends BaseService {
   apiOrgsOrgIdApplicationInvitesApplicationInviteIdDelete$Response(params: {
     applicationInviteId: string;
     orgId: string;
-    context?: HttpContext
-  }
+  },
+  context?: HttpContext
+
 ): Observable<StrictHttpResponse<ActionResult>> {
 
     const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdApplicationInvitesApplicationInviteIdDeletePath, 'delete');
@@ -197,7 +202,7 @@ export class ApplicationService extends BaseService {
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json',
-      context: params?.context
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -211,7 +216,7 @@ export class ApplicationService extends BaseService {
    *
    *
    *
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiOrgsOrgIdApplicationInvitesApplicationInviteIdDelete$Response()` instead.
    *
    * This method doesn't expect any request body.
@@ -219,11 +224,12 @@ export class ApplicationService extends BaseService {
   apiOrgsOrgIdApplicationInvitesApplicationInviteIdDelete(params: {
     applicationInviteId: string;
     orgId: string;
-    context?: HttpContext
-  }
+  },
+  context?: HttpContext
+
 ): Observable<ActionResult> {
 
-    return this.apiOrgsOrgIdApplicationInvitesApplicationInviteIdDelete$Response(params).pipe(
+    return this.apiOrgsOrgIdApplicationInvitesApplicationInviteIdDelete$Response(params,context).pipe(
       map((r: StrictHttpResponse<ActionResult>) => r.body as ActionResult)
     );
   }
@@ -249,8 +255,9 @@ export class ApplicationService extends BaseService {
     sorts?: string;
     page?: number;
     pageSize?: number;
-    context?: HttpContext
-  }
+  },
+  context?: HttpContext
+
 ): Observable<StrictHttpResponse<BulkHistoryListResponse>> {
 
     const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdApplicationsBulkHistoryGetPath, 'get');
@@ -264,7 +271,7 @@ export class ApplicationService extends BaseService {
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json',
-      context: params?.context
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -279,7 +286,7 @@ export class ApplicationService extends BaseService {
    *
    *
    *
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiOrgsOrgIdApplicationsBulkHistoryGet$Response()` instead.
    *
    * This method doesn't expect any request body.
@@ -289,11 +296,12 @@ export class ApplicationService extends BaseService {
     sorts?: string;
     page?: number;
     pageSize?: number;
-    context?: HttpContext
-  }
+  },
+  context?: HttpContext
+
 ): Observable<BulkHistoryListResponse> {
 
-    return this.apiOrgsOrgIdApplicationsBulkHistoryGet$Response(params).pipe(
+    return this.apiOrgsOrgIdApplicationsBulkHistoryGet$Response(params,context).pipe(
       map((r: StrictHttpResponse<BulkHistoryListResponse>) => r.body as BulkHistoryListResponse)
     );
   }
@@ -315,12 +323,13 @@ export class ApplicationService extends BaseService {
    */
   apiOrgsOrgIdApplicationsBulkPost$Response(params: {
     orgId: string;
-    context?: HttpContext
     body?: {
 'File'?: Blob;
 'RequireDuplicateCheck'?: boolean;
 }
-  }
+  },
+  context?: HttpContext
+
 ): Observable<StrictHttpResponse<BulkUploadCreateResponse>> {
 
     const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdApplicationsBulkPostPath, 'post');
@@ -332,7 +341,7 @@ export class ApplicationService extends BaseService {
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json',
-      context: params?.context
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -346,22 +355,23 @@ export class ApplicationService extends BaseService {
    *
    *
    *
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiOrgsOrgIdApplicationsBulkPost$Response()` instead.
    *
    * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
   apiOrgsOrgIdApplicationsBulkPost(params: {
     orgId: string;
-    context?: HttpContext
     body?: {
 'File'?: Blob;
 'RequireDuplicateCheck'?: boolean;
 }
-  }
+  },
+  context?: HttpContext
+
 ): Observable<BulkUploadCreateResponse> {
 
-    return this.apiOrgsOrgIdApplicationsBulkPost$Response(params).pipe(
+    return this.apiOrgsOrgIdApplicationsBulkPost$Response(params,context).pipe(
       map((r: StrictHttpResponse<BulkUploadCreateResponse>) => r.body as BulkUploadCreateResponse)
     );
   }
@@ -383,8 +393,9 @@ export class ApplicationService extends BaseService {
    */
   apiOrgsOrgIdApplicationStatisticsGet$Response(params: {
     orgId: string;
-    context?: HttpContext
-  }
+  },
+  context?: HttpContext
+
 ): Observable<StrictHttpResponse<ApplicationStatisticsResponse>> {
 
     const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdApplicationStatisticsGetPath, 'get');
@@ -395,7 +406,7 @@ export class ApplicationService extends BaseService {
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json',
-      context: params?.context
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -409,18 +420,19 @@ export class ApplicationService extends BaseService {
    *
    *
    *
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiOrgsOrgIdApplicationStatisticsGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
   apiOrgsOrgIdApplicationStatisticsGet(params: {
     orgId: string;
-    context?: HttpContext
-  }
+  },
+  context?: HttpContext
+
 ): Observable<ApplicationStatisticsResponse> {
 
-    return this.apiOrgsOrgIdApplicationStatisticsGet$Response(params).pipe(
+    return this.apiOrgsOrgIdApplicationStatisticsGet$Response(params,context).pipe(
       map((r: StrictHttpResponse<ApplicationStatisticsResponse>) => r.body as ApplicationStatisticsResponse)
     );
   }
@@ -440,8 +452,9 @@ export class ApplicationService extends BaseService {
     applicationId: string;
     orgId: string;
     status?: IdentityStatusCode;
-    context?: HttpContext
-  }
+  },
+  context?: HttpContext
+
 ): Observable<StrictHttpResponse<ActionResult>> {
 
     const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdIdentityApplicationIdPutPath, 'put');
@@ -454,7 +467,7 @@ export class ApplicationService extends BaseService {
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json',
-      context: params?.context
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -464,7 +477,7 @@ export class ApplicationService extends BaseService {
   }
 
   /**
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiOrgsOrgIdIdentityApplicationIdPut$Response()` instead.
    *
    * This method doesn't expect any request body.
@@ -473,11 +486,12 @@ export class ApplicationService extends BaseService {
     applicationId: string;
     orgId: string;
     status?: IdentityStatusCode;
-    context?: HttpContext
-  }
+  },
+  context?: HttpContext
+
 ): Observable<ActionResult> {
 
-    return this.apiOrgsOrgIdIdentityApplicationIdPut$Response(params).pipe(
+    return this.apiOrgsOrgIdIdentityApplicationIdPut$Response(params,context).pipe(
       map((r: StrictHttpResponse<ActionResult>) => r.body as ActionResult)
     );
   }
@@ -503,7 +517,6 @@ export class ApplicationService extends BaseService {
      * organizationId
      */
     orgId: string;
-    context?: HttpContext
     body: {
 
 /**
@@ -549,7 +562,9 @@ export class ApplicationService extends BaseService {
 'screeningTypeCode'?: string;
 };
 }
-  }
+  },
+  context?: HttpContext
+
 ): Observable<StrictHttpResponse<ApplicationCreateResponse>> {
 
     const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdApplicationPostPath, 'post');
@@ -561,7 +576,7 @@ export class ApplicationService extends BaseService {
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json',
-      context: params?.context
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -575,7 +590,7 @@ export class ApplicationService extends BaseService {
    *
    *
    *
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiOrgsOrgIdApplicationPost$Response()` instead.
    *
    * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
@@ -586,7 +601,6 @@ export class ApplicationService extends BaseService {
      * organizationId
      */
     orgId: string;
-    context?: HttpContext
     body: {
 
 /**
@@ -632,10 +646,12 @@ export class ApplicationService extends BaseService {
 'screeningTypeCode'?: string;
 };
 }
-  }
+  },
+  context?: HttpContext
+
 ): Observable<ApplicationCreateResponse> {
 
-    return this.apiOrgsOrgIdApplicationPost$Response(params).pipe(
+    return this.apiOrgsOrgIdApplicationPost$Response(params,context).pipe(
       map((r: StrictHttpResponse<ApplicationCreateResponse>) => r.body as ApplicationCreateResponse)
     );
   }
@@ -657,8 +673,9 @@ export class ApplicationService extends BaseService {
     sorts?: string;
     page?: number;
     pageSize?: number;
-    context?: HttpContext
-  }
+  },
+  context?: HttpContext
+
 ): Observable<StrictHttpResponse<ApplicationListResponse>> {
 
     const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdApplicationsGetPath, 'get');
@@ -673,7 +690,7 @@ export class ApplicationService extends BaseService {
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json',
-      context: params?.context
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -683,7 +700,7 @@ export class ApplicationService extends BaseService {
   }
 
   /**
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiOrgsOrgIdApplicationsGet$Response()` instead.
    *
    * This method doesn't expect any request body.
@@ -694,11 +711,12 @@ export class ApplicationService extends BaseService {
     sorts?: string;
     page?: number;
     pageSize?: number;
-    context?: HttpContext
-  }
+  },
+  context?: HttpContext
+
 ): Observable<ApplicationListResponse> {
 
-    return this.apiOrgsOrgIdApplicationsGet$Response(params).pipe(
+    return this.apiOrgsOrgIdApplicationsGet$Response(params,context).pipe(
       map((r: StrictHttpResponse<ApplicationListResponse>) => r.body as ApplicationListResponse)
     );
   }
@@ -725,8 +743,9 @@ export class ApplicationService extends BaseService {
     sorts?: string;
     page?: number;
     pageSize?: number;
-    context?: HttpContext
-  }
+  },
+  context?: HttpContext
+
 ): Observable<StrictHttpResponse<ClearanceListResponse>> {
 
     const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdClearancesExpiredGetPath, 'get');
@@ -741,7 +760,7 @@ export class ApplicationService extends BaseService {
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json',
-      context: params?.context
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -756,7 +775,7 @@ export class ApplicationService extends BaseService {
    *
    *
    *
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiOrgsOrgIdClearancesExpiredGet$Response()` instead.
    *
    * This method doesn't expect any request body.
@@ -767,11 +786,12 @@ export class ApplicationService extends BaseService {
     sorts?: string;
     page?: number;
     pageSize?: number;
-    context?: HttpContext
-  }
+  },
+  context?: HttpContext
+
 ): Observable<ClearanceListResponse> {
 
-    return this.apiOrgsOrgIdClearancesExpiredGet$Response(params).pipe(
+    return this.apiOrgsOrgIdClearancesExpiredGet$Response(params,context).pipe(
       map((r: StrictHttpResponse<ClearanceListResponse>) => r.body as ClearanceListResponse)
     );
   }
@@ -794,8 +814,9 @@ export class ApplicationService extends BaseService {
   apiOrgsOrgIdClearancesExpiredClearanceAccessIdDelete$Response(params: {
     clearanceAccessId: string;
     orgId: string;
-    context?: HttpContext
-  }
+  },
+  context?: HttpContext
+
 ): Observable<StrictHttpResponse<ActionResult>> {
 
     const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdClearancesExpiredClearanceAccessIdDeletePath, 'delete');
@@ -807,7 +828,7 @@ export class ApplicationService extends BaseService {
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json',
-      context: params?.context
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -821,7 +842,7 @@ export class ApplicationService extends BaseService {
    *
    *
    *
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiOrgsOrgIdClearancesExpiredClearanceAccessIdDelete$Response()` instead.
    *
    * This method doesn't expect any request body.
@@ -829,11 +850,12 @@ export class ApplicationService extends BaseService {
   apiOrgsOrgIdClearancesExpiredClearanceAccessIdDelete(params: {
     clearanceAccessId: string;
     orgId: string;
-    context?: HttpContext
-  }
+  },
+  context?: HttpContext
+
 ): Observable<ActionResult> {
 
-    return this.apiOrgsOrgIdClearancesExpiredClearanceAccessIdDelete$Response(params).pipe(
+    return this.apiOrgsOrgIdClearancesExpiredClearanceAccessIdDelete$Response(params,context).pipe(
       map((r: StrictHttpResponse<ActionResult>) => r.body as ActionResult)
     );
   }
