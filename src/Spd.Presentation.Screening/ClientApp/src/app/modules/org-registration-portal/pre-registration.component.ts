@@ -1,21 +1,28 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { OrgRegistrationStatusCode } from 'src/app/api/models';
+import { OrgRegistrationService } from 'src/app/api/services';
 
 @Component({
 	selector: 'app-pre-registration',
 	template: `
 		<div class="container mt-4">
+			<h2 class="text-center py-4 fw-normal">Where is my application right now?</h2>
 			<div class="row">
-				<div class="offset-md-2 col-md-8 col-sm-12">
-					<app-step-title title="Pre-Registration"></app-step-title>
+				<div class="offset-lg-4 col-lg-4 offset-md-2 col-md-8 col-sm-12">
 					<table class="mt-4">
-						<tr>
-							<td class="point__icon"><mat-icon>find_in_page</mat-icon></td>
+						<tr
+							[ngClass]="
+								status == orgRegistrationStatusCodes.ApplicationSubmitted ? 'point__active' : 'point__inactive'
+							"
+						>
+							<td>
+								<mat-icon>find_in_page</mat-icon>
+							</td>
 							<td class="px-4">
-								<div class="fs-5 mb-2">Application submitted</div>
-								<p>
-									Your registration application will be reviewed shortly. We will contact you if we need any more
-									information.
+								<div class="fs-5 mb-2">Application Submitted</div>
+								<p *ngIf="status == orgRegistrationStatusCodes.ApplicationSubmitted">
+									If we need any more information, we’ll contact you.
 								</p>
 							</td>
 						</tr>
@@ -24,10 +31,15 @@ import { ActivatedRoute } from '@angular/router';
 								<mat-divider vertical class="divider"></mat-divider>
 							</td>
 						</tr>
-						<tr>
-							<td class="point__green-icon"><mat-icon>task_alt</mat-icon></td>
+						<tr [ngClass]="status == orgRegistrationStatusCodes.InProgress ? 'point__active' : 'point__inactive'">
+							<td>
+								<mat-icon>task_alt</mat-icon>
+							</td>
 							<td class="px-4">
-								<div class="fs-5 mb-2">In progress</div>
+								<div class="fs-5 mb-2">In Progress</div>
+								<p *ngIf="status == orgRegistrationStatusCodes.InProgress">
+									If we need any more information, we’ll contact you.
+								</p>
 							</td>
 						</tr>
 						<tr>
@@ -35,14 +47,12 @@ import { ActivatedRoute } from '@angular/router';
 								<mat-divider vertical class="divider"></mat-divider>
 							</td>
 						</tr>
-						<tr>
-							<td class="point__icon"><mat-icon>connect_without_contact</mat-icon></td>
+						<tr [ngClass]="status == orgRegistrationStatusCodes.Complete ? 'point__active' : 'point__inactive'">
+							<td>
+								<mat-icon>connect_without_contact</mat-icon>
+							</td>
 							<td class="px-4">
 								<div class="fs-5 mb-2">Complete</div>
-								<p>
-									If your registration is approved, we'll send a link to the organization online service for you to
-									manage all of your criminal record checks.
-								</p>
 							</td>
 						</tr>
 					</table>
@@ -53,21 +63,23 @@ import { ActivatedRoute } from '@angular/router';
 	styles: [
 		`
 			.point {
-				&__green-icon {
+				&__active {
 					display: inline-block;
 					color: var(--color-green);
+					font-weight: 500;
 
 					.mat-icon {
 						color: var(--color-green);
 					}
 				}
 
-				&__icon {
+				&__inactive {
 					display: inline-block;
-					color: var(--color-grey-light);
+					color: var(--color-grey-inactive);
+					font-weight: 500;
 
 					.mat-icon {
-						color: var(--color-grey-light);
+						color: var(--color-grey-inactive);
 					}
 				}
 			}
@@ -81,7 +93,7 @@ import { ActivatedRoute } from '@angular/router';
 			.divider {
 				padding-left: 1.4rem !important;
 				min-height: 50px;
-				border-color: var(--color-green);
+				border-color: var(--color-grey-light);
 				border-width: medium;
 				width: 0px;
 				position: relative;
@@ -90,18 +102,21 @@ import { ActivatedRoute } from '@angular/router';
 	],
 })
 export class PreRegistrationComponent {
-	constructor(private route: ActivatedRoute) {}
+	status = '';
+	orgRegistrationStatusCodes = OrgRegistrationStatusCode;
+
+	constructor(private route: ActivatedRoute, private orgRegistrationService: OrgRegistrationService) {}
 
 	ngOnInit(): void {
-		const id = this.route.snapshot.paramMap.get('id');
-		console.log('PreRegistrationComponent id', id);
+		const registrationNumber = this.route.snapshot.paramMap.get('id');
 
-		// this.orgUserService
-		// 	.apiInvitationPost({ body: invitationRequest })
-		// 	.pipe()
-		// 	.subscribe((resp: any) => {
-		// 		console.log('resp', resp);
-		// 		}
-		// 	});
+		if (registrationNumber) {
+			this.orgRegistrationService
+				.apiOrgRegistrationsRegistrationNumberStatusGet({ registrationNumber })
+				.pipe()
+				.subscribe((resp: any) => {
+					this.status = resp.status;
+				});
+		}
 	}
 }
