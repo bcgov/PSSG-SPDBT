@@ -18,6 +18,7 @@ namespace Spd.Manager.Cases
         public Task<BulkUploadCreateResponse> Handle(BulkUploadCreateCommand cmd, CancellationToken ct);
         public Task<ClearanceListResponse> Handle(ClearanceListQuery request, CancellationToken ct);
         public Task<Unit> Handle(ClearanceAccessDeleteCommand request, CancellationToken ct);
+        public Task<ClearanceLetterResponse> Handle(ClearanceLetterQuery query, CancellationToken ct);
     }
 
     #region application invites
@@ -352,6 +353,14 @@ namespace Spd.Manager.Cases
         public DateTimeOffset? ExpiresOn { get; set; } = null!;
         public string Facility { get; set; } = null!;
         public string Status { get; set; } = null!;
+    }
+
+    public record ClearanceLetterQuery(Guid ClearanceId) : IRequest<ClearanceLetterResponse>;
+
+    public record ClearanceLetterResponse
+    {
+        public string ContentType { get; set; } = null!;
+        public byte[] Content { get; set; } = Array.Empty<byte>();
     }
     #endregion
 
