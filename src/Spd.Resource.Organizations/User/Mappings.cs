@@ -13,7 +13,6 @@ namespace Spd.Resource.Organizations.User
             .ForMember(d => d.organizationid, opt => opt.Ignore())
             .ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => s.FirstName))
             .ForMember(d => d.spd_surname, opt => opt.MapFrom(s => s.LastName))
-            .ForMember(d => d.spd_fullname, opt => opt.MapFrom(s => s.LastName + ", " + s.FirstName))
             .ForMember(d => d.spd_emailaddress1, opt => opt.MapFrom(s => s.Email))
             .ForMember(d => d.spd_jobtitle, opt => opt.MapFrom(s => s.JobTitle))
             .ForMember(d => d.spd_phonenumber, opt => opt.MapFrom(s => s.PhoneNumber))
