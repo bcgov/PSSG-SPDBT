@@ -41,8 +41,7 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => s.GivenName))
             .ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => s.MiddleName1))
             .ForMember(d => d.spd_middlename2, opt => opt.MapFrom(s => s.MiddleName2))
-            .ForMember(d => d.spd_surname, opt => opt.MapFrom(s => s.Surname))
-            .ForMember(d => d.spd_fullname, opt => opt.MapFrom(s => s.Surname + ", " + s.GivenName + " " + s.MiddleName1 + " " + s.MiddleName2));
+            .ForMember(d => d.spd_surname, opt => opt.MapFrom(s => s.Surname));
 
             _ = CreateMap<ApplicationCreateCmd, contact>()
             .ForMember(d => d.contactid, opt => opt.MapFrom(s => Guid.NewGuid()))
