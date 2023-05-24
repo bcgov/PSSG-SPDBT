@@ -1,13 +1,16 @@
+using Amazon.S3.Model;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Cases;
+using Spd.Utilities.FileStorage;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
+using System.Net.Mime;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -465,6 +468,21 @@ namespace Spd.Presentation.Screening.Controllers
         {
             await _mediator.Send(new ClearanceAccessDeleteCommand(clearanceAccessId, orgId));
             return Ok();
+        }
+
+        /// <summary>
+        /// download the clearance letter
+        /// </summary>
+        /// <param name="clearanceId"></param>
+        /// <returns>FileStreamResult</returns>
+        [Route("api/orgs/{orgId}/clearances/{clearanceId}/file")]
+        [HttpGet]
+        public async Task<FileStreamResult> DownloadClearanceLetterAsync([FromRoute] Guid clearanceId)
+        {
+            ClearanceLetterResponse response = await _mediator.Send(new ClearanceLetterQuery(clearanceId));
+            var content = new MemoryStream(response.Content);
+            var contentType = response.ContentType ?? "application/octet-stream";
+            return new FileStreamResult(content, contentType);
         }
 
         private ClearanceListFilterBy GetClearanceListFilterBy(string? filters, Guid orgId)
