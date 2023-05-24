@@ -20,8 +20,8 @@ import { OrgRegistrationService } from 'src/app/api/services';
 								<mat-icon>find_in_page</mat-icon>
 							</td>
 							<td class="px-4">
-								<div class="fs-5 mb-2">Application Submitted</div>
-								<p *ngIf="status == orgRegistrationStatusCodes.ApplicationSubmitted">
+								<div class="fs-4 mb-2">Application submitted</div>
+								<p class="fw-normal" *ngIf="status == orgRegistrationStatusCodes.ApplicationSubmitted">
 									If we need any more information, we’ll contact you.
 								</p>
 							</td>
@@ -36,8 +36,8 @@ import { OrgRegistrationService } from 'src/app/api/services';
 								<mat-icon>task_alt</mat-icon>
 							</td>
 							<td class="px-4">
-								<div class="fs-5 mb-2">In Progress</div>
-								<p *ngIf="status == orgRegistrationStatusCodes.InProgress">
+								<div class="fs-4 mb-2">In progress</div>
+								<p class="fw-normal" *ngIf="status == orgRegistrationStatusCodes.InProgress">
 									If we need any more information, we’ll contact you.
 								</p>
 							</td>
@@ -52,7 +52,7 @@ import { OrgRegistrationService } from 'src/app/api/services';
 								<mat-icon>connect_without_contact</mat-icon>
 							</td>
 							<td class="px-4">
-								<div class="fs-5 mb-2">Complete</div>
+								<div class="fs-4 mb-2">Complete</div>
 							</td>
 						</tr>
 					</table>
@@ -76,7 +76,7 @@ import { OrgRegistrationService } from 'src/app/api/services';
 				&__inactive {
 					display: inline-block;
 					color: var(--color-grey-inactive);
-					font-weight: 500;
+					font-weight: 300;
 
 					.mat-icon {
 						color: var(--color-grey-inactive);
