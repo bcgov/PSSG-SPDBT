@@ -17,7 +17,7 @@ export interface CrcFormStepComponent {
 }
 
 @Component({
-	selector: 'app-crc-application',
+	selector: 'app-crc',
 	template: `
 		<div class="container mt-4">
 			<mat-stepper
@@ -96,7 +96,7 @@ export interface CrcFormStepComponent {
 	`,
 	styles: [],
 })
-export class CrcApplicationComponent implements OnInit {
+export class CrcComponent implements OnInit {
 	orientation: StepperOrientation = 'vertical';
 	paymentBy!: 'APP' | 'ORG';
 

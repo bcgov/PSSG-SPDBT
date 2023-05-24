@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { CrcFormStepComponent } from '../crc-application.component';
+import { CrcFormStepComponent } from '../crc.component';
 
 @Component({
 	selector: 'app-personal-information',

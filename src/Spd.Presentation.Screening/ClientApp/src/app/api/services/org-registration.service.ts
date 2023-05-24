@@ -12,6 +12,7 @@ import { map, filter } from 'rxjs/operators';
 import { AnonymousOrgRegistrationCreateRequest } from '../models/anonymous-org-registration-create-request';
 import { OrgRegistrationCreateRequest } from '../models/org-registration-create-request';
 import { OrgRegistrationCreateResponse } from '../models/org-registration-create-response';
+import { OrgRegistrationPortalStatusResponse } from '../models/org-registration-portal-status-response';
 
 @Injectable({
   providedIn: 'root',
@@ -131,6 +132,57 @@ export class OrgRegistrationService extends BaseService {
 
     return this.apiOrgRegistrationsPost$Response(params).pipe(
       map((r: StrictHttpResponse<OrgRegistrationCreateResponse>) => r.body as OrgRegistrationCreateResponse)
+    );
+  }
+
+  /**
+   * Path part for operation apiOrgRegistrationsRegistrationNumberStatusGet
+   */
+  static readonly ApiOrgRegistrationsRegistrationNumberStatusGetPath = '/api/org-registrations/{registrationNumber}/status';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiOrgRegistrationsRegistrationNumberStatusGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiOrgRegistrationsRegistrationNumberStatusGet$Response(params: {
+    registrationNumber: string;
+    context?: HttpContext
+  }
+): Observable<StrictHttpResponse<OrgRegistrationPortalStatusResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, OrgRegistrationService.ApiOrgRegistrationsRegistrationNumberStatusGetPath, 'get');
+    if (params) {
+      rb.path('registrationNumber', params.registrationNumber, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: params?.context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<OrgRegistrationPortalStatusResponse>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `apiOrgRegistrationsRegistrationNumberStatusGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiOrgRegistrationsRegistrationNumberStatusGet(params: {
+    registrationNumber: string;
+    context?: HttpContext
+  }
+): Observable<OrgRegistrationPortalStatusResponse> {
+
+    return this.apiOrgRegistrationsRegistrationNumberStatusGet$Response(params).pipe(
+      map((r: StrictHttpResponse<OrgRegistrationPortalStatusResponse>) => r.body as OrgRegistrationPortalStatusResponse)
     );
   }
 
