@@ -15,7 +15,7 @@ namespace Spd.Manager.Membership.OrgUser
     }
 
     public record OrgUserCreateCommand(OrgUserCreateRequest OrgUserCreateRequest, string HostUrl) : IRequest<OrgUserResponse>;
-    public record OrgUserUpdateCommand(Guid UserId, OrgUserUpdateRequest OrgUserUpdateRequest) : IRequest<OrgUserResponse>;
+    public record OrgUserUpdateCommand(Guid UserId, OrgUserUpdateRequest OrgUserUpdateRequest, bool OnlyChangePhoneJob = false) : IRequest<OrgUserResponse>;
     public record OrgUserGetQuery(Guid UserId) : IRequest<OrgUserResponse>;
     public record OrgUserListQuery(Guid OrganizationId, bool OnlyReturnActiveUsers = false) : IRequest<OrgUserListResponse>;
     public record OrgUserDeleteCommand(Guid UserId, Guid OrganizationId) : IRequest<Unit>;

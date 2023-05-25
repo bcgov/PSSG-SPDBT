@@ -149,7 +149,15 @@ namespace Spd.Resource.Organizations.User
         private async Task<OrgUserManageResult> UpdateUserAsync(UserUpdateCmd updateUserCmd, CancellationToken cancellationToken)
         {
             var user = await GetUserById(updateUserCmd.Id, cancellationToken);
-            _mapper.Map(updateUserCmd.User, user);
+            if (updateUserCmd.OnlyChangePhoneJob)
+            {
+                user.spd_phonenumber = updateUserCmd.User.PhoneNumber;
+                user.spd_jobtitle = updateUserCmd.User.JobTitle;
+            }
+            else
+            {
+                _mapper.Map(updateUserCmd.User, user);
+            }
 
             spd_role existingRole = user.spd_spd_role_spd_portaluser.First();
             spd_role newRole = existingRole;

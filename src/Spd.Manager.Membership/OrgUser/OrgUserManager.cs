@@ -73,7 +73,7 @@ namespace Spd.Manager.Membership.OrgUser
 
             var user = _mapper.Map<User>(request.OrgUserUpdateRequest);
             var response = await _orgUserRepository.ManageOrgUserAsync(
-                new UserUpdateCmd(request.OrgUserUpdateRequest.Id, user),
+                new UserUpdateCmd(request.OrgUserUpdateRequest.Id, user, request.OnlyChangePhoneJob),
                 ct);
             return _mapper.Map<OrgUserResponse>(response.UserResult);
         }

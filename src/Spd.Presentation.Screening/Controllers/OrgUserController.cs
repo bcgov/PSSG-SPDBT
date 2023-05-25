@@ -67,7 +67,9 @@ namespace Spd.Presentation.Screening.Controllers
             {
                throw new ApiException(HttpStatusCode.Forbidden, "Authorized Contact can only change his own phone number and job title.");
             }
-            return await _mediator.Send(new OrgUserUpdateCommand(userId, orgUserUpdateRequest));
+            if (_currentUser.GetUserRole() == ContactAuthorizationTypeCode.Contact.ToString())
+                return await _mediator.Send(new OrgUserUpdateCommand(userId, orgUserUpdateRequest, true));
+            return await _mediator.Send(new OrgUserUpdateCommand(userId, orgUserUpdateRequest, false));
         }
 
         [Authorize(Roles = "Primary")]
