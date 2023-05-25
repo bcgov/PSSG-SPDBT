@@ -34,8 +34,9 @@ export class UserProfileService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiUserGet$Response(params?: {
-    context?: HttpContext
-  }
+  },
+  context?: HttpContext
+
 ): Observable<StrictHttpResponse<UserProfileResponse>> {
 
     const rb = new RequestBuilder(this.rootUrl, UserProfileService.ApiUserGetPath, 'get');
@@ -45,7 +46,7 @@ export class UserProfileService extends BaseService {
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json',
-      context: params?.context
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -55,17 +56,18 @@ export class UserProfileService extends BaseService {
   }
 
   /**
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiUserGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
   apiUserGet(params?: {
-    context?: HttpContext
-  }
+  },
+  context?: HttpContext
+
 ): Observable<UserProfileResponse> {
 
-    return this.apiUserGet$Response(params).pipe(
+    return this.apiUserGet$Response(params,context).pipe(
       map((r: StrictHttpResponse<UserProfileResponse>) => r.body as UserProfileResponse)
     );
   }
