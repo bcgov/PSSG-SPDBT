@@ -3,7 +3,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { OrgRegDuplicateModalComponent } from './org-reg-duplicate-modal.component';
 import { OrgRegistrationRoutingModule } from './org-registration-routing.module';
 import { OrgRegistrationComponent } from './org-registration.component';
-import { PreRegistrationComponent } from './pre-registration.component';
+import { RegistrationStatusComponent } from './registration-status.component';
 import { AgreementOfTermsComponent } from './step-components/agreement-of-terms.component';
 import { CompensationQuestionComponent } from './step-components/compensation-question.component';
 import { CompletedComponent } from './step-components/completed.component';
@@ -47,7 +47,7 @@ import { StepTwoComponent } from './steps/step-two.component';
 		StepTwoComponent,
 		StepThreeComponent,
 		StepFourComponent,
-		PreRegistrationComponent,
+		RegistrationStatusComponent,
 	],
 	imports: [SharedModule, OrgRegistrationRoutingModule],
 	providers: [],
