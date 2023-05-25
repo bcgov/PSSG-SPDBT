@@ -69,7 +69,9 @@ namespace Spd.Manager.Membership.OrgRegistration
                 "New" => OrgRegistrationStatusCode.ApplicationSubmitted,
                 "InProgress" => OrgRegistrationStatusCode.InProgress,
                 "AwaitingOrganization" => OrgRegistrationStatusCode.InProgress,
-                _ => OrgRegistrationStatusCode.Complete,
+                "Approved" => OrgRegistrationStatusCode.CompleteSuccess,
+                "Cancelled" => OrgRegistrationStatusCode.CompleteFailed,
+                _ => OrgRegistrationStatusCode.CompleteFailed,
             };
             return new OrgRegistrationPortalStatusResponse(statusCode);
         }
