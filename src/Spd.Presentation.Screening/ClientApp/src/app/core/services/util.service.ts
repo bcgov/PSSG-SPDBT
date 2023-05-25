@@ -95,4 +95,8 @@ export class UtilService {
 		const desc = (ApplicationPortalStatusCodes.find((item: SelectOptions) => item.code == code)?.desc as string) ?? '';
 		return [desc, currClass];
 	}
+
+	geApplicationPortalStatusDesc(code: string): string {
+		return (ApplicationPortalStatusCodes.find((item: SelectOptions) => item.code == code)?.desc as string) ?? '';
+	}
 }

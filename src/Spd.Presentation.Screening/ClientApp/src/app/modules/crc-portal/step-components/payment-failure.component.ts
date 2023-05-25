@@ -8,10 +8,9 @@ import { Component } from '@angular/core';
 
 			<div class="row">
 				<div class="offset-lg-3 col-lg-6 col-md-12 col-sm-12">
-					<div class="alert alert-danger d-flex align-items-center" role="alert">
-						<mat-icon class="d-none d-lg-block alert-icon me-2">error</mat-icon>
+					<app-alert type="danger">
 						<div>Payment transaction has failed</div>
-					</div>
+					</app-alert>
 				</div>
 			</div>
 

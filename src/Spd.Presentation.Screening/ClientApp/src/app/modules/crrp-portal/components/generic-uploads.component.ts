@@ -36,9 +36,8 @@ import { CrrpRoutes } from '../crrp-routing.module';
 			<ng-container *ngIf="showResult">
 				<div class="row" *ngIf="validationErrs.length > 0">
 					<div class="col-lg-8 col-md-12 col-sm-12">
-						<div class="alert alert-danger d-flex" role="alert">
-							<mat-icon class="d-none d-xl-block alert-icon mt-2 me-2">error</mat-icon>
-							<div class="mt-2 ms-2">
+						<app-alert type="danger" icon="error"
+							><div class="mt-2 ms-2">
 								File upload failed
 								<ul class="mb-0 me-2">
 									<li *ngFor="let err of validationErrs; let i = index" class="my-2">
@@ -46,15 +45,12 @@ import { CrrpRoutes } from '../crrp-routing.module';
 									</li>
 								</ul>
 							</div>
-						</div>
+						</app-alert>
 					</div>
 				</div>
 				<div class="row" *ngIf="validationErrs.length == 0">
 					<div class="col-lg-8 col-md-12 col-sm-12">
-						<div class="alert alert-success d-flex" role="alert">
-							<mat-icon class="d-none d-xl-block alert-icon me-2">check_circle</mat-icon>
-							File upload succeeded
-						</div>
+						<app-alert type="success" icon="check_circle"> File upload succeeded </app-alert>
 					</div>
 				</div>
 			</ng-container>

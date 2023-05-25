@@ -11,7 +11,7 @@ import { ExpiringChecksComponent } from './components/expiring-checks.component'
 import { GenericUploadsComponent } from './components/generic-uploads.component';
 import { IdentifyVerificationComponent } from './components/identify-verification.component';
 import { InvitationComponent } from './components/invitation.component';
-import { ManualSubmissionsComponent } from './components/manual-submissions.component';
+import { ManualSubmissionComponent } from './components/manual-submission.component';
 import { OrganizationProfileComponent } from './components/organization-profile.component';
 import { PaymentFilterComponent } from './components/payment-filter.component';
 import { PaymentsComponent } from './components/payments.component';
@@ -38,7 +38,7 @@ import { CrrpComponent } from './crrp.component';
 		CrcAddModalComponent,
 		IdentifyVerificationComponent,
 		ExpiringChecksComponent,
-		ManualSubmissionsComponent,
+		ManualSubmissionComponent,
 		ReportsComponent,
 		BannerComponent,
 		InvitationComponent,
