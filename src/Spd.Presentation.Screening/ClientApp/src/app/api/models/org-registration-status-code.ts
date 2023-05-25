@@ -3,5 +3,6 @@
 export enum OrgRegistrationStatusCode {
   ApplicationSubmitted = 'ApplicationSubmitted',
   InProgress = 'InProgress',
-  Complete = 'Complete'
+  CompleteSuccess = 'CompleteSuccess',
+  CompleteFailed = 'CompleteFailed'
 }

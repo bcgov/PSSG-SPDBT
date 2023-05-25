@@ -25,7 +25,7 @@ export interface CrcDialogData {
 			<form [formGroup]="form" novalidate>
 				<div class="row mt-4">
 					<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-						<div class="alert alert-danger d-flex align-items-center" role="alert" *ngIf="isDuplicateDetected">
+						<div class="alert alert-danger d-flex" role="alert" *ngIf="isDuplicateDetected">
 							<mat-icon class="d-none d-md-block alert-icon me-2">warning</mat-icon>
 							<div>
 								Duplicates are not allowed. Update the data associated with the following:

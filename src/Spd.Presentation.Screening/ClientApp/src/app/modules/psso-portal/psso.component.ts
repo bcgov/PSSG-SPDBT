@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IsActiveMatchOptions, QueryParamsHandling } from '@angular/router';
+import { IsActiveMatchOptions, QueryParamsHandling, Router } from '@angular/router';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { PssoRoutes } from './psso-routing.module';
 
@@ -23,8 +23,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 @Component({
 	selector: 'app-psso',
 	template: `
-		<!-- *ngIf="isAuthenticated | async"-->
-		<div class="container-fluid p-0">
+		<div class="container-fluid p-0" *ngIf="isAuthenticated | async">
 			<div class="row flex-nowrap m-0">
 				<div class="col-auto px-0" style="background-color: var(--color-sidebar);">
 					<div
@@ -49,19 +48,19 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 									<span class="menu-item ms-2 d-none d-sm-inline text-white">Screening Statuses</span>
 								</a>
 							</li>
-							<!-- <li class="nav-item w-100">
+							<li class="nav-item w-100">
 								<a
-									[routerLink]="[pssoRoutes.pssoPath(pssoRoutes.SCREENING_STATUSES)]"
+									[routerLink]="[pssoRoutes.pssoPath(pssoRoutes.SCREENING_CHECKS)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
 								>
-									<mat-icon>people</mat-icon>
-									<span class="menu-item ms-2 d-none d-sm-inline text-white">New Screening</span>
+									<mat-icon>post_add</mat-icon>
+									<span class="menu-item ms-2 d-none d-sm-inline text-white">Screening Checks</span>
 								</a>
 							</li>
 							<li class="nav-item w-100">
 								<a
-									[routerLink]="[pssoRoutes.pssoPath(pssoRoutes.SCREENING_STATUSES)]"
+									[routerLink]="[pssoRoutes.pssoPath(pssoRoutes.IDENTITY_VERIFICATION)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
 								>
@@ -71,14 +70,14 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 							</li>
 							<li class="nav-item w-100">
 								<a
-									[routerLink]="[pssoRoutes.pssoPath(pssoRoutes.SCREENING_STATUSES)]"
+									[routerLink]="[pssoRoutes.pssoPath(pssoRoutes.MANUAL_SUBMISSIONS)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
 								>
-									<mat-icon>post_add</mat-icon>
+									<mat-icon>description</mat-icon>
 									<span class="menu-item ms-2 d-none d-sm-inline text-white">Manual Submissions</span>
 								</a>
-							</li> -->
+							</li>
 						</ul>
 					</div>
 				</div>
@@ -101,5 +100,14 @@ export class PssoComponent {
 	isAuthenticated = this.authenticationService.waitUntilAuthentication$;
 	pssoRoutes = PssoRoutes;
 
-	constructor(private authenticationService: AuthenticationService) {}
+	constructor(protected authenticationService: AuthenticationService, private router: Router) {}
+
+	async ngOnInit(): Promise<void> {
+		const nextUrl = await this.authenticationService.login(PssoRoutes.pssoPath());
+
+		if (nextUrl) {
+			const nextRoute = decodeURIComponent(nextUrl);
+			await this.router.navigate([nextRoute]);
+		}
+	}
 }

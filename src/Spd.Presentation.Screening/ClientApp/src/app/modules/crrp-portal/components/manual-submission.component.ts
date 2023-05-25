@@ -31,7 +31,7 @@ export interface AliasCreateRequest {
 }
 
 @Component({
-	selector: 'app-manual-submissions',
+	selector: 'app-manual-submission',
 	template: `
 		<app-crrp-header></app-crrp-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
@@ -383,7 +383,7 @@ export interface AliasCreateRequest {
 		`,
 	],
 })
-export class ManualSubmissionsComponent implements OnInit {
+export class ManualSubmissionComponent implements OnInit {
 	@ViewChild(AddressAutocompleteComponent) addressAutocompleteComponent!: AddressAutocompleteComponent;
 	matcher = new FormErrorStateMatcher();
 

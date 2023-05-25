@@ -1,12 +1,14 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { OrgRegistrationStatusCode } from 'src/app/api/models';
 import { OrgRegistrationService } from 'src/app/api/services';
+import { CrrpRoutes } from '../crrp-portal/crrp-routing.module';
+import { OrgRegistrationRoutes } from './org-registration-routing.module';
 
 @Component({
-	selector: 'app-pre-registration',
+	selector: 'app-registration-status',
 	template: `
-		<div class="container mt-4">
+		<div class="container mt-4" *ngIf="status">
 			<h2 class="text-center py-4 fw-normal">Where is my application right now?</h2>
 			<div class="row">
 				<div class="offset-lg-4 col-lg-4 offset-md-2 col-md-8 col-sm-12">
@@ -47,7 +49,7 @@ import { OrgRegistrationService } from 'src/app/api/services';
 								<mat-divider vertical class="divider"></mat-divider>
 							</td>
 						</tr>
-						<tr [ngClass]="status == orgRegistrationStatusCodes.Complete ? 'point__active' : 'point__inactive'">
+						<tr class="point__inactive">
 							<td>
 								<mat-icon>connect_without_contact</mat-icon>
 							</td>
@@ -101,11 +103,15 @@ import { OrgRegistrationService } from 'src/app/api/services';
 		`,
 	],
 })
-export class PreRegistrationComponent {
+export class RegistrationStatusComponent {
 	status = '';
 	orgRegistrationStatusCodes = OrgRegistrationStatusCode;
 
-	constructor(private route: ActivatedRoute, private orgRegistrationService: OrgRegistrationService) {}
+	constructor(
+		private route: ActivatedRoute,
+		private router: Router,
+		private orgRegistrationService: OrgRegistrationService
+	) {}
 
 	ngOnInit(): void {
 		const registrationNumber = this.route.snapshot.paramMap.get('id');
@@ -115,6 +121,12 @@ export class PreRegistrationComponent {
 				.apiOrgRegistrationsRegistrationNumberStatusGet({ registrationNumber })
 				.pipe()
 				.subscribe((resp: any) => {
+					if (resp.status == OrgRegistrationStatusCode.CompleteFailed) {
+						this.router.navigate([OrgRegistrationRoutes.orgRegPath(OrgRegistrationRoutes.ORG_REGISTRATION)]);
+					} else if (resp.status == OrgRegistrationStatusCode.CompleteSuccess) {
+						this.router.navigate([CrrpRoutes.crrpPath(CrrpRoutes.HOME)]);
+					}
+
 					this.status = resp.status;
 				});
 		}

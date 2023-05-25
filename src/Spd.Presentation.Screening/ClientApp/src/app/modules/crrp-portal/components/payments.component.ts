@@ -30,10 +30,8 @@ export interface PaymentResponse extends ApplicationResponse {
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
 					<h2 class="mb-2 fw-normal">Payments</h2>
-
 					<ng-container *ngIf="applicationStatistics$ | async">
-						<div class="alert alert-warning d-flex align-items-center" role="alert">
-							<mat-icon class="d-none d-md-block alert-icon me-2">warning</mat-icon>
+						<app-alert type="warning">
 							<ng-container *ngIf="count > 0">
 								<ng-container *ngIf="count == 1; else notOne">
 									<div>There is 1 application which requires payment</div>
@@ -42,7 +40,7 @@ export interface PaymentResponse extends ApplicationResponse {
 									<div>There are {{ count }} applications which require payment</div>
 								</ng-template>
 							</ng-container>
-						</div>
+						</app-alert>
 					</ng-container>
 				</div>
 			</div>

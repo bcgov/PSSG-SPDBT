@@ -189,16 +189,17 @@ body {
   font-size: .9rem!important;
 }
 
-// .status-filter .mdc-text-field {
-//   background-color: transparent;
-// }
-// .status-filter .mat-mdc-form-field-focus-overlay {
-//   background-color: transparent;
-// }
-
 .mat-mdc-card-content {  
   text-align: center;
 }
+
+.multi-select-filter .mdc-text-field {
+  background-color: transparent;
+}
+.multi-select-filter .mat-mdc-form-field-focus-overlay {
+  background-color: transparent;
+}
+
 
 .search-icon-button {
   color: var(--color-white) !important;

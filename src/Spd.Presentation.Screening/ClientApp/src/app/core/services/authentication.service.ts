@@ -181,7 +181,7 @@ export class AuthenticationService {
 	}
 
 	private setUserInfo(userInfo: UserInfo) {
-		console.log('setUserInfo', userInfo);
+		console.debug('setUserInfo', userInfo);
 		this.loggedInUserInfo = userInfo;
 		this.genericUploadEnabled = userInfo.orgSettings?.genericUploadEnabled ?? false;
 	}
