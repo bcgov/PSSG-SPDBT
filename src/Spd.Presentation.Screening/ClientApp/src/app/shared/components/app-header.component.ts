@@ -61,7 +61,7 @@ export class HeaderComponent implements OnInit {
 	constructor(protected router: Router, private authenticationService: AuthenticationService) {}
 
 	ngOnInit(): void {
-		this.authenticationService.isLoginSubject$.subscribe((_subjectData: any) => {
+		this.authenticationService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
 			this.getUserInfo();
 		});
 	}

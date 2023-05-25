@@ -860,4 +860,68 @@ export class ApplicationService extends BaseService {
     );
   }
 
+  /**
+   * Path part for operation apiOrgsOrgIdClearancesClearanceIdFileGet
+   */
+  static readonly ApiOrgsOrgIdClearancesClearanceIdFileGetPath = '/api/orgs/{orgId}/clearances/{clearanceId}/file';
+
+  /**
+   * download the clearance letter.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiOrgsOrgIdClearancesClearanceIdFileGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiOrgsOrgIdClearancesClearanceIdFileGet$Response(params: {
+    clearanceId: string;
+    orgId: string;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<Blob>> {
+
+    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdClearancesClearanceIdFileGetPath, 'get');
+    if (params) {
+      rb.path('clearanceId', params.clearanceId, {});
+      rb.path('orgId', params.orgId, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'blob',
+      accept: 'application/pdf',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<Blob>;
+      })
+    );
+  }
+
+  /**
+   * download the clearance letter.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiOrgsOrgIdClearancesClearanceIdFileGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiOrgsOrgIdClearancesClearanceIdFileGet(params: {
+    clearanceId: string;
+    orgId: string;
+  },
+  context?: HttpContext
+
+): Observable<Blob> {
+
+    return this.apiOrgsOrgIdClearancesClearanceIdFileGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<Blob>) => r.body as Blob)
+    );
+  }
+
 }

@@ -157,8 +157,7 @@ export class AgreementOfTermsComponent implements OnInit, CrcFormStepComponent {
 	constructor(private formBuilder: FormBuilder, private authenticationService: AuthenticationService) {}
 
 	ngOnInit(): void {
-		this.authenticationService.isLoginSubject$.subscribe((_subjectData: any) => {
-			const isLoggedIn = this.authenticationService.isLoggedIn();
+		this.authenticationService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
 			this.displayCaptcha = !isLoggedIn;
 		});
 

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { OAuthService } from 'angular-oauth2-oidc';
-import { BehaviorSubject, lastValueFrom, Subject } from 'rxjs';
+import { BehaviorSubject, lastValueFrom } from 'rxjs';
 import { UserInfo, UserProfileResponse } from 'src/app/api/models';
 import { UserProfileService } from 'src/app/api/services';
 import {
@@ -13,8 +13,6 @@ import { UtilService } from './util.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
-	isLoginSubject$: Subject<boolean> = new Subject<boolean>();
-
 	private _waitUntilAuthentication$ = new BehaviorSubject<boolean>(false);
 	waitUntilAuthentication$ = this._waitUntilAuthentication$.asObservable();
 
@@ -202,7 +200,6 @@ export class AuthenticationService {
 			this.loggedInUserTokenData = decodedToken;
 		}
 
-		this.isLoginSubject$.next(true);
 		this._waitUntilAuthentication$.next(isLoggedIn);
 	}
 }
