@@ -253,10 +253,6 @@ export class UsersComponent implements OnInit {
 	}
 
 	allowEditRow(user: OrgUserResponse): boolean {
-		if (this.usersList.length <= 1) {
-			return false;
-		}
-
 		// if row is current user, allow edit
 		if (this.authenticationService.loggedInUserInfo?.userId == user.id) {
 			return true;
