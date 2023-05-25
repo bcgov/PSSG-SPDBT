@@ -98,7 +98,7 @@ namespace Spd.Utilities.LogonUser
                 return false;
             }
             //add ui to claims
-            context.User.UpdateUserClaims(ui.UserId.ToString(), orgId.ToString());
+            context.User.UpdateUserClaims(ui.UserId.ToString(), orgId.ToString(), ui.ContactAuthorizationTypeCode.ToString());
             return true;
         }
 

@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Membership.OrgUser;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared;
+using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
+using System.Net;
 using System.Security.Principal;
 
 namespace Spd.Presentation.Screening.Controllers
@@ -13,7 +15,6 @@ namespace Spd.Presentation.Screening.Controllers
     /// <summary>
     /// 
     /// </summary>
-    [Authorize]
     public class OrgUserController : SpdControllerBase
     {
         private readonly ILogger<OrgUserController> _logger;
@@ -36,11 +37,13 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/invitation")]
         [HttpPost]
-        public async Task<InvitationResponse> VerifyUserInvitation([FromBody][Required]InvitationRequest orgUserInvitationRequest)
+        [Authorize]
+        public async Task<InvitationResponse> VerifyUserInvitation([FromBody][Required] InvitationRequest orgUserInvitationRequest)
         {
             return await _mediator.Send(new VerifyUserInvitation(orgUserInvitationRequest, _currentUser.GetBizGuid(), _currentUser.GetUserGuid()));
         }
 
+        [Authorize(Roles = "Primary")]
         [Route("api/orgs/{orgId}/users")]
         [HttpPost]
         public async Task<OrgUserResponse> Add([FromBody][Required] OrgUserCreateRequest orgUserCreateRequest, [FromRoute] Guid orgId)
@@ -53,13 +56,21 @@ namespace Spd.Presentation.Screening.Controllers
             return await _mediator.Send(new OrgUserCreateCommand(orgUserCreateRequest, hostUrl));
         }
 
+        [Authorize(Roles = "Primary,Contact")]
         [Route("api/orgs/{orgId}/users/{userId}")]
         [HttpPut]
         public async Task<OrgUserResponse> Put([FromRoute] Guid userId, [FromBody] OrgUserUpdateRequest orgUserUpdateRequest, [FromRoute] Guid orgId)
         {
+            //if role is contact, can only change his own phone number, job title
+            if (_currentUser.GetUserRole() == ContactAuthorizationTypeCode.Contact.ToString() &&
+                userId.ToString() != _currentUser.GetUserId())
+            {
+               throw new ApiException(HttpStatusCode.Forbidden, "Authorized Contact can only change his own phone number and job title.");
+            }
             return await _mediator.Send(new OrgUserUpdateCommand(userId, orgUserUpdateRequest));
         }
 
+        [Authorize(Roles = "Primary")]
         [Route("api/orgs/{orgId}/users/{userId}")]
         [HttpDelete]
         public async Task<ActionResult> DeleteAsync([FromRoute] Guid userId, [FromRoute] Guid orgId)
@@ -76,6 +87,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <exception cref="Exception"></exception>
         [Route("api/orgs/{orgId}/users/{userId}")]
         [HttpGet]
+        [Authorize(Roles = "Primary,Contact")]
         public async Task<OrgUserResponse> Get([FromRoute] Guid orgId, Guid userId)
         {
             return await _mediator.Send(new OrgUserGetQuery(userId));
@@ -86,10 +98,15 @@ namespace Spd.Presentation.Screening.Controllers
         /// </summary>
         /// <param name="orgId"></param>
         /// <returns></returns>
+        [Authorize(Roles = "Primary,Contact")]
         [Route("api/orgs/{orgId}/users")]
         [HttpGet]
         public async Task<OrgUserListResponse> GetList([FromRoute] Guid orgId)
         {
+            //if user is contact, he can only see active user list.
+            if (_currentUser.GetUserRole() == ContactAuthorizationTypeCode.Contact.ToString())
+                return await _mediator.Send(new OrgUserListQuery(orgId, true));
+
             return await _mediator.Send(new OrgUserListQuery(orgId));
         }
     }

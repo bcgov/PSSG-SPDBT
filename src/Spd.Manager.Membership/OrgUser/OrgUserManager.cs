@@ -111,6 +111,10 @@ namespace Spd.Manager.Membership.OrgUser
                 ct);
 
             var userResps = _mapper.Map<IEnumerable<OrgUserResponse>>(existingUsersResult.UserResults);
+            if (request.OnlyReturnActiveUsers)
+            {
+                userResps = userResps.Where(u => u.IsActive);
+            }
             var org = await _orgRepository.QueryOrgAsync(new OrgByIdQry(request.OrganizationId), ct);
 
             return new OrgUserListResponse
