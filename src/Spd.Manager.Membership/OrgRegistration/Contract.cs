@@ -302,6 +302,7 @@ namespace Spd.Manager.Membership.OrgRegistration
     {
         ApplicationSubmitted,
         InProgress,
-        Complete
+        CompleteSuccess,
+        CompleteFailed
     }
 }

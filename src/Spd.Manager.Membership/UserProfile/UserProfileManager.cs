@@ -56,7 +56,8 @@ namespace Spd.Manager.Membership.UserProfile
                         "New" => OrgRegistrationStatusCode.ApplicationSubmitted,
                         "InProgress" => OrgRegistrationStatusCode.InProgress,
                         "AwaitingOrganization" => OrgRegistrationStatusCode.InProgress,
-                        _ => OrgRegistrationStatusCode.Complete,
+                        "Approved" => OrgRegistrationStatusCode.CompleteSuccess,
+                        _ => OrgRegistrationStatusCode.CompleteFailed,
                     };
                     userInfos.Add(ui);
                 }
