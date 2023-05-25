@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
+using Microsoft.OData.Client;
 using Spd.Utilities.Dynamics;
 
 namespace Spd.Resource.Organizations.Registration
@@ -17,14 +18,14 @@ namespace Spd.Resource.Organizations.Registration
 
         public async Task<OrgRegistrationQueryResult> Query(OrgRegistrationQuery query, CancellationToken ct)
         {
-            var orgRegs = _dynaContext.spd_orgregistrations.Where(o => o.statecode != DynamicsConstants.StateCode_Inactive);
+            var orgRegs = _dynaContext.spd_orgregistrations;
 
             if (query.UserGuid != null)
-                orgRegs = orgRegs.Where(o => o.spd_portaluseridentityguid == query.UserGuid.ToString());
+                orgRegs = (DataServiceQuery<spd_orgregistration>)orgRegs.Where(o => o.statecode != DynamicsConstants.StateCode_Inactive).Where(o => o.spd_portaluseridentityguid == query.UserGuid.ToString());
             if (query.OrgGuid != null)
-                orgRegs = orgRegs.Where(o => o.spd_identityguid == query.OrgGuid.ToString());
+                orgRegs = (DataServiceQuery<spd_orgregistration>)orgRegs.Where(o => o.statecode != DynamicsConstants.StateCode_Inactive).Where(o => o.spd_identityguid == query.OrgGuid.ToString());
             if (query.RegistrationNumber != null)
-                orgRegs = orgRegs.Where(o => o.spd_registrationnumber == query.RegistrationNumber);
+                orgRegs = (DataServiceQuery<spd_orgregistration>)orgRegs.Where(o => o.spd_registrationnumber == query.RegistrationNumber);
 
             IEnumerable<spd_orgregistration> results = await orgRegs.GetAllPagesAsync(ct);
             return new OrgRegistrationQueryResult(_mapper.Map<IEnumerable<OrgRegistrationResult>>(results));
