@@ -286,22 +286,19 @@ export class ExpiringChecksComponent implements OnInit {
 	onDownloadClearanceLetter(clearance: ExpiredClearanceResponse) {
 		this.applicationService
 			.apiOrgsOrgIdClearancesClearanceIdFileGet({
-				clearanceId: clearance.id!,
+				clearanceId: clearance.clearanceId!,
 				orgId: this.authenticationService.loggedInUserInfo?.orgId!,
 			})
 			.pipe()
 			.subscribe((res: Blob) => {
 				if (res && res.size > 0) {
-					const fileDownloadUrl = window.URL.createObjectURL(res);
-					const fileDownloadLink = document.createElement('a');
-
-					fileDownloadLink.href = fileDownloadUrl;
-					fileDownloadLink.download = 'true';
-
-					document.body.appendChild(fileDownloadLink);
-					fileDownloadLink.click();
-
-					document.body.removeChild(fileDownloadLink);
+					const url = window.URL.createObjectURL(res);
+					const anchor = document.createElement('a');
+					anchor.href = url;
+					anchor.download = `clearance-letter-${clearance.firstName}-${clearance.lastName}`;
+					document.body.appendChild(anchor);
+					anchor.click();
+					document.body.removeChild(anchor);
 				} else {
 					this.hotToast.warning('There is no clearance letter associated with this criminal record check');
 				}

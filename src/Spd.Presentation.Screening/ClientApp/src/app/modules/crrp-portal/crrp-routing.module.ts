@@ -7,7 +7,7 @@ import { ExpiringChecksComponent } from './components/expiring-checks.component'
 import { GenericUploadsComponent } from './components/generic-uploads.component';
 import { IdentifyVerificationComponent } from './components/identify-verification.component';
 import { InvitationComponent } from './components/invitation.component';
-import { ManualSubmissionsComponent } from './components/manual-submissions.component';
+import { ManualSubmissionComponent } from './components/manual-submission.component';
 import { OrganizationProfileComponent } from './components/organization-profile.component';
 import { PaymentsComponent } from './components/payments.component';
 import { ReportsComponent } from './components/reports.component';
@@ -47,7 +47,7 @@ const routes: Routes = [
 			{ path: CrrpRoutes.GENERIC_UPLOADS, component: GenericUploadsComponent },
 			{ path: CrrpRoutes.IDENTITY_VERIFICATION, component: IdentifyVerificationComponent },
 			{ path: CrrpRoutes.PAYMENTS, component: PaymentsComponent },
-			{ path: CrrpRoutes.MANUAL_SUBMISSIONS, component: ManualSubmissionsComponent },
+			{ path: CrrpRoutes.MANUAL_SUBMISSIONS, component: ManualSubmissionComponent },
 			{ path: CrrpRoutes.ORGANIZATION_PROFILE, component: OrganizationProfileComponent },
 			{ path: CrrpRoutes.REPORTS, component: ReportsComponent },
 			{ path: CrrpRoutes.USERS, component: UsersComponent },

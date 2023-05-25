@@ -38,17 +38,15 @@ export interface IdentityVerificationResponse extends ApplicationResponse {
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
 					<h2 class="mb-2 fw-normal">Identity Verification</h2>
-
 					<ng-container *ngIf="applicationStatistics$ | async">
-						<div class="alert alert-warning d-flex align-items-center" role="alert">
-							<mat-icon class="d-none d-md-block alert-icon me-2">warning</mat-icon>
+						<app-alert type="warning" icon="warning">
 							<ng-container *ngIf="count == 1; else notOne">
 								<div>There is 1 applicant which requires confirmation</div>
 							</ng-container>
 							<ng-template #notOne>
 								<div>There are {{ count }} applicants which require confirmation</div>
 							</ng-template>
-						</div>
+						</app-alert>
 					</ng-container>
 				</div>
 			</div>

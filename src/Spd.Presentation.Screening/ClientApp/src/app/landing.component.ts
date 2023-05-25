@@ -24,14 +24,14 @@ import { CrrpRoutes } from './modules/crrp-portal/crrp-routing.module';
 			<a [routerLink]="['/org-registration/']"> Register now </a>
 		</section>
 
-		<section class="step-section col-xxl-4 col-xl-4 col-lg-5 col-md-6 col-sm-12 mx-auto mt-4 p-4">
+		<section class="step-section col-xxl-4 col-xl-4 col-lg-5 col-md-6 col-sm-12 mx-auto my-4 p-4">
 			Temporary section
 			<button mat-stroked-button color="primary" class="large my-2" (click)="goToApplicant()">Applicant Portal</button>
 
 			<mat-divider class="my-4"></mat-divider>
 
 			<button mat-stroked-button color="primary" class="large my-2" (click)="goToScreening()">
-				Criminal Record Check Application
+				Criminal Record Check Portal
 			</button>
 			<mat-radio-group [(ngModel)]="paymentBy">
 				<mat-radio-button value="APP">
