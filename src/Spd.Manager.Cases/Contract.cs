@@ -353,6 +353,7 @@ namespace Spd.Manager.Cases
         public DateTimeOffset? ExpiresOn { get; set; } = null!;
         public string Facility { get; set; } = null!;
         public string Status { get; set; } = null!;
+        public Guid ClearanceId { get; set; }
     }
 
     public record ClearanceLetterQuery(Guid ClearanceId) : IRequest<ClearanceLetterResponse>;

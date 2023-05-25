@@ -78,8 +78,10 @@ internal partial class ApplicationRepository : IApplicationRepository
 
     private string GetClearanceFilterString(ClearanceFilterBy clearanceFilterBy)
     {
+        string dateStr = DateTime.UtcNow.AddDays(90).Date.ToString("yyyy-MM-dd");
         string orgFilter = $"_spd_organizationid_value eq {clearanceFilterBy.OrgId}";
         string stateFilter = $"statecode eq {DynamicsConstants.StateCode_Active}";
+        string expireDateFilter = $"spd_expirydate le {dateStr}";
 
         string? contains = null;
         if (!string.IsNullOrWhiteSpace(clearanceFilterBy.NameOrEmailContains))
@@ -88,6 +90,7 @@ internal partial class ApplicationRepository : IApplicationRepository
         }
         string result = $"{orgFilter}";
         result += $" and {stateFilter}";
+        result += $" and {expireDateFilter}";
         if (contains != null)
         {
             result += $" and {contains}";
