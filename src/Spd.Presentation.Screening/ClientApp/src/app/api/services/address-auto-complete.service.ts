@@ -50,8 +50,9 @@ export class AddressAutoCompleteService extends BaseService {
      * optional, The Id from a previous Find
      */
     lastId?: string;
-    context?: HttpContext
-  }
+  },
+  context?: HttpContext
+
 ): Observable<StrictHttpResponse<Array<AddressFindResponse>>> {
 
     const rb = new RequestBuilder(this.rootUrl, AddressAutoCompleteService.ApiMetadataAddressGetPath, 'get');
@@ -64,7 +65,7 @@ export class AddressAutoCompleteService extends BaseService {
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json',
-      context: params?.context
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -78,7 +79,7 @@ export class AddressAutoCompleteService extends BaseService {
    *
    *
    *
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiMetadataAddressGet$Response()` instead.
    *
    * This method doesn't expect any request body.
@@ -95,11 +96,12 @@ export class AddressAutoCompleteService extends BaseService {
      * optional, The Id from a previous Find
      */
     lastId?: string;
-    context?: HttpContext
-  }
+  },
+  context?: HttpContext
+
 ): Observable<Array<AddressFindResponse>> {
 
-    return this.apiMetadataAddressGet$Response(params).pipe(
+    return this.apiMetadataAddressGet$Response(params,context).pipe(
       map((r: StrictHttpResponse<Array<AddressFindResponse>>) => r.body as Array<AddressFindResponse>)
     );
   }
@@ -125,8 +127,9 @@ export class AddressAutoCompleteService extends BaseService {
      * the id from find items, like CAN|1520704
      */
     id: string;
-    context?: HttpContext
-  }
+  },
+  context?: HttpContext
+
 ): Observable<StrictHttpResponse<Array<AddressRetrieveResponse>>> {
 
     const rb = new RequestBuilder(this.rootUrl, AddressAutoCompleteService.ApiMetadataAddressIdGetPath, 'get');
@@ -137,7 +140,7 @@ export class AddressAutoCompleteService extends BaseService {
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json',
-      context: params?.context
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -151,7 +154,7 @@ export class AddressAutoCompleteService extends BaseService {
    *
    *
    *
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiMetadataAddressIdGet$Response()` instead.
    *
    * This method doesn't expect any request body.
@@ -162,11 +165,12 @@ export class AddressAutoCompleteService extends BaseService {
      * the id from find items, like CAN|1520704
      */
     id: string;
-    context?: HttpContext
-  }
+  },
+  context?: HttpContext
+
 ): Observable<Array<AddressRetrieveResponse>> {
 
-    return this.apiMetadataAddressIdGet$Response(params).pipe(
+    return this.apiMetadataAddressIdGet$Response(params,context).pipe(
       map((r: StrictHttpResponse<Array<AddressRetrieveResponse>>) => r.body as Array<AddressRetrieveResponse>)
     );
   }

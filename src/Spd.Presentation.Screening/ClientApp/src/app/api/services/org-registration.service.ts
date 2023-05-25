@@ -41,9 +41,10 @@ export class OrgRegistrationService extends BaseService {
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   apiAnonymousOrgRegistrationsPost$Response(params: {
-    context?: HttpContext
     body: AnonymousOrgRegistrationCreateRequest
-  }
+  },
+  context?: HttpContext
+
 ): Observable<StrictHttpResponse<OrgRegistrationCreateResponse>> {
 
     const rb = new RequestBuilder(this.rootUrl, OrgRegistrationService.ApiAnonymousOrgRegistrationsPostPath, 'post');
@@ -54,7 +55,7 @@ export class OrgRegistrationService extends BaseService {
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json',
-      context: params?.context
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -68,18 +69,19 @@ export class OrgRegistrationService extends BaseService {
    *
    *
    *
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiAnonymousOrgRegistrationsPost$Response()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   apiAnonymousOrgRegistrationsPost(params: {
-    context?: HttpContext
     body: AnonymousOrgRegistrationCreateRequest
-  }
+  },
+  context?: HttpContext
+
 ): Observable<OrgRegistrationCreateResponse> {
 
-    return this.apiAnonymousOrgRegistrationsPost$Response(params).pipe(
+    return this.apiAnonymousOrgRegistrationsPost$Response(params,context).pipe(
       map((r: StrictHttpResponse<OrgRegistrationCreateResponse>) => r.body as OrgRegistrationCreateResponse)
     );
   }
@@ -96,9 +98,10 @@ export class OrgRegistrationService extends BaseService {
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   apiOrgRegistrationsPost$Response(params: {
-    context?: HttpContext
     body: OrgRegistrationCreateRequest
-  }
+  },
+  context?: HttpContext
+
 ): Observable<StrictHttpResponse<OrgRegistrationCreateResponse>> {
 
     const rb = new RequestBuilder(this.rootUrl, OrgRegistrationService.ApiOrgRegistrationsPostPath, 'post');
@@ -109,7 +112,7 @@ export class OrgRegistrationService extends BaseService {
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json',
-      context: params?.context
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -119,18 +122,19 @@ export class OrgRegistrationService extends BaseService {
   }
 
   /**
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiOrgRegistrationsPost$Response()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   apiOrgRegistrationsPost(params: {
-    context?: HttpContext
     body: OrgRegistrationCreateRequest
-  }
+  },
+  context?: HttpContext
+
 ): Observable<OrgRegistrationCreateResponse> {
 
-    return this.apiOrgRegistrationsPost$Response(params).pipe(
+    return this.apiOrgRegistrationsPost$Response(params,context).pipe(
       map((r: StrictHttpResponse<OrgRegistrationCreateResponse>) => r.body as OrgRegistrationCreateResponse)
     );
   }
@@ -148,8 +152,9 @@ export class OrgRegistrationService extends BaseService {
    */
   apiOrgRegistrationsRegistrationNumberStatusGet$Response(params: {
     registrationNumber: string;
-    context?: HttpContext
-  }
+  },
+  context?: HttpContext
+
 ): Observable<StrictHttpResponse<OrgRegistrationPortalStatusResponse>> {
 
     const rb = new RequestBuilder(this.rootUrl, OrgRegistrationService.ApiOrgRegistrationsRegistrationNumberStatusGetPath, 'get');
@@ -160,7 +165,7 @@ export class OrgRegistrationService extends BaseService {
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json',
-      context: params?.context
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -170,18 +175,19 @@ export class OrgRegistrationService extends BaseService {
   }
 
   /**
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiOrgRegistrationsRegistrationNumberStatusGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
   apiOrgRegistrationsRegistrationNumberStatusGet(params: {
     registrationNumber: string;
-    context?: HttpContext
-  }
+  },
+  context?: HttpContext
+
 ): Observable<OrgRegistrationPortalStatusResponse> {
 
-    return this.apiOrgRegistrationsRegistrationNumberStatusGet$Response(params).pipe(
+    return this.apiOrgRegistrationsRegistrationNumberStatusGet$Response(params,context).pipe(
       map((r: StrictHttpResponse<OrgRegistrationPortalStatusResponse>) => r.body as OrgRegistrationPortalStatusResponse)
     );
   }
