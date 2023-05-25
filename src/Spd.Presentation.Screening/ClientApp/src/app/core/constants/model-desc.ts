@@ -12,7 +12,7 @@ export enum ScreeningTypeCode {
 export enum GenderCode {
 	Male = 'M',
 	Female = 'F',
-	NonBinary = 'N',
+	NonBinary = 'X',
 }
 
 export enum ApplicationOriginTypeCode {
