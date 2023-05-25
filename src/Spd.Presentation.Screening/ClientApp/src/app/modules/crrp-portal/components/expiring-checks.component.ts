@@ -129,7 +129,7 @@ export const ExpiringChecksFilterMap: Record<keyof ExpiringChecksFilter, string>
 									class="table-button m-2"
 									style="color: var(--color-primary-light);"
 									aria-label="Download Clearance Letter"
-									matTooltip="Download Clearance Letter"
+									(click)="onDownloadClearanceLetter(clearance)"
 								>
 									<mat-icon>file_download</mat-icon>Clearance Letter
 								</button>
@@ -281,6 +281,31 @@ export class ExpiringChecksComponent implements OnInit {
 		this.queryParams.sorts = currentSort;
 
 		this.loadList();
+	}
+
+	onDownloadClearanceLetter(clearance: ExpiredClearanceResponse) {
+		this.applicationService
+			.apiOrgsOrgIdClearancesClearanceIdFileGet({
+				clearanceId: clearance.id!,
+				orgId: this.authenticationService.loggedInUserInfo?.orgId!,
+			})
+			.pipe()
+			.subscribe((res: Blob) => {
+				if (res && res.size > 0) {
+					const fileDownloadUrl = window.URL.createObjectURL(res);
+					const fileDownloadLink = document.createElement('a');
+
+					fileDownloadLink.href = fileDownloadUrl;
+					fileDownloadLink.download = 'true';
+
+					document.body.appendChild(fileDownloadLink);
+					fileDownloadLink.click();
+
+					document.body.removeChild(fileDownloadLink);
+				} else {
+					this.hotToast.warning('There is no clearance letter associated with this criminal record check');
+				}
+			});
 	}
 
 	onSendRequest(clearance: ExpiredClearanceResponse) {
