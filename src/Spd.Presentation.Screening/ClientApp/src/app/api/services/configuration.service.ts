@@ -34,8 +34,9 @@ export class ConfigurationService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiConfigurationGet$Response(params?: {
-    context?: HttpContext
-  }
+  },
+  context?: HttpContext
+
 ): Observable<StrictHttpResponse<ConfigurationResponse>> {
 
     const rb = new RequestBuilder(this.rootUrl, ConfigurationService.ApiConfigurationGetPath, 'get');
@@ -45,7 +46,7 @@ export class ConfigurationService extends BaseService {
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json',
-      context: params?.context
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -55,17 +56,18 @@ export class ConfigurationService extends BaseService {
   }
 
   /**
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiConfigurationGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
   apiConfigurationGet(params?: {
-    context?: HttpContext
-  }
+  },
+  context?: HttpContext
+
 ): Observable<ConfigurationResponse> {
 
-    return this.apiConfigurationGet$Response(params).pipe(
+    return this.apiConfigurationGet$Response(params,context).pipe(
       map((r: StrictHttpResponse<ConfigurationResponse>) => r.body as ConfigurationResponse)
     );
   }

@@ -100,8 +100,8 @@ export class CompletedComponent {
 	constructor(private authenticationService: AuthenticationService) {}
 
 	ngOnInit(): void {
-		this.authenticationService.isLoginSubject$.subscribe((_subjectData: any) => {
-			this.isLoggedIn = this.authenticationService.isLoggedIn();
+		this.authenticationService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
+			this.isLoggedIn = isLoggedIn;
 		});
 	}
 }

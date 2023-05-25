@@ -95,7 +95,7 @@ export class AgreementOfTermsModel {
 					</div>
 				</div>
 
-				<div class="row my-4" *ngIf="displayCaptcha">
+				<div class="row mb-4" *ngIf="displayCaptcha">
 					<div class="offset-md-2 col-md-8 col-sm-12">
 						<app-captcha-v2
 							(captchaResponse)="onTokenResponse($event)"
@@ -141,8 +141,7 @@ export class AgreementOfTermsComponent implements OnInit, RegistrationFormStepCo
 			agreeToTermsAndConditions: new FormControl('', [Validators.required]),
 		});
 
-		this.authenticationService.isLoginSubject$.subscribe((_subjectData: any) => {
-			const isLoggedIn = this.authenticationService.isLoggedIn();
+		this.authenticationService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
 			this.displayCaptcha = !isLoggedIn;
 		});
 

@@ -42,9 +42,9 @@ export class OrganizationNameComponent implements OnInit, RegistrationFormStepCo
 			organizationName: new FormControl('', [Validators.required]),
 		});
 
-		this.authenticationService.isLoginSubject$.subscribe((_subjectData: any) => {
+		this.authenticationService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
 			const currOrgName = this.organizationName.value;
-			if (!currOrgName) {
+			if (!currOrgName && isLoggedIn) {
 				const loggedInOrgName = this.authenticationService.loggedInUserInfo?.orgName;
 				if (loggedInOrgName) {
 					this.form.patchValue({ organizationName: loggedInOrgName });
