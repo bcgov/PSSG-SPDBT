@@ -49,19 +49,19 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 									<span class="menu-item ms-2 d-none d-sm-inline text-white">Screening Statuses</span>
 								</a>
 							</li>
-							<!-- <li class="nav-item w-100">
+							<li class="nav-item w-100">
 								<a
-									[routerLink]="[pssoRoutes.pssoPath(pssoRoutes.SCREENING_STATUSES)]"
+									[routerLink]="[pssoRoutes.pssoPath(pssoRoutes.SCREENING_CHECKS)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
 								>
-									<mat-icon>people</mat-icon>
-									<span class="menu-item ms-2 d-none d-sm-inline text-white">New Screening</span>
+									<mat-icon>post_add</mat-icon>
+									<span class="menu-item ms-2 d-none d-sm-inline text-white">Screening Checks</span>
 								</a>
 							</li>
 							<li class="nav-item w-100">
 								<a
-									[routerLink]="[pssoRoutes.pssoPath(pssoRoutes.SCREENING_STATUSES)]"
+									[routerLink]="[pssoRoutes.pssoPath(pssoRoutes.IDENTITY_VERIFICATION)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
 								>
@@ -71,14 +71,14 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 							</li>
 							<li class="nav-item w-100">
 								<a
-									[routerLink]="[pssoRoutes.pssoPath(pssoRoutes.SCREENING_STATUSES)]"
+									[routerLink]="[pssoRoutes.pssoPath(pssoRoutes.MANUAL_SUBMISSIONS)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
 								>
-									<mat-icon>post_add</mat-icon>
+									<mat-icon>description</mat-icon>
 									<span class="menu-item ms-2 d-none d-sm-inline text-white">Manual Submissions</span>
 								</a>
-							</li> -->
+							</li>
 						</ul>
 					</div>
 				</div>

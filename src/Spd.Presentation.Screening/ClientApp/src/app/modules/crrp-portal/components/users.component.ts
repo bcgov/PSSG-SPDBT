@@ -35,7 +35,7 @@ import { UserDialogData, UserEditModalComponent } from './user-edit-modal.compon
 						<button mat-flat-button class="large w-100 mat-green-button mb-2" (click)="onAddUser()">Add User</button>
 					</ng-container>
 					<ng-template #addNotAllowed>
-						<div class="alert alert-warning d-flex align-items-center" role="alert">
+						<div class="alert alert-warning d-flex" role="alert">
 							<div>The maximum number of authorized users has been reached</div>
 						</div>
 					</ng-template>
@@ -107,7 +107,7 @@ import { UserDialogData, UserEditModalComponent } from './user-edit-modal.compon
 									class="table-button my-2 me-4"
 									style="color: var(--color-green);"
 									(click)="onMaintainUser(user)"
-									*ngIf="user.isActive"
+									*ngIf="allowEditRow(user)"
 									aria-label="Edit user"
 								>
 									<mat-icon>edit</mat-icon>Edit
@@ -252,17 +252,36 @@ export class UsersComponent implements OnInit {
 		});
 	}
 
+	allowEditRow(user: OrgUserResponse): boolean {
+		if (this.usersList.length <= 1) {
+			return false;
+		}
+
+		// if row is current user, allow edit
+		if (this.authenticationService.loggedInUserInfo?.userId == user.id) {
+			return true;
+		}
+
+		// if row is not active user, prevent edit
+		if (!user.isActive) {
+			return false;
+		}
+
+		// if current user is a Primary Authorized User, allow edit
+		return this.isUserPrimaryAuthorizedUser();
+	}
+
 	allowDeleteRow(user: OrgUserResponse): boolean {
 		if (this.usersList.length <= 1) {
 			return false;
 		}
 
-		// if row is current user, remove delete
+		// if row is current user, prevent delete
 		if (this.authenticationService.loggedInUserInfo?.userId == user.id) {
 			return false;
 		}
 
-		// if current user is not a Primary Authorized User, prevent delete
+		// if current user is a Primary Authorized User, allow delete
 		return this.isUserPrimaryAuthorizedUser();
 	}
 
@@ -417,6 +436,7 @@ export class UsersComponent implements OnInit {
 		}
 
 		const currUser = this.usersList.find((item) => item.id == this.authenticationService.loggedInUserInfo?.userId);
+		console.log('currUser', currUser);
 		return currUser ? currUser.contactAuthorizationTypeCode == ContactAuthorizationTypeCode.Primary : false;
 	}
 }

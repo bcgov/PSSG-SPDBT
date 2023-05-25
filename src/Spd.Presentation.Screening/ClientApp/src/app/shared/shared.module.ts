@@ -8,6 +8,7 @@ import { MaterialModule } from '../material.module';
 import { AccessDeniedComponent } from './components/access-denied.component';
 import { AddressAutocompleteComponent } from './components/address-autocomplete.component';
 import { AddressModalComponent } from './components/address-modal.component';
+import { AlertComponent } from './components/alert.component';
 import { FooterComponent } from './components/app-footer.component';
 import { HeaderComponent } from './components/app-header.component';
 import { BaseFilterComponent } from './components/base-filter.component';
@@ -37,6 +38,7 @@ const SHARED_COMPONENTS = [
 	CaptchaV2Component,
 	FileUploadComponent,
 	AccessDeniedComponent,
+	AlertComponent,
 ];
 
 @NgModule({
