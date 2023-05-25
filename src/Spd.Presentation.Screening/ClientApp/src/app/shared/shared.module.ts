@@ -17,6 +17,7 @@ import { DialogComponent } from './components/dialog.component';
 import { DropdownOverlayComponent } from './components/dropdown-overlay.component';
 import { FileUploadComponent } from './components/file-upload.component';
 import { OrgSelectionModalComponent } from './components/org-selection-modal.component';
+import { StatusStatisticsComponent } from './components/status-statistics.component';
 import { StepTitleComponent } from './components/step-title.component';
 import { DefaultPipe } from './pipes/default.pipe';
 import { FullnamePipe } from './pipes/fullname.pipe';
@@ -39,6 +40,7 @@ const SHARED_COMPONENTS = [
 	FileUploadComponent,
 	AccessDeniedComponent,
 	AlertComponent,
+	StatusStatisticsComponent,
 ];
 
 @NgModule({

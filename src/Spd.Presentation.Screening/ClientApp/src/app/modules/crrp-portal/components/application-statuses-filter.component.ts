@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { ApplicationPortalStatusCodes, SelectOptions } from 'src/app/core/constants/model-desc';
+import { ApplicationPortalStatusCodes } from 'src/app/core/constants/model-desc';
 import { UtilService } from 'src/app/core/services/util.service';
 import { BaseFilterComponent, FilterQueryList } from 'src/app/shared/components/base-filter.component';
 
@@ -33,7 +33,7 @@ export const ApplicationStatusFilterMap: Record<keyof ApplicationStatusFilter, s
 				</mat-toolbar>
 				<mat-card>
 					<mat-card-content class="mb-2 text-start">
-						<mat-form-field class="status-filter" style="min-width: 600px; min-height: 200px">
+						<mat-form-field class="multi-select-filter" style="min-width: 600px; min-height: 200px">
 							<mat-label>Filter by status</mat-label>
 							<mat-select formControlName="statuses" placeholder="All statuses" multiple>
 								<mat-select-trigger>
@@ -113,7 +113,7 @@ export class ApplicationStatusesFilterComponent extends BaseFilterComponent {
 	}
 
 	getFilterStatusDesc(code: string): string {
-		return (ApplicationPortalStatusCodes.find((item: SelectOptions) => item.code == code)?.desc as string) ?? '';
+		return this.utilService.geApplicationPortalStatusDesc(code);
 	}
 
 	private constructFilterList(formGroupValue: ApplicationStatusFilter): FilterQueryList[] {

@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { OrgRegistrationStatusCode } from 'src/app/api/models';
 import { OrgRegistrationService } from 'src/app/api/services';
+import { CrrpRoutes } from '../crrp-portal/crrp-routing.module';
 
 @Component({
 	selector: 'app-pre-registration',
@@ -105,7 +106,11 @@ export class PreRegistrationComponent {
 	status = '';
 	orgRegistrationStatusCodes = OrgRegistrationStatusCode;
 
-	constructor(private route: ActivatedRoute, private orgRegistrationService: OrgRegistrationService) {}
+	constructor(
+		private route: ActivatedRoute,
+		private router: Router,
+		private orgRegistrationService: OrgRegistrationService
+	) {}
 
 	ngOnInit(): void {
 		const registrationNumber = this.route.snapshot.paramMap.get('id');
@@ -115,7 +120,12 @@ export class PreRegistrationComponent {
 				.apiOrgRegistrationsRegistrationNumberStatusGet({ registrationNumber })
 				.pipe()
 				.subscribe((resp: any) => {
+					console.log('resp', resp);
 					this.status = resp.status;
+					if (resp.status == OrgRegistrationStatusCode.Complete) {
+						// this.router.navigate([OrgRegistrationRoutes.orgRegPath(OrgRegistrationRoutes.ORG_REGISTRATION)]);
+						this.router.navigate([CrrpRoutes.crrpPath(CrrpRoutes.HOME)]);
+					}
 				});
 		}
 	}
