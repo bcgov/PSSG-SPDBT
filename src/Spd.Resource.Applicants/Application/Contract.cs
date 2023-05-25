@@ -175,6 +175,7 @@ public record ClearanceResp
     public DateTimeOffset? ExpiresOn { get; set; } = null!;
     public string Facility { get; set; } = null!;
     public string Status { get; set; } = null!;
+    public Guid ClearanceId { get; set; }
 }
 public record ClearanceAccessDeleteCmd
 {
