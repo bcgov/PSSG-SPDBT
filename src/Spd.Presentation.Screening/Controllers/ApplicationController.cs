@@ -220,8 +220,8 @@ namespace Spd.Presentation.Screening.Controllers
                                 oneRequest.DateOfBirth = DateTimeOffset.ParseExact(birthDateStr, SpdConstants.BULK_APP_UPLOAD_BIRTHDATE_FORMAT, CultureInfo.InvariantCulture);
                             string? genderStr = CleanString(data[21]);
                             oneRequest.GenderCode = string.IsNullOrEmpty(genderStr) ? null : Enum.Parse<GenderCode>(genderStr);
-                            oneRequest.LicenceNo = data[22];
-                            oneRequest.DriversLicense = data[23];
+                            oneRequest.LicenceNo = CleanString(data[22]);
+                            oneRequest.DriversLicense = CleanString(data[23]);
                             oneRequest.AgreeToCompleteAndAccurate = true;
                             oneRequest.HaveVerifiedIdentity = true;
                             oneRequest.OriginTypeCode = ApplicationOriginTypeCode.GenericUpload;
