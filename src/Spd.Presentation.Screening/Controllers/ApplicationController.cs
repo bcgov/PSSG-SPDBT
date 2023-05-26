@@ -1,23 +1,20 @@
-using Amazon.S3.Model;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Cases;
-using Spd.Utilities.FileStorage;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
-using System.Net.Mime;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Spd.Presentation.Screening.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Primary,Contact")]
     public class ApplicationController : SpdControllerBase
     {
         private readonly IMediator _mediator;
