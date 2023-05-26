@@ -16,8 +16,10 @@ internal partial class ApplicationRepository : IApplicationRepository
         spd_application? application = null;
         account? org = await _context.GetOrgById(createApplicationCmd.OrgId, ct);
         spd_portaluser? user = await _context.GetUserById(createApplicationCmd.CreatedByUserId, ct);
-        if (org != null && user != null)
-            application = await CreateAppAsync(createApplicationCmd, org, user);
+        Guid teamGuid = Guid.Parse(DynamicsConstants.Client_Service_Team_Guid);
+        team? serviceTeam = await _context.teams.Where(t => t.teamid == teamGuid).FirstOrDefaultAsync(ct);
+        if (org != null && user != null && serviceTeam != null)
+            application = await CreateAppAsync(createApplicationCmd, org, user, serviceTeam);
 
         if (application != null)
         {
@@ -231,12 +233,14 @@ internal partial class ApplicationRepository : IApplicationRepository
             ), ct);
     }
 
-    private async Task<spd_application> CreateAppAsync(ApplicationCreateCmd createApplicationCmd, account org, spd_portaluser user)
+    //note: any change in this function, the operation number also needs to change in AddBulkAppsAsync
+    private async Task<spd_application> CreateAppAsync(ApplicationCreateCmd createApplicationCmd, account org, spd_portaluser user, team team)
     {
         spd_application app = _mapper.Map<spd_application>(createApplicationCmd);
         _context.AddTospd_applications(app);
         _context.SetLink(app, nameof(spd_application.spd_OrganizationId), org);
         _context.SetLink(app, nameof(spd_application.spd_SubmittedBy), user);
+        _context.SetLink(app, nameof(spd_application.ownerid), team);
 
         contact? contact = GetContact(createApplicationCmd);
         // if not found, create new contact

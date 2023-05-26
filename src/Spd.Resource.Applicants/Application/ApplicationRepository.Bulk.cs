@@ -46,6 +46,8 @@ internal partial class ApplicationRepository : IApplicationRepository
     {
         account? org = await _context.GetOrgById(cmd.OrgId, ct);
         spd_portaluser? user = await _context.GetUserById(cmd.UserId, ct);
+        Guid teamGuid = Guid.Parse(DynamicsConstants.Client_Service_Team_Guid);
+        team? team = await _context.teams.Where(t => t.teamid == teamGuid).FirstOrDefaultAsync(ct);
         if (org == null || user == null)
             throw new ApiException(System.Net.HttpStatusCode.PreconditionFailed, "Invalid organization or user.");
 
@@ -60,7 +62,7 @@ internal partial class ApplicationRepository : IApplicationRepository
         int begin = 0;
         //dynamics constraints: A maximum number of '1000' operations are allowed in a change set.
         //for each app create request, there is max 12 operations
-        int oneChangeSetMaxApps = 1000 / 12;
+        int oneChangeSetMaxApps = 1000 / 13;
         while (begin < createApps.Count)
         {
             int len = createApps.Count - begin;
@@ -68,7 +70,7 @@ internal partial class ApplicationRepository : IApplicationRepository
                 len = oneChangeSetMaxApps;
             for (int index = begin; index < begin + len; index++)
             {
-                var app = await CreateAppAsync(createApps[index], org, user);
+                var app = await CreateAppAsync(createApps[index], org, user, team);
                 results[index].ApplicationId = (Guid)app.spd_applicationid;
             }
             await _context.SaveChangesAsync(SaveChangesOptions.BatchWithSingleChangeset, ct);
