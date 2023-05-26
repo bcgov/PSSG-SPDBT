@@ -9,7 +9,7 @@ namespace Spd.Presentation.Screening.Controllers
     /// <summary>
     /// 
     /// </summary>
-    [Authorize]
+ 
     public class OrgController : SpdControllerBase
     {
         private readonly IMediator _mediator;
@@ -25,6 +25,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <param name="updateOrgRequest"></param>
         /// <param name="orgId"></param>
         /// <returns></returns>
+        [Authorize(Roles = "Primary")]
         [Route("api/orgs/{orgId}")]
         [HttpPut]
         public async Task<OrgResponse> Put([FromBody] OrgUpdateRequest updateOrgRequest, [FromRoute] Guid orgId)
@@ -32,6 +33,7 @@ namespace Spd.Presentation.Screening.Controllers
             return await _mediator.Send(new OrgUpdateCommand(updateOrgRequest, orgId));
         }
 
+        [Authorize(Roles = "Primary,Contact")]
         [Route("api/orgs/{orgId}")]
         [HttpGet]
         public async Task<OrgResponse> Get([FromRoute] Guid orgId)

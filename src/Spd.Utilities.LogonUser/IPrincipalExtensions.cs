@@ -49,6 +49,8 @@ namespace Spd.Utilities.LogonUser
 
         public static string? GetOrgId(this IPrincipal principal) => ValidatePrincipal(principal).GetClaimValue(SPD_ORGID);
 
+        public static string? GetUserRole(this IPrincipal principal) => ValidatePrincipal(principal).GetClaimValue(ClaimTypes.Role);
+
         public static string? GetBizName(this IPrincipal principal)
         {
             if (BCeID_IDENTITY_PROVIDERS.Contains(principal.GetIdentityProvider()))

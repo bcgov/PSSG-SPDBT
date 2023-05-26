@@ -87,7 +87,7 @@ namespace Spd.Manager.Membership.UserProfile
                         }
                     }
                 }
-            };
+            }
 
             UserProfileResponse response = new()
             {

@@ -73,7 +73,7 @@ namespace Spd.Manager.Membership.OrgUser
 
             var user = _mapper.Map<User>(request.OrgUserUpdateRequest);
             var response = await _orgUserRepository.ManageOrgUserAsync(
-                new UserUpdateCmd(request.OrgUserUpdateRequest.Id, user),
+                new UserUpdateCmd(request.OrgUserUpdateRequest.Id, user, request.OnlyChangePhoneJob),
                 ct);
             return _mapper.Map<OrgUserResponse>(response.UserResult);
         }
@@ -111,6 +111,10 @@ namespace Spd.Manager.Membership.OrgUser
                 ct);
 
             var userResps = _mapper.Map<IEnumerable<OrgUserResponse>>(existingUsersResult.UserResults);
+            if (request.OnlyReturnActiveUsers)
+            {
+                userResps = userResps.Where(u => u.IsActive);
+            }
             var org = await _orgRepository.QueryOrgAsync(new OrgByIdQry(request.OrganizationId), ct);
 
             return new OrgUserListResponse
