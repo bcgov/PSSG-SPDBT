@@ -17,7 +17,7 @@ namespace Spd.Engine.Validation
             return qry switch
             {
                 BulkUploadAppDuplicateCheckRequest q => await BulkUploadAppDuplicateCheckAsync(q, ct),
-                AppInviteDuplicateCheckRequest q => await AppInviteDuplicateCheckAsync(q, ct)
+                AppInviteDuplicateCheckRequest q => await AppInviteDuplicateCheckAsync(q, ct),
                 _ => throw new NotSupportedException($"{qry.GetType().Name} is not supported")
             };
         }

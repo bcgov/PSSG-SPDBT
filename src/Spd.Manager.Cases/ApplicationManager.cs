@@ -48,10 +48,14 @@ namespace Spd.Manager.Cases
             ApplicationInvitesCreateResponse resp = new(createCmd.OrgId);
             if (createCmd.ApplicationInvitesCreateRequest.RequireDuplicateCheck)
             {
-                var duplicateResp = await CheckDuplicateAppInvite(createCmd.ApplicationInvitesCreateRequest, createCmd.OrgId, ct);
+                var checks = _mapper.Map<IEnumerable<AppInviteDuplicateCheck>>(createCmd.ApplicationInvitesCreateRequest.ApplicationInviteCreateRequests);
+                var duplicateResp = (AppInviteDuplicateCheckResponse)await _duplicateCheckEngine.DuplicateCheckAsync(
+                    new AppInviteDuplicateCheckRequest(checks, createCmd.OrgId),
+                    ct
+                    );
                 resp.IsDuplicateCheckRequired = createCmd.ApplicationInvitesCreateRequest.RequireDuplicateCheck;
-                resp.DuplicateResponses = duplicateResp;
-                if (duplicateResp.Any())
+                resp.DuplicateResponses = _mapper.Map<IEnumerable<ApplicationInviteDuplicateResponse>>(duplicateResp.AppInviteCheckResults);
+                if (duplicateResp.AppInviteCheckResults.Any(r => r.HasPotentialDuplicate))
                 {
                     resp.CreateSuccess = false;
                     return resp;
@@ -77,38 +81,6 @@ namespace Spd.Manager.Cases
             var cmd = _mapper.Map<ApplicationInviteDeleteCmd>(request);
             await _applicationInviteRepository.DeleteApplicationInvitesAsync(cmd, ct);
             return default;
-        }
-        private async Task<IEnumerable<ApplicationInviteDuplicateResponse>> CheckDuplicateAppInvite(ApplicationInvitesCreateRequest request, Guid orgId, CancellationToken cancellationToken)
-        {
-            List<ApplicationInviteDuplicateResponse> resp = new List<ApplicationInviteDuplicateResponse>();
-            foreach (var item in request.ApplicationInviteCreateRequests)
-            {
-                var searchInvitationQry = _mapper.Map<SearchInvitationQry>(item);
-                searchInvitationQry.OrgId = orgId;
-
-                //duplicated in portal invitation
-                bool hasDuplicateInvitation = await _applicationInviteRepository.CheckInviteInvitationDuplicateAsync(searchInvitationQry, cancellationToken);
-                if (hasDuplicateInvitation)
-                {
-                    ApplicationInviteDuplicateResponse dupResp = _mapper.Map<ApplicationInviteDuplicateResponse>(item);
-                    dupResp.HasPotentialDuplicate = true;
-                    resp.Add(dupResp);
-                }
-
-                if (!hasDuplicateInvitation)
-                {
-                    //duplicated in application
-                    bool hasDuplicateApplication = await _applicationInviteRepository.CheckInviteApplicationDuplicateAsync(searchInvitationQry, cancellationToken);
-                    if (hasDuplicateApplication)
-                    {
-                        ApplicationInviteDuplicateResponse dupResp = _mapper.Map<ApplicationInviteDuplicateResponse>(item);
-                        dupResp.HasPotentialDuplicate = true;
-                        resp.Add(dupResp);
-                    }
-                }
-            }
-
-            return resp;
         }
         #endregion
 
@@ -271,10 +243,10 @@ namespace Spd.Manager.Cases
             return default;
         }
 
-        public async Task<ClearanceLetterResponse> Handle(ClearanceLetterQuery query, CancellationToken ct) 
+        public async Task<ClearanceLetterResponse> Handle(ClearanceLetterQuery query, CancellationToken ct)
         {
             ClearanceLetterResp letter = await _applicationRepository.QueryLetterAsync(new ClearanceLetterQry(query.ClearanceId), ct);
-            return _mapper.Map<ClearanceLetterResponse>(letter); 
+            return _mapper.Map<ClearanceLetterResponse>(letter);
         }
         #endregion
     }

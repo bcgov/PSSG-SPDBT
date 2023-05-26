@@ -14,7 +14,8 @@ namespace Spd.Manager.Cases
             .ForMember(d => d.ApplicationInvites, opt => opt.MapFrom(s => s.ApplicationInviteCreateRequests));
 
             CreateMap<ApplicationInviteCreateRequest, Spd.Resource.Applicants.ApplicationInvite.ApplicationInvite>();
-            CreateMap<ApplicationInviteCreateRequest, SearchInvitationQry>();
+            CreateMap<ApplicationInviteCreateRequest, AppInviteDuplicateCheck>();
+            CreateMap<AppInviteDuplicateCheckResult, ApplicationInviteDuplicateResponse>();
             CreateMap<ApplicationInviteCreateRequest, ApplicationInviteDuplicateResponse>();
             CreateMap<ApplicationInviteListResp, ApplicationInviteListResponse>();
             CreateMap<ApplicationInviteListQuery, ApplicationInviteQuery>();

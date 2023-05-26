@@ -87,8 +87,6 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             await _dynaContext.SaveChangesAsync(cancellationToken);
         }
 
-
-
         private async Task<spd_portalinvitation?> GetPortalInvitationById(Guid organizationId, Guid portalInvitationId)
            => await _dynaContext.spd_portalinvitations
                 .Where(a => a.spd_portalinvitationid == portalInvitationId && a._spd_organizationid_value == organizationId).SingleOrDefaultAsync();

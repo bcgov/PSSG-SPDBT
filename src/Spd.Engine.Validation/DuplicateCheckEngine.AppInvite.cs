@@ -4,28 +4,54 @@ namespace Spd.Engine.Validation
 {
     internal partial class DuplicateCheckEngine : IDuplicateCheckEngine
     {
-        public async Task<IEnumerable<ApplicationInviteDuplicateResponse>> AppInviteDuplicateCheckAsync(AppInviteDuplicateCheckRequest appInviteCheckRequest, CancellationToken ct)
+        public async Task<AppInviteDuplicateCheckResponse> AppInviteDuplicateCheckAsync(AppInviteDuplicateCheckRequest appInviteRequest, CancellationToken ct)
         {
-            return true;
+            List<AppInviteDuplicateCheckResult> results = new List<AppInviteDuplicateCheckResult>();
+            foreach (var item in appInviteRequest.AppInviteChecks)
+            {
+                //duplicated in portal invitation
+                bool hasDuplicateInvitation = await CheckInvitationDuplicateAsync(item, appInviteRequest.OrgId, ct);
+                if (hasDuplicateInvitation)
+                {
+                    AppInviteDuplicateCheckResult dupResp = _mapper.Map<AppInviteDuplicateCheckResult>(item);
+                    dupResp.HasPotentialDuplicate = true;
+                    results.Add(dupResp);
+                }
+
+                if (!hasDuplicateInvitation)
+                {
+                    //duplicated in application
+                    bool hasDuplicateApplication = await CheckInviteApplicationDuplicateAsync(item, appInviteRequest.OrgId, ct);
+                    if (hasDuplicateApplication)
+                    {
+                        AppInviteDuplicateCheckResult dupResp = _mapper.Map<AppInviteDuplicateCheckResult>(item);
+                        dupResp.HasPotentialDuplicate = true;
+                        results.Add(dupResp);
+                    }
+                }
+            }
+
+            AppInviteDuplicateCheckResponse resp = new AppInviteDuplicateCheckResponse(results);
+            return resp;
         }
 
-        public async Task<bool> CheckInviteInvitationDuplicateAsync(AppInviteDuplicateCheckRequest searchInvitationQry, CancellationToken cancellationToken)
+        private async Task<bool> CheckInvitationDuplicateAsync(AppInviteDuplicateCheck query, Guid orgId, CancellationToken cancellationToken)
         {
             var orginvitation = await _context.spd_portalinvitations.Where(o =>
-                o.spd_OrganizationId.accountid == searchInvitationQry.OrgId &&
-                o.spd_firstname == searchInvitationQry.FirstName &&
-                o.spd_surname == searchInvitationQry.LastName &&
+                o.spd_OrganizationId.accountid == orgId &&
+                o.spd_firstname == query.FirstName &&
+                o.spd_surname == query.LastName &&
                 o.statecode != DynamicsConstants.StateCode_Inactive
             ).FirstOrDefaultAsync(cancellationToken);
             return orginvitation != null;
         }
 
-        public async Task<bool> CheckInviteApplicationDuplicateAsync(AppInviteDuplicateCheckRequest searchInvitationQry, CancellationToken cancellationToken)
+        private async Task<bool> CheckInviteApplicationDuplicateAsync(AppInviteDuplicateCheck query, Guid orgId, CancellationToken cancellationToken)
         {
             var orginvitation = await _context.spd_applications.Where(o =>
-                o.spd_OrganizationId.accountid == searchInvitationQry.OrgId &&
-                o.spd_firstname == searchInvitationQry.FirstName &&
-                o.spd_lastname == searchInvitationQry.LastName &&
+                o.spd_OrganizationId.accountid == orgId &&
+                o.spd_firstname == query.FirstName &&
+                o.spd_lastname == query.LastName &&
                 o.statecode != DynamicsConstants.StateCode_Inactive
             ).FirstOrDefaultAsync(cancellationToken);
             return orginvitation != null;
