@@ -87,27 +87,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             await _dynaContext.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<bool> CheckInviteInvitationDuplicateAsync(SearchInvitationQry searchInvitationQry, CancellationToken cancellationToken)
-        {
-            var orginvitation = await _dynaContext.spd_portalinvitations.Where(o =>
-                o.spd_OrganizationId.accountid == searchInvitationQry.OrgId &&
-                o.spd_firstname == searchInvitationQry.FirstName &&
-                o.spd_surname == searchInvitationQry.LastName &&
-                o.statecode != DynamicsConstants.StateCode_Inactive
-            ).FirstOrDefaultAsync(cancellationToken);
-            return orginvitation != null;
-        }
 
-        public async Task<bool> CheckInviteApplicationDuplicateAsync(SearchInvitationQry searchInvitationQry, CancellationToken cancellationToken)
-        {
-            var orginvitation = await _dynaContext.spd_applications.Where(o =>
-                o.spd_OrganizationId.accountid == searchInvitationQry.OrgId &&
-                o.spd_firstname == searchInvitationQry.FirstName &&
-                o.spd_lastname == searchInvitationQry.LastName &&
-                o.statecode != DynamicsConstants.StateCode_Inactive
-            ).FirstOrDefaultAsync(cancellationToken);
-            return orginvitation != null;
-        }
 
         private async Task<spd_portalinvitation?> GetPortalInvitationById(Guid organizationId, Guid portalInvitationId)
            => await _dynaContext.spd_portalinvitations
