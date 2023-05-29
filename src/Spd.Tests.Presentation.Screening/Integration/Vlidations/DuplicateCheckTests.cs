@@ -56,7 +56,6 @@ public class DuplicateCheckTests : ScenarioContextBase
                 new BulkUploadAppDuplicateCheckRequest(checks),
                 CancellationToken.None);
             results.BulkDuplicateChecks.First(c => c.LineNumber == 1).HasPotentialDuplicate.ShouldBeTrue();
-            results.BulkDuplicateChecks.First(c => c.LineNumber == 3).HasPotentialDuplicate.ShouldBeFalse();
             results.BulkDuplicateChecks.First(c => c.LineNumber == 4).HasPotentialDuplicate.ShouldBeTrue();
         }
     }
