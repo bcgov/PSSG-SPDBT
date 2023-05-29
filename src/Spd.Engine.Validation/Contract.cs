@@ -15,13 +15,22 @@ namespace Spd.Engine.Validation
     public record AppDuplicateCheck
     {
         public Guid OrgId { get; set; }
-        public string? GivenName { get; set; }
-        public string Surname { get; set; } = null!;
+        public string? FirstName { get; set; }
+        public string LastName { get; set; } = null!;
         public DateTimeOffset DateOfBirth { get; set; }
     }
-
+    public record AppInviteDuplicateCheckRequest(IEnumerable<AppInviteDuplicateCheck> AppInviteChecks, Guid OrgId) : DuplicateCheckRequest;
+    public record AppInviteDuplicateCheck
+    {
+        public string? FirstName { get; set; }
+        public string LastName { get; set; } = null!;
+    }
+    public record AppInviteDuplicateCheckResponse(IEnumerable<AppInviteDuplicateCheckResult> AppInviteCheckResults) : DuplicateCheckResponse;
+    public record AppInviteDuplicateCheckResult : AppInviteDuplicateCheck
+    {
+        public bool HasPotentialDuplicate { get; set; } = false;
+    }
     public record BulkUploadAppDuplicateCheckResponse(IEnumerable<AppBulkDuplicateCheckResult> BulkDuplicateChecks) : DuplicateCheckResponse;
-
     public record AppBulkDuplicateCheckResult : AppDuplicateCheckResult
     {
         public int LineNumber { get; set; }

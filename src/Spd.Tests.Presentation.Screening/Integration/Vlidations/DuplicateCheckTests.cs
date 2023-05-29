@@ -22,32 +22,32 @@ public class DuplicateCheckTests : ScenarioContextBase
                 new AppBulkDuplicateCheck()
                 {
                     DateOfBirth = new DateTime(2000,1,1),
-                    GivenName = "given",
-                    Surname = "sur",
+                    FirstName = "given",
+                    LastName = "sur",
                     LineNumber = 1,
                     OrgId = (Guid)org.accountid
                 },
                 new AppBulkDuplicateCheck()
                 {
                     DateOfBirth = new DateTime(2000,1,1),
-                    GivenName = "given",
-                    Surname = "sur",
+                    FirstName = "given",
+                    LastName = "sur",
                     LineNumber = 2,
                     OrgId = (Guid)org.accountid
                 },
                 new AppBulkDuplicateCheck()
                 {
                     DateOfBirth = new DateTime(2000,1,1),
-                    GivenName = "given3",
-                    Surname = "sur3",
+                    FirstName = "given3",
+                    LastName = "sur3",
                     LineNumber = 3,
                     OrgId = (Guid)org.accountid
                 },
                 new AppBulkDuplicateCheck()
                 {
                     DateOfBirth = DateTimeOffset.UtcNow,
-                    GivenName = "fn",
-                    Surname = "ln",
+                    FirstName = "fn",
+                    LastName = "ln",
                     LineNumber = 4,
                     OrgId =  (Guid)org.accountid
                 }

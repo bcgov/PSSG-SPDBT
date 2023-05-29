@@ -3,8 +3,6 @@ namespace Spd.Resource.Applicants.ApplicationInvite
     public interface IApplicationInviteRepository
     {
         public Task AddApplicationInvitesAsync(ApplicationInvitesCreateCmd createInviteCmd, CancellationToken cancellationToken);
-        public Task<bool> CheckInviteInvitationDuplicateAsync(SearchInvitationQry searchInvitationQry, CancellationToken cancellationToken);
-        public Task<bool> CheckInviteApplicationDuplicateAsync(SearchInvitationQry searchInvitationQry, CancellationToken cancellationToken);
         public Task<ApplicationInviteListResp> QueryAsync(ApplicationInviteQuery query, CancellationToken cancellationToken);
         public Task DeleteApplicationInvitesAsync(ApplicationInviteDeleteCmd applicationInviteDeleteCmd, CancellationToken cancellationToken);
     }
@@ -59,10 +57,5 @@ namespace Spd.Resource.Applicants.ApplicationInvite
         public bool ErrorReason { get; set; }
     }
 
-    public record SearchInvitationQry
-    {
-        public Guid OrgId { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-    }
+
 }
