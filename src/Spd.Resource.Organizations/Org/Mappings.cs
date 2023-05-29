@@ -34,8 +34,8 @@ namespace Spd.Resource.Organizations.Org
             .ForMember(d => d.MaxContacts, opt => opt.MapFrom(s => s.spd_maximumnumberofcontacts))
             .ForMember(d => d.MaxPrimaryContacts, opt => opt.MapFrom(s => s.spd_noofprimaryauthorizedcontacts))
             .ForMember(d => d.AccessCode, opt => opt.MapFrom(s => s.spd_accesscode))
-            .ForMember(d => d.EmployeeOrganizationTypeCode, opt => opt.MapFrom(s => GetTypeFromTypeId(s._spd_organizationtypeid_value).Item1))
-            .ForMember(d => d.VolunteerOrganizationTypeCode, opt => opt.MapFrom(s => GetTypeFromTypeId(s._spd_organizationtypeid_value).Item2));
+            .ForMember(d => d.EmployeeOrganizationTypeCode, opt => opt.MapFrom(s => DynamicsContextLookupHelpers.GetTypeFromTypeId(s._spd_organizationtypeid_value).Item1))
+            .ForMember(d => d.VolunteerOrganizationTypeCode, opt => opt.MapFrom(s => DynamicsContextLookupHelpers.GetTypeFromTypeId(s._spd_organizationtypeid_value).Item2));
         }
 
         private static int? GetLicenseesNeedVulnerableSectorScreening(BooleanTypeCode? code)
@@ -54,23 +54,6 @@ namespace Spd.Resource.Organizations.Org
         {
             if (code == null) return null;
             return Enum.GetName(typeof(YesNoOptionSet), code);
-        }
-
-        //return (employeeTypeCode, volunteerTypeCode)
-        private static (string?, string?) GetTypeFromTypeId(Guid? orgTypeId)
-        {
-            if (orgTypeId == null) return (null, null);
-            string key = DynamicsContextLookupHelpers.LookupOrganizationTypeKey((Guid)orgTypeId);
-            var str = key.Split("-");
-            if (str.Length == 0 || str.Length > 2) return (null, null);
-            if (str[0].Equals("Volunteer", StringComparison.InvariantCultureIgnoreCase))
-            {
-                return (null, str[1]);
-            }
-            else
-            {
-                return (str[1], null);
-            }
         }
     }
 }
