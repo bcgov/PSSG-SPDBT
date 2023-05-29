@@ -48,6 +48,7 @@ namespace Spd.Manager.Cases
         public string? AddressProvince { get; set; }
         public string? EmployeeOrganizationTypeCode { get; set; }
         public string? VolunteerOrganizationTypeCode { get; set; }
+        public PayeePreferenceTypeCode PayeeType { get; set; }
     };
 
     public record IdentityCommand(Guid OrgId, Guid ApplicationId, IdentityStatusCode Status) : IRequest<Unit>;

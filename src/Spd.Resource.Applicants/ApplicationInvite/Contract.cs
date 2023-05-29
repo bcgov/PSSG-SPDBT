@@ -53,6 +53,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
         public string? AddressProvince { get; set; }
         public string? EmployeeOrganizationTypeCode { get; set; }
         public string? VolunteerOrganizationTypeCode { get; set; }
+        public PayerPreferenceTypeCode PayeeType { get; set; }
     };
 
     public record ApplicationInvite
