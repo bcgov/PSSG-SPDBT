@@ -46,7 +46,7 @@ namespace Spd.Manager.Cases
         public string? JobTitle { get; set; }
         public PayeePreferenceTypeCode PayeeType { get; set; }
     }
-    public record ApplicationInviteCreateRequest : ApplicationInvite;
+    public record ApplicationInviteCreateRequest() : ApplicationInvite;
     public record ApplicationInvitesCreateResponse(Guid OrgId)
     {
         public bool IsDuplicateCheckRequired { get; set; }
