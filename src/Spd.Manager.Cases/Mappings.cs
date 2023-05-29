@@ -43,7 +43,10 @@ namespace Spd.Manager.Cases
             CreateMap<BulkHistoryResp, BulkHistoryResponse>();
             CreateMap<BulkAppsCreateResp, BulkAppsCreateResponse>();
             CreateMap<ApplicationCreateRslt, ApplicationCreateResult>();
-            CreateMap<ApplicationCreateRequest, AppDuplicateCheck>();
+            CreateMap<ApplicationCreateRequest, AppDuplicateCheck>()
+               .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.Surname))
+               .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName))
+            ;
             CreateMap<AppBulkDuplicateCheckResult, DuplicateCheckResult>();
             CreateMap<ApplicationCreateRequestFromBulk, AppBulkDuplicateCheck>()
                 .IncludeBase<ApplicationCreateRequest, AppDuplicateCheck>();
