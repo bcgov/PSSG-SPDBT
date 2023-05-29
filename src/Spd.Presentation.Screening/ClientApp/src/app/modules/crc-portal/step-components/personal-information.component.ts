@@ -6,7 +6,7 @@ import { CrcFormStepComponent } from '../crc.component';
 @Component({
 	selector: 'app-personal-information',
 	template: `
-		<section class="step-section pt-4 pb-5 px-3">
+		<section class="step-section p-3">
 			<form [formGroup]="form" novalidate>
 				<div class="step">
 					<app-step-title

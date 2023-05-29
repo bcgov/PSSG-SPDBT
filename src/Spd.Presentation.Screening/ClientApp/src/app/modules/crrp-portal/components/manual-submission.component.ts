@@ -9,7 +9,6 @@ import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import {
 	ApplicationOriginTypeCode,
-	EmployeeInteractionTypes,
 	GenderCodes,
 	ScreeningTypeCode,
 	ScreeningTypeCodes,
@@ -389,7 +388,6 @@ export class ManualSubmissionComponent implements OnInit {
 
 	screeningTypes = ScreeningTypeCodes;
 	genderCodes = GenderCodes;
-	employeeInteractionTypes = EmployeeInteractionTypes;
 
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	booleanTypeCodes = BooleanTypeCode;

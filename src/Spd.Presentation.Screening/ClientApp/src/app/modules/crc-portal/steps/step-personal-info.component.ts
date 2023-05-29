@@ -1,8 +1,8 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
+import { CrcRequestCreateRequest } from '../crc.component';
 import { ContactInformationComponent } from '../step-components/contact-information.component';
-import { DeclarationComponent } from '../step-components/declaration.component';
 import { MailingAddressComponent } from '../step-components/mailing-address.component';
 import { PersonalInformationComponent } from '../step-components/personal-information.component';
 import { PreviousNameComponent } from '../step-components/previous-name.component';
@@ -12,14 +12,16 @@ import { PreviousNameComponent } from '../step-components/previous-name.componen
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-contact-information></app-contact-information>
+				<app-contact-information [orgData]="orgData"></app-contact-information>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(1)">Next</button>
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_CONTACT_INFO)">
+							Next
+						</button>
 					</div>
 				</div>
 			</mat-step>
@@ -32,7 +34,14 @@ import { PreviousNameComponent } from '../step-components/previous-name.componen
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(2)">Next</button>
+						<button
+							mat-flat-button
+							color="primary"
+							class="large mb-2"
+							(click)="onFormValidNextStep(STEP_PERSONAL_INFO)"
+						>
+							Next
+						</button>
 					</div>
 				</div>
 			</mat-step>
@@ -45,7 +54,14 @@ import { PreviousNameComponent } from '../step-components/previous-name.componen
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(3)">Next</button>
+						<button
+							mat-flat-button
+							color="primary"
+							class="large mb-2"
+							(click)="onFormValidNextStep(STEP_PREVIOUS_NAME)"
+						>
+							Next
+						</button>
 					</div>
 				</div>
 			</mat-step>
@@ -58,13 +74,21 @@ import { PreviousNameComponent } from '../step-components/previous-name.componen
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(4)">Next</button>
+						<button
+							mat-flat-button
+							color="primary"
+							class="large mb-2"
+							(click)="onFormValidNextStep(STEP_MAILING_ADDRESS)"
+						>
+							Next
+						</button>
 					</div>
 				</div>
 			</mat-step>
 
 			<mat-step>
 				<app-summary
+					[crcData]="crcData"
 					(reEditPersonalInformation)="onReEditPersonalInformation()"
 					(reEditCrcInformation)="onReEditCrcInformation()"
 				></app-summary>
@@ -74,20 +98,9 @@ import { PreviousNameComponent } from '../step-components/previous-name.componen
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Confirm</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<mat-step>
-				<app-declaration></app-declaration>
-
-				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="goToStepNext()">Next</button>
+						<button mat-flat-button color="primary" class="large mb-2" (click)="goToStepNext(STEP_SUMMARY)">
+							Confirm
+						</button>
 					</div>
 				</div>
 			</mat-step>
@@ -99,10 +112,19 @@ import { PreviousNameComponent } from '../step-components/previous-name.componen
 export class StepPersonalInfoComponent {
 	@ViewChild('childstepper') childstepper!: MatStepper;
 
+	@Input() orgData!: CrcRequestCreateRequest;
+	@Input() crcData!: any;
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
 	@Output() reEditCrcData: EventEmitter<boolean> = new EventEmitter();
+	@Output() getCrcData: EventEmitter<boolean> = new EventEmitter();
+
+	readonly STEP_CONTACT_INFO: number = 1;
+	readonly STEP_PERSONAL_INFO: number = 2;
+	readonly STEP_PREVIOUS_NAME: number = 3;
+	readonly STEP_MAILING_ADDRESS: number = 4;
+	readonly STEP_SUMMARY: number = 5;
 
 	@ViewChild(ContactInformationComponent)
 	contactInformationComponent!: ContactInformationComponent;
@@ -116,22 +138,24 @@ export class StepPersonalInfoComponent {
 	@ViewChild(MailingAddressComponent)
 	mailingAddressComponent!: MailingAddressComponent;
 
-	@ViewChild(DeclarationComponent)
-	declarationComponent!: DeclarationComponent;
-
 	getStepData(): any {
 		return {
 			...this.contactInformationComponent.getDataToSave(),
 			...this.personalInformationComponent.getDataToSave(),
 			...this.previousNameComponent.getDataToSave(),
 			...this.mailingAddressComponent.getDataToSave(),
-			...this.declarationComponent.getDataToSave(),
 		};
 	}
 
 	onFormValidNextStep(formNumber: number): void {
+		console.log('onFormValidNextStep', formNumber);
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
+
+		if (formNumber == this.STEP_MAILING_ADDRESS) {
+			this.getCrcData.emit();
+		}
+
 		this.childstepper.next();
 	}
 
@@ -139,8 +163,8 @@ export class StepPersonalInfoComponent {
 		this.previousStepperStep.emit(true);
 	}
 
-	goToStepNext(): void {
-		const isValid = this.dirtyForm(5);
+	goToStepNext(formNumber: number): void {
+		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 		this.nextStepperStep.emit(true);
 	}
@@ -159,21 +183,20 @@ export class StepPersonalInfoComponent {
 
 	private dirtyForm(step: number): boolean {
 		switch (step) {
-			case 1:
+			case this.STEP_CONTACT_INFO:
 				this.contactInformationComponent.form.markAllAsTouched();
 				return this.contactInformationComponent.isFormValid();
-			case 2:
+			case this.STEP_PERSONAL_INFO:
 				this.personalInformationComponent.form.markAllAsTouched();
 				return this.personalInformationComponent.isFormValid();
-			case 3:
+			case this.STEP_PREVIOUS_NAME:
 				this.previousNameComponent.form.markAllAsTouched();
 				return this.previousNameComponent.isFormValid();
-			case 4:
+			case this.STEP_MAILING_ADDRESS:
 				this.mailingAddressComponent.form.markAllAsTouched();
 				return this.mailingAddressComponent.isFormValid();
-			case 5:
-				this.declarationComponent.form.markAllAsTouched();
-				return this.declarationComponent.isFormValid();
+			case this.STEP_SUMMARY:
+				return true;
 
 			default:
 				console.error('Unknown Form', step);

@@ -4,7 +4,7 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 @Component({
 	selector: 'app-checklist',
 	template: `
-		<section class="step-section pt-4 pb-5 px-3">
+		<section class="step-section p-3">
 			<div class="step">
 				<app-step-title
 					title="To submit a request for a criminal record check, you will need the following"

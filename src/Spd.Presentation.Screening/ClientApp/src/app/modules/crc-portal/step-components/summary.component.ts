@@ -1,10 +1,11 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 
 @Component({
 	selector: 'app-summary',
 	template: `
 		<section class="step-section pt-4 pb-4 px-3">
-			<div class="step">
+			<div class="step" *ngIf="crcData">
 				<app-step-title title="Review the following information"></app-step-title>
 				<div class="row">
 					<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
@@ -15,11 +16,13 @@ import { Component, EventEmitter, Output } from '@angular/core';
 								</div>
 								<div class="col-xl-4 col-lg-4 col-md-12">
 									<div class="text-label d-block text-muted">Requesting Organization</div>
-									<div class="text-data">Sunshine Daycare</div>
+									<div class="text-data">{{ crcData.orgName }}</div>
 								</div>
 								<div class="col-xl-4 col-lg-3 col-md-12">
 									<div class="text-label d-block text-muted mt-2 mt-lg-0">Organization Phone Number</div>
-									<div class="text-data">(250) 455-6565</div>
+									<div class="text-data">
+										{{ crcData.orgPhoneNumber || '' | mask : appConstants.phone.displayMask }}
+									</div>
 								</div>
 								<div class="col-xl-1 col-lg-1 col-md-12 text-end">
 									<mat-icon matTooltip="Edit this data" (click)="onReEditOrg()">edit</mat-icon>
@@ -31,11 +34,11 @@ import { Component, EventEmitter, Output } from '@angular/core';
 							<div class="row mb-2">
 								<div class="offset-xl-3 col-xl-4 offset-lg-4 col-lg-4 col-md-12">
 									<div class="text-label d-block text-muted">Organization Address</div>
-									<div class="text-data">760 Vernon Ave, Victoria, BC V8X 2W6, Canada</div>
+									<div class="text-data">{{ crcData.address }}</div>
 								</div>
 								<div class="col-xl-4 col-lg-4 col-md-12">
 									<div class="text-label d-block text-muted mt-2 mt-lg-0">Job Title</div>
-									<div class="text-data">Teacher</div>
+									<div class="text-data">{{ crcData.jobTitle }}</div>
 								</div>
 							</div>
 						</section>
@@ -49,12 +52,14 @@ import { Component, EventEmitter, Output } from '@angular/core';
 									<h4>Contact<br />Information</h4>
 								</div>
 								<div class="col-xl-4 col-lg-4 col-md-12">
-									<div class="text-label d-block text-muted">Contact Given Name</div>
-									<div class="text-data">John</div>
+									<div class="text-label d-block text-muted">Contact Given Names</div>
+									<div class="text-data">
+										{{ crcData.contactGivenName }} {{ crcData.contactMiddleName1 }} {{ crcData.contactMiddleName2 }}
+									</div>
 								</div>
 								<div class="col-xl-4 col-lg-3 col-md-12">
 									<div class="text-label d-block text-muted mt-2 mt-lg-0">Contact Surname</div>
-									<div class="text-data">Smith</div>
+									<div class="text-data">{{ crcData.contactSurname }}</div>
 								</div>
 								<div class="col-xl-1 col-lg-1 col-md-12 text-end">
 									<mat-icon matTooltip="Edit this data" (click)="onReEditContact()">edit</mat-icon>
@@ -66,43 +71,52 @@ import { Component, EventEmitter, Output } from '@angular/core';
 							<div class="row mb-2">
 								<div class="offset-xl-3 col-xl-4 offset-lg-4 col-lg-4 col-md-12">
 									<div class="text-label d-block text-muted">Email</div>
-									<div class="text-data">test@test.com</div>
+									<div class="text-data">{{ crcData.emailAddress }}</div>
 								</div>
 								<div class="col-xl-4 col-lg-4 col-md-12">
 									<div class="text-label d-block text-muted mt-2 mt-lg-0">Phone Number</div>
-									<div class="text-data">(250) 465-9898</div>
+									<div class="text-data">{{ crcData.phoneNumber || '' | mask : appConstants.phone.displayMask }}</div>
 								</div>
 							</div>
 
 							<div class="row mb-2">
 								<div class="offset-xl-3 col-xl-4 offset-lg-4 col-lg-4 col-md-12">
 									<div class="text-label d-block text-muted">Date of Birth</div>
-									<div class="text-data">2000-Jan-04</div>
+									<div class="text-data">
+										{{ crcData.contactDateOfBirth | date : appConstants.date.dateFormat : 'UTC' }}
+									</div>
 								</div>
 								<div class="col-xl-4 col-lg-4 col-md-12">
 									<div class="text-label d-block text-muted mt-2 mt-lg-0">Birthplace</div>
-									<div class="text-data">Victoria, BC, Canada</div>
+									<div class="text-data">{{ crcData.birthplace }}</div>
 								</div>
 							</div>
 
 							<div class="row mt-2">
 								<div class="offset-xl-3 col-xl-8 offset-lg-4 col-lg-8 col-md-12">
 									<div class="text-label d-block text-muted">BC Drivers Licence</div>
-									<div class="text-data">9998877</div>
+									<div class="text-data">{{ crcData.driversLicenseNumber | default }}</div>
 								</div>
 							</div>
 
 							<div class="row mt-2">
 								<div class="offset-xl-3 col-xl-8 offset-lg-4 col-lg-8 col-md-12">
 									<div class="text-label d-block text-muted">Previous Names</div>
-									<div class="text-data">Norma Jeane Mortenson, Jean Morty</div>
+									<div class="text-data">
+										<ng-container *ngIf="crcData.previousNamesList?.length > 0; else noPreviousNames">
+											<ng-container *ngFor="let name of crcData.previousNamesList">
+												<div>{{ name.firstName }} {{ name.middleNames }} {{ name.previousSurname }}</div>
+											</ng-container>
+										</ng-container>
+										<ng-template #noPreviousNames> -- </ng-template>
+									</div>
 								</div>
 							</div>
 
 							<div class="row my-2">
 								<div class="offset-xl-3 col-xl-8 offset-lg-4 col-lg-8 col-md-12">
 									<div class="text-label d-block text-muted">Mailing Address</div>
-									<div class="text-data">755 Caledonia Avenue, Victoria, BC V8T 0C2, Canada</div>
+									<div class="text-data">{{ getCrcDataMailingAddress() }}</div>
 								</div>
 							</div>
 						</section>
@@ -137,6 +151,9 @@ import { Component, EventEmitter, Output } from '@angular/core';
 	],
 })
 export class SummaryComponent {
+	appConstants = SPD_CONSTANTS;
+
+	@Input() crcData!: any;
 	@Output() reEditPersonalInformation: EventEmitter<boolean> = new EventEmitter();
 	@Output() reEditCrcInformation: EventEmitter<boolean> = new EventEmitter();
 
@@ -146,5 +163,23 @@ export class SummaryComponent {
 
 	onReEditContact(): void {
 		this.reEditPersonalInformation.emit(true);
+	}
+
+	getCrcDataMailingAddress(): string {
+		if (this.crcData) {
+			let address =
+				this.crcData.mailingAddressLine1 +
+				', ' +
+				this.crcData.mailingCity +
+				', ' +
+				this.crcData.mailingProvince +
+				', ' +
+				this.crcData.mailingPostalCode +
+				', ' +
+				this.crcData.mailingCountry;
+			return address;
+		}
+
+		return '';
 	}
 }

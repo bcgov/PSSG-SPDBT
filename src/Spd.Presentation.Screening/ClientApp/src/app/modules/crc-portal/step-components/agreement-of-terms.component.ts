@@ -8,7 +8,7 @@ import { CrcFormStepComponent } from '../crc.component';
 @Component({
 	selector: 'app-agreement-of-terms',
 	template: `
-		<section class="step-section pt-4 pb-5 px-3">
+		<section class="step-section p-3">
 			<form [formGroup]="form" novalidate>
 				<div class="step">
 					<app-step-title title="Review the following terms of agreement"></app-step-title>
@@ -82,6 +82,7 @@ import { CrcFormStepComponent } from '../crc.component';
 								further described below, including any local police records.
 							</mat-checkbox>
 							<mat-error
+								class="mat-option-error"
 								*ngIf="
 									(form.get('agreeToCriminalCheck')?.dirty || form.get('agreeToCriminalCheck')?.touched) &&
 									form.get('agreeToCriminalCheck')?.invalid &&
@@ -100,6 +101,7 @@ import { CrcFormStepComponent } from '../crc.component';
 								per the Criminal Records Act.
 							</mat-checkbox>
 							<mat-error
+								class="mat-option-error"
 								*ngIf="
 									(form.get('agreeToVulnerableSectorSearch')?.dirty ||
 										form.get('agreeToVulnerableSectorSearch')?.touched) &&
@@ -117,7 +119,9 @@ import { CrcFormStepComponent } from '../crc.component';
 								(captchaResponse)="onTokenResponse($event)"
 								[resetControl]="resetRecaptcha"
 							></app-captcha-v2>
-							<mat-error *ngIf="displayValidationErrors && !captchaPassed"> This is required </mat-error>
+							<mat-error class="mat-option-error" *ngIf="displayValidationErrors && !captchaPassed">
+								This is required
+							</mat-error>
 						</div>
 					</div>
 				</div>

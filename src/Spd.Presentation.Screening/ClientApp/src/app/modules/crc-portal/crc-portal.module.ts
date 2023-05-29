@@ -5,6 +5,7 @@ import { CrcComponent } from './crc.component';
 import { AgreementOfTermsComponent } from './step-components/agreement-of-terms.component';
 import { ApplicationSubmittedComponent } from './step-components/application-submitted.component';
 import { ChecklistComponent } from './step-components/checklist.component';
+import { ConsentToCrcComponent } from './step-components/consentToCrc.component';
 import { ContactInformationComponent } from './step-components/contact-information.component';
 import { DeclarationComponent } from './step-components/declaration.component';
 import { LogInOptionsComponent } from './step-components/log-in-options.component';
@@ -46,6 +47,7 @@ import { StepTermsAndCondComponent } from './steps/step-terms-and-cond.component
 		PaymentSuccessComponent,
 		PaymentFailureComponent,
 		ApplicationSubmittedComponent,
+		ConsentToCrcComponent,
 	],
 	imports: [SharedModule, CrcApplicationRoutingModule],
 	providers: [],

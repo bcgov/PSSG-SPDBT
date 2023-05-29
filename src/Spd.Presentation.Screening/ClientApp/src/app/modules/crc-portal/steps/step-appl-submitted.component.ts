@@ -26,7 +26,7 @@ import { DeclarationComponent } from '../step-components/declaration.component';
 				<app-payment-failure></app-payment-failure>
 
 				<div class="row mt-4">
-					<div class="offset-lg-4 col-lg-4 offset-md-4 col-md-4 col-sm-12">
+					<div class="col-xxl-3 col-lg-4 col-md-4 col-sm-12 mx-auto">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperNext>Close</button>
 					</div>
 				</div>
@@ -36,7 +36,7 @@ import { DeclarationComponent } from '../step-components/declaration.component';
 				<app-application-submitted></app-application-submitted>
 
 				<div class="row mt-4">
-					<div class="offset-lg-4 col-lg-4 offset-md-4 col-md-4 col-sm-12">
+					<div class="col-xxl-3 col-lg-4 col-md-4 col-sm-12 mx-auto">
 						<button mat-flat-button color="primary" class="large mb-2" [routerLink]="'/'">Close</button>
 					</div>
 				</div>

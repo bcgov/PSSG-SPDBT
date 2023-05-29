@@ -4,6 +4,8 @@ import { Location } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { distinctUntilChanged } from 'rxjs';
+import { EmployeeInteractionTypeCode } from 'src/app/api/models';
+import { EmployeeInteractionTypes } from 'src/app/core/constants/model-desc';
 import { StepApplSubmittedComponent } from './steps/step-appl-submitted.component';
 import { StepEligibilityComponent } from './steps/step-eligibility.component';
 import { StepLoginOptionsComponent } from './steps/step-login-options.component';
@@ -14,6 +16,24 @@ import { StepTermsAndCondComponent } from './steps/step-terms-and-cond.component
 export interface CrcFormStepComponent {
 	getDataToSave(): any;
 	isFormValid(): boolean;
+}
+
+export interface CrcRequestCreateRequest {
+	orgId?: string;
+	orgName?: string;
+	orgPhoneNumber?: string;
+	givenName?: string | null;
+	middleName1?: string | null;
+	middleName2?: string | null;
+	surname?: string | null;
+	emailAddress?: string | null;
+	jobTitle?: string | null;
+	phoneNumber?: string | null;
+	address?: string | null;
+	oneLegalName?: boolean | null;
+	facilityNameRequired?: boolean | null;
+	vulnerableSectorCategory?: EmployeeInteractionTypeCode | null;
+	vulnerableSectorCategoryDesc?: string | null;
 }
 
 @Component({
@@ -42,11 +62,12 @@ export interface CrcFormStepComponent {
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
 						(nextStepperStep)="onNextStepperStep(stepper)"
 						(scrollIntoView)="onScrollIntoView()"
+						[orgData]="orgData"
 					></app-step-organization-info>
 				</mat-step>
 
 				<mat-step completed="false">
-					<ng-template matStepLabel>Log In Information</ng-template>
+					<ng-template matStepLabel>Log In</ng-template>
 					<app-step-login-options
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
 						(nextStepperStep)="onNextStepperStep(stepper)"
@@ -61,6 +82,9 @@ export interface CrcFormStepComponent {
 						(nextStepperStep)="onNextStepperStep(stepper)"
 						(scrollIntoView)="onScrollIntoView()"
 						(reEditCrcData)="onReEditCrcData()"
+						(getCrcData)="onGetCrcData()"
+						[orgData]="orgData"
+						[crcData]="crcData"
 					></app-step-personal-info>
 				</mat-step>
 
@@ -69,8 +93,9 @@ export interface CrcFormStepComponent {
 					<app-step-terms-and-cond
 						[paymentBy]="paymentBy"
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
-						(nextStepperStep)="onNextStepperStep(stepper)"
+						(nextStepperStep)="onSaveStepperStep(stepper)"
 						(scrollIntoView)="onScrollIntoView()"
+						[orgData]="orgData"
 					></app-step-terms-and-cond>
 				</mat-step>
 
@@ -97,6 +122,8 @@ export interface CrcFormStepComponent {
 	styles: [],
 })
 export class CrcComponent implements OnInit {
+	orgData!: CrcRequestCreateRequest;
+	crcData!: any;
 	orientation: StepperOrientation = 'vertical';
 	paymentBy!: 'APP' | 'ORG';
 
@@ -132,6 +159,27 @@ export class CrcComponent implements OnInit {
 				distinctUntilChanged()
 			)
 			.subscribe(() => this.breakpointChanged());
+
+		this.orgData = {
+			orgId: 'abcdef123',
+			orgName: 'Anikon Ltd',
+			orgPhoneNumber: '2507776655',
+			givenName: 'Ann',
+			middleName1: 'Amber',
+			middleName2: 'Annie',
+			surname: 'Anderson',
+			emailAddress: 'Ann@two.com',
+			jobTitle: 'Aaaa',
+			phoneNumber: '2504479898',
+			address: '760 Andy Ave, Victoria, BC V8X 2W6, Canada',
+			facilityNameRequired: false,
+			vulnerableSectorCategory: EmployeeInteractionTypeCode.ChildrenAndAdults,
+			oneLegalName: false,
+		};
+
+		this.orgData.vulnerableSectorCategoryDesc = EmployeeInteractionTypes.find(
+			(item) => item.code == this.orgData.vulnerableSectorCategory
+		)?.desc as string;
 	}
 
 	onScrollIntoView(): void {
@@ -154,7 +202,12 @@ export class CrcComponent implements OnInit {
 		this.stepPersonalInfoComponent.childstepper.selectedIndex = 0;
 	}
 
-	onStepSelectionChange(event: StepperSelectionEvent) {
+	onGetCrcData(): void {
+		this.crcData = { ...this.orgData, ...this.getDataToSave() };
+		console.log('onGetCrcData crcData', this.crcData);
+	}
+
+	onStepSelectionChange(_event: StepperSelectionEvent) {
 		this.onScrollIntoView();
 	}
 
@@ -163,34 +216,74 @@ export class CrcComponent implements OnInit {
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
+		console.log('onNextStepperStep', stepper.selectedIndex);
 		// complete the current step
-		if (stepper && stepper.selected) stepper.selected.completed = true;
-		this.stepper.next();
+		if (stepper?.selected) stepper.selected.completed = true;
 
-		// make these steps uneditable...
-		// so that after payment, user cannot navigate to any of these steps
-		if (stepper.selectedIndex == 5) {
-			for (let i = 0; i < 5; i++) {
+		if (stepper.selectedIndex == 3) {
+			// make these steps uneditable...
+			// so that after save, user cannot navigate to any of these steps
+			for (let i = 0; i <= stepper.selectedIndex; i++) {
 				let step = this.stepper.steps.get(i);
 				if (step) {
 					step.editable = false;
 				}
 			}
 		}
+
+		this.stepper.next();
 	}
 
-	onSaveStepperStep(): void {
-		// let dataToSave = {};
-		// if (this.stepOneComponent) {
-		// 	dataToSave = { ...dataToSave, ...this.stepOneComponent.getStepData() };
-		// }
-		// if (this.stepThreeComponent) {
-		// 	dataToSave = { ...dataToSave, ...this.stepThreeComponent.getStepData() };
-		// }
-		// if (this.stepFourComponent) {
-		// 	dataToSave = { ...dataToSave, ...this.stepFourComponent.getStepData() };
-		// }
-		// console.log('onSaveStepperStep', dataToSave);
+	// onNextSummaryStepperStep(stepper: MatStepper): void {
+	// 	console.log('onNextSummaryStepperStep', stepper.selectedIndex);
+	// 	// complete the current step
+	// 	if (stepper?.selected) stepper.selected.completed = true;
+
+	// 	this.crcData = { ...this.orgData, ...this.getDataToSave() };
+	// 	console.log('onNextSummaryStepperStep crcData', this.crcData);
+
+	// 	// make these steps uneditable...
+	// 	// so that after save, user cannot navigate to any of these steps
+	// 	for (let i = 0; i <= stepper.selectedIndex; i++) {
+	// 		let step = this.stepper.steps.get(i);
+	// 		if (step) {
+	// 			step.editable = false;
+	// 		}
+	// 	}
+
+	// 	this.stepper.next();
+	// }
+
+	onSaveStepperStep(stepper: MatStepper): void {
+		if (stepper?.selected) stepper.selected.completed = true;
+
+		let dataToSave = this.getDataToSave();
+		console.log('onSaveStepperStep', dataToSave);
+
+		// make these steps uneditable...
+		// so that after save, user cannot navigate to any of these steps
+		for (let i = 0; i <= 4; i++) {
+			let step = this.stepper.steps.get(i);
+			if (step) {
+				step.editable = false;
+			}
+		}
+		this.stepper.next();
+	}
+
+	private getDataToSave(): any {
+		let dataToSave = {};
+		if (this.stepOrganizationInfoComponent) {
+			dataToSave = { ...dataToSave, ...this.stepOrganizationInfoComponent.getStepData() };
+		}
+		if (this.stepPersonalInfoComponent) {
+			dataToSave = { ...dataToSave, ...this.stepPersonalInfoComponent.getStepData() };
+		}
+		if (this.stepTermsAndCondComponent) {
+			dataToSave = { ...dataToSave, ...this.stepTermsAndCondComponent.getStepData() };
+		}
+		console.log('onSaveStepperStep', dataToSave);
+		return dataToSave;
 	}
 
 	private breakpointChanged() {

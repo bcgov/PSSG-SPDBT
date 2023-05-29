@@ -122,10 +122,6 @@ button.mat-green-button {
   width: 100%;
 }
 
-mat-hint {
-  font-size: small;
-}
-
 mat-label {  
   color: var(--color-grey-dark);
   font-weight: 500;
@@ -150,9 +146,18 @@ mat-label {
   font-weight: 600;
 }
 
+.mat-mdc-highlight-row {
+  background-color: var(--color-grey-lightest);
+}
+
+.mat-mdc-row-clickable {
+  cursor: pointer;
+}
+
 .mat-mdc-row:hover {
   background-color: var(--color-grey-lightest) !important;
 }
+
 
 .mobile-label {
   display: none;

@@ -9,7 +9,7 @@ import { CrcFormStepComponent } from '../crc.component';
 @Component({
 	selector: 'app-previous-name',
 	template: `
-		<section class="step-section pt-4 pb-5 px-3">
+		<section class="step-section p-3">
 			<form [formGroup]="form" novalidate>
 				<div class="step">
 					<app-step-title title="Have you ever had a previous name?"></app-step-title>
@@ -36,7 +36,10 @@ import { CrcFormStepComponent } from '../crc.component';
 						<div class="offset-lg-1 col-lg-10 col-md-12 col-sm-12">
 							<mat-divider class="my-3" style="border-top-color: var(--color-primary-light);"></mat-divider>
 							<div class="text-minor-heading fw-semibold mb-2">Previous Names</div>
-							<ng-container formArrayName="tableRows" *ngFor="let group of getFormControls.controls; let i = index">
+							<ng-container
+								formArrayName="previousNamesList"
+								*ngFor="let group of getFormControls.controls; let i = index"
+							>
 								<div class="row" [formGroupName]="i">
 									<div class="col-xl-4 col-lg-3 col-md-6 col-sm-12">
 										<mat-form-field>
@@ -122,7 +125,7 @@ export class PreviousNameComponent implements OnInit, CrcFormStepComponent {
 	ngOnInit(): void {
 		this.form = this.formBuilder.group({
 			previousNameFlag: new FormControl('', [Validators.required]),
-			tableRows: this.formBuilder.array([]),
+			previousNamesList: this.formBuilder.array([]),
 		});
 		this.onAddRow();
 	}
@@ -136,12 +139,12 @@ export class PreviousNameComponent implements OnInit, CrcFormStepComponent {
 	}
 
 	onAddRow() {
-		const control = this.form.get('tableRows') as FormArray;
+		const control = this.form.get('previousNamesList') as FormArray;
 		control.push(this.initiateForm());
 	}
 
 	deleteRow(index: number) {
-		const control = this.form.get('tableRows') as FormArray;
+		const control = this.form.get('previousNamesList') as FormArray;
 		if (control.length == 1) {
 			const data: DialogOptions = {
 				icon: 'warning',
@@ -167,23 +170,27 @@ export class PreviousNameComponent implements OnInit, CrcFormStepComponent {
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
-					const control = this.form.get('tableRows') as FormArray;
+					const control = this.form.get('previousNamesList') as FormArray;
 					control.removeAt(index);
 				}
 			});
 	}
 
 	get getFormControls() {
-		const control = this.form.get('tableRows') as FormArray;
+		const control = this.form.get('previousNamesList') as FormArray;
 		return control;
 	}
 
 	getDataToSave(): any {
-		return this.form.value;
+		let dataToSave = { ...this.form.value };
+		if (this.previousNameFlag.value == BooleanTypeCode.No) {
+			dataToSave.previousNamesList = [];
+		}
+		return dataToSave;
 	}
 
 	isFormValid(): boolean {
-		if (!this.previousNameFlag || !this.previousNameFlag.value) return false;
+		if (!this.previousNameFlag?.value) return false;
 		return this.previousNameFlag.value == BooleanTypeCode.Yes ? this.form.valid : true;
 	}
 
@@ -192,7 +199,7 @@ export class PreviousNameComponent implements OnInit, CrcFormStepComponent {
 	}
 
 	get oneRowExists(): boolean {
-		const control = this.form.get('tableRows') as FormArray;
+		const control = this.form.get('previousNamesList') as FormArray;
 		return control.length > 1 ? false : true;
 	}
 }

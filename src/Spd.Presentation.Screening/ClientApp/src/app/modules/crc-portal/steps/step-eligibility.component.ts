@@ -10,7 +10,7 @@ import { MatStepper } from '@angular/material/stepper';
 				<app-checklist [paymentBy]="paymentBy"></app-checklist>
 
 				<div class="row mt-4">
-					<div class="offset-lg-4 col-lg-4 offset-md-4 col-md-4 col-sm-12">
+					<div class="col-xxl-3 col-lg-4 col-md-4 col-sm-12 mx-auto">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext()">Start</button>
 					</div>
 				</div>

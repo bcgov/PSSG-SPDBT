@@ -1,13 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { CrcFormStepComponent } from '../crc.component';
+import { CrcFormStepComponent, CrcRequestCreateRequest } from '../crc.component';
 
 @Component({
 	selector: 'app-security-information',
 	template: `
-		<section class="step-section pt-4 pb-5 px-3">
+		<section class="step-section p-3">
 			<form [formGroup]="form" novalidate>
 				<div class="step">
 					<app-step-title
@@ -28,25 +29,33 @@ import { CrcFormStepComponent } from '../crc.component';
 						</div>
 					</div>
 					<div class="row">
-						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
+						<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Organization Address</mat-label>
 								<input matInput formControlName="organizationAddress" />
 							</mat-form-field>
 						</div>
-					</div>
-					<div class="row">
-						<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
+						<div class="col-lg-4 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Job Title</mat-label>
 								<input matInput formControlName="jobTitle" [errorStateMatcher]="matcher" maxlength="100" />
 								<mat-error *ngIf="form.get('jobTitle')?.hasError('required')">This is required</mat-error>
 							</mat-form-field>
 						</div>
-						<div class="col-lg-4 col-md-6 col-sm-12">
+					</div>
+					<div class="row">
+						<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Vulnerable Sector Category</mat-label>
 								<input matInput formControlName="vulnerableSectorCategory" />
+							</mat-form-field>
+						</div>
+						<div class="col-lg-4 col-md-6 col-sm-12" *ngIf="orgData.facilityNameRequired">
+							<mat-form-field>
+								<mat-label>Facility Name</mat-label>
+								<input matInput formControlName="facilityName" />
+								<mat-hint>(Licensed Child Care Name or Adult Care Facility Name)</mat-hint>
+								<mat-error *ngIf="form.get('facilityName')?.hasError('required')">This is required</mat-error>
 							</mat-form-field>
 						</div>
 					</div>
@@ -57,14 +66,35 @@ import { CrcFormStepComponent } from '../crc.component';
 	styles: [],
 })
 export class SecurityInformationComponent implements CrcFormStepComponent {
+	private _orgData!: CrcRequestCreateRequest;
+	@Input()
+	set orgData(data: CrcRequestCreateRequest) {
+		this._orgData = data;
+		this.form = this.formBuilder.group(
+			{
+				organizationName: new FormControl({ value: this.orgData.orgName, disabled: true }),
+				organizationPhoneNumber: new FormControl({ value: this.orgData.orgPhoneNumber, disabled: true }),
+				organizationAddress: new FormControl({ value: this.orgData.address, disabled: true }),
+				jobTitle: new FormControl(this.orgData.jobTitle, [Validators.required]),
+				vulnerableSectorCategory: new FormControl({ value: this.orgData.vulnerableSectorCategoryDesc, disabled: true }),
+				facilityName: new FormControl('', [Validators.required]),
+			},
+			{
+				validators: [
+					FormGroupValidators.conditionalRequiredValidator(
+						'facilityName',
+						(form) => this.orgData.facilityNameRequired ?? false
+					),
+				],
+			}
+		);
+	}
+	get orgData(): CrcRequestCreateRequest {
+		return this._orgData;
+	}
+
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
-	form: FormGroup = this.formBuilder.group({
-		organizationName: new FormControl({ value: 'Sunshine Daycare', disabled: true }),
-		organizationPhoneNumber: new FormControl({ value: '2503859988', disabled: true }),
-		organizationAddress: new FormControl({ value: '760 Vernon Ave, Victoria, BC V8X 2W6, Canada', disabled: true }),
-		jobTitle: new FormControl('', [Validators.required]),
-		vulnerableSectorCategory: new FormControl({ value: 'Division Pulled From Organization Type', disabled: true }),
-	});
+	form!: FormGroup;
 	matcher = new FormErrorStateMatcher();
 
 	constructor(private formBuilder: FormBuilder) {}

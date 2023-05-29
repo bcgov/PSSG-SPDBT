@@ -10,7 +10,7 @@ import { DeclarationComponent } from '../step-components/declaration.component';
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<div class="row mt-4">
-					<div class="offset-lg-4 col-lg-4 offset-md-4 col-md-4 col-sm-12">
+					<div class="col-xxl-3 col-lg-4 col-md-4 col-sm-12 mx-auto">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext()">Next</button>
 					</div>
 				</div>
