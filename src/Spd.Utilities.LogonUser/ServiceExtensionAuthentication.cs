@@ -13,6 +13,7 @@ namespace Spd.Utilities.LogonUser
             IConfiguration configuration)
         {
             services.Configure<BCeIDAuthenticationConfiguration>(opts => configuration.GetSection(BCeIDAuthenticationConfiguration.Name).Bind(opts));
+            services.Configure<BcscAuthenticationConfiguration>(opts => configuration.GetSection(BcscAuthenticationConfiguration.Name).Bind(opts));
 
             var bceidConfig = configuration
             .GetSection(BCeIDAuthenticationConfiguration.Name)
