@@ -64,6 +64,23 @@ public class ApplicationScenarios : ScenarioContextBase
     }
 
     [Fact]
+    public async Task VerifyApplicationInvites_WithoutAuth_Success()
+    {
+        var (org, user) = await fixture.testData.CreateOrgWithLogonUser("org1");
+        var invite = await fixture.testData.CreatePortalInvitationInOrg("first1", "last1", org);
+        var encodedCode = invite.spd_invitationlink.Substring(invite.spd_invitationlink.LastIndexOf("/") + 1, invite.spd_invitationlink.Length - invite.spd_invitationlink.LastIndexOf("/") - 1);
+        await Host.Scenario(_ =>
+        {
+            _.Post.Json(Create_AppInviteVerifyRequest(encodedCode)).ToUrl($"/api/application/invitation");
+            if (org != null && org.accountid != null)
+            {
+                _.ContentShouldContain(org.accountid.ToString());
+                _.StatusCodeShouldBeOk();
+            }
+        });
+    }
+
+    [Fact]
     public async Task CreateApplication_WithCorrectAuthAndHeader_Success()
     {
         var (org, user) = await fixture.testData.CreateOrgWithLogonUser("org1");
@@ -164,6 +181,11 @@ public class ApplicationScenarios : ScenarioContextBase
                 }
             }
         };
+    }
+
+    private AppInviteVerifyRequest Create_AppInviteVerifyRequest(string inviteEncryptedCode)
+    {
+        return new AppInviteVerifyRequest(inviteEncryptedCode);
     }
 
     private MultipartFormDataContent CreateMultipartFormData(string content, string fileName)

@@ -4,6 +4,7 @@ using Microsoft.Dynamics.CRM;
 using Spd.Resource.Organizations.Registration;
 using Spd.Resource.Organizations.User;
 using Spd.Utilities.Dynamics;
+using System.Net;
 
 namespace Spd.Tests.Presentation.Screening.Integration;
 public class DynamicsTestData
@@ -68,7 +69,7 @@ public class DynamicsTestData
         else
         {
             Guid portalInvitationId = Guid.NewGuid();
-            string encryptedId = _dataProtector.Protect(portalInvitationId.ToString());
+            string encryptedId = WebUtility.UrlEncode(_dataProtector.Protect(portalInvitationId.ToString()));
             spd_portalinvitation newOne = new spd_portalinvitation
             {
                 spd_portalinvitationid = portalInvitationId,

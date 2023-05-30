@@ -134,7 +134,7 @@ namespace Spd.Resource.Organizations.User
             Guid inviteId = Guid.NewGuid();
             invitation.spd_portalinvitationid = inviteId;
             var encryptedInviteId = WebUtility.UrlEncode(_dataProtector.Protect(inviteId.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.USER_INVITE_VALID_DAYS)));
-            invitation.spd_invitationlink = $"{createUserCmd.HostUrl}crrp/invitation/{encryptedInviteId}";
+            invitation.spd_invitationlink = $"{createUserCmd.HostUrl}{SpdConstants.USER_INVITE_LINK}{encryptedInviteId}";
             _dynaContext.AddTospd_portalinvitations(invitation);
             _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_OrganizationId), organization);
             _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_PortalUserId), user);
