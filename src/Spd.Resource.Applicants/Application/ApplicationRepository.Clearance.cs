@@ -57,7 +57,8 @@ internal partial class ApplicationRepository : IApplicationRepository
         return new ClearanceLetterResp()
         {
             Content = fileResult.File.Content,
-            ContentType = fileResult.File.ContentType
+            ContentType = fileResult.File.ContentType,
+            FileName = fileResult.File.FileName
         };
     }
 
