@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { CrcComponent } from './crc.component';
 
 export class CrcRoutes {
-	public static CRC_APPLICATION = 'crc';
+	public static CRC_APPLICATION = 'crca';
 	public static MODULE_PATH = CrcRoutes.CRC_APPLICATION;
 
 	public static path(route: string): string {

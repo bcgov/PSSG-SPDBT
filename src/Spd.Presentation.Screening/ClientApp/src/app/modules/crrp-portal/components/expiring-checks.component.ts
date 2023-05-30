@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
 import { ApplicationInviteCreateRequest, ClearanceListResponse, ClearanceResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
+import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
@@ -285,18 +286,28 @@ export class ExpiringChecksComponent implements OnInit {
 
 	onDownloadClearanceLetter(clearance: ExpiredClearanceResponse) {
 		this.applicationService
-			.apiOrgsOrgIdClearancesClearanceIdFileGet({
+			.apiOrgsOrgIdClearancesClearanceIdFileGet$Response({
 				clearanceId: clearance.clearanceId!,
 				orgId: this.authenticationService.loggedInUserInfo?.orgId!,
 			})
 			.pipe()
-			.subscribe((res: any) => {
-				//BLOB
-				if (res && res.size > 0) {
-					const url = window.URL.createObjectURL(res);
+			.subscribe((resp: StrictHttpResponse<Blob>) => {
+				let fileName = `clearance-letter-${clearance.firstName}-${clearance.lastName}`; // default
+				const contentDisposition = resp.headers.get('Content-Disposition');
+				if (contentDisposition) {
+					const fileNameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+					const matches = fileNameRegex.exec(contentDisposition);
+					if (matches != null && matches[1]) {
+						fileName = matches[1].replace(/['"]/g, '');
+					}
+				}
+
+				const blob = resp.body;
+				if (blob?.size > 0) {
+					const url = window.URL.createObjectURL(blob);
 					const anchor = document.createElement('a');
 					anchor.href = url;
-					anchor.download = `clearance-letter-${clearance.firstName}-${clearance.lastName}`;
+					anchor.download = fileName;
 					document.body.appendChild(anchor);
 					anchor.click();
 					document.body.removeChild(anchor);
@@ -391,7 +402,6 @@ export class ExpiringChecksComponent implements OnInit {
 
 	private loadList(): void {
 		this.queryParams.filters = this.buildQueryParamsFilterString();
-
 		this.applicationService
 			.apiOrgsOrgIdClearancesExpiredGet({
 				orgId: this.authenticationService.loggedInUserInfo?.orgId!,

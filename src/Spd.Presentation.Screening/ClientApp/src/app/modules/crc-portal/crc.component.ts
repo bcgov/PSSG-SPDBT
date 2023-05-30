@@ -180,7 +180,7 @@ export class CrcComponent implements OnInit {
 			middleName2: 'Annie',
 			surname: 'Anderson',
 			emailAddress: 'Ann@two.com',
-			jobTitle: 'Aaaa',
+			jobTitle: '',
 			phoneNumber: '2504479898',
 			address: '760 Andy Ave, Victoria, BC V8X 2W6, Canada',
 			facilityNameRequired: false,
@@ -257,13 +257,11 @@ export class CrcComponent implements OnInit {
 		if (stepIndex == 1 && this.authenticationService.isLoggedIn()) {
 			// Mark Step 2 (Log In) as complete
 			const stepLogin = this.stepper.steps.get(2);
-			console.log('stepLogin', stepLogin);
 			if (stepLogin) {
 				stepLogin.completed = true;
 			}
 
 			const stateInfo = JSON.stringify({ ...this.getDataToSave() });
-			console.log('stateInfo', stateInfo);
 			this.currentStateInfo = JSON.parse(stateInfo);
 			this.utilService.setSessionData(this.utilService.CRC_PORTAL_STATE_KEY, stateInfo);
 
@@ -286,7 +284,6 @@ export class CrcComponent implements OnInit {
 
 	async onRegisterWithBcServicesCard(): Promise<void> {
 		const stateInfo = JSON.stringify({ ...this.getDataToSave() });
-		console.log('stateInfo', stateInfo);
 
 		//auth step 2 - unload angular, redirect to KC
 		// const decodedData = decodeURIComponent(authInfo.state);
@@ -300,7 +297,8 @@ export class CrcComponent implements OnInit {
 	}
 
 	private postLoginNavigate(stepperData: any): void {
-		console.log('postLoginNavigate', stepperData);
+		this.currentStateInfo = JSON.parse(stepperData);
+
 		let step = this.stepper.steps.get(0);
 		if (step) {
 			step.completed = true;
@@ -309,7 +307,7 @@ export class CrcComponent implements OnInit {
 		step = this.stepper.steps.get(1);
 		if (step) {
 			if (this.stepOrganizationInfoComponent) {
-				this.stepOrganizationInfoComponent.setStepData(stepperData);
+				this.stepOrganizationInfoComponent.setStepData(this.currentStateInfo);
 			}
 
 			step.completed = true;
@@ -320,7 +318,6 @@ export class CrcComponent implements OnInit {
 			step.completed = true;
 		}
 
-		this.currentStateInfo = JSON.parse(stepperData);
 		this.stepper.selectedIndex = 3;
 	}
 
@@ -349,7 +346,7 @@ export class CrcComponent implements OnInit {
 		if (this.stepTermsAndCondComponent) {
 			dataToSave = { ...dataToSave, ...this.stepTermsAndCondComponent.getStepData() };
 		}
-		console.log('onSaveStepperStep', dataToSave);
+		console.debug('getDataToSave', dataToSave);
 		return dataToSave;
 	}
 

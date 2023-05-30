@@ -113,19 +113,6 @@ export class SecurityInformationComponent implements CrcFormStepComponent {
 	}
 
 	setStepData(data: any): void {
-		console.log('setStepData1', data);
-		console.log(
-			'setStepData2',
-			data['orgName'],
-			data.orgName,
-			data.orgPhoneNumber,
-			data.address,
-			data.orgEmail,
-			data.jobTitle,
-			data.vulnerableSectorCategory,
-			data.facilityName
-		);
-
 		this.form.patchValue({
 			orgName: data.orgName,
 			orgPhoneNumber: data.orgPhoneNumber,
@@ -135,7 +122,6 @@ export class SecurityInformationComponent implements CrcFormStepComponent {
 			vulnerableSectorCategory: data.vulnerableSectorCategory,
 			facilityName: data.facilityName,
 		});
-		console.log('setStepData AFTER', this.form.value);
 	}
 
 	isFormValid(): boolean {

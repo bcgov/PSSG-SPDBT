@@ -31,7 +31,6 @@ export { DuplicateCheckResult } from './models/duplicate-check-result';
 export { EmployeeInteractionTypeCode } from './models/employee-interaction-type-code';
 export { EmployeeOrganizationTypeCode } from './models/employee-organization-type-code';
 export { FundsFromBcGovtExceedsThresholdCode } from './models/funds-from-bc-govt-exceeds-threshold-code';
-export { IActionResult } from './models/i-action-result';
 export { IdentityStatusCode } from './models/identity-status-code';
 export { InvitationRequest } from './models/invitation-request';
 export { InvitationResponse } from './models/invitation-response';
