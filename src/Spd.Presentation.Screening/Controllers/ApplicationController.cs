@@ -500,12 +500,12 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns>FileStreamResult</returns>
         [Route("api/orgs/{orgId}/clearances/{clearanceId}/file")]
         [HttpGet]
-        public async Task<FileStreamResult> DownloadClearanceLetterAsync([FromRoute] Guid clearanceId)
+        public async Task<IActionResult> DownloadClearanceLetterAsync([FromRoute] Guid clearanceId)
         {
             ClearanceLetterResponse response = await _mediator.Send(new ClearanceLetterQuery(clearanceId));
             var content = new MemoryStream(response.Content);
             var contentType = response.ContentType ?? "application/octet-stream";
-            return new FileStreamResult(content, contentType);
+            return File(content, contentType, response.FileName);
         }
 
         private ClearanceListFilterBy GetClearanceListFilterBy(string? filters, Guid orgId)
@@ -562,4 +562,3 @@ public record CreateApplication
     public IFormFile ConsentFormFile { get; set; } = null!;
     public string ApplicationCreateRequestJson { get; set; } = null!;
 }
-
