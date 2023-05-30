@@ -22,6 +22,7 @@ export interface CrcRequestCreateRequest {
 	orgId?: string;
 	orgName?: string;
 	orgPhoneNumber?: string;
+	orgEmail?: string;
 	givenName?: string | null;
 	middleName1?: string | null;
 	middleName2?: string | null;
@@ -164,6 +165,7 @@ export class CrcComponent implements OnInit {
 			orgId: 'abcdef123',
 			orgName: 'Anikon Ltd',
 			orgPhoneNumber: '2507776655',
+			orgEmail: 'test@test.test.com',
 			givenName: 'Ann',
 			middleName1: 'Amber',
 			middleName2: 'Annie',
@@ -204,7 +206,6 @@ export class CrcComponent implements OnInit {
 
 	onGetCrcData(): void {
 		this.crcData = { ...this.orgData, ...this.getDataToSave() };
-		console.log('onGetCrcData crcData', this.crcData);
 	}
 
 	onStepSelectionChange(_event: StepperSelectionEvent) {
@@ -216,7 +217,6 @@ export class CrcComponent implements OnInit {
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
-		console.log('onNextStepperStep', stepper.selectedIndex);
 		// complete the current step
 		if (stepper?.selected) stepper.selected.completed = true;
 
@@ -257,8 +257,8 @@ export class CrcComponent implements OnInit {
 	onSaveStepperStep(stepper: MatStepper): void {
 		if (stepper?.selected) stepper.selected.completed = true;
 
-		let dataToSave = this.getDataToSave();
-		console.log('onSaveStepperStep', dataToSave);
+		// let dataToSave = this.getDataToSave();
+		// console.log('onSaveStepperStep', dataToSave);
 
 		// make these steps uneditable...
 		// so that after save, user cannot navigate to any of these steps

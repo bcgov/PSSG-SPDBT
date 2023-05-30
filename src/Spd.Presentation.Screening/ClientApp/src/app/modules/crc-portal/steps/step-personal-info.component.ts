@@ -148,7 +148,6 @@ export class StepPersonalInfoComponent {
 	}
 
 	onFormValidNextStep(formNumber: number): void {
-		console.log('onFormValidNextStep', formNumber);
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 

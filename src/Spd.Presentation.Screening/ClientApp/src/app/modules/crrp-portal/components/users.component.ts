@@ -432,7 +432,6 @@ export class UsersComponent implements OnInit {
 		}
 
 		const currUser = this.usersList.find((item) => item.id == this.authenticationService.loggedInUserInfo?.userId);
-		console.log('currUser', currUser);
 		return currUser ? currUser.contactAuthorizationTypeCode == ContactAuthorizationTypeCode.Primary : false;
 	}
 }

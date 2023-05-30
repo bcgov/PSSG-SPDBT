@@ -118,7 +118,6 @@ export class ApplicationStatusesFilterComponent extends BaseFilterComponent {
 
 	private constructFilterList(formGroupValue: ApplicationStatusFilter): FilterQueryList[] {
 		let filterList: FilterQueryList[] = [];
-		console.log('formGroupValue.statuses', formGroupValue.statuses);
 
 		if (formGroupValue.statuses?.length > 0) {
 			filterList.push({
