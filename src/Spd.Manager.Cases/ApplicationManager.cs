@@ -10,6 +10,7 @@ namespace Spd.Manager.Cases
 {
     internal class ApplicationManager :
         IRequestHandler<ApplicationInviteCreateCommand, ApplicationInvitesCreateResponse>,
+        IRequestHandler<ApplicationInviteVerifyCommand, AppInviteVerifyResponse>,
         IRequestHandler<ApplicationInviteListQuery, ApplicationInviteListResponse>,
         IRequestHandler<ApplicationInviteDeleteCommand, Unit>,
         IRequestHandler<ApplicationCreateCommand, ApplicationCreateResponse>,
@@ -81,6 +82,13 @@ namespace Spd.Manager.Cases
             var cmd = _mapper.Map<ApplicationInviteDeleteCmd>(request);
             await _applicationInviteRepository.DeleteApplicationInvitesAsync(cmd, ct);
             return default;
+        }
+        public async Task<AppInviteVerifyResponse> Handle(ApplicationInviteVerifyCommand request, CancellationToken ct)
+        {
+            var result = await _applicationInviteRepository.VerifyApplicationInvitesAsync(
+                 new ApplicationInviteVerifyCmd(request.AppInvitesVerifyRequest.InviteEncryptedCode),
+                 ct);
+            return _mapper.Map<AppInviteVerifyResponse>(result);
         }
         #endregion
 

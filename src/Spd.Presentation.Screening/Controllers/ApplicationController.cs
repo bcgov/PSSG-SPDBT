@@ -7,6 +7,7 @@ using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
+using System.Configuration;
 using System.Globalization;
 using System.Text;
 using System.Text.Json;
@@ -14,18 +15,22 @@ using System.Text.Json.Serialization;
 
 namespace Spd.Presentation.Screening.Controllers
 {
-    [Authorize(Roles = "Primary,Contact")]
     public class ApplicationController : SpdControllerBase
     {
         private readonly IMediator _mediator;
         private readonly IValidator<ApplicationCreateRequest> _appCreateRequestValidator;
         private readonly IValidator<ApplicationCreateRequestFromBulk> _appCreateRequestFromBulkValidator;
+        private readonly IConfiguration _configuration;
 
-        public ApplicationController(IMediator mediator, IValidator<ApplicationCreateRequest> appCreateRequestValidator, IValidator<ApplicationCreateRequestFromBulk> appCreateRequestFromBulkValidator)
+        public ApplicationController(IMediator mediator,
+            IValidator<ApplicationCreateRequest> appCreateRequestValidator,
+            IValidator<ApplicationCreateRequestFromBulk> appCreateRequestFromBulkValidator,
+            IConfiguration configuration)
         {
             _mediator = mediator;
             _appCreateRequestValidator = appCreateRequestValidator;
             _appCreateRequestFromBulkValidator = appCreateRequestFromBulkValidator;
+            _configuration = configuration;
         }
 
         #region application-invites
@@ -38,10 +43,15 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/orgs/{orgId}/application-invites")]
         [HttpPost]
+        [Authorize(Roles = "Primary,Contact")]
         public async Task<ApplicationInvitesCreateResponse> AddApplicationInvites([FromBody][Required] ApplicationInvitesCreateRequest invitesCreateRequest, [FromRoute] Guid orgId)
         {
             var userId = this.HttpContext.User.GetUserId();
             if (userId == null) throw new ApiException(System.Net.HttpStatusCode.Unauthorized);
+            string? hostUrl = _configuration.GetValue<string>("HostUrl");
+            if (hostUrl == null)
+                throw new ConfigurationErrorsException("HostUrl is not set correctly in configuration.");
+            invitesCreateRequest.HostUrl = hostUrl;
             return await _mediator.Send(new ApplicationInviteCreateCommand(invitesCreateRequest, orgId, Guid.Parse(userId)));
         }
 
@@ -57,6 +67,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/orgs/{orgId}/application-invites")]
         [HttpGet]
+        [Authorize(Roles = "Primary,Contact")]
         public async Task<ApplicationInviteListResponse> GetInvitesList([FromRoute] Guid orgId, [FromQuery] string? filters, [FromQuery] uint? page, [FromQuery] uint? pageSize)
         {
             page = (page == null || page < 0) ? 0 : page;
@@ -95,10 +106,23 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/orgs/{orgId}/application-invites/{applicationInviteId}")]
         [HttpDelete]
+        [Authorize(Roles = "Primary,Contact")]
         public async Task<ActionResult> DeleteAsync([FromRoute] Guid applicationInviteId, [FromRoute] Guid orgId)
         {
             await _mediator.Send(new ApplicationInviteDeleteCommand(orgId, applicationInviteId));
             return Ok();
+        }
+
+        /// <summary>
+        /// Verify if the current application invite is correct, and return needed info
+        /// </summary>
+        /// <param name="appInviteVerifyRequest">which include InviteEncryptedCode</param>
+        /// <returns></returns>
+        [Route("api/application/invitation")]
+        [HttpPost]
+        public async Task<AppInviteVerifyResponse> VerifyAppInvitation([FromBody][Required] AppInviteVerifyRequest appInviteVerifyRequest)
+        {
+            return await _mediator.Send(new ApplicationInviteVerifyCommand(appInviteVerifyRequest));
         }
 
         #endregion
@@ -116,6 +140,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/orgs/{orgId}/applications/bulk/history")]
         [HttpGet]
+        [Authorize(Roles = "Primary,Contact")]
         public async Task<BulkHistoryListResponse> GetBulkUploadHistoryList([FromRoute] Guid orgId, [FromQuery] string? sorts, [FromQuery] int? page, [FromQuery] int? pageSize)
         {
             page = (page == null || page < 0) ? 0 : page;
@@ -137,6 +162,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/orgs/{orgId}/applications/bulk")]
         [HttpPost]
+        [Authorize(Roles = "Primary,Contact")]
         public async Task<BulkUploadCreateResponse> BulkUpload([FromForm][Required] BulkUploadRequest bulkUploadRequest, [FromRoute] Guid orgId, CancellationToken ct)
         {
             var userId = this.HttpContext.User.GetUserId();
@@ -474,12 +500,12 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns>FileStreamResult</returns>
         [Route("api/orgs/{orgId}/clearances/{clearanceId}/file")]
         [HttpGet]
-        public async Task<FileStreamResult> DownloadClearanceLetterAsync([FromRoute] Guid clearanceId)
+        public async Task<IActionResult> DownloadClearanceLetterAsync([FromRoute] Guid clearanceId)
         {
             ClearanceLetterResponse response = await _mediator.Send(new ClearanceLetterQuery(clearanceId));
             var content = new MemoryStream(response.Content);
             var contentType = response.ContentType ?? "application/octet-stream";
-            return new FileStreamResult(content, contentType);
+            return File(content, contentType, response.FileName);
         }
 
         private ClearanceListFilterBy GetClearanceListFilterBy(string? filters, Guid orgId)
@@ -536,4 +562,3 @@ public record CreateApplication
     public IFormFile ConsentFormFile { get; set; } = null!;
     public string ApplicationCreateRequestJson { get; set; } = null!;
 }
-

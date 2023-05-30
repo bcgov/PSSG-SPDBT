@@ -5,6 +5,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
         public Task AddApplicationInvitesAsync(ApplicationInvitesCreateCmd createInviteCmd, CancellationToken cancellationToken);
         public Task<ApplicationInviteListResp> QueryAsync(ApplicationInviteQuery query, CancellationToken cancellationToken);
         public Task DeleteApplicationInvitesAsync(ApplicationInviteDeleteCmd applicationInviteDeleteCmd, CancellationToken cancellationToken);
+        public Task<AppInviteVerifyResp> VerifyApplicationInvitesAsync(ApplicationInviteVerifyCmd createInviteCmd, CancellationToken cancellationToken);
     }
 
     public record ApplicationInviteQuery
@@ -33,8 +34,27 @@ namespace Spd.Resource.Applicants.ApplicationInvite
     {
         public Guid OrgId { get; set; }
         public Guid CreatedByUserId { get; set; }
-        public IEnumerable<ApplicationInvite> ApplicationInvites { get; set; }
+        public IEnumerable<ApplicationInvite> ApplicationInvites { get; set; } = Array.Empty<ApplicationInvite>();
+        public string HostUrl { get; set; } = null!;
     }
+
+    public record ApplicationInviteVerifyCmd(string InviteEncryptedCode);
+
+    public record AppInviteVerifyResp()
+    {
+        public Guid OrgId { get; set; }
+        public string OrganizationName { get; set; }
+        public string? PhoneNumber { get; set; }
+        public string? AddressLine1 { get; set; }
+        public string? AddressLine2 { get; set; }
+        public string? AddressCity { get; set; }
+        public string? AddressCountry { get; set; }
+        public string? AddressPostalCode { get; set; }
+        public string? AddressProvince { get; set; }
+        public string? EmployeeOrganizationTypeCode { get; set; }
+        public string? VolunteerOrganizationTypeCode { get; set; }
+        public PayerPreferenceTypeCode PayeeType { get; set; }
+    };
 
     public record ApplicationInvite
     {

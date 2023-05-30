@@ -41,6 +41,23 @@ namespace Spd.Utilities.Dynamics
         {
             return OrganizationTypeGuidDictionary.FirstOrDefault(s => s.Value == typeId).Key;
         }
+
+        //return (employeeTypeCode, volunteerTypeCode)
+        public static (string?, string?) GetTypeFromTypeId(Guid? orgTypeId)
+        {
+            if (orgTypeId == null) return (null, null);
+            string key = LookupOrganizationTypeKey((Guid)orgTypeId);
+            var str = key.Split("-");
+            if (str.Length == 0 || str.Length > 2) return (null, null);
+            if (str[0].Equals("Volunteer", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return (null, str[1]);
+            }
+            else
+            {
+                return (str[1], null);
+            }
+        }
         #endregion
 
         #region role
