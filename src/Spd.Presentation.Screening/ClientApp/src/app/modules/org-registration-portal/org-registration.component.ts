@@ -147,7 +147,7 @@ export class OrgRegistrationComponent implements OnInit {
 		}
 	}
 
-	postLoginNavigate(step1Data: any): void {
+	private postLoginNavigate(step1Data: any): void {
 		let step = this.stepper.steps.get(0);
 		if (step) {
 			step.completed = true;

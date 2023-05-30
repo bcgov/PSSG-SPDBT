@@ -41,6 +41,10 @@ export class StepOrganizationInfoComponent {
 		};
 	}
 
+	setStepData(data: any): void {
+		this.securityInformationComponent.setStepData(data);
+	}
+
 	onStepPrevious(): void {
 		this.previousStepperStep.emit(true);
 	}

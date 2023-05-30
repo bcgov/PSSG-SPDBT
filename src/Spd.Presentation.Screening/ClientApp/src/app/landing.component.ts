@@ -28,30 +28,18 @@ import { CrrpRoutes } from './modules/crrp-portal/crrp-routing.module';
 			Temporary section
 			<button mat-stroked-button color="primary" class="large my-2" (click)="goToApplicant()">Applicant Portal</button>
 
-			<mat-divider class="my-4"></mat-divider>
-
 			<button mat-stroked-button color="primary" class="large my-2" (click)="goToScreening()">
 				Criminal Record Check Portal
 			</button>
-			<mat-radio-group [(ngModel)]="paymentBy">
-				<mat-radio-button value="APP">
-					<strong>Applicant Paying</strong>
-				</mat-radio-button>
-				<mat-radio-button value="ORG">
-					<strong>Organization Paying</strong>
-				</mat-radio-button>
-			</mat-radio-group>
 		</section>
 	`,
 	styles: [],
 })
 export class LandingComponent {
-	paymentBy: string = 'APP';
-
 	constructor(private router: Router) {}
 
 	goToScreening(): void {
-		this.router.navigateByUrl(`/${CrcRoutes.MODULE_PATH}`, { state: { paymentBy: this.paymentBy } });
+		this.router.navigateByUrl(CrcRoutes.path(CrcRoutes.MODULE_PATH));
 	}
 
 	goToApplicant(): void {

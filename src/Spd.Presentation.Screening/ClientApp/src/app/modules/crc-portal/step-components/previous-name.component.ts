@@ -183,7 +183,7 @@ export class PreviousNameComponent implements OnInit, CrcFormStepComponent {
 
 	getDataToSave(): any {
 		let dataToSave = { ...this.form.value };
-		if (this.previousNameFlag.value == BooleanTypeCode.No) {
+		if (this.previousNameFlag.value != BooleanTypeCode.Yes) {
 			dataToSave.previousNamesList = [];
 		}
 		return dataToSave;

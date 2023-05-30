@@ -290,7 +290,8 @@ export class ExpiringChecksComponent implements OnInit {
 				orgId: this.authenticationService.loggedInUserInfo?.orgId!,
 			})
 			.pipe()
-			.subscribe((res: Blob) => {
+			.subscribe((res: any) => {
+				//BLOB
 				if (res && res.size > 0) {
 					const url = window.URL.createObjectURL(res);
 					const anchor = document.createElement('a');

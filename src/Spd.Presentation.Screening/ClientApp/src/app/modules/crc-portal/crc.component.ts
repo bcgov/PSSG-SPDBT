@@ -1,11 +1,14 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperOrientation, StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Location } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
+import { Router } from '@angular/router';
 import { distinctUntilChanged } from 'rxjs';
 import { EmployeeInteractionTypeCode } from 'src/app/api/models';
 import { EmployeeInteractionTypes } from 'src/app/core/constants/model-desc';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { UtilService } from 'src/app/core/services/util.service';
+import { CrcRoutes } from './crc-routing.module';
 import { StepApplSubmittedComponent } from './steps/step-appl-submitted.component';
 import { StepEligibilityComponent } from './steps/step-eligibility.component';
 import { StepLoginOptionsComponent } from './steps/step-login-options.component';
@@ -19,6 +22,7 @@ export interface CrcFormStepComponent {
 }
 
 export interface CrcRequestCreateRequest {
+	paymentBy: 'APP' | 'ORG';
 	orgId?: string;
 	orgName?: string;
 	orgPhoneNumber?: string;
@@ -51,7 +55,7 @@ export interface CrcRequestCreateRequest {
 				<mat-step completed="false">
 					<ng-template matStepLabel>Eligibility Check</ng-template>
 					<app-step-eligibility
-						[paymentBy]="paymentBy"
+						[paymentBy]="orgData.paymentBy"
 						(nextStepperStep)="onNextStepperStep(stepper)"
 						(scrollIntoView)="onScrollIntoView()"
 					></app-step-eligibility>
@@ -73,6 +77,7 @@ export interface CrcRequestCreateRequest {
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
 						(nextStepperStep)="onNextStepperStep(stepper)"
 						(scrollIntoView)="onScrollIntoView()"
+						(registerWithBcServicesCard)="onRegisterWithBcServicesCard()"
 					></app-step-login-options>
 				</mat-step>
 
@@ -92,7 +97,7 @@ export interface CrcRequestCreateRequest {
 				<mat-step completed="false">
 					<ng-template matStepLabel>Terms and Conditions</ng-template>
 					<app-step-terms-and-cond
-						[paymentBy]="paymentBy"
+						[paymentBy]="orgData.paymentBy"
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
 						(nextStepperStep)="onSaveStepperStep(stepper)"
 						(scrollIntoView)="onScrollIntoView()"
@@ -112,7 +117,7 @@ export interface CrcRequestCreateRequest {
 				<mat-step completed="false">
 					<ng-template matStepLabel>Application Submitted</ng-template>
 					<app-step-appl-submitted
-						[paymentBy]="paymentBy"
+						[paymentBy]="orgData.paymentBy"
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
 						(scrollIntoView)="onScrollIntoView()"
 					></app-step-appl-submitted>
@@ -126,7 +131,7 @@ export class CrcComponent implements OnInit {
 	orgData!: CrcRequestCreateRequest;
 	crcData!: any;
 	orientation: StepperOrientation = 'vertical';
-	paymentBy!: 'APP' | 'ORG';
+	currentStateInfo: any = {};
 
 	@ViewChild('stepper') stepper!: MatStepper;
 
@@ -148,11 +153,14 @@ export class CrcComponent implements OnInit {
 	@ViewChild(StepTermsAndCondComponent)
 	stepTermsAndCondComponent!: StepTermsAndCondComponent;
 
-	constructor(private breakpointObserver: BreakpointObserver, private location: Location) {}
+	constructor(
+		private router: Router,
+		private breakpointObserver: BreakpointObserver,
+		private utilService: UtilService,
+		private authenticationService: AuthenticationService
+	) {}
 
-	ngOnInit(): void {
-		this.paymentBy = (this.location.getState() as any).paymentBy;
-
+	async ngOnInit(): Promise<void> {
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(
@@ -162,6 +170,7 @@ export class CrcComponent implements OnInit {
 			.subscribe(() => this.breakpointChanged());
 
 		this.orgData = {
+			paymentBy: 'APP',
 			orgId: 'abcdef123',
 			orgName: 'Anikon Ltd',
 			orgPhoneNumber: '2507776655',
@@ -182,6 +191,22 @@ export class CrcComponent implements OnInit {
 		this.orgData.vulnerableSectorCategoryDesc = EmployeeInteractionTypes.find(
 			(item) => item.code == this.orgData.vulnerableSectorCategory
 		)?.desc as string;
+
+		//auth step 1 - user is not logged in, no state at all
+		//auth step 3 - angular loads again here, KC posts the token, oidc lib reads token and returns state
+		const authInfo = await this.authenticationService.tryLogin(CrcRoutes.path(CrcRoutes.CRC_APPLICATION));
+
+		if (authInfo.loggedIn) {
+			if (authInfo.state) {
+				const stateInfo = this.utilService.getSessionData(this.utilService.CRC_PORTAL_STATE_KEY);
+				console.debug('[CrcComponent.ngOnInit] stateInfo', stateInfo);
+				if (stateInfo) {
+					this.postLoginNavigate(stateInfo);
+				}
+			} else {
+				this.router.navigate([CrcRoutes.CRC_APPLICATION]);
+			}
+		}
 	}
 
 	onScrollIntoView(): void {
@@ -213,6 +238,13 @@ export class CrcComponent implements OnInit {
 	}
 
 	onPreviousStepperStep(stepper: MatStepper): void {
+		const stepIndex = stepper.selectedIndex;
+		if (stepIndex == 3 && this.authenticationService.isLoggedIn()) {
+			// Go to Step 2
+			this.stepper.selectedIndex = 1;
+			return;
+		}
+
 		stepper.previous();
 	}
 
@@ -220,7 +252,25 @@ export class CrcComponent implements OnInit {
 		// complete the current step
 		if (stepper?.selected) stepper.selected.completed = true;
 
-		if (stepper.selectedIndex == 3) {
+		const stepIndex = stepper.selectedIndex;
+
+		if (stepIndex == 1 && this.authenticationService.isLoggedIn()) {
+			// Mark Step 2 (Log In) as complete
+			const stepLogin = this.stepper.steps.get(2);
+			console.log('stepLogin', stepLogin);
+			if (stepLogin) {
+				stepLogin.completed = true;
+			}
+
+			const stateInfo = JSON.stringify({ ...this.getDataToSave() });
+			console.log('stateInfo', stateInfo);
+			this.currentStateInfo = JSON.parse(stateInfo);
+			this.utilService.setSessionData(this.utilService.CRC_PORTAL_STATE_KEY, stateInfo);
+
+			// Go to Step 43
+			this.stepper.selectedIndex = 3;
+			return;
+		} else if (stepIndex == 3) {
 			// make these steps uneditable...
 			// so that after save, user cannot navigate to any of these steps
 			for (let i = 0; i <= stepper.selectedIndex; i++) {
@@ -234,31 +284,48 @@ export class CrcComponent implements OnInit {
 		this.stepper.next();
 	}
 
-	// onNextSummaryStepperStep(stepper: MatStepper): void {
-	// 	console.log('onNextSummaryStepperStep', stepper.selectedIndex);
-	// 	// complete the current step
-	// 	if (stepper?.selected) stepper.selected.completed = true;
+	async onRegisterWithBcServicesCard(): Promise<void> {
+		const stateInfo = JSON.stringify({ ...this.getDataToSave() });
+		console.log('stateInfo', stateInfo);
 
-	// 	this.crcData = { ...this.orgData, ...this.getDataToSave() };
-	// 	console.log('onNextSummaryStepperStep crcData', this.crcData);
+		//auth step 2 - unload angular, redirect to KC
+		// const decodedData = decodeURIComponent(authInfo.state);
+		this.utilService.setSessionData(this.utilService.CRC_PORTAL_STATE_KEY, stateInfo);
+		const nextUrl = await this.authenticationService.login(CrcRoutes.path(CrcRoutes.CRC_APPLICATION));
+		if (nextUrl) {
+			// User is already logged in and clicks Login button.
+			// Want it to start at the beginning and continue past login page.
+			this.postLoginNavigate(stateInfo);
+		}
+	}
 
-	// 	// make these steps uneditable...
-	// 	// so that after save, user cannot navigate to any of these steps
-	// 	for (let i = 0; i <= stepper.selectedIndex; i++) {
-	// 		let step = this.stepper.steps.get(i);
-	// 		if (step) {
-	// 			step.editable = false;
-	// 		}
-	// 	}
+	private postLoginNavigate(stepperData: any): void {
+		console.log('postLoginNavigate', stepperData);
+		let step = this.stepper.steps.get(0);
+		if (step) {
+			step.completed = true;
+		}
 
-	// 	this.stepper.next();
-	// }
+		step = this.stepper.steps.get(1);
+		if (step) {
+			if (this.stepOrganizationInfoComponent) {
+				this.stepOrganizationInfoComponent.setStepData(stepperData);
+			}
+
+			step.completed = true;
+		}
+
+		step = this.stepper.steps.get(2);
+		if (step) {
+			step.completed = true;
+		}
+
+		this.currentStateInfo = JSON.parse(stepperData);
+		this.stepper.selectedIndex = 3;
+	}
 
 	onSaveStepperStep(stepper: MatStepper): void {
 		if (stepper?.selected) stepper.selected.completed = true;
-
-		// let dataToSave = this.getDataToSave();
-		// console.log('onSaveStepperStep', dataToSave);
 
 		// make these steps uneditable...
 		// so that after save, user cannot navigate to any of these steps
@@ -272,7 +339,7 @@ export class CrcComponent implements OnInit {
 	}
 
 	private getDataToSave(): any {
-		let dataToSave = {};
+		let dataToSave = { ...this.orgData };
 		if (this.stepOrganizationInfoComponent) {
 			dataToSave = { ...dataToSave, ...this.stepOrganizationInfoComponent.getStepData() };
 		}

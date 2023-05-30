@@ -10,6 +10,8 @@ import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
 import { ActionResult } from '../models/action-result';
+import { AppInviteVerifyRequest } from '../models/app-invite-verify-request';
+import { AppInviteVerifyResponse } from '../models/app-invite-verify-response';
 import { ApplicationCreateResponse } from '../models/application-create-response';
 import { ApplicationInviteListResponse } from '../models/application-invite-list-response';
 import { ApplicationInvitesCreateRequest } from '../models/application-invites-create-request';
@@ -19,6 +21,7 @@ import { ApplicationStatisticsResponse } from '../models/application-statistics-
 import { BulkHistoryListResponse } from '../models/bulk-history-list-response';
 import { BulkUploadCreateResponse } from '../models/bulk-upload-create-response';
 import { ClearanceListResponse } from '../models/clearance-list-response';
+import { IActionResult } from '../models/i-action-result';
 import { IdentityStatusCode } from '../models/identity-status-code';
 
 @Injectable({
@@ -231,6 +234,75 @@ export class ApplicationService extends BaseService {
 
     return this.apiOrgsOrgIdApplicationInvitesApplicationInviteIdDelete$Response(params,context).pipe(
       map((r: StrictHttpResponse<ActionResult>) => r.body as ActionResult)
+    );
+  }
+
+  /**
+   * Path part for operation apiApplicationInvitationPost
+   */
+  static readonly ApiApplicationInvitationPostPath = '/api/application/invitation';
+
+  /**
+   * Verify if the current application invite is correct, and return needed info.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiApplicationInvitationPost()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiApplicationInvitationPost$Response(params: {
+
+    /**
+     * which include InviteEncryptedCode
+     */
+    body: AppInviteVerifyRequest
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<AppInviteVerifyResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiApplicationInvitationPostPath, 'post');
+    if (params) {
+      rb.body(params.body, 'application/*+json');
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<AppInviteVerifyResponse>;
+      })
+    );
+  }
+
+  /**
+   * Verify if the current application invite is correct, and return needed info.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiApplicationInvitationPost$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiApplicationInvitationPost(params: {
+
+    /**
+     * which include InviteEncryptedCode
+     */
+    body: AppInviteVerifyRequest
+  },
+  context?: HttpContext
+
+): Observable<AppInviteVerifyResponse> {
+
+    return this.apiApplicationInvitationPost$Response(params,context).pipe(
+      map((r: StrictHttpResponse<AppInviteVerifyResponse>) => r.body as AppInviteVerifyResponse)
     );
   }
 
@@ -881,7 +953,7 @@ export class ApplicationService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<StrictHttpResponse<Blob>> {
+): Observable<StrictHttpResponse<IActionResult>> {
 
     const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdClearancesClearanceIdFileGetPath, 'get');
     if (params) {
@@ -890,13 +962,13 @@ export class ApplicationService extends BaseService {
     }
 
     return this.http.request(rb.build({
-      responseType: 'blob',
-      accept: 'application/pdf',
+      responseType: 'json',
+      accept: 'application/json',
       context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Blob>;
+        return r as StrictHttpResponse<IActionResult>;
       })
     );
   }
@@ -917,10 +989,10 @@ export class ApplicationService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<Blob> {
+): Observable<IActionResult> {
 
     return this.apiOrgsOrgIdClearancesClearanceIdFileGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<Blob>) => r.body as Blob)
+      map((r: StrictHttpResponse<IActionResult>) => r.body as IActionResult)
     );
   }
 

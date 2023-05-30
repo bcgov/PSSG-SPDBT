@@ -18,13 +18,13 @@ import { CrcFormStepComponent, CrcRequestCreateRequest } from '../crc.component'
 						<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Requesting Organization</mat-label>
-								<input matInput formControlName="organizationName" />
+								<input matInput formControlName="orgName" />
 							</mat-form-field>
 						</div>
 						<div class="col-lg-4 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Organization Email</mat-label>
-								<input matInput formControlName="organizationEmail" />
+								<input matInput formControlName="orgEmail" />
 							</mat-form-field>
 						</div>
 					</div>
@@ -32,13 +32,13 @@ import { CrcFormStepComponent, CrcRequestCreateRequest } from '../crc.component'
 						<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Organization Phone Number</mat-label>
-								<input matInput formControlName="organizationPhoneNumber" [mask]="phoneMask" [showMaskTyped]="true" />
+								<input matInput formControlName="orgPhoneNumber" [mask]="phoneMask" [showMaskTyped]="true" />
 							</mat-form-field>
 						</div>
 						<div class="col-lg-4 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Organization Address</mat-label>
-								<input matInput formControlName="organizationAddress" />
+								<input matInput formControlName="address" />
 							</mat-form-field>
 						</div>
 					</div>
@@ -80,10 +80,10 @@ export class SecurityInformationComponent implements CrcFormStepComponent {
 		this._orgData = data;
 		this.form = this.formBuilder.group(
 			{
-				organizationName: new FormControl({ value: this.orgData.orgName, disabled: true }),
-				organizationPhoneNumber: new FormControl({ value: this.orgData.orgPhoneNumber, disabled: true }),
-				organizationAddress: new FormControl({ value: this.orgData.address, disabled: true }),
-				organizationEmail: new FormControl({ value: this.orgData.orgEmail, disabled: true }),
+				orgName: new FormControl({ value: this.orgData.orgName, disabled: true }),
+				orgPhoneNumber: new FormControl({ value: this.orgData.orgPhoneNumber, disabled: true }),
+				address: new FormControl({ value: this.orgData.address, disabled: true }),
+				orgEmail: new FormControl({ value: this.orgData.orgEmail, disabled: true }),
 				jobTitle: new FormControl(this.orgData.jobTitle, [Validators.required]),
 				vulnerableSectorCategory: new FormControl({ value: this.orgData.vulnerableSectorCategoryDesc, disabled: true }),
 				facilityName: new FormControl('', [Validators.required]),
@@ -110,6 +110,32 @@ export class SecurityInformationComponent implements CrcFormStepComponent {
 
 	getDataToSave(): any {
 		return this.form.value;
+	}
+
+	setStepData(data: any): void {
+		console.log('setStepData1', data);
+		console.log(
+			'setStepData2',
+			data['orgName'],
+			data.orgName,
+			data.orgPhoneNumber,
+			data.address,
+			data.orgEmail,
+			data.jobTitle,
+			data.vulnerableSectorCategory,
+			data.facilityName
+		);
+
+		this.form.patchValue({
+			orgName: data.orgName,
+			orgPhoneNumber: data.orgPhoneNumber,
+			address: data.address,
+			orgEmail: data.orgEmail,
+			jobTitle: data.jobTitle,
+			vulnerableSectorCategory: data.vulnerableSectorCategory,
+			facilityName: data.facilityName,
+		});
+		console.log('setStepData AFTER', this.form.value);
 	}
 
 	isFormValid(): boolean {

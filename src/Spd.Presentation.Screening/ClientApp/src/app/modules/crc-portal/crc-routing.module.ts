@@ -5,6 +5,10 @@ import { CrcComponent } from './crc.component';
 export class CrcRoutes {
 	public static CRC_APPLICATION = 'crc';
 	public static MODULE_PATH = CrcRoutes.CRC_APPLICATION;
+
+	public static path(route: string): string {
+		return `/${route}`;
+	}
 }
 
 const routes: Routes = [

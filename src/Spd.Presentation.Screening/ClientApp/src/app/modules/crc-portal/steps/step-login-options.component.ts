@@ -6,7 +6,10 @@ import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/cor
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-log-in-options (clickNext)="onStepNext()"></app-log-in-options>
+				<app-log-in-options
+					(clickNext)="onStepNext()"
+					(registerWithBcServicesCard)="onRegisterWithBcServicesCard()"
+				></app-log-in-options>
 
 				<div class="row mt-4">
 					<div class="col-xxl-3 col-lg-4 col-md-4 col-sm-12 mx-auto">
@@ -23,6 +26,7 @@ export class StepLoginOptionsComponent {
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
+	@Output() registerWithBcServicesCard: EventEmitter<boolean> = new EventEmitter<boolean>();
 
 	onStepPrevious(): void {
 		this.previousStepperStep.emit(true);
@@ -34,5 +38,9 @@ export class StepLoginOptionsComponent {
 
 	onStepSelectionChange(event: StepperSelectionEvent) {
 		this.scrollIntoView.emit(true);
+	}
+
+	onRegisterWithBcServicesCard(): void {
+		this.registerWithBcServicesCard.emit(true);
 	}
 }

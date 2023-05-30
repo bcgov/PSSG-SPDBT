@@ -44,10 +44,10 @@ export class InvitationComponent {
 		const invitationRequest: InvitationRequest = { inviteEncryptedCode: id };
 
 		this.orgUserService
-			.apiInvitationPost({ body: invitationRequest })
+			.apiUserInvitationPost({ body: invitationRequest })
 			.pipe()
 			.subscribe((resp: any) => {
-				if (resp && resp.isError) {
+				if (resp?.isError) {
 					this.message = resp.message;
 				} else {
 					this.authenticationService.login(CrrpRoutes.crrpPath()).then((_resp) => {
