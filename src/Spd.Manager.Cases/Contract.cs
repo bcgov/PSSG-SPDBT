@@ -8,6 +8,7 @@ namespace Spd.Manager.Cases
     public interface IApplicationManager
     {
         public Task<ApplicationInvitesCreateResponse> Handle(ApplicationInviteCreateCommand request, CancellationToken ct);
+        public Task<AppInviteVerifyResponse> Handle(ApplicationInviteVerifyCommand request, CancellationToken ct);
         public Task<ApplicationInviteListResponse> Handle(ApplicationInviteListQuery request, CancellationToken ct);
         public Task<Unit> Handle(ApplicationInviteDeleteCommand request, CancellationToken ct);
         public Task<ApplicationListResponse> Handle(ApplicationListQuery request, CancellationToken ct);
@@ -30,11 +31,30 @@ namespace Spd.Manager.Cases
         public PaginationRequest Paging { get; set; } = null!;
     };
     public record ApplicationInviteDeleteCommand(Guid OrgId, Guid ApplicationInviteId) : IRequest<Unit>;
+    public record ApplicationInviteVerifyCommand(AppInviteVerifyRequest AppInvitesVerifyRequest) : IRequest<AppInviteVerifyResponse>;
     public record AppInviteListFilterBy(Guid OrgId, string? EmailOrNameContains);
     public record AppInviteListSortBy(bool? SubmittedDateDesc);
+    public record AppInviteVerifyRequest(string InviteEncryptedCode);
+    public record AppInviteVerifyResponse
+    {
+        public Guid OrgId { get; set; }
+        public string? OrganizationName { get; set; }
+        public string? PhoneNumber { get; set; }
+        public string? AddressLine1 { get; set; }
+        public string? AddressLine2 { get; set; }
+        public string? AddressCity { get; set; }
+        public string? AddressCountry { get; set; }
+        public string? AddressPostalCode { get; set; }
+        public string? AddressProvince { get; set; }
+        public string? EmployeeOrganizationTypeCode { get; set; }
+        public string? VolunteerOrganizationTypeCode { get; set; }
+        public PayeePreferenceTypeCode PayeeType { get; set; }
+    };
+
     public record IdentityCommand(Guid OrgId, Guid ApplicationId, IdentityStatusCode Status) : IRequest<Unit>;
     public record ApplicationInvitesCreateRequest
     {
+        public string? HostUrl { get; set; }
         public bool RequireDuplicateCheck { get; set; }
         public IEnumerable<ApplicationInviteCreateRequest> ApplicationInviteCreateRequests { get; set; } = Array.Empty<ApplicationInviteCreateRequest>();
     }

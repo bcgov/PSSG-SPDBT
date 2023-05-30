@@ -1,8 +1,10 @@
 using AutoMapper;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
 using Microsoft.OData.Client;
 using Spd.Utilities.Dynamics;
+using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
 
@@ -12,10 +14,12 @@ namespace Spd.Resource.Applicants.ApplicationInvite
     {
         private readonly DynamicsContext _dynaContext;
         private readonly IMapper _mapper;
-        public ApplicationInviteRepository(IDynamicsContextFactory ctx, IMapper mapper, ILogger<ApplicationInviteRepository> logger)
+        private readonly ITimeLimitedDataProtector _dataProtector;
+        public ApplicationInviteRepository(IDynamicsContextFactory ctx, IMapper mapper, ILogger<ApplicationInviteRepository> logger, IDataProtectionProvider dpProvider)
         {
             _dynaContext = ctx.CreateChangeOverwrite();
             _mapper = mapper;
+            _dataProtector = dpProvider.CreateProtector(nameof(ApplicationInvitesCreateCmd)).ToTimeLimitedDataProtector();
         }
 
         public async Task<ApplicationInviteListResp> QueryAsync(ApplicationInviteQuery query, CancellationToken cancellationToken)
@@ -65,6 +69,8 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             foreach (var item in createInviteCmd.ApplicationInvites)
             {
                 spd_portalinvitation invitation = _mapper.Map<spd_portalinvitation>(item);
+                var encryptedInviteId = WebUtility.UrlEncode(_dataProtector.Protect(invitation.spd_portalinvitationid.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.APPLICATION_INVITE_VALID_DAYS)));
+                invitation.spd_invitationlink = $"{createInviteCmd.HostUrl}{SpdConstants.APPLICATION_INVITE_LINK}{encryptedInviteId}";
                 _dynaContext.AddTospd_portalinvitations(invitation);
                 _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_OrganizationId), org);
                 _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_PortalUserId), user);
@@ -85,6 +91,34 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             _dynaContext.UpdateObject(invite);
 
             await _dynaContext.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task<AppInviteVerifyResp> VerifyApplicationInvitesAsync(ApplicationInviteVerifyCmd verifyInviteCmd, CancellationToken ct)
+        {
+            Guid inviteId;
+            try
+            {
+                string inviteIdStr = _dataProtector.Unprotect(WebUtility.UrlDecode(verifyInviteCmd.InviteEncryptedCode));
+                inviteId = Guid.Parse(inviteIdStr);
+            }
+            catch
+            {
+                throw new ApiException(HttpStatusCode.Accepted, "The invitation link is no longer valid.");
+            }
+            var invite = await _dynaContext.spd_portalinvitations
+                .Expand(i => i.spd_OrganizationId)
+                .Where(i => i.spd_portalinvitationid == inviteId)
+                .Where(i => i.spd_invitationtype == (int)InvitationTypeOptionSet.ScreeningRequest)
+                .Where(i => i.statecode != DynamicsConstants.StateCode_Inactive)
+                .FirstOrDefaultAsync(ct);
+            if (invite == null)
+                throw new ApiException(HttpStatusCode.Accepted, "The invitation link is no longer valid.");
+
+            //set invite views
+            invite.spd_views = (invite.spd_views ?? 0) + 1;
+            _dynaContext.UpdateObject(invite);
+            await _dynaContext.SaveChangesAsync(ct);
+            return _mapper.Map<AppInviteVerifyResp>(invite);
         }
 
         private async Task<spd_portalinvitation?> GetPortalInvitationById(Guid organizationId, Guid portalInvitationId)
