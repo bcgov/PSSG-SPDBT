@@ -1,7 +1,7 @@
 using MediatR;
 using Spd.Manager.Membership.OrgRegistration;
 using Spd.Manager.Membership.OrgUser;
-using Spd.Manager.Membership.Shared;
+using Spd.Utilities.Shared.ManagerContract;
 
 namespace Spd.Manager.Membership.UserProfile
 {
