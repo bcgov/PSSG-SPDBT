@@ -25,16 +25,16 @@ export interface CrcFormStepComponent {
 }
 
 export interface AppInviteOrgData extends AppInviteVerifyResponse {
-	_address?: string | null;
-	_facilityNameRequired?: boolean | null;
-	_worksWithDesc?: string | null;
-	_performPayment?: boolean | null;
+	address?: string | null;
+	facilityNameRequired?: boolean | null;
+	worksWithDesc?: string | null;
+	performPaymentProcess?: boolean | null;
 }
 
 @Component({
 	selector: 'app-crc',
 	template: `
-		<div class="container mt-4" *ngIf="orgData">
+		<div class="container mt-4" [hidden]="!orgData">
 			<mat-stepper
 				linear
 				labelPosition="bottom"
@@ -108,7 +108,7 @@ export interface AppInviteOrgData extends AppInviteVerifyResponse {
 					<ng-template matStepLabel>Application Submitted</ng-template>
 					<app-step-appl-submitted
 						[payeeType]="orgData.payeeType!"
-						[performPayment]="orgData._performPayment ?? false"
+						[performPayment]="orgData.performPaymentProcess ?? false"
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
 						(scrollIntoView)="onScrollIntoView()"
 					></app-step-appl-submitted>
@@ -153,9 +153,17 @@ export class CrcComponent implements OnInit {
 	) {}
 
 	async ngOnInit(): Promise<void> {
+		this.breakpointObserver
+			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
+			.pipe(
+				// tap((value) => console.log(value)),
+				distinctUntilChanged()
+			)
+			.subscribe(() => this.breakpointChanged());
+
 		this.orgData = (this.location.getState() as any).orgData;
 		if (this.orgData) {
-			this.orgData._address = this.utilService.getAddressString({
+			this.orgData.address = this.utilService.getAddressString({
 				addressLine1: this.orgData.addressLine1!,
 				addressLine2: this.orgData.addressLine2 ?? undefined,
 				city: this.orgData.addressCity!,
@@ -166,24 +174,21 @@ export class CrcComponent implements OnInit {
 
 			// TODO hardcode for now
 			this.orgData.validCrc = false;
-			this.orgData._facilityNameRequired = false;
-			this.orgData._performPayment = false;
+			this.orgData.facilityNameRequired = false;
+			this.orgData.performPaymentProcess = false;
 
-			this.orgData._worksWithDesc = EmployeeInteractionTypes.find((item) => item.code == this.orgData.worksWith)
+			this.orgData.worksWithDesc = EmployeeInteractionTypes.find((item) => item.code == this.orgData.worksWith)
 				?.desc as string;
-			// } else {
-			// this.router.navigate([AppRoutes.ACCESS_DENIED]);
+		} else {
+			// cannot navigate to 4 in stepper if orgData is not retrieved sooner
+			const stateInfo = this.utilService.getSessionData(this.utilService.CRC_PORTAL_STATE_KEY);
+			console.debug('[CrcComponent.ngOnInit] stateInfo in else', stateInfo);
+			if (stateInfo) {
+				this.orgData = JSON.parse(stateInfo);
+			}
 		}
 
 		console.debug('orgData', this.orgData);
-
-		this.breakpointObserver
-			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
-			.pipe(
-				// tap((value) => console.log(value)),
-				distinctUntilChanged()
-			)
-			.subscribe(() => this.breakpointChanged());
 
 		//auth step 1 - user is not logged in, no state at all
 		//auth step 3 - angular loads again here, KC posts the token, oidc lib reads token and returns state
@@ -197,11 +202,7 @@ export class CrcComponent implements OnInit {
 					this.postLoginNavigate(stateInfo);
 					return;
 				}
-				// } else {
-				// this.router.navigateByUrl(CrcRoutes.path());
 			}
-			// } else if (!this.orgData) {
-			// 	this.router.navigate([AppRoutes.ACCESS_DENIED]);
 		}
 
 		if (!this.orgData) {
@@ -298,8 +299,7 @@ export class CrcComponent implements OnInit {
 
 	private postLoginNavigate(stepperData: any): void {
 		this.currentStateInfo = JSON.parse(stepperData);
-		this.orgData = JSON.parse(stepperData); // TODO deal with this a better way
-		console.log('this.stepper', this.stepper);
+
 		let step = this.stepper.steps.get(0);
 		if (step) {
 			step.completed = true;

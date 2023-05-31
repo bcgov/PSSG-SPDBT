@@ -73,12 +73,9 @@ export class UtilService {
 		country: string;
 		postalCode: string;
 	}): string {
-		return `${params.addressLine1}, 
-			${params.addressLine2 ? params.addressLine2 + ', ' : ''} 
-			${params.city}, 
-			${params.province}, 
-			${params.country}, 
-			${params.postalCode}`;
+		return `${params.addressLine1}, ${params.addressLine2 ? params.addressLine2 + ',' : ''} ${params.city}, ${
+			params.province
+		}, ${params.country}, ${params.postalCode}`;
 	}
 
 	//------------------------------------

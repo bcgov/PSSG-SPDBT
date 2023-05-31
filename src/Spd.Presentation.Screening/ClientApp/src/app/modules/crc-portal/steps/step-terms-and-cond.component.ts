@@ -114,10 +114,10 @@ export class StepTermsAndCondComponent {
 			this.showConsentToCrc = true;
 		} else {
 			this.showConsentToCrc = false;
-			// this.orgData._performPayment = true; TODO leave as false for now.
+			// this.orgData.performPaymentProcess = true; TODO leave as false for now.
 		}
 
-		// this.childstepper._stateChanged();
+		// this.childstepper._stateChanged(); TODO ??
 		this.childstepper.next();
 	}
 
@@ -125,7 +125,7 @@ export class StepTermsAndCondComponent {
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 
-		this.orgData._performPayment = false;
+		this.orgData.performPaymentProcess = false;
 		this.nextStepperStep.emit(true);
 	}
 
