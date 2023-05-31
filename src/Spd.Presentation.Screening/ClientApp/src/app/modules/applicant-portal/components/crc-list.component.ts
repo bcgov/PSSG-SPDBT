@@ -60,11 +60,11 @@ import { ApplicantRoutes } from '../applicant-routing.module';
 						</mat-cell>
 					</ng-container>
 
-					<ng-container matColumnDef="paidBy">
+					<ng-container matColumnDef="payeeType">
 						<mat-header-cell *matHeaderCellDef>Paid By</mat-header-cell>
 						<mat-cell *matCellDef="let application">
 							<span class="mobile-label">Paid By:</span>
-							{{ application.paidBy }}
+							{{ application.payeeType }}
 						</mat-cell>
 					</ng-container>
 
@@ -147,7 +147,7 @@ export class CrcListComponent implements OnInit {
 	constants = SPD_CONSTANTS;
 	dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
-	columns: string[] = ['organizationName', 'uploadedDateTime', 'type', 'paidBy', 'status', 'action1', 'action2'];
+	columns: string[] = ['organizationName', 'uploadedDateTime', 'type', 'payeeType', 'status', 'action1', 'action2'];
 	showResult = false;
 	validationErrs: Array<ValidationErr> = [];
 
@@ -186,7 +186,7 @@ export class CrcListComponent implements OnInit {
 				id: 1,
 				organizationName: 'MacDonalds',
 				uploadedDateTime: '2023-01-14T00:13:05.865Z',
-				paidBy: 'Applicant',
+				payeeType: 'Applicant',
 				type: 'PSSO',
 				status: 'Awaiting Applicant',
 			},
@@ -194,7 +194,7 @@ export class CrcListComponent implements OnInit {
 				id: 2,
 				organizationName: 'Starbucks',
 				uploadedDateTime: '2023-02-04T00:10:05.865Z',
-				paidBy: 'Organization',
+				payeeType: 'Organization',
 				type: 'CRRP',
 				status: 'Complete - No Risk',
 			},

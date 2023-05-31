@@ -98,7 +98,7 @@ public record ApplicationResult
     public string? Surname { get; set; }
     public string? EmailAddress { get; set; }
     public string? JobTitle { get; set; }
-    public PayerPreferenceTypeCode? PaidBy { get; set; }
+    public PayerPreferenceTypeCode? PayeeType { get; set; }
     public DateTimeOffset? DateOfBirth { get; set; }
     public string? ContractedCompanyName { get; set; }
     public string ApplicationPortalStatus { get; set; } = null!;

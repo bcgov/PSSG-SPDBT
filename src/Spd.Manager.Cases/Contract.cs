@@ -188,7 +188,6 @@ namespace Spd.Manager.Cases
         public Guid Id { get; set; }
         public string? ApplicationNumber { get; set; }
         public bool? HaveVerifiedIdentity { get; set; }
-        public PayerPreferenceTypeCode? PaidBy { get; set; }
         public DateTimeOffset? CreatedOn { get; set; }
         public ApplicationPortalStatusCode? Status { get; set; }
     }

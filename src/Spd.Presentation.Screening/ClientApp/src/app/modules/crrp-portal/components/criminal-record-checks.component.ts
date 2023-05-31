@@ -102,7 +102,7 @@ export const CriminalRecordCheckFilterMap: Record<keyof CriminalRecordCheckFilte
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="paidBy">
+						<ng-container matColumnDef="payeeType">
 							<mat-header-cell *matHeaderCellDef>To Be Paid By</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">To Be Paid By:</span>
@@ -192,7 +192,7 @@ export class CriminalRecordChecksComponent implements OnInit {
 
 	dataSource: MatTableDataSource<ApplicationInviteResponse> = new MatTableDataSource<ApplicationInviteResponse>([]);
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
-	columns: string[] = ['applicantName', 'emailAddress', 'jobTitle', 'paidBy', 'createdOn', 'viewed', 'actions'];
+	columns: string[] = ['applicantName', 'emailAddress', 'jobTitle', 'payeeType', 'createdOn', 'viewed', 'actions'];
 	formFilter: FormGroup = this.formBuilder.group({
 		search: new FormControl(''),
 	});

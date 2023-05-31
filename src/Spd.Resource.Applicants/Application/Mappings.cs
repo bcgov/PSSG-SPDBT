@@ -83,7 +83,7 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.MiddleName2, opt => opt.MapFrom(s => s.spd_middlename2))
             .ForMember(d => d.Surname, opt => opt.MapFrom(s => s.spd_lastname))
             .ForMember(d => d.JobTitle, opt => opt.MapFrom(s => s.spd_applicantsposition))
-            .ForMember(d => d.PaidBy, opt => opt.MapFrom(s => GetPaidBy(s.spd_payer)))
+            .ForMember(d => d.PayeeType, opt => opt.MapFrom(s => GetPayeeType(s.spd_payer)))
             .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.spd_emailaddress1))
             .ForMember(d => d.ContractedCompanyName, opt => opt.MapFrom(s => s.spd_contractedcompanyname))
             .ForMember(d => d.DateOfBirth, opt => opt.MapFrom(s => new DateTimeOffset(s.spd_dateofbirth.Value.Year, s.spd_dateofbirth.Value.Month, s.spd_dateofbirth.Value.Day, 0, 0, 0, TimeSpan.Zero)))
@@ -106,7 +106,7 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.UploadedDateTime, opt => opt.MapFrom(s => s.spd_datetimeuploaded))
             .ForMember(d => d.UploadedByUserFullName, opt => opt.MapFrom(s => s.spd_UploadedBy.spd_fullname));
         }
-        private static string? GetPaidBy(int? code)
+        private static string? GetPayeeType(int? code)
         {
             if (code == null) return null;
             return Enum.GetName(typeof(PayerPreferenceOptionSet), code);

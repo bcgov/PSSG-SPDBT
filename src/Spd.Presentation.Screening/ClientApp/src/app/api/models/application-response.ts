@@ -15,7 +15,6 @@ export interface ApplicationResponse {
   middleName1?: null | string;
   middleName2?: null | string;
   orgId?: string;
-  paidBy?: PayerPreferenceTypeCode;
   payeeType?: PayerPreferenceTypeCode;
   status?: ApplicationPortalStatusCode;
   surname?: null | string;
