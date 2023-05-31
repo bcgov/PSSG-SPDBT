@@ -1,9 +1,9 @@
 using AutoMapper;
 using MediatR;
 using Spd.Engine.Validation;
-using Spd.Resource.Applicants;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.ApplicationInvite;
+using Spd.Utilities.Shared.ResourceContracts;
 using Spd.Utilities.TempFileStorage;
 
 namespace Spd.Manager.Cases

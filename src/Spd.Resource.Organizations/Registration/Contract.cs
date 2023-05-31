@@ -1,3 +1,5 @@
+using Spd.Utilities.Shared.ResourceContracts;
+
 namespace Spd.Resource.Organizations.Registration
 {
     public interface IOrgRegistrationRepository
@@ -68,14 +70,6 @@ namespace Spd.Resource.Organizations.Registration
         Volunteer
     }
 
-    public enum EmployeeInteractionTypeCode
-    {
-        Children,
-        Adults,
-        ChildrenAndAdults,
-        Neither
-    }
-
     public enum ScreeningsCountTypeCode
     {
         LessThanOneHundred,
@@ -83,49 +77,10 @@ namespace Spd.Resource.Organizations.Registration
         MoreThanFiveHundred
     }
 
-    public enum PayerPreferenceTypeCode
-    {
-        Organization,
-        Applicant
-    }
-
-    public enum BooleanTypeCode
-    {
-        Yes,
-        No
-    }
-
     public enum FundsFromBcGovtExceedsThresholdCode
     {
         Yes,
         NotSure
-    }
-
-    public enum EmployeeOrganizationTypeCode
-    {
-        Childcare,
-        Healthcare,
-        Education,
-        Funding,
-        CrownCorp,
-        ProvGovt,
-        Registrant,
-        GovnBody,
-        Appointed
-    }
-
-    public enum VolunteerOrganizationTypeCode
-    {
-        NonProfit,
-        Childcare,
-        Healthcare,
-        Education,
-        ProvFunded,
-        CrownCorp,
-        ProvGovt,
-        Registrant,
-        Municipality,
-        PostSec,
     }
 
     public enum IdentityProviderTypeCode
