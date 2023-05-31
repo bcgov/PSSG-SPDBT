@@ -1,4 +1,4 @@
-using Spd.Utilities.Shared.ManagerContract;
+using Spd.Utilities.Shared.ResourceContracts;
 
 namespace Spd.Resource.Applicants.ApplicationInvite
 {

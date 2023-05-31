@@ -1,3 +1,5 @@
+using Spd.Utilities.Shared.ResourceContracts;
+
 namespace Spd.Resource.Applicants.Application;
 
 public interface IApplicationRepository
