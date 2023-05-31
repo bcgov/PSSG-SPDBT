@@ -48,7 +48,7 @@ namespace Spd.Manager.Cases
         public string? AddressCountry { get; set; }
         public string? AddressPostalCode { get; set; }
         public string? AddressProvince { get; set; }
-        public string? WorksWith { get; set; }
+        public EmployeeInteractionTypeCode? WorksWith { get; set; }
         public EmployeeOrganizationTypeCode? EmployeeOrganizationTypeCode { get; set; }
         public VolunteerOrganizationTypeCode? VolunteerOrganizationTypeCode { get; set; }
         public string? ContactGivenName { get; set; }
@@ -57,7 +57,6 @@ namespace Spd.Manager.Cases
         public string? JobTitle { get; set; }
         public PayerPreferenceTypeCode PayeeType { get; set; }
         public bool? ValidCrc { get; set; }
-        public EmployeeInteractionTypeCode? EmployeeInteractionTypeCode { get; set; }
     };
 
     public record IdentityCommand(Guid OrgId, Guid ApplicationId, IdentityStatusCode Status) : IRequest<Unit>;

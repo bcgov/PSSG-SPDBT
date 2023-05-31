@@ -41,6 +41,11 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             .ForMember(d => d.AddressProvince, opt => opt.MapFrom(s => s.spd_OrganizationId.address1_stateorprovince))
             .ForMember(d => d.WorksWith, opt => opt.MapFrom(s => GetEmployeeInteractionType(s.spd_OrganizationId.spd_workswith)))
             .ForMember(d => d.PayeeType, opt => opt.MapFrom(s => GetPayeeType(s.spd_payeetype)))
+            .ForMember(d => d.ContactEmail, opt => opt.MapFrom(s => s.spd_email))
+            .ForMember(d => d.ContactGivenName, opt => opt.MapFrom(s => s.spd_firstname))
+            .ForMember(d => d.ContactSurname, opt => opt.MapFrom(s => s.spd_surname))
+            .ForMember(d => d.JobTitle, opt => opt.MapFrom(s => s.spd_jobtitle))
+            .ForMember(d => d.ValidCrc, opt => opt.MapFrom(s => true)) //todo: needs to be set with another query.
             .ForMember(d => d.EmployeeOrganizationTypeCode, opt => opt.MapFrom(s => DynamicsContextLookupHelpers.GetTypeFromTypeId(s.spd_OrganizationId._spd_organizationtypeid_value).Item1))
             .ForMember(d => d.VolunteerOrganizationTypeCode, opt => opt.MapFrom(s => DynamicsContextLookupHelpers.GetTypeFromTypeId(s.spd_OrganizationId._spd_organizationtypeid_value).Item2));
         }
