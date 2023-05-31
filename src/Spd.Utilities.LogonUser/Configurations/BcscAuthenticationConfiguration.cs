@@ -15,7 +15,7 @@ namespace Spd.Utilities.LogonUser.Configurations
 
         public const string Name = "BcscAuthentication";
 
-        public const string AuthSchemeName = "Bearer";
+        public const string AuthSchemeName = "Bcsc";
         public string ResponseType { get; set; } = "code";
         public string Scope { get; set; } = "openid profile email offline_access";
         public string ClientId { get; set; } = null!;
