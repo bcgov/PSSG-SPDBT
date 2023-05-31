@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -33,7 +31,7 @@ namespace Spd.Utilities.LogonUser
             if (bcscConfig == null)
                 throw new ConfigurationErrorsException("bcscAuthentication configuration is not set correctly.");
 
-            var defaultScheme = BCeIDAuthenticationConfiguration.AuthSchemeName;
+            var defaultScheme = "BCeID_OR_BCSC";
             services.AddAuthentication(
                 options =>
             {
@@ -85,52 +83,51 @@ namespace Spd.Utilities.LogonUser
                     ValidateIssuerSigningKey = true,
                 };
             })
-            //.AddPolicyScheme(defaultScheme, defaultScheme, options =>
-            //{
-            //    options.ForwardDefaultSelector = context =>
-            //    {
-            //        string authorization = context.Request.Headers[HeaderNames.Authorization];
-            //        if (!string.IsNullOrEmpty(authorization) && authorization.StartsWith("Bearer "))
-            //        {
-            //            var token = authorization["Bearer ".Length..].Trim();
-            //            var jwtHandler = new JwtSecurityTokenHandler();
+            .AddPolicyScheme(defaultScheme, defaultScheme, options =>
+            {
+                options.ForwardDefaultSelector = context =>
+                {
+                    string? authorization = context.Request.Headers[HeaderNames.Authorization];
+                    if (!string.IsNullOrEmpty(authorization) && authorization.StartsWith("Bearer "))
+                    {
+                        var token = authorization["Bearer ".Length..].Trim();
+                        var jwtHandler = new JwtSecurityTokenHandler();
 
-            //            if (jwtHandler.CanReadToken(token))
-            //            {
-            //                if (jwtHandler.ReadJwtToken(token).Issuer.Equals(bceidConfig.Authority) ||
-            //                    jwtHandler.ReadJwtToken(token).Audiences.Any(a => bceidConfig.Audiences.Contains(a)))
-            //                {
-            //                    return BCeIDAuthenticationConfiguration.AuthSchemeName;
-            //                }
-            //                else
-            //                if (jwtHandler.ReadJwtToken(token).Issuer.Equals(bcscConfig.Issuer) ||
-            //                    jwtHandler.ReadJwtToken(token).Audiences.Any(a => bcscConfig.Audiences.Contains(a)))
-            //                {
-            //                    return BcscAuthenticationConfiguration.AuthSchemeName;
-            //                }
-            //            }
-            //            return BCeIDAuthenticationConfiguration.AuthSchemeName;
-            //        }
-            //        return BCeIDAuthenticationConfiguration.AuthSchemeName;
-            //    };
-            //})
+                        if (jwtHandler.CanReadToken(token))
+                        {
+                            if (jwtHandler.ReadJwtToken(token).Issuer.Equals(bceidConfig.Authority) ||
+                                jwtHandler.ReadJwtToken(token).Audiences.Any(a => bceidConfig.Audiences.Contains(a)))
+                            {
+                                return BCeIDAuthenticationConfiguration.AuthSchemeName;
+                            }
+                            else if (jwtHandler.ReadJwtToken(token).Issuer.Equals(bcscConfig.Issuer) ||
+                                jwtHandler.ReadJwtToken(token).Audiences.Any(a => bcscConfig.Audiences.Contains(a)))
+                            {
+                                return BcscAuthenticationConfiguration.AuthSchemeName;
+                            }
+                        }
+                        return BCeIDAuthenticationConfiguration.AuthSchemeName;
+                    }
+                    return BCeIDAuthenticationConfiguration.AuthSchemeName;
+                };
+            })
             ;
 
-            services.AddAuthorization(options =>
-            {
-                var bceidPolicy = new AuthorizationPolicyBuilder()
-                    .RequireAuthenticatedUser()
-                    .AddAuthenticationSchemes(BCeIDAuthenticationConfiguration.AuthSchemeName)
-                    .Build();
-                var bcscPolicy = new AuthorizationPolicyBuilder()
-                    .RequireAuthenticatedUser()
-                    .AddAuthenticationSchemes(BcscAuthenticationConfiguration.AuthSchemeName)
-                    .Build();
+            //services.AddAuthorization(options =>
+            //{
+            //    var bceidPolicy = new AuthorizationPolicyBuilder()
+            //        .RequireAuthenticatedUser()
+            //        .AddAuthenticationSchemes(BCeIDAuthenticationConfiguration.AuthSchemeName)
+            //        .Build();
+            //    var bcscPolicy = new AuthorizationPolicyBuilder()
+            //        .RequireAuthenticatedUser()
+            //        .AddAuthenticationSchemes(BcscAuthenticationConfiguration.AuthSchemeName)
+            //        .Build();
 
-                options.AddPolicy("bceidUser", bceidPolicy);
-                options.AddPolicy("bcscUser", bcscPolicy);
-                options.DefaultPolicy = options.GetPolicy("bceidUser")!;
-            });
+            //    options.AddPolicy("bceidUser", bceidPolicy);
+            //    options.AddPolicy("bcscUser", bcscPolicy);
+            //    options.DefaultPolicy = options.GetPolicy("bceidUser")!;
+            //});
 
             // Authorization
             //services.AddAuthorization(options =>
@@ -142,17 +139,7 @@ namespace Spd.Utilities.LogonUser
             //        defaultAuthorizationPolicyBuilder.RequireAuthenticatedUser();
             //    options.DefaultPolicy = defaultAuthorizationPolicyBuilder.Build();
             //});
-            //services.AddAuthorization(options =>
-            //{
-            //    options.AddPolicy(BCeIDAuthenticationConfiguration.AuthSchemeName, policy =>
-            //    {
-            //        policy.AddAuthenticationSchemes(BCeIDAuthenticationConfiguration.AuthSchemeName)
-            //            .RequireAuthenticatedUser();
-            //        //.RequireClaim("user_role")
-            //        //.RequireClaim("user_team");
-            //    });
-            //    options.DefaultPolicy = options.GetPolicy(BCeIDAuthenticationConfiguration.AuthSchemeName) ?? null!;
-            //});
+
         }
     }
 }
