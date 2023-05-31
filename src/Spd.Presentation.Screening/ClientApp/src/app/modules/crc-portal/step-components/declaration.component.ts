@@ -1,8 +1,15 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/api/models';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
+import { CaptchaResponse, CaptchaResponseType } from 'src/app/shared/components/captcha-v2.component';
 import { AppInviteOrgData, CrcFormStepComponent } from '../crc.component';
+
+export class DeclarationModel {
+	agreeToDeclaration: string | null = null;
+	shareCrc: string | null = null;
+}
 
 @Component({
 	selector: 'app-declaration',
@@ -62,18 +69,33 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../crc.component';
 					</div>
 				</div>
 			</form>
+
+			<div class="row mb-4" *ngIf="displayCaptcha">
+				<div class="offset-lg-3 col-lg-9 col-md-12 col-sm-12">
+					<app-captcha-v2 (captchaResponse)="onTokenResponse($event)"></app-captcha-v2>
+					<mat-error class="mat-option-error" *ngIf="displayValidationErrors && !captchaPassed">
+						This is required
+					</mat-error>
+				</div>
+			</div>
 		</section>
 	`,
 	styles: [],
 })
-export class DeclarationComponent implements CrcFormStepComponent {
+export class DeclarationComponent implements OnInit, CrcFormStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 	form!: FormGroup;
+	displayValidationErrors = false;
+
+	displayCaptcha = false;
+	captchaPassed = false;
+	captchaResponse: CaptchaResponse | null = null;
 
 	private _orgData!: AppInviteOrgData;
 	@Input()
 	set orgData(data: AppInviteOrgData) {
 		this._orgData = data;
+
 		this.form = this.formBuilder.group(
 			{
 				agreeToDeclaration: new FormControl('', [Validators.required]),
@@ -90,13 +112,32 @@ export class DeclarationComponent implements CrcFormStepComponent {
 		return this._orgData;
 	}
 
-	constructor(private formBuilder: FormBuilder) {}
+	constructor(private formBuilder: FormBuilder, private authenticationService: AuthenticationService) {}
 
-	getDataToSave(): any {
-		return this.form.value;
+	ngOnInit(): void {
+		this.authenticationService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
+			this.displayCaptcha = !isLoggedIn;
+		});
+	}
+
+	getDataToSave(): DeclarationModel {
+		return {
+			...this.form.value,
+			recaptcha: this.displayCaptcha && this.captchaPassed ? this.captchaResponse?.resolved : null,
+		};
 	}
 
 	isFormValid(): boolean {
-		return this.form.valid;
+		this.displayValidationErrors = !this.captchaPassed;
+		return this.form.valid && ((this.displayCaptcha && this.captchaPassed) || !this.displayCaptcha) ? true : false;
+	}
+
+	onTokenResponse($event: CaptchaResponse) {
+		this.captchaResponse = $event;
+		if ($event.type === CaptchaResponseType.success && this.captchaResponse?.resolved) {
+			this.captchaPassed = true;
+		} else {
+			this.captchaPassed = false;
+		}
 	}
 }

@@ -1,3 +1,5 @@
+using Spd.Utilities.Shared.ManagerContract;
+
 namespace Spd.Resource.Applicants.ApplicationInvite
 {
     public interface IApplicationInviteRepository
@@ -43,7 +45,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
     public record AppInviteVerifyResp()
     {
         public Guid OrgId { get; set; }
-        public string OrgName { get; set; }
+        public string? OrgName { get; set; }
         public string? OrgPhoneNumber { get; set; }
         public string? OrgEmail { get; set; }
         public string? AddressLine1 { get; set; }
@@ -52,7 +54,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
         public string? AddressCountry { get; set; }
         public string? AddressPostalCode { get; set; }
         public string? AddressProvince { get; set; }
-        public string? WorksWith { get; set; }
+        public EmployeeInteractionTypeCode WorksWith { get; set; }
         public string? EmployeeOrganizationTypeCode { get; set; }
         public string? VolunteerOrganizationTypeCode { get; set; }
         public string? ContactGivenName { get; set; }

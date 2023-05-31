@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { PayeePreferenceTypeCode } from 'src/app/api/models';
+import { PayerPreferenceTypeCode } from 'src/app/api/models';
 
 @Component({
 	selector: 'app-checklist',
@@ -11,7 +11,7 @@ import { PayeePreferenceTypeCode } from 'src/app/api/models';
 				></app-step-title>
 				<div class="row">
 					<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12 mx-auto">
-						<ul *ngIf="payeeType == payeePreferenceTypeCodes.Applicant">
+						<ul *ngIf="payeeType == payerPreferenceTypeCodes.Applicant">
 							<li>Your BC Services Card (recommended), or other government issued identification.</li>
 							<li>A method of payment (Visa, Mastercard, American Express, Visa Debit, Mastercard Debit)</li>
 							<li>
@@ -19,7 +19,7 @@ import { PayeePreferenceTypeCode } from 'src/app/api/models';
 								BC Services Card.
 							</li>
 						</ul>
-						<ul *ngIf="payeeType == payeePreferenceTypeCodes.Organization">
+						<ul *ngIf="payeeType == payerPreferenceTypeCodes.Organization">
 							<li>Your BC Services Card (recommended), or other government issued identification.</li>
 							<li>
 								Before you submit a request for a criminal record check, if possible, verify your identity by using your
@@ -40,7 +40,7 @@ import { PayeePreferenceTypeCode } from 'src/app/api/models';
 	],
 })
 export class ChecklistComponent {
-	payeePreferenceTypeCodes = PayeePreferenceTypeCode;
+	payerPreferenceTypeCodes = PayerPreferenceTypeCode;
 
-	@Input() payeeType!: PayeePreferenceTypeCode;
+	@Input() payeeType!: PayerPreferenceTypeCode;
 }

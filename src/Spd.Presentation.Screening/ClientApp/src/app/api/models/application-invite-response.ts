@@ -1,7 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import { ApplicationInviteStatusCode } from './application-invite-status-code';
-import { PayeePreferenceTypeCode } from './payee-preference-type-code';
+import { PayerPreferenceTypeCode } from './payer-preference-type-code';
 export interface ApplicationInviteResponse {
   createdOn?: string;
   email?: null | string;
@@ -10,7 +10,7 @@ export interface ApplicationInviteResponse {
   id?: string;
   jobTitle?: null | string;
   lastName?: null | string;
-  payeeType?: PayeePreferenceTypeCode;
+  payeeType?: PayerPreferenceTypeCode;
   status?: ApplicationInviteStatusCode;
   viewed?: null | boolean;
 }

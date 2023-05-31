@@ -8,6 +8,7 @@ import { distinctUntilChanged } from 'rxjs';
 import { AppInviteVerifyResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
+import { EmployeeInteractionTypes } from 'src/app/core/constants/model-desc';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { CrcRoutes } from './crc-routing.module';
@@ -24,9 +25,10 @@ export interface CrcFormStepComponent {
 }
 
 export interface AppInviteOrgData extends AppInviteVerifyResponse {
-	address?: string | null;
-	facilityNameRequired?: boolean | null;
-	vulnerableSectorCategoryDesc?: string | null;
+	_address?: string | null;
+	_facilityNameRequired?: boolean | null;
+	_worksWithDesc?: string | null;
+	_performPayment?: boolean | null;
 }
 
 @Component({
@@ -94,7 +96,7 @@ export interface AppInviteOrgData extends AppInviteVerifyResponse {
 				</mat-step>
 
 				<!-- PAYMENT PROCESS?
-				 <mat-step completed="false" *ngIf="payeeType == 'APP'">
+				 <mat-step completed="false" *ngIf="payeeType == payeePreferenceTypeCodes.Applicant">
 				<ng-template matStepLabel>Pay for Application</ng-template>
 				<app-step-pay-for-application
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -106,6 +108,7 @@ export interface AppInviteOrgData extends AppInviteVerifyResponse {
 					<ng-template matStepLabel>Application Submitted</ng-template>
 					<app-step-appl-submitted
 						[payeeType]="orgData.payeeType!"
+						[performPayment]="orgData._performPayment ?? false"
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
 						(scrollIntoView)="onScrollIntoView()"
 					></app-step-appl-submitted>
@@ -152,7 +155,7 @@ export class CrcComponent implements OnInit {
 	async ngOnInit(): Promise<void> {
 		this.orgData = (this.location.getState() as any).orgData;
 		if (this.orgData) {
-			this.orgData.address =
+			this.orgData._address =
 				this.orgData.addressLine1 +
 				', ' +
 				this.orgData.addressCity +
@@ -162,17 +165,18 @@ export class CrcComponent implements OnInit {
 				this.orgData.addressPostalCode +
 				', ' +
 				this.orgData.addressCountry;
-			// vulnerableSectorCategory?: EmployeeInteractionTypeCode | null;
 
-			this.orgData.vulnerableSectorCategoryDesc = this.orgData.worksWith;
 			this.orgData.contactGivenName = 'Jim';
 			this.orgData.contactSurname = 'Jimmy';
 			this.orgData.contactEmail = 'Jim@jim.com';
 			this.orgData.jobTitle = 'Tester';
+			this.orgData.validCrc = true;
 
-			// this.orgData.vulnerableSectorCategoryDesc = EmployeeInteractionTypes.find(
-			// 	(item) => item.code == this.orgData.worksWith
-			// )?.desc as string;
+			this.orgData._facilityNameRequired = false;
+			this.orgData._performPayment = false;
+
+			this.orgData._worksWithDesc = EmployeeInteractionTypes.find((item) => item.code == this.orgData.worksWith)
+				?.desc as string;
 		} else {
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 		}

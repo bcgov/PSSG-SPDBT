@@ -1,6 +1,9 @@
 /* tslint:disable */
 /* eslint-disable */
-import { PayeePreferenceTypeCode } from './payee-preference-type-code';
+import { EmployeeInteractionTypeCode } from './employee-interaction-type-code';
+import { EmployeeOrganizationTypeCode } from './employee-organization-type-code';
+import { PayerPreferenceTypeCode } from './payer-preference-type-code';
+import { VolunteerOrganizationTypeCode } from './volunteer-organization-type-code';
 export interface AppInviteVerifyResponse {
   addressCity?: null | string;
   addressCountry?: null | string;
@@ -11,14 +14,14 @@ export interface AppInviteVerifyResponse {
   contactEmail?: null | string;
   contactGivenName?: null | string;
   contactSurname?: null | string;
-  employeeOrganizationTypeCode?: null | string;
+  employeeOrganizationTypeCode?: EmployeeOrganizationTypeCode;
   jobTitle?: null | string;
   orgEmail?: null | string;
   orgId?: string;
   orgName?: null | string;
   orgPhoneNumber?: null | string;
-  payeeType?: PayeePreferenceTypeCode;
+  payeeType?: PayerPreferenceTypeCode;
   validCrc?: null | boolean;
-  volunteerOrganizationTypeCode?: null | string;
-  worksWith?: null | string;
+  volunteerOrganizationTypeCode?: VolunteerOrganizationTypeCode;
+  worksWith?: EmployeeInteractionTypeCode;
 }

@@ -23,7 +23,9 @@ export interface OrgRegDuplicateDialogResponse {
 
 			<div *ngIf="dialogData.displayCaptcha">
 				<app-captcha-v2 (captchaResponse)="onTokenResponse($event)"></app-captcha-v2>
-				<mat-error *ngIf="displayValidationErrors && !captchaPassed"> This is required </mat-error>
+				<mat-error class="mat-option-error" *ngIf="displayValidationErrors && !captchaPassed">
+					This is required
+				</mat-error>
 			</div>
 		</mat-dialog-content>
 		<mat-dialog-actions>

@@ -1,14 +1,14 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { PayeePreferenceTypeCode } from 'src/app/api/models';
+import { PayerPreferenceTypeCode } from 'src/app/api/models';
 
 @Component({
 	selector: 'app-step-appl-submitted',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<!--  *ngIf="paymentBy == 'APP'" -->
-			<mat-step>
+			<!--  *ngIf="payeeType == payeePreferenceTypeCodes.Applicant" -->
+			<mat-step *ngIf="performPayment">
 				<app-payment-success></app-payment-success>
 
 				<div class="row mt-4">
@@ -21,7 +21,7 @@ import { PayeePreferenceTypeCode } from 'src/app/api/models';
 				</div>
 			</mat-step>
 
-			<mat-step>
+			<mat-step *ngIf="performPayment">
 				<app-payment-failure></app-payment-failure>
 
 				<div class="row mt-4">
@@ -48,7 +48,8 @@ import { PayeePreferenceTypeCode } from 'src/app/api/models';
 export class StepApplSubmittedComponent {
 	@ViewChild('childstepper') childstepper!: MatStepper;
 
-	@Input() payeeType!: PayeePreferenceTypeCode;
+	@Input() payeeType!: PayerPreferenceTypeCode;
+	@Input() performPayment = false;
 
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();

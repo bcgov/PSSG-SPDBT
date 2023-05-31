@@ -8,11 +8,11 @@ import { CrrpRoutes } from './modules/crrp-portal/crrp-routing.module';
 	template: `
 		<section class="step-section col-xxl-4 col-xl-4 col-lg-5 col-md-6 col-sm-12 mx-auto mt-4 p-4">
 			<h1>Criminal Record Check Portal</h1>
-			<p class="lead">Submit and manage criminal record checks for your employees or volunteers</p>
+			<p class="lead">Submit and manage your organization's criminal record checks</p>
 
 			<mat-divider class="my-4"></mat-divider>
 
-			<div>Select your log in method:</div>
+			<div>Log in with:</div>
 			<button mat-flat-button color="primary" class="large my-2" (click)="onRegisterWithBCeid()">
 				Business BCeID Account
 			</button>
@@ -25,20 +25,12 @@ import { CrrpRoutes } from './modules/crrp-portal/crrp-routing.module';
 
 		<section class="step-section col-xxl-4 col-xl-4 col-lg-5 col-md-6 col-sm-12 mx-auto my-4 p-4">
 			<button mat-stroked-button color="primary" class="large my-2" (click)="goToApplicant()">Applicant Portal</button>
-
-			<!-- <button mat-stroked-button color="primary" class="large my-2" (click)="goToScreening()">
-				Criminal Record Check Portal
-			</button> -->
 		</section>
 	`,
 	styles: [],
 })
 export class LandingComponent {
 	constructor(private router: Router) {}
-
-	// goToScreening(): void {
-	// 	this.router.navigateByUrl(CrcRoutes.path());
-	// }
 
 	goToApplicant(): void {
 		this.router.navigateByUrl(ApplicantRoutes.path(ApplicantRoutes.CRC_LIST));

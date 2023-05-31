@@ -1,7 +1,7 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { PayeePreferenceTypeCode } from 'src/app/api/models';
+import { PayerPreferenceTypeCode } from 'src/app/api/models';
 
 @Component({
 	selector: 'app-step-eligibility',
@@ -24,7 +24,7 @@ import { PayeePreferenceTypeCode } from 'src/app/api/models';
 export class StepEligibilityComponent {
 	@ViewChild('childstepper') childstepper!: MatStepper;
 
-	@Input() payeeType!: PayeePreferenceTypeCode;
+	@Input() payeeType!: PayerPreferenceTypeCode;
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
 

@@ -57,7 +57,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../crc.component';
 							</mat-form-field>
 						</div>
 					</div>
-					<div class="row" *ngIf="orgData.facilityNameRequired">
+					<div class="row" *ngIf="orgData._facilityNameRequired">
 						<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Facility Name</mat-label>
@@ -82,11 +82,11 @@ export class SecurityInformationComponent implements CrcFormStepComponent {
 			{
 				orgName: new FormControl({ value: this.orgData.orgName, disabled: true }),
 				orgPhoneNumber: new FormControl({ value: this.orgData.orgPhoneNumber, disabled: true }),
-				address: new FormControl({ value: this.orgData.address, disabled: true }),
+				address: new FormControl({ value: this.orgData._address, disabled: true }),
 				orgEmail: new FormControl({ value: this.orgData.orgEmail, disabled: true }),
 				jobTitle: new FormControl(this.orgData.jobTitle, [Validators.required]),
 				vulnerableSectorCategoryDesc: new FormControl({
-					value: this.orgData.vulnerableSectorCategoryDesc,
+					value: this.orgData._worksWithDesc,
 					disabled: true,
 				}),
 				facilityName: new FormControl('', [Validators.required]),
@@ -95,7 +95,7 @@ export class SecurityInformationComponent implements CrcFormStepComponent {
 				validators: [
 					FormGroupValidators.conditionalRequiredValidator(
 						'facilityName',
-						(form) => this.orgData.facilityNameRequired ?? false
+						(form) => this.orgData._facilityNameRequired ?? false
 					),
 				],
 			}

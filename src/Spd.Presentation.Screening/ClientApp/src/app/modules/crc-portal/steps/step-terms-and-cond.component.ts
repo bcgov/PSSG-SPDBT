@@ -1,7 +1,7 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { PayeePreferenceTypeCode } from 'src/app/api/models';
+import { BooleanTypeCode, PayerPreferenceTypeCode } from 'src/app/api/models';
 import { AppInviteOrgData } from '../crc.component';
 import { AgreementOfTermsComponent } from '../step-components/agreement-of-terms.component';
 import { ConsentToCrcComponent } from '../step-components/consentToCrc.component';
@@ -19,14 +19,19 @@ import { DeclarationComponent } from '../step-components/declaration.component';
 						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_DECLARATION)">
+						<button
+							mat-flat-button
+							color="primary"
+							class="large mb-2"
+							(click)="onDeclarationNextStep(STEP_DECLARATION)"
+						>
 							Next
 						</button>
 					</div>
 				</div>
 			</mat-step>
 
-			<mat-step *ngIf="orgData.validCrc">
+			<mat-step *ngIf="showConsentToCrc">
 				<app-consent-to-crc [orgData]="orgData"></app-consent-to-crc>
 
 				<div class="row mt-4">
@@ -38,9 +43,9 @@ import { DeclarationComponent } from '../step-components/declaration.component';
 							mat-flat-button
 							color="primary"
 							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_CONSENT_TO_CRC)"
+							(click)="onConsentToCrcNextStep(STEP_CONSENT_TO_CRC)"
 						>
-							Next
+							Submit
 						</button>
 					</div>
 				</div>
@@ -67,12 +72,13 @@ import { DeclarationComponent } from '../step-components/declaration.component';
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepTermsAndCondComponent {
-	payeePreferenceTypeCodes = PayeePreferenceTypeCode;
+	payeePreferenceTypeCodes = PayerPreferenceTypeCode;
+	showConsentToCrc = true;
 
 	@Input() orgData!: AppInviteOrgData;
 	@ViewChild('childstepper') childstepper!: MatStepper;
 
-	@Input() payeeType!: PayeePreferenceTypeCode;
+	@Input() payeeType!: PayerPreferenceTypeCode;
 
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
@@ -99,10 +105,28 @@ export class StepTermsAndCondComponent {
 		};
 	}
 
-	onFormValidNextStep(formNumber: number): void {
+	onDeclarationNextStep(formNumber: number): void {
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
+
+		const declarationData = this.declarationComponent.getDataToSave();
+		if (declarationData.shareCrc == BooleanTypeCode.Yes) {
+			this.showConsentToCrc = true;
+		} else {
+			this.showConsentToCrc = false;
+			this.orgData._performPayment = true;
+		}
+
+		// this.childstepper._stateChanged();
 		this.childstepper.next();
+	}
+
+	onConsentToCrcNextStep(formNumber: number): void {
+		const isValid = this.dirtyForm(formNumber);
+		if (!isValid) return;
+
+		this.orgData._performPayment = false;
+		this.nextStepperStep.emit(true);
 	}
 
 	goToStepNext(formNumber: number): void {
