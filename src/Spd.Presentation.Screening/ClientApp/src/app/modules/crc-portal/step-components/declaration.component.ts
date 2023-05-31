@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/api/models';
-import { CrcFormStepComponent } from '../crc.component';
+import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
+import { AppInviteOrgData, CrcFormStepComponent } from '../crc.component';
 
 @Component({
 	selector: 'app-declaration',
@@ -28,7 +29,7 @@ import { CrcFormStepComponent } from '../crc.component';
 							>
 						</div>
 					</div>
-					<div class="row">
+					<div class="row" *ngIf="orgData.validCrc">
 						<div class="offset-lg-3 col-lg-6 col-md-12 col-sm-12">
 							<mat-divider class="my-3"></mat-divider>
 							<p class="fs-5">Share your existing criminal record check</p>
@@ -67,10 +68,27 @@ import { CrcFormStepComponent } from '../crc.component';
 })
 export class DeclarationComponent implements CrcFormStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
-	form: FormGroup = this.formBuilder.group({
-		agreeToDeclaration: new FormControl('', [Validators.required]),
-		shareCrc: new FormControl('', [Validators.required]),
-	});
+	form!: FormGroup;
+
+	private _orgData!: AppInviteOrgData;
+	@Input()
+	set orgData(data: AppInviteOrgData) {
+		this._orgData = data;
+		this.form = this.formBuilder.group(
+			{
+				agreeToDeclaration: new FormControl('', [Validators.required]),
+				shareCrc: new FormControl(''),
+			},
+			{
+				validators: [
+					FormGroupValidators.conditionalRequiredValidator('shareCrc', (form) => this.orgData.validCrc ?? false),
+				],
+			}
+		);
+	}
+	get orgData(): AppInviteOrgData {
+		return this._orgData;
+	}
 
 	constructor(private formBuilder: FormBuilder) {}
 

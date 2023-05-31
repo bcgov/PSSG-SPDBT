@@ -12,7 +12,7 @@ import { DeclarationComponent } from '../step-components/declaration.component';
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-declaration></app-declaration>
+				<app-declaration [orgData]="orgData"></app-declaration>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -26,7 +26,7 @@ import { DeclarationComponent } from '../step-components/declaration.component';
 				</div>
 			</mat-step>
 
-			<mat-step>
+			<mat-step *ngIf="orgData.validCrc">
 				<app-consent-to-crc [orgData]="orgData"></app-consent-to-crc>
 
 				<div class="row mt-4">
@@ -93,6 +93,8 @@ export class StepTermsAndCondComponent {
 
 	getStepData(): any {
 		return {
+			...this.consentToCrcComponent?.getDataToSave(),
+			...this.declarationComponent.getDataToSave(),
 			...this.agreementOfTermsComponent.getDataToSave(),
 		};
 	}

@@ -47,11 +47,12 @@ namespace Spd.Manager.Cases
         public string? AddressCountry { get; set; }
         public string? AddressPostalCode { get; set; }
         public string? AddressProvince { get; set; }
+        public string? WorksWith { get; set; }
         public string? EmployeeOrganizationTypeCode { get; set; }
         public string? VolunteerOrganizationTypeCode { get; set; }
-        public string? GivenName { get; set; }
-        public string? Surname { get; set; }
-        public string? EmailAddress { get; set; }
+        public string? ContactGivenName { get; set; }
+        public string? ContactSurname { get; set; }
+        public string? ContactEmail { get; set; }
         public string? JobTitle { get; set; }
         public PayeePreferenceTypeCode PayeeType { get; set; }
         public bool? ValidCrc { get; set; }

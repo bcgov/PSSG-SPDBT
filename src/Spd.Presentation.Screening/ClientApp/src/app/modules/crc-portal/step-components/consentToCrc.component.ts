@@ -85,7 +85,7 @@ export class ConsentToCrcComponent implements CrcFormStepComponent {
 	@Input()
 	set orgData(data: AppInviteOrgData) {
 		this._orgData = data;
-		const name = this.utilService.getFullName(data.givenName, data.surname);
+		const name = this.utilService.getFullName(data.contactGivenName, data.contactSurname);
 		this.certifyLabel = `I, ${name}, consent to the following`;
 	}
 	get orgData(): AppInviteOrgData {

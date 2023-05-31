@@ -39,7 +39,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             .ForMember(d => d.AddressCountry, opt => opt.MapFrom(s => s.spd_OrganizationId.address1_country))
             .ForMember(d => d.AddressPostalCode, opt => opt.MapFrom(s => s.spd_OrganizationId.address1_postalcode))
             .ForMember(d => d.AddressProvince, opt => opt.MapFrom(s => s.spd_OrganizationId.address1_stateorprovince))
-            // .ForMember(d => d.WorksWith, opt => opt.MapFrom(s => GetEmployeeInteractionType(s.spd_OrganizationId.spd_workswith)))
+            .ForMember(d => d.WorksWith, opt => opt.MapFrom(s => GetEmployeeInteractionType(s.spd_OrganizationId.spd_workswith)))
             .ForMember(d => d.PayeeType, opt => opt.MapFrom(s => GetPayeeType(s.spd_payeetype)))
             .ForMember(d => d.EmployeeOrganizationTypeCode, opt => opt.MapFrom(s => DynamicsContextLookupHelpers.GetTypeFromTypeId(s.spd_OrganizationId._spd_organizationtypeid_value).Item1))
             .ForMember(d => d.VolunteerOrganizationTypeCode, opt => opt.MapFrom(s => DynamicsContextLookupHelpers.GetTypeFromTypeId(s.spd_OrganizationId._spd_organizationtypeid_value).Item2));

@@ -93,13 +93,13 @@ export class ContactInformationComponent implements CrcFormStepComponent {
 		this._orgData = data;
 		this.form = this.formBuilder.group(
 			{
-				contactGivenName: new FormControl(this._orgData.givenName, [Validators.required]),
-				contactMiddleName1: new FormControl(this._orgData.middleName1),
-				contactMiddleName2: new FormControl(this._orgData.middleName2),
-				contactSurname: new FormControl(this._orgData.surname, [Validators.required]),
-				contactEmail: new FormControl(this._orgData.emailAddress, [Validators.required, FormControlValidators.email]),
-				contactPhoneNumber: new FormControl(this._orgData.phoneNumber, [Validators.required]),
-				oneLegalName: new FormControl(this._orgData.oneLegalName),
+				contactGivenName: new FormControl(this._orgData.contactGivenName, [Validators.required]),
+				contactMiddleName1: new FormControl(''),
+				contactMiddleName2: new FormControl(''),
+				contactSurname: new FormControl(this._orgData.contactSurname, [Validators.required]),
+				contactEmail: new FormControl(this._orgData.contactEmail, [Validators.required, FormControlValidators.email]),
+				contactPhoneNumber: new FormControl('', [Validators.required]),
+				oneLegalName: new FormControl(false),
 			},
 			{
 				validators: [
@@ -123,7 +123,7 @@ export class ContactInformationComponent implements CrcFormStepComponent {
 	constructor(private formBuilder: FormBuilder, private maskPipe: NgxMaskPipe) {}
 
 	getDataToSave(): any {
-		const data = this.form.value;
+		const data = { ...this.form.value };
 		data.contactPhoneNumber = this.maskPipe.transform(data.contactPhoneNumber, SPD_CONSTANTS.phone.backendMask);
 		return data;
 	}

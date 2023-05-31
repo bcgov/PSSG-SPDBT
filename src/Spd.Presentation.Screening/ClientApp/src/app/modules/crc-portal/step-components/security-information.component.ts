@@ -53,7 +53,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../crc.component';
 						<div class="col-lg-4 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Vulnerable Sector Category</mat-label>
-								<input matInput formControlName="vulnerableSectorCategory" />
+								<input matInput formControlName="vulnerableSectorCategoryDesc" />
 							</mat-form-field>
 						</div>
 					</div>
@@ -85,7 +85,10 @@ export class SecurityInformationComponent implements CrcFormStepComponent {
 				address: new FormControl({ value: this.orgData.address, disabled: true }),
 				orgEmail: new FormControl({ value: this.orgData.orgEmail, disabled: true }),
 				jobTitle: new FormControl(this.orgData.jobTitle, [Validators.required]),
-				vulnerableSectorCategory: new FormControl({ value: this.orgData.vulnerableSectorCategoryDesc, disabled: true }),
+				vulnerableSectorCategoryDesc: new FormControl({
+					value: this.orgData.vulnerableSectorCategoryDesc,
+					disabled: true,
+				}),
 				facilityName: new FormControl('', [Validators.required]),
 			},
 			{

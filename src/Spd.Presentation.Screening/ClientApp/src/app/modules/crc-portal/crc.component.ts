@@ -6,6 +6,7 @@ import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { distinctUntilChanged } from 'rxjs';
 import { AppInviteVerifyResponse } from 'src/app/api/models';
+import { ApplicationService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
@@ -163,6 +164,12 @@ export class CrcComponent implements OnInit {
 				this.orgData.addressCountry;
 			// vulnerableSectorCategory?: EmployeeInteractionTypeCode | null;
 
+			this.orgData.vulnerableSectorCategoryDesc = this.orgData.worksWith;
+			this.orgData.contactGivenName = 'Jim';
+			this.orgData.contactSurname = 'Jimmy';
+			this.orgData.contactEmail = 'Jim@jim.com';
+			this.orgData.jobTitle = 'Tester';
+
 			// this.orgData.vulnerableSectorCategoryDesc = EmployeeInteractionTypes.find(
 			// 	(item) => item.code == this.orgData.worksWith
 			// )?.desc as string;
@@ -297,7 +304,6 @@ export class CrcComponent implements OnInit {
 			if (this.stepOrganizationInfoComponent) {
 				this.stepOrganizationInfoComponent.setStepData(this.currentStateInfo);
 			}
-
 			step.completed = true;
 		}
 
@@ -320,6 +326,13 @@ export class CrcComponent implements OnInit {
 				step.editable = false;
 			}
 		}
+
+		const data = this.getDataToSave();
+		const createRequest: any = { ...data } as Parameters<
+			ApplicationService['apiOrgsOrgIdApplicationPost']
+		>[0]['body']['ApplicationCreateRequestJson'];
+		console.log('onSaveStepperStep createRequest', data);
+
 		this.stepper.next();
 	}
 
