@@ -65,6 +65,22 @@ export class UtilService {
 		}
 	}
 
+	getAddressString(params: {
+		addressLine1: string;
+		addressLine2?: string;
+		city: string;
+		province: string;
+		country: string;
+		postalCode: string;
+	}): string {
+		return `${params.addressLine1}, 
+			${params.addressLine2 ? params.addressLine2 + ', ' : ''} 
+			${params.city}, 
+			${params.province}, 
+			${params.country}, 
+			${params.postalCode}`;
+	}
+
 	//------------------------------------
 	// Misc
 	getApplicationPortalStatus(code: string | null | undefined): [string, string] {

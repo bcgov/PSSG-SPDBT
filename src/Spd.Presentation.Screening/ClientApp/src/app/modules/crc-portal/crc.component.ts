@@ -155,30 +155,24 @@ export class CrcComponent implements OnInit {
 	async ngOnInit(): Promise<void> {
 		this.orgData = (this.location.getState() as any).orgData;
 		if (this.orgData) {
-			this.orgData._address =
-				this.orgData.addressLine1 +
-				', ' +
-				this.orgData.addressCity +
-				', ' +
-				this.orgData.addressProvince +
-				', ' +
-				this.orgData.addressPostalCode +
-				', ' +
-				this.orgData.addressCountry;
+			this.orgData._address = this.utilService.getAddressString({
+				addressLine1: this.orgData.addressLine1!,
+				addressLine2: this.orgData.addressLine2 ?? undefined,
+				city: this.orgData.addressCity!,
+				province: this.orgData.addressProvince!,
+				postalCode: this.orgData.addressPostalCode!,
+				country: this.orgData.addressCountry!,
+			});
 
-			this.orgData.contactGivenName = 'Jim';
-			this.orgData.contactSurname = 'Jimmy';
-			this.orgData.contactEmail = 'Jim@jim.com';
-			this.orgData.jobTitle = 'Tester';
-			this.orgData.validCrc = true;
-
+			// TODO hardcode for now
+			this.orgData.validCrc = false;
 			this.orgData._facilityNameRequired = false;
 			this.orgData._performPayment = false;
 
 			this.orgData._worksWithDesc = EmployeeInteractionTypes.find((item) => item.code == this.orgData.worksWith)
 				?.desc as string;
-		} else {
-			this.router.navigate([AppRoutes.ACCESS_DENIED]);
+			// } else {
+			// this.router.navigate([AppRoutes.ACCESS_DENIED]);
 		}
 
 		console.debug('orgData', this.orgData);
@@ -201,10 +195,17 @@ export class CrcComponent implements OnInit {
 				console.debug('[CrcComponent.ngOnInit] stateInfo', stateInfo);
 				if (stateInfo) {
 					this.postLoginNavigate(stateInfo);
+					return;
 				}
-			} else {
-				this.router.navigateByUrl(CrcRoutes.path());
+				// } else {
+				// this.router.navigateByUrl(CrcRoutes.path());
 			}
+			// } else if (!this.orgData) {
+			// 	this.router.navigate([AppRoutes.ACCESS_DENIED]);
+		}
+
+		if (!this.orgData) {
+			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 		}
 	}
 
@@ -287,7 +288,7 @@ export class CrcComponent implements OnInit {
 		//auth step 2 - unload angular, redirect to KC
 		// const decodedData = decodeURIComponent(authInfo.state);
 		this.utilService.setSessionData(this.utilService.CRC_PORTAL_STATE_KEY, stateInfo);
-		const nextUrl = await this.authenticationService.login(CrcRoutes.path(CrcRoutes.CRCA));
+		const nextUrl = await this.authenticationService.login(CrcRoutes.path());
 		if (nextUrl) {
 			// User is already logged in and clicks Login button.
 			// Want it to start at the beginning and continue past login page.
@@ -297,7 +298,8 @@ export class CrcComponent implements OnInit {
 
 	private postLoginNavigate(stepperData: any): void {
 		this.currentStateInfo = JSON.parse(stepperData);
-
+		this.orgData = JSON.parse(stepperData); // TODO deal with this a better way
+		console.log('this.stepper', this.stepper);
 		let step = this.stepper.steps.get(0);
 		if (step) {
 			step.completed = true;

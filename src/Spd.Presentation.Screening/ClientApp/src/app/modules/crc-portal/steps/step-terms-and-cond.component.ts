@@ -114,7 +114,7 @@ export class StepTermsAndCondComponent {
 			this.showConsentToCrc = true;
 		} else {
 			this.showConsentToCrc = false;
-			this.orgData._performPayment = true;
+			// this.orgData._performPayment = true; TODO leave as false for now.
 		}
 
 		// this.childstepper._stateChanged();

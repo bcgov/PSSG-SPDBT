@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import { UtilService } from 'src/app/core/services/util.service';
 
 @Component({
 	selector: 'app-summary',
@@ -157,6 +158,8 @@ export class SummaryComponent {
 	@Output() reEditPersonalInformation: EventEmitter<boolean> = new EventEmitter();
 	@Output() reEditCrcInformation: EventEmitter<boolean> = new EventEmitter();
 
+	constructor(private utilService: UtilService) {}
+
 	onReEditOrg(): void {
 		this.reEditCrcInformation.emit(true);
 	}
@@ -167,17 +170,14 @@ export class SummaryComponent {
 
 	getCrcDataMailingAddress(): string {
 		if (this.crcData) {
-			let address =
-				this.crcData.mailingAddressLine1 +
-				', ' +
-				this.crcData.mailingCity +
-				', ' +
-				this.crcData.mailingProvince +
-				', ' +
-				this.crcData.mailingPostalCode +
-				', ' +
-				this.crcData.mailingCountry;
-			return address;
+			return this.utilService.getAddressString({
+				addressLine1: this.crcData.mailingAddressLine1!,
+				addressLine2: this.crcData.mailingAddressLine2 ?? undefined,
+				city: this.crcData.mailingCity!,
+				province: this.crcData.mailingProvince!,
+				postalCode: this.crcData.mailingPostalCode!,
+				country: this.crcData.mailingCountry!,
+			});
 		}
 
 		return '';

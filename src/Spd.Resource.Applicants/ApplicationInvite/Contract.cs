@@ -63,7 +63,6 @@ namespace Spd.Resource.Applicants.ApplicationInvite
         public string? JobTitle { get; set; }
         public PayerPreferenceTypeCode PayeeType { get; set; }
         public bool? ValidCrc { get; set; }
-        public EmployeeInteractionTypeCode? EmployeeInteractionTypeCode { get; set; } = null;
     };
 
     public record ApplicationInvite
