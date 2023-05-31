@@ -50,8 +50,8 @@ export class InvitationComponent {
 				if (resp?.isError) {
 					this.message = resp.message;
 				} else {
-					this.authenticationService.login(CrrpRoutes.crrpPath()).then((_resp) => {
-						this.router.navigate([CrrpRoutes.crrpPath(CrrpRoutes.HOME)]);
+					this.authenticationService.login(CrrpRoutes.path()).then((_resp) => {
+						this.router.navigate([CrrpRoutes.path(CrrpRoutes.HOME)]);
 					});
 				}
 			});

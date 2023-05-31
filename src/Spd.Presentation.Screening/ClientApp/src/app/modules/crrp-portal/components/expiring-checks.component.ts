@@ -354,7 +354,7 @@ export class ExpiringChecksComponent implements OnInit {
 								this.hotToast.success('Expired check was successfully removed');
 								this.hotToast.success(resp.message);
 
-								this.router.navigateByUrl(CrrpRoutes.crrpPath(CrrpRoutes.CRIMINAL_RECORD_CHECKS));
+								this.router.navigateByUrl(CrrpRoutes.path(CrrpRoutes.CRIMINAL_RECORD_CHECKS));
 							}
 						});
 				}

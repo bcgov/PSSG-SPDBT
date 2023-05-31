@@ -314,7 +314,7 @@ export class IdentifyVerificationComponent implements OnInit {
 			.subscribe((resp) => {
 				if (resp.success) {
 					this.hotToast.success(resp.message);
-					this.router.navigateByUrl(CrrpRoutes.crrpPath(CrrpRoutes.CRIMINAL_RECORD_CHECKS));
+					this.router.navigateByUrl(CrrpRoutes.path(CrrpRoutes.CRIMINAL_RECORD_CHECKS));
 				}
 			});
 	}

@@ -1,6 +1,7 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
-import { CrcRequestCreateRequest } from '../crc.component';
+import { PayeePreferenceTypeCode } from 'src/app/api/models';
+import { AppInviteOrgData } from '../crc.component';
 import { SecurityInformationComponent } from '../step-components/security-information.component';
 
 @Component({
@@ -25,9 +26,9 @@ import { SecurityInformationComponent } from '../step-components/security-inform
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepOrganizationInfoComponent {
-	@Input() orgData!: CrcRequestCreateRequest;
+	@Input() orgData!: AppInviteOrgData;
 
-	@Input() paymentBy!: 'APP' | 'ORG';
+	@Input() payeeType!: PayeePreferenceTypeCode;
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();

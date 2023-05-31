@@ -268,13 +268,13 @@ export class ApplicationStatusesComponent implements OnInit {
 	}
 
 	onPayNow(application: ApplicationStatusResponse): void {
-		this.router.navigateByUrl(CrrpRoutes.crrpPath(CrrpRoutes.PAYMENTS), {
+		this.router.navigateByUrl(CrrpRoutes.path(CrrpRoutes.PAYMENTS), {
 			state: { caseId: application.applicationNumber },
 		});
 	}
 
 	onVerifyApplicant(application: ApplicationStatusResponse): void {
-		this.router.navigateByUrl(CrrpRoutes.crrpPath(CrrpRoutes.IDENTITY_VERIFICATION), {
+		this.router.navigateByUrl(CrrpRoutes.path(CrrpRoutes.IDENTITY_VERIFICATION), {
 			state: { caseId: application.applicationNumber },
 		});
 	}

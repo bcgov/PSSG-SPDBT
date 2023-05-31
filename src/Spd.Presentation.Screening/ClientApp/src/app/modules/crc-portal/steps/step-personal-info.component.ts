@@ -1,7 +1,7 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { CrcRequestCreateRequest } from '../crc.component';
+import { AppInviteOrgData } from '../crc.component';
 import { ContactInformationComponent } from '../step-components/contact-information.component';
 import { MailingAddressComponent } from '../step-components/mailing-address.component';
 import { PersonalInformationComponent } from '../step-components/personal-information.component';
@@ -112,7 +112,7 @@ import { PreviousNameComponent } from '../step-components/previous-name.componen
 export class StepPersonalInfoComponent {
 	@ViewChild('childstepper') childstepper!: MatStepper;
 
-	@Input() orgData!: CrcRequestCreateRequest;
+	@Input() orgData!: AppInviteOrgData;
 	@Input() crcData!: any;
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();

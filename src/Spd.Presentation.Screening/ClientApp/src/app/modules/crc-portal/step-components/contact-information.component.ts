@@ -5,7 +5,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { CrcFormStepComponent, CrcRequestCreateRequest } from '../crc.component';
+import { AppInviteOrgData, CrcFormStepComponent } from '../crc.component';
 
 @Component({
 	selector: 'app-contact-information',
@@ -87,9 +87,9 @@ import { CrcFormStepComponent, CrcRequestCreateRequest } from '../crc.component'
 	styles: [],
 })
 export class ContactInformationComponent implements CrcFormStepComponent {
-	private _orgData!: CrcRequestCreateRequest;
+	private _orgData!: AppInviteOrgData;
 	@Input()
-	set orgData(data: CrcRequestCreateRequest) {
+	set orgData(data: AppInviteOrgData) {
 		this._orgData = data;
 		this.form = this.formBuilder.group(
 			{
@@ -111,7 +111,7 @@ export class ContactInformationComponent implements CrcFormStepComponent {
 			}
 		);
 	}
-	get orgData(): CrcRequestCreateRequest {
+	get orgData(): AppInviteOrgData {
 		return this._orgData;
 	}
 

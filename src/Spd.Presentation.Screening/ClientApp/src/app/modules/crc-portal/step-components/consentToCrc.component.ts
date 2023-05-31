@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/api/models';
 import { UtilService } from 'src/app/core/services/util.service';
-import { CrcFormStepComponent, CrcRequestCreateRequest } from '../crc.component';
+import { AppInviteOrgData, CrcFormStepComponent } from '../crc.component';
 
 @Component({
 	selector: 'app-consent-to-crc',
@@ -81,14 +81,14 @@ import { CrcFormStepComponent, CrcRequestCreateRequest } from '../crc.component'
 	styles: [],
 })
 export class ConsentToCrcComponent implements CrcFormStepComponent {
-	private _orgData!: CrcRequestCreateRequest;
+	private _orgData!: AppInviteOrgData;
 	@Input()
-	set orgData(data: CrcRequestCreateRequest) {
+	set orgData(data: AppInviteOrgData) {
 		this._orgData = data;
 		const name = this.utilService.getFullName(data.givenName, data.surname);
 		this.certifyLabel = `I, ${name}, consent to the following`;
 	}
-	get orgData(): CrcRequestCreateRequest {
+	get orgData(): AppInviteOrgData {
 		return this._orgData;
 	}
 

@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
+import { PayeePreferenceTypeCode } from 'src/app/api/models';
 
 @Component({
 	selector: 'app-checklist',
@@ -11,7 +11,7 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 				></app-step-title>
 				<div class="row">
 					<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12 mx-auto">
-						<ul *ngIf="paymentBy == 'APP'">
+						<ul *ngIf="payeeType == payeePreferenceTypeCodes.Applicant">
 							<li>Your BC Services Card (recommended), or other government issued identification.</li>
 							<li>A method of payment (Visa, Mastercard, American Express, Visa Debit, Mastercard Debit)</li>
 							<li>
@@ -19,7 +19,7 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 								BC Services Card.
 							</li>
 						</ul>
-						<ul *ngIf="paymentBy == 'ORG'">
+						<ul *ngIf="payeeType == payeePreferenceTypeCodes.Organization">
 							<li>Your BC Services Card (recommended), or other government issued identification.</li>
 							<li>
 								Before you submit a request for a criminal record check, if possible, verify your identity by using your
@@ -40,9 +40,7 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 	],
 })
 export class ChecklistComponent {
-	matcher = new FormErrorStateMatcher();
+	payeePreferenceTypeCodes = PayeePreferenceTypeCode;
 
-	@Input() paymentBy!: 'APP' | 'ORG';
-
-	constructor() {}
+	@Input() payeeType!: PayeePreferenceTypeCode;
 }

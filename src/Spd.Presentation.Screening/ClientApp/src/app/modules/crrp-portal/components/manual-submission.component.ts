@@ -652,6 +652,6 @@ export class ManualSubmissionComponent implements OnInit {
 
 	private handleSaveSuccess(): void {
 		this.hotToast.success('The manual submission was successfully saved');
-		this.router.navigateByUrl(CrrpRoutes.crrpPath(CrrpRoutes.APPLICATION_STATUSES));
+		this.router.navigateByUrl(CrrpRoutes.path(CrrpRoutes.APPLICATION_STATUSES));
 	}
 }

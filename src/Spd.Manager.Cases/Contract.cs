@@ -38,8 +38,9 @@ namespace Spd.Manager.Cases
     public record AppInviteVerifyResponse
     {
         public Guid OrgId { get; set; }
-        public string? OrganizationName { get; set; }
-        public string? PhoneNumber { get; set; }
+        public string? OrgName { get; set; }
+        public string? OrgPhoneNumber { get; set; }
+        public string? OrgEmail { get; set; }
         public string? AddressLine1 { get; set; }
         public string? AddressLine2 { get; set; }
         public string? AddressCity { get; set; }
@@ -48,7 +49,12 @@ namespace Spd.Manager.Cases
         public string? AddressProvince { get; set; }
         public string? EmployeeOrganizationTypeCode { get; set; }
         public string? VolunteerOrganizationTypeCode { get; set; }
+        public string? GivenName { get; set; }
+        public string? Surname { get; set; }
+        public string? EmailAddress { get; set; }
+        public string? JobTitle { get; set; }
         public PayeePreferenceTypeCode PayeeType { get; set; }
+        public bool? ValidCrc { get; set; }
     };
 
     public record IdentityCommand(Guid OrgId, Guid ApplicationId, IdentityStatusCode Status) : IRequest<Unit>;

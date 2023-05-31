@@ -1,11 +1,12 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperOrientation, StepperSelectionEvent } from '@angular/cdk/stepper';
+import { Location } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { distinctUntilChanged } from 'rxjs';
-import { EmployeeInteractionTypeCode } from 'src/app/api/models';
-import { EmployeeInteractionTypes } from 'src/app/core/constants/model-desc';
+import { AppInviteVerifyResponse } from 'src/app/api/models';
+import { AppRoutes } from 'src/app/app-routing.module';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { CrcRoutes } from './crc-routing.module';
@@ -21,30 +22,16 @@ export interface CrcFormStepComponent {
 	isFormValid(): boolean;
 }
 
-export interface CrcRequestCreateRequest {
-	paymentBy: 'APP' | 'ORG';
-	orgId?: string;
-	orgName?: string;
-	orgPhoneNumber?: string;
-	orgEmail?: string;
-	givenName?: string | null;
-	middleName1?: string | null;
-	middleName2?: string | null;
-	surname?: string | null;
-	emailAddress?: string | null;
-	jobTitle?: string | null;
-	phoneNumber?: string | null;
+export interface AppInviteOrgData extends AppInviteVerifyResponse {
 	address?: string | null;
-	oneLegalName?: boolean | null;
 	facilityNameRequired?: boolean | null;
-	vulnerableSectorCategory?: EmployeeInteractionTypeCode | null;
 	vulnerableSectorCategoryDesc?: string | null;
 }
 
 @Component({
 	selector: 'app-crc',
 	template: `
-		<div class="container mt-4">
+		<div class="container mt-4" *ngIf="orgData">
 			<mat-stepper
 				linear
 				labelPosition="bottom"
@@ -55,7 +42,7 @@ export interface CrcRequestCreateRequest {
 				<mat-step completed="false">
 					<ng-template matStepLabel>Eligibility Check</ng-template>
 					<app-step-eligibility
-						[paymentBy]="orgData.paymentBy"
+						[payeeType]="orgData.payeeType!"
 						(nextStepperStep)="onNextStepperStep(stepper)"
 						(scrollIntoView)="onScrollIntoView()"
 					></app-step-eligibility>
@@ -97,7 +84,7 @@ export interface CrcRequestCreateRequest {
 				<mat-step completed="false">
 					<ng-template matStepLabel>Terms and Conditions</ng-template>
 					<app-step-terms-and-cond
-						[paymentBy]="orgData.paymentBy"
+						[payeeType]="orgData.payeeType!"
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
 						(nextStepperStep)="onSaveStepperStep(stepper)"
 						(scrollIntoView)="onScrollIntoView()"
@@ -106,7 +93,7 @@ export interface CrcRequestCreateRequest {
 				</mat-step>
 
 				<!-- PAYMENT PROCESS?
-				 <mat-step completed="false" *ngIf="paymentBy == 'APP'">
+				 <mat-step completed="false" *ngIf="payeeType == 'APP'">
 				<ng-template matStepLabel>Pay for Application</ng-template>
 				<app-step-pay-for-application
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -117,7 +104,7 @@ export interface CrcRequestCreateRequest {
 				<mat-step completed="false">
 					<ng-template matStepLabel>Application Submitted</ng-template>
 					<app-step-appl-submitted
-						[paymentBy]="orgData.paymentBy"
+						[payeeType]="orgData.payeeType!"
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
 						(scrollIntoView)="onScrollIntoView()"
 					></app-step-appl-submitted>
@@ -128,7 +115,7 @@ export interface CrcRequestCreateRequest {
 	styles: [],
 })
 export class CrcComponent implements OnInit {
-	orgData!: CrcRequestCreateRequest;
+	orgData!: AppInviteOrgData;
 	crcData!: any;
 	orientation: StepperOrientation = 'vertical';
 	currentStateInfo: any = {};
@@ -157,10 +144,34 @@ export class CrcComponent implements OnInit {
 		private router: Router,
 		private breakpointObserver: BreakpointObserver,
 		private utilService: UtilService,
-		private authenticationService: AuthenticationService
+		private authenticationService: AuthenticationService,
+		private location: Location
 	) {}
 
 	async ngOnInit(): Promise<void> {
+		this.orgData = (this.location.getState() as any).orgData;
+		if (this.orgData) {
+			this.orgData.address =
+				this.orgData.addressLine1 +
+				', ' +
+				this.orgData.addressCity +
+				', ' +
+				this.orgData.addressProvince +
+				', ' +
+				this.orgData.addressPostalCode +
+				', ' +
+				this.orgData.addressCountry;
+			// vulnerableSectorCategory?: EmployeeInteractionTypeCode | null;
+
+			// this.orgData.vulnerableSectorCategoryDesc = EmployeeInteractionTypes.find(
+			// 	(item) => item.code == this.orgData.worksWith
+			// )?.desc as string;
+		} else {
+			this.router.navigate([AppRoutes.ACCESS_DENIED]);
+		}
+
+		console.debug('orgData', this.orgData);
+
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(
@@ -169,32 +180,9 @@ export class CrcComponent implements OnInit {
 			)
 			.subscribe(() => this.breakpointChanged());
 
-		this.orgData = {
-			paymentBy: 'APP',
-			orgId: 'abcdef123',
-			orgName: 'Anikon Ltd',
-			orgPhoneNumber: '2507776655',
-			orgEmail: 'test@test.test.com',
-			givenName: 'Ann',
-			middleName1: 'Amber',
-			middleName2: 'Annie',
-			surname: 'Anderson',
-			emailAddress: 'Ann@two.com',
-			jobTitle: '',
-			phoneNumber: '2504479898',
-			address: '760 Andy Ave, Victoria, BC V8X 2W6, Canada',
-			facilityNameRequired: false,
-			vulnerableSectorCategory: EmployeeInteractionTypeCode.ChildrenAndAdults,
-			oneLegalName: false,
-		};
-
-		this.orgData.vulnerableSectorCategoryDesc = EmployeeInteractionTypes.find(
-			(item) => item.code == this.orgData.vulnerableSectorCategory
-		)?.desc as string;
-
 		//auth step 1 - user is not logged in, no state at all
 		//auth step 3 - angular loads again here, KC posts the token, oidc lib reads token and returns state
-		const authInfo = await this.authenticationService.tryLogin(CrcRoutes.path(CrcRoutes.CRC_APPLICATION));
+		const authInfo = await this.authenticationService.tryLogin(CrcRoutes.path());
 
 		if (authInfo.loggedIn) {
 			if (authInfo.state) {
@@ -204,7 +192,7 @@ export class CrcComponent implements OnInit {
 					this.postLoginNavigate(stateInfo);
 				}
 			} else {
-				this.router.navigate([CrcRoutes.CRC_APPLICATION]);
+				this.router.navigateByUrl(CrcRoutes.path());
 			}
 		}
 	}
@@ -288,7 +276,7 @@ export class CrcComponent implements OnInit {
 		//auth step 2 - unload angular, redirect to KC
 		// const decodedData = decodeURIComponent(authInfo.state);
 		this.utilService.setSessionData(this.utilService.CRC_PORTAL_STATE_KEY, stateInfo);
-		const nextUrl = await this.authenticationService.login(CrcRoutes.path(CrcRoutes.CRC_APPLICATION));
+		const nextUrl = await this.authenticationService.login(CrcRoutes.path(CrcRoutes.CRCA));
 		if (nextUrl) {
 			// User is already logged in and clicks Login button.
 			// Want it to start at the beginning and continue past login page.

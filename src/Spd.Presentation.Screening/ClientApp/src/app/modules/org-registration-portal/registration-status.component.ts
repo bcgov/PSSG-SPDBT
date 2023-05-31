@@ -124,7 +124,7 @@ export class RegistrationStatusComponent {
 					if (resp.status == OrgRegistrationStatusCode.CompleteFailed) {
 						this.router.navigate([OrgRegistrationRoutes.orgRegPath(OrgRegistrationRoutes.ORG_REGISTRATION)]);
 					} else if (resp.status == OrgRegistrationStatusCode.CompleteSuccess) {
-						this.router.navigate([CrrpRoutes.crrpPath(CrrpRoutes.HOME)]);
+						this.router.navigate([CrrpRoutes.path(CrrpRoutes.HOME)]);
 					}
 
 					this.status = resp.status;

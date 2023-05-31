@@ -1,7 +1,6 @@
 using FluentValidation;
 using MediatR;
 using Spd.Manager.Membership.Shared;
-using Spd.Utilities.Dynamics;
 using System.ComponentModel;
 
 namespace Spd.Manager.Membership.OrgRegistration
@@ -50,15 +49,6 @@ namespace Spd.Manager.Membership.OrgRegistration
         public bool RequireDuplicateCheck { get; set; } = true;
     }
 
-    public enum RegistrationTypeCode
-    {
-        [Description("Employee")]
-        Employee,
-
-        [Description("Volunteer")]
-        Volunteer
-    }
-
     public enum EmployeeInteractionTypeCode
     {
         [Description("My employees work with children")]
@@ -72,6 +62,15 @@ namespace Spd.Manager.Membership.OrgRegistration
 
         [Description("Neither")]
         Neither
+    }
+
+    public enum RegistrationTypeCode
+    {
+        [Description("Employee")]
+        Employee,
+
+        [Description("Volunteer")]
+        Volunteer
     }
 
     public enum ScreeningsCountTypeCode

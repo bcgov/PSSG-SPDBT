@@ -1,6 +1,7 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
+import { PayeePreferenceTypeCode } from 'src/app/api/models';
 import { AgreementOfTermsComponent } from '../step-components/agreement-of-terms.component';
 import { DeclarationComponent } from '../step-components/declaration.component';
 
@@ -49,7 +50,7 @@ import { DeclarationComponent } from '../step-components/declaration.component';
 export class StepApplSubmittedComponent {
 	@ViewChild('childstepper') childstepper!: MatStepper;
 
-	@Input() paymentBy!: 'APP' | 'ORG';
+	@Input() payeeType!: PayeePreferenceTypeCode;
 
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();

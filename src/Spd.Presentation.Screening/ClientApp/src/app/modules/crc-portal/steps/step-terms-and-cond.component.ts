@@ -1,7 +1,8 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { CrcRequestCreateRequest } from '../crc.component';
+import { PayeePreferenceTypeCode } from 'src/app/api/models';
+import { AppInviteOrgData } from '../crc.component';
 import { AgreementOfTermsComponent } from '../step-components/agreement-of-terms.component';
 import { ConsentToCrcComponent } from '../step-components/consentToCrc.component';
 import { DeclarationComponent } from '../step-components/declaration.component';
@@ -54,7 +55,7 @@ import { DeclarationComponent } from '../step-components/declaration.component';
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="goToStepNext(STEP_TERMS)">
-							<span *ngIf="paymentBy == 'APP'; else noPay">Pay</span>
+							<span *ngIf="payeeType == payeePreferenceTypeCodes.Applicant; else noPay">Pay</span>
 							<ng-template #noPay>Submit</ng-template>
 						</button>
 					</div>
@@ -66,10 +67,12 @@ import { DeclarationComponent } from '../step-components/declaration.component';
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepTermsAndCondComponent {
-	@Input() orgData!: CrcRequestCreateRequest;
+	payeePreferenceTypeCodes = PayeePreferenceTypeCode;
+
+	@Input() orgData!: AppInviteOrgData;
 	@ViewChild('childstepper') childstepper!: MatStepper;
 
-	@Input() paymentBy!: 'APP' | 'ORG';
+	@Input() payeeType!: PayeePreferenceTypeCode;
 
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();

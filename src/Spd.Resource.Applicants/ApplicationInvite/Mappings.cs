@@ -30,14 +30,16 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             _ = CreateMap<spd_portalinvitation, AppInviteVerifyResp>()
             .ForMember(d => d.AddressPostalCode, opt => opt.MapFrom(s => s.spd_OrganizationId.address1_postalcode))
             .ForMember(d => d.OrgId, opt => opt.MapFrom(s => s.spd_OrganizationId.accountid))
-            .ForMember(d => d.OrganizationName, opt => opt.MapFrom(s => s.spd_OrganizationId.spd_organizationlegalname))
-            .ForMember(d => d.PhoneNumber, opt => opt.MapFrom(s => s.spd_OrganizationId.address1_telephone1))
+            .ForMember(d => d.OrgName, opt => opt.MapFrom(s => s.spd_OrganizationId.spd_organizationlegalname ?? s.spd_OrganizationId.name))
+            .ForMember(d => d.OrgPhoneNumber, opt => opt.MapFrom(s => s.spd_OrganizationId.address1_telephone1))
+            .ForMember(d => d.OrgEmail, opt => opt.MapFrom(s => s.spd_OrganizationId.emailaddress1))
             .ForMember(d => d.AddressLine1, opt => opt.MapFrom(s => s.spd_OrganizationId.address1_line1))
             .ForMember(d => d.AddressLine2, opt => opt.MapFrom(s => s.spd_OrganizationId.address1_line2))
             .ForMember(d => d.AddressCity, opt => opt.MapFrom(s => s.spd_OrganizationId.address1_city))
             .ForMember(d => d.AddressCountry, opt => opt.MapFrom(s => s.spd_OrganizationId.address1_country))
             .ForMember(d => d.AddressPostalCode, opt => opt.MapFrom(s => s.spd_OrganizationId.address1_postalcode))
             .ForMember(d => d.AddressProvince, opt => opt.MapFrom(s => s.spd_OrganizationId.address1_stateorprovince))
+            // .ForMember(d => d.WorksWith, opt => opt.MapFrom(s => GetEmployeeInteractionType(s.spd_OrganizationId.spd_workswith)))
             .ForMember(d => d.PayeeType, opt => opt.MapFrom(s => GetPayeeType(s.spd_payeetype)))
             .ForMember(d => d.EmployeeOrganizationTypeCode, opt => opt.MapFrom(s => DynamicsContextLookupHelpers.GetTypeFromTypeId(s.spd_OrganizationId._spd_organizationtypeid_value).Item1))
             .ForMember(d => d.VolunteerOrganizationTypeCode, opt => opt.MapFrom(s => DynamicsContextLookupHelpers.GetTypeFromTypeId(s.spd_OrganizationId._spd_organizationtypeid_value).Item2));
@@ -46,6 +48,11 @@ namespace Spd.Resource.Applicants.ApplicationInvite
         {
             if (code == null) return null;
             return Enum.GetName(typeof(PayerPreferenceOptionSet), code);
+        }
+        private static string? GetEmployeeInteractionType(int? code)
+        {
+            if (code == null) return null;
+            return Enum.GetName(typeof(WorksWithChildrenOptionSet), code);
         }
     }
 }

@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { CrcApplicationRoutingModule } from './crc-routing.module';
 import { CrcComponent } from './crc.component';
+import { InvitationComponent } from './invitation.component';
 import { AgreementOfTermsComponent } from './step-components/agreement-of-terms.component';
 import { ApplicationSubmittedComponent } from './step-components/application-submitted.component';
 import { ChecklistComponent } from './step-components/checklist.component';
@@ -48,6 +49,7 @@ import { StepTermsAndCondComponent } from './steps/step-terms-and-cond.component
 		PaymentFailureComponent,
 		ApplicationSubmittedComponent,
 		ConsentToCrcComponent,
+		InvitationComponent,
 	],
 	imports: [SharedModule, CrcApplicationRoutingModule],
 	providers: [],
