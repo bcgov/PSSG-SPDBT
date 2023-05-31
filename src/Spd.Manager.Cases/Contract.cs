@@ -48,7 +48,7 @@ namespace Spd.Manager.Cases
         public string? AddressCountry { get; set; }
         public string? AddressPostalCode { get; set; }
         public string? AddressProvince { get; set; }
-        public EmployeeInteractionTypeCode WorksWith { get; set; }
+        public EmployeeInteractionTypeCode? WorksWith { get; set; }
         public EmployeeOrganizationTypeCode? EmployeeOrganizationTypeCode { get; set; }
         public VolunteerOrganizationTypeCode? VolunteerOrganizationTypeCode { get; set; }
         public string? ContactGivenName { get; set; }
