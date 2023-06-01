@@ -156,6 +156,11 @@ namespace Spd.Utilities.Dynamics
                 .Where(s => s.statecode != DynamicsConstants.StateCode_Inactive)
                 .FirstOrDefault();
         }
+
+        public static string LookupServiceTypeKey(Guid? serviceTypeId)
+        {
+            return ServiceTypeGuidDictionary.FirstOrDefault(s => s.Value == serviceTypeId).Key;
+        }
         #endregion
 
         public static async Task<spd_application?> GetApplicationById(this DynamicsContext context, Guid appId, CancellationToken ct)

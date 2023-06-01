@@ -94,16 +94,4 @@ namespace Spd.Resource.Applicants.ApplicationInvite
         Contractor,
         Licensee
     }
-
-    public enum ServiceTypeEnum
-    {
-        PSSO,
-        CRRP_EMPLOYEE,
-        CRRP_VOLUNTEER,
-        MCFD,
-        PE_CRC,
-        PE_CRC_VS,
-        LICENSING,
-        PSSO_VS
-    }
 }

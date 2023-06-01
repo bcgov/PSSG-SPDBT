@@ -1,7 +1,6 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using Spd.Resource.Applicants.ApplicationInvite;
 using Spd.Utilities.Shared.ManagerContract;
 using System.ComponentModel;
 
@@ -121,17 +120,7 @@ namespace Spd.Manager.Cases
         Licensee
     }
 
-    public enum ServiceTypeCode
-    {
-        PSSO,
-        CRRP_EMPLOYEE,
-        CRRP_VOLUNTEER,
-        MCFD,
-        PE_CRC,
-        PE_CRC_VS,
-        LICENSING,
-        PSSO_VS
-    }
+
     #endregion
 
     #region application
