@@ -10,7 +10,7 @@ import { CrcFormStepComponent } from '../crc.component';
 @Component({
 	selector: 'app-mailing-address',
 	template: `
-		<section class="step-section pt-4 pb-5 px-3">
+		<section class="step-section p-3">
 			<form [formGroup]="form" novalidate>
 				<div class="step">
 					<app-step-title title="What is your mailing address?"></app-step-title>
@@ -22,6 +22,7 @@ import { CrcFormStepComponent } from '../crc.component';
 							>
 							</app-address-form-autocomplete>
 							<mat-error
+								class="mat-option-error"
 								*ngIf="
 									(form.get('addressSelected')?.dirty || form.get('addressSelected')?.touched) &&
 									form.get('addressSelected')?.invalid &&

@@ -1,8 +1,6 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { AgreementOfTermsComponent } from '../step-components/agreement-of-terms.component';
-import { DeclarationComponent } from '../step-components/declaration.component';
 
 @Component({
 	selector: 'app-step-pay-for-application',
@@ -10,7 +8,7 @@ import { DeclarationComponent } from '../step-components/declaration.component';
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<div class="row mt-4">
-					<div class="offset-lg-4 col-lg-4 offset-md-4 col-md-4 col-sm-12">
+					<div class="col-xxl-3 col-lg-4 col-md-4 col-sm-12 mx-auto">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext()">Next</button>
 					</div>
 				</div>
@@ -27,17 +25,8 @@ export class StepPayForApplicationComponent {
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-	@ViewChild(DeclarationComponent)
-	declarationComponent!: DeclarationComponent;
-
-	@ViewChild(AgreementOfTermsComponent)
-	agreementOfTermsComponent!: AgreementOfTermsComponent;
-
 	getStepData(): any {
-		return {
-			...this.declarationComponent.getDataToSave(),
-			...this.agreementOfTermsComponent.getDataToSave(),
-		};
+		return {};
 	}
 
 	onFormValidNextStep(formNumber: number): void {
@@ -59,17 +48,18 @@ export class StepPayForApplicationComponent {
 	}
 
 	private dirtyForm(step: number): boolean {
-		switch (step) {
-			case 1:
-				this.declarationComponent.form.markAllAsTouched();
-				return this.declarationComponent.isFormValid();
-			case 2:
-				this.agreementOfTermsComponent.form.markAllAsTouched();
-				return this.agreementOfTermsComponent.isFormValid();
+		// switch (step) {
+		// 	case 1:
+		// 		this.declarationComponent.form.markAllAsTouched();
+		// 		return this.declarationComponent.isFormValid();
+		// 	case 2:
+		// 		this.agreementOfTermsComponent.form.markAllAsTouched();
+		// 		return this.agreementOfTermsComponent.isFormValid();
 
-			default:
-				console.error('Unknown Form', step);
-		}
-		return false;
+		// 	default:
+		// 		console.error('Unknown Form', step);
+		// }
+		// return false;
+		return true;
 	}
 }

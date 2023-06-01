@@ -1,7 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import { ApplicationPortalStatusCode } from './application-portal-status-code';
-import { PayeePreferenceTypeCode } from './payee-preference-type-code';
+import { PayerPreferenceTypeCode } from './payer-preference-type-code';
 export interface ApplicationResponse {
   applicationNumber?: null | string;
   contractedCompanyName?: null | string;
@@ -15,8 +15,7 @@ export interface ApplicationResponse {
   middleName1?: null | string;
   middleName2?: null | string;
   orgId?: string;
-  paidBy?: PayeePreferenceTypeCode;
-  payeeType?: PayeePreferenceTypeCode;
+  payeeType?: PayerPreferenceTypeCode;
   status?: ApplicationPortalStatusCode;
   surname?: null | string;
 }

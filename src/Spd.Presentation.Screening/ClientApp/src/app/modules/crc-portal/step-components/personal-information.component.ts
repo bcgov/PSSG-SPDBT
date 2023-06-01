@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { GenderTypes } from 'src/app/core/code-types/model-desc.models';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { CrcFormStepComponent } from '../crc.component';
 
 @Component({
 	selector: 'app-personal-information',
 	template: `
-		<section class="step-section pt-4 pb-5 px-3">
+		<section class="step-section p-3">
 			<form [formGroup]="form" novalidate>
 				<div class="step">
 					<app-step-title
@@ -39,7 +40,7 @@ import { CrcFormStepComponent } from '../crc.component';
 						</div>
 					</div>
 					<div class="row">
-						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
+						<div class="offset-lg-2 col-lg-4 col-md-12 col-sm-12">
 							<mat-form-field>
 								<mat-label>Birthplace</mat-label>
 								<input
@@ -52,6 +53,16 @@ import { CrcFormStepComponent } from '../crc.component';
 								<mat-error *ngIf="form.get('birthplace')?.hasError('required')">This is required</mat-error>
 							</mat-form-field>
 						</div>
+						<div class="col-lg-4 col-md-12 col-sm-12">
+							<mat-form-field>
+								<mat-label>Gender <span class="optional-label">(optional)</span></mat-label>
+								<mat-select formControlName="contactGenderCode">
+									<mat-option *ngFor="let gdr of genderCodes" [value]="gdr.code">
+										{{ gdr.desc }}
+									</mat-option>
+								</mat-select>
+							</mat-form-field>
+						</div>
 					</div>
 				</div>
 			</form>
@@ -60,10 +71,12 @@ import { CrcFormStepComponent } from '../crc.component';
 	styles: [],
 })
 export class PersonalInformationComponent implements CrcFormStepComponent {
+	genderCodes = GenderTypes;
 	form: FormGroup = this.formBuilder.group({
 		birthplace: new FormControl('', [Validators.required]),
 		driversLicenseNumber: new FormControl(''),
 		contactDateOfBirth: new FormControl('', [Validators.required]),
+		contactGenderCode: new FormControl(''),
 	});
 	startDate = new Date(2000, 0, 1);
 	matcher = new FormErrorStateMatcher();

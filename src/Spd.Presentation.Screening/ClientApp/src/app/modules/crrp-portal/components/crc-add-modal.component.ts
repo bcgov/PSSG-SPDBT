@@ -5,7 +5,7 @@ import {
 	ApplicationInviteCreateRequest,
 	ApplicationInvitesCreateRequest,
 	ApplicationInvitesCreateResponse,
-	PayeePreferenceTypeCode,
+	PayerPreferenceTypeCode,
 } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
@@ -171,7 +171,7 @@ export class CrcAddModalComponent implements OnInit {
 	readonly yesMessageMultiple = 'Your criminal record checks have been sent to the applicants';
 
 	matcher = new FormErrorStateMatcher();
-	payeePreferenceTypeCodes = PayeePreferenceTypeCode;
+	payeePreferenceTypeCodes = PayerPreferenceTypeCode;
 
 	title: string = 'Add Criminal Record Check';
 	form!: FormGroup;

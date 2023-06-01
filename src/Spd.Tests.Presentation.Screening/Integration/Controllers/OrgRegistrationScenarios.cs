@@ -4,6 +4,7 @@ using Spd.Manager.Membership.OrgRegistration;
 using Spd.Presentation.Screening.Controllers;
 using System.Net;
 using Xunit.Abstractions;
+using Spd.Utilities.Shared.ManagerContract;
 
 namespace Spd.Tests.Presentation.Screening.Integration.Controllers;
 

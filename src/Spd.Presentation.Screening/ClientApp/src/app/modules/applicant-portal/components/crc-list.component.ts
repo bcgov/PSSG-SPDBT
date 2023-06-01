@@ -60,11 +60,11 @@ import { ApplicantRoutes } from '../applicant-routing.module';
 						</mat-cell>
 					</ng-container>
 
-					<ng-container matColumnDef="paidBy">
+					<ng-container matColumnDef="payeeType">
 						<mat-header-cell *matHeaderCellDef>Paid By</mat-header-cell>
 						<mat-cell *matCellDef="let application">
 							<span class="mobile-label">Paid By:</span>
-							{{ application.paidBy }}
+							{{ application.payeeType }}
 						</mat-cell>
 					</ng-container>
 
@@ -99,7 +99,12 @@ import { ApplicantRoutes } from '../applicant-routing.module';
 					</ng-container>
 
 					<mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
-					<mat-row *matRowDef="let row; columns: columns"></mat-row>
+					<mat-row
+						*matRowDef="let row; columns: columns"
+						(click)="onRowClick(row)"
+						class="mat-mdc-row-clickable"
+						[ngClass]="{ 'mat-mdc-highlight-row': selectedRowIndex == row.id }"
+					></mat-row>
 				</mat-table>
 				<mat-paginator
 					[showFirstLastButtons]="true"
@@ -111,6 +116,10 @@ import { ApplicantRoutes } from '../applicant-routing.module';
 				>
 				</mat-paginator>
 			</div>
+		</div>
+
+		<div class="row mt-4" *ngIf="selectedRowIndex >= 0">
+			<div class="col-12">clicked</div>
 		</div>
 	`,
 	styles: [
@@ -133,10 +142,12 @@ export class CrcListComponent implements OnInit {
 	screeningFilter: string = 'ACTIVE';
 	private queryParams: any = this.utilService.getDefaultQueryParams();
 
+	selectedRowIndex = -1;
+
 	constants = SPD_CONSTANTS;
 	dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
-	columns: string[] = ['organizationName', 'uploadedDateTime', 'type', 'paidBy', 'status', 'action1', 'action2'];
+	columns: string[] = ['organizationName', 'uploadedDateTime', 'type', 'payeeType', 'status', 'action1', 'action2'];
 	showResult = false;
 	validationErrs: Array<ValidationErr> = [];
 
@@ -163,20 +174,27 @@ export class CrcListComponent implements OnInit {
 		});
 	}
 
+	onRowClick(row: any) {
+		console.log('onRowClick', row);
+		this.selectedRowIndex = row.id;
+	}
+
 	private loadList(): void {
 		this.dataSource = new MatTableDataSource<any>([]);
 		this.dataSource.data = [
 			{
+				id: 1,
 				organizationName: 'MacDonalds',
 				uploadedDateTime: '2023-01-14T00:13:05.865Z',
-				paidBy: 'Applicant',
+				payeeType: 'Applicant',
 				type: 'PSSO',
 				status: 'Awaiting Applicant',
 			},
 			{
+				id: 2,
 				organizationName: 'Starbucks',
 				uploadedDateTime: '2023-02-04T00:10:05.865Z',
-				paidBy: 'Organization',
+				payeeType: 'Organization',
 				type: 'CRRP',
 				status: 'Complete - No Risk',
 			},

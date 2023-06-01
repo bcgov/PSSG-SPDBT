@@ -6,6 +6,7 @@ using Microsoft.OData.Client;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
+using Spd.Utilities.Shared.ResourceContracts;
 using System.Net;
 
 namespace Spd.Resource.Applicants.ApplicationInvite

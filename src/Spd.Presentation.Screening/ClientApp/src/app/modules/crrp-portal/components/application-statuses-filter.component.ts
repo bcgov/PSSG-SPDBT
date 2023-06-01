@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { ApplicationPortalStatusCodes } from 'src/app/core/constants/model-desc';
+import { ApplicationPortalStatusTypes } from 'src/app/core/code-types/model-desc.models';
 import { UtilService } from 'src/app/core/services/util.service';
 import { BaseFilterComponent, FilterQueryList } from 'src/app/shared/components/base-filter.component';
 
@@ -87,7 +87,7 @@ export const ApplicationStatusFilterMap: Record<keyof ApplicationStatusFilter, s
 	],
 })
 export class ApplicationStatusesFilterComponent extends BaseFilterComponent {
-	applicationPortalStatusCodes = ApplicationPortalStatusCodes;
+	applicationPortalStatusCodes = ApplicationPortalStatusTypes;
 
 	@Input() formGroup: FormGroup = this.formBuilder.group({
 		statuses: new FormControl(),
@@ -118,7 +118,6 @@ export class ApplicationStatusesFilterComponent extends BaseFilterComponent {
 
 	private constructFilterList(formGroupValue: ApplicationStatusFilter): FilterQueryList[] {
 		let filterList: FilterQueryList[] = [];
-		console.log('formGroupValue.statuses', formGroupValue.statuses);
 
 		if (formGroupValue.statuses?.length > 0) {
 			filterList.push({
