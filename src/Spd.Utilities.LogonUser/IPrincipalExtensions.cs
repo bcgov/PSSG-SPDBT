@@ -14,11 +14,14 @@ namespace Spd.Utilities.LogonUser
         public static readonly string IDENTITY_PROVIDER = "identity_provider";
         public static readonly string SPD_USERID = "spd_userid";
         public static readonly string SPD_ORGID = "spd_orgid";
+        public static readonly string ISSUER = "iss";
         public static bool IsAuthenticated(this IPrincipal principal)
         {
             var claimPrincipal = ValidatePrincipal(principal);
             return claimPrincipal.Identity?.IsAuthenticated ?? false;
         }
+
+        public static string? GetIssuer(this IPrincipal principal) => ValidatePrincipal(principal).GetClaimValue(ISSUER);
 
         public static string? GetUserName(this IPrincipal principal)
         {

@@ -2,7 +2,7 @@
 
 namespace Spd.Utilities.LogonUser.Configurations
 {
-    public class BCeIDAuthenticationConfiguration 
+    public class BcscAuthenticationConfiguration 
     {
         [Required]
         public string Authority { get; set; }
@@ -13,9 +13,9 @@ namespace Spd.Utilities.LogonUser.Configurations
         [Required]
         public string Audiences { get; set; }
 
-        public const string Name = "BCeIDAuthentication";
+        public const string Name = "BcscAuthentication";
 
-        public const string AuthSchemeName = "BCeID";
+        public const string AuthSchemeName = "Bcsc";
         public string ResponseType { get; set; } = "code";
         public string Scope { get; set; } = "openid profile email offline_access";
         public string ClientId { get; set; } = null!;
