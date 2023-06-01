@@ -1,8 +1,11 @@
 using MediatR;
+using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Membership.UserProfile;
 using Spd.Utilities.Cache;
+using Spd.Utilities.LogonUser.Configurations;
 using System.Net;
+using System.Security.Claims;
 
 namespace Spd.Utilities.LogonUser
 {
@@ -10,35 +13,52 @@ namespace Spd.Utilities.LogonUser
     {
         private readonly RequestDelegate next;
         private readonly IDistributedCache cache;
+        private readonly BCeIDAuthenticationConfiguration bceidConfig;
+        private readonly BcscAuthenticationConfiguration bcscConfig;
 
-        public UsersMiddleware(RequestDelegate next, IDistributedCache cache)
+        public UsersMiddleware(RequestDelegate next, IDistributedCache cache, IConfiguration configuration)
         {
             this.next = next;
             this.cache = cache;
+            bceidConfig = configuration
+                .GetSection(BCeIDAuthenticationConfiguration.Name)
+                .Get<BCeIDAuthenticationConfiguration>();
+
+            bcscConfig = configuration
+            .GetSection(BcscAuthenticationConfiguration.Name)
+            .Get<BcscAuthenticationConfiguration>();
         }
 
         public async Task InvokeAsync(HttpContext context, IMediator mediator)
         {
-            if (NoUserMiddlewareProcessNeededEndpoints(context) ||
-                context.User.Identity == null ||
-                !context.User.Identity.IsAuthenticated)
+            if (context.User.GetIssuer() == bceidConfig.Issuer)
             {
-                await next(context);
-                return;
-            }
-
-            if (context.Request.Headers.TryGetValue("organization", out var orgIdStr))
-            {
-                bool isSuccess = await ProcessUser(context, mediator, orgIdStr);
-                if (isSuccess)
+                if (NoUserMiddlewareProcessNeededEndpoints(context) ||
+                    context.User.Identity == null ||
+                    !context.User.Identity.IsAuthenticated)
                 {
                     await next(context);
+                    return;
                 }
-            }
-            else
+
+                if (context.Request.Headers.TryGetValue("organization", out var orgIdStr))
+                {
+                    bool isSuccess = await ProcessUser(context, mediator, orgIdStr);
+                    if (isSuccess)
+                    {
+                        await next(context);
+                    }
+                }
+                else
+                {
+                    await ReturnUnauthorized(context, "missing organization in the header.");
+                }
+            }else if(context.User.GetIssuer() == bcscConfig.Issuer)
             {
-                await ReturnUnauthorized(context, "missing organization in the header.");
+                context.User.AddUpdateClaim(ClaimTypes.Role, "Applicant");
             }
+
+            await next(context);
         }
 
         //endpoints that no authentication needed  
@@ -79,6 +99,7 @@ namespace Spd.Utilities.LogonUser
                 await ReturnUnauthorized(context, "organization is not a valid guid");
                 return false;
             }
+            
             UserProfileResponse? userProfile = await cache.Get<UserProfileResponse>($"user-{context.User.GetUserGuid()}");
             if (userProfile == null)
             {

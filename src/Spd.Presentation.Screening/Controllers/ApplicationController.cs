@@ -43,7 +43,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/orgs/{orgId}/application-invites")]
         [HttpPost]
-        [Authorize(Roles = "Primary,Contact")]
+        [Authorize(AuthenticationSchemes = "BCeID", Roles = "Primary,Contact")]
         public async Task<ApplicationInvitesCreateResponse> AddApplicationInvites([FromBody][Required] ApplicationInvitesCreateRequest invitesCreateRequest, [FromRoute] Guid orgId)
         {
             var userId = this.HttpContext.User.GetUserId();
@@ -67,7 +67,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/orgs/{orgId}/application-invites")]
         [HttpGet]
-        [Authorize(Roles = "Primary,Contact")]
+        [Authorize(AuthenticationSchemes = "BCeID", Roles = "Primary,Contact")]
         public async Task<ApplicationInviteListResponse> GetInvitesList([FromRoute] Guid orgId, [FromQuery] string? filters, [FromQuery] uint? page, [FromQuery] uint? pageSize)
         {
             page = (page == null || page < 0) ? 0 : page;
@@ -140,7 +140,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/orgs/{orgId}/applications/bulk/history")]
         [HttpGet]
-        [Authorize(Roles = "Primary,Contact")]
+        [Authorize(AuthenticationSchemes="BCeID",  Roles = "Primary,Contact")]
         public async Task<BulkHistoryListResponse> GetBulkUploadHistoryList([FromRoute] Guid orgId, [FromQuery] string? sorts, [FromQuery] int? page, [FromQuery] int? pageSize)
         {
             page = (page == null || page < 0) ? 0 : page;
@@ -162,7 +162,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/orgs/{orgId}/applications/bulk")]
         [HttpPost]
-        [Authorize(Roles = "Primary,Contact")]
+        [Authorize(AuthenticationSchemes = "BCeID", Roles = "Primary,Contact")]
         public async Task<BulkUploadCreateResponse> BulkUpload([FromForm][Required] BulkUploadRequest bulkUploadRequest, [FromRoute] Guid orgId, CancellationToken ct)
         {
             var userId = this.HttpContext.User.GetUserId();
@@ -316,6 +316,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/orgs/{orgId}/application-statistics")]
         [HttpGet]
+        [Authorize(AuthenticationSchemes = "BCeID", Roles = "Primary,Contact")]
         public async Task<ApplicationStatisticsResponse> GetAppStatsList([FromRoute] Guid orgId)
         {
             return await _mediator.Send(new ApplicationStatisticsQuery(orgId));
@@ -327,6 +328,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <param name="applicationId"></param>
         /// <param name="orgId"></param>
         /// <returns></returns>
+        [Authorize(AuthenticationSchemes = "BCeID", Roles = "Primary,Contact")]
         [Route("api/orgs/{orgId}/identity/{applicationId}")]
         [HttpPut]
         public async Task<ActionResult> Verify([FromRoute] Guid applicationId, [FromRoute] Guid orgId, [FromQuery] IdentityStatusCode status)
@@ -342,6 +344,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <param name="orgId">organizationId</param>
         /// <returns></returns>
         [Route("api/orgs/{orgId}/application")]
+        [Authorize(AuthenticationSchemes = "BCeID", Roles = "Primary,Contact")]
         [HttpPost]
         public async Task<ApplicationCreateResponse> AddApplication([FromForm][Required] CreateApplication createApplication, [FromRoute] Guid orgId)
         {
@@ -375,6 +378,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/orgs/{orgId}/applications")]
         [HttpGet]
+        [Authorize(AuthenticationSchemes = "BCeID", Roles = "Primary,Contact")]
         public async Task<ApplicationListResponse> GetList([FromRoute] Guid orgId, [FromQuery] string? filters, [FromQuery] string? sorts, [FromQuery] int? page, [FromQuery] int? pageSize)
         {
             page = (page == null || page < 0) ? 0 : page;
@@ -462,6 +466,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/orgs/{orgId}/clearances/expired")]
         [HttpGet]
+        [Authorize(AuthenticationSchemes = "BCeID", Roles = "Primary,Contact")]
         public async Task<ClearanceListResponse> GetExpiredClearancesList([FromRoute] Guid orgId, [FromQuery] string? filters, [FromQuery] string? sorts, [FromQuery] int? page, [FromQuery] int? pageSize)
         {
             page = (page == null || page < 0) ? 0 : page;
@@ -485,6 +490,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <param name="clearanceAccessId"></param>
         /// <param name="orgId"></param>
         /// <returns></returns>
+        [Authorize(AuthenticationSchemes = "BCeID", Roles = "Primary,Contact")]
         [Route("api/orgs/{orgId}/clearances/expired/{clearanceAccessId}")]
         [HttpDelete]
         public async Task<ActionResult> ClearanceAccessDeleteAsync([FromRoute] Guid clearanceAccessId, [FromRoute] Guid orgId)
@@ -500,6 +506,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns>FileStreamResult</returns>
         [Route("api/orgs/{orgId}/clearances/{clearanceId}/file")]
         [HttpGet]
+        [Authorize(AuthenticationSchemes = "BCeID", Roles = "Primary,Contact")]
         public async Task<FileStreamResult> DownloadClearanceLetterAsync([FromRoute] Guid clearanceId)
         {
             ClearanceLetterResponse response = await _mediator.Send(new ClearanceLetterQuery(clearanceId));
