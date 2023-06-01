@@ -8,7 +8,6 @@ import { distinctUntilChanged } from 'rxjs';
 import { AppInviteVerifyResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
-import { EmployeeInteractionTypes } from 'src/app/core/constants/model-desc';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { CrcRoutes } from './crc-routing.module';
@@ -37,6 +36,7 @@ export interface AppInviteOrgData extends AppInviteVerifyResponse {
 	contactMiddleName1?: string | null;
 	contactMiddleName2?: string | null;
 	contactPhoneNumber?: string | null;
+	contactGenderCode?: string | null;
 	driversLicenseNumber?: string | null;
 	facilityName?: string | null;
 	mailingAddressLine1?: string | null;
@@ -57,7 +57,6 @@ export interface AppInviteOrgData extends AppInviteVerifyResponse {
 	recaptcha?: string | null;
 	shareCrc?: string | null;
 	validCrc?: boolean | null;
-	worksWithDesc?: string | null;
 }
 
 @Component({
@@ -202,12 +201,7 @@ export class CrcComponent implements OnInit {
 			this.orgData.validCrc = false;
 			this.orgData.facilityNameRequired = false;
 			this.orgData.performPaymentProcess = false;
-
-			this.orgData.worksWithDesc = EmployeeInteractionTypes.find((item) => item.code == this.orgData?.worksWith)
-				?.desc as string;
 		}
-
-		console.debug('orgData', this.orgData);
 
 		//auth step 1 - user is not logged in, no state at all
 		//auth step 3 - angular loads again here, KC posts the token, oidc lib reads token and returns state
@@ -336,7 +330,7 @@ export class CrcComponent implements OnInit {
 		const createRequest: any = { ...data } as Parameters<
 			ApplicationService['apiOrgsOrgIdApplicationPost']
 		>[0]['body']['ApplicationCreateRequestJson'];
-		console.log('onSaveStepperStep createRequest', createRequest);
+		console.debug('onSaveStepperStep createRequest', createRequest);
 
 		this.stepper.next();
 	}

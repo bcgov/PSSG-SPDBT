@@ -6,13 +6,10 @@ import { HotToastService } from '@ngneat/hot-toast';
 import { NgxMaskPipe } from 'ngx-mask';
 import { ApplicationCreateResponse, BooleanTypeCode } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
+import { ApplicationOriginTypeCode } from 'src/app/core/code-types/application-origin-type.model';
+import { GenderTypes, ScreeningTypes } from 'src/app/core/code-types/model-desc.models';
+import { ScreeningTypeCode } from 'src/app/core/code-types/screening-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import {
-	ApplicationOriginTypeCode,
-	GenderCodes,
-	ScreeningTypeCode,
-	ScreeningTypeCodes,
-} from 'src/app/core/constants/model-desc';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
@@ -386,8 +383,8 @@ export class ManualSubmissionComponent implements OnInit {
 	@ViewChild(AddressAutocompleteComponent) addressAutocompleteComponent!: AddressAutocompleteComponent;
 	matcher = new FormErrorStateMatcher();
 
-	screeningTypes = ScreeningTypeCodes;
-	genderCodes = GenderCodes;
+	screeningTypes = ScreeningTypes;
+	genderCodes = GenderTypes;
 
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	booleanTypeCodes = BooleanTypeCode;

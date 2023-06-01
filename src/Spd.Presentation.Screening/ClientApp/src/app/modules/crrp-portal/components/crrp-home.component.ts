@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { tap } from 'rxjs';
 import { ApplicationStatisticsResponse, ContactAuthorizationTypeCode, OrgUserResponse } from 'src/app/api/models';
 import { ApplicationService, OrgUserService } from 'src/app/api/services';
-import { ApplicationPortalStatisticsCode } from 'src/app/core/constants/model-desc';
+import { ApplicationPortalStatisticsTypeCode } from 'src/app/core/code-types/application-portal-statistics-type.model';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { CrrpRoutes } from '../crrp-routing.module';
 
@@ -62,11 +62,11 @@ import { CrrpRoutes } from '../crrp-routing.module';
 							</div>
 						</div>
 						<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
-							<div class="box mx-auto">
+							<div class="box mx-auto" [routerLink]="[getRoute(crrpRoutes.PAYMENTS)]">
 								<div class="box__image">
 									<img class="box__image__item" src="/assets/dashboard/outstanding_payments.png" />
 								</div>
-								<div class="box__text" [routerLink]="[getRoute(crrpRoutes.PAYMENTS)]">
+								<div class="box__text">
 									<h4>Payments</h4>
 									<div class="d-grid gap-2 d-md-flex justify-content-between">
 										<p>Manage and view payments</p>
@@ -262,10 +262,11 @@ export class CrrpHomeComponent {
 		.pipe(
 			tap((res: ApplicationStatisticsResponse) => {
 				const applicationStatistics = res.statistics ?? {};
-				this.awaitingPaymentCount = applicationStatistics[ApplicationPortalStatisticsCode.AwaitingPayment] ?? 0;
-				this.verifyIdentityCount = applicationStatistics[ApplicationPortalStatisticsCode.VerifyIdentity] ?? 0;
-				this.completedClearedCount = applicationStatistics[ApplicationPortalStatisticsCode.ClearedLastSevenDays] ?? 0;
-				this.riskFoundCount = applicationStatistics[ApplicationPortalStatisticsCode.NotClearedLastSevenDays] ?? 0;
+				this.awaitingPaymentCount = applicationStatistics[ApplicationPortalStatisticsTypeCode.AwaitingPayment] ?? 0;
+				this.verifyIdentityCount = applicationStatistics[ApplicationPortalStatisticsTypeCode.VerifyIdentity] ?? 0;
+				this.completedClearedCount =
+					applicationStatistics[ApplicationPortalStatisticsTypeCode.ClearedLastSevenDays] ?? 0;
+				this.riskFoundCount = applicationStatistics[ApplicationPortalStatisticsTypeCode.NotClearedLastSevenDays] ?? 0;
 			})
 		);
 

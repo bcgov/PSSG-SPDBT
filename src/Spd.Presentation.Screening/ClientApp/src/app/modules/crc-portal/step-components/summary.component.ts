@@ -95,10 +95,14 @@ import { UtilService } from 'src/app/core/services/util.service';
 								</div>
 							</div>
 
-							<div class="row mt-2">
-								<div class="offset-xl-3 col-xl-8 offset-lg-4 col-lg-8 col-md-12">
+							<div class="row mb-2">
+								<div class="offset-xl-3 col-xl-4 offset-lg-4 col-lg-4 col-md-12">
 									<div class="text-label d-block text-muted">BC Drivers Licence</div>
 									<div class="text-data">{{ orgData.driversLicenseNumber | default }}</div>
+								</div>
+								<div class="col-xl-4 col-lg-4 col-md-12">
+									<div class="text-label d-block text-muted mt-2 mt-lg-0">Gender</div>
+									<div class="text-data">{{ orgData.contactGenderCode | options : 'GenderTypes' | default }}</div>
 								</div>
 							</div>
 

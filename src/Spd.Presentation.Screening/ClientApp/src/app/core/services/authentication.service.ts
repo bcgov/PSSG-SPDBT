@@ -35,7 +35,7 @@ export class AuthenticationService {
 			.loadDiscoveryDocumentAndTryLogin()
 			.then((_) => this.oauthService.hasValidAccessToken())
 			.catch((_) => false);
-		console.debug('[AuthenticationService.tryLogin] isLoggedIn', isLoggedIn, this.isLoggedIn());
+		console.debug('[AuthenticationService.tryLogin] isLoggedIn', isLoggedIn, this.oauthService.hasValidAccessToken());
 
 		if (isLoggedIn) {
 			this.userService.apiUserGet().subscribe({
@@ -175,17 +175,15 @@ export class AuthenticationService {
 	private notify(isLoggedIn: boolean): void {
 		const token = this.getToken();
 
-		if (!token) {
+		if (!isLoggedIn || !token) {
 			this.loggedInUserTokenData = null;
 			this.loggedInUserInfo = null;
-			return;
+			this._waitUntilAuthentication$.next(false);
 		} else {
 			const decodedToken = this.utilService.getDecodedAccessToken(token);
 			console.debug('[AuthenticationService.setDecodedToken] decodedToken', decodedToken);
-
 			this.loggedInUserTokenData = decodedToken;
+			this._waitUntilAuthentication$.next(true);
 		}
-
-		this._waitUntilAuthentication$.next(isLoggedIn);
 	}
 }

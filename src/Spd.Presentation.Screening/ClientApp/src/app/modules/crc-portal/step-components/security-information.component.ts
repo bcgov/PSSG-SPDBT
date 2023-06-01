@@ -3,6 +3,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
+import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 import { AppInviteOrgData, CrcFormStepComponent } from '../crc.component';
 
 @Component({
@@ -88,7 +89,7 @@ export class SecurityInformationComponent implements CrcFormStepComponent {
 				orgEmail: new FormControl({ value: data.orgEmail, disabled: true }),
 				jobTitle: new FormControl(data.jobTitle, [Validators.required]),
 				vulnerableSectorCategoryDesc: new FormControl({
-					value: data.worksWithDesc,
+					value: this.optionsPipe.transform(data.worksWith, 'EmployeeInteractionTypes'),
 					disabled: true,
 				}),
 				facilityName: new FormControl('', [Validators.required]),
@@ -111,7 +112,7 @@ export class SecurityInformationComponent implements CrcFormStepComponent {
 	form!: FormGroup;
 	matcher = new FormErrorStateMatcher();
 
-	constructor(private formBuilder: FormBuilder) {}
+	constructor(private formBuilder: FormBuilder, private optionsPipe: OptionsPipe) {}
 
 	getDataToSave(): any {
 		return this.form.value;
@@ -124,7 +125,7 @@ export class SecurityInformationComponent implements CrcFormStepComponent {
 			address: data.address,
 			orgEmail: data.orgEmail,
 			jobTitle: data.jobTitle,
-			vulnerableSectorCategory: data.worksWithDesc,
+			vulnerableSectorCategory: this.optionsPipe.transform(data.worksWith, 'EmployeeInteractionTypes'),
 			facilityName: data.facilityName,
 		});
 	}

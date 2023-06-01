@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import jwt_decode from 'jwt-decode';
 import { ApplicationPortalStatusCode, PaginationResponse } from 'src/app/api/models';
+import * as CodeDescTypes from 'src/app/core/code-types/code-desc-types.models';
+import { ApplicationPortalStatusTypes, SelectOptions } from '../code-types/model-desc.models';
 import { SPD_CONSTANTS } from '../constants/constants';
-import { ApplicationPortalStatusCodes, SelectOptions } from '../constants/model-desc';
 
 @Injectable({ providedIn: 'root' })
 export class UtilService {
@@ -79,6 +80,18 @@ export class UtilService {
 	}
 
 	//------------------------------------
+	// Code Table
+
+	getCodeDescTypes<K extends keyof typeof CodeDescTypes>(key: K): (typeof CodeDescTypes)[K] {
+		return CodeDescTypes[key];
+	}
+
+	getCodeDesc(codeTableName: keyof typeof CodeDescTypes, input: string): string {
+		const codeDescs = this.getCodeDescTypes(codeTableName);
+		return codeDescs ? (codeDescs.find((item: SelectOptions) => item.code == input)?.desc as string) ?? '' : '';
+	}
+
+	//------------------------------------
 	// Misc
 	getApplicationPortalStatus(code: string | null | undefined): [string, string] {
 		if (!code) {
@@ -107,11 +120,11 @@ export class UtilService {
 				break;
 		}
 
-		const desc = (ApplicationPortalStatusCodes.find((item: SelectOptions) => item.code == code)?.desc as string) ?? '';
+		const desc = (ApplicationPortalStatusTypes.find((item: SelectOptions) => item.code == code)?.desc as string) ?? '';
 		return [desc, currClass];
 	}
 
 	geApplicationPortalStatusDesc(code: string): string {
-		return (ApplicationPortalStatusCodes.find((item: SelectOptions) => item.code == code)?.desc as string) ?? '';
+		return (ApplicationPortalStatusTypes.find((item: SelectOptions) => item.code == code)?.desc as string) ?? '';
 	}
 }

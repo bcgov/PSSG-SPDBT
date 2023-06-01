@@ -6,8 +6,8 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { ApplicationListResponse, ApplicationResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
+import { ApplicationPortalStatisticsTypeCode } from 'src/app/core/code-types/application-portal-statistics-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { ApplicationPortalStatisticsCode } from 'src/app/core/constants/model-desc';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { CrrpRoutes } from '../crrp-routing.module';
@@ -231,7 +231,7 @@ export class ApplicationStatusesComponent implements OnInit {
 	private queryParams: any = this.utilService.getDefaultQueryParams();
 
 	constants = SPD_CONSTANTS;
-	statisticsCode = ApplicationPortalStatisticsCode;
+	statisticsCode = ApplicationPortalStatisticsTypeCode;
 	filterCriteriaExists = false;
 
 	dataSource: MatTableDataSource<ApplicationStatusResponse> = new MatTableDataSource<ApplicationStatusResponse>([]);
