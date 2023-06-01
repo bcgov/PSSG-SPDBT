@@ -154,4 +154,11 @@ namespace Spd.Utilities.Dynamics
         NoJurisdiction = 100000004,
         Cancelled = 100000005
     }
+
+    public enum ScreenTypeOptionSet
+    {
+        Staff = 100000000,
+        Contractor = 100000001,
+        Licensee = 10000002
+    }
 }

@@ -63,6 +63,8 @@ namespace Spd.Resource.Applicants.ApplicationInvite
         public string? Email { get; set; }
         public string? JobTitle { get; set; }
         public PayerPreferenceTypeCode? PayeeType { get; set; }
+        public ServiceTypeCode ServiceType { get; set; }
+        public ScreenTypeCode ScreenType { get; set; }
     }
 
     public record ApplicationInviteDeleteCmd
@@ -77,5 +79,22 @@ namespace Spd.Resource.Applicants.ApplicationInvite
         public bool ErrorReason { get; set; }
     }
 
+    public enum ScreenTypeCode
+    {
+        Staff,
+        Contractor,
+        Licensee
+    }
 
+    public enum ServiceTypeCode
+    {
+        PSSO,
+        CRRP_EMPLOYEE,
+        CRRP_VOLUNTEER,
+        MCFD,
+        PE_CRC,
+        PE_CRC_VS,
+        LICENSING,
+        PSSO_VS
+    }
 }
