@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { HotToastService } from '@ngneat/hot-toast';
+import { DelegateAddModalComponent } from './delegate-add-modal.component';
 
 @Component({
 	selector: 'app-screening-statuses',
@@ -12,8 +15,25 @@ import { Component } from '@angular/core';
 			</div>
 
 			<app-status-statistics></app-status-statistics>
+
+			<button mat-flat-button color="primary" class="w-auto" (click)="addDelegate()">Add Delegate</button>
 		</section>
 	`,
 	styles: [],
 })
-export class ScreeningStatusesComponent {}
+export class ScreeningStatusesComponent {
+	constructor(private dialog: MatDialog, private hotToast: HotToastService) {}
+
+	addDelegate(): void {
+		this.dialog
+			.open(DelegateAddModalComponent, {
+				width: '800px',
+			})
+			.afterClosed()
+			.subscribe((resp) => {
+				if (resp) {
+					this.hotToast.success('User was successfully added');
+				}
+			});
+	}
+}

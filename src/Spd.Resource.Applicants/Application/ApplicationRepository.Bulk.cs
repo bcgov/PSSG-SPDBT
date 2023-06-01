@@ -2,6 +2,7 @@ using Microsoft.Dynamics.CRM;
 using Microsoft.OData.Client;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
+using Spd.Utilities.Shared.ResourceContracts;
 
 namespace Spd.Resource.Applicants.Application;
 internal partial class ApplicationRepository : IApplicationRepository

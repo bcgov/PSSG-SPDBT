@@ -33,6 +33,7 @@ export const SPD_CONSTANTS = {
 	},
 	sessionStorage: {
 		organizationRegStateKey: 'state',
+		crcPortalStateKey: 'crc-state',
 		bannerMessageKey: 'banner-message',
 	},
 };

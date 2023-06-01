@@ -6,8 +6,8 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { ApplicationListResponse, ApplicationResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
+import { ApplicationPortalStatisticsTypeCode } from 'src/app/core/code-types/application-portal-statistics-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { ApplicationPortalStatisticsCode } from 'src/app/core/constants/model-desc';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { CrrpRoutes } from '../crrp-routing.module';
@@ -127,7 +127,7 @@ export interface ApplicationStatusResponse extends ApplicationResponse {
 							<mat-header-cell *matHeaderCellDef>Paid By</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Paid By:</span>
-								{{ application.paidBy }}
+								{{ application.payeeType }}
 							</mat-cell>
 						</ng-container>
 
@@ -231,7 +231,7 @@ export class ApplicationStatusesComponent implements OnInit {
 	private queryParams: any = this.utilService.getDefaultQueryParams();
 
 	constants = SPD_CONSTANTS;
-	statisticsCode = ApplicationPortalStatisticsCode;
+	statisticsCode = ApplicationPortalStatisticsTypeCode;
 	filterCriteriaExists = false;
 
 	dataSource: MatTableDataSource<ApplicationStatusResponse> = new MatTableDataSource<ApplicationStatusResponse>([]);
@@ -268,13 +268,13 @@ export class ApplicationStatusesComponent implements OnInit {
 	}
 
 	onPayNow(application: ApplicationStatusResponse): void {
-		this.router.navigateByUrl(CrrpRoutes.crrpPath(CrrpRoutes.PAYMENTS), {
+		this.router.navigateByUrl(CrrpRoutes.path(CrrpRoutes.PAYMENTS), {
 			state: { caseId: application.applicationNumber },
 		});
 	}
 
 	onVerifyApplicant(application: ApplicationStatusResponse): void {
-		this.router.navigateByUrl(CrrpRoutes.crrpPath(CrrpRoutes.IDENTITY_VERIFICATION), {
+		this.router.navigateByUrl(CrrpRoutes.path(CrrpRoutes.IDENTITY_VERIFICATION), {
 			state: { caseId: application.applicationNumber },
 		});
 	}

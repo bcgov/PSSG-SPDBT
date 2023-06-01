@@ -1,5 +1,6 @@
 using Alba;
 using Spd.Manager.Cases;
+using Spd.Utilities.Shared.ManagerContract;
 using System.Net.Http.Json;
 using System.Net.Mime;
 using System.Text.Json;
@@ -177,7 +178,7 @@ public class ApplicationScenarios : ScenarioContextBase
                     LastName="lastName",
                     Email="email@test.com",
                     JobTitle="qa",
-                    PayeeType=PayeePreferenceTypeCode.Applicant
+                    PayeeType=PayerPreferenceTypeCode.Applicant
                 }
             }
         };
