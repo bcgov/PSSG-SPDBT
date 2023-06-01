@@ -7,18 +7,18 @@ import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged, Subject } from 'rxjs';
 import {
-  AnonymousOrgRegistrationCreateRequest,
-  BooleanTypeCode,
-  OrgRegistrationCreateResponse,
-  RegistrationTypeCode,
+	AnonymousOrgRegistrationCreateRequest,
+	BooleanTypeCode,
+	OrgRegistrationCreateResponse,
+	RegistrationTypeCode,
 } from 'src/app/api/models';
 import { OrgRegistrationService } from 'src/app/api/services';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import {
-  OrgRegDuplicateDialogData,
-  OrgRegDuplicateDialogResponse,
-  OrgRegDuplicateModalComponent,
+	OrgRegDuplicateDialogData,
+	OrgRegDuplicateDialogResponse,
+	OrgRegDuplicateModalComponent,
 } from './org-reg-duplicate-modal.component';
 import { OrgRegistrationRoutes } from './org-registration-routing.module';
 import { StepFourComponent } from './steps/step-four.component';
@@ -27,14 +27,14 @@ import { StepThreeComponent } from './steps/step-three.component';
 import { StepTwoComponent } from './steps/step-two.component';
 
 export interface RegistrationFormStepComponent {
-  getDataToSave(): any;
-  clearCurrentData(): void;
-  isFormValid(): boolean;
+	getDataToSave(): any;
+	clearCurrentData(): void;
+	isFormValid(): boolean;
 }
 
 @Component({
-  selector: 'app-org-registration',
-  template: `
+	selector: 'app-org-registration',
+	template: `
 		<div class="container mt-4">
 			<mat-stepper
 				linear
@@ -86,275 +86,277 @@ export interface RegistrationFormStepComponent {
 			</mat-stepper>
 		</div>
 	`,
-  styles: [],
+	styles: [],
 })
 export class OrgRegistrationComponent implements OnInit {
-  registrationTypeCode: RegistrationTypeCode | null = null;
-  resetRecaptcha: Subject<void> = new Subject<void>();
-  sendToEmailAddress = '';
-  orientation: StepperOrientation = 'vertical';
-  currentStateInfo: any = {};
+	registrationTypeCode: RegistrationTypeCode | null = null;
+	resetRecaptcha: Subject<void> = new Subject<void>();
+	sendToEmailAddress = '';
+	orientation: StepperOrientation = 'vertical';
+	currentStateInfo: any = {};
 
-  @ViewChild('stepper') stepper!: MatStepper;
+	@ViewChild('stepper') stepper!: MatStepper;
 
-  @ViewChild(StepOneComponent)
-  stepOneComponent!: StepOneComponent;
+	@ViewChild(StepOneComponent)
+	stepOneComponent!: StepOneComponent;
 
-  @ViewChild(StepTwoComponent)
-  stepTwoComponent!: StepTwoComponent;
+	@ViewChild(StepTwoComponent)
+	stepTwoComponent!: StepTwoComponent;
 
-  @ViewChild(StepThreeComponent)
-  stepThreeComponent!: StepThreeComponent;
+	@ViewChild(StepThreeComponent)
+	stepThreeComponent!: StepThreeComponent;
 
-  @ViewChild(StepFourComponent)
-  stepFourComponent!: StepFourComponent;
+	@ViewChild(StepFourComponent)
+	stepFourComponent!: StepFourComponent;
 
-  constructor(
-    private router: Router,
-    private breakpointObserver: BreakpointObserver,
-    private authenticationService: AuthenticationService,
-    private orgRegistrationService: OrgRegistrationService,
-    private hotToast: HotToastService,
-    private utilService: UtilService,
-    private dialog: MatDialog
-  ) { }
+	constructor(
+		private router: Router,
+		private breakpointObserver: BreakpointObserver,
+		private authenticationService: AuthenticationService,
+		private orgRegistrationService: OrgRegistrationService,
+		private hotToast: HotToastService,
+		private utilService: UtilService,
+		private dialog: MatDialog
+	) {}
 
-  async ngOnInit(): Promise<void> {
-    this.breakpointObserver
-      .observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
-      .pipe(
-        // tap((value) => console.debug(value)),
-        distinctUntilChanged()
-      )
-      .subscribe(() => this.breakpointChanged());
+	async ngOnInit(): Promise<void> {
+		this.breakpointObserver
+			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
+			.pipe(
+				// tap((value) => console.debug(value)),
+				distinctUntilChanged()
+			)
+			.subscribe(() => this.breakpointChanged());
 
-    //auth step 1 - user is not logged in, no state at all
-    //auth step 3 - angular loads again here, KC posts the token, oidc lib reads token and returns state
-    const authInfo = await this.authenticationService.tryLogin(OrgRegistrationRoutes.orgRegPath(OrgRegistrationRoutes.ORG_REGISTRATION));
+		//auth step 1 - user is not logged in, no state at all
+		//auth step 3 - angular loads again here, KC posts the token, oidc lib reads token and returns state
+		const authInfo = await this.authenticationService.tryLogin(
+			OrgRegistrationRoutes.orgRegPath(OrgRegistrationRoutes.ORG_REGISTRATION)
+		);
 
-    if (authInfo.loggedIn) {
-      if (authInfo.state) {
-        const stateInfo = this.utilService.getSessionData(this.utilService.ORG_REG_STATE_KEY);
-        console.debug('[OrgRegistrationComponent.ngOnInit] stateInfo', stateInfo);
-        if (stateInfo) {
-          this.postLoginNavigate(stateInfo);
-        }
-      } else {
-        this.router.navigate([OrgRegistrationRoutes.ORG_REGISTRATION]);
-      }
-    }
-  }
+		if (authInfo.loggedIn) {
+			if (authInfo.state) {
+				const stateInfo = this.utilService.getSessionData(this.utilService.ORG_REG_STATE_KEY);
+				console.debug('[OrgRegistrationComponent.ngOnInit] stateInfo', stateInfo);
+				if (stateInfo) {
+					this.postLoginNavigate(stateInfo);
+				}
+			} else {
+				this.router.navigate([OrgRegistrationRoutes.ORG_REGISTRATION]);
+			}
+		}
+	}
 
-  postLoginNavigate(step1Data: any): void {
-    let step = this.stepper.steps.get(0);
-    if (step) {
-      step.completed = true;
-    }
+	private postLoginNavigate(step1Data: any): void {
+		let step = this.stepper.steps.get(0);
+		if (step) {
+			step.completed = true;
+		}
 
-    step = this.stepper.steps.get(1);
-    if (step) {
-      step.completed = true;
-    }
+		step = this.stepper.steps.get(1);
+		if (step) {
+			step.completed = true;
+		}
 
-    this.currentStateInfo = JSON.parse(step1Data);
-    this.stepper.selectedIndex = 2;
-  }
+		this.currentStateInfo = JSON.parse(step1Data);
+		this.stepper.selectedIndex = 2;
+	}
 
-  async onRegisterWithBCeid(): Promise<void> {
-    const stateInfo = JSON.stringify({ ...this.stepOneComponent.getStepData() });
+	async onRegisterWithBCeid(): Promise<void> {
+		const stateInfo = JSON.stringify({ ...this.stepOneComponent.getStepData() });
 
-    //auth step 2 - unload angular, redirect to KC
-    // const decodedData = decodeURIComponent(authInfo.state);
-    this.utilService.setSessionData(this.utilService.ORG_REG_STATE_KEY, stateInfo);
-    const nextUrl = await this.authenticationService.login(
-      OrgRegistrationRoutes.orgRegPath(OrgRegistrationRoutes.ORG_REGISTRATION)
-    );
-    if (nextUrl) {
-      // User is already logged in and clicks Login button.
-      // For example, complete a registration then refresh the page.
-      // Want it to start at the beginning and continue past login page.
-      this.postLoginNavigate(stateInfo);
-    }
-  }
+		//auth step 2 - unload angular, redirect to KC
+		// const decodedData = decodeURIComponent(authInfo.state);
+		this.utilService.setSessionData(this.utilService.ORG_REG_STATE_KEY, stateInfo);
+		const nextUrl = await this.authenticationService.login(
+			OrgRegistrationRoutes.orgRegPath(OrgRegistrationRoutes.ORG_REGISTRATION)
+		);
+		if (nextUrl) {
+			// User is already logged in and clicks Login button.
+			// For example, complete a registration then refresh the page.
+			// Want it to start at the beginning and continue past login page.
+			this.postLoginNavigate(stateInfo);
+		}
+	}
 
-  onPreviousStepperStep(stepper: MatStepper): void {
-    const stepIndex = this.stepper.selectedIndex;
-    if (stepIndex == 2 && this.authenticationService.isLoggedIn()) {
-      // Go to Step 1
-      this.stepper.selectedIndex = 0;
-      this.stepOneComponent.navigateToLastStep(this.currentStateInfo);
-      return;
-    }
+	onPreviousStepperStep(stepper: MatStepper): void {
+		const stepIndex = this.stepper.selectedIndex;
+		if (stepIndex == 2 && this.authenticationService.isLoggedIn()) {
+			// Go to Step 1
+			this.stepper.selectedIndex = 0;
+			this.stepOneComponent.navigateToLastStep(this.currentStateInfo);
+			return;
+		}
 
-    stepper.previous();
-  }
+		stepper.previous();
+	}
 
-  onSaveStepperStep(): void {
-    let dataToSave = {};
-    if (this.stepOneComponent) {
-      console.debug('[onSaveStepperStep] currentStateInfo', this.currentStateInfo);
-      if (this.currentStateInfo && this.currentStateInfo.registrationTypeCode) {
-        dataToSave = { ...this.currentStateInfo };
-      } else {
-        dataToSave = { ...this.stepOneComponent.getStepData() };
-      }
-    }
+	onSaveStepperStep(): void {
+		let dataToSave = {};
+		if (this.stepOneComponent) {
+			console.debug('[onSaveStepperStep] currentStateInfo', this.currentStateInfo);
+			if (this.currentStateInfo && this.currentStateInfo.registrationTypeCode) {
+				dataToSave = { ...this.currentStateInfo };
+			} else {
+				dataToSave = { ...this.stepOneComponent.getStepData() };
+			}
+		}
 
-    if (this.stepThreeComponent) {
-      dataToSave = { ...dataToSave, ...this.stepThreeComponent.getStepData() };
-    }
+		if (this.stepThreeComponent) {
+			dataToSave = { ...dataToSave, ...this.stepThreeComponent.getStepData() };
+		}
 
-    if (this.stepFourComponent) {
-      dataToSave = { ...dataToSave, ...this.stepFourComponent.getStepData() };
-    }
+		if (this.stepFourComponent) {
+			dataToSave = { ...dataToSave, ...this.stepFourComponent.getStepData() };
+		}
 
-    const body: AnonymousOrgRegistrationCreateRequest = dataToSave;
-    body.requireDuplicateCheck = true;
-    console.debug('[onSaveStepperStep] dataToSave', body);
+		const body: AnonymousOrgRegistrationCreateRequest = dataToSave;
+		body.requireDuplicateCheck = true;
+		console.debug('[onSaveStepperStep] dataToSave', body);
 
-    if (this.authenticationService.isLoggedIn()) {
-      this.orgRegistrationService
-        .apiOrgRegistrationsPost({ body })
-        .pipe()
-        .subscribe((dupres: OrgRegistrationCreateResponse) => {
-          this.displayDataValidationMessage(body, dupres, false);
-        });
-    } else {
-      this.orgRegistrationService
-        .apiAnonymousOrgRegistrationsPost({ body })
-        .pipe()
-        .subscribe((dupres: OrgRegistrationCreateResponse) => {
-          this.displayDataValidationMessage(body, dupres, true);
-        });
-    }
-  }
+		if (this.authenticationService.isLoggedIn()) {
+			this.orgRegistrationService
+				.apiOrgRegistrationsPost({ body })
+				.pipe()
+				.subscribe((dupres: OrgRegistrationCreateResponse) => {
+					this.displayDataValidationMessage(body, dupres, false);
+				});
+		} else {
+			this.orgRegistrationService
+				.apiAnonymousOrgRegistrationsPost({ body })
+				.pipe()
+				.subscribe((dupres: OrgRegistrationCreateResponse) => {
+					this.displayDataValidationMessage(body, dupres, true);
+				});
+		}
+	}
 
-  onNextStepperStep(stepper: MatStepper): void {
-    // complete the current step
-    if (this.stepper && this.stepper.selected) this.stepper.selected.completed = true;
+	onNextStepperStep(stepper: MatStepper): void {
+		// complete the current step
+		if (this.stepper?.selected) this.stepper.selected.completed = true;
 
-    const stepIndex = this.stepper.selectedIndex;
-    if (stepIndex == 0 && this.authenticationService.isLoggedIn()) {
-      // Mark Step 2 (Log In) as complete
-      const stepLogin = this.stepper.steps.get(1);
-      if (stepLogin) {
-        stepLogin.completed = true;
-      }
+		const stepIndex = this.stepper.selectedIndex;
+		if (stepIndex == 0 && this.authenticationService.isLoggedIn()) {
+			// Mark Step 2 (Log In) as complete
+			const stepLogin = this.stepper.steps.get(1);
+			if (stepLogin) {
+				stepLogin.completed = true;
+			}
 
-      const stateInfo = JSON.stringify({ ...this.stepOneComponent.getStepData() });
-      this.currentStateInfo = JSON.parse(stateInfo);
-      this.utilService.setSessionData(this.utilService.ORG_REG_STATE_KEY, stateInfo);
+			const stateInfo = JSON.stringify({ ...this.stepOneComponent.getStepData() });
+			this.currentStateInfo = JSON.parse(stateInfo);
+			this.utilService.setSessionData(this.utilService.ORG_REG_STATE_KEY, stateInfo);
 
-      // Go to Step 3
-      this.stepper.selectedIndex = 2;
-      return;
-    }
+			// Go to Step 3
+			this.stepper.selectedIndex = 2;
+			return;
+		}
 
-    stepper.next();
-  }
+		stepper.next();
+	}
 
-  onSelectRegistrationType(type: RegistrationTypeCode): void {
-    this.registrationTypeCode = type;
-  }
+	onSelectRegistrationType(type: RegistrationTypeCode): void {
+		this.registrationTypeCode = type;
+	}
 
-  onClearRegistrationData(): void {
-    this.stepper.steps.forEach((step) => {
-      step.completed = false;
-    });
+	onClearRegistrationData(): void {
+		this.stepper.steps.forEach((step) => {
+			step.completed = false;
+		});
 
-    this.stepThreeComponent.clearStepData();
-    this.stepFourComponent.clearStepData();
-  }
+		this.stepThreeComponent.clearStepData();
+		this.stepFourComponent.clearStepData();
+	}
 
-  onScrollIntoView(): void {
-    const stepIndex = this.stepper.selectedIndex;
-    const stepId = this.stepper._getStepLabelId(stepIndex);
-    const stepElement = document.getElementById(stepId);
-    if (stepElement) {
-      setTimeout(() => {
-        stepElement.scrollIntoView({
-          block: 'start',
-          inline: 'nearest',
-          behavior: 'smooth',
-        });
-      }, 250);
-    }
-  }
+	onScrollIntoView(): void {
+		const stepIndex = this.stepper.selectedIndex;
+		const stepId = this.stepper._getStepLabelId(stepIndex);
+		const stepElement = document.getElementById(stepId);
+		if (stepElement) {
+			setTimeout(() => {
+				stepElement.scrollIntoView({
+					block: 'start',
+					inline: 'nearest',
+					behavior: 'smooth',
+				});
+			}, 250);
+		}
+	}
 
-  onStepSelectionChange(event: StepperSelectionEvent) {
-    if (event.selectedIndex == 3) {
-      const step3Data = this.stepThreeComponent.getStepData();
-      this.sendToEmailAddress = step3Data.contactEmail;
-    }
+	onStepSelectionChange(event: StepperSelectionEvent) {
+		if (event.selectedIndex == 3) {
+			const step3Data = this.stepThreeComponent.getStepData();
+			this.sendToEmailAddress = step3Data.contactEmail;
+		}
 
-    this.onScrollIntoView();
-  }
+		this.onScrollIntoView();
+	}
 
-  private displayDataValidationMessage(
-    body: AnonymousOrgRegistrationCreateRequest,
-    dupres: OrgRegistrationCreateResponse,
-    isAnonymous: boolean
-  ): void {
-    if (dupres.createSuccess) {
-      this.handleSaveSuccess();
-      return;
-    }
+	private displayDataValidationMessage(
+		body: AnonymousOrgRegistrationCreateRequest,
+		dupres: OrgRegistrationCreateResponse,
+		isAnonymous: boolean
+	): void {
+		if (dupres.createSuccess) {
+			this.handleSaveSuccess();
+			return;
+		}
 
-    if (dupres.hasPotentialDuplicate == true) {
-      const data: OrgRegDuplicateDialogData = {
-        title: 'Potential duplicate detected',
-        message: 'A potential duplicate has been found. Are you sure this is a new organization registration request?',
-        actionText: 'Yes, create registration',
-        cancelText: 'Cancel',
-        displayCaptcha: isAnonymous,
-      };
+		if (dupres.hasPotentialDuplicate == true) {
+			const data: OrgRegDuplicateDialogData = {
+				title: 'Potential duplicate detected',
+				message: 'A potential duplicate has been found. Are you sure this is a new organization registration request?',
+				actionText: 'Yes, create registration',
+				cancelText: 'Cancel',
+				displayCaptcha: isAnonymous,
+			};
 
-      this.dialog
-        .open(OrgRegDuplicateModalComponent, { data })
-        .afterClosed()
-        .subscribe((response: OrgRegDuplicateDialogResponse) => {
-          if (response.success) {
-            body.recaptcha = isAnonymous ? response.captchaResponse?.resolved : null;
-            this.saveRegistration(body, BooleanTypeCode.Yes);
-          } else if (isAnonymous) {
-            this.resetRecaptcha.next(); // reset the recaptcha
-          }
-        });
-    }
-  }
+			this.dialog
+				.open(OrgRegDuplicateModalComponent, { data })
+				.afterClosed()
+				.subscribe((response: OrgRegDuplicateDialogResponse) => {
+					if (response.success) {
+						body.recaptcha = isAnonymous ? response.captchaResponse?.resolved : null;
+						this.saveRegistration(body, BooleanTypeCode.Yes);
+					} else if (isAnonymous) {
+						this.resetRecaptcha.next(); // reset the recaptcha
+					}
+				});
+		}
+	}
 
-  private saveRegistration(body: AnonymousOrgRegistrationCreateRequest, hasPotentialDuplicate: BooleanTypeCode) {
-    body.hasPotentialDuplicate = hasPotentialDuplicate;
-    body.requireDuplicateCheck = false;
+	private saveRegistration(body: AnonymousOrgRegistrationCreateRequest, hasPotentialDuplicate: BooleanTypeCode) {
+		body.hasPotentialDuplicate = hasPotentialDuplicate;
+		body.requireDuplicateCheck = false;
 
-    if (this.authenticationService.isLoggedIn()) {
-      this.orgRegistrationService
-        .apiOrgRegistrationsPost({ body })
-        .pipe()
-        .subscribe((_res: any) => {
-          this.handleSaveSuccess();
-        });
-    } else {
-      this.orgRegistrationService
-        .apiAnonymousOrgRegistrationsPost({ body })
-        .pipe()
-        .subscribe((_res: any) => {
-          this.handleSaveSuccess();
-        });
-    }
-  }
+		if (this.authenticationService.isLoggedIn()) {
+			this.orgRegistrationService
+				.apiOrgRegistrationsPost({ body })
+				.pipe()
+				.subscribe((_res: any) => {
+					this.handleSaveSuccess();
+				});
+		} else {
+			this.orgRegistrationService
+				.apiAnonymousOrgRegistrationsPost({ body })
+				.pipe()
+				.subscribe((_res: any) => {
+					this.handleSaveSuccess();
+				});
+		}
+	}
 
-  private breakpointChanged() {
-    if (this.breakpointObserver.isMatched(Breakpoints.XLarge) || this.breakpointObserver.isMatched(Breakpoints.Large)) {
-      this.orientation = 'horizontal';
-    } else {
-      this.orientation = 'vertical';
-    }
-  }
+	private breakpointChanged() {
+		if (this.breakpointObserver.isMatched(Breakpoints.XLarge) || this.breakpointObserver.isMatched(Breakpoints.Large)) {
+			this.orientation = 'horizontal';
+		} else {
+			this.orientation = 'vertical';
+		}
+	}
 
-  private handleSaveSuccess(): void {
-    this.hotToast.success('The application was successfully submitted');
-    this.utilService.clearSessionData(this.utilService.ORG_REG_STATE_KEY);
-    this.stepFourComponent.childStepNext();
-  }
+	private handleSaveSuccess(): void {
+		this.hotToast.success('The application was successfully submitted');
+		this.utilService.clearSessionData(this.utilService.ORG_REG_STATE_KEY);
+		this.stepFourComponent.childStepNext();
+	}
 }

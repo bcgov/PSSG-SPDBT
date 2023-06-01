@@ -6,6 +6,7 @@ import { ScreeningChecksComponent } from './components/screening-checks.componen
 import { ScreeningStatusesComponent } from './components/screening-statuses.component';
 import { PssoRoutingModule } from './psso-routing.module';
 import { PssoComponent } from './psso.component';
+import { DelegateAddModalComponent } from './components/delegate-add-modal.component';
 
 @NgModule({
 	declarations: [
@@ -14,6 +15,7 @@ import { PssoComponent } from './psso.component';
 		ScreeningChecksComponent,
 		IdentityVerificationComponent,
 		ManualSubmissionComponent,
+  DelegateAddModalComponent,
 	],
 	imports: [SharedModule, PssoRoutingModule],
 })

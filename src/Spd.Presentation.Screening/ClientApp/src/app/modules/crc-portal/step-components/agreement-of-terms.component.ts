@@ -1,14 +1,13 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { CaptchaResponse, CaptchaResponseType } from 'src/app/shared/components/captcha-v2.component';
 import { CrcFormStepComponent } from '../crc.component';
 
 @Component({
 	selector: 'app-agreement-of-terms',
 	template: `
-		<section class="step-section pt-4 pb-5 px-3">
+		<section class="step-section p-3">
 			<form [formGroup]="form" novalidate>
 				<div class="step">
 					<app-step-title title="Review the following terms of agreement"></app-step-title>
@@ -82,6 +81,7 @@ import { CrcFormStepComponent } from '../crc.component';
 								further described below, including any local police records.
 							</mat-checkbox>
 							<mat-error
+								class="mat-option-error"
 								*ngIf="
 									(form.get('agreeToCriminalCheck')?.dirty || form.get('agreeToCriminalCheck')?.touched) &&
 									form.get('agreeToCriminalCheck')?.invalid &&
@@ -100,6 +100,7 @@ import { CrcFormStepComponent } from '../crc.component';
 								per the Criminal Records Act.
 							</mat-checkbox>
 							<mat-error
+								class="mat-option-error"
 								*ngIf="
 									(form.get('agreeToVulnerableSectorSearch')?.dirty ||
 										form.get('agreeToVulnerableSectorSearch')?.touched) &&
@@ -108,16 +109,6 @@ import { CrcFormStepComponent } from '../crc.component';
 								"
 								>This is required</mat-error
 							>
-						</div>
-					</div>
-
-					<div class="row" *ngIf="displayCaptcha">
-						<div class="offset-md-2 col-md-8 col-sm-12">
-							<app-captcha-v2
-								(captchaResponse)="onTokenResponse($event)"
-								[resetControl]="resetRecaptcha"
-							></app-captcha-v2>
-							<mat-error *ngIf="displayValidationErrors && !captchaPassed"> This is required </mat-error>
 						</div>
 					</div>
 				</div>
@@ -140,7 +131,7 @@ import { CrcFormStepComponent } from '../crc.component';
 		`,
 	],
 })
-export class AgreementOfTermsComponent implements OnInit, CrcFormStepComponent {
+export class AgreementOfTermsComponent implements CrcFormStepComponent {
 	@Input() resetRecaptcha: Subject<void> = new Subject<void>();
 
 	form: FormGroup = this.formBuilder.group({
@@ -150,53 +141,22 @@ export class AgreementOfTermsComponent implements OnInit, CrcFormStepComponent {
 	hasScrolledToBottom = false;
 	displayValidationErrors = false;
 
-	displayCaptcha = false;
-	captchaPassed = false;
-	captchaResponse: CaptchaResponse | null = null;
-
 	constructor(private formBuilder: FormBuilder, private authenticationService: AuthenticationService) {}
-
-	ngOnInit(): void {
-		this.authenticationService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
-			this.displayCaptcha = !isLoggedIn;
-		});
-
-		this.resetRecaptcha.subscribe(() => this.onResetRecaptcha());
-	}
 
 	getDataToSave(): any {
 		return {
 			...this.form.value,
-			recaptcha: this.displayCaptcha && this.captchaPassed ? this.captchaResponse?.resolved : null,
 		};
 	}
 
 	isFormValid(): boolean {
-		this.displayValidationErrors = !this.hasScrolledToBottom || !this.captchaPassed;
-		return this.form.valid &&
-			this.hasScrolledToBottom &&
-			((this.displayCaptcha && this.captchaPassed) || !this.displayCaptcha)
-			? true
-			: false;
-	}
-
-	onResetRecaptcha(): void {
-		this.captchaPassed = false;
-		this.captchaResponse = null;
+		this.displayValidationErrors = !this.hasScrolledToBottom;
+		return this.form.valid && this.hasScrolledToBottom ? true : false;
 	}
 
 	onScrollTermsAndConditions(e: any) {
 		if (e.target.scrollHeight < e.target.scrollTop + e.target.offsetHeight) {
 			this.hasScrolledToBottom = true;
-		}
-	}
-
-	onTokenResponse($event: CaptchaResponse) {
-		this.captchaResponse = $event;
-		if ($event.type === CaptchaResponseType.success && this.captchaResponse?.resolved) {
-			this.captchaPassed = true;
-		} else {
-			this.captchaPassed = false;
 		}
 	}
 }

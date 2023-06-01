@@ -30,7 +30,7 @@ export class CrrpRoutes {
 
 	public static MODULE_PATH = 'crrp';
 
-	public static crrpPath(route: string | null = null): string {
+	public static path(route: string | null = null): string {
 		return route ? `/${CrrpRoutes.MODULE_PATH}/${route}` : `/${CrrpRoutes.MODULE_PATH}`;
 	}
 }

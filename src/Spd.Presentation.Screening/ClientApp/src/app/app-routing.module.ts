@@ -10,14 +10,14 @@ import { AccessDeniedComponent } from './shared/components/access-denied.compone
 
 export class AppRoutes {
 	public static ORG_REGISTRATION = OrgRegistrationRoutes.MODULE_PATH;
-	public static CRC_APPLICATION = CrcRoutes.MODULE_PATH;
+	public static CRCA_APPLICATION = CrcRoutes.MODULE_PATH;
 	public static CRRP_APPLICATION = CrrpRoutes.MODULE_PATH;
 	public static PSSO_APPLICATION = PssoRoutes.MODULE_PATH;
 	public static APPLICANT_PORTAL = ApplicantRoutes.MODULE_PATH;
 	public static ACCESS_DENIED = 'access-denied';
 	public static INVITATION_DENIED = 'invitation-denied';
 
-	public static appPath(route: string): string {
+	public static path(route: string): string {
 		return `/${route}`;
 	}
 }
@@ -36,7 +36,7 @@ const routes: Routes = [
 		data: { title: 'Organization Registration' },
 	},
 	{
-		path: AppRoutes.CRC_APPLICATION,
+		path: AppRoutes.CRCA_APPLICATION,
 		loadChildren: () => import('./modules/crc-portal/crc-portal.module').then((m) => m.CrcPortalModule),
 		data: { title: 'Criminal Record Check Application' },
 	},

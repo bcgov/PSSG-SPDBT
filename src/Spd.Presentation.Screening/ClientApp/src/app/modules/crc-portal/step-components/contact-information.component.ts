@@ -1,16 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgxMaskPipe } from 'ngx-mask';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { CrcFormStepComponent } from '../crc.component';
+import { AppInviteOrgData, CrcFormStepComponent } from '../crc.component';
 
 @Component({
 	selector: 'app-contact-information',
 	template: `
-		<section class="step-section pt-4 pb-5 px-3">
+		<section class="step-section p-3" *ngIf="orgData">
 			<form [formGroup]="form" novalidate>
 				<div class="step">
 					<app-step-title
@@ -84,36 +84,48 @@ import { CrcFormStepComponent } from '../crc.component';
 			</form>
 		</section>
 	`,
-	styles: [``],
+	styles: [],
 })
 export class ContactInformationComponent implements CrcFormStepComponent {
+	private _orgData: AppInviteOrgData | null = null;
+	@Input()
+	set orgData(data: AppInviteOrgData | null) {
+		if (!data) return;
+
+		this._orgData = data;
+		this.form = this.formBuilder.group(
+			{
+				contactGivenName: new FormControl(this._orgData.contactGivenName, [Validators.required]),
+				contactMiddleName1: new FormControl(this._orgData.contactMiddleName1),
+				contactMiddleName2: new FormControl(this._orgData.contactMiddleName2),
+				contactSurname: new FormControl(this._orgData.contactSurname, [Validators.required]),
+				contactEmail: new FormControl(this._orgData.contactEmail, [Validators.required, FormControlValidators.email]),
+				contactPhoneNumber: new FormControl(this._orgData.contactPhoneNumber, [Validators.required]),
+				oneLegalName: new FormControl(this._orgData.oneLegalName),
+			},
+			{
+				validators: [
+					FormGroupValidators.conditionalRequiredValidator(
+						'contactGivenName',
+						(form) => !form.get('oneLegalName')?.value
+					),
+				],
+			}
+		);
+	}
+	get orgData(): AppInviteOrgData | null {
+		return this._orgData;
+	}
+
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
-	form: FormGroup = this.formBuilder.group(
-		{
-			contactGivenName: new FormControl('', [Validators.required]),
-			contactMiddleName1: new FormControl(''),
-			contactMiddleName2: new FormControl(''),
-			contactSurname: new FormControl('', [Validators.required]),
-			contactEmail: new FormControl('', [Validators.required, FormControlValidators.email]),
-			contactPhoneNumber: new FormControl('', [Validators.required]),
-			oneLegalName: new FormControl(false),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalRequiredValidator(
-					'contactGivenName',
-					(form) => !form.get('oneLegalName')?.value
-				),
-			],
-		}
-	);
+	form!: FormGroup;
 	startDate = new Date(2000, 0, 1);
 	matcher = new FormErrorStateMatcher();
 
 	constructor(private formBuilder: FormBuilder, private maskPipe: NgxMaskPipe) {}
 
 	getDataToSave(): any {
-		const data = this.form.value;
+		const data = { ...this.form.value };
 		data.contactPhoneNumber = this.maskPipe.transform(data.contactPhoneNumber, SPD_CONSTANTS.phone.backendMask);
 		return data;
 	}

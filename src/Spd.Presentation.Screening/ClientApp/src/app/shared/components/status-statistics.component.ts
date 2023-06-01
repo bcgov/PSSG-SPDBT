@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { tap } from 'rxjs/operators';
 import { ApplicationStatisticsResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
-import { ApplicationPortalStatisticsCode } from 'src/app/core/constants/model-desc';
+import { ApplicationPortalStatisticsTypeCode } from 'src/app/core/code-types/application-portal-statistics-type.model';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
 
@@ -102,7 +102,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 	],
 })
 export class StatusStatisticsComponent {
-	statisticsCode = ApplicationPortalStatisticsCode;
+	statisticsCode = ApplicationPortalStatisticsTypeCode;
 
 	constructor(
 		private utilService: UtilService,

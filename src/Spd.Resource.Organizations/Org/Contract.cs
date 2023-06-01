@@ -1,4 +1,5 @@
 ﻿using Spd.Resource.Organizations.Registration;
+using Spd.Utilities.Shared.ResourceContracts;
 
 namespace Spd.Resource.Organizations.Org
 {
@@ -54,17 +55,5 @@ namespace Spd.Resource.Organizations.Org
         public bool GenericUploadEnabled { get; set; }
         public string? EmployeeOrganizationTypeCode { get; set; }
         public string? VolunteerOrganizationTypeCode { get; set; }
-    }
-
-    public enum PayerPreferenceTypeCode
-    {
-        Organization,
-        Applicant
-    }
-
-    public enum BooleanTypeCode
-    {
-        Yes,
-        No
     }
 }

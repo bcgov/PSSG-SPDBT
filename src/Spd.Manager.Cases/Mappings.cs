@@ -3,6 +3,8 @@ using Spd.Engine.Validation;
 using Spd.Resource.Applicants;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.ApplicationInvite;
+using Spd.Utilities.Shared.ManagerContract;
+using Spd.Utilities.Shared.ResourceContracts;
 
 namespace Spd.Manager.Cases
 {

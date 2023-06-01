@@ -4,8 +4,8 @@ import { MatTableDataSource } from '@angular/material/table';
 import { HotToastService } from '@ngneat/hot-toast';
 import { ContactAuthorizationTypeCode, OrgUserListResponse, OrgUserResponse } from 'src/app/api/models';
 import { OrgUserService } from 'src/app/api/services';
+import { ContactAuthorizationTypes, SelectOptions } from 'src/app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { ContactAuthorizationTypes, SelectOptions } from 'src/app/core/constants/model-desc';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { UserDialogData, UserEditModalComponent } from './user-edit-modal.component';
@@ -432,7 +432,6 @@ export class UsersComponent implements OnInit {
 		}
 
 		const currUser = this.usersList.find((item) => item.id == this.authenticationService.loggedInUserInfo?.userId);
-		console.log('currUser', currUser);
 		return currUser ? currUser.contactAuthorizationTypeCode == ContactAuthorizationTypeCode.Primary : false;
 	}
 }

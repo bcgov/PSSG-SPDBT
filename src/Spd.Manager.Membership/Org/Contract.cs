@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
 using MediatR;
-using Spd.Manager.Membership.OrgRegistration;
-using Spd.Manager.Membership.Shared;
+using Spd.Utilities.Shared.ManagerContract;
 
 namespace Spd.Manager.Membership.Org
 {

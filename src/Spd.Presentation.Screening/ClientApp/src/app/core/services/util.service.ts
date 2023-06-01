@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
 import jwt_decode from 'jwt-decode';
 import { ApplicationPortalStatusCode, PaginationResponse } from 'src/app/api/models';
+import * as CodeDescTypes from 'src/app/core/code-types/code-desc-types.models';
+import { ApplicationPortalStatusTypes, SelectOptions } from '../code-types/model-desc.models';
 import { SPD_CONSTANTS } from '../constants/constants';
-import { ApplicationPortalStatusCodes, SelectOptions } from '../constants/model-desc';
 
 @Injectable({ providedIn: 'root' })
 export class UtilService {
 	//------------------------------------
 	// Session storage
 	readonly ORG_REG_STATE_KEY: string = SPD_CONSTANTS.sessionStorage.organizationRegStateKey;
+	readonly CRC_PORTAL_STATE_KEY: string = SPD_CONSTANTS.sessionStorage.crcPortalStateKey;
 
 	setSessionData(key: string, data: any): void {
 		sessionStorage.setItem(key, data);
@@ -24,6 +26,7 @@ export class UtilService {
 
 	clearAllSessionData(): void {
 		this.clearSessionData(this.ORG_REG_STATE_KEY);
+		this.clearSessionData(this.CRC_PORTAL_STATE_KEY);
 	}
 
 	//------------------------------------
@@ -43,7 +46,7 @@ export class UtilService {
 
 	//------------------------------------
 	// Generic
-	getFullName(firstName: string | null, lastName: string | null): string {
+	getFullName(firstName: string | null | undefined, lastName: string | null | undefined): string {
 		return `${firstName ?? ''} ${lastName ?? ''}`.trim();
 	}
 
@@ -61,6 +64,31 @@ export class UtilService {
 		} catch (Error) {
 			return null;
 		}
+	}
+
+	getAddressString(params: {
+		addressLine1: string;
+		addressLine2?: string;
+		city: string;
+		province: string;
+		country: string;
+		postalCode: string;
+	}): string {
+		return `${params.addressLine1}, ${params.addressLine2 ? params.addressLine2 + ',' : ''} ${params.city}, ${
+			params.province
+		}, ${params.country}, ${params.postalCode}`;
+	}
+
+	//------------------------------------
+	// Code Table
+
+	getCodeDescTypes<K extends keyof typeof CodeDescTypes>(key: K): (typeof CodeDescTypes)[K] {
+		return CodeDescTypes[key];
+	}
+
+	getCodeDesc(codeTableName: keyof typeof CodeDescTypes, input: string): string {
+		const codeDescs = this.getCodeDescTypes(codeTableName);
+		return codeDescs ? (codeDescs.find((item: SelectOptions) => item.code == input)?.desc as string) ?? '' : '';
 	}
 
 	//------------------------------------
@@ -92,11 +120,11 @@ export class UtilService {
 				break;
 		}
 
-		const desc = (ApplicationPortalStatusCodes.find((item: SelectOptions) => item.code == code)?.desc as string) ?? '';
+		const desc = (ApplicationPortalStatusTypes.find((item: SelectOptions) => item.code == code)?.desc as string) ?? '';
 		return [desc, currClass];
 	}
 
 	geApplicationPortalStatusDesc(code: string): string {
-		return (ApplicationPortalStatusCodes.find((item: SelectOptions) => item.code == code)?.desc as string) ?? '';
+		return (ApplicationPortalStatusTypes.find((item: SelectOptions) => item.code == code)?.desc as string) ?? '';
 	}
 }

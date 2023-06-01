@@ -38,14 +38,14 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 						class="d-flex flex-column align-items-sm-start pt-2 text-white "
 						style="min-height: calc(100vh - 138px)!important;"
 					>
-						<a [routerLink]="[crrpRoutes.crrpPath(crrpRoutes.HOME)]" class="nav-link d-flex text-white w-100">
+						<a [routerLink]="[crrpRoutes.path(crrpRoutes.HOME)]" class="nav-link d-flex text-white w-100">
 							<span class="d-none d-sm-inline mx-3 mt-2">Menu</span>
 						</a>
 						<hr class="d-none d-sm-inline w-100 text-white" />
 						<ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-sm-start w-100">
 							<li class="nav-item w-100">
 								<a
-									[routerLink]="[crrpRoutes.crrpPath(crrpRoutes.HOME)]"
+									[routerLink]="[crrpRoutes.path(crrpRoutes.HOME)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
 								>
@@ -55,7 +55,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 							</li>
 							<li class="nav-item w-100">
 								<a
-									[routerLink]="[crrpRoutes.crrpPath(crrpRoutes.APPLICATION_STATUSES)]"
+									[routerLink]="[crrpRoutes.path(crrpRoutes.APPLICATION_STATUSES)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
 								>
@@ -65,7 +65,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 							</li>
 							<li class="nav-item w-100">
 								<a
-									[routerLink]="[crrpRoutes.crrpPath(crrpRoutes.CRIMINAL_RECORD_CHECKS)]"
+									[routerLink]="[crrpRoutes.path(crrpRoutes.CRIMINAL_RECORD_CHECKS)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
 								>
@@ -75,7 +75,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 							</li>
 							<li class="nav-item w-100">
 								<a
-									[routerLink]="[crrpRoutes.crrpPath(crrpRoutes.EXPIRING_CHECKS)]"
+									[routerLink]="[crrpRoutes.path(crrpRoutes.EXPIRING_CHECKS)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
 								>
@@ -85,7 +85,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 							</li>
 							<li class="nav-item w-100">
 								<a
-									[routerLink]="[crrpRoutes.crrpPath(crrpRoutes.PAYMENTS)]"
+									[routerLink]="[crrpRoutes.path(crrpRoutes.PAYMENTS)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
 								>
@@ -96,7 +96,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 							<hr class="d-none d-sm-inline w-100 text-white" />
 							<li class="nav-item w-100" *ngIf="authenticationService.genericUploadEnabled">
 								<a
-									[routerLink]="[crrpRoutes.crrpPath(crrpRoutes.GENERIC_UPLOADS)]"
+									[routerLink]="[crrpRoutes.path(crrpRoutes.GENERIC_UPLOADS)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
 								>
@@ -106,7 +106,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 							</li>
 							<li class="nav-item w-100">
 								<a
-									[routerLink]="[crrpRoutes.crrpPath(crrpRoutes.IDENTITY_VERIFICATION)]"
+									[routerLink]="[crrpRoutes.path(crrpRoutes.IDENTITY_VERIFICATION)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
 								>
@@ -116,7 +116,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 							</li>
 							<li class="nav-item w-100">
 								<a
-									[routerLink]="[crrpRoutes.crrpPath(crrpRoutes.MANUAL_SUBMISSIONS)]"
+									[routerLink]="[crrpRoutes.path(crrpRoutes.MANUAL_SUBMISSIONS)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
 								>
@@ -126,7 +126,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 							</li>
 							<li class="nav-item w-100">
 								<a
-									[routerLink]="[crrpRoutes.crrpPath(crrpRoutes.REPORTS)]"
+									[routerLink]="[crrpRoutes.path(crrpRoutes.REPORTS)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
 								>
@@ -136,7 +136,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 							</li>
 							<li class="nav-item w-100">
 								<a
-									[routerLink]="[crrpRoutes.crrpPath(crrpRoutes.USERS)]"
+									[routerLink]="[crrpRoutes.path(crrpRoutes.USERS)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
 								>
@@ -147,7 +147,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 							<hr class="d-none d-sm-inline w-100 text-white" />
 							<li class="nav-item w-100">
 								<a
-									[routerLink]="[crrpRoutes.crrpPath(crrpRoutes.ORGANIZATION_PROFILE)]"
+									[routerLink]="[crrpRoutes.path(crrpRoutes.ORGANIZATION_PROFILE)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
 								>
@@ -185,7 +185,7 @@ export class CrrpComponent {
 			this.setShowNavigationFlag((evt as NavigationEnd).url);
 		});
 
-		const nextUrl = await this.authenticationService.login(CrrpRoutes.crrpPath());
+		const nextUrl = await this.authenticationService.login(CrrpRoutes.path());
 		// console.debug('nextUrl', nextUrl);
 
 		if (nextUrl) {

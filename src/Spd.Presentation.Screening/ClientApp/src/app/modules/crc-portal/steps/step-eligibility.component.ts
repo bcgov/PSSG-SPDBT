@@ -1,16 +1,16 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
-import { MatStepper } from '@angular/material/stepper';
+import { Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
+import { AppInviteOrgData } from '../crc.component';
 
 @Component({
 	selector: 'app-step-eligibility',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-checklist [paymentBy]="paymentBy"></app-checklist>
+				<app-checklist *ngIf="orgData" [payeeType]="orgData.payeeType!"></app-checklist>
 
 				<div class="row mt-4">
-					<div class="offset-lg-4 col-lg-4 offset-md-4 col-md-4 col-sm-12">
+					<div class="col-xxl-3 col-lg-4 col-md-4 col-sm-12 mx-auto">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext()">Start</button>
 					</div>
 				</div>
@@ -21,15 +21,9 @@ import { MatStepper } from '@angular/material/stepper';
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepEligibilityComponent {
-	@ViewChild('childstepper') childstepper!: MatStepper;
-
-	@Input() paymentBy!: 'APP' | 'ORG';
+	@Input() orgData: AppInviteOrgData | null = null;
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
-
-	onInfoNotCorrect(): void {
-		this.childstepper.next();
-	}
 
 	onStepNext(): void {
 		this.nextStepperStep.emit(true);
