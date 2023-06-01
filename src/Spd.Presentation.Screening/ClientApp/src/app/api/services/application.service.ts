@@ -10,6 +10,8 @@ import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
 import { ActionResult } from '../models/action-result';
+import { AppInviteVerifyRequest } from '../models/app-invite-verify-request';
+import { AppInviteVerifyResponse } from '../models/app-invite-verify-response';
 import { ApplicationCreateResponse } from '../models/application-create-response';
 import { ApplicationInviteListResponse } from '../models/application-invite-list-response';
 import { ApplicationInvitesCreateRequest } from '../models/application-invites-create-request';
@@ -231,6 +233,75 @@ export class ApplicationService extends BaseService {
 
     return this.apiOrgsOrgIdApplicationInvitesApplicationInviteIdDelete$Response(params,context).pipe(
       map((r: StrictHttpResponse<ActionResult>) => r.body as ActionResult)
+    );
+  }
+
+  /**
+   * Path part for operation apiApplicationInvitationPost
+   */
+  static readonly ApiApplicationInvitationPostPath = '/api/application/invitation';
+
+  /**
+   * Verify if the current application invite is correct, and return needed info.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiApplicationInvitationPost()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiApplicationInvitationPost$Response(params: {
+
+    /**
+     * which include InviteEncryptedCode
+     */
+    body: AppInviteVerifyRequest
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<AppInviteVerifyResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiApplicationInvitationPostPath, 'post');
+    if (params) {
+      rb.body(params.body, 'application/*+json');
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<AppInviteVerifyResponse>;
+      })
+    );
+  }
+
+  /**
+   * Verify if the current application invite is correct, and return needed info.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiApplicationInvitationPost$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiApplicationInvitationPost(params: {
+
+    /**
+     * which include InviteEncryptedCode
+     */
+    body: AppInviteVerifyRequest
+  },
+  context?: HttpContext
+
+): Observable<AppInviteVerifyResponse> {
+
+    return this.apiApplicationInvitationPost$Response(params,context).pipe(
+      map((r: StrictHttpResponse<AppInviteVerifyResponse>) => r.body as AppInviteVerifyResponse)
     );
   }
 

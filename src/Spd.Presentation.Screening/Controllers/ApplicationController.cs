@@ -6,6 +6,7 @@ using Spd.Manager.Cases;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
+using Spd.Utilities.Shared.ManagerContract;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 using System.Globalization;
@@ -251,7 +252,7 @@ namespace Spd.Presentation.Screening.Controllers
                             oneRequest.AgreeToCompleteAndAccurate = true;
                             oneRequest.HaveVerifiedIdentity = true;
                             oneRequest.OriginTypeCode = ApplicationOriginTypeCode.GenericUpload;
-                            oneRequest.PayeeType = PayeePreferenceTypeCode.Organization;
+                            oneRequest.PayeeType = PayerPreferenceTypeCode.Organization;
                             List<AliasCreateRequest> aliasCreates = new List<AliasCreateRequest>();
                             foreach (AliasCreateRequest a in aliases)
                             {

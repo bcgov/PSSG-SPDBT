@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Spd.Manager.Membership.OrgRegistration;
 using Spd.Resource.Organizations.Org;
+using Spd.Utilities.Shared.ManagerContract;
 
 namespace Spd.Manager.Membership.Org
 {

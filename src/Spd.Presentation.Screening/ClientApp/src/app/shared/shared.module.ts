@@ -21,6 +21,7 @@ import { StatusStatisticsComponent } from './components/status-statistics.compon
 import { StepTitleComponent } from './components/step-title.component';
 import { DefaultPipe } from './pipes/default.pipe';
 import { FullnamePipe } from './pipes/fullname.pipe';
+import { OptionsPipe } from './pipes/options.pipe';
 import { YesNoPipe } from './pipes/yes-no.pipe';
 
 const SHARED_COMPONENTS = [
@@ -36,6 +37,7 @@ const SHARED_COMPONENTS = [
 	DefaultPipe,
 	FullnamePipe,
 	YesNoPipe,
+	OptionsPipe,
 	CaptchaV2Component,
 	FileUploadComponent,
 	AccessDeniedComponent,
@@ -56,7 +58,7 @@ const SHARED_COMPONENTS = [
 		RecaptchaFormsModule,
 		RecaptchaModule,
 	],
-	providers: [provideNgxMask(), NgxMaskPipe],
+	providers: [provideNgxMask(), NgxMaskPipe, OptionsPipe],
 	exports: [
 		CommonModule,
 		MaterialModule,

@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApplicantRoutes } from './modules/applicant-portal/applicant-routing.module';
-import { CrcRoutes } from './modules/crc-portal/crc-routing.module';
 import { CrrpRoutes } from './modules/crrp-portal/crrp-routing.module';
 
 @Component({
@@ -9,11 +8,11 @@ import { CrrpRoutes } from './modules/crrp-portal/crrp-routing.module';
 	template: `
 		<section class="step-section col-xxl-4 col-xl-4 col-lg-5 col-md-6 col-sm-12 mx-auto mt-4 p-4">
 			<h1>Criminal Record Check Portal</h1>
-			<p class="lead">Submit and manage criminal record checks for your employees or volunteers</p>
+			<p class="lead">Submit and manage your organization's criminal record checks</p>
 
 			<mat-divider class="my-4"></mat-divider>
 
-			<div>Select your log in method:</div>
+			<div>Log in with:</div>
 			<button mat-flat-button color="primary" class="large my-2" (click)="onRegisterWithBCeid()">
 				Business BCeID Account
 			</button>
@@ -25,40 +24,19 @@ import { CrrpRoutes } from './modules/crrp-portal/crrp-routing.module';
 		</section>
 
 		<section class="step-section col-xxl-4 col-xl-4 col-lg-5 col-md-6 col-sm-12 mx-auto my-4 p-4">
-			Temporary section
 			<button mat-stroked-button color="primary" class="large my-2" (click)="goToApplicant()">Applicant Portal</button>
-
-			<mat-divider class="my-4"></mat-divider>
-
-			<button mat-stroked-button color="primary" class="large my-2" (click)="goToScreening()">
-				Criminal Record Check Portal
-			</button>
-			<mat-radio-group [(ngModel)]="paymentBy">
-				<mat-radio-button value="APP">
-					<strong>Applicant Paying</strong>
-				</mat-radio-button>
-				<mat-radio-button value="ORG">
-					<strong>Organization Paying</strong>
-				</mat-radio-button>
-			</mat-radio-group>
 		</section>
 	`,
 	styles: [],
 })
 export class LandingComponent {
-	paymentBy: string = 'APP';
-
 	constructor(private router: Router) {}
-
-	goToScreening(): void {
-		this.router.navigateByUrl(`/${CrcRoutes.MODULE_PATH}`, { state: { paymentBy: this.paymentBy } });
-	}
 
 	goToApplicant(): void {
 		this.router.navigateByUrl(ApplicantRoutes.path(ApplicantRoutes.CRC_LIST));
 	}
 
 	onRegisterWithBCeid(): void {
-		this.router.navigateByUrl(CrrpRoutes.crrpPath(CrrpRoutes.HOME));
+		this.router.navigateByUrl(CrrpRoutes.path(CrrpRoutes.HOME));
 	}
 }

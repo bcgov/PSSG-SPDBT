@@ -1,7 +1,6 @@
 using FluentValidation;
 using MediatR;
-using Spd.Manager.Membership.Shared;
-using Spd.Utilities.Dynamics;
+using Spd.Utilities.Shared.ManagerContract;
 using System.ComponentModel;
 
 namespace Spd.Manager.Membership.OrgRegistration
@@ -50,6 +49,8 @@ namespace Spd.Manager.Membership.OrgRegistration
         public bool RequireDuplicateCheck { get; set; } = true;
     }
 
+
+
     public enum RegistrationTypeCode
     {
         [Description("Employee")]
@@ -57,21 +58,6 @@ namespace Spd.Manager.Membership.OrgRegistration
 
         [Description("Volunteer")]
         Volunteer
-    }
-
-    public enum EmployeeInteractionTypeCode
-    {
-        [Description("My employees work with children")]
-        Children,
-
-        [Description("My employees work with vulnerable adults")]
-        Adults,
-
-        [Description("My employees work with children and vulnerable adults")]
-        ChildrenAndAdults,
-
-        [Description("Neither")]
-        Neither
     }
 
     public enum ScreeningsCountTypeCode
@@ -95,69 +81,7 @@ namespace Spd.Manager.Membership.OrgRegistration
         NotSure
     }
 
-    public enum EmployeeOrganizationTypeCode
-    {
 
-        [Description("A childcare facility or daycare")]
-        Childcare,
-
-        [Description("A health board, hospital, or care facility")]
-        Healthcare,
-
-        [Description("A school board or education authority")]
-        Education,
-
-        [Description("An organization or person who receives ongoing provincial funding")]
-        Funding,
-
-        [Description("A mainly government-owned corporation")]
-        CrownCorp,
-
-        [Description("A provincial government ministry or related agency")]
-        ProvGovt,
-
-        [Description("A registered health professional or social worker")]
-        Registrant,
-
-        [Description("A governing body under the Health Professions Act or the Social Workers Act")]
-        GovnBody,
-
-        [Description("An act- or minister-appointed board, commission, or council")]
-        Appointed
-    }
-
-    public enum VolunteerOrganizationTypeCode
-    {
-        [Description("A registered health professional or social worker")]
-        Registrant,
-
-        [Description("A registered non profit organization")]
-        NonProfit,
-
-        [Description("A childcare facility or daycare")]
-        Childcare,
-
-        [Description("A health board, hospital or care facility")]
-        Healthcare,
-
-        [Description("A school board or education authority")]
-        Education,
-
-        [Description("An organization or person who receives ongoing provincial funding")]
-        ProvFunded,
-
-        [Description("A mainly government-owned corporation")]
-        CrownCorp,
-
-        [Description("A provincial government ministry or related agency")]
-        ProvGovt,
-
-        [Description("A municipality")]
-        Municipality,
-
-        [Description("A post-secondary institution")]
-        PostSec,
-    }
 
     public enum PortalUserIdentityTypeCode
     {

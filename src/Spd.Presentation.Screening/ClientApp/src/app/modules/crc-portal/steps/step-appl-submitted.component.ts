@@ -1,15 +1,13 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { AgreementOfTermsComponent } from '../step-components/agreement-of-terms.component';
-import { DeclarationComponent } from '../step-components/declaration.component';
 
 @Component({
 	selector: 'app-step-appl-submitted',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<!--  *ngIf="paymentBy == 'APP'" -->
-			<mat-step>
+			<!--  *ngIf="payeeType == payeePreferenceTypeCodes.Applicant" -->
+			<mat-step *ngIf="performPayment">
 				<app-payment-success></app-payment-success>
 
 				<div class="row mt-4">
@@ -22,11 +20,11 @@ import { DeclarationComponent } from '../step-components/declaration.component';
 				</div>
 			</mat-step>
 
-			<mat-step>
+			<mat-step *ngIf="performPayment">
 				<app-payment-failure></app-payment-failure>
 
 				<div class="row mt-4">
-					<div class="offset-lg-4 col-lg-4 offset-md-4 col-md-4 col-sm-12">
+					<div class="col-xxl-3 col-lg-4 col-md-4 col-sm-12 mx-auto">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperNext>Close</button>
 					</div>
 				</div>
@@ -36,7 +34,7 @@ import { DeclarationComponent } from '../step-components/declaration.component';
 				<app-application-submitted></app-application-submitted>
 
 				<div class="row mt-4">
-					<div class="offset-lg-4 col-lg-4 offset-md-4 col-md-4 col-sm-12">
+					<div class="col-xxl-3 col-lg-4 col-md-4 col-sm-12 mx-auto">
 						<button mat-flat-button color="primary" class="large mb-2" [routerLink]="'/'">Close</button>
 					</div>
 				</div>
@@ -49,23 +47,14 @@ import { DeclarationComponent } from '../step-components/declaration.component';
 export class StepApplSubmittedComponent {
 	@ViewChild('childstepper') childstepper!: MatStepper;
 
-	@Input() paymentBy!: 'APP' | 'ORG';
-
+	@Input() performPayment = false;
+	// @Input() orgData: AppInviteOrgData | null = null;
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-	@ViewChild(DeclarationComponent)
-	declarationComponent!: DeclarationComponent;
-
-	@ViewChild(AgreementOfTermsComponent)
-	agreementOfTermsComponent!: AgreementOfTermsComponent;
-
 	getStepData(): any {
-		return {
-			...this.declarationComponent.getDataToSave(),
-			...this.agreementOfTermsComponent.getDataToSave(),
-		};
+		return {};
 	}
 
 	onFormValidNextStep(formNumber: number): void {
@@ -87,17 +76,18 @@ export class StepApplSubmittedComponent {
 	}
 
 	private dirtyForm(step: number): boolean {
-		switch (step) {
-			case 1:
-				this.declarationComponent.form.markAllAsTouched();
-				return this.declarationComponent.isFormValid();
-			case 2:
-				this.agreementOfTermsComponent.form.markAllAsTouched();
-				return this.agreementOfTermsComponent.isFormValid();
+		// switch (step) {
+		// 	case 1:
+		// 		this.declarationComponent.form.markAllAsTouched();
+		// 		return this.declarationComponent.isFormValid();
+		// 	case 2:
+		// 		this.agreementOfTermsComponent.form.markAllAsTouched();
+		// 		return this.agreementOfTermsComponent.isFormValid();
 
-			default:
-				console.error('Unknown Form', step);
-		}
-		return false;
+		// 	default:
+		// 		console.error('Unknown Form', step);
+		// }
+		// return false;
+		return true; //TODO UPDATE when working on payment
 	}
 }

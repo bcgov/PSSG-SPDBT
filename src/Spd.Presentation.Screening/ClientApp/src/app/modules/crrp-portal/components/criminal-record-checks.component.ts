@@ -30,7 +30,7 @@ export const CriminalRecordCheckFilterMap: Record<keyof CriminalRecordCheckFilte
 		<app-crrp-header></app-crrp-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
-				<div class="col-xxl-9 col-xl-8 col-lg-7 col-md-6 col-sm-12">
+				<div class="col-xxl-10 col-xl-9 col-lg-6 col-md-6 col-sm-12">
 					<h2 class="mb-2 fw-normal">
 						Criminal Record Check Requests
 						<div class="mt-2 fs-5 fw-light">
@@ -38,7 +38,7 @@ export const CriminalRecordCheckFilterMap: Record<keyof CriminalRecordCheckFilte
 						</div>
 					</h2>
 				</div>
-				<div class="col-xxl-3 col-xl-4 col-lg-5 col-md-6 col-sm-12 my-auto">
+				<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 my-auto">
 					<button mat-flat-button class="large w-100 mat-green-button mb-2" (click)="onAddCRCs()">Add Request</button>
 				</div>
 			</div>
@@ -102,7 +102,7 @@ export const CriminalRecordCheckFilterMap: Record<keyof CriminalRecordCheckFilte
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="paidBy">
+						<ng-container matColumnDef="payeeType">
 							<mat-header-cell *matHeaderCellDef>To Be Paid By</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">To Be Paid By:</span>
@@ -192,7 +192,7 @@ export class CriminalRecordChecksComponent implements OnInit {
 
 	dataSource: MatTableDataSource<ApplicationInviteResponse> = new MatTableDataSource<ApplicationInviteResponse>([]);
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
-	columns: string[] = ['applicantName', 'emailAddress', 'jobTitle', 'paidBy', 'createdOn', 'viewed', 'actions'];
+	columns: string[] = ['applicantName', 'emailAddress', 'jobTitle', 'payeeType', 'createdOn', 'viewed', 'actions'];
 	formFilter: FormGroup = this.formBuilder.group({
 		search: new FormControl(''),
 	});

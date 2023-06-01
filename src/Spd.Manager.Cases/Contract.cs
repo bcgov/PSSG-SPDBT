@@ -2,6 +2,7 @@ using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Spd.Resource.Applicants.ApplicationInvite;
+using Spd.Utilities.Shared.ManagerContract;
 using System.ComponentModel;
 
 namespace Spd.Manager.Cases
@@ -39,17 +40,24 @@ namespace Spd.Manager.Cases
     public record AppInviteVerifyResponse
     {
         public Guid OrgId { get; set; }
-        public string? OrganizationName { get; set; }
-        public string? PhoneNumber { get; set; }
+        public string? OrgName { get; set; }
+        public string? OrgPhoneNumber { get; set; }
+        public string? OrgEmail { get; set; }
         public string? AddressLine1 { get; set; }
         public string? AddressLine2 { get; set; }
         public string? AddressCity { get; set; }
         public string? AddressCountry { get; set; }
         public string? AddressPostalCode { get; set; }
         public string? AddressProvince { get; set; }
-        public string? EmployeeOrganizationTypeCode { get; set; }
-        public string? VolunteerOrganizationTypeCode { get; set; }
-        public PayeePreferenceTypeCode PayeeType { get; set; }
+        public EmployeeInteractionTypeCode? WorksWith { get; set; }
+        public EmployeeOrganizationTypeCode? EmployeeOrganizationTypeCode { get; set; }
+        public VolunteerOrganizationTypeCode? VolunteerOrganizationTypeCode { get; set; }
+        public string? ContactGivenName { get; set; }
+        public string? ContactSurname { get; set; }
+        public string? ContactEmail { get; set; }
+        public string? JobTitle { get; set; }
+        public PayerPreferenceTypeCode PayeeType { get; set; }
+        public bool? ValidCrc { get; set; }
     };
 
     public record IdentityCommand(Guid OrgId, Guid ApplicationId, IdentityStatusCode Status) : IRequest<Unit>;
@@ -65,7 +73,7 @@ namespace Spd.Manager.Cases
         public string LastName { get; set; } = null!;
         public string Email { get; set; } = null!;
         public string? JobTitle { get; set; }
-        public PayeePreferenceTypeCode PayeeType { get; set; }
+        public PayerPreferenceTypeCode PayeeType { get; set; }
     }
     public record ApplicationInviteCreateRequest : ApplicationInvite
     {
@@ -101,9 +109,9 @@ namespace Spd.Manager.Cases
         Draft,
         Sent,
         Failed,
-        Completed, //inactive Status code, no use
-        Cancelled,//inactive Status code, no use
-        Expired //inactive Status code, no use
+        Completed, //inactive Status code
+        Cancelled,//inactive Status code
+        Expired //inactive Status code
     }
 
     public enum ScreenTypeCode
@@ -152,7 +160,7 @@ namespace Spd.Manager.Cases
         public string? JobTitle { get; set; }
         public DateTimeOffset? DateOfBirth { get; set; }
         public string? ContractedCompanyName { get; set; }
-        public PayeePreferenceTypeCode PayeeType { get; set; }
+        public PayerPreferenceTypeCode PayeeType { get; set; }
     }
     public record ApplicationCreateRequest : Application
     {
@@ -204,7 +212,6 @@ namespace Spd.Manager.Cases
         public Guid Id { get; set; }
         public string? ApplicationNumber { get; set; }
         public bool? HaveVerifiedIdentity { get; set; }
-        public PayeePreferenceTypeCode? PaidBy { get; set; }
         public DateTimeOffset? CreatedOn { get; set; }
         public ApplicationPortalStatusCode? Status { get; set; }
     }
@@ -283,14 +290,6 @@ namespace Spd.Manager.Cases
         Cancelled,
     }
 
-    public enum PayeePreferenceTypeCode
-    {
-        [Description("Organization")]
-        Organization,
-
-        [Description("Applicant")]
-        Applicant
-    }
 
     public enum ScreeningTypeCode
     {
@@ -611,27 +610,6 @@ namespace Spd.Manager.Cases
             RuleFor(r => r.HaveVerifiedIdentity)
                 .NotNull(); // Must be true or false
         }
-    }
-    #endregion
-
-
-
-    #region shared
-    public record PaginationRequest(int Page, int PageSize);
-    public record PaginationResponse
-    {
-        public int PageSize { get; set; }
-        public int PageIndex { get; set; }
-        public int Length { get; set; }
-    }
-    public enum GenderCode
-    {
-        [Description("Male")]
-        M,
-        [Description("Female")]
-        F,
-        [Description("Non-Binary")]
-        X
     }
     #endregion
 }

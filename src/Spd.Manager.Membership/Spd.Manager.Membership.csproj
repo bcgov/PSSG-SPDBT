@@ -14,10 +14,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Spd.Resource.Organizations\Spd.Resource.Organizations.csproj" />
     <ProjectReference Include="..\Spd.Utilities.LogonUser\Spd.Utilities.LogonUser.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Shared\" />
+    <ProjectReference Include="..\Spd.Utilities.Shared\Spd.Utilities.Shared.csproj" />
   </ItemGroup>
 
 </Project>

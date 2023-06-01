@@ -1,3 +1,5 @@
+using Spd.Utilities.Shared.ResourceContracts;
+
 namespace Spd.Resource.Applicants.ApplicationInvite
 {
     public interface IApplicationInviteRepository
@@ -43,17 +45,24 @@ namespace Spd.Resource.Applicants.ApplicationInvite
     public record AppInviteVerifyResp()
     {
         public Guid OrgId { get; set; }
-        public string OrganizationName { get; set; }
-        public string? PhoneNumber { get; set; }
+        public string? OrgName { get; set; }
+        public string? OrgPhoneNumber { get; set; }
+        public string? OrgEmail { get; set; }
         public string? AddressLine1 { get; set; }
         public string? AddressLine2 { get; set; }
         public string? AddressCity { get; set; }
         public string? AddressCountry { get; set; }
         public string? AddressPostalCode { get; set; }
         public string? AddressProvince { get; set; }
+        public EmployeeInteractionTypeCode WorksWith { get; set; }
         public string? EmployeeOrganizationTypeCode { get; set; }
         public string? VolunteerOrganizationTypeCode { get; set; }
+        public string? ContactGivenName { get; set; }
+        public string? ContactSurname { get; set; }
+        public string? ContactEmail { get; set; }
+        public string? JobTitle { get; set; }
         public PayerPreferenceTypeCode PayeeType { get; set; }
+        public bool? ValidCrc { get; set; }
     };
 
     public record ApplicationInvite

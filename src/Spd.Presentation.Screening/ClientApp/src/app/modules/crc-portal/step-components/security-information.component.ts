@@ -1,13 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { CrcFormStepComponent } from '../crc.component';
+import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
+import { AppInviteOrgData, CrcFormStepComponent } from '../crc.component';
 
 @Component({
 	selector: 'app-security-information',
 	template: `
-		<section class="step-section pt-4 pb-5 px-3">
+		<section class="step-section p-3" *ngIf="orgData">
 			<form [formGroup]="form" novalidate>
 				<div class="step">
 					<app-step-title
@@ -17,21 +19,27 @@ import { CrcFormStepComponent } from '../crc.component';
 						<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Requesting Organization</mat-label>
-								<input matInput formControlName="organizationName" />
+								<input matInput formControlName="orgName" />
 							</mat-form-field>
 						</div>
 						<div class="col-lg-4 col-md-6 col-sm-12">
 							<mat-form-field>
-								<mat-label>Organization Phone Number</mat-label>
-								<input matInput formControlName="organizationPhoneNumber" [mask]="phoneMask" [showMaskTyped]="true" />
+								<mat-label>Organization Email</mat-label>
+								<input matInput formControlName="orgEmail" />
 							</mat-form-field>
 						</div>
 					</div>
 					<div class="row">
-						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
+						<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
+							<mat-form-field>
+								<mat-label>Organization Phone Number</mat-label>
+								<input matInput formControlName="orgPhoneNumber" [mask]="phoneMask" [showMaskTyped]="true" />
+							</mat-form-field>
+						</div>
+						<div class="col-lg-4 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Organization Address</mat-label>
-								<input matInput formControlName="organizationAddress" />
+								<input matInput formControlName="address" />
 							</mat-form-field>
 						</div>
 					</div>
@@ -46,7 +54,17 @@ import { CrcFormStepComponent } from '../crc.component';
 						<div class="col-lg-4 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Vulnerable Sector Category</mat-label>
-								<input matInput formControlName="vulnerableSectorCategory" />
+								<input matInput formControlName="vulnerableSectorCategoryDesc" />
+							</mat-form-field>
+						</div>
+					</div>
+					<div class="row" *ngIf="orgData.facilityNameRequired">
+						<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
+							<mat-form-field>
+								<mat-label>Facility Name</mat-label>
+								<input matInput formControlName="facilityName" />
+								<mat-hint>(Licensed Child Care Name or Adult Care Facility Name)</mat-hint>
+								<mat-error *ngIf="form.get('facilityName')?.hasError('required')">This is required</mat-error>
 							</mat-form-field>
 						</div>
 					</div>
@@ -57,20 +75,59 @@ import { CrcFormStepComponent } from '../crc.component';
 	styles: [],
 })
 export class SecurityInformationComponent implements CrcFormStepComponent {
+	private _orgData: AppInviteOrgData | null = null;
+	@Input()
+	set orgData(data: AppInviteOrgData | null) {
+		if (!data) return;
+
+		this._orgData = data;
+		this.form = this.formBuilder.group(
+			{
+				orgName: new FormControl({ value: data.orgName, disabled: true }),
+				orgPhoneNumber: new FormControl({ value: data.orgPhoneNumber, disabled: true }),
+				address: new FormControl({ value: data.address, disabled: true }),
+				orgEmail: new FormControl({ value: data.orgEmail, disabled: true }),
+				jobTitle: new FormControl(data.jobTitle, [Validators.required]),
+				vulnerableSectorCategoryDesc: new FormControl({
+					value: this.optionsPipe.transform(data.worksWith, 'EmployeeInteractionTypes'),
+					disabled: true,
+				}),
+				facilityName: new FormControl('', [Validators.required]),
+			},
+			{
+				validators: [
+					FormGroupValidators.conditionalRequiredValidator(
+						'facilityName',
+						(form) => data.facilityNameRequired ?? false
+					),
+				],
+			}
+		);
+	}
+	get orgData(): AppInviteOrgData | null {
+		return this._orgData;
+	}
+
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
-	form: FormGroup = this.formBuilder.group({
-		organizationName: new FormControl({ value: 'Sunshine Daycare', disabled: true }),
-		organizationPhoneNumber: new FormControl({ value: '2503859988', disabled: true }),
-		organizationAddress: new FormControl({ value: '760 Vernon Ave, Victoria, BC V8X 2W6, Canada', disabled: true }),
-		jobTitle: new FormControl('', [Validators.required]),
-		vulnerableSectorCategory: new FormControl({ value: 'Division Pulled From Organization Type', disabled: true }),
-	});
+	form!: FormGroup;
 	matcher = new FormErrorStateMatcher();
 
-	constructor(private formBuilder: FormBuilder) {}
+	constructor(private formBuilder: FormBuilder, private optionsPipe: OptionsPipe) {}
 
 	getDataToSave(): any {
 		return this.form.value;
+	}
+
+	setStepData(data: any): void {
+		this.form.patchValue({
+			orgName: data.orgName,
+			orgPhoneNumber: data.orgPhoneNumber,
+			address: data.address,
+			orgEmail: data.orgEmail,
+			jobTitle: data.jobTitle,
+			vulnerableSectorCategory: this.optionsPipe.transform(data.worksWith, 'EmployeeInteractionTypes'),
+			facilityName: data.facilityName,
+		});
 	}
 
 	isFormValid(): boolean {

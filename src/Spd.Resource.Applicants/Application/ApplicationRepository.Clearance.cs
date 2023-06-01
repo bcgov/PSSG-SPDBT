@@ -3,6 +3,7 @@ using Microsoft.OData.Client;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.Exceptions;
+using Spd.Utilities.Shared.ResourceContracts;
 using System.Net;
 
 namespace Spd.Resource.Applicants.Application;

@@ -85,6 +85,7 @@ export class AgreementOfTermsModel {
 							enrolment in the CRRP online service, as applicable.
 						</mat-checkbox>
 						<mat-error
+							class="mat-option-error"
 							*ngIf="
 								(form.get('agreeToTermsAndConditions')?.dirty || form.get('agreeToTermsAndConditions')?.touched) &&
 								form.get('agreeToTermsAndConditions')?.invalid &&
@@ -101,7 +102,9 @@ export class AgreementOfTermsModel {
 							(captchaResponse)="onTokenResponse($event)"
 							[resetControl]="resetRecaptcha"
 						></app-captcha-v2>
-						<mat-error *ngIf="displayValidationErrors && !captchaPassed"> This is required </mat-error>
+						<mat-error class="mat-option-error" *ngIf="displayValidationErrors && !captchaPassed">
+							This is required
+						</mat-error>
 					</div>
 				</div>
 			</div>
