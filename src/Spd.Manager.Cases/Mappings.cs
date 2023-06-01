@@ -12,11 +12,7 @@ namespace Spd.Manager.Cases
         {
             _ = CreateMap<ApplicationInvitesCreateRequest, ApplicationInvitesCreateCmd>()
             .ForMember(d => d.ApplicationInvites, opt => opt.MapFrom(s => s.ApplicationInviteCreateRequests));
-
-            CreateMap<ApplicationInviteCreateRequest, Spd.Resource.Applicants.ApplicationInvite.ApplicationInvite>()
-                .ForMember(d => d.ScreenType, opt => opt.MapFrom(s => s.ScreenType))
-                .ForMember(d => d.ServiceType, opt => opt.MapFrom(s => s.ServiceType));
-
+            CreateMap<ApplicationInviteCreateRequest, Spd.Resource.Applicants.ApplicationInvite.ApplicationInvite>();
             CreateMap<ApplicationInviteCreateRequest, AppInviteDuplicateCheck>();
             CreateMap<AppInviteDuplicateCheckResult, ApplicationInviteDuplicateResponse>();
             CreateMap<ApplicationInviteCreateRequest, ApplicationInviteDuplicateResponse>();
@@ -48,8 +44,7 @@ namespace Spd.Manager.Cases
             CreateMap<ApplicationCreateRslt, ApplicationCreateResult>();
             CreateMap<ApplicationCreateRequest, AppDuplicateCheck>()
                .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.Surname))
-               .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName))
-            ;
+               .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName));
             CreateMap<AppBulkDuplicateCheckResult, DuplicateCheckResult>();
             CreateMap<ApplicationCreateRequestFromBulk, AppBulkDuplicateCheck>()
                 .IncludeBase<ApplicationCreateRequest, AppDuplicateCheck>();
