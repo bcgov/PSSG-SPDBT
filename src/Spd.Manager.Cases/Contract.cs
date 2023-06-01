@@ -74,7 +74,11 @@ namespace Spd.Manager.Cases
         public string? JobTitle { get; set; }
         public PayerPreferenceTypeCode PayeeType { get; set; }
     }
-    public record ApplicationInviteCreateRequest() : ApplicationInvite;
+    public record ApplicationInviteCreateRequest : ApplicationInvite
+    {
+        public ServiceTypeCode ServiceType { get; set; } = ServiceTypeCode.CRRP_EMPLOYEE;
+        public ScreenTypeCode ScreenType { get; set; } = ScreenTypeCode.Staff;
+    }
     public record ApplicationInvitesCreateResponse(Guid OrgId)
     {
         public bool IsDuplicateCheckRequired { get; set; }
@@ -108,6 +112,15 @@ namespace Spd.Manager.Cases
         Cancelled,//inactive Status code
         Expired //inactive Status code
     }
+
+    public enum ScreenTypeCode
+    {
+        Staff,
+        Contractor,
+        Licensee
+    }
+
+
     #endregion
 
     #region application
