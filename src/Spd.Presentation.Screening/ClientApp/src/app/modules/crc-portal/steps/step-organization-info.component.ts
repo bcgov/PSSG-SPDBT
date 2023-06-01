@@ -1,6 +1,5 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
-import { PayerPreferenceTypeCode } from 'src/app/api/models';
 import { AppInviteOrgData } from '../crc.component';
 import { SecurityInformationComponent } from '../step-components/security-information.component';
 
@@ -9,7 +8,7 @@ import { SecurityInformationComponent } from '../step-components/security-inform
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)">
 			<mat-step>
-				<app-security-information [orgData]="orgData"></app-security-information>
+				<app-security-information *ngIf="orgData" [orgData]="orgData"></app-security-information>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -26,9 +25,7 @@ import { SecurityInformationComponent } from '../step-components/security-inform
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepOrganizationInfoComponent {
-	@Input() orgData!: AppInviteOrgData;
-
-	@Input() payeeType!: PayerPreferenceTypeCode;
+	@Input() orgData: AppInviteOrgData | null = null;
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();

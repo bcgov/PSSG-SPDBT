@@ -6,7 +6,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 	selector: 'app-summary',
 	template: `
 		<section class="step-section pt-4 pb-4 px-3">
-			<div class="step" *ngIf="crcData">
+			<div class="step" *ngIf="orgData">
 				<app-step-title title="Review the following information"></app-step-title>
 				<div class="row">
 					<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
@@ -17,12 +17,12 @@ import { UtilService } from 'src/app/core/services/util.service';
 								</div>
 								<div class="col-xl-4 col-lg-4 col-md-12">
 									<div class="text-label d-block text-muted">Requesting Organization</div>
-									<div class="text-data">{{ crcData.orgName }}</div>
+									<div class="text-data">{{ orgData.orgName }}</div>
 								</div>
 								<div class="col-xl-4 col-lg-3 col-md-12">
 									<div class="text-label d-block text-muted mt-2 mt-lg-0">Organization Phone Number</div>
 									<div class="text-data">
-										{{ crcData.orgPhoneNumber || '' | mask : appConstants.phone.displayMask }}
+										{{ orgData.orgPhoneNumber || '' | mask : appConstants.phone.displayMask }}
 									</div>
 								</div>
 								<div class="col-xl-1 col-lg-1 col-md-12 text-end">
@@ -35,11 +35,11 @@ import { UtilService } from 'src/app/core/services/util.service';
 							<div class="row mb-2">
 								<div class="offset-xl-3 col-xl-4 offset-lg-4 col-lg-4 col-md-12">
 									<div class="text-label d-block text-muted">Organization Address</div>
-									<div class="text-data">{{ crcData.address }}</div>
+									<div class="text-data">{{ orgData.address }}</div>
 								</div>
 								<div class="col-xl-4 col-lg-4 col-md-12">
 									<div class="text-label d-block text-muted mt-2 mt-lg-0">Job Title</div>
-									<div class="text-data">{{ crcData.jobTitle }}</div>
+									<div class="text-data">{{ orgData.jobTitle }}</div>
 								</div>
 							</div>
 						</section>
@@ -55,12 +55,12 @@ import { UtilService } from 'src/app/core/services/util.service';
 								<div class="col-xl-4 col-lg-4 col-md-12">
 									<div class="text-label d-block text-muted">Contact Given Names</div>
 									<div class="text-data">
-										{{ crcData.contactGivenName }} {{ crcData.contactMiddleName1 }} {{ crcData.contactMiddleName2 }}
+										{{ orgData.contactGivenName }} {{ orgData.contactMiddleName1 }} {{ orgData.contactMiddleName2 }}
 									</div>
 								</div>
 								<div class="col-xl-4 col-lg-3 col-md-12">
 									<div class="text-label d-block text-muted mt-2 mt-lg-0">Contact Surname</div>
-									<div class="text-data">{{ crcData.contactSurname }}</div>
+									<div class="text-data">{{ orgData.contactSurname }}</div>
 								</div>
 								<div class="col-xl-1 col-lg-1 col-md-12 text-end">
 									<mat-icon matTooltip="Edit this data" (click)="onReEditContact()">edit</mat-icon>
@@ -72,11 +72,13 @@ import { UtilService } from 'src/app/core/services/util.service';
 							<div class="row mb-2">
 								<div class="offset-xl-3 col-xl-4 offset-lg-4 col-lg-4 col-md-12">
 									<div class="text-label d-block text-muted">Email</div>
-									<div class="text-data">{{ crcData.emailAddress }}</div>
+									<div class="text-data">{{ orgData.contactEmail }}</div>
 								</div>
 								<div class="col-xl-4 col-lg-4 col-md-12">
 									<div class="text-label d-block text-muted mt-2 mt-lg-0">Phone Number</div>
-									<div class="text-data">{{ crcData.phoneNumber || '' | mask : appConstants.phone.displayMask }}</div>
+									<div class="text-data">
+										{{ orgData.contactPhoneNumber || '' | mask : appConstants.phone.displayMask }}
+									</div>
 								</div>
 							</div>
 
@@ -84,19 +86,19 @@ import { UtilService } from 'src/app/core/services/util.service';
 								<div class="offset-xl-3 col-xl-4 offset-lg-4 col-lg-4 col-md-12">
 									<div class="text-label d-block text-muted">Date of Birth</div>
 									<div class="text-data">
-										{{ crcData.contactDateOfBirth | date : appConstants.date.dateFormat : 'UTC' }}
+										{{ orgData.contactDateOfBirth | date : appConstants.date.dateFormat : 'UTC' }}
 									</div>
 								</div>
 								<div class="col-xl-4 col-lg-4 col-md-12">
 									<div class="text-label d-block text-muted mt-2 mt-lg-0">Birthplace</div>
-									<div class="text-data">{{ crcData.birthplace }}</div>
+									<div class="text-data">{{ orgData.birthplace }}</div>
 								</div>
 							</div>
 
 							<div class="row mt-2">
 								<div class="offset-xl-3 col-xl-8 offset-lg-4 col-lg-8 col-md-12">
 									<div class="text-label d-block text-muted">BC Drivers Licence</div>
-									<div class="text-data">{{ crcData.driversLicenseNumber | default }}</div>
+									<div class="text-data">{{ orgData.driversLicenseNumber | default }}</div>
 								</div>
 							</div>
 
@@ -104,8 +106,8 @@ import { UtilService } from 'src/app/core/services/util.service';
 								<div class="offset-xl-3 col-xl-8 offset-lg-4 col-lg-8 col-md-12">
 									<div class="text-label d-block text-muted">Previous Names</div>
 									<div class="text-data">
-										<ng-container *ngIf="crcData.previousNamesList?.length > 0; else noPreviousNames">
-											<ng-container *ngFor="let name of crcData.previousNamesList">
+										<ng-container *ngIf="orgData.previousNamesList?.length > 0; else noPreviousNames">
+											<ng-container *ngFor="let name of orgData.previousNamesList">
 												<div>{{ name.firstName }} {{ name.middleNames }} {{ name.previousSurname }}</div>
 											</ng-container>
 										</ng-container>
@@ -154,7 +156,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 export class SummaryComponent {
 	appConstants = SPD_CONSTANTS;
 
-	@Input() crcData!: any;
+	@Input() orgData: any | null = null;
 	@Output() reEditPersonalInformation: EventEmitter<boolean> = new EventEmitter();
 	@Output() reEditCrcInformation: EventEmitter<boolean> = new EventEmitter();
 
@@ -169,14 +171,14 @@ export class SummaryComponent {
 	}
 
 	getCrcDataMailingAddress(): string {
-		if (this.crcData) {
+		if (this.orgData) {
 			return this.utilService.getAddressString({
-				addressLine1: this.crcData.mailingAddressLine1!,
-				addressLine2: this.crcData.mailingAddressLine2 ?? undefined,
-				city: this.crcData.mailingCity!,
-				province: this.crcData.mailingProvince!,
-				postalCode: this.crcData.mailingPostalCode!,
-				country: this.crcData.mailingCountry!,
+				addressLine1: this.orgData.mailingAddressLine1!,
+				addressLine2: this.orgData.mailingAddressLine2 ?? undefined,
+				city: this.orgData.mailingCity!,
+				province: this.orgData.mailingProvince!,
+				postalCode: this.orgData.mailingPostalCode!,
+				country: this.orgData.mailingCountry!,
 			});
 		}
 

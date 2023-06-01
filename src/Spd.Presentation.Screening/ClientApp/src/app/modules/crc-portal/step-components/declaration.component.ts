@@ -14,7 +14,7 @@ export class DeclarationModel {
 @Component({
 	selector: 'app-declaration',
 	template: `
-		<section class="step-section p-3">
+		<section class="step-section p-3" *ngIf="orgData">
 			<form [formGroup]="form" novalidate>
 				<div class="step">
 					<app-step-title title="Consent to a Criminal Record Check"></app-step-title>
@@ -91,24 +91,23 @@ export class DeclarationComponent implements OnInit, CrcFormStepComponent {
 	captchaPassed = false;
 	captchaResponse: CaptchaResponse | null = null;
 
-	private _orgData!: AppInviteOrgData;
+	private _orgData: AppInviteOrgData | null = null;
 	@Input()
-	set orgData(data: AppInviteOrgData) {
-		this._orgData = data;
+	set orgData(data: AppInviteOrgData | null) {
+		if (!data) return;
 
+		this._orgData = data;
 		this.form = this.formBuilder.group(
 			{
 				agreeToDeclaration: new FormControl('', [Validators.required]),
 				shareCrc: new FormControl(''),
 			},
 			{
-				validators: [
-					FormGroupValidators.conditionalRequiredValidator('shareCrc', (form) => this.orgData.validCrc ?? false),
-				],
+				validators: [FormGroupValidators.conditionalRequiredValidator('shareCrc', (form) => data.validCrc ?? false)],
 			}
 		);
 	}
-	get orgData(): AppInviteOrgData {
+	get orgData(): AppInviteOrgData | null {
 		return this._orgData;
 	}
 

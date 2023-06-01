@@ -8,7 +8,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../crc.component';
 @Component({
 	selector: 'app-security-information',
 	template: `
-		<section class="step-section p-3">
+		<section class="step-section p-3" *ngIf="orgData">
 			<form [formGroup]="form" novalidate>
 				<div class="step">
 					<app-step-title
@@ -74,19 +74,21 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../crc.component';
 	styles: [],
 })
 export class SecurityInformationComponent implements CrcFormStepComponent {
-	private _orgData!: AppInviteOrgData;
+	private _orgData: AppInviteOrgData | null = null;
 	@Input()
-	set orgData(data: AppInviteOrgData) {
+	set orgData(data: AppInviteOrgData | null) {
+		if (!data) return;
+
 		this._orgData = data;
 		this.form = this.formBuilder.group(
 			{
-				orgName: new FormControl({ value: this.orgData.orgName, disabled: true }),
-				orgPhoneNumber: new FormControl({ value: this.orgData.orgPhoneNumber, disabled: true }),
-				address: new FormControl({ value: this.orgData.address, disabled: true }),
-				orgEmail: new FormControl({ value: this.orgData.orgEmail, disabled: true }),
-				jobTitle: new FormControl(this.orgData.jobTitle, [Validators.required]),
+				orgName: new FormControl({ value: data.orgName, disabled: true }),
+				orgPhoneNumber: new FormControl({ value: data.orgPhoneNumber, disabled: true }),
+				address: new FormControl({ value: data.address, disabled: true }),
+				orgEmail: new FormControl({ value: data.orgEmail, disabled: true }),
+				jobTitle: new FormControl(data.jobTitle, [Validators.required]),
 				vulnerableSectorCategoryDesc: new FormControl({
-					value: this.orgData.worksWithDesc,
+					value: data.worksWithDesc,
 					disabled: true,
 				}),
 				facilityName: new FormControl('', [Validators.required]),
@@ -95,13 +97,13 @@ export class SecurityInformationComponent implements CrcFormStepComponent {
 				validators: [
 					FormGroupValidators.conditionalRequiredValidator(
 						'facilityName',
-						(form) => this.orgData.facilityNameRequired ?? false
+						(form) => data.facilityNameRequired ?? false
 					),
 				],
 			}
 		);
 	}
-	get orgData(): AppInviteOrgData {
+	get orgData(): AppInviteOrgData | null {
 		return this._orgData;
 	}
 

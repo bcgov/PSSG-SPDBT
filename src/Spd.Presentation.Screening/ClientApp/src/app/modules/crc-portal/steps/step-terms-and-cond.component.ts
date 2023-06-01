@@ -12,7 +12,7 @@ import { DeclarationComponent } from '../step-components/declaration.component';
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-declaration [orgData]="orgData"></app-declaration>
+				<app-declaration *ngIf="orgData" [orgData]="orgData"></app-declaration>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -32,7 +32,7 @@ import { DeclarationComponent } from '../step-components/declaration.component';
 			</mat-step>
 
 			<mat-step *ngIf="showConsentToCrc">
-				<app-consent-to-crc [orgData]="orgData"></app-consent-to-crc>
+				<app-consent-to-crc *ngIf="orgData" [orgData]="orgData"></app-consent-to-crc>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -60,7 +60,7 @@ import { DeclarationComponent } from '../step-components/declaration.component';
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="goToStepNext(STEP_TERMS)">
-							<span *ngIf="payeeType == payeePreferenceTypeCodes.Applicant; else noPay">Pay</span>
+							<span *ngIf="orgData?.payeeType == payeePreferenceTypeCodes.Applicant; else noPay">Pay</span>
 							<ng-template #noPay>Submit</ng-template>
 						</button>
 					</div>
@@ -75,11 +75,9 @@ export class StepTermsAndCondComponent {
 	payeePreferenceTypeCodes = PayerPreferenceTypeCode;
 	showConsentToCrc = true;
 
-	@Input() orgData!: AppInviteOrgData;
 	@ViewChild('childstepper') childstepper!: MatStepper;
 
-	@Input() payeeType!: PayerPreferenceTypeCode;
-
+	@Input() orgData: AppInviteOrgData | null = null;
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -125,7 +123,7 @@ export class StepTermsAndCondComponent {
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 
-		this.orgData.performPaymentProcess = false;
+		// this.orgData?.performPaymentProcess = false;
 		this.nextStepperStep.emit(true);
 	}
 

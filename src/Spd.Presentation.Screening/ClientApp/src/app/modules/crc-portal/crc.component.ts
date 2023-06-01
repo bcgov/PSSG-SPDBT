@@ -27,14 +27,43 @@ export interface CrcFormStepComponent {
 export interface AppInviteOrgData extends AppInviteVerifyResponse {
 	address?: string | null;
 	facilityNameRequired?: boolean | null;
-	worksWithDesc?: string | null;
 	performPaymentProcess?: boolean | null;
+	agreeToCriminalCheck?: string | null;
+	agreeToDeclaration?: string | null;
+	agreeToVulnerableSectorSearch?: string | null;
+	birthplace?: string | null;
+	completedCrc?: string | null;
+	contactDateOfBirth?: string | null;
+	contactMiddleName1?: string | null;
+	contactMiddleName2?: string | null;
+	contactPhoneNumber?: string | null;
+	driversLicenseNumber?: string | null;
+	facilityName?: string | null;
+	mailingAddressLine1?: string | null;
+	mailingAddressLine2?: string | null;
+	mailingCity?: string | null;
+	mailingCountry?: string | null;
+	mailingPostalCode?: string | null;
+	mailingProvince?: string | null;
+	notifyNoCrc?: string | null;
+	notifyRisk?: string | null;
+	oneLegalName?: boolean | null;
+	previousNameFlag?: boolean | null;
+	previousNamesList?: Array<{
+		firstName?: string | null;
+		middleNames?: string | null;
+		previousSurname?: string | null;
+	}>;
+	recaptcha?: string | null;
+	shareCrc?: string | null;
+	validCrc?: boolean | null;
+	worksWithDesc?: string | null;
 }
 
 @Component({
 	selector: 'app-crc',
 	template: `
-		<div class="container mt-4" [hidden]="!orgData">
+		<div class="container mt-4">
 			<mat-stepper
 				linear
 				labelPosition="bottom"
@@ -45,9 +74,9 @@ export interface AppInviteOrgData extends AppInviteVerifyResponse {
 				<mat-step completed="false">
 					<ng-template matStepLabel>Eligibility Check</ng-template>
 					<app-step-eligibility
-						[payeeType]="orgData.payeeType!"
 						(nextStepperStep)="onNextStepperStep(stepper)"
 						(scrollIntoView)="onScrollIntoView()"
+						[orgData]="orgData"
 					></app-step-eligibility>
 				</mat-step>
 
@@ -78,16 +107,14 @@ export interface AppInviteOrgData extends AppInviteVerifyResponse {
 						(nextStepperStep)="onNextStepperStep(stepper)"
 						(scrollIntoView)="onScrollIntoView()"
 						(reEditCrcData)="onReEditCrcData()"
-						(getCrcData)="onGetCrcData()"
+						(getCrcData)="onUpdateOrgData()"
 						[orgData]="orgData"
-						[crcData]="crcData"
 					></app-step-personal-info>
 				</mat-step>
 
 				<mat-step completed="false">
 					<ng-template matStepLabel>Terms and Conditions</ng-template>
 					<app-step-terms-and-cond
-						[payeeType]="orgData.payeeType!"
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
 						(nextStepperStep)="onSaveStepperStep(stepper)"
 						(scrollIntoView)="onScrollIntoView()"
@@ -95,32 +122,31 @@ export interface AppInviteOrgData extends AppInviteVerifyResponse {
 					></app-step-terms-and-cond>
 				</mat-step>
 
-				<!-- PAYMENT PROCESS?
-				 <mat-step completed="false" *ngIf="payeeType == payeePreferenceTypeCodes.Applicant">
-				<ng-template matStepLabel>Pay for Application</ng-template>
-				<app-step-pay-for-application
-					(nextStepperStep)="onNextStepperStep(stepper)"
-					(scrollIntoView)="onScrollIntoView()"
-				></app-step-pay-for-application>
-			</mat-step> -->
-
 				<mat-step completed="false">
 					<ng-template matStepLabel>Application Submitted</ng-template>
 					<app-step-appl-submitted
-						[payeeType]="orgData.payeeType!"
-						[performPayment]="orgData.performPaymentProcess ?? false"
+						[performPayment]="orgData?.performPaymentProcess ?? false"
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
 						(scrollIntoView)="onScrollIntoView()"
 					></app-step-appl-submitted>
 				</mat-step>
+
+				<!-- PAYMENT PROCESS?
+ <mat-step completed="false" *ngIf="payeeType == payeePreferenceTypeCodes.Applicant">
+<ng-template matStepLabel>Pay for Application</ng-template>
+<app-step-pay-for-application
+	(nextStepperStep)="onNextStepperStep(stepper)"
+	(scrollIntoView)="onScrollIntoView()"
+></app-step-pay-for-application>
+</mat-step> -->
 			</mat-stepper>
 		</div>
 	`,
 	styles: [],
 })
 export class CrcComponent implements OnInit {
-	orgData!: AppInviteOrgData;
-	crcData!: any;
+	orgData: AppInviteOrgData | null = null;
+
 	orientation: StepperOrientation = 'vertical';
 	currentStateInfo: any = {};
 
@@ -177,15 +203,8 @@ export class CrcComponent implements OnInit {
 			this.orgData.facilityNameRequired = false;
 			this.orgData.performPaymentProcess = false;
 
-			this.orgData.worksWithDesc = EmployeeInteractionTypes.find((item) => item.code == this.orgData.worksWith)
+			this.orgData.worksWithDesc = EmployeeInteractionTypes.find((item) => item.code == this.orgData?.worksWith)
 				?.desc as string;
-		} else {
-			// cannot navigate to 4 in stepper if orgData is not retrieved sooner
-			const stateInfo = this.utilService.getSessionData(this.utilService.CRC_PORTAL_STATE_KEY);
-			console.debug('[CrcComponent.ngOnInit] stateInfo in else', stateInfo);
-			if (stateInfo) {
-				this.orgData = JSON.parse(stateInfo);
-			}
 		}
 
 		console.debug('orgData', this.orgData);
@@ -230,8 +249,8 @@ export class CrcComponent implements OnInit {
 		this.stepPersonalInfoComponent.childstepper.selectedIndex = 0;
 	}
 
-	onGetCrcData(): void {
-		this.crcData = { ...this.orgData, ...this.getDataToSave() };
+	onUpdateOrgData(): void {
+		this.orgData = { ...this.orgData, ...this.getDataToSave() };
 	}
 
 	onStepSelectionChange(_event: StepperSelectionEvent) {
@@ -268,16 +287,6 @@ export class CrcComponent implements OnInit {
 
 			// Go to Step 43
 			this.stepper.selectedIndex = 3;
-			return;
-		} else if (stepIndex == 3) {
-			// make these steps uneditable...
-			// so that after save, user cannot navigate to any of these steps
-			for (let i = 0; i <= stepper.selectedIndex; i++) {
-				let step = this.stepper.steps.get(i);
-				if (step) {
-					step.editable = false;
-				}
-			}
 		}
 
 		this.stepper.next();
@@ -299,23 +308,13 @@ export class CrcComponent implements OnInit {
 
 	private postLoginNavigate(stepperData: any): void {
 		this.currentStateInfo = JSON.parse(stepperData);
+		this.orgData = JSON.parse(stepperData);
 
-		let step = this.stepper.steps.get(0);
-		if (step) {
-			step.completed = true;
-		}
-
-		step = this.stepper.steps.get(1);
-		if (step) {
-			if (this.stepOrganizationInfoComponent) {
-				this.stepOrganizationInfoComponent.setStepData(this.currentStateInfo);
+		for (let i = 0; i <= 2; i++) {
+			let step = this.stepper.steps.get(i);
+			if (step) {
+				step.completed = true;
 			}
-			step.completed = true;
-		}
-
-		step = this.stepper.steps.get(2);
-		if (step) {
-			step.completed = true;
 		}
 
 		this.stepper.selectedIndex = 3;
@@ -337,7 +336,7 @@ export class CrcComponent implements OnInit {
 		const createRequest: any = { ...data } as Parameters<
 			ApplicationService['apiOrgsOrgIdApplicationPost']
 		>[0]['body']['ApplicationCreateRequestJson'];
-		console.log('onSaveStepperStep createRequest', data);
+		console.log('onSaveStepperStep createRequest', createRequest);
 
 		this.stepper.next();
 	}

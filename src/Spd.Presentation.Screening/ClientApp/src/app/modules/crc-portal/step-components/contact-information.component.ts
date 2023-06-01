@@ -10,7 +10,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../crc.component';
 @Component({
 	selector: 'app-contact-information',
 	template: `
-		<section class="step-section p-3">
+		<section class="step-section p-3" *ngIf="orgData">
 			<form [formGroup]="form" novalidate>
 				<div class="step">
 					<app-step-title
@@ -87,19 +87,21 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../crc.component';
 	styles: [],
 })
 export class ContactInformationComponent implements CrcFormStepComponent {
-	private _orgData!: AppInviteOrgData;
+	private _orgData: AppInviteOrgData | null = null;
 	@Input()
-	set orgData(data: AppInviteOrgData) {
+	set orgData(data: AppInviteOrgData | null) {
+		if (!data) return;
+
 		this._orgData = data;
 		this.form = this.formBuilder.group(
 			{
 				contactGivenName: new FormControl(this._orgData.contactGivenName, [Validators.required]),
-				contactMiddleName1: new FormControl(''),
-				contactMiddleName2: new FormControl(''),
+				contactMiddleName1: new FormControl(this._orgData.contactMiddleName1),
+				contactMiddleName2: new FormControl(this._orgData.contactMiddleName2),
 				contactSurname: new FormControl(this._orgData.contactSurname, [Validators.required]),
 				contactEmail: new FormControl(this._orgData.contactEmail, [Validators.required, FormControlValidators.email]),
-				contactPhoneNumber: new FormControl('', [Validators.required]),
-				oneLegalName: new FormControl(false),
+				contactPhoneNumber: new FormControl(this._orgData.contactPhoneNumber, [Validators.required]),
+				oneLegalName: new FormControl(this._orgData.oneLegalName),
 			},
 			{
 				validators: [
@@ -111,7 +113,7 @@ export class ContactInformationComponent implements CrcFormStepComponent {
 			}
 		);
 	}
-	get orgData(): AppInviteOrgData {
+	get orgData(): AppInviteOrgData | null {
 		return this._orgData;
 	}
 

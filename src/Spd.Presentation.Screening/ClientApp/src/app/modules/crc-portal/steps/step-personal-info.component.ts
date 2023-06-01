@@ -12,7 +12,7 @@ import { PreviousNameComponent } from '../step-components/previous-name.componen
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-contact-information [orgData]="orgData"></app-contact-information>
+				<app-contact-information *ngIf="orgData" [orgData]="orgData"></app-contact-information>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -88,7 +88,8 @@ import { PreviousNameComponent } from '../step-components/previous-name.componen
 
 			<mat-step>
 				<app-summary
-					[crcData]="crcData"
+					*ngIf="orgData"
+					[orgData]="orgData"
 					(reEditPersonalInformation)="onReEditPersonalInformation()"
 					(reEditCrcInformation)="onReEditCrcInformation()"
 				></app-summary>
@@ -99,7 +100,7 @@ import { PreviousNameComponent } from '../step-components/previous-name.componen
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="goToStepNext(STEP_SUMMARY)">
-							Confirm
+							Next
 						</button>
 					</div>
 				</div>
@@ -112,8 +113,7 @@ import { PreviousNameComponent } from '../step-components/previous-name.componen
 export class StepPersonalInfoComponent {
 	@ViewChild('childstepper') childstepper!: MatStepper;
 
-	@Input() orgData!: AppInviteOrgData;
-	@Input() crcData!: any;
+	@Input() orgData: AppInviteOrgData | null = null;
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();

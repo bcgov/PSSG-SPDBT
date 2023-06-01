@@ -1,7 +1,6 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { PayerPreferenceTypeCode } from 'src/app/api/models';
 
 @Component({
 	selector: 'app-step-appl-submitted',
@@ -48,9 +47,8 @@ import { PayerPreferenceTypeCode } from 'src/app/api/models';
 export class StepApplSubmittedComponent {
 	@ViewChild('childstepper') childstepper!: MatStepper;
 
-	@Input() payeeType!: PayerPreferenceTypeCode;
 	@Input() performPayment = false;
-
+	// @Input() orgData: AppInviteOrgData | null = null;
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
