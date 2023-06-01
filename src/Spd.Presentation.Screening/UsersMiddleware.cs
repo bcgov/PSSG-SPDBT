@@ -56,9 +56,12 @@ namespace Spd.Utilities.LogonUser
             }else if(context.User.GetIssuer() == bcscConfig.Issuer)
             {
                 context.User.AddUpdateClaim(ClaimTypes.Role, "Applicant");
+                await next(context);
             }
-
-            await next(context);
+            else
+            {
+                await next(context);
+            }
         }
 
         //endpoints that no authentication needed  

@@ -110,36 +110,7 @@ namespace Spd.Utilities.LogonUser
                     }
                     return BCeIDAuthenticationConfiguration.AuthSchemeName;
                 };
-            })
-            ;
-
-            //services.AddAuthorization(options =>
-            //{
-            //    var bceidPolicy = new AuthorizationPolicyBuilder()
-            //        .RequireAuthenticatedUser()
-            //        .AddAuthenticationSchemes(BCeIDAuthenticationConfiguration.AuthSchemeName)
-            //        .Build();
-            //    var bcscPolicy = new AuthorizationPolicyBuilder()
-            //        .RequireAuthenticatedUser()
-            //        .AddAuthenticationSchemes(BcscAuthenticationConfiguration.AuthSchemeName)
-            //        .Build();
-
-            //    options.AddPolicy("bceidUser", bceidPolicy);
-            //    options.AddPolicy("bcscUser", bcscPolicy);
-            //    options.DefaultPolicy = options.GetPolicy("bceidUser")!;
-            //});
-
-            // Authorization
-            //services.AddAuthorization(options =>
-            //{
-            //    var defaultAuthorizationPolicyBuilder = new AuthorizationPolicyBuilder(
-            //        BcscAuthenticationConfiguration.AuthSchemeName,
-            //        BCeIDAuthenticationConfiguration.AuthSchemeName);
-            //    defaultAuthorizationPolicyBuilder =
-            //        defaultAuthorizationPolicyBuilder.RequireAuthenticatedUser();
-            //    options.DefaultPolicy = defaultAuthorizationPolicyBuilder.Build();
-            //});
-
+            });
         }
     }
 }
