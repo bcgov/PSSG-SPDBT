@@ -1,6 +1,7 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Spd.Resource.Applicants.ApplicationInvite;
 using System.ComponentModel;
 
 namespace Spd.Manager.Cases
@@ -66,7 +67,11 @@ namespace Spd.Manager.Cases
         public string? JobTitle { get; set; }
         public PayeePreferenceTypeCode PayeeType { get; set; }
     }
-    public record ApplicationInviteCreateRequest() : ApplicationInvite;
+    public record ApplicationInviteCreateRequest : ApplicationInvite
+    {
+        public ServiceTypeCode ServiceType { get; set; } = ServiceTypeCode.CRRP_EMPLOYEE;
+        public ScreenTypeCode ScreenType { get; set; } = ScreenTypeCode.Staff;
+    }
     public record ApplicationInvitesCreateResponse(Guid OrgId)
     {
         public bool IsDuplicateCheckRequired { get; set; }
@@ -99,6 +104,25 @@ namespace Spd.Manager.Cases
         Completed, //inactive Status code, no use
         Cancelled,//inactive Status code, no use
         Expired //inactive Status code, no use
+    }
+
+    public enum ScreenTypeCode
+    {
+        Staff,
+        Contractor,
+        Licensee
+    }
+
+    public enum ServiceTypeCode
+    {
+        PSSO,
+        CRRP_EMPLOYEE,
+        CRRP_VOLUNTEER,
+        MCFD,
+        PE_CRC,
+        PE_CRC_VS,
+        LICENSING,
+        PSSO_VS
     }
     #endregion
 

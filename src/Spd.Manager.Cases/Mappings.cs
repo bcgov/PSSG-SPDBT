@@ -13,7 +13,10 @@ namespace Spd.Manager.Cases
             _ = CreateMap<ApplicationInvitesCreateRequest, ApplicationInvitesCreateCmd>()
             .ForMember(d => d.ApplicationInvites, opt => opt.MapFrom(s => s.ApplicationInviteCreateRequests));
 
-            CreateMap<ApplicationInviteCreateRequest, Spd.Resource.Applicants.ApplicationInvite.ApplicationInvite>();
+            CreateMap<ApplicationInviteCreateRequest, Spd.Resource.Applicants.ApplicationInvite.ApplicationInvite>()
+                .ForMember(d => d.ScreenType, opt => opt.MapFrom(s => s.ScreenType))
+                .ForMember(d => d.ServiceType, opt => opt.MapFrom(s => s.ServiceType));
+
             CreateMap<ApplicationInviteCreateRequest, AppInviteDuplicateCheck>();
             CreateMap<AppInviteDuplicateCheckResult, ApplicationInviteDuplicateResponse>();
             CreateMap<ApplicationInviteCreateRequest, ApplicationInviteDuplicateResponse>();

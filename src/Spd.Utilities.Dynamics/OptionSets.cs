@@ -159,6 +159,6 @@ namespace Spd.Utilities.Dynamics
     {
         Staff = 100000000,
         Contractor = 100000001,
-        Licensee = 10000002
+        Licensee = 100000002
     }
 }
