@@ -263,6 +263,7 @@
           <ReferentialConstraint Property="_spd_organizationtypeid_value" ReferencedProperty="spd_organizationtypeid" />
         </NavigationProperty>
         <NavigationProperty Name="spd_account_spd_clearanceaccess" Type="Collection(mscrm.spd_clearanceaccess)" Partner="spd_OrganizationId" />
+        <NavigationProperty Name="spd_account_spd_pdfreport" Type="Collection(mscrm.spd_pdfreport)" Partner="spd_OrganizationId" />
         <NavigationProperty Name="ownerid" Type="mscrm.principal" Nullable="false" Partner="owner_accounts">
           <ReferentialConstraint Property="_ownerid_value" ReferencedProperty="ownerid" />
         </NavigationProperty>
@@ -1800,6 +1801,9 @@
         <NavigationProperty Name="regardingobjectid_spd_clearanceaccess" Type="mscrm.spd_clearanceaccess" Nullable="false" Partner="spd_clearanceaccess_AsyncOperations">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_clearanceaccessid" />
         </NavigationProperty>
+        <NavigationProperty Name="regardingobjectid_spd_pdfreport" Type="mscrm.spd_pdfreport" Nullable="false" Partner="spd_pdfreport_AsyncOperations">
+          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_pdfreportid" />
+        </NavigationProperty>
         <NavigationProperty Name="regardingobjectid_report" Type="mscrm.report" Nullable="false" Partner="Report_AsyncOperations">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="reportid" />
         </NavigationProperty>
@@ -2095,6 +2099,7 @@
         <Property Name="bcgov_filesize" Type="Edm.String" Unicode="false" />
         <Property Name="_ownerid_value" Type="Edm.Guid" />
         <Property Name="bcgov_url" Type="Edm.String" Unicode="false" />
+        <Property Name="_spd_pdfreportid_value" Type="Edm.Guid" />
         <Property Name="_owninguser_value" Type="Edm.Guid" />
         <Property Name="bcgov_receiveddate" Type="Edm.DateTimeOffset" />
         <Property Name="bcgov_origincode" Type="Edm.Int32" />
@@ -2185,6 +2190,9 @@
         </NavigationProperty>
         <NavigationProperty Name="spd_ClearanceId" Type="mscrm.spd_clearance" Nullable="false" Partner="spd_clearance_bcgov_documenturl">
           <ReferentialConstraint Property="_spd_clearanceid_value" ReferencedProperty="spd_clearanceid" />
+        </NavigationProperty>
+        <NavigationProperty Name="spd_PDFReportId" Type="mscrm.spd_pdfreport" Nullable="false" Partner="spd_pdfreport_bcgov_documenturl">
+          <ReferentialConstraint Property="_spd_pdfreportid_value" ReferencedProperty="spd_pdfreportid" />
         </NavigationProperty>
       </EntityType>
       <EntityType Name="bcgov_field" BaseType="mscrm.crmbaseentity">
@@ -3488,6 +3496,9 @@
         <NavigationProperty Name="regardingobjectid_spd_clearanceaccess" Type="mscrm.spd_clearanceaccess" Nullable="false" Partner="spd_clearanceaccess_BulkDeleteFailures">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_clearanceaccessid" />
         </NavigationProperty>
+        <NavigationProperty Name="regardingobjectid_spd_pdfreport" Type="mscrm.spd_pdfreport" Nullable="false" Partner="spd_pdfreport_BulkDeleteFailures">
+          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_pdfreportid" />
+        </NavigationProperty>
         <NavigationProperty Name="regardingobjectid_customeraddress" Type="mscrm.customeraddress" Nullable="false" Partner="CustomerAddress_BulkDeleteFailures">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="customeraddressid" />
         </NavigationProperty>
@@ -3967,6 +3978,7 @@
         <NavigationProperty Name="business_unit_spd_cpicbatch" Type="Collection(mscrm.spd_cpicbatch)" Partner="owningbusinessunit" />
         <NavigationProperty Name="business_unit_spd_clearance" Type="Collection(mscrm.spd_clearance)" Partner="owningbusinessunit" />
         <NavigationProperty Name="business_unit_spd_clearanceaccess" Type="Collection(mscrm.spd_clearanceaccess)" Partner="owningbusinessunit" />
+        <NavigationProperty Name="business_unit_spd_pdfreport" Type="Collection(mscrm.spd_pdfreport)" Partner="owningbusinessunit" />
         <NavigationProperty Name="BusinessUnit_SyncErrors" Type="Collection(mscrm.syncerror)" Partner="regardingobjectid_businessunit_syncerror" />
         <NavigationProperty Name="transactioncurrencyid" Type="mscrm.transactioncurrency" Nullable="false" Partner="TransactionCurrency_BusinessUnit">
           <ReferentialConstraint Property="_transactioncurrencyid_value" ReferencedProperty="transactioncurrencyid" />
@@ -9047,6 +9059,7 @@
         <Property Name="_createdbyexternalparty_value" Type="Edm.Guid" />
         <Property Name="entityimageid" Type="Edm.Guid" />
         <Property Name="_entitlementid_value" Type="Edm.Guid" />
+        <Property Name="spd_justincheckcompleted" Type="Edm.Boolean" />
         <Property Name="activitiescomplete" Type="Edm.Boolean" />
         <Property Name="statuscode" Type="Edm.Int32" />
         <Property Name="spd_cpiccheckcompleted" Type="Edm.Boolean" />
@@ -11332,6 +11345,9 @@
         <NavigationProperty Name="regardingobjectid_spd_clearanceaccess" Type="mscrm.spd_clearanceaccess" Nullable="false" Partner="spd_clearanceaccess_MailboxTrackingFolders">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_clearanceaccessid" />
         </NavigationProperty>
+        <NavigationProperty Name="regardingobjectid_spd_pdfreport" Type="mscrm.spd_pdfreport" Nullable="false" Partner="spd_pdfreport_MailboxTrackingFolders">
+          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_pdfreportid" />
+        </NavigationProperty>
         <NavigationProperty Name="modifiedonbehalfby" Type="mscrm.systemuser" Nullable="false" Partner="lk_mailboxtrackingfolder_modifiedonbehalfby">
           <ReferentialConstraint Property="_modifiedonbehalfby_value" ReferencedProperty="systemuserid" />
         </NavigationProperty>
@@ -13492,6 +13508,7 @@
         <NavigationProperty Name="owner_spd_cpicbatch" Type="Collection(mscrm.spd_cpicbatch)" Partner="ownerid" />
         <NavigationProperty Name="owner_spd_clearance" Type="Collection(mscrm.spd_clearance)" Partner="ownerid" />
         <NavigationProperty Name="owner_spd_clearanceaccess" Type="Collection(mscrm.spd_clearanceaccess)" Partner="ownerid" />
+        <NavigationProperty Name="owner_spd_pdfreport" Type="Collection(mscrm.spd_pdfreport)" Partner="ownerid" />
         <NavigationProperty Name="owner_personaldocumenttemplates" Type="Collection(mscrm.personaldocumenttemplate)" Partner="ownerid" />
         <NavigationProperty Name="owner_accounts" Type="Collection(mscrm.account)" Partner="ownerid" />
         <NavigationProperty Name="owner_goalrollupquery" Type="Collection(mscrm.goalrollupquery)" Partner="ownerid" />
@@ -14684,6 +14701,9 @@
         <NavigationProperty Name="objectid_spd_clearanceaccess" Type="mscrm.spd_clearanceaccess" Nullable="false" Partner="spd_clearanceaccess_PrincipalObjectAttributeAccesses">
           <ReferentialConstraint Property="_objectid_value" ReferencedProperty="spd_clearanceaccessid" />
         </NavigationProperty>
+        <NavigationProperty Name="objectid_spd_pdfreport" Type="mscrm.spd_pdfreport" Nullable="false" Partner="spd_pdfreport_PrincipalObjectAttributeAccesses">
+          <ReferentialConstraint Property="_objectid_value" ReferencedProperty="spd_pdfreportid" />
+        </NavigationProperty>
         <NavigationProperty Name="objectid_letter" Type="mscrm.letter" Nullable="false" Partner="letter_principalobjectattributeaccess" />
         <NavigationProperty Name="objectid_reportcategory" Type="mscrm.reportcategory" Nullable="false" Partner="reportcategory_principalobjectattributeaccess">
           <ReferentialConstraint Property="_objectid_value" ReferencedProperty="reportcategoryid" />
@@ -15077,6 +15097,9 @@
         </NavigationProperty>
         <NavigationProperty Name="regardingobjectid_spd_clearanceaccess" Type="mscrm.spd_clearanceaccess" Nullable="false" Partner="spd_clearanceaccess_ProcessSession">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_clearanceaccessid" />
+        </NavigationProperty>
+        <NavigationProperty Name="regardingobjectid_spd_pdfreport" Type="mscrm.spd_pdfreport" Nullable="false" Partner="spd_pdfreport_ProcessSession">
+          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_pdfreportid" />
         </NavigationProperty>
         <NavigationProperty Name="regardingobjectid_queue" Type="mscrm.queue" Nullable="false" Partner="Queue_ProcessSessions">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="queueid" />
@@ -20116,30 +20139,92 @@
           <ReferentialConstraint Property="_spd_applicationid_value" ReferencedProperty="spd_applicationid" />
         </NavigationProperty>
       </EntityType>
+      <EntityType Name="spd_pdfreport" BaseType="mscrm.crmbaseentity">
+        <Key>
+          <PropertyRef Name="spd_pdfreportid" />
+        </Key>
+        <Property Name="_createdby_value" Type="Edm.Guid" />
+        <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
+        <Property Name="importsequencenumber" Type="Edm.Int32" />
+        <Property Name="spd_pdfreportid" Type="Edm.Guid" />
+        <Property Name="_owningteam_value" Type="Edm.Guid" />
+        <Property Name="versionnumber" Type="Edm.Int64" />
+        <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
+        <Property Name="statuscode" Type="Edm.Int32" />
+        <Property Name="_createdonbehalfby_value" Type="Edm.Guid" />
+        <Property Name="_owninguser_value" Type="Edm.Guid" />
+        <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
+        <Property Name="_modifiedby_value" Type="Edm.Guid" />
+        <Property Name="spd_name" Type="Edm.String" Unicode="false" />
+        <Property Name="createdon" Type="Edm.DateTimeOffset" />
+        <Property Name="spd_type" Type="Edm.Int32" />
+        <Property Name="_spd_organizationid_value" Type="Edm.Guid" />
+        <Property Name="_ownerid_value" Type="Edm.Guid" />
+        <Property Name="statecode" Type="Edm.Int32" />
+        <Property Name="_owningbusinessunit_value" Type="Edm.Guid" />
+        <Property Name="_modifiedonbehalfby_value" Type="Edm.Guid" />
+        <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
+        <NavigationProperty Name="createdby" Type="mscrm.systemuser" Nullable="false" Partner="lk_spd_pdfreport_createdby">
+          <ReferentialConstraint Property="_createdby_value" ReferencedProperty="systemuserid" />
+        </NavigationProperty>
+        <NavigationProperty Name="createdonbehalfby" Type="mscrm.systemuser" Nullable="false" Partner="lk_spd_pdfreport_createdonbehalfby">
+          <ReferentialConstraint Property="_createdonbehalfby_value" ReferencedProperty="systemuserid" />
+        </NavigationProperty>
+        <NavigationProperty Name="modifiedby" Type="mscrm.systemuser" Nullable="false" Partner="lk_spd_pdfreport_modifiedby">
+          <ReferentialConstraint Property="_modifiedby_value" ReferencedProperty="systemuserid" />
+        </NavigationProperty>
+        <NavigationProperty Name="modifiedonbehalfby" Type="mscrm.systemuser" Nullable="false" Partner="lk_spd_pdfreport_modifiedonbehalfby">
+          <ReferentialConstraint Property="_modifiedonbehalfby_value" ReferencedProperty="systemuserid" />
+        </NavigationProperty>
+        <NavigationProperty Name="owninguser" Type="mscrm.systemuser" Nullable="false" Partner="user_spd_pdfreport">
+          <ReferentialConstraint Property="_owninguser_value" ReferencedProperty="systemuserid" />
+        </NavigationProperty>
+        <NavigationProperty Name="owningteam" Type="mscrm.team" Nullable="false" Partner="team_spd_pdfreport">
+          <ReferentialConstraint Property="_owningteam_value" ReferencedProperty="teamid" />
+        </NavigationProperty>
+        <NavigationProperty Name="ownerid" Type="mscrm.principal" Nullable="false" Partner="owner_spd_pdfreport">
+          <ReferentialConstraint Property="_ownerid_value" ReferencedProperty="ownerid" />
+        </NavigationProperty>
+        <NavigationProperty Name="owningbusinessunit" Type="mscrm.businessunit" Nullable="false" Partner="business_unit_spd_pdfreport">
+          <ReferentialConstraint Property="_owningbusinessunit_value" ReferencedProperty="businessunitid" />
+        </NavigationProperty>
+        <NavigationProperty Name="spd_pdfreport_SyncErrors" Type="Collection(mscrm.syncerror)" Partner="regardingobjectid_spd_pdfreport" />
+        <NavigationProperty Name="spd_pdfreport_AsyncOperations" Type="Collection(mscrm.asyncoperation)" Partner="regardingobjectid_spd_pdfreport" />
+        <NavigationProperty Name="spd_pdfreport_MailboxTrackingFolders" Type="Collection(mscrm.mailboxtrackingfolder)" Partner="regardingobjectid_spd_pdfreport" />
+        <NavigationProperty Name="spd_pdfreport_ProcessSession" Type="Collection(mscrm.processsession)" Partner="regardingobjectid_spd_pdfreport" />
+        <NavigationProperty Name="spd_pdfreport_BulkDeleteFailures" Type="Collection(mscrm.bulkdeletefailure)" Partner="regardingobjectid_spd_pdfreport" />
+        <NavigationProperty Name="spd_pdfreport_PrincipalObjectAttributeAccesses" Type="Collection(mscrm.principalobjectattributeaccess)" Partner="objectid_spd_pdfreport" />
+        <NavigationProperty Name="spd_pdfreport_bcgov_documenturl" Type="Collection(mscrm.bcgov_documenturl)" Partner="spd_PDFReportId" />
+        <NavigationProperty Name="spd_OrganizationId" Type="mscrm.account" Nullable="false" Partner="spd_account_spd_pdfreport">
+          <ReferentialConstraint Property="_spd_organizationid_value" ReferencedProperty="accountid" />
+        </NavigationProperty>
+      </EntityType>
       <EntityType Name="spd_portalinvitation" BaseType="mscrm.crmbaseentity">
         <Key>
           <PropertyRef Name="spd_portalinvitationid" />
         </Key>
         <Property Name="spd_views" Type="Edm.Int32" />
+        <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
         <Property Name="_modifiedonbehalfby_value" Type="Edm.Guid" />
         <Property Name="spd_firstname" Type="Edm.String" Unicode="false" />
         <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
         <Property Name="_organizationid_value" Type="Edm.Guid" />
         <Property Name="_createdby_value" Type="Edm.Guid" />
         <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
+        <Property Name="spd_screeningrequesttype" Type="Edm.Int32" />
         <Property Name="_spd_organizationid_value" Type="Edm.Guid" />
         <Property Name="spd_portalinvitationid" Type="Edm.Guid" />
         <Property Name="statuscode" Type="Edm.Int32" />
         <Property Name="createdon" Type="Edm.DateTimeOffset" />
         <Property Name="spd_payeetype" Type="Edm.Int32" />
         <Property Name="versionnumber" Type="Edm.Int64" />
-        <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
         <Property Name="spd_invitationlink" Type="Edm.String" Unicode="false" />
         <Property Name="importsequencenumber" Type="Edm.Int32" />
+        <Property Name="spd_jobtitle" Type="Edm.String" Unicode="false" />
         <Property Name="_spd_applicant_value" Type="Edm.Guid" />
         <Property Name="statecode" Type="Edm.Int32" />
         <Property Name="spd_invitationnumber" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_jobtitle" Type="Edm.String" Unicode="false" />
+        <Property Name="_spd_servicetypeid_value" Type="Edm.Guid" />
         <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
         <Property Name="spd_email" Type="Edm.String" Unicode="false" />
         <Property Name="spd_invitationtype" Type="Edm.Int32" />
@@ -20189,6 +20274,9 @@
         <NavigationProperty Name="spd_portalinvitation_ServiceAppointments" Type="Collection(mscrm.serviceappointment)" Partner="regardingobjectid_spd_portalinvitation_serviceappointment" />
         <NavigationProperty Name="spd_Applicant" Type="mscrm.contact" Nullable="false" Partner="spd_PortalInvitation_Applicant">
           <ReferentialConstraint Property="_spd_applicant_value" ReferencedProperty="contactid" />
+        </NavigationProperty>
+        <NavigationProperty Name="spd_ServiceTypeId" Type="mscrm.spd_servicetype" Nullable="false" Partner="spd_spd_servicetype_spd_portalinvitation">
+          <ReferentialConstraint Property="_spd_servicetypeid_value" ReferencedProperty="spd_servicetypeid" />
         </NavigationProperty>
       </EntityType>
       <EntityType Name="spd_portaluser" BaseType="mscrm.crmbaseentity">
@@ -20487,6 +20575,7 @@
         <NavigationProperty Name="spd_spd_servicetype_incident" Type="Collection(mscrm.incident)" Partner="spd_ServiceTypeId" />
         <NavigationProperty Name="spd_servicetype_spd_cpicbatch" Type="Collection(mscrm.spd_cpicbatch)" Partner="spd_ServiceTypeId" />
         <NavigationProperty Name="spd_servicetype_spd_clearance" Type="Collection(mscrm.spd_clearance)" Partner="spd_ServiceType" />
+        <NavigationProperty Name="spd_spd_servicetype_spd_portalinvitation" Type="Collection(mscrm.spd_portalinvitation)" Partner="spd_ServiceTypeId" />
       </EntityType>
       <EntityType Name="spd_spd_role_spd_portaluser" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -21008,6 +21097,9 @@
         </NavigationProperty>
         <NavigationProperty Name="regardingobjectid_spd_clearanceaccess" Type="mscrm.spd_clearanceaccess" Nullable="false" Partner="spd_clearanceaccess_SyncErrors">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_clearanceaccessid" />
+        </NavigationProperty>
+        <NavigationProperty Name="regardingobjectid_spd_pdfreport" Type="mscrm.spd_pdfreport" Nullable="false" Partner="spd_pdfreport_SyncErrors">
+          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_pdfreportid" />
         </NavigationProperty>
         <NavigationProperty Name="regardingobjectid_ExpiredProcess_syncerror" Type="mscrm.expiredprocess" Nullable="false" Partner="ExpiredProcess_SyncErrors">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="businessprocessflowinstanceid" />
@@ -22001,6 +22093,11 @@
         <NavigationProperty Name="lk_spd_clearanceaccess_modifiedby" Type="Collection(mscrm.spd_clearanceaccess)" Partner="modifiedby" />
         <NavigationProperty Name="lk_spd_clearanceaccess_modifiedonbehalfby" Type="Collection(mscrm.spd_clearanceaccess)" Partner="modifiedonbehalfby" />
         <NavigationProperty Name="user_spd_clearanceaccess" Type="Collection(mscrm.spd_clearanceaccess)" Partner="owninguser" />
+        <NavigationProperty Name="lk_spd_pdfreport_createdby" Type="Collection(mscrm.spd_pdfreport)" Partner="createdby" />
+        <NavigationProperty Name="lk_spd_pdfreport_createdonbehalfby" Type="Collection(mscrm.spd_pdfreport)" Partner="createdonbehalfby" />
+        <NavigationProperty Name="lk_spd_pdfreport_modifiedby" Type="Collection(mscrm.spd_pdfreport)" Partner="modifiedby" />
+        <NavigationProperty Name="lk_spd_pdfreport_modifiedonbehalfby" Type="Collection(mscrm.spd_pdfreport)" Partner="modifiedonbehalfby" />
+        <NavigationProperty Name="user_spd_pdfreport" Type="Collection(mscrm.spd_pdfreport)" Partner="owninguser" />
         <NavigationProperty Name="lk_slakpiinstancebase_createdonbehalfby" Type="Collection(mscrm.slakpiinstance)" Partner="createdonbehalfby" />
         <NavigationProperty Name="lk_mobileofflineprofileitemassocaition_modifiedonbehalfby" Type="Collection(mscrm.mobileofflineprofileitemassociation)" Partner="modifiedonbehalfby" />
         <NavigationProperty Name="lk_userqueryvisualizationbase_modifiedonbehalfby" Type="Collection(mscrm.userqueryvisualization)" Partner="modifiedonbehalfby" />
@@ -22796,6 +22893,7 @@
         <NavigationProperty Name="team_spd_cpicbatch" Type="Collection(mscrm.spd_cpicbatch)" Partner="owningteam" />
         <NavigationProperty Name="team_spd_clearance" Type="Collection(mscrm.spd_clearance)" Partner="owningteam" />
         <NavigationProperty Name="team_spd_clearanceaccess" Type="Collection(mscrm.spd_clearanceaccess)" Partner="owningteam" />
+        <NavigationProperty Name="team_spd_pdfreport" Type="Collection(mscrm.spd_pdfreport)" Partner="owningteam" />
         <NavigationProperty Name="team_DuplicateRules" Type="Collection(mscrm.duplicaterule)" Partner="owningteam" />
         <NavigationProperty Name="team_Imports" Type="Collection(mscrm.import)" Partner="owningteam" />
         <NavigationProperty Name="OwningTeam_postfollows" Type="Collection(mscrm.postfollow)" Partner="owningteam" />
@@ -26363,6 +26461,16 @@
         <Parameter Name="Client" Type="Edm.String" Nullable="false" Unicode="false" />
         <ReturnType Type="mscrm.spd_GetCORNETOffencesResponse" Nullable="false" />
       </Action>
+      <ComplexType Name="spd_GetDefaultQueueResponse">
+        <Property Name="IsSuccess" Type="Edm.Boolean" />
+        <Property Name="QueueName" Type="Edm.String" Unicode="false" />
+        <Property Name="QueueId" Type="Edm.String" Unicode="false" />
+        <Property Name="QueueEmail" Type="Edm.String" Unicode="false" />
+      </ComplexType>
+      <Action Name="spd_GetDefaultQueue" IsBound="true">
+        <Parameter Name="entity" Type="mscrm.systemuser" Nullable="false" />
+        <ReturnType Type="mscrm.spd_GetDefaultQueueResponse" Nullable="false" />
+      </Action>
       <ComplexType Name="spd_GetOrganizationStatisticsResponse">
         <Property Name="VerifyIdentity" Type="Edm.Int32" />
         <Property Name="AwaitingPayment" Type="Edm.Int32" />
@@ -29345,6 +29453,7 @@
           <NavigationPropertyBinding Path="spd_Account_GenericUpload" Target="spd_genericuploads" />
           <NavigationPropertyBinding Path="spd_OrganizationTypeId" Target="spd_organizationtypes" />
           <NavigationPropertyBinding Path="spd_account_spd_clearanceaccess" Target="spd_clearanceaccesses" />
+          <NavigationPropertyBinding Path="spd_account_spd_pdfreport" Target="spd_pdfreports" />
           <NavigationPropertyBinding Path="ownerid" Target="owners" />
           <NavigationPropertyBinding Path="Account_ActivityPointers" Target="activitypointers" />
           <NavigationPropertyBinding Path="Account_SyncErrors" Target="syncerrors" />
@@ -29860,6 +29969,7 @@
           <NavigationPropertyBinding Path="regardingobjectid_spd_ministry" Target="spd_ministries" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_clearance" Target="spd_clearances" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_clearanceaccess" Target="spd_clearanceaccesses" />
+          <NavigationPropertyBinding Path="regardingobjectid_spd_pdfreport" Target="spd_pdfreports" />
           <NavigationPropertyBinding Path="regardingobjectid_report" Target="reports" />
           <NavigationPropertyBinding Path="AsyncOperation_Emails" Target="emails" />
           <NavigationPropertyBinding Path="regardingobjectid_recurringappointmentmaster" Target="recurringappointmentmasters" />
@@ -29988,6 +30098,7 @@
           <NavigationPropertyBinding Path="bcgov_TaskId" Target="tasks" />
           <NavigationPropertyBinding Path="spd_ApplicationId" Target="spd_applications" />
           <NavigationPropertyBinding Path="spd_ClearanceId" Target="spd_clearances" />
+          <NavigationPropertyBinding Path="spd_PDFReportId" Target="spd_pdfreports" />
         </EntitySet>
         <EntitySet Name="bcgov_fields" EntityType="Microsoft.Dynamics.CRM.bcgov_field">
           <NavigationPropertyBinding Path="createdby" Target="systemusers" />
@@ -30423,6 +30534,7 @@
           <NavigationPropertyBinding Path="regardingobjectid_spd_ministry" Target="spd_ministries" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_clearance" Target="spd_clearances" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_clearanceaccess" Target="spd_clearanceaccesses" />
+          <NavigationPropertyBinding Path="regardingobjectid_spd_pdfreport" Target="spd_pdfreports" />
           <NavigationPropertyBinding Path="regardingobjectid_customeraddress" Target="customeraddresses" />
           <NavigationPropertyBinding Path="regardingobjectid_annualfiscalcalendar" Target="annualfiscalcalendars" />
           <NavigationPropertyBinding Path="regardingobjectid_fax" Target="faxes" />
@@ -30621,6 +30733,7 @@
           <NavigationPropertyBinding Path="business_unit_spd_cpicbatch" Target="spd_cpicbatchs" />
           <NavigationPropertyBinding Path="business_unit_spd_clearance" Target="spd_clearances" />
           <NavigationPropertyBinding Path="business_unit_spd_clearanceaccess" Target="spd_clearanceaccesses" />
+          <NavigationPropertyBinding Path="business_unit_spd_pdfreport" Target="spd_pdfreports" />
           <NavigationPropertyBinding Path="BusinessUnit_SyncErrors" Target="syncerrors" />
           <NavigationPropertyBinding Path="transactioncurrencyid" Target="transactioncurrencies" />
           <NavigationPropertyBinding Path="BulkDeleteOperation_BusinessUnit" Target="bulkdeleteoperations" />
@@ -32914,6 +33027,7 @@
           <NavigationPropertyBinding Path="regardingobjectid_spd_ministry" Target="spd_ministries" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_clearance" Target="spd_clearances" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_clearanceaccess" Target="spd_clearanceaccesses" />
+          <NavigationPropertyBinding Path="regardingobjectid_spd_pdfreport" Target="spd_pdfreports" />
           <NavigationPropertyBinding Path="modifiedonbehalfby" Target="systemusers" />
           <NavigationPropertyBinding Path="ownerid" Target="owners" />
           <NavigationPropertyBinding Path="createdonbehalfby" Target="systemusers" />
@@ -33860,6 +33974,7 @@
           <NavigationPropertyBinding Path="objectid_spd_ministry" Target="spd_ministries" />
           <NavigationPropertyBinding Path="objectid_spd_clearance" Target="spd_clearances" />
           <NavigationPropertyBinding Path="objectid_spd_clearanceaccess" Target="spd_clearanceaccesses" />
+          <NavigationPropertyBinding Path="objectid_spd_pdfreport" Target="spd_pdfreports" />
           <NavigationPropertyBinding Path="objectid_letter" Target="letters" />
           <NavigationPropertyBinding Path="objectid_reportcategory" Target="reportcategories" />
           <NavigationPropertyBinding Path="objectid_sharepointdocumentlocation" Target="sharepointdocumentlocations" />
@@ -33985,6 +34100,7 @@
           <NavigationPropertyBinding Path="regardingobjectid_spd_ministry" Target="spd_ministries" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_clearance" Target="spd_clearances" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_clearanceaccess" Target="spd_clearanceaccesses" />
+          <NavigationPropertyBinding Path="regardingobjectid_spd_pdfreport" Target="spd_pdfreports" />
           <NavigationPropertyBinding Path="regardingobjectid_queue" Target="queues" />
           <NavigationPropertyBinding Path="canceledby" Target="systemusers" />
           <NavigationPropertyBinding Path="regardingobjectid_contact" Target="contacts" />
@@ -35503,6 +35619,24 @@
           <NavigationPropertyBinding Path="transactioncurrencyid" Target="transactioncurrencies" />
           <NavigationPropertyBinding Path="spd_ApplicationId" Target="spd_applications" />
         </EntitySet>
+        <EntitySet Name="spd_pdfreports" EntityType="Microsoft.Dynamics.CRM.spd_pdfreport">
+          <NavigationPropertyBinding Path="createdby" Target="systemusers" />
+          <NavigationPropertyBinding Path="createdonbehalfby" Target="systemusers" />
+          <NavigationPropertyBinding Path="modifiedby" Target="systemusers" />
+          <NavigationPropertyBinding Path="modifiedonbehalfby" Target="systemusers" />
+          <NavigationPropertyBinding Path="owninguser" Target="systemusers" />
+          <NavigationPropertyBinding Path="owningteam" Target="teams" />
+          <NavigationPropertyBinding Path="ownerid" Target="owners" />
+          <NavigationPropertyBinding Path="owningbusinessunit" Target="businessunits" />
+          <NavigationPropertyBinding Path="spd_pdfreport_SyncErrors" Target="syncerrors" />
+          <NavigationPropertyBinding Path="spd_pdfreport_AsyncOperations" Target="asyncoperations" />
+          <NavigationPropertyBinding Path="spd_pdfreport_MailboxTrackingFolders" Target="mailboxtrackingfolders" />
+          <NavigationPropertyBinding Path="spd_pdfreport_ProcessSession" Target="processsessions" />
+          <NavigationPropertyBinding Path="spd_pdfreport_BulkDeleteFailures" Target="bulkdeletefailures" />
+          <NavigationPropertyBinding Path="spd_pdfreport_PrincipalObjectAttributeAccesses" Target="principalobjectattributeaccessset" />
+          <NavigationPropertyBinding Path="spd_pdfreport_bcgov_documenturl" Target="bcgov_documenturls" />
+          <NavigationPropertyBinding Path="spd_OrganizationId" Target="accounts" />
+        </EntitySet>
         <EntitySet Name="spd_portalinvitations" EntityType="Microsoft.Dynamics.CRM.spd_portalinvitation">
           <NavigationPropertyBinding Path="createdby" Target="systemusers" />
           <NavigationPropertyBinding Path="createdonbehalfby" Target="systemusers" />
@@ -35530,6 +35664,7 @@
           <NavigationPropertyBinding Path="spd_portalinvitation_SocialActivities" Target="socialactivities" />
           <NavigationPropertyBinding Path="spd_portalinvitation_ServiceAppointments" Target="serviceappointments" />
           <NavigationPropertyBinding Path="spd_Applicant" Target="contacts" />
+          <NavigationPropertyBinding Path="spd_ServiceTypeId" Target="spd_servicetypes" />
         </EntitySet>
         <EntitySet Name="spd_portalusers" EntityType="Microsoft.Dynamics.CRM.spd_portaluser">
           <NavigationPropertyBinding Path="createdby" Target="systemusers" />
@@ -35625,6 +35760,7 @@
           <NavigationPropertyBinding Path="spd_spd_servicetype_incident" Target="incidents" />
           <NavigationPropertyBinding Path="spd_servicetype_spd_cpicbatch" Target="spd_cpicbatchs" />
           <NavigationPropertyBinding Path="spd_servicetype_spd_clearance" Target="spd_clearances" />
+          <NavigationPropertyBinding Path="spd_spd_servicetype_spd_portalinvitation" Target="spd_portalinvitations" />
         </EntitySet>
         <EntitySet Name="spd_spd_role_spd_portaluserset" EntityType="Microsoft.Dynamics.CRM.spd_spd_role_spd_portaluser" />
         <EntitySet Name="spd_submissions" EntityType="Microsoft.Dynamics.CRM.spd_submission">
@@ -35773,6 +35909,7 @@
           <NavigationPropertyBinding Path="regardingobjectid_spd_ministry" Target="spd_ministries" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_clearance" Target="spd_clearances" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_clearanceaccess" Target="spd_clearanceaccesses" />
+          <NavigationPropertyBinding Path="regardingobjectid_spd_pdfreport" Target="spd_pdfreports" />
           <NavigationPropertyBinding Path="regardingobjectid_ExpiredProcess_syncerror" Target="expiredprocesses" />
           <NavigationPropertyBinding Path="regardingobjectid_email_syncerror" Target="emails" />
           <NavigationPropertyBinding Path="regardingobjectid_systemuser" Target="systemusers" />
@@ -36425,6 +36562,11 @@
           <NavigationPropertyBinding Path="lk_spd_clearanceaccess_modifiedby" Target="spd_clearanceaccesses" />
           <NavigationPropertyBinding Path="lk_spd_clearanceaccess_modifiedonbehalfby" Target="spd_clearanceaccesses" />
           <NavigationPropertyBinding Path="user_spd_clearanceaccess" Target="spd_clearanceaccesses" />
+          <NavigationPropertyBinding Path="lk_spd_pdfreport_createdby" Target="spd_pdfreports" />
+          <NavigationPropertyBinding Path="lk_spd_pdfreport_createdonbehalfby" Target="spd_pdfreports" />
+          <NavigationPropertyBinding Path="lk_spd_pdfreport_modifiedby" Target="spd_pdfreports" />
+          <NavigationPropertyBinding Path="lk_spd_pdfreport_modifiedonbehalfby" Target="spd_pdfreports" />
+          <NavigationPropertyBinding Path="user_spd_pdfreport" Target="spd_pdfreports" />
           <NavigationPropertyBinding Path="lk_slakpiinstancebase_createdonbehalfby" Target="slakpiinstances" />
           <NavigationPropertyBinding Path="lk_mobileofflineprofileitemassocaition_modifiedonbehalfby" Target="mobileofflineprofileitemassociations" />
           <NavigationPropertyBinding Path="lk_userqueryvisualizationbase_modifiedonbehalfby" Target="userqueryvisualizations" />
@@ -37117,6 +37259,7 @@
           <NavigationPropertyBinding Path="team_spd_cpicbatch" Target="spd_cpicbatchs" />
           <NavigationPropertyBinding Path="team_spd_clearance" Target="spd_clearances" />
           <NavigationPropertyBinding Path="team_spd_clearanceaccess" Target="spd_clearanceaccesses" />
+          <NavigationPropertyBinding Path="team_spd_pdfreport" Target="spd_pdfreports" />
           <NavigationPropertyBinding Path="team_DuplicateRules" Target="duplicaterules" />
           <NavigationPropertyBinding Path="team_Imports" Target="imports" />
           <NavigationPropertyBinding Path="OwningTeam_postfollows" Target="postfollows" />
