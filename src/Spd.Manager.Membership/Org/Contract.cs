@@ -37,6 +37,7 @@ namespace Spd.Manager.Membership.Org
         public bool GenericUploadEnabled { get; set; } = false;
         public EmployeeOrganizationTypeCode? EmployeeOrganizationTypeCode { get; set; }
         public VolunteerOrganizationTypeCode? VolunteerOrganizationTypeCode { get; set; }
+        public Enumerable<ServiceTypeCode> ServiceTypes { get; set; }
     }
     public class OrgUpdateRequestValidator : AbstractValidator<OrgUpdateRequest>
     {
