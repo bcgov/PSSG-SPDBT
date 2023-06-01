@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Spd.Resource.Organizations.Registration;
@@ -123,7 +124,13 @@ namespace Spd.Resource.Organizations.Org
             var org = await _dynaContext.GetOrgById(query.OrgId, ct);
             if (org?.statecode == DynamicsConstants.StateCode_Inactive) return null;
 
+            //tried with org expand, does not work. so have to make another call.
+            List<spd_servicetype_organization> serviceTypes = _dynaContext.spd_servicetype_organizationset
+                .Where(so => so.accountid == query.OrgId)
+                .ToList();
+
             var response = _mapper.Map<OrgResult>(org);
+            response.ServiceTypes = serviceTypes.Select(s => Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.LookupServiceTypeKey(s.spd_servicetypeid)));
             return new OrgQryResult(response);
         }
     }

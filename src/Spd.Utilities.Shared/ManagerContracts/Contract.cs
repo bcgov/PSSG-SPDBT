@@ -112,4 +112,16 @@ namespace Spd.Utilities.Shared.ManagerContract
         [Description("Neither")]
         Neither
     }
+
+    public enum ServiceTypeCode
+    {
+        PSSO,
+        CRRP_EMPLOYEE,
+        CRRP_VOLUNTEER,
+        MCFD,
+        PE_CRC,
+        PE_CRC_VS,
+        LICENSING,
+        PSSO_VS
+    }
 }

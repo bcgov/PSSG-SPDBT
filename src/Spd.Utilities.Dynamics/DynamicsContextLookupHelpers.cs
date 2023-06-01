@@ -134,6 +134,35 @@ namespace Spd.Utilities.Dynamics
         }
         #endregion
 
+        #region service type
+        public static readonly ImmutableDictionary<string, Guid> ServiceTypeGuidDictionary = new Dictionary<string, Guid>()
+        {
+            {"PSSO", Guid.Parse("f093141b-1e9d-ed11-b83d-00505683fbf4")},
+            {"CRRP_EMPLOYEE", Guid.Parse("f193141b-1e9d-ed11-b83d-00505683fbf4")},
+            {"CRRP_VOLUNTEER", Guid.Parse("a2834126-1e9d-ed11-b83d-00505683fbf4")},
+            {"MCFD", Guid.Parse("a3834126-1e9d-ed11-b83d-00505683fbf4")},
+            {"PE_CRC", Guid.Parse("a5d6ca3b-1e9d-ed11-b83d-00505683fbf4")},
+            {"PE_CRC_VS", Guid.Parse("61a2ecee-58ae-ed11-b83e-00505683fbf4")},
+            {"LICENSING", Guid.Parse("451101f8-58ae-ed11-b83e-00505683fbf4")},
+            {"PSSO_VS", Guid.Parse("8c653cc7-64b9-ed11-b83e-00505683fbf4")},
+        }.ToImmutableDictionary();
+
+        public static spd_servicetype? LookupServiceType(this DynamicsContext context, string key)
+        {
+            var keyExisted = ServiceTypeGuidDictionary.TryGetValue(key, out Guid guid);
+            if (!keyExisted) return null;
+            return context.spd_servicetypes
+                .Where(s => s.spd_servicetypeid == guid)
+                .Where(s => s.statecode != DynamicsConstants.StateCode_Inactive)
+                .FirstOrDefault();
+        }
+
+        public static string LookupServiceTypeKey(Guid? serviceTypeId)
+        {
+            return ServiceTypeGuidDictionary.FirstOrDefault(s => s.Value == serviceTypeId).Key;
+        }
+        #endregion
+
         public static async Task<spd_application?> GetApplicationById(this DynamicsContext context, Guid appId, CancellationToken ct)
             => await context.spd_applications.Where(a => a.spd_applicationid == appId).SingleOrDefaultAsync(ct);
 
