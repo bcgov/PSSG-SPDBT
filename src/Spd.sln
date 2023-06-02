@@ -37,9 +37,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resource", "Resource", "{8D004FC3-58FA-40BA-9826-B0A2D8B8C7BD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utilities", "Utilities", "{744553C0-C41C-4315-9592-92A97938234E}"
-	ProjectSection(SolutionItems) = preProject
-		Spd.Utilities.LogonUser\ServiceExtensionAuthentication.cs = Spd.Utilities.LogonUser\ServiceExtensionAuthentication.cs
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{B5A15349-F339-4FA1-A05D-7EE9866B8B46}"
 EndProject
