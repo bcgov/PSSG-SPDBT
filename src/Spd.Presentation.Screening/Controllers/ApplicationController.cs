@@ -119,6 +119,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/application/invitation")]
         [HttpPost]
+        [AllowAnonymous]
         public async Task<AppInviteVerifyResponse> VerifyAppInvitation([FromBody][Required] AppInviteVerifyRequest appInviteVerifyRequest)
         {
             return await _mediator.Send(new ApplicationInviteVerifyCommand(appInviteVerifyRequest));
