@@ -98,7 +98,7 @@ export interface CrcDialogData {
 								<div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 pe-md-0">
 									<mat-form-field>
 										<mat-label>Paid by</mat-label>
-										<mat-select formControlName="payeeType">
+										<mat-select formControlName="payeeType" [errorStateMatcher]="matcher">
 											<mat-option *ngFor="let payer of payerPreferenceTypes" [value]="payer.code">
 												{{ payer.desc }}
 											</mat-option>
@@ -110,7 +110,7 @@ export interface CrcDialogData {
 								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0" *ngIf="showScreeningType">
 									<mat-form-field>
 										<mat-label>Application Type</mat-label>
-										<mat-select formControlName="screeningTypeCode">
+										<mat-select formControlName="screeningTypeCode" [errorStateMatcher]="matcher">
 											<mat-option *ngFor="let scr of screeningTypes" [value]="scr.code">
 												{{ scr.desc }}
 											</mat-option>
@@ -122,7 +122,7 @@ export interface CrcDialogData {
 								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0" *ngIf="serviceTypes">
 									<mat-form-field>
 										<mat-label>Service type</mat-label>
-										<mat-select formControlName="serviceTypeCode">
+										<mat-select formControlName="serviceTypeCode" [errorStateMatcher]="matcher">
 											<mat-option *ngFor="let srv of serviceTypes" [value]="srv.code">
 												{{ srv.desc }}
 											</mat-option>
@@ -235,6 +235,7 @@ export class CrcAddModalComponent implements OnInit {
 	}
 
 	initiateForm(inviteDefault?: ApplicationInviteCreateRequest): FormGroup {
+		const screeningTypeCodeDefault = this.showScreeningType ? '' : ScreeningTypeCode.Staff;
 		return this.formBuilder.group(
 			{
 				firstName: new FormControl(inviteDefault ? inviteDefault.firstName : '', [Validators.required]),
@@ -245,7 +246,7 @@ export class CrcAddModalComponent implements OnInit {
 				]),
 				jobTitle: new FormControl(inviteDefault ? inviteDefault.jobTitle : '', [Validators.required]),
 				payeeType: new FormControl(inviteDefault ? inviteDefault.payeeType : '', [Validators.required]),
-				screeningTypeCode: new FormControl(ScreeningTypeCode.Staff),
+				screeningTypeCode: new FormControl(screeningTypeCodeDefault),
 				serviceTypeCode: new FormControl(''),
 			},
 			{
