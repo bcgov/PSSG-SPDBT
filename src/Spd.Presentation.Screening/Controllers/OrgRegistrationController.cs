@@ -62,7 +62,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <exception cref="ConfigurationErrorsException"></exception>
         [Route("api/org-registrations")]
         [HttpPost]
-        [Authorize(AuthenticationSchemes="BCeID")]
+        [Authorize(Policy = "OnlyBCeID")]
         public async Task<OrgRegistrationCreateResponse> Register([FromBody][Required] OrgRegistrationCreateRequest orgRegistrationCreateRequest)
         {
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
