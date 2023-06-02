@@ -5,10 +5,11 @@ import {
 	ApplicationInviteCreateRequest,
 	ApplicationInvitesCreateRequest,
 	ApplicationInvitesCreateResponse,
-	PayerPreferenceTypeCode,
+	BooleanTypeCode,
 } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { PayerPreferenceTypes, ScreeningTypes } from 'src/app/core/code-types/model-desc.models';
+import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
@@ -85,7 +86,32 @@ export interface CrcDialogData {
 										<mat-error *ngIf="group.get('jobTitle')?.hasError('required')">This is required</mat-error>
 									</mat-form-field>
 								</div>
-								<div class="col-xl-3 col-lg-3 col-md-6 col-sm-9" style="text-align: center;">
+
+								<div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 pe-md-0">
+									<mat-form-field>
+										<mat-label>Application Type</mat-label>
+										<mat-select formControlName="screeningTypeCode">
+											<mat-option *ngFor="let scr of screeningTypes" [value]="scr.code">
+												{{ scr.desc }}
+											</mat-option>
+										</mat-select>
+										<mat-error *ngIf="form.get('screeningTypeCode')?.hasError('required')">This is required</mat-error>
+									</mat-form-field>
+								</div>
+
+								<div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 pe-md-0">
+									<mat-form-field>
+										<mat-label>Paid by</mat-label>
+										<mat-select formControlName="payeeType">
+											<mat-option *ngFor="let payer of payerPreferenceTypes" [value]="payer.code">
+												{{ payer.desc }}
+											</mat-option>
+										</mat-select>
+										<mat-error *ngIf="form.get('payeeType')?.hasError('required')">This is required</mat-error>
+									</mat-form-field>
+								</div>
+
+								<!-- <div class="col-xl-3 col-lg-3 col-md-6 col-sm-9" style="text-align: center;">
 									<mat-button-toggle-group formControlName="payeeType" aria-label="Paid By">
 										<mat-button-toggle class="button-toggle" [value]="payeePreferenceTypeCodes.Organization">
 											Organization
@@ -106,7 +132,8 @@ export interface CrcDialogData {
 										"
 										>An option must be selected</mat-error
 									>
-								</div>
+								</div> -->
+
 								<div class="col-xl-1 col-lg-1 col-md-3 col-sm-3 mb-4 mb-md-0">
 									<button
 										mat-icon-button
@@ -171,7 +198,9 @@ export class CrcAddModalComponent implements OnInit {
 	readonly yesMessageMultiple = 'Your criminal record checks have been sent to the applicants';
 
 	matcher = new FormErrorStateMatcher();
-	payeePreferenceTypeCodes = PayerPreferenceTypeCode;
+	showApplicationType = false;
+	screeningTypes = ScreeningTypes;
+	payerPreferenceTypes = PayerPreferenceTypes;
 
 	title: string = 'Add Criminal Record Check';
 	form!: FormGroup;
@@ -180,12 +209,18 @@ export class CrcAddModalComponent implements OnInit {
 		private formBuilder: FormBuilder,
 		private dialogRef: MatDialogRef<CrcAddModalComponent>,
 		private applicationService: ApplicationService,
-		private authenticationService: AuthenticationService,
+		private authUserService: AuthUserService,
 		private dialog: MatDialog,
 		@Inject(MAT_DIALOG_DATA) public dialogData: CrcDialogData
 	) {}
 
 	ngOnInit(): void {
+		const orgProfile = this.authUserService.userOrgProfile;
+		this.showApplicationType = orgProfile
+			? orgProfile.contractorsNeedVulnerableSectorScreening == BooleanTypeCode.Yes ||
+			  orgProfile.licenseesNeedVulnerableSectorScreening == BooleanTypeCode.Yes
+			: false;
+
 		this.form = this.formBuilder.group({
 			tableRows: this.formBuilder.array([]),
 		});
@@ -203,6 +238,7 @@ export class CrcAddModalComponent implements OnInit {
 			]),
 			jobTitle: new FormControl(inviteDefault ? inviteDefault.jobTitle : '', [Validators.required]),
 			payeeType: new FormControl(inviteDefault ? inviteDefault.payeeType : '', [Validators.required]),
+			screeningTypeCode: new FormControl(''),
 		});
 	}
 
@@ -344,7 +380,7 @@ export class CrcAddModalComponent implements OnInit {
 			body.applicationInviteCreateRequests?.length == 1 ? this.yesMessageSingular : this.yesMessageMultiple;
 
 		this.applicationService
-			.apiOrgsOrgIdApplicationInvitesPost({ orgId: this.authenticationService.loggedInUserInfo?.orgId!, body })
+			.apiOrgsOrgIdApplicationInvitesPost({ orgId: this.authUserService.userInfo?.orgId!, body })
 			.pipe()
 			.subscribe((dupres: ApplicationInvitesCreateResponse) => {
 				if (dupres.createSuccess) {
@@ -397,7 +433,7 @@ export class CrcAddModalComponent implements OnInit {
 	private saveInviteRequests(body: ApplicationInvitesCreateRequest, message: string): void {
 		body.requireDuplicateCheck = false;
 		this.applicationService
-			.apiOrgsOrgIdApplicationInvitesPost({ orgId: this.authenticationService.loggedInUserInfo?.orgId!, body })
+			.apiOrgsOrgIdApplicationInvitesPost({ orgId: this.authUserService.userInfo?.orgId!, body })
 			.pipe()
 			.subscribe((_resp: any) => {
 				this.handleSaveSuccess(message);

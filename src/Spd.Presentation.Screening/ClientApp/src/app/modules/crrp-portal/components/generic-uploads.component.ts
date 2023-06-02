@@ -11,6 +11,7 @@ import {
 } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
@@ -130,6 +131,7 @@ export class GenericUploadsComponent implements OnInit {
 	constructor(
 		private router: Router,
 		private authenticationService: AuthenticationService,
+		private authUserService: AuthUserService,
 		private applicationService: ApplicationService,
 		private utilService: UtilService,
 		private dialog: MatDialog
@@ -137,7 +139,7 @@ export class GenericUploadsComponent implements OnInit {
 
 	ngOnInit() {
 		this.authenticationService.waitUntilAuthentication$.subscribe((_subjectData: any) => {
-			const genericUploadEnabled = this.authenticationService.genericUploadEnabled;
+			const genericUploadEnabled = this.authUserService.genericUploadEnabled;
 			if (!genericUploadEnabled) {
 				this.router.navigate([CrrpRoutes.path(CrrpRoutes.HOME)]);
 			}
@@ -156,7 +158,7 @@ export class GenericUploadsComponent implements OnInit {
 
 		// Check for potential duplicate
 		this.applicationService
-			.apiOrgsOrgIdApplicationsBulkPost({ orgId: this.authenticationService.loggedInUserInfo?.orgId!, body })
+			.apiOrgsOrgIdApplicationsBulkPost({ orgId: this.authUserService.userInfo?.orgId!, body })
 			.pipe()
 			.subscribe((resp: BulkUploadCreateResponse) => {
 				this.validationErrs = resp.validationErrs ?? [];
@@ -241,7 +243,7 @@ export class GenericUploadsComponent implements OnInit {
 		};
 
 		this.applicationService
-			.apiOrgsOrgIdApplicationsBulkPost({ orgId: this.authenticationService.loggedInUserInfo?.orgId!, body })
+			.apiOrgsOrgIdApplicationsBulkPost({ orgId: this.authUserService.userInfo?.orgId!, body })
 			.pipe()
 			.subscribe((_resp: BulkUploadCreateResponse) => {
 				this.showResult = true;
@@ -251,7 +253,7 @@ export class GenericUploadsComponent implements OnInit {
 	private loadList(): void {
 		this.applicationService
 			.apiOrgsOrgIdApplicationsBulkHistoryGet({
-				orgId: this.authenticationService.loggedInUserInfo?.orgId!,
+				orgId: this.authUserService.userInfo?.orgId!,
 				...this.queryParams,
 			})
 			.pipe()

@@ -10,7 +10,7 @@ import { ApplicationInviteCreateRequest, ClearanceListResponse, ClearanceRespons
 import { ApplicationService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { CrrpRoutes } from '../crrp-routing.module';
@@ -239,7 +239,7 @@ export class ExpiringChecksComponent implements OnInit {
 		private utilService: UtilService,
 		private formBuilder: FormBuilder,
 		private applicationService: ApplicationService,
-		private authenticationService: AuthenticationService,
+		private authUserService: AuthUserService,
 		private hotToast: HotToastService,
 		private dialog: MatDialog
 	) {}
@@ -288,7 +288,7 @@ export class ExpiringChecksComponent implements OnInit {
 		this.applicationService
 			.apiOrgsOrgIdClearancesClearanceIdFileGet$Response({
 				clearanceId: clearance.clearanceId!,
-				orgId: this.authenticationService.loggedInUserInfo?.orgId!,
+				orgId: this.authUserService.userInfo?.orgId!,
 			})
 			.pipe()
 			.subscribe((resp: StrictHttpResponse<Blob>) => {
@@ -378,7 +378,7 @@ export class ExpiringChecksComponent implements OnInit {
 					this.applicationService
 						.apiOrgsOrgIdClearancesExpiredClearanceAccessIdDelete({
 							clearanceAccessId: clearance.id!,
-							orgId: this.authenticationService.loggedInUserInfo?.orgId!,
+							orgId: this.authUserService.userInfo?.orgId!,
 						})
 						.pipe()
 						.subscribe((_res) => {
@@ -404,7 +404,7 @@ export class ExpiringChecksComponent implements OnInit {
 		this.queryParams.filters = this.buildQueryParamsFilterString();
 		this.applicationService
 			.apiOrgsOrgIdClearancesExpiredGet({
-				orgId: this.authenticationService.loggedInUserInfo?.orgId!,
+				orgId: this.authUserService.userInfo?.orgId!,
 				...this.queryParams,
 			})
 			.pipe()

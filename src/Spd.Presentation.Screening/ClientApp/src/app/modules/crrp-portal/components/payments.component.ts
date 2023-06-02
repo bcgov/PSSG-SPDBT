@@ -13,7 +13,7 @@ import {
 import { ApplicationService } from 'src/app/api/services';
 import { ApplicationPortalStatisticsTypeCode } from 'src/app/core/code-types/application-portal-statistics-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { ApplicationStatusFilterMap } from './application-statuses-filter.component';
 import { PaymentFilter } from './payment-filter.component';
@@ -216,7 +216,7 @@ export class PaymentsComponent implements OnInit {
 		private utilService: UtilService,
 		private formBuilder: FormBuilder,
 		private applicationService: ApplicationService,
-		private authenticationService: AuthenticationService,
+		private authUserService: AuthUserService,
 		private location: Location
 	) {
 		this.refreshStats();
@@ -287,7 +287,7 @@ export class PaymentsComponent implements OnInit {
 
 		this.applicationService
 			.apiOrgsOrgIdApplicationsGet({
-				orgId: this.authenticationService.loggedInUserInfo?.orgId!,
+				orgId: this.authUserService.userInfo?.orgId!,
 				...this.queryParams,
 			})
 			.pipe()
@@ -307,7 +307,7 @@ export class PaymentsComponent implements OnInit {
 	private refreshStats(): void {
 		this.applicationStatistics$ = this.applicationService
 			.apiOrgsOrgIdApplicationStatisticsGet({
-				orgId: this.authenticationService.loggedInUserInfo?.orgId!,
+				orgId: this.authUserService.userInfo?.orgId!,
 			})
 			.pipe(
 				tap((res: ApplicationStatisticsResponse) => {

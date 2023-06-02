@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { AuthUserService } from 'src/app/core/services/auth-user.service';
 
 @Component({
 	selector: 'app-crrp-header',
@@ -30,8 +30,8 @@ import { AuthenticationService } from 'src/app/core/services/authentication.serv
 	],
 })
 export class CrrpHeaderComponent {
-	loggedInOrgDisplay: string | null | undefined = this.authenticationService.loggedInUserInfo?.orgName;
+	loggedInOrgDisplay: string | null | undefined = this.authUserService.userInfo?.orgName;
 	@Input() subtitle = '';
 
-	constructor(private authenticationService: AuthenticationService) {}
+	constructor(private authUserService: AuthUserService) {}
 }
