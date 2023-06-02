@@ -54,8 +54,9 @@ namespace Spd.Manager.Membership.OrgUser
         {
             var existingUsersResult = (OrgUsersResult)await _orgUserRepository.QueryOrgUserAsync(
                 new OrgUsersSearch(request.OrgUserUpdateRequest.OrganizationId, null),
-                ct);            //check email rule
-
+                ct);            
+            
+            //check email rule
             if (existingUsersResult.UserResults.Any(u =>
                 u.Email.Equals(request.OrgUserUpdateRequest.Email, StringComparison.InvariantCultureIgnoreCase) &&
                 u.Id != request.OrgUserUpdateRequest.Id))
@@ -65,6 +66,9 @@ namespace Spd.Manager.Membership.OrgUser
 
             //check max role number rule
             var existingUser = existingUsersResult.UserResults.FirstOrDefault(u => u.Id == request.OrgUserUpdateRequest.Id);
+            if(existingUser==null)
+                throw new NotFoundException(HttpStatusCode.BadRequest, $"Cannot find the user");
+
             _mapper.Map(request.OrgUserUpdateRequest, existingUser);
             await CheckMaxRoleNumberRuleAsync(
                 existingUsersResult.UserResults.ToList(),
