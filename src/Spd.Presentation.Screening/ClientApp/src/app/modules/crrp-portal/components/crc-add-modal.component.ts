@@ -6,11 +6,19 @@ import {
 	ApplicationInvitesCreateRequest,
 	ApplicationInvitesCreateResponse,
 	BooleanTypeCode,
+	ServiceTypeCode,
 } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
-import { PayerPreferenceTypes, ScreeningTypes } from 'src/app/core/code-types/model-desc.models';
+import {
+	PayerPreferenceTypes,
+	ScreeningTypes,
+	SelectOptions,
+	ServiceTypes,
+} from 'src/app/core/code-types/model-desc.models';
+import { ScreeningTypeCode } from 'src/app/core/code-types/screening-type.model';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
+import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 
@@ -38,7 +46,7 @@ export interface CrcDialogData {
 						<ng-container formArrayName="tableRows" *ngFor="let group of getFormControls.controls; let i = index">
 							<mat-divider class="mb-3" *ngIf="i > 0"></mat-divider>
 							<div class="row" [formGroupName]="i">
-								<div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 pe-md-0">
+								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0">
 									<mat-form-field>
 										<mat-label>Given Name</mat-label>
 										<input
@@ -51,7 +59,7 @@ export interface CrcDialogData {
 										<mat-error *ngIf="group.get('firstName')?.hasError('required')">This is required</mat-error>
 									</mat-form-field>
 								</div>
-								<div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 pe-md-0">
+								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0">
 									<mat-form-field>
 										<mat-label>Surname</mat-label>
 										<input
@@ -89,50 +97,39 @@ export interface CrcDialogData {
 
 								<div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 pe-md-0">
 									<mat-form-field>
-										<mat-label>Application Type</mat-label>
-										<mat-select formControlName="screeningTypeCode">
-											<mat-option *ngFor="let scr of screeningTypes" [value]="scr.code">
-												{{ scr.desc }}
-											</mat-option>
-										</mat-select>
-										<mat-error *ngIf="form.get('screeningTypeCode')?.hasError('required')">This is required</mat-error>
-									</mat-form-field>
-								</div>
-
-								<div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 pe-md-0">
-									<mat-form-field>
 										<mat-label>Paid by</mat-label>
 										<mat-select formControlName="payeeType">
 											<mat-option *ngFor="let payer of payerPreferenceTypes" [value]="payer.code">
 												{{ payer.desc }}
 											</mat-option>
 										</mat-select>
-										<mat-error *ngIf="form.get('payeeType')?.hasError('required')">This is required</mat-error>
+										<mat-error *ngIf="group.get('payeeType')?.hasError('required')">This is required</mat-error>
 									</mat-form-field>
 								</div>
 
-								<!-- <div class="col-xl-3 col-lg-3 col-md-6 col-sm-9" style="text-align: center;">
-									<mat-button-toggle-group formControlName="payeeType" aria-label="Paid By">
-										<mat-button-toggle class="button-toggle" [value]="payeePreferenceTypeCodes.Organization">
-											Organization
-										</mat-button-toggle>
-										<mat-button-toggle class="button-toggle" [value]="payeePreferenceTypeCodes.Applicant">
-											Applicant
-										</mat-button-toggle>
-									</mat-button-toggle-group>
-									<div>
-										<mat-hint style="white-space: nowrap;">Paid by</mat-hint>
-									</div>
-									<mat-error
-										class="mat-option-error"
-										*ngIf="
-											(group.get('payeeType')?.dirty || group.get('payeeType')?.touched) &&
-											group.get('payeeType')?.invalid &&
-											group.get('payeeType')?.hasError('required')
-										"
-										>An option must be selected</mat-error
-									>
-								</div> -->
+								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0" *ngIf="showScreeningType">
+									<mat-form-field>
+										<mat-label>Application Type</mat-label>
+										<mat-select formControlName="screeningTypeCode">
+											<mat-option *ngFor="let scr of screeningTypes" [value]="scr.code">
+												{{ scr.desc }}
+											</mat-option>
+										</mat-select>
+										<mat-error *ngIf="group.get('screeningTypeCode')?.hasError('required')">This is required</mat-error>
+									</mat-form-field>
+								</div>
+
+								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0" *ngIf="serviceTypes">
+									<mat-form-field>
+										<mat-label>Service type</mat-label>
+										<mat-select formControlName="serviceTypeCode">
+											<mat-option *ngFor="let srv of serviceTypes" [value]="srv.code">
+												{{ srv.desc }}
+											</mat-option>
+										</mat-select>
+										<mat-error *ngIf="group.get('serviceTypeCode')?.hasError('required')">This is required</mat-error>
+									</mat-form-field>
+								</div>
 
 								<div class="col-xl-1 col-lg-1 col-md-3 col-sm-3 mb-4 mb-md-0">
 									<button
@@ -198,7 +195,9 @@ export class CrcAddModalComponent implements OnInit {
 	readonly yesMessageMultiple = 'Your criminal record checks have been sent to the applicants';
 
 	matcher = new FormErrorStateMatcher();
-	showApplicationType = false;
+	showScreeningType = false;
+	showServiceType = false;
+	serviceTypes: null | SelectOptions[] = null;
 	screeningTypes = ScreeningTypes;
 	payerPreferenceTypes = PayerPreferenceTypes;
 
@@ -216,10 +215,17 @@ export class CrcAddModalComponent implements OnInit {
 
 	ngOnInit(): void {
 		const orgProfile = this.authUserService.userOrgProfile;
-		this.showApplicationType = orgProfile
+
+		this.showScreeningType = orgProfile
 			? orgProfile.contractorsNeedVulnerableSectorScreening == BooleanTypeCode.Yes ||
 			  orgProfile.licenseesNeedVulnerableSectorScreening == BooleanTypeCode.Yes
 			: false;
+
+		const serviceTypes = orgProfile?.serviceTypes;
+		if (serviceTypes && serviceTypes.length > 1) {
+			this.showServiceType = true;
+			this.serviceTypes = ServiceTypes.filter((item) => serviceTypes.includes(item.code as ServiceTypeCode));
+		}
 
 		this.form = this.formBuilder.group({
 			tableRows: this.formBuilder.array([]),
@@ -229,17 +235,29 @@ export class CrcAddModalComponent implements OnInit {
 	}
 
 	initiateForm(inviteDefault?: ApplicationInviteCreateRequest): FormGroup {
-		return this.formBuilder.group({
-			firstName: new FormControl(inviteDefault ? inviteDefault.firstName : '', [Validators.required]),
-			lastName: new FormControl(inviteDefault ? inviteDefault.lastName : '', [Validators.required]),
-			email: new FormControl(inviteDefault ? inviteDefault.email : '', [
-				Validators.required,
-				FormControlValidators.email,
-			]),
-			jobTitle: new FormControl(inviteDefault ? inviteDefault.jobTitle : '', [Validators.required]),
-			payeeType: new FormControl(inviteDefault ? inviteDefault.payeeType : '', [Validators.required]),
-			screeningTypeCode: new FormControl(''),
-		});
+		return this.formBuilder.group(
+			{
+				firstName: new FormControl(inviteDefault ? inviteDefault.firstName : '', [Validators.required]),
+				lastName: new FormControl(inviteDefault ? inviteDefault.lastName : '', [Validators.required]),
+				email: new FormControl(inviteDefault ? inviteDefault.email : '', [
+					Validators.required,
+					FormControlValidators.email,
+				]),
+				jobTitle: new FormControl(inviteDefault ? inviteDefault.jobTitle : '', [Validators.required]),
+				payeeType: new FormControl(inviteDefault ? inviteDefault.payeeType : '', [Validators.required]),
+				screeningTypeCode: new FormControl(ScreeningTypeCode.Staff),
+				serviceTypeCode: new FormControl(''),
+			},
+			{
+				validators: [
+					FormGroupValidators.conditionalRequiredValidator(
+						'screeningTypeCode',
+						(form) => this.showScreeningType ?? false
+					),
+					FormGroupValidators.conditionalRequiredValidator('serviceTypeCode', (form) => this.showServiceType ?? false),
+				],
+			}
+		);
 	}
 
 	addFirstRow(inviteDefault?: ApplicationInviteCreateRequest) {
