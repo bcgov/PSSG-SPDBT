@@ -15,6 +15,7 @@ namespace Spd.Presentation.Screening.Controllers
     /// <summary>
     /// 
     /// </summary>
+    [Authorize(Policy = "OnlyBCeID", Roles = "Primary,Contact")]
     public class OrgUserController : SpdControllerBase
     {
         private readonly ILogger<OrgUserController> _logger;
@@ -37,13 +38,13 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/user/invitation")]
         [HttpPost]
-        [Authorize(AuthenticationSchemes="BCeID")]
+        [Authorize(Policy = "OnlyBCeID")]
         public async Task<InvitationResponse> VerifyUserInvitation([FromBody][Required] InvitationRequest orgUserInvitationRequest)
         {
             return await _mediator.Send(new VerifyUserInvitation(orgUserInvitationRequest, _currentUser.GetBizGuid(), _currentUser.GetUserGuid()));
         }
 
-        [Authorize(Roles = "Primary")]
+        [Authorize(Policy = "OnlyBCeID", Roles = "Primary")]
         [Route("api/orgs/{orgId}/users")]
         [HttpPost]
         public async Task<OrgUserResponse> Add([FromBody][Required] OrgUserCreateRequest orgUserCreateRequest, [FromRoute] Guid orgId)
@@ -56,7 +57,7 @@ namespace Spd.Presentation.Screening.Controllers
             return await _mediator.Send(new OrgUserCreateCommand(orgUserCreateRequest, hostUrl));
         }
 
-        [Authorize(Roles = "Primary,Contact")]
+
         [Route("api/orgs/{orgId}/users/{userId}")]
         [HttpPut]
         public async Task<OrgUserResponse> Put([FromRoute] Guid userId, [FromBody] OrgUserUpdateRequest orgUserUpdateRequest, [FromRoute] Guid orgId)
@@ -72,7 +73,7 @@ namespace Spd.Presentation.Screening.Controllers
             return await _mediator.Send(new OrgUserUpdateCommand(userId, orgUserUpdateRequest, false));
         }
 
-        [Authorize(Roles = "Primary")]
+        [Authorize(Policy = "OnlyBCeID", Roles = "Primary")]
         [Route("api/orgs/{orgId}/users/{userId}")]
         [HttpDelete]
         public async Task<ActionResult> DeleteAsync([FromRoute] Guid userId, [FromRoute] Guid orgId)
@@ -89,7 +90,6 @@ namespace Spd.Presentation.Screening.Controllers
         /// <exception cref="Exception"></exception>
         [Route("api/orgs/{orgId}/users/{userId}")]
         [HttpGet]
-        [Authorize(Roles = "Primary,Contact")]
         public async Task<OrgUserResponse> Get([FromRoute] Guid orgId, Guid userId)
         {
             return await _mediator.Send(new OrgUserGetQuery(userId));
@@ -100,7 +100,6 @@ namespace Spd.Presentation.Screening.Controllers
         /// </summary>
         /// <param name="orgId"></param>
         /// <returns></returns>
-        [Authorize(Roles = "Primary,Contact")]
         [Route("api/orgs/{orgId}/users")]
         [HttpGet]
         public async Task<OrgUserListResponse> GetList([FromRoute] Guid orgId)
