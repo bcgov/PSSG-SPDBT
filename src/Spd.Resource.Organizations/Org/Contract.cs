@@ -55,5 +55,6 @@ namespace Spd.Resource.Organizations.Org
         public bool GenericUploadEnabled { get; set; }
         public string? EmployeeOrganizationTypeCode { get; set; }
         public string? VolunteerOrganizationTypeCode { get; set; }
+        public IEnumerable<ServiceTypeEnum> ServiceTypes { get; set; } = Array.Empty<ServiceTypeEnum>();
     }
 }

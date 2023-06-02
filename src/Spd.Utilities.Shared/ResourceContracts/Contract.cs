@@ -53,4 +53,16 @@ namespace Spd.Utilities.Shared.ResourceContracts
         ChildrenAndAdults,
         Neither
     }
+
+    public enum ServiceTypeEnum
+    {
+        PSSO,
+        CRRP_EMPLOYEE,
+        CRRP_VOLUNTEER,
+        MCFD,
+        PE_CRC,
+        PE_CRC_VS,
+        LICENSING,
+        PSSO_VS
+    }
 }
