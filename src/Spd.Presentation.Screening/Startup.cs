@@ -61,6 +61,7 @@ namespace Spd.Presentation.Screening
             services.AddGoogleRecaptcha(configuration);
             services.AddValidatorsFromAssemblies(assemblies);
             services.ConfigureAuthentication(configuration);
+            services.ConfigureAuthorization();
             services.AddHttpContextAccessor();
             services.AddTransient<IPrincipal>(provider => provider.GetService<IHttpContextAccessor>()?.HttpContext?.User);
 
