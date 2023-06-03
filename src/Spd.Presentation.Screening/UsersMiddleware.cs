@@ -1,11 +1,11 @@
 using MediatR;
-using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Membership.UserProfile;
 using Spd.Utilities.Cache;
 using Spd.Utilities.LogonUser.Configurations;
 using System.Net;
 using System.Security.Claims;
+using System.Text.Json;
 
 namespace Spd.Utilities.LogonUser
 {
@@ -53,8 +53,14 @@ namespace Spd.Utilities.LogonUser
                 {
                     await ReturnUnauthorized(context, "missing organization in the header.");
                 }
-            }else if(context.User.GetIssuer() == bcscConfig.Issuer)
+            }
+            else if (context.User.GetIssuer() == bcscConfig.Issuer)
             {
+                ClaimsIdentity? identity = context.User.Identities.FirstOrDefault(x => x.Claims.Any(c => c.Type == "userInfo"));
+                if(identity == null) await ReturnUnauthorized(context, "Cannot get the user info for this bcsc account");
+                string? userInfoStr = identity?.Claims.FirstOrDefault(c => c.Type == "userInfo")?.Value;
+                string displayName = "test";
+                context.User.AddUpdateClaim(IPrincipalExtensions.BCeID_DISPLAY_USER_NAME, displayName);
                 context.User.AddUpdateClaim(ClaimTypes.Role, "Applicant");
                 await next(context);
             }
@@ -102,7 +108,7 @@ namespace Spd.Utilities.LogonUser
                 await ReturnUnauthorized(context, "organization is not a valid guid");
                 return false;
             }
-            
+
             UserProfileResponse? userProfile = await cache.Get<UserProfileResponse>($"user-{context.User.GetUserGuid()}");
             if (userProfile == null)
             {
@@ -131,6 +137,15 @@ namespace Spd.Utilities.LogonUser
             context.Response.Clear();
             context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
             await context.Response.WriteAsync(msg);
+        }
+
+        private string GetDisplayName(string userInfoStr)
+        {
+            //bcsc returned userinfo would be like
+            //{"sub":"A5VOX7AS6AULXIV2QPMY7R4JLOFHUTFW","birthdate":"1972-04-13","email_verified":true,"gender":"female","iss":"https://idtest.gov.bc.ca/oauth2/","given_name":"GIVENONE","given_names":"GIVENONE GIVENTWO","display_name":"GIVENONE SURNAME","aud":"ca.bc.gov.ag.spd.dev","transaction_identifier":"715efacb-591b-456d-8e6c-eec6be724a71","family_name":"SURNAME","iat":1685752338,"email":"SPD00001@TEST.COM","age":51,"jti":"872ab531-21bc-44e8-b86f-60dc0dd2a9f1"}
+            JsonDocument jd = JsonDocument.Parse(userInfoStr);
+            return "temp";
+
         }
     }
 }
