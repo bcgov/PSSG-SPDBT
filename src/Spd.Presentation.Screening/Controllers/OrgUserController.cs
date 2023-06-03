@@ -15,7 +15,7 @@ namespace Spd.Presentation.Screening.Controllers
     /// <summary>
     /// 
     /// </summary>
-    [Authorize(Policy = "OnlyBCeID", Roles = "Primary,Contact")]
+    [Authorize(Policy = "OnlyBCeID")]
     public class OrgUserController : SpdControllerBase
     {
         private readonly ILogger<OrgUserController> _logger;
@@ -38,7 +38,6 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/user/invitation")]
         [HttpPost]
-        [Authorize(Policy = "OnlyBCeID")]
         public async Task<InvitationResponse> VerifyUserInvitation([FromBody][Required] InvitationRequest orgUserInvitationRequest)
         {
             return await _mediator.Send(new VerifyUserInvitation(orgUserInvitationRequest, _currentUser.GetBizGuid(), _currentUser.GetUserGuid()));
@@ -57,7 +56,7 @@ namespace Spd.Presentation.Screening.Controllers
             return await _mediator.Send(new OrgUserCreateCommand(orgUserCreateRequest, hostUrl));
         }
 
-
+        [Authorize(Policy = "OnlyBCeID", Roles = "Primary,Contact")]
         [Route("api/orgs/{orgId}/users/{userId}")]
         [HttpPut]
         public async Task<OrgUserResponse> Put([FromRoute] Guid userId, [FromBody] OrgUserUpdateRequest orgUserUpdateRequest, [FromRoute] Guid orgId)
@@ -90,6 +89,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <exception cref="Exception"></exception>
         [Route("api/orgs/{orgId}/users/{userId}")]
         [HttpGet]
+        [Authorize(Policy = "OnlyBCeID", Roles = "Primary,Contact")]
         public async Task<OrgUserResponse> Get([FromRoute] Guid orgId, Guid userId)
         {
             return await _mediator.Send(new OrgUserGetQuery(userId));
@@ -102,6 +102,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/orgs/{orgId}/users")]
         [HttpGet]
+        [Authorize(Policy = "OnlyBCeID", Roles = "Primary,Contact")]
         public async Task<OrgUserListResponse> GetList([FromRoute] Guid orgId)
         {
             //if user is contact, he can only see active user list.
