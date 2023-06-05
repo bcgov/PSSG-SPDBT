@@ -62,11 +62,23 @@ export class AuthenticationService {
 		const returnRoute = location.pathname.substring(1);
 		console.debug('[AuthenticationService] login', returnComponentRoute, returnRoute);
 
-		const isLoggedIn = await this.oauthService.loadDiscoveryDocumentAndLogin({
-			state: returnRoute,
-		});
+		let isLoggedIn = false;
+		if (loginType == LoginTypeCode.Bceid) {
+			isLoggedIn = await this.oauthService.loadDiscoveryDocumentAndLogin({
+				state: returnRoute,
+			});
+		} else {
+			this.oauthService.initCodeFlow(returnRoute);
+			isLoggedIn = this.oauthService.hasValidAccessToken();
+		}
 
+		console.debug('[AuthenticationService] login isLoggedIn', isLoggedIn);
 		if (isLoggedIn) {
+			if (loginType == LoginTypeCode.Bcsc) {
+				const temp = await this.oauthService.loadUserProfile();
+				console.log('temp', temp);
+			}
+
 			const success = await this.authUserService.setOrgSelection();
 			this.notify(success);
 			return Promise.resolve(this.oauthService.state || returnRoute);

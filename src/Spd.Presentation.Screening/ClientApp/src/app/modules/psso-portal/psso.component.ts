@@ -31,17 +31,14 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 						class="d-flex flex-column align-items-sm-start pt-2 text-white "
 						style="min-height: calc(100vh - 138px)!important;"
 					>
-						<a
-							[routerLink]="[pssoRoutes.pssoPath(pssoRoutes.SCREENING_STATUSES)]"
-							class="nav-link d-flex text-white w-100"
-						>
+						<a [routerLink]="[pssoRoutes.path(pssoRoutes.SCREENING_STATUSES)]" class="nav-link d-flex text-white w-100">
 							<span class="d-none d-sm-inline mx-3 mt-2">Menu</span>
 						</a>
 						<hr class="d-none d-sm-inline w-100 text-white" />
 						<ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-sm-start w-100">
 							<li class="nav-item w-100">
 								<a
-									[routerLink]="[pssoRoutes.pssoPath(pssoRoutes.SCREENING_STATUSES)]"
+									[routerLink]="[pssoRoutes.path(pssoRoutes.SCREENING_STATUSES)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
 								>
@@ -51,7 +48,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 							</li>
 							<li class="nav-item w-100">
 								<a
-									[routerLink]="[pssoRoutes.pssoPath(pssoRoutes.SCREENING_CHECKS)]"
+									[routerLink]="[pssoRoutes.path(pssoRoutes.SCREENING_CHECKS)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
 								>
@@ -61,7 +58,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 							</li>
 							<li class="nav-item w-100">
 								<a
-									[routerLink]="[pssoRoutes.pssoPath(pssoRoutes.IDENTITY_VERIFICATION)]"
+									[routerLink]="[pssoRoutes.path(pssoRoutes.IDENTITY_VERIFICATION)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
 								>
@@ -71,7 +68,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 							</li>
 							<li class="nav-item w-100">
 								<a
-									[routerLink]="[pssoRoutes.pssoPath(pssoRoutes.MANUAL_SUBMISSIONS)]"
+									[routerLink]="[pssoRoutes.path(pssoRoutes.MANUAL_SUBMISSIONS)]"
 									routerLinkActive="active"
 									class="nav-link align-middle text-white w-100"
 								>
@@ -104,7 +101,7 @@ export class PssoComponent {
 	constructor(protected authenticationService: AuthenticationService, private router: Router) {}
 
 	async ngOnInit(): Promise<void> {
-		const nextUrl = await this.authenticationService.login(LoginTypeCode.Bcsc, PssoRoutes.pssoPath()); // TODO change to IDIR
+		const nextUrl = await this.authenticationService.login(LoginTypeCode.Bceid, PssoRoutes.path()); // TODO change to IDIR
 
 		if (nextUrl) {
 			const nextRoute = decodeURIComponent(nextUrl);

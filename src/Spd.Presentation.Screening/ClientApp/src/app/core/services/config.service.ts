@@ -18,11 +18,13 @@ export class ConfigService {
 		const bcscConfig = {
 			issuer: resp.issuer!,
 			clientId: resp.clientId!,
-			redirectUri,
+			redirectUri: 'http://localhost:4200/scr-application', // 'http://localhost:4200/crca',
 			responseType: resp.responseType!,
 			scope: resp.scope!,
 			showDebugInformation: true,
 			postLogoutRedirectUri: resp.postLogoutRedirectUri!,
+			tokenEndpoint: resp.tokenEndpoint!,
+			loginUrl: resp.loginUrl!,
 		};
 		console.debug('[ConfigService] getBcscConfig', bcscConfig, 'redirectUri', redirectUri);
 		return bcscConfig;
