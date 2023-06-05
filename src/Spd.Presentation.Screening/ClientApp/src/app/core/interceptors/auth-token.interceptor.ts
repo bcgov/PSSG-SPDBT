@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { OAuthResourceServerErrorHandler } from 'angular-oauth2-oidc';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { AuthUserService } from '../services/auth-user.service';
 import { AuthenticationService } from '../services/authentication.service';
 
 const includedURLs = [/^\/api\/.+$/];
@@ -10,6 +11,7 @@ const includedURLs = [/^\/api\/.+$/];
 @Injectable()
 export class AuthTokenInterceptor implements HttpInterceptor {
 	constructor(
+		private authUserService: AuthUserService,
 		private authenticationService: AuthenticationService,
 		private errorHandler: OAuthResourceServerErrorHandler
 	) {}
@@ -28,8 +30,8 @@ export class AuthTokenInterceptor implements HttpInterceptor {
 
 		const header = 'Bearer ' + token;
 		let headers = req.headers.set('Authorization', header);
-		if (this.authenticationService.loggedInUserInfo?.orgId) {
-			headers = req.headers.set('organization', this.authenticationService.loggedInUserInfo?.orgId);
+		if (this.authUserService.userInfo?.orgId) {
+			headers = req.headers.set('organization', this.authUserService.userInfo?.orgId);
 		}
 
 		req = req.clone({ headers });
