@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { BehaviorSubject } from 'rxjs';
+import { LoginTypeCode } from '../code-types/login-type.model';
 import { AuthUserService } from './auth-user.service';
 import { ConfigService } from './config.service';
 import { UtilService } from './util.service';
@@ -19,8 +20,11 @@ export class AuthenticationService {
 		private configService: ConfigService
 	) {}
 
-	public async tryLogin(returnComponentRoute: string): Promise<{ state: any; loggedIn: boolean }> {
-		await this.configureOAuthService(window.location.origin + returnComponentRoute);
+	public async tryLogin(
+		loginType: LoginTypeCode,
+		returnComponentRoute: string
+	): Promise<{ state: any; loggedIn: boolean }> {
+		await this.configureOAuthService(loginType, window.location.origin + returnComponentRoute);
 
 		const isLoggedIn = await this.oauthService
 			.loadDiscoveryDocumentAndTryLogin()
@@ -49,8 +53,11 @@ export class AuthenticationService {
 		};
 	}
 
-	public async login(returnComponentRoute: string | undefined = undefined): Promise<string | null> {
-		await this.configureOAuthService(window.location.origin + returnComponentRoute);
+	public async login(
+		loginType: LoginTypeCode,
+		returnComponentRoute: string | undefined = undefined
+	): Promise<string | null> {
+		await this.configureOAuthService(loginType, window.location.origin + returnComponentRoute);
 
 		const returnRoute = location.pathname.substring(1);
 		console.debug('[AuthenticationService] login', returnComponentRoute, returnRoute);
@@ -83,8 +90,15 @@ export class AuthenticationService {
 		return this.oauthService.hasValidAccessToken();
 	}
 
-	public async configureOAuthService(redirectUri: string): Promise<void> {
-		return this.configService.getAuthConfig(redirectUri).then((config) => {
+	public async configureOAuthService(loginType: LoginTypeCode, redirectUri: string): Promise<void> {
+		if (loginType == LoginTypeCode.Bceid) {
+			return this.configService.getBceidConfig(redirectUri).then((config) => {
+				this.oauthService.configure(config);
+				this.oauthService.setupAutomaticSilentRefresh();
+			});
+		}
+
+		return this.configService.getBcscConfig(redirectUri).then((config) => {
 			this.oauthService.configure(config);
 			this.oauthService.setupAutomaticSilentRefresh();
 		});
