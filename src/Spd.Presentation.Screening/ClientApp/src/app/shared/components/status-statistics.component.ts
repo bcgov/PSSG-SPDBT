@@ -3,7 +3,7 @@ import { tap } from 'rxjs/operators';
 import { ApplicationStatisticsResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { ApplicationPortalStatisticsTypeCode } from 'src/app/core/code-types/application-portal-statistics-type.model';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { UtilService } from 'src/app/core/services/util.service';
 
 @Component({
@@ -107,13 +107,13 @@ export class StatusStatisticsComponent {
 	constructor(
 		private utilService: UtilService,
 		private applicationService: ApplicationService,
-		private authenticationService: AuthenticationService
+		private authUserService: AuthUserService
 	) {}
 
 	applicationStatistics!: { [key: string]: number };
 	applicationStatistics$ = this.applicationService
 		.apiOrgsOrgIdApplicationStatisticsGet({
-			orgId: this.authenticationService.loggedInUserInfo?.orgId!,
+			orgId: this.authUserService.userInfo?.orgId!,
 		})
 		.pipe(
 			tap((res: ApplicationStatisticsResponse) => {

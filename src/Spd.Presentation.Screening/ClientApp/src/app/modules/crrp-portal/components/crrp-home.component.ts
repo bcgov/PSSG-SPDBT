@@ -3,7 +3,7 @@ import { tap } from 'rxjs';
 import { ApplicationStatisticsResponse, ContactAuthorizationTypeCode, OrgUserResponse } from 'src/app/api/models';
 import { ApplicationService, OrgUserService } from 'src/app/api/services';
 import { ApplicationPortalStatisticsTypeCode } from 'src/app/core/code-types/application-portal-statistics-type.model';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { CrrpRoutes } from '../crrp-routing.module';
 
 @Component({
@@ -257,7 +257,7 @@ export class CrrpHomeComponent {
 
 	applicationStatistics$ = this.applicationService
 		.apiOrgsOrgIdApplicationStatisticsGet({
-			orgId: this.authenticationService.loggedInUserInfo?.orgId!,
+			orgId: this.authUserService.userInfo?.orgId!,
 		})
 		.pipe(
 			tap((res: ApplicationStatisticsResponse) => {
@@ -272,15 +272,15 @@ export class CrrpHomeComponent {
 
 	constructor(
 		private applicationService: ApplicationService,
-		private authenticationService: AuthenticationService,
+		private authUserService: AuthUserService,
 		private orgUserService: OrgUserService
 	) {}
 
 	ngOnInit(): void {
 		this.orgUserService
 			.apiOrgsOrgIdUsersUserIdGet({
-				orgId: this.authenticationService.loggedInUserInfo?.orgId!,
-				userId: this.authenticationService.loggedInUserInfo?.userId!,
+				orgId: this.authUserService.userInfo?.orgId!,
+				userId: this.authUserService.userInfo?.userId!,
 			})
 			.pipe()
 			.subscribe((res: OrgUserResponse) => {

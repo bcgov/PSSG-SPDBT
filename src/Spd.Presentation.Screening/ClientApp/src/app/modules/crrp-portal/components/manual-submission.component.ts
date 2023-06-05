@@ -10,7 +10,7 @@ import { ApplicationOriginTypeCode } from 'src/app/core/code-types/application-o
 import { GenderTypes, ScreeningTypes } from 'src/app/core/code-types/model-desc.models';
 import { ScreeningTypeCode } from 'src/app/core/code-types/screening-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { Address, AddressAutocompleteComponent } from 'src/app/shared/components/address-autocomplete.component';
@@ -436,7 +436,7 @@ export class ManualSubmissionComponent implements OnInit {
 		private router: Router,
 		private formBuilder: FormBuilder,
 		private applicationService: ApplicationService,
-		private authenticationService: AuthenticationService,
+		private authUserService: AuthUserService,
 		private hotToast: HotToastService,
 		private maskPipe: NgxMaskPipe,
 		private dialog: MatDialog
@@ -484,7 +484,7 @@ export class ManualSubmissionComponent implements OnInit {
 
 			// Check for potential duplicate
 			this.applicationService
-				.apiOrgsOrgIdApplicationPost({ orgId: this.authenticationService.loggedInUserInfo?.orgId!, body })
+				.apiOrgsOrgIdApplicationPost({ orgId: this.authUserService.userInfo?.orgId!, body })
 				.pipe()
 				.subscribe((dupres: ApplicationCreateResponse) => {
 					this.displayDataValidationMessage(body, dupres);
@@ -638,7 +638,7 @@ export class ManualSubmissionComponent implements OnInit {
 
 		this.applicationService
 			.apiOrgsOrgIdApplicationPost({
-				orgId: this.authenticationService.loggedInUserInfo?.orgId!,
+				orgId: this.authUserService.userInfo?.orgId!,
 				body,
 			})
 			.pipe()

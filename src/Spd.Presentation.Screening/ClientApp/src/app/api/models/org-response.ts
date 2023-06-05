@@ -3,6 +3,7 @@
 import { BooleanTypeCode } from './boolean-type-code';
 import { EmployeeOrganizationTypeCode } from './employee-organization-type-code';
 import { PayerPreferenceTypeCode } from './payer-preference-type-code';
+import { ServiceTypeCode } from './service-type-code';
 import { VolunteerOrganizationTypeCode } from './volunteer-organization-type-code';
 export interface OrgResponse {
   accessCode?: null | string;
@@ -22,5 +23,6 @@ export interface OrgResponse {
   organizationName?: null | string;
   payerPreference?: PayerPreferenceTypeCode;
   phoneNumber?: null | string;
+  serviceTypes?: null | Array<ServiceTypeCode>;
   volunteerOrganizationTypeCode?: VolunteerOrganizationTypeCode;
 }

@@ -2,6 +2,8 @@ import {
 	ApplicationPortalStatusCode,
 	ContactAuthorizationTypeCode,
 	EmployeeInteractionTypeCode,
+	PayerPreferenceTypeCode,
+	ServiceTypeCode,
 } from 'src/app/api/models';
 import { CountryTypeCode } from './country-type.model';
 import { GenderTypeCode } from './gender-type.model';
@@ -21,6 +23,22 @@ export const EmployeeInteractionTypes: SelectOptions[] = [
 export const ScreeningTypes: SelectOptions[] = [
 	{ desc: 'Staff', code: ScreeningTypeCode.Staff },
 	{ desc: 'Contractor/Licensee', code: ScreeningTypeCode.Contractor },
+];
+
+export const PayerPreferenceTypes: SelectOptions[] = [
+	{ desc: 'Applicant', code: PayerPreferenceTypeCode.Applicant },
+	{ desc: 'Organization', code: PayerPreferenceTypeCode.Organization },
+];
+
+export const ServiceTypes: SelectOptions[] = [
+	{ desc: 'Psso', code: ServiceTypeCode.Psso },
+	{ desc: 'Crrp Employee', code: ServiceTypeCode.CrrpEmployee },
+	{ desc: 'Crrp Volunteer', code: ServiceTypeCode.CrrpVolunteer },
+	{ desc: 'Mcfd', code: ServiceTypeCode.Mcfd },
+	{ desc: 'Pe Crc', code: ServiceTypeCode.PeCrc },
+	{ desc: 'Pe Crc Vs', code: ServiceTypeCode.PeCrcVs },
+	{ desc: 'Licensing', code: ServiceTypeCode.Licensing },
+	{ desc: 'Psso Vs', code: ServiceTypeCode.PssoVs },
 ];
 
 export const GenderTypes: SelectOptions[] = [

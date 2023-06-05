@@ -8,10 +8,12 @@ import {
 	ApplicationInviteListResponse,
 	ApplicationInviteResponse,
 	ApplicationInviteStatusCode,
+	BooleanTypeCode,
+	OrgResponse,
 } from 'src/app/api/models';
-import { ApplicationService } from 'src/app/api/services';
+import { ApplicationService, OrgService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { CrcAddModalComponent } from './crc-add-modal.component';
@@ -199,6 +201,7 @@ export class CriminalRecordChecksComponent implements OnInit {
 
 	private queryParams: any = this.utilService.getDefaultQueryParams();
 	private currentSearch = '';
+	private showScreeningType = false;
 
 	@ViewChild('paginator') paginator!: MatPaginator;
 
@@ -207,11 +210,21 @@ export class CriminalRecordChecksComponent implements OnInit {
 		private formBuilder: FormBuilder,
 		private dialog: MatDialog,
 		private applicationService: ApplicationService,
-		private authenticationService: AuthenticationService,
+		private orgService: OrgService,
+		private authUserService: AuthUserService,
 		private hotToast: HotToastService
 	) {}
 
 	ngOnInit() {
+		this.orgService
+			.apiOrgsOrgIdGet({ orgId: this.authUserService.userInfo?.orgId! })
+			.pipe()
+			.subscribe((resp: OrgResponse) => {
+				this.showScreeningType =
+					resp.licenseesNeedVulnerableSectorScreening == BooleanTypeCode.Yes ||
+					resp.contractorsNeedVulnerableSectorScreening == BooleanTypeCode.Yes;
+			});
+
 		this.loadList();
 	}
 
@@ -246,7 +259,7 @@ export class CriminalRecordChecksComponent implements OnInit {
 					this.applicationService
 						.apiOrgsOrgIdApplicationInvitesApplicationInviteIdDelete({
 							applicationInviteId: application.id!,
-							orgId: this.authenticationService.loggedInUserInfo?.orgId!,
+							orgId: this.authUserService.userInfo?.orgId!,
 						})
 						.pipe()
 						.subscribe((_res) => {
@@ -282,7 +295,7 @@ export class CriminalRecordChecksComponent implements OnInit {
 	private loadList(): void {
 		this.applicationService
 			.apiOrgsOrgIdApplicationInvitesGet({
-				orgId: this.authenticationService.loggedInUserInfo?.orgId!,
+				orgId: this.authUserService.userInfo?.orgId!,
 				...this.queryParams,
 			})
 			.pipe()
