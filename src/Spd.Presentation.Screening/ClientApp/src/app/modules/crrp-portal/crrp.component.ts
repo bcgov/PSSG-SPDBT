@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { IsActiveMatchOptions, NavigationEnd, QueryParamsHandling, Router } from '@angular/router';
 import { filter } from 'rxjs';
+import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { CrrpRoutes } from './crrp-routing.module';
 
@@ -94,7 +95,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 								</a>
 							</li>
 							<hr class="d-none d-sm-inline w-100 text-white" />
-							<li class="nav-item w-100" *ngIf="authenticationService.genericUploadEnabled">
+							<li class="nav-item w-100" *ngIf="authUserService.genericUploadEnabled">
 								<a
 									[routerLink]="[crrpRoutes.path(crrpRoutes.GENERIC_UPLOADS)]"
 									routerLinkActive="active"
@@ -178,7 +179,11 @@ export class CrrpComponent {
 	isAuthenticated = this.authenticationService.waitUntilAuthentication$;
 	crrpRoutes = CrrpRoutes;
 
-	constructor(protected authenticationService: AuthenticationService, private router: Router) {}
+	constructor(
+		protected authenticationService: AuthenticationService,
+		protected authUserService: AuthUserService,
+		private router: Router
+	) {}
 
 	async ngOnInit(): Promise<void> {
 		this.router.events.pipe(filter((evt) => evt instanceof NavigationEnd)).subscribe((evt) => {

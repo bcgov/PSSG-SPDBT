@@ -6,7 +6,7 @@ import { ContactAuthorizationTypeCode, OrgUserListResponse, OrgUserResponse } fr
 import { OrgUserService } from 'src/app/api/services';
 import { ContactAuthorizationTypes, SelectOptions } from 'src/app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { UserDialogData, UserEditModalComponent } from './user-edit-modal.component';
 
@@ -203,7 +203,7 @@ export class UsersComponent implements OnInit {
 	constructor(
 		private dialog: MatDialog,
 		private orgUserService: OrgUserService,
-		private authenticationService: AuthenticationService,
+		private authUserService: AuthUserService,
 		private hotToast: HotToastService
 	) {}
 
@@ -254,7 +254,7 @@ export class UsersComponent implements OnInit {
 
 	allowEditRow(user: OrgUserResponse): boolean {
 		// if row is current user, allow edit
-		if (this.authenticationService.loggedInUserInfo?.userId == user.id) {
+		if (this.authUserService.userInfo?.userId == user.id) {
 			return true;
 		}
 
@@ -273,7 +273,7 @@ export class UsersComponent implements OnInit {
 		}
 
 		// if row is current user, prevent delete
-		if (this.authenticationService.loggedInUserInfo?.userId == user.id) {
+		if (this.authUserService.userInfo?.userId == user.id) {
 			return false;
 		}
 
@@ -374,7 +374,7 @@ export class UsersComponent implements OnInit {
 
 	private loadList(): void {
 		this.orgUserService
-			.apiOrgsOrgIdUsersGet({ orgId: this.authenticationService.loggedInUserInfo?.orgId! })
+			.apiOrgsOrgIdUsersGet({ orgId: this.authUserService.userInfo?.orgId! })
 			.pipe()
 			.subscribe((res: OrgUserListResponse) => {
 				this.maximumNumberOfContacts = res.maximumNumberOfAuthorizedContacts ?? this.DEFAULT_MAX_NUMBER_OF_CONTACTS;
@@ -431,7 +431,7 @@ export class UsersComponent implements OnInit {
 			return false;
 		}
 
-		const currUser = this.usersList.find((item) => item.id == this.authenticationService.loggedInUserInfo?.userId);
+		const currUser = this.usersList.find((item) => item.id == this.authUserService.userInfo?.userId);
 		return currUser ? currUser.contactAuthorizationTypeCode == ContactAuthorizationTypeCode.Primary : false;
 	}
 }

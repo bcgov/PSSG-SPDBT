@@ -19,7 +19,7 @@ import {
 import { ApplicationService } from 'src/app/api/services';
 import { ApplicationPortalStatisticsTypeCode } from 'src/app/core/code-types/application-portal-statistics-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { DialogCloseCode, DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { CrrpRoutes } from '../crrp-routing.module';
@@ -225,7 +225,7 @@ export class IdentifyVerificationComponent implements OnInit {
 		private utilService: UtilService,
 		private formBuilder: FormBuilder,
 		private location: Location,
-		private authenticationService: AuthenticationService,
+		private authUserService: AuthUserService,
 		private applicationService: ApplicationService,
 		private hotToast: HotToastService,
 		private dialog: MatDialog
@@ -335,7 +335,7 @@ export class IdentifyVerificationComponent implements OnInit {
 
 		this.applicationService
 			.apiOrgsOrgIdApplicationsGet({
-				orgId: this.authenticationService.loggedInUserInfo?.orgId!,
+				orgId: this.authUserService.userInfo?.orgId!,
 				...this.queryParams,
 			})
 			.pipe()
@@ -350,7 +350,7 @@ export class IdentifyVerificationComponent implements OnInit {
 	private verifyIdentity(application: IdentityVerificationResponse) {
 		this.applicationService
 			.apiOrgsOrgIdIdentityApplicationIdPut({
-				orgId: this.authenticationService.loggedInUserInfo?.orgId!,
+				orgId: this.authUserService.userInfo?.orgId!,
 				applicationId: application.id!,
 				status: IdentityStatusCode.Verified,
 			})
@@ -364,7 +364,7 @@ export class IdentifyVerificationComponent implements OnInit {
 	private rejectIdentity(application: IdentityVerificationResponse) {
 		this.applicationService
 			.apiOrgsOrgIdIdentityApplicationIdPut({
-				orgId: this.authenticationService.loggedInUserInfo?.orgId!,
+				orgId: this.authUserService.userInfo?.orgId!,
 				applicationId: application.id!,
 				status: IdentityStatusCode.Rejected,
 			})
@@ -403,7 +403,7 @@ export class IdentifyVerificationComponent implements OnInit {
 	private refreshStats(): void {
 		this.applicationStatistics$ = this.applicationService
 			.apiOrgsOrgIdApplicationStatisticsGet({
-				orgId: this.authenticationService.loggedInUserInfo?.orgId!,
+				orgId: this.authUserService.userInfo?.orgId!,
 			})
 			.pipe(
 				tap((res: ApplicationStatisticsResponse) => {

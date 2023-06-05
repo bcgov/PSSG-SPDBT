@@ -6,7 +6,7 @@ import { ContactAuthorizationTypeCode, OrgUserResponse, OrgUserUpdateRequest } f
 import { OrgUserService } from 'src/app/api/services';
 import { ContactAuthorizationTypes } from 'src/app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 
@@ -118,7 +118,7 @@ export class UserEditModalComponent implements OnInit {
 		private dialogRef: MatDialogRef<UserEditModalComponent>,
 		private orgUserService: OrgUserService,
 		private maskPipe: NgxMaskPipe,
-		private authenticationService: AuthenticationService,
+		private authUserService: AuthUserService,
 		@Inject(MAT_DIALOG_DATA) public dialogData: UserDialogData
 	) {}
 
@@ -156,7 +156,7 @@ export class UserEditModalComponent implements OnInit {
 						});
 					});
 			} else {
-				body.organizationId = this.authenticationService.loggedInUserInfo?.orgId!;
+				body.organizationId = this.authUserService.userInfo?.orgId!;
 				this.orgUserService
 					.apiOrgsOrgIdUsersPost({ orgId: body.organizationId, body })
 					.pipe()

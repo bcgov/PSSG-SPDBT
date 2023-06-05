@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { RegistrationFormStepComponent } from '../org-registration.component';
@@ -35,7 +36,11 @@ export class OrganizationNameComponent implements OnInit, RegistrationFormStepCo
 	form!: FormGroup;
 	matcher = new FormErrorStateMatcher();
 
-	constructor(private formBuilder: FormBuilder, private authenticationService: AuthenticationService) {}
+	constructor(
+		private formBuilder: FormBuilder,
+		private authenticationService: AuthenticationService,
+		private authUserService: AuthUserService
+	) {}
 
 	ngOnInit(): void {
 		this.form = this.formBuilder.group({
@@ -45,7 +50,7 @@ export class OrganizationNameComponent implements OnInit, RegistrationFormStepCo
 		this.authenticationService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
 			const currOrgName = this.organizationName.value;
 			if (!currOrgName && isLoggedIn) {
-				const loggedInOrgName = this.authenticationService.loggedInUserInfo?.orgName;
+				const loggedInOrgName = this.authUserService.userInfo?.orgName;
 				if (loggedInOrgName) {
 					this.form.patchValue({ organizationName: loggedInOrgName });
 				}

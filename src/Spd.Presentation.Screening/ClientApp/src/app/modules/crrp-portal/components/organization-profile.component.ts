@@ -12,7 +12,7 @@ import {
 } from 'src/app/api/models';
 import { OrgService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 
@@ -264,12 +264,12 @@ export class OrganizationProfileComponent implements OnInit {
 		private hotToast: HotToastService,
 		private maskPipe: NgxMaskPipe,
 		private orgService: OrgService,
-		private authenticationService: AuthenticationService
+		private authUserService: AuthUserService
 	) {}
 
 	ngOnInit(): void {
 		this.orgService
-			.apiOrgsOrgIdGet({ orgId: this.authenticationService.loggedInUserInfo?.orgId! })
+			.apiOrgsOrgIdGet({ orgId: this.authUserService.userInfo?.orgId! })
 			.pipe()
 			.subscribe((resp: OrgResponse) => {
 				this.form.patchValue(resp);
@@ -314,7 +314,7 @@ export class OrganizationProfileComponent implements OnInit {
 	onSave() {
 		this.form.markAllAsTouched();
 		if (this.form.valid) {
-			const body: OrgUpdateRequest = { ...this.form.value, id: this.authenticationService.loggedInUserInfo?.orgId! };
+			const body: OrgUpdateRequest = { ...this.form.value, id: this.authUserService.userInfo?.orgId! };
 			if (body.phoneNumber) {
 				body.phoneNumber = this.maskPipe.transform(body.phoneNumber, SPD_CONSTANTS.phone.backendMask);
 			}
@@ -323,13 +323,14 @@ export class OrganizationProfileComponent implements OnInit {
 			}
 
 			this.orgService
-				.apiOrgsOrgIdPut({ orgId: this.authenticationService.loggedInUserInfo?.orgId!, body })
+				.apiOrgsOrgIdPut({ orgId: this.authUserService.userInfo?.orgId!, body })
 				.pipe()
 				.subscribe((resp: OrgUpdateRequest) => {
 					this.viewOnly = true;
 					this.form.disable();
 					this.form.patchValue({ ...resp });
 					this.initialValues = this.form.value;
+					this.authUserService.updateOrgProfile();
 					this.hotToast.success('Organization Information was successfully updated');
 				});
 		}
