@@ -57,7 +57,7 @@ namespace Spd.Utilities.LogonUser
             else if (context.User.GetIssuer() == bcscConfig.Issuer)
             {
                 string? userInfoStr = context.User.Claims.FirstOrDefault(c => c.Type == "userInfo")?.Value;
-                context.User.AddUpdateClaim(IPrincipalExtensions.BCeID_DISPLAY_USER_NAME, GetDisplayName(userInfoStr)??string.Empty);
+                context.User.AddUpdateClaim(IPrincipalExtensions.BCeID_DISPLAY_USER_NAME, GetDisplayName(userInfoStr) ?? string.Empty);
                 context.User.AddUpdateClaim(ClaimTypes.Role, "Applicant");
                 await next(context);
             }
