@@ -62,7 +62,8 @@ namespace Spd.Resource.Applicants.ApplicationInvite
         public string? ContactEmail { get; set; }
         public string? JobTitle { get; set; }
         public PayerPreferenceTypeCode PayeeType { get; set; }
-        public bool? ValidCrc { get; set; }
+        public ScreenTypeEnum ScreeningType { get; set; } = ScreenTypeEnum.Staff;
+        public ServiceTypeEnum ServiceType { get; set; } = ServiceTypeEnum.CRRP_EMPLOYEE;
     };
 
     public record ApplicationInvite

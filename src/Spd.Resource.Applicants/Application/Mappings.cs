@@ -33,6 +33,8 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.spd_payer, opt => opt.MapFrom(s => (int)Enum.Parse<PayerPreferenceOptionSet>(s.PayeeType.ToString())))
             .ForMember(d => d.spd_declarationdate, opt => opt.MapFrom(s => DateTime.Now))
             .ForMember(d => d.spd_identityconfirmed, opt => opt.MapFrom(s => s.HaveVerifiedIdentity))
+            .ForMember(d => d.spd_sex, opt => opt.MapFrom(s => GetGender(s.GenderCode)))
+            //.ForMember(d => d.spd_screenrequesttype, opt => opt.MapFrom(s => s.ScreeningType)) //to confirm if we need it or not.Now, it does not exist in dynamics.
             .ForMember(d => d.statuscode, opt => opt.MapFrom(s => s.HaveVerifiedIdentity == true ? ApplicationActiveStatus.PaymentPending : ApplicationActiveStatus.ApplicantVerification));
 
             _ = CreateMap<AliasCreateCmd, spd_alias>()
