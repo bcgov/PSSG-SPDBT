@@ -79,7 +79,7 @@ namespace Spd.Manager.Cases
     public record ApplicationInviteCreateRequest : ApplicationInvite
     {
         public ServiceTypeCode ServiceType { get; set; } = ServiceTypeCode.CRRP_EMPLOYEE;
-        public ScreenTypeCode ScreenType { get; set; } = ScreenTypeCode.Staff;
+        public ScreeningTypeCode ScreenType { get; set; } = ScreeningTypeCode.Staff;
     }
     public record ApplicationInvitesCreateResponse(Guid OrgId)
     {
@@ -114,15 +114,6 @@ namespace Spd.Manager.Cases
         Cancelled,//inactive Status code
         Expired //inactive Status code
     }
-
-    public enum ScreenTypeCode
-    {
-        Staff,
-        Contractor,
-        Licensee
-    }
-
-
     #endregion
 
     #region application
