@@ -2,7 +2,7 @@
 
 namespace Spd.Utilities.LogonUser.Configurations
 {
-    public class BcscAuthenticationConfiguration 
+    public class BcscAuthenticationConfiguration
     {
         [Required]
         public string Authority { get; set; }
