@@ -27,7 +27,13 @@ import { SecurityScreeningRoutes } from './modules/security-screening-portal/sec
 			</button>
 		</section>
 	`,
-	styles: [],
+	styles: [
+		`
+			a {
+				color: var(--bs-link-color) !important;
+			}
+		`,
+	],
 })
 export class LandingComponent {
 	constructor(private router: Router) {}
