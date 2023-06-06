@@ -4,6 +4,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { UtilService } from 'src/app/core/services/util.service';
+import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 
 @Component({
 	selector: 'app-crc-detail',
@@ -11,11 +12,11 @@ import { UtilService } from 'src/app/core/services/util.service';
 		<div class="d-flex flex-row justify-content-between mb-2">
 			<h3 class="pb-2 fw-light">Screening Information</h3>
 			<div>
+				<button mat-stroked-button color="primary" class="w-auto m-2" aria-label="Back" (click)="onBack()">
+					<mat-icon>arrow_back</mat-icon>Back
+				</button>
 				<button mat-flat-button color="primary" class="w-auto m-2" aria-label="Download Clearance Letter">
 					<mat-icon>file_download</mat-icon>Clearance Letter
-				</button>
-				<button mat-stroked-button color="primary" class="w-auto m-2" aria-label="Back">
-					<mat-icon>arrow_back</mat-icon>Back
 				</button>
 			</div>
 		</div>
@@ -100,6 +101,10 @@ export class CrcDetailComponent {
 	onPageChanged(page: PageEvent): void {
 		this.queryParams.page = page.pageIndex;
 		this.loadList();
+	}
+
+	onBack(): void {
+		this.router.navigateByUrl(SecurityScreeningRoutes.path(SecurityScreeningRoutes.CRC_LIST));
 	}
 
 	private loadList(): void {

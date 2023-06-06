@@ -198,7 +198,7 @@ export class OrgRegistrationComponent implements OnInit {
 		let dataToSave = {};
 		if (this.stepOneComponent) {
 			console.debug('[onSaveStepperStep] currentStateInfo', this.currentStateInfo);
-			if (this.currentStateInfo && this.currentStateInfo.registrationTypeCode) {
+			if (this.currentStateInfo?.registrationTypeCode) {
 				dataToSave = { ...this.currentStateInfo };
 			} else {
 				dataToSave = { ...this.stepOneComponent.getStepData() };

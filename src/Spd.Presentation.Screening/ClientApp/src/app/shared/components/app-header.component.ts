@@ -1,6 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { LoginTypeCode } from 'src/app/core/code-types/login-type.model';
+import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { UtilService } from 'src/app/core/services/util.service';
 
 @Component({
 	selector: 'app-header',
@@ -58,7 +61,12 @@ export class HeaderComponent implements OnInit {
 	@Input() title = '';
 	loggedInUserDisplay: string | null = null;
 
-	constructor(protected router: Router, private authenticationService: AuthenticationService) {}
+	constructor(
+		protected router: Router,
+		private authenticationService: AuthenticationService,
+		private authUserService: AuthUserService,
+		private utilService: UtilService
+	) {}
 
 	ngOnInit(): void {
 		this.authenticationService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
@@ -71,7 +79,16 @@ export class HeaderComponent implements OnInit {
 	}
 
 	private getUserInfo(): void {
-		const loggedInUserData = this.authenticationService.loggedInUserTokenData;
-		this.loggedInUserDisplay = loggedInUserData ? loggedInUserData.display_name : null;
+		const loginType = this.authUserService.loginType;
+		if (loginType == LoginTypeCode.Bcsc) {
+			this.loggedInUserDisplay = 'BCSC';
+			return;
+		}
+
+		// const loggedInUserData = this.authenticationService.loggedInUserTokenData;
+		// this.loggedInUserDisplay = loggedInUserData ? loggedInUserData.display_name : null;
+
+		const userData = this.authUserService.userInfo;
+		this.loggedInUserDisplay = userData ? this.utilService.getFullName(userData.firstName, userData.lastName) : null;
 	}
 }

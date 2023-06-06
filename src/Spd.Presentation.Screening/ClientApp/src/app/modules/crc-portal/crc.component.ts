@@ -50,10 +50,11 @@ export interface AppInviteOrgData extends AppInviteVerifyResponse {
 	notifyRisk?: string | null;
 	oneLegalName?: boolean | null;
 	previousNameFlag?: boolean | null;
-	previousNamesList?: Array<{
+	previousNameList?: Array<{
 		firstName?: string | null;
-		middleNames?: string | null;
-		previousSurname?: string | null;
+		middleName1?: string | null;
+		middleName2?: string | null;
+		lastName?: string | null;
 	}>;
 	recaptcha?: string | null;
 	shareCrc?: string | null;
@@ -211,7 +212,6 @@ export class CrcComponent implements OnInit {
 		if (authInfo.loggedIn) {
 			if (authInfo.state) {
 				const stateInfo = this.utilService.getSessionData(this.utilService.CRC_PORTAL_STATE_KEY);
-				console.debug('[CrcComponent.ngOnInit] stateInfo', stateInfo);
 				if (stateInfo) {
 					this.postLoginNavigate(stateInfo);
 					return;

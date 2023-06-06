@@ -110,9 +110,11 @@ import { UtilService } from 'src/app/core/services/util.service';
 								<div class="offset-xl-3 col-xl-8 offset-lg-4 col-lg-8 col-md-12">
 									<div class="text-label d-block text-muted">Previous Names</div>
 									<div class="text-data">
-										<ng-container *ngIf="orgData.previousNamesList?.length > 0; else noPreviousNames">
-											<ng-container *ngFor="let name of orgData.previousNamesList">
-												<div>{{ name.firstName }} {{ name.middleNames }} {{ name.previousSurname }}</div>
+										<ng-container *ngIf="orgData.previousNameList?.length > 0; else noPreviousNames">
+											<ng-container *ngFor="let name of orgData.previousNameList">
+												<div>
+													{{ name.firstName }} {{ name.middleName1 }} {{ name.middleName2 }} {{ name.lastName }}
+												</div>
 											</ng-container>
 										</ng-container>
 										<ng-template #noPreviousNames> -- </ng-template>

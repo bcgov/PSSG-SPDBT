@@ -7,19 +7,25 @@ import {
 	OrgSelectionDialogData,
 	OrgSelectionModalComponent,
 } from 'src/app/shared/components/org-selection-modal.component';
-import { OrgResponse, UserInfo, UserProfileResponse } from '../code-types/code-types.models';
+import { LoginTypeCode, OrgResponse, UserInfo, UserProfileResponse } from '../code-types/code-types.models';
 
 @Injectable({ providedIn: 'root' })
 export class AuthUserService {
+	loginType: LoginTypeCode | null = null;
 	userOrgProfile: OrgResponse | null = null;
 	userInfo: UserInfo | null = null;
 	genericUploadEnabled: boolean = false;
 
 	constructor(private userService: UserProfileService, private orgService: OrgService, private dialog: MatDialog) {}
 
-	whoAmI(): Observable<UserProfileResponse> {
+	whoAmI(loginType: LoginTypeCode): Observable<UserProfileResponse> {
 		return this.userService.apiUserGet().pipe(
 			tap((resp: UserProfileResponse) => {
+				this.loginType = loginType;
+				if (loginType == LoginTypeCode.Bcsc) {
+					return;
+				}
+
 				const userInfosList = resp.userInfos?.filter((info) => info.orgId);
 				const userInfos = userInfosList ? userInfosList : [];
 
@@ -64,10 +70,15 @@ export class AuthUserService {
 			});
 	}
 
-	async setOrgSelection(): Promise<boolean> {
+	async whoAmIAsync(loginType: LoginTypeCode): Promise<boolean> {
 		const resp: UserProfileResponse = await lastValueFrom(this.userService.apiUserGet());
 
 		if (resp) {
+			this.loginType = loginType;
+			if (loginType == LoginTypeCode.Bcsc) {
+				return Promise.resolve(true);
+			}
+
 			const uniqueUserInfoList = [
 				...new Map(resp.userInfos?.filter((info) => info.orgId).map((item) => [item['orgId'], item])).values(),
 			];
