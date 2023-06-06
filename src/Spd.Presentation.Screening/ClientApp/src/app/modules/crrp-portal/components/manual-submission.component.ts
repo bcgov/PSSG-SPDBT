@@ -420,9 +420,8 @@ export class ManualSubmissionComponent implements OnInit {
 		{
 			validators: [
 				FormGroupValidators.conditionalRequiredValidator('givenName', (form) => !form.get('oneLegalName')?.value),
-				FormGroupValidators.conditionalRequiredValidator(
-					'contractedCompanyName',
-					(form) => form.get('screeningTypeCode')?.value == this.screeningTypeCodes.Contractor
+				FormGroupValidators.conditionalRequiredValidator('contractedCompanyName', (form) =>
+					[ScreeningTypeCode.Contractor, ScreeningTypeCode.Licensee].includes(form.get('screeningTypeCode')?.value)
 				),
 			],
 		}
