@@ -6,6 +6,7 @@ import {
 	ApplicationInvitesCreateRequest,
 	ApplicationInvitesCreateResponse,
 	BooleanTypeCode,
+	ScreeningTypeCode,
 	ServiceTypeCode,
 } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
@@ -15,7 +16,6 @@ import {
 	SelectOptions,
 	ServiceTypes,
 } from 'src/app/core/code-types/model-desc.models';
-import { ScreeningTypeCode } from 'src/app/core/code-types/screening-type.model';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
