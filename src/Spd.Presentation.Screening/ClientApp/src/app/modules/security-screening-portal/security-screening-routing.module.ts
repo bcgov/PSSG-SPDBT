@@ -5,7 +5,7 @@ import { CrcListComponent } from './components/crc-list.component';
 import { SecurityScreeningComponent } from './security-screening.component';
 
 export class SecurityScreeningRoutes {
-	public static SECURITY_SCREENING_APPLICATION = 'security-screening';
+	public static SECURITY_SCREENING_APPLICATION = 'scr-application';
 	public static CRC_LIST = 'crc-list';
 	public static CRC_DETAIL = 'crc-detail';
 

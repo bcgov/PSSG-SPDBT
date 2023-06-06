@@ -18,13 +18,14 @@ export class ConfigService {
 		const bcscConfig = {
 			issuer: resp.issuer!,
 			clientId: resp.clientId!,
-			redirectUri: 'http://localhost:4200/scr-application', // 'http://localhost:4200/crca',
+			redirectUri,
 			responseType: resp.responseType!,
 			scope: resp.scope!,
 			showDebugInformation: true,
 			postLogoutRedirectUri: resp.postLogoutRedirectUri!,
 			tokenEndpoint: resp.tokenEndpoint!,
 			loginUrl: resp.loginUrl!,
+			userinfoEndpoint: 'https://idtest.gov.bc.ca/oauth2/userinfo',
 		};
 		console.debug('[ConfigService] getBcscConfig', bcscConfig, 'redirectUri', redirectUri);
 		return bcscConfig;

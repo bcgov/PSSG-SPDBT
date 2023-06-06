@@ -60,17 +60,21 @@ export class AuthenticationService {
 		await this.configureOAuthService(loginType, window.location.origin + returnComponentRoute);
 
 		const returnRoute = location.pathname.substring(1);
-		console.debug('[AuthenticationService] login', returnComponentRoute, returnRoute);
+		console.debug('[AuthenticationService] login', returnComponentRoute);
 
-		let isLoggedIn = false;
-		if (loginType == LoginTypeCode.Bceid) {
-			isLoggedIn = await this.oauthService.loadDiscoveryDocumentAndLogin({
-				state: returnRoute,
-			});
-		} else {
-			this.oauthService.initCodeFlow(returnRoute);
-			isLoggedIn = this.oauthService.hasValidAccessToken();
+		let isLoggedIn = this.oauthService.hasValidAccessToken();
+		if (!isLoggedIn) {
+			if (loginType == LoginTypeCode.Bceid) {
+				isLoggedIn = await this.oauthService.loadDiscoveryDocumentAndLogin({
+					state: returnRoute,
+				});
+			} else {
+				this.oauthService.initLoginFlow(returnRoute);
+				isLoggedIn = this.oauthService.hasValidAccessToken();
+			}
 		}
+		console.debug('[xxxxxxxxxxxxxxxxx] login hasValidAccessToken', this.oauthService.hasValidAccessToken());
+		console.debug('[xxxxxxxxxxxxxxxxx] login hasValidIdToken', this.oauthService.hasValidIdToken());
 
 		console.debug('[AuthenticationService] login isLoggedIn', isLoggedIn);
 		if (isLoggedIn) {
