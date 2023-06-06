@@ -30,6 +30,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             .ForMember(d => d.Viewed, opt => opt.MapFrom(s => s.spd_views != null && s.spd_views > 0));
 
             _ = CreateMap<spd_portalinvitation, AppInviteVerifyResp>()
+            .ForMember(d => d.InviteId, opt => opt.MapFrom(s => s.spd_portalinvitationid))
             .ForMember(d => d.AddressPostalCode, opt => opt.MapFrom(s => s.spd_OrganizationId.address1_postalcode))
             .ForMember(d => d.OrgId, opt => opt.MapFrom(s => s.spd_OrganizationId.accountid))
             .ForMember(d => d.OrgName, opt => opt.MapFrom(s => s.spd_OrganizationId.spd_organizationlegalname ?? s.spd_OrganizationId.name))

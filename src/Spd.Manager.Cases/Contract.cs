@@ -38,6 +38,7 @@ namespace Spd.Manager.Cases
     public record AppInviteVerifyRequest(string InviteEncryptedCode);
     public record AppInviteVerifyResponse
     {
+        public Guid InviteId { get; set; }
         public Guid OrgId { get; set; }
         public string? OrgName { get; set; }
         public string? OrgPhoneNumber { get; set; }

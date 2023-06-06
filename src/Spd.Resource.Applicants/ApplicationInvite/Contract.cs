@@ -44,6 +44,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
 
     public record AppInviteVerifyResp()
     {
+        public Guid InviteId { get; set; }
         public Guid OrgId { get; set; }
         public string? OrgName { get; set; }
         public string? OrgPhoneNumber { get; set; }
