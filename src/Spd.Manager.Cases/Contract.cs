@@ -38,6 +38,7 @@ namespace Spd.Manager.Cases
     public record AppInviteVerifyRequest(string InviteEncryptedCode);
     public record AppInviteVerifyResponse
     {
+        public Guid InviteId { get; set; }
         public Guid OrgId { get; set; }
         public string? OrgName { get; set; }
         public string? OrgPhoneNumber { get; set; }
@@ -56,7 +57,8 @@ namespace Spd.Manager.Cases
         public string? ContactEmail { get; set; }
         public string? JobTitle { get; set; }
         public PayerPreferenceTypeCode PayeeType { get; set; }
-        public bool? ValidCrc { get; set; }
+        public ScreeningTypeCode? ScreeningType { get; set; }
+        public ServiceTypeCode? ServiceType { get; set; }
     };
 
     public record IdentityCommand(Guid OrgId, Guid ApplicationId, IdentityStatusCode Status) : IRequest<Unit>;
@@ -158,7 +160,8 @@ namespace Spd.Manager.Cases
         public string? DriversLicense { get; set; }
         public string? BirthPlace { get; set; }
         public GenderCode? GenderCode { get; set; }
-        public ScreeningTypeCode? ScreeningTypeCode { get; set; }
+        public ScreeningTypeCode? ScreeningType { get; set; }
+        public ServiceTypeCode? ServiceType { get; set; }
         public string? AddressLine1 { get; set; }
         public string? AddressLine2 { get; set; }
         public string? City { get; set; }
@@ -284,10 +287,10 @@ namespace Spd.Manager.Cases
     {
         [Description("Staff")]
         Staff,
-
-        [Description("Contractor/Licensee")]
-        Contractor
+        Contractor,
+        Licensee
     }
+
     public enum IdentityStatusCode
     {
         Verified,
@@ -562,12 +565,15 @@ namespace Spd.Manager.Cases
                     .NotEmpty()
                     .MaximumLength(100);
 
-            RuleFor(r => r.ScreeningTypeCode)
+            RuleFor(r => r.ScreeningType)
                     .IsInEnum();
 
             RuleFor(r => r.ContractedCompanyName)
                     .NotEmpty()
-                    .When(r => r.ScreeningTypeCode == ScreeningTypeCode.Contractor);
+                    .When(r => r.ScreeningType == ScreeningTypeCode.Contractor || r.ScreeningType == ScreeningTypeCode.Licensee);
+
+            RuleFor(r => r.ServiceType)
+                .IsInEnum();
 
             RuleFor(r => r.AddressLine1)
                     .NotEmpty()
