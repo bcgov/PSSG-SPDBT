@@ -13,8 +13,8 @@ namespace Spd.Utilities.LogonUser
     {
         private readonly RequestDelegate next;
         private readonly IDistributedCache cache;
-        private readonly BCeIDAuthenticationConfiguration bceidConfig;
-        private readonly BcscAuthenticationConfiguration bcscConfig;
+        private readonly BCeIDAuthenticationConfiguration? bceidConfig;
+        private readonly BcscAuthenticationConfiguration? bcscConfig;
 
         public UsersMiddleware(RequestDelegate next, IDistributedCache cache, IConfiguration configuration)
         {
@@ -56,9 +56,6 @@ namespace Spd.Utilities.LogonUser
             }
             else if (context.User.GetIssuer() == bcscConfig.Issuer)
             {
-                string? userInfoStr = context.User.Claims.FirstOrDefault(c => c.Type == "userInfo")?.Value;
-                context.User.AddUpdateClaim(IPrincipalExtensions.BCeID_DISPLAY_USER_NAME, GetDisplayName(userInfoStr) ?? string.Empty);
-                context.User.AddUpdateClaim(ClaimTypes.Role, "Applicant");
                 await next(context);
             }
             else
@@ -134,16 +131,6 @@ namespace Spd.Utilities.LogonUser
             context.Response.Clear();
             context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
             await context.Response.WriteAsync(msg);
-        }
-
-        private string? GetDisplayName(string userInfoStr)
-        {
-            //bcsc returned userinfo would be like
-            //{"sub":"A5VOX7AS6AULXIV2QPMY7R4JLOFHUTFW","birthdate":"1972-04-13","email_verified":true,"gender":"female","iss":"https://idtest.gov.bc.ca/oauth2/","given_name":"GIVENONE","given_names":"GIVENONE GIVENTWO","display_name":"GIVENONE SURNAME","aud":"ca.bc.gov.ag.spd.dev","transaction_identifier":"715efacb-591b-456d-8e6c-eec6be724a71","family_name":"SURNAME","iat":1685752338,"email":"SPD00001@TEST.COM","age":51,"jti":"872ab531-21bc-44e8-b86f-60dc0dd2a9f1"}
-            JsonDocument jd = JsonDocument.Parse(userInfoStr);
-            string? displayname = jd.RootElement.GetProperty("display_name").GetString();
-            return displayname;
-
         }
     }
 }

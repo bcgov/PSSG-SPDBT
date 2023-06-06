@@ -118,7 +118,7 @@ namespace Spd.Utilities.LogonUser
                                 {
                                     handler.ValidateToken(response.Raw, validationParameters, out var token);
                                     var jwe = token as JwtSecurityToken;
-                                    ctx.Principal.AddIdentity(new ClaimsIdentity(new[] { new Claim("userInfo", jwe.Payload.SerializeToJson()) }));
+                                    MapJweClaimsToPrincipalClaims(ctx.Principal, jwe);
                                 }
                             }
                             else
@@ -168,6 +168,14 @@ namespace Spd.Utilities.LogonUser
                     return BCeIDAuthenticationConfiguration.AuthSchemeName;
                 };
             });
+        }
+
+        private static void MapJweClaimsToPrincipalClaims(ClaimsPrincipal principal, JwtSecurityToken jwt)
+        {
+            foreach(var claim in jwt.Claims) 
+            {
+                principal.AddUpdateClaim(claim.Type, claim.Value);
+            }
         }
     }
 }
