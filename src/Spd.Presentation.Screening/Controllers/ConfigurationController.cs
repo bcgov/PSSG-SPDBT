@@ -47,8 +47,6 @@ namespace Spd.Presentation.Screening.Controllers
                 ResponseType = _bcscOption.Value.ResponseType,
                 Scope = _bcscOption.Value.Scope,
                 PostLogoutRedirectUri = _bcscOption.Value.PostLogoutRedirectUri,
-                TokenEndpoint = _bcscOption.Value.TokenEndpoint,
-                LoginUrl = _bcscOption.Value.LoginUrl
             };
             RecaptchaConfiguration recaptchaResp = new RecaptchaConfiguration(_captchaOption.Value.ClientKey);
             var bannerMessage = await _mediator.Send(new GetBannerMsgQuery());
@@ -79,10 +77,6 @@ namespace Spd.Presentation.Screening.Controllers
         public string Scope { get; set; }
         public string PostLogoutRedirectUri { get; set; }
     }
-    public record BcscConfiguration : OidcConfiguration
-    {
-        public string TokenEndpoint { get; set; }
-        public string LoginUrl { get; set; }
-    };
+    public record BcscConfiguration : OidcConfiguration;
     public record RecaptchaConfiguration(string Key);
 }

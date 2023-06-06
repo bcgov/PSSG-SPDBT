@@ -23,9 +23,8 @@ export class ConfigService {
 			scope: resp.scope!,
 			showDebugInformation: true,
 			postLogoutRedirectUri: resp.postLogoutRedirectUri!,
-			tokenEndpoint: resp.tokenEndpoint!,
-			loginUrl: resp.loginUrl!,
-			userinfoEndpoint: 'https://idtest.gov.bc.ca/oauth2/userinfo',
+			// userinfoEndpoint: 'https://idtest.gov.bc.ca/oauth2/userinfo',
+			strictDiscoveryDocumentValidation: false,
 		};
 		console.debug('[ConfigService] getBcscConfig', bcscConfig, 'redirectUri', redirectUri);
 		return bcscConfig;

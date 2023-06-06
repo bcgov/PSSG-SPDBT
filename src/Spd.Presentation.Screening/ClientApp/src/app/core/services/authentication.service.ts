@@ -60,28 +60,27 @@ export class AuthenticationService {
 		await this.configureOAuthService(loginType, window.location.origin + returnComponentRoute);
 
 		const returnRoute = location.pathname.substring(1);
-		console.debug('[AuthenticationService] login', returnComponentRoute);
+		console.debug('[AuthenticationService] login', returnComponentRoute, returnRoute);
 
-		let isLoggedIn = this.oauthService.hasValidAccessToken();
-		if (!isLoggedIn) {
-			if (loginType == LoginTypeCode.Bceid) {
-				isLoggedIn = await this.oauthService.loadDiscoveryDocumentAndLogin({
-					state: returnRoute,
-				});
-			} else {
-				this.oauthService.initLoginFlow(returnRoute);
-				isLoggedIn = this.oauthService.hasValidAccessToken();
-			}
-		}
+		const isLoggedIn = await this.oauthService.loadDiscoveryDocumentAndLogin({
+			state: returnRoute,
+		});
+
+		// this.oauthService.initLoginFlow(returnRoute);
+		// const isLoggedIn = this.oauthService.hasValidAccessToken();
 		console.debug('[xxxxxxxxxxxxxxxxx] login hasValidAccessToken', this.oauthService.hasValidAccessToken());
-		console.debug('[xxxxxxxxxxxxxxxxx] login hasValidIdToken', this.oauthService.hasValidIdToken());
 
-		console.debug('[AuthenticationService] login isLoggedIn', isLoggedIn);
 		if (isLoggedIn) {
-			if (loginType == LoginTypeCode.Bcsc) {
-				const temp = await this.oauthService.loadUserProfile();
-				console.log('temp', temp);
-			}
+			// const temp = await this.oauthService.loadUserProfile();
+			// console.log('xxxxxxxxxxxxxxxxx');
+
+			// this.oauthService.loadUserProfile().then((user) => {
+			// 	console.log('user : ', user);
+			// });
+
+			// const decodedToken = this.utilService.getDecodedAccessToken(temp.body);
+			// console.log('decodedToken', decodedToken);
+			// this.notify(isLoggedIn);
 
 			const success = await this.authUserService.setOrgSelection();
 			this.notify(success);
@@ -91,6 +90,45 @@ export class AuthenticationService {
 			return Promise.resolve(null);
 		}
 	}
+
+	// public async loginx(
+	// 	loginType: LoginTypeCode,
+	// 	returnComponentRoute: string | undefined = undefined
+	// ): Promise<string | null> {
+	// 	await this.configureOAuthService(loginType, window.location.origin + returnComponentRoute);
+
+	// 	const returnRoute = location.pathname.substring(1);
+	// 	console.debug('[AuthenticationService] login', returnComponentRoute);
+
+	// 	let isLoggedIn = this.oauthService.hasValidAccessToken();
+	// 	if (!isLoggedIn) {
+	// 		if (loginType == LoginTypeCode.Bceid) {
+	// 			isLoggedIn = await this.oauthService.loadDiscoveryDocumentAndLogin({
+	// 				state: returnRoute,
+	// 			});
+	// 		} else {
+	// 			// this.oauthService.initLoginFlow(returnRoute);
+	// 			// isLoggedIn = this.oauthService.hasValidAccessToken();
+	// 		}
+	// 	}
+	// 	console.debug('[xxxxxxxxxxxxxxxxx] login hasValidAccessToken', this.oauthService.hasValidAccessToken());
+	// 	console.debug('[xxxxxxxxxxxxxxxxx] login hasValidIdToken', this.oauthService.hasValidIdToken());
+
+	// 	console.debug('[AuthenticationService] login isLoggedIn', isLoggedIn);
+	// 	if (isLoggedIn) {
+	// 		// if (loginType == LoginTypeCode.Bcsc) {
+	// 		// 	const temp = await this.oauthService.loadUserProfile();
+	// 		// 	console.log('temp', temp);
+	// 		// }
+
+	// 		const success = await this.authUserService.setOrgSelection();
+	// 		this.notify(success);
+	// 		return Promise.resolve(this.oauthService.state || returnRoute);
+	// 	} else {
+	// 		this.notify(isLoggedIn);
+	// 		return Promise.resolve(null);
+	// 	}
+	// }
 
 	public logout(): void {
 		this.oauthService.logOut();

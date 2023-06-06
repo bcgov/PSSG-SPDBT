@@ -20,7 +20,5 @@ namespace Spd.Utilities.LogonUser.Configurations
         public string Scope { get; set; } = "openid profile email offline_access";
         public string ClientId { get; set; } = null!;
         public string PostLogoutRedirectUri { get; set; } = null;
-        public string TokenEndpoint { get; set; } = null!;
-        public string LoginUrl { get; set; } = null!;
     }
 }
