@@ -4,11 +4,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
 import { NgxMaskPipe } from 'ngx-mask';
-import { ApplicationCreateResponse, BooleanTypeCode } from 'src/app/api/models';
+import { ApplicationCreateResponse, BooleanTypeCode, ScreeningTypeCode } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { ApplicationOriginTypeCode } from 'src/app/core/code-types/application-origin-type.model';
 import { GenderTypes, ScreeningTypes } from 'src/app/core/code-types/model-desc.models';
-import { ScreeningTypeCode } from 'src/app/core/code-types/screening-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
@@ -149,7 +148,7 @@ export interface AliasCreateRequest {
 							<mat-error *ngIf="form.get('screeningTypeCode')?.hasError('required')">This is required</mat-error>
 						</mat-form-field>
 					</div>
-					<div class="col-xl-3 col-lg-6 col-md-12" *ngIf="screeningTypeCode.value == screeningTypeCodes.Contractor">
+					<div class="col-xl-3 col-lg-6 col-md-12" *ngIf="isDisplayFacilityName">
 						<mat-form-field>
 							<mat-label>Company / Facility Name</mat-label>
 							<input matInput formControlName="contractedCompanyName" [errorStateMatcher]="matcher" maxlength="100" />
@@ -421,9 +420,8 @@ export class ManualSubmissionComponent implements OnInit {
 		{
 			validators: [
 				FormGroupValidators.conditionalRequiredValidator('givenName', (form) => !form.get('oneLegalName')?.value),
-				FormGroupValidators.conditionalRequiredValidator(
-					'contractedCompanyName',
-					(form) => form.get('screeningTypeCode')?.value == this.screeningTypeCodes.Contractor
+				FormGroupValidators.conditionalRequiredValidator('contractedCompanyName', (form) =>
+					[ScreeningTypeCode.Contractor, ScreeningTypeCode.Licensee].includes(form.get('screeningTypeCode')?.value)
 				),
 			],
 		}
@@ -473,8 +471,11 @@ export class ManualSubmissionComponent implements OnInit {
 				? this.maskPipe.transform(createRequest.phoneNumber, SPD_CONSTANTS.phone.backendMask)
 				: '';
 			createRequest.haveVerifiedIdentity = createRequest.haveVerifiedIdentity == true ? true : false;
-			createRequest.contractedCompanyName =
-				createRequest.screeningTypeCode == ScreeningTypeCode.Contractor ? createRequest.contractedCompanyName : '';
+			createRequest.contractedCompanyName = [ScreeningTypeCode.Contractor, ScreeningTypeCode.Licensee].includes(
+				createRequest.screeningTypeCode
+			)
+				? createRequest.contractedCompanyName
+				: '';
 			createRequest.requireDuplicateCheck = true;
 
 			const body = {
@@ -585,6 +586,10 @@ export class ManualSubmissionComponent implements OnInit {
 
 	get isMaxAliasCount(): boolean {
 		return this.aliases.length >= 3 ? false : true;
+	}
+
+	get isDisplayFacilityName(): boolean {
+		return [ScreeningTypeCode.Contractor, ScreeningTypeCode.Licensee].includes(this.screeningTypeCode.value);
 	}
 
 	private resetForm(): void {

@@ -228,7 +228,7 @@ public class ApplicationScenarios : ScenarioContextBase
             Country = "canada",
             AgreeToCompleteAndAccurate = true,
             HaveVerifiedIdentity = true,
-            ScreeningTypeCode = ScreeningTypeCode.Staff,
+            ScreeningType = ScreeningTypeCode.Staff,
             BirthPlace = "place"
         };
     }

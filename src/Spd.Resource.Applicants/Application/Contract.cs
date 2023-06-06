@@ -1,3 +1,4 @@
+using Spd.Resource.Applicants.ApplicationInvite;
 using Spd.Utilities.Shared.ResourceContracts;
 
 namespace Spd.Resource.Applicants.Application;
@@ -66,6 +67,8 @@ public record ApplicationCreateCmd
     public IEnumerable<AliasCreateCmd> Aliases { get; set; } = Array.Empty<AliasCreateCmd>();
     public Guid CreatedByUserId { get; set; }
     public PayerPreferenceTypeCode PayeeType { get; set; }
+    public ServiceTypeEnum? ServiceType { get; set; }
+    public ScreenTypeEnum? ScreeningType { get; set; }
     public SpdTempFile ConsentFormTempFile { get; set; } = null!;
 }
 public record AliasCreateCmd
