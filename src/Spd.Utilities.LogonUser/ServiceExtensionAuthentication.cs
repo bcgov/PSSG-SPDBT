@@ -5,7 +5,10 @@ using Microsoft.Net.Http.Headers;
 using Spd.Utilities.LogonUser.Configurations;
 using System.Configuration;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http.Headers;
+using System.Net;
 using System.Security.Claims;
+using IdentityModel.Client;
 
 namespace Spd.Utilities.LogonUser
 {
@@ -82,6 +85,60 @@ namespace Spd.Utilities.LogonUser
                     ValidateActor = true,
                     ValidateIssuerSigningKey = true,
                 };
+                options.Events = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents
+                {
+                    OnTokenValidated = async ctx =>
+                    {
+                        var oidcConfig = await ctx.Options.ConfigurationManager.GetConfigurationAsync(CancellationToken.None);
+
+                        //set token validation parameters
+                        var validationParameters = ctx.Options.TokenValidationParameters.Clone();
+                        validationParameters.IssuerSigningKeys = oidcConfig.JsonWebKeySet.GetSigningKeys();
+                        validationParameters.ValidateLifetime = false;
+                        validationParameters.ValidateIssuer = false;
+
+                        var userInfoRequest = new UserInfoRequest
+                        {
+                            Address = oidcConfig.UserInfoEndpoint,
+                            Token = ((JwtSecurityToken)ctx.SecurityToken).RawData
+                        };
+                        //set the userinfo response to be JWT
+                        userInfoRequest.Headers.Accept.Clear();
+                        userInfoRequest.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/jwt"));
+
+                        //request userinfo claims through the backchannel
+                        var response = await ctx.Options.Backchannel.GetUserInfoAsync(userInfoRequest, CancellationToken.None);
+                        if (response.IsError && response.HttpStatusCode == HttpStatusCode.OK)
+                        {
+                            //handle encrypted userinfo response...
+                            if (response.HttpResponse.Content?.Headers?.ContentType?.MediaType == "application/jwt")
+                            {
+                                var handler = new JwtSecurityTokenHandler();
+                                if (handler.CanReadToken(response.Raw))
+                                {
+                                    handler.ValidateToken(response.Raw, validationParameters, out var token);
+                                    var jwe = token as JwtSecurityToken;
+                                    MapJweClaimsToPrincipalClaims(ctx.Principal, jwe);
+                                }
+                            }
+                            else
+                            {
+                                //...or fail
+                                ctx.Fail(response.Error);
+                            }
+                        }
+                        else if (response.IsError)
+                        {
+                            //handle for all other failures
+                            ctx.Fail(response.Error);
+                        }
+                        else
+                        {
+                            //handle non encrypted userinfo response
+                            ctx.Principal.AddIdentity(new ClaimsIdentity(new[] { new Claim("userInfo", response.Json.GetRawText()) }));
+                        }
+                    }
+                };
             })
             .AddPolicyScheme(defaultScheme, defaultScheme, options =>
             {
@@ -111,6 +168,14 @@ namespace Spd.Utilities.LogonUser
                     return BCeIDAuthenticationConfiguration.AuthSchemeName;
                 };
             });
+        }
+
+        private static void MapJweClaimsToPrincipalClaims(ClaimsPrincipal principal, JwtSecurityToken jwt)
+        {
+            foreach(var claim in jwt.Claims) 
+            {
+                principal.AddUpdateClaim(claim.Type, claim.Value);
+            }
         }
     }
 }
