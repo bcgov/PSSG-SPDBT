@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Membership.UserProfile;
 using Spd.Utilities.Cache;
@@ -56,6 +57,7 @@ namespace Spd.Utilities.LogonUser
             }
             else if (context.User.GetIssuer() == bcscConfig.Issuer)
             {
+                context.User.AddUpdateClaim(ClaimTypes.Role, "Applicant");
                 await next(context);
             }
             else
