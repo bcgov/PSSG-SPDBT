@@ -3,6 +3,8 @@
 import { EmployeeInteractionTypeCode } from './employee-interaction-type-code';
 import { EmployeeOrganizationTypeCode } from './employee-organization-type-code';
 import { PayerPreferenceTypeCode } from './payer-preference-type-code';
+import { ScreeningTypeCode } from './screening-type-code';
+import { ServiceTypeCode } from './service-type-code';
 import { VolunteerOrganizationTypeCode } from './volunteer-organization-type-code';
 export interface AppInviteVerifyResponse {
   addressCity?: null | string;
@@ -15,13 +17,15 @@ export interface AppInviteVerifyResponse {
   contactGivenName?: null | string;
   contactSurname?: null | string;
   employeeOrganizationTypeCode?: EmployeeOrganizationTypeCode;
+  inviteId?: string;
   jobTitle?: null | string;
   orgEmail?: null | string;
   orgId?: string;
   orgName?: null | string;
   orgPhoneNumber?: null | string;
   payeeType?: PayerPreferenceTypeCode;
-  validCrc?: null | boolean;
+  screeningType?: ScreeningTypeCode;
+  serviceType?: ServiceTypeCode;
   volunteerOrganizationTypeCode?: VolunteerOrganizationTypeCode;
   worksWith?: EmployeeInteractionTypeCode;
 }

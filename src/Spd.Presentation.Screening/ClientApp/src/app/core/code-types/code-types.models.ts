@@ -3,4 +3,3 @@ export { ApplicationOriginTypeCode } from './application-origin-type.model';
 export { ApplicationPortalStatisticsTypeCode } from './application-portal-statistics-type.model';
 export { GenderTypeCode } from './gender-type.model';
 export { LoginTypeCode } from './login-type.model';
-export { ScreeningTypeCode } from './screening-type.model';

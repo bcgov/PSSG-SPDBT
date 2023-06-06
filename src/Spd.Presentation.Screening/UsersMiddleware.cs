@@ -6,6 +6,7 @@ using Spd.Utilities.Cache;
 using Spd.Utilities.LogonUser.Configurations;
 using System.Net;
 using System.Security.Claims;
+using System.Text.Json;
 
 namespace Spd.Utilities.LogonUser
 {
@@ -13,8 +14,8 @@ namespace Spd.Utilities.LogonUser
     {
         private readonly RequestDelegate next;
         private readonly IDistributedCache cache;
-        private readonly BCeIDAuthenticationConfiguration bceidConfig;
-        private readonly BcscAuthenticationConfiguration bcscConfig;
+        private readonly BCeIDAuthenticationConfiguration? bceidConfig;
+        private readonly BcscAuthenticationConfiguration? bcscConfig;
 
         public UsersMiddleware(RequestDelegate next, IDistributedCache cache, IConfiguration configuration)
         {
@@ -53,7 +54,8 @@ namespace Spd.Utilities.LogonUser
                 {
                     await ReturnUnauthorized(context, "missing organization in the header.");
                 }
-            }else if(context.User.GetIssuer() == bcscConfig.Issuer)
+            }
+            else if (context.User.GetIssuer() == bcscConfig.Issuer)
             {
                 context.User.AddUpdateClaim(ClaimTypes.Role, "Applicant");
                 await next(context);
@@ -102,7 +104,7 @@ namespace Spd.Utilities.LogonUser
                 await ReturnUnauthorized(context, "organization is not a valid guid");
                 return false;
             }
-            
+
             UserProfileResponse? userProfile = await cache.Get<UserProfileResponse>($"user-{context.User.GetUserGuid()}");
             if (userProfile == null)
             {

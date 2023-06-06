@@ -5,9 +5,9 @@ import {
 	PayerPreferenceTypeCode,
 	ServiceTypeCode,
 } from 'src/app/api/models';
+import { ScreeningTypeCode } from './code-types.models';
 import { CountryTypeCode } from './country-type.model';
 import { GenderTypeCode } from './gender-type.model';
-import { ScreeningTypeCode } from './screening-type.model';
 
 export interface SelectOptions<k = string | number | boolean> {
 	code: k;
@@ -22,7 +22,8 @@ export const EmployeeInteractionTypes: SelectOptions[] = [
 
 export const ScreeningTypes: SelectOptions[] = [
 	{ desc: 'Staff', code: ScreeningTypeCode.Staff },
-	{ desc: 'Contractor/Licensee', code: ScreeningTypeCode.Contractor },
+	{ desc: 'Contractor', code: ScreeningTypeCode.Contractor },
+	{ desc: 'Licensee', code: ScreeningTypeCode.Licensee },
 ];
 
 export const PayerPreferenceTypes: SelectOptions[] = [
