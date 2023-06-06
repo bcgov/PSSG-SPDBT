@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Spd.Utilities.Dynamics;
+using Spd.Utilities.Shared.ResourceContracts;
 
 namespace Spd.Resource.Applicants.ApplicationInvite
 {
@@ -29,6 +30,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             .ForMember(d => d.Viewed, opt => opt.MapFrom(s => s.spd_views != null && s.spd_views > 0));
 
             _ = CreateMap<spd_portalinvitation, AppInviteVerifyResp>()
+            .ForMember(d => d.InviteId, opt => opt.MapFrom(s => s.spd_portalinvitationid))
             .ForMember(d => d.AddressPostalCode, opt => opt.MapFrom(s => s.spd_OrganizationId.address1_postalcode))
             .ForMember(d => d.OrgId, opt => opt.MapFrom(s => s.spd_OrganizationId.accountid))
             .ForMember(d => d.OrgName, opt => opt.MapFrom(s => s.spd_OrganizationId.spd_organizationlegalname ?? s.spd_OrganizationId.name))
@@ -46,7 +48,8 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             .ForMember(d => d.ContactGivenName, opt => opt.MapFrom(s => s.spd_firstname))
             .ForMember(d => d.ContactSurname, opt => opt.MapFrom(s => s.spd_surname))
             .ForMember(d => d.JobTitle, opt => opt.MapFrom(s => s.spd_jobtitle))
-            .ForMember(d => d.ValidCrc, opt => opt.MapFrom(s => true)) //todo: needs to be set with another query.
+            .ForMember(d => d.ScreeningType, opt => opt.MapFrom(s => GetScreenType(s.spd_screeningrequesttype)))
+            .ForMember(d => d.ServiceType, opt => opt.MapFrom(s => GetServiceType(s._spd_servicetypeid_value)))
             .ForMember(d => d.EmployeeOrganizationTypeCode, opt => opt.MapFrom(s => DynamicsContextLookupHelpers.GetTypeFromTypeId(s.spd_OrganizationId._spd_organizationtypeid_value).Item1))
             .ForMember(d => d.VolunteerOrganizationTypeCode, opt => opt.MapFrom(s => DynamicsContextLookupHelpers.GetTypeFromTypeId(s.spd_OrganizationId._spd_organizationtypeid_value).Item2));
         }
@@ -59,6 +62,17 @@ namespace Spd.Resource.Applicants.ApplicationInvite
         {
             if (code == null) return null;
             return Enum.GetName(typeof(WorksWithChildrenOptionSet), code);
+        }
+        private static ScreenTypeEnum? GetScreenType(int? code)
+        {
+            if (code == null) return null;
+            return Enum.Parse<ScreenTypeEnum>(Enum.GetName(typeof(ScreenTypeOptionSet), code));
+        }
+
+        private static ServiceTypeEnum? GetServiceType(Guid? servieTypeGuid)
+        {
+            if (servieTypeGuid == null) return null;
+            return Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.LookupServiceTypeKey(servieTypeGuid));
         }
     }
 }
