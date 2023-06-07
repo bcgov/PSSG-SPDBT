@@ -11,7 +11,7 @@ import { GenderTypeCode } from './gender-type.model';
 
 export interface SelectOptions<k = string | number | boolean> {
 	code: k;
-	desc: string | number | boolean;
+	desc: string;
 }
 
 export const EmployeeInteractionTypes: SelectOptions[] = [

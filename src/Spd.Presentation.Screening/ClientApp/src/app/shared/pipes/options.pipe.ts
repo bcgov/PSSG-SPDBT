@@ -7,6 +7,6 @@ export class OptionsPipe {
 	constructor(private utilService: UtilService) {}
 
 	transform(input: string | undefined, codeTableName: keyof typeof CodeDescTypes, defaultValue: string = ''): string {
-		return input ? this.utilService.getCodeDesc(codeTableName, input) : defaultValue;
+		return input ? this.utilService.getDescByCode(codeTableName, input) : defaultValue;
 	}
 }

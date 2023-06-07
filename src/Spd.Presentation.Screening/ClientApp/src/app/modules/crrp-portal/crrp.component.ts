@@ -191,7 +191,10 @@ export class CrrpComponent {
 			this.setShowNavigationFlag((evt as NavigationEnd).url);
 		});
 
-		const nextUrl = await this.authenticationService.login(IdentityProviderTypeCode.BusinessBceId, CrrpRoutes.path());
+		const nextUrl = await this.authenticationService.login(
+			IdentityProviderTypeCode.BusinessBceId,
+			CrrpRoutes.path(CrrpRoutes.HOME)
+		);
 		// console.debug('nextUrl', nextUrl);
 
 		if (nextUrl) {

@@ -101,7 +101,10 @@ export class PssoComponent {
 	constructor(protected authenticationService: AuthenticationService, private router: Router) {}
 
 	async ngOnInit(): Promise<void> {
-		const nextUrl = await this.authenticationService.login(IdentityProviderTypeCode.BusinessBceId, PssoRoutes.path()); // TODO change to IDIR
+		const nextUrl = await this.authenticationService.login(
+			IdentityProviderTypeCode.BusinessBceId,
+			PssoRoutes.path(PssoRoutes.SCREENING_STATUSES)
+		); // TODO change to IDIR
 
 		if (nextUrl) {
 			const nextRoute = decodeURIComponent(nextUrl);

@@ -13,8 +13,11 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
+import {
+	ScreeningRequestAddCommonModalComponent,
+	ScreeningRequestAddDialogData,
+} from 'src/app/shared/components/screening-request-add-common-modal.component';
 import { CrrpRoutes } from '../crrp-routing.module';
-import { CrcAddModalComponent, CrcDialogData } from './crc-add-modal.component';
 
 export interface ExpiredClearanceResponse extends ClearanceResponse {
 	daysRemainingText: string;
@@ -43,7 +46,7 @@ export const ExpiringChecksFilterMap: Record<keyof ExpiringChecksFilter, string>
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
 					<h2 class="mb-2 fw-normal">Expiring Criminal Record Checks</h2>
-					<app-banner></app-banner>
+					<app-applications-banner></app-applications-banner>
 				</div>
 			</div>
 
@@ -339,12 +342,12 @@ export class ExpiringChecksComponent implements OnInit {
 						payeeType: undefined,
 					};
 
-					const dialogOptions: CrcDialogData = {
+					const dialogOptions: ScreeningRequestAddDialogData = {
 						inviteDefault,
 					};
 
 					this.dialog
-						.open(CrcAddModalComponent, {
+						.open(ScreeningRequestAddCommonModalComponent, {
 							width: '1400px',
 							data: dialogOptions,
 						})
