@@ -1,12 +1,10 @@
 using MediatR;
-using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Membership.UserProfile;
 using Spd.Utilities.Cache;
 using Spd.Utilities.LogonUser.Configurations;
 using System.Net;
 using System.Security.Claims;
-using System.Text.Json;
 
 namespace Spd.Utilities.LogonUser
 {
