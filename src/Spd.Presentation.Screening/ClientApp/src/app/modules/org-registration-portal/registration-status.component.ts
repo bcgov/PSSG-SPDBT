@@ -122,7 +122,7 @@ export class RegistrationStatusComponent {
 				.pipe()
 				.subscribe((resp: any) => {
 					if (resp.status == OrgRegistrationStatusCode.CompleteFailed) {
-						this.router.navigate([OrgRegistrationRoutes.orgRegPath(OrgRegistrationRoutes.ORG_REGISTRATION)]);
+						this.router.navigate([OrgRegistrationRoutes.path(OrgRegistrationRoutes.ORG_REGISTRATION)]);
 					} else if (resp.status == OrgRegistrationStatusCode.CompleteSuccess) {
 						this.router.navigate([CrrpRoutes.path(CrrpRoutes.HOME)]);
 					}

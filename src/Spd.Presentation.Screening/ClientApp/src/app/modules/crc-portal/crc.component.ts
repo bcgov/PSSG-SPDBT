@@ -5,7 +5,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { distinctUntilChanged } from 'rxjs';
-import { AppInviteVerifyResponse } from 'src/app/api/models';
+import { AppInviteVerifyResponse, IdentityProviderTypeCode } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
@@ -49,10 +49,11 @@ export interface AppInviteOrgData extends AppInviteVerifyResponse {
 	notifyRisk?: string | null;
 	oneLegalName?: boolean | null;
 	previousNameFlag?: boolean | null;
-	previousNamesList?: Array<{
+	previousNameList?: Array<{
 		firstName?: string | null;
-		middleNames?: string | null;
-		previousSurname?: string | null;
+		middleName1?: string | null;
+		middleName2?: string | null;
+		lastName?: string | null;
 	}>;
 	recaptcha?: string | null;
 	shareCrc?: string | null;
@@ -205,12 +206,14 @@ export class CrcComponent implements OnInit {
 
 		//auth step 1 - user is not logged in, no state at all
 		//auth step 3 - angular loads again here, KC posts the token, oidc lib reads token and returns state
-		const authInfo = await this.authenticationService.tryLogin(CrcRoutes.path());
+		const authInfo = await this.authenticationService.tryLogin(
+			IdentityProviderTypeCode.BcServicesCard,
+			CrcRoutes.path()
+		);
 
 		if (authInfo.loggedIn) {
 			if (authInfo.state) {
 				const stateInfo = this.utilService.getSessionData(this.utilService.CRC_PORTAL_STATE_KEY);
-				console.debug('[CrcComponent.ngOnInit] stateInfo', stateInfo);
 				if (stateInfo) {
 					this.postLoginNavigate(stateInfo);
 					return;
@@ -292,7 +295,7 @@ export class CrcComponent implements OnInit {
 		//auth step 2 - unload angular, redirect to KC
 		// const decodedData = decodeURIComponent(authInfo.state);
 		this.utilService.setSessionData(this.utilService.CRC_PORTAL_STATE_KEY, stateInfo);
-		const nextUrl = await this.authenticationService.login(CrcRoutes.path());
+		const nextUrl = await this.authenticationService.login(IdentityProviderTypeCode.BcServicesCard, CrcRoutes.path());
 		if (nextUrl) {
 			// User is already logged in and clicks Login button.
 			// Want it to start at the beginning and continue past login page.

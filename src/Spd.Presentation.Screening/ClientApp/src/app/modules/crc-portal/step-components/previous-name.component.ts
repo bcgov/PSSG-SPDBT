@@ -37,35 +37,33 @@ import { CrcFormStepComponent } from '../crc.component';
 							<mat-divider class="my-3" style="border-top-color: var(--color-primary-light);"></mat-divider>
 							<div class="text-minor-heading fw-semibold mb-2">Previous Names</div>
 							<ng-container
-								formArrayName="previousNamesList"
+								formArrayName="previousNameList"
 								*ngFor="let group of getFormControls.controls; let i = index"
 							>
 								<div class="row" [formGroupName]="i">
-									<div class="col-xl-4 col-lg-3 col-md-6 col-sm-12">
+									<div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
 										<mat-form-field>
 											<mat-label>Given Name <span class="optional-label">(optional)</span></mat-label>
 											<input matInput type="text" formControlName="firstName" [errorStateMatcher]="matcher" />
 										</mat-form-field>
 									</div>
-									<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+									<div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
 										<mat-form-field>
-											<mat-label>Middle Name <span class="optional-label">(optional)</span></mat-label>
-											<input matInput type="text" formControlName="middleNames" />
+											<mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
+											<input matInput type="text" formControlName="middleName1" />
 										</mat-form-field>
 									</div>
-									<div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+									<div class="col-xl-2 col-lg-6 col-md-6 col-sm-12">
+										<mat-form-field>
+											<mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
+											<input matInput type="text" formControlName="middleName2" />
+										</mat-form-field>
+									</div>
+									<div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
 										<mat-form-field>
 											<mat-label>Previous Surname</mat-label>
-											<input
-												matInput
-												type="text"
-												formControlName="previousSurname"
-												[errorStateMatcher]="matcher"
-												required
-											/>
-											<mat-error *ngIf="group.get('previousSurname')?.hasError('required')">
-												This is required
-											</mat-error>
+											<input matInput type="text" formControlName="lastName" [errorStateMatcher]="matcher" required />
+											<mat-error *ngIf="group.get('lastName')?.hasError('required')"> This is required </mat-error>
 										</mat-form-field>
 									</div>
 									<div class="col-xl-1 col-lg-1 col-md-6 col-sm-12">
@@ -125,7 +123,7 @@ export class PreviousNameComponent implements OnInit, CrcFormStepComponent {
 	ngOnInit(): void {
 		this.form = this.formBuilder.group({
 			previousNameFlag: new FormControl('', [Validators.required]),
-			previousNamesList: this.formBuilder.array([]),
+			previousNameList: this.formBuilder.array([]),
 		});
 		this.onAddRow();
 	}
@@ -133,18 +131,19 @@ export class PreviousNameComponent implements OnInit, CrcFormStepComponent {
 	initiateForm(): FormGroup {
 		return this.formBuilder.group({
 			firstName: [''],
-			middleNames: [''],
-			previousSurname: ['', [Validators.required]],
+			middleName1: [''],
+			middleName2: [''],
+			lastName: ['', [Validators.required]],
 		});
 	}
 
 	onAddRow() {
-		const control = this.form.get('previousNamesList') as FormArray;
+		const control = this.form.get('previousNameList') as FormArray;
 		control.push(this.initiateForm());
 	}
 
 	deleteRow(index: number) {
-		const control = this.form.get('previousNamesList') as FormArray;
+		const control = this.form.get('previousNameList') as FormArray;
 		if (control.length == 1) {
 			const data: DialogOptions = {
 				icon: 'warning',
@@ -170,21 +169,21 @@ export class PreviousNameComponent implements OnInit, CrcFormStepComponent {
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
-					const control = this.form.get('previousNamesList') as FormArray;
+					const control = this.form.get('previousNameList') as FormArray;
 					control.removeAt(index);
 				}
 			});
 	}
 
 	get getFormControls() {
-		const control = this.form.get('previousNamesList') as FormArray;
+		const control = this.form.get('previousNameList') as FormArray;
 		return control;
 	}
 
 	getDataToSave(): any {
 		let dataToSave = { ...this.form.value };
 		if (this.previousNameFlag.value != BooleanTypeCode.Yes) {
-			dataToSave.previousNamesList = [];
+			dataToSave.previousNameList = [];
 		}
 		return dataToSave;
 	}
@@ -199,7 +198,7 @@ export class PreviousNameComponent implements OnInit, CrcFormStepComponent {
 	}
 
 	get oneRowExists(): boolean {
-		const control = this.form.get('previousNamesList') as FormArray;
+		const control = this.form.get('previousNameList') as FormArray;
 		return control.length > 1 ? false : true;
 	}
 }

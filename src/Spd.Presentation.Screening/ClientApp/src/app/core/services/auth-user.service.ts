@@ -1,38 +1,32 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { lastValueFrom, Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { lastValueFrom } from 'rxjs';
 import { OrgService, UserProfileService } from 'src/app/api/services';
 import {
 	OrgSelectionDialogData,
 	OrgSelectionModalComponent,
 } from 'src/app/shared/components/org-selection-modal.component';
-import { OrgResponse, UserInfo, UserProfileResponse } from '../code-types/code-types.models';
+import {
+	ApplicantProfileResponse,
+	IdentityProviderTypeCode,
+	OrgResponse,
+	UserInfo,
+	UserProfileResponse,
+} from '../code-types/code-types.models';
 
 @Injectable({ providedIn: 'root' })
 export class AuthUserService {
+	loginType: IdentityProviderTypeCode | null = null;
 	userOrgProfile: OrgResponse | null = null;
+	applicantProfile: ApplicantProfileResponse | null = null;
 	userInfo: UserInfo | null = null;
 	genericUploadEnabled: boolean = false;
 
-	constructor(private userService: UserProfileService, private orgService: OrgService, private dialog: MatDialog) {}
-
-	whoAmI(): Observable<UserProfileResponse> {
-		return this.userService.apiUserGet().pipe(
-			tap((resp: UserProfileResponse) => {
-				const userInfosList = resp.userInfos?.filter((info) => info.orgId);
-				const userInfos = userInfosList ? userInfosList : [];
-
-				if (userInfos.length == 0) {
-					console.error('User does not have any organizations');
-				} else if (userInfos.length > 1) {
-					this.orgSelection(userInfos);
-				} else {
-					this.setOrgProfile(userInfos[0]);
-				}
-			})
-		);
-	}
+	constructor(
+		private userProfileService: UserProfileService,
+		private orgService: OrgService,
+		private dialog: MatDialog
+	) {}
 
 	setOrgProfile(userInfo: UserInfo | null = null): void {
 		console.debug('[AuthUserService] userInfo', userInfo);
@@ -64,30 +58,48 @@ export class AuthUserService {
 			});
 	}
 
-	async setOrgSelection(): Promise<boolean> {
-		const resp: UserProfileResponse = await lastValueFrom(this.userService.apiUserGet());
+	async whoAmIAsync(loginType: IdentityProviderTypeCode): Promise<boolean> {
+		this.loginType = loginType;
+		this.clearUserData();
 
-		if (resp) {
-			const uniqueUserInfoList = [
-				...new Map(resp.userInfos?.filter((info) => info.orgId).map((item) => [item['orgId'], item])).values(),
-			];
+		if (loginType == IdentityProviderTypeCode.BusinessBceId) {
+			const resp: UserProfileResponse = await lastValueFrom(this.userProfileService.apiUsersWhoamiGet());
 
-			if (uniqueUserInfoList.length == 0) {
-				console.error('User does not have any organizations');
-				return Promise.resolve(false);
-			} else {
-				if (uniqueUserInfoList.length > 1) {
-					const result = await this.orgSelectionAsync(uniqueUserInfoList);
-					this.setOrgProfile(result);
+			if (resp) {
+				const uniqueUserInfoList = [
+					...new Map(resp.userInfos?.filter((info) => info.orgId).map((item) => [item['orgId'], item])).values(),
+				];
+
+				if (uniqueUserInfoList.length == 0) {
+					console.error('User does not have any organizations');
+					return Promise.resolve(false);
 				} else {
-					this.setOrgProfile(uniqueUserInfoList[0]);
+					if (uniqueUserInfoList.length > 1) {
+						const result = await this.orgSelectionAsync(uniqueUserInfoList);
+						this.setOrgProfile(result);
+					} else {
+						this.setOrgProfile(uniqueUserInfoList[0]);
+					}
+					return Promise.resolve(true);
 				}
+			}
+		} else if (loginType == IdentityProviderTypeCode.BcServicesCard) {
+			const resp: ApplicantProfileResponse = await lastValueFrom(this.userProfileService.apiApplicantsWhoamiGet());
+
+			if (resp) {
+				this.applicantProfile = resp;
 				return Promise.resolve(true);
 			}
 		}
 
-		console.error('No user response');
 		return Promise.resolve(false);
+	}
+
+	private clearUserData(): void {
+		this.userOrgProfile = null;
+		this.applicantProfile = null;
+		this.userInfo = null;
+		this.genericUploadEnabled = false;
 	}
 
 	private orgSelectionAsync(userInfos: Array<UserInfo>): Promise<any> {
@@ -103,23 +115,5 @@ export class AuthUserService {
 				})
 				.afterClosed()
 		);
-	}
-
-	private orgSelection(userInfos: Array<UserInfo>): void {
-		const dialogOptions: OrgSelectionDialogData = {
-			userInfos: userInfos,
-		};
-
-		this.dialog
-			.open(OrgSelectionModalComponent, {
-				width: '500px',
-				data: dialogOptions,
-			})
-			.afterClosed()
-			.subscribe((res: UserInfo) => {
-				if (res) {
-					this.setOrgProfile(res);
-				}
-			});
 	}
 }
