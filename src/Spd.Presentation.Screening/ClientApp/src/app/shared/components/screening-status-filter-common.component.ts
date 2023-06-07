@@ -1,10 +1,10 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { ApplicationPortalStatusTypes } from 'src/app/core/code-types/model-desc.models';
+import { SelectOptions } from 'src/app/core/code-types/model-desc.models';
 import { UtilService } from 'src/app/core/services/util.service';
 import { BaseFilterComponent, FilterQueryList } from 'src/app/shared/components/base-filter.component';
 
-export class ApplicationStatusFilter {
+export class ScreeningStatusFilter {
 	search: string = '';
 	statuses: string[] = [];
 	applicantName: string = '';
@@ -12,7 +12,7 @@ export class ApplicationStatusFilter {
 	contractedCompanyName: string = '';
 }
 
-export const ApplicationStatusFilterMap: Record<keyof ApplicationStatusFilter, string> = {
+export const ScreeningStatusFilterMap: Record<keyof ScreeningStatusFilter, string> = {
 	search: 'searchText',
 	statuses: 'status',
 	applicantName: 'name',
@@ -21,7 +21,7 @@ export const ApplicationStatusFilterMap: Record<keyof ApplicationStatusFilter, s
 };
 
 @Component({
-	selector: 'app-application-statuses-filter',
+	selector: 'app-screening-status-filter-common',
 	template: `
 		<div class="filter-container mat-elevation-z8">
 			<form [formGroup]="formGroup" novalidate>
@@ -86,8 +86,8 @@ export const ApplicationStatusFilterMap: Record<keyof ApplicationStatusFilter, s
 		`,
 	],
 })
-export class ApplicationStatusesFilterComponent extends BaseFilterComponent {
-	applicationPortalStatusCodes = ApplicationPortalStatusTypes;
+export class ScreeningStatusFilterCommonComponent extends BaseFilterComponent {
+	applicationPortalStatusCodes!: SelectOptions[];
 
 	@Input() formGroup: FormGroup = this.formBuilder.group({
 		statuses: new FormControl(),
@@ -95,6 +95,10 @@ export class ApplicationStatusesFilterComponent extends BaseFilterComponent {
 
 	constructor(private formBuilder: FormBuilder, private utilService: UtilService) {
 		super();
+	}
+
+	ngOnInit(): void {
+		this.applicationPortalStatusCodes = this.utilService.getCodeDescSorted('ApplicationPortalStatusTypes');
 	}
 
 	onItemRemoved(item: string) {
@@ -116,12 +120,12 @@ export class ApplicationStatusesFilterComponent extends BaseFilterComponent {
 		return this.utilService.geApplicationPortalStatusDesc(code);
 	}
 
-	private constructFilterList(formGroupValue: ApplicationStatusFilter): FilterQueryList[] {
+	private constructFilterList(formGroupValue: ScreeningStatusFilter): FilterQueryList[] {
 		let filterList: FilterQueryList[] = [];
 
 		if (formGroupValue.statuses?.length > 0) {
 			filterList.push({
-				key: ApplicationStatusFilterMap['statuses'],
+				key: ScreeningStatusFilterMap['statuses'],
 				operator: 'equals',
 				value: formGroupValue.statuses.join('|'),
 			});

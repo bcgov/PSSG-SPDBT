@@ -82,13 +82,19 @@ export class UtilService {
 	//------------------------------------
 	// Code Table
 
-	getCodeDescTypes<K extends keyof typeof CodeDescTypes>(key: K): (typeof CodeDescTypes)[K] {
+	private getCodeDescByType<K extends keyof typeof CodeDescTypes>(key: K): (typeof CodeDescTypes)[K] {
 		return CodeDescTypes[key];
 	}
 
-	getCodeDesc(codeTableName: keyof typeof CodeDescTypes, input: string): string {
-		const codeDescs = this.getCodeDescTypes(codeTableName);
+	getDescByCode(codeTableName: keyof typeof CodeDescTypes, input: string): string {
+		const codeDescs = this.getCodeDescByType(codeTableName);
 		return codeDescs ? (codeDescs.find((item: SelectOptions) => item.code == input)?.desc as string) ?? '' : '';
+	}
+
+	getCodeDescSorted(codeTableName: keyof typeof CodeDescTypes): SelectOptions[] {
+		const codeDescs = this.getCodeDescByType(codeTableName);
+		codeDescs.sort((a: SelectOptions, b: SelectOptions) => this.compareByStringUpper(a.desc ?? '', b.desc));
+		return codeDescs;
 	}
 
 	//------------------------------------
@@ -126,5 +132,33 @@ export class UtilService {
 
 	geApplicationPortalStatusDesc(code: string): string {
 		return (ApplicationPortalStatusTypes.find((item: SelectOptions) => item.code == code)?.desc as string) ?? '';
+	}
+
+	//------------------------------------
+	// Sort
+
+	private compareByString(a: any, b: any, ascending: boolean = true) {
+		if (ascending) {
+			if (a < b) {
+				return -1;
+			}
+			if (a > b) {
+				return 1;
+			}
+		} else {
+			if (a < b) {
+				return 1;
+			}
+			if (a > b) {
+				return -1;
+			}
+		}
+		return 0;
+	}
+
+	compareByStringUpper(a: string | null | undefined, b: string | null | undefined, ascending: boolean = true) {
+		const aUpper = a ? a.toUpperCase() : '';
+		const bUpper = b ? b.toUpperCase() : '';
+		return this.compareByString(aUpper, bUpper, ascending);
 	}
 }

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ConfigService } from 'src/app/core/services/config.service';
 
 @Component({
-	selector: 'app-banner',
+	selector: 'app-applications-banner',
 	template: `
 		<app-alert type="warning" icon="schedule">
 			<div>
@@ -15,7 +15,7 @@ import { ConfigService } from 'src/app/core/services/config.service';
 	`,
 	styles: [],
 })
-export class BannerComponent {
+export class ApplicationsBannerComponent {
 	bannerMessage = '';
 
 	constructor(private configService: ConfigService) {

@@ -22,9 +22,12 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { DialogCloseCode, DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
+import {
+	ScreeningRequestAddCommonModalComponent,
+	ScreeningRequestAddDialogData,
+} from 'src/app/shared/components/screening-request-add-common-modal.component';
+import { ScreeningStatusFilterMap } from 'src/app/shared/components/screening-status-filter-common.component';
 import { CrrpRoutes } from '../crrp-routing.module';
-import { ApplicationStatusFilterMap } from './application-statuses-filter.component';
-import { CrcAddModalComponent, CrcDialogData } from './crc-add-modal.component';
 
 export interface IdentityVerificationResponse extends ApplicationResponse {
 	hideActions: boolean;
@@ -301,12 +304,12 @@ export class IdentifyVerificationComponent implements OnInit {
 			payeeType: application.payeeType,
 		};
 
-		const dialogOptions: CrcDialogData = {
+		const dialogOptions: ScreeningRequestAddDialogData = {
 			inviteDefault,
 		};
 
 		this.dialog
-			.open(CrcAddModalComponent, {
+			.open(ScreeningRequestAddCommonModalComponent, {
 				width: '1400px',
 				data: dialogOptions,
 			})
@@ -320,7 +323,7 @@ export class IdentifyVerificationComponent implements OnInit {
 	}
 
 	private performSearch(searchString: string): void {
-		this.currentSearch = searchString ? `${ApplicationStatusFilterMap['search']}@=${searchString}` : '';
+		this.currentSearch = searchString ? `${ScreeningStatusFilterMap['search']}@=${searchString}` : '';
 		this.queryParams.page = 0;
 
 		this.loadList();
