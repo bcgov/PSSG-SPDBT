@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { ScreeningStatusResponse } from 'src/app/shared/components/screening-statuses-common.component';
 import { DelegateManageModalComponent } from './delegate-manage-modal.component';
 
@@ -7,7 +8,7 @@ import { DelegateManageModalComponent } from './delegate-manage-modal.component'
 	selector: 'app-screening-statuses',
 	template: `
 		<app-screening-statuses-common
-			portal="PSSO"
+			[portal]="portal.Psso"
 			title="Screening Statuses"
 			(emitManageDelegate)="onManageDelegates($event)"
 		></app-screening-statuses-common>
@@ -15,6 +16,8 @@ import { DelegateManageModalComponent } from './delegate-manage-modal.component'
 	styles: [],
 })
 export class ScreeningStatusesComponent {
+	portal = PortalTypeCode;
+
 	constructor(private dialog: MatDialog) {}
 
 	onManageDelegates(application: ScreeningStatusResponse): void {

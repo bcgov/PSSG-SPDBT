@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 
 @Component({
 	selector: 'app-criminal-record-checks',
@@ -6,11 +7,13 @@ import { Component } from '@angular/core';
 		<app-crrp-header></app-crrp-header>
 
 		<app-screening-requests-common
-			portal="CRRP"
+			[portal]="portal.Crrp"
 			title="Criminal Record Check Requests"
 			subtitle="Criminal record check request links will expire 14 days after being sent"
 		></app-screening-requests-common>
 	`,
 	styles: [],
 })
-export class CriminalRecordChecksComponent {}
+export class CriminalRecordChecksComponent {
+	portal = PortalTypeCode;
+}

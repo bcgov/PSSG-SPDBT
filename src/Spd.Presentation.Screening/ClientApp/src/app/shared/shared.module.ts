@@ -17,6 +17,8 @@ import { CaptchaV2Component } from './components/captcha-v2.component';
 import { DialogComponent } from './components/dialog.component';
 import { DropdownOverlayComponent } from './components/dropdown-overlay.component';
 import { FileUploadComponent } from './components/file-upload.component';
+import { IdentifyVerificationCommonComponent } from './components/identify-verification-common.component';
+import { ManualSubmissionCommonComponent } from './components/manual-submission-common.component';
 import { OrgSelectionModalComponent } from './components/org-selection-modal.component';
 import { ScreeningRequestAddCommonModalComponent } from './components/screening-request-add-common-modal.component';
 import { ScreeningRequestsCommonComponent } from './components/screening-requests-common.component';
@@ -53,6 +55,8 @@ const SHARED_COMPONENTS = [
 	ScreeningStatusesCommonComponent,
 	ScreeningRequestsCommonComponent,
 	ScreeningRequestAddCommonModalComponent,
+	IdentifyVerificationCommonComponent,
+	ManualSubmissionCommonComponent,
 ];
 
 @NgModule({

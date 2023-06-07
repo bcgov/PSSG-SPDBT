@@ -55,7 +55,7 @@ const routes: Routes = [
 				path: 'invitation/:id',
 				component: InvitationComponent,
 			},
-			{ path: '', redirectTo: CrrpRoutes.HOME, pathMatch: 'full' },
+			{ path: '', redirectTo: CrrpRoutes.path(CrrpRoutes.HOME), pathMatch: 'full' },
 		],
 	},
 ];

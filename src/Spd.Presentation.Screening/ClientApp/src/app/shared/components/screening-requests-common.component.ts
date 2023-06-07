@@ -10,6 +10,7 @@ import {
 	ApplicationInviteStatusCode,
 } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
+import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { UtilService } from 'src/app/core/services/util.service';
@@ -198,7 +199,7 @@ export class ScreeningRequestsCommonComponent implements OnInit {
 	private queryParams: any = this.utilService.getDefaultQueryParams();
 	private currentSearch = '';
 
-	@Input() portal: 'PSSO' | 'CRRP' | null = null;
+	@Input() portal: PortalTypeCode | null = null;
 	@Input() title = '';
 	@Input() subtitle = '';
 

@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
+import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 
 @Component({
 	selector: 'app-screening-checks',
 	template: `
 		<app-screening-requests-common
-			portal="PSSO"
+			[portal]="portal.Psso"
 			title="Screening Requests"
 			subtitle="Screening request links will expire 14 days after being sent"
 		></app-screening-requests-common>
@@ -12,5 +13,7 @@ import { Component } from '@angular/core';
 	styles: [],
 })
 export class ScreeningChecksComponent {
+	portal = PortalTypeCode;
+
 	onAddScreeningRequest(): void {}
 }

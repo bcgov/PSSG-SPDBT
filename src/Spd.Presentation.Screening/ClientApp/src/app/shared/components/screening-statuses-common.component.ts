@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { ApplicationListResponse, ApplicationResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { ApplicationPortalStatisticsTypeCode } from 'src/app/core/code-types/application-portal-statistics-type.model';
+import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { UtilService } from 'src/app/core/services/util.service';
@@ -262,7 +263,7 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 	showDropdownOverlay = false;
 	formFilter: FormGroup = this.formBuilder.group(new ScreeningStatusFilter());
 
-	@Input() portal: 'PSSO' | 'CRRP' | null = null;
+	@Input() portal: PortalTypeCode | null = null;
 	@Input() title = '';
 	@Output() emitManageDelegate: EventEmitter<ScreeningStatusResponse> = new EventEmitter<ScreeningStatusResponse>();
 	@Output() emitPayNow: EventEmitter<ScreeningStatusResponse> = new EventEmitter<ScreeningStatusResponse>();
