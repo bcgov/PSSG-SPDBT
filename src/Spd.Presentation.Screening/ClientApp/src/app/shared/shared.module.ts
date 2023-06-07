@@ -11,12 +11,19 @@ import { AddressModalComponent } from './components/address-modal.component';
 import { AlertComponent } from './components/alert.component';
 import { FooterComponent } from './components/app-footer.component';
 import { HeaderComponent } from './components/app-header.component';
+import { ApplicationsBannerComponent } from './components/applications-banner.component';
 import { BaseFilterComponent } from './components/base-filter.component';
 import { CaptchaV2Component } from './components/captcha-v2.component';
 import { DialogComponent } from './components/dialog.component';
 import { DropdownOverlayComponent } from './components/dropdown-overlay.component';
 import { FileUploadComponent } from './components/file-upload.component';
+import { IdentifyVerificationCommonComponent } from './components/identify-verification-common.component';
+import { ManualSubmissionCommonComponent } from './components/manual-submission-common.component';
 import { OrgSelectionModalComponent } from './components/org-selection-modal.component';
+import { ScreeningRequestAddCommonModalComponent } from './components/screening-request-add-common-modal.component';
+import { ScreeningRequestsCommonComponent } from './components/screening-requests-common.component';
+import { ScreeningStatusFilterCommonComponent } from './components/screening-status-filter-common.component';
+import { ScreeningStatusesCommonComponent } from './components/screening-statuses-common.component';
 import { StatusStatisticsComponent } from './components/status-statistics.component';
 import { StepTitleComponent } from './components/step-title.component';
 import { DefaultPipe } from './pipes/default.pipe';
@@ -43,6 +50,13 @@ const SHARED_COMPONENTS = [
 	AccessDeniedComponent,
 	AlertComponent,
 	StatusStatisticsComponent,
+	ApplicationsBannerComponent,
+	ScreeningStatusFilterCommonComponent,
+	ScreeningStatusesCommonComponent,
+	ScreeningRequestsCommonComponent,
+	ScreeningRequestAddCommonModalComponent,
+	IdentifyVerificationCommonComponent,
+	ManualSubmissionCommonComponent,
 ];
 
 @NgModule({

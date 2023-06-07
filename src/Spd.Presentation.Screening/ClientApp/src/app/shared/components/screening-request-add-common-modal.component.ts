@@ -22,12 +22,12 @@ import { FormGroupValidators } from 'src/app/core/validators/form-group.validato
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 
-export interface CrcDialogData {
+export interface ScreeningRequestAddDialogData {
 	inviteDefault: ApplicationInviteCreateRequest | undefined;
 }
 
 @Component({
-	selector: 'app-crc-add-modal',
+	selector: 'app-screening-request-add-common-modal',
 	template: `
 		<div mat-dialog-title>{{ title }}</div>
 		<mat-dialog-content>
@@ -186,7 +186,7 @@ export interface CrcDialogData {
 		`,
 	],
 })
-export class CrcAddModalComponent implements OnInit {
+export class ScreeningRequestAddCommonModalComponent implements OnInit {
 	isDuplicateDetected = false;
 	duplicateName = '';
 	duplicateEmail = '';
@@ -206,16 +206,17 @@ export class CrcAddModalComponent implements OnInit {
 
 	constructor(
 		private formBuilder: FormBuilder,
-		private dialogRef: MatDialogRef<CrcAddModalComponent>,
+		private dialogRef: MatDialogRef<ScreeningRequestAddCommonModalComponent>,
 		private applicationService: ApplicationService,
 		private authUserService: AuthUserService,
 		private dialog: MatDialog,
-		@Inject(MAT_DIALOG_DATA) public dialogData: CrcDialogData
+		@Inject(MAT_DIALOG_DATA) public dialogData: ScreeningRequestAddDialogData
 	) {}
 
 	ngOnInit(): void {
 		const orgProfile = this.authUserService.userOrgProfile;
 
+		//TODO What to do in PSSO?
 		this.showScreeningType = orgProfile
 			? orgProfile.contractorsNeedVulnerableSectorScreening == BooleanTypeCode.Yes ||
 			  orgProfile.licenseesNeedVulnerableSectorScreening == BooleanTypeCode.Yes
