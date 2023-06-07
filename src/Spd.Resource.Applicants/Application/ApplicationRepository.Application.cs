@@ -235,7 +235,11 @@ internal partial class ApplicationRepository : IApplicationRepository
     }
 
     //note: any change in this function, the operation number also needs to change in AddBulkAppsAsync
-    private async Task<spd_application> CreateAppAsync(ApplicationCreateCmd createApplicationCmd, account org, spd_portaluser user, team team)
+    private async Task<spd_application> CreateAppAsync(
+        ApplicationCreateCmd createApplicationCmd, 
+        account org, 
+        spd_portaluser user, 
+        team team)
     {
         spd_application app = _mapper.Map<spd_application>(createApplicationCmd);
         _context.AddTospd_applications(app);
