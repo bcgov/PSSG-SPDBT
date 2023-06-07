@@ -1,6 +1,7 @@
 using MediatR;
 using Spd.Manager.Membership.OrgRegistration;
 using Spd.Manager.Membership.OrgUser;
+using Spd.Resource.Organizations.Registration;
 using Spd.Utilities.Shared.ManagerContract;
 
 namespace Spd.Manager.Membership.UserProfile
@@ -14,10 +15,19 @@ namespace Spd.Manager.Membership.UserProfile
 
     public class UserProfileResponse
     {
-        public Guid UserGuid { get; set; } //from token
+        public Guid UserGuid { get; set; }//from token
         public string? UserDisplayName { get; set; } //from token
-        public string? IdentityProvider { get; set; }
+        public IdentityProviderTypeCode? IdentityProviderType { get; set; }
         public IEnumerable<UserInfo> UserInfos { get; set; } = Array.Empty<UserInfo>();
+    }
+
+    public class ApplicantProfileResponse
+    {
+        public string? Sub { get; set; } = null!;//from token
+        public string? DisplayName { get; set; } //from token
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public IdentityProviderTypeCode? IdentityProviderType { get; set; }
     }
 
     public record UserInfo
