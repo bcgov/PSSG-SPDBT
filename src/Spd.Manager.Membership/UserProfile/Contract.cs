@@ -21,15 +21,6 @@ namespace Spd.Manager.Membership.UserProfile
         public IEnumerable<UserInfo> UserInfos { get; set; } = Array.Empty<UserInfo>();
     }
 
-    public class ApplicantProfileResponse
-    {
-        public string? Sub { get; set; } = null!;//from token
-        public string? DisplayName { get; set; } //from token
-        public string? FirstName { get; set; }
-        public string? LastName { get; set; }
-        public IdentityProviderTypeCode? IdentityProviderType { get; set; }
-    }
-
     public record UserInfo
     {
         public Guid UserId { get; set; }//from spd, portal user id
