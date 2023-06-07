@@ -9,11 +9,11 @@ import { distinctUntilChanged, Subject } from 'rxjs';
 import {
 	AnonymousOrgRegistrationCreateRequest,
 	BooleanTypeCode,
+	IdentityProviderTypeCode,
 	OrgRegistrationCreateResponse,
 	RegistrationTypeCode,
 } from 'src/app/api/models';
 import { OrgRegistrationService } from 'src/app/api/services';
-import { LoginTypeCode } from 'src/app/core/code-types/login-type.model';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import {
@@ -132,7 +132,7 @@ export class OrgRegistrationComponent implements OnInit {
 		//auth step 1 - user is not logged in, no state at all
 		//auth step 3 - angular loads again here, KC posts the token, oidc lib reads token and returns state
 		const authInfo = await this.authenticationService.tryLogin(
-			LoginTypeCode.Bceid,
+			IdentityProviderTypeCode.BusinessBceId,
 			OrgRegistrationRoutes.path(OrgRegistrationRoutes.ORG_REGISTRATION)
 		);
 
@@ -171,7 +171,7 @@ export class OrgRegistrationComponent implements OnInit {
 		// const decodedData = decodeURIComponent(authInfo.state);
 		this.utilService.setSessionData(this.utilService.ORG_REG_STATE_KEY, stateInfo);
 		const nextUrl = await this.authenticationService.login(
-			LoginTypeCode.Bceid,
+			IdentityProviderTypeCode.BusinessBceId,
 			OrgRegistrationRoutes.path(OrgRegistrationRoutes.ORG_REGISTRATION)
 		);
 		if (nextUrl) {

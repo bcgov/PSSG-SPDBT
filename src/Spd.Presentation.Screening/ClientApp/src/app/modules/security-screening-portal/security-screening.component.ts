@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { LoginTypeCode } from 'src/app/core/code-types/login-type.model';
+import { IdentityProviderTypeCode } from 'src/app/api/models';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { SecurityScreeningRoutes } from './security-screening-routing.module';
 
@@ -21,7 +21,10 @@ export class SecurityScreeningComponent {
 	constructor(protected authenticationService: AuthenticationService, private router: Router) {}
 
 	async ngOnInit(): Promise<void> {
-		const nextUrl = await this.authenticationService.login(LoginTypeCode.Bcsc, SecurityScreeningRoutes.path()); // TODO change to IDIR
+		const nextUrl = await this.authenticationService.login(
+			IdentityProviderTypeCode.BcServicesCard,
+			SecurityScreeningRoutes.path()
+		); // TODO change to IDIR
 
 		if (nextUrl) {
 			const nextRoute = decodeURIComponent(nextUrl);

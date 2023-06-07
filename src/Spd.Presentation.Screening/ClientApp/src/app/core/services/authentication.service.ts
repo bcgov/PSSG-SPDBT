@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { BehaviorSubject } from 'rxjs';
-import { LoginTypeCode } from '../code-types/login-type.model';
+import { AppRoutes } from 'src/app/app-routing.module';
+import { IdentityProviderTypeCode } from '../code-types/code-types.models';
 import { AuthUserService } from './auth-user.service';
 import { ConfigService } from './config.service';
 import { UtilService } from './util.service';
@@ -14,6 +16,7 @@ export class AuthenticationService {
 	loggedInUserTokenData: any = null;
 
 	constructor(
+		private router: Router,
 		private oauthService: OAuthService,
 		private authUserService: AuthUserService,
 		private utilService: UtilService,
@@ -21,7 +24,7 @@ export class AuthenticationService {
 	) {}
 
 	public async tryLogin(
-		loginType: LoginTypeCode,
+		loginType: IdentityProviderTypeCode,
 		returnComponentRoute: string
 	): Promise<{ state: any; loggedIn: boolean }> {
 		await this.configureOAuthService(loginType, window.location.origin + returnComponentRoute);
@@ -34,15 +37,8 @@ export class AuthenticationService {
 		console.debug('[AuthenticationService.tryLogin] isLoggedIn', isLoggedIn, this.oauthService.hasValidAccessToken());
 
 		if (isLoggedIn) {
-			this.authUserService.whoAmI(loginType).subscribe({
-				next: (res) => {
-					this.notify(true);
-				},
-				error: (err) => {
-					console.error('Login Error', err);
-					this.notify(false);
-				},
-			});
+			const success = await this.authUserService.whoAmIAsync(loginType);
+			this.notify(success);
 		} else {
 			this.notify(false);
 		}
@@ -54,7 +50,7 @@ export class AuthenticationService {
 	}
 
 	public async login(
-		loginType: LoginTypeCode,
+		loginType: IdentityProviderTypeCode,
 		returnComponentRoute: string | undefined = undefined
 	): Promise<string | null> {
 		await this.configureOAuthService(loginType, window.location.origin + returnComponentRoute);
@@ -80,6 +76,10 @@ export class AuthenticationService {
 		this.oauthService.logOut();
 		this.utilService.clearAllSessionData();
 		this.notify(false);
+
+		if (this.authUserService.loginType == IdentityProviderTypeCode.BcServicesCard) {
+			this.router.navigate([AppRoutes.LANDING]);
+		}
 	}
 
 	public getToken(): string {
@@ -90,8 +90,8 @@ export class AuthenticationService {
 		return this.oauthService.hasValidAccessToken();
 	}
 
-	public async configureOAuthService(loginType: LoginTypeCode, redirectUri: string): Promise<void> {
-		if (loginType == LoginTypeCode.Bceid) {
+	public async configureOAuthService(loginType: IdentityProviderTypeCode, redirectUri: string): Promise<void> {
+		if (loginType == IdentityProviderTypeCode.BusinessBceId) {
 			return this.configService.getBceidConfig(redirectUri).then((config) => {
 				this.oauthService.configure(config);
 				this.oauthService.setupAutomaticSilentRefresh();
@@ -105,12 +105,12 @@ export class AuthenticationService {
 	}
 
 	private notify(isLoggedIn: boolean): void {
-		const token = this.getToken();
+		const hasValidAccessToken = this.oauthService.hasValidAccessToken();
 
-		if (!isLoggedIn || !token) {
-			this.authUserService.setOrgProfile();
+		if (!isLoggedIn || !hasValidAccessToken) {
 			this._waitUntilAuthentication$.next(false);
 		} else {
+			const token = this.getToken();
 			this.loggedInUserTokenData = this.utilService.getDecodedAccessToken(token);
 			console.debug('[AuthenticationService.setDecodedToken] loggedInUserTokenData', this.loggedInUserTokenData);
 			this._waitUntilAuthentication$.next(true);

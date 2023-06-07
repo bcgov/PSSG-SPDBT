@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { LoginTypeCode } from 'src/app/core/code-types/login-type.model';
+import { IdentityProviderTypeCode } from 'src/app/api/models';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
@@ -70,6 +70,11 @@ export class HeaderComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.authenticationService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
+			if (!isLoggedIn) {
+				this.loggedInUserDisplay = null;
+				return;
+			}
+
 			this.getUserInfo();
 		});
 	}
@@ -80,8 +85,8 @@ export class HeaderComponent implements OnInit {
 
 	private getUserInfo(): void {
 		const loginType = this.authUserService.loginType;
-		if (loginType == LoginTypeCode.Bcsc) {
-			this.loggedInUserDisplay = 'BCSC';
+		if (loginType == IdentityProviderTypeCode.BcServicesCard) {
+			this.loggedInUserDisplay = this.authUserService.applicantProfile?.displayName ?? 'BCSC';
 			return;
 		}
 

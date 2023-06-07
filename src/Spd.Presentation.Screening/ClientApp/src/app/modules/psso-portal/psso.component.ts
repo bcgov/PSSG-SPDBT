@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { IsActiveMatchOptions, QueryParamsHandling, Router } from '@angular/router';
-import { LoginTypeCode } from 'src/app/core/code-types/login-type.model';
+import { IdentityProviderTypeCode } from 'src/app/api/models';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { PssoRoutes } from './psso-routing.module';
 
@@ -101,7 +101,7 @@ export class PssoComponent {
 	constructor(protected authenticationService: AuthenticationService, private router: Router) {}
 
 	async ngOnInit(): Promise<void> {
-		const nextUrl = await this.authenticationService.login(LoginTypeCode.Bceid, PssoRoutes.path()); // TODO change to IDIR
+		const nextUrl = await this.authenticationService.login(IdentityProviderTypeCode.BusinessBceId, PssoRoutes.path()); // TODO change to IDIR
 
 		if (nextUrl) {
 			const nextRoute = decodeURIComponent(nextUrl);

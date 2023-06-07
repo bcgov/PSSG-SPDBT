@@ -14,6 +14,7 @@ export class AppRoutes {
 	public static CRRP_APPLICATION = CrrpRoutes.MODULE_PATH;
 	public static PSSO_APPLICATION = PssoRoutes.MODULE_PATH;
 	public static SECURITY_SCREENING_APPLICATION = SecurityScreeningRoutes.MODULE_PATH;
+	public static LANDING = '';
 	public static ACCESS_DENIED = 'access-denied';
 	public static INVITATION_DENIED = 'invitation-denied';
 
@@ -24,7 +25,7 @@ export class AppRoutes {
 
 const routes: Routes = [
 	{
-		path: '',
+		path: AppRoutes.LANDING,
 		component: LandingComponent,
 	},
 	{

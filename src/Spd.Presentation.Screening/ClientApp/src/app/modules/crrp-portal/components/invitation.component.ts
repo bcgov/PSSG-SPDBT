@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { InvitationRequest } from 'src/app/api/models';
+import { IdentityProviderTypeCode, InvitationRequest } from 'src/app/api/models';
 import { OrgUserService } from 'src/app/api/services';
-import { LoginTypeCode } from 'src/app/core/code-types/login-type.model';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { CrrpRoutes } from '../crrp-routing.module';
 
@@ -51,7 +50,7 @@ export class InvitationComponent {
 				if (resp?.isError) {
 					this.message = resp.message;
 				} else {
-					this.authenticationService.login(LoginTypeCode.Bceid, CrrpRoutes.path()).then((_resp) => {
+					this.authenticationService.login(IdentityProviderTypeCode.BusinessBceId, CrrpRoutes.path()).then((_resp) => {
 						this.router.navigate([CrrpRoutes.path(CrrpRoutes.HOME)]);
 					});
 				}
