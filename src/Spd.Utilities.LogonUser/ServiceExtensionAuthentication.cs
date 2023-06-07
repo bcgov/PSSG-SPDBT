@@ -9,6 +9,7 @@ using System.Net.Http.Headers;
 using System.Net;
 using System.Security.Claims;
 using IdentityModel.Client;
+using System.Text.Json;
 
 namespace Spd.Utilities.LogonUser
 {
@@ -118,7 +119,7 @@ namespace Spd.Utilities.LogonUser
                                 {
                                     handler.ValidateToken(response.Raw, validationParameters, out var token);
                                     var jwe = token as JwtSecurityToken;
-                                    MapJweClaimsToPrincipalClaims(ctx.Principal, jwe);
+                                    MapClaimsToPrincipalClaims(ctx.Principal, jwe.Claims);
                                 }
                             }
                             else
@@ -134,8 +135,10 @@ namespace Spd.Utilities.LogonUser
                         }
                         else
                         {
-                            //handle non encrypted userinfo response
-                            ctx.Principal.AddIdentity(new ClaimsIdentity(new[] { new Claim("userInfo", response.Json.GetRawText()) }));
+                            //handle non encrypted
+                            JsonDocument jd = JsonDocument.Parse(response.Json.GetRawText()); 
+                            var claims = jd.RootElement.ToClaims();
+                            MapClaimsToPrincipalClaims(ctx.Principal, claims);
                         }
                     }
                 };
@@ -170,9 +173,9 @@ namespace Spd.Utilities.LogonUser
             });
         }
 
-        private static void MapJweClaimsToPrincipalClaims(ClaimsPrincipal principal, JwtSecurityToken jwt)
+        private static void MapClaimsToPrincipalClaims(ClaimsPrincipal principal, IEnumerable<Claim> claims)
         {
-            foreach(var claim in jwt.Claims) 
+            foreach(var claim in claims) 
             {
                 principal.AddUpdateClaim(claim.Type, claim.Value);
             }
