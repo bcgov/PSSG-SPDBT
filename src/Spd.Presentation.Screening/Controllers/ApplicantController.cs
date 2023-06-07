@@ -1,4 +1,3 @@
-using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -6,26 +5,20 @@ using Spd.Manager.Cases;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
-using Spd.Utilities.Shared.ManagerContract;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using System.Security.Principal;
 
 namespace Spd.Presentation.Screening.Controllers
 {
-
     public class ApplicantController : SpdControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly IValidator<ApplicationCreateRequest> _appCreateRequestValidator;
+        private readonly IPrincipal _currentUser;
 
-        public ApplicantController(IMediator mediator,
-            IValidator<ApplicationCreateRequest> appCreateRequestValidator,
-            IValidator<ApplicationCreateRequestFromBulk> appCreateRequestFromBulkValidator,
-            IConfiguration configuration)
+        public ApplicantController(IMediator mediator, IPrincipal currentUser)
         {
             _mediator = mediator;
-            _appCreateRequestValidator = appCreateRequestValidator;
+            _currentUser = currentUser;
         }
 
         #region application-invites
@@ -47,26 +40,24 @@ namespace Spd.Presentation.Screening.Controllers
         #region application
 
         /// <summary>
-        /// create application. if checkDuplicate is true, it will check if there is existing duplicated applications 
+        /// create application
         /// </summary>
-        /// <param name="createApplication"></param>
-        /// <param name="orgId">organizationId</param>
+        /// <param name="appCreateRequest"></param>
         /// <returns></returns>
         [Authorize(Policy = "OnlyBcsc")]
         [Route("api/applicants/screenings")]
         [HttpPost]
-        public async Task<ApplicationCreateResponse> CreateApplication([FromForm][Required] ApplicantAppCreateRequest createApplication, [FromRoute] Guid orgId)
+        public async Task<ApplicationCreateResponse> CreateApplicantApp([FromBody] ApplicantAppCreateRequest appCreateRequest)
         {
-            //return await _mediator.Send(new ApplicationCreateCommand(appCreateRequest, orgId));
-            return null;
+            string? sub = _currentUser.GetBcscSub();
+            if (sub == null)
+            {
+                throw new ApiException(System.Net.HttpStatusCode.Unauthorized, "there is no sub from bcsc.");
+            }
+            return await _mediator.Send(new ApplicantApplicationCreateCommand(appCreateRequest, sub));
         }
 
         #endregion
-    }
-
-    public record ApplicantAppCreateRequest: ApplicationCreateRequest
-    {
-        public Guid AppInviteId { get; set; }
     }
 }
 
