@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { ValidationErr } from 'src/app/api/models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { UtilService } from 'src/app/core/services/util.service';
-import { ApplicantRoutes } from '../applicant-routing.module';
+import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 
 @Component({
 	selector: 'app-crc-list',
@@ -169,7 +169,7 @@ export class CrcListComponent implements OnInit {
 	}
 
 	onViewDetail(application: any): void {
-		this.router.navigateByUrl(ApplicantRoutes.path(ApplicantRoutes.CRC_DETAIL), {
+		this.router.navigateByUrl(SecurityScreeningRoutes.path(SecurityScreeningRoutes.CRC_DETAIL), {
 			state: { id: 234 },
 		});
 	}
