@@ -13,7 +13,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
-					<app-banner></app-banner>
+					<app-applications-banner></app-applications-banner>
 				</div>
 			</div>
 			<div class="row">

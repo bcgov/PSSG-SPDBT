@@ -27,6 +27,7 @@ const routes: Routes = [
 			{ path: PssoRoutes.SCREENING_STATUSES, component: ScreeningStatusesComponent },
 			{ path: PssoRoutes.IDENTITY_VERIFICATION, component: IdentityVerificationComponent },
 			{ path: PssoRoutes.MANUAL_SUBMISSIONS, component: ManualSubmissionComponent },
+			{ path: '', redirectTo: PssoRoutes.path(PssoRoutes.SCREENING_STATUSES), pathMatch: 'full' },
 		],
 	},
 ];

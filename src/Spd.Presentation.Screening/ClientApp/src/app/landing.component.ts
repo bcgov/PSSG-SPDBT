@@ -43,7 +43,7 @@ export class LandingComponent {
 	}
 
 	goToPsso(): void {
-		this.router.navigateByUrl(PssoRoutes.path());
+		this.router.navigateByUrl(PssoRoutes.path(PssoRoutes.SCREENING_STATUSES));
 	}
 
 	goToCrrp(): void {

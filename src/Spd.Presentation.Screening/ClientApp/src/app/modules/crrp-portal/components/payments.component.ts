@@ -15,7 +15,7 @@ import { ApplicationPortalStatisticsTypeCode } from 'src/app/core/code-types/app
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { UtilService } from 'src/app/core/services/util.service';
-import { ApplicationStatusFilterMap } from './application-statuses-filter.component';
+import { ScreeningStatusFilterMap } from 'src/app/shared/components/screening-status-filter-common.component';
 import { PaymentFilter } from './payment-filter.component';
 
 export interface PaymentResponse extends ApplicationResponse {
@@ -269,7 +269,7 @@ export class PaymentsComponent implements OnInit {
 	}
 
 	private performSearch(searchString: string): void {
-		this.currentSearch = searchString ? `${ApplicationStatusFilterMap['search']}@=${searchString}` : '';
+		this.currentSearch = searchString ? `${ScreeningStatusFilterMap['search']}@=${searchString}` : '';
 		this.queryParams.page = 0;
 
 		this.loadList();
