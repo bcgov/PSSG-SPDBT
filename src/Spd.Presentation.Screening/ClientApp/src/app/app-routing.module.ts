@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LandingComponent } from './landing.component';
-import { ApplicantRoutes } from './modules/applicant-portal/applicant-routing.module';
 import { CrcRoutes } from './modules/crc-portal/crc-routing.module';
 import { CrrpRoutes } from './modules/crrp-portal/crrp-routing.module';
 import { OrgRegistrationRoutes } from './modules/org-registration-portal/org-registration-routing.module';
 import { PssoRoutes } from './modules/psso-portal/psso-routing.module';
+import { SecurityScreeningRoutes } from './modules/security-screening-portal/security-screening-routing.module';
 import { AccessDeniedComponent } from './shared/components/access-denied.component';
 
 export class AppRoutes {
@@ -13,7 +13,8 @@ export class AppRoutes {
 	public static CRCA_APPLICATION = CrcRoutes.MODULE_PATH;
 	public static CRRP_APPLICATION = CrrpRoutes.MODULE_PATH;
 	public static PSSO_APPLICATION = PssoRoutes.MODULE_PATH;
-	public static APPLICANT_PORTAL = ApplicantRoutes.MODULE_PATH;
+	public static SECURITY_SCREENING_APPLICATION = SecurityScreeningRoutes.MODULE_PATH;
+	public static LANDING = '';
 	public static ACCESS_DENIED = 'access-denied';
 	public static INVITATION_DENIED = 'invitation-denied';
 
@@ -24,7 +25,7 @@ export class AppRoutes {
 
 const routes: Routes = [
 	{
-		path: '',
+		path: AppRoutes.LANDING,
 		component: LandingComponent,
 	},
 	{
@@ -51,9 +52,11 @@ const routes: Routes = [
 		data: { title: 'Personnel Security Screening Office' },
 	},
 	{
-		path: AppRoutes.APPLICANT_PORTAL,
+		path: AppRoutes.SECURITY_SCREENING_APPLICATION,
 		loadChildren: () =>
-			import('./modules/applicant-portal/applicant-portal.module').then((m) => m.ApplicantPortalModule),
+			import('./modules/security-screening-portal/security-screening-portal.module').then(
+				(m) => m.SecurityScreeningPortalModule
+			),
 		data: { title: 'Security Screening' },
 	},
 	{
