@@ -39,17 +39,6 @@ namespace Spd.Manager.Membership.UserProfile
 
         public async Task<UserProfileResponse> Handle(GetCurrentUserProfileQuery request, CancellationToken ct)
         {
-            if (_currentUser.GetUserRole() == "Applicant")
-            {
-                return new UserProfileResponse()
-                {
-                    IdentityProvider = "bcsc",
-                    UserDisplayName = _currentUser.GetUserDisplayName(),
-                    UserGuid = _currentUser.GetUserGuid(),
-                    UserInfos = Array.Empty<UserInfo>(),
-                };
-            }
-
             Guid userGuid = _currentUser.GetUserGuid();
             List<UserInfo> userInfos = new();
 
@@ -102,7 +91,7 @@ namespace Spd.Manager.Membership.UserProfile
 
             UserProfileResponse response = new()
             {
-                IdentityProvider = _currentUser.GetIdentityProvider(), //bceidboth
+                IdentityProviderType = IdentityProviderTypeCode.BusinessBceId, 
                 UserDisplayName = _currentUser.GetUserDisplayName(),
                 UserGuid = _currentUser.GetUserGuid(),
                 UserInfos = userInfos

@@ -5,7 +5,7 @@ namespace Spd.Utilities.LogonUser
 {
     public static class IPrincipalExtensions
     {
-        public static readonly string[] BCeID_IDENTITY_PROVIDERS = { "bceidboth", "bceidbusiness", "bceidbasic" };
+        public static readonly string[] BCeID_IDENTITY_PROVIDERS = { "bceidboth", "bceidbusiness" };
         public static readonly string BCeID_USER_NAME = "bceid_username";
         public static readonly string BCeID_DISPLAY_USER_NAME = "display_name";
         public static readonly string BCeID_USER_GUID = "bceid_user_guid";
@@ -15,6 +15,7 @@ namespace Spd.Utilities.LogonUser
         public static readonly string SPD_USERID = "spd_userid";
         public static readonly string SPD_ORGID = "spd_orgid";
         public static readonly string ISSUER = "iss";
+        public static readonly string SUB = "sub";
         public static bool IsAuthenticated(this IPrincipal principal)
         {
             var claimPrincipal = ValidatePrincipal(principal);
@@ -22,6 +23,8 @@ namespace Spd.Utilities.LogonUser
         }
 
         public static string? GetIssuer(this IPrincipal principal) => ValidatePrincipal(principal).GetClaimValue(ISSUER);
+
+        public static string? GetBcscSub(this IPrincipal principal) => ValidatePrincipal(principal).GetClaimValue(SUB);
 
         public static string? GetUserName(this IPrincipal principal)
         {
@@ -64,6 +67,22 @@ namespace Spd.Utilities.LogonUser
             return null;
         }
 
+        public static ApplicantInfo GetApplicantInfo(this IPrincipal principal)
+        {
+            var claim = ValidatePrincipal(principal);
+            return new ApplicantInfo()
+            {
+                BirthDate = claim.GetClaimValue("birthdate"),
+                Age = claim.GetClaimValue("age"),
+                DisplayName = claim.GetClaimValue("display_name"),
+                Email = claim.GetClaimValue("email"),
+                FirstName = claim.GetClaimValue("given_name"),
+                LastName = claim.GetClaimValue("family_name"),
+                Gender = claim.GetClaimValue("gender"),
+                Sub=claim.GetClaimValue("sub"),
+                EmailVerified = claim.GetClaimValue("email_verified")==null? null: Boolean.Parse( claim.GetClaimValue("email_verified"))
+            };
+        }
         public static Guid GetBizGuid(this IPrincipal principal)
         {
             if (BCeID_IDENTITY_PROVIDERS.Contains(principal.GetIdentityProvider()))
