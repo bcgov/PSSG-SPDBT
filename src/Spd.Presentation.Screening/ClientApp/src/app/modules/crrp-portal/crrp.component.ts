@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { IsActiveMatchOptions, NavigationEnd, QueryParamsHandling, Router } from '@angular/router';
 import { filter } from 'rxjs';
+import { IdentityProviderTypeCode } from 'src/app/api/models';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { CrrpRoutes } from './crrp-routing.module';
@@ -190,7 +191,7 @@ export class CrrpComponent {
 			this.setShowNavigationFlag((evt as NavigationEnd).url);
 		});
 
-		const nextUrl = await this.authenticationService.login(CrrpRoutes.path());
+		const nextUrl = await this.authenticationService.login(IdentityProviderTypeCode.BusinessBceId, CrrpRoutes.path());
 		// console.debug('nextUrl', nextUrl);
 
 		if (nextUrl) {

@@ -9,6 +9,7 @@ import { distinctUntilChanged, Subject } from 'rxjs';
 import {
 	AnonymousOrgRegistrationCreateRequest,
 	BooleanTypeCode,
+	IdentityProviderTypeCode,
 	OrgRegistrationCreateResponse,
 	RegistrationTypeCode,
 } from 'src/app/api/models';
@@ -131,7 +132,8 @@ export class OrgRegistrationComponent implements OnInit {
 		//auth step 1 - user is not logged in, no state at all
 		//auth step 3 - angular loads again here, KC posts the token, oidc lib reads token and returns state
 		const authInfo = await this.authenticationService.tryLogin(
-			OrgRegistrationRoutes.orgRegPath(OrgRegistrationRoutes.ORG_REGISTRATION)
+			IdentityProviderTypeCode.BusinessBceId,
+			OrgRegistrationRoutes.path(OrgRegistrationRoutes.ORG_REGISTRATION)
 		);
 
 		if (authInfo.loggedIn) {
@@ -169,7 +171,8 @@ export class OrgRegistrationComponent implements OnInit {
 		// const decodedData = decodeURIComponent(authInfo.state);
 		this.utilService.setSessionData(this.utilService.ORG_REG_STATE_KEY, stateInfo);
 		const nextUrl = await this.authenticationService.login(
-			OrgRegistrationRoutes.orgRegPath(OrgRegistrationRoutes.ORG_REGISTRATION)
+			IdentityProviderTypeCode.BusinessBceId,
+			OrgRegistrationRoutes.path(OrgRegistrationRoutes.ORG_REGISTRATION)
 		);
 		if (nextUrl) {
 			// User is already logged in and clicks Login button.
@@ -195,7 +198,7 @@ export class OrgRegistrationComponent implements OnInit {
 		let dataToSave = {};
 		if (this.stepOneComponent) {
 			console.debug('[onSaveStepperStep] currentStateInfo', this.currentStateInfo);
-			if (this.currentStateInfo && this.currentStateInfo.registrationTypeCode) {
+			if (this.currentStateInfo?.registrationTypeCode) {
 				dataToSave = { ...this.currentStateInfo };
 			} else {
 				dataToSave = { ...this.stepOneComponent.getStepData() };

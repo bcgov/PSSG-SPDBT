@@ -18,6 +18,10 @@ export class ErrorInterceptor implements HttpInterceptor {
 				let message = 'An error has occurred';
 				console.error('ErrorInterceptor errorResponse', errorResponse);
 
+				if (errorResponse.status == 401 && errorResponse.url?.includes('whoami')) {
+					this.router.navigate([AppRoutes.LANDING]);
+				}
+
 				if (errorResponse.error) {
 					if (errorResponse.error.status == 403) {
 						this.router.navigate([AppRoutes.ACCESS_DENIED]);
@@ -39,13 +43,6 @@ export class ErrorInterceptor implements HttpInterceptor {
 						title = errorResponse.statusText;
 						message = errorResponse.message;
 					}
-
-					// 			if (status === 403) {
-					// 				const httpOperation = request.method.toLowerCase();
-					// 				const operation = `httpMethod.${httpOperation}`;
-					// 				const operationMessage = `httpStatusText.${status}`;
-					// 				title = `${operation} - ${operationMessage}`;
-					// 			}
 				} else {
 					message = `<p><strong>The request failed to process due to a network error. Please retry.</strong></p>
 						<p>Error Status: ${errorResponse.status}</p>

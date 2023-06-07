@@ -13,7 +13,7 @@ export class PssoRoutes {
 	public static MANUAL_SUBMISSIONS = 'manual-submissions';
 	public static MODULE_PATH = 'psso';
 
-	public static pssoPath(route: string | null = null): string {
+	public static path(route: string | null = null): string {
 		return route ? `/${PssoRoutes.MODULE_PATH}/${route}` : `/${PssoRoutes.MODULE_PATH}`;
 	}
 }
