@@ -10,6 +10,7 @@ namespace Spd.Manager.Cases
 {
     internal class ApplicationManager :
         IRequestHandler<ApplicationInviteCreateCommand, ApplicationInvitesCreateResponse>,
+        IRequestHandler<ApplicantApplicationCreateCommand, ApplicationCreateResponse>,
         IRequestHandler<ApplicationInviteVerifyCommand, AppInviteVerifyResponse>,
         IRequestHandler<ApplicationInviteListQuery, ApplicationInviteListResponse>,
         IRequestHandler<ApplicationInviteDeleteCommand, Unit>,
@@ -127,6 +128,30 @@ namespace Spd.Manager.Cases
             }
             return result;
         }
+
+        public async Task<ApplicationCreateResponse> Handle(ApplicantApplicationCreateCommand request, CancellationToken ct)
+        {
+            var result = new ApplicationCreateResponse();
+            var cmd = _mapper.Map<ApplicationCreateCmd>(request.ApplicationCreateRequest);
+            cmd.OrgId = request.ApplicationCreateRequest.OrgId;
+            cmd.ConsentFormTempFile = null;
+            cmd.CreatedByApplicantSub = request.ApplicantSub;
+            Guid? applicationId = await _applicationRepository.AddApplicationAsync(cmd, ct);
+            if (applicationId.HasValue)
+            {
+                result.ApplicationId = applicationId.Value;
+                result.CreateSuccess = true;
+            }
+
+            await _applicationInviteRepository.DeleteApplicationInvitesAsync(
+                new ApplicationInviteDeleteCmd()
+                {
+                    ApplicationInviteId = request.ApplicationCreateRequest.AppInviteId,
+                    OrgId = request.ApplicationCreateRequest.OrgId,
+                }, ct);
+            return result;
+        }
+
         public async Task<ApplicationListResponse> Handle(ApplicationListQuery request, CancellationToken ct)
         {
             AppFilterBy filterBy = _mapper.Map<AppFilterBy>(request.FilterBy);

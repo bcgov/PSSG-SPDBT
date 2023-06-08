@@ -111,20 +111,6 @@ namespace Spd.Presentation.Screening.Controllers
             await _mediator.Send(new ApplicationInviteDeleteCommand(orgId, applicationInviteId));
             return Ok();
         }
-
-        /// <summary>
-        /// Verify if the current application invite is correct, and return needed info
-        /// </summary>
-        /// <param name="appInviteVerifyRequest">which include InviteEncryptedCode</param>
-        /// <returns></returns>
-        [Route("api/application/invitation")]
-        [HttpPost]
-        [AllowAnonymous]
-        public async Task<AppInviteVerifyResponse> VerifyAppInvitation([FromBody][Required] AppInviteVerifyRequest appInviteVerifyRequest)
-        {
-            return await _mediator.Send(new ApplicationInviteVerifyCommand(appInviteVerifyRequest));
-        }
-
         #endregion
 
         #region bulk-upload

@@ -147,8 +147,9 @@ namespace Spd.Utilities.Dynamics
             {"PSSO_VS", Guid.Parse("8c653cc7-64b9-ed11-b83e-00505683fbf4")},
         }.ToImmutableDictionary();
 
-        public static spd_servicetype? LookupServiceType(this DynamicsContext context, string key)
+        public static spd_servicetype? LookupServiceType(this DynamicsContext context, string? key)
         {
+            if (key == null) return null;
             var keyExisted = ServiceTypeGuidDictionary.TryGetValue(key, out Guid guid);
             if (!keyExisted) return null;
             return context.spd_servicetypes
