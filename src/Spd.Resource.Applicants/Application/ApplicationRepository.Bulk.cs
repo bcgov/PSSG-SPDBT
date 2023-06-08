@@ -45,7 +45,11 @@ internal partial class ApplicationRepository : IApplicationRepository
 
     public async Task<BulkAppsCreateResp> AddBulkAppsAsync(BulkAppsCreateCmd cmd, CancellationToken ct)
     {
-        account? org = await _context.GetOrgById(cmd.OrgId, ct);
+        account? org = await _context.accounts
+            .Expand(a => a.spd_ServiceType_Organization)
+            .Where(a => a.accountid == cmd.OrgId)
+            .SingleOrDefaultAsync(ct);
+        spd_servicetype? servicetype = org.spd_ServiceType_Organization.First();
         spd_portaluser? user = await _context.GetUserById(cmd.UserId, ct);
         Guid teamGuid = Guid.Parse(DynamicsConstants.Client_Service_Team_Guid);
         team? team = await _context.teams.Where(t => t.teamid == teamGuid).FirstOrDefaultAsync(ct);
@@ -54,16 +58,16 @@ internal partial class ApplicationRepository : IApplicationRepository
 
         //create applications
         List<ApplicationCreateCmd> createApps = cmd.CreateApps.ToList();
-        List<ApplicationCreateRslt> results =new List<ApplicationCreateRslt>();
-        for(int i=0; i<createApps.Count; i++)
+        List<ApplicationCreateRslt> results = new List<ApplicationCreateRslt>();
+        for (int i = 0; i < createApps.Count; i++)
         {
             results.Add(new ApplicationCreateRslt { LineNumber = i + 1 });
         }
 
         int begin = 0;
         //dynamics constraints: A maximum number of '1000' operations are allowed in a change set.
-        //for each app create request, there is max 12 operations
-        int oneChangeSetMaxApps = 1000 / 13;
+        //for each app create request, there is max 14 operations
+        int oneChangeSetMaxApps = 1000 / 14;
         while (begin < createApps.Count)
         {
             int len = createApps.Count - begin;
@@ -71,7 +75,7 @@ internal partial class ApplicationRepository : IApplicationRepository
                 len = oneChangeSetMaxApps;
             for (int index = begin; index < begin + len; index++)
             {
-                var app = await CreateAppAsync(createApps[index], org, user, team);
+                var app = await CreateAppAsync(createApps[index], org, user, team, servicetype);
                 results[index].ApplicationId = (Guid)app.spd_applicationid;
             }
             await _context.SaveChangesAsync(SaveChangesOptions.BatchWithSingleChangeset, ct);
@@ -104,7 +108,7 @@ internal partial class ApplicationRepository : IApplicationRepository
         }
 
         //add history
-        if(bulkResult != BulkAppsCreateResultCd.Failed)
+        if (bulkResult != BulkAppsCreateResultCd.Failed)
         {
             spd_genericupload bulkInfo = new spd_genericupload
             {

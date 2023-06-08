@@ -63,13 +63,15 @@ public record ApplicationCreateCmd
     public string? Province { get; set; }
     public string? Country { get; set; }
     public bool? AgreeToCompleteAndAccurate { get; set; }
+    public bool? AgreeToConsent { get; set; }
     public bool? HaveVerifiedIdentity { get; set; }
     public IEnumerable<AliasCreateCmd> Aliases { get; set; } = Array.Empty<AliasCreateCmd>();
     public Guid CreatedByUserId { get; set; }
     public PayerPreferenceTypeCode PayeeType { get; set; }
     public ServiceTypeEnum? ServiceType { get; set; }
     public ScreenTypeEnum? ScreeningType { get; set; }
-    public SpdTempFile ConsentFormTempFile { get; set; } = null!;
+    public SpdTempFile? ConsentFormTempFile { get; set; } // would be null if applicant submit application
+    public string? CreatedByApplicantSub { get; set; } = null;
 }
 public record AliasCreateCmd
 {

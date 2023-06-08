@@ -14,6 +14,7 @@ namespace Spd.Manager.Cases
         public Task<Unit> Handle(ApplicationInviteDeleteCommand request, CancellationToken ct);
         public Task<ApplicationListResponse> Handle(ApplicationListQuery request, CancellationToken ct);
         public Task<ApplicationCreateResponse> Handle(ApplicationCreateCommand request, CancellationToken ct);
+        public Task<ApplicationCreateResponse> Handle(ApplicantApplicationCreateCommand request, CancellationToken ct);
         public Task<ApplicationStatisticsResponse> Handle(ApplicationStatisticsQuery request, CancellationToken ct);
         public Task<Unit> Handle(IdentityCommand request, CancellationToken ct);
         public Task<BulkHistoryListResponse> Handle(GetBulkUploadHistoryQuery request, CancellationToken ct);
@@ -118,6 +119,7 @@ namespace Spd.Manager.Cases
 
     #region application
     public record ApplicationCreateCommand(ApplicationCreateRequest ApplicationCreateRequest, Guid OrgId, Guid UserId, IFormFile ConsentFormFile) : IRequest<ApplicationCreateResponse>;
+    public record ApplicantApplicationCreateCommand(ApplicantAppCreateRequest ApplicationCreateRequest, string ApplicantSub) : IRequest<ApplicationCreateResponse>;
     public record ApplicationListQuery : IRequest<ApplicationListResponse>
     {
         public AppListFilterBy? FilterBy { get; set; } //null means no filter
@@ -164,6 +166,11 @@ namespace Spd.Manager.Cases
         public bool? HaveVerifiedIdentity { get; set; }
         public IEnumerable<AliasCreateRequest> Aliases { get; set; } = Array.Empty<AliasCreateRequest>();
         public bool RequireDuplicateCheck { get; set; } = false;
+    }
+    public record ApplicantAppCreateRequest : ApplicationCreateRequest
+    {
+        public Guid AppInviteId { get; set; }
+        public bool? AgreeToConsent { get; set; }
     }
     public record AliasCreateRequest
     {
