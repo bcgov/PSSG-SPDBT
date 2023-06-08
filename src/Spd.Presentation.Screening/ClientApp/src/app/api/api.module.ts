@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 
 import { AddressAutoCompleteService } from './services/address-auto-complete.service';
+import { ApplicantService } from './services/applicant.service';
 import { ApplicationService } from './services/application.service';
 import { ConfigurationService } from './services/configuration.service';
 import { OrgService } from './services/org.service';
@@ -21,6 +22,7 @@ import { UserProfileService } from './services/user-profile.service';
   declarations: [],
   providers: [
     AddressAutoCompleteService,
+    ApplicantService,
     ApplicationService,
     ConfigurationService,
     OrgService,

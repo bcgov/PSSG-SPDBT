@@ -35,7 +35,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 							<div class="row mb-2">
 								<div class="offset-xl-3 col-xl-4 offset-lg-4 col-lg-4 col-md-12">
 									<div class="text-label d-block text-muted">Organization Address</div>
-									<div class="text-data">{{ orgData.address }}</div>
+									<div class="text-data">{{ orgData.orgAddress }}</div>
 								</div>
 								<div class="col-xl-4 col-lg-4 col-md-12">
 									<div class="text-label d-block text-muted mt-2 mt-lg-0">Job Title</div>
@@ -55,12 +55,12 @@ import { UtilService } from 'src/app/core/services/util.service';
 								<div class="col-xl-4 col-lg-4 col-md-12">
 									<div class="text-label d-block text-muted">Contact Given Names</div>
 									<div class="text-data">
-										{{ orgData.contactGivenName }} {{ orgData.contactMiddleName1 }} {{ orgData.contactMiddleName2 }}
+										{{ orgData.givenName }} {{ orgData.middleName1 }} {{ orgData.middleName2 }}
 									</div>
 								</div>
 								<div class="col-xl-4 col-lg-3 col-md-12">
 									<div class="text-label d-block text-muted mt-2 mt-lg-0">Contact Surname</div>
-									<div class="text-data">{{ orgData.contactSurname }}</div>
+									<div class="text-data">{{ orgData.surname }}</div>
 								</div>
 								<div class="col-xl-1 col-lg-1 col-md-12 text-end">
 									<mat-icon matTooltip="Edit this data" (click)="onReEditContact()">edit</mat-icon>
@@ -72,12 +72,12 @@ import { UtilService } from 'src/app/core/services/util.service';
 							<div class="row mb-2">
 								<div class="offset-xl-3 col-xl-4 offset-lg-4 col-lg-4 col-md-12">
 									<div class="text-label d-block text-muted">Email</div>
-									<div class="text-data">{{ orgData.contactEmail }}</div>
+									<div class="text-data">{{ orgData.emailAddress }}</div>
 								</div>
 								<div class="col-xl-4 col-lg-4 col-md-12">
 									<div class="text-label d-block text-muted mt-2 mt-lg-0">Phone Number</div>
 									<div class="text-data">
-										{{ orgData.contactPhoneNumber || '' | mask : appConstants.phone.displayMask }}
+										{{ orgData.phoneNumber || '' | mask : appConstants.phone.displayMask }}
 									</div>
 								</div>
 							</div>
@@ -86,7 +86,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 								<div class="offset-xl-3 col-xl-4 offset-lg-4 col-lg-4 col-md-12">
 									<div class="text-label d-block text-muted">Date of Birth</div>
 									<div class="text-data">
-										{{ orgData.contactDateOfBirth | date : appConstants.date.dateFormat : 'UTC' }}
+										{{ orgData.dateOfBirth | date : appConstants.date.dateFormat : 'UTC' }}
 									</div>
 								</div>
 								<div class="col-xl-4 col-lg-4 col-md-12">
@@ -98,11 +98,11 @@ import { UtilService } from 'src/app/core/services/util.service';
 							<div class="row mb-2">
 								<div class="offset-xl-3 col-xl-4 offset-lg-4 col-lg-4 col-md-12">
 									<div class="text-label d-block text-muted">BC Drivers Licence</div>
-									<div class="text-data">{{ orgData.driversLicenseNumber | default }}</div>
+									<div class="text-data">{{ orgData.driversLicense | default }}</div>
 								</div>
 								<div class="col-xl-4 col-lg-4 col-md-12">
 									<div class="text-label d-block text-muted mt-2 mt-lg-0">Gender</div>
-									<div class="text-data">{{ orgData.contactGenderCode | options : 'GenderTypes' | default }}</div>
+									<div class="text-data">{{ orgData.genderCode | options : 'GenderTypes' | default }}</div>
 								</div>
 							</div>
 
@@ -110,11 +110,9 @@ import { UtilService } from 'src/app/core/services/util.service';
 								<div class="offset-xl-3 col-xl-8 offset-lg-4 col-lg-8 col-md-12">
 									<div class="text-label d-block text-muted">Previous Names</div>
 									<div class="text-data">
-										<ng-container *ngIf="orgData.previousNameList?.length > 0; else noPreviousNames">
-											<ng-container *ngFor="let name of orgData.previousNameList">
-												<div>
-													{{ name.firstName }} {{ name.middleName1 }} {{ name.middleName2 }} {{ name.lastName }}
-												</div>
+										<ng-container *ngIf="orgData.aliases?.length > 0; else noPreviousNames">
+											<ng-container *ngFor="let name of orgData.aliases">
+												<div>{{ name.givenName }} {{ name.middleName1 }} {{ name.middleName2 }} {{ name.surname }}</div>
 											</ng-container>
 										</ng-container>
 										<ng-template #noPreviousNames> -- </ng-template>
@@ -179,12 +177,12 @@ export class SummaryComponent {
 	getCrcDataMailingAddress(): string {
 		if (this.orgData) {
 			return this.utilService.getAddressString({
-				addressLine1: this.orgData.mailingAddressLine1!,
-				addressLine2: this.orgData.mailingAddressLine2 ?? undefined,
-				city: this.orgData.mailingCity!,
-				province: this.orgData.mailingProvince!,
-				postalCode: this.orgData.mailingPostalCode!,
-				country: this.orgData.mailingCountry!,
+				addressLine1: this.orgData.addressLine1!,
+				addressLine2: this.orgData.addressLine2 ?? undefined,
+				city: this.orgData.city!,
+				province: this.orgData.province!,
+				postalCode: this.orgData.postalCode!,
+				country: this.orgData.country!,
 			});
 		}
 
