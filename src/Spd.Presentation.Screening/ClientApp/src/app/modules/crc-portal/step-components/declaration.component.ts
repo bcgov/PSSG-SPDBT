@@ -2,12 +2,11 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/api/models';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { CaptchaResponse, CaptchaResponseType } from 'src/app/shared/components/captcha-v2.component';
 import { AppInviteOrgData, CrcFormStepComponent } from '../crc.component';
 
 export class DeclarationModel {
-	agreeToDeclaration: string | null = null;
+	agreeToCompleteAndAccurate: string | null = null;
 	shareCrc: string | null = null;
 }
 
@@ -21,22 +20,22 @@ export class DeclarationModel {
 					<div class="row">
 						<div class="offset-lg-3 col-lg-6 col-md-12 col-sm-12">
 							<p class="fs-5">Declaration</p>
-							<mat-checkbox formControlName="agreeToDeclaration">
+							<mat-checkbox formControlName="agreeToCompleteAndAccurate">
 								I certify that, to the best of my knowledge, the information I have provided and will provide as
 								necessary is complete and accurate.
 							</mat-checkbox>
 							<mat-error
 								class="mat-option-error"
 								*ngIf="
-									(form.get('agreeToDeclaration')?.dirty || form.get('agreeToDeclaration')?.touched) &&
-									form.get('agreeToDeclaration')?.invalid &&
-									form.get('agreeToDeclaration')?.hasError('required')
+									(form.get('agreeToCompleteAndAccurate')?.dirty || form.get('agreeToCompleteAndAccurate')?.touched) &&
+									form.get('agreeToCompleteAndAccurate')?.invalid &&
+									form.get('agreeToCompleteAndAccurate')?.hasError('required')
 								"
 								>This is required</mat-error
 							>
 						</div>
 					</div>
-					<div class="row" *ngIf="orgData.validCrc">
+					<!-- <div class="row" *ngIf="orgData.validCrc">
 						<div class="offset-lg-3 col-lg-6 col-md-12 col-sm-12">
 							<mat-divider class="my-3"></mat-divider>
 							<p class="fs-5">Share your existing criminal record check</p>
@@ -66,7 +65,7 @@ export class DeclarationModel {
 								>An option must be selected</mat-error
 							>
 						</div>
-					</div>
+					</div> -->
 				</div>
 			</form>
 
@@ -99,12 +98,12 @@ export class DeclarationComponent implements OnInit, CrcFormStepComponent {
 		this._orgData = data;
 		this.form = this.formBuilder.group(
 			{
-				agreeToDeclaration: new FormControl('', [Validators.required]),
-				shareCrc: new FormControl(''),
-			},
-			{
-				validators: [FormGroupValidators.conditionalRequiredValidator('shareCrc', (form) => data.validCrc ?? false)],
+				agreeToCompleteAndAccurate: new FormControl('', [Validators.required]),
+				// shareCrc: new FormControl(''),
 			}
+			// {
+			// 	validators: [FormGroupValidators.conditionalRequiredValidator('shareCrc', (form) => data.validCrc ?? false)],
+			// }
 		);
 	}
 	get orgData(): AppInviteOrgData | null {

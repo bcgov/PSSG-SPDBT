@@ -1,7 +1,7 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { BooleanTypeCode, PayerPreferenceTypeCode } from 'src/app/api/models';
+import { PayerPreferenceTypeCode } from 'src/app/api/models';
 import { AppInviteOrgData } from '../crc.component';
 import { AgreementOfTermsComponent } from '../step-components/agreement-of-terms.component';
 import { ConsentToCrcComponent } from '../step-components/consentToCrc.component';
@@ -31,7 +31,7 @@ import { DeclarationComponent } from '../step-components/declaration.component';
 				</div>
 			</mat-step>
 
-			<mat-step *ngIf="showConsentToCrc">
+			<!-- <mat-step *ngIf="showConsentToCrc">
 				<app-consent-to-crc *ngIf="orgData" [orgData]="orgData"></app-consent-to-crc>
 
 				<div class="row mt-4">
@@ -49,7 +49,7 @@ import { DeclarationComponent } from '../step-components/declaration.component';
 						</button>
 					</div>
 				</div>
-			</mat-step>
+			</mat-step> -->
 
 			<mat-step>
 				<app-agreement-of-terms></app-agreement-of-terms>
@@ -73,7 +73,7 @@ import { DeclarationComponent } from '../step-components/declaration.component';
 })
 export class StepTermsAndCondComponent {
 	payeePreferenceTypeCodes = PayerPreferenceTypeCode;
-	showConsentToCrc = true;
+	// showConsentToCrc = true;
 
 	@ViewChild('childstepper') childstepper!: MatStepper;
 
@@ -107,13 +107,13 @@ export class StepTermsAndCondComponent {
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 
-		const declarationData = this.declarationComponent.getDataToSave();
-		if (declarationData.shareCrc == BooleanTypeCode.Yes) {
-			this.showConsentToCrc = true;
-		} else {
-			this.showConsentToCrc = false;
-			// this.orgData.performPaymentProcess = true; TODO leave as false for now.
-		}
+		// const declarationData = this.declarationComponent.getDataToSave();
+		// if (declarationData.shareCrc == BooleanTypeCode.Yes) {
+		// 	this.showConsentToCrc = true;
+		// } else {
+		// 	this.showConsentToCrc = false;
+		// 	// this.orgData.performPaymentProcess = true; TODO leave as false for now.
+		// }
 
 		// this.childstepper._stateChanged(); TODO ??
 		this.childstepper.next();

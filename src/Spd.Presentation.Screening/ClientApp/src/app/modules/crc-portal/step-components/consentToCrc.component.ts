@@ -8,7 +8,8 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../crc.component';
 	selector: 'app-consent-to-crc',
 	template: `
 		<section class="step-section p-3" *ngIf="orgData">
-			<form [formGroup]="form" novalidate>
+			WIP
+			<!-- <form [formGroup]="form" novalidate>
 				<div class="step">
 					<app-step-title title="Consent to share a Criminal Record Check" [subtitle]="certifyLabel"></app-step-title>
 					<div class="row">
@@ -75,7 +76,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../crc.component';
 						</div>
 					</div>
 				</div>
-			</form>
+			</form> -->
 		</section>
 	`,
 	styles: [],
@@ -87,7 +88,7 @@ export class ConsentToCrcComponent implements CrcFormStepComponent {
 		if (!data) return;
 
 		this._orgData = data;
-		const name = this.utilService.getFullName(data.contactGivenName, data.contactSurname);
+		const name = this.utilService.getFullName(data.givenName, data.surname);
 		this.certifyLabel = `I, ${name}, consent to the following:`;
 	}
 	get orgData(): AppInviteOrgData | null {
