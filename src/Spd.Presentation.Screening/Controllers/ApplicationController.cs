@@ -337,6 +337,7 @@ namespace Spd.Presentation.Screening.Controllers
             ApplicationCreateRequest? appCreateRequest = JsonSerializer.Deserialize<ApplicationCreateRequest>(createApplication.ApplicationCreateRequestJson, options);
             if (appCreateRequest == null)
                 throw new ApiException(System.Net.HttpStatusCode.BadRequest, "ApplicationCreateRequestJson is invalid.");
+            appCreateRequest.OriginTypeCode = ApplicationOriginTypeCode.OrganizationSubmitted;
             var result = await _appCreateRequestValidator.ValidateAsync(appCreateRequest);
             if (!result.IsValid)
                 throw new ApiException(System.Net.HttpStatusCode.BadRequest, JsonSerializer.Serialize(result.Errors));
