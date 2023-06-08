@@ -313,7 +313,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/orgs/{orgId}/identity/{applicationId}")]
         [HttpPut]
-        public async Task<ActionResult> Verify([FromRoute] Guid applicationId, [FromRoute] Guid orgId, [FromQuery] IdentityStatusCode status)
+        public async Task<ActionResult> IdentityVerify([FromRoute] Guid applicationId, [FromRoute] Guid orgId, [FromQuery] IdentityStatusCode status)
         {
             await _mediator.Send(new IdentityCommand(orgId, applicationId, status));
             return Ok();
