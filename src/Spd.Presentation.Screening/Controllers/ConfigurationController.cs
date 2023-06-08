@@ -46,7 +46,6 @@ namespace Spd.Presentation.Screening.Controllers
                 ClientId = _bcscOption.Value.ClientId,
                 ResponseType = _bcscOption.Value.ResponseType,
                 Scope = _bcscOption.Value.Scope,
-                PostLogoutRedirectUri = _bcscOption.Value.PostLogoutRedirectUri,
             };
             RecaptchaConfiguration recaptchaResp = new RecaptchaConfiguration(_captchaOption.Value.ClientKey);
             var bannerMessage = await _mediator.Send(new GetBannerMsgQuery());

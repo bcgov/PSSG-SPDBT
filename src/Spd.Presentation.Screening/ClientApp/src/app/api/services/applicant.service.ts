@@ -1,0 +1,158 @@
+/* tslint:disable */
+/* eslint-disable */
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpResponse, HttpContext } from '@angular/common/http';
+import { BaseService } from '../base-service';
+import { ApiConfiguration } from '../api-configuration';
+import { StrictHttpResponse } from '../strict-http-response';
+import { RequestBuilder } from '../request-builder';
+import { Observable } from 'rxjs';
+import { map, filter } from 'rxjs/operators';
+
+import { AppInviteVerifyRequest } from '../models/app-invite-verify-request';
+import { AppInviteVerifyResponse } from '../models/app-invite-verify-response';
+import { ApplicantAppCreateRequest } from '../models/applicant-app-create-request';
+import { ApplicationCreateResponse } from '../models/application-create-response';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class ApplicantService extends BaseService {
+  constructor(
+    config: ApiConfiguration,
+    http: HttpClient
+  ) {
+    super(config, http);
+  }
+
+  /**
+   * Path part for operation apiApplicantsInvitesPost
+   */
+  static readonly ApiApplicantsInvitesPostPath = '/api/applicants/invites';
+
+  /**
+   * Verify if the current application invite is correct, and return needed info.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiApplicantsInvitesPost()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiApplicantsInvitesPost$Response(params: {
+
+    /**
+     * which include InviteEncryptedCode
+     */
+    body: AppInviteVerifyRequest
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<AppInviteVerifyResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, ApplicantService.ApiApplicantsInvitesPostPath, 'post');
+    if (params) {
+      rb.body(params.body, 'application/*+json');
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<AppInviteVerifyResponse>;
+      })
+    );
+  }
+
+  /**
+   * Verify if the current application invite is correct, and return needed info.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiApplicantsInvitesPost$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiApplicantsInvitesPost(params: {
+
+    /**
+     * which include InviteEncryptedCode
+     */
+    body: AppInviteVerifyRequest
+  },
+  context?: HttpContext
+
+): Observable<AppInviteVerifyResponse> {
+
+    return this.apiApplicantsInvitesPost$Response(params,context).pipe(
+      map((r: StrictHttpResponse<AppInviteVerifyResponse>) => r.body as AppInviteVerifyResponse)
+    );
+  }
+
+  /**
+   * Path part for operation apiApplicantsScreeningsPost
+   */
+  static readonly ApiApplicantsScreeningsPostPath = '/api/applicants/screenings';
+
+  /**
+   * create application.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiApplicantsScreeningsPost()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiApplicantsScreeningsPost$Response(params?: {
+    body?: ApplicantAppCreateRequest
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<ApplicationCreateResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, ApplicantService.ApiApplicantsScreeningsPostPath, 'post');
+    if (params) {
+      rb.body(params.body, 'application/*+json');
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<ApplicationCreateResponse>;
+      })
+    );
+  }
+
+  /**
+   * create application.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiApplicantsScreeningsPost$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiApplicantsScreeningsPost(params?: {
+    body?: ApplicantAppCreateRequest
+  },
+  context?: HttpContext
+
+): Observable<ApplicationCreateResponse> {
+
+    return this.apiApplicantsScreeningsPost$Response(params,context).pipe(
+      map((r: StrictHttpResponse<ApplicationCreateResponse>) => r.body as ApplicationCreateResponse)
+    );
+  }
+
+}

@@ -18,7 +18,11 @@ export class ErrorInterceptor implements HttpInterceptor {
 				let message = 'An error has occurred';
 				console.error('ErrorInterceptor errorResponse', errorResponse);
 
-				if (errorResponse.status == 401 && errorResponse.url?.includes('whoami')) {
+				// Handling 401 that can occur when you are logged into the wrong identity authority
+				if (
+					errorResponse.status == 401 &&
+					(errorResponse.url?.includes('whoami') || errorResponse.url?.includes('applicants/invites'))
+				) {
 					this.router.navigate([AppRoutes.LANDING]);
 				}
 
