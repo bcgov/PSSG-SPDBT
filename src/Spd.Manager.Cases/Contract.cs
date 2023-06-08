@@ -39,23 +39,23 @@ namespace Spd.Manager.Cases
     public record AppInviteVerifyRequest(string InviteEncryptedCode);
     public record AppInviteVerifyResponse
     {
-        public Guid InviteId { get; set; }
+        public Guid AppInviteId { get; set; }
         public Guid OrgId { get; set; }
         public string? OrgName { get; set; }
         public string? OrgPhoneNumber { get; set; }
         public string? OrgEmail { get; set; }
-        public string? AddressLine1 { get; set; }
-        public string? AddressLine2 { get; set; }
-        public string? AddressCity { get; set; }
-        public string? AddressCountry { get; set; }
-        public string? AddressPostalCode { get; set; }
-        public string? AddressProvince { get; set; }
+        public string? OrgAddressLine1 { get; set; }
+        public string? OrgAddressLine2 { get; set; }
+        public string? OrgCity { get; set; }
+        public string? OrgCountry { get; set; }
+        public string? OrgPostalCode { get; set; }
+        public string? OrgProvince { get; set; }
         public EmployeeInteractionTypeCode? WorksWith { get; set; }
         public EmployeeOrganizationTypeCode? EmployeeOrganizationTypeCode { get; set; }
         public VolunteerOrganizationTypeCode? VolunteerOrganizationTypeCode { get; set; }
-        public string? ContactGivenName { get; set; }
-        public string? ContactSurname { get; set; }
-        public string? ContactEmail { get; set; }
+        public string? GivenName { get; set; }
+        public string? Surname { get; set; }
+        public string? EmailAddress { get; set; }
         public string? JobTitle { get; set; }
         public PayerPreferenceTypeCode PayeeType { get; set; }
         public ScreeningTypeCode? ScreeningType { get; set; }
@@ -170,7 +170,8 @@ namespace Spd.Manager.Cases
     public record ApplicantAppCreateRequest : ApplicationCreateRequest
     {
         public Guid AppInviteId { get; set; }
-        public bool? AgreeToConsent { get; set; }
+        public bool? AgreeToVulnerableSectorSearch { get; set; }
+        public bool? AgreeToCriminalCheck { get; set; }
     }
     public record AliasCreateRequest
     {

@@ -76,7 +76,8 @@ namespace Spd.Utilities.LogonUser
                 ("POST", "api/anonymous-org-registrations"),
                 ("POST", "api/org-registrations"),
                 ("POST", "api/user/invitation"),
-                ("GET", "api/org-registrations")
+                ("GET", "api/org-registrations"),
+                ("POST", "api/applicants/invites")
             };
 
             if (context.Request.Path.HasValue)

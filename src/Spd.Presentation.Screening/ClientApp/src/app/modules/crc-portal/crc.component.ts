@@ -5,8 +5,13 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { distinctUntilChanged } from 'rxjs';
-import { AppInviteVerifyResponse, IdentityProviderTypeCode } from 'src/app/api/models';
-import { ApplicationService } from 'src/app/api/services';
+import {
+	ApplicantAppCreateRequest,
+	ApplicationCreateResponse,
+	EmployeeInteractionTypeCode,
+	IdentityProviderTypeCode,
+} from 'src/app/api/models';
+import { ApplicantService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
@@ -23,41 +28,24 @@ export interface CrcFormStepComponent {
 	isFormValid(): boolean;
 }
 
-export interface AppInviteOrgData extends AppInviteVerifyResponse {
-	address?: string | null;
-	facilityNameRequired?: boolean | null;
+export interface AppInviteOrgData extends ApplicantAppCreateRequest {
+	orgAddress?: string | null; // for display
 	performPaymentProcess?: boolean | null;
-	agreeToCriminalCheck?: string | null;
-	agreeToDeclaration?: string | null;
-	agreeToVulnerableSectorSearch?: string | null;
-	birthplace?: string | null;
-	completedCrc?: string | null;
-	contactDateOfBirth?: string | null;
-	contactMiddleName1?: string | null;
-	contactMiddleName2?: string | null;
-	contactPhoneNumber?: string | null;
-	contactGenderCode?: string | null;
-	driversLicenseNumber?: string | null;
-	facilityName?: string | null;
-	mailingAddressLine1?: string | null;
-	mailingAddressLine2?: string | null;
-	mailingCity?: string | null;
-	mailingCountry?: string | null;
-	mailingPostalCode?: string | null;
-	mailingProvince?: string | null;
-	notifyNoCrc?: string | null;
-	notifyRisk?: string | null;
-	oneLegalName?: boolean | null;
 	previousNameFlag?: boolean | null;
-	previousNameList?: Array<{
-		firstName?: string | null;
-		middleName1?: string | null;
-		middleName2?: string | null;
-		lastName?: string | null;
-	}>;
+	// shareCrc?: string | null;
+	// validCrc?: boolean | null;
 	recaptcha?: string | null;
-	shareCrc?: string | null;
-	validCrc?: boolean | null;
+	orgEmail?: null | string; // from AppInviteVerifyResponse
+	orgId?: string; // from AppInviteVerifyResponse
+	orgName?: null | string; // from AppInviteVerifyResponse
+	orgPhoneNumber?: null | string; // from AppInviteVerifyResponse
+	orgAddressLine1?: null | string; // from AppInviteVerifyResponse
+	orgAddressLine2?: null | string; // from AppInviteVerifyResponse
+	orgCity?: null | string; // from AppInviteVerifyResponse
+	orgCountry?: null | string; // from AppInviteVerifyResponse
+	orgPostalCode?: null | string; // from AppInviteVerifyResponse
+	orgProvince?: null | string; // from AppInviteVerifyResponse
+	worksWith?: EmployeeInteractionTypeCode; // from AppInviteVerifyResponse
 }
 
 @Component({
@@ -175,6 +163,7 @@ export class CrcComponent implements OnInit {
 		private breakpointObserver: BreakpointObserver,
 		private utilService: UtilService,
 		private authenticationService: AuthenticationService,
+		private applicantService: ApplicantService,
 		private location: Location
 	) {}
 
@@ -189,20 +178,21 @@ export class CrcComponent implements OnInit {
 
 		this.orgData = (this.location.getState() as any).orgData;
 		if (this.orgData) {
-			this.orgData.address = this.utilService.getAddressString({
-				addressLine1: this.orgData.addressLine1!,
-				addressLine2: this.orgData.addressLine2 ?? undefined,
-				city: this.orgData.addressCity!,
-				province: this.orgData.addressProvince!,
-				postalCode: this.orgData.addressPostalCode!,
-				country: this.orgData.addressCountry!,
+			this.orgData.orgAddress = this.utilService.getAddressString({
+				addressLine1: this.orgData.orgAddressLine1!,
+				addressLine2: this.orgData.orgAddressLine2 ?? undefined,
+				city: this.orgData.orgCity!,
+				province: this.orgData.orgProvince!,
+				postalCode: this.orgData.orgPostalCode!,
+				country: this.orgData.orgCountry!,
 			});
 
 			// TODO hardcode for now
-			this.orgData.validCrc = false;
-			this.orgData.facilityNameRequired = false;
+			// this.orgData.validCrc = false;
 			this.orgData.performPaymentProcess = false;
 		}
+
+		console.debug('orgData', this.orgData);
 
 		//auth step 1 - user is not logged in, no state at all
 		//auth step 3 - angular loads again here, KC posts the token, oidc lib reads token and returns state
@@ -278,11 +268,11 @@ export class CrcComponent implements OnInit {
 				stepLogin.completed = true;
 			}
 
-			const stateInfo = JSON.stringify({ ...this.getDataToSave() });
-			this.currentStateInfo = JSON.parse(stateInfo);
-			this.utilService.setSessionData(this.utilService.CRC_PORTAL_STATE_KEY, stateInfo);
+			// const stateInfo = JSON.stringify({ ...this.getDataToSave() });
+			// this.currentStateInfo = JSON.parse(stateInfo);
+			// this.utilService.setSessionData(this.utilService.CRC_PORTAL_STATE_KEY, stateInfo);
 
-			// Go to Step 43
+			// Go to Step 4
 			this.stepper.selectedIndex = 3;
 		}
 
@@ -329,13 +319,26 @@ export class CrcComponent implements OnInit {
 			}
 		}
 
-		const data = this.getDataToSave();
-		const createRequest: any = { ...data } as Parameters<
-			ApplicationService['apiOrgsOrgIdApplicationPost']
-		>[0]['body']['ApplicationCreateRequestJson'];
-		console.debug('onSaveStepperStep createRequest', createRequest);
+		const dataToSave = this.getDataToSave();
+		const body: ApplicantAppCreateRequest = dataToSave;
+		body.genderCode = dataToSave.genderCode ? dataToSave.genderCode : null;
+		console.debug('[onSaveStepperStep] dataToSave', body);
 
-		this.stepper.next();
+		if (this.authenticationService.isLoggedIn()) {
+			this.applicantService
+				.apiApplicantsScreeningsPost({ body })
+				.pipe()
+				.subscribe((res: ApplicationCreateResponse) => {
+					this.stepper.next();
+				});
+		} else {
+			this.applicantService
+				.apiApplicantsScreeningsPost({ body })
+				.pipe()
+				.subscribe((res: ApplicationCreateResponse) => {
+					this.stepper.next();
+				});
+		}
 	}
 
 	private getDataToSave(): any {

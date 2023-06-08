@@ -18,24 +18,17 @@ import { CrcFormStepComponent } from '../crc.component';
 						<div class="offset-lg-2 col-lg-4 col-md-12 col-sm-12">
 							<mat-form-field>
 								<mat-label>Date of Birth</mat-label>
-								<input
-									matInput
-									[matDatepicker]="picker"
-									formControlName="contactDateOfBirth"
-									[errorStateMatcher]="matcher"
-								/>
+								<input matInput [matDatepicker]="picker" formControlName="dateOfBirth" [errorStateMatcher]="matcher" />
 								<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
 								<mat-datepicker #picker startView="multi-year" [startAt]="startDate"></mat-datepicker>
-								<mat-error *ngIf="form.get('contactDateOfBirth')?.hasError('required')">This is required</mat-error>
+								<mat-error *ngIf="form.get('dateOfBirth')?.hasError('required')">This is required</mat-error>
 							</mat-form-field>
 						</div>
 						<div class="col-lg-4 col-md-12 col-sm-12">
 							<mat-form-field>
 								<mat-label>BC Drivers Licence # <span class="optional-label">(optional)</span></mat-label>
-								<input matInput formControlName="driversLicenseNumber" mask="00000009" />
-								<mat-error *ngIf="form.get('driversLicenseNumber')?.hasError('mask')">
-									This must be 7 or 8 digits
-								</mat-error>
+								<input matInput formControlName="driversLicense" mask="00000009" />
+								<mat-error *ngIf="form.get('driversLicense')?.hasError('mask')"> This must be 7 or 8 digits </mat-error>
 							</mat-form-field>
 						</div>
 					</div>
@@ -56,7 +49,7 @@ import { CrcFormStepComponent } from '../crc.component';
 						<div class="col-lg-4 col-md-12 col-sm-12">
 							<mat-form-field>
 								<mat-label>Gender <span class="optional-label">(optional)</span></mat-label>
-								<mat-select formControlName="contactGenderCode">
+								<mat-select formControlName="genderCode">
 									<mat-option *ngFor="let gdr of genderCodes" [value]="gdr.code">
 										{{ gdr.desc }}
 									</mat-option>
@@ -74,9 +67,9 @@ export class PersonalInformationComponent implements CrcFormStepComponent {
 	genderCodes = GenderTypes;
 	form: FormGroup = this.formBuilder.group({
 		birthplace: new FormControl('', [Validators.required]),
-		driversLicenseNumber: new FormControl(''),
-		contactDateOfBirth: new FormControl('', [Validators.required]),
-		contactGenderCode: new FormControl(''),
+		driversLicense: new FormControl(''),
+		dateOfBirth: new FormControl('', [Validators.required]),
+		genderCode: new FormControl(''),
 	});
 	startDate = new Date(2000, 0, 1);
 	matcher = new FormErrorStateMatcher();

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppInviteVerifyRequest } from 'src/app/api/models';
-import { ApplicationService } from 'src/app/api/services';
+import { ApplicantService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { CrcRoutes } from './crc-routing.module';
 
@@ -32,14 +32,14 @@ import { CrcRoutes } from './crc-routing.module';
 export class InvitationComponent {
 	message = '';
 
-	constructor(private route: ActivatedRoute, private router: Router, private applicationService: ApplicationService) {}
+	constructor(private route: ActivatedRoute, private router: Router, private applicantService: ApplicantService) {}
 
 	async ngOnInit(): Promise<void> {
 		const id = this.route.snapshot.paramMap.get('id');
 
 		const invitationRequest: AppInviteVerifyRequest = { inviteEncryptedCode: id };
-		this.applicationService
-			.apiApplicationInvitationPost$Response({ body: invitationRequest })
+		this.applicantService
+			.apiApplicantsInvitesPost$Response({ body: invitationRequest })
 			.pipe()
 			.subscribe((resp: StrictHttpResponse<any>) => {
 				if (resp.status == 202) {
