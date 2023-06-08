@@ -21,20 +21,20 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../crc.component';
 						<div class="offset-lg-1 col-lg-3 col-md-12 col-sm-12">
 							<mat-form-field>
 								<mat-label>Legal Given Name</mat-label>
-								<input matInput formControlName="contactGivenName" [errorStateMatcher]="matcher" maxlength="40" />
-								<mat-error *ngIf="form.get('contactGivenName')?.hasError('required')">This is required</mat-error>
+								<input matInput formControlName="givenName" [errorStateMatcher]="matcher" maxlength="40" />
+								<mat-error *ngIf="form.get('givenName')?.hasError('required')">This is required</mat-error>
 							</mat-form-field>
 						</div>
 						<div class="col-lg-3 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
-								<input matInput formControlName="contactMiddleName1" [errorStateMatcher]="matcher" maxlength="40" />
+								<input matInput formControlName="middleName1" [errorStateMatcher]="matcher" maxlength="40" />
 							</mat-form-field>
 						</div>
 						<div class="col-lg-3 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
-								<input matInput formControlName="contactMiddleName2" [errorStateMatcher]="matcher" maxlength="40" />
+								<input matInput formControlName="middleName2" [errorStateMatcher]="matcher" maxlength="40" />
 							</mat-form-field>
 						</div>
 					</div>
@@ -42,8 +42,8 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../crc.component';
 						<div class="offset-lg-1 col-lg-3 col-md-12 col-sm-12">
 							<mat-form-field>
 								<mat-label>Legal Surname</mat-label>
-								<input matInput formControlName="contactSurname" [errorStateMatcher]="matcher" maxlength="40" />
-								<mat-error *ngIf="form.get('contactSurname')?.hasError('required')">This is required</mat-error>
+								<input matInput formControlName="surname" [errorStateMatcher]="matcher" maxlength="40" />
+								<mat-error *ngIf="form.get('surname')?.hasError('required')">This is required</mat-error>
 							</mat-form-field>
 							<div class="w-100 mb-4">
 								<mat-checkbox formControlName="oneLegalName"> I have one legal name </mat-checkbox>
@@ -54,13 +54,13 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../crc.component';
 								<mat-label>Email Address</mat-label>
 								<input
 									matInput
-									formControlName="contactEmail"
+									formControlName="emailAddress"
 									placeholder="name@domain.com"
 									[errorStateMatcher]="matcher"
 									maxlength="75"
 								/>
-								<mat-error *ngIf="form.get('contactEmail')?.hasError('required')">This is required</mat-error>
-								<mat-error *ngIf="form.get('contactEmail')?.hasError('email')">
+								<mat-error *ngIf="form.get('emailAddress')?.hasError('required')">This is required</mat-error>
+								<mat-error *ngIf="form.get('emailAddress')?.hasError('email')">
 									Must be a valid email address
 								</mat-error>
 							</mat-form-field>
@@ -70,13 +70,13 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../crc.component';
 								<mat-label>Phone Number</mat-label>
 								<input
 									matInput
-									formControlName="contactPhoneNumber"
+									formControlName="phoneNumber"
 									[errorStateMatcher]="matcher"
 									[mask]="phoneMask"
 									[showMaskTyped]="true"
 								/>
-								<mat-error *ngIf="form.get('contactPhoneNumber')?.hasError('required')">This is required</mat-error>
-								<mat-error *ngIf="form.get('contactPhoneNumber')?.hasError('mask')">This must be 10 digits</mat-error>
+								<mat-error *ngIf="form.get('phoneNumber')?.hasError('required')">This is required</mat-error>
+								<mat-error *ngIf="form.get('phoneNumber')?.hasError('mask')">This must be 10 digits</mat-error>
 							</mat-form-field>
 						</div>
 					</div>
@@ -95,20 +95,17 @@ export class ContactInformationComponent implements CrcFormStepComponent {
 		this._orgData = data;
 		this.form = this.formBuilder.group(
 			{
-				contactGivenName: new FormControl(this._orgData.contactGivenName, [Validators.required]),
-				contactMiddleName1: new FormControl(this._orgData.contactMiddleName1),
-				contactMiddleName2: new FormControl(this._orgData.contactMiddleName2),
-				contactSurname: new FormControl(this._orgData.contactSurname, [Validators.required]),
-				contactEmail: new FormControl(this._orgData.contactEmail, [Validators.required, FormControlValidators.email]),
-				contactPhoneNumber: new FormControl(this._orgData.contactPhoneNumber, [Validators.required]),
+				givenName: new FormControl(this._orgData.givenName, [Validators.required]),
+				middleName1: new FormControl(this._orgData.middleName1),
+				middleName2: new FormControl(this._orgData.middleName2),
+				surname: new FormControl(this._orgData.surname, [Validators.required]),
+				emailAddress: new FormControl(this._orgData.emailAddress, [Validators.required, FormControlValidators.email]),
+				phoneNumber: new FormControl(this._orgData.phoneNumber, [Validators.required]),
 				oneLegalName: new FormControl(this._orgData.oneLegalName),
 			},
 			{
 				validators: [
-					FormGroupValidators.conditionalRequiredValidator(
-						'contactGivenName',
-						(form) => !form.get('oneLegalName')?.value
-					),
+					FormGroupValidators.conditionalRequiredValidator('givenName', (form) => !form.get('oneLegalName')?.value),
 				],
 			}
 		);
@@ -119,14 +116,13 @@ export class ContactInformationComponent implements CrcFormStepComponent {
 
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	form!: FormGroup;
-	startDate = new Date(2000, 0, 1);
 	matcher = new FormErrorStateMatcher();
 
 	constructor(private formBuilder: FormBuilder, private maskPipe: NgxMaskPipe) {}
 
 	getDataToSave(): any {
 		const data = { ...this.form.value };
-		data.contactPhoneNumber = this.maskPipe.transform(data.contactPhoneNumber, SPD_CONSTANTS.phone.backendMask);
+		data.phoneNumber = this.maskPipe.transform(data.phoneNumber, SPD_CONSTANTS.phone.backendMask);
 		return data;
 	}
 

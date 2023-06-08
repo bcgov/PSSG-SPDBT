@@ -1,9 +1,11 @@
 export { ActionResult } from './models/action-result';
 export { AddressFindResponse } from './models/address-find-response';
 export { AddressRetrieveResponse } from './models/address-retrieve-response';
+export { AliasCreateRequest } from './models/alias-create-request';
 export { AnonymousOrgRegistrationCreateRequest } from './models/anonymous-org-registration-create-request';
 export { AppInviteVerifyRequest } from './models/app-invite-verify-request';
 export { AppInviteVerifyResponse } from './models/app-invite-verify-response';
+export { ApplicantAppCreateRequest } from './models/applicant-app-create-request';
 export { ApplicantProfileResponse } from './models/applicant-profile-response';
 export { ApplicationCreateResponse } from './models/application-create-response';
 export { ApplicationCreateResult } from './models/application-create-result';
@@ -15,6 +17,7 @@ export { ApplicationInviteStatusCode } from './models/application-invite-status-
 export { ApplicationInvitesCreateRequest } from './models/application-invites-create-request';
 export { ApplicationInvitesCreateResponse } from './models/application-invites-create-response';
 export { ApplicationListResponse } from './models/application-list-response';
+export { ApplicationOriginTypeCode } from './models/application-origin-type-code';
 export { ApplicationPortalStatusCode } from './models/application-portal-status-code';
 export { ApplicationResponse } from './models/application-response';
 export { ApplicationStatisticsResponse } from './models/application-statistics-response';
@@ -33,6 +36,7 @@ export { DuplicateCheckResult } from './models/duplicate-check-result';
 export { EmployeeInteractionTypeCode } from './models/employee-interaction-type-code';
 export { EmployeeOrganizationTypeCode } from './models/employee-organization-type-code';
 export { FundsFromBcGovtExceedsThresholdCode } from './models/funds-from-bc-govt-exceeds-threshold-code';
+export { GenderCode } from './models/gender-code';
 export { IdentityProviderTypeCode } from './models/identity-provider-type-code';
 export { IdentityStatusCode } from './models/identity-status-code';
 export { InvitationRequest } from './models/invitation-request';

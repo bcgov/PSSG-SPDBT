@@ -22,7 +22,6 @@ export class ConfigService {
 			responseType: resp.responseType!,
 			scope: resp.scope!,
 			showDebugInformation: true,
-			postLogoutRedirectUri: resp.postLogoutRedirectUri!,
 			strictDiscoveryDocumentValidation: false,
 		};
 		console.debug('[ConfigService] getBcscConfig', bcscConfig, 'redirectUri', redirectUri);
