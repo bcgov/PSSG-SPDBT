@@ -116,7 +116,6 @@ export class ContactInformationComponent implements CrcFormStepComponent {
 
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	form!: FormGroup;
-	startDate = new Date(2000, 0, 1);
 	matcher = new FormErrorStateMatcher();
 
 	constructor(private formBuilder: FormBuilder, private maskPipe: NgxMaskPipe) {}
