@@ -16,13 +16,18 @@ internal partial class ApplicationRepository : IApplicationRepository
         //create application
         spd_application? application = null;
         account? org = await _context.GetOrgById(createApplicationCmd.OrgId, ct);
-        spd_portaluser? user = await _context.GetUserById(createApplicationCmd.CreatedByUserId, ct);
+        spd_portaluser? user = null;
+        if (createApplicationCmd.CreatedByUserId != Guid.Empty)
+        {
+            user = await _context.GetUserById(createApplicationCmd.CreatedByUserId, ct);
+        }
         Guid teamGuid = Guid.Parse(DynamicsConstants.Client_Service_Team_Guid);
         team? serviceTeam = await _context.teams.Where(t => t.teamid == teamGuid).FirstOrDefaultAsync(ct);
-        if (org != null && user != null && serviceTeam != null)
-            application = await CreateAppAsync(createApplicationCmd, org, user, serviceTeam);
+        spd_servicetype? servicetype = _context.LookupServiceType(createApplicationCmd.ServiceType.ToString());
+        if (org != null && serviceTeam != null)
+            application = await CreateAppAsync(createApplicationCmd, org, user, serviceTeam, servicetype);
 
-        if (application != null)
+        if (application != null && createApplicationCmd.ConsentFormTempFile != null)
         {
             //create bcgov_documenturl
             bcgov_documenturl documenturl = _mapper.Map<bcgov_documenturl>(createApplicationCmd.ConsentFormTempFile);
@@ -33,11 +38,9 @@ internal partial class ApplicationRepository : IApplicationRepository
 
             //upload file to s3
             await UploadFileAsync(createApplicationCmd, application.spd_applicationid, documenturl.bcgov_documenturlid, ct);
-
-            await _context.SaveChangesAsync(ct);
-            return application.spd_applicationid;
         }
-        return null;
+        await _context.SaveChangesAsync(ct);
+        return application?.spd_applicationid;
     }
 
     public async Task<ApplicationListResp> QueryAsync(ApplicationListQry query, CancellationToken cancellationToken)
@@ -130,6 +133,10 @@ internal partial class ApplicationRepository : IApplicationRepository
 
     private contact? GetContact(ApplicationCreateCmd createApplicationCmd)
     {
+        if(createApplicationCmd.CreatedByApplicantSub != null)
+        {
+            //todo: when dynamics ready, need to add contact and identity relationship
+        }
         var contacts = _context.contacts
             .Where(o =>
             o.firstname == createApplicationCmd.GivenName &&
@@ -238,14 +245,22 @@ internal partial class ApplicationRepository : IApplicationRepository
     private async Task<spd_application> CreateAppAsync(
         ApplicationCreateCmd createApplicationCmd, 
         account org, 
-        spd_portaluser user, 
-        team team)
+        spd_portaluser? user, 
+        team team,
+        spd_servicetype? serviceType)
     {
         spd_application app = _mapper.Map<spd_application>(createApplicationCmd);
         _context.AddTospd_applications(app);
         _context.SetLink(app, nameof(spd_application.spd_OrganizationId), org);
-        _context.SetLink(app, nameof(spd_application.spd_SubmittedBy), user);
+        if (user != null)
+        {
+            _context.SetLink(app, nameof(spd_application.spd_SubmittedBy), user);
+        }
         _context.SetLink(app, nameof(spd_application.ownerid), team);
+        if (serviceType != null)
+        {
+            _context.SetLink(app, nameof(spd_application.spd_ServiceTypeId), serviceType);
+        }
 
         contact? contact = GetContact(createApplicationCmd);
         // if not found, create new contact

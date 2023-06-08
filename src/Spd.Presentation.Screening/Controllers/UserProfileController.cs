@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Membership.UserProfile;
-using Spd.Resource.Organizations.Registration;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared;
 using System.Security.Claims;
@@ -25,6 +24,7 @@ namespace Spd.Presentation.Screening.Controllers
 
         [Route("api/users/whoami")]
         [HttpGet]
+        [Authorize(Policy = "OnlyBCeID")]
         public async Task<UserProfileResponse> OrgUserWhoami()
         {
             return await _mediator.Send(new GetCurrentUserProfileQuery());
@@ -32,21 +32,21 @@ namespace Spd.Presentation.Screening.Controllers
 
         [Route("api/applicants/whoami")]
         [HttpGet]
-        [Authorize(Policy ="OnlyBcsc")]
+        [Authorize(Policy = "OnlyBcsc")]
         public async Task<ApplicantProfileResponse> ApplicantWhoami()
         {
             var info = _currentUser.GetApplicantInfo();
             return new ApplicantProfileResponse
             {
-                Email= info.Email,
-                EmailVerified= info.EmailVerified,  
-                Age=info.Age,
-                BirthDate=info.BirthDate,   
-                DisplayName=info.DisplayName,
-                FirstName=info.FirstName,
-                LastName=info.LastName,
-                Gender=info.Gender,
-                Sub=info.Sub,                
+                Email = info.Email,
+                EmailVerified = info.EmailVerified,
+                Age = info.Age,
+                BirthDate = info.BirthDate,
+                DisplayName = info.DisplayName,
+                FirstName = info.FirstName,
+                LastName = info.LastName,
+                Gender = info.Gender,
+                Sub = info.Sub,
             };
         }
     }
