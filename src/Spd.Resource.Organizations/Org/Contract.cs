@@ -6,7 +6,7 @@ namespace Spd.Resource.Organizations.Org
     public interface IOrgRepository
     {
         Task<bool> CheckDuplicateAsync(SearchOrgQry searchOrgQry, CancellationToken cancellationToken);
-        Task<OrgQryResult> QueryOrgAsync(OrgQry orgQry, CancellationToken ct);
+        Task<OrgQryData> QueryOrgAsync(OrgQry orgQry, CancellationToken ct);
         Task<OrgManageResult> ManageOrgAsync(OrgCmd orgCmd, CancellationToken ct);
     }
     //command
@@ -27,7 +27,9 @@ namespace Spd.Resource.Organizations.Org
         public VolunteerOrganizationTypeCode? VolunteerOrganizationTypeCode { get; set; }
         public RegistrationTypeCode RegistrationTypeCode { get; set; }
     }
-    public record OrgQryResult(OrgResult OrgResult) { }
+    public abstract record OrgQryData;
+    public record OrgQryResult(OrgResult OrgResult) : OrgQryData;
+    public record OrgsQryResult(IEnumerable<OrgResult> OrgResults) : OrgQryData;
 
     //shared content
     public record Org

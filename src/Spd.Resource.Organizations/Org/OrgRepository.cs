@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OData.Extensions.Client;
 using Spd.Resource.Organizations.Registration;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
@@ -19,11 +20,11 @@ namespace Spd.Resource.Organizations.Org
             _dynaContext = ctx.Create();
             _mapper = mapper;
         }
-        public async Task<OrgQryResult?> QueryOrgAsync(OrgQry query, CancellationToken ct)
+        public async Task<OrgQryData?> QueryOrgAsync(OrgQry query, CancellationToken ct)
         {
             return query switch
             {
-                OrgByOrgGuidQry q => await GetOrgByOrgGuidAsync(q, ct),
+                OrgByOrgGuidQry q => await GetOrgsByOrgGuidAsync(q, ct),
                 OrgByIdQry q => await GetOrgByOrgIdAsync(q, ct),
                 _ => throw new NotSupportedException($"{query.GetType().Name} is not supported")
             };
@@ -109,17 +110,17 @@ namespace Spd.Resource.Organizations.Org
             }
         }
 
-        private async Task<OrgQryResult?> GetOrgByOrgGuidAsync(OrgByOrgGuidQry query, CancellationToken ct)
+        private async Task<OrgsQryResult> GetOrgsByOrgGuidAsync(OrgByOrgGuidQry query, CancellationToken ct)
         {
-            var account = await _dynaContext.accounts
+            var accounts = _dynaContext.accounts
                 .Where(a => a.spd_orgguid == query.OrgGuid.ToString())
                 .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
-                .FirstOrDefaultAsync(ct);
-            if (account == null) return null;
-            return new OrgQryResult(_mapper.Map<OrgResult>(account));
+                .ToList();
+            if (accounts == null) return null;
+            return new OrgsQryResult(_mapper.Map<IEnumerable<OrgResult>>(accounts));
         }
 
-        private async Task<OrgQryResult?> GetOrgByOrgIdAsync(OrgByIdQry query, CancellationToken ct)
+        private async Task<OrgQryData?> GetOrgByOrgIdAsync(OrgByIdQry query, CancellationToken ct)
         {
             var org = await _dynaContext.GetOrgById(query.OrgId, ct);
             if (org?.statecode == DynamicsConstants.StateCode_Inactive) return null;
