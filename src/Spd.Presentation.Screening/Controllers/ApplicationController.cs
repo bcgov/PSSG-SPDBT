@@ -313,7 +313,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/orgs/{orgId}/identity/{applicationId}")]
         [HttpPut]
-        public async Task<ActionResult> Verify([FromRoute] Guid applicationId, [FromRoute] Guid orgId, [FromQuery] IdentityStatusCode status)
+        public async Task<ActionResult> IdentityVerify([FromRoute] Guid applicationId, [FromRoute] Guid orgId, [FromQuery] IdentityStatusCode status)
         {
             await _mediator.Send(new IdentityCommand(orgId, applicationId, status));
             return Ok();
@@ -337,6 +337,7 @@ namespace Spd.Presentation.Screening.Controllers
             ApplicationCreateRequest? appCreateRequest = JsonSerializer.Deserialize<ApplicationCreateRequest>(createApplication.ApplicationCreateRequestJson, options);
             if (appCreateRequest == null)
                 throw new ApiException(System.Net.HttpStatusCode.BadRequest, "ApplicationCreateRequestJson is invalid.");
+            appCreateRequest.OriginTypeCode = ApplicationOriginTypeCode.OrganizationSubmitted;
             var result = await _appCreateRequestValidator.ValidateAsync(appCreateRequest);
             if (!result.IsValid)
                 throw new ApiException(System.Net.HttpStatusCode.BadRequest, JsonSerializer.Serialize(result.Errors));

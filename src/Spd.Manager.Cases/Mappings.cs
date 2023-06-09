@@ -26,6 +26,9 @@ namespace Spd.Manager.Cases
                .ForMember(d => d.Status, opt => opt.MapFrom(s => Enum.Parse<ApplicationInviteStatusCode>(s.Status)));
             CreateMap<ApplicationCreateRequest, SearchApplicationQry>();
             CreateMap<ApplicationCreateRequest, ApplicationCreateCmd>();
+            CreateMap<ApplicantAppCreateRequest, ApplicationCreateCmd>()
+                 .IncludeBase<ApplicationCreateRequest, ApplicationCreateCmd>()
+                 .ForMember(d => d.AgreeToConsent, opt => opt.MapFrom(s => true));
             CreateMap<ApplicationCreateRequestFromBulk, ApplicationCreateCmd>()
                 .IncludeBase<ApplicationCreateRequest, ApplicationCreateCmd>();
             CreateMap<AliasCreateRequest, AliasCreateCmd>();
