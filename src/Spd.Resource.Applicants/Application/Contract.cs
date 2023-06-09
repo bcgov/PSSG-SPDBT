@@ -73,6 +73,7 @@ public record ApplicationCreateCmd
     public SpdTempFile? ConsentFormTempFile { get; set; } // would be null if applicant submit application
     public string? CreatedByApplicantSub { get; set; } = null;
 }
+
 public record AliasCreateCmd
 {
     public string? GivenName { get; set; }

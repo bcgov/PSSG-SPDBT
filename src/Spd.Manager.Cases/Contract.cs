@@ -119,7 +119,7 @@ namespace Spd.Manager.Cases
 
     #region application
     public record ApplicationCreateCommand(ApplicationCreateRequest ApplicationCreateRequest, Guid OrgId, Guid UserId, IFormFile ConsentFormFile) : IRequest<ApplicationCreateResponse>;
-    public record ApplicantApplicationCreateCommand(ApplicantAppCreateRequest ApplicationCreateRequest, string ApplicantSub) : IRequest<ApplicationCreateResponse>;
+    public record ApplicantApplicationCreateCommand(ApplicantAppCreateRequest ApplicationCreateRequest, string? ApplicantSub = null) : IRequest<ApplicationCreateResponse>;
     public record ApplicationListQuery : IRequest<ApplicationListResponse>
     {
         public AppListFilterBy? FilterBy { get; set; } //null means no filter
@@ -250,12 +250,14 @@ namespace Spd.Manager.Cases
 
     public enum ApplicationOriginTypeCode
     {
+        //applicant authenticated with bcsc submit app
         [Description("Portal")]
         Portal,
 
         [Description("Email")]
         Email,
 
+        //applicant anonymous submit app
         [Description("Web Form")]
         WebForm,
 
@@ -268,6 +270,7 @@ namespace Spd.Manager.Cases
         [Description("Generic Upload")]
         GenericUpload,
 
+        //organization submit app manually
         [Description("Organization Submitted")]
         OrganizationSubmitted
     }
@@ -603,6 +606,20 @@ namespace Spd.Manager.Cases
 
             RuleFor(r => r.HaveVerifiedIdentity)
                 .NotNull(); // Must be true or false
+        }
+    }
+
+    public class ApplicantAppCreateRequestValidator : AbstractValidator<ApplicantAppCreateRequest>
+    {
+        public ApplicantAppCreateRequestValidator()
+        {
+            Include(new ApplicationCreateRequestValidator());
+            RuleFor(a=>a.AgreeToCriminalCheck)
+                .NotEmpty()
+                .Equal(true);
+            RuleFor(a => a.AgreeToVulnerableSectorSearch)
+                .NotEmpty()
+                .Equal(true);
         }
     }
     #endregion
