@@ -8,7 +8,7 @@ export interface ApplicantProfileResponse {
   email?: null | string;
   emailVerified?: null | boolean;
   firstName?: null | string;
-  gender?: GenderCode;
+  genderCode?: GenderCode;
   lastName?: null | string;
   sub?: null | string;
 }

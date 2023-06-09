@@ -5,14 +5,10 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { distinctUntilChanged } from 'rxjs';
-import {
-	ApplicantAppCreateRequest,
-	ApplicationCreateResponse,
-	EmployeeInteractionTypeCode,
-	IdentityProviderTypeCode,
-} from 'src/app/api/models';
+import { ApplicantAppCreateRequest, EmployeeInteractionTypeCode, IdentityProviderTypeCode } from 'src/app/api/models';
 import { ApplicantService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
+import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { CrcRoutes } from './crc-routing.module';
@@ -30,6 +26,7 @@ export interface CrcFormStepComponent {
 
 export interface AppInviteOrgData extends ApplicantAppCreateRequest {
 	orgAddress?: string | null; // for display
+	// readonlyTombstone?: boolean | null; // logic for screens
 	performPaymentProcess?: boolean | null;
 	previousNameFlag?: boolean | null;
 	// shareCrc?: string | null;
@@ -164,6 +161,7 @@ export class CrcComponent implements OnInit {
 		private utilService: UtilService,
 		private authenticationService: AuthenticationService,
 		private applicantService: ApplicantService,
+		private authUserService: AuthUserService,
 		private location: Location
 	) {}
 
@@ -188,8 +186,8 @@ export class CrcComponent implements OnInit {
 			});
 
 			// TODO hardcode for now
-			// this.orgData.validCrc = false;
 			this.orgData.performPaymentProcess = false;
+			// this.orgData.readonlyTombstone = false;
 		}
 
 		console.debug('orgData', this.orgData);
@@ -296,6 +294,15 @@ export class CrcComponent implements OnInit {
 	private postLoginNavigate(stepperData: any): void {
 		this.currentStateInfo = JSON.parse(stepperData);
 		this.orgData = JSON.parse(stepperData);
+		if (this.orgData) {
+			const applicantProfile = this.authUserService.applicantProfile;
+			// this.orgData.readonlyTombstone = true;
+			this.orgData.givenName = applicantProfile?.firstName;
+			this.orgData.surname = applicantProfile?.lastName;
+			this.orgData.dateOfBirth = applicantProfile?.birthDate;
+			this.orgData.emailAddress = applicantProfile?.email;
+			this.orgData.genderCode = applicantProfile?.genderCode;
+		}
 
 		for (let i = 0; i <= 2; i++) {
 			let step = this.stepper.steps.get(i);
@@ -324,21 +331,21 @@ export class CrcComponent implements OnInit {
 		body.genderCode = dataToSave.genderCode ? dataToSave.genderCode : null;
 		console.debug('[onSaveStepperStep] dataToSave', body);
 
-		if (this.authenticationService.isLoggedIn()) {
-			this.applicantService
-				.apiApplicantsScreeningsPost({ body })
-				.pipe()
-				.subscribe((res: ApplicationCreateResponse) => {
-					this.stepper.next();
-				});
-		} else {
-			this.applicantService
-				.apiApplicantsScreeningsPost({ body })
-				.pipe()
-				.subscribe((res: ApplicationCreateResponse) => {
-					this.stepper.next();
-				});
-		}
+		// if (this.authenticationService.isLoggedIn()) {
+		// 	this.applicantService
+		// 		.apiApplicantsScreeningsPost({ body })
+		// 		.pipe()
+		// 		.subscribe((res: ApplicationCreateResponse) => {
+		// 			this.stepper.next();
+		// 		});
+		// } else {
+		// 	this.applicantService
+		// 		.apiApplicantsScreeningsPost({ body })
+		// 		.pipe()
+		// 		.subscribe((res: ApplicationCreateResponse) => {
+		// 			this.stepper.next();
+		// 		});
+		// }
 	}
 
 	private getDataToSave(): any {

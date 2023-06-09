@@ -68,7 +68,7 @@ namespace Spd.Presentation.Screening.Controllers
                 DisplayName = info.DisplayName,
                 FirstName = info.FirstName,
                 LastName = info.LastName,
-                Gender = gender,
+                GenderCode = gender,
                 Sub = info.Sub,
             };
         }
@@ -80,7 +80,7 @@ namespace Spd.Presentation.Screening.Controllers
         public string? LastName { get; set; }
         public string? DisplayName { get; set; }
         public string? Email { get; set; }
-        public GenderCode? Gender { get; set; }
+        public GenderCode? GenderCode { get; set; }
         public string? Age { get; set; }
         public string? Sub { get; set; }
         public DateTimeOffset? BirthDate { get; set; }
