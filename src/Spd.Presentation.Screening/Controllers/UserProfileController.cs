@@ -2,12 +2,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Membership.UserProfile;
-using Spd.Resource.Applicants.Application;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared;
 using System.Globalization;
 using System.Security.Claims;
 using System.Security.Principal;
+using GenderCode = Spd.Utilities.Shared.ManagerContract.GenderCode;
 
 namespace Spd.Presentation.Screening.Controllers
 {
