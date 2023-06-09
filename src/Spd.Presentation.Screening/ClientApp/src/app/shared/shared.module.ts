@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RecaptchaFormsModule, RecaptchaModule } from 'ng-recaptcha';
@@ -19,6 +19,7 @@ import { DropdownOverlayComponent } from './components/dropdown-overlay.componen
 import { FileUploadComponent } from './components/file-upload.component';
 import { IdentifyVerificationCommonComponent } from './components/identify-verification-common.component';
 import { ManualSubmissionCommonComponent } from './components/manual-submission-common.component';
+import { MonthPickerComponent } from './components/month-picker.component';
 import { OrgSelectionModalComponent } from './components/org-selection-modal.component';
 import { ScreeningRequestAddCommonModalComponent } from './components/screening-request-add-common-modal.component';
 import { ScreeningRequestsCommonComponent } from './components/screening-requests-common.component';
@@ -57,6 +58,7 @@ const SHARED_COMPONENTS = [
 	ScreeningRequestAddCommonModalComponent,
 	IdentifyVerificationCommonComponent,
 	ManualSubmissionCommonComponent,
+	MonthPickerComponent,
 ];
 
 @NgModule({

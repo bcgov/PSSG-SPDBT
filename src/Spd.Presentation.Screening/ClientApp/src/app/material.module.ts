@@ -82,8 +82,18 @@ const matFormFieldCustomOptions: MatFormFieldDefaultOptions = {
 export class SpdDateAdapter extends NativeDateAdapter {
 	override format(date: Date, displayFormat: Object): string {
 		if (displayFormat === 'input') {
-			// Return the format as per your requirement
 			return formatDate(date, SPD_CONSTANTS.date.dateFormat, this.locale);
+		} else {
+			return date.toDateString();
+		}
+	}
+}
+
+@Injectable()
+export class SpdDateYearMonthAdapter extends NativeDateAdapter {
+	override format(date: Date, displayFormat: Object): string {
+		if (displayFormat === 'input') {
+			return formatDate(date, SPD_CONSTANTS.date.monthYearFormat, this.locale);
 		} else {
 			return date.toDateString();
 		}
