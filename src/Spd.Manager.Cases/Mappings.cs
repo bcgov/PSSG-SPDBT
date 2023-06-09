@@ -27,7 +27,8 @@ namespace Spd.Manager.Cases
             CreateMap<ApplicationCreateRequest, SearchApplicationQry>();
             CreateMap<ApplicationCreateRequest, ApplicationCreateCmd>();
             CreateMap<ApplicantAppCreateRequest, ApplicationCreateCmd>()
-                 .IncludeBase<ApplicationCreateRequest, ApplicationCreateCmd>(); 
+                 .IncludeBase<ApplicationCreateRequest, ApplicationCreateCmd>()
+                 .ForMember(d => d.AgreeToConsent, opt => opt.MapFrom(s => true));
             CreateMap<ApplicationCreateRequestFromBulk, ApplicationCreateCmd>()
                 .IncludeBase<ApplicationCreateRequest, ApplicationCreateCmd>();
             CreateMap<AliasCreateRequest, AliasCreateCmd>();

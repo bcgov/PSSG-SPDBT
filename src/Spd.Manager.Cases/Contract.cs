@@ -608,5 +608,19 @@ namespace Spd.Manager.Cases
                 .NotNull(); // Must be true or false
         }
     }
+
+    public class ApplicantAppCreateRequestValidator : AbstractValidator<ApplicantAppCreateRequest>
+    {
+        public ApplicantAppCreateRequestValidator()
+        {
+            Include(new ApplicationCreateRequestValidator());
+            RuleFor(a=>a.AgreeToCriminalCheck)
+                .NotEmpty()
+                .Equal(true);
+            RuleFor(a => a.AgreeToVulnerableSectorSearch)
+                .NotEmpty()
+                .Equal(true);
+        }
+    }
     #endregion
 }

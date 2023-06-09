@@ -1,3 +1,4 @@
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -94,6 +95,14 @@ namespace Spd.Presentation.Screening.Controllers
     public record AnonymousApplicantAppCreateRequest : ApplicantAppCreateRequest
     {
         public string Recaptcha { get; set; } = null!;
+    }
+
+    public class AnonymousApplicantAppCreateRequestValidator : AbstractValidator<AnonymousApplicantAppCreateRequest>
+    {
+        public AnonymousApplicantAppCreateRequestValidator()
+        {
+            Include(new ApplicantAppCreateRequestValidator());
+        }
     }
 }
 
