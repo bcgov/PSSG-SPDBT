@@ -6,7 +6,6 @@ import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { distinctUntilChanged } from 'rxjs';
 import { ApplicantAppCreateRequest, EmployeeInteractionTypeCode, IdentityProviderTypeCode } from 'src/app/api/models';
-import { ApplicantService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
@@ -160,7 +159,6 @@ export class CrcComponent implements OnInit {
 		private breakpointObserver: BreakpointObserver,
 		private utilService: UtilService,
 		private authenticationService: AuthenticationService,
-		private applicantService: ApplicantService,
 		private authUserService: AuthUserService,
 		private location: Location
 	) {}

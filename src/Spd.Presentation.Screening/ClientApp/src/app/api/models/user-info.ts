@@ -8,6 +8,7 @@ export interface UserInfo {
   email?: null | string;
   firstName?: null | string;
   lastName?: null | string;
+  msg?: null | string;
   orgId?: null | string;
   orgName?: null | string;
   orgRegistrationId?: null | string;
