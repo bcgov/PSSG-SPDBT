@@ -10,7 +10,7 @@ namespace Spd.Resource.Organizations.Registration
     }
 
     //queries
-    public record OrgRegistrationQuery(Guid? UserGuid, Guid? OrgGuid, string? RegistrationNumber = null);
+    public record OrgRegistrationQuery(Guid? UserGuid, Guid? OrgGuid, string? RegistrationNumber = null, bool IncludeInactive = false);
     public record SearchRegistrationQry()
     {
         public string? GenericEmail { get; set; }
@@ -62,6 +62,7 @@ namespace Spd.Resource.Organizations.Registration
     {
         public Guid OrgRegistrationId { get; set; }
         public string OrgRegistrationStatusStr { get; set; } = null!;
+        public DateTimeOffset CreatedOn { get; set; }
     };
 
     public enum RegistrationTypeCode

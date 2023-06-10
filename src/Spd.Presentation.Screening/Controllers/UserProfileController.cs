@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Membership.UserProfile;
@@ -16,6 +17,7 @@ namespace Spd.Presentation.Screening.Controllers
     public class UserProfileController : SpdControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
         private readonly ClaimsPrincipal _currentUser;
 
         /// <summary>
@@ -23,9 +25,10 @@ namespace Spd.Presentation.Screening.Controllers
         /// </summary>
         /// <param name="mediator"></param>
         /// <param name="currentUser"></param>
-        public UserProfileController(IMediator mediator, IPrincipal currentUser)
+        public UserProfileController(IMediator mediator, IPrincipal currentUser, IMapper mapper)
         {
             _mediator = mediator;
+            _mapper = mapper;
             _currentUser = (ClaimsPrincipal)currentUser;
         }
 
@@ -38,7 +41,8 @@ namespace Spd.Presentation.Screening.Controllers
         [Authorize(Policy = "OnlyBCeID")]
         public async Task<UserProfileResponse> OrgUserWhoami()
         {
-            return await _mediator.Send(new GetCurrentUserProfileQuery());
+            PortalUserIdentityInfo userIdentity = _currentUser.GetPortalUserIdentityInfo();
+            return await _mediator.Send(new GetCurrentUserProfileQuery(_mapper.Map<PortalUserIdentity>(userIdentity)));
         }
 
         /// <summary>
@@ -50,7 +54,7 @@ namespace Spd.Presentation.Screening.Controllers
         [Authorize(Policy = "OnlyBcsc")]
         public async Task<ApplicantProfileResponse> ApplicantWhoami()
         {
-            var info = _currentUser.GetApplicantInfo();
+            var info = _currentUser.GetApplicantIdentityInfo();
             string? str = info.Gender?.ToLower();
             GenderCode? gender = str switch
             {

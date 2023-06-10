@@ -11,11 +11,11 @@ namespace Spd.Manager.Membership.UserProfile
         public Task<UserProfileResponse> Handle(GetCurrentUserProfileQuery request, CancellationToken cancellationToken);
     }
 
-    public record GetCurrentUserProfileQuery : IRequest<UserProfileResponse>;
+    public record GetCurrentUserProfileQuery(PortalUserIdentity PortalUserIdentity) : IRequest<UserProfileResponse>;
 
     public class UserProfileResponse
     {
-        public Guid UserGuid { get; set; }//from token
+        public Guid? UserGuid { get; set; }//from token
         public string? UserDisplayName { get; set; } //from token
         public IdentityProviderTypeCode? IdentityProviderType { get; set; }
         public IEnumerable<UserInfo> UserInfos { get; set; } = Array.Empty<UserInfo>();
@@ -34,6 +34,7 @@ namespace Spd.Manager.Membership.UserProfile
         public OrgRegistrationStatusCode? OrgRegistrationStatusCode { get; set; } = null;
         public string? OrgName { get; set; }
         public Guid? UserGuid { get; set; }
+        public string? Msg { get; set; }
     }
 
     public record OrgSettings
@@ -44,5 +45,18 @@ namespace Spd.Manager.Membership.UserProfile
         public bool GenericUploadEnabled { get; set; }
     }
 
-
+    public class PortalUserIdentity
+    {
+        public string? BCeIDUserName { get; set; }
+        public string? DisplayName { get; set; }
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public string? PreferedUserName { get; set; }
+        public Guid? UserGuid { get; set; }
+        public Guid BizGuid { get; set; }
+        public string? BizName { get; set; }
+        public string? Issuer { get; set; }
+        public bool? EmailVerified { get; set; }
+        public string? Email { get; set; }
+    }
 }
