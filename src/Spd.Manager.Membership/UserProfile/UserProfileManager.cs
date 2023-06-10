@@ -5,7 +5,6 @@ using Spd.Resource.Organizations.Identity;
 using Spd.Resource.Organizations.Org;
 using Spd.Resource.Organizations.Registration;
 using Spd.Resource.Organizations.User;
-using Spd.Utilities.LogonUser;
 using System.Security.Principal;
 
 namespace Spd.Manager.Membership.UserProfile
@@ -39,19 +38,22 @@ namespace Spd.Manager.Membership.UserProfile
 
         public async Task<UserProfileResponse> Handle(GetCurrentUserProfileQuery request, CancellationToken ct)
         {
-            Guid userGuid = _currentUser.GetUserGuid();
+            Guid orgGuid = request.PortalUserIdentity.BizGuid;
+            Guid? userGuid = request.PortalUserIdentity.UserGuid;
+            var orgResult = (OrgsQryResult)await _orgRepository.QueryOrgAsync(new OrgByOrgGuidQry(orgGuid), ct);
             List<UserInfo> userInfos = new();
-
-            //check registration
-            var orgRegResult = await _orgRegistrationRepository.Query(new OrgRegistrationQuery(userGuid, null), ct);
-            if (orgRegResult != null)
+            if (orgResult == null || !orgResult.OrgResults.Any()) //no active org
             {
-                foreach (OrgRegistrationResult reg in orgRegResult.OrgRegistrationResults)
+                var orgRegisters = await _orgRegistrationRepository.Query(new OrgRegistrationQuery(null, orgGuid, IncludeInactive: true), ct);
+                var latestReg = orgRegisters.OrgRegistrationResults.OrderByDescending(reg => reg.CreatedOn).FirstOrDefault();
+                UserInfo ui = new UserInfo();
+                if (latestReg == null)
                 {
-                    UserInfo ui = new UserInfo();
-                    ui.OrgRegistrationId = reg.OrgRegistrationId;
-                    ui.OrgName = reg.OrganizationName;
-                    ui.OrgRegistrationStatusCode = reg.OrgRegistrationStatusStr switch
+                    ui.Msg = "Your account doesn't match our records. Visit SPD webpage to learn more or register for the Criminal Records Review Program.";
+                }
+                else
+                {
+                    ui.OrgRegistrationStatusCode = latestReg?.OrgRegistrationStatusStr switch
                     {
                         "New" => OrgRegistrationStatusCode.ApplicationSubmitted,
                         "InProgress" => OrgRegistrationStatusCode.InProgress,
@@ -59,44 +61,45 @@ namespace Spd.Manager.Membership.UserProfile
                         "Approved" => OrgRegistrationStatusCode.CompleteSuccess,
                         _ => OrgRegistrationStatusCode.CompleteFailed,
                     };
-                    userInfos.Add(ui);
-                }
-            }
-
-            //check org portal user
-            var identityResult = await _idRepository.Query(
-                new IdentityQuery(userGuid, null),
-                ct);
-            if (identityResult?.Identities != null)
-            {
-                foreach (Identity id in identityResult.Identities)
-                {
-                    var result = (OrgUsersResult)await _orgUserRepository.QueryOrgUserAsync(new OrgUsersSearch(null, id.Id), ct);
-                    foreach (UserResult u in result.UserResults)
+                    ui.OrgRegistrationId = latestReg?.OrgRegistrationId;
+                    ui.OrgName = latestReg.OrganizationName;
+                    if (ui.OrgRegistrationStatusCode == OrgRegistrationStatusCode.CompleteFailed)
                     {
-                        UserInfo ui = _mapper.Map<UserInfo>(u);
-                        if (u.OrganizationId != null)
-                        {
-                            var orgResult = await _orgRepository.QueryOrgAsync(new OrgByIdQry((Guid)u.OrganizationId), ct);
-                            if (orgResult != null) // do not add an inactive organization
-                            {
-                                ui.OrgName = orgResult.OrgResult.OrganizationName;
-                                ui.OrgSettings = _mapper.Map<OrgSettings>(orgResult.OrgResult);
-                                userInfos.Add(ui);
-                            }
-                        }
+                        ui.Msg = "Your organization's registration request was not approved. Visit SPD webpage for more information about the Criminal Records Review Program.";
                     }
                 }
+                userInfos.Add(ui);
+                UserProfileResponse response = new()
+                {
+                    IdentityProviderType = IdentityProviderTypeCode.BusinessBceId,
+                    UserDisplayName = request.PortalUserIdentity.DisplayName,
+                    UserGuid = request.PortalUserIdentity.UserGuid,
+                    UserInfos = userInfos
+                };
+                return response;
             }
 
-            UserProfileResponse response = new()
+            foreach (OrgResult org in orgResult.OrgResults)
             {
-                IdentityProviderType = IdentityProviderTypeCode.BusinessBceId, 
-                UserDisplayName = _currentUser.GetUserDisplayName(),
-                UserGuid = _currentUser.GetUserGuid(),
+                UserInfo ui;
+                var orgUsers = (OrgUsersResult)await _orgUserRepository.QueryOrgUserAsync(new OrgUsersSearch(org.Id), ct);
+                var u = orgUsers.UserResults.FirstOrDefault(u => u.UserGuid == userGuid && u.IsActive);
+                if (u != null)
+                    ui = _mapper.Map<UserInfo>(u);
+                else
+                    ui = new UserInfo() { Msg = "You don't have an active account with this organization. Please contact the primary authorized contact in your organization to get access to the portal." };
+                ui.OrgName = org.OrganizationName;
+                ui.OrgSettings = _mapper.Map<OrgSettings>(org);
+                userInfos.Add(ui);
+            }
+
+            return new UserProfileResponse()
+            {
+                IdentityProviderType = IdentityProviderTypeCode.BusinessBceId,
+                UserDisplayName = request.PortalUserIdentity.DisplayName,
+                UserGuid = request.PortalUserIdentity.UserGuid,
                 UserInfos = userInfos
             };
-            return response;
         }
     }
 }

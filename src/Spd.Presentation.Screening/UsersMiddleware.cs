@@ -1,3 +1,4 @@
+using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Membership.UserProfile;
@@ -12,13 +13,15 @@ namespace Spd.Utilities.LogonUser
     {
         private readonly RequestDelegate next;
         private readonly IDistributedCache cache;
+        private readonly IMapper mapper;
         private readonly BCeIDAuthenticationConfiguration? bceidConfig;
         private readonly BcscAuthenticationConfiguration? bcscConfig;
 
-        public UsersMiddleware(RequestDelegate next, IDistributedCache cache, IConfiguration configuration)
+        public UsersMiddleware(RequestDelegate next, IDistributedCache cache, IConfiguration configuration, IMapper mapper)
         {
             this.next = next;
             this.cache = cache;
+            this.mapper = mapper;
             bceidConfig = configuration
                 .GetSection(BCeIDAuthenticationConfiguration.Name)
                 .Get<BCeIDAuthenticationConfiguration>();
@@ -106,7 +109,8 @@ namespace Spd.Utilities.LogonUser
             UserProfileResponse? userProfile = await cache.Get<UserProfileResponse>($"user-{context.User.GetUserGuid()}");
             if (userProfile == null)
             {
-                userProfile = await mediator.Send(new GetCurrentUserProfileQuery());
+                var userIdInfo = context.User.GetPortalUserIdentityInfo();
+                userProfile = await mediator.Send(new GetCurrentUserProfileQuery(mapper.Map<PortalUserIdentity>(userIdInfo)));
                 await cache.Set<UserProfileResponse>($"user-{context.User.GetUserGuid()}", userProfile, new TimeSpan(0, 30, 0));
             }
 
