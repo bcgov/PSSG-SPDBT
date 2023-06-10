@@ -20,10 +20,12 @@ namespace Spd.Resource.Organizations.Registration
         {
             var orgRegs = _dynaContext.spd_orgregistrations;
 
+            if (!query.IncludeInactive)
+                orgRegs = (DataServiceQuery<spd_orgregistration>)orgRegs.Where(o => o.statecode != DynamicsConstants.StateCode_Inactive);
             if (query.UserGuid != null)
-                orgRegs = (DataServiceQuery<spd_orgregistration>)orgRegs.Where(o => o.statecode != DynamicsConstants.StateCode_Inactive).Where(o => o.spd_portaluseridentityguid == query.UserGuid.ToString());
+                orgRegs = (DataServiceQuery<spd_orgregistration>)orgRegs.Where(o => o.spd_portaluseridentityguid == query.UserGuid.ToString());
             if (query.OrgGuid != null)
-                orgRegs = (DataServiceQuery<spd_orgregistration>)orgRegs.Where(o => o.statecode != DynamicsConstants.StateCode_Inactive).Where(o => o.spd_identityguid == query.OrgGuid.ToString());
+                orgRegs = (DataServiceQuery<spd_orgregistration>)orgRegs.Where(o => o.spd_identityguid == query.OrgGuid.ToString());
             if (query.RegistrationNumber != null)
                 orgRegs = (DataServiceQuery<spd_orgregistration>)orgRegs.Where(o => o.spd_registrationnumber == query.RegistrationNumber);
 
