@@ -119,7 +119,7 @@ namespace Spd.Manager.Membership.OrgUser
             {
                 userResps = userResps.Where(u => u.IsActive);
             }
-            var org = await _orgRepository.QueryOrgAsync(new OrgByIdQry(request.OrganizationId), ct);
+            var org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdQry(request.OrganizationId), ct);
 
             return new OrgUserListResponse
             {
@@ -140,7 +140,7 @@ namespace Spd.Manager.Membership.OrgUser
         }
         private async Task CheckMaxRoleNumberRuleAsync(List<UserResult> userList, Guid orgId, CancellationToken ct)
         {
-            var org = await _orgRepository.QueryOrgAsync(new OrgByIdQry(orgId), ct);
+            var org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdQry(orgId), ct);
             int maxContacts = org != null ? org.OrgResult.MaxContacts : 0;
             int maxPrimaryContacts = org != null ? org.OrgResult.MaxPrimaryContacts : 0;
             int userNo = userList.Count;
