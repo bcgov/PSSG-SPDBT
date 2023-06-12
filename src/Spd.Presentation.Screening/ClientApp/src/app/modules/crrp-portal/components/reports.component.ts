@@ -15,8 +15,19 @@ import { UtilService } from 'src/app/core/services/util.service';
 				</div>
 			</div>
 
+			<div class="row mt-4">
+				<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
+					<app-month-picker
+						label="Filter"
+						hint="Select the year and month to filter the report list"
+						[monthAndYear]="reportMonthYear"
+						(monthAndYearChange)="onMonthAndYearChange($event)"
+					></app-month-picker>
+				</div>
+			</div>
+
 			<div class="row mb-4">
-				<div class="col-xxl-8 col-xl-9 col-lg-12 col-md-12 col-sm-12">
+				<div class="col-xxl-7 col-xl-8 col-lg-12 col-md-12 col-sm-12">
 					<mat-table [dataSource]="dataSource">
 						<ng-container matColumnDef="filename">
 							<mat-header-cell *matHeaderCellDef></mat-header-cell>
@@ -32,7 +43,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 								<span class="mobile-label"></span>
 								<button
 									mat-flat-button
-									class="table-button m-2"
+									class="table-button w-auto m-2"
 									style="color: var(--color-primary-light);"
 									aria-label="Download"
 									matTooltip="Download"
@@ -58,7 +69,17 @@ import { UtilService } from 'src/app/core/services/util.service';
 			</div>
 		</section>
 	`,
-	styles: [],
+	styles: [
+		`
+			.mat-column-action {
+				text-align: right;
+				justify-content: flex-end;
+				min-width: 140px;
+				padding-right: 4px !important;
+				padding-left: 4px !important;
+			}
+		`,
+	],
 })
 export class ReportsComponent {
 	private queryParams: any = this.utilService.getDefaultQueryParams();
@@ -76,6 +97,11 @@ export class ReportsComponent {
 		this.loadList();
 	}
 
+	onMonthAndYearChange(val: any) {
+		console.log('onMonthAndYearChange', val);
+		this.loadList();
+	}
+
 	onPageChanged(page: PageEvent): void {
 		this.queryParams.page = page.pageIndex;
 		this.loadList();
@@ -88,6 +114,12 @@ export class ReportsComponent {
 			},
 			{
 				filename: 'Monthly Screening Report Apr 2023',
+			},
+			{
+				filename: 'Monthly Screening Report Mar 2023',
+			},
+			{
+				filename: 'Monthly Screening Report Feb 2023',
 			},
 		];
 		this.dataSource = new MatTableDataSource(dataList);

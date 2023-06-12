@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { GenderTypes } from 'src/app/core/code-types/model-desc.models';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { CrcFormStepComponent } from '../crc.component';
+import { AppInviteOrgData, CrcFormStepComponent } from '../crc.component';
 
 @Component({
 	selector: 'app-personal-information',
@@ -38,12 +38,12 @@ import { CrcFormStepComponent } from '../crc.component';
 								<mat-label>Birthplace</mat-label>
 								<input
 									matInput
-									formControlName="birthplace"
+									formControlName="birthPlace"
 									placeholder="City, Country"
 									[errorStateMatcher]="matcher"
 									maxlength="100"
 								/>
-								<mat-error *ngIf="form.get('birthplace')?.hasError('required')">This is required</mat-error>
+								<mat-error *ngIf="form.get('birthPlace')?.hasError('required')">This is required</mat-error>
 							</mat-form-field>
 						</div>
 						<div class="col-lg-4 col-md-12 col-sm-12">
@@ -64,13 +64,25 @@ import { CrcFormStepComponent } from '../crc.component';
 	styles: [],
 })
 export class PersonalInformationComponent implements CrcFormStepComponent {
+	private _orgData: AppInviteOrgData | null = null;
+	@Input()
+	set orgData(data: AppInviteOrgData | null) {
+		if (!data) return;
+
+		this._orgData = data;
+		this.form = this.formBuilder.group({
+			birthPlace: new FormControl(data.birthPlace, [Validators.required]),
+			driversLicense: new FormControl(data.driversLicense),
+			dateOfBirth: new FormControl(data.dateOfBirth, [Validators.required]),
+			genderCode: new FormControl(data.genderCode),
+		});
+	}
+	get orgData(): AppInviteOrgData | null {
+		return this._orgData;
+	}
+
 	genderCodes = GenderTypes;
-	form: FormGroup = this.formBuilder.group({
-		birthplace: new FormControl('', [Validators.required]),
-		driversLicense: new FormControl(''),
-		dateOfBirth: new FormControl('', [Validators.required]),
-		genderCode: new FormControl(''),
-	});
+	form!: FormGroup;
 	startDate = new Date(2000, 0, 1);
 	matcher = new FormErrorStateMatcher();
 

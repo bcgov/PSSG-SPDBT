@@ -60,8 +60,9 @@ import { DeclarationComponent } from '../step-components/declaration.component';
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="goToStepNext(STEP_TERMS)">
-							<span *ngIf="orgData?.payeeType == payeePreferenceTypeCodes.Applicant; else noPay">Pay</span>
-							<ng-template #noPay>Submit</ng-template>
+							Submit
+							<!-- <span *ngIf="orgData?.payeeType == payeePreferenceTypeCodes.Applicant; else noPay">Pay</span>
+							<ng-template #noPay>Submit</ng-template> -->
 						</button>
 					</div>
 				</div>
