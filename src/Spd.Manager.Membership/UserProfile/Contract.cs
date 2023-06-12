@@ -51,7 +51,7 @@ namespace Spd.Manager.Membership.UserProfile
         public string? DisplayName { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
-        public string? PreferedUserName { get; set; }
+        public string? PreferredUserName { get; set; }
         public Guid? UserGuid { get; set; }
         public Guid BizGuid { get; set; }
         public string? BizName { get; set; }

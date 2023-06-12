@@ -62,7 +62,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../crc.component';
 					<div class="row" *ngIf="facilityNameRequired">
 						<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
 							<mat-form-field>
-								<mat-label>Facility Name</mat-label>
+								<mat-label>Company / Facility Name</mat-label>
 								<input matInput formControlName="contractedCompanyName" />
 								<mat-hint>(Licensed Child Care Name or Adult Care Facility Name)</mat-hint>
 								<mat-error *ngIf="form.get('contractedCompanyName')?.hasError('required')">This is required</mat-error>
@@ -98,7 +98,7 @@ export class SecurityInformationComponent implements CrcFormStepComponent {
 					value: this.optionsPipe.transform(data.worksWith, 'EmployeeInteractionTypes'),
 					disabled: true,
 				}),
-				contractedCompanyName: new FormControl('', [Validators.required]),
+				contractedCompanyName: new FormControl(data.contractedCompanyName, [Validators.required]),
 			},
 			{
 				validators: [

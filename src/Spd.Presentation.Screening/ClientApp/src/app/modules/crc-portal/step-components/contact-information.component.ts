@@ -93,6 +93,7 @@ export class ContactInformationComponent implements CrcFormStepComponent {
 		if (!data) return;
 
 		this._orgData = data;
+		//{ value: this._orgData.givenName, disabled: data.readonlyTombstone ?? false }
 		this.form = this.formBuilder.group(
 			{
 				givenName: new FormControl(this._orgData.givenName, [Validators.required]),

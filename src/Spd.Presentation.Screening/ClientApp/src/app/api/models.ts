@@ -2,6 +2,7 @@ export { ActionResult } from './models/action-result';
 export { AddressFindResponse } from './models/address-find-response';
 export { AddressRetrieveResponse } from './models/address-retrieve-response';
 export { AliasCreateRequest } from './models/alias-create-request';
+export { AnonymousApplicantAppCreateRequest } from './models/anonymous-applicant-app-create-request';
 export { AnonymousOrgRegistrationCreateRequest } from './models/anonymous-org-registration-create-request';
 export { AppInviteVerifyRequest } from './models/app-invite-verify-request';
 export { AppInviteVerifyResponse } from './models/app-invite-verify-response';

@@ -93,7 +93,7 @@ namespace Spd.Utilities.LogonUser
                 Email = claim.GetClaimValue("email"),
                 FirstName = claim.GetClaimValue("given_name"),
                 LastName = claim.GetClaimValue("family_name"),
-                PreferedUserName = claim.GetClaimValue("preferred_username"),
+                PreferredUserName = claim.GetClaimValue("preferred_username"),
                 BCeIDUserName = claim.GetClaimValue("bceid_username"),
                 UserGuid = claim.GetClaimValue("bceid_user_guid") == null ? Guid.Empty : Guid.Parse(claim.GetClaimValue("bceid_user_guid")),
                 EmailVerified = claim.GetClaimValue("email_verified") == null ? null : Boolean.Parse(claim.GetClaimValue("email_verified")),

@@ -5,6 +5,6 @@ import { UserInfo } from './user-info';
 export interface UserProfileResponse {
   identityProviderType?: IdentityProviderTypeCode;
   userDisplayName?: null | string;
-  userGuid?: string;
+  userGuid?: null | string;
   userInfos?: null | Array<UserInfo>;
 }
