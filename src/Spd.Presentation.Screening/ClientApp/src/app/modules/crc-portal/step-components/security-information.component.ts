@@ -98,7 +98,7 @@ export class SecurityInformationComponent implements CrcFormStepComponent {
 					value: this.optionsPipe.transform(data.worksWith, 'EmployeeInteractionTypes'),
 					disabled: true,
 				}),
-				contractedCompanyName: new FormControl('', [Validators.required]),
+				contractedCompanyName: new FormControl(data.contractedCompanyName, [Validators.required]),
 			},
 			{
 				validators: [

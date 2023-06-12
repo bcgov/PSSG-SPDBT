@@ -63,18 +63,29 @@ namespace Spd.Presentation.Screening.Controllers
                 "diverse" => GenderCode.X,
                 _ => null,
             };
+
             return new ApplicantProfileResponse
             {
-                Email = info.Email,
+                Email = ToTitleCase(info.Email),
                 EmailVerified = info.EmailVerified,
                 Age = info.Age,
                 BirthDate = info.BirthDate == null ? null : DateTimeOffset.ParseExact(info.BirthDate, "yyyy-MM-dd", CultureInfo.InvariantCulture),
-                DisplayName = info.DisplayName,
-                FirstName = info.FirstName,
-                LastName = info.LastName,
+                DisplayName = ToTitleCase(info.DisplayName),
+                FirstName = ToTitleCase(info.FirstName),
+                LastName = ToTitleCase(info.LastName),
                 GenderCode = gender,
                 Sub = info.Sub,
             };
+        }
+        private string? ToTitleCase(string? strText)
+        {
+            if (strText == null)
+            {
+                return null;
+            }
+
+            TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
+            return textInfo.ToTitleCase(strText.ToLower());
         }
     }
 

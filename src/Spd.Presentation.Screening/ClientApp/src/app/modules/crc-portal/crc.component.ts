@@ -4,8 +4,15 @@ import { Location } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
+import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
-import { ApplicantAppCreateRequest, EmployeeInteractionTypeCode, IdentityProviderTypeCode } from 'src/app/api/models';
+import {
+	ApplicantAppCreateRequest,
+	ApplicationCreateResponse,
+	EmployeeInteractionTypeCode,
+	IdentityProviderTypeCode,
+} from 'src/app/api/models';
+import { ApplicantService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
@@ -160,7 +167,9 @@ export class CrcComponent implements OnInit {
 		private utilService: UtilService,
 		private authenticationService: AuthenticationService,
 		private authUserService: AuthUserService,
-		private location: Location
+		private applicantService: ApplicantService,
+		private location: Location,
+		private hotToast: HotToastService
 	) {}
 
 	async ngOnInit(): Promise<void> {
@@ -172,23 +181,21 @@ export class CrcComponent implements OnInit {
 			)
 			.subscribe(() => this.breakpointChanged());
 
-		this.orgData = (this.location.getState() as any).orgData;
-		if (this.orgData) {
-			this.orgData.orgAddress = this.utilService.getAddressString({
-				addressLine1: this.orgData.orgAddressLine1!,
-				addressLine2: this.orgData.orgAddressLine2 ?? undefined,
-				city: this.orgData.orgCity!,
-				province: this.orgData.orgProvince!,
-				postalCode: this.orgData.orgPostalCode!,
-				country: this.orgData.orgCountry!,
+		const orgData = (this.location.getState() as any).orgData;
+		if (orgData) {
+			orgData.orgAddress = this.utilService.getAddressString({
+				addressLine1: orgData.orgAddressLine1!,
+				addressLine2: orgData.orgAddressLine2 ?? undefined,
+				city: orgData.orgCity!,
+				province: orgData.orgProvince!,
+				postalCode: orgData.orgPostalCode!,
+				country: orgData.orgCountry!,
 			});
 
 			// TODO hardcode for now
-			this.orgData.performPaymentProcess = false;
-			// this.orgData.readonlyTombstone = false;
+			orgData.performPaymentProcess = false;
+			// orgData.readonlyTombstone = false;
 		}
-
-		console.debug('orgData', this.orgData);
 
 		//auth step 1 - user is not logged in, no state at all
 		//auth step 3 - angular loads again here, KC posts the token, oidc lib reads token and returns state
@@ -204,8 +211,13 @@ export class CrcComponent implements OnInit {
 					this.postLoginNavigate(stateInfo);
 					return;
 				}
+			} else {
+				this.assignWhoamiData(orgData);
 			}
 		}
+
+		// Assign this at the end so that the orgData setters have the correct information.
+		this.orgData = orgData;
 
 		if (!this.orgData) {
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
@@ -291,16 +303,11 @@ export class CrcComponent implements OnInit {
 
 	private postLoginNavigate(stepperData: any): void {
 		this.currentStateInfo = JSON.parse(stepperData);
-		this.orgData = JSON.parse(stepperData);
-		if (this.orgData) {
-			const applicantProfile = this.authUserService.applicantProfile;
-			// this.orgData.readonlyTombstone = true;
-			this.orgData.givenName = applicantProfile?.firstName;
-			this.orgData.surname = applicantProfile?.lastName;
-			this.orgData.dateOfBirth = applicantProfile?.birthDate;
-			this.orgData.emailAddress = applicantProfile?.email;
-			this.orgData.genderCode = applicantProfile?.genderCode;
-		}
+		const orgData = JSON.parse(stepperData);
+		this.assignWhoamiData(orgData);
+
+		// Assign this at the end so that the orgData setters have the correct information.
+		this.orgData = orgData;
 
 		for (let i = 0; i <= 2; i++) {
 			let step = this.stepper.steps.get(i);
@@ -329,21 +336,38 @@ export class CrcComponent implements OnInit {
 		body.genderCode = dataToSave.genderCode ? dataToSave.genderCode : null;
 		console.debug('[onSaveStepperStep] dataToSave', body);
 
-		// if (this.authenticationService.isLoggedIn()) {
-		// 	this.applicantService
-		// 		.apiApplicantsScreeningsPost({ body })
-		// 		.pipe()
-		// 		.subscribe((res: ApplicationCreateResponse) => {
-		// 			this.stepper.next();
-		// 		});
-		// } else {
-		// 	this.applicantService
-		// 		.apiApplicantsScreeningsPost({ body })
-		// 		.pipe()
-		// 		.subscribe((res: ApplicationCreateResponse) => {
-		// 			this.stepper.next();
-		// 		});
-		// }
+		if (this.authenticationService.isLoggedIn()) {
+			body.haveVerifiedIdentity = true;
+			this.applicantService
+				.apiApplicantsScreeningsPost({ body })
+				.pipe()
+				.subscribe((res: ApplicationCreateResponse) => {
+					this.hotToast.success('Application was successfully saved');
+					this.stepper.next();
+				});
+		} else {
+			body.haveVerifiedIdentity = false;
+			this.applicantService
+				.apiApplicantsScreeningsAnonymousPost({ body })
+				.pipe()
+				.subscribe((res: ApplicationCreateResponse) => {
+					this.hotToast.success('Application was successfully saved');
+					this.stepper.next();
+				});
+		}
+	}
+
+	private assignWhoamiData(orgData: AppInviteOrgData | null): void {
+		if (orgData) {
+			const applicantProfile = this.authUserService.applicantProfile;
+
+			// orgData.readonlyTombstone = true;
+			orgData.givenName = applicantProfile?.firstName;
+			orgData.surname = applicantProfile?.lastName;
+			orgData.dateOfBirth = applicantProfile?.birthDate;
+			orgData.emailAddress = applicantProfile?.email;
+			orgData.genderCode = applicantProfile?.genderCode;
+		}
 	}
 
 	private getDataToSave(): any {

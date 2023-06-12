@@ -38,12 +38,12 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../crc.component';
 								<mat-label>Birthplace</mat-label>
 								<input
 									matInput
-									formControlName="birthplace"
+									formControlName="birthPlace"
 									placeholder="City, Country"
 									[errorStateMatcher]="matcher"
 									maxlength="100"
 								/>
-								<mat-error *ngIf="form.get('birthplace')?.hasError('required')">This is required</mat-error>
+								<mat-error *ngIf="form.get('birthPlace')?.hasError('required')">This is required</mat-error>
 							</mat-form-field>
 						</div>
 						<div class="col-lg-4 col-md-12 col-sm-12">
@@ -71,8 +71,8 @@ export class PersonalInformationComponent implements CrcFormStepComponent {
 
 		this._orgData = data;
 		this.form = this.formBuilder.group({
-			birthplace: new FormControl('', [Validators.required]),
-			driversLicense: new FormControl(''),
+			birthPlace: new FormControl(data.birthPlace, [Validators.required]),
+			driversLicense: new FormControl(data.driversLicense),
 			dateOfBirth: new FormControl(data.dateOfBirth, [Validators.required]),
 			genderCode: new FormControl(data.genderCode),
 		});

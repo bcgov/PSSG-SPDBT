@@ -27,7 +27,7 @@ export class AuthenticationService {
 		loginType: IdentityProviderTypeCode,
 		returnComponentRoute: string
 	): Promise<{ state: any; loggedIn: boolean }> {
-		await this.configureOAuthService(loginType, window.location.origin + returnComponentRoute);
+		await this.configService.configureOAuthService(loginType, window.location.origin + returnComponentRoute);
 
 		const isLoggedIn = await this.oauthService
 			.loadDiscoveryDocumentAndTryLogin()
@@ -53,7 +53,7 @@ export class AuthenticationService {
 		loginType: IdentityProviderTypeCode,
 		returnComponentRoute: string | undefined = undefined
 	): Promise<string | null> {
-		await this.configureOAuthService(loginType, window.location.origin + returnComponentRoute);
+		await this.configService.configureOAuthService(loginType, window.location.origin + returnComponentRoute);
 
 		const returnRoute = location.pathname.substring(1);
 		console.debug('[AuthenticationService] login', returnComponentRoute, returnRoute);
@@ -88,20 +88,6 @@ export class AuthenticationService {
 
 	public isLoggedIn(): boolean {
 		return this.oauthService.hasValidAccessToken();
-	}
-
-	public async configureOAuthService(loginType: IdentityProviderTypeCode, redirectUri: string): Promise<void> {
-		if (loginType == IdentityProviderTypeCode.BusinessBceId) {
-			return this.configService.getBceidConfig(redirectUri).then((config) => {
-				this.oauthService.configure(config);
-				this.oauthService.setupAutomaticSilentRefresh();
-			});
-		}
-
-		return this.configService.getBcscConfig(redirectUri).then((config) => {
-			this.oauthService.configure(config);
-			this.oauthService.setupAutomaticSilentRefresh();
-		});
 	}
 
 	private notify(isLoggedIn: boolean): void {
