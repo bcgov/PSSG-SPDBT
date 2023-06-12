@@ -40,7 +40,7 @@ namespace Spd.Manager.Membership.UserProfile
     public enum UserInfoMsgTypeCode
     {
         REGISTRATION_NOT_APPROVED,
-        ACCONT_NOT_MATCH_RECORD,
+        ACCOUNT_NOT_MATCH_RECORD,
         NO_ACTIVE_ACCOUNT_FOR_ORG
     }
 

@@ -6,10 +6,15 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
+import { AuthenticationService } from '../services/authentication.service';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
-	constructor(private router: Router, private dialog: MatDialog) {}
+	constructor(
+		private router: Router,
+		private authenticationService: AuthenticationService,
+		private dialog: MatDialog
+	) {}
 
 	intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 		return next.handle(request).pipe(
@@ -18,12 +23,42 @@ export class ErrorInterceptor implements HttpInterceptor {
 				let message = 'An error has occurred';
 				console.error('ErrorInterceptor errorResponse', errorResponse);
 
+				const status = errorResponse.status;
+				switch (status) {
+					case 400:
+						title = 'Bad Request';
+						break;
+					case 401:
+						title = 'Unauthorized';
+						break;
+					case 403:
+						title = 'Forbidden';
+						break;
+					case 404:
+						title = 'Not Found';
+						break;
+					case 422:
+						title = 'Unprocessable Entity';
+						break;
+					case 500:
+						title = 'Internal Server Error';
+						break;
+					case 503:
+						title = 'Service Unavailable';
+						break;
+					default:
+						title = 'Unhandled HTTP response.';
+						break;
+				}
+
 				// Handling 401 that can occur when you are logged into the wrong identity authority
 				if (
 					errorResponse.status == 401 &&
 					(errorResponse.url?.includes('whoami') || errorResponse.url?.includes('applicants/invites'))
 				) {
-					this.router.navigate([AppRoutes.LANDING]);
+					this.authenticationService.logout();
+					this.router.navigate([AppRoutes.ACCESS_DENIED]);
+					return next.handle(request); // do not show error
 				}
 
 				if (errorResponse.error) {
@@ -32,7 +67,7 @@ export class ErrorInterceptor implements HttpInterceptor {
 					}
 
 					if (errorResponse.error?.errors) {
-						title = errorResponse.error.title;
+						title = title ? title : errorResponse.error.title;
 						message = '<ul>';
 						for (const key in errorResponse.error?.errors) {
 							const value = errorResponse.error?.errors[key];
@@ -44,7 +79,7 @@ export class ErrorInterceptor implements HttpInterceptor {
 					} else if (errorResponse.error?.message) {
 						message = errorResponse.error?.message;
 					} else {
-						title = errorResponse.statusText;
+						title = title ? title : errorResponse.statusText;
 						message = errorResponse.message;
 					}
 				} else {
@@ -65,14 +100,5 @@ export class ErrorInterceptor implements HttpInterceptor {
 				return throwError(() => new Error(message));
 			})
 		) as Observable<HttpEvent<any>>;
-	}
-
-	private isJson(str: any): boolean {
-		try {
-			JSON.parse(str);
-		} catch (e) {
-			return false;
-		}
-		return true;
 	}
 }
