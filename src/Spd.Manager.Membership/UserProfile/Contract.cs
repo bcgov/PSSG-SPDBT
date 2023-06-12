@@ -34,7 +34,14 @@ namespace Spd.Manager.Membership.UserProfile
         public OrgRegistrationStatusCode? OrgRegistrationStatusCode { get; set; } = null;
         public string? OrgName { get; set; }
         public Guid? UserGuid { get; set; }
-        public string? Msg { get; set; }
+        public UserInfoMsgTypeCode? UserInfoMsgType { get; set; }
+    }
+
+    public enum UserInfoMsgTypeCode
+    {
+        REGISTRATION_NOT_APPROVED,
+        ACCONT_NOT_MATCH_RECORD,
+        NO_ACTIVE_ACCOUNT_FOR_ORG
     }
 
     public record OrgSettings
