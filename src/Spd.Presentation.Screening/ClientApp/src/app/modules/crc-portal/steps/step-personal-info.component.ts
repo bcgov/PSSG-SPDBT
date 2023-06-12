@@ -27,7 +27,7 @@ import { PreviousNameComponent } from '../step-components/previous-name.componen
 			</mat-step>
 
 			<mat-step>
-				<app-personal-information></app-personal-information>
+				<app-personal-information *ngIf="orgData" [orgData]="orgData"></app-personal-information>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
