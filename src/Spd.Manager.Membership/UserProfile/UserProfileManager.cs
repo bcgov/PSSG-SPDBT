@@ -49,7 +49,7 @@ namespace Spd.Manager.Membership.UserProfile
                 UserInfo ui = new UserInfo();
                 if (latestReg == null)
                 {
-                    ui.Msg = "Your account doesn't match our records. Visit SPD webpage to learn more or register for the Criminal Records Review Program.";
+                    ui.UserInfoMsgType = UserInfoMsgTypeCode.ACCONT_NOT_MATCH_RECORD;
                 }
                 else
                 {
@@ -65,7 +65,7 @@ namespace Spd.Manager.Membership.UserProfile
                     ui.OrgName = latestReg.OrganizationName;
                     if (ui.OrgRegistrationStatusCode == OrgRegistrationStatusCode.CompleteFailed)
                     {
-                        ui.Msg = "Your organization's registration request was not approved. Visit SPD webpage for more information about the Criminal Records Review Program.";
+                        ui.UserInfoMsgType = UserInfoMsgTypeCode.REGISTRATION_NOT_APPROVED;
                     }
                 }
                 userInfos.Add(ui);
@@ -87,7 +87,7 @@ namespace Spd.Manager.Membership.UserProfile
                 if (u != null)
                     ui = _mapper.Map<UserInfo>(u);
                 else
-                    ui = new UserInfo() { Msg = "You don't have an active account with this organization. Please contact the primary authorized contact in your organization to get access to the portal." };
+                    ui = new UserInfo() { UserInfoMsgType = UserInfoMsgTypeCode.REGISTRATION_NOT_APPROVED };
                 ui.OrgName = org.OrganizationName;
                 ui.OrgSettings = _mapper.Map<OrgSettings>(org);
                 userInfos.Add(ui);
