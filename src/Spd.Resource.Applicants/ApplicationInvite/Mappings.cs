@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.ResourceContracts;
+using Spd.Utilities.Shared.Tools;
 
 namespace Spd.Resource.Applicants.ApplicationInvite
 {
@@ -11,10 +12,10 @@ namespace Spd.Resource.Applicants.ApplicationInvite
         {
             _ = CreateMap<ApplicationInvite, spd_portalinvitation>()
             .ForMember(d => d.spd_portalinvitationid, opt => opt.MapFrom(s => Guid.NewGuid()))
-            .ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => s.FirstName))
-            .ForMember(d => d.spd_surname, opt => opt.MapFrom(s => s.LastName))
+            .ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.FirstName)))
+            .ForMember(d => d.spd_surname, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.LastName)))
             .ForMember(d => d.spd_email, opt => opt.MapFrom(s => s.Email))
-            .ForMember(d => d.spd_jobtitle, opt => opt.MapFrom(s => s.JobTitle))
+            .ForMember(d => d.spd_jobtitle, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.JobTitle)))
             .ForMember(d => d.spd_invitationtype, opt => opt.MapFrom(s => InvitationTypeOptionSet.ScreeningRequest))
             .ForMember(d => d.spd_screeningrequesttype, opt => opt.MapFrom(s => (int)Enum.Parse<ScreenTypeOptionSet>(s.ScreenType.ToString())))
             .ForMember(d => d.spd_views, opt => opt.MapFrom(s => 0))
