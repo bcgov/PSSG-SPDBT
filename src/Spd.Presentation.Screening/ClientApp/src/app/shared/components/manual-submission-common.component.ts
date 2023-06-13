@@ -123,7 +123,7 @@ export interface AliasCreateRequest {
 					</div>
 					<div class="col-xl-3 col-lg-6 col-md-12">
 						<mat-form-field>
-							<mat-label>Gender <span class="optional-label">(optional)</span></mat-label>
+							<mat-label>Sex <span class="optional-label">(optional)</span></mat-label>
 							<mat-select formControlName="genderCode">
 								<mat-option *ngFor="let gdr of genderCodes" [value]="gdr.code">
 									{{ gdr.desc }}

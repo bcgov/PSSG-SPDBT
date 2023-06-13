@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IsActiveMatchOptions, NavigationEnd, QueryParamsHandling, Router } from '@angular/router';
 import { filter } from 'rxjs';
 import { IdentityProviderTypeCode } from 'src/app/api/models';
+import { AppRoutes } from 'src/app/app-routing.module';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { CrrpRoutes } from './crrp-routing.module';
@@ -198,6 +199,12 @@ export class CrrpComponent {
 		// console.debug('nextUrl', nextUrl);
 
 		if (nextUrl) {
+			const userInfoMsgType = this.authUserService.userInfo?.userInfoMsgType;
+			if (userInfoMsgType) {
+				this.router.navigate([AppRoutes.ACCESS_DENIED], { state: { userInfoMsgType: userInfoMsgType } });
+				return;
+			}
+
 			const nextRoute = decodeURIComponent(nextUrl);
 			// console.debug('nextRoute', nextRoute);
 
