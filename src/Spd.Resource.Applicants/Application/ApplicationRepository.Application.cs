@@ -133,9 +133,32 @@ internal partial class ApplicationRepository : IApplicationRepository
 
     private contact? GetContact(ApplicationCreateCmd createApplicationCmd)
     {
-        if(createApplicationCmd.CreatedByApplicantSub != null)
+        if (createApplicationCmd.CreatedByApplicantSub != null)
         {
-            //todo: when dynamics ready, need to add contact and identity relationship
+            var identity = _context.spd_identities
+                .Where(i => i.spd_userguid == createApplicationCmd.CreatedByApplicantSub)
+                .Where(i => i.spd_type==(int)IdentityTypeOptionSet.BcServicesCard)
+                .FirstOrDefault();
+            if (identity == null)
+            {
+                identity = new spd_identity
+                {
+                    spd_identityid = Guid.NewGuid(),
+                    spd_userguid = createApplicationCmd.CreatedByApplicantSub,
+                    spd_type = (int)IdentityTypeOptionSet.BcServicesCard
+                };
+                _context.AddTospd_identities(identity);
+            }
+            else
+            {
+
+            }
+            //bcsc login
+            //if the identity not exists
+            //then create identity
+            //else
+
+
         }
         var contacts = _context.contacts
             .Where(o =>
@@ -243,9 +266,9 @@ internal partial class ApplicationRepository : IApplicationRepository
 
     //note: any change in this function, the operation number also needs to change in AddBulkAppsAsync
     private async Task<spd_application> CreateAppAsync(
-        ApplicationCreateCmd createApplicationCmd, 
-        account org, 
-        spd_portaluser? user, 
+        ApplicationCreateCmd createApplicationCmd,
+        account org,
+        spd_portaluser? user,
         team team,
         spd_servicetype? serviceType)
     {
