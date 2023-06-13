@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Membership.UserProfile;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared;
+using Spd.Utilities.Shared.Tools;
 using System.Globalization;
 using System.Security.Claims;
 using System.Security.Principal;
@@ -66,26 +67,16 @@ namespace Spd.Presentation.Screening.Controllers
 
             return new ApplicantProfileResponse
             {
-                Email = ToTitleCase(info.Email),
+                Email = StringHelper.ToTitleCase(info.Email),
                 EmailVerified = info.EmailVerified,
                 Age = info.Age,
                 BirthDate = info.BirthDate == null ? null : DateTimeOffset.ParseExact(info.BirthDate, "yyyy-MM-dd", CultureInfo.InvariantCulture),
-                DisplayName = ToTitleCase(info.DisplayName),
-                FirstName = ToTitleCase(info.FirstName),
-                LastName = ToTitleCase(info.LastName),
+                DisplayName = StringHelper.ToTitleCase(info.DisplayName),
+                FirstName = StringHelper.ToTitleCase(info.FirstName),
+                LastName = StringHelper.ToTitleCase(info.LastName),
                 GenderCode = gender,
                 Sub = info.Sub,
             };
-        }
-        private string? ToTitleCase(string? strText)
-        {
-            if (strText == null)
-            {
-                return null;
-            }
-
-            TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
-            return textInfo.ToTitleCase(strText.ToLower());
         }
     }
 
