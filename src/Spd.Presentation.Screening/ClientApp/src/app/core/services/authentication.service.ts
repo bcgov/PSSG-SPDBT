@@ -73,11 +73,14 @@ export class AuthenticationService {
 	}
 
 	public logout(): void {
+		const loginType = this.authUserService.loginType;
+
 		this.oauthService.logOut();
 		this.utilService.clearAllSessionData();
+		this.authUserService.clearUserData();
 		this.notify(false);
 
-		if (this.authUserService.loginType == IdentityProviderTypeCode.BcServicesCard) {
+		if (loginType == IdentityProviderTypeCode.BcServicesCard) {
 			this.router.navigate([AppRoutes.LANDING]);
 		}
 	}
