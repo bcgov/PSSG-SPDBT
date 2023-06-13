@@ -61,6 +61,8 @@ namespace Spd.Presentation.Screening.Controllers
                 throw new ApiException(System.Net.HttpStatusCode.Unauthorized, "there is no sub from bcsc.");
             }
             appCreateRequest.OriginTypeCode = ApplicationOriginTypeCode.Portal;
+
+            //add validation, appCreateRequest names must be the same as bcsc official name.
             return await _mediator.Send(new ApplicantApplicationCreateCommand(appCreateRequest, sub));
         }
 
