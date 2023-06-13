@@ -2,7 +2,6 @@ using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OData.Extensions.Client;
 using Spd.Resource.Organizations.Registration;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
@@ -25,9 +24,9 @@ namespace Spd.Resource.Organizations.Org
             return query switch
             {
                 OrgByOrgGuidQry q => await GetOrgsByOrgGuidAsync(q, ct),
-                OrgByIdQry q => await GetOrgByOrgIdAsync(q, ct),
+                OrgByIdentifierQry q => await GetOrgByIdentifierAsync(q, ct),
                 _ => throw new NotSupportedException($"{query.GetType().Name} is not supported")
-            };
+            }; ;
         }
 
         public async Task<OrgManageResult?> ManageOrgAsync(OrgCmd cmd, CancellationToken ct)
@@ -120,14 +119,22 @@ namespace Spd.Resource.Organizations.Org
             return new OrgsQryResult(_mapper.Map<IEnumerable<OrgResult>>(accounts));
         }
 
-        private async Task<OrgQryData?> GetOrgByOrgIdAsync(OrgByIdQry query, CancellationToken ct)
+        private async Task<OrgQryData?> GetOrgByIdentifierAsync(OrgByIdentifierQry query, CancellationToken ct)
         {
-            var org = await _dynaContext.GetOrgById(query.OrgId, ct);
-            if (org?.statecode == DynamicsConstants.StateCode_Inactive) return null;
+            IQueryable<account> accounts = _dynaContext.accounts.Where(a => a.statecode != DynamicsConstants.StateCode_Inactive);
+
+            if (query.OrgId != null)
+                accounts = accounts.Where(a => a.accountid == query.OrgId);
+            if (query.AccessCode != null)
+                accounts = accounts.Where(a => a.spd_accesscode == query.AccessCode);
+
+            account? org = await accounts.FirstOrDefaultAsync(ct);
+
+            if (org == null) throw new ApiException(HttpStatusCode.NotFound);
 
             //tried with org expand, does not work. so have to make another call.
             List<spd_servicetype_organization> serviceTypes = _dynaContext.spd_servicetype_organizationset
-                .Where(so => so.accountid == query.OrgId)
+                .Where(so => so.accountid == org.accountid)
                 .ToList();
 
             var response = _mapper.Map<OrgResult>(org);
