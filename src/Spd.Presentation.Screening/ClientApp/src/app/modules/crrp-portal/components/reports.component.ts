@@ -1,6 +1,9 @@
 import { Component, ViewChild } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { OrgReportListResponse, OrgReportResponse } from 'src/app/api/models';
+import { OrgReportService } from 'src/app/api/services';
+import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { UtilService } from 'src/app/core/services/util.service';
 
 @Component({
@@ -21,6 +24,8 @@ import { UtilService } from 'src/app/core/services/util.service';
 						label="Filter"
 						hint="Select the year and month to filter the report list"
 						[monthAndYear]="reportMonthYear"
+						[minDate]="minDate"
+						[maxDate]="maxDate"
 						(monthAndYearChange)="onMonthAndYearChange($event)"
 					></app-month-picker>
 				</div>
@@ -29,11 +34,11 @@ import { UtilService } from 'src/app/core/services/util.service';
 			<div class="row mb-4">
 				<div class="col-xxl-7 col-xl-8 col-lg-12 col-md-12 col-sm-12">
 					<mat-table [dataSource]="dataSource">
-						<ng-container matColumnDef="filename">
+						<ng-container matColumnDef="reportName">
 							<mat-header-cell *matHeaderCellDef></mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label"></span>
-								{{ application.filename }}
+								{{ application.reportName }}
 							</mat-cell>
 						</ng-container>
 
@@ -46,7 +51,6 @@ import { UtilService } from 'src/app/core/services/util.service';
 									class="table-button w-auto m-2"
 									style="color: var(--color-primary-light);"
 									aria-label="Download"
-									matTooltip="Download"
 								>
 									<mat-icon>file_download</mat-icon>Download
 								</button>
@@ -83,23 +87,30 @@ import { UtilService } from 'src/app/core/services/util.service';
 })
 export class ReportsComponent {
 	private queryParams: any = this.utilService.getDefaultQueryParams();
-	reportMonthYear: any;
+	private allReports: Array<OrgReportResponse> = [];
+	reportMonthYear: Date | null = null;
+	maxDate = new Date();
+	minDate = new Date(2023, 0, 1);
 
 	dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
-	columns: string[] = ['filename', 'action'];
+	columns: string[] = ['reportName', 'action'];
 
 	@ViewChild('paginator') paginator!: MatPaginator;
 
-	constructor(private utilService: UtilService) {}
+	constructor(
+		private utilService: UtilService,
+		private authUserService: AuthUserService,
+		private orgReportService: OrgReportService
+	) {}
 
 	ngOnInit() {
 		this.loadList();
 	}
 
-	onMonthAndYearChange(val: any) {
-		console.log('onMonthAndYearChange', val);
-		this.loadList();
+	onMonthAndYearChange(val: Date | null) {
+		this.reportMonthYear = val;
+		this.filterList();
 	}
 
 	onPageChanged(page: PageEvent): void {
@@ -108,20 +119,24 @@ export class ReportsComponent {
 	}
 
 	private loadList(): void {
-		const dataList = [
-			{
-				filename: 'Monthly Screening Report May 2023',
-			},
-			{
-				filename: 'Monthly Screening Report Apr 2023',
-			},
-			{
-				filename: 'Monthly Screening Report Mar 2023',
-			},
-			{
-				filename: 'Monthly Screening Report Feb 2023',
-			},
-		];
-		this.dataSource = new MatTableDataSource(dataList);
+		this.orgReportService
+			.apiOrgsOrgIdReportsGet({
+				orgId: this.authUserService.userInfo?.orgId!,
+			})
+			.pipe()
+			.subscribe((res: OrgReportListResponse) => {
+				this.allReports = res.reports as Array<OrgReportResponse>;
+				this.dataSource.data = this.allReports;
+				this.tablePaginator = { ...res.pagination };
+			});
+	}
+
+	private filterList(): void {
+		if (!this.reportMonthYear) {
+			this.dataSource.data = this.allReports;
+			return;
+		}
+
+		this.dataSource.data = [];
 	}
 }
