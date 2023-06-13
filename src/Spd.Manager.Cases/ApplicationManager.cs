@@ -11,7 +11,7 @@ namespace Spd.Manager.Cases
     internal class ApplicationManager :
         IRequestHandler<ApplicationInviteCreateCommand, ApplicationInvitesCreateResponse>,
         IRequestHandler<ApplicantApplicationCreateCommand, ApplicationCreateResponse>,
-        IRequestHandler<ApplicationInviteVerifyCommand, AppInviteVerifyResponse>,
+        IRequestHandler<ApplicationInviteVerifyCommand, AppOrgResponse>,
         IRequestHandler<ApplicationInviteListQuery, ApplicationInviteListResponse>,
         IRequestHandler<ApplicationInviteDeleteCommand, Unit>,
         IRequestHandler<ApplicationCreateCommand, ApplicationCreateResponse>,
@@ -84,12 +84,12 @@ namespace Spd.Manager.Cases
             await _applicationInviteRepository.DeleteApplicationInvitesAsync(cmd, ct);
             return default;
         }
-        public async Task<AppInviteVerifyResponse> Handle(ApplicationInviteVerifyCommand request, CancellationToken ct)
+        public async Task<AppOrgResponse> Handle(ApplicationInviteVerifyCommand request, CancellationToken ct)
         {
             var result = await _applicationInviteRepository.VerifyApplicationInvitesAsync(
                  new ApplicationInviteVerifyCmd(request.AppInvitesVerifyRequest.InviteEncryptedCode),
                  ct);
-            return _mapper.Map<AppInviteVerifyResponse>(result);
+            return _mapper.Map<AppOrgResponse>(result);
         }
         #endregion
 
@@ -143,12 +143,15 @@ namespace Spd.Manager.Cases
                 result.CreateSuccess = true;
             }
 
-            await _applicationInviteRepository.DeleteApplicationInvitesAsync(
-                new ApplicationInviteDeleteCmd()
-                {
-                    ApplicationInviteId = request.ApplicationCreateRequest.AppInviteId,
-                    OrgId = request.ApplicationCreateRequest.OrgId,
-                }, ct);
+            if (request.ApplicationCreateRequest.AppInviteId != null)
+            {
+                await _applicationInviteRepository.DeleteApplicationInvitesAsync(
+                    new ApplicationInviteDeleteCmd()
+                    {
+                        ApplicationInviteId =(Guid) request.ApplicationCreateRequest.AppInviteId,
+                        OrgId = request.ApplicationCreateRequest.OrgId,
+                    }, ct);
+            }
             return result;
         }
 
