@@ -11,7 +11,7 @@ namespace Spd.Manager.Membership.Org
     }
 
     public record OrgUpdateCommand(OrgUpdateRequest OrgUpdateRequest, Guid OrgId) : IRequest<OrgResponse>;
-    public record OrgGetQuery(Guid OrgId) : IRequest<OrgResponse>;
+    public record OrgGetQuery(Guid? OrgId, string? AccessCode = null) : IRequest<OrgResponse>;
     public record OrgInfo
     {
         public Guid Id { get; set; }

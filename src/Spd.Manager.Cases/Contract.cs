@@ -9,7 +9,7 @@ namespace Spd.Manager.Cases
     public interface IApplicationManager
     {
         public Task<ApplicationInvitesCreateResponse> Handle(ApplicationInviteCreateCommand request, CancellationToken ct);
-        public Task<AppInviteVerifyResponse> Handle(ApplicationInviteVerifyCommand request, CancellationToken ct);
+        public Task<AppOrgResponse> Handle(ApplicationInviteVerifyCommand request, CancellationToken ct);
         public Task<ApplicationInviteListResponse> Handle(ApplicationInviteListQuery request, CancellationToken ct);
         public Task<Unit> Handle(ApplicationInviteDeleteCommand request, CancellationToken ct);
         public Task<ApplicationListResponse> Handle(ApplicationListQuery request, CancellationToken ct);
@@ -33,13 +33,13 @@ namespace Spd.Manager.Cases
         public PaginationRequest Paging { get; set; } = null!;
     };
     public record ApplicationInviteDeleteCommand(Guid OrgId, Guid ApplicationInviteId) : IRequest<Unit>;
-    public record ApplicationInviteVerifyCommand(AppInviteVerifyRequest AppInvitesVerifyRequest) : IRequest<AppInviteVerifyResponse>;
+    public record ApplicationInviteVerifyCommand(AppInviteVerifyRequest AppInvitesVerifyRequest) : IRequest<AppOrgResponse>;
     public record AppInviteListFilterBy(Guid OrgId, string? EmailOrNameContains);
     public record AppInviteListSortBy(bool? SubmittedDateDesc);
     public record AppInviteVerifyRequest(string InviteEncryptedCode);
-    public record AppInviteVerifyResponse
+    public record AppOrgResponse
     {
-        public Guid AppInviteId { get; set; }
+        public Guid? AppInviteId { get; set; }
         public Guid OrgId { get; set; }
         public string? OrgName { get; set; }
         public string? OrgPhoneNumber { get; set; }
@@ -169,7 +169,7 @@ namespace Spd.Manager.Cases
     }
     public record ApplicantAppCreateRequest : ApplicationCreateRequest
     {
-        public Guid AppInviteId { get; set; }
+        public Guid? AppInviteId { get; set; }
         public bool? AgreeToVulnerableSectorSearch { get; set; }
         public bool? AgreeToCriminalCheck { get; set; }
     }
