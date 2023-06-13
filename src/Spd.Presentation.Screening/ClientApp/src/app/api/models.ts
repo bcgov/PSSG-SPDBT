@@ -48,6 +48,8 @@ export { OrgRegistrationCreateRequest } from './models/org-registration-create-r
 export { OrgRegistrationCreateResponse } from './models/org-registration-create-response';
 export { OrgRegistrationPortalStatusResponse } from './models/org-registration-portal-status-response';
 export { OrgRegistrationStatusCode } from './models/org-registration-status-code';
+export { OrgReportListResponse } from './models/org-report-list-response';
+export { OrgReportResponse } from './models/org-report-response';
 export { OrgResponse } from './models/org-response';
 export { OrgSettings } from './models/org-settings';
 export { OrgUpdateRequest } from './models/org-update-request';

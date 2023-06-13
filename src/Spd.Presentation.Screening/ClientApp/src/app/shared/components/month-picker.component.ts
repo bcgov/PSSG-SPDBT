@@ -8,7 +8,7 @@ import { SpdDateYearMonthAdapter } from 'src/app/material.module';
 	template: `
 		<mat-form-field>
 			<mat-label>{{ label }}</mat-label>
-			<input matInput readonly [(ngModel)]="monthAndYear" [matDatepicker]="picker" />
+			<input matInput readonly [(ngModel)]="monthAndYear" [matDatepicker]="picker" [max]="maxDate" [min]="minDate" />
 			<mat-hint>{{ hint }}</mat-hint>
 			<mat-datepicker-toggle matSuffix (click)="onClearDate()">
 				<mat-icon matDatepickerToggleIcon>clear</mat-icon>
@@ -30,6 +30,8 @@ export class MonthPickerComponent {
 	@Input() label = '';
 	@Input() hint = '';
 	@Input() monthAndYear: Date | null = null;
+	@Input() minDate: Date | null = null;
+	@Input() maxDate: Date | null = null;
 
 	@Output() monthAndYearChange = new EventEmitter<Date | null>();
 
