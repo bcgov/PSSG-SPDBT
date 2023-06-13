@@ -10,6 +10,7 @@ import { ApplicationService } from './services/application.service';
 import { ConfigurationService } from './services/configuration.service';
 import { OrgService } from './services/org.service';
 import { OrgRegistrationService } from './services/org-registration.service';
+import { OrgReportService } from './services/org-report.service';
 import { OrgUserService } from './services/org-user.service';
 import { UserProfileService } from './services/user-profile.service';
 
@@ -27,6 +28,7 @@ import { UserProfileService } from './services/user-profile.service';
     ConfigurationService,
     OrgService,
     OrgRegistrationService,
+    OrgReportService,
     OrgUserService,
     UserProfileService,
     ApiConfiguration

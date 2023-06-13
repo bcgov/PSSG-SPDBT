@@ -1804,6 +1804,12 @@
         <NavigationProperty Name="regardingobjectid_spd_pdfreport" Type="mscrm.spd_pdfreport" Nullable="false" Partner="spd_pdfreport_AsyncOperations">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_pdfreportid" />
         </NavigationProperty>
+        <NavigationProperty Name="regardingobjectid_bcgov_schedulejob" Type="mscrm.bcgov_schedulejob" Nullable="false" Partner="bcgov_schedulejob_AsyncOperations">
+          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="bcgov_schedulejobid" />
+        </NavigationProperty>
+        <NavigationProperty Name="regardingobjectid_bcgov_schedulejobsession" Type="mscrm.bcgov_schedulejobsession" Nullable="false" Partner="bcgov_schedulejobsession_AsyncOperations">
+          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="bcgov_schedulejobsessionid" />
+        </NavigationProperty>
         <NavigationProperty Name="regardingobjectid_report" Type="mscrm.report" Nullable="false" Partner="Report_AsyncOperations">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="reportid" />
         </NavigationProperty>
@@ -2301,6 +2307,132 @@
           <ReferentialConstraint Property="_bcgov_primaryentityid_value" ReferencedProperty="bcgov_templateid" />
         </NavigationProperty>
         <NavigationProperty Name="bcgov_relationship_bcgov_field" Type="Collection(mscrm.bcgov_field)" Partner="bcgov_RelationshipId" />
+      </EntityType>
+      <EntityType Name="bcgov_schedulejob" BaseType="mscrm.crmbaseentity">
+        <Key>
+          <PropertyRef Name="bcgov_schedulejobid" />
+        </Key>
+        <Property Name="bcgov_name" Type="Edm.String" Unicode="false" />
+        <Property Name="versionnumber" Type="Edm.Int64" />
+        <Property Name="bcgov_schedulejobid" Type="Edm.Guid" />
+        <Property Name="_createdby_value" Type="Edm.Guid" />
+        <Property Name="_ownerid_value" Type="Edm.Guid" />
+        <Property Name="statuscode" Type="Edm.Int32" />
+        <Property Name="_modifiedonbehalfby_value" Type="Edm.Guid" />
+        <Property Name="statecode" Type="Edm.Int32" />
+        <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
+        <Property Name="_createdonbehalfby_value" Type="Edm.Guid" />
+        <Property Name="bcgov_nextruntime" Type="Edm.DateTimeOffset" />
+        <Property Name="bcgov_frequency" Type="Edm.Int32" />
+        <Property Name="bcgov_lastruntime" Type="Edm.DateTimeOffset" />
+        <Property Name="_owninguser_value" Type="Edm.Guid" />
+        <Property Name="bcgov_xvalue" Type="Edm.Int32" />
+        <Property Name="bcgov_lastruntime_state" Type="Edm.Int32" />
+        <Property Name="bcgov_fetchxml" Type="Edm.String" Unicode="false" />
+        <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
+        <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
+        <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
+        <Property Name="bcgov_lastruntime_date" Type="Edm.DateTimeOffset" />
+        <Property Name="importsequencenumber" Type="Edm.Int32" />
+        <Property Name="_modifiedby_value" Type="Edm.Guid" />
+        <Property Name="_owningteam_value" Type="Edm.Guid" />
+        <Property Name="_bcgov_actionid_value" Type="Edm.Guid" />
+        <Property Name="_owningbusinessunit_value" Type="Edm.Guid" />
+        <Property Name="createdon" Type="Edm.DateTimeOffset" />
+        <NavigationProperty Name="createdby" Type="mscrm.systemuser" Nullable="false" Partner="lk_bcgov_schedulejob_createdby">
+          <ReferentialConstraint Property="_createdby_value" ReferencedProperty="systemuserid" />
+        </NavigationProperty>
+        <NavigationProperty Name="createdonbehalfby" Type="mscrm.systemuser" Nullable="false" Partner="lk_bcgov_schedulejob_createdonbehalfby">
+          <ReferentialConstraint Property="_createdonbehalfby_value" ReferencedProperty="systemuserid" />
+        </NavigationProperty>
+        <NavigationProperty Name="modifiedby" Type="mscrm.systemuser" Nullable="false" Partner="lk_bcgov_schedulejob_modifiedby">
+          <ReferentialConstraint Property="_modifiedby_value" ReferencedProperty="systemuserid" />
+        </NavigationProperty>
+        <NavigationProperty Name="modifiedonbehalfby" Type="mscrm.systemuser" Nullable="false" Partner="lk_bcgov_schedulejob_modifiedonbehalfby">
+          <ReferentialConstraint Property="_modifiedonbehalfby_value" ReferencedProperty="systemuserid" />
+        </NavigationProperty>
+        <NavigationProperty Name="owninguser" Type="mscrm.systemuser" Nullable="false" Partner="user_bcgov_schedulejob">
+          <ReferentialConstraint Property="_owninguser_value" ReferencedProperty="systemuserid" />
+        </NavigationProperty>
+        <NavigationProperty Name="owningteam" Type="mscrm.team" Nullable="false" Partner="team_bcgov_schedulejob">
+          <ReferentialConstraint Property="_owningteam_value" ReferencedProperty="teamid" />
+        </NavigationProperty>
+        <NavigationProperty Name="ownerid" Type="mscrm.principal" Nullable="false" Partner="owner_bcgov_schedulejob">
+          <ReferentialConstraint Property="_ownerid_value" ReferencedProperty="ownerid" />
+        </NavigationProperty>
+        <NavigationProperty Name="owningbusinessunit" Type="mscrm.businessunit" Nullable="false" Partner="business_unit_bcgov_schedulejob">
+          <ReferentialConstraint Property="_owningbusinessunit_value" ReferencedProperty="businessunitid" />
+        </NavigationProperty>
+        <NavigationProperty Name="bcgov_schedulejob_SyncErrors" Type="Collection(mscrm.syncerror)" Partner="regardingobjectid_bcgov_schedulejob" />
+        <NavigationProperty Name="bcgov_schedulejob_AsyncOperations" Type="Collection(mscrm.asyncoperation)" Partner="regardingobjectid_bcgov_schedulejob" />
+        <NavigationProperty Name="bcgov_schedulejob_MailboxTrackingFolders" Type="Collection(mscrm.mailboxtrackingfolder)" Partner="regardingobjectid_bcgov_schedulejob" />
+        <NavigationProperty Name="bcgov_schedulejob_ProcessSession" Type="Collection(mscrm.processsession)" Partner="regardingobjectid_bcgov_schedulejob" />
+        <NavigationProperty Name="bcgov_schedulejob_BulkDeleteFailures" Type="Collection(mscrm.bulkdeletefailure)" Partner="regardingobjectid_bcgov_schedulejob" />
+        <NavigationProperty Name="bcgov_schedulejob_PrincipalObjectAttributeAccesses" Type="Collection(mscrm.principalobjectattributeaccess)" Partner="objectid_bcgov_schedulejob" />
+        <NavigationProperty Name="bcgov_schedulejob_bcgov_schedulejobsession" Type="Collection(mscrm.bcgov_schedulejobsession)" Partner="bcgov_ScheduleJobId" />
+        <NavigationProperty Name="bcgov_ActionId" Type="mscrm.workflow" Nullable="false" Partner="bcgov_workflow_bcgov_schedulejob">
+          <ReferentialConstraint Property="_bcgov_actionid_value" ReferencedProperty="workflowid" />
+        </NavigationProperty>
+      </EntityType>
+      <EntityType Name="bcgov_schedulejobsession" BaseType="mscrm.crmbaseentity">
+        <Key>
+          <PropertyRef Name="bcgov_schedulejobsessionid" />
+        </Key>
+        <Property Name="_owningteam_value" Type="Edm.Guid" />
+        <Property Name="bcgov_schedulejobsessionid" Type="Edm.Guid" />
+        <Property Name="bcgov_duration" Type="Edm.Decimal" Scale="Variable" />
+        <Property Name="_modifiedonbehalfby_value" Type="Edm.Guid" />
+        <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
+        <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
+        <Property Name="versionnumber" Type="Edm.Int64" />
+        <Property Name="bcgov_error" Type="Edm.String" Unicode="false" />
+        <Property Name="createdon" Type="Edm.DateTimeOffset" />
+        <Property Name="importsequencenumber" Type="Edm.Int32" />
+        <Property Name="_ownerid_value" Type="Edm.Guid" />
+        <Property Name="_owningbusinessunit_value" Type="Edm.Guid" />
+        <Property Name="_owninguser_value" Type="Edm.Guid" />
+        <Property Name="bcgov_id" Type="Edm.String" Unicode="false" />
+        <Property Name="statuscode" Type="Edm.Int32" />
+        <Property Name="_createdby_value" Type="Edm.Guid" />
+        <Property Name="_modifiedby_value" Type="Edm.Guid" />
+        <Property Name="_createdonbehalfby_value" Type="Edm.Guid" />
+        <Property Name="statecode" Type="Edm.Int32" />
+        <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
+        <Property Name="_bcgov_schedulejobid_value" Type="Edm.Guid" />
+        <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
+        <NavigationProperty Name="createdby" Type="mscrm.systemuser" Nullable="false" Partner="lk_bcgov_schedulejobsession_createdby">
+          <ReferentialConstraint Property="_createdby_value" ReferencedProperty="systemuserid" />
+        </NavigationProperty>
+        <NavigationProperty Name="createdonbehalfby" Type="mscrm.systemuser" Nullable="false" Partner="lk_bcgov_schedulejobsession_createdonbehalfby">
+          <ReferentialConstraint Property="_createdonbehalfby_value" ReferencedProperty="systemuserid" />
+        </NavigationProperty>
+        <NavigationProperty Name="modifiedby" Type="mscrm.systemuser" Nullable="false" Partner="lk_bcgov_schedulejobsession_modifiedby">
+          <ReferentialConstraint Property="_modifiedby_value" ReferencedProperty="systemuserid" />
+        </NavigationProperty>
+        <NavigationProperty Name="modifiedonbehalfby" Type="mscrm.systemuser" Nullable="false" Partner="lk_bcgov_schedulejobsession_modifiedonbehalfby">
+          <ReferentialConstraint Property="_modifiedonbehalfby_value" ReferencedProperty="systemuserid" />
+        </NavigationProperty>
+        <NavigationProperty Name="owninguser" Type="mscrm.systemuser" Nullable="false" Partner="user_bcgov_schedulejobsession">
+          <ReferentialConstraint Property="_owninguser_value" ReferencedProperty="systemuserid" />
+        </NavigationProperty>
+        <NavigationProperty Name="owningteam" Type="mscrm.team" Nullable="false" Partner="team_bcgov_schedulejobsession">
+          <ReferentialConstraint Property="_owningteam_value" ReferencedProperty="teamid" />
+        </NavigationProperty>
+        <NavigationProperty Name="ownerid" Type="mscrm.principal" Nullable="false" Partner="owner_bcgov_schedulejobsession">
+          <ReferentialConstraint Property="_ownerid_value" ReferencedProperty="ownerid" />
+        </NavigationProperty>
+        <NavigationProperty Name="owningbusinessunit" Type="mscrm.businessunit" Nullable="false" Partner="business_unit_bcgov_schedulejobsession">
+          <ReferentialConstraint Property="_owningbusinessunit_value" ReferencedProperty="businessunitid" />
+        </NavigationProperty>
+        <NavigationProperty Name="bcgov_schedulejobsession_SyncErrors" Type="Collection(mscrm.syncerror)" Partner="regardingobjectid_bcgov_schedulejobsession" />
+        <NavigationProperty Name="bcgov_schedulejobsession_AsyncOperations" Type="Collection(mscrm.asyncoperation)" Partner="regardingobjectid_bcgov_schedulejobsession" />
+        <NavigationProperty Name="bcgov_schedulejobsession_MailboxTrackingFolders" Type="Collection(mscrm.mailboxtrackingfolder)" Partner="regardingobjectid_bcgov_schedulejobsession" />
+        <NavigationProperty Name="bcgov_schedulejobsession_ProcessSession" Type="Collection(mscrm.processsession)" Partner="regardingobjectid_bcgov_schedulejobsession" />
+        <NavigationProperty Name="bcgov_schedulejobsession_BulkDeleteFailures" Type="Collection(mscrm.bulkdeletefailure)" Partner="regardingobjectid_bcgov_schedulejobsession" />
+        <NavigationProperty Name="bcgov_schedulejobsession_PrincipalObjectAttributeAccesses" Type="Collection(mscrm.principalobjectattributeaccess)" Partner="objectid_bcgov_schedulejobsession" />
+        <NavigationProperty Name="bcgov_ScheduleJobId" Type="mscrm.bcgov_schedulejob" Nullable="false" Partner="bcgov_schedulejob_bcgov_schedulejobsession">
+          <ReferentialConstraint Property="_bcgov_schedulejobid_value" ReferencedProperty="bcgov_schedulejobid" />
+        </NavigationProperty>
       </EntityType>
       <EntityType Name="bcgov_tag" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -3499,6 +3631,12 @@
         <NavigationProperty Name="regardingobjectid_spd_pdfreport" Type="mscrm.spd_pdfreport" Nullable="false" Partner="spd_pdfreport_BulkDeleteFailures">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_pdfreportid" />
         </NavigationProperty>
+        <NavigationProperty Name="regardingobjectid_bcgov_schedulejob" Type="mscrm.bcgov_schedulejob" Nullable="false" Partner="bcgov_schedulejob_BulkDeleteFailures">
+          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="bcgov_schedulejobid" />
+        </NavigationProperty>
+        <NavigationProperty Name="regardingobjectid_bcgov_schedulejobsession" Type="mscrm.bcgov_schedulejobsession" Nullable="false" Partner="bcgov_schedulejobsession_BulkDeleteFailures">
+          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="bcgov_schedulejobsessionid" />
+        </NavigationProperty>
         <NavigationProperty Name="regardingobjectid_customeraddress" Type="mscrm.customeraddress" Nullable="false" Partner="CustomerAddress_BulkDeleteFailures">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="customeraddressid" />
         </NavigationProperty>
@@ -3979,6 +4117,8 @@
         <NavigationProperty Name="business_unit_spd_clearance" Type="Collection(mscrm.spd_clearance)" Partner="owningbusinessunit" />
         <NavigationProperty Name="business_unit_spd_clearanceaccess" Type="Collection(mscrm.spd_clearanceaccess)" Partner="owningbusinessunit" />
         <NavigationProperty Name="business_unit_spd_pdfreport" Type="Collection(mscrm.spd_pdfreport)" Partner="owningbusinessunit" />
+        <NavigationProperty Name="business_unit_bcgov_schedulejob" Type="Collection(mscrm.bcgov_schedulejob)" Partner="owningbusinessunit" />
+        <NavigationProperty Name="business_unit_bcgov_schedulejobsession" Type="Collection(mscrm.bcgov_schedulejobsession)" Partner="owningbusinessunit" />
         <NavigationProperty Name="BusinessUnit_SyncErrors" Type="Collection(mscrm.syncerror)" Partner="regardingobjectid_businessunit_syncerror" />
         <NavigationProperty Name="transactioncurrencyid" Type="mscrm.transactioncurrency" Nullable="false" Partner="TransactionCurrency_BusinessUnit">
           <ReferentialConstraint Property="_transactioncurrencyid_value" ReferencedProperty="transactioncurrencyid" />
@@ -5631,6 +5771,7 @@
         <NavigationProperty Name="spd_contact_spd_finding" Type="Collection(mscrm.spd_finding)" Partner="spd_ContactId" />
         <NavigationProperty Name="spd_PortalInvitation_Applicant" Type="Collection(mscrm.spd_portalinvitation)" Partner="spd_Applicant" />
         <NavigationProperty Name="spd_contact_spd_clearance" Type="Collection(mscrm.spd_clearance)" Partner="spd_ContactID" />
+        <NavigationProperty Name="spd_contact_spd_identity" Type="Collection(mscrm.spd_identity)" Partner="spd_ContactId" />
         <NavigationProperty Name="contact_connections1" Type="Collection(mscrm.connection)" Partner="record1id_contact" />
         <NavigationProperty Name="Contact_Feedback" Type="Collection(mscrm.feedback)" Partner="ContactId" />
         <NavigationProperty Name="Contact_ProcessSessions" Type="Collection(mscrm.processsession)" Partner="regardingobjectid_contact" />
@@ -11348,6 +11489,12 @@
         <NavigationProperty Name="regardingobjectid_spd_pdfreport" Type="mscrm.spd_pdfreport" Nullable="false" Partner="spd_pdfreport_MailboxTrackingFolders">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_pdfreportid" />
         </NavigationProperty>
+        <NavigationProperty Name="regardingobjectid_bcgov_schedulejob" Type="mscrm.bcgov_schedulejob" Nullable="false" Partner="bcgov_schedulejob_MailboxTrackingFolders">
+          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="bcgov_schedulejobid" />
+        </NavigationProperty>
+        <NavigationProperty Name="regardingobjectid_bcgov_schedulejobsession" Type="mscrm.bcgov_schedulejobsession" Nullable="false" Partner="bcgov_schedulejobsession_MailboxTrackingFolders">
+          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="bcgov_schedulejobsessionid" />
+        </NavigationProperty>
         <NavigationProperty Name="modifiedonbehalfby" Type="mscrm.systemuser" Nullable="false" Partner="lk_mailboxtrackingfolder_modifiedonbehalfby">
           <ReferentialConstraint Property="_modifiedonbehalfby_value" ReferencedProperty="systemuserid" />
         </NavigationProperty>
@@ -13509,6 +13656,8 @@
         <NavigationProperty Name="owner_spd_clearance" Type="Collection(mscrm.spd_clearance)" Partner="ownerid" />
         <NavigationProperty Name="owner_spd_clearanceaccess" Type="Collection(mscrm.spd_clearanceaccess)" Partner="ownerid" />
         <NavigationProperty Name="owner_spd_pdfreport" Type="Collection(mscrm.spd_pdfreport)" Partner="ownerid" />
+        <NavigationProperty Name="owner_bcgov_schedulejob" Type="Collection(mscrm.bcgov_schedulejob)" Partner="ownerid" />
+        <NavigationProperty Name="owner_bcgov_schedulejobsession" Type="Collection(mscrm.bcgov_schedulejobsession)" Partner="ownerid" />
         <NavigationProperty Name="owner_personaldocumenttemplates" Type="Collection(mscrm.personaldocumenttemplate)" Partner="ownerid" />
         <NavigationProperty Name="owner_accounts" Type="Collection(mscrm.account)" Partner="ownerid" />
         <NavigationProperty Name="owner_goalrollupquery" Type="Collection(mscrm.goalrollupquery)" Partner="ownerid" />
@@ -14704,6 +14853,12 @@
         <NavigationProperty Name="objectid_spd_pdfreport" Type="mscrm.spd_pdfreport" Nullable="false" Partner="spd_pdfreport_PrincipalObjectAttributeAccesses">
           <ReferentialConstraint Property="_objectid_value" ReferencedProperty="spd_pdfreportid" />
         </NavigationProperty>
+        <NavigationProperty Name="objectid_bcgov_schedulejob" Type="mscrm.bcgov_schedulejob" Nullable="false" Partner="bcgov_schedulejob_PrincipalObjectAttributeAccesses">
+          <ReferentialConstraint Property="_objectid_value" ReferencedProperty="bcgov_schedulejobid" />
+        </NavigationProperty>
+        <NavigationProperty Name="objectid_bcgov_schedulejobsession" Type="mscrm.bcgov_schedulejobsession" Nullable="false" Partner="bcgov_schedulejobsession_PrincipalObjectAttributeAccesses">
+          <ReferentialConstraint Property="_objectid_value" ReferencedProperty="bcgov_schedulejobsessionid" />
+        </NavigationProperty>
         <NavigationProperty Name="objectid_letter" Type="mscrm.letter" Nullable="false" Partner="letter_principalobjectattributeaccess" />
         <NavigationProperty Name="objectid_reportcategory" Type="mscrm.reportcategory" Nullable="false" Partner="reportcategory_principalobjectattributeaccess">
           <ReferentialConstraint Property="_objectid_value" ReferencedProperty="reportcategoryid" />
@@ -15100,6 +15255,12 @@
         </NavigationProperty>
         <NavigationProperty Name="regardingobjectid_spd_pdfreport" Type="mscrm.spd_pdfreport" Nullable="false" Partner="spd_pdfreport_ProcessSession">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_pdfreportid" />
+        </NavigationProperty>
+        <NavigationProperty Name="regardingobjectid_bcgov_schedulejob" Type="mscrm.bcgov_schedulejob" Nullable="false" Partner="bcgov_schedulejob_ProcessSession">
+          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="bcgov_schedulejobid" />
+        </NavigationProperty>
+        <NavigationProperty Name="regardingobjectid_bcgov_schedulejobsession" Type="mscrm.bcgov_schedulejobsession" Nullable="false" Partner="bcgov_schedulejobsession_ProcessSession">
+          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="bcgov_schedulejobsessionid" />
         </NavigationProperty>
         <NavigationProperty Name="regardingobjectid_queue" Type="mscrm.queue" Nullable="false" Partner="Queue_ProcessSessions">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="queueid" />
@@ -19826,25 +19987,26 @@
         <Key>
           <PropertyRef Name="spd_identityid" />
         </Key>
-        <Property Name="statuscode" Type="Edm.Int32" />
+        <Property Name="_spd_contactid_value" Type="Edm.Guid" />
+        <Property Name="versionnumber" Type="Edm.Int64" />
         <Property Name="spd_identitynumber" Type="Edm.String" Unicode="false" />
-        <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
-        <Property Name="spd_identityid" Type="Edm.Guid" />
+        <Property Name="_createdonbehalfby_value" Type="Edm.Guid" />
         <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
         <Property Name="statecode" Type="Edm.Int32" />
-        <Property Name="_organizationid_value" Type="Edm.Guid" />
+        <Property Name="statuscode" Type="Edm.Int32" />
+        <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
+        <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
+        <Property Name="spd_identityid" Type="Edm.Guid" />
+        <Property Name="spd_type" Type="Edm.Int32" />
         <Property Name="_modifiedonbehalfby_value" Type="Edm.Guid" />
         <Property Name="spd_orgguid" Type="Edm.String" Unicode="false" />
+        <Property Name="_organizationid_value" Type="Edm.Guid" />
         <Property Name="_createdby_value" Type="Edm.Guid" />
-        <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
-        <Property Name="_createdonbehalfby_value" Type="Edm.Guid" />
-        <Property Name="spd_userguid" Type="Edm.String" Unicode="false" />
-        <Property Name="versionnumber" Type="Edm.Int64" />
-        <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
-        <Property Name="importsequencenumber" Type="Edm.Int32" />
         <Property Name="createdon" Type="Edm.DateTimeOffset" />
+        <Property Name="importsequencenumber" Type="Edm.Int32" />
+        <Property Name="spd_userguid" Type="Edm.String" Unicode="false" />
+        <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
         <Property Name="_modifiedby_value" Type="Edm.Guid" />
-        <Property Name="spd_type" Type="Edm.Int32" />
         <NavigationProperty Name="createdby" Type="mscrm.systemuser" Nullable="false" Partner="lk_spd_identity_createdby">
           <ReferentialConstraint Property="_createdby_value" ReferencedProperty="systemuserid" />
         </NavigationProperty>
@@ -19869,6 +20031,9 @@
         <NavigationProperty Name="spd_identity_BulkDeleteFailures" Type="Collection(mscrm.bulkdeletefailure)" Partner="regardingobjectid_spd_identity" />
         <NavigationProperty Name="spd_identity_PrincipalObjectAttributeAccesses" Type="Collection(mscrm.principalobjectattributeaccess)" Partner="objectid_spd_identity" />
         <NavigationProperty Name="spd_spd_identity_spd_portaluser" Type="Collection(mscrm.spd_portaluser)" Partner="spd_IdentityId" />
+        <NavigationProperty Name="spd_ContactId" Type="mscrm.contact" Nullable="false" Partner="spd_contact_spd_identity">
+          <ReferentialConstraint Property="_spd_contactid_value" ReferencedProperty="contactid" />
+        </NavigationProperty>
       </EntityType>
       <EntityType Name="spd_ministry" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -21103,6 +21268,12 @@
         <NavigationProperty Name="regardingobjectid_spd_pdfreport" Type="mscrm.spd_pdfreport" Nullable="false" Partner="spd_pdfreport_SyncErrors">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_pdfreportid" />
         </NavigationProperty>
+        <NavigationProperty Name="regardingobjectid_bcgov_schedulejob" Type="mscrm.bcgov_schedulejob" Nullable="false" Partner="bcgov_schedulejob_SyncErrors">
+          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="bcgov_schedulejobid" />
+        </NavigationProperty>
+        <NavigationProperty Name="regardingobjectid_bcgov_schedulejobsession" Type="mscrm.bcgov_schedulejobsession" Nullable="false" Partner="bcgov_schedulejobsession_SyncErrors">
+          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="bcgov_schedulejobsessionid" />
+        </NavigationProperty>
         <NavigationProperty Name="regardingobjectid_ExpiredProcess_syncerror" Type="mscrm.expiredprocess" Nullable="false" Partner="ExpiredProcess_SyncErrors">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="businessprocessflowinstanceid" />
         </NavigationProperty>
@@ -22100,6 +22271,16 @@
         <NavigationProperty Name="lk_spd_pdfreport_modifiedby" Type="Collection(mscrm.spd_pdfreport)" Partner="modifiedby" />
         <NavigationProperty Name="lk_spd_pdfreport_modifiedonbehalfby" Type="Collection(mscrm.spd_pdfreport)" Partner="modifiedonbehalfby" />
         <NavigationProperty Name="user_spd_pdfreport" Type="Collection(mscrm.spd_pdfreport)" Partner="owninguser" />
+        <NavigationProperty Name="lk_bcgov_schedulejob_createdby" Type="Collection(mscrm.bcgov_schedulejob)" Partner="createdby" />
+        <NavigationProperty Name="lk_bcgov_schedulejob_createdonbehalfby" Type="Collection(mscrm.bcgov_schedulejob)" Partner="createdonbehalfby" />
+        <NavigationProperty Name="lk_bcgov_schedulejob_modifiedby" Type="Collection(mscrm.bcgov_schedulejob)" Partner="modifiedby" />
+        <NavigationProperty Name="lk_bcgov_schedulejob_modifiedonbehalfby" Type="Collection(mscrm.bcgov_schedulejob)" Partner="modifiedonbehalfby" />
+        <NavigationProperty Name="user_bcgov_schedulejob" Type="Collection(mscrm.bcgov_schedulejob)" Partner="owninguser" />
+        <NavigationProperty Name="lk_bcgov_schedulejobsession_createdby" Type="Collection(mscrm.bcgov_schedulejobsession)" Partner="createdby" />
+        <NavigationProperty Name="lk_bcgov_schedulejobsession_createdonbehalfby" Type="Collection(mscrm.bcgov_schedulejobsession)" Partner="createdonbehalfby" />
+        <NavigationProperty Name="lk_bcgov_schedulejobsession_modifiedby" Type="Collection(mscrm.bcgov_schedulejobsession)" Partner="modifiedby" />
+        <NavigationProperty Name="lk_bcgov_schedulejobsession_modifiedonbehalfby" Type="Collection(mscrm.bcgov_schedulejobsession)" Partner="modifiedonbehalfby" />
+        <NavigationProperty Name="user_bcgov_schedulejobsession" Type="Collection(mscrm.bcgov_schedulejobsession)" Partner="owninguser" />
         <NavigationProperty Name="lk_slakpiinstancebase_createdonbehalfby" Type="Collection(mscrm.slakpiinstance)" Partner="createdonbehalfby" />
         <NavigationProperty Name="lk_mobileofflineprofileitemassocaition_modifiedonbehalfby" Type="Collection(mscrm.mobileofflineprofileitemassociation)" Partner="modifiedonbehalfby" />
         <NavigationProperty Name="lk_userqueryvisualizationbase_modifiedonbehalfby" Type="Collection(mscrm.userqueryvisualization)" Partner="modifiedonbehalfby" />
@@ -22896,6 +23077,8 @@
         <NavigationProperty Name="team_spd_clearance" Type="Collection(mscrm.spd_clearance)" Partner="owningteam" />
         <NavigationProperty Name="team_spd_clearanceaccess" Type="Collection(mscrm.spd_clearanceaccess)" Partner="owningteam" />
         <NavigationProperty Name="team_spd_pdfreport" Type="Collection(mscrm.spd_pdfreport)" Partner="owningteam" />
+        <NavigationProperty Name="team_bcgov_schedulejob" Type="Collection(mscrm.bcgov_schedulejob)" Partner="owningteam" />
+        <NavigationProperty Name="team_bcgov_schedulejobsession" Type="Collection(mscrm.bcgov_schedulejobsession)" Partner="owningteam" />
         <NavigationProperty Name="team_DuplicateRules" Type="Collection(mscrm.duplicaterule)" Partner="owningteam" />
         <NavigationProperty Name="team_Imports" Type="Collection(mscrm.import)" Partner="owningteam" />
         <NavigationProperty Name="OwningTeam_postfollows" Type="Collection(mscrm.postfollow)" Partner="owningteam" />
@@ -24366,6 +24549,7 @@
         <NavigationProperty Name="workflow_leadtoopportunitysalesprocess" Type="Collection(mscrm.leadtoopportunitysalesprocess)" Partner="processid" />
         <NavigationProperty Name="workflow_opportunitysalesprocess" Type="Collection(mscrm.opportunitysalesprocess)" Partner="processid" />
         <NavigationProperty Name="lk_spd_securityscreening_processid" Type="Collection(mscrm.spd_securityscreening)" Partner="processid" />
+        <NavigationProperty Name="bcgov_workflow_bcgov_schedulejob" Type="Collection(mscrm.bcgov_schedulejob)" Partner="bcgov_ActionId" />
         <NavigationProperty Name="slabase_workflowid" Type="Collection(mscrm.sla)" Partner="workflowid" />
         <NavigationProperty Name="owningbusinessunit" Type="mscrm.businessunit" Nullable="false" Partner="business_unit_workflow">
           <ReferentialConstraint Property="_owningbusinessunit_value" ReferencedProperty="businessunitid" />
@@ -29976,6 +30160,8 @@
           <NavigationPropertyBinding Path="regardingobjectid_spd_clearance" Target="spd_clearances" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_clearanceaccess" Target="spd_clearanceaccesses" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_pdfreport" Target="spd_pdfreports" />
+          <NavigationPropertyBinding Path="regardingobjectid_bcgov_schedulejob" Target="bcgov_schedulejobs" />
+          <NavigationPropertyBinding Path="regardingobjectid_bcgov_schedulejobsession" Target="bcgov_schedulejobsessions" />
           <NavigationPropertyBinding Path="regardingobjectid_report" Target="reports" />
           <NavigationPropertyBinding Path="AsyncOperation_Emails" Target="emails" />
           <NavigationPropertyBinding Path="regardingobjectid_recurringappointmentmaster" Target="recurringappointmentmasters" />
@@ -30137,6 +30323,41 @@
           <NavigationPropertyBinding Path="bcgov_parentrelationship_bcgov_childrelation" Target="bcgov_relationships" />
           <NavigationPropertyBinding Path="bcgov_PrimaryEntityId" Target="bcgov_templates" />
           <NavigationPropertyBinding Path="bcgov_relationship_bcgov_field" Target="bcgov_fields" />
+        </EntitySet>
+        <EntitySet Name="bcgov_schedulejobs" EntityType="Microsoft.Dynamics.CRM.bcgov_schedulejob">
+          <NavigationPropertyBinding Path="createdby" Target="systemusers" />
+          <NavigationPropertyBinding Path="createdonbehalfby" Target="systemusers" />
+          <NavigationPropertyBinding Path="modifiedby" Target="systemusers" />
+          <NavigationPropertyBinding Path="modifiedonbehalfby" Target="systemusers" />
+          <NavigationPropertyBinding Path="owninguser" Target="systemusers" />
+          <NavigationPropertyBinding Path="owningteam" Target="teams" />
+          <NavigationPropertyBinding Path="ownerid" Target="owners" />
+          <NavigationPropertyBinding Path="owningbusinessunit" Target="businessunits" />
+          <NavigationPropertyBinding Path="bcgov_schedulejob_SyncErrors" Target="syncerrors" />
+          <NavigationPropertyBinding Path="bcgov_schedulejob_AsyncOperations" Target="asyncoperations" />
+          <NavigationPropertyBinding Path="bcgov_schedulejob_MailboxTrackingFolders" Target="mailboxtrackingfolders" />
+          <NavigationPropertyBinding Path="bcgov_schedulejob_ProcessSession" Target="processsessions" />
+          <NavigationPropertyBinding Path="bcgov_schedulejob_BulkDeleteFailures" Target="bulkdeletefailures" />
+          <NavigationPropertyBinding Path="bcgov_schedulejob_PrincipalObjectAttributeAccesses" Target="principalobjectattributeaccessset" />
+          <NavigationPropertyBinding Path="bcgov_schedulejob_bcgov_schedulejobsession" Target="bcgov_schedulejobsessions" />
+          <NavigationPropertyBinding Path="bcgov_ActionId" Target="workflows" />
+        </EntitySet>
+        <EntitySet Name="bcgov_schedulejobsessions" EntityType="Microsoft.Dynamics.CRM.bcgov_schedulejobsession">
+          <NavigationPropertyBinding Path="createdby" Target="systemusers" />
+          <NavigationPropertyBinding Path="createdonbehalfby" Target="systemusers" />
+          <NavigationPropertyBinding Path="modifiedby" Target="systemusers" />
+          <NavigationPropertyBinding Path="modifiedonbehalfby" Target="systemusers" />
+          <NavigationPropertyBinding Path="owninguser" Target="systemusers" />
+          <NavigationPropertyBinding Path="owningteam" Target="teams" />
+          <NavigationPropertyBinding Path="ownerid" Target="owners" />
+          <NavigationPropertyBinding Path="owningbusinessunit" Target="businessunits" />
+          <NavigationPropertyBinding Path="bcgov_schedulejobsession_SyncErrors" Target="syncerrors" />
+          <NavigationPropertyBinding Path="bcgov_schedulejobsession_AsyncOperations" Target="asyncoperations" />
+          <NavigationPropertyBinding Path="bcgov_schedulejobsession_MailboxTrackingFolders" Target="mailboxtrackingfolders" />
+          <NavigationPropertyBinding Path="bcgov_schedulejobsession_ProcessSession" Target="processsessions" />
+          <NavigationPropertyBinding Path="bcgov_schedulejobsession_BulkDeleteFailures" Target="bulkdeletefailures" />
+          <NavigationPropertyBinding Path="bcgov_schedulejobsession_PrincipalObjectAttributeAccesses" Target="principalobjectattributeaccessset" />
+          <NavigationPropertyBinding Path="bcgov_ScheduleJobId" Target="bcgov_schedulejobs" />
         </EntitySet>
         <EntitySet Name="bcgov_tags" EntityType="Microsoft.Dynamics.CRM.bcgov_tag">
           <NavigationPropertyBinding Path="createdby" Target="systemusers" />
@@ -30541,6 +30762,8 @@
           <NavigationPropertyBinding Path="regardingobjectid_spd_clearance" Target="spd_clearances" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_clearanceaccess" Target="spd_clearanceaccesses" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_pdfreport" Target="spd_pdfreports" />
+          <NavigationPropertyBinding Path="regardingobjectid_bcgov_schedulejob" Target="bcgov_schedulejobs" />
+          <NavigationPropertyBinding Path="regardingobjectid_bcgov_schedulejobsession" Target="bcgov_schedulejobsessions" />
           <NavigationPropertyBinding Path="regardingobjectid_customeraddress" Target="customeraddresses" />
           <NavigationPropertyBinding Path="regardingobjectid_annualfiscalcalendar" Target="annualfiscalcalendars" />
           <NavigationPropertyBinding Path="regardingobjectid_fax" Target="faxes" />
@@ -30740,6 +30963,8 @@
           <NavigationPropertyBinding Path="business_unit_spd_clearance" Target="spd_clearances" />
           <NavigationPropertyBinding Path="business_unit_spd_clearanceaccess" Target="spd_clearanceaccesses" />
           <NavigationPropertyBinding Path="business_unit_spd_pdfreport" Target="spd_pdfreports" />
+          <NavigationPropertyBinding Path="business_unit_bcgov_schedulejob" Target="bcgov_schedulejobs" />
+          <NavigationPropertyBinding Path="business_unit_bcgov_schedulejobsession" Target="bcgov_schedulejobsessions" />
           <NavigationPropertyBinding Path="BusinessUnit_SyncErrors" Target="syncerrors" />
           <NavigationPropertyBinding Path="transactioncurrencyid" Target="transactioncurrencies" />
           <NavigationPropertyBinding Path="BulkDeleteOperation_BusinessUnit" Target="bulkdeleteoperations" />
@@ -31297,6 +31522,7 @@
           <NavigationPropertyBinding Path="spd_contact_spd_finding" Target="spd_findings" />
           <NavigationPropertyBinding Path="spd_PortalInvitation_Applicant" Target="spd_portalinvitations" />
           <NavigationPropertyBinding Path="spd_contact_spd_clearance" Target="spd_clearances" />
+          <NavigationPropertyBinding Path="spd_contact_spd_identity" Target="spd_identities" />
           <NavigationPropertyBinding Path="contact_connections1" Target="connections" />
           <NavigationPropertyBinding Path="Contact_Feedback" Target="feedback" />
           <NavigationPropertyBinding Path="Contact_ProcessSessions" Target="processsessions" />
@@ -33034,6 +33260,8 @@
           <NavigationPropertyBinding Path="regardingobjectid_spd_clearance" Target="spd_clearances" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_clearanceaccess" Target="spd_clearanceaccesses" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_pdfreport" Target="spd_pdfreports" />
+          <NavigationPropertyBinding Path="regardingobjectid_bcgov_schedulejob" Target="bcgov_schedulejobs" />
+          <NavigationPropertyBinding Path="regardingobjectid_bcgov_schedulejobsession" Target="bcgov_schedulejobsessions" />
           <NavigationPropertyBinding Path="modifiedonbehalfby" Target="systemusers" />
           <NavigationPropertyBinding Path="ownerid" Target="owners" />
           <NavigationPropertyBinding Path="createdonbehalfby" Target="systemusers" />
@@ -33981,6 +34209,8 @@
           <NavigationPropertyBinding Path="objectid_spd_clearance" Target="spd_clearances" />
           <NavigationPropertyBinding Path="objectid_spd_clearanceaccess" Target="spd_clearanceaccesses" />
           <NavigationPropertyBinding Path="objectid_spd_pdfreport" Target="spd_pdfreports" />
+          <NavigationPropertyBinding Path="objectid_bcgov_schedulejob" Target="bcgov_schedulejobs" />
+          <NavigationPropertyBinding Path="objectid_bcgov_schedulejobsession" Target="bcgov_schedulejobsessions" />
           <NavigationPropertyBinding Path="objectid_letter" Target="letters" />
           <NavigationPropertyBinding Path="objectid_reportcategory" Target="reportcategories" />
           <NavigationPropertyBinding Path="objectid_sharepointdocumentlocation" Target="sharepointdocumentlocations" />
@@ -34107,6 +34337,8 @@
           <NavigationPropertyBinding Path="regardingobjectid_spd_clearance" Target="spd_clearances" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_clearanceaccess" Target="spd_clearanceaccesses" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_pdfreport" Target="spd_pdfreports" />
+          <NavigationPropertyBinding Path="regardingobjectid_bcgov_schedulejob" Target="bcgov_schedulejobs" />
+          <NavigationPropertyBinding Path="regardingobjectid_bcgov_schedulejobsession" Target="bcgov_schedulejobsessions" />
           <NavigationPropertyBinding Path="regardingobjectid_queue" Target="queues" />
           <NavigationPropertyBinding Path="canceledby" Target="systemusers" />
           <NavigationPropertyBinding Path="regardingobjectid_contact" Target="contacts" />
@@ -35538,6 +35770,7 @@
           <NavigationPropertyBinding Path="spd_identity_BulkDeleteFailures" Target="bulkdeletefailures" />
           <NavigationPropertyBinding Path="spd_identity_PrincipalObjectAttributeAccesses" Target="principalobjectattributeaccessset" />
           <NavigationPropertyBinding Path="spd_spd_identity_spd_portaluser" Target="spd_portalusers" />
+          <NavigationPropertyBinding Path="spd_ContactId" Target="contacts" />
         </EntitySet>
         <EntitySet Name="spd_ministries" EntityType="Microsoft.Dynamics.CRM.spd_ministry">
           <NavigationPropertyBinding Path="createdby" Target="systemusers" />
@@ -35916,6 +36149,8 @@
           <NavigationPropertyBinding Path="regardingobjectid_spd_clearance" Target="spd_clearances" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_clearanceaccess" Target="spd_clearanceaccesses" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_pdfreport" Target="spd_pdfreports" />
+          <NavigationPropertyBinding Path="regardingobjectid_bcgov_schedulejob" Target="bcgov_schedulejobs" />
+          <NavigationPropertyBinding Path="regardingobjectid_bcgov_schedulejobsession" Target="bcgov_schedulejobsessions" />
           <NavigationPropertyBinding Path="regardingobjectid_ExpiredProcess_syncerror" Target="expiredprocesses" />
           <NavigationPropertyBinding Path="regardingobjectid_email_syncerror" Target="emails" />
           <NavigationPropertyBinding Path="regardingobjectid_systemuser" Target="systemusers" />
@@ -36573,6 +36808,16 @@
           <NavigationPropertyBinding Path="lk_spd_pdfreport_modifiedby" Target="spd_pdfreports" />
           <NavigationPropertyBinding Path="lk_spd_pdfreport_modifiedonbehalfby" Target="spd_pdfreports" />
           <NavigationPropertyBinding Path="user_spd_pdfreport" Target="spd_pdfreports" />
+          <NavigationPropertyBinding Path="lk_bcgov_schedulejob_createdby" Target="bcgov_schedulejobs" />
+          <NavigationPropertyBinding Path="lk_bcgov_schedulejob_createdonbehalfby" Target="bcgov_schedulejobs" />
+          <NavigationPropertyBinding Path="lk_bcgov_schedulejob_modifiedby" Target="bcgov_schedulejobs" />
+          <NavigationPropertyBinding Path="lk_bcgov_schedulejob_modifiedonbehalfby" Target="bcgov_schedulejobs" />
+          <NavigationPropertyBinding Path="user_bcgov_schedulejob" Target="bcgov_schedulejobs" />
+          <NavigationPropertyBinding Path="lk_bcgov_schedulejobsession_createdby" Target="bcgov_schedulejobsessions" />
+          <NavigationPropertyBinding Path="lk_bcgov_schedulejobsession_createdonbehalfby" Target="bcgov_schedulejobsessions" />
+          <NavigationPropertyBinding Path="lk_bcgov_schedulejobsession_modifiedby" Target="bcgov_schedulejobsessions" />
+          <NavigationPropertyBinding Path="lk_bcgov_schedulejobsession_modifiedonbehalfby" Target="bcgov_schedulejobsessions" />
+          <NavigationPropertyBinding Path="user_bcgov_schedulejobsession" Target="bcgov_schedulejobsessions" />
           <NavigationPropertyBinding Path="lk_slakpiinstancebase_createdonbehalfby" Target="slakpiinstances" />
           <NavigationPropertyBinding Path="lk_mobileofflineprofileitemassocaition_modifiedonbehalfby" Target="mobileofflineprofileitemassociations" />
           <NavigationPropertyBinding Path="lk_userqueryvisualizationbase_modifiedonbehalfby" Target="userqueryvisualizations" />
@@ -37266,6 +37511,8 @@
           <NavigationPropertyBinding Path="team_spd_clearance" Target="spd_clearances" />
           <NavigationPropertyBinding Path="team_spd_clearanceaccess" Target="spd_clearanceaccesses" />
           <NavigationPropertyBinding Path="team_spd_pdfreport" Target="spd_pdfreports" />
+          <NavigationPropertyBinding Path="team_bcgov_schedulejob" Target="bcgov_schedulejobs" />
+          <NavigationPropertyBinding Path="team_bcgov_schedulejobsession" Target="bcgov_schedulejobsessions" />
           <NavigationPropertyBinding Path="team_DuplicateRules" Target="duplicaterules" />
           <NavigationPropertyBinding Path="team_Imports" Target="imports" />
           <NavigationPropertyBinding Path="OwningTeam_postfollows" Target="postfollows" />
@@ -37705,6 +37952,7 @@
           <NavigationPropertyBinding Path="workflow_leadtoopportunitysalesprocess" Target="leadtoopportunitysalesprocesses" />
           <NavigationPropertyBinding Path="workflow_opportunitysalesprocess" Target="opportunitysalesprocesses" />
           <NavigationPropertyBinding Path="lk_spd_securityscreening_processid" Target="spd_securityscreenings" />
+          <NavigationPropertyBinding Path="bcgov_workflow_bcgov_schedulejob" Target="bcgov_schedulejobs" />
           <NavigationPropertyBinding Path="slabase_workflowid" Target="slas" />
           <NavigationPropertyBinding Path="owningbusinessunit" Target="businessunits" />
           <NavigationPropertyBinding Path="createdonbehalfby" Target="systemusers" />
