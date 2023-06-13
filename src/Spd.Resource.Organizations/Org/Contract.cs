@@ -17,7 +17,7 @@ namespace Spd.Resource.Organizations.Org
     //query
     public abstract record OrgQry;
     public record OrgByOrgGuidQry(Guid OrgGuid) : OrgQry;
-    public record OrgByIdQry(Guid OrgId) : OrgQry;
+    public record OrgByIdentifierQry(Guid? OrgId, string? AccessCode = null) : OrgQry;
     public record SearchOrgQry : OrgQry
     {
         public string? GenericEmail { get; set; }
