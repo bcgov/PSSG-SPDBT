@@ -49,7 +49,7 @@ namespace Spd.Manager.Membership.UserProfile
                 UserInfo ui = new UserInfo();
                 if (latestReg == null)
                 {
-                    ui.UserInfoMsgType = UserInfoMsgTypeCode.ACCONT_NOT_MATCH_RECORD;
+                    ui.UserInfoMsgType = UserInfoMsgTypeCode.ACCOUNT_NOT_MATCH_RECORD;
                 }
                 else
                 {

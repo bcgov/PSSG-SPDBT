@@ -101,7 +101,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 									<div class="text-data">{{ orgData.driversLicense | default }}</div>
 								</div>
 								<div class="col-xl-4 col-lg-4 col-md-12">
-									<div class="text-label d-block text-muted mt-2 mt-lg-0">Gender</div>
+									<div class="text-label d-block text-muted mt-2 mt-lg-0">Sex</div>
 									<div class="text-data">{{ orgData.genderCode | options : 'GenderTypes' | default }}</div>
 								</div>
 							</div>

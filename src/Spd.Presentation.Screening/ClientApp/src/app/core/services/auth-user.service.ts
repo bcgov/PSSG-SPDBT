@@ -95,7 +95,7 @@ export class AuthUserService {
 		return Promise.resolve(false);
 	}
 
-	private clearUserData(): void {
+	public clearUserData(): void {
 		this.userOrgProfile = null;
 		this.applicantProfile = null;
 		this.userInfo = null;
