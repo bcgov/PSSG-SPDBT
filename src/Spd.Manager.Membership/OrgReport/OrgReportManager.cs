@@ -21,7 +21,7 @@ namespace Spd.Manager.Membership.Report
 
         public async Task<OrgReportListResponse> Handle(OrgReportListQuery request, CancellationToken ct)
         {
-            var reports = await _reportRepository.QueryReportsAsync(new OrgReportListQry(request.orgId, request.dateFilter), ct);
+            var reports = await _reportRepository.QueryReportsAsync(new OrgReportListQry(request.orgId), ct);
             var reportResps = _mapper.Map<IEnumerable<OrgReportResponse>>(reports.ReportResults);
 
             return new OrgReportListResponse

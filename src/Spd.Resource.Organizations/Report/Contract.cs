@@ -8,7 +8,7 @@ namespace Spd.Resource.Organizations.Report
     public abstract record OrgReportQryResult;
     public record OrgReportsResult(IEnumerable<OrgReportResult> ReportResults) : OrgReportQryResult;
     public abstract record OrgReportQry;
-    public record OrgReportListQry(Guid? OrgId = null, DateTimeOffset? dateFilter = null) : OrgReportQry;
+    public record OrgReportListQry(Guid? OrgId = null) : OrgReportQry;
 
 
     public record OrgReportResult

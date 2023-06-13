@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Membership.Report;
 using Spd.Utilities.Shared;
-using System.Runtime.InteropServices;
 using System.Security.Claims;
 using System.Security.Principal;
 
@@ -37,9 +36,9 @@ namespace Spd.Presentation.Screening.Controllers
         [Route("api/orgs/{orgId}/reports")]
         [HttpGet]
         [Authorize(Policy = "OnlyBCeID")]
-        public async Task<OrgReportListResponse> Reports([FromQuery][Optional] DateTimeOffset dateFilter, [FromRoute] Guid orgId)
+        public async Task<OrgReportListResponse> Reports([FromRoute] Guid orgId)
         {
-            return await _mediator.Send(new OrgReportListQuery(orgId, dateFilter));
+            return await _mediator.Send(new OrgReportListQuery(orgId));
         }
     }
 }

@@ -34,7 +34,6 @@ export class OrgReportService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiOrgsOrgIdReportsGet$Response(params: {
-    dateFilter?: string;
     orgId: string;
   },
   context?: HttpContext
@@ -43,7 +42,6 @@ export class OrgReportService extends BaseService {
 
     const rb = new RequestBuilder(this.rootUrl, OrgReportService.ApiOrgsOrgIdReportsGetPath, 'get');
     if (params) {
-      rb.query('dateFilter', params.dateFilter, {});
       rb.path('orgId', params.orgId, {});
     }
 
@@ -66,7 +64,6 @@ export class OrgReportService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiOrgsOrgIdReportsGet(params: {
-    dateFilter?: string;
     orgId: string;
   },
   context?: HttpContext

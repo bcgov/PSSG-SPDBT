@@ -87,6 +87,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 })
 export class ReportsComponent {
 	private queryParams: any = this.utilService.getDefaultQueryParams();
+	private allReports: Array<OrgReportResponse> = [];
 	reportMonthYear: Date | null = null;
 	maxDate = new Date();
 	minDate = new Date(2023, 0, 1);
@@ -109,7 +110,7 @@ export class ReportsComponent {
 
 	onMonthAndYearChange(val: Date | null) {
 		this.reportMonthYear = val;
-		this.loadList();
+		this.filterList();
 	}
 
 	onPageChanged(page: PageEvent): void {
@@ -121,12 +122,21 @@ export class ReportsComponent {
 		this.orgReportService
 			.apiOrgsOrgIdReportsGet({
 				orgId: this.authUserService.userInfo?.orgId!,
-				dateFilter: this.reportMonthYear ? (this.reportMonthYear as unknown as string) : undefined,
 			})
 			.pipe()
 			.subscribe((res: OrgReportListResponse) => {
-				this.dataSource.data = res.reports as Array<OrgReportResponse>;
+				this.allReports = res.reports as Array<OrgReportResponse>;
+				this.dataSource.data = this.allReports;
 				this.tablePaginator = { ...res.pagination };
 			});
+	}
+
+	private filterList(): void {
+		if (!this.reportMonthYear) {
+			this.dataSource.data = this.allReports;
+			return;
+		}
+
+		this.dataSource.data = [];
 	}
 }

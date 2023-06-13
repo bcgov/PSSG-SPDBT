@@ -8,7 +8,7 @@ namespace Spd.Manager.Membership.Report
         public Task<OrgReportListResponse> Handle(OrgReportListQuery request, CancellationToken ct);
     }
 
-    public record OrgReportListQuery(Guid orgId, DateTimeOffset dateFilter) : IRequest<OrgReportListResponse>;
+    public record OrgReportListQuery(Guid orgId) : IRequest<OrgReportListResponse>;
 
     public class OrgReportListResponse
     {
