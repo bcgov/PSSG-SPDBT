@@ -76,12 +76,16 @@ namespace Spd.Presentation.Screening.Controllers
                 LastName = StringHelper.ToTitleCase(info.LastName),
                 GenderCode = gender,
                 Sub = info.Sub,
+                MiddleName1 = StringHelper.ToTitleCase(info.MiddleName1),
+                MiddleName2 = StringHelper.ToTitleCase(info.MiddleName2),
             };
         }
     }
 
     public class ApplicantProfileResponse
     {
+        public string? MiddleName2 { get; set; }
+        public string? MiddleName1 { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? DisplayName { get; set; }

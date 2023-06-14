@@ -11,6 +11,8 @@ public class ApplicantIdentityInfo
     public string? BirthDate { get; set; }
     public bool? EmailVerified { get; set; }
     public string? Issuer { get; set; }
+    public string? MiddleName1 { get; set; }
+    public string? MiddleName2 { get; set; }
 }
 
 public class PortalUserIdentityInfo
