@@ -73,7 +73,9 @@ export class PersonalInformationComponent implements CrcFormStepComponent {
 		this.form = this.formBuilder.group({
 			birthPlace: new FormControl(data.birthPlace, [Validators.required]),
 			driversLicense: new FormControl(data.driversLicense),
-			dateOfBirth: new FormControl(data.dateOfBirth, [Validators.required]),
+			dateOfBirth: new FormControl({ value: data.dateOfBirth, disabled: data.readonlyTombstone ?? false }, [
+				Validators.required,
+			]),
 			genderCode: new FormControl(data.genderCode),
 		});
 	}
