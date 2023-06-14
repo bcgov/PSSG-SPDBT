@@ -20,7 +20,10 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             .ForMember(d => d.spd_screeningrequesttype, opt => opt.MapFrom(s => (int)Enum.Parse<ScreenTypeOptionSet>(s.ScreenType.ToString())))
             .ForMember(d => d.spd_views, opt => opt.MapFrom(s => 0))
             .ForMember(d => d.spd_payeetype, opt => opt.MapFrom(s => (int)Enum.Parse<PayerPreferenceOptionSet>(s.PayeeType.ToString())))
-            .ReverseMap();
+            .ReverseMap()
+            .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.spd_firstname))
+            .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.spd_surname))
+            .ForMember(d => d.JobTitle, opt => opt.MapFrom(s => s.spd_jobtitle));
 
             _ = CreateMap<spd_portalinvitation, ApplicationInviteResult>()
             .IncludeBase<spd_portalinvitation, ApplicationInvite>()
