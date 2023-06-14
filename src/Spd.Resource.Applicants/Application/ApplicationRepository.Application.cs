@@ -306,8 +306,8 @@ internal partial class ApplicationRepository : IApplicationRepository
             {
                 //if the same name
                 var existingContact = identity.spd_ContactId;
-                if (existingContact.firstname.Equals(createApplicationCmd.GivenName)
-                    && existingContact.lastname.Equals(createApplicationCmd.Surname))
+                if (string.Equals(existingContact.firstname, createApplicationCmd.GivenName, StringComparison.InvariantCultureIgnoreCase)
+                    && string.Equals(existingContact.lastname, createApplicationCmd.Surname, StringComparison.InvariantCultureIgnoreCase))
                     return existingContact;
 
                 //if the contact first name and lastname is different. make existing one to be alias and add the new one.
