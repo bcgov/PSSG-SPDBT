@@ -15,7 +15,10 @@ import { CrcRoutes } from './crc-routing.module';
 						<p>
 							In British Columbia, if you work or volunteer with, or have the potential for unsupervised access to
 							children and/or vulnerable adults, you are required to complete a criminal record check. This portal
-							enables you to easily apply for a criminal record check under the Criminal Records Review Act.
+							enables you to easily apply for a criminal record check under the
+							<a href="https://www2.gov.bc.ca/gov/content/safety/crime-prevention/criminal-record-check" target="_blank"
+								>Criminal Records Review Act</a
+							>.
 						</p>
 						<h3 class="fw-normal my-3">How do I submit a CRC request online?</h3>
 						<p>To submit an online request for a criminal record check, you must:</p>
@@ -27,27 +30,31 @@ import { CrcRoutes } from './crc-routing.module';
 								to government online services.
 							</li>
 							<li>
-								If you do not have a BC Services Card or if you live otuside the province, please contact your
+								If you do not have a BC Services Card or if you live outside the province, please contact your
 								organization for a manual consent form.
 							</li>
 						</ul>
-						<h3 class="fw-normal my-3">I'm ready</h3>
+						<h3 class="fw-normal my-3">I'm ready with my access code</h3>
 						<p>
 							Enter the access code provided by your organization. An Access code is required to proceed with the online
 							submission
 						</p>
 						<form [formGroup]="form" novalidate>
 							<div class="row">
-								<div class="col-lg-4 col-sm-6">
+								<div class="col-xl-4 col-lg-5 col-md-6 col-sm-6">
 									<mat-form-field>
-										<mat-label>Access Code</mat-label>
-										<input matInput formControlName="accessCode" oninput="this.value = this.value.toUpperCase()" />
+										<input
+											matInput
+											formControlName="accessCode"
+											oninput="this.value = this.value.toUpperCase()"
+											placeholder="Enter your code here"
+										/>
 										<mat-error *ngIf="form.get('accessCode')?.hasError('required')">This is required</mat-error>
 									</mat-form-field>
 									<mat-error class="mb-3" *ngIf="errorMessage">{{ errorMessage }}</mat-error>
 								</div>
-								<div class="col-lg-4 col-sm-6">
-									<button mat-flat-button color="primary" class="large w-auto mx-2" (click)="onAccessCode()">
+								<div class="col-xl-4 col-lg-4 col-md-6 col-sm-6">
+									<button mat-flat-button color="primary" class="large w-auto mx-2 my-2" (click)="onAccessCode()">
 										Continue
 									</button>
 								</div>
@@ -56,18 +63,30 @@ import { CrcRoutes } from './crc-routing.module';
 						<h3 class="fw-normal mb-3">I need more information</h3>
 						<ul>
 							<li>
-								I'm an employee or a volunteer and I want to know why I need to apply for a criminal record check.
+								I'm an employee or a volunteer and I want to know
+								<a href="https://www2.gov.bc.ca" target="_blank">why I need to apply for a criminal record check</a>.
 							</li>
 							<li>
-								I'm an authorized contact who is reponsible for the facilitating the criminal record check for my
-								organization.
+								<a href="https://www2.gov.bc.ca" target="_blank">I'm an authorized contact</a> who is reponsible for the
+								facilitating the criminal record check for my organization.
 							</li>
 							<li>
-								I'm an employer organization and I want to learn about registering with the Criminal Records Review
-								Program (CRRP).
+								<a href="https://www2.gov.bc.ca" target="_blank">I'm an employer organization</a> and I want to learn
+								about registering with the Criminal Records Review Program (CRRP).
 							</li>
-							<li>I'm a volunteer organization and I want to register with the CRRP.</li>
+							<li>
+								<a href="https://www2.gov.bc.ca" target="_blank">I'm a volunteer organization</a> and I want to register
+								with the CRRP.
+							</li>
 						</ul>
+						<h3 class="fw-normal mb-3">I need help</h3>
+						<p>For applicants, contact your organization for your access code.</p>
+						<p>
+							For organizations, if you have a question about the online submission process or to register your
+							organization, contact the Criminal Records Review Program (CRRP) at
+							<a href="mailto:criminalrecords@gov.bc.ca">criminalrecords@gov.bc.ca</a> or by phone at 1-855-587-0185
+							(Option 2).
+						</p>
 					</div>
 				</div>
 			</section>
