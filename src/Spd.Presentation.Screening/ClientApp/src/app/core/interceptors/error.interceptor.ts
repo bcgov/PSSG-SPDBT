@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { ApplicantService, UserProfileService } from 'src/app/api/services';
+import { ApplicantService, OrgService, UserProfileService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 
@@ -15,7 +15,6 @@ export class ErrorInterceptor implements HttpInterceptor {
 	intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 		return next.handle(request).pipe(
 			catchError((errorResponse: HttpErrorResponse) => {
-				let message = 'An error has occurred';
 				console.error('ErrorInterceptor errorResponse', errorResponse);
 
 				// Handling 401 that can occur when you are logged into the wrong identity authority
@@ -26,9 +25,21 @@ export class ErrorInterceptor implements HttpInterceptor {
 						errorResponse.url?.includes(ApplicantService.ApiApplicantsInvitesPostPath))
 				) {
 					this.router.navigate([AppRoutes.ACCESS_DENIED]);
-					return next.handle(request); // do not show error
+					return throwError(() => new Error(message));
 				}
 
+				// Certain 404s will be handled in the component
+				if (errorResponse.status == 404) {
+					const orgAccessCodeGet = OrgService.ApiOrgsAccessCodeAccessCodeGetPath.substring(
+						OrgService.ApiOrgsAccessCodeAccessCodeGetPath.indexOf('/api') + 1,
+						OrgService.ApiOrgsAccessCodeAccessCodeGetPath.lastIndexOf('/')
+					);
+					if (errorResponse.url?.includes(orgAccessCodeGet)) {
+						return throwError(() => errorResponse);
+					}
+				}
+
+				let message = 'An error has occurred';
 				let title = errorResponse.statusText ?? 'Unexpected Error';
 				if (errorResponse.error) {
 					if (errorResponse.error?.errors) {
