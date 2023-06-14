@@ -6,8 +6,8 @@ import { PayerPreferenceTypeCode } from './payer-preference-type-code';
 import { ScreeningTypeCode } from './screening-type-code';
 import { ServiceTypeCode } from './service-type-code';
 import { VolunteerOrganizationTypeCode } from './volunteer-organization-type-code';
-export interface AppInviteVerifyResponse {
-  appInviteId?: string;
+export interface AppOrgResponse {
+  appInviteId?: null | string;
   emailAddress?: null | string;
   employeeOrganizationTypeCode?: EmployeeOrganizationTypeCode;
   givenName?: null | string;
