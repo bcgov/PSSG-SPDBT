@@ -19,6 +19,6 @@ namespace Spd.Manager.Membership.Report
     public class OrgReportResponse
     {
         public Guid Id { get; set; }
-        public string ReportName { get; set; }
+        public DateTimeOffset ReportDate { get; set; }
     }
 }

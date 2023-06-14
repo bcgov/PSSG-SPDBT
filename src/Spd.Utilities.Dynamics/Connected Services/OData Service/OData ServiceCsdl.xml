@@ -20315,6 +20315,7 @@
         <Property Name="spd_pdfreportid" Type="Edm.Guid" />
         <Property Name="_owningteam_value" Type="Edm.Guid" />
         <Property Name="versionnumber" Type="Edm.Int64" />
+        <Property Name="spd_reportdate" Type="Edm.Date" />
         <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
         <Property Name="statuscode" Type="Edm.Int32" />
         <Property Name="_createdonbehalfby_value" Type="Edm.Guid" />
