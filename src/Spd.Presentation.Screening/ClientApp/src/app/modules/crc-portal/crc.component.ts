@@ -32,7 +32,7 @@ export interface CrcFormStepComponent {
 
 export interface AppInviteOrgData extends ApplicantAppCreateRequest {
 	orgAddress?: string | null; // for display
-	// readonlyTombstone?: boolean | null; // logic for screens
+	readonlyTombstone?: boolean | null; // logic for screens - SPDBT-1272
 	performPaymentProcess?: boolean | null;
 	previousNameFlag?: boolean | null;
 	// shareCrc?: string | null;
@@ -184,11 +184,6 @@ export class CrcComponent implements OnInit {
 		// Parameter must be orgData or accessCode
 
 		const orgData = (this.location.getState() as any).crcaOrgData;
-		if (!orgData) {
-			this.router.navigate([AppRoutes.ACCESS_DENIED]);
-			return;
-		}
-
 		if (orgData) {
 			orgData.orgAddress = this.utilService.getAddressString({
 				addressLine1: orgData.orgAddressLine1!,
@@ -201,7 +196,7 @@ export class CrcComponent implements OnInit {
 
 			// TODO hardcode for now
 			orgData.performPaymentProcess = false;
-			// orgData.readonlyTombstone = false;
+			orgData.readonlyTombstone = false;
 		}
 
 		//auth step 1 - user is not logged in, no state at all
@@ -225,6 +220,11 @@ export class CrcComponent implements OnInit {
 
 		// Assign this at the end so that the orgData setters have the correct information.
 		this.orgData = orgData;
+
+		if (!this.orgData) {
+			this.router.navigate([AppRoutes.ACCESS_DENIED]);
+			return;
+		}
 	}
 
 	onScrollIntoView(): void {
@@ -364,7 +364,7 @@ export class CrcComponent implements OnInit {
 		if (orgData) {
 			const applicantProfile = this.authUserService.applicantProfile;
 
-			// orgData.readonlyTombstone = true;
+			orgData.readonlyTombstone = true;
 			orgData.givenName = applicantProfile?.firstName;
 			orgData.surname = applicantProfile?.lastName;
 			orgData.dateOfBirth = applicantProfile?.birthDate;
