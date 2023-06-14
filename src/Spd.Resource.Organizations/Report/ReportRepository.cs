@@ -24,7 +24,7 @@ namespace Spd.Resource.Organizations.Report
         {
             IQueryable<spd_pdfreport> reports = _dynaContext.spd_pdfreports
             .Where(r => r._spd_organizationid_value == qry.OrgId)
-            .OrderByDescending(r => r.createdon);
+            .OrderByDescending(r => r.spd_reportdate);
 
             return new OrgReportsResult(_mapper.Map<IEnumerable<OrgReportResult>>(reports));
         }
