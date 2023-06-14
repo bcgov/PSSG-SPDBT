@@ -9,7 +9,7 @@ namespace Spd.Resource.Organizations.Report
         {
             _ = CreateMap<spd_pdfreport, OrgReportResult>()
             .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_pdfreportid))
-            .ForMember(d => d.ReportName, opt => opt.MapFrom(s => "Monthly Screening Report - May 2023 " + s.spd_name));
+            .ForMember(d => d.ReportDate, opt => opt.MapFrom(s => new DateTimeOffset(s.spd_reportdate.Value.Year, s.spd_reportdate.Value.Month, s.spd_reportdate.Value.Day, 0, 0, 0, TimeSpan.Zero)));
         }
     }
 }
