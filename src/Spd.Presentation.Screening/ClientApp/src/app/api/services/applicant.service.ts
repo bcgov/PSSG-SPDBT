@@ -11,7 +11,7 @@ import { map, filter } from 'rxjs/operators';
 
 import { AnonymousApplicantAppCreateRequest } from '../models/anonymous-applicant-app-create-request';
 import { AppInviteVerifyRequest } from '../models/app-invite-verify-request';
-import { AppInviteVerifyResponse } from '../models/app-invite-verify-response';
+import { AppOrgResponse } from '../models/app-org-response';
 import { ApplicantAppCreateRequest } from '../models/applicant-app-create-request';
 import { ApplicationCreateResponse } from '../models/application-create-response';
 
@@ -50,7 +50,7 @@ export class ApplicantService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<StrictHttpResponse<AppInviteVerifyResponse>> {
+): Observable<StrictHttpResponse<AppOrgResponse>> {
 
     const rb = new RequestBuilder(this.rootUrl, ApplicantService.ApiApplicantsInvitesPostPath, 'post');
     if (params) {
@@ -64,7 +64,7 @@ export class ApplicantService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<AppInviteVerifyResponse>;
+        return r as StrictHttpResponse<AppOrgResponse>;
       })
     );
   }
@@ -88,10 +88,10 @@ export class ApplicantService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<AppInviteVerifyResponse> {
+): Observable<AppOrgResponse> {
 
     return this.apiApplicantsInvitesPost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<AppInviteVerifyResponse>) => r.body as AppInviteVerifyResponse)
+      map((r: StrictHttpResponse<AppOrgResponse>) => r.body as AppOrgResponse)
     );
   }
 

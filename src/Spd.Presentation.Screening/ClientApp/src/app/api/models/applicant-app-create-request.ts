@@ -13,7 +13,7 @@ export interface ApplicantAppCreateRequest {
   agreeToCriminalCheck?: null | boolean;
   agreeToVulnerableSectorSearch?: null | boolean;
   aliases?: null | Array<AliasCreateRequest>;
-  appInviteId?: string;
+  appInviteId?: null | string;
   birthPlace?: null | string;
   city?: null | string;
   contractedCompanyName?: null | string;
