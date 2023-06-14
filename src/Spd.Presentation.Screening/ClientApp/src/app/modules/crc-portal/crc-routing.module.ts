@@ -2,10 +2,12 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CrcComponent } from './crc.component';
 import { InvitationComponent } from './invitation.component';
+import { OrgAccessComponent } from './org-access.component';
 
 export class CrcRoutes {
 	public static CRCA = 'crca';
 	public static INVITATION = 'invitation';
+	public static ORG_ACCESS = 'org-access';
 
 	public static MODULE_PATH = CrcRoutes.CRCA;
 
@@ -22,6 +24,10 @@ const routes: Routes = [
 	{
 		path: 'invitation/:id',
 		component: InvitationComponent,
+	},
+	{
+		path: CrcRoutes.ORG_ACCESS,
+		component: OrgAccessComponent,
 	},
 ];
 

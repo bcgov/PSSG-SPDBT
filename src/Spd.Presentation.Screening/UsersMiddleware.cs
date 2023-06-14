@@ -76,10 +76,11 @@ namespace Spd.Utilities.LogonUser
                 ("GET", "api/user"),
                 ("GET", "api/configuration"),
                 ("GET", "api/metadata/address"),
+                ("GET", "api/org-registrations"),
+                ("GET", "api/orgs/access-code"),
                 ("POST", "api/anonymous-org-registrations"),
                 ("POST", "api/org-registrations"),
                 ("POST", "api/user/invitation"),
-                ("GET", "api/org-registrations"),
                 ("POST", "api/applicants/invites")
             };
 

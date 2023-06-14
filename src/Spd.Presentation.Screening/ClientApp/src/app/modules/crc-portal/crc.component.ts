@@ -181,7 +181,14 @@ export class CrcComponent implements OnInit {
 			)
 			.subscribe(() => this.breakpointChanged());
 
-		const orgData = (this.location.getState() as any).orgData;
+		// Parameter must be orgData or accessCode
+
+		const orgData = (this.location.getState() as any).crcaOrgData;
+		if (!orgData) {
+			this.router.navigate([AppRoutes.ACCESS_DENIED]);
+			return;
+		}
+
 		if (orgData) {
 			orgData.orgAddress = this.utilService.getAddressString({
 				addressLine1: orgData.orgAddressLine1!,
@@ -218,10 +225,6 @@ export class CrcComponent implements OnInit {
 
 		// Assign this at the end so that the orgData setters have the correct information.
 		this.orgData = orgData;
-
-		if (!this.orgData) {
-			this.router.navigate([AppRoutes.ACCESS_DENIED]);
-		}
 	}
 
 	onScrollIntoView(): void {
