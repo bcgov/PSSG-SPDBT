@@ -1,8 +1,9 @@
-import { Component, ViewChild } from '@angular/core';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { Component } from '@angular/core';
+import { PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { OrgReportListResponse, OrgReportResponse } from 'src/app/api/models';
 import { OrgReportService } from 'src/app/api/services';
+import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { UtilService } from 'src/app/core/services/util.service';
 
@@ -19,31 +20,37 @@ import { UtilService } from 'src/app/core/services/util.service';
 			</div>
 
 			<div class="row mt-4">
-				<div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12">
+				<div class="col-xxl-4 col-xl-5 col-lg-6 col-md-12">
 					<app-month-picker
-						label="Filter"
-						hint="Select the year and month to filter the report list"
-						[monthAndYear]="reportMonthYear"
+						label="From Month/Year"
+						[monthAndYear]="reportMonthYearFrom"
 						[minDate]="minDate"
 						[maxDate]="maxDate"
-						(monthAndYearChange)="onMonthAndYearChange($event)"
+						(monthAndYearChange)="onMonthAndYearChangeFrom($event)"
+					></app-month-picker>
+				</div>
+				<div class="col-xxl-4 col-xl-5 col-lg-6 col-md-12">
+					<app-month-picker
+						label="To Month/Year"
+						[monthAndYear]="reportMonthYearTo"
+						[minDate]="minDate"
+						[maxDate]="maxDate"
+						(monthAndYearChange)="onMonthAndYearChangeTo($event)"
 					></app-month-picker>
 				</div>
 			</div>
 
 			<div class="row mb-4">
-				<div class="col-xxl-7 col-xl-8 col-lg-12 col-md-12 col-sm-12">
+				<div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12">
 					<mat-table [dataSource]="dataSource">
-						<ng-container matColumnDef="reportName">
-							<mat-header-cell *matHeaderCellDef></mat-header-cell>
+						<ng-container matColumnDef="reportDate">
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label"></span>
-								{{ application.reportName }}
+								Monthly Report - {{ application.reportDate | date : constants.date.monthYearFormat }}
 							</mat-cell>
 						</ng-container>
 
 						<ng-container matColumnDef="action">
-							<mat-header-cell *matHeaderCellDef></mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label"></span>
 								<button
@@ -57,7 +64,6 @@ import { UtilService } from 'src/app/core/services/util.service';
 							</mat-cell>
 						</ng-container>
 
-						<mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
 						<mat-row *matRowDef="let row; columns: columns"></mat-row>
 					</mat-table>
 					<mat-paginator
@@ -88,15 +94,16 @@ import { UtilService } from 'src/app/core/services/util.service';
 export class ReportsComponent {
 	private queryParams: any = this.utilService.getDefaultQueryParams();
 	private allReports: Array<OrgReportResponse> = [];
-	reportMonthYear: Date | null = null;
+
+	constants = SPD_CONSTANTS;
+	reportMonthYearFrom: Date | null = new Date(new Date().getFullYear(), 0, 1);
+	reportMonthYearTo: Date | null = null;
 	maxDate = new Date();
 	minDate = new Date(2023, 0, 1);
 
-	dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
+	dataSource: MatTableDataSource<OrgReportResponse> = new MatTableDataSource<OrgReportResponse>([]);
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
-	columns: string[] = ['reportName', 'action'];
-
-	@ViewChild('paginator') paginator!: MatPaginator;
+	columns: string[] = ['reportDate', 'action'];
 
 	constructor(
 		private utilService: UtilService,
@@ -108,14 +115,25 @@ export class ReportsComponent {
 		this.loadList();
 	}
 
-	onMonthAndYearChange(val: Date | null) {
-		this.reportMonthYear = val;
+	onMonthAndYearChangeFrom(val: Date | null) {
+		this.reportMonthYearFrom = val;
+		this.filterList();
+	}
+
+	onMonthAndYearChangeTo(val: Date | null) {
+		this.reportMonthYearTo = val;
+		if (val) {
+			// change to last day of month and time at end of day
+			const lastDayOfMonth = new Date(val.getFullYear(), val.getMonth() + 1, 0);
+			lastDayOfMonth.setHours(23, 59, 59, 999);
+			this.reportMonthYearTo = lastDayOfMonth;
+		}
 		this.filterList();
 	}
 
 	onPageChanged(page: PageEvent): void {
 		this.queryParams.page = page.pageIndex;
-		this.loadList();
+		this.filterList();
 	}
 
 	private loadList(): void {
@@ -126,17 +144,31 @@ export class ReportsComponent {
 			.pipe()
 			.subscribe((res: OrgReportListResponse) => {
 				this.allReports = res.reports as Array<OrgReportResponse>;
-				this.dataSource.data = this.allReports;
-				this.tablePaginator = { ...res.pagination };
+				this.filterList();
 			});
 	}
 
 	private filterList(): void {
-		if (!this.reportMonthYear) {
-			this.dataSource.data = this.allReports;
-			return;
+		let reports: Array<OrgReportResponse> = [];
+
+		if (!this.reportMonthYearFrom && !this.reportMonthYearTo) {
+			reports = this.allReports;
+		} else if (this.reportMonthYearFrom && !this.reportMonthYearTo) {
+			reports = this.allReports.filter((rpt) => new Date(rpt.reportDate!) >= this.reportMonthYearFrom!);
+		} else if (!this.reportMonthYearFrom && this.reportMonthYearTo) {
+			reports = this.allReports.filter((rpt) => new Date(rpt.reportDate!) <= this.reportMonthYearTo!);
+		} else {
+			reports = this.allReports.filter(
+				(rpt) =>
+					new Date(rpt.reportDate!) >= this.reportMonthYearFrom! && new Date(rpt.reportDate!) <= this.reportMonthYearTo!
+			);
 		}
 
-		this.dataSource.data = [];
+		const pageIndex = this.queryParams.page;
+		const start = pageIndex * this.tablePaginator.pageSize!;
+		const subset = reports.slice(start, start + this.tablePaginator.pageSize!);
+
+		this.tablePaginator = { ...this.tablePaginator, length: reports.length, pageIndex: pageIndex };
+		this.dataSource.data = subset;
 	}
 }

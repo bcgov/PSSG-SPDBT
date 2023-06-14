@@ -5,7 +5,7 @@ export { AliasCreateRequest } from './models/alias-create-request';
 export { AnonymousApplicantAppCreateRequest } from './models/anonymous-applicant-app-create-request';
 export { AnonymousOrgRegistrationCreateRequest } from './models/anonymous-org-registration-create-request';
 export { AppInviteVerifyRequest } from './models/app-invite-verify-request';
-export { AppInviteVerifyResponse } from './models/app-invite-verify-response';
+export { AppOrgResponse } from './models/app-org-response';
 export { ApplicantAppCreateRequest } from './models/applicant-app-create-request';
 export { ApplicantProfileResponse } from './models/applicant-profile-response';
 export { ApplicationCreateResponse } from './models/application-create-response';
