@@ -98,8 +98,8 @@ export class ContactInformationComponent implements CrcFormStepComponent {
 				givenName: new FormControl({ value: data.givenName, disabled: data.readonlyTombstone ?? false }, [
 					Validators.required,
 				]),
-				middleName1: new FormControl(data.middleName1),
-				middleName2: new FormControl(data.middleName2),
+				middleName1: new FormControl({ value: data.middleName1, disabled: data.readonlyTombstone ?? false }),
+				middleName2: new FormControl({ value: data.middleName2, disabled: data.readonlyTombstone ?? false }),
 				surname: new FormControl({ value: data.surname, disabled: data.readonlyTombstone ?? false }, [
 					Validators.required,
 				]),
