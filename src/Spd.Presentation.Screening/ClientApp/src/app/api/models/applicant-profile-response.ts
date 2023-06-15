@@ -10,5 +10,7 @@ export interface ApplicantProfileResponse {
   firstName?: null | string;
   genderCode?: GenderCode;
   lastName?: null | string;
+  middleName1?: null | string;
+  middleName2?: null | string;
   sub?: null | string;
 }
