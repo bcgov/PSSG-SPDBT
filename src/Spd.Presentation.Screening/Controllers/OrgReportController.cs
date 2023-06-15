@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Spd.Manager.Cases;
 using Spd.Manager.Membership.Report;
 using Spd.Utilities.Shared;
 using System.Security.Claims;
@@ -39,6 +40,21 @@ namespace Spd.Presentation.Screening.Controllers
         public async Task<OrgReportListResponse> Reports([FromRoute] Guid orgId)
         {
             return await _mediator.Send(new OrgReportListQuery(orgId));
+        }
+
+        /// <summary>
+        /// download the report
+        /// </summary>
+        /// <param name="reportId"></param>
+        /// <returns>FileStreamResult</returns>
+        [Route("api/orgs/{orgId}/reports/{reportId}/file")]
+        [HttpGet]
+        public async Task<FileStreamResult> DownloadReportAsync([FromRoute] Guid reportId, CancellationToken ct)
+        {
+            ReportFileResponse response = await _mediator.Send(new ReportFileQuery(reportId));
+            var content = new MemoryStream(response.Content);
+            var contentType = response.ContentType ?? "application/octet-stream";
+            return File(content, contentType, response.FileName);
         }
     }
 }
