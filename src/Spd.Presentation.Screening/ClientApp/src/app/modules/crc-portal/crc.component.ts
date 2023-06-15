@@ -367,6 +367,8 @@ export class CrcComponent implements OnInit {
 			orgData.readonlyTombstone = true;
 			orgData.givenName = applicantProfile?.firstName;
 			orgData.surname = applicantProfile?.lastName;
+			orgData.middleName1 = applicantProfile?.middleName1;
+			orgData.middleName2 = applicantProfile?.middleName2;
 			orgData.dateOfBirth = applicantProfile?.birthDate;
 			orgData.emailAddress = applicantProfile?.email;
 			orgData.genderCode = applicantProfile?.genderCode;
