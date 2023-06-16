@@ -49,6 +49,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns>FileStreamResult</returns>
         [Route("api/orgs/{orgId}/reports/{reportId}/file")]
         [HttpGet]
+        [Authorize(Policy = "OnlyBCeID")]
         public async Task<FileStreamResult> DownloadReportAsync([FromRoute] Guid reportId, CancellationToken ct)
         {
             ReportFileResponse response = await _mediator.Send(new ReportFileQuery(reportId));
