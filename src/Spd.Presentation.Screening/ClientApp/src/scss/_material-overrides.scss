@@ -213,6 +213,10 @@ mat-label {
 
 
 // MAT CHIPS
+.mdc-evolution-chip__action:hover { // show as arrow on hover
+  cursor: default;
+}
+
 .mat-chip-green {
   background-color: rgba(215, 228, 213, 1) !important;
   .mdc-evolution-chip__text-label {

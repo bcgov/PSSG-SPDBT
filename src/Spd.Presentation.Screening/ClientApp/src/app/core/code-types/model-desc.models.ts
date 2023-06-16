@@ -32,14 +32,25 @@ export const PayerPreferenceTypes: SelectOptions[] = [
 ];
 
 export const ServiceTypes: SelectOptions[] = [
-	{ desc: 'Psso', code: ServiceTypeCode.Psso },
-	{ desc: 'Crrp Employee', code: ServiceTypeCode.CrrpEmployee },
-	{ desc: 'Crrp Volunteer', code: ServiceTypeCode.CrrpVolunteer },
-	{ desc: 'Mcfd', code: ServiceTypeCode.Mcfd },
-	{ desc: 'Pe Crc', code: ServiceTypeCode.PeCrc },
-	{ desc: 'Pe Crc Vs', code: ServiceTypeCode.PeCrcVs },
+	{ desc: 'PSSO', code: ServiceTypeCode.Psso },
+	{ desc: 'CRRP-Employee', code: ServiceTypeCode.CrrpEmployee },
+	{ desc: 'CRRP-Volunteer', code: ServiceTypeCode.CrrpVolunteer },
+	{ desc: 'MCFD', code: ServiceTypeCode.Mcfd },
+	{ desc: 'PE-CRC', code: ServiceTypeCode.PeCrc },
+	{ desc: 'PE-CRC +Vulnerable Sector', code: ServiceTypeCode.PeCrcVs },
 	{ desc: 'Licensing', code: ServiceTypeCode.Licensing },
-	{ desc: 'Psso Vs', code: ServiceTypeCode.PssoVs },
+	{ desc: 'PSSO +Vulnerable Sector', code: ServiceTypeCode.PssoVs },
+];
+
+export const ServiceTypesPsso: SelectOptions[] = [
+	{ desc: 'CRC', code: ServiceTypeCode.Psso },
+	{ desc: 'CRRP-Employee', code: ServiceTypeCode.CrrpEmployee },
+	{ desc: 'CRRP-Volunteer', code: ServiceTypeCode.CrrpVolunteer },
+	{ desc: 'MCFD', code: ServiceTypeCode.Mcfd },
+	{ desc: 'PE-CRC', code: ServiceTypeCode.PeCrc },
+	{ desc: 'PE-CRC +Vulnerable Sector', code: ServiceTypeCode.PeCrcVs },
+	{ desc: 'Licensing', code: ServiceTypeCode.Licensing },
+	{ desc: 'CRC +Vulnerable Sector', code: ServiceTypeCode.PssoVs },
 ];
 
 export const GenderTypes: SelectOptions[] = [

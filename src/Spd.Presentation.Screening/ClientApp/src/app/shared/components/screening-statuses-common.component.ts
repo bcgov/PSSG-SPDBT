@@ -29,7 +29,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
-					<h2 class="mb-2 fw-normal">{{ title }}</h2>
+					<h2 class="mb-2 fw-normal">{{ heading }}</h2>
 					<app-applications-banner></app-applications-banner>
 				</div>
 			</div>
@@ -200,10 +200,10 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 									mat-flat-button
 									(click)="onManageDelegates(application)"
 									class="m-2"
-									style="color: var(--color-green);"
+									style="color: var(--color-primary-light);"
 									aria-label="Pay now"
 								>
-									<mat-icon>send</mat-icon>Manage Delegates
+									<mat-icon>edit</mat-icon>Delegates
 								</a>
 							</mat-cell>
 						</ng-container>
@@ -264,7 +264,7 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 	formFilter: FormGroup = this.formBuilder.group(new ScreeningStatusFilter());
 
 	@Input() portal: PortalTypeCode | null = null;
-	@Input() title = '';
+	@Input() heading = '';
 	@Output() emitManageDelegate: EventEmitter<ScreeningStatusResponse> = new EventEmitter<ScreeningStatusResponse>();
 	@Output() emitPayNow: EventEmitter<ScreeningStatusResponse> = new EventEmitter<ScreeningStatusResponse>();
 	@Output() emitVerifyIdentity: EventEmitter<ScreeningStatusResponse> = new EventEmitter<ScreeningStatusResponse>();

@@ -9,7 +9,7 @@ import { DelegateManageModalComponent } from './delegate-manage-modal.component'
 	template: `
 		<app-screening-statuses-common
 			[portal]="portal.Psso"
-			title="Screening Statuses"
+			heading="Screening Statuses"
 			(emitManageDelegate)="onManageDelegates($event)"
 		></app-screening-statuses-common>
 	`,

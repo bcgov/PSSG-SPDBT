@@ -155,7 +155,7 @@ export interface PaymentResponse extends ApplicationResponse {
 									*ngIf="application.status == applicationPortalStatusCodes.AwaitingPayment"
 									aria-label="Pay now"
 								>
-									<mat-icon>attach_money</mat-icon>Pay Now
+									<mat-icon>send</mat-icon>Pay Now
 								</button>
 							</mat-cell>
 						</ng-container>

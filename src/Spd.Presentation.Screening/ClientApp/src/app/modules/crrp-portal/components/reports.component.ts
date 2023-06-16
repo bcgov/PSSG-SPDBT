@@ -59,7 +59,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 									style="color: var(--color-primary-light);"
 									aria-label="Download"
 								>
-									<mat-icon>file_download</mat-icon>Download
+									<mat-icon>file_download</mat-icon>Report
 								</button>
 							</mat-cell>
 						</ng-container>
