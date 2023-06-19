@@ -167,17 +167,35 @@ export class ReportsComponent {
 	private filterList(): void {
 		let reports: Array<OrgReportResponse> = [];
 
+		// console.log('this.reportMonthYearFrom', this.reportMonthYearFrom);
+		// this.allReports.forEach((rpt) => console.log('reportDate', new Date(rpt.reportDate!)));
+		// this.allReports.forEach((rpt) => {
+		// 	const xx = new Date(rpt.reportDate!);
+		// 	console.log('reportDate', new Date(Date.UTC(xx.getUTCFullYear(), xx.getUTCMonth(), xx.getUTCDate())));
+		// 	console.log('reportDate2', new Date(xx.getUTCFullYear(), xx.getUTCMonth(), xx.getUTCDate()));
+		// 	console.log('reportDate3', this.datePipe.transform(rpt.reportDate!, undefined, 'UTC'));
+		// });
+
 		if (!this.reportMonthYearFrom && !this.reportMonthYearTo) {
 			reports = this.allReports;
 		} else if (this.reportMonthYearFrom && !this.reportMonthYearTo) {
-			reports = this.allReports.filter((rpt) => new Date(rpt.reportDate!) >= this.reportMonthYearFrom!);
+			reports = this.allReports.filter((rpt) => {
+				const reportDate = new Date(rpt.reportDate!);
+				const reportUtcDate = new Date(reportDate.getUTCFullYear(), reportDate.getUTCMonth(), reportDate.getUTCDate());
+				return reportUtcDate >= this.reportMonthYearFrom!;
+			});
 		} else if (!this.reportMonthYearFrom && this.reportMonthYearTo) {
-			reports = this.allReports.filter((rpt) => new Date(rpt.reportDate!) <= this.reportMonthYearTo!);
+			reports = this.allReports.filter((rpt) => {
+				const reportDate = new Date(rpt.reportDate!);
+				const reportUtcDate = new Date(reportDate.getUTCFullYear(), reportDate.getUTCMonth(), reportDate.getUTCDate());
+				return reportUtcDate <= this.reportMonthYearTo!;
+			});
 		} else {
-			reports = this.allReports.filter(
-				(rpt) =>
-					new Date(rpt.reportDate!) >= this.reportMonthYearFrom! && new Date(rpt.reportDate!) <= this.reportMonthYearTo!
-			);
+			reports = this.allReports.filter((rpt) => {
+				const reportDate = new Date(rpt.reportDate!);
+				const reportUtcDate = new Date(reportDate.getUTCFullYear(), reportDate.getUTCMonth(), reportDate.getUTCDate());
+				return reportUtcDate >= this.reportMonthYearFrom! && reportUtcDate <= this.reportMonthYearTo!;
+			});
 		}
 
 		const pageIndex = this.queryParams.page;
