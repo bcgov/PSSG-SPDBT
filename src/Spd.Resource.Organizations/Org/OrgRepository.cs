@@ -26,7 +26,7 @@ namespace Spd.Resource.Organizations.Org
                 OrgByOrgGuidQry q => await GetOrgsByOrgGuidAsync(q, ct),
                 OrgByIdentifierQry q => await GetOrgByIdentifierAsync(q, ct),
                 _ => throw new NotSupportedException($"{query.GetType().Name} is not supported")
-            }; ;
+            }; 
         }
 
         public async Task<OrgManageResult?> ManageOrgAsync(OrgCmd cmd, CancellationToken ct)
