@@ -1,5 +1,6 @@
 using AutoMapper;
 using MediatR;
+using Spd.Resource.Applicants.Application;
 using Spd.Resource.Organizations.Org;
 using Spd.Resource.Organizations.Report;
 
@@ -7,6 +8,7 @@ namespace Spd.Manager.Membership.Report
 {
     internal class OrgReportManager
     : IRequestHandler<OrgReportListQuery, OrgReportListResponse>,
+    IRequestHandler<ReportFileQuery, ReportFileResponse>,   
     IReportManager
     {
         private readonly IOrgReportRepository _reportRepository;
@@ -28,6 +30,12 @@ namespace Spd.Manager.Membership.Report
             {
                 Reports = reportResps
             };
+        }
+
+        public async Task<ReportFileResponse> Handle(ReportFileQuery query, CancellationToken ct)
+        {
+            ReportFileResp reportFile = await _reportRepository.QueryReportFileAsync(new ReportFileQry(query.ReportId), ct);
+            return _mapper.Map<ReportFileResponse>(reportFile);
         }
     }
 }
