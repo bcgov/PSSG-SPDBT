@@ -243,7 +243,7 @@ export class ExpiringChecksComponent implements OnInit {
 		private formBuilder: FormBuilder,
 		private applicationService: ApplicationService,
 		private authUserService: AuthUserService,
-		private hotToast: HotToastService,
+		private hotToastService: HotToastService,
 		private dialog: MatDialog
 	) {}
 
@@ -295,28 +295,7 @@ export class ExpiringChecksComponent implements OnInit {
 			})
 			.pipe()
 			.subscribe((resp: StrictHttpResponse<Blob>) => {
-				let fileName = `clearance-letter-${clearance.firstName}-${clearance.lastName}`; // default
-				const contentDisposition = resp.headers.get('Content-Disposition');
-				if (contentDisposition) {
-					const fileNameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-					const matches = fileNameRegex.exec(contentDisposition);
-					if (matches != null && matches[1]) {
-						fileName = matches[1].replace(/['"]/g, '');
-					}
-				}
-
-				const blob = resp.body;
-				if (blob?.size > 0) {
-					const url = window.URL.createObjectURL(blob);
-					const anchor = document.createElement('a');
-					anchor.href = url;
-					anchor.download = fileName;
-					document.body.appendChild(anchor);
-					anchor.click();
-					document.body.removeChild(anchor);
-				} else {
-					this.hotToast.warning('There is no clearance letter associated with this criminal record check');
-				}
+				this.utilService.downloadFile(resp.headers, resp.body);
 			});
 	}
 
@@ -354,8 +333,8 @@ export class ExpiringChecksComponent implements OnInit {
 						.afterClosed()
 						.subscribe((resp) => {
 							if (resp.success) {
-								this.hotToast.success('Expired check was successfully removed');
-								this.hotToast.success(resp.message);
+								this.hotToastService.success('Expired check was successfully removed');
+								this.hotToastService.success(resp.message);
 
 								this.router.navigateByUrl(CrrpRoutes.path(CrrpRoutes.CRIMINAL_RECORD_CHECKS));
 							}
@@ -385,7 +364,7 @@ export class ExpiringChecksComponent implements OnInit {
 						})
 						.pipe()
 						.subscribe((_res) => {
-							this.hotToast.success('The request was successfully cancelled');
+							this.hotToastService.success('The request was successfully cancelled');
 							this.loadList();
 						});
 				}

@@ -8,7 +8,7 @@ import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 
 		<app-screening-requests-common
 			[portal]="portal.Crrp"
-			title="Criminal Record Check Requests"
+			heading="Criminal Record Check Requests"
 			subtitle="Criminal record check request links will expire 14 days after being sent"
 		></app-screening-requests-common>
 	`,

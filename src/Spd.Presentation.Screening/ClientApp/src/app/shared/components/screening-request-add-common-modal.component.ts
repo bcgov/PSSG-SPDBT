@@ -43,7 +43,7 @@ export interface ScreeningRequestAddDialogData {
 								</ul>
 							</div>
 						</div>
-						<ng-container formArrayName="tableRows" *ngFor="let group of getFormControls.controls; let i = index">
+						<ng-container formArrayName="crcs" *ngFor="let group of getFormControls.controls; let i = index">
 							<mat-divider class="mb-3" *ngIf="i > 0"></mat-divider>
 							<div class="row" [formGroupName]="i">
 								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0">
@@ -72,7 +72,7 @@ export interface ScreeningRequestAddDialogData {
 										<mat-error *ngIf="group.get('lastName')?.hasError('required')">This is required</mat-error>
 									</mat-form-field>
 								</div>
-								<div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 pe-md-0">
+								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0">
 									<mat-form-field>
 										<mat-label>Email Address</mat-label>
 										<input
@@ -87,7 +87,7 @@ export interface ScreeningRequestAddDialogData {
 										<mat-error *ngIf="group.get('email')?.hasError('required')">This is required</mat-error>
 									</mat-form-field>
 								</div>
-								<div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 pe-md-0">
+								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0">
 									<mat-form-field>
 										<mat-label>Job Title</mat-label>
 										<input matInput formControlName="jobTitle" [errorStateMatcher]="matcher" maxlength="100" />
@@ -95,7 +95,7 @@ export interface ScreeningRequestAddDialogData {
 									</mat-form-field>
 								</div>
 
-								<div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 pe-md-0">
+								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0">
 									<mat-form-field>
 										<mat-label>Paid by</mat-label>
 										<mat-select formControlName="payeeType" [errorStateMatcher]="matcher">
@@ -194,15 +194,17 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 	readonly yesMessageSingular = 'Your criminal record check has been sent to the applicant';
 	readonly yesMessageMultiple = 'Your criminal record checks have been sent to the applicants';
 
-	matcher = new FormErrorStateMatcher();
-	showScreeningType = false;
 	showServiceType = false;
+	serviceTypeDefault: ServiceTypeCode | null = null;
 	serviceTypes: null | SelectOptions[] = null;
+
+	showScreeningType = false;
 	screeningTypes = ScreeningTypes;
 	payerPreferenceTypes = PayerPreferenceTypes;
 
 	title: string = 'Add Criminal Record Check';
 	form!: FormGroup;
+	matcher = new FormErrorStateMatcher();
 
 	constructor(
 		private formBuilder: FormBuilder,
@@ -223,13 +225,17 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 			: false;
 
 		const serviceTypes = orgProfile?.serviceTypes;
-		if (serviceTypes && serviceTypes.length > 1) {
-			this.showServiceType = true;
-			this.serviceTypes = ServiceTypes.filter((item) => serviceTypes.includes(item.code as ServiceTypeCode));
+		if (serviceTypes) {
+			if (serviceTypes.length == 1) {
+				this.serviceTypeDefault = serviceTypes[0];
+			} else {
+				this.showServiceType = true;
+				this.serviceTypes = ServiceTypes.filter((item) => serviceTypes.includes(item.code as ServiceTypeCode));
+			}
 		}
 
 		this.form = this.formBuilder.group({
-			tableRows: this.formBuilder.array([]),
+			crcs: this.formBuilder.array([]),
 		});
 
 		this.addFirstRow(this.dialogData?.inviteDefault ?? undefined);
@@ -237,6 +243,8 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 
 	initiateForm(inviteDefault?: ApplicationInviteCreateRequest): FormGroup {
 		const screeningTypeCodeDefault = this.showScreeningType ? '' : ScreeningTypeCode.Staff;
+		const serviceTypeCodeDefault = this.showServiceType ? '' : this.serviceTypeDefault;
+
 		return this.formBuilder.group(
 			{
 				firstName: new FormControl(inviteDefault ? inviteDefault.firstName : '', [Validators.required]),
@@ -248,7 +256,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 				jobTitle: new FormControl(inviteDefault ? inviteDefault.jobTitle : '', [Validators.required]),
 				payeeType: new FormControl(inviteDefault ? inviteDefault.payeeType : '', [Validators.required]),
 				screeningTypeCode: new FormControl(screeningTypeCodeDefault),
-				serviceTypeCode: new FormControl(''),
+				serviceTypeCode: new FormControl(serviceTypeCodeDefault),
 			},
 			{
 				validators: [
@@ -263,17 +271,17 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 	}
 
 	addFirstRow(inviteDefault?: ApplicationInviteCreateRequest) {
-		const control = this.form.get('tableRows') as FormArray;
+		const control = this.form.get('crcs') as FormArray;
 		control.push(this.initiateForm(inviteDefault));
 	}
 
 	onAddRow() {
-		const control = this.form.get('tableRows') as FormArray;
+		const control = this.form.get('crcs') as FormArray;
 		control.push(this.initiateForm());
 	}
 
 	deleteRow(index: number) {
-		const control = this.form.get('tableRows') as FormArray;
+		const control = this.form.get('crcs') as FormArray;
 		if (control.length == 1) {
 			const data: DialogOptions = {
 				icon: 'warning',
@@ -299,7 +307,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
-					const control = this.form.get('tableRows') as FormArray;
+					const control = this.form.get('crcs') as FormArray;
 					control.removeAt(index);
 				}
 			});
@@ -311,7 +319,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 
 		if (!this.form.valid) return;
 
-		const control = (this.form.get('tableRows') as FormArray).value;
+		const control = (this.form.get('crcs') as FormArray).value;
 
 		const seen = new Set();
 		let duplicateInfo: any;
@@ -468,12 +476,12 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 	}
 
 	get getFormControls() {
-		const control = this.form.get('tableRows') as FormArray;
+		const control = this.form.get('crcs') as FormArray;
 		return control;
 	}
 
 	get rowsExist(): boolean {
-		const control = this.form.get('tableRows') as FormArray;
+		const control = this.form.get('crcs') as FormArray;
 		return control.length > 1 ? true : false;
 	}
 }

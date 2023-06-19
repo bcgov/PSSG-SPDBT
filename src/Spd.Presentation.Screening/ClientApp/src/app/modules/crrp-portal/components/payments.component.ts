@@ -105,7 +105,7 @@ export interface PaymentResponse extends ApplicationResponse {
 							<mat-header-cell *matHeaderCellDef>Paid On</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Paid On:</span>
-								??<!-- {{ application.paidOn | date : constants.date.dateTimeFormat }} -->
+								??<!-- {{ application.paidOn | date : constants.date.dateTimeFormat  : 'UTC' }} -->
 							</mat-cell>
 						</ng-container>
 
@@ -155,7 +155,7 @@ export interface PaymentResponse extends ApplicationResponse {
 									*ngIf="application.status == applicationPortalStatusCodes.AwaitingPayment"
 									aria-label="Pay now"
 								>
-									<mat-icon>attach_money</mat-icon>Pay Now
+									<mat-icon>send</mat-icon>Pay Now
 								</button>
 							</mat-cell>
 						</ng-container>
