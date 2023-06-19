@@ -47,7 +47,7 @@ export class InvitationComponent {
 					this.message = resp.body.message;
 				} else {
 					// 200 success
-					this.router.navigateByUrl(`/${CrcRoutes.MODULE_PATH}`, { state: { orgData: resp.body } });
+					this.router.navigateByUrl(`/${CrcRoutes.MODULE_PATH}`, { state: { crcaOrgData: resp.body } });
 				}
 			});
 	}

@@ -33,7 +33,12 @@ namespace Spd.Resource.Organizations.Registration
             .ForMember(d => d.spd_identityprovider, opt => opt.MapFrom(s => GetPortalUserIdentityType(s.IdentityProviderTypeCode)))
             .ForMember(d => d.spd_portaluseridentityguid, opt => opt.MapFrom(s => s.BCeIDUserGuid))
             .ForMember(d => d.spd_potentialduplicate, opt => opt.MapFrom(s => (int)Enum.Parse<YesNoOptionSet>(s.HasPotentialDuplicate.ToString())))
-            .ReverseMap();
+            .ReverseMap()
+            .ForMember(d => d.MailingProvince, opt => opt.MapFrom(s => s.spd_province))
+            .ForMember(d => d.ContactGivenName, opt => opt.MapFrom(s => s.spd_authorizedcontactgivenname))
+            .ForMember(d => d.ContactSurname, opt => opt.MapFrom(s => s.spd_authorizedcontactsurname))
+            .ForMember(d => d.ContactJobTitle, opt => opt.MapFrom(s => s.spd_jobtitle))
+            .ForMember(d => d.OrganizationName, opt => opt.MapFrom(s => s.spd_organizationname));
 
             _ = CreateMap<spd_orgregistration, OrgRegistrationResult>()
             .IncludeBase<spd_orgregistration, OrgRegistration>()

@@ -93,16 +93,19 @@ export class ContactInformationComponent implements CrcFormStepComponent {
 		if (!data) return;
 
 		this._orgData = data;
-		//{ value: this._orgData.givenName, disabled: data.readonlyTombstone ?? false }
 		this.form = this.formBuilder.group(
 			{
-				givenName: new FormControl(this._orgData.givenName, [Validators.required]),
-				middleName1: new FormControl(this._orgData.middleName1),
-				middleName2: new FormControl(this._orgData.middleName2),
-				surname: new FormControl(this._orgData.surname, [Validators.required]),
-				emailAddress: new FormControl(this._orgData.emailAddress, [Validators.required, FormControlValidators.email]),
-				phoneNumber: new FormControl(this._orgData.phoneNumber, [Validators.required]),
-				oneLegalName: new FormControl(this._orgData.oneLegalName),
+				givenName: new FormControl({ value: data.givenName, disabled: data.readonlyTombstone ?? false }, [
+					Validators.required,
+				]),
+				middleName1: new FormControl({ value: data.middleName1, disabled: data.readonlyTombstone ?? false }),
+				middleName2: new FormControl({ value: data.middleName2, disabled: data.readonlyTombstone ?? false }),
+				surname: new FormControl({ value: data.surname, disabled: data.readonlyTombstone ?? false }, [
+					Validators.required,
+				]),
+				emailAddress: new FormControl(data.emailAddress, [Validators.required, FormControlValidators.email]),
+				phoneNumber: new FormControl(data.phoneNumber, [Validators.required]),
+				oneLegalName: new FormControl(data.oneLegalName),
 			},
 			{
 				validators: [

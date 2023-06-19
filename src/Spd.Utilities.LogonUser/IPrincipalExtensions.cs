@@ -70,8 +70,11 @@ namespace Spd.Utilities.LogonUser
         public static ApplicantIdentityInfo GetApplicantIdentityInfo(this IPrincipal principal)
         {
             var claim = ValidatePrincipal(principal);
+            var middleName = GetMiddleNames(claim.GetClaimValue("given_names"), claim.GetClaimValue("given_name"));
+
             return new ApplicantIdentityInfo()
             {
+                Issuer = claim.GetClaimValue("iss"),
                 BirthDate = claim.GetClaimValue("birthdate"),
                 Age = claim.GetClaimValue("age"),
                 DisplayName = claim.GetClaimValue("display_name"),
@@ -80,7 +83,9 @@ namespace Spd.Utilities.LogonUser
                 LastName = claim.GetClaimValue("family_name"),
                 Gender = claim.GetClaimValue("gender"),
                 Sub = claim.GetClaimValue("sub"),
-                EmailVerified = claim.GetClaimValue("email_verified") == null ? null : Boolean.Parse(claim.GetClaimValue("email_verified"))
+                EmailVerified = claim.GetClaimValue("email_verified") == null ? null : Boolean.Parse(claim.GetClaimValue("email_verified")),
+                MiddleName1 = middleName.Item1,
+                MiddleName2 = middleName.Item2,
             };
         }
 
@@ -131,6 +136,17 @@ namespace Spd.Utilities.LogonUser
 
             var claim = identity.Claims.FirstOrDefault(c => c.Type == key);
             return claim?.Value;
+        }
+
+        private static (string?, string?) GetMiddleNames(string? givenNames, string? firstName)
+        {
+            if (givenNames != null)
+            {
+                string str = givenNames.Replace(firstName, string.Empty).Trim();
+                var strs = str.Split(' ');
+                return (strs.Length > 0 ? strs[0]:null, strs.Length > 1 ? strs[1] :null);
+            }
+            return (null, null);
         }
     }
 }

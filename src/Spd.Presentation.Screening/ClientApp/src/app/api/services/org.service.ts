@@ -9,6 +9,7 @@ import { RequestBuilder } from '../request-builder';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
+import { AppOrgResponse } from '../models/app-org-response';
 import { OrgResponse } from '../models/org-response';
 import { OrgUpdateRequest } from '../models/org-update-request';
 
@@ -137,6 +138,59 @@ export class OrgService extends BaseService {
 
     return this.apiOrgsOrgIdPut$Response(params,context).pipe(
       map((r: StrictHttpResponse<OrgResponse>) => r.body as OrgResponse)
+    );
+  }
+
+  /**
+   * Path part for operation apiOrgsAccessCodeAccessCodeGet
+   */
+  static readonly ApiOrgsAccessCodeAccessCodeGetPath = '/api/orgs/access-code/{accessCode}';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiOrgsAccessCodeAccessCodeGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiOrgsAccessCodeAccessCodeGet$Response(params: {
+    accessCode: string;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<AppOrgResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, OrgService.ApiOrgsAccessCodeAccessCodeGetPath, 'get');
+    if (params) {
+      rb.path('accessCode', params.accessCode, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<AppOrgResponse>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiOrgsAccessCodeAccessCodeGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiOrgsAccessCodeAccessCodeGet(params: {
+    accessCode: string;
+  },
+  context?: HttpContext
+
+): Observable<AppOrgResponse> {
+
+    return this.apiOrgsAccessCodeAccessCodeGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<AppOrgResponse>) => r.body as AppOrgResponse)
     );
   }
 
