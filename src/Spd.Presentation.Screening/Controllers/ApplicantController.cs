@@ -3,12 +3,13 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Cases;
+using Spd.Resource.Applicants.Application;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
+using Spd.Utilities.Shared.Tools;
 using System.ComponentModel.DataAnnotations;
-using System.Globalization;
 using System.Net;
 using System.Security.Principal;
 
@@ -91,22 +92,75 @@ namespace Spd.Presentation.Screening.Controllers
             return await _mediator.Send(new ApplicantApplicationCreateCommand(anonymAppCreateRequest));
         }
         #endregion
-    }
 
-    /// <summary>
-    /// for Anonymous Applicant Application submission
-    /// </summary>
-    public record AnonymousApplicantAppCreateRequest : ApplicantAppCreateRequest
-    {
-        public string Recaptcha { get; set; } = null!;
-    }
-
-    public class AnonymousApplicantAppCreateRequestValidator : AbstractValidator<AnonymousApplicantAppCreateRequest>
-    {
-        public AnonymousApplicantAppCreateRequestValidator()
+        #region userinfo
+        /// <summary>
+        /// used for Applicants logs in with BCSC to submit an application
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/applicants/userinfo")]
+        [HttpGet]
+        [Authorize(Policy = "OnlyBcsc")]
+        public async Task<ApplicantUserInfo> ApplicantUserInfo()
         {
-            Include(new ApplicantAppCreateRequestValidator());
+            var info = _currentUser.GetApplicantIdentityInfo();
+            string? str = info.Gender?.ToLower();
+            GenderCode? gender = str switch
+            {
+                "female" => GenderCode.F,
+                "male" => GenderCode.M,
+                "diverse" => GenderCode.X,
+                _ => null,
+            };
+
+            return new ApplicantUserInfo
+            {
+                Email = StringHelper.ToTitleCase(info.Email),
+                EmailVerified = info.EmailVerified,
+                Age = info.Age,
+                BirthDate = new DateTimeOffset(info.BirthDate.Year, info.BirthDate.Month, info.BirthDate.Day, 0, 0, 0, TimeSpan.Zero),
+                DisplayName = StringHelper.ToTitleCase(info.DisplayName),
+                FirstName = StringHelper.ToTitleCase(info.FirstName),
+                LastName = StringHelper.ToTitleCase(info.LastName),
+                GenderCode = gender,
+                Sub = info.Sub,
+                MiddleName1 = StringHelper.ToTitleCase(info.MiddleName1),
+                MiddleName2 = StringHelper.ToTitleCase(info.MiddleName2),
+            };
         }
     }
+    #endregion
 }
+
+/// <summary>
+/// for Anonymous Applicant Application submission
+/// </summary>
+public record AnonymousApplicantAppCreateRequest : ApplicantAppCreateRequest
+{
+    public string Recaptcha { get; set; } = null!;
+}
+
+public class AnonymousApplicantAppCreateRequestValidator : AbstractValidator<AnonymousApplicantAppCreateRequest>
+{
+    public AnonymousApplicantAppCreateRequestValidator()
+    {
+        Include(new ApplicantAppCreateRequestValidator());
+    }
+}
+
+public class ApplicantUserInfo
+{
+    public string? MiddleName2 { get; set; }
+    public string? MiddleName1 { get; set; }
+    public string? FirstName { get; set; }
+    public string? LastName { get; set; }
+    public string? DisplayName { get; set; }
+    public string? Email { get; set; }
+    public GenderCode? GenderCode { get; set; }
+    public string? Age { get; set; }
+    public string? Sub { get; set; }
+    public DateTimeOffset? BirthDate { get; set; }
+    public bool? EmailVerified { get; set; }
+}
+
 
