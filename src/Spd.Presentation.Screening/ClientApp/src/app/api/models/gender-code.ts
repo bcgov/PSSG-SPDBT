@@ -3,5 +3,5 @@
 export enum GenderCode {
   M = 'M',
   F = 'F',
-  X = 'X'
+  U = 'U'
 }

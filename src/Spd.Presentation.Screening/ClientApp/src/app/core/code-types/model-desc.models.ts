@@ -2,12 +2,12 @@ import {
 	ApplicationPortalStatusCode,
 	ContactAuthorizationTypeCode,
 	EmployeeInteractionTypeCode,
+	GenderCode,
 	PayerPreferenceTypeCode,
 	ServiceTypeCode,
 } from 'src/app/api/models';
 import { ScreeningTypeCode } from './code-types.models';
 import { CountryTypeCode } from './country-type.model';
-import { GenderTypeCode } from './gender-type.model';
 
 export interface SelectOptions<k = string | number | boolean> {
 	code: k;
@@ -54,9 +54,9 @@ export const ServiceTypesPsso: SelectOptions[] = [
 ];
 
 export const GenderTypes: SelectOptions[] = [
-	{ desc: 'M', code: GenderTypeCode.Male },
-	{ desc: 'F', code: GenderTypeCode.Female },
-	{ desc: 'X', code: GenderTypeCode.NonBinary },
+	{ desc: 'M', code: GenderCode.M },
+	{ desc: 'F', code: GenderCode.F },
+	{ desc: 'X', code: GenderCode.U },
 ];
 
 export const ContactAuthorizationTypes: SelectOptions[] = [
