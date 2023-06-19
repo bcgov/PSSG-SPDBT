@@ -3,12 +3,12 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Cases;
-using Spd.Manager.Membership.OrgRegistration;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.Net;
 using System.Security.Principal;
 
@@ -55,13 +55,17 @@ namespace Spd.Presentation.Screening.Controllers
         [HttpPost]
         public async Task<ApplicationCreateResponse> CreateApplicantApp([FromBody] ApplicantAppCreateRequest appCreateRequest)
         {
-            string? sub = _currentUser.GetBcscSub();
-            if (sub == null)
-            {
-                throw new ApiException(System.Net.HttpStatusCode.Unauthorized, "there is no sub from bcsc.");
-            }
+            var applicantInfo = _currentUser.GetApplicantIdentityInfo();
             appCreateRequest.OriginTypeCode = ApplicationOriginTypeCode.Portal;
-            return await _mediator.Send(new ApplicantApplicationCreateCommand(appCreateRequest, sub));
+
+            //bcsc user name and birth date must be the same as name inside ApplicantAppCreateRequest          
+            DateOnly requestBirthDate = DateOnly.FromDateTime(((DateTimeOffset)appCreateRequest.DateOfBirth).Date);
+            if (!string.Equals(applicantInfo.FirstName, appCreateRequest.GivenName, StringComparison.InvariantCultureIgnoreCase) ||
+                !string.Equals(applicantInfo.LastName, appCreateRequest.Surname, StringComparison.InvariantCultureIgnoreCase) ||
+                applicantInfo.BirthDate != requestBirthDate)
+                throw new ApiException(HttpStatusCode.BadRequest, "Submitted user pi data is different than bscs identity info data.");
+
+            return await _mediator.Send(new ApplicantApplicationCreateCommand(appCreateRequest, applicantInfo.Sub));
         }
 
         /// <summary>

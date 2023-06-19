@@ -119,24 +119,21 @@ internal partial class ApplicationRepository : IApplicationRepository
         return application != null;
     }
 
-    private spd_alias? GetAlias(AliasCreateCmd aliasCreateCmd)
+    private spd_alias? GetAlias(AliasCreateCmd aliasCreateCmd, contact contact)
     {
         var matchingAlias = _context.spd_aliases.Where(o =>
            o.spd_firstname == aliasCreateCmd.GivenName &&
            o.spd_middlename1 == aliasCreateCmd.MiddleName1 &&
            o.spd_middlename2 == aliasCreateCmd.MiddleName2 &&
            o.spd_surname == aliasCreateCmd.Surname &&
-           o.statecode != DynamicsConstants.StateCode_Inactive
+           o.statecode != DynamicsConstants.StateCode_Inactive &&
+           o._spd_contactid_value == contact.contactid
        ).FirstOrDefault();
         return matchingAlias;
     }
 
     private contact? GetContact(ApplicationCreateCmd createApplicationCmd)
     {
-        if(createApplicationCmd.CreatedByApplicantSub != null)
-        {
-            //todo: when dynamics ready, need to add contact and identity relationship
-        }
         var contacts = _context.contacts
             .Where(o =>
             o.firstname == createApplicationCmd.GivenName &&
@@ -243,9 +240,9 @@ internal partial class ApplicationRepository : IApplicationRepository
 
     //note: any change in this function, the operation number also needs to change in AddBulkAppsAsync
     private async Task<spd_application> CreateAppAsync(
-        ApplicationCreateCmd createApplicationCmd, 
-        account org, 
-        spd_portaluser? user, 
+        ApplicationCreateCmd createApplicationCmd,
+        account org,
+        spd_portaluser? user,
         team team,
         spd_servicetype? serviceType)
     {
@@ -262,31 +259,101 @@ internal partial class ApplicationRepository : IApplicationRepository
             _context.SetLink(app, nameof(spd_application.spd_ServiceTypeId), serviceType);
         }
 
-        contact? contact = GetContact(createApplicationCmd);
-        // if not found, create new contact
-        if (contact == null)
+        contact? contact;
+        if (createApplicationCmd.CreatedByApplicantSub != null)//authenticated with 
         {
-            contact = _mapper.Map<contact>(createApplicationCmd);
-            _context.AddTocontacts(contact);
+            contact = ProcessContactWithBcscApplicant(createApplicationCmd);
         }
-
+        else
+        {
+            //no authentication
+            contact = AddContact(createApplicationCmd);
+        }
         // associate contact to application
         _context.SetLink(app, nameof(app.spd_ApplicantId_contact), contact);
 
         //create the aliases
         foreach (var item in createApplicationCmd.Aliases)
         {
-            spd_alias? matchingAlias = GetAlias(item);
-            // if not found, create new alias
-            if (matchingAlias == null)
-            {
-                spd_alias alias = _mapper.Map<spd_alias>(item);
-                _context.AddTospd_aliases(alias);
-                // associate alias to contact
-                _context.SetLink(alias, nameof(alias.spd_ContactId), contact);
-            }
+            AddAlias(item, contact);
         }
         return app;
+    }
+
+    private contact ProcessContactWithBcscApplicant(ApplicationCreateCmd createApplicationCmd)
+    {
+        var identity = _context.spd_identities
+               .Expand(i => i.spd_ContactId)
+               .Where(i => i.spd_userguid == createApplicationCmd.CreatedByApplicantSub)
+               .Where(i => i.spd_type == (int)IdentityTypeOptionSet.BcServicesCard)
+               .FirstOrDefault();
+        if (identity == null)
+        {
+            identity = new spd_identity
+            {
+                spd_identityid = Guid.NewGuid(),
+                spd_userguid = createApplicationCmd.CreatedByApplicantSub,
+                spd_type = (int)IdentityTypeOptionSet.BcServicesCard
+            };
+            _context.AddTospd_identities(identity);
+            var contact = AddContact(createApplicationCmd);
+            _context.SetLink(identity, nameof(identity.spd_ContactId), contact);
+            return contact;
+        }
+        else
+        {
+            if (identity.spd_ContactId != null) //existing identity already connected with a contact
+            {
+                //if the same name
+                var existingContact = identity.spd_ContactId;
+                if (string.Equals(existingContact.firstname, createApplicationCmd.GivenName, StringComparison.InvariantCultureIgnoreCase)
+                    && string.Equals(existingContact.lastname, createApplicationCmd.Surname, StringComparison.InvariantCultureIgnoreCase))
+                    return existingContact;
+
+                //if the contact first name and lastname is different. make existing one to be alias and add the new one.
+                AliasCreateCmd newAlias = new AliasCreateCmd
+                {
+                    Surname = existingContact.lastname,
+                    GivenName = existingContact.firstname,
+                };
+                AddAlias(newAlias, existingContact);
+                existingContact.firstname = createApplicationCmd.GivenName;
+                existingContact.lastname = createApplicationCmd.Surname;
+                _context.UpdateObject(existingContact);
+                return existingContact;
+            }
+            else
+            {
+                var contact = AddContact(createApplicationCmd);
+                _context.SetLink(identity, nameof(identity.spd_ContactId), contact);
+                return contact;
+            }
+        }
+    }
+
+    private contact AddContact(ApplicationCreateCmd createApplicationCmd)
+    {
+        var contact = GetContact(createApplicationCmd);
+        // if not found, create new contact
+        if (contact == null)
+        {
+            contact = _mapper.Map<contact>(createApplicationCmd);
+            _context.AddTocontacts(contact);
+        }
+        return contact;
+    }
+
+    private void AddAlias(AliasCreateCmd createAliasCmd, contact contact)
+    {
+        spd_alias? matchingAlias = GetAlias(createAliasCmd, contact);
+        // if not found, create new alias
+        if (matchingAlias == null)
+        {
+            spd_alias alias = _mapper.Map<spd_alias>(createAliasCmd);
+            _context.AddTospd_aliases(alias);
+            // associate alias to contact
+            _context.SetLink(alias, nameof(alias.spd_ContactId), contact);
+        }
     }
 }
 
