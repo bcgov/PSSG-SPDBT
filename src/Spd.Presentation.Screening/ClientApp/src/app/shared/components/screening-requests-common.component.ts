@@ -32,7 +32,7 @@ export const ScreeningCheckFilterMap: Record<keyof ScreeningCheckFilter, string>
 			<div class="row">
 				<div class="col-xxl-10 col-xl-9 col-lg-6 col-md-6 col-sm-12">
 					<h2 class="mb-2 fw-normal">
-						{{ title }}
+						{{ heading }}
 						<div class="mt-2 fs-5 fw-light">{{ subtitle }}</div>
 					</h2>
 				</div>
@@ -132,11 +132,11 @@ export const ScreeningCheckFilterMap: Record<keyof ScreeningCheckFilter, string>
 								<button
 									mat-flat-button
 									class="table-button m-2"
-									style="white-space: nowrap;"
+									style="color: var(--color-red);"
 									aria-label="Cancel Request"
 									(click)="OnCancelRequest(application)"
 								>
-									<mat-icon>cancel</mat-icon>Cancel Request
+									<mat-icon>cancel</mat-icon>Cancel
 								</button>
 							</mat-cell>
 						</ng-container>
@@ -161,7 +161,7 @@ export const ScreeningCheckFilterMap: Record<keyof ScreeningCheckFilter, string>
 	styles: [
 		`
 			.mat-column-actions {
-				min-width: 300px;
+				min-width: 185px;
 			}
 
 			.error-icon {
@@ -200,7 +200,7 @@ export class ScreeningRequestsCommonComponent implements OnInit {
 	private currentSearch = '';
 
 	@Input() portal: PortalTypeCode | null = null;
-	@Input() title = '';
+	@Input() heading = '';
 	@Input() subtitle = '';
 
 	@ViewChild('paginator') paginator!: MatPaginator;

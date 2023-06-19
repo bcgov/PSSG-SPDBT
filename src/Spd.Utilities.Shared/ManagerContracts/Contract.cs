@@ -15,8 +15,8 @@ namespace Spd.Utilities.Shared.ManagerContract
         M,
         [Description("Female")]
         F,
-        [Description("Non-Binary")]
-        X
+        [Description("Unspecified")]
+        U
     }
     public enum PayerPreferenceTypeCode
     {

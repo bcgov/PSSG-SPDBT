@@ -229,7 +229,7 @@ namespace Spd.Presentation.Screening.Controllers
                             else
                                 oneRequest.DateOfBirth = DateTimeOffset.ParseExact(birthDateStr, SpdConstants.BULK_APP_UPLOAD_BIRTHDATE_FORMAT, CultureInfo.InvariantCulture);
                             string? genderStr = CleanString(data[21]);
-                            oneRequest.GenderCode = string.IsNullOrEmpty(genderStr) ? null : Enum.Parse<GenderCode>(genderStr);
+                            oneRequest.GenderCode = string.IsNullOrEmpty(genderStr) ? GenderCode.U : Enum.Parse<GenderCode>(genderStr);
                             oneRequest.LicenceNo = CleanString(data[22]);
                             oneRequest.DriversLicense = CleanString(data[23]);
                             oneRequest.AgreeToCompleteAndAccurate = true;

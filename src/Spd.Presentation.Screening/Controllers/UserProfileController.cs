@@ -60,7 +60,7 @@ namespace Spd.Presentation.Screening.Controllers
             {
                 "female" => GenderCode.F,
                 "male" => GenderCode.M,
-                "diverse" => GenderCode.X,
+                "diverse" => GenderCode.U,
                 _ => null,
             };
 

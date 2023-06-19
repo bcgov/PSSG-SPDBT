@@ -135,7 +135,7 @@ public enum GenderCode
 {
     M,
     F,
-    X
+    U
 }
 public enum IdentityStatusCode
 {

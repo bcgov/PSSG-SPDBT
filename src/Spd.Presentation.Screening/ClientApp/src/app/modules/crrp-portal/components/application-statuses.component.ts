@@ -11,7 +11,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 
 		<app-screening-statuses-common
 			[portal]="portal.Crrp"
-			title="Application Statuses"
+			heading="Application Statuses"
 			(emitPayNow)="onPayNow($event)"
 			(emitVerifyIdentity)="onVerifyIdentity($event)"
 		></app-screening-statuses-common>
