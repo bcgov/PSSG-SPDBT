@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
@@ -110,7 +109,6 @@ export class ReportsComponent {
 
 	constructor(
 		private utilService: UtilService,
-		private datePipe: DatePipe,
 		private authUserService: AuthUserService,
 		private orgReportService: OrgReportService
 	) {}
@@ -166,15 +164,6 @@ export class ReportsComponent {
 
 	private filterList(): void {
 		let reports: Array<OrgReportResponse> = [];
-
-		// console.log('this.reportMonthYearFrom', this.reportMonthYearFrom);
-		// this.allReports.forEach((rpt) => console.log('reportDate', new Date(rpt.reportDate!)));
-		// this.allReports.forEach((rpt) => {
-		// 	const xx = new Date(rpt.reportDate!);
-		// 	console.log('reportDate', new Date(Date.UTC(xx.getUTCFullYear(), xx.getUTCMonth(), xx.getUTCDate())));
-		// 	console.log('reportDate2', new Date(xx.getUTCFullYear(), xx.getUTCMonth(), xx.getUTCDate()));
-		// 	console.log('reportDate3', this.datePipe.transform(rpt.reportDate!, undefined, 'UTC'));
-		// });
 
 		if (!this.reportMonthYearFrom && !this.reportMonthYearTo) {
 			reports = this.allReports;
