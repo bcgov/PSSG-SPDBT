@@ -114,6 +114,10 @@ button.mat-green-button {
   padding-top: 30px !important;
 }
 
+.mat-mdc-form-field-icon-suffix {
+  white-space: nowrap;
+}
+
 .mat-mdc-radio-group {
   text-align: left;
 }
@@ -211,8 +215,11 @@ mat-label {
   border-radius: 0 !important;
 }
 
-
 // MAT CHIPS
+.mdc-evolution-chip__action:hover { // show as arrow on hover
+  cursor: default;
+}
+
 .mat-chip-green {
   background-color: rgba(215, 228, 213, 1) !important;
   .mdc-evolution-chip__text-label {

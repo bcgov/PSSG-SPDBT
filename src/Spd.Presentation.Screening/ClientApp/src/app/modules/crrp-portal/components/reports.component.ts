@@ -3,6 +3,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { OrgReportListResponse, OrgReportResponse } from 'src/app/api/models';
 import { OrgReportService } from 'src/app/api/services';
+import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { UtilService } from 'src/app/core/services/util.service';
@@ -20,7 +21,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 			</div>
 
 			<div class="row mt-4">
-				<div class="col-xxl-4 col-xl-5 col-lg-6 col-md-12">
+				<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
 					<app-month-picker
 						label="From Month/Year"
 						[monthAndYear]="reportMonthYearFrom"
@@ -29,7 +30,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 						(monthAndYearChange)="onMonthAndYearChangeFrom($event)"
 					></app-month-picker>
 				</div>
-				<div class="col-xxl-4 col-xl-5 col-lg-6 col-md-12">
+				<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
 					<app-month-picker
 						label="To Month/Year"
 						[monthAndYear]="reportMonthYearTo"
@@ -41,25 +42,26 @@ import { UtilService } from 'src/app/core/services/util.service';
 			</div>
 
 			<div class="row mb-4">
-				<div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12">
+				<div class="col-xxl-6 col-xl-8 col-lg-12 col-md-12 col-sm-12">
 					<mat-table [dataSource]="dataSource">
 						<ng-container matColumnDef="reportDate">
-							<mat-cell *matCellDef="let application">
+							<mat-cell *matCellDef="let report">
 								<span class="mobile-label"></span>
-								Monthly Report - {{ application.reportDate | date : constants.date.monthYearFormat }}
+								Monthly Report - {{ report.reportDate | date : constants.date.monthYearFormat : 'UTC' }}
 							</mat-cell>
 						</ng-container>
 
 						<ng-container matColumnDef="action">
-							<mat-cell *matCellDef="let application">
+							<mat-cell *matCellDef="let report">
 								<span class="mobile-label"></span>
 								<button
 									mat-flat-button
 									class="table-button w-auto m-2"
 									style="color: var(--color-primary-light);"
+									(click)="onDownloadReport(report)"
 									aria-label="Download"
 								>
-									<mat-icon>file_download</mat-icon>Download
+									<mat-icon>file_download</mat-icon>Report
 								</button>
 							</mat-cell>
 						</ng-container>
@@ -131,6 +133,18 @@ export class ReportsComponent {
 		this.filterList();
 	}
 
+	onDownloadReport(report: OrgReportResponse): void {
+		this.orgReportService
+			.apiOrgsOrgIdReportsReportIdFileGet$Response({
+				reportId: report.id!,
+				orgId: this.authUserService.userInfo?.orgId!,
+			})
+			.pipe()
+			.subscribe((resp: StrictHttpResponse<Blob>) => {
+				this.utilService.downloadFile(resp.headers, resp.body);
+			});
+	}
+
 	onPageChanged(page: PageEvent): void {
 		this.queryParams.page = page.pageIndex;
 		this.filterList();
@@ -154,14 +168,23 @@ export class ReportsComponent {
 		if (!this.reportMonthYearFrom && !this.reportMonthYearTo) {
 			reports = this.allReports;
 		} else if (this.reportMonthYearFrom && !this.reportMonthYearTo) {
-			reports = this.allReports.filter((rpt) => new Date(rpt.reportDate!) >= this.reportMonthYearFrom!);
+			reports = this.allReports.filter((rpt) => {
+				const reportDate = new Date(rpt.reportDate!);
+				const reportUtcDate = new Date(reportDate.getUTCFullYear(), reportDate.getUTCMonth(), reportDate.getUTCDate());
+				return reportUtcDate >= this.reportMonthYearFrom!;
+			});
 		} else if (!this.reportMonthYearFrom && this.reportMonthYearTo) {
-			reports = this.allReports.filter((rpt) => new Date(rpt.reportDate!) <= this.reportMonthYearTo!);
+			reports = this.allReports.filter((rpt) => {
+				const reportDate = new Date(rpt.reportDate!);
+				const reportUtcDate = new Date(reportDate.getUTCFullYear(), reportDate.getUTCMonth(), reportDate.getUTCDate());
+				return reportUtcDate <= this.reportMonthYearTo!;
+			});
 		} else {
-			reports = this.allReports.filter(
-				(rpt) =>
-					new Date(rpt.reportDate!) >= this.reportMonthYearFrom! && new Date(rpt.reportDate!) <= this.reportMonthYearTo!
-			);
+			reports = this.allReports.filter((rpt) => {
+				const reportDate = new Date(rpt.reportDate!);
+				const reportUtcDate = new Date(reportDate.getUTCFullYear(), reportDate.getUTCMonth(), reportDate.getUTCDate());
+				return reportUtcDate >= this.reportMonthYearFrom! && reportUtcDate <= this.reportMonthYearTo!;
+			});
 		}
 
 		const pageIndex = this.queryParams.page;

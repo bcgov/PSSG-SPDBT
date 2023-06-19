@@ -2,12 +2,12 @@ import {
 	ApplicationPortalStatusCode,
 	ContactAuthorizationTypeCode,
 	EmployeeInteractionTypeCode,
+	GenderCode,
 	PayerPreferenceTypeCode,
 	ServiceTypeCode,
 } from 'src/app/api/models';
 import { ScreeningTypeCode } from './code-types.models';
 import { CountryTypeCode } from './country-type.model';
-import { GenderTypeCode } from './gender-type.model';
 
 export interface SelectOptions<k = string | number | boolean> {
 	code: k;
@@ -32,20 +32,31 @@ export const PayerPreferenceTypes: SelectOptions[] = [
 ];
 
 export const ServiceTypes: SelectOptions[] = [
-	{ desc: 'Psso', code: ServiceTypeCode.Psso },
-	{ desc: 'Crrp Employee', code: ServiceTypeCode.CrrpEmployee },
-	{ desc: 'Crrp Volunteer', code: ServiceTypeCode.CrrpVolunteer },
-	{ desc: 'Mcfd', code: ServiceTypeCode.Mcfd },
-	{ desc: 'Pe Crc', code: ServiceTypeCode.PeCrc },
-	{ desc: 'Pe Crc Vs', code: ServiceTypeCode.PeCrcVs },
+	{ desc: 'PSSO', code: ServiceTypeCode.Psso },
+	{ desc: 'CRRP-Employee', code: ServiceTypeCode.CrrpEmployee },
+	{ desc: 'CRRP-Volunteer', code: ServiceTypeCode.CrrpVolunteer },
+	{ desc: 'MCFD', code: ServiceTypeCode.Mcfd },
+	{ desc: 'PE-CRC', code: ServiceTypeCode.PeCrc },
+	{ desc: 'PE-CRC +Vulnerable Sector', code: ServiceTypeCode.PeCrcVs },
 	{ desc: 'Licensing', code: ServiceTypeCode.Licensing },
-	{ desc: 'Psso Vs', code: ServiceTypeCode.PssoVs },
+	{ desc: 'PSSO +Vulnerable Sector', code: ServiceTypeCode.PssoVs },
+];
+
+export const ServiceTypesPsso: SelectOptions[] = [
+	{ desc: 'CRC', code: ServiceTypeCode.Psso },
+	{ desc: 'CRRP-Employee', code: ServiceTypeCode.CrrpEmployee },
+	{ desc: 'CRRP-Volunteer', code: ServiceTypeCode.CrrpVolunteer },
+	{ desc: 'MCFD', code: ServiceTypeCode.Mcfd },
+	{ desc: 'PE-CRC', code: ServiceTypeCode.PeCrc },
+	{ desc: 'PE-CRC +Vulnerable Sector', code: ServiceTypeCode.PeCrcVs },
+	{ desc: 'Licensing', code: ServiceTypeCode.Licensing },
+	{ desc: 'CRC +Vulnerable Sector', code: ServiceTypeCode.PssoVs },
 ];
 
 export const GenderTypes: SelectOptions[] = [
-	{ desc: 'Male', code: GenderTypeCode.Male },
-	{ desc: 'Female', code: GenderTypeCode.Female },
-	{ desc: 'Non-Binary', code: GenderTypeCode.NonBinary },
+	{ desc: 'M', code: GenderCode.M },
+	{ desc: 'F', code: GenderCode.F },
+	{ desc: 'X', code: GenderCode.U },
 ];
 
 export const ContactAuthorizationTypes: SelectOptions[] = [

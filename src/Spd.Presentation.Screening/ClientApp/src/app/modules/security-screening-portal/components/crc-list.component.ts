@@ -48,7 +48,7 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 						<mat-header-cell *matHeaderCellDef>Submitted On</mat-header-cell>
 						<mat-cell *matCellDef="let application">
 							<span class="mobile-label">Submitted On:</span>
-							{{ application.uploadedDateTime | date : constants.date.dateFormat }}
+							{{ application.uploadedDateTime | date : constants.date.dateFormat : 'UTC' }}
 						</mat-cell>
 					</ng-container>
 

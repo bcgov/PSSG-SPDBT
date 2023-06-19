@@ -6,7 +6,7 @@ import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 	template: `
 		<app-screening-requests-common
 			[portal]="portal.Psso"
-			title="Screening Requests"
+			heading="Screening Requests"
 			subtitle="Screening request links will expire 14 days after being sent"
 		></app-screening-requests-common>
 	`,
