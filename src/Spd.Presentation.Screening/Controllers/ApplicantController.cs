@@ -56,17 +56,13 @@ namespace Spd.Presentation.Screening.Controllers
         public async Task<ApplicationCreateResponse> CreateApplicantApp([FromBody] ApplicantAppCreateRequest appCreateRequest)
         {
             var applicantInfo = _currentUser.GetApplicantIdentityInfo();
-            if (applicantInfo == null || applicantInfo.Sub == null)
-            {
-                throw new ApiException(System.Net.HttpStatusCode.Unauthorized, "there is no sub from bcsc.");
-            }
             appCreateRequest.OriginTypeCode = ApplicationOriginTypeCode.Portal;
 
-            //bcsc user name must be the same as name inside ApplicantAppCreateRequest          
-            DateTimeOffset birthdate = DateTimeOffset.ParseExact(applicantInfo.BirthDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+            //bcsc user name and birth date must be the same as name inside ApplicantAppCreateRequest          
+            DateOnly requestBirthDate = DateOnly.FromDateTime(((DateTimeOffset)appCreateRequest.DateOfBirth).Date);
             if (!string.Equals(applicantInfo.FirstName, appCreateRequest.GivenName, StringComparison.InvariantCultureIgnoreCase) ||
                 !string.Equals(applicantInfo.LastName, appCreateRequest.Surname, StringComparison.InvariantCultureIgnoreCase) ||
-                birthdate != appCreateRequest.DateOfBirth)
+                applicantInfo.BirthDate != requestBirthDate)
                 throw new ApiException(HttpStatusCode.BadRequest, "Submitted user pi data is different than bscs identity info data.");
 
             return await _mediator.Send(new ApplicantApplicationCreateCommand(appCreateRequest, applicantInfo.Sub));

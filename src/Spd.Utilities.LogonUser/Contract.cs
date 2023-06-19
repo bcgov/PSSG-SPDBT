@@ -7,8 +7,8 @@ public class ApplicantIdentityInfo
     public string? Email { get; set; }
     public string? Gender { get; set; }
     public string? Age { get; set; }
-    public string? Sub { get; set; }
-    public string? BirthDate { get; set; }
+    public string Sub { get; set; } = null!;
+    public DateOnly BirthDate { get; set; }
     public bool? EmailVerified { get; set; }
     public string? Issuer { get; set; }
     public string? MiddleName1 { get; set; }

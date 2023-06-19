@@ -6,7 +6,6 @@ using Spd.Manager.Membership.UserProfile;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Tools;
-using System.Globalization;
 using System.Security.Claims;
 using System.Security.Principal;
 using GenderCode = Spd.Utilities.Shared.ManagerContract.GenderCode;
@@ -70,7 +69,7 @@ namespace Spd.Presentation.Screening.Controllers
                 Email = StringHelper.ToTitleCase(info.Email),
                 EmailVerified = info.EmailVerified,
                 Age = info.Age,
-                BirthDate = info.BirthDate == null ? null : DateTimeOffset.ParseExact(info.BirthDate, "yyyy-MM-dd", CultureInfo.InvariantCulture),
+                BirthDate = new DateTimeOffset(info.BirthDate.Year, info.BirthDate.Month, info.BirthDate.Day, 0, 0, 0, TimeSpan.Zero),
                 DisplayName = StringHelper.ToTitleCase(info.DisplayName),
                 FirstName = StringHelper.ToTitleCase(info.FirstName),
                 LastName = StringHelper.ToTitleCase(info.LastName),

@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+using System.Globalization;
+using System.Security.Claims;
 using System.Security.Principal;
 
 namespace Spd.Utilities.LogonUser
@@ -71,19 +72,26 @@ namespace Spd.Utilities.LogonUser
         {
             var claim = ValidatePrincipal(principal);
             var middleName = GetMiddleNames(claim.GetClaimValue("given_names"), claim.GetClaimValue("given_name"));
+            string? birthDateStr = claim.GetClaimValue("birthdate");
+            if (birthDateStr == null)
+                throw new ArgumentNullException("principal.birthdate");
+            DateOnly birthDate = DateOnly.ParseExact(birthDateStr, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+            string? sub = claim.GetClaimValue("sub");
+            if (sub == null)
+                throw new ArgumentNullException("principal.sub");
 
             return new ApplicantIdentityInfo()
             {
                 Issuer = claim.GetClaimValue("iss"),
-                BirthDate = claim.GetClaimValue("birthdate"),
+                BirthDate = birthDate,
                 Age = claim.GetClaimValue("age"),
                 DisplayName = claim.GetClaimValue("display_name"),
                 Email = claim.GetClaimValue("email"),
                 FirstName = claim.GetClaimValue("given_name"),
                 LastName = claim.GetClaimValue("family_name"),
                 Gender = claim.GetClaimValue("gender"),
-                Sub = claim.GetClaimValue("sub"),
-                EmailVerified = claim.GetClaimValue("email_verified") == null ? null : Boolean.Parse(claim.GetClaimValue("email_verified")),
+                Sub = sub,
+                EmailVerified = claim.GetClaimValue("email_verified") == null ? null : bool.Parse(claim.GetClaimValue("email_verified")),
                 MiddleName1 = middleName.Item1,
                 MiddleName2 = middleName.Item2,
             };
@@ -102,9 +110,9 @@ namespace Spd.Utilities.LogonUser
                 BCeIDUserName = claim.GetClaimValue("bceid_username"),
                 UserGuid = claim.GetClaimValue("bceid_user_guid") == null ? Guid.Empty : Guid.Parse(claim.GetClaimValue("bceid_user_guid")),
                 EmailVerified = claim.GetClaimValue("email_verified") == null ? null : Boolean.Parse(claim.GetClaimValue("email_verified")),
-                BizGuid=claim.GetClaimValue("bceid_business_guid")==null? Guid.Empty : Guid.Parse(claim.GetClaimValue("bceid_business_guid")),
+                BizGuid = claim.GetClaimValue("bceid_business_guid") == null ? Guid.Empty : Guid.Parse(claim.GetClaimValue("bceid_business_guid")),
                 BizName = claim.GetClaimValue("bceid_business_name"),
-                Issuer= claim.GetClaimValue("iss"),
+                Issuer = claim.GetClaimValue("iss"),
             };
         }
 
@@ -142,9 +150,10 @@ namespace Spd.Utilities.LogonUser
         {
             if (givenNames != null)
             {
+                if (firstName == null) firstName = string.Empty;
                 string str = givenNames.Replace(firstName, string.Empty).Trim();
                 var strs = str.Split(' ');
-                return (strs.Length > 0 ? strs[0]:null, strs.Length > 1 ? strs[1] :null);
+                return (strs.Length > 0 ? strs[0] : null, strs.Length > 1 ? strs[1] : null);
             }
             return (null, null);
         }
