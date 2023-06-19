@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { GenderTypes } from 'src/app/core/code-types/model-desc.models';
+import { GenderTypesPublic } from 'src/app/core/code-types/model-desc.models';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { AppInviteOrgData, CrcFormStepComponent } from '../crc.component';
 
@@ -83,7 +83,7 @@ export class PersonalInformationComponent implements CrcFormStepComponent {
 		return this._orgData;
 	}
 
-	genderCodes = GenderTypes;
+	genderCodes = GenderTypesPublic;
 	form!: FormGroup;
 	startDate = new Date(2000, 0, 1);
 	matcher = new FormErrorStateMatcher();

@@ -6,6 +6,7 @@ export const SPD_CONSTANTS = {
 		birthDateStartAt: new Date(2000, 0, 1),
 		dateFormat: 'yyyy-MM-dd',
 		monthYearFormat: 'MMM yyyy',
+		monthYearHyphenFormat: 'MMM-yyyy',
 		dateTimeFormat: 'yyyy-MM-dd HH:mm',
 	},
 	phone: {

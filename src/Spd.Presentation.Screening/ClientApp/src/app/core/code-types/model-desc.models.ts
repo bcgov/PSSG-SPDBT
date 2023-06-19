@@ -59,6 +59,12 @@ export const GenderTypes: SelectOptions[] = [
 	{ desc: 'Non-Binary', code: GenderTypeCode.NonBinary },
 ];
 
+export const GenderTypesPublic: SelectOptions[] = [
+	{ desc: 'M', code: GenderTypeCode.Male },
+	{ desc: 'F', code: GenderTypeCode.Female },
+	{ desc: 'X', code: GenderTypeCode.NonBinary },
+];
+
 export const ContactAuthorizationTypes: SelectOptions[] = [
 	{ desc: 'Primary Authorized Contact', code: ContactAuthorizationTypeCode.Primary },
 	{ desc: 'Authorized Contact', code: ContactAuthorizationTypeCode.Contact },

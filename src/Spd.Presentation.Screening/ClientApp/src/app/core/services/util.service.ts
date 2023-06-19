@@ -1,3 +1,4 @@
+import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import jwt_decode from 'jwt-decode';
 import { ApplicationPortalStatusCode, PaginationResponse } from 'src/app/api/models';
@@ -95,6 +96,32 @@ export class UtilService {
 		const codeDescs = this.getCodeDescByType(codeTableName);
 		codeDescs.sort((a: SelectOptions, b: SelectOptions) => this.compareByStringUpper(a.desc ?? '', b.desc));
 		return codeDescs;
+	}
+
+	//------------------------------------
+	// Download File
+	downloadFile(headers: HttpHeaders, file: Blob): void {
+		let fileName = 'download-file';
+		const contentDisposition = headers.get('Content-Disposition');
+		if (contentDisposition) {
+			const fileNameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+			const matches = fileNameRegex.exec(contentDisposition);
+			if (matches != null && matches[1]) {
+				fileName = matches[1].replace(/['"]/g, '');
+			}
+		}
+
+		if (file?.size > 0) {
+			const url = window.URL.createObjectURL(file);
+			const anchor = document.createElement('a');
+			anchor.href = url;
+			anchor.download = fileName;
+			document.body.appendChild(anchor);
+			anchor.click();
+			document.body.removeChild(anchor);
+		} else {
+			console.error(`fileName ${fileName} is empty`);
+		}
 	}
 
 	//------------------------------------
