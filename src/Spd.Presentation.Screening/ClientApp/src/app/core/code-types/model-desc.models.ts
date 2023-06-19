@@ -54,12 +54,6 @@ export const ServiceTypesPsso: SelectOptions[] = [
 ];
 
 export const GenderTypes: SelectOptions[] = [
-	{ desc: 'Male', code: GenderTypeCode.Male },
-	{ desc: 'Female', code: GenderTypeCode.Female },
-	{ desc: 'Non-Binary', code: GenderTypeCode.NonBinary },
-];
-
-export const GenderTypesPublic: SelectOptions[] = [
 	{ desc: 'M', code: GenderTypeCode.Male },
 	{ desc: 'F', code: GenderTypeCode.Female },
 	{ desc: 'X', code: GenderTypeCode.NonBinary },

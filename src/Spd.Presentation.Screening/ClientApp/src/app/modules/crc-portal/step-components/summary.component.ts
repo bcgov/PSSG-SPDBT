@@ -102,7 +102,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 								</div>
 								<div class="col-xl-4 col-lg-4 col-md-12">
 									<div class="text-label d-block text-muted mt-2 mt-lg-0">Sex</div>
-									<div class="text-data">{{ orgData.genderCode | options : 'GenderTypesPublic' | default }}</div>
+									<div class="text-data">{{ orgData.genderCode | options : 'GenderTypes' | default }}</div>
 								</div>
 							</div>
 

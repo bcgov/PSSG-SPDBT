@@ -4,5 +4,4 @@ export {
 	CountryTypes,
 	EmployeeInteractionTypes,
 	GenderTypes,
-	GenderTypesPublic,
 } from './model-desc.models';
