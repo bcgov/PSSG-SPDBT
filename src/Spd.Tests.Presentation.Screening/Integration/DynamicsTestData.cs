@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.Dynamics.CRM;
-using Spd.Resource.Organizations.Registration;
 using Spd.Resource.Organizations.User;
 using Spd.Utilities.Dynamics;
 using System.Net;
@@ -17,6 +15,11 @@ public class DynamicsTestData
     {
         _context = factory.CreateChangeOverwrite();
         _dataProtector = protectProvider.CreateProtector(nameof(UserCreateCmd)).ToTimeLimitedDataProtector();
+    }
+
+    public DynamicsContext GetDynamicsContext()
+    {
+        return _context;
     }
 
     public async Task<(account, spd_portaluser)> CreateOrgWithLogonUser(string orgName)
@@ -193,7 +196,7 @@ public class DynamicsTestData
             {
                 spd_orgregistrationid = id,
                 spd_organizationname = orgName,
-                spd_email = "testorgReg@orgreg.com"              
+                spd_email = "testorgReg@orgreg.com"
             };
             _context.AddTospd_orgregistrations(newOne);
             _context.SetLink(newOne, nameof(spd_orgregistration.spd_OrganizationTypeId), _context.LookupOrganizationType("Volunteer-Registrant"));

@@ -52,7 +52,7 @@ namespace Spd.Utilities.Dynamics
         Applicant = 100000001,
     }
 
-    public enum PortalUserIdentityOptionSet
+    public enum IdentityTypeOptionSet
     {
         BusinessBceId = 100000000,
         BcServicesCard = 100000001,
