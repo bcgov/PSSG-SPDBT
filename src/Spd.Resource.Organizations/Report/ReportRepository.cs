@@ -33,8 +33,10 @@ namespace Spd.Resource.Organizations.Report
 
         public async Task<ReportFileResp> QueryReportFileAsync(ReportFileQry reportFileQry, CancellationToken ct)
         {
-            var docUrl = await _dynaContext.bcgov_documenturls.Where(d => d._spd_pdfreportid_value == reportFileQry.ReportId)
-                .OrderByDescending(d => d.createdon).FirstOrDefaultAsync(ct);
+            var docUrl = await _dynaContext.bcgov_documenturls
+                .Where(d => d._spd_pdfreportid_value == reportFileQry.ReportId)
+                .OrderByDescending(d => d.createdon)
+                .FirstOrDefaultAsync(ct);
 
             if (docUrl == null || docUrl.bcgov_documenturlid == null)
                 return new ReportFileResp(); // no report
