@@ -30,8 +30,7 @@ namespace Spd.Utilities.Dynamics
     {
         M = 100000000,
         F = 100000001,
-        X = 100000002,
-        Unspecified = 100000003,
+        U = 100000003,
     }
 
     public enum SourceOptionSet

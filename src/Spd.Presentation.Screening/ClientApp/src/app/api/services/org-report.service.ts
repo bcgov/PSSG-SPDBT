@@ -75,4 +75,68 @@ export class OrgReportService extends BaseService {
     );
   }
 
+  /**
+   * Path part for operation apiOrgsOrgIdReportsReportIdFileGet
+   */
+  static readonly ApiOrgsOrgIdReportsReportIdFileGetPath = '/api/orgs/{orgId}/reports/{reportId}/file';
+
+  /**
+   * download the report.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiOrgsOrgIdReportsReportIdFileGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiOrgsOrgIdReportsReportIdFileGet$Response(params: {
+    reportId: string;
+    orgId: string;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<Blob>> {
+
+    const rb = new RequestBuilder(this.rootUrl, OrgReportService.ApiOrgsOrgIdReportsReportIdFileGetPath, 'get');
+    if (params) {
+      rb.path('reportId', params.reportId, {});
+      rb.path('orgId', params.orgId, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'blob',
+      accept: 'application/pdf',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<Blob>;
+      })
+    );
+  }
+
+  /**
+   * download the report.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiOrgsOrgIdReportsReportIdFileGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiOrgsOrgIdReportsReportIdFileGet(params: {
+    reportId: string;
+    orgId: string;
+  },
+  context?: HttpContext
+
+): Observable<Blob> {
+
+    return this.apiOrgsOrgIdReportsReportIdFileGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<Blob>) => r.body as Blob)
+    );
+  }
+
 }

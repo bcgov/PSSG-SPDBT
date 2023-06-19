@@ -74,7 +74,7 @@ const SHARED_COMPONENTS = [
 		RecaptchaFormsModule,
 		RecaptchaModule,
 	],
-	providers: [provideNgxMask(), NgxMaskPipe, OptionsPipe],
+	providers: [provideNgxMask(), NgxMaskPipe, DatePipe, OptionsPipe],
 	exports: [
 		CommonModule,
 		MaterialModule,
