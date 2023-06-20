@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Spd.Resource.Organizations.Identity;
 using Spd.Resource.Organizations.Org;
 using Spd.Resource.Organizations.User;
 
@@ -15,6 +16,9 @@ namespace Spd.Manager.Membership.UserProfile
                .ForMember(d => d.UserId, opt => opt.MapFrom(s => s.Id))
                .ForMember(d => d.OrgRegistrationId, opt => opt.Ignore())
                .ForMember(d => d.OrgId, opt => opt.MapFrom(s => s.OrganizationId));
+
+            CreateMap<ApplicantIdentityQueryResult, ApplicantProfileResponse>()
+                .ForMember(d => d.ApplicantId, opt => opt.MapFrom(s => s.ContactId));
         }
     }
 }

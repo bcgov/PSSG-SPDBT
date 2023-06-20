@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -55,44 +55,7 @@ namespace Spd.Presentation.Screening.Controllers
         public async Task<ApplicantProfileResponse> ApplicantWhoami()
         {
             var info = _currentUser.GetApplicantIdentityInfo();
-            string? str = info.Gender?.ToLower();
-            GenderCode? gender = str switch
-            {
-                "female" => GenderCode.F,
-                "male" => GenderCode.M,
-                "diverse" => GenderCode.U,
-                _ => null,
-            };
-
-            return new ApplicantProfileResponse
-            {
-                Email = StringHelper.ToTitleCase(info.Email),
-                EmailVerified = info.EmailVerified,
-                Age = info.Age,
-                BirthDate = new DateTimeOffset(info.BirthDate.Year, info.BirthDate.Month, info.BirthDate.Day, 0, 0, 0, TimeSpan.Zero),
-                DisplayName = StringHelper.ToTitleCase(info.DisplayName),
-                FirstName = StringHelper.ToTitleCase(info.FirstName),
-                LastName = StringHelper.ToTitleCase(info.LastName),
-                GenderCode = gender,
-                Sub = info.Sub,
-                MiddleName1 = StringHelper.ToTitleCase(info.MiddleName1),
-                MiddleName2 = StringHelper.ToTitleCase(info.MiddleName2),
-            };
+            return await _mediator.Send(new GetApplicantProfileQuery(info.Sub));
         }
-    }
-
-    public class ApplicantProfileResponse
-    {
-        public string? MiddleName2 { get; set; }
-        public string? MiddleName1 { get; set; }
-        public string? FirstName { get; set; }
-        public string? LastName { get; set; }
-        public string? DisplayName { get; set; }
-        public string? Email { get; set; }
-        public GenderCode? GenderCode { get; set; }
-        public string? Age { get; set; }
-        public string? Sub { get; set; }
-        public DateTimeOffset? BirthDate { get; set; }
-        public bool? EmailVerified { get; set; }
     }
 }

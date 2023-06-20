@@ -6,8 +6,17 @@
     }
 
     //query
-    public record IdentityQuery(Guid UserGuid, Guid? OrgGuid);
-    public record IdentityQueryResult(IEnumerable<Identity> Identities);
+    public abstract record IdentityQuery;
+    public record UserIdentityQuery(Guid UserGuid, Guid? OrgGuid) : IdentityQuery;
+    public record ApplicantIdentityQuery(string UserGuid) : IdentityQuery;
+    public abstract record IdentityQueryResult;
+    public record UserIdentityQueryResult(IEnumerable<Identity> Identities) : IdentityQueryResult;
+    public record ApplicantIdentityQueryResult : IdentityQueryResult
+    {
+        public Guid ContactId { get; set; }
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+    }
 
     //shared content
     public record Identity
