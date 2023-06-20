@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { BehaviorSubject } from 'rxjs';
 import { AppRoutes } from 'src/app/app-routing.module';
+import { CrcRoutes } from 'src/app/modules/crc-portal/crc-routing.module';
 import { IdentityProviderTypeCode } from '../code-types/code-types.models';
 import { AuthUserService } from './auth-user.service';
 import { ConfigService } from './config.service';
@@ -37,7 +38,13 @@ export class AuthenticationService {
 		console.debug('[AuthenticationService.tryLogin] isLoggedIn', isLoggedIn, this.oauthService.hasValidAccessToken());
 
 		if (isLoggedIn) {
-			const success = await this.authUserService.whoAmIAsync(loginType);
+			let success = false;
+			if (returnComponentRoute == CrcRoutes.path()) {
+				success = await this.authUserService.applicantUserInfoAsync();
+			} else {
+				success = await this.authUserService.whoAmIAsync(loginType);
+			}
+
 			this.notify(success);
 		} else {
 			this.notify(false);
@@ -63,7 +70,12 @@ export class AuthenticationService {
 		});
 
 		if (isLoggedIn) {
-			const success = await this.authUserService.whoAmIAsync(loginType);
+			let success = false;
+			if (returnComponentRoute == CrcRoutes.path()) {
+				success = await this.authUserService.applicantUserInfoAsync();
+			} else {
+				success = await this.authUserService.whoAmIAsync(loginType);
+			}
 			this.notify(success);
 			return Promise.resolve(this.oauthService.state || returnRoute);
 		} else {

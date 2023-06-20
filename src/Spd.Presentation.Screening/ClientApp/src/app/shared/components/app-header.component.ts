@@ -85,13 +85,20 @@ export class HeaderComponent implements OnInit {
 
 	private getUserInfo(): void {
 		const loginType = this.authUserService.loginType;
+
 		if (loginType == IdentityProviderTypeCode.BcServicesCard) {
-			this.loggedInUserDisplay = this.authUserService.applicantProfile?.displayName ?? 'BCSC';
+			console.debug(
+				'applicantUserInfo',
+				this.authUserService.applicantUserInfo,
+				'applicantProfile',
+				this.authUserService.applicantProfile
+			);
+
+			this.loggedInUserDisplay =
+				this.authUserService.applicantUserInfo?.displayName ??
+				`${this.authUserService.applicantProfile?.firstName} ${this.authUserService.applicantProfile?.lastName}`;
 			return;
 		}
-
-		// const loggedInUserData = this.authenticationService.loggedInUserTokenData;
-		// this.loggedInUserDisplay = loggedInUserData ? loggedInUserData.display_name : null;
 
 		const userData = this.authUserService.userInfo;
 		this.loggedInUserDisplay = userData ? this.utilService.getFullName(userData.firstName, userData.lastName) : null;

@@ -8,7 +8,7 @@ import { SecurityScreeningRoutes } from './security-screening-routing.module';
 	selector: 'app-security-screening',
 	template: `
 		<div class="container mt-4" *ngIf="isAuthenticated | async">
-			<section class="step-section p-4">
+			<section class="step-section p-4 m-4">
 				<router-outlet></router-outlet>
 			</section>
 		</div>
