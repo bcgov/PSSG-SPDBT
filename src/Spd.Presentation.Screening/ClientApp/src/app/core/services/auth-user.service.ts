@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { lastValueFrom } from 'rxjs';
-import { OrgService, UserProfileService } from 'src/app/api/services';
+import { ApplicantService, OrgService, UserProfileService } from 'src/app/api/services';
 import {
 	OrgSelectionDialogData,
 	OrgSelectionModalComponent,
 } from 'src/app/shared/components/org-selection-modal.component';
 import {
 	ApplicantProfileResponse,
+	ApplicantUserInfo,
 	IdentityProviderTypeCode,
 	OrgResponse,
 	UserInfo,
@@ -19,11 +20,13 @@ export class AuthUserService {
 	loginType: IdentityProviderTypeCode | null = null;
 	userOrgProfile: OrgResponse | null = null;
 	applicantProfile: ApplicantProfileResponse | null = null;
+	applicantUserInfo: ApplicantUserInfo | null = null;
 	userInfo: UserInfo | null = null;
 	genericUploadEnabled: boolean = false;
 
 	constructor(
 		private userProfileService: UserProfileService,
+		private applicantService: ApplicantService,
 		private orgService: OrgService,
 		private dialog: MatDialog
 	) {}
@@ -56,6 +59,12 @@ export class AuthUserService {
 				this.userOrgProfile = resp;
 				console.debug('[AuthUserService] setOrgProfile', resp);
 			});
+	}
+
+	async applicantUserInfoAsync(): Promise<boolean> {
+		this.loginType = IdentityProviderTypeCode.BcServicesCard;
+		this.applicantUserInfo = await lastValueFrom(this.applicantService.apiApplicantsUserinfoGet());
+		return Promise.resolve(true);
 	}
 
 	async whoAmIAsync(loginType: IdentityProviderTypeCode): Promise<boolean> {
@@ -98,6 +107,7 @@ export class AuthUserService {
 	public clearUserData(): void {
 		this.userOrgProfile = null;
 		this.applicantProfile = null;
+		this.applicantUserInfo = null;
 		this.userInfo = null;
 		this.genericUploadEnabled = false;
 	}

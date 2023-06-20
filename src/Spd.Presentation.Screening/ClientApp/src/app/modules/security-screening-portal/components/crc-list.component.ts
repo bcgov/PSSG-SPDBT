@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { ValidationErr } from 'src/app/api/models';
@@ -11,27 +11,58 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 @Component({
 	selector: 'app-crc-list',
 	template: `
-		<h3 class="pb-2 fw-light" style="height: 52px;">Applicant Information for John Doe</h3>
+		<h3 class="pb-2 fw-normal">Applicant Information for John Doe</h3>
 
-		<app-alert type="danger">
-			<div class="fw-semibold">Fingerprint information required on 2 applications</div>
-		</app-alert>
+		<div class="row mb-4">
+			<div class="col-lg-8 col-md-12">
+				<!-- <app-alert type="danger">
+					<div class="fw-semibold">Fingerprint information required on 2 applications</div>
+				</app-alert>
 
-		<app-alert type="danger">
-			<div class="fw-semibold">1 application requires additional information</div>
-		</app-alert>
+				<app-alert type="danger">
+					<div class="fw-semibold">1 application requires additional information</div>
+				</app-alert> -->
 
-		<div class="d-flex flex-row justify-content-between pt-4">
-			<h3 class="fw-normal">Criminal Record Check History</h3>
-			<mat-button-toggle-group
-				[(ngModel)]="screeningFilter"
-				(change)="onFilterChange($event)"
-				aria-label="Screening Filter"
-			>
-				<mat-button-toggle class="button-toggle" value="ACTIVE"> Active Screenings </mat-button-toggle>
-				<mat-button-toggle class="button-toggle" value="ALL"> All Screenings </mat-button-toggle>
-			</mat-button-toggle-group>
+				<app-alert type="danger">
+					<ul class="m-0">
+						<li>Fingerprint information required on 2 applications</li>
+						<li>1 application requires additional information</li>
+						<li>You have the opportunity to respond on 2 applications</li>
+						<li>You have the opportunity to provide a statutory declaration on 3 applications</li>
+					</ul>
+				</app-alert>
+			</div>
 		</div>
+
+		<div class="row">
+			<div class="col-lg-6 col-md-12">
+				<h3 class="fw-light">Criminal Record Check History</h3>
+			</div>
+			<div class="col-lg-6 col-md-12">
+				<div class="d-flex justify-content-end">
+					<mat-button-toggle-group
+						[(ngModel)]="screeningFilter"
+						(change)="onFilterChange($event)"
+						aria-label="Screening Filter"
+					>
+						<mat-button-toggle class="button-toggle" value="ACTIVE"> Active Screenings </mat-button-toggle>
+						<mat-button-toggle class="button-toggle" value="ALL"> All Screenings </mat-button-toggle>
+					</mat-button-toggle-group>
+				</div>
+			</div>
+		</div>
+
+		<!-- <div class="d-flex flex-row justify-content-between pt-4">
+				<h3 class="fw-normal">Criminal Record Check History</h3>
+				<mat-button-toggle-group
+					[(ngModel)]="screeningFilter"
+					(change)="onFilterChange($event)"
+					aria-label="Screening Filter"
+				>
+					<mat-button-toggle class="button-toggle" value="ACTIVE"> Active Screenings </mat-button-toggle>
+					<mat-button-toggle class="button-toggle" value="ALL"> All Screenings </mat-button-toggle>
+				</mat-button-toggle-group>
+			</div> -->
 
 		<div class="row mt-4">
 			<div class="col-12">
@@ -84,7 +115,7 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 						<mat-header-cell *matHeaderCellDef>Your Action Required</mat-header-cell>
 						<mat-cell *matCellDef="let application">
 							<span class="mobile-label">Your Action Required:</span>
-							<div class="fw-semibold" style="color: red;">Documents required</div>
+							<div style="color: red;">Documents required</div>
 						</mat-cell>
 					</ng-container>
 
@@ -95,26 +126,22 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 							<a mat-flat-button (click)="onViewDetail(application)" class="m-2" aria-label="View Detail">
 								<mat-icon>send</mat-icon>View detail
 							</a>
+
+							<!-- <button
+								mat-flat-button
+								class="table-button m-2"
+								style="color: var(--color-primary-light);"
+								aria-label="Download Clearance Letter"
+								(click)="onDownloadClearanceLetter(application)"
+							>
+								<mat-icon>file_download</mat-icon>Clearance Letter
+							</button> -->
 						</mat-cell>
 					</ng-container>
 
 					<mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
-					<mat-row
-						*matRowDef="let row; columns: columns"
-						(click)="onRowClick(row)"
-						class="mat-mdc-row-clickable"
-						[ngClass]="{ 'mat-mdc-highlight-row': selectedRowIndex == row.id }"
-					></mat-row>
+					<mat-row *matRowDef="let row; columns: columns"></mat-row>
 				</mat-table>
-				<mat-paginator
-					[showFirstLastButtons]="true"
-					[pageIndex]="tablePaginator.pageIndex"
-					[pageSize]="tablePaginator.pageSize"
-					[length]="tablePaginator.length"
-					(page)="onPageChanged($event)"
-					aria-label="Select page"
-				>
-				</mat-paginator>
 			</div>
 		</div>
 
@@ -159,11 +186,6 @@ export class CrcListComponent implements OnInit {
 		this.loadList();
 	}
 
-	onPageChanged(page: PageEvent): void {
-		this.queryParams.page = page.pageIndex;
-		this.loadList();
-	}
-
 	onFilterChange(event: MatButtonToggleChange) {
 		console.log('onFilterChange', event.value);
 	}
@@ -174,14 +196,21 @@ export class CrcListComponent implements OnInit {
 		});
 	}
 
-	onRowClick(row: any) {
-		console.log('onRowClick', row);
-		this.selectedRowIndex = row.id;
+	onDownloadClearanceLetter(clearance: any) {
+		// this.applicationService
+		// 	.apiOrgsOrgIdClearancesClearanceIdFileGet$Response({
+		// 		clearanceId: clearance.clearanceId!,
+		// 		orgId: this.authUserService.userInfo?.orgId!,
+		// 	})
+		// 	.pipe()
+		// 	.subscribe((resp: StrictHttpResponse<Blob>) => {
+		// 		this.utilService.downloadFile(resp.headers, resp.body);
+		// 	});
 	}
 
 	private loadList(): void {
 		this.dataSource = new MatTableDataSource<any>([]);
-		this.dataSource.data = [
+		let temp = [
 			{
 				id: 1,
 				organizationName: 'MacDonalds',
@@ -199,5 +228,7 @@ export class CrcListComponent implements OnInit {
 				status: 'Complete - No Risk',
 			},
 		];
+		temp = [...temp, ...temp];
+		this.dataSource.data = temp;
 	}
 }
