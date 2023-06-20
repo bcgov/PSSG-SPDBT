@@ -214,7 +214,7 @@ export class CrcComponent implements OnInit {
 					return;
 				}
 			} else {
-				this.assignWhoamiData(orgData);
+				this.assignApplicantUserInfoData(orgData);
 			}
 		}
 
@@ -307,7 +307,7 @@ export class CrcComponent implements OnInit {
 	private postLoginNavigate(stepperData: any): void {
 		this.currentStateInfo = JSON.parse(stepperData);
 		const orgData = JSON.parse(stepperData);
-		this.assignWhoamiData(orgData);
+		this.assignApplicantUserInfoData(orgData);
 
 		// Assign this at the end so that the orgData setters have the correct information.
 		this.orgData = orgData;
@@ -360,18 +360,18 @@ export class CrcComponent implements OnInit {
 		}
 	}
 
-	private assignWhoamiData(orgData: AppInviteOrgData | null): void {
+	private assignApplicantUserInfoData(orgData: AppInviteOrgData | null): void {
 		if (orgData) {
-			const applicantProfile = this.authUserService.applicantProfile;
+			const applicantUserInfo = this.authUserService.applicantUserInfo;
 
 			orgData.readonlyTombstone = true;
-			orgData.givenName = applicantProfile?.firstName;
-			orgData.surname = applicantProfile?.lastName;
-			orgData.middleName1 = applicantProfile?.middleName1;
-			orgData.middleName2 = applicantProfile?.middleName2;
-			orgData.dateOfBirth = applicantProfile?.birthDate;
-			orgData.emailAddress = applicantProfile?.email;
-			orgData.genderCode = applicantProfile?.genderCode;
+			orgData.givenName = applicantUserInfo?.firstName;
+			orgData.surname = applicantUserInfo?.lastName;
+			orgData.middleName1 = applicantUserInfo?.middleName1;
+			orgData.middleName2 = applicantUserInfo?.middleName2;
+			orgData.dateOfBirth = applicantUserInfo?.birthDate;
+			orgData.emailAddress = applicantUserInfo?.email;
+			orgData.genderCode = applicantUserInfo?.genderCode;
 		}
 	}
 
