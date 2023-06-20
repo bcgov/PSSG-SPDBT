@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using Spd.Manager.Cases;
-using Spd.Resource.Applicants.Application;
 using Xunit.Abstractions;
 
 namespace Spd.Tests.Presentation.Screening.Integration.Managers;
@@ -63,12 +62,12 @@ public class ApplicationManagerTests : ScenarioContextBase
             .Expand(c => c.spd_Contact_Alias)
             .Where(c => c.contactid == id.spd_ContactId.contactid)
             .FirstOrDefault();
-        var alias = contact.spd_Contact_Alias.Where(a=>a.spd_firstname.Equals("givenName", StringComparison.InvariantCultureIgnoreCase))
+        var alias = contact.spd_Contact_Alias.Where(a => a.spd_firstname.Equals("givenName", StringComparison.InvariantCultureIgnoreCase))
             .FirstOrDefault();
         alias.ShouldNotBeNull();
     }
 
-    private ApplicantAppCreateRequest Create_ApplicantAppCreateRequest()
+    public static ApplicantAppCreateRequest Create_ApplicantAppCreateRequest()
     {
         return new ApplicantAppCreateRequest
         {

@@ -40,7 +40,7 @@ namespace Spd.Resource.Organizations.Identity
             return new UserIdentityQueryResult(_mapper.Map<IEnumerable<Identity>>(identities.ToList()));
         }
 
-        private async Task<IdentityQueryResult?> HandleApplicantIdentityQuery(ApplicantIdentityQuery queryRequest, CancellationToken ct)
+        private async Task<ApplicantIdentityQueryResult> HandleApplicantIdentityQuery(ApplicantIdentityQuery queryRequest, CancellationToken ct)
         {
             var applicantIdentity = await _dynaContext.spd_identities
                 .Expand(i => i.spd_ContactId)
