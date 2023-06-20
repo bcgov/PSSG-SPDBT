@@ -5,12 +5,12 @@ using Spd.Resource.Organizations.Identity;
 using Spd.Resource.Organizations.Org;
 using Spd.Resource.Organizations.Registration;
 using Spd.Resource.Organizations.User;
-using System.Security.Principal;
 
 namespace Spd.Manager.Membership.UserProfile
 {
     internal class UserProfileManager
         : IRequestHandler<GetCurrentUserProfileQuery, UserProfileResponse>,
+        IRequestHandler<GetApplicantProfileQuery, ApplicantProfileResponse>,
         IUserProfileManager
     {
         private readonly IOrgUserRepository _orgUserRepository;
@@ -18,18 +18,15 @@ namespace Spd.Manager.Membership.UserProfile
         private readonly IOrgRepository _orgRepository;
         private readonly IOrgRegistrationRepository _orgRegistrationRepository;
         private readonly IMapper _mapper;
-        private readonly IPrincipal _currentUser;
 
         public UserProfileManager(
             IOrgUserRepository orgUserRepository,
             IIdentityRepository idRepository,
-            IPrincipal currentUser,
             IOrgRepository orgRepository,
             IOrgRegistrationRepository orgRegistrationRepository,
             IMapper mapper)
         {
             _orgUserRepository = orgUserRepository;
-            _currentUser = currentUser;
             _idRepository = idRepository;
             _orgRepository = orgRepository;
             _mapper = mapper;
@@ -100,6 +97,12 @@ namespace Spd.Manager.Membership.UserProfile
                 UserGuid = request.PortalUserIdentity.UserGuid,
                 UserInfos = userInfos
             };
+        }
+
+        public async Task<ApplicantProfileResponse> Handle(GetApplicantProfileQuery request, CancellationToken ct)
+        {
+            var result = await _idRepository.Query(new ApplicantIdentityQuery(request.BcscSub), ct);
+            return _mapper.Map<ApplicantProfileResponse>(result);
         }
     }
 }
