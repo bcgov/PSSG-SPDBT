@@ -8,6 +8,7 @@ export { AppInviteVerifyRequest } from './models/app-invite-verify-request';
 export { AppOrgResponse } from './models/app-org-response';
 export { ApplicantAppCreateRequest } from './models/applicant-app-create-request';
 export { ApplicantProfileResponse } from './models/applicant-profile-response';
+export { ApplicantUserInfo } from './models/applicant-user-info';
 export { ApplicationCreateResponse } from './models/application-create-response';
 export { ApplicationCreateResult } from './models/application-create-result';
 export { ApplicationInviteCreateRequest } from './models/application-invite-create-request';

@@ -21,15 +21,28 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 			</div>
 		</div>
 
-		<app-alert type="danger">
+		<div class="row mb-4">
+			<div class="col-lg-8 col-md-12">
+				<app-alert type="danger">
+					<ul class="fw-semibold m-0">
+						<li>Fingerprint information required on 2 applications</li>
+						<li>1 application requires additional information</li>
+						<li>You have the opportunity to respond on 2 applications</li>
+						<li>You have the opportunity to provide a statutory declaration on 3 applications</li>
+					</ul>
+				</app-alert>
+			</div>
+		</div>
+
+		<!-- <app-alert type="danger">
 			<div class="fw-semibold">Fingerprint information required. Download the fingerprint package</div>
 		</app-alert>
 
 		<app-alert type="danger">
 			<div class="fw-semibold">
 				Statutory declaration requested. Download statutory declaration form and upload the filled form.
-			</div>
-		</app-alert>
+			</div>			
+		</app-alert> -->
 
 		<h3 class="fw-normal">Organization Name</h3>
 		<p>CRRP screening YYYY - MM - DD Organization paid</p>

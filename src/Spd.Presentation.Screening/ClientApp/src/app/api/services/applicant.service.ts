@@ -13,6 +13,7 @@ import { AnonymousApplicantAppCreateRequest } from '../models/anonymous-applican
 import { AppInviteVerifyRequest } from '../models/app-invite-verify-request';
 import { AppOrgResponse } from '../models/app-org-response';
 import { ApplicantAppCreateRequest } from '../models/applicant-app-create-request';
+import { ApplicantUserInfo } from '../models/applicant-user-info';
 import { ApplicationCreateResponse } from '../models/application-create-response';
 
 @Injectable({
@@ -214,6 +215,64 @@ export class ApplicantService extends BaseService {
 
     return this.apiApplicantsScreeningsAnonymousPost$Response(params,context).pipe(
       map((r: StrictHttpResponse<ApplicationCreateResponse>) => r.body as ApplicationCreateResponse)
+    );
+  }
+
+  /**
+   * Path part for operation apiApplicantsUserinfoGet
+   */
+  static readonly ApiApplicantsUserinfoGetPath = '/api/applicants/userinfo';
+
+  /**
+   * used for Applicants logs in with BCSC to submit an application.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiApplicantsUserinfoGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantsUserinfoGet$Response(params?: {
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<ApplicantUserInfo>> {
+
+    const rb = new RequestBuilder(this.rootUrl, ApplicantService.ApiApplicantsUserinfoGetPath, 'get');
+    if (params) {
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<ApplicantUserInfo>;
+      })
+    );
+  }
+
+  /**
+   * used for Applicants logs in with BCSC to submit an application.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiApplicantsUserinfoGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantsUserinfoGet(params?: {
+  },
+  context?: HttpContext
+
+): Observable<ApplicantUserInfo> {
+
+    return this.apiApplicantsUserinfoGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<ApplicantUserInfo>) => r.body as ApplicantUserInfo)
     );
   }
 
