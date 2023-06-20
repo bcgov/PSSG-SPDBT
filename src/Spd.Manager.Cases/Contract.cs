@@ -22,6 +22,8 @@ namespace Spd.Manager.Cases
         public Task<ClearanceListResponse> Handle(ClearanceListQuery request, CancellationToken ct);
         public Task<Unit> Handle(ClearanceAccessDeleteCommand request, CancellationToken ct);
         public Task<ClearanceLetterResponse> Handle(ClearanceLetterQuery query, CancellationToken ct);
+        public Task<ApplicantApplicationListResponse> Handle(ApplicantApplicationListQuery request, CancellationToken ct);
+        public Task<ApplicantApplicationResponse> Handle(ApplicantApplicationQuery request, CancellationToken ct);
     }
 
     #region application invites
@@ -206,6 +208,7 @@ namespace Spd.Manager.Cases
         public DateTimeOffset? CreatedOn { get; set; }
         public ApplicationPortalStatusCode? Status { get; set; }
     }
+
     public record ClearanceAccessDeleteCommand(Guid ClearanceAccessId, Guid OrgId) : IRequest<Unit>;
 
     public enum ApplicationPortalStatusCode
@@ -402,7 +405,6 @@ namespace Spd.Manager.Cases
         public string? FileName { get; set; } = null!;
     }
     #endregion
-
 
     #region validator
     public class ApplicationInviteCreateRequestValidator : AbstractValidator<ApplicationInviteCreateRequest>
@@ -614,7 +616,7 @@ namespace Spd.Manager.Cases
         public ApplicantAppCreateRequestValidator()
         {
             Include(new ApplicationCreateRequestValidator());
-            RuleFor(a=>a.AgreeToCriminalCheck)
+            RuleFor(a => a.AgreeToCriminalCheck)
                 .NotEmpty()
                 .Equal(true);
             RuleFor(a => a.AgreeToVulnerableSectorSearch)
@@ -622,5 +624,31 @@ namespace Spd.Manager.Cases
                 .Equal(true);
         }
     }
+    #endregion
+
+    #region applicant-applications
+
+    public record ApplicantApplicationResponse : ApplicationResponse
+    {
+        public string? OrgName { get; set; }
+        public ServiceTypeCode? ServiceType { get; set; }
+    }
+
+    public record ApplicantApplicationListQuery : IRequest<ApplicantApplicationListResponse>
+    {
+        public Guid ApplicantId { get; set; }
+    };
+
+    public record ApplicantApplicationQuery : IRequest<ApplicantApplicationResponse>
+    {
+        public Guid ApplicantId { get; set; }
+        public Guid ApplicationId { get; set; }
+    };
+
+    public class ApplicantApplicationListResponse
+    {
+        public IEnumerable<ApplicantApplicationResponse> Applications { get; set; } = Array.Empty<ApplicantApplicationResponse>();
+    }
+
     #endregion
 }

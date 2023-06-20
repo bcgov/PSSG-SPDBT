@@ -3,9 +3,10 @@ import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { ValidationErr } from 'src/app/api/models';
+import { ApplicantApplicationListResponse, ApplicantApplicationResponse } from 'src/app/api/models';
+import { ApplicantService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { UtilService } from 'src/app/core/services/util.service';
+import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 
 @Component({
@@ -67,27 +68,27 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 		<div class="row mt-4">
 			<div class="col-12">
 				<mat-table [dataSource]="dataSource">
-					<ng-container matColumnDef="organizationName">
+					<ng-container matColumnDef="orgName">
 						<mat-header-cell *matHeaderCellDef>Organization Name</mat-header-cell>
 						<mat-cell *matCellDef="let application">
 							<span class="mobile-label">Organization Name:</span>
-							{{ application.organizationName }}
+							{{ application.orgName }}
 						</mat-cell>
 					</ng-container>
 
-					<ng-container matColumnDef="uploadedDateTime">
+					<ng-container matColumnDef="createdOn">
 						<mat-header-cell *matHeaderCellDef>Submitted On</mat-header-cell>
 						<mat-cell *matCellDef="let application">
 							<span class="mobile-label">Submitted On:</span>
-							{{ application.uploadedDateTime | date : constants.date.dateFormat : 'UTC' }}
+							{{ application.createdOn | date : constants.date.dateFormat : 'UTC' }}
 						</mat-cell>
 					</ng-container>
 
-					<ng-container matColumnDef="type">
+					<ng-container matColumnDef="serviceType">
 						<mat-header-cell *matHeaderCellDef>Type</mat-header-cell>
 						<mat-cell *matCellDef="let application">
 							<span class="mobile-label">Type:</span>
-							{{ application.type }}
+							{{ application.serviceType | options : 'ServiceTypes' }}
 						</mat-cell>
 					</ng-container>
 
@@ -144,10 +145,6 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 				</mat-table>
 			</div>
 		</div>
-
-		<div class="row mt-4" *ngIf="selectedRowIndex >= 0">
-			<div class="col-12">clicked</div>
-		</div>
 	`,
 	styles: [
 		`
@@ -167,20 +164,19 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 })
 export class CrcListComponent implements OnInit {
 	screeningFilter: string = 'ACTIVE';
-	private queryParams: any = this.utilService.getDefaultQueryParams();
-
-	selectedRowIndex = -1;
-
 	constants = SPD_CONSTANTS;
-	dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
-	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
-	columns: string[] = ['organizationName', 'uploadedDateTime', 'type', 'payeeType', 'status', 'action1', 'action2'];
-	showResult = false;
-	validationErrs: Array<ValidationErr> = [];
+	dataSource: MatTableDataSource<ApplicantApplicationResponse> = new MatTableDataSource<ApplicantApplicationResponse>(
+		[]
+	);
+	columns: string[] = ['orgName', 'createdOn', 'serviceType', 'payeeType', 'status', 'action1', 'action2'];
 
 	@ViewChild('paginator') paginator!: MatPaginator;
 
-	constructor(private router: Router, private utilService: UtilService) {}
+	constructor(
+		private router: Router,
+		private applicantService: ApplicantService,
+		private authUserService: AuthUserService
+	) {}
 
 	ngOnInit() {
 		this.loadList();
@@ -209,26 +205,14 @@ export class CrcListComponent implements OnInit {
 	}
 
 	private loadList(): void {
-		this.dataSource = new MatTableDataSource<any>([]);
-		let temp = [
-			{
-				id: 1,
-				organizationName: 'MacDonalds',
-				uploadedDateTime: '2023-01-14T00:13:05.865Z',
-				payeeType: 'Applicant',
-				type: 'PSSO',
-				status: 'Awaiting Applicant',
-			},
-			{
-				id: 2,
-				organizationName: 'Starbucks',
-				uploadedDateTime: '2023-02-04T00:10:05.865Z',
-				payeeType: 'Organization',
-				type: 'CRRP',
-				status: 'Complete - No Risk',
-			},
-		];
-		temp = [...temp, ...temp];
-		this.dataSource.data = temp;
+		console.log('applicantId', this.authUserService.applicantProfile?.applicantId);
+		this.applicantService
+			.apiApplicantsApplicantIdApplicationsGet({
+				applicantId: this.authUserService.applicantProfile?.applicantId!,
+			})
+			.pipe()
+			.subscribe((res: ApplicantApplicationListResponse) => {
+				this.dataSource.data = res.applications as Array<ApplicantApplicationResponse>;
+			});
 	}
 }

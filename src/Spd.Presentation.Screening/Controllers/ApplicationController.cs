@@ -311,7 +311,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <param name="applicationId"></param>
         /// <param name="orgId"></param>
         /// <returns></returns>
-        [Route("api/orgs/{orgId}/identity/{applicationId}")]
+        [Route("api/orgs/{orgId}/identity/{ApplicationId}")]
         [HttpPut]
         public async Task<ActionResult> IdentityVerify([FromRoute] Guid applicationId, [FromRoute] Guid orgId, [FromQuery] IdentityStatusCode status)
         {

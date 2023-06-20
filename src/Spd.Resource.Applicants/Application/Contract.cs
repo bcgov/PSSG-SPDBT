@@ -15,6 +15,8 @@ public interface IApplicationRepository
     public Task<ClearanceListResp> QueryAsync(ClearanceListQry clearanceListQry, CancellationToken ct);
     public Task DeleteClearanceAccessAsync(ClearanceAccessDeleteCmd clearanceAccessDeleteCmd, CancellationToken cancellationToken);
     public Task<ClearanceLetterResp> QueryLetterAsync(ClearanceLetterQry clearanceLetterQry, CancellationToken ct);
+    public Task<ApplicantApplicationListResp> QueryApplicantApplicationListAsync(ApplicantApplicationListQry query, CancellationToken cancellationToken);
+    public Task<ApplicationResult> QueryApplicantApplicationAsync(ApplicantApplicationQry query, CancellationToken cancellationToken);
 }
 
 #region application
@@ -114,6 +116,8 @@ public record ApplicationResult
     public string? CaseSubStatus { get; set; }
     public bool? HaveVerifiedIdentity { get; set; }
     public DateTimeOffset? CreatedOn { get; set; }
+    public string? OrgName { get; set; }
+    public ServiceTypeCode? ServiceType { get; set; }
 }
 public class ApplicationListResp
 {
@@ -121,6 +125,18 @@ public class ApplicationListResp
     public IEnumerable<ApplicationResult> Applications { get; set; } = Array.Empty<ApplicationResult>();
     public PaginationResp Pagination { get; set; } = null!;
 }
+
+public record ApplicantApplicationListQry
+{
+    public Guid ApplicantId { get; set; }
+};
+
+public record ApplicantApplicationQry
+{
+    public Guid ApplicantId { get; set; }
+    public Guid ApplicationId { get; set; }
+};
+
 public enum ApplicationOriginTypeCode
 {
     Portal,
@@ -248,6 +264,16 @@ public record ApplicationCreateRslt()
     public bool CreateSuccess { get; set; } = false;
 };
 #endregion
+
+#region applicant-applications
+
+public record ApplicantApplicationListResp
+{
+    public IEnumerable<ApplicationResult> Applications { get; set; } = Array.Empty<ApplicationResult>();
+}
+
+#endregion
+
 public enum ApplicationPortalStatusCd
 {
     Draft,
