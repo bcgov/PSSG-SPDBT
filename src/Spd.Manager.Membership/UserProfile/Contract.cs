@@ -8,9 +8,11 @@ namespace Spd.Manager.Membership.UserProfile
 {
     public interface IUserProfileManager
     {
-        public Task<UserProfileResponse> Handle(GetCurrentUserProfileQuery request, CancellationToken cancellationToken);
+        public Task<UserProfileResponse> Handle(GetCurrentUserProfileQuery request, CancellationToken ct);
+        public Task<ApplicantProfileResponse> Handle(GetApplicantProfileQuery request, CancellationToken ct);
     }
 
+    #region UserProfile
     public record GetCurrentUserProfileQuery(PortalUserIdentity PortalUserIdentity) : IRequest<UserProfileResponse>;
 
     public class UserProfileResponse
@@ -66,4 +68,15 @@ namespace Spd.Manager.Membership.UserProfile
         public bool? EmailVerified { get; set; }
         public string? Email { get; set; }
     }
+    #endregion
+
+    #region ApplicantProfile
+    public record GetApplicantProfileQuery(string BcscSub) : IRequest<ApplicantProfileResponse>;
+    public class ApplicantProfileResponse
+    {
+        public Guid ApplicantId { get; set; } //which is contact id in db
+        public string? FirstName { get; set; } // which is contact firstname
+        public string? LastName { get; set; } // which is contact lastname
+    }
+    #endregion
 }
