@@ -3,11 +3,11 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Cases;
-using Spd.Resource.Applicants.Application;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
+using Spd.Utilities.Shared.ManagerContract;
 using Spd.Utilities.Shared.Tools;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
@@ -109,7 +109,7 @@ namespace Spd.Presentation.Screening.Controllers
             {
                 "female" => GenderCode.F,
                 "male" => GenderCode.M,
-                "diverse" => GenderCode.X,
+                "diverse" => GenderCode.U,
                 _ => null,
             };
 
