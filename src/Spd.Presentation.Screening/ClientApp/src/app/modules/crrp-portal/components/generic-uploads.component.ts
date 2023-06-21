@@ -168,6 +168,7 @@ export class GenericUploadsComponent implements OnInit {
 				// if validation errors or not a duplicate, show result of error messages or success message
 				if (this.validationErrs.length > 0 || duplicateCheckResponses.length == 0) {
 					this.showResult = true;
+					this.loadList();
 					return;
 				}
 
@@ -247,6 +248,7 @@ export class GenericUploadsComponent implements OnInit {
 			.pipe()
 			.subscribe((_resp: BulkUploadCreateResponse) => {
 				this.showResult = true;
+				this.loadList();
 			}); // should be no errors since this file has already been processed
 	}
 
