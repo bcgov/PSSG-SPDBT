@@ -16,74 +16,50 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 
 export interface ApplicantApplicationStatusResponse extends ApplicantApplicationResponse {
 	applicationPortalStatusClass: string;
-	// actionRequired: string;
-	documentsRequiredCount: number;
-	opportunityToRespond: boolean;
-	opportunityToRespondCount: number;
-	requestForAdditionalInfo: boolean;
-	requestForAdditionalInfoCount: number;
-	fingerprints: boolean;
-	fingerprintsCount: number;
-	statutoryDeclaration: boolean;
-	statutoryDeclarationCount: number;
+	actionAlert: string | null;
 }
 @Component({
 	selector: 'app-crc-list',
 	template: `
-		<h3 class="pb-2 fw-normal">Applicant Information for John Doe</h3>
-
-		<div class="row mb-4">
-			<div class="col-lg-8 col-md-12">
-				<!-- <app-alert type="danger">
-					<div class="fw-semibold">Fingerprint information required on 2 applications</div>
-				</app-alert>
-
-				<app-alert type="danger">
-					<div class="fw-semibold">1 application requires additional information</div>
-				</app-alert> -->
-
-				<app-alert type="danger">
-					<ul class="m-0">
-						<li>Fingerprint information required on 2 applications</li>
-						<li>1 application requires additional information</li>
-						<li>You have the opportunity to respond on 2 applications</li>
-						<li>You have the opportunity to provide a statutory declaration on 3 applications</li>
-					</ul>
-				</app-alert>
-			</div>
-		</div>
-
 		<div class="row">
-			<div class="col-lg-6 col-md-12">
-				<h3 class="fw-light">Criminal Record Check History</h3>
+			<div class="col-xl-8 col-lg-6 col-md-12">
+				<h3 class="fw-normal">Criminal Record Check History</h3>
+				<h4 class="fw-light">{{ applicantName }}</h4>
 			</div>
-			<div class="col-lg-6 col-md-12">
-				<div class="d-flex justify-content-end">
+			<div class="col-xl-4 col-lg-6 col-md-12">
+				<div class="d-flex justify-content-end m-2">
 					<mat-button-toggle-group
-						[(ngModel)]="screeningFilter"
+						[(ngModel)]="applicationsFilter"
 						(change)="onFilterChange($event)"
-						aria-label="Screening Filter"
+						aria-label="Applications Filter"
 					>
-						<mat-button-toggle class="button-toggle" value="ACTIVE"> Active Screenings </mat-button-toggle>
-						<mat-button-toggle class="button-toggle" value="ALL"> All Screenings </mat-button-toggle>
+						<mat-button-toggle class="button-toggle" value="ACTIVE"> Active Applications </mat-button-toggle>
+						<mat-button-toggle class="button-toggle" value="ALL"> All Applications </mat-button-toggle>
 					</mat-button-toggle-group>
 				</div>
 			</div>
 		</div>
 
-		<!-- <div class="d-flex flex-row justify-content-between pt-4">
-				<h3 class="fw-normal">Criminal Record Check History</h3>
-				<mat-button-toggle-group
-					[(ngModel)]="screeningFilter"
-					(change)="onFilterChange($event)"
-					aria-label="Screening Filter"
-				>
-					<mat-button-toggle class="button-toggle" value="ACTIVE"> Active Screenings </mat-button-toggle>
-					<mat-button-toggle class="button-toggle" value="ALL"> All Screenings </mat-button-toggle>
-				</mat-button-toggle-group>
-			</div> -->
+		<mat-divider class="mb-4"></mat-divider>
 
-		<div class="row mt-4">
+		<div class="row">
+			<div class="col-12">
+				<app-alert type="danger" *ngIf="opportunityToRespondAlert">
+					<div class="fw-semibold">{{ opportunityToRespondAlert }}</div>
+				</app-alert>
+				<app-alert type="danger" *ngIf="requestForAdditionalInfoAlert">
+					<div class="fw-semibold">{{ requestForAdditionalInfoAlert }}</div>
+				</app-alert>
+				<app-alert type="danger" *ngIf="fingerprintsAlert">
+					<div class="fw-semibold">{{ fingerprintsAlert }}</div>
+				</app-alert>
+				<app-alert type="danger" *ngIf="statutoryDeclarationAlert">
+					<div class="fw-semibold">{{ statutoryDeclarationAlert }}</div>
+				</app-alert>
+			</div>
+		</div>
+
+		<div class="row">
 			<div class="col-12">
 				<mat-table [dataSource]="dataSource">
 					<ng-container matColumnDef="orgName">
@@ -134,10 +110,11 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
 						<mat-header-cell *matHeaderCellDef>Your Action Required</mat-header-cell>
 						<mat-cell *matCellDef="let application">
 							<span class="mobile-label">Your Action Required:</span>
-							<div style="color: red;" *ngIf="application.documentsRequiredCount > 0">
-								<span *ngIf="application.documentsRequiredCount == 1"> Document required </span>
-								<span *ngIf="application.documentsRequiredCount > 1"> Documents required </span>
-							</div>
+							<ng-container *ngIf="application.actionAlert">
+								<div style="color: red;">
+									{{ application.actionAlert }}
+								</div>
+							</ng-container>
 						</mat-cell>
 					</ng-container>
 
@@ -180,15 +157,27 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
 				padding-right: 4px !important;
 				padding-left: 4px !important;
 			}
+
+			@media (max-width: 991px) {
+				.mdc-button {
+					border: 1px solid black;
+				}
+			}
 		`,
 	],
 })
 export class CrcListComponent implements OnInit {
-	screeningFilter: string = 'ACTIVE';
+	applicantName = '';
+	applicationsFilter: string = 'ACTIVE';
 	constants = SPD_CONSTANTS;
 	dataSource: MatTableDataSource<ApplicantApplicationStatusResponse> =
 		new MatTableDataSource<ApplicantApplicationStatusResponse>([]);
 	columns: string[] = ['orgName', 'createdOn', 'serviceType', 'payeeType', 'status', 'action1', 'action2'];
+
+	opportunityToRespondAlert: string | null = null;
+	requestForAdditionalInfoAlert: string | null = null;
+	fingerprintsAlert: string | null = null;
+	statutoryDeclarationAlert: string | null = null;
 
 	@ViewChild('paginator') paginator!: MatPaginator;
 
@@ -207,9 +196,9 @@ export class CrcListComponent implements OnInit {
 		console.log('onFilterChange', event.value);
 	}
 
-	onViewDetail(application: any): void {
-		this.router.navigateByUrl(SecurityScreeningRoutes.path(SecurityScreeningRoutes.CRC_DETAIL), {
-			state: { id: 234 },
+	onViewDetail(application: ApplicantApplicationStatusResponse): void {
+		this.router.navigate([SecurityScreeningRoutes.path(SecurityScreeningRoutes.CRC_DETAIL)], {
+			queryParams: { applicationId: application.id },
 		});
 	}
 
@@ -226,39 +215,103 @@ export class CrcListComponent implements OnInit {
 	}
 
 	private loadList(): void {
-		console.log('applicantId', this.authUserService.applicantProfile?.applicantId);
+		this.applicantName = this.utilService.getFullName(
+			this.authUserService.applicantProfile?.firstName,
+			this.authUserService.applicantProfile?.lastName
+		);
+
+		this.opportunityToRespondAlert = null;
+		this.requestForAdditionalInfoAlert = null;
+		this.fingerprintsAlert = null;
+		this.statutoryDeclarationAlert = null;
+
+		let opportunityToRespondCount = 0;
+		let requestForAdditionalInfoCount = 0;
+		let fingerprintsCount = 0;
+		let statutoryDeclarationCount = 0;
+
+		const applicantId = '81dddb1e-05cb-4de5-93ca-2537aa00b5ac';
 		this.applicantService
 			.apiApplicantsApplicantIdApplicationsGet({
-				applicantId: this.authUserService.applicantProfile?.applicantId!,
+				applicantId: applicantId, //this.authUserService.applicantProfile?.applicantId!,
 			})
 			.pipe()
 			.subscribe((res: ApplicantApplicationListResponse) => {
 				const applications = res.applications as Array<ApplicantApplicationStatusResponse>;
+
 				applications.forEach((app: ApplicantApplicationStatusResponse) => {
-					const itemClass = this.utilService.getApplicationPortalStatusClass(app.status);
-					app.applicationPortalStatusClass = itemClass;
+					app.applicationPortalStatusClass = this.utilService.getApplicationPortalStatusClass(app.status);
 
-					app.opportunityToRespond = false;
-					app.opportunityToRespondCount = 0;
-					app.requestForAdditionalInfo = false;
-					app.requestForAdditionalInfoCount = 0;
-					app.fingerprints = false;
-					app.fingerprintsCount = 0;
-					app.statutoryDeclaration = false;
-					app.statutoryDeclarationCount = 0;
-
-					// OTR letter has been sent.
-					// Request for fingerprints  (Fingerprint is needed if the VS hit is found for the applicant during the CPIC check.)
-					// Requesting further information or documentation to support their application.
-
-					app.documentsRequiredCount = 0;
+					let documentsRequiredCount = 0;
 					if (app.status == ApplicationPortalStatusCode.AwaitingApplicant) {
-						// app.actionRequired = app.caseSubStatus ??
-						app.documentsRequiredCount++;
+						console.log('app.caseSubStatus', app.caseSubStatus);
+
+						switch (app.caseSubStatus?.toUpperCase()) {
+							case 'FINGERPRINTS':
+								documentsRequiredCount++;
+								fingerprintsCount++;
+								break;
+							case 'APPLICANTINFORMATION':
+								documentsRequiredCount++;
+								opportunityToRespondCount++;
+								break;
+							case 'AWAITINGINFORMATION':
+								documentsRequiredCount++;
+								requestForAdditionalInfoCount++;
+								break;
+							case 'STATUTORYDECLARATION':
+								documentsRequiredCount++;
+								statutoryDeclarationCount++;
+								break;
+						}
+					}
+
+					if (documentsRequiredCount > 0) {
+						app.actionAlert = this.getDocumentRequiredText(documentsRequiredCount);
 					}
 				});
 
+				fingerprintsCount = 5; // TODO REMOVE
+
+				this.opportunityToRespondAlert = this.getOpportunityToRespondText(opportunityToRespondCount);
+				this.requestForAdditionalInfoAlert = this.getRequestForAdditionalInfoText(requestForAdditionalInfoCount);
+				this.fingerprintsAlert = this.getFingerprintsText(fingerprintsCount);
+				this.statutoryDeclarationAlert = this.getStatutoryDeclarationText(statutoryDeclarationCount);
+
 				this.dataSource.data = applications;
 			});
+	}
+
+	private getDocumentRequiredText(count: number): string | null {
+		if ((count = 0)) return null;
+		return count > 1 ? 'Documents required' : 'Document required';
+	}
+
+	private getOpportunityToRespondText(count: number): string | null {
+		if (count == 0) return null;
+		return count > 1
+			? `You have the opportunity to respond on ${count} applications`
+			: 'You have the opportunity to respond on 1 application';
+	}
+
+	private getRequestForAdditionalInfoText(count: number): string | null {
+		if (count == 0) return null;
+		return count > 1
+			? `${count} applications require additional information`
+			: '1 application requires additional information';
+	}
+
+	private getFingerprintsText(count: number): string | null {
+		if (count == 0) return null;
+		return count > 1
+			? `Fingerprint information required on ${count} applications`
+			: 'Fingerprint information required on 1 application';
+	}
+
+	private getStatutoryDeclarationText(count: number): string | null {
+		if (count == 0) return null;
+		return count > 1
+			? `You have the opportunity to provide a statutory declaration on ${count} applications`
+			: 'You have the opportunity to provide a statutory declaration on 1 application';
 	}
 }

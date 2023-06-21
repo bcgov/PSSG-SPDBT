@@ -123,7 +123,7 @@ internal partial class ApplicationRepository : IApplicationRepository
     {
         var applications = _context.spd_applications
             .Expand(i => i.spd_OrganizationId)
-            //.Where(r => r._spd_applicantid_value == query.ApplicantId)
+            .Where(r => r._spd_applicantid_value == query.ApplicantId)
             .OrderByDescending(i => i.createdon);
 
         var result = applications.ToList();
@@ -134,10 +134,11 @@ internal partial class ApplicationRepository : IApplicationRepository
 
     public async Task<ApplicationResult> QueryApplicantApplicationAsync(ApplicantApplicationQry query, CancellationToken cancellationToken)
     {
-
-        var application = _context.spd_applications;
-        var result = (QueryOperationResponse<spd_application>)await application.ExecuteAsync(cancellationToken);
-        return _mapper.Map<ApplicationResult>(result);
+        var application = _context.spd_applications
+            .Expand(i => i.spd_OrganizationId)
+            .Where(r => r.spd_applicationid == query.ApplicationId && r._spd_applicantid_value == query.ApplicantId)
+            .FirstOrDefault();
+        return _mapper.Map<ApplicationResult>(application);
     }
 
     private spd_alias? GetAlias(AliasCreateCmd aliasCreateCmd, contact contact)

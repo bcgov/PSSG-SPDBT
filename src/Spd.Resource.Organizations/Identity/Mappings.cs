@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.Dynamics.CRM;
+using Spd.Utilities.Shared.Tools;
 
 namespace Spd.Resource.Organizations.Identity
 {
@@ -14,8 +15,8 @@ namespace Spd.Resource.Organizations.Identity
 
             _ = CreateMap<spd_identity, ApplicantIdentityQueryResult>()
              .ForMember(d => d.ContactId, opt => opt.MapFrom(s => s.spd_ContactId.contactid))
-             .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.spd_ContactId.lastname))
-             .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.spd_ContactId.firstname));
+             .ForMember(d => d.LastName, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.spd_ContactId.lastname)))
+             .ForMember(d => d.FirstName, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.spd_ContactId.firstname)));
         }
     }
 }
