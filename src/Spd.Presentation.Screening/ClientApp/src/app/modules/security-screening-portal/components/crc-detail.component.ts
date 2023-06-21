@@ -29,7 +29,7 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 			</div>
 		</div>
 
-		<mat-divider class="mb-4"></mat-divider>
+		<mat-divider class="mb-2 mb-lg-4"></mat-divider>
 
 		<ng-container *ngIf="application">
 			<div class="row">
@@ -62,6 +62,7 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 					The CRRP application was submitted on {{ application.createdOn | date : constants.date.dateFormat : 'UTC' }}
 				</li>
 				<li>Paid by the {{ application.payeeType }}</li>
+				<li>The Case ID is {{ application.applicationNumber }}</li>
 			</ul>
 
 			<ng-container *ngIf="fingerprintsAlert || statutoryDeclarationAlert">
@@ -180,10 +181,9 @@ export class CrcDetailComponent {
 			this.authUserService.applicantProfile?.lastName
 		);
 
-		const applicantId = '81dddb1e-05cb-4de5-93ca-2537aa00b5ac'; // TODO hardcoded
 		this.applicantService
 			.apiApplicantsApplicantIdApplicationsApplicationIdGet({
-				applicantId: applicantId, //this.authUserService.applicantProfile?.applicantId!,
+				applicantId: this.authUserService.applicantProfile?.applicantId!,
 				applicationId: applicationId,
 			})
 			.pipe()
@@ -192,8 +192,6 @@ export class CrcDetailComponent {
 				this.applicationPortalStatusClass = this.utilService.getApplicationPortalStatusClass(res.status);
 
 				if (res.status == ApplicationPortalStatusCode.AwaitingApplicant) {
-					console.log('app.caseSubStatus', res.caseSubStatus);
-
 					switch (res.caseSubStatus?.toUpperCase()) {
 						case 'FINGERPRINTS':
 							this.fingerprintsAlert = this.getFingerprintsText();

@@ -27,20 +27,21 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
 				<h4 class="fw-light">{{ applicantName }}</h4>
 			</div>
 			<div class="col-xl-4 col-lg-6 col-md-12">
-				<div class="d-flex justify-content-end m-2">
+				<div class="d-flex justify-content-end my-2">
 					<mat-button-toggle-group
-						[(ngModel)]="applicationsFilter"
+						[(ngModel)]="applicationFilter"
 						(change)="onFilterChange($event)"
+						class="w-100"
 						aria-label="Applications Filter"
 					>
-						<mat-button-toggle class="button-toggle" value="ACTIVE"> Active Applications </mat-button-toggle>
-						<mat-button-toggle class="button-toggle" value="ALL"> All Applications </mat-button-toggle>
+						<mat-button-toggle class="button-toggle w-100" value="ACTIVE"> Active Applications </mat-button-toggle>
+						<mat-button-toggle class="button-toggle w-100" value="ALL"> All Applications </mat-button-toggle>
 					</mat-button-toggle-group>
 				</div>
 			</div>
 		</div>
 
-		<mat-divider class="mb-4"></mat-divider>
+		<mat-divider class="mb-2 mb-lg-4"></mat-divider>
 
 		<div class="row">
 			<div class="col-12">
@@ -59,7 +60,7 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
 			</div>
 		</div>
 
-		<div class="row">
+		<div class="row mb-2">
 			<div class="col-12">
 				<mat-table [dataSource]="dataSource">
 					<ng-container matColumnDef="orgName">
@@ -168,7 +169,8 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
 })
 export class CrcListComponent implements OnInit {
 	applicantName = '';
-	applicationsFilter: string = 'ACTIVE';
+	applicationFilter: string = 'ACTIVE';
+	allApplications: Array<ApplicantApplicationStatusResponse> = [];
 	constants = SPD_CONSTANTS;
 	dataSource: MatTableDataSource<ApplicantApplicationStatusResponse> =
 		new MatTableDataSource<ApplicantApplicationStatusResponse>([]);
@@ -193,7 +195,7 @@ export class CrcListComponent implements OnInit {
 	}
 
 	onFilterChange(event: MatButtonToggleChange) {
-		console.log('onFilterChange', event.value);
+		this.setFilterApplications();
 	}
 
 	onViewDetail(application: ApplicantApplicationStatusResponse): void {
@@ -230,22 +232,19 @@ export class CrcListComponent implements OnInit {
 		let fingerprintsCount = 0;
 		let statutoryDeclarationCount = 0;
 
-		const applicantId = '81dddb1e-05cb-4de5-93ca-2537aa00b5ac';
 		this.applicantService
 			.apiApplicantsApplicantIdApplicationsGet({
-				applicantId: applicantId, //this.authUserService.applicantProfile?.applicantId!,
+				applicantId: this.authUserService.applicantProfile?.applicantId!,
 			})
 			.pipe()
 			.subscribe((res: ApplicantApplicationListResponse) => {
-				const applications = res.applications as Array<ApplicantApplicationStatusResponse>;
+				this.allApplications = res.applications as Array<ApplicantApplicationStatusResponse>;
 
-				applications.forEach((app: ApplicantApplicationStatusResponse) => {
+				this.allApplications.forEach((app: ApplicantApplicationStatusResponse) => {
 					app.applicationPortalStatusClass = this.utilService.getApplicationPortalStatusClass(app.status);
 
 					let documentsRequiredCount = 0;
 					if (app.status == ApplicationPortalStatusCode.AwaitingApplicant) {
-						console.log('app.caseSubStatus', app.caseSubStatus);
-
 						switch (app.caseSubStatus?.toUpperCase()) {
 							case 'FINGERPRINTS':
 								documentsRequiredCount++;
@@ -271,15 +270,23 @@ export class CrcListComponent implements OnInit {
 					}
 				});
 
-				fingerprintsCount = 5; // TODO REMOVE
-
 				this.opportunityToRespondAlert = this.getOpportunityToRespondText(opportunityToRespondCount);
 				this.requestForAdditionalInfoAlert = this.getRequestForAdditionalInfoText(requestForAdditionalInfoCount);
 				this.fingerprintsAlert = this.getFingerprintsText(fingerprintsCount);
 				this.statutoryDeclarationAlert = this.getStatutoryDeclarationText(statutoryDeclarationCount);
 
-				this.dataSource.data = applications;
+				this.setFilterApplications();
 			});
+	}
+
+	private setFilterApplications(): void {
+		const selectedApplications =
+			this.applicationFilter == 'ACTIVE'
+				? this.allApplications.filter((app) => {
+						return !['Closed', 'Cancelled', 'Completed'].includes(app.caseStatus ?? '');
+				  })
+				: [...this.allApplications];
+		this.dataSource.data = selectedApplications;
 	}
 
 	private getDocumentRequiredText(count: number): string | null {
