@@ -91,6 +91,20 @@ namespace Spd.Presentation.Screening.Controllers
             anonymAppCreateRequest.OriginTypeCode = ApplicationOriginTypeCode.WebForm;
             return await _mediator.Send(new ApplicantApplicationCreateCommand(anonymAppCreateRequest));
         }
+
+        /// <summary>
+        /// Applicant checks for existing shareable clearance
+        /// </summary>
+        /// <param name="orgId"></param>
+        /// <returns></returns>
+        [Route("api/applicants/clearances/sharable?withOrgId={orgId}")]
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<SharableClearanceResponse> GetSharableClearanceWithOrg([FromQuery] Guid orgId, CancellationToken ct)
+        {
+            var applicantInfo = _currentUser.GetApplicantIdentityInfo();
+            return await _mediator.Send(new GetSharableClearanceQuery(orgId, applicantInfo.Sub), ct);
+        }
         #endregion
 
         #region userinfo

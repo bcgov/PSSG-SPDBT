@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Spd.Engine.Search\Spd.Engine.Search.csproj" />
     <ProjectReference Include="..\Spd.Engine.Validation\Spd.Engine.Validation.csproj" />
     <ProjectReference Include="..\Spd.Resource.Applicants\Spd.Resource.Applicants.csproj" />
     <ProjectReference Include="..\Spd.Utilities.TempFileStorage\Spd.Utilities.TempFileStorage.csproj" />

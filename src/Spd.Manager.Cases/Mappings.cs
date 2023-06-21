@@ -1,4 +1,5 @@
 using AutoMapper;
+using Spd.Engine.Search;
 using Spd.Engine.Validation;
 using Spd.Resource.Applicants;
 using Spd.Resource.Applicants.Application;
@@ -59,6 +60,7 @@ namespace Spd.Manager.Cases
             CreateMap<ClearanceListSortBy, ClearanceSortBy>();
             CreateMap<ClearanceAccessDeleteCommand, ClearanceAccessDeleteCmd>();
             CreateMap<ClearanceLetterResp, ClearanceLetterResponse>();
+            CreateMap<SharableClearanceSearchResponse, SharableClearanceResponse>();
             CreateMap<AppInviteVerifyResp, AppOrgResponse>();
 
         }

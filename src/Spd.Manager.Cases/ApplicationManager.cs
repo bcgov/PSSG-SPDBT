@@ -1,5 +1,6 @@
 using AutoMapper;
 using MediatR;
+using Spd.Engine.Search;
 using Spd.Engine.Validation;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.ApplicationInvite;
@@ -23,6 +24,7 @@ namespace Spd.Manager.Cases
         IRequestHandler<ClearanceListQuery, ClearanceListResponse>,
         IRequestHandler<ClearanceAccessDeleteCommand, Unit>,
         IRequestHandler<ClearanceLetterQuery, ClearanceLetterResponse>,
+        IRequestHandler<GetSharableClearanceQuery, SharableClearanceResponse>,
         IApplicationManager
     {
         private readonly IApplicationRepository _applicationRepository;
@@ -30,18 +32,21 @@ namespace Spd.Manager.Cases
         private readonly IMapper _mapper;
         private readonly ITempFileStorageService _tempFile;
         private readonly IDuplicateCheckEngine _duplicateCheckEngine;
+        private readonly ISearchEngine _searchEngine;
 
         public ApplicationManager(IApplicationRepository applicationRepository,
             IApplicationInviteRepository applicationInviteRepository,
             IMapper mapper,
             ITempFileStorageService tempFile,
-            IDuplicateCheckEngine duplicateCheckEngine)
+            IDuplicateCheckEngine duplicateCheckEngine,
+            ISearchEngine searchEngine)
         {
             _applicationRepository = applicationRepository;
             _applicationInviteRepository = applicationInviteRepository;
             _tempFile = tempFile;
             _mapper = mapper;
             _duplicateCheckEngine = duplicateCheckEngine;
+            _searchEngine = searchEngine;
         }
 
         #region application-invite
@@ -148,7 +153,7 @@ namespace Spd.Manager.Cases
                 await _applicationInviteRepository.DeleteApplicationInvitesAsync(
                     new ApplicationInviteDeleteCmd()
                     {
-                        ApplicationInviteId =(Guid) request.ApplicationCreateRequest.AppInviteId,
+                        ApplicationInviteId = (Guid)request.ApplicationCreateRequest.AppInviteId,
                         OrgId = request.ApplicationCreateRequest.OrgId,
                     }, ct);
             }
@@ -283,6 +288,12 @@ namespace Spd.Manager.Cases
         {
             ClearanceLetterResp letter = await _applicationRepository.QueryLetterAsync(new ClearanceLetterQry(query.ClearanceId), ct);
             return _mapper.Map<ClearanceLetterResponse>(letter);
+        }
+
+        public async Task<SharableClearanceResponse> Handle(GetSharableClearanceQuery query, CancellationToken ct)
+        {
+            SharableClearanceSearchResponse response = (SharableClearanceSearchResponse)await _searchEngine.SearchAsync(new SharableClearanceSearchRequest(query.OrgId, query.BcscId), ct);
+            return _mapper.Map<SharableClearanceResponse>(response);
         }
         #endregion
     }

@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.Dynamics.CRM;
+﻿using Microsoft.Dynamics.CRM;
 using Microsoft.OData.Client;
 using Spd.Utilities.Dynamics;
 using System.Net;
