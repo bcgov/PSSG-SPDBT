@@ -123,7 +123,7 @@ internal partial class ApplicationRepository : IApplicationRepository
     {
         var applications = _context.spd_applications
             .Expand(i => i.spd_OrganizationId)
-            .Where(r => r._spd_applicantid_value == query.ApplicantId)
+            //.Where(r => r._spd_applicantid_value == query.ApplicantId)
             .OrderByDescending(i => i.createdon);
 
         var result = applications.ToList();

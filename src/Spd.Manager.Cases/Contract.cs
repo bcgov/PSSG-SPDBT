@@ -632,6 +632,8 @@ namespace Spd.Manager.Cases
     {
         public string? OrgName { get; set; }
         public ServiceTypeCode? ServiceType { get; set; }
+        public string? CaseStatus { get; set; }
+        public string? CaseSubStatus { get; set; }
     }
 
     public record ApplicantApplicationListQuery : IRequest<ApplicantApplicationListResponse>

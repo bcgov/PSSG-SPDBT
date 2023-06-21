@@ -3,12 +3,30 @@ import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { ApplicantApplicationListResponse, ApplicantApplicationResponse } from 'src/app/api/models';
+import {
+	ApplicantApplicationListResponse,
+	ApplicantApplicationResponse,
+	ApplicationPortalStatusCode,
+} from 'src/app/api/models';
 import { ApplicantService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
+import { UtilService } from 'src/app/core/services/util.service';
 import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 
+export interface ApplicantApplicationStatusResponse extends ApplicantApplicationResponse {
+	applicationPortalStatusClass: string;
+	// actionRequired: string;
+	documentsRequiredCount: number;
+	opportunityToRespond: boolean;
+	opportunityToRespondCount: number;
+	requestForAdditionalInfo: boolean;
+	requestForAdditionalInfoCount: number;
+	fingerprints: boolean;
+	fingerprintsCount: number;
+	statutoryDeclaration: boolean;
+	statutoryDeclarationCount: number;
+}
 @Component({
 	selector: 'app-crc-list',
 	template: `
@@ -80,7 +98,7 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 						<mat-header-cell *matHeaderCellDef>Submitted On</mat-header-cell>
 						<mat-cell *matCellDef="let application">
 							<span class="mobile-label">Submitted On:</span>
-							{{ application.createdOn | date : constants.date.dateFormat : 'UTC' }}
+							{{ application.createdOn | date : constants.date.dateFormat }}
 						</mat-cell>
 					</ng-container>
 
@@ -105,8 +123,8 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 						<mat-cell *matCellDef="let application">
 							<span class="mobile-label">Application Status:</span>
 							<mat-chip-listbox aria-label="Status">
-								<mat-chip-option [selectable]="false">
-									{{ application.status }}
+								<mat-chip-option [selectable]="false" [ngClass]="application.applicationPortalStatusClass">
+									{{ application.status | options : 'ApplicationPortalStatusTypes' }}
 								</mat-chip-option>
 							</mat-chip-listbox>
 						</mat-cell>
@@ -116,7 +134,10 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 						<mat-header-cell *matHeaderCellDef>Your Action Required</mat-header-cell>
 						<mat-cell *matCellDef="let application">
 							<span class="mobile-label">Your Action Required:</span>
-							<div style="color: red;">Documents required</div>
+							<div style="color: red;" *ngIf="application.documentsRequiredCount > 0">
+								<span *ngIf="application.documentsRequiredCount == 1"> Document required </span>
+								<span *ngIf="application.documentsRequiredCount > 1"> Documents required </span>
+							</div>
 						</mat-cell>
 					</ng-container>
 
@@ -165,9 +186,8 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 export class CrcListComponent implements OnInit {
 	screeningFilter: string = 'ACTIVE';
 	constants = SPD_CONSTANTS;
-	dataSource: MatTableDataSource<ApplicantApplicationResponse> = new MatTableDataSource<ApplicantApplicationResponse>(
-		[]
-	);
+	dataSource: MatTableDataSource<ApplicantApplicationStatusResponse> =
+		new MatTableDataSource<ApplicantApplicationStatusResponse>([]);
 	columns: string[] = ['orgName', 'createdOn', 'serviceType', 'payeeType', 'status', 'action1', 'action2'];
 
 	@ViewChild('paginator') paginator!: MatPaginator;
@@ -175,7 +195,8 @@ export class CrcListComponent implements OnInit {
 	constructor(
 		private router: Router,
 		private applicantService: ApplicantService,
-		private authUserService: AuthUserService
+		private authUserService: AuthUserService,
+		private utilService: UtilService
 	) {}
 
 	ngOnInit() {
@@ -212,7 +233,32 @@ export class CrcListComponent implements OnInit {
 			})
 			.pipe()
 			.subscribe((res: ApplicantApplicationListResponse) => {
-				this.dataSource.data = res.applications as Array<ApplicantApplicationResponse>;
+				const applications = res.applications as Array<ApplicantApplicationStatusResponse>;
+				applications.forEach((app: ApplicantApplicationStatusResponse) => {
+					const itemClass = this.utilService.getApplicationPortalStatusClass(app.status);
+					app.applicationPortalStatusClass = itemClass;
+
+					app.opportunityToRespond = false;
+					app.opportunityToRespondCount = 0;
+					app.requestForAdditionalInfo = false;
+					app.requestForAdditionalInfoCount = 0;
+					app.fingerprints = false;
+					app.fingerprintsCount = 0;
+					app.statutoryDeclaration = false;
+					app.statutoryDeclarationCount = 0;
+
+					// OTR letter has been sent.
+					// Request for fingerprints  (Fingerprint is needed if the VS hit is found for the applicant during the CPIC check.)
+					// Requesting further information or documentation to support their application.
+
+					app.documentsRequiredCount = 0;
+					if (app.status == ApplicationPortalStatusCode.AwaitingApplicant) {
+						// app.actionRequired = app.caseSubStatus ??
+						app.documentsRequiredCount++;
+					}
+				});
+
+				this.dataSource.data = applications;
 			});
 	}
 }

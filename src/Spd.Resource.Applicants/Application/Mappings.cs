@@ -92,6 +92,8 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.DateOfBirth, opt => opt.MapFrom(s => new DateTimeOffset(s.spd_dateofbirth.Value.Year, s.spd_dateofbirth.Value.Month, s.spd_dateofbirth.Value.Day, 0, 0, 0, TimeSpan.Zero)))
             .ForMember(d => d.CreatedOn, opt => opt.MapFrom(s => s.createdon))
             .ForMember(d => d.HaveVerifiedIdentity, opt => opt.MapFrom(s => s.spd_identityconfirmed))
+            .ForMember(d => d.CaseStatus, opt => opt.MapFrom(s => s.spd_casestatus))
+            .ForMember(d => d.CaseSubStatus, opt => opt.MapFrom(s => s.spd_casesubstatus))
             .ForMember(d => d.OrgName, opt => opt.MapFrom(s => s.spd_OrganizationId.name))
             .ForMember(d => d.ServiceType, opt => opt.MapFrom(s => GetServiceType(s._spd_servicetypeid_value)));
 
