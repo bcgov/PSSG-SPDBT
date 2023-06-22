@@ -224,8 +224,8 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 			  orgProfile.licenseesNeedVulnerableSectorScreening == BooleanTypeCode.Yes
 			: false;
 
-		const serviceTypes = orgProfile?.serviceTypes;
-		if (serviceTypes) {
+		const serviceTypes = orgProfile?.serviceTypes ?? [];
+		if (serviceTypes.length > 0) {
 			if (serviceTypes.length == 1) {
 				this.serviceTypeDefault = serviceTypes[0];
 			} else {
