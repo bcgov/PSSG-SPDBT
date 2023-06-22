@@ -28,6 +28,12 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 			</div>
 		</div>
 
+		<mat-divider></mat-divider>
+
+		<p class="warning-text fw-semibold my-2">
+			This page cannot be used as substitute for a clearance letter from the Criminal Records Review Program.
+		</p>
+
 		<mat-divider class="mb-2 mb-lg-4"></mat-divider>
 
 		<ng-container *ngIf="application">
@@ -48,14 +54,14 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 				</div>
 			</div>
 
-			<h3 class="fw-normal d-flex">
+			<h4 class="subheading fw-normal d-flex mt-2">
 				{{ application.orgName }}
 				<mat-chip-listbox aria-label="Status" class="ms-4">
 					<mat-chip-option [selectable]="false" [ngClass]="applicationPortalStatusClass">
 						{{ application.status | options : 'ApplicationPortalStatusTypes' }}
 					</mat-chip-option>
 				</mat-chip-listbox>
-			</h3>
+			</h4>
 			<ul>
 				<li>
 					The CRRP application was submitted on {{ application.createdOn | date : constants.date.dateFormat : 'UTC' }}
@@ -65,7 +71,7 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 			</ul>
 
 			<ng-container *ngIf="fingerprintsAlert || statutoryDeclarationAlert">
-				<h3 class="fw-normal mt-4">Downloadable Documents</h3>
+				<h4 class="subheading fw-normal mt-4">Downloadable Documents</h4>
 				<div class="row">
 					<div class="col-xl-4 col-lg-6 col-md-6 col-sm-12" *ngIf="fingerprintsAlert">
 						<button mat-stroked-button color="primary" class="m-2" aria-label="Download Fingerprint Package">
@@ -80,7 +86,7 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 				</div>
 			</ng-container>
 
-			<h3 class="fw-normal mt-4">Document Upload History</h3>
+			<h4 class="subheading fw-normal mt-4">Document Upload History</h4>
 			<ng-container *ngIf="opportunityToRespondAlert || requestForAdditionalInfoAlert">
 				<div class="row">
 					<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
@@ -132,7 +138,17 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 			</div>
 		</ng-container>
 	`,
-	styles: [],
+	styles: [
+		`
+			.warning-text {
+				color: var(--color-red);
+			}
+
+			.subheading {
+				color: var(--color-grey);
+			}
+		`,
+	],
 })
 export class CrcDetailComponent {
 	applicantName = '';
