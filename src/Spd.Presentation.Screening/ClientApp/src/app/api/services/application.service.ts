@@ -440,7 +440,7 @@ export class ApplicationService extends BaseService {
   /**
    * Path part for operation apiOrgsOrgIdIdentityApplicationIdPut
    */
-  static readonly ApiOrgsOrgIdIdentityApplicationIdPutPath = '/api/orgs/{orgId}/identity/{ApplicationId}';
+  static readonly ApiOrgsOrgIdIdentityApplicationIdPutPath = '/api/orgs/{orgId}/identity/{applicationId}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
