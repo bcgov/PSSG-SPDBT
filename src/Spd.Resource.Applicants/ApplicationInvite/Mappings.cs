@@ -73,10 +73,10 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             return Enum.Parse<ScreenTypeEnum>(Enum.GetName(typeof(ScreenTypeOptionSet), code));
         }
 
-        private static ServiceTypeEnum? GetServiceType(Guid? servieTypeGuid)
+        private static ServiceTypeEnum? GetServiceType(Guid? serviceTypeGuid)
         {
-            if (servieTypeGuid == null) return null;
-            return Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.LookupServiceTypeKey(servieTypeGuid));
+            if (serviceTypeGuid == null) return null;
+            return Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.LookupServiceTypeKey(serviceTypeGuid));
         }
     }
 }

@@ -1,127 +1,228 @@
-import { Component, ViewChild } from '@angular/core';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { Component } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ApplicantApplicationResponse, ApplicationPortalStatusCode } from 'src/app/api/models';
+import { ApplicantService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 
 @Component({
 	selector: 'app-crc-detail',
 	template: `
-		<div class="d-flex flex-row justify-content-between mb-2">
-			<h3 class="pb-2 fw-light">Screening Information</h3>
-			<div>
-				<button mat-stroked-button color="primary" class="w-auto m-2" aria-label="Back" (click)="onBack()">
-					<mat-icon>arrow_back</mat-icon>Back
-				</button>
-				<button mat-flat-button color="primary" class="w-auto m-2" aria-label="Download Clearance Letter">
-					<mat-icon>file_download</mat-icon>Clearance Letter
-				</button>
+		<div class="row">
+			<div class="col-xl-6 col-lg-4 col-md-12">
+				<h3 class="fw-normal">Application Information</h3>
+				<h4 class="fw-light">{{ applicantName }}</h4>
+			</div>
+			<div class="col-xl-6 col-lg-8 col-md-12">
+				<div class="d-flex justify-content-end">
+					<button mat-stroked-button color="primary" class="large w-auto m-2" aria-label="Back" (click)="onBack()">
+						<mat-icon>arrow_back</mat-icon>Back
+					</button>
+					<button mat-flat-button color="primary" class="large w-auto m-2" aria-label="Download Receipt">
+						<mat-icon>file_download</mat-icon>Download Receipt
+					</button>
+				</div>
 			</div>
 		</div>
 
-		<div class="row mb-4">
-			<div class="col-lg-8 col-md-12">
-				<app-alert type="danger">
-					<ul class="fw-semibold m-0">
-						<li>Fingerprint information required on 2 applications</li>
-						<li>1 application requires additional information</li>
-						<li>You have the opportunity to respond on 2 applications</li>
-						<li>You have the opportunity to provide a statutory declaration on 3 applications</li>
-					</ul>
-				</app-alert>
+		<mat-divider></mat-divider>
+
+		<p class="warning-text fw-semibold my-2">
+			This page cannot be used as substitute for a clearance letter from the Criminal Records Review Program.
+		</p>
+
+		<mat-divider class="mb-2 mb-lg-4"></mat-divider>
+
+		<ng-container *ngIf="application">
+			<div class="row">
+				<div class="col-12">
+					<app-alert type="danger" *ngIf="opportunityToRespondAlert">
+						<div class="fw-semibold">{{ opportunityToRespondAlert }}</div>
+					</app-alert>
+					<app-alert type="danger" *ngIf="requestForAdditionalInfoAlert">
+						<div class="fw-semibold">{{ requestForAdditionalInfoAlert }}</div>
+					</app-alert>
+					<app-alert type="danger" *ngIf="fingerprintsAlert">
+						<div class="fw-semibold">{{ fingerprintsAlert }}</div>
+					</app-alert>
+					<app-alert type="danger" *ngIf="statutoryDeclarationAlert">
+						<div class="fw-semibold">{{ statutoryDeclarationAlert }}</div>
+					</app-alert>
+				</div>
 			</div>
-		</div>
 
-		<!-- <app-alert type="danger">
-			<div class="fw-semibold">Fingerprint information required. Download the fingerprint package</div>
-		</app-alert>
+			<h4 class="subheading fw-normal d-flex mt-2">
+				{{ application.orgName }}
+				<mat-chip-listbox aria-label="Status" class="ms-4">
+					<mat-chip-option [selectable]="false" [ngClass]="applicationPortalStatusClass">
+						{{ application.status | options : 'ApplicationPortalStatusTypes' }}
+					</mat-chip-option>
+				</mat-chip-listbox>
+			</h4>
+			<ul>
+				<li>
+					The CRRP application was submitted on {{ application.createdOn | date : constants.date.dateFormat : 'UTC' }}
+				</li>
+				<li>Paid by the {{ application.payeeType }}</li>
+				<li>The Case ID is {{ application.applicationNumber }}</li>
+			</ul>
 
-		<app-alert type="danger">
-			<div class="fw-semibold">
-				Statutory declaration requested. Download statutory declaration form and upload the filled form.
-			</div>			
-		</app-alert> -->
+			<ng-container *ngIf="fingerprintsAlert || statutoryDeclarationAlert">
+				<h4 class="subheading fw-normal mt-4">Downloadable Documents</h4>
+				<div class="row">
+					<div class="col-xl-4 col-lg-6 col-md-6 col-sm-12" *ngIf="fingerprintsAlert">
+						<button mat-stroked-button color="primary" class="m-2" aria-label="Download Fingerprint Package">
+							<mat-icon>file_download</mat-icon>Download Fingerprint Package
+						</button>
+					</div>
+					<div class="col-xl-4 col-lg-6 col-md-6 col-sm-12" *ngIf="statutoryDeclarationAlert">
+						<button mat-stroked-button color="primary" class="m-2" aria-label="Download Statutory Declaration">
+							<mat-icon>file_download</mat-icon>Download Statutory Declaration
+						</button>
+					</div>
+				</div>
+			</ng-container>
 
-		<h3 class="fw-normal">Organization Name</h3>
-		<p>CRRP screening YYYY - MM - DD Organization paid</p>
+			<h4 class="subheading fw-normal mt-4">Document Upload History</h4>
+			<ng-container *ngIf="opportunityToRespondAlert || requestForAdditionalInfoAlert">
+				<div class="row">
+					<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
+						<button
+							mat-stroked-button
+							color="primary"
+							class="m-2"
+							aria-label="Upload a Word or PDF document providing more information"
+						>
+							<mat-icon>file_upload</mat-icon>Upload a Word or PDF Document
+						</button>
+					</div>
+				</div>
+			</ng-container>
 
-		<h3 class="fw-normal">Document Upload History</h3>
+			<div class="row">
+				<div class="col-12">
+					<mat-table [dataSource]="dataSource">
+						<ng-container matColumnDef="documentName">
+							<mat-header-cell *matHeaderCellDef>Document Name</mat-header-cell>
+							<mat-cell *matCellDef="let document">
+								<span class="mobile-label">Document Name:</span>
+								{{ document.documentName }}
+							</mat-cell>
+						</ng-container>
 
-		<div class="row mt-4">
-			<div class="col-12">
-				<mat-table [dataSource]="dataSource">
-					<ng-container matColumnDef="documentName">
-						<mat-header-cell *matHeaderCellDef>Document Name</mat-header-cell>
-						<mat-cell *matCellDef="let application">
-							<span class="mobile-label">Document Name:</span>
-							{{ application.documentName }}
-						</mat-cell>
-					</ng-container>
+						<ng-container matColumnDef="uploadedOn">
+							<mat-header-cell *matHeaderCellDef>Uploaded On</mat-header-cell>
+							<mat-cell *matCellDef="let document">
+								<span class="mobile-label">Uploaded On:</span>
+								{{ document.uploadedOn | date : constants.date.dateFormat : 'UTC' }}
+							</mat-cell>
+						</ng-container>
 
-					<ng-container matColumnDef="uploadedOn">
-						<mat-header-cell *matHeaderCellDef>Uploaded On</mat-header-cell>
-						<mat-cell *matCellDef="let application">
-							<span class="mobile-label">Uploaded On:</span>
-							{{ application.uploadedOn | date : constants.date.dateFormat : 'UTC' }}
-						</mat-cell>
-					</ng-container>
+						<ng-container matColumnDef="action">
+							<mat-header-cell *matHeaderCellDef></mat-header-cell>
+							<mat-cell *matCellDef="let document">
+								<span class="mobile-label"></span>
+								<a mat-flat-button class="m-2" aria-label="Remove Document">
+									<mat-icon>delete_outline</mat-icon>Remove document
+								</a>
+							</mat-cell>
+						</ng-container>
 
-					<ng-container matColumnDef="action">
-						<mat-header-cell *matHeaderCellDef></mat-header-cell>
-						<mat-cell *matCellDef="let application">
-							<span class="mobile-label"></span>
-							<a mat-flat-button class="m-2" aria-label="Remove Document">
-								<mat-icon>delete_outline</mat-icon>Remove Document
-							</a>
-						</mat-cell>
-					</ng-container>
-
-					<mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
-					<mat-row *matRowDef="let row; columns: columns"></mat-row>
-				</mat-table>
-				<mat-paginator
-					[showFirstLastButtons]="true"
-					[pageIndex]="tablePaginator.pageIndex"
-					[pageSize]="tablePaginator.pageSize"
-					[length]="tablePaginator.length"
-					(page)="onPageChanged($event)"
-					aria-label="Select page"
-				>
-				</mat-paginator>
+						<mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
+						<mat-row *matRowDef="let row; columns: columns"></mat-row>
+					</mat-table>
+				</div>
 			</div>
-		</div>
+		</ng-container>
 	`,
-	styles: [],
+	styles: [
+		`
+			.warning-text {
+				color: var(--color-red);
+			}
+
+			.subheading {
+				color: var(--color-grey);
+			}
+		`,
+	],
 })
 export class CrcDetailComponent {
-	private queryParams: any = this.utilService.getDefaultQueryParams();
+	applicantName = '';
+	applicationPortalStatusClass = '';
+	application: ApplicantApplicationResponse | null = null;
 
 	constants = SPD_CONSTANTS;
 	dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
-	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
 	columns: string[] = ['documentName', 'uploadedOn', 'action'];
 
-	@ViewChild('paginator') paginator!: MatPaginator;
+	opportunityToRespondAlert: string | null = null;
+	requestForAdditionalInfoAlert: string | null = null;
+	fingerprintsAlert: string | null = null;
+	statutoryDeclarationAlert: string | null = null;
 
-	constructor(private router: Router, private utilService: UtilService) {}
+	constructor(
+		private router: Router,
+		private route: ActivatedRoute,
+		private applicantService: ApplicantService,
+		private authUserService: AuthUserService,
+		private utilService: UtilService
+	) {}
 
 	ngOnInit() {
-		this.loadList();
-	}
+		this.route.queryParamMap.subscribe((params) => {
+			const applicationId = params.get('applicationId');
+			if (!applicationId) {
+				this.router.navigateByUrl(SecurityScreeningRoutes.path(SecurityScreeningRoutes.CRC_LIST));
+				return;
+			}
 
-	onPageChanged(page: PageEvent): void {
-		this.queryParams.page = page.pageIndex;
-		this.loadList();
+			this.loadList(applicationId);
+		});
 	}
 
 	onBack(): void {
 		this.router.navigateByUrl(SecurityScreeningRoutes.path(SecurityScreeningRoutes.CRC_LIST));
 	}
 
-	private loadList(): void {
-		this.dataSource = new MatTableDataSource<any>([]);
+	private loadList(applicationId: string): void {
+		this.applicantName = this.utilService.getFullName(
+			this.authUserService.applicantProfile?.firstName,
+			this.authUserService.applicantProfile?.lastName
+		);
+
+		this.applicantService
+			.apiApplicantsApplicantIdApplicationsApplicationIdGet({
+				applicantId: this.authUserService.applicantProfile?.applicantId!,
+				applicationId: applicationId,
+			})
+			.pipe()
+			.subscribe((res: ApplicantApplicationResponse) => {
+				this.application = res;
+				this.applicationPortalStatusClass = this.utilService.getApplicationPortalStatusClass(res.status);
+
+				if (res.status == ApplicationPortalStatusCode.AwaitingApplicant) {
+					switch (res.caseSubStatus?.toUpperCase()) {
+						case 'FINGERPRINTS':
+							this.fingerprintsAlert = this.getFingerprintsText();
+							break;
+						case 'APPLICANTINFORMATION':
+							this.opportunityToRespondAlert = this.getOpportunityToRespondText();
+							break;
+						case 'AWAITINGINFORMATION':
+							this.requestForAdditionalInfoAlert = this.getRequestForAdditionalInfoText();
+							break;
+						case 'STATUTORYDECLARATION':
+							this.statutoryDeclarationAlert = this.getStatutoryDeclarationText();
+							break;
+					}
+				}
+			});
+
+		this.dataSource = new MatTableDataSource<ApplicantApplicationResponse>([]);
 		this.dataSource.data = [
 			{
 				documentName: 'file.pdf',
@@ -132,5 +233,21 @@ export class CrcDetailComponent {
 				uploadedOn: '2023-02-04T00:10:05.865Z',
 			},
 		];
+	}
+
+	private getOpportunityToRespondText(): string | null {
+		return 'You can to respond to the outcome of your risk assessment. Upload a Word or PDF document providing more information.';
+	}
+
+	private getRequestForAdditionalInfoText(): string | null {
+		return 'Security Programs Division has requested additional information. Upload a Word or PDF document.';
+	}
+
+	private getFingerprintsText(): string | null {
+		return 'Fingerprint information required. Download the fingerprint package.';
+	}
+
+	private getStatutoryDeclarationText(): string | null {
+		return 'Statutory declaration requested. Download statutory declaration form and upload the filled form.';
 	}
 }
