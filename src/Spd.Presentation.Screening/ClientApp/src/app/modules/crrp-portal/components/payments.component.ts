@@ -105,7 +105,7 @@ export interface PaymentResponse extends ApplicationResponse {
 							<mat-header-cell *matHeaderCellDef>Paid On</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Paid On:</span>
-								??<!-- {{ application.paidOn | date : constants.date.dateTimeFormat  : 'UTC' }} -->
+								??<!-- {{ application.paidOn | date : constants.date.dateTimeFormat  : 'UTC-7' }} -->
 							</mat-cell>
 						</ng-container>
 
@@ -294,8 +294,7 @@ export class PaymentsComponent implements OnInit {
 			.subscribe((res: ApplicationListResponse) => {
 				const applications = res.applications as Array<PaymentResponse>;
 				applications.forEach((app: PaymentResponse) => {
-					const [itemText, itemClass] = this.utilService.getApplicationPortalStatus(app.status);
-					app.applicationPortalStatusText = itemText;
+					const itemClass = this.utilService.getApplicationPortalStatusClass(app.status);
 					app.applicationPortalStatusClass = itemClass;
 				});
 

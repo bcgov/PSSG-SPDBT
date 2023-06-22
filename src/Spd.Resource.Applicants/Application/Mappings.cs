@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Spd.Utilities.Dynamics;
+using Spd.Utilities.Shared.ResourceContracts;
 using Spd.Utilities.Shared.Tools;
 
 namespace Spd.Resource.Applicants.Application
@@ -73,8 +74,7 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.bcgov_filesize, opt => opt.MapFrom(s => $"{Math.Round((decimal)s.FileSize / 1024, 2)} KB"))
             .ForMember(d => d.bcgov_origincode, opt => opt.MapFrom(s => BcGovOriginCode.Web))
             .ForMember(d => d.bcgov_receiveddate, opt => opt.MapFrom(s => DateTimeOffset.UtcNow))
-            .ForMember(d => d.bcgov_fileextension, opt => opt.MapFrom(s => GetFileExtension(s.FileName)))
-            ;
+            .ForMember(d => d.bcgov_fileextension, opt => opt.MapFrom(s => GetFileExtension(s.FileName)));
 
             _ = CreateMap<spd_application, ApplicationResult>()
             .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_applicationid))
@@ -91,16 +91,20 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.ContractedCompanyName, opt => opt.MapFrom(s => s.spd_contractedcompanyname))
             .ForMember(d => d.DateOfBirth, opt => opt.MapFrom(s => new DateTimeOffset(s.spd_dateofbirth.Value.Year, s.spd_dateofbirth.Value.Month, s.spd_dateofbirth.Value.Day, 0, 0, 0, TimeSpan.Zero)))
             .ForMember(d => d.CreatedOn, opt => opt.MapFrom(s => s.createdon))
-            .ForMember(d => d.HaveVerifiedIdentity, opt => opt.MapFrom(s => s.spd_identityconfirmed));
+            .ForMember(d => d.HaveVerifiedIdentity, opt => opt.MapFrom(s => s.spd_identityconfirmed))
+            .ForMember(d => d.CaseStatus, opt => opt.MapFrom(s => s.spd_casestatus))
+            .ForMember(d => d.CaseSubStatus, opt => opt.MapFrom(s => s.spd_casesubstatus))
+            .ForMember(d => d.OrgName, opt => opt.MapFrom(s => s.spd_OrganizationId.name))
+            .ForMember(d => d.ServiceType, opt => opt.MapFrom(s => GetServiceType(s._spd_servicetypeid_value)));
 
             _ = CreateMap<spd_clearanceaccess, ClearanceResp>()
-            .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_clearanceaccessid))
-            .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.spd_applicantfirstname))
-            .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.spd_applicantlastname))
-            .ForMember(d => d.Facility, opt => opt.MapFrom(s => s.spd_contractedcompanyname))
-            .ForMember(d => d.Email, opt => opt.MapFrom(s => s.spd_emailaddress1))
-            .ForMember(d => d.ExpiresOn, opt => opt.MapFrom(s => s.spd_expirydate))
-            .ForMember(d => d.ClearanceId, opt => opt.MapFrom(s => s._spd_clearanceid_value));
+                .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_clearanceaccessid))
+                .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.spd_applicantfirstname))
+                .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.spd_applicantlastname))
+                .ForMember(d => d.Facility, opt => opt.MapFrom(s => s.spd_contractedcompanyname))
+                .ForMember(d => d.Email, opt => opt.MapFrom(s => s.spd_emailaddress1))
+                .ForMember(d => d.ExpiresOn, opt => opt.MapFrom(s => s.spd_expirydate))
+                .ForMember(d => d.ClearanceId, opt => opt.MapFrom(s => s._spd_clearanceid_value));
 
             _ = CreateMap<spd_genericupload, BulkHistoryResp>()
             .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_genericuploadid))
@@ -109,11 +113,13 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.UploadedDateTime, opt => opt.MapFrom(s => s.spd_datetimeuploaded))
             .ForMember(d => d.UploadedByUserFullName, opt => opt.MapFrom(s => s.spd_UploadedBy.spd_fullname));
         }
+
         private static string? GetPayeeType(int? code)
         {
             if (code == null) return null;
             return Enum.GetName(typeof(PayerPreferenceOptionSet), code);
         }
+
         private static int? GetGender(GenderCode? code)
         {
             if (code == null) return (int)GenderOptionSet.U;
@@ -128,6 +134,12 @@ namespace Spd.Resource.Applicants.Application
                 return fileName.Substring(dot, fileName.Length - dot);
             }
             return null;
+        }
+
+        private static ServiceTypeEnum? GetServiceType(Guid? serviceTypeGuid)
+        {
+            if (serviceTypeGuid == null) return null;
+            return Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.LookupServiceTypeKey(serviceTypeGuid));
         }
     }
 }

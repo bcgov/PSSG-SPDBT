@@ -20,7 +20,6 @@ import {
 
 export interface ScreeningStatusResponse extends ApplicationResponse {
 	applicationPortalStatusClass: string;
-	applicationPortalStatusText: string;
 }
 
 @Component({
@@ -154,7 +153,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 								<ng-container *ngIf="application.status; else noStatus">
 									<mat-chip-listbox aria-label="Status" *ngIf="application.status">
 										<mat-chip-option [selectable]="false" [ngClass]="application.applicationPortalStatusClass">
-											{{ application.applicationPortalStatusText }}
+											{{ application.status | options : 'ApplicationPortalStatusTypes' }}
 										</mat-chip-option>
 									</mat-chip-listbox>
 								</ng-container>
@@ -409,8 +408,7 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 			.subscribe((res: ApplicationListResponse) => {
 				const applications = res.applications as Array<ScreeningStatusResponse>;
 				applications.forEach((app: ScreeningStatusResponse) => {
-					const [itemText, itemClass] = this.utilService.getApplicationPortalStatus(app.status);
-					app.applicationPortalStatusText = itemText;
+					const itemClass = this.utilService.getApplicationPortalStatusClass(app.status);
 					app.applicationPortalStatusClass = itemClass;
 				});
 

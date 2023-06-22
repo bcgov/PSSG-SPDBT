@@ -1,6 +1,5 @@
 using AutoMapper;
 using Spd.Engine.Validation;
-using Spd.Resource.Applicants;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.ApplicationInvite;
 using Spd.Utilities.Shared.ManagerContract;
@@ -60,6 +59,11 @@ namespace Spd.Manager.Cases
             CreateMap<ClearanceAccessDeleteCommand, ClearanceAccessDeleteCmd>();
             CreateMap<ClearanceLetterResp, ClearanceLetterResponse>();
             CreateMap<AppInviteVerifyResp, AppOrgResponse>();
+            CreateMap<ApplicantApplicationListQuery, ApplicantApplicationListQry>();
+            CreateMap<ApplicantApplicationListResp, ApplicantApplicationListResponse>();
+            CreateMap<ApplicantApplicationQuery, ApplicantApplicationQry>();
+            CreateMap<ApplicationResult, ApplicantApplicationResponse>()
+                .ForMember(d => d.Status, opt => opt.MapFrom(s => s.ApplicationPortalStatus == null ? null : Enum.Parse<ApplicationPortalStatusCode>(s.ApplicationPortalStatus).ToString()));
 
         }
     }

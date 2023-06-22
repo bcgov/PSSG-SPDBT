@@ -93,6 +93,31 @@ namespace Spd.Presentation.Screening.Controllers
         }
         #endregion
 
+        #region applicant-applications
+
+        [Authorize(Policy = "OnlyBcsc")]
+        [Route("api/applicants/{applicantId}/applications")]
+        [HttpGet]
+        public async Task<ApplicantApplicationListResponse> ApplicantApplicationsList([FromRoute] Guid applicantId)
+        {
+            var query = new ApplicantApplicationListQuery();
+            query.ApplicantId = applicantId;
+            return await _mediator.Send(query);
+        }
+
+        [Authorize(Policy = "OnlyBcsc")]
+        [Route("api/applicants/{applicantId}/applications/{applicationId}")]
+        [HttpGet]
+        public async Task<ApplicantApplicationResponse> ApplicantApplication([FromRoute] Guid applicantId, [FromRoute] Guid applicationId)
+        {
+            var query = new ApplicantApplicationQuery();
+            query.ApplicantId = applicantId;
+            query.ApplicationId = applicationId;
+            return await _mediator.Send(query);
+        }
+
+        #endregion
+
         #region userinfo
         /// <summary>
         /// used for Applicants logs in with BCSC to submit an application

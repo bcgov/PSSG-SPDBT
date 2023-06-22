@@ -119,6 +119,28 @@ internal partial class ApplicationRepository : IApplicationRepository
         return application != null;
     }
 
+    public async Task<ApplicantApplicationListResp> QueryApplicantApplicationListAsync(ApplicantApplicationListQry query, CancellationToken cancellationToken)
+    {
+        var applications = _context.spd_applications
+            .Expand(i => i.spd_OrganizationId)
+            .Where(r => r._spd_applicantid_value == query.ApplicantId)
+            .OrderByDescending(i => i.createdon);
+
+        var result = applications.ToList();
+        var response = new ApplicantApplicationListResp();
+        response.Applications = _mapper.Map<IEnumerable<ApplicationResult>>(result);
+        return response;
+    }
+
+    public async Task<ApplicationResult> QueryApplicantApplicationAsync(ApplicantApplicationQry query, CancellationToken cancellationToken)
+    {
+        var application = _context.spd_applications
+            .Expand(i => i.spd_OrganizationId)
+            .Where(r => r.spd_applicationid == query.ApplicationId && r._spd_applicantid_value == query.ApplicantId)
+            .FirstOrDefault();
+        return _mapper.Map<ApplicationResult>(application);
+    }
+
     private spd_alias? GetAlias(AliasCreateCmd aliasCreateCmd, contact contact)
     {
         var matchingAlias = _context.spd_aliases.Where(o =>

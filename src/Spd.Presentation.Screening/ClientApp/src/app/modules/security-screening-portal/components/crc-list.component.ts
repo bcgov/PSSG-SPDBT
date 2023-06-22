@@ -1,93 +1,88 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
-import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { ValidationErr } from 'src/app/api/models';
+import {
+	ApplicantApplicationListResponse,
+	ApplicantApplicationResponse,
+	ApplicationPortalStatusCode,
+} from 'src/app/api/models';
+import { ApplicantService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 
+export interface ApplicantApplicationStatusResponse extends ApplicantApplicationResponse {
+	applicationPortalStatusClass: string;
+	actionAlert: string | null;
+}
 @Component({
 	selector: 'app-crc-list',
 	template: `
-		<h3 class="pb-2 fw-normal">Applicant Information for John Doe</h3>
-
-		<div class="row mb-4">
-			<div class="col-lg-8 col-md-12">
-				<!-- <app-alert type="danger">
-					<div class="fw-semibold">Fingerprint information required on 2 applications</div>
-				</app-alert>
-
-				<app-alert type="danger">
-					<div class="fw-semibold">1 application requires additional information</div>
-				</app-alert> -->
-
-				<app-alert type="danger">
-					<ul class="m-0">
-						<li>Fingerprint information required on 2 applications</li>
-						<li>1 application requires additional information</li>
-						<li>You have the opportunity to respond on 2 applications</li>
-						<li>You have the opportunity to provide a statutory declaration on 3 applications</li>
-					</ul>
-				</app-alert>
-			</div>
-		</div>
-
 		<div class="row">
-			<div class="col-lg-6 col-md-12">
-				<h3 class="fw-light">Criminal Record Check History</h3>
+			<div class="col-xl-8 col-lg-6 col-md-12">
+				<h3 class="fw-normal">Criminal Record Check History</h3>
+				<h4 class="fw-light">{{ applicantName }}</h4>
 			</div>
-			<div class="col-lg-6 col-md-12">
-				<div class="d-flex justify-content-end">
+			<div class="col-xl-4 col-lg-6 col-md-12">
+				<div class="d-flex justify-content-end my-2">
 					<mat-button-toggle-group
-						[(ngModel)]="screeningFilter"
+						[(ngModel)]="applicationFilter"
 						(change)="onFilterChange($event)"
-						aria-label="Screening Filter"
+						class="w-100"
+						aria-label="Applications Filter"
 					>
-						<mat-button-toggle class="button-toggle" value="ACTIVE"> Active Screenings </mat-button-toggle>
-						<mat-button-toggle class="button-toggle" value="ALL"> All Screenings </mat-button-toggle>
+						<mat-button-toggle class="button-toggle w-100" value="ACTIVE"> Active Applications </mat-button-toggle>
+						<mat-button-toggle class="button-toggle w-100" value="ALL"> All Applications </mat-button-toggle>
 					</mat-button-toggle-group>
 				</div>
 			</div>
 		</div>
 
-		<!-- <div class="d-flex flex-row justify-content-between pt-4">
-				<h3 class="fw-normal">Criminal Record Check History</h3>
-				<mat-button-toggle-group
-					[(ngModel)]="screeningFilter"
-					(change)="onFilterChange($event)"
-					aria-label="Screening Filter"
-				>
-					<mat-button-toggle class="button-toggle" value="ACTIVE"> Active Screenings </mat-button-toggle>
-					<mat-button-toggle class="button-toggle" value="ALL"> All Screenings </mat-button-toggle>
-				</mat-button-toggle-group>
-			</div> -->
+		<mat-divider class="mb-2 mb-lg-4"></mat-divider>
 
-		<div class="row mt-4">
+		<div class="row">
+			<div class="col-12">
+				<app-alert type="danger" *ngIf="opportunityToRespondAlert">
+					<div class="fw-semibold">{{ opportunityToRespondAlert }}</div>
+				</app-alert>
+				<app-alert type="danger" *ngIf="requestForAdditionalInfoAlert">
+					<div class="fw-semibold">{{ requestForAdditionalInfoAlert }}</div>
+				</app-alert>
+				<app-alert type="danger" *ngIf="fingerprintsAlert">
+					<div class="fw-semibold">{{ fingerprintsAlert }}</div>
+				</app-alert>
+				<app-alert type="danger" *ngIf="statutoryDeclarationAlert">
+					<div class="fw-semibold">{{ statutoryDeclarationAlert }}</div>
+				</app-alert>
+			</div>
+		</div>
+
+		<div class="row mb-2">
 			<div class="col-12">
 				<mat-table [dataSource]="dataSource">
-					<ng-container matColumnDef="organizationName">
+					<ng-container matColumnDef="orgName">
 						<mat-header-cell *matHeaderCellDef>Organization Name</mat-header-cell>
 						<mat-cell *matCellDef="let application">
 							<span class="mobile-label">Organization Name:</span>
-							{{ application.organizationName }}
+							{{ application.orgName }}
 						</mat-cell>
 					</ng-container>
 
-					<ng-container matColumnDef="uploadedDateTime">
+					<ng-container matColumnDef="createdOn">
 						<mat-header-cell *matHeaderCellDef>Submitted On</mat-header-cell>
 						<mat-cell *matCellDef="let application">
 							<span class="mobile-label">Submitted On:</span>
-							{{ application.uploadedDateTime | date : constants.date.dateFormat : 'UTC' }}
+							{{ application.createdOn | date : constants.date.dateFormat }}
 						</mat-cell>
 					</ng-container>
 
-					<ng-container matColumnDef="type">
+					<ng-container matColumnDef="serviceType">
 						<mat-header-cell *matHeaderCellDef>Type</mat-header-cell>
 						<mat-cell *matCellDef="let application">
 							<span class="mobile-label">Type:</span>
-							{{ application.type }}
+							{{ application.serviceType | options : 'ServiceTypes' }}
 						</mat-cell>
 					</ng-container>
 
@@ -104,8 +99,8 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 						<mat-cell *matCellDef="let application">
 							<span class="mobile-label">Application Status:</span>
 							<mat-chip-listbox aria-label="Status">
-								<mat-chip-option [selectable]="false">
-									{{ application.status }}
+								<mat-chip-option [selectable]="false" [ngClass]="application.applicationPortalStatusClass">
+									{{ application.status | options : 'ApplicationPortalStatusTypes' }}
 								</mat-chip-option>
 							</mat-chip-listbox>
 						</mat-cell>
@@ -115,7 +110,11 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 						<mat-header-cell *matHeaderCellDef>Your Action Required</mat-header-cell>
 						<mat-cell *matCellDef="let application">
 							<span class="mobile-label">Your Action Required:</span>
-							<div style="color: red;">Documents required</div>
+							<ng-container *ngIf="application.actionAlert">
+								<div style="color: red;">
+									{{ application.actionAlert }}
+								</div>
+							</ng-container>
 						</mat-cell>
 					</ng-container>
 
@@ -144,10 +143,6 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 				</mat-table>
 			</div>
 		</div>
-
-		<div class="row mt-4" *ngIf="selectedRowIndex >= 0">
-			<div class="col-12">clicked</div>
-		</div>
 	`,
 	styles: [
 		`
@@ -162,37 +157,48 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 				padding-right: 4px !important;
 				padding-left: 4px !important;
 			}
+
+			@media (max-width: 991px) {
+				.mdc-button {
+					border: 1px solid black;
+				}
+			}
 		`,
 	],
 })
 export class CrcListComponent implements OnInit {
-	screeningFilter: string = 'ACTIVE';
-	private queryParams: any = this.utilService.getDefaultQueryParams();
-
-	selectedRowIndex = -1;
+	applicantName = '';
+	applicationFilter: string = 'ACTIVE';
+	allApplications: Array<ApplicantApplicationStatusResponse> = [];
 
 	constants = SPD_CONSTANTS;
-	dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
-	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
-	columns: string[] = ['organizationName', 'uploadedDateTime', 'type', 'payeeType', 'status', 'action1', 'action2'];
-	showResult = false;
-	validationErrs: Array<ValidationErr> = [];
+	dataSource: MatTableDataSource<ApplicantApplicationStatusResponse> =
+		new MatTableDataSource<ApplicantApplicationStatusResponse>([]);
+	columns: string[] = ['orgName', 'createdOn', 'serviceType', 'payeeType', 'status', 'action1', 'action2'];
 
-	@ViewChild('paginator') paginator!: MatPaginator;
+	opportunityToRespondAlert: string | null = null;
+	requestForAdditionalInfoAlert: string | null = null;
+	fingerprintsAlert: string | null = null;
+	statutoryDeclarationAlert: string | null = null;
 
-	constructor(private router: Router, private utilService: UtilService) {}
+	constructor(
+		private router: Router,
+		private applicantService: ApplicantService,
+		private authUserService: AuthUserService,
+		private utilService: UtilService
+	) {}
 
 	ngOnInit() {
 		this.loadList();
 	}
 
 	onFilterChange(event: MatButtonToggleChange) {
-		console.log('onFilterChange', event.value);
+		this.setFilterApplications();
 	}
 
-	onViewDetail(application: any): void {
-		this.router.navigateByUrl(SecurityScreeningRoutes.path(SecurityScreeningRoutes.CRC_DETAIL), {
-			state: { id: 234 },
+	onViewDetail(application: ApplicantApplicationStatusResponse): void {
+		this.router.navigate([SecurityScreeningRoutes.path(SecurityScreeningRoutes.CRC_DETAIL)], {
+			queryParams: { applicationId: application.id },
 		});
 	}
 
@@ -209,26 +215,115 @@ export class CrcListComponent implements OnInit {
 	}
 
 	private loadList(): void {
-		this.dataSource = new MatTableDataSource<any>([]);
-		let temp = [
-			{
-				id: 1,
-				organizationName: 'MacDonalds',
-				uploadedDateTime: '2023-01-14T00:13:05.865Z',
-				payeeType: 'Applicant',
-				type: 'PSSO',
-				status: 'Awaiting Applicant',
-			},
-			{
-				id: 2,
-				organizationName: 'Starbucks',
-				uploadedDateTime: '2023-02-04T00:10:05.865Z',
-				payeeType: 'Organization',
-				type: 'CRRP',
-				status: 'Complete - No Risk',
-			},
-		];
-		temp = [...temp, ...temp];
-		this.dataSource.data = temp;
+		this.applicantName = this.utilService.getFullName(
+			this.authUserService.applicantProfile?.firstName,
+			this.authUserService.applicantProfile?.lastName
+		);
+
+		this.opportunityToRespondAlert = null;
+		this.requestForAdditionalInfoAlert = null;
+		this.fingerprintsAlert = null;
+		this.statutoryDeclarationAlert = null;
+
+		let opportunityToRespondCount = 0;
+		let requestForAdditionalInfoCount = 0;
+		let fingerprintsCount = 0;
+		let statutoryDeclarationCount = 0;
+
+		this.applicantService
+			.apiApplicantsApplicantIdApplicationsGet({
+				applicantId: this.authUserService.applicantProfile?.applicantId!,
+			})
+			.pipe()
+			.subscribe((res: ApplicantApplicationListResponse) => {
+				this.allApplications = res.applications as Array<ApplicantApplicationStatusResponse>;
+
+				this.allApplications.forEach((app: ApplicantApplicationStatusResponse) => {
+					app.applicationPortalStatusClass = this.utilService.getApplicationPortalStatusClass(app.status);
+
+					let documentsRequiredCount = 0;
+					if (app.status == ApplicationPortalStatusCode.AwaitingApplicant) {
+						switch (app.caseSubStatus?.toUpperCase()) {
+							case 'FINGERPRINTS':
+								documentsRequiredCount++;
+								fingerprintsCount++;
+								break;
+							case 'APPLICANTINFORMATION':
+								documentsRequiredCount++;
+								opportunityToRespondCount++;
+								break;
+							case 'AWAITINGINFORMATION':
+								documentsRequiredCount++;
+								requestForAdditionalInfoCount++;
+								break;
+							case 'STATUTORYDECLARATION':
+								documentsRequiredCount++;
+								statutoryDeclarationCount++;
+								break;
+						}
+					}
+
+					if (documentsRequiredCount > 0) {
+						app.actionAlert = this.getDocumentRequiredText(documentsRequiredCount);
+					}
+				});
+
+				this.opportunityToRespondAlert = this.getOpportunityToRespondText(opportunityToRespondCount);
+				this.requestForAdditionalInfoAlert = this.getRequestForAdditionalInfoText(requestForAdditionalInfoCount);
+				this.fingerprintsAlert = this.getFingerprintsText(fingerprintsCount);
+				this.statutoryDeclarationAlert = this.getStatutoryDeclarationText(statutoryDeclarationCount);
+
+				this.setFilterApplications();
+			});
+	}
+
+	private setFilterApplications(): void {
+		const selectedApplications =
+			this.applicationFilter == 'ACTIVE'
+				? this.allApplications.filter((app) => {
+						return ![
+							'CancelledByOrganization',
+							'CancelledByApplicant',
+							'ClosedNoConsent',
+							'ClosedNoResponse',
+							'ClosedJudicialReview',
+							'CompletedCleared',
+						].includes(app.status ?? '');
+				  })
+				: [...this.allApplications];
+		this.dataSource.data = selectedApplications;
+	}
+
+	private getDocumentRequiredText(count: number): string | null {
+		if ((count = 0)) return null;
+		return count > 1 ? 'Documents required' : 'Document required';
+	}
+
+	private getOpportunityToRespondText(count: number): string | null {
+		if (count == 0) return null;
+		return count > 1
+			? `You have the opportunity to respond on ${count} applications`
+			: 'You have the opportunity to respond on 1 application';
+	}
+
+	private getRequestForAdditionalInfoText(count: number): string | null {
+		if (count == 0) return null;
+		return count > 1
+			? `${count} applications require additional information`
+			: '1 application requires additional information';
+	}
+
+	private getFingerprintsText(count: number): string | null {
+		if (count == 0) return null;
+		return count > 1
+			? `Fingerprint information required on ${count} applications`
+			: 'Fingerprint information required on 1 application';
+	}
+
+	private getStatutoryDeclarationText(count: number): string | null {
+		if (count == 0) return null;
+		return count > 1
+			? `You have the opportunity to provide a statutory declaration on ${count} applications`
+			: 'You have the opportunity to provide a statutory declaration on 1 application';
 	}
 }

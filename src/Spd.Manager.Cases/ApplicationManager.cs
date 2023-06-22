@@ -23,6 +23,8 @@ namespace Spd.Manager.Cases
         IRequestHandler<ClearanceListQuery, ClearanceListResponse>,
         IRequestHandler<ClearanceAccessDeleteCommand, Unit>,
         IRequestHandler<ClearanceLetterQuery, ClearanceLetterResponse>,
+        IRequestHandler<ApplicantApplicationListQuery, ApplicantApplicationListResponse>,
+        IRequestHandler<ApplicantApplicationQuery, ApplicantApplicationResponse>,
         IApplicationManager
     {
         private readonly IApplicationRepository _applicationRepository;
@@ -148,7 +150,7 @@ namespace Spd.Manager.Cases
                 await _applicationInviteRepository.DeleteApplicationInvitesAsync(
                     new ApplicationInviteDeleteCmd()
                     {
-                        ApplicationInviteId =(Guid) request.ApplicationCreateRequest.AppInviteId,
+                        ApplicationInviteId = (Guid)request.ApplicationCreateRequest.AppInviteId,
                         OrgId = request.ApplicationCreateRequest.OrgId,
                     }, ct);
             }
@@ -284,6 +286,27 @@ namespace Spd.Manager.Cases
             ClearanceLetterResp letter = await _applicationRepository.QueryLetterAsync(new ClearanceLetterQry(query.ClearanceId), ct);
             return _mapper.Map<ClearanceLetterResponse>(letter);
         }
+        #endregion
+
+        #region applicant-applications
+
+        public async Task<ApplicantApplicationListResponse> Handle(ApplicantApplicationListQuery request, CancellationToken cancellationToken)
+        {
+            var query = new ApplicantApplicationListQry();
+            query.ApplicantId = request.ApplicantId;
+            var response = await _applicationRepository.QueryApplicantApplicationListAsync(query, cancellationToken);
+            return _mapper.Map<ApplicantApplicationListResponse>(response);
+        }
+
+        public async Task<ApplicantApplicationResponse> Handle(ApplicantApplicationQuery request, CancellationToken cancellationToken)
+        {
+            var query = new ApplicantApplicationQry();
+            query.ApplicantId = request.ApplicantId;
+            query.ApplicationId = request.ApplicationId;
+            var response = await _applicationRepository.QueryApplicantApplicationAsync(query, cancellationToken);
+            return _mapper.Map<ApplicantApplicationResponse>(response);
+        }
+
         #endregion
     }
 }
