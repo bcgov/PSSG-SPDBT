@@ -117,7 +117,7 @@ public record ApplicationResult
     public bool? HaveVerifiedIdentity { get; set; }
     public DateTimeOffset? CreatedOn { get; set; }
     public string? OrgName { get; set; }
-    public ServiceTypeCode? ServiceType { get; set; }
+    public ServiceTypeEnum? ServiceType { get; set; }
 }
 public class ApplicationListResp
 {

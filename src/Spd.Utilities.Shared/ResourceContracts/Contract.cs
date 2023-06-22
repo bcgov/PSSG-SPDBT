@@ -6,18 +6,6 @@ namespace Spd.Utilities.Shared.ResourceContracts
         Applicant
     }
 
-    public enum ServiceTypeCode
-    {
-        PSSO,
-        CRRP_EMPLOYEE,
-        CRRP_VOLUNTEER,
-        MCFD,
-        PE_CRC,
-        PE_CRC_VS,
-        LICENSING,
-        PSSO_VS
-    }
-
     public record Paging(int Page, int PageSize);
     public record PaginationResp
     {
