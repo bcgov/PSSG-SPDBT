@@ -61,7 +61,7 @@ namespace Spd.Manager.Membership.OrgRegistration
 
         public async Task<OrgRegistrationPortalStatusResponse> Handle(GetOrgRegistrationStatusQuery query, CancellationToken cancellationToken)
         {
-            var result = await _orgRegRepository.Query(new OrgRegistrationQuery(null,null, query.RegistrationNumber), cancellationToken);
+            var result = await _orgRegRepository.Query(new OrgRegistrationQuery(null, null, query.RegistrationNumber, true), cancellationToken);
             if (result == null || !result.OrgRegistrationResults.Any())
                 throw new ApiException(HttpStatusCode.BadRequest, "Cannot find registration with the registration number.");
             var statusCode = result.OrgRegistrationResults.First().OrgRegistrationStatusStr switch
@@ -84,7 +84,7 @@ namespace Spd.Manager.Membership.OrgRegistration
             if (_currentUser.IsAuthenticated())
             {
                 var org = (OrgsQryResult)await _orgRepository.QueryOrgAsync(new OrgByOrgGuidQry(_currentUser.GetBizGuid()), cancellationToken);
-                if(org != null && org.OrgResults.Any())
+                if (org != null && org.OrgResults.Any())
                 {
                     resp.HasPotentialDuplicate = true;
                     resp.DuplicateFoundIn = OrgProcess.ExistingOrganization;
