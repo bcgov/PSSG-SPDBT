@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Membership.UserProfile;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared;
+using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.Shared.Tools;
 using System.Security.Claims;
 using System.Security.Principal;
@@ -33,7 +34,7 @@ namespace Spd.Presentation.Screening.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Org user whoami, for orgPortal
         /// </summary>
         /// <returns></returns>
         [Route("api/users/whoami")]
@@ -46,7 +47,7 @@ namespace Spd.Presentation.Screening.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Applicant whoami, for applicantPortal
         /// </summary>
         /// <returns></returns>
         [Route("api/applicants/whoami")]
@@ -55,7 +56,12 @@ namespace Spd.Presentation.Screening.Controllers
         public async Task<ApplicantProfileResponse> ApplicantWhoami()
         {
             var info = _currentUser.GetApplicantIdentityInfo();
-            return await _mediator.Send(new GetApplicantProfileQuery(info.Sub));
+            var response = await _mediator.Send(new GetApplicantProfileQuery(info.Sub));
+            if (response == null)
+            {
+                throw new ApiException(System.Net.HttpStatusCode.Unauthorized, "Applicant is not found");
+            }
+            return response;
         }
     }
 }

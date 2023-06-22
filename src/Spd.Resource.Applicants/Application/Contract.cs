@@ -13,6 +13,7 @@ public interface IApplicationRepository
     public Task<BulkAppsCreateResp> AddBulkAppsAsync(BulkAppsCreateCmd createApplicationCmds, CancellationToken cancellationToken);
     public Task<BulkHistoryListResp> QueryBulkHistoryAsync(BulkHistoryListQry query, CancellationToken cancellationToken);
     public Task<ClearanceListResp> QueryAsync(ClearanceListQry clearanceListQry, CancellationToken ct);
+    public Task<ClearanceListResp> QueryAsync(SharableClearanceQry sharableClearanceQry, CancellationToken ct);
     public Task DeleteClearanceAccessAsync(ClearanceAccessDeleteCmd clearanceAccessDeleteCmd, CancellationToken cancellationToken);
     public Task<ClearanceLetterResp> QueryLetterAsync(ClearanceLetterQry clearanceLetterQry, CancellationToken ct);
 }
@@ -176,7 +177,7 @@ public record ClearanceListResp
 }
 public record ClearanceResp
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; set; } //clearance access id
     public string FirstName { get; set; } = null!;
     public string LastName { get; set; } = null!;
     public string Email { get; set; } = null!;
@@ -197,7 +198,20 @@ public record ClearanceLetterResp
     public byte[] Content { get; set; } = Array.Empty<byte>();
     public string? FileName { get; set; } = null!;
 }
-
+public record SharableClearanceQry(Guid ContactId, EmployeeInteractionTypeCode? WorkWith, DateTimeOffset FromDate, ServiceTypeEnum ServiceType, bool Sharable=true);
+public record SharableClearanceResp
+{
+    public Guid OrgId { get; set; }
+    public ServiceTypeEnum ServiceType { get; set; }
+    public DateTimeOffset? GrantedDate { get; set; }
+    public DateTimeOffset? ExpiryDate { get; set; }
+    public EmployeeInteractionTypeCode? WorkWith { get; set; }
+    public Guid ClearanceId { get; set; }
+}
+public record SharableClearanceListResp
+{
+    public IEnumerable<SharableClearanceResp> Clearances { get; set; } = Array.Empty<SharableClearanceResp>();
+}
 #endregion
 
 #region bulk upload

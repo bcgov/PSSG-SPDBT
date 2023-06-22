@@ -63,6 +63,26 @@ internal partial class ApplicationRepository : IApplicationRepository
         };
     }
 
+    public async Task<SharableClearanceListResp> QueryAsync(SharableClearanceQry sharableClearanceQry, CancellationToken ct)
+    {
+        SharableClearanceListResp resp = new();
+        var keyExisted = DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(sharableClearanceQry.ServiceType.ToString(), out Guid stGuid);
+        if (!keyExisted)
+            throw new ArgumentException("invalid service type");
+
+        var clearances = _context.spd_clearances
+            .Expand(c => c.spd_CaseID)
+            .Where(c => c._spd_contactid_value == sharableClearanceQry.ContactId)
+            .Where(c => c.spd_expirydate > sharableClearanceQry.FromDate)
+            .Where(c => sharableClearanceQry.Sharable ? c.spd_sharable > 0 : c.spd_sharable <= 0)
+            .Where(c => c._spd_servicetype_value == stGuid)
+            .Where(c => c.spd_workswith == (int)Enum.Parse<WorksWithChildrenOptionSet>(sharableClearanceQry.WorkWith.ToString()))
+            .Where(c => c.statecode != DynamicsConstants.StateCode_Inactive)
+            .ToList();
+        resp.Clearances = _mapper.Map<IEnumerable<SharableClearanceResp>>(clearances);
+        return resp;
+    }
+
     public async Task DeleteClearanceAccessAsync(ClearanceAccessDeleteCmd clearanceAccessDeleteCmd, CancellationToken cancellationToken)
     {
         var clearance = await GetClearanceAccessById(clearanceAccessDeleteCmd.ClearanceAccessId, clearanceAccessDeleteCmd.OrgId);

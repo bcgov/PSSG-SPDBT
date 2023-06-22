@@ -1,3 +1,5 @@
+using Spd.Utilities.Shared.ManagerContract;
+
 namespace Spd.Engine.Search
 {
     public interface ISearchEngine
@@ -7,8 +9,12 @@ namespace Spd.Engine.Search
 
     public abstract record SearchRequest;
     public abstract record SearchResponse;
-    public record SharableClearanceSearchRequest(Guid OrgId, string BcscId) : SearchRequest;
-    public record SharableClearanceSearchResponse() : SearchResponse
+    public record SharableClearanceSearchRequest(Guid OrgId, string BcscId, ServiceTypeCode ServiceType) : SearchRequest;
+    public record SharableClearanceSearchResponse : SearchResponse
+    {
+        public IEnumerable<SharableClearance> Items { get; set; } = Array.Empty<SharableClearance>();
+    }
+    public record SharableClearance()
     {
         public Guid OrgId { get; set; }
         public string OrgName { get; set; } = null!;

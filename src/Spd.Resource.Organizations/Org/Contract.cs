@@ -46,6 +46,7 @@ namespace Spd.Resource.Organizations.Org
         public string? AddressCountry { get; set; }
         public string? AddressPostalCode { get; set; }
         public string? AddressProvince { get; set; }
+        public EmployeeInteractionTypeCode? WorkWith { get; set; }
     }
     public record OrgResult : Org
     {

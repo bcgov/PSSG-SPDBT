@@ -49,11 +49,6 @@ namespace Spd.Resource.Organizations.Identity
                 .Where(i => i.statecode == DynamicsConstants.StateCode_Active)
                 .FirstOrDefaultAsync(ct);
 
-            if (applicantIdentity == null)
-            {
-                throw new ApiException(System.Net.HttpStatusCode.Unauthorized, "Applicant is not found");
-            }
-
             return _mapper.Map<ApplicantIdentityQueryResult>(applicantIdentity);
         }
     }

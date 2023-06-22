@@ -11,7 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Spd.Utilities.Dynamics\Spd.Utilities.Dynamics.csproj" />
+    <ProjectReference Include="..\Spd.Resource.Applicants\Spd.Resource.Applicants.csproj" />
+    <ProjectReference Include="..\Spd.Resource.Organizations\Spd.Resource.Organizations.csproj" />
   </ItemGroup>
 
 </Project>

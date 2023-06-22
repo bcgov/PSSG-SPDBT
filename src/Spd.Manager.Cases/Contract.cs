@@ -403,7 +403,7 @@ namespace Spd.Manager.Cases
         public string? FileName { get; set; } = null!;
     }
 
-    public record GetSharableClearanceQuery(Guid OrgId, string BcscId) : IRequest<SharableClearanceResponse>;
+    public record GetSharableClearanceQuery(Guid OrgId, string BcscId, ServiceTypeCode ServiceType) : IRequest<SharableClearanceResponse>;
 
     public record SharableClearanceResponse()
     {

@@ -25,6 +25,7 @@ namespace Spd.Resource.Organizations.Org
             .ReverseMap()
             .ForMember(d => d.PayerPreference, opt => opt.MapFrom(s => GetPayerPreferenceType(s.spd_payerpreference)))
             .ForMember(d => d.ContractorsNeedVulnerableSectorScreening, opt => opt.MapFrom(s => GetBooleanType(s.spd_havecontractors)))
+            .ForMember(d => d.WorkWith, opt => opt.MapFrom(s => GetEmployeeInteractionCode(s.spd_workswith)))
             .ForMember(d => d.LicenseesNeedVulnerableSectorScreening, opt => opt.MapFrom(s => GetBooleanType(s.spd_havelicenseesorregistrants)));
 
             _ = CreateMap<account, OrgResult>()
@@ -55,6 +56,14 @@ namespace Spd.Resource.Organizations.Org
         {
             if (code == null) return null;
             return Enum.GetName(typeof(YesNoOptionSet), code);
+        }
+
+        private static EmployeeInteractionTypeCode? GetEmployeeInteractionCode(int? code)
+        {
+            if (code == null) return null;
+            string? enumName = Enum.GetName(typeof(WorksWithChildrenOptionSet), code);
+            if(enumName == null) return null;
+            return Enum.Parse<EmployeeInteractionTypeCode>(enumName);
         }
     }
 }

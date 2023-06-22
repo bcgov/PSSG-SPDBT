@@ -292,7 +292,7 @@ namespace Spd.Manager.Cases
 
         public async Task<SharableClearanceResponse> Handle(GetSharableClearanceQuery query, CancellationToken ct)
         {
-            SharableClearanceSearchResponse response = (SharableClearanceSearchResponse)await _searchEngine.SearchAsync(new SharableClearanceSearchRequest(query.OrgId, query.BcscId), ct);
+            SharableClearanceSearchResponse response = (SharableClearanceSearchResponse)await _searchEngine.SearchAsync(new SharableClearanceSearchRequest(query.OrgId, query.BcscId, query.ServiceType), ct);
             return _mapper.Map<SharableClearanceResponse>(response);
         }
         #endregion
