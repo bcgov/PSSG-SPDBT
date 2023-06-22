@@ -19,10 +19,10 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 			</div>
 			<div class="col-xl-6 col-lg-8 col-md-12">
 				<div class="d-flex justify-content-end">
-					<button mat-stroked-button color="primary" class="w-auto m-2" aria-label="Back" (click)="onBack()">
+					<button mat-stroked-button color="primary" class="large w-auto m-2" aria-label="Back" (click)="onBack()">
 						<mat-icon>arrow_back</mat-icon>Back
 					</button>
-					<button mat-flat-button color="primary" class="w-auto m-2" aria-label="Download Receipt">
+					<button mat-flat-button color="primary" class="large w-auto m-2" aria-label="Download Receipt">
 						<mat-icon>file_download</mat-icon>Download Receipt
 					</button>
 				</div>

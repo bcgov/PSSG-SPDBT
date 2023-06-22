@@ -283,7 +283,14 @@ export class CrcListComponent implements OnInit {
 		const selectedApplications =
 			this.applicationFilter == 'ACTIVE'
 				? this.allApplications.filter((app) => {
-						return !['Closed', 'Cancelled', 'Completed'].includes(app.caseStatus ?? '');
+						return ![
+							'CancelledByOrganization',
+							'CancelledByApplicant',
+							'ClosedNoConsent',
+							'ClosedNoResponse',
+							'ClosedJudicialReview',
+							'CompletedCleared',
+						].includes(app.status ?? '');
 				  })
 				: [...this.allApplications];
 		this.dataSource.data = selectedApplications;

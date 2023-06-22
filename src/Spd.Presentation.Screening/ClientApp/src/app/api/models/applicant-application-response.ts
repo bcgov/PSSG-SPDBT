@@ -5,7 +5,6 @@ import { PayerPreferenceTypeCode } from './payer-preference-type-code';
 import { ServiceTypeCode } from './service-type-code';
 export interface ApplicantApplicationResponse {
   applicationNumber?: null | string;
-  caseStatus?: null | string;
   caseSubStatus?: null | string;
   contractedCompanyName?: null | string;
   createdOn?: null | string;
