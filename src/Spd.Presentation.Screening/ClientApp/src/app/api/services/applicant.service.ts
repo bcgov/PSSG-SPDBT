@@ -13,6 +13,8 @@ import { AnonymousApplicantAppCreateRequest } from '../models/anonymous-applican
 import { AppInviteVerifyRequest } from '../models/app-invite-verify-request';
 import { AppOrgResponse } from '../models/app-org-response';
 import { ApplicantAppCreateRequest } from '../models/applicant-app-create-request';
+import { ApplicantApplicationListResponse } from '../models/applicant-application-list-response';
+import { ApplicantApplicationResponse } from '../models/applicant-application-response';
 import { ApplicantUserInfo } from '../models/applicant-user-info';
 import { ApplicationCreateResponse } from '../models/application-create-response';
 
@@ -215,6 +217,115 @@ export class ApplicantService extends BaseService {
 
     return this.apiApplicantsScreeningsAnonymousPost$Response(params,context).pipe(
       map((r: StrictHttpResponse<ApplicationCreateResponse>) => r.body as ApplicationCreateResponse)
+    );
+  }
+
+  /**
+   * Path part for operation apiApplicantsApplicantIdApplicationsGet
+   */
+  static readonly ApiApplicantsApplicantIdApplicationsGetPath = '/api/applicants/{applicantId}/applications';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiApplicantsApplicantIdApplicationsGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantsApplicantIdApplicationsGet$Response(params: {
+    applicantId: string;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<ApplicantApplicationListResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, ApplicantService.ApiApplicantsApplicantIdApplicationsGetPath, 'get');
+    if (params) {
+      rb.path('applicantId', params.applicantId, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<ApplicantApplicationListResponse>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiApplicantsApplicantIdApplicationsGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantsApplicantIdApplicationsGet(params: {
+    applicantId: string;
+  },
+  context?: HttpContext
+
+): Observable<ApplicantApplicationListResponse> {
+
+    return this.apiApplicantsApplicantIdApplicationsGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<ApplicantApplicationListResponse>) => r.body as ApplicantApplicationListResponse)
+    );
+  }
+
+  /**
+   * Path part for operation apiApplicantsApplicantIdApplicationsApplicationIdGet
+   */
+  static readonly ApiApplicantsApplicantIdApplicationsApplicationIdGetPath = '/api/applicants/{applicantId}/applications/{applicationId}';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiApplicantsApplicantIdApplicationsApplicationIdGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantsApplicantIdApplicationsApplicationIdGet$Response(params: {
+    applicantId: string;
+    applicationId: string;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<ApplicantApplicationResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, ApplicantService.ApiApplicantsApplicantIdApplicationsApplicationIdGetPath, 'get');
+    if (params) {
+      rb.path('applicantId', params.applicantId, {});
+      rb.path('applicationId', params.applicationId, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<ApplicantApplicationResponse>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiApplicantsApplicantIdApplicationsApplicationIdGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantsApplicantIdApplicationsApplicationIdGet(params: {
+    applicantId: string;
+    applicationId: string;
+  },
+  context?: HttpContext
+
+): Observable<ApplicantApplicationResponse> {
+
+    return this.apiApplicantsApplicantIdApplicationsApplicationIdGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<ApplicantApplicationResponse>) => r.body as ApplicantApplicationResponse)
     );
   }
 

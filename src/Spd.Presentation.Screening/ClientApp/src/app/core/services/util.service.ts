@@ -126,9 +126,9 @@ export class UtilService {
 
 	//------------------------------------
 	// Misc
-	getApplicationPortalStatus(code: string | null | undefined): [string, string] {
+	getApplicationPortalStatusClass(code: string | null | undefined): string {
 		if (!code) {
-			return ['', ''];
+			return '';
 		}
 
 		let currClass = 'mat-chip-grey';
@@ -153,8 +153,7 @@ export class UtilService {
 				break;
 		}
 
-		const desc = (ApplicationPortalStatusTypes.find((item: SelectOptions) => item.code == code)?.desc as string) ?? '';
-		return [desc, currClass];
+		return currClass;
 	}
 
 	geApplicationPortalStatusDesc(code: string): string {
