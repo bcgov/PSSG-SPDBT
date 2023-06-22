@@ -1,5 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
+import { Component } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApplicantApplicationResponse, ApplicationPortalStatusCode } from 'src/app/api/models';
@@ -102,23 +101,23 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 					<mat-table [dataSource]="dataSource">
 						<ng-container matColumnDef="documentName">
 							<mat-header-cell *matHeaderCellDef>Document Name</mat-header-cell>
-							<mat-cell *matCellDef="let application">
+							<mat-cell *matCellDef="let document">
 								<span class="mobile-label">Document Name:</span>
-								{{ application.documentName }}
+								{{ document.documentName }}
 							</mat-cell>
 						</ng-container>
 
 						<ng-container matColumnDef="uploadedOn">
 							<mat-header-cell *matHeaderCellDef>Uploaded On</mat-header-cell>
-							<mat-cell *matCellDef="let application">
+							<mat-cell *matCellDef="let document">
 								<span class="mobile-label">Uploaded On:</span>
-								{{ application.uploadedOn | date : constants.date.dateFormat : 'UTC' }}
+								{{ document.uploadedOn | date : constants.date.dateFormat : 'UTC' }}
 							</mat-cell>
 						</ng-container>
 
 						<ng-container matColumnDef="action">
 							<mat-header-cell *matHeaderCellDef></mat-header-cell>
-							<mat-cell *matCellDef="let application">
+							<mat-cell *matCellDef="let document">
 								<span class="mobile-label"></span>
 								<a mat-flat-button class="m-2" aria-label="Remove Document">
 									<mat-icon>delete_outline</mat-icon>Remove document
@@ -148,8 +147,6 @@ export class CrcDetailComponent {
 	requestForAdditionalInfoAlert: string | null = null;
 	fingerprintsAlert: string | null = null;
 	statutoryDeclarationAlert: string | null = null;
-
-	@ViewChild('paginator') paginator!: MatPaginator;
 
 	constructor(
 		private router: Router,

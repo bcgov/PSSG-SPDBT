@@ -1,6 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
-import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import {
@@ -171,6 +170,7 @@ export class CrcListComponent implements OnInit {
 	applicantName = '';
 	applicationFilter: string = 'ACTIVE';
 	allApplications: Array<ApplicantApplicationStatusResponse> = [];
+
 	constants = SPD_CONSTANTS;
 	dataSource: MatTableDataSource<ApplicantApplicationStatusResponse> =
 		new MatTableDataSource<ApplicantApplicationStatusResponse>([]);
@@ -180,8 +180,6 @@ export class CrcListComponent implements OnInit {
 	requestForAdditionalInfoAlert: string | null = null;
 	fingerprintsAlert: string | null = null;
 	statutoryDeclarationAlert: string | null = null;
-
-	@ViewChild('paginator') paginator!: MatPaginator;
 
 	constructor(
 		private router: Router,
