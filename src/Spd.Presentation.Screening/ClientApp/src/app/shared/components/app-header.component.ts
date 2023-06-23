@@ -77,6 +77,7 @@ export class HeaderComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.authenticationService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
+			console.log('HeaderComponent waitUntilAuthentication', isLoggedIn);
 			if (!isLoggedIn) {
 				this.loggedInUserDisplay = null;
 				return;
@@ -95,19 +96,38 @@ export class HeaderComponent implements OnInit {
 
 		if (loginType == IdentityProviderTypeCode.BcServicesCard) {
 			console.debug(
-				'applicantUserInfo',
+				'BcServicesCard applicantUserInfo',
 				this.authUserService.applicantUserInfo,
 				'applicantProfile',
 				this.authUserService.applicantProfile
 			);
 
-			this.loggedInUserDisplay =
-				this.authUserService.applicantUserInfo?.displayName ??
-				`${this.authUserService.applicantProfile?.firstName} ${this.authUserService.applicantProfile?.lastName}`;
+			let name = this.authUserService.applicantUserInfo?.displayName;
+			if (!name) {
+				name = this.utilService.getFullName(
+					this.authUserService.applicantProfile?.firstName,
+					this.authUserService.applicantProfile?.lastName
+				);
+			}
+			this.loggedInUserDisplay = name ?? 'User';
 			return;
 		}
 
+		console.debug(
+			'BCeID userInfo',
+			this.authUserService.userInfo,
+			'loggedInUserTokenData',
+			this.authenticationService.loggedInUserTokenData
+		);
+
 		const userData = this.authUserService.userInfo;
-		this.loggedInUserDisplay = userData ? this.utilService.getFullName(userData.firstName, userData.lastName) : null;
+		let name = '';
+		if (userData) {
+			name = this.utilService.getFullName(userData.firstName, userData.lastName);
+		}
+		if (!name) {
+			name = this.authenticationService.loggedInUserTokenData.display_name;
+		}
+		this.loggedInUserDisplay = name ?? 'User';
 	}
 }

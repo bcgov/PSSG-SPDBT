@@ -4,6 +4,7 @@ import { OAuthService } from 'angular-oauth2-oidc';
 import { BehaviorSubject } from 'rxjs';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { CrcRoutes } from 'src/app/modules/crc-portal/crc-routing.module';
+import { OrgRegistrationRoutes } from 'src/app/modules/org-registration-portal/org-registration-routing.module';
 import { IdentityProviderTypeCode } from '../code-types/code-types.models';
 import { AuthUserService } from './auth-user.service';
 import { ConfigService } from './config.service';
@@ -39,7 +40,10 @@ export class AuthenticationService {
 
 		if (isLoggedIn) {
 			let success = false;
-			if (returnComponentRoute == CrcRoutes.path()) {
+			if (returnComponentRoute == OrgRegistrationRoutes.path()) {
+				// do not call anything
+				success = true;
+			} else if (returnComponentRoute == CrcRoutes.path()) {
 				success = await this.authUserService.applicantUserInfoAsync();
 			} else {
 				success = await this.authUserService.whoAmIAsync(loginType);
@@ -71,7 +75,11 @@ export class AuthenticationService {
 
 		if (isLoggedIn) {
 			let success = false;
-			if (returnComponentRoute == CrcRoutes.path()) {
+
+			if (returnComponentRoute == OrgRegistrationRoutes.path()) {
+				// do not call anything
+				success = true;
+			} else if (returnComponentRoute == CrcRoutes.path()) {
 				success = await this.authUserService.applicantUserInfoAsync();
 			} else {
 				success = await this.authUserService.whoAmIAsync(loginType);
