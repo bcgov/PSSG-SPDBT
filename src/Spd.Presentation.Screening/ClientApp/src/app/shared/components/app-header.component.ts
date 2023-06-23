@@ -16,8 +16,8 @@ import { UtilService } from 'src/app/core/services/util.service';
 			<div class="header-text pl-3">{{ title }}</div>
 			<span style="flex: 1 1 auto;"></span>
 			<div *ngIf="loggedInUserDisplay">
-				<mat-icon matTooltip="Logout" class="logout-button me-2" (click)="onLogout()">logout</mat-icon
-				>{{ loggedInUserDisplay }}
+				<mat-icon matTooltip="Logout" class="logout-button me-2" (click)="onLogout()">logout</mat-icon>
+				<span class="d-none d-sm-inline">{{ loggedInUserDisplay }}</span>
 			</div>
 		</mat-toolbar>
 	`,
@@ -53,6 +53,13 @@ import { UtilService } from 'src/app/core/services/util.service';
 			.logout-button {
 				vertical-align: middle;
 				cursor: pointer;
+			}
+
+			@media (max-width: 767px) {
+				.mat-toolbar-row,
+				.mat-toolbar-single-row {
+					padding: 0 8px !important;
+				}
 			}
 		`,
 	],

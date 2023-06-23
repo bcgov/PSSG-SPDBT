@@ -1,5 +1,4 @@
 using MediatR;
-using Spd.Utilities.Shared.ManagerContract;
 
 namespace Spd.Manager.Membership.Report
 {
@@ -14,7 +13,6 @@ namespace Spd.Manager.Membership.Report
     public class OrgReportListResponse
     {
         public IEnumerable<OrgReportResponse> Reports { get; set; } = Array.Empty<OrgReportResponse>();
-        public PaginationResponse Pagination { get; set; } = null!;
     }
 
     public class OrgReportResponse

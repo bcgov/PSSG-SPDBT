@@ -25,6 +25,8 @@ namespace Spd.Manager.Cases
         IRequestHandler<ClearanceAccessDeleteCommand, Unit>,
         IRequestHandler<ClearanceLetterQuery, ClearanceLetterResponse>,
         IRequestHandler<GetSharableClearanceQuery, SharableClearanceResponse>,
+        IRequestHandler<ApplicantApplicationListQuery, ApplicantApplicationListResponse>,
+        IRequestHandler<ApplicantApplicationQuery, ApplicantApplicationResponse>,
         IApplicationManager
     {
         private readonly IApplicationRepository _applicationRepository;
@@ -302,6 +304,27 @@ namespace Spd.Manager.Cases
 
             return null;
         }
+        #endregion
+
+        #region applicant-applications
+
+        public async Task<ApplicantApplicationListResponse> Handle(ApplicantApplicationListQuery request, CancellationToken cancellationToken)
+        {
+            var query = new ApplicantApplicationListQry();
+            query.ApplicantId = request.ApplicantId;
+            var response = await _applicationRepository.QueryApplicantApplicationListAsync(query, cancellationToken);
+            return _mapper.Map<ApplicantApplicationListResponse>(response);
+        }
+
+        public async Task<ApplicantApplicationResponse> Handle(ApplicantApplicationQuery request, CancellationToken cancellationToken)
+        {
+            var query = new ApplicantApplicationQry();
+            query.ApplicantId = request.ApplicantId;
+            query.ApplicationId = request.ApplicationId;
+            var response = await _applicationRepository.QueryApplicantApplicationAsync(query, cancellationToken);
+            return _mapper.Map<ApplicantApplicationResponse>(response);
+        }
+
         #endregion
     }
 }
