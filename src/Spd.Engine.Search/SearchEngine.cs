@@ -2,6 +2,7 @@
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Organizations.Identity;
 using Spd.Resource.Organizations.Org;
+using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.ResourceContracts;
 
 namespace Spd.Engine.Search
@@ -38,7 +39,7 @@ namespace Spd.Engine.Search
 
             SharableClearanceQry qry = new SharableClearanceQry(
                 ContactId: contact.ContactId,
-                FromDate: DateTimeOffset.UtcNow.AddMonths(6),
+                FromDate: DateTimeOffset.UtcNow.AddMonths(SpdConstants.SHARABLE_CLEARANCE_EXPIRED_DATE_BUFFER_IN_MONTHS),
                 Sharable: true,
                 WorkWith: org.OrgResult.WorkWith,
                 ServiceType: Enum.Parse<ServiceTypeEnum>(request.ServiceType.ToString())

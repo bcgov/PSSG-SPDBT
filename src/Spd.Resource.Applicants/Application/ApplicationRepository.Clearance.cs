@@ -86,7 +86,7 @@ internal partial class ApplicationRepository : IApplicationRepository
         }
 
         if (sharableClearanceQry.Sharable)
-            clearances = clearances.Where(c => c.spd_sharable > 0);
+            clearances = clearances.Where(c => c.spd_sharable == (int)YesNoOptionSet.Yes);
 
         resp.Clearances = _mapper.Map<IEnumerable<SharableClearanceResp>>(clearances);
         return resp;
