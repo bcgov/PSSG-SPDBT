@@ -62,13 +62,47 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 					</mat-chip-option>
 				</mat-chip-listbox>
 			</h4>
-			<ul>
+
+			<!-- <ul>
 				<li>
 					The CRRP application was submitted on {{ application.createdOn | date : constants.date.dateFormat : 'UTC' }}
 				</li>
 				<li>Paid by the {{ application.payeeType }}</li>
 				<li>The Case ID is {{ application.applicationNumber }}</li>
-			</ul>
+			</ul> -->
+
+			<div class="row">
+				<div class="col-12">
+					<mat-table [dataSource]="dataSourceAppl">
+						<ng-container matColumnDef="applicationNumber">
+							<mat-header-cell *matHeaderCellDef>Case ID</mat-header-cell>
+							<mat-cell *matCellDef="let application">
+								<span class="mobile-label">Case ID:</span>
+								{{ application.applicationNumber }}
+							</mat-cell>
+						</ng-container>
+
+						<ng-container matColumnDef="createdOn">
+							<mat-header-cell *matHeaderCellDef>Submitted On</mat-header-cell>
+							<mat-cell *matCellDef="let application">
+								<span class="mobile-label">Submitted On:</span>
+								{{ application.createdOn | date : constants.date.dateFormat : 'UTC' }}
+							</mat-cell>
+						</ng-container>
+
+						<ng-container matColumnDef="payeeType">
+							<mat-header-cell *matHeaderCellDef>Paid By</mat-header-cell>
+							<mat-cell *matCellDef="let application">
+								<span class="mobile-label">Paid By:</span>
+								{{ application.payeeType }}
+							</mat-cell>
+						</ng-container>
+
+						<mat-header-row *matHeaderRowDef="columnsAppl; sticky: true"></mat-header-row>
+						<mat-row *matRowDef="let row; columns: columnsAppl"></mat-row>
+					</mat-table>
+				</div>
+			</div>
 
 			<ng-container *ngIf="fingerprintsAlert || statutoryDeclarationAlert">
 				<h4 class="subheading fw-normal mt-4">Downloadable Documents</h4>
@@ -156,6 +190,9 @@ export class CrcDetailComponent {
 	application: ApplicantApplicationResponse | null = null;
 
 	constants = SPD_CONSTANTS;
+	dataSourceAppl: MatTableDataSource<ApplicantApplicationResponse> =
+		new MatTableDataSource<ApplicantApplicationResponse>([]);
+	columnsAppl: string[] = ['applicationNumber', 'createdOn', 'payeeType'];
 	dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
 	columns: string[] = ['documentName', 'uploadedOn', 'action'];
 
@@ -220,6 +257,9 @@ export class CrcDetailComponent {
 							break;
 					}
 				}
+
+				this.dataSourceAppl = new MatTableDataSource<ApplicantApplicationResponse>([]);
+				this.dataSourceAppl.data = [res];
 			});
 
 		this.dataSource = new MatTableDataSource<ApplicantApplicationResponse>([]);
