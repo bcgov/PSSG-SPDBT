@@ -293,7 +293,14 @@ namespace Spd.Manager.Cases
         public async Task<SharableClearanceResponse> Handle(GetSharableClearanceQuery query, CancellationToken ct)
         {
             SharableClearanceSearchResponse response = (SharableClearanceSearchResponse)await _searchEngine.SearchAsync(new SharableClearanceSearchRequest(query.OrgId, query.BcscId, query.ServiceType), ct);
-            return _mapper.Map<SharableClearanceResponse>(response);
+            
+            if(response.Items.Any())
+            {
+                var lastestGrantedDate = response.Items.Min(c => c.GrantedDate);
+                return _mapper.Map<SharableClearanceResponse>(response.Items.FirstOrDefault(c=>c.GrantedDate==lastestGrantedDate));
+            }
+
+            return null;
         }
         #endregion
     }

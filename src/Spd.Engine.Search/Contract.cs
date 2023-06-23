@@ -22,7 +22,5 @@ namespace Spd.Engine.Search
         public DateTimeOffset? GrantedDate { get; set; }
         public DateTimeOffset? ExpiryDate { get; set; }
         public Guid ClearanceId { get; set; }
-        public string? FirstName { get; set; }
-        public string LastName { get; set; } = null!;
     }
 }

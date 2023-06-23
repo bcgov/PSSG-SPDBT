@@ -97,14 +97,14 @@ namespace Spd.Presentation.Screening.Controllers
         /// </summary>
         /// <param name="orgId"></param>
         /// <returns></returns>
-        /// GET api/applicants/clearances/sharable?withOrgId={orgId}&serviceType={serviceType}
+        /// GET api/applicants/clearances/sharable?withOrgId={withOrgId}&serviceType={serviceType}
         [Route("api/applicants/clearances/sharable")]
-        [HttpPost]
-        [AllowAnonymous]
-        public async Task<SharableClearanceResponse> GetSharableClearanceWithOrg([FromQuery] Guid orgId, ServiceTypeCode serviceType, CancellationToken ct)
+        [Authorize(Policy = "OnlyBcsc")]
+        [HttpGet]
+        public async Task<SharableClearanceResponse> GetSharableClearanceWithOrg([FromQuery] Guid withOrgId, [FromQuery] ServiceTypeCode serviceType, CancellationToken ct)
         {
             var applicantInfo = _currentUser.GetApplicantIdentityInfo();
-            return await _mediator.Send(new GetSharableClearanceQuery(orgId, applicantInfo.Sub, serviceType), ct);
+            return await _mediator.Send(new GetSharableClearanceQuery(withOrgId, applicantInfo.Sub, serviceType), ct);
         }
         #endregion
 

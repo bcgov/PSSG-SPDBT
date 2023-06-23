@@ -408,7 +408,6 @@ namespace Spd.Manager.Cases
     public record SharableClearanceResponse()
     {
         public Guid OrgId { get; set; }
-        public string OrgName { get; set; } = null!;
         public ServiceTypeCode ServiceType { get; set; }
         public DateTimeOffset? GrantedDate { get; set; }
         public DateTimeOffset? ExpiryDate { get; set; }

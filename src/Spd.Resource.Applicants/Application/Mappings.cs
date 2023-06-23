@@ -114,7 +114,7 @@ namespace Spd.Resource.Applicants.Application
              .ForMember(d => d.GrantedDate, opt => opt.MapFrom(s => s.spd_dategranted))
              .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => s.spd_expirydate))
              .ForMember(d => d.WorkWith, opt => opt.MapFrom(s => s.spd_workswith))
-             .ForMember(d => d.ServiceType, opt => opt.MapFrom(s => s.spd_CaseID._spd_servicetypeid_value))
+             .ForMember(d => d.ServiceType, opt => opt.MapFrom(s => DynamicsContextLookupHelpers.LookupServiceTypeKey(s._spd_servicetype_value)))
              .ForMember(d => d.ClearanceId, opt => opt.MapFrom(s => s.spd_clearanceid));
         }
         private static string? GetPayeeType(int? code)

@@ -31,9 +31,11 @@ namespace Spd.Engine.Search
 
         private async Task<SharableClearanceSearchResponse> SearchSharableClearanceAsync(SharableClearanceSearchRequest request, CancellationToken ct)
         {
+            SharableClearanceSearchResponse response = new ();
             var org = (OrgQryResult)await _orgRepo.QueryOrgAsync(new OrgByIdentifierQry(request.OrgId), ct);
             var contact = (ApplicantIdentityQueryResult?)await _identityRepo.Query(new ApplicantIdentityQuery(request.BcscId), ct);
-            if (contact == null) return new SharableClearanceSearchResponse();
+            if (contact == null) return response;
+
             SharableClearanceQry qry = new SharableClearanceQry(
                 ContactId: contact.ContactId,
                 FromDate: DateTimeOffset.UtcNow.AddMonths(6),
@@ -42,7 +44,8 @@ namespace Spd.Engine.Search
                 ServiceType: Enum.Parse<ServiceTypeEnum>(request.ServiceType.ToString())
             );
             var results = await _appRepo.QueryAsync(qry, ct);
-            return null;
+            response.Items = _mapper.Map<IEnumerable<SharableClearance>>(results.Clearances);
+            return response;
         }
     }
 }

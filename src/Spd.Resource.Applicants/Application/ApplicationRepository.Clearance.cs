@@ -73,12 +73,21 @@ internal partial class ApplicationRepository : IApplicationRepository
         var clearances = _context.spd_clearances
             .Expand(c => c.spd_CaseID)
             .Where(c => c._spd_contactid_value == sharableClearanceQry.ContactId)
-            .Where(c => c.spd_expirydate > sharableClearanceQry.FromDate)
-            .Where(c => sharableClearanceQry.Sharable ? c.spd_sharable > 0 : c.spd_sharable <= 0)
             .Where(c => c._spd_servicetype_value == stGuid)
-            .Where(c => c.spd_workswith == (int)Enum.Parse<WorksWithChildrenOptionSet>(sharableClearanceQry.WorkWith.ToString()))
             .Where(c => c.statecode != DynamicsConstants.StateCode_Inactive)
-            .ToList();
+            .Where(c => c.spd_expirydate > sharableClearanceQry.FromDate);
+
+        if (sharableClearanceQry.WorkWith == null || sharableClearanceQry.WorkWith == EmployeeInteractionTypeCode.Neither)
+            clearances = clearances.Where(c => c.spd_workswith == null);
+        else 
+        {
+            int workwith = (int)Enum.Parse<WorksWithChildrenOptionSet>(sharableClearanceQry.WorkWith.ToString());
+            clearances = clearances.Where(c => c.spd_workswith == workwith);
+        }
+
+        if (sharableClearanceQry.Sharable)
+            clearances = clearances.Where(c => c.spd_sharable > 0);
+
         resp.Clearances = _mapper.Map<IEnumerable<SharableClearanceResp>>(clearances);
         return resp;
     }

@@ -262,8 +262,8 @@
         <NavigationProperty Name="spd_OrganizationTypeId" Type="mscrm.spd_organizationtype" Nullable="false" Partner="spd_spd_organizationtype_account">
           <ReferentialConstraint Property="_spd_organizationtypeid_value" ReferencedProperty="spd_organizationtypeid" />
         </NavigationProperty>
-        <NavigationProperty Name="spd_account_spd_clearanceaccess" Type="Collection(mscrm.spd_clearanceaccess)" Partner="spd_OrganizationId" />
         <NavigationProperty Name="spd_account_spd_pdfreport" Type="Collection(mscrm.spd_pdfreport)" Partner="spd_OrganizationId" />
+        <NavigationProperty Name="spd_organization_spd_clearanceaccess" Type="Collection(mscrm.spd_clearanceaccess)" Partner="spd_OrganizationId" />
         <NavigationProperty Name="ownerid" Type="mscrm.principal" Nullable="false" Partner="owner_accounts">
           <ReferentialConstraint Property="_ownerid_value" ReferencedProperty="ownerid" />
         </NavigationProperty>
@@ -19577,8 +19577,7 @@
           <PropertyRef Name="spd_clearanceaccessid" />
         </Key>
         <Property Name="_createdby_value" Type="Edm.Guid" />
-        <Property Name="_spd_clearanceid_value" Type="Edm.Guid" />
-        <Property Name="statuscode" Type="Edm.Int32" />
+        <Property Name="createdon" Type="Edm.DateTimeOffset" />
         <Property Name="spd_clearanceaccessnumber" Type="Edm.String" Unicode="false" />
         <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
         <Property Name="importsequencenumber" Type="Edm.Int32" />
@@ -19586,15 +19585,16 @@
         <Property Name="spd_emailaddress1" Type="Edm.String" Unicode="false" />
         <Property Name="_owningbusinessunit_value" Type="Edm.Guid" />
         <Property Name="spd_applicantlastname" Type="Edm.String" Unicode="false" />
-        <Property Name="_ownerid_value" Type="Edm.Guid" />
         <Property Name="spd_clearanceaccessid" Type="Edm.Guid" />
         <Property Name="versionnumber" Type="Edm.Int64" />
-        <Property Name="spd_contractedcompanyname" Type="Edm.String" Unicode="false" />
+        <Property Name="_spd_clearanceid_value" Type="Edm.Guid" />
+        <Property Name="_spd_organizationid_value" Type="Edm.Guid" />
+        <Property Name="_ownerid_value" Type="Edm.Guid" />
         <Property Name="spd_expirydate" Type="Edm.DateTimeOffset" />
         <Property Name="statecode" Type="Edm.Int32" />
-        <Property Name="createdon" Type="Edm.DateTimeOffset" />
+        <Property Name="statuscode" Type="Edm.Int32" />
+        <Property Name="spd_contractedcompanyname" Type="Edm.String" Unicode="false" />
         <Property Name="spd_applicantfullname" Type="Edm.String" Unicode="false" />
-        <Property Name="_spd_organizationid_value" Type="Edm.Guid" />
         <Property Name="_owningteam_value" Type="Edm.Guid" />
         <Property Name="_owninguser_value" Type="Edm.Guid" />
         <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
@@ -19635,12 +19635,13 @@
         <NavigationProperty Name="spd_clearanceaccess_ProcessSession" Type="Collection(mscrm.processsession)" Partner="regardingobjectid_spd_clearanceaccess" />
         <NavigationProperty Name="spd_clearanceaccess_BulkDeleteFailures" Type="Collection(mscrm.bulkdeletefailure)" Partner="regardingobjectid_spd_clearanceaccess" />
         <NavigationProperty Name="spd_clearanceaccess_PrincipalObjectAttributeAccesses" Type="Collection(mscrm.principalobjectattributeaccess)" Partner="objectid_spd_clearanceaccess" />
+        <NavigationProperty Name="spd_OrganizationId" Type="mscrm.account" Nullable="false" Partner="spd_organization_spd_clearanceaccess">
+          <ReferentialConstraint Property="_spd_organizationid_value" ReferencedProperty="accountid" />
+        </NavigationProperty>
         <NavigationProperty Name="spd_ClearanceId" Type="mscrm.spd_clearance" Nullable="false" Partner="spd_clearance_spd_clearanceaccess">
           <ReferentialConstraint Property="_spd_clearanceid_value" ReferencedProperty="spd_clearanceid" />
         </NavigationProperty>
-        <NavigationProperty Name="spd_OrganizationId" Type="mscrm.account" Nullable="false" Partner="spd_account_spd_clearanceaccess">
-          <ReferentialConstraint Property="_spd_organizationid_value" ReferencedProperty="accountid" />
-        </NavigationProperty>
+        <NavigationProperty Name="spd_spd_clearanceaccess_task" Type="Collection(mscrm.task)" Partner="spd_ClearanceAccessId_Task" />
       </EntityType>
       <EntityType Name="spd_clearance" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -22885,6 +22886,7 @@
         <Property Name="subcategory" Type="Edm.String" Unicode="false" />
         <Property Name="percentcomplete" Type="Edm.Int32" />
         <Property Name="crmtaskassigneduniqueid" Type="Edm.Guid" />
+        <Property Name="_spd_clearanceaccessid_value" Type="Edm.Guid" />
         <Property Name="category" Type="Edm.String" Unicode="false" />
         <NavigationProperty Name="task_PostRegardings" Type="Collection(mscrm.postregarding)" Partner="regardingobjectid_task" />
         <NavigationProperty Name="task_PostFollows" Type="Collection(mscrm.postfollow)" Partner="regardingobjectid_task" />
@@ -22909,6 +22911,9 @@
         <NavigationProperty Name="bcgov_task_bcgov_documenturl" Type="Collection(mscrm.bcgov_documenturl)" Partner="bcgov_TaskId" />
         <NavigationProperty Name="regardingobjectid_spd_orgregistration_task" Type="mscrm.spd_orgregistration" Nullable="false" Partner="spd_orgregistration_Tasks" />
         <NavigationProperty Name="regardingobjectid_spd_portalinvitation_task" Type="mscrm.spd_portalinvitation" Nullable="false" Partner="spd_portalinvitation_Tasks" />
+        <NavigationProperty Name="spd_ClearanceAccessId_Task" Type="mscrm.spd_clearanceaccess" Nullable="false" Partner="spd_spd_clearanceaccess_task">
+          <ReferentialConstraint Property="_spd_clearanceaccessid_value" ReferencedProperty="spd_clearanceaccessid" />
+        </NavigationProperty>
         <NavigationProperty Name="task_connections2" Type="Collection(mscrm.connection)" Partner="record2id_task" />
         <NavigationProperty Name="sla_task_sla" Type="mscrm.sla" Nullable="false" Partner="manualsla_task" />
         <NavigationProperty Name="Task_DuplicateBaseRecord" Type="Collection(mscrm.duplicaterecord)" Partner="baserecordid_task" />
@@ -26553,6 +26558,14 @@
         <Parameter Name="Client" Type="Edm.String" Unicode="false" />
         <ReturnType Type="mscrm.spd_CORNETOffenderSearchResponse" Nullable="false" />
       </Action>
+      <ComplexType Name="spd_CPICParserResponse">
+        <Property Name="IsSuccess" Type="Edm.Boolean" />
+      </ComplexType>
+      <Action Name="spd_CPICParser" IsBound="true">
+        <Parameter Name="entity" Type="mscrm.spd_cpicbatch" Nullable="false" />
+        <Parameter Name="InputText" Type="Edm.String" Nullable="false" Unicode="false" />
+        <ReturnType Type="mscrm.spd_CPICParserResponse" Nullable="false" />
+      </Action>
       <ComplexType Name="spd_CreateCaseResponse">
         <Property Name="IsSuccess" Type="Edm.Boolean" />
         <Property Name="Result" Type="Edm.String" Unicode="false" />
@@ -26597,9 +26610,20 @@
         <Parameter Name="AliasLN3" Type="Edm.String" Unicode="false" />
         <ReturnType Type="mscrm.spd_CreateCaseResponse" Nullable="false" />
       </Action>
-      <Action Name="spd_GetActivityParty" IsBound="true">
-        <Parameter Name="entity" Type="mscrm.spd_orgregistration" Nullable="false" />
-        <ReturnType Type="mscrm.activityparty" Nullable="false" />
+      <ComplexType Name="spd_CreateUnresolvedEmailResponse">
+        <Property Name="IsSuccess" Type="Edm.Boolean" />
+        <NavigationProperty Name="NewEmail" Type="mscrm.email" Nullable="false" />
+      </ComplexType>
+      <Action Name="spd_CreateUnresolvedEmail">
+        <Parameter Name="EmailAddress" Type="Edm.String" Nullable="false" Unicode="false" />
+        <ReturnType Type="mscrm.spd_CreateUnresolvedEmailResponse" Nullable="false" />
+      </Action>
+      <ComplexType Name="spd_ExpirePortalInviteResponse">
+        <Property Name="IsSuccess" Type="Edm.Boolean" />
+      </ComplexType>
+      <Action Name="spd_ExpirePortalInvite" IsBound="true">
+        <Parameter Name="entity" Type="mscrm.spd_portalinvitation" Nullable="false" />
+        <ReturnType Type="mscrm.spd_ExpirePortalInviteResponse" Nullable="false" />
       </Action>
       <ComplexType Name="spd_GetAddressTitleResponse">
         <Property Name="NewName" Type="Edm.String" Unicode="false" />
@@ -26688,6 +26712,22 @@
       <Action Name="spd_HasHits" IsBound="true">
         <Parameter Name="entity" Type="mscrm.contact" Nullable="false" />
         <ReturnType Type="mscrm.spd_HasHitsResponse" Nullable="false" />
+      </Action>
+      <ComplexType Name="spd_MonthlyReportResponse">
+        <Property Name="MoreRecords" Type="Edm.Boolean" />
+        <Property Name="ErrorMessage" Type="Edm.String" Unicode="false" />
+      </ComplexType>
+      <Action Name="spd_MonthlyReport" IsBound="true">
+        <Parameter Name="entity" Type="mscrm.bcgov_schedulejob" Nullable="false" />
+        <Parameter Name="PageNumber" Type="Edm.Int32" Nullable="false" />
+        <ReturnType Type="mscrm.spd_MonthlyReportResponse" Nullable="false" />
+      </Action>
+      <ComplexType Name="spd_SendEmailResponse">
+        <Property Name="IsSuccess" Type="Edm.Boolean" />
+      </ComplexType>
+      <Action Name="spd_SendEmail" IsBound="true">
+        <Parameter Name="entity" Type="mscrm.email" Nullable="false" />
+        <ReturnType Type="mscrm.spd_SendEmailResponse" Nullable="false" />
       </Action>
       <Action Name="UnlockInvoicePricing">
         <Parameter Name="InvoiceId" Type="Edm.Guid" Nullable="false" />
@@ -29643,8 +29683,8 @@
           <NavigationPropertyBinding Path="spd_account_spd_submission_OrganizationId" Target="spd_submissions" />
           <NavigationPropertyBinding Path="spd_Account_GenericUpload" Target="spd_genericuploads" />
           <NavigationPropertyBinding Path="spd_OrganizationTypeId" Target="spd_organizationtypes" />
-          <NavigationPropertyBinding Path="spd_account_spd_clearanceaccess" Target="spd_clearanceaccesses" />
           <NavigationPropertyBinding Path="spd_account_spd_pdfreport" Target="spd_pdfreports" />
+          <NavigationPropertyBinding Path="spd_organization_spd_clearanceaccess" Target="spd_clearanceaccesses" />
           <NavigationPropertyBinding Path="ownerid" Target="owners" />
           <NavigationPropertyBinding Path="Account_ActivityPointers" Target="activitypointers" />
           <NavigationPropertyBinding Path="Account_SyncErrors" Target="syncerrors" />
@@ -35659,8 +35699,9 @@
           <NavigationPropertyBinding Path="spd_clearanceaccess_ProcessSession" Target="processsessions" />
           <NavigationPropertyBinding Path="spd_clearanceaccess_BulkDeleteFailures" Target="bulkdeletefailures" />
           <NavigationPropertyBinding Path="spd_clearanceaccess_PrincipalObjectAttributeAccesses" Target="principalobjectattributeaccessset" />
-          <NavigationPropertyBinding Path="spd_ClearanceId" Target="spd_clearances" />
           <NavigationPropertyBinding Path="spd_OrganizationId" Target="accounts" />
+          <NavigationPropertyBinding Path="spd_ClearanceId" Target="spd_clearances" />
+          <NavigationPropertyBinding Path="spd_spd_clearanceaccess_task" Target="tasks" />
         </EntitySet>
         <EntitySet Name="spd_clearances" EntityType="Microsoft.Dynamics.CRM.spd_clearance">
           <NavigationPropertyBinding Path="createdby" Target="systemusers" />
@@ -37404,6 +37445,7 @@
           <NavigationPropertyBinding Path="bcgov_task_bcgov_documenturl" Target="bcgov_documenturls" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_orgregistration_task" Target="spd_orgregistrations" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_portalinvitation_task" Target="spd_portalinvitations" />
+          <NavigationPropertyBinding Path="spd_ClearanceAccessId_Task" Target="spd_clearanceaccesses" />
           <NavigationPropertyBinding Path="task_connections2" Target="connections" />
           <NavigationPropertyBinding Path="sla_task_sla" Target="slas" />
           <NavigationPropertyBinding Path="Task_DuplicateBaseRecord" Target="duplicaterecords" />
@@ -38146,6 +38188,7 @@
         <ActionImport Name="SetBusinessEquipment" Action="Microsoft.Dynamics.CRM.SetBusinessEquipment" />
         <ActionImport Name="spd_CORNETOffenderSearch" Action="Microsoft.Dynamics.CRM.spd_CORNETOffenderSearch" />
         <ActionImport Name="spd_CreateCase" Action="Microsoft.Dynamics.CRM.spd_CreateCase" />
+        <ActionImport Name="spd_CreateUnresolvedEmail" Action="Microsoft.Dynamics.CRM.spd_CreateUnresolvedEmail" />
         <ActionImport Name="spd_GetCORNETHearings" Action="Microsoft.Dynamics.CRM.spd_GetCORNETHearings" />
         <ActionImport Name="spd_GetCORNETOffences" Action="Microsoft.Dynamics.CRM.spd_GetCORNETOffences" />
         <ActionImport Name="UnlockInvoicePricing" Action="Microsoft.Dynamics.CRM.UnlockInvoicePricing" />

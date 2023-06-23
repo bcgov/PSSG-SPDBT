@@ -18,6 +18,7 @@ namespace Spd.Resource.Organizations.Org
             .ForMember(d => d.address1_line1, opt => opt.MapFrom(s => s.AddressLine1))
             .ForMember(d => d.address1_line2, opt => opt.MapFrom(s => s.AddressLine2))
             .ForMember(d => d.emailaddress1, opt => opt.MapFrom(s => s.Email))
+            .ForMember(d => d.spd_workswith, opt => opt.MapFrom(s => GetWorkWithOptionSet(s.WorkWith)))
             .ForMember(d => d.address1_telephone1, opt => opt.MapFrom(s => s.PhoneNumber))
             .ForMember(d => d.spd_payerpreference, opt => opt.MapFrom(s => (int)Enum.Parse<PayerPreferenceOptionSet>(s.PayerPreference.ToString())))
             .ForMember(d => d.spd_havecontractors, opt => opt.MapFrom(s => (int)Enum.Parse<YesNoOptionSet>(s.ContractorsNeedVulnerableSectorScreening.ToString())))
@@ -64,6 +65,12 @@ namespace Spd.Resource.Organizations.Org
             string? enumName = Enum.GetName(typeof(WorksWithChildrenOptionSet), code);
             if(enumName == null) return null;
             return Enum.Parse<EmployeeInteractionTypeCode>(enumName);
+        }
+
+        private static WorksWithChildrenOptionSet? GetWorkWithOptionSet(EmployeeInteractionTypeCode? code)
+        {
+            if (code == null || code == EmployeeInteractionTypeCode.Neither) return null;
+            return Enum.Parse<WorksWithChildrenOptionSet>(code.ToString());
         }
     }
 }
