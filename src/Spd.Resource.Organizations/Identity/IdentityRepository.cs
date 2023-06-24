@@ -29,6 +29,7 @@ namespace Spd.Resource.Organizations.Identity
         {
             var identities = _dynaContext.spd_identities
                 .Where(i => i.spd_userguid == queryRequest.UserGuid.ToString())
+                .Where(i => i.spd_type == (int)IdentityTypeOptionSet.BusinessBceId)
                 .Where(i => i.statecode == DynamicsConstants.StateCode_Active);
 
             if (queryRequest.OrgGuid != null)

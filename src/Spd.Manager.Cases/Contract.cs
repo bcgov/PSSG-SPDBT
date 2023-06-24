@@ -174,6 +174,8 @@ namespace Spd.Manager.Cases
         public Guid? AppInviteId { get; set; }
         public bool? AgreeToVulnerableSectorSearch { get; set; }
         public bool? AgreeToCriminalCheck { get; set; }
+        public bool? AgreeToShare { get; set; } = false;
+        public Guid? SharedClearanceId { get; set; } = null;
     }
     public record AliasCreateRequest
     {

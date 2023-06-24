@@ -141,6 +141,23 @@ internal partial class ApplicationRepository : IApplicationRepository
         return _mapper.Map<ApplicationResult>(application);
     }
 
+    public async Task SubmitAppWithSharableClearanceAsync(ApplicationCreateCmd createApplicationCmd, CancellationToken ct)
+    {
+        if (!createApplicationCmd.SharedClearanceId.HasValue)
+            throw new ArgumentException("SharedClearanceId cannot be null");
+        account? org = await _context.GetOrgById(createApplicationCmd.OrgId, ct);
+        spd_clearance clearance = await _context.GetClearanceById((Guid)createApplicationCmd.SharedClearanceId, ct);
+        contact contact = await _context.contacts.Where(c => c.contactid == createApplicationCmd.ContactId).FirstOrDefaultAsync(ct);
+        _mapper.Map<ApplicationCreateCmd, contact>(createApplicationCmd, contact);
+        _context.UpdateObject(contact);
+
+        spd_clearanceaccess clearanceaccess = new spd_clearanceaccess() { spd_clearanceaccessid = Guid.NewGuid() };
+        _context.AddTospd_clearanceaccesses(clearanceaccess);
+        _context.SetLink(clearanceaccess, nameof(clearanceaccess.spd_OrganizationId), org);
+        _context.SetLink(clearanceaccess, nameof(clearanceaccess.spd_ClearanceId), clearance);
+        await _context.SaveChangesAsync(ct);
+    }
+
     private spd_alias? GetAlias(AliasCreateCmd aliasCreateCmd, contact contact)
     {
         var matchingAlias = _context.spd_aliases.Where(o =>
@@ -339,8 +356,7 @@ internal partial class ApplicationRepository : IApplicationRepository
                     GivenName = existingContact.firstname,
                 };
                 AddAlias(newAlias, existingContact);
-                existingContact.firstname = createApplicationCmd.GivenName;
-                existingContact.lastname = createApplicationCmd.Surname;
+                _mapper.Map<ApplicationCreateCmd, contact>(createApplicationCmd, existingContact);
                 _context.UpdateObject(existingContact);
                 return existingContact;
             }
@@ -360,6 +376,7 @@ internal partial class ApplicationRepository : IApplicationRepository
         if (contact == null)
         {
             contact = _mapper.Map<contact>(createApplicationCmd);
+            contact.contactid = Guid.NewGuid();
             _context.AddTocontacts(contact);
         }
         return contact;

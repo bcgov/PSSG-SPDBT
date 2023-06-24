@@ -6,6 +6,7 @@ namespace Spd.Resource.Applicants.Application;
 public interface IApplicationRepository
 {
     public Task<Guid?> AddApplicationAsync(ApplicationCreateCmd createApplicationCmd, CancellationToken cancellationToken);
+    public Task SubmitAppWithSharableClearanceAsync(ApplicationCreateCmd createApplicationCmd, CancellationToken cancellationToken);
     public Task<bool> CheckApplicationDuplicateAsync(SearchApplicationQry searchApplicationQry, CancellationToken cancellationToken);
     public Task<ApplicationListResp> QueryAsync(ApplicationListQry query, CancellationToken cancellationToken);
     public Task<ApplicationStatisticsResp> QueryApplicationStatisticsAsync(ApplicationStatisticsQry query, CancellationToken cancellationToken);
@@ -74,6 +75,9 @@ public record ApplicationCreateCmd
     public ScreenTypeEnum? ScreeningType { get; set; }
     public SpdTempFile? ConsentFormTempFile { get; set; } // would be null if applicant submit application
     public string? CreatedByApplicantSub { get; set; } = null;
+    public Guid? SharedClearanceId { get; set; } = null;
+    public Guid? ContactId { get; set; }
+
 }
 
 public record AliasCreateCmd
