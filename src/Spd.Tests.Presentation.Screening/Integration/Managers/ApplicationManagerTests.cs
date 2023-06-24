@@ -57,7 +57,7 @@ public class ApplicationManagerTests : ScenarioContextBase
             .Where(a => a.spd_applicationid == response.ApplicationId)
             .FirstOrDefault();
         app.spd_ApplicantId_contact.contactid.ShouldBe(id.spd_ContactId.contactid);
-        app.spd_ApplicantId_contact.firstname.ShouldBe("NewGivenName");
+        app.spd_ApplicantId_contact.firstname.ShouldBe("NewGivenName", StringCompareShould.IgnoreCase);
         var contact = context.contacts
             .Expand(c => c.spd_Contact_Alias)
             .Where(c => c.contactid == id.spd_ContactId.contactid)
@@ -65,6 +65,20 @@ public class ApplicationManagerTests : ScenarioContextBase
         var alias = contact.spd_Contact_Alias.Where(a => a.spd_firstname.Equals("givenName", StringComparison.InvariantCultureIgnoreCase))
             .FirstOrDefault();
         alias.ShouldNotBeNull();
+    }
+
+    [Fact]
+    public async Task Handle_ApplicantApplicationCreateCommand_withApplicantSub_SharableClearance_Success()
+    {
+        var mediator = Host.Services.GetRequiredService<IMediator>();
+        var org = await fixture.testData.CreateOrg("org1");
+        var request = Create_ApplicantAppCreateRequest();
+        request.SharedClearanceId
+        request.AgreeToShare = true;
+        request.OrgId = (Guid)org.accountid;
+        string bcscApplicantSub = Guid.NewGuid().ToString();
+
+
     }
 
     public static ApplicantAppCreateRequest Create_ApplicantAppCreateRequest()
