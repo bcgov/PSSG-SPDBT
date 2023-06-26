@@ -85,7 +85,7 @@ export const ExpiringChecksFilterMap: Record<keyof ExpiringChecksFilter, string>
 					>
 						<ng-container matColumnDef="applicantName">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Applicant Name</mat-header-cell>
-							<mat-cell *matCellDef="let clearance">
+							<mat-cell class="mat-cell-email" *matCellDef="let clearance">
 								<span class="mobile-label">Applicant Name:</span>
 								{{ clearance | fullname }}
 							</mat-cell>
@@ -95,7 +95,7 @@ export const ExpiringChecksFilterMap: Record<keyof ExpiringChecksFilter, string>
 							<mat-header-cell *matHeaderCellDef>Email</mat-header-cell>
 							<mat-cell *matCellDef="let clearance">
 								<span class="mobile-label">Email:</span>
-								{{ clearance.email }}
+								{{ clearance.email | default }}
 							</mat-cell>
 						</ng-container>
 
