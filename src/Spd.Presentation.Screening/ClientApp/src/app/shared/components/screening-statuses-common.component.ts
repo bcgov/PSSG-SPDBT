@@ -1,12 +1,12 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { ApplicationListResponse, ApplicationResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
+import { AppRoutes } from 'src/app/app-routing.module';
 import { ApplicationPortalStatisticsTypeCode } from 'src/app/core/code-types/application-portal-statistics-type.model';
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
@@ -274,7 +274,6 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 
 	constructor(
 		private router: Router,
-		private dialog: MatDialog,
 		private utilService: UtilService,
 		private formBuilder: FormBuilder,
 		private applicationService: ApplicationService,
@@ -282,6 +281,11 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 	) {}
 
 	ngOnInit() {
+		if (!this.authUserService.userInfo?.orgId) {
+			this.router.navigate([AppRoutes.ACCESS_DENIED]);
+			return;
+		}
+
 		if (this.portal == 'CRRP') {
 			this.columns = [
 				'applicantName',

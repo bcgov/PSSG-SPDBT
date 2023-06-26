@@ -105,10 +105,11 @@ export class AuthUserService {
 	}
 
 	public clearUserData(): void {
+		this.userInfo = null;
+		this.loginType = null;
 		this.userOrgProfile = null;
 		this.applicantProfile = null;
 		this.applicantUserInfo = null;
-		this.userInfo = null;
 		this.genericUploadEnabled = false;
 	}
 
