@@ -297,13 +297,10 @@ namespace Spd.Manager.Cases
             ShareableClearanceResponse response = new ShareableClearanceResponse();
             ShareableClearanceSearchResponse searchResponse = (ShareableClearanceSearchResponse)await _searchEngine.SearchAsync(new ShareableClearanceSearchRequest(query.OrgId, query.BcscId, query.ServiceType), ct);
 
-            if (searchResponse.Items.Any())
+            response.Items = new List<ShareableClearanceItem>()
             {
-                response.Items = new List<ShareableClearanceItem>()
-                {
-                    _mapper.Map<ShareableClearanceItem>(searchResponse.Items.OrderByDescending(c => c.GrantedDate).FirstOrDefault())
-                };
-            }
+                _mapper.Map<ShareableClearanceItem>(searchResponse.Items.OrderByDescending(c => c.GrantedDate).FirstOrDefault())
+            };
 
             return response;
         }
