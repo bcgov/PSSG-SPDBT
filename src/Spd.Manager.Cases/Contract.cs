@@ -410,6 +410,10 @@ namespace Spd.Manager.Cases
 
     public record ShareableClearanceResponse()
     {
+        public IEnumerable<ShareableClearanceItem> Items { get; set; } = Array.Empty<ShareableClearanceItem>();
+    }
+    public record ShareableClearanceItem()
+    {
         public Guid OrgId { get; set; }
         public ServiceTypeCode ServiceType { get; set; }
         public DateTimeOffset? GrantedDate { get; set; }

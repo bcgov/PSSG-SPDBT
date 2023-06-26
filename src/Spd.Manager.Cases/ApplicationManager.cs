@@ -294,14 +294,18 @@ namespace Spd.Manager.Cases
 
         public async Task<ShareableClearanceResponse> Handle(ShareableClearanceQuery query, CancellationToken ct)
         {
-            ShareableClearanceSearchResponse response = (ShareableClearanceSearchResponse)await _searchEngine.SearchAsync(new ShareableClearanceSearchRequest(query.OrgId, query.BcscId, query.ServiceType), ct);
-            
-            if(response.Items.Any())
+            ShareableClearanceResponse response = new ShareableClearanceResponse();
+            ShareableClearanceSearchResponse searchResponse = (ShareableClearanceSearchResponse)await _searchEngine.SearchAsync(new ShareableClearanceSearchRequest(query.OrgId, query.BcscId, query.ServiceType), ct);
+
+            if (searchResponse.Items.Any())
             {
-                return _mapper.Map<ShareableClearanceResponse>(response.Items.OrderByDescending(c=>c.GrantedDate).FirstOrDefault());
+                response.Items = new List<ShareableClearanceItem>()
+                {
+                    _mapper.Map<ShareableClearanceItem>(searchResponse.Items.OrderByDescending(c => c.GrantedDate).FirstOrDefault())
+                };
             }
 
-            return null;
+            return response;
         }
         #endregion
 

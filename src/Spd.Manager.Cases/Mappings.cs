@@ -59,7 +59,7 @@ namespace Spd.Manager.Cases
             CreateMap<ClearanceListSortBy, ClearanceSortBy>();
             CreateMap<ClearanceAccessDeleteCommand, ClearanceAccessDeleteCmd>();
             CreateMap<ClearanceLetterResp, ClearanceLetterResponse>();
-            CreateMap<ShareableClearance, ShareableClearanceResponse>();
+            CreateMap<ShareableClearance, ShareableClearanceItem>();
             CreateMap<AppInviteVerifyResp, AppOrgResponse>();
             CreateMap<ApplicantApplicationListQuery, ApplicantApplicationListQry>();
             CreateMap<ApplicantApplicationListResp, ApplicantApplicationListResponse>();
