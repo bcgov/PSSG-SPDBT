@@ -108,9 +108,9 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 
 						<ng-container matColumnDef="emailAddress">
 							<mat-header-cell *matHeaderCellDef>Email</mat-header-cell>
-							<mat-cell *matCellDef="let application">
+							<mat-cell class="mat-cell-email" *matCellDef="let application">
 								<span class="mobile-label">Email:</span>
-								{{ application.emailAddress }}
+								{{ application.emailAddress | default }}
 							</mat-cell>
 						</ng-container>
 
