@@ -41,7 +41,7 @@ namespace Spd.Engine.Search
                 ContactId: contact.ContactId,
                 FromDate: DateTimeOffset.UtcNow.AddMonths(SpdConstants.SHAREABLE_CLEARANCE_EXPIRED_DATE_BUFFER_IN_MONTHS),
                 Shareable: true,
-                WorkWith: org.OrgResult.WorkWith,
+                WorkWith: org.OrgResult.EmployeeInteractionType,
                 ServiceType: Enum.Parse<ServiceTypeEnum>(request.ServiceType.ToString())
             );
             var results = await _appRepo.QueryAsync(qry, ct);

@@ -18,7 +18,7 @@ namespace Spd.Resource.Organizations.Org
             .ForMember(d => d.address1_line1, opt => opt.MapFrom(s => s.AddressLine1))
             .ForMember(d => d.address1_line2, opt => opt.MapFrom(s => s.AddressLine2))
             .ForMember(d => d.emailaddress1, opt => opt.MapFrom(s => s.Email))
-            .ForMember(d => d.spd_workswith, opt => opt.MapFrom(s => GetWorkWithOptionSet(s.WorkWith)))
+            .ForMember(d => d.spd_workswith, opt => opt.MapFrom(s => GetWorkWithOptionSet(s.EmployeeInteractionType)))
             .ForMember(d => d.address1_telephone1, opt => opt.MapFrom(s => s.PhoneNumber))
             .ForMember(d => d.spd_payerpreference, opt => opt.MapFrom(s => (int)Enum.Parse<PayerPreferenceOptionSet>(s.PayerPreference.ToString())))
             .ForMember(d => d.spd_havecontractors, opt => opt.MapFrom(s => (int)Enum.Parse<YesNoOptionSet>(s.ContractorsNeedVulnerableSectorScreening.ToString())))
@@ -26,7 +26,7 @@ namespace Spd.Resource.Organizations.Org
             .ReverseMap()
             .ForMember(d => d.PayerPreference, opt => opt.MapFrom(s => GetPayerPreferenceType(s.spd_payerpreference)))
             .ForMember(d => d.ContractorsNeedVulnerableSectorScreening, opt => opt.MapFrom(s => GetBooleanType(s.spd_havecontractors)))
-            .ForMember(d => d.WorkWith, opt => opt.MapFrom(s => GetEmployeeInteractionCode(s.spd_workswith)))
+            .ForMember(d => d.EmployeeInteractionType, opt => opt.MapFrom(s => GetEmployeeInteractionCode(s.spd_workswith)))
             .ForMember(d => d.LicenseesNeedVulnerableSectorScreening, opt => opt.MapFrom(s => GetBooleanType(s.spd_havelicenseesorregistrants)));
 
             _ = CreateMap<account, OrgResult>()
