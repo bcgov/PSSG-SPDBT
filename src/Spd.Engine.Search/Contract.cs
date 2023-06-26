@@ -9,12 +9,12 @@ namespace Spd.Engine.Search
 
     public abstract record SearchRequest;
     public abstract record SearchResponse;
-    public record SharableClearanceSearchRequest(Guid OrgId, string BcscId, ServiceTypeCode ServiceType) : SearchRequest;
-    public record SharableClearanceSearchResponse : SearchResponse
+    public record ShareableClearanceSearchRequest(Guid OrgId, string BcscId, ServiceTypeCode ServiceType) : SearchRequest;
+    public record ShareableClearanceSearchResponse : SearchResponse
     {
-        public IEnumerable<SharableClearance> Items { get; set; } = Array.Empty<SharableClearance>();
+        public IEnumerable<ShareableClearance> Items { get; set; } = Array.Empty<ShareableClearance>();
     }
-    public record SharableClearance()
+    public record ShareableClearance()
     {
         public Guid OrgId { get; set; }
         public string OrgName { get; set; } = null!;

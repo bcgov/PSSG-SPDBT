@@ -24,7 +24,7 @@ namespace Spd.Manager.Cases
         public Task<ClearanceLetterResponse> Handle(ClearanceLetterQuery query, CancellationToken ct);
         public Task<ApplicantApplicationListResponse> Handle(ApplicantApplicationListQuery request, CancellationToken ct);
         public Task<ApplicantApplicationResponse> Handle(ApplicantApplicationQuery request, CancellationToken ct);
-        public Task<SharableClearanceResponse> Handle(GetSharableClearanceQuery request, CancellationToken ct);
+        public Task<ShareableClearanceResponse> Handle(ShareableClearanceQuery request, CancellationToken ct);
     }
 
     #region application invites
@@ -406,9 +406,9 @@ namespace Spd.Manager.Cases
         public string? FileName { get; set; } = null!;
     }
 
-    public record GetSharableClearanceQuery(Guid OrgId, string BcscId, ServiceTypeCode ServiceType) : IRequest<SharableClearanceResponse>;
+    public record ShareableClearanceQuery(Guid OrgId, string BcscId, ServiceTypeCode ServiceType) : IRequest<ShareableClearanceResponse>;
 
-    public record SharableClearanceResponse()
+    public record ShareableClearanceResponse()
     {
         public Guid OrgId { get; set; }
         public ServiceTypeCode ServiceType { get; set; }

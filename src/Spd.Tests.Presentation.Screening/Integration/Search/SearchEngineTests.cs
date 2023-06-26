@@ -12,15 +12,15 @@ public class SearchEngineTests : ScenarioContextBase
     }
 
     [Fact]
-    public async Task SearchSharableClearance_Success()
+    public async Task SearchShareableClearance_Success()
     {
         var searchEngine = Host.Services.GetRequiredService<ISearchEngine>();
         string bcscId = Guid.NewGuid().ToString();
         await fixture.testData.CreateClearance(bcscId);
         var org2 = await fixture.testData.CreateOrg("org4");
 
-        SharableClearanceSearchResponse searchResponse = (SharableClearanceSearchResponse)await searchEngine.SearchAsync(
-            new SharableClearanceSearchRequest((Guid)org2.accountid, bcscId, Utilities.Shared.ManagerContract.ServiceTypeCode.CRRP_EMPLOYEE),
+        ShareableClearanceSearchResponse searchResponse = (ShareableClearanceSearchResponse)await searchEngine.SearchAsync(
+            new ShareableClearanceSearchRequest((Guid)org2.accountid, bcscId, Utilities.Shared.ManagerContract.ServiceTypeCode.CRRP_EMPLOYEE),
             CancellationToken.None);
         searchResponse.Items.Count().ShouldBe(1);
     }

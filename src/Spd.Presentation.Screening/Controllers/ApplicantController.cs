@@ -97,14 +97,14 @@ namespace Spd.Presentation.Screening.Controllers
         /// </summary>
         /// <param name="orgId"></param>
         /// <returns></returns>
-        /// GET api/applicants/clearances/sharable?withOrgId={withOrgId}&serviceType={serviceType}
-        [Route("api/applicants/clearances/sharable")]
+        /// GET api/applicants/clearances/shareable?withOrgId={withOrgId}&serviceType={serviceType}
+        [Route("api/applicants/clearances/shareable")]
         [Authorize(Policy = "OnlyBcsc")]
         [HttpGet]
-        public async Task<SharableClearanceResponse> GetSharableClearanceWithOrg([FromQuery] Guid withOrgId, [FromQuery] ServiceTypeCode serviceType, CancellationToken ct)
+        public async Task<ShareableClearanceResponse> GetShareableClearanceWithOrg([FromQuery] Guid withOrgId, [FromQuery] ServiceTypeCode serviceType, CancellationToken ct)
         {
             var applicantInfo = _currentUser.GetApplicantIdentityInfo();
-            return await _mediator.Send(new GetSharableClearanceQuery(withOrgId, applicantInfo.Sub, serviceType), ct);
+            return await _mediator.Send(new ShareableClearanceQuery(withOrgId, applicantInfo.Sub, serviceType), ct);
         }
         #endregion
 

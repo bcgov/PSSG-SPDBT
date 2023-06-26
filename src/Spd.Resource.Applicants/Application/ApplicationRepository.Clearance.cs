@@ -63,32 +63,32 @@ internal partial class ApplicationRepository : IApplicationRepository
         };
     }
 
-    public async Task<SharableClearanceListResp> QueryAsync(SharableClearanceQry sharableClearanceQry, CancellationToken ct)
+    public async Task<ShareableClearanceListResp> QueryAsync(ShareableClearanceQry shareableClearanceQry, CancellationToken ct)
     {
-        SharableClearanceListResp resp = new();
-        var keyExisted = DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(sharableClearanceQry.ServiceType.ToString(), out Guid stGuid);
+        ShareableClearanceListResp resp = new();
+        var keyExisted = DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(shareableClearanceQry.ServiceType.ToString(), out Guid stGuid);
         if (!keyExisted)
             throw new ArgumentException("invalid service type");
 
         var clearances = _context.spd_clearances
             .Expand(c => c.spd_CaseID)
-            .Where(c => c._spd_contactid_value == sharableClearanceQry.ContactId)
+            .Where(c => c._spd_contactid_value == shareableClearanceQry.ContactId)
             .Where(c => c._spd_servicetype_value == stGuid)
             .Where(c => c.statecode != DynamicsConstants.StateCode_Inactive)
-            .Where(c => c.spd_expirydate > sharableClearanceQry.FromDate);
+            .Where(c => c.spd_expirydate > shareableClearanceQry.FromDate);
 
-        if (sharableClearanceQry.WorkWith == null || sharableClearanceQry.WorkWith == EmployeeInteractionTypeCode.Neither)
+        if (shareableClearanceQry.WorkWith == null || shareableClearanceQry.WorkWith == EmployeeInteractionTypeCode.Neither)
             clearances = clearances.Where(c => c.spd_workswith == null);
         else 
         {
-            int workwith = (int)Enum.Parse<WorksWithChildrenOptionSet>(sharableClearanceQry.WorkWith.ToString());
+            int workwith = (int)Enum.Parse<WorksWithChildrenOptionSet>(shareableClearanceQry.WorkWith.ToString());
             clearances = clearances.Where(c => c.spd_workswith == workwith);
         }
 
-        if (sharableClearanceQry.Sharable)
+        if (shareableClearanceQry.Shareable)
             clearances = clearances.Where(c => c.spd_sharable == (int)YesNoOptionSet.Yes);
 
-        resp.Clearances = _mapper.Map<IEnumerable<SharableClearanceResp>>(clearances);
+        resp.Clearances = _mapper.Map<IEnumerable<ShareableClearanceResp>>(clearances);
         return resp;
     }
 

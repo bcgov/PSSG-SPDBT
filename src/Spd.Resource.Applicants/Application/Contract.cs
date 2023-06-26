@@ -13,7 +13,7 @@ public interface IApplicationRepository
     public Task<BulkAppsCreateResp> AddBulkAppsAsync(BulkAppsCreateCmd createApplicationCmds, CancellationToken cancellationToken);
     public Task<BulkHistoryListResp> QueryBulkHistoryAsync(BulkHistoryListQry query, CancellationToken cancellationToken);
     public Task<ClearanceListResp> QueryAsync(ClearanceListQry clearanceListQry, CancellationToken ct);
-    public Task<SharableClearanceListResp> QueryAsync(SharableClearanceQry sharableClearanceQry, CancellationToken ct);
+    public Task<ShareableClearanceListResp> QueryAsync(ShareableClearanceQry ShareableClearanceQry, CancellationToken ct);
     public Task DeleteClearanceAccessAsync(ClearanceAccessDeleteCmd clearanceAccessDeleteCmd, CancellationToken cancellationToken);
     public Task<ClearanceLetterResp> QueryLetterAsync(ClearanceLetterQry clearanceLetterQry, CancellationToken ct);
     public Task<ApplicantApplicationListResp> QueryApplicantApplicationListAsync(ApplicantApplicationListQry query, CancellationToken cancellationToken);
@@ -214,8 +214,8 @@ public record ClearanceLetterResp
     public byte[] Content { get; set; } = Array.Empty<byte>();
     public string? FileName { get; set; } = null!;
 }
-public record SharableClearanceQry(Guid ContactId, EmployeeInteractionTypeCode? WorkWith, DateTimeOffset FromDate, ServiceTypeEnum ServiceType, bool Sharable=true);
-public record SharableClearanceResp
+public record ShareableClearanceQry(Guid ContactId, EmployeeInteractionTypeCode? WorkWith, DateTimeOffset FromDate, ServiceTypeEnum ServiceType, bool Shareable=true);
+public record ShareableClearanceResp
 {
     public Guid OrgId { get; set; }
     public ServiceTypeEnum ServiceType { get; set; }
@@ -224,9 +224,9 @@ public record SharableClearanceResp
     public EmployeeInteractionTypeCode? WorkWith { get; set; }
     public Guid ClearanceId { get; set; }
 }
-public record SharableClearanceListResp
+public record ShareableClearanceListResp
 {
-    public IEnumerable<SharableClearanceResp> Clearances { get; set; } = Array.Empty<SharableClearanceResp>();
+    public IEnumerable<ShareableClearanceResp> Clearances { get; set; } = Array.Empty<ShareableClearanceResp>();
 }
 #endregion
 

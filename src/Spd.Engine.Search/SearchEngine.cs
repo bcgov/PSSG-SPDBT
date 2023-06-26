@@ -25,27 +25,27 @@ namespace Spd.Engine.Search
         {
             return request switch
             {
-                SharableClearanceSearchRequest q => await SearchSharableClearanceAsync(q, ct),
+                ShareableClearanceSearchRequest q => await SearchShareableClearanceAsync(q, ct),
                 _ => throw new NotSupportedException($"{request.GetType().Name} is not supported")
             };
         }
 
-        private async Task<SharableClearanceSearchResponse> SearchSharableClearanceAsync(SharableClearanceSearchRequest request, CancellationToken ct)
+        private async Task<ShareableClearanceSearchResponse> SearchShareableClearanceAsync(ShareableClearanceSearchRequest request, CancellationToken ct)
         {
-            SharableClearanceSearchResponse response = new ();
+            ShareableClearanceSearchResponse response = new ();
             var org = (OrgQryResult)await _orgRepo.QueryOrgAsync(new OrgByIdentifierQry(request.OrgId), ct);
             var contact = (ApplicantIdentityQueryResult?)await _identityRepo.Query(new ApplicantIdentityQuery(request.BcscId), ct);
             if (contact == null) return response;
 
-            SharableClearanceQry qry = new SharableClearanceQry(
+            ShareableClearanceQry qry = new ShareableClearanceQry(
                 ContactId: contact.ContactId,
-                FromDate: DateTimeOffset.UtcNow.AddMonths(SpdConstants.SHARABLE_CLEARANCE_EXPIRED_DATE_BUFFER_IN_MONTHS),
-                Sharable: true,
+                FromDate: DateTimeOffset.UtcNow.AddMonths(SpdConstants.SHAREABLE_CLEARANCE_EXPIRED_DATE_BUFFER_IN_MONTHS),
+                Shareable: true,
                 WorkWith: org.OrgResult.WorkWith,
                 ServiceType: Enum.Parse<ServiceTypeEnum>(request.ServiceType.ToString())
             );
             var results = await _appRepo.QueryAsync(qry, ct);
-            response.Items = _mapper.Map<IEnumerable<SharableClearance>>(results.Clearances);
+            response.Items = _mapper.Map<IEnumerable<ShareableClearance>>(results.Clearances);
             return response;
         }
     }

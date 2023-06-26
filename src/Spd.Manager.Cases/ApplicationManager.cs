@@ -24,7 +24,7 @@ namespace Spd.Manager.Cases
         IRequestHandler<ClearanceListQuery, ClearanceListResponse>,
         IRequestHandler<ClearanceAccessDeleteCommand, Unit>,
         IRequestHandler<ClearanceLetterQuery, ClearanceLetterResponse>,
-        IRequestHandler<GetSharableClearanceQuery, SharableClearanceResponse>,
+        IRequestHandler<ShareableClearanceQuery, ShareableClearanceResponse>,
         IRequestHandler<ApplicantApplicationListQuery, ApplicantApplicationListResponse>,
         IRequestHandler<ApplicantApplicationQuery, ApplicantApplicationResponse>,
         IApplicationManager
@@ -292,14 +292,13 @@ namespace Spd.Manager.Cases
             return _mapper.Map<ClearanceLetterResponse>(letter);
         }
 
-        public async Task<SharableClearanceResponse> Handle(GetSharableClearanceQuery query, CancellationToken ct)
+        public async Task<ShareableClearanceResponse> Handle(ShareableClearanceQuery query, CancellationToken ct)
         {
-            SharableClearanceSearchResponse response = (SharableClearanceSearchResponse)await _searchEngine.SearchAsync(new SharableClearanceSearchRequest(query.OrgId, query.BcscId, query.ServiceType), ct);
+            ShareableClearanceSearchResponse response = (ShareableClearanceSearchResponse)await _searchEngine.SearchAsync(new ShareableClearanceSearchRequest(query.OrgId, query.BcscId, query.ServiceType), ct);
             
             if(response.Items.Any())
             {
-                var lastestGrantedDate = response.Items.Min(c => c.GrantedDate);
-                return _mapper.Map<SharableClearanceResponse>(response.Items.FirstOrDefault(c=>c.GrantedDate==lastestGrantedDate));
+                return _mapper.Map<ShareableClearanceResponse>(response.Items.OrderByDescending(c=>c.GrantedDate).FirstOrDefault());
             }
 
             return null;
