@@ -88,7 +88,7 @@ export const ScreeningCheckFilterMap: Record<keyof ScreeningCheckFilter, string>
 
 						<ng-container matColumnDef="emailAddress">
 							<mat-header-cell *matHeaderCellDef>Email</mat-header-cell>
-							<mat-cell *matCellDef="let application">
+							<mat-cell class="mat-cell-email" *matCellDef="let application">
 								<span class="mobile-label">Email:</span>
 								{{ application.email | default }}
 							</mat-cell>

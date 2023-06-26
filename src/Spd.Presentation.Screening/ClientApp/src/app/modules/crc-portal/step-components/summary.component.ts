@@ -72,7 +72,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 							<div class="row mb-2">
 								<div class="offset-xl-3 col-xl-4 offset-lg-4 col-lg-4 col-md-12">
 									<div class="text-label d-block text-muted">Email</div>
-									<div class="text-data">{{ orgData.emailAddress }}</div>
+									<div class="text-data">{{ orgData.emailAddress | default }}</div>
 								</div>
 								<div class="col-xl-4 col-lg-4 col-md-12">
 									<div class="text-label d-block text-muted mt-2 mt-lg-0">Phone Number</div>

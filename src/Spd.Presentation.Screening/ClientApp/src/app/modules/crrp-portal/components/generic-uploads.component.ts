@@ -139,8 +139,7 @@ export class GenericUploadsComponent implements OnInit {
 
 	ngOnInit() {
 		this.authenticationService.waitUntilAuthentication$.subscribe((_subjectData: any) => {
-			const genericUploadEnabled = this.authUserService.genericUploadEnabled;
-			if (!genericUploadEnabled) {
+			if (!this.authUserService.genericUploadEnabled) {
 				this.router.navigate([CrrpRoutes.path(CrrpRoutes.HOME)]);
 			}
 		});
