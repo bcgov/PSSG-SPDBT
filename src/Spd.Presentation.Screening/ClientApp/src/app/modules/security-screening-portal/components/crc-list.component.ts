@@ -8,6 +8,7 @@ import {
 	ApplicationPortalStatusCode,
 } from 'src/app/api/models';
 import { ApplicantService } from 'src/app/api/services';
+import { AppRoutes } from 'src/app/app-routing.module';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { UtilService } from 'src/app/core/services/util.service';
@@ -189,6 +190,11 @@ export class CrcListComponent implements OnInit {
 	) {}
 
 	ngOnInit() {
+		if (!this.authUserService.applicantProfile?.applicantId) {
+			this.router.navigate([AppRoutes.ACCESS_DENIED]);
+			return;
+		}
+
 		this.loadList();
 	}
 

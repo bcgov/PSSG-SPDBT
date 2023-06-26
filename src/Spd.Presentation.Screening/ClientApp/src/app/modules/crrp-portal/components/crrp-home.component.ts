@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
-import { tap } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Observable, tap } from 'rxjs';
 import { ApplicationStatisticsResponse, ContactAuthorizationTypeCode, OrgUserResponse } from 'src/app/api/models';
 import { ApplicationService, OrgUserService } from 'src/app/api/services';
+import { AppRoutes } from 'src/app/app-routing.module';
 import { ApplicationPortalStatisticsTypeCode } from 'src/app/core/code-types/application-portal-statistics-type.model';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { CrrpRoutes } from '../crrp-routing.module';
@@ -246,7 +248,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 		`,
 	],
 })
-export class CrrpHomeComponent {
+export class CrrpHomeComponent implements OnInit {
 	crrpRoutes = CrrpRoutes;
 
 	userPrimary: boolean | null = null;
@@ -255,28 +257,24 @@ export class CrrpHomeComponent {
 	completedClearedCount: number = 0;
 	riskFoundCount: number = 0;
 
-	applicationStatistics$ = this.applicationService
-		.apiOrgsOrgIdApplicationStatisticsGet({
-			orgId: this.authUserService.userInfo?.orgId!,
-		})
-		.pipe(
-			tap((res: ApplicationStatisticsResponse) => {
-				const applicationStatistics = res.statistics ?? {};
-				this.awaitingPaymentCount = applicationStatistics[ApplicationPortalStatisticsTypeCode.AwaitingPayment] ?? 0;
-				this.verifyIdentityCount = applicationStatistics[ApplicationPortalStatisticsTypeCode.VerifyIdentity] ?? 0;
-				this.completedClearedCount =
-					applicationStatistics[ApplicationPortalStatisticsTypeCode.ClearedLastSevenDays] ?? 0;
-				this.riskFoundCount = applicationStatistics[ApplicationPortalStatisticsTypeCode.NotClearedLastSevenDays] ?? 0;
-			})
-		);
+	applicationStatistics$!: Observable<ApplicationStatisticsResponse>;
 
 	constructor(
-		private applicationService: ApplicationService,
+		private router: Router,
 		private authUserService: AuthUserService,
+		private applicationService: ApplicationService,
 		private orgUserService: OrgUserService
 	) {}
 
-	ngOnInit(): void {
+	ngOnInit() {
+		const orgId = this.authUserService.userInfo?.orgId;
+		const userId = this.authUserService.userInfo?.userId;
+
+		if (!orgId || !userId) {
+			this.router.navigate([AppRoutes.ACCESS_DENIED]);
+			return;
+		}
+
 		this.orgUserService
 			.apiOrgsOrgIdUsersUserIdGet({
 				orgId: this.authUserService.userInfo?.orgId!,
@@ -286,6 +284,21 @@ export class CrrpHomeComponent {
 			.subscribe((res: OrgUserResponse) => {
 				this.userPrimary = res ? res.contactAuthorizationTypeCode == ContactAuthorizationTypeCode.Primary : false;
 			});
+
+		this.applicationStatistics$ = this.applicationService
+			.apiOrgsOrgIdApplicationStatisticsGet({
+				orgId: this.authUserService.userInfo?.orgId!,
+			})
+			.pipe(
+				tap((res: ApplicationStatisticsResponse) => {
+					const applicationStatistics = res.statistics ?? {};
+					this.awaitingPaymentCount = applicationStatistics[ApplicationPortalStatisticsTypeCode.AwaitingPayment] ?? 0;
+					this.verifyIdentityCount = applicationStatistics[ApplicationPortalStatisticsTypeCode.VerifyIdentity] ?? 0;
+					this.completedClearedCount =
+						applicationStatistics[ApplicationPortalStatisticsTypeCode.ClearedLastSevenDays] ?? 0;
+					this.riskFoundCount = applicationStatistics[ApplicationPortalStatisticsTypeCode.NotClearedLastSevenDays] ?? 0;
+				})
+			);
 	}
 
 	getRoute(route: string): string {

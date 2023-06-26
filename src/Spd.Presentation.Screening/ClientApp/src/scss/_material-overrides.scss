@@ -150,6 +150,10 @@ mat-label {
   font-weight: 600;
 }
 
+.mat-cell-email {
+  overflow-wrap: anywhere;
+}
+
 .mat-mdc-highlight-row {
   background-color: var(--color-grey-lightest);
 }
@@ -191,7 +195,7 @@ mat-label {
   mat-cell, mat-header-cell, mat-footer-cell {    
     padding: 0 !important;
   }
-
+  
   .mat-mdc-header-row {
     display: none;
   }
