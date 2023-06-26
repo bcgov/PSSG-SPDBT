@@ -23,9 +23,9 @@ import { DelegateAddModalComponent } from './delegate-add-modal.component';
 
 						<ng-container matColumnDef="emailAddress">
 							<mat-header-cell *matHeaderCellDef>Email</mat-header-cell>
-							<mat-cell *matCellDef="let delegate">
+							<mat-cell class="mat-cell-email" *matCellDef="let delegate">
 								<span class="mobile-label">Email:</span>
-								{{ delegate.emailAddress }}
+								{{ delegate.emailAddress | default }}
 							</mat-cell>
 						</ng-container>
 
