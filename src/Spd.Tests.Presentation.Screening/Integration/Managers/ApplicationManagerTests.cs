@@ -67,20 +67,6 @@ public class ApplicationManagerTests : ScenarioContextBase
         alias.ShouldNotBeNull();
     }
 
-    [Fact]
-    public async Task Handle_ApplicantApplicationCreateCommand_withApplicantSub_SharableClearance_Success()
-    {
-        var mediator = Host.Services.GetRequiredService<IMediator>();
-        var org = await fixture.testData.CreateOrg("org1");
-        var request = Create_ApplicantAppCreateRequest();
-        request.SharedClearanceId
-        request.AgreeToShare = true;
-        request.OrgId = (Guid)org.accountid;
-        string bcscApplicantSub = Guid.NewGuid().ToString();
-
-
-    }
-
     public static ApplicantAppCreateRequest Create_ApplicantAppCreateRequest()
     {
         return new ApplicantAppCreateRequest
