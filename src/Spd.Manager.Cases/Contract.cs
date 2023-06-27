@@ -177,7 +177,12 @@ namespace Spd.Manager.Cases
         public bool? AgreeToCriminalCheck { get; set; }
         public bool AgreeToShare { get; set; } = false;
         public Guid? SharedClearanceId { get; set; } = null;
+        public bool? ConsentToShareResultCrc { get; set; } = null;
+        public bool? ConsentToCompletedCrc { get; set; } = null;
+        public bool? ConsentToNotifyNoCrc { get; set; } = null;
+        public bool? ConsentToNotifyRisk { get; set; } = null;
     }
+
     public record AliasCreateRequest
     {
         public string? GivenName { get; set; }
@@ -641,6 +646,18 @@ namespace Spd.Manager.Cases
             RuleFor(a => a.AgreeToVulnerableSectorSearch)
                 .NotEmpty()
                 .Equal(true);
+            RuleFor(a => a.ConsentToCompletedCrc)
+                .Equal(true)
+                .When(a => a.AgreeToShare);
+            RuleFor(a => a.ConsentToNotifyNoCrc)
+                .Equal(true)
+                .When(a => a.AgreeToShare);
+            RuleFor(a => a.ConsentToNotifyRisk)
+                .Equal(true)
+                .When(a => a.AgreeToShare);
+            RuleFor(a => a.ConsentToShareResultCrc)
+                .Equal(true)
+                .When(a => a.AgreeToShare);
         }
     }
     #endregion
