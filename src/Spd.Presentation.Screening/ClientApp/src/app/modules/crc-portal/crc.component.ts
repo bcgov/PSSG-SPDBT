@@ -5,12 +5,12 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
-import { distinctUntilChanged } from 'rxjs';
+import { distinctUntilChanged, Observable, tap } from 'rxjs';
 import {
 	ApplicantAppCreateRequest,
-	ApplicationCreateResponse,
 	EmployeeInteractionTypeCode,
 	IdentityProviderTypeCode,
+	ServiceTypeCode,
 	ShareableClearanceItem,
 	ShareableClearanceResponse,
 } from 'src/app/api/models';
@@ -196,9 +196,8 @@ export class CrcComponent implements OnInit {
 				country: orgData.orgCountry!,
 			});
 
-			// TODO hardcode for now
-			orgData.performPaymentProcess = false;
-			orgData.readonlyTombstone = false;
+			orgData.performPaymentProcess = false; // TODO hardcode  performPaymentProcess for now
+			orgData.readonlyTombstone = false; // TODO hardcode readonlyTombstone for now
 		}
 
 		//auth step 1 - user is not logged in, no state at all
@@ -215,8 +214,10 @@ export class CrcComponent implements OnInit {
 					this.postLoginNavigate(stateInfo);
 					return;
 				}
-			} else {
+			} else if (orgData) {
 				this.assignApplicantUserInfoData(orgData);
+
+				this.populateShareableClearance(orgData.orgId, orgData.serviceType).subscribe();
 			}
 		}
 
@@ -306,6 +307,27 @@ export class CrcComponent implements OnInit {
 		}
 	}
 
+	private populateShareableClearance(
+		orgId: string,
+		serviceType: ServiceTypeCode
+	): Observable<ShareableClearanceResponse> {
+		return this.applicantService
+			.apiApplicantsClearancesShareableGet({
+				withOrgId: orgId,
+				serviceType: serviceType,
+			})
+			.pipe(
+				tap((resp: ShareableClearanceResponse) => {
+					const shareableClearanceItem = resp?.items ? resp.items[0] : null;
+					if (shareableClearanceItem) {
+						this.orgData!.shareableClearanceItem = shareableClearanceItem;
+						this.orgData!.shareableCrcExists = true;
+						this.orgData!.sharedClearanceId = shareableClearanceItem.clearanceId;
+					}
+				})
+			);
+	}
+
 	private postLoginNavigate(stepperData: any): void {
 		this.currentStateInfo = JSON.parse(stepperData);
 		const orgData = JSON.parse(stepperData);
@@ -314,22 +336,8 @@ export class CrcComponent implements OnInit {
 		// Assign this at the end so that the orgData setters have the correct information.
 		this.orgData = orgData;
 
-		this.applicantService
-			.apiApplicantsClearancesShareableGet({
-				withOrgId: orgData.orgId,
-				serviceType: orgData.serviceType,
-			})
-			.pipe()
-			.subscribe((resp: ShareableClearanceResponse) => {
-				const shareableClearanceItem = resp?.items ? resp.items[0] : null;
-				if (shareableClearanceItem) {
-					this.orgData!.shareableClearanceItem = shareableClearanceItem;
-					this.orgData!.shareableCrcExists = true;
-					this.orgData!.sharedClearanceId = shareableClearanceItem.clearanceId;
-				}
-				console.log('shareableClearanceData resp', resp);
-				console.log('this.orgData', this.orgData);
-
+		this.populateShareableClearance(orgData.orgId, orgData.serviceType).subscribe(
+			(_resp: ShareableClearanceResponse) => {
 				for (let i = 0; i <= 2; i++) {
 					let step = this.stepper.steps.get(i);
 					if (step) {
@@ -338,7 +346,8 @@ export class CrcComponent implements OnInit {
 				}
 
 				this.stepper.selectedIndex = 3;
-			});
+			}
+		);
 	}
 
 	onSaveStepperStep(stepper: MatStepper): void {
@@ -358,25 +367,25 @@ export class CrcComponent implements OnInit {
 		body.genderCode = dataToSave.genderCode ? dataToSave.genderCode : null;
 		console.debug('[onSaveStepperStep] dataToSave', body);
 
-		if (this.authenticationService.isLoggedIn()) {
-			body.haveVerifiedIdentity = true;
-			this.applicantService
-				.apiApplicantsScreeningsPost({ body })
-				.pipe()
-				.subscribe((res: ApplicationCreateResponse) => {
-					this.hotToast.success('Application was successfully saved');
-					this.stepper.next();
-				});
-		} else {
-			body.haveVerifiedIdentity = false;
-			this.applicantService
-				.apiApplicantsScreeningsAnonymousPost({ body })
-				.pipe()
-				.subscribe((res: ApplicationCreateResponse) => {
-					this.hotToast.success('Application was successfully saved');
-					this.stepper.next();
-				});
-		}
+		// if (this.authenticationService.isLoggedIn()) {
+		// 	body.haveVerifiedIdentity = true;
+		// 	this.applicantService
+		// 		.apiApplicantsScreeningsPost({ body })
+		// 		.pipe()
+		// 		.subscribe((res: ApplicationCreateResponse) => {
+		// 			this.hotToast.success('Application was successfully saved');
+		// 			this.stepper.next();
+		// 		});
+		// } else {
+		// 	body.haveVerifiedIdentity = false;
+		// 	this.applicantService
+		// 		.apiApplicantsScreeningsAnonymousPost({ body })
+		// 		.pipe()
+		// 		.subscribe((res: ApplicationCreateResponse) => {
+		// 			this.hotToast.success('Application was successfully saved');
+		// 			this.stepper.next();
+		// 		});
+		// }
 	}
 
 	private assignApplicantUserInfoData(orgData: AppInviteOrgData | null): void {

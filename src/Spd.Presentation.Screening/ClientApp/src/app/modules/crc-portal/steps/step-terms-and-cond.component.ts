@@ -108,14 +108,13 @@ export class StepTermsAndCondComponent {
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 
-		this.agreeToShare = this.orgData?.agreeToShare ?? false;
-		// const declarationData = this.declarationComponent.getDataToSave();
-		// if (declarationData.shareCrc == BooleanTypeCode.Yes) {
-		// 	this.showConsentToCrc = true;
-		// } else {
-		// 	this.showConsentToCrc = false;
-		// 	// this.orgData.performPaymentProcess = true; TODO leave as false for now.
-		// }
+		const declarationData = this.declarationComponent.getDataToSave();
+		if (declarationData.agreeToShare) {
+			this.agreeToShare = true;
+		} else {
+			this.agreeToShare = false;
+			// this.orgData.performPaymentProcess = true; TODO leave as false for now.
+		}
 
 		// this.childstepper._stateChanged(); TODO ??
 		this.childstepper.next();

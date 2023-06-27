@@ -17,6 +17,10 @@ export interface ApplicantAppCreateRequest {
   appInviteId?: null | string;
   birthPlace?: null | string;
   city?: null | string;
+  consentToCompletedCrc?: null | boolean;
+  consentToNotifyNoCrc?: null | boolean;
+  consentToNotifyRisk?: null | boolean;
+  consentToShareResultCrc?: null | boolean;
   contractedCompanyName?: null | string;
   country?: null | string;
   dateOfBirth?: null | string;
