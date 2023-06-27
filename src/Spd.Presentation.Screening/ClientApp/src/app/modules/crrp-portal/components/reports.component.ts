@@ -43,7 +43,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 
 			<div class="row mb-4">
 				<div class="col-xxl-6 col-xl-8 col-lg-12 col-md-12 col-sm-12">
-					<mat-table [dataSource]="dataSource">
+					<mat-table [dataSource]="dataSource" class="report-table">
 						<ng-container matColumnDef="reportDate">
 							<mat-cell *matCellDef="let report">
 								<span class="mobile-label"></span>
@@ -70,6 +70,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 					</mat-table>
 					<mat-paginator
 						[showFirstLastButtons]="true"
+						[hidePageSize]="true"
 						[pageIndex]="tablePaginator.pageIndex"
 						[pageSize]="tablePaginator.pageSize"
 						[length]="tablePaginator.length"
@@ -83,6 +84,10 @@ import { UtilService } from 'src/app/core/services/util.service';
 	`,
 	styles: [
 		`
+			.report-table {
+				background-color: var(--color-primary-lightest);
+			}
+
 			.mat-column-action {
 				text-align: right;
 				justify-content: flex-end;
