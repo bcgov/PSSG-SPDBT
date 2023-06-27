@@ -29,6 +29,10 @@ export class UserProfileService extends BaseService {
   static readonly ApiUsersWhoamiGetPath = '/api/users/whoami';
 
   /**
+   * Org user whoami, for orgPortal.
+   *
+   *
+   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `apiUsersWhoamiGet()` instead.
    *
@@ -57,6 +61,10 @@ export class UserProfileService extends BaseService {
   }
 
   /**
+   * Org user whoami, for orgPortal.
+   *
+   *
+   *
    * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiUsersWhoamiGet$Response()` instead.
    *
@@ -79,6 +87,10 @@ export class UserProfileService extends BaseService {
   static readonly ApiApplicantsWhoamiGetPath = '/api/applicants/whoami';
 
   /**
+   * Applicant whoami, for applicantPortal.
+   *
+   *
+   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `apiApplicantsWhoamiGet()` instead.
    *
@@ -107,6 +119,10 @@ export class UserProfileService extends BaseService {
   }
 
   /**
+   * Applicant whoami, for applicantPortal.
+   *
+   *
+   *
    * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiApplicantsWhoamiGet$Response()` instead.
    *

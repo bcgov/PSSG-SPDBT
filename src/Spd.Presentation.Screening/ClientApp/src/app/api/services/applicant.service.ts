@@ -17,6 +17,8 @@ import { ApplicantApplicationListResponse } from '../models/applicant-applicatio
 import { ApplicantApplicationResponse } from '../models/applicant-application-response';
 import { ApplicantUserInfo } from '../models/applicant-user-info';
 import { ApplicationCreateResponse } from '../models/application-create-response';
+import { ServiceTypeCode } from '../models/service-type-code';
+import { ShareableClearanceResponse } from '../models/shareable-clearance-response';
 
 @Injectable({
   providedIn: 'root',
@@ -217,6 +219,62 @@ export class ApplicantService extends BaseService {
 
     return this.apiApplicantsScreeningsAnonymousPost$Response(params,context).pipe(
       map((r: StrictHttpResponse<ApplicationCreateResponse>) => r.body as ApplicationCreateResponse)
+    );
+  }
+
+  /**
+   * Path part for operation apiApplicantsClearancesShareableGet
+   */
+  static readonly ApiApplicantsClearancesShareableGetPath = '/api/applicants/clearances/shareable';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiApplicantsClearancesShareableGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantsClearancesShareableGet$Response(params?: {
+    withOrgId?: string;
+    serviceType?: ServiceTypeCode;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<ShareableClearanceResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, ApplicantService.ApiApplicantsClearancesShareableGetPath, 'get');
+    if (params) {
+      rb.query('withOrgId', params.withOrgId, {});
+      rb.query('serviceType', params.serviceType, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<ShareableClearanceResponse>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiApplicantsClearancesShareableGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantsClearancesShareableGet(params?: {
+    withOrgId?: string;
+    serviceType?: ServiceTypeCode;
+  },
+  context?: HttpContext
+
+): Observable<ShareableClearanceResponse> {
+
+    return this.apiApplicantsClearancesShareableGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<ShareableClearanceResponse>) => r.body as ShareableClearanceResponse)
     );
   }
 

@@ -11,6 +11,8 @@ import {
 	ApplicationCreateResponse,
 	EmployeeInteractionTypeCode,
 	IdentityProviderTypeCode,
+	ShareableClearanceItem,
+	ShareableClearanceResponse,
 } from 'src/app/api/models';
 import { ApplicantService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
@@ -35,8 +37,8 @@ export interface AppInviteOrgData extends ApplicantAppCreateRequest {
 	readonlyTombstone?: boolean | null; // logic for screens - SPDBT-1272
 	performPaymentProcess?: boolean | null;
 	previousNameFlag?: boolean | null;
-	// shareCrc?: string | null;
-	// validCrc?: boolean | null;
+	shareableCrcExists?: boolean | null;
+	shareableClearanceItem?: ShareableClearanceItem | null;
 	recaptcha?: string | null;
 	orgEmail?: null | string; // from AppInviteVerifyResponse
 	orgId?: string; // from AppInviteVerifyResponse
@@ -312,14 +314,31 @@ export class CrcComponent implements OnInit {
 		// Assign this at the end so that the orgData setters have the correct information.
 		this.orgData = orgData;
 
-		for (let i = 0; i <= 2; i++) {
-			let step = this.stepper.steps.get(i);
-			if (step) {
-				step.completed = true;
-			}
-		}
+		this.applicantService
+			.apiApplicantsClearancesShareableGet({
+				withOrgId: orgData.orgId,
+				serviceType: orgData.serviceType,
+			})
+			.pipe()
+			.subscribe((resp: ShareableClearanceResponse) => {
+				const shareableClearanceItem = resp?.items ? resp.items[0] : null;
+				if (shareableClearanceItem) {
+					this.orgData!.shareableClearanceItem = shareableClearanceItem;
+					this.orgData!.shareableCrcExists = true;
+					this.orgData!.sharedClearanceId = shareableClearanceItem.clearanceId;
+				}
+				console.log('shareableClearanceData resp', resp);
+				console.log('this.orgData', this.orgData);
 
-		this.stepper.selectedIndex = 3;
+				for (let i = 0; i <= 2; i++) {
+					let step = this.stepper.steps.get(i);
+					if (step) {
+						step.completed = true;
+					}
+				}
+
+				this.stepper.selectedIndex = 3;
+			});
 	}
 
 	onSaveStepperStep(stepper: MatStepper): void {

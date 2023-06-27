@@ -2,12 +2,13 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/api/models';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { CaptchaResponse, CaptchaResponseType } from 'src/app/shared/components/captcha-v2.component';
 import { AppInviteOrgData, CrcFormStepComponent } from '../crc.component';
 
 export class DeclarationModel {
 	agreeToCompleteAndAccurate: string | null = null;
-	shareCrc: string | null = null;
+	agreeToShare: string | null = null;
 }
 
 @Component({
@@ -35,15 +36,15 @@ export class DeclarationModel {
 							>
 						</div>
 					</div>
-					<!-- <div class="row" *ngIf="orgData.validCrc">
+					<div class="row" *ngIf="orgData.shareableCrcExists">
 						<div class="offset-lg-3 col-lg-6 col-md-12 col-sm-12">
 							<mat-divider class="my-3"></mat-divider>
 							<p class="fs-5">Share your existing criminal record check</p>
 							<div>
-								You have an existing valid criminal record check. Do you want to share the results of this criminal
-								record check at no cost?
+								You have an existing criminal record check for working with 'TODO vulnerable adults', issued on
+								'TODOApril XX, 2022'. Do you want to share the results of this criminal record check at no cost?
 							</div>
-							<mat-radio-group aria-label="Select an option" formControlName="shareCrc">
+							<mat-radio-group aria-label="Select an option" formControlName="agreeToShare">
 								<mat-radio-button [value]="booleanTypeCodes.Yes">
 									Yes, share my existing criminal record check
 								</mat-radio-button>
@@ -58,14 +59,14 @@ export class DeclarationModel {
 							<mat-error
 								class="mat-option-error"
 								*ngIf="
-									(form.get('shareCrc')?.dirty || form.get('shareCrc')?.touched) &&
-									form.get('shareCrc')?.invalid &&
-									form.get('shareCrc')?.hasError('required')
+									(form.get('agreeToShare')?.dirty || form.get('agreeToShare')?.touched) &&
+									form.get('agreeToShare')?.invalid &&
+									form.get('agreeToShare')?.hasError('required')
 								"
 								>An option must be selected</mat-error
 							>
 						</div>
-					</div> -->
+					</div>
 				</div>
 			</form>
 
@@ -99,11 +100,13 @@ export class DeclarationComponent implements OnInit, CrcFormStepComponent {
 		this.form = this.formBuilder.group(
 			{
 				agreeToCompleteAndAccurate: new FormControl('', [Validators.required]),
-				// shareCrc: new FormControl(''),
+				agreeToShare: new FormControl(''),
+			},
+			{
+				validators: [
+					FormGroupValidators.conditionalRequiredValidator('agreeToShare', (form) => data.shareableCrcExists ?? false),
+				],
 			}
-			// {
-			// 	validators: [FormGroupValidators.conditionalRequiredValidator('shareCrc', (form) => data.validCrc ?? false)],
-			// }
 		);
 	}
 	get orgData(): AppInviteOrgData | null {

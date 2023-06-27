@@ -11,6 +11,7 @@ export interface ApplicantAppCreateRequest {
   addressLine2?: null | string;
   agreeToCompleteAndAccurate?: null | boolean;
   agreeToCriminalCheck?: null | boolean;
+  agreeToShare?: boolean;
   agreeToVulnerableSectorSearch?: null | boolean;
   aliases?: null | Array<AliasCreateRequest>;
   appInviteId?: null | string;
@@ -37,5 +38,6 @@ export interface ApplicantAppCreateRequest {
   requireDuplicateCheck?: boolean;
   screeningType?: ScreeningTypeCode;
   serviceType?: ServiceTypeCode;
+  sharedClearanceId?: null | string;
   surname?: null | string;
 }

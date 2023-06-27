@@ -68,6 +68,8 @@ export { RegistrationTypeCode } from './models/registration-type-code';
 export { ScreeningTypeCode } from './models/screening-type-code';
 export { ScreeningsCountTypeCode } from './models/screenings-count-type-code';
 export { ServiceTypeCode } from './models/service-type-code';
+export { ShareableClearanceItem } from './models/shareable-clearance-item';
+export { ShareableClearanceResponse } from './models/shareable-clearance-response';
 export { UserInfo } from './models/user-info';
 export { UserInfoMsgTypeCode } from './models/user-info-msg-type-code';
 export { UserProfileResponse } from './models/user-profile-response';
