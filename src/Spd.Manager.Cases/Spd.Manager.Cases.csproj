@@ -15,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Spd.Engine.Validation\Spd.Engine.Validation.csproj" />
     <ProjectReference Include="..\Spd.Resource.Applicants\Spd.Resource.Applicants.csproj" />
+    <ProjectReference Include="..\Spd.Resource.Organizations\Spd.Resource.Organizations.csproj" />
     <ProjectReference Include="..\Spd.Utilities.TempFileStorage\Spd.Utilities.TempFileStorage.csproj" />
   </ItemGroup>
 

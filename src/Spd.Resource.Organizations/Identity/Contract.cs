@@ -1,4 +1,6 @@
-﻿namespace Spd.Resource.Organizations.Identity
+﻿using Spd.Resource.Organizations.Registration;
+
+namespace Spd.Resource.Organizations.Identity
 {
     public interface IIdentityRepository
     {
@@ -8,7 +10,7 @@
     //query
     public abstract record IdentityQuery;
     public record UserIdentityQuery(Guid UserGuid, Guid? OrgGuid) : IdentityQuery;
-    public record ApplicantIdentityQuery(string UserGuid) : IdentityQuery;
+    public record ApplicantIdentityQuery(string UserGuid, IdentityProviderTypeCode IdentityProviderType) : IdentityQuery;
     public abstract record IdentityQueryResult;
     public record UserIdentityQueryResult(IEnumerable<Identity> Identities) : IdentityQueryResult;
     public record ApplicantIdentityQueryResult : IdentityQueryResult
