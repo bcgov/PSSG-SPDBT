@@ -4,6 +4,7 @@ using Spd.Engine.Validation;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.ApplicationInvite;
 using Spd.Resource.Organizations.Identity;
+using Spd.Resource.Organizations.Registration;
 using Spd.Utilities.Shared.ResourceContracts;
 using Spd.Utilities.TempFileStorage;
 
@@ -147,7 +148,7 @@ namespace Spd.Manager.Cases
                cmd.SharedClearanceId.HasValue &&
                cmd.CreatedByApplicantBcscId != null)//bcsc authenticated and has sharable clearance
             {
-                ApplicantIdentityQueryResult contact = (ApplicantIdentityQueryResult)await _identityRepository.Query(new ApplicantIdentityQuery(cmd.CreatedByApplicantBcscId), ct);
+                ApplicantIdentityQueryResult contact = (ApplicantIdentityQueryResult)await _identityRepository.Query(new ApplicantIdentityQuery(cmd.CreatedByApplicantBcscId, IdentityProviderTypeCode.BcServicesCard), ct);
                 if (contact == null)
                     throw new ArgumentException("No contact found");
                 cmd.ContactId = contact.ContactId;
