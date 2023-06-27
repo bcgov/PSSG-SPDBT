@@ -44,7 +44,7 @@ namespace Spd.Manager.Cases
             IMapper mapper,
             ITempFileStorageService tempFile,
             IDuplicateCheckEngine duplicateCheckEngine,
-            ISearchEngine searchEngine)
+            ISearchEngine searchEngine,
             IIdentityRepository identityRepository)
         {
             _applicationRepository = applicationRepository;

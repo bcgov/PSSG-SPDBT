@@ -2,6 +2,7 @@
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Organizations.Identity;
 using Spd.Resource.Organizations.Org;
+using Spd.Resource.Organizations.Registration;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.ResourceContracts;
 
@@ -34,7 +35,7 @@ namespace Spd.Engine.Search
         {
             ShareableClearanceSearchResponse response = new ();
             var org = (OrgQryResult)await _orgRepo.QueryOrgAsync(new OrgByIdentifierQry(request.OrgId), ct);
-            var contact = (ApplicantIdentityQueryResult?)await _identityRepo.Query(new ApplicantIdentityQuery(request.BcscId), ct);
+            var contact = (ApplicantIdentityQueryResult?)await _identityRepo.Query(new ApplicantIdentityQuery(request.BcscId, IdentityProviderTypeCode.BcServicesCard), ct);
             if (contact == null) return response;
 
             ShareableClearanceQry qry = new ShareableClearanceQry(
