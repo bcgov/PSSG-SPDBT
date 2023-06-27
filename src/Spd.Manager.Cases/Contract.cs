@@ -24,6 +24,7 @@ namespace Spd.Manager.Cases
         public Task<ClearanceLetterResponse> Handle(ClearanceLetterQuery query, CancellationToken ct);
         public Task<ApplicantApplicationListResponse> Handle(ApplicantApplicationListQuery request, CancellationToken ct);
         public Task<ApplicantApplicationResponse> Handle(ApplicantApplicationQuery request, CancellationToken ct);
+        public Task<ShareableClearanceResponse> Handle(ShareableClearanceQuery request, CancellationToken ct);
     }
 
     #region application invites
@@ -406,6 +407,22 @@ namespace Spd.Manager.Cases
         public byte[] Content { get; set; } = Array.Empty<byte>();
         public string? FileName { get; set; } = null!;
     }
+
+    public record ShareableClearanceQuery(Guid OrgId, string BcscId, ServiceTypeCode ServiceType) : IRequest<ShareableClearanceResponse>;
+
+    public record ShareableClearanceResponse()
+    {
+        public IEnumerable<ShareableClearanceItem> Items { get; set; } = Array.Empty<ShareableClearanceItem>();
+    }
+    public record ShareableClearanceItem()
+    {
+        public Guid OrgId { get; set; }
+        public ServiceTypeCode ServiceType { get; set; }
+        public DateTimeOffset? GrantedDate { get; set; }
+        public DateTimeOffset? ExpiryDate { get; set; }
+        public Guid ClearanceId { get; set; }
+    }
+
     #endregion
 
     #region validator

@@ -1,0 +1,53 @@
+﻿using AutoMapper;
+using Spd.Resource.Applicants.Application;
+using Spd.Resource.Organizations.Identity;
+using Spd.Resource.Organizations.Org;
+using Spd.Resource.Organizations.Registration;
+using Spd.Utilities.Shared;
+using Spd.Utilities.Shared.ResourceContracts;
+
+namespace Spd.Engine.Search
+{
+    internal class SearchEngine : ISearchEngine
+    {
+        private readonly IMapper _mapper;
+        private readonly IApplicationRepository _appRepo;
+        private readonly IOrgRepository _orgRepo;
+        private readonly IIdentityRepository _identityRepo;
+
+        public SearchEngine(IApplicationRepository appRepo, IOrgRepository orgRepo, IIdentityRepository identityRepo, IMapper mapper)
+        {
+            _appRepo = appRepo;
+            _orgRepo = orgRepo;
+            _identityRepo = identityRepo;
+            _mapper = mapper;
+        }
+        public async Task<SearchResponse?> SearchAsync(SearchRequest request, CancellationToken ct)
+        {
+            return request switch
+            {
+                ShareableClearanceSearchRequest q => await SearchShareableClearanceAsync(q, ct),
+                _ => throw new NotSupportedException($"{request.GetType().Name} is not supported")
+            };
+        }
+
+        private async Task<ShareableClearanceSearchResponse> SearchShareableClearanceAsync(ShareableClearanceSearchRequest request, CancellationToken ct)
+        {
+            ShareableClearanceSearchResponse response = new ();
+            var org = (OrgQryResult)await _orgRepo.QueryOrgAsync(new OrgByIdentifierQry(request.OrgId), ct);
+            var contact = (ApplicantIdentityQueryResult?)await _identityRepo.Query(new ApplicantIdentityQuery(request.BcscId, IdentityProviderTypeCode.BcServicesCard), ct);
+            if (contact == null) return response;
+
+            ShareableClearanceQry qry = new ShareableClearanceQry(
+                ContactId: contact.ContactId,
+                FromDate: DateTimeOffset.UtcNow.AddMonths(SpdConstants.SHAREABLE_CLEARANCE_EXPIRED_DATE_BUFFER_IN_MONTHS),
+                Shareable: true,
+                WorkWith: org.OrgResult.EmployeeInteractionType,
+                ServiceType: Enum.Parse<ServiceTypeEnum>(request.ServiceType.ToString())
+            );
+            var results = await _appRepo.QueryAsync(qry, ct);
+            response.Items = _mapper.Map<IEnumerable<ShareableClearance>>(results.Clearances);
+            return response;
+        }
+    }
+}

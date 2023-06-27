@@ -54,7 +54,8 @@ public class DynamicsTestData
                 name = $"{testPrefix}{orgName}",
                 spd_organizationlegalname = $"{testPrefix}{orgName}",
                 address1_city = "victoria",
-                spd_orgguid = WebAppFixture.LOGON_ORG_GUID.ToString()
+                spd_orgguid = WebAppFixture.LOGON_ORG_GUID.ToString(),
+                spd_workswith = (int)WorksWithChildrenOptionSet.Adults
             };
             _context.AddToaccounts(newOne);
             await _context.SaveChangesAsync();
@@ -204,6 +205,75 @@ public class DynamicsTestData
             spd_orgregistration? orgReg = _context.spd_orgregistrations.Where(o => o.spd_orgregistrationid == newOne.spd_orgregistrationid).FirstOrDefault();
             return orgReg;
         }
+    }
+
+    public async Task<spd_clearance> CreateClearance(string bcscId)
+    {
+        account org = await CreateOrg("org1");
+        Guid identityId = Guid.NewGuid();
+        spd_identity identity = new spd_identity
+        {
+            spd_identityid = identityId,
+            spd_userguid = bcscId,
+            spd_type = (int)IdentityTypeOptionSet.BcServicesCard
+        };
+        _context.AddTospd_identities(identity);
+
+        Guid contactId = Guid.NewGuid();
+        contact contact = new contact
+        {
+            firstname = "applicantfn",
+            lastname = "applicantln",
+            contactid = contactId,
+            birthdate = new Microsoft.OData.Edm.Date(2000, 1, 1)
+        };
+        _context.AddTocontacts(contact);
+        _context.AddLink(contact, nameof(contact.spd_contact_spd_identity), identity);
+
+        //create clearance
+        Guid clearanceId = Guid.NewGuid();
+        spd_clearance clearance = new spd_clearance
+        {
+            spd_clearanceid = clearanceId,
+            spd_dategranted = new DateTimeOffset(2023, 6, 1, 0, 0, 0, TimeSpan.Zero),
+            spd_expirydate = new DateTimeOffset(2030, 7, 1, 0, 0, 0, TimeSpan.Zero),
+            spd_workswith = (int)WorksWithChildrenOptionSet.Adults,
+            spd_sharable = (int)YesNoOptionSet.Yes
+        };
+        _context.AddTospd_clearances(clearance);
+        _context.SetLink(clearance, nameof(clearance.spd_ServiceType), _context.LookupServiceType("CRRP_EMPLOYEE"));
+        _context.SetLink(clearance, nameof(clearance.spd_ContactID), contact);
+
+        //create application
+        Guid id = Guid.NewGuid();
+        spd_application newOne = new spd_application
+        {
+            spd_applicationid = id,
+            spd_firstname = $"{testPrefix}appfirstname",
+            spd_lastname = $"{testPrefix}applastname",
+            spd_dateofbirth = new Microsoft.OData.Edm.Date(2000, 1, 1),
+            statecode = DynamicsConstants.StatusCode_Active,
+        };
+        _context.AddTospd_applications(newOne);
+        _context.SetLink(newOne, nameof(newOne.spd_OrganizationId), org);
+
+        //create case
+        Guid incidentId = Guid.NewGuid();
+        incident incident = new incident
+        {
+            incidentid = incidentId,
+            title = $"{testPrefix}incident",
+            prioritycode = 1,
+            _spd_applicationid_value = id,
+
+        };
+        _context.AddToincidents(incident);
+        _context.SetLink(incident, nameof(incident.customerid_account), org);
+        _context.SetLink(incident, nameof(incident.customerid_contact), contact);
+        _context.SetLink(incident, nameof(incident.spd_OrganizationId), org);
+        _context.AddLink(incident, nameof(incident.spd_incident_spd_clearance), clearance);
+        await _context.SaveChangesAsync();
+        return clearance;
     }
 }
 
