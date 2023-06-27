@@ -104,7 +104,7 @@ namespace Spd.Manager.Membership.OrgRegistration
             if (_currentUser.IsAuthenticated())
             {
                 var orgReg = await _orgRegRepository.Query(new OrgRegistrationQuery(null, _currentUser.GetBizGuid()), cancellationToken);
-                if (orgReg != null)
+                if (orgReg != null && orgReg.OrgRegistrationResults.Any())
                 {
                     resp.HasPotentialDuplicate = true;
                     resp.DuplicateFoundIn = OrgProcess.Registration;
