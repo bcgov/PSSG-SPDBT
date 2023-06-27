@@ -15,6 +15,7 @@ import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
+import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { CrrpRoutes } from '../crrp-routing.module';
 
 @Component({
@@ -34,7 +35,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 					></app-file-upload>
 				</div>
 			</div>
-			<ng-container *ngIf="showResult">
+			<ng-container *ngIf="showUploadMessages">
 				<div class="row" *ngIf="validationErrs.length > 0">
 					<div class="col-lg-8 col-md-12 col-sm-12">
 						<app-alert type="danger" icon="error"
@@ -123,9 +124,10 @@ export class GenericUploadsComponent implements OnInit {
 	dataSource: MatTableDataSource<BulkHistoryResponse> = new MatTableDataSource<BulkHistoryResponse>([]);
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
 	columns: string[] = ['uploadedDateTime', 'uploadedByUserFullName', 'fileName', 'batchNumber'];
-	showResult = false;
+	showUploadMessages = false;
 	validationErrs: Array<ValidationErr> = [];
 
+	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 	@ViewChild('paginator') paginator!: MatPaginator;
 
 	constructor(
@@ -148,7 +150,7 @@ export class GenericUploadsComponent implements OnInit {
 	}
 
 	onUploadFile(files: any) {
-		this.showResult = false;
+		this.showUploadMessages = false;
 
 		const body = {
 			File: files[0],
@@ -166,7 +168,10 @@ export class GenericUploadsComponent implements OnInit {
 
 				// if validation errors or not a duplicate, show result of error messages or success message
 				if (this.validationErrs.length > 0 || duplicateCheckResponses.length == 0) {
-					this.showResult = true;
+					this.showUploadMessages = true;
+					if (this.validationErrs.length == 0 && duplicateCheckResponses.length == 0) {
+						this.removeFileFromView(); // on success, remove file from upload area
+					}
 					this.loadList();
 					return;
 				}
@@ -222,18 +227,24 @@ export class GenericUploadsComponent implements OnInit {
 					.subscribe((response: boolean) => {
 						if (response) {
 							this.saveBulkUpload(files[0]);
+						} else {
+							this.removeFileFromView(); // on cancel, remove file from upload area
 						}
 					});
 			});
 	}
 
 	onRemoveFile(_files: any) {
-		this.showResult = false;
+		this.showUploadMessages = false;
 	}
 
 	onPageChanged(page: PageEvent): void {
 		this.queryParams.page = page.pageIndex;
 		this.loadList();
+	}
+
+	private removeFileFromView(): void {
+		this.fileUploadComponent.removeAllFiles();
 	}
 
 	private saveBulkUpload(file: any): void {
@@ -246,7 +257,8 @@ export class GenericUploadsComponent implements OnInit {
 			.apiOrgsOrgIdApplicationsBulkPost({ orgId: this.authUserService.userInfo?.orgId!, body })
 			.pipe()
 			.subscribe((_resp: BulkUploadCreateResponse) => {
-				this.showResult = true;
+				this.showUploadMessages = true;
+				this.removeFileFromView(); // on success, remove file from upload area
 				this.loadList();
 			}); // should be no errors since this file has already been processed
 	}

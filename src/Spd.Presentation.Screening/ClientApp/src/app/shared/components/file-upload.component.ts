@@ -187,6 +187,10 @@ export class FileUploadComponent {
 		this.files = currentFiles;
 	}
 
+	removeAllFiles(): void {
+		this.files = [];
+	}
+
 	getFileIcon(file: File): IconType {
 		return FileUploadHelper.getFileIcon(file);
 	}
