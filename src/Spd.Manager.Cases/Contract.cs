@@ -121,7 +121,7 @@ namespace Spd.Manager.Cases
 
     #region application
     public record ApplicationCreateCommand(ApplicationCreateRequest ApplicationCreateRequest, Guid OrgId, Guid UserId, IFormFile ConsentFormFile) : IRequest<ApplicationCreateResponse>;
-    public record ApplicantApplicationCreateCommand(ApplicantAppCreateRequest ApplicationCreateRequest, string? ApplicantSub = null) : IRequest<ApplicationCreateResponse>;
+    public record ApplicantApplicationCreateCommand(ApplicantAppCreateRequest ApplicationCreateRequest, string? BcscId = null) : IRequest<ApplicationCreateResponse>;
     public record ApplicationListQuery : IRequest<ApplicationListResponse>
     {
         public AppListFilterBy? FilterBy { get; set; } //null means no filter
@@ -174,7 +174,7 @@ namespace Spd.Manager.Cases
         public Guid? AppInviteId { get; set; }
         public bool? AgreeToVulnerableSectorSearch { get; set; }
         public bool? AgreeToCriminalCheck { get; set; }
-        public bool? AgreeToShare { get; set; } = false;
+        public bool AgreeToShare { get; set; } = false;
         public Guid? SharedClearanceId { get; set; } = null;
     }
     public record AliasCreateRequest

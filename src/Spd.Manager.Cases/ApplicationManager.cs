@@ -141,18 +141,17 @@ namespace Spd.Manager.Cases
             var cmd = _mapper.Map<ApplicationCreateCmd>(command.ApplicationCreateRequest);
             cmd.OrgId = command.ApplicationCreateRequest.OrgId;
             cmd.ConsentFormTempFile = null;
-            cmd.CreatedByApplicantSub = command.ApplicantSub;
+            cmd.CreatedByApplicantBcscId = command.BcscId;
 
-            if (command.ApplicationCreateRequest.AgreeToShare != null &&
-                (bool)command.ApplicationCreateRequest.AgreeToShare &&
+            if (command.ApplicationCreateRequest.AgreeToShare &&
                cmd.SharedClearanceId.HasValue &&
-               cmd.CreatedByApplicantSub != null)//bcsc authenticated and has sharable clearance
+               cmd.CreatedByApplicantBcscId != null)//bcsc authenticated and has sharable clearance
             {
-                ApplicantIdentityQueryResult contact = (ApplicantIdentityQueryResult)await _identityRepository.Query(new ApplicantIdentityQuery(cmd.CreatedByApplicantSub), ct);
+                ApplicantIdentityQueryResult contact = (ApplicantIdentityQueryResult)await _identityRepository.Query(new ApplicantIdentityQuery(cmd.CreatedByApplicantBcscId), ct);
                 if (contact == null)
                     throw new ArgumentException("No contact found");
                 cmd.ContactId = contact.ContactId;
-                await _applicationRepository.SubmitAppWithSharableClearanceAsync(cmd, ct);
+                await _applicationRepository.ProcessAppWithSharableClearanceAsync(cmd, ct);
                 result.CreateSuccess = true;
                 result.ApplicationId = null;
             }

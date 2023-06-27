@@ -43,10 +43,11 @@ namespace Spd.Resource.Organizations.Identity
 
         private async Task<ApplicantIdentityQueryResult> HandleApplicantIdentityQuery(ApplicantIdentityQuery queryRequest, CancellationToken ct)
         {
+            int identityType = (int)Enum.Parse<IdentityTypeOptionSet>(queryRequest.IdentityProviderType.ToString());
             var applicantIdentity = await _dynaContext.spd_identities
                 .Expand(i => i.spd_ContactId)
                 .Where(i => i.spd_userguid == queryRequest.UserGuid)
-                .Where(i => i.spd_type == (int)IdentityTypeOptionSet.BcServicesCard)
+                .Where(i => i.spd_type == identityType)
                 .Where(i => i.statecode == DynamicsConstants.StateCode_Active)
                 .FirstOrDefaultAsync(ct);
 

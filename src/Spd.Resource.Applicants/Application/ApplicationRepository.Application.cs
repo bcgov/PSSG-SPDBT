@@ -141,7 +141,7 @@ internal partial class ApplicationRepository : IApplicationRepository
         return _mapper.Map<ApplicationResult>(application);
     }
 
-    public async Task SubmitAppWithSharableClearanceAsync(ApplicationCreateCmd createApplicationCmd, CancellationToken ct)
+    public async Task ProcessAppWithSharableClearanceAsync(ApplicationCreateCmd createApplicationCmd, CancellationToken ct)
     {
         if (!createApplicationCmd.SharedClearanceId.HasValue)
             throw new ArgumentException("SharedClearanceId cannot be null");
@@ -299,7 +299,7 @@ internal partial class ApplicationRepository : IApplicationRepository
         }
 
         contact? contact;
-        if (createApplicationCmd.CreatedByApplicantSub != null)//authenticated with 
+        if (createApplicationCmd.CreatedByApplicantBcscId != null)//authenticated with 
         {
             contact = ProcessContactWithBcscApplicant(createApplicationCmd);
         }
@@ -323,7 +323,7 @@ internal partial class ApplicationRepository : IApplicationRepository
     {
         var identity = _context.spd_identities
                .Expand(i => i.spd_ContactId)
-               .Where(i => i.spd_userguid == createApplicationCmd.CreatedByApplicantSub)
+               .Where(i => i.spd_userguid == createApplicationCmd.CreatedByApplicantBcscId)
                .Where(i => i.spd_type == (int)IdentityTypeOptionSet.BcServicesCard)
                .FirstOrDefault();
         if (identity == null)
@@ -331,7 +331,7 @@ internal partial class ApplicationRepository : IApplicationRepository
             identity = new spd_identity
             {
                 spd_identityid = Guid.NewGuid(),
-                spd_userguid = createApplicationCmd.CreatedByApplicantSub,
+                spd_userguid = createApplicationCmd.CreatedByApplicantBcscId,
                 spd_type = (int)IdentityTypeOptionSet.BcServicesCard
             };
             _context.AddTospd_identities(identity);
