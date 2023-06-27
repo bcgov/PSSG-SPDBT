@@ -4,6 +4,8 @@ using Spd.Engine.Search;
 using Spd.Engine.Validation;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.ApplicationInvite;
+using Spd.Resource.Organizations.Identity;
+using Spd.Resource.Organizations.Registration;
 using Spd.Utilities.Shared.ResourceContracts;
 using Spd.Utilities.TempFileStorage;
 
@@ -34,6 +36,7 @@ namespace Spd.Manager.Cases
         private readonly IMapper _mapper;
         private readonly ITempFileStorageService _tempFile;
         private readonly IDuplicateCheckEngine _duplicateCheckEngine;
+        private readonly IIdentityRepository _identityRepository;
         private readonly ISearchEngine _searchEngine;
 
         public ApplicationManager(IApplicationRepository applicationRepository,
@@ -42,12 +45,14 @@ namespace Spd.Manager.Cases
             ITempFileStorageService tempFile,
             IDuplicateCheckEngine duplicateCheckEngine,
             ISearchEngine searchEngine)
+            IIdentityRepository identityRepository)
         {
             _applicationRepository = applicationRepository;
             _applicationInviteRepository = applicationInviteRepository;
             _tempFile = tempFile;
             _mapper = mapper;
             _duplicateCheckEngine = duplicateCheckEngine;
+            _identityRepository = identityRepository;
             _searchEngine = searchEngine;
         }
 
@@ -136,27 +141,44 @@ namespace Spd.Manager.Cases
             return result;
         }
 
-        public async Task<ApplicationCreateResponse> Handle(ApplicantApplicationCreateCommand request, CancellationToken ct)
+        public async Task<ApplicationCreateResponse> Handle(ApplicantApplicationCreateCommand command, CancellationToken ct)
         {
             var result = new ApplicationCreateResponse();
-            var cmd = _mapper.Map<ApplicationCreateCmd>(request.ApplicationCreateRequest);
-            cmd.OrgId = request.ApplicationCreateRequest.OrgId;
+            var cmd = _mapper.Map<ApplicationCreateCmd>(command.ApplicationCreateRequest);
+            cmd.OrgId = command.ApplicationCreateRequest.OrgId;
             cmd.ConsentFormTempFile = null;
-            cmd.CreatedByApplicantSub = request.ApplicantSub;
-            Guid? applicationId = await _applicationRepository.AddApplicationAsync(cmd, ct);
-            if (applicationId.HasValue)
+            cmd.CreatedByApplicantBcscId = command.BcscId;
+
+            if (command.ApplicationCreateRequest.AgreeToShare &&
+               cmd.SharedClearanceId.HasValue &&
+               cmd.CreatedByApplicantBcscId != null)//bcsc authenticated and has sharable clearance
             {
-                result.ApplicationId = applicationId.Value;
+                ApplicantIdentityQueryResult contact = (ApplicantIdentityQueryResult)await _identityRepository.Query(new ApplicantIdentityQuery(cmd.CreatedByApplicantBcscId, IdentityProviderTypeCode.BcServicesCard), ct);
+                if (contact == null)
+                    throw new ArgumentException("No contact found");
+                cmd.ContactId = contact.ContactId;
+                await _applicationRepository.ProcessAppWithSharableClearanceAsync(cmd, ct);
                 result.CreateSuccess = true;
+                result.ApplicationId = null;
+            }
+            else
+            {
+                //no sharable clearance
+                Guid? applicationId = await _applicationRepository.AddApplicationAsync(cmd, ct);
+                if (applicationId.HasValue)
+                {
+                    result.ApplicationId = applicationId.Value;
+                    result.CreateSuccess = true;
+                }
             }
 
-            if (request.ApplicationCreateRequest.AppInviteId != null)
+            if (command.ApplicationCreateRequest.AppInviteId != null)
             {
                 await _applicationInviteRepository.DeleteApplicationInvitesAsync(
                     new ApplicationInviteDeleteCmd()
                     {
-                        ApplicationInviteId = (Guid)request.ApplicationCreateRequest.AppInviteId,
-                        OrgId = request.ApplicationCreateRequest.OrgId,
+                        ApplicationInviteId = (Guid)command.ApplicationCreateRequest.AppInviteId,
+                        OrgId = command.ApplicationCreateRequest.OrgId,
                     }, ct);
             }
             return result;

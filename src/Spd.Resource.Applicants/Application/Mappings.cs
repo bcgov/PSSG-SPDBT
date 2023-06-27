@@ -48,7 +48,7 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.spd_surname, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.Surname)));
 
             _ = CreateMap<ApplicationCreateCmd, contact>()
-            .ForMember(d => d.contactid, opt => opt.MapFrom(s => Guid.NewGuid()))
+            .ForMember(d => d.contactid, opt => opt.Ignore())
             .ForMember(d => d.firstname, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.GivenName)))
             .ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.MiddleName1)))
             .ForMember(d => d.spd_middlename2, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.MiddleName2)))

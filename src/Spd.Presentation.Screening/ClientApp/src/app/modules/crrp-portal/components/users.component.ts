@@ -77,7 +77,7 @@ import { UserDialogData, UserEditModalComponent } from './user-edit-modal.compon
 
 						<ng-container matColumnDef="email">
 							<mat-header-cell *matHeaderCellDef>Email</mat-header-cell>
-							<mat-cell *matCellDef="let user">
+							<mat-cell class="mat-cell-email" *matCellDef="let user">
 								<span class="mobile-label">Email:</span>
 								{{ user.email | default }}
 							</mat-cell>

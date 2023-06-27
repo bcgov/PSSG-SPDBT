@@ -172,5 +172,10 @@ namespace Spd.Utilities.Dynamics
 
         public static async Task<account?> GetOrgById(this DynamicsContext context, Guid organizationId, CancellationToken ct)
            => await context.accounts.Where(a => a.accountid == organizationId).SingleOrDefaultAsync(ct);
+
+        public static async Task<spd_clearance?> GetClearanceById(this DynamicsContext context, Guid clearanceId, CancellationToken ct)
+           => await context.spd_clearances.Where(a => a.spd_clearanceid == clearanceId)
+            .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
+            .SingleOrDefaultAsync(ct);
     }
 }
