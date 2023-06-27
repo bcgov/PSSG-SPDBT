@@ -149,7 +149,8 @@ namespace Spd.Manager.Cases
             cmd.ConsentFormTempFile = null;
             cmd.CreatedByApplicantBcscId = command.BcscId;
 
-            if (command.ApplicationCreateRequest.AgreeToShare &&
+            if (command.ApplicationCreateRequest.AgreeToShare != null &&
+               (bool)command.ApplicationCreateRequest.AgreeToShare &&
                cmd.SharedClearanceId.HasValue &&
                cmd.CreatedByApplicantBcscId != null)//bcsc authenticated and has sharable clearance
             {
