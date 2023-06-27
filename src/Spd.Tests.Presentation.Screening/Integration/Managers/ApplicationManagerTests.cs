@@ -57,12 +57,12 @@ public class ApplicationManagerTests : ScenarioContextBase
             .Where(a => a.spd_applicationid == response.ApplicationId)
             .FirstOrDefault();
         app.spd_ApplicantId_contact.contactid.ShouldBe(id.spd_ContactId.contactid);
-        app.spd_ApplicantId_contact.firstname.ShouldBe("NewGivenName");
+        app.spd_ApplicantId_contact.firstname.ShouldBe("Newgivenname");
         var contact = context.contacts
             .Expand(c => c.spd_Contact_Alias)
             .Where(c => c.contactid == id.spd_ContactId.contactid)
             .FirstOrDefault();
-        var alias = contact.spd_Contact_Alias.Where(a => a.spd_firstname.Equals("givenName", StringComparison.InvariantCultureIgnoreCase))
+        var alias = contact.spd_Contact_Alias.Where(a => a.spd_firstname.Equals("Givenname"))
             .FirstOrDefault();
         alias.ShouldNotBeNull();
     }
