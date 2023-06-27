@@ -63,6 +63,35 @@ internal partial class ApplicationRepository : IApplicationRepository
         };
     }
 
+    public async Task<ShareableClearanceListResp> QueryAsync(ShareableClearanceQry shareableClearanceQry, CancellationToken ct)
+    {
+        ShareableClearanceListResp resp = new();
+        var keyExisted = DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(shareableClearanceQry.ServiceType.ToString(), out Guid stGuid);
+        if (!keyExisted)
+            throw new ArgumentException("invalid service type");
+
+        var clearances = _context.spd_clearances
+            .Expand(c => c.spd_CaseID)
+            .Where(c => c._spd_contactid_value == shareableClearanceQry.ContactId)
+            .Where(c => c._spd_servicetype_value == stGuid)
+            .Where(c => c.statecode != DynamicsConstants.StateCode_Inactive)
+            .Where(c => c.spd_expirydate > shareableClearanceQry.FromDate);
+
+        if (shareableClearanceQry.WorkWith == null || shareableClearanceQry.WorkWith == EmployeeInteractionTypeCode.Neither)
+            clearances = clearances.Where(c => c.spd_workswith == null);
+        else 
+        {
+            int workwith = (int)Enum.Parse<WorksWithChildrenOptionSet>(shareableClearanceQry.WorkWith.ToString());
+            clearances = clearances.Where(c => c.spd_workswith == workwith);
+        }
+
+        if (shareableClearanceQry.Shareable)
+            clearances = clearances.Where(c => c.spd_sharable == (int)YesNoOptionSet.Yes);
+
+        resp.Clearances = _mapper.Map<IEnumerable<ShareableClearanceResp>>(clearances);
+        return resp;
+    }
+
     public async Task DeleteClearanceAccessAsync(ClearanceAccessDeleteCmd clearanceAccessDeleteCmd, CancellationToken cancellationToken)
     {
         var clearance = await GetClearanceAccessById(clearanceAccessDeleteCmd.ClearanceAccessId, clearanceAccessDeleteCmd.OrgId);

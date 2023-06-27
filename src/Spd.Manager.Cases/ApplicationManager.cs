@@ -1,5 +1,6 @@
 using AutoMapper;
 using MediatR;
+using Spd.Engine.Search;
 using Spd.Engine.Validation;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.ApplicationInvite;
@@ -25,6 +26,7 @@ namespace Spd.Manager.Cases
         IRequestHandler<ClearanceListQuery, ClearanceListResponse>,
         IRequestHandler<ClearanceAccessDeleteCommand, Unit>,
         IRequestHandler<ClearanceLetterQuery, ClearanceLetterResponse>,
+        IRequestHandler<ShareableClearanceQuery, ShareableClearanceResponse>,
         IRequestHandler<ApplicantApplicationListQuery, ApplicantApplicationListResponse>,
         IRequestHandler<ApplicantApplicationQuery, ApplicantApplicationResponse>,
         IApplicationManager
@@ -35,12 +37,14 @@ namespace Spd.Manager.Cases
         private readonly ITempFileStorageService _tempFile;
         private readonly IDuplicateCheckEngine _duplicateCheckEngine;
         private readonly IIdentityRepository _identityRepository;
+        private readonly ISearchEngine _searchEngine;
 
         public ApplicationManager(IApplicationRepository applicationRepository,
             IApplicationInviteRepository applicationInviteRepository,
             IMapper mapper,
             ITempFileStorageService tempFile,
             IDuplicateCheckEngine duplicateCheckEngine,
+            ISearchEngine searchEngine,
             IIdentityRepository identityRepository)
         {
             _applicationRepository = applicationRepository;
@@ -49,6 +53,7 @@ namespace Spd.Manager.Cases
             _mapper = mapper;
             _duplicateCheckEngine = duplicateCheckEngine;
             _identityRepository = identityRepository;
+            _searchEngine = searchEngine;
         }
 
         #region application-invite
@@ -307,6 +312,19 @@ namespace Spd.Manager.Cases
         {
             ClearanceLetterResp letter = await _applicationRepository.QueryLetterAsync(new ClearanceLetterQry(query.ClearanceId), ct);
             return _mapper.Map<ClearanceLetterResponse>(letter);
+        }
+
+        public async Task<ShareableClearanceResponse> Handle(ShareableClearanceQuery query, CancellationToken ct)
+        {
+            ShareableClearanceResponse response = new ShareableClearanceResponse();
+            ShareableClearanceSearchResponse searchResponse = (ShareableClearanceSearchResponse)await _searchEngine.SearchAsync(new ShareableClearanceSearchRequest(query.OrgId, query.BcscId, query.ServiceType), ct);
+
+            response.Items = new List<ShareableClearanceItem>()
+            {
+                _mapper.Map<ShareableClearanceItem>(searchResponse.Items.OrderByDescending(c => c.GrantedDate).FirstOrDefault())
+            };
+
+            return response;
         }
         #endregion
 
