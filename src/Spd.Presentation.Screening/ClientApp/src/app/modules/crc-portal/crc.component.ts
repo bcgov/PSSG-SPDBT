@@ -8,6 +8,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged, Observable, tap } from 'rxjs';
 import {
 	ApplicantAppCreateRequest,
+	ApplicationCreateResponse,
 	EmployeeInteractionTypeCode,
 	IdentityProviderTypeCode,
 	ServiceTypeCode,
@@ -323,6 +324,8 @@ export class CrcComponent implements OnInit {
 						this.orgData!.shareableClearanceItem = shareableClearanceItem;
 						this.orgData!.shareableCrcExists = true;
 						this.orgData!.sharedClearanceId = shareableClearanceItem.clearanceId;
+					} else {
+						this.orgData!.agreeToShare = false;
 					}
 				})
 			);
@@ -367,25 +370,25 @@ export class CrcComponent implements OnInit {
 		body.genderCode = dataToSave.genderCode ? dataToSave.genderCode : null;
 		console.debug('[onSaveStepperStep] dataToSave', body);
 
-		// if (this.authenticationService.isLoggedIn()) {
-		// 	body.haveVerifiedIdentity = true;
-		// 	this.applicantService
-		// 		.apiApplicantsScreeningsPost({ body })
-		// 		.pipe()
-		// 		.subscribe((res: ApplicationCreateResponse) => {
-		// 			this.hotToast.success('Application was successfully saved');
-		// 			this.stepper.next();
-		// 		});
-		// } else {
-		// 	body.haveVerifiedIdentity = false;
-		// 	this.applicantService
-		// 		.apiApplicantsScreeningsAnonymousPost({ body })
-		// 		.pipe()
-		// 		.subscribe((res: ApplicationCreateResponse) => {
-		// 			this.hotToast.success('Application was successfully saved');
-		// 			this.stepper.next();
-		// 		});
-		// }
+		if (this.authenticationService.isLoggedIn()) {
+			body.haveVerifiedIdentity = true;
+			this.applicantService
+				.apiApplicantsScreeningsPost({ body })
+				.pipe()
+				.subscribe((_res: ApplicationCreateResponse) => {
+					this.hotToast.success('Application was successfully saved');
+					this.stepper.next();
+				});
+		} else {
+			body.haveVerifiedIdentity = false;
+			this.applicantService
+				.apiApplicantsScreeningsAnonymousPost({ body })
+				.pipe()
+				.subscribe((_res: ApplicationCreateResponse) => {
+					this.hotToast.success('Application was successfully saved');
+					this.stepper.next();
+				});
+		}
 	}
 
 	private assignApplicantUserInfoData(orgData: AppInviteOrgData | null): void {

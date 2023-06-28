@@ -15,7 +15,7 @@ export interface AnonymousApplicantAppCreateRequest {
   addressLine2?: null | string;
   agreeToCompleteAndAccurate?: null | boolean;
   agreeToCriminalCheck?: null | boolean;
-  agreeToShare?: boolean;
+  agreeToShare?: null | boolean;
   agreeToVulnerableSectorSearch?: null | boolean;
   aliases?: null | Array<AliasCreateRequest>;
   appInviteId?: null | string;
