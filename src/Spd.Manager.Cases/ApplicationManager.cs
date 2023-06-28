@@ -29,6 +29,7 @@ namespace Spd.Manager.Cases
         IRequestHandler<ShareableClearanceQuery, ShareableClearanceResponse>,
         IRequestHandler<ApplicantApplicationListQuery, ApplicantApplicationListResponse>,
         IRequestHandler<ApplicantApplicationQuery, ApplicantApplicationResponse>,
+        IRequestHandler<ApplicantApplicationFileQuery, ApplicantApplicationFileListResponse>,
         IApplicationManager
     {
         private readonly IApplicationRepository _applicationRepository;
@@ -137,49 +138,6 @@ namespace Spd.Manager.Cases
             {
                 result.ApplicationId = applicationId.Value;
                 result.CreateSuccess = true;
-            }
-            return result;
-        }
-
-        public async Task<ApplicationCreateResponse> Handle(ApplicantApplicationCreateCommand command, CancellationToken ct)
-        {
-            var result = new ApplicationCreateResponse();
-            var cmd = _mapper.Map<ApplicationCreateCmd>(command.ApplicationCreateRequest);
-            cmd.OrgId = command.ApplicationCreateRequest.OrgId;
-            cmd.ConsentFormTempFile = null;
-            cmd.CreatedByApplicantBcscId = command.BcscId;
-
-            if (command.ApplicationCreateRequest.AgreeToShare &&
-               cmd.SharedClearanceId.HasValue &&
-               cmd.CreatedByApplicantBcscId != null)//bcsc authenticated and has sharable clearance
-            {
-                ApplicantIdentityQueryResult contact = (ApplicantIdentityQueryResult)await _identityRepository.Query(new ApplicantIdentityQuery(cmd.CreatedByApplicantBcscId, IdentityProviderTypeCode.BcServicesCard), ct);
-                if (contact == null)
-                    throw new ArgumentException("No contact found");
-                cmd.ContactId = contact.ContactId;
-                await _applicationRepository.ProcessAppWithSharableClearanceAsync(cmd, ct);
-                result.CreateSuccess = true;
-                result.ApplicationId = null;
-            }
-            else
-            {
-                //no sharable clearance
-                Guid? applicationId = await _applicationRepository.AddApplicationAsync(cmd, ct);
-                if (applicationId.HasValue)
-                {
-                    result.ApplicationId = applicationId.Value;
-                    result.CreateSuccess = true;
-                }
-            }
-
-            if (command.ApplicationCreateRequest.AppInviteId != null)
-            {
-                await _applicationInviteRepository.DeleteApplicationInvitesAsync(
-                    new ApplicationInviteDeleteCmd()
-                    {
-                        ApplicationInviteId = (Guid)command.ApplicationCreateRequest.AppInviteId,
-                        OrgId = command.ApplicationCreateRequest.OrgId,
-                    }, ct);
             }
             return result;
         }
@@ -311,6 +269,7 @@ namespace Spd.Manager.Cases
         public async Task<ClearanceLetterResponse> Handle(ClearanceLetterQuery query, CancellationToken ct)
         {
             ClearanceLetterResp letter = await _applicationRepository.QueryLetterAsync(new ClearanceLetterQry(query.ClearanceId), ct);
+            await _applicationRepository.QueryFilesAsync()
             return _mapper.Map<ClearanceLetterResponse>(letter);
         }
 
@@ -329,6 +288,48 @@ namespace Spd.Manager.Cases
         #endregion
 
         #region applicant-applications
+        public async Task<ApplicationCreateResponse> Handle(ApplicantApplicationCreateCommand command, CancellationToken ct)
+        {
+            var result = new ApplicationCreateResponse();
+            var cmd = _mapper.Map<ApplicationCreateCmd>(command.ApplicationCreateRequest);
+            cmd.OrgId = command.ApplicationCreateRequest.OrgId;
+            cmd.ConsentFormTempFile = null;
+            cmd.CreatedByApplicantBcscId = command.BcscId;
+
+            if (command.ApplicationCreateRequest.AgreeToShare &&
+               cmd.SharedClearanceId.HasValue &&
+               cmd.CreatedByApplicantBcscId != null)//bcsc authenticated and has sharable clearance
+            {
+                ApplicantIdentityQueryResult contact = (ApplicantIdentityQueryResult)await _identityRepository.Query(new ApplicantIdentityQuery(cmd.CreatedByApplicantBcscId, IdentityProviderTypeCode.BcServicesCard), ct);
+                if (contact == null)
+                    throw new ArgumentException("No contact found");
+                cmd.ContactId = contact.ContactId;
+                await _applicationRepository.ProcessAppWithSharableClearanceAsync(cmd, ct);
+                result.CreateSuccess = true;
+                result.ApplicationId = null;
+            }
+            else
+            {
+                //no sharable clearance
+                Guid? applicationId = await _applicationRepository.AddApplicationAsync(cmd, ct);
+                if (applicationId.HasValue)
+                {
+                    result.ApplicationId = applicationId.Value;
+                    result.CreateSuccess = true;
+                }
+            }
+
+            if (command.ApplicationCreateRequest.AppInviteId != null)
+            {
+                await _applicationInviteRepository.DeleteApplicationInvitesAsync(
+                    new ApplicationInviteDeleteCmd()
+                    {
+                        ApplicationInviteId = (Guid)command.ApplicationCreateRequest.AppInviteId,
+                        OrgId = command.ApplicationCreateRequest.OrgId,
+                    }, ct);
+            }
+            return result;
+        }
 
         public async Task<ApplicantApplicationListResponse> Handle(ApplicantApplicationListQuery request, CancellationToken cancellationToken)
         {
@@ -347,6 +348,16 @@ namespace Spd.Manager.Cases
             return _mapper.Map<ApplicantApplicationResponse>(response);
         }
 
+        public async Task<ApplicantApplicationFileListResponse> Handle(ApplicantApplicationFileQuery query, CancellationToken ct)
+        {
+            ApplicantIdentityQueryResult? contact = (ApplicantIdentityQueryResult?)await _identityRepository.Query(new ApplicantIdentityQuery(query.BcscId, IdentityProviderTypeCode.BcServicesCard), ct);
+            if (contact == null)
+                throw new ArgumentException("No contact found");
+
+            FilesQry qry = new ApplicantApplicationFilesQry(query.ApplicationId, contact.ContactId);
+            var response = await _applicationRepository.QueryFilesAsync(qry, ct);
+            return _mapper.Map<ApplicantApplicationResponse>(response);
+        }
         #endregion
     }
 }

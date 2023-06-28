@@ -176,11 +176,11 @@ namespace Spd.Presentation.Screening.Controllers
         [Authorize(Policy = "OnlyBcsc")]
         [Route("api/applicants/screenings/{applicationId}/files")]
         [HttpGet]
-        public async Task<ApplicationCreateResponse> GetApplicantAppFiles([FromRoute] Guid applicationId)
+        public async Task<ApplicantApplicationFileListResponse> GetApplicantAppFiles([FromRoute] Guid applicationId)
         {
             var applicantInfo = _currentUser.GetApplicantIdentityInfo();
 
-            return await _mediator.Send(new ApplicantApplicationFileQuery(appCreateRequest, applicantInfo.Sub));
+            return await _mediator.Send(new ApplicantApplicationFileQuery(applicationId, applicantInfo.Sub));
         }
         #endregion
     }

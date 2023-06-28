@@ -1,5 +1,6 @@
 using Spd.Resource.Applicants.ApplicationInvite;
 using Spd.Utilities.Shared.ResourceContracts;
+using System.ComponentModel;
 
 namespace Spd.Resource.Applicants.Application;
 
@@ -19,6 +20,7 @@ public interface IApplicationRepository
     public Task<ClearanceLetterResp> QueryLetterAsync(ClearanceLetterQry clearanceLetterQry, CancellationToken ct);
     public Task<ApplicantApplicationListResp> QueryApplicantApplicationListAsync(ApplicantApplicationListQry query, CancellationToken cancellationToken);
     public Task<ApplicationResult> QueryApplicantApplicationAsync(ApplicantApplicationQry query, CancellationToken cancellationToken);
+    public Task<FileListResp> QueryFilesAsync(FilesQry query, CancellationToken cancellationToken);
 }
 
 #region application
@@ -290,6 +292,67 @@ public record ApplicantApplicationListResp
     public IEnumerable<ApplicationResult> Applications { get; set; } = Array.Empty<ApplicationResult>();
 }
 
+#endregion
+
+#region applicant-application-file
+public record FilesQry(Guid? ApplicationId, Guid? ApplicantId, Guid? ClearanceId, FileTypeEnum? FileType);
+public enum FileTypeEnum
+{
+    [Description("Applicant Consent Form")]
+    ApplicantConsentForm,
+
+    [Description("Applicant Information")]
+    ApplicantInformation,
+
+    ArmouredCarGuard,
+    ArmouredVehiclePurpose,
+    ArmouredVehicleRationale,
+    BCCompaniesRegistrationVerification,
+    BCServicesCard,
+    BirthCertificate,
+    BodyArmourPurpose,
+    BodyArmourRationale,
+    BusinessInsurance,
+    CanadianCitizenship,
+    CanadianFirearmsLicense,
+    CanadianNativeStatusCard,
+    CertificateOfAdvancedSecurityTraining,
+    ConfirmationLetterFromSuperiorOfficer,
+    ConfirmationOfFingerprints,
+    ConvictedOffence,
+    CriminalCharges,
+    DriverLicense,
+    GovtIssuedPhotoID,
+    LegalNameChange,
+    LegalWorkStatus,
+    LetterOfNoConflict,
+    Locksmith,
+    MentalHealthConditionForm,
+    Passport,
+    PermanentResidenceCard,
+    Photograph,
+    PrivateInvestigator,
+    PrivateInvestigatorUnderSupervision,
+    SecurityAlarmInstaller,
+    SecurityConsultant,
+    SecurityGuard,
+
+    [Description("Statutory Declaration")]
+    StatutoryDeclaration,
+    ValidationCertificate
+}
+public record FileListResp
+{
+    public IEnumerable<FileResp> Items { get; set; } = Array.Empty<FileResp>();
+}
+
+public record FileResp
+{
+    public string ContentType { get; set; } = null!;
+    public string? FileName { get; set; } = null!;
+    public FileTypeEnum? FileType { get; set; } = null;
+    public DateTimeOffset UploadedDateTime { get; set; }
+}
 #endregion
 
 public enum ApplicationPortalStatusCd

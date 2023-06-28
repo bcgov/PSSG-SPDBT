@@ -5,6 +5,7 @@ using Spd.Utilities.Dynamics;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.Shared.ResourceContracts;
+using Spd.Utilities.Shared.Tools;
 using Spd.Utilities.TempFileStorage;
 using System.Net;
 
@@ -31,7 +32,7 @@ internal partial class ApplicationRepository : IApplicationRepository
         {
             //create bcgov_documenturl
             bcgov_documenturl documenturl = _mapper.Map<bcgov_documenturl>(createApplicationCmd.ConsentFormTempFile);
-            var tag = _context.LookupTag(DynamicsContextLookupHelpers.AppConsentForm);
+            var tag = _context.LookupTag(FileTypeEnum.ApplicantConsentForm.ToString());
             _context.AddTobcgov_documenturls(documenturl);
             _context.SetLink(documenturl, nameof(documenturl.spd_ApplicationId), application);
             _context.SetLink(documenturl, nameof(documenturl.bcgov_Tag1Id), tag);
@@ -266,15 +267,15 @@ internal partial class ApplicationRepository : IApplicationRepository
             Tags = new List<Tag>
             {
                 new Tag("file-classification", "Unclassified"),
-                new Tag("file-tag",DynamicsContextLookupHelpers.AppConsentForm)
+                new Tag("file-tag",FileTypeEnum.ApplicantConsentForm.GetDescription())
             }
         };
         await _fileStorage.HandleCommand(new UploadFileCommand(
-            Key: ((Guid)docUrlId).ToString(),
-            Folder: $"spd_application/{applicationId}",
-            File: file,
-            FileTag: fileTag
-            ), ct);
+                    Key: ((Guid)docUrlId).ToString(),
+                    Folder: $"spd_application/{applicationId}",
+                    File: file,
+                    FileTag: fileTag
+                    ), ct);
     }
 
     //note: any change in this function, the operation number also needs to change in AddBulkAppsAsync
