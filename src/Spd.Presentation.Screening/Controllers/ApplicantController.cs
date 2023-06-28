@@ -44,7 +44,7 @@ namespace Spd.Presentation.Screening.Controllers
 
         #endregion
 
-        #region application
+        #region applicant-application
 
         /// <summary>
         /// create application
@@ -106,9 +106,6 @@ namespace Spd.Presentation.Screening.Controllers
             var applicantInfo = _currentUser.GetApplicantIdentityInfo();
             return await _mediator.Send(new ShareableClearanceQuery(withOrgId, applicantInfo.Sub, serviceType), ct);
         }
-        #endregion
-
-        #region applicant-applications
 
         [Authorize(Policy = "OnlyBcsc")]
         [Route("api/applicants/{applicantId}/applications")]
@@ -168,8 +165,25 @@ namespace Spd.Presentation.Screening.Controllers
                 MiddleName2 = StringHelper.ToTitleCase(info.MiddleName2),
             };
         }
+
+        #endregion
+
+        #region applicant-file
+        /// <summary>
+        /// Get the list of all files the applicant has uploaded for the application.
+        /// </summary>
+        /// <returns></returns>
+        [Authorize(Policy = "OnlyBcsc")]
+        [Route("api/applicants/screenings/{applicationId}/files")]
+        [HttpGet]
+        public async Task<ApplicationCreateResponse> GetApplicantAppFiles([FromRoute] Guid applicationId)
+        {
+            var applicantInfo = _currentUser.GetApplicantIdentityInfo();
+
+            return await _mediator.Send(new ApplicantApplicationFileQuery(appCreateRequest, applicantInfo.Sub));
+        }
+        #endregion
     }
-    #endregion
 }
 
 /// <summary>

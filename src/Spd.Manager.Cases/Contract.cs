@@ -671,4 +671,27 @@ namespace Spd.Manager.Cases
     }
 
     #endregion
+
+    #region applicant-application-file
+
+    public record ApplicantApplicationFileListResponse
+    {
+        public IEnumerable<ApplicantApplicationFileResponse> Items { get; set; } = Array.Empty<ApplicantApplicationFileResponse>();
+    }
+
+    public record ApplicantApplicationFileResponse
+    {
+        public string ContentType { get; set; } = null!;
+        public string? FileName { get; set; } = null!;
+        public CaseSubStatusCode? CaseSubStatusCode { get; set; } = null;
+    }
+    
+    public enum CaseSubStatusCode
+    {
+        Fingerprints,
+        StatutoryDeclaration,
+        ApplicantInformation,
+        OpportunityToRespond
+    }
+    #endregion
 }
