@@ -46,10 +46,10 @@ internal partial class ApplicationRepository : IApplicationRepository
     public async Task<BulkAppsCreateResp> AddBulkAppsAsync(BulkAppsCreateCmd cmd, CancellationToken ct)
     {
         account? org = await _context.accounts
-            .Expand(a => a.spd_ServiceType_Organization)
+            .Expand(a => a.spd_account_spd_servicetype)
             .Where(a => a.accountid == cmd.OrgId)
             .SingleOrDefaultAsync(ct);
-        spd_servicetype? servicetype = org.spd_ServiceType_Organization.First();
+        spd_servicetype? servicetype = org.spd_account_spd_servicetype.First();
         spd_portaluser? user = await _context.GetUserById(cmd.UserId, ct);
         Guid teamGuid = Guid.Parse(DynamicsConstants.Client_Service_Team_Guid);
         team? team = await _context.teams.Where(t => t.teamid == teamGuid).FirstOrDefaultAsync(ct);

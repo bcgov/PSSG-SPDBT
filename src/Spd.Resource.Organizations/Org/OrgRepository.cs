@@ -133,7 +133,7 @@ namespace Spd.Resource.Organizations.Org
             if (org == null) throw new ApiException(HttpStatusCode.NotFound);
 
             //tried with org expand, does not work. so have to make another call.
-            List<spd_servicetype_organization> serviceTypes = _dynaContext.spd_servicetype_organizationset
+            List<spd_account_spd_servicetype> serviceTypes = _dynaContext.spd_account_spd_servicetypeset
                 .Where(so => so.accountid == org.accountid)
                 .ToList();
 
