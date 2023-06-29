@@ -48,6 +48,7 @@
         <Property Name="versionnumber" Type="Edm.Int64" />
         <Property Name="_territoryid_value" Type="Edm.Guid" />
         <Property Name="entityimage_timestamp" Type="Edm.Int64" />
+        <Property Name="spd_caspartynumber" Type="Edm.String" Unicode="false" />
         <Property Name="telephone3" Type="Edm.String" Unicode="false" />
         <Property Name="donotbulkpostalmail" Type="Edm.Boolean" />
         <Property Name="address1_freighttermscode" Type="Edm.Int32" />
@@ -167,6 +168,7 @@
         <Property Name="donotphone" Type="Edm.Boolean" />
         <Property Name="accountclassificationcode" Type="Edm.Int32" />
         <Property Name="_preferredequipmentid_value" Type="Edm.Guid" />
+        <Property Name="importsequencenumber" Type="Edm.Int32" />
         <Property Name="businesstypecode" Type="Edm.Int32" />
         <Property Name="address2_telephone2" Type="Edm.String" Unicode="false" />
         <Property Name="address1_addresstypecode" Type="Edm.Int32" />
@@ -179,6 +181,7 @@
         <Property Name="_modifiedonbehalfby_value" Type="Edm.Guid" />
         <Property Name="stockexchange" Type="Edm.String" Unicode="false" />
         <Property Name="name" Type="Edm.String" Unicode="false" />
+        <Property Name="accountcategorycode" Type="Edm.Int32" />
         <Property Name="address1_line3" Type="Edm.String" Unicode="false" />
         <Property Name="preferredcontactmethodcode" Type="Edm.Int32" />
         <Property Name="aging30_base" Type="Edm.Decimal" Scale="Variable" />
@@ -199,11 +202,11 @@
         <Property Name="preferredappointmenttimecode" Type="Edm.Int32" />
         <Property Name="emailaddress2" Type="Edm.String" Unicode="false" />
         <Property Name="marketcap_base" Type="Edm.Decimal" Scale="Variable" />
-        <Property Name="importsequencenumber" Type="Edm.Int32" />
+        <Property Name="spd_casaccountnumber" Type="Edm.String" Unicode="false" />
         <Property Name="industrycode" Type="Edm.Int32" />
         <Property Name="spd_figaroid" Type="Edm.String" Unicode="false" />
         <Property Name="address1_telephone3" Type="Edm.String" Unicode="false" />
-        <Property Name="accountcategorycode" Type="Edm.Int32" />
+        <Property Name="spd_cassitenumber" Type="Edm.String" Unicode="false" />
         <NavigationProperty Name="account_principalobjectattributeaccess" Type="Collection(mscrm.principalobjectattributeaccess)" Partner="objectid_account" />
         <NavigationProperty Name="lead_customer_accounts" Type="Collection(mscrm.lead)" Partner="customerid_account" />
         <NavigationProperty Name="accountleads_association" Type="Collection(mscrm.lead)" Partner="accountleads_association" />
@@ -253,7 +256,6 @@
         <NavigationProperty Name="spd_organization_spd_portaluser" Type="Collection(mscrm.spd_portaluser)" Partner="spd_OrganizationId" />
         <NavigationProperty Name="spd_orgagnization_spd_portalinvitation" Type="Collection(mscrm.spd_portalinvitation)" Partner="spd_OrganizationId" />
         <NavigationProperty Name="spd_Organization_Addresses" Type="Collection(mscrm.spd_address)" Partner="spd_Organization" />
-        <NavigationProperty Name="spd_ServiceType_Organization" Type="Collection(mscrm.spd_servicetype)" Partner="spd_ServiceType_Organization" />
         <NavigationProperty Name="spd_account_incident_OrganizationId" Type="Collection(mscrm.incident)" Partner="spd_OrganizationId" />
         <NavigationProperty Name="spd_account_spd_application_ApplicantId" Type="Collection(mscrm.spd_application)" Partner="spd_ApplicantId_account" />
         <NavigationProperty Name="spd_account_spd_application_OrganizationId" Type="Collection(mscrm.spd_application)" Partner="spd_OrganizationId" />
@@ -264,6 +266,8 @@
         </NavigationProperty>
         <NavigationProperty Name="spd_account_spd_pdfreport" Type="Collection(mscrm.spd_pdfreport)" Partner="spd_OrganizationId" />
         <NavigationProperty Name="spd_organization_spd_clearanceaccess" Type="Collection(mscrm.spd_clearanceaccess)" Partner="spd_OrganizationId" />
+        <NavigationProperty Name="spd_account_spd_invoice" Type="Collection(mscrm.spd_invoice)" Partner="spd_OrganizationId" />
+        <NavigationProperty Name="spd_account_spd_servicetype" Type="Collection(mscrm.spd_servicetype)" Partner="spd_account_spd_servicetype" />
         <NavigationProperty Name="ownerid" Type="mscrm.principal" Nullable="false" Partner="owner_accounts">
           <ReferentialConstraint Property="_ownerid_value" ReferencedProperty="ownerid" />
         </NavigationProperty>
@@ -1753,9 +1757,6 @@
         <NavigationProperty Name="regardingobjectid_spd_portalinvitation" Type="mscrm.spd_portalinvitation" Nullable="false" Partner="spd_portalinvitation_AsyncOperations">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_portalinvitationid" />
         </NavigationProperty>
-        <NavigationProperty Name="regardingobjectid_spd_cornetnotification" Type="mscrm.spd_cornetnotification" Nullable="false" Partner="spd_cornetnotification_AsyncOperations">
-          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_cornetnotificationid" />
-        </NavigationProperty>
         <NavigationProperty Name="regardingobjectid_spd_address" Type="mscrm.spd_address" Nullable="false" Partner="spd_address_AsyncOperations">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_addressid" />
         </NavigationProperty>
@@ -1809,6 +1810,9 @@
         </NavigationProperty>
         <NavigationProperty Name="regardingobjectid_bcgov_schedulejobsession" Type="mscrm.bcgov_schedulejobsession" Nullable="false" Partner="bcgov_schedulejobsession_AsyncOperations">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="bcgov_schedulejobsessionid" />
+        </NavigationProperty>
+        <NavigationProperty Name="regardingobjectid_spd_invoice" Type="mscrm.spd_invoice" Nullable="false" Partner="spd_invoice_AsyncOperations">
+          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_invoiceid" />
         </NavigationProperty>
         <NavigationProperty Name="regardingobjectid_report" Type="mscrm.report" Nullable="false" Partner="Report_AsyncOperations">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="reportid" />
@@ -2118,6 +2122,7 @@
         <Property Name="_bcgov_appointmentid_value" Type="Edm.Guid" />
         <Property Name="statuscode" Type="Edm.Int32" />
         <Property Name="_owningbusinessunit_value" Type="Edm.Guid" />
+        <Property Name="_spd_submittedbyid_value" Type="Edm.Guid" />
         <Property Name="statecode" Type="Edm.Int32" />
         <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
         <Property Name="_bcgov_emailid_value" Type="Edm.Guid" />
@@ -2199,6 +2204,9 @@
         </NavigationProperty>
         <NavigationProperty Name="spd_PDFReportId" Type="mscrm.spd_pdfreport" Nullable="false" Partner="spd_pdfreport_bcgov_documenturl">
           <ReferentialConstraint Property="_spd_pdfreportid_value" ReferencedProperty="spd_pdfreportid" />
+        </NavigationProperty>
+        <NavigationProperty Name="spd_SubmittedById" Type="mscrm.contact" Nullable="false" Partner="spd_contact_bcgov_documenturl">
+          <ReferentialConstraint Property="_spd_submittedbyid_value" ReferencedProperty="contactid" />
         </NavigationProperty>
       </EntityType>
       <EntityType Name="bcgov_field" BaseType="mscrm.crmbaseentity">
@@ -3580,9 +3588,6 @@
         <NavigationProperty Name="regardingobjectid_spd_portalinvitation" Type="mscrm.spd_portalinvitation" Nullable="false" Partner="spd_portalinvitation_BulkDeleteFailures">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_portalinvitationid" />
         </NavigationProperty>
-        <NavigationProperty Name="regardingobjectid_spd_cornetnotification" Type="mscrm.spd_cornetnotification" Nullable="false" Partner="spd_cornetnotification_BulkDeleteFailures">
-          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_cornetnotificationid" />
-        </NavigationProperty>
         <NavigationProperty Name="regardingobjectid_spd_address" Type="mscrm.spd_address" Nullable="false" Partner="spd_address_BulkDeleteFailures">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_addressid" />
         </NavigationProperty>
@@ -3636,6 +3641,9 @@
         </NavigationProperty>
         <NavigationProperty Name="regardingobjectid_bcgov_schedulejobsession" Type="mscrm.bcgov_schedulejobsession" Nullable="false" Partner="bcgov_schedulejobsession_BulkDeleteFailures">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="bcgov_schedulejobsessionid" />
+        </NavigationProperty>
+        <NavigationProperty Name="regardingobjectid_spd_invoice" Type="mscrm.spd_invoice" Nullable="false" Partner="spd_invoice_BulkDeleteFailures">
+          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_invoiceid" />
         </NavigationProperty>
         <NavigationProperty Name="regardingobjectid_customeraddress" Type="mscrm.customeraddress" Nullable="false" Partner="CustomerAddress_BulkDeleteFailures">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="customeraddressid" />
@@ -4119,6 +4127,7 @@
         <NavigationProperty Name="business_unit_spd_pdfreport" Type="Collection(mscrm.spd_pdfreport)" Partner="owningbusinessunit" />
         <NavigationProperty Name="business_unit_bcgov_schedulejob" Type="Collection(mscrm.bcgov_schedulejob)" Partner="owningbusinessunit" />
         <NavigationProperty Name="business_unit_bcgov_schedulejobsession" Type="Collection(mscrm.bcgov_schedulejobsession)" Partner="owningbusinessunit" />
+        <NavigationProperty Name="business_unit_spd_invoice" Type="Collection(mscrm.spd_invoice)" Partner="owningbusinessunit" />
         <NavigationProperty Name="BusinessUnit_SyncErrors" Type="Collection(mscrm.syncerror)" Partner="regardingobjectid_businessunit_syncerror" />
         <NavigationProperty Name="transactioncurrencyid" Type="mscrm.transactioncurrency" Nullable="false" Partner="TransactionCurrency_BusinessUnit">
           <ReferentialConstraint Property="_transactioncurrencyid_value" ReferencedProperty="transactioncurrencyid" />
@@ -5772,6 +5781,7 @@
         <NavigationProperty Name="spd_PortalInvitation_Applicant" Type="Collection(mscrm.spd_portalinvitation)" Partner="spd_Applicant" />
         <NavigationProperty Name="spd_contact_spd_clearance" Type="Collection(mscrm.spd_clearance)" Partner="spd_ContactID" />
         <NavigationProperty Name="spd_contact_spd_identity" Type="Collection(mscrm.spd_identity)" Partner="spd_ContactId" />
+        <NavigationProperty Name="spd_contact_bcgov_documenturl" Type="Collection(mscrm.bcgov_documenturl)" Partner="spd_SubmittedById" />
         <NavigationProperty Name="contact_connections1" Type="Collection(mscrm.connection)" Partner="record1id_contact" />
         <NavigationProperty Name="Contact_Feedback" Type="Collection(mscrm.feedback)" Partner="ContactId" />
         <NavigationProperty Name="Contact_ProcessSessions" Type="Collection(mscrm.processsession)" Partner="regardingobjectid_contact" />
@@ -6890,6 +6900,12 @@
         </NavigationProperty>
         <NavigationProperty Name="baserecordid_spd_clearanceaccess" Type="mscrm.spd_clearanceaccess" Nullable="false" Partner="spd_clearanceaccess_DuplicateBaseRecord">
           <ReferentialConstraint Property="_baserecordid_value" ReferencedProperty="spd_clearanceaccessid" />
+        </NavigationProperty>
+        <NavigationProperty Name="duplicaterecordid_spd_invoice" Type="mscrm.spd_invoice" Nullable="false" Partner="spd_invoice_DuplicateMatchingRecord">
+          <ReferentialConstraint Property="_duplicaterecordid_value" ReferencedProperty="spd_invoiceid" />
+        </NavigationProperty>
+        <NavigationProperty Name="baserecordid_spd_invoice" Type="mscrm.spd_invoice" Nullable="false" Partner="spd_invoice_DuplicateBaseRecord">
+          <ReferentialConstraint Property="_baserecordid_value" ReferencedProperty="spd_invoiceid" />
         </NavigationProperty>
         <NavigationProperty Name="baserecordid_goalrollupquery" Type="mscrm.goalrollupquery" Nullable="false" Partner="GoalRollupQuery_DuplicateBaseRecord">
           <ReferentialConstraint Property="_baserecordid_value" ReferencedProperty="goalrollupqueryid" />
@@ -11438,9 +11454,6 @@
         <NavigationProperty Name="regardingobjectid_spd_portalinvitation" Type="mscrm.spd_portalinvitation" Nullable="false" Partner="spd_portalinvitation_MailboxTrackingFolders">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_portalinvitationid" />
         </NavigationProperty>
-        <NavigationProperty Name="regardingobjectid_spd_cornetnotification" Type="mscrm.spd_cornetnotification" Nullable="false" Partner="spd_cornetnotification_MailboxTrackingFolders">
-          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_cornetnotificationid" />
-        </NavigationProperty>
         <NavigationProperty Name="regardingobjectid_spd_address" Type="mscrm.spd_address" Nullable="false" Partner="spd_address_MailboxTrackingFolders">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_addressid" />
         </NavigationProperty>
@@ -11494,6 +11507,9 @@
         </NavigationProperty>
         <NavigationProperty Name="regardingobjectid_bcgov_schedulejobsession" Type="mscrm.bcgov_schedulejobsession" Nullable="false" Partner="bcgov_schedulejobsession_MailboxTrackingFolders">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="bcgov_schedulejobsessionid" />
+        </NavigationProperty>
+        <NavigationProperty Name="regardingobjectid_spd_invoice" Type="mscrm.spd_invoice" Nullable="false" Partner="spd_invoice_MailboxTrackingFolders">
+          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_invoiceid" />
         </NavigationProperty>
         <NavigationProperty Name="modifiedonbehalfby" Type="mscrm.systemuser" Nullable="false" Partner="lk_mailboxtrackingfolder_modifiedonbehalfby">
           <ReferentialConstraint Property="_modifiedonbehalfby_value" ReferencedProperty="systemuserid" />
@@ -13451,7 +13467,6 @@
         <NavigationProperty Name="organization_spd_role" Type="Collection(mscrm.spd_role)" Partner="organizationid" />
         <NavigationProperty Name="organization_spd_identity" Type="Collection(mscrm.spd_identity)" Partner="organizationid" />
         <NavigationProperty Name="organization_spd_portalinvitation" Type="Collection(mscrm.spd_portalinvitation)" Partner="organizationid" />
-        <NavigationProperty Name="organization_spd_cornetnotification" Type="Collection(mscrm.spd_cornetnotification)" Partner="organizationid" />
         <NavigationProperty Name="organization_spd_servicetype" Type="Collection(mscrm.spd_servicetype)" Partner="organizationid" />
         <NavigationProperty Name="organization_spd_submission" Type="Collection(mscrm.spd_submission)" Partner="organizationid" />
         <NavigationProperty Name="organization_spd_securityscreening" Type="Collection(mscrm.spd_securityscreening)" Partner="organizationid" />
@@ -13658,6 +13673,7 @@
         <NavigationProperty Name="owner_spd_pdfreport" Type="Collection(mscrm.spd_pdfreport)" Partner="ownerid" />
         <NavigationProperty Name="owner_bcgov_schedulejob" Type="Collection(mscrm.bcgov_schedulejob)" Partner="ownerid" />
         <NavigationProperty Name="owner_bcgov_schedulejobsession" Type="Collection(mscrm.bcgov_schedulejobsession)" Partner="ownerid" />
+        <NavigationProperty Name="owner_spd_invoice" Type="Collection(mscrm.spd_invoice)" Partner="ownerid" />
         <NavigationProperty Name="owner_personaldocumenttemplates" Type="Collection(mscrm.personaldocumenttemplate)" Partner="ownerid" />
         <NavigationProperty Name="owner_accounts" Type="Collection(mscrm.account)" Partner="ownerid" />
         <NavigationProperty Name="owner_goalrollupquery" Type="Collection(mscrm.goalrollupquery)" Partner="ownerid" />
@@ -14802,9 +14818,6 @@
         <NavigationProperty Name="objectid_spd_portalinvitation" Type="mscrm.spd_portalinvitation" Nullable="false" Partner="spd_portalinvitation_PrincipalObjectAttributeAccesses">
           <ReferentialConstraint Property="_objectid_value" ReferencedProperty="spd_portalinvitationid" />
         </NavigationProperty>
-        <NavigationProperty Name="objectid_spd_cornetnotification" Type="mscrm.spd_cornetnotification" Nullable="false" Partner="spd_cornetnotification_PrincipalObjectAttributeAccesses">
-          <ReferentialConstraint Property="_objectid_value" ReferencedProperty="spd_cornetnotificationid" />
-        </NavigationProperty>
         <NavigationProperty Name="objectid_spd_address" Type="mscrm.spd_address" Nullable="false" Partner="spd_address_PrincipalObjectAttributeAccesses">
           <ReferentialConstraint Property="_objectid_value" ReferencedProperty="spd_addressid" />
         </NavigationProperty>
@@ -14858,6 +14871,9 @@
         </NavigationProperty>
         <NavigationProperty Name="objectid_bcgov_schedulejobsession" Type="mscrm.bcgov_schedulejobsession" Nullable="false" Partner="bcgov_schedulejobsession_PrincipalObjectAttributeAccesses">
           <ReferentialConstraint Property="_objectid_value" ReferencedProperty="bcgov_schedulejobsessionid" />
+        </NavigationProperty>
+        <NavigationProperty Name="objectid_spd_invoice" Type="mscrm.spd_invoice" Nullable="false" Partner="spd_invoice_PrincipalObjectAttributeAccesses">
+          <ReferentialConstraint Property="_objectid_value" ReferencedProperty="spd_invoiceid" />
         </NavigationProperty>
         <NavigationProperty Name="objectid_letter" Type="mscrm.letter" Nullable="false" Partner="letter_principalobjectattributeaccess" />
         <NavigationProperty Name="objectid_reportcategory" Type="mscrm.reportcategory" Nullable="false" Partner="reportcategory_principalobjectattributeaccess">
@@ -15205,9 +15221,6 @@
         <NavigationProperty Name="regardingobjectid_spd_portalinvitation" Type="mscrm.spd_portalinvitation" Nullable="false" Partner="spd_portalinvitation_ProcessSession">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_portalinvitationid" />
         </NavigationProperty>
-        <NavigationProperty Name="regardingobjectid_spd_cornetnotification" Type="mscrm.spd_cornetnotification" Nullable="false" Partner="spd_cornetnotification_ProcessSession">
-          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_cornetnotificationid" />
-        </NavigationProperty>
         <NavigationProperty Name="regardingobjectid_spd_address" Type="mscrm.spd_address" Nullable="false" Partner="spd_address_ProcessSession">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_addressid" />
         </NavigationProperty>
@@ -15261,6 +15274,9 @@
         </NavigationProperty>
         <NavigationProperty Name="regardingobjectid_bcgov_schedulejobsession" Type="mscrm.bcgov_schedulejobsession" Nullable="false" Partner="bcgov_schedulejobsession_ProcessSession">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="bcgov_schedulejobsessionid" />
+        </NavigationProperty>
+        <NavigationProperty Name="regardingobjectid_spd_invoice" Type="mscrm.spd_invoice" Nullable="false" Partner="spd_invoice_ProcessSession">
+          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_invoiceid" />
         </NavigationProperty>
         <NavigationProperty Name="regardingobjectid_queue" Type="mscrm.queue" Nullable="false" Partner="Queue_ProcessSessions">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="queueid" />
@@ -19323,6 +19339,15 @@
           <ReferentialConstraint Property="_createdonbehalfby_value" ReferencedProperty="systemuserid" />
         </NavigationProperty>
       </EntityType>
+      <EntityType Name="spd_account_spd_servicetype" BaseType="mscrm.crmbaseentity">
+        <Key>
+          <PropertyRef Name="spd_account_spd_servicetypeid" />
+        </Key>
+        <Property Name="spd_account_spd_servicetypeid" Type="Edm.Guid" />
+        <Property Name="accountid" Type="Edm.Guid" />
+        <Property Name="versionnumber" Type="Edm.Int64" />
+        <Property Name="spd_servicetypeid" Type="Edm.Guid" />
+      </EntityType>
       <EntityType Name="spd_address" BaseType="mscrm.crmbaseentity">
         <Key>
           <PropertyRef Name="spd_addressid" />
@@ -19480,6 +19505,7 @@
         <Property Name="_spd_servicetypeid_value" Type="Edm.Guid" />
         <Property Name="spd_province" Type="Edm.String" Unicode="false" />
         <Property Name="_ownerid_value" Type="Edm.Guid" />
+        <Property Name="spd_country" Type="Edm.String" Unicode="false" />
         <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
         <Property Name="spd_declaration" Type="Edm.Boolean" />
         <Property Name="spd_dateofbirth" Type="Edm.Date" />
@@ -19495,6 +19521,7 @@
         <Property Name="spd_casestatus" Type="Edm.String" Unicode="false" />
         <Property Name="createdon" Type="Edm.DateTimeOffset" />
         <Property Name="_modifiedby_value" Type="Edm.Guid" />
+        <Property Name="_spd_invoiceid_value" Type="Edm.Guid" />
         <Property Name="spd_fullname" Type="Edm.String" Unicode="false" />
         <Property Name="spd_applicantsposition" Type="Edm.String" Unicode="false" />
         <Property Name="spd_employeeid" Type="Edm.String" Unicode="false" />
@@ -19505,7 +19532,6 @@
         <Property Name="spd_addressline1" Type="Edm.String" Unicode="false" />
         <Property Name="_createdonbehalfby_value" Type="Edm.Guid" />
         <Property Name="_owninguser_value" Type="Edm.Guid" />
-        <Property Name="spd_country" Type="Edm.String" Unicode="false" />
         <Property Name="spd_payer" Type="Edm.Int32" />
         <Property Name="statecode" Type="Edm.Int32" />
         <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
@@ -19550,7 +19576,6 @@
         <NavigationProperty Name="spd_application_BulkDeleteFailures" Type="Collection(mscrm.bulkdeletefailure)" Partner="regardingobjectid_spd_application" />
         <NavigationProperty Name="spd_application_PrincipalObjectAttributeAccesses" Type="Collection(mscrm.principalobjectattributeaccess)" Partner="objectid_spd_application" />
         <NavigationProperty Name="spd_spd_application_incident" Type="Collection(mscrm.incident)" Partner="spd_ApplicationId" />
-        <NavigationProperty Name="spd_Application_ServiceType" Type="Collection(mscrm.spd_servicetype)" Partner="spd_ApplicationId" />
         <NavigationProperty Name="spd_ApplicantId_account" Type="mscrm.account" Nullable="false" Partner="spd_account_spd_application_ApplicantId">
           <ReferentialConstraint Property="_spd_applicantid_value" ReferencedProperty="accountid" />
         </NavigationProperty>
@@ -19571,6 +19596,9 @@
           <ReferentialConstraint Property="_spd_submittedby_value" ReferencedProperty="spd_portaluserid" />
         </NavigationProperty>
         <NavigationProperty Name="spd_application_bcgov_documenturl" Type="Collection(mscrm.bcgov_documenturl)" Partner="spd_ApplicationId" />
+        <NavigationProperty Name="spd_InvoiceId" Type="mscrm.spd_invoice" Nullable="false" Partner="spd_spd_invoice_spd_application">
+          <ReferentialConstraint Property="_spd_invoiceid_value" ReferencedProperty="spd_invoiceid" />
+        </NavigationProperty>
       </EntityType>
       <EntityType Name="spd_clearanceaccess" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -19716,55 +19744,6 @@
         </NavigationProperty>
         <NavigationProperty Name="spd_clearance_bcgov_documenturl" Type="Collection(mscrm.bcgov_documenturl)" Partner="spd_ClearanceId" />
         <NavigationProperty Name="spd_clearance_spd_clearanceaccess" Type="Collection(mscrm.spd_clearanceaccess)" Partner="spd_ClearanceId" />
-      </EntityType>
-      <EntityType Name="spd_cornetnotification" BaseType="mscrm.crmbaseentity">
-        <Key>
-          <PropertyRef Name="spd_cornetnotificationid" />
-        </Key>
-        <Property Name="spd_eventdate" Type="Edm.DateTimeOffset" />
-        <Property Name="spd_clientnumber" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_guid" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_fetcheddate" Type="Edm.DateTimeOffset" />
-        <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
-        <Property Name="statuscode" Type="Edm.Int32" />
-        <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
-        <Property Name="spd_eventreferenceid" Type="Edm.String" Unicode="false" />
-        <Property Name="createdon" Type="Edm.DateTimeOffset" />
-        <Property Name="_createdonbehalfby_value" Type="Edm.Guid" />
-        <Property Name="_organizationid_value" Type="Edm.Guid" />
-        <Property Name="_modifiedby_value" Type="Edm.Guid" />
-        <Property Name="_createdby_value" Type="Edm.Guid" />
-        <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
-        <Property Name="spd_eventtype" Type="Edm.Int32" />
-        <Property Name="spd_eventid" Type="Edm.String" Unicode="false" />
-        <Property Name="importsequencenumber" Type="Edm.Int32" />
-        <Property Name="versionnumber" Type="Edm.Int64" />
-        <Property Name="_modifiedonbehalfby_value" Type="Edm.Guid" />
-        <Property Name="spd_cornetdetailjson" Type="Edm.String" Unicode="false" />
-        <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
-        <Property Name="spd_cornetnotificationid" Type="Edm.Guid" />
-        <Property Name="statecode" Type="Edm.Int32" />
-        <NavigationProperty Name="createdby" Type="mscrm.systemuser" Nullable="false" Partner="lk_spd_cornetnotification_createdby">
-          <ReferentialConstraint Property="_createdby_value" ReferencedProperty="systemuserid" />
-        </NavigationProperty>
-        <NavigationProperty Name="createdonbehalfby" Type="mscrm.systemuser" Nullable="false" Partner="lk_spd_cornetnotification_createdonbehalfby">
-          <ReferentialConstraint Property="_createdonbehalfby_value" ReferencedProperty="systemuserid" />
-        </NavigationProperty>
-        <NavigationProperty Name="modifiedby" Type="mscrm.systemuser" Nullable="false" Partner="lk_spd_cornetnotification_modifiedby">
-          <ReferentialConstraint Property="_modifiedby_value" ReferencedProperty="systemuserid" />
-        </NavigationProperty>
-        <NavigationProperty Name="modifiedonbehalfby" Type="mscrm.systemuser" Nullable="false" Partner="lk_spd_cornetnotification_modifiedonbehalfby">
-          <ReferentialConstraint Property="_modifiedonbehalfby_value" ReferencedProperty="systemuserid" />
-        </NavigationProperty>
-        <NavigationProperty Name="organizationid" Type="mscrm.organization" Nullable="false" Partner="organization_spd_cornetnotification">
-          <ReferentialConstraint Property="_organizationid_value" ReferencedProperty="organizationid" />
-        </NavigationProperty>
-        <NavigationProperty Name="spd_cornetnotification_SyncErrors" Type="Collection(mscrm.syncerror)" Partner="regardingobjectid_spd_cornetnotification" />
-        <NavigationProperty Name="spd_cornetnotification_AsyncOperations" Type="Collection(mscrm.asyncoperation)" Partner="regardingobjectid_spd_cornetnotification" />
-        <NavigationProperty Name="spd_cornetnotification_MailboxTrackingFolders" Type="Collection(mscrm.mailboxtrackingfolder)" Partner="regardingobjectid_spd_cornetnotification" />
-        <NavigationProperty Name="spd_cornetnotification_ProcessSession" Type="Collection(mscrm.processsession)" Partner="regardingobjectid_spd_cornetnotification" />
-        <NavigationProperty Name="spd_cornetnotification_BulkDeleteFailures" Type="Collection(mscrm.bulkdeletefailure)" Partner="regardingobjectid_spd_cornetnotification" />
-        <NavigationProperty Name="spd_cornetnotification_PrincipalObjectAttributeAccesses" Type="Collection(mscrm.principalobjectattributeaccess)" Partner="objectid_spd_cornetnotification" />
       </EntityType>
       <EntityType Name="spd_cpicbatch" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -20034,6 +20013,77 @@
         <NavigationProperty Name="spd_spd_identity_spd_portaluser" Type="Collection(mscrm.spd_portaluser)" Partner="spd_IdentityId" />
         <NavigationProperty Name="spd_ContactId" Type="mscrm.contact" Nullable="false" Partner="spd_contact_spd_identity">
           <ReferentialConstraint Property="_spd_contactid_value" ReferencedProperty="contactid" />
+        </NavigationProperty>
+      </EntityType>
+      <EntityType Name="spd_invoice" BaseType="mscrm.crmbaseentity">
+        <Key>
+          <PropertyRef Name="spd_invoiceid" />
+        </Key>
+        <Property Name="_owninguser_value" Type="Edm.Guid" />
+        <Property Name="statuscode" Type="Edm.Int32" />
+        <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
+        <Property Name="_createdby_value" Type="Edm.Guid" />
+        <Property Name="spd_name" Type="Edm.String" Unicode="false" />
+        <Property Name="_spd_organizationid_value" Type="Edm.Guid" />
+        <Property Name="importsequencenumber" Type="Edm.Int32" />
+        <Property Name="spd_numberofapplications_date" Type="Edm.DateTimeOffset" />
+        <Property Name="exchangerate" Type="Edm.Decimal" Scale="Variable" />
+        <Property Name="spd_invoiceid" Type="Edm.Guid" />
+        <Property Name="statecode" Type="Edm.Int32" />
+        <Property Name="_createdonbehalfby_value" Type="Edm.Guid" />
+        <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
+        <Property Name="_transactioncurrencyid_value" Type="Edm.Guid" />
+        <Property Name="_modifiedonbehalfby_value" Type="Edm.Guid" />
+        <Property Name="spd_numberofapplications_state" Type="Edm.Int32" />
+        <Property Name="_owningteam_value" Type="Edm.Guid" />
+        <Property Name="spd_numberofapplications" Type="Edm.Int32" />
+        <Property Name="_ownerid_value" Type="Edm.Guid" />
+        <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
+        <Property Name="_modifiedby_value" Type="Edm.Guid" />
+        <Property Name="createdon" Type="Edm.DateTimeOffset" />
+        <Property Name="_owningbusinessunit_value" Type="Edm.Guid" />
+        <Property Name="versionnumber" Type="Edm.Int64" />
+        <Property Name="spd_totalamount_base" Type="Edm.Decimal" Scale="Variable" />
+        <Property Name="spd_totalamount" Type="Edm.Decimal" Scale="Variable" />
+        <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
+        <NavigationProperty Name="createdby" Type="mscrm.systemuser" Nullable="false" Partner="lk_spd_invoice_createdby">
+          <ReferentialConstraint Property="_createdby_value" ReferencedProperty="systemuserid" />
+        </NavigationProperty>
+        <NavigationProperty Name="createdonbehalfby" Type="mscrm.systemuser" Nullable="false" Partner="lk_spd_invoice_createdonbehalfby">
+          <ReferentialConstraint Property="_createdonbehalfby_value" ReferencedProperty="systemuserid" />
+        </NavigationProperty>
+        <NavigationProperty Name="modifiedby" Type="mscrm.systemuser" Nullable="false" Partner="lk_spd_invoice_modifiedby">
+          <ReferentialConstraint Property="_modifiedby_value" ReferencedProperty="systemuserid" />
+        </NavigationProperty>
+        <NavigationProperty Name="modifiedonbehalfby" Type="mscrm.systemuser" Nullable="false" Partner="lk_spd_invoice_modifiedonbehalfby">
+          <ReferentialConstraint Property="_modifiedonbehalfby_value" ReferencedProperty="systemuserid" />
+        </NavigationProperty>
+        <NavigationProperty Name="owninguser" Type="mscrm.systemuser" Nullable="false" Partner="user_spd_invoice">
+          <ReferentialConstraint Property="_owninguser_value" ReferencedProperty="systemuserid" />
+        </NavigationProperty>
+        <NavigationProperty Name="owningteam" Type="mscrm.team" Nullable="false" Partner="team_spd_invoice">
+          <ReferentialConstraint Property="_owningteam_value" ReferencedProperty="teamid" />
+        </NavigationProperty>
+        <NavigationProperty Name="ownerid" Type="mscrm.principal" Nullable="false" Partner="owner_spd_invoice">
+          <ReferentialConstraint Property="_ownerid_value" ReferencedProperty="ownerid" />
+        </NavigationProperty>
+        <NavigationProperty Name="owningbusinessunit" Type="mscrm.businessunit" Nullable="false" Partner="business_unit_spd_invoice">
+          <ReferentialConstraint Property="_owningbusinessunit_value" ReferencedProperty="businessunitid" />
+        </NavigationProperty>
+        <NavigationProperty Name="spd_invoice_SyncErrors" Type="Collection(mscrm.syncerror)" Partner="regardingobjectid_spd_invoice" />
+        <NavigationProperty Name="spd_invoice_DuplicateMatchingRecord" Type="Collection(mscrm.duplicaterecord)" Partner="duplicaterecordid_spd_invoice" />
+        <NavigationProperty Name="spd_invoice_DuplicateBaseRecord" Type="Collection(mscrm.duplicaterecord)" Partner="baserecordid_spd_invoice" />
+        <NavigationProperty Name="spd_invoice_AsyncOperations" Type="Collection(mscrm.asyncoperation)" Partner="regardingobjectid_spd_invoice" />
+        <NavigationProperty Name="spd_invoice_MailboxTrackingFolders" Type="Collection(mscrm.mailboxtrackingfolder)" Partner="regardingobjectid_spd_invoice" />
+        <NavigationProperty Name="spd_invoice_ProcessSession" Type="Collection(mscrm.processsession)" Partner="regardingobjectid_spd_invoice" />
+        <NavigationProperty Name="spd_invoice_BulkDeleteFailures" Type="Collection(mscrm.bulkdeletefailure)" Partner="regardingobjectid_spd_invoice" />
+        <NavigationProperty Name="spd_invoice_PrincipalObjectAttributeAccesses" Type="Collection(mscrm.principalobjectattributeaccess)" Partner="objectid_spd_invoice" />
+        <NavigationProperty Name="transactioncurrencyid" Type="mscrm.transactioncurrency" Nullable="false" Partner="TransactionCurrency_spd_invoice">
+          <ReferentialConstraint Property="_transactioncurrencyid_value" ReferencedProperty="transactioncurrencyid" />
+        </NavigationProperty>
+        <NavigationProperty Name="spd_spd_invoice_spd_application" Type="Collection(mscrm.spd_application)" Partner="spd_InvoiceId" />
+        <NavigationProperty Name="spd_OrganizationId" Type="mscrm.account" Nullable="false" Partner="spd_account_spd_invoice">
+          <ReferentialConstraint Property="_spd_organizationid_value" ReferencedProperty="accountid" />
         </NavigationProperty>
       </EntityType>
       <EntityType Name="spd_ministry" BaseType="mscrm.crmbaseentity">
@@ -20672,15 +20722,6 @@
           <ReferentialConstraint Property="_bpf_incidentid_value" ReferencedProperty="incidentid" />
         </NavigationProperty>
       </EntityType>
-      <EntityType Name="spd_servicetype_organization" BaseType="mscrm.crmbaseentity">
-        <Key>
-          <PropertyRef Name="spd_servicetype_organizationid" />
-        </Key>
-        <Property Name="spd_servicetypeid" Type="Edm.Guid" />
-        <Property Name="spd_servicetype_organizationid" Type="Edm.Guid" />
-        <Property Name="versionnumber" Type="Edm.Int64" />
-        <Property Name="accountid" Type="Edm.Guid" />
-      </EntityType>
       <EntityType Name="spd_servicetype" BaseType="mscrm.crmbaseentity">
         <Key>
           <PropertyRef Name="spd_servicetypeid" />
@@ -20688,7 +20729,7 @@
         <Property Name="versionnumber" Type="Edm.Int64" />
         <Property Name="importsequencenumber" Type="Edm.Int32" />
         <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
-        <Property Name="_spd_applicationid_value" Type="Edm.Guid" />
+        <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
         <Property Name="_createdonbehalfby_value" Type="Edm.Guid" />
         <Property Name="_modifiedby_value" Type="Edm.Guid" />
         <Property Name="_organizationid_value" Type="Edm.Guid" />
@@ -20702,7 +20743,6 @@
         <Property Name="createdon" Type="Edm.DateTimeOffset" />
         <Property Name="spd_servicetypeid" Type="Edm.Guid" />
         <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
-        <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
         <Property Name="spd_servicecategory" Type="Edm.Int32" />
         <Property Name="spd_components" Type="Edm.String" Unicode="false" />
         <Property Name="spd_cost_base" Type="Edm.Decimal" Scale="Variable" />
@@ -20731,10 +20771,6 @@
         <NavigationProperty Name="spd_servicetype_ProcessSession" Type="Collection(mscrm.processsession)" Partner="regardingobjectid_spd_servicetype" />
         <NavigationProperty Name="spd_servicetype_BulkDeleteFailures" Type="Collection(mscrm.bulkdeletefailure)" Partner="regardingobjectid_spd_servicetype" />
         <NavigationProperty Name="spd_servicetype_PrincipalObjectAttributeAccesses" Type="Collection(mscrm.principalobjectattributeaccess)" Partner="objectid_spd_servicetype" />
-        <NavigationProperty Name="spd_ServiceType_Organization" Type="Collection(mscrm.account)" Partner="spd_ServiceType_Organization" />
-        <NavigationProperty Name="spd_ApplicationId" Type="mscrm.spd_application" Nullable="false" Partner="spd_Application_ServiceType">
-          <ReferentialConstraint Property="_spd_applicationid_value" ReferencedProperty="spd_applicationid" />
-        </NavigationProperty>
         <NavigationProperty Name="transactioncurrencyid" Type="mscrm.transactioncurrency" Nullable="false" Partner="TransactionCurrency_spd_ServiceType">
           <ReferentialConstraint Property="_transactioncurrencyid_value" ReferencedProperty="transactioncurrencyid" />
         </NavigationProperty>
@@ -20744,6 +20780,7 @@
         <NavigationProperty Name="spd_servicetype_spd_cpicbatch" Type="Collection(mscrm.spd_cpicbatch)" Partner="spd_ServiceTypeId" />
         <NavigationProperty Name="spd_servicetype_spd_clearance" Type="Collection(mscrm.spd_clearance)" Partner="spd_ServiceType" />
         <NavigationProperty Name="spd_spd_servicetype_spd_portalinvitation" Type="Collection(mscrm.spd_portalinvitation)" Partner="spd_ServiceTypeId" />
+        <NavigationProperty Name="spd_account_spd_servicetype" Type="Collection(mscrm.account)" Partner="spd_account_spd_servicetype" />
       </EntityType>
       <EntityType Name="spd_spd_role_spd_portaluser" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -21219,9 +21256,6 @@
         <NavigationProperty Name="regardingobjectid_spd_portalinvitation" Type="mscrm.spd_portalinvitation" Nullable="false" Partner="spd_portalinvitation_SyncErrors">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_portalinvitationid" />
         </NavigationProperty>
-        <NavigationProperty Name="regardingobjectid_spd_cornetnotification" Type="mscrm.spd_cornetnotification" Nullable="false" Partner="spd_cornetnotification_SyncErrors">
-          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_cornetnotificationid" />
-        </NavigationProperty>
         <NavigationProperty Name="regardingobjectid_spd_address" Type="mscrm.spd_address" Nullable="false" Partner="spd_address_SyncErrors">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_addressid" />
         </NavigationProperty>
@@ -21275,6 +21309,9 @@
         </NavigationProperty>
         <NavigationProperty Name="regardingobjectid_bcgov_schedulejobsession" Type="mscrm.bcgov_schedulejobsession" Nullable="false" Partner="bcgov_schedulejobsession_SyncErrors">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="bcgov_schedulejobsessionid" />
+        </NavigationProperty>
+        <NavigationProperty Name="regardingobjectid_spd_invoice" Type="mscrm.spd_invoice" Nullable="false" Partner="spd_invoice_SyncErrors">
+          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_invoiceid" />
         </NavigationProperty>
         <NavigationProperty Name="regardingobjectid_ExpiredProcess_syncerror" Type="mscrm.expiredprocess" Nullable="false" Partner="ExpiredProcess_SyncErrors">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="businessprocessflowinstanceid" />
@@ -22194,10 +22231,6 @@
         <NavigationProperty Name="lk_spd_portalinvitation_createdonbehalfby" Type="Collection(mscrm.spd_portalinvitation)" Partner="createdonbehalfby" />
         <NavigationProperty Name="lk_spd_portalinvitation_modifiedby" Type="Collection(mscrm.spd_portalinvitation)" Partner="modifiedby" />
         <NavigationProperty Name="lk_spd_portalinvitation_modifiedonbehalfby" Type="Collection(mscrm.spd_portalinvitation)" Partner="modifiedonbehalfby" />
-        <NavigationProperty Name="lk_spd_cornetnotification_createdby" Type="Collection(mscrm.spd_cornetnotification)" Partner="createdby" />
-        <NavigationProperty Name="lk_spd_cornetnotification_createdonbehalfby" Type="Collection(mscrm.spd_cornetnotification)" Partner="createdonbehalfby" />
-        <NavigationProperty Name="lk_spd_cornetnotification_modifiedby" Type="Collection(mscrm.spd_cornetnotification)" Partner="modifiedby" />
-        <NavigationProperty Name="lk_spd_cornetnotification_modifiedonbehalfby" Type="Collection(mscrm.spd_cornetnotification)" Partner="modifiedonbehalfby" />
         <NavigationProperty Name="lk_spd_address_createdby" Type="Collection(mscrm.spd_address)" Partner="createdby" />
         <NavigationProperty Name="lk_spd_address_createdonbehalfby" Type="Collection(mscrm.spd_address)" Partner="createdonbehalfby" />
         <NavigationProperty Name="lk_spd_address_modifiedby" Type="Collection(mscrm.spd_address)" Partner="modifiedby" />
@@ -22283,6 +22316,11 @@
         <NavigationProperty Name="lk_bcgov_schedulejobsession_modifiedby" Type="Collection(mscrm.bcgov_schedulejobsession)" Partner="modifiedby" />
         <NavigationProperty Name="lk_bcgov_schedulejobsession_modifiedonbehalfby" Type="Collection(mscrm.bcgov_schedulejobsession)" Partner="modifiedonbehalfby" />
         <NavigationProperty Name="user_bcgov_schedulejobsession" Type="Collection(mscrm.bcgov_schedulejobsession)" Partner="owninguser" />
+        <NavigationProperty Name="lk_spd_invoice_createdby" Type="Collection(mscrm.spd_invoice)" Partner="createdby" />
+        <NavigationProperty Name="lk_spd_invoice_createdonbehalfby" Type="Collection(mscrm.spd_invoice)" Partner="createdonbehalfby" />
+        <NavigationProperty Name="lk_spd_invoice_modifiedby" Type="Collection(mscrm.spd_invoice)" Partner="modifiedby" />
+        <NavigationProperty Name="lk_spd_invoice_modifiedonbehalfby" Type="Collection(mscrm.spd_invoice)" Partner="modifiedonbehalfby" />
+        <NavigationProperty Name="user_spd_invoice" Type="Collection(mscrm.spd_invoice)" Partner="owninguser" />
         <NavigationProperty Name="lk_slakpiinstancebase_createdonbehalfby" Type="Collection(mscrm.slakpiinstance)" Partner="createdonbehalfby" />
         <NavigationProperty Name="lk_mobileofflineprofileitemassocaition_modifiedonbehalfby" Type="Collection(mscrm.mobileofflineprofileitemassociation)" Partner="modifiedonbehalfby" />
         <NavigationProperty Name="lk_userqueryvisualizationbase_modifiedonbehalfby" Type="Collection(mscrm.userqueryvisualization)" Partner="modifiedonbehalfby" />
@@ -23085,6 +23123,7 @@
         <NavigationProperty Name="team_spd_pdfreport" Type="Collection(mscrm.spd_pdfreport)" Partner="owningteam" />
         <NavigationProperty Name="team_bcgov_schedulejob" Type="Collection(mscrm.bcgov_schedulejob)" Partner="owningteam" />
         <NavigationProperty Name="team_bcgov_schedulejobsession" Type="Collection(mscrm.bcgov_schedulejobsession)" Partner="owningteam" />
+        <NavigationProperty Name="team_spd_invoice" Type="Collection(mscrm.spd_invoice)" Partner="owningteam" />
         <NavigationProperty Name="team_DuplicateRules" Type="Collection(mscrm.duplicaterule)" Partner="owningteam" />
         <NavigationProperty Name="team_Imports" Type="Collection(mscrm.import)" Partner="owningteam" />
         <NavigationProperty Name="OwningTeam_postfollows" Type="Collection(mscrm.postfollow)" Partner="owningteam" />
@@ -23670,6 +23709,7 @@
         <NavigationProperty Name="transactioncurrency_opportunitysalesprocess" Type="Collection(mscrm.opportunitysalesprocess)" Partner="transactioncurrencyid" />
         <NavigationProperty Name="TransactionCurrency_spd_payment" Type="Collection(mscrm.spd_payment)" Partner="transactioncurrencyid" />
         <NavigationProperty Name="TransactionCurrency_spd_ServiceType" Type="Collection(mscrm.spd_servicetype)" Partner="transactioncurrencyid" />
+        <NavigationProperty Name="TransactionCurrency_spd_invoice" Type="Collection(mscrm.spd_invoice)" Partner="transactioncurrencyid" />
         <NavigationProperty Name="TransactionCurrency_Email" Type="Collection(mscrm.email)" Partner="transactioncurrencyid_email" />
         <NavigationProperty Name="TransactionCurrency_DuplicateBaseRecord" Type="Collection(mscrm.duplicaterecord)" Partner="baserecordid_transactioncurrency" />
         <NavigationProperty Name="TransactionCurrency_BusinessUnit" Type="Collection(mscrm.businessunit)" Partner="transactioncurrencyid" />
@@ -24778,7 +24818,7 @@
         <Property Name="SeriesCanBeExpanded" Type="Edm.Boolean" />
       </ComplexType>
       <Action Name="CreateInstance">
-        <Parameter Name="Target" Type="mscrm.crmbaseentity" Nullable="false" />
+        <Parameter Name="Target" Type="mscrm.recurringappointmentmaster" Nullable="false" />
         <Parameter Name="Count" Type="Edm.Int32" Nullable="false" />
         <ReturnType Type="mscrm.CreateInstanceResponse" Nullable="false" />
       </Action>
@@ -24844,7 +24884,7 @@
         <Parameter Name="Importance" Type="Edm.String" Nullable="false" Unicode="false" />
         <Parameter Name="Body" Type="Edm.String" Nullable="false" Unicode="false" />
         <Parameter Name="Attachments" Type="Collection(mscrm.activitymimeattachment)" Nullable="false" />
-        <Parameter Name="ExtraProperties" Type="mscrm.crmbaseentity" />
+        <Parameter Name="ExtraProperties" Type="mscrm.email" />
         <Parameter Name="ValidateBeforeCreate" Type="Edm.Boolean" />
         <ReturnType Type="mscrm.email" Nullable="false" />
       </Action>
@@ -24861,7 +24901,7 @@
         <Parameter Name="Importance" Type="Edm.String" Nullable="false" Unicode="false" />
         <Parameter Name="Body" Type="Edm.String" Nullable="false" Unicode="false" />
         <Parameter Name="Attachments" Type="Collection(mscrm.activitymimeattachment)" Nullable="false" />
-        <Parameter Name="ExtraProperties" Type="mscrm.crmbaseentity" />
+        <Parameter Name="ExtraProperties" Type="mscrm.email" />
         <ReturnType Type="mscrm.email" Nullable="false" />
       </Action>
       <Action Name="DeprovisionLanguage">
@@ -25805,7 +25845,7 @@
       </Function>
       <Function Name="RetrieveUnpublished" IsBound="true" IsComposable="true">
         <Parameter Name="entity" Type="mscrm.savedqueryvisualization" Nullable="false" />
-        <ReturnType Type="mscrm.savedqueryvisualization" Nullable="false" />
+        <ReturnType Type="mscrm.systemform" Nullable="false" />
       </Function>
       <Function Name="RetrieveUnpublished" IsBound="true" IsComposable="true">
         <Parameter Name="entity" Type="mscrm.systemform" Nullable="false" />
@@ -25813,43 +25853,43 @@
       </Function>
       <Function Name="RetrieveUnpublished" IsBound="true" IsComposable="true">
         <Parameter Name="entity" Type="mscrm.customcontroldefaultconfig" Nullable="false" />
-        <ReturnType Type="mscrm.customcontroldefaultconfig" Nullable="false" />
+        <ReturnType Type="mscrm.systemform" Nullable="false" />
       </Function>
       <Function Name="RetrieveUnpublished" IsBound="true" IsComposable="true">
         <Parameter Name="entity" Type="mscrm.webresource" Nullable="false" />
-        <ReturnType Type="mscrm.webresource" Nullable="false" />
+        <ReturnType Type="mscrm.systemform" Nullable="false" />
       </Function>
       <Function Name="RetrieveUnpublished" IsBound="true" IsComposable="true">
         <Parameter Name="entity" Type="mscrm.sitemap" Nullable="false" />
-        <ReturnType Type="mscrm.sitemap" Nullable="false" />
+        <ReturnType Type="mscrm.systemform" Nullable="false" />
       </Function>
       <Function Name="RetrieveUnpublished" IsBound="true" IsComposable="true">
         <Parameter Name="entity" Type="mscrm.savedquery" Nullable="false" />
-        <ReturnType Type="mscrm.savedquery" Nullable="false" />
+        <ReturnType Type="mscrm.systemform" Nullable="false" />
       </Function>
       <Function Name="RetrieveUnpublished" IsBound="true" IsComposable="true">
         <Parameter Name="entity" Type="mscrm.mobileofflineprofileitem" Nullable="false" />
-        <ReturnType Type="mscrm.mobileofflineprofileitem" Nullable="false" />
+        <ReturnType Type="mscrm.systemform" Nullable="false" />
       </Function>
       <Function Name="RetrieveUnpublished" IsBound="true" IsComposable="true">
         <Parameter Name="entity" Type="mscrm.mobileofflineprofile" Nullable="false" />
-        <ReturnType Type="mscrm.mobileofflineprofile" Nullable="false" />
+        <ReturnType Type="mscrm.systemform" Nullable="false" />
       </Function>
       <Function Name="RetrieveUnpublished" IsBound="true" IsComposable="true">
         <Parameter Name="entity" Type="mscrm.appconfig" Nullable="false" />
-        <ReturnType Type="mscrm.appconfig" Nullable="false" />
+        <ReturnType Type="mscrm.systemform" Nullable="false" />
       </Function>
       <Function Name="RetrieveUnpublished" IsBound="true" IsComposable="true">
         <Parameter Name="entity" Type="mscrm.appconfiginstance" Nullable="false" />
-        <ReturnType Type="mscrm.appconfiginstance" Nullable="false" />
+        <ReturnType Type="mscrm.systemform" Nullable="false" />
       </Function>
       <Function Name="RetrieveUnpublished" IsBound="true" IsComposable="true">
         <Parameter Name="entity" Type="mscrm.navigationsetting" Nullable="false" />
-        <ReturnType Type="mscrm.navigationsetting" Nullable="false" />
+        <ReturnType Type="mscrm.systemform" Nullable="false" />
       </Function>
       <Function Name="RetrieveUnpublished" IsBound="true" IsComposable="true">
         <Parameter Name="entity" Type="mscrm.appmodule" Nullable="false" />
-        <ReturnType Type="mscrm.appmodule" Nullable="false" />
+        <ReturnType Type="mscrm.systemform" Nullable="false" />
       </Function>
       <Function Name="RetrieveUnpublishedMultiple" IsBound="true" IsComposable="true">
         <Parameter Name="entityset" Type="Collection(mscrm.savedqueryvisualization)" Nullable="false" />
@@ -26530,6 +26570,33 @@
         <Parameter Name="BusinessUnit" Type="mscrm.businessunit" Nullable="false" />
         <Parameter Name="ReassignPrincipal" Type="mscrm.crmbaseentity" Nullable="false" />
       </Action>
+      <ComplexType Name="spd_CancelUnderReviewCasesResponse">
+        <Property Name="MoreRecords" Type="Edm.Boolean" />
+        <Property Name="ErrorMessage" Type="Edm.String" Unicode="false" />
+      </ComplexType>
+      <Action Name="spd_CancelUnderReviewCases" IsBound="true">
+        <Parameter Name="entity" Type="mscrm.bcgov_schedulejob" Nullable="false" />
+        <Parameter Name="PageNumber" Type="Edm.Int32" Nullable="false" />
+        <ReturnType Type="mscrm.spd_CancelUnderReviewCasesResponse" Nullable="false" />
+      </Action>
+      <ComplexType Name="spd_CancelWaitingCasesResponse">
+        <Property Name="MoreRecords" Type="Edm.Boolean" />
+        <Property Name="ErrorMessage" Type="Edm.String" Unicode="false" />
+      </ComplexType>
+      <Action Name="spd_CancelWaitingCases" IsBound="true">
+        <Parameter Name="entity" Type="mscrm.bcgov_schedulejob" Nullable="false" />
+        <Parameter Name="PageNumber" Type="Edm.Int32" Nullable="false" />
+        <ReturnType Type="mscrm.spd_CancelWaitingCasesResponse" Nullable="false" />
+      </Action>
+      <ComplexType Name="spd_CheckInvoiceStatusResponse">
+        <Property Name="MoreRecords" Type="Edm.Boolean" />
+        <Property Name="ErrorMessage" Type="Edm.String" Unicode="false" />
+      </ComplexType>
+      <Action Name="spd_CheckInvoiceStatus" IsBound="true">
+        <Parameter Name="entity" Type="mscrm.bcgov_schedulejob" Nullable="false" />
+        <Parameter Name="PageNumber" Type="Edm.Int32" Nullable="false" />
+        <ReturnType Type="mscrm.spd_CheckInvoiceStatusResponse" Nullable="false" />
+      </Action>
       <ComplexType Name="spd_ConvertToOrganizationResponse">
         <Property Name="IsSuccess" Type="Edm.Boolean" />
         <Property Name="Result" Type="Edm.String" Unicode="false" />
@@ -26560,6 +26627,7 @@
       </Action>
       <ComplexType Name="spd_CPICParserResponse">
         <Property Name="IsSuccess" Type="Edm.Boolean" />
+        <Property Name="Offenders" Type="Edm.String" Unicode="false" />
       </ComplexType>
       <Action Name="spd_CPICParser" IsBound="true">
         <Parameter Name="entity" Type="mscrm.spd_cpicbatch" Nullable="false" />
@@ -26624,6 +26692,15 @@
       <Action Name="spd_ExpirePortalInvite" IsBound="true">
         <Parameter Name="entity" Type="mscrm.spd_portalinvitation" Nullable="false" />
         <ReturnType Type="mscrm.spd_ExpirePortalInviteResponse" Nullable="false" />
+      </Action>
+      <ComplexType Name="spd_FingerprintReminderResponse">
+        <Property Name="MoreRecords" Type="Edm.Boolean" />
+        <Property Name="ErrorMessage" Type="Edm.String" Unicode="false" />
+      </ComplexType>
+      <Action Name="spd_FingerprintReminder" IsBound="true">
+        <Parameter Name="entity" Type="mscrm.bcgov_schedulejob" Nullable="false" />
+        <Parameter Name="PageNumber" Type="Edm.Int32" Nullable="false" />
+        <ReturnType Type="mscrm.spd_FingerprintReminderResponse" Nullable="false" />
       </Action>
       <ComplexType Name="spd_GetAddressTitleResponse">
         <Property Name="NewName" Type="Edm.String" Unicode="false" />
@@ -26713,6 +26790,15 @@
         <Parameter Name="entity" Type="mscrm.contact" Nullable="false" />
         <ReturnType Type="mscrm.spd_HasHitsResponse" Nullable="false" />
       </Action>
+      <ComplexType Name="spd_MonthlyInvoiceResponse">
+        <Property Name="MoreRecords" Type="Edm.Boolean" />
+        <Property Name="ErrorMessage" Type="Edm.String" Unicode="false" />
+      </ComplexType>
+      <Action Name="spd_MonthlyInvoice" IsBound="true">
+        <Parameter Name="entity" Type="mscrm.bcgov_schedulejob" Nullable="false" />
+        <Parameter Name="PageNumber" Type="Edm.Int32" Nullable="false" />
+        <ReturnType Type="mscrm.spd_MonthlyInvoiceResponse" Nullable="false" />
+      </Action>
       <ComplexType Name="spd_MonthlyReportResponse">
         <Property Name="MoreRecords" Type="Edm.Boolean" />
         <Property Name="ErrorMessage" Type="Edm.String" Unicode="false" />
@@ -26721,6 +26807,51 @@
         <Parameter Name="entity" Type="mscrm.bcgov_schedulejob" Nullable="false" />
         <Parameter Name="PageNumber" Type="Edm.Int32" Nullable="false" />
         <ReturnType Type="mscrm.spd_MonthlyReportResponse" Nullable="false" />
+      </Action>
+      <ComplexType Name="spd_PaymentReminderResponse">
+        <Property Name="MoreRecords" Type="Edm.Boolean" />
+        <Property Name="ErrorMessage" Type="Edm.Boolean" />
+      </ComplexType>
+      <Action Name="spd_PaymentReminder" IsBound="true">
+        <Parameter Name="entity" Type="mscrm.bcgov_schedulejob" Nullable="false" />
+        <Parameter Name="PageNumber" Type="Edm.Int32" Nullable="false" />
+        <ReturnType Type="mscrm.spd_PaymentReminderResponse" Nullable="false" />
+      </Action>
+      <ComplexType Name="spd_PortalInviteExpiryResponse">
+        <Property Name="MoreRecords" Type="Edm.Boolean" />
+        <Property Name="ErrorMessage" Type="Edm.String" Unicode="false" />
+      </ComplexType>
+      <Action Name="spd_PortalInviteExpiry" IsBound="true">
+        <Parameter Name="entity" Type="mscrm.bcgov_schedulejob" Nullable="false" />
+        <Parameter Name="PageNumber" Type="Edm.Int32" Nullable="false" />
+        <ReturnType Type="mscrm.spd_PortalInviteExpiryResponse" Nullable="false" />
+      </Action>
+      <ComplexType Name="spd_PortalUserExpiryResponse">
+        <Property Name="MoreRecords" Type="Edm.Boolean" />
+        <Property Name="ErrorMessage" Type="Edm.String" Unicode="false" />
+      </ComplexType>
+      <Action Name="spd_PortalUserExpiry" IsBound="true">
+        <Parameter Name="entity" Type="mscrm.bcgov_schedulejob" Nullable="false" />
+        <Parameter Name="PageNumber" Type="Edm.Int32" Nullable="false" />
+        <ReturnType Type="mscrm.spd_PortalUserExpiryResponse" Nullable="false" />
+      </Action>
+      <ComplexType Name="spd_RequestMoreInfoOnCaseResponse">
+        <Property Name="MoreRecords" Type="Edm.Boolean" />
+        <Property Name="ErrorMessage" Type="Edm.String" Unicode="false" />
+      </ComplexType>
+      <Action Name="spd_RequestMoreInfoOnCase" IsBound="true">
+        <Parameter Name="entity" Type="mscrm.bcgov_schedulejob" Nullable="false" />
+        <Parameter Name="PageNumber" Type="Edm.Int32" Nullable="false" />
+        <ReturnType Type="mscrm.spd_RequestMoreInfoOnCaseResponse" Nullable="false" />
+      </Action>
+      <ComplexType Name="spd_ScreeningRequestExpiryResponse">
+        <Property Name="MoreRecords" Type="Edm.Boolean" />
+        <Property Name="ErrorMessage" Type="Edm.String" Unicode="false" />
+      </ComplexType>
+      <Action Name="spd_ScreeningRequestExpiry" IsBound="true">
+        <Parameter Name="entity" Type="mscrm.bcgov_schedulejob" Nullable="false" />
+        <Parameter Name="PageNumber" Type="Edm.Int32" Nullable="false" />
+        <ReturnType Type="mscrm.spd_ScreeningRequestExpiryResponse" Nullable="false" />
       </Action>
       <ComplexType Name="spd_SendEmailResponse">
         <Property Name="IsSuccess" Type="Edm.Boolean" />
@@ -29676,7 +29807,6 @@
           <NavigationPropertyBinding Path="spd_organization_spd_portaluser" Target="spd_portalusers" />
           <NavigationPropertyBinding Path="spd_orgagnization_spd_portalinvitation" Target="spd_portalinvitations" />
           <NavigationPropertyBinding Path="spd_Organization_Addresses" Target="spd_addresses" />
-          <NavigationPropertyBinding Path="spd_ServiceType_Organization" Target="spd_servicetypes" />
           <NavigationPropertyBinding Path="spd_account_incident_OrganizationId" Target="incidents" />
           <NavigationPropertyBinding Path="spd_account_spd_application_ApplicantId" Target="spd_applications" />
           <NavigationPropertyBinding Path="spd_account_spd_application_OrganizationId" Target="spd_applications" />
@@ -29685,6 +29815,8 @@
           <NavigationPropertyBinding Path="spd_OrganizationTypeId" Target="spd_organizationtypes" />
           <NavigationPropertyBinding Path="spd_account_spd_pdfreport" Target="spd_pdfreports" />
           <NavigationPropertyBinding Path="spd_organization_spd_clearanceaccess" Target="spd_clearanceaccesses" />
+          <NavigationPropertyBinding Path="spd_account_spd_invoice" Target="spd_invoices" />
+          <NavigationPropertyBinding Path="spd_account_spd_servicetype" Target="spd_servicetypes" />
           <NavigationPropertyBinding Path="ownerid" Target="owners" />
           <NavigationPropertyBinding Path="Account_ActivityPointers" Target="activitypointers" />
           <NavigationPropertyBinding Path="Account_SyncErrors" Target="syncerrors" />
@@ -30184,7 +30316,6 @@
           <NavigationPropertyBinding Path="regardingobjectid_spd_role" Target="spd_roles" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_identity" Target="spd_identities" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_portalinvitation" Target="spd_portalinvitations" />
-          <NavigationPropertyBinding Path="regardingobjectid_spd_cornetnotification" Target="spd_cornetnotifications" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_address" Target="spd_addresses" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_payment" Target="spd_payments" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_application" Target="spd_applications" />
@@ -30203,6 +30334,7 @@
           <NavigationPropertyBinding Path="regardingobjectid_spd_pdfreport" Target="spd_pdfreports" />
           <NavigationPropertyBinding Path="regardingobjectid_bcgov_schedulejob" Target="bcgov_schedulejobs" />
           <NavigationPropertyBinding Path="regardingobjectid_bcgov_schedulejobsession" Target="bcgov_schedulejobsessions" />
+          <NavigationPropertyBinding Path="regardingobjectid_spd_invoice" Target="spd_invoices" />
           <NavigationPropertyBinding Path="regardingobjectid_report" Target="reports" />
           <NavigationPropertyBinding Path="AsyncOperation_Emails" Target="emails" />
           <NavigationPropertyBinding Path="regardingobjectid_recurringappointmentmaster" Target="recurringappointmentmasters" />
@@ -30332,6 +30464,7 @@
           <NavigationPropertyBinding Path="spd_ApplicationId" Target="spd_applications" />
           <NavigationPropertyBinding Path="spd_ClearanceId" Target="spd_clearances" />
           <NavigationPropertyBinding Path="spd_PDFReportId" Target="spd_pdfreports" />
+          <NavigationPropertyBinding Path="spd_SubmittedById" Target="contacts" />
         </EntitySet>
         <EntitySet Name="bcgov_fields" EntityType="Microsoft.Dynamics.CRM.bcgov_field">
           <NavigationPropertyBinding Path="createdby" Target="systemusers" />
@@ -30786,7 +30919,6 @@
           <NavigationPropertyBinding Path="regardingobjectid_spd_role" Target="spd_roles" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_identity" Target="spd_identities" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_portalinvitation" Target="spd_portalinvitations" />
-          <NavigationPropertyBinding Path="regardingobjectid_spd_cornetnotification" Target="spd_cornetnotifications" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_address" Target="spd_addresses" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_payment" Target="spd_payments" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_application" Target="spd_applications" />
@@ -30805,6 +30937,7 @@
           <NavigationPropertyBinding Path="regardingobjectid_spd_pdfreport" Target="spd_pdfreports" />
           <NavigationPropertyBinding Path="regardingobjectid_bcgov_schedulejob" Target="bcgov_schedulejobs" />
           <NavigationPropertyBinding Path="regardingobjectid_bcgov_schedulejobsession" Target="bcgov_schedulejobsessions" />
+          <NavigationPropertyBinding Path="regardingobjectid_spd_invoice" Target="spd_invoices" />
           <NavigationPropertyBinding Path="regardingobjectid_customeraddress" Target="customeraddresses" />
           <NavigationPropertyBinding Path="regardingobjectid_annualfiscalcalendar" Target="annualfiscalcalendars" />
           <NavigationPropertyBinding Path="regardingobjectid_fax" Target="faxes" />
@@ -31006,6 +31139,7 @@
           <NavigationPropertyBinding Path="business_unit_spd_pdfreport" Target="spd_pdfreports" />
           <NavigationPropertyBinding Path="business_unit_bcgov_schedulejob" Target="bcgov_schedulejobs" />
           <NavigationPropertyBinding Path="business_unit_bcgov_schedulejobsession" Target="bcgov_schedulejobsessions" />
+          <NavigationPropertyBinding Path="business_unit_spd_invoice" Target="spd_invoices" />
           <NavigationPropertyBinding Path="BusinessUnit_SyncErrors" Target="syncerrors" />
           <NavigationPropertyBinding Path="transactioncurrencyid" Target="transactioncurrencies" />
           <NavigationPropertyBinding Path="BulkDeleteOperation_BusinessUnit" Target="bulkdeleteoperations" />
@@ -31564,6 +31698,7 @@
           <NavigationPropertyBinding Path="spd_PortalInvitation_Applicant" Target="spd_portalinvitations" />
           <NavigationPropertyBinding Path="spd_contact_spd_clearance" Target="spd_clearances" />
           <NavigationPropertyBinding Path="spd_contact_spd_identity" Target="spd_identities" />
+          <NavigationPropertyBinding Path="spd_contact_bcgov_documenturl" Target="bcgov_documenturls" />
           <NavigationPropertyBinding Path="contact_connections1" Target="connections" />
           <NavigationPropertyBinding Path="Contact_Feedback" Target="feedback" />
           <NavigationPropertyBinding Path="Contact_ProcessSessions" Target="processsessions" />
@@ -31890,6 +32025,8 @@
           <NavigationPropertyBinding Path="baserecordid_spd_clearance" Target="spd_clearances" />
           <NavigationPropertyBinding Path="duplicaterecordid_spd_clearanceaccess" Target="spd_clearanceaccesses" />
           <NavigationPropertyBinding Path="baserecordid_spd_clearanceaccess" Target="spd_clearanceaccesses" />
+          <NavigationPropertyBinding Path="duplicaterecordid_spd_invoice" Target="spd_invoices" />
+          <NavigationPropertyBinding Path="baserecordid_spd_invoice" Target="spd_invoices" />
           <NavigationPropertyBinding Path="baserecordid_goalrollupquery" Target="goalrollupqueries" />
           <NavigationPropertyBinding Path="duplicaterecordid_publisher" Target="publishers" />
           <NavigationPropertyBinding Path="baserecordid_transactioncurrency" Target="transactioncurrencies" />
@@ -33284,7 +33421,6 @@
           <NavigationPropertyBinding Path="regardingobjectid_spd_role" Target="spd_roles" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_identity" Target="spd_identities" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_portalinvitation" Target="spd_portalinvitations" />
-          <NavigationPropertyBinding Path="regardingobjectid_spd_cornetnotification" Target="spd_cornetnotifications" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_address" Target="spd_addresses" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_payment" Target="spd_payments" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_application" Target="spd_applications" />
@@ -33303,6 +33439,7 @@
           <NavigationPropertyBinding Path="regardingobjectid_spd_pdfreport" Target="spd_pdfreports" />
           <NavigationPropertyBinding Path="regardingobjectid_bcgov_schedulejob" Target="bcgov_schedulejobs" />
           <NavigationPropertyBinding Path="regardingobjectid_bcgov_schedulejobsession" Target="bcgov_schedulejobsessions" />
+          <NavigationPropertyBinding Path="regardingobjectid_spd_invoice" Target="spd_invoices" />
           <NavigationPropertyBinding Path="modifiedonbehalfby" Target="systemusers" />
           <NavigationPropertyBinding Path="ownerid" Target="owners" />
           <NavigationPropertyBinding Path="createdonbehalfby" Target="systemusers" />
@@ -33797,7 +33934,6 @@
           <NavigationPropertyBinding Path="organization_spd_role" Target="spd_roles" />
           <NavigationPropertyBinding Path="organization_spd_identity" Target="spd_identities" />
           <NavigationPropertyBinding Path="organization_spd_portalinvitation" Target="spd_portalinvitations" />
-          <NavigationPropertyBinding Path="organization_spd_cornetnotification" Target="spd_cornetnotifications" />
           <NavigationPropertyBinding Path="organization_spd_servicetype" Target="spd_servicetypes" />
           <NavigationPropertyBinding Path="organization_spd_submission" Target="spd_submissions" />
           <NavigationPropertyBinding Path="organization_spd_securityscreening" Target="spd_securityscreenings" />
@@ -34233,7 +34369,6 @@
           <NavigationPropertyBinding Path="objectid_spd_role" Target="spd_roles" />
           <NavigationPropertyBinding Path="objectid_spd_identity" Target="spd_identities" />
           <NavigationPropertyBinding Path="objectid_spd_portalinvitation" Target="spd_portalinvitations" />
-          <NavigationPropertyBinding Path="objectid_spd_cornetnotification" Target="spd_cornetnotifications" />
           <NavigationPropertyBinding Path="objectid_spd_address" Target="spd_addresses" />
           <NavigationPropertyBinding Path="objectid_spd_payment" Target="spd_payments" />
           <NavigationPropertyBinding Path="objectid_spd_application" Target="spd_applications" />
@@ -34252,6 +34387,7 @@
           <NavigationPropertyBinding Path="objectid_spd_pdfreport" Target="spd_pdfreports" />
           <NavigationPropertyBinding Path="objectid_bcgov_schedulejob" Target="bcgov_schedulejobs" />
           <NavigationPropertyBinding Path="objectid_bcgov_schedulejobsession" Target="bcgov_schedulejobsessions" />
+          <NavigationPropertyBinding Path="objectid_spd_invoice" Target="spd_invoices" />
           <NavigationPropertyBinding Path="objectid_letter" Target="letters" />
           <NavigationPropertyBinding Path="objectid_reportcategory" Target="reportcategories" />
           <NavigationPropertyBinding Path="objectid_sharepointdocumentlocation" Target="sharepointdocumentlocations" />
@@ -34361,7 +34497,6 @@
           <NavigationPropertyBinding Path="regardingobjectid_spd_role" Target="spd_roles" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_identity" Target="spd_identities" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_portalinvitation" Target="spd_portalinvitations" />
-          <NavigationPropertyBinding Path="regardingobjectid_spd_cornetnotification" Target="spd_cornetnotifications" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_address" Target="spd_addresses" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_payment" Target="spd_payments" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_application" Target="spd_applications" />
@@ -34380,6 +34515,7 @@
           <NavigationPropertyBinding Path="regardingobjectid_spd_pdfreport" Target="spd_pdfreports" />
           <NavigationPropertyBinding Path="regardingobjectid_bcgov_schedulejob" Target="bcgov_schedulejobs" />
           <NavigationPropertyBinding Path="regardingobjectid_bcgov_schedulejobsession" Target="bcgov_schedulejobsessions" />
+          <NavigationPropertyBinding Path="regardingobjectid_spd_invoice" Target="spd_invoices" />
           <NavigationPropertyBinding Path="regardingobjectid_queue" Target="queues" />
           <NavigationPropertyBinding Path="canceledby" Target="systemusers" />
           <NavigationPropertyBinding Path="regardingobjectid_contact" Target="contacts" />
@@ -35615,6 +35751,7 @@
           <NavigationPropertyBinding Path="solution_parent_solution" Target="solutions" />
           <NavigationPropertyBinding Path="createdonbehalfby" Target="systemusers" />
         </EntitySet>
+        <EntitySet Name="spd_account_spd_servicetypeset" EntityType="Microsoft.Dynamics.CRM.spd_account_spd_servicetype" />
         <EntitySet Name="spd_addresses" EntityType="Microsoft.Dynamics.CRM.spd_address">
           <NavigationPropertyBinding Path="createdby" Target="systemusers" />
           <NavigationPropertyBinding Path="createdonbehalfby" Target="systemusers" />
@@ -35672,7 +35809,6 @@
           <NavigationPropertyBinding Path="spd_application_BulkDeleteFailures" Target="bulkdeletefailures" />
           <NavigationPropertyBinding Path="spd_application_PrincipalObjectAttributeAccesses" Target="principalobjectattributeaccessset" />
           <NavigationPropertyBinding Path="spd_spd_application_incident" Target="incidents" />
-          <NavigationPropertyBinding Path="spd_Application_ServiceType" Target="spd_servicetypes" />
           <NavigationPropertyBinding Path="spd_ApplicantId_account" Target="accounts" />
           <NavigationPropertyBinding Path="spd_ApplicantId_contact" Target="contacts" />
           <NavigationPropertyBinding Path="spd_OrganizationId" Target="accounts" />
@@ -35681,6 +35817,7 @@
           <NavigationPropertyBinding Path="spd_Ministry" Target="spd_ministries" />
           <NavigationPropertyBinding Path="spd_SubmittedBy" Target="spd_portalusers" />
           <NavigationPropertyBinding Path="spd_application_bcgov_documenturl" Target="bcgov_documenturls" />
+          <NavigationPropertyBinding Path="spd_InvoiceId" Target="spd_invoices" />
         </EntitySet>
         <EntitySet Name="spd_clearanceaccesses" EntityType="Microsoft.Dynamics.CRM.spd_clearanceaccess">
           <NavigationPropertyBinding Path="createdby" Target="systemusers" />
@@ -35725,19 +35862,6 @@
           <NavigationPropertyBinding Path="spd_ContactID" Target="contacts" />
           <NavigationPropertyBinding Path="spd_clearance_bcgov_documenturl" Target="bcgov_documenturls" />
           <NavigationPropertyBinding Path="spd_clearance_spd_clearanceaccess" Target="spd_clearanceaccesses" />
-        </EntitySet>
-        <EntitySet Name="spd_cornetnotifications" EntityType="Microsoft.Dynamics.CRM.spd_cornetnotification">
-          <NavigationPropertyBinding Path="createdby" Target="systemusers" />
-          <NavigationPropertyBinding Path="createdonbehalfby" Target="systemusers" />
-          <NavigationPropertyBinding Path="modifiedby" Target="systemusers" />
-          <NavigationPropertyBinding Path="modifiedonbehalfby" Target="systemusers" />
-          <NavigationPropertyBinding Path="organizationid" Target="organizations" />
-          <NavigationPropertyBinding Path="spd_cornetnotification_SyncErrors" Target="syncerrors" />
-          <NavigationPropertyBinding Path="spd_cornetnotification_AsyncOperations" Target="asyncoperations" />
-          <NavigationPropertyBinding Path="spd_cornetnotification_MailboxTrackingFolders" Target="mailboxtrackingfolders" />
-          <NavigationPropertyBinding Path="spd_cornetnotification_ProcessSession" Target="processsessions" />
-          <NavigationPropertyBinding Path="spd_cornetnotification_BulkDeleteFailures" Target="bulkdeletefailures" />
-          <NavigationPropertyBinding Path="spd_cornetnotification_PrincipalObjectAttributeAccesses" Target="principalobjectattributeaccessset" />
         </EntitySet>
         <EntitySet Name="spd_cpicbatchs" EntityType="Microsoft.Dynamics.CRM.spd_cpicbatch">
           <NavigationPropertyBinding Path="createdby" Target="systemusers" />
@@ -35813,6 +35937,27 @@
           <NavigationPropertyBinding Path="spd_identity_PrincipalObjectAttributeAccesses" Target="principalobjectattributeaccessset" />
           <NavigationPropertyBinding Path="spd_spd_identity_spd_portaluser" Target="spd_portalusers" />
           <NavigationPropertyBinding Path="spd_ContactId" Target="contacts" />
+        </EntitySet>
+        <EntitySet Name="spd_invoices" EntityType="Microsoft.Dynamics.CRM.spd_invoice">
+          <NavigationPropertyBinding Path="createdby" Target="systemusers" />
+          <NavigationPropertyBinding Path="createdonbehalfby" Target="systemusers" />
+          <NavigationPropertyBinding Path="modifiedby" Target="systemusers" />
+          <NavigationPropertyBinding Path="modifiedonbehalfby" Target="systemusers" />
+          <NavigationPropertyBinding Path="owninguser" Target="systemusers" />
+          <NavigationPropertyBinding Path="owningteam" Target="teams" />
+          <NavigationPropertyBinding Path="ownerid" Target="owners" />
+          <NavigationPropertyBinding Path="owningbusinessunit" Target="businessunits" />
+          <NavigationPropertyBinding Path="spd_invoice_SyncErrors" Target="syncerrors" />
+          <NavigationPropertyBinding Path="spd_invoice_DuplicateMatchingRecord" Target="duplicaterecords" />
+          <NavigationPropertyBinding Path="spd_invoice_DuplicateBaseRecord" Target="duplicaterecords" />
+          <NavigationPropertyBinding Path="spd_invoice_AsyncOperations" Target="asyncoperations" />
+          <NavigationPropertyBinding Path="spd_invoice_MailboxTrackingFolders" Target="mailboxtrackingfolders" />
+          <NavigationPropertyBinding Path="spd_invoice_ProcessSession" Target="processsessions" />
+          <NavigationPropertyBinding Path="spd_invoice_BulkDeleteFailures" Target="bulkdeletefailures" />
+          <NavigationPropertyBinding Path="spd_invoice_PrincipalObjectAttributeAccesses" Target="principalobjectattributeaccessset" />
+          <NavigationPropertyBinding Path="transactioncurrencyid" Target="transactioncurrencies" />
+          <NavigationPropertyBinding Path="spd_spd_invoice_spd_application" Target="spd_applications" />
+          <NavigationPropertyBinding Path="spd_OrganizationId" Target="accounts" />
         </EntitySet>
         <EntitySet Name="spd_ministries" EntityType="Microsoft.Dynamics.CRM.spd_ministry">
           <NavigationPropertyBinding Path="createdby" Target="systemusers" />
@@ -36018,7 +36163,6 @@
           <NavigationPropertyBinding Path="spd_securityscreening_PrincipalObjectAttributeAccesses" Target="principalobjectattributeaccessset" />
           <NavigationPropertyBinding Path="bpf_incidentid" Target="incidents" />
         </EntitySet>
-        <EntitySet Name="spd_servicetype_organizationset" EntityType="Microsoft.Dynamics.CRM.spd_servicetype_organization" />
         <EntitySet Name="spd_servicetypes" EntityType="Microsoft.Dynamics.CRM.spd_servicetype">
           <NavigationPropertyBinding Path="createdby" Target="systemusers" />
           <NavigationPropertyBinding Path="createdonbehalfby" Target="systemusers" />
@@ -36033,8 +36177,6 @@
           <NavigationPropertyBinding Path="spd_servicetype_ProcessSession" Target="processsessions" />
           <NavigationPropertyBinding Path="spd_servicetype_BulkDeleteFailures" Target="bulkdeletefailures" />
           <NavigationPropertyBinding Path="spd_servicetype_PrincipalObjectAttributeAccesses" Target="principalobjectattributeaccessset" />
-          <NavigationPropertyBinding Path="spd_ServiceType_Organization" Target="accounts" />
-          <NavigationPropertyBinding Path="spd_ApplicationId" Target="spd_applications" />
           <NavigationPropertyBinding Path="transactioncurrencyid" Target="transactioncurrencies" />
           <NavigationPropertyBinding Path="spd_spd_servicetype_spd_application_ServiceTypeId" Target="spd_applications" />
           <NavigationPropertyBinding Path="spd_spd_servicetype_spd_submission_ServiceTypeId" Target="spd_submissions" />
@@ -36042,6 +36184,7 @@
           <NavigationPropertyBinding Path="spd_servicetype_spd_cpicbatch" Target="spd_cpicbatchs" />
           <NavigationPropertyBinding Path="spd_servicetype_spd_clearance" Target="spd_clearances" />
           <NavigationPropertyBinding Path="spd_spd_servicetype_spd_portalinvitation" Target="spd_portalinvitations" />
+          <NavigationPropertyBinding Path="spd_account_spd_servicetype" Target="accounts" />
         </EntitySet>
         <EntitySet Name="spd_spd_role_spd_portaluserset" EntityType="Microsoft.Dynamics.CRM.spd_spd_role_spd_portaluser" />
         <EntitySet Name="spd_submissions" EntityType="Microsoft.Dynamics.CRM.spd_submission">
@@ -36174,7 +36317,6 @@
           <NavigationPropertyBinding Path="regardingobjectid_spd_role" Target="spd_roles" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_identity" Target="spd_identities" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_portalinvitation" Target="spd_portalinvitations" />
-          <NavigationPropertyBinding Path="regardingobjectid_spd_cornetnotification" Target="spd_cornetnotifications" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_address" Target="spd_addresses" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_payment" Target="spd_payments" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_application" Target="spd_applications" />
@@ -36193,6 +36335,7 @@
           <NavigationPropertyBinding Path="regardingobjectid_spd_pdfreport" Target="spd_pdfreports" />
           <NavigationPropertyBinding Path="regardingobjectid_bcgov_schedulejob" Target="bcgov_schedulejobs" />
           <NavigationPropertyBinding Path="regardingobjectid_bcgov_schedulejobsession" Target="bcgov_schedulejobsessions" />
+          <NavigationPropertyBinding Path="regardingobjectid_spd_invoice" Target="spd_invoices" />
           <NavigationPropertyBinding Path="regardingobjectid_ExpiredProcess_syncerror" Target="expiredprocesses" />
           <NavigationPropertyBinding Path="regardingobjectid_email_syncerror" Target="emails" />
           <NavigationPropertyBinding Path="regardingobjectid_systemuser" Target="systemusers" />
@@ -36771,10 +36914,6 @@
           <NavigationPropertyBinding Path="lk_spd_portalinvitation_createdonbehalfby" Target="spd_portalinvitations" />
           <NavigationPropertyBinding Path="lk_spd_portalinvitation_modifiedby" Target="spd_portalinvitations" />
           <NavigationPropertyBinding Path="lk_spd_portalinvitation_modifiedonbehalfby" Target="spd_portalinvitations" />
-          <NavigationPropertyBinding Path="lk_spd_cornetnotification_createdby" Target="spd_cornetnotifications" />
-          <NavigationPropertyBinding Path="lk_spd_cornetnotification_createdonbehalfby" Target="spd_cornetnotifications" />
-          <NavigationPropertyBinding Path="lk_spd_cornetnotification_modifiedby" Target="spd_cornetnotifications" />
-          <NavigationPropertyBinding Path="lk_spd_cornetnotification_modifiedonbehalfby" Target="spd_cornetnotifications" />
           <NavigationPropertyBinding Path="lk_spd_address_createdby" Target="spd_addresses" />
           <NavigationPropertyBinding Path="lk_spd_address_createdonbehalfby" Target="spd_addresses" />
           <NavigationPropertyBinding Path="lk_spd_address_modifiedby" Target="spd_addresses" />
@@ -36860,6 +36999,11 @@
           <NavigationPropertyBinding Path="lk_bcgov_schedulejobsession_modifiedby" Target="bcgov_schedulejobsessions" />
           <NavigationPropertyBinding Path="lk_bcgov_schedulejobsession_modifiedonbehalfby" Target="bcgov_schedulejobsessions" />
           <NavigationPropertyBinding Path="user_bcgov_schedulejobsession" Target="bcgov_schedulejobsessions" />
+          <NavigationPropertyBinding Path="lk_spd_invoice_createdby" Target="spd_invoices" />
+          <NavigationPropertyBinding Path="lk_spd_invoice_createdonbehalfby" Target="spd_invoices" />
+          <NavigationPropertyBinding Path="lk_spd_invoice_modifiedby" Target="spd_invoices" />
+          <NavigationPropertyBinding Path="lk_spd_invoice_modifiedonbehalfby" Target="spd_invoices" />
+          <NavigationPropertyBinding Path="user_spd_invoice" Target="spd_invoices" />
           <NavigationPropertyBinding Path="lk_slakpiinstancebase_createdonbehalfby" Target="slakpiinstances" />
           <NavigationPropertyBinding Path="lk_mobileofflineprofileitemassocaition_modifiedonbehalfby" Target="mobileofflineprofileitemassociations" />
           <NavigationPropertyBinding Path="lk_userqueryvisualizationbase_modifiedonbehalfby" Target="userqueryvisualizations" />
@@ -37556,6 +37700,7 @@
           <NavigationPropertyBinding Path="team_spd_pdfreport" Target="spd_pdfreports" />
           <NavigationPropertyBinding Path="team_bcgov_schedulejob" Target="bcgov_schedulejobs" />
           <NavigationPropertyBinding Path="team_bcgov_schedulejobsession" Target="bcgov_schedulejobsessions" />
+          <NavigationPropertyBinding Path="team_spd_invoice" Target="spd_invoices" />
           <NavigationPropertyBinding Path="team_DuplicateRules" Target="duplicaterules" />
           <NavigationPropertyBinding Path="team_Imports" Target="imports" />
           <NavigationPropertyBinding Path="OwningTeam_postfollows" Target="postfollows" />
@@ -37766,6 +37911,7 @@
           <NavigationPropertyBinding Path="transactioncurrency_opportunitysalesprocess" Target="opportunitysalesprocesses" />
           <NavigationPropertyBinding Path="TransactionCurrency_spd_payment" Target="spd_payments" />
           <NavigationPropertyBinding Path="TransactionCurrency_spd_ServiceType" Target="spd_servicetypes" />
+          <NavigationPropertyBinding Path="TransactionCurrency_spd_invoice" Target="spd_invoices" />
           <NavigationPropertyBinding Path="TransactionCurrency_Email" Target="emails" />
           <NavigationPropertyBinding Path="TransactionCurrency_DuplicateBaseRecord" Target="duplicaterecords" />
           <NavigationPropertyBinding Path="TransactionCurrency_BusinessUnit" Target="businessunits" />

@@ -15,8 +15,8 @@ internal class DocumentUrlRepository : IDocumentUrlRepository
     public async Task<DocumentUrlListResp> QueryAsync(DocumentUrlQry qry, CancellationToken ct)
     {
         var documents = _context.bcgov_documenturls.Where(d => d.statecode != DynamicsConstants.StateCode_Inactive);
-        //if (qry.ApplicantId != null) //waiting for dynamics
-        //    documents = documents.Where(d => d._spd_applicantid_value == qry.ApplicantId);
+        if (qry.ApplicantId != null) 
+            documents = documents.Where(d => d._spd_submittedbyid_value == qry.ApplicantId);
 
         if (qry.ApplicationId != null)
             documents = documents.Where(d => d._spd_applicationid_value == qry.ApplicationId);
