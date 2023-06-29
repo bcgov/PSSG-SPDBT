@@ -35,19 +35,19 @@ import { FormGroupValidators } from 'src/app/core/validators/form-group.validato
 					<div class="col-xl-4 col-lg-12">
 						<div class="ms-3 mb-2">
 							<div class="text-minor-heading fw-semibold">Organization Name</div>
-							<div class="fw-bold">{{ organizationName.value }}</div>
+							<div class="fw-bold">{{ organizationName.value | default }}</div>
 						</div>
 					</div>
 					<div class="col-xl-4 col-lg-12">
 						<div class="ms-3 mb-2">
 							<div class="text-minor-heading fw-semibold">Legal Organization Name</div>
-							<div class="fw-bold">{{ organizationLegalName.value }}</div>
+							<div class="fw-bold">{{ organizationLegalName.value | default }}</div>
 						</div>
 					</div>
 					<div class="col-xl-4 col-lg-12">
 						<div class="ms-3 mb-2">
 							<div class="text-minor-heading fw-semibold">Access Code</div>
-							<div class="fw-bold">{{ accessCode.value }}</div>
+							<div class="fw-bold">{{ accessCode.value | default }}</div>
 						</div>
 					</div>
 				</div>

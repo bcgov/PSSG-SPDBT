@@ -98,6 +98,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 					</mat-table>
 					<mat-paginator
 						[showFirstLastButtons]="true"
+						[hidePageSize]="true"
 						[pageIndex]="tablePaginator.pageIndex"
 						[pageSize]="tablePaginator.pageSize"
 						[length]="tablePaginator.length"

@@ -298,16 +298,22 @@ namespace Spd.Manager.Cases
             ShareableClearanceResponse response = new ShareableClearanceResponse();
             ShareableClearanceSearchResponse searchResponse = (ShareableClearanceSearchResponse)await _searchEngine.SearchAsync(new ShareableClearanceSearchRequest(query.OrgId, query.BcscId, query.ServiceType), ct);
 
-            response.Items = new List<ShareableClearanceItem>()
+            if (searchResponse.Items.Any())
             {
-                _mapper.Map<ShareableClearanceItem>(searchResponse.Items.OrderByDescending(c => c.GrantedDate).FirstOrDefault())
-            };
+                response.Items = new List<ShareableClearanceItem>()
+                {
+                    _mapper.Map<ShareableClearanceItem>(searchResponse.Items.OrderByDescending(c => c.GrantedDate).FirstOrDefault())
+                };
+            }
 
             return response;
         }
         #endregion
 
         #region applicant-applications
+
+
+
         public async Task<ApplicationCreateResponse> Handle(ApplicantApplicationCreateCommand command, CancellationToken ct)
         {
             var result = new ApplicationCreateResponse();
@@ -316,7 +322,8 @@ namespace Spd.Manager.Cases
             cmd.ConsentFormTempFile = null;
             cmd.CreatedByApplicantBcscId = command.BcscId;
 
-            if (command.ApplicationCreateRequest.AgreeToShare &&
+            if (command.ApplicationCreateRequest.AgreeToShare != null &&
+               (bool)command.ApplicationCreateRequest.AgreeToShare &&
                cmd.SharedClearanceId.HasValue &&
                cmd.CreatedByApplicantBcscId != null)//bcsc authenticated and has sharable clearance
             {
@@ -377,7 +384,8 @@ namespace Spd.Manager.Cases
             DocumentUrlQry qry = new DocumentUrlQry(query.ApplicationId, contact.ContactId);
             var docList = await _documentUrlRepository.QueryAsync(qry, ct);
 
-            return new ApplicantApplicationFileListResponse{
+            return new ApplicantApplicationFileListResponse
+            {
                 Items = _mapper.Map<IEnumerable<ApplicantApplicationFileResponse>>(docList.Items)
             };
         }

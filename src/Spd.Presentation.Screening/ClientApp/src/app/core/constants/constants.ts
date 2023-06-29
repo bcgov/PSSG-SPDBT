@@ -5,6 +5,7 @@ export const SPD_CONSTANTS = {
 	date: {
 		birthDateStartAt: new Date(2000, 0, 1),
 		dateFormat: 'yyyy-MM-dd',
+		formalDateFormat: 'MMM dd, yyyy',
 		monthYearFormat: 'MMM yyyy',
 		dateTimeFormat: 'yyyy-MM-dd HH:mm',
 	},
