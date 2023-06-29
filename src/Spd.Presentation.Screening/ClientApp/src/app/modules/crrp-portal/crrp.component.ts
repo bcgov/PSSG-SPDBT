@@ -1,9 +1,7 @@
 import { Component } from '@angular/core';
 import { IsActiveMatchOptions, QueryParamsHandling, Router } from '@angular/router';
-import { IdentityProviderTypeCode } from 'src/app/api/models';
-import { AppRoutes } from 'src/app/app-routing.module';
+import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { CrrpRoutes } from './crrp-routing.module';
 
 // export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
@@ -176,35 +174,20 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 	],
 })
 export class CrrpComponent {
-	isAuthenticated = this.authenticationService.waitUntilAuthentication$;
+	isAuthenticated = this.authProcessService.waitUntilAuthentication$;
 	crrpRoutes = CrrpRoutes;
 
 	constructor(
-		protected authenticationService: AuthenticationService,
 		protected authUserService: AuthUserService,
+		private authProcessService: AuthProcessService,
 		private router: Router
 	) {}
 
 	async ngOnInit(): Promise<void> {
-		const nextUrl = await this.authenticationService.login(
-			IdentityProviderTypeCode.BusinessBceId,
-			CrrpRoutes.path(CrrpRoutes.HOME)
-		);
-		// console.debug('CrrpComponent nextUrl', nextUrl);
+		const nextRoute = await this.authProcessService.initializeCrrp();
+		console.log('initialize nextRoute', nextRoute);
 
-		if (nextUrl) {
-			const success = await this.authUserService.whoAmIAsync(IdentityProviderTypeCode.BusinessBceId);
-			this.authenticationService.notify(success);
-
-			const userInfoMsgType = this.authUserService.userInfo?.userInfoMsgType;
-			if (userInfoMsgType) {
-				this.router.navigate([AppRoutes.ACCESS_DENIED], { state: { userInfoMsgType: userInfoMsgType } });
-				return;
-			}
-
-			const nextRoute = decodeURIComponent(nextUrl);
-			// console.debug('nextRoute', nextRoute);
-
+		if (nextRoute) {
 			await this.router.navigate([nextRoute]);
 		}
 	}
