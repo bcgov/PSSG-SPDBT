@@ -388,6 +388,7 @@ namespace Spd.Manager.Cases
             ApplicantIdentityQueryResult? contact = (ApplicantIdentityQueryResult?)await _identityRepository.Query(new ApplicantIdentityQuery(command.BcscId, IdentityProviderTypeCode.BcServicesCard), ct);
             if (contact == null)
                 throw new ArgumentException("No contact found");
+
             //validate the application is in correct state.
 
             //create bcgov_documenturl
@@ -407,8 +408,7 @@ namespace Spd.Manager.Cases
                 SubmittedByApplicantId=contact.ContactId
             }, ct);
 
-            //upload file to s3
-            return null;
+            return _mapper.Map<ApplicantAppFileCreateResponse>(docUrlResp);
         }
         #endregion
     }
