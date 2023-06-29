@@ -29,7 +29,7 @@ import { CrcRoutes } from './crc-routing.module';
 		`,
 	],
 })
-export class InvitationComponent {
+export class InvitationCrcComponent {
 	message = '';
 
 	constructor(private route: ActivatedRoute, private router: Router, private applicantService: ApplicantService) {}

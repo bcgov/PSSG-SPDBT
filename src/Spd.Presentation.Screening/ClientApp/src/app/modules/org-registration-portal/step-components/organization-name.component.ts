@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { AuthUserService } from 'src/app/core/services/auth-user.service';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { RegistrationFormStepComponent } from '../org-registration.component';
 
@@ -36,21 +35,17 @@ export class OrganizationNameComponent implements OnInit, RegistrationFormStepCo
 	form!: FormGroup;
 	matcher = new FormErrorStateMatcher();
 
-	constructor(
-		private formBuilder: FormBuilder,
-		private authenticationService: AuthenticationService,
-		private authUserService: AuthUserService
-	) {}
+	constructor(private formBuilder: FormBuilder, private authProcessService: AuthProcessService) {}
 
 	ngOnInit(): void {
 		this.form = this.formBuilder.group({
 			organizationName: new FormControl('', [Validators.required]),
 		});
 
-		this.authenticationService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
+		this.authProcessService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
 			const currOrgName = this.organizationName.value;
 			if (!currOrgName && isLoggedIn) {
-				const loggedInOrgName = this.authenticationService.loggedInUserTokenData.bceid_business_name;
+				const loggedInOrgName = this.authProcessService.loggedInUserTokenData.bceid_business_name;
 				if (loggedInOrgName) {
 					this.form.patchValue({ organizationName: loggedInOrgName });
 				}

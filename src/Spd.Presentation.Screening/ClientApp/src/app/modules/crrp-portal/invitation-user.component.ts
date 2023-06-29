@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { IdentityProviderTypeCode, InvitationRequest } from 'src/app/api/models';
 import { OrgUserService } from 'src/app/api/services';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { CrrpRoutes } from '../crrp-routing.module';
+import { CrrpRoutes } from './crrp-routing.module';
 
 @Component({
 	selector: 'app-invitation',
@@ -29,7 +29,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 		`,
 	],
 })
-export class InvitationComponent {
+export class InvitationUserComponent {
 	message = '';
 
 	constructor(
@@ -40,20 +40,23 @@ export class InvitationComponent {
 	) {}
 
 	async ngOnInit(): Promise<void> {
-		const id = this.route.snapshot.paramMap.get('id');
-		const invitationRequest: InvitationRequest = { inviteEncryptedCode: id };
+		const nextUrl = await this.authenticationService.login(IdentityProviderTypeCode.BusinessBceId, location.pathname);
 
-		this.orgUserService
-			.apiUserInvitationPost({ body: invitationRequest })
-			.pipe()
-			.subscribe((resp: any) => {
-				if (resp?.isError) {
-					this.message = resp.message;
-				} else {
-					this.authenticationService.login(IdentityProviderTypeCode.BusinessBceId, CrrpRoutes.path()).then((_resp) => {
+		const id = this.route.snapshot.paramMap.get('id');
+
+		if (nextUrl && id) {
+			const invitationRequest: InvitationRequest = { inviteEncryptedCode: id };
+			this.orgUserService
+				.apiUserInvitationPost({ body: invitationRequest })
+				.pipe()
+				.subscribe((resp: any) => {
+					console.log('InvitationUserComponent, apiUserInvitationPost', resp);
+					if (resp?.isError) {
+						this.message = resp.message;
+					} else {
 						this.router.navigate([CrrpRoutes.path(CrrpRoutes.HOME)]);
-					});
-				}
-			});
+					}
+				});
+		}
 	}
 }

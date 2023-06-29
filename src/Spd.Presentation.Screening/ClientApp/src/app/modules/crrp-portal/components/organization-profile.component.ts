@@ -4,6 +4,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 import { NgxMaskPipe } from 'ngx-mask';
 import {
 	BooleanTypeCode,
+	ContactAuthorizationTypeCode,
 	EmployeeOrganizationTypeCode,
 	OrgResponse,
 	OrgUpdateRequest,
@@ -25,7 +26,7 @@ import { FormGroupValidators } from 'src/app/core/validators/form-group.validato
 				<div class="col-xl-9 col-lg-8 col-md-12 col-sm-12">
 					<h2 class="fw-normal">Organization Profile</h2>
 				</div>
-				<div class="col-xl-3 col-lg-4 col-md-12 col-sm-12" *ngIf="viewOnly">
+				<div class="col-xl-3 col-lg-4 col-md-12 col-sm-12" *ngIf="viewOnly && editable">
 					<button mat-flat-button color="primary" class="large mb-2" (click)="onEditView()">Edit Information</button>
 				</div>
 			</div>
@@ -224,6 +225,7 @@ import { FormGroupValidators } from 'src/app/core/validators/form-group.validato
 	],
 })
 export class OrganizationProfileComponent implements OnInit {
+	editable: boolean = true;
 	viewOnly: boolean = true;
 	displayLicenseesQuestion: boolean = true;
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
@@ -268,6 +270,8 @@ export class OrganizationProfileComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
+		this.editable = this.authUserService.userInfo?.contactAuthorizationTypeCode == ContactAuthorizationTypeCode.Primary;
+		console.log('editable', this.editable);
 		this.orgService
 			.apiOrgsOrgIdGet({ orgId: this.authUserService.userInfo?.orgId! })
 			.pipe()
