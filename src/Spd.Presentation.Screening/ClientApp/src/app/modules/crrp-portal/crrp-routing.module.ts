@@ -6,13 +6,13 @@ import { CrrpHomeComponent } from './components/crrp-home.component';
 import { ExpiringChecksComponent } from './components/expiring-checks.component';
 import { GenericUploadsComponent } from './components/generic-uploads.component';
 import { IdentifyVerificationComponent } from './components/identify-verification.component';
-import { InvitationComponent } from './components/invitation.component';
 import { ManualSubmissionComponent } from './components/manual-submission.component';
 import { OrganizationProfileComponent } from './components/organization-profile.component';
 import { PaymentsComponent } from './components/payments.component';
 import { ReportsComponent } from './components/reports.component';
 import { UsersComponent } from './components/users.component';
 import { CrrpComponent } from './crrp.component';
+import { InvitationUserComponent } from './invitation-user.component';
 
 export class CrrpRoutes {
 	public static HOME = 'home';
@@ -51,12 +51,12 @@ const routes: Routes = [
 			{ path: CrrpRoutes.ORGANIZATION_PROFILE, component: OrganizationProfileComponent },
 			{ path: CrrpRoutes.REPORTS, component: ReportsComponent },
 			{ path: CrrpRoutes.USERS, component: UsersComponent },
-			{
-				path: 'invitation/:id',
-				component: InvitationComponent,
-			},
 			{ path: '', redirectTo: CrrpRoutes.path(CrrpRoutes.HOME), pathMatch: 'full' },
 		],
+	},
+	{
+		path: 'invitation/:id',
+		component: InvitationUserComponent,
 	},
 ];
 

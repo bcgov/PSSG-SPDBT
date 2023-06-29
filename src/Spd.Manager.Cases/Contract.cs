@@ -25,6 +25,7 @@ namespace Spd.Manager.Cases
         public Task<ApplicantApplicationListResponse> Handle(ApplicantApplicationListQuery request, CancellationToken ct);
         public Task<ApplicantApplicationResponse> Handle(ApplicantApplicationQuery request, CancellationToken ct);
         public Task<ShareableClearanceResponse> Handle(ShareableClearanceQuery request, CancellationToken ct);
+        public Task<ApplicantApplicationFileListResponse> Handle(ApplicantApplicationFileQuery query, CancellationToken ct);
     }
 
     #region application invites
@@ -122,7 +123,6 @@ namespace Spd.Manager.Cases
 
     #region application
     public record ApplicationCreateCommand(ApplicationCreateRequest ApplicationCreateRequest, Guid OrgId, Guid UserId, IFormFile ConsentFormFile) : IRequest<ApplicationCreateResponse>;
-    public record ApplicantApplicationCreateCommand(ApplicantAppCreateRequest ApplicationCreateRequest, string? BcscId = null) : IRequest<ApplicationCreateResponse>;
     public record ApplicationListQuery : IRequest<ApplicationListResponse>
     {
         public AppListFilterBy? FilterBy { get; set; } //null means no filter
@@ -170,19 +170,6 @@ namespace Spd.Manager.Cases
         public IEnumerable<AliasCreateRequest> Aliases { get; set; } = Array.Empty<AliasCreateRequest>();
         public bool RequireDuplicateCheck { get; set; } = false;
     }
-    public record ApplicantAppCreateRequest : ApplicationCreateRequest
-    {
-        public Guid? AppInviteId { get; set; }
-        public bool? AgreeToVulnerableSectorSearch { get; set; }
-        public bool? AgreeToCriminalCheck { get; set; }
-        public bool? AgreeToShare { get; set; } = false;
-        public Guid? SharedClearanceId { get; set; } = null;
-        public bool? ConsentToShareResultCrc { get; set; } = null;
-        public bool? ConsentToCompletedCrc { get; set; } = null;
-        public bool? ConsentToNotifyNoCrc { get; set; } = null;
-        public bool? ConsentToNotifyRisk { get; set; } = null;
-    }
-
     public record AliasCreateRequest
     {
         public string? GivenName { get; set; }
@@ -665,6 +652,20 @@ namespace Spd.Manager.Cases
     #endregion
 
     #region applicant-applications
+    public record ApplicantApplicationCreateCommand(ApplicantAppCreateRequest ApplicationCreateRequest, string? BcscId = null) : IRequest<ApplicationCreateResponse>;
+
+    public record ApplicantAppCreateRequest : ApplicationCreateRequest
+    {
+        public Guid? AppInviteId { get; set; }
+        public bool? AgreeToVulnerableSectorSearch { get; set; }
+        public bool? AgreeToCriminalCheck { get; set; }
+        public bool? AgreeToShare { get; set; } = false;
+        public Guid? SharedClearanceId { get; set; } = null;
+        public bool? ConsentToShareResultCrc { get; set; } = null;
+        public bool? ConsentToCompletedCrc { get; set; } = null;
+        public bool? ConsentToNotifyNoCrc { get; set; } = null;
+        public bool? ConsentToNotifyRisk { get; set; } = null;
+    }
 
     public record ApplicantApplicationResponse : ApplicationResponse
     {
@@ -689,5 +690,61 @@ namespace Spd.Manager.Cases
         public IEnumerable<ApplicantApplicationResponse> Applications { get; set; } = Array.Empty<ApplicantApplicationResponse>();
     }
 
+    #endregion
+
+    #region applicant-application-file
+
+    public record ApplicantApplicationFileQuery(Guid ApplicationId, string BcscId) : IRequest<ApplicantApplicationFileListResponse>;
+    public record ApplicantApplicationFileListResponse
+    {
+        public IEnumerable<ApplicantApplicationFileResponse> Items { get; set; } = Array.Empty<ApplicantApplicationFileResponse>();
+    }
+
+    public record ApplicantApplicationFileResponse
+    {
+        public string? FileName { get; set; } = null!;
+        public FileTypeCode? FileTypeCode { get; set; } = null;
+        public DateTimeOffset UploadedDateTime { get; set; }
+    }
+
+    public enum FileTypeCode
+    {
+        ApplicantConsentForm,
+        ApplicantInformation,
+        ArmouredCarGuard,
+        ArmouredVehiclePurpose,
+        ArmouredVehicleRationale,
+        BCCompaniesRegistrationVerification,
+        BCServicesCard,
+        BirthCertificate,
+        BodyArmourPurpose,
+        BodyArmourRationale,
+        BusinessInsurance,
+        CanadianCitizenship,
+        CanadianFirearmsLicense,
+        CanadianNativeStatusCard,
+        CertificateOfAdvancedSecurityTraining,
+        ConfirmationLetterFromSuperiorOfficer,
+        ConfirmationOfFingerprints,
+        ConvictedOffence,
+        CriminalCharges,
+        DriverLicense,
+        GovtIssuedPhotoID,
+        LegalNameChange,
+        LegalWorkStatus,
+        LetterOfNoConflict,
+        Locksmith,
+        MentalHealthConditionForm,
+        Passport,
+        PermanentResidenceCard,
+        Photograph,
+        PrivateInvestigator,
+        PrivateInvestigatorUnderSupervision,
+        SecurityAlarmInstaller,
+        SecurityConsultant,
+        SecurityGuard,
+        StatutoryDeclaration,
+        ValidationCertificate
+    }
     #endregion
 }

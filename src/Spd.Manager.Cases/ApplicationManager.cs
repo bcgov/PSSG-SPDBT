@@ -4,8 +4,10 @@ using Spd.Engine.Search;
 using Spd.Engine.Validation;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.ApplicationInvite;
+using Spd.Resource.Applicants.DocumentUrl;
 using Spd.Resource.Organizations.Identity;
 using Spd.Resource.Organizations.Registration;
+using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.ResourceContracts;
 using Spd.Utilities.TempFileStorage;
 
@@ -29,6 +31,7 @@ namespace Spd.Manager.Cases
         IRequestHandler<ShareableClearanceQuery, ShareableClearanceResponse>,
         IRequestHandler<ApplicantApplicationListQuery, ApplicantApplicationListResponse>,
         IRequestHandler<ApplicantApplicationQuery, ApplicantApplicationResponse>,
+        IRequestHandler<ApplicantApplicationFileQuery, ApplicantApplicationFileListResponse>,
         IApplicationManager
     {
         private readonly IApplicationRepository _applicationRepository;
@@ -37,6 +40,8 @@ namespace Spd.Manager.Cases
         private readonly ITempFileStorageService _tempFile;
         private readonly IDuplicateCheckEngine _duplicateCheckEngine;
         private readonly IIdentityRepository _identityRepository;
+        private readonly IDocumentUrlRepository _documentUrlRepository;
+        private readonly IFileStorageService _fileStorageService;
         private readonly ISearchEngine _searchEngine;
 
         public ApplicationManager(IApplicationRepository applicationRepository,
@@ -45,7 +50,9 @@ namespace Spd.Manager.Cases
             ITempFileStorageService tempFile,
             IDuplicateCheckEngine duplicateCheckEngine,
             ISearchEngine searchEngine,
-            IIdentityRepository identityRepository)
+            IIdentityRepository identityRepository,
+            IDocumentUrlRepository documentUrlRepository,
+            IFileStorageService fileStorageService)
         {
             _applicationRepository = applicationRepository;
             _applicationInviteRepository = applicationInviteRepository;
@@ -53,6 +60,8 @@ namespace Spd.Manager.Cases
             _mapper = mapper;
             _duplicateCheckEngine = duplicateCheckEngine;
             _identityRepository = identityRepository;
+            _documentUrlRepository = documentUrlRepository;
+            _fileStorageService = fileStorageService;
             _searchEngine = searchEngine;
         }
 
@@ -137,50 +146,6 @@ namespace Spd.Manager.Cases
             {
                 result.ApplicationId = applicationId.Value;
                 result.CreateSuccess = true;
-            }
-            return result;
-        }
-
-        public async Task<ApplicationCreateResponse> Handle(ApplicantApplicationCreateCommand command, CancellationToken ct)
-        {
-            var result = new ApplicationCreateResponse();
-            var cmd = _mapper.Map<ApplicationCreateCmd>(command.ApplicationCreateRequest);
-            cmd.OrgId = command.ApplicationCreateRequest.OrgId;
-            cmd.ConsentFormTempFile = null;
-            cmd.CreatedByApplicantBcscId = command.BcscId;
-
-            if (command.ApplicationCreateRequest.AgreeToShare != null &&
-               (bool)command.ApplicationCreateRequest.AgreeToShare &&
-               cmd.SharedClearanceId.HasValue &&
-               cmd.CreatedByApplicantBcscId != null)//bcsc authenticated and has sharable clearance
-            {
-                ApplicantIdentityQueryResult contact = (ApplicantIdentityQueryResult)await _identityRepository.Query(new ApplicantIdentityQuery(cmd.CreatedByApplicantBcscId, IdentityProviderTypeCode.BcServicesCard), ct);
-                if (contact == null)
-                    throw new ArgumentException("No contact found");
-                cmd.ContactId = contact.ContactId;
-                await _applicationRepository.ProcessAppWithSharableClearanceAsync(cmd, ct);
-                result.CreateSuccess = true;
-                result.ApplicationId = null;
-            }
-            else
-            {
-                //no sharable clearance
-                Guid? applicationId = await _applicationRepository.AddApplicationAsync(cmd, ct);
-                if (applicationId.HasValue)
-                {
-                    result.ApplicationId = applicationId.Value;
-                    result.CreateSuccess = true;
-                }
-            }
-
-            if (command.ApplicationCreateRequest.AppInviteId != null)
-            {
-                await _applicationInviteRepository.DeleteApplicationInvitesAsync(
-                    new ApplicationInviteDeleteCmd()
-                    {
-                        ApplicationInviteId = (Guid)command.ApplicationCreateRequest.AppInviteId,
-                        OrgId = command.ApplicationCreateRequest.OrgId,
-                    }, ct);
             }
             return result;
         }
@@ -311,8 +276,21 @@ namespace Spd.Manager.Cases
 
         public async Task<ClearanceLetterResponse> Handle(ClearanceLetterQuery query, CancellationToken ct)
         {
-            ClearanceLetterResp letter = await _applicationRepository.QueryLetterAsync(new ClearanceLetterQry(query.ClearanceId), ct);
-            return _mapper.Map<ClearanceLetterResponse>(letter);
+            DocumentUrlQry qry = new DocumentUrlQry(ClearanceId: query.ClearanceId);
+            var docList = await _documentUrlRepository.QueryAsync(qry, ct);
+            if (docList == null || !docList.Items.Any())
+                return new ClearanceLetterResponse();
+
+            var docUrl = docList.Items.OrderByDescending(f => f.UploadedDateTime).FirstOrDefault();
+            FileQueryResult fileResult = (FileQueryResult)await _fileStorageService.HandleQuery(
+                new FileQuery { Key = docUrl.DocumentUrlId.ToString(), Folder = $"spd_clearance/{docUrl.ClearanceId}" },
+                ct);
+            return new ClearanceLetterResponse
+            {
+                Content = fileResult.File.Content,
+                ContentType = fileResult.File.ContentType,
+                FileName = fileResult.File.FileName
+            };
         }
 
         public async Task<ShareableClearanceResponse> Handle(ShareableClearanceQuery query, CancellationToken ct)
@@ -334,6 +312,52 @@ namespace Spd.Manager.Cases
 
         #region applicant-applications
 
+
+
+        public async Task<ApplicationCreateResponse> Handle(ApplicantApplicationCreateCommand command, CancellationToken ct)
+        {
+            var result = new ApplicationCreateResponse();
+            var cmd = _mapper.Map<ApplicationCreateCmd>(command.ApplicationCreateRequest);
+            cmd.OrgId = command.ApplicationCreateRequest.OrgId;
+            cmd.ConsentFormTempFile = null;
+            cmd.CreatedByApplicantBcscId = command.BcscId;
+
+            if (command.ApplicationCreateRequest.AgreeToShare != null &&
+               (bool)command.ApplicationCreateRequest.AgreeToShare &&
+               cmd.SharedClearanceId.HasValue &&
+               cmd.CreatedByApplicantBcscId != null)//bcsc authenticated and has sharable clearance
+            {
+                ApplicantIdentityQueryResult contact = (ApplicantIdentityQueryResult)await _identityRepository.Query(new ApplicantIdentityQuery(cmd.CreatedByApplicantBcscId, IdentityProviderTypeCode.BcServicesCard), ct);
+                if (contact == null)
+                    throw new ArgumentException("No contact found");
+                cmd.ContactId = contact.ContactId;
+                await _applicationRepository.ProcessAppWithSharableClearanceAsync(cmd, ct);
+                result.CreateSuccess = true;
+                result.ApplicationId = null;
+            }
+            else
+            {
+                //no sharable clearance
+                Guid? applicationId = await _applicationRepository.AddApplicationAsync(cmd, ct);
+                if (applicationId.HasValue)
+                {
+                    result.ApplicationId = applicationId.Value;
+                    result.CreateSuccess = true;
+                }
+            }
+
+            if (command.ApplicationCreateRequest.AppInviteId != null)
+            {
+                await _applicationInviteRepository.DeleteApplicationInvitesAsync(
+                    new ApplicationInviteDeleteCmd()
+                    {
+                        ApplicationInviteId = (Guid)command.ApplicationCreateRequest.AppInviteId,
+                        OrgId = command.ApplicationCreateRequest.OrgId,
+                    }, ct);
+            }
+            return result;
+        }
+
         public async Task<ApplicantApplicationListResponse> Handle(ApplicantApplicationListQuery request, CancellationToken cancellationToken)
         {
             var query = new ApplicantApplicationListQry();
@@ -351,6 +375,20 @@ namespace Spd.Manager.Cases
             return _mapper.Map<ApplicantApplicationResponse>(response);
         }
 
+        public async Task<ApplicantApplicationFileListResponse> Handle(ApplicantApplicationFileQuery query, CancellationToken ct)
+        {
+            ApplicantIdentityQueryResult? contact = (ApplicantIdentityQueryResult?)await _identityRepository.Query(new ApplicantIdentityQuery(query.BcscId, IdentityProviderTypeCode.BcServicesCard), ct);
+            if (contact == null)
+                throw new ArgumentException("No contact found");
+
+            DocumentUrlQry qry = new DocumentUrlQry(query.ApplicationId, contact.ContactId);
+            var docList = await _documentUrlRepository.QueryAsync(qry, ct);
+
+            return new ApplicantApplicationFileListResponse
+            {
+                Items = _mapper.Map<IEnumerable<ApplicantApplicationFileResponse>>(docList.Items)
+            };
+        }
         #endregion
     }
 }

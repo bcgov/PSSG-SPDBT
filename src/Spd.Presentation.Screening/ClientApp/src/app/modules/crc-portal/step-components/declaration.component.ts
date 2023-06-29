@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/api/models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { CaptchaResponse, CaptchaResponseType } from 'src/app/shared/components/captcha-v2.component';
 import { AppInviteOrgData, CrcFormStepComponent } from '../crc.component';
@@ -119,10 +119,10 @@ export class DeclarationComponent implements OnInit, CrcFormStepComponent {
 		return this._orgData;
 	}
 
-	constructor(private formBuilder: FormBuilder, private authenticationService: AuthenticationService) {}
+	constructor(private formBuilder: FormBuilder, private authProcessService: AuthProcessService) {}
 
 	ngOnInit(): void {
-		this.authenticationService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
+		this.authProcessService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
 			this.displayCaptcha = !isLoggedIn;
 		});
 	}

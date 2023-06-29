@@ -7,7 +7,6 @@ import { CrrpHomeComponent } from './components/crrp-home.component';
 import { ExpiringChecksComponent } from './components/expiring-checks.component';
 import { GenericUploadsComponent } from './components/generic-uploads.component';
 import { IdentifyVerificationComponent } from './components/identify-verification.component';
-import { InvitationComponent } from './components/invitation.component';
 import { ManualSubmissionComponent } from './components/manual-submission.component';
 import { OrganizationProfileComponent } from './components/organization-profile.component';
 import { PaymentFilterComponent } from './components/payment-filter.component';
@@ -17,6 +16,7 @@ import { UserEditModalComponent } from './components/user-edit-modal.component';
 import { UsersComponent } from './components/users.component';
 import { CrrpRoutingModule } from './crrp-routing.module';
 import { CrrpComponent } from './crrp.component';
+import { InvitationUserComponent } from './invitation-user.component';
 
 @NgModule({
 	declarations: [
@@ -35,7 +35,7 @@ import { CrrpComponent } from './crrp.component';
 		ExpiringChecksComponent,
 		ManualSubmissionComponent,
 		ReportsComponent,
-		InvitationComponent,
+		InvitationUserComponent,
 	],
 	imports: [SharedModule, CrrpRoutingModule],
 })

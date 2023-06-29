@@ -1,7 +1,6 @@
 ﻿using System.Globalization;
 
 namespace Spd.Utilities.Shared.Tools;
-
 public static class StringHelper
 {
     public static string ToTitleCase(string? str)
@@ -11,4 +10,5 @@ public static class StringHelper
         return textInfo.ToTitleCase(str.ToLower());
     }
 }
+
 

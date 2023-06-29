@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { IdentityProviderTypeCode } from 'src/app/api/models';
+import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
 
 @Component({
@@ -70,13 +70,13 @@ export class HeaderComponent implements OnInit {
 
 	constructor(
 		protected router: Router,
-		private authenticationService: AuthenticationService,
 		private authUserService: AuthUserService,
+		private authProcessService: AuthProcessService,
 		private utilService: UtilService
 	) {}
 
 	ngOnInit(): void {
-		this.authenticationService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
+		this.authProcessService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
 			if (!isLoggedIn) {
 				this.loggedInUserDisplay = null;
 				return;
@@ -87,7 +87,7 @@ export class HeaderComponent implements OnInit {
 	}
 
 	onLogout(): void {
-		this.authenticationService.logout();
+		this.authProcessService.logout();
 	}
 
 	private getUserInfo(): void {
@@ -116,7 +116,7 @@ export class HeaderComponent implements OnInit {
 			'BCeID userInfo',
 			this.authUserService.userInfo,
 			'loggedInUserTokenData',
-			this.authenticationService.loggedInUserTokenData
+			this.authProcessService.loggedInUserTokenData
 		);
 
 		const userData = this.authUserService.userInfo;
@@ -125,7 +125,7 @@ export class HeaderComponent implements OnInit {
 			name = this.utilService.getFullName(userData.firstName, userData.lastName);
 		}
 		if (!name) {
-			name = this.authenticationService.loggedInUserTokenData.display_name;
+			name = this.authProcessService.loggedInUserTokenData.display_name;
 		}
 		this.loggedInUserDisplay = name ?? 'User';
 	}
