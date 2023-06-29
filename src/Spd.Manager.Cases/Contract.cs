@@ -26,6 +26,7 @@ namespace Spd.Manager.Cases
         public Task<ApplicantApplicationResponse> Handle(ApplicantApplicationQuery request, CancellationToken ct);
         public Task<ShareableClearanceResponse> Handle(ShareableClearanceQuery request, CancellationToken ct);
         public Task<ApplicantApplicationFileListResponse> Handle(ApplicantApplicationFileQuery query, CancellationToken ct);
+        public Task<ApplicantAppFileCreateResponse> Handle(CreateApplicantAppFileCommand query, CancellationToken ct);
     }
 
     #region application invites
@@ -688,6 +689,10 @@ namespace Spd.Manager.Cases
         public FileTypeCode? FileTypeCode { get; set; } = null;
         public DateTimeOffset UploadedDateTime { get; set; }
     }
+
+    public record CreateApplicantAppFileCommand(ApplicantAppFileUploadRequest Request, string BcscId, Guid ApplicationId) : IRequest<ApplicantAppFileCreateResponse>;
+    public record ApplicantAppFileUploadRequest(IFormFile File, FileTypeCode FileType = FileTypeCode.StatutoryDeclaration);
+    public record ApplicantAppFileCreateResponse();
 
     public enum FileTypeCode
     {

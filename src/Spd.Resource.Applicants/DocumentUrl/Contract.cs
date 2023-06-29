@@ -1,3 +1,4 @@
+using Spd.Resource.Applicants.Application;
 using System.ComponentModel;
 
 namespace Spd.Resource.Applicants.DocumentUrl
@@ -5,6 +6,7 @@ namespace Spd.Resource.Applicants.DocumentUrl
     public interface IDocumentUrlRepository
     {
         public Task<DocumentUrlListResp> QueryAsync(DocumentUrlQry query, CancellationToken cancellationToken);
+        public Task<DocumentUrlResp> ManageAsync(DocumentUrlCmd cmd, CancellationToken cancellationToken);
     }
 
     public record DocumentUrlQry(
@@ -27,6 +29,16 @@ namespace Spd.Resource.Applicants.DocumentUrl
         public Guid? ClearanceId { get; set; } = null;
         public Guid? ApplicationId { get; set; } = null;
         public Guid? ReportId { get; set; } = null;
+    }
+
+    public abstract record DocumentUrlCmd;
+
+    public record CreateDocumentUrlCmd: DocumentUrlCmd
+    {
+        public SpdTempFile TempFile { get; set; }
+        public Guid ApplicationId { get; set; }
+        public Guid? SubmittedByApplicantId { get; set; }
+        public DocumentTypeEnum DocumentType { get; set; }
     }
 
     public enum DocumentTypeEnum

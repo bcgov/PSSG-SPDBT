@@ -1,3 +1,4 @@
+using Amazon.Runtime.Internal;
 using AutoMapper;
 using MediatR;
 using Spd.Engine.Search;
@@ -380,6 +381,34 @@ namespace Spd.Manager.Cases
             return new ApplicantApplicationFileListResponse{
                 Items = _mapper.Map<IEnumerable<ApplicantApplicationFileResponse>>(docList.Items)
             };
+        }
+
+        public async Task<ApplicantAppFileCreateResponse> Handle(CreateApplicantAppFileCommand command, CancellationToken ct)
+        {
+            ApplicantIdentityQueryResult? contact = (ApplicantIdentityQueryResult?)await _identityRepository.Query(new ApplicantIdentityQuery(command.BcscId, IdentityProviderTypeCode.BcServicesCard), ct);
+            if (contact == null)
+                throw new ArgumentException("No contact found");
+            //validate the application is in correct state.
+
+            //create bcgov_documenturl
+            string fileKey = await _tempFile.HandleCommand(new SaveTempFileCommand(command.Request.File), ct);
+            SpdTempFile spdTempFile = new()
+            {
+                TempFileKey = fileKey,
+                ContentType = command.Request.File.ContentType,
+                FileName = command.Request.File.FileName,
+                FileSize = command.Request.File.Length,
+            };
+            var docUrlResp = await _documentUrlRepository.ManageAsync(new CreateDocumentUrlCmd
+            {
+                TempFile = spdTempFile,
+                ApplicationId = command.ApplicationId,
+                DocumentType = Enum.Parse<DocumentTypeEnum>(command.Request.FileType.ToString()),
+                SubmittedByApplicantId=contact.ContactId
+            }, ct);
+
+            //upload file to s3
+            return null;
         }
         #endregion
     }

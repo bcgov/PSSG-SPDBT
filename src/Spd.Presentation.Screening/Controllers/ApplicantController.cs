@@ -182,6 +182,32 @@ namespace Spd.Presentation.Screening.Controllers
 
             return await _mediator.Send(new ApplicantApplicationFileQuery(applicationId, applicantInfo.Sub));
         }
+
+        /// <summary>
+        /// Upload applicant app files
+        /// </summary>
+        /// <param name="bulkUploadRequest"></param>
+        /// <param name="orgId"></param>
+        /// <returns></returns>
+        [Route("api/applicants/screenings/{applicationId}/files")]
+        [HttpPost]
+        public async Task<ApplicantAppFileCreateResponse> UploadApplicantAppFile([FromForm][Required] ApplicantAppFileUploadRequest fileUploadRequest, [FromRoute] Guid applicationId, CancellationToken ct)
+        {
+            var applicantInfo = _currentUser.GetApplicantIdentityInfo();
+
+            //validation file
+            //string fileName = fileUploadRequest.File.FileName;
+            //if (!fileName.EndsWith(SpdConstants.BULK_APP_UPLOAD_FILE_EXTENSION, StringComparison.InvariantCultureIgnoreCase))
+            //{
+            //    throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"only {SpdConstants.BULK_APP_UPLOAD_FILE_EXTENSION} file supported.");
+            //}
+            long fileSize = fileUploadRequest.File.Length;
+            if (fileSize > SpdConstants.UPLOAD_FILE_MAX_SIZE)
+            {
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"max supported file size is {SpdConstants.UPLOAD_FILE_MAX_SIZE}.");
+            }
+            return await _mediator.Send(new CreateApplicantAppFileCommand(fileUploadRequest, applicantInfo.Sub, applicationId), ct);
+        }
         #endregion
     }
 }
@@ -216,5 +242,8 @@ public class ApplicantUserInfo
     public DateTimeOffset? BirthDate { get; set; }
     public bool? EmailVerified { get; set; }
 }
+
+
+
 
 
