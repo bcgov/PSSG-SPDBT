@@ -31,7 +31,7 @@ import { DeclarationComponent } from '../step-components/declaration.component';
 				</div>
 			</mat-step>
 
-			<!-- <mat-step *ngIf="showConsentToCrc">
+			<mat-step *ngIf="agreeToShare">
 				<app-consent-to-crc *ngIf="orgData" [orgData]="orgData"></app-consent-to-crc>
 
 				<div class="row mt-4">
@@ -49,7 +49,7 @@ import { DeclarationComponent } from '../step-components/declaration.component';
 						</button>
 					</div>
 				</div>
-			</mat-step> -->
+			</mat-step>
 
 			<mat-step>
 				<app-agreement-of-terms></app-agreement-of-terms>
@@ -74,7 +74,7 @@ import { DeclarationComponent } from '../step-components/declaration.component';
 })
 export class StepTermsAndCondComponent {
 	payeePreferenceTypeCodes = PayerPreferenceTypeCode;
-	// showConsentToCrc = true;
+	agreeToShare: boolean = false;
 
 	@ViewChild('childstepper') childstepper!: MatStepper;
 
@@ -108,13 +108,13 @@ export class StepTermsAndCondComponent {
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 
-		// const declarationData = this.declarationComponent.getDataToSave();
-		// if (declarationData.shareCrc == BooleanTypeCode.Yes) {
-		// 	this.showConsentToCrc = true;
-		// } else {
-		// 	this.showConsentToCrc = false;
-		// 	// this.orgData.performPaymentProcess = true; TODO leave as false for now.
-		// }
+		const declarationData = this.declarationComponent.getDataToSave();
+		if (declarationData.agreeToShare) {
+			this.agreeToShare = true;
+		} else {
+			this.agreeToShare = false;
+			// this.orgData.performPaymentProcess = true; TODO leave as false for now.
+		}
 
 		// this.childstepper._stateChanged(); TODO ??
 		this.childstepper.next();

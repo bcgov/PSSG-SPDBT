@@ -630,10 +630,24 @@ namespace Spd.Manager.Cases
             Include(new ApplicationCreateRequestValidator());
             RuleFor(a => a.AgreeToCriminalCheck)
                 .NotEmpty()
-                .Equal(true);
+                .Equal(true)
+                .When(a => a.AgreeToShare != null && !(bool)a.AgreeToShare);
             RuleFor(a => a.AgreeToVulnerableSectorSearch)
                 .NotEmpty()
-                .Equal(true);
+                .Equal(true)
+                .When(a => a.AgreeToShare != null && !(bool)a.AgreeToShare);
+            RuleFor(a => a.ConsentToCompletedCrc)
+                .Equal(true)
+                .When(a => a.AgreeToShare != null && (bool)a.AgreeToShare);
+            RuleFor(a => a.ConsentToNotifyNoCrc)
+                .Equal(true)
+                .When(a => a.AgreeToShare != null && (bool)a.AgreeToShare);
+            RuleFor(a => a.ConsentToNotifyRisk)
+                .Equal(true)
+                .When(a => a.AgreeToShare != null && (bool)a.AgreeToShare);
+            RuleFor(a => a.ConsentToShareResultCrc)
+                .Equal(true)
+                .When(a => a.AgreeToShare != null && (bool)a.AgreeToShare);
         }
     }
     #endregion
@@ -646,8 +660,12 @@ namespace Spd.Manager.Cases
         public Guid? AppInviteId { get; set; }
         public bool? AgreeToVulnerableSectorSearch { get; set; }
         public bool? AgreeToCriminalCheck { get; set; }
-        public bool AgreeToShare { get; set; } = false;
+        public bool? AgreeToShare { get; set; } = false;
         public Guid? SharedClearanceId { get; set; } = null;
+        public bool? ConsentToShareResultCrc { get; set; } = null;
+        public bool? ConsentToCompletedCrc { get; set; } = null;
+        public bool? ConsentToNotifyNoCrc { get; set; } = null;
+        public bool? ConsentToNotifyRisk { get; set; } = null;
     }
 
     public record ApplicantApplicationResponse : ApplicationResponse
