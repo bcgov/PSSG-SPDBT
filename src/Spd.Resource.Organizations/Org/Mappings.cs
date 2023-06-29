@@ -19,7 +19,7 @@ namespace Spd.Resource.Organizations.Org
             .ForMember(d => d.address1_line2, opt => opt.MapFrom(s => s.AddressLine2))
             .ForMember(d => d.emailaddress1, opt => opt.MapFrom(s => s.Email))
             .ForMember(d => d.spd_workswith, opt => opt.MapFrom(s => GetWorkWithOptionSet(s.EmployeeInteractionType)))
-            .ForMember(d => d.address1_telephone1, opt => opt.MapFrom(s => s.PhoneNumber))
+            .ForMember(d => d.telephone1, opt => opt.MapFrom(s => s.PhoneNumber))
             .ForMember(d => d.spd_payerpreference, opt => opt.MapFrom(s => (int)Enum.Parse<PayerPreferenceOptionSet>(s.PayerPreference.ToString())))
             .ForMember(d => d.spd_havecontractors, opt => opt.MapFrom(s => (int)Enum.Parse<YesNoOptionSet>(s.ContractorsNeedVulnerableSectorScreening.ToString())))
             .ForMember(d => d.spd_havelicenseesorregistrants, opt => opt.MapFrom(s => GetLicenseesNeedVulnerableSectorScreening(s.LicenseesNeedVulnerableSectorScreening)))

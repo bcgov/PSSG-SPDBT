@@ -16,7 +16,6 @@ public interface IApplicationRepository
     public Task<ClearanceListResp> QueryAsync(ClearanceListQry clearanceListQry, CancellationToken ct);
     public Task<ShareableClearanceListResp> QueryAsync(ShareableClearanceQry ShareableClearanceQry, CancellationToken ct);
     public Task DeleteClearanceAccessAsync(ClearanceAccessDeleteCmd clearanceAccessDeleteCmd, CancellationToken cancellationToken);
-    public Task<ClearanceLetterResp> QueryLetterAsync(ClearanceLetterQry clearanceLetterQry, CancellationToken ct);
     public Task<ApplicantApplicationListResp> QueryApplicantApplicationListAsync(ApplicantApplicationListQry query, CancellationToken cancellationToken);
     public Task<ApplicationResult> QueryApplicantApplicationAsync(ApplicantApplicationQry query, CancellationToken cancellationToken);
 }
@@ -211,14 +210,7 @@ public record ClearanceAccessDeleteCmd
     public Guid ClearanceAccessId { get; set; }
     public Guid OrgId { get; set; }
 }
-public record ClearanceLetterQry(Guid ClearanceId);
-public record ClearanceLetterResp
-{
-    public string? ContentType { get; set; } = null!;
-    public byte[] Content { get; set; } = Array.Empty<byte>();
-    public string? FileName { get; set; } = null!;
-}
-public record ShareableClearanceQry(Guid ContactId, EmployeeInteractionTypeCode? WorkWith, DateTimeOffset FromDate, ServiceTypeEnum ServiceType, bool Shareable=true);
+public record ShareableClearanceQry(Guid ContactId, EmployeeInteractionTypeCode? WorkWith, DateTimeOffset FromDate, ServiceTypeEnum ServiceType, bool Shareable = true);
 public record ShareableClearanceResp
 {
     public Guid OrgId { get; set; }
