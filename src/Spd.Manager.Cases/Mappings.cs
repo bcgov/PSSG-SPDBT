@@ -3,6 +3,7 @@ using Spd.Engine.Search;
 using Spd.Engine.Validation;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.ApplicationInvite;
+using Spd.Resource.Applicants.DocumentUrl;
 using Spd.Utilities.Shared.ManagerContract;
 using Spd.Utilities.Shared.ResourceContracts;
 
@@ -58,11 +59,12 @@ namespace Spd.Manager.Cases
             CreateMap<ClearanceListFilterBy, ClearanceFilterBy>();
             CreateMap<ClearanceListSortBy, ClearanceSortBy>();
             CreateMap<ClearanceAccessDeleteCommand, ClearanceAccessDeleteCmd>();
-            CreateMap<ClearanceLetterResp, ClearanceLetterResponse>();
             CreateMap<ShareableClearance, ShareableClearanceItem>();
             CreateMap<AppInviteVerifyResp, AppOrgResponse>();
             CreateMap<ApplicantApplicationListQuery, ApplicantApplicationListQry>();
             CreateMap<ApplicantApplicationListResp, ApplicantApplicationListResponse>();
+            CreateMap<DocumentUrlResp, ApplicantApplicationFileResponse>()
+                .ForMember(d => d.FileTypeCode, opt => opt.MapFrom(s => s.DocumentType));
             CreateMap<ApplicantApplicationQuery, ApplicantApplicationQry>();
             CreateMap<ApplicationResult, ApplicantApplicationResponse>()
                 .ForMember(d => d.Status, opt => opt.MapFrom(s => s.ApplicationPortalStatus == null ? null : Enum.Parse<ApplicationPortalStatusCode>(s.ApplicationPortalStatus).ToString()));

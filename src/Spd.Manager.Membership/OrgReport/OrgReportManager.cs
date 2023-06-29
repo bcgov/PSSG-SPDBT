@@ -1,24 +1,28 @@
 using AutoMapper;
 using MediatR;
-using Spd.Resource.Applicants.Application;
+using Spd.Resource.Applicants.DocumentUrl;
 using Spd.Resource.Organizations.Org;
 using Spd.Resource.Organizations.Report;
+using Spd.Utilities.FileStorage;
 
 namespace Spd.Manager.Membership.Report
 {
     internal class OrgReportManager
     : IRequestHandler<OrgReportListQuery, OrgReportListResponse>,
-    IRequestHandler<ReportFileQuery, ReportFileResponse>,   
+    IRequestHandler<ReportFileQuery, ReportFileResponse>,
     IReportManager
     {
         private readonly IOrgReportRepository _reportRepository;
         private readonly IMapper _mapper;
-        private readonly IOrgRepository _orgRepository;
-        public OrgReportManager(IOrgReportRepository reportRepository, IMapper mapper, IOrgRepository orgRepository)
+        private readonly IDocumentUrlRepository _documentUrlRepository;
+        private readonly IFileStorageService _fileStorageService;
+
+        public OrgReportManager(IOrgReportRepository reportRepository, IMapper mapper, IDocumentUrlRepository documentUrlRepository, IFileStorageService fileStorageService)
         {
             _reportRepository = reportRepository;
             _mapper = mapper;
-            _orgRepository = orgRepository;
+            _documentUrlRepository = documentUrlRepository;
+            _fileStorageService = fileStorageService;
         }
 
         public async Task<OrgReportListResponse> Handle(OrgReportListQuery request, CancellationToken ct)
@@ -34,8 +38,21 @@ namespace Spd.Manager.Membership.Report
 
         public async Task<ReportFileResponse> Handle(ReportFileQuery query, CancellationToken ct)
         {
-            ReportFileResp reportFile = await _reportRepository.QueryReportFileAsync(new ReportFileQry(query.ReportId), ct);
-            return _mapper.Map<ReportFileResponse>(reportFile);
+            DocumentUrlQry qry = new DocumentUrlQry(ReportId: query.ReportId);
+            var docList = await _documentUrlRepository.QueryAsync(qry, ct);
+            if (docList == null || !docList.Items.Any())
+                return new ReportFileResponse();
+
+            var docUrl = docList.Items.OrderByDescending(f => f.UploadedDateTime).FirstOrDefault();
+            FileQueryResult fileResult = (FileQueryResult)await _fileStorageService.HandleQuery(
+                new FileQuery { Key = docUrl.DocumentUrlId.ToString(), Folder = $"spd_pdfreport/{docUrl.ReportId}" },
+                ct);
+            return new ReportFileResponse
+            {
+                Content = fileResult.File.Content,
+                ContentType = fileResult.File.ContentType,
+                FileName = fileResult.File.FileName
+            };
         }
     }
 }
