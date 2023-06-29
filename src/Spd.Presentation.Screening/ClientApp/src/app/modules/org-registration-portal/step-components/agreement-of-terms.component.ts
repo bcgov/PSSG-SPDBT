@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { CaptchaResponse, CaptchaResponseType } from 'src/app/shared/components/captcha-v2.component';
 import { RegistrationFormStepComponent } from '../org-registration.component';
 
@@ -137,14 +137,14 @@ export class AgreementOfTermsComponent implements OnInit, RegistrationFormStepCo
 	captchaPassed = false;
 	captchaResponse: CaptchaResponse | null = null;
 
-	constructor(private formBuilder: FormBuilder, private authenticationService: AuthenticationService) {}
+	constructor(private formBuilder: FormBuilder, private authProcessService: AuthProcessService) {}
 
 	ngOnInit(): void {
 		this.form = this.formBuilder.group({
 			agreeToTermsAndConditions: new FormControl('', [Validators.required]),
 		});
 
-		this.authenticationService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
+		this.authProcessService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
 			this.displayCaptcha = !isLoggedIn;
 		});
 

@@ -1,10 +1,7 @@
 import { Component } from '@angular/core';
-import { IsActiveMatchOptions, NavigationEnd, QueryParamsHandling, Router } from '@angular/router';
-import { filter } from 'rxjs';
-import { IdentityProviderTypeCode } from 'src/app/api/models';
-import { AppRoutes } from 'src/app/app-routing.module';
+import { IsActiveMatchOptions, QueryParamsHandling, Router } from '@angular/router';
+import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { CrrpRoutes } from './crrp-routing.module';
 
 // export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
@@ -36,7 +33,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 	template: `
 		<div class="container-fluid p-0" *ngIf="isAuthenticated | async">
 			<div class="row flex-nowrap m-0">
-				<div class="col-auto px-0" style="background-color: var(--color-sidebar);" *ngIf="showNavigation">
+				<div class="col-auto px-0" style="background-color: var(--color-sidebar);">
 					<div
 						class="d-flex flex-column align-items-sm-start pt-2 text-white "
 						style="min-height: calc(100vh - 138px)!important;"
@@ -177,43 +174,21 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 	],
 })
 export class CrrpComponent {
-	showNavigation = true;
-	isAuthenticated = this.authenticationService.waitUntilAuthentication$;
+	isAuthenticated = this.authProcessService.waitUntilAuthentication$;
 	crrpRoutes = CrrpRoutes;
 
 	constructor(
-		protected authenticationService: AuthenticationService,
 		protected authUserService: AuthUserService,
+		private authProcessService: AuthProcessService,
 		private router: Router
 	) {}
 
 	async ngOnInit(): Promise<void> {
-		this.router.events.pipe(filter((evt) => evt instanceof NavigationEnd)).subscribe((evt) => {
-			this.setShowNavigationFlag((evt as NavigationEnd).url);
-		});
+		const nextRoute = await this.authProcessService.initializeCrrp();
+		console.log('initialize nextRoute', nextRoute);
 
-		const nextUrl = await this.authenticationService.login(
-			IdentityProviderTypeCode.BusinessBceId,
-			CrrpRoutes.path(CrrpRoutes.HOME)
-		);
-		// console.debug('nextUrl', nextUrl);
-
-		if (nextUrl) {
-			const userInfoMsgType = this.authUserService.userInfo?.userInfoMsgType;
-			if (userInfoMsgType) {
-				this.router.navigate([AppRoutes.ACCESS_DENIED], { state: { userInfoMsgType: userInfoMsgType } });
-				return;
-			}
-
-			const nextRoute = decodeURIComponent(nextUrl);
-			// console.debug('nextRoute', nextRoute);
-
-			this.setShowNavigationFlag(nextRoute);
+		if (nextRoute) {
 			await this.router.navigate([nextRoute]);
 		}
-	}
-
-	private setShowNavigationFlag(url: string): void {
-		this.showNavigation = !url.includes(`${CrrpRoutes.MODULE_PATH}/${CrrpRoutes.INVITATION}`);
 	}
 }

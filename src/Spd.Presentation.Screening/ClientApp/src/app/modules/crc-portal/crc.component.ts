@@ -6,18 +6,13 @@ import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
-import {
-	ApplicantAppCreateRequest,
-	ApplicationCreateResponse,
-	EmployeeInteractionTypeCode,
-	IdentityProviderTypeCode,
-} from 'src/app/api/models';
+import { ApplicantAppCreateRequest, ApplicationCreateResponse, EmployeeInteractionTypeCode } from 'src/app/api/models';
 import { ApplicantService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
+import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
-import { CrcRoutes } from './crc-routing.module';
 import { StepApplSubmittedComponent } from './steps/step-appl-submitted.component';
 import { StepEligibilityComponent } from './steps/step-eligibility.component';
 import { StepLoginOptionsComponent } from './steps/step-login-options.component';
@@ -166,6 +161,7 @@ export class CrcComponent implements OnInit {
 		private breakpointObserver: BreakpointObserver,
 		private utilService: UtilService,
 		private authenticationService: AuthenticationService,
+		private authProcessService: AuthProcessService,
 		private authUserService: AuthUserService,
 		private applicantService: ApplicantService,
 		private location: Location,
@@ -199,31 +195,18 @@ export class CrcComponent implements OnInit {
 			orgData.readonlyTombstone = false;
 		}
 
-		//auth step 1 - user is not logged in, no state at all
-		//auth step 3 - angular loads again here, KC posts the token, oidc lib reads token and returns state
-		const authInfo = await this.authenticationService.tryLogin(
-			IdentityProviderTypeCode.BcServicesCard,
-			CrcRoutes.path()
-		);
+		const stateInfo = await this.authProcessService.tryInitializeCrc();
+		if (stateInfo) {
+			this.postLoginNavigate(stateInfo);
+		} else {
+			this.assignApplicantUserInfoData(orgData);
 
-		if (authInfo.loggedIn) {
-			if (authInfo.state) {
-				const stateInfo = this.utilService.getSessionData(this.utilService.CRC_PORTAL_STATE_KEY);
-				if (stateInfo) {
-					this.postLoginNavigate(stateInfo);
-					return;
-				}
-			} else {
-				this.assignApplicantUserInfoData(orgData);
-			}
+			// Assign this at the end so that the orgData setters have the correct information.
+			this.orgData = orgData;
 		}
-
-		// Assign this at the end so that the orgData setters have the correct information.
-		this.orgData = orgData;
 
 		if (!this.orgData) {
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
-			return;
 		}
 	}
 
@@ -296,7 +279,8 @@ export class CrcComponent implements OnInit {
 		//auth step 2 - unload angular, redirect to KC
 		// const decodedData = decodeURIComponent(authInfo.state);
 		this.utilService.setSessionData(this.utilService.CRC_PORTAL_STATE_KEY, stateInfo);
-		const nextUrl = await this.authenticationService.login(IdentityProviderTypeCode.BcServicesCard, CrcRoutes.path());
+
+		const nextUrl = await this.authProcessService.initializeCrc();
 		if (nextUrl) {
 			// User is already logged in and clicks Login button.
 			// Want it to start at the beginning and continue past login page.
@@ -306,6 +290,8 @@ export class CrcComponent implements OnInit {
 
 	private postLoginNavigate(stepperData: any): void {
 		this.currentStateInfo = JSON.parse(stepperData);
+		console.log('stepperData', stepperData);
+
 		const orgData = JSON.parse(stepperData);
 		this.assignApplicantUserInfoData(orgData);
 

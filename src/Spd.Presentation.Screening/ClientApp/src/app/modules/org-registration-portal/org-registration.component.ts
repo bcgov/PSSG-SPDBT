@@ -9,11 +9,12 @@ import { distinctUntilChanged, Subject } from 'rxjs';
 import {
 	AnonymousOrgRegistrationCreateRequest,
 	BooleanTypeCode,
-	IdentityProviderTypeCode,
 	OrgRegistrationCreateResponse,
 	RegistrationTypeCode,
 } from 'src/app/api/models';
 import { OrgRegistrationService } from 'src/app/api/services';
+import { AuthProcessService } from 'src/app/core/services/auth-process.service';
+import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import {
@@ -113,6 +114,8 @@ export class OrgRegistrationComponent implements OnInit {
 	constructor(
 		private router: Router,
 		private breakpointObserver: BreakpointObserver,
+		private authUserService: AuthUserService,
+		private authProcessService: AuthProcessService,
 		private authenticationService: AuthenticationService,
 		private orgRegistrationService: OrgRegistrationService,
 		private hotToast: HotToastService,
@@ -129,23 +132,12 @@ export class OrgRegistrationComponent implements OnInit {
 			)
 			.subscribe(() => this.breakpointChanged());
 
-		//auth step 1 - user is not logged in, no state at all
-		//auth step 3 - angular loads again here, KC posts the token, oidc lib reads token and returns state
-		const authInfo = await this.authenticationService.tryLogin(
-			IdentityProviderTypeCode.BusinessBceId,
-			OrgRegistrationRoutes.path()
-		);
-
-		if (authInfo.loggedIn) {
-			if (authInfo.state) {
-				const stateInfo = this.utilService.getSessionData(this.utilService.ORG_REG_STATE_KEY);
-				console.debug('[OrgRegistrationComponent.ngOnInit] stateInfo', stateInfo);
-				if (stateInfo) {
-					this.postLoginNavigate(stateInfo);
-				}
-			} else {
-				this.router.navigate([OrgRegistrationRoutes.ORG_REGISTRATION]);
-			}
+		const stateInfo = await this.authProcessService.tryInitializeOrgReg();
+		console.log('stateInfo', stateInfo);
+		if (stateInfo) {
+			this.postLoginNavigate(stateInfo);
+		} else {
+			this.router.navigate([OrgRegistrationRoutes.ORG_REGISTRATION]);
 		}
 	}
 
@@ -170,10 +162,8 @@ export class OrgRegistrationComponent implements OnInit {
 		//auth step 2 - unload angular, redirect to KC
 		// const decodedData = decodeURIComponent(authInfo.state);
 		this.utilService.setSessionData(this.utilService.ORG_REG_STATE_KEY, stateInfo);
-		const nextUrl = await this.authenticationService.login(
-			IdentityProviderTypeCode.BusinessBceId,
-			OrgRegistrationRoutes.path()
-		);
+
+		const nextUrl = await this.authProcessService.initializeOrgReg();
 		if (nextUrl) {
 			// User is already logged in and clicks Login button.
 			// For example, complete a registration then refresh the page.
