@@ -1,7 +1,6 @@
 using Microsoft.Dynamics.CRM;
 using Microsoft.OData.Client;
 using Spd.Utilities.Dynamics;
-using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.Shared.ResourceContracts;
 using System.Net;
@@ -44,25 +43,6 @@ internal partial class ApplicationRepository : IApplicationRepository
         return response;
     }
 
-    public async Task<ClearanceLetterResp> QueryLetterAsync(ClearanceLetterQry clearanceLetterQry, CancellationToken ct)
-    {
-        var docUrl = await _context.bcgov_documenturls.Where(d => d._spd_clearanceid_value == clearanceLetterQry.ClearanceId)
-            .OrderByDescending(d => d.createdon).FirstOrDefaultAsync(ct);
-
-        if (docUrl == null || docUrl.bcgov_documenturlid == null)
-            return new ClearanceLetterResp(); // no clearance letter yet
-
-        FileQueryResult fileResult = (FileQueryResult)await _fileStorage.HandleQuery(
-            new FileQuery { Key = docUrl.bcgov_documenturlid.ToString(), Folder = $"spd_clearance/{docUrl._spd_clearanceid_value}" },
-            ct);
-        return new ClearanceLetterResp()
-        {
-            Content = fileResult.File.Content,
-            ContentType = fileResult.File.ContentType,
-            FileName = fileResult.File.FileName
-        };
-    }
-
     public async Task<ShareableClearanceListResp> QueryAsync(ShareableClearanceQry shareableClearanceQry, CancellationToken ct)
     {
         ShareableClearanceListResp resp = new();
@@ -79,7 +59,7 @@ internal partial class ApplicationRepository : IApplicationRepository
 
         if (shareableClearanceQry.WorkWith == null || shareableClearanceQry.WorkWith == EmployeeInteractionTypeCode.Neither)
             clearances = clearances.Where(c => c.spd_workswith == null);
-        else 
+        else
         {
             int workwith = (int)Enum.Parse<WorksWithChildrenOptionSet>(shareableClearanceQry.WorkWith.ToString());
             clearances = clearances.Where(c => c.spd_workswith == workwith);

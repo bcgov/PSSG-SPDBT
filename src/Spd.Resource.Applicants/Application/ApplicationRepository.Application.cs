@@ -1,6 +1,7 @@
 using Microsoft.Dynamics.CRM;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OData.Client;
+using Spd.Resource.Applicants.DocumentUrl;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.Exceptions;
@@ -32,7 +33,8 @@ internal partial class ApplicationRepository : IApplicationRepository
         {
             //create bcgov_documenturl
             bcgov_documenturl documenturl = _mapper.Map<bcgov_documenturl>(createApplicationCmd.ConsentFormTempFile);
-            var tag = _context.LookupTag(FileTypeEnum.ApplicantConsentForm.ToString());
+            var tag = _context.LookupTag(DocumentTypeEnum.ApplicantConsentForm.ToString());
+            documenturl.bcgov_url = $"spd_application/{application.spd_applicationid}";
             _context.AddTobcgov_documenturls(documenturl);
             _context.SetLink(documenturl, nameof(documenturl.spd_ApplicationId), application);
             _context.SetLink(documenturl, nameof(documenturl.bcgov_Tag1Id), tag);
@@ -267,7 +269,7 @@ internal partial class ApplicationRepository : IApplicationRepository
             Tags = new List<Tag>
             {
                 new Tag("file-classification", "Unclassified"),
-                new Tag("file-tag",FileTypeEnum.ApplicantConsentForm.GetDescription())
+                new Tag("file-tag", DocumentTypeEnum.ApplicantConsentForm.GetDescription())
             }
         };
         await _fileStorage.HandleCommand(new UploadFileCommand(

@@ -684,18 +684,49 @@ namespace Spd.Manager.Cases
 
     public record ApplicantApplicationFileResponse
     {
-        public string ContentType { get; set; } = null!;
         public string? FileName { get; set; } = null!;
-        public CaseSubStatusCode? CaseSubStatusCode { get; set; } = null;
+        public FileTypeCode? FileTypeCode { get; set; } = null;
         public DateTimeOffset UploadedDateTime { get; set; }
     }
 
-    public enum CaseSubStatusCode
+    public enum FileTypeCode
     {
-        Fingerprints,
-        StatutoryDeclaration,
+        ApplicantConsentForm,
         ApplicantInformation,
-        OpportunityToRespond
+        ArmouredCarGuard,
+        ArmouredVehiclePurpose,
+        ArmouredVehicleRationale,
+        BCCompaniesRegistrationVerification,
+        BCServicesCard,
+        BirthCertificate,
+        BodyArmourPurpose,
+        BodyArmourRationale,
+        BusinessInsurance,
+        CanadianCitizenship,
+        CanadianFirearmsLicense,
+        CanadianNativeStatusCard,
+        CertificateOfAdvancedSecurityTraining,
+        ConfirmationLetterFromSuperiorOfficer,
+        ConfirmationOfFingerprints,
+        ConvictedOffence,
+        CriminalCharges,
+        DriverLicense,
+        GovtIssuedPhotoID,
+        LegalNameChange,
+        LegalWorkStatus,
+        LetterOfNoConflict,
+        Locksmith,
+        MentalHealthConditionForm,
+        Passport,
+        PermanentResidenceCard,
+        Photograph,
+        PrivateInvestigator,
+        PrivateInvestigatorUnderSupervision,
+        SecurityAlarmInstaller,
+        SecurityConsultant,
+        SecurityGuard,
+        StatutoryDeclaration,
+        ValidationCertificate
     }
     #endregion
 }

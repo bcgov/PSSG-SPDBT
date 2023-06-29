@@ -1,9 +1,18 @@
+using AutoMapper;
 using Spd.Utilities.Dynamics;
 
-namespace Spd.Resource.Applicants.Application;
-internal partial class ApplicationRepository : IApplicationRepository
+namespace Spd.Resource.Applicants.DocumentUrl;
+internal class DocumentUrlRepository : IDocumentUrlRepository
 {
-    public async Task<FileListResp> QueryFilesAsync(FilesQry qry, CancellationToken ct)
+    private readonly DynamicsContext _context;
+    private readonly IMapper _mapper;
+
+    public DocumentUrlRepository(IDynamicsContextFactory ctx, IMapper mapper)
+    {
+        _context = ctx.Create();
+        _mapper = mapper;
+    }
+    public async Task<DocumentUrlListResp> QueryAsync(DocumentUrlQry qry, CancellationToken ct)
     {
         var documents = _context.bcgov_documenturls.Where(d => d.statecode != DynamicsConstants.StateCode_Inactive);
         //if (qry.ApplicantId != null) //waiting for dynamics
@@ -15,6 +24,9 @@ internal partial class ApplicationRepository : IApplicationRepository
         if (qry.ClearanceId != null)
             documents = documents.Where(d => d._spd_clearanceid_value == qry.ClearanceId);
 
+        if (qry.ReportId != null)
+            documents = documents.Where(d => d._spd_pdfreportid_value == qry.ReportId);
+
         if (qry.FileType != null)
         {
             DynamicsContextLookupHelpers.BcGovTagDictionary.TryGetValue(qry.FileType.ToString(), out Guid tagId);
@@ -22,7 +34,10 @@ internal partial class ApplicationRepository : IApplicationRepository
         }
 
         var result = await documents.GetAllPagesAsync(ct);
-        return _mapper.Map<FileListResp>(result);
+        return new DocumentUrlListResp
+        {
+            Items = _mapper.Map<IEnumerable<DocumentUrlResp>>(result)
+        };
     }
 }
 
