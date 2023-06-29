@@ -642,10 +642,12 @@ namespace Spd.Manager.Cases
             Include(new ApplicationCreateRequestValidator());
             RuleFor(a => a.AgreeToCriminalCheck)
                 .NotEmpty()
-                .Equal(true);
+                .Equal(true)
+                .When(a => a.AgreeToShare != null && !(bool)a.AgreeToShare);
             RuleFor(a => a.AgreeToVulnerableSectorSearch)
                 .NotEmpty()
-                .Equal(true);
+                .Equal(true)
+                .When(a => a.AgreeToShare != null && !(bool)a.AgreeToShare);
             RuleFor(a => a.ConsentToCompletedCrc)
                 .Equal(true)
                 .When(a => a.AgreeToShare != null && (bool)a.AgreeToShare);

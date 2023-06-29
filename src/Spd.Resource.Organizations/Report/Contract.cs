@@ -1,5 +1,3 @@
-using Spd.Resource.Applicants.Application;
-
 namespace Spd.Resource.Organizations.Report
 {
     public interface IOrgReportRepository
