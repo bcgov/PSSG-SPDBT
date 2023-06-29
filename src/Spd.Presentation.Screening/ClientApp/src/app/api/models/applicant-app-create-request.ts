@@ -11,11 +11,16 @@ export interface ApplicantAppCreateRequest {
   addressLine2?: null | string;
   agreeToCompleteAndAccurate?: null | boolean;
   agreeToCriminalCheck?: null | boolean;
+  agreeToShare?: null | boolean;
   agreeToVulnerableSectorSearch?: null | boolean;
   aliases?: null | Array<AliasCreateRequest>;
   appInviteId?: null | string;
   birthPlace?: null | string;
   city?: null | string;
+  consentToCompletedCrc?: null | boolean;
+  consentToNotifyNoCrc?: null | boolean;
+  consentToNotifyRisk?: null | boolean;
+  consentToShareResultCrc?: null | boolean;
   contractedCompanyName?: null | string;
   country?: null | string;
   dateOfBirth?: null | string;
@@ -37,5 +42,6 @@ export interface ApplicantAppCreateRequest {
   requireDuplicateCheck?: boolean;
   screeningType?: ScreeningTypeCode;
   serviceType?: ServiceTypeCode;
+  sharedClearanceId?: null | string;
   surname?: null | string;
 }

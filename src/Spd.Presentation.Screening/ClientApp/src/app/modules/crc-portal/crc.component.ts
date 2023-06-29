@@ -5,8 +5,15 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
-import { distinctUntilChanged } from 'rxjs';
-import { ApplicantAppCreateRequest, ApplicationCreateResponse, EmployeeInteractionTypeCode } from 'src/app/api/models';
+import { distinctUntilChanged, Observable, tap } from 'rxjs';
+import {
+	ApplicantAppCreateRequest,
+	ApplicationCreateResponse,
+	EmployeeInteractionTypeCode,
+	ServiceTypeCode,
+	ShareableClearanceItem,
+	ShareableClearanceResponse,
+} from 'src/app/api/models';
 import { ApplicantService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
@@ -30,8 +37,8 @@ export interface AppInviteOrgData extends ApplicantAppCreateRequest {
 	readonlyTombstone?: boolean | null; // logic for screens - SPDBT-1272
 	performPaymentProcess?: boolean | null;
 	previousNameFlag?: boolean | null;
-	// shareCrc?: string | null;
-	// validCrc?: boolean | null;
+	shareableCrcExists?: boolean | null;
+	shareableClearanceItem?: ShareableClearanceItem | null;
 	recaptcha?: string | null;
 	orgEmail?: null | string; // from AppInviteVerifyResponse
 	orgId?: string; // from AppInviteVerifyResponse
@@ -190,9 +197,8 @@ export class CrcComponent implements OnInit {
 				country: orgData.orgCountry!,
 			});
 
-			// TODO hardcode for now
-			orgData.performPaymentProcess = false;
-			orgData.readonlyTombstone = false;
+			orgData.performPaymentProcess = false; // TODO hardcode  performPaymentProcess for now
+			orgData.readonlyTombstone = false; // TODO hardcode readonlyTombstone for now
 		}
 
 		const stateInfo = await this.authProcessService.tryInitializeCrc();
@@ -288,6 +294,29 @@ export class CrcComponent implements OnInit {
 		}
 	}
 
+	private populateShareableClearance(
+		orgId: string,
+		serviceType: ServiceTypeCode
+	): Observable<ShareableClearanceResponse> {
+		return this.applicantService
+			.apiApplicantsClearancesShareableGet({
+				withOrgId: orgId,
+				serviceType: serviceType,
+			})
+			.pipe(
+				tap((resp: ShareableClearanceResponse) => {
+					const shareableClearanceItem = resp?.items ? resp.items[0] : null;
+					if (shareableClearanceItem) {
+						this.orgData!.shareableClearanceItem = shareableClearanceItem;
+						this.orgData!.shareableCrcExists = true;
+						this.orgData!.sharedClearanceId = shareableClearanceItem.clearanceId;
+					} else {
+						this.orgData!.agreeToShare = false;
+					}
+				})
+			);
+	}
+
 	private postLoginNavigate(stepperData: any): void {
 		this.currentStateInfo = JSON.parse(stepperData);
 		console.log('stepperData', stepperData);
@@ -298,14 +327,18 @@ export class CrcComponent implements OnInit {
 		// Assign this at the end so that the orgData setters have the correct information.
 		this.orgData = orgData;
 
-		for (let i = 0; i <= 2; i++) {
-			let step = this.stepper.steps.get(i);
-			if (step) {
-				step.completed = true;
-			}
-		}
+		this.populateShareableClearance(orgData.orgId, orgData.serviceType).subscribe(
+			(_resp: ShareableClearanceResponse) => {
+				for (let i = 0; i <= 2; i++) {
+					let step = this.stepper.steps.get(i);
+					if (step) {
+						step.completed = true;
+					}
+				}
 
-		this.stepper.selectedIndex = 3;
+				this.stepper.selectedIndex = 3;
+			}
+		);
 	}
 
 	onSaveStepperStep(stepper: MatStepper): void {
@@ -330,7 +363,7 @@ export class CrcComponent implements OnInit {
 			this.applicantService
 				.apiApplicantsScreeningsPost({ body })
 				.pipe()
-				.subscribe((res: ApplicationCreateResponse) => {
+				.subscribe((_res: ApplicationCreateResponse) => {
 					this.hotToast.success('Application was successfully saved');
 					this.stepper.next();
 				});
@@ -339,7 +372,7 @@ export class CrcComponent implements OnInit {
 			this.applicantService
 				.apiApplicantsScreeningsAnonymousPost({ body })
 				.pipe()
-				.subscribe((res: ApplicationCreateResponse) => {
+				.subscribe((_res: ApplicationCreateResponse) => {
 					this.hotToast.success('Application was successfully saved');
 					this.stepper.next();
 				});
