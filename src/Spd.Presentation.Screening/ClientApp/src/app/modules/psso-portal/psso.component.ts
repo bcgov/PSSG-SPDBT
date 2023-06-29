@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { IsActiveMatchOptions, QueryParamsHandling, Router } from '@angular/router';
-import { IdentityProviderTypeCode } from 'src/app/api/models';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { PssoRoutes } from './psso-routing.module';
 
 export interface NavigationItemType {
@@ -24,7 +23,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 @Component({
 	selector: 'app-psso',
 	template: `
-		<div class="container-fluid p-0" *ngIf="isAuthenticated | async">
+		<div class="container-fluid p-0" *ngIf="isAuthenticated$ | async">
 			<div class="row flex-nowrap m-0">
 				<div class="col-auto px-0" style="background-color: var(--color-sidebar);">
 					<div
@@ -95,19 +94,15 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 	],
 })
 export class PssoComponent {
-	isAuthenticated = this.authenticationService.waitUntilAuthentication$;
+	isAuthenticated$ = this.authProcessService.waitUntilAuthentication$;
 	pssoRoutes = PssoRoutes;
 
-	constructor(protected authenticationService: AuthenticationService, private router: Router) {}
+	constructor(private authProcessService: AuthProcessService, private router: Router) {}
 
 	async ngOnInit(): Promise<void> {
-		const nextUrl = await this.authenticationService.login(
-			IdentityProviderTypeCode.BusinessBceId,
-			PssoRoutes.path(PssoRoutes.SCREENING_STATUSES)
-		); // TODO change to IDIR
+		const nextRoute = await this.authProcessService.initializePsso();
 
-		if (nextUrl) {
-			const nextRoute = decodeURIComponent(nextUrl);
+		if (nextRoute) {
 			await this.router.navigate([nextRoute]);
 		}
 	}
