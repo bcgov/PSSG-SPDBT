@@ -38,7 +38,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             .ForMember(d => d.OrgPostalCode, opt => opt.MapFrom(s => s.spd_OrganizationId.address1_postalcode))
             .ForMember(d => d.OrgId, opt => opt.MapFrom(s => s.spd_OrganizationId.accountid))
             .ForMember(d => d.OrgName, opt => opt.MapFrom(s => s.spd_OrganizationId.spd_organizationlegalname ?? s.spd_OrganizationId.name))
-            .ForMember(d => d.OrgPhoneNumber, opt => opt.MapFrom(s => s.spd_OrganizationId.address1_telephone1))
+            .ForMember(d => d.OrgPhoneNumber, opt => opt.MapFrom(s => s.spd_OrganizationId.telephone1))
             .ForMember(d => d.OrgEmail, opt => opt.MapFrom(s => s.spd_OrganizationId.emailaddress1))
             .ForMember(d => d.OrgAddressLine1, opt => opt.MapFrom(s => s.spd_OrganizationId.address1_line1))
             .ForMember(d => d.OrgAddressLine2, opt => opt.MapFrom(s => s.spd_OrganizationId.address1_line2))

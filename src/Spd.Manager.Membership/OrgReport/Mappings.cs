@@ -8,8 +8,6 @@ namespace Spd.Manager.Membership.Report
         public Mappings()
         {
             CreateMap<OrgReportResult, OrgReportResponse>();
-            CreateMap<ReportFileResp, ReportFileResponse>();
-
         }
     }
 }
