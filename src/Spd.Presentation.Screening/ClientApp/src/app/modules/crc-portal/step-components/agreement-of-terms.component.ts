@@ -135,8 +135,8 @@ export class AgreementOfTermsComponent implements CrcFormStepComponent {
 	@Input() resetRecaptcha: Subject<void> = new Subject<void>();
 
 	form: FormGroup = this.formBuilder.group({
-		agreeToCriminalCheck: new FormControl('', [Validators.required]),
-		agreeToVulnerableSectorSearch: new FormControl('', [Validators.required]),
+		agreeToCriminalCheck: new FormControl(null, [Validators.required]),
+		agreeToVulnerableSectorSearch: new FormControl(null, [Validators.required]),
 	});
 	hasScrolledToBottom = false;
 	displayValidationErrors = false;

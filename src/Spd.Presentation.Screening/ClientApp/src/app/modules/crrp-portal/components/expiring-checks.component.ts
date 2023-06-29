@@ -175,6 +175,7 @@ export const ExpiringChecksFilterMap: Record<keyof ExpiringChecksFilter, string>
 					</mat-table>
 					<mat-paginator
 						[showFirstLastButtons]="true"
+						[hidePageSize]="true"
 						[pageIndex]="tablePaginator.pageIndex"
 						[pageSize]="tablePaginator.pageSize"
 						[length]="tablePaginator.length"

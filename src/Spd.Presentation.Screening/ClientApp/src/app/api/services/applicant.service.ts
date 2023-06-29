@@ -13,10 +13,13 @@ import { AnonymousApplicantAppCreateRequest } from '../models/anonymous-applican
 import { AppInviteVerifyRequest } from '../models/app-invite-verify-request';
 import { AppOrgResponse } from '../models/app-org-response';
 import { ApplicantAppCreateRequest } from '../models/applicant-app-create-request';
+import { ApplicantApplicationFileListResponse } from '../models/applicant-application-file-list-response';
 import { ApplicantApplicationListResponse } from '../models/applicant-application-list-response';
 import { ApplicantApplicationResponse } from '../models/applicant-application-response';
 import { ApplicantUserInfo } from '../models/applicant-user-info';
 import { ApplicationCreateResponse } from '../models/application-create-response';
+import { ServiceTypeCode } from '../models/service-type-code';
+import { ShareableClearanceResponse } from '../models/shareable-clearance-response';
 
 @Injectable({
   providedIn: 'root',
@@ -221,6 +224,62 @@ export class ApplicantService extends BaseService {
   }
 
   /**
+   * Path part for operation apiApplicantsClearancesShareableGet
+   */
+  static readonly ApiApplicantsClearancesShareableGetPath = '/api/applicants/clearances/shareable';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiApplicantsClearancesShareableGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantsClearancesShareableGet$Response(params?: {
+    withOrgId?: string;
+    serviceType?: ServiceTypeCode;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<ShareableClearanceResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, ApplicantService.ApiApplicantsClearancesShareableGetPath, 'get');
+    if (params) {
+      rb.query('withOrgId', params.withOrgId, {});
+      rb.query('serviceType', params.serviceType, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<ShareableClearanceResponse>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiApplicantsClearancesShareableGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantsClearancesShareableGet(params?: {
+    withOrgId?: string;
+    serviceType?: ServiceTypeCode;
+  },
+  context?: HttpContext
+
+): Observable<ShareableClearanceResponse> {
+
+    return this.apiApplicantsClearancesShareableGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<ShareableClearanceResponse>) => r.body as ShareableClearanceResponse)
+    );
+  }
+
+  /**
    * Path part for operation apiApplicantsApplicantIdApplicationsGet
    */
   static readonly ApiApplicantsApplicantIdApplicationsGetPath = '/api/applicants/{applicantId}/applications';
@@ -384,6 +443,67 @@ export class ApplicantService extends BaseService {
 
     return this.apiApplicantsUserinfoGet$Response(params,context).pipe(
       map((r: StrictHttpResponse<ApplicantUserInfo>) => r.body as ApplicantUserInfo)
+    );
+  }
+
+  /**
+   * Path part for operation apiApplicantsScreeningsApplicationIdFilesGet
+   */
+  static readonly ApiApplicantsScreeningsApplicationIdFilesGetPath = '/api/applicants/screenings/{applicationId}/files';
+
+  /**
+   * Get the list of all files the applicant has uploaded for the application.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiApplicantsScreeningsApplicationIdFilesGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantsScreeningsApplicationIdFilesGet$Response(params: {
+    applicationId: string;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<ApplicantApplicationFileListResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, ApplicantService.ApiApplicantsScreeningsApplicationIdFilesGetPath, 'get');
+    if (params) {
+      rb.path('applicationId', params.applicationId, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<ApplicantApplicationFileListResponse>;
+      })
+    );
+  }
+
+  /**
+   * Get the list of all files the applicant has uploaded for the application.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiApplicantsScreeningsApplicationIdFilesGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantsScreeningsApplicationIdFilesGet(params: {
+    applicationId: string;
+  },
+  context?: HttpContext
+
+): Observable<ApplicantApplicationFileListResponse> {
+
+    return this.apiApplicantsScreeningsApplicationIdFilesGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<ApplicantApplicationFileListResponse>) => r.body as ApplicantApplicationFileListResponse)
     );
   }
 

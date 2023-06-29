@@ -165,6 +165,7 @@ export interface PaymentResponse extends ApplicationResponse {
 					</mat-table>
 					<mat-paginator
 						[showFirstLastButtons]="true"
+						[hidePageSize]="true"
 						[pageIndex]="tablePaginator.pageIndex"
 						[pageSize]="tablePaginator.pageSize"
 						[length]="tablePaginator.length"
