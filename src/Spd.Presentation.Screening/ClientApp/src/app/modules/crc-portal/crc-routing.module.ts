@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CrcComponent } from './crc.component';
-import { InvitationComponent } from './invitation.component';
+import { InvitationCrcComponent } from './invitation-crc.component';
 import { OrgAccessComponent } from './org-access.component';
 
 export class CrcRoutes {
@@ -23,7 +23,7 @@ const routes: Routes = [
 	},
 	{
 		path: 'invitation/:id',
-		component: InvitationComponent,
+		component: InvitationCrcComponent,
 	},
 	{
 		path: CrcRoutes.ORG_ACCESS,

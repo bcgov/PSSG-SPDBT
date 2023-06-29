@@ -207,6 +207,9 @@ export class CrcComponent implements OnInit {
 		);
 
 		if (authInfo.loggedIn) {
+			const success = await this.authUserService.applicantUserInfoAsync();
+			this.authenticationService.notify(success);
+
 			if (authInfo.state) {
 				const stateInfo = this.utilService.getSessionData(this.utilService.CRC_PORTAL_STATE_KEY);
 				if (stateInfo) {
@@ -298,6 +301,9 @@ export class CrcComponent implements OnInit {
 		this.utilService.setSessionData(this.utilService.CRC_PORTAL_STATE_KEY, stateInfo);
 		const nextUrl = await this.authenticationService.login(IdentityProviderTypeCode.BcServicesCard, CrcRoutes.path());
 		if (nextUrl) {
+			const success = await this.authUserService.applicantUserInfoAsync();
+			this.authenticationService.notify(success);
+
 			// User is already logged in and clicks Login button.
 			// Want it to start at the beginning and continue past login page.
 			this.postLoginNavigate(stateInfo);

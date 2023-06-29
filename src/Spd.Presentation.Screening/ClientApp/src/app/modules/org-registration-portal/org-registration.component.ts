@@ -14,6 +14,7 @@ import {
 	RegistrationTypeCode,
 } from 'src/app/api/models';
 import { OrgRegistrationService } from 'src/app/api/services';
+import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import {
@@ -113,6 +114,7 @@ export class OrgRegistrationComponent implements OnInit {
 	constructor(
 		private router: Router,
 		private breakpointObserver: BreakpointObserver,
+		private authUserService: AuthUserService,
 		private authenticationService: AuthenticationService,
 		private orgRegistrationService: OrgRegistrationService,
 		private hotToast: HotToastService,
@@ -175,6 +177,9 @@ export class OrgRegistrationComponent implements OnInit {
 			OrgRegistrationRoutes.path()
 		);
 		if (nextUrl) {
+			// const success = await this.authUserService.whoAmIAsync(IdentityProviderTypeCode.BusinessBceId);
+			// this.authenticationService.notify(true);
+
 			// User is already logged in and clicks Login button.
 			// For example, complete a registration then refresh the page.
 			// Want it to start at the beginning and continue past login page.

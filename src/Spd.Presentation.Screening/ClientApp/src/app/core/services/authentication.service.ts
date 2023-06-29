@@ -3,8 +3,6 @@ import { Router } from '@angular/router';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { BehaviorSubject } from 'rxjs';
 import { AppRoutes } from 'src/app/app-routing.module';
-import { CrcRoutes } from 'src/app/modules/crc-portal/crc-routing.module';
-import { OrgRegistrationRoutes } from 'src/app/modules/org-registration-portal/org-registration-routing.module';
 import { IdentityProviderTypeCode } from '../code-types/code-types.models';
 import { AuthUserService } from './auth-user.service';
 import { ConfigService } from './config.service';
@@ -38,21 +36,22 @@ export class AuthenticationService {
 
 		console.debug('[AuthenticationService.tryLogin] isLoggedIn', isLoggedIn, this.oauthService.hasValidAccessToken());
 
-		if (isLoggedIn) {
-			let success = false;
-			if (returnComponentRoute == OrgRegistrationRoutes.path()) {
-				// do not call anything
-				success = true;
-			} else if (returnComponentRoute == CrcRoutes.path()) {
-				success = await this.authUserService.applicantUserInfoAsync();
-			} else {
-				success = await this.authUserService.whoAmIAsync(loginType);
-			}
+		this.notify(isLoggedIn);
+		// if (isLoggedIn) {
+		// 	let success = false;
+		// 	if (returnComponentRoute == OrgRegistrationRoutes.path()) {
+		// 		// do not call anything
+		// 		success = true;
+		// 	} else if (returnComponentRoute == CrcRoutes.path()) {
+		// 		success = await this.authUserService.applicantUserInfoAsync();
+		// 	} else {
+		// 		success = await this.authUserService.whoAmIAsync(loginType);
+		// 	}
 
-			this.notify(success);
-		} else {
-			this.notify(false);
-		}
+		// 	this.notify(success);
+		// } else {
+		// 	this.notify(false);
+		// }
 
 		return {
 			state: this.oauthService.state || null,
@@ -67,27 +66,33 @@ export class AuthenticationService {
 		await this.configService.configureOAuthService(loginType, window.location.origin + returnComponentRoute);
 
 		const returnRoute = location.pathname.substring(1);
-		console.debug('[AuthenticationService] login', returnComponentRoute, returnRoute);
+		console.debug('[AuthenticationService] LOGIN', returnComponentRoute, returnRoute);
 
 		const isLoggedIn = await this.oauthService.loadDiscoveryDocumentAndLogin({
 			state: returnRoute,
 		});
 
-		if (isLoggedIn) {
-			let success = false;
+		console.debug('[AuthenticationService] ISLOGGEDIN', isLoggedIn, this.oauthService.state);
 
-			if (returnComponentRoute == OrgRegistrationRoutes.path()) {
-				// do not call anything
-				success = true;
-			} else if (returnComponentRoute == CrcRoutes.path()) {
-				success = await this.authUserService.applicantUserInfoAsync();
-			} else {
-				success = await this.authUserService.whoAmIAsync(loginType);
-			}
-			this.notify(success);
-			return Promise.resolve(this.oauthService.state || returnRoute);
+		if (isLoggedIn) {
+			// let success = false;
+
+			const returningLocation = this.oauthService.state || returnRoute;
+			console.debug('returningLocation ', returningLocation);
+
+			// if (returnComponentRoute == OrgRegistrationRoutes.path() || returningLocation.includes(CrrpRoutes.INVITATION)) {
+			// 	// do not call anything
+			// 	console.debug('DO NOT CALL WHOAMI');
+			// 	success = true;
+			// } else if (returnComponentRoute == CrcRoutes.path()) {
+			// 	success = await this.authUserService.applicantUserInfoAsync();
+			// } else {
+			// 	success = await this.authUserService.whoAmIAsync(loginType);
+			// }
+			// this.notify(success);
+			return Promise.resolve(returningLocation);
 		} else {
-			this.notify(isLoggedIn);
+			// this.notify(isLoggedIn);
 			return Promise.resolve(null);
 		}
 	}
@@ -113,7 +118,7 @@ export class AuthenticationService {
 		return this.oauthService.hasValidAccessToken();
 	}
 
-	private notify(isLoggedIn: boolean): void {
+	notify(isLoggedIn: boolean): void {
 		const hasValidAccessToken = this.oauthService.hasValidAccessToken();
 
 		if (!isLoggedIn || !hasValidAccessToken) {
