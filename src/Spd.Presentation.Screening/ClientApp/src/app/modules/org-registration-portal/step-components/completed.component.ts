@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 
 @Component({
 	selector: 'app-completed',
@@ -97,10 +97,10 @@ export class CompletedComponent {
 	get subHeading(): string {
 		return `Your registration is complete and a confirmation email has been sent to ${this.sendToEmailAddress}`;
 	}
-	constructor(private authenticationService: AuthenticationService) {}
+	constructor(private authProcessService: AuthProcessService) {}
 
 	ngOnInit(): void {
-		this.authenticationService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
+		this.authProcessService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
 			this.isLoggedIn = isLoggedIn;
 		});
 	}

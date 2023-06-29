@@ -1,13 +1,11 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { IdentityProviderTypeCode } from 'src/app/api/models';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { SecurityScreeningRoutes } from './security-screening-routing.module';
+import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 
 @Component({
 	selector: 'app-security-screening',
 	template: `
-		<div class="container mt-4" *ngIf="isAuthenticated | async">
+		<div class="container mt-4" *ngIf="isAuthenticated$ | async">
 			<section class="step-section p-0 p-lg-4 m-0 m-lg-4">
 				<router-outlet></router-outlet>
 			</section>
@@ -16,18 +14,14 @@ import { SecurityScreeningRoutes } from './security-screening-routing.module';
 	styles: [],
 })
 export class SecurityScreeningComponent {
-	isAuthenticated = this.authenticationService.waitUntilAuthentication$;
+	isAuthenticated$ = this.authProcessService.waitUntilAuthentication$;
 
-	constructor(protected authenticationService: AuthenticationService, private router: Router) {}
+	constructor(private authProcessService: AuthProcessService, private router: Router) {}
 
 	async ngOnInit(): Promise<void> {
-		const nextUrl = await this.authenticationService.login(
-			IdentityProviderTypeCode.BcServicesCard,
-			SecurityScreeningRoutes.path()
-		); // TODO change to IDIR
+		const nextRoute = await this.authProcessService.initializeSecurityScreening();
 
-		if (nextUrl) {
-			const nextRoute = decodeURIComponent(nextUrl);
+		if (nextRoute) {
 			await this.router.navigate([nextRoute]);
 		}
 	}
