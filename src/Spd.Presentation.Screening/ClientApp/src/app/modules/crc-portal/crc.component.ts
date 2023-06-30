@@ -380,9 +380,9 @@ export class CrcComponent implements OnInit {
 	}
 
 	private assignApplicantUserInfoData(orgData: AppInviteOrgData | null): void {
-		if (orgData) {
-			const applicantUserInfo = this.authUserService.applicantUserInfo;
+		const applicantUserInfo = this.authUserService.applicantUserInfo;
 
+		if (orgData && applicantUserInfo) {
 			orgData.readonlyTombstone = true;
 			orgData.givenName = applicantUserInfo?.firstName;
 			orgData.surname = applicantUserInfo?.lastName;
