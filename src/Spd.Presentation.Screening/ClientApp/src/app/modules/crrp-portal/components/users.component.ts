@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
 import { ContactAuthorizationTypeCode, OrgUserListResponse, OrgUserResponse } from 'src/app/api/models';
 import { OrgUserService } from 'src/app/api/services';
+import { AppRoutes } from 'src/app/app-routing.module';
 import { ContactAuthorizationTypes, SelectOptions } from 'src/app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
@@ -201,6 +203,7 @@ export class UsersComponent implements OnInit {
 	usersList: OrgUserResponse[] = [];
 
 	constructor(
+		private router: Router,
 		private dialog: MatDialog,
 		private orgUserService: OrgUserService,
 		private authUserService: AuthUserService,
@@ -208,6 +211,12 @@ export class UsersComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
+		const orgId = this.authUserService.userInfo?.orgId;
+		if (!orgId) {
+			this.router.navigate([AppRoutes.ACCESS_DENIED]);
+			return;
+		}
+
 		this.loadList();
 	}
 

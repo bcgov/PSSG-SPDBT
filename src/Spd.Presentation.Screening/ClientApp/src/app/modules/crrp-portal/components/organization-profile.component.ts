@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
 import { NgxMaskPipe } from 'ngx-mask';
 import {
@@ -12,6 +13,7 @@ import {
 	VolunteerOrganizationTypeCode,
 } from 'src/app/api/models';
 import { OrgService } from 'src/app/api/services';
+import { AppRoutes } from 'src/app/app-routing.module';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
@@ -262,6 +264,7 @@ export class OrganizationProfileComponent implements OnInit {
 	formValues = {};
 
 	constructor(
+		private router: Router,
 		private formBuilder: FormBuilder,
 		private hotToast: HotToastService,
 		private maskPipe: NgxMaskPipe,
@@ -270,6 +273,12 @@ export class OrganizationProfileComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
+		const orgId = this.authUserService.userInfo?.orgId;
+		if (!orgId) {
+			this.router.navigate([AppRoutes.ACCESS_DENIED]);
+			return;
+		}
+
 		this.editable = this.authUserService.userInfo?.contactAuthorizationTypeCode == ContactAuthorizationTypeCode.Primary;
 		console.log('editable', this.editable);
 		this.orgService
