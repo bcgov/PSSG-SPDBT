@@ -7,6 +7,9 @@ import { ConfigService } from './config.service';
 export class AuthenticationService {
 	constructor(private oauthService: OAuthService, private configService: ConfigService) {}
 
+	//----------------------------------------------------------
+	// *
+	// *
 	public async tryLogin(
 		loginType: IdentityProviderTypeCode,
 		returnComponentRoute: string
@@ -26,6 +29,9 @@ export class AuthenticationService {
 		};
 	}
 
+	//----------------------------------------------------------
+	// *
+	// *
 	public async login(
 		loginType: IdentityProviderTypeCode,
 		returnComponentRoute: string | undefined = undefined
@@ -48,10 +54,16 @@ export class AuthenticationService {
 		return Promise.resolve(null);
 	}
 
+	//----------------------------------------------------------
+	// *
+	// *
 	public getToken(): string {
 		return this.oauthService.getAccessToken();
 	}
 
+	//----------------------------------------------------------
+	// *
+	// *
 	public isLoggedIn(): boolean {
 		return this.oauthService.hasValidAccessToken();
 	}

@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
 import { OrgReportListResponse, OrgReportResponse } from 'src/app/api/models';
 import { OrgReportService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
+import { AppRoutes } from 'src/app/app-routing.module';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { UtilService } from 'src/app/core/services/util.service';
@@ -113,12 +115,19 @@ export class ReportsComponent {
 	columns: string[] = ['reportDate', 'action'];
 
 	constructor(
+		private router: Router,
 		private utilService: UtilService,
 		private authUserService: AuthUserService,
 		private orgReportService: OrgReportService
 	) {}
 
 	ngOnInit() {
+		const orgId = this.authUserService.userInfo?.orgId;
+		if (!orgId) {
+			this.router.navigate([AppRoutes.ACCESS_DENIED]);
+			return;
+		}
+
 		this.loadList();
 	}
 
