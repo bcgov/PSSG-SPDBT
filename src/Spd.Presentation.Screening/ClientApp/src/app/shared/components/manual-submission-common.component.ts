@@ -6,6 +6,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 import { NgxMaskPipe } from 'ngx-mask';
 import { ApplicationCreateResponse, BooleanTypeCode, ScreeningTypeCode } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
+import { AppRoutes } from 'src/app/app-routing.module';
 import { ApplicationOriginTypeCode } from 'src/app/core/code-types/application-origin-type.model';
 import { GenderTypes, ScreeningTypes } from 'src/app/core/code-types/model-desc.models';
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
@@ -447,6 +448,12 @@ export class ManualSubmissionCommonComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
+		const orgId = this.authUserService.userInfo?.orgId;
+		if (!orgId) {
+			this.router.navigate([AppRoutes.ACCESS_DENIED]);
+			return;
+		}
+
 		this.resetForm();
 	}
 

@@ -10,6 +10,7 @@ import {
 	ValidationErr,
 } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
+import { AppRoutes } from 'src/app/app-routing.module';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
@@ -141,6 +142,12 @@ export class GenericUploadsComponent implements OnInit {
 	) {}
 
 	ngOnInit() {
+		const orgId = this.authUserService.userInfo?.orgId;
+		if (!orgId) {
+			this.router.navigate([AppRoutes.ACCESS_DENIED]);
+			return;
+		}
+
 		this.authProcessService.waitUntilAuthentication$.subscribe((_subjectData: any) => {
 			if (!this.authUserService.genericUploadEnabled) {
 				this.router.navigate([CrrpRoutes.path(CrrpRoutes.HOME)]);
