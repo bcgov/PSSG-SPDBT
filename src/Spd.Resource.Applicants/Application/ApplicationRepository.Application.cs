@@ -1,13 +1,9 @@
 using Microsoft.Dynamics.CRM;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OData.Client;
-using Spd.Resource.Applicants.DocumentUrl;
 using Spd.Utilities.Dynamics;
-using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.Shared.ResourceContracts;
-using Spd.Utilities.Shared.Tools;
-using Spd.Utilities.TempFileStorage;
 using System.Net;
 
 namespace Spd.Resource.Applicants.Application;
@@ -28,20 +24,6 @@ internal partial class ApplicationRepository : IApplicationRepository
         spd_servicetype? servicetype = _context.LookupServiceType(createApplicationCmd.ServiceType.ToString());
         if (org != null && serviceTeam != null)
             application = await CreateAppAsync(createApplicationCmd, org, user, serviceTeam, servicetype);
-
-        if (application != null && createApplicationCmd.ConsentFormTempFile != null)
-        {
-            //create bcgov_documenturl
-            bcgov_documenturl documenturl = _mapper.Map<bcgov_documenturl>(createApplicationCmd.ConsentFormTempFile);
-            var tag = _context.LookupTag(DocumentTypeEnum.ApplicantConsentForm.ToString());
-            documenturl.bcgov_url = $"spd_application/{application.spd_applicationid}";
-            _context.AddTobcgov_documenturls(documenturl);
-            _context.SetLink(documenturl, nameof(documenturl.spd_ApplicationId), application);
-            _context.SetLink(documenturl, nameof(documenturl.bcgov_Tag1Id), tag);
-
-            //upload file to s3
-            await UploadFileAsync(createApplicationCmd, application.spd_applicationid, documenturl.bcgov_documenturlid, ct);
-        }
         await _context.SaveChangesAsync(ct);
         return application?.spd_applicationid;
     }
@@ -248,36 +230,6 @@ internal partial class ApplicationRepository : IApplicationRepository
             return "spd_contractedcompanyname";
 
         return "createdon desc";
-    }
-
-    private async Task UploadFileAsync(ApplicationCreateCmd cmd, Guid? applicationId, Guid? docUrlId, CancellationToken ct)
-    {
-        if (applicationId == null) return;
-        if (docUrlId == null) return;
-        byte[]? consentFileContent = await _tempFile.HandleQuery(
-            new GetTempFileQuery(cmd.ConsentFormTempFile.TempFileKey), ct);
-        if (consentFileContent == null) return;
-
-        Utilities.FileStorage.File file = new()
-        {
-            Content = consentFileContent,
-            ContentType = cmd.ConsentFormTempFile.ContentType,
-            FileName = cmd.ConsentFormTempFile.FileName,
-        };
-        FileTag fileTag = new FileTag()
-        {
-            Tags = new List<Tag>
-            {
-                new Tag("file-classification", "Unclassified"),
-                new Tag("file-tag", DocumentTypeEnum.ApplicantConsentForm.GetDescription())
-            }
-        };
-        await _fileStorage.HandleCommand(new UploadFileCommand(
-                    Key: ((Guid)docUrlId).ToString(),
-                    Folder: $"spd_application/{applicationId}",
-                    File: file,
-                    FileTag: fileTag
-                    ), ct);
     }
 
     //note: any change in this function, the operation number also needs to change in AddBulkAppsAsync

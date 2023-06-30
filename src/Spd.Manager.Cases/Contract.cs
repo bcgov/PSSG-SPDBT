@@ -710,7 +710,12 @@ namespace Spd.Manager.Cases
 
     public record CreateApplicantAppFileCommand(ApplicantAppFileUploadRequest Request, string BcscId, Guid ApplicationId) : IRequest<ApplicantAppFileCreateResponse>;
     public record ApplicantAppFileUploadRequest(IFormFile File, FileTypeCode FileType = FileTypeCode.StatutoryDeclaration);
-    public record ApplicantAppFileCreateResponse();
+    public record ApplicantAppFileCreateResponse
+    {
+        public Guid DocumentUrlId { get; set; }
+        public DateTimeOffset UploadedDateTime { get; set; }
+        public Guid? ApplicationId { get; set; } = null;
+    };
 
     public enum FileTypeCode
     {

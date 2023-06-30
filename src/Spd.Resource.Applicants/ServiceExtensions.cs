@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.ApplicationInvite;
-using Spd.Resource.Applicants.DocumentUrl;
+using Spd.Resource.Applicants.Document;
 using Spd.Utilities.Hosting;
 
 namespace Spd.Resource.Applicants
@@ -12,7 +12,7 @@ namespace Spd.Resource.Applicants
         {
             configurationServices.Services.AddTransient<IApplicationRepository, ApplicationRepository>();
             configurationServices.Services.AddTransient<IApplicationInviteRepository, ApplicationInviteRepository>();
-            configurationServices.Services.AddTransient<IDocumentUrlRepository, DocumentUrlRepository>();
+            configurationServices.Services.AddTransient<IDocumentRepository, DocumentRepository>();
         }
     }
 }

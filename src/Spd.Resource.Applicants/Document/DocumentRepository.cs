@@ -6,15 +6,15 @@ using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.Tools;
 using Spd.Utilities.TempFileStorage;
 
-namespace Spd.Resource.Applicants.DocumentUrl;
-internal class DocumentUrlRepository : IDocumentUrlRepository
+namespace Spd.Resource.Applicants.Document;
+internal class DocumentRepository : IDocumentRepository
 {
     private readonly DynamicsContext _context;
     private readonly IMapper _mapper;
     private readonly IFileStorageService _fileStorageService;
     private readonly ITempFileStorageService _tempFileService;
 
-    public DocumentUrlRepository(IDynamicsContextFactory ctx,
+    public DocumentRepository(IDynamicsContextFactory ctx,
         IMapper mapper,
         IFileStorageService fileStorageService,
         ITempFileStorageService tempFileService)
@@ -24,7 +24,7 @@ internal class DocumentUrlRepository : IDocumentUrlRepository
         _fileStorageService = fileStorageService;
         _tempFileService = tempFileService;
     }
-    public async Task<DocumentUrlListResp> QueryAsync(DocumentUrlQry qry, CancellationToken ct)
+    public async Task<DocumentListResp> QueryAsync(DocumentQry qry, CancellationToken ct)
     {
         var documents = _context.bcgov_documenturls.Where(d => d.statecode != DynamicsConstants.StateCode_Inactive);
         if (qry.ApplicantId != null)
@@ -46,21 +46,21 @@ internal class DocumentUrlRepository : IDocumentUrlRepository
         }
 
         var result = await documents.GetAllPagesAsync(ct);
-        return new DocumentUrlListResp
+        return new DocumentListResp
         {
-            Items = _mapper.Map<IEnumerable<DocumentUrlResp>>(result)
+            Items = _mapper.Map<IEnumerable<DocumentResp>>(result)
         };
     }
-    public async Task<DocumentUrlResp> ManageAsync(DocumentUrlCmd cmd, CancellationToken ct)
+    public async Task<DocumentResp> ManageAsync(DocumentCmd cmd, CancellationToken ct)
     {
         return cmd switch
         {
-            CreateDocumentUrlCmd c => await DocumentUrlCreateAsync(c, ct),
+            CreateDocumentCmd c => await DocumentCreateAsync(c, ct),
             _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
         };
     }
 
-    private async Task<DocumentUrlResp> DocumentUrlCreateAsync(CreateDocumentUrlCmd cmd, CancellationToken ct)
+    private async Task<DocumentResp> DocumentCreateAsync(CreateDocumentCmd cmd, CancellationToken ct)
     {
         spd_application? application = await _context.GetApplicationById(cmd.ApplicationId, ct);
         if (application == null)
@@ -72,10 +72,16 @@ internal class DocumentUrlRepository : IDocumentUrlRepository
         _context.AddTobcgov_documenturls(documenturl);
         _context.SetLink(documenturl, nameof(documenturl.spd_ApplicationId), application);
         _context.SetLink(documenturl, nameof(documenturl.bcgov_Tag1Id), tag);
+        if (cmd.SubmittedByApplicantId != null)
+        {
+            contact? contact = await _context.GetContactById((Guid)cmd.SubmittedByApplicantId, ct);
+            _context.SetLink(documenturl, nameof(documenturl.spd_SubmittedById), contact);
+        }
 
         await UploadFileAsync(cmd.TempFile, application.spd_applicationid, documenturl.bcgov_documenturlid, cmd.DocumentType, ct);
         await _context.SaveChangesAsync(ct);
-        return _mapper.Map<DocumentUrlResp>(documenturl);
+        documenturl._spd_applicationid_value = application.spd_applicationid;
+        return _mapper.Map<DocumentResp>(documenturl);
     }
 
     private async Task UploadFileAsync(SpdTempFile tempFile, Guid? applicationId, Guid? docUrlId, DocumentTypeEnum documentType, CancellationToken ct)

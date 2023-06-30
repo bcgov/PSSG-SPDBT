@@ -1,26 +1,26 @@
 using Spd.Resource.Applicants.Application;
 using System.ComponentModel;
 
-namespace Spd.Resource.Applicants.DocumentUrl
+namespace Spd.Resource.Applicants.Document
 {
-    public interface IDocumentUrlRepository
+    public interface IDocumentRepository
     {
-        public Task<DocumentUrlListResp> QueryAsync(DocumentUrlQry query, CancellationToken cancellationToken);
-        public Task<DocumentUrlResp> ManageAsync(DocumentUrlCmd cmd, CancellationToken cancellationToken);
+        public Task<DocumentListResp> QueryAsync(DocumentQry query, CancellationToken cancellationToken);
+        public Task<DocumentResp> ManageAsync(DocumentCmd cmd, CancellationToken cancellationToken);
     }
 
-    public record DocumentUrlQry(
+    public record DocumentQry(
         Guid? ApplicationId = null,
         Guid? ApplicantId = null,
         Guid? ClearanceId = null,
         Guid? ReportId = null,
         DocumentTypeEnum? FileType = null);
-    public record DocumentUrlListResp
+    public record DocumentListResp
     {
-        public IEnumerable<DocumentUrlResp> Items { get; set; } = Array.Empty<DocumentUrlResp>();
+        public IEnumerable<DocumentResp> Items { get; set; } = Array.Empty<DocumentResp>();
     }
 
-    public record DocumentUrlResp
+    public record DocumentResp
     {
         public string? FileName { get;set; }
         public DocumentTypeEnum? DocumentType { get; set; } = null;
@@ -31,9 +31,9 @@ namespace Spd.Resource.Applicants.DocumentUrl
         public Guid? ReportId { get; set; } = null;
     }
 
-    public abstract record DocumentUrlCmd;
+    public abstract record DocumentCmd;
 
-    public record CreateDocumentUrlCmd: DocumentUrlCmd
+    public record CreateDocumentCmd: DocumentCmd
     {
         public SpdTempFile TempFile { get; set; }
         public Guid ApplicationId { get; set; }
@@ -51,6 +51,8 @@ namespace Spd.Resource.Applicants.DocumentUrl
 
         [Description("Armoured Car Guard")]
         ArmouredCarGuard,
+
+        [Description("Armoured Vehicle Purpose")]
         ArmouredVehiclePurpose,
         ArmouredVehicleRationale,
         BCCompaniesRegistrationVerification,
