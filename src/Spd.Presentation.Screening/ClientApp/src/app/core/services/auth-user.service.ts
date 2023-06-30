@@ -31,6 +31,9 @@ export class AuthUserService {
 		private dialog: MatDialog
 	) {}
 
+	//----------------------------------------------------------
+	// *
+	// *
 	setOrgProfile(userInfo: UserInfo | null = null): void {
 		console.debug('[AuthUserService] userInfo', userInfo);
 
@@ -46,6 +49,9 @@ export class AuthUserService {
 		this.updateOrgProfile();
 	}
 
+	//----------------------------------------------------------
+	// *
+	// *
 	updateOrgProfile(): void {
 		if (!this.userInfo) {
 			this.userOrgProfile = null;
@@ -61,12 +67,18 @@ export class AuthUserService {
 			});
 	}
 
+	//----------------------------------------------------------
+	// *
+	// *
 	async applicantUserInfoAsync(): Promise<boolean> {
 		this.loginType = IdentityProviderTypeCode.BcServicesCard;
 		this.applicantUserInfo = await lastValueFrom(this.applicantService.apiApplicantsUserinfoGet());
 		return Promise.resolve(true);
 	}
 
+	//----------------------------------------------------------
+	// *
+	// *
 	async whoAmIAsync(loginType: IdentityProviderTypeCode): Promise<boolean> {
 		this.loginType = loginType;
 		this.clearUserData();
@@ -104,6 +116,9 @@ export class AuthUserService {
 		return Promise.resolve(false);
 	}
 
+	//----------------------------------------------------------
+	// *
+	// *
 	public clearUserData(): void {
 		this.userInfo = null;
 		this.userOrgProfile = null;
