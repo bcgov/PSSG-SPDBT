@@ -91,7 +91,7 @@ namespace Spd.Engine.Validation
                 _context.LoadPropertyAsync(app, nameof(spd_application.spd_spd_application_incident));
                 var relatedCases = app.spd_spd_application_incident.ToList();
                 if (relatedCases.Any(c => c.statecode == DynamicsConstants.StateCode_Active ||
-                        (c.modifiedon > completedAppCutOffTime && (c.statuscode == (int)CaseStatusCode.Cancelled || c.statuscode == (int)CaseStatusCode.Completed))))
+                        (c.modifiedon > completedAppCutOffTime && (c.statuscode == (int)CaseStatusOptionSet.Cancelled || c.statuscode == (int)CaseStatusOptionSet.Completed))))
                     return true;
             }
             return false;

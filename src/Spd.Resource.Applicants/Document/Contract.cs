@@ -1,26 +1,27 @@
-using System.ComponentModel;
+using Spd.Resource.Applicants.Application;
 
-namespace Spd.Resource.Applicants.DocumentUrl
+namespace Spd.Resource.Applicants.Document
 {
-    public interface IDocumentUrlRepository
+    public interface IDocumentRepository
     {
-        public Task<DocumentUrlListResp> QueryAsync(DocumentUrlQry query, CancellationToken cancellationToken);
+        public Task<DocumentListResp> QueryAsync(DocumentQry query, CancellationToken cancellationToken);
+        public Task<DocumentResp> ManageAsync(DocumentCmd cmd, CancellationToken cancellationToken);
     }
 
-    public record DocumentUrlQry(
+    public record DocumentQry(
         Guid? ApplicationId = null,
         Guid? ApplicantId = null,
         Guid? ClearanceId = null,
         Guid? ReportId = null,
         DocumentTypeEnum? FileType = null);
-    public record DocumentUrlListResp
+    public record DocumentListResp
     {
-        public IEnumerable<DocumentUrlResp> Items { get; set; } = Array.Empty<DocumentUrlResp>();
+        public IEnumerable<DocumentResp> Items { get; set; } = Array.Empty<DocumentResp>();
     }
 
-    public record DocumentUrlResp
+    public record DocumentResp
     {
-        public string? FileName { get;set; }
+        public string? FileName { get; set; }
         public DocumentTypeEnum? DocumentType { get; set; } = null;
         public DateTimeOffset UploadedDateTime { get; set; }
         public Guid DocumentUrlId { get; set; }
@@ -29,15 +30,20 @@ namespace Spd.Resource.Applicants.DocumentUrl
         public Guid? ReportId { get; set; } = null;
     }
 
+    public abstract record DocumentCmd;
+
+    public record CreateDocumentCmd : DocumentCmd
+    {
+        public SpdTempFile TempFile { get; set; }
+        public Guid ApplicationId { get; set; }
+        public Guid? SubmittedByApplicantId { get; set; }
+        public DocumentTypeEnum DocumentType { get; set; }
+    }
+
     public enum DocumentTypeEnum
     {
-        [Description("Applicant Consent Form")]
         ApplicantConsentForm,
-
-        [Description("Applicant Information")]
         ApplicantInformation,
-
-        [Description("Armoured Car Guard")]
         ArmouredCarGuard,
         ArmouredVehiclePurpose,
         ArmouredVehicleRationale,
@@ -70,9 +76,8 @@ namespace Spd.Resource.Applicants.DocumentUrl
         SecurityAlarmInstaller,
         SecurityConsultant,
         SecurityGuard,
-
-        [Description("Statutory Declaration")]
         StatutoryDeclaration,
-        ValidationCertificate
+        ValidationCertificate,
+        OpportunityToRespond
     }
 }

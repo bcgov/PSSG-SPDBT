@@ -4,7 +4,8 @@ using Spd.Engine.Search;
 using Spd.Engine.Validation;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.ApplicationInvite;
-using Spd.Resource.Applicants.DocumentUrl;
+using Spd.Resource.Applicants.Document;
+using Spd.Resource.Applicants.Incident;
 using Spd.Resource.Organizations.Identity;
 using Spd.Resource.Organizations.Registration;
 using Spd.Utilities.FileStorage;
@@ -30,8 +31,8 @@ namespace Spd.Manager.Cases
         IRequestHandler<ClearanceLetterQuery, ClearanceLetterResponse>,
         IRequestHandler<ShareableClearanceQuery, ShareableClearanceResponse>,
         IRequestHandler<ApplicantApplicationListQuery, ApplicantApplicationListResponse>,
-        IRequestHandler<ApplicantApplicationQuery, ApplicantApplicationResponse>,
         IRequestHandler<ApplicantApplicationFileQuery, ApplicantApplicationFileListResponse>,
+        IRequestHandler<CreateApplicantAppFileCommand, ApplicantAppFileCreateResponse>,
         IApplicationManager
     {
         private readonly IApplicationRepository _applicationRepository;
@@ -40,8 +41,9 @@ namespace Spd.Manager.Cases
         private readonly ITempFileStorageService _tempFile;
         private readonly IDuplicateCheckEngine _duplicateCheckEngine;
         private readonly IIdentityRepository _identityRepository;
-        private readonly IDocumentUrlRepository _documentUrlRepository;
+        private readonly IDocumentRepository _documentUrlRepository;
         private readonly IFileStorageService _fileStorageService;
+        private readonly IIncidentRepository _incidentRepository;
         private readonly ISearchEngine _searchEngine;
 
         public ApplicationManager(IApplicationRepository applicationRepository,
@@ -51,8 +53,9 @@ namespace Spd.Manager.Cases
             IDuplicateCheckEngine duplicateCheckEngine,
             ISearchEngine searchEngine,
             IIdentityRepository identityRepository,
-            IDocumentUrlRepository documentUrlRepository,
-            IFileStorageService fileStorageService)
+            IDocumentRepository documentUrlRepository,
+            IFileStorageService fileStorageService,
+            IIncidentRepository incidentRepository)
         {
             _applicationRepository = applicationRepository;
             _applicationInviteRepository = applicationInviteRepository;
@@ -62,6 +65,7 @@ namespace Spd.Manager.Cases
             _identityRepository = identityRepository;
             _documentUrlRepository = documentUrlRepository;
             _fileStorageService = fileStorageService;
+            _incidentRepository = incidentRepository;
             _searchEngine = searchEngine;
         }
 
@@ -144,6 +148,13 @@ namespace Spd.Manager.Cases
             Guid? applicationId = await _applicationRepository.AddApplicationAsync(cmd, ct);
             if (applicationId.HasValue)
             {
+                await _documentUrlRepository.ManageAsync(new CreateDocumentCmd
+                {
+                    TempFile = spdTempFile,
+                    ApplicationId = (Guid)applicationId,
+                    DocumentType = DocumentTypeEnum.ApplicantConsentForm,
+                }, ct);
+
                 result.ApplicationId = applicationId.Value;
                 result.CreateSuccess = true;
             }
@@ -276,7 +287,7 @@ namespace Spd.Manager.Cases
 
         public async Task<ClearanceLetterResponse> Handle(ClearanceLetterQuery query, CancellationToken ct)
         {
-            DocumentUrlQry qry = new DocumentUrlQry(ClearanceId: query.ClearanceId);
+            DocumentQry qry = new DocumentQry(ClearanceId: query.ClearanceId);
             var docList = await _documentUrlRepository.QueryAsync(qry, ct);
             if (docList == null || !docList.Items.Any())
                 return new ClearanceLetterResponse();
@@ -311,9 +322,6 @@ namespace Spd.Manager.Cases
         #endregion
 
         #region applicant-applications
-
-
-
         public async Task<ApplicationCreateResponse> Handle(ApplicantApplicationCreateCommand command, CancellationToken ct)
         {
             var result = new ApplicationCreateResponse();
@@ -366,28 +374,60 @@ namespace Spd.Manager.Cases
             return _mapper.Map<ApplicantApplicationListResponse>(response);
         }
 
-        public async Task<ApplicantApplicationResponse> Handle(ApplicantApplicationQuery request, CancellationToken cancellationToken)
-        {
-            var query = new ApplicantApplicationQry();
-            query.ApplicantId = request.ApplicantId;
-            query.ApplicationId = request.ApplicationId;
-            var response = await _applicationRepository.QueryApplicantApplicationAsync(query, cancellationToken);
-            return _mapper.Map<ApplicantApplicationResponse>(response);
-        }
-
         public async Task<ApplicantApplicationFileListResponse> Handle(ApplicantApplicationFileQuery query, CancellationToken ct)
         {
             ApplicantIdentityQueryResult? contact = (ApplicantIdentityQueryResult?)await _identityRepository.Query(new ApplicantIdentityQuery(query.BcscId, IdentityProviderTypeCode.BcServicesCard), ct);
             if (contact == null)
                 throw new ArgumentException("No contact found");
 
-            DocumentUrlQry qry = new DocumentUrlQry(query.ApplicationId, contact.ContactId);
+            DocumentQry qry = new DocumentQry(query.ApplicationId, contact.ContactId);
             var docList = await _documentUrlRepository.QueryAsync(qry, ct);
 
             return new ApplicantApplicationFileListResponse
             {
                 Items = _mapper.Map<IEnumerable<ApplicantApplicationFileResponse>>(docList.Items)
             };
+        }
+
+        public async Task<ApplicantAppFileCreateResponse> Handle(CreateApplicantAppFileCommand command, CancellationToken ct)
+        {
+            ApplicantIdentityQueryResult? contact = (ApplicantIdentityQueryResult?)await _identityRepository.Query(new ApplicantIdentityQuery(command.BcscId, IdentityProviderTypeCode.BcServicesCard), ct);
+            if (contact == null)
+                throw new ArgumentException("No contact found");
+
+            //validate the application is in correct state.
+            var app = await _applicationRepository.QueryApplicationAsync(new ApplicationQry(command.ApplicationId), ct);
+            //todo: add checking case status match with file type.
+
+            //put file to cache
+            string fileKey = await _tempFile.HandleCommand(new SaveTempFileCommand(command.Request.File), ct);
+            SpdTempFile spdTempFile = new()
+            {
+                TempFileKey = fileKey,
+                ContentType = command.Request.File.ContentType,
+                FileName = command.Request.File.FileName,
+                FileSize = command.Request.File.Length,
+            };
+
+            //create bcgov_documenturl and file
+            var docUrlResp = await _documentUrlRepository.ManageAsync(new CreateDocumentCmd
+            {
+                TempFile = spdTempFile,
+                ApplicationId = command.ApplicationId,
+                DocumentType = Enum.Parse<DocumentTypeEnum>(command.Request.FileType.ToString()),
+                SubmittedByApplicantId = contact.ContactId
+            }, ct);
+
+            //update application status to InProgress, substatus to InReview
+            await _incidentRepository.ManageAsync(
+                new UpdateIncidentCmd
+                {
+                    ApplicationId = command.ApplicationId,
+                    CaseStatus = CaseStatusEnum.InProgress,
+                    CaseSubStatus = CaseSubStatusEnum.InReview
+                },
+                ct);
+            return _mapper.Map<ApplicantAppFileCreateResponse>(docUrlResp);
         }
         #endregion
     }

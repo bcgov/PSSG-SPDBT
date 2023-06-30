@@ -116,18 +116,6 @@ namespace Spd.Presentation.Screening.Controllers
             query.ApplicantId = applicantId;
             return await _mediator.Send(query);
         }
-
-        [Authorize(Policy = "OnlyBcsc")]
-        [Route("api/applicants/{applicantId}/applications/{applicationId}")]
-        [HttpGet]
-        public async Task<ApplicantApplicationResponse> ApplicantApplication([FromRoute] Guid applicantId, [FromRoute] Guid applicationId)
-        {
-            var query = new ApplicantApplicationQuery();
-            query.ApplicantId = applicantId;
-            query.ApplicationId = applicationId;
-            return await _mediator.Send(query);
-        }
-
         #endregion
 
         #region userinfo
@@ -182,6 +170,33 @@ namespace Spd.Presentation.Screening.Controllers
 
             return await _mediator.Send(new ApplicantApplicationFileQuery(applicationId, applicantInfo.Sub));
         }
+
+        /// <summary>
+        /// Upload applicant app files
+        /// </summary>
+        /// <param name="fileUploadRequest"></param>
+        /// <param name="applicationId"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/applicants/screenings/{applicationId}/files")]
+        [HttpPost]
+        public async Task<ApplicantAppFileCreateResponse> UploadApplicantAppFile([FromForm][Required] ApplicantAppFileUploadRequest fileUploadRequest, [FromRoute] Guid applicationId, CancellationToken ct)
+        {
+            var applicantInfo = _currentUser.GetApplicantIdentityInfo();
+
+            //validation file
+            string? fileexe = FileNameHelper.GetFileExtension(fileUploadRequest.File.FileName);
+            if (!SpdConstants.VALID_UPLOAD_FILE_EXE.Contains(fileexe, StringComparer.InvariantCultureIgnoreCase))
+            {
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"file type is not supported.");
+            }
+            long fileSize = fileUploadRequest.File.Length;
+            if (fileSize > SpdConstants.UPLOAD_FILE_MAX_SIZE)
+            {
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"max supported file size is {SpdConstants.UPLOAD_FILE_MAX_SIZE}.");
+            }
+            return await _mediator.Send(new CreateApplicantAppFileCommand(fileUploadRequest, applicantInfo.Sub, applicationId), ct);
+        }
         #endregion
     }
 }
@@ -216,5 +231,8 @@ public class ApplicantUserInfo
     public DateTimeOffset? BirthDate { get; set; }
     public bool? EmailVerified { get; set; }
 }
+
+
+
 
 

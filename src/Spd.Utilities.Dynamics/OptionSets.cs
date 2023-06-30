@@ -84,7 +84,7 @@ namespace Spd.Utilities.Dynamics
         Cancelled = 100000002
     }
 
-    public enum CaseStatusCode
+    public enum CaseStatusOptionSet
     {
         New = 1,
         InProgress = 2,
@@ -96,6 +96,40 @@ namespace Spd.Utilities.Dynamics
         InformationProvided = 1000,
         Cancelled = 6,
         Merged = 2000
+    }
+
+    public enum CaseSubStatusOptionSet
+    {
+        InReview = 100000029,
+        OpportunityToRespond = 100000028,
+        JUSTINCheck = 100000026,
+        CORNETCheck = 100000000,
+        CPICCheck = 100000001,
+        PRIMECheck = 100000002,
+        Fingerprints = 100000003,
+        StatutoryDeclaration = 100000004,
+        ApplicantInformation = 100000005,
+        AwaitingRCC = 100000006,
+        Incomplete = 100000007,
+        CategoryReview = 100000008,
+        NoRiskFound = 100000009,
+        RiskFound = 100000010,
+        AssessmentTriage = 100000011,
+        ReadyForInvestigation = 100000012,
+        UnderInvestigation = 100000013,
+        PeerReview = 100000014,
+        ManagerReview = 100000015,
+        DirectorReview = 100000016,
+        DeputyRegistrarReview = 100000017,
+        AwaitingInformation = 100000027,
+        RegistrarReview = 100000018,
+        Reconsideration = 100000019,
+        JudicialReview = 100000020,
+        NoResponse = 100000021,
+        NoConsent = 100000022,
+        OrganizationInitiated = 100000023,
+        ApplicantInitiated = 100000024,
+        PendingApplicantClearances = 100000025
     }
 
     public enum AliasTypeOptionSet

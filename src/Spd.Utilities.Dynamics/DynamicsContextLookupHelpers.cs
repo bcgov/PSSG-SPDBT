@@ -85,7 +85,7 @@ namespace Spd.Utilities.Dynamics
         public static readonly ImmutableDictionary<string, Guid> BcGovTagDictionary = new Dictionary<string, Guid>()
         {
             {"ApplicantConsentForm", Guid.Parse("b9bc7549-0cea-ed11-b840-005056830319")},
-            {"AppInformation", Guid.Parse("bdbc7549-0cea-ed11-b840-005056830319")},
+            {"ApplicantInformation", Guid.Parse("bdbc7549-0cea-ed11-b840-005056830319")},
             {"ArmouredCarGuard", Guid.Parse("e7bc7549-0cea-ed11-b840-005056830319")},
             {"ArmouredVehiclePurpose", Guid.Parse("ddbc7549-0cea-ed11-b840-005056830319")},
             {"ArmouredVehicleRationale", Guid.Parse("dfbc7549-0cea-ed11-b840-005056830319")},
@@ -120,6 +120,7 @@ namespace Spd.Utilities.Dynamics
             {"SecurityGuard", Guid.Parse("efbc7549-0cea-ed11-b840-005056830319")},
             {"StatutoryDeclaration", Guid.Parse("bbbc7549-0cea-ed11-b840-005056830319")},
             {"ValidationCertificate", Guid.Parse("f5bc7549-0cea-ed11-b840-005056830319")},
+            {"OpportunityToRespond", Guid.Parse("385edd8c-fd16-ee11-b844-00505683fbf4")},
         }.ToImmutableDictionary();
 
         public static bcgov_tag? LookupTag(this DynamicsContext context, string key)
@@ -173,6 +174,11 @@ namespace Spd.Utilities.Dynamics
 
         public static async Task<spd_clearance?> GetClearanceById(this DynamicsContext context, Guid clearanceId, CancellationToken ct)
            => await context.spd_clearances.Where(a => a.spd_clearanceid == clearanceId)
+            .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
+            .SingleOrDefaultAsync(ct);
+
+        public static async Task<contact?> GetContactById(this DynamicsContext context, Guid contactId, CancellationToken ct)
+           => await context.contacts.Where(a => a.contactid == contactId)
             .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
             .SingleOrDefaultAsync(ct);
     }
