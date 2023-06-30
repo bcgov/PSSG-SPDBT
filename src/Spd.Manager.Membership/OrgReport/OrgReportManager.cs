@@ -1,7 +1,6 @@
 using AutoMapper;
 using MediatR;
-using Spd.Resource.Applicants.DocumentUrl;
-using Spd.Resource.Organizations.Org;
+using Spd.Resource.Applicants.Document;
 using Spd.Resource.Organizations.Report;
 using Spd.Utilities.FileStorage;
 
@@ -14,14 +13,14 @@ namespace Spd.Manager.Membership.Report
     {
         private readonly IOrgReportRepository _reportRepository;
         private readonly IMapper _mapper;
-        private readonly IDocumentUrlRepository _documentUrlRepository;
+        private readonly IDocumentRepository _documentRepository;
         private readonly IFileStorageService _fileStorageService;
 
-        public OrgReportManager(IOrgReportRepository reportRepository, IMapper mapper, IDocumentUrlRepository documentUrlRepository, IFileStorageService fileStorageService)
+        public OrgReportManager(IOrgReportRepository reportRepository, IMapper mapper, IDocumentRepository documentRepository, IFileStorageService fileStorageService)
         {
             _reportRepository = reportRepository;
             _mapper = mapper;
-            _documentUrlRepository = documentUrlRepository;
+            _documentRepository = documentRepository;
             _fileStorageService = fileStorageService;
         }
 
@@ -38,8 +37,8 @@ namespace Spd.Manager.Membership.Report
 
         public async Task<ReportFileResponse> Handle(ReportFileQuery query, CancellationToken ct)
         {
-            DocumentUrlQry qry = new DocumentUrlQry(ReportId: query.ReportId);
-            var docList = await _documentUrlRepository.QueryAsync(qry, ct);
+            DocumentQry qry = new DocumentQry(ReportId: query.ReportId);
+            var docList = await _documentRepository.QueryAsync(qry, ct);
             if (docList == null || !docList.Items.Any())
                 return new ReportFileResponse();
 

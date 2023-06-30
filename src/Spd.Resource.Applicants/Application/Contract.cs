@@ -17,7 +17,7 @@ public interface IApplicationRepository
     public Task<ShareableClearanceListResp> QueryAsync(ShareableClearanceQry ShareableClearanceQry, CancellationToken ct);
     public Task DeleteClearanceAccessAsync(ClearanceAccessDeleteCmd clearanceAccessDeleteCmd, CancellationToken cancellationToken);
     public Task<ApplicantApplicationListResp> QueryApplicantApplicationListAsync(ApplicantApplicationListQry query, CancellationToken cancellationToken);
-    public Task<ApplicationResult> QueryApplicantApplicationAsync(ApplicantApplicationQry query, CancellationToken cancellationToken);
+    public Task<ApplicationResult> QueryApplicationAsync(ApplicationQry query, CancellationToken cancellationToken);
 }
 
 #region application
@@ -135,11 +135,7 @@ public record ApplicantApplicationListQry
     public Guid ApplicantId { get; set; }
 };
 
-public record ApplicantApplicationQry
-{
-    public Guid ApplicantId { get; set; }
-    public Guid ApplicationId { get; set; }
-};
+public record ApplicationQry(Guid ApplicationId);
 
 public enum ApplicationOriginTypeCode
 {

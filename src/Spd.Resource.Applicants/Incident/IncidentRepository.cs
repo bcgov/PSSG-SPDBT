@@ -1,0 +1,45 @@
+using AutoMapper;
+using Spd.Utilities.Dynamics;
+
+namespace Spd.Resource.Applicants.Incident;
+internal class IncidentRepository : IIncidentRepository
+{
+    private readonly DynamicsContext _context;
+    private readonly IMapper _mapper;
+
+    public IncidentRepository(IDynamicsContextFactory ctx,
+        IMapper mapper)
+    {
+        _context = ctx.Create();
+        _mapper = mapper;
+    }
+
+    public async Task<IncidentResp> ManageAsync(IncidentCmd cmd, CancellationToken ct)
+    {
+        return cmd switch
+        {
+            UpdateIncidentCmd c => await UpdateIncidentAsync(c, ct),
+            _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
+        };
+    }
+
+    private async Task<IncidentResp> UpdateIncidentAsync(UpdateIncidentCmd cmd, CancellationToken ct)
+    {
+        var incident = await _context.incidents
+            .Where(i => i._spd_applicationid_value == cmd.ApplicationId)
+            .OrderByDescending(i => i.createdon)
+            .FirstOrDefaultAsync(ct);
+
+        if (incident == null) { return null; }
+
+        incident.statuscode = (int)Enum.Parse<CaseStatusOptionSet>(cmd.CaseStatus.ToString());
+        incident.spd_substatusreasondetail = (int)Enum.Parse<CaseSubStatusOptionSet>(cmd.CaseSubStatus.ToString());
+        _context.UpdateObject(incident);
+        _context.SaveChanges();
+        return _mapper.Map<IncidentResp>(incident);
+    }
+
+
+}
+
+
