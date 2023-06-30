@@ -18,14 +18,25 @@ internal class IncidentRepository : IIncidentRepository
     {
         return cmd switch
         {
-            CreateIncidentCmd c => await IncidentCreateAsync(c, ct),
+            UpdateIncidentCmd c => await UpdateIncidentAsync(c, ct),
             _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
         };
     }
 
-    private async Task<IncidentResp> IncidentCreateAsync(CreateIncidentCmd cmd, CancellationToken ct)
+    private async Task<IncidentResp> UpdateIncidentAsync(UpdateIncidentCmd cmd, CancellationToken ct)
     {
-        return null;
+        var incident = await _context.incidents
+            .Where(i => i._spd_applicationid_value == cmd.ApplicationId)
+            .OrderByDescending(i => i.createdon)
+            .FirstOrDefaultAsync(ct);
+
+        if (incident == null) { return null; }
+
+        incident.statuscode = (int)Enum.Parse<CaseStatusOptionSet>(cmd.CaseStatus.ToString());
+        incident.spd_substatusreasondetail = (int)Enum.Parse<CaseSubStatusOptionSet>(cmd.CaseSubStatus.ToString());
+        _context.UpdateObject(incident);
+        _context.SaveChanges();
+        return _mapper.Map<IncidentResp>(incident);
     }
 
 

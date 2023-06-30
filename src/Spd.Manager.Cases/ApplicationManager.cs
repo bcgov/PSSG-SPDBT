@@ -5,6 +5,7 @@ using Spd.Engine.Validation;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.ApplicationInvite;
 using Spd.Resource.Applicants.Document;
+using Spd.Resource.Applicants.Incident;
 using Spd.Resource.Organizations.Identity;
 using Spd.Resource.Organizations.Registration;
 using Spd.Utilities.FileStorage;
@@ -42,6 +43,7 @@ namespace Spd.Manager.Cases
         private readonly IIdentityRepository _identityRepository;
         private readonly IDocumentRepository _documentUrlRepository;
         private readonly IFileStorageService _fileStorageService;
+        private readonly IIncidentRepository _incidentRepository;
         private readonly ISearchEngine _searchEngine;
 
         public ApplicationManager(IApplicationRepository applicationRepository,
@@ -52,7 +54,8 @@ namespace Spd.Manager.Cases
             ISearchEngine searchEngine,
             IIdentityRepository identityRepository,
             IDocumentRepository documentUrlRepository,
-            IFileStorageService fileStorageService)
+            IFileStorageService fileStorageService,
+            IIncidentRepository incidentRepository)
         {
             _applicationRepository = applicationRepository;
             _applicationInviteRepository = applicationInviteRepository;
@@ -62,6 +65,7 @@ namespace Spd.Manager.Cases
             _identityRepository = identityRepository;
             _documentUrlRepository = documentUrlRepository;
             _fileStorageService = fileStorageService;
+            _incidentRepository = incidentRepository;
             _searchEngine = searchEngine;
         }
 
@@ -395,7 +399,7 @@ namespace Spd.Manager.Cases
             var app = await _applicationRepository.QueryApplicationAsync(new ApplicationQry(command.ApplicationId), ct);
             //todo: add checking case status match with file type.
 
-                //put file to cache
+            //put file to cache
             string fileKey = await _tempFile.HandleCommand(new SaveTempFileCommand(command.Request.File), ct);
             SpdTempFile spdTempFile = new()
             {
@@ -404,7 +408,8 @@ namespace Spd.Manager.Cases
                 FileName = command.Request.File.FileName,
                 FileSize = command.Request.File.Length,
             };
-            //create bcgov_documenturl
+
+            //create bcgov_documenturl and file
             var docUrlResp = await _documentUrlRepository.ManageAsync(new CreateDocumentCmd
             {
                 TempFile = spdTempFile,
@@ -414,6 +419,14 @@ namespace Spd.Manager.Cases
             }, ct);
 
             //update application status to InProgress, substatus to InReview
+            await _incidentRepository.ManageAsync(
+                new UpdateIncidentCmd
+                {
+                    ApplicationId = command.ApplicationId,
+                    CaseStatus = CaseStatusEnum.InProgress,
+                    CaseSubStatus = CaseSubStatusEnum.InReview
+                },
+                ct);
             return _mapper.Map<ApplicantAppFileCreateResponse>(docUrlResp);
         }
         #endregion
