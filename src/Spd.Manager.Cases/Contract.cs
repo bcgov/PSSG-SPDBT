@@ -23,9 +23,9 @@ namespace Spd.Manager.Cases
         public Task<Unit> Handle(ClearanceAccessDeleteCommand request, CancellationToken ct);
         public Task<ClearanceLetterResponse> Handle(ClearanceLetterQuery query, CancellationToken ct);
         public Task<ApplicantApplicationListResponse> Handle(ApplicantApplicationListQuery request, CancellationToken ct);
-        public Task<ApplicantApplicationResponse> Handle(ApplicantApplicationQuery request, CancellationToken ct);
         public Task<ShareableClearanceResponse> Handle(ShareableClearanceQuery request, CancellationToken ct);
         public Task<ApplicantApplicationFileListResponse> Handle(ApplicantApplicationFileQuery query, CancellationToken ct);
+        public Task<ApplicantAppFileCreateResponse> Handle(CreateApplicantAppFileCommand query, CancellationToken ct);
     }
 
     #region application invites
@@ -679,12 +679,6 @@ namespace Spd.Manager.Cases
         public Guid ApplicantId { get; set; }
     };
 
-    public record ApplicantApplicationQuery : IRequest<ApplicantApplicationResponse>
-    {
-        public Guid ApplicantId { get; set; }
-        public Guid ApplicationId { get; set; }
-    };
-
     public class ApplicantApplicationListResponse
     {
         public IEnumerable<ApplicantApplicationResponse> Applications { get; set; } = Array.Empty<ApplicantApplicationResponse>();
@@ -706,6 +700,15 @@ namespace Spd.Manager.Cases
         public FileTypeCode? FileTypeCode { get; set; } = null;
         public DateTimeOffset UploadedDateTime { get; set; }
     }
+
+    public record CreateApplicantAppFileCommand(ApplicantAppFileUploadRequest Request, string BcscId, Guid ApplicationId) : IRequest<ApplicantAppFileCreateResponse>;
+    public record ApplicantAppFileUploadRequest(IFormFile File, FileTypeCode FileType = FileTypeCode.StatutoryDeclaration);
+    public record ApplicantAppFileCreateResponse
+    {
+        public Guid DocumentUrlId { get; set; }
+        public DateTimeOffset UploadedDateTime { get; set; }
+        public Guid? ApplicationId { get; set; } = null;
+    };
 
     public enum FileTypeCode
     {
@@ -744,7 +747,8 @@ namespace Spd.Manager.Cases
         SecurityConsultant,
         SecurityGuard,
         StatutoryDeclaration,
-        ValidationCertificate
+        ValidationCertificate,
+        OpportunityToRespond
     }
     #endregion
 }

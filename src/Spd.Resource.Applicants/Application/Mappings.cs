@@ -68,14 +68,6 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.address1_stateorprovince, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.Province)))
             .ForMember(d => d.address1_country, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.Country)));
 
-            _ = CreateMap<SpdTempFile, bcgov_documenturl>()
-            .ForMember(d => d.bcgov_documenturlid, opt => opt.MapFrom(s => Guid.NewGuid()))
-            .ForMember(d => d.bcgov_filename, opt => opt.MapFrom(s => s.FileName))
-            .ForMember(d => d.bcgov_filesize, opt => opt.MapFrom(s => $"{Math.Round((decimal)s.FileSize / 1024, 2)} KB"))
-            .ForMember(d => d.bcgov_origincode, opt => opt.MapFrom(s => BcGovOriginCode.Web))
-            .ForMember(d => d.bcgov_receiveddate, opt => opt.MapFrom(s => DateTimeOffset.UtcNow))
-            .ForMember(d => d.bcgov_fileextension, opt => opt.MapFrom(s => GetFileExtension(s.FileName)));
-
             _ = CreateMap<spd_application, ApplicationResult>()
             .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_applicationid))
             .ForMember(d => d.OrgId, opt => opt.MapFrom(s => s._spd_organizationid_value))
@@ -132,16 +124,6 @@ namespace Spd.Resource.Applicants.Application
         {
             if (code == null) return (int)GenderOptionSet.U;
             return (int)Enum.Parse<GenderOptionSet>(code.ToString());
-        }
-
-        private string? GetFileExtension(string fileName)
-        {
-            int dot = fileName.LastIndexOf('.');
-            if (dot > 0)
-            {
-                return fileName.Substring(dot, fileName.Length - dot);
-            }
-            return null;
         }
 
         private static ServiceTypeEnum? GetServiceType(Guid? serviceTypeGuid)
