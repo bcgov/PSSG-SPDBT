@@ -1,7 +1,12 @@
 import { Component } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ApplicantApplicationResponse, ApplicationPortalStatusCode } from 'src/app/api/models';
+import {
+	ApplicantApplicationFileListResponse,
+	ApplicantApplicationFileResponse,
+	ApplicantApplicationResponse,
+	ApplicationPortalStatusCode,
+} from 'src/app/api/models';
 import { ApplicantService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
@@ -138,35 +143,33 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 
 			<div class="row">
 				<div class="col-12">
-					<mat-table [dataSource]="dataSource">
-						<ng-container matColumnDef="documentName">
+					<mat-table [dataSource]="dataSourceHistory">
+						<ng-container matColumnDef="fileName">
 							<mat-header-cell *matHeaderCellDef>Document Name</mat-header-cell>
 							<mat-cell *matCellDef="let document">
 								<span class="mobile-label">Document Name:</span>
-								{{ document.documentName }}
+								{{ document.fileName }}
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="uploadedOn">
+						<ng-container matColumnDef="fileTypeCode">
+							<mat-header-cell *matHeaderCellDef>File Type</mat-header-cell>
+							<mat-cell *matCellDef="let document">
+								<span class="mobile-label">File Type:</span>
+								{{ document.fileTypeCode }}
+							</mat-cell>
+						</ng-container>
+
+						<ng-container matColumnDef="uploadedDateTime">
 							<mat-header-cell *matHeaderCellDef>Uploaded On</mat-header-cell>
 							<mat-cell *matCellDef="let document">
 								<span class="mobile-label">Uploaded On:</span>
-								{{ document.uploadedOn | date : constants.date.dateFormat : 'UTC' }}
+								{{ document.uploadedDateTime | date : constants.date.dateFormat : 'UTC' }}
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="action">
-							<mat-header-cell *matHeaderCellDef></mat-header-cell>
-							<mat-cell *matCellDef="let document">
-								<span class="mobile-label"></span>
-								<a mat-flat-button class="m-2" aria-label="Remove Document">
-									<mat-icon>delete_outline</mat-icon>Remove document
-								</a>
-							</mat-cell>
-						</ng-container>
-
-						<mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
-						<mat-row *matRowDef="let row; columns: columns"></mat-row>
+						<mat-header-row *matHeaderRowDef="columnsHistory; sticky: true"></mat-header-row>
+						<mat-row *matRowDef="let row; columns: columnsHistory"></mat-row>
 					</mat-table>
 				</div>
 			</div>
@@ -193,8 +196,10 @@ export class CrcDetailComponent {
 	dataSourceAppl: MatTableDataSource<ApplicantApplicationResponse> =
 		new MatTableDataSource<ApplicantApplicationResponse>([]);
 	columnsAppl: string[] = ['applicationNumber', 'createdOn', 'payeeType'];
-	dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
-	columns: string[] = ['documentName', 'uploadedOn', 'action'];
+
+	dataSourceHistory: MatTableDataSource<ApplicantApplicationFileResponse> =
+		new MatTableDataSource<ApplicantApplicationFileResponse>([]);
+	columnsHistory: string[] = ['fileName', 'fileTypeCode', 'uploadedDateTime'];
 
 	opportunityToRespondAlert: string | null = null;
 	requestForAdditionalInfoAlert: string | null = null;
@@ -262,17 +267,13 @@ export class CrcDetailComponent {
 				this.dataSourceAppl.data = [res];
 			});
 
-		this.dataSource = new MatTableDataSource<ApplicantApplicationResponse>([]);
-		this.dataSource.data = [
-			{
-				documentName: 'file.pdf',
-				uploadedOn: '2023-01-14T00:13:05.865Z',
-			},
-			{
-				documentName: 'example.doc',
-				uploadedOn: '2023-02-04T00:10:05.865Z',
-			},
-		];
+		this.dataSourceHistory = new MatTableDataSource<ApplicantApplicationFileResponse>([]);
+		this.applicantService
+			.apiApplicantsScreeningsApplicationIdFilesGet({ applicationId })
+			.pipe()
+			.subscribe((res: ApplicantApplicationFileListResponse) => {
+				this.dataSourceHistory.data = res.items ?? [];
+			});
 	}
 
 	private getOpportunityToRespondText(): string | null {
