@@ -28,7 +28,7 @@ namespace Spd.Manager.Cases
         IRequestHandler<BulkUploadCreateCommand, BulkUploadCreateResponse>,
         IRequestHandler<ClearanceListQuery, ClearanceListResponse>,
         IRequestHandler<ClearanceAccessDeleteCommand, Unit>,
-        IRequestHandler<ClearanceLetterQuery, ClearanceLetterResponse>,
+        IRequestHandler<ClearanceLetterQuery, FileResponse>,
         IRequestHandler<ShareableClearanceQuery, ShareableClearanceResponse>,
         IRequestHandler<ApplicantApplicationListQuery, ApplicantApplicationListResponse>,
         IRequestHandler<ApplicantApplicationFileQuery, ApplicantApplicationFileListResponse>,
@@ -285,18 +285,18 @@ namespace Spd.Manager.Cases
             return default;
         }
 
-        public async Task<ClearanceLetterResponse> Handle(ClearanceLetterQuery query, CancellationToken ct)
+        public async Task<FileResponse> Handle(ClearanceLetterQuery query, CancellationToken ct)
         {
             DocumentQry qry = new DocumentQry(ClearanceId: query.ClearanceId);
             var docList = await _documentUrlRepository.QueryAsync(qry, ct);
             if (docList == null || !docList.Items.Any())
-                return new ClearanceLetterResponse();
+                return new FileResponse();
 
             var docUrl = docList.Items.OrderByDescending(f => f.UploadedDateTime).FirstOrDefault();
             FileQueryResult fileResult = (FileQueryResult)await _fileStorageService.HandleQuery(
                 new FileQuery { Key = docUrl.DocumentUrlId.ToString(), Folder = $"spd_clearance/{docUrl.ClearanceId}" },
                 ct);
-            return new ClearanceLetterResponse
+            return new FileResponse
             {
                 Content = fileResult.File.Content,
                 ContentType = fileResult.File.ContentType,
@@ -429,6 +429,14 @@ namespace Spd.Manager.Cases
                 ct);
             return _mapper.Map<ApplicantAppFileCreateResponse>(docUrlResp);
         }
+
+        public async Task<FileResponse> Handle(FileTemplateQuery query, CancellationToken ct)
+        {
+            //waiting for dynamics decision
+            return null;
+        }
         #endregion
+
+
     }
 }

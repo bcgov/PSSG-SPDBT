@@ -21,11 +21,12 @@ namespace Spd.Manager.Cases
         public Task<BulkUploadCreateResponse> Handle(BulkUploadCreateCommand cmd, CancellationToken ct);
         public Task<ClearanceListResponse> Handle(ClearanceListQuery request, CancellationToken ct);
         public Task<Unit> Handle(ClearanceAccessDeleteCommand request, CancellationToken ct);
-        public Task<ClearanceLetterResponse> Handle(ClearanceLetterQuery query, CancellationToken ct);
+        public Task<FileResponse> Handle(ClearanceLetterQuery query, CancellationToken ct);
         public Task<ApplicantApplicationListResponse> Handle(ApplicantApplicationListQuery request, CancellationToken ct);
         public Task<ShareableClearanceResponse> Handle(ShareableClearanceQuery request, CancellationToken ct);
         public Task<ApplicantApplicationFileListResponse> Handle(ApplicantApplicationFileQuery query, CancellationToken ct);
         public Task<ApplicantAppFileCreateResponse> Handle(CreateApplicantAppFileCommand query, CancellationToken ct);
+        public Task<FileResponse> Handle(FileTemplateQuery query, CancellationToken ct);
     }
 
     #region application invites
@@ -391,9 +392,9 @@ namespace Spd.Manager.Cases
         public Guid ClearanceId { get; set; }
     }
 
-    public record ClearanceLetterQuery(Guid ClearanceId) : IRequest<ClearanceLetterResponse>;
+    public record ClearanceLetterQuery(Guid ClearanceId) : IRequest<FileResponse>;
 
-    public record ClearanceLetterResponse
+    public record FileResponse
     {
         public string ContentType { get; set; } = null!;
         public byte[] Content { get; set; } = Array.Empty<byte>();
@@ -707,6 +708,8 @@ namespace Spd.Manager.Cases
         public Guid? ApplicationId { get; set; } = null;
     };
 
+    public record FileTemplateQuery(FileTemplateTypeCode FileTemplateType) : IRequest<FileResponse>;
+
     public enum FileTypeCode
     {
         ApplicantConsentForm,
@@ -746,6 +749,12 @@ namespace Spd.Manager.Cases
         StatutoryDeclaration,
         ValidationCertificate,
         OpportunityToRespond
+    }
+
+    public enum FileTemplateTypeCode
+    {
+        FingerPrintPkg,
+        StatutoryDeclaration
     }
     #endregion
 }
