@@ -116,18 +116,6 @@ namespace Spd.Presentation.Screening.Controllers
             query.ApplicantId = applicantId;
             return await _mediator.Send(query);
         }
-
-        [Authorize(Policy = "OnlyBcsc")]
-        [Route("api/applicants/{applicantId}/applications/{applicationId}")]
-        [HttpGet]
-        public async Task<ApplicantApplicationResponse> ApplicantApplication([FromRoute] Guid applicantId, [FromRoute] Guid applicationId)
-        {
-            var query = new ApplicantApplicationQuery();
-            query.ApplicantId = applicantId;
-            query.ApplicationId = applicationId;
-            return await _mediator.Send(query);
-        }
-
         #endregion
 
         #region userinfo

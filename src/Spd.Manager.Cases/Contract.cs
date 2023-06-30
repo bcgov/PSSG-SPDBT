@@ -23,7 +23,6 @@ namespace Spd.Manager.Cases
         public Task<Unit> Handle(ClearanceAccessDeleteCommand request, CancellationToken ct);
         public Task<ClearanceLetterResponse> Handle(ClearanceLetterQuery query, CancellationToken ct);
         public Task<ApplicantApplicationListResponse> Handle(ApplicantApplicationListQuery request, CancellationToken ct);
-        public Task<ApplicantApplicationResponse> Handle(ApplicantApplicationQuery request, CancellationToken ct);
         public Task<ShareableClearanceResponse> Handle(ShareableClearanceQuery request, CancellationToken ct);
         public Task<ApplicantApplicationFileListResponse> Handle(ApplicantApplicationFileQuery query, CancellationToken ct);
         public Task<ApplicantAppFileCreateResponse> Handle(CreateApplicantAppFileCommand query, CancellationToken ct);
@@ -680,12 +679,6 @@ namespace Spd.Manager.Cases
         public Guid ApplicantId { get; set; }
     };
 
-    public record ApplicantApplicationQuery : IRequest<ApplicantApplicationResponse>
-    {
-        public Guid ApplicantId { get; set; }
-        public Guid ApplicationId { get; set; }
-    };
-
     public class ApplicantApplicationListResponse
     {
         public IEnumerable<ApplicantApplicationResponse> Applications { get; set; } = Array.Empty<ApplicantApplicationResponse>();
@@ -754,7 +747,8 @@ namespace Spd.Manager.Cases
         SecurityConsultant,
         SecurityGuard,
         StatutoryDeclaration,
-        ValidationCertificate
+        ValidationCertificate,
+        OpportunityToRespond
     }
     #endregion
 }

@@ -117,11 +117,11 @@ internal partial class ApplicationRepository : IApplicationRepository
         return response;
     }
 
-    public async Task<ApplicationResult> QueryApplicantApplicationAsync(ApplicantApplicationQry query, CancellationToken cancellationToken)
+    public async Task<ApplicationResult> QueryApplicationAsync(ApplicationQry query, CancellationToken cancellationToken)
     {
         var application = _context.spd_applications
             .Expand(i => i.spd_OrganizationId)
-            .Where(r => r.spd_applicationid == query.ApplicationId && r._spd_applicantid_value == query.ApplicantId)
+            .Where(r => r.spd_applicationid == query.ApplicationId)
             .FirstOrDefault();
         return _mapper.Map<ApplicationResult>(application);
     }

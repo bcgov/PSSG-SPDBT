@@ -30,7 +30,6 @@ namespace Spd.Manager.Cases
         IRequestHandler<ClearanceLetterQuery, ClearanceLetterResponse>,
         IRequestHandler<ShareableClearanceQuery, ShareableClearanceResponse>,
         IRequestHandler<ApplicantApplicationListQuery, ApplicantApplicationListResponse>,
-        IRequestHandler<ApplicantApplicationQuery, ApplicantApplicationResponse>,
         IRequestHandler<ApplicantApplicationFileQuery, ApplicantApplicationFileListResponse>,
         IRequestHandler<CreateApplicantAppFileCommand, ApplicantAppFileCreateResponse>,
         IApplicationManager
@@ -371,15 +370,6 @@ namespace Spd.Manager.Cases
             return _mapper.Map<ApplicantApplicationListResponse>(response);
         }
 
-        public async Task<ApplicantApplicationResponse> Handle(ApplicantApplicationQuery request, CancellationToken cancellationToken)
-        {
-            var query = new ApplicantApplicationQry();
-            query.ApplicantId = request.ApplicantId;
-            query.ApplicationId = request.ApplicationId;
-            var response = await _applicationRepository.QueryApplicantApplicationAsync(query, cancellationToken);
-            return _mapper.Map<ApplicantApplicationResponse>(response);
-        }
-
         public async Task<ApplicantApplicationFileListResponse> Handle(ApplicantApplicationFileQuery query, CancellationToken ct)
         {
             ApplicantIdentityQueryResult? contact = (ApplicantIdentityQueryResult?)await _identityRepository.Query(new ApplicantIdentityQuery(query.BcscId, IdentityProviderTypeCode.BcServicesCard), ct);
@@ -402,8 +392,10 @@ namespace Spd.Manager.Cases
                 throw new ArgumentException("No contact found");
 
             //validate the application is in correct state.
+            var app = await _applicationRepository.QueryApplicationAsync(new ApplicationQry(command.ApplicationId), ct);
+            //todo: add checking case status match with file type.
 
-            //create bcgov_documenturl
+                //put file to cache
             string fileKey = await _tempFile.HandleCommand(new SaveTempFileCommand(command.Request.File), ct);
             SpdTempFile spdTempFile = new()
             {
@@ -412,6 +404,7 @@ namespace Spd.Manager.Cases
                 FileName = command.Request.File.FileName,
                 FileSize = command.Request.File.Length,
             };
+            //create bcgov_documenturl
             var docUrlResp = await _documentUrlRepository.ManageAsync(new CreateDocumentCmd
             {
                 TempFile = spdTempFile,

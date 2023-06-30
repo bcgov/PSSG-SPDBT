@@ -1,5 +1,4 @@
 using Spd.Resource.Applicants.Application;
-using System.ComponentModel;
 
 namespace Spd.Resource.Applicants.Document
 {
@@ -22,7 +21,7 @@ namespace Spd.Resource.Applicants.Document
 
     public record DocumentResp
     {
-        public string? FileName { get;set; }
+        public string? FileName { get; set; }
         public DocumentTypeEnum? DocumentType { get; set; } = null;
         public DateTimeOffset UploadedDateTime { get; set; }
         public Guid DocumentUrlId { get; set; }
@@ -33,7 +32,7 @@ namespace Spd.Resource.Applicants.Document
 
     public abstract record DocumentCmd;
 
-    public record CreateDocumentCmd: DocumentCmd
+    public record CreateDocumentCmd : DocumentCmd
     {
         public SpdTempFile TempFile { get; set; }
         public Guid ApplicationId { get; set; }
@@ -43,16 +42,9 @@ namespace Spd.Resource.Applicants.Document
 
     public enum DocumentTypeEnum
     {
-        [Description("Applicant Consent Form")]
         ApplicantConsentForm,
-
-        [Description("Applicant Information")]
         ApplicantInformation,
-
-        [Description("Armoured Car Guard")]
         ArmouredCarGuard,
-
-        [Description("Armoured Vehicle Purpose")]
         ArmouredVehiclePurpose,
         ArmouredVehicleRationale,
         BCCompaniesRegistrationVerification,
@@ -84,9 +76,8 @@ namespace Spd.Resource.Applicants.Document
         SecurityAlarmInstaller,
         SecurityConsultant,
         SecurityGuard,
-
-        [Description("Statutory Declaration")]
         StatutoryDeclaration,
-        ValidationCertificate
+        ValidationCertificate,
+        OpportunityToRespond
     }
 }

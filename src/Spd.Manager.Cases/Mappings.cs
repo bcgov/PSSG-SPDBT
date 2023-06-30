@@ -65,7 +65,6 @@ namespace Spd.Manager.Cases
             CreateMap<ApplicantApplicationListResp, ApplicantApplicationListResponse>();
             CreateMap<DocumentResp, ApplicantApplicationFileResponse>()
                 .ForMember(d => d.FileTypeCode, opt => opt.MapFrom(s => s.DocumentType));
-            CreateMap<ApplicantApplicationQuery, ApplicantApplicationQry>();
             CreateMap<DocumentResp, ApplicantAppFileCreateResponse>();
             CreateMap<ApplicationResult, ApplicantApplicationResponse>()
                 .ForMember(d => d.Status, opt => opt.MapFrom(s => s.ApplicationPortalStatus == null ? null : Enum.Parse<ApplicationPortalStatusCode>(s.ApplicationPortalStatus).ToString()));

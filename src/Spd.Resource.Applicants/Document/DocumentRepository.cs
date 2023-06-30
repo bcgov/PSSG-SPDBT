@@ -3,7 +3,6 @@ using Microsoft.Dynamics.CRM;
 using Spd.Resource.Applicants.Application;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.FileStorage;
-using Spd.Utilities.Shared.Tools;
 using Spd.Utilities.TempFileStorage;
 
 namespace Spd.Resource.Applicants.Document;
@@ -78,13 +77,13 @@ internal class DocumentRepository : IDocumentRepository
             _context.SetLink(documenturl, nameof(documenturl.spd_SubmittedById), contact);
         }
 
-        await UploadFileAsync(cmd.TempFile, application.spd_applicationid, documenturl.bcgov_documenturlid, cmd.DocumentType, ct);
+        await UploadFileAsync(cmd.TempFile, application.spd_applicationid, documenturl.bcgov_documenturlid, tag, ct);
         await _context.SaveChangesAsync(ct);
         documenturl._spd_applicationid_value = application.spd_applicationid;
         return _mapper.Map<DocumentResp>(documenturl);
     }
 
-    private async Task UploadFileAsync(SpdTempFile tempFile, Guid? applicationId, Guid? docUrlId, DocumentTypeEnum documentType, CancellationToken ct)
+    private async Task UploadFileAsync(SpdTempFile tempFile, Guid? applicationId, Guid? docUrlId, bcgov_tag? tag, CancellationToken ct)
     {
         if (applicationId == null) return;
         if (docUrlId == null) return;
@@ -98,14 +97,17 @@ internal class DocumentRepository : IDocumentRepository
             ContentType = tempFile.ContentType,
             FileName = tempFile.FileName,
         };
-        FileTag fileTag = new FileTag()
-        {
-            Tags = new List<Tag>
+        FileTag fileTag = tag == null ?
+            new FileTag() { Tags = new List<Tag> { new Tag("file-classification", "Unclassified") } } :
+            new FileTag()
             {
-                new Tag("file-classification", "Unclassified"),
-                new Tag("file-tag", documentType.GetDescription())
-            }
-        };
+                Tags = new List<Tag>
+                {
+                    new Tag("file-classification", "Unclassified"),
+                    new Tag("file-tag", tag.bcgov_name)
+                }
+            };
+
         await _fileStorageService.HandleCommand(new UploadFileCommand(
                     Key: ((Guid)docUrlId).ToString(),
                     Folder: $"spd_application/{applicationId}",
