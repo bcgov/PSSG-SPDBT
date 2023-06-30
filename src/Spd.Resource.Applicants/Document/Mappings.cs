@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Spd.Resource.Applicants.Application;
 using Spd.Utilities.Dynamics;
+using Spd.Utilities.Shared.Tools;
 
 namespace Spd.Resource.Applicants.Document
 {
@@ -24,7 +25,7 @@ namespace Spd.Resource.Applicants.Document
             .ForMember(d => d.bcgov_filesize, opt => opt.MapFrom(s => $"{Math.Round((decimal)s.FileSize / 1024, 2)} KB"))
             .ForMember(d => d.bcgov_origincode, opt => opt.MapFrom(s => BcGovOriginCode.Web))
             .ForMember(d => d.bcgov_receiveddate, opt => opt.MapFrom(s => DateTimeOffset.UtcNow))
-            .ForMember(d => d.bcgov_fileextension, opt => opt.MapFrom(s => GetFileExtension(s.FileName)));
+            .ForMember(d => d.bcgov_fileextension, opt => opt.MapFrom(s => FileNameHelper.GetFileExtension(s.FileName)));
         }
 
         private static DocumentTypeEnum? GetDocumentType(bcgov_documenturl documenturl)
@@ -33,16 +34,6 @@ namespace Spd.Resource.Applicants.Document
                 .FirstOrDefault(t => (t.Value == documenturl._bcgov_tag1id_value || t.Value == documenturl._bcgov_tag2id_value || t.Value == documenturl._bcgov_tag3id_value)).Key;
             if (docType == null) { return null; }
             return Enum.Parse<DocumentTypeEnum>(docType);
-        }
-
-        private static string? GetFileExtension(string fileName)
-        {
-            int dot = fileName.LastIndexOf('.');
-            if (dot > 0)
-            {
-                return fileName.Substring(dot, fileName.Length - dot);
-            }
-            return null;
         }
     }
 }

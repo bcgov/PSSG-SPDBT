@@ -1,4 +1,6 @@
-﻿namespace Spd.Utilities.Shared;
+﻿using System.Net.NetworkInformation;
+
+namespace Spd.Utilities.Shared;
 public static class SpdConstants
 {
     public static readonly int USER_INVITE_VALID_DAYS = 7;
@@ -12,4 +14,5 @@ public static class SpdConstants
     public static readonly string USER_INVITE_LINK = "crrp/invitation/";
     public static readonly string APPLICATION_INVITE_LINK = "crca/invitation/";
     public static readonly int SHAREABLE_CLEARANCE_EXPIRED_DATE_BUFFER_IN_MONTHS = 6;
+    public static readonly string[] VALID_UPLOAD_FILE_EXE = { ".docx",".doc",".bmp",".jpeg",".jpg",".tif",".tiff",".png",".gif",".pdf",".html",".htm" };
 }

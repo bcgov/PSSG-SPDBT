@@ -186,8 +186,9 @@ namespace Spd.Presentation.Screening.Controllers
         /// <summary>
         /// Upload applicant app files
         /// </summary>
-        /// <param name="bulkUploadRequest"></param>
-        /// <param name="orgId"></param>
+        /// <param name="fileUploadRequest"></param>
+        /// <param name="applicationId"></param>
+        /// <param name="ct"></param>
         /// <returns></returns>
         [Route("api/applicants/screenings/{applicationId}/files")]
         [HttpPost]
@@ -196,11 +197,11 @@ namespace Spd.Presentation.Screening.Controllers
             var applicantInfo = _currentUser.GetApplicantIdentityInfo();
 
             //validation file
-            //string fileName = fileUploadRequest.File.FileName;
-            //if (!fileName.EndsWith(SpdConstants.BULK_APP_UPLOAD_FILE_EXTENSION, StringComparison.InvariantCultureIgnoreCase))
-            //{
-            //    throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"only {SpdConstants.BULK_APP_UPLOAD_FILE_EXTENSION} file supported.");
-            //}
+            string? fileexe = FileNameHelper.GetFileExtension(fileUploadRequest.File.FileName);
+            if (!SpdConstants.VALID_UPLOAD_FILE_EXE.Contains(fileexe, StringComparer.InvariantCultureIgnoreCase))
+            {
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"file type is not supported.");
+            }
             long fileSize = fileUploadRequest.File.Length;
             if (fileSize > SpdConstants.UPLOAD_FILE_MAX_SIZE)
             {
