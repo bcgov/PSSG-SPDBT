@@ -31,7 +31,7 @@ export class AuthProcessService {
 	) {}
 
 	//----------------------------------------------------------
-	// *
+	// * CRRP Portal
 	// *
 	async initializeCrrp(): Promise<string | null> {
 		const identityProvider = IdentityProviderTypeCode.BusinessBceId;
@@ -65,7 +65,7 @@ export class AuthProcessService {
 	}
 
 	//----------------------------------------------------------
-	// *
+	// * Security Screening Portal
 	// *
 	async initializeSecurityScreening(): Promise<string | null> {
 		const identityProvider = IdentityProviderTypeCode.BcServicesCard;
@@ -85,7 +85,7 @@ export class AuthProcessService {
 	}
 
 	//----------------------------------------------------------
-	// *
+	// * Crc Screening
 	// *
 	async tryInitializeCrc(): Promise<string | null> {
 		const identityProvider = IdentityProviderTypeCode.BcServicesCard;
@@ -112,7 +112,7 @@ export class AuthProcessService {
 	}
 
 	//----------------------------------------------------------
-	// *
+	// * Crc Screening
 	// *
 	async initializeCrc(): Promise<string | null> {
 		const identityProvider = IdentityProviderTypeCode.BcServicesCard;
@@ -132,7 +132,7 @@ export class AuthProcessService {
 	}
 
 	//----------------------------------------------------------
-	// *
+	// * PSSO Portal
 	// *
 	async initializePsso(): Promise<string | null> {
 		const identityProvider = IdentityProviderTypeCode.BusinessBceId;
@@ -162,7 +162,7 @@ export class AuthProcessService {
 	}
 
 	//----------------------------------------------------------
-	// *
+	// * Org Registration Portal
 	// *
 	async tryInitializeOrgReg(): Promise<string | null> {
 		const identityProvider = IdentityProviderTypeCode.BusinessBceId;
@@ -187,7 +187,7 @@ export class AuthProcessService {
 	}
 
 	//----------------------------------------------------------
-	// *
+	// * Org Registration Portal
 	// *
 	async initializeOrgReg(): Promise<string | null> {
 		const nextUrl = await this.authenticationService.login(
