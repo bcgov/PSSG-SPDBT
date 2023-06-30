@@ -671,13 +671,10 @@ namespace Spd.Manager.Cases
     {
         public string? OrgName { get; set; }
         public ServiceTypeCode? ServiceType { get; set; }
-        public string? CaseSubStatus { get; set; }
+        public CaseSubStatusCode? CaseSubStatus { get; set; }
     }
 
-    public record ApplicantApplicationListQuery : IRequest<ApplicantApplicationListResponse>
-    {
-        public Guid ApplicantId { get; set; }
-    };
+    public record ApplicantApplicationListQuery(Guid ApplicantId) : IRequest<ApplicantApplicationListResponse>;
 
     public class ApplicantApplicationListResponse
     {

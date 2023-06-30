@@ -112,9 +112,7 @@ namespace Spd.Presentation.Screening.Controllers
         [HttpGet]
         public async Task<ApplicantApplicationListResponse> ApplicantApplicationsList([FromRoute] Guid applicantId)
         {
-            var query = new ApplicantApplicationListQuery();
-            query.ApplicantId = applicantId;
-            return await _mediator.Send(query);
+            return await _mediator.Send(new ApplicantApplicationListQuery(applicantId));
         }
         #endregion
 
