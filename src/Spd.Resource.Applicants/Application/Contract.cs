@@ -1,4 +1,5 @@
 using Spd.Resource.Applicants.ApplicationInvite;
+using Spd.Resource.Applicants.Incident;
 using Spd.Utilities.Shared.ResourceContracts;
 
 namespace Spd.Resource.Applicants.Application;
@@ -30,7 +31,7 @@ public record ApplicationListQry
 }
 public record AppFilterBy(Guid OrgId)
 {
-    public IEnumerable<ApplicationPortalStatusCd>? ApplicationPortalStatus { get; set; }
+    public IEnumerable<ApplicationPortalStatusEnum>? ApplicationPortalStatus { get; set; }
     public string? NameOrEmailOrAppIdContains { get; set; }
 }
 public record AppSortBy(bool? SubmittedDateDesc = true, bool? NameDesc = null, bool? CompanyNameDesc = null);
@@ -115,9 +116,9 @@ public record ApplicationResult
     public PayerPreferenceTypeCode? PayeeType { get; set; }
     public DateTimeOffset? DateOfBirth { get; set; }
     public string? ContractedCompanyName { get; set; }
-    public string ApplicationPortalStatus { get; set; } = null!;
-    public string? CaseStatus { get; set; }
-    public string? CaseSubStatus { get; set; }
+    public ApplicationPortalStatusEnum? ApplicationPortalStatus { get; set; } = null!;
+    public CaseStatusEnum? CaseStatus { get; set; }
+    public CaseSubStatusEnum? CaseSubStatus { get; set; }
     public bool? HaveVerifiedIdentity { get; set; }
     public DateTimeOffset? CreatedOn { get; set; }
     public string? OrgName { get; set; }
@@ -280,7 +281,7 @@ public record ApplicantApplicationListResp
 
 #endregion
 
-public enum ApplicationPortalStatusCd
+public enum ApplicationPortalStatusEnum
 {
     Draft,
     VerifyIdentity,

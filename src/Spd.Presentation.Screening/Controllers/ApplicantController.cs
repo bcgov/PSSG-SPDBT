@@ -112,9 +112,7 @@ namespace Spd.Presentation.Screening.Controllers
         [HttpGet]
         public async Task<ApplicantApplicationListResponse> ApplicantApplicationsList([FromRoute] Guid applicantId)
         {
-            var query = new ApplicantApplicationListQuery();
-            query.ApplicantId = applicantId;
-            return await _mediator.Send(query);
+            return await _mediator.Send(new ApplicantApplicationListQuery(applicantId));
         }
         #endregion
 
@@ -196,6 +194,21 @@ namespace Spd.Presentation.Screening.Controllers
                 throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"max supported file size is {SpdConstants.UPLOAD_FILE_MAX_SIZE}.");
             }
             return await _mediator.Send(new CreateApplicantAppFileCommand(fileUploadRequest, applicantInfo.Sub, applicationId), ct);
+        }
+
+        /// <summary>
+        /// download the template document
+        /// </summary>
+        /// <returns></returns>
+        [Authorize(Policy = "OnlyBcsc")]
+        [Route("api/applicants/screenings/file-templates")]
+        [HttpGet]
+        public async Task<FileStreamResult> DownloadFileTemplate([FromQuery][Required] FileTemplateTypeCode fileTemplateType )
+        {
+            FileResponse response = await _mediator.Send(new FileTemplateQuery(fileTemplateType));
+            var content = new MemoryStream(response.Content);
+            var contentType = response.ContentType ?? "application/octet-stream";
+            return File(content, contentType, response.FileName);
         }
         #endregion
     }

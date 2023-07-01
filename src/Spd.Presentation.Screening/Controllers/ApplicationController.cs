@@ -487,7 +487,7 @@ namespace Spd.Presentation.Screening.Controllers
         [HttpGet]
         public async Task<FileStreamResult> DownloadClearanceLetterAsync([FromRoute] Guid clearanceId)
         {
-            ClearanceLetterResponse response = await _mediator.Send(new ClearanceLetterQuery(clearanceId));
+            FileResponse response = await _mediator.Send(new ClearanceLetterQuery(clearanceId));
             var content = new MemoryStream(response.Content);
             var contentType = response.ContentType ?? "application/octet-stream";
             return File(content, contentType, response.FileName);

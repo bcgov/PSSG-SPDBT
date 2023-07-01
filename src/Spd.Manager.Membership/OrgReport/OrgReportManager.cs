@@ -3,12 +3,13 @@ using MediatR;
 using Spd.Resource.Applicants.Document;
 using Spd.Resource.Organizations.Report;
 using Spd.Utilities.FileStorage;
+using Spd.Utilities.Shared.ManagerContract;
 
 namespace Spd.Manager.Membership.Report
 {
     internal class OrgReportManager
     : IRequestHandler<OrgReportListQuery, OrgReportListResponse>,
-    IRequestHandler<ReportFileQuery, ReportFileResponse>,
+    IRequestHandler<ReportFileQuery, FileResponse>,
     IReportManager
     {
         private readonly IOrgReportRepository _reportRepository;
@@ -35,18 +36,18 @@ namespace Spd.Manager.Membership.Report
             };
         }
 
-        public async Task<ReportFileResponse> Handle(ReportFileQuery query, CancellationToken ct)
+        public async Task<FileResponse> Handle(ReportFileQuery query, CancellationToken ct)
         {
             DocumentQry qry = new DocumentQry(ReportId: query.ReportId);
             var docList = await _documentRepository.QueryAsync(qry, ct);
             if (docList == null || !docList.Items.Any())
-                return new ReportFileResponse();
+                return new FileResponse();
 
             var docUrl = docList.Items.OrderByDescending(f => f.UploadedDateTime).FirstOrDefault();
             FileQueryResult fileResult = (FileQueryResult)await _fileStorageService.HandleQuery(
                 new FileQuery { Key = docUrl.DocumentUrlId.ToString(), Folder = $"spd_pdfreport/{docUrl.ReportId}" },
                 ct);
-            return new ReportFileResponse
+            return new FileResponse
             {
                 Content = fileResult.File.Content,
                 ContentType = fileResult.File.ContentType,
