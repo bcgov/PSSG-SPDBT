@@ -394,13 +394,6 @@ namespace Spd.Manager.Cases
 
     public record ClearanceLetterQuery(Guid ClearanceId) : IRequest<FileResponse>;
 
-    public record FileResponse
-    {
-        public string ContentType { get; set; } = null!;
-        public byte[] Content { get; set; } = Array.Empty<byte>();
-        public string? FileName { get; set; } = null!;
-    }
-
     public record ShareableClearanceQuery(Guid OrgId, string BcscId, ServiceTypeCode ServiceType) : IRequest<ShareableClearanceResponse>;
 
     public record ShareableClearanceResponse()
