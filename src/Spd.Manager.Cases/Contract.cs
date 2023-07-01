@@ -21,11 +21,12 @@ namespace Spd.Manager.Cases
         public Task<BulkUploadCreateResponse> Handle(BulkUploadCreateCommand cmd, CancellationToken ct);
         public Task<ClearanceListResponse> Handle(ClearanceListQuery request, CancellationToken ct);
         public Task<Unit> Handle(ClearanceAccessDeleteCommand request, CancellationToken ct);
-        public Task<ClearanceLetterResponse> Handle(ClearanceLetterQuery query, CancellationToken ct);
+        public Task<FileResponse> Handle(ClearanceLetterQuery query, CancellationToken ct);
         public Task<ApplicantApplicationListResponse> Handle(ApplicantApplicationListQuery request, CancellationToken ct);
         public Task<ShareableClearanceResponse> Handle(ShareableClearanceQuery request, CancellationToken ct);
         public Task<ApplicantApplicationFileListResponse> Handle(ApplicantApplicationFileQuery query, CancellationToken ct);
         public Task<ApplicantAppFileCreateResponse> Handle(CreateApplicantAppFileCommand query, CancellationToken ct);
+        public Task<FileResponse> Handle(FileTemplateQuery query, CancellationToken ct);
     }
 
     #region application invites
@@ -391,14 +392,7 @@ namespace Spd.Manager.Cases
         public Guid ClearanceId { get; set; }
     }
 
-    public record ClearanceLetterQuery(Guid ClearanceId) : IRequest<ClearanceLetterResponse>;
-
-    public record ClearanceLetterResponse
-    {
-        public string ContentType { get; set; } = null!;
-        public byte[] Content { get; set; } = Array.Empty<byte>();
-        public string? FileName { get; set; } = null!;
-    }
+    public record ClearanceLetterQuery(Guid ClearanceId) : IRequest<FileResponse>;
 
     public record ShareableClearanceQuery(Guid OrgId, string BcscId, ServiceTypeCode ServiceType) : IRequest<ShareableClearanceResponse>;
 
@@ -671,19 +665,23 @@ namespace Spd.Manager.Cases
     {
         public string? OrgName { get; set; }
         public ServiceTypeCode? ServiceType { get; set; }
-        public string? CaseSubStatus { get; set; }
+        public CaseSubStatusCode? CaseSubStatus { get; set; }
     }
 
-    public record ApplicantApplicationListQuery : IRequest<ApplicantApplicationListResponse>
-    {
-        public Guid ApplicantId { get; set; }
-    };
+    public record ApplicantApplicationListQuery(Guid ApplicantId) : IRequest<ApplicantApplicationListResponse>;
 
     public class ApplicantApplicationListResponse
     {
         public IEnumerable<ApplicantApplicationResponse> Applications { get; set; } = Array.Empty<ApplicantApplicationResponse>();
     }
 
+    public enum CaseSubStatusCode
+    {
+        ApplicantInformation,
+        ConfirmationOfFingerprints,
+        StatutoryDeclaration,
+        OpportunityToRespond
+    }
     #endregion
 
     #region applicant-application-file
@@ -709,6 +707,8 @@ namespace Spd.Manager.Cases
         public DateTimeOffset UploadedDateTime { get; set; }
         public Guid? ApplicationId { get; set; } = null;
     };
+
+    public record FileTemplateQuery(FileTemplateTypeCode FileTemplateType) : IRequest<FileResponse>;
 
     public enum FileTypeCode
     {
@@ -749,6 +749,12 @@ namespace Spd.Manager.Cases
         StatutoryDeclaration,
         ValidationCertificate,
         OpportunityToRespond
+    }
+
+    public enum FileTemplateTypeCode
+    {
+        FingerPrintPkg,
+        StatutoryDeclaration
     }
     #endregion
 }

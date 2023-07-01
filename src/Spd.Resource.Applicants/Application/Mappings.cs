@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
+using Spd.Resource.Applicants.Incident;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.ResourceContracts;
 using Spd.Utilities.Shared.Tools;
@@ -84,8 +85,8 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.DateOfBirth, opt => opt.MapFrom(s => new DateTimeOffset(s.spd_dateofbirth.Value.Year, s.spd_dateofbirth.Value.Month, s.spd_dateofbirth.Value.Day, 0, 0, 0, TimeSpan.Zero)))
             .ForMember(d => d.CreatedOn, opt => opt.MapFrom(s => s.createdon))
             .ForMember(d => d.HaveVerifiedIdentity, opt => opt.MapFrom(s => s.spd_identityconfirmed))
-            .ForMember(d => d.CaseStatus, opt => opt.MapFrom(s => s.spd_casestatus))
-            .ForMember(d => d.CaseSubStatus, opt => opt.MapFrom(s => s.spd_casesubstatus))
+            .ForMember(d => d.CaseStatus, opt => opt.MapFrom(s => Enum.Parse<CaseStatusEnum>(s.spd_casestatus)))
+            .ForMember(d => d.CaseSubStatus, opt => opt.MapFrom(s => GetSubStatusEnum(s.spd_casesubstatus))) //dynamics put number there as string, for example 100000029
             .ForMember(d => d.OrgName, opt => opt.MapFrom(s => s.spd_OrganizationId.name))
             .ForMember(d => d.ServiceType, opt => opt.MapFrom(s => GetServiceType(s._spd_servicetypeid_value)));
 
@@ -130,6 +131,20 @@ namespace Spd.Resource.Applicants.Application
         {
             if (serviceTypeGuid == null) return null;
             return Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.LookupServiceTypeKey(serviceTypeGuid));
+        }
+
+        private static CaseSubStatusEnum? GetSubStatusEnum(string intStr)
+        {
+            try
+            {
+                int value = Int32.Parse(intStr);
+                CaseSubStatusOptionSet subStatus = (CaseSubStatusOptionSet)value;
+                return Enum.Parse<CaseSubStatusEnum>(subStatus.ToString());
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

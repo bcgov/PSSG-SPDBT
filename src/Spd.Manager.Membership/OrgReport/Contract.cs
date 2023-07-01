@@ -1,11 +1,12 @@
 using MediatR;
+using Spd.Utilities.Shared.ManagerContract;
 
 namespace Spd.Manager.Membership.Report
 {
     public interface IReportManager
     {
         public Task<OrgReportListResponse> Handle(OrgReportListQuery request, CancellationToken ct);
-        public Task<ReportFileResponse> Handle(ReportFileQuery query, CancellationToken ct);
+        public Task<FileResponse> Handle(ReportFileQuery query, CancellationToken ct);
     }
 
     public record OrgReportListQuery(Guid orgId) : IRequest<OrgReportListResponse>;
@@ -21,12 +22,7 @@ namespace Spd.Manager.Membership.Report
         public DateTimeOffset ReportDate { get; set; }
     }
 
-    public record ReportFileQuery(Guid ReportId) : IRequest<ReportFileResponse>;
+    public record ReportFileQuery(Guid ReportId) : IRequest<FileResponse>;
 
-    public record ReportFileResponse
-    {
-        public string ContentType { get; set; } = null!;
-        public byte[] Content { get; set; } = Array.Empty<byte>();
-        public string? FileName { get; set; } = null!;
-    }
+
 }

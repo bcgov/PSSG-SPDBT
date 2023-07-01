@@ -4,6 +4,7 @@ using Spd.Engine.Validation;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.ApplicationInvite;
 using Spd.Resource.Applicants.Document;
+using Spd.Resource.Applicants.Incident;
 using Spd.Utilities.Shared.ManagerContract;
 using Spd.Utilities.Shared.ResourceContracts;
 
@@ -34,7 +35,7 @@ namespace Spd.Manager.Cases
                 .IncludeBase<ApplicationCreateRequest, ApplicationCreateCmd>();
             CreateMap<AliasCreateRequest, AliasCreateCmd>();
             CreateMap<ApplicationResult, ApplicationResponse>()
-                .ForMember(d => d.Status, opt => opt.MapFrom(s => s.ApplicationPortalStatus == null ? null : Enum.Parse<ApplicationPortalStatusCode>(s.ApplicationPortalStatus).ToString()));
+                .ForMember(d => d.Status, opt => opt.MapFrom(s => GetApplicationPortalStatusCode(s.ApplicationPortalStatus)));
             CreateMap<ApplicationListResp, ApplicationListResponse>();
             CreateMap<AppListFilterBy, AppFilterBy>();
             CreateMap<AppListSortBy, AppSortBy>();
@@ -67,8 +68,35 @@ namespace Spd.Manager.Cases
                 .ForMember(d => d.FileTypeCode, opt => opt.MapFrom(s => s.DocumentType));
             CreateMap<DocumentResp, ApplicantAppFileCreateResponse>();
             CreateMap<ApplicationResult, ApplicantApplicationResponse>()
-                .ForMember(d => d.Status, opt => opt.MapFrom(s => s.ApplicationPortalStatus == null ? null : Enum.Parse<ApplicationPortalStatusCode>(s.ApplicationPortalStatus).ToString()));
+                .ForMember(d => d.Status, opt => opt.MapFrom(s => GetApplicationPortalStatusCode(s.ApplicationPortalStatus)))
+                .ForMember(d => d.CaseSubStatus, opt => opt.MapFrom(s => GetCaseSubStatusCode(s.CaseSubStatus)));
 
+        }
+
+        private static CaseSubStatusCode? GetCaseSubStatusCode(CaseSubStatusEnum? subStatusEnum)
+        {
+            if (subStatusEnum == null) return null;
+            try
+            {
+                return Enum.Parse<CaseSubStatusCode>(subStatusEnum.ToString());
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private static ApplicationPortalStatusCode? GetApplicationPortalStatusCode(ApplicationPortalStatusEnum? portalStatusEnum)
+        {
+            if (portalStatusEnum == null) return null;
+            try
+            {
+                return Enum.Parse<ApplicationPortalStatusCode>(portalStatusEnum.ToString());
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }
