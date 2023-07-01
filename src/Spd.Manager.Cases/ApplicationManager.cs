@@ -9,6 +9,7 @@ using Spd.Resource.Applicants.Incident;
 using Spd.Resource.Organizations.Identity;
 using Spd.Resource.Organizations.Registration;
 using Spd.Utilities.FileStorage;
+using Spd.Utilities.Shared.ManagerContract;
 using Spd.Utilities.Shared.ResourceContracts;
 using Spd.Utilities.TempFileStorage;
 
@@ -28,7 +29,7 @@ namespace Spd.Manager.Cases
         IRequestHandler<BulkUploadCreateCommand, BulkUploadCreateResponse>,
         IRequestHandler<ClearanceListQuery, ClearanceListResponse>,
         IRequestHandler<ClearanceAccessDeleteCommand, Unit>,
-        IRequestHandler<ClearanceLetterQuery, ClearanceLetterResponse>,
+        IRequestHandler<ClearanceLetterQuery, FileResponse>,
         IRequestHandler<ShareableClearanceQuery, ShareableClearanceResponse>,
         IRequestHandler<ApplicantApplicationListQuery, ApplicantApplicationListResponse>,
         IRequestHandler<ApplicantApplicationFileQuery, ApplicantApplicationFileListResponse>,
@@ -285,18 +286,18 @@ namespace Spd.Manager.Cases
             return default;
         }
 
-        public async Task<ClearanceLetterResponse> Handle(ClearanceLetterQuery query, CancellationToken ct)
+        public async Task<FileResponse> Handle(ClearanceLetterQuery query, CancellationToken ct)
         {
             DocumentQry qry = new DocumentQry(ClearanceId: query.ClearanceId);
             var docList = await _documentUrlRepository.QueryAsync(qry, ct);
             if (docList == null || !docList.Items.Any())
-                return new ClearanceLetterResponse();
+                return new FileResponse();
 
             var docUrl = docList.Items.OrderByDescending(f => f.UploadedDateTime).FirstOrDefault();
             FileQueryResult fileResult = (FileQueryResult)await _fileStorageService.HandleQuery(
                 new FileQuery { Key = docUrl.DocumentUrlId.ToString(), Folder = $"spd_clearance/{docUrl.ClearanceId}" },
                 ct);
-            return new ClearanceLetterResponse
+            return new FileResponse
             {
                 Content = fileResult.File.Content,
                 ContentType = fileResult.File.ContentType,
@@ -396,8 +397,16 @@ namespace Spd.Manager.Cases
                 throw new ArgumentException("No contact found");
 
             //validate the application is in correct state.
-            var app = await _applicationRepository.QueryApplicationAsync(new ApplicationQry(command.ApplicationId), ct);
-            //todo: add checking case status match with file type.
+            ApplicationResult app = await _applicationRepository.QueryApplicationAsync(new ApplicationQry(command.ApplicationId), ct);
+            FileTypeCode? validFileCode = app.CaseSubStatus switch
+            {
+                CaseSubStatusEnum.ApplicantInformation => FileTypeCode.ApplicantInformation,
+                CaseSubStatusEnum.StatutoryDeclaration => FileTypeCode.StatutoryDeclaration,
+                CaseSubStatusEnum.OpportunityToRespond => FileTypeCode.OpportunityToRespond,
+                _ => throw new ArgumentException("Invalid File Type")
+            };
+            if (validFileCode != command.Request.FileType)
+                throw new ArgumentException("Invalid File Type");
 
             //put file to cache
             string fileKey = await _tempFile.HandleCommand(new SaveTempFileCommand(command.Request.File), ct);
@@ -429,6 +438,14 @@ namespace Spd.Manager.Cases
                 ct);
             return _mapper.Map<ApplicantAppFileCreateResponse>(docUrlResp);
         }
+
+        public async Task<FileResponse> Handle(FileTemplateQuery query, CancellationToken ct)
+        {
+            //waiting for dynamics decision
+            return null;
+        }
         #endregion
+
+
     }
 }

@@ -184,7 +184,7 @@ internal partial class ApplicationRepository : IApplicationRepository
         if (appFilterBy.ApplicationPortalStatus != null && appFilterBy.ApplicationPortalStatus.Any())
         {
             List<string> strs = new List<string>();
-            foreach (ApplicationPortalStatusCd cd in appFilterBy.ApplicationPortalStatus)
+            foreach (ApplicationPortalStatusEnum cd in appFilterBy.ApplicationPortalStatus)
             {
                 var status = Enum.Parse<ApplicationPortalStatus>(cd.ToString());
                 strs.Add($"spd_portalstatus eq {(int)status}");

@@ -124,4 +124,10 @@ namespace Spd.Utilities.Shared.ManagerContract
         LICENSING,
         PSSO_VS
     }
+    public record FileResponse
+    {
+        public string ContentType { get; set; } = null!;
+        public byte[] Content { get; set; } = Array.Empty<byte>();
+        public string? FileName { get; set; } = null!;
+    }
 }
