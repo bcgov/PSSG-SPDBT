@@ -6,6 +6,7 @@ import {
 	ApplicantApplicationListResponse,
 	ApplicantApplicationResponse,
 	ApplicationPortalStatusCode,
+	CaseSubStatusCode,
 } from 'src/app/api/models';
 import { ApplicantService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
@@ -203,9 +204,13 @@ export class CrcListComponent implements OnInit {
 	}
 
 	onViewDetail(application: ApplicantApplicationStatusResponse): void {
-		this.router.navigate([SecurityScreeningRoutes.path(SecurityScreeningRoutes.CRC_DETAIL)], {
-			queryParams: { applicationId: application.id },
+		this.router.navigateByUrl(`/${SecurityScreeningRoutes.path(SecurityScreeningRoutes.CRC_DETAIL)}`, {
+			state: { applicationData: application },
 		});
+
+		// this.router.navigate([SecurityScreeningRoutes.path(SecurityScreeningRoutes.CRC_DETAIL)], {
+		// 	queryParams: { applicationId: application.id },
+		// });
 	}
 
 	onDownloadClearanceLetter(clearance: any) {
@@ -249,20 +254,20 @@ export class CrcListComponent implements OnInit {
 
 					let documentsRequiredCount = 0;
 					if (app.status == ApplicationPortalStatusCode.AwaitingApplicant) {
-						switch (app.caseSubStatus?.toUpperCase()) {
-							case 'FINGERPRINTS':
+						switch (app.caseSubStatus) {
+							case CaseSubStatusCode.ConfirmationOfFingerprints:
 								documentsRequiredCount++;
 								fingerprintsCount++;
 								break;
-							case 'APPLICANTINFORMATION':
+							case CaseSubStatusCode.ApplicantInformation:
 								documentsRequiredCount++;
 								opportunityToRespondCount++;
 								break;
-							case 'AWAITINGINFORMATION':
+							case CaseSubStatusCode.OpportunityToRespond:
 								documentsRequiredCount++;
 								requestForAdditionalInfoCount++;
 								break;
-							case 'STATUTORYDECLARATION':
+							case CaseSubStatusCode.StatutoryDeclaration:
 								documentsRequiredCount++;
 								statutoryDeclarationCount++;
 								break;

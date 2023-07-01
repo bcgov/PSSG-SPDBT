@@ -1,7 +1,9 @@
 import {
 	ApplicationPortalStatusCode,
+	CaseSubStatusCode,
 	ContactAuthorizationTypeCode,
 	EmployeeInteractionTypeCode,
+	FileTypeCode,
 	GenderCode,
 	PayerPreferenceTypeCode,
 	ServiceTypeCode,
@@ -14,10 +16,57 @@ export interface SelectOptions<k = string | number | boolean> {
 	desc: string;
 }
 
+export const CaseSubStatuses: SelectOptions[] = [
+	{ desc: 'Applicant Information', code: CaseSubStatusCode.ApplicantInformation },
+	{ desc: 'Confirmation Of Fingerprints', code: CaseSubStatusCode.ConfirmationOfFingerprints },
+	{ desc: 'Statutory Declaration', code: CaseSubStatusCode.StatutoryDeclaration },
+	{ desc: 'Opportunity To Respond', code: CaseSubStatusCode.OpportunityToRespond },
+];
+
 export const EmployeeInteractionTypes: SelectOptions[] = [
 	{ desc: 'Children', code: EmployeeInteractionTypeCode.Children },
 	{ desc: 'Vulnerable Adults', code: EmployeeInteractionTypeCode.Adults },
 	{ desc: 'Children and Vulnerable Adults', code: EmployeeInteractionTypeCode.ChildrenAndAdults },
+];
+
+export const FileTypes: SelectOptions[] = [
+	{ desc: 'Applicant Consent Form', code: FileTypeCode.ApplicantConsentForm },
+	{ desc: 'Applicant Information', code: FileTypeCode.ApplicantInformation },
+	{ desc: 'Armoured Car Guard', code: FileTypeCode.ArmouredCarGuard },
+	{ desc: 'Armoured Vehicle Purpose', code: FileTypeCode.ArmouredVehiclePurpose },
+	{ desc: 'Armoured Vehicle Rationale', code: FileTypeCode.ArmouredVehicleRationale },
+	{ desc: 'BC Companies Registration Verification', code: FileTypeCode.BcCompaniesRegistrationVerification },
+	{ desc: 'BC Services Card', code: FileTypeCode.BcServicesCard },
+	{ desc: 'Birth Certificate', code: FileTypeCode.BirthCertificate },
+	{ desc: 'Body Armour Purpose', code: FileTypeCode.BodyArmourPurpose },
+	{ desc: 'Body Armour Rationale', code: FileTypeCode.BodyArmourRationale },
+	{ desc: 'Business Insurance', code: FileTypeCode.BusinessInsurance },
+	{ desc: 'Canadian Citizenship', code: FileTypeCode.CanadianCitizenship },
+	{ desc: 'Canadian Firearms License', code: FileTypeCode.CanadianFirearmsLicense },
+	{ desc: 'Canadian Native Status Card', code: FileTypeCode.CanadianNativeStatusCard },
+	{ desc: 'Certificate Of Advanced Security Training', code: FileTypeCode.CertificateOfAdvancedSecurityTraining },
+	{ desc: 'Confirmation Letter From Superior Officer', code: FileTypeCode.ConfirmationLetterFromSuperiorOfficer },
+	{ desc: 'Confirmation Of Fingerprints', code: FileTypeCode.ConfirmationOfFingerprints },
+	{ desc: 'Convicted Offence', code: FileTypeCode.ConvictedOffence },
+	{ desc: 'Criminal Charges', code: FileTypeCode.CriminalCharges },
+	{ desc: 'Driver License', code: FileTypeCode.DriverLicense },
+	{ desc: 'Govt Issued Photo Id', code: FileTypeCode.GovtIssuedPhotoId },
+	{ desc: 'Legal Name Change', code: FileTypeCode.LegalNameChange },
+	{ desc: 'Legal Work Status', code: FileTypeCode.LegalWorkStatus },
+	{ desc: 'Letter Of No Conflict', code: FileTypeCode.LetterOfNoConflict },
+	{ desc: 'Locksmith', code: FileTypeCode.Locksmith },
+	{ desc: 'Mental Health Condition Form', code: FileTypeCode.MentalHealthConditionForm },
+	{ desc: 'Passport', code: FileTypeCode.Passport },
+	{ desc: 'Permanent Residence Card', code: FileTypeCode.PermanentResidenceCard },
+	{ desc: 'Photograph', code: FileTypeCode.Photograph },
+	{ desc: 'Private Investigator', code: FileTypeCode.PrivateInvestigator },
+	{ desc: 'Private Investigator Under Supervision', code: FileTypeCode.PrivateInvestigatorUnderSupervision },
+	{ desc: 'Security Alarm Installer', code: FileTypeCode.SecurityAlarmInstaller },
+	{ desc: 'Security Consultant', code: FileTypeCode.SecurityConsultant },
+	{ desc: 'Security Guard', code: FileTypeCode.SecurityGuard },
+	{ desc: 'Statutory Declaration', code: FileTypeCode.StatutoryDeclaration },
+	{ desc: 'Validation Certificate', code: FileTypeCode.ValidationCertificate },
+	{ desc: 'Opportunity To Respond', code: FileTypeCode.OpportunityToRespond },
 ];
 
 export const ScreeningTypes: SelectOptions[] = [

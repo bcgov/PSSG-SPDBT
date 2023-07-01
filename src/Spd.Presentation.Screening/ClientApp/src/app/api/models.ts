@@ -7,6 +7,7 @@ export { AnonymousOrgRegistrationCreateRequest } from './models/anonymous-org-re
 export { AppInviteVerifyRequest } from './models/app-invite-verify-request';
 export { AppOrgResponse } from './models/app-org-response';
 export { ApplicantAppCreateRequest } from './models/applicant-app-create-request';
+export { ApplicantAppFileCreateResponse } from './models/applicant-app-file-create-response';
 export { ApplicantApplicationFileListResponse } from './models/applicant-application-file-list-response';
 export { ApplicantApplicationFileResponse } from './models/applicant-application-file-response';
 export { ApplicantApplicationListResponse } from './models/applicant-application-list-response';
@@ -34,6 +35,7 @@ export { BulkAppsCreateResultCode } from './models/bulk-apps-create-result-code'
 export { BulkHistoryListResponse } from './models/bulk-history-list-response';
 export { BulkHistoryResponse } from './models/bulk-history-response';
 export { BulkUploadCreateResponse } from './models/bulk-upload-create-response';
+export { CaseSubStatusCode } from './models/case-sub-status-code';
 export { ClearanceListResponse } from './models/clearance-list-response';
 export { ClearanceResponse } from './models/clearance-response';
 export { ConfigurationResponse } from './models/configuration-response';
@@ -41,6 +43,7 @@ export { ContactAuthorizationTypeCode } from './models/contact-authorization-typ
 export { DuplicateCheckResult } from './models/duplicate-check-result';
 export { EmployeeInteractionTypeCode } from './models/employee-interaction-type-code';
 export { EmployeeOrganizationTypeCode } from './models/employee-organization-type-code';
+export { FileTemplateTypeCode } from './models/file-template-type-code';
 export { FileTypeCode } from './models/file-type-code';
 export { FundsFromBcGovtExceedsThresholdCode } from './models/funds-from-bc-govt-exceeds-threshold-code';
 export { GenderCode } from './models/gender-code';
