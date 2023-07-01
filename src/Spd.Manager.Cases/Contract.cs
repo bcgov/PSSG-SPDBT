@@ -682,6 +682,13 @@ namespace Spd.Manager.Cases
         public IEnumerable<ApplicantApplicationResponse> Applications { get; set; } = Array.Empty<ApplicantApplicationResponse>();
     }
 
+    public enum CaseSubStatusCode
+    {
+        ApplicantInformation,
+        ConfirmationOfFingerprints,
+        StatutoryDeclaration,
+        OpportunityToRespond
+    }
     #endregion
 
     #region applicant-application-file

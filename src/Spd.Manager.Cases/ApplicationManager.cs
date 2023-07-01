@@ -396,8 +396,16 @@ namespace Spd.Manager.Cases
                 throw new ArgumentException("No contact found");
 
             //validate the application is in correct state.
-            var app = await _applicationRepository.QueryApplicationAsync(new ApplicationQry(command.ApplicationId), ct);
-            //todo: add checking case status match with file type.
+            ApplicationResult app = await _applicationRepository.QueryApplicationAsync(new ApplicationQry(command.ApplicationId), ct);
+            FileTypeCode? validFileCode = app.CaseSubStatus switch
+            {
+                CaseSubStatusEnum.ApplicantInformation => FileTypeCode.ApplicantInformation,
+                CaseSubStatusEnum.StatutoryDeclaration => FileTypeCode.StatutoryDeclaration,
+                CaseSubStatusEnum.OpportunityToRespond => FileTypeCode.OpportunityToRespond,
+                _ => throw new ArgumentException("Invalid File Type")
+            };
+            if (validFileCode != command.Request.FileType)
+                throw new ArgumentException("Invalid File Type");
 
             //put file to cache
             string fileKey = await _tempFile.HandleCommand(new SaveTempFileCommand(command.Request.File), ct);
