@@ -1,16 +1,17 @@
-﻿using FluentValidation;
+﻿using System.Reflection;
+using System.Security.Principal;
+using System.Text.Json.Serialization;
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using Spd.Manager.Membership;
 using Spd.Utilities.Address;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Hosting;
+using Spd.Utilities.Hosting.Logging;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.TempFileStorage;
-using System.Reflection;
-using System.Security.Principal;
-using System.Text.Json.Serialization;
 
 namespace Spd.Presentation.Screening
 {
@@ -92,6 +93,8 @@ namespace Spd.Presentation.Screening
             app.UseMiddleware<UsersMiddleware>();
             app.UseAuthorization();
             app.ConfigureComponentPipeline(configuration, hostEnvironment, assemblies);
+
+            app.UseDefaultHttpRequestLogging();
 
             app.MapControllerRoute(
                 name: "default",

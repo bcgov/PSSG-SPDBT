@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
+using System.Globalization;
+using System.Net;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -7,8 +9,6 @@ using Serilog.Enrichers.Span;
 using Serilog.Events;
 using Serilog.Exceptions;
 using Serilog.Extensions.Logging;
-using System.Globalization;
-using System.Net;
 
 namespace Spd.Utilities.Hosting.Logging;
 
@@ -23,6 +23,7 @@ public static class Observability
     /// <returns>An instance of a logger.</returns>
     public static Microsoft.Extensions.Logging.ILogger GetInitialLogger(IConfiguration configuration)
     {
+        Serilog.Debugging.SelfLog.Enable(Console.Error);
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Debug()
             .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
@@ -73,13 +74,36 @@ public static class Observability
             .Enrich.WithProperty("service", serviceName)
             .Enrich.WithEnvironmentName()
             .Enrich.WithEnvironmentUserName()
-            .Enrich.WithCorrelationId()
-            .Enrich.WithCorrelationIdHeader()
             //.Enrich.WithClientAgent()
             .Enrich.WithClientIp()
             .Enrich.WithSpan(new SpanOptions() { IncludeBaggage = true, IncludeTags = true, IncludeOperationName = true, IncludeTraceFlags = true })
             .WriteTo.Console(outputTemplate: LogOutputTemplate, formatProvider: CultureInfo.InvariantCulture)
             ;
+
+        var splunkConfiguration = configuration.GetSection("Splunk");
+        if (splunkConfiguration == null || string.IsNullOrEmpty(splunkConfiguration.Value))
+        {
+            Log.Warning($"Logs will not be forwarded to Splunk - configuration is missing");
+        }
+        else
+        {
+            var hostUrl = splunkConfiguration.GetValue("HostUrl", string.Empty);
+            var token = splunkConfiguration.GetValue("Token", string.Empty);
+
+            Log.Information($"Logs will be forwarded to Splunk");
+
+            loggerConfiguration
+                .WriteTo.EventCollector(
+                    splunkHost: hostUrl,
+                    eventCollectorToken: token,
+#pragma warning disable S4830 // Server certificates should be verified during SSL/TLS connections
+                    messageHandler: new HttpClientHandler
+                    {
+                        ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                    },
+                    renderTemplate: false);
+#pragma warning restore S4830 // Server certificates should be verified during SSL/TLS connections
+        }
 
         return loggerConfiguration;
     }
