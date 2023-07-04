@@ -133,13 +133,11 @@ namespace Spd.Resource.Applicants.Application
             return Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.LookupServiceTypeKey(serviceTypeGuid));
         }
 
-        private static CaseSubStatusEnum? GetSubStatusEnum(string intStr)
+        private static CaseSubStatusEnum? GetSubStatusEnum(string str)
         {
             try
             {
-                int value = Int32.Parse(intStr);
-                CaseSubStatusOptionSet subStatus = (CaseSubStatusOptionSet)value;
-                return Enum.Parse<CaseSubStatusEnum>(subStatus.ToString());
+                return Enum.Parse<CaseSubStatusEnum>(str);
             }
             catch
             {
