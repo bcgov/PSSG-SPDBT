@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using System.Net;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -74,7 +74,7 @@ public static class Observability
             .Enrich.WithProperty("service", serviceName)
             .Enrich.WithEnvironmentName()
             .Enrich.WithEnvironmentUserName()
-            .Enrich.WithClientAgent()
+            //.Enrich.WithClientAgent()
             .Enrich.WithClientIp()
             .Enrich.WithSpan(new SpanOptions() { IncludeBaggage = true, IncludeTags = true, IncludeOperationName = true, IncludeTraceFlags = true })
             .WriteTo.Console(outputTemplate: LogOutputTemplate, formatProvider: CultureInfo.InvariantCulture)
