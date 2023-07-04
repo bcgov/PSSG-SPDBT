@@ -678,7 +678,7 @@ namespace Spd.Manager.Cases
     public enum CaseSubStatusCode
     {
         ApplicantInformation,
-        ConfirmationOfFingerprints,
+        Fingerprints,
         StatutoryDeclaration,
         OpportunityToRespond
     }

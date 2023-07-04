@@ -137,7 +137,7 @@ namespace Spd.Resource.Applicants.Application
         {
             try
             {
-                return Enum.Parse<CaseSubStatusEnum>(str);
+                return Enum.Parse<CaseSubStatusEnum>(str, true); //ignore case
             }
             catch
             {
