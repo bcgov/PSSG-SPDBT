@@ -282,7 +282,7 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 	) {}
 
 	ngOnInit() {
-		if (!this.authUserService.userInfo?.orgId) {
+		if (!this.authUserService.bceidUserInfoProfile?.orgId) {
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 			return;
 		}
@@ -406,7 +406,7 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 
 		this.applicationService
 			.apiOrgsOrgIdApplicationsGet({
-				orgId: this.authUserService.userInfo?.orgId!,
+				orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
 				...this.queryParams,
 			})
 			.pipe()

@@ -229,8 +229,8 @@ export class CrcDetailComponent {
 
 	private loadList(application: ApplicantApplicationStatusResponse): void {
 		this.applicantName = this.utilService.getFullName(
-			this.authUserService.applicantProfile?.firstName,
-			this.authUserService.applicantProfile?.lastName
+			this.authUserService.bcscUserWhoamiProfile?.firstName,
+			this.authUserService.bcscUserWhoamiProfile?.lastName
 		);
 
 		this.application = application;

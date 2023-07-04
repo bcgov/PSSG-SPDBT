@@ -250,7 +250,7 @@ export class ExpiringChecksComponent implements OnInit {
 	) {}
 
 	ngOnInit() {
-		const orgId = this.authUserService.userInfo?.orgId;
+		const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
 		if (!orgId) {
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 			return;
@@ -299,7 +299,7 @@ export class ExpiringChecksComponent implements OnInit {
 		this.applicationService
 			.apiOrgsOrgIdClearancesClearanceIdFileGet$Response({
 				clearanceId: clearance.clearanceId!,
-				orgId: this.authUserService.userInfo?.orgId!,
+				orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
 			})
 			.pipe()
 			.subscribe((resp: StrictHttpResponse<Blob>) => {
@@ -368,7 +368,7 @@ export class ExpiringChecksComponent implements OnInit {
 					this.applicationService
 						.apiOrgsOrgIdClearancesExpiredClearanceAccessIdDelete({
 							clearanceAccessId: clearance.id!,
-							orgId: this.authUserService.userInfo?.orgId!,
+							orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
 						})
 						.pipe()
 						.subscribe((_res) => {
@@ -394,7 +394,7 @@ export class ExpiringChecksComponent implements OnInit {
 		this.queryParams.filters = this.buildQueryParamsFilterString();
 		this.applicationService
 			.apiOrgsOrgIdClearancesExpiredGet({
-				orgId: this.authUserService.userInfo?.orgId!,
+				orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
 				...this.queryParams,
 			})
 			.pipe()

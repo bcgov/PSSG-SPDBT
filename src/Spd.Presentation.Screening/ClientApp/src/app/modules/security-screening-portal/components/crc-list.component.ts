@@ -191,7 +191,7 @@ export class CrcListComponent implements OnInit {
 	) {}
 
 	ngOnInit() {
-		if (!this.authUserService.applicantProfile?.applicantId) {
+		if (!this.authUserService.bcscUserWhoamiProfile?.applicantId) {
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 			return;
 		}
@@ -217,7 +217,7 @@ export class CrcListComponent implements OnInit {
 		// this.applicationService
 		// 	.apiOrgsOrgIdClearancesClearanceIdFileGet$Response({
 		// 		clearanceId: clearance.clearanceId!,
-		// 		orgId: this.authUserService.userInfo?.orgId!,
+		// 		orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
 		// 	})
 		// 	.pipe()
 		// 	.subscribe((resp: StrictHttpResponse<Blob>) => {
@@ -227,8 +227,8 @@ export class CrcListComponent implements OnInit {
 
 	private loadList(): void {
 		this.applicantName = this.utilService.getFullName(
-			this.authUserService.applicantProfile?.firstName,
-			this.authUserService.applicantProfile?.lastName
+			this.authUserService.bcscUserWhoamiProfile?.firstName,
+			this.authUserService.bcscUserWhoamiProfile?.lastName
 		);
 
 		this.opportunityToRespondAlert = null;
@@ -243,7 +243,7 @@ export class CrcListComponent implements OnInit {
 
 		this.applicantService
 			.apiApplicantsApplicantIdApplicationsGet({
-				applicantId: this.authUserService.applicantProfile?.applicantId!,
+				applicantId: this.authUserService.bcscUserWhoamiProfile?.applicantId!,
 			})
 			.pipe()
 			.subscribe((res: ApplicantApplicationListResponse) => {

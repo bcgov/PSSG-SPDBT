@@ -122,7 +122,7 @@ export class ReportsComponent {
 	) {}
 
 	ngOnInit() {
-		const orgId = this.authUserService.userInfo?.orgId;
+		const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
 		if (!orgId) {
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 			return;
@@ -151,7 +151,7 @@ export class ReportsComponent {
 		this.orgReportService
 			.apiOrgsOrgIdReportsReportIdFileGet$Response({
 				reportId: report.id!,
-				orgId: this.authUserService.userInfo?.orgId!,
+				orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
 			})
 			.pipe()
 			.subscribe((resp: StrictHttpResponse<Blob>) => {
@@ -167,7 +167,7 @@ export class ReportsComponent {
 	private loadList(): void {
 		this.orgReportService
 			.apiOrgsOrgIdReportsGet({
-				orgId: this.authUserService.userInfo?.orgId!,
+				orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
 			})
 			.pipe()
 			.subscribe((res: OrgReportListResponse) => {

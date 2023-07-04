@@ -30,7 +30,7 @@ import { AuthUserService } from 'src/app/core/services/auth-user.service';
 	],
 })
 export class CrrpHeaderComponent {
-	loggedInOrgDisplay: string | null | undefined = this.authUserService.userInfo?.orgName;
+	loggedInOrgDisplay: string | null | undefined = this.authUserService.bceidUserInfoProfile?.orgName;
 	@Input() subtitle = '';
 
 	constructor(private authUserService: AuthUserService) {}
