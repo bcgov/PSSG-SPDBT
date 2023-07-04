@@ -34,6 +34,7 @@ namespace Spd.Manager.Cases
         IRequestHandler<ApplicantApplicationListQuery, ApplicantApplicationListResponse>,
         IRequestHandler<ApplicantApplicationFileQuery, ApplicantApplicationFileListResponse>,
         IRequestHandler<CreateApplicantAppFileCommand, ApplicantAppFileCreateResponse>,
+        IRequestHandler<FileTemplateQuery, FileResponse>,
         IApplicationManager
     {
         private readonly IApplicationRepository _applicationRepository;
@@ -442,8 +443,35 @@ namespace Spd.Manager.Cases
         public async Task<FileResponse> Handle(FileTemplateQuery query, CancellationToken ct)
         {
             //waiting for dynamics decision
-            return null;
+            //temp code
+            if (query.FileTemplateType == FileTemplateTypeCode.FingerPrintPkg)
+            {
+                FileQueryResult fileResult = (FileQueryResult)await _fileStorageService.HandleQuery(
+                        new FileQuery { Key = "Fingerprint Letter June 2023.pdf", Folder = $"templates" },
+                    ct);
+                return new FileResponse
+                {
+                    Content = fileResult.File.Content,
+                    ContentType = "application/pdf",
+                    FileName = "Fingerprint_Letter.pdf"
+                };
+            }
+            else if (query.FileTemplateType == FileTemplateTypeCode.StatutoryDeclaration)
+            {
+                FileQueryResult fileResult = (FileQueryResult)await _fileStorageService.HandleQuery(
+                        new FileQuery { Key = "Statutory_Declaration.pdf", Folder = $"templates" },
+                    ct);
+                return new FileResponse
+                {
+                    Content = fileResult.File.Content,
+                    ContentType = "application/pdf",
+                    FileName = "Statutory_Declaration.pdf"
+                };
+            }
+            else
+                throw new ArgumentException("Invalid FileTemplateType");
         }
+
         #endregion
 
 
