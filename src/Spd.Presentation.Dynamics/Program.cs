@@ -1,15 +1,17 @@
+using System.Reflection;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Hosting;
 using Spd.Utilities.Hosting.Logging;
-using System.Reflection;
-using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var secretsFile = Environment.GetEnvironmentVariable($"SECRETS_FILE");
 if (!string.IsNullOrEmpty(secretsFile)) builder.Configuration.AddJsonFile(secretsFile, true, true);
+
+Observability.GetInitialLogger(builder.Configuration);
 
 builder.Host.UseDefaultLogging(Assembly.GetEntryAssembly()!.GetName().Name!);
 
@@ -50,8 +52,6 @@ builder.Services.AddAuthorization(options =>
 
 var app = builder.Build();
 
-app.UseDefaultHttpRequestLogging();
-
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -59,6 +59,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseAuthorization();
+
+app.UseDefaultHttpRequestLogging();
 
 app.MapControllers();
 
