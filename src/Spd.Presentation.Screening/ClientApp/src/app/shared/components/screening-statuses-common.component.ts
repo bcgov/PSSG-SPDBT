@@ -167,7 +167,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 							<mat-header-cell *matHeaderCellDef></mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label"></span>
-								<a
+								<button
 									mat-flat-button
 									(click)="onPayNow(application)"
 									class="table-button m-2"
@@ -176,9 +176,9 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 									*ngIf="application.status == statisticsCode.AwaitingPayment"
 								>
 									<mat-icon>send</mat-icon>Pay Now
-								</a>
+								</button>
 
-								<a
+								<button
 									mat-flat-button
 									(click)="onVerifyApplicant(application)"
 									class="table-button m-2"
@@ -187,7 +187,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 									*ngIf="application.status == statisticsCode.VerifyIdentity"
 								>
 									<mat-icon>send</mat-icon>Verify Applicant
-								</a>
+								</button>
 							</mat-cell>
 						</ng-container>
 
@@ -195,7 +195,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 							<mat-header-cell *matHeaderCellDef></mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label"></span>
-								<a
+								<button
 									mat-flat-button
 									(click)="onManageDelegates(application)"
 									class="m-2"
@@ -203,7 +203,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 									aria-label="Pay now"
 								>
 									<mat-icon>edit</mat-icon>Delegates
-								</a>
+								</button>
 							</mat-cell>
 						</ng-container>
 
