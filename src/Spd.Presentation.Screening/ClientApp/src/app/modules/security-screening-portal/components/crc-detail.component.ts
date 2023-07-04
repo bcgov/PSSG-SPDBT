@@ -1,5 +1,6 @@
 import { Location } from '@angular/common';
 import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import {
@@ -8,13 +9,14 @@ import {
 	ApplicantApplicationResponse,
 	ApplicationPortalStatusCode,
 	CaseSubStatusCode,
+	FileTypeCode,
 } from 'src/app/api/models';
 import { ApplicantService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { SecurityScreeningRoutes } from '../security-screening-routing.module';
-import { ApplicantApplicationStatusResponse } from './crc-list.component';
+import { CrcUploadDialogData, CrcUploadModalComponent } from './crc-upload-modal.component';
 
 @Component({
 	selector: 'app-crc-detail',
@@ -121,12 +123,12 @@ import { ApplicantApplicationStatusResponse } from './crc-list.component';
 			</div>
 		</ng-container>
 
-		<h4 class="subheading fw-normal mt-4">Document Upload History</h4>
 		<ng-container *ngIf="opportunityToRespondAlert || requestForAdditionalInfoAlert">
+			<h4 class="subheading fw-normal mt-4">Upload Document</h4>
 			<div class="row">
 				<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
 					<button
-						mat-stroked-button
+						mat-flat-button
 						color="primary"
 						class="m-2"
 						aria-label="Upload a Word or PDF document providing more information"
@@ -138,38 +140,41 @@ import { ApplicantApplicationStatusResponse } from './crc-list.component';
 			</div>
 		</ng-container>
 
-		<div class="row">
-			<div class="col-12">
-				<mat-table [dataSource]="dataSourceHistory">
-					<ng-container matColumnDef="fileName">
-						<mat-header-cell *matHeaderCellDef>Document Name</mat-header-cell>
-						<mat-cell *matCellDef="let document">
-							<span class="mobile-label">Document Name:</span>
-							{{ document.fileName }}
-						</mat-cell>
-					</ng-container>
+		<ng-container *ngIf="documentHistoryExists">
+			<h4 class="subheading fw-normal mt-4">Document Upload History</h4>
+			<div class="row">
+				<div class="col-12">
+					<mat-table [dataSource]="dataSourceHistory">
+						<ng-container matColumnDef="fileName">
+							<mat-header-cell *matHeaderCellDef>Document Name</mat-header-cell>
+							<mat-cell *matCellDef="let document">
+								<span class="mobile-label">Document Name:</span>
+								{{ document.fileName }}
+							</mat-cell>
+						</ng-container>
 
-					<ng-container matColumnDef="fileTypeCode">
-						<mat-header-cell *matHeaderCellDef>File Type</mat-header-cell>
-						<mat-cell *matCellDef="let document">
-							<span class="mobile-label">File Type:</span>
-							{{ document.fileTypeCode | options : 'FileTypes' }}
-						</mat-cell>
-					</ng-container>
+						<ng-container matColumnDef="fileTypeCode">
+							<mat-header-cell *matHeaderCellDef>File Type</mat-header-cell>
+							<mat-cell *matCellDef="let document">
+								<span class="mobile-label">File Type:</span>
+								{{ document.fileTypeCode | options : 'FileTypes' }}
+							</mat-cell>
+						</ng-container>
 
-					<ng-container matColumnDef="uploadedDateTime">
-						<mat-header-cell *matHeaderCellDef>Uploaded On</mat-header-cell>
-						<mat-cell *matCellDef="let document">
-							<span class="mobile-label">Uploaded On:</span>
-							{{ document.uploadedDateTime | date : constants.date.dateFormat : 'UTC' }}
-						</mat-cell>
-					</ng-container>
+						<ng-container matColumnDef="uploadedDateTime">
+							<mat-header-cell *matHeaderCellDef>Uploaded On</mat-header-cell>
+							<mat-cell *matCellDef="let document">
+								<span class="mobile-label">Uploaded On:</span>
+								{{ document.uploadedDateTime | date : constants.date.dateFormat : 'UTC' }}
+							</mat-cell>
+						</ng-container>
 
-					<mat-header-row *matHeaderRowDef="columnsHistory; sticky: true"></mat-header-row>
-					<mat-row *matRowDef="let row; columns: columnsHistory"></mat-row>
-				</mat-table>
+						<mat-header-row *matHeaderRowDef="columnsHistory; sticky: true"></mat-header-row>
+						<mat-row *matRowDef="let row; columns: columnsHistory"></mat-row>
+					</mat-table>
+				</div>
 			</div>
-		</div>
+		</ng-container>
 	`,
 	styles: [
 		`
@@ -186,6 +191,7 @@ import { ApplicantApplicationStatusResponse } from './crc-list.component';
 export class CrcDetailComponent {
 	applicantName = '';
 	applicationPortalStatusClass = '';
+	documentHistoryExists = false;
 	application: ApplicantApplicationResponse | null = null;
 
 	constants = SPD_CONSTANTS;
@@ -201,19 +207,19 @@ export class CrcDetailComponent {
 	requestForAdditionalInfoAlert: string | null = null;
 	fingerprintsAlert: string | null = null;
 	statutoryDeclarationAlert: string | null = null;
+	associatedFileType: FileTypeCode | null = null;
 
 	constructor(
 		private router: Router,
 		private applicantService: ApplicantService,
 		private authUserService: AuthUserService,
 		private location: Location,
-		private utilService: UtilService
+		private utilService: UtilService,
+		private dialog: MatDialog
 	) {}
 
 	ngOnInit() {
 		const applicationData = (this.location.getState() as any)?.applicationData;
-		console.log('applicationData', applicationData);
-
 		if (applicationData) {
 			this.loadList(applicationData);
 		} else {
@@ -225,9 +231,26 @@ export class CrcDetailComponent {
 		this.router.navigateByUrl(SecurityScreeningRoutes.path(SecurityScreeningRoutes.CRC_LIST));
 	}
 
-	onUploadFile(): void {}
+	onUploadFile(): void {
+		const dialogOptions: CrcUploadDialogData = {
+			applicationId: this.application!.id!,
+			fileType: this.associatedFileType!,
+		};
 
-	private loadList(application: ApplicantApplicationStatusResponse): void {
+		this.dialog
+			.open(CrcUploadModalComponent, {
+				width: '800px',
+				data: dialogOptions,
+			})
+			.afterClosed()
+			.subscribe((resp) => {
+				if (resp) {
+					this.router.navigate([SecurityScreeningRoutes.path(SecurityScreeningRoutes.CRC_LIST)]);
+				}
+			});
+	}
+
+	private loadList(application: ApplicantApplicationResponse): void {
 		this.applicantName = this.utilService.getFullName(
 			this.authUserService.bcscUserWhoamiProfile?.firstName,
 			this.authUserService.bcscUserWhoamiProfile?.lastName
@@ -238,29 +261,38 @@ export class CrcDetailComponent {
 
 		if (application.status == ApplicationPortalStatusCode.AwaitingApplicant) {
 			switch (application.caseSubStatus) {
-				case CaseSubStatusCode.ConfirmationOfFingerprints:
+				case CaseSubStatusCode.Fingerprints:
 					this.fingerprintsAlert = this.getFingerprintsText();
+					this.associatedFileType = FileTypeCode.ConfirmationOfFingerprints;
 					break;
 				case CaseSubStatusCode.ApplicantInformation:
 					this.opportunityToRespondAlert = this.getOpportunityToRespondText();
+					this.associatedFileType = FileTypeCode.ApplicantInformation;
 					break;
 				case CaseSubStatusCode.OpportunityToRespond:
 					this.requestForAdditionalInfoAlert = this.getRequestForAdditionalInfoText();
+					this.associatedFileType = FileTypeCode.OpportunityToRespond;
 					break;
 				case CaseSubStatusCode.StatutoryDeclaration:
 					this.statutoryDeclarationAlert = this.getStatutoryDeclarationText();
+					this.associatedFileType = FileTypeCode.StatutoryDeclaration;
 					break;
 			}
 		}
 
 		this.dataSourceAppl = new MatTableDataSource<ApplicantApplicationResponse>([]);
-		this.dataSourceAppl.data = [application];
+		this.dataSourceAppl.data = [this.application!];
 
+		this.loadDocumentHistory();
+	}
+
+	private loadDocumentHistory(): void {
 		this.applicantService
-			.apiApplicantsScreeningsApplicationIdFilesGet({ applicationId: application.id! })
+			.apiApplicantsScreeningsApplicationIdFilesGet({ applicationId: this.application?.id! })
 			.pipe()
 			.subscribe((res: ApplicantApplicationFileListResponse) => {
 				this.dataSourceHistory.data = res.items ?? [];
+				this.documentHistoryExists = this.dataSourceHistory.data.length > 0 ?? false;
 			});
 	}
 

@@ -2,7 +2,7 @@
 /* eslint-disable */
 export enum CaseSubStatusCode {
   ApplicantInformation = 'ApplicantInformation',
-  ConfirmationOfFingerprints = 'ConfirmationOfFingerprints',
+  Fingerprints = 'Fingerprints',
   StatutoryDeclaration = 'StatutoryDeclaration',
   OpportunityToRespond = 'OpportunityToRespond'
 }

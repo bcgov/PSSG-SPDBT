@@ -18,7 +18,7 @@ export interface SelectOptions<k = string | number | boolean> {
 
 export const CaseSubStatuses: SelectOptions[] = [
 	{ desc: 'Applicant Information', code: CaseSubStatusCode.ApplicantInformation },
-	{ desc: 'Confirmation Of Fingerprints', code: CaseSubStatusCode.ConfirmationOfFingerprints },
+	{ desc: 'Confirmation Of Fingerprints', code: CaseSubStatusCode.Fingerprints },
 	{ desc: 'Statutory Declaration', code: CaseSubStatusCode.StatutoryDeclaration },
 	{ desc: 'Opportunity To Respond', code: CaseSubStatusCode.OpportunityToRespond },
 ];

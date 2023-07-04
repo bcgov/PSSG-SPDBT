@@ -255,7 +255,7 @@ export class CrcListComponent implements OnInit {
 					let documentsRequiredCount = 0;
 					if (app.status == ApplicationPortalStatusCode.AwaitingApplicant) {
 						switch (app.caseSubStatus) {
-							case CaseSubStatusCode.ConfirmationOfFingerprints:
+							case CaseSubStatusCode.Fingerprints:
 								documentsRequiredCount++;
 								fingerprintsCount++;
 								break;
