@@ -75,7 +75,7 @@ public static class Observability
             .Enrich.WithEnvironmentUserName()
             .Enrich.WithCorrelationId()
             .Enrich.WithCorrelationIdHeader()
-            .Enrich.WithClientAgent()
+            //.Enrich.WithClientAgent()
             .Enrich.WithClientIp()
             .Enrich.WithSpan(new SpanOptions() { IncludeBaggage = true, IncludeTags = true, IncludeOperationName = true, IncludeTraceFlags = true })
             .WriteTo.Console(outputTemplate: LogOutputTemplate, formatProvider: CultureInfo.InvariantCulture)
