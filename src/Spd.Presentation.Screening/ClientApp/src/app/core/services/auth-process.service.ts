@@ -50,7 +50,7 @@ export class AuthProcessService {
 
 			this.notify(success);
 
-			const userInfoMsgType = this.authUserService.userInfo?.userInfoMsgType;
+			const userInfoMsgType = this.authUserService.bceidUserInfoProfile?.userInfoMsgType;
 			if (userInfoMsgType) {
 				this.router.navigate([AppRoutes.ACCESS_DENIED], { state: { userInfoMsgType: userInfoMsgType } });
 				return Promise.resolve(null);

@@ -211,6 +211,11 @@ mat-label {
     border-bottom-width: 1px !important;
     border-bottom-style: solid !important; 
   }
+  
+  .mat-column-action1:empty, .mat-column-action2:empty {
+    /* hide column if empty on small screens */
+    display:none;
+  }
 }
 
 // NAVIGATION 

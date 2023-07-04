@@ -113,7 +113,7 @@ export class StatusStatisticsComponent {
 	applicationStatistics!: { [key: string]: number };
 	applicationStatistics$ = this.applicationService
 		.apiOrgsOrgIdApplicationStatisticsGet({
-			orgId: this.authUserService.userInfo?.orgId!,
+			orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
 		})
 		.pipe(
 			tap((res: ApplicationStatisticsResponse) => {

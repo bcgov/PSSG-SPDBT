@@ -142,14 +142,14 @@ export class GenericUploadsComponent implements OnInit {
 	) {}
 
 	ngOnInit() {
-		const orgId = this.authUserService.userInfo?.orgId;
+		const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
 		if (!orgId) {
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 			return;
 		}
 
 		this.authProcessService.waitUntilAuthentication$.subscribe((_subjectData: any) => {
-			if (!this.authUserService.genericUploadEnabled) {
+			if (!this.authUserService.isAllowedGenericUpload) {
 				this.router.navigate([CrrpRoutes.path(CrrpRoutes.HOME)]);
 			}
 		});
@@ -167,7 +167,7 @@ export class GenericUploadsComponent implements OnInit {
 
 		// Check for potential duplicate
 		this.applicationService
-			.apiOrgsOrgIdApplicationsBulkPost({ orgId: this.authUserService.userInfo?.orgId!, body })
+			.apiOrgsOrgIdApplicationsBulkPost({ orgId: this.authUserService.bceidUserInfoProfile?.orgId!, body })
 			.pipe()
 			.subscribe((resp: BulkUploadCreateResponse) => {
 				this.validationErrs = resp.validationErrs ?? [];
@@ -262,7 +262,7 @@ export class GenericUploadsComponent implements OnInit {
 		};
 
 		this.applicationService
-			.apiOrgsOrgIdApplicationsBulkPost({ orgId: this.authUserService.userInfo?.orgId!, body })
+			.apiOrgsOrgIdApplicationsBulkPost({ orgId: this.authUserService.bceidUserInfoProfile?.orgId!, body })
 			.pipe()
 			.subscribe((_resp: BulkUploadCreateResponse) => {
 				this.showUploadMessages = true;
@@ -274,7 +274,7 @@ export class GenericUploadsComponent implements OnInit {
 	private loadList(): void {
 		this.applicationService
 			.apiOrgsOrgIdApplicationsBulkHistoryGet({
-				orgId: this.authUserService.userInfo?.orgId!,
+				orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
 				...this.queryParams,
 			})
 			.pipe()

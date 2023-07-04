@@ -36,5 +36,6 @@ export enum FileTypeCode {
   SecurityConsultant = 'SecurityConsultant',
   SecurityGuard = 'SecurityGuard',
   StatutoryDeclaration = 'StatutoryDeclaration',
-  ValidationCertificate = 'ValidationCertificate'
+  ValidationCertificate = 'ValidationCertificate',
+  OpportunityToRespond = 'OpportunityToRespond'
 }

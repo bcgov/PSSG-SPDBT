@@ -18,11 +18,13 @@ import {
 @Injectable({ providedIn: 'root' })
 export class AuthUserService {
 	loginType: IdentityProviderTypeCode | null = null;
-	userOrgProfile: OrgResponse | null = null;
-	applicantProfile: ApplicantProfileResponse | null = null;
-	applicantUserInfo: ApplicantUserInfo | null = null;
-	userInfo: UserInfo | null = null;
-	genericUploadEnabled: boolean = false;
+	isAllowedGenericUpload: boolean = false;
+
+	bcscUserWhoamiProfile: ApplicantProfileResponse | null = null;
+	bcscUserInfoProfile: ApplicantUserInfo | null = null;
+
+	bceidUserOrgProfile: OrgResponse | null = null;
+	bceidUserInfoProfile: UserInfo | null = null;
 
 	constructor(
 		private userProfileService: UserProfileService,
@@ -34,17 +36,17 @@ export class AuthUserService {
 	//----------------------------------------------------------
 	// *
 	// *
-	setOrgProfile(userInfo: UserInfo | null = null): void {
-		console.debug('[AuthUserService] userInfo', userInfo);
+	setOrgProfile(bceidUserInfoProfile: UserInfo | null = null): void {
+		console.debug('[AuthUserService] bceidUserInfoProfile', bceidUserInfoProfile);
 
-		if (!userInfo) {
-			this.userInfo = null;
-			this.genericUploadEnabled = false;
+		if (!bceidUserInfoProfile) {
+			this.bceidUserInfoProfile = null;
+			this.isAllowedGenericUpload = false;
 			return;
 		}
 
-		this.userInfo = userInfo;
-		this.genericUploadEnabled = userInfo.orgSettings?.genericUploadEnabled ?? false;
+		this.bceidUserInfoProfile = bceidUserInfoProfile;
+		this.isAllowedGenericUpload = bceidUserInfoProfile.orgSettings?.genericUploadEnabled ?? false;
 
 		this.updateOrgProfile();
 	}
@@ -53,16 +55,16 @@ export class AuthUserService {
 	// *
 	// *
 	updateOrgProfile(): void {
-		if (!this.userInfo) {
-			this.userOrgProfile = null;
+		if (!this.bceidUserInfoProfile) {
+			this.bceidUserOrgProfile = null;
 			return;
 		}
 
 		this.orgService
-			.apiOrgsOrgIdGet({ orgId: this.userInfo.orgId! })
+			.apiOrgsOrgIdGet({ orgId: this.bceidUserInfoProfile.orgId! })
 			.pipe()
 			.subscribe((resp: OrgResponse) => {
-				this.userOrgProfile = resp;
+				this.bceidUserOrgProfile = resp;
 				console.debug('[AuthUserService] setOrgProfile', resp);
 			});
 	}
@@ -72,7 +74,7 @@ export class AuthUserService {
 	// *
 	async applicantUserInfoAsync(): Promise<boolean> {
 		this.loginType = IdentityProviderTypeCode.BcServicesCard;
-		this.applicantUserInfo = await lastValueFrom(this.applicantService.apiApplicantsUserinfoGet());
+		this.bcscUserInfoProfile = await lastValueFrom(this.applicantService.apiApplicantsUserinfoGet());
 		return Promise.resolve(true);
 	}
 
@@ -108,7 +110,7 @@ export class AuthUserService {
 			const resp: ApplicantProfileResponse = await lastValueFrom(this.userProfileService.apiApplicantsWhoamiGet());
 
 			if (resp) {
-				this.applicantProfile = resp;
+				this.bcscUserWhoamiProfile = resp;
 				return Promise.resolve(true);
 			}
 		}
@@ -120,11 +122,11 @@ export class AuthUserService {
 	// *
 	// *
 	public clearUserData(): void {
-		this.userInfo = null;
-		this.userOrgProfile = null;
-		this.applicantProfile = null;
-		this.applicantUserInfo = null;
-		this.genericUploadEnabled = false;
+		this.bceidUserInfoProfile = null;
+		this.bceidUserOrgProfile = null;
+		this.bcscUserWhoamiProfile = null;
+		this.bcscUserInfoProfile = null;
+		this.isAllowedGenericUpload = false;
 	}
 
 	private orgSelectionAsync(userInfos: Array<UserInfo>): Promise<any> {
