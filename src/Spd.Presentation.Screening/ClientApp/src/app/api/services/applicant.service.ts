@@ -13,11 +13,13 @@ import { AnonymousApplicantAppCreateRequest } from '../models/anonymous-applican
 import { AppInviteVerifyRequest } from '../models/app-invite-verify-request';
 import { AppOrgResponse } from '../models/app-org-response';
 import { ApplicantAppCreateRequest } from '../models/applicant-app-create-request';
+import { ApplicantAppFileCreateResponse } from '../models/applicant-app-file-create-response';
 import { ApplicantApplicationFileListResponse } from '../models/applicant-application-file-list-response';
 import { ApplicantApplicationListResponse } from '../models/applicant-application-list-response';
-import { ApplicantApplicationResponse } from '../models/applicant-application-response';
 import { ApplicantUserInfo } from '../models/applicant-user-info';
 import { ApplicationCreateResponse } from '../models/application-create-response';
+import { FileTemplateTypeCode } from '../models/file-template-type-code';
+import { FileTypeCode } from '../models/file-type-code';
 import { ServiceTypeCode } from '../models/service-type-code';
 import { ShareableClearanceResponse } from '../models/shareable-clearance-response';
 
@@ -333,62 +335,6 @@ export class ApplicantService extends BaseService {
   }
 
   /**
-   * Path part for operation apiApplicantsApplicantIdApplicationsApplicationIdGet
-   */
-  static readonly ApiApplicantsApplicantIdApplicationsApplicationIdGetPath = '/api/applicants/{applicantId}/applications/{applicationId}';
-
-  /**
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiApplicantsApplicantIdApplicationsApplicationIdGet()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiApplicantsApplicantIdApplicationsApplicationIdGet$Response(params: {
-    applicantId: string;
-    applicationId: string;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<ApplicantApplicationResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, ApplicantService.ApiApplicantsApplicantIdApplicationsApplicationIdGetPath, 'get');
-    if (params) {
-      rb.path('applicantId', params.applicantId, {});
-      rb.path('applicationId', params.applicationId, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<ApplicantApplicationResponse>;
-      })
-    );
-  }
-
-  /**
-   * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiApplicantsApplicantIdApplicationsApplicationIdGet$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiApplicantsApplicantIdApplicationsApplicationIdGet(params: {
-    applicantId: string;
-    applicationId: string;
-  },
-  context?: HttpContext
-
-): Observable<ApplicantApplicationResponse> {
-
-    return this.apiApplicantsApplicantIdApplicationsApplicationIdGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<ApplicantApplicationResponse>) => r.body as ApplicantApplicationResponse)
-    );
-  }
-
-  /**
    * Path part for operation apiApplicantsUserinfoGet
    */
   static readonly ApiApplicantsUserinfoGetPath = '/api/applicants/userinfo';
@@ -504,6 +450,137 @@ export class ApplicantService extends BaseService {
 
     return this.apiApplicantsScreeningsApplicationIdFilesGet$Response(params,context).pipe(
       map((r: StrictHttpResponse<ApplicantApplicationFileListResponse>) => r.body as ApplicantApplicationFileListResponse)
+    );
+  }
+
+  /**
+   * Path part for operation apiApplicantsScreeningsApplicationIdFilesPost
+   */
+  static readonly ApiApplicantsScreeningsApplicationIdFilesPostPath = '/api/applicants/screenings/{applicationId}/files';
+
+  /**
+   * Upload applicant app files.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiApplicantsScreeningsApplicationIdFilesPost()` instead.
+   *
+   * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
+   */
+  apiApplicantsScreeningsApplicationIdFilesPost$Response(params: {
+    applicationId: string;
+    body?: {
+'File'?: Blob;
+'FileType'?: FileTypeCode;
+}
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<ApplicantAppFileCreateResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, ApplicantService.ApiApplicantsScreeningsApplicationIdFilesPostPath, 'post');
+    if (params) {
+      rb.path('applicationId', params.applicationId, {});
+      rb.body(params.body, 'multipart/form-data');
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<ApplicantAppFileCreateResponse>;
+      })
+    );
+  }
+
+  /**
+   * Upload applicant app files.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiApplicantsScreeningsApplicationIdFilesPost$Response()` instead.
+   *
+   * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
+   */
+  apiApplicantsScreeningsApplicationIdFilesPost(params: {
+    applicationId: string;
+    body?: {
+'File'?: Blob;
+'FileType'?: FileTypeCode;
+}
+  },
+  context?: HttpContext
+
+): Observable<ApplicantAppFileCreateResponse> {
+
+    return this.apiApplicantsScreeningsApplicationIdFilesPost$Response(params,context).pipe(
+      map((r: StrictHttpResponse<ApplicantAppFileCreateResponse>) => r.body as ApplicantAppFileCreateResponse)
+    );
+  }
+
+  /**
+   * Path part for operation apiApplicantsScreeningsFileTemplatesGet
+   */
+  static readonly ApiApplicantsScreeningsFileTemplatesGetPath = '/api/applicants/screenings/file-templates';
+
+  /**
+   * download the template document.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiApplicantsScreeningsFileTemplatesGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantsScreeningsFileTemplatesGet$Response(params: {
+    fileTemplateType: FileTemplateTypeCode;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<Blob>> {
+
+    const rb = new RequestBuilder(this.rootUrl, ApplicantService.ApiApplicantsScreeningsFileTemplatesGetPath, 'get');
+    if (params) {
+      rb.query('fileTemplateType', params.fileTemplateType, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'blob',
+      accept: 'application/pdf',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<Blob>;
+      })
+    );
+  }
+
+  /**
+   * download the template document.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiApplicantsScreeningsFileTemplatesGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantsScreeningsFileTemplatesGet(params: {
+    fileTemplateType: FileTemplateTypeCode;
+  },
+  context?: HttpContext
+
+): Observable<Blob> {
+
+    return this.apiApplicantsScreeningsFileTemplatesGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<Blob>) => r.body as Blob)
     );
   }
 

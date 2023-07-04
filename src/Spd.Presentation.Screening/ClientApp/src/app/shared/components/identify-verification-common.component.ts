@@ -242,7 +242,7 @@ export class IdentifyVerificationCommonComponent implements OnInit {
 	}
 
 	ngOnInit() {
-		const orgId = this.authUserService.userInfo?.orgId;
+		const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
 		if (!orgId) {
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 			return;
@@ -353,7 +353,7 @@ export class IdentifyVerificationCommonComponent implements OnInit {
 
 		this.applicationService
 			.apiOrgsOrgIdApplicationsGet({
-				orgId: this.authUserService.userInfo?.orgId!,
+				orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
 				...this.queryParams,
 			})
 			.pipe()
@@ -368,7 +368,7 @@ export class IdentifyVerificationCommonComponent implements OnInit {
 	private verifyIdentity(application: IdentityVerificationResponse) {
 		this.applicationService
 			.apiOrgsOrgIdIdentityApplicationIdPut({
-				orgId: this.authUserService.userInfo?.orgId!,
+				orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
 				applicationId: application.id!,
 				status: IdentityStatusCode.Verified,
 			})
@@ -382,7 +382,7 @@ export class IdentifyVerificationCommonComponent implements OnInit {
 	private rejectIdentity(application: IdentityVerificationResponse) {
 		this.applicationService
 			.apiOrgsOrgIdIdentityApplicationIdPut({
-				orgId: this.authUserService.userInfo?.orgId!,
+				orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
 				applicationId: application.id!,
 				status: IdentityStatusCode.Rejected,
 			})
@@ -421,7 +421,7 @@ export class IdentifyVerificationCommonComponent implements OnInit {
 	private refreshStats(): void {
 		this.applicationStatistics$ = this.applicationService
 			.apiOrgsOrgIdApplicationStatisticsGet({
-				orgId: this.authUserService.userInfo?.orgId!,
+				orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
 			})
 			.pipe(
 				tap((res: ApplicationStatisticsResponse) => {

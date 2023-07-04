@@ -94,7 +94,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 								</a>
 							</li>
 							<hr class="d-none d-sm-inline w-100 text-white" />
-							<li class="nav-item w-100" *ngIf="authUserService.genericUploadEnabled">
+							<li class="nav-item w-100" *ngIf="authUserService.isAllowedGenericUpload">
 								<a
 									[routerLink]="[crrpRoutes.path(crrpRoutes.GENERIC_UPLOADS)]"
 									routerLinkActive="active"

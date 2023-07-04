@@ -156,7 +156,7 @@ export class UserEditModalComponent implements OnInit {
 						});
 					});
 			} else {
-				body.organizationId = this.authUserService.userInfo?.orgId!;
+				body.organizationId = this.authUserService.bceidUserInfoProfile?.orgId!;
 				this.orgUserService
 					.apiOrgsOrgIdUsersPost({ orgId: body.organizationId, body })
 					.pipe()

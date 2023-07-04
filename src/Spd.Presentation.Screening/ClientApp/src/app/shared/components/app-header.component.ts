@@ -95,17 +95,17 @@ export class HeaderComponent implements OnInit {
 
 		if (loginType == IdentityProviderTypeCode.BcServicesCard) {
 			console.debug(
-				'BcServicesCard applicantUserInfo',
-				this.authUserService.applicantUserInfo,
-				'applicantProfile',
-				this.authUserService.applicantProfile
+				'BcServicesCard bcscUserInfoProfile',
+				this.authUserService.bcscUserInfoProfile,
+				'bcscUserWhoamiProfile',
+				this.authUserService.bcscUserWhoamiProfile
 			);
 
-			let name = this.authUserService.applicantUserInfo?.displayName;
+			let name = this.authUserService.bcscUserInfoProfile?.displayName;
 			if (!name) {
 				name = this.utilService.getFullName(
-					this.authUserService.applicantProfile?.firstName,
-					this.authUserService.applicantProfile?.lastName
+					this.authUserService.bcscUserWhoamiProfile?.firstName,
+					this.authUserService.bcscUserWhoamiProfile?.lastName
 				);
 			}
 			this.loggedInUserDisplay = name ?? 'User';
@@ -113,13 +113,13 @@ export class HeaderComponent implements OnInit {
 		}
 
 		console.debug(
-			'BCeID userInfo',
-			this.authUserService.userInfo,
+			'BCeID bceidUserInfoProfile',
+			this.authUserService.bceidUserInfoProfile,
 			'loggedInUserTokenData',
 			this.authProcessService.loggedInUserTokenData
 		);
 
-		const userData = this.authUserService.userInfo;
+		const userData = this.authUserService.bceidUserInfoProfile;
 		let name = '';
 		if (userData) {
 			name = this.utilService.getFullName(userData.firstName, userData.lastName);

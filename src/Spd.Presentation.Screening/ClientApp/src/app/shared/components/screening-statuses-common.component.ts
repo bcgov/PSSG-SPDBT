@@ -163,31 +163,31 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="actions">
+						<ng-container matColumnDef="action1">
 							<mat-header-cell *matHeaderCellDef></mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label"></span>
-								<a
+								<button
 									mat-flat-button
 									(click)="onPayNow(application)"
-									class="m-2"
+									class="table-button m-2"
 									style="color: var(--color-green);"
 									aria-label="Pay now"
 									*ngIf="application.status == statisticsCode.AwaitingPayment"
 								>
 									<mat-icon>send</mat-icon>Pay Now
-								</a>
+								</button>
 
-								<a
+								<button
 									mat-flat-button
 									(click)="onVerifyApplicant(application)"
-									class="m-2"
+									class="table-button m-2"
 									style="color: var(--color-primary-light);"
 									aria-label="Verify Applicant"
 									*ngIf="application.status == statisticsCode.VerifyIdentity"
 								>
 									<mat-icon>send</mat-icon>Verify Applicant
-								</a>
+								</button>
 							</mat-cell>
 						</ng-container>
 
@@ -195,7 +195,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 							<mat-header-cell *matHeaderCellDef></mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label"></span>
-								<a
+								<button
 									mat-flat-button
 									(click)="onManageDelegates(application)"
 									class="m-2"
@@ -203,7 +203,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 									aria-label="Pay now"
 								>
 									<mat-icon>edit</mat-icon>Delegates
-								</a>
+								</button>
 							</mat-cell>
 						</ng-container>
 
@@ -227,12 +227,12 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 	styles: [
 		`
 			.mat-column-status {
-				min-width: 190px;
+				min-width: 210px;
 				padding-right: 4px !important;
 				padding-left: 4px !important;
 			}
 
-			.mat-column-actions {
+			.mat-column-action1 {
 				min-width: 210px;
 				padding-right: 4px !important;
 				padding-left: 4px !important;
@@ -282,7 +282,7 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 	) {}
 
 	ngOnInit() {
-		if (!this.authUserService.userInfo?.orgId) {
+		if (!this.authUserService.bceidUserInfoProfile?.orgId) {
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 			return;
 		}
@@ -296,7 +296,7 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 				'applicationNumber',
 				'contractedCompanyName',
 				'status',
-				'actions',
+				'action1',
 			];
 		} else if (this.portal == 'PSSO') {
 			this.columns = [
@@ -305,7 +305,7 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 				'createdOn',
 				'applicationNumber',
 				'status',
-				'actions',
+				'action1',
 				'delegates',
 			];
 		}
@@ -406,7 +406,7 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 
 		this.applicationService
 			.apiOrgsOrgIdApplicationsGet({
-				orgId: this.authUserService.userInfo?.orgId!,
+				orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
 				...this.queryParams,
 			})
 			.pipe()

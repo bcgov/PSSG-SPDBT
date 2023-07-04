@@ -6,6 +6,7 @@ import {
 	ApplicantApplicationListResponse,
 	ApplicantApplicationResponse,
 	ApplicationPortalStatusCode,
+	CaseSubStatusCode,
 } from 'src/app/api/models';
 import { ApplicantService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
@@ -190,7 +191,7 @@ export class CrcListComponent implements OnInit {
 	) {}
 
 	ngOnInit() {
-		if (!this.authUserService.applicantProfile?.applicantId) {
+		if (!this.authUserService.bcscUserWhoamiProfile?.applicantId) {
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 			return;
 		}
@@ -203,16 +204,20 @@ export class CrcListComponent implements OnInit {
 	}
 
 	onViewDetail(application: ApplicantApplicationStatusResponse): void {
-		this.router.navigate([SecurityScreeningRoutes.path(SecurityScreeningRoutes.CRC_DETAIL)], {
-			queryParams: { applicationId: application.id },
+		this.router.navigateByUrl(`/${SecurityScreeningRoutes.path(SecurityScreeningRoutes.CRC_DETAIL)}`, {
+			state: { applicationData: application },
 		});
+
+		// this.router.navigate([SecurityScreeningRoutes.path(SecurityScreeningRoutes.CRC_DETAIL)], {
+		// 	queryParams: { applicationId: application.id },
+		// });
 	}
 
 	onDownloadClearanceLetter(clearance: any) {
 		// this.applicationService
 		// 	.apiOrgsOrgIdClearancesClearanceIdFileGet$Response({
 		// 		clearanceId: clearance.clearanceId!,
-		// 		orgId: this.authUserService.userInfo?.orgId!,
+		// 		orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
 		// 	})
 		// 	.pipe()
 		// 	.subscribe((resp: StrictHttpResponse<Blob>) => {
@@ -222,8 +227,8 @@ export class CrcListComponent implements OnInit {
 
 	private loadList(): void {
 		this.applicantName = this.utilService.getFullName(
-			this.authUserService.applicantProfile?.firstName,
-			this.authUserService.applicantProfile?.lastName
+			this.authUserService.bcscUserWhoamiProfile?.firstName,
+			this.authUserService.bcscUserWhoamiProfile?.lastName
 		);
 
 		this.opportunityToRespondAlert = null;
@@ -238,7 +243,7 @@ export class CrcListComponent implements OnInit {
 
 		this.applicantService
 			.apiApplicantsApplicantIdApplicationsGet({
-				applicantId: this.authUserService.applicantProfile?.applicantId!,
+				applicantId: this.authUserService.bcscUserWhoamiProfile?.applicantId!,
 			})
 			.pipe()
 			.subscribe((res: ApplicantApplicationListResponse) => {
@@ -249,20 +254,20 @@ export class CrcListComponent implements OnInit {
 
 					let documentsRequiredCount = 0;
 					if (app.status == ApplicationPortalStatusCode.AwaitingApplicant) {
-						switch (app.caseSubStatus?.toUpperCase()) {
-							case 'FINGERPRINTS':
+						switch (app.caseSubStatus) {
+							case CaseSubStatusCode.Fingerprints:
 								documentsRequiredCount++;
 								fingerprintsCount++;
 								break;
-							case 'APPLICANTINFORMATION':
+							case CaseSubStatusCode.ApplicantInformation:
 								documentsRequiredCount++;
 								opportunityToRespondCount++;
 								break;
-							case 'AWAITINGINFORMATION':
+							case CaseSubStatusCode.OpportunityToRespond:
 								documentsRequiredCount++;
 								requestForAdditionalInfoCount++;
 								break;
-							case 'STATUTORYDECLARATION':
+							case CaseSubStatusCode.StatutoryDeclaration:
 								documentsRequiredCount++;
 								statutoryDeclarationCount++;
 								break;

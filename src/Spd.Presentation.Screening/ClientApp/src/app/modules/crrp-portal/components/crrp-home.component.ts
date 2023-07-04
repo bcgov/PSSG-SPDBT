@@ -267,8 +267,8 @@ export class CrrpHomeComponent implements OnInit {
 	) {}
 
 	ngOnInit() {
-		const orgId = this.authUserService.userInfo?.orgId;
-		const userId = this.authUserService.userInfo?.userId;
+		const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
+		const userId = this.authUserService.bceidUserInfoProfile?.userId;
 
 		if (!orgId || !userId) {
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
@@ -277,8 +277,8 @@ export class CrrpHomeComponent implements OnInit {
 
 		this.orgUserService
 			.apiOrgsOrgIdUsersUserIdGet({
-				orgId: this.authUserService.userInfo?.orgId!,
-				userId: this.authUserService.userInfo?.userId!,
+				orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
+				userId: this.authUserService.bceidUserInfoProfile?.userId!,
 			})
 			.pipe()
 			.subscribe((res: OrgUserResponse) => {
@@ -287,7 +287,7 @@ export class CrrpHomeComponent implements OnInit {
 
 		this.applicationStatistics$ = this.applicationService
 			.apiOrgsOrgIdApplicationStatisticsGet({
-				orgId: this.authUserService.userInfo?.orgId!,
+				orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
 			})
 			.pipe(
 				tap((res: ApplicationStatisticsResponse) => {

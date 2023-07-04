@@ -53,7 +53,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="action">
+						<ng-container matColumnDef="action1">
 							<mat-cell *matCellDef="let report">
 								<span class="mobile-label"></span>
 								<button
@@ -90,7 +90,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 				background-color: var(--color-primary-lightest);
 			}
 
-			.mat-column-action {
+			.mat-column-action1 {
 				text-align: right;
 				justify-content: flex-end;
 				min-width: 140px;
@@ -112,7 +112,7 @@ export class ReportsComponent {
 
 	dataSource: MatTableDataSource<OrgReportResponse> = new MatTableDataSource<OrgReportResponse>([]);
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
-	columns: string[] = ['reportDate', 'action'];
+	columns: string[] = ['reportDate', 'action1'];
 
 	constructor(
 		private router: Router,
@@ -122,7 +122,7 @@ export class ReportsComponent {
 	) {}
 
 	ngOnInit() {
-		const orgId = this.authUserService.userInfo?.orgId;
+		const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
 		if (!orgId) {
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 			return;
@@ -151,7 +151,7 @@ export class ReportsComponent {
 		this.orgReportService
 			.apiOrgsOrgIdReportsReportIdFileGet$Response({
 				reportId: report.id!,
-				orgId: this.authUserService.userInfo?.orgId!,
+				orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
 			})
 			.pipe()
 			.subscribe((resp: StrictHttpResponse<Blob>) => {
@@ -167,7 +167,7 @@ export class ReportsComponent {
 	private loadList(): void {
 		this.orgReportService
 			.apiOrgsOrgIdReportsGet({
-				orgId: this.authUserService.userInfo?.orgId!,
+				orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
 			})
 			.pipe()
 			.subscribe((res: OrgReportListResponse) => {
