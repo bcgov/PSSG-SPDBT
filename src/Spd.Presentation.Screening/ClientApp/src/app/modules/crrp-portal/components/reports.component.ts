@@ -53,7 +53,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="action">
+						<ng-container matColumnDef="action1">
 							<mat-cell *matCellDef="let report">
 								<span class="mobile-label"></span>
 								<button
@@ -90,7 +90,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 				background-color: var(--color-primary-lightest);
 			}
 
-			.mat-column-action {
+			.mat-column-action1 {
 				text-align: right;
 				justify-content: flex-end;
 				min-width: 140px;
@@ -112,7 +112,7 @@ export class ReportsComponent {
 
 	dataSource: MatTableDataSource<OrgReportResponse> = new MatTableDataSource<OrgReportResponse>([]);
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
-	columns: string[] = ['reportDate', 'action'];
+	columns: string[] = ['reportDate', 'action1'];
 
 	constructor(
 		private router: Router,

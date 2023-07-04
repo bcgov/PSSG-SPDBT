@@ -163,14 +163,14 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="actions">
+						<ng-container matColumnDef="action1">
 							<mat-header-cell *matHeaderCellDef></mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label"></span>
 								<a
 									mat-flat-button
 									(click)="onPayNow(application)"
-									class="m-2"
+									class="table-button m-2"
 									style="color: var(--color-green);"
 									aria-label="Pay now"
 									*ngIf="application.status == statisticsCode.AwaitingPayment"
@@ -181,7 +181,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 								<a
 									mat-flat-button
 									(click)="onVerifyApplicant(application)"
-									class="m-2"
+									class="table-button m-2"
 									style="color: var(--color-primary-light);"
 									aria-label="Verify Applicant"
 									*ngIf="application.status == statisticsCode.VerifyIdentity"
@@ -227,12 +227,12 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 	styles: [
 		`
 			.mat-column-status {
-				min-width: 190px;
+				min-width: 210px;
 				padding-right: 4px !important;
 				padding-left: 4px !important;
 			}
 
-			.mat-column-actions {
+			.mat-column-action1 {
 				min-width: 210px;
 				padding-right: 4px !important;
 				padding-left: 4px !important;
@@ -296,7 +296,7 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 				'applicationNumber',
 				'contractedCompanyName',
 				'status',
-				'actions',
+				'action1',
 			];
 		} else if (this.portal == 'PSSO') {
 			this.columns = [
@@ -305,7 +305,7 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 				'createdOn',
 				'applicationNumber',
 				'status',
-				'actions',
+				'action1',
 				'delegates',
 			];
 		}

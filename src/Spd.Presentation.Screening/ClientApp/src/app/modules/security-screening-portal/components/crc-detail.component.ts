@@ -72,14 +72,6 @@ import { ApplicantApplicationStatusResponse } from './crc-list.component';
 			</h4>
 		</ng-container>
 
-		<!-- <ul>
-				<li>
-					The CRRP application was submitted on {{ application.createdOn | date : constants.date.dateFormat : 'UTC' }}
-				</li>
-				<li>Paid by the {{ application.payeeType }}</li>
-				<li>The Case ID is {{ application.applicationNumber }}</li>
-			</ul> -->
-
 		<div class="row">
 			<div class="col-12">
 				<mat-table [dataSource]="dataSourceAppl">
@@ -117,12 +109,12 @@ import { ApplicantApplicationStatusResponse } from './crc-list.component';
 			<h4 class="subheading fw-normal mt-4">Downloadable Documents</h4>
 			<div class="row">
 				<div class="col-xl-4 col-lg-6 col-md-6 col-sm-12" *ngIf="fingerprintsAlert">
-					<button mat-stroked-button color="primary" class="m-2" aria-label="Download Fingerprint Package">
+					<button mat-flat-button color="primary" class="m-2" aria-label="Download Fingerprint Package">
 						<mat-icon>file_download</mat-icon>Download Fingerprint Package
 					</button>
 				</div>
 				<div class="col-xl-4 col-lg-6 col-md-6 col-sm-12" *ngIf="statutoryDeclarationAlert">
-					<button mat-stroked-button color="primary" class="m-2" aria-label="Download Statutory Declaration">
+					<button mat-flat-button color="primary" class="m-2" aria-label="Download Statutory Declaration">
 						<mat-icon>file_download</mat-icon>Download Statutory Declaration
 					</button>
 				</div>
@@ -130,8 +122,7 @@ import { ApplicantApplicationStatusResponse } from './crc-list.component';
 		</ng-container>
 
 		<h4 class="subheading fw-normal mt-4">Document Upload History</h4>
-		<ng-container>
-			<!-- *ngIf="opportunityToRespondAlert || requestForAdditionalInfoAlert">-->
+		<ng-container *ngIf="opportunityToRespondAlert || requestForAdditionalInfoAlert">
 			<div class="row">
 				<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
 					<button
@@ -274,7 +265,7 @@ export class CrcDetailComponent {
 	}
 
 	private getOpportunityToRespondText(): string | null {
-		return 'You can to respond to the outcome of your risk assessment. Upload a Word or PDF document providing more information.';
+		return 'You have to respond to the outcome of your risk assessment. Upload a Word or PDF document providing more information.';
 	}
 
 	private getRequestForAdditionalInfoText(): string | null {

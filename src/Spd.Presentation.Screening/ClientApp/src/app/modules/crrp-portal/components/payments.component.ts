@@ -136,7 +136,7 @@ export interface PaymentResponse extends ApplicationResponse {
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="actions">
+						<ng-container matColumnDef="action1">
 							<mat-header-cell *matHeaderCellDef></mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<button
@@ -187,7 +187,7 @@ export interface PaymentResponse extends ApplicationResponse {
 				padding-left: 4px !important;
 			}
 
-			.mat-column-actions {
+			.mat-column-action1 {
 				min-width: 150px;
 				padding-right: 4px !important;
 				padding-left: 4px !important;
@@ -206,7 +206,7 @@ export class PaymentsComponent implements OnInit {
 
 	dataSource: MatTableDataSource<PaymentResponse> = new MatTableDataSource<PaymentResponse>([]);
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
-	columns: string[] = ['applicantName', 'createdOn', 'paidOn', 'applicationNumber', 'status', 'actions'];
+	columns: string[] = ['applicantName', 'createdOn', 'paidOn', 'applicationNumber', 'status', 'action1'];
 
 	showDropdownOverlay = false;
 	formFilter: FormGroup = this.formBuilder.group(new PaymentFilter());
