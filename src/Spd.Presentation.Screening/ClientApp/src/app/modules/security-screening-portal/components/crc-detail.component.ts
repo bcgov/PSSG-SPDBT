@@ -1,17 +1,22 @@
+import { Location } from '@angular/common';
 import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import {
 	ApplicantApplicationFileListResponse,
 	ApplicantApplicationFileResponse,
 	ApplicantApplicationResponse,
 	ApplicationPortalStatusCode,
+	CaseSubStatusCode,
+	FileTypeCode,
 } from 'src/app/api/models';
 import { ApplicantService } from 'src/app/api/services';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { SecurityScreeningRoutes } from '../security-screening-routing.module';
+import { CrcUploadDialogData, CrcUploadModalComponent } from './crc-upload-modal.component';
 
 @Component({
 	selector: 'app-crc-detail',
@@ -67,80 +72,76 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 					</mat-chip-option>
 				</mat-chip-listbox>
 			</h4>
+		</ng-container>
 
-			<!-- <ul>
-				<li>
-					The CRRP application was submitted on {{ application.createdOn | date : constants.date.dateFormat : 'UTC' }}
-				</li>
-				<li>Paid by the {{ application.payeeType }}</li>
-				<li>The Case ID is {{ application.applicationNumber }}</li>
-			</ul> -->
+		<div class="row">
+			<div class="col-12">
+				<mat-table [dataSource]="dataSourceAppl">
+					<ng-container matColumnDef="applicationNumber">
+						<mat-header-cell *matHeaderCellDef>Case ID</mat-header-cell>
+						<mat-cell *matCellDef="let application">
+							<span class="mobile-label">Case ID:</span>
+							{{ application.applicationNumber }}
+						</mat-cell>
+					</ng-container>
 
+					<ng-container matColumnDef="createdOn">
+						<mat-header-cell *matHeaderCellDef>Submitted On</mat-header-cell>
+						<mat-cell *matCellDef="let application">
+							<span class="mobile-label">Submitted On:</span>
+							{{ application.createdOn | date : constants.date.dateFormat : 'UTC' }}
+						</mat-cell>
+					</ng-container>
+
+					<ng-container matColumnDef="payeeType">
+						<mat-header-cell *matHeaderCellDef>Paid By</mat-header-cell>
+						<mat-cell *matCellDef="let application">
+							<span class="mobile-label">Paid By:</span>
+							{{ application.payeeType }}
+						</mat-cell>
+					</ng-container>
+
+					<mat-header-row *matHeaderRowDef="columnsAppl; sticky: true"></mat-header-row>
+					<mat-row *matRowDef="let row; columns: columnsAppl"></mat-row>
+				</mat-table>
+			</div>
+		</div>
+
+		<ng-container *ngIf="fingerprintsAlert || statutoryDeclarationAlert">
+			<h4 class="subheading fw-normal mt-4">Downloadable Documents</h4>
 			<div class="row">
-				<div class="col-12">
-					<mat-table [dataSource]="dataSourceAppl">
-						<ng-container matColumnDef="applicationNumber">
-							<mat-header-cell *matHeaderCellDef>Case ID</mat-header-cell>
-							<mat-cell *matCellDef="let application">
-								<span class="mobile-label">Case ID:</span>
-								{{ application.applicationNumber }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="createdOn">
-							<mat-header-cell *matHeaderCellDef>Submitted On</mat-header-cell>
-							<mat-cell *matCellDef="let application">
-								<span class="mobile-label">Submitted On:</span>
-								{{ application.createdOn | date : constants.date.dateFormat : 'UTC' }}
-							</mat-cell>
-						</ng-container>
-
-						<ng-container matColumnDef="payeeType">
-							<mat-header-cell *matHeaderCellDef>Paid By</mat-header-cell>
-							<mat-cell *matCellDef="let application">
-								<span class="mobile-label">Paid By:</span>
-								{{ application.payeeType }}
-							</mat-cell>
-						</ng-container>
-
-						<mat-header-row *matHeaderRowDef="columnsAppl; sticky: true"></mat-header-row>
-						<mat-row *matRowDef="let row; columns: columnsAppl"></mat-row>
-					</mat-table>
+				<div class="col-xl-4 col-lg-6 col-md-6 col-sm-12" *ngIf="fingerprintsAlert">
+					<button mat-flat-button color="primary" class="m-2" aria-label="Download Fingerprint Package">
+						<mat-icon>file_download</mat-icon>Download Fingerprint Package
+					</button>
+				</div>
+				<div class="col-xl-4 col-lg-6 col-md-6 col-sm-12" *ngIf="statutoryDeclarationAlert">
+					<button mat-flat-button color="primary" class="m-2" aria-label="Download Statutory Declaration">
+						<mat-icon>file_download</mat-icon>Download Statutory Declaration
+					</button>
 				</div>
 			</div>
+		</ng-container>
 
-			<ng-container *ngIf="fingerprintsAlert || statutoryDeclarationAlert">
-				<h4 class="subheading fw-normal mt-4">Downloadable Documents</h4>
-				<div class="row">
-					<div class="col-xl-4 col-lg-6 col-md-6 col-sm-12" *ngIf="fingerprintsAlert">
-						<button mat-stroked-button color="primary" class="m-2" aria-label="Download Fingerprint Package">
-							<mat-icon>file_download</mat-icon>Download Fingerprint Package
-						</button>
-					</div>
-					<div class="col-xl-4 col-lg-6 col-md-6 col-sm-12" *ngIf="statutoryDeclarationAlert">
-						<button mat-stroked-button color="primary" class="m-2" aria-label="Download Statutory Declaration">
-							<mat-icon>file_download</mat-icon>Download Statutory Declaration
-						</button>
-					</div>
+		<ng-container *ngIf="opportunityToRespondAlert || requestForAdditionalInfoAlert">
+			<h4 class="subheading fw-normal mt-4">Upload Document</h4>
+			<div class="row">
+				<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
+					<button
+						mat-flat-button
+						color="primary"
+						class="m-2"
+						aria-label="Upload a Word or PDF document providing more information"
+						(click)="onUploadFile()"
+					>
+						<mat-icon>file_upload</mat-icon>Upload a Word or PDF Document
+					</button>
 				</div>
-			</ng-container>
+			</div>
+		</ng-container>
 
+		<ng-container *ngIf="documentHistoryExists">
 			<h4 class="subheading fw-normal mt-4">Document Upload History</h4>
-			<ng-container *ngIf="opportunityToRespondAlert || requestForAdditionalInfoAlert">
-				<div class="row">
-					<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="m-2"
-							aria-label="Upload a Word or PDF document providing more information"
-						>
-							<mat-icon>file_upload</mat-icon>Upload a Word or PDF Document
-						</button>
-					</div>
-				</div>
-			</ng-container>
-
 			<div class="row">
 				<div class="col-12">
 					<mat-table [dataSource]="dataSourceHistory">
@@ -156,7 +157,7 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 							<mat-header-cell *matHeaderCellDef>File Type</mat-header-cell>
 							<mat-cell *matCellDef="let document">
 								<span class="mobile-label">File Type:</span>
-								{{ document.fileTypeCode }}
+								{{ document.fileTypeCode | options : 'FileTypes' }}
 							</mat-cell>
 						</ng-container>
 
@@ -190,6 +191,7 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 export class CrcDetailComponent {
 	applicantName = '';
 	applicationPortalStatusClass = '';
+	documentHistoryExists = false;
 	application: ApplicantApplicationResponse | null = null;
 
 	constants = SPD_CONSTANTS;
@@ -205,79 +207,97 @@ export class CrcDetailComponent {
 	requestForAdditionalInfoAlert: string | null = null;
 	fingerprintsAlert: string | null = null;
 	statutoryDeclarationAlert: string | null = null;
+	associatedFileType: FileTypeCode | null = null;
 
 	constructor(
 		private router: Router,
-		private route: ActivatedRoute,
 		private applicantService: ApplicantService,
 		private authUserService: AuthUserService,
-		private utilService: UtilService
+		private location: Location,
+		private utilService: UtilService,
+		private dialog: MatDialog
 	) {}
 
 	ngOnInit() {
-		this.route.queryParamMap.subscribe((params) => {
-			const applicationId = params.get('applicationId');
-			if (!applicationId) {
-				this.router.navigateByUrl(SecurityScreeningRoutes.path(SecurityScreeningRoutes.CRC_LIST));
-				return;
-			}
-
-			this.loadList(applicationId);
-		});
+		const applicationData = (this.location.getState() as any)?.applicationData;
+		if (applicationData) {
+			this.loadList(applicationData);
+		} else {
+			this.router.navigate([SecurityScreeningRoutes.path(SecurityScreeningRoutes.CRC_LIST)]);
+		}
 	}
 
 	onBack(): void {
 		this.router.navigateByUrl(SecurityScreeningRoutes.path(SecurityScreeningRoutes.CRC_LIST));
 	}
 
-	private loadList(applicationId: string): void {
+	onUploadFile(): void {
+		const dialogOptions: CrcUploadDialogData = {
+			applicationId: this.application!.id!,
+			fileType: this.associatedFileType!,
+		};
+
+		this.dialog
+			.open(CrcUploadModalComponent, {
+				width: '800px',
+				data: dialogOptions,
+			})
+			.afterClosed()
+			.subscribe((resp) => {
+				if (resp) {
+					this.router.navigate([SecurityScreeningRoutes.path(SecurityScreeningRoutes.CRC_LIST)]);
+				}
+			});
+	}
+
+	private loadList(application: ApplicantApplicationResponse): void {
 		this.applicantName = this.utilService.getFullName(
-			this.authUserService.applicantProfile?.firstName,
-			this.authUserService.applicantProfile?.lastName
+			this.authUserService.bcscUserWhoamiProfile?.firstName,
+			this.authUserService.bcscUserWhoamiProfile?.lastName
 		);
 
+		this.application = application;
+		this.applicationPortalStatusClass = this.utilService.getApplicationPortalStatusClass(application.status);
+
+		if (application.status == ApplicationPortalStatusCode.AwaitingApplicant) {
+			switch (application.caseSubStatus) {
+				case CaseSubStatusCode.Fingerprints:
+					this.fingerprintsAlert = this.getFingerprintsText();
+					this.associatedFileType = FileTypeCode.ConfirmationOfFingerprints;
+					break;
+				case CaseSubStatusCode.ApplicantInformation:
+					this.opportunityToRespondAlert = this.getOpportunityToRespondText();
+					this.associatedFileType = FileTypeCode.ApplicantInformation;
+					break;
+				case CaseSubStatusCode.OpportunityToRespond:
+					this.requestForAdditionalInfoAlert = this.getRequestForAdditionalInfoText();
+					this.associatedFileType = FileTypeCode.OpportunityToRespond;
+					break;
+				case CaseSubStatusCode.StatutoryDeclaration:
+					this.statutoryDeclarationAlert = this.getStatutoryDeclarationText();
+					this.associatedFileType = FileTypeCode.StatutoryDeclaration;
+					break;
+			}
+		}
+
+		this.dataSourceAppl = new MatTableDataSource<ApplicantApplicationResponse>([]);
+		this.dataSourceAppl.data = [this.application!];
+
+		this.loadDocumentHistory();
+	}
+
+	private loadDocumentHistory(): void {
 		this.applicantService
-			.apiApplicantsApplicantIdApplicationsApplicationIdGet({
-				applicantId: this.authUserService.applicantProfile?.applicantId!,
-				applicationId: applicationId,
-			})
-			.pipe()
-			.subscribe((res: ApplicantApplicationResponse) => {
-				this.application = res;
-				this.applicationPortalStatusClass = this.utilService.getApplicationPortalStatusClass(res.status);
-
-				if (res.status == ApplicationPortalStatusCode.AwaitingApplicant) {
-					switch (res.caseSubStatus?.toUpperCase()) {
-						case 'FINGERPRINTS':
-							this.fingerprintsAlert = this.getFingerprintsText();
-							break;
-						case 'APPLICANTINFORMATION':
-							this.opportunityToRespondAlert = this.getOpportunityToRespondText();
-							break;
-						case 'AWAITINGINFORMATION':
-							this.requestForAdditionalInfoAlert = this.getRequestForAdditionalInfoText();
-							break;
-						case 'STATUTORYDECLARATION':
-							this.statutoryDeclarationAlert = this.getStatutoryDeclarationText();
-							break;
-					}
-				}
-
-				this.dataSourceAppl = new MatTableDataSource<ApplicantApplicationResponse>([]);
-				this.dataSourceAppl.data = [res];
-			});
-
-		this.dataSourceHistory = new MatTableDataSource<ApplicantApplicationFileResponse>([]);
-		this.applicantService
-			.apiApplicantsScreeningsApplicationIdFilesGet({ applicationId })
+			.apiApplicantsScreeningsApplicationIdFilesGet({ applicationId: this.application?.id! })
 			.pipe()
 			.subscribe((res: ApplicantApplicationFileListResponse) => {
 				this.dataSourceHistory.data = res.items ?? [];
+				this.documentHistoryExists = this.dataSourceHistory.data.length > 0 ?? false;
 			});
 	}
 
 	private getOpportunityToRespondText(): string | null {
-		return 'You can to respond to the outcome of your risk assessment. Upload a Word or PDF document providing more information.';
+		return 'You have to respond to the outcome of your risk assessment. Upload a Word or PDF document providing more information.';
 	}
 
 	private getRequestForAdditionalInfoText(): string | null {

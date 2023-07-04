@@ -216,7 +216,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		const orgProfile = this.authUserService.userOrgProfile;
+		const orgProfile = this.authUserService.bceidUserOrgProfile;
 
 		//TODO What to do in PSSO?
 		this.showScreeningType = orgProfile
@@ -408,7 +408,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 			body.applicationInviteCreateRequests?.length == 1 ? this.yesMessageSingular : this.yesMessageMultiple;
 
 		this.applicationService
-			.apiOrgsOrgIdApplicationInvitesPost({ orgId: this.authUserService.userInfo?.orgId!, body })
+			.apiOrgsOrgIdApplicationInvitesPost({ orgId: this.authUserService.bceidUserInfoProfile?.orgId!, body })
 			.pipe()
 			.subscribe((dupres: ApplicationInvitesCreateResponse) => {
 				if (dupres.createSuccess) {
@@ -461,7 +461,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 	private saveInviteRequests(body: ApplicationInvitesCreateRequest, message: string): void {
 		body.requireDuplicateCheck = false;
 		this.applicationService
-			.apiOrgsOrgIdApplicationInvitesPost({ orgId: this.authUserService.userInfo?.orgId!, body })
+			.apiOrgsOrgIdApplicationInvitesPost({ orgId: this.authUserService.bceidUserInfoProfile?.orgId!, body })
 			.pipe()
 			.subscribe((_resp: any) => {
 				this.handleSaveSuccess(message);

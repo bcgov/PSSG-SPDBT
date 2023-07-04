@@ -448,7 +448,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		const orgId = this.authUserService.userInfo?.orgId;
+		const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
 		if (!orgId) {
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 			return;
@@ -498,7 +498,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 
 			// Check for potential duplicate
 			this.applicationService
-				.apiOrgsOrgIdApplicationPost({ orgId: this.authUserService.userInfo?.orgId!, body })
+				.apiOrgsOrgIdApplicationPost({ orgId: this.authUserService.bceidUserInfoProfile?.orgId!, body })
 				.pipe()
 				.subscribe((dupres: ApplicationCreateResponse) => {
 					this.displayDataValidationMessage(body, dupres);
@@ -656,7 +656,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 
 		this.applicationService
 			.apiOrgsOrgIdApplicationPost({
-				orgId: this.authUserService.userInfo?.orgId!,
+				orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
 				body,
 			})
 			.pipe()

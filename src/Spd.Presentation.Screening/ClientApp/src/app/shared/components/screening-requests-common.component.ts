@@ -128,7 +128,7 @@ export const ScreeningCheckFilterMap: Record<keyof ScreeningCheckFilter, string>
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="actions">
+						<ng-container matColumnDef="action1">
 							<mat-header-cell *matHeaderCellDef></mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<button
@@ -162,7 +162,18 @@ export const ScreeningCheckFilterMap: Record<keyof ScreeningCheckFilter, string>
 	`,
 	styles: [
 		`
-			.mat-column-actions {
+			@media (min-width: 1200px) {
+				/* only force max width on large screens */
+				.mat-column-createdOn {
+					max-width: 160px;
+				}
+
+				.mat-column-viewed {
+					max-width: 100px;
+				}
+			}
+
+			.mat-column-action1 {
 				min-width: 185px;
 			}
 
@@ -193,7 +204,7 @@ export class ScreeningRequestsCommonComponent implements OnInit {
 
 	dataSource: MatTableDataSource<ApplicationInviteResponse> = new MatTableDataSource<ApplicationInviteResponse>([]);
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
-	columns: string[] = ['applicantName', 'emailAddress', 'jobTitle', 'payeeType', 'createdOn', 'viewed', 'actions'];
+	columns: string[] = ['applicantName', 'emailAddress', 'jobTitle', 'payeeType', 'createdOn', 'viewed', 'action1'];
 	formFilter: FormGroup = this.formBuilder.group({
 		search: new FormControl(''),
 	});
@@ -218,16 +229,16 @@ export class ScreeningRequestsCommonComponent implements OnInit {
 	) {}
 
 	ngOnInit() {
-		const orgId = this.authUserService.userInfo?.orgId;
+		const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
 		if (!orgId) {
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 			return;
 		}
 
 		if (this.portal == 'CRRP') {
-			this.columns = ['applicantName', 'emailAddress', 'jobTitle', 'payeeType', 'createdOn', 'viewed', 'actions'];
+			this.columns = ['applicantName', 'emailAddress', 'jobTitle', 'payeeType', 'createdOn', 'viewed', 'action1'];
 		} else if (this.portal == 'PSSO') {
-			this.columns = ['applicantName', 'emailAddress', 'jobTitle', 'createdOn', 'viewed', 'actions'];
+			this.columns = ['applicantName', 'emailAddress', 'jobTitle', 'createdOn', 'viewed', 'action1'];
 		}
 
 		this.loadList();
@@ -264,7 +275,7 @@ export class ScreeningRequestsCommonComponent implements OnInit {
 					this.applicationService
 						.apiOrgsOrgIdApplicationInvitesApplicationInviteIdDelete({
 							applicationInviteId: application.id!,
-							orgId: this.authUserService.userInfo?.orgId!,
+							orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
 						})
 						.pipe()
 						.subscribe((_res) => {
@@ -300,7 +311,7 @@ export class ScreeningRequestsCommonComponent implements OnInit {
 	private loadList(): void {
 		this.applicationService
 			.apiOrgsOrgIdApplicationInvitesGet({
-				orgId: this.authUserService.userInfo?.orgId!,
+				orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
 				...this.queryParams,
 			})
 			.pipe()

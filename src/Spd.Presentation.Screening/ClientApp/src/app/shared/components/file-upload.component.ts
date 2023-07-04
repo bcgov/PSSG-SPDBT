@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { HotToastService } from '@ngneat/hot-toast';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { DialogComponent, DialogOptions } from './dialog.component';
 
@@ -93,6 +94,9 @@ export class FileUploadHelper {
 				</ng-container>
 			</div>
 		</ngx-dropzone>
+		<!-- <button mat-stroked-button (click)="fileDropzone.showFileSelector()" class="large w-auto mt-2">
+			<mat-icon>file_open</mat-icon> Add file
+		</button> -->
 	`,
 	styles: [
 		`
@@ -135,7 +139,7 @@ export class FileUploadComponent {
 
 	maxFileSize: number = SPD_CONSTANTS.document.maxFileSize; // bytes
 
-	constructor(private dialog: MatDialog) {}
+	constructor(private dialog: MatDialog, private hotToastService: HotToastService) {}
 
 	onUploadFile(evt: any) {
 		if (this.maxNumberOfFiles == 1) {
@@ -143,6 +147,7 @@ export class FileUploadComponent {
 		}
 
 		if (this.maxNumberOfFiles !== 0 && this.files.length >= this.maxNumberOfFiles) {
+			this.hotToastService.warning(`You are only allowed to upload a maximum of ${this.maxNumberOfFiles} files`);
 			return;
 		}
 
@@ -189,6 +194,10 @@ export class FileUploadComponent {
 
 	removeAllFiles(): void {
 		this.files = [];
+	}
+
+	getFileType(file: File): DocumentTypeCode {
+		return FileUploadHelper.getFileDocumentType(file);
 	}
 
 	getFileIcon(file: File): IconType {

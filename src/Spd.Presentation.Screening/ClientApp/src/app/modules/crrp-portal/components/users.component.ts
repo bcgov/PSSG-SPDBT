@@ -211,7 +211,7 @@ export class UsersComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		const orgId = this.authUserService.userInfo?.orgId;
+		const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
 		if (!orgId) {
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 			return;
@@ -263,7 +263,7 @@ export class UsersComponent implements OnInit {
 
 	allowEditRow(user: OrgUserResponse): boolean {
 		// if row is current user, allow edit
-		if (this.authUserService.userInfo?.userId == user.id) {
+		if (this.authUserService.bceidUserInfoProfile?.userId == user.id) {
 			return true;
 		}
 
@@ -282,7 +282,7 @@ export class UsersComponent implements OnInit {
 		}
 
 		// if row is current user, prevent delete
-		if (this.authUserService.userInfo?.userId == user.id) {
+		if (this.authUserService.bceidUserInfoProfile?.userId == user.id) {
 			return false;
 		}
 
@@ -383,7 +383,7 @@ export class UsersComponent implements OnInit {
 
 	private loadList(): void {
 		this.orgUserService
-			.apiOrgsOrgIdUsersGet({ orgId: this.authUserService.userInfo?.orgId! })
+			.apiOrgsOrgIdUsersGet({ orgId: this.authUserService.bceidUserInfoProfile?.orgId! })
 			.pipe()
 			.subscribe((res: OrgUserListResponse) => {
 				this.maximumNumberOfContacts = res.maximumNumberOfAuthorizedContacts ?? this.DEFAULT_MAX_NUMBER_OF_CONTACTS;
@@ -440,7 +440,7 @@ export class UsersComponent implements OnInit {
 			return false;
 		}
 
-		const currUser = this.usersList.find((item) => item.id == this.authUserService.userInfo?.userId);
+		const currUser = this.usersList.find((item) => item.id == this.authUserService.bceidUserInfoProfile?.userId);
 		return currUser ? currUser.contactAuthorizationTypeCode == ContactAuthorizationTypeCode.Primary : false;
 	}
 }

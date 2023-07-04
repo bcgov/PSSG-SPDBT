@@ -380,17 +380,17 @@ export class CrcComponent implements OnInit {
 	}
 
 	private assignApplicantUserInfoData(orgData: AppInviteOrgData | null): void {
-		const applicantUserInfo = this.authUserService.applicantUserInfo;
+		const bcscUserInfoProfile = this.authUserService.bcscUserInfoProfile;
 
-		if (orgData && applicantUserInfo) {
+		if (orgData && bcscUserInfoProfile) {
 			orgData.readonlyTombstone = true;
-			orgData.givenName = applicantUserInfo?.firstName;
-			orgData.surname = applicantUserInfo?.lastName;
-			orgData.middleName1 = applicantUserInfo?.middleName1;
-			orgData.middleName2 = applicantUserInfo?.middleName2;
-			orgData.dateOfBirth = applicantUserInfo?.birthDate;
-			orgData.emailAddress = applicantUserInfo?.email;
-			orgData.genderCode = applicantUserInfo?.genderCode;
+			orgData.givenName = bcscUserInfoProfile?.firstName;
+			orgData.surname = bcscUserInfoProfile?.lastName;
+			orgData.middleName1 = bcscUserInfoProfile?.middleName1;
+			orgData.middleName2 = bcscUserInfoProfile?.middleName2;
+			orgData.dateOfBirth = bcscUserInfoProfile?.birthDate;
+			orgData.emailAddress = bcscUserInfoProfile?.email;
+			orgData.genderCode = bcscUserInfoProfile?.genderCode;
 		}
 	}
 

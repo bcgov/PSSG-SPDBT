@@ -273,16 +273,17 @@ export class OrganizationProfileComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		const orgId = this.authUserService.userInfo?.orgId;
+		const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
 		if (!orgId) {
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 			return;
 		}
 
-		this.editable = this.authUserService.userInfo?.contactAuthorizationTypeCode == ContactAuthorizationTypeCode.Primary;
+		this.editable =
+			this.authUserService.bceidUserInfoProfile?.contactAuthorizationTypeCode == ContactAuthorizationTypeCode.Primary;
 		console.log('editable', this.editable);
 		this.orgService
-			.apiOrgsOrgIdGet({ orgId: this.authUserService.userInfo?.orgId! })
+			.apiOrgsOrgIdGet({ orgId: this.authUserService.bceidUserInfoProfile?.orgId! })
 			.pipe()
 			.subscribe((resp: OrgResponse) => {
 				this.form.patchValue(resp);
@@ -327,7 +328,7 @@ export class OrganizationProfileComponent implements OnInit {
 	onSave() {
 		this.form.markAllAsTouched();
 		if (this.form.valid) {
-			const body: OrgUpdateRequest = { ...this.form.value, id: this.authUserService.userInfo?.orgId! };
+			const body: OrgUpdateRequest = { ...this.form.value, id: this.authUserService.bceidUserInfoProfile?.orgId! };
 			if (body.phoneNumber) {
 				body.phoneNumber = this.maskPipe.transform(body.phoneNumber, SPD_CONSTANTS.phone.backendMask);
 			}
@@ -336,7 +337,7 @@ export class OrganizationProfileComponent implements OnInit {
 			}
 
 			this.orgService
-				.apiOrgsOrgIdPut({ orgId: this.authUserService.userInfo?.orgId!, body })
+				.apiOrgsOrgIdPut({ orgId: this.authUserService.bceidUserInfoProfile?.orgId!, body })
 				.pipe()
 				.subscribe((resp: OrgUpdateRequest) => {
 					this.viewOnly = true;
