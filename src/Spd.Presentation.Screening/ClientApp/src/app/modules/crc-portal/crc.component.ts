@@ -4,7 +4,6 @@ import { Location } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged, Observable, tap } from 'rxjs';
 import {
 	ApplicantAppCreateRequest,
@@ -171,8 +170,7 @@ export class CrcComponent implements OnInit {
 		private authProcessService: AuthProcessService,
 		private authUserService: AuthUserService,
 		private applicantService: ApplicantService,
-		private location: Location,
-		private hotToast: HotToastService
+		private location: Location
 	) {}
 
 	async ngOnInit(): Promise<void> {
