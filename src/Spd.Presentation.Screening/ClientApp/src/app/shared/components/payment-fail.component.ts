@@ -6,11 +6,18 @@ import { Router } from '@angular/router';
 	template: `
 		<div class="row">
 			<div class="col-xl-6 col-lg-4 col-md-12">
-				<h3 class="fw-normal">Payment Failed</h3>
+				<h3 class="fw-normal m-2">Payment Failed</h3>
 			</div>
 			<div class="col-xl-6 col-lg-8 col-md-12">
 				<div class="d-flex justify-content-end">
-					<button mat-stroked-button color="primary" class="large w-auto m-2" aria-label="Back" (click)="onBack()">
+					<button
+						mat-stroked-button
+						color="primary"
+						class="large w-auto m-2"
+						aria-label="Back"
+						*ngIf="backRoute"
+						(click)="onBack()"
+					>
 						<mat-icon>arrow_back</mat-icon>Back
 					</button>
 					<button mat-flat-button color="primary" class="large w-auto m-2" aria-label="Pay Now">
@@ -79,6 +86,10 @@ import { Router } from '@angular/router';
 			.text {
 				font-weight: 700;
 				line-height: 1.5em;
+			}
+
+			a {
+				color: var(--bs-link-color) !important;
 			}
 		`,
 	],

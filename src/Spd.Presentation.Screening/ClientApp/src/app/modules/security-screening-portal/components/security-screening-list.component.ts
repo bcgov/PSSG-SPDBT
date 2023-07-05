@@ -20,7 +20,7 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
 	actionAlert: string | null;
 }
 @Component({
-	selector: 'app-crc-list',
+	selector: 'app-security-screening-list',
 	template: `
 		<div class="row">
 			<div class="col-xl-8 col-lg-6 col-md-12">
@@ -168,7 +168,7 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
 		`,
 	],
 })
-export class CrcListComponent implements OnInit {
+export class SecurityScreeningListComponent implements OnInit {
 	applicantName = '';
 	applicationFilter: string = 'ACTIVE';
 	allApplications: Array<ApplicantApplicationStatusResponse> = [];
@@ -211,7 +211,7 @@ export class CrcListComponent implements OnInit {
 	}
 
 	onPayNow(application: ApplicantApplicationStatusResponse): void {
-		this.router.navigate([SecurityScreeningRoutes.path(SecurityScreeningRoutes.PAYMENT_SUCCESS)]);
+		this.router.navigate([SecurityScreeningRoutes.path(SecurityScreeningRoutes.PAYMENT_SUCCESS)]); // TODO Handle PAYMENT
 		// this.router.navigate([SecurityScreeningRoutes.path(SecurityScreeningRoutes.CRC_PAYMENT_FAIL)]);
 	}
 

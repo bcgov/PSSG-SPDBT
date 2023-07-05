@@ -20,6 +20,7 @@ import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
+import { CrcRoutes } from './crc-routing.module';
 import { StepApplSubmittedComponent } from './steps/step-appl-submitted.component';
 import { StepEligibilityComponent } from './steps/step-eligibility.component';
 import { StepLoginOptionsComponent } from './steps/step-login-options.component';
@@ -118,7 +119,6 @@ export interface AppInviteOrgData extends ApplicantAppCreateRequest {
 				<mat-step completed="false">
 					<ng-template matStepLabel>Application Submitted</ng-template>
 					<app-step-appl-submitted
-						[performPayment]="orgData?.performPaymentProcess ?? false"
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
 						(scrollIntoView)="onScrollIntoView()"
 					></app-step-appl-submitted>
@@ -197,15 +197,22 @@ export class CrcComponent implements OnInit {
 				country: orgData.orgCountry!,
 			});
 
-			orgData.performPaymentProcess = false; // TODO hardcode  performPaymentProcess for now
-			orgData.readonlyTombstone = false; // TODO hardcode readonlyTombstone for now
+			orgData.performPaymentProcess = false; //default
+			orgData.readonlyTombstone = false; // default
 		}
 
 		const stateInfo = await this.authProcessService.tryInitializeCrc();
 		if (stateInfo) {
 			this.postLoginNavigate(stateInfo);
 		} else {
-			this.assignApplicantUserInfoData(orgData);
+			if (orgData) {
+				// If already logged in, get the shareable information
+				if (this.authenticationService.isLoggedIn()) {
+					this.populateShareableClearance(orgData.orgId, orgData.serviceType).subscribe();
+				}
+
+				this.assignApplicantUserInfoData(orgData);
+			}
 
 			// Assign this at the end so that the orgData setters have the correct information.
 			this.orgData = orgData;
@@ -364,8 +371,12 @@ export class CrcComponent implements OnInit {
 				.apiApplicantsScreeningsPost({ body })
 				.pipe()
 				.subscribe((_res: ApplicationCreateResponse) => {
-					this.hotToast.success('Application was successfully saved');
-					this.stepper.next();
+					if (this.orgData!.performPaymentProcess) {
+						this.router.navigate([CrcRoutes.path(CrcRoutes.PAYMENT_SUCCESS)]); // TODO Handle PAYMENT
+						// this.router.navigate([CrcRoutes.path(CrcRoutes.PAYMENT_FAIL)]);
+					} else {
+						this.stepper.next();
+					}
 				});
 		} else {
 			body.haveVerifiedIdentity = false;
@@ -373,8 +384,12 @@ export class CrcComponent implements OnInit {
 				.apiApplicantsScreeningsAnonymousPost({ body })
 				.pipe()
 				.subscribe((_res: ApplicationCreateResponse) => {
-					this.hotToast.success('Application was successfully saved');
-					this.stepper.next();
+					if (this.orgData!.performPaymentProcess) {
+						this.router.navigate([CrcRoutes.path(CrcRoutes.PAYMENT_SUCCESS)]); // TODO Handle PAYMENT
+						// this.router.navigate([CrcRoutes.path(CrcRoutes.PAYMENT_FAIL)]);
+					} else {
+						this.stepper.next();
+					}
 				});
 		}
 	}

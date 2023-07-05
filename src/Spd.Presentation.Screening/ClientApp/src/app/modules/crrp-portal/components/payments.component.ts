@@ -242,7 +242,7 @@ export class PaymentsComponent implements OnInit {
 	}
 
 	onPayNow(application: PaymentResponse): void {
-		this.router.navigate([CrrpRoutes.path(CrrpRoutes.PAYMENT_SUCCESS)]);
+		this.router.navigate([CrrpRoutes.path(CrrpRoutes.PAYMENT_SUCCESS)]); // TODO Handle PAYMENT
 		// this.router.navigate([CrrpRoutes.path(CrrpRoutes.PAYMENT_FAIL)]);
 	}
 

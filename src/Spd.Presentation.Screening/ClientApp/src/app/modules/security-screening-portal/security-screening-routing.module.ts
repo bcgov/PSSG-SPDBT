@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { CrcDetailComponent } from './components/crc-detail.component';
-import { CrcListComponent } from './components/crc-list.component';
-import { CrcPaymentFailComponent } from './components/crc-payment-fail.component';
-import { CrcPaymentSuccessComponent } from './components/crc-payment-success.component';
+import { SecurityScreeningDetailComponent } from './components/security-screening-detail.component';
+import { SecurityScreeningListComponent } from './components/security-screening-list.component';
+import { SecurityScreeningPaymentFailComponent } from './components/security-screening-payment-fail.component';
+import { SecurityScreeningPaymentSuccessComponent } from './components/security-screening-payment-success.component';
 import { SecurityScreeningComponent } from './security-screening.component';
 
 export class SecurityScreeningRoutes {
@@ -25,10 +25,10 @@ const routes: Routes = [
 		path: '',
 		component: SecurityScreeningComponent,
 		children: [
-			{ path: SecurityScreeningRoutes.CRC_LIST, component: CrcListComponent },
-			{ path: SecurityScreeningRoutes.CRC_DETAIL, component: CrcDetailComponent },
-			{ path: SecurityScreeningRoutes.PAYMENT_SUCCESS, component: CrcPaymentSuccessComponent },
-			{ path: SecurityScreeningRoutes.PAYMENT_FAIL, component: CrcPaymentFailComponent },
+			{ path: SecurityScreeningRoutes.CRC_LIST, component: SecurityScreeningListComponent },
+			{ path: SecurityScreeningRoutes.CRC_DETAIL, component: SecurityScreeningDetailComponent },
+			{ path: SecurityScreeningRoutes.PAYMENT_SUCCESS, component: SecurityScreeningPaymentSuccessComponent },
+			{ path: SecurityScreeningRoutes.PAYMENT_FAIL, component: SecurityScreeningPaymentFailComponent },
 		],
 	},
 ];

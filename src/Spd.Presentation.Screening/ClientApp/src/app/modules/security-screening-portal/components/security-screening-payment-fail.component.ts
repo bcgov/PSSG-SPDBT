@@ -2,10 +2,10 @@ import { Component } from '@angular/core';
 import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 
 @Component({
-	selector: 'app-crc-payment-success',
-	template: ` <app-payment-success [backRoute]="backRoute"></app-payment-success> `,
+	selector: 'app-security-screening-payment-fail',
+	template: ` <app-payment-fail [backRoute]="backRoute"></app-payment-fail> `,
 	styles: [],
 })
-export class CrcPaymentSuccessComponent {
+export class SecurityScreeningPaymentFailComponent {
 	backRoute = SecurityScreeningRoutes.path(SecurityScreeningRoutes.CRC_LIST);
 }

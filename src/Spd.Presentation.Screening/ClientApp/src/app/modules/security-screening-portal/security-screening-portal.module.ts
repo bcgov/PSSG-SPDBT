@@ -1,15 +1,22 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { CrcDetailComponent } from './components/crc-detail.component';
-import { CrcListComponent } from './components/crc-list.component';
-import { CrcUploadModalComponent } from './components/crc-upload-modal.component';
+import { SecurityScreeningDetailComponent } from './components/security-screening-detail.component';
+import { SecurityScreeningListComponent } from './components/security-screening-list.component';
+import { SecurityScreeningPaymentFailComponent } from './components/security-screening-payment-fail.component';
+import { SecurityScreeningPaymentSuccessComponent } from './components/security-screening-payment-success.component';
+import { SecurityScreeningUploadModalComponent } from './components/security-screening-upload-modal.component';
 import { SecurityScreeningRoutingModule } from './security-screening-routing.module';
 import { SecurityScreeningComponent } from './security-screening.component';
-import { CrcPaymentSuccessComponent } from './components/crc-payment-success.component';
-import { CrcPaymentFailComponent } from './components/crc-payment-fail.component';
 
 @NgModule({
-	declarations: [SecurityScreeningComponent, CrcListComponent, CrcDetailComponent, CrcUploadModalComponent, CrcPaymentSuccessComponent, CrcPaymentFailComponent],
+	declarations: [
+		SecurityScreeningComponent,
+		SecurityScreeningListComponent,
+		SecurityScreeningDetailComponent,
+		SecurityScreeningUploadModalComponent,
+		SecurityScreeningPaymentSuccessComponent,
+		SecurityScreeningPaymentFailComponent,
+	],
 	imports: [SharedModule, SecurityScreeningRoutingModule],
 })
 export class SecurityScreeningPortalModule {}
