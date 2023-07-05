@@ -170,7 +170,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 								<button
 									mat-flat-button
 									(click)="onPayNow(application)"
-									class="table-button m-2"
+									class="table-button"
 									style="color: var(--color-green);"
 									aria-label="Pay now"
 									*ngIf="application.status == statisticsCode.AwaitingPayment"
@@ -181,7 +181,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 								<button
 									mat-flat-button
 									(click)="onVerifyApplicant(application)"
-									class="table-button m-2"
+									class="table-button"
 									style="color: var(--color-primary-light);"
 									aria-label="Verify Applicant"
 									*ngIf="application.status == statisticsCode.VerifyIdentity"
@@ -200,7 +200,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 									(click)="onManageDelegates(application)"
 									class="m-2"
 									style="color: var(--color-primary-light);"
-									aria-label="Pay now"
+									aria-label="Edit delegates"
 								>
 									<mat-icon>edit</mat-icon>Delegates
 								</button>

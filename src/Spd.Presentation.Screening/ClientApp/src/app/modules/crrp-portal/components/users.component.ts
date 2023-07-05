@@ -106,7 +106,7 @@ import { UserDialogData, UserEditModalComponent } from './user-edit-modal.compon
 							<mat-cell *matCellDef="let user">
 								<button
 									mat-flat-button
-									class="table-button my-2 me-4"
+									class="table-button"
 									style="color: var(--color-green);"
 									(click)="onMaintainUser(user)"
 									*ngIf="allowEditRow(user)"
@@ -123,7 +123,7 @@ import { UserDialogData, UserEditModalComponent } from './user-edit-modal.compon
 								<ng-container *ngIf="user.isActive; else notactiveactions">
 									<button
 										mat-flat-button
-										class="table-button my-2 me-4"
+										class="table-button"
 										style="color: var(--color-red);"
 										(click)="onDeleteUser(user)"
 										*ngIf="allowDeleteRow(user)"
@@ -135,7 +135,7 @@ import { UserDialogData, UserEditModalComponent } from './user-edit-modal.compon
 								<ng-template #notactiveactions>
 									<button
 										mat-flat-button
-										class="table-button my-2 me-4"
+										class="table-button"
 										style="color: var(--color-primary-light);"
 										(click)="onCancelInvitation(user)"
 										aria-label="Cancel invitation"

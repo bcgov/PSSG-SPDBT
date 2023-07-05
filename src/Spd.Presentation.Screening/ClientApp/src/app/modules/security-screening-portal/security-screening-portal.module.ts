@@ -5,9 +5,11 @@ import { CrcListComponent } from './components/crc-list.component';
 import { CrcUploadModalComponent } from './components/crc-upload-modal.component';
 import { SecurityScreeningRoutingModule } from './security-screening-routing.module';
 import { SecurityScreeningComponent } from './security-screening.component';
+import { CrcPaymentSuccessComponent } from './components/crc-payment-success.component';
+import { CrcPaymentFailComponent } from './components/crc-payment-fail.component';
 
 @NgModule({
-	declarations: [SecurityScreeningComponent, CrcListComponent, CrcDetailComponent, CrcUploadModalComponent],
+	declarations: [SecurityScreeningComponent, CrcListComponent, CrcDetailComponent, CrcUploadModalComponent, CrcPaymentSuccessComponent, CrcPaymentFailComponent],
 	imports: [SharedModule, SecurityScreeningRoutingModule],
 })
 export class SecurityScreeningPortalModule {}

@@ -141,7 +141,7 @@ export interface PaymentResponse extends ApplicationResponse {
 							<mat-cell *matCellDef="let application">
 								<button
 									mat-flat-button
-									class="table-button m-2"
+									class="table-button"
 									style="color: var(--color-primary-light);"
 									*ngIf="application.status != applicationPortalStatusCodes.AwaitingPayment"
 									aria-label="Download Receipt"
@@ -152,7 +152,7 @@ export interface PaymentResponse extends ApplicationResponse {
 
 								<button
 									mat-flat-button
-									class="table-button m-2"
+									class="table-button"
 									style="color: var(--color-green);"
 									*ngIf="application.status == applicationPortalStatusCodes.AwaitingPayment"
 									aria-label="Pay now"

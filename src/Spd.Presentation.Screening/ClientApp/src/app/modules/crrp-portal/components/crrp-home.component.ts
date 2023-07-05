@@ -128,7 +128,12 @@ import { CrrpRoutes } from '../crrp-routing.module';
 										<p>{{ awaitingPaymentCount }} applications require payment</p>
 									</mat-card-content>
 									<mat-card-actions class="mt-4">
-										<button mat-flat-button color="primary" [routerLink]="[getRoute(crrpRoutes.PAYMENTS)]">
+										<button
+											mat-flat-button
+											color="primary"
+											[routerLink]="[getRoute(crrpRoutes.PAYMENTS)]"
+											aria-label="Pay now"
+										>
 											<mat-icon>attach_money</mat-icon>Pay Now
 										</button>
 									</mat-card-actions>
