@@ -139,7 +139,7 @@ export interface AliasCreateRequest {
 							<mat-error *ngIf="form.get('jobTitle')?.hasError('required')">This is required</mat-error>
 						</mat-form-field>
 					</div>
-					<div class="col-xl-3 col-lg-6 col-md-12">
+					<div class="col-xl-3 col-lg-6 col-md-12" *ngIf="showScreeningType">
 						<mat-form-field>
 							<mat-label>Application Type</mat-label>
 							<mat-select formControlName="screeningTypeCode">
@@ -339,6 +339,7 @@ export interface AliasCreateRequest {
 					<div class="col-md-12 col-sm-12">
 						<mat-checkbox formControlName="haveVerifiedIdentity">
 							I confirm that I have verified the identity of the applicant for this criminal record check
+							<span class="optional-label">(optional)</span>
 						</mat-checkbox>
 					</div>
 				</div>
@@ -385,6 +386,7 @@ export interface AliasCreateRequest {
 export class ManualSubmissionCommonComponent implements OnInit {
 	@ViewChild(AddressAutocompleteComponent) addressAutocompleteComponent!: AddressAutocompleteComponent;
 	matcher = new FormErrorStateMatcher();
+	showScreeningType = false;
 
 	screeningTypes = ScreeningTypes;
 	genderCodes = GenderTypes;
@@ -423,7 +425,11 @@ export class ManualSubmissionCommonComponent implements OnInit {
 		},
 		{
 			validators: [
-				FormGroupValidators.conditionalRequiredValidator('attachments', (form) => this.portal == 'CRRP'),
+				FormGroupValidators.conditionalRequiredValidator(
+					'screeningTypeCode',
+					(form) => this.showScreeningType ?? false
+				),
+				FormGroupValidators.conditionalRequiredValidator('attachments', (form) => this.portal == PortalTypeCode.Crrp),
 				FormGroupValidators.conditionalRequiredValidator('givenName', (form) => !form.get('oneLegalName')?.value),
 				FormGroupValidators.conditionalRequiredValidator('contractedCompanyName', (form) =>
 					[ScreeningTypeCode.Contractor, ScreeningTypeCode.Licensee].includes(form.get('screeningTypeCode')?.value)
@@ -448,6 +454,12 @@ export class ManualSubmissionCommonComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
+		const orgProfile = this.authUserService.bceidUserOrgProfile;
+		this.showScreeningType = orgProfile
+			? orgProfile.contractorsNeedVulnerableSectorScreening == BooleanTypeCode.Yes ||
+			  orgProfile.licenseesNeedVulnerableSectorScreening == BooleanTypeCode.Yes
+			: false;
+
 		const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
 		if (!orgId) {
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);

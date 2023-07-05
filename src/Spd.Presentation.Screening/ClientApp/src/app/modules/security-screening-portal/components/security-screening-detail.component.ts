@@ -16,10 +16,13 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { SecurityScreeningRoutes } from '../security-screening-routing.module';
-import { CrcUploadDialogData, CrcUploadModalComponent } from './crc-upload-modal.component';
+import {
+	CrcUploadDialogData,
+	SecurityScreeningUploadModalComponent,
+} from './security-screening-upload-modal.component';
 
 @Component({
-	selector: 'app-crc-detail',
+	selector: 'app-security-screening-detail',
 	template: `
 		<div class="row">
 			<div class="col-xl-6 col-lg-4 col-md-12">
@@ -188,7 +191,7 @@ import { CrcUploadDialogData, CrcUploadModalComponent } from './crc-upload-modal
 		`,
 	],
 })
-export class CrcDetailComponent {
+export class SecurityScreeningDetailComponent {
 	applicantName = '';
 	applicationPortalStatusClass = '';
 	documentHistoryExists = false;
@@ -238,7 +241,7 @@ export class CrcDetailComponent {
 		};
 
 		this.dialog
-			.open(CrcUploadModalComponent, {
+			.open(SecurityScreeningUploadModalComponent, {
 				width: '800px',
 				data: dialogOptions,
 			})

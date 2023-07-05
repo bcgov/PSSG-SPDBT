@@ -10,7 +10,7 @@ export interface CrcUploadDialogData {
 }
 
 @Component({
-	selector: 'app-crc-upload-modal',
+	selector: 'app-security-screening-upload-modal',
 	template: `
 		<div mat-dialog-title>Upload Additional Document</div>
 		<mat-dialog-content class="mb-2">
@@ -33,12 +33,12 @@ export interface CrcUploadDialogData {
 	`,
 	styles: [],
 })
-export class CrcUploadModalComponent implements OnInit {
+export class SecurityScreeningUploadModalComponent implements OnInit {
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
 	constructor(
 		private applicantService: ApplicantService,
-		private dialogRef: MatDialogRef<CrcUploadModalComponent>,
+		private dialogRef: MatDialogRef<SecurityScreeningUploadModalComponent>,
 		@Inject(MAT_DIALOG_DATA) public dialogData: CrcUploadDialogData
 	) {}
 
