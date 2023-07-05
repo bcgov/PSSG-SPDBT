@@ -18,6 +18,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { ScreeningStatusFilterMap } from 'src/app/shared/components/screening-status-filter-common.component';
+import { CrrpRoutes } from '../crrp-routing.module';
 import { PaymentFilter } from './payment-filter.component';
 
 export interface PaymentResponse extends ApplicationResponse {
@@ -141,7 +142,7 @@ export interface PaymentResponse extends ApplicationResponse {
 							<mat-cell *matCellDef="let application">
 								<button
 									mat-flat-button
-									class="table-button m-2"
+									class="table-button"
 									style="color: var(--color-primary-light);"
 									*ngIf="application.status != applicationPortalStatusCodes.AwaitingPayment"
 									aria-label="Download Receipt"
@@ -152,12 +153,13 @@ export interface PaymentResponse extends ApplicationResponse {
 
 								<button
 									mat-flat-button
-									class="table-button m-2"
+									class="table-button"
 									style="color: var(--color-green);"
 									*ngIf="application.status == applicationPortalStatusCodes.AwaitingPayment"
 									aria-label="Pay now"
+									(click)="onPayNow(application)"
 								>
-									<mat-icon>send</mat-icon>Pay Now
+									<mat-icon>payment</mat-icon>Pay Now
 								</button>
 							</mat-cell>
 						</ng-container>
@@ -237,6 +239,11 @@ export class PaymentsComponent implements OnInit {
 		this.formFilter.patchValue({ search: caseId });
 
 		this.performSearch(caseId);
+	}
+
+	onPayNow(application: PaymentResponse): void {
+		this.router.navigate([CrrpRoutes.path(CrrpRoutes.PAYMENT_SUCCESS)]); // TODO Handle PAYMENT
+		// this.router.navigate([CrrpRoutes.path(CrrpRoutes.PAYMENT_FAIL)]);
 	}
 
 	onShowDropdownOverlayChange(show: boolean): void {

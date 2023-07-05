@@ -136,13 +136,13 @@ export interface IdentityVerificationResponse extends ApplicationResponse {
 							<mat-cell *matCellDef="let application">
 								<button
 									mat-flat-button
-									class="table-button m-2"
+									class="table-button"
 									style="color: var(--color-green);"
 									aria-label="Confirm"
 									*ngIf="!application.hideActions"
 									(click)="onConfirm(application)"
 								>
-									<mat-icon>check</mat-icon>Confirm
+									<mat-icon>check_circle</mat-icon>Confirm
 								</button>
 							</mat-cell>
 						</ng-container>
@@ -152,7 +152,7 @@ export interface IdentityVerificationResponse extends ApplicationResponse {
 							<mat-cell *matCellDef="let application">
 								<button
 									mat-flat-button
-									class="table-button m-2"
+									class="table-button"
 									style="color: var(--color-red);"
 									aria-label="Reject"
 									*ngIf="!application.hideActions"

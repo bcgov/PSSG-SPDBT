@@ -58,7 +58,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 								<span class="mobile-label"></span>
 								<button
 									mat-flat-button
-									class="table-button w-auto m-2"
+									class="table-button w-auto"
 									style="color: var(--color-primary-light);"
 									(click)="onDownloadReport(report)"
 									aria-label="Download"

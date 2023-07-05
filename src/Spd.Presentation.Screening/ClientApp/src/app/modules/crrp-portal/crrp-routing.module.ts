@@ -3,6 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { ApplicationStatusesComponent } from './components/application-statuses.component';
 import { CriminalRecordChecksComponent } from './components/criminal-record-checks.component';
 import { CrrpHomeComponent } from './components/crrp-home.component';
+import { CrrpPaymentFailComponent } from './components/crrp-payment-fail.component';
+import { CrrpPaymentSuccessComponent } from './components/crrp-payment-success.component';
 import { ExpiringChecksComponent } from './components/expiring-checks.component';
 import { GenericUploadsComponent } from './components/generic-uploads.component';
 import { IdentifyVerificationComponent } from './components/identify-verification.component';
@@ -24,6 +26,8 @@ export class CrrpRoutes {
 	public static MANUAL_SUBMISSIONS = 'manual-submissions';
 	public static ORGANIZATION_PROFILE = 'organization-profile';
 	public static PAYMENTS = 'payments';
+	public static PAYMENT_SUCCESS = 'payment-success';
+	public static PAYMENT_FAIL = 'payment-fail';
 	public static INVITATION = 'invitation';
 	public static REPORTS = 'reports';
 	public static USERS = 'users';
@@ -47,6 +51,8 @@ const routes: Routes = [
 			{ path: CrrpRoutes.GENERIC_UPLOADS, component: GenericUploadsComponent },
 			{ path: CrrpRoutes.IDENTITY_VERIFICATION, component: IdentifyVerificationComponent },
 			{ path: CrrpRoutes.PAYMENTS, component: PaymentsComponent },
+			{ path: CrrpRoutes.PAYMENT_SUCCESS, component: CrrpPaymentSuccessComponent },
+			{ path: CrrpRoutes.PAYMENT_FAIL, component: CrrpPaymentFailComponent },
 			{ path: CrrpRoutes.MANUAL_SUBMISSIONS, component: ManualSubmissionComponent },
 			{ path: CrrpRoutes.ORGANIZATION_PROFILE, component: OrganizationProfileComponent },
 			{ path: CrrpRoutes.REPORTS, component: ReportsComponent },

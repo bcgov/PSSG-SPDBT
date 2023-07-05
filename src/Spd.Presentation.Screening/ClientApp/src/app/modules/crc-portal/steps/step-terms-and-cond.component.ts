@@ -60,9 +60,8 @@ import { DeclarationComponent } from '../step-components/declaration.component';
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="goToStepNext(STEP_TERMS)">
-							Submit
-							<!-- <span *ngIf="orgData?.payeeType == payeePreferenceTypeCodes.Applicant; else noPay">Pay</span>
-							<ng-template #noPay>Submit</ng-template> -->
+							<span *ngIf="orgData?.performPaymentProcess; else noPay">Pay Now</span>
+							<ng-template #noPay>Submit</ng-template>
 						</button>
 					</div>
 				</div>
@@ -110,13 +109,13 @@ export class StepTermsAndCondComponent {
 
 		const declarationData = this.declarationComponent.getDataToSave();
 		if (declarationData.agreeToShare) {
+			this.orgData!.performPaymentProcess = false;
 			this.agreeToShare = true;
 		} else {
+			this.orgData!.performPaymentProcess = this.orgData?.payeeType == PayerPreferenceTypeCode.Applicant ? true : false;
 			this.agreeToShare = false;
-			// this.orgData.performPaymentProcess = true; TODO leave as false for now.
 		}
 
-		// this.childstepper._stateChanged(); TODO ??
 		this.childstepper.next();
 	}
 
@@ -124,7 +123,6 @@ export class StepTermsAndCondComponent {
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 
-		// this.orgData?.performPaymentProcess = false;
 		this.nextStepperStep.emit(true);
 	}
 

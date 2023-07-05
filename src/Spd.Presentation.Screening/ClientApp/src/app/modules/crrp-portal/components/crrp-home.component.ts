@@ -22,7 +22,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
 					<div class="row box-row gy-4">
 						<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
-							<div class="box mx-auto" [routerLink]="[getRoute(crrpRoutes.CRIMINAL_RECORD_CHECKS)]">
+							<div class="box mx-auto" [routerLink]="[crrpRoutes.path(crrpRoutes.CRIMINAL_RECORD_CHECKS)]">
 								<div class="box__image">
 									<img class="box__image__item" src="/assets/dashboard/new_screening.png" />
 								</div>
@@ -36,7 +36,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 							</div>
 						</div>
 						<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
-							<div class="box mx-auto" [routerLink]="[getRoute(crrpRoutes.APPLICATION_STATUSES)]">
+							<div class="box mx-auto" [routerLink]="[crrpRoutes.path(crrpRoutes.APPLICATION_STATUSES)]">
 								<div class="box__image">
 									<img class="box__image__item" src="/assets/dashboard/screening_status.png" />
 								</div>
@@ -50,7 +50,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 							</div>
 						</div>
 						<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
-							<div class="box mx-auto" [routerLink]="[getRoute(crrpRoutes.EXPIRING_CHECKS)]">
+							<div class="box mx-auto" [routerLink]="[crrpRoutes.path(crrpRoutes.EXPIRING_CHECKS)]">
 								<div class="box__image">
 									<img class="box__image__item" src="/assets/dashboard/expired_screenings.png" />
 								</div>
@@ -64,7 +64,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 							</div>
 						</div>
 						<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
-							<div class="box mx-auto" [routerLink]="[getRoute(crrpRoutes.PAYMENTS)]">
+							<div class="box mx-auto" [routerLink]="[crrpRoutes.path(crrpRoutes.PAYMENTS)]">
 								<div class="box__image">
 									<img class="box__image__item" src="/assets/dashboard/outstanding_payments.png" />
 								</div>
@@ -78,7 +78,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 							</div>
 						</div>
 						<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
-							<div class="box mx-auto" [routerLink]="[getRoute(crrpRoutes.USERS)]">
+							<div class="box mx-auto" [routerLink]="[crrpRoutes.path(crrpRoutes.USERS)]">
 								<div class="box__image">
 									<img class="box__image__item" src="/assets/dashboard/authorized_users.png" />
 								</div>
@@ -94,7 +94,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 							</div>
 						</div>
 						<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
-							<div class="box mx-auto" [routerLink]="[getRoute(crrpRoutes.IDENTITY_VERIFICATION)]">
+							<div class="box mx-auto" [routerLink]="[crrpRoutes.path(crrpRoutes.IDENTITY_VERIFICATION)]">
 								<div class="box__image">
 									<img class="box__image__item" src="/assets/dashboard/applicant_identity.png" />
 								</div>
@@ -128,8 +128,13 @@ import { CrrpRoutes } from '../crrp-routing.module';
 										<p>{{ awaitingPaymentCount }} applications require payment</p>
 									</mat-card-content>
 									<mat-card-actions class="mt-4">
-										<button mat-flat-button color="primary" [routerLink]="[getRoute(crrpRoutes.PAYMENTS)]">
-											<mat-icon>attach_money</mat-icon>Pay Now
+										<button
+											mat-flat-button
+											color="primary"
+											[routerLink]="[crrpRoutes.path(crrpRoutes.PAYMENTS)]"
+											aria-label="Pay now"
+										>
+											<mat-icon>paid</mat-icon>Pay Now
 										</button>
 									</mat-card-actions>
 								</mat-card>
@@ -143,7 +148,11 @@ import { CrrpRoutes } from '../crrp-routing.module';
 										<p>{{ verifyIdentityCount }} applications require ID verification</p>
 									</mat-card-content>
 									<mat-card-actions class="mt-4">
-										<button mat-flat-button color="accent" [routerLink]="[getRoute(crrpRoutes.IDENTITY_VERIFICATION)]">
+										<button
+											mat-flat-button
+											color="accent"
+											[routerLink]="[crrpRoutes.path(crrpRoutes.IDENTITY_VERIFICATION)]"
+										>
 											<mat-icon>send</mat-icon>Verify Now
 										</button>
 									</mat-card-actions>
@@ -163,7 +172,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 									<mat-card-actions class="mt-4">
 										<button
 											mat-flat-button
-											[routerLink]="[getRoute(crrpRoutes.APPLICATION_STATUSES)]"
+											[routerLink]="[crrpRoutes.path(crrpRoutes.APPLICATION_STATUSES)]"
 											style="background-color: var(--color-green);color: var(--color-white);"
 										>
 											<mat-icon>preview</mat-icon>Review
@@ -185,7 +194,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 									<mat-card-actions class="mt-4">
 										<button
 											mat-flat-button
-											[routerLink]="[getRoute(crrpRoutes.APPLICATION_STATUSES)]"
+											[routerLink]="[crrpRoutes.path(crrpRoutes.APPLICATION_STATUSES)]"
 											style="background-color: var(--color-red);color: var(--color-white);"
 										>
 											<mat-icon>preview</mat-icon>Review
@@ -299,9 +308,5 @@ export class CrrpHomeComponent implements OnInit {
 					this.riskFoundCount = applicationStatistics[ApplicationPortalStatisticsTypeCode.NotClearedLastSevenDays] ?? 0;
 				})
 			);
-	}
-
-	getRoute(route: string): string {
-		return CrrpRoutes.path(route);
 	}
 }
