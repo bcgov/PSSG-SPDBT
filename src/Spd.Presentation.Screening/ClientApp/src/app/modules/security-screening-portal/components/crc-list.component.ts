@@ -125,7 +125,7 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
 								aria-label="Pay now"
 								*ngIf="application.status == applicationPortalStatusCodes.AwaitingPayment"
 							>
-								<mat-icon>attach_money</mat-icon>Pay Now
+								<mat-icon>payment</mat-icon>Pay Now
 							</button>
 						</mat-cell>
 					</ng-container>
@@ -135,7 +135,7 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
 						<mat-cell *matCellDef="let application">
 							<span class="mobile-label"></span>
 							<button mat-flat-button (click)="onViewDetail(application)" class="table-button" aria-label="View Detail">
-								<mat-icon>send</mat-icon>View Detail
+								<mat-icon>wysiwyg</mat-icon>View Detail
 							</button>
 						</mat-cell>
 					</ng-container>
@@ -211,7 +211,7 @@ export class CrcListComponent implements OnInit {
 	}
 
 	onPayNow(application: ApplicantApplicationStatusResponse): void {
-		this.router.navigate([SecurityScreeningRoutes.path(SecurityScreeningRoutes.CRC_PAYMENT_SUCCESS)]);
+		this.router.navigate([SecurityScreeningRoutes.path(SecurityScreeningRoutes.PAYMENT_SUCCESS)]);
 		// this.router.navigate([SecurityScreeningRoutes.path(SecurityScreeningRoutes.CRC_PAYMENT_FAIL)]);
 	}
 

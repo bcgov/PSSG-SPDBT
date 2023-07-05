@@ -14,7 +14,7 @@ import { Router } from '@angular/router';
 						<mat-icon>arrow_back</mat-icon>Back
 					</button>
 					<button mat-flat-button color="primary" class="large w-auto m-2" aria-label="Pay Now">
-						<mat-icon>attach_money</mat-icon>Pay Now
+						<mat-icon>payment</mat-icon>Try Again
 					</button>
 				</div>
 			</div>
@@ -33,16 +33,32 @@ import { Router } from '@angular/router';
 				<div class="fw-normal fs-3 text-center">Your payment transaction has failed</div>
 			</div>
 
-			<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
-				<div class="lead fs-5 mt-4">
-					Please ensure the information you entered is correct and try again, or use a different credit card.
+			<ng-container *ngIf="numberOfAttemptsRemaining == 0; else remaining">
+				<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
+					<div class="lead fs-5 mt-4">
+						Your application has been submitted, but it won't be processed until payment is received.
+					</div>
+					<div class="lead fs-5 my-4">
+						Please download and complete the
+						<a (click)="onDownloadManualPaymentForm()">Manual Payment Form</a> then follow the instructions on the form
+						to submit payment to the Security Programs Division.
+					</div>
 				</div>
-				<div class="lead fs-5 mt-4">You have x more attempts.</div>
-				<div class="lead fs-5 my-4">
-					Alternatively, you can download the Manual Payment Form. Fill it out, and follow the instructions to submit it
-					to the Security Programs Division.
+			</ng-container>
+
+			<ng-template #remaining>
+				<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
+					<div class="lead fs-5 mt-4">
+						Please ensure the information you entered is correct and try again, or use a different credit card. You have
+						{{ numberOfAttemptsRemaining }} more attempt{{ numberOfAttemptsRemaining == 1 ? '' : 's' }}.
+					</div>
+					<div class="lead fs-5 my-4">
+						Alternatively, you can download the
+						<a (click)="onDownloadManualPaymentForm()">Manual Payment Form</a>. Fill it out, and follow the instructions
+						to submit it to the Security Programs Division.
+					</div>
 				</div>
-			</div>
+			</ng-template>
 		</div>
 	`,
 	styles: [
@@ -69,8 +85,11 @@ import { Router } from '@angular/router';
 })
 export class PaymentFailComponent {
 	@Input() backRoute = '';
+	@Input() numberOfAttemptsRemaining = 0;
 
 	constructor(private router: Router) {}
+
+	onDownloadManualPaymentForm(): void {}
 
 	onBack(): void {
 		this.router.navigate([this.backRoute]);

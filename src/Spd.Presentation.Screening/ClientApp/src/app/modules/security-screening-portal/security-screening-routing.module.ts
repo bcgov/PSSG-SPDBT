@@ -10,8 +10,8 @@ export class SecurityScreeningRoutes {
 	public static SECURITY_SCREENING_APPLICATION = 'security-screening';
 	public static CRC_LIST = 'crc-list';
 	public static CRC_DETAIL = 'crc-detail';
-	public static CRC_PAYMENT_SUCCESS = 'payment-success';
-	public static CRC_PAYMENT_FAIL = 'payment-fail';
+	public static PAYMENT_SUCCESS = 'payment-success';
+	public static PAYMENT_FAIL = 'payment-fail';
 
 	public static MODULE_PATH = SecurityScreeningRoutes.SECURITY_SCREENING_APPLICATION;
 
@@ -27,8 +27,8 @@ const routes: Routes = [
 		children: [
 			{ path: SecurityScreeningRoutes.CRC_LIST, component: CrcListComponent },
 			{ path: SecurityScreeningRoutes.CRC_DETAIL, component: CrcDetailComponent },
-			{ path: SecurityScreeningRoutes.CRC_PAYMENT_SUCCESS, component: CrcPaymentSuccessComponent },
-			{ path: SecurityScreeningRoutes.CRC_PAYMENT_FAIL, component: CrcPaymentFailComponent },
+			{ path: SecurityScreeningRoutes.PAYMENT_SUCCESS, component: CrcPaymentSuccessComponent },
+			{ path: SecurityScreeningRoutes.PAYMENT_FAIL, component: CrcPaymentFailComponent },
 		],
 	},
 ];

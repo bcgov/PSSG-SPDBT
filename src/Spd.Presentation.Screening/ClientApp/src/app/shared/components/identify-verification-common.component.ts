@@ -142,7 +142,7 @@ export interface IdentityVerificationResponse extends ApplicationResponse {
 									*ngIf="!application.hideActions"
 									(click)="onConfirm(application)"
 								>
-									<mat-icon>check</mat-icon>Confirm
+									<mat-icon>check_circle</mat-icon>Confirm
 								</button>
 							</mat-cell>
 						</ng-container>

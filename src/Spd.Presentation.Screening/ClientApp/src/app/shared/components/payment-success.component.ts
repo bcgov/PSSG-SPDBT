@@ -30,7 +30,7 @@ import { Router } from '@angular/router';
 
 		<div class="row">
 			<div class="col-12 mt-4">
-				<div class="fw-normal fs-3 text-center">Your payment transaction has been successfully processed</div>
+				<div class="fw-normal fs-3 text-center">Your payment transaction was successful</div>
 			</div>
 		</div>
 
@@ -42,6 +42,7 @@ import { Router } from '@angular/router';
 			<div class="col-lg-3 mt-4">
 				<small class="d-block"> Date & Time of Transaction </small>
 				<div class="text">Aug 23, 2023 11:15 am</div>
+				<!-- <div class="text">{{ transactionDate | date : appConstants.date.formalDateTimeFormat }} </div>-->
 			</div>
 			<div class="col-lg-3 mt-4">
 				<small class="d-block">Invoice/Order Number</small>

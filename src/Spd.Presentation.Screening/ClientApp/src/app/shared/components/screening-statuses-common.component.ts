@@ -175,7 +175,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 									aria-label="Pay now"
 									*ngIf="application.status == statisticsCode.AwaitingPayment"
 								>
-									<mat-icon>send</mat-icon>Pay Now
+									<mat-icon>payment</mat-icon>Pay Now
 								</button>
 
 								<button
