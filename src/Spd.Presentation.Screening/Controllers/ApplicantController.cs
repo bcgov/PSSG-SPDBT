@@ -108,7 +108,7 @@ namespace Spd.Presentation.Screening.Controllers
         }
 
         [Authorize(Policy = "OnlyBcsc")]
-        [Route("api/applicants/{applicantId}/applications")]
+        [Route("api/applicants/{applicantId}/screenings")]
         [HttpGet]
         public async Task<ApplicantApplicationListResponse> ApplicantApplicationsList([FromRoute] Guid applicantId)
         {
