@@ -133,7 +133,7 @@ export const ScreeningCheckFilterMap: Record<keyof ScreeningCheckFilter, string>
 							<mat-cell *matCellDef="let application">
 								<button
 									mat-flat-button
-									class="table-button m-2"
+									class="table-button"
 									style="color: var(--color-red);"
 									aria-label="Cancel Request"
 									(click)="OnCancelRequest(application)"

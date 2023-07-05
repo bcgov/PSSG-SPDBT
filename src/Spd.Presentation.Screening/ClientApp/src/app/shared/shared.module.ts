@@ -21,6 +21,8 @@ import { IdentifyVerificationCommonComponent } from './components/identify-verif
 import { ManualSubmissionCommonComponent } from './components/manual-submission-common.component';
 import { MonthPickerComponent } from './components/month-picker.component';
 import { OrgSelectionModalComponent } from './components/org-selection-modal.component';
+import { PaymentFailComponent } from './components/payment-fail.component';
+import { PaymentSuccessComponent } from './components/payment-success.component';
 import { ScreeningRequestAddCommonModalComponent } from './components/screening-request-add-common-modal.component';
 import { ScreeningRequestsCommonComponent } from './components/screening-requests-common.component';
 import { ScreeningStatusFilterCommonComponent } from './components/screening-status-filter-common.component';
@@ -59,6 +61,8 @@ const SHARED_COMPONENTS = [
 	IdentifyVerificationCommonComponent,
 	ManualSubmissionCommonComponent,
 	MonthPickerComponent,
+	PaymentSuccessComponent,
+	PaymentFailComponent,
 ];
 
 @NgModule({

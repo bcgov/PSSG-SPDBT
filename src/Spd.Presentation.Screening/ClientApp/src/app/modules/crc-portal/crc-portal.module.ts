@@ -9,11 +9,11 @@ import { ApplicationSubmittedComponent } from './step-components/application-sub
 import { ChecklistComponent } from './step-components/checklist.component';
 import { ConsentToCrcComponent } from './step-components/consentToCrc.component';
 import { ContactInformationComponent } from './step-components/contact-information.component';
+import { CrcPaymentFailComponent } from './step-components/crc-payment-fail.component';
+import { CrcPaymentSuccessComponent } from './step-components/crc-payment-success.component';
 import { DeclarationComponent } from './step-components/declaration.component';
 import { LogInOptionsComponent } from './step-components/log-in-options.component';
 import { MailingAddressComponent } from './step-components/mailing-address.component';
-import { PaymentFailureComponent } from './step-components/payment-failure.component';
-import { PaymentSuccessComponent } from './step-components/payment-success.component';
 import { PersonalInformationComponent } from './step-components/personal-information.component';
 import { PreviousNameComponent } from './step-components/previous-name.component';
 import { SecurityInformationComponent } from './step-components/security-information.component';
@@ -46,8 +46,8 @@ import { StepTermsAndCondComponent } from './steps/step-terms-and-cond.component
 		SummaryComponent,
 		SecurityInformationComponent,
 		DeclarationComponent,
-		PaymentSuccessComponent,
-		PaymentFailureComponent,
+		CrcPaymentSuccessComponent,
+		CrcPaymentFailComponent,
 		ApplicationSubmittedComponent,
 		ConsentToCrcComponent,
 		InvitationCrcComponent,

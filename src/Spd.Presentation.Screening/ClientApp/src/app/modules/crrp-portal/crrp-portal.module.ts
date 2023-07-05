@@ -4,6 +4,8 @@ import { ApplicationStatusesComponent } from './components/application-statuses.
 import { CriminalRecordChecksComponent } from './components/criminal-record-checks.component';
 import { CrrpHeaderComponent } from './components/crrp-header.component';
 import { CrrpHomeComponent } from './components/crrp-home.component';
+import { CrrpPaymentFailComponent } from './components/crrp-payment-fail.component';
+import { CrrpPaymentSuccessComponent } from './components/crrp-payment-success.component';
 import { ExpiringChecksComponent } from './components/expiring-checks.component';
 import { GenericUploadsComponent } from './components/generic-uploads.component';
 import { IdentifyVerificationComponent } from './components/identify-verification.component';
@@ -36,6 +38,8 @@ import { InvitationUserComponent } from './invitation-user.component';
 		ManualSubmissionComponent,
 		ReportsComponent,
 		InvitationUserComponent,
+		CrrpPaymentFailComponent,
+		CrrpPaymentSuccessComponent,
 	],
 	imports: [SharedModule, CrrpRoutingModule],
 })

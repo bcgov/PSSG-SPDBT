@@ -20,7 +20,7 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
 	actionAlert: string | null;
 }
 @Component({
-	selector: 'app-crc-list',
+	selector: 'app-security-screening-list',
 	template: `
 		<div class="row">
 			<div class="col-xl-8 col-lg-6 col-md-12">
@@ -117,6 +117,16 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
 									{{ application.actionAlert }}
 								</div>
 							</ng-container>
+							<button
+								mat-flat-button
+								(click)="onPayNow(application)"
+								class="table-button"
+								style="color: var(--color-green);"
+								aria-label="Pay now"
+								*ngIf="application.status == applicationPortalStatusCodes.AwaitingPayment"
+							>
+								<mat-icon>payment</mat-icon>Pay Now
+							</button>
 						</mat-cell>
 					</ng-container>
 
@@ -124,19 +134,9 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
 						<mat-header-cell *matHeaderCellDef></mat-header-cell>
 						<mat-cell *matCellDef="let application">
 							<span class="mobile-label"></span>
-							<a mat-flat-button (click)="onViewDetail(application)" class="m-2" aria-label="View Detail">
-								<mat-icon>send</mat-icon>View detail
-							</a>
-
-							<!-- <button
-								mat-flat-button
-								class="table-button m-2"
-								style="color: var(--color-primary-light);"
-								aria-label="Download Clearance Letter"
-								(click)="onDownloadClearanceLetter(application)"
-							>
-								<mat-icon>file_download</mat-icon>Clearance Letter
-							</button> -->
+							<button mat-flat-button (click)="onViewDetail(application)" class="table-button" aria-label="View Detail">
+								<mat-icon>wysiwyg</mat-icon>View Detail
+							</button>
 						</mat-cell>
 					</ng-container>
 
@@ -168,10 +168,11 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
 		`,
 	],
 })
-export class CrcListComponent implements OnInit {
+export class SecurityScreeningListComponent implements OnInit {
 	applicantName = '';
 	applicationFilter: string = 'ACTIVE';
 	allApplications: Array<ApplicantApplicationStatusResponse> = [];
+	applicationPortalStatusCodes = ApplicationPortalStatusCode;
 
 	constants = SPD_CONSTANTS;
 	dataSource: MatTableDataSource<ApplicantApplicationStatusResponse> =
@@ -207,10 +208,11 @@ export class CrcListComponent implements OnInit {
 		this.router.navigateByUrl(`/${SecurityScreeningRoutes.path(SecurityScreeningRoutes.CRC_DETAIL)}`, {
 			state: { applicationData: application },
 		});
+	}
 
-		// this.router.navigate([SecurityScreeningRoutes.path(SecurityScreeningRoutes.CRC_DETAIL)], {
-		// 	queryParams: { applicationId: application.id },
-		// });
+	onPayNow(application: ApplicantApplicationStatusResponse): void {
+		this.router.navigate([SecurityScreeningRoutes.path(SecurityScreeningRoutes.PAYMENT_SUCCESS)]); // TODO Handle PAYMENT
+		// this.router.navigate([SecurityScreeningRoutes.path(SecurityScreeningRoutes.CRC_PAYMENT_FAIL)]);
 	}
 
 	onDownloadClearanceLetter(clearance: any) {
