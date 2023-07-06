@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { GenderTypes } from 'src/app/core/code-types/model-desc.models';
+import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { AppInviteOrgData, CrcFormStepComponent } from '../crc.component';
 
@@ -71,7 +72,7 @@ export class PersonalInformationComponent implements CrcFormStepComponent {
 
 		this._orgData = data;
 		this.form = this.formBuilder.group({
-			birthPlace: new FormControl(data.birthPlace, [Validators.required]),
+			birthPlace: new FormControl(data.birthPlace, [FormControlValidators.required]),
 			driversLicense: new FormControl(data.driversLicense),
 			dateOfBirth: new FormControl({ value: data.dateOfBirth, disabled: data.readonlyTombstone ?? false }, [
 				Validators.required,

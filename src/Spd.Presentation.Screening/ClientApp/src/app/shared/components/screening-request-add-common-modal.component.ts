@@ -247,14 +247,14 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 
 		return this.formBuilder.group(
 			{
-				firstName: new FormControl(inviteDefault ? inviteDefault.firstName : '', [Validators.required]),
-				lastName: new FormControl(inviteDefault ? inviteDefault.lastName : '', [Validators.required]),
+				firstName: new FormControl(inviteDefault ? inviteDefault.firstName : '', [FormControlValidators.required]),
+				lastName: new FormControl(inviteDefault ? inviteDefault.lastName : '', [FormControlValidators.required]),
 				email: new FormControl(inviteDefault ? inviteDefault.email : '', [
 					Validators.required,
 					FormControlValidators.email,
 				]),
-				jobTitle: new FormControl(inviteDefault ? inviteDefault.jobTitle : '', [Validators.required]),
-				payeeType: new FormControl(inviteDefault ? inviteDefault.payeeType : '', [Validators.required]),
+				jobTitle: new FormControl(inviteDefault ? inviteDefault.jobTitle : '', [FormControlValidators.required]),
+				payeeType: new FormControl(inviteDefault ? inviteDefault.payeeType : '', [FormControlValidators.required]),
 				screeningTypeCode: new FormControl(screeningTypeCodeDefault),
 				serviceTypeCode: new FormControl(serviceTypeCodeDefault),
 			},

@@ -46,8 +46,8 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 								[errorStateMatcher]="matcher"
 								maxlength="75"
 							/>
-							<mat-error *ngIf="form.get('contactEmail')?.hasError('email')"> Must be a valid email address </mat-error>
 							<mat-error *ngIf="form.get('contactEmail')?.hasError('required')">This is required</mat-error>
+							<mat-error *ngIf="form.get('contactEmail')?.hasError('email')"> Must be a valid email address </mat-error>
 						</mat-form-field>
 					</div>
 				</div>
@@ -75,9 +75,9 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 export class ContactInformationComponent implements RegistrationFormStepComponent {
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	form: FormGroup = this.formBuilder.group({
-		contactGivenName: new FormControl('', [Validators.required]),
-		contactSurname: new FormControl('', [Validators.required]),
-		contactJobTitle: new FormControl('', [Validators.required]),
+		contactGivenName: new FormControl('', [FormControlValidators.required]),
+		contactSurname: new FormControl('', [FormControlValidators.required]),
+		contactJobTitle: new FormControl('', [FormControlValidators.required]),
 		contactEmail: new FormControl('', [Validators.required, FormControlValidators.email]),
 		contactPhoneNumber: new FormControl('', [Validators.required]),
 	});

@@ -1,7 +1,8 @@
 import { Component, Input } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ScreeningTypeCode } from 'src/app/api/models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
@@ -93,12 +94,12 @@ export class SecurityInformationComponent implements CrcFormStepComponent {
 				orgPhoneNumber: new FormControl({ value: data.orgPhoneNumber, disabled: true }),
 				orgAddress: new FormControl({ value: data.orgAddress, disabled: true }),
 				orgEmail: new FormControl({ value: data.orgEmail, disabled: true }),
-				jobTitle: new FormControl(data.jobTitle, [Validators.required]),
+				jobTitle: new FormControl(data.jobTitle, [FormControlValidators.required]),
 				vulnerableSectorCategoryDesc: new FormControl({
 					value: this.optionsPipe.transform(data.worksWith, 'EmployeeInteractionTypes'),
 					disabled: true,
 				}),
-				contractedCompanyName: new FormControl(data.contractedCompanyName, [Validators.required]),
+				contractedCompanyName: new FormControl(data.contractedCompanyName, [FormControlValidators.required]),
 			},
 			{
 				validators: [
