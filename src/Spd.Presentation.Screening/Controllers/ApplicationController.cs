@@ -378,7 +378,7 @@ namespace Spd.Presentation.Screening.Controllers
         }
 
         /// <summary>
-        /// return all applications belong to the organization.
+        /// return applications in this org and paidby should be organization.
         /// sort: submittedon, name, companyname , add - in front of name means descending.
         /// filters: status, use | to filter multiple status : if no filters specified, endpoint returns all applications.
         /// search:wild card search in name, email and caseID, such as searchText@=test
@@ -398,8 +398,8 @@ namespace Spd.Presentation.Screening.Controllers
             pageSize = (pageSize == null || pageSize == 0 || pageSize > 100) ? 10 : pageSize;
             if (string.IsNullOrWhiteSpace(sorts)) sorts = "-submittedOn";
             PaginationRequest pagination = new PaginationRequest((int)page, (int)pageSize);
-            AppListFilterBy filterBy = GetAppListFilterBy(filters, orgId);
-            AppListSortBy sortBy = GetAppSortBy(sorts);
+            AppPaymentListFilterBy filterBy = GetAppPaymentListFilterBy(filters, orgId);
+            AppPaymentListSortBy sortBy = GetAppPaymentListSortBy(sorts);
             return await _mediator.Send(
                 new ApplicationPaymentListQuery
                 {
@@ -462,6 +462,56 @@ namespace Spd.Presentation.Screening.Controllers
                 "companyname" => new AppListSortBy(null, null, false),
                 "-companyname" => new AppListSortBy(null, null, true),
                 _ => new AppListSortBy()
+            };
+        }
+
+        private AppPaymentListFilterBy GetAppPaymentListFilterBy(string? filters, Guid orgId)
+        {
+            AppPaymentListFilterBy filterBy = new AppPaymentListFilterBy(orgId);
+            if (string.IsNullOrWhiteSpace(filters)) return filterBy;
+
+            try
+            {
+                //filters string should be like paid==true,fromDate==2021-01-09,toDate==2022-02-29
+                string[] items = filters.Split(',');
+                foreach (string item in items)
+                {
+                    string[] strs = item.Split("==");
+                    if (strs[0] == "paid")
+                    {
+                        string str = strs[1];
+                        filterBy.Paid = str == "true";
+                    }
+                    else if (strs[0] == "fromDate")
+                    {
+                        string str = strs[1];
+                        filterBy.FromDateTime = DateTimeOffset.ParseExact(str, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                    }
+                    else if (strs[1] == "toDate")
+                    {
+                        string str = strs[1];
+                        filterBy.ToDateTime = DateTimeOffset.ParseExact(str, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                    }
+                }
+            }
+            catch
+            {
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Invalid filter string.");
+            }
+            return filterBy;
+        }
+
+        private AppPaymentListSortBy GetAppPaymentListSortBy(string? sortby)
+        {
+            //sorts string should be like: sorts=-submittedOn or sorts=paid
+            return sortby switch
+            {
+                null => new AppPaymentListSortBy(),
+                "paid" => new AppPaymentListSortBy(true),
+                "-paid" => new AppPaymentListSortBy(false),
+                "-submittedOn" => new AppPaymentListSortBy(null,true),
+                "submittedOn" => new AppPaymentListSortBy(null, false),
+                _ => new AppPaymentListSortBy()
             };
         }
         #endregion

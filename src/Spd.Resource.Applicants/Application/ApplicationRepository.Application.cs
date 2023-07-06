@@ -179,7 +179,10 @@ internal partial class ApplicationRepository : IApplicationRepository
 
     private string GetAppFilterString(AppFilterBy appFilterBy)
     {
+        //orgfilter
         string orgFilter = $"_spd_organizationid_value eq {appFilterBy.OrgId}";
+
+        //portal status filter
         string? portalStatusFilter = null;
         if (appFilterBy.ApplicationPortalStatus != null && appFilterBy.ApplicationPortalStatus.Any())
         {
@@ -191,11 +194,24 @@ internal partial class ApplicationRepository : IApplicationRepository
             }
             portalStatusFilter = $"({string.Join(" or ", strs)})";
         }
+
+        //name email contains
         string? contains = null;
         if (!string.IsNullOrWhiteSpace(appFilterBy.NameOrEmailOrAppIdContains))
         {
             contains = $"(contains(spd_firstname,'{appFilterBy.NameOrEmailOrAppIdContains}') or contains(spd_lastname,'{appFilterBy.NameOrEmailOrAppIdContains}') or contains(spd_emailaddress1,'{appFilterBy.NameOrEmailOrAppIdContains}') or contains(spd_name,'{appFilterBy.NameOrEmailOrAppIdContains}'))";
         }
+
+        //paid
+        string? paid = null;
+        if (appFilterBy.Paid != null)
+        {
+            if ((bool)appFilterBy.Paid)
+                paid = $"spd_paidon not eq null";
+            else
+                paid = $"spd_paidon eq null";
+        }
+
         string result = $"{orgFilter}";
         if (portalStatusFilter != null)
         {
@@ -204,6 +220,10 @@ internal partial class ApplicationRepository : IApplicationRepository
         if (contains != null)
         {
             result += $" and {contains}";
+        }
+        if (paid != null)
+        {
+            result += $" and {paid}";
         }
         return result;
     }

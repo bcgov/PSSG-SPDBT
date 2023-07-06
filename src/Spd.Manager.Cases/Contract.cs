@@ -131,15 +131,33 @@ namespace Spd.Manager.Cases
         public AppListSortBy? SortBy { get; set; } //null means no sorting
         public PaginationRequest Paging { get; set; } = null!;
     };
-    public record ApplicationPaymentListQuery : ApplicationListQuery, IRequest<ApplicationPaymentListResponse>;
 
     public record ApplicationStatisticsQuery(Guid OrganizationId) : IRequest<ApplicationStatisticsResponse>;
     public record AppListFilterBy(Guid OrgId)
     {
         public IEnumerable<ApplicationPortalStatusCode>? ApplicationPortalStatus { get; set; }
         public string? NameOrEmailOrAppIdContains { get; set; }
+
     }
     public record AppListSortBy(bool? SubmittedDateDesc = true, bool? NameDesc = null, bool? CompanyNameDesc = null);
+
+    public record ApplicationPaymentListQuery : IRequest<ApplicationPaymentListResponse>
+    {
+        public AppPaymentListFilterBy? FilterBy { get; set; } //null means no filter
+        public AppPaymentListSortBy? SortBy { get; set; } //null means no sorting
+        public PaginationRequest Paging { get; set; } = null!;
+    };
+
+    public record AppPaymentListFilterBy(Guid OrgId)
+    {
+        public bool? Paid { get; set; } = null;
+        public DateTimeOffset? FromDateTime { get; set; } = null;
+        public DateTimeOffset? ToDateTime { get; set; } = null;
+        public PayerPreferenceTypeCode? PayerType { get; set; } = PayerPreferenceTypeCode.Organization;
+    }
+
+    public record AppPaymentListSortBy(bool? PaidDesc = false, bool? SubmittedDateDesc = true);
+
     public abstract record Application
     {
         public Guid OrgId { get; set; }
