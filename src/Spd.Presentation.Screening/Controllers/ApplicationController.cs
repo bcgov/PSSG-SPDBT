@@ -377,6 +377,38 @@ namespace Spd.Presentation.Screening.Controllers
                 });
         }
 
+        /// <summary>
+        /// return all applications belong to the organization.
+        /// sort: submittedon, name, companyname , add - in front of name means descending.
+        /// filters: status, use | to filter multiple status : if no filters specified, endpoint returns all applications.
+        /// search:wild card search in name, email and caseID, such as searchText@=test
+        /// sample: api/orgs/4165bdfe-7cb4-ed11-b83e-00505683fbf4/applications?filters=status==AwaitingPayment|AwaitingApplicant,searchText@=str&sorts=name&page=1&pageSize=15
+        /// </summary>
+        /// <param name="orgId"></param>
+        /// <param name="filters"></param>
+        /// <param name="sorts"></param>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        [Route("api/orgs/{orgId}/applications/payments")]
+        [HttpGet]
+        public async Task<ApplicationPaymentListResponse> GetPaymentList([FromRoute] Guid orgId, [FromQuery] string? filters, [FromQuery] string? sorts, [FromQuery] int? page, [FromQuery] int? pageSize)
+        {
+            page = (page == null || page < 0) ? 0 : page;
+            pageSize = (pageSize == null || pageSize == 0 || pageSize > 100) ? 10 : pageSize;
+            if (string.IsNullOrWhiteSpace(sorts)) sorts = "-submittedOn";
+            PaginationRequest pagination = new PaginationRequest((int)page, (int)pageSize);
+            AppListFilterBy filterBy = GetAppListFilterBy(filters, orgId);
+            AppListSortBy sortBy = GetAppSortBy(sorts);
+            return await _mediator.Send(
+                new ApplicationPaymentListQuery
+                {
+                    FilterBy = filterBy,
+                    SortBy = sortBy,
+                    Paging = pagination
+                });
+        }
+
         private AppListFilterBy GetAppListFilterBy(string? filters, Guid orgId)
         {
             AppListFilterBy appListFilterBy = new AppListFilterBy(orgId);

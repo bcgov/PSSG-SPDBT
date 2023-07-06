@@ -13,6 +13,7 @@ namespace Spd.Manager.Cases
         public Task<ApplicationInviteListResponse> Handle(ApplicationInviteListQuery request, CancellationToken ct);
         public Task<Unit> Handle(ApplicationInviteDeleteCommand request, CancellationToken ct);
         public Task<ApplicationListResponse> Handle(ApplicationListQuery request, CancellationToken ct);
+        public Task<ApplicationPaymentListResponse> Handle(ApplicationPaymentListQuery request, CancellationToken ct);
         public Task<ApplicationCreateResponse> Handle(ApplicationCreateCommand request, CancellationToken ct);
         public Task<ApplicationCreateResponse> Handle(ApplicantApplicationCreateCommand request, CancellationToken ct);
         public Task<ApplicationStatisticsResponse> Handle(ApplicationStatisticsQuery request, CancellationToken ct);
@@ -130,6 +131,8 @@ namespace Spd.Manager.Cases
         public AppListSortBy? SortBy { get; set; } //null means no sorting
         public PaginationRequest Paging { get; set; } = null!;
     };
+    public record ApplicationPaymentListQuery : ApplicationListQuery, IRequest<ApplicationPaymentListResponse>;
+
     public record ApplicationStatisticsQuery(Guid OrganizationId) : IRequest<ApplicationStatisticsResponse>;
     public record AppListFilterBy(Guid OrgId)
     {
@@ -190,6 +193,11 @@ namespace Spd.Manager.Cases
         public IEnumerable<ApplicationResponse> Applications { get; set; } = Array.Empty<ApplicationResponse>();
         public PaginationResponse Pagination { get; set; } = null!;
     }
+    public class ApplicationPaymentListResponse
+    {
+        public IEnumerable<ApplicationPaymentResponse> Applications { get; set; } = Array.Empty<ApplicationPaymentResponse>();
+        public PaginationResponse Pagination { get; set; } = null!;
+    }
 
     public record ApplicationStatisticsResponse
     {
@@ -203,6 +211,12 @@ namespace Spd.Manager.Cases
         public bool? HaveVerifiedIdentity { get; set; }
         public DateTimeOffset? CreatedOn { get; set; }
         public ApplicationPortalStatusCode? Status { get; set; }
+    }
+
+    public record ApplicationPaymentResponse : ApplicationResponse
+    {
+        public DateTimeOffset? PaidOn { get; set; }
+        public int? NumberOfAttempts { get; set; }
     }
 
     public record ClearanceAccessDeleteCommand(Guid ClearanceAccessId, Guid OrgId) : IRequest<Unit>;
@@ -753,7 +767,7 @@ namespace Spd.Manager.Cases
 
     public enum FileTemplateTypeCode
     {
-        FingerPrintPkg,
+        FingerprintPkg,
         StatutoryDeclaration
     }
     #endregion

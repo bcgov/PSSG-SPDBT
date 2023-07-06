@@ -15,6 +15,7 @@ import { ApplicationInviteListResponse } from '../models/application-invite-list
 import { ApplicationInvitesCreateRequest } from '../models/application-invites-create-request';
 import { ApplicationInvitesCreateResponse } from '../models/application-invites-create-response';
 import { ApplicationListResponse } from '../models/application-list-response';
+import { ApplicationPaymentListResponse } from '../models/application-payment-list-response';
 import { ApplicationStatisticsResponse } from '../models/application-statistics-response';
 import { BulkHistoryListResponse } from '../models/bulk-history-list-response';
 import { BulkUploadCreateResponse } from '../models/bulk-upload-create-response';
@@ -718,6 +719,71 @@ export class ApplicationService extends BaseService {
 
     return this.apiOrgsOrgIdApplicationsGet$Response(params,context).pipe(
       map((r: StrictHttpResponse<ApplicationListResponse>) => r.body as ApplicationListResponse)
+    );
+  }
+
+  /**
+   * Path part for operation apiOrgsOrgIdApplicationsPaymentsGet
+   */
+  static readonly ApiOrgsOrgIdApplicationsPaymentsGetPath = '/api/orgs/{orgId}/applications/payments';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiOrgsOrgIdApplicationsPaymentsGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiOrgsOrgIdApplicationsPaymentsGet$Response(params: {
+    orgId: string;
+    filters?: string;
+    sorts?: string;
+    page?: number;
+    pageSize?: number;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<ApplicationPaymentListResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdApplicationsPaymentsGetPath, 'get');
+    if (params) {
+      rb.path('orgId', params.orgId, {});
+      rb.query('filters', params.filters, {});
+      rb.query('sorts', params.sorts, {});
+      rb.query('page', params.page, {});
+      rb.query('pageSize', params.pageSize, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<ApplicationPaymentListResponse>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiOrgsOrgIdApplicationsPaymentsGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiOrgsOrgIdApplicationsPaymentsGet(params: {
+    orgId: string;
+    filters?: string;
+    sorts?: string;
+    page?: number;
+    pageSize?: number;
+  },
+  context?: HttpContext
+
+): Observable<ApplicationPaymentListResponse> {
+
+    return this.apiOrgsOrgIdApplicationsPaymentsGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<ApplicationPaymentListResponse>) => r.body as ApplicationPaymentListResponse)
     );
   }
 

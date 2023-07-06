@@ -123,7 +123,10 @@ public record ApplicationResult
     public DateTimeOffset? CreatedOn { get; set; }
     public string? OrgName { get; set; }
     public ServiceTypeEnum? ServiceType { get; set; }
+    public DateTimeOffset? PaidOn { get; set; }
+    public int? NumberOfAttempts { get; set; }
 }
+
 public class ApplicationListResp
 {
     public int? FollowUpBusinessDays { get; set; }

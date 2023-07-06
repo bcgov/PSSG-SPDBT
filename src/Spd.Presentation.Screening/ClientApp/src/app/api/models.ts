@@ -25,6 +25,8 @@ export { ApplicationInvitesCreateRequest } from './models/application-invites-cr
 export { ApplicationInvitesCreateResponse } from './models/application-invites-create-response';
 export { ApplicationListResponse } from './models/application-list-response';
 export { ApplicationOriginTypeCode } from './models/application-origin-type-code';
+export { ApplicationPaymentListResponse } from './models/application-payment-list-response';
+export { ApplicationPaymentResponse } from './models/application-payment-response';
 export { ApplicationPortalStatusCode } from './models/application-portal-status-code';
 export { ApplicationResponse } from './models/application-response';
 export { ApplicationStatisticsResponse } from './models/application-statistics-response';

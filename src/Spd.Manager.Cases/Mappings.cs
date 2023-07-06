@@ -36,6 +36,8 @@ namespace Spd.Manager.Cases
             CreateMap<AliasCreateRequest, AliasCreateCmd>();
             CreateMap<ApplicationResult, ApplicationResponse>()
                 .ForMember(d => d.Status, opt => opt.MapFrom(s => GetApplicationPortalStatusCode(s.ApplicationPortalStatus)));
+            CreateMap<ApplicationResult, ApplicationPaymentResponse>()
+                .IncludeBase<ApplicationResult, ApplicationResponse>();
             CreateMap<ApplicationListResp, ApplicationListResponse>();
             CreateMap<AppListFilterBy, AppFilterBy>();
             CreateMap<AppListSortBy, AppSortBy>();
