@@ -41,6 +41,9 @@ namespace Spd.Manager.Cases
             CreateMap<ApplicationListResp, ApplicationListResponse>();
             CreateMap<AppListFilterBy, AppFilterBy>();
             CreateMap<AppListSortBy, AppSortBy>();
+            CreateMap<AppPaymentListFilterBy, AppFilterBy>();
+            CreateMap<AppPaymentListSortBy, AppSortBy>();
+            CreateMap<ApplicationListResp, ApplicationPaymentListResponse>();
             CreateMap<PaginationRequest, Paging>();
             CreateMap<PaginationResp, PaginationResponse>();
             CreateMap<ApplicationInviteDeleteCommand, ApplicationInviteDeleteCmd>();

@@ -380,9 +380,9 @@ namespace Spd.Presentation.Screening.Controllers
         /// <summary>
         /// return applications in this org and paidby should be organization.
         /// sort: submittedon, name, companyname , add - in front of name means descending.
-        /// filters: status, use | to filter multiple status : if no filters specified, endpoint returns all applications.
+        /// filters: paid
         /// search:wild card search in name, email and caseID, such as searchText@=test
-        /// sample: api/orgs/4165bdfe-7cb4-ed11-b83e-00505683fbf4/applications?filters=status==AwaitingPayment|AwaitingApplicant,searchText@=str&sorts=name&page=1&pageSize=15
+        /// sample: api/orgs/4165bdfe-7cb4-ed11-b83e-00505683fbf4/applications?filters=paid==true,fromDate==2021-01-12&page=1&pageSize=15
         /// </summary>
         /// <param name="orgId"></param>
         /// <param name="filters"></param>
@@ -477,17 +477,17 @@ namespace Spd.Presentation.Screening.Controllers
                 foreach (string item in items)
                 {
                     string[] strs = item.Split("==");
-                    if (strs[0] == "paid")
+                    if (strs[0].Equals("paid", StringComparison.InvariantCultureIgnoreCase))
                     {
                         string str = strs[1];
                         filterBy.Paid = str == "true";
                     }
-                    else if (strs[0] == "fromDate")
+                    else if (strs[0].Equals("fromDate", StringComparison.InvariantCultureIgnoreCase))
                     {
                         string str = strs[1];
                         filterBy.FromDateTime = DateTimeOffset.ParseExact(str, "yyyy-MM-dd", CultureInfo.InvariantCulture);
                     }
-                    else if (strs[1] == "toDate")
+                    else if (strs[0].Equals("toDate", StringComparison.InvariantCultureIgnoreCase))
                     {
                         string str = strs[1];
                         filterBy.ToDateTime = DateTimeOffset.ParseExact(str, "yyyy-MM-dd", CultureInfo.InvariantCulture);
@@ -509,7 +509,7 @@ namespace Spd.Presentation.Screening.Controllers
                 null => new AppPaymentListSortBy(),
                 "paid" => new AppPaymentListSortBy(true),
                 "-paid" => new AppPaymentListSortBy(false),
-                "-submittedOn" => new AppPaymentListSortBy(null,true),
+                "-submittedOn" => new AppPaymentListSortBy(null, true),
                 "submittedOn" => new AppPaymentListSortBy(null, false),
                 _ => new AppPaymentListSortBy()
             };
