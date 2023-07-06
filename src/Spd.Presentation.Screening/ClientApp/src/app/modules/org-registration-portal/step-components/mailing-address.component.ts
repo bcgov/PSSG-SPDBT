@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { AddressRetrieveResponse } from 'src/app/api/models';
+import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { Address } from 'src/app/shared/components/address-autocomplete.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { RegistrationFormStepComponent } from '../org-registration.component';
@@ -112,12 +113,12 @@ export class MailingAddressComponent implements OnInit, RegistrationFormStepComp
 	ngOnInit(): void {
 		this.form = this.formBuilder.group({
 			addressSelected: new FormControl(false, [Validators.requiredTrue]),
-			mailingAddressLine1: new FormControl('', [Validators.required]),
+			mailingAddressLine1: new FormControl('', [FormControlValidators.required]),
 			mailingAddressLine2: new FormControl(''),
-			mailingCity: new FormControl('', [Validators.required]),
-			mailingPostalCode: new FormControl('', [Validators.required]),
-			mailingProvince: new FormControl('', [Validators.required]),
-			mailingCountry: new FormControl('', [Validators.required]),
+			mailingCity: new FormControl('', [FormControlValidators.required]),
+			mailingPostalCode: new FormControl('', [FormControlValidators.required]),
+			mailingProvince: new FormControl('', [FormControlValidators.required]),
+			mailingCountry: new FormControl('', [FormControlValidators.required]),
 		});
 	}
 

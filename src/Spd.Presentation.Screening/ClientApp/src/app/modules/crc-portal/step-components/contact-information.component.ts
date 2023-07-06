@@ -96,12 +96,12 @@ export class ContactInformationComponent implements CrcFormStepComponent {
 		this.form = this.formBuilder.group(
 			{
 				givenName: new FormControl({ value: data.givenName, disabled: data.readonlyTombstone ?? false }, [
-					Validators.required,
+					FormControlValidators.required,
 				]),
 				middleName1: new FormControl({ value: data.middleName1, disabled: data.readonlyTombstone ?? false }),
 				middleName2: new FormControl({ value: data.middleName2, disabled: data.readonlyTombstone ?? false }),
 				surname: new FormControl({ value: data.surname, disabled: data.readonlyTombstone ?? false }, [
-					Validators.required,
+					FormControlValidators.required,
 				]),
 				emailAddress: new FormControl(data.emailAddress, [Validators.required, FormControlValidators.email]),
 				phoneNumber: new FormControl(data.phoneNumber, [Validators.required]),
@@ -109,7 +109,10 @@ export class ContactInformationComponent implements CrcFormStepComponent {
 			},
 			{
 				validators: [
-					FormGroupValidators.conditionalRequiredValidator('givenName', (form) => !form.get('oneLegalName')?.value),
+					FormGroupValidators.conditionalRequiredValidator(
+						'givenName',
+						(form) => form.get('oneLegalName')?.value != true
+					),
 				],
 			}
 		);

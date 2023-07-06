@@ -97,10 +97,10 @@ export class ConsentToCrcComponent implements CrcFormStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 	certifyLabel = '';
 	form: FormGroup = this.formBuilder.group({
-		consentToShareResultCrc: new FormControl('', [Validators.required]),
-		consentToCompletedCrc: new FormControl('', [Validators.required]),
-		consentToNotifyNoCrc: new FormControl('', [Validators.required]),
-		consentToNotifyRisk: new FormControl('', [Validators.required]),
+		consentToShareResultCrc: new FormControl('', [Validators.requiredTrue]),
+		consentToCompletedCrc: new FormControl('', [Validators.requiredTrue]),
+		consentToNotifyNoCrc: new FormControl('', [Validators.requiredTrue]),
+		consentToNotifyRisk: new FormControl('', [Validators.requiredTrue]),
 	});
 
 	constructor(private formBuilder: FormBuilder, private utilService: UtilService) {}

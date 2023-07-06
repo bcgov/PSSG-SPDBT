@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ScreeningsCountTypeCode } from 'src/app/api/models';
+import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { RegistrationFormStepComponent } from '../org-registration.component';
 
 @Component({
@@ -47,7 +48,7 @@ export class ScreeningsQuestionComponent implements OnInit, RegistrationFormStep
 
 	ngOnInit(): void {
 		this.form = this.formBuilder.group({
-			screeningsCount: new FormControl('', [Validators.required]),
+			screeningsCount: new FormControl('', [FormControlValidators.required]),
 		});
 	}
 
