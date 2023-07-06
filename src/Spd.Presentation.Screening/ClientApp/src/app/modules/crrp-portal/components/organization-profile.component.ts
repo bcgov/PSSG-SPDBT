@@ -68,6 +68,7 @@ import { FormGroupValidators } from 'src/app/core/validators/form-group.validato
 							<mat-label>Organization Phone Number</mat-label>
 							<input matInput formControlName="phoneNumber" [mask]="phoneMask" [showMaskTyped]="true" />
 							<mat-error *ngIf="form.get('phoneNumber')?.hasError('required')">This is required</mat-error>
+							<mat-error *ngIf="form.get('phoneNumber')?.hasError('mask')">This must be 10 digits</mat-error>
 						</mat-form-field>
 					</div>
 				</div>
@@ -241,14 +242,14 @@ export class OrganizationProfileComponent implements OnInit {
 			accessCode: new FormControl(''),
 			email: new FormControl('', [Validators.required, FormControlValidators.email]),
 			phoneNumber: new FormControl('', [Validators.required]),
-			addressLine1: new FormControl('', [Validators.required]),
+			addressLine1: new FormControl('', [FormControlValidators.required]),
 			addressLine2: new FormControl(''),
-			addressCity: new FormControl('', [Validators.required]),
-			addressPostalCode: new FormControl('', [Validators.required]),
-			addressProvince: new FormControl('', [Validators.required]),
-			addressCountry: new FormControl('', [Validators.required]),
-			payerPreference: new FormControl('', [Validators.required]),
-			contractorsNeedVulnerableSectorScreening: new FormControl('', [Validators.required]),
+			addressCity: new FormControl('', [FormControlValidators.required]),
+			addressPostalCode: new FormControl('', [FormControlValidators.required]),
+			addressProvince: new FormControl('', [FormControlValidators.required]),
+			addressCountry: new FormControl('', [FormControlValidators.required]),
+			payerPreference: new FormControl('', [FormControlValidators.required]),
+			contractorsNeedVulnerableSectorScreening: new FormControl('', [FormControlValidators.required]),
 			licenseesNeedVulnerableSectorScreening: new FormControl(''),
 		},
 		{

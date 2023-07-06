@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { PayerPreferenceTypeCode } from 'src/app/api/models';
+import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { RegistrationFormStepComponent } from '../org-registration.component';
 
 @Component({
@@ -45,7 +46,7 @@ export class PaymentQuestionComponent implements OnInit, RegistrationFormStepCom
 
 	ngOnInit(): void {
 		this.form = this.formBuilder.group({
-			payerPreference: new FormControl('', [Validators.required]),
+			payerPreference: new FormControl('', [FormControlValidators.required]),
 		});
 	}
 

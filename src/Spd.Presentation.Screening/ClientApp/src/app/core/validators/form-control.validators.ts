@@ -124,6 +124,21 @@ export class FormControlValidators {
 
 	/**
 	 * @description
+	 * Checks a form control is within a valid length,
+	 * if there is no maxLength, it will be assumed to be the same as minLength.
+	 */
+	public static required(control: AbstractControl): ValidationErrors | null {
+		if (!control.value) {
+			return { required: true };
+		}
+
+		const currentLength = control.value ? control.value.trim().length : 0;
+		const valid = control.valid && currentLength > 0;
+		return valid ? null : { required: true };
+	}
+
+	/**
+	 * @description
 	 * Checks the form control value is an email address.
 	 */
 	public static email(control: AbstractControl): ValidationErrors | null {

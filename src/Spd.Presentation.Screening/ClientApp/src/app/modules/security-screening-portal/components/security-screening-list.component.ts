@@ -81,7 +81,7 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
 					</ng-container>
 
 					<ng-container matColumnDef="serviceType">
-						<mat-header-cell *matHeaderCellDef>Type</mat-header-cell>
+						<mat-header-cell *matHeaderCellDef>Service Type</mat-header-cell>
 						<mat-cell *matCellDef="let application">
 							<span class="mobile-label">Type:</span>
 							{{ application.serviceType | options : 'ServiceTypes' }}

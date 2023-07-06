@@ -1,4 +1,5 @@
-import { AbstractControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { FormControlValidators } from './form-control.validators';
 
 export class FormGroupValidators {
 	public static conditionalRequiredValidator =
@@ -7,11 +8,11 @@ export class FormGroupValidators {
 			let targetInput = form.get(inputName);
 			if (targetInput) {
 				let isRequired = requiredWhen(form);
-				if (isRequired != targetInput.hasValidator(Validators.required)) {
+				if (isRequired != targetInput.hasValidator(FormControlValidators.required)) {
 					if (isRequired) {
-						targetInput.addValidators(Validators.required);
+						targetInput.addValidators(FormControlValidators.required);
 					} else {
-						targetInput.removeValidators(Validators.required);
+						targetInput.removeValidators(FormControlValidators.required);
 					}
 					targetInput.updateValueAndValidity({ onlySelf: true });
 				}
