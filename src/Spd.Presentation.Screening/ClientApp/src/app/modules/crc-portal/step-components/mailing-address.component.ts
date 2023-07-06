@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { AddressRetrieveResponse } from 'src/app/api/models';
+import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { Address } from 'src/app/shared/components/address-autocomplete.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { CrcFormStepComponent } from '../crc.component';
@@ -115,12 +116,12 @@ export class MailingAddressComponent implements OnInit, CrcFormStepComponent {
 	ngOnInit(): void {
 		this.form = this.formBuilder.group({
 			addressSelected: new FormControl(false, [Validators.requiredTrue]),
-			addressLine1: new FormControl('', [Validators.required]),
+			addressLine1: new FormControl('', [FormControlValidators.required]),
 			addressLine2: new FormControl(''),
-			city: new FormControl('', [Validators.required]),
-			postalCode: new FormControl('', [Validators.required]),
-			province: new FormControl('', [Validators.required]),
-			country: new FormControl('', [Validators.required]),
+			city: new FormControl('', [FormControlValidators.required]),
+			postalCode: new FormControl('', [FormControlValidators.required]),
+			province: new FormControl('', [FormControlValidators.required]),
+			country: new FormControl('', [FormControlValidators.required]),
 		});
 	}
 

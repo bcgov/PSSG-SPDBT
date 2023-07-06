@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { OrgService } from 'src/app/api/services';
+import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { CrcRoutes } from './crc-routing.module';
 
 @Component({
@@ -78,7 +79,7 @@ import { CrcRoutes } from './crc-routing.module';
 })
 export class OrgAccessComponent {
 	form: FormGroup = this.formBuilder.group({
-		accessCode: new FormControl('', [Validators.required]),
+		accessCode: new FormControl('', [FormControlValidators.required]),
 	});
 	errorMessage: string | null = null;
 

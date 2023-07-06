@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
+import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { RegistrationFormStepComponent } from '../org-registration.component';
 
@@ -39,7 +40,7 @@ export class OrganizationNameComponent implements OnInit, RegistrationFormStepCo
 
 	ngOnInit(): void {
 		this.form = this.formBuilder.group({
-			organizationName: new FormControl('', [Validators.required]),
+			organizationName: new FormControl('', [FormControlValidators.required]),
 		});
 
 		this.authProcessService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
