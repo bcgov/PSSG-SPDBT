@@ -124,8 +124,8 @@ export class FormControlValidators {
 
 	/**
 	 * @description
-	 * Checks a form control is within a valid length,
-	 * if there is no maxLength, it will be assumed to be the same as minLength.
+	 * Checks a form control containing a string is required,
+	 * data is trimmed first to prevent 'empty' values
 	 */
 	public static required(control: AbstractControl): ValidationErrors | null {
 		if (!control.value) {
