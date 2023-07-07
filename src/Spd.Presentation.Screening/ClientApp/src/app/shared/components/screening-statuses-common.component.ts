@@ -175,7 +175,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 									aria-label="Pay now"
 									*ngIf="application.status == statisticsCode.AwaitingPayment"
 								>
-									<mat-icon>payment</mat-icon>Pay Now
+									<mat-icon>send</mat-icon>Pay Now
 								</button>
 
 								<button
@@ -314,7 +314,7 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 	}
 
 	onPayNow(application: ScreeningStatusResponse): void {
-		this.emitManageDelegate.emit(application);
+		this.emitPayNow.emit(application);
 	}
 
 	onVerifyApplicant(application: ScreeningStatusResponse): void {
