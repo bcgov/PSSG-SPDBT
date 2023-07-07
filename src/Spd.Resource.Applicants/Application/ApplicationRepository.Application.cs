@@ -286,6 +286,12 @@ internal partial class ApplicationRepository : IApplicationRepository
         if (appSortBy.CompanyNameDesc != null && !(bool)appSortBy.CompanyNameDesc)
             return "spd_contractedcompanyname";
 
+        if (appSortBy.PaidDesc != null && !(bool)appSortBy.PaidDesc)
+            return "spd_paidon";
+
+        if (appSortBy.PaidDesc != null && (bool)appSortBy.PaidDesc)
+            return "spd_paidon desc";
+
         return "createdon desc";
     }
 

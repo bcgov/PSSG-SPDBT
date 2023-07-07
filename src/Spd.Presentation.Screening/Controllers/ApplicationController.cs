@@ -382,7 +382,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// sort: submittedon, name, companyname , add - in front of name means descending.
         /// filters: paid
         /// search:wild card search in name, email and caseID, such as searchText@=test
-        /// sample: api/orgs/4165bdfe-7cb4-ed11-b83e-00505683fbf4/applications?filters=paid==true,fromDate==2021-01-12&page=1&pageSize=15
+        /// sample: api/orgs/4165bdfe-7cb4-ed11-b83e-00505683fbf4/applications/payments?filters=paid==true,fromDate==2021-01-12&sorts=-paid&page=1&pageSize=15
         /// </summary>
         /// <param name="orgId"></param>
         /// <param name="filters"></param>
@@ -507,8 +507,8 @@ namespace Spd.Presentation.Screening.Controllers
             return sortby switch
             {
                 null => new AppPaymentListSortBy(),
-                "paid" => new AppPaymentListSortBy(true),
-                "-paid" => new AppPaymentListSortBy(false),
+                "paid" => new AppPaymentListSortBy(true, null),
+                "-paid" => new AppPaymentListSortBy(false, null),
                 "-submittedOn" => new AppPaymentListSortBy(null, true),
                 "submittedOn" => new AppPaymentListSortBy(null, false),
                 _ => new AppPaymentListSortBy()
