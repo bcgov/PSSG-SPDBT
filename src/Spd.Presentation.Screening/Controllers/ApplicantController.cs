@@ -200,7 +200,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// download the template document
         /// </summary>
         /// <returns></returns>
-        /// http://localhost/api/applicants/screenings/file-templates?fileTemplateType=FingerPrintPkg
+        /// http://localhost/api/applicants/screenings/file-templates?fileTemplateType=FingerprintPkg
         [Authorize(Policy = "OnlyBcsc")]
         [Route("api/applicants/screenings/file-templates")]
         [HttpGet]

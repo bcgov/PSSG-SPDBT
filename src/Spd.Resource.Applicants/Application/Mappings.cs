@@ -88,16 +88,18 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.CaseStatus, opt => opt.MapFrom(s => Enum.Parse<CaseStatusEnum>(s.spd_casestatus)))
             .ForMember(d => d.CaseSubStatus, opt => opt.MapFrom(s => GetSubStatusEnum(s.spd_casesubstatus))) //dynamics put number there as string, for example 100000029
             .ForMember(d => d.OrgName, opt => opt.MapFrom(s => s.spd_OrganizationId.name))
-            .ForMember(d => d.ServiceType, opt => opt.MapFrom(s => GetServiceType(s._spd_servicetypeid_value)));
+            .ForMember(d => d.ServiceType, opt => opt.MapFrom(s => GetServiceType(s._spd_servicetypeid_value)))
+            .ForMember(d => d.PaidOn, opt => opt.MapFrom(s => s.spd_paidon))
+            .ForMember(d => d.NumberOfAttempts, opt => opt.MapFrom(s => s.spd_numberofattempts));
 
             _ = CreateMap<spd_clearanceaccess, ClearanceResp>()
-                .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_clearanceaccessid))
-                .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.spd_applicantfirstname))
-                .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.spd_applicantlastname))
-                .ForMember(d => d.Facility, opt => opt.MapFrom(s => s.spd_contractedcompanyname))
-                .ForMember(d => d.Email, opt => opt.MapFrom(s => s.spd_emailaddress1))
-                .ForMember(d => d.ExpiresOn, opt => opt.MapFrom(s => s.spd_expirydate))
-                .ForMember(d => d.ClearanceId, opt => opt.MapFrom(s => s._spd_clearanceid_value));
+            .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_clearanceaccessid))
+            .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.spd_applicantfirstname))
+            .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.spd_applicantlastname))
+            .ForMember(d => d.Facility, opt => opt.MapFrom(s => s.spd_contractedcompanyname))
+            .ForMember(d => d.Email, opt => opt.MapFrom(s => s.spd_emailaddress1))
+            .ForMember(d => d.ExpiresOn, opt => opt.MapFrom(s => s.spd_expirydate))
+            .ForMember(d => d.ClearanceId, opt => opt.MapFrom(s => s._spd_clearanceid_value));
 
             _ = CreateMap<spd_genericupload, BulkHistoryResp>()
             .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_genericuploadid))
@@ -107,12 +109,12 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.UploadedByUserFullName, opt => opt.MapFrom(s => s.spd_UploadedBy.spd_fullname));
 
             _ = CreateMap<spd_clearance, ShareableClearanceResp>()
-             .ForMember(d => d.OrgId, opt => opt.MapFrom(s => s.spd_CaseID._spd_organizationid_value))
-             .ForMember(d => d.GrantedDate, opt => opt.MapFrom(s => s.spd_dategranted))
-             .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => s.spd_expirydate))
-             .ForMember(d => d.WorkWith, opt => opt.MapFrom(s => s.spd_workswith))
-             .ForMember(d => d.ServiceType, opt => opt.MapFrom(s => DynamicsContextLookupHelpers.LookupServiceTypeKey(s._spd_servicetype_value)))
-             .ForMember(d => d.ClearanceId, opt => opt.MapFrom(s => s.spd_clearanceid));
+            .ForMember(d => d.OrgId, opt => opt.MapFrom(s => s.spd_CaseID._spd_organizationid_value))
+            .ForMember(d => d.GrantedDate, opt => opt.MapFrom(s => s.spd_dategranted))
+            .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => s.spd_expirydate))
+            .ForMember(d => d.WorkWith, opt => opt.MapFrom(s => s.spd_workswith))
+            .ForMember(d => d.ServiceType, opt => opt.MapFrom(s => DynamicsContextLookupHelpers.LookupServiceTypeKey(s._spd_servicetype_value)))
+            .ForMember(d => d.ClearanceId, opt => opt.MapFrom(s => s.spd_clearanceid));
         }
 
         private static string? GetPayeeType(int? code)
