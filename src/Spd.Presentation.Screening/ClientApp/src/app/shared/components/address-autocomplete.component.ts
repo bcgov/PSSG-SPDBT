@@ -2,7 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { UntilDestroy } from '@ngneat/until-destroy';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 import { EMPTY } from 'rxjs';
 import { debounceTime, switchMap } from 'rxjs/operators';
@@ -48,13 +48,7 @@ export class Address {
 				<div class="col-xl-7 col-lg-7 col-md-12 pb-4">
 					<mat-form-field>
 						<mat-label>Address Completed by Canada Post</mat-label>
-						<input
-							matInput
-							formControlName="addressComplete"
-							type="search"
-							(keyup.enter)="onSearchEnter($event)"
-							[matAutocomplete]="auto"
-						/>
+						<input matInput formControlName="addressComplete" type="search" [matAutocomplete]="auto" />
 						<mat-autocomplete #auto="matAutocomplete">
 							<mat-option
 								*ngFor="let field of addressAutocompleteFields"
@@ -143,6 +137,8 @@ export class AddressAutocompleteComponent implements OnInit {
 					const lastId = this.lastId;
 					this.lastId = '';
 
+					if (!value || value.trim().length == 0) return EMPTY;
+
 					return value ? this.find(value, lastId) : EMPTY;
 				})
 			)
@@ -193,13 +189,6 @@ export class AddressAutocompleteComponent implements OnInit {
 			});
 	}
 
-	public async onSearchEnter($event: any) {
-		const found = this.addressAutocompleteFields.find((item) => item.text == this.addressComplete.value);
-		if (found) {
-			this.onAutocomplete(found);
-		}
-	}
-
 	public get addressComplete(): FormControl {
 		return this.form.get('addressComplete') as FormControl;
 	}
@@ -209,6 +198,8 @@ export class AddressAutocompleteComponent implements OnInit {
 	}
 
 	public find(searchTerm: string, lastId: string | undefined = undefined): Observable<AddressFindResponse[]> {
+		if (!searchTerm || searchTerm.trim().length == 0) return of([]);
+
 		return this.addressAutoCompleteService
 			.apiMetadataAddressGet({
 				search: searchTerm,

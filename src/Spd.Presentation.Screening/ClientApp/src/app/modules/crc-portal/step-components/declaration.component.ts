@@ -105,7 +105,7 @@ export class DeclarationComponent implements OnInit, CrcFormStepComponent {
 
 		this.form = this.formBuilder.group(
 			{
-				agreeToCompleteAndAccurate: new FormControl(data.agreeToCompleteAndAccurate, [Validators.required]),
+				agreeToCompleteAndAccurate: new FormControl(data.agreeToCompleteAndAccurate, [Validators.requiredTrue]),
 				agreeToShare: new FormControl(data.agreeToShare),
 			},
 			{

@@ -131,7 +131,7 @@ export const ExpiringChecksFilterMap: Record<keyof ExpiringChecksFilter, string>
 							<mat-cell *matCellDef="let clearance">
 								<button
 									mat-flat-button
-									class="table-button m-2"
+									class="table-button"
 									style="color: var(--color-primary-light);"
 									aria-label="Download Clearance Letter"
 									(click)="onDownloadClearanceLetter(clearance)"
@@ -146,7 +146,7 @@ export const ExpiringChecksFilterMap: Record<keyof ExpiringChecksFilter, string>
 							<mat-cell *matCellDef="let clearance">
 								<button
 									mat-flat-button
-									class="table-button m-2"
+									class="table-button"
 									style="color: var(--color-green);"
 									aria-label="Send Request"
 									(click)="onSendRequest(clearance)"
@@ -161,7 +161,7 @@ export const ExpiringChecksFilterMap: Record<keyof ExpiringChecksFilter, string>
 							<mat-cell *matCellDef="let clearance">
 								<button
 									mat-flat-button
-									class="table-button m-2"
+									class="table-button"
 									style="color: var(--color-red);"
 									aria-label="Cancel"
 									(click)="onCancel(clearance)"

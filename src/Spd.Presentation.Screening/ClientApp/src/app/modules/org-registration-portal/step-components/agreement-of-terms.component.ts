@@ -141,7 +141,7 @@ export class AgreementOfTermsComponent implements OnInit, RegistrationFormStepCo
 
 	ngOnInit(): void {
 		this.form = this.formBuilder.group({
-			agreeToTermsAndConditions: new FormControl('', [Validators.required]),
+			agreeToTermsAndConditions: new FormControl('', [Validators.requiredTrue]),
 		});
 
 		this.authProcessService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {

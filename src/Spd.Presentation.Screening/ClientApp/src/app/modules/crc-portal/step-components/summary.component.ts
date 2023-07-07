@@ -140,7 +140,9 @@ import { UtilService } from 'src/app/core/services/util.service';
 			}
 
 			.text-data {
+				font-size: 1.05rem;
 				font-weight: 300;
+				line-height: 1.3em;
 			}
 
 			.text-label {

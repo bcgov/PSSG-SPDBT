@@ -179,7 +179,10 @@ internal partial class ApplicationRepository : IApplicationRepository
 
     private string GetAppFilterString(AppFilterBy appFilterBy)
     {
+        //orgfilter
         string orgFilter = $"_spd_organizationid_value eq {appFilterBy.OrgId}";
+
+        //portal status filter
         string? portalStatusFilter = null;
         if (appFilterBy.ApplicationPortalStatus != null && appFilterBy.ApplicationPortalStatus.Any())
         {
@@ -191,11 +194,49 @@ internal partial class ApplicationRepository : IApplicationRepository
             }
             portalStatusFilter = $"({string.Join(" or ", strs)})";
         }
+
+        //name email contains
         string? contains = null;
         if (!string.IsNullOrWhiteSpace(appFilterBy.NameOrEmailOrAppIdContains))
         {
             contains = $"(contains(spd_firstname,'{appFilterBy.NameOrEmailOrAppIdContains}') or contains(spd_lastname,'{appFilterBy.NameOrEmailOrAppIdContains}') or contains(spd_emailaddress1,'{appFilterBy.NameOrEmailOrAppIdContains}') or contains(spd_name,'{appFilterBy.NameOrEmailOrAppIdContains}'))";
         }
+
+        //paid
+        string? paid = null;
+        if (appFilterBy.Paid != null)
+        {
+            if ((bool)appFilterBy.Paid)
+                paid = $"spd_paidon ne null";
+            else
+                paid = $"spd_paidon eq null";
+        }
+
+        //payer type
+        string? payer = null;
+        if (appFilterBy.PayerType != null)
+        {
+            int payerValue = (int)Enum.Parse<PayerPreferenceOptionSet>(appFilterBy.PayerType.ToString());
+            payer = $"spd_payer eq {payerValue}";
+        }
+
+        //submitted from date
+        string submitFromDate = null;
+        if(appFilterBy.FromDateTime != null)
+        {
+            var date = new Microsoft.OData.Edm.Date(((DateTimeOffset)appFilterBy.FromDateTime).Year, ((DateTimeOffset)appFilterBy.FromDateTime).Month, ((DateTimeOffset)appFilterBy.FromDateTime).Day);
+            submitFromDate = $"createdon ge {date}";
+        }
+
+        //submitted to date
+        string submitToDate = null;
+        if (appFilterBy.ToDateTime != null)
+        {
+            var date = new Microsoft.OData.Edm.Date(((DateTimeOffset)appFilterBy.ToDateTime).Year, ((DateTimeOffset)appFilterBy.ToDateTime).Month, ((DateTimeOffset)appFilterBy.ToDateTime).AddDays(1).Day);
+            submitToDate = $"createdon lt {date}";
+        }
+
+        //get result filter string
         string result = $"{orgFilter}";
         if (portalStatusFilter != null)
         {
@@ -204,6 +245,22 @@ internal partial class ApplicationRepository : IApplicationRepository
         if (contains != null)
         {
             result += $" and {contains}";
+        }
+        if (paid != null)
+        {
+            result += $" and {paid}";
+        }
+        if (payer != null)
+        {
+            result += $" and {payer}";
+        }
+        if (submitFromDate != null)
+        {
+            result += $" and {submitFromDate}";
+        }
+        if (submitToDate != null)
+        {
+            result += $" and {submitToDate}";
         }
         return result;
     }
@@ -228,6 +285,12 @@ internal partial class ApplicationRepository : IApplicationRepository
 
         if (appSortBy.CompanyNameDesc != null && !(bool)appSortBy.CompanyNameDesc)
             return "spd_contractedcompanyname";
+
+        if (appSortBy.PaidDesc != null && !(bool)appSortBy.PaidDesc)
+            return "spd_paidon";
+
+        if (appSortBy.PaidDesc != null && (bool)appSortBy.PaidDesc)
+            return "spd_paidon desc";
 
         return "createdon desc";
     }

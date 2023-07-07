@@ -79,6 +79,7 @@ export interface AliasCreateRequest {
 							<mat-label>Email Address</mat-label>
 							<input matInput formControlName="emailAddress" [errorStateMatcher]="matcher" maxlength="75" />
 							<mat-error *ngIf="form.get('emailAddress')?.hasError('required')"> This is required </mat-error>
+							<mat-error *ngIf="form.get('emailAddress')?.hasError('email')"> Must be a valid email address </mat-error>
 						</mat-form-field>
 					</div>
 					<div class="col-xl-3 col-lg-6 col-md-12">
@@ -92,6 +93,7 @@ export interface AliasCreateRequest {
 								[errorStateMatcher]="matcher"
 							/>
 							<mat-error *ngIf="form.get('phoneNumber')?.hasError('required')"> This is required </mat-error>
+							<mat-error *ngIf="form.get('phoneNumber')?.hasError('mask')">This must be 10 digits</mat-error>
 						</mat-form-field>
 					</div>
 					<div class="col-xl-3 col-lg-6 col-md-12">
@@ -139,7 +141,7 @@ export interface AliasCreateRequest {
 							<mat-error *ngIf="form.get('jobTitle')?.hasError('required')">This is required</mat-error>
 						</mat-form-field>
 					</div>
-					<div class="col-xl-3 col-lg-6 col-md-12">
+					<div class="col-xl-3 col-lg-6 col-md-12" *ngIf="showScreeningType">
 						<mat-form-field>
 							<mat-label>Application Type</mat-label>
 							<mat-select formControlName="screeningTypeCode">
@@ -339,6 +341,7 @@ export interface AliasCreateRequest {
 					<div class="col-md-12 col-sm-12">
 						<mat-checkbox formControlName="haveVerifiedIdentity">
 							I confirm that I have verified the identity of the applicant for this criminal record check
+							<span class="optional-label">(optional)</span>
 						</mat-checkbox>
 					</div>
 				</div>
@@ -385,6 +388,7 @@ export interface AliasCreateRequest {
 export class ManualSubmissionCommonComponent implements OnInit {
 	@ViewChild(AddressAutocompleteComponent) addressAutocompleteComponent!: AddressAutocompleteComponent;
 	matcher = new FormErrorStateMatcher();
+	showScreeningType = false;
 
 	screeningTypes = ScreeningTypes;
 	genderCodes = GenderTypes;
@@ -394,37 +398,44 @@ export class ManualSubmissionCommonComponent implements OnInit {
 	screeningTypeCodes = ScreeningTypeCode;
 	form: FormGroup = this.formBuilder.group(
 		{
-			givenName: new FormControl('', [Validators.required]),
+			givenName: new FormControl('', [FormControlValidators.required]),
 			middleName1: new FormControl(''),
 			middleName2: new FormControl(''),
-			surname: new FormControl('', [Validators.required]),
+			surname: new FormControl('', [FormControlValidators.required]),
 			oneLegalName: new FormControl(false),
 			emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
 			phoneNumber: new FormControl('', [Validators.required]),
 			driversLicense: new FormControl(''),
 			genderCode: new FormControl(''),
 			dateOfBirth: new FormControl(null, [Validators.required]),
-			birthPlace: new FormControl('', [Validators.required]),
-			jobTitle: new FormControl('', [Validators.required]),
-			screeningTypeCode: new FormControl('', [Validators.required]),
+			birthPlace: new FormControl('', [FormControlValidators.required]),
+			jobTitle: new FormControl('', [FormControlValidators.required]),
+			screeningTypeCode: new FormControl('', [FormControlValidators.required]),
 			contractedCompanyName: new FormControl(''),
-			previousNameFlag: new FormControl('', [Validators.required]),
+			previousNameFlag: new FormControl('', [FormControlValidators.required]),
 			addressSelected: new FormControl(false, [Validators.requiredTrue]),
-			addressLine1: new FormControl('', [Validators.required]),
+			addressLine1: new FormControl('', [FormControlValidators.required]),
 			addressLine2: new FormControl(''),
-			city: new FormControl('', [Validators.required]),
-			postalCode: new FormControl('', [Validators.required]),
-			province: new FormControl('', [Validators.required]),
-			country: new FormControl('', [Validators.required]),
+			city: new FormControl('', [FormControlValidators.required]),
+			postalCode: new FormControl('', [FormControlValidators.required]),
+			province: new FormControl('', [FormControlValidators.required]),
+			country: new FormControl('', [FormControlValidators.required]),
 			agreeToCompleteAndAccurate: new FormControl('', [Validators.requiredTrue]),
 			haveVerifiedIdentity: new FormControl(''),
 			aliases: this.formBuilder.array([]),
-			attachments: new FormControl('', [Validators.required]),
+			attachments: new FormControl('', [FormControlValidators.required]),
 		},
 		{
 			validators: [
-				FormGroupValidators.conditionalRequiredValidator('attachments', (form) => this.portal == 'CRRP'),
-				FormGroupValidators.conditionalRequiredValidator('givenName', (form) => !form.get('oneLegalName')?.value),
+				FormGroupValidators.conditionalRequiredValidator(
+					'screeningTypeCode',
+					(form) => this.showScreeningType ?? false
+				),
+				FormGroupValidators.conditionalRequiredValidator('attachments', (form) => this.portal == PortalTypeCode.Crrp),
+				FormGroupValidators.conditionalRequiredValidator(
+					'givenName',
+					(form) => form.get('oneLegalName')?.value != true
+				),
 				FormGroupValidators.conditionalRequiredValidator('contractedCompanyName', (form) =>
 					[ScreeningTypeCode.Contractor, ScreeningTypeCode.Licensee].includes(form.get('screeningTypeCode')?.value)
 				),
@@ -448,6 +459,12 @@ export class ManualSubmissionCommonComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
+		const orgProfile = this.authUserService.bceidUserOrgProfile;
+		this.showScreeningType = orgProfile
+			? orgProfile.contractorsNeedVulnerableSectorScreening == BooleanTypeCode.Yes ||
+			  orgProfile.licenseesNeedVulnerableSectorScreening == BooleanTypeCode.Yes
+			: false;
+
 		const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
 		if (!orgId) {
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
@@ -616,7 +633,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 			givenName: [''],
 			middleName1: [''],
 			middleName2: [''],
-			surname: ['', [Validators.required]],
+			surname: ['', [FormControlValidators.required]],
 		});
 	}
 
