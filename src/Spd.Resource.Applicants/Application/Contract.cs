@@ -33,8 +33,12 @@ public record AppFilterBy(Guid OrgId)
 {
     public IEnumerable<ApplicationPortalStatusEnum>? ApplicationPortalStatus { get; set; }
     public string? NameOrEmailOrAppIdContains { get; set; }
+    public bool? Paid { get; set; }
+    public DateTimeOffset? FromDateTime { get; set; }
+    public DateTimeOffset? ToDateTime { get; set; }
+    public PayerPreferenceTypeCode? PayerType { get; set; } = null;
 }
-public record AppSortBy(bool? SubmittedDateDesc = true, bool? NameDesc = null, bool? CompanyNameDesc = null);
+public record AppSortBy(bool? SubmittedDateDesc = true, bool? NameDesc = null, bool? CompanyNameDesc = null, bool? PaidDesc = null);
 public record SearchApplicationQry
 {
     public Guid OrgId { get; set; }
@@ -123,7 +127,10 @@ public record ApplicationResult
     public DateTimeOffset? CreatedOn { get; set; }
     public string? OrgName { get; set; }
     public ServiceTypeEnum? ServiceType { get; set; }
+    public DateTimeOffset? PaidOn { get; set; }
+    public int? NumberOfAttempts { get; set; }
 }
+
 public class ApplicationListResp
 {
     public int? FollowUpBusinessDays { get; set; }

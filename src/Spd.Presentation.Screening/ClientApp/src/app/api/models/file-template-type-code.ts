@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export enum FileTemplateTypeCode {
-  FingerPrintPkg = 'FingerPrintPkg',
+  FingerprintPkg = 'FingerprintPkg',
   StatutoryDeclaration = 'StatutoryDeclaration'
 }

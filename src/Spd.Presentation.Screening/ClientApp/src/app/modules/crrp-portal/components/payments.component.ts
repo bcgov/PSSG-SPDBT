@@ -6,9 +6,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import {
-	ApplicationListResponse,
+	ApplicationPaymentListResponse,
+	ApplicationPaymentResponse,
 	ApplicationPortalStatusCode,
-	ApplicationResponse,
 	ApplicationStatisticsResponse,
 } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
@@ -21,7 +21,7 @@ import { ScreeningStatusFilterMap } from 'src/app/shared/components/screening-st
 import { CrrpRoutes } from '../crrp-routing.module';
 import { PaymentFilter } from './payment-filter.component';
 
-export interface PaymentResponse extends ApplicationResponse {
+export interface PaymentResponse extends ApplicationPaymentResponse {
 	applicationPortalStatusClass: string;
 	applicationPortalStatusText: string;
 }
@@ -108,7 +108,7 @@ export interface PaymentResponse extends ApplicationResponse {
 							<mat-header-cell *matHeaderCellDef>Paid On</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Paid On:</span>
-								??<!-- {{ application.paidOn | date : constants.date.dateTimeFormat  : 'UTC-7' }} -->
+								{{ application.paidOn | date : constants.date.dateTimeFormat }}
 							</mat-cell>
 						</ng-container>
 
@@ -303,12 +303,12 @@ export class PaymentsComponent implements OnInit {
 		this.queryParams.filters = this.buildQueryParamsFilterString();
 
 		this.applicationService
-			.apiOrgsOrgIdApplicationsGet({
+			.apiOrgsOrgIdApplicationsPaymentsGet({
 				orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
 				...this.queryParams,
 			})
 			.pipe()
-			.subscribe((res: ApplicationListResponse) => {
+			.subscribe((res: ApplicationPaymentListResponse) => {
 				const applications = res.applications as Array<PaymentResponse>;
 				applications.forEach((app: PaymentResponse) => {
 					const itemClass = this.utilService.getApplicationPortalStatusClass(app.status);

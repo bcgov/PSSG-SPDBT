@@ -377,6 +377,38 @@ namespace Spd.Presentation.Screening.Controllers
                 });
         }
 
+        /// <summary>
+        /// return applications in this org and paidby should be organization.
+        /// sort: submittedon, name, companyname , add - in front of name means descending.
+        /// filters: paid
+        /// search:wild card search in name, email and caseID, such as searchText@=test
+        /// sample: api/orgs/4165bdfe-7cb4-ed11-b83e-00505683fbf4/applications/payments?filters=paid==true,fromDate==2021-01-12&sorts=-paid&page=1&pageSize=15
+        /// </summary>
+        /// <param name="orgId"></param>
+        /// <param name="filters"></param>
+        /// <param name="sorts"></param>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        [Route("api/orgs/{orgId}/applications/payments")]
+        [HttpGet]
+        public async Task<ApplicationPaymentListResponse> GetPaymentList([FromRoute] Guid orgId, [FromQuery] string? filters, [FromQuery] string? sorts, [FromQuery] int? page, [FromQuery] int? pageSize)
+        {
+            page = (page == null || page < 0) ? 0 : page;
+            pageSize = (pageSize == null || pageSize == 0 || pageSize > 100) ? 10 : pageSize;
+            if (string.IsNullOrWhiteSpace(sorts)) sorts = "-submittedOn";
+            PaginationRequest pagination = new PaginationRequest((int)page, (int)pageSize);
+            AppPaymentListFilterBy filterBy = GetAppPaymentListFilterBy(filters, orgId);
+            AppPaymentListSortBy sortBy = GetAppPaymentListSortBy(sorts);
+            return await _mediator.Send(
+                new ApplicationPaymentListQuery
+                {
+                    FilterBy = filterBy,
+                    SortBy = sortBy,
+                    Paging = pagination
+                });
+        }
+
         private AppListFilterBy GetAppListFilterBy(string? filters, Guid orgId)
         {
             AppListFilterBy appListFilterBy = new AppListFilterBy(orgId);
@@ -430,6 +462,56 @@ namespace Spd.Presentation.Screening.Controllers
                 "companyname" => new AppListSortBy(null, null, false),
                 "-companyname" => new AppListSortBy(null, null, true),
                 _ => new AppListSortBy()
+            };
+        }
+
+        private AppPaymentListFilterBy GetAppPaymentListFilterBy(string? filters, Guid orgId)
+        {
+            AppPaymentListFilterBy filterBy = new AppPaymentListFilterBy(orgId);
+            if (string.IsNullOrWhiteSpace(filters)) return filterBy;
+
+            try
+            {
+                //filters string should be like paid==true,fromDate==2021-01-09,toDate==2022-02-29
+                string[] items = filters.Split(',');
+                foreach (string item in items)
+                {
+                    string[] strs = item.Split("==");
+                    if (strs[0].Equals("paid", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        string str = strs[1];
+                        filterBy.Paid = str == "true";
+                    }
+                    else if (strs[0].Equals("fromDate", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        string str = strs[1];
+                        filterBy.FromDateTime = DateTimeOffset.ParseExact(str, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                    }
+                    else if (strs[0].Equals("toDate", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        string str = strs[1];
+                        filterBy.ToDateTime = DateTimeOffset.ParseExact(str, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                    }
+                }
+            }
+            catch
+            {
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Invalid filter string.");
+            }
+            return filterBy;
+        }
+
+        private AppPaymentListSortBy GetAppPaymentListSortBy(string? sortby)
+        {
+            //sorts string should be like: sorts=-submittedOn or sorts=paid
+            return sortby switch
+            {
+                null => new AppPaymentListSortBy(),
+                "paid" => new AppPaymentListSortBy(true, null),
+                "-paid" => new AppPaymentListSortBy(false, null),
+                "-submittedOn" => new AppPaymentListSortBy(null, true),
+                "submittedOn" => new AppPaymentListSortBy(null, false),
+                _ => new AppPaymentListSortBy()
             };
         }
         #endregion

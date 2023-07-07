@@ -9238,6 +9238,7 @@
         <Property Name="actualserviceunits" Type="Edm.Int32" />
         <Property Name="_parentcaseid_value" Type="Edm.Guid" />
         <Property Name="numberofchildincidents" Type="Edm.Int32" />
+        <Property Name="spd_statusmodifiedon" Type="Edm.DateTimeOffset" />
         <Property Name="incidentid" Type="Edm.Guid" />
         <Property Name="merged" Type="Edm.Boolean" />
         <Property Name="onholdtime" Type="Edm.Int32" />
@@ -9254,6 +9255,7 @@
         <Property Name="stageid" Type="Edm.Guid" />
         <Property Name="spd_datecompleted" Type="Edm.DateTimeOffset" />
         <Property Name="lastonholdtime" Type="Edm.DateTimeOffset" />
+        <Property Name="spd_justinhitfound" Type="Edm.Int32" />
         <Property Name="_owninguser_value" Type="Edm.Guid" />
         <Property Name="messagetypecode" Type="Edm.Int32" />
         <Property Name="isdecrementing" Type="Edm.Boolean" />
@@ -19516,6 +19518,7 @@
         <Property Name="spd_city" Type="Edm.String" Unicode="false" />
         <Property Name="_createdby_value" Type="Edm.Guid" />
         <Property Name="versionnumber" Type="Edm.Int64" />
+        <Property Name="spd_paidon" Type="Edm.DateTimeOffset" />
         <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
         <Property Name="_spd_submittedby_value" Type="Edm.Guid" />
         <Property Name="spd_casestatus" Type="Edm.String" Unicode="false" />
@@ -19534,6 +19537,7 @@
         <Property Name="_owninguser_value" Type="Edm.Guid" />
         <Property Name="spd_payer" Type="Edm.Int32" />
         <Property Name="statecode" Type="Edm.Int32" />
+        <Property Name="spd_numberofattempts" Type="Edm.Int32" />
         <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
         <Property Name="spd_applicationid" Type="Edm.Guid" />
         <Property Name="_spd_organizationid_value" Type="Edm.Guid" />
@@ -24818,7 +24822,7 @@
         <Property Name="SeriesCanBeExpanded" Type="Edm.Boolean" />
       </ComplexType>
       <Action Name="CreateInstance">
-        <Parameter Name="Target" Type="mscrm.recurringappointmentmaster" Nullable="false" />
+        <Parameter Name="Target" Type="mscrm.crmbaseentity" Nullable="false" />
         <Parameter Name="Count" Type="Edm.Int32" Nullable="false" />
         <ReturnType Type="mscrm.CreateInstanceResponse" Nullable="false" />
       </Action>
@@ -24884,7 +24888,7 @@
         <Parameter Name="Importance" Type="Edm.String" Nullable="false" Unicode="false" />
         <Parameter Name="Body" Type="Edm.String" Nullable="false" Unicode="false" />
         <Parameter Name="Attachments" Type="Collection(mscrm.activitymimeattachment)" Nullable="false" />
-        <Parameter Name="ExtraProperties" Type="mscrm.email" />
+        <Parameter Name="ExtraProperties" Type="mscrm.crmbaseentity" />
         <Parameter Name="ValidateBeforeCreate" Type="Edm.Boolean" />
         <ReturnType Type="mscrm.email" Nullable="false" />
       </Action>
@@ -24901,7 +24905,7 @@
         <Parameter Name="Importance" Type="Edm.String" Nullable="false" Unicode="false" />
         <Parameter Name="Body" Type="Edm.String" Nullable="false" Unicode="false" />
         <Parameter Name="Attachments" Type="Collection(mscrm.activitymimeattachment)" Nullable="false" />
-        <Parameter Name="ExtraProperties" Type="mscrm.email" />
+        <Parameter Name="ExtraProperties" Type="mscrm.crmbaseentity" />
         <ReturnType Type="mscrm.email" Nullable="false" />
       </Action>
       <Action Name="DeprovisionLanguage">
@@ -25845,7 +25849,7 @@
       </Function>
       <Function Name="RetrieveUnpublished" IsBound="true" IsComposable="true">
         <Parameter Name="entity" Type="mscrm.savedqueryvisualization" Nullable="false" />
-        <ReturnType Type="mscrm.systemform" Nullable="false" />
+        <ReturnType Type="mscrm.savedqueryvisualization" Nullable="false" />
       </Function>
       <Function Name="RetrieveUnpublished" IsBound="true" IsComposable="true">
         <Parameter Name="entity" Type="mscrm.systemform" Nullable="false" />
@@ -25853,43 +25857,43 @@
       </Function>
       <Function Name="RetrieveUnpublished" IsBound="true" IsComposable="true">
         <Parameter Name="entity" Type="mscrm.customcontroldefaultconfig" Nullable="false" />
-        <ReturnType Type="mscrm.systemform" Nullable="false" />
+        <ReturnType Type="mscrm.customcontroldefaultconfig" Nullable="false" />
       </Function>
       <Function Name="RetrieveUnpublished" IsBound="true" IsComposable="true">
         <Parameter Name="entity" Type="mscrm.webresource" Nullable="false" />
-        <ReturnType Type="mscrm.systemform" Nullable="false" />
+        <ReturnType Type="mscrm.webresource" Nullable="false" />
       </Function>
       <Function Name="RetrieveUnpublished" IsBound="true" IsComposable="true">
         <Parameter Name="entity" Type="mscrm.sitemap" Nullable="false" />
-        <ReturnType Type="mscrm.systemform" Nullable="false" />
+        <ReturnType Type="mscrm.sitemap" Nullable="false" />
       </Function>
       <Function Name="RetrieveUnpublished" IsBound="true" IsComposable="true">
         <Parameter Name="entity" Type="mscrm.savedquery" Nullable="false" />
-        <ReturnType Type="mscrm.systemform" Nullable="false" />
+        <ReturnType Type="mscrm.savedquery" Nullable="false" />
       </Function>
       <Function Name="RetrieveUnpublished" IsBound="true" IsComposable="true">
         <Parameter Name="entity" Type="mscrm.mobileofflineprofileitem" Nullable="false" />
-        <ReturnType Type="mscrm.systemform" Nullable="false" />
+        <ReturnType Type="mscrm.mobileofflineprofileitem" Nullable="false" />
       </Function>
       <Function Name="RetrieveUnpublished" IsBound="true" IsComposable="true">
         <Parameter Name="entity" Type="mscrm.mobileofflineprofile" Nullable="false" />
-        <ReturnType Type="mscrm.systemform" Nullable="false" />
+        <ReturnType Type="mscrm.mobileofflineprofile" Nullable="false" />
       </Function>
       <Function Name="RetrieveUnpublished" IsBound="true" IsComposable="true">
         <Parameter Name="entity" Type="mscrm.appconfig" Nullable="false" />
-        <ReturnType Type="mscrm.systemform" Nullable="false" />
+        <ReturnType Type="mscrm.appconfig" Nullable="false" />
       </Function>
       <Function Name="RetrieveUnpublished" IsBound="true" IsComposable="true">
         <Parameter Name="entity" Type="mscrm.appconfiginstance" Nullable="false" />
-        <ReturnType Type="mscrm.systemform" Nullable="false" />
+        <ReturnType Type="mscrm.appconfiginstance" Nullable="false" />
       </Function>
       <Function Name="RetrieveUnpublished" IsBound="true" IsComposable="true">
         <Parameter Name="entity" Type="mscrm.navigationsetting" Nullable="false" />
-        <ReturnType Type="mscrm.systemform" Nullable="false" />
+        <ReturnType Type="mscrm.navigationsetting" Nullable="false" />
       </Function>
       <Function Name="RetrieveUnpublished" IsBound="true" IsComposable="true">
         <Parameter Name="entity" Type="mscrm.appmodule" Nullable="false" />
-        <ReturnType Type="mscrm.systemform" Nullable="false" />
+        <ReturnType Type="mscrm.appmodule" Nullable="false" />
       </Function>
       <Function Name="RetrieveUnpublishedMultiple" IsBound="true" IsComposable="true">
         <Parameter Name="entityset" Type="Collection(mscrm.savedqueryvisualization)" Nullable="false" />

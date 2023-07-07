@@ -23,6 +23,7 @@ namespace Spd.Manager.Cases
         IRequestHandler<ApplicationInviteDeleteCommand, Unit>,
         IRequestHandler<ApplicationCreateCommand, ApplicationCreateResponse>,
         IRequestHandler<ApplicationListQuery, ApplicationListResponse>,
+        IRequestHandler<ApplicationPaymentListQuery, ApplicationPaymentListResponse>,
         IRequestHandler<ApplicationStatisticsQuery, ApplicationStatisticsResponse>,
         IRequestHandler<IdentityCommand, Unit>,
         IRequestHandler<GetBulkUploadHistoryQuery, BulkHistoryListResponse>,
@@ -179,6 +180,24 @@ namespace Spd.Manager.Cases
                 ct);
 
             return _mapper.Map<ApplicationListResponse>(response);
+        }
+
+        public async Task<ApplicationPaymentListResponse> Handle(ApplicationPaymentListQuery request, CancellationToken ct)
+        {
+            AppFilterBy filterBy = _mapper.Map<AppFilterBy>(request.FilterBy);
+            AppSortBy sortBy = _mapper.Map<AppSortBy>(request.SortBy);
+            Paging paging = _mapper.Map<Paging>(request.Paging);
+
+            var response = await _applicationRepository.QueryAsync(
+                new ApplicationListQry
+                {
+                    FilterBy = filterBy,
+                    SortBy = sortBy,
+                    Paging = paging
+                },
+                ct);
+
+            return _mapper.Map<ApplicationPaymentListResponse>(response);
         }
 
         public async Task<ApplicationStatisticsResponse> Handle(ApplicationStatisticsQuery request, CancellationToken ct)
@@ -444,7 +463,7 @@ namespace Spd.Manager.Cases
         {
             //waiting for dynamics decision
             //temp code
-            if (query.FileTemplateType == FileTemplateTypeCode.FingerPrintPkg)
+            if (query.FileTemplateType == FileTemplateTypeCode.FingerprintPkg)
             {
                 FileQueryResult fileResult = (FileQueryResult)await _fileStorageService.HandleQuery(
                         new FileQuery { Key = "Fingerprint Letter June 2023.pdf", Folder = $"templates" },

@@ -9,9 +9,11 @@ import {
 	ApplicantApplicationResponse,
 	ApplicationPortalStatusCode,
 	CaseSubStatusCode,
+	FileTemplateTypeCode,
 	FileTypeCode,
 } from 'src/app/api/models';
 import { ApplicantService } from 'src/app/api/services';
+import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { UtilService } from 'src/app/core/services/util.service';
@@ -114,12 +116,24 @@ import {
 			<h4 class="subheading fw-normal mt-4">Downloadable Documents</h4>
 			<div class="row">
 				<div class="col-xl-4 col-lg-6 col-md-6 col-sm-12" *ngIf="fingerprintsAlert">
-					<button mat-flat-button color="primary" class="m-2" aria-label="Download Fingerprint Package">
+					<button
+						mat-flat-button
+						color="primary"
+						class="m-2"
+						(click)="onDownloadFile(fileTemplateTypeCodes.FingerprintPkg)"
+						aria-label="Download Fingerprint Package"
+					>
 						<mat-icon>file_download</mat-icon>Download Fingerprint Package
 					</button>
 				</div>
 				<div class="col-xl-4 col-lg-6 col-md-6 col-sm-12" *ngIf="statutoryDeclarationAlert">
-					<button mat-flat-button color="primary" class="m-2" aria-label="Download Statutory Declaration">
+					<button
+						mat-flat-button
+						color="primary"
+						class="m-2"
+						(click)="onDownloadFile(fileTemplateTypeCodes.StatutoryDeclaration)"
+						aria-label="Download Statutory Declaration"
+					>
 						<mat-icon>file_download</mat-icon>Download Statutory Declaration
 					</button>
 				</div>
@@ -198,6 +212,7 @@ export class SecurityScreeningDetailComponent {
 	application: ApplicantApplicationResponse | null = null;
 
 	constants = SPD_CONSTANTS;
+	fileTemplateTypeCodes = FileTemplateTypeCode;
 	dataSourceAppl: MatTableDataSource<ApplicantApplicationResponse> =
 		new MatTableDataSource<ApplicantApplicationResponse>([]);
 	columnsAppl: string[] = ['applicationNumber', 'createdOn', 'payeeType'];
@@ -250,6 +265,25 @@ export class SecurityScreeningDetailComponent {
 				if (resp) {
 					this.router.navigate([SecurityScreeningRoutes.path(SecurityScreeningRoutes.CRC_LIST)]);
 				}
+			});
+	}
+
+	onDownloadFile(fileTemplateType: FileTemplateTypeCode): void {
+		this.applicantService
+			.apiApplicantsScreeningsApplicationIdFilesGet({ applicationId: this.application?.id! })
+			.pipe()
+			.subscribe((res: ApplicantApplicationFileListResponse) => {
+				this.dataSourceHistory.data = res.items ?? [];
+				this.documentHistoryExists = this.dataSourceHistory.data.length > 0 ?? false;
+			});
+
+		this.applicantService
+			.apiApplicantsScreeningsFileTemplatesGet$Response({
+				fileTemplateType,
+			})
+			.pipe()
+			.subscribe((resp: StrictHttpResponse<Blob>) => {
+				this.utilService.downloadFile(resp.headers, resp.body);
 			});
 	}
 
