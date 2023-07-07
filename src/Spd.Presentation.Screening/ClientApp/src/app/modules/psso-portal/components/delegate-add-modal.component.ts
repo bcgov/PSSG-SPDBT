@@ -50,8 +50,8 @@ import { FormControlValidators } from 'src/app/core/validators/form-control.vali
 })
 export class DelegateAddModalComponent {
 	form: FormGroup = this.formBuilder.group({
-		lastName: new FormControl('', [Validators.required]),
-		firstName: new FormControl('', [Validators.required]),
+		lastName: new FormControl('', [FormControlValidators.required]),
+		firstName: new FormControl('', [FormControlValidators.required]),
 		email: new FormControl('', [Validators.required, FormControlValidators.email]),
 	});
 

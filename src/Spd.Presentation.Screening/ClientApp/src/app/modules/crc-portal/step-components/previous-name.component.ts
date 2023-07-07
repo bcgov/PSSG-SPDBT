@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { BooleanTypeCode } from 'src/app/api/models';
+import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { CrcFormStepComponent } from '../crc.component';
@@ -120,7 +121,7 @@ export class PreviousNameComponent implements OnInit, CrcFormStepComponent {
 
 	ngOnInit(): void {
 		this.form = this.formBuilder.group({
-			previousNameFlag: new FormControl('', [Validators.required]),
+			previousNameFlag: new FormControl('', [FormControlValidators.required]),
 			aliases: this.formBuilder.array([]),
 		});
 		this.onAddRow();
@@ -131,7 +132,7 @@ export class PreviousNameComponent implements OnInit, CrcFormStepComponent {
 			givenName: [''],
 			middleName1: [''],
 			middleName2: [''],
-			surname: ['', [Validators.required]],
+			surname: ['', [FormControlValidators.required]],
 		});
 	}
 

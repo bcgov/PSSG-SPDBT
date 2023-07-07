@@ -3,6 +3,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { NgxMaskPipe } from 'ngx-mask';
 import { BooleanTypeCode } from 'src/app/api/models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { RegistrationFormStepComponent } from '../org-registration.component';
 
@@ -96,8 +97,8 @@ export class OrganizationInformationComponent implements OnInit, RegistrationFor
 
 	ngOnInit(): void {
 		this.form = this.formBuilder.group({
-			hasPhoneOrEmail: new FormControl('', [Validators.required]),
-			genericEmail: new FormControl('', [Validators.email, Validators.required]),
+			hasPhoneOrEmail: new FormControl('', [FormControlValidators.required]),
+			genericEmail: new FormControl('', [Validators.required, FormControlValidators.email]),
 			genericPhoneNumber: new FormControl('', [Validators.required]),
 		});
 	}
@@ -113,7 +114,7 @@ export class OrganizationInformationComponent implements OnInit, RegistrationFor
 	}
 
 	isFormValid(): boolean {
-		if (!this.hasPhoneOrEmail || !this.hasPhoneOrEmail.value) return false;
+		if (!this.hasPhoneOrEmail?.value) return false;
 		return this.hasPhoneOrEmail.value == BooleanTypeCode.Yes ? this.form.valid : true;
 	}
 
