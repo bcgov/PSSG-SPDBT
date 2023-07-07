@@ -41,13 +41,12 @@ namespace Spd.Presentation.Screening.Controllers
                 glDate = trnDate;
 
             string description = paymentLinkCreateRequest.Description;
-            string trnNumber = "TR000000012";//Guid.NewGuid().ToString();
+            string trnNumber = Guid.NewGuid().ToString();
             string trnAmount = paymentLinkCreateRequest.Amount.ToString();
             string paymentMethod = paymentLinkCreateRequest.PaymentMethod;
             string redirectUrl = paymentLinkCreateRequest.RedirectUrl;
             string currency = "CAD";
-            //string revenue = "1:039.18ACE.14691.8928.1800000.000000.0000:25.00|2:039.18ACE.14692.8928.1800000.000000.0000:25.27";
-            string revenue = "1:039.18ACE.14691.8928.1800000.000000.0000:50.27";
+            string revenue = "1:039.18ACE.14691.8928.1800000.000000.0000:25.00|2:039.18ACE.14692.8928.1800000.000000.0000:25.27";
             string? ref1 = paymentLinkCreateRequest.Ref1;
             string? ref2 = paymentLinkCreateRequest.Ref2;
             string? ref3 = paymentLinkCreateRequest.Ref3;
@@ -59,16 +58,12 @@ namespace Spd.Presentation.Screening.Controllers
             using (MD5 md5 = MD5.Create())
             {
                 string str = $"{query}{apikey}";
-                //byte[] hash = md5.ComputeHash(Encoding.ASCII.GetBytes(str));
-                //byte[] hash = md5.ComputeHash(Encoding.UTF8.GetBytes(str));
-                byte[] hash = md5.ComputeHash(Encoding.Unicode.GetBytes(str));
+                byte[] hash = md5.ComputeHash(Encoding.UTF8.GetBytes(str));
                 // Convert the byte array to string format
                 foreach (byte b in hash)
                 {
-                    sb.Append($"{b:X2}");
+                    sb.Append($"{b:x2}");
                 }
-               // hashValue = BitConverter.ToString(hash);
-                //hashValue= Encoding.ASCII.GetString(hash, 0, hash.Length);
             }
             hashValue = sb.ToString();
              
@@ -79,7 +74,6 @@ namespace Spd.Presentation.Screening.Controllers
             uriBuilder.Host = "paydev.gov.bc.ca";
             uriBuilder.Path = "public/directsale";
             uriBuilder.Query = query;
-            Uri uri = uriBuilder.Uri;
 
             return new PaymentLinkResponse
             {
