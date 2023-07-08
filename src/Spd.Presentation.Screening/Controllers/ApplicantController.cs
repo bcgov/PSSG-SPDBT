@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Cases;
+using Spd.Presentation.Screening.Configurations;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared;
@@ -10,6 +11,7 @@ using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.Shared.ManagerContract;
 using Spd.Utilities.Shared.Tools;
 using System.ComponentModel.DataAnnotations;
+using System.Configuration;
 using System.Net;
 using System.Security.Principal;
 
@@ -20,12 +22,17 @@ namespace Spd.Presentation.Screening.Controllers
         private readonly IMediator _mediator;
         private readonly IPrincipal _currentUser;
         private readonly IRecaptchaVerificationService _verificationService;
+        private readonly IConfiguration _configuration;
 
-        public ApplicantController(IMediator mediator, IPrincipal currentUser, IRecaptchaVerificationService verificationService)
+        public ApplicantController(IMediator mediator,
+            IPrincipal currentUser,
+            IRecaptchaVerificationService verificationService,
+            IConfiguration configuration)
         {
             _mediator = mediator;
             _currentUser = currentUser;
             _verificationService = verificationService;
+            _configuration = configuration;
         }
 
         #region application-invites
@@ -181,29 +188,33 @@ namespace Spd.Presentation.Screening.Controllers
         [Authorize(Policy = "OnlyBcsc")]
         public async Task<IEnumerable<ApplicantAppFileCreateResponse>> UploadApplicantAppFiles([FromForm][Required] ApplicantAppFileUploadRequest fileUploadRequest, [FromRoute] Guid applicationId, CancellationToken ct)
         {
+            UploadFileConfiguration? fileUploadConfig = _configuration.GetSection("UploadFile").Get<UploadFileConfiguration>();
+            if (fileUploadConfig == null)
+                throw new ConfigurationErrorsException("UploadFile configuration does not exist.");
+
             var applicantInfo = _currentUser.GetApplicantIdentityInfo();
 
             //validation files
             foreach (IFormFile file in fileUploadRequest.Files)
             {
                 string? fileexe = FileNameHelper.GetFileExtension(file.FileName);
-                if (!SpdConstants.VALID_UPLOAD_FILE_EXE.Contains(fileexe, StringComparer.InvariantCultureIgnoreCase))
+                if (!fileUploadConfig.AllowedExtentions.Split(",").Contains(fileexe, StringComparer.InvariantCultureIgnoreCase))
                 {
-                    throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"{file.Name} file type is not supported.");
+                    throw new ApiException(HttpStatusCode.BadRequest, $"{file.FileName} file type is not supported.");
                 }
                 long fileSize = file.Length;
-                if (fileSize > SpdConstants.UPLOAD_FILE_MAX_SIZE)
+                if (fileSize > fileUploadConfig.MaxFileSizeMB * 1024 * 1024)
                 {
-                    throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"{file.Name} exceeds max supported file size {SpdConstants.UPLOAD_FILE_MAX_SIZE}.");
+                    throw new ApiException(HttpStatusCode.BadRequest, $"{file.Name} exceeds max supported file size {fileUploadConfig.MaxFileSizeMB} MB.");
                 }
             }
-            if (fileUploadRequest.FileType != FileTypeCode.ApplicantInformation && fileUploadRequest.Files.Count > 1) 
-            { 
-                throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"Only 1 file upload allowed.");
-            }
-            if (fileUploadRequest.FileType == FileTypeCode.ApplicantInformation && fileUploadRequest.Files.Count > 10)
+            if (fileUploadRequest.FileType != FileTypeCode.ApplicantInformation && fileUploadRequest.Files.Count > 1)
             {
-                throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"Max 10 files upload allowed.");
+                throw new ApiException(HttpStatusCode.BadRequest, $"Only 1 file upload allowed.");
+            }
+            if (fileUploadRequest.FileType == FileTypeCode.ApplicantInformation && fileUploadRequest.Files.Count > fileUploadConfig.MaxAllowedFileNumbers)
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, $"Max {fileUploadConfig.MaxAllowedFileNumbers} files upload allowed.");
             }
             return await _mediator.Send(new CreateApplicantAppFileCommand(fileUploadRequest, applicantInfo.Sub, applicationId), ct);
         }
