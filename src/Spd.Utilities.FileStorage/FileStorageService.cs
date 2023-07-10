@@ -2,6 +2,7 @@
 using Amazon.S3;
 using Amazon.S3.Model;
 using Microsoft.Extensions.Options;
+using System.Web;
 
 namespace Spd.Utilities.FileStorage
 {
@@ -49,7 +50,7 @@ namespace Spd.Utilities.FileStorage
                 TagSet = GetTagSet(cmd.FileTag?.Tags),
             };
             request.Metadata.Add("contenttype", file.ContentType);
-            request.Metadata.Add("filename", file.FileName);
+            request.Metadata.Add("filename", HttpUtility.HtmlEncode(file.FileName));
             if (file.Metadata != null)
             {
                 foreach (Metadata md in file.Metadata)
