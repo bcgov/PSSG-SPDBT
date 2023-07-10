@@ -185,6 +185,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/applicants/screenings/{applicationId}/files")]
         [HttpPost]
+        [DisableRequestSizeLimit]
         [Authorize(Policy = "OnlyBcsc")]
         public async Task<IEnumerable<ApplicantAppFileCreateResponse>> UploadApplicantAppFiles([FromForm][Required] ApplicantAppFileUploadRequest fileUploadRequest, [FromRoute] Guid applicationId, CancellationToken ct)
         {
