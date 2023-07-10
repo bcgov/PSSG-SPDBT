@@ -88,6 +88,7 @@ export class SecurityInformationComponent implements CrcFormStepComponent {
 		this.facilityNameRequired = [ScreeningTypeCode.Contractor, ScreeningTypeCode.Licensee].includes(
 			data.screeningType!
 		);
+
 		this.form = this.formBuilder.group(
 			{
 				orgName: new FormControl({ value: data.orgName, disabled: true }),
@@ -105,7 +106,7 @@ export class SecurityInformationComponent implements CrcFormStepComponent {
 				validators: [
 					FormGroupValidators.conditionalRequiredValidator(
 						'contractedCompanyName',
-						(form) => this.facilityNameRequired ?? false
+						(form) => this.facilityNameRequired
 					),
 				],
 			}
