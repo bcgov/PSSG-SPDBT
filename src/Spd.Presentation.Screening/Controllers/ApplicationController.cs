@@ -477,38 +477,52 @@ namespace Spd.Presentation.Screening.Controllers
                 foreach (string item in items)
                 {
                     string[] strs = item.Split("==");
-                    if (strs[0].Equals("paid", StringComparison.InvariantCultureIgnoreCase))
+                    if (strs.Length == 2)
                     {
-                        string str = strs[1];
-                        filterBy.Paid = str == "true";
+                        if (strs[0].Equals("paid", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            string str = strs[1];
+                            filterBy.Paid = str == "true";
+                        }
+                        else if (strs[0].Equals("fromDate", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            string str = strs[1];
+
+                            string[] parts = str.Split('(', ')');
+
+                            string format = "ddd MMM dd yyyy HH:mm:ss 'GMT'zzz";
+
+                            filterBy.FromDateTime = DateTimeOffset.ParseExact(parts[0].Trim(), format, CultureInfo.InvariantCulture);
+                            //filterBy.FromDateTime = DateTimeOffset.ParseExact(str, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                        }
+                        else if (strs[0].Equals("toDate", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            string str = strs[1];
+
+
+                            string[] parts = str.Split('(', ')');
+
+                            string format = "ddd MMM dd yyyy HH:mm:ss 'GMT'zzz";
+
+                            filterBy.ToDateTime = DateTimeOffset.ParseExact(parts[0].Trim(), format, CultureInfo.InvariantCulture);
+                            //filterBy.ToDateTime = DateTimeOffset.ParseExact(str, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                        }
+                        else if (strs[0] == "status")
+                        {
+                            string[] status = strs[1].Split("|");
+                            filterBy.ApplicationPortalStatus = status.Select(s => Enum.Parse<ApplicationPortalStatusCode>(s)).AsEnumerable();
+                        }
                     }
-                    else if (strs[0].Equals("fromDate", StringComparison.InvariantCultureIgnoreCase))
+                    else
                     {
-                        string str = strs[1];
-
-                        string[] parts = str.Split('(', ')');
-
-                        string format = "ddd MMM dd yyyy HH:mm:ss 'GMT'zzz";
-
-                        filterBy.FromDateTime = DateTimeOffset.ParseExact(parts[0].Trim(), format, CultureInfo.InvariantCulture);
-                        //filterBy.FromDateTime = DateTimeOffset.ParseExact(str, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-                    }
-                    else if (strs[0].Equals("toDate", StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        string str = strs[1];
-
-
-                        string[] parts = str.Split('(', ')');
-
-                        string format = "ddd MMM dd yyyy HH:mm:ss 'GMT'zzz";
-
-                        filterBy.ToDateTime = DateTimeOffset.ParseExact(parts[0].Trim(), format, CultureInfo.InvariantCulture);
-                        //filterBy.ToDateTime = DateTimeOffset.ParseExact(str, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-                    }
-                    else if (strs[0] == "status")
-                    {
-                        string[] status = strs[1].Split("|");
-                        filterBy.ApplicationPortalStatus = status.Select(s => Enum.Parse<ApplicationPortalStatusCode>(s)).AsEnumerable();
+                        if (strs.Length == 1)
+                        {
+                            string[] s = strs[0].Split("@=");
+                            if (s.Length == 2 && s[0] == "searchText")
+                            {
+                                filterBy.NameOrAppIdContains = s[1];
+                            }
+                        }
                     }
                 }
             }

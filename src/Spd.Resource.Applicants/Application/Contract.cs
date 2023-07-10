@@ -33,6 +33,7 @@ public record AppFilterBy(Guid OrgId)
 {
     public IEnumerable<ApplicationPortalStatusEnum>? ApplicationPortalStatus { get; set; }
     public string? NameOrEmailOrAppIdContains { get; set; }
+    public string? NameOrAppIdContains { get; set; }
     public bool? Paid { get; set; }
     public DateTimeOffset? FromDateTime { get; set; }
     public DateTimeOffset? ToDateTime { get; set; }

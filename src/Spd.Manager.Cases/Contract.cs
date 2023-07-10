@@ -156,6 +156,7 @@ namespace Spd.Manager.Cases
         public DateTimeOffset? FromDateTime { get; set; } = null;
         public DateTimeOffset? ToDateTime { get; set; } = null;
         public PayerPreferenceTypeCode? PayerType { get; set; } = PayerPreferenceTypeCode.Organization;
+        public string? NameOrAppIdContains { get; set; }
     }
 
     public record AppPaymentListSortBy(bool? PaidAndSubmittedOnDesc = false);
