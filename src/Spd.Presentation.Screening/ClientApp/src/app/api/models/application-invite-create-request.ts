@@ -9,6 +9,6 @@ export interface ApplicationInviteCreateRequest {
   jobTitle?: null | string;
   lastName?: null | string;
   payeeType?: PayerPreferenceTypeCode;
-  screenType?: ScreeningTypeCode;
+  screeningType?: ScreeningTypeCode;
   serviceType?: ServiceTypeCode;
 }
