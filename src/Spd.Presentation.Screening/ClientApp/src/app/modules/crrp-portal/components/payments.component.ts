@@ -76,6 +76,7 @@ export interface PaymentResponse extends ApplicationPaymentResponse {
 					<app-dropdown-overlay
 						[showDropdownOverlay]="showDropdownOverlay"
 						(showDropdownOverlayChange)="onShowDropdownOverlayChange($event)"
+						[matBadgeShow]="filterCriteriaExists"
 					>
 						<app-payment-filter
 							[formGroup]="formFilter"
@@ -110,7 +111,7 @@ export interface PaymentResponse extends ApplicationPaymentResponse {
 							<mat-header-cell *matHeaderCellDef>Paid On</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Paid On:</span>
-								{{ application.paidOn | date : constants.date.dateTimeFormat }}
+								{{ application.paidOn | date : constants.date.dateFormat : 'UTC' }}
 							</mat-cell>
 						</ng-container>
 
@@ -216,6 +217,7 @@ export class PaymentsComponent implements OnInit {
 	applicationPortalStatusCodes = ApplicationPortalStatusCode;
 	currentFilters = '';
 	currentSearch = '';
+	filterCriteriaExists = false;
 
 	dataSource: MatTableDataSource<PaymentResponse> = new MatTableDataSource<PaymentResponse>([]);
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
@@ -276,6 +278,7 @@ export class PaymentsComponent implements OnInit {
 
 	onFilterChange(filters: any) {
 		this.currentFilters = filters;
+		this.filterCriteriaExists = filters ? true : false;
 		this.queryParams.page = 0;
 		this.onFilterClose();
 
@@ -285,6 +288,7 @@ export class PaymentsComponent implements OnInit {
 	onFilterClear() {
 		this.currentFilters = '';
 		this.currentSearch = '';
+		this.filterCriteriaExists = false;
 		this.queryParams = this.utilService.getDefaultQueryParams();
 		this.onFilterClose();
 
@@ -308,9 +312,27 @@ export class PaymentsComponent implements OnInit {
 	}
 
 	private buildQueryParamsFilterString(): string {
+		const defaultStatuses = [
+			ApplicationPortalStatusCode.AwaitingApplicant,
+			ApplicationPortalStatusCode.AwaitingPayment,
+			ApplicationPortalStatusCode.AwaitingThirdParty,
+			ApplicationPortalStatusCode.CancelledByApplicant,
+			ApplicationPortalStatusCode.CancelledByOrganization,
+			ApplicationPortalStatusCode.ClosedJudicialReview,
+			ApplicationPortalStatusCode.ClosedNoConsent,
+			ApplicationPortalStatusCode.ClosedNoResponse,
+			ApplicationPortalStatusCode.CompletedCleared,
+			ApplicationPortalStatusCode.InProgress,
+			ApplicationPortalStatusCode.Incomplete,
+			ApplicationPortalStatusCode.RiskFound,
+			ApplicationPortalStatusCode.UnderAssessment,
+		];
+
 		return (
-			// `status==${ApplicationPortalStatusCode.AwaitingPayment},` +
-			this.currentFilters + (this.currentFilters ? ',' : '') + this.currentSearch
+			`status==${defaultStatuses.join('|')},` +
+			this.currentFilters +
+			(this.currentFilters ? ',' : '') +
+			this.currentSearch
 		);
 	}
 
@@ -330,9 +352,10 @@ export class PaymentsComponent implements OnInit {
 					app.isPayManual = false;
 					app.isPayNow = false;
 
-					// if (app.status != ApplicationPortalStatusCode.AwaitingPayment) {
-					if (app.paidOn) {
-						app.isDownloadReceipt = true;
+					if (app.status != ApplicationPortalStatusCode.AwaitingPayment) {
+						if (app.paidOn) {
+							app.isDownloadReceipt = true;
+						}
 					} else {
 						const numberOfAttempts = app.numberOfAttempts ?? 0;
 						app.isPayManual = numberOfAttempts >= 3;

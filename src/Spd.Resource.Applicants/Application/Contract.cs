@@ -38,7 +38,7 @@ public record AppFilterBy(Guid OrgId)
     public DateTimeOffset? ToDateTime { get; set; }
     public PayerPreferenceTypeCode? PayerType { get; set; } = null;
 }
-public record AppSortBy(bool? SubmittedDateDesc = true, bool? NameDesc = null, bool? CompanyNameDesc = null, bool? PaidDesc = null);
+public record AppSortBy(bool? SubmittedDateDesc = null, bool? NameDesc = null, bool? CompanyNameDesc = null, bool? PaidAndSubmittedOnDesc = null);
 public record SearchApplicationQry
 {
     public Guid OrgId { get; set; }

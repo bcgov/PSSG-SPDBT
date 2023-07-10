@@ -222,7 +222,7 @@ internal partial class ApplicationRepository : IApplicationRepository
 
         //submitted from date
         string submitFromDate = null;
-        if(appFilterBy.FromDateTime != null)
+        if (appFilterBy.FromDateTime != null)
         {
             var date = new Microsoft.OData.Edm.Date(((DateTimeOffset)appFilterBy.FromDateTime).Year, ((DateTimeOffset)appFilterBy.FromDateTime).Month, ((DateTimeOffset)appFilterBy.FromDateTime).Day);
             submitFromDate = $"createdon ge {date}";
@@ -286,11 +286,8 @@ internal partial class ApplicationRepository : IApplicationRepository
         if (appSortBy.CompanyNameDesc != null && !(bool)appSortBy.CompanyNameDesc)
             return "spd_contractedcompanyname";
 
-        if (appSortBy.PaidDesc != null && !(bool)appSortBy.PaidDesc)
-            return "spd_paidon";
-
-        if (appSortBy.PaidDesc != null && (bool)appSortBy.PaidDesc)
-            return "spd_paidon desc";
+        if (appSortBy.PaidAndSubmittedOnDesc != null && (bool)appSortBy.PaidAndSubmittedOnDesc)
+            return "spd_paidon, createdon desc";
 
         return "createdon desc";
     }

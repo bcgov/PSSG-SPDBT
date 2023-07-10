@@ -396,7 +396,7 @@ namespace Spd.Presentation.Screening.Controllers
         {
             page = (page == null || page < 0) ? 0 : page;
             pageSize = (pageSize == null || pageSize == 0 || pageSize > 100) ? 10 : pageSize;
-            if (string.IsNullOrWhiteSpace(sorts)) sorts = "-submittedOn";
+            if (string.IsNullOrWhiteSpace(sorts)) sorts = "paid";
             PaginationRequest pagination = new PaginationRequest((int)page, (int)pageSize);
             AppPaymentListFilterBy filterBy = GetAppPaymentListFilterBy(filters, orgId);
             AppPaymentListSortBy sortBy = GetAppPaymentListSortBy(sorts);
@@ -485,12 +485,30 @@ namespace Spd.Presentation.Screening.Controllers
                     else if (strs[0].Equals("fromDate", StringComparison.InvariantCultureIgnoreCase))
                     {
                         string str = strs[1];
-                        filterBy.FromDateTime = DateTimeOffset.ParseExact(str, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+
+                        string[] parts = str.Split('(', ')');
+
+                        string format = "ddd MMM dd yyyy HH:mm:ss 'GMT'zzz";
+
+                        filterBy.FromDateTime = DateTimeOffset.ParseExact(parts[0].Trim(), format, CultureInfo.InvariantCulture);
+                        //filterBy.FromDateTime = DateTimeOffset.ParseExact(str, "yyyy-MM-dd", CultureInfo.InvariantCulture);
                     }
                     else if (strs[0].Equals("toDate", StringComparison.InvariantCultureIgnoreCase))
                     {
                         string str = strs[1];
-                        filterBy.ToDateTime = DateTimeOffset.ParseExact(str, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+
+
+                        string[] parts = str.Split('(', ')');
+
+                        string format = "ddd MMM dd yyyy HH:mm:ss 'GMT'zzz";
+
+                        filterBy.ToDateTime = DateTimeOffset.ParseExact(parts[0].Trim(), format, CultureInfo.InvariantCulture);
+                        //filterBy.ToDateTime = DateTimeOffset.ParseExact(str, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                    }
+                    else if (strs[0] == "status")
+                    {
+                        string[] status = strs[1].Split("|");
+                        filterBy.ApplicationPortalStatus = status.Select(s => Enum.Parse<ApplicationPortalStatusCode>(s)).AsEnumerable();
                     }
                 }
             }
@@ -503,14 +521,12 @@ namespace Spd.Presentation.Screening.Controllers
 
         private AppPaymentListSortBy GetAppPaymentListSortBy(string? sortby)
         {
-            //sorts string should be like: sorts=-submittedOn or sorts=paid
+            //sorts string should be like: sorts=-paid or sorts=paid
             return sortby switch
             {
                 null => new AppPaymentListSortBy(),
-                "paid" => new AppPaymentListSortBy(true, null),
-                "-paid" => new AppPaymentListSortBy(false, null),
-                "-submittedOn" => new AppPaymentListSortBy(null, true),
-                "submittedOn" => new AppPaymentListSortBy(null, false),
+                "paid" => new AppPaymentListSortBy(true),
+                "-paid" => new AppPaymentListSortBy(false),
                 _ => new AppPaymentListSortBy()
             };
         }
