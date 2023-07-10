@@ -418,15 +418,15 @@ namespace Spd.Manager.Cases
 
             //validate the application is in correct state.
             ApplicationResult app = await _applicationRepository.QueryApplicationAsync(new ApplicationQry(command.ApplicationId), ct);
-            //FileTypeCode? validFileCode = app.CaseSubStatus switch
-            //{
-            //    CaseSubStatusEnum.ApplicantInformation => FileTypeCode.ApplicantInformation,
-            //    CaseSubStatusEnum.StatutoryDeclaration => FileTypeCode.StatutoryDeclaration,
-            //    CaseSubStatusEnum.OpportunityToRespond => FileTypeCode.OpportunityToRespond,
-            //    _ => throw new ArgumentException("Invalid File Type")
-            //};
-            //if (validFileCode != command.Request.FileType)
-            //    throw new ArgumentException("Invalid File Type");
+            FileTypeCode? validFileCode = app.CaseSubStatus switch
+            {
+                CaseSubStatusEnum.ApplicantInformation => FileTypeCode.ApplicantInformation,
+                CaseSubStatusEnum.StatutoryDeclaration => FileTypeCode.StatutoryDeclaration,
+                CaseSubStatusEnum.OpportunityToRespond => FileTypeCode.OpportunityToRespond,
+                _ => throw new ArgumentException("Invalid File Type")
+            };
+            if (validFileCode != command.Request.FileType)
+                throw new ArgumentException("Invalid File Type");
 
             //put file to cache
             IList<DocumentResp> docResps= new List<DocumentResp>();
