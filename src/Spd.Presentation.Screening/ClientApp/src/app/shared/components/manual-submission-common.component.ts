@@ -423,7 +423,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 			agreeToCompleteAndAccurate: new FormControl('', [Validators.requiredTrue]),
 			haveVerifiedIdentity: new FormControl(''),
 			aliases: this.formBuilder.array([]),
-			attachments: new FormControl('', [FormControlValidators.required]),
+			attachments: new FormControl('', [Validators.required]),
 		},
 		{
 			validators: [
@@ -431,7 +431,10 @@ export class ManualSubmissionCommonComponent implements OnInit {
 					'screeningTypeCode',
 					(form) => this.showScreeningType ?? false
 				),
-				FormGroupValidators.conditionalRequiredValidator('attachments', (form) => this.portal == PortalTypeCode.Crrp),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'attachments',
+					(form) => this.portal == PortalTypeCode.Crrp
+				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'givenName',
 					(form) => form.get('oneLegalName')?.value != true
