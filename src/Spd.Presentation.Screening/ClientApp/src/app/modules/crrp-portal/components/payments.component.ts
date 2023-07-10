@@ -22,9 +22,11 @@ import { CrrpRoutes } from '../crrp-routing.module';
 import { PaymentFilter } from './payment-filter.component';
 
 export interface PaymentResponse extends ApplicationPaymentResponse {
-	applicationPortalStatusClass: string;
-	applicationPortalStatusText: string;
+	isPayNow: boolean;
+	isPayManual: boolean;
+	isDownloadReceipt: boolean;
 }
+
 @Component({
 	selector: 'app-payments',
 	template: `
@@ -125,9 +127,7 @@ export interface PaymentResponse extends ApplicationPaymentResponse {
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Status:</span>
 								<mat-chip-listbox aria-label="Status" *ngIf="application.status">
-									<ng-container
-										*ngIf="application.status != applicationPortalStatusCodes.AwaitingPayment; else notpaid"
-									>
+									<ng-container *ngIf="application.isDownloadReceipt; else notpaid">
 										<mat-chip-option [selectable]="false" class="mat-chip-green"> Paid </mat-chip-option>
 									</ng-container>
 									<ng-template #notpaid>
@@ -144,7 +144,7 @@ export interface PaymentResponse extends ApplicationPaymentResponse {
 									mat-flat-button
 									class="table-button"
 									style="color: var(--color-primary-light);"
-									*ngIf="application.status != applicationPortalStatusCodes.AwaitingPayment"
+									*ngIf="application.isDownloadReceipt"
 									aria-label="Download Receipt"
 									matTooltip="Download Receipt"
 								>
@@ -155,11 +155,22 @@ export interface PaymentResponse extends ApplicationPaymentResponse {
 									mat-flat-button
 									class="table-button"
 									style="color: var(--color-green);"
-									*ngIf="application.status == applicationPortalStatusCodes.AwaitingPayment"
+									*ngIf="application.isPayNow"
 									aria-label="Pay now"
 									(click)="onPayNow(application)"
 								>
 									<mat-icon>payment</mat-icon>Pay Now
+								</button>
+
+								<button
+									mat-flat-button
+									class="table-button"
+									style="color: var(--color-red);"
+									*ngIf="application.isPayManual"
+									aria-label="Pay manually"
+									(click)="onPayManually(application)"
+								>
+									<mat-icon>payment</mat-icon>Pay Manually
 								</button>
 							</mat-cell>
 						</ng-container>
@@ -184,13 +195,13 @@ export interface PaymentResponse extends ApplicationPaymentResponse {
 	styles: [
 		`
 			.mat-column-status {
-				min-width: 190px;
+				min-width: 110px;
 				padding-right: 4px !important;
 				padding-left: 4px !important;
 			}
 
 			.mat-column-action1 {
-				min-width: 150px;
+				min-width: 180px;
 				padding-right: 4px !important;
 				padding-left: 4px !important;
 			}
@@ -244,6 +255,10 @@ export class PaymentsComponent implements OnInit {
 	onPayNow(application: PaymentResponse): void {
 		this.router.navigate([CrrpRoutes.path(CrrpRoutes.PAYMENT_SUCCESS)]); // TODO Handle PAYMENT
 		// this.router.navigate([CrrpRoutes.path(CrrpRoutes.PAYMENT_FAIL)]);
+	}
+
+	onPayManually(application: PaymentResponse): void {
+		this.router.navigate([CrrpRoutes.path(CrrpRoutes.PAYMENT_MANUAL)]);
 	}
 
 	onShowDropdownOverlayChange(show: boolean): void {
@@ -311,8 +326,18 @@ export class PaymentsComponent implements OnInit {
 			.subscribe((res: ApplicationPaymentListResponse) => {
 				const applications = res.applications as Array<PaymentResponse>;
 				applications.forEach((app: PaymentResponse) => {
-					const itemClass = this.utilService.getApplicationPortalStatusClass(app.status);
-					app.applicationPortalStatusClass = itemClass;
+					app.isDownloadReceipt = false;
+					app.isPayManual = false;
+					app.isPayNow = false;
+
+					// if (app.status != ApplicationPortalStatusCode.AwaitingPayment) {
+					if (app.paidOn) {
+						app.isDownloadReceipt = true;
+					} else {
+						const numberOfAttempts = app.numberOfAttempts ?? 0;
+						app.isPayManual = numberOfAttempts >= 3;
+						app.isPayNow = numberOfAttempts < 3;
+					}
 				});
 
 				this.dataSource = new MatTableDataSource(applications);
