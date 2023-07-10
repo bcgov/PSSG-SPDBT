@@ -122,6 +122,6 @@ export class StatusStatisticsComponent {
 		);
 
 	getStatusDesc(code: string): string {
-		return this.utilService.geApplicationPortalStatusDesc(code);
+		return this.utilService.getApplicationPortalStatusDesc(code);
 	}
 }

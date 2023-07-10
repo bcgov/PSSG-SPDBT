@@ -36,8 +36,8 @@ export interface PaymentResponse extends ApplicationPaymentResponse {
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
 					<h2 class="mb-2 fw-normal">Payments</h2>
 					<ng-container *ngIf="applicationStatistics$ | async">
-						<app-alert type="warning">
-							<ng-container *ngIf="count > 0">
+						<app-alert type="warning" *ngIf="count > 0">
+							<ng-container>
 								<ng-container *ngIf="count == 1; else notOne">
 									<div>There is 1 application which requires payment</div>
 								</ng-container>
@@ -328,12 +328,15 @@ export class PaymentsComponent implements OnInit {
 			ApplicationPortalStatusCode.UnderAssessment,
 		];
 
-		return (
-			`status==${defaultStatuses.join('|')},` +
-			this.currentFilters +
-			(this.currentFilters ? ',' : '') +
-			this.currentSearch
-		);
+		let defaultSearch = `status==${defaultStatuses.join('|')}`;
+
+		if (!this.currentFilters) {
+			const fromDate = this.utilService.getDateString(new Date(new Date().setFullYear(new Date().getFullYear() - 1)));
+			const toDate = this.utilService.getDateString(new Date());
+			defaultSearch += `,fromDate==${fromDate},toDate==${toDate}`;
+		}
+
+		return defaultSearch + this.currentFilters + (this.currentFilters ? ',' : '') + this.currentSearch;
 	}
 
 	private loadList(): void {

@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { UtilService } from 'src/app/core/services/util.service';
 import { BaseFilterComponent, FilterQueryList } from 'src/app/shared/components/base-filter.component';
 
 export class PaymentFilter {
@@ -95,7 +96,7 @@ export class PaymentFilterComponent extends BaseFilterComponent {
 		notPaid: new FormControl(''),
 	});
 
-	constructor(private formBuilder: FormBuilder) {
+	constructor(private formBuilder: FormBuilder, private utilService: UtilService) {
 		super();
 	}
 
@@ -112,26 +113,20 @@ export class PaymentFilterComponent extends BaseFilterComponent {
 		let filterList: FilterQueryList[] = [];
 
 		if (formGroupValue.fromDate) {
-			// set time portion to midnight
 			const date = new Date(formGroupValue.fromDate);
-			date.setHours(0, 0, 0);
-
 			filterList.push({
 				key: PaymentFilterMap['fromDate'],
-				operator: 'equals', //'greaterThanOrEqualTo',
-				value: date,
+				operator: 'equals',
+				value: this.utilService.getDateString(date),
 			});
 		}
 
 		if (formGroupValue.toDate) {
-			// set time portion just before midnight
 			const date = new Date(formGroupValue.toDate);
-			date.setHours(23, 59, 59);
-
 			filterList.push({
 				key: PaymentFilterMap['toDate'],
-				operator: 'equals', // 'lessThanOrEqualTo',
-				value: date,
+				operator: 'equals',
+				value: this.utilService.getDateString(date),
 			});
 		}
 

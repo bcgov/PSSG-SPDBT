@@ -487,25 +487,12 @@ namespace Spd.Presentation.Screening.Controllers
                         else if (strs[0].Equals("fromDate", StringComparison.InvariantCultureIgnoreCase))
                         {
                             string str = strs[1];
-
-                            string[] parts = str.Split('(', ')');
-
-                            string format = "ddd MMM dd yyyy HH:mm:ss 'GMT'zzz";
-
-                            filterBy.FromDateTime = DateTimeOffset.ParseExact(parts[0].Trim(), format, CultureInfo.InvariantCulture);
-                            //filterBy.FromDateTime = DateTimeOffset.ParseExact(str, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                            filterBy.FromDateTime = DateTimeOffset.ParseExact(str, "yyyy-MM-dd", CultureInfo.InvariantCulture);
                         }
                         else if (strs[0].Equals("toDate", StringComparison.InvariantCultureIgnoreCase))
                         {
                             string str = strs[1];
-
-
-                            string[] parts = str.Split('(', ')');
-
-                            string format = "ddd MMM dd yyyy HH:mm:ss 'GMT'zzz";
-
-                            filterBy.ToDateTime = DateTimeOffset.ParseExact(parts[0].Trim(), format, CultureInfo.InvariantCulture);
-                            //filterBy.ToDateTime = DateTimeOffset.ParseExact(str, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                            filterBy.ToDateTime = DateTimeOffset.ParseExact(str, "yyyy-MM-dd", CultureInfo.InvariantCulture);
                         }
                         else if (strs[0] == "status")
                         {
