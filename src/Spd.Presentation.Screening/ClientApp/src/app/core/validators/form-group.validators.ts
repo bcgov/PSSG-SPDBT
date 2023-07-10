@@ -1,4 +1,4 @@
-import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { AbstractControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { FormControlValidators } from './form-control.validators';
 
 export class FormGroupValidators {
@@ -13,6 +13,24 @@ export class FormGroupValidators {
 						targetInput.addValidators(FormControlValidators.required);
 					} else {
 						targetInput.removeValidators(FormControlValidators.required);
+					}
+					targetInput.updateValueAndValidity({ onlySelf: true });
+				}
+			}
+			return null;
+		};
+
+	public static conditionalDefaultRequiredValidator =
+		(inputName: string, requiredWhen: (form: AbstractControl) => boolean): ValidatorFn =>
+		(form: AbstractControl): ValidationErrors | null => {
+			let targetInput = form.get(inputName);
+			if (targetInput) {
+				let isRequired = requiredWhen(form);
+				if (isRequired != targetInput.hasValidator(Validators.required)) {
+					if (isRequired) {
+						targetInput.addValidators(Validators.required);
+					} else {
+						targetInput.removeValidators(Validators.required);
 					}
 					targetInput.updateValueAndValidity({ onlySelf: true });
 				}
