@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Spd.Manager.Cases.Payment;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared;
 using System.ComponentModel.DataAnnotations;
@@ -28,76 +29,62 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/payments/link")]
         [HttpPost]
-        public async Task<PaymentLinkResponse> GetPaymentLink([FromBody][Required] PaymentLinkCreateRequest paymentLinkCreateRequest)
+        public async Task<PaymentLinkResponse> GetPaymentLink([FromBody][Required] ApplicantPaymentLinkCreateRequest paymentLinkCreateRequest)
         {
-            string trnDate = DateOnly.FromDateTime(DateTime.Now).ToString("yyyy-MM-dd");
-            string pbcRefNumber = "10015";
+            //string trnDate = DateOnly.FromDateTime(DateTime.Now).ToString("yyyy-MM-dd");
+            //string pbcRefNumber = "10015";
 
-            string glDate;
-            if (DateTime.Now.Hour > 16)
-                glDate = DateOnly.FromDateTime(DateTime.Now.AddDays(1)).ToString("yyyy-MM-dd");
-            else
-                glDate = trnDate;
+            //string glDate;
+            //if (DateTime.Now.Hour > 16)
+            //    glDate = DateOnly.FromDateTime(DateTime.Now.AddDays(1)).ToString("yyyy-MM-dd");
+            //else
+            //    glDate = trnDate;
 
-            string description = paymentLinkCreateRequest.Description;
-            string trnNumber = Guid.NewGuid().ToString();
-            string trnAmount = paymentLinkCreateRequest.Amount.ToString();
-            string paymentMethod = paymentLinkCreateRequest.PaymentMethod;
-            string redirectUrl = paymentLinkCreateRequest.RedirectUrl;
-            string currency = "CAD";
-            string revenue = "1:039.18ACE.14691.8928.1800000.000000.0000:25.00|2:039.18ACE.14692.8928.1800000.000000.0000:25.27";
-            string? ref1 = paymentLinkCreateRequest.Ref1;
-            string? ref2 = paymentLinkCreateRequest.Ref2;
-            string? ref3 = paymentLinkCreateRequest.Ref3;
-            string apikey = "MXJW7MUJSYA39LXN3WXPDZ1SCUJ19MEX";
+            //string description = paymentLinkCreateRequest.Description;
+            //string trnNumber = Guid.NewGuid().ToString();
+            //string trnAmount = paymentLinkCreateRequest.Amount.ToString();
+            //string paymentMethod = paymentLinkCreateRequest.PaymentMethod;
+            //string redirectUrl = paymentLinkCreateRequest.RedirectUrl;
+            //string currency = "CAD";
+            //string revenue = "1:039.18ACE.14691.8928.1800000.000000.0000:25.00|2:039.18ACE.14692.8928.1800000.000000.0000:25.27";
+            //string? ref1 = paymentLinkCreateRequest.Ref1;
+            //string? ref2 = paymentLinkCreateRequest.Ref2;
+            //string? ref3 = paymentLinkCreateRequest.Ref3;
+            //string apikey = "MXJW7MUJSYA39LXN3WXPDZ1SCUJ19MEX";
 
-            string query = $"trnDate={trnDate}&pbcRefNumber={pbcRefNumber}&glDate={glDate}&description={description}&trnNumber={trnNumber}&trnAmount={trnAmount}&paymentMethod={paymentMethod}&currency={currency}&redirectUri={redirectUrl}&revenue={revenue}&ref1={ref1}&ref2={ref2}&ref3={ref3}";
-            StringBuilder sb = new StringBuilder();
-            string hashValue;
-            using (MD5 md5 = MD5.Create())
-            {
-                string str = $"{query}{apikey}";
-                byte[] hash = md5.ComputeHash(Encoding.UTF8.GetBytes(str));
-                // Convert the byte array to string format
-                foreach (byte b in hash)
-                {
-                    sb.Append($"{b:x2}");
-                }
-            }
-            hashValue = sb.ToString();
-             
-            query = query + $"&hashValue={hashValue}";
+            //string query = $"trnDate={trnDate}&pbcRefNumber={pbcRefNumber}&glDate={glDate}&description={description}&trnNumber={trnNumber}&trnAmount={trnAmount}&paymentMethod={paymentMethod}&currency={currency}&redirectUri={redirectUrl}&revenue={revenue}&ref1={ref1}&ref2={ref2}&ref3={ref3}";
+            //StringBuilder sb = new StringBuilder();
+            //string hashValue;
+            //using (MD5 md5 = MD5.Create())
+            //{
+            //    string str = $"{query}{apikey}";
+            //    byte[] hash = md5.ComputeHash(Encoding.UTF8.GetBytes(str));
+            //    // Convert the byte array to string format
+            //    foreach (byte b in hash)
+            //    {
+            //        sb.Append($"{b:x2}");
+            //    }
+            //}
+            //hashValue = sb.ToString();
 
-            UriBuilder uriBuilder = new UriBuilder();
-            uriBuilder.Scheme = "https";
-            uriBuilder.Host = "paydev.gov.bc.ca";
-            uriBuilder.Path = "public/directsale";
-            uriBuilder.Query = query;
+            //query = query + $"&hashValue={hashValue}";
 
-            return new PaymentLinkResponse
-            {
-                PaymentLinkUrl = uriBuilder.Uri.ToString(),
-            };
+            //UriBuilder uriBuilder = new UriBuilder();
+            //uriBuilder.Scheme = "https";
+            //uriBuilder.Host = "paydev.gov.bc.ca";
+            //uriBuilder.Path = "public/directsale";
+            //uriBuilder.Query = query;
+
+            //return new PaymentLinkResponse
+            //{
+            //    PaymentLinkUrl = uriBuilder.Uri.ToString(),
+            //};
+            return null;
         }
 
     }
 
-    public record PaymentLinkCreateRequest
-    {
-        [MaxLength(100)]
-        public string Description { get; set; }
-        public string PaymentMethod { get; set; } //CC-credit card, VI - debit card
-        public decimal Amount { get; set; }
-        public string RedirectUrl { get; set; }
-        public string? Ref1 { get; set; } //caseId
-        public string? Ref2 { get; set; }
-        public string? Ref3 { get; set; }
-    }
-
-    public record PaymentLinkResponse
-    {
-        public string PaymentLinkUrl { get; set; }
-    }
+ 
 }
 
 

@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Cases.Application;
+using Spd.Manager.Cases.Payment;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared;
@@ -11,7 +12,9 @@ using Spd.Utilities.Shared.ManagerContract;
 using Spd.Utilities.Shared.Tools;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
+using System.Security.Cryptography;
 using System.Security.Principal;
+using System.Text;
 
 namespace Spd.Presentation.Screening.Controllers
 {
@@ -210,6 +213,20 @@ namespace Spd.Presentation.Screening.Controllers
             var content = new MemoryStream(response.Content);
             var contentType = response.ContentType ?? "application/octet-stream";
             return File(content, contentType, response.FileName);
+        }
+        #endregion
+
+        #region applicant-payment
+        /// <summary>
+        /// Return the direct pay payment link 
+        /// </summary>
+        /// <param name="ApplicantPaymentLinkCreateRequest">which include Payment link create request</param>
+        /// <returns></returns>
+        [Route("api/applicants/screenings/{applicationId}/paymentLink")]
+        [HttpPost]
+        public async Task<PaymentLinkResponse> GetPaymentLink([FromBody][Required] ApplicantPaymentLinkCreateRequest paymentLinkCreateRequest)
+        {
+            return await _mediator.Send(new PaymentLinkCreateCommand(paymentLinkCreateRequest));
         }
         #endregion
     }
