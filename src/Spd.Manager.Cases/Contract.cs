@@ -27,7 +27,7 @@ namespace Spd.Manager.Cases
         public Task<ApplicantApplicationListResponse> Handle(ApplicantApplicationListQuery request, CancellationToken ct);
         public Task<ShareableClearanceResponse> Handle(ShareableClearanceQuery request, CancellationToken ct);
         public Task<ApplicantApplicationFileListResponse> Handle(ApplicantApplicationFileQuery query, CancellationToken ct);
-        public Task<ApplicantAppFileCreateResponse> Handle(CreateApplicantAppFileCommand query, CancellationToken ct);
+        public Task<IEnumerable<ApplicantAppFileCreateResponse>> Handle(CreateApplicantAppFileCommand query, CancellationToken ct);
         public Task<FileResponse> Handle(FileTemplateQuery query, CancellationToken ct);
     }
 
@@ -734,8 +734,8 @@ namespace Spd.Manager.Cases
         public DateTimeOffset UploadedDateTime { get; set; }
     }
 
-    public record CreateApplicantAppFileCommand(ApplicantAppFileUploadRequest Request, string BcscId, Guid ApplicationId) : IRequest<ApplicantAppFileCreateResponse>;
-    public record ApplicantAppFileUploadRequest(IFormFile File, FileTypeCode FileType = FileTypeCode.StatutoryDeclaration);
+    public record CreateApplicantAppFileCommand(ApplicantAppFileUploadRequest Request, string BcscId, Guid ApplicationId) : IRequest<IEnumerable<ApplicantAppFileCreateResponse>>;
+    public record ApplicantAppFileUploadRequest(IList<IFormFile> Files, FileTypeCode FileType = FileTypeCode.StatutoryDeclaration);
     public record ApplicantAppFileCreateResponse
     {
         public Guid DocumentUrlId { get; set; }
