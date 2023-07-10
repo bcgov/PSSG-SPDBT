@@ -17,7 +17,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             .ForMember(d => d.spd_email, opt => opt.MapFrom(s => s.Email))
             .ForMember(d => d.spd_jobtitle, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.JobTitle)))
             .ForMember(d => d.spd_invitationtype, opt => opt.MapFrom(s => InvitationTypeOptionSet.ScreeningRequest))
-            .ForMember(d => d.spd_screeningrequesttype, opt => opt.MapFrom(s => (int)Enum.Parse<ScreenTypeOptionSet>(s.ScreenType.ToString())))
+            .ForMember(d => d.spd_screeningrequesttype, opt => opt.MapFrom(s => (int)Enum.Parse<ScreenTypeOptionSet>(s.ScreeningType.ToString())))
             .ForMember(d => d.spd_views, opt => opt.MapFrom(s => 0))
             .ForMember(d => d.spd_payeetype, opt => opt.MapFrom(s => (int)Enum.Parse<PayerPreferenceOptionSet>(s.PayeeType.ToString())))
             .ReverseMap()

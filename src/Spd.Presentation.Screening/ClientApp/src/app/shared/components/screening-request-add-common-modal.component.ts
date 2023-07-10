@@ -110,24 +110,24 @@ export interface ScreeningRequestAddDialogData {
 								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0" *ngIf="showScreeningType">
 									<mat-form-field>
 										<mat-label>Application Type</mat-label>
-										<mat-select formControlName="screeningTypeCode" [errorStateMatcher]="matcher">
+										<mat-select formControlName="screeningType" [errorStateMatcher]="matcher">
 											<mat-option *ngFor="let scr of screeningTypes" [value]="scr.code">
 												{{ scr.desc }}
 											</mat-option>
 										</mat-select>
-										<mat-error *ngIf="group.get('screeningTypeCode')?.hasError('required')">This is required</mat-error>
+										<mat-error *ngIf="group.get('screeningType')?.hasError('required')">This is required</mat-error>
 									</mat-form-field>
 								</div>
 
 								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0" *ngIf="serviceTypes">
 									<mat-form-field>
 										<mat-label>Service type</mat-label>
-										<mat-select formControlName="serviceTypeCode" [errorStateMatcher]="matcher">
+										<mat-select formControlName="serviceType" [errorStateMatcher]="matcher">
 											<mat-option *ngFor="let srv of serviceTypes" [value]="srv.code">
 												{{ srv.desc }}
 											</mat-option>
 										</mat-select>
-										<mat-error *ngIf="group.get('serviceTypeCode')?.hasError('required')">This is required</mat-error>
+										<mat-error *ngIf="group.get('serviceType')?.hasError('required')">This is required</mat-error>
 									</mat-form-field>
 								</div>
 
@@ -255,16 +255,13 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 				]),
 				jobTitle: new FormControl(inviteDefault ? inviteDefault.jobTitle : '', [FormControlValidators.required]),
 				payeeType: new FormControl(inviteDefault ? inviteDefault.payeeType : '', [FormControlValidators.required]),
-				screeningTypeCode: new FormControl(screeningTypeCodeDefault),
-				serviceTypeCode: new FormControl(serviceTypeCodeDefault),
+				screeningType: new FormControl(screeningTypeCodeDefault),
+				serviceType: new FormControl(serviceTypeCodeDefault),
 			},
 			{
 				validators: [
-					FormGroupValidators.conditionalRequiredValidator(
-						'screeningTypeCode',
-						(form) => this.showScreeningType ?? false
-					),
-					FormGroupValidators.conditionalRequiredValidator('serviceTypeCode', (form) => this.showServiceType ?? false),
+					FormGroupValidators.conditionalRequiredValidator('screeningType', (form) => this.showScreeningType ?? false),
+					FormGroupValidators.conditionalRequiredValidator('serviceType', (form) => this.showServiceType ?? false),
 				],
 			}
 		);
