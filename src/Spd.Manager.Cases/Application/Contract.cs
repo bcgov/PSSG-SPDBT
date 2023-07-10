@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Spd.Utilities.Shared.ManagerContract;
 using System.ComponentModel;
 
-namespace Spd.Manager.Cases
+namespace Spd.Manager.Cases.Application
 {
     public interface IApplicationManager
     {

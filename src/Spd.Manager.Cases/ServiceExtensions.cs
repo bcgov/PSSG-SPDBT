@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Spd.Manager.Cases.Application;
 using Spd.Utilities.Hosting;
 
 namespace Spd.Manager.Cases

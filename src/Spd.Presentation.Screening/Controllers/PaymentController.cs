@@ -13,13 +13,12 @@ namespace Spd.Presentation.Screening.Controllers
     {
         private readonly IMediator _mediator;
         private readonly IPrincipal _currentUser;
-        private readonly IRecaptchaVerificationService _verificationService;
+
 
         public PaymentController(IMediator mediator, IPrincipal currentUser, IRecaptchaVerificationService verificationService)
         {
             _mediator = mediator;
             _currentUser = currentUser;
-            _verificationService = verificationService;
         }
 
         /// <summary>
