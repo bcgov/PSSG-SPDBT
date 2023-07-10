@@ -86,7 +86,7 @@ namespace Spd.Manager.Cases
     public record ApplicationInviteCreateRequest : ApplicationInvite
     {
         public ServiceTypeCode ServiceType { get; set; } = ServiceTypeCode.CRRP_EMPLOYEE;
-        public ScreeningTypeCode ScreenType { get; set; } = ScreeningTypeCode.Staff;
+        public ScreeningTypeCode ScreeningType { get; set; } = ScreeningTypeCode.Staff;
     }
     public record ApplicationInvitesCreateResponse(Guid OrgId)
     {
