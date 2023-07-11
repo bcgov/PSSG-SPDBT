@@ -1,5 +1,4 @@
 using MediatR;
-using Spd.Manager.Cases.Application;
 using System.ComponentModel.DataAnnotations;
 
 namespace Spd.Manager.Cases.Payment
@@ -9,18 +8,7 @@ namespace Spd.Manager.Cases.Payment
         public Task<PaymentLinkResponse> Handle(PaymentLinkCreateCommand request, CancellationToken ct);
     }
 
-    public record PaymentLinkCreateCommand(PaymentLinkCreateRequest PaymentLinkCreateRequest) : IRequest<PaymentLinkResponse>;
-    //public record PaymentLinkCreateRequest
-    //{
-    //    [MaxLength(100)]
-    //    public string Description { get; set; }
-    //    public PaymentMethodCode PaymentMethod { get; set; } //CC-credit card, VI - debit card
-    //    public decimal Amount { get; set; }
-    //    public string RedirectUrl { get; set; }
-    //    public string? Ref1 { get; set; } //caseId
-    //    public string? Ref2 { get; set; }
-    //    public string? Ref3 { get; set; }
-    //}
+    public record PaymentLinkCreateCommand(PaymentLinkCreateRequest PaymentLinkCreateRequest, string RedirectUrl, string Ref1, string Ref2, string Ref3) : IRequest<PaymentLinkResponse>;
 
     public record PaymentLinkCreateRequest
     {
@@ -40,7 +28,6 @@ namespace Spd.Manager.Cases.Payment
 
     public enum PaymentMethodCode
     {
-        CreditCard,
-        DebitCard
+        CreditCard
     }
 }

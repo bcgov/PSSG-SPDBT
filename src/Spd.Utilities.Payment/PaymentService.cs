@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Spd.Utilities.Payment
 {
@@ -35,16 +36,16 @@ namespace Spd.Utilities.Payment
             else
                 glDate = trnDate;
 
-            string? description = command.Description;
+            string? description = HttpUtility.HtmlEncode(command.Description);
             string trnNumber = Guid.NewGuid().ToString();
             string trnAmount = command.Amount.ToString();
             string paymentMethod = command.PaymentMethod.ToString();
             string redirectUrl = command.RedirectUrl;
             string currency = "CAD";
             string revenue = $"1:{command.RevenueAccount}:{trnAmount}";
-            string? ref1 = command.Ref1;
-            string? ref2 = command.Ref2;
-            string? ref3 = command.Ref3;
+            string? ref1 = HttpUtility.HtmlEncode(command.Ref1);
+            string? ref2 = HttpUtility.HtmlEncode(command.Ref2);
+            string? ref3 = HttpUtility.HtmlEncode(command.Ref3);
             string apikey = _config.APIKey;
 
             string query = $"trnDate={trnDate}&pbcRefNumber={pbcRefNumber}&glDate={glDate}&description={description}&trnNumber={trnNumber}&trnAmount={trnAmount}&paymentMethod={paymentMethod}&currency={currency}&redirectUri={redirectUrl}&revenue={revenue}&ref1={ref1}&ref2={ref2}&ref3={ref3}";

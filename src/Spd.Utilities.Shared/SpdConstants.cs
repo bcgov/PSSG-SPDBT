@@ -8,7 +8,6 @@ public static class SpdConstants
     public static readonly string BULK_APP_UPLOAD_COL_SEPARATOR = "\"\t\"";
     public static readonly string BULK_APP_UPLOAD_BIRTHDATE_FORMAT = "yyyy-MM-dd";
     public static readonly string DEFAULT_BANNER_MSG = "10 business days for online applications and 20 business days for manual applications.";
-    public static readonly string BANNER_MSG_CONFIG_KEY = "ScreeningPortalProcessingTimeBanner";
     public static readonly string USER_INVITE_LINK = "crrp/invitation/";
     public static readonly string APPLICATION_INVITE_LINK = "crca/invitation/";
     public static readonly int SHAREABLE_CLEARANCE_EXPIRED_DATE_BUFFER_IN_MONTHS = 6;

@@ -12,9 +12,7 @@ using Spd.Utilities.Shared.ManagerContract;
 using Spd.Utilities.Shared.Tools;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
-using System.Security.Cryptography;
 using System.Security.Principal;
-using System.Text;
 
 namespace Spd.Presentation.Screening.Controllers
 {
@@ -23,12 +21,17 @@ namespace Spd.Presentation.Screening.Controllers
         private readonly IMediator _mediator;
         private readonly IPrincipal _currentUser;
         private readonly IRecaptchaVerificationService _verificationService;
+        private readonly IConfiguration _configuration;
 
-        public ApplicantController(IMediator mediator, IPrincipal currentUser, IRecaptchaVerificationService verificationService)
+        public ApplicantController(IMediator mediator,
+            IPrincipal currentUser,
+            IRecaptchaVerificationService verificationService,
+            IConfiguration configuration)
         {
             _mediator = mediator;
             _currentUser = currentUser;
             _verificationService = verificationService;
+            _configuration = configuration;
         }
 
         #region application-invites
@@ -207,7 +210,7 @@ namespace Spd.Presentation.Screening.Controllers
         [Authorize(Policy = "OnlyBcsc")]
         [Route("api/applicants/screenings/file-templates")]
         [HttpGet]
-        public async Task<FileStreamResult> DownloadFileTemplate([FromQuery][Required] FileTemplateTypeCode fileTemplateType )
+        public async Task<FileStreamResult> DownloadFileTemplate([FromQuery][Required] FileTemplateTypeCode fileTemplateType)
         {
             FileResponse response = await _mediator.Send(new FileTemplateQuery(fileTemplateType));
             var content = new MemoryStream(response.Content);
@@ -224,9 +227,15 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/applicants/screenings/{applicationId}/paymentLink")]
         [HttpPost]
+        [Authorize(Policy = "OnlyBcsc")]
         public async Task<PaymentLinkResponse> GetPaymentLink([FromBody][Required] ApplicantPaymentLinkCreateRequest paymentLinkCreateRequest)
         {
-            return await _mediator.Send(new PaymentLinkCreateCommand(paymentLinkCreateRequest));
+            string? hostUrl = _configuration.GetValue<string>("HostUrl");
+            string? path = _configuration.GetValue<string>("ApplicantPortalPath");
+            string redirectUrl = $"{hostUrl}{path}payment-result";
+            string tag1 = paymentLinkCreateRequest.ApplicationId.ToString();
+            string? tag2 = _currentUser.GetApplicantIdentityInfo().Sub; //need poc to test.
+            return await _mediator.Send(new PaymentLinkCreateCommand(paymentLinkCreateRequest, redirectUrl, tag1, tag2, null));
         }
         #endregion
     }
