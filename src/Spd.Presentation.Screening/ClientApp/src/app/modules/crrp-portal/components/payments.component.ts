@@ -22,9 +22,11 @@ import { CrrpRoutes } from '../crrp-routing.module';
 import { PaymentFilter } from './payment-filter.component';
 
 export interface PaymentResponse extends ApplicationPaymentResponse {
-	applicationPortalStatusClass: string;
-	applicationPortalStatusText: string;
+	isPayNow: boolean;
+	isPayManual: boolean;
+	isDownloadReceipt: boolean;
 }
+
 @Component({
 	selector: 'app-payments',
 	template: `
@@ -34,8 +36,8 @@ export interface PaymentResponse extends ApplicationPaymentResponse {
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
 					<h2 class="mb-2 fw-normal">Payments</h2>
 					<ng-container *ngIf="applicationStatistics$ | async">
-						<app-alert type="warning">
-							<ng-container *ngIf="count > 0">
+						<app-alert type="warning" *ngIf="count > 0">
+							<ng-container>
 								<ng-container *ngIf="count == 1; else notOne">
 									<div>There is 1 application which requires payment</div>
 								</ng-container>
@@ -74,6 +76,7 @@ export interface PaymentResponse extends ApplicationPaymentResponse {
 					<app-dropdown-overlay
 						[showDropdownOverlay]="showDropdownOverlay"
 						(showDropdownOverlayChange)="onShowDropdownOverlayChange($event)"
+						[matBadgeShow]="filterCriteriaExists"
 					>
 						<app-payment-filter
 							[formGroup]="formFilter"
@@ -108,7 +111,7 @@ export interface PaymentResponse extends ApplicationPaymentResponse {
 							<mat-header-cell *matHeaderCellDef>Paid On</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Paid On:</span>
-								{{ application.paidOn | date : constants.date.dateTimeFormat }}
+								{{ application.paidOn | date : constants.date.dateFormat : 'UTC' }}
 							</mat-cell>
 						</ng-container>
 
@@ -125,9 +128,7 @@ export interface PaymentResponse extends ApplicationPaymentResponse {
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Status:</span>
 								<mat-chip-listbox aria-label="Status" *ngIf="application.status">
-									<ng-container
-										*ngIf="application.status != applicationPortalStatusCodes.AwaitingPayment; else notpaid"
-									>
+									<ng-container *ngIf="application.isDownloadReceipt; else notpaid">
 										<mat-chip-option [selectable]="false" class="mat-chip-green"> Paid </mat-chip-option>
 									</ng-container>
 									<ng-template #notpaid>
@@ -144,7 +145,7 @@ export interface PaymentResponse extends ApplicationPaymentResponse {
 									mat-flat-button
 									class="table-button"
 									style="color: var(--color-primary-light);"
-									*ngIf="application.status != applicationPortalStatusCodes.AwaitingPayment"
+									*ngIf="application.isDownloadReceipt"
 									aria-label="Download Receipt"
 									matTooltip="Download Receipt"
 								>
@@ -155,11 +156,22 @@ export interface PaymentResponse extends ApplicationPaymentResponse {
 									mat-flat-button
 									class="table-button"
 									style="color: var(--color-green);"
-									*ngIf="application.status == applicationPortalStatusCodes.AwaitingPayment"
+									*ngIf="application.isPayNow"
 									aria-label="Pay now"
 									(click)="onPayNow(application)"
 								>
 									<mat-icon>payment</mat-icon>Pay Now
+								</button>
+
+								<button
+									mat-flat-button
+									class="table-button"
+									style="color: var(--color-red);"
+									*ngIf="application.isPayManual"
+									aria-label="Pay manually"
+									(click)="onPayManually(application)"
+								>
+									<mat-icon>payment</mat-icon>Pay Manually
 								</button>
 							</mat-cell>
 						</ng-container>
@@ -184,13 +196,13 @@ export interface PaymentResponse extends ApplicationPaymentResponse {
 	styles: [
 		`
 			.mat-column-status {
-				min-width: 190px;
+				min-width: 110px;
 				padding-right: 4px !important;
 				padding-left: 4px !important;
 			}
 
 			.mat-column-action1 {
-				min-width: 150px;
+				min-width: 180px;
 				padding-right: 4px !important;
 				padding-left: 4px !important;
 			}
@@ -205,6 +217,7 @@ export class PaymentsComponent implements OnInit {
 	applicationPortalStatusCodes = ApplicationPortalStatusCode;
 	currentFilters = '';
 	currentSearch = '';
+	filterCriteriaExists = false;
 
 	dataSource: MatTableDataSource<PaymentResponse> = new MatTableDataSource<PaymentResponse>([]);
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
@@ -246,6 +259,10 @@ export class PaymentsComponent implements OnInit {
 		// this.router.navigate([CrrpRoutes.path(CrrpRoutes.PAYMENT_FAIL)]);
 	}
 
+	onPayManually(application: PaymentResponse): void {
+		this.router.navigate([CrrpRoutes.path(CrrpRoutes.PAYMENT_MANUAL)]);
+	}
+
 	onShowDropdownOverlayChange(show: boolean): void {
 		this.showDropdownOverlay = show;
 	}
@@ -261,6 +278,7 @@ export class PaymentsComponent implements OnInit {
 
 	onFilterChange(filters: any) {
 		this.currentFilters = filters;
+		this.filterCriteriaExists = filters ? true : false;
 		this.queryParams.page = 0;
 		this.onFilterClose();
 
@@ -270,6 +288,7 @@ export class PaymentsComponent implements OnInit {
 	onFilterClear() {
 		this.currentFilters = '';
 		this.currentSearch = '';
+		this.filterCriteriaExists = false;
 		this.queryParams = this.utilService.getDefaultQueryParams();
 		this.onFilterClose();
 
@@ -293,10 +312,31 @@ export class PaymentsComponent implements OnInit {
 	}
 
 	private buildQueryParamsFilterString(): string {
-		return (
-			// `status==${ApplicationPortalStatusCode.AwaitingPayment},` +
-			this.currentFilters + (this.currentFilters ? ',' : '') + this.currentSearch
-		);
+		const defaultStatuses = [
+			ApplicationPortalStatusCode.AwaitingApplicant,
+			ApplicationPortalStatusCode.AwaitingPayment,
+			ApplicationPortalStatusCode.AwaitingThirdParty,
+			ApplicationPortalStatusCode.CancelledByApplicant,
+			ApplicationPortalStatusCode.CancelledByOrganization,
+			ApplicationPortalStatusCode.ClosedJudicialReview,
+			ApplicationPortalStatusCode.ClosedNoConsent,
+			ApplicationPortalStatusCode.ClosedNoResponse,
+			ApplicationPortalStatusCode.CompletedCleared,
+			ApplicationPortalStatusCode.InProgress,
+			ApplicationPortalStatusCode.Incomplete,
+			ApplicationPortalStatusCode.RiskFound,
+			ApplicationPortalStatusCode.UnderAssessment,
+		];
+
+		let defaultSearch = `status==${defaultStatuses.join('|')},`;
+
+		if (!this.currentFilters) {
+			const fromDate = this.utilService.getDateString(new Date(new Date().setFullYear(new Date().getFullYear() - 1)));
+			const toDate = this.utilService.getDateString(new Date());
+			defaultSearch += `fromDate==${fromDate},toDate==${toDate},`;
+		}
+
+		return defaultSearch + this.currentFilters + (this.currentFilters ? ',' : '') + this.currentSearch;
 	}
 
 	private loadList(): void {
@@ -311,8 +351,19 @@ export class PaymentsComponent implements OnInit {
 			.subscribe((res: ApplicationPaymentListResponse) => {
 				const applications = res.applications as Array<PaymentResponse>;
 				applications.forEach((app: PaymentResponse) => {
-					const itemClass = this.utilService.getApplicationPortalStatusClass(app.status);
-					app.applicationPortalStatusClass = itemClass;
+					app.isDownloadReceipt = false;
+					app.isPayManual = false;
+					app.isPayNow = false;
+
+					if (app.status != ApplicationPortalStatusCode.AwaitingPayment) {
+						if (app.paidOn) {
+							app.isDownloadReceipt = true;
+						}
+					} else {
+						const numberOfAttempts = app.numberOfAttempts ?? 0;
+						app.isPayManual = numberOfAttempts >= 3;
+						app.isPayNow = numberOfAttempts < 3;
+					}
 				});
 
 				this.dataSource = new MatTableDataSource(applications);

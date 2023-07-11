@@ -117,7 +117,7 @@ export class ScreeningStatusFilterCommonComponent extends BaseFilterComponent {
 	}
 
 	getFilterStatusDesc(code: string): string {
-		return this.utilService.geApplicationPortalStatusDesc(code);
+		return this.utilService.getApplicationPortalStatusDesc(code);
 	}
 
 	private constructFilterList(formGroupValue: ScreeningStatusFilter): FilterQueryList[] {

@@ -396,7 +396,7 @@ namespace Spd.Presentation.Screening.Controllers
         {
             page = (page == null || page < 0) ? 0 : page;
             pageSize = (pageSize == null || pageSize == 0 || pageSize > 100) ? 10 : pageSize;
-            if (string.IsNullOrWhiteSpace(sorts)) sorts = "-submittedOn";
+            if (string.IsNullOrWhiteSpace(sorts)) sorts = "paid";
             PaginationRequest pagination = new PaginationRequest((int)page, (int)pageSize);
             AppPaymentListFilterBy filterBy = GetAppPaymentListFilterBy(filters, orgId);
             AppPaymentListSortBy sortBy = GetAppPaymentListSortBy(sorts);
@@ -477,20 +477,39 @@ namespace Spd.Presentation.Screening.Controllers
                 foreach (string item in items)
                 {
                     string[] strs = item.Split("==");
-                    if (strs[0].Equals("paid", StringComparison.InvariantCultureIgnoreCase))
+                    if (strs.Length == 2)
                     {
-                        string str = strs[1];
-                        filterBy.Paid = str == "true";
+                        if (strs[0].Equals("paid", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            string str = strs[1];
+                            filterBy.Paid = str == "true";
+                        }
+                        else if (strs[0].Equals("fromDate", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            string str = strs[1];
+                            filterBy.FromDateTime = DateTimeOffset.ParseExact(str, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                        }
+                        else if (strs[0].Equals("toDate", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            string str = strs[1];
+                            filterBy.ToDateTime = DateTimeOffset.ParseExact(str, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                        }
+                        else if (strs[0] == "status")
+                        {
+                            string[] status = strs[1].Split("|");
+                            filterBy.ApplicationPortalStatus = status.Select(s => Enum.Parse<ApplicationPortalStatusCode>(s)).AsEnumerable();
+                        }
                     }
-                    else if (strs[0].Equals("fromDate", StringComparison.InvariantCultureIgnoreCase))
+                    else
                     {
-                        string str = strs[1];
-                        filterBy.FromDateTime = DateTimeOffset.ParseExact(str, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-                    }
-                    else if (strs[0].Equals("toDate", StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        string str = strs[1];
-                        filterBy.ToDateTime = DateTimeOffset.ParseExact(str, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                        if (strs.Length == 1)
+                        {
+                            string[] s = strs[0].Split("@=");
+                            if (s.Length == 2 && s[0] == "searchText")
+                            {
+                                filterBy.NameOrAppIdContains = s[1];
+                            }
+                        }
                     }
                 }
             }
@@ -503,14 +522,12 @@ namespace Spd.Presentation.Screening.Controllers
 
         private AppPaymentListSortBy GetAppPaymentListSortBy(string? sortby)
         {
-            //sorts string should be like: sorts=-submittedOn or sorts=paid
+            //sorts string should be like: sorts=-paid or sorts=paid
             return sortby switch
             {
                 null => new AppPaymentListSortBy(),
-                "paid" => new AppPaymentListSortBy(true, null),
-                "-paid" => new AppPaymentListSortBy(false, null),
-                "-submittedOn" => new AppPaymentListSortBy(null, true),
-                "submittedOn" => new AppPaymentListSortBy(null, false),
+                "paid" => new AppPaymentListSortBy(true),
+                "-paid" => new AppPaymentListSortBy(false),
                 _ => new AppPaymentListSortBy()
             };
         }
