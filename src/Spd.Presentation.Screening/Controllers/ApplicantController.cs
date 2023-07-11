@@ -199,23 +199,23 @@ namespace Spd.Presentation.Screening.Controllers
             foreach (IFormFile file in fileUploadRequest.Files)
             {
                 string? fileexe = FileNameHelper.GetFileExtension(file.FileName);
-                if (!fileUploadConfig.AllowedExtentions.Split(",").Contains(fileexe, StringComparer.InvariantCultureIgnoreCase))
+                if (!fileUploadConfig.AllowedExtensions.Split(",").Contains(fileexe, StringComparer.InvariantCultureIgnoreCase))
                 {
                     throw new ApiException(HttpStatusCode.BadRequest, $"{file.FileName} file type is not supported.");
                 }
                 long fileSize = file.Length;
                 if (fileSize > fileUploadConfig.MaxFileSizeMB * 1024 * 1024)
                 {
-                    throw new ApiException(HttpStatusCode.BadRequest, $"{file.Name} exceeds max supported file size {fileUploadConfig.MaxFileSizeMB} MB.");
+                    throw new ApiException(HttpStatusCode.BadRequest, $"{file.Name} exceeds maximum supported file size {fileUploadConfig.MaxFileSizeMB} MB.");
                 }
             }
             if (fileUploadRequest.FileType != FileTypeCode.ApplicantInformation && fileUploadRequest.Files.Count > 1)
             {
                 throw new ApiException(HttpStatusCode.BadRequest, $"Only 1 file upload allowed.");
             }
-            if (fileUploadRequest.FileType == FileTypeCode.ApplicantInformation && fileUploadRequest.Files.Count > fileUploadConfig.MaxAllowedFileNumbers)
+            if (fileUploadRequest.FileType == FileTypeCode.ApplicantInformation && fileUploadRequest.Files.Count > fileUploadConfig.MaxAllowedNumberOfFiles)
             {
-                throw new ApiException(HttpStatusCode.BadRequest, $"Max {fileUploadConfig.MaxAllowedFileNumbers} files upload allowed.");
+                throw new ApiException(HttpStatusCode.BadRequest, $"Maximum {fileUploadConfig.MaxAllowedNumberOfFiles} files upload allowed.");
             }
             return await _mediator.Send(new CreateApplicantAppFileCommand(fileUploadRequest, applicantInfo.Sub, applicationId), ct);
         }
