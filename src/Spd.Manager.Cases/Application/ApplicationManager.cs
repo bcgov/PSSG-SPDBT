@@ -34,7 +34,7 @@ namespace Spd.Manager.Cases.Application
         IRequestHandler<ShareableClearanceQuery, ShareableClearanceResponse>,
         IRequestHandler<ApplicantApplicationListQuery, ApplicantApplicationListResponse>,
         IRequestHandler<ApplicantApplicationFileQuery, ApplicantApplicationFileListResponse>,
-        IRequestHandler<CreateApplicantAppFileCommand, ApplicantAppFileCreateResponse>,
+        IRequestHandler<CreateApplicantAppFileCommand, IEnumerable<ApplicantAppFileCreateResponse>>,
         IRequestHandler<FileTemplateQuery, FileResponse>,
         IApplicationManager
     {
@@ -410,7 +410,7 @@ namespace Spd.Manager.Cases.Application
             };
         }
 
-        public async Task<ApplicantAppFileCreateResponse> Handle(CreateApplicantAppFileCommand command, CancellationToken ct)
+        public async Task<IEnumerable<ApplicantAppFileCreateResponse>> Handle(CreateApplicantAppFileCommand command, CancellationToken ct)
         {
             ApplicantIdentityQueryResult? contact = (ApplicantIdentityQueryResult?)await _identityRepository.Query(new ApplicantIdentityQuery(command.BcscId, IdentityProviderTypeCode.BcServicesCard), ct);
             if (contact == null)
@@ -429,15 +429,19 @@ namespace Spd.Manager.Cases.Application
                 throw new ArgumentException("Invalid File Type");
 
             //put file to cache
-            string fileKey = await _tempFile.HandleCommand(new SaveTempFileCommand(command.Request.File), ct);
-            SpdTempFile spdTempFile = new()
+            IList<DocumentResp> docResps= new List<DocumentResp>();
+            foreach (var file in command.Request.Files)
             {
-                TempFileKey = fileKey,
-                ContentType = command.Request.File.ContentType,
-                FileName = command.Request.File.FileName,
-                FileSize = command.Request.File.Length,
-            };
+                string fileKey = await _tempFile.HandleCommand(new SaveTempFileCommand(file), ct);
+                SpdTempFile spdTempFile = new()
+                {
+                    TempFileKey = fileKey,
+                    ContentType = file.ContentType,
+                    FileName = file.FileName,
+                    FileSize = file.Length,
+                };
 
+<<<<<<< HEAD:src/Spd.Manager.Cases/Application/ApplicationManager.cs
             //create bcgov_documenturl and file
             var docUrlResp = await _documentRepository.ManageAsync(new CreateDocumentCmd
             {
@@ -446,6 +450,18 @@ namespace Spd.Manager.Cases.Application
                 DocumentType = Enum.Parse<DocumentTypeEnum>(command.Request.FileType.ToString()),
                 SubmittedByApplicantId = contact.ContactId
             }, ct);
+=======
+                //create bcgov_documenturl and file
+                var docResp = await _documentUrlRepository.ManageAsync(new CreateDocumentCmd
+                {
+                    TempFile = spdTempFile,
+                    ApplicationId = command.ApplicationId,
+                    DocumentType = Enum.Parse<DocumentTypeEnum>(command.Request.FileType.ToString()),
+                    SubmittedByApplicantId = contact.ContactId
+                }, ct);
+                docResps.Add(docResp);
+            }
+>>>>>>> main:src/Spd.Manager.Cases/ApplicationManager.cs
 
             //update application status to InProgress, substatus to InReview
             await _incidentRepository.ManageAsync(
@@ -456,7 +472,7 @@ namespace Spd.Manager.Cases.Application
                     CaseSubStatus = CaseSubStatusEnum.InReview
                 },
                 ct);
-            return _mapper.Map<ApplicantAppFileCreateResponse>(docUrlResp);
+            return _mapper.Map<IEnumerable<ApplicantAppFileCreateResponse>>(docResps);
         }
 
         public async Task<FileResponse> Handle(FileTemplateQuery query, CancellationToken ct)
