@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
-using Spd.Manager.Cases;
+using Spd.Manager.Cases.Application;
 using Xunit.Abstractions;
 
 namespace Spd.Tests.Presentation.Screening.Integration.Managers;
@@ -71,7 +71,7 @@ public class ApplicationManagerTests : ScenarioContextBase
     {
         return new ApplicantAppCreateRequest
         {
-            OriginTypeCode = Manager.Cases.ApplicationOriginTypeCode.Portal,
+            OriginTypeCode = ApplicationOriginTypeCode.Portal,
             GivenName = "givenName",
             EmailAddress = "email@test.com",
             Surname = "surname",

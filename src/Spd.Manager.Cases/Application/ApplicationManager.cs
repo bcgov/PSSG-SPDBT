@@ -13,7 +13,7 @@ using Spd.Utilities.Shared.ManagerContract;
 using Spd.Utilities.Shared.ResourceContracts;
 using Spd.Utilities.TempFileStorage;
 
-namespace Spd.Manager.Cases
+namespace Spd.Manager.Cases.Application
 {
     internal class ApplicationManager :
         IRequestHandler<ApplicationInviteCreateCommand, ApplicationInvitesCreateResponse>,
@@ -44,7 +44,7 @@ namespace Spd.Manager.Cases
         private readonly ITempFileStorageService _tempFile;
         private readonly IDuplicateCheckEngine _duplicateCheckEngine;
         private readonly IIdentityRepository _identityRepository;
-        private readonly IDocumentRepository _documentUrlRepository;
+        private readonly IDocumentRepository _documentRepository;
         private readonly IFileStorageService _fileStorageService;
         private readonly IIncidentRepository _incidentRepository;
         private readonly ISearchEngine _searchEngine;
@@ -66,7 +66,7 @@ namespace Spd.Manager.Cases
             _mapper = mapper;
             _duplicateCheckEngine = duplicateCheckEngine;
             _identityRepository = identityRepository;
-            _documentUrlRepository = documentUrlRepository;
+            _documentRepository = documentUrlRepository;
             _fileStorageService = fileStorageService;
             _incidentRepository = incidentRepository;
             _searchEngine = searchEngine;
@@ -151,7 +151,7 @@ namespace Spd.Manager.Cases
             Guid? applicationId = await _applicationRepository.AddApplicationAsync(cmd, ct);
             if (applicationId.HasValue)
             {
-                await _documentUrlRepository.ManageAsync(new CreateDocumentCmd
+                await _documentRepository.ManageAsync(new CreateDocumentCmd
                 {
                     TempFile = spdTempFile,
                     ApplicationId = (Guid)applicationId,
@@ -309,7 +309,7 @@ namespace Spd.Manager.Cases
         public async Task<FileResponse> Handle(ClearanceLetterQuery query, CancellationToken ct)
         {
             DocumentQry qry = new DocumentQry(ClearanceId: query.ClearanceId);
-            var docList = await _documentUrlRepository.QueryAsync(qry, ct);
+            var docList = await _documentRepository.QueryAsync(qry, ct);
             if (docList == null || !docList.Items.Any())
                 return new FileResponse();
 
@@ -402,7 +402,7 @@ namespace Spd.Manager.Cases
                 throw new ArgumentException("No contact found");
 
             DocumentQry qry = new DocumentQry(query.ApplicationId, contact.ContactId);
-            var docList = await _documentUrlRepository.QueryAsync(qry, ct);
+            var docList = await _documentRepository.QueryAsync(qry, ct);
 
             return new ApplicantApplicationFileListResponse
             {
@@ -442,7 +442,7 @@ namespace Spd.Manager.Cases
                 };
 
                 //create bcgov_documenturl and file
-                var docResp = await _documentUrlRepository.ManageAsync(new CreateDocumentCmd
+                var docResp = await _documentRepository.ManageAsync(new CreateDocumentCmd
                 {
                     TempFile = spdTempFile,
                     ApplicationId = command.ApplicationId,
