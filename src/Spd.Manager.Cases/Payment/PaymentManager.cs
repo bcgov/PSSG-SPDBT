@@ -28,14 +28,20 @@ namespace Spd.Manager.Cases.Payment
             string revenueAccount = raBytes != null ? Encoding.Default.GetString(raBytes) : null;
             if (revenueAccount == null)
             {
-                revenueAccount = (await _configRepository.Query(new ConfigQuery(IConfigRepository.PAYBC_REVENUEACCOUNT_KEY), ct)).Value;
+                var config = await _configRepository.Query(
+                    new ConfigQuery(IConfigRepository.PAYBC_REVENUEACCOUNT_KEY, IConfigRepository.PAYBC_GROUP),
+                    ct);
+                revenueAccount = config.Value;
                 _cache.Set("paybcRevenueAccount", Encoding.UTF8.GetBytes(revenueAccount), new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = new TimeSpan(10, 0, 0) });
             }
             var refBytes = _cache.Get("pbcRefNumber");
             string pbcRef = refBytes != null ? Encoding.Default.GetString(refBytes) : null;
             if (pbcRef == null)
             {
-                pbcRef = (await _configRepository.Query(new ConfigQuery(IConfigRepository.PAYBC_PBCREFNUMBER_KEY), ct)).Value;
+                var config = await _configRepository.Query(
+                    new ConfigQuery(IConfigRepository.PAYBC_PBCREFNUMBER_KEY, IConfigRepository.PAYBC_GROUP),
+                    ct);
+                pbcRef = config.Value;
                 _cache.Set("pbcRefNumber", Encoding.UTF8.GetBytes(pbcRef), new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = new TimeSpan(10, 0, 0) });
             }
 

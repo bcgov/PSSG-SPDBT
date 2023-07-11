@@ -10,7 +10,7 @@
     }
 
     //query
-    public record ConfigQuery(string Key);
+    public record ConfigQuery(string Key, string? Group = null);
     public record ConfigResult(string Value);
 
 

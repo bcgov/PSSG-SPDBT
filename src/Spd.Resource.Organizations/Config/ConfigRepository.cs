@@ -17,8 +17,9 @@ namespace Spd.Resource.Organizations.Config
         public async Task<ConfigResult> Query(ConfigQuery query, CancellationToken ct)
         {
             IQueryable<bcgov_config> configs = _dynaContext.bcgov_configs.Where(c => c.bcgov_key == query.Key);
-            if (query.Key == IConfigRepository.PAYBC_REVENUEACCOUNT_KEY || query.Key == IConfigRepository.PAYBC_PBCREFNUMBER_KEY)
-                configs = configs.Where(c => c.bcgov_group == IConfigRepository.PAYBC_GROUP);
+
+            if (query.Group != null)
+                configs = configs.Where(c => c.bcgov_group == query.Group);
 
             var config = await configs.FirstOrDefaultAsync(ct);
             if (config == null)
