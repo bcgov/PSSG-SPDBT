@@ -110,7 +110,10 @@ export class DeclarationComponent implements OnInit, CrcFormStepComponent {
 			},
 			{
 				validators: [
-					FormGroupValidators.conditionalRequiredValidator('agreeToShare', (form) => data.shareableCrcExists ?? false),
+					FormGroupValidators.conditionalDefaultRequiredValidator(
+						'agreeToShare',
+						(form) => data.shareableCrcExists ?? false
+					),
 				],
 			}
 		);
