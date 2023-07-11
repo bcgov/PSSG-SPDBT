@@ -333,7 +333,7 @@ export class PaymentsComponent implements OnInit {
 		if (!this.currentFilters) {
 			const fromDate = this.utilService.getDateString(new Date(new Date().setFullYear(new Date().getFullYear() - 1)));
 			const toDate = this.utilService.getDateString(new Date());
-			defaultSearch += `fromDate==${fromDate},toDate==${toDate}`;
+			defaultSearch += `fromDate==${fromDate},toDate==${toDate},`;
 		}
 
 		return defaultSearch + this.currentFilters + (this.currentFilters ? ',' : '') + this.currentSearch;
