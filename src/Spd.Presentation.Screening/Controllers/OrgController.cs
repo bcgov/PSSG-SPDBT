@@ -2,7 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Spd.Manager.Cases;
+using Spd.Manager.Cases.Application;
 using Spd.Manager.Membership.Org;
 using Spd.Utilities.Shared;
 
