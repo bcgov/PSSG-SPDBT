@@ -244,7 +244,7 @@ export class SecurityScreeningListComponent implements OnInit {
 		let statutoryDeclarationCount = 0;
 
 		this.applicantService
-			.apiApplicantsApplicantIdApplicationsGet({
+			.apiApplicantsApplicantIdScreeningsGet({
 				applicantId: this.authUserService.bcscUserWhoamiProfile?.applicantId!,
 			})
 			.pipe()

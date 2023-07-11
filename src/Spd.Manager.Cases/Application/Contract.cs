@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Spd.Utilities.Shared.ManagerContract;
 using System.ComponentModel;
+using GenderCode = Spd.Utilities.Shared.ManagerContract.GenderCode;
 
 namespace Spd.Manager.Cases.Application
 {
@@ -150,13 +151,15 @@ namespace Spd.Manager.Cases.Application
 
     public record AppPaymentListFilterBy(Guid OrgId)
     {
+        public IEnumerable<ApplicationPortalStatusCode>? ApplicationPortalStatus { get; set; }
         public bool? Paid { get; set; } = null;
         public DateTimeOffset? FromDateTime { get; set; } = null;
         public DateTimeOffset? ToDateTime { get; set; } = null;
         public PayerPreferenceTypeCode? PayerType { get; set; } = PayerPreferenceTypeCode.Organization;
+        public string? NameOrAppIdContains { get; set; }
     }
 
-    public record AppPaymentListSortBy(bool? PaidDesc = false, bool? SubmittedDateDesc = true);
+    public record AppPaymentListSortBy(bool? PaidAndSubmittedOnDesc = false);
 
     public abstract record Application
     {
