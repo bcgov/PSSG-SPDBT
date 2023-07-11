@@ -64,7 +64,7 @@ const routes: Routes = [
 		],
 	},
 	{
-		path: 'invitation/:id',
+		path: `${CrrpRoutes.INVITATION}/:id`,
 		component: InvitationUserComponent,
 	},
 ];
