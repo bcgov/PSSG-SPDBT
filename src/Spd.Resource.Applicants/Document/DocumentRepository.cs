@@ -45,6 +45,8 @@ internal class DocumentRepository : IDocumentRepository
         }
 
         var result = await documents.GetAllPagesAsync(ct);
+        result = result.OrderByDescending(a => a.createdon);
+
         return new DocumentListResp
         {
             Items = _mapper.Map<IEnumerable<DocumentResp>>(result)

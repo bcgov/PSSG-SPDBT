@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { HotToastService } from '@ngneat/hot-toast';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
@@ -78,6 +78,9 @@ export class FileUploadHelper {
 					</div>
 					<div class="mb-4">
 						<strong>Drag and Drop your file here or click to browse</strong>
+						<div class="mat-option-error" *ngIf="maxNumberOfFiles > 1">
+							A maximum of {{ maxNumberOfFiles }} files can be uploaded at one time
+						</div>
 					</div>
 					<div class="fine-print mb-4">{{ message }}</div>
 				</div>
@@ -94,9 +97,15 @@ export class FileUploadHelper {
 				</ng-container>
 			</div>
 		</ngx-dropzone>
-		<!-- <button mat-stroked-button (click)="fileDropzone.showFileSelector()" class="large w-auto mt-2">
+
+		<button
+			mat-stroked-button
+			(click)="fileDropzone.showFileSelector()"
+			*ngIf="maxNumberOfFiles > 1 && this.files.length < maxNumberOfFiles"
+			class="large w-auto mt-2"
+		>
 			<mat-icon>file_open</mat-icon> Add file
-		</button> -->
+		</button>
 	`,
 	styles: [
 		`
@@ -123,7 +132,7 @@ export class FileUploadHelper {
 		`,
 	],
 })
-export class FileUploadComponent {
+export class FileUploadComponent implements OnInit {
 	files: Array<File> = [];
 
 	@Input() message: string = '';
@@ -140,6 +149,12 @@ export class FileUploadComponent {
 	maxFileSize: number = SPD_CONSTANTS.document.maxFileSize; // bytes
 
 	constructor(private dialog: MatDialog, private hotToastService: HotToastService) {}
+
+	ngOnInit(): void {
+		if (this.maxNumberOfFiles > SPD_CONSTANTS.document.maxNumberOfFiles) {
+			this.maxNumberOfFiles = SPD_CONSTANTS.document.maxNumberOfFiles;
+		}
+	}
 
 	onUploadFile(evt: any) {
 		if (this.maxNumberOfFiles == 1) {
