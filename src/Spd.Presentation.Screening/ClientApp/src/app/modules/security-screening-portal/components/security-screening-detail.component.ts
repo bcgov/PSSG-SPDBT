@@ -302,13 +302,13 @@ export class SecurityScreeningDetailComponent {
 					this.fingerprintsAlert = this.getFingerprintsText();
 					this.associatedFileType = FileTypeCode.ConfirmationOfFingerprints;
 					break;
-				case CaseSubStatusCode.ApplicantInformation:
-					this.opportunityToRespondAlert = this.getOpportunityToRespondText();
-					this.associatedFileType = FileTypeCode.ApplicantInformation;
-					break;
 				case CaseSubStatusCode.OpportunityToRespond:
-					this.requestForAdditionalInfoAlert = this.getRequestForAdditionalInfoText();
+					this.opportunityToRespondAlert = this.getOpportunityToRespondText();
 					this.associatedFileType = FileTypeCode.OpportunityToRespond;
+					break;
+				case CaseSubStatusCode.ApplicantInformation:
+					this.requestForAdditionalInfoAlert = this.getRequestForAdditionalInfoText();
+					this.associatedFileType = FileTypeCode.ApplicantInformation;
 					break;
 				case CaseSubStatusCode.StatutoryDeclaration:
 					this.statutoryDeclarationAlert = this.getStatutoryDeclarationText();

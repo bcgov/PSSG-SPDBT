@@ -14,6 +14,7 @@ export interface ApplicationPaymentResponse {
   jobTitle?: null | string;
   middleName1?: null | string;
   middleName2?: null | string;
+  numberOfAttempts?: null | number;
   orgId?: string;
   paidOn?: null | string;
   payeeType?: PayerPreferenceTypeCode;

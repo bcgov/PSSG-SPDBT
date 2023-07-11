@@ -471,13 +471,13 @@ export class ApplicantService extends BaseService {
   apiApplicantsScreeningsApplicationIdFilesPost$Response(params: {
     applicationId: string;
     body?: {
-'File'?: Blob;
+'Files'?: Array<Blob>;
 'FileType'?: FileTypeCode;
 }
   },
   context?: HttpContext
 
-): Observable<StrictHttpResponse<ApplicantAppFileCreateResponse>> {
+): Observable<StrictHttpResponse<Array<ApplicantAppFileCreateResponse>>> {
 
     const rb = new RequestBuilder(this.rootUrl, ApplicantService.ApiApplicantsScreeningsApplicationIdFilesPostPath, 'post');
     if (params) {
@@ -492,7 +492,7 @@ export class ApplicantService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<ApplicantAppFileCreateResponse>;
+        return r as StrictHttpResponse<Array<ApplicantAppFileCreateResponse>>;
       })
     );
   }
@@ -510,16 +510,16 @@ export class ApplicantService extends BaseService {
   apiApplicantsScreeningsApplicationIdFilesPost(params: {
     applicationId: string;
     body?: {
-'File'?: Blob;
+'Files'?: Array<Blob>;
 'FileType'?: FileTypeCode;
 }
   },
   context?: HttpContext
 
-): Observable<ApplicantAppFileCreateResponse> {
+): Observable<Array<ApplicantAppFileCreateResponse>> {
 
     return this.apiApplicantsScreeningsApplicationIdFilesPost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<ApplicantAppFileCreateResponse>) => r.body as ApplicantAppFileCreateResponse)
+      map((r: StrictHttpResponse<Array<ApplicantAppFileCreateResponse>>) => r.body as Array<ApplicantAppFileCreateResponse>)
     );
   }
 
