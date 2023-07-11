@@ -6,8 +6,10 @@ namespace Spd.Manager.Cases.Payment
     public interface IPaymentManager
     {
         public Task<PaymentLinkResponse> Handle(PaymentLinkCreateCommand request, CancellationToken ct);
+        public Task<PaymentResponse> Handle(PaymentCreateCommand request, CancellationToken ct);
     }
 
+    //payment link
     public record PaymentLinkCreateCommand(PaymentLinkCreateRequest PaymentLinkCreateRequest, string RedirectUrl, string Ref1, string Ref2, string Ref3) : IRequest<PaymentLinkResponse>;
 
     public record PaymentLinkCreateRequest
@@ -15,9 +17,7 @@ namespace Spd.Manager.Cases.Payment
         [MaxLength(100)]
         public string Description { get; set; } = null!;
         public PaymentMethodCode PaymentMethod { get; set; } //CC-credit card, VI - debit card
-        public decimal Amount { get; set; }//must be two digitals after point decimal
         public Guid ApplicationId { get; set; }
-        public string RedirectPath { get; set; } = null!;
     }
 
     public record OrgPaymentLinkCreateRequest : PaymentLinkCreateRequest;
@@ -26,12 +26,13 @@ namespace Spd.Manager.Cases.Payment
     {
         public string PaymentLinkUrl { get; set; }
     }
-
     public enum PaymentMethodCode
     {
         CreditCard
     }
 
+    //payment result
+    public record PaymentCreateCommand(PaybcPaymentResult PaybcPaymentResult) : IRequest<PaymentResponse>;
     public record PaybcPaymentResult
     {
         public string PaybcPaymentResultStr { get; set; }

@@ -2,6 +2,7 @@ using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Dynamics.CRM;
 using Spd.Manager.Cases.Application;
 using Spd.Manager.Cases.Payment;
 using Spd.Presentation.Screening.Configurations;
@@ -250,33 +251,58 @@ namespace Spd.Presentation.Screening.Controllers
         public async Task<PaymentLinkResponse> GetPaymentLink([FromBody][Required] ApplicantPaymentLinkCreateRequest paymentLinkCreateRequest)
         {
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
-            //string? path = _configuration.GetValue<string>("ApplicantPortalPath");
-            string redirectUrl = $"{hostUrl}{paymentLinkCreateRequest.RedirectPath}";
+            string redirectUrl = $"{hostUrl}api/applicants/screenings/payment-result";
             string tag1 = paymentLinkCreateRequest.ApplicationId.ToString();
             string? tag2 = _currentUser.GetApplicantIdentityInfo().Sub; //need poc to test.
             return await _mediator.Send(new PaymentLinkCreateCommand(paymentLinkCreateRequest, redirectUrl, tag1, tag2, null));
         }
 
         /// <summary>
-        /// Process the paybc payment result.
+        /// redirect url for paybc to redirect to
         /// </summary>
-        /// <param name="PaymentResultString">which include Payment link create request</param>
         /// <returns></returns>
-        [Route("api/applicants/screenings/{applicationId}/payment-result")]
-        [HttpPost]
-        [Authorize(Policy = "OnlyBcsc")]
-        public async Task<PaymentResponse> ProcessPaymentResult([FromBody][Required] PaybcPaymentResult paybcResult)
+        [Route("api/applicants/screenings/payment-result")]
+        [HttpGet]
+       // [Authorize(Policy = "OnlyBcsc")]
+        public async Task<ActionResult> ProcessPaymentResult([FromQuery][Required]string? trnApproved,
+            [FromQuery] string? messageText,
+            [FromQuery] string? trnOrderId,
+            [FromQuery] string? trnAmount,
+            [FromQuery] string? paymentMethod,
+            [FromQuery] string? cardType,
+            [FromQuery] string? trnDate,
+            [FromQuery] string? ref1,
+            [FromQuery] string? ref2,
+            [FromQuery] string? ref3,
+            [FromQuery] string? pbcTxnNumber,
+            [FromQuery] string? trnNumber,
+            [FromQuery] string? hashValue,
+            [FromQuery] string? pbcRefNumber,
+            [FromQuery] string? glDate,
+            [FromQuery] string? paymentAuthCode,
+            [FromQuery] string? revenue)
         {
-            return new PaymentResponse
+            string? hostUrl = _configuration.GetValue<string>("HostUrl");
+            string? successPath = _configuration.GetValue<string>("ApplicantPortalPaymentSuccessPath");
+            string? failPath = _configuration.GetValue<string>("ApplicantPortalPaymentSuccessPath");
+    
+            if(trnApproved == "1")
             {
-                ApplicationId = Guid.NewGuid(),
-                PaidSuccess = true,
-                Message = "Approved",
-                TransDate = DateTime.Now.Date.ToString("yyyy-MM-dd"),
-                TransNumber = "12345",
-                TransOrderId = "45678",
-                TransAmount=30.00M,
-            };
+                return Redirect($"{hostUrl}{successPath}");
+            }
+                
+
+            return Redirect($"{hostUrl}{failPath}");
+            //return new PaymentResponse
+            //{
+            //    ApplicationId = Guid.NewGuid(),
+            //    PaidSuccess = true,
+            //    Message = "Approved",
+            //    TransDate = DateTime.Now.Date.ToString("yyyy-MM-dd"),
+            //    TransNumber = "12345",
+            //    TransOrderId = "45678",
+            //    TransAmount=30.00M,
+            //};
         }
         #endregion
     }
