@@ -244,17 +244,39 @@ namespace Spd.Presentation.Screening.Controllers
         /// </summary>
         /// <param name="ApplicantPaymentLinkCreateRequest">which include Payment link create request</param>
         /// <returns></returns>
-        [Route("api/applicants/screenings/{applicationId}/paymentLink")]
+        [Route("api/applicants/screenings/{applicationId}/payment-link")]
         [HttpPost]
         [Authorize(Policy = "OnlyBcsc")]
         public async Task<PaymentLinkResponse> GetPaymentLink([FromBody][Required] ApplicantPaymentLinkCreateRequest paymentLinkCreateRequest)
         {
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
-            string? path = _configuration.GetValue<string>("ApplicantPortalPath");
-            string redirectUrl = $"{hostUrl}{path}payment-result";
+            //string? path = _configuration.GetValue<string>("ApplicantPortalPath");
+            string redirectUrl = $"{hostUrl}{paymentLinkCreateRequest.RedirectPath}";
             string tag1 = paymentLinkCreateRequest.ApplicationId.ToString();
             string? tag2 = _currentUser.GetApplicantIdentityInfo().Sub; //need poc to test.
             return await _mediator.Send(new PaymentLinkCreateCommand(paymentLinkCreateRequest, redirectUrl, tag1, tag2, null));
+        }
+
+        /// <summary>
+        /// Process the paybc payment result.
+        /// </summary>
+        /// <param name="PaymentResultString">which include Payment link create request</param>
+        /// <returns></returns>
+        [Route("api/applicants/screenings/{applicationId}/payment-result")]
+        [HttpPost]
+        [Authorize(Policy = "OnlyBcsc")]
+        public async Task<PaymentResponse> ProcessPaymentResult([FromBody][Required] PaybcPaymentResult paybcResult)
+        {
+            return new PaymentResponse
+            {
+                ApplicationId = Guid.NewGuid(),
+                PaidSuccess = true,
+                Message = "Approved",
+                TransDate = DateTime.Now.Date.ToString("yyyy-MM-dd"),
+                TransNumber = "12345",
+                TransOrderId = "45678",
+                TransAmount=30.00M,
+            };
         }
         #endregion
     }

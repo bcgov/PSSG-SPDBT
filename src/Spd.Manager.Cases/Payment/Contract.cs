@@ -13,10 +13,11 @@ namespace Spd.Manager.Cases.Payment
     public record PaymentLinkCreateRequest
     {
         [MaxLength(100)]
-        public string Description { get; set; }
+        public string Description { get; set; } = null!;
         public PaymentMethodCode PaymentMethod { get; set; } //CC-credit card, VI - debit card
-        public decimal Amount { get; set; }
+        public decimal Amount { get; set; }//must be two digitals after point decimal
         public Guid ApplicationId { get; set; }
+        public string RedirectPath { get; set; } = null!;
     }
 
     public record OrgPaymentLinkCreateRequest : PaymentLinkCreateRequest;
@@ -29,5 +30,20 @@ namespace Spd.Manager.Cases.Payment
     public enum PaymentMethodCode
     {
         CreditCard
+    }
+
+    public record PaybcPaymentResult
+    {
+        public string PaybcPaymentResultStr { get; set; }
+    }
+    public record PaymentResponse
+    {
+        public Guid ApplicationId { get; set; }
+        public bool PaidSuccess { get; set; }
+        public string Message { get; set; }
+        public string TransNumber { get; set; }
+        public string TransOrderId { get; set; }
+        public string TransDate { get; set; }
+        public decimal TransAmount { get; set; }
     }
 }
