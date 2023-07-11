@@ -2,6 +2,7 @@ import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FileTypeCode } from 'src/app/api/models';
 import { ApplicantService } from 'src/app/api/services';
+import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 
 export interface CrcUploadDialogData {
@@ -16,7 +17,7 @@ export interface CrcUploadDialogData {
 		<mat-dialog-content class="mb-2">
 			<div class="row">
 				<div class="col-12">
-					<app-file-upload [maxNumberOfFiles]="1" accept=".doc,.docx,.pdf"></app-file-upload>
+					<app-file-upload [maxNumberOfFiles]="maxNumberOfFiles" accept=".doc,.docx,.pdf"></app-file-upload>
 				</div>
 			</div>
 		</mat-dialog-content>
@@ -34,6 +35,8 @@ export interface CrcUploadDialogData {
 	styles: [],
 })
 export class SecurityScreeningUploadModalComponent implements OnInit {
+	maxNumberOfFiles = 1;
+
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
 	constructor(
@@ -47,11 +50,14 @@ export class SecurityScreeningUploadModalComponent implements OnInit {
 			console.error('applicationId was not passed to CrcUploadModalComponent');
 			this.dialogRef.close();
 		}
+
+		this.maxNumberOfFiles =
+			this.dialogData.fileType == FileTypeCode.ApplicantInformation ? SPD_CONSTANTS.document.maxNumberOfFiles : 1;
 	}
 
 	onSave(): void {
 		const body = {
-			File: this.fileUploadComponent.files[0],
+			Files: this.fileUploadComponent.files,
 			FileType: this.dialogData.fileType,
 		};
 		this.applicantService
