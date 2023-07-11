@@ -2,7 +2,8 @@ using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Spd.Manager.Cases;
+using Spd.Manager.Cases.Application;
+using Spd.Manager.Cases.Payment;
 using Spd.Presentation.Screening.Configurations;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Recaptcha;
@@ -115,7 +116,7 @@ namespace Spd.Presentation.Screening.Controllers
         }
 
         [Authorize(Policy = "OnlyBcsc")]
-        [Route("api/applicants/{applicantId}/applications")]
+        [Route("api/applicants/{applicantId}/screenings")]
         [HttpGet]
         public async Task<ApplicantApplicationListResponse> ApplicantApplicationsList([FromRoute] Guid applicantId)
         {
@@ -234,6 +235,26 @@ namespace Spd.Presentation.Screening.Controllers
             var content = new MemoryStream(response.Content);
             var contentType = response.ContentType ?? "application/octet-stream";
             return File(content, contentType, response.FileName);
+        }
+        #endregion
+
+        #region applicant-payment
+        /// <summary>
+        /// Return the direct pay payment link 
+        /// </summary>
+        /// <param name="ApplicantPaymentLinkCreateRequest">which include Payment link create request</param>
+        /// <returns></returns>
+        [Route("api/applicants/screenings/{applicationId}/paymentLink")]
+        [HttpPost]
+        [Authorize(Policy = "OnlyBcsc")]
+        public async Task<PaymentLinkResponse> GetPaymentLink([FromBody][Required] ApplicantPaymentLinkCreateRequest paymentLinkCreateRequest)
+        {
+            string? hostUrl = _configuration.GetValue<string>("HostUrl");
+            string? path = _configuration.GetValue<string>("ApplicantPortalPath");
+            string redirectUrl = $"{hostUrl}{path}payment-result";
+            string tag1 = paymentLinkCreateRequest.ApplicationId.ToString();
+            string? tag2 = _currentUser.GetApplicantIdentityInfo().Sub; //need poc to test.
+            return await _mediator.Send(new PaymentLinkCreateCommand(paymentLinkCreateRequest, redirectUrl, tag1, tag2, null));
         }
         #endregion
     }

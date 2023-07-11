@@ -1,5 +1,5 @@
 using Alba;
-using Spd.Manager.Cases;
+using Spd.Manager.Cases.Application;
 using Spd.Utilities.Shared.ManagerContract;
 using System.Net.Http.Json;
 using System.Net.Mime;

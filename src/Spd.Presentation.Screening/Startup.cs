@@ -10,6 +10,7 @@ using Spd.Utilities.FileStorage;
 using Spd.Utilities.Hosting;
 using Spd.Utilities.Hosting.Logging;
 using Spd.Utilities.LogonUser;
+using Spd.Utilities.Payment;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.TempFileStorage;
 
@@ -72,6 +73,7 @@ namespace Spd.Presentation.Screening
             services.AddTempFileStorageService();
             services.AddFileStorageProxy(configuration);
             services
+              .AddPaymentService(configuration)
               .AddDynamicsProxy(configuration)
               .AddAddressAutoComplete(configuration);
 

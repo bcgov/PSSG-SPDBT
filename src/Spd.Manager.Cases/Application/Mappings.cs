@@ -8,7 +8,7 @@ using Spd.Resource.Applicants.Incident;
 using Spd.Utilities.Shared.ManagerContract;
 using Spd.Utilities.Shared.ResourceContracts;
 
-namespace Spd.Manager.Cases
+namespace Spd.Manager.Cases.Application
 {
     internal class Mappings : Profile
     {
@@ -16,7 +16,7 @@ namespace Spd.Manager.Cases
         {
             _ = CreateMap<ApplicationInvitesCreateRequest, ApplicationInvitesCreateCmd>()
             .ForMember(d => d.ApplicationInvites, opt => opt.MapFrom(s => s.ApplicationInviteCreateRequests));
-            CreateMap<ApplicationInviteCreateRequest, Spd.Resource.Applicants.ApplicationInvite.ApplicationInvite>();
+            CreateMap<ApplicationInviteCreateRequest, Resource.Applicants.ApplicationInvite.ApplicationInvite>();
             CreateMap<ApplicationInviteCreateRequest, AppInviteDuplicateCheck>();
             CreateMap<AppInviteDuplicateCheckResult, ApplicationInviteDuplicateResponse>();
             CreateMap<ApplicationInviteCreateRequest, ApplicationInviteDuplicateResponse>();
