@@ -441,18 +441,8 @@ namespace Spd.Manager.Cases.Application
                     FileSize = file.Length,
                 };
 
-<<<<<<< HEAD:src/Spd.Manager.Cases/Application/ApplicationManager.cs
-            //create bcgov_documenturl and file
-            var docUrlResp = await _documentRepository.ManageAsync(new CreateDocumentCmd
-            {
-                TempFile = spdTempFile,
-                ApplicationId = command.ApplicationId,
-                DocumentType = Enum.Parse<DocumentTypeEnum>(command.Request.FileType.ToString()),
-                SubmittedByApplicantId = contact.ContactId
-            }, ct);
-=======
                 //create bcgov_documenturl and file
-                var docResp = await _documentUrlRepository.ManageAsync(new CreateDocumentCmd
+                var docResp = await _documentRepository.ManageAsync(new CreateDocumentCmd
                 {
                     TempFile = spdTempFile,
                     ApplicationId = command.ApplicationId,
@@ -461,7 +451,6 @@ namespace Spd.Manager.Cases.Application
                 }, ct);
                 docResps.Add(docResp);
             }
->>>>>>> main:src/Spd.Manager.Cases/ApplicationManager.cs
 
             //update application status to InProgress, substatus to InReview
             await _incidentRepository.ManageAsync(
