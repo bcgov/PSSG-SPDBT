@@ -199,14 +199,14 @@ internal partial class ApplicationRepository : IApplicationRepository
         string? containsNameEmailAppId = null;
         if (!string.IsNullOrWhiteSpace(appFilterBy.NameOrEmailOrAppIdContains))
         {
-            containsNameEmailAppId = $"(containsNameEmailAppId(spd_firstname,'{appFilterBy.NameOrEmailOrAppIdContains}') or containsNameEmailAppId(spd_lastname,'{appFilterBy.NameOrEmailOrAppIdContains}') or containsNameEmailAppId(spd_emailaddress1,'{appFilterBy.NameOrEmailOrAppIdContains}') or containsNameEmailAppId(spd_name,'{appFilterBy.NameOrEmailOrAppIdContains}'))";
+            containsNameEmailAppId = $"(contains(spd_firstname,'{appFilterBy.NameOrEmailOrAppIdContains}') or contains(spd_lastname,'{appFilterBy.NameOrEmailOrAppIdContains}') or contains(spd_emailaddress1,'{appFilterBy.NameOrEmailOrAppIdContains}') or contains(spd_name,'{appFilterBy.NameOrEmailOrAppIdContains}'))";
         }
 
         //name appId 
         string? containsNameAppId = null;
         if (!string.IsNullOrWhiteSpace(appFilterBy.NameOrAppIdContains))
         {
-            containsNameAppId = $"(containsNameEmailAppId(spd_firstname,'{appFilterBy.NameOrAppIdContains}') or containsNameEmailAppId(spd_lastname,'{appFilterBy.NameOrAppIdContains}') or containsNameEmailAppId(spd_name,'{appFilterBy.NameOrAppIdContains}'))";
+            containsNameAppId = $"(contains(spd_firstname,'{appFilterBy.NameOrAppIdContains}') or contains(spd_lastname,'{appFilterBy.NameOrAppIdContains}') or contains(spd_name,'{appFilterBy.NameOrAppIdContains}'))";
         }
 
         //paid
