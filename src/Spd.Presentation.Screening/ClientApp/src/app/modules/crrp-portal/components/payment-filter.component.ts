@@ -1,27 +1,22 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { UtilService } from 'src/app/core/services/util.service';
 import { BaseFilterComponent, FilterQueryList } from 'src/app/shared/components/base-filter.component';
 
 export class PaymentFilter {
 	search: string = '';
-	startDate: string = '';
-	endDate: string = '';
+	fromDate: string = '';
+	toDate: string = '';
 	paid: string = '';
 	notPaid: string = '';
-	applicantName: string = '';
-	createdOn: string = '';
-	contractedCompanyName: string = '';
 }
 
 export const PaymentFilterMap: Record<keyof PaymentFilter, string> = {
 	search: 'searchText',
-	startDate: 'startDate',
-	endDate: 'endDate',
+	fromDate: 'fromDate',
+	toDate: 'toDate',
 	paid: 'paid',
 	notPaid: 'notpaid',
-	applicantName: 'name',
-	createdOn: 'submittedon',
-	contractedCompanyName: 'companyname',
 };
 
 @Component({
@@ -41,9 +36,9 @@ export const PaymentFilterMap: Record<keyof PaymentFilter, string> = {
 							<div class="col-sm-12">
 								<strong>Date Range</strong>
 								<mat-form-field>
-									<mat-date-range-input [rangePicker]="picker">
-										<input matStartDate formControlName="startDate" placeholder="Start date" />
-										<input matEndDate formControlName="endDate" placeholder="End date" />
+									<mat-date-range-input [rangePicker]="picker" [max]="maxDate" [min]="minDate">
+										<input matStartDate formControlName="fromDate" placeholder="Start date" />
+										<input matEndDate formControlName="toDate" placeholder="End date" />
 									</mat-date-range-input>
 									<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
 									<mat-date-range-picker #picker></mat-date-range-picker>
@@ -90,15 +85,18 @@ export const PaymentFilterMap: Record<keyof PaymentFilter, string> = {
 	],
 })
 export class PaymentFilterComponent extends BaseFilterComponent {
+	minDate: Date | null = new Date(new Date().setFullYear(new Date().getFullYear() - 1));
+	maxDate: Date | null = new Date();
+
 	@Input() formGroup: FormGroup = this.formBuilder.group({
 		search: new FormControl(''),
-		startDate: new FormControl(''),
-		endDate: new FormControl(''),
+		fromDate: new FormControl(''),
+		toDate: new FormControl(''),
 		paid: new FormControl(''),
 		notPaid: new FormControl(''),
 	});
 
-	constructor(private formBuilder: FormBuilder) {
+	constructor(private formBuilder: FormBuilder, private utilService: UtilService) {
 		super();
 	}
 
@@ -114,43 +112,37 @@ export class PaymentFilterComponent extends BaseFilterComponent {
 	private constructFilterList(formGroupValue: PaymentFilter): FilterQueryList[] {
 		let filterList: FilterQueryList[] = [];
 
-		if (formGroupValue.startDate) {
-			// set time portion to midnight
-			const date = new Date(formGroupValue.startDate);
-			date.setHours(0, 0, 0);
-
+		if (formGroupValue.fromDate) {
+			const date = new Date(formGroupValue.fromDate);
 			filterList.push({
-				key: PaymentFilterMap['startDate'],
-				operator: 'greaterThanOrEqualTo',
-				value: date,
+				key: PaymentFilterMap['fromDate'],
+				operator: 'equals',
+				value: this.utilService.getDateString(date),
 			});
 		}
 
-		if (formGroupValue.endDate) {
-			// set time portion just before midnight
-			const date = new Date(formGroupValue.endDate);
-			date.setHours(23, 59, 59);
-
+		if (formGroupValue.toDate) {
+			const date = new Date(formGroupValue.toDate);
 			filterList.push({
-				key: PaymentFilterMap['endDate'],
-				operator: 'lessThanOrEqualTo',
-				value: date,
+				key: PaymentFilterMap['toDate'],
+				operator: 'equals',
+				value: this.utilService.getDateString(date),
 			});
 		}
 
-		if (formGroupValue.paid) {
+		if (formGroupValue.paid && formGroupValue.notPaid) {
+			// do nothing
+		} else if (formGroupValue.paid) {
 			filterList.push({
 				key: PaymentFilterMap['paid'],
 				operator: 'equals',
-				value: formGroupValue.paid,
+				value: true,
 			});
-		}
-
-		if (formGroupValue.notPaid) {
+		} else if (formGroupValue.notPaid) {
 			filterList.push({
-				key: PaymentFilterMap['notPaid'],
+				key: PaymentFilterMap['paid'],
 				operator: 'equals',
-				value: formGroupValue.notPaid,
+				value: false,
 			});
 		}
 

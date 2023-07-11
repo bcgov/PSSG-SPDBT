@@ -22,6 +22,7 @@ import { ManualSubmissionCommonComponent } from './components/manual-submission-
 import { MonthPickerComponent } from './components/month-picker.component';
 import { OrgSelectionModalComponent } from './components/org-selection-modal.component';
 import { PaymentFailComponent } from './components/payment-fail.component';
+import { PaymentManualComponent } from './components/payment-manual.component';
 import { PaymentSuccessComponent } from './components/payment-success.component';
 import { ScreeningRequestAddCommonModalComponent } from './components/screening-request-add-common-modal.component';
 import { ScreeningRequestsCommonComponent } from './components/screening-requests-common.component';
@@ -63,6 +64,7 @@ const SHARED_COMPONENTS = [
 	MonthPickerComponent,
 	PaymentSuccessComponent,
 	PaymentFailComponent,
+	PaymentManualComponent,
 ];
 
 @NgModule({

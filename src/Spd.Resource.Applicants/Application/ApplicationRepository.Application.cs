@@ -195,11 +195,18 @@ internal partial class ApplicationRepository : IApplicationRepository
             portalStatusFilter = $"({string.Join(" or ", strs)})";
         }
 
-        //name email contains
-        string? contains = null;
+        //name email appId 
+        string? containsNameEmailAppId = null;
         if (!string.IsNullOrWhiteSpace(appFilterBy.NameOrEmailOrAppIdContains))
         {
-            contains = $"(contains(spd_firstname,'{appFilterBy.NameOrEmailOrAppIdContains}') or contains(spd_lastname,'{appFilterBy.NameOrEmailOrAppIdContains}') or contains(spd_emailaddress1,'{appFilterBy.NameOrEmailOrAppIdContains}') or contains(spd_name,'{appFilterBy.NameOrEmailOrAppIdContains}'))";
+            containsNameEmailAppId = $"(contains(spd_firstname,'{appFilterBy.NameOrEmailOrAppIdContains}') or contains(spd_lastname,'{appFilterBy.NameOrEmailOrAppIdContains}') or contains(spd_emailaddress1,'{appFilterBy.NameOrEmailOrAppIdContains}') or contains(spd_name,'{appFilterBy.NameOrEmailOrAppIdContains}'))";
+        }
+
+        //name appId 
+        string? containsNameAppId = null;
+        if (!string.IsNullOrWhiteSpace(appFilterBy.NameOrAppIdContains))
+        {
+            containsNameAppId = $"(contains(spd_firstname,'{appFilterBy.NameOrAppIdContains}') or contains(spd_lastname,'{appFilterBy.NameOrAppIdContains}') or contains(spd_name,'{appFilterBy.NameOrAppIdContains}'))";
         }
 
         //paid
@@ -222,7 +229,7 @@ internal partial class ApplicationRepository : IApplicationRepository
 
         //submitted from date
         string submitFromDate = null;
-        if(appFilterBy.FromDateTime != null)
+        if (appFilterBy.FromDateTime != null)
         {
             var date = new Microsoft.OData.Edm.Date(((DateTimeOffset)appFilterBy.FromDateTime).Year, ((DateTimeOffset)appFilterBy.FromDateTime).Month, ((DateTimeOffset)appFilterBy.FromDateTime).Day);
             submitFromDate = $"createdon ge {date}";
@@ -242,9 +249,13 @@ internal partial class ApplicationRepository : IApplicationRepository
         {
             result += $" and {portalStatusFilter}";
         }
-        if (contains != null)
+        if (containsNameEmailAppId != null)
         {
-            result += $" and {contains}";
+            result += $" and {containsNameEmailAppId}";
+        }
+        if (containsNameAppId != null)
+        {
+            result += $" and {containsNameAppId}";
         }
         if (paid != null)
         {
@@ -286,11 +297,8 @@ internal partial class ApplicationRepository : IApplicationRepository
         if (appSortBy.CompanyNameDesc != null && !(bool)appSortBy.CompanyNameDesc)
             return "spd_contractedcompanyname";
 
-        if (appSortBy.PaidDesc != null && !(bool)appSortBy.PaidDesc)
-            return "spd_paidon";
-
-        if (appSortBy.PaidDesc != null && (bool)appSortBy.PaidDesc)
-            return "spd_paidon desc";
+        if (appSortBy.PaidAndSubmittedOnDesc != null && (bool)appSortBy.PaidAndSubmittedOnDesc)
+            return "spd_paidon, createdon desc";
 
         return "createdon desc";
     }

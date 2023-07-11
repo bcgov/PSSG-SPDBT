@@ -5,6 +5,7 @@ import { CriminalRecordChecksComponent } from './components/criminal-record-chec
 import { CrrpHeaderComponent } from './components/crrp-header.component';
 import { CrrpHomeComponent } from './components/crrp-home.component';
 import { CrrpPaymentFailComponent } from './components/crrp-payment-fail.component';
+import { CrrpPaymentManualComponent } from './components/crrp-payment-manual.component';
 import { CrrpPaymentSuccessComponent } from './components/crrp-payment-success.component';
 import { ExpiringChecksComponent } from './components/expiring-checks.component';
 import { GenericUploadsComponent } from './components/generic-uploads.component';
@@ -40,6 +41,7 @@ import { InvitationUserComponent } from './invitation-user.component';
 		InvitationUserComponent,
 		CrrpPaymentFailComponent,
 		CrrpPaymentSuccessComponent,
+		CrrpPaymentManualComponent,
 	],
 	imports: [SharedModule, CrrpRoutingModule],
 })

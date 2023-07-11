@@ -20,7 +20,7 @@ import { Router } from '@angular/router';
 					>
 						<mat-icon>arrow_back</mat-icon>Back
 					</button>
-					<button mat-flat-button color="primary" class="large w-auto m-2" aria-label="Pay Now">
+					<button mat-flat-button color="primary" class="large w-auto m-2" aria-label="Try again">
 						<mat-icon>payment</mat-icon>Try Again
 					</button>
 				</div>

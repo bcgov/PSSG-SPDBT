@@ -59,10 +59,28 @@ import { DeclarationComponent } from '../step-components/declaration.component';
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="goToStepNext(STEP_TERMS)">
-							<span *ngIf="orgData?.performPaymentProcess; else noPay">Pay Now</span>
-							<ng-template #noPay>Submit</ng-template>
-						</button>
+						<ng-container *ngIf="orgData?.performPaymentProcess; else noPay">
+							<button
+								mat-flat-button
+								color="primary"
+								class="large mb-2"
+								(click)="goToStepNext(STEP_TERMS)"
+								aria-label="Pay now"
+							>
+								Pay Now
+							</button>
+						</ng-container>
+						<ng-template #noPay>
+							<button
+								mat-flat-button
+								color="primary"
+								class="large mb-2"
+								(click)="goToStepNext(STEP_TERMS)"
+								aria-label="Submit"
+							>
+								Submit
+							</button>
+						</ng-template>
 					</div>
 				</div>
 			</mat-step>
