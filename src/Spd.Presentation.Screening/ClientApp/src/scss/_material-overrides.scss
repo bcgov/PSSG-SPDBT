@@ -187,13 +187,18 @@ mat-label {
 
 @media(max-width: 1199px) {
   .mobile-label {
-    width: 100px;
+    width: 110px;
     display: inline-block;
-    margin-right: 4px;
+    margin-right: 4px;    
+    opacity: 1;
+    color: #6c757d!important;
+    font-size: .875em !important;
   }
 
   mat-cell, mat-header-cell, mat-footer-cell {    
+    letter-spacing: normal !important;
     padding: 0 !important;
+    font-size: 1rem !important; 
   }
   
   .mat-mdc-header-row {

@@ -130,13 +130,13 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
 							>
 								<mat-icon>payment</mat-icon>Pay Now
 							</button>
+							<!-- <div *ngIf="application.status != applicationPortalStatusCodes.AwaitingPayment">None</div> -->
 						</mat-cell>
 					</ng-container>
 
 					<ng-container matColumnDef="action2">
 						<mat-header-cell *matHeaderCellDef></mat-header-cell>
 						<mat-cell *matCellDef="let application">
-							<span class="mobile-label"></span>
 							<button mat-flat-button (click)="onViewDetail(application)" class="table-button" aria-label="View Detail">
 								<mat-icon>wysiwyg</mat-icon>View Detail
 							</button>
@@ -153,14 +153,20 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
 		`
 			.mat-column-status {
 				min-width: 190px;
-				padding-right: 4px !important;
-				padding-left: 4px !important;
+			}
+
+			.mat-column-action1 {
+				min-width: 190px;
+				.table-button {
+					min-width: 160px;
+				}
 			}
 
 			.mat-column-action2 {
-				min-width: 170px;
-				padding-right: 4px !important;
-				padding-left: 4px !important;
+				min-width: 190px;
+				.table-button {
+					min-width: 160px;
+				}
 			}
 
 			@media (max-width: 991px) {
