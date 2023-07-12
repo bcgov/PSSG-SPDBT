@@ -1,9 +1,8 @@
 ﻿using Microsoft.Extensions.Options;
 using System;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Web;
 
 namespace Spd.Utilities.Payment
@@ -16,16 +15,17 @@ namespace Spd.Utilities.Payment
         {
             _config = config.Value;
         }
-        public async Task<PaymentResult> HandleCommand(PaymentCommand cmd, CancellationToken ct)
+        public PaymentResult HandleCommand(PaymentCommand cmd)
         {
             return cmd switch
             {
-                CreateDirectPaymentLinkCommand c => await CreateDirectPaymentLinkAsync(c, ct),
+                CreateDirectPaymentLinkCommand c => CreateDirectPaymentLink(c),
+                ValidatePaymentResultStrCommand c => ValidatePaymentResultStr(c),
                 _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
             };
         }
 
-        public async Task<CreateDirectPaymentLinkResult> CreateDirectPaymentLinkAsync(CreateDirectPaymentLinkCommand command, CancellationToken ct)
+        public CreateDirectPaymentLinkResult CreateDirectPaymentLink(CreateDirectPaymentLinkCommand command)
         {
             string trnDate = DateTime.Now.Date.ToString("yyyy-MM-dd");
             string pbcRefNumber = command.PbcRefNumber;
@@ -75,6 +75,19 @@ namespace Spd.Utilities.Payment
             {
                 PaymentLinkUrl = uriBuilder.Uri.ToString(),
             };
+        }
+
+        public ValidationResult ValidatePaymentResultStr(ValidatePaymentResultStrCommand command)
+        {
+            string queryStr = command.QueryStr;
+            string[] queries = queryStr.Split("&");
+            string hashvalueStr = queries.FirstOrDefault(q => q.StartsWith("hashValue="));
+            if (hashvalueStr == null)
+            {
+                return new ValidationResult() { ValidationPassed = false };
+            }
+            string hashValue = hashvalueStr.Split("=").Last();
+            queryStr.LastIndexOf()
         }
     }
 }

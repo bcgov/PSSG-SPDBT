@@ -255,8 +255,8 @@ namespace Spd.Presentation.Screening.Controllers
         {
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
             string redirectUrl = $"{hostUrl}api/applicants/screenings/payment-result";
-            string tag1 = paymentLinkCreateRequest.ApplicationId.ToString();
-            string? tag2 = _currentUser.GetApplicantIdentityInfo().Sub; //need poc to test.
+            string tag1 = paymentLinkCreateRequest.ApplicationId.ToString();//put applicationId in ref1
+            string? tag2 = null;//_currentUser.GetApplicantIdentityInfo().Sub; //need poc to test.
             return await _mediator.Send(new PaymentLinkCreateCommand(paymentLinkCreateRequest, redirectUrl, tag1, tag2, null));
         }
 
@@ -301,10 +301,10 @@ namespace Spd.Presentation.Screening.Controllers
                     CardType = cardType,
                     PaymentAuthCode = paymentAuthCode,
                     PaymentMethod = paymentMethod.Equals("CC", StringComparison.InvariantCultureIgnoreCase) ? PaymentMethodCode.CreditCard : PaymentMethodCode.CreditCard,
-                    TransOrderId= trnOrderId,
-                    TransDate=DateTimeOffset.ParseExact(trnDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)
+                    TransOrderId = trnOrderId,
+                    TransDate = DateTimeOffset.ParseExact(trnDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)
                 };
-                var response = await _mediator.Send(new PaymentCreateCommand(paybcPayment, Guid.Parse(ref1)));
+                var response = await _mediator.Send(new PaymentCreateCommand(Request.QueryString.ToString(), paybcPayment, Guid.Parse(ref1)));
                 return Redirect($"{hostUrl}{successPath}{response.PaymentId}");
             }
             else

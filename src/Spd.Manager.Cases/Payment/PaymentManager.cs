@@ -92,6 +92,9 @@ namespace Spd.Manager.Cases.Payment
 
         public async Task<PaymentResponse> Handle(PaymentCreateCommand command, CancellationToken ct)
         {
+            //validate hashcode
+            command.queryStr
+
             var cmd = _mapper.Map<CreatePaymentCmd>(command.PaybcPaymentResult);
             cmd.ApplicationId = command.ApplicationId;
             var resp = await _paymentRepository.ManageAsync(cmd, ct);
