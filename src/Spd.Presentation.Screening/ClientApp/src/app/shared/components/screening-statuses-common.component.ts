@@ -234,7 +234,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 				}
 			}
 
-			.mat-column-action2 {
+			.mat-column-delegates {
 				min-width: 230px;
 				.table-button {
 					min-width: 220px;
