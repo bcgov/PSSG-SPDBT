@@ -1,6 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import { BooleanTypeCode } from './boolean-type-code';
+import { EmployeeInteractionTypeCode } from './employee-interaction-type-code';
 import { EmployeeOrganizationTypeCode } from './employee-organization-type-code';
 import { PayerPreferenceTypeCode } from './payer-preference-type-code';
 import { ServiceTypeCode } from './service-type-code';
@@ -15,6 +16,7 @@ export interface OrgResponse {
   addressProvince?: null | string;
   contractorsNeedVulnerableSectorScreening?: BooleanTypeCode;
   email?: null | string;
+  employeeInteractionType?: EmployeeInteractionTypeCode;
   employeeOrganizationTypeCode?: EmployeeOrganizationTypeCode;
   genericUploadEnabled?: boolean;
   id?: string;
