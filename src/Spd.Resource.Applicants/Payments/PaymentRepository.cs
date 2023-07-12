@@ -15,7 +15,10 @@ internal class PaymentRepository : IPaymentRepository
     }
     public async Task<PaymentListResp> QueryAsync(PaymentQry qry, CancellationToken ct)
     {
-        var payments = _context.spd_payments.Where(d => d.statecode != DynamicsConstants.StateCode_Inactive);
+        var payments = _context.spd_payments
+            .Expand(p => p.spd_ApplicationId)
+            .Where(p => p.statecode != DynamicsConstants.StateCode_Inactive);
+
         if (qry.ApplicationId != null)
             payments = payments.Where(d => d._spd_applicationid_value == qry.ApplicationId);
 
@@ -51,6 +54,7 @@ internal class PaymentRepository : IPaymentRepository
         await _context.SaveChangesAsync(ct);
         PaymentResp paymentResp = _mapper.Map<PaymentResp>(payment);
         paymentResp.CaseNumber = application.spd_name;
+        paymentResp.ApplicationId = cmd.ApplicationId;
         return paymentResp;
     }
 

@@ -5,8 +5,9 @@ namespace Spd.Manager.Cases.Payment
 {
     public interface IPaymentManager
     {
-        public Task<PaymentLinkResponse> Handle(PaymentLinkCreateCommand request, CancellationToken ct);
-        public Task<PaymentResponse> Handle(PaymentCreateCommand request, CancellationToken ct);
+        public Task<PaymentLinkResponse> Handle(PaymentLinkCreateCommand command, CancellationToken ct);
+        public Task<PaymentResponse> Handle(PaymentCreateCommand command, CancellationToken ct);
+        public Task<PaymentResponse> Handle(PaymentQuery query, CancellationToken ct);
     }
 
     //payment link
@@ -32,7 +33,8 @@ namespace Spd.Manager.Cases.Payment
     }
 
     //payment result
-    public record PaymentCreateCommand(PaybcPaymentResult PaybcPaymentResult) : IRequest<PaymentResponse>;
+    public record PaymentCreateCommand(PaybcPaymentResult PaybcPaymentResult, Guid ApplicationId) : IRequest<PaymentResponse>;
+    public record PaymentQuery(Guid PaymentId) : IRequest<PaymentResponse>;
     public record PaybcPaymentResult
     {
         public bool Success { get; set; }
@@ -48,7 +50,8 @@ namespace Spd.Manager.Cases.Payment
     public record PaymentResponse
     {
         public Guid ApplicationId { get; set; }
-        public string CaseId { get; set; }
+        public Guid PaymentId { get; set; }
+        public string CaseNumber { get; set; }
         public bool PaidSuccess { get; set; }
         public string Message { get; set; }
         public string TransOrderId { get; set; }

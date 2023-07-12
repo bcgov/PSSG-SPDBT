@@ -25,16 +25,19 @@ namespace Spd.Presentation.Screening.Controllers
         private readonly IPrincipal _currentUser;
         private readonly IRecaptchaVerificationService _verificationService;
         private readonly IConfiguration _configuration;
+        private readonly ILogger<ApplicationController> _logger;
 
         public ApplicantController(IMediator mediator,
             IPrincipal currentUser,
             IRecaptchaVerificationService verificationService,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            ILogger<ApplicationController> logger)
         {
             _mediator = mediator;
             _currentUser = currentUser;
             _verificationService = verificationService;
             _configuration = configuration;
+            _logger = logger;
         }
 
         #region application-invites
@@ -281,6 +284,8 @@ namespace Spd.Presentation.Screening.Controllers
             [FromQuery] string? paymentAuthCode,
             [FromQuery] string? revenue)
         {
+            //todo: hashValue validation.
+            //same transactionNumber duplicate check.
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
             string? successPath = _configuration.GetValue<string>("ApplicantPortalPaymentSuccessPath");
             string? failPath = _configuration.GetValue<string>("ApplicantPortalPaymentFailPath");
@@ -292,24 +297,38 @@ namespace Spd.Presentation.Screening.Controllers
                     Success = true,
                     MessageText = messageText,
                     TransAmount = Decimal.Parse(trnAmount),
-                    TransNumber = trnNumber,
+                    TransNumber = pbcTxnNumber,
                     CardType = cardType,
                     PaymentAuthCode = paymentAuthCode,
                     PaymentMethod = paymentMethod.Equals("CC", StringComparison.InvariantCultureIgnoreCase) ? PaymentMethodCode.CreditCard : PaymentMethodCode.CreditCard,
                     TransOrderId= trnOrderId,
                     TransDate=DateTimeOffset.ParseExact(trnDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)
                 };
-                await _mediator.Send(new PaymentCreateCommand(paybcPayment));
-                return Redirect($"{hostUrl}{successPath}");
+                var response = await _mediator.Send(new PaymentCreateCommand(paybcPayment, Guid.Parse(ref1)));
+                return Redirect($"{hostUrl}{successPath}{response.PaymentId}");
             }
             else
             {
                 if (messageText.Equals("Declined", StringComparison.CurrentCultureIgnoreCase))
                 {
-                    return Redirect($"{hostUrl}{failPath}");
+                    PaybcPaymentResult paybcPayment = new PaybcPaymentResult
+                    {
+                        Success = false,
+                        MessageText = messageText,
+                        TransAmount = Decimal.Parse(trnAmount),
+                        TransNumber = trnNumber,
+                        CardType = cardType,
+                        PaymentAuthCode = null,
+                        PaymentMethod = paymentMethod.Equals("CC", StringComparison.InvariantCultureIgnoreCase) ? PaymentMethodCode.CreditCard : PaymentMethodCode.CreditCard,
+                        TransOrderId = trnOrderId,
+                        TransDate = DateTimeOffset.ParseExact(trnDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)
+                    };
+                    var response = await _mediator.Send(new PaymentCreateCommand(paybcPayment, Guid.Parse(ref1)));
+                    return Redirect($"{hostUrl}{failPath}{response.PaymentId}");
                 }
                 else
                 {
+                    _logger.LogError($"PayBC returns error with message {messageText}, transactionNumer {pbcTxnNumber}");
                     return Redirect($"{hostUrl}{failPath}");//should change to error page.
                 }
             }
@@ -319,20 +338,12 @@ namespace Spd.Presentation.Screening.Controllers
         /// Get the payment result for application and payment
         /// </summary>
         /// <returns></returns>
-        [Route("api/applicants/screenings/{applicationId}/payment-results/{paymentId}")]
+        [Route("api/applicants/screenings/payments/{paymentId}")]
         [HttpGet]
-        public async Task<PaymentResponse> GetPaymentResult([FromRoute] Guid? paymentId)
+        [Authorize(Policy = "OnlyBcsc")]
+        public async Task<PaymentResponse> GetPaymentResult([FromRoute]Guid paymentId)
         {
-            return new PaymentResponse
-            {
-                ApplicationId = Guid.NewGuid(),
-                PaidSuccess = true,
-                Message = "Approved",
-                TransDate = DateTime.Now.Date.ToString("yyyy-MM-dd"),
-                TransNumber = "12345",
-                TransOrderId = "45678",
-                TransAmount = 30.00M,
-            };
+            return await _mediator.Send(new PaymentQuery(paymentId));
         }
         #endregion
     }

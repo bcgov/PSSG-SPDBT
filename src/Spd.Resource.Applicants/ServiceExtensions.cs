@@ -3,6 +3,7 @@ using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.ApplicationInvite;
 using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.Incident;
+using Spd.Resource.Applicants.Payment;
 using Spd.Utilities.Hosting;
 
 namespace Spd.Resource.Applicants
@@ -13,8 +14,9 @@ namespace Spd.Resource.Applicants
         {
             configurationServices.Services.AddTransient<IApplicationRepository, ApplicationRepository>();
             configurationServices.Services.AddTransient<IApplicationInviteRepository, ApplicationInviteRepository>();
-            configurationServices.Services.AddTransient<IDocumentRepository, PaymentRepository>();
+            configurationServices.Services.AddTransient<IDocumentRepository, DocumentRepository>();
             configurationServices.Services.AddTransient<IIncidentRepository, IncidentRepository>();
+            configurationServices.Services.AddTransient<IPaymentRepository, PaymentRepository>();
         }
     }
 }

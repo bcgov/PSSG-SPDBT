@@ -11,6 +11,7 @@ namespace Spd.Manager.Cases.Payment
     internal class PaymentManager :
         IRequestHandler<PaymentLinkCreateCommand, PaymentLinkResponse>,
         IRequestHandler<PaymentCreateCommand, PaymentResponse>,
+        IRequestHandler<PaymentQuery, PaymentResponse>,
         IPaymentManager
     {
         private readonly IPaymentService _paymentService;
@@ -75,7 +76,7 @@ namespace Spd.Manager.Cases.Payment
                     PbcRefNumber = pbcRef,
                     Amount = Decimal.Round(Decimal.Parse(cost), 2),
                     Description = command.PaymentLinkCreateRequest.Description,
-                    PaymentMethod = PaymentMethodEnum.CC,
+                    PaymentMethod = Spd.Utilities.Payment.PaymentMethodEnum.CC,
                     RedirectUrl = command.RedirectUrl,
                     Ref1 = command.Ref1,
                     Ref2 = command.Ref2,
@@ -92,8 +93,15 @@ namespace Spd.Manager.Cases.Payment
         public async Task<PaymentResponse> Handle(PaymentCreateCommand command, CancellationToken ct)
         {
             var cmd = _mapper.Map<CreatePaymentCmd>(command.PaybcPaymentResult);
+            cmd.ApplicationId = command.ApplicationId;
             var resp = await _paymentRepository.ManageAsync(cmd, ct);
             return _mapper.Map<PaymentResponse>(resp);
+        }
+
+        public async Task<PaymentResponse> Handle(PaymentQuery query, CancellationToken ct)
+        {
+            var respList = await _paymentRepository.QueryAsync(new PaymentQry(null, query.PaymentId), ct);
+            return _mapper.Map<PaymentResponse>(respList.Items.First());
         }
     }
 }

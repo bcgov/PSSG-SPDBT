@@ -15,10 +15,11 @@ namespace Spd.Resource.Applicants.Payment
     public record PaymentResp
     {
         public Guid ApplicationId { get; set; }
+        public Guid PaymentId { get; set; }
         public string CaseNumber { get; set; }
         public bool PaidSuccess { get; set; }
         public string Message { get; set; }
-        public string TransOrderId { get; set; }
+        public string? TransOrderId { get; set; }
         public string TransDate { get; set; }
         public decimal TransAmount { get; set; }
     }
