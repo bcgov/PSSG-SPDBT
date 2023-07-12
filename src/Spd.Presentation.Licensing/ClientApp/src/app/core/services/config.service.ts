@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AuthConfig, OAuthService } from 'angular-oauth2-oidc';
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { ConfigurationResponse, IdentityProviderTypeCode } from 'src/app/api/models';
+import { ConfigurationResponse } from 'src/app/api/models';
 import { ConfigurationService } from 'src/app/api/services';
 
 @Injectable({
@@ -13,14 +13,7 @@ export class ConfigService {
 
 	constructor(private oauthService: OAuthService, private configurationService: ConfigurationService) {}
 
-	public async configureOAuthService(loginType: IdentityProviderTypeCode, redirectUri: string): Promise<void> {
-		if (loginType == IdentityProviderTypeCode.BusinessBceId) {
-			return this.getBceidConfig(redirectUri).then((config) => {
-				this.oauthService.configure(config);
-				this.oauthService.setupAutomaticSilentRefresh();
-			});
-		}
-
+	public async configureOAuthService(redirectUri: string): Promise<void> {
 		return this.getBcscConfig(redirectUri).then((config) => {
 			this.oauthService.configure(config);
 			// this.oauthService.setupAutomaticSilentRefresh();
@@ -40,22 +33,6 @@ export class ConfigService {
 		};
 		console.debug('[ConfigService] getBcscConfig', bcscConfig, 'redirectUri', redirectUri);
 		return bcscConfig;
-	}
-
-	private async getBceidConfig(redirectUri?: string): Promise<AuthConfig> {
-		const resp = this.configs?.oidcConfiguration!;
-		const bceIdConfig = {
-			issuer: resp.issuer!,
-			clientId: resp.clientId!,
-			redirectUri,
-			responseType: resp.responseType!,
-			scope: resp.scope!,
-			showDebugInformation: true,
-			postLogoutRedirectUri: resp.postLogoutRedirectUri!,
-			customQueryParams: { kc_idp_hint: 'bceidbusiness' },
-		};
-		console.debug('[ConfigService] getBceidConfig', bceIdConfig, 'redirectUri', redirectUri);
-		return bceIdConfig;
 	}
 
 	public getConfigs(): Observable<ConfigurationResponse> {

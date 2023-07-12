@@ -17,18 +17,11 @@ import { CaptchaV2Component } from './components/captcha-v2.component';
 import { DialogComponent } from './components/dialog.component';
 import { DropdownOverlayComponent } from './components/dropdown-overlay.component';
 import { FileUploadComponent } from './components/file-upload.component';
-import { IdentifyVerificationCommonComponent } from './components/identify-verification-common.component';
-import { ManualSubmissionCommonComponent } from './components/manual-submission-common.component';
 import { MonthPickerComponent } from './components/month-picker.component';
 import { OrgSelectionModalComponent } from './components/org-selection-modal.component';
 import { PaymentFailComponent } from './components/payment-fail.component';
 import { PaymentManualComponent } from './components/payment-manual.component';
 import { PaymentSuccessComponent } from './components/payment-success.component';
-import { ScreeningRequestAddCommonModalComponent } from './components/screening-request-add-common-modal.component';
-import { ScreeningRequestsCommonComponent } from './components/screening-requests-common.component';
-import { ScreeningStatusFilterCommonComponent } from './components/screening-status-filter-common.component';
-import { ScreeningStatusesCommonComponent } from './components/screening-statuses-common.component';
-import { StatusStatisticsComponent } from './components/status-statistics.component';
 import { StepTitleComponent } from './components/step-title.component';
 import { DefaultPipe } from './pipes/default.pipe';
 import { FullnamePipe } from './pipes/fullname.pipe';
@@ -53,14 +46,7 @@ const SHARED_COMPONENTS = [
 	FileUploadComponent,
 	AccessDeniedComponent,
 	AlertComponent,
-	StatusStatisticsComponent,
 	ApplicationsBannerComponent,
-	ScreeningStatusFilterCommonComponent,
-	ScreeningStatusesCommonComponent,
-	ScreeningRequestsCommonComponent,
-	ScreeningRequestAddCommonModalComponent,
-	IdentifyVerificationCommonComponent,
-	ManualSubmissionCommonComponent,
 	MonthPickerComponent,
 	PaymentSuccessComponent,
 	PaymentFailComponent,

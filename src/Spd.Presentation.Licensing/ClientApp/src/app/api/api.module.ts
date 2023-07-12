@@ -1,8 +1,18 @@
 /* tslint:disable */
 /* eslint-disable */
+import { NgModule, ModuleWithProviders, SkipSelf, Optional } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
 import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
+
+import { AddressAutoCompleteService } from './services/address-auto-complete.service';
+import { ApplicantService } from './services/applicant.service';
+import { ApplicationService } from './services/application.service';
+import { ConfigurationService } from './services/configuration.service';
+import { OrgService } from './services/org.service';
+import { OrgRegistrationService } from './services/org-registration.service';
+import { OrgReportService } from './services/org-report.service';
+import { OrgUserService } from './services/org-user.service';
+import { UserProfileService } from './services/user-profile.service';
 
 /**
  * Module that provides all services and configuration.
@@ -12,6 +22,15 @@ import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
   exports: [],
   declarations: [],
   providers: [
+    AddressAutoCompleteService,
+    ApplicantService,
+    ApplicationService,
+    ConfigurationService,
+    OrgService,
+    OrgRegistrationService,
+    OrgReportService,
+    OrgUserService,
+    UserProfileService,
     ApiConfiguration
   ],
 })

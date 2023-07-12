@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LandingComponent } from './landing.component';
-import { OrgRegistrationRoutes } from './modules/org-registration-portal/org-registration-routing.module';
+import { LicenceRoutes } from './modules/licence-portal/licence-routing.module';
 import { AccessDeniedComponent } from './shared/components/access-denied.component';
 
 export class AppRoutes {
-	public static LICENCE_APPLICATION = OrgRegistrationRoutes.MODULE_PATH;
+	public static LICENCE_APPLICATION = LicenceRoutes.MODULE_PATH;
 	public static LANDING = '';
 	public static ACCESS_DENIED = 'access-denied';
 	public static INVITATION_DENIED = 'invitation-denied';
@@ -22,10 +22,7 @@ const routes: Routes = [
 	},
 	{
 		path: AppRoutes.LICENCE_APPLICATION,
-		loadChildren: () =>
-			import('./modules/licence-portal/licence-portal.module').then(
-				(m) => m.LicencePortalModule
-			),
+		loadChildren: () => import('./modules/licence-portal/licence-portal.module').then((m) => m.LicencePortalModule),
 		data: { title: 'Licence Application' },
 	},
 	{

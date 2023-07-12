@@ -30,10 +30,6 @@ export class AuthTokenInterceptor implements HttpInterceptor {
 
 		const header = 'Bearer ' + token;
 		let headers = req.headers.set('Authorization', header);
-		if (this.authUserService.bceidUserInfoProfile?.orgId) {
-			headers = req.headers.set('organization', this.authUserService.bceidUserInfoProfile?.orgId);
-		}
-
 		req = req.clone({ headers });
 
 		return next.handle(req).pipe(catchError((err) => this.errorHandler.handleError(err)));

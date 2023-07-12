@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { IdentityProviderTypeCode } from 'src/app/api/models';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { UtilService } from 'src/app/core/services/util.service';
@@ -91,41 +90,19 @@ export class HeaderComponent implements OnInit {
 	}
 
 	private getUserInfo(): void {
-		const loginType = this.authUserService.loginType;
-
-		if (loginType == IdentityProviderTypeCode.BcServicesCard) {
-			console.debug(
-				'BcServicesCard bcscUserInfoProfile',
-				this.authUserService.bcscUserInfoProfile,
-				'bcscUserWhoamiProfile',
-				this.authUserService.bcscUserWhoamiProfile
-			);
-
-			let name = this.authUserService.bcscUserInfoProfile?.displayName;
-			if (!name) {
-				name = this.utilService.getFullName(
-					this.authUserService.bcscUserWhoamiProfile?.firstName,
-					this.authUserService.bcscUserWhoamiProfile?.lastName
-				);
-			}
-			this.loggedInUserDisplay = name ?? 'User';
-			return;
-		}
-
 		console.debug(
-			'BCeID bceidUserInfoProfile',
-			this.authUserService.bceidUserInfoProfile,
-			'loggedInUserTokenData',
-			this.authProcessService.loggedInUserTokenData
+			'BcServicesCard bcscUserInfoProfile',
+			this.authUserService.bcscUserInfoProfile,
+			'bcscUserWhoamiProfile',
+			this.authUserService.bcscUserWhoamiProfile
 		);
 
-		const userData = this.authUserService.bceidUserInfoProfile;
-		let name = '';
-		if (userData) {
-			name = this.utilService.getFullName(userData.firstName, userData.lastName);
-		}
+		let name = this.authUserService.bcscUserInfoProfile?.displayName;
 		if (!name) {
-			name = this.authProcessService.loggedInUserTokenData.display_name;
+			name = this.utilService.getFullName(
+				this.authUserService.bcscUserWhoamiProfile?.firstName,
+				this.authUserService.bcscUserWhoamiProfile?.lastName
+			);
 		}
 		this.loggedInUserDisplay = name ?? 'User';
 	}

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { LicenceRoutes } from './modules/licence-portal/licence-routing.module';
 
 @Component({
 	selector: 'app-landing',
