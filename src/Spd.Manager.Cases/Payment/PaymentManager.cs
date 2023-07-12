@@ -1,5 +1,7 @@
+using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
+using Spd.Resource.Applicants.Payment;
 using Spd.Resource.Organizations.Config;
 using Spd.Utilities.Payment;
 using System.Text;
@@ -14,12 +16,20 @@ namespace Spd.Manager.Cases.Payment
         private readonly IPaymentService _paymentService;
         private readonly IConfigRepository _configRepository;
         private readonly IDistributedCache _cache;
+        private readonly IPaymentRepository _paymentRepository;
+        private readonly IMapper _mapper;
 
-        public PaymentManager(IPaymentService paymentService, IConfigRepository configRepository, IDistributedCache cache)
+        public PaymentManager(IPaymentService paymentService, 
+            IConfigRepository configRepository, 
+            IDistributedCache cache, 
+            IPaymentRepository paymentRepository,
+            IMapper mapper)
         {
             _paymentService = paymentService;
             _configRepository = configRepository;
             _cache = cache;
+            _paymentRepository = paymentRepository;
+            _mapper = mapper;
         }
 
         public async Task<PaymentLinkResponse> Handle(PaymentLinkCreateCommand command, CancellationToken ct)
@@ -46,8 +56,8 @@ namespace Spd.Manager.Cases.Payment
                 _cache.Set("pbcRefNumber", Encoding.UTF8.GetBytes(pbcRef), new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = new TimeSpan(10, 0, 0) });
             }
             var costBytes = _cache.Get("serviceCost");
-            string cost = refBytes != null ? Encoding.Default.GetString(costBytes) : null;
-            if (pbcRef == null)
+            string cost = costBytes != null ? Encoding.Default.GetString(costBytes) : null;
+            if (cost == null)
             {
                 var config = await _configRepository.Query(
                     new ConfigQuery(IConfigRepository.PAYBCS_SERVICECOST_KEY, IConfigRepository.PAYBC_GROUP),
@@ -81,7 +91,9 @@ namespace Spd.Manager.Cases.Payment
 
         public async Task<PaymentResponse> Handle(PaymentCreateCommand command, CancellationToken ct)
         {
-            return null;
+            var cmd = _mapper.Map<CreatePaymentCmd>(command.PaybcPaymentResult);
+            var resp = await _paymentRepository.ManageAsync(cmd, ct);
+            return _mapper.Map<PaymentResponse>(resp);
         }
     }
 }

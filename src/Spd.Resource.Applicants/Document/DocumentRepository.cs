@@ -6,14 +6,14 @@ using Spd.Utilities.FileStorage;
 using Spd.Utilities.TempFileStorage;
 
 namespace Spd.Resource.Applicants.Document;
-internal class DocumentRepository : IDocumentRepository
+internal class PaymentRepository : IDocumentRepository
 {
     private readonly DynamicsContext _context;
     private readonly IMapper _mapper;
     private readonly IFileStorageService _fileStorageService;
     private readonly ITempFileStorageService _tempFileService;
 
-    public DocumentRepository(IDynamicsContextFactory ctx,
+    public PaymentRepository(IDynamicsContextFactory ctx,
         IMapper mapper,
         IFileStorageService fileStorageService,
         ITempFileStorageService tempFileService)

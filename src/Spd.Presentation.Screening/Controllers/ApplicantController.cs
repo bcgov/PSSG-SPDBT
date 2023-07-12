@@ -2,7 +2,6 @@ using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Dynamics.CRM;
 using Spd.Manager.Cases.Application;
 using Spd.Manager.Cases.Payment;
 using Spd.Presentation.Screening.Configurations;
@@ -14,6 +13,7 @@ using Spd.Utilities.Shared.ManagerContract;
 using Spd.Utilities.Shared.Tools;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
+using System.Globalization;
 using System.Net;
 using System.Security.Principal;
 
@@ -263,8 +263,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/applicants/screenings/payment-result")]
         [HttpGet]
-       // [Authorize(Policy = "OnlyBcsc")]
-        public async Task<ActionResult> ProcessPaymentResult([FromQuery][Required]string? trnApproved,
+        public async Task<ActionResult> ProcessPaymentResult([FromQuery][Required] string? trnApproved,
             [FromQuery] string? messageText,
             [FromQuery] string? trnOrderId,
             [FromQuery] string? trnAmount,
@@ -284,25 +283,56 @@ namespace Spd.Presentation.Screening.Controllers
         {
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
             string? successPath = _configuration.GetValue<string>("ApplicantPortalPaymentSuccessPath");
-            string? failPath = _configuration.GetValue<string>("ApplicantPortalPaymentSuccessPath");
-    
-            if(trnApproved == "1")
+            string? failPath = _configuration.GetValue<string>("ApplicantPortalPaymentFailPath");
+
+            if (trnApproved == "1")
             {
+                PaybcPaymentResult paybcPayment = new PaybcPaymentResult
+                {
+                    Success = true,
+                    MessageText = messageText,
+                    TransAmount = Decimal.Parse(trnAmount),
+                    TransNumber = trnNumber,
+                    CardType = cardType,
+                    PaymentAuthCode = paymentAuthCode,
+                    PaymentMethod = paymentMethod.Equals("CC", StringComparison.InvariantCultureIgnoreCase) ? PaymentMethodCode.CreditCard : PaymentMethodCode.CreditCard,
+                    TransOrderId= trnOrderId,
+                    TransDate=DateTimeOffset.ParseExact(trnDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)
+                };
+                await _mediator.Send(new PaymentCreateCommand(paybcPayment));
                 return Redirect($"{hostUrl}{successPath}");
             }
-                
+            else
+            {
+                if (messageText.Equals("Declined", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    return Redirect($"{hostUrl}{failPath}");
+                }
+                else
+                {
+                    return Redirect($"{hostUrl}{failPath}");//should change to error page.
+                }
+            }
+        }
 
-            return Redirect($"{hostUrl}{failPath}");
-            //return new PaymentResponse
-            //{
-            //    ApplicationId = Guid.NewGuid(),
-            //    PaidSuccess = true,
-            //    Message = "Approved",
-            //    TransDate = DateTime.Now.Date.ToString("yyyy-MM-dd"),
-            //    TransNumber = "12345",
-            //    TransOrderId = "45678",
-            //    TransAmount=30.00M,
-            //};
+        /// <summary>
+        /// Get the payment result for application and payment
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/applicants/screenings/{applicationId}/payment-results/{paymentId}")]
+        [HttpGet]
+        public async Task<PaymentResponse> GetPaymentResult([FromRoute] Guid? paymentId)
+        {
+            return new PaymentResponse
+            {
+                ApplicationId = Guid.NewGuid(),
+                PaidSuccess = true,
+                Message = "Approved",
+                TransDate = DateTime.Now.Date.ToString("yyyy-MM-dd"),
+                TransNumber = "12345",
+                TransOrderId = "45678",
+                TransAmount = 30.00M,
+            };
         }
         #endregion
     }

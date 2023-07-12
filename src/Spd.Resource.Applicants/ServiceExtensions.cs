@@ -13,7 +13,7 @@ namespace Spd.Resource.Applicants
         {
             configurationServices.Services.AddTransient<IApplicationRepository, ApplicationRepository>();
             configurationServices.Services.AddTransient<IApplicationInviteRepository, ApplicationInviteRepository>();
-            configurationServices.Services.AddTransient<IDocumentRepository, DocumentRepository>();
+            configurationServices.Services.AddTransient<IDocumentRepository, PaymentRepository>();
             configurationServices.Services.AddTransient<IIncidentRepository, IncidentRepository>();
         }
     }

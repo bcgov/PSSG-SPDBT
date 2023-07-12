@@ -35,14 +35,22 @@ namespace Spd.Manager.Cases.Payment
     public record PaymentCreateCommand(PaybcPaymentResult PaybcPaymentResult) : IRequest<PaymentResponse>;
     public record PaybcPaymentResult
     {
-        public string PaybcPaymentResultStr { get; set; }
+        public bool Success { get; set; }
+        public string MessageText { get; set; }
+        public string TransNumber { get; set; }
+        public string TransOrderId { get; set; }
+        public DateTimeOffset TransDate { get; set; }
+        public decimal TransAmount { get; set; }
+        public PaymentMethodCode PaymentMethod { get; set; }
+        public string CardType { get; set; }
+        public string PaymentAuthCode { get; set; }
     }
     public record PaymentResponse
     {
         public Guid ApplicationId { get; set; }
+        public string CaseId { get; set; }
         public bool PaidSuccess { get; set; }
         public string Message { get; set; }
-        public string TransNumber { get; set; }
         public string TransOrderId { get; set; }
         public string TransDate { get; set; }
         public decimal TransAmount { get; set; }
