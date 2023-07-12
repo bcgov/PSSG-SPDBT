@@ -21,4 +21,3 @@ bld/
 .vs/
 
 src/Spd.Presentation.Screening/key-*.xml
-/src/Spd.Presentation.Licensing/ClientApp/.angular
