@@ -121,7 +121,8 @@ export interface AliasCreateRequest {
 					<div class="col-xl-3 col-lg-6 col-md-12">
 						<mat-form-field>
 							<mat-label>BC Drivers Licence <span class="optional-label">(optional)</span></mat-label>
-							<input matInput formControlName="driversLicense" />
+							<input matInput formControlName="driversLicense" mask="00000009" />
+							<mat-error *ngIf="form.get('driversLicense')?.hasError('mask')"> This must be 7 or 8 digits </mat-error>
 						</mat-form-field>
 					</div>
 					<div class="col-xl-3 col-lg-6 col-md-12">

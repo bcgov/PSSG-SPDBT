@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
@@ -69,51 +69,39 @@ import {
 				</div>
 			</div>
 
-			<h4 class="subheading fw-normal d-flex mt-2">
+			<h3 class="fw-semibold d-flex mt-2" style="color: var(--color-primary);">
 				{{ application.orgName }}
 				<mat-chip-listbox aria-label="Status" class="ms-4">
 					<mat-chip-option [selectable]="false" [ngClass]="applicationPortalStatusClass">
 						{{ application.status | options : 'ApplicationPortalStatusTypes' }}
 					</mat-chip-option>
 				</mat-chip-listbox>
-			</h4>
+			</h3>
+
+			<div class="row mt-2 mb-4">
+				<div class="col-md-11 col-sm-12">
+					<section class="px-4 py-2 ">
+						<div class="row mt-2">
+							<div class="col-lg-3 col-md-4">
+								<small class="d-block text-muted">Case ID</small>
+								<strong> {{ application.applicationNumber }} </strong>
+							</div>
+							<div class="col-lg-3 col-md-4">
+								<small class="d-block text-muted mt-2 mt-md-0">Submitted On</small>
+								<strong> {{ application.createdOn | date : constants.date.dateFormat : 'UTC' }} </strong>
+							</div>
+							<div class="col-lg-3 col-md-4">
+								<small class="d-block text-muted">Paid By</small>
+								<strong> {{ application.payeeType }}</strong>
+							</div>
+						</div>
+					</section>
+				</div>
+			</div>
 		</ng-container>
 
-		<div class="row">
-			<div class="col-12">
-				<mat-table [dataSource]="dataSourceAppl">
-					<ng-container matColumnDef="applicationNumber">
-						<mat-header-cell *matHeaderCellDef>Case ID</mat-header-cell>
-						<mat-cell *matCellDef="let application">
-							<span class="mobile-label">Case ID:</span>
-							{{ application.applicationNumber }}
-						</mat-cell>
-					</ng-container>
-
-					<ng-container matColumnDef="createdOn">
-						<mat-header-cell *matHeaderCellDef>Submitted On</mat-header-cell>
-						<mat-cell *matCellDef="let application">
-							<span class="mobile-label">Submitted On:</span>
-							{{ application.createdOn | date : constants.date.dateFormat : 'UTC' }}
-						</mat-cell>
-					</ng-container>
-
-					<ng-container matColumnDef="payeeType">
-						<mat-header-cell *matHeaderCellDef>Paid By</mat-header-cell>
-						<mat-cell *matCellDef="let application">
-							<span class="mobile-label">Paid By:</span>
-							{{ application.payeeType }}
-						</mat-cell>
-					</ng-container>
-
-					<mat-header-row *matHeaderRowDef="columnsAppl; sticky: true"></mat-header-row>
-					<mat-row *matRowDef="let row; columns: columnsAppl"></mat-row>
-				</mat-table>
-			</div>
-		</div>
-
 		<ng-container *ngIf="fingerprintsAlert || statutoryDeclarationAlert">
-			<h4 class="subheading fw-normal mt-4">Downloadable Documents</h4>
+			<h4 class="subheading fw-normal mb-4">Downloadable Documents</h4>
 			<div class="row">
 				<div class="col-xl-4 col-lg-6 col-md-6 col-sm-12" *ngIf="fingerprintsAlert">
 					<button
@@ -141,7 +129,7 @@ import {
 		</ng-container>
 
 		<ng-container *ngIf="opportunityToRespondAlert || requestForAdditionalInfoAlert">
-			<h4 class="subheading fw-normal mt-4">Upload Document</h4>
+			<h4 class="subheading fw-normal mb-4">Upload Document</h4>
 			<div class="row">
 				<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
 					<button
@@ -158,7 +146,7 @@ import {
 		</ng-container>
 
 		<ng-container *ngIf="documentHistoryExists">
-			<h4 class="subheading fw-normal mt-4">Document Upload History</h4>
+			<h4 class="subheading fw-normal mb-4">Document Upload History</h4>
 			<div class="row">
 				<div class="col-12">
 					<mat-table [dataSource]="dataSourceHistory">
@@ -205,7 +193,7 @@ import {
 		`,
 	],
 })
-export class SecurityScreeningDetailComponent {
+export class SecurityScreeningDetailComponent implements OnInit, AfterViewInit {
 	applicantName = '';
 	applicationPortalStatusClass = '';
 	documentHistoryExists = false;
@@ -213,9 +201,6 @@ export class SecurityScreeningDetailComponent {
 
 	constants = SPD_CONSTANTS;
 	fileTemplateTypeCodes = FileTemplateTypeCode;
-	dataSourceAppl: MatTableDataSource<ApplicantApplicationResponse> =
-		new MatTableDataSource<ApplicantApplicationResponse>([]);
-	columnsAppl: string[] = ['applicationNumber', 'createdOn', 'payeeType'];
 
 	dataSourceHistory: MatTableDataSource<ApplicantApplicationFileResponse> =
 		new MatTableDataSource<ApplicantApplicationFileResponse>([]);
@@ -242,6 +227,23 @@ export class SecurityScreeningDetailComponent {
 			this.loadList(applicationData);
 		} else {
 			this.router.navigate([SecurityScreeningRoutes.path(SecurityScreeningRoutes.CRC_LIST)]);
+		}
+	}
+
+	ngAfterViewInit() {
+		this.scrollToTop();
+	}
+
+	scrollToTop(): void {
+		const headerElement = document.getElementsByClassName('app-header').item(0);
+		if (headerElement) {
+			setTimeout(() => {
+				headerElement.scrollIntoView({
+					block: 'start',
+					inline: 'nearest',
+					behavior: 'smooth',
+				});
+			}, 250);
 		}
 	}
 
@@ -316,9 +318,6 @@ export class SecurityScreeningDetailComponent {
 					break;
 			}
 		}
-
-		this.dataSourceAppl = new MatTableDataSource<ApplicantApplicationResponse>([]);
-		this.dataSourceAppl.data = [this.application!];
 
 		this.loadDocumentHistory();
 	}

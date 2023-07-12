@@ -203,21 +203,24 @@ export const ExpiringChecksFilterMap: Record<keyof ExpiringChecksFilter, string>
 			}
 
 			.mat-column-action1 {
-				min-width: 220px;
-				padding-right: 4px !important;
-				padding-left: 4px !important;
+				min-width: 200px;
+				.table-button {
+					min-width: 180px;
+				}
 			}
 
 			.mat-column-action2 {
-				min-width: 160px;
-				padding-right: 4px !important;
-				padding-left: 4px !important;
+				min-width: 200px;
+				.table-button {
+					min-width: 180px;
+				}
 			}
 
 			.mat-column-action3 {
-				min-width: 160px;
-				padding-right: 4px !important;
-				padding-left: 4px !important;
+				min-width: 200px;
+				.table-button {
+					min-width: 180px;
+				}
 			}
 		`,
 	],

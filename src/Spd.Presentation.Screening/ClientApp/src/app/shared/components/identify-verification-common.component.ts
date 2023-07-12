@@ -183,15 +183,17 @@ export interface IdentityVerificationResponse extends ApplicationResponse {
 	styles: [
 		`
 			.mat-column-action1 {
-				min-width: 150px;
-				padding-right: 4px !important;
-				padding-left: 4px !important;
+				min-width: 170px;
+				.table-button {
+					min-width: 150px;
+				}
 			}
 
 			.mat-column-action2 {
-				min-width: 150px;
-				padding-right: 4px !important;
-				padding-left: 4px !important;
+				min-width: 170px;
+				.table-button {
+					min-width: 150px;
+				}
 			}
 		`,
 	],

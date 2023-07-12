@@ -197,14 +197,13 @@ export interface PaymentResponse extends ApplicationPaymentResponse {
 		`
 			.mat-column-status {
 				min-width: 110px;
-				padding-right: 4px !important;
-				padding-left: 4px !important;
 			}
 
 			.mat-column-action1 {
-				min-width: 180px;
-				padding-right: 4px !important;
-				padding-left: 4px !important;
+				min-width: 170px;
+				.table-button {
+					min-width: 150px;
+				}
 			}
 		`,
 	],
