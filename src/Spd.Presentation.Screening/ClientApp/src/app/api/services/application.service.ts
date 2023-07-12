@@ -558,9 +558,10 @@ export class ApplicationService extends BaseService {
 'middleName2'?: string | null;
 'surname'?: string | null;
 }>;
-'OriginTypeCode'?: string;
+'originTypeCode'?: string;
 'payeeType'?: string;
-'screeningTypeCode'?: string;
+'screeningType'?: string;
+'serviceType'?: string;
 };
 }
   },
@@ -642,9 +643,10 @@ export class ApplicationService extends BaseService {
 'middleName2'?: string | null;
 'surname'?: string | null;
 }>;
-'OriginTypeCode'?: string;
+'originTypeCode'?: string;
 'payeeType'?: string;
-'screeningTypeCode'?: string;
+'screeningType'?: string;
+'serviceType'?: string;
 };
 }
   },

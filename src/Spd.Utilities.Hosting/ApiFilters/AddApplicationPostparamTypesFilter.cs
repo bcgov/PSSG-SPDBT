@@ -274,7 +274,7 @@ namespace Rsvp.Cms.Api.Filters
                                             }
                                         },
                                         {
-                                            "OriginTypeCode",
+                                            "originTypeCode",
                                             new OpenApiSchema
                                             {
                                                 Type = "string",
@@ -288,7 +288,14 @@ namespace Rsvp.Cms.Api.Filters
                                             }
                                         },
                                         {
-                                            "screeningTypeCode",
+                                            "screeningType",
+                                            new OpenApiSchema
+                                            {
+                                                Type = "string",
+                                            }
+                                        },
+                                        {
+                                            "serviceType",
                                             new OpenApiSchema
                                             {
                                                 Type = "string",
