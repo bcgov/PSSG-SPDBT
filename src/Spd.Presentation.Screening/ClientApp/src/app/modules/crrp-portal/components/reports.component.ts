@@ -93,9 +93,10 @@ import { UtilService } from 'src/app/core/services/util.service';
 			.mat-column-action1 {
 				text-align: right;
 				justify-content: flex-end;
-				min-width: 140px;
-				padding-right: 4px !important;
-				padding-left: 4px !important;
+				min-width: 160px;
+				.table-button {
+					min-width: 140px;
+				}
 			}
 		`,
 	],

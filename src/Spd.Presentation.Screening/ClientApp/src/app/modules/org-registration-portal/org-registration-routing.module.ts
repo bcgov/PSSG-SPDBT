@@ -5,6 +5,7 @@ import { RegistrationStatusComponent } from './registration-status.component';
 
 export class OrgRegistrationRoutes {
 	public static ORG_REGISTRATION = 'org-registration';
+	public static INVITATION = 'registration';
 	public static MODULE_PATH = OrgRegistrationRoutes.ORG_REGISTRATION;
 
 	public static path(route: string | null = null): string {
@@ -18,7 +19,7 @@ const routes: Routes = [
 		component: OrgRegistrationComponent,
 	},
 	{
-		path: 'registration/:id',
+		path: `${OrgRegistrationRoutes.INVITATION}/:id`,
 		component: RegistrationStatusComponent,
 	},
 ];

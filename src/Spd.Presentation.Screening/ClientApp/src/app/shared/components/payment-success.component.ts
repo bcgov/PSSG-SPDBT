@@ -50,15 +50,15 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 		<div class="row text-center mb-4">
 			<div class="offset-xl-3 col-xl-2 offset-lg-2  col-lg-3 mt-4">
 				<small class="d-block"> Case ID </small>
-				<div class="text">{{ data.caseID }}</div>
+				<div class="text">{{ caseID }}</div>
 			</div>
 			<div class=" col-xl-2 col-lg-3 mt-4">
 				<small class="d-block"> Date & Time of Transaction </small>
-				<div class="text">{{ data.transactionOn | date : appConstants.date.formalDateTimeFormat }}</div>
+				<div class="text">{{ transactionOn | date : appConstants.date.formalDateTimeFormat }}</div>
 			</div>
 			<div class=" col-xl-2 col-lg-3 mt-4">
 				<small class="d-block">Invoice/Order Number</small>
-				<div class="text">{{ data.invoiceNo }}</div>
+				<div class="text">{{ invoiceNo }}</div>
 			</div>
 		</div>
 
@@ -97,13 +97,10 @@ export class PaymentSuccessComponent {
 	appConstants = SPD_CONSTANTS;
 
 	@Input() backRoute = '';
+	@Input() caseID = '';
+	@Input() transactionOn = '';
+	@Input() invoiceNo = '';
 	@Input() isApplicationReceived = false;
-
-	data = {
-		caseID: 'CAS-TEST-H7V9J7965',
-		transactionOn: '2023-07-05T14:38:13+00:00',
-		invoiceNo: '333444',
-	};
 
 	constructor(private router: Router) {}
 

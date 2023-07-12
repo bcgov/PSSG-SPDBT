@@ -166,7 +166,6 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 						<ng-container matColumnDef="action1">
 							<mat-header-cell *matHeaderCellDef></mat-header-cell>
 							<mat-cell *matCellDef="let application">
-								<span class="mobile-label"></span>
 								<button
 									mat-flat-button
 									(click)="onPayNow(application)"
@@ -177,7 +176,6 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 								>
 									<mat-icon>send</mat-icon>Pay Now
 								</button>
-
 								<button
 									mat-flat-button
 									(click)="onVerifyApplicant(application)"
@@ -194,7 +192,6 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 						<ng-container matColumnDef="delegates">
 							<mat-header-cell *matHeaderCellDef></mat-header-cell>
 							<mat-cell *matCellDef="let application">
-								<span class="mobile-label"></span>
 								<button
 									mat-flat-button
 									(click)="onManageDelegates(application)"
@@ -228,20 +225,20 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 		`
 			.mat-column-status {
 				min-width: 210px;
-				padding-right: 4px !important;
-				padding-left: 4px !important;
 			}
 
 			.mat-column-action1 {
 				min-width: 210px;
-				padding-right: 4px !important;
-				padding-left: 4px !important;
+				.table-button {
+					min-width: 190px;
+				}
 			}
 
 			.mat-column-delegates {
 				min-width: 230px;
-				padding-right: 4px !important;
-				padding-left: 4px !important;
+				.table-button {
+					min-width: 220px;
+				}
 			}
 		`,
 	],

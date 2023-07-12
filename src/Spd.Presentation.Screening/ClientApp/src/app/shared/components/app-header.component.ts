@@ -8,12 +8,12 @@ import { UtilService } from 'src/app/core/services/util.service';
 @Component({
 	selector: 'app-header',
 	template: `
-		<mat-toolbar color="primary" class="header">
+		<mat-toolbar color="primary" class="app-header">
 			<span>
 				<img src="assets/gov_bc_logo_blue.png" alt="Government of BC Logo" class="gov-bc-logo" />
 			</span>
-			<mat-divider vertical class="header-divider mx-3"></mat-divider>
-			<div class="header-text pl-3">{{ title }}</div>
+			<mat-divider vertical class="app-header-divider mx-3"></mat-divider>
+			<div class="app-header-text pl-3">{{ title }}</div>
 			<span style="flex: 1 1 auto;"></span>
 			<div *ngIf="loggedInUserDisplay">
 				<mat-icon matTooltip="Logout" class="logout-button me-2" (click)="onLogout()">logout</mat-icon>
@@ -33,19 +33,19 @@ import { UtilService } from 'src/app/core/services/util.service';
 				cursor: pointer;
 			}
 
-			.header {
+			.app-header {
 				border-bottom: 2px solid var(--color-yellow);
 				box-shadow: 0px 5px 10px 0px rgb(169 169 169);
 			}
 
-			.header-text {
+			.app-header-text {
 				white-space: normal;
 				font-size: 1.3rem;
 				cursor: pointer;
 				line-height: 20px;
 			}
 
-			.header-divider {
+			.app-header-divider {
 				height: 70%;
 				border-right-color: gray;
 			}
