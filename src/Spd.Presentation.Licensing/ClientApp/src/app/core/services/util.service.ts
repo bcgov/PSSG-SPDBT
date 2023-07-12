@@ -1,7 +1,7 @@
 import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import jwt_decode from 'jwt-decode';
-import { ApplicationPortalStatusCode, PaginationResponse } from 'src/app/api/models';
+import { PaginationResponse } from 'src/app/api/models';
 import * as CodeDescTypes from 'src/app/core/code-types/code-desc-types.models';
 import { SelectOptions } from '../code-types/model-desc.models';
 import { SPD_CONSTANTS } from '../constants/constants';
@@ -126,35 +126,6 @@ export class UtilService {
 
 	//------------------------------------
 	// Misc
-	getApplicationPortalStatusClass(code: string | null | undefined): string {
-		if (!code) {
-			return '';
-		}
-
-		let currClass = 'mat-chip-grey';
-
-		switch (code) {
-			case ApplicationPortalStatusCode.InProgress:
-				currClass = 'mat-chip-green';
-				break;
-			case ApplicationPortalStatusCode.VerifyIdentity:
-			case ApplicationPortalStatusCode.AwaitingPayment:
-			case ApplicationPortalStatusCode.AwaitingThirdParty:
-			case ApplicationPortalStatusCode.AwaitingApplicant:
-				currClass = 'mat-chip-yellow';
-				break;
-			case ApplicationPortalStatusCode.RiskFound:
-				currClass = 'mat-chip-red';
-				break;
-			case ApplicationPortalStatusCode.Draft:
-			case ApplicationPortalStatusCode.Incomplete:
-			case ApplicationPortalStatusCode.UnderAssessment:
-				currClass = 'mat-chip-blue';
-				break;
-		}
-
-		return currClass;
-	}
 
 	getDateString(date: Date): string {
 		let d = new Date(date),

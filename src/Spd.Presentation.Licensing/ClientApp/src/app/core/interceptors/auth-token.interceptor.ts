@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { OAuthResourceServerErrorHandler } from 'angular-oauth2-oidc';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { AuthUserService } from '../services/auth-user.service';
 import { AuthenticationService } from '../services/authentication.service';
 
 const includedURLs = [/^\/api\/.+$/];
@@ -11,7 +10,6 @@ const includedURLs = [/^\/api\/.+$/];
 @Injectable()
 export class AuthTokenInterceptor implements HttpInterceptor {
 	constructor(
-		private authUserService: AuthUserService,
 		private authenticationService: AuthenticationService,
 		private errorHandler: OAuthResourceServerErrorHandler
 	) {}

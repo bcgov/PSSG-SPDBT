@@ -11,14 +11,12 @@ import { AddressModalComponent } from './components/address-modal.component';
 import { AlertComponent } from './components/alert.component';
 import { FooterComponent } from './components/app-footer.component';
 import { HeaderComponent } from './components/app-header.component';
-import { ApplicationsBannerComponent } from './components/applications-banner.component';
 import { BaseFilterComponent } from './components/base-filter.component';
 import { CaptchaV2Component } from './components/captcha-v2.component';
 import { DialogComponent } from './components/dialog.component';
 import { DropdownOverlayComponent } from './components/dropdown-overlay.component';
 import { FileUploadComponent } from './components/file-upload.component';
 import { MonthPickerComponent } from './components/month-picker.component';
-import { OrgSelectionModalComponent } from './components/org-selection-modal.component';
 import { PaymentFailComponent } from './components/payment-fail.component';
 import { PaymentManualComponent } from './components/payment-manual.component';
 import { PaymentSuccessComponent } from './components/payment-success.component';
@@ -34,7 +32,6 @@ const SHARED_COMPONENTS = [
 	DialogComponent,
 	AddressAutocompleteComponent,
 	AddressModalComponent,
-	OrgSelectionModalComponent,
 	DropdownOverlayComponent,
 	BaseFilterComponent,
 	StepTitleComponent,
@@ -46,7 +43,6 @@ const SHARED_COMPONENTS = [
 	FileUploadComponent,
 	AccessDeniedComponent,
 	AlertComponent,
-	ApplicationsBannerComponent,
 	MonthPickerComponent,
 	PaymentSuccessComponent,
 	PaymentFailComponent,

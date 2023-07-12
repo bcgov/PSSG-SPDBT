@@ -28,7 +28,7 @@ export class AuthProcessService {
 	//----------------------------------------------------------
 	// * Licence Portal
 	// *
-	async tryInitializeCrc(): Promise<string | null> {
+	async tryInitializeLicencePortal(): Promise<string | null> {
 		//auth step 1 - user is not logged in, no state at all
 		//auth step 3 - angular loads again here, KC posts the token, oidc lib reads token and returns state
 		const authInfo = await this.authenticationService.tryLogin(LicenceRoutes.path());
@@ -53,7 +53,7 @@ export class AuthProcessService {
 	//----------------------------------------------------------
 	// * Licence Portal
 	// *
-	async initializeCrc(): Promise<string | null> {
+	async initializeLicencePortal(): Promise<string | null> {
 		const nextUrl = await this.authenticationService.login(LicenceRoutes.path());
 
 		if (nextUrl) {
