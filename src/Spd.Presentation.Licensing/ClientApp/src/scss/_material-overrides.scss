@@ -1,0 +1,282 @@
+
+
+button.mdc-button {
+  width: 100%;
+  letter-spacing: var(--mdc-typography-button-letter-spacing, 0.02em);
+
+  &.xlarge {
+    height: 60px;
+    font-size: 1rem;
+  }
+
+  &.large {
+    height: 46px;
+    font-size: 1rem;
+  }
+
+  &.medium {
+    height: 42px;
+    font-size: .9rem;
+  }
+}
+
+// STEPPER 
+.mat-stepper-horizontal, .mat-stepper-vertical {
+  background-color: var(--color-primary-lightest);
+}
+
+.mat-horizontal-content-container {
+  padding: 0 !important;
+}
+
+.mat-step-text-label {
+  white-space: normal;
+}
+
+.mat-step-label-selected .mat-step-text-label {
+  color: var(--color-yellow);
+  font-weight: bold;
+}
+
+.mat-step-header .mat-step-icon-selected {
+  background-color: var(--color-yellow);
+  color: #fff !important;
+}
+
+.mat-step-header .mat-step-icon-state-done,
+.mat-step-header .mat-step-icon-state-edit {
+  background-color: #155724 !important;
+  color: #fff !important;
+}
+
+.mat-step-header:active, .mat-step-header.cdk-program-focused, .mat-step-header.cdk-keyboard-focuses {
+  background-color: unset;// rgba(0, 0, 0, 0.04);
+}
+
+// CARD
+.mat-mdc-card-content {  
+  text-align: center;
+}
+
+// FORM FIELDS
+.wide-radio .mdc-form-field {
+  background-color: rgba(245, 245, 245);
+}
+
+.mdc-radio, .mdc-checkbox {
+  background-color: rgba(245, 245, 245);
+}
+
+.mdc-radio--disabled {
+  background-color: transparent;
+}
+
+.mdc-text-field--disabled.mdc-text-field--filled {
+  background-color: transparent;
+  color: var(--color-primary);
+}
+
+button.mat-green-button {
+  background-color: var(--color-green) !important; 
+  color: var(--color-white) !important;
+}
+
+.mat-mdc-radio-button.mat-primary .mdc-radio--disabled + label {
+  color: var(--color-primary);
+}
+
+.mdc-text-field--disabled .mdc-text-field__input {
+  color: rgba(0, 0, 0, 0.68);
+}
+
+.mat-mdc-form-field, .mat-mdc-radio-button, .mat-mdc-checkbox {  
+  width: 100%;
+}
+
+.mat-mdc-radio-button .mdc-form-field {
+  // padding: 0.5rem !important;
+  padding: 0.5rem 0.5rem 0.5rem 0 !important;
+}
+
+.mat-mdc-checkbox .mdc-form-field {
+  // padding: 0.5rem !important;
+  padding: 0.5rem 0.5rem 0.5rem 0 !important;
+}
+
+.mdc-form-field>label {
+  width: 100%;
+}
+
+// .mat-mdc-option {
+//   margin-bottom: 15px;
+// }
+.mat-mdc-form-field-icon-prefix > .mat-icon {
+  padding-top: 30px !important;
+}
+
+.mat-mdc-form-field-icon-suffix {
+  white-space: nowrap;
+}
+
+.mat-mdc-radio-group {
+  text-align: left;
+}
+
+.mdc-form-field {
+  width: 100%;
+}
+
+mat-label {  
+  color: var(--color-grey-dark);
+  font-weight: 500;
+}
+
+.mat-mdc-form-field-required-marker {
+  display: none;
+}
+
+// TABLE 
+// .mat-sort-header {
+//   .mat-sort-header-content {
+//     font-weight: 600;
+//   }
+
+//   .mat-sort-header-sorted {
+//     color: var(--color-green);
+//   }
+// }
+
+.mat-mdc-header-cell {
+  font-weight: 600;
+}
+
+.mat-cell-email {
+  overflow-wrap: anywhere;
+}
+
+.mat-mdc-highlight-row {
+  background-color: var(--color-grey-lightest);
+}
+
+.mat-mdc-row-clickable {
+  cursor: pointer;
+}
+
+.mat-mdc-row:hover {
+  background-color: var(--color-grey-lightest) !important;
+}
+
+
+.mobile-label {
+  display: none;
+}
+
+// DIALOG
+.mat-mdc-dialog-container .mdc-dialog__surface {
+  border: 2px solid var(--color-yellow);
+}
+
+.mat-mdc-dialog-actions {
+  padding: 0 8px 9px !important;
+}
+
+// OVERLAY
+.cdk-overlay-pane {
+  right: 0;
+}
+
+@media(max-width: 1199px) {
+  .mobile-label {
+    width: 110px;
+    display: inline-block;
+    margin-right: 4px;    
+    opacity: 1;
+    color: #6c757d!important;
+    font-size: .875em !important;
+  }
+
+  mat-cell, mat-header-cell, mat-footer-cell {    
+    letter-spacing: normal !important;
+    padding: 0 !important;
+    font-size: 1rem !important; 
+  }
+  
+  .mat-mdc-header-row {
+    display: none;
+  }
+  
+  .mdc-data-table__cell, .mdc-data-table__header-cell {
+     border-bottom-style: none !important; 
+  }
+
+  .mat-mdc-row { 
+    flex-direction: column;
+    align-items: start;
+    padding: 8px 24px;
+    border-bottom-width: 1px !important;
+    border-bottom-style: solid !important; 
+  }
+  
+  .mat-column-action1:empty, .mat-column-action2:empty {
+    /* hide column if empty on small screens */
+    display:none;
+  }
+}
+
+// NAVIGATION 
+.nav-link {
+  font-weight: 500;
+  border-radius: 0 !important;
+}
+
+// MAT CHIPS
+.mdc-evolution-chip__action:hover { // show as arrow on hover
+  cursor: default;
+}
+
+.mat-chip-green {
+  background-color: rgba(215, 228, 213, 1) !important;
+  .mdc-evolution-chip__text-label {
+    color: #23471F !important;
+  }
+}
+
+.mat-chip-yellow {
+  background-color: rgba(251, 227, 163, 1) !important;
+  .mdc-evolution-chip__text-label {
+    color: #56451B !important;
+  }
+}
+
+.mat-chip-blue {
+  background-color: rgba(211, 220, 229, 1) !important;
+  .mdc-evolution-chip__text-label {
+    color: #013365 !important;
+  }
+}
+
+.mat-chip-grey {
+  background-color: rgba(215, 215, 215, 1) !important;
+  .mdc-evolution-chip__text-label {
+    color: #333333 !important;
+  }
+}
+
+.mat-chip-red {
+  background-color: rgba(242, 222, 223, 1) !important;
+  .mdc-evolution-chip__text-label {
+    color: #910012 !important;
+  }
+}
+
+.mat-mdc-card-header-text {
+  width: 100%;
+  text-align: center;
+}
+
+// MAT CARD
+
+// MAT ERROR
+.mat-option-error {
+  font-size: .8em;
+}
