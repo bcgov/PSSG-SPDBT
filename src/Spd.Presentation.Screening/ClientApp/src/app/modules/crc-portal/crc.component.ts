@@ -8,6 +8,7 @@ import { distinctUntilChanged, Observable, tap } from 'rxjs';
 import {
 	ApplicantAppCreateRequest,
 	ApplicationCreateResponse,
+	BooleanTypeCode,
 	EmployeeInteractionTypeCode,
 	ServiceTypeCode,
 	ShareableClearanceItem,
@@ -40,17 +41,19 @@ export interface AppInviteOrgData extends ApplicantAppCreateRequest {
 	shareableCrcExists?: boolean | null;
 	shareableClearanceItem?: ShareableClearanceItem | null;
 	recaptcha?: string | null;
-	orgEmail?: null | string; // from AppInviteVerifyResponse
-	orgId?: string; // from AppInviteVerifyResponse
-	orgName?: null | string; // from AppInviteVerifyResponse
-	orgPhoneNumber?: null | string; // from AppInviteVerifyResponse
-	orgAddressLine1?: null | string; // from AppInviteVerifyResponse
-	orgAddressLine2?: null | string; // from AppInviteVerifyResponse
-	orgCity?: null | string; // from AppInviteVerifyResponse
-	orgCountry?: null | string; // from AppInviteVerifyResponse
-	orgPostalCode?: null | string; // from AppInviteVerifyResponse
-	orgProvince?: null | string; // from AppInviteVerifyResponse
-	worksWith?: EmployeeInteractionTypeCode; // from AppInviteVerifyResponse
+	orgEmail?: null | string; // from AppOrgResponse
+	orgId?: string; // from AppOrgResponse
+	orgName?: null | string; // from AppOrgResponse
+	orgPhoneNumber?: null | string; // from AppOrgResponse
+	orgAddressLine1?: null | string; // from AppOrgResponse
+	orgAddressLine2?: null | string; // from AppOrgResponse
+	orgCity?: null | string; // from AppOrgResponse
+	orgCountry?: null | string; // from AppOrgResponse
+	orgPostalCode?: null | string; // from AppOrgResponse
+	orgProvince?: null | string; // from AppOrgResponse
+	worksWith?: EmployeeInteractionTypeCode; // from AppOrgResponse
+	contractorsNeedVulnerableSectorScreening?: BooleanTypeCode; // from AppOrgResponse
+	licenseesNeedVulnerableSectorScreening?: BooleanTypeCode; // from AppOrgResponse
 }
 
 @Component({
