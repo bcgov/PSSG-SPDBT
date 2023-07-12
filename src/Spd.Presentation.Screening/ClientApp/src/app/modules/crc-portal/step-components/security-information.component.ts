@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { ScreeningTypeCode } from 'src/app/api/models';
+import { BooleanTypeCode, ScreeningTypeCode } from 'src/app/api/models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
@@ -60,7 +60,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../crc.component';
 							</mat-form-field>
 						</div>
 					</div>
-					<div class="row" *ngIf="facilityNameRequired">
+					<div class="row" *ngIf="facilityNameShow">
 						<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Company / Facility Name</mat-label>
@@ -77,6 +77,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../crc.component';
 	styles: [],
 })
 export class SecurityInformationComponent implements CrcFormStepComponent {
+	facilityNameShow = false;
 	facilityNameRequired = false;
 
 	private _orgData: AppInviteOrgData | null = null;
@@ -85,9 +86,22 @@ export class SecurityInformationComponent implements CrcFormStepComponent {
 		if (!data) return;
 
 		this._orgData = data;
-		this.facilityNameRequired = [ScreeningTypeCode.Contractor, ScreeningTypeCode.Licensee].includes(
-			data.screeningType!
-		);
+
+		if (data.screeningType) {
+			// If coming from Portal Invitation (screeningType is provided). If shown, always required.
+			this.facilityNameRequired = [ScreeningTypeCode.Contractor, ScreeningTypeCode.Licensee].includes(
+				data.screeningType!
+			);
+			this.facilityNameShow = this.facilityNameRequired;
+		} else {
+			// If coming from Access Code page, use these flags to determine if field is shown. If shown, always optional
+			this.facilityNameShow =
+				data.contractorsNeedVulnerableSectorScreening! == BooleanTypeCode.Yes ||
+				data.licenseesNeedVulnerableSectorScreening! == BooleanTypeCode.Yes
+					? true
+					: false;
+			this.facilityNameRequired = false;
+		}
 
 		this.form = this.formBuilder.group(
 			{

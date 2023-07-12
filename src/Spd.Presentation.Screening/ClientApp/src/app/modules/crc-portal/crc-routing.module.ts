@@ -26,7 +26,7 @@ const routes: Routes = [
 		component: CrcComponent,
 	},
 	{
-		path: 'invitation/:id',
+		path: `${CrcRoutes.INVITATION}/:id`,
 		component: InvitationCrcComponent,
 	},
 	{

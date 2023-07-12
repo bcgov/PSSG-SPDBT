@@ -57,6 +57,8 @@ namespace Spd.Manager.Cases.Application
         public string? OrgCountry { get; set; }
         public string? OrgPostalCode { get; set; }
         public string? OrgProvince { get; set; }
+        public BooleanTypeCode ContractorsNeedVulnerableSectorScreening { get; set; }
+        public BooleanTypeCode? LicenseesNeedVulnerableSectorScreening { get; set; }
         public EmployeeInteractionTypeCode? WorksWith { get; set; }
         public EmployeeOrganizationTypeCode? EmployeeOrganizationTypeCode { get; set; }
         public VolunteerOrganizationTypeCode? VolunteerOrganizationTypeCode { get; set; }

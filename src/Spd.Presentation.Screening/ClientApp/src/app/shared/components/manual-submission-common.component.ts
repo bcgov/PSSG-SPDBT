@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
 import { NgxMaskPipe } from 'ngx-mask';
-import { ApplicationCreateResponse, BooleanTypeCode, ScreeningTypeCode } from 'src/app/api/models';
+import { ApplicationCreateResponse, BooleanTypeCode, ScreeningTypeCode, ServiceTypeCode } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { ApplicationOriginTypeCode } from 'src/app/core/code-types/application-origin-type.model';
@@ -121,7 +121,8 @@ export interface AliasCreateRequest {
 					<div class="col-xl-3 col-lg-6 col-md-12">
 						<mat-form-field>
 							<mat-label>BC Drivers Licence <span class="optional-label">(optional)</span></mat-label>
-							<input matInput formControlName="driversLicense" />
+							<input matInput formControlName="driversLicense" mask="00000009" />
+							<mat-error *ngIf="form.get('driversLicense')?.hasError('mask')"> This must be 7 or 8 digits </mat-error>
 						</mat-form-field>
 					</div>
 					<div class="col-xl-3 col-lg-6 col-md-12">
@@ -144,12 +145,12 @@ export interface AliasCreateRequest {
 					<div class="col-xl-3 col-lg-6 col-md-12" *ngIf="showScreeningType">
 						<mat-form-field>
 							<mat-label>Application Type</mat-label>
-							<mat-select formControlName="screeningTypeCode">
+							<mat-select formControlName="screeningType">
 								<mat-option *ngFor="let scr of screeningTypes" [value]="scr.code">
 									{{ scr.desc }}
 								</mat-option>
 							</mat-select>
-							<mat-error *ngIf="form.get('screeningTypeCode')?.hasError('required')">This is required</mat-error>
+							<mat-error *ngIf="form.get('screeningType')?.hasError('required')">This is required</mat-error>
 						</mat-form-field>
 					</div>
 					<div class="col-xl-3 col-lg-6 col-md-12" *ngIf="isDisplayFacilityName">
@@ -386,6 +387,8 @@ export interface AliasCreateRequest {
 	],
 })
 export class ManualSubmissionCommonComponent implements OnInit {
+	serviceType: ServiceTypeCode | null = null;
+
 	@ViewChild(AddressAutocompleteComponent) addressAutocompleteComponent!: AddressAutocompleteComponent;
 	matcher = new FormErrorStateMatcher();
 	showScreeningType = false;
@@ -410,7 +413,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 			dateOfBirth: new FormControl(null, [Validators.required]),
 			birthPlace: new FormControl('', [FormControlValidators.required]),
 			jobTitle: new FormControl('', [FormControlValidators.required]),
-			screeningTypeCode: new FormControl('', [FormControlValidators.required]),
+			screeningType: new FormControl('', [FormControlValidators.required]),
 			contractedCompanyName: new FormControl(''),
 			previousNameFlag: new FormControl('', [FormControlValidators.required]),
 			addressSelected: new FormControl(false, [Validators.requiredTrue]),
@@ -427,10 +430,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 		},
 		{
 			validators: [
-				FormGroupValidators.conditionalRequiredValidator(
-					'screeningTypeCode',
-					(form) => this.showScreeningType ?? false
-				),
+				FormGroupValidators.conditionalRequiredValidator('screeningType', (form) => this.showScreeningType ?? false),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'attachments',
 					(form) => this.portal == PortalTypeCode.Crrp
@@ -440,7 +440,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 					(form) => form.get('oneLegalName')?.value != true
 				),
 				FormGroupValidators.conditionalRequiredValidator('contractedCompanyName', (form) =>
-					[ScreeningTypeCode.Contractor, ScreeningTypeCode.Licensee].includes(form.get('screeningTypeCode')?.value)
+					[ScreeningTypeCode.Contractor, ScreeningTypeCode.Licensee].includes(form.get('screeningType')?.value)
 				),
 			],
 		}
@@ -467,6 +467,8 @@ export class ManualSubmissionCommonComponent implements OnInit {
 			? orgProfile.contractorsNeedVulnerableSectorScreening == BooleanTypeCode.Yes ||
 			  orgProfile.licenseesNeedVulnerableSectorScreening == BooleanTypeCode.Yes
 			: false;
+
+		this.serviceType = orgProfile?.serviceTypes ? orgProfile?.serviceTypes[0] : null;
 
 		const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
 		if (!orgId) {
@@ -499,13 +501,14 @@ export class ManualSubmissionCommonComponent implements OnInit {
 				ApplicationService['apiOrgsOrgIdApplicationPost']
 			>[0]['body']['ApplicationCreateRequestJson'];
 
-			createRequest.originTypeCode = ApplicationOriginTypeCode.Portal;
+			createRequest.originTypeCode = ApplicationOriginTypeCode.OrganizationSubmitted;
+			createRequest.serviceType = this.serviceType;
 			createRequest.phoneNumber = createRequest.phoneNumber
 				? this.maskPipe.transform(createRequest.phoneNumber, SPD_CONSTANTS.phone.backendMask)
 				: '';
 			createRequest.haveVerifiedIdentity = createRequest.haveVerifiedIdentity == true ? true : false;
 			createRequest.contractedCompanyName = [ScreeningTypeCode.Contractor, ScreeningTypeCode.Licensee].includes(
-				createRequest.screeningTypeCode
+				createRequest.screeningType
 			)
 				? createRequest.contractedCompanyName
 				: '';
@@ -609,8 +612,8 @@ export class ManualSubmissionCommonComponent implements OnInit {
 		return this.form.get('previousNameFlag') as FormControl;
 	}
 
-	get screeningTypeCode(): FormControl {
-		return this.form.get('screeningTypeCode') as FormControl;
+	get screeningType(): FormControl {
+		return this.form.get('screeningType') as FormControl;
 	}
 
 	get moreThanOneAlias(): boolean {
@@ -622,7 +625,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 	}
 
 	get isDisplayFacilityName(): boolean {
-		return [ScreeningTypeCode.Contractor, ScreeningTypeCode.Licensee].includes(this.screeningTypeCode.value);
+		return [ScreeningTypeCode.Contractor, ScreeningTypeCode.Licensee].includes(this.screeningType.value);
 	}
 
 	private resetForm(): void {

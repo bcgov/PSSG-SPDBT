@@ -22,6 +22,7 @@ internal class Mappings : Profile
            .ForMember(d => d.OrgProvince, opt => opt.MapFrom(s => s.AddressProvince))
            .ForMember(d => d.OrgCountry, opt => opt.MapFrom(s => s.AddressCountry))
            .ForMember(d => d.OrgPostalCode, opt => opt.MapFrom(s => s.AddressPostalCode))
+           .ForMember(d => d.WorksWith, opt => opt.MapFrom(s => s.EmployeeInteractionType))
            .ForMember(d => d.GivenName, opt => opt.Ignore())
            .ForMember(d => d.Surname, opt => opt.Ignore())
            .ForMember(d => d.EmailAddress, opt => opt.Ignore())

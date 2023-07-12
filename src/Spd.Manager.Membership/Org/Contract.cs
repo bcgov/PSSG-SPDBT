@@ -34,6 +34,7 @@ namespace Spd.Manager.Membership.Org
         public string? OrganizationName { get; set; }
         public string? OrganizationLegalName { get; set; }
         public bool GenericUploadEnabled { get; set; } = false;
+        public EmployeeInteractionTypeCode? EmployeeInteractionType { get; set; }
         public EmployeeOrganizationTypeCode? EmployeeOrganizationTypeCode { get; set; }
         public VolunteerOrganizationTypeCode? VolunteerOrganizationTypeCode { get; set; }
         public IEnumerable<ServiceTypeCode> ServiceTypes { get; set; } = Array.Empty<ServiceTypeCode>();
