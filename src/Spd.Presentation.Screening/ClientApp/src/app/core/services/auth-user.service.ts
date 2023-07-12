@@ -36,37 +36,35 @@ export class AuthUserService {
 	//----------------------------------------------------------
 	// *
 	// *
-	setOrgProfile(bceidUserInfoProfile: UserInfo | null = null): void {
+	async setOrgProfile(bceidUserInfoProfile: UserInfo | null = null): Promise<boolean> {
 		console.debug('[AuthUserService] bceidUserInfoProfile', bceidUserInfoProfile);
 
 		if (!bceidUserInfoProfile) {
 			this.bceidUserInfoProfile = null;
 			this.isAllowedGenericUpload = false;
-			return;
+			return Promise.resolve(false);
 		}
 
 		this.bceidUserInfoProfile = bceidUserInfoProfile;
 		this.isAllowedGenericUpload = bceidUserInfoProfile.orgSettings?.genericUploadEnabled ?? false;
 
-		this.updateOrgProfile();
+		return this.updateOrgProfile();
 	}
 
 	//----------------------------------------------------------
 	// *
 	// *
-	updateOrgProfile(): void {
+	async updateOrgProfile(): Promise<boolean> {
 		if (!this.bceidUserInfoProfile) {
 			this.bceidUserOrgProfile = null;
-			return;
+			return Promise.resolve(false);
 		}
 
-		this.orgService
-			.apiOrgsOrgIdGet({ orgId: this.bceidUserInfoProfile.orgId! })
-			.pipe()
-			.subscribe((resp: OrgResponse) => {
-				this.bceidUserOrgProfile = resp;
-				console.debug('[AuthUserService] setOrgProfile', resp);
-			});
+		this.bceidUserOrgProfile = await lastValueFrom(
+			this.orgService.apiOrgsOrgIdGet({ orgId: this.bceidUserInfoProfile.orgId! })
+		);
+		console.debug('[AuthUserService] setOrgProfile', this.bceidUserOrgProfile);
+		return Promise.resolve(true);
 	}
 
 	//----------------------------------------------------------
@@ -99,9 +97,9 @@ export class AuthUserService {
 				} else {
 					if (uniqueUserInfoList.length > 1) {
 						const result = await this.orgSelectionAsync(uniqueUserInfoList);
-						this.setOrgProfile(result);
+						await this.setOrgProfile(result);
 					} else {
-						this.setOrgProfile(uniqueUserInfoList[0]);
+						await this.setOrgProfile(uniqueUserInfoList[0]);
 					}
 					return Promise.resolve(true);
 				}
