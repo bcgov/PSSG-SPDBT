@@ -71,7 +71,7 @@ internal partial class ApplicationRepository : IApplicationRepository
         if (identityCmd.Status == IdentityStatusCode.Verified)
         {
             var paid = app.statecode == DynamicsConstants.StateCode_Inactive ? true : false;
-            if (paid)
+            if (!paid)
             {
                 app.statuscode = (int?)ApplicationActiveStatus.PaymentPending;
                 app.statecode = DynamicsConstants.StateCode_Active;
