@@ -34,7 +34,7 @@ export class InvitationCrcComponent {
 
 	constructor(private route: ActivatedRoute, private router: Router, private applicantService: ApplicantService) {}
 
-	async ngOnInit(): Promise<void> {
+	ngOnInit(): void {
 		const id = this.route.snapshot.paramMap.get('id');
 
 		const invitationRequest: AppInviteVerifyRequest = { inviteEncryptedCode: id };

@@ -162,14 +162,16 @@ import { UserDialogData, UserEditModalComponent } from './user-edit-modal.compon
 
 			.mat-column-action1 {
 				min-width: 170px;
-				padding-right: 4px !important;
-				padding-left: 4px !important;
+				.table-button {
+					min-width: 150px;
+				}
 			}
 
 			.mat-column-action2 {
 				min-width: 170px;
-				padding-right: 4px !important;
-				padding-left: 4px !important;
+				.table-button {
+					min-width: 150px;
+				}
 			}
 		`,
 	],
