@@ -361,8 +361,8 @@ export class PaymentsComponent implements OnInit {
 						}
 					} else {
 						const numberOfAttempts = app.numberOfAttempts ?? 0;
-						app.isPayManual = numberOfAttempts >= 3;
-						app.isPayNow = numberOfAttempts < 3;
+						app.isPayManual = numberOfAttempts >= SPD_CONSTANTS.payment.maxNumberOfAttempts;
+						app.isPayNow = numberOfAttempts < SPD_CONSTANTS.payment.maxNumberOfAttempts;
 					}
 				});
 
