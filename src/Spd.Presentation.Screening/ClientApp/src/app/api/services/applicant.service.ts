@@ -667,13 +667,13 @@ export class ApplicantService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantsScreeningsPaymentResultGet$Response(params: {
-    trnApproved: string;
+  apiApplicantsScreeningsPaymentResultGet$Response(params?: {
+    trnApproved?: number;
     messageText?: string;
+    cardType?: string;
     trnOrderId?: string;
     trnAmount?: string;
     paymentMethod?: string;
-    cardType?: string;
     trnDate?: string;
     ref1?: string;
     ref2?: string;
@@ -694,10 +694,10 @@ export class ApplicantService extends BaseService {
     if (params) {
       rb.query('trnApproved', params.trnApproved, {});
       rb.query('messageText', params.messageText, {});
+      rb.query('cardType', params.cardType, {});
       rb.query('trnOrderId', params.trnOrderId, {});
       rb.query('trnAmount', params.trnAmount, {});
       rb.query('paymentMethod', params.paymentMethod, {});
-      rb.query('cardType', params.cardType, {});
       rb.query('trnDate', params.trnDate, {});
       rb.query('ref1', params.ref1, {});
       rb.query('ref2', params.ref2, {});
@@ -733,13 +733,13 @@ export class ApplicantService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantsScreeningsPaymentResultGet(params: {
-    trnApproved: string;
+  apiApplicantsScreeningsPaymentResultGet(params?: {
+    trnApproved?: number;
     messageText?: string;
+    cardType?: string;
     trnOrderId?: string;
     trnAmount?: string;
     paymentMethod?: string;
-    cardType?: string;
     trnDate?: string;
     ref1?: string;
     ref2?: string;

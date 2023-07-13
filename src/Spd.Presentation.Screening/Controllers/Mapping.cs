@@ -38,7 +38,7 @@ internal class Mappings : Profile
            .ForMember(d => d.MessageText, opt => opt.MapFrom(s => s.messageText))
            .ForMember(d => d.TransOrderId, opt => opt.MapFrom(s => s.trnOrderId))
            .ForMember(d => d.TransAmount, opt => opt.MapFrom(s => Decimal.Parse(s.trnAmount)))
-           .ForMember(d => d.TransDateTime, opt => opt.MapFrom(s => DateTimeOffset.UtcNow))/*opt.MapFrom(s => DateTimeOffset.ParseExact(s.trnDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)))*/
+           .ForMember(d => d.TransDateTime, opt => opt.MapFrom(s => DateTimeOffset.ParseExact(s.trnDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)))
            .ForMember(d => d.PaymentMethod, opt => opt.MapFrom(s => PaymentMethodCode.CreditCard))
            .ForMember(d => d.PaymentAuthCode, opt => opt.MapFrom(s => s.paymentAuthCode))
            .ForMember(d => d.TransNumber, opt => opt.MapFrom(s => s.pbcTxnNumber))

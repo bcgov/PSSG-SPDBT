@@ -275,12 +275,13 @@ namespace Spd.Presentation.Screening.Controllers
             string? cancelPath = _configuration.GetValue<string>("ApplicantPortalPaymentCancelPath");
 
             PaybcPaymentResult paybcPaymentResult = _mapper.Map<PaybcPaymentResult>(paybcResult);
+
+            if (paybcPaymentResult.Success == false && paybcPaymentResult.MessageText == "Payment Canceled")
+                return Redirect($"{hostUrl}{cancelPath}");
+
             var paymentId = await _mediator.Send(new PaymentUpdateCommand(Request.QueryString.ToString(), paybcPaymentResult));
             if (paybcPaymentResult.Success)
                 return Redirect($"{hostUrl}{successPath}{paymentId}");
-
-            if (paybcPaymentResult.MessageText == "Payment Canceled")
-                return Redirect($"{hostUrl}{cancelPath}");
 
             return Redirect($"{hostUrl}{failPath}{paymentId}");
         }

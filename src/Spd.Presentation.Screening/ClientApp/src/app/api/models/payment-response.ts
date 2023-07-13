@@ -7,6 +7,6 @@ export interface PaymentResponse {
   paidSuccess?: boolean;
   paymentId?: string;
   transAmount?: number;
-  transDate?: null | string;
+  transDateTime?: string;
   transOrderId?: null | string;
 }
