@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IdentityProviderTypeCode, InvitationRequest } from 'src/app/api/models';
 import { OrgUserService } from 'src/app/api/services';
@@ -29,7 +29,7 @@ import { CrrpRoutes } from './crrp-routing.module';
 		`,
 	],
 })
-export class InvitationUserComponent {
+export class InvitationUserComponent implements OnInit {
 	message = '';
 
 	constructor(

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrgRegistrationStatusCode } from 'src/app/api/models';
 import { OrgRegistrationService } from 'src/app/api/services';
@@ -103,7 +103,7 @@ import { OrgRegistrationRoutes } from './org-registration-routing.module';
 		`,
 	],
 })
-export class RegistrationStatusComponent {
+export class RegistrationStatusComponent implements OnInit {
 	status = '';
 	orgRegistrationStatusCodes = OrgRegistrationStatusCode;
 

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 
 @Component({
@@ -90,7 +90,7 @@ import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 		`,
 	],
 })
-export class CompletedComponent {
+export class CompletedComponent implements OnInit {
 	@Input() sendToEmailAddress = '';
 	isLoggedIn!: boolean;
 

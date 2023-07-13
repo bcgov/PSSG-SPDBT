@@ -5,8 +5,11 @@ import { Router } from '@angular/router';
 import {
 	ApplicantApplicationListResponse,
 	ApplicantApplicationResponse,
+	ApplicantPaymentLinkCreateRequest,
 	ApplicationPortalStatusCode,
 	CaseSubStatusCode,
+	PaymentLinkResponse,
+	PaymentMethodCode,
 } from 'src/app/api/models';
 import { ApplicantService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
@@ -217,24 +220,23 @@ export class SecurityScreeningListComponent implements OnInit {
 	}
 
 	onPayNow(application: ApplicantApplicationStatusResponse): void {
-		// const body: ApplicantPaymentLinkCreateRequest = {
-		// 	applicationId: application.id!,
-		// 	paymentMethod: PaymentMethodCode.CreditCard,
-		// 	amount: 123,
-		// 	description: `Payment for Case ID: ${application.applicationNumber}`,
-		// };
-		// this.applicantService
-		// 	.apiApplicantsScreeningsApplicationIdPaymentLinkPost({
-		// 		applicationId: application.id!,
-		// 		body,
-		// 	})
-		// 	.pipe()
-		// 	.subscribe((res: PaymentLinkResponse) => {
-		// 		if (res.paymentLinkUrl) {
-		// 			console.log('res.paymentLinkUrl', res.paymentLinkUrl);
-		// 			window.location.assign(res.paymentLinkUrl);
-		// 		}
-		// 	});
+		const body: ApplicantPaymentLinkCreateRequest = {
+			applicationId: application.id!,
+			paymentMethod: PaymentMethodCode.CreditCard,
+			description: `Payment for Case ID: ${application.applicationNumber}`,
+		};
+
+		this.applicantService
+			.apiApplicantsScreeningsApplicationIdPaymentLinkPost({
+				applicationId: application.id!,
+				body,
+			})
+			.pipe()
+			.subscribe((res: PaymentLinkResponse) => {
+				if (res.paymentLinkUrl) {
+					window.location.assign(res.paymentLinkUrl);
+				}
+			});
 	}
 
 	onDownloadClearanceLetter(clearance: any) {

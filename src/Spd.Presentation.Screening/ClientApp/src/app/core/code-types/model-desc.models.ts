@@ -82,8 +82,8 @@ export const PayerPreferenceTypes: SelectOptions[] = [
 
 export const ServiceTypes: SelectOptions[] = [
 	{ desc: 'PSSO', code: ServiceTypeCode.Psso },
-	{ desc: 'CRRP-Employee', code: ServiceTypeCode.CrrpEmployee },
-	{ desc: 'CRRP-Volunteer', code: ServiceTypeCode.CrrpVolunteer },
+	{ desc: 'CRRP - Employee', code: ServiceTypeCode.CrrpEmployee },
+	{ desc: 'CRRP - Volunteer', code: ServiceTypeCode.CrrpVolunteer },
 	{ desc: 'MCFD', code: ServiceTypeCode.Mcfd },
 	{ desc: 'PE-CRC', code: ServiceTypeCode.PeCrc },
 	{ desc: 'PE-CRC +Vulnerable Sector', code: ServiceTypeCode.PeCrcVs },
@@ -93,8 +93,8 @@ export const ServiceTypes: SelectOptions[] = [
 
 export const ServiceTypesPsso: SelectOptions[] = [
 	{ desc: 'CRC', code: ServiceTypeCode.Psso },
-	{ desc: 'CRRP-Employee', code: ServiceTypeCode.CrrpEmployee },
-	{ desc: 'CRRP-Volunteer', code: ServiceTypeCode.CrrpVolunteer },
+	{ desc: 'CRRP - Employee', code: ServiceTypeCode.CrrpEmployee },
+	{ desc: 'CRRP - Volunteer', code: ServiceTypeCode.CrrpVolunteer },
 	{ desc: 'MCFD', code: ServiceTypeCode.Mcfd },
 	{ desc: 'PE-CRC', code: ServiceTypeCode.PeCrc },
 	{ desc: 'PE-CRC +Vulnerable Sector', code: ServiceTypeCode.PeCrcVs },

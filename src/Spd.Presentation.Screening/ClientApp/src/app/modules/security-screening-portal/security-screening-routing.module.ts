@@ -28,7 +28,7 @@ const routes: Routes = [
 			{ path: SecurityScreeningRoutes.CRC_LIST, component: SecurityScreeningListComponent },
 			{ path: SecurityScreeningRoutes.CRC_DETAIL, component: SecurityScreeningDetailComponent },
 			{ path: `${SecurityScreeningRoutes.PAYMENT_SUCCESS}/:id`, component: SecurityScreeningPaymentSuccessComponent },
-			{ path: SecurityScreeningRoutes.PAYMENT_FAIL, component: SecurityScreeningPaymentFailComponent },
+			{ path: `${SecurityScreeningRoutes.PAYMENT_FAIL}/:id`, component: SecurityScreeningPaymentFailComponent },
 		],
 	},
 ];

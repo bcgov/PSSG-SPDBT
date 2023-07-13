@@ -9,6 +9,7 @@ import { RequestBuilder } from '../request-builder';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
+import { ActionResult } from '../models/action-result';
 import { AnonymousApplicantAppCreateRequest } from '../models/anonymous-applicant-app-create-request';
 import { AppInviteVerifyRequest } from '../models/app-invite-verify-request';
 import { AppOrgResponse } from '../models/app-org-response';
@@ -22,6 +23,7 @@ import { ApplicationCreateResponse } from '../models/application-create-response
 import { FileTemplateTypeCode } from '../models/file-template-type-code';
 import { FileTypeCode } from '../models/file-type-code';
 import { PaymentLinkResponse } from '../models/payment-link-response';
+import { PaymentResponse } from '../models/payment-response';
 import { ServiceTypeCode } from '../models/service-type-code';
 import { ShareableClearanceResponse } from '../models/shareable-clearance-response';
 
@@ -589,7 +591,7 @@ export class ApplicantService extends BaseService {
   /**
    * Path part for operation apiApplicantsScreeningsApplicationIdPaymentLinkPost
    */
-  static readonly ApiApplicantsScreeningsApplicationIdPaymentLinkPostPath = '/api/applicants/screenings/{applicationId}/paymentLink';
+  static readonly ApiApplicantsScreeningsApplicationIdPaymentLinkPostPath = '/api/applicants/screenings/{applicationId}/payment-link';
 
   /**
    * Return the direct pay payment link.
@@ -647,6 +649,176 @@ export class ApplicantService extends BaseService {
 
     return this.apiApplicantsScreeningsApplicationIdPaymentLinkPost$Response(params,context).pipe(
       map((r: StrictHttpResponse<PaymentLinkResponse>) => r.body as PaymentLinkResponse)
+    );
+  }
+
+  /**
+   * Path part for operation apiApplicantsScreeningsPaymentResultGet
+   */
+  static readonly ApiApplicantsScreeningsPaymentResultGetPath = '/api/applicants/screenings/payment-result';
+
+  /**
+   * redirect url for paybc to redirect to.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiApplicantsScreeningsPaymentResultGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantsScreeningsPaymentResultGet$Response(params: {
+    trnApproved: string;
+    messageText?: string;
+    trnOrderId?: string;
+    trnAmount?: string;
+    paymentMethod?: string;
+    cardType?: string;
+    trnDate?: string;
+    ref1?: string;
+    ref2?: string;
+    ref3?: string;
+    pbcTxnNumber?: string;
+    trnNumber?: string;
+    hashValue?: string;
+    pbcRefNumber?: string;
+    glDate?: string;
+    paymentAuthCode?: string;
+    revenue?: string;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<ActionResult>> {
+
+    const rb = new RequestBuilder(this.rootUrl, ApplicantService.ApiApplicantsScreeningsPaymentResultGetPath, 'get');
+    if (params) {
+      rb.query('trnApproved', params.trnApproved, {});
+      rb.query('messageText', params.messageText, {});
+      rb.query('trnOrderId', params.trnOrderId, {});
+      rb.query('trnAmount', params.trnAmount, {});
+      rb.query('paymentMethod', params.paymentMethod, {});
+      rb.query('cardType', params.cardType, {});
+      rb.query('trnDate', params.trnDate, {});
+      rb.query('ref1', params.ref1, {});
+      rb.query('ref2', params.ref2, {});
+      rb.query('ref3', params.ref3, {});
+      rb.query('pbcTxnNumber', params.pbcTxnNumber, {});
+      rb.query('trnNumber', params.trnNumber, {});
+      rb.query('hashValue', params.hashValue, {});
+      rb.query('pbcRefNumber', params.pbcRefNumber, {});
+      rb.query('glDate', params.glDate, {});
+      rb.query('paymentAuthCode', params.paymentAuthCode, {});
+      rb.query('revenue', params.revenue, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<ActionResult>;
+      })
+    );
+  }
+
+  /**
+   * redirect url for paybc to redirect to.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiApplicantsScreeningsPaymentResultGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantsScreeningsPaymentResultGet(params: {
+    trnApproved: string;
+    messageText?: string;
+    trnOrderId?: string;
+    trnAmount?: string;
+    paymentMethod?: string;
+    cardType?: string;
+    trnDate?: string;
+    ref1?: string;
+    ref2?: string;
+    ref3?: string;
+    pbcTxnNumber?: string;
+    trnNumber?: string;
+    hashValue?: string;
+    pbcRefNumber?: string;
+    glDate?: string;
+    paymentAuthCode?: string;
+    revenue?: string;
+  },
+  context?: HttpContext
+
+): Observable<ActionResult> {
+
+    return this.apiApplicantsScreeningsPaymentResultGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<ActionResult>) => r.body as ActionResult)
+    );
+  }
+
+  /**
+   * Path part for operation apiApplicantsScreeningsPaymentsPaymentIdGet
+   */
+  static readonly ApiApplicantsScreeningsPaymentsPaymentIdGetPath = '/api/applicants/screenings/payments/{paymentId}';
+
+  /**
+   * Get the payment result for application and payment.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiApplicantsScreeningsPaymentsPaymentIdGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantsScreeningsPaymentsPaymentIdGet$Response(params: {
+    paymentId: string;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<PaymentResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, ApplicantService.ApiApplicantsScreeningsPaymentsPaymentIdGetPath, 'get');
+    if (params) {
+      rb.path('paymentId', params.paymentId, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<PaymentResponse>;
+      })
+    );
+  }
+
+  /**
+   * Get the payment result for application and payment.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiApplicantsScreeningsPaymentsPaymentIdGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantsScreeningsPaymentsPaymentIdGet(params: {
+    paymentId: string;
+  },
+  context?: HttpContext
+
+): Observable<PaymentResponse> {
+
+    return this.apiApplicantsScreeningsPaymentsPaymentIdGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<PaymentResponse>) => r.body as PaymentResponse)
     );
   }
 
