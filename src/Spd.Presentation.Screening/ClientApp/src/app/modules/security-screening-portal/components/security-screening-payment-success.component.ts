@@ -18,6 +18,7 @@ export class SecurityScreeningPaymentSuccessComponent implements OnInit {
 	ngOnInit(): void {
 		const paymentId = this.route.snapshot.paramMap.get('id');
 		if (!paymentId) {
+			console.debug('SecurityScreeningPaymentSuccessComponent - paymentId', paymentId);
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 		}
 

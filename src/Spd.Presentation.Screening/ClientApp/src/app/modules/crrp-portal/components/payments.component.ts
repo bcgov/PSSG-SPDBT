@@ -243,6 +243,7 @@ export class PaymentsComponent implements OnInit {
 	ngOnInit(): void {
 		const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
 		if (!orgId) {
+			console.debug('PaymentsComponent - orgId', orgId);
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 			return;
 		}

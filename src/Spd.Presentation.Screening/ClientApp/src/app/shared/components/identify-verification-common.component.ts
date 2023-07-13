@@ -246,6 +246,7 @@ export class IdentifyVerificationCommonComponent implements OnInit {
 	ngOnInit() {
 		const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
 		if (!orgId) {
+			console.debug('IdentifyVerificationCommonComponent - orgId', orgId);
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 			return;
 		}

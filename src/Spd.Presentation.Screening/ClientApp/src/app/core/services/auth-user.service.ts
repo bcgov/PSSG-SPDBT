@@ -127,7 +127,7 @@ export class AuthUserService {
 		this.isAllowedGenericUpload = false;
 	}
 
-	private orgSelectionAsync(userInfos: Array<UserInfo>): Promise<any> {
+	private async orgSelectionAsync(userInfos: Array<UserInfo>): Promise<any> {
 		const dialogOptions: OrgSelectionDialogData = {
 			userInfos: userInfos,
 		};

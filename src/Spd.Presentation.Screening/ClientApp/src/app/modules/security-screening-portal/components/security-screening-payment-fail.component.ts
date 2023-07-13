@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { switchMap } from 'rxjs/operators';
 import {
 	ApplicantPaymentLinkCreateRequest,
 	PaymentLinkResponse,
@@ -34,27 +35,25 @@ export class SecurityScreeningPaymentFailComponent implements OnInit {
 	ngOnInit(): void {
 		const paymentId = this.route.snapshot.paramMap.get('id');
 		if (!paymentId) {
+			console.debug('SecurityScreeningPaymentFailComponent - paymentId', paymentId);
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 		}
 
-		// import { forkJoin } from 'rxjs';
-		// forkJoin([
-		// 	this.applicantService.apiApplicantsScreeningsPaymentsPaymentIdGet({ paymentId: paymentId! }),
-		// 	this.applicantService.apiApplicantsScreeningsPaymentsPaymentIdGet({ paymentId: paymentId! }),
-		// ]).subscribe(([paymentResponse1, paymentResponse2]) => {
-		// 	this.applicationId = paymentResponse1.applicationId!;
-		// 	this.caseNumber = paymentResponse1.caseNumber!;
-		// });
-
 		this.applicantService
 			.apiApplicantsScreeningsPaymentsPaymentIdGet({ paymentId: paymentId! })
-			.pipe()
-			.subscribe((resp: PaymentResponse) => {
-				this.applicationId = resp.applicationId!;
-				this.caseNumber = resp.caseNumber!;
-			});
+			.pipe(
+				switchMap((paymentResp: PaymentResponse) => {
+					this.applicationId = paymentResp.applicationId!;
+					this.caseNumber = paymentResp.caseNumber!;
 
-		// TODO get the number of attempts
+					return this.applicantService.apiApplicantsScreeningsApplicationIdPaymentAttemptsGet({
+						applicationId: paymentResp.applicationId!,
+					});
+				})
+			)
+			.subscribe((numberOfFails) => {
+				this.numberOfAttempts = numberOfFails;
+			});
 	}
 
 	onBackRoute(): void {

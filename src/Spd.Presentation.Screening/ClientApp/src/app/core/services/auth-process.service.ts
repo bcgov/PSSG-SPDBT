@@ -44,6 +44,7 @@ export class AuthProcessService {
 
 			if (!success) {
 				this.notify(true);
+				console.debug('initializeCrrp - not success', identityProvider, nextUrl, success);
 				this.router.navigate([AppRoutes.ACCESS_DENIED]);
 				return Promise.resolve(null);
 			}
@@ -52,6 +53,7 @@ export class AuthProcessService {
 
 			const userInfoMsgType = this.authUserService.bceidUserInfoProfile?.userInfoMsgType;
 			if (userInfoMsgType) {
+				console.debug('initializeCrrp - userInfoMsgType', userInfoMsgType);
 				this.router.navigate([AppRoutes.ACCESS_DENIED], { state: { userInfoMsgType: userInfoMsgType } });
 				return Promise.resolve(null);
 			}
@@ -147,6 +149,7 @@ export class AuthProcessService {
 
 			if (!success) {
 				this.notify(true);
+				console.debug('initializePsso - not success', identityProvider, nextUrl, success);
 				this.router.navigate([AppRoutes.ACCESS_DENIED]);
 				return Promise.resolve(null);
 			}

@@ -822,4 +822,65 @@ export class ApplicantService extends BaseService {
     );
   }
 
+  /**
+   * Path part for operation apiApplicantsScreeningsApplicationIdPaymentAttemptsGet
+   */
+  static readonly ApiApplicantsScreeningsApplicationIdPaymentAttemptsGetPath = '/api/applicants/screenings/{applicationId}/payment-attempts';
+
+  /**
+   * Get the payment result for application and payment.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiApplicantsScreeningsApplicationIdPaymentAttemptsGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantsScreeningsApplicationIdPaymentAttemptsGet$Response(params: {
+    applicationId: string;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<number>> {
+
+    const rb = new RequestBuilder(this.rootUrl, ApplicantService.ApiApplicantsScreeningsApplicationIdPaymentAttemptsGetPath, 'get');
+    if (params) {
+      rb.path('applicationId', params.applicationId, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return (r as HttpResponse<any>).clone({ body: parseFloat(String((r as HttpResponse<any>).body)) }) as StrictHttpResponse<number>;
+      })
+    );
+  }
+
+  /**
+   * Get the payment result for application and payment.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiApplicantsScreeningsApplicationIdPaymentAttemptsGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantsScreeningsApplicationIdPaymentAttemptsGet(params: {
+    applicationId: string;
+  },
+  context?: HttpContext
+
+): Observable<number> {
+
+    return this.apiApplicantsScreeningsApplicationIdPaymentAttemptsGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<number>) => r.body as number)
+    );
+  }
+
 }

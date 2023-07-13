@@ -202,6 +202,10 @@ export class SecurityScreeningListComponent implements OnInit {
 
 	ngOnInit() {
 		if (!this.authUserService.bcscUserWhoamiProfile?.applicantId) {
+			console.debug(
+				'SecurityScreeningListComponent - bcscUserWhoamiProfile missing applicantId',
+				this.authUserService.bcscUserWhoamiProfile
+			);
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 			return;
 		}

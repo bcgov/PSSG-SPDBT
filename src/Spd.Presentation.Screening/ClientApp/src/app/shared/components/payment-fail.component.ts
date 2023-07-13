@@ -23,7 +23,14 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 					>
 						<mat-icon>arrow_back</mat-icon>Back
 					</button>
-					<button mat-flat-button color="primary" class="large w-auto m-2" aria-label="Try again" (click)="onPayNow()">
+					<button
+						mat-flat-button
+						color="primary"
+						class="large w-auto m-2"
+						*ngIf="numberOfAttemptsRemaining > 0"
+						aria-label="Try again"
+						(click)="onPayNow()"
+					>
 						<mat-icon>payment</mat-icon>Try Again
 					</button>
 				</div>
@@ -115,17 +122,28 @@ export class PaymentFailComponent implements OnInit {
 	isBackRoute: boolean = false;
 	numberOfAttemptsRemaining = 0;
 
-	@Input() numberOfAttempts = 0;
 	@Input() isCancelledPayment = true;
+
+	private _numberOfAttempts!: number | null;
+	@Input()
+	set numberOfAttempts(data: number | null) {
+		if (!data) {
+			this.numberOfAttemptsRemaining = 0;
+			return;
+		}
+
+		const remaining = SPD_CONSTANTS.payment.maxNumberOfAttempts - data;
+		this.numberOfAttemptsRemaining = remaining <= 0 ? 0 : remaining;
+	}
+	get numberOfAttempts(): number | null {
+		return this._numberOfAttempts;
+	}
 
 	@Output() backRoute: EventEmitter<any> = new EventEmitter();
 	@Output() payNow: EventEmitter<any> = new EventEmitter();
 	@Output() downloadManualPaymentForm: EventEmitter<any> = new EventEmitter();
 
 	ngOnInit(): void {
-		const remaining = SPD_CONSTANTS.payment.maxNumberOfAttempts - this.numberOfAttempts;
-		this.numberOfAttemptsRemaining = remaining <= 0 ? 0 : remaining;
-
 		this.isBackRoute = this.backRoute.observed;
 	}
 
