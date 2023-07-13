@@ -73,6 +73,7 @@ export { PaginationResponse } from './models/pagination-response';
 export { PayerPreferenceTypeCode } from './models/payer-preference-type-code';
 export { PaymentLinkResponse } from './models/payment-link-response';
 export { PaymentMethodCode } from './models/payment-method-code';
+export { PaymentResponse } from './models/payment-response';
 export { PortalUserIdentityTypeCode } from './models/portal-user-identity-type-code';
 export { RecaptchaConfiguration } from './models/recaptcha-configuration';
 export { RegistrationTypeCode } from './models/registration-type-code';

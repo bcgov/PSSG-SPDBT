@@ -1,5 +1,5 @@
-import { Component, Input } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { PaymentResponse } from 'src/app/api/models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 
 @Component({
@@ -16,7 +16,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 						color="primary"
 						class="large w-auto m-2"
 						aria-label="Back"
-						*ngIf="backRoute"
+						*ngIf="isBackRoute"
 						(click)="onBack()"
 					>
 						<mat-icon>arrow_back</mat-icon>Back
@@ -50,15 +50,15 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 		<div class="row text-center mb-4">
 			<div class="offset-xl-3 col-xl-2 offset-lg-2  col-lg-3 mt-4">
 				<small class="d-block"> Case ID </small>
-				<div class="text">{{ caseID }}</div>
+				<div class="text">{{ payment?.caseNumber }}</div>
 			</div>
 			<div class=" col-xl-2 col-lg-3 mt-4">
-				<small class="d-block"> Date & Time of Transaction </small>
-				<div class="text">{{ transactionOn | date : appConstants.date.formalDateTimeFormat }}</div>
+				<small class="d-block"> Date of Transaction </small>
+				<div class="text">{{ payment?.transDate | date : appConstants.date.formalDateFormat : 'UTC' }}</div>
 			</div>
 			<div class=" col-xl-2 col-lg-3 mt-4">
 				<small class="d-block">Invoice/Order Number</small>
-				<div class="text">{{ invoiceNo }}</div>
+				<div class="text">{{ payment?.transOrderId }}</div>
 			</div>
 		</div>
 
@@ -93,18 +93,20 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 		`,
 	],
 })
-export class PaymentSuccessComponent {
+export class PaymentSuccessComponent implements OnInit {
+	isBackRoute: boolean = false;
 	appConstants = SPD_CONSTANTS;
 
-	@Input() backRoute = '';
-	@Input() caseID = '';
-	@Input() transactionOn = '';
-	@Input() invoiceNo = '';
+	@Input() payment: PaymentResponse | null = null;
 	@Input() isApplicationReceived = false;
 
-	constructor(private router: Router) {}
+	@Output() backRoute: EventEmitter<any> = new EventEmitter();
+
+	ngOnInit(): void {
+		this.isBackRoute = this.backRoute.observed;
+	}
 
 	onBack(): void {
-		this.router.navigate([this.backRoute]);
+		this.backRoute.emit();
 	}
 }

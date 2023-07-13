@@ -117,7 +117,7 @@ export class AddressAutocompleteComponent implements OnInit {
 		this.autocompleteAddress = new EventEmitter<Address>();
 	}
 
-	public ngOnInit(): void {
+	ngOnInit(): void {
 		this.form = this.formBuilder.group({
 			addressComplete: [null],
 			country: new FormControl('CAN'),

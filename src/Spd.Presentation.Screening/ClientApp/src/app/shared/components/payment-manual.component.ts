@@ -1,5 +1,4 @@
-import { Component, Input } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
 @Component({
 	selector: 'app-payment-manual',
@@ -15,7 +14,7 @@ import { Router } from '@angular/router';
 						color="primary"
 						class="large w-auto m-2"
 						aria-label="Back"
-						*ngIf="backRoute"
+						*ngIf="isBackRoute"
 						(click)="onBack()"
 					>
 						<mat-icon>arrow_back</mat-icon>Back
@@ -72,14 +71,20 @@ import { Router } from '@angular/router';
 		`,
 	],
 })
-export class PaymentManualComponent {
-	@Input() backRoute = '';
+export class PaymentManualComponent implements OnInit {
+	isBackRoute: boolean = false;
 
-	constructor(private router: Router) {}
+	@Output() backRoute: EventEmitter<any> = new EventEmitter();
 
-	onDownloadManualPaymentForm(): void {}
+	ngOnInit(): void {
+		this.isBackRoute = this.backRoute.observed;
+	}
+
+	onDownloadManualPaymentForm(): void {
+		//TODO download manual payment form
+	}
 
 	onBack(): void {
-		this.router.navigate([this.backRoute]);
+		this.backRoute.emit();
 	}
 }
