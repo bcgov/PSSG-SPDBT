@@ -323,7 +323,7 @@ namespace Spd.Presentation.Screening.Controllers
                         TransOrderId = trnOrderId,
                         TransDate = DateTimeOffset.ParseExact(trnDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)
                     };
-                    var response = await _mediator.Send(new PaymentCreateCommand(paybcPayment, Guid.Parse(ref1)));
+                    var response = await _mediator.Send(new PaymentCreateCommand(Request.QueryString.ToString(), paybcPayment, Guid.Parse(ref1)));
                     return Redirect($"{hostUrl}{failPath}{response.PaymentId}");
                 }
                 else

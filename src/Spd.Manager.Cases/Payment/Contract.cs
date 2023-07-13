@@ -33,7 +33,7 @@ namespace Spd.Manager.Cases.Payment
     }
 
     //payment result
-    public record PaymentCreateCommand(string queryStr, PaybcPaymentResult PaybcPaymentResult, Guid ApplicationId) : IRequest<PaymentResponse>;
+    public record PaymentCreateCommand(string QueryStr, PaybcPaymentResult PaybcPaymentResult, Guid ApplicationId) : IRequest<PaymentResponse>;
     public record PaymentQuery(Guid PaymentId) : IRequest<PaymentResponse>;
     public record PaybcPaymentResult
     {

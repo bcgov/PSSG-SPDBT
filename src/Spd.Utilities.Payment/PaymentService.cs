@@ -79,6 +79,7 @@ namespace Spd.Utilities.Payment
 
         public ValidationResult ValidatePaymentResultStr(ValidatePaymentResultStrCommand command)
         {
+            string apikey = _config.APIKey;
             string queryStr = command.QueryStr;
             string[] queries = queryStr.Split("&");
             string hashvalueStr = queries.FirstOrDefault(q => q.StartsWith("hashValue="));
@@ -86,8 +87,22 @@ namespace Spd.Utilities.Payment
             {
                 return new ValidationResult() { ValidationPassed = false };
             }
-            string hashValue = hashvalueStr.Split("=").Last();
-            queryStr.LastIndexOf()
+            string expectedHashValue = hashvalueStr.Split("=").Last();
+            int pos = queryStr.LastIndexOf(hashvalueStr);
+            string query = queryStr.Substring(1, pos-2);
+            StringBuilder sb = new StringBuilder();
+            using (MD5 md5 = MD5.Create())
+            {
+                string str = $"{query}{apikey}";
+                byte[] hash = md5.ComputeHash(Encoding.UTF8.GetBytes(str));
+                // Convert the byte array to string format
+                foreach (byte b in hash)
+                {
+                    sb.Append($"{b:x2}");
+                }
+            }
+            string calculatedHash = sb.ToString();
+            return new ValidationResult() { ValidationPassed = calculatedHash.Equals(expectedHashValue) };
         }
     }
 }

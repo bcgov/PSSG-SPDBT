@@ -69,7 +69,7 @@ namespace Spd.Manager.Cases.Payment
 
             //generate the link string 
             //payment utility
-            var linkResult = (CreateDirectPaymentLinkResult)await _paymentService.HandleCommand(
+            var linkResult = (CreateDirectPaymentLinkResult)_paymentService.HandleCommand(
                 new CreateDirectPaymentLinkCommand
                 {
                     RevenueAccount = revenueAccount,
@@ -81,7 +81,7 @@ namespace Spd.Manager.Cases.Payment
                     Ref1 = command.Ref1,
                     Ref2 = command.Ref2,
                     Ref3 = command.Ref3
-                }, ct);
+                });
 
 
             return new PaymentLinkResponse
@@ -93,7 +93,7 @@ namespace Spd.Manager.Cases.Payment
         public async Task<PaymentResponse> Handle(PaymentCreateCommand command, CancellationToken ct)
         {
             //validate hashcode
-            command.queryStr
+            var validated = _paymentService.HandleCommand(new ValidatePaymentResultStrCommand() {QueryStr = command.QueryStr });
 
             var cmd = _mapper.Map<CreatePaymentCmd>(command.PaybcPaymentResult);
             cmd.ApplicationId = command.ApplicationId;
