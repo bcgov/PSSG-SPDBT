@@ -55,16 +55,29 @@ internal class PaymentRepository : IPaymentRepository
         await _context.SaveChangesAsync(ct);
         return (Guid)payment.spd_paymentid;
     }
+
     private async Task<Guid> PaymentUpdateAsync(UpdatePaymentCmd cmd, CancellationToken ct)
     {
         spd_payment? payment = await _context.GetPaymentById(cmd.PaymentId, ct);
-        if (payment == null)
+        if (payment == null || payment.statecode == DynamicsConstants.StatusCode_Inactive)
             throw new ArgumentException("invalid payment id");
 
-        if (payment.spd_transactionid != cmd.TransNumber)
+        if (payment.spd_transactionid != cmd.TransNumber || payment._spd_applicationid_value != cmd.ApplicationId)
             throw new ArgumentException("invalid payment transaction");
 
-        payment = _mapper.Map<UpdatePaymentCmd, spd_payment>(cmd, payment);
+        if (cmd.Success == null) return cmd.PaymentId; //no result, not update payment.
+
+        payment = _mapper.Map(cmd, payment);
+        if((bool)cmd.Success)
+        {
+            payment.statecode = DynamicsConstants.StateCode_Inactive;
+            payment.statuscode = (int)PaymentStatusCodeOptionSet.Successful;
+        }
+        else
+        {
+            payment.statecode = DynamicsConstants.StateCode_Inactive;
+            payment.statuscode = (int)PaymentStatusCodeOptionSet.Failure;
+        }
         _context.UpdateObject(payment);
         await _context.SaveChangesAsync(ct);
         return (Guid)payment.spd_paymentid;

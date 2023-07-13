@@ -33,7 +33,7 @@ namespace Spd.Manager.Cases.Payment
     }
 
     //payment result
-    public record PaymentUpdateCommand(string QueryStr, PaybcPaymentResult PaybcPaymentResult, Guid PaymentId, Guid ApplicationId) : IRequest<Guid>;
+    public record PaymentUpdateCommand(string QueryStr, PaybcPaymentResult PaybcPaymentResult) : IRequest<Guid>;
     public record PaymentQuery(Guid PaymentId) : IRequest<PaymentResponse>;
     public record PaybcPaymentResult
     {
@@ -46,6 +46,8 @@ namespace Spd.Manager.Cases.Payment
         public PaymentMethodCode PaymentMethod { get; set; }
         public string CardType { get; set; }
         public string PaymentAuthCode { get; set; }
+        public Guid PaymentId { get; set; }
+        public Guid ApplicationId { get; set; }
     }
     public record PaymentResponse
     {

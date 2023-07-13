@@ -1,3 +1,4 @@
+using AutoMapper;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -26,18 +27,21 @@ namespace Spd.Presentation.Screening.Controllers
         private readonly IRecaptchaVerificationService _verificationService;
         private readonly IConfiguration _configuration;
         private readonly ILogger<ApplicationController> _logger;
+        private readonly IMapper _mapper;
 
         public ApplicantController(IMediator mediator,
             IPrincipal currentUser,
             IRecaptchaVerificationService verificationService,
             IConfiguration configuration,
-            ILogger<ApplicationController> logger)
+            ILogger<ApplicationController> logger,
+            IMapper mapper)
         {
             _mediator = mediator;
             _currentUser = currentUser;
             _verificationService = verificationService;
             _configuration = configuration;
             _logger = logger;
+            _mapper = mapper;
         }
 
         #region application-invites
@@ -264,69 +268,21 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/applicants/screenings/payment-result")]
         [HttpGet]
-        public async Task<ActionResult> ProcessPaymentResult([FromQuery][Required] string? trnApproved,
-            [FromQuery] string? messageText,
-            [FromQuery] string? trnOrderId,
-            [FromQuery] string? trnAmount,
-            [FromQuery] string? paymentMethod,
-            [FromQuery] string? cardType,
-            [FromQuery] string? trnDate,
-            [FromQuery] string? ref1, //paymentId
-            [FromQuery] string? ref2, //applicationId
-            [FromQuery] string? ref3,
-            [FromQuery] string? pbcTxnNumber,
-            [FromQuery] string? trnNumber,
-            [FromQuery] string? hashValue,
-            [FromQuery] string? pbcRefNumber,
-            [FromQuery] string? glDate,
-            [FromQuery] string? paymentAuthCode,
-            [FromQuery] string? revenue)
+         public async Task<ActionResult> ProcessPaymentResult([FromQuery]PaybcPaymentResultViewModel paybcResult)
         {
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
             string? successPath = _configuration.GetValue<string>("ApplicantPortalPaymentSuccessPath");
             string? failPath = _configuration.GetValue<string>("ApplicantPortalPaymentFailPath");
 
-            if (trnApproved == "1")
+            PaybcPaymentResult paybcPaymentResult = _mapper.Map<PaybcPaymentResult>(paybcResult);
+            var paymentId = await _mediator.Send(new PaymentUpdateCommand(Request.QueryString.ToString(), paybcPaymentResult));
+            if(paybcPaymentResult.Success)
             {
-                PaybcPaymentResult paybcPayment = new PaybcPaymentResult
-                {
-                    Success = true,
-                    MessageText = messageText,
-                    TransAmount = Decimal.Parse(trnAmount),
-                    TransNumber = pbcTxnNumber,
-                    CardType = cardType,
-                    PaymentAuthCode = paymentAuthCode,
-                    PaymentMethod = paymentMethod.Equals("CC", StringComparison.InvariantCultureIgnoreCase) ? PaymentMethodCode.CreditCard : PaymentMethodCode.CreditCard,
-                    TransOrderId = trnOrderId,
-                    TransDate = DateTimeOffset.ParseExact(trnDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)
-                };
-                var paymentId = await _mediator.Send(new PaymentUpdateCommand(Request.QueryString.ToString(), paybcPayment, Guid.Parse(ref1), Guid.Parse(ref2)));
                 return Redirect($"{hostUrl}{successPath}{paymentId}");
             }
             else
             {
-                if (messageText.Equals("Declined", StringComparison.CurrentCultureIgnoreCase))
-                {
-                    PaybcPaymentResult paybcPayment = new PaybcPaymentResult
-                    {
-                        Success = false,
-                        MessageText = messageText,
-                        TransAmount = Decimal.Parse(trnAmount),
-                        TransNumber = trnNumber,
-                        CardType = cardType,
-                        PaymentAuthCode = null,
-                        PaymentMethod = paymentMethod.Equals("CC", StringComparison.InvariantCultureIgnoreCase) ? PaymentMethodCode.CreditCard : PaymentMethodCode.CreditCard,
-                        TransOrderId = trnOrderId,
-                        TransDate = DateTimeOffset.ParseExact(trnDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)
-                    };
-                    var paymentId = await _mediator.Send(new PaymentUpdateCommand(Request.QueryString.ToString(), paybcPayment, Guid.Parse(ref1), Guid.Parse(ref2)));
-                    return Redirect($"{hostUrl}{failPath}{paymentId}");
-                }
-                else
-                {
-                    _logger.LogError($"PayBC returns error with message {messageText}, transactionNumer {pbcTxnNumber}");
-                    return Redirect($"{hostUrl}{failPath}");//should change to error page.
-                }
+                return Redirect($"{hostUrl}{failPath}{paymentId}");
             }
         }
 
@@ -376,6 +332,26 @@ public class ApplicantUserInfo
     public bool? EmailVerified { get; set; }
 }
 
+public class PaybcPaymentResultViewModel
+{
+    public int trnApproved { get; set; }
+    public string? messageText { get; set; }
+    public string? cardType { get; set; }
+    public string? trnOrderId { get; set; }
+    public string? trnAmount { get; set; }
+    public string? paymentMethod { get; set; }
+    public string? trnDate { get; set; }
+    public string? ref1 { get; set; }
+    public string? ref2 { get; set; }
+    public string? ref3 { get; set; }
+    public string? pbcTxnNumber { get; set; }
+    public string? trnNumber { get; set; }
+    public string? hashValue { get; set; }
+    public string? pbcRefNumber { get; set; }
+    public string? glDate { get; set; }
+    public string? paymentAuthCode { get; set; }
+    public string? revenue { get; set; }
+}
 
 
 

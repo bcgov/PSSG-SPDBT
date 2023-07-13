@@ -213,4 +213,10 @@ namespace Spd.Utilities.Dynamics
         Success = 100000000,
         Failure = 100000001,
     }
+
+    public enum PaymentStatusCodeOptionSet
+    {
+        Successful = 2,
+        Failure = 100000000,
+    }
 }

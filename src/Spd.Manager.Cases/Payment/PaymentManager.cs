@@ -114,8 +114,6 @@ namespace Spd.Manager.Cases.Payment
             }
 
             var cmd = _mapper.Map<UpdatePaymentCmd>(command.PaybcPaymentResult);
-            cmd.PaymentId = command.PaymentId;
-            cmd.ApplicationId = command.ApplicationId;
             return await _paymentRepository.ManageAsync(cmd, ct);
         }
 

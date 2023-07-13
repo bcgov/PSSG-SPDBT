@@ -19,7 +19,7 @@ namespace Spd.Resource.Applicants.Payment
                 .IncludeBase<PaymentCmd, spd_payment>();
 
             _ = CreateMap<UpdatePaymentCmd, spd_payment>()
-                .IncludeBase<PaymentCmd, spd_payment>()
+                .ForMember(d => d.spd_manualpayment, opt => opt.MapFrom(s => (int)YesNoOptionSet.No))
                 .ForMember(d => d.spd_response, opt => opt.MapFrom(s => GetResponseCode(s.Success)))
                 .ForMember(d => d.spd_datetimeofpayment, opt => opt.MapFrom(s => s.TransDate))
                 .ForMember(d => d.spd_errordescription, opt => opt.MapFrom(s => s.MessageText))

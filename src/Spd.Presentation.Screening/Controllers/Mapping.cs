@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Spd.Manager.Cases.Application;
+using Spd.Manager.Cases.Payment;
 using Spd.Manager.Membership.Org;
 using Spd.Manager.Membership.UserProfile;
 using Spd.Utilities.LogonUser;
+using System.Globalization;
 
 namespace Spd.Presentation.Screening.Controllers;
 
@@ -30,6 +32,20 @@ internal class Mappings : Profile
            .ForMember(d => d.PayeeType, opt => opt.MapFrom(s => s.PayerPreference))
            .ForMember(d => d.ScreeningType, opt => opt.Ignore())
            .ForMember(d => d.ServiceType, opt => opt.MapFrom(s => s.ServiceTypes.FirstOrDefault()));
+
+        CreateMap<PaybcPaymentResultViewModel, PaybcPaymentResult>()
+           .ForMember(d => d.Success, opt => opt.MapFrom(s => s.trnApproved == 1))
+           .ForMember(d => d.MessageText, opt => opt.MapFrom(s => s.messageText))
+           .ForMember(d => d.TransOrderId, opt => opt.MapFrom(s => s.trnOrderId))
+           .ForMember(d => d.TransAmount, opt => opt.MapFrom(s => Decimal.Parse(s.trnAmount)))
+           .ForMember(d => d.TransDate, opt => opt.MapFrom(s => DateTimeOffset.ParseExact(s.trnDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)))
+           .ForMember(d => d.PaymentMethod, opt => opt.MapFrom(s => PaymentMethodCode.CreditCard))
+           .ForMember(d => d.PaymentAuthCode, opt => opt.MapFrom(s => s.paymentAuthCode))
+           .ForMember(d => d.TransNumber, opt => opt.MapFrom(s => s.pbcTxnNumber))
+           .ForMember(d => d.CardType, opt => opt.MapFrom(s => s.cardType))
+           .ForMember(d => d.PaymentId, opt => opt.MapFrom(s => s.ref1))
+           .ForMember(d => d.ApplicationId, opt => opt.MapFrom(s => s.ref2));
+
     }
 }
 
