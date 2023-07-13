@@ -14,6 +14,7 @@ namespace Spd.Manager.Cases.Payment
         IRequestHandler<PaymentLinkCreateCommand, PaymentLinkResponse>,
         IRequestHandler<PaymentUpdateCommand, Guid>,
         IRequestHandler<PaymentQuery, PaymentResponse>,
+        IRequestHandler<PaymentFailedAttemptCountQuery, int>,
         IPaymentManager
     {
         private readonly IPaymentService _paymentService;
@@ -123,6 +124,12 @@ namespace Spd.Manager.Cases.Payment
         {
             var respList = await _paymentRepository.QueryAsync(new PaymentQry(null, query.PaymentId), ct);
             return _mapper.Map<PaymentResponse>(respList.Items.First());
+        }
+
+        public async Task<int> Handle(PaymentFailedAttemptCountQuery query, CancellationToken ct)
+        {
+            var respList = await _paymentRepository.QueryAsync(new PaymentQry(query.ApplicationId), ct);
+            return respList.Items.Count(i => !i.PaidSuccess);
         }
     }
 }

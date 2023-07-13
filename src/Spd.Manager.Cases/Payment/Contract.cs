@@ -8,6 +8,7 @@ namespace Spd.Manager.Cases.Payment
         public Task<PaymentLinkResponse> Handle(PaymentLinkCreateCommand command, CancellationToken ct);
         public Task<Guid> Handle(PaymentUpdateCommand command, CancellationToken ct);
         public Task<PaymentResponse> Handle(PaymentQuery query, CancellationToken ct);
+        public Task<int> Handle(PaymentFailedAttemptCountQuery query, CancellationToken ct);
     }
 
     //payment link
@@ -35,6 +36,7 @@ namespace Spd.Manager.Cases.Payment
     //payment result
     public record PaymentUpdateCommand(string QueryStr, PaybcPaymentResult PaybcPaymentResult) : IRequest<Guid>;
     public record PaymentQuery(Guid PaymentId) : IRequest<PaymentResponse>;
+    public record PaymentFailedAttemptCountQuery(Guid ApplicationId): IRequest<int>;
     public record PaybcPaymentResult
     {
         public bool Success { get; set; }

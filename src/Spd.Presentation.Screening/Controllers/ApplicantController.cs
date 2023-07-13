@@ -297,6 +297,18 @@ namespace Spd.Presentation.Screening.Controllers
         {
             return await _mediator.Send(new PaymentQuery(paymentId));
         }
+
+        /// <summary>
+        /// Get the payment result for application and payment
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/applicants/screenings/{applicationId}/payment-attempts")]
+        [HttpGet]
+        [Authorize(Policy = "OnlyBcsc")]
+        public async Task<int> GetFailedPaymentAttempts([FromRoute] Guid applicationId)
+        {
+            return await _mediator.Send(new PaymentFailedAttemptCountQuery(applicationId));
+        }
         #endregion
     }
 }
