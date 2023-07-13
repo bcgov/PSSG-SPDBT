@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
+using Microsoft.OData.Client;
 using Spd.Utilities.Dynamics;
 
 namespace Spd.Resource.Applicants.Payment;
@@ -16,14 +17,13 @@ internal class PaymentRepository : IPaymentRepository
     public async Task<PaymentListResp> QueryAsync(PaymentQry qry, CancellationToken ct)
     {
         var payments = _context.spd_payments
-            .Expand(p => p.spd_ApplicationId)
-            .Where(p => p.statecode != DynamicsConstants.StateCode_Inactive);
+            .Expand(p => p.spd_ApplicationId);
 
         if (qry.ApplicationId != null)
-            payments = payments.Where(d => d._spd_applicationid_value == qry.ApplicationId);
+            payments = (DataServiceQuery<spd_payment>)payments.Where(d => d._spd_applicationid_value == qry.ApplicationId);
 
         if (qry.PaymentId != null)
-            payments = payments.Where(d => d.spd_paymentid == qry.PaymentId);
+            payments = (DataServiceQuery<spd_payment>)payments.Where(d => d.spd_paymentid == qry.PaymentId);
 
         var result = await payments.GetAllPagesAsync(ct);
         result = result.OrderByDescending(a => a.createdon);

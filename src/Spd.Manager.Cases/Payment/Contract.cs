@@ -41,7 +41,7 @@ namespace Spd.Manager.Cases.Payment
         public string MessageText { get; set; }
         public string TransNumber { get; set; }
         public string TransOrderId { get; set; }
-        public DateTimeOffset TransDate { get; set; }
+        public DateTimeOffset TransDateTime { get; set; }
         public decimal TransAmount { get; set; }
         public PaymentMethodCode PaymentMethod { get; set; }
         public string CardType { get; set; }
@@ -57,7 +57,7 @@ namespace Spd.Manager.Cases.Payment
         public bool PaidSuccess { get; set; }
         public string Message { get; set; }
         public string TransOrderId { get; set; }
-        public string TransDate { get; set; }
+        public DateTimeOffset TransDateTime { get; set; }
         public decimal TransAmount { get; set; }
     }
 }

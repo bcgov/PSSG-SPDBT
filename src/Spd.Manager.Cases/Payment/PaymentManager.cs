@@ -37,6 +37,8 @@ namespace Spd.Manager.Cases.Payment
 
         public async Task<PaymentLinkResponse> Handle(PaymentLinkCreateCommand command, CancellationToken ct)
         {
+            //add validation: application has not been paid, application belong to the applicant.
+
             //get config from cache or Dynamics
             var raBytes = _cache.Get("paybcRevenueAccount");
             string revenueAccount = raBytes != null ? Encoding.Default.GetString(raBytes) : null;

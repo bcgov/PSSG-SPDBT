@@ -20,7 +20,7 @@ namespace Spd.Resource.Applicants.Payment
         public bool PaidSuccess { get; set; }
         public string Message { get; set; }
         public string? TransOrderId { get; set; }
-        public string TransDate { get; set; }
+        public DateTime TransDateTime { get; set; }
         public decimal TransAmount { get; set; }
     }
 
@@ -39,7 +39,7 @@ namespace Spd.Resource.Applicants.Payment
         public string? CardType { get; set; }
         public string? PaymentAuthCode { get; set; }
         public string? TransOrderId { get; set; }
-        public DateTimeOffset? TransDate { get; set; }
+        public DateTimeOffset? TransDateTime { get; set; }
         public string? MessageText { get; set; }
     };
     public record CreatePaymentCmd : PaymentCmd;

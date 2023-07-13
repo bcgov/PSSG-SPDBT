@@ -21,7 +21,7 @@ namespace Spd.Resource.Applicants.Payment
             _ = CreateMap<UpdatePaymentCmd, spd_payment>()
                 .ForMember(d => d.spd_manualpayment, opt => opt.MapFrom(s => (int)YesNoOptionSet.No))
                 .ForMember(d => d.spd_response, opt => opt.MapFrom(s => GetResponseCode(s.Success)))
-                .ForMember(d => d.spd_datetimeofpayment, opt => opt.MapFrom(s => s.TransDate))
+                .ForMember(d => d.spd_datetimeofpayment, opt => opt.MapFrom(s => s.TransDateTime))
                 .ForMember(d => d.spd_errordescription, opt => opt.MapFrom(s => s.MessageText))
                 .ForMember(d => d.spd_ordernumber, opt => opt.MapFrom(s => s.TransOrderId));
 
@@ -32,7 +32,7 @@ namespace Spd.Resource.Applicants.Payment
                 .ForMember(d => d.ApplicationId, opt => opt.MapFrom(s => s._spd_applicationid_value))
                 .ForMember(d => d.TransAmount, opt => opt.MapFrom(s => s.spd_amount))
                 .ForMember(d => d.TransOrderId, opt => opt.MapFrom(s => s.spd_ordernumber))
-                .ForMember(d => d.TransDate, opt => opt.MapFrom(s => s.spd_datetimeofpayment))
+                .ForMember(d => d.TransDateTime, opt => opt.MapFrom(s => s.spd_datetimeofpayment))
                 .ForMember(d => d.CaseNumber, opt => opt.MapFrom(s => s.spd_ApplicationId.spd_name));
         }
 

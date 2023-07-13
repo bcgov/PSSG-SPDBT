@@ -14,7 +14,6 @@ using Spd.Utilities.Shared.ManagerContract;
 using Spd.Utilities.Shared.Tools;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
-using System.Globalization;
 using System.Net;
 using System.Security.Principal;
 
@@ -268,22 +267,22 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/applicants/screenings/payment-result")]
         [HttpGet]
-         public async Task<ActionResult> ProcessPaymentResult([FromQuery]PaybcPaymentResultViewModel paybcResult)
+        public async Task<ActionResult> ProcessPaymentResult([FromQuery] PaybcPaymentResultViewModel paybcResult)
         {
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
             string? successPath = _configuration.GetValue<string>("ApplicantPortalPaymentSuccessPath");
             string? failPath = _configuration.GetValue<string>("ApplicantPortalPaymentFailPath");
+            string? cancelPath = _configuration.GetValue<string>("ApplicantPortalPaymentCancelPath");
 
             PaybcPaymentResult paybcPaymentResult = _mapper.Map<PaybcPaymentResult>(paybcResult);
             var paymentId = await _mediator.Send(new PaymentUpdateCommand(Request.QueryString.ToString(), paybcPaymentResult));
-            if(paybcPaymentResult.Success)
-            {
+            if (paybcPaymentResult.Success)
                 return Redirect($"{hostUrl}{successPath}{paymentId}");
-            }
-            else
-            {
-                return Redirect($"{hostUrl}{failPath}{paymentId}");
-            }
+
+            if (paybcPaymentResult.MessageText == "Payment Canceled")
+                return Redirect($"{hostUrl}{cancelPath}");
+
+            return Redirect($"{hostUrl}{failPath}{paymentId}");
         }
 
         /// <summary>
@@ -293,7 +292,7 @@ namespace Spd.Presentation.Screening.Controllers
         [Route("api/applicants/screenings/payments/{paymentId}")]
         [HttpGet]
         [Authorize(Policy = "OnlyBcsc")]
-        public async Task<PaymentResponse> GetPaymentResult([FromRoute]Guid paymentId)
+        public async Task<PaymentResponse> GetPaymentResult([FromRoute] Guid paymentId)
         {
             return await _mediator.Send(new PaymentQuery(paymentId));
         }
