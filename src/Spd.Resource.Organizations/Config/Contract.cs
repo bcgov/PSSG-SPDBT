@@ -6,6 +6,7 @@
         public static readonly string PAYBC_GROUP = "PAYBC";
         public static readonly string PAYBC_REVENUEACCOUNT_KEY = "RevenueAccount";
         public static readonly string PAYBC_PBCREFNUMBER_KEY = "PbcRefNumber";
+        public static readonly string PAYBCS_SERVICECOST_KEY = "Service Amount";
         Task<ConfigResult> Query(ConfigQuery query, CancellationToken ct);
     }
 

@@ -38,4 +38,7 @@ export const SPD_CONSTANTS = {
 		crcPortalStateKey: 'crc-state',
 		bannerMessageKey: 'banner-message',
 	},
+	payment: {
+		maxNumberOfAttempts: 3,
+	},
 };

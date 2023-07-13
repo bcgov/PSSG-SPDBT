@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
@@ -101,7 +101,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 		`,
 	],
 })
-export class ReportsComponent {
+export class ReportsComponent implements OnInit {
 	private queryParams: any = this.utilService.getDefaultQueryParams();
 	private allReports: Array<OrgReportResponse> = [];
 
@@ -125,6 +125,7 @@ export class ReportsComponent {
 	ngOnInit() {
 		const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
 		if (!orgId) {
+			console.debug('ReportsComponent - orgId', orgId);
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 			return;
 		}

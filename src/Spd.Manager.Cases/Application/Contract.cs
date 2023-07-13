@@ -703,6 +703,7 @@ namespace Spd.Manager.Cases.Application
         public string? OrgName { get; set; }
         public ServiceTypeCode? ServiceType { get; set; }
         public CaseSubStatusCode? CaseSubStatus { get; set; }
+        public int FailedPaymentAttempts { get; set;} = 0;
     }
 
     public record ApplicantApplicationListQuery(Guid ApplicantId) : IRequest<ApplicantApplicationListResponse>;

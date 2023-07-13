@@ -255,6 +255,7 @@ export class ExpiringChecksComponent implements OnInit {
 	ngOnInit() {
 		const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
 		if (!orgId) {
+			console.debug('ExpiringChecksComponent - orgId', orgId);
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 			return;
 		}

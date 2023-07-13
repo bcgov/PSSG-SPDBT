@@ -472,6 +472,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 
 		const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
 		if (!orgId) {
+			console.debug('ManualSubmissionCommonComponent - orgId', orgId);
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 			return;
 		}

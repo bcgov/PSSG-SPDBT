@@ -1,12 +1,15 @@
-import { Component, Input } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 
 @Component({
 	selector: 'app-payment-fail',
 	template: `
 		<div class="row">
 			<div class="col-xl-6 col-lg-4 col-md-12">
-				<h3 class="fw-normal m-2">Payment Failed</h3>
+				<h3 class="fw-normal m-2">
+					<span *ngIf="isCancelledPayment; else paymentFailedHeader">Payment Cancelled</span>
+					<ng-template #paymentFailedHeader>Payment Failed </ng-template>
+				</h3>
 			</div>
 			<div class="col-xl-6 col-lg-8 col-md-12">
 				<div class="d-flex justify-content-end">
@@ -15,12 +18,19 @@ import { Router } from '@angular/router';
 						color="primary"
 						class="large w-auto m-2"
 						aria-label="Back"
-						*ngIf="backRoute"
+						*ngIf="isBackRoute"
 						(click)="onBack()"
 					>
 						<mat-icon>arrow_back</mat-icon>Back
 					</button>
-					<button mat-flat-button color="primary" class="large w-auto m-2" aria-label="Try again">
+					<button
+						mat-flat-button
+						color="primary"
+						class="large w-auto m-2"
+						*ngIf="numberOfAttemptsRemaining > 0"
+						aria-label="Try again"
+						(click)="onPayNow()"
+					>
 						<mat-icon>payment</mat-icon>Try Again
 					</button>
 				</div>
@@ -37,34 +47,48 @@ import { Router } from '@angular/router';
 
 		<div class="row mx-4">
 			<div class="col-12 mt-4">
-				<div class="fw-normal fs-3 text-center">Your payment transaction has failed</div>
+				<div class="fw-normal fs-3 text-center">
+					<span *ngIf="isCancelledPayment; else paymentFailedSubHeader">Your payment attempt has been cancelled</span>
+					<ng-template #paymentFailedSubHeader>Your payment transaction has failed </ng-template>
+				</div>
 			</div>
 
-			<ng-container *ngIf="numberOfAttemptsRemaining == 0; else remaining">
+			<ng-container *ngIf="isCancelledPayment; else paymentFailed">
 				<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
 					<div class="lead fs-5 mt-4">
-						Your application has been submitted, but it won't be processed until payment is received.
-					</div>
-					<div class="lead fs-5 my-4">
-						Please download and complete the
-						<a (click)="onDownloadManualPaymentForm()">Manual Payment Form</a> then follow the instructions on the form
-						to submit payment to the Security Programs Division.
+						Your application is submitted, but it won't be processed until payment is received.
 					</div>
 				</div>
 			</ng-container>
 
-			<ng-template #remaining>
-				<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
-					<div class="lead fs-5 mt-4">
-						Please ensure the information you entered is correct and try again, or use a different credit card. You have
-						{{ numberOfAttemptsRemaining }} more attempt{{ numberOfAttemptsRemaining == 1 ? '' : 's' }}.
+			<ng-template #paymentFailed>
+				<ng-container *ngIf="numberOfAttemptsRemaining == 0; else remainingAttempts">
+					<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
+						<div class="lead fs-5 mt-4">
+							Your application has been submitted, but it won't be processed until payment is received.
+						</div>
+						<div class="lead fs-5 my-4">
+							Please download and complete the
+							<a (click)="onDownloadManualPaymentForm()">Manual Payment Form</a> then follow the instructions on the
+							form to submit payment to the Security Programs Division.
+						</div>
 					</div>
-					<div class="lead fs-5 my-4">
-						Alternatively, you can download the
-						<a (click)="onDownloadManualPaymentForm()">Manual Payment Form</a>. Fill it out, and follow the instructions
-						to submit it to the Security Programs Division.
+				</ng-container>
+
+				<ng-template #remainingAttempts>
+					<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
+						<div class="lead fs-5 mt-4">
+							Please ensure the information you entered is correct and try again, or use a different credit card. You
+							have
+							{{ numberOfAttemptsRemaining }} more attempt{{ numberOfAttemptsRemaining == 1 ? '' : 's' }}.
+						</div>
+						<div class="lead fs-5 my-4">
+							Alternatively, you can download the
+							<a (click)="onDownloadManualPaymentForm()">Manual Payment Form</a>. Fill it out, and follow the
+							instructions to submit it to the Security Programs Division.
+						</div>
 					</div>
-				</div>
+				</ng-template>
 			</ng-template>
 		</div>
 	`,
@@ -94,15 +118,44 @@ import { Router } from '@angular/router';
 		`,
 	],
 })
-export class PaymentFailComponent {
-	@Input() backRoute = '';
-	@Input() numberOfAttemptsRemaining = 0;
+export class PaymentFailComponent implements OnInit {
+	isBackRoute: boolean = false;
+	numberOfAttemptsRemaining = 0;
 
-	constructor(private router: Router) {}
+	@Input() isCancelledPayment = true;
 
-	onDownloadManualPaymentForm(): void {}
+	private _numberOfAttempts!: number | null;
+	@Input()
+	set numberOfAttempts(data: number | null) {
+		if (!data) {
+			this.numberOfAttemptsRemaining = 0;
+			return;
+		}
+
+		const remaining = SPD_CONSTANTS.payment.maxNumberOfAttempts - data;
+		this.numberOfAttemptsRemaining = remaining <= 0 ? 0 : remaining;
+	}
+	get numberOfAttempts(): number | null {
+		return this._numberOfAttempts;
+	}
+
+	@Output() backRoute: EventEmitter<any> = new EventEmitter();
+	@Output() payNow: EventEmitter<any> = new EventEmitter();
+	@Output() downloadManualPaymentForm: EventEmitter<any> = new EventEmitter();
+
+	ngOnInit(): void {
+		this.isBackRoute = this.backRoute.observed;
+	}
+
+	onDownloadManualPaymentForm(): void {
+		this.downloadManualPaymentForm.emit();
+	}
+
+	onPayNow(): void {
+		this.payNow.emit();
+	}
 
 	onBack(): void {
-		this.router.navigate([this.backRoute]);
+		this.backRoute.emit();
 	}
 }

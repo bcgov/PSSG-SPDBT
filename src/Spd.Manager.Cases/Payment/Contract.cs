@@ -5,17 +5,20 @@ namespace Spd.Manager.Cases.Payment
 {
     public interface IPaymentManager
     {
-        public Task<PaymentLinkResponse> Handle(PaymentLinkCreateCommand request, CancellationToken ct);
+        public Task<PaymentLinkResponse> Handle(PaymentLinkCreateCommand command, CancellationToken ct);
+        public Task<Guid> Handle(PaymentUpdateCommand command, CancellationToken ct);
+        public Task<PaymentResponse> Handle(PaymentQuery query, CancellationToken ct);
+        public Task<int> Handle(PaymentFailedAttemptCountQuery query, CancellationToken ct);
     }
 
-    public record PaymentLinkCreateCommand(PaymentLinkCreateRequest PaymentLinkCreateRequest, string RedirectUrl, string Ref1, string Ref2, string Ref3) : IRequest<PaymentLinkResponse>;
+    //payment link
+    public record PaymentLinkCreateCommand(PaymentLinkCreateRequest PaymentLinkCreateRequest, string RedirectUrl) : IRequest<PaymentLinkResponse>;
 
     public record PaymentLinkCreateRequest
     {
         [MaxLength(100)]
-        public string Description { get; set; }
+        public string Description { get; set; } = null!;
         public PaymentMethodCode PaymentMethod { get; set; } //CC-credit card, VI - debit card
-        public decimal Amount { get; set; }
         public Guid ApplicationId { get; set; }
     }
 
@@ -25,9 +28,38 @@ namespace Spd.Manager.Cases.Payment
     {
         public string PaymentLinkUrl { get; set; }
     }
-
     public enum PaymentMethodCode
     {
         CreditCard
+    }
+
+    //payment result
+    public record PaymentUpdateCommand(string QueryStr, PaybcPaymentResult PaybcPaymentResult) : IRequest<Guid>;
+    public record PaymentQuery(Guid PaymentId) : IRequest<PaymentResponse>;
+    public record PaymentFailedAttemptCountQuery(Guid ApplicationId): IRequest<int>;
+    public record PaybcPaymentResult
+    {
+        public bool Success { get; set; }
+        public string MessageText { get; set; }
+        public string TransNumber { get; set; }
+        public string TransOrderId { get; set; }
+        public DateTimeOffset TransDateTime { get; set; }
+        public decimal TransAmount { get; set; }
+        public PaymentMethodCode PaymentMethod { get; set; }
+        public string CardType { get; set; }
+        public string PaymentAuthCode { get; set; }
+        public Guid PaymentId { get; set; }
+        public Guid ApplicationId { get; set; }
+    }
+    public record PaymentResponse
+    {
+        public Guid ApplicationId { get; set; }
+        public Guid PaymentId { get; set; }
+        public string CaseNumber { get; set; }
+        public bool PaidSuccess { get; set; }
+        public string Message { get; set; }
+        public string TransOrderId { get; set; }
+        public DateTimeOffset TransDateTime { get; set; }
+        public decimal TransAmount { get; set; }
     }
 }

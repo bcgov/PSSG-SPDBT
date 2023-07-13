@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { SelectOptions } from 'src/app/core/code-types/model-desc.models';
 import { UtilService } from 'src/app/core/services/util.service';
@@ -86,7 +86,7 @@ export const ScreeningStatusFilterMap: Record<keyof ScreeningStatusFilter, strin
 		`,
 	],
 })
-export class ScreeningStatusFilterCommonComponent extends BaseFilterComponent {
+export class ScreeningStatusFilterCommonComponent extends BaseFilterComponent implements OnInit {
 	applicationPortalStatusCodes!: SelectOptions[];
 
 	@Input() formGroup: FormGroup = this.formBuilder.group({
