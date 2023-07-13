@@ -181,5 +181,8 @@ namespace Spd.Utilities.Dynamics
            => await context.contacts.Where(a => a.contactid == contactId)
             .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
             .SingleOrDefaultAsync(ct);
+
+        public static async Task<spd_payment?> GetPaymentById(this DynamicsContext context, Guid paymentId, CancellationToken ct)
+             => await context.spd_payments.Where(a => a.spd_paymentid == paymentId).SingleOrDefaultAsync(ct);
     }
 }

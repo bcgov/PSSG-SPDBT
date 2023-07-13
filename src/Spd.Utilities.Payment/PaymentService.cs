@@ -37,7 +37,7 @@ namespace Spd.Utilities.Payment
                 glDate = trnDate;
 
             string? description = HttpUtility.HtmlEncode(command.Description);
-            string trnNumber = Guid.NewGuid().ToString();
+            string trnNumber = command.TransNumber;
             string trnAmount = command.Amount.ToString();
             string paymentMethod = command.PaymentMethod.ToString();
             string redirectUrl = command.RedirectUrl;

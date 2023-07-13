@@ -7,7 +7,7 @@ namespace Spd.Manager.Cases.Payment
     {
         public Mappings()
         {
-            CreateMap<PaybcPaymentResult, CreatePaymentCmd>();
+            CreateMap<PaybcPaymentResult, UpdatePaymentCmd>();
             CreateMap<PaymentResp, PaymentResponse>();
         }
 

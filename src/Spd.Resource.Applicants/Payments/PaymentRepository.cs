@@ -33,16 +33,17 @@ internal class PaymentRepository : IPaymentRepository
             Items = _mapper.Map<IEnumerable<PaymentResp>>(result)
         };
     }
-    public async Task<PaymentResp> ManageAsync(PaymentCmd cmd, CancellationToken ct)
+    public async Task<Guid> ManageAsync(PaymentCmd cmd, CancellationToken ct)
     {
         return cmd switch
         {
+            UpdatePaymentCmd c => await PaymentUpdateAsync(c, ct),
             CreatePaymentCmd c => await PaymentCreateAsync(c, ct),
             _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
         };
     }
 
-    private async Task<PaymentResp> PaymentCreateAsync(CreatePaymentCmd cmd, CancellationToken ct)
+    private async Task<Guid> PaymentCreateAsync(CreatePaymentCmd cmd, CancellationToken ct)
     {
         spd_application? application = await _context.GetApplicationById(cmd.ApplicationId, ct);
         if (application == null)
@@ -52,10 +53,21 @@ internal class PaymentRepository : IPaymentRepository
         _context.AddTospd_payments(payment);
         _context.SetLink(payment, nameof(payment.spd_ApplicationId), application);
         await _context.SaveChangesAsync(ct);
-        PaymentResp paymentResp = _mapper.Map<PaymentResp>(payment);
-        paymentResp.CaseNumber = application.spd_name;
-        paymentResp.ApplicationId = cmd.ApplicationId;
-        return paymentResp;
+        return (Guid)payment.spd_paymentid;
+    }
+    private async Task<Guid> PaymentUpdateAsync(UpdatePaymentCmd cmd, CancellationToken ct)
+    {
+        spd_payment? payment = await _context.GetPaymentById(cmd.PaymentId, ct);
+        if (payment == null)
+            throw new ArgumentException("invalid payment id");
+
+        if (payment.spd_transactionid != cmd.TransNumber)
+            throw new ArgumentException("invalid payment transaction");
+
+        payment = _mapper.Map<UpdatePaymentCmd, spd_payment>(cmd, payment);
+        _context.UpdateObject(payment);
+        await _context.SaveChangesAsync(ct);
+        return (Guid)payment.spd_paymentid;
     }
 
 

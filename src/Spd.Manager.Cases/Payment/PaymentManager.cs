@@ -4,13 +4,15 @@ using Microsoft.Extensions.Caching.Distributed;
 using Spd.Resource.Applicants.Payment;
 using Spd.Resource.Organizations.Config;
 using Spd.Utilities.Payment;
+using Spd.Utilities.Shared.Exceptions;
+using System.Net;
 using System.Text;
 
 namespace Spd.Manager.Cases.Payment
 {
     internal class PaymentManager :
         IRequestHandler<PaymentLinkCreateCommand, PaymentLinkResponse>,
-        IRequestHandler<PaymentCreateCommand, PaymentResponse>,
+        IRequestHandler<PaymentUpdateCommand, Guid>,
         IRequestHandler<PaymentQuery, PaymentResponse>,
         IPaymentManager
     {
@@ -20,9 +22,9 @@ namespace Spd.Manager.Cases.Payment
         private readonly IPaymentRepository _paymentRepository;
         private readonly IMapper _mapper;
 
-        public PaymentManager(IPaymentService paymentService, 
-            IConfigRepository configRepository, 
-            IDistributedCache cache, 
+        public PaymentManager(IPaymentService paymentService,
+            IConfigRepository configRepository,
+            IDistributedCache cache,
             IPaymentRepository paymentRepository,
             IMapper mapper)
         {
@@ -66,6 +68,18 @@ namespace Spd.Manager.Cases.Payment
                 cost = config.Value;
                 _cache.Set("serviceCost", Encoding.UTF8.GetBytes(cost), new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = new TimeSpan(1, 0, 0) });
             }
+            decimal price = Decimal.Round(Decimal.Parse(cost), 2);
+            string transNumber = Guid.NewGuid().ToString();
+
+            //create payment
+            Guid paymentId = await _paymentRepository.ManageAsync(
+                new CreatePaymentCmd()
+                {
+                    ApplicationId = command.PaymentLinkCreateRequest.ApplicationId,
+                    PaymentMethod = Resource.Applicants.Payment.PaymentMethodEnum.CreditCard,
+                    TransAmount = price,
+                    TransNumber = transNumber,
+                }, ct);
 
             //generate the link string 
             //payment utility
@@ -73,14 +87,14 @@ namespace Spd.Manager.Cases.Payment
                 new CreateDirectPaymentLinkCommand
                 {
                     RevenueAccount = revenueAccount,
+                    TransNumber = transNumber,
                     PbcRefNumber = pbcRef,
-                    Amount = Decimal.Round(Decimal.Parse(cost), 2),
+                    Amount = price,
                     Description = command.PaymentLinkCreateRequest.Description,
                     PaymentMethod = Spd.Utilities.Payment.PaymentMethodEnum.CC,
                     RedirectUrl = command.RedirectUrl,
-                    Ref1 = command.Ref1,
-                    Ref2 = command.Ref2,
-                    Ref3 = command.Ref3
+                    Ref1 = paymentId.ToString(), //put payment id to ref1
+                    Ref2 = command.PaymentLinkCreateRequest.ApplicationId.ToString(), //application id to ref2
                 });
 
 
@@ -90,15 +104,19 @@ namespace Spd.Manager.Cases.Payment
             };
         }
 
-        public async Task<PaymentResponse> Handle(PaymentCreateCommand command, CancellationToken ct)
+        public async Task<Guid> Handle(PaymentUpdateCommand command, CancellationToken ct)
         {
             //validate hashcode
-            var validated = _paymentService.HandleCommand(new ValidatePaymentResultStrCommand() {QueryStr = command.QueryStr });
+            ValidationResult validated = (ValidationResult)_paymentService.HandleCommand(new ValidatePaymentResultStrCommand() { QueryStr = command.QueryStr });
+            if (!validated.ValidationPassed)
+            {
+                throw new ApiException(HttpStatusCode.InternalServerError, "payment result from paybc is not validated.");
+            }
 
-            var cmd = _mapper.Map<CreatePaymentCmd>(command.PaybcPaymentResult);
+            var cmd = _mapper.Map<UpdatePaymentCmd>(command.PaybcPaymentResult);
+            cmd.PaymentId = command.PaymentId;
             cmd.ApplicationId = command.ApplicationId;
-            var resp = await _paymentRepository.ManageAsync(cmd, ct);
-            return _mapper.Map<PaymentResponse>(resp);
+            return await _paymentRepository.ManageAsync(cmd, ct);
         }
 
         public async Task<PaymentResponse> Handle(PaymentQuery query, CancellationToken ct)

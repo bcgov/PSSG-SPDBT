@@ -255,9 +255,7 @@ namespace Spd.Presentation.Screening.Controllers
         {
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
             string redirectUrl = $"{hostUrl}api/applicants/screenings/payment-result";
-            string tag1 = paymentLinkCreateRequest.ApplicationId.ToString();//put applicationId in ref1
-            string? tag2 = null;//_currentUser.GetApplicantIdentityInfo().Sub; //need poc to test.
-            return await _mediator.Send(new PaymentLinkCreateCommand(paymentLinkCreateRequest, redirectUrl, tag1, tag2, null));
+            return await _mediator.Send(new PaymentLinkCreateCommand(paymentLinkCreateRequest, redirectUrl));
         }
 
         /// <summary>
@@ -273,8 +271,8 @@ namespace Spd.Presentation.Screening.Controllers
             [FromQuery] string? paymentMethod,
             [FromQuery] string? cardType,
             [FromQuery] string? trnDate,
-            [FromQuery] string? ref1,
-            [FromQuery] string? ref2,
+            [FromQuery] string? ref1, //paymentId
+            [FromQuery] string? ref2, //applicationId
             [FromQuery] string? ref3,
             [FromQuery] string? pbcTxnNumber,
             [FromQuery] string? trnNumber,
@@ -284,8 +282,6 @@ namespace Spd.Presentation.Screening.Controllers
             [FromQuery] string? paymentAuthCode,
             [FromQuery] string? revenue)
         {
-            //todo: hashValue validation.
-            //same transactionNumber duplicate check.
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
             string? successPath = _configuration.GetValue<string>("ApplicantPortalPaymentSuccessPath");
             string? failPath = _configuration.GetValue<string>("ApplicantPortalPaymentFailPath");
@@ -304,8 +300,8 @@ namespace Spd.Presentation.Screening.Controllers
                     TransOrderId = trnOrderId,
                     TransDate = DateTimeOffset.ParseExact(trnDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)
                 };
-                var response = await _mediator.Send(new PaymentCreateCommand(Request.QueryString.ToString(), paybcPayment, Guid.Parse(ref1)));
-                return Redirect($"{hostUrl}{successPath}{response.PaymentId}");
+                var paymentId = await _mediator.Send(new PaymentUpdateCommand(Request.QueryString.ToString(), paybcPayment, Guid.Parse(ref1), Guid.Parse(ref2)));
+                return Redirect($"{hostUrl}{successPath}{paymentId}");
             }
             else
             {
@@ -323,8 +319,8 @@ namespace Spd.Presentation.Screening.Controllers
                         TransOrderId = trnOrderId,
                         TransDate = DateTimeOffset.ParseExact(trnDate, "yyyy-MM-dd", CultureInfo.InvariantCulture)
                     };
-                    var response = await _mediator.Send(new PaymentCreateCommand(Request.QueryString.ToString(), paybcPayment, Guid.Parse(ref1)));
-                    return Redirect($"{hostUrl}{failPath}{response.PaymentId}");
+                    var paymentId = await _mediator.Send(new PaymentUpdateCommand(Request.QueryString.ToString(), paybcPayment, Guid.Parse(ref1), Guid.Parse(ref2)));
+                    return Redirect($"{hostUrl}{failPath}{paymentId}");
                 }
                 else
                 {

@@ -13,7 +13,7 @@ namespace Spd.Utilities.Payment
     {
         public string RevenueAccount { get; set; } = null!;
         public string PbcRefNumber { get; set; } = null!;
-
+        public string TransNumber { get; set; } = null!;
         [MaxLength(100)]
         public string? Description { get; set; }
         public PaymentMethodEnum PaymentMethod { get; set; } //CC-credit card, VI - debit card

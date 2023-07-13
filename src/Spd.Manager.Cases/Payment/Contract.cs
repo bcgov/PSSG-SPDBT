@@ -6,12 +6,12 @@ namespace Spd.Manager.Cases.Payment
     public interface IPaymentManager
     {
         public Task<PaymentLinkResponse> Handle(PaymentLinkCreateCommand command, CancellationToken ct);
-        public Task<PaymentResponse> Handle(PaymentCreateCommand command, CancellationToken ct);
+        public Task<Guid> Handle(PaymentUpdateCommand command, CancellationToken ct);
         public Task<PaymentResponse> Handle(PaymentQuery query, CancellationToken ct);
     }
 
     //payment link
-    public record PaymentLinkCreateCommand(PaymentLinkCreateRequest PaymentLinkCreateRequest, string RedirectUrl, string Ref1, string Ref2, string Ref3) : IRequest<PaymentLinkResponse>;
+    public record PaymentLinkCreateCommand(PaymentLinkCreateRequest PaymentLinkCreateRequest, string RedirectUrl) : IRequest<PaymentLinkResponse>;
 
     public record PaymentLinkCreateRequest
     {
@@ -33,7 +33,7 @@ namespace Spd.Manager.Cases.Payment
     }
 
     //payment result
-    public record PaymentCreateCommand(string QueryStr, PaybcPaymentResult PaybcPaymentResult, Guid ApplicationId) : IRequest<PaymentResponse>;
+    public record PaymentUpdateCommand(string QueryStr, PaybcPaymentResult PaybcPaymentResult, Guid PaymentId, Guid ApplicationId) : IRequest<Guid>;
     public record PaymentQuery(Guid PaymentId) : IRequest<PaymentResponse>;
     public record PaybcPaymentResult
     {
