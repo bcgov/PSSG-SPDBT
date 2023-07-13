@@ -276,6 +276,7 @@ export class OrganizationProfileComponent implements OnInit {
 	ngOnInit(): void {
 		const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
 		if (!orgId) {
+			console.debug('OrganizationProfileComponent - orgId', orgId);
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 			return;
 		}

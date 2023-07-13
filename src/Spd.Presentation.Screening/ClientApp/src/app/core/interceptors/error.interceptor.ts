@@ -25,6 +25,7 @@ export class ErrorInterceptor implements HttpInterceptor {
 						errorResponse.url?.includes(ApplicantService.ApiApplicantsUserinfoGetPath) ||
 						errorResponse.url?.includes(ApplicantService.ApiApplicantsInvitesPostPath))
 				) {
+					console.debug('ErrorInterceptor - 401 and whoami/userinfo/invites');
 					this.router.navigate([AppRoutes.ACCESS_DENIED]);
 					return throwError(() => new Error(message));
 				}

@@ -280,6 +280,10 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 
 	ngOnInit() {
 		if (!this.authUserService.bceidUserInfoProfile?.orgId) {
+			console.debug(
+				'ScreeningStatusesCommonComponent - bceidUserInfoProfile missing orgId',
+				this.authUserService.bceidUserInfoProfile
+			);
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 			return;
 		}

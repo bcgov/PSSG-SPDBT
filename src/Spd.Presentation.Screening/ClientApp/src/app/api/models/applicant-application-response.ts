@@ -11,6 +11,7 @@ export interface ApplicantApplicationResponse {
   createdOn?: null | string;
   dateOfBirth?: null | string;
   emailAddress?: null | string;
+  failedPaymentAttempts?: number;
   givenName?: null | string;
   haveVerifiedIdentity?: null | boolean;
   id?: string;

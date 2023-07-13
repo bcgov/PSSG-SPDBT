@@ -74,7 +74,8 @@ namespace Spd.Manager.Cases.Application
             CreateMap<DocumentResp, ApplicantAppFileCreateResponse>();
             CreateMap<ApplicationResult, ApplicantApplicationResponse>()
                 .ForMember(d => d.Status, opt => opt.MapFrom(s => GetApplicationPortalStatusCode(s.ApplicationPortalStatus)))
-                .ForMember(d => d.CaseSubStatus, opt => opt.MapFrom(s => GetCaseSubStatusCode(s.CaseSubStatus)));
+                .ForMember(d => d.CaseSubStatus, opt => opt.MapFrom(s => GetCaseSubStatusCode(s.CaseSubStatus)))
+                .ForMember(d => d.FailedPaymentAttempts, opt => opt.MapFrom(s => s.NumberOfAttempts ?? 0));
 
         }
 

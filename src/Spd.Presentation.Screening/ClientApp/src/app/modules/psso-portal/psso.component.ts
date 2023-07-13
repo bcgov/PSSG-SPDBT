@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { IsActiveMatchOptions, QueryParamsHandling, Router } from '@angular/router';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { PssoRoutes } from './psso-routing.module';
@@ -93,7 +93,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 		`,
 	],
 })
-export class PssoComponent {
+export class PssoComponent implements OnInit {
 	isAuthenticated$ = this.authProcessService.waitUntilAuthentication$;
 	pssoRoutes = PssoRoutes;
 

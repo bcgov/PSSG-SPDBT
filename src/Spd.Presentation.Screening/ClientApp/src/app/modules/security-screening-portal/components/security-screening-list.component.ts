@@ -5,8 +5,11 @@ import { Router } from '@angular/router';
 import {
 	ApplicantApplicationListResponse,
 	ApplicantApplicationResponse,
+	ApplicantPaymentLinkCreateRequest,
 	ApplicationPortalStatusCode,
 	CaseSubStatusCode,
+	PaymentLinkResponse,
+	PaymentMethodCode,
 } from 'src/app/api/models';
 import { ApplicantService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
@@ -18,6 +21,8 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 export interface ApplicantApplicationStatusResponse extends ApplicantApplicationResponse {
 	applicationPortalStatusClass: string;
 	actionAlert: string | null;
+	isPayManual: boolean;
+	isPayNow: boolean;
 }
 @Component({
 	selector: 'app-security-screening-list',
@@ -123,11 +128,21 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
 								class="table-button"
 								style="color: var(--color-green);"
 								aria-label="Pay now"
-								*ngIf="application.status == applicationPortalStatusCodes.AwaitingPayment"
+								*ngIf="application.isPayNow"
 							>
 								<mat-icon>payment</mat-icon>Pay Now
 							</button>
-							<!-- <div *ngIf="application.status != applicationPortalStatusCodes.AwaitingPayment">None</div> -->
+
+							<button
+								mat-flat-button
+								(click)="onPayManually()"
+								class="table-button"
+								style="color: var(--color-red);"
+								aria-label="Pay manually"
+								*ngIf="application.isPayManual"
+							>
+								<mat-icon>payment</mat-icon>Pay Manually
+							</button>
 						</mat-cell>
 					</ng-container>
 
@@ -199,6 +214,10 @@ export class SecurityScreeningListComponent implements OnInit {
 
 	ngOnInit() {
 		if (!this.authUserService.bcscUserWhoamiProfile?.applicantId) {
+			console.debug(
+				'SecurityScreeningListComponent - bcscUserWhoamiProfile missing applicantId',
+				this.authUserService.bcscUserWhoamiProfile
+			);
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 			return;
 		}
@@ -217,36 +236,31 @@ export class SecurityScreeningListComponent implements OnInit {
 	}
 
 	onPayNow(application: ApplicantApplicationStatusResponse): void {
-		// const body: ApplicantPaymentLinkCreateRequest = {
-		// 	applicationId: application.id!,
-		// 	paymentMethod: PaymentMethodCode.CreditCard,
-		// 	amount: 123,
-		// 	description: `Payment for Case ID: ${application.applicationNumber}`,
-		// };
-		// this.applicantService
-		// 	.apiApplicantsScreeningsApplicationIdPaymentLinkPost({
-		// 		applicationId: application.id!,
-		// 		body,
-		// 	})
-		// 	.pipe()
-		// 	.subscribe((res: PaymentLinkResponse) => {
-		// 		if (res.paymentLinkUrl) {
-		// 			console.log('res.paymentLinkUrl', res.paymentLinkUrl);
-		// 			window.location.assign(res.paymentLinkUrl);
-		// 		}
-		// 	});
+		const body: ApplicantPaymentLinkCreateRequest = {
+			applicationId: application.id!,
+			paymentMethod: PaymentMethodCode.CreditCard,
+			description: `Payment for Case ID: ${application.applicationNumber}`,
+		};
+
+		this.applicantService
+			.apiApplicantsScreeningsApplicationIdPaymentLinkPost({
+				applicationId: application.id!,
+				body,
+			})
+			.pipe()
+			.subscribe((res: PaymentLinkResponse) => {
+				if (res.paymentLinkUrl) {
+					window.location.assign(res.paymentLinkUrl);
+				}
+			});
+	}
+
+	onPayManually(): void {
+		this.router.navigate([SecurityScreeningRoutes.path(SecurityScreeningRoutes.PAYMENT_MANUAL)]);
 	}
 
 	onDownloadClearanceLetter(clearance: any) {
-		// this.applicationService
-		// 	.apiOrgsOrgIdClearancesClearanceIdFileGet$Response({
-		// 		clearanceId: clearance.clearanceId!,
-		// 		orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
-		// 	})
-		// 	.pipe()
-		// 	.subscribe((resp: StrictHttpResponse<Blob>) => {
-		// 		this.utilService.downloadFile(resp.headers, resp.body);
-		// 	});
+		//TODO handle clearance letter
 	}
 
 	private loadList(): void {
@@ -275,6 +289,15 @@ export class SecurityScreeningListComponent implements OnInit {
 
 				this.allApplications.forEach((app: ApplicantApplicationStatusResponse) => {
 					app.applicationPortalStatusClass = this.utilService.getApplicationPortalStatusClass(app.status);
+
+					if (app.status != ApplicationPortalStatusCode.AwaitingPayment) {
+						app.isPayManual = false;
+						app.isPayNow = false;
+					} else {
+						const numberOfAttempts = app.failedPaymentAttempts ?? 0;
+						app.isPayManual = numberOfAttempts >= SPD_CONSTANTS.payment.maxNumberOfAttempts;
+						app.isPayNow = numberOfAttempts < SPD_CONSTANTS.payment.maxNumberOfAttempts;
+					}
 
 					let documentsRequiredCount = 0;
 					if (app.status == ApplicationPortalStatusCode.AwaitingApplicant) {

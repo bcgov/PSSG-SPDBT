@@ -220,6 +220,7 @@ export class CrcComponent implements OnInit {
 		}
 
 		if (!this.orgData) {
+			console.debug('CrcComponent - missing orgData');
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 		}
 	}

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 
@@ -13,7 +13,7 @@ import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 	`,
 	styles: [],
 })
-export class SecurityScreeningComponent {
+export class SecurityScreeningComponent implements OnInit {
 	isAuthenticated$ = this.authProcessService.waitUntilAuthentication$;
 
 	constructor(private authProcessService: AuthProcessService, private router: Router) {}
