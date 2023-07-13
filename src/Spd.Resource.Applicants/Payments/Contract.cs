@@ -20,7 +20,7 @@ namespace Spd.Resource.Applicants.Payment
         public bool PaidSuccess { get; set; }
         public string Message { get; set; }
         public string? TransOrderId { get; set; }
-        public DateTime TransDateTime { get; set; }
+        public DateTimeOffset TransDateTime { get; set; }
         public decimal TransAmount { get; set; }
     }
 

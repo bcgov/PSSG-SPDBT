@@ -27,10 +27,9 @@ internal class PaymentRepository : IPaymentRepository
 
         var result = await payments.GetAllPagesAsync(ct);
         result = result.OrderByDescending(a => a.createdon);
-
         return new PaymentListResp
         {
-            Items = _mapper.Map<IEnumerable<PaymentResp>>(result)
+            Items = _mapper.Map<IEnumerable<PaymentResp>>(result.ToList())
         };
     }
     public async Task<Guid> ManageAsync(PaymentCmd cmd, CancellationToken ct)
