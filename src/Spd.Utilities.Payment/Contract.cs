@@ -1,12 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Spd.Utilities.Payment
 {
     public interface IPaymentService
     {
-        Task<PaymentResult> HandleCommand(PaymentCommand cmd, CancellationToken cancellationToken);
+        PaymentResult HandleCommand(PaymentCommand cmd);
     }
 
     public interface PaymentCommand { };
@@ -15,7 +13,7 @@ namespace Spd.Utilities.Payment
     {
         public string RevenueAccount { get; set; } = null!;
         public string PbcRefNumber { get; set; } = null!;
-
+        public string TransNumber { get; set; } = null!;
         [MaxLength(100)]
         public string? Description { get; set; }
         public PaymentMethodEnum PaymentMethod { get; set; } //CC-credit card, VI - debit card
@@ -33,5 +31,13 @@ namespace Spd.Utilities.Payment
     {
         CC, //credit card
         DI //debit card
+    }
+    public class ValidatePaymentResultStrCommand : PaymentCommand
+    {
+        public string QueryStr { get; set; } = null!;
+    }
+    public class ValidationResult : PaymentResult
+    {
+        public bool ValidationPassed { get; set; }
     }
 }

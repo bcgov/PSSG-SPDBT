@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { IsActiveMatchOptions, QueryParamsHandling, Router } from '@angular/router';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
@@ -173,7 +173,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 		`,
 	],
 })
-export class CrrpComponent {
+export class CrrpComponent implements OnInit {
 	isAuthenticated = this.authProcessService.waitUntilAuthentication$;
 	crrpRoutes = CrrpRoutes;
 

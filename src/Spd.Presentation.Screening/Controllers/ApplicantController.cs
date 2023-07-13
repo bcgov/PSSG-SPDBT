@@ -1,3 +1,4 @@
+using AutoMapper;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -24,16 +25,22 @@ namespace Spd.Presentation.Screening.Controllers
         private readonly IPrincipal _currentUser;
         private readonly IRecaptchaVerificationService _verificationService;
         private readonly IConfiguration _configuration;
+        private readonly ILogger<ApplicationController> _logger;
+        private readonly IMapper _mapper;
 
         public ApplicantController(IMediator mediator,
             IPrincipal currentUser,
             IRecaptchaVerificationService verificationService,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            ILogger<ApplicationController> logger,
+            IMapper mapper)
         {
             _mediator = mediator;
             _currentUser = currentUser;
             _verificationService = verificationService;
             _configuration = configuration;
+            _logger = logger;
+            _mapper = mapper;
         }
 
         #region application-invites
@@ -244,17 +251,63 @@ namespace Spd.Presentation.Screening.Controllers
         /// </summary>
         /// <param name="ApplicantPaymentLinkCreateRequest">which include Payment link create request</param>
         /// <returns></returns>
-        [Route("api/applicants/screenings/{applicationId}/paymentLink")]
+        [Route("api/applicants/screenings/{applicationId}/payment-link")]
         [HttpPost]
         [Authorize(Policy = "OnlyBcsc")]
         public async Task<PaymentLinkResponse> GetPaymentLink([FromBody][Required] ApplicantPaymentLinkCreateRequest paymentLinkCreateRequest)
         {
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
-            string? path = _configuration.GetValue<string>("ApplicantPortalPath");
-            string redirectUrl = $"{hostUrl}{path}payment-result";
-            string tag1 = paymentLinkCreateRequest.ApplicationId.ToString();
-            string? tag2 = _currentUser.GetApplicantIdentityInfo().Sub; //need poc to test.
-            return await _mediator.Send(new PaymentLinkCreateCommand(paymentLinkCreateRequest, redirectUrl, tag1, tag2, null));
+            string redirectUrl = $"{hostUrl}api/applicants/screenings/payment-result";
+            return await _mediator.Send(new PaymentLinkCreateCommand(paymentLinkCreateRequest, redirectUrl));
+        }
+
+        /// <summary>
+        /// redirect url for paybc to redirect to
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/applicants/screenings/payment-result")]
+        [HttpGet]
+        public async Task<ActionResult> ProcessPaymentResult([FromQuery] PaybcPaymentResultViewModel paybcResult)
+        {
+            string? hostUrl = _configuration.GetValue<string>("HostUrl");
+            string? successPath = _configuration.GetValue<string>("ApplicantPortalPaymentSuccessPath");
+            string? failPath = _configuration.GetValue<string>("ApplicantPortalPaymentFailPath");
+            string? cancelPath = _configuration.GetValue<string>("ApplicantPortalPaymentCancelPath");
+
+            PaybcPaymentResult paybcPaymentResult = _mapper.Map<PaybcPaymentResult>(paybcResult);
+
+            if (paybcPaymentResult.Success == false && paybcPaymentResult.MessageText == "Payment Canceled")
+                return Redirect($"{hostUrl}{cancelPath}");
+
+            var paymentId = await _mediator.Send(new PaymentUpdateCommand(Request.QueryString.ToString(), paybcPaymentResult));
+            if (paybcPaymentResult.Success)
+                return Redirect($"{hostUrl}{successPath}{paymentId}");
+
+            return Redirect($"{hostUrl}{failPath}{paymentId}");
+        }
+
+        /// <summary>
+        /// Get the payment result for application and payment
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/applicants/screenings/payments/{paymentId}")]
+        [HttpGet]
+        [Authorize(Policy = "OnlyBcsc")]
+        public async Task<PaymentResponse> GetPaymentResult([FromRoute] Guid paymentId)
+        {
+            return await _mediator.Send(new PaymentQuery(paymentId));
+        }
+
+        /// <summary>
+        /// Get the payment result for application and payment
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/applicants/screenings/{applicationId}/payment-attempts")]
+        [HttpGet]
+        [Authorize(Policy = "OnlyBcsc")]
+        public async Task<int> GetFailedPaymentAttempts([FromRoute] Guid applicationId)
+        {
+            return await _mediator.Send(new PaymentFailedAttemptCountQuery(applicationId));
         }
         #endregion
     }
@@ -291,6 +344,26 @@ public class ApplicantUserInfo
     public bool? EmailVerified { get; set; }
 }
 
+public class PaybcPaymentResultViewModel
+{
+    public int trnApproved { get; set; }
+    public string? messageText { get; set; }
+    public string? cardType { get; set; }
+    public string? trnOrderId { get; set; }
+    public string? trnAmount { get; set; }
+    public string? paymentMethod { get; set; }
+    public string? trnDate { get; set; }
+    public string? ref1 { get; set; }
+    public string? ref2 { get; set; }
+    public string? ref3 { get; set; }
+    public string? pbcTxnNumber { get; set; }
+    public string? trnNumber { get; set; }
+    public string? hashValue { get; set; }
+    public string? pbcRefNumber { get; set; }
+    public string? glDate { get; set; }
+    public string? paymentAuthCode { get; set; }
+    public string? revenue { get; set; }
+}
 
 
 

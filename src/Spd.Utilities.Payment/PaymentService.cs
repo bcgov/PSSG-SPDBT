@@ -1,9 +1,8 @@
 ﻿using Microsoft.Extensions.Options;
 using System;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Web;
 
 namespace Spd.Utilities.Payment
@@ -16,16 +15,17 @@ namespace Spd.Utilities.Payment
         {
             _config = config.Value;
         }
-        public async Task<PaymentResult> HandleCommand(PaymentCommand cmd, CancellationToken ct)
+        public PaymentResult HandleCommand(PaymentCommand cmd)
         {
             return cmd switch
             {
-                CreateDirectPaymentLinkCommand c => await CreateDirectPaymentLinkAsync(c, ct),
+                CreateDirectPaymentLinkCommand c => CreateDirectPaymentLink(c),
+                ValidatePaymentResultStrCommand c => ValidatePaymentResultStr(c),
                 _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
             };
         }
 
-        public async Task<CreateDirectPaymentLinkResult> CreateDirectPaymentLinkAsync(CreateDirectPaymentLinkCommand command, CancellationToken ct)
+        public CreateDirectPaymentLinkResult CreateDirectPaymentLink(CreateDirectPaymentLinkCommand command)
         {
             string trnDate = DateTime.Now.Date.ToString("yyyy-MM-dd");
             string pbcRefNumber = command.PbcRefNumber;
@@ -37,7 +37,7 @@ namespace Spd.Utilities.Payment
                 glDate = trnDate;
 
             string? description = HttpUtility.HtmlEncode(command.Description);
-            string trnNumber = Guid.NewGuid().ToString();
+            string trnNumber = command.TransNumber;
             string trnAmount = command.Amount.ToString();
             string paymentMethod = command.PaymentMethod.ToString();
             string redirectUrl = command.RedirectUrl;
@@ -75,6 +75,34 @@ namespace Spd.Utilities.Payment
             {
                 PaymentLinkUrl = uriBuilder.Uri.ToString(),
             };
+        }
+
+        public ValidationResult ValidatePaymentResultStr(ValidatePaymentResultStrCommand command)
+        {
+            string apikey = _config.APIKey;
+            string queryStr = command.QueryStr;
+            string[] queries = queryStr.Split("&");
+            string hashvalueStr = queries.FirstOrDefault(q => q.StartsWith("hashValue="));
+            if (hashvalueStr == null)
+            {
+                return new ValidationResult() { ValidationPassed = false };
+            }
+            string expectedHashValue = hashvalueStr.Split("=").Last();
+            int pos = queryStr.LastIndexOf(hashvalueStr);
+            string query = queryStr.Substring(1, pos-2);
+            StringBuilder sb = new StringBuilder();
+            using (MD5 md5 = MD5.Create())
+            {
+                string str = $"{query}{apikey}";
+                byte[] hash = md5.ComputeHash(Encoding.UTF8.GetBytes(str));
+                // Convert the byte array to string format
+                foreach (byte b in hash)
+                {
+                    sb.Append($"{b:x2}");
+                }
+            }
+            string calculatedHash = sb.ToString();
+            return new ValidationResult() { ValidationPassed = calculatedHash.Equals(expectedHashValue) };
         }
     }
 }

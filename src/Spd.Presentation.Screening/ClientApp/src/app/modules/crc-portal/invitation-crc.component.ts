@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppInviteVerifyRequest } from 'src/app/api/models';
 import { ApplicantService } from 'src/app/api/services';
@@ -29,7 +29,7 @@ import { CrcRoutes } from './crc-routing.module';
 		`,
 	],
 })
-export class InvitationCrcComponent {
+export class InvitationCrcComponent implements OnInit {
 	message = '';
 
 	constructor(private route: ActivatedRoute, private router: Router, private applicantService: ApplicantService) {}

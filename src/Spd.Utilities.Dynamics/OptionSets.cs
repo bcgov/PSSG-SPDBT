@@ -194,4 +194,29 @@ namespace Spd.Utilities.Dynamics
         Contractor = 100000001,
         Licensee = 100000002
     }
+
+    public enum PaymentTypeOptionSet
+    {
+        PayBC = 100000000,
+        Cash = 100000001,
+        CreditCard = 100000002,
+        MoneyOrder = 100000003,
+        Cheque = 100000004,
+        CertifiedCheque = 100000005,
+        CreditAccount = 100000006,
+        JournalVoucher = 100000008,
+        NoPayment = 100000007,
+    }
+
+    public enum ResponseOptionSet
+    {
+        Success = 100000000,
+        Failure = 100000001,
+    }
+
+    public enum PaymentStatusCodeOptionSet
+    {
+        Successful = 2,
+        Failure = 100000000,
+    }
 }

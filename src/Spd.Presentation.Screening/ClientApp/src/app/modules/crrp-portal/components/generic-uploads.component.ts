@@ -144,6 +144,7 @@ export class GenericUploadsComponent implements OnInit {
 	ngOnInit() {
 		const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
 		if (!orgId) {
+			console.debug('GenericUploadsComponent - orgId', orgId);
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 			return;
 		}
