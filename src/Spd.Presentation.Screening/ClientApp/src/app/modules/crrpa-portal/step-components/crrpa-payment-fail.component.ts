@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 
 @Component({
-	selector: 'app-crc-payment-success',
+	selector: 'app-crrpa-payment-fail',
 	template: `
 		<div class="container mt-4">
 			<section class="step-section pt-4 pb-4 px-3">
-				<app-payment-success [isApplicationReceived]="true"></app-payment-success>
+				<app-payment-fail></app-payment-fail>
 			</section>
 		</div>
 	`,
 	styles: [],
 })
-export class CrcPaymentSuccessComponent {}
+export class CrrpaPaymentFailComponent {}

@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { GenderTypes } from 'src/app/core/code-types/model-desc.models';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { AppInviteOrgData, CrcFormStepComponent } from '../crc.component';
+import { AppInviteOrgData, CrcFormStepComponent } from '../crrpa.component';
 
 @Component({
 	selector: 'app-personal-information',

@@ -20,7 +20,7 @@ import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
-import { CrcRoutes } from './crc-routing.module';
+import { CrrpaRoutes } from './crrpa-routing.module';
 import { StepApplSubmittedComponent } from './steps/step-appl-submitted.component';
 import { StepEligibilityComponent } from './steps/step-eligibility.component';
 import { StepLoginOptionsComponent } from './steps/step-login-options.component';
@@ -202,7 +202,7 @@ export class CrcComponent implements OnInit {
 			orgData.readonlyTombstone = false; // default
 		}
 
-		const stateInfo = await this.authProcessService.tryInitializeCrc();
+		const stateInfo = await this.authProcessService.tryInitializeCrrpa();
 		if (stateInfo) {
 			this.postLoginNavigate(stateInfo);
 		} else {
@@ -295,7 +295,7 @@ export class CrcComponent implements OnInit {
 		// const decodedData = decodeURIComponent(authInfo.state);
 		this.utilService.setSessionData(this.utilService.CRC_PORTAL_STATE_KEY, stateInfo);
 
-		const nextUrl = await this.authProcessService.initializeCrc();
+		const nextUrl = await this.authProcessService.initializeCrrpa();
 		if (nextUrl) {
 			// User is already logged in and clicks Login button.
 			// Want it to start at the beginning and continue past login page.
@@ -374,8 +374,8 @@ export class CrcComponent implements OnInit {
 				.pipe()
 				.subscribe((_res: ApplicationCreateResponse) => {
 					if (this.orgData!.performPaymentProcess) {
-						this.router.navigate([CrcRoutes.path(CrcRoutes.PAYMENT_SUCCESS)]); // TODO Handle PAYMENT
-						// this.router.navigate([CrcRoutes.path(CrcRoutes.PAYMENT_FAIL)]);
+						this.router.navigate([CrrpaRoutes.path(CrrpaRoutes.PAYMENT_SUCCESS)]); // TODO Handle PAYMENT
+						// this.router.navigate([CrrpaRoutes.path(CrrpaRoutes.PAYMENT_FAIL)]);
 					} else {
 						this.stepper.next();
 					}
@@ -387,8 +387,8 @@ export class CrcComponent implements OnInit {
 				.pipe()
 				.subscribe((_res: ApplicationCreateResponse) => {
 					if (this.orgData!.performPaymentProcess) {
-						this.router.navigate([CrcRoutes.path(CrcRoutes.PAYMENT_SUCCESS)]); // TODO Handle PAYMENT
-						// this.router.navigate([CrcRoutes.path(CrcRoutes.PAYMENT_FAIL)]);
+						this.router.navigate([CrrpaRoutes.path(CrrpaRoutes.PAYMENT_SUCCESS)]); // TODO Handle PAYMENT
+						// this.router.navigate([CrrpaRoutes.path(CrrpaRoutes.PAYMENT_FAIL)]);
 					} else {
 						this.stepper.next();
 					}

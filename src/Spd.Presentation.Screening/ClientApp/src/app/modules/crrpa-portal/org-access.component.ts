@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { OrgService } from 'src/app/api/services';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
-import { CrcRoutes } from './crc-routing.module';
+import { CrrpaRoutes } from './crrpa-routing.module';
 
 @Component({
 	selector: 'app-org-access',
@@ -95,7 +95,7 @@ export class OrgAccessComponent {
 
 		this.orgService.apiOrgsAccessCodeAccessCodeGet$Response({ accessCode: this.form.value.accessCode }).subscribe({
 			next: (resp) => {
-				this.router.navigateByUrl(`/${CrcRoutes.MODULE_PATH}`, { state: { crcaOrgData: resp.body } });
+				this.router.navigateByUrl(`/${CrrpaRoutes.MODULE_PATH}`, { state: { crcaOrgData: resp.body } });
 			},
 			error: (error) => {
 				// only 404 will be here as an error

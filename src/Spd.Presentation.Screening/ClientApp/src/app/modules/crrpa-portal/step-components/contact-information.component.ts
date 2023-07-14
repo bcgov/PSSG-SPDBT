@@ -5,7 +5,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { AppInviteOrgData, CrcFormStepComponent } from '../crc.component';
+import { AppInviteOrgData, CrcFormStepComponent } from '../crrpa.component';
 
 @Component({
 	selector: 'app-contact-information',

@@ -5,7 +5,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { CaptchaResponse, CaptchaResponseType } from 'src/app/shared/components/captcha-v2.component';
-import { AppInviteOrgData, CrcFormStepComponent } from '../crc.component';
+import { AppInviteOrgData, CrcFormStepComponent } from '../crrpa.component';
 
 export class DeclarationModel {
 	agreeToCompleteAndAccurate: string | null = null;

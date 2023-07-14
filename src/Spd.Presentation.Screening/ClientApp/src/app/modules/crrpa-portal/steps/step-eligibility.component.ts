@@ -1,6 +1,6 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
-import { AppInviteOrgData } from '../crc.component';
+import { AppInviteOrgData } from '../crrpa.component';
 
 @Component({
 	selector: 'app-step-eligibility',
