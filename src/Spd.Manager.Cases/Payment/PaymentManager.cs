@@ -1,5 +1,6 @@
 using AutoMapper;
 using MediatR;
+using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.Payment;
@@ -16,7 +17,7 @@ namespace Spd.Manager.Cases.Payment
         IRequestHandler<PaymentUpdateCommand, Guid>,
         IRequestHandler<PaymentQuery, PaymentResponse>,
         IRequestHandler<PaymentFailedAttemptCountQuery, int>,
-        
+
         IPaymentManager
     {
         private readonly IPaymentService _paymentService;
@@ -45,10 +46,10 @@ namespace Spd.Manager.Cases.Payment
         {
             //validation
             var app = await _appRepository.QueryApplicationAsync(new ApplicationQry(command.PaymentLinkCreateRequest.ApplicationId), ct);
-            if(app.PaidOn != null)
+            if (app.PaidOn != null)
                 throw new ArgumentException("application has already been paid.");
-            if(app.NumberOfAttempts > command.MaxFailedTimes)
-                throw new ArgumentException("Payment can only be tried no more than 3 times.");
+            if (app.NumberOfAttempts > command.MaxFailedTimes)
+                throw new ArgumentException($"Payment can only be tried no more than {command.MaxFailedTimes} times.");
 
             //get config from cache or Dynamics
             var raBytes = _cache.Get("paybcRevenueAccount");
@@ -141,5 +142,17 @@ namespace Spd.Manager.Cases.Payment
             var respList = await _paymentRepository.QueryAsync(new PaymentQry(query.ApplicationId), ct);
             return respList.Items.Count(i => !i.PaidSuccess);
         }
+
+        //private async Task<SpdPaymentConfig> GetSpdPaymentConfig(CancellationToken ct)
+        //{
+        //    var config = await _configRepository.Query(new ConfigQuery(null, IConfigRepository.PAYBC_GROUP), ct);
+        //}
+
+        //private record SpdPaymentConfig
+        //{
+        //    public string PbcRefNumber { get; set; }
+        //    public string PaybcRevenueAccount { get; set; }
+        //    public decimal ServiceCost { get; set; }
+        //}
     }
 }
