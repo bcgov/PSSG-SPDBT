@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/api/models';
 import { UtilService } from 'src/app/core/services/util.service';
-import { AppInviteOrgData, CrcFormStepComponent } from '../crc.component';
+import { AppInviteOrgData, CrcFormStepComponent } from '../crrpa.component';
 
 @Component({
 	selector: 'app-consent-to-crc',

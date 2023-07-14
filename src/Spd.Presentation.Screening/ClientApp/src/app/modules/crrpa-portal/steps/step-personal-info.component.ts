@@ -1,7 +1,7 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { AppInviteOrgData } from '../crc.component';
+import { AppInviteOrgData } from '../crrpa.component';
 import { ContactInformationComponent } from '../step-components/contact-information.component';
 import { MailingAddressComponent } from '../step-components/mailing-address.component';
 import { PersonalInformationComponent } from '../step-components/personal-information.component';

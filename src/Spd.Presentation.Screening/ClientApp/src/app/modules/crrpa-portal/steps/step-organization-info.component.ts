@@ -1,6 +1,6 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
-import { AppInviteOrgData } from '../crc.component';
+import { AppInviteOrgData } from '../crrpa.component';
 import { SecurityInformationComponent } from '../step-components/security-information.component';
 
 @Component({

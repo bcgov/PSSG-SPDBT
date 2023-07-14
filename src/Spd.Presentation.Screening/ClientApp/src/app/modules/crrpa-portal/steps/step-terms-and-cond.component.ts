@@ -2,7 +2,7 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { PayerPreferenceTypeCode } from 'src/app/api/models';
-import { AppInviteOrgData } from '../crc.component';
+import { AppInviteOrgData } from '../crrpa.component';
 import { AgreementOfTermsComponent } from '../step-components/agreement-of-terms.component';
 import { ConsentToCrcComponent } from '../step-components/consentToCrc.component';
 import { DeclarationComponent } from '../step-components/declaration.component';
