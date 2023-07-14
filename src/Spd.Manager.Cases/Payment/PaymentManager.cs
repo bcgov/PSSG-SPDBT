@@ -1,6 +1,7 @@
 using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
+using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.Payment;
 using Spd.Resource.Organizations.Config;
 using Spd.Utilities.Payment;
@@ -15,6 +16,7 @@ namespace Spd.Manager.Cases.Payment
         IRequestHandler<PaymentUpdateCommand, Guid>,
         IRequestHandler<PaymentQuery, PaymentResponse>,
         IRequestHandler<PaymentFailedAttemptCountQuery, int>,
+        
         IPaymentManager
     {
         private readonly IPaymentService _paymentService;
@@ -22,23 +24,31 @@ namespace Spd.Manager.Cases.Payment
         private readonly IDistributedCache _cache;
         private readonly IPaymentRepository _paymentRepository;
         private readonly IMapper _mapper;
+        private readonly IApplicationRepository _appRepository;
 
         public PaymentManager(IPaymentService paymentService,
             IConfigRepository configRepository,
             IDistributedCache cache,
             IPaymentRepository paymentRepository,
-            IMapper mapper)
+            IMapper mapper,
+            IApplicationRepository appRepository)
         {
             _paymentService = paymentService;
             _configRepository = configRepository;
             _cache = cache;
             _paymentRepository = paymentRepository;
             _mapper = mapper;
+            _appRepository = appRepository;
         }
 
         public async Task<PaymentLinkResponse> Handle(PaymentLinkCreateCommand command, CancellationToken ct)
         {
-            //add validation: application has not been paid, application belong to the applicant.
+            //validation
+            var app = await _appRepository.QueryApplicationAsync(new ApplicationQry(command.PaymentLinkCreateRequest.ApplicationId), ct);
+            if(app.PaidOn != null)
+                throw new ArgumentException("application has already been paid.");
+            if(app.NumberOfAttempts > command.MaxFailedTimes)
+                throw new ArgumentException("Payment can only be tried no more than 3 times.");
 
             //get config from cache or Dynamics
             var raBytes = _cache.Get("paybcRevenueAccount");

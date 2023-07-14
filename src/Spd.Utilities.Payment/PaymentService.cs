@@ -9,9 +9,9 @@ namespace Spd.Utilities.Payment
 {
     internal class PaymentService : IPaymentService
     {
-        private readonly PaymentSettings _config;
+        private readonly PayBCSettings _config;
 
-        public PaymentService(IOptions<PaymentSettings> config)
+        public PaymentService(IOptions<PayBCSettings> config)
         {
             _config = config.Value;
         }

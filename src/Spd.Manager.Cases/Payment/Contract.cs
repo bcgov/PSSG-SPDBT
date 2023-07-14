@@ -12,7 +12,7 @@ namespace Spd.Manager.Cases.Payment
     }
 
     //payment link
-    public record PaymentLinkCreateCommand(PaymentLinkCreateRequest PaymentLinkCreateRequest, string RedirectUrl) : IRequest<PaymentLinkResponse>;
+    public record PaymentLinkCreateCommand(PaymentLinkCreateRequest PaymentLinkCreateRequest, string RedirectUrl, int MaxFailedTimes = 3) : IRequest<PaymentLinkResponse>;
 
     public record PaymentLinkCreateRequest
     {
@@ -36,7 +36,7 @@ namespace Spd.Manager.Cases.Payment
     //payment result
     public record PaymentUpdateCommand(string QueryStr, PaybcPaymentResult PaybcPaymentResult) : IRequest<Guid>;
     public record PaymentQuery(Guid PaymentId) : IRequest<PaymentResponse>;
-    public record PaymentFailedAttemptCountQuery(Guid ApplicationId): IRequest<int>;
+    public record PaymentFailedAttemptCountQuery(Guid ApplicationId) : IRequest<int>;
     public record PaybcPaymentResult
     {
         public bool Success { get; set; }

@@ -7,7 +7,7 @@ namespace Spd.Utilities.Payment
     {
         public static IServiceCollection AddPaymentService(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<PaymentSettings>(opts => configuration.GetSection("payment").Bind(opts));
+            services.Configure<PayBCSettings>(opts => configuration.GetSection("PayBC").Bind(opts));
             services.AddTransient<IPaymentService, PaymentService>();
             return services;
         }
