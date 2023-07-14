@@ -1,14 +1,13 @@
 using AutoMapper;
 using MediatR;
-using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.Payment;
 using Spd.Resource.Organizations.Config;
+using Spd.Utilities.Cache;
 using Spd.Utilities.Payment;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
-using System.Text;
 
 namespace Spd.Manager.Cases.Payment
 {
@@ -47,42 +46,12 @@ namespace Spd.Manager.Cases.Payment
             //validation
             var app = await _appRepository.QueryApplicationAsync(new ApplicationQry(command.PaymentLinkCreateRequest.ApplicationId), ct);
             if (app.PaidOn != null)
-                throw new ArgumentException("application has already been paid.");
+                throw new ApiException(HttpStatusCode.BadRequest, "application has already been paid.");
             if (app.NumberOfAttempts > command.MaxFailedTimes)
-                throw new ArgumentException($"Payment can only be tried no more than {command.MaxFailedTimes} times.");
+                throw new ApiException(HttpStatusCode.BadRequest, $"Payment can only be tried no more than {command.MaxFailedTimes} times.");
 
             //get config from cache or Dynamics
-            var raBytes = _cache.Get("paybcRevenueAccount");
-            string revenueAccount = raBytes != null ? Encoding.Default.GetString(raBytes) : null;
-            if (revenueAccount == null)
-            {
-                var config = await _configRepository.Query(
-                    new ConfigQuery(IConfigRepository.PAYBC_REVENUEACCOUNT_KEY, IConfigRepository.PAYBC_GROUP),
-                    ct);
-                revenueAccount = config.Value;
-                _cache.Set("paybcRevenueAccount", Encoding.UTF8.GetBytes(revenueAccount), new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = new TimeSpan(10, 0, 0) });
-            }
-            var refBytes = _cache.Get("pbcRefNumber");
-            string pbcRef = refBytes != null ? Encoding.Default.GetString(refBytes) : null;
-            if (pbcRef == null)
-            {
-                var config = await _configRepository.Query(
-                    new ConfigQuery(IConfigRepository.PAYBC_PBCREFNUMBER_KEY, IConfigRepository.PAYBC_GROUP),
-                    ct);
-                pbcRef = config.Value;
-                _cache.Set("pbcRefNumber", Encoding.UTF8.GetBytes(pbcRef), new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = new TimeSpan(10, 0, 0) });
-            }
-            var costBytes = _cache.Get("serviceCost");
-            string cost = costBytes != null ? Encoding.Default.GetString(costBytes) : null;
-            if (cost == null)
-            {
-                var config = await _configRepository.Query(
-                    new ConfigQuery(IConfigRepository.PAYBCS_SERVICECOST_KEY, IConfigRepository.PAYBC_GROUP),
-                    ct);
-                cost = config.Value;
-                _cache.Set("serviceCost", Encoding.UTF8.GetBytes(cost), new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = new TimeSpan(1, 0, 0) });
-            }
-            decimal price = Decimal.Round(Decimal.Parse(cost), 2);
+            SpdPaymentConfig spdPaymentConfig = await GetSpdPaymentConfigAsync(ct);
             string transNumber = Guid.NewGuid().ToString();
 
             //create payment
@@ -91,7 +60,7 @@ namespace Spd.Manager.Cases.Payment
                 {
                     ApplicationId = command.PaymentLinkCreateRequest.ApplicationId,
                     PaymentMethod = Resource.Applicants.Payment.PaymentMethodEnum.CreditCard,
-                    TransAmount = price,
+                    TransAmount = spdPaymentConfig.ServiceCost,
                     TransNumber = transNumber,
                 }, ct);
 
@@ -100,10 +69,10 @@ namespace Spd.Manager.Cases.Payment
             var linkResult = (CreateDirectPaymentLinkResult)_paymentService.HandleCommand(
                 new CreateDirectPaymentLinkCommand
                 {
-                    RevenueAccount = revenueAccount,
+                    RevenueAccount = spdPaymentConfig.PaybcRevenueAccount,
                     TransNumber = transNumber,
-                    PbcRefNumber = pbcRef,
-                    Amount = price,
+                    PbcRefNumber = spdPaymentConfig.PbcRefNumber,
+                    Amount = spdPaymentConfig.ServiceCost,
                     Description = command.PaymentLinkCreateRequest.Description,
                     PaymentMethod = Spd.Utilities.Payment.PaymentMethodEnum.CC,
                     RedirectUrl = command.RedirectUrl,
@@ -121,7 +90,7 @@ namespace Spd.Manager.Cases.Payment
         public async Task<Guid> Handle(PaymentUpdateCommand command, CancellationToken ct)
         {
             //validate hashcode
-            ValidationResult validated = (ValidationResult)_paymentService.HandleCommand(new ValidatePaymentResultStrCommand() { QueryStr = command.QueryStr });
+            PaymentValidationResult validated = (PaymentValidationResult)_paymentService.HandleCommand(new ValidatePaymentResultStrCommand() { QueryStr = command.QueryStr });
             if (!validated.ValidationPassed)
             {
                 throw new ApiException(HttpStatusCode.InternalServerError, "payment result from paybc is not validated.");
@@ -143,16 +112,39 @@ namespace Spd.Manager.Cases.Payment
             return respList.Items.Count(i => !i.PaidSuccess);
         }
 
-        //private async Task<SpdPaymentConfig> GetSpdPaymentConfig(CancellationToken ct)
-        //{
-        //    var config = await _configRepository.Query(new ConfigQuery(null, IConfigRepository.PAYBC_GROUP), ct);
-        //}
+        private async Task<SpdPaymentConfig> GetSpdPaymentConfigAsync(CancellationToken ct)
+        {
+            SpdPaymentConfig? spdPaymentConfig = await _cache.Get<SpdPaymentConfig>("spdPaymentConfig");
+            if (spdPaymentConfig != null) return spdPaymentConfig;
 
-        //private record SpdPaymentConfig
-        //{
-        //    public string PbcRefNumber { get; set; }
-        //    public string PaybcRevenueAccount { get; set; }
-        //    public decimal ServiceCost { get; set; }
-        //}
+            var configs = await _configRepository.Query(new ConfigQuery(null, IConfigRepository.PAYBC_GROUP), ct);
+            var pbcRefnumberConfig = configs.ConfigItems.FirstOrDefault(c => c.Key == IConfigRepository.PAYBC_PBCREFNUMBER_KEY);
+            if (pbcRefnumberConfig == null)
+                throw new ApiException(HttpStatusCode.InternalServerError, "Dyanmics does not set pbcRefNumber correctly.");
+
+            var PaybcRevenueAccountConfig = configs.ConfigItems.FirstOrDefault(c => c.Key == IConfigRepository.PAYBC_REVENUEACCOUNT_KEY);
+            if (PaybcRevenueAccountConfig == null)
+                throw new ApiException(HttpStatusCode.InternalServerError, "Dyanmics does not set paybc revenue account correctly.");
+
+            var serviceCostConfig = configs.ConfigItems.FirstOrDefault(c => c.Key == IConfigRepository.PAYBCS_SERVICECOST_KEY);
+            if (serviceCostConfig == null)
+                throw new ApiException(HttpStatusCode.InternalServerError, "Dyanmics does not set service cost correctly.");
+
+            spdPaymentConfig = new SpdPaymentConfig()
+            {
+                PbcRefNumber = pbcRefnumberConfig.Value,
+                PaybcRevenueAccount = PaybcRevenueAccountConfig.Value,
+                ServiceCost = Decimal.Round(Decimal.Parse(serviceCostConfig.Value), 2)
+            };
+            await _cache.Set<SpdPaymentConfig>("spdPaymentConfig", spdPaymentConfig, new TimeSpan(1, 0, 0));
+            return spdPaymentConfig;
+        }
+
+        private record SpdPaymentConfig
+        {
+            public string PbcRefNumber { get; set; }
+            public string PaybcRevenueAccount { get; set; }
+            public decimal ServiceCost { get; set; }
+        }
     }
 }

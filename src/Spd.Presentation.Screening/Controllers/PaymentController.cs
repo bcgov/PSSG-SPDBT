@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Cases.Payment;
 using Spd.Presentation.Screening.Configurations;
+using Spd.Resource.Applicants.Payment;
 using Spd.Utilities.Shared;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
@@ -21,6 +22,7 @@ namespace Spd.Presentation.Screening.Controllers
         private readonly ILogger<PaymentController> _logger;
         private readonly IConfiguration _configuration;
         private readonly ClaimsPrincipal _currentUser;
+        private readonly PaymentsConfiguration _paymentsConfiguration;
 
         /// <summary>
         /// 
@@ -38,6 +40,9 @@ namespace Spd.Presentation.Screening.Controllers
             _logger = logger;
             _configuration = configuration;
             _currentUser = (ClaimsPrincipal)currentUser;
+            _paymentsConfiguration = configuration.GetSection("Payments").Get<PaymentsConfiguration>();
+            if (_paymentsConfiguration == null)
+                throw new ConfigurationErrorsException("PaymentsConfiguration configuration does not exist.");
         }
 
         #region applicant-payment
@@ -51,13 +56,9 @@ namespace Spd.Presentation.Screening.Controllers
         [Authorize(Policy = "OnlyBcsc")]
         public async Task<PaymentLinkResponse> GetApplicantPaymentLink([FromBody][Required] ApplicantPaymentLinkCreateRequest paymentLinkCreateRequest)
         {
-            PaymentsConfiguration? paymentConfig = _configuration.GetSection("Payments").Get<PaymentsConfiguration>();
-            if (paymentConfig == null)
-                throw new ConfigurationErrorsException("PaymentsConfiguration configuration does not exist.");
-
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
             string redirectUrl = $"{hostUrl}api/applicants/screenings/payment-result";
-            return await _mediator.Send(new PaymentLinkCreateCommand(paymentLinkCreateRequest, redirectUrl, paymentConfig.MaxOnlinePaymentFailedTimes));
+            return await _mediator.Send(new PaymentLinkCreateCommand(paymentLinkCreateRequest, redirectUrl, _paymentsConfiguration.MaxOnlinePaymentFailedTimes));
         }
 
         /// <summary>
@@ -69,25 +70,28 @@ namespace Spd.Presentation.Screening.Controllers
         public async Task<ActionResult> ProcessApplicantPaymentResult([FromQuery] PaybcPaymentResultViewModel paybcResult)
         {
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
+            string? successPath = _paymentsConfiguration.ApplicantPortalPaymentSuccessPath;
+            string? failPath = _paymentsConfiguration.ApplicantPortalPaymentFailPath;
+            string? cancelPath = _paymentsConfiguration.ApplicantPortalPaymentCancelPath;
+            string? errorPath = _paymentsConfiguration.OrgPortalPaymentErrorPath;
 
-            PaymentsConfiguration? paymentConfig = _configuration.GetSection("Payments").Get<PaymentsConfiguration>();
-            if (paymentConfig == null)
-                throw new ConfigurationErrorsException("PaymentsConfiguration configuration does not exist.");
+            try
+            {
+                PaybcPaymentResult paybcPaymentResult = _mapper.Map<PaybcPaymentResult>(paybcResult);
 
-            string? successPath = paymentConfig.ApplicantPortalPaymentSuccessPath;
-            string? failPath = paymentConfig.ApplicantPortalPaymentFailPath;
-            string? cancelPath = paymentConfig.ApplicantPortalPaymentCancelPath;
+                if (!paybcPaymentResult.Success && paybcPaymentResult.MessageText == "Payment Canceled")
+                    return Redirect($"{hostUrl}{cancelPath}");
 
-            PaybcPaymentResult paybcPaymentResult = _mapper.Map<PaybcPaymentResult>(paybcResult);
+                var paymentId = await _mediator.Send(new PaymentUpdateCommand(Request.QueryString.ToString(), paybcPaymentResult));
+                if (paybcPaymentResult.Success)
+                    return Redirect($"{hostUrl}{successPath}{paymentId}");
 
-            if (!paybcPaymentResult.Success && paybcPaymentResult.MessageText == "Payment Canceled")
-                return Redirect($"{hostUrl}{cancelPath}");
-
-            var paymentId = await _mediator.Send(new PaymentUpdateCommand(Request.QueryString.ToString(), paybcPaymentResult));
-            if (paybcPaymentResult.Success)
-                return Redirect($"{hostUrl}{successPath}{paymentId}");
-
-            return Redirect($"{hostUrl}{failPath}{paymentId}");
+                return Redirect($"{hostUrl}{failPath}{paymentId}");
+            }
+            catch
+            {
+                return Redirect($"{hostUrl}{errorPath}");
+            }
         }
 
         /// <summary>
@@ -119,7 +123,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <summary>
         /// Return the direct pay payment link 
         /// </summary>
-        /// <param name="OrgPaymentLinkCreateRequest">which include Payment link create request</param>
+        /// <param name="paymentLinkCreateRequest">which include Payment link create request</param>
         /// <returns></returns>
         [Authorize(Policy = "OnlyBCeID", Roles = "Primary,Contact")]
         [Route("api/orgs/{orgId}/applications/{applicationId}/payment-link")]
@@ -142,24 +146,27 @@ namespace Spd.Presentation.Screening.Controllers
         public async Task<ActionResult> ProcessOrgPaymentResult([FromQuery] PaybcPaymentResultViewModel paybcResult, [FromRoute] Guid orgId)
         {
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
-            PaymentsConfiguration? paymentConfig = _configuration.GetSection("Payments").Get<PaymentsConfiguration>();
-            if (paymentConfig == null)
-                throw new ConfigurationErrorsException("PaymentsConfiguration configuration does not exist.");
+            string? successPath = _paymentsConfiguration.OrgPortalPaymentSuccessPath;
+            string? failPath = _paymentsConfiguration.OrgPortalPaymentFailPath;
+            string? cancelPath = _paymentsConfiguration.OrgPortalPaymentCancelPath;
+            string? errorPath = _paymentsConfiguration.OrgPortalPaymentErrorPath;
 
-            string? successPath = paymentConfig.OrgPortalPaymentSuccessPath;
-            string? failPath = paymentConfig.OrgPortalPaymentFailPath;
-            string? cancelPath = paymentConfig.OrgPortalPaymentCancelPath;
+            try
+            {
+                PaybcPaymentResult paybcPaymentResult = _mapper.Map<PaybcPaymentResult>(paybcResult);
 
-            PaybcPaymentResult paybcPaymentResult = _mapper.Map<PaybcPaymentResult>(paybcResult);
+                if (!paybcPaymentResult.Success && paybcPaymentResult.MessageText == "Payment Canceled")
+                    return Redirect($"{hostUrl}{cancelPath}");
 
-            if (!paybcPaymentResult.Success && paybcPaymentResult.MessageText == "Payment Canceled")
-                return Redirect($"{hostUrl}{cancelPath}");
+                var paymentId = await _mediator.Send(new PaymentUpdateCommand(Request.QueryString.ToString(), paybcPaymentResult));
+                if (paybcPaymentResult.Success)
+                    return Redirect($"{hostUrl}{successPath}{paymentId}");
 
-            var paymentId = await _mediator.Send(new PaymentUpdateCommand(Request.QueryString.ToString(), paybcPaymentResult));
-            if (paybcPaymentResult.Success)
-                return Redirect($"{hostUrl}{successPath}{paymentId}");
-
-            return Redirect($"{hostUrl}{failPath}{paymentId}");
+                return Redirect($"{hostUrl}{failPath}{paymentId}");
+            }catch
+            {
+                return Redirect($"{hostUrl}{errorPath}");
+            }
         }
 
         /// <summary>

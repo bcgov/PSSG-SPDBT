@@ -77,7 +77,7 @@ namespace Spd.Utilities.Payment
             };
         }
 
-        public ValidationResult ValidatePaymentResultStr(ValidatePaymentResultStrCommand command)
+        public PaymentValidationResult ValidatePaymentResultStr(ValidatePaymentResultStrCommand command)
         {
             string apikey = _config.APIKey;
             string queryStr = command.QueryStr;
@@ -85,7 +85,7 @@ namespace Spd.Utilities.Payment
             string hashvalueStr = queries.FirstOrDefault(q => q.StartsWith("hashValue="));
             if (hashvalueStr == null)
             {
-                return new ValidationResult() { ValidationPassed = false };
+                return new PaymentValidationResult() { ValidationPassed = false };
             }
             string expectedHashValue = hashvalueStr.Split("=").Last();
             int pos = queryStr.LastIndexOf(hashvalueStr);
@@ -102,7 +102,7 @@ namespace Spd.Utilities.Payment
                 }
             }
             string calculatedHash = sb.ToString();
-            return new ValidationResult() { ValidationPassed = calculatedHash.Equals(expectedHashValue) };
+            return new PaymentValidationResult() { ValidationPassed = calculatedHash.Equals(expectedHashValue) };
         }
     }
 }
