@@ -3,10 +3,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AppInviteVerifyRequest } from 'src/app/api/models';
 import { ApplicantService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
-import { CrcRoutes } from './crc-routing.module';
+import { CrrpaRoutes } from './crrpa-routing.module';
 
 @Component({
-	selector: 'app-invitation',
+	selector: 'app-invitation-crrpa',
 	template: `
 		<div class="container-fluid text-center mt-4" *ngIf="message">
 			<mat-icon>no_accounts</mat-icon>
@@ -29,7 +29,7 @@ import { CrcRoutes } from './crc-routing.module';
 		`,
 	],
 })
-export class InvitationCrcComponent implements OnInit {
+export class InvitationCrrpaComponent implements OnInit {
 	message = '';
 
 	constructor(private route: ActivatedRoute, private router: Router, private applicantService: ApplicantService) {}
@@ -47,7 +47,7 @@ export class InvitationCrcComponent implements OnInit {
 					this.message = resp.body.message;
 				} else {
 					// 200 success
-					this.router.navigateByUrl(`/${CrcRoutes.MODULE_PATH}`, { state: { crcaOrgData: resp.body } });
+					this.router.navigateByUrl(`/${CrrpaRoutes.MODULE_PATH}`, { state: { crcaOrgData: resp.body } });
 				}
 			});
 	}

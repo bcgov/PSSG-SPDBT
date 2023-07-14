@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { CrcFormStepComponent } from '../crc.component';
+import { CrcFormStepComponent } from '../crrpa.component';
 
 @Component({
 	selector: 'app-agreement-of-terms',

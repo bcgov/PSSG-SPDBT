@@ -6,7 +6,7 @@ import { FormControlValidators } from 'src/app/core/validators/form-control.vali
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
-import { AppInviteOrgData, CrcFormStepComponent } from '../crc.component';
+import { AppInviteOrgData, CrcFormStepComponent } from '../crrpa.component';
 
 @Component({
 	selector: 'app-security-information',

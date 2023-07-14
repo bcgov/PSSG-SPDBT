@@ -6,8 +6,8 @@ import { IdentityProviderTypeCode } from 'src/app/api/models';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { CrcRoutes } from 'src/app/modules/crc-portal/crc-routing.module';
 import { CrrpRoutes } from 'src/app/modules/crrp-portal/crrp-routing.module';
+import { CrrpaRoutes } from 'src/app/modules/crrpa-portal/crrpa-routing.module';
 import { OrgRegistrationRoutes } from 'src/app/modules/org-registration-portal/org-registration-routing.module';
 import { PssoRoutes } from 'src/app/modules/psso-portal/psso-routing.module';
 import { SecurityScreeningRoutes } from 'src/app/modules/security-screening-portal/security-screening-routing.module';
@@ -87,14 +87,14 @@ export class AuthProcessService {
 	}
 
 	//----------------------------------------------------------
-	// * Crc Screening
+	// * Crrpa Screening
 	// *
-	async tryInitializeCrc(): Promise<string | null> {
+	async tryInitializeCrrpa(): Promise<string | null> {
 		const identityProvider = IdentityProviderTypeCode.BcServicesCard;
 
 		//auth step 1 - user is not logged in, no state at all
 		//auth step 3 - angular loads again here, KC posts the token, oidc lib reads token and returns state
-		const authInfo = await this.authenticationService.tryLogin(identityProvider, CrcRoutes.path());
+		const authInfo = await this.authenticationService.tryLogin(identityProvider, CrrpaRoutes.path());
 
 		if (authInfo.loggedIn) {
 			const success = await this.authUserService.applicantUserInfoAsync();
@@ -114,12 +114,12 @@ export class AuthProcessService {
 	}
 
 	//----------------------------------------------------------
-	// * Crc Screening
+	// * Crrpa Screening
 	// *
-	async initializeCrc(): Promise<string | null> {
+	async initializeCrrpa(): Promise<string | null> {
 		const identityProvider = IdentityProviderTypeCode.BcServicesCard;
 
-		const nextUrl = await this.authenticationService.login(identityProvider, CrcRoutes.path());
+		const nextUrl = await this.authenticationService.login(identityProvider, CrrpaRoutes.path());
 
 		if (nextUrl) {
 			const success = await this.authUserService.applicantUserInfoAsync();

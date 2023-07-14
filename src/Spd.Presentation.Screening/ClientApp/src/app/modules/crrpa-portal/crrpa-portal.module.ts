@@ -1,16 +1,16 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { CrcApplicationRoutingModule } from './crc-routing.module';
-import { CrcComponent } from './crc.component';
-import { InvitationCrcComponent } from './invitation-crc.component';
+import { CrrpaRoutingModule } from './crrpa-routing.module';
+import { CrcComponent } from './crrpa.component';
+import { InvitationCrrpaComponent } from './invitation-crrpa.component';
 import { OrgAccessComponent } from './org-access.component';
 import { AgreementOfTermsComponent } from './step-components/agreement-of-terms.component';
 import { ApplicationSubmittedComponent } from './step-components/application-submitted.component';
 import { ChecklistComponent } from './step-components/checklist.component';
 import { ConsentToCrcComponent } from './step-components/consentToCrc.component';
 import { ContactInformationComponent } from './step-components/contact-information.component';
-import { CrcPaymentFailComponent } from './step-components/crc-payment-fail.component';
-import { CrcPaymentSuccessComponent } from './step-components/crc-payment-success.component';
+import { CrrpaPaymentFailComponent } from './step-components/crrpa-payment-fail.component';
+import { CrrpaPaymentSuccessComponent } from './step-components/crrpa-payment-success.component';
 import { DeclarationComponent } from './step-components/declaration.component';
 import { LogInOptionsComponent } from './step-components/log-in-options.component';
 import { MailingAddressComponent } from './step-components/mailing-address.component';
@@ -46,14 +46,14 @@ import { StepTermsAndCondComponent } from './steps/step-terms-and-cond.component
 		SummaryComponent,
 		SecurityInformationComponent,
 		DeclarationComponent,
-		CrcPaymentSuccessComponent,
-		CrcPaymentFailComponent,
+		CrrpaPaymentSuccessComponent,
+		CrrpaPaymentFailComponent,
 		ApplicationSubmittedComponent,
 		ConsentToCrcComponent,
-		InvitationCrcComponent,
+		InvitationCrrpaComponent,
 		OrgAccessComponent,
 	],
-	imports: [SharedModule, CrcApplicationRoutingModule],
+	imports: [SharedModule, CrrpaRoutingModule],
 	providers: [],
 })
-export class CrcPortalModule {}
+export class CrrpaPortalModule {}
