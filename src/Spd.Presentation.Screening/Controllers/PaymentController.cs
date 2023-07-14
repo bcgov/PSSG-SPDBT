@@ -27,9 +27,9 @@ namespace Spd.Presentation.Screening.Controllers
         /// </summary>
         /// <param name="mediator"></param>
         /// <param name="currentUser"></param>
-        public PaymentController(IMediator mediator, 
-            IPrincipal currentUser, 
-            IMapper mapper, 
+        public PaymentController(IMediator mediator,
+            IPrincipal currentUser,
+            IMapper mapper,
             ILogger<PaymentController> logger,
             IConfiguration configuration)
         {
@@ -125,7 +125,7 @@ namespace Spd.Presentation.Screening.Controllers
         [Route("api/orgs/{orgId}/applications/{applicationId}/payment-link")]
         [HttpPost]
         [Authorize(Policy = "OnlyBceid")]
-        public async Task<PaymentLinkResponse> GetOrgPaymentLink([FromBody][Required] OrgPaymentLinkCreateRequest paymentLinkCreateRequest, [FromRoute]Guid orgId)
+        public async Task<PaymentLinkResponse> GetOrgPaymentLink([FromBody][Required] OrgPaymentLinkCreateRequest paymentLinkCreateRequest, [FromRoute] Guid orgId)
         {
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
             string redirectUrl = $"{hostUrl}api/orgs/{orgId}/payment-result";
@@ -136,10 +136,10 @@ namespace Spd.Presentation.Screening.Controllers
         /// redirect url for paybc to redirect to
         /// </summary>
         /// <returns></returns>
-        [Authorize(Policy = "OnlyBCeID", Roles = "Primary,Contact")]
+       // [Authorize(Policy = "OnlyBCeID", Roles = "Primary,Contact")]
         [Route("api/orgs/{orgId}/payment-result")]
         [HttpGet]
-        public async Task<ActionResult> ProcessOrgPaymentResult([FromQuery] PaybcPaymentResultViewModel paybcResult, [FromRoute]Guid orgId)
+        public async Task<ActionResult> ProcessOrgPaymentResult([FromQuery] PaybcPaymentResultViewModel paybcResult, [FromRoute] Guid orgId)
         {
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
             PaymentsConfiguration? paymentConfig = _configuration.GetSection("Payments").Get<PaymentsConfiguration>();
@@ -180,8 +180,8 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/orgs/{orgId}/applications/{applicationId}/payment-attempts")]
         [HttpGet]
-        [Authorize(Policy = "OnlyBcsc")]
-        public async Task<int> GetFailedPaymentAttempts([FromRoute] Guid applicationId, [FromRoute]Guid orgId)
+        [Authorize(Policy = "OnlyBCeID", Roles = "Primary,Contact")]
+        public async Task<int> GetFailedPaymentAttempts([FromRoute] Guid applicationId, [FromRoute] Guid orgId)
         {
             return await _mediator.Send(new PaymentFailedAttemptCountQuery(applicationId));
         }
