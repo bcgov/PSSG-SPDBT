@@ -5,7 +5,7 @@ import { BooleanTypeCode } from 'src/app/api/models';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { CrcFormStepComponent } from '../crc.component';
+import { CrcFormStepComponent } from '../crrpa.component';
 
 @Component({
 	selector: 'app-previous-name',

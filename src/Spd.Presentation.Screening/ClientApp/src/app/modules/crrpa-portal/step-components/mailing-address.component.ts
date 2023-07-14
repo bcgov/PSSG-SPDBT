@@ -5,7 +5,7 @@ import { AddressRetrieveResponse } from 'src/app/api/models';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { Address } from 'src/app/shared/components/address-autocomplete.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { CrcFormStepComponent } from '../crc.component';
+import { CrcFormStepComponent } from '../crrpa.component';
 
 @UntilDestroy({ checkProperties: true })
 @Component({
