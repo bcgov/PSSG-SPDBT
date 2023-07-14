@@ -1,10 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { InvitationPssoaComponent } from './invitation-pssoa.component';
 import { PssoaComponent } from './pssoa.component';
 
 export class PssoaRoutes {
 	public static PSSOA = 'pssoa';
-	// public static INVITATION = 'invitation';
+	public static INVITATION = 'invitation';
 
 	public static MODULE_PATH = PssoaRoutes.PSSOA;
 
@@ -18,10 +19,10 @@ const routes: Routes = [
 		path: '',
 		component: PssoaComponent,
 	},
-	// {
-	// 	path: `${PssoaRoutes.INVITATION}/:id`,
-	// 	component: InvitationCrrpaComponent,
-	// },
+	{
+		path: `${PssoaRoutes.INVITATION}/:id`,
+		component: InvitationPssoaComponent,
+	},
 ];
 
 @NgModule({
