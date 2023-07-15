@@ -55,6 +55,7 @@ export { IdentityStatusCode } from './models/identity-status-code';
 export { InvitationRequest } from './models/invitation-request';
 export { InvitationResponse } from './models/invitation-response';
 export { OidcConfiguration } from './models/oidc-configuration';
+export { OrgPaymentLinkCreateRequest } from './models/org-payment-link-create-request';
 export { OrgProcess } from './models/org-process';
 export { OrgRegistrationCreateRequest } from './models/org-registration-create-request';
 export { OrgRegistrationCreateResponse } from './models/org-registration-create-response';

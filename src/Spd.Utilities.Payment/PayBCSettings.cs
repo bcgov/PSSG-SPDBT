@@ -1,6 +1,6 @@
 ﻿namespace Spd.Utilities.Payment
 {
-    internal class PaymentSettings
+    internal class PayBCSettings
     {
         public string APIKey { get; set; }
         public string Host { get; set; }

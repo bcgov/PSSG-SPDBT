@@ -10,8 +10,11 @@ import {
 	ApplicationPaymentResponse,
 	ApplicationPortalStatusCode,
 	ApplicationStatisticsResponse,
+	OrgPaymentLinkCreateRequest,
+	PaymentLinkResponse,
+	PaymentMethodCode,
 } from 'src/app/api/models';
-import { ApplicationService } from 'src/app/api/services';
+import { ApplicationService, PaymentService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { ApplicationPortalStatisticsTypeCode } from 'src/app/core/code-types/application-portal-statistics-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
@@ -169,7 +172,7 @@ export interface PaymentResponse extends ApplicationPaymentResponse {
 									style="color: var(--color-red);"
 									*ngIf="application.isPayManual"
 									aria-label="Pay manually"
-									(click)="onPayManually(application)"
+									(click)="onPayManually()"
 								>
 									<mat-icon>payment</mat-icon>Pay Manually
 								</button>
@@ -234,6 +237,7 @@ export class PaymentsComponent implements OnInit {
 		private utilService: UtilService,
 		private formBuilder: FormBuilder,
 		private applicationService: ApplicationService,
+		private paymentService: PaymentService,
 		private authUserService: AuthUserService,
 		private location: Location
 	) {
@@ -255,11 +259,27 @@ export class PaymentsComponent implements OnInit {
 	}
 
 	onPayNow(application: PaymentResponse): void {
-		this.router.navigate([CrrpRoutes.path(CrrpRoutes.PAYMENT_SUCCESS)]); // TODO Handle PAYMENT
-		// this.router.navigate([CrrpRoutes.path(CrrpRoutes.PAYMENT_FAIL)]);
+		const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
+		const body: OrgPaymentLinkCreateRequest = {
+			applicationId: application.id!,
+			paymentMethod: PaymentMethodCode.CreditCard,
+			description: `Payment for Case ID: ${application.applicationNumber}`,
+		};
+		this.paymentService
+			.apiOrgsOrgIdApplicationsApplicationIdPaymentLinkPost({
+				orgId: orgId!,
+				applicationId: application.id!,
+				body,
+			})
+			.pipe()
+			.subscribe((res: PaymentLinkResponse) => {
+				if (res.paymentLinkUrl) {
+					window.location.assign(res.paymentLinkUrl);
+				}
+			});
 	}
 
-	onPayManually(application: PaymentResponse): void {
+	onPayManually(): void {
 		this.router.navigate([CrrpRoutes.path(CrrpRoutes.PAYMENT_MANUAL)]);
 	}
 

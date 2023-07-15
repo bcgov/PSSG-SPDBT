@@ -47,8 +47,6 @@ internal class PaymentRepository : IPaymentRepository
         spd_application? application = await _context.GetApplicationById(cmd.ApplicationId, ct);
         if (application == null)
             throw new ArgumentException("invalid application id");
-        if(application.spd_paidon != null)
-            throw new ArgumentException("application has already been paid.");
 
         spd_payment payment = _mapper.Map<spd_payment>(cmd);
         _context.AddTospd_payments(payment);

@@ -20,7 +20,6 @@ import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
-import { CrrpaRoutes } from './crrpa-routing.module';
 import { StepApplSubmittedComponent } from './steps/step-appl-submitted.component';
 import { StepEligibilityComponent } from './steps/step-eligibility.component';
 import { StepLoginOptionsComponent } from './steps/step-login-options.component';
@@ -374,7 +373,7 @@ export class CrcComponent implements OnInit {
 				.pipe()
 				.subscribe((_res: ApplicationCreateResponse) => {
 					if (this.orgData!.performPaymentProcess) {
-						this.router.navigate([CrrpaRoutes.path(CrrpaRoutes.PAYMENT_SUCCESS)]); // TODO Handle PAYMENT
+						// this.router.navigate([CrrpaRoutes.path(CrrpaRoutes.PAYMENT_SUCCESS)]); // TODO Handle PAYMENT
 						// this.router.navigate([CrrpaRoutes.path(CrrpaRoutes.PAYMENT_FAIL)]);
 					} else {
 						this.stepper.next();
@@ -387,7 +386,7 @@ export class CrcComponent implements OnInit {
 				.pipe()
 				.subscribe((_res: ApplicationCreateResponse) => {
 					if (this.orgData!.performPaymentProcess) {
-						this.router.navigate([CrrpaRoutes.path(CrrpaRoutes.PAYMENT_SUCCESS)]); // TODO Handle PAYMENT
+						// this.router.navigate([CrrpaRoutes.path(CrrpaRoutes.PAYMENT_SUCCESS)]); // TODO Handle PAYMENT
 						// this.router.navigate([CrrpaRoutes.path(CrrpaRoutes.PAYMENT_FAIL)]);
 					} else {
 						this.stepper.next();
