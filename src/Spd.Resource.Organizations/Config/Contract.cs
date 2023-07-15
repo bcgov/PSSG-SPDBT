@@ -12,8 +12,11 @@
 
     //query
     public record ConfigQuery(string Key, string? Group = null);
-    public record ConfigResult(string Value);
-
-
-
+    public record ConfigResult(IEnumerable<ConfigItem> ConfigItems);
+    public record ConfigItem
+    {
+        public string Key { get; set; } = null!;
+        public string? Group { get; set; }
+        public string? Value { get; set; }
+    }
 }

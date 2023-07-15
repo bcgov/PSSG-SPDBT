@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PaymentResponse } from 'src/app/api/models';
-import { ApplicantService } from 'src/app/api/services';
+import { PaymentService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 
@@ -13,7 +13,7 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 export class SecurityScreeningPaymentSuccessComponent implements OnInit {
 	payment: PaymentResponse | null = null;
 
-	constructor(private route: ActivatedRoute, private router: Router, private applicantService: ApplicantService) {}
+	constructor(private route: ActivatedRoute, private router: Router, private paymentService: PaymentService) {}
 
 	ngOnInit(): void {
 		const paymentId = this.route.snapshot.paramMap.get('id');
@@ -22,7 +22,7 @@ export class SecurityScreeningPaymentSuccessComponent implements OnInit {
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 		}
 
-		this.applicantService
+		this.paymentService
 			.apiApplicantsScreeningsPaymentsPaymentIdGet({ paymentId: paymentId! })
 			.pipe()
 			.subscribe((resp: PaymentResponse) => {

@@ -11,7 +11,7 @@ import {
 	PaymentLinkResponse,
 	PaymentMethodCode,
 } from 'src/app/api/models';
-import { ApplicantService } from 'src/app/api/services';
+import { ApplicantService, PaymentService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
@@ -208,6 +208,7 @@ export class SecurityScreeningListComponent implements OnInit {
 	constructor(
 		private router: Router,
 		private applicantService: ApplicantService,
+		private paymentService: PaymentService,
 		private authUserService: AuthUserService,
 		private utilService: UtilService
 	) {}
@@ -242,7 +243,7 @@ export class SecurityScreeningListComponent implements OnInit {
 			description: `Payment for Case ID: ${application.applicationNumber}`,
 		};
 
-		this.applicantService
+		this.paymentService
 			.apiApplicantsScreeningsApplicationIdPaymentLinkPost({
 				applicationId: application.id!,
 				body,

@@ -8,25 +8,25 @@ namespace Spd.Resource.Organizations.Config
     internal class ConfigRepository : IConfigRepository
     {
         private readonly DynamicsContext _dynaContext;
+        private readonly IMapper _mapper;
 
         public ConfigRepository(IDynamicsContextFactory ctx, IMapper mapper, ILogger<ConfigRepository> logger)
         {
             _dynaContext = ctx.Create();
+            _mapper = mapper;
         }
 
         public async Task<ConfigResult> Query(ConfigQuery query, CancellationToken ct)
         {
-            IQueryable<bcgov_config> configs = _dynaContext.bcgov_configs.Where(c => c.bcgov_key == query.Key);
+            IQueryable<bcgov_config> configs = _dynaContext.bcgov_configs.Where(c => c.statecode != DynamicsConstants.StateCode_Inactive);
 
+            if (query.Key != null)
+                configs = configs.Where(c => c.bcgov_key == query.Key);
             if (query.Group != null)
                 configs = configs.Where(c => c.bcgov_group == query.Group);
+            var result = await configs.GetAllPagesAsync(ct);
 
-            var config = await configs.FirstOrDefaultAsync(ct);
-            if (config == null)
-            {
-                throw new ArgumentException("the Key does not have value in system config");
-            }
-            return new ConfigResult(config.bcgov_value);
+            return new ConfigResult(_mapper.Map<IEnumerable<ConfigItem>>(result.ToList()));
         }
     }
 }

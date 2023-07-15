@@ -7,7 +7,7 @@ import {
 	PaymentMethodCode,
 	PaymentResponse,
 } from 'src/app/api/models';
-import { ApplicantService } from 'src/app/api/services';
+import { PaymentService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 
@@ -30,7 +30,7 @@ export class SecurityScreeningPaymentFailComponent implements OnInit {
 	applicationId: string | null = null;
 	caseNumber: string | null = null;
 
-	constructor(private route: ActivatedRoute, private router: Router, private applicantService: ApplicantService) {}
+	constructor(private route: ActivatedRoute, private router: Router, private paymentService: PaymentService) {}
 
 	ngOnInit(): void {
 		const paymentId = this.route.snapshot.paramMap.get('id');
@@ -39,14 +39,14 @@ export class SecurityScreeningPaymentFailComponent implements OnInit {
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 		}
 
-		this.applicantService
+		this.paymentService
 			.apiApplicantsScreeningsPaymentsPaymentIdGet({ paymentId: paymentId! })
 			.pipe(
 				switchMap((paymentResp: PaymentResponse) => {
 					this.applicationId = paymentResp.applicationId!;
 					this.caseNumber = paymentResp.caseNumber!;
 
-					return this.applicantService.apiApplicantsScreeningsApplicationIdPaymentAttemptsGet({
+					return this.paymentService.apiApplicantsScreeningsApplicationIdPaymentAttemptsGet({
 						applicationId: paymentResp.applicationId!,
 					});
 				})
@@ -66,7 +66,7 @@ export class SecurityScreeningPaymentFailComponent implements OnInit {
 			paymentMethod: PaymentMethodCode.CreditCard,
 			description: `Payment for Case ID: ${this.caseNumber}`,
 		};
-		this.applicantService
+		this.paymentService
 			.apiApplicantsScreeningsApplicationIdPaymentLinkPost({
 				applicationId: this.applicationId!,
 				body,
