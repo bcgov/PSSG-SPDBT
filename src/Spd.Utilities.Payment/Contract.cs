@@ -36,7 +36,7 @@ namespace Spd.Utilities.Payment
     {
         public string QueryStr { get; set; } = null!;
     }
-    public class ValidationResult : PaymentResult
+    public class PaymentValidationResult : PaymentResult
     {
         public bool ValidationPassed { get; set; }
     }

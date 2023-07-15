@@ -4,7 +4,12 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { ApplicationListResponse, ApplicationResponse } from 'src/app/api/models';
+import {
+	ApplicationListResponse,
+	ApplicationPortalStatusCode,
+	ApplicationResponse,
+	PayerPreferenceTypeCode,
+} from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { ApplicationPortalStatisticsTypeCode } from 'src/app/core/code-types/application-portal-statistics-type.model';
@@ -20,6 +25,8 @@ import {
 
 export interface ScreeningStatusResponse extends ApplicationResponse {
 	applicationPortalStatusClass: string;
+	isVerifyIdentity: boolean;
+	isPayNow: boolean;
 }
 
 @Component({
@@ -172,9 +179,9 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 									class="table-button"
 									style="color: var(--color-green);"
 									aria-label="Pay now"
-									*ngIf="application.status == statisticsCode.AwaitingPayment"
+									*ngIf="application.isPayNow"
 								>
-									<mat-icon>send</mat-icon>Pay Now
+									<mat-icon>send</mat-icon>Payment
 								</button>
 								<button
 									mat-flat-button
@@ -182,7 +189,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 									class="table-button"
 									style="color: var(--color-primary-light);"
 									aria-label="Verify Applicant"
-									*ngIf="application.status == statisticsCode.VerifyIdentity"
+									*ngIf="application.isVerifyIdentity"
 								>
 									<mat-icon>send</mat-icon>Verify Applicant
 								</button>
@@ -416,6 +423,10 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 				applications.forEach((app: ScreeningStatusResponse) => {
 					const itemClass = this.utilService.getApplicationPortalStatusClass(app.status);
 					app.applicationPortalStatusClass = itemClass;
+					app.isPayNow =
+						app.payeeType == PayerPreferenceTypeCode.Organization &&
+						app.status == ApplicationPortalStatusCode.AwaitingPayment;
+					app.isVerifyIdentity = app.status == ApplicationPortalStatusCode.VerifyIdentity;
 				});
 
 				this.dataSource.data = applications;

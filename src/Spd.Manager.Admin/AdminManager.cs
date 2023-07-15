@@ -39,7 +39,10 @@ namespace Spd.Manager.Admin
 
         public async Task<string> Handle(GetBannerMsgQuery query, CancellationToken cancellationToken)
         {
-            return (await _configRepo.Query(new ConfigQuery(IConfigRepository.BANNER_MSG_CONFIG_KEY), cancellationToken)).Value;
+            return (await _configRepo.Query(new ConfigQuery(IConfigRepository.BANNER_MSG_CONFIG_KEY), cancellationToken))
+                .ConfigItems
+                .First()
+                .Value;
         }
     }
 }

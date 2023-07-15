@@ -6,4 +6,5 @@ export { OrgService } from './services/org.service';
 export { OrgRegistrationService } from './services/org-registration.service';
 export { OrgReportService } from './services/org-report.service';
 export { OrgUserService } from './services/org-user.service';
+export { PaymentService } from './services/payment.service';
 export { UserProfileService } from './services/user-profile.service';
