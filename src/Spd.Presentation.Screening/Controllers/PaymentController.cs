@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Cases.Payment;
 using Spd.Presentation.Screening.Configurations;
-using Spd.Resource.Applicants.Payment;
 using Spd.Utilities.Shared;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
@@ -19,27 +18,22 @@ namespace Spd.Presentation.Screening.Controllers
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
-        private readonly ILogger<PaymentController> _logger;
         private readonly IConfiguration _configuration;
-        private readonly ClaimsPrincipal _currentUser;
         private readonly PaymentsConfiguration _paymentsConfiguration;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="mediator"></param>
-        /// <param name="currentUser"></param>
+        /// <param name="mapper"></param>
+        /// <param name="configuration"></param>
         public PaymentController(IMediator mediator,
-            IPrincipal currentUser,
             IMapper mapper,
-            ILogger<PaymentController> logger,
             IConfiguration configuration)
         {
             _mediator = mediator;
             _mapper = mapper;
-            _logger = logger;
             _configuration = configuration;
-            _currentUser = (ClaimsPrincipal)currentUser;
             _paymentsConfiguration = configuration.GetSection("Payments").Get<PaymentsConfiguration>();
             if (_paymentsConfiguration == null)
                 throw new ConfigurationErrorsException("PaymentsConfiguration configuration does not exist.");
@@ -73,7 +67,7 @@ namespace Spd.Presentation.Screening.Controllers
             string? successPath = _paymentsConfiguration.ApplicantPortalPaymentSuccessPath;
             string? failPath = _paymentsConfiguration.ApplicantPortalPaymentFailPath;
             string? cancelPath = _paymentsConfiguration.ApplicantPortalPaymentCancelPath;
-            string? errorPath = _paymentsConfiguration.OrgPortalPaymentErrorPath;
+            string? errorPath = _paymentsConfiguration.ApplicantPortalPaymentErrorPath;
 
             try
             {
@@ -140,7 +134,6 @@ namespace Spd.Presentation.Screening.Controllers
         /// redirect url for paybc to redirect to
         /// </summary>
         /// <returns></returns>
-       // [Authorize(Policy = "OnlyBCeID", Roles = "Primary,Contact")]
         [Route("api/orgs/{orgId}/payment-result")]
         [HttpGet]
         public async Task<ActionResult> ProcessOrgPaymentResult([FromQuery] PaybcPaymentResultViewModel paybcResult, [FromRoute] Guid orgId)
@@ -163,7 +156,8 @@ namespace Spd.Presentation.Screening.Controllers
                     return Redirect($"{hostUrl}{successPath}{paymentId}");
 
                 return Redirect($"{hostUrl}{failPath}{paymentId}");
-            }catch
+            }
+            catch
             {
                 return Redirect($"{hostUrl}{errorPath}");
             }
@@ -189,6 +183,80 @@ namespace Spd.Presentation.Screening.Controllers
         [HttpGet]
         [Authorize(Policy = "OnlyBCeID", Roles = "Primary,Contact")]
         public async Task<int> GetFailedPaymentAttempts([FromRoute] Guid applicationId, [FromRoute] Guid orgId)
+        {
+            return await _mediator.Send(new PaymentFailedAttemptCountQuery(applicationId));
+        }
+        #endregion
+
+        #region applicant-invite-link-payment
+        /// <summary>
+        /// Return the direct pay payment link 
+        /// </summary>
+        /// <param name="paymentLinkCreateRequest">which include Payment link create request</param>
+        /// <returns></returns>
+        [Route("api/crca/payment-link")]
+        [HttpPost]
+        //[Authorize(Policy = "OnlyBcsc")]
+        public async Task<PaymentLinkResponse> GetApplicantInvitePaymentLink([FromBody][Required] ApplicantInvitePaymentLinkCreateRequest paymentLinkCreateRequest)
+        {
+            string? hostUrl = _configuration.GetValue<string>("HostUrl");
+            string redirectUrl = $"{hostUrl}api/crca/payment-result";
+            return await _mediator.Send(new PaymentLinkCreateCommand(paymentLinkCreateRequest, redirectUrl, _paymentsConfiguration.MaxOnlinePaymentFailedTimes));
+        }
+
+        /// <summary>
+        /// redirect url for paybc to redirect to
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/crca/payment-result")]
+        [HttpGet]
+        public async Task<ActionResult> ProcessApplicantInvitePaymentResult([FromQuery] PaybcPaymentResultViewModel paybcResult)
+        {
+            string? hostUrl = _configuration.GetValue<string>("HostUrl");
+            string? successPath = _paymentsConfiguration.CrcaPaymentSuccessPath;
+            string? failPath = _paymentsConfiguration.CrcaPaymentFailPath;
+            string? cancelPath = _paymentsConfiguration.CrcaPaymentCancelPath;
+            string? errorPath = _paymentsConfiguration.CrcaPaymentErrorPath;
+
+            try
+            {
+                PaybcPaymentResult paybcPaymentResult = _mapper.Map<PaybcPaymentResult>(paybcResult);
+
+                if (!paybcPaymentResult.Success && paybcPaymentResult.MessageText == "Payment Canceled")
+                    return Redirect($"{hostUrl}{cancelPath}");
+
+                var paymentId = await _mediator.Send(new PaymentUpdateCommand(Request.QueryString.ToString(), paybcPaymentResult));
+                if (paybcPaymentResult.Success)
+                    return Redirect($"{hostUrl}{successPath}{paymentId}");
+
+                return Redirect($"{hostUrl}{failPath}{paymentId}");
+            }
+            catch
+            {
+                return Redirect($"{hostUrl}{errorPath}");
+            }
+        }
+
+        /// <summary>
+        /// Get the payment result for application and payment
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/crca/payments/{paymentId}")]
+        [HttpGet]
+        //[Authorize(Policy = "OnlyBcsc")]
+        public async Task<PaymentResponse> GetApplicantInvitePaymentResult([FromRoute] Guid paymentId)
+        {
+            return await _mediator.Send(new PaymentQuery(paymentId));
+        }
+
+        /// <summary>
+        /// Get the payment result for application and payment
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/crca/payment-attempts")]
+        [HttpGet]
+        //[Authorize(Policy = "OnlyBcsc")]
+        public async Task<int> GetApplicantInvitePaymentAttempts([FromRoute] Guid applicationId)
         {
             return await _mediator.Send(new PaymentFailedAttemptCountQuery(applicationId));
         }

@@ -24,6 +24,7 @@ namespace Spd.Manager.Cases.Payment
 
     public record OrgPaymentLinkCreateRequest : PaymentLinkCreateRequest;
     public record ApplicantPaymentLinkCreateRequest : PaymentLinkCreateRequest;
+    public record ApplicantInvitePaymentLinkCreateRequest : PaymentLinkCreateRequest;
     public record PaymentLinkResponse
     {
         public string PaymentLinkUrl { get; set; }
