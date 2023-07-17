@@ -7,8 +7,6 @@ using Spd.Presentation.Screening.Configurations;
 using Spd.Utilities.Shared;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
-using System.Security.Claims;
-using System.Security.Principal;
 
 namespace Spd.Presentation.Screening.Controllers
 {
@@ -194,13 +192,13 @@ namespace Spd.Presentation.Screening.Controllers
         /// </summary>
         /// <param name="paymentLinkCreateRequest">which include Payment link create request</param>
         /// <returns></returns>
-        [Route("api/crca/payment-link")]
+        [Route("api/crrpa/payment-link")]
         [HttpPost]
         //[Authorize(Policy = "OnlyBcsc")]
         public async Task<PaymentLinkResponse> GetApplicantInvitePaymentLink([FromBody][Required] ApplicantInvitePaymentLinkCreateRequest paymentLinkCreateRequest)
         {
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
-            string redirectUrl = $"{hostUrl}api/crca/payment-result";
+            string redirectUrl = $"{hostUrl}api/crrpa/payment-result";
             return await _mediator.Send(new PaymentLinkCreateCommand(paymentLinkCreateRequest, redirectUrl, _paymentsConfiguration.MaxOnlinePaymentFailedTimes));
         }
 
@@ -208,15 +206,15 @@ namespace Spd.Presentation.Screening.Controllers
         /// redirect url for paybc to redirect to
         /// </summary>
         /// <returns></returns>
-        [Route("api/crca/payment-result")]
+        [Route("api/crrpa/payment-result")]
         [HttpGet]
         public async Task<ActionResult> ProcessApplicantInvitePaymentResult([FromQuery] PaybcPaymentResultViewModel paybcResult)
         {
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
-            string? successPath = _paymentsConfiguration.CrcaPaymentSuccessPath;
-            string? failPath = _paymentsConfiguration.CrcaPaymentFailPath;
-            string? cancelPath = _paymentsConfiguration.CrcaPaymentCancelPath;
-            string? errorPath = _paymentsConfiguration.CrcaPaymentErrorPath;
+            string? successPath = _paymentsConfiguration.CrrpaPaymentSuccessPath;
+            string? failPath = _paymentsConfiguration.CrrpaPaymentFailPath;
+            string? cancelPath = _paymentsConfiguration.CrrpaPaymentCancelPath;
+            string? errorPath = _paymentsConfiguration.CrrpaPaymentErrorPath;
 
             try
             {
@@ -241,7 +239,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// Get the payment result for application and payment
         /// </summary>
         /// <returns></returns>
-        [Route("api/crca/payments/{paymentId}")]
+        [Route("api/crrpa/payments/{paymentId}")]
         [HttpGet]
         //[Authorize(Policy = "OnlyBcsc")]
         public async Task<PaymentResponse> GetApplicantInvitePaymentResult([FromRoute] Guid paymentId)
@@ -253,7 +251,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// Get the payment result for application and payment
         /// </summary>
         /// <returns></returns>
-        [Route("api/crca/payment-attempts")]
+        [Route("api/crrpa/payment-attempts")]
         [HttpGet]
         //[Authorize(Policy = "OnlyBcsc")]
         public async Task<int> GetApplicantInvitePaymentAttempts([FromRoute] Guid applicationId)

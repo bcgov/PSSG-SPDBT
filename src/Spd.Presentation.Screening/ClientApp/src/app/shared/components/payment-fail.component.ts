@@ -7,7 +7,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 		<div class="row">
 			<div class="col-xl-6 col-lg-4 col-md-12">
 				<h3 class="fw-normal m-2">
-					<span *ngIf="isCancelledPayment; else paymentFailedHeader">Payment Cancelled</span>
+					<span *ngIf="isCancelledPaymentFlow; else paymentFailedHeader">Payment Cancelled</span>
 					<ng-template #paymentFailedHeader>Payment Failed </ng-template>
 				</h3>
 			</div>
@@ -27,7 +27,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 						mat-flat-button
 						color="primary"
 						class="large w-auto m-2"
-						*ngIf="numberOfAttemptsRemaining > 0"
+						*ngIf="!isCancelledPaymentFlow && numberOfAttemptsRemaining > 0"
 						aria-label="Try again"
 						(click)="onPayNow()"
 					>
@@ -48,14 +48,16 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 		<div class="row mx-4">
 			<div class="col-12 mt-4">
 				<div class="fw-normal fs-3 text-center">
-					<span *ngIf="isCancelledPayment; else paymentFailedSubHeader">Your payment attempt has been cancelled</span>
+					<span *ngIf="isCancelledPaymentFlow; else paymentFailedSubHeader"
+						>Your payment attempt has been cancelled</span
+					>
 					<ng-template #paymentFailedSubHeader>Your payment transaction has failed </ng-template>
 				</div>
 			</div>
 
-			<ng-container *ngIf="isCancelledPayment; else paymentFailed">
+			<ng-container *ngIf="isCancelledPaymentFlow; else paymentFailed">
 				<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
-					<div class="lead fs-5 mt-4">
+					<div class="lead fs-5 mt-4 text-center">
 						Your application is submitted, but it won't be processed until payment is received.
 					</div>
 				</div>
@@ -122,12 +124,12 @@ export class PaymentFailComponent implements OnInit {
 	isBackRoute: boolean = false;
 	numberOfAttemptsRemaining = 0;
 
-	@Input() isCancelledPayment = true;
+	@Input() isCancelledPaymentFlow = false;
 
 	private _numberOfAttempts!: number | null;
 	@Input()
 	set numberOfAttempts(data: number | null) {
-		if (!data) {
+		if (data == null) {
 			this.numberOfAttemptsRemaining = 0;
 			return;
 		}

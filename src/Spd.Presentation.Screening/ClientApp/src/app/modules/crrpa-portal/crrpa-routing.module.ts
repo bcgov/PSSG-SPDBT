@@ -35,6 +35,7 @@ const routes: Routes = [
 	},
 	{ path: `${CrrpaRoutes.PAYMENT_SUCCESS}/:id`, component: CrrpaPaymentSuccessComponent },
 	{ path: `${CrrpaRoutes.PAYMENT_FAIL}/:id`, component: CrrpaPaymentFailComponent },
+	{ path: CrrpaRoutes.PAYMENT_FAIL, component: CrrpaPaymentFailComponent },
 ];
 
 @NgModule({

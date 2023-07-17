@@ -17,7 +17,6 @@ import { CrrpRoutes } from '../crrp-routing.module';
 	template: `
 		<app-payment-fail
 			[numberOfAttempts]="numberOfAttempts"
-			[isCancelledPayment]="isCancelledPayment"
 			(backRoute)="onBackRoute()"
 			(payNow)="onPayNow()"
 			(downloadManualPaymentForm)="onDownloadManualPaymentForm()"
@@ -26,7 +25,6 @@ import { CrrpRoutes } from '../crrp-routing.module';
 	styles: [],
 })
 export class CrrpPaymentFailComponent implements OnInit {
-	isCancelledPayment: boolean = false;
 	numberOfAttempts: number = 0;
 	applicationId: string | null = null;
 	caseNumber: string | null = null;

@@ -16,7 +16,6 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 	template: `
 		<app-payment-fail
 			[numberOfAttempts]="numberOfAttempts"
-			[isCancelledPayment]="isCancelledPayment"
 			(backRoute)="onBackRoute()"
 			(payNow)="onPayNow()"
 			(downloadManualPaymentForm)="onDownloadManualPaymentForm()"
@@ -25,7 +24,6 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 	styles: [],
 })
 export class SecurityScreeningPaymentFailComponent implements OnInit {
-	isCancelledPayment: boolean = false;
 	numberOfAttempts: number = 0;
 	applicationId: string | null = null;
 	caseNumber: string | null = null;

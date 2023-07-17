@@ -29,6 +29,13 @@ namespace Spd.Manager.Cases.Payment
     {
         public string PaymentLinkUrl { get; set; }
     }
+
+    public enum PaymentStatusCode
+    {
+        Success,
+        Failure,
+        Cancelled
+    }
     public enum PaymentMethodCode
     {
         CreditCard
@@ -58,6 +65,7 @@ namespace Spd.Manager.Cases.Payment
         public Guid PaymentId { get; set; }
         public string CaseNumber { get; set; }
         public bool PaidSuccess { get; set; }
+        public PaymentStatusCode PaymentStatus { get; set; }
         public string Message { get; set; }
         public string TransOrderId { get; set; }
         public DateTimeOffset TransDateTime { get; set; }

@@ -185,7 +185,7 @@ export class CrrpComponent implements OnInit {
 
 	async ngOnInit(): Promise<void> {
 		const nextRoute = await this.authProcessService.initializeCrrp();
-		console.log('initialize nextRoute', nextRoute);
+		console.debug('initialize nextRoute', nextRoute);
 
 		if (nextRoute) {
 			await this.router.navigate([nextRoute]);

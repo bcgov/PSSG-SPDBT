@@ -50,7 +50,7 @@ export class InvitationUserComponent implements OnInit {
 				.apiUserInvitationPost({ body: invitationRequest })
 				.pipe()
 				.subscribe((resp: any) => {
-					console.log('InvitationUserComponent, apiUserInvitationPost', resp);
+					console.debug('InvitationUserComponent, apiUserInvitationPost', resp);
 					if (resp?.isError) {
 						this.message = resp.message;
 					} else {

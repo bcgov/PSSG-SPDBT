@@ -12,6 +12,7 @@ export { ApplicantApplicationFileListResponse } from './models/applicant-applica
 export { ApplicantApplicationFileResponse } from './models/applicant-application-file-response';
 export { ApplicantApplicationListResponse } from './models/applicant-application-list-response';
 export { ApplicantApplicationResponse } from './models/applicant-application-response';
+export { ApplicantInvitePaymentLinkCreateRequest } from './models/applicant-invite-payment-link-create-request';
 export { ApplicantPaymentLinkCreateRequest } from './models/applicant-payment-link-create-request';
 export { ApplicantProfileResponse } from './models/applicant-profile-response';
 export { ApplicantUserInfo } from './models/applicant-user-info';
@@ -75,6 +76,7 @@ export { PayerPreferenceTypeCode } from './models/payer-preference-type-code';
 export { PaymentLinkResponse } from './models/payment-link-response';
 export { PaymentMethodCode } from './models/payment-method-code';
 export { PaymentResponse } from './models/payment-response';
+export { PaymentStatusCode } from './models/payment-status-code';
 export { PortalUserIdentityTypeCode } from './models/portal-user-identity-type-code';
 export { RecaptchaConfiguration } from './models/recaptcha-configuration';
 export { RegistrationTypeCode } from './models/registration-type-code';
