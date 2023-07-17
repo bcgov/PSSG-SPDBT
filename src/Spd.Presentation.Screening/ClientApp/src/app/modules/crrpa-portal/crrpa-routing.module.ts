@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { CrcComponent } from './crrpa.component';
 import { InvitationCrrpaComponent } from './invitation-crrpa.component';
 import { OrgAccessComponent } from './org-access.component';
+import { CrrpaPaymentErrorComponent } from './step-components/crrpa-payment-error.component';
 import { CrrpaPaymentFailComponent } from './step-components/crrpa-payment-fail.component';
 import { CrrpaPaymentSuccessComponent } from './step-components/crrpa-payment-success.component';
 
@@ -12,6 +13,7 @@ export class CrrpaRoutes {
 	public static ORG_ACCESS = 'org-access';
 	public static PAYMENT_SUCCESS = 'payment-success';
 	public static PAYMENT_FAIL = 'payment-fail';
+	public static PAYMENT_ERROR = 'payment-error';
 
 	public static MODULE_PATH = CrrpaRoutes.CRRPA;
 
@@ -36,6 +38,7 @@ const routes: Routes = [
 	{ path: `${CrrpaRoutes.PAYMENT_SUCCESS}/:id`, component: CrrpaPaymentSuccessComponent },
 	{ path: `${CrrpaRoutes.PAYMENT_FAIL}/:id`, component: CrrpaPaymentFailComponent },
 	{ path: CrrpaRoutes.PAYMENT_FAIL, component: CrrpaPaymentFailComponent },
+	{ path: CrrpaRoutes.PAYMENT_ERROR, component: CrrpaPaymentErrorComponent },
 ];
 
 @NgModule({

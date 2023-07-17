@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { ApplicationStatusesComponent } from './components/application-statuses.component';
 import { CriminalRecordChecksComponent } from './components/criminal-record-checks.component';
 import { CrrpHomeComponent } from './components/crrp-home.component';
+import { CrrpPaymentErrorComponent } from './components/crrp-payment-error.component';
 import { CrrpPaymentFailComponent } from './components/crrp-payment-fail.component';
 import { CrrpPaymentManualComponent } from './components/crrp-payment-manual.component';
 import { CrrpPaymentSuccessComponent } from './components/crrp-payment-success.component';
@@ -30,6 +31,7 @@ export class CrrpRoutes {
 	public static PAYMENT_SUCCESS = 'payment-success';
 	public static PAYMENT_FAIL = 'payment-fail';
 	public static PAYMENT_MANUAL = 'payment-manual';
+	public static PAYMENT_ERROR = 'payment-error';
 	public static INVITATION = 'invitation';
 	public static REPORTS = 'reports';
 	public static USERS = 'users';
@@ -56,6 +58,7 @@ const routes: Routes = [
 			{ path: `${CrrpRoutes.PAYMENT_SUCCESS}/:id`, component: CrrpPaymentSuccessComponent },
 			{ path: `${CrrpRoutes.PAYMENT_FAIL}/:id`, component: CrrpPaymentFailComponent },
 			{ path: CrrpRoutes.PAYMENT_MANUAL, component: CrrpPaymentManualComponent },
+			{ path: CrrpRoutes.PAYMENT_ERROR, component: CrrpPaymentErrorComponent },
 			{ path: CrrpRoutes.MANUAL_SUBMISSIONS, component: ManualSubmissionComponent },
 			{ path: CrrpRoutes.ORGANIZATION_PROFILE, component: OrganizationProfileComponent },
 			{ path: CrrpRoutes.REPORTS, component: ReportsComponent },
