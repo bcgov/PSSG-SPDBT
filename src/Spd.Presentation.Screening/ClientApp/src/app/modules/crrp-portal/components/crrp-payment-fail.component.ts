@@ -16,6 +16,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 	selector: 'app-crrp-payment-fail',
 	template: `
 		<app-payment-fail
+			[payment]="payment"
 			[numberOfAttempts]="numberOfAttempts"
 			(backRoute)="onBackRoute()"
 			(payNow)="onPayNow()"
@@ -26,8 +27,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 })
 export class CrrpPaymentFailComponent implements OnInit {
 	numberOfAttempts: number = 0;
-	applicationId: string | null = null;
-	caseNumber: string | null = null;
+	payment: PaymentResponse | null = null;
 
 	constructor(
 		private route: ActivatedRoute,
@@ -54,8 +54,7 @@ export class CrrpPaymentFailComponent implements OnInit {
 			.apiOrgsOrgIdPaymentsPaymentIdGet({ paymentId: paymentId!, orgId })
 			.pipe(
 				switchMap((paymentResp: PaymentResponse) => {
-					this.applicationId = paymentResp.applicationId!;
-					this.caseNumber = paymentResp.caseNumber!;
+					this.payment = paymentResp;
 
 					return this.paymentService.apiOrgsOrgIdApplicationsApplicationIdPaymentAttemptsGet({
 						orgId,
@@ -75,14 +74,14 @@ export class CrrpPaymentFailComponent implements OnInit {
 	onPayNow(): void {
 		const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
 		const body: OrgPaymentLinkCreateRequest = {
-			applicationId: this.applicationId!,
+			applicationId: this.payment!.applicationId!,
 			paymentMethod: PaymentMethodCode.CreditCard,
-			description: `Payment for Case ID: ${this.caseNumber}`,
+			description: `Payment for Case ID: ${this.payment!.caseNumber}`,
 		};
 		this.paymentService
 			.apiOrgsOrgIdApplicationsApplicationIdPaymentLinkPost({
 				orgId: orgId!,
-				applicationId: this.applicationId!,
+				applicationId: this.payment!.applicationId!,
 				body,
 			})
 			.pipe()

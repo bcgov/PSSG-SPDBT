@@ -15,6 +15,7 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 	selector: 'app-security-screening-payment-fail',
 	template: `
 		<app-payment-fail
+			[payment]="payment"
 			[numberOfAttempts]="numberOfAttempts"
 			(backRoute)="onBackRoute()"
 			(payNow)="onPayNow()"
@@ -25,8 +26,7 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 })
 export class SecurityScreeningPaymentFailComponent implements OnInit {
 	numberOfAttempts: number = 0;
-	applicationId: string | null = null;
-	caseNumber: string | null = null;
+	payment: PaymentResponse | null = null;
 
 	constructor(private route: ActivatedRoute, private router: Router, private paymentService: PaymentService) {}
 
@@ -41,8 +41,7 @@ export class SecurityScreeningPaymentFailComponent implements OnInit {
 			.apiApplicantsScreeningsPaymentsPaymentIdGet({ paymentId: paymentId! })
 			.pipe(
 				switchMap((paymentResp: PaymentResponse) => {
-					this.applicationId = paymentResp.applicationId!;
-					this.caseNumber = paymentResp.caseNumber!;
+					this.payment = paymentResp;
 
 					return this.paymentService.apiApplicantsScreeningsApplicationIdPaymentAttemptsGet({
 						applicationId: paymentResp.applicationId!,
@@ -60,13 +59,13 @@ export class SecurityScreeningPaymentFailComponent implements OnInit {
 
 	onPayNow(): void {
 		const body: ApplicantPaymentLinkCreateRequest = {
-			applicationId: this.applicationId!,
+			applicationId: this.payment!.applicationId!,
 			paymentMethod: PaymentMethodCode.CreditCard,
-			description: `Payment for Case ID: ${this.caseNumber}`,
+			description: `Payment for Case ID: ${this.payment!.caseNumber}`,
 		};
 		this.paymentService
 			.apiApplicantsScreeningsApplicationIdPaymentLinkPost({
-				applicationId: this.applicationId!,
+				applicationId: this.payment!.applicationId!,
 				body,
 			})
 			.pipe()

@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { PaymentResponse } from 'src/app/api/models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 
 @Component({
@@ -51,7 +52,10 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 					<span *ngIf="isCancelledPaymentFlow; else paymentFailedSubHeader"
 						>Your payment attempt has been cancelled</span
 					>
-					<ng-template #paymentFailedSubHeader>Your payment transaction has failed </ng-template>
+					<ng-template #paymentFailedSubHeader>
+						Your payment transaction has failed for<br />
+						Case ID: {{ payment?.caseNumber }}
+					</ng-template>
 				</div>
 			</div>
 
@@ -125,6 +129,7 @@ export class PaymentFailComponent implements OnInit {
 	numberOfAttemptsRemaining = 0;
 
 	@Input() isCancelledPaymentFlow = false;
+	@Input() payment: PaymentResponse | null = null;
 
 	private _numberOfAttempts!: number | null;
 	@Input()

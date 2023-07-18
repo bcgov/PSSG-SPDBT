@@ -15,6 +15,7 @@ import { PaymentService } from 'src/app/api/services';
 		<div class="container mt-4">
 			<section class="step-section p-3">
 				<app-payment-fail
+					[payment]="payment"
 					[numberOfAttempts]="numberOfAttempts"
 					[isCancelledPaymentFlow]="isCancelledPaymentFlow"
 					(payNow)="onPayNow()"
@@ -28,8 +29,7 @@ import { PaymentService } from 'src/app/api/services';
 export class CrrpaPaymentFailComponent implements OnInit {
 	isCancelledPaymentFlow: boolean = false;
 	numberOfAttempts: number = 0;
-	applicationId: string | null = null;
-	caseNumber: string | null = null;
+	payment: PaymentResponse | null = null;
 
 	constructor(private route: ActivatedRoute, private router: Router, private paymentService: PaymentService) {}
 
@@ -42,8 +42,7 @@ export class CrrpaPaymentFailComponent implements OnInit {
 				.apiCrrpaPaymentsPaymentIdGet({ paymentId: paymentId! })
 				.pipe(
 					switchMap((paymentResp: PaymentResponse) => {
-						this.applicationId = paymentResp.applicationId!;
-						this.caseNumber = paymentResp.caseNumber!;
+						this.payment = paymentResp;
 
 						return this.paymentService.apiCrrpaPaymentAttemptsGet({
 							applicationId: paymentResp.applicationId!,
@@ -58,9 +57,9 @@ export class CrrpaPaymentFailComponent implements OnInit {
 
 	onPayNow(): void {
 		const body: ApplicantInvitePaymentLinkCreateRequest = {
-			applicationId: this.applicationId!,
+			applicationId: this.payment!.applicationId!,
 			paymentMethod: PaymentMethodCode.CreditCard,
-			description: `Payment for Case ID: ${this.caseNumber}`,
+			description: `Payment for Case ID: ${this.payment!.caseNumber}`,
 		};
 		this.paymentService
 			.apiCrrpaPaymentLinkPost({
