@@ -26,8 +26,8 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 		<mat-divider class="mb-2 mb-lg-4"></mat-divider>
 
 		<div class="d-flex justify-content-center">
-			<div class="fail-image text-center">
-				<img class="fail-image__item" src="/assets/payment-fail.png" />
+			<div class="payment__image text-center">
+				<img class="payment__image__item" src="/assets/payment-fail.png" />
 			</div>
 		</div>
 
@@ -39,37 +39,13 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 			<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
 				<div class="lead fs-5 my-4">
 					Please download and complete the
-					<a (click)="onDownloadManualPaymentForm()">Manual Payment Form</a> then follow the instructions on the form to
-					submit payment to the Security Programs Division.
+					<a class="payment__anchor" (click)="onDownloadManualPaymentForm()">Manual Payment Form</a> then follow the
+					instructions on the form to submit payment to the Security Programs Division.
 				</div>
 			</div>
 		</div>
 	`,
-	styles: [
-		`
-			.fail-image {
-				max-height: 8em;
-				border-radius: 50%;
-				width: 400px;
-				background: var(--color-grey-lighter);
-				font: 32px Arial, sans-serif;
-
-				&__item {
-					margin-top: 15px;
-					height: 5em;
-				}
-			}
-
-			.text {
-				font-weight: 700;
-				line-height: 1.5em;
-			}
-
-			a {
-				color: var(--bs-link-color) !important;
-			}
-		`,
-	],
+	styles: [],
 })
 export class PaymentManualComponent implements OnInit {
 	isBackRoute: boolean = false;
