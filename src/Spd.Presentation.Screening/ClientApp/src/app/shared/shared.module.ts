@@ -21,6 +21,7 @@ import { IdentifyVerificationCommonComponent } from './components/identify-verif
 import { ManualSubmissionCommonComponent } from './components/manual-submission-common.component';
 import { MonthPickerComponent } from './components/month-picker.component';
 import { OrgSelectionModalComponent } from './components/org-selection-modal.component';
+import { PaymentErrorComponent } from './components/payment-error.component';
 import { PaymentFailComponent } from './components/payment-fail.component';
 import { PaymentManualComponent } from './components/payment-manual.component';
 import { PaymentSuccessComponent } from './components/payment-success.component';
@@ -65,6 +66,7 @@ const SHARED_COMPONENTS = [
 	PaymentSuccessComponent,
 	PaymentFailComponent,
 	PaymentManualComponent,
+	PaymentErrorComponent,
 ];
 
 @NgModule({

@@ -10,6 +10,7 @@ import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
 import { ActionResult } from '../models/action-result';
+import { ApplicantInvitePaymentLinkCreateRequest } from '../models/applicant-invite-payment-link-create-request';
 import { ApplicantPaymentLinkCreateRequest } from '../models/applicant-payment-link-create-request';
 import { OrgPaymentLinkCreateRequest } from '../models/org-payment-link-create-request';
 import { PaymentLinkResponse } from '../models/payment-link-response';
@@ -339,6 +340,10 @@ export class PaymentService extends BaseService {
   apiOrgsOrgIdApplicationsApplicationIdPaymentLinkPost$Response(params: {
     orgId: string;
     applicationId: string;
+
+    /**
+     * which include Payment link create request
+     */
     body: OrgPaymentLinkCreateRequest
   },
   context?: HttpContext
@@ -377,6 +382,10 @@ export class PaymentService extends BaseService {
   apiOrgsOrgIdApplicationsApplicationIdPaymentLinkPost(params: {
     orgId: string;
     applicationId: string;
+
+    /**
+     * which include Payment link create request
+     */
     body: OrgPaymentLinkCreateRequest
   },
   context?: HttpContext
@@ -624,6 +633,306 @@ export class PaymentService extends BaseService {
 ): Observable<number> {
 
     return this.apiOrgsOrgIdApplicationsApplicationIdPaymentAttemptsGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<number>) => r.body as number)
+    );
+  }
+
+  /**
+   * Path part for operation apiCrrpaPaymentLinkPost
+   */
+  static readonly ApiCrrpaPaymentLinkPostPath = '/api/crrpa/payment-link';
+
+  /**
+   * Return the direct pay payment link.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiCrrpaPaymentLinkPost()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiCrrpaPaymentLinkPost$Response(params: {
+
+    /**
+     * which include Payment link create request
+     */
+    body: ApplicantInvitePaymentLinkCreateRequest
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<PaymentLinkResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, PaymentService.ApiCrrpaPaymentLinkPostPath, 'post');
+    if (params) {
+      rb.body(params.body, 'application/*+json');
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<PaymentLinkResponse>;
+      })
+    );
+  }
+
+  /**
+   * Return the direct pay payment link.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiCrrpaPaymentLinkPost$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiCrrpaPaymentLinkPost(params: {
+
+    /**
+     * which include Payment link create request
+     */
+    body: ApplicantInvitePaymentLinkCreateRequest
+  },
+  context?: HttpContext
+
+): Observable<PaymentLinkResponse> {
+
+    return this.apiCrrpaPaymentLinkPost$Response(params,context).pipe(
+      map((r: StrictHttpResponse<PaymentLinkResponse>) => r.body as PaymentLinkResponse)
+    );
+  }
+
+  /**
+   * Path part for operation apiCrrpaPaymentResultGet
+   */
+  static readonly ApiCrrpaPaymentResultGetPath = '/api/crrpa/payment-result';
+
+  /**
+   * redirect url for paybc to redirect to.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiCrrpaPaymentResultGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiCrrpaPaymentResultGet$Response(params?: {
+    trnApproved?: number;
+    messageText?: string;
+    cardType?: string;
+    trnOrderId?: string;
+    trnAmount?: string;
+    paymentMethod?: string;
+    trnDate?: string;
+    ref1?: string;
+    ref2?: string;
+    ref3?: string;
+    pbcTxnNumber?: string;
+    trnNumber?: string;
+    hashValue?: string;
+    pbcRefNumber?: string;
+    glDate?: string;
+    paymentAuthCode?: string;
+    revenue?: string;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<ActionResult>> {
+
+    const rb = new RequestBuilder(this.rootUrl, PaymentService.ApiCrrpaPaymentResultGetPath, 'get');
+    if (params) {
+      rb.query('trnApproved', params.trnApproved, {});
+      rb.query('messageText', params.messageText, {});
+      rb.query('cardType', params.cardType, {});
+      rb.query('trnOrderId', params.trnOrderId, {});
+      rb.query('trnAmount', params.trnAmount, {});
+      rb.query('paymentMethod', params.paymentMethod, {});
+      rb.query('trnDate', params.trnDate, {});
+      rb.query('ref1', params.ref1, {});
+      rb.query('ref2', params.ref2, {});
+      rb.query('ref3', params.ref3, {});
+      rb.query('pbcTxnNumber', params.pbcTxnNumber, {});
+      rb.query('trnNumber', params.trnNumber, {});
+      rb.query('hashValue', params.hashValue, {});
+      rb.query('pbcRefNumber', params.pbcRefNumber, {});
+      rb.query('glDate', params.glDate, {});
+      rb.query('paymentAuthCode', params.paymentAuthCode, {});
+      rb.query('revenue', params.revenue, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<ActionResult>;
+      })
+    );
+  }
+
+  /**
+   * redirect url for paybc to redirect to.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiCrrpaPaymentResultGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiCrrpaPaymentResultGet(params?: {
+    trnApproved?: number;
+    messageText?: string;
+    cardType?: string;
+    trnOrderId?: string;
+    trnAmount?: string;
+    paymentMethod?: string;
+    trnDate?: string;
+    ref1?: string;
+    ref2?: string;
+    ref3?: string;
+    pbcTxnNumber?: string;
+    trnNumber?: string;
+    hashValue?: string;
+    pbcRefNumber?: string;
+    glDate?: string;
+    paymentAuthCode?: string;
+    revenue?: string;
+  },
+  context?: HttpContext
+
+): Observable<ActionResult> {
+
+    return this.apiCrrpaPaymentResultGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<ActionResult>) => r.body as ActionResult)
+    );
+  }
+
+  /**
+   * Path part for operation apiCrrpaPaymentsPaymentIdGet
+   */
+  static readonly ApiCrrpaPaymentsPaymentIdGetPath = '/api/crrpa/payments/{paymentId}';
+
+  /**
+   * Get the payment result for application and payment.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiCrrpaPaymentsPaymentIdGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiCrrpaPaymentsPaymentIdGet$Response(params: {
+    paymentId: string;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<PaymentResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, PaymentService.ApiCrrpaPaymentsPaymentIdGetPath, 'get');
+    if (params) {
+      rb.path('paymentId', params.paymentId, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<PaymentResponse>;
+      })
+    );
+  }
+
+  /**
+   * Get the payment result for application and payment.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiCrrpaPaymentsPaymentIdGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiCrrpaPaymentsPaymentIdGet(params: {
+    paymentId: string;
+  },
+  context?: HttpContext
+
+): Observable<PaymentResponse> {
+
+    return this.apiCrrpaPaymentsPaymentIdGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<PaymentResponse>) => r.body as PaymentResponse)
+    );
+  }
+
+  /**
+   * Path part for operation apiCrrpaPaymentAttemptsGet
+   */
+  static readonly ApiCrrpaPaymentAttemptsGetPath = '/api/crrpa/payment-attempts';
+
+  /**
+   * Get the payment result for application and payment.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiCrrpaPaymentAttemptsGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiCrrpaPaymentAttemptsGet$Response(params: {
+    applicationId: string;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<number>> {
+
+    const rb = new RequestBuilder(this.rootUrl, PaymentService.ApiCrrpaPaymentAttemptsGetPath, 'get');
+    if (params) {
+      rb.path('applicationId', params.applicationId, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return (r as HttpResponse<any>).clone({ body: parseFloat(String((r as HttpResponse<any>).body)) }) as StrictHttpResponse<number>;
+      })
+    );
+  }
+
+  /**
+   * Get the payment result for application and payment.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiCrrpaPaymentAttemptsGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiCrrpaPaymentAttemptsGet(params: {
+    applicationId: string;
+  },
+  context?: HttpContext
+
+): Observable<number> {
+
+    return this.apiCrrpaPaymentAttemptsGet$Response(params,context).pipe(
       map((r: StrictHttpResponse<number>) => r.body as number)
     );
   }

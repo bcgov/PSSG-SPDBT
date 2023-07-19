@@ -173,7 +173,7 @@ export class AuthProcessService {
 		//auth step 1 - user is not logged in, no state at all
 		//auth step 3 - angular loads again here, KC posts the token, oidc lib reads token and returns state
 		const authInfo = await this.authenticationService.tryLogin(identityProvider, OrgRegistrationRoutes.path());
-		console.log('tryInitializeOrgReg', authInfo);
+		console.debug('tryInitializeOrgReg', authInfo);
 
 		if (authInfo.loggedIn) {
 			this.notify(true);

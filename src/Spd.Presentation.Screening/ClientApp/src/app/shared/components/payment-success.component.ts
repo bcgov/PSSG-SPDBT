@@ -31,8 +31,8 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 		<mat-divider class="mb-2 mb-lg-4"></mat-divider>
 
 		<div class="d-flex justify-content-center">
-			<div class="success-image text-center">
-				<img class="success-image__item" src="/assets/payment-success.png" />
+			<div class="payment__image text-center">
+				<img class="payment__image__item" src="/assets/payment-success.png" />
 			</div>
 		</div>
 
@@ -50,15 +50,17 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 		<div class="row text-center mb-4">
 			<div class="offset-xl-3 col-xl-2 offset-lg-2  col-lg-3 mt-4">
 				<small class="d-block"> Case ID </small>
-				<div class="text">{{ payment?.caseNumber }}</div>
+				<div class="payment__text">{{ payment?.caseNumber }}</div>
 			</div>
 			<div class=" col-xl-2 col-lg-3 mt-4">
 				<small class="d-block"> Date of Transaction </small>
-				<div class="text">{{ payment?.transDateTime | date : appConstants.date.formalDateFormat : 'UTC' }}</div>
+				<div class="payment__text">
+					{{ payment?.transDateTime | date : appConstants.date.formalDateFormat : 'UTC' }}
+				</div>
 			</div>
 			<div class=" col-xl-2 col-lg-3 mt-4">
 				<small class="d-block">Invoice/Order Number</small>
-				<div class="text">{{ payment?.transOrderId }}</div>
+				<div class="payment__text">{{ payment?.transOrderId }}</div>
 			</div>
 		</div>
 
@@ -71,27 +73,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 			</div>
 		</div>
 	`,
-	styles: [
-		`
-			.success-image {
-				max-height: 8em;
-				border-radius: 50%;
-				width: 400px;
-				background: var(--color-grey-lighter);
-				font: 32px Arial, sans-serif;
-
-				&__item {
-					margin-top: 15px;
-					height: 5em;
-				}
-			}
-
-			.text {
-				font-weight: 700;
-				line-height: 1.5em;
-			}
-		`,
-	],
+	styles: [],
 })
 export class PaymentSuccessComponent implements OnInit {
 	isBackRoute: boolean = false;
