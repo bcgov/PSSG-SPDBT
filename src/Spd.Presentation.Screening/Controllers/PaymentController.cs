@@ -45,7 +45,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/applicants/screenings/{applicationId}/payment-link")]
         [HttpPost]
-        [Authorize(Policy = "OnlyBcsc")]
+        [Authorize(Policy = "OnlyBcsc", Roles = "Applicant")]
         public async Task<PaymentLinkResponse> GetApplicantPaymentLink([FromBody][Required] ApplicantPaymentLinkCreateRequest paymentLinkCreateRequest)
         {
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
@@ -92,7 +92,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/applicants/screenings/payments/{paymentId}")]
         [HttpGet]
-        [Authorize(Policy = "OnlyBcsc")]
+        [Authorize(Policy = "OnlyBcsc", Roles = "Applicant")]
         public async Task<PaymentResponse> GetApplicantPaymentResult([FromRoute] Guid paymentId)
         {
             return await _mediator.Send(new PaymentQuery(paymentId));
@@ -104,7 +104,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/applicants/screenings/{applicationId}/payment-attempts")]
         [HttpGet]
-        [Authorize(Policy = "OnlyBcsc")]
+        [Authorize(Policy = "OnlyBcsc", Roles = "Applicant")]
         public async Task<int> GetApplicantFailedPaymentAttempts([FromRoute] Guid applicationId)
         {
             return await _mediator.Send(new PaymentFailedAttemptCountQuery(applicationId));
