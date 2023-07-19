@@ -15,7 +15,9 @@ import { CrrpaRoutes } from './crrpa-routing.module';
 						<h2 class="mb-3">Criminal Record Check</h2>
 						<p>
 							In British Columbia, if you work or volunteer with, or have the potential for unsupervised access to
-							children and/or vulnerable adults, you are required to complete a criminal record check.
+							children and/or vulnerable adults, you are required to complete a criminal record check. This portal
+							enables you to easily apply for a criminal record check under the
+							<a href="https://www2.gov.bc.ca" target="_blank">Criminal Records Review Act</a>.
 						</p>
 						<h3 class="subheading fw-normal my-3">How do I submit a CRC request online?</h3>
 						<p>To submit an online request for a criminal record check, you must:</p>
@@ -23,11 +25,12 @@ import { CrrpaRoutes } from './crrpa-routing.module';
 							<li>Be at least 12 years of age as of today's date.</li>
 							<li>Have an access code provided by your organization.</li>
 							<li>
-								Have your identity verified by using your
-								<a href="https://www2.gov.bc.ca/gov/content/governments/government-id/bcservicescardapp" target="_blank"
-									>BC Services Card</a
-								>. If you don't have a BC Services Card or are unable to verify your identity through the app, your
-								organization will verify your ID after you submit your criminal record check application.1-855-587-0185
+								Have your identity verified by using your BC Services Card. The BC Services Card provides secure access
+								to government online services.
+							</li>
+							<li>
+								If you do not have a BC Services Card or if you live outside of the province, please contact your
+								organization for a manual consent form.
 							</li>
 						</ul>
 						<h3 class="subheading fw-normal my-3">Access code:</h3>
@@ -56,13 +59,32 @@ import { CrrpaRoutes } from './crrpa-routing.module';
 								</div>
 							</div>
 						</form>
-						<h3 class="subheading fw-normal mb-3">Need help?</h3>
+						<h3 class="subheading fw-normal mb-3">I need more information</h3>
+						<ul>
+							<li>
+								I'm an employee or a volunteer and I want to know
+								<a href="https://www2.gov.bc.ca" target="_blank">why I need to apply for a criminal record check</a>.
+							</li>
+							<li>
+								<a href="https://www2.gov.bc.ca" target="_blank">I'm an authorized contact</a> who is responsible for
+								facilitating the criminal record check for my organization.
+							</li>
+							<li>
+								<a href="https://www2.gov.bc.ca" target="_blank">I'm an employer organization</a> and I want to learn
+								more about registering with the Criminal Records Review Program (CRRP).
+							</li>
+							<li>
+								<a href="https://www2.gov.bc.ca" target="_blank">I'm a volunteer organization</a> and I want to register
+								with the CRRP.
+							</li>
+						</ul>
+						<h3 class="subheading fw-normal mb-3">I need help</h3>
 						<p>For applicants, contact your organization for your access code.</p>
 						<p>
 							For organizations, if you have a question about the online submission process or to register your
 							organization, contact the Criminal Records Review Program (CRRP) at
 							<a href="mailto:criminalrecords@gov.bc.ca">criminalrecords@gov.bc.ca</a> or by phone at 1-855-587-0185
-							(Option 2).
+							(option 2).
 						</p>
 					</div>
 				</div>
@@ -73,6 +95,10 @@ import { CrrpaRoutes } from './crrpa-routing.module';
 		`
 			.subheading {
 				color: grey;
+			}
+
+			li {
+				padding: 5px 0px 5px;
 			}
 		`,
 	],
