@@ -37,9 +37,9 @@ const routes: Routes = [
 			{ path: `${SecurityScreeningRoutes.PAYMENT_FAIL}/:id`, component: SecurityScreeningPaymentFailComponent },
 			{ path: SecurityScreeningRoutes.PAYMENT_MANUAL, component: SecurityScreeningPaymentManualComponent },
 			{ path: SecurityScreeningRoutes.PAYMENT_ERROR, component: SecurityScreeningPaymentErrorComponent },
-			{ path: SecurityScreeningRoutes.LOGIN_FAIL, component: SecurityScreeningLoginFailComponent },
 		],
 	},
+	{ path: SecurityScreeningRoutes.LOGIN_FAIL, component: SecurityScreeningLoginFailComponent },
 ];
 
 @NgModule({
