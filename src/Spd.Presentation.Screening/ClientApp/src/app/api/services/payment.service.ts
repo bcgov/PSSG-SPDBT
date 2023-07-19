@@ -877,9 +877,9 @@ export class PaymentService extends BaseService {
   }
 
   /**
-   * Path part for operation apiCrrpaPaymentAttemptsGet
+   * Path part for operation apiCrrpaApplicationIdPaymentAttemptsGet
    */
-  static readonly ApiCrrpaPaymentAttemptsGetPath = '/api/crrpa/payment-attempts';
+  static readonly ApiCrrpaApplicationIdPaymentAttemptsGetPath = '/api/crrpa/{applicationId}/payment-attempts';
 
   /**
    * Get the payment result for application and payment.
@@ -887,18 +887,18 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiCrrpaPaymentAttemptsGet()` instead.
+   * To access only the response body, use `apiCrrpaApplicationIdPaymentAttemptsGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiCrrpaPaymentAttemptsGet$Response(params: {
+  apiCrrpaApplicationIdPaymentAttemptsGet$Response(params: {
     applicationId: string;
   },
   context?: HttpContext
 
 ): Observable<StrictHttpResponse<number>> {
 
-    const rb = new RequestBuilder(this.rootUrl, PaymentService.ApiCrrpaPaymentAttemptsGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, PaymentService.ApiCrrpaApplicationIdPaymentAttemptsGetPath, 'get');
     if (params) {
       rb.path('applicationId', params.applicationId, {});
     }
@@ -921,18 +921,18 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiCrrpaPaymentAttemptsGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiCrrpaApplicationIdPaymentAttemptsGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiCrrpaPaymentAttemptsGet(params: {
+  apiCrrpaApplicationIdPaymentAttemptsGet(params: {
     applicationId: string;
   },
   context?: HttpContext
 
 ): Observable<number> {
 
-    return this.apiCrrpaPaymentAttemptsGet$Response(params,context).pipe(
+    return this.apiCrrpaApplicationIdPaymentAttemptsGet$Response(params,context).pipe(
       map((r: StrictHttpResponse<number>) => r.body as number)
     );
   }

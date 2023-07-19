@@ -251,7 +251,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// Get the payment result for application and payment
         /// </summary>
         /// <returns></returns>
-        [Route("api/crrpa/payment-attempts")]
+        [Route("api/crrpa/{applicationId}/payment-attempts")]
         [HttpGet]
         //[Authorize(Policy = "OnlyBcsc")]
         public async Task<int> GetApplicantInvitePaymentAttempts([FromRoute] Guid applicationId)
