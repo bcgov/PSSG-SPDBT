@@ -6,6 +6,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { ApplicantService, OrgService, UserProfileService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
+import { SecurityScreeningRoutes } from 'src/app/modules/security-screening-portal/security-screening-routing.module';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 
 @Injectable()
@@ -25,9 +26,16 @@ export class ErrorInterceptor implements HttpInterceptor {
 						errorResponse.url?.includes(ApplicantService.ApiApplicantsUserinfoGetPath) ||
 						errorResponse.url?.includes(ApplicantService.ApiApplicantsInvitesPostPath))
 				) {
-					console.debug('ErrorInterceptor - 401 and whoami/userinfo/invites');
+					console.debug(`ErrorInterceptor - ${errorResponse.status} and ${errorResponse.url}`);
 					this.router.navigate([AppRoutes.ACCESS_DENIED]);
-					return throwError(() => new Error(message));
+					return throwError(() => new Error('Access denied'));
+				} else if (
+					errorResponse.status == 403 &&
+					errorResponse.url?.includes(UserProfileService.ApiApplicantsWhoamiGetPath)
+				) {
+					console.debug(`ErrorInterceptor - ${errorResponse.status} and ${errorResponse.url}`);
+					this.router.navigate([SecurityScreeningRoutes.path(SecurityScreeningRoutes.LOGIN_FAIL)]);
+					return throwError(() => new Error('Login failure'));
 				}
 
 				// Certain 404s will be handled in the component
