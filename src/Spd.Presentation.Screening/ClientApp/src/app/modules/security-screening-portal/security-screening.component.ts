@@ -25,7 +25,7 @@ export class SecurityScreeningComponent implements OnInit {
 		if (nextRoute) {
 			await this.router.navigate([nextRoute]);
 		} else {
-			this.router.navigate([SecurityScreeningRoutes.path(SecurityScreeningRoutes.LOGIN_FAILURE)]);
+			this.router.navigate([SecurityScreeningRoutes.path(SecurityScreeningRoutes.LOGIN_FAIL)]);
 		}
 	}
 }

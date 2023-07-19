@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-	selector: 'app-security-screening-login-failure',
+	selector: 'app-security-screening-login-fail',
 	template: `
 		<div class="d-flex justify-content-center">
 			<div class="fail-image text-center">
@@ -49,4 +49,4 @@ import { Component } from '@angular/core';
 		`,
 	],
 })
-export class SecurityScreeningLoginFailureComponent {}
+export class SecurityScreeningLoginFailComponent {}
