@@ -117,7 +117,7 @@ namespace Spd.Presentation.Screening.Controllers
             return await _mediator.Send(new ShareableClearanceQuery(withOrgId, applicantInfo.Sub, serviceType), ct);
         }
 
-        [Authorize(Policy = "OnlyBcsc")]
+        [Authorize(Policy = "OnlyBcsc", Roles = "Applicant")]
         [Route("api/applicants/{applicantId}/screenings")]
         [HttpGet]
         public async Task<ApplicantApplicationListResponse> ApplicantApplicationsList([FromRoute] Guid applicantId)
@@ -169,7 +169,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// Get the list of all files the applicant has uploaded for the application.
         /// </summary>
         /// <returns></returns>
-        [Authorize(Policy = "OnlyBcsc")]
+        [Authorize(Policy = "OnlyBcsc", Roles = "Applicant")]
         [Route("api/applicants/screenings/{applicationId}/files")]
         [HttpGet]
         public async Task<ApplicantApplicationFileListResponse> GetApplicantAppFiles([FromRoute] Guid applicationId)
@@ -189,7 +189,7 @@ namespace Spd.Presentation.Screening.Controllers
         [Route("api/applicants/screenings/{applicationId}/files")]
         [HttpPost]
         [DisableRequestSizeLimit]
-        [Authorize(Policy = "OnlyBcsc")]
+        [Authorize(Policy = "OnlyBcsc", Roles = "Applicant")]
         public async Task<IEnumerable<ApplicantAppFileCreateResponse>> UploadApplicantAppFiles([FromForm][Required] ApplicantAppFileUploadRequest fileUploadRequest, [FromRoute] Guid applicationId, CancellationToken ct)
         {
             UploadFileConfiguration? fileUploadConfig = _configuration.GetSection("UploadFile").Get<UploadFileConfiguration>();
@@ -228,7 +228,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// </summary>
         /// <returns></returns>
         /// http://localhost/api/applicants/screenings/file-templates?fileTemplateType=FingerprintPkg
-        [Authorize(Policy = "OnlyBcsc")]
+        [Authorize(Policy = "OnlyBcsc", Roles = "Applicant")]
         [Route("api/applicants/screenings/{applicationId}/file-templates")]
         [HttpGet]
         public async Task<FileStreamResult> DownloadFileTemplate([FromRoute] Guid applicationId, [FromQuery][Required] FileTemplateTypeCode fileTemplateType)
