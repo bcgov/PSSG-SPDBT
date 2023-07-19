@@ -41,7 +41,7 @@ namespace Spd.Resource.Organizations.Identity
             return new UserIdentityQueryResult(_mapper.Map<IEnumerable<Identity>>(identities.ToList()));
         }
 
-        private async Task<ApplicantIdentityQueryResult> HandleApplicantIdentityQuery(ApplicantIdentityQuery queryRequest, CancellationToken ct)
+        private async Task<ApplicantIdentityQueryResult?> HandleApplicantIdentityQuery(ApplicantIdentityQuery queryRequest, CancellationToken ct)
         {
             int identityType = (int)Enum.Parse<IdentityTypeOptionSet>(queryRequest.IdentityProviderType.ToString());
             var applicantIdentity = await _dynaContext.spd_identities
@@ -51,7 +51,14 @@ namespace Spd.Resource.Organizations.Identity
                 .Where(i => i.statecode == DynamicsConstants.StateCode_Active)
                 .FirstOrDefaultAsync(ct);
 
-            return _mapper.Map<ApplicantIdentityQueryResult>(applicantIdentity);
+            if (applicantIdentity?.spd_ContactId != null && applicantIdentity.spd_ContactId.statecode == DynamicsConstants.StateCode_Active)
+            {
+                return _mapper.Map<ApplicantIdentityQueryResult>(applicantIdentity);
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }
