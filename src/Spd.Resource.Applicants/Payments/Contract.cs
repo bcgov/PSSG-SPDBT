@@ -18,6 +18,7 @@ namespace Spd.Resource.Applicants.Payment
         public Guid PaymentId { get; set; }
         public string CaseNumber { get; set; }
         public bool PaidSuccess { get; set; }
+        public PaymentStatusEnum PaymentStatus { get; set; }
         public string Message { get; set; }
         public string? TransOrderId { get; set; }
         public DateTimeOffset TransDateTime { get; set; }
@@ -43,8 +44,14 @@ namespace Spd.Resource.Applicants.Payment
         public string? MessageText { get; set; }
     };
     public record CreatePaymentCmd : PaymentCmd;
- 
 
+
+    public enum PaymentStatusEnum
+    {
+        Success,
+        Failure,
+        Cancelled
+    }
     public enum PaymentMethodEnum
     {
         CreditCard

@@ -283,7 +283,6 @@ export class OrganizationProfileComponent implements OnInit {
 
 		this.editable =
 			this.authUserService.bceidUserInfoProfile?.contactAuthorizationTypeCode == ContactAuthorizationTypeCode.Primary;
-		console.log('editable', this.editable);
 		this.orgService
 			.apiOrgsOrgIdGet({ orgId: this.authUserService.bceidUserInfoProfile?.orgId! })
 			.pipe()

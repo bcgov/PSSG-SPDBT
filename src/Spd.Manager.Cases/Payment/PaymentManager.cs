@@ -109,7 +109,7 @@ namespace Spd.Manager.Cases.Payment
         public async Task<int> Handle(PaymentFailedAttemptCountQuery query, CancellationToken ct)
         {
             var respList = await _paymentRepository.QueryAsync(new PaymentQry(query.ApplicationId), ct);
-            return respList.Items.Count(i => !i.PaidSuccess);
+            return respList.Items.Count(i => i.PaymentStatus == PaymentStatusEnum.Failure);
         }
 
         private async Task<SpdPaymentConfig> GetSpdPaymentConfigAsync(CancellationToken ct)
@@ -120,15 +120,15 @@ namespace Spd.Manager.Cases.Payment
             var configs = await _configRepository.Query(new ConfigQuery(null, IConfigRepository.PAYBC_GROUP), ct);
             var pbcRefnumberConfig = configs.ConfigItems.FirstOrDefault(c => c.Key == IConfigRepository.PAYBC_PBCREFNUMBER_KEY);
             if (pbcRefnumberConfig == null)
-                throw new ApiException(HttpStatusCode.InternalServerError, "Dyanmics does not set pbcRefNumber correctly.");
+                throw new ApiException(HttpStatusCode.InternalServerError, "Dynamics did not set pbcRefNumber correctly.");
 
             var PaybcRevenueAccountConfig = configs.ConfigItems.FirstOrDefault(c => c.Key == IConfigRepository.PAYBC_REVENUEACCOUNT_KEY);
             if (PaybcRevenueAccountConfig == null)
-                throw new ApiException(HttpStatusCode.InternalServerError, "Dyanmics does not set paybc revenue account correctly.");
+                throw new ApiException(HttpStatusCode.InternalServerError, "Dynamics did not set paybc revenue account correctly.");
 
             var serviceCostConfig = configs.ConfigItems.FirstOrDefault(c => c.Key == IConfigRepository.PAYBCS_SERVICECOST_KEY);
             if (serviceCostConfig == null)
-                throw new ApiException(HttpStatusCode.InternalServerError, "Dyanmics does not set service cost correctly.");
+                throw new ApiException(HttpStatusCode.InternalServerError, "Dynamics did not set service cost correctly.");
 
             spdPaymentConfig = new SpdPaymentConfig()
             {

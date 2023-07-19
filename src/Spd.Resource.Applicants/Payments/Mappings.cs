@@ -28,6 +28,7 @@ namespace Spd.Resource.Applicants.Payment
             _ = CreateMap<spd_payment, PaymentResp>()
                 .ForMember(d => d.PaymentId, opt => opt.MapFrom(s => s.spd_paymentid))
                 .ForMember(d => d.PaidSuccess, opt => opt.MapFrom(s => s.spd_response == (int)ResponseOptionSet.Success))
+                .ForMember(d => d.PaymentStatus, opt => opt.MapFrom(s => GetPaymentStatus(s.spd_response)))
                 .ForMember(d => d.Message, opt => opt.MapFrom(s => s.spd_errordescription))
                 .ForMember(d => d.ApplicationId, opt => opt.MapFrom(s => s._spd_applicationid_value))
                 .ForMember(d => d.TransAmount, opt => opt.MapFrom(s => s.spd_amount))
@@ -41,6 +42,13 @@ namespace Spd.Resource.Applicants.Payment
             if (success == null) return null;
             if ((bool)success) return (int)ResponseOptionSet.Success;
             else return (int)ResponseOptionSet.Failure;
+        }
+
+        private PaymentStatusEnum GetPaymentStatus(int? response)
+        {
+            if (response == null) return PaymentStatusEnum.Cancelled;
+            if (response == (int)ResponseOptionSet.Failure) return PaymentStatusEnum.Failure;
+            return PaymentStatusEnum.Success;
         }
     }
 }

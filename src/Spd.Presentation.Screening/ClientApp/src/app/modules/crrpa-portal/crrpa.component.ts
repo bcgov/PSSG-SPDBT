@@ -7,14 +7,17 @@ import { Router } from '@angular/router';
 import { distinctUntilChanged, Observable, tap } from 'rxjs';
 import {
 	ApplicantAppCreateRequest,
+	ApplicantInvitePaymentLinkCreateRequest,
 	ApplicationCreateResponse,
 	BooleanTypeCode,
 	EmployeeInteractionTypeCode,
+	PaymentLinkResponse,
+	PaymentMethodCode,
 	ServiceTypeCode,
 	ShareableClearanceItem,
 	ShareableClearanceResponse,
 } from 'src/app/api/models';
-import { ApplicantService } from 'src/app/api/services';
+import { ApplicantService, PaymentService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
@@ -56,7 +59,7 @@ export interface AppInviteOrgData extends ApplicantAppCreateRequest {
 }
 
 @Component({
-	selector: 'app-crc',
+	selector: 'app-crrpa',
 	template: `
 		<div class="container mt-4">
 			<mat-stepper
@@ -124,15 +127,6 @@ export interface AppInviteOrgData extends ApplicantAppCreateRequest {
 						(scrollIntoView)="onScrollIntoView()"
 					></app-step-appl-submitted>
 				</mat-step>
-
-				<!-- PAYMENT PROCESS?
- <mat-step completed="false" *ngIf="payeeType == payeePreferenceTypeCodes.Applicant">
-<ng-template matStepLabel>Pay for Application</ng-template>
-<app-step-pay-for-application
-	(nextStepperStep)="onNextStepperStep(stepper)"
-	(scrollIntoView)="onScrollIntoView()"
-></app-step-pay-for-application>
-</mat-step> -->
 			</mat-stepper>
 		</div>
 	`,
@@ -172,6 +166,7 @@ export class CrcComponent implements OnInit {
 		private authProcessService: AuthProcessService,
 		private authUserService: AuthUserService,
 		private applicantService: ApplicantService,
+		private paymentService: PaymentService,
 		private location: Location
 	) {}
 
@@ -327,7 +322,7 @@ export class CrcComponent implements OnInit {
 
 	private postLoginNavigate(stepperData: any): void {
 		this.currentStateInfo = JSON.parse(stepperData);
-		console.log('stepperData', stepperData);
+		console.debug('stepperData', stepperData);
 
 		const orgData = JSON.parse(stepperData);
 		this.assignApplicantUserInfoData(orgData);
@@ -371,10 +366,9 @@ export class CrcComponent implements OnInit {
 			this.applicantService
 				.apiApplicantsScreeningsPost({ body })
 				.pipe()
-				.subscribe((_res: ApplicationCreateResponse) => {
+				.subscribe((res: ApplicationCreateResponse) => {
 					if (this.orgData!.performPaymentProcess) {
-						// this.router.navigate([CrrpaRoutes.path(CrrpaRoutes.PAYMENT_SUCCESS)]); // TODO Handle PAYMENT
-						// this.router.navigate([CrrpaRoutes.path(CrrpaRoutes.PAYMENT_FAIL)]);
+						this.payNow(res.applicationId!);
 					} else {
 						this.stepper.next();
 					}
@@ -384,15 +378,32 @@ export class CrcComponent implements OnInit {
 			this.applicantService
 				.apiApplicantsScreeningsAnonymousPost({ body })
 				.pipe()
-				.subscribe((_res: ApplicationCreateResponse) => {
+				.subscribe((res: ApplicationCreateResponse) => {
 					if (this.orgData!.performPaymentProcess) {
-						// this.router.navigate([CrrpaRoutes.path(CrrpaRoutes.PAYMENT_SUCCESS)]); // TODO Handle PAYMENT
-						// this.router.navigate([CrrpaRoutes.path(CrrpaRoutes.PAYMENT_FAIL)]);
+						this.payNow(res.applicationId!);
 					} else {
 						this.stepper.next();
 					}
 				});
 		}
+	}
+
+	private payNow(applicationId: string): void {
+		const body: ApplicantInvitePaymentLinkCreateRequest = {
+			applicationId: applicationId,
+			paymentMethod: PaymentMethodCode.CreditCard,
+			description: 'Payment for Case',
+		};
+		this.paymentService
+			.apiCrrpaPaymentLinkPost({
+				body,
+			})
+			.pipe()
+			.subscribe((res: PaymentLinkResponse) => {
+				if (res.paymentLinkUrl) {
+					window.location.assign(res.paymentLinkUrl);
+				}
+			});
 	}
 
 	private assignApplicantUserInfoData(orgData: AppInviteOrgData | null): void {
