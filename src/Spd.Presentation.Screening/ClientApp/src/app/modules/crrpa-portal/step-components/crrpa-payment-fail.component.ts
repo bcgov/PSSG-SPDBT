@@ -44,7 +44,7 @@ export class CrrpaPaymentFailComponent implements OnInit {
 					switchMap((paymentResp: PaymentResponse) => {
 						this.payment = paymentResp;
 
-						return this.paymentService.apiCrrpaPaymentAttemptsGet({
+						return this.paymentService.apiCrrpaApplicationIdPaymentAttemptsGet({
 							applicationId: paymentResp.applicationId!,
 						});
 					})
