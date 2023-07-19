@@ -6,10 +6,8 @@ using Spd.Manager.Membership.UserProfile;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
-using Spd.Utilities.Shared.Tools;
 using System.Security.Claims;
 using System.Security.Principal;
-using GenderCode = Spd.Utilities.Shared.ManagerContract.GenderCode;
 
 namespace Spd.Presentation.Screening.Controllers
 {
@@ -39,7 +37,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/users/whoami")]
         [HttpGet]
-        [Authorize(Policy = "OnlyBCeID")]
+        [Authorize(Policy = "OnlyBCeID", Roles = "Primary,Contact")]
         public async Task<UserProfileResponse> OrgUserWhoami()
         {
             PortalUserIdentityInfo userIdentity = _currentUser.GetPortalUserIdentityInfo();
@@ -52,7 +50,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/applicants/whoami")]
         [HttpGet]
-        [Authorize(Policy = "OnlyBcsc")]
+        [Authorize(Policy = "OnlyBcsc", Roles = "Applicant")]
         public async Task<ApplicantProfileResponse> ApplicantWhoami()
         {
             var info = _currentUser.GetApplicantIdentityInfo();
