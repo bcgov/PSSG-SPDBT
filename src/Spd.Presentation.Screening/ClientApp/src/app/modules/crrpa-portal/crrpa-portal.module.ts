@@ -9,6 +9,7 @@ import { ApplicationSubmittedComponent } from './step-components/application-sub
 import { ChecklistComponent } from './step-components/checklist.component';
 import { ConsentToCrcComponent } from './step-components/consentToCrc.component';
 import { ContactInformationComponent } from './step-components/contact-information.component';
+import { CrrpaPaymentErrorComponent } from './step-components/crrpa-payment-error.component';
 import { CrrpaPaymentFailComponent } from './step-components/crrpa-payment-fail.component';
 import { CrrpaPaymentSuccessComponent } from './step-components/crrpa-payment-success.component';
 import { DeclarationComponent } from './step-components/declaration.component';
@@ -48,6 +49,7 @@ import { StepTermsAndCondComponent } from './steps/step-terms-and-cond.component
 		DeclarationComponent,
 		CrrpaPaymentSuccessComponent,
 		CrrpaPaymentFailComponent,
+		CrrpaPaymentErrorComponent,
 		ApplicationSubmittedComponent,
 		ConsentToCrcComponent,
 		InvitationCrrpaComponent,

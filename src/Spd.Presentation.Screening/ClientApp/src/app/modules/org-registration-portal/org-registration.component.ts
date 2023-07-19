@@ -133,7 +133,7 @@ export class OrgRegistrationComponent implements OnInit {
 			.subscribe(() => this.breakpointChanged());
 
 		const stateInfo = await this.authProcessService.tryInitializeOrgReg();
-		console.log('stateInfo', stateInfo);
+		console.debug('stateInfo', stateInfo);
 		if (stateInfo) {
 			this.postLoginNavigate(stateInfo);
 		} else {

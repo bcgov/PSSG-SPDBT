@@ -164,7 +164,7 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
 	styles: [
 		`
 			.mat-column-status {
-				min-width: 190px;
+				min-width: 210px;
 			}
 
 			.mat-column-action1 {
