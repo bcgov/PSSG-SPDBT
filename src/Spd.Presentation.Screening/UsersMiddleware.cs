@@ -58,7 +58,20 @@ namespace Spd.Utilities.LogonUser
             }
             else if (context.User.GetIssuer() == bcscConfig.Issuer)
             {
-                context.User.AddUpdateClaim(ClaimTypes.Role, "Applicant");
+                var applicantInfo = context.User.GetApplicantIdentityInfo();
+                //we need to differentiate if current user-applicant has account in spd db. If yes, add role applicant.
+                ApplicantProfileResponse? appProfile = await cache.Get<ApplicantProfileResponse>($"applicant-{applicantInfo.Sub}");
+                if (appProfile == null)
+                {                    
+                    appProfile = await mediator.Send(new GetApplicantProfileQuery(applicantInfo.Sub));
+                    if(appProfile != null)
+                        await cache.Set($"applicant-{applicantInfo.Sub}", appProfile, new TimeSpan(0, 30, 0));
+                }
+
+                if (appProfile != null)
+                {
+                    context.User.AddUpdateClaim(ClaimTypes.Role, "Applicant");
+                }               
                 await next(context);
             }
             else
