@@ -37,7 +37,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/users/whoami")]
         [HttpGet]
-        [Authorize(Policy = "OnlyBCeID", Roles = "Primary,Contact")]
+        [Authorize(Policy = "OnlyBCeID")]
         public async Task<UserProfileResponse> OrgUserWhoami()
         {
             PortalUserIdentityInfo userIdentity = _currentUser.GetPortalUserIdentityInfo();
