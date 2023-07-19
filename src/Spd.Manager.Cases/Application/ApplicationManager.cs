@@ -1,5 +1,6 @@
 using AutoMapper;
 using MediatR;
+using Microsoft.Dynamics.CRM;
 using Spd.Engine.Search;
 using Spd.Engine.Validation;
 using Spd.Resource.Applicants.Application;
@@ -35,7 +36,7 @@ namespace Spd.Manager.Cases.Application
         IRequestHandler<ApplicantApplicationListQuery, ApplicantApplicationListResponse>,
         IRequestHandler<ApplicantApplicationFileQuery, ApplicantApplicationFileListResponse>,
         IRequestHandler<CreateApplicantAppFileCommand, IEnumerable<ApplicantAppFileCreateResponse>>,
-        IRequestHandler<FileTemplateQuery, FileResponse>,
+        IRequestHandler<PrepopluateFileTemplateQuery, FileResponse>,
         IApplicationManager
     {
         private readonly IApplicationRepository _applicationRepository;
@@ -464,9 +465,15 @@ namespace Spd.Manager.Cases.Application
             return _mapper.Map<IEnumerable<ApplicantAppFileCreateResponse>>(docResps);
         }
 
-        public async Task<FileResponse> Handle(FileTemplateQuery query, CancellationToken ct)
+        public async Task<FileResponse> Handle(PrepopluateFileTemplateQuery query, CancellationToken ct)
         {
-            //waiting for dynamics decision
+            //dynamics will put the pre-popluated template file in S3 and add record in documentUrl. so, download file from there.
+            var docResp = await _documentRepository.QueryAsync(new DocumentQry
+            {
+                ApplicationId = query.ApplicationId,
+                FileType = Enum.Parse<DocumentTypeEnum>(query.FileTemplateType.ToString()),
+            }, ct);
+
             //temp code
             if (query.FileTemplateType == FileTemplateTypeCode.FingerprintPkg)
             {

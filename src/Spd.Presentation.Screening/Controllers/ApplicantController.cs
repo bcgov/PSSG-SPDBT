@@ -229,11 +229,11 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         /// http://localhost/api/applicants/screenings/file-templates?fileTemplateType=FingerprintPkg
         [Authorize(Policy = "OnlyBcsc")]
-        [Route("api/applicants/screenings/file-templates")]
+        [Route("api/applicants/screenings/{applicationId}/file-templates")]
         [HttpGet]
-        public async Task<FileStreamResult> DownloadFileTemplate([FromQuery][Required] FileTemplateTypeCode fileTemplateType)
+        public async Task<FileStreamResult> DownloadFileTemplate([FromRoute] Guid applicationId, [FromQuery][Required] FileTemplateTypeCode fileTemplateType)
         {
-            FileResponse response = await _mediator.Send(new FileTemplateQuery(fileTemplateType));
+            FileResponse response = await _mediator.Send(new PrepopluateFileTemplateQuery(fileTemplateType, applicationId));
             var content = new MemoryStream(response.Content);
             var contentType = response.ContentType ?? "application/octet-stream";
             return File(content, contentType, response.FileName);
