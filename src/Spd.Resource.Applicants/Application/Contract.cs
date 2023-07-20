@@ -144,13 +144,6 @@ public record ApplicantApplicationListQry
     public Guid ApplicantId { get; set; }
 };
 
-
-public record ApplicantApplicationQry
-{
-    public Guid ApplicantId { get; set; }
-    public Guid ApplicationId { get; set; }
-};
-
 public record ApplicationQry(Guid ApplicationId);
 
 public enum ApplicationOriginTypeCode
@@ -293,7 +286,6 @@ public record ApplicantApplicationListResp
 {
     public IEnumerable<ApplicationResult> Applications { get; set; } = Array.Empty<ApplicationResult>();
 }
-public record ApplicantApplicationResp : ApplicationResult;
 
 #endregion
 
