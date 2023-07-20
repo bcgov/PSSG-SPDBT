@@ -69,6 +69,7 @@ namespace Spd.Manager.Cases.Application
             CreateMap<AppInviteVerifyResp, AppOrgResponse>();
             CreateMap<ApplicantApplicationListQuery, ApplicantApplicationListQry>();
             CreateMap<ApplicantApplicationListResp, ApplicantApplicationListResponse>();
+            CreateMap<ApplicantApplicationQuery, ApplicantApplicationQry>();
             CreateMap<DocumentResp, ApplicantApplicationFileResponse>()
                 .ForMember(d => d.FileTypeCode, opt => opt.MapFrom(s => s.DocumentType));
             CreateMap<DocumentResp, ApplicantAppFileCreateResponse>();

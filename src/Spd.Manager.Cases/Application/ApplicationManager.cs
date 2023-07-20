@@ -33,6 +33,7 @@ namespace Spd.Manager.Cases.Application
         IRequestHandler<ClearanceLetterQuery, FileResponse>,
         IRequestHandler<ShareableClearanceQuery, ShareableClearanceResponse>,
         IRequestHandler<ApplicantApplicationListQuery, ApplicantApplicationListResponse>,
+        IRequestHandler<ApplicantApplicationQuery, ApplicantApplicationResponse>,
         IRequestHandler<ApplicantApplicationFileQuery, ApplicantApplicationFileListResponse>,
         IRequestHandler<CreateApplicantAppFileCommand, IEnumerable<ApplicantAppFileCreateResponse>>,
         IRequestHandler<FileTemplateQuery, FileResponse>,
@@ -395,6 +396,12 @@ namespace Spd.Manager.Cases.Application
             return _mapper.Map<ApplicantApplicationListResponse>(response);
         }
 
+        public async Task<ApplicantApplicationResponse> Handle(ApplicantApplicationQuery request, CancellationToken cancellationToken)
+        {
+            var response = await _applicationRepository.QueryApplicationAsync(new ApplicationQry(request.ApplicationId), cancellationToken);
+            return _mapper.Map<ApplicantApplicationResponse>(response);
+        }
+
         public async Task<ApplicantApplicationFileListResponse> Handle(ApplicantApplicationFileQuery query, CancellationToken ct)
         {
             ApplicantIdentityQueryResult? contact = (ApplicantIdentityQueryResult?)await _identityRepository.Query(new ApplicantIdentityQuery(query.BcscId, IdentityProviderTypeCode.BcServicesCard), ct);
@@ -429,7 +436,7 @@ namespace Spd.Manager.Cases.Application
                 throw new ArgumentException("Invalid File Type");
 
             //put file to cache
-            IList<DocumentResp> docResps= new List<DocumentResp>();
+            IList<DocumentResp> docResps = new List<DocumentResp>();
             foreach (var file in command.Request.Files)
             {
                 string fileKey = await _tempFile.HandleCommand(new SaveTempFileCommand(file), ct);
