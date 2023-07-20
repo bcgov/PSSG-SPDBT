@@ -104,6 +104,7 @@ namespace Spd.Utilities.Dynamics
             {"ConvictedOffence", Guid.Parse("dbbc7549-0cea-ed11-b840-005056830319")},
             {"CriminalCharges", Guid.Parse("d9bc7549-0cea-ed11-b840-005056830319")},
             {"DriverLicense", Guid.Parse("cbbc7549-0cea-ed11-b840-005056830319")},
+            {"FingerprintsPkg", Guid.Parse("23a899f9-4e1c-ee11-b844-00505683fbf4")},
             {"GovtIssuedPhotoID", Guid.Parse("d5bc7549-0cea-ed11-b840-005056830319")},
             {"LegalNameChange", Guid.Parse("bfbc7549-0cea-ed11-b840-005056830319")},
             {"LegalWorkStatus", Guid.Parse("c9bc7549-0cea-ed11-b840-005056830319")},
@@ -119,6 +120,7 @@ namespace Spd.Utilities.Dynamics
             {"SecurityConsultant", Guid.Parse("f1bc7549-0cea-ed11-b840-005056830319")},
             {"SecurityGuard", Guid.Parse("efbc7549-0cea-ed11-b840-005056830319")},
             {"StatutoryDeclaration", Guid.Parse("bbbc7549-0cea-ed11-b840-005056830319")},
+            {"StatutoryDeclarationPkg", Guid.Parse("5b9ef416-4f1c-ee11-b844-00505683fbf4")},
             {"ValidationCertificate", Guid.Parse("f5bc7549-0cea-ed11-b840-005056830319")},
             {"OpportunityToRespond", Guid.Parse("385edd8c-fd16-ee11-b844-00505683fbf4")},
         }.ToImmutableDictionary();

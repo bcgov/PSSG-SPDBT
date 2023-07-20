@@ -10,9 +10,11 @@ using Spd.Resource.Applicants.Incident;
 using Spd.Resource.Organizations.Identity;
 using Spd.Resource.Organizations.Registration;
 using Spd.Utilities.FileStorage;
+using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.Shared.ManagerContract;
 using Spd.Utilities.Shared.ResourceContracts;
 using Spd.Utilities.TempFileStorage;
+using System.Net;
 
 namespace Spd.Manager.Cases.Application
 {
@@ -467,40 +469,33 @@ namespace Spd.Manager.Cases.Application
 
         public async Task<FileResponse> Handle(PrepopluateFileTemplateQuery query, CancellationToken ct)
         {
+            //get caseId from applicationId
+            var incidents = await _incidentRepository.QueryAsync(new IncidentQry { ApplicationId = query.ApplicationId }, ct);
+            if (incidents.Items.Count() <= 0)
+                throw new ApiException(HttpStatusCode.BadRequest, "cannot find the case for this application.");
+
             //dynamics will put the pre-popluated template file in S3 and add record in documentUrl. so, download file from there.
-            var docResp = await _documentRepository.QueryAsync(new DocumentQry
+            var docList = await _documentRepository.QueryAsync(new DocumentQry
             {
-                ApplicationId = query.ApplicationId,
+                CaseId = incidents.Items.First().IncidentId,
                 FileType = Enum.Parse<DocumentTypeEnum>(query.FileTemplateType.ToString()),
             }, ct);
 
-            //temp code
-            if (query.FileTemplateType == FileTemplateTypeCode.FingerprintPkg)
+            var docUrl = docList.Items.OrderByDescending(f => f.UploadedDateTime).FirstOrDefault();
+
+            if (docUrl != null)
             {
                 FileQueryResult fileResult = (FileQueryResult)await _fileStorageService.HandleQuery(
-                        new FileQuery { Key = "Fingerprint Letter June 2023.pdf", Folder = $"templates" },
+                    new FileQuery { Key = docUrl.DocumentUrlId.ToString(), Folder = $"incident/{docUrl.CaseId}" }, //need confirm with dynamics.
                     ct);
                 return new FileResponse
                 {
                     Content = fileResult.File.Content,
-                    ContentType = "application/pdf",
-                    FileName = "Fingerprint_Letter.pdf"
+                    ContentType = fileResult.File.ContentType,
+                    FileName = fileResult.File.FileName
                 };
             }
-            else if (query.FileTemplateType == FileTemplateTypeCode.StatutoryDeclaration)
-            {
-                FileQueryResult fileResult = (FileQueryResult)await _fileStorageService.HandleQuery(
-                        new FileQuery { Key = "Statutory_Declaration.pdf", Folder = $"templates" },
-                    ct);
-                return new FileResponse
-                {
-                    Content = fileResult.File.Content,
-                    ContentType = "application/pdf",
-                    FileName = "Statutory_Declaration.pdf"
-                };
-            }
-            else
-                throw new ArgumentException("Invalid FileTemplateType");
+            throw new ApiException(HttpStatusCode.NoContent, "No file found." );
         }
 
         #endregion

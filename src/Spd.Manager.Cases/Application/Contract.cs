@@ -791,8 +791,8 @@ namespace Spd.Manager.Cases.Application
 
     public enum FileTemplateTypeCode
     {
-        FingerprintPkg,
-        StatutoryDeclaration
+        FingerprintsPkg,
+        StatutoryDeclarationPkg
     }
     #endregion
 }
