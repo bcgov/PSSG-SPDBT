@@ -63,9 +63,9 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../crrpa.component';
 					<div class="row" *ngIf="facilityNameShow">
 						<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
 							<mat-form-field>
-								<mat-label>Company / Facility Name</mat-label>
+								<mat-label>{{ companyFacilityLabel }}</mat-label>
 								<input matInput formControlName="contractedCompanyName" />
-								<mat-hint>(Licensed Child Care Name or Adult Care Facility Name)</mat-hint>
+								<mat-hint>{{ companyFacilityHint }}</mat-hint>
 								<mat-error *ngIf="form.get('contractedCompanyName')?.hasError('required')">This is required</mat-error>
 							</mat-form-field>
 						</div>
@@ -79,6 +79,8 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../crrpa.component';
 export class SecurityInformationComponent implements CrcFormStepComponent {
 	facilityNameShow = false;
 	facilityNameRequired = false;
+	companyFacilityLabel = '';
+	companyFacilityHint = '';
 
 	private _orgData: AppInviteOrgData | null = null;
 	@Input()
@@ -87,12 +89,16 @@ export class SecurityInformationComponent implements CrcFormStepComponent {
 
 		this._orgData = data;
 
+		let isCompanyContractor = false;
+		let isCompanyLicensee = false;
+
 		if (data.screeningType) {
 			// If coming from Portal Invitation (screeningType is provided). If shown, always required.
-			this.facilityNameRequired = [ScreeningTypeCode.Contractor, ScreeningTypeCode.Licensee].includes(
-				data.screeningType!
-			);
-			this.facilityNameShow = this.facilityNameRequired;
+			this.facilityNameShow = [ScreeningTypeCode.Contractor, ScreeningTypeCode.Licensee].includes(data.screeningType!);
+			this.facilityNameRequired = this.facilityNameShow;
+
+			isCompanyContractor = data.screeningType == ScreeningTypeCode.Contractor;
+			isCompanyLicensee = data.screeningType == ScreeningTypeCode.Licensee;
 		} else {
 			// If coming from Access Code page, use these flags to determine if field is shown. If shown, always optional
 			this.facilityNameShow =
@@ -101,6 +107,17 @@ export class SecurityInformationComponent implements CrcFormStepComponent {
 					? true
 					: false;
 			this.facilityNameRequired = false;
+
+			isCompanyContractor = data.contractorsNeedVulnerableSectorScreening! == BooleanTypeCode.Yes;
+			isCompanyLicensee = data.licenseesNeedVulnerableSectorScreening! == BooleanTypeCode.Yes;
+		}
+
+		if (isCompanyContractor) {
+			this.companyFacilityLabel = 'Contracted Company Name';
+			this.companyFacilityHint = '';
+		} else if (isCompanyLicensee) {
+			this.companyFacilityLabel = 'Facility Name';
+			this.companyFacilityHint = '(Licensed Child Care Name or Adult Care Facility Name)';
 		}
 
 		this.form = this.formBuilder.group(
