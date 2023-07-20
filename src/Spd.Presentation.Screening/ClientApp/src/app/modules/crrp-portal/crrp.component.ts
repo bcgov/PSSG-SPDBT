@@ -194,7 +194,7 @@ export class CrrpComponent implements OnInit {
 		console.debug('initialize nextRoute', nextRoute);
 
 		if (nextRoute) {
-			await this.router.navigate([nextRoute]);
+			await this.router.navigate([nextRoute], { queryParams: { orgId: defaultOrgId } });
 		}
 	}
 }
