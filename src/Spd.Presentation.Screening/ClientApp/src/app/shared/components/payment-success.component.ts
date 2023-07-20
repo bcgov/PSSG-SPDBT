@@ -47,6 +47,17 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 			</div>
 		</div>
 
+		<div class="row mx-4" *ngIf="sendEmailTo">
+			<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
+				<div class="lead fs-5 my-4">
+					Your payment has been received and your application will be reviewed shortly. You will be contacted if it is
+					found to be incomplete or inaccurate. An email with a receipt has been sent to:
+					<strong>{{ sendEmailTo }}</strong
+					>.
+				</div>
+			</div>
+		</div>
+
 		<div class="row text-center mb-4">
 			<div class="offset-xl-3 col-xl-2 offset-lg-2  col-lg-3 mt-4">
 				<small class="d-block"> Case ID </small>
@@ -80,6 +91,7 @@ export class PaymentSuccessComponent implements OnInit {
 	appConstants = SPD_CONSTANTS;
 
 	@Input() payment: PaymentResponse | null = null;
+	@Input() sendEmailTo: string | null = null;
 	@Input() isApplicationReceived = false;
 
 	@Output() backRoute: EventEmitter<any> = new EventEmitter();
