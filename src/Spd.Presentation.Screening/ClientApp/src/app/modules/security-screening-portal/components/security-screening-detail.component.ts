@@ -108,7 +108,7 @@ import {
 						mat-flat-button
 						color="primary"
 						class="m-2"
-						(click)="onDownloadFile(fileTemplateTypeCodes.FingerprintPkg)"
+						(click)="onDownloadFile(fileTemplateTypeCodes.FingerprintsPkg)"
 						aria-label="Download Fingerprint Package"
 					>
 						<mat-icon>file_download</mat-icon>Download Fingerprint Package
@@ -119,7 +119,7 @@ import {
 						mat-flat-button
 						color="primary"
 						class="m-2"
-						(click)="onDownloadFile(fileTemplateTypeCodes.StatutoryDeclaration)"
+						(click)="onDownloadFile(fileTemplateTypeCodes.StatutoryDeclarationPkg)"
 						aria-label="Download Statutory Declaration"
 					>
 						<mat-icon>file_download</mat-icon>Download Statutory Declaration
@@ -280,7 +280,8 @@ export class SecurityScreeningDetailComponent implements OnInit, AfterViewInit {
 			});
 
 		this.applicantService
-			.apiApplicantsScreeningsFileTemplatesGet$Response({
+			.apiApplicantsScreeningsApplicationIdFileTemplatesGet$Response({
+				applicationId: this.application?.id!,
 				fileTemplateType,
 			})
 			.pipe()

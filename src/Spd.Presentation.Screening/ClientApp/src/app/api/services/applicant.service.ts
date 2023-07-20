@@ -581,9 +581,9 @@ export class ApplicantService extends BaseService {
   }
 
   /**
-   * Path part for operation apiApplicantsScreeningsFileTemplatesGet
+   * Path part for operation apiApplicantsScreeningsApplicationIdFileTemplatesGet
    */
-  static readonly ApiApplicantsScreeningsFileTemplatesGetPath = '/api/applicants/screenings/file-templates';
+  static readonly ApiApplicantsScreeningsApplicationIdFileTemplatesGetPath = '/api/applicants/screenings/{applicationId}/file-templates';
 
   /**
    * download the template document.
@@ -591,19 +591,21 @@ export class ApplicantService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiApplicantsScreeningsFileTemplatesGet()` instead.
+   * To access only the response body, use `apiApplicantsScreeningsApplicationIdFileTemplatesGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantsScreeningsFileTemplatesGet$Response(params: {
+  apiApplicantsScreeningsApplicationIdFileTemplatesGet$Response(params: {
+    applicationId: string;
     fileTemplateType: FileTemplateTypeCode;
   },
   context?: HttpContext
 
 ): Observable<StrictHttpResponse<Blob>> {
 
-    const rb = new RequestBuilder(this.rootUrl, ApplicantService.ApiApplicantsScreeningsFileTemplatesGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, ApplicantService.ApiApplicantsScreeningsApplicationIdFileTemplatesGetPath, 'get');
     if (params) {
+      rb.path('applicationId', params.applicationId, {});
       rb.query('fileTemplateType', params.fileTemplateType, {});
     }
 
@@ -625,18 +627,19 @@ export class ApplicantService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiApplicantsScreeningsFileTemplatesGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiApplicantsScreeningsApplicationIdFileTemplatesGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantsScreeningsFileTemplatesGet(params: {
+  apiApplicantsScreeningsApplicationIdFileTemplatesGet(params: {
+    applicationId: string;
     fileTemplateType: FileTemplateTypeCode;
   },
   context?: HttpContext
 
 ): Observable<Blob> {
 
-    return this.apiApplicantsScreeningsFileTemplatesGet$Response(params,context).pipe(
+    return this.apiApplicantsScreeningsApplicationIdFileTemplatesGet$Response(params,context).pipe(
       map((r: StrictHttpResponse<Blob>) => r.body as Blob)
     );
   }
