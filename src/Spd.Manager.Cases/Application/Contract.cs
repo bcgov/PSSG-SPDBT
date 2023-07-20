@@ -28,7 +28,7 @@ namespace Spd.Manager.Cases.Application
         public Task<ShareableClearanceResponse> Handle(ShareableClearanceQuery request, CancellationToken ct);
         public Task<ApplicantApplicationFileListResponse> Handle(ApplicantApplicationFileQuery query, CancellationToken ct);
         public Task<IEnumerable<ApplicantAppFileCreateResponse>> Handle(CreateApplicantAppFileCommand query, CancellationToken ct);
-        public Task<FileResponse> Handle(PrepopluateFileTemplateQuery query, CancellationToken ct);
+        public Task<FileResponse> Handle(PrepopulateFileTemplateQuery query, CancellationToken ct);
     }
 
     #region application invites
@@ -748,7 +748,7 @@ namespace Spd.Manager.Cases.Application
         public Guid? ApplicationId { get; set; } = null;
     };
 
-    public record PrepopluateFileTemplateQuery(FileTemplateTypeCode FileTemplateType, Guid ApplicationId) : IRequest<FileResponse>;
+    public record PrepopulateFileTemplateQuery(FileTemplateTypeCode FileTemplateType, Guid ApplicationId) : IRequest<FileResponse>;
 
     public enum FileTypeCode
     {

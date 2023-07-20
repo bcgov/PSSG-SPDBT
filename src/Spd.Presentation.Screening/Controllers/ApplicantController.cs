@@ -239,7 +239,7 @@ namespace Spd.Presentation.Screening.Controllers
         [HttpGet]
         public async Task<FileStreamResult> DownloadFileTemplate([FromRoute] Guid applicationId, [FromQuery][Required] FileTemplateTypeCode fileTemplateType)
         {
-            FileResponse response = await _mediator.Send(new PrepopluateFileTemplateQuery(fileTemplateType, applicationId));
+            FileResponse response = await _mediator.Send(new PrepopulateFileTemplateQuery(fileTemplateType, applicationId));
             var content = new MemoryStream(response?.Content);
             var contentType = response.ContentType ?? "application/octet-stream";
             return File(content, contentType, response.FileName);

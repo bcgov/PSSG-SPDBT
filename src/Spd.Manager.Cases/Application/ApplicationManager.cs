@@ -39,7 +39,7 @@ namespace Spd.Manager.Cases.Application
         IRequestHandler<ApplicantApplicationQuery, ApplicantApplicationResponse>,
         IRequestHandler<ApplicantApplicationFileQuery, ApplicantApplicationFileListResponse>,
         IRequestHandler<CreateApplicantAppFileCommand, IEnumerable<ApplicantAppFileCreateResponse>>,
-        IRequestHandler<PrepopluateFileTemplateQuery, FileResponse>,
+        IRequestHandler<PrepopulateFileTemplateQuery, FileResponse>,
         IApplicationManager
     {
         private readonly IApplicationRepository _applicationRepository;
@@ -474,7 +474,7 @@ namespace Spd.Manager.Cases.Application
             return _mapper.Map<IEnumerable<ApplicantAppFileCreateResponse>>(docResps);
         }
 
-        public async Task<FileResponse> Handle(PrepopluateFileTemplateQuery query, CancellationToken ct)
+        public async Task<FileResponse> Handle(PrepopulateFileTemplateQuery query, CancellationToken ct)
         {
             //get caseId from applicationId
             var incidents = await _incidentRepository.QueryAsync(new IncidentQry { ApplicationId = query.ApplicationId }, ct);
