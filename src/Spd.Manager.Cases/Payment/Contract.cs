@@ -24,15 +24,15 @@ namespace Spd.Manager.Cases.Payment
 
     public record PaymentLinkCreateRequest
     {
+        public Guid? ApplicationId { get; set; }
+        public string? EncodedApplicationId { get; set; } = null; //from secure payment link
+
         [MaxLength(100)]
         public string Description { get; set; } = null!;
         public PaymentMethodCode PaymentMethod { get; set; } //CC-credit card, VI - debit card
-        public Guid ApplicationId { get; set; }
+
     }
 
-    public record OrgPaymentLinkCreateRequest : PaymentLinkCreateRequest;
-    public record ApplicantPaymentLinkCreateRequest : PaymentLinkCreateRequest;
-    public record ApplicantInvitePaymentLinkCreateRequest : PaymentLinkCreateRequest;
     public record PaymentLinkResponse
     {
         public string PaymentLinkUrl { get; set; }

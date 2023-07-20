@@ -46,7 +46,7 @@ namespace Spd.Presentation.Screening.Controllers
         [Route("api/applicants/screenings/{applicationId}/payment-link")]
         [HttpPost]
         [Authorize(Policy = "OnlyBcsc", Roles = "Applicant")]
-        public async Task<PaymentLinkResponse> GetApplicantPaymentLink([FromBody][Required] ApplicantPaymentLinkCreateRequest paymentLinkCreateRequest)
+        public async Task<PaymentLinkResponse> GetApplicantPaymentLink([FromBody][Required] PaymentLinkCreateRequest paymentLinkCreateRequest)
         {
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
             string redirectUrl = $"{hostUrl}api/applicants/screenings/payment-result";
@@ -195,7 +195,7 @@ namespace Spd.Presentation.Screening.Controllers
         [Route("api/crrpa/payment-link")]
         [HttpPost]
         //[Authorize(Policy = "OnlyBcsc")]
-        public async Task<PaymentLinkResponse> GetApplicantInvitePaymentLink([FromBody][Required] ApplicantInvitePaymentLinkCreateRequest paymentLinkCreateRequest)
+        public async Task<PaymentLinkResponse> GetApplicantInvitePaymentLink([FromBody][Required] PaymentLinkCreateRequest paymentLinkCreateRequest)
         {
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
             string redirectUrl = $"{hostUrl}api/crrpa/payment-result";
@@ -257,6 +257,29 @@ namespace Spd.Presentation.Screening.Controllers
         public async Task<int> GetApplicantInvitePaymentAttempts([FromRoute] Guid applicationId)
         {
             return await _mediator.Send(new PaymentFailedAttemptCountQuery(applicationId));
+        }
+        #endregion
+
+        #region secure-payment-link for dynamics email.
+        /// <summary>
+        /// Redirect to PayBC the direct pay payment page 
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/crrpa/payment-secure-link/{encodedAppId}")]
+        [HttpGet]
+        public async Task<ActionResult> CreateLinkRedirectToPaybcPaymentPage([FromRoute] string encodedAppId)
+        {
+            string? hostUrl = _configuration.GetValue<string>("HostUrl");
+            string redirectUrl = $"{hostUrl}api/crrpa/payment-result";
+            PaymentLinkCreateRequest linkCreateRequest = new PaymentLinkCreateRequest()
+            {
+                ApplicationId = null,
+                EncodedApplicationId = encodedAppId,
+                Description = "Criminal Record Check",
+                PaymentMethod = PaymentMethodCode.CreditCard
+            };
+            var result = await _mediator.Send(new PaymentLinkCreateCommand(linkCreateRequest, redirectUrl, _paymentsConfiguration.MaxOnlinePaymentFailedTimes));
+            return Redirect(result.PaymentLinkUrl);
         }
         #endregion
     }

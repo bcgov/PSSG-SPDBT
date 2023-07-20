@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.Dynamics.CRM;
+using Microsoft.Extensions.Configuration;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Hosting;
@@ -33,6 +35,7 @@ builder.Services.Configure<KestrelServerOptions>(options =>
 
 builder.Services.ConfigureCors(builder.Configuration);
 var assemblyName = $"{typeof(Program).Assembly.GetName().Name}";
+builder.Services.ConfigureDataProtection(builder.Configuration, assemblyName);
 builder.Services.ConfigureSwagger(assemblyName);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers()

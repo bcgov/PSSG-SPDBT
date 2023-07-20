@@ -63,8 +63,26 @@ namespace Spd.Manager.Cases.Payment
 
         public async Task<PaymentLinkResponse> Handle(PaymentLinkCreateCommand command, CancellationToken ct)
         {
+            Guid applicationId;
+            if(command.PaymentLinkCreateRequest.ApplicationId == null && command.PaymentLinkCreateRequest.EncodedApplicationId != null)
+            {
+                try
+                {
+                    string appIdStr = _dataProtector.Unprotect(WebUtility.UrlDecode(command.PaymentLinkCreateRequest.EncodedApplicationId));
+                    applicationId = Guid.Parse(appIdStr);
+                }
+                catch
+                {
+                    throw new ApiException(HttpStatusCode.Accepted, "The payment link is no longer valid.");
+                }
+            }
+            else
+            {
+                applicationId = (Guid)command.PaymentLinkCreateRequest.ApplicationId;
+            }
+
             //validation
-            var app = await _appRepository.QueryApplicationAsync(new ApplicationQry(command.PaymentLinkCreateRequest.ApplicationId), ct);
+            var app = await _appRepository.QueryApplicationAsync(new ApplicationQry(applicationId), ct);
             if (app.PaidOn != null)
                 throw new ApiException(HttpStatusCode.BadRequest, "application has already been paid.");
             if (app.NumberOfAttempts > command.MaxFailedTimes)
@@ -78,10 +96,11 @@ namespace Spd.Manager.Cases.Payment
             Guid paymentId = await _paymentRepository.ManageAsync(
                 new CreatePaymentCmd()
                 {
-                    ApplicationId = command.PaymentLinkCreateRequest.ApplicationId,
+                    ApplicationId = applicationId,
                     PaymentMethod = Resource.Applicants.Payment.PaymentMethodEnum.CreditCard,
                     TransAmount = spdPaymentConfig.ServiceCost,
                     TransNumber = transNumber,
+                    
                 }, ct);
 
             //generate the link string 
