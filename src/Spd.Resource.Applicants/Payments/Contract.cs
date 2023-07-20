@@ -23,6 +23,7 @@ namespace Spd.Resource.Applicants.Payment
         public string? TransOrderId { get; set; }
         public DateTimeOffset TransDateTime { get; set; }
         public decimal TransAmount { get; set; }
+        public PaymentTypeEnum? PaymentType { get; set; }
     }
 
     public abstract record PaymentCmd
@@ -31,6 +32,7 @@ namespace Spd.Resource.Applicants.Payment
         public string TransNumber { get; set; } = null!;
         public decimal TransAmount { get; set; }
         public PaymentMethodEnum? PaymentMethod { get; set; }
+        public PaymentTypeEnum PaymentType { get; set; } = PaymentTypeEnum.PayBC_OnSubmission;
     };
 
     public record UpdatePaymentCmd : PaymentCmd
@@ -55,5 +57,19 @@ namespace Spd.Resource.Applicants.Payment
     public enum PaymentMethodEnum
     {
         CreditCard
+    }
+
+    public enum PaymentTypeEnum
+    {
+        PayBC_OnSubmission,
+        Cash,
+        CreditCard,
+        MoneyOrder,
+        Cheque,
+        CertifiedCheque,
+        CreditAccount,
+        JournalVoucher,
+        NoPayment,
+        PayBC_SecurePaymentLink,
     }
 }
