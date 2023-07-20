@@ -67,16 +67,6 @@ internal class PaymentRepository : IPaymentRepository
         if (cmd.Success == null) return cmd.PaymentId; //no result, not update payment.
 
         payment = _mapper.Map(cmd, payment);
-        if((bool)cmd.Success)
-        {
-            payment.statecode = DynamicsConstants.StateCode_Inactive;
-            payment.statuscode = (int)PaymentStatusCodeOptionSet.Successful;
-        }
-        else
-        {
-            payment.statecode = DynamicsConstants.StateCode_Inactive;
-            payment.statuscode = (int)PaymentStatusCodeOptionSet.Failure;
-        }
         _context.UpdateObject(payment);
         await _context.SaveChangesAsync(ct);
         return (Guid)payment.spd_paymentid;
