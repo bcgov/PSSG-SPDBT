@@ -520,13 +520,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 				ApplicationCreateRequestJson: createRequest,
 			};
 
-			// Check for potential duplicate
-			this.applicationService
-				.apiOrgsOrgIdApplicationPost({ orgId: this.authUserService.bceidUserInfoProfile?.orgId!, body })
-				.pipe()
-				.subscribe((dupres: ApplicationCreateResponse) => {
-					this.displayDataValidationMessage(body, dupres);
-				});
+			this.promptVulnerableSector(body);
 		}
 	}
 
@@ -672,6 +666,16 @@ export class ManualSubmissionCommonComponent implements OnInit {
 		}
 	}
 
+	private saveAndCheckDuplicates(body: any): void {
+		// Check for potential duplicate
+		this.applicationService
+			.apiOrgsOrgIdApplicationPost({ orgId: this.authUserService.bceidUserInfoProfile?.orgId!, body })
+			.pipe()
+			.subscribe((dupres: ApplicationCreateResponse) => {
+				this.displayDataValidationMessage(body, dupres);
+			});
+	}
+
 	private saveManualSubmission(body: any): void {
 		body.requireDuplicateCheck = false;
 		if (body.phoneNumber) {
@@ -689,8 +693,53 @@ export class ManualSubmissionCommonComponent implements OnInit {
 			});
 	}
 
+	private promptVulnerableSector(body: any): void {
+		const data: DialogOptions = {
+			icon: 'info_outline',
+			title: 'Vulnerable sector',
+			message: '',
+			actionText: 'Yes',
+			cancelText: 'No',
+		};
+
+		data.message =
+			'In their role with your organization, will this person work directly with, or potentially have unsupervised access to, children and/or vulnerable adults?';
+
+		this.dialog
+			.open(DialogComponent, { data })
+			.afterClosed()
+			.subscribe((response: boolean) => {
+				if (response) {
+					this.saveAndCheckDuplicates(body);
+				} else {
+					this.promptVulnerableSectorNo(body);
+				}
+			});
+	}
+
+	private promptVulnerableSectorNo(body: any): void {
+		const data: DialogOptions = {
+			icon: 'info_outline',
+			title: 'Criminal record check',
+			message: '',
+			actionText: 'Cancel request',
+			cancelText: 'Previous',
+		};
+
+		data.message = `If the applicant will not have unsupervised access to children or vulnerable adults in this role, but they require a criminal record check for another reason, please <a href="https://www2.gov.bc.ca/gov/content/safety/crime-prevention/criminal-record-check" target="_blank"> contact your local police detachment</a>`;
+
+		this.dialog
+			.open(DialogComponent, { data })
+			.afterClosed()
+			.subscribe((response: boolean) => {
+				if (!response) {
+					this.promptVulnerableSector(body);
+				}
+			});
+	}
+
 	private handleSaveSuccess(): void {
-		this.hotToast.success('The manual submission was successfully saved');
+		this.hotToast.success('Your screening request has been sent to the applicant');
 		if (this.portal == 'CRRP') {
 			this.router.navigateByUrl(CrrpRoutes.path(CrrpRoutes.APPLICATION_STATUSES));
 		} else if (this.portal == 'PSSO') {
