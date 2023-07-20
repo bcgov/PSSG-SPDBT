@@ -13,6 +13,7 @@ namespace Spd.Resource.Applicants.Document
         Guid? ApplicantId = null,
         Guid? ClearanceId = null,
         Guid? ReportId = null,
+        Guid? CaseId = null,
         DocumentTypeEnum? FileType = null);
     public record DocumentListResp
     {
@@ -27,6 +28,7 @@ namespace Spd.Resource.Applicants.Document
         public Guid DocumentUrlId { get; set; }
         public Guid? ClearanceId { get; set; } = null;
         public Guid? ApplicationId { get; set; } = null;
+        public Guid? CaseId { get; set; } = null;
         public Guid? ReportId { get; set; } = null;
     }
 
@@ -59,6 +61,7 @@ namespace Spd.Resource.Applicants.Document
         CertificateOfAdvancedSecurityTraining,
         ConfirmationLetterFromSuperiorOfficer,
         ConfirmationOfFingerprints,
+        FingerprintsPkg,
         ConvictedOffence,
         CriminalCharges,
         DriverLicense,
@@ -77,6 +80,7 @@ namespace Spd.Resource.Applicants.Document
         SecurityConsultant,
         SecurityGuard,
         StatutoryDeclaration,
+        StatutoryDeclarationPkg,
         ValidationCertificate,
         OpportunityToRespond
     }

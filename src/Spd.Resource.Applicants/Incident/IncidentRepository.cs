@@ -1,4 +1,5 @@
 using AutoMapper;
+using Spd.Resource.Applicants.Document;
 using Spd.Utilities.Dynamics;
 
 namespace Spd.Resource.Applicants.Incident;
@@ -12,6 +13,27 @@ internal class IncidentRepository : IIncidentRepository
     {
         _context = ctx.Create();
         _mapper = mapper;
+    }
+
+    public async Task<IncidentListResp> QueryAsync(IncidentQry qry, CancellationToken ct)
+    {
+        var incidents = _context.incidents.Where(i => i.statecode != DynamicsConstants.StateCode_Inactive);
+
+        if (qry.IncidentId != null)
+            incidents = incidents.Where(i => i.incidentid == qry.IncidentId);
+
+        if(qry.ApplicationId != null)
+            incidents = incidents.Where(i => i._spd_applicationid_value == qry.ApplicationId);
+
+        if (qry.CaseNumber != null)
+            incidents = incidents.Where(i => i.ticketnumber == qry.CaseNumber);
+
+        var result = await incidents.GetAllPagesAsync(ct);
+        result = result.OrderByDescending(a => a.createdon);
+        return new IncidentListResp
+        {
+            Items = _mapper.Map<IEnumerable<IncidentResp>>(result)
+        };
     }
 
     public async Task<IncidentResp> ManageAsync(IncidentCmd cmd, CancellationToken ct)
