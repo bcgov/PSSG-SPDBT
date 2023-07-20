@@ -1,10 +1,8 @@
-using AutoMapper;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Cases.Application;
-using Spd.Manager.Cases.Payment;
 using Spd.Presentation.Screening.Configurations;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Recaptcha;
@@ -123,6 +121,14 @@ namespace Spd.Presentation.Screening.Controllers
         public async Task<ApplicantApplicationListResponse> ApplicantApplicationsList([FromRoute] Guid applicantId)
         {
             return await _mediator.Send(new ApplicantApplicationListQuery(applicantId));
+        }
+
+        [Authorize(Policy = "OnlyBcsc", Roles = "Applicant")]
+        [Route("api/applicants/{applicantId}/screenings/{applicationId}")]
+        [HttpGet]
+        public async Task<ApplicantApplicationResponse> ApplicantApplication([FromRoute] Guid applicantId, [FromRoute] Guid applicationId)
+        {
+            return await _mediator.Send(new ApplicantApplicationQuery(applicantId, applicationId));
         }
         #endregion
 
