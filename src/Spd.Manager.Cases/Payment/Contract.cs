@@ -6,9 +6,17 @@ namespace Spd.Manager.Cases.Payment
     public interface IPaymentManager
     {
         public Task<PaymentLinkResponse> Handle(PaymentLinkCreateCommand command, CancellationToken ct);
+        public Task<PrePaymentLinkResponse> Handle(PrePaymentLinkCreateCommand command, CancellationToken ct);
         public Task<Guid> Handle(PaymentUpdateCommand command, CancellationToken ct);
         public Task<PaymentResponse> Handle(PaymentQuery query, CancellationToken ct);
         public Task<int> Handle(PaymentFailedAttemptCountQuery query, CancellationToken ct);
+    }
+
+    //pre payment link - for dynamics internal use
+    public record PrePaymentLinkCreateCommand(Guid ApplicationId, string ScreeningHostUrl) : IRequest<PrePaymentLinkResponse>;
+    public record PrePaymentLinkResponse
+    {
+        public string PrePaymentLinkUrl { get; set; }
     }
 
     //payment link

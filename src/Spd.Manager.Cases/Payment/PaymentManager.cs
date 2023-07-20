@@ -1,11 +1,14 @@
 using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Resource.Applicants.Application;
+using Spd.Resource.Applicants.ApplicationInvite;
 using Spd.Resource.Applicants.Payment;
 using Spd.Resource.Organizations.Config;
 using Spd.Utilities.Cache;
 using Spd.Utilities.Payment;
+using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
 
@@ -16,7 +19,7 @@ namespace Spd.Manager.Cases.Payment
         IRequestHandler<PaymentUpdateCommand, Guid>,
         IRequestHandler<PaymentQuery, PaymentResponse>,
         IRequestHandler<PaymentFailedAttemptCountQuery, int>,
-
+        IRequestHandler<PrePaymentLinkCreateCommand, PrePaymentLinkResponse>,
         IPaymentManager
     {
         private readonly IPaymentService _paymentService;
@@ -25,13 +28,15 @@ namespace Spd.Manager.Cases.Payment
         private readonly IPaymentRepository _paymentRepository;
         private readonly IMapper _mapper;
         private readonly IApplicationRepository _appRepository;
+        private readonly ITimeLimitedDataProtector _dataProtector;
 
         public PaymentManager(IPaymentService paymentService,
             IConfigRepository configRepository,
             IDistributedCache cache,
             IPaymentRepository paymentRepository,
             IMapper mapper,
-            IApplicationRepository appRepository)
+            IApplicationRepository appRepository, 
+            IDataProtectionProvider dpProvider)
         {
             _paymentService = paymentService;
             _configRepository = configRepository;
@@ -39,6 +44,21 @@ namespace Spd.Manager.Cases.Payment
             _paymentRepository = paymentRepository;
             _mapper = mapper;
             _appRepository = appRepository;
+            _dataProtector = dpProvider.CreateProtector(nameof(PrePaymentLinkCreateCommand)).ToTimeLimitedDataProtector();
+        }
+
+        public async Task<PrePaymentLinkResponse> Handle(PrePaymentLinkCreateCommand command, CancellationToken ct)
+        {
+            var app = await _appRepository.QueryApplicationAsync(new ApplicationQry(command.ApplicationId), ct);
+            if (app.PaidOn != null)
+                throw new ApiException(HttpStatusCode.BadRequest, "application has already been paid.");
+
+            var encryptedApplicationId = WebUtility.UrlEncode(_dataProtector.Protect(command.ApplicationId.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.APPLICATION_INVITE_VALID_DAYS)));
+
+            return new PrePaymentLinkResponse
+            {
+                PrePaymentLinkUrl = $"{command.ScreeningHostUrl}api/payment-secure-link/{encryptedApplicationId}",
+            };
         }
 
         public async Task<PaymentLinkResponse> Handle(PaymentLinkCreateCommand command, CancellationToken ct)
