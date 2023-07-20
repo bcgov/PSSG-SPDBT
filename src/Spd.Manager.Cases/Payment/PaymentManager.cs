@@ -109,7 +109,7 @@ namespace Spd.Manager.Cases.Payment
         public async Task<int> Handle(PaymentFailedAttemptCountQuery query, CancellationToken ct)
         {
             var respList = await _paymentRepository.QueryAsync(new PaymentQry(query.ApplicationId), ct);
-            return respList.Items.Count(i => i.PaymentStatus == PaymentStatusEnum.Failure);
+            return respList.Items.Count(i => i.PaymentStatus == PaymentStatusEnum.Failure && i.PaymentType == PaymentTypeEnum.PayBC_OnSubmission);
         }
 
         private async Task<SpdPaymentConfig> GetSpdPaymentConfigAsync(CancellationToken ct)

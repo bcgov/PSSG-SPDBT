@@ -217,6 +217,7 @@ namespace Spd.Utilities.Dynamics
 
     public enum PaymentStatusCodeOptionSet
     {
+        Pending = 1,
         Successful = 2,
         Failure = 100000000,
     }
