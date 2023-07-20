@@ -16,6 +16,7 @@ import { ApplicantAppCreateRequest } from '../models/applicant-app-create-reques
 import { ApplicantAppFileCreateResponse } from '../models/applicant-app-file-create-response';
 import { ApplicantApplicationFileListResponse } from '../models/applicant-application-file-list-response';
 import { ApplicantApplicationListResponse } from '../models/applicant-application-list-response';
+import { ApplicantApplicationResponse } from '../models/applicant-application-response';
 import { ApplicantUserInfo } from '../models/applicant-user-info';
 import { ApplicationCreateResponse } from '../models/application-create-response';
 import { FileTemplateTypeCode } from '../models/file-template-type-code';
@@ -331,6 +332,62 @@ export class ApplicantService extends BaseService {
 
     return this.apiApplicantsApplicantIdScreeningsGet$Response(params,context).pipe(
       map((r: StrictHttpResponse<ApplicantApplicationListResponse>) => r.body as ApplicantApplicationListResponse)
+    );
+  }
+
+  /**
+   * Path part for operation apiApplicantsApplicantIdScreeningsApplicationIdGet
+   */
+  static readonly ApiApplicantsApplicantIdScreeningsApplicationIdGetPath = '/api/applicants/{applicantId}/screenings/{applicationId}';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiApplicantsApplicantIdScreeningsApplicationIdGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantsApplicantIdScreeningsApplicationIdGet$Response(params: {
+    applicantId: string;
+    applicationId: string;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<ApplicantApplicationResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, ApplicantService.ApiApplicantsApplicantIdScreeningsApplicationIdGetPath, 'get');
+    if (params) {
+      rb.path('applicantId', params.applicantId, {});
+      rb.path('applicationId', params.applicationId, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<ApplicantApplicationResponse>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiApplicantsApplicantIdScreeningsApplicationIdGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantsApplicantIdScreeningsApplicationIdGet(params: {
+    applicantId: string;
+    applicationId: string;
+  },
+  context?: HttpContext
+
+): Observable<ApplicantApplicationResponse> {
+
+    return this.apiApplicantsApplicantIdScreeningsApplicationIdGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<ApplicantApplicationResponse>) => r.body as ApplicantApplicationResponse)
     );
   }
 

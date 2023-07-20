@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
-import { SecurityScreeningRoutes } from './security-screening-routing.module';
 
 @Component({
 	selector: 'app-security-screening',
@@ -24,8 +23,6 @@ export class SecurityScreeningComponent implements OnInit {
 
 		if (nextRoute) {
 			await this.router.navigate([nextRoute]);
-		} else {
-			this.router.navigate([SecurityScreeningRoutes.path(SecurityScreeningRoutes.LOGIN_FAIL)]);
 		}
 	}
 }
