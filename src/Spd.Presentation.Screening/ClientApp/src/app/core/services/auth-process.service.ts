@@ -33,14 +33,14 @@ export class AuthProcessService {
 	//----------------------------------------------------------
 	// * CRRP Portal
 	// *
-	async initializeCrrp(): Promise<string | null> {
+	async initializeCrrp(defaultOrgId: string | null = null): Promise<string | null> {
 		const identityProvider = IdentityProviderTypeCode.BusinessBceId;
 
 		const nextUrl = await this.authenticationService.login(identityProvider, CrrpRoutes.path(CrrpRoutes.HOME));
 		console.debug('CrrpComponent nextUrl', nextUrl);
 
 		if (nextUrl) {
-			const success = await this.authUserService.whoAmIAsync(identityProvider);
+			const success = await this.authUserService.whoAmIAsync(identityProvider, defaultOrgId);
 
 			if (!success) {
 				this.notify(true);
