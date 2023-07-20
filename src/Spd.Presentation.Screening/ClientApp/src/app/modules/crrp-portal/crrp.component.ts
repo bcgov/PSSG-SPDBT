@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { IsActiveMatchOptions, QueryParamsHandling, Router } from '@angular/router';
+import { ActivatedRoute, IsActiveMatchOptions, QueryParamsHandling, Router } from '@angular/router';
+import { lastValueFrom, take } from 'rxjs';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { CrrpRoutes } from './crrp-routing.module';
@@ -178,13 +179,18 @@ export class CrrpComponent implements OnInit {
 	crrpRoutes = CrrpRoutes;
 
 	constructor(
+		private route: ActivatedRoute,
 		protected authUserService: AuthUserService,
 		private authProcessService: AuthProcessService,
 		private router: Router
 	) {}
 
 	async ngOnInit(): Promise<void> {
-		const nextRoute = await this.authProcessService.initializeCrrp();
+		// If an org id is supplied, use it as the user's selected organization during login
+		const queryParams = await lastValueFrom(this.route.queryParams.pipe(take(1)));
+		const defaultOrgId: string | undefined = queryParams['orgId'];
+
+		const nextRoute = await this.authProcessService.initializeCrrp(defaultOrgId);
 		console.debug('initialize nextRoute', nextRoute);
 
 		if (nextRoute) {
