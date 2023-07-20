@@ -197,7 +197,7 @@ namespace Spd.Utilities.Dynamics
 
     public enum PaymentTypeOptionSet
     {
-        PayBC = 100000000,
+        PayBC_OnSubmission = 100000000,
         Cash = 100000001,
         CreditCard = 100000002,
         MoneyOrder = 100000003,
@@ -206,6 +206,7 @@ namespace Spd.Utilities.Dynamics
         CreditAccount = 100000006,
         JournalVoucher = 100000008,
         NoPayment = 100000007,
+        PayBC_SecurePaymentLink = 100000009,
     }
 
     public enum ResponseOptionSet

@@ -13,7 +13,7 @@ namespace Spd.Resource.Applicants.Payment
                 .ForMember(d => d.spd_amount, opt => opt.MapFrom(s => s.TransAmount))
                 .ForMember(d => d.spd_manualpayment, opt => opt.MapFrom(s => (int)YesNoOptionSet.No))
                 .ForMember(d => d.spd_transactionid, opt => opt.MapFrom(s => s.TransNumber))
-                .ForMember(d => d.spd_paymenttype, opt => opt.MapFrom(s => PaymentTypeOptionSet.CreditCard));
+                .ForMember(d => d.spd_paymenttype, opt => opt.MapFrom(s => PaymentTypeOptionSet.PayBC_OnSubmission));
 
             _ = CreateMap<CreatePaymentCmd, spd_payment>()
                 .IncludeBase<PaymentCmd, spd_payment>();
