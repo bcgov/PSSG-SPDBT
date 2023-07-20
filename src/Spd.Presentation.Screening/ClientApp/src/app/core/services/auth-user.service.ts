@@ -79,7 +79,7 @@ export class AuthUserService {
 	//----------------------------------------------------------
 	// *
 	// *
-	async whoAmIAsync(loginType: IdentityProviderTypeCode): Promise<boolean> {
+	async whoAmIAsync(loginType: IdentityProviderTypeCode, defaultOrgId: string | null = null): Promise<boolean> {
 		this.loginType = loginType;
 		this.clearUserData();
 
@@ -95,6 +95,14 @@ export class AuthUserService {
 					console.error('User does not have any organizations');
 					return Promise.resolve(false);
 				} else {
+					if (defaultOrgId) {
+						const orgIdItem = uniqueUserInfoList.find((user) => user.orgId == defaultOrgId);
+						if (orgIdItem) {
+							await this.setOrgProfile(orgIdItem);
+							return Promise.resolve(true);
+						}
+					}
+
 					if (uniqueUserInfoList.length > 1) {
 						const result = await this.orgSelectionAsync(uniqueUserInfoList);
 						await this.setOrgProfile(result);

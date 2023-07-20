@@ -147,17 +147,17 @@ namespace Spd.Presentation.Screening.Controllers
                 PaybcPaymentResult paybcPaymentResult = _mapper.Map<PaybcPaymentResult>(paybcResult);
 
                 if (!paybcPaymentResult.Success && paybcPaymentResult.MessageText == "Payment Canceled")
-                    return Redirect($"{hostUrl}{cancelPath}");
+                    return Redirect($"{hostUrl}{cancelPath}?orgId={orgId}");
 
                 var paymentId = await _mediator.Send(new PaymentUpdateCommand(Request.QueryString.ToString(), paybcPaymentResult));
                 if (paybcPaymentResult.Success)
-                    return Redirect($"{hostUrl}{successPath}{paymentId}");
+                    return Redirect($"{hostUrl}{successPath}{paymentId}?orgId={orgId}");
 
-                return Redirect($"{hostUrl}{failPath}{paymentId}");
+                return Redirect($"{hostUrl}{failPath}{paymentId}?orgId={orgId}");
             }
             catch
             {
-                return Redirect($"{hostUrl}{errorPath}");
+                return Redirect($"{hostUrl}{errorPath}?orgId={orgId}");
             }
         }
 

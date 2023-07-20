@@ -62,7 +62,7 @@ import { CrrpaRoutes } from './crrpa-routing.module';
 							For organizations, if you have a question about the online submission process or to register your
 							organization, contact the Criminal Records Review Program (CRRP) at
 							<a href="mailto:criminalrecords@gov.bc.ca">criminalrecords@gov.bc.ca</a> or by phone at 1-855-587-0185
-							(Option 2).
+							(option 2).
 						</p>
 					</div>
 				</div>
