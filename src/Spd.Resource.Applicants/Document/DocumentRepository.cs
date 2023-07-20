@@ -32,6 +32,9 @@ internal class DocumentRepository : IDocumentRepository
         if (qry.ApplicationId != null)
             documents = documents.Where(d => d._spd_applicationid_value == qry.ApplicationId);
 
+        if (qry.CaseId != null)
+            documents = documents.Where(d => d._bcgov_caseid_value == qry.CaseId);
+
         if (qry.ClearanceId != null)
             documents = documents.Where(d => d._spd_clearanceid_value == qry.ClearanceId);
 

@@ -120,6 +120,7 @@
         <Property Name="address2_composite" Type="Edm.String" Unicode="false" />
         <Property Name="marketcap" Type="Edm.Decimal" Scale="Variable" />
         <Property Name="donotemail" Type="Edm.Boolean" />
+        <Property Name="spd_sendconsolidatedemails" Type="Edm.Int32" />
         <Property Name="aging60" Type="Edm.Decimal" Scale="Variable" />
         <Property Name="customertypecode" Type="Edm.Int32" />
         <Property Name="telephone1" Type="Edm.String" Unicode="false" />
@@ -141,6 +142,7 @@
         <Property Name="spd_accesscode" Type="Edm.String" Unicode="false" />
         <Property Name="address1_longitude" Type="Edm.Double" />
         <Property Name="participatesinworkflow" Type="Edm.Boolean" />
+        <Property Name="spd_outstandingbalance_base" Type="Edm.Decimal" Scale="Variable" />
         <Property Name="shippingmethodcode" Type="Edm.Int32" />
         <Property Name="revenue_base" Type="Edm.Decimal" Scale="Variable" />
         <Property Name="spd_noofprimaryauthorizedcontacts" Type="Edm.Int32" />
@@ -168,6 +170,7 @@
         <Property Name="donotphone" Type="Edm.Boolean" />
         <Property Name="accountclassificationcode" Type="Edm.Int32" />
         <Property Name="_preferredequipmentid_value" Type="Edm.Guid" />
+        <Property Name="spd_outstandingbalance" Type="Edm.Decimal" Scale="Variable" />
         <Property Name="importsequencenumber" Type="Edm.Int32" />
         <Property Name="businesstypecode" Type="Edm.Int32" />
         <Property Name="address2_telephone2" Type="Edm.String" Unicode="false" />
@@ -9234,7 +9237,6 @@
         <Property Name="_slaid_value" Type="Edm.Guid" />
         <Property Name="influencescore" Type="Edm.Double" />
         <Property Name="_firstresponsebykpiid_value" Type="Edm.Guid" />
-        <Property Name="spd_applicationsubmittedondate" Type="Edm.DateTimeOffset" />
         <Property Name="actualserviceunits" Type="Edm.Int32" />
         <Property Name="_parentcaseid_value" Type="Edm.Guid" />
         <Property Name="numberofchildincidents" Type="Edm.Int32" />
@@ -20042,6 +20044,8 @@
         <Property Name="_owningteam_value" Type="Edm.Guid" />
         <Property Name="statuscode" Type="Edm.Int32" />
         <Property Name="spd_numberofapplications" Type="Edm.Int32" />
+        <Property Name="spd_gldate" Type="Edm.Date" />
+        <Property Name="spd_castransactionid" Type="Edm.String" Unicode="false" />
         <Property Name="_ownerid_value" Type="Edm.Guid" />
         <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
         <Property Name="_modifiedby_value" Type="Edm.Guid" />

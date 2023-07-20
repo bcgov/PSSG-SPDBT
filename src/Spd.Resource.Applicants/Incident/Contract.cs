@@ -1,10 +1,17 @@
 using Spd.Resource.Applicants.Application;
+using Spd.Resource.Applicants.Document;
 
 namespace Spd.Resource.Applicants.Incident
 {
     public interface IIncidentRepository
     {
         public Task<IncidentResp> ManageAsync(IncidentCmd cmd, CancellationToken cancellationToken);
+        public Task<IncidentListResp> QueryAsync(IncidentQry cmd, CancellationToken cancellationToken);
+    }
+
+    public record IncidentListResp
+    {
+        public IEnumerable<IncidentResp> Items { get; set; } = Array.Empty<IncidentResp>();
     }
 
     public record IncidentResp
@@ -15,7 +22,12 @@ namespace Spd.Resource.Applicants.Incident
     }
 
     public abstract record IncidentCmd;
-
+    public record IncidentQry
+    {
+        public Guid? IncidentId { get; set; } = null;
+        public Guid? ApplicationId { get; set; } = null;
+        public string? CaseNumber { get; set; } = null;
+    };
     public record UpdateIncidentCmd : IncidentCmd
     {
         public Guid ApplicationId { get; set; }

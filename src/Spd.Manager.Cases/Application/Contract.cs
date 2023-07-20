@@ -28,7 +28,7 @@ namespace Spd.Manager.Cases.Application
         public Task<ShareableClearanceResponse> Handle(ShareableClearanceQuery request, CancellationToken ct);
         public Task<ApplicantApplicationFileListResponse> Handle(ApplicantApplicationFileQuery query, CancellationToken ct);
         public Task<IEnumerable<ApplicantAppFileCreateResponse>> Handle(CreateApplicantAppFileCommand query, CancellationToken ct);
-        public Task<FileResponse> Handle(FileTemplateQuery query, CancellationToken ct);
+        public Task<FileResponse> Handle(PrepopulateFileTemplateQuery query, CancellationToken ct);
     }
 
     #region application invites
@@ -748,7 +748,7 @@ namespace Spd.Manager.Cases.Application
         public Guid? ApplicationId { get; set; } = null;
     };
 
-    public record FileTemplateQuery(FileTemplateTypeCode FileTemplateType) : IRequest<FileResponse>;
+    public record PrepopulateFileTemplateQuery(FileTemplateTypeCode FileTemplateType, Guid ApplicationId) : IRequest<FileResponse>;
 
     public enum FileTypeCode
     {
@@ -793,8 +793,8 @@ namespace Spd.Manager.Cases.Application
 
     public enum FileTemplateTypeCode
     {
-        FingerprintPkg,
-        StatutoryDeclaration
+        FingerprintsPkg,
+        StatutoryDeclarationPkg
     }
     #endregion
 }
