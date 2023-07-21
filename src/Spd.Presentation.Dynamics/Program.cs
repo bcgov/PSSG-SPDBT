@@ -8,6 +8,7 @@ using Spd.Utilities.Hosting;
 using Spd.Utilities.Hosting.Logging;
 using Spd.Utilities.Payment;
 using Spd.Utilities.TempFileStorage;
+using System.Configuration;
 using System.Reflection;
 using System.Text.Json.Serialization;
 
@@ -35,7 +36,12 @@ builder.Services.Configure<KestrelServerOptions>(options =>
 
 builder.Services.ConfigureCors(builder.Configuration);
 var assemblyName = $"{typeof(Program).Assembly.GetName().Name}";
-builder.Services.ConfigureDataProtection(builder.Configuration, "Spd.Presentation.Screening");
+
+string? protectionShareKeyAppName = builder.Configuration.GetValue<string>("ProtectionShareKeyAppName");
+if(protectionShareKeyAppName == null) 
+    throw new ConfigurationErrorsException("ProtectionShareKeyAppName is not set correctly.");
+builder.Services.ConfigureDataProtection(builder.Configuration, protectionShareKeyAppName);
+
 builder.Services.ConfigureSwagger(assemblyName);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers()

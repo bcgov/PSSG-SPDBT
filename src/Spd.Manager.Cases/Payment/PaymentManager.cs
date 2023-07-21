@@ -49,6 +49,8 @@ namespace Spd.Manager.Cases.Payment
         public async Task<PrePaymentLinkResponse> Handle(PrePaymentLinkCreateCommand command, CancellationToken ct)
         {
             var app = await _appRepository.QueryApplicationAsync(new ApplicationQry(command.ApplicationId), ct);
+            if (app == null)
+                throw new ApiException(HttpStatusCode.BadRequest, "application does not exist.");
             if (app.PaidOn != null)
                 throw new ApiException(HttpStatusCode.BadRequest, "application has already been paid.");
 
@@ -56,7 +58,7 @@ namespace Spd.Manager.Cases.Payment
 
             return new PrePaymentLinkResponse
             {
-                PrePaymentLinkUrl = $"{command.ScreeningHostUrl}api/crrpa/payment-secure-link?encodedAppId={encryptedApplicationId}",
+                PrePaymentLinkUrl = $"{command.ScreeningAppPaymentUrl}?encodedAppId={encryptedApplicationId}",
             };
         }
 

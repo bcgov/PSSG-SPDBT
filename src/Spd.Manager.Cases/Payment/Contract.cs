@@ -13,7 +13,7 @@ namespace Spd.Manager.Cases.Payment
     }
 
     //pre payment link - for dynamics internal use
-    public record PrePaymentLinkCreateCommand(Guid ApplicationId, string ScreeningHostUrl) : IRequest<PrePaymentLinkResponse>;
+    public record PrePaymentLinkCreateCommand(Guid ApplicationId, string ScreeningAppPaymentUrl) : IRequest<PrePaymentLinkResponse>;
     public record PrePaymentLinkResponse
     {
         public string PrePaymentLinkUrl { get; set; }

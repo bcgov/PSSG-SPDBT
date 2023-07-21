@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Configuration;
 
 namespace Spd.Utilities.Address
 {
@@ -10,7 +11,7 @@ namespace Spd.Utilities.Address
             var options = configuration.GetSection("addressAutoCompleteClient").Get<AddressAutoCompleteClientConfigurations>();
 
             if (options == null || string.IsNullOrWhiteSpace(options.Url))
-                throw new Exception("AddressAutoCompleteConfiguration is not correct.");
+                throw new ConfigurationErrorsException("AddressAutoCompleteConfiguration is not correct.");
 
             services.Configure<AddressAutoCompleteClientConfigurations>(opts => configuration.GetSection("AddressAutoCompleteClient").Bind(opts));
 
