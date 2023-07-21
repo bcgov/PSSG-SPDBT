@@ -20,7 +20,7 @@ namespace Spd.Manager.Cases.Payment
     }
 
     //payment link
-    public record PaymentLinkCreateCommand(PaymentLinkCreateRequest PaymentLinkCreateRequest, string RedirectUrl, int MaxFailedTimes = 3) : IRequest<PaymentLinkResponse>;
+    public record PaymentLinkCreateCommand(PaymentLinkCreateRequest PaymentLinkCreateRequest, string RedirectUrl, int MaxFailedTimes = 3, bool IsFromSecurePaymentLink = false) : IRequest<PaymentLinkResponse>;
 
     public record PaymentLinkCreateRequest
     {

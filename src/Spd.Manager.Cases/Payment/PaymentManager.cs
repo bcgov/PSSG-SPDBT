@@ -3,7 +3,6 @@ using MediatR;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Resource.Applicants.Application;
-using Spd.Resource.Applicants.ApplicationInvite;
 using Spd.Resource.Applicants.Payment;
 using Spd.Resource.Organizations.Config;
 using Spd.Utilities.Cache;
@@ -35,7 +34,7 @@ namespace Spd.Manager.Cases.Payment
             IDistributedCache cache,
             IPaymentRepository paymentRepository,
             IMapper mapper,
-            IApplicationRepository appRepository, 
+            IApplicationRepository appRepository,
             IDataProtectionProvider dpProvider)
         {
             _paymentService = paymentService;
@@ -57,14 +56,14 @@ namespace Spd.Manager.Cases.Payment
 
             return new PrePaymentLinkResponse
             {
-                PrePaymentLinkUrl = $"{command.ScreeningHostUrl}api/payment-secure-link/{encryptedApplicationId}",
+                PrePaymentLinkUrl = $"{command.ScreeningHostUrl}api/crrpa/payment-secure-link?encodedAppId={encryptedApplicationId}",
             };
         }
 
         public async Task<PaymentLinkResponse> Handle(PaymentLinkCreateCommand command, CancellationToken ct)
         {
             Guid applicationId;
-            if(command.PaymentLinkCreateRequest.ApplicationId == null && command.PaymentLinkCreateRequest.EncodedApplicationId != null)
+            if (command.PaymentLinkCreateRequest.ApplicationId == null && command.PaymentLinkCreateRequest.EncodedApplicationId != null)
             {
                 try
                 {
@@ -85,7 +84,7 @@ namespace Spd.Manager.Cases.Payment
             var app = await _appRepository.QueryApplicationAsync(new ApplicationQry(applicationId), ct);
             if (app.PaidOn != null)
                 throw new ApiException(HttpStatusCode.BadRequest, "application has already been paid.");
-            if (app.NumberOfAttempts > command.MaxFailedTimes)
+            if (app.NumberOfAttempts > command.MaxFailedTimes && !command.IsFromSecurePaymentLink)
                 throw new ApiException(HttpStatusCode.BadRequest, $"Payment can only be tried no more than {command.MaxFailedTimes} times.");
 
             //get config from cache or Dynamics
@@ -100,7 +99,7 @@ namespace Spd.Manager.Cases.Payment
                     PaymentMethod = Resource.Applicants.Payment.PaymentMethodEnum.CreditCard,
                     TransAmount = spdPaymentConfig.ServiceCost,
                     TransNumber = transNumber,
-                    
+                    PaymentType = command.IsFromSecurePaymentLink ? PaymentTypeEnum.PayBC_SecurePaymentLink : PaymentTypeEnum.PayBC_OnSubmission
                 }, ct);
 
             //generate the link string 

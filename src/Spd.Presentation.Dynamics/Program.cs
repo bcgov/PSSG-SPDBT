@@ -35,7 +35,7 @@ builder.Services.Configure<KestrelServerOptions>(options =>
 
 builder.Services.ConfigureCors(builder.Configuration);
 var assemblyName = $"{typeof(Program).Assembly.GetName().Name}";
-builder.Services.ConfigureDataProtection(builder.Configuration, assemblyName);
+builder.Services.ConfigureDataProtection(builder.Configuration, "Spd.Presentation.Screening");
 builder.Services.ConfigureSwagger(assemblyName);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers()
@@ -43,7 +43,6 @@ builder.Services.AddControllers()
     {
         x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
-//builder.Services.AddFileStorageProxy(builder.Configuration);
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies));
 builder.Services.AddAutoMapper(assemblies);

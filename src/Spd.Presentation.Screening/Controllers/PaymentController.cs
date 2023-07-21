@@ -121,7 +121,7 @@ namespace Spd.Presentation.Screening.Controllers
         [Route("api/orgs/{orgId}/applications/{applicationId}/payment-link")]
         [HttpPost]
         [Authorize(Policy = "OnlyBceid")]
-        public async Task<PaymentLinkResponse> GetOrgPaymentLink([FromBody][Required] OrgPaymentLinkCreateRequest paymentLinkCreateRequest, [FromRoute] Guid orgId)
+        public async Task<PaymentLinkResponse> GetOrgPaymentLink([FromBody][Required] PaymentLinkCreateRequest paymentLinkCreateRequest, [FromRoute] Guid orgId)
         {
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
             string redirectUrl = $"{hostUrl}api/orgs/{orgId}/payment-result";
@@ -264,10 +264,11 @@ namespace Spd.Presentation.Screening.Controllers
         /// <summary>
         /// Redirect to PayBC the direct pay payment page 
         /// </summary>
+        /// sample:http://localhost:5114/api/crrpa/payment-secure-link?encodedAppId=CfDJ8MELGoA6ZCBIuDpjih7jnJo3inVYsL3UPdbgBResn9qAoHpjCIIEmMJyuO_oHKEWLi-SA3qmmMJ_yqvl4myfXutYpPB75aOz7Wi49jjp1wHD9J56kmaOvJ3bhJuGl5hjbXybqO1TLXA0KsKO8Qr5IKLF7jK2WDpTn3hYj_U9YQ1g
         /// <returns></returns>
-        [Route("api/crrpa/payment-secure-link/{encodedAppId}")]
+        [Route("api/crrpa/payment-secure-link")]
         [HttpGet]
-        public async Task<ActionResult> CreateLinkRedirectToPaybcPaymentPage([FromRoute] string encodedAppId)
+        public async Task<ActionResult> CreateLinkRedirectToPaybcPaymentPage([FromQuery] string encodedAppId)
         {
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
             string redirectUrl = $"{hostUrl}api/crrpa/payment-result";
