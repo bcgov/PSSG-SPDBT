@@ -54,12 +54,10 @@ namespace Spd.Manager.Cases.Payment
             if (app.PaidOn != null)
                 throw new ApiException(HttpStatusCode.BadRequest, "application has already been paid.");
 
+            //todo, the valid days needs to get from biz, current days is temporary
             var encryptedApplicationId = WebUtility.UrlEncode(_dataProtector.Protect(command.ApplicationId.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.APPLICATION_INVITE_VALID_DAYS)));
 
-            return new PrePaymentLinkResponse
-            {
-                PrePaymentLinkUrl = $"{command.ScreeningAppPaymentUrl}?encodedAppId={encryptedApplicationId}",
-            };
+            return new PrePaymentLinkResponse($"{command.ScreeningAppPaymentUrl}?encodedAppId={encryptedApplicationId}");
         }
 
         public async Task<PaymentLinkResponse> Handle(PaymentLinkCreateCommand command, CancellationToken ct)
@@ -120,11 +118,7 @@ namespace Spd.Manager.Cases.Payment
                     Ref2 = command.PaymentLinkCreateRequest.ApplicationId.ToString(), //application id to ref2
                 });
 
-
-            return new PaymentLinkResponse
-            {
-                PaymentLinkUrl = linkResult.PaymentLinkUrl,
-            };
+            return new PaymentLinkResponse(linkResult.PaymentLinkUrl);
         }
 
         public async Task<Guid> Handle(PaymentUpdateCommand command, CancellationToken ct)

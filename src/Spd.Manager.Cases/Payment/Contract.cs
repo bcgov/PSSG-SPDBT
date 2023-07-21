@@ -14,29 +14,20 @@ namespace Spd.Manager.Cases.Payment
 
     //pre payment link - for dynamics internal use
     public record PrePaymentLinkCreateCommand(Guid ApplicationId, string ScreeningAppPaymentUrl) : IRequest<PrePaymentLinkResponse>;
-    public record PrePaymentLinkResponse
-    {
-        public string PrePaymentLinkUrl { get; set; }
-    }
+    public record PrePaymentLinkResponse(string PrePaymentLinkUrl);
 
     //payment link
     public record PaymentLinkCreateCommand(PaymentLinkCreateRequest PaymentLinkCreateRequest, string RedirectUrl, int MaxFailedTimes = 3, bool IsFromSecurePaymentLink = false) : IRequest<PaymentLinkResponse>;
-
     public record PaymentLinkCreateRequest
     {
         public Guid? ApplicationId { get; set; }
         public string? EncodedApplicationId { get; set; } = null; //from secure payment link
-
         [MaxLength(100)]
         public string Description { get; set; } = null!;
         public PaymentMethodCode PaymentMethod { get; set; } //CC-credit card, VI - debit card
 
     }
-
-    public record PaymentLinkResponse
-    {
-        public string PaymentLinkUrl { get; set; }
-    }
+    public record PaymentLinkResponse(string PaymentLinkUrl);
 
     public enum PaymentStatusCode
     {
@@ -56,14 +47,14 @@ namespace Spd.Manager.Cases.Payment
     public record PaybcPaymentResult
     {
         public bool Success { get; set; }
-        public string MessageText { get; set; }
-        public string TransNumber { get; set; }
-        public string TransOrderId { get; set; }
+        public string? MessageText { get; set; }
+        public string? TransNumber { get; set; }
+        public string? TransOrderId { get; set; }
         public DateTimeOffset TransDateTime { get; set; }
         public decimal TransAmount { get; set; }
         public PaymentMethodCode PaymentMethod { get; set; }
-        public string CardType { get; set; }
-        public string PaymentAuthCode { get; set; }
+        public string? CardType { get; set; }
+        public string? PaymentAuthCode { get; set; }
         public Guid PaymentId { get; set; }
         public Guid ApplicationId { get; set; }
     }
