@@ -1,15 +1,9 @@
-using AutoMapper;
-using Microsoft.Dynamics.CRM;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OData.Client;
 using Spd.Utilities.Dynamics;
-using Spd.Utilities.FileStorage;
-using Spd.Utilities.TempFileStorage;
 
 namespace Spd.Resource.Applicants.Application;
 internal partial class ApplicationRepository : IApplicationRepository
 {
-     public async Task<ApplicationStatisticsResp> QueryApplicationStatisticsAsync(ApplicationStatisticsQry query, CancellationToken ct)
+    public async Task<ApplicationStatisticsResp> QueryApplicationStatisticsAsync(ApplicationStatisticsQry query, CancellationToken ct)
     {
         var organization = await _context.GetOrgById(query.OrganizationId, ct);
         if (organization == null) return new ApplicationStatisticsResp();

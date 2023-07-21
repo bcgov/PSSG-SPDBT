@@ -1,12 +1,26 @@
-using System.Reflection;
-using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.Dynamics.CRM;
+using Microsoft.Extensions.Configuration;
+using Spd.Utilities.Dynamics;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Hosting;
 using Spd.Utilities.Hosting.Logging;
+using Spd.Utilities.Payment;
+using Spd.Utilities.TempFileStorage;
+using System.Configuration;
+using System.Reflection;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+var assemblies = Directory.GetFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty, "*.dll", SearchOption.TopDirectoryOnly)
+     .Where(assembly =>
+     {
+         var assemblyName = Path.GetFileName(assembly);
+         return !assemblyName.StartsWith("System.") && !assemblyName.StartsWith("Microsoft.") && assemblyName.StartsWith("Spd");
+     })
+     .Select(assembly => Assembly.LoadFrom(assembly))
+     .ToArray();
 
 var secretsFile = Environment.GetEnvironmentVariable($"SECRETS_FILE");
 if (!string.IsNullOrEmpty(secretsFile)) builder.Configuration.AddJsonFile(secretsFile, true, true);
@@ -22,6 +36,12 @@ builder.Services.Configure<KestrelServerOptions>(options =>
 
 builder.Services.ConfigureCors(builder.Configuration);
 var assemblyName = $"{typeof(Program).Assembly.GetName().Name}";
+
+string? protectionShareKeyAppName = builder.Configuration.GetValue<string>("ProtectionShareKeyAppName");
+if(protectionShareKeyAppName == null) 
+    throw new ConfigurationErrorsException("ProtectionShareKeyAppName is not set correctly.");
+builder.Services.ConfigureDataProtection(builder.Configuration, protectionShareKeyAppName);
+
 builder.Services.ConfigureSwagger(assemblyName);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers()
@@ -29,8 +49,16 @@ builder.Services.AddControllers()
     {
         x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
-builder.Services.AddFileStorageProxy(builder.Configuration);
 
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies));
+builder.Services.AddAutoMapper(assemblies);
+builder.Services.AddDistributedMemoryCache();
+builder.Services
+    .AddTempFileStorageService()
+    .AddFileStorageProxy(builder.Configuration)
+    .AddPaymentService(builder.Configuration)
+    .AddDynamicsProxy(builder.Configuration);
+builder.Services.ConfigureComponentServices(builder.Configuration, builder.Environment, assemblies);
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
