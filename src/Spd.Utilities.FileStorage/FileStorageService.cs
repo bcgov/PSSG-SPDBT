@@ -119,8 +119,8 @@ namespace Spd.Utilities.FileStorage
                     Content = ms.ToArray(),
                     Metadata = GetMetadata(response.Metadata).AsEnumerable(),
                 },
-                new FileTag 
-                { 
+                new FileTag
+                {
                     Tags = GetTags(tagResponse.Tagging).AsEnumerable()
                 }
             );
