@@ -46,7 +46,7 @@ namespace Spd.Presentation.Screening.Controllers
         [Route("api/applicants/screenings/{applicationId}/payment-link")]
         [HttpPost]
         [Authorize(Policy = "OnlyBcsc", Roles = "Applicant")]
-        public async Task<PaymentLinkResponse> GetApplicantPaymentLink([FromBody][Required] ApplicantPaymentLinkCreateRequest paymentLinkCreateRequest)
+        public async Task<PaymentLinkResponse> GetApplicantPaymentLink([FromBody][Required] PaymentLinkCreateRequest paymentLinkCreateRequest)
         {
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
             string redirectUrl = $"{hostUrl}api/applicants/screenings/payment-result";
@@ -121,7 +121,7 @@ namespace Spd.Presentation.Screening.Controllers
         [Route("api/orgs/{orgId}/applications/{applicationId}/payment-link")]
         [HttpPost]
         [Authorize(Policy = "OnlyBceid")]
-        public async Task<PaymentLinkResponse> GetOrgPaymentLink([FromBody][Required] OrgPaymentLinkCreateRequest paymentLinkCreateRequest, [FromRoute] Guid orgId)
+        public async Task<PaymentLinkResponse> GetOrgPaymentLink([FromBody][Required] PaymentLinkCreateRequest paymentLinkCreateRequest, [FromRoute] Guid orgId)
         {
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
             string redirectUrl = $"{hostUrl}api/orgs/{orgId}/payment-result";
@@ -195,7 +195,7 @@ namespace Spd.Presentation.Screening.Controllers
         [Route("api/crrpa/payment-link")]
         [HttpPost]
         //[Authorize(Policy = "OnlyBcsc")]
-        public async Task<PaymentLinkResponse> GetApplicantInvitePaymentLink([FromBody][Required] ApplicantInvitePaymentLinkCreateRequest paymentLinkCreateRequest)
+        public async Task<PaymentLinkResponse> GetApplicantInvitePaymentLink([FromBody][Required] PaymentLinkCreateRequest paymentLinkCreateRequest)
         {
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
             string redirectUrl = $"{hostUrl}api/crrpa/payment-result";
@@ -257,6 +257,30 @@ namespace Spd.Presentation.Screening.Controllers
         public async Task<int> GetApplicantInvitePaymentAttempts([FromRoute] Guid applicationId)
         {
             return await _mediator.Send(new PaymentFailedAttemptCountQuery(applicationId));
+        }
+        #endregion
+
+        #region secure-payment-link for dynamics email.
+        /// <summary>
+        /// Redirect to PayBC the direct pay payment page 
+        /// </summary>
+        /// sample:http://localhost:5114/api/crrpa/payment-secure-link?encodedAppId=CfDJ8MELGoA6ZCBIuDpjih7jnJo3inVYsL3UPdbgBResn9qAoHpjCIIEmMJyuO_oHKEWLi-SA3qmmMJ_yqvl4myfXutYpPB75aOz7Wi49jjp1wHD9J56kmaOvJ3bhJuGl5hjbXybqO1TLXA0KsKO8Qr5IKLF7jK2WDpTn3hYj_U9YQ1g
+        /// <returns></returns>
+        [Route("api/crrpa/payment-secure-link")]
+        [HttpGet]
+        public async Task<ActionResult> CreateLinkRedirectToPaybcPaymentPage([FromQuery] string encodedAppId)
+        {
+            string? hostUrl = _configuration.GetValue<string>("HostUrl");
+            string redirectUrl = $"{hostUrl}api/crrpa/payment-result";
+            PaymentLinkCreateRequest linkCreateRequest = new PaymentLinkCreateRequest()
+            {
+                ApplicationId = null,
+                EncodedApplicationId = encodedAppId,
+                Description = "Criminal Record Check",
+                PaymentMethod = PaymentMethodCode.CreditCard
+            };
+            var result = await _mediator.Send(new PaymentLinkCreateCommand(linkCreateRequest, redirectUrl, _paymentsConfiguration.MaxOnlinePaymentFailedTimes));
+            return Redirect(result.PaymentLinkUrl);
         }
         #endregion
     }

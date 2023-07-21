@@ -1,6 +1,5 @@
 using AutoMapper;
 using MediatR;
-using Microsoft.Dynamics.CRM;
 using Spd.Engine.Search;
 using Spd.Engine.Validation;
 using Spd.Resource.Applicants.Application;
@@ -502,7 +501,7 @@ namespace Spd.Manager.Cases.Application
                     FileName = fileResult.File.FileName
                 };
             }
-            throw new ApiException(HttpStatusCode.NoContent, "No file found." );
+            throw new ApiException(HttpStatusCode.NoContent, "No file found.");
         }
 
         #endregion
