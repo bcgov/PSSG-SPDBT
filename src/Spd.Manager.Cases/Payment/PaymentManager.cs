@@ -15,7 +15,7 @@ namespace Spd.Manager.Cases.Payment
 {
     internal class PaymentManager :
         IRequestHandler<PaymentLinkCreateCommand, PaymentLinkResponse>,
-        IRequestHandler<PaymentUpdateCommand, Guid>,
+        IRequestHandler<PaymenCreateCommand, Guid>,
         IRequestHandler<PaymentQuery, PaymentResponse>,
         IRequestHandler<PaymentFailedAttemptCountQuery, int>,
         IRequestHandler<PrePaymentLinkCreateCommand, PrePaymentLinkResponse>,
@@ -89,39 +89,29 @@ namespace Spd.Manager.Cases.Payment
 
             //get config from cache or Dynamics
             SpdPaymentConfig spdPaymentConfig = await GetSpdPaymentConfigAsync(ct);
-            string transNumber = Guid.NewGuid().ToString();
-
-            //create payment
-            Guid paymentId = await _paymentRepository.ManageAsync(
-                new CreatePaymentCmd()
-                {
-                    ApplicationId = applicationId,
-                    PaymentMethod = Resource.Applicants.Payment.PaymentMethodEnum.CreditCard,
-                    TransAmount = spdPaymentConfig.ServiceCost,
-                    TransNumber = transNumber,
-                    PaymentType = command.IsFromSecurePaymentLink ? PaymentTypeEnum.PayBC_SecurePaymentLink : PaymentTypeEnum.PayBC_OnSubmission
-                }, ct);
-
+            Guid transNumber = Guid.NewGuid();
+            Guid paymentId = Guid.NewGuid();
             //generate the link string 
             //payment utility
             var linkResult = (CreateDirectPaymentLinkResult)_paymentService.HandleCommand(
                 new CreateDirectPaymentLinkCommand
                 {
                     RevenueAccount = spdPaymentConfig.PaybcRevenueAccount,
-                    TransNumber = transNumber,
+                    TransNumber = transNumber.ToString(),
                     PbcRefNumber = spdPaymentConfig.PbcRefNumber,
                     Amount = spdPaymentConfig.ServiceCost,
                     Description = command.PaymentLinkCreateRequest.Description,
                     PaymentMethod = Spd.Utilities.Payment.PaymentMethodEnum.CC,
                     RedirectUrl = command.RedirectUrl,
                     Ref1 = paymentId.ToString(), //put payment id to ref1
-                    Ref2 = command.PaymentLinkCreateRequest.ApplicationId.ToString(), //application id to ref2
+                    Ref2 = applicationId.ToString(), //application id to ref2
+                    Ref3 = command.IsFromSecurePaymentLink.ToString()
                 });
 
             return new PaymentLinkResponse(linkResult.PaymentLinkUrl);
         }
 
-        public async Task<Guid> Handle(PaymentUpdateCommand command, CancellationToken ct)
+        public async Task<Guid> Handle(PaymenCreateCommand command, CancellationToken ct)
         {
             //validate hashcode
             PaymentValidationResult validated = (PaymentValidationResult)_paymentService.HandleCommand(new ValidatePaymentResultStrCommand() { QueryStr = command.QueryStr });
@@ -130,8 +120,10 @@ namespace Spd.Manager.Cases.Payment
                 throw new ApiException(HttpStatusCode.InternalServerError, "payment result from paybc is not validated.");
             }
 
-            var cmd = _mapper.Map<UpdatePaymentCmd>(command.PaybcPaymentResult);
-            return await _paymentRepository.ManageAsync(cmd, ct);
+            var createCmd = _mapper.Map<CreatePaymentCmd>(command.PaybcPaymentResult);
+            await _paymentRepository.ManageAsync(createCmd, ct);
+            var updateCmd = _mapper.Map<UpdatePaymentCmd>(command.PaybcPaymentResult);
+            return await _paymentRepository.ManageAsync(updateCmd, ct);
         }
 
         public async Task<PaymentResponse> Handle(PaymentQuery query, CancellationToken ct)
@@ -143,7 +135,7 @@ namespace Spd.Manager.Cases.Payment
         public async Task<int> Handle(PaymentFailedAttemptCountQuery query, CancellationToken ct)
         {
             var respList = await _paymentRepository.QueryAsync(new PaymentQry(query.ApplicationId), ct);
-            return respList.Items.Count(i => i.PaymentStatus == PaymentStatusEnum.Failure && i.PaymentType == PaymentTypeEnum.PayBC_OnSubmission);
+            return respList.Items.Count(i => !i.PaidSuccess && i.PaymentType == PaymentTypeEnum.PayBC_OnSubmission);
         }
 
         private async Task<SpdPaymentConfig> GetSpdPaymentConfigAsync(CancellationToken ct)

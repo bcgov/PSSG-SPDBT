@@ -74,7 +74,7 @@ namespace Spd.Presentation.Screening.Controllers
                 if (!paybcPaymentResult.Success && paybcPaymentResult.MessageText == "Payment Canceled")
                     return Redirect($"{hostUrl}{cancelPath}");
 
-                var paymentId = await _mediator.Send(new PaymentUpdateCommand(Request.QueryString.ToString(), paybcPaymentResult));
+                var paymentId = await _mediator.Send(new PaymenCreateCommand(Request.QueryString.ToString(), paybcPaymentResult));
                 if (paybcPaymentResult.Success)
                     return Redirect($"{hostUrl}{successPath}{paymentId}");
 
@@ -149,7 +149,7 @@ namespace Spd.Presentation.Screening.Controllers
                 if (!paybcPaymentResult.Success && paybcPaymentResult.MessageText == "Payment Canceled")
                     return Redirect($"{hostUrl}{cancelPath}?orgId={orgId}");
 
-                var paymentId = await _mediator.Send(new PaymentUpdateCommand(Request.QueryString.ToString(), paybcPaymentResult));
+                var paymentId = await _mediator.Send(new PaymenCreateCommand(Request.QueryString.ToString(), paybcPaymentResult));
                 if (paybcPaymentResult.Success)
                     return Redirect($"{hostUrl}{successPath}{paymentId}?orgId={orgId}");
 
@@ -223,7 +223,7 @@ namespace Spd.Presentation.Screening.Controllers
                 if (!paybcPaymentResult.Success && paybcPaymentResult.MessageText == "Payment Canceled")
                     return Redirect($"{hostUrl}{cancelPath}");
 
-                var paymentId = await _mediator.Send(new PaymentUpdateCommand(Request.QueryString.ToString(), paybcPaymentResult));
+                var paymentId = await _mediator.Send(new PaymenCreateCommand(Request.QueryString.ToString(), paybcPaymentResult));
                 if (paybcPaymentResult.Success)
                     return Redirect($"{hostUrl}{successPath}{paymentId}");
 
@@ -279,7 +279,7 @@ namespace Spd.Presentation.Screening.Controllers
                 Description = "Criminal Record Check",
                 PaymentMethod = PaymentMethodCode.CreditCard
             };
-            var result = await _mediator.Send(new PaymentLinkCreateCommand(linkCreateRequest, redirectUrl, _paymentsConfiguration.MaxOnlinePaymentFailedTimes));
+            var result = await _mediator.Send(new PaymentLinkCreateCommand(linkCreateRequest, redirectUrl, _paymentsConfiguration.MaxOnlinePaymentFailedTimes, true));
             return Redirect(result.PaymentLinkUrl);
         }
         #endregion
