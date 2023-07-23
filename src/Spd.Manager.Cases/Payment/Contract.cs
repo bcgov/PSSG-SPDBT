@@ -17,16 +17,21 @@ namespace Spd.Manager.Cases.Payment
     public record PrePaymentLinkResponse(string PrePaymentLinkUrl);
 
     //payment link
-    public record PaymentLinkCreateCommand(PaymentLinkCreateRequest PaymentLinkCreateRequest, string RedirectUrl, int MaxFailedTimes = 3, bool IsFromSecurePaymentLink = false) : IRequest<PaymentLinkResponse>;
+    public record PaymentLinkCreateCommand(PaymentLinkCreateRequest PaymentLinkCreateRequest, string RedirectUrl, int MaxFailedTimes = 3) : IRequest<PaymentLinkResponse>;
     public record PaymentLinkCreateRequest
     {
         public Guid? ApplicationId { get; set; }
-        public string? EncodedApplicationId { get; set; } = null; //from secure payment link
         [MaxLength(100)]
         public string Description { get; set; } = null!;
         public PaymentMethodCode PaymentMethod { get; set; } //CC-credit card, VI - debit card
 
     }
+    public record PaymentLinkFromSecureLinkCreateRequest : PaymentLinkCreateRequest
+    {
+        public string? EncodedApplicationId { get; set; } = null; //from secure payment link
+        public string? EncodedPaymentId { get; set; } = null; //from secure payment link
+    }
+
     public record PaymentLinkResponse(string PaymentLinkUrl);
 
     public enum PaymentStatusCode

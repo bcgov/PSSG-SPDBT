@@ -57,40 +57,53 @@ namespace Spd.Manager.Cases.Payment
             //todo, the valid days needs to get from biz, current days is temporary
             var encryptedApplicationId = WebUtility.UrlEncode(_dataProtector.Protect(command.ApplicationId.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.APPLICATION_INVITE_VALID_DAYS)));
 
-            return new PrePaymentLinkResponse($"{command.ScreeningAppPaymentUrl}?encodedAppId={encryptedApplicationId}");
+            var paymentId = Guid.NewGuid();
+            var encryptedPaymentId = WebUtility.UrlEncode(_dataProtector.Protect(paymentId.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.APPLICATION_INVITE_VALID_DAYS)));
+            return new PrePaymentLinkResponse($"{command.ScreeningAppPaymentUrl}?encodedAppId={encryptedApplicationId}&encodedPaymentId={encryptedPaymentId}");
         }
 
         public async Task<PaymentLinkResponse> Handle(PaymentLinkCreateCommand command, CancellationToken ct)
         {
             Guid applicationId;
-            if (command.PaymentLinkCreateRequest.ApplicationId == null && command.PaymentLinkCreateRequest.EncodedApplicationId != null)
+            Guid paymentId;
+            bool isFromSecurePaymentLink;
+            if (command.PaymentLinkCreateRequest is PaymentLinkFromSecureLinkCreateRequest request)
             {
                 try
                 {
-                    string appIdStr = _dataProtector.Unprotect(WebUtility.UrlDecode(command.PaymentLinkCreateRequest.EncodedApplicationId));
+                    string appIdStr = _dataProtector.Unprotect(WebUtility.UrlDecode(request.EncodedApplicationId));
                     applicationId = Guid.Parse(appIdStr);
+                    string paymentIdStr = _dataProtector.Unprotect(WebUtility.UrlDecode(request.EncodedPaymentId));
+                    paymentId = Guid.Parse(paymentIdStr);
                 }
                 catch
                 {
                     throw new ApiException(HttpStatusCode.Accepted, "The payment link is no longer valid.");
                 }
+                isFromSecurePaymentLink = true;
+                //secure payment link can only be used once.
+                var existingPayment = await _paymentRepository.QueryAsync(new PaymentQry(applicationId, paymentId), ct);
+                if (existingPayment.Items.Any())
+                    throw new ApiException(HttpStatusCode.Accepted, "The payment link has already been used.");
             }
             else
             {
                 applicationId = (Guid)command.PaymentLinkCreateRequest.ApplicationId;
+                paymentId = Guid.NewGuid();
+                isFromSecurePaymentLink = false;
             }
 
             //validation
             var app = await _appRepository.QueryApplicationAsync(new ApplicationQry(applicationId), ct);
             if (app.PaidOn != null)
                 throw new ApiException(HttpStatusCode.BadRequest, "application has already been paid.");
-            if (app.NumberOfAttempts > command.MaxFailedTimes && !command.IsFromSecurePaymentLink)
+            if (app.NumberOfAttempts > command.MaxFailedTimes && !isFromSecurePaymentLink)
                 throw new ApiException(HttpStatusCode.BadRequest, $"Payment can only be tried no more than {command.MaxFailedTimes} times.");
 
             //get config from cache or Dynamics
             SpdPaymentConfig spdPaymentConfig = await GetSpdPaymentConfigAsync(ct);
             Guid transNumber = Guid.NewGuid();
-            Guid paymentId = Guid.NewGuid();
+
             //generate the link string 
             //payment utility
             var linkResult = (CreateDirectPaymentLinkResult)_paymentService.HandleCommand(
@@ -105,7 +118,7 @@ namespace Spd.Manager.Cases.Payment
                     RedirectUrl = command.RedirectUrl,
                     Ref1 = paymentId.ToString(), //put payment id to ref1
                     Ref2 = applicationId.ToString(), //application id to ref2
-                    Ref3 = command.IsFromSecurePaymentLink.ToString()
+                    Ref3 = isFromSecurePaymentLink.ToString()
                 });
 
             return new PaymentLinkResponse(linkResult.PaymentLinkUrl);

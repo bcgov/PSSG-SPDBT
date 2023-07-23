@@ -268,18 +268,19 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/crrpa/payment-secure-link")]
         [HttpGet]
-        public async Task<ActionResult> CreateLinkRedirectToPaybcPaymentPage([FromQuery] string encodedAppId)
+        public async Task<ActionResult> CreateLinkRedirectToPaybcPaymentPage([FromQuery] string encodedAppId, [FromQuery] string encodedPaymentId)
         {
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
             string redirectUrl = $"{hostUrl}api/crrpa/payment-result";
-            PaymentLinkCreateRequest linkCreateRequest = new PaymentLinkCreateRequest()
+            PaymentLinkFromSecureLinkCreateRequest linkCreateRequest = new PaymentLinkFromSecureLinkCreateRequest()
             {
                 ApplicationId = null,
                 EncodedApplicationId = encodedAppId,
+                EncodedPaymentId = encodedPaymentId,
                 Description = "Criminal Record Check",
                 PaymentMethod = PaymentMethodCode.CreditCard
             };
-            var result = await _mediator.Send(new PaymentLinkCreateCommand(linkCreateRequest, redirectUrl, _paymentsConfiguration.MaxOnlinePaymentFailedTimes, true));
+            var result = await _mediator.Send(new PaymentLinkCreateCommand(linkCreateRequest, redirectUrl, _paymentsConfiguration.MaxOnlinePaymentFailedTimes));
             return Redirect(result.PaymentLinkUrl);
         }
         #endregion
