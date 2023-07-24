@@ -15,7 +15,7 @@ namespace Spd.Manager.Cases.Payment
 {
     internal class PaymentManager :
         IRequestHandler<PaymentLinkCreateCommand, PaymentLinkResponse>,
-        IRequestHandler<PaymentUpdateCommand, Guid>,
+        IRequestHandler<PaymenCreateCommand, Guid>,
         IRequestHandler<PaymentQuery, PaymentResponse>,
         IRequestHandler<PaymentFailedAttemptCountQuery, int>,
         IRequestHandler<PrePaymentLinkCreateCommand, PrePaymentLinkResponse>,
@@ -57,50 +57,52 @@ namespace Spd.Manager.Cases.Payment
             //todo, the valid days needs to get from biz, current days is temporary
             var encryptedApplicationId = WebUtility.UrlEncode(_dataProtector.Protect(command.ApplicationId.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.APPLICATION_INVITE_VALID_DAYS)));
 
-            return new PrePaymentLinkResponse($"{command.ScreeningAppPaymentUrl}?encodedAppId={encryptedApplicationId}");
+            var paymentId = Guid.NewGuid();
+            var encryptedPaymentId = WebUtility.UrlEncode(_dataProtector.Protect(paymentId.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.APPLICATION_INVITE_VALID_DAYS)));
+            return new PrePaymentLinkResponse($"{command.ScreeningAppPaymentUrl}?encodedAppId={encryptedApplicationId}&encodedPaymentId={encryptedPaymentId}");
         }
 
         public async Task<PaymentLinkResponse> Handle(PaymentLinkCreateCommand command, CancellationToken ct)
         {
             Guid applicationId;
-            if (command.PaymentLinkCreateRequest.ApplicationId == null && command.PaymentLinkCreateRequest.EncodedApplicationId != null)
+            Guid paymentId;
+            bool isFromSecurePaymentLink;
+            if (command.PaymentLinkCreateRequest is PaymentLinkFromSecureLinkCreateRequest request)
             {
                 try
                 {
-                    string appIdStr = _dataProtector.Unprotect(WebUtility.UrlDecode(command.PaymentLinkCreateRequest.EncodedApplicationId));
+                    string appIdStr = _dataProtector.Unprotect(WebUtility.UrlDecode(request.EncodedApplicationId));
                     applicationId = Guid.Parse(appIdStr);
+                    string paymentIdStr = _dataProtector.Unprotect(WebUtility.UrlDecode(request.EncodedPaymentId));
+                    paymentId = Guid.Parse(paymentIdStr);
                 }
                 catch
                 {
                     throw new ApiException(HttpStatusCode.Accepted, "The payment link is no longer valid.");
                 }
+                isFromSecurePaymentLink = true;
+                //secure payment link can only be used once.
+                var existingPayment = await _paymentRepository.QueryAsync(new PaymentQry(applicationId, paymentId), ct);
+                if (existingPayment.Items.Any())
+                    throw new ApiException(HttpStatusCode.Accepted, "The payment link has already been used.");
             }
             else
             {
                 applicationId = (Guid)command.PaymentLinkCreateRequest.ApplicationId;
+                paymentId = Guid.NewGuid();
+                isFromSecurePaymentLink = false;
             }
 
             //validation
             var app = await _appRepository.QueryApplicationAsync(new ApplicationQry(applicationId), ct);
             if (app.PaidOn != null)
                 throw new ApiException(HttpStatusCode.BadRequest, "application has already been paid.");
-            if (app.NumberOfAttempts > command.MaxFailedTimes && !command.IsFromSecurePaymentLink)
+            if (app.NumberOfAttempts > command.MaxFailedTimes && !isFromSecurePaymentLink)
                 throw new ApiException(HttpStatusCode.BadRequest, $"Payment can only be tried no more than {command.MaxFailedTimes} times.");
 
             //get config from cache or Dynamics
             SpdPaymentConfig spdPaymentConfig = await GetSpdPaymentConfigAsync(ct);
-            string transNumber = Guid.NewGuid().ToString();
-
-            //create payment
-            Guid paymentId = await _paymentRepository.ManageAsync(
-                new CreatePaymentCmd()
-                {
-                    ApplicationId = applicationId,
-                    PaymentMethod = Resource.Applicants.Payment.PaymentMethodEnum.CreditCard,
-                    TransAmount = spdPaymentConfig.ServiceCost,
-                    TransNumber = transNumber,
-                    PaymentType = command.IsFromSecurePaymentLink ? PaymentTypeEnum.PayBC_SecurePaymentLink : PaymentTypeEnum.PayBC_OnSubmission
-                }, ct);
+            Guid transNumber = Guid.NewGuid();
 
             //generate the link string 
             //payment utility
@@ -108,20 +110,21 @@ namespace Spd.Manager.Cases.Payment
                 new CreateDirectPaymentLinkCommand
                 {
                     RevenueAccount = spdPaymentConfig.PaybcRevenueAccount,
-                    TransNumber = transNumber,
+                    TransNumber = transNumber.ToString(),
                     PbcRefNumber = spdPaymentConfig.PbcRefNumber,
                     Amount = spdPaymentConfig.ServiceCost,
                     Description = command.PaymentLinkCreateRequest.Description,
                     PaymentMethod = Spd.Utilities.Payment.PaymentMethodEnum.CC,
                     RedirectUrl = command.RedirectUrl,
                     Ref1 = paymentId.ToString(), //put payment id to ref1
-                    Ref2 = command.PaymentLinkCreateRequest.ApplicationId.ToString(), //application id to ref2
+                    Ref2 = applicationId.ToString(), //application id to ref2
+                    Ref3 = isFromSecurePaymentLink.ToString()
                 });
 
             return new PaymentLinkResponse(linkResult.PaymentLinkUrl);
         }
 
-        public async Task<Guid> Handle(PaymentUpdateCommand command, CancellationToken ct)
+        public async Task<Guid> Handle(PaymenCreateCommand command, CancellationToken ct)
         {
             //validate hashcode
             PaymentValidationResult validated = (PaymentValidationResult)_paymentService.HandleCommand(new ValidatePaymentResultStrCommand() { QueryStr = command.QueryStr });
@@ -130,8 +133,10 @@ namespace Spd.Manager.Cases.Payment
                 throw new ApiException(HttpStatusCode.InternalServerError, "payment result from paybc is not validated.");
             }
 
-            var cmd = _mapper.Map<UpdatePaymentCmd>(command.PaybcPaymentResult);
-            return await _paymentRepository.ManageAsync(cmd, ct);
+            var createCmd = _mapper.Map<CreatePaymentCmd>(command.PaybcPaymentResult);
+            await _paymentRepository.ManageAsync(createCmd, ct);
+            var updateCmd = _mapper.Map<UpdatePaymentCmd>(command.PaybcPaymentResult);
+            return await _paymentRepository.ManageAsync(updateCmd, ct);
         }
 
         public async Task<PaymentResponse> Handle(PaymentQuery query, CancellationToken ct)
@@ -143,7 +148,7 @@ namespace Spd.Manager.Cases.Payment
         public async Task<int> Handle(PaymentFailedAttemptCountQuery query, CancellationToken ct)
         {
             var respList = await _paymentRepository.QueryAsync(new PaymentQry(query.ApplicationId), ct);
-            return respList.Items.Count(i => i.PaymentStatus == PaymentStatusEnum.Failure && i.PaymentType == PaymentTypeEnum.PayBC_OnSubmission);
+            return respList.Items.Count(i => !i.PaidSuccess && i.PaymentType == PaymentTypeEnum.PayBC_OnSubmission);
         }
 
         private async Task<SpdPaymentConfig> GetSpdPaymentConfigAsync(CancellationToken ct)

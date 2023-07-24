@@ -18,7 +18,6 @@ namespace Spd.Resource.Applicants.Payment
         public Guid PaymentId { get; set; }
         public string CaseNumber { get; set; }
         public bool PaidSuccess { get; set; }
-        public PaymentStatusEnum PaymentStatus { get; set; }
         public string Message { get; set; }
         public string? TransOrderId { get; set; }
         public DateTimeOffset TransDateTime { get; set; }
@@ -26,17 +25,15 @@ namespace Spd.Resource.Applicants.Payment
         public PaymentTypeEnum? PaymentType { get; set; }
     }
 
-    public abstract record PaymentCmd
+    public abstract record PaymentCmd;
+
+    public record CreatePaymentCmd : PaymentCmd
     {
         public Guid ApplicationId { get; set; }
         public string TransNumber { get; set; } = null!;
         public decimal TransAmount { get; set; }
         public PaymentMethodEnum? PaymentMethod { get; set; }
         public PaymentTypeEnum PaymentType { get; set; } = PaymentTypeEnum.PayBC_OnSubmission;
-    };
-
-    public record UpdatePaymentCmd : PaymentCmd
-    {
         public Guid PaymentId { get; set; }
         public bool? Success { get; set; }
         public string? CardType { get; set; }
@@ -44,9 +41,13 @@ namespace Spd.Resource.Applicants.Payment
         public string? TransOrderId { get; set; }
         public DateTimeOffset? TransDateTime { get; set; }
         public string? MessageText { get; set; }
-    };
-    public record CreatePaymentCmd : PaymentCmd;
+    }
 
+    public record UpdatePaymentCmd : PaymentCmd
+    {
+        public Guid PaymentId { get; set; }
+        public bool? Success { get; set; }
+    }
 
     public enum PaymentStatusEnum
     {

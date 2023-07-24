@@ -74,7 +74,7 @@ namespace Spd.Presentation.Screening.Controllers
                 if (!paybcPaymentResult.Success && paybcPaymentResult.MessageText == "Payment Canceled")
                     return Redirect($"{hostUrl}{cancelPath}");
 
-                var paymentId = await _mediator.Send(new PaymentUpdateCommand(Request.QueryString.ToString(), paybcPaymentResult));
+                var paymentId = await _mediator.Send(new PaymenCreateCommand(Request.QueryString.ToString(), paybcPaymentResult));
                 if (paybcPaymentResult.Success)
                     return Redirect($"{hostUrl}{successPath}{paymentId}");
 
@@ -149,7 +149,7 @@ namespace Spd.Presentation.Screening.Controllers
                 if (!paybcPaymentResult.Success && paybcPaymentResult.MessageText == "Payment Canceled")
                     return Redirect($"{hostUrl}{cancelPath}?orgId={orgId}");
 
-                var paymentId = await _mediator.Send(new PaymentUpdateCommand(Request.QueryString.ToString(), paybcPaymentResult));
+                var paymentId = await _mediator.Send(new PaymenCreateCommand(Request.QueryString.ToString(), paybcPaymentResult));
                 if (paybcPaymentResult.Success)
                     return Redirect($"{hostUrl}{successPath}{paymentId}?orgId={orgId}");
 
@@ -223,7 +223,7 @@ namespace Spd.Presentation.Screening.Controllers
                 if (!paybcPaymentResult.Success && paybcPaymentResult.MessageText == "Payment Canceled")
                     return Redirect($"{hostUrl}{cancelPath}");
 
-                var paymentId = await _mediator.Send(new PaymentUpdateCommand(Request.QueryString.ToString(), paybcPaymentResult));
+                var paymentId = await _mediator.Send(new PaymenCreateCommand(Request.QueryString.ToString(), paybcPaymentResult));
                 if (paybcPaymentResult.Success)
                     return Redirect($"{hostUrl}{successPath}{paymentId}");
 
@@ -268,14 +268,15 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/crrpa/payment-secure-link")]
         [HttpGet]
-        public async Task<ActionResult> CreateLinkRedirectToPaybcPaymentPage([FromQuery] string encodedAppId)
+        public async Task<ActionResult> CreateLinkRedirectToPaybcPaymentPage([FromQuery] string encodedAppId, [FromQuery] string encodedPaymentId)
         {
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
             string redirectUrl = $"{hostUrl}api/crrpa/payment-result";
-            PaymentLinkCreateRequest linkCreateRequest = new PaymentLinkCreateRequest()
+            PaymentLinkFromSecureLinkCreateRequest linkCreateRequest = new PaymentLinkFromSecureLinkCreateRequest()
             {
                 ApplicationId = null,
                 EncodedApplicationId = encodedAppId,
+                EncodedPaymentId = encodedPaymentId,
                 Description = "Criminal Record Check",
                 PaymentMethod = PaymentMethodCode.CreditCard
             };

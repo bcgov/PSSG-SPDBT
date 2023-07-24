@@ -2,6 +2,8 @@ using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.OData.Client;
 using Spd.Utilities.Dynamics;
+using Spd.Utilities.Shared.Exceptions;
+using System.Net;
 
 namespace Spd.Resource.Applicants.Payment;
 internal class PaymentRepository : IPaymentRepository
@@ -36,8 +38,8 @@ internal class PaymentRepository : IPaymentRepository
     {
         return cmd switch
         {
-            UpdatePaymentCmd c => await PaymentUpdateAsync(c, ct),
             CreatePaymentCmd c => await PaymentCreateAsync(c, ct),
+            UpdatePaymentCmd c => await PaymentUpdateAsync(c, ct),
             _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
         };
     }
@@ -47,31 +49,26 @@ internal class PaymentRepository : IPaymentRepository
         spd_application? application = await _context.GetApplicationById(cmd.ApplicationId, ct);
         if (application == null)
             throw new ArgumentException("invalid application id");
+        spd_payment? payment = await _context.GetPaymentById(cmd.PaymentId, ct);
+        if (payment != null)
+            throw new ApiException(HttpStatusCode.BadRequest, "the payment result has been updated.");
 
-        spd_payment payment = _mapper.Map<spd_payment>(cmd);
+        payment = _mapper.Map<spd_payment>(cmd);
         _context.AddTospd_payments(payment);
         _context.SetLink(payment, nameof(payment.spd_ApplicationId), application);
         await _context.SaveChangesAsync(ct);
-        return (Guid)payment.spd_paymentid;
+        return cmd.PaymentId;
     }
 
     private async Task<Guid> PaymentUpdateAsync(UpdatePaymentCmd cmd, CancellationToken ct)
     {
         spd_payment? payment = await _context.GetPaymentById(cmd.PaymentId, ct);
-        if (payment == null || payment.statecode == DynamicsConstants.StatusCode_Inactive)
-            throw new ArgumentException("invalid payment id");
-
-        if (payment.spd_transactionid != cmd.TransNumber || payment._spd_applicationid_value != cmd.ApplicationId)
-            throw new ArgumentException("invalid payment transaction");
-
-        if (cmd.Success == null) return cmd.PaymentId; //no result, not update payment.
-
+        if (payment == null) throw new ApiException(HttpStatusCode.BadRequest, "payment does not exist.");
         payment = _mapper.Map(cmd, payment);
         _context.UpdateObject(payment);
         await _context.SaveChangesAsync(ct);
         return (Guid)payment.spd_paymentid;
     }
-
 
 }
 
