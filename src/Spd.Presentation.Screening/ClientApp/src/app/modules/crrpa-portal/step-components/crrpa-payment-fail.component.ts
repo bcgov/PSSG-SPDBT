@@ -8,6 +8,7 @@ import {
 	PaymentResponse,
 } from 'src/app/api/models';
 import { PaymentService } from 'src/app/api/services';
+import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 
 @Component({
 	selector: 'app-crrpa-payment-fail',
@@ -31,9 +32,16 @@ export class CrrpaPaymentFailComponent implements OnInit {
 	numberOfAttempts: number = 0;
 	payment: PaymentResponse | null = null;
 
-	constructor(private route: ActivatedRoute, private router: Router, private paymentService: PaymentService) {}
+	constructor(
+		private route: ActivatedRoute,
+		private authProcessService: AuthProcessService,
+		private router: Router,
+		private paymentService: PaymentService
+	) {}
 
-	ngOnInit(): void {
+	async ngOnInit(): Promise<void> {
+		await this.authProcessService.tryInitializeCrrpa();
+
 		const paymentId = this.route.snapshot.paramMap.get('id');
 		if (!paymentId) {
 			this.isCancelledPaymentFlow = true;
