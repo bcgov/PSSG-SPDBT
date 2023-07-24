@@ -5,9 +5,9 @@ import { Router } from '@angular/router';
 import {
 	ApplicantApplicationListResponse,
 	ApplicantApplicationResponse,
-	ApplicantPaymentLinkCreateRequest,
 	ApplicationPortalStatusCode,
 	CaseSubStatusCode,
+	PaymentLinkCreateRequest,
 	PaymentLinkResponse,
 	PaymentMethodCode,
 } from 'src/app/api/models';
@@ -237,7 +237,7 @@ export class SecurityScreeningListComponent implements OnInit {
 	}
 
 	onPayNow(application: ApplicantApplicationStatusResponse): void {
-		const body: ApplicantPaymentLinkCreateRequest = {
+		const body: PaymentLinkCreateRequest = {
 			applicationId: application.id!,
 			paymentMethod: PaymentMethodCode.CreditCard,
 			description: `Payment for Case ID: ${application.applicationNumber}`,
