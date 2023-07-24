@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 
 @Component({
 	selector: 'app-crrpa-payment-error',
@@ -11,4 +12,10 @@ import { Component } from '@angular/core';
 	`,
 	styles: [],
 })
-export class CrrpaPaymentErrorComponent {}
+export class CrrpaPaymentErrorComponent {
+	constructor(private authProcessService: AuthProcessService) {}
+
+	async ngOnInit(): Promise<void> {
+		await this.authProcessService.tryInitializeCrrpa();
+	}
+}

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { CrrpaRoutingModule } from './crrpa-routing.module';
-import { CrcComponent } from './crrpa.component';
+import { CrrpaComponent } from './crrpa.component';
 import { InvitationCrrpaComponent } from './invitation-crrpa.component';
 import { OrgAccessComponent } from './org-access.component';
 import { AgreementOfTermsComponent } from './step-components/agreement-of-terms.component';
@@ -29,7 +29,7 @@ import { StepTermsAndCondComponent } from './steps/step-terms-and-cond.component
 
 @NgModule({
 	declarations: [
-		CrcComponent,
+		CrrpaComponent,
 		StepEligibilityComponent,
 		StepOrganizationInfoComponent,
 		StepLoginOptionsComponent,

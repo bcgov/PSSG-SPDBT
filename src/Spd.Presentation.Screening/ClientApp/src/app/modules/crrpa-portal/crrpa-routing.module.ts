@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { CrcComponent } from './crrpa.component';
+import { CrrpaComponent } from './crrpa.component';
 import { InvitationCrrpaComponent } from './invitation-crrpa.component';
 import { OrgAccessComponent } from './org-access.component';
 import { CrrpaPaymentErrorComponent } from './step-components/crrpa-payment-error.component';
@@ -25,7 +25,7 @@ export class CrrpaRoutes {
 const routes: Routes = [
 	{
 		path: '',
-		component: CrcComponent,
+		component: CrrpaComponent,
 	},
 	{
 		path: `${CrrpaRoutes.INVITATION}/:id`,
