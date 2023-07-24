@@ -44,7 +44,8 @@ internal class Mappings : Profile
            .ForMember(d => d.TransNumber, opt => opt.MapFrom(s => s.pbcTxnNumber))
            .ForMember(d => d.CardType, opt => opt.MapFrom(s => s.cardType))
            .ForMember(d => d.PaymentId, opt => opt.MapFrom(s => s.ref1))
-           .ForMember(d => d.ApplicationId, opt => opt.MapFrom(s => s.ref2));
+           .ForMember(d => d.ApplicationId, opt => opt.MapFrom(s => s.ref2))
+           .ForMember(d => d.IsFromSecurePaymentLink, opt => opt.MapFrom(s => !string.IsNullOrWhiteSpace(s.ref3) && Boolean.Parse(s.ref3)));
 
     }
 }
