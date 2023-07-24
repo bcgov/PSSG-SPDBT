@@ -7,7 +7,7 @@ namespace Spd.Manager.Cases.Payment
     {
         public Task<PaymentLinkResponse> Handle(PaymentLinkCreateCommand command, CancellationToken ct);
         public Task<PrePaymentLinkResponse> Handle(PrePaymentLinkCreateCommand command, CancellationToken ct);
-        public Task<Guid> Handle(PaymentUpdateCommand command, CancellationToken ct);
+        public Task<Guid> Handle(PaymenCreateCommand command, CancellationToken ct);
         public Task<PaymentResponse> Handle(PaymentQuery query, CancellationToken ct);
         public Task<int> Handle(PaymentFailedAttemptCountQuery query, CancellationToken ct);
     }
@@ -17,23 +17,27 @@ namespace Spd.Manager.Cases.Payment
     public record PrePaymentLinkResponse(string PrePaymentLinkUrl);
 
     //payment link
-    public record PaymentLinkCreateCommand(PaymentLinkCreateRequest PaymentLinkCreateRequest, string RedirectUrl, int MaxFailedTimes = 3, bool IsFromSecurePaymentLink = false) : IRequest<PaymentLinkResponse>;
+    public record PaymentLinkCreateCommand(PaymentLinkCreateRequest PaymentLinkCreateRequest, string RedirectUrl, int MaxFailedTimes = 3) : IRequest<PaymentLinkResponse>;
     public record PaymentLinkCreateRequest
     {
         public Guid? ApplicationId { get; set; }
-        public string? EncodedApplicationId { get; set; } = null; //from secure payment link
         [MaxLength(100)]
         public string Description { get; set; } = null!;
         public PaymentMethodCode PaymentMethod { get; set; } //CC-credit card, VI - debit card
 
     }
+    public record PaymentLinkFromSecureLinkCreateRequest : PaymentLinkCreateRequest
+    {
+        public string? EncodedApplicationId { get; set; } = null; //from secure payment link
+        public string? EncodedPaymentId { get; set; } = null; //from secure payment link
+    }
+
     public record PaymentLinkResponse(string PaymentLinkUrl);
 
     public enum PaymentStatusCode
     {
         Success,
         Failure,
-        Cancelled
     }
     public enum PaymentMethodCode
     {
@@ -41,7 +45,7 @@ namespace Spd.Manager.Cases.Payment
     }
 
     //payment result
-    public record PaymentUpdateCommand(string QueryStr, PaybcPaymentResult PaybcPaymentResult) : IRequest<Guid>;
+    public record PaymenCreateCommand(string QueryStr, PaybcPaymentResult PaybcPaymentResult) : IRequest<Guid>;
     public record PaymentQuery(Guid PaymentId) : IRequest<PaymentResponse>;
     public record PaymentFailedAttemptCountQuery(Guid ApplicationId) : IRequest<int>;
     public record PaybcPaymentResult
@@ -57,6 +61,7 @@ namespace Spd.Manager.Cases.Payment
         public string? PaymentAuthCode { get; set; }
         public Guid PaymentId { get; set; }
         public Guid ApplicationId { get; set; }
+        public bool IsFromSecurePaymentLink { get; set; } = false;
     }
     public record PaymentResponse
     {

@@ -1,4 +1,5 @@
 using Microsoft.Dynamics.CRM;
+using Microsoft.OData.Client;
 using System.Collections.Immutable;
 
 namespace Spd.Utilities.Dynamics
@@ -166,13 +167,38 @@ namespace Spd.Utilities.Dynamics
         #endregion
 
         public static async Task<spd_application?> GetApplicationById(this DynamicsContext context, Guid appId, CancellationToken ct)
-            => await context.spd_applications.Where(a => a.spd_applicationid == appId).SingleOrDefaultAsync(ct);
+        {
+            try
+            {
+                return await context.spd_applications.Where(a => a.spd_applicationid == appId).SingleOrDefaultAsync(ct);
+            }
+            catch (DataServiceQueryException ex)
+            {
+                if (ex.Response.StatusCode == 404)
+                    return null;
+                else
+                    throw;
+            }
+
+        }
 
         public static async Task<spd_portaluser?> GetUserById(this DynamicsContext context, Guid userId, CancellationToken ct)
             => await context.spd_portalusers.Where(a => a.spd_portaluserid == userId).SingleOrDefaultAsync(ct);
 
         public static async Task<account?> GetOrgById(this DynamicsContext context, Guid organizationId, CancellationToken ct)
-           => await context.accounts.Where(a => a.accountid == organizationId).SingleOrDefaultAsync(ct);
+        {
+            try
+            {
+                return await context.accounts.Where(a => a.accountid == organizationId).SingleOrDefaultAsync(ct);
+            }
+            catch (DataServiceQueryException ex)
+            {
+                if (ex.Response.StatusCode == 404)
+                    return null;
+                else
+                    throw;
+            }
+        }
 
         public static async Task<spd_clearance?> GetClearanceById(this DynamicsContext context, Guid clearanceId, CancellationToken ct)
            => await context.spd_clearances.Where(a => a.spd_clearanceid == clearanceId)
@@ -185,6 +211,18 @@ namespace Spd.Utilities.Dynamics
             .SingleOrDefaultAsync(ct);
 
         public static async Task<spd_payment?> GetPaymentById(this DynamicsContext context, Guid paymentId, CancellationToken ct)
-             => await context.spd_payments.Where(a => a.spd_paymentid == paymentId).SingleOrDefaultAsync(ct);
+        {
+            try
+            {
+                return await context.spd_payments.Where(p=>p.spd_paymentid == paymentId).SingleOrDefaultAsync(ct);
+            }
+            catch (DataServiceQueryException ex)
+            {
+                if (ex.Response.StatusCode == 404)
+                    return null;
+                else
+                    throw;
+            }
+        }
     }
 }
