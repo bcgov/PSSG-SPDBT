@@ -10,13 +10,17 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 @Component({
 	selector: 'app-security-screening-payment-success',
 	template: `
-		<app-payment-success [payment]="payment" [sendEmailTo]="email" (backRoute)="onBackRoute()"></app-payment-success>
+		<app-payment-success
+			[payment]="payment"
+			[sendEmailTo]="sendEmailTo"
+			(backRoute)="onBackRoute()"
+		></app-payment-success>
 	`,
 	styles: [],
 })
 export class SecurityScreeningPaymentSuccessComponent implements OnInit {
 	payment: PaymentResponse | null = null;
-	email: string | null = null;
+	sendEmailTo: string | null = null;
 
 	constructor(
 		private route: ActivatedRoute,
@@ -55,7 +59,7 @@ export class SecurityScreeningPaymentSuccessComponent implements OnInit {
 				})
 			)
 			.subscribe((resp: ApplicantApplicationResponse) => {
-				this.email = resp.emailAddress ?? null;
+				this.sendEmailTo = resp.emailAddress ?? null;
 			});
 	}
 
