@@ -132,7 +132,7 @@ export interface AppInviteOrgData extends ApplicantAppCreateRequest {
 	`,
 	styles: [],
 })
-export class CrcComponent implements OnInit {
+export class CrrpaComponent implements OnInit {
 	orgData: AppInviteOrgData | null = null;
 
 	orientation: StepperOrientation = 'vertical';

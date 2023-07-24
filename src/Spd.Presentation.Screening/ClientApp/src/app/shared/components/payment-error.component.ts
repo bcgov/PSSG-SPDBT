@@ -37,7 +37,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 			</div>
 
 			<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
-				<div class="lead fs-5 mt-4 text-center">An error occurred during the payment process</div>
+				<div class="lead fs-5 my-4 text-center">An error occurred during the payment process</div>
 			</div>
 		</div>
 	`,
