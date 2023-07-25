@@ -10,9 +10,7 @@ import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
 import { ActionResult } from '../models/action-result';
-import { ApplicantInvitePaymentLinkCreateRequest } from '../models/applicant-invite-payment-link-create-request';
-import { ApplicantPaymentLinkCreateRequest } from '../models/applicant-payment-link-create-request';
-import { OrgPaymentLinkCreateRequest } from '../models/org-payment-link-create-request';
+import { PaymentLinkCreateRequest } from '../models/payment-link-create-request';
 import { PaymentLinkResponse } from '../models/payment-link-response';
 import { PaymentResponse } from '../models/payment-response';
 
@@ -44,7 +42,7 @@ export class PaymentService extends BaseService {
    */
   apiApplicantsScreeningsApplicationIdPaymentLinkPost$Response(params: {
     applicationId: string;
-    body: ApplicantPaymentLinkCreateRequest
+    body: PaymentLinkCreateRequest
   },
   context?: HttpContext
 
@@ -80,7 +78,7 @@ export class PaymentService extends BaseService {
    */
   apiApplicantsScreeningsApplicationIdPaymentLinkPost(params: {
     applicationId: string;
-    body: ApplicantPaymentLinkCreateRequest
+    body: PaymentLinkCreateRequest
   },
   context?: HttpContext
 
@@ -344,7 +342,7 @@ export class PaymentService extends BaseService {
     /**
      * which include Payment link create request
      */
-    body: OrgPaymentLinkCreateRequest
+    body: PaymentLinkCreateRequest
   },
   context?: HttpContext
 
@@ -386,7 +384,7 @@ export class PaymentService extends BaseService {
     /**
      * which include Payment link create request
      */
-    body: OrgPaymentLinkCreateRequest
+    body: PaymentLinkCreateRequest
   },
   context?: HttpContext
 
@@ -657,7 +655,7 @@ export class PaymentService extends BaseService {
     /**
      * which include Payment link create request
      */
-    body: ApplicantInvitePaymentLinkCreateRequest
+    body: PaymentLinkCreateRequest
   },
   context?: HttpContext
 
@@ -695,7 +693,7 @@ export class PaymentService extends BaseService {
     /**
      * which include Payment link create request
      */
-    body: ApplicantInvitePaymentLinkCreateRequest
+    body: PaymentLinkCreateRequest
   },
   context?: HttpContext
 
@@ -934,6 +932,70 @@ export class PaymentService extends BaseService {
 
     return this.apiCrrpaApplicationIdPaymentAttemptsGet$Response(params,context).pipe(
       map((r: StrictHttpResponse<number>) => r.body as number)
+    );
+  }
+
+  /**
+   * Path part for operation apiCrrpaPaymentSecureLinkGet
+   */
+  static readonly ApiCrrpaPaymentSecureLinkGetPath = '/api/crrpa/payment-secure-link';
+
+  /**
+   * Redirect to PayBC the direct pay payment page.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiCrrpaPaymentSecureLinkGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiCrrpaPaymentSecureLinkGet$Response(params?: {
+    encodedAppId?: string;
+    encodedPaymentId?: string;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<ActionResult>> {
+
+    const rb = new RequestBuilder(this.rootUrl, PaymentService.ApiCrrpaPaymentSecureLinkGetPath, 'get');
+    if (params) {
+      rb.query('encodedAppId', params.encodedAppId, {});
+      rb.query('encodedPaymentId', params.encodedPaymentId, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<ActionResult>;
+      })
+    );
+  }
+
+  /**
+   * Redirect to PayBC the direct pay payment page.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiCrrpaPaymentSecureLinkGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiCrrpaPaymentSecureLinkGet(params?: {
+    encodedAppId?: string;
+    encodedPaymentId?: string;
+  },
+  context?: HttpContext
+
+): Observable<ActionResult> {
+
+    return this.apiCrrpaPaymentSecureLinkGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<ActionResult>) => r.body as ActionResult)
     );
   }
 

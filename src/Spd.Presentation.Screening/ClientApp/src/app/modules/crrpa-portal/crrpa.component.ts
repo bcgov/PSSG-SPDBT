@@ -7,10 +7,10 @@ import { Router } from '@angular/router';
 import { distinctUntilChanged, Observable, tap } from 'rxjs';
 import {
 	ApplicantAppCreateRequest,
-	ApplicantInvitePaymentLinkCreateRequest,
 	ApplicationCreateResponse,
 	BooleanTypeCode,
 	EmployeeInteractionTypeCode,
+	PaymentLinkCreateRequest,
 	PaymentLinkResponse,
 	PaymentMethodCode,
 	ServiceTypeCode,
@@ -389,7 +389,7 @@ export class CrrpaComponent implements OnInit {
 	}
 
 	private payNow(applicationId: string): void {
-		const body: ApplicantInvitePaymentLinkCreateRequest = {
+		const body: PaymentLinkCreateRequest = {
 			applicationId: applicationId,
 			paymentMethod: PaymentMethodCode.CreditCard,
 			description: 'Payment for Case',
