@@ -68,7 +68,6 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             if (code == null) return null;
             try
             {
-                var temp = (int)Enum.Parse<PayerPreferenceOptionSet>(code.ToString());
                 return (int)Enum.Parse<PayerPreferenceOptionSet>(code.ToString());
             }
             catch
