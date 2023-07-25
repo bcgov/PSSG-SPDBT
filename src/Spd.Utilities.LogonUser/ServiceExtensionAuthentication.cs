@@ -20,6 +20,7 @@ namespace Spd.Utilities.LogonUser
         {
             services.Configure<BCeIDAuthenticationConfiguration>(opts => configuration.GetSection(BCeIDAuthenticationConfiguration.Name).Bind(opts));
             services.Configure<BcscAuthenticationConfiguration>(opts => configuration.GetSection(BcscAuthenticationConfiguration.Name).Bind(opts));
+            services.Configure<IdirAuthenticationConfiguration>(opts => configuration.GetSection(IdirAuthenticationConfiguration.Name).Bind(opts));
 
             var bceidConfig = configuration
             .GetSection(BCeIDAuthenticationConfiguration.Name)
@@ -29,11 +30,18 @@ namespace Spd.Utilities.LogonUser
             .GetSection(BcscAuthenticationConfiguration.Name)
             .Get<BcscAuthenticationConfiguration>();
 
+            var idirConfig = configuration
+            .GetSection(IdirAuthenticationConfiguration.Name)
+            .Get<IdirAuthenticationConfiguration>();
+
             if (bceidConfig == null)
                 throw new ConfigurationErrorsException("bcediAuthentication configuration is not set correctly.");
 
             if (bcscConfig == null)
                 throw new ConfigurationErrorsException("bcscAuthentication configuration is not set correctly.");
+
+            if (idirConfig == null)
+                throw new ConfigurationErrorsException("idirAuthentication configuration is not set correctly.");
 
             var defaultScheme = "BCeID_OR_BCSC";
             services.AddAuthentication(
@@ -47,6 +55,28 @@ namespace Spd.Utilities.LogonUser
             {
                 options.MetadataAddress = $"{bceidConfig.Authority}/.well-known/openid-configuration";
                 options.Authority = bceidConfig?.Authority;
+                options.RequireHttpsMetadata = true;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateAudience = true,
+                    ValidAudiences = new[] { bceidConfig?.Audiences },
+                    ValidateIssuer = true,
+                    ValidIssuers = new[] { bceidConfig?.Issuer },
+                    RequireSignedTokens = true,
+                    RequireAudience = true,
+                    RequireExpirationTime = true,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.FromSeconds(60),
+                    NameClaimType = ClaimTypes.Upn,
+                    RoleClaimType = ClaimTypes.Role,
+                    ValidateActor = true,
+                    ValidateIssuerSigningKey = true,
+                };
+            })
+            .AddJwtBearer(IdirAuthenticationConfiguration.AuthSchemeName, options =>
+            {
+                options.MetadataAddress = $"{idirConfig.Authority}/.well-known/openid-configuration";
+                options.Authority = idirConfig?.Authority;
                 options.RequireHttpsMetadata = true;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
