@@ -4,6 +4,7 @@ import { switchMap } from 'rxjs/operators';
 import { PaymentLinkCreateRequest, PaymentLinkResponse, PaymentMethodCode, PaymentResponse } from 'src/app/api/models';
 import { PaymentService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
+import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { CrrpRoutes } from '../crrp-routing.module';
 
@@ -12,7 +13,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 	template: `
 		<app-payment-fail
 			[payment]="payment"
-			[numberOfAttempts]="numberOfAttempts"
+			[numberOfAttemptsRemaining]="numberOfAttemptsRemaining"
 			(backRoute)="onBackRoute()"
 			(payNow)="onPayNow()"
 			(downloadManualPaymentForm)="onDownloadManualPaymentForm()"
@@ -21,7 +22,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 	styles: [],
 })
 export class CrrpPaymentFailComponent implements OnInit {
-	numberOfAttempts: number = 0;
+	numberOfAttemptsRemaining: number = 0;
 	payment: PaymentResponse | null = null;
 
 	constructor(
@@ -58,7 +59,8 @@ export class CrrpPaymentFailComponent implements OnInit {
 				})
 			)
 			.subscribe((numberOfFails) => {
-				this.numberOfAttempts = numberOfFails;
+				const remaining = SPD_CONSTANTS.payment.maxNumberOfAttempts - numberOfFails;
+				this.numberOfAttemptsRemaining = remaining <= 0 ? 0 : remaining;
 			});
 	}
 
