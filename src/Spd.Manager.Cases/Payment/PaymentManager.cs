@@ -78,13 +78,13 @@ namespace Spd.Manager.Cases.Payment
                 }
                 catch
                 {
-                    throw new ApiException(HttpStatusCode.Accepted, "The payment link is no longer valid.");
+                    throw new ApiException(HttpStatusCode.BadRequest, "The payment link is no longer valid.");
                 }
                 isFromSecurePaymentLink = true;
                 //secure payment link can only be used once.
                 var existingPayment = await _paymentRepository.QueryAsync(new PaymentQry(applicationId, paymentId), ct);
                 if (existingPayment.Items.Any())
-                    throw new ApiException(HttpStatusCode.Accepted, "The payment link has already been used.");
+                    throw new ApiException(HttpStatusCode.BadRequest, "The payment link has already been used.");
             }
             else
             {
@@ -130,7 +130,7 @@ namespace Spd.Manager.Cases.Payment
             PaymentValidationResult validated = (PaymentValidationResult)_paymentService.HandleCommand(new ValidatePaymentResultStrCommand() { QueryStr = command.QueryStr });
             if (!validated.ValidationPassed)
             {
-                throw new ApiException(HttpStatusCode.InternalServerError, "payment result from paybc is not validated.");
+                throw new ApiException(HttpStatusCode.BadRequest, "payment result from paybc is not validated.");
             }
 
             var createCmd = _mapper.Map<CreatePaymentCmd>(command.PaybcPaymentResult);
