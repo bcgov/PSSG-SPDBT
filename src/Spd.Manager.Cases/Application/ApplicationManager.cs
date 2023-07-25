@@ -83,17 +83,14 @@ namespace Spd.Manager.Cases.Application
         public async Task<ApplicationInvitesCreateResponse> Handle(ApplicationInviteCreateCommand createCmd, CancellationToken ct)
         {
             var org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(createCmd.OrgId), ct);
-            //var org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByOrgGuidQry(createCmd.OrgId), ct);
+
+            // If not a volunteer org, then the payee type is required
             if (org != null && org.OrgResult.VolunteerOrganizationTypeCode == null)
             {
-                // If not a volunteer org, then the payee type is required
-                createCmd.ApplicationInvitesCreateRequest.ApplicationInviteCreateRequests.ToList().ForEach((item) =>
+                if (createCmd.ApplicationInvitesCreateRequest.ApplicationInviteCreateRequests.Any(a => a.PayeeType == null))
                 {
-                    if (item.PayeeType == null)
-                    {
-                        throw new ApiException(HttpStatusCode.BadRequest, "Payee Type is required");
-                    }
-                });
+                    throw new ApiException(HttpStatusCode.BadRequest, "Payee Type is required");
+                }
             }
 
             ApplicationInvitesCreateResponse resp = new(createCmd.OrgId);
