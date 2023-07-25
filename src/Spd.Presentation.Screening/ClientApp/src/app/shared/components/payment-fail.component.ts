@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Router } from '@angular/router';
 import { PaymentResponse } from 'src/app/api/models';
-import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import { AppRoutes } from 'src/app/app-routing.module';
 
 @Component({
 	selector: 'app-payment-fail',
@@ -90,41 +91,65 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 						</div>
 						<div class="lead fs-5 my-4">
 							Alternatively, you can download the
-							<a class="payment__anchor" (click)="onDownloadManualPaymentForm()">Manual Payment Form</a>. Fill it out,
-							and follow the instructions to submit it to the Security Programs Division.
+							<a (click)="onDownloadManualPaymentForm()">Manual Payment Form</a>. Fill it out, and follow the
+							instructions to submit it to the Security Programs Division.
 						</div>
 					</div>
 				</ng-template>
 			</ng-template>
 		</div>
 	`,
-	styles: [],
+	styles: [
+		`
+			a {
+				color: var(--bs-link-color) !important;
+			}
+		`,
+	],
 })
 export class PaymentFailComponent implements OnInit {
 	isBackRoute: boolean = false;
-	numberOfAttemptsRemaining = 0;
+	payBySecureLink = true;
 
 	@Input() isCancelledPaymentFlow = false;
-	@Input() payment: PaymentResponse | null = null;
 
-	private _numberOfAttempts!: number | null;
+	private _payment: PaymentResponse | null = null;
 	@Input()
-	set numberOfAttempts(data: number | null) {
+	set payment(data: PaymentResponse | null) {
 		if (data == null) {
-			this.numberOfAttemptsRemaining = 0;
+			this._payment = null;
 			return;
 		}
 
-		const remaining = SPD_CONSTANTS.payment.maxNumberOfAttempts - data;
-		this.numberOfAttemptsRemaining = remaining <= 0 ? 0 : remaining;
+		this._payment = data;
+
+		if (data.paidSuccess) {
+			this.router.navigate([AppRoutes.ACCESS_DENIED]);
+		}
 	}
-	get numberOfAttempts(): number | null {
-		return this._numberOfAttempts;
+	get payment(): PaymentResponse | null {
+		return this._payment;
+	}
+
+	private _numberOfAttemptsRemaining!: number;
+	@Input()
+	set numberOfAttemptsRemaining(data: number | null) {
+		if (data == null) {
+			this._numberOfAttemptsRemaining = 0;
+			return;
+		}
+
+		this._numberOfAttemptsRemaining = data;
+	}
+	get numberOfAttemptsRemaining(): number {
+		return this._numberOfAttemptsRemaining;
 	}
 
 	@Output() backRoute: EventEmitter<any> = new EventEmitter();
 	@Output() payNow: EventEmitter<any> = new EventEmitter();
 	@Output() downloadManualPaymentForm: EventEmitter<any> = new EventEmitter();
+
+	constructor(private router: Router) {}
 
 	ngOnInit(): void {
 		this.isBackRoute = this.backRoute.observed;

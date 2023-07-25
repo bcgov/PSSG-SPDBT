@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Router } from '@angular/router';
 import { PaymentResponse } from 'src/app/api/models';
+import { AppRoutes } from 'src/app/app-routing.module';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 
 @Component({
@@ -106,11 +108,30 @@ export class PaymentSuccessComponent implements OnInit {
 	isBackRoute: boolean = false;
 	appConstants = SPD_CONSTANTS;
 
-	@Input() payment: PaymentResponse | null = null;
 	@Input() sendEmailTo: string | null = null;
 	@Input() isApplicationReceived = false;
 
+	private _payment: PaymentResponse | null = null;
+	@Input()
+	set payment(data: PaymentResponse | null) {
+		if (data == null) {
+			this._payment = null;
+			return;
+		}
+
+		this._payment = data;
+
+		if (data.paidSuccess != true) {
+			this.router.navigate([AppRoutes.ACCESS_DENIED]);
+		}
+	}
+	get payment(): PaymentResponse | null {
+		return this._payment;
+	}
+
 	@Output() backRoute: EventEmitter<any> = new EventEmitter();
+
+	constructor(private router: Router) {}
 
 	ngOnInit(): void {
 		this.isBackRoute = this.backRoute.observed;
