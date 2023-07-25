@@ -579,7 +579,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/orgs/{orgId}/application/{applicationId}/delegate/{delegateId}")]
         [HttpDelete]
-        public async Task<ActionResult> PostDelegate([FromRoute] Guid delegateId, [FromRoute] Guid applicationId, [FromRoute] Guid orgId)
+        public async Task<ActionResult> DeleteDelegate([FromRoute] Guid delegateId, [FromRoute] Guid applicationId, [FromRoute] Guid orgId)
         {
             return Ok();
         }
