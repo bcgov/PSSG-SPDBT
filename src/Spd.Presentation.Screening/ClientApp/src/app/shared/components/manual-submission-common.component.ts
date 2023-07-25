@@ -37,7 +37,12 @@ export interface AliasCreateRequest {
 					<h2 class="fw-normal">
 						Manual Submissions
 						<div class="mt-2 fs-5 fw-light">
-							Enter the applicant's information, upload their consent form, and then pay the criminal record check fee
+							<div *ngIf="isNotVolunteerOrg; else isVolunteer">
+								Enter the applicant's information, upload their consent form, and then pay the criminal record check fee
+							</div>
+							<ng-template #isVolunteer>
+								Enter the applicant's information and then upload their consent form
+							</ng-template>
 						</div>
 					</h2>
 				</div>
@@ -388,6 +393,7 @@ export interface AliasCreateRequest {
 })
 export class ManualSubmissionCommonComponent implements OnInit {
 	serviceType: ServiceTypeCode | null = null;
+	isNotVolunteerOrg = false;
 
 	@ViewChild(AddressAutocompleteComponent) addressAutocompleteComponent!: AddressAutocompleteComponent;
 	matcher = new FormErrorStateMatcher();
@@ -463,10 +469,17 @@ export class ManualSubmissionCommonComponent implements OnInit {
 
 	ngOnInit(): void {
 		const orgProfile = this.authUserService.bceidUserOrgProfile;
-		this.showScreeningType = orgProfile
-			? orgProfile.contractorsNeedVulnerableSectorScreening == BooleanTypeCode.Yes ||
-			  orgProfile.licenseesNeedVulnerableSectorScreening == BooleanTypeCode.Yes
-			: false;
+		this.isNotVolunteerOrg = this.authUserService.bceidUserOrgProfile?.isNotVolunteerOrg ?? false;
+
+		//TODO What to do in PSSO?
+		if (this.isNotVolunteerOrg) {
+			this.showScreeningType = orgProfile
+				? orgProfile.contractorsNeedVulnerableSectorScreening == BooleanTypeCode.Yes ||
+				  orgProfile.licenseesNeedVulnerableSectorScreening == BooleanTypeCode.Yes
+				: false;
+		} else {
+			this.showScreeningType = false;
+		}
 
 		this.serviceType = orgProfile?.serviceTypes ? orgProfile?.serviceTypes[0] : null;
 

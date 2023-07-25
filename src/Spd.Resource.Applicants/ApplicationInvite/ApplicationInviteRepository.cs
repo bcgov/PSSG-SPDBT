@@ -76,7 +76,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
                 _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_OrganizationId), org);
                 _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_PortalUserId), user);
                 spd_servicetype? servicetype = _dynaContext.LookupServiceType(item.ServiceType.ToString());
-                if(servicetype!= null)
+                if (servicetype != null)
                 {
                     _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_ServiceTypeId), servicetype);
                 }
