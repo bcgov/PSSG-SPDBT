@@ -377,25 +377,21 @@ ngx-dropzone-remove-badge {
 }
 
 .payment{
-&__image {
-  max-height: 8em;
-  border-radius: 50%;
-  width: 400px;
-  background: var(--color-grey-lighter);
-  font: 32px Arial, sans-serif;
+  &__image {
+    max-height: 8em;
+    border-radius: 50%;
+    width: 400px;
+    background: var(--color-grey-lighter);
+    font: 32px Arial, sans-serif;
 
-  &__item {
-    margin-top: 15px;
-    height: 5em;
+    &__item {
+      margin-top: 15px;
+      height: 5em;
+    }
   }
-}
 
-&__text {
-  font-weight: 700;
-  line-height: 1.5em;
-}
-
-&__anchor {
-  color: var(--bs-link-color) !important;
-}
+  &__text {
+    font-weight: 700;
+    line-height: 1.5em;
+  }
 }

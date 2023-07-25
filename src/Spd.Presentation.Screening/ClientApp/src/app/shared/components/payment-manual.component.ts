@@ -39,13 +39,19 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 			<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
 				<div class="lead fs-5 my-4">
 					Please download and complete the
-					<a class="payment__anchor" (click)="onDownloadManualPaymentForm()">Manual Payment Form</a> then follow the
-					instructions on the form to submit payment to the Security Programs Division.
+					<a (click)="onDownloadManualPaymentForm()">Manual Payment Form</a> then follow the instructions on the form to
+					submit payment to the Security Programs Division.
 				</div>
 			</div>
 		</div>
 	`,
-	styles: [],
+	styles: [
+		`
+			a {
+				color: var(--bs-link-color) !important;
+			}
+		`,
+	],
 })
 export class PaymentManualComponent implements OnInit {
 	isBackRoute: boolean = false;
