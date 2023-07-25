@@ -1,12 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
-import {
-	ApplicantPaymentLinkCreateRequest,
-	PaymentLinkResponse,
-	PaymentMethodCode,
-	PaymentResponse,
-} from 'src/app/api/models';
+import { PaymentLinkCreateRequest, PaymentLinkResponse, PaymentMethodCode, PaymentResponse } from 'src/app/api/models';
 import { PaymentService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { SecurityScreeningRoutes } from '../security-screening-routing.module';
@@ -58,7 +53,7 @@ export class SecurityScreeningPaymentFailComponent implements OnInit {
 	}
 
 	onPayNow(): void {
-		const body: ApplicantPaymentLinkCreateRequest = {
+		const body: PaymentLinkCreateRequest = {
 			applicationId: this.payment!.applicationId!,
 			paymentMethod: PaymentMethodCode.CreditCard,
 			description: `Payment for Case ID: ${this.payment!.caseNumber}`,

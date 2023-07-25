@@ -1,12 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
-import {
-	ApplicantInvitePaymentLinkCreateRequest,
-	PaymentLinkResponse,
-	PaymentMethodCode,
-	PaymentResponse,
-} from 'src/app/api/models';
+import { PaymentLinkCreateRequest, PaymentLinkResponse, PaymentMethodCode, PaymentResponse } from 'src/app/api/models';
 import { PaymentService } from 'src/app/api/services';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 
@@ -64,7 +59,7 @@ export class CrrpaPaymentFailComponent implements OnInit {
 	}
 
 	onPayNow(): void {
-		const body: ApplicantInvitePaymentLinkCreateRequest = {
+		const body: PaymentLinkCreateRequest = {
 			applicationId: this.payment!.applicationId!,
 			paymentMethod: PaymentMethodCode.CreditCard,
 			description: `Payment for Case ID: ${this.payment!.caseNumber}`,

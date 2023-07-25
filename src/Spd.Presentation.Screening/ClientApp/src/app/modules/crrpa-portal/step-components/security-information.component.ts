@@ -89,35 +89,30 @@ export class SecurityInformationComponent implements CrcFormStepComponent {
 
 		this._orgData = data;
 
-		let isCompanyContractor = false;
-		let isCompanyLicensee = false;
+		this.companyFacilityLabel = '';
+		this.companyFacilityHint = '';
 
 		if (data.screeningType) {
 			// If coming from Portal Invitation (screeningType is provided). If shown, always required.
 			this.facilityNameShow = [ScreeningTypeCode.Contractor, ScreeningTypeCode.Licensee].includes(data.screeningType!);
 			this.facilityNameRequired = this.facilityNameShow;
 
-			isCompanyContractor = data.screeningType == ScreeningTypeCode.Contractor;
-			isCompanyLicensee = data.screeningType == ScreeningTypeCode.Licensee;
+			if (data.screeningType == ScreeningTypeCode.Contractor) {
+				this.companyFacilityLabel = 'Contracted Company Name';
+			} else if (data.screeningType == ScreeningTypeCode.Licensee) {
+				this.companyFacilityLabel = 'Facility Name';
+				this.companyFacilityHint = '(Licensed Child Care Name or Adult Care Facility Name)';
+			}
 		} else {
 			// If coming from Access Code page, use these flags to determine if field is shown. If shown, always optional
 			this.facilityNameShow =
-				data.contractorsNeedVulnerableSectorScreening! == BooleanTypeCode.Yes ||
-				data.licenseesNeedVulnerableSectorScreening! == BooleanTypeCode.Yes
+				data.contractorsNeedVulnerableSectorScreening == BooleanTypeCode.Yes ||
+				data.licenseesNeedVulnerableSectorScreening == BooleanTypeCode.Yes
 					? true
 					: false;
 			this.facilityNameRequired = false;
 
-			isCompanyContractor = data.contractorsNeedVulnerableSectorScreening! == BooleanTypeCode.Yes;
-			isCompanyLicensee = data.licenseesNeedVulnerableSectorScreening! == BooleanTypeCode.Yes;
-		}
-
-		if (isCompanyContractor) {
-			this.companyFacilityLabel = 'Contracted Company Name';
-			this.companyFacilityHint = '';
-		} else if (isCompanyLicensee) {
-			this.companyFacilityLabel = 'Facility Name';
-			this.companyFacilityHint = '(Licensed Child Care Name or Adult Care Facility Name)';
+			this.companyFacilityLabel = 'Contracted Company / Facility Name';
 		}
 
 		this.form = this.formBuilder.group(
