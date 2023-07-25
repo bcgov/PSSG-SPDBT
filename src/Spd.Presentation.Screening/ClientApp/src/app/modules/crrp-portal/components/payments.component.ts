@@ -10,7 +10,7 @@ import {
 	ApplicationPaymentResponse,
 	ApplicationPortalStatusCode,
 	ApplicationStatisticsResponse,
-	OrgPaymentLinkCreateRequest,
+	PaymentLinkCreateRequest,
 	PaymentLinkResponse,
 	PaymentMethodCode,
 } from 'src/app/api/models';
@@ -260,7 +260,7 @@ export class PaymentsComponent implements OnInit {
 
 	onPayNow(application: PaymentResponse): void {
 		const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
-		const body: OrgPaymentLinkCreateRequest = {
+		const body: PaymentLinkCreateRequest = {
 			applicationId: application.id!,
 			paymentMethod: PaymentMethodCode.CreditCard,
 			description: `Payment for Case ID: ${application.applicationNumber}`,
