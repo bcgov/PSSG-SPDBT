@@ -1,14 +1,20 @@
-import { Component } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { HotToastService } from '@ngneat/hot-toast';
+import { DelegateResponse } from 'src/app/api/models';
+import { ApplicationService } from 'src/app/api/services';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
+import { ScreeningStatusResponse } from 'src/app/shared/components/screening-statuses-common.component';
 import { DelegateAddModalComponent } from './delegate-add-modal.component';
 
+export interface DelegateManageDialogData {
+	application: ScreeningStatusResponse;
+}
 @Component({
 	selector: 'app-delegate-manage-modal',
 	template: `
-		<div mat-dialog-title>Manage Delegates</div>
+		<div mat-dialog-title>Manage Delegates for {{ data.application.applicationNumber }}</div>
 		<mat-dialog-content>
 			<div class="row">
 				<div class="col-12">
@@ -54,7 +60,7 @@ import { DelegateAddModalComponent } from './delegate-add-modal.component';
 		<mat-dialog-actions>
 			<div class="row m-0 w-100">
 				<div class="col-md-4 col-sm-12 mb-2">
-					<button mat-stroked-button mat-dialog-close class="large" color="primary">Cancel</button>
+					<button mat-stroked-button mat-dialog-close class="large" color="primary">Close</button>
 				</div>
 				<div class="offset-md-4 col-md-4 col-sm-12 mb-2">
 					<button mat-flat-button color="primary" class="large" (click)="onAddDelegate()">Add Delegate</button>
@@ -64,11 +70,20 @@ import { DelegateAddModalComponent } from './delegate-add-modal.component';
 	`,
 	styles: [],
 })
-export class DelegateManageModalComponent {
-	dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
+export class DelegateManageModalComponent implements OnInit {
+	dataSource: MatTableDataSource<DelegateResponse> = new MatTableDataSource<DelegateResponse>([]);
 	columns: string[] = ['applicantName', 'emailAddress', 'actions'];
 
-	constructor(private dialog: MatDialog, private hotToast: HotToastService) {}
+	constructor(
+		private applicationService: ApplicationService,
+		private dialog: MatDialog,
+		private hotToast: HotToastService,
+		@Inject(MAT_DIALOG_DATA) public data: DelegateManageDialogData
+	) {}
+
+	ngOnInit(): void {
+		this.loadList();
+	}
 
 	onAddDelegate(): void {
 		this.dialog
@@ -78,12 +93,12 @@ export class DelegateManageModalComponent {
 			.afterClosed()
 			.subscribe((resp) => {
 				if (resp) {
-					this.hotToast.success('Delegate was successfully added');
+					this.loadList();
 				}
 			});
 	}
 
-	onRemoveDelegate(delegate: any): void {
+	onRemoveDelegate(delegate: DelegateResponse): void {
 		const data: DialogOptions = {
 			icon: 'warning',
 			title: 'Confirmation',
@@ -97,7 +112,30 @@ export class DelegateManageModalComponent {
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
+					this.applicationService
+						.apiOrgsOrgIdApplicationApplicationIdDelegateDelegateIdDelete({
+							delegateId: delegate.id!,
+							applicationId: this.data.application.id!,
+							orgId: this.data.application.orgId!,
+						})
+						.pipe()
+						.subscribe(() => {
+							this.hotToast.success('Delegate was successfully removed');
+							this.loadList();
+						});
 				}
+			});
+	}
+
+	private loadList(): void {
+		this.applicationService
+			.apiOrgsOrgIdApplicationApplicationIdDelegatesGet({
+				applicationId: this.data.application.id!,
+				orgId: this.data.application.orgId!,
+			})
+			.pipe()
+			.subscribe((res: Array<DelegateResponse>) => {
+				this.dataSource.data = res ?? [];
 			});
 	}
 }

@@ -42,6 +42,7 @@ export { ClearanceListResponse } from './models/clearance-list-response';
 export { ClearanceResponse } from './models/clearance-response';
 export { ConfigurationResponse } from './models/configuration-response';
 export { ContactAuthorizationTypeCode } from './models/contact-authorization-type-code';
+export { DelegateResponse } from './models/delegate-response';
 export { DuplicateCheckResult } from './models/duplicate-check-result';
 export { EmployeeInteractionTypeCode } from './models/employee-interaction-type-code';
 export { EmployeeOrganizationTypeCode } from './models/employee-organization-type-code';
