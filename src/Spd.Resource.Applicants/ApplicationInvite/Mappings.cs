@@ -19,7 +19,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             .ForMember(d => d.spd_invitationtype, opt => opt.MapFrom(s => InvitationTypeOptionSet.ScreeningRequest))
             .ForMember(d => d.spd_screeningrequesttype, opt => opt.MapFrom(s => (int)Enum.Parse<ScreenTypeOptionSet>(s.ScreeningType.ToString())))
             .ForMember(d => d.spd_views, opt => opt.MapFrom(s => 0))
-            .ForMember(d => d.spd_payeetype, opt => opt.MapFrom(s => (int)Enum.Parse<PayerPreferenceOptionSet>(s.PayeeType.ToString())))
+            .ForMember(d => d.spd_payeetype, opt => opt.MapFrom(s => GetPayeeTypeCode(s.PayeeType)))
             .ReverseMap()
             .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.spd_firstname))
             .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.spd_surname))
@@ -61,6 +61,19 @@ namespace Spd.Resource.Applicants.ApplicationInvite
         {
             if (code == null) return null;
             return Enum.GetName(typeof(PayerPreferenceOptionSet), code);
+        }
+
+        private static int? GetPayeeTypeCode(PayerPreferenceTypeCode? code)
+        {
+            if (code == null) return null;
+            try
+            {
+                return (int)Enum.Parse<PayerPreferenceOptionSet>(code.ToString());
+            }
+            catch
+            {
+                return null;
+            }
         }
         private static string? GetEmployeeInteractionType(int? code)
         {

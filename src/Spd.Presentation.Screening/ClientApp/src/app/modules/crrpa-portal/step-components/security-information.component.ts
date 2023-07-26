@@ -89,8 +89,8 @@ export class SecurityInformationComponent implements CrcFormStepComponent {
 
 		this._orgData = data;
 
-		this.companyFacilityLabel = '';
-		this.companyFacilityHint = '';
+		let companyFacilityLabel = '';
+		let companyFacilityHint = '';
 
 		if (data.screeningType) {
 			// If coming from Portal Invitation (screeningType is provided). If shown, always required.
@@ -98,10 +98,10 @@ export class SecurityInformationComponent implements CrcFormStepComponent {
 			this.facilityNameRequired = this.facilityNameShow;
 
 			if (data.screeningType == ScreeningTypeCode.Contractor) {
-				this.companyFacilityLabel = 'Contracted Company Name';
+				companyFacilityLabel = 'Contracted Company Name';
 			} else if (data.screeningType == ScreeningTypeCode.Licensee) {
-				this.companyFacilityLabel = 'Facility Name';
-				this.companyFacilityHint = '(Licensed Child Care Name or Adult Care Facility Name)';
+				companyFacilityLabel = 'Facility Name';
+				companyFacilityHint = '(Licensed Child Care Name or Adult Care Facility Name)';
 			}
 		} else {
 			// If coming from Access Code page, use these flags to determine if field is shown. If shown, always optional
@@ -112,8 +112,11 @@ export class SecurityInformationComponent implements CrcFormStepComponent {
 					: false;
 			this.facilityNameRequired = false;
 
-			this.companyFacilityLabel = 'Contracted Company / Facility Name';
+			companyFacilityLabel = 'Contracted Company / Facility Name';
 		}
+
+		this.companyFacilityLabel = companyFacilityLabel;
+		this.companyFacilityHint = companyFacilityHint;
 
 		this.form = this.formBuilder.group(
 			{

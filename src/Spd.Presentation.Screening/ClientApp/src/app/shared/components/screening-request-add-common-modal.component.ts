@@ -95,7 +95,7 @@ export interface ScreeningRequestAddDialogData {
 									</mat-form-field>
 								</div>
 
-								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0">
+								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0" *ngIf="isNotVolunteerOrg">
 									<mat-form-field>
 										<mat-label>Paid by</mat-label>
 										<mat-select formControlName="payeeType" [errorStateMatcher]="matcher">
@@ -187,6 +187,7 @@ export interface ScreeningRequestAddDialogData {
 	],
 })
 export class ScreeningRequestAddCommonModalComponent implements OnInit {
+	isNotVolunteerOrg = false;
 	isDuplicateDetected = false;
 	duplicateName = '';
 	duplicateEmail = '';
@@ -218,11 +219,17 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 	ngOnInit(): void {
 		const orgProfile = this.authUserService.bceidUserOrgProfile;
 
+		this.isNotVolunteerOrg = this.authUserService.bceidUserOrgProfile?.isNotVolunteerOrg ?? false;
+
 		//TODO What to do in PSSO?
-		this.showScreeningType = orgProfile
-			? orgProfile.contractorsNeedVulnerableSectorScreening == BooleanTypeCode.Yes ||
-			  orgProfile.licenseesNeedVulnerableSectorScreening == BooleanTypeCode.Yes
-			: false;
+		if (this.isNotVolunteerOrg) {
+			this.showScreeningType = orgProfile
+				? orgProfile.contractorsNeedVulnerableSectorScreening == BooleanTypeCode.Yes ||
+				  orgProfile.licenseesNeedVulnerableSectorScreening == BooleanTypeCode.Yes
+				: false;
+		} else {
+			this.showScreeningType = false;
+		}
 
 		const serviceTypes = orgProfile?.serviceTypes ?? [];
 		if (serviceTypes.length > 0) {
@@ -254,7 +261,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 					FormControlValidators.email,
 				]),
 				jobTitle: new FormControl(inviteDefault ? inviteDefault.jobTitle : '', [FormControlValidators.required]),
-				payeeType: new FormControl(inviteDefault ? inviteDefault.payeeType : '', [FormControlValidators.required]),
+				payeeType: new FormControl(inviteDefault ? inviteDefault.payeeType : null, [FormControlValidators.required]),
 				screeningType: new FormControl(screeningTypeCodeDefault),
 				serviceType: new FormControl(serviceTypeCodeDefault),
 			},
@@ -262,6 +269,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 				validators: [
 					FormGroupValidators.conditionalRequiredValidator('screeningType', (form) => this.showScreeningType ?? false),
 					FormGroupValidators.conditionalRequiredValidator('serviceType', (form) => this.showServiceType ?? false),
+					FormGroupValidators.conditionalRequiredValidator('payeeType', (form) => this.isNotVolunteerOrg ?? false),
 				],
 			}
 		);

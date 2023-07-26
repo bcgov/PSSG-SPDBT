@@ -25,6 +25,21 @@ internal partial class ApplicationRepository : IApplicationRepository
         if (org != null && serviceTeam != null)
             application = await CreateAppAsync(createApplicationCmd, org, user, serviceTeam, servicetype);
         await _context.SaveChangesAsync(ct);
+
+        // when volunteer application is created, set application status to Submitted
+        if ((bool)createApplicationCmd.HaveVerifiedIdentity)
+        {
+            var volunteerOrganizationTypeCode = DynamicsContextLookupHelpers.GetTypeFromTypeId(org!._spd_organizationtypeid_value).Item2;
+            if (volunteerOrganizationTypeCode != null)
+            {
+                application.statuscode = (int?)ApplicationInactiveStatus.Submitted;
+                application.statecode = DynamicsConstants.StateCode_Inactive;
+
+                _context.UpdateObject(application);
+                await _context.SaveChangesAsync(ct);
+            }
+        }
+
         return application?.spd_applicationid;
     }
 
@@ -68,18 +83,31 @@ internal partial class ApplicationRepository : IApplicationRepository
         if (app == null)
             throw new ApiException(HttpStatusCode.BadRequest, "Invalid ApplicationId");
 
+
+        account? org = await _context.GetOrgById(identityCmd.OrgId, cancellationToken);
+
         if (identityCmd.Status == IdentityStatusCode.Verified)
         {
-            var paid = app.statecode == DynamicsConstants.StateCode_Inactive ? true : false;
-            if (!paid)
-            {
-                app.statuscode = (int?)ApplicationActiveStatus.PaymentPending;
-                app.statecode = DynamicsConstants.StateCode_Active;
-            }
-            else
+            // when volunteer application is verified, set application status to Submitted
+            var volunteerOrganizationTypeCode = DynamicsContextLookupHelpers.GetTypeFromTypeId(org!._spd_organizationtypeid_value).Item2;
+            if (volunteerOrganizationTypeCode != null)
             {
                 app.statuscode = (int?)ApplicationInactiveStatus.Submitted;
                 app.statecode = DynamicsConstants.StateCode_Inactive;
+            }
+            else
+            {
+                var paid = app.statecode == DynamicsConstants.StateCode_Inactive ? true : false;
+                if (!paid)
+                {
+                    app.statuscode = (int?)ApplicationActiveStatus.PaymentPending;
+                    app.statecode = DynamicsConstants.StateCode_Active;
+                }
+                else
+                {
+                    app.statuscode = (int?)ApplicationInactiveStatus.Submitted;
+                    app.statecode = DynamicsConstants.StateCode_Inactive;
+                }
             }
         }
         else
@@ -312,6 +340,7 @@ internal partial class ApplicationRepository : IApplicationRepository
         spd_servicetype? serviceType)
     {
         spd_application app = _mapper.Map<spd_application>(createApplicationCmd);
+
         _context.AddTospd_applications(app);
         _context.SetLink(app, nameof(spd_application.spd_OrganizationId), org);
         if (user != null)
@@ -342,6 +371,7 @@ internal partial class ApplicationRepository : IApplicationRepository
         {
             AddAlias(item, contact);
         }
+
         return app;
     }
 
