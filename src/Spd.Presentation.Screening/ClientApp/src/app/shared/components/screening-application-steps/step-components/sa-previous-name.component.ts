@@ -5,10 +5,10 @@ import { BooleanTypeCode } from 'src/app/api/models';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { CrcFormStepComponent } from '../crrpa.component';
+import { CrcFormStepComponent } from '../screening-application.model';
 
 @Component({
-	selector: 'app-previous-name',
+	selector: 'app-sa-previous-name',
 	template: `
 		<section class="step-section p-3">
 			<form [formGroup]="form" novalidate>
@@ -111,7 +111,7 @@ import { CrcFormStepComponent } from '../crrpa.component';
 		`,
 	],
 })
-export class PreviousNameComponent implements OnInit, CrcFormStepComponent {
+export class SaPreviousNameComponent implements OnInit, CrcFormStepComponent {
 	form!: FormGroup;
 	matcher = new FormErrorStateMatcher();
 

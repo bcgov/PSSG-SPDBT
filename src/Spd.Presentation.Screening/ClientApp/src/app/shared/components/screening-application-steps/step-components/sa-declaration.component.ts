@@ -5,7 +5,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { CaptchaResponse, CaptchaResponseType } from 'src/app/shared/components/captcha-v2.component';
-import { AppInviteOrgData, CrcFormStepComponent } from '../crrpa.component';
+import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application.model';
 
 export class DeclarationModel {
 	agreeToCompleteAndAccurate: string | null = null;
@@ -13,11 +13,11 @@ export class DeclarationModel {
 }
 
 @Component({
-	selector: 'app-declaration',
+	selector: 'app-sa-declaration',
 	template: `
 		<section class="step-section p-3" *ngIf="orgData">
 			<form [formGroup]="form" novalidate>
-				<div class="step">
+				<div class="step mb-4">
 					<app-step-title title="Consent to a Criminal Record Check"></app-step-title>
 					<div class="row">
 						<div class="offset-lg-3 col-lg-6 col-md-12 col-sm-12">
@@ -81,7 +81,7 @@ export class DeclarationModel {
 	`,
 	styles: [],
 })
-export class DeclarationComponent implements OnInit, CrcFormStepComponent {
+export class SaDeclarationComponent implements OnInit, CrcFormStepComponent {
 	appConstants = SPD_CONSTANTS;
 	booleanTypeCodes = BooleanTypeCode;
 	form!: FormGroup;

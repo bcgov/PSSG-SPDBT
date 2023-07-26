@@ -3,11 +3,11 @@ import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@
 import { MatStepper } from '@angular/material/stepper';
 
 @Component({
-	selector: 'app-step-appl-submitted',
+	selector: 'app-sa-step-appl-submitted',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-application-submitted></app-application-submitted>
+				<app-sa-application-submitted></app-sa-application-submitted>
 
 				<div class="row mt-4">
 					<div class="col-xxl-3 col-lg-4 col-md-4 col-sm-12 mx-auto">
@@ -20,7 +20,7 @@ import { MatStepper } from '@angular/material/stepper';
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepApplSubmittedComponent {
+export class SaStepApplSubmittedComponent {
 	@ViewChild('childstepper') childstepper!: MatStepper;
 
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();

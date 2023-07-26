@@ -8,13 +8,10 @@ import { distinctUntilChanged, Observable, tap } from 'rxjs';
 import {
 	ApplicantAppCreateRequest,
 	ApplicationCreateResponse,
-	BooleanTypeCode,
-	EmployeeInteractionTypeCode,
 	PaymentLinkCreateRequest,
 	PaymentLinkResponse,
 	PaymentMethodCode,
 	ServiceTypeCode,
-	ShareableClearanceItem,
 	ShareableClearanceResponse,
 } from 'src/app/api/models';
 import { ApplicantService, PaymentService } from 'src/app/api/services';
@@ -23,40 +20,13 @@ import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
-import { StepApplSubmittedComponent } from './steps/step-appl-submitted.component';
-import { StepEligibilityComponent } from './steps/step-eligibility.component';
-import { StepLoginOptionsComponent } from './steps/step-login-options.component';
-import { StepOrganizationInfoComponent } from './steps/step-organization-info.component';
-import { StepPersonalInfoComponent } from './steps/step-personal-info.component';
-import { StepTermsAndCondComponent } from './steps/step-terms-and-cond.component';
-
-export interface CrcFormStepComponent {
-	getDataToSave(): any;
-	isFormValid(): boolean;
-}
-
-export interface AppInviteOrgData extends ApplicantAppCreateRequest {
-	orgAddress?: string | null; // for display
-	readonlyTombstone?: boolean | null; // logic for screens - SPDBT-1272
-	performPaymentProcess?: boolean | null;
-	previousNameFlag?: boolean | null;
-	shareableCrcExists?: boolean | null;
-	shareableClearanceItem?: ShareableClearanceItem | null;
-	recaptcha?: string | null;
-	orgEmail?: null | string; // from AppOrgResponse
-	orgId?: string; // from AppOrgResponse
-	orgName?: null | string; // from AppOrgResponse
-	orgPhoneNumber?: null | string; // from AppOrgResponse
-	orgAddressLine1?: null | string; // from AppOrgResponse
-	orgAddressLine2?: null | string; // from AppOrgResponse
-	orgCity?: null | string; // from AppOrgResponse
-	orgCountry?: null | string; // from AppOrgResponse
-	orgPostalCode?: null | string; // from AppOrgResponse
-	orgProvince?: null | string; // from AppOrgResponse
-	worksWith?: EmployeeInteractionTypeCode; // from AppOrgResponse
-	contractorsNeedVulnerableSectorScreening?: BooleanTypeCode; // from AppOrgResponse
-	licenseesNeedVulnerableSectorScreening?: BooleanTypeCode; // from AppOrgResponse
-}
+import { SaStepApplSubmittedComponent } from 'src/app/shared/components/screening-application-steps/sa-step-appl-submitted.component';
+import { SaStepEligibilityComponent } from 'src/app/shared/components/screening-application-steps/sa-step-eligibility.component';
+import { SaStepLoginOptionsComponent } from 'src/app/shared/components/screening-application-steps/sa-step-login-options.component';
+import { SaStepOrganizationInfoComponent } from 'src/app/shared/components/screening-application-steps/sa-step-organization-info.component';
+import { SaStepPersonalInfoComponent } from 'src/app/shared/components/screening-application-steps/sa-step-personal-info.component';
+import { SaStepTermsAndCondComponent } from 'src/app/shared/components/screening-application-steps/sa-step-terms-and-cond.component';
+import { AppInviteOrgData } from 'src/app/shared/components/screening-application-steps/screening-application.model';
 
 @Component({
 	selector: 'app-crrpa',
@@ -71,61 +41,61 @@ export interface AppInviteOrgData extends ApplicantAppCreateRequest {
 			>
 				<mat-step completed="false">
 					<ng-template matStepLabel>Eligibility Check</ng-template>
-					<app-step-eligibility
+					<app-sa-step-eligibility
 						(nextStepperStep)="onNextStepperStep(stepper)"
 						(scrollIntoView)="onScrollIntoView()"
 						[orgData]="orgData"
-					></app-step-eligibility>
+					></app-sa-step-eligibility>
 				</mat-step>
 
 				<mat-step completed="false">
 					<ng-template matStepLabel>Organization Information</ng-template>
-					<app-step-organization-info
+					<app-sa-step-organization-info
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
 						(nextStepperStep)="onNextStepperStep(stepper)"
 						(scrollIntoView)="onScrollIntoView()"
 						[orgData]="orgData"
-					></app-step-organization-info>
+					></app-sa-step-organization-info>
 				</mat-step>
 
 				<mat-step completed="false">
 					<ng-template matStepLabel>Log In</ng-template>
-					<app-step-login-options
+					<app-sa-step-login-options
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
 						(nextStepperStep)="onNextStepperStep(stepper)"
 						(scrollIntoView)="onScrollIntoView()"
 						(registerWithBcServicesCard)="onRegisterWithBcServicesCard()"
-					></app-step-login-options>
+					></app-sa-step-login-options>
 				</mat-step>
 
 				<mat-step completed="false">
 					<ng-template matStepLabel>Personal Information</ng-template>
-					<app-step-personal-info
+					<app-sa-step-personal-info
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
 						(nextStepperStep)="onNextStepperStep(stepper)"
 						(scrollIntoView)="onScrollIntoView()"
 						(reEditCrcData)="onReEditCrcData()"
 						(getCrcData)="onUpdateOrgData()"
 						[orgData]="orgData"
-					></app-step-personal-info>
+					></app-sa-step-personal-info>
 				</mat-step>
 
 				<mat-step completed="false">
 					<ng-template matStepLabel>Terms and Conditions</ng-template>
-					<app-step-terms-and-cond
+					<app-sa-step-terms-and-cond
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
 						(nextStepperStep)="onSaveStepperStep(stepper)"
 						(scrollIntoView)="onScrollIntoView()"
 						[orgData]="orgData"
-					></app-step-terms-and-cond>
+					></app-sa-step-terms-and-cond>
 				</mat-step>
 
 				<mat-step completed="false">
 					<ng-template matStepLabel>Application Submitted</ng-template>
-					<app-step-appl-submitted
+					<app-sa-step-appl-submitted
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
 						(scrollIntoView)="onScrollIntoView()"
-					></app-step-appl-submitted>
+					></app-sa-step-appl-submitted>
 				</mat-step>
 			</mat-stepper>
 		</div>
@@ -140,23 +110,23 @@ export class CrrpaComponent implements OnInit {
 
 	@ViewChild('stepper') stepper!: MatStepper;
 
-	@ViewChild(StepEligibilityComponent)
-	stepEligibilityComponent!: StepEligibilityComponent;
+	@ViewChild(SaStepEligibilityComponent)
+	stepEligibilityComponent!: SaStepEligibilityComponent;
 
-	@ViewChild(StepApplSubmittedComponent)
-	stepApplSubmittedComponent!: StepApplSubmittedComponent;
+	@ViewChild(SaStepApplSubmittedComponent)
+	stepApplSubmittedComponent!: SaStepApplSubmittedComponent;
 
-	@ViewChild(StepLoginOptionsComponent)
-	stepLoginOptionsComponent!: StepLoginOptionsComponent;
+	@ViewChild(SaStepLoginOptionsComponent)
+	stepLoginOptionsComponent!: SaStepLoginOptionsComponent;
 
-	@ViewChild(StepOrganizationInfoComponent)
-	stepOrganizationInfoComponent!: StepOrganizationInfoComponent;
+	@ViewChild(SaStepOrganizationInfoComponent)
+	stepOrganizationInfoComponent!: SaStepOrganizationInfoComponent;
 
-	@ViewChild(StepPersonalInfoComponent)
-	stepPersonalInfoComponent!: StepPersonalInfoComponent;
+	@ViewChild(SaStepPersonalInfoComponent)
+	stepPersonalInfoComponent!: SaStepPersonalInfoComponent;
 
-	@ViewChild(StepTermsAndCondComponent)
-	stepTermsAndCondComponent!: StepTermsAndCondComponent;
+	@ViewChild(SaStepTermsAndCondComponent)
+	stepTermsAndCondComponent!: SaStepTermsAndCondComponent;
 
 	constructor(
 		private router: Router,
