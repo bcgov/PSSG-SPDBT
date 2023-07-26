@@ -139,4 +139,62 @@ export class UserProfileService extends BaseService {
     );
   }
 
+  /**
+   * Path part for operation apiIdirUsersWhoamiGet
+   */
+  static readonly ApiIdirUsersWhoamiGetPath = '/api/idir-users/whoami';
+
+  /**
+   * Idir user whoami, for PSSO portal.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiIdirUsersWhoamiGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiIdirUsersWhoamiGet$Response(params?: {
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<UserProfileResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, UserProfileService.ApiIdirUsersWhoamiGetPath, 'get');
+    if (params) {
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<UserProfileResponse>;
+      })
+    );
+  }
+
+  /**
+   * Idir user whoami, for PSSO portal.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiIdirUsersWhoamiGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiIdirUsersWhoamiGet(params?: {
+  },
+  context?: HttpContext
+
+): Observable<UserProfileResponse> {
+
+    return this.apiIdirUsersWhoamiGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<UserProfileResponse>) => r.body as UserProfileResponse)
+    );
+  }
+
 }

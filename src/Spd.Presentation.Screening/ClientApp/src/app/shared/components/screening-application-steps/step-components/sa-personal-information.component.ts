@@ -3,10 +3,10 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { GenderTypes } from 'src/app/core/code-types/model-desc.models';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { AppInviteOrgData, CrcFormStepComponent } from '../crrpa.component';
+import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application.model';
 
 @Component({
-	selector: 'app-personal-information',
+	selector: 'app-sa-personal-information',
 	template: `
 		<section class="step-section p-3">
 			<form [formGroup]="form" novalidate>
@@ -64,7 +64,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../crrpa.component';
 	`,
 	styles: [],
 })
-export class PersonalInformationComponent implements CrcFormStepComponent {
+export class SaPersonalInformationComponent implements CrcFormStepComponent {
 	private _orgData: AppInviteOrgData | null = null;
 	@Input()
 	set orgData(data: AppInviteOrgData | null) {

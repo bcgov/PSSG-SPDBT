@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { CrrpaPaymentErrorComponent } from './components/crrpa-payment-error.component';
+import { CrrpaPaymentFailComponent } from './components/crrpa-payment-fail.component';
+import { CrrpaPaymentSuccessComponent } from './components/crrpa-payment-success.component';
 import { CrrpaComponent } from './crrpa.component';
 import { InvitationCrrpaComponent } from './invitation-crrpa.component';
 import { OrgAccessComponent } from './org-access.component';
-import { CrrpaPaymentErrorComponent } from './step-components/crrpa-payment-error.component';
-import { CrrpaPaymentFailComponent } from './step-components/crrpa-payment-fail.component';
-import { CrrpaPaymentSuccessComponent } from './step-components/crrpa-payment-success.component';
 
 export class CrrpaRoutes {
 	public static CRRPA = 'crca';

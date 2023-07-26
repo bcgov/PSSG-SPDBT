@@ -1,18 +1,18 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { AppInviteOrgData } from '../crrpa.component';
-import { ContactInformationComponent } from '../step-components/contact-information.component';
-import { MailingAddressComponent } from '../step-components/mailing-address.component';
-import { PersonalInformationComponent } from '../step-components/personal-information.component';
-import { PreviousNameComponent } from '../step-components/previous-name.component';
+import { AppInviteOrgData } from './screening-application.model';
+import { SaContactInformationComponent } from './step-components/sa-contact-information.component';
+import { SaMailingAddressComponent } from './step-components/sa-mailing-address.component';
+import { SaPersonalInformationComponent } from './step-components/sa-personal-information.component';
+import { SaPreviousNameComponent } from './step-components/sa-previous-name.component';
 
 @Component({
-	selector: 'app-step-personal-info',
+	selector: 'app-sa-step-personal-info',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-contact-information *ngIf="orgData" [orgData]="orgData"></app-contact-information>
+				<app-sa-contact-information *ngIf="orgData" [orgData]="orgData"></app-sa-contact-information>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -27,7 +27,7 @@ import { PreviousNameComponent } from '../step-components/previous-name.componen
 			</mat-step>
 
 			<mat-step>
-				<app-personal-information *ngIf="orgData" [orgData]="orgData"></app-personal-information>
+				<app-sa-personal-information *ngIf="orgData" [orgData]="orgData"></app-sa-personal-information>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -47,7 +47,7 @@ import { PreviousNameComponent } from '../step-components/previous-name.componen
 			</mat-step>
 
 			<mat-step>
-				<app-previous-name></app-previous-name>
+				<app-sa-previous-name></app-sa-previous-name>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -67,7 +67,7 @@ import { PreviousNameComponent } from '../step-components/previous-name.componen
 			</mat-step>
 
 			<mat-step>
-				<app-mailing-address></app-mailing-address>
+				<app-sa-mailing-address></app-sa-mailing-address>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -87,12 +87,12 @@ import { PreviousNameComponent } from '../step-components/previous-name.componen
 			</mat-step>
 
 			<mat-step>
-				<app-summary
+				<app-sa-summary
 					*ngIf="orgData"
 					[orgData]="orgData"
 					(reEditPersonalInformation)="onReEditPersonalInformation()"
 					(reEditCrcInformation)="onReEditCrcInformation()"
-				></app-summary>
+				></app-sa-summary>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -110,7 +110,7 @@ import { PreviousNameComponent } from '../step-components/previous-name.componen
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepPersonalInfoComponent {
+export class SaStepPersonalInfoComponent {
 	@ViewChild('childstepper') childstepper!: MatStepper;
 
 	@Input() orgData: AppInviteOrgData | null = null;
@@ -126,17 +126,17 @@ export class StepPersonalInfoComponent {
 	readonly STEP_MAILING_ADDRESS: number = 4;
 	readonly STEP_SUMMARY: number = 5;
 
-	@ViewChild(ContactInformationComponent)
-	contactInformationComponent!: ContactInformationComponent;
+	@ViewChild(SaContactInformationComponent)
+	contactInformationComponent!: SaContactInformationComponent;
 
-	@ViewChild(PersonalInformationComponent)
-	personalInformationComponent!: PersonalInformationComponent;
+	@ViewChild(SaPersonalInformationComponent)
+	personalInformationComponent!: SaPersonalInformationComponent;
 
-	@ViewChild(PreviousNameComponent)
-	previousNameComponent!: PreviousNameComponent;
+	@ViewChild(SaPreviousNameComponent)
+	previousNameComponent!: SaPreviousNameComponent;
 
-	@ViewChild(MailingAddressComponent)
-	mailingAddressComponent!: MailingAddressComponent;
+	@ViewChild(SaMailingAddressComponent)
+	mailingAddressComponent!: SaMailingAddressComponent;
 
 	getStepData(): any {
 		return {

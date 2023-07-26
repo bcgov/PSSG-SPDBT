@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-	selector: 'app-application-submitted',
+	selector: 'app-sa-application-submitted',
 	template: `
 		<section class="step-section pt-4 pb-4 px-3">
 			<app-step-title title="Application Submitted"></app-step-title>
@@ -21,4 +21,4 @@ import { Component } from '@angular/core';
 	`,
 	styles: [],
 })
-export class ApplicationSubmittedComponent {}
+export class SaApplicationSubmittedComponent {}

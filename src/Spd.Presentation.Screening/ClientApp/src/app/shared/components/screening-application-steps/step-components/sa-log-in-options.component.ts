@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
-	selector: 'app-log-in-options',
+	selector: 'app-sa-log-in-options',
 	template: `
 		<div class="step">
 			<app-step-title title="What is your preferred log in option?"></app-step-title>
@@ -96,7 +96,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 		`,
 	],
 })
-export class LogInOptionsComponent {
+export class SaLogInOptionsComponent {
 	@Output() clickNext: EventEmitter<boolean> = new EventEmitter<boolean>();
 	@Output() registerWithBcServicesCard: EventEmitter<boolean> = new EventEmitter<boolean>();
 

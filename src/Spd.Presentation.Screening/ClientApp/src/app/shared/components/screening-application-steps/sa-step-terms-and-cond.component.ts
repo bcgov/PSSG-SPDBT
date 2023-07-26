@@ -2,17 +2,17 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { PayerPreferenceTypeCode } from 'src/app/api/models';
-import { AppInviteOrgData } from '../crrpa.component';
-import { AgreementOfTermsComponent } from '../step-components/agreement-of-terms.component';
-import { ConsentToCrcComponent } from '../step-components/consentToCrc.component';
-import { DeclarationComponent } from '../step-components/declaration.component';
+import { AppInviteOrgData } from './screening-application.model';
+import { SaAgreementOfTermsComponent } from './step-components/sa-agreement-of-terms.component';
+import { SaConsentToCrcComponent } from './step-components/sa-consentToCrc.component';
+import { SaDeclarationComponent } from './step-components/sa-declaration.component';
 
 @Component({
-	selector: 'app-step-terms-and-cond',
+	selector: 'app-sa-step-terms-and-cond',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-declaration *ngIf="orgData" [orgData]="orgData"></app-declaration>
+				<app-sa-declaration *ngIf="orgData" [orgData]="orgData"></app-sa-declaration>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -32,7 +32,7 @@ import { DeclarationComponent } from '../step-components/declaration.component';
 			</mat-step>
 
 			<mat-step *ngIf="agreeToShare">
-				<app-consent-to-crc *ngIf="orgData" [orgData]="orgData"></app-consent-to-crc>
+				<app-sa-consent-to-crc *ngIf="orgData" [orgData]="orgData"></app-sa-consent-to-crc>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -52,7 +52,7 @@ import { DeclarationComponent } from '../step-components/declaration.component';
 			</mat-step>
 
 			<mat-step>
-				<app-agreement-of-terms></app-agreement-of-terms>
+				<app-sa-agreement-of-terms></app-sa-agreement-of-terms>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -89,7 +89,7 @@ import { DeclarationComponent } from '../step-components/declaration.component';
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepTermsAndCondComponent {
+export class SaStepTermsAndCondComponent {
 	payeePreferenceTypeCodes = PayerPreferenceTypeCode;
 	agreeToShare: boolean = false;
 
@@ -104,14 +104,14 @@ export class StepTermsAndCondComponent {
 	readonly STEP_CONSENT_TO_CRC: number = 2;
 	readonly STEP_TERMS: number = 3;
 
-	@ViewChild(DeclarationComponent)
-	declarationComponent!: DeclarationComponent;
+	@ViewChild(SaDeclarationComponent)
+	declarationComponent!: SaDeclarationComponent;
 
-	@ViewChild(ConsentToCrcComponent)
-	consentToCrcComponent!: ConsentToCrcComponent;
+	@ViewChild(SaConsentToCrcComponent)
+	consentToCrcComponent!: SaConsentToCrcComponent;
 
-	@ViewChild(AgreementOfTermsComponent)
-	agreementOfTermsComponent!: AgreementOfTermsComponent;
+	@ViewChild(SaAgreementOfTermsComponent)
+	agreementOfTermsComponent!: SaAgreementOfTermsComponent;
 
 	getStepData(): any {
 		return {

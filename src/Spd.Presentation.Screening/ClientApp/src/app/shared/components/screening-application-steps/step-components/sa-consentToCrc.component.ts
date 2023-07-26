@@ -2,10 +2,10 @@ import { Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/api/models';
 import { UtilService } from 'src/app/core/services/util.service';
-import { AppInviteOrgData, CrcFormStepComponent } from '../crrpa.component';
+import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application.model';
 
 @Component({
-	selector: 'app-consent-to-crc',
+	selector: 'app-sa-consent-to-crc',
 	template: `
 		<section class="step-section p-3" *ngIf="orgData">
 			<form [formGroup]="form" novalidate>
@@ -80,7 +80,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../crrpa.component';
 	`,
 	styles: [],
 })
-export class ConsentToCrcComponent implements CrcFormStepComponent {
+export class SaConsentToCrcComponent implements CrcFormStepComponent {
 	private _orgData!: AppInviteOrgData | null;
 	@Input()
 	set orgData(data: AppInviteOrgData | null) {

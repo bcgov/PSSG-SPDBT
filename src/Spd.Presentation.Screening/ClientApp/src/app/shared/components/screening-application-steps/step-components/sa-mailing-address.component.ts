@@ -5,11 +5,11 @@ import { AddressRetrieveResponse } from 'src/app/api/models';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { Address } from 'src/app/shared/components/address-autocomplete.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { CrcFormStepComponent } from '../crrpa.component';
+import { CrcFormStepComponent } from '../screening-application.model';
 
 @UntilDestroy({ checkProperties: true })
 @Component({
-	selector: 'app-mailing-address',
+	selector: 'app-sa-mailing-address',
 	template: `
 		<section class="step-section p-3">
 			<form [formGroup]="form" novalidate>
@@ -106,7 +106,7 @@ import { CrcFormStepComponent } from '../crrpa.component';
 		`,
 	],
 })
-export class MailingAddressComponent implements OnInit, CrcFormStepComponent {
+export class SaMailingAddressComponent implements OnInit, CrcFormStepComponent {
 	form!: FormGroup;
 	addressAutocompleteFields: AddressRetrieveResponse[] = [];
 	matcher = new FormErrorStateMatcher();
