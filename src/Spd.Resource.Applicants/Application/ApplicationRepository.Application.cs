@@ -26,6 +26,7 @@ internal partial class ApplicationRepository : IApplicationRepository
             application = await CreateAppAsync(createApplicationCmd, org, user, serviceTeam, servicetype);
         await _context.SaveChangesAsync(ct);
 
+        // when volunteer application is created, set application status to Submitted
         if ((bool)createApplicationCmd.HaveVerifiedIdentity)
         {
             var volunteerOrganizationTypeCode = DynamicsContextLookupHelpers.GetTypeFromTypeId(org!._spd_organizationtypeid_value).Item2;
@@ -33,21 +34,11 @@ internal partial class ApplicationRepository : IApplicationRepository
             {
                 application.statuscode = (int?)ApplicationInactiveStatus.Submitted;
                 application.statecode = DynamicsConstants.StateCode_Inactive;
-            }
-            else
-            {
-                application.statuscode = (int?)ApplicationActiveStatus.PaymentPending;
-                application.statecode = DynamicsConstants.StatusCode_Active;
-            }
-        }
-        else
-        {
-            application.statuscode = (int?)ApplicationActiveStatus.ApplicantVerification;
-            application.statecode = DynamicsConstants.StatusCode_Active;
-        }
 
-        _context.UpdateObject(application);
-        await _context.SaveChangesAsync(ct);
+                _context.UpdateObject(application);
+                await _context.SaveChangesAsync(ct);
+            }
+        }
 
         return application?.spd_applicationid;
     }
@@ -92,18 +83,31 @@ internal partial class ApplicationRepository : IApplicationRepository
         if (app == null)
             throw new ApiException(HttpStatusCode.BadRequest, "Invalid ApplicationId");
 
+
+        account? org = await _context.GetOrgById(identityCmd.OrgId, cancellationToken);
+
         if (identityCmd.Status == IdentityStatusCode.Verified)
         {
-            var paid = app.statecode == DynamicsConstants.StateCode_Inactive ? true : false;
-            if (!paid)
-            {
-                app.statuscode = (int?)ApplicationActiveStatus.PaymentPending;
-                app.statecode = DynamicsConstants.StateCode_Active;
-            }
-            else
+            // when volunteer application is verified, set application status to Submitted
+            var volunteerOrganizationTypeCode = DynamicsContextLookupHelpers.GetTypeFromTypeId(org!._spd_organizationtypeid_value).Item2;
+            if (volunteerOrganizationTypeCode != null)
             {
                 app.statuscode = (int?)ApplicationInactiveStatus.Submitted;
                 app.statecode = DynamicsConstants.StateCode_Inactive;
+            }
+            else
+            {
+                var paid = app.statecode == DynamicsConstants.StateCode_Inactive ? true : false;
+                if (!paid)
+                {
+                    app.statuscode = (int?)ApplicationActiveStatus.PaymentPending;
+                    app.statecode = DynamicsConstants.StateCode_Active;
+                }
+                else
+                {
+                    app.statuscode = (int?)ApplicationInactiveStatus.Submitted;
+                    app.statecode = DynamicsConstants.StateCode_Inactive;
+                }
             }
         }
         else
