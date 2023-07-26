@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { ScreeningStatusResponse } from 'src/app/shared/components/screening-statuses-common.component';
 import { PssoRoutes } from '../psso-routing.module';
-import { DelegateManageModalComponent } from './delegate-manage-modal.component';
+import { DelegateManageDialogData, DelegateManageModalComponent } from './delegate-manage-modal.component';
 
 @Component({
 	selector: 'app-screening-statuses',
@@ -24,8 +24,13 @@ export class ScreeningStatusesComponent {
 	constructor(private dialog: MatDialog, private router: Router) {}
 
 	onManageDelegates(application: ScreeningStatusResponse): void {
+		const dialogOptions: DelegateManageDialogData = {
+			application: application,
+		};
+
 		this.dialog.open(DelegateManageModalComponent, {
 			width: '800px',
+			data: dialogOptions,
 		});
 	}
 

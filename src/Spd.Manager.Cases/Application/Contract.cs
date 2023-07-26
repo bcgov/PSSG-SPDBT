@@ -236,6 +236,14 @@ namespace Spd.Manager.Cases.Application
         public ApplicationPortalStatusCode? Status { get; set; }
     }
 
+    public record DelegateResponse
+    {
+        public Guid Id { get; set; }
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public string? EmailAddress { get; set; }
+    }
+
     public record ApplicationPaymentResponse : ApplicationResponse
     {
         public DateTimeOffset? PaidOn { get; set; }

@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
+import { HotToastService } from '@ngneat/hot-toast';
+import { DelegateResponse } from 'src/app/api/models';
+import { ApplicationService } from 'src/app/api/services';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 
 @Component({
@@ -55,11 +58,34 @@ export class DelegateAddModalComponent {
 		email: new FormControl('', [Validators.required, FormControlValidators.email]),
 	});
 
-	constructor(private formBuilder: FormBuilder, private dialogRef: MatDialogRef<DelegateAddModalComponent>) {}
+	constructor(
+		private applicationService: ApplicationService,
+		private formBuilder: FormBuilder,
+		private hotToast: HotToastService,
+		private dialogRef: MatDialogRef<DelegateAddModalComponent>
+	) {}
 
 	onSave(): void {
-		this.dialogRef.close({
-			data: '',
-		});
+		this.form.markAllAsTouched();
+
+		if (!this.form.valid) {
+			return;
+		}
+
+		const body: DelegateResponse = { ...this.form.value };
+
+		this.applicationService
+			.apiOrgsOrgIdApplicationApplicationIdDelegatePost({
+				applicationId: '7214ba1e-1b15-ee11-b844-00505683fbf4',
+				orgId: '7214ba1e-1b15-ee11-b844-00505683fbf4',
+				body,
+			})
+			.pipe()
+			.subscribe(() => {
+				this.hotToast.success('Delegate was successfully added');
+				this.dialogRef.close({
+					data: '',
+				});
+			});
 	}
 }
