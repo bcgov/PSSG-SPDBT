@@ -7,6 +7,7 @@ using Spd.Resource.Applicants.ApplicationInvite;
 using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.Incident;
 using Spd.Resource.Organizations.Identity;
+using Spd.Resource.Organizations.Org;
 using Spd.Resource.Organizations.Registration;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.Exceptions;
@@ -43,6 +44,7 @@ namespace Spd.Manager.Cases.Application
     {
         private readonly IApplicationRepository _applicationRepository;
         private readonly IApplicationInviteRepository _applicationInviteRepository;
+        private readonly IOrgRepository _orgRepository;
         private readonly IMapper _mapper;
         private readonly ITempFileStorageService _tempFile;
         private readonly IDuplicateCheckEngine _duplicateCheckEngine;
@@ -54,6 +56,7 @@ namespace Spd.Manager.Cases.Application
 
         public ApplicationManager(IApplicationRepository applicationRepository,
             IApplicationInviteRepository applicationInviteRepository,
+            IOrgRepository orgRepository,
             IMapper mapper,
             ITempFileStorageService tempFile,
             IDuplicateCheckEngine duplicateCheckEngine,
@@ -65,6 +68,7 @@ namespace Spd.Manager.Cases.Application
         {
             _applicationRepository = applicationRepository;
             _applicationInviteRepository = applicationInviteRepository;
+            _orgRepository = orgRepository;
             _tempFile = tempFile;
             _mapper = mapper;
             _duplicateCheckEngine = duplicateCheckEngine;
@@ -78,6 +82,17 @@ namespace Spd.Manager.Cases.Application
         #region application-invite
         public async Task<ApplicationInvitesCreateResponse> Handle(ApplicationInviteCreateCommand createCmd, CancellationToken ct)
         {
+            var org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(createCmd.OrgId), ct);
+
+            // If not a volunteer org, then the payee type is required
+            if (org != null && org.OrgResult.VolunteerOrganizationTypeCode == null)
+            {
+                if (createCmd.ApplicationInvitesCreateRequest.ApplicationInviteCreateRequests.Any(a => a.PayeeType == null))
+                {
+                    throw new ApiException(HttpStatusCode.BadRequest, "Payee Type is required");
+                }
+            }
+
             ApplicationInvitesCreateResponse resp = new(createCmd.OrgId);
             if (createCmd.ApplicationInvitesCreateRequest.RequireDuplicateCheck)
             {

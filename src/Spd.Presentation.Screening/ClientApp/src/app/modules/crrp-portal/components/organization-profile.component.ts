@@ -127,29 +127,31 @@ import { FormGroupValidators } from 'src/app/core/validators/form-group.validato
 					</div>
 				</div>
 
-				<mat-divider class="my-3"></mat-divider>
-				<div class="text-minor-heading fw-semibold mb-2">Who pays for the criminal record checks?</div>
-				<div class="mb-2">
-					Set who is responsible for paying the fee. You can adjust this when you generate a new criminal record check
-					request.
-				</div>
-				<div class="row">
-					<div class="col-xl-4 col-lg-12">
-						<mat-radio-group aria-label="Select an option" formControlName="payerPreference" class="d-flex flex-row">
-							<mat-radio-button [value]="payerPreferenceTypeCode.Organization">Organization Pays</mat-radio-button>
-							<mat-radio-button [value]="payerPreferenceTypeCode.Applicant">Applicant Pays</mat-radio-button>
-						</mat-radio-group>
-						<mat-error
-							class="mat-option-error"
-							*ngIf="
-								(form.get('payerPreference')?.dirty || form.get('payerPreference')?.touched) &&
-								form.get('payerPreference')?.invalid &&
-								form.get('payerPreference')?.hasError('required')
-							"
-							>An option must be selected</mat-error
-						>
+				<ng-container *ngIf="isNotVolunteerOrg">
+					<mat-divider class="my-3"></mat-divider>
+					<div class="text-minor-heading fw-semibold mb-2">Who pays for the criminal record checks?</div>
+					<div class="mb-2">
+						Set who is responsible for paying the fee. You can adjust this when you generate a new criminal record check
+						request.
 					</div>
-				</div>
+					<div class="row">
+						<div class="col-xl-4 col-lg-12">
+							<mat-radio-group aria-label="Select an option" formControlName="payerPreference" class="d-flex flex-row">
+								<mat-radio-button [value]="payerPreferenceTypeCode.Organization">Organization Pays</mat-radio-button>
+								<mat-radio-button [value]="payerPreferenceTypeCode.Applicant">Applicant Pays</mat-radio-button>
+							</mat-radio-group>
+							<mat-error
+								class="mat-option-error"
+								*ngIf="
+									(form.get('payerPreference')?.dirty || form.get('payerPreference')?.touched) &&
+									form.get('payerPreference')?.invalid &&
+									form.get('payerPreference')?.hasError('required')
+								"
+								>An option must be selected</mat-error
+							>
+						</div>
+					</div>
+				</ng-container>
 
 				<mat-divider class="my-3"></mat-divider>
 				<div class="text-minor-heading fw-semibold mb-2">
@@ -228,6 +230,8 @@ import { FormGroupValidators } from 'src/app/core/validators/form-group.validato
 	],
 })
 export class OrganizationProfileComponent implements OnInit {
+	isNotVolunteerOrg = false;
+
 	editable: boolean = true;
 	viewOnly: boolean = true;
 	displayLicenseesQuestion: boolean = true;
@@ -258,6 +262,7 @@ export class OrganizationProfileComponent implements OnInit {
 					'licenseesNeedVulnerableSectorScreening',
 					() => this.displayLicenseesQuestion
 				),
+				FormGroupValidators.conditionalRequiredValidator('payerPreference', (form) => this.isNotVolunteerOrg ?? false),
 			],
 		}
 	);
@@ -280,6 +285,8 @@ export class OrganizationProfileComponent implements OnInit {
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 			return;
 		}
+
+		this.isNotVolunteerOrg = this.authUserService.bceidUserOrgProfile?.isNotVolunteerOrg ?? false;
 
 		this.editable =
 			this.authUserService.bceidUserInfoProfile?.contactAuthorizationTypeCode == ContactAuthorizationTypeCode.Primary;

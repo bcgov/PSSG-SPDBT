@@ -66,7 +66,7 @@ namespace Spd.Manager.Cases.Application
         public string? Surname { get; set; }
         public string? EmailAddress { get; set; }
         public string? JobTitle { get; set; }
-        public PayerPreferenceTypeCode PayeeType { get; set; }
+        public PayerPreferenceTypeCode? PayeeType { get; set; }
         public ScreeningTypeCode? ScreeningType { get; set; }
         public ServiceTypeCode? ServiceType { get; set; }
     };
@@ -84,7 +84,7 @@ namespace Spd.Manager.Cases.Application
         public string LastName { get; set; } = null!;
         public string Email { get; set; } = null!;
         public string? JobTitle { get; set; }
-        public PayerPreferenceTypeCode PayeeType { get; set; }
+        public PayerPreferenceTypeCode? PayeeType { get; set; }
     }
     public record ApplicationInviteCreateRequest : ApplicationInvite
     {
@@ -174,7 +174,7 @@ namespace Spd.Manager.Cases.Application
         public string? JobTitle { get; set; }
         public DateTimeOffset? DateOfBirth { get; set; }
         public string? ContractedCompanyName { get; set; }
-        public PayerPreferenceTypeCode PayeeType { get; set; }
+        public PayerPreferenceTypeCode? PayeeType { get; set; }
     }
     public record ApplicationCreateRequest : Application
     {
@@ -477,9 +477,6 @@ namespace Spd.Manager.Cases.Application
             RuleFor(r => r.JobTitle)
                     .NotEmpty()
                     .MaximumLength(100);
-
-            RuleFor(r => r.PayeeType)
-                .IsInEnum();
         }
     }
 

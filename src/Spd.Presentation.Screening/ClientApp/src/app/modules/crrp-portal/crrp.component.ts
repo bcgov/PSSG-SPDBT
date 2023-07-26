@@ -84,7 +84,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 									<span class="menu-item ms-2 d-none d-sm-inline text-white">Expiring Checks</span>
 								</a>
 							</li>
-							<li class="nav-item w-100">
+							<li class="nav-item w-100" *ngIf="isNotVolunteerOrg">
 								<a
 									[routerLink]="[crrpRoutes.path(crrpRoutes.PAYMENTS)]"
 									routerLinkActive="active"
@@ -176,6 +176,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 })
 export class CrrpComponent implements OnInit {
 	isAuthenticated = this.authProcessService.waitUntilAuthentication$;
+	isNotVolunteerOrg = false;
 	crrpRoutes = CrrpRoutes;
 
 	constructor(
@@ -192,6 +193,8 @@ export class CrrpComponent implements OnInit {
 
 		const nextRoute = await this.authProcessService.initializeCrrp(defaultOrgId);
 		console.debug('initialize nextRoute', nextRoute);
+
+		this.isNotVolunteerOrg = this.authUserService.bceidUserOrgProfile?.isNotVolunteerOrg ?? false;
 
 		if (nextRoute) {
 			await this.router.navigate([nextRoute], { queryParams: { orgId: defaultOrgId } });

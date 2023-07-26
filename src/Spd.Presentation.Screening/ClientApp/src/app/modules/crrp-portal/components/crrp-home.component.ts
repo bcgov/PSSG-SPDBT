@@ -63,7 +63,10 @@ import { CrrpRoutes } from '../crrp-routing.module';
 								</div>
 							</div>
 						</div>
-						<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
+						<div
+							class="col-xl-4 col-lg-6 col-md-12 col-sm-12"
+							*ngIf="authUserService.bceidUserOrgProfile?.isNotVolunteerOrg ?? false"
+						>
 							<div class="box mx-auto" [routerLink]="[crrpRoutes.path(crrpRoutes.PAYMENTS)]">
 								<div class="box__image">
 									<img class="box__image__item" src="/assets/dashboard/outstanding_payments.png" />
@@ -116,7 +119,10 @@ import { CrrpRoutes } from '../crrp-routing.module';
 					<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
 						<h4>To Do</h4>
 						<div class="row gy-4">
-							<div class="col-xl-3 col-lg-6 col-md-12 col-sm-12">
+							<div
+								class="col-xl-3 col-lg-6 col-md-12 col-sm-12"
+								*ngIf="authUserService.bceidUserOrgProfile?.isNotVolunteerOrg ?? false"
+							>
 								<mat-card class="data-card" style="border-color: var(--color-primary);">
 									<mat-card-header
 										class="data-card__header mb-2"
@@ -269,8 +275,8 @@ export class CrrpHomeComponent implements OnInit {
 	applicationStatistics$!: Observable<ApplicationStatisticsResponse>;
 
 	constructor(
+		protected authUserService: AuthUserService,
 		private router: Router,
-		private authUserService: AuthUserService,
 		private applicationService: ApplicationService,
 		private orgUserService: OrgUserService
 	) {}
