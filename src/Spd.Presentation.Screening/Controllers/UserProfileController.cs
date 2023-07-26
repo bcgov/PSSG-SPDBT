@@ -40,17 +40,8 @@ namespace Spd.Presentation.Screening.Controllers
         [Authorize(Policy = "OnlyBCeID")]
         public async Task<UserProfileResponse> OrgUserWhoami()
         {
-            if (_currentUser.GetIdentityProvider().Equals("idir", StringComparison.InvariantCultureIgnoreCase))
-            {
-                IdirUserIdentityInfo userIdentity = _currentUser.GetIdirUserIdentityInfo();
-                return new UserProfileResponse { 
-                    IdentityProviderType=Resource.Organizations.Registration.IdentityProviderTypeCode.Idir};
-            }
-            else
-            {
-                PortalUserIdentityInfo userIdentity = _currentUser.GetPortalUserIdentityInfo();
-                return await _mediator.Send(new GetCurrentUserProfileQuery(_mapper.Map<PortalUserIdentity>(userIdentity)));
-            }
+            PortalUserIdentityInfo userIdentity = _currentUser.GetPortalUserIdentityInfo();
+            return await _mediator.Send(new GetCurrentUserProfileQuery(_mapper.Map<PortalUserIdentity>(userIdentity)));
         }
 
         /// <summary>
@@ -72,7 +63,7 @@ namespace Spd.Presentation.Screening.Controllers
         }
 
         /// <summary>
-        /// Org user whoami, for orgPortal
+        /// Idir user whoami, for PSSO portal
         /// </summary>
         /// <returns></returns>
         [Route("api/idir-users/whoami")]
@@ -85,7 +76,7 @@ namespace Spd.Presentation.Screening.Controllers
                 IdirUserIdentityInfo userIdentity = _currentUser.GetIdirUserIdentityInfo();
                 return new UserProfileResponse
                 {
-                    IdentityProviderType = Resource.Organizations.Registration.IdentityProviderTypeCode.Idir,
+                    IdentityProviderType = IdentityProviderTypeCode.Idir,
                     UserDisplayName= userIdentity.DisplayName,
                     UserGuid = null, //temp
                     UserInfos = Array.Empty<UserInfo>(),
