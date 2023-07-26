@@ -5,10 +5,10 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { AppInviteOrgData, CrcFormStepComponent } from '../crrpa.component';
+import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application.model';
 
 @Component({
-	selector: 'app-contact-information',
+	selector: 'app-sa-contact-information',
 	template: `
 		<section class="step-section p-3" *ngIf="orgData">
 			<form [formGroup]="form" novalidate>
@@ -86,7 +86,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../crrpa.component';
 	`,
 	styles: [],
 })
-export class ContactInformationComponent implements CrcFormStepComponent {
+export class SaContactInformationComponent implements CrcFormStepComponent {
 	private _orgData: AppInviteOrgData | null = null;
 	@Input()
 	set orgData(data: AppInviteOrgData | null) {

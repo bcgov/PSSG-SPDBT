@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { PayerPreferenceTypeCode } from 'src/app/api/models';
 
 @Component({
-	selector: 'app-checklist',
+	selector: 'app-sa-checklist',
 	template: `
 		<section class="step-section p-3">
 			<div class="step">
@@ -39,7 +39,7 @@ import { PayerPreferenceTypeCode } from 'src/app/api/models';
 		`,
 	],
 })
-export class ChecklistComponent {
+export class SaChecklistComponent {
 	payerPreferenceTypeCodes = PayerPreferenceTypeCode;
 
 	@Input() payeeType!: PayerPreferenceTypeCode;
