@@ -533,6 +533,59 @@ namespace Spd.Presentation.Screening.Controllers
         }
         #endregion
 
+        #region application-delegates
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="applicationId"></param>
+        /// <param name="orgId"></param>
+        /// <returns></returns>
+        [Route("api/orgs/{orgId}/application/{applicationId}/delegates")]
+        [HttpGet]
+        public async Task<IEnumerable<DelegateResponse>> GetDelegateList([FromRoute] Guid applicationId, [FromRoute] Guid orgId)
+        {
+            //            await _mediator.Send(new DelegateCommand(orgId, applicationId));
+            IEnumerable<DelegateResponse> dataList = new List<DelegateResponse>();
+            DelegateResponse item = new DelegateResponse();
+            item.FirstName = "Jane";
+            item.LastName = "Thompson";
+            item.EmailAddress = "jane.thompson@test.com";
+            dataList = dataList.Append(item);
+
+            return dataList;
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="applicationId"></param>
+        /// <param name="orgId"></param>
+        /// <returns></returns>
+        [Route("api/orgs/{orgId}/application/{applicationId}/delegate")]
+        [HttpPost]
+        public async Task<ActionResult> PostDelegate([FromBody][Required] DelegateResponse delegateRequest, [FromRoute] Guid applicationId, [FromRoute] Guid orgId)
+        {
+            return Ok();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="delegateId"></param>
+        /// <param name="applicationId"></param>
+        /// <param name="orgId"></param>
+        /// <returns></returns>
+        [Route("api/orgs/{orgId}/application/{applicationId}/delegate/{delegateId}")]
+        [HttpDelete]
+        public async Task<ActionResult> DeleteDelegate([FromRoute] Guid delegateId, [FromRoute] Guid applicationId, [FromRoute] Guid orgId)
+        {
+            return Ok();
+        }
+
+        #endregion
+
         #region clearances
 
         /// <summary>
