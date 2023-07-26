@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Cases.Payment;
 using Spd.Presentation.Screening.Configurations;
 using Spd.Utilities.Shared;
+using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 
@@ -270,18 +271,26 @@ namespace Spd.Presentation.Screening.Controllers
         [HttpGet]
         public async Task<ActionResult> CreateLinkRedirectToPaybcPaymentPage([FromQuery] string encodedAppId, [FromQuery] string encodedPaymentId)
         {
+            string? errorPath = _paymentsConfiguration.CrrpaPaymentErrorPath;
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
-            string redirectUrl = $"{hostUrl}api/crrpa/payment-result";
-            PaymentLinkFromSecureLinkCreateRequest linkCreateRequest = new PaymentLinkFromSecureLinkCreateRequest()
+            try
             {
-                ApplicationId = null,
-                EncodedApplicationId = encodedAppId,
-                EncodedPaymentId = encodedPaymentId,
-                Description = "Criminal Record Check",
-                PaymentMethod = PaymentMethodCode.CreditCard
-            };
-            var result = await _mediator.Send(new PaymentLinkCreateCommand(linkCreateRequest, redirectUrl, _paymentsConfiguration.MaxOnlinePaymentFailedTimes));
-            return Redirect(result.PaymentLinkUrl);
+                string redirectUrl = $"{hostUrl}api/crrpa/payment-result";
+                PaymentLinkFromSecureLinkCreateRequest linkCreateRequest = new PaymentLinkFromSecureLinkCreateRequest()
+                {
+                    ApplicationId = null,
+                    EncodedApplicationId = encodedAppId,
+                    EncodedPaymentId = encodedPaymentId,
+                    Description = "Criminal Record Check",
+                    PaymentMethod = PaymentMethodCode.CreditCard
+                };
+                var result = await _mediator.Send(new PaymentLinkCreateCommand(linkCreateRequest, redirectUrl, _paymentsConfiguration.MaxOnlinePaymentFailedTimes));
+                return Redirect(result.PaymentLinkUrl);
+            }
+            catch (ApiException e)
+            {
+                return Redirect($"{hostUrl}{errorPath}");
+            }
         }
         #endregion
     }

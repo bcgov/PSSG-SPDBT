@@ -1,8 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
-import { PaymentLinkCreateRequest, PaymentLinkResponse, PaymentMethodCode, PaymentResponse } from 'src/app/api/models';
+import {
+	PaymentLinkCreateRequest,
+	PaymentLinkResponse,
+	PaymentMethodCode,
+	PaymentResponse,
+	PaymentTypeCode,
+} from 'src/app/api/models';
 import { PaymentService } from 'src/app/api/services';
+import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 
 @Component({
@@ -12,7 +19,7 @@ import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 			<section class="step-section p-3">
 				<app-payment-fail
 					[payment]="payment"
-					[numberOfAttempts]="numberOfAttempts"
+					[numberOfAttemptsRemaining]="numberOfAttemptsRemaining"
 					[isCancelledPaymentFlow]="isCancelledPaymentFlow"
 					(payNow)="onPayNow()"
 					(downloadManualPaymentForm)="onDownloadManualPaymentForm()"
@@ -24,13 +31,12 @@ import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 })
 export class CrrpaPaymentFailComponent implements OnInit {
 	isCancelledPaymentFlow: boolean = false;
-	numberOfAttempts: number = 0;
+	numberOfAttemptsRemaining: number = 0;
 	payment: PaymentResponse | null = null;
 
 	constructor(
 		private route: ActivatedRoute,
 		private authProcessService: AuthProcessService,
-		private router: Router,
 		private paymentService: PaymentService
 	) {}
 
@@ -53,7 +59,12 @@ export class CrrpaPaymentFailComponent implements OnInit {
 					})
 				)
 				.subscribe((numberOfFails) => {
-					this.numberOfAttempts = numberOfFails;
+					if (this.payment?.paymentType == PaymentTypeCode.PayBcSecurePaymentLink) {
+						this.numberOfAttemptsRemaining = 0;
+					} else {
+						const remaining = SPD_CONSTANTS.payment.maxNumberOfAttempts - numberOfFails;
+						this.numberOfAttemptsRemaining = remaining <= 0 ? 0 : remaining;
+					}
 				});
 		}
 	}

@@ -44,6 +44,20 @@ namespace Spd.Manager.Cases.Payment
         CreditCard
     }
 
+    public enum PaymentTypeCode
+    {
+        PayBC_OnSubmission,
+        Cash,
+        CreditCard,
+        MoneyOrder,
+        Cheque,
+        CertifiedCheque,
+        CreditAccount,
+        JournalVoucher,
+        NoPayment,
+        PayBC_SecurePaymentLink,
+    }
+
     //payment result
     public record PaymenCreateCommand(string QueryStr, PaybcPaymentResult PaybcPaymentResult) : IRequest<Guid>;
     public record PaymentQuery(Guid PaymentId) : IRequest<PaymentResponse>;
@@ -70,6 +84,7 @@ namespace Spd.Manager.Cases.Payment
         public string CaseNumber { get; set; }
         public bool PaidSuccess { get; set; }
         public PaymentStatusCode PaymentStatus { get; set; }
+        public PaymentTypeCode? PaymentType { get; set; }
         public string Message { get; set; }
         public string TransOrderId { get; set; }
         public DateTimeOffset TransDateTime { get; set; }
