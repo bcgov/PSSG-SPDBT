@@ -374,7 +374,7 @@ namespace Spd.Manager.Cases.Application
                cmd.SharedClearanceId.HasValue &&
                cmd.CreatedByApplicantBcscId != null)//bcsc authenticated and has sharable clearance
             {
-                ApplicantIdentityQueryResult contact = (ApplicantIdentityQueryResult)await _identityRepository.Query(new ApplicantIdentityQuery(cmd.CreatedByApplicantBcscId, IdentityProviderTypEnum.BcServicesCard), ct);
+                ApplicantIdentityQueryResult contact = (ApplicantIdentityQueryResult)await _identityRepository.Query(new ApplicantIdentityQuery(cmd.CreatedByApplicantBcscId, IdentityProviderTypeEnum.BcServicesCard), ct);
                 if (contact == null)
                     throw new ArgumentException("No contact found");
                 cmd.ContactId = contact.ContactId;
@@ -421,7 +421,7 @@ namespace Spd.Manager.Cases.Application
 
         public async Task<ApplicantApplicationFileListResponse> Handle(ApplicantApplicationFileQuery query, CancellationToken ct)
         {
-            ApplicantIdentityQueryResult? contact = (ApplicantIdentityQueryResult?)await _identityRepository.Query(new ApplicantIdentityQuery(query.BcscId, IdentityProviderTypEnum.BcServicesCard), ct);
+            ApplicantIdentityQueryResult? contact = (ApplicantIdentityQueryResult?)await _identityRepository.Query(new ApplicantIdentityQuery(query.BcscId, IdentityProviderTypeEnum.BcServicesCard), ct);
             if (contact == null)
                 throw new ArgumentException("No contact found");
 
@@ -436,7 +436,7 @@ namespace Spd.Manager.Cases.Application
 
         public async Task<IEnumerable<ApplicantAppFileCreateResponse>> Handle(CreateApplicantAppFileCommand command, CancellationToken ct)
         {
-            ApplicantIdentityQueryResult? contact = (ApplicantIdentityQueryResult?)await _identityRepository.Query(new ApplicantIdentityQuery(command.BcscId, IdentityProviderTypEnum.BcServicesCard), ct);
+            ApplicantIdentityQueryResult? contact = (ApplicantIdentityQueryResult?)await _identityRepository.Query(new ApplicantIdentityQuery(command.BcscId, IdentityProviderTypeEnum.BcServicesCard), ct);
             if (contact == null)
                 throw new ArgumentException("No contact found");
 

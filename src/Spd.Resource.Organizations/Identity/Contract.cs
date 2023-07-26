@@ -10,7 +10,7 @@ namespace Spd.Resource.Organizations.Identity
     //query
     public abstract record IdentityQuery;
     public record UserIdentityQuery(Guid UserGuid, Guid? OrgGuid) : IdentityQuery;
-    public record ApplicantIdentityQuery(string UserGuid, IdentityProviderTypEnum IdentityProviderType) : IdentityQuery;
+    public record ApplicantIdentityQuery(string UserGuid, IdentityProviderTypeEnum IdentityProviderType) : IdentityQuery;
     public abstract record IdentityQueryResult;
     public record UserIdentityQueryResult(IEnumerable<Identity> Identities) : IdentityQueryResult;
     public record ApplicantIdentityQueryResult : IdentityQueryResult
