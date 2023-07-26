@@ -1,3 +1,4 @@
+using IdentityModel.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -5,10 +6,9 @@ using Microsoft.Net.Http.Headers;
 using Spd.Utilities.LogonUser.Configurations;
 using System.Configuration;
 using System.IdentityModel.Tokens.Jwt;
-using System.Net.Http.Headers;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Security.Claims;
-using IdentityModel.Client;
 using System.Text.Json;
 
 namespace Spd.Utilities.LogonUser
@@ -35,7 +35,7 @@ namespace Spd.Utilities.LogonUser
             .Get<IdirAuthenticationConfiguration>();
 
             if (bceidConfig == null)
-                throw new ConfigurationErrorsException("bcediAuthentication configuration is not set correctly.");
+                throw new ConfigurationErrorsException("bceidAuthentication configuration is not set correctly.");
 
             if (bcscConfig == null)
                 throw new ConfigurationErrorsException("bcscAuthentication configuration is not set correctly.");
@@ -43,7 +43,7 @@ namespace Spd.Utilities.LogonUser
             if (idirConfig == null)
                 throw new ConfigurationErrorsException("idirAuthentication configuration is not set correctly.");
 
-            var defaultScheme = "BCeID_OR_BCSC";
+            var defaultScheme = "BCeID_OR_BCSC_OR_IDIR";
             services.AddAuthentication(
                 options =>
             {
@@ -81,9 +81,9 @@ namespace Spd.Utilities.LogonUser
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateAudience = true,
-                    ValidAudiences = new[] { bceidConfig?.Audiences },
+                    ValidAudiences = new[] { idirConfig?.Audiences },
                     ValidateIssuer = true,
-                    ValidIssuers = new[] { bceidConfig?.Issuer },
+                    ValidIssuers = new[] { idirConfig?.Issuer },
                     RequireSignedTokens = true,
                     RequireAudience = true,
                     RequireExpirationTime = true,
@@ -166,7 +166,7 @@ namespace Spd.Utilities.LogonUser
                         else
                         {
                             //handle non encrypted
-                            JsonDocument jd = JsonDocument.Parse(response.Json.GetRawText()); 
+                            JsonDocument jd = JsonDocument.Parse(response.Json.GetRawText());
                             var claims = jd.RootElement.ToClaims();
                             MapClaimsToPrincipalClaims(ctx.Principal, claims);
                         }
@@ -185,13 +185,20 @@ namespace Spd.Utilities.LogonUser
 
                         if (jwtHandler.CanReadToken(token))
                         {
-                            if (jwtHandler.ReadJwtToken(token).Issuer.Equals(bceidConfig.Authority) ||
-                                jwtHandler.ReadJwtToken(token).Audiences.Any(a => bceidConfig.Audiences.Contains(a)))
+                            JwtSecurityToken jwtToken = jwtHandler.ReadJwtToken(token);
+                            if (jwtToken.Issuer.Equals(bceidConfig.Authority) ||
+                                jwtToken.Audiences.Any(a => bceidConfig.Audiences.Contains(a)))
                             {
+                                //idir and bceid have the same authoritiy and audience.
+                                var identityProviderClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "identity_provider");
+                                if (identityProviderClaim != null && identityProviderClaim.Value.Equals("idir", StringComparison.InvariantCultureIgnoreCase))
+                                {
+                                    return IdirAuthenticationConfiguration.AuthSchemeName;
+                                }
                                 return BCeIDAuthenticationConfiguration.AuthSchemeName;
                             }
-                            else if (jwtHandler.ReadJwtToken(token).Issuer.Equals(bcscConfig.Issuer) ||
-                                jwtHandler.ReadJwtToken(token).Audiences.Any(a => bcscConfig.Audiences.Contains(a)))
+                            else if (jwtToken.Issuer.Equals(bcscConfig.Issuer) ||
+                                jwtToken.Audiences.Any(a => bcscConfig.Audiences.Contains(a)))
                             {
                                 return BcscAuthenticationConfiguration.AuthSchemeName;
                             }
@@ -205,7 +212,7 @@ namespace Spd.Utilities.LogonUser
 
         private static void MapClaimsToPrincipalClaims(ClaimsPrincipal principal, IEnumerable<Claim> claims)
         {
-            foreach(var claim in claims) 
+            foreach (var claim in claims)
             {
                 principal.AddUpdateClaim(claim.Type, claim.Value);
             }

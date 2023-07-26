@@ -37,11 +37,19 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/users/whoami")]
         [HttpGet]
-        [Authorize(Policy = "OnlyBCeID")]
+        [Authorize(Policy = "OnlyBCeID, OnlyIdir")]
         public async Task<UserProfileResponse> OrgUserWhoami()
         {
-            PortalUserIdentityInfo userIdentity = _currentUser.GetPortalUserIdentityInfo();
-            return await _mediator.Send(new GetCurrentUserProfileQuery(_mapper.Map<PortalUserIdentity>(userIdentity)));
+            if (_currentUser.GetIdentityProvider().Equals("idir", StringComparison.InvariantCultureIgnoreCase))
+            {
+                IdirUserIdentityInfo userIdentity = _currentUser.GetIdirUserIdentityInfo();
+                return null;
+            }
+            else
+            {
+                PortalUserIdentityInfo userIdentity = _currentUser.GetPortalUserIdentityInfo();
+                return await _mediator.Send(new GetCurrentUserProfileQuery(_mapper.Map<PortalUserIdentity>(userIdentity)));
+            }
         }
 
         /// <summary>

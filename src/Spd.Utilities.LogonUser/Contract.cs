@@ -29,3 +29,17 @@ public class PortalUserIdentityInfo
     public bool? EmailVerified { get; set; }
     public string? Email { get; set; }
 }
+
+public class IdirUserIdentityInfo
+{
+    public string? IdirUserName { get; set; } //idir_username
+    public string? DisplayName { get; set; } //display_name
+    public string? FirstName { get; set; } //given_name
+    public string? LastName { get; set; } //family_name
+    public string? PreferredUserName { get; set; } //preferred_username
+    public string? UserGuid { get; set; } //idir_user_guid
+    public string? UserName { get; set; } //idir_username
+    public string? Issuer { get; set; } //iss
+    public bool? EmailVerified { get; set; } //email_verified
+    public string? Email { get; set; } //email
+}
