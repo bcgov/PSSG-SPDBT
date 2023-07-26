@@ -116,6 +116,22 @@ namespace Spd.Utilities.LogonUser
             };
         }
 
+        public static IdirUserIdentityInfo GetIdirUserIdentityInfo(this IPrincipal principal)
+        {
+            var claim = ValidatePrincipal(principal);
+            return new IdirUserIdentityInfo()
+            {
+                DisplayName = claim.GetClaimValue("display_name"),
+                Email = claim.GetClaimValue("email"),
+                FirstName = claim.GetClaimValue("given_name"),
+                LastName = claim.GetClaimValue("family_name"),
+                PreferredUserName = claim.GetClaimValue("preferred_username"),
+                UserGuid = claim.GetClaimValue("idir_user_guid"),
+                EmailVerified = claim.GetClaimValue("email_verified") == null ? null : Boolean.Parse(claim.GetClaimValue("email_verified")),
+                Issuer = claim.GetClaimValue("iss"),
+                IdirUserName = claim.GetClaimValue("idir_username")
+            };
+        }
         public static Guid GetBizGuid(this IPrincipal principal)
         {
             if (BCeID_IDENTITY_PROVIDERS.Contains(principal.GetIdentityProvider()))

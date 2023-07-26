@@ -31,7 +31,7 @@ namespace Spd.Presentation.Screening.Controllers
         [HttpGet]
         public async Task<ConfigurationResponse> Get()
         {
-            OidcConfiguration bceidResp = new OidcConfiguration
+            OidcConfiguration oidcResp = new OidcConfiguration
             {
                 Issuer = _bceidOption.Value.Issuer,
                 ClientId = _bceidOption.Value.ClientId,
@@ -52,7 +52,7 @@ namespace Spd.Presentation.Screening.Controllers
 
             return await Task.FromResult(new ConfigurationResponse()
             {
-                OidcConfiguration = bceidResp,
+                OidcConfiguration = oidcResp,
                 RecaptchaConfiguration = recaptchaResp,
                 BannerMessage = bannerMessage,
                 BcscConfiguration = bcscConfig
