@@ -35,7 +35,7 @@ namespace Spd.Engine.Search
         {
             ShareableClearanceSearchResponse response = new ();
             var org = (OrgQryResult)await _orgRepo.QueryOrgAsync(new OrgByIdentifierQry(request.OrgId), ct);
-            var contact = (ApplicantIdentityQueryResult?)await _identityRepo.Query(new ApplicantIdentityQuery(request.BcscId, IdentityProviderTypeCode.BcServicesCard), ct);
+            var contact = (ApplicantIdentityQueryResult?)await _identityRepo.Query(new ApplicantIdentityQuery(request.BcscId, IdentityProviderTypEnum.BcServicesCard), ct);
             if (contact == null) return response;
 
             ShareableClearanceQry qry = new ShareableClearanceQry(

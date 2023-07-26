@@ -87,6 +87,7 @@ namespace Spd.Utilities.LogonUser
             {
                 ("GET", "api/health"),
                 ("GET", "api/users/whoami"),
+                ("GET", "api/idir-users/whoami"),
                 ("GET", "api/configuration"),
                 ("GET", "api/metadata/address"),
                 ("GET", "api/org-registrations"),

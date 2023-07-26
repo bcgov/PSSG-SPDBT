@@ -52,7 +52,7 @@ namespace Spd.Resource.Organizations.Registration
         public VolunteerOrganizationTypeCode? VolunteerOrganizationTypeCode { get; set; }
         public RegistrationTypeCode RegistrationTypeCode { get; set; }
         public ScreeningsCountTypeCode ScreeningsCount { get; set; }
-        public IdentityProviderTypeCode? IdentityProviderTypeCode { get; set; }
+        public IdentityProviderTypEnum? IdentityProviderTypeCode { get; set; }
         public Guid? BizIdentityGuid { get; set; }
         public Guid? BCeIDUserGuid { get; set; }
         public BooleanTypeCode HasPotentialDuplicate { get; set; } = BooleanTypeCode.No;
@@ -84,7 +84,7 @@ namespace Spd.Resource.Organizations.Registration
         NotSure
     }
 
-    public enum IdentityProviderTypeCode
+    public enum IdentityProviderTypEnum
     {
         BusinessBceId,
         BcServicesCard,

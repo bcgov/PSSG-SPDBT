@@ -48,7 +48,7 @@ namespace Spd.Manager.Membership.OrgRegistration
             {
                 orgRegistration.IdentityProviderTypeCode = _currentUser.GetIdentityProvider() switch
                 {
-                    "bceidboth" or "bceidbusiness" => IdentityProviderTypeCode.BusinessBceId,
+                    "bceidboth" or "bceidbusiness" => IdentityProviderTypEnum.BusinessBceId,
                     _ => null
                 };
                 orgRegistration.BCeIDUserGuid = _currentUser.GetUserGuid();
