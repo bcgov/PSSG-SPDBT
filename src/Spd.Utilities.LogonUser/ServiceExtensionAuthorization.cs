@@ -14,6 +14,10 @@ namespace Spd.Utilities.LogonUser
                 options.AddPolicy("OnlyBcsc",
                     onlyBcscPolicyBuilder.RequireAuthenticatedUser().Build());
 
+                var onlyIdirPolicyBuilder = new AuthorizationPolicyBuilder(IdirAuthenticationConfiguration.AuthSchemeName);
+                options.AddPolicy("OnlyIdir",
+                    onlyIdirPolicyBuilder.RequireAuthenticatedUser().Build());
+
                 var onlyBceidPolicyBuilder = new AuthorizationPolicyBuilder(BCeIDAuthenticationConfiguration.AuthSchemeName);
                 options.AddPolicy("OnlyBCeID",
                     onlyBceidPolicyBuilder.RequireAuthenticatedUser().Build());
