@@ -20,6 +20,7 @@ import { ApplicationStatisticsResponse } from '../models/application-statistics-
 import { BulkHistoryListResponse } from '../models/bulk-history-list-response';
 import { BulkUploadCreateResponse } from '../models/bulk-upload-create-response';
 import { ClearanceListResponse } from '../models/clearance-list-response';
+import { DelegateResponse } from '../models/delegate-response';
 import { IdentityStatusCode } from '../models/identity-status-code';
 
 @Injectable({
@@ -786,6 +787,180 @@ export class ApplicationService extends BaseService {
 
     return this.apiOrgsOrgIdApplicationsPaymentsGet$Response(params,context).pipe(
       map((r: StrictHttpResponse<ApplicationPaymentListResponse>) => r.body as ApplicationPaymentListResponse)
+    );
+  }
+
+  /**
+   * Path part for operation apiOrgsOrgIdApplicationApplicationIdDelegatesGet
+   */
+  static readonly ApiOrgsOrgIdApplicationApplicationIdDelegatesGetPath = '/api/orgs/{orgId}/application/{applicationId}/delegates';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiOrgsOrgIdApplicationApplicationIdDelegatesGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiOrgsOrgIdApplicationApplicationIdDelegatesGet$Response(params: {
+    applicationId: string;
+    orgId: string;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<Array<DelegateResponse>>> {
+
+    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdApplicationApplicationIdDelegatesGetPath, 'get');
+    if (params) {
+      rb.path('applicationId', params.applicationId, {});
+      rb.path('orgId', params.orgId, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<Array<DelegateResponse>>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiOrgsOrgIdApplicationApplicationIdDelegatesGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiOrgsOrgIdApplicationApplicationIdDelegatesGet(params: {
+    applicationId: string;
+    orgId: string;
+  },
+  context?: HttpContext
+
+): Observable<Array<DelegateResponse>> {
+
+    return this.apiOrgsOrgIdApplicationApplicationIdDelegatesGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<Array<DelegateResponse>>) => r.body as Array<DelegateResponse>)
+    );
+  }
+
+  /**
+   * Path part for operation apiOrgsOrgIdApplicationApplicationIdDelegatePost
+   */
+  static readonly ApiOrgsOrgIdApplicationApplicationIdDelegatePostPath = '/api/orgs/{orgId}/application/{applicationId}/delegate';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiOrgsOrgIdApplicationApplicationIdDelegatePost()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiOrgsOrgIdApplicationApplicationIdDelegatePost$Response(params: {
+    applicationId: string;
+    orgId: string;
+    body: DelegateResponse
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<ActionResult>> {
+
+    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdApplicationApplicationIdDelegatePostPath, 'post');
+    if (params) {
+      rb.path('applicationId', params.applicationId, {});
+      rb.path('orgId', params.orgId, {});
+      rb.body(params.body, 'application/*+json');
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<ActionResult>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiOrgsOrgIdApplicationApplicationIdDelegatePost$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiOrgsOrgIdApplicationApplicationIdDelegatePost(params: {
+    applicationId: string;
+    orgId: string;
+    body: DelegateResponse
+  },
+  context?: HttpContext
+
+): Observable<ActionResult> {
+
+    return this.apiOrgsOrgIdApplicationApplicationIdDelegatePost$Response(params,context).pipe(
+      map((r: StrictHttpResponse<ActionResult>) => r.body as ActionResult)
+    );
+  }
+
+  /**
+   * Path part for operation apiOrgsOrgIdApplicationApplicationIdDelegateDelegateIdDelete
+   */
+  static readonly ApiOrgsOrgIdApplicationApplicationIdDelegateDelegateIdDeletePath = '/api/orgs/{orgId}/application/{applicationId}/delegate/{delegateId}';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiOrgsOrgIdApplicationApplicationIdDelegateDelegateIdDelete()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiOrgsOrgIdApplicationApplicationIdDelegateDelegateIdDelete$Response(params: {
+    delegateId: string;
+    applicationId: string;
+    orgId: string;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<ActionResult>> {
+
+    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdApplicationApplicationIdDelegateDelegateIdDeletePath, 'delete');
+    if (params) {
+      rb.path('delegateId', params.delegateId, {});
+      rb.path('applicationId', params.applicationId, {});
+      rb.path('orgId', params.orgId, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<ActionResult>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiOrgsOrgIdApplicationApplicationIdDelegateDelegateIdDelete$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiOrgsOrgIdApplicationApplicationIdDelegateDelegateIdDelete(params: {
+    delegateId: string;
+    applicationId: string;
+    orgId: string;
+  },
+  context?: HttpContext
+
+): Observable<ActionResult> {
+
+    return this.apiOrgsOrgIdApplicationApplicationIdDelegateDelegateIdDelete$Response(params,context).pipe(
+      map((r: StrictHttpResponse<ActionResult>) => r.body as ActionResult)
     );
   }
 
