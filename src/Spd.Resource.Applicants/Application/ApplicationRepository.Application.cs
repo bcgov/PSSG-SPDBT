@@ -25,6 +25,30 @@ internal partial class ApplicationRepository : IApplicationRepository
         if (org != null && serviceTeam != null)
             application = await CreateAppAsync(createApplicationCmd, org, user, serviceTeam, servicetype);
         await _context.SaveChangesAsync(ct);
+
+        if ((bool)createApplicationCmd.HaveVerifiedIdentity)
+        {
+            var volunteerOrganizationTypeCode = DynamicsContextLookupHelpers.GetTypeFromTypeId(org!._spd_organizationtypeid_value).Item2;
+            if (volunteerOrganizationTypeCode != null)
+            {
+                application.statuscode = (int?)ApplicationInactiveStatus.Submitted;
+                application.statecode = DynamicsConstants.StateCode_Inactive;
+            }
+            else
+            {
+                application.statuscode = (int?)ApplicationActiveStatus.PaymentPending;
+                application.statecode = DynamicsConstants.StatusCode_Active;
+            }
+        }
+        else
+        {
+            application.statuscode = (int?)ApplicationActiveStatus.ApplicantVerification;
+            application.statecode = DynamicsConstants.StatusCode_Active;
+        }
+
+        _context.UpdateObject(application);
+        await _context.SaveChangesAsync(ct);
+
         return application?.spd_applicationid;
     }
 
@@ -313,26 +337,6 @@ internal partial class ApplicationRepository : IApplicationRepository
     {
         spd_application app = _mapper.Map<spd_application>(createApplicationCmd);
 
-        if ((bool)createApplicationCmd.HaveVerifiedIdentity)
-        {
-            var volunteerOrganizationTypeCode = DynamicsContextLookupHelpers.GetTypeFromTypeId(org._spd_organizationtypeid_value).Item2;
-            if (volunteerOrganizationTypeCode != null)
-            {
-                app.statuscode = (int?)ApplicationInactiveStatus.Submitted;
-                app.statecode = DynamicsConstants.StateCode_Inactive;
-            }
-            else
-            {
-                app.statuscode = (int?)ApplicationActiveStatus.PaymentPending;
-                app.statecode = DynamicsConstants.StatusCode_Active;
-            }
-        }
-        else
-        {
-            app.statuscode = (int?)ApplicationActiveStatus.ApplicantVerification;
-            app.statecode = DynamicsConstants.StatusCode_Active;
-        }
-
         _context.AddTospd_applications(app);
         _context.SetLink(app, nameof(spd_application.spd_OrganizationId), org);
         if (user != null)
@@ -363,6 +367,7 @@ internal partial class ApplicationRepository : IApplicationRepository
         {
             AddAlias(item, contact);
         }
+
         return app;
     }
 
