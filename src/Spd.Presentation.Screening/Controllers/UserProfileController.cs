@@ -37,13 +37,14 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/users/whoami")]
         [HttpGet]
-        [Authorize(Policy = "OnlyBCeID, OnlyIdir")]
+        [Authorize(Policy = "OnlyBCeID")]
         public async Task<UserProfileResponse> OrgUserWhoami()
         {
             if (_currentUser.GetIdentityProvider().Equals("idir", StringComparison.InvariantCultureIgnoreCase))
             {
                 IdirUserIdentityInfo userIdentity = _currentUser.GetIdirUserIdentityInfo();
-                return null;
+                return new UserProfileResponse { 
+                    IdentityProviderType=Resource.Organizations.Registration.IdentityProviderTypeCode.Idir};
             }
             else
             {
@@ -68,6 +69,29 @@ namespace Spd.Presentation.Screening.Controllers
                 throw new ApiException(System.Net.HttpStatusCode.Unauthorized, "Applicant is not found");
             }
             return response;
+        }
+
+        /// <summary>
+        /// Org user whoami, for orgPortal
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/idir-users/whoami")]
+        [HttpGet]
+        [Authorize(Policy = "OnlyIdir")]
+        public async Task<UserProfileResponse> IdirUserWhoami()
+        {
+            if (_currentUser.GetIdentityProvider().Equals("idir", StringComparison.InvariantCultureIgnoreCase))
+            {
+                IdirUserIdentityInfo userIdentity = _currentUser.GetIdirUserIdentityInfo();
+                return new UserProfileResponse
+                {
+                    IdentityProviderType = Resource.Organizations.Registration.IdentityProviderTypeCode.Idir,
+                    UserDisplayName= userIdentity.DisplayName,
+                    UserGuid = null, //temp
+                    UserInfos = Array.Empty<UserInfo>(),
+                };
+            }
+            return null;
         }
     }
 }
