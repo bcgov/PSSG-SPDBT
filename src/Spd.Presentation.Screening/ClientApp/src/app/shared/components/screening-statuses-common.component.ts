@@ -420,10 +420,13 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 			.pipe()
 			.subscribe((res: ApplicationListResponse) => {
 				const applications = res.applications as Array<ScreeningStatusResponse>;
+				const isNotVolunteerOrg = this.authUserService.bceidUserOrgProfile?.isNotVolunteerOrg ?? false;
+
 				applications.forEach((app: ScreeningStatusResponse) => {
 					const itemClass = this.utilService.getApplicationPortalStatusClass(app.status);
 					app.applicationPortalStatusClass = itemClass;
 					app.isPayNow =
+						isNotVolunteerOrg &&
 						app.payeeType == PayerPreferenceTypeCode.Organization &&
 						app.status == ApplicationPortalStatusCode.AwaitingPayment;
 					app.isVerifyIdentity = app.status == ApplicationPortalStatusCode.VerifyIdentity;
