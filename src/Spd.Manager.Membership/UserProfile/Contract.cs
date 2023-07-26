@@ -23,6 +23,12 @@ namespace Spd.Manager.Membership.UserProfile
         public IEnumerable<UserInfo> UserInfos { get; set; } = Array.Empty<UserInfo>();
     }
 
+    public enum IdentityProviderTypeCode
+    {
+        BusinessBceId,
+        BcServicesCard,
+        Idir,
+    }
     public record UserInfo
     {
         public Guid UserId { get; set; }//from spd, portal user id
