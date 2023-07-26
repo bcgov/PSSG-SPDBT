@@ -312,6 +312,27 @@ internal partial class ApplicationRepository : IApplicationRepository
         spd_servicetype? serviceType)
     {
         spd_application app = _mapper.Map<spd_application>(createApplicationCmd);
+
+        if ((bool)createApplicationCmd.HaveVerifiedIdentity)
+        {
+            var volunteerOrganizationTypeCode = DynamicsContextLookupHelpers.GetTypeFromTypeId(org._spd_organizationtypeid_value).Item2;
+            if (volunteerOrganizationTypeCode != null)
+            {
+                app.statuscode = (int?)ApplicationInactiveStatus.Submitted;
+                app.statecode = DynamicsConstants.StateCode_Inactive;
+            }
+            else
+            {
+                app.statuscode = (int?)ApplicationActiveStatus.PaymentPending;
+                app.statecode = DynamicsConstants.StatusCode_Active;
+            }
+        }
+        else
+        {
+            app.statuscode = (int?)ApplicationActiveStatus.ApplicantVerification;
+            app.statecode = DynamicsConstants.StatusCode_Active;
+        }
+
         _context.AddTospd_applications(app);
         _context.SetLink(app, nameof(spd_application.spd_OrganizationId), org);
         if (user != null)
