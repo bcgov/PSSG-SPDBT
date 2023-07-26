@@ -15,6 +15,10 @@ import {
 	UserProfileResponse,
 } from '../code-types/code-types.models';
 
+export interface BceidOrgResponse extends OrgResponse {
+	isNotVolunteerOrg: boolean;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AuthUserService {
 	loginType: IdentityProviderTypeCode | null = null;
@@ -23,7 +27,7 @@ export class AuthUserService {
 	bcscUserWhoamiProfile: ApplicantProfileResponse | null = null;
 	bcscUserInfoProfile: ApplicantUserInfo | null = null;
 
-	bceidUserOrgProfile: OrgResponse | null = null;
+	bceidUserOrgProfile: BceidOrgResponse | null = null;
 	bceidUserInfoProfile: UserInfo | null = null;
 
 	constructor(
@@ -60,10 +64,15 @@ export class AuthUserService {
 			return Promise.resolve(false);
 		}
 
-		this.bceidUserOrgProfile = await lastValueFrom(
+		const bceidUserOrgProfile = await lastValueFrom(
 			this.orgService.apiOrgsOrgIdGet({ orgId: this.bceidUserInfoProfile.orgId! })
 		);
-		console.debug('[AuthUserService] setOrgProfile', this.bceidUserOrgProfile);
+		this.bceidUserOrgProfile = {
+			...bceidUserOrgProfile,
+			isNotVolunteerOrg: bceidUserOrgProfile.volunteerOrganizationTypeCode ? false : true,
+		};
+
+		console.debug('[AuthUserService] updateOrgProfile bceidUserOrgProfile', this.bceidUserOrgProfile);
 		return Promise.resolve(true);
 	}
 
