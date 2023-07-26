@@ -124,6 +124,9 @@ namespace Spd.Utilities.Dynamics
             {"StatutoryDeclarationPkg", Guid.Parse("5b9ef416-4f1c-ee11-b844-00505683fbf4")},
             {"ValidationCertificate", Guid.Parse("f5bc7549-0cea-ed11-b840-005056830319")},
             {"OpportunityToRespond", Guid.Parse("385edd8c-fd16-ee11-b844-00505683fbf4")},
+            {"ClearanceLetter", Guid.Parse("90ea957e-a426-ee11-b844-00505683fbf4")},
+            {"PaymentReceipt", Guid.Parse("d5fec490-3e2b-ee11-b845-00505683fbf4")},
+            {"ManualPaymentForm", Guid.Parse("be79f9af-3e2b-ee11-b845-00505683fbf4")},
         }.ToImmutableDictionary();
 
         public static bcgov_tag? LookupTag(this DynamicsContext context, string key)

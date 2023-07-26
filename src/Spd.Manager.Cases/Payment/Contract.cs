@@ -1,4 +1,5 @@
 using MediatR;
+using Spd.Utilities.Shared.ManagerContract;
 using System.ComponentModel.DataAnnotations;
 
 namespace Spd.Manager.Cases.Payment
@@ -10,6 +11,7 @@ namespace Spd.Manager.Cases.Payment
         public Task<Guid> Handle(PaymenCreateCommand command, CancellationToken ct);
         public Task<PaymentResponse> Handle(PaymentQuery query, CancellationToken ct);
         public Task<int> Handle(PaymentFailedAttemptCountQuery query, CancellationToken ct);
+        public Task<FileResponse> Handle(PaymentReceiptQuery query, CancellationToken ct);
     }
 
     //pre payment link - for dynamics internal use
@@ -90,4 +92,7 @@ namespace Spd.Manager.Cases.Payment
         public DateTimeOffset TransDateTime { get; set; }
         public decimal TransAmount { get; set; }
     }
+
+    //payment receipt
+    public record PaymentReceiptQuery(Guid PaymentId) : IRequest<FileResponse>;
 }
