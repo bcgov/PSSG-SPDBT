@@ -1,13 +1,13 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
-import { AppInviteOrgData } from '../crrpa.component';
+import { AppInviteOrgData } from './screening-application.model';
 
 @Component({
-	selector: 'app-step-eligibility',
+	selector: 'app-sa-step-eligibility',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-checklist *ngIf="orgData" [payeeType]="orgData.payeeType!"></app-checklist>
+				<app-sa-checklist *ngIf="orgData" [payeeType]="orgData.payeeType!"></app-sa-checklist>
 
 				<div class="row mt-4">
 					<div class="col-xxl-3 col-lg-4 col-md-4 col-sm-12 mx-auto">
@@ -20,7 +20,7 @@ import { AppInviteOrgData } from '../crrpa.component';
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepEligibilityComponent {
+export class SaStepEligibilityComponent {
 	@Input() orgData: AppInviteOrgData | null = null;
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();

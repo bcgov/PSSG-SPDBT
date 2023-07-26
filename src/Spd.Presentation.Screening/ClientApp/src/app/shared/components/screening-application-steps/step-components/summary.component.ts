@@ -3,7 +3,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { UtilService } from 'src/app/core/services/util.service';
 
 @Component({
-	selector: 'app-summary',
+	selector: 'app-sa-summary',
 	template: `
 		<section class="step-section pt-4 pb-4 px-3">
 			<div class="step" *ngIf="orgData">
@@ -159,7 +159,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 		`,
 	],
 })
-export class SummaryComponent {
+export class SaSummaryComponent {
 	appConstants = SPD_CONSTANTS;
 
 	@Input() orgData: any | null = null;

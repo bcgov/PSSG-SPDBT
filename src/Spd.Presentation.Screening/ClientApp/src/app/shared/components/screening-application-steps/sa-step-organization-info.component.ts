@@ -1,14 +1,14 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
-import { AppInviteOrgData } from '../crrpa.component';
-import { SecurityInformationComponent } from '../step-components/security-information.component';
+import { AppInviteOrgData } from './screening-application.model';
+import { SaSecurityInformationComponent } from './step-components/sa-security-information.component';
 
 @Component({
-	selector: 'app-step-organization-info',
+	selector: 'app-sa-step-organization-info',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)">
 			<mat-step>
-				<app-security-information *ngIf="orgData" [orgData]="orgData"></app-security-information>
+				<app-sa-security-information *ngIf="orgData" [orgData]="orgData"></app-sa-security-information>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -24,14 +24,14 @@ import { SecurityInformationComponent } from '../step-components/security-inform
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepOrganizationInfoComponent {
+export class SaStepOrganizationInfoComponent {
 	@Input() orgData: AppInviteOrgData | null = null;
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-	@ViewChild(SecurityInformationComponent)
-	securityInformationComponent!: SecurityInformationComponent;
+	@ViewChild(SaSecurityInformationComponent)
+	securityInformationComponent!: SaSecurityInformationComponent;
 
 	getStepData(): any {
 		return {

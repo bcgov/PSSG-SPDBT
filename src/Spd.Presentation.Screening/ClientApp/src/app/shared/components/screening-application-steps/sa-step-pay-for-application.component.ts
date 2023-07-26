@@ -3,7 +3,7 @@ import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@
 import { MatStepper } from '@angular/material/stepper';
 
 @Component({
-	selector: 'app-step-pay-for-application',
+	selector: 'app-sa-step-pay-for-application',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
@@ -18,7 +18,7 @@ import { MatStepper } from '@angular/material/stepper';
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepPayForApplicationComponent {
+export class SaStepPayForApplicationComponent {
 	@ViewChild('childstepper') childstepper!: MatStepper;
 
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
@@ -48,18 +48,6 @@ export class StepPayForApplicationComponent {
 	}
 
 	private dirtyForm(step: number): boolean {
-		// switch (step) {
-		// 	case 1:
-		// 		this.declarationComponent.form.markAllAsTouched();
-		// 		return this.declarationComponent.isFormValid();
-		// 	case 2:
-		// 		this.agreementOfTermsComponent.form.markAllAsTouched();
-		// 		return this.agreementOfTermsComponent.isFormValid();
-
-		// 	default:
-		// 		console.error('Unknown Form', step);
-		// }
-		// return false;
 		return true;
 	}
 }

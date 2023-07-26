@@ -2,14 +2,14 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/core';
 
 @Component({
-	selector: 'app-step-login-options',
+	selector: 'app-sa-step-login-options',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-log-in-options
+				<app-sa-log-in-options
 					(clickNext)="onStepNext()"
 					(registerWithBcServicesCard)="onRegisterWithBcServicesCard()"
-				></app-log-in-options>
+				></app-sa-log-in-options>
 
 				<div class="row mt-4">
 					<div class="col-xxl-3 col-lg-4 col-md-4 col-sm-12 mx-auto">
@@ -22,7 +22,7 @@ import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/cor
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepLoginOptionsComponent {
+export class SaStepLoginOptionsComponent {
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();

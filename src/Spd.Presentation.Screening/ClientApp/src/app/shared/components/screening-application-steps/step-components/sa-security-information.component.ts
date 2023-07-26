@@ -6,10 +6,10 @@ import { FormControlValidators } from 'src/app/core/validators/form-control.vali
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
-import { AppInviteOrgData, CrcFormStepComponent } from '../crrpa.component';
+import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application.model';
 
 @Component({
-	selector: 'app-security-information',
+	selector: 'app-sa-security-information',
 	template: `
 		<section class="step-section p-3" *ngIf="orgData">
 			<form [formGroup]="form" novalidate>
@@ -76,7 +76,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../crrpa.component';
 	`,
 	styles: [],
 })
-export class SecurityInformationComponent implements CrcFormStepComponent {
+export class SaSecurityInformationComponent implements CrcFormStepComponent {
 	facilityNameShow = false;
 	facilityNameRequired = false;
 	companyFacilityLabel = '';

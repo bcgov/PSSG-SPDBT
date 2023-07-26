@@ -2,10 +2,10 @@ import { Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { CrcFormStepComponent } from '../crrpa.component';
+import { CrcFormStepComponent } from '../screening-application.model';
 
 @Component({
-	selector: 'app-agreement-of-terms',
+	selector: 'app-sa-agreement-of-terms',
 	template: `
 		<section class="step-section p-3">
 			<form [formGroup]="form" novalidate>
@@ -131,7 +131,7 @@ import { CrcFormStepComponent } from '../crrpa.component';
 		`,
 	],
 })
-export class AgreementOfTermsComponent implements CrcFormStepComponent {
+export class SaAgreementOfTermsComponent implements CrcFormStepComponent {
 	@Input() resetRecaptcha: Subject<void> = new Subject<void>();
 
 	form: FormGroup = this.formBuilder.group({
