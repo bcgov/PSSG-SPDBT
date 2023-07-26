@@ -2,10 +2,12 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Spd.Manager.Cases.Application;
 using Spd.Manager.Cases.Payment;
 using Spd.Presentation.Screening.Configurations;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
+using Spd.Utilities.Shared.ManagerContract;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 
@@ -109,6 +111,22 @@ namespace Spd.Presentation.Screening.Controllers
         public async Task<int> GetApplicantFailedPaymentAttempts([FromRoute] Guid applicationId)
         {
             return await _mediator.Send(new PaymentFailedAttemptCountQuery(applicationId));
+        }
+
+        /// <summary>
+        /// download the receipt for successful payment
+        /// </summary>
+        /// <param name="paymentId"></param>
+        /// <returns>FileStreamResult</returns>
+        [Route("api/applicants/screenings/payments/{paymentId}/receipt")]
+        [HttpGet]
+        //[Authorize(Policy = "OnlyBcsc", Roles = "Applicant")]
+        public async Task<FileStreamResult> ApplicantDownloadReceiptAsync([FromRoute] Guid paymentId)
+        {
+            FileResponse response = await _mediator.Send(new PaymentReceiptQuery(paymentId));
+            var content = new MemoryStream(response.Content);
+            var contentType = response.ContentType ?? "application/octet-stream";
+            return File(content, contentType, response.FileName);
         }
         #endregion
 

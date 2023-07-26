@@ -59,6 +59,7 @@ namespace Spd.Resource.Applicants.Document
         CanadianFirearmsLicense,
         CanadianNativeStatusCard,
         CertificateOfAdvancedSecurityTraining,
+        ClearanceLetter,
         ConfirmationLetterFromSuperiorOfficer,
         ConfirmationOfFingerprints,
         FingerprintsPkg,
@@ -70,7 +71,9 @@ namespace Spd.Resource.Applicants.Document
         LegalWorkStatus,
         LetterOfNoConflict,
         Locksmith,
+        ManualPaymentForm,
         MentalHealthConditionForm,
+        PaymentReceipt,
         Passport,
         PermanentResidenceCard,
         Photograph,
@@ -82,6 +85,6 @@ namespace Spd.Resource.Applicants.Document
         StatutoryDeclaration,
         StatutoryDeclarationPkg,
         ValidationCertificate,
-        OpportunityToRespond
+        OpportunityToRespond,
     }
 }

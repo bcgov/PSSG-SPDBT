@@ -3,12 +3,15 @@ using MediatR;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Resource.Applicants.Application;
+using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.Payment;
 using Spd.Resource.Organizations.Config;
 using Spd.Utilities.Cache;
+using Spd.Utilities.FileStorage;
 using Spd.Utilities.Payment;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
+using Spd.Utilities.Shared.ManagerContract;
 using System.Net;
 
 namespace Spd.Manager.Cases.Payment
@@ -19,6 +22,7 @@ namespace Spd.Manager.Cases.Payment
         IRequestHandler<PaymentQuery, PaymentResponse>,
         IRequestHandler<PaymentFailedAttemptCountQuery, int>,
         IRequestHandler<PrePaymentLinkCreateCommand, PrePaymentLinkResponse>,
+        IRequestHandler<PaymentReceiptQuery, FileResponse>,
         IPaymentManager
     {
         private readonly IPaymentService _paymentService;
@@ -27,6 +31,8 @@ namespace Spd.Manager.Cases.Payment
         private readonly IPaymentRepository _paymentRepository;
         private readonly IMapper _mapper;
         private readonly IApplicationRepository _appRepository;
+        private readonly IDocumentRepository _documentRepository;
+        private readonly IFileStorageService _fileStorageService;
         private readonly ITimeLimitedDataProtector _dataProtector;
 
         public PaymentManager(IPaymentService paymentService,
@@ -35,7 +41,9 @@ namespace Spd.Manager.Cases.Payment
             IPaymentRepository paymentRepository,
             IMapper mapper,
             IApplicationRepository appRepository,
-            IDataProtectionProvider dpProvider)
+            IDataProtectionProvider dpProvider,
+            IDocumentRepository documentRepository,
+            IFileStorageService fileStorageService)
         {
             _paymentService = paymentService;
             _configRepository = configRepository;
@@ -43,6 +51,8 @@ namespace Spd.Manager.Cases.Payment
             _paymentRepository = paymentRepository;
             _mapper = mapper;
             _appRepository = appRepository;
+            _documentRepository = documentRepository;
+            _fileStorageService = fileStorageService;
             _dataProtector = dpProvider.CreateProtector(nameof(PrePaymentLinkCreateCommand)).ToTimeLimitedDataProtector();
         }
 
@@ -149,6 +159,27 @@ namespace Spd.Manager.Cases.Payment
         {
             var respList = await _paymentRepository.QueryAsync(new PaymentQry(query.ApplicationId), ct);
             return respList.Items.Count(i => !i.PaidSuccess && i.PaymentType == PaymentTypeEnum.PayBC_OnSubmission);
+        }
+
+        public async Task<FileResponse> Handle(PaymentReceiptQuery query, CancellationToken ct)
+        {
+            var respList = await _paymentRepository.QueryAsync(new PaymentQry(null, query.PaymentId), ct);
+            var applicationId = respList.Items.First().ApplicationId;
+            DocumentQry qry = new DocumentQry(ApplicationId: applicationId, FileType: DocumentTypeEnum.PaymentReceipt);
+            var docList = await _documentRepository.QueryAsync(qry, ct);
+            if (docList == null || !docList.Items.Any())
+                return new FileResponse();
+
+            var docUrl = docList.Items.OrderByDescending(f => f.UploadedDateTime).FirstOrDefault();
+            FileQueryResult fileResult = (FileQueryResult)await _fileStorageService.HandleQuery(
+                new FileQuery { Key = docUrl.DocumentUrlId.ToString(), Folder = $"spd_application/{docUrl.ApplicationId}" },
+                ct);
+            return new FileResponse
+            {
+                Content = fileResult.File.Content,
+                ContentType = fileResult.File.ContentType,
+                FileName = fileResult.File.FileName
+            };
         }
 
         private async Task<SpdPaymentConfig> GetSpdPaymentConfigAsync(CancellationToken ct)
