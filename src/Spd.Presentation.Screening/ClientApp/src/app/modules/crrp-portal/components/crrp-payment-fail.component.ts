@@ -3,9 +3,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 import { PaymentLinkCreateRequest, PaymentLinkResponse, PaymentMethodCode, PaymentResponse } from 'src/app/api/models';
 import { PaymentService } from 'src/app/api/services';
+import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
+import { UtilService } from 'src/app/core/services/util.service';
 import { CrrpRoutes } from '../crrp-routing.module';
 
 @Component({
@@ -29,7 +31,8 @@ export class CrrpPaymentFailComponent implements OnInit {
 		private route: ActivatedRoute,
 		private router: Router,
 		private authUserService: AuthUserService,
-		private paymentService: PaymentService
+		private paymentService: PaymentService,
+		private utilService: UtilService
 	) {}
 
 	ngOnInit(): void {
@@ -90,6 +93,14 @@ export class CrrpPaymentFailComponent implements OnInit {
 	}
 
 	onDownloadManualPaymentForm(): void {
-		//TODO download manual payment form
+		this.paymentService
+			.apiOrgsOrgIdApplicationsApplicationIdManualPaymentFormGet$Response({
+				orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
+				applicationId: this.payment?.applicationId!,
+			})
+			.pipe()
+			.subscribe((resp: StrictHttpResponse<Blob>) => {
+				this.utilService.downloadFile(resp.headers, resp.body);
+			});
 	}
 }

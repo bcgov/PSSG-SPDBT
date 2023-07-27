@@ -135,7 +135,7 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
 
 							<button
 								mat-flat-button
-								(click)="onPayManually()"
+								(click)="onPayManual(application)"
 								class="table-button"
 								style="color: var(--color-red);"
 								aria-label="Pay manually"
@@ -256,12 +256,14 @@ export class SecurityScreeningListComponent implements OnInit {
 			});
 	}
 
-	onPayManually(): void {
-		this.router.navigate([SecurityScreeningRoutes.path(SecurityScreeningRoutes.PAYMENT_MANUAL)]);
+	onPayManual(application: ApplicantApplicationStatusResponse): void {
+		this.router.navigateByUrl(`/${SecurityScreeningRoutes.path(SecurityScreeningRoutes.PAYMENT_MANUAL)}`, {
+			state: { applicationData: application },
+		});
 	}
 
 	onDownloadClearanceLetter(clearance: any) {
-		//TODO handle clearance letter
+		//TODO download clearance letter
 	}
 
 	private loadList(): void {
