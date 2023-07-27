@@ -2,7 +2,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Spd.Manager.Cases.Application;
 using Spd.Manager.Cases.Payment;
 using Spd.Presentation.Screening.Configurations;
 using Spd.Utilities.Shared;
@@ -299,7 +298,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// </summary>
         /// <param name="paymentId"></param>
         /// <returns>FileStreamResult</returns>
-        [Route("api/crrpa/payments//{paymentId}/receipt")]
+        [Route("api/crrpa/payments/{paymentId}/receipt")]
         [HttpGet]
         public async Task<FileStreamResult> ApplicantInviteDownloadReceiptAsync([FromRoute] Guid paymentId)
         {
