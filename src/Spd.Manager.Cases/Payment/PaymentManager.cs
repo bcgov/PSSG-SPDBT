@@ -163,9 +163,7 @@ namespace Spd.Manager.Cases.Payment
 
         public async Task<FileResponse> Handle(PaymentReceiptQuery query, CancellationToken ct)
         {
-            var respList = await _paymentRepository.QueryAsync(new PaymentQry(null, query.PaymentId), ct);
-            var applicationId = respList.Items.First().ApplicationId;
-            DocumentQry qry = new DocumentQry(ApplicationId: applicationId, FileType: DocumentTypeEnum.PaymentReceipt);
+            DocumentQry qry = new DocumentQry(ApplicationId: query.ApplicationId, FileType: DocumentTypeEnum.PaymentReceipt);
             var docList = await _documentRepository.QueryAsync(qry, ct);
             if (docList == null || !docList.Items.Any())
                 return new FileResponse();

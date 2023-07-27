@@ -117,12 +117,12 @@ namespace Spd.Presentation.Screening.Controllers
         /// </summary>
         /// <param name="paymentId"></param>
         /// <returns>FileStreamResult</returns>
-        [Route("api/applicants/screenings/payments/{paymentId}/receipt")]
+        [Route("api/applicants/screenings/{applicationId}/payment-receipt")]
         [HttpGet]
         [Authorize(Policy = "OnlyBcsc", Roles = "Applicant")]
-        public async Task<FileStreamResult> ApplicantDownloadReceiptAsync([FromRoute] Guid paymentId)
+        public async Task<FileStreamResult> ApplicantDownloadReceiptAsync([FromRoute] Guid applicationId)
         {
-            FileResponse response = await _mediator.Send(new PaymentReceiptQuery(paymentId));
+            FileResponse response = await _mediator.Send(new PaymentReceiptQuery(applicationId));
             var content = new MemoryStream(response.Content);
             var contentType = response.ContentType ?? "application/octet-stream";
             return File(content, contentType, response.FileName);
@@ -208,12 +208,12 @@ namespace Spd.Presentation.Screening.Controllers
         /// </summary>
         /// <param name="paymentId"></param>
         /// <returns>FileStreamResult</returns>
-        [Route("api/orgs/{orgId}/applications/{applicationId}/payments/{paymentId}/receipt")]
+        [Route("api/orgs/{orgId}/applications/{applicationId}/payment-receipt")]
         [HttpGet]
         [Authorize(Policy = "OnlyBCeID", Roles = "Primary,Contact")]
-        public async Task<FileStreamResult> DownloadOrgReceiptAsync([FromRoute] Guid paymentId, [FromRoute] Guid orgId)
+        public async Task<FileStreamResult> DownloadOrgReceiptAsync([FromRoute] Guid applicationId, [FromRoute] Guid orgId)
         {
-            FileResponse response = await _mediator.Send(new PaymentReceiptQuery(paymentId));
+            FileResponse response = await _mediator.Send(new PaymentReceiptQuery(applicationId));
             var content = new MemoryStream(response.Content);
             var contentType = response.ContentType ?? "application/octet-stream";
             return File(content, contentType, response.FileName);
@@ -298,11 +298,11 @@ namespace Spd.Presentation.Screening.Controllers
         /// </summary>
         /// <param name="paymentId"></param>
         /// <returns>FileStreamResult</returns>
-        [Route("api/crrpa/payments/{paymentId}/receipt")]
+        [Route("api/crrpa/{applicationId}/payment-receipt")]
         [HttpGet]
-        public async Task<FileStreamResult> ApplicantInviteDownloadReceiptAsync([FromRoute] Guid paymentId)
+        public async Task<FileStreamResult> ApplicantInviteDownloadReceiptAsync([FromRoute] Guid applicationId)
         {
-            FileResponse response = await _mediator.Send(new PaymentReceiptQuery(paymentId));
+            FileResponse response = await _mediator.Send(new PaymentReceiptQuery(applicationId));
             var content = new MemoryStream(response.Content);
             var contentType = response.ContentType ?? "application/octet-stream";
             return File(content, contentType, response.FileName);
