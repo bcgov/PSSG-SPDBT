@@ -1,5 +1,6 @@
 import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { HotToastService } from '@ngneat/hot-toast';
 import jwt_decode from 'jwt-decode';
 import { ApplicationPortalStatusCode, PaginationResponse } from 'src/app/api/models';
 import * as CodeDescTypes from 'src/app/core/code-types/code-desc-types.models';
@@ -8,6 +9,8 @@ import { SPD_CONSTANTS } from '../constants/constants';
 
 @Injectable({ providedIn: 'root' })
 export class UtilService {
+	constructor(private hotToastService: HotToastService) {}
+
 	//------------------------------------
 	// Session storage
 	readonly ORG_REG_STATE_KEY: string = SPD_CONSTANTS.sessionStorage.organizationRegStateKey;
@@ -120,6 +123,7 @@ export class UtilService {
 			anchor.click();
 			document.body.removeChild(anchor);
 		} else {
+			this.hotToastService.error('File could not be found');
 			console.error(`fileName ${fileName} is empty`);
 		}
 	}
