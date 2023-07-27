@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
+using Spd.Resource.Applicants.Document;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
@@ -17,7 +18,7 @@ internal class DocumentTemplateRepository : IDocumentTemplateRepository
         _mapper = mapper;
     }
 
-    public async Task<string> ManageAsync(DocumentTemplateCmd cmd, CancellationToken ct)
+    public async Task<GeneratedDocumentResp> ManageAsync(DocumentTemplateCmd cmd, CancellationToken ct)
     {
         return cmd switch
         {
@@ -26,12 +27,12 @@ internal class DocumentTemplateRepository : IDocumentTemplateRepository
         };
     }
 
-    private async Task<string> GenerateDocBasedOnTemplateAsync(GenerateDocBasedOnTemplateCmd cmd, CancellationToken ct)
+    private async Task<GeneratedDocumentResp> GenerateDocBasedOnTemplateAsync(GenerateDocBasedOnTemplateCmd cmd, CancellationToken ct)
     {
         string templateName = cmd.DocTemplateType switch
         {
             DocTemplateTypeEnum.ManualPaymentForm => "Manual Payment Form",
-            DocTemplateTypeEnum.MonthlyReport => "Monthly Report",
+            //DocTemplateTypeEnum.MonthlyReport => "Monthly Report",
             DocTemplateTypeEnum.StatutoryDeclaration => "Statutory Declaration",
             DocTemplateTypeEnum.ClearanceLetter => "Clearance Letter",
             _ => throw new NotSupportedException()
@@ -46,7 +47,19 @@ internal class DocumentTemplateRepository : IDocumentTemplateRepository
         }
 
         bcgov_GenerateDocumentWithAEMResponse response = await template.bcgov_GenerateDocumentWithAEM(cmd.RegardingObjectId.ToString()).GetValueAsync(ct);
-        return null;
+        
+        if(response.IsSuccess==null || !(bool)response.IsSuccess)
+            throw new ApiException(HttpStatusCode.InternalServerError, "Document generated failed.");
+
+        var result = _mapper.Map<GeneratedDocumentResp>(response);
+        result.DocumentType = cmd.DocTemplateType switch
+        {
+            DocTemplateTypeEnum.ManualPaymentForm => DocumentTypeEnum.ManualPaymentForm,
+            DocTemplateTypeEnum.StatutoryDeclaration => DocumentTypeEnum.StatutoryDeclarationPkg,
+            DocTemplateTypeEnum.ClearanceLetter => DocumentTypeEnum.ClearanceLetter,
+            _ => throw new NotSupportedException()
+        };
+        return result;
     }
 
 }

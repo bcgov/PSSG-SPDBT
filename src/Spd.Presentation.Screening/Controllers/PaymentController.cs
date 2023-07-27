@@ -127,6 +127,22 @@ namespace Spd.Presentation.Screening.Controllers
             var contentType = response.ContentType ?? "application/octet-stream";
             return File(content, contentType, response.FileName);
         }
+
+        /// <summary>
+        /// download the receipt for successful payment
+        /// </summary>
+        /// <param name="paymentId"></param>
+        /// <returns>FileStreamResult</returns>
+        [Route("api/applicants/screenings/{applicationId}/manual-payment-form")]
+        [HttpGet]
+        [Authorize(Policy = "OnlyBcsc", Roles = "Applicant")]
+        public async Task<FileStreamResult> ApplicantDownloadManualPaymentFormAsync([FromRoute] Guid applicationId)
+        {
+            FileResponse response = await _mediator.Send(new ManualPaymentFormQuery(applicationId));
+            var content = new MemoryStream(response.Content);
+            var contentType = response.ContentType ?? "application/octet-stream";
+            return File(content, contentType, response.FileName);
+        }
         #endregion
 
         #region org-payment

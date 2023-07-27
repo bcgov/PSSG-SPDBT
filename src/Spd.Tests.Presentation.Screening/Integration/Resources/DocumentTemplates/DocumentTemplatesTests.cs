@@ -23,6 +23,8 @@ public class DocumentTemplatesTests : ScenarioContextBase
             DocTemplateType = DocTemplateTypeEnum.ManualPaymentForm
         };
         var response = await docTemplateRepo.ManageAsync(cmd, CancellationToken.None);
-        response.ShouldNotBeEmpty();
+        response.ContentType.ShouldBe("application/pdf");
+        response.FileName.ShouldBe("Manual Payment Form.pdf");
+        response.DocumentType.ShouldBe(Resource.Applicants.Document.DocumentTypeEnum.ManualPaymentForm);
     }
 }

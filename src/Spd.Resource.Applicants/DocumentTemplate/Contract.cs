@@ -1,8 +1,10 @@
+using Spd.Resource.Applicants.Document;
+
 namespace Spd.Resource.Applicants.DocumentTemplate
 {
     public interface IDocumentTemplateRepository
     {
-        public Task<string> ManageAsync(DocumentTemplateCmd cmd, CancellationToken cancellationToken);
+        public Task<GeneratedDocumentResp> ManageAsync(DocumentTemplateCmd cmd, CancellationToken cancellationToken);
     }
 
     public abstract record DocumentTemplateCmd;
@@ -18,5 +20,13 @@ namespace Spd.Resource.Applicants.DocumentTemplate
         ManualPaymentForm,
         StatutoryDeclaration,
         ClearanceLetter
+    }
+
+    public record GeneratedDocumentResp
+    {
+        public string? FileName { get; set; }
+        public DocumentTypeEnum? DocumentType { get; set; } = null;
+        public string ContentType { get; set; } = null!;
+        public byte[] Content { get; set; } = Array.Empty<byte>();
     }
 }
