@@ -115,7 +115,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <summary>
         /// download the receipt for successful payment
         /// </summary>
-        /// <param name="paymentId"></param>
+        /// <param name="applicationId"></param>
         /// <returns>FileStreamResult</returns>
         [Route("api/applicants/screenings/{applicationId}/payment-receipt")]
         [HttpGet]
@@ -129,9 +129,9 @@ namespace Spd.Presentation.Screening.Controllers
         }
 
         /// <summary>
-        /// download the receipt for successful payment
+        /// download the manual payment form
         /// </summary>
-        /// <param name="paymentId"></param>
+        /// <param name="applicationId"></param>
         /// <returns>FileStreamResult</returns>
         [Route("api/applicants/screenings/{applicationId}/manual-payment-form")]
         [HttpGet]
@@ -234,6 +234,22 @@ namespace Spd.Presentation.Screening.Controllers
             var contentType = response.ContentType ?? "application/octet-stream";
             return File(content, contentType, response.FileName);
         }
+
+        /// <summary>
+        /// download the manual payment form
+        /// </summary>
+        /// <param name="applicationId"></param>
+        /// <returns>FileStreamResult</returns>
+        [Route("api/orgs/{orgId}/applications/{applicationId}/manual-payment-form")]
+        [HttpGet]
+        [Authorize(Policy = "OnlyBCeID", Roles = "Primary,Contact")]
+        public async Task<FileStreamResult> DownloadOrgManualPaymentFormAsync([FromRoute] Guid applicationId)
+        {
+            FileResponse response = await _mediator.Send(new ManualPaymentFormQuery(applicationId));
+            var content = new MemoryStream(response.Content);
+            var contentType = response.ContentType ?? "application/octet-stream";
+            return File(content, contentType, response.FileName);
+        }
         #endregion
 
         #region applicant-invite-link-payment
@@ -319,6 +335,21 @@ namespace Spd.Presentation.Screening.Controllers
         public async Task<FileStreamResult> ApplicantInviteDownloadReceiptAsync([FromRoute] Guid applicationId)
         {
             FileResponse response = await _mediator.Send(new PaymentReceiptQuery(applicationId));
+            var content = new MemoryStream(response.Content);
+            var contentType = response.ContentType ?? "application/octet-stream";
+            return File(content, contentType, response.FileName);
+        }
+
+        /// <summary>
+        /// download the manual payment form
+        /// </summary>
+        /// <param name="applicationId"></param>
+        /// <returns>FileStreamResult</returns>
+        [Route("api/crrpa/{applicationId}/manual-payment-form")]
+        [HttpGet]
+        public async Task<FileStreamResult> ApplicantInviteManualPaymentFormAsync([FromRoute] Guid applicationId)
+        {
+            FileResponse response = await _mediator.Send(new ManualPaymentFormQuery(applicationId));
             var content = new MemoryStream(response.Content);
             var contentType = response.ContentType ?? "application/octet-stream";
             return File(content, contentType, response.FileName);
