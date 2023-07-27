@@ -9,8 +9,10 @@ import {
 	PaymentTypeCode,
 } from 'src/app/api/models';
 import { PaymentService } from 'src/app/api/services';
+import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
+import { UtilService } from 'src/app/core/services/util.service';
 
 @Component({
 	selector: 'app-crrpa-payment-fail',
@@ -37,7 +39,8 @@ export class CrrpaPaymentFailComponent implements OnInit {
 	constructor(
 		private route: ActivatedRoute,
 		private authProcessService: AuthProcessService,
-		private paymentService: PaymentService
+		private paymentService: PaymentService,
+		private utilService: UtilService
 	) {}
 
 	async ngOnInit(): Promise<void> {
@@ -88,6 +91,13 @@ export class CrrpaPaymentFailComponent implements OnInit {
 	}
 
 	onDownloadManualPaymentForm(): void {
-		//TODO download manual payment form
+		this.paymentService
+			.apiCrrpaApplicationIdManualPaymentFormGet$Response({
+				applicationId: this.payment?.applicationId!,
+			})
+			.pipe()
+			.subscribe((resp: StrictHttpResponse<Blob>) => {
+				this.utilService.downloadFile(resp.headers, resp.body);
+			});
 	}
 }

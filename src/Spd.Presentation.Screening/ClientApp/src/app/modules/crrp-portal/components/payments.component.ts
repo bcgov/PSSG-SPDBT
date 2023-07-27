@@ -174,7 +174,7 @@ export interface PaymentResponse extends ApplicationPaymentResponse {
 									style="color: var(--color-red);"
 									*ngIf="application.isPayManual"
 									aria-label="Pay manually"
-									(click)="onPayManually()"
+									(click)="onPayManual(application)"
 								>
 									<mat-icon>payment</mat-icon>Pay Manually
 								</button>
@@ -281,8 +281,10 @@ export class PaymentsComponent implements OnInit {
 			});
 	}
 
-	onPayManually(): void {
-		this.router.navigate([CrrpRoutes.path(CrrpRoutes.PAYMENT_MANUAL)]);
+	onPayManual(application: PaymentResponse): void {
+		this.router.navigateByUrl(`/${CrrpRoutes.path(CrrpRoutes.PAYMENT_MANUAL)}`, {
+			state: { applicationData: application },
+		});
 	}
 
 	onDownloadReceipt(application: PaymentResponse): void {
