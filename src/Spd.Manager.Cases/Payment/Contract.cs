@@ -12,6 +12,7 @@ namespace Spd.Manager.Cases.Payment
         public Task<PaymentResponse> Handle(PaymentQuery query, CancellationToken ct);
         public Task<int> Handle(PaymentFailedAttemptCountQuery query, CancellationToken ct);
         public Task<FileResponse> Handle(PaymentReceiptQuery query, CancellationToken ct);
+        public Task<FileResponse> Handle(ManualPaymentFormQuery query, CancellationToken ct);
     }
 
     //pre payment link - for dynamics internal use
@@ -95,4 +96,7 @@ namespace Spd.Manager.Cases.Payment
 
     //payment receipt
     public record PaymentReceiptQuery(Guid ApplicationId) : IRequest<FileResponse>;
+
+    //payment form
+    public record ManualPaymentFormQuery(Guid ApplicationId) : IRequest<FileResponse>;
 }
