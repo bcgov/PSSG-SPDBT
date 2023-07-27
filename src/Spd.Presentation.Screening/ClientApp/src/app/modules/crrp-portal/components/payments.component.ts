@@ -15,6 +15,7 @@ import {
 	PaymentMethodCode,
 } from 'src/app/api/models';
 import { ApplicationService, PaymentService } from 'src/app/api/services';
+import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { ApplicationPortalStatisticsTypeCode } from 'src/app/core/code-types/application-portal-statistics-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
@@ -151,6 +152,7 @@ export interface PaymentResponse extends ApplicationPaymentResponse {
 									*ngIf="application.isDownloadReceipt"
 									aria-label="Download Receipt"
 									matTooltip="Download Receipt"
+									(click)="onDownloadReceipt(application)"
 								>
 									<mat-icon>file_download</mat-icon>Receipt
 								</button>
@@ -281,6 +283,18 @@ export class PaymentsComponent implements OnInit {
 
 	onPayManually(): void {
 		this.router.navigate([CrrpRoutes.path(CrrpRoutes.PAYMENT_MANUAL)]);
+	}
+
+	onDownloadReceipt(application: PaymentResponse): void {
+		this.paymentService
+			.apiOrgsOrgIdApplicationsApplicationIdPaymentReceiptGet$Response({
+				orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
+				applicationId: application.id!,
+			})
+			.pipe()
+			.subscribe((resp: StrictHttpResponse<Blob>) => {
+				this.utilService.downloadFile(resp.headers, resp.body);
+			});
 	}
 
 	onShowDropdownOverlayChange(show: boolean): void {

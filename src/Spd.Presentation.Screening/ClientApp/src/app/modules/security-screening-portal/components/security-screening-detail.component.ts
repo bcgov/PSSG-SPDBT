@@ -12,7 +12,7 @@ import {
 	FileTemplateTypeCode,
 	FileTypeCode,
 } from 'src/app/api/models';
-import { ApplicantService } from 'src/app/api/services';
+import { ApplicantService, PaymentService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
@@ -36,7 +36,13 @@ import {
 					<button mat-stroked-button color="primary" class="large w-auto m-2" aria-label="Back" (click)="onBack()">
 						<mat-icon>arrow_back</mat-icon>Back
 					</button>
-					<button mat-flat-button color="primary" class="large w-auto m-2" aria-label="Download Receipt">
+					<button
+						mat-flat-button
+						color="primary"
+						class="large w-auto m-2"
+						aria-label="Download Receipt"
+						(click)="onDownloadReceipt()"
+					>
 						<mat-icon>file_download</mat-icon>Download Receipt
 					</button>
 				</div>
@@ -216,6 +222,7 @@ export class SecurityScreeningDetailComponent implements OnInit, AfterViewInit {
 		private router: Router,
 		private applicantService: ApplicantService,
 		private authUserService: AuthUserService,
+		private paymentService: PaymentService,
 		private location: Location,
 		private utilService: UtilService,
 		private dialog: MatDialog
@@ -249,6 +256,17 @@ export class SecurityScreeningDetailComponent implements OnInit, AfterViewInit {
 
 	onBack(): void {
 		this.router.navigateByUrl(SecurityScreeningRoutes.path(SecurityScreeningRoutes.CRC_LIST));
+	}
+
+	onDownloadReceipt(): void {
+		this.paymentService
+			.apiApplicantsScreeningsApplicationIdPaymentReceiptGet$Response({
+				applicationId: this.application!.id!,
+			})
+			.pipe()
+			.subscribe((resp: StrictHttpResponse<Blob>) => {
+				this.utilService.downloadFile(resp.headers, resp.body);
+			});
 	}
 
 	onUploadFile(): void {
