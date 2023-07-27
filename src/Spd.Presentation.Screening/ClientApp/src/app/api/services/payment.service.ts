@@ -321,6 +321,67 @@ export class PaymentService extends BaseService {
   }
 
   /**
+   * Path part for operation apiApplicantsScreeningsApplicationIdPaymentReceiptGet
+   */
+  static readonly ApiApplicantsScreeningsApplicationIdPaymentReceiptGetPath = '/api/applicants/screenings/{applicationId}/payment-receipt';
+
+  /**
+   * download the receipt for successful payment.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiApplicantsScreeningsApplicationIdPaymentReceiptGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantsScreeningsApplicationIdPaymentReceiptGet$Response(params: {
+    applicationId: string;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<Blob>> {
+
+    const rb = new RequestBuilder(this.rootUrl, PaymentService.ApiApplicantsScreeningsApplicationIdPaymentReceiptGetPath, 'get');
+    if (params) {
+      rb.path('applicationId', params.applicationId, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'blob',
+      accept: 'application/pdf',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<Blob>;
+      })
+    );
+  }
+
+  /**
+   * download the receipt for successful payment.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiApplicantsScreeningsApplicationIdPaymentReceiptGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantsScreeningsApplicationIdPaymentReceiptGet(params: {
+    applicationId: string;
+  },
+  context?: HttpContext
+
+): Observable<Blob> {
+
+    return this.apiApplicantsScreeningsApplicationIdPaymentReceiptGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<Blob>) => r.body as Blob)
+    );
+  }
+
+  /**
    * Path part for operation apiOrgsOrgIdApplicationsApplicationIdPaymentLinkPost
    */
   static readonly ApiOrgsOrgIdApplicationsApplicationIdPaymentLinkPostPath = '/api/orgs/{orgId}/applications/{applicationId}/payment-link';
@@ -636,6 +697,70 @@ export class PaymentService extends BaseService {
   }
 
   /**
+   * Path part for operation apiOrgsOrgIdApplicationsApplicationIdPaymentReceiptGet
+   */
+  static readonly ApiOrgsOrgIdApplicationsApplicationIdPaymentReceiptGetPath = '/api/orgs/{orgId}/applications/{applicationId}/payment-receipt';
+
+  /**
+   * download the receipt for successful payment.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiOrgsOrgIdApplicationsApplicationIdPaymentReceiptGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiOrgsOrgIdApplicationsApplicationIdPaymentReceiptGet$Response(params: {
+    applicationId: string;
+    orgId: string;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<Blob>> {
+
+    const rb = new RequestBuilder(this.rootUrl, PaymentService.ApiOrgsOrgIdApplicationsApplicationIdPaymentReceiptGetPath, 'get');
+    if (params) {
+      rb.path('applicationId', params.applicationId, {});
+      rb.path('orgId', params.orgId, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'blob',
+      accept: 'application/pdf',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<Blob>;
+      })
+    );
+  }
+
+  /**
+   * download the receipt for successful payment.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiOrgsOrgIdApplicationsApplicationIdPaymentReceiptGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiOrgsOrgIdApplicationsApplicationIdPaymentReceiptGet(params: {
+    applicationId: string;
+    orgId: string;
+  },
+  context?: HttpContext
+
+): Observable<Blob> {
+
+    return this.apiOrgsOrgIdApplicationsApplicationIdPaymentReceiptGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<Blob>) => r.body as Blob)
+    );
+  }
+
+  /**
    * Path part for operation apiCrrpaPaymentLinkPost
    */
   static readonly ApiCrrpaPaymentLinkPostPath = '/api/crrpa/payment-link';
@@ -932,6 +1057,67 @@ export class PaymentService extends BaseService {
 
     return this.apiCrrpaApplicationIdPaymentAttemptsGet$Response(params,context).pipe(
       map((r: StrictHttpResponse<number>) => r.body as number)
+    );
+  }
+
+  /**
+   * Path part for operation apiCrrpaApplicationIdPaymentReceiptGet
+   */
+  static readonly ApiCrrpaApplicationIdPaymentReceiptGetPath = '/api/crrpa/{applicationId}/payment-receipt';
+
+  /**
+   * download the receipt for successful payment.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiCrrpaApplicationIdPaymentReceiptGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiCrrpaApplicationIdPaymentReceiptGet$Response(params: {
+    applicationId: string;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<Blob>> {
+
+    const rb = new RequestBuilder(this.rootUrl, PaymentService.ApiCrrpaApplicationIdPaymentReceiptGetPath, 'get');
+    if (params) {
+      rb.path('applicationId', params.applicationId, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'blob',
+      accept: 'application/pdf',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<Blob>;
+      })
+    );
+  }
+
+  /**
+   * download the receipt for successful payment.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiCrrpaApplicationIdPaymentReceiptGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiCrrpaApplicationIdPaymentReceiptGet(params: {
+    applicationId: string;
+  },
+  context?: HttpContext
+
+): Observable<Blob> {
+
+    return this.apiCrrpaApplicationIdPaymentReceiptGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<Blob>) => r.body as Blob)
     );
   }
 
