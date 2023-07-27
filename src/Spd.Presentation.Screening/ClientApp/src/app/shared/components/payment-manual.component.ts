@@ -57,13 +57,14 @@ export class PaymentManualComponent implements OnInit {
 	isBackRoute: boolean = false;
 
 	@Output() backRoute: EventEmitter<any> = new EventEmitter();
+	@Output() downloadManualPaymentForm: EventEmitter<any> = new EventEmitter();
 
 	ngOnInit(): void {
 		this.isBackRoute = this.backRoute.observed;
 	}
 
 	onDownloadManualPaymentForm(): void {
-		//TODO download manual payment form
+		this.downloadManualPaymentForm.emit();
 	}
 
 	onBack(): void {
