@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.Document;
+using Spd.Resource.Applicants.DocumentTemplate;
 using Spd.Resource.Applicants.Payment;
 using Spd.Resource.Organizations.Config;
 using Spd.Utilities.Cache;
@@ -23,6 +24,7 @@ namespace Spd.Manager.Cases.Payment
         IRequestHandler<PaymentFailedAttemptCountQuery, int>,
         IRequestHandler<PrePaymentLinkCreateCommand, PrePaymentLinkResponse>,
         IRequestHandler<PaymentReceiptQuery, FileResponse>,
+        IRequestHandler<ManualPaymentFormQuery, FileResponse>,
         IPaymentManager
     {
         private readonly IPaymentService _paymentService;
@@ -32,6 +34,7 @@ namespace Spd.Manager.Cases.Payment
         private readonly IMapper _mapper;
         private readonly IApplicationRepository _appRepository;
         private readonly IDocumentRepository _documentRepository;
+        private readonly IDocumentTemplateRepository _documentTemplateRepository;
         private readonly IFileStorageService _fileStorageService;
         private readonly ITimeLimitedDataProtector _dataProtector;
 
@@ -43,6 +46,7 @@ namespace Spd.Manager.Cases.Payment
             IApplicationRepository appRepository,
             IDataProtectionProvider dpProvider,
             IDocumentRepository documentRepository,
+            IDocumentTemplateRepository documentTemplateRepository,
             IFileStorageService fileStorageService)
         {
             _paymentService = paymentService;
@@ -52,6 +56,7 @@ namespace Spd.Manager.Cases.Payment
             _mapper = mapper;
             _appRepository = appRepository;
             _documentRepository = documentRepository;
+            _documentTemplateRepository = documentTemplateRepository;
             _fileStorageService = fileStorageService;
             _dataProtector = dpProvider.CreateProtector(nameof(PrePaymentLinkCreateCommand)).ToTimeLimitedDataProtector();
         }
@@ -177,6 +182,22 @@ namespace Spd.Manager.Cases.Payment
                 Content = fileResult.File.Content,
                 ContentType = fileResult.File.ContentType,
                 FileName = fileResult.File.FileName
+            };
+        }
+
+        public async Task<FileResponse> Handle(ManualPaymentFormQuery query, CancellationToken ct)
+        {
+            var docResp = await _documentTemplateRepository.ManageAsync(
+                new GenerateDocBasedOnTemplateCmd()
+                {
+                    RegardingObjectId = query.ApplicationId,
+                    DocTemplateType = DocTemplateTypeEnum.ManualPaymentForm
+                },ct);
+            return new FileResponse
+            {
+                Content = docResp.Content,
+                ContentType = docResp.ContentType,
+                FileName = docResp.FileName
             };
         }
 

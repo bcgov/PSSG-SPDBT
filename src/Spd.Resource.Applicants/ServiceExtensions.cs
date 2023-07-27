@@ -2,6 +2,7 @@
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.ApplicationInvite;
 using Spd.Resource.Applicants.Document;
+using Spd.Resource.Applicants.DocumentTemplate;
 using Spd.Resource.Applicants.Incident;
 using Spd.Resource.Applicants.Payment;
 using Spd.Utilities.Hosting;
@@ -17,6 +18,7 @@ namespace Spd.Resource.Applicants
             configurationServices.Services.AddTransient<IDocumentRepository, DocumentRepository>();
             configurationServices.Services.AddTransient<IIncidentRepository, IncidentRepository>();
             configurationServices.Services.AddTransient<IPaymentRepository, PaymentRepository>();
+            configurationServices.Services.AddTransient<IDocumentTemplateRepository, DocumentTemplateRepository>();
         }
     }
 }
