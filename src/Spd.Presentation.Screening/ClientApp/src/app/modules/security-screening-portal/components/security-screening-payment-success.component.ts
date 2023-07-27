@@ -3,8 +3,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 import { ApplicantApplicationResponse, PaymentResponse } from 'src/app/api/models';
 import { ApplicantService, PaymentService } from 'src/app/api/services';
+import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
+import { UtilService } from 'src/app/core/services/util.service';
 import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 
 @Component({
@@ -14,6 +16,7 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 			[payment]="payment"
 			[sendEmailTo]="sendEmailTo"
 			(backRoute)="onBackRoute()"
+			(downloadReceipt)="onDownloadReceipt()"
 		></app-payment-success>
 	`,
 	styles: [],
@@ -27,7 +30,8 @@ export class SecurityScreeningPaymentSuccessComponent implements OnInit {
 		private router: Router,
 		private authUserService: AuthUserService,
 		private paymentService: PaymentService,
-		private applicantService: ApplicantService
+		private applicantService: ApplicantService,
+		private utilService: UtilService
 	) {}
 
 	ngOnInit(): void {
@@ -65,5 +69,16 @@ export class SecurityScreeningPaymentSuccessComponent implements OnInit {
 
 	onBackRoute(): void {
 		this.router.navigate([SecurityScreeningRoutes.path(SecurityScreeningRoutes.CRC_LIST)]);
+	}
+
+	onDownloadReceipt(): void {
+		this.paymentService
+			.apiApplicantsScreeningsApplicationIdPaymentReceiptGet$Response({
+				applicationId: this.payment?.applicationId!,
+			})
+			.pipe()
+			.subscribe((resp: StrictHttpResponse<Blob>) => {
+				this.utilService.downloadFile(resp.headers, resp.body);
+			});
 	}
 }

@@ -23,7 +23,13 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 					>
 						<mat-icon>arrow_back</mat-icon>Back
 					</button>
-					<button mat-flat-button color="primary" class="large w-auto m-2" aria-label="Download Receipt">
+					<button
+						mat-flat-button
+						color="primary"
+						class="large w-auto m-2"
+						aria-label="Download Receipt"
+						(click)="onDownloadReceipt()"
+					>
 						<mat-icon>file_download</mat-icon>Download Receipt
 					</button>
 				</div>
@@ -130,6 +136,7 @@ export class PaymentSuccessComponent implements OnInit {
 	}
 
 	@Output() backRoute: EventEmitter<any> = new EventEmitter();
+	@Output() downloadReceipt: EventEmitter<any> = new EventEmitter();
 
 	constructor(private router: Router) {}
 
@@ -139,5 +146,9 @@ export class PaymentSuccessComponent implements OnInit {
 
 	onBack(): void {
 		this.backRoute.emit();
+	}
+
+	onDownloadReceipt(): void {
+		this.downloadReceipt.emit();
 	}
 }
