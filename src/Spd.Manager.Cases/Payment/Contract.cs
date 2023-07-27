@@ -94,5 +94,5 @@ namespace Spd.Manager.Cases.Payment
     }
 
     //payment receipt
-    public record PaymentReceiptQuery(Guid PaymentId) : IRequest<FileResponse>;
+    public record PaymentReceiptQuery(Guid ApplicationId) : IRequest<FileResponse>;
 }
