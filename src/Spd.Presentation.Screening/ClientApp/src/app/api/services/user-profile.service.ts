@@ -10,7 +10,8 @@ import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
 import { ApplicantProfileResponse } from '../models/applicant-profile-response';
-import { UserProfileResponse } from '../models/user-profile-response';
+import { IdirUserProfileResponse } from '../models/idir-user-profile-response';
+import { OrgUserProfileResponse } from '../models/org-user-profile-response';
 
 @Injectable({
   providedIn: 'root',
@@ -42,7 +43,7 @@ export class UserProfileService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<StrictHttpResponse<UserProfileResponse>> {
+): Observable<StrictHttpResponse<OrgUserProfileResponse>> {
 
     const rb = new RequestBuilder(this.rootUrl, UserProfileService.ApiUsersWhoamiGetPath, 'get');
     if (params) {
@@ -55,7 +56,7 @@ export class UserProfileService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<UserProfileResponse>;
+        return r as StrictHttpResponse<OrgUserProfileResponse>;
       })
     );
   }
@@ -74,10 +75,10 @@ export class UserProfileService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<UserProfileResponse> {
+): Observable<OrgUserProfileResponse> {
 
     return this.apiUsersWhoamiGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<UserProfileResponse>) => r.body as UserProfileResponse)
+      map((r: StrictHttpResponse<OrgUserProfileResponse>) => r.body as OrgUserProfileResponse)
     );
   }
 
@@ -158,7 +159,7 @@ export class UserProfileService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<StrictHttpResponse<UserProfileResponse>> {
+): Observable<StrictHttpResponse<IdirUserProfileResponse>> {
 
     const rb = new RequestBuilder(this.rootUrl, UserProfileService.ApiIdirUsersWhoamiGetPath, 'get');
     if (params) {
@@ -171,7 +172,7 @@ export class UserProfileService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<UserProfileResponse>;
+        return r as StrictHttpResponse<IdirUserProfileResponse>;
       })
     );
   }
@@ -190,10 +191,10 @@ export class UserProfileService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<UserProfileResponse> {
+): Observable<IdirUserProfileResponse> {
 
     return this.apiIdirUsersWhoamiGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<UserProfileResponse>) => r.body as UserProfileResponse)
+      map((r: StrictHttpResponse<IdirUserProfileResponse>) => r.body as IdirUserProfileResponse)
     );
   }
 

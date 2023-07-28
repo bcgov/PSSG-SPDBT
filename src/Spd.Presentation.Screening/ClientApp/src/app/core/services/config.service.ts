@@ -21,9 +21,15 @@ export class ConfigService {
 			});
 		}
 
+		if (loginType == IdentityProviderTypeCode.Idir) {
+			return this.getIdirConfig(redirectUri).then((config) => {
+				this.oauthService.configure(config);
+				this.oauthService.setupAutomaticSilentRefresh();
+			});
+		}
+
 		return this.getBcscConfig(redirectUri).then((config) => {
 			this.oauthService.configure(config);
-			// this.oauthService.setupAutomaticSilentRefresh();
 		});
 	}
 
@@ -56,6 +62,22 @@ export class ConfigService {
 		};
 		console.debug('[ConfigService] getBceidConfig', bceIdConfig, 'redirectUri', redirectUri);
 		return bceIdConfig;
+	}
+
+	private async getIdirConfig(redirectUri?: string): Promise<AuthConfig> {
+		const resp = this.configs?.oidcConfiguration!;
+		const idirConfig = {
+			issuer: resp.issuer!,
+			clientId: resp.clientId!,
+			redirectUri,
+			responseType: resp.responseType!,
+			scope: resp.scope!,
+			showDebugInformation: true,
+			postLogoutRedirectUri: resp.postLogoutRedirectUri!,
+			customQueryParams: { kc_idp_hint: 'idir' },
+		};
+		console.debug('[ConfigService] getIdirConfig', idirConfig, 'redirectUri', redirectUri);
+		return idirConfig;
 	}
 
 	public getConfigs(): Observable<ConfigurationResponse> {

@@ -10,9 +10,10 @@ import {
 	ApplicantProfileResponse,
 	ApplicantUserInfo,
 	IdentityProviderTypeCode,
+	IdirUserProfileResponse,
 	OrgResponse,
+	OrgUserProfileResponse,
 	UserInfo,
-	UserProfileResponse,
 } from '../code-types/code-types.models';
 
 export interface BceidOrgResponse extends OrgResponse {
@@ -29,6 +30,8 @@ export class AuthUserService {
 
 	bceidUserOrgProfile: BceidOrgResponse | null = null;
 	bceidUserInfoProfile: UserInfo | null = null;
+
+	idirUserWhoamiProfile: IdirUserProfileResponse | null = null;
 
 	constructor(
 		private userProfileService: UserProfileService,
@@ -93,7 +96,7 @@ export class AuthUserService {
 		this.clearUserData();
 
 		if (loginType == IdentityProviderTypeCode.BusinessBceId) {
-			const resp: UserProfileResponse = await lastValueFrom(this.userProfileService.apiUsersWhoamiGet());
+			const resp: OrgUserProfileResponse = await lastValueFrom(this.userProfileService.apiUsersWhoamiGet());
 
 			if (resp) {
 				const uniqueUserInfoList = [
@@ -121,6 +124,13 @@ export class AuthUserService {
 					return Promise.resolve(true);
 				}
 			}
+		} else if (loginType == IdentityProviderTypeCode.Idir) {
+			const resp: IdirUserProfileResponse = await lastValueFrom(this.userProfileService.apiIdirUsersWhoamiGet());
+
+			if (resp) {
+				this.idirUserWhoamiProfile = resp;
+				return Promise.resolve(true);
+			}
 		} else if (loginType == IdentityProviderTypeCode.BcServicesCard) {
 			const resp: ApplicantProfileResponse = await lastValueFrom(this.userProfileService.apiApplicantsWhoamiGet());
 
@@ -141,6 +151,7 @@ export class AuthUserService {
 		this.bceidUserOrgProfile = null;
 		this.bcscUserWhoamiProfile = null;
 		this.bcscUserInfoProfile = null;
+		this.idirUserWhoamiProfile = null;
 		this.isAllowedGenericUpload = false;
 	}
 
