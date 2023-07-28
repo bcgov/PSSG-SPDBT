@@ -88,6 +88,7 @@ namespace Spd.Manager.Membership.UserProfile
     #region IdirUserProfile
     public class IdirUserProfileResponse
     {
+        public Guid OrgId { get; set; } //would be hardcoded bcgov id.
         public string? UserGuid { get; set; }//from token
         public string? UserDisplayName { get; set; } //from token
         public string? FirstName { get; set; }

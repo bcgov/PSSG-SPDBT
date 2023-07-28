@@ -7,6 +7,7 @@ namespace Spd.Utilities.LogonUser
     public static class IPrincipalExtensions
     {
         public static readonly string[] BCeID_IDENTITY_PROVIDERS = { "bceidboth", "bceidbusiness" };
+        public static readonly string IDIR_IDENTITY_PROVIDER = "idir";
         public static readonly string BCeID_USER_NAME = "bceid_username";
         public static readonly string BCeID_DISPLAY_USER_NAME = "display_name";
         public static readonly string BCeID_USER_GUID = "bceid_user_guid";
@@ -122,9 +123,9 @@ namespace Spd.Utilities.LogonUser
             return new IdirUserIdentityInfo()
             {
                 DisplayName = claim.GetClaimValue("display_name"),
-                Email = claim.GetClaimValue("email"),
-                FirstName = claim.GetClaimValue("given_name"),
-                LastName = claim.GetClaimValue("family_name"),
+                Email = claim.GetClaimValue(ClaimTypes.Email),
+                FirstName = claim.GetClaimValue(ClaimTypes.GivenName),
+                LastName = claim.GetClaimValue(ClaimTypes.Surname),
                 PreferredUserName = claim.GetClaimValue("preferred_username"),
                 UserGuid = claim.GetClaimValue("idir_user_guid"),
                 EmailVerified = claim.GetClaimValue("email_verified") == null ? null : Boolean.Parse(claim.GetClaimValue("email_verified")),

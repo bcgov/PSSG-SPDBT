@@ -77,6 +77,7 @@ namespace Spd.Presentation.Screening.Controllers
                 IdirUserIdentityInfo userIdentity = _currentUser.GetIdirUserIdentityInfo();
                 return new IdirUserProfileResponse
                 {
+                    OrgId = SpdConstants.BC_GOV_ORG_ID,
                     IdentityProviderType = IdentityProviderTypeCode.Idir,
                     UserDisplayName = userIdentity.DisplayName,
                     FirstName = userIdentity.FirstName,
