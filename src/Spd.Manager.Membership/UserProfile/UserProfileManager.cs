@@ -9,7 +9,7 @@ using Spd.Resource.Organizations.User;
 namespace Spd.Manager.Membership.UserProfile
 {
     internal class UserProfileManager
-        : IRequestHandler<GetCurrentUserProfileQuery, UserProfileResponse>,
+        : IRequestHandler<GetCurrentUserProfileQuery, OrgUserProfileResponse>,
         IRequestHandler<GetApplicantProfileQuery, ApplicantProfileResponse>,
         IUserProfileManager
     {
@@ -33,7 +33,7 @@ namespace Spd.Manager.Membership.UserProfile
             _orgRegistrationRepository = orgRegistrationRepository;
         }
 
-        public async Task<UserProfileResponse> Handle(GetCurrentUserProfileQuery request, CancellationToken ct)
+        public async Task<OrgUserProfileResponse> Handle(GetCurrentUserProfileQuery request, CancellationToken ct)
         {
             Guid orgGuid = request.PortalUserIdentity.BizGuid;
             Guid? userGuid = request.PortalUserIdentity.UserGuid;
@@ -66,7 +66,7 @@ namespace Spd.Manager.Membership.UserProfile
                     }
                 }
                 userInfos.Add(ui);
-                UserProfileResponse response = new()
+                OrgUserProfileResponse response = new()
                 {
                     IdentityProviderType = IdentityProviderTypeCode.BusinessBceId,
                     UserDisplayName = request.PortalUserIdentity.DisplayName,
@@ -90,7 +90,7 @@ namespace Spd.Manager.Membership.UserProfile
                 userInfos.Add(ui);
             }
 
-            return new UserProfileResponse()
+            return new OrgUserProfileResponse()
             {
                 IdentityProviderType = IdentityProviderTypeCode.BusinessBceId,
                 UserDisplayName = request.PortalUserIdentity.DisplayName,
