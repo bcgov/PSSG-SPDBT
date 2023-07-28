@@ -1,21 +1,20 @@
 using MediatR;
 using Spd.Manager.Membership.OrgRegistration;
 using Spd.Manager.Membership.OrgUser;
-using Spd.Resource.Organizations.Registration;
 using Spd.Utilities.Shared.ManagerContract;
 
 namespace Spd.Manager.Membership.UserProfile
 {
     public interface IUserProfileManager
     {
-        public Task<UserProfileResponse> Handle(GetCurrentUserProfileQuery request, CancellationToken ct);
+        public Task<OrgUserProfileResponse> Handle(GetCurrentUserProfileQuery request, CancellationToken ct);
         public Task<ApplicantProfileResponse> Handle(GetApplicantProfileQuery request, CancellationToken ct);
     }
 
     #region UserProfile
-    public record GetCurrentUserProfileQuery(PortalUserIdentity PortalUserIdentity) : IRequest<UserProfileResponse>;
+    public record GetCurrentUserProfileQuery(PortalUserIdentity PortalUserIdentity) : IRequest<OrgUserProfileResponse>;
 
-    public class UserProfileResponse
+    public class OrgUserProfileResponse
     {
         public Guid? UserGuid { get; set; }//from token
         public string? UserDisplayName { get; set; } //from token
@@ -83,6 +82,18 @@ namespace Spd.Manager.Membership.UserProfile
         public Guid ApplicantId { get; set; } //which is contact id in db
         public string? FirstName { get; set; } // which is contact firstname
         public string? LastName { get; set; } // which is contact lastname
+    }
+    #endregion
+
+    #region IdirUserProfile
+    public class IdirUserProfileResponse
+    {
+        public string? UserGuid { get; set; }//from token
+        public string? UserDisplayName { get; set; } //from token
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public string? IdirUserName { get; set; }
+        public IdentityProviderTypeCode? IdentityProviderType { get; set; }
     }
     #endregion
 }
