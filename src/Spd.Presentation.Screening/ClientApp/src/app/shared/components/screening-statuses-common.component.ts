@@ -40,7 +40,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 				</div>
 			</div>
 
-			<app-status-statistics></app-status-statistics>
+			<!-- TODO Add back later <app-status-statistics [orgId]="orgId"></app-status-statistics> -->
 
 			<div [formGroup]="formFilter">
 				<div class="row">
@@ -269,6 +269,25 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 
 	@Input() portal: PortalTypeCode | null = null;
 	@Input() heading = '';
+	@Input() orgId: string | null = null;
+
+	// private _orgId: string | null = null;
+	// @Input()
+	// set orgId(data: string | null) {
+	// 	console.log('set orgId', data);
+	// 	if (data == null) {
+	// 		this._orgId = null;
+	// 		return;
+	// 	}
+
+	// 	this._orgId = data;
+
+	// 	this.loadList();
+	// }
+	// get orgId(): string | null {
+	// 	return this._orgId;
+	// }
+
 	@Output() emitManageDelegate: EventEmitter<ScreeningStatusResponse> = new EventEmitter<ScreeningStatusResponse>();
 	@Output() emitPayNow: EventEmitter<ScreeningStatusResponse> = new EventEmitter<ScreeningStatusResponse>();
 	@Output() emitVerifyIdentity: EventEmitter<ScreeningStatusResponse> = new EventEmitter<ScreeningStatusResponse>();
@@ -286,11 +305,8 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 	) {}
 
 	ngOnInit() {
-		if (!this.authUserService.bceidUserInfoProfile?.orgId) {
-			console.debug(
-				'ScreeningStatusesCommonComponent - bceidUserInfoProfile missing orgId',
-				this.authUserService.bceidUserInfoProfile
-			);
+		if (!this.orgId) {
+			console.debug('ScreeningStatusesCommonComponent - missing orgId');
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 			return;
 		}
@@ -317,7 +333,6 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 				'delegates',
 			];
 		}
-
 		this.loadList();
 	}
 
@@ -414,7 +429,7 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 
 		this.applicationService
 			.apiOrgsOrgIdApplicationsGet({
-				orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
+				orgId: this.orgId!,
 				...this.queryParams,
 			})
 			.pipe()

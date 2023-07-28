@@ -137,12 +137,12 @@ export class AuthProcessService {
 	// * PSSO Portal
 	// *
 	async initializePsso(): Promise<string | null> {
-		const identityProvider = IdentityProviderTypeCode.BusinessBceId;
+		const identityProvider = IdentityProviderTypeCode.Idir;
 
 		const nextUrl = await this.authenticationService.login(
 			identityProvider,
 			PssoRoutes.path(PssoRoutes.SCREENING_STATUSES)
-		); // TODO change to IDIR
+		);
 
 		if (nextUrl) {
 			const success = await this.authUserService.whoAmIAsync(identityProvider);

@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
+import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { ScreeningStatusResponse } from 'src/app/shared/components/screening-statuses-common.component';
 import { CrrpRoutes } from '../crrp-routing.module';
 
@@ -10,6 +11,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 		<app-crrp-header></app-crrp-header>
 
 		<app-screening-statuses-common
+			[orgId]="orgId"
 			[portal]="portal.Crrp"
 			heading="Application Statuses"
 			(emitPayNow)="onPayNow($event)"
@@ -18,10 +20,15 @@ import { CrrpRoutes } from '../crrp-routing.module';
 	`,
 	styles: [],
 })
-export class ApplicationStatusesComponent {
+export class ApplicationStatusesComponent implements OnInit {
 	portal = PortalTypeCode;
+	orgId = '';
 
-	constructor(private router: Router) {}
+	constructor(private router: Router, private authUserService: AuthUserService) {}
+
+	ngOnInit(): void {
+		this.orgId = this.authUserService.bceidUserInfoProfile?.orgId!;
+	}
 
 	onPayNow(application: ScreeningStatusResponse): void {
 		this.router.navigateByUrl(CrrpRoutes.path(CrrpRoutes.PAYMENTS), {

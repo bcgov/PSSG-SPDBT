@@ -32,6 +32,8 @@ export class AuthTokenInterceptor implements HttpInterceptor {
 		let headers = req.headers.set('Authorization', header);
 		if (this.authUserService.bceidUserInfoProfile?.orgId) {
 			headers = req.headers.set('organization', this.authUserService.bceidUserInfoProfile?.orgId);
+		} else if (this.authUserService.idirUserWhoamiProfile?.orgId) {
+			headers = req.headers.set('organization', this.authUserService.idirUserWhoamiProfile?.orgId);
 		}
 
 		req = req.clone({ headers });
