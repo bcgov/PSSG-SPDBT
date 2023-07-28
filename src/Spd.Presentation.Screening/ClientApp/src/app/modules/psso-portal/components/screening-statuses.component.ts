@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
+import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { ScreeningStatusResponse } from 'src/app/shared/components/screening-statuses-common.component';
 import { PssoRoutes } from '../psso-routing.module';
 import { DelegateManageDialogData, DelegateManageModalComponent } from './delegate-manage-modal.component';
@@ -10,6 +11,7 @@ import { DelegateManageDialogData, DelegateManageModalComponent } from './delega
 	selector: 'app-screening-statuses',
 	template: `
 		<app-screening-statuses-common
+			[orgId]="orgId"
 			[portal]="portal.Psso"
 			heading="Screening Statuses"
 			(emitManageDelegate)="onManageDelegates($event)"
@@ -18,10 +20,16 @@ import { DelegateManageDialogData, DelegateManageModalComponent } from './delega
 	`,
 	styles: [],
 })
-export class ScreeningStatusesComponent {
+export class ScreeningStatusesComponent implements OnInit {
+	orgId: string | null = null;
 	portal = PortalTypeCode;
 
-	constructor(private dialog: MatDialog, private router: Router) {}
+	constructor(private dialog: MatDialog, private router: Router, private authUserService: AuthUserService) {}
+
+	ngOnInit(): void {
+		console.log('this.authUserService.idirUserWhoamiProfile', this.authUserService.idirUserWhoamiProfile);
+		this.orgId = this.authUserService.idirUserWhoamiProfile?.orgId!;
+	}
 
 	onManageDelegates(application: ScreeningStatusResponse): void {
 		const dialogOptions: DelegateManageDialogData = {

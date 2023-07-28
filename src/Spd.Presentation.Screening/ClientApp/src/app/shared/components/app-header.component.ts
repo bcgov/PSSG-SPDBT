@@ -108,7 +108,12 @@ export class HeaderComponent implements OnInit {
 					this.authUserService.bcscUserWhoamiProfile?.lastName
 				);
 			}
-			this.loggedInUserDisplay = name ?? 'User';
+			this.loggedInUserDisplay = name ?? 'BCSC User';
+			return;
+		}
+
+		if (loginType == IdentityProviderTypeCode.Idir) {
+			this.loggedInUserDisplay = this.authUserService.idirUserWhoamiProfile?.userDisplayName ?? 'Idir User';
 			return;
 		}
 
@@ -127,6 +132,6 @@ export class HeaderComponent implements OnInit {
 		if (!name) {
 			name = this.authProcessService.loggedInUserTokenData.display_name;
 		}
-		this.loggedInUserDisplay = name ?? 'User';
+		this.loggedInUserDisplay = name ?? 'BCeID User';
 	}
 }

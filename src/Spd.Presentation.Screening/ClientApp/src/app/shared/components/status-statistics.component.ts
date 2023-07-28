@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { tap } from 'rxjs/operators';
 import { ApplicationStatisticsResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
@@ -104,6 +104,8 @@ import { UtilService } from 'src/app/core/services/util.service';
 export class StatusStatisticsComponent {
 	statisticsCode = ApplicationPortalStatisticsTypeCode;
 
+	@Input() orgId: string | null = null;
+
 	constructor(
 		private utilService: UtilService,
 		private applicationService: ApplicationService,
@@ -113,7 +115,7 @@ export class StatusStatisticsComponent {
 	applicationStatistics!: { [key: string]: number };
 	applicationStatistics$ = this.applicationService
 		.apiOrgsOrgIdApplicationStatisticsGet({
-			orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
+			orgId: this.orgId!,
 		})
 		.pipe(
 			tap((res: ApplicationStatisticsResponse) => {
