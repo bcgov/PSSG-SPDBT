@@ -81,7 +81,7 @@ public static class Observability
             ;
 
         var splunkConfiguration = configuration.GetSection("Splunk");
-        if (splunkConfiguration == null || string.IsNullOrEmpty(splunkConfiguration.Value))
+        if (splunkConfiguration == null)
         {
             Log.Warning($"Logs will not be forwarded to Splunk - configuration is missing");
         }
