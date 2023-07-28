@@ -137,6 +137,9 @@ namespace Spd.Resource.Organizations.Org
                 .Where(so => so.accountid == org.accountid)
                 .ToList();
 
+            if (!serviceTypes.Any()) 
+                throw new ApiException(HttpStatusCode.InternalServerError, $"organization {org.name} does not have service type.");
+
             var response = _mapper.Map<OrgResult>(org);
             response.ServiceTypes = serviceTypes.Select(s => Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.LookupServiceTypeKey(s.spd_servicetypeid)));
             return new OrgQryResult(response);
