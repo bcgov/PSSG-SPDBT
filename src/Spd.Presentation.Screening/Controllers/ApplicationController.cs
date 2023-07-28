@@ -16,7 +16,7 @@ using System.Text.Json.Serialization;
 
 namespace Spd.Presentation.Screening.Controllers
 {
-    [Authorize(Policy = "OnlyBCeID", Roles = "Primary,Contact")]
+    [Authorize(Roles = "Primary,Contact,BCGovStaff")]
     public class ApplicationController : SpdControllerBase
     {
         private readonly IMediator _mediator;

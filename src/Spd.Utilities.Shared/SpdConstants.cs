@@ -1,6 +1,7 @@
 ﻿namespace Spd.Utilities.Shared;
 public static class SpdConstants
 {
+    public static readonly Guid BC_GOV_ORG_ID = Guid.Parse("9ea90fe7-3658-4b98-a513-77d93ea7570e");
     public static readonly int USER_INVITE_VALID_DAYS = 7;
     public static readonly int APPLICATION_INVITE_VALID_DAYS = 14;
     public static readonly string BULK_APP_UPLOAD_FILE_EXTENSION = ".tsv";
