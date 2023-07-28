@@ -121,12 +121,12 @@ namespace Spd.Utilities.LogonUser
                 return false;
             }
 
-            UserProfileResponse? userProfile = await cache.Get<UserProfileResponse>($"user-{context.User.GetUserGuid()}");
+            OrgUserProfileResponse? userProfile = await cache.Get<OrgUserProfileResponse>($"user-{context.User.GetUserGuid()}");
             if (userProfile == null)
             {
                 var userIdInfo = context.User.GetPortalUserIdentityInfo();
                 userProfile = await mediator.Send(new GetCurrentUserProfileQuery(mapper.Map<PortalUserIdentity>(userIdInfo)));
-                await cache.Set<UserProfileResponse>($"user-{context.User.GetUserGuid()}", userProfile, new TimeSpan(0, 30, 0));
+                await cache.Set<OrgUserProfileResponse>($"user-{context.User.GetUserGuid()}", userProfile, new TimeSpan(0, 30, 0));
             }
 
             if (userProfile?.UserInfos == null)

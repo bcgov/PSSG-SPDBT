@@ -38,7 +38,7 @@ namespace Spd.Presentation.Screening.Controllers
         [Route("api/users/whoami")]
         [HttpGet]
         [Authorize(Policy = "OnlyBCeID")]
-        public async Task<UserProfileResponse> OrgUserWhoami()
+        public async Task<OrgUserProfileResponse> OrgUserWhoami()
         {
             PortalUserIdentityInfo userIdentity = _currentUser.GetPortalUserIdentityInfo();
             return await _mediator.Send(new GetCurrentUserProfileQuery(_mapper.Map<PortalUserIdentity>(userIdentity)));
@@ -69,20 +69,23 @@ namespace Spd.Presentation.Screening.Controllers
         [Route("api/idir-users/whoami")]
         [HttpGet]
         [Authorize(Policy = "OnlyIdir")]
-        public async Task<UserProfileResponse> IdirUserWhoami()
+        public IdirUserProfileResponse IdirUserWhoami()
         {
-            if (_currentUser.GetIdentityProvider().Equals("idir", StringComparison.InvariantCultureIgnoreCase))
+            string? identityProvider = _currentUser.GetIdentityProvider();
+            if (identityProvider != null && identityProvider.Equals("idir", StringComparison.InvariantCultureIgnoreCase))
             {
                 IdirUserIdentityInfo userIdentity = _currentUser.GetIdirUserIdentityInfo();
-                return new UserProfileResponse
+                return new IdirUserProfileResponse
                 {
                     IdentityProviderType = IdentityProviderTypeCode.Idir,
-                    UserDisplayName= userIdentity.DisplayName,
-                    UserGuid = null, //temp
-                    UserInfos = Array.Empty<UserInfo>(),
+                    UserDisplayName = userIdentity.DisplayName,
+                    FirstName = userIdentity.FirstName,
+                    LastName = userIdentity.LastName,
+                    IdirUserName = userIdentity.IdirUserName,
+                    UserGuid = userIdentity.UserGuid,
                 };
             }
-            return null;
+            throw new ApiException(System.Net.HttpStatusCode.NotFound, "Cannot get idir info from token.");
         }
     }
 }
