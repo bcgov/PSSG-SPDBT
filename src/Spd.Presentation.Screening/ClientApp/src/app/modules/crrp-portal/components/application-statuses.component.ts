@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AppRoutes } from 'src/app/app-routing.module';
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { ScreeningStatusResponse } from 'src/app/shared/components/screening-statuses-common.component';
@@ -27,7 +28,14 @@ export class ApplicationStatusesComponent implements OnInit {
 	constructor(private router: Router, private authUserService: AuthUserService) {}
 
 	ngOnInit(): void {
-		this.orgId = this.authUserService.bceidUserInfoProfile?.orgId!;
+		const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
+		if (!orgId) {
+			console.debug('ApplicationStatusesComponent - orgId', orgId);
+			this.router.navigate([AppRoutes.ACCESS_DENIED]);
+			return;
+		}
+
+		this.orgId = orgId;
 	}
 
 	onPayNow(application: ScreeningStatusResponse): void {

@@ -3,7 +3,6 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
 import {
 	ApplicationInviteListResponse,
@@ -11,10 +10,8 @@ import {
 	ApplicationInviteStatusCode,
 } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
-import { AppRoutes } from 'src/app/app-routing.module';
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { ScreeningRequestAddCommonModalComponent } from './screening-request-add-common-modal.component';
@@ -212,6 +209,7 @@ export class ScreeningRequestsCommonComponent implements OnInit {
 	private queryParams: any = this.utilService.getDefaultQueryParams();
 	private currentSearch = '';
 
+	@Input() orgId: string | null = null;
 	@Input() portal: PortalTypeCode | null = null;
 	@Input() heading = '';
 	@Input() subtitle = '';
@@ -219,23 +217,14 @@ export class ScreeningRequestsCommonComponent implements OnInit {
 	@ViewChild('paginator') paginator!: MatPaginator;
 
 	constructor(
-		private router: Router,
 		private utilService: UtilService,
 		private formBuilder: FormBuilder,
 		private dialog: MatDialog,
 		private applicationService: ApplicationService,
-		private authUserService: AuthUserService,
 		private hotToast: HotToastService
 	) {}
 
 	ngOnInit() {
-		const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
-		if (!orgId) {
-			console.debug('ScreeningRequestsCommonComponent - orgId', orgId);
-			this.router.navigate([AppRoutes.ACCESS_DENIED]);
-			return;
-		}
-
 		if (this.portal == 'CRRP') {
 			this.columns = ['applicantName', 'emailAddress', 'jobTitle', 'payeeType', 'createdOn', 'viewed', 'action1'];
 		} else if (this.portal == 'PSSO') {
@@ -276,7 +265,7 @@ export class ScreeningRequestsCommonComponent implements OnInit {
 					this.applicationService
 						.apiOrgsOrgIdApplicationInvitesApplicationInviteIdDelete({
 							applicationInviteId: application.id!,
-							orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
+							orgId: this.orgId!,
 						})
 						.pipe()
 						.subscribe((_res) => {
@@ -312,7 +301,7 @@ export class ScreeningRequestsCommonComponent implements OnInit {
 	private loadList(): void {
 		this.applicationService
 			.apiOrgsOrgIdApplicationInvitesGet({
-				orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
+				orgId: this.orgId!,
 				...this.queryParams,
 			})
 			.pipe()

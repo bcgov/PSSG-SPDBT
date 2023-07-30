@@ -40,7 +40,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 				</div>
 			</div>
 
-			<!-- TODO Add back later <app-status-statistics [orgId]="orgId"></app-status-statistics> -->
+			<app-status-statistics-common [orgId]="orgId"></app-status-statistics-common>
 
 			<div [formGroup]="formFilter">
 				<div class="row">
