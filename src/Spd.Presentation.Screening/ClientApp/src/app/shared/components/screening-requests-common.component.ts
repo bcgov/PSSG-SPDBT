@@ -3,6 +3,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
 import {
 	ApplicationInviteListResponse,
@@ -10,11 +11,15 @@ import {
 	ApplicationInviteStatusCode,
 } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
+import { AppRoutes } from 'src/app/app-routing.module';
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { UtilService } from 'src/app/core/services/util.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
-import { ScreeningRequestAddCommonModalComponent } from './screening-request-add-common-modal.component';
+import {
+	ScreeningRequestAddCommonModalComponent,
+	ScreeningRequestAddDialogData,
+} from './screening-request-add-common-modal.component';
 
 export class ScreeningCheckFilter {
 	search: string = '';
@@ -217,6 +222,7 @@ export class ScreeningRequestsCommonComponent implements OnInit {
 	@ViewChild('paginator') paginator!: MatPaginator;
 
 	constructor(
+		private router: Router,
 		private utilService: UtilService,
 		private formBuilder: FormBuilder,
 		private dialog: MatDialog,
@@ -225,6 +231,12 @@ export class ScreeningRequestsCommonComponent implements OnInit {
 	) {}
 
 	ngOnInit() {
+		if (!this.orgId) {
+			console.debug('ScreeningRequestsCommonComponent - missing orgId');
+			this.router.navigate([AppRoutes.ACCESS_DENIED]);
+			return;
+		}
+
 		if (this.portal == 'CRRP') {
 			this.columns = ['applicantName', 'emailAddress', 'jobTitle', 'payeeType', 'createdOn', 'viewed', 'action1'];
 		} else if (this.portal == 'PSSO') {
@@ -235,8 +247,14 @@ export class ScreeningRequestsCommonComponent implements OnInit {
 	}
 
 	onAddRequest(): void {
+		const dialogOptions: ScreeningRequestAddDialogData = {
+			orgId: this.orgId!,
+			inviteDefault: undefined,
+		};
+
 		this.dialog
 			.open(ScreeningRequestAddCommonModalComponent, {
+				data: dialogOptions,
 				width: '1400px',
 			})
 			.afterClosed()

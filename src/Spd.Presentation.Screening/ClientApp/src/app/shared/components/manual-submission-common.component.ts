@@ -6,10 +6,12 @@ import { HotToastService } from '@ngneat/hot-toast';
 import { NgxMaskPipe } from 'ngx-mask';
 import { ApplicationCreateResponse, BooleanTypeCode, ScreeningTypeCode, ServiceTypeCode } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
+import { AppRoutes } from 'src/app/app-routing.module';
 import { ApplicationOriginTypeCode } from 'src/app/core/code-types/application-origin-type.model';
 import { GenderTypes, ScreeningTypes } from 'src/app/core/code-types/model-desc.models';
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { CrrpRoutes } from 'src/app/modules/crrp-portal/crrp-routing.module';
@@ -460,34 +462,40 @@ export class ManualSubmissionCommonComponent implements OnInit {
 		private router: Router,
 		private formBuilder: FormBuilder,
 		private applicationService: ApplicationService,
-		// private authUserService: AuthUserService,
+		private authUserService: AuthUserService,
 		private hotToast: HotToastService,
 		private maskPipe: NgxMaskPipe,
 		private dialog: MatDialog
 	) {}
 
 	ngOnInit(): void {
-		// const orgProfile = this.authUserService.bceidUserOrgProfile;
-		// this.isNotVolunteerOrg = this.authUserService.bceidUserOrgProfile?.isNotVolunteerOrg ?? false;
+		if (!this.orgId) {
+			console.debug('ManualSubmissionCommonComponent - missing orgId');
+			this.router.navigate([AppRoutes.ACCESS_DENIED]);
+			return;
+		}
 
-		// //TODO What to do in PSSO?
-		// if (this.isNotVolunteerOrg) {
-		// 	this.showScreeningType = orgProfile
-		// 		? orgProfile.contractorsNeedVulnerableSectorScreening == BooleanTypeCode.Yes ||
-		// 		  orgProfile.licenseesNeedVulnerableSectorScreening == BooleanTypeCode.Yes
-		// 		: false;
-		// } else {
-		// 	this.showScreeningType = false;
-		// }
+		const orgProfile = this.authUserService.bceidUserOrgProfile;
+		if (orgProfile) {
+			// using bceid
+			this.isNotVolunteerOrg = orgProfile?.isNotVolunteerOrg ?? false;
 
-		// this.serviceType = orgProfile?.serviceTypes ? orgProfile?.serviceTypes[0] : null;
+			if (this.isNotVolunteerOrg) {
+				this.showScreeningType = orgProfile
+					? orgProfile.contractorsNeedVulnerableSectorScreening == BooleanTypeCode.Yes ||
+					  orgProfile.licenseesNeedVulnerableSectorScreening == BooleanTypeCode.Yes
+					: false;
+			} else {
+				this.showScreeningType = false;
+			}
 
-		// const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
-		// if (!orgId) {
-		// 	console.debug('ManualSubmissionCommonComponent - orgId', orgId);
-		// 	this.router.navigate([AppRoutes.ACCESS_DENIED]);
-		// 	return;
-		// }
+			this.serviceType = orgProfile?.serviceTypes ? orgProfile?.serviceTypes[0] : null;
+		} else {
+			// using idir
+			this.isNotVolunteerOrg = true;
+			this.showScreeningType = false;
+			this.serviceType = ServiceTypeCode.Psso;
+		}
 
 		this.resetForm();
 	}

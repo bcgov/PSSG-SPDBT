@@ -23,6 +23,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 
 export interface ScreeningRequestAddDialogData {
+	orgId: string;
 	inviteDefault: ApplicationInviteCreateRequest | undefined;
 }
 
@@ -218,27 +219,36 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 
 	ngOnInit(): void {
 		const orgProfile = this.authUserService.bceidUserOrgProfile;
+		if (orgProfile) {
+			// using bceid
+			this.isNotVolunteerOrg = orgProfile?.isNotVolunteerOrg ?? false;
 
-		this.isNotVolunteerOrg = this.authUserService.bceidUserOrgProfile?.isNotVolunteerOrg ?? false;
-
-		//TODO What to do in PSSO?
-		if (this.isNotVolunteerOrg) {
-			this.showScreeningType = orgProfile
-				? orgProfile.contractorsNeedVulnerableSectorScreening == BooleanTypeCode.Yes ||
-				  orgProfile.licenseesNeedVulnerableSectorScreening == BooleanTypeCode.Yes
-				: false;
-		} else {
-			this.showScreeningType = false;
-		}
-
-		const serviceTypes = orgProfile?.serviceTypes ?? [];
-		if (serviceTypes.length > 0) {
-			if (serviceTypes.length == 1) {
-				this.serviceTypeDefault = serviceTypes[0];
+			if (this.isNotVolunteerOrg) {
+				this.showScreeningType = orgProfile
+					? orgProfile.contractorsNeedVulnerableSectorScreening == BooleanTypeCode.Yes ||
+					  orgProfile.licenseesNeedVulnerableSectorScreening == BooleanTypeCode.Yes
+					: false;
 			} else {
-				this.showServiceType = true;
-				this.serviceTypes = ServiceTypes.filter((item) => serviceTypes.includes(item.code as ServiceTypeCode));
+				this.showScreeningType = false;
 			}
+
+			const serviceTypes = orgProfile?.serviceTypes ?? [];
+			if (serviceTypes.length > 0) {
+				if (serviceTypes.length == 1) {
+					this.serviceTypeDefault = serviceTypes[0];
+				} else {
+					this.showServiceType = true;
+					this.serviceTypes = ServiceTypes.filter((item) => serviceTypes.includes(item.code as ServiceTypeCode));
+				}
+			}
+		} else {
+			// using idir
+			this.isNotVolunteerOrg = true;
+			this.showScreeningType = false;
+			this.showServiceType = true;
+			this.serviceTypes = ServiceTypes.filter(
+				(item) => item.code == ServiceTypeCode.Psso || item.code == ServiceTypeCode.PssoVs
+			);
 		}
 
 		this.form = this.formBuilder.group({
@@ -413,7 +423,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 			body.applicationInviteCreateRequests?.length == 1 ? this.yesMessageSingular : this.yesMessageMultiple;
 
 		this.applicationService
-			.apiOrgsOrgIdApplicationInvitesPost({ orgId: this.authUserService.bceidUserInfoProfile?.orgId!, body })
+			.apiOrgsOrgIdApplicationInvitesPost({ orgId: this.dialogData?.orgId!, body })
 			.pipe()
 			.subscribe((dupres: ApplicationInvitesCreateResponse) => {
 				if (dupres.createSuccess) {
@@ -466,7 +476,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 	private saveInviteRequests(body: ApplicationInvitesCreateRequest, message: string): void {
 		body.requireDuplicateCheck = false;
 		this.applicationService
-			.apiOrgsOrgIdApplicationInvitesPost({ orgId: this.authUserService.bceidUserInfoProfile?.orgId!, body })
+			.apiOrgsOrgIdApplicationInvitesPost({ orgId: this.dialogData?.orgId!, body })
 			.pipe()
 			.subscribe((_resp: any) => {
 				this.handleSaveSuccess(message);

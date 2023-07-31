@@ -334,6 +334,7 @@ export class ExpiringChecksComponent implements OnInit {
 					};
 
 					const dialogOptions: ScreeningRequestAddDialogData = {
+						orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
 						inviteDefault,
 					};
 

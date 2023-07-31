@@ -17,6 +17,7 @@ import {
 	IdentityStatusCode,
 } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
+import { AppRoutes } from 'src/app/app-routing.module';
 import { ApplicationPortalStatisticsTypeCode } from 'src/app/core/code-types/application-portal-statistics-type.model';
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
@@ -240,6 +241,12 @@ export class IdentifyVerificationCommonComponent implements OnInit {
 	) {}
 
 	ngOnInit() {
+		if (!this.orgId) {
+			console.debug('IdentifyVerificationCommonComponent - missing orgId');
+			this.router.navigate([AppRoutes.ACCESS_DENIED]);
+			return;
+		}
+
 		const caseId = (this.location.getState() as any)?.caseId;
 		this.formFilter.patchValue({ search: caseId });
 
@@ -309,6 +316,7 @@ export class IdentifyVerificationCommonComponent implements OnInit {
 		};
 
 		const dialogOptions: ScreeningRequestAddDialogData = {
+			orgId: this.orgId!,
 			inviteDefault,
 		};
 
