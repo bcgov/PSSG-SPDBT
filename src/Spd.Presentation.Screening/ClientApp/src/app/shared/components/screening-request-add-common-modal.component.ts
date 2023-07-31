@@ -15,7 +15,9 @@ import {
 	ScreeningTypes,
 	SelectOptions,
 	ServiceTypes,
+	ServiceTypesPsso,
 } from 'src/app/core/code-types/model-desc.models';
+import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
@@ -23,6 +25,7 @@ import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 
 export interface ScreeningRequestAddDialogData {
+	portal: PortalTypeCode;
 	orgId: string;
 	inviteDefault: ApplicationInviteCreateRequest | undefined;
 }
@@ -30,7 +33,7 @@ export interface ScreeningRequestAddDialogData {
 @Component({
 	selector: 'app-screening-request-add-common-modal',
 	template: `
-		<div mat-dialog-title>{{ title }}</div>
+		<div mat-dialog-title>Add {{ requestName }}</div>
 		<mat-dialog-content>
 			<form [formGroup]="form" novalidate>
 				<div class="row mt-4">
@@ -132,6 +135,17 @@ export interface ScreeningRequestAddDialogData {
 									</mat-form-field>
 								</div>
 
+								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0" *ngIf="!isCrrpPortal">
+									<mat-form-field>
+										<mat-label>Ministry</mat-label>
+										<mat-select formControlName="ministry">
+											<!-- TODO ministry list of values ?  -->
+											<mat-option *ngFor="let scr of screeningTypes" [value]="scr.code"> Ministry </mat-option>
+										</mat-select>
+										<mat-error *ngIf="form.get('ministry')?.hasError('required')">This is required</mat-error>
+									</mat-form-field>
+								</div>
+
 								<div class="col-xl-1 col-lg-1 col-md-3 col-sm-3 mb-4 mb-md-0">
 									<button
 										mat-icon-button
@@ -169,7 +183,7 @@ export interface ScreeningRequestAddDialogData {
 				</div>
 				<div class="offset-lg-6 col-lg-3 offset-md-4 col-md-4 col-sm-12 mb-2">
 					<button mat-flat-button color="primary" class="large" (click)="onSendScreeningRequest()">
-						Send Criminal Record Check
+						Send {{ requestName }}
 					</button>
 				</div>
 			</div>
@@ -188,6 +202,7 @@ export interface ScreeningRequestAddDialogData {
 	],
 })
 export class ScreeningRequestAddCommonModalComponent implements OnInit {
+	isCrrpPortal = false;
 	isNotVolunteerOrg = false;
 	isDuplicateDetected = false;
 	duplicateName = '';
@@ -204,7 +219,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 	screeningTypes = ScreeningTypes;
 	payerPreferenceTypes = PayerPreferenceTypes;
 
-	title: string = 'Add Criminal Record Check';
+	requestName: string = '';
 	form!: FormGroup;
 	matcher = new FormErrorStateMatcher();
 
@@ -218,9 +233,12 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		const orgProfile = this.authUserService.bceidUserOrgProfile;
-		if (orgProfile) {
+		this.isCrrpPortal = this.dialogData?.portal == PortalTypeCode.Crrp;
+		if (this.isCrrpPortal) {
+			this.requestName = 'Criminal Record Check';
+
 			// using bceid
+			const orgProfile = this.authUserService.bceidUserOrgProfile;
 			this.isNotVolunteerOrg = orgProfile?.isNotVolunteerOrg ?? false;
 
 			if (this.isNotVolunteerOrg) {
@@ -242,11 +260,13 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 				}
 			}
 		} else {
+			this.requestName = 'Screening Request';
+
 			// using idir
-			this.isNotVolunteerOrg = true;
+			this.isNotVolunteerOrg = false;
 			this.showScreeningType = false;
 			this.showServiceType = true;
-			this.serviceTypes = ServiceTypes.filter(
+			this.serviceTypes = ServiceTypesPsso.filter(
 				(item) => item.code == ServiceTypeCode.Psso || item.code == ServiceTypeCode.PssoVs
 			);
 		}
@@ -274,6 +294,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 				payeeType: new FormControl(inviteDefault ? inviteDefault.payeeType : null, [FormControlValidators.required]),
 				screeningType: new FormControl(screeningTypeCodeDefault),
 				serviceType: new FormControl(serviceTypeCodeDefault),
+				ministry: new FormControl(),
 			},
 			{
 				validators: [

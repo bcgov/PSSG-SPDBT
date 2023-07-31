@@ -12,6 +12,7 @@ import { GenderTypes, ScreeningTypes } from 'src/app/core/code-types/model-desc.
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
+import { UtilService } from 'src/app/core/services/util.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { CrrpRoutes } from 'src/app/modules/crrp-portal/crrp-routing.module';
@@ -37,11 +38,17 @@ export interface AliasCreateRequest {
 					<h2 class="fw-normal">
 						Manual Submissions
 						<div class="mt-2 fs-5 fw-light">
-							<div *ngIf="isNotVolunteerOrg; else isVolunteer">
-								Enter the applicant's information, upload their consent form, and then pay the criminal record check fee
-							</div>
-							<ng-template #isVolunteer>
-								Enter the applicant's information and then upload their consent form
+							<ng-container *ngIf="portal == portalTypeCodes.Psso; crrpSubtitle">
+								Enter the applicant's information and submit their application
+							</ng-container>
+							<ng-template #crrpSubtitle>
+								<div *ngIf="isNotVolunteerOrg; else isVolunteer">
+									Enter the applicant's information, upload their consent form, and then pay the criminal record check
+									fee
+								</div>
+								<ng-template #isVolunteer>
+									Enter the applicant's information and then upload their consent form
+								</ng-template>
 							</ng-template>
 						</div>
 					</h2>
@@ -49,327 +56,356 @@ export interface AliasCreateRequest {
 			</div>
 			<form [formGroup]="form" novalidate>
 				<mat-divider class="my-3"></mat-divider>
-				<div class="text-minor-heading fw-semibold mb-2">Applicant Information</div>
-				<mat-checkbox formControlName="oneLegalName"> I have one legal name </mat-checkbox>
-				<div class="row">
-					<div class="col-xl-3 col-lg-6 col-md-12">
-						<mat-form-field>
-							<mat-label>Legal Given Name</mat-label>
-							<input matInput formControlName="givenName" [errorStateMatcher]="matcher" maxlength="40" />
-							<mat-error *ngIf="form.get('givenName')?.hasError('required')"> This is required </mat-error>
-						</mat-form-field>
-					</div>
-					<div class="col-xl-3 col-lg-6 col-md-12">
-						<mat-form-field>
-							<mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
-							<input matInput formControlName="middleName1" maxlength="40" />
-						</mat-form-field>
-					</div>
-					<div class="col-xl-3 col-lg-6 col-md-12">
-						<mat-form-field>
-							<mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
-							<input matInput formControlName="middleName2" maxlength="40" />
-						</mat-form-field>
-					</div>
-					<div class="col-xl-3 col-lg-6 col-md-12">
-						<mat-form-field>
-							<mat-label>Legal Surname</mat-label>
-							<input matInput formControlName="surname" [errorStateMatcher]="matcher" maxlength="40" />
-							<mat-error *ngIf="form.get('surname')?.hasError('required')"> This is required </mat-error>
-						</mat-form-field>
-					</div>
-
-					<div class="col-xl-3 col-lg-6 col-md-12">
-						<mat-form-field>
-							<mat-label>Email Address</mat-label>
-							<input matInput formControlName="emailAddress" [errorStateMatcher]="matcher" maxlength="75" />
-							<mat-error *ngIf="form.get('emailAddress')?.hasError('required')"> This is required </mat-error>
-							<mat-error *ngIf="form.get('emailAddress')?.hasError('email')"> Must be a valid email address </mat-error>
-						</mat-form-field>
-					</div>
-					<div class="col-xl-3 col-lg-6 col-md-12">
-						<mat-form-field>
-							<mat-label>Phone Number</mat-label>
-							<input
-								matInput
-								formControlName="phoneNumber"
-								[mask]="phoneMask"
-								[showMaskTyped]="true"
-								[errorStateMatcher]="matcher"
-							/>
-							<mat-error *ngIf="form.get('phoneNumber')?.hasError('required')"> This is required </mat-error>
-							<mat-error *ngIf="form.get('phoneNumber')?.hasError('mask')">This must be 10 digits</mat-error>
-						</mat-form-field>
-					</div>
-					<div class="col-xl-3 col-lg-6 col-md-12">
-						<mat-form-field>
-							<mat-label>Date of Birth</mat-label>
-							<input matInput [matDatepicker]="picker" formControlName="dateOfBirth" [errorStateMatcher]="matcher" />
-							<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-							<mat-datepicker #picker startView="multi-year" [startAt]="startAt"></mat-datepicker>
-							<mat-error *ngIf="form.get('dateOfBirth')?.hasError('required')">This is required</mat-error>
-						</mat-form-field>
-					</div>
-					<div class="col-xl-3 col-lg-6 col-md-12">
-						<mat-form-field>
-							<mat-label>Birth Place</mat-label>
-							<input
-								matInput
-								formControlName="birthPlace"
-								placeholder="City, Country"
-								[errorStateMatcher]="matcher"
-								maxlength="100"
-							/>
-							<mat-error *ngIf="form.get('birthPlace')?.hasError('required')"> This is required </mat-error>
-						</mat-form-field>
-					</div>
-					<div class="col-xl-3 col-lg-6 col-md-12">
-						<mat-form-field>
-							<mat-label>BC Drivers Licence <span class="optional-label">(optional)</span></mat-label>
-							<input matInput formControlName="driversLicense" mask="00000009" />
-							<mat-error *ngIf="form.get('driversLicense')?.hasError('mask')"> This must be 7 or 8 digits </mat-error>
-						</mat-form-field>
-					</div>
-					<div class="col-xl-3 col-lg-6 col-md-12">
-						<mat-form-field>
-							<mat-label>Sex <span class="optional-label">(optional)</span></mat-label>
-							<mat-select formControlName="genderCode">
-								<mat-option *ngFor="let gdr of genderCodes" [value]="gdr.code">
-									{{ gdr.desc }}
-								</mat-option>
-							</mat-select>
-						</mat-form-field>
-					</div>
-					<div class="col-xl-3 col-lg-6 col-md-12">
-						<mat-form-field>
-							<mat-label>Job Title</mat-label>
-							<input matInput formControlName="jobTitle" [errorStateMatcher]="matcher" maxlength="100" />
-							<mat-error *ngIf="form.get('jobTitle')?.hasError('required')">This is required</mat-error>
-						</mat-form-field>
-					</div>
-					<div class="col-xl-3 col-lg-6 col-md-12" *ngIf="showScreeningType">
-						<mat-form-field>
-							<mat-label>Application Type</mat-label>
-							<mat-select formControlName="screeningType">
-								<mat-option *ngFor="let scr of screeningTypes" [value]="scr.code">
-									{{ scr.desc }}
-								</mat-option>
-							</mat-select>
-							<mat-error *ngIf="form.get('screeningType')?.hasError('required')">This is required</mat-error>
-						</mat-form-field>
-					</div>
-					<div class="col-xl-3 col-lg-6 col-md-12" *ngIf="isDisplayFacilityName">
-						<mat-form-field>
-							<mat-label>Company / Facility Name</mat-label>
-							<input matInput formControlName="contractedCompanyName" [errorStateMatcher]="matcher" maxlength="100" />
-							<mat-error *ngIf="form.get('contractedCompanyName')?.hasError('required')">This is required</mat-error>
-						</mat-form-field>
-					</div>
-				</div>
-
-				<mat-divider class="my-3"></mat-divider>
-				<div class="text-minor-heading fw-semibold mb-2">Does the applicant have a previous name?</div>
-				<div class="row">
-					<div class="col-xl-4 col-lg-12">
-						<mat-radio-group aria-label="Select an option" formControlName="previousNameFlag" class="d-flex flex-row">
-							<mat-radio-button class="me-4" style="width: initial;" [value]="booleanTypeCodes.No">No</mat-radio-button>
-							<mat-radio-button [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
-						</mat-radio-group>
-						<mat-error
-							class="mat-option-error"
-							*ngIf="
-								(form.get('previousNameFlag')?.dirty || form.get('previousNameFlag')?.touched) &&
-								form.get('previousNameFlag')?.invalid &&
-								form.get('previousNameFlag')?.hasError('required')
-							"
-							>An option must be selected</mat-error
-						>
-					</div>
-				</div>
-
-				<div *ngIf="previousNameFlag.value == booleanTypeCodes.Yes">
-					<div class="text-minor-heading fw-semibold mb-2">Previous Names</div>
-					<ng-container formArrayName="aliases" *ngFor="let group of getFormControls.controls; let i = index">
-						<div class="row" [formGroupName]="i">
-							<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
-								<mat-form-field>
-									<mat-label>Given Name <span class="optional-label">(optional)</span></mat-label>
-									<input matInput type="text" formControlName="givenName" maxlength="40" />
-								</mat-form-field>
-							</div>
-							<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
-								<mat-form-field>
-									<mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
-									<input matInput type="text" formControlName="middleName1" maxlength="40" />
-								</mat-form-field>
-							</div>
-							<div class="col-xl-2 col-lg-2 col-md-6 col-sm-12">
-								<mat-form-field>
-									<mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
-									<input matInput type="text" formControlName="middleName2" maxlength="40" />
-								</mat-form-field>
-							</div>
-							<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
-								<mat-form-field>
-									<mat-label>Surname</mat-label>
-									<input
-										matInput
-										type="text"
-										formControlName="surname"
-										required
-										[errorStateMatcher]="matcher"
-										maxlength="40"
-									/>
-									<mat-error *ngIf="group.get('surname')?.hasError('required')"> This is required </mat-error>
-								</mat-form-field>
-							</div>
-							<div class="col-xl-1 col-lg-1 col-md-6 col-sm-12">
-								<button
-									mat-mini-fab
-									class="delete-row-button mb-3"
-									matTooltip="Remove previous name"
-									(click)="onDeleteRow(i)"
-									[disabled]="moreThanOneAlias"
-									aria-label="Remove row"
-								>
-									<mat-icon>delete_outline</mat-icon>
-								</button>
-							</div>
-						</div>
-					</ng-container>
-					<div class="row" *ngIf="isMaxAliasCount">
-						<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
-							<button mat-stroked-button (click)="onAddRow()">
-								<mat-icon class="add-icon">add_circle</mat-icon>Add Another Name
-							</button>
-						</div>
-					</div>
-				</div>
-
-				<mat-divider class="my-3"></mat-divider>
-				<div class="text-minor-heading fw-semibold mb-2">Mailing Address</div>
-				<div class="row mt-3">
-					<div class="col-lg-8 col-md-12 col-sm-12">
-						<app-address-form-autocomplete
-							(autocompleteAddress)="onAddressAutocomplete($event)"
-							(enterAddressManually)="onEnterAddressManually()"
-						>
-						</app-address-form-autocomplete>
-						<mat-error
-							class="mat-option-error"
-							*ngIf="
-								(form.get('addressSelected')?.dirty || form.get('addressSelected')?.touched) &&
-								form.get('addressSelected')?.invalid &&
-								form.get('addressSelected')?.hasError('required')
-							"
-						>
-							This is required
-						</mat-error>
-					</div>
-				</div>
-
-				<section *ngIf="form.get('addressSelected')?.value">
+				<section>
+					<div class="text-minor-heading fw-semibold mb-2">Applicant Information</div>
+					<mat-checkbox formControlName="oneLegalName"> I have one legal name </mat-checkbox>
 					<div class="row">
-						<div class="col-lg-8 col-md-12 col-sm-12">
-							<div class="text-minor-heading fw-semibold mb-2">Address Information</div>
+						<div class="col-xl-3 col-lg-6 col-md-12">
 							<mat-form-field>
-								<mat-label>Street Address 1</mat-label>
-								<input matInput formControlName="addressLine1" maxlength="100" />
-								<mat-error *ngIf="form.get('addressLine1')?.hasError('required')">This is required</mat-error>
+								<mat-label>Legal Given Name</mat-label>
+								<input matInput formControlName="givenName" [errorStateMatcher]="matcher" maxlength="40" />
+								<mat-error *ngIf="form.get('givenName')?.hasError('required')"> This is required </mat-error>
 							</mat-form-field>
 						</div>
-					</div>
-					<div class="row">
-						<div class="col-lg-8 col-md-12 col-sm-12">
+						<div class="col-xl-3 col-lg-6 col-md-12">
 							<mat-form-field>
-								<mat-label>Street Address 2 <span class="optional-label">(optional)</span></mat-label>
-								<input matInput formControlName="addressLine2" maxlength="100" />
+								<mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
+								<input matInput formControlName="middleName1" maxlength="40" />
 							</mat-form-field>
 						</div>
-					</div>
-					<div class="row">
-						<div class="col-lg-4 col-md-6 col-sm-12">
+						<div class="col-xl-3 col-lg-6 col-md-12">
 							<mat-form-field>
-								<mat-label>City</mat-label>
-								<input matInput formControlName="city" maxlength="100" />
-								<mat-error *ngIf="form.get('city')?.hasError('required')">This is required</mat-error>
+								<mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
+								<input matInput formControlName="middleName2" maxlength="40" />
 							</mat-form-field>
 						</div>
-						<div class="col-lg-4 col-md-6 col-sm-12">
+						<div class="col-xl-3 col-lg-6 col-md-12">
 							<mat-form-field>
-								<mat-label>Postal/Zip Code</mat-label>
+								<mat-label>Legal Surname</mat-label>
+								<input matInput formControlName="surname" [errorStateMatcher]="matcher" maxlength="40" />
+								<mat-error *ngIf="form.get('surname')?.hasError('required')"> This is required </mat-error>
+							</mat-form-field>
+						</div>
+
+						<div class="col-xl-3 col-lg-6 col-md-12">
+							<mat-form-field>
+								<mat-label>Email Address</mat-label>
+								<input matInput formControlName="emailAddress" [errorStateMatcher]="matcher" maxlength="75" />
+								<mat-error *ngIf="form.get('emailAddress')?.hasError('required')"> This is required </mat-error>
+								<mat-error *ngIf="form.get('emailAddress')?.hasError('email')">
+									Must be a valid email address
+								</mat-error>
+							</mat-form-field>
+						</div>
+						<div class="col-xl-3 col-lg-6 col-md-12">
+							<mat-form-field>
+								<mat-label>Phone Number</mat-label>
 								<input
 									matInput
-									formControlName="postalCode"
-									oninput="this.value = this.value.toUpperCase()"
-									maxlength="20"
+									formControlName="phoneNumber"
+									[mask]="phoneMask"
+									[showMaskTyped]="true"
+									[errorStateMatcher]="matcher"
 								/>
-								<mat-error *ngIf="form.get('postalCode')?.hasError('required')">This is required</mat-error>
+								<mat-error *ngIf="form.get('phoneNumber')?.hasError('required')"> This is required </mat-error>
+								<mat-error *ngIf="form.get('phoneNumber')?.hasError('mask')">This must be 10 digits</mat-error>
 							</mat-form-field>
 						</div>
-					</div>
-					<div class="row">
-						<div class="col-lg-4 col-md-6 col-sm-12">
+						<div class="col-xl-3 col-lg-6 col-md-12">
 							<mat-form-field>
-								<mat-label>Province/State</mat-label>
-								<input matInput formControlName="province" maxlength="100" />
-								<mat-error *ngIf="form.get('province')?.hasError('required')">This is required</mat-error>
+								<mat-label>Date of Birth</mat-label>
+								<input matInput [matDatepicker]="picker" formControlName="dateOfBirth" [errorStateMatcher]="matcher" />
+								<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+								<mat-datepicker #picker startView="multi-year" [startAt]="startAt"></mat-datepicker>
+								<mat-error *ngIf="form.get('dateOfBirth')?.hasError('required')">This is required</mat-error>
 							</mat-form-field>
 						</div>
-						<div class="col-lg-4 col-md-6 col-sm-12">
+						<div class="col-xl-3 col-lg-6 col-md-12">
 							<mat-form-field>
-								<mat-label>Country</mat-label>
-								<input matInput formControlName="country" maxlength="100" />
-								<mat-error *ngIf="form.get('country')?.hasError('required')">This is required</mat-error>
+								<mat-label>Birth Place</mat-label>
+								<input
+									matInput
+									formControlName="birthPlace"
+									placeholder="City, Country"
+									[errorStateMatcher]="matcher"
+									maxlength="100"
+								/>
+								<mat-error *ngIf="form.get('birthPlace')?.hasError('required')"> This is required </mat-error>
+							</mat-form-field>
+						</div>
+						<div class="col-xl-3 col-lg-6 col-md-12">
+							<mat-form-field>
+								<mat-label>BC Drivers Licence <span class="optional-label">(optional)</span></mat-label>
+								<input matInput formControlName="driversLicense" mask="00000009" />
+								<mat-error *ngIf="form.get('driversLicense')?.hasError('mask')"> This must be 7 or 8 digits </mat-error>
+							</mat-form-field>
+						</div>
+						<div class="col-xl-3 col-lg-6 col-md-12">
+							<mat-form-field>
+								<mat-label>Sex <span class="optional-label">(optional)</span></mat-label>
+								<mat-select formControlName="genderCode">
+									<mat-option *ngFor="let gdr of genderTypes" [value]="gdr.code">
+										{{ gdr.desc }}
+									</mat-option>
+								</mat-select>
+							</mat-form-field>
+						</div>
+						<div class="col-xl-3 col-lg-6 col-md-12">
+							<mat-form-field>
+								<mat-label>Job Title</mat-label>
+								<input matInput formControlName="jobTitle" [errorStateMatcher]="matcher" maxlength="100" />
+								<mat-error *ngIf="form.get('jobTitle')?.hasError('required')">This is required</mat-error>
+							</mat-form-field>
+						</div>
+						<div class="col-xl-3 col-lg-6 col-md-12" *ngIf="showScreeningType">
+							<mat-form-field>
+								<mat-label>Application Type</mat-label>
+								<mat-select formControlName="screeningType">
+									<mat-option *ngFor="let scr of screeningTypes" [value]="scr.code">
+										{{ scr.desc }}
+									</mat-option>
+								</mat-select>
+								<mat-error *ngIf="form.get('screeningType')?.hasError('required')">This is required</mat-error>
+							</mat-form-field>
+						</div>
+						<div class="col-xl-3 col-lg-6 col-md-12" *ngIf="isDisplayFacilityName">
+							<mat-form-field>
+								<mat-label>Company / Facility Name</mat-label>
+								<input matInput formControlName="contractedCompanyName" [errorStateMatcher]="matcher" maxlength="100" />
+								<mat-error *ngIf="form.get('contractedCompanyName')?.hasError('required')">This is required</mat-error>
+							</mat-form-field>
+						</div>
+						<div class="col-xl-3 col-lg-6 col-md-12" *ngIf="portal == portalTypeCodes.Psso">
+							<mat-form-field>
+								<mat-label>Employee ID</mat-label>
+								<input matInput formControlName="employeeId" maxlength="100" />
+								<!-- TODO rules for employee id? -->
+							</mat-form-field>
+						</div>
+						<div class="col-xl-3 col-lg-6 col-md-12" *ngIf="portal == portalTypeCodes.Psso">
+							<mat-form-field>
+								<mat-label>Ministry</mat-label>
+								<mat-select formControlName="ministry">
+									<!-- TODO ministry list of values ?  -->
+									<mat-option *ngFor="let scr of screeningTypes" [value]="scr.code"> Ministry </mat-option>
+								</mat-select>
+								<mat-error *ngIf="form.get('ministry')?.hasError('required')">This is required</mat-error>
 							</mat-form-field>
 						</div>
 					</div>
 				</section>
 
 				<mat-divider class="my-3"></mat-divider>
-				<div class="text-minor-heading fw-semibold mb-2">Declaration</div>
-				<div class="row">
-					<div class="col-md-12 col-sm-12">
-						<mat-checkbox formControlName="agreeToCompleteAndAccurate">
-							I certify that, to the best of my knowledge, the information I have provided and will provide as necessary
-							is complete and accurate
-						</mat-checkbox>
-						<mat-error
-							class="mat-option-error"
-							*ngIf="
-								(form.get('agreeToCompleteAndAccurate')?.dirty || form.get('agreeToCompleteAndAccurate')?.touched) &&
-								form.get('agreeToCompleteAndAccurate')?.invalid &&
-								form.get('agreeToCompleteAndAccurate')?.hasError('required')
-							"
-							>This is required</mat-error
-						>
+				<section>
+					<div class="text-minor-heading fw-semibold mb-2">Does the applicant have a previous name?</div>
+					<div class="row">
+						<div class="col-xl-4 col-lg-12">
+							<mat-radio-group aria-label="Select an option" formControlName="previousNameFlag" class="d-flex flex-row">
+								<mat-radio-button class="me-4" style="width: initial;" [value]="booleanTypeCodes.No"
+									>No</mat-radio-button
+								>
+								<mat-radio-button [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
+							</mat-radio-group>
+							<mat-error
+								class="mat-option-error"
+								*ngIf="
+									(form.get('previousNameFlag')?.dirty || form.get('previousNameFlag')?.touched) &&
+									form.get('previousNameFlag')?.invalid &&
+									form.get('previousNameFlag')?.hasError('required')
+								"
+								>An option must be selected</mat-error
+							>
+						</div>
 					</div>
-					<div class="col-md-12 col-sm-12">
-						<mat-checkbox formControlName="haveVerifiedIdentity">
-							I confirm that I have verified the identity of the applicant for this criminal record check
-							<span class="optional-label">(optional)</span>
-						</mat-checkbox>
-					</div>
-				</div>
 
-				<ng-container *ngIf="portal == 'CRRP'">
-					<mat-divider class="my-3"></mat-divider>
-					<div class="text-minor-heading fw-semibold mb-2">
-						Upload the copy of signed consent form sent by the applicant
+					<div *ngIf="previousNameFlag.value == booleanTypeCodes.Yes">
+						<div class="text-minor-heading fw-semibold mb-2">Previous Names</div>
+						<ng-container formArrayName="aliases" *ngFor="let group of getFormControls.controls; let i = index">
+							<div class="row" [formGroupName]="i">
+								<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
+									<mat-form-field>
+										<mat-label>Given Name <span class="optional-label">(optional)</span></mat-label>
+										<input matInput type="text" formControlName="givenName" maxlength="40" />
+									</mat-form-field>
+								</div>
+								<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
+									<mat-form-field>
+										<mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
+										<input matInput type="text" formControlName="middleName1" maxlength="40" />
+									</mat-form-field>
+								</div>
+								<div class="col-xl-2 col-lg-2 col-md-6 col-sm-12">
+									<mat-form-field>
+										<mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
+										<input matInput type="text" formControlName="middleName2" maxlength="40" />
+									</mat-form-field>
+								</div>
+								<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
+									<mat-form-field>
+										<mat-label>Surname</mat-label>
+										<input
+											matInput
+											type="text"
+											formControlName="surname"
+											required
+											[errorStateMatcher]="matcher"
+											maxlength="40"
+										/>
+										<mat-error *ngIf="group.get('surname')?.hasError('required')"> This is required </mat-error>
+									</mat-form-field>
+								</div>
+								<div class="col-xl-1 col-lg-1 col-md-6 col-sm-12">
+									<button
+										mat-mini-fab
+										class="delete-row-button mb-3"
+										matTooltip="Remove previous name"
+										(click)="onDeleteRow(i)"
+										[disabled]="moreThanOneAlias"
+										aria-label="Remove row"
+									>
+										<mat-icon>delete_outline</mat-icon>
+									</button>
+								</div>
+							</div>
+						</ng-container>
+						<div class="row" *ngIf="isMaxAliasCount">
+							<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+								<button mat-stroked-button (click)="onAddRow()">
+									<mat-icon class="add-icon">add_circle</mat-icon>Add Another Name
+								</button>
+							</div>
+						</div>
 					</div>
-					<div class="my-4">
-						<app-file-upload [maxNumberOfFiles]="1"></app-file-upload>
-						<mat-error
-							class="mat-option-error"
-							*ngIf="
-								(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-								form.get('attachments')?.invalid &&
-								form.get('attachments')?.hasError('required')
-							"
-							>This is required</mat-error
-						>
+				</section>
+
+				<mat-divider class="my-3"></mat-divider>
+				<section>
+					<div class="text-minor-heading fw-semibold mb-2">Mailing Address</div>
+					<div class="row mt-3">
+						<div class="col-lg-8 col-md-12 col-sm-12">
+							<app-address-form-autocomplete
+								(autocompleteAddress)="onAddressAutocomplete($event)"
+								(enterAddressManually)="onEnterAddressManually()"
+							>
+							</app-address-form-autocomplete>
+							<mat-error
+								class="mat-option-error"
+								*ngIf="
+									(form.get('addressSelected')?.dirty || form.get('addressSelected')?.touched) &&
+									form.get('addressSelected')?.invalid &&
+									form.get('addressSelected')?.hasError('required')
+								"
+							>
+								This is required
+							</mat-error>
+						</div>
 					</div>
-				</ng-container>
+
+					<ng-container *ngIf="form.get('addressSelected')?.value">
+						<div class="row">
+							<div class="col-lg-8 col-md-12 col-sm-12">
+								<div class="text-minor-heading fw-semibold mb-2">Address Information</div>
+								<mat-form-field>
+									<mat-label>Street Address 1</mat-label>
+									<input matInput formControlName="addressLine1" maxlength="100" />
+									<mat-error *ngIf="form.get('addressLine1')?.hasError('required')">This is required</mat-error>
+								</mat-form-field>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-8 col-md-12 col-sm-12">
+								<mat-form-field>
+									<mat-label>Street Address 2 <span class="optional-label">(optional)</span></mat-label>
+									<input matInput formControlName="addressLine2" maxlength="100" />
+								</mat-form-field>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-4 col-md-6 col-sm-12">
+								<mat-form-field>
+									<mat-label>City</mat-label>
+									<input matInput formControlName="city" maxlength="100" />
+									<mat-error *ngIf="form.get('city')?.hasError('required')">This is required</mat-error>
+								</mat-form-field>
+							</div>
+							<div class="col-lg-4 col-md-6 col-sm-12">
+								<mat-form-field>
+									<mat-label>Postal/Zip Code</mat-label>
+									<input
+										matInput
+										formControlName="postalCode"
+										oninput="this.value = this.value.toUpperCase()"
+										maxlength="20"
+									/>
+									<mat-error *ngIf="form.get('postalCode')?.hasError('required')">This is required</mat-error>
+								</mat-form-field>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-4 col-md-6 col-sm-12">
+								<mat-form-field>
+									<mat-label>Province/State</mat-label>
+									<input matInput formControlName="province" maxlength="100" />
+									<mat-error *ngIf="form.get('province')?.hasError('required')">This is required</mat-error>
+								</mat-form-field>
+							</div>
+							<div class="col-lg-4 col-md-6 col-sm-12">
+								<mat-form-field>
+									<mat-label>Country</mat-label>
+									<input matInput formControlName="country" maxlength="100" />
+									<mat-error *ngIf="form.get('country')?.hasError('required')">This is required</mat-error>
+								</mat-form-field>
+							</div>
+						</div>
+					</ng-container>
+				</section>
+
+				<mat-divider class="my-3"></mat-divider>
+				<section>
+					<div class="text-minor-heading fw-semibold mb-2">Declaration</div>
+					<div class="row">
+						<div class="col-md-12 col-sm-12">
+							<mat-checkbox formControlName="agreeToCompleteAndAccurate">
+								I certify that, to the best of my knowledge, the information I have provided and will provide as
+								necessary is complete and accurate
+							</mat-checkbox>
+							<mat-error
+								class="mat-option-error"
+								*ngIf="
+									(form.get('agreeToCompleteAndAccurate')?.dirty || form.get('agreeToCompleteAndAccurate')?.touched) &&
+									form.get('agreeToCompleteAndAccurate')?.invalid &&
+									form.get('agreeToCompleteAndAccurate')?.hasError('required')
+								"
+								>This is required</mat-error
+							>
+						</div>
+						<div class="col-md-12 col-sm-12">
+							<mat-checkbox formControlName="haveVerifiedIdentity">
+								I confirm that I have verified the identity of the applicant for this criminal record check
+								<span class="optional-label">(optional)</span>
+							</mat-checkbox>
+						</div>
+					</div>
+
+					<ng-container *ngIf="portal == 'CRRP'">
+						<mat-divider class="my-3"></mat-divider>
+						<div class="text-minor-heading fw-semibold mb-2">
+							Upload the copy of signed consent form sent by the applicant
+						</div>
+						<div class="my-4">
+							<app-file-upload [maxNumberOfFiles]="1"></app-file-upload>
+							<mat-error
+								class="mat-option-error"
+								*ngIf="
+									(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+									form.get('attachments')?.invalid &&
+									form.get('attachments')?.hasError('required')
+								"
+								>This is required</mat-error
+							>
+						</div>
+					</ng-container>
+				</section>
 			</form>
 			<div class="row mb-4">
 				<div class="offset-xl-8 offset-lg-6 col-xl-2 col-lg-3 col-md-6 col-sm-12">
@@ -400,7 +436,8 @@ export class ManualSubmissionCommonComponent implements OnInit {
 	showScreeningType = false;
 
 	screeningTypes = ScreeningTypes;
-	genderCodes = GenderTypes;
+	genderTypes = GenderTypes;
+	portalTypeCodes = PortalTypeCode;
 
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	booleanTypeCodes = BooleanTypeCode;
@@ -421,6 +458,8 @@ export class ManualSubmissionCommonComponent implements OnInit {
 			jobTitle: new FormControl('', [FormControlValidators.required]),
 			screeningType: new FormControl('', [FormControlValidators.required]),
 			contractedCompanyName: new FormControl(''),
+			employeeId: new FormControl(''),
+			ministry: new FormControl(''),
 			previousNameFlag: new FormControl('', [FormControlValidators.required]),
 			addressSelected: new FormControl(false, [Validators.requiredTrue]),
 			addressLine1: new FormControl('', [FormControlValidators.required]),
@@ -463,6 +502,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 		private formBuilder: FormBuilder,
 		private applicationService: ApplicationService,
 		private authUserService: AuthUserService,
+		private utilService: UtilService,
 		private hotToast: HotToastService,
 		private maskPipe: NgxMaskPipe,
 		private dialog: MatDialog
@@ -475,9 +515,9 @@ export class ManualSubmissionCommonComponent implements OnInit {
 			return;
 		}
 
-		const orgProfile = this.authUserService.bceidUserOrgProfile;
-		if (orgProfile) {
+		if (this.portal == PortalTypeCode.Crrp) {
 			// using bceid
+			const orgProfile = this.authUserService.bceidUserOrgProfile;
 			this.isNotVolunteerOrg = orgProfile?.isNotVolunteerOrg ?? false;
 
 			if (this.isNotVolunteerOrg) {
@@ -494,7 +534,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 			// using idir
 			this.isNotVolunteerOrg = true;
 			this.showScreeningType = false;
-			this.serviceType = ServiceTypeCode.Psso;
+			this.serviceType = ServiceTypeCode.Psso; // TODO how to handle service type for PSSO
 		}
 
 		this.resetForm();
@@ -505,16 +545,22 @@ export class ManualSubmissionCommonComponent implements OnInit {
 	}
 
 	onSubmit() {
-		const attachments =
-			this.fileUploadComponent.files && this.fileUploadComponent.files.length > 0
-				? this.fileUploadComponent.files[0]
-				: '';
-		this.form.controls['attachments'].setValue(attachments);
+		if (this.portal == PortalTypeCode.Crrp) {
+			const attachments =
+				this.fileUploadComponent.files && this.fileUploadComponent.files.length > 0
+					? this.fileUploadComponent.files[0]
+					: '';
+			this.form.controls['attachments'].setValue(attachments);
+		}
 
 		this.form.markAllAsTouched();
 
 		if (this.previousNameFlag.value != BooleanTypeCode.Yes) {
 			this.aliases.clear();
+		}
+
+		if (!this.form.valid) {
+			this.utilService.scrollToErrorSection();
 		}
 
 		if (this.form.valid) {
