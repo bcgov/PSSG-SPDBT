@@ -14,7 +14,6 @@ import {
 } from 'src/app/api/models';
 import { OrgRegistrationService } from 'src/app/api/services';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
-import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import {
@@ -114,7 +113,6 @@ export class OrgRegistrationComponent implements OnInit {
 	constructor(
 		private router: Router,
 		private breakpointObserver: BreakpointObserver,
-		private authUserService: AuthUserService,
 		private authProcessService: AuthProcessService,
 		private authenticationService: AuthenticationService,
 		private orgRegistrationService: OrgRegistrationService,

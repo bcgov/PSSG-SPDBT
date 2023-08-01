@@ -5,7 +5,7 @@ import { ApplicantApplicationResponse, PaymentResponse } from 'src/app/api/model
 import { ApplicantService, PaymentService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { AppRoutes } from 'src/app/app-routing.module';
-import { AuthUserService } from 'src/app/core/services/auth-user.service';
+import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 
@@ -28,7 +28,7 @@ export class SecurityScreeningPaymentSuccessComponent implements OnInit {
 	constructor(
 		private route: ActivatedRoute,
 		private router: Router,
-		private authUserService: AuthUserService,
+		private authUserService: AuthUserBcscService,
 		private paymentService: PaymentService,
 		private applicantService: ApplicantService,
 		private utilService: UtilService
