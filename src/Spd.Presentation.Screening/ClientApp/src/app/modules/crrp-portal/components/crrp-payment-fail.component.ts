@@ -6,7 +6,7 @@ import { PaymentService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { AuthUserService } from 'src/app/core/services/auth-user.service';
+import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { CrrpRoutes } from '../crrp-routing.module';
 
@@ -30,7 +30,7 @@ export class CrrpPaymentFailComponent implements OnInit {
 	constructor(
 		private route: ActivatedRoute,
 		private router: Router,
-		private authUserService: AuthUserService,
+		private authUserService: AuthUserBceidService,
 		private paymentService: PaymentService,
 		private utilService: UtilService
 	) {}

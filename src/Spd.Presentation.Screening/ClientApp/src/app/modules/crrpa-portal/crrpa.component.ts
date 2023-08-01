@@ -17,7 +17,7 @@ import {
 import { ApplicantService, PaymentService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
-import { AuthUserService } from 'src/app/core/services/auth-user.service';
+import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { SaStepApplSubmittedComponent } from 'src/app/shared/components/screening-application-steps/sa-step-appl-submitted.component';
@@ -134,7 +134,7 @@ export class CrrpaComponent implements OnInit {
 		private utilService: UtilService,
 		private authenticationService: AuthenticationService,
 		private authProcessService: AuthProcessService,
-		private authUserService: AuthUserService,
+		private authUserService: AuthUserBcscService,
 		private applicantService: ApplicantService,
 		private paymentService: PaymentService,
 		private location: Location

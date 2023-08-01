@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, IsActiveMatchOptions, QueryParamsHandling, Router } from '@angular/router';
 import { lastValueFrom, take } from 'rxjs';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
-import { AuthUserService } from 'src/app/core/services/auth-user.service';
+import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
 import { CrrpRoutes } from './crrp-routing.module';
 
 // export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
@@ -181,7 +181,7 @@ export class CrrpComponent implements OnInit {
 
 	constructor(
 		private route: ActivatedRoute,
-		protected authUserService: AuthUserService,
+		protected authUserService: AuthUserBceidService,
 		private authProcessService: AuthProcessService,
 		private router: Router
 	) {}

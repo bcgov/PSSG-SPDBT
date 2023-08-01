@@ -11,7 +11,7 @@ import { ApplicationOriginTypeCode } from 'src/app/core/code-types/application-o
 import { GenderTypes, ScreeningTypes } from 'src/app/core/code-types/model-desc.models';
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { AuthUserService } from 'src/app/core/services/auth-user.service';
+import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
@@ -501,7 +501,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 		private router: Router,
 		private formBuilder: FormBuilder,
 		private applicationService: ApplicationService,
-		private authUserService: AuthUserService,
+		private authUserService: AuthUserBceidService,
 		private utilService: UtilService,
 		private hotToast: HotToastService,
 		private maskPipe: NgxMaskPipe,

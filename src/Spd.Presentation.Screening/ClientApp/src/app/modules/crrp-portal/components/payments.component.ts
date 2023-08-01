@@ -19,7 +19,7 @@ import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { ApplicationPortalStatisticsTypeCode } from 'src/app/core/code-types/application-portal-statistics-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { AuthUserService } from 'src/app/core/services/auth-user.service';
+import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { ScreeningStatusFilterMap } from 'src/app/shared/components/screening-status-filter-common.component';
 import { CrrpRoutes } from '../crrp-routing.module';
@@ -240,7 +240,7 @@ export class PaymentsComponent implements OnInit {
 		private formBuilder: FormBuilder,
 		private applicationService: ApplicationService,
 		private paymentService: PaymentService,
-		private authUserService: AuthUserService,
+		private authUserService: AuthUserBceidService,
 		private location: Location
 	) {
 		this.refreshStats();
