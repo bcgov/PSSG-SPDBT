@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { AppRoutes } from 'src/app/app-routing.module';
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { ScreeningStatusResponse } from 'src/app/shared/components/screening-statuses-common.component';
@@ -11,8 +12,8 @@ import { DelegateManageDialogData, DelegateManageModalComponent } from './delega
 	selector: 'app-screening-statuses',
 	template: `
 		<app-screening-statuses-common
-			[orgId]="orgId"
 			[portal]="portal.Psso"
+			[orgId]="orgId"
 			heading="Screening Statuses"
 			(emitManageDelegate)="onManageDelegates($event)"
 			(emitVerifyIdentity)="onVerifyIdentity($event)"
@@ -27,8 +28,14 @@ export class ScreeningStatusesComponent implements OnInit {
 	constructor(private dialog: MatDialog, private router: Router, private authUserService: AuthUserService) {}
 
 	ngOnInit(): void {
-		console.log('this.authUserService.idirUserWhoamiProfile', this.authUserService.idirUserWhoamiProfile);
-		this.orgId = this.authUserService.idirUserWhoamiProfile?.orgId!;
+		const orgId = this.authUserService.idirUserWhoamiProfile?.orgId;
+		if (!orgId) {
+			console.debug('ScreeningStatusesComponent - orgId', orgId);
+			this.router.navigate([AppRoutes.ACCESS_DENIED]);
+			return;
+		}
+
+		this.orgId = orgId;
 	}
 
 	onManageDelegates(application: ScreeningStatusResponse): void {

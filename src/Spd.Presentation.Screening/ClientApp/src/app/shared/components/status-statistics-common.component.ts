@@ -1,13 +1,12 @@
 import { Component, Input } from '@angular/core';
-import { tap } from 'rxjs/operators';
+import { Observable, tap } from 'rxjs';
 import { ApplicationStatisticsResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { ApplicationPortalStatisticsTypeCode } from 'src/app/core/code-types/application-portal-statistics-type.model';
-import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { UtilService } from 'src/app/core/services/util.service';
 
 @Component({
-	selector: 'app-status-statistics',
+	selector: 'app-status-statistics-common',
 	template: `
 		<ng-container *ngIf="applicationStatistics$ | async">
 			<div class="mb-4">
@@ -15,37 +14,37 @@ import { UtilService } from 'src/app/core/services/util.service';
 				<div class="d-flex flex-wrap justify-content-start">
 					<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">
-							{{ applicationStatistics[statisticsCode.VerifyIdentity] }}
+							{{ applicationStatistics[statisticsCode.VerifyIdentity] ?? 0 }}
 						</div>
 						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCode.VerifyIdentity) }}</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-green align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">
-							{{ applicationStatistics[statisticsCode.InProgress] }}
+							{{ applicationStatistics[statisticsCode.InProgress] ?? 0 }}
 						</div>
 						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCode.InProgress) }}</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">
-							{{ applicationStatistics[statisticsCode.AwaitingPayment] }}
+							{{ applicationStatistics[statisticsCode.AwaitingPayment] ?? 0 }}
 						</div>
 						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCode.AwaitingPayment) }}</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">
-							{{ applicationStatistics[statisticsCode.AwaitingThirdParty] }}
+							{{ applicationStatistics[statisticsCode.AwaitingThirdParty] ?? 0 }}
 						</div>
 						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCode.AwaitingThirdParty) }}</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">
-							{{ applicationStatistics[statisticsCode.AwaitingApplicant] }}
+							{{ applicationStatistics[statisticsCode.AwaitingApplicant] ?? 0 }}
 						</div>
 						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCode.AwaitingApplicant) }}</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-blue align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">
-							{{ applicationStatistics[statisticsCode.UnderAssessment] }}
+							{{ applicationStatistics[statisticsCode.UnderAssessment] ?? 0 }}
 						</div>
 						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCode.UnderAssessment) }}</div>
 					</div>
@@ -57,31 +56,31 @@ import { UtilService } from 'src/app/core/services/util.service';
 				<div class="d-flex flex-wrap justify-content-start">
 					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">
-							{{ applicationStatistics[statisticsCode.RiskFound] }}
+							{{ applicationStatistics[statisticsCode.RiskFound] ?? 0 }}
 						</div>
 						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCode.RiskFound) }}</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">
-							{{ applicationStatistics[statisticsCode.ClosedJudicialReview] }}
+							{{ applicationStatistics[statisticsCode.ClosedJudicialReview] ?? 0 }}
 						</div>
 						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCode.ClosedJudicialReview) }}</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">
-							{{ applicationStatistics[statisticsCode.ClosedNoResponse] }}
+							{{ applicationStatistics[statisticsCode.ClosedNoResponse] ?? 0 }}
 						</div>
 						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCode.ClosedNoResponse) }}</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">
-							{{ applicationStatistics[statisticsCode.ClosedNoConsent] }}
+							{{ applicationStatistics[statisticsCode.ClosedNoConsent] ?? 0 }}
 						</div>
 						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCode.ClosedNoConsent) }}</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">
-							{{ applicationStatistics[statisticsCode.CancelledByApplicant] }}
+							{{ applicationStatistics[statisticsCode.CancelledByApplicant] ?? 0 }}
 						</div>
 						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCode.CancelledByApplicant) }}</div>
 					</div>
@@ -101,27 +100,27 @@ import { UtilService } from 'src/app/core/services/util.service';
 		`,
 	],
 })
-export class StatusStatisticsComponent {
+export class StatusStatisticsCommonComponent {
+	applicationStatistics$!: Observable<ApplicationStatisticsResponse>;
+	applicationStatistics!: { [key: string]: number | null };
+
 	statisticsCode = ApplicationPortalStatisticsTypeCode;
 
 	@Input() orgId: string | null = null;
 
-	constructor(
-		private utilService: UtilService,
-		private applicationService: ApplicationService,
-		private authUserService: AuthUserService
-	) {}
+	constructor(private utilService: UtilService, private applicationService: ApplicationService) {}
 
-	applicationStatistics!: { [key: string]: number };
-	applicationStatistics$ = this.applicationService
-		.apiOrgsOrgIdApplicationStatisticsGet({
-			orgId: this.orgId!,
-		})
-		.pipe(
-			tap((res: ApplicationStatisticsResponse) => {
-				this.applicationStatistics = res.statistics ?? {};
+	ngOnInit(): void {
+		this.applicationStatistics$ = this.applicationService
+			.apiOrgsOrgIdApplicationStatisticsGet({
+				orgId: this.orgId!,
 			})
-		);
+			.pipe(
+				tap((res: ApplicationStatisticsResponse) => {
+					this.applicationStatistics = res.statistics ?? {};
+				})
+			);
+	}
 
 	getStatusDesc(code: string): string {
 		return this.utilService.getApplicationPortalStatusDesc(code);

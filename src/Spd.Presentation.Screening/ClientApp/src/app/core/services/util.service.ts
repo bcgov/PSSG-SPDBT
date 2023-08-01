@@ -1,5 +1,6 @@
+import { DOCUMENT } from '@angular/common';
 import { HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { HotToastService } from '@ngneat/hot-toast';
 import jwt_decode from 'jwt-decode';
 import { ApplicationPortalStatusCode, PaginationResponse } from 'src/app/api/models';
@@ -9,7 +10,7 @@ import { SPD_CONSTANTS } from '../constants/constants';
 
 @Injectable({ providedIn: 'root' })
 export class UtilService {
-	constructor(private hotToastService: HotToastService) {}
+	constructor(@Inject(DOCUMENT) private document: Document, private hotToastService: HotToastService) {}
 
 	//------------------------------------
 	// Session storage
@@ -174,6 +175,52 @@ export class UtilService {
 		if (day.length < 2) day = '0' + day;
 
 		return [year, month, day].join('-');
+	}
+
+	/**
+	 * @description
+	 * Scroll to the top of the mat-sidenav container.
+	 */
+	public scrollTop() {
+		const contentContainer = this.document.querySelector('.mat-sidenav-content') || window;
+		contentContainer.scroll({ top: 0, left: 0, behavior: 'smooth' });
+	}
+
+	/**
+	 * @description
+	 * Scroll to have the element in view.
+	 */
+	public scrollTo(el: Element | null): void {
+		if (el) {
+			el.scrollIntoView({
+				block: 'start',
+				inline: 'nearest',
+				behavior: 'smooth',
+			});
+		}
+	}
+
+	/**
+	 * @description
+	 * Scroll to a material form field that is invalid, and if contained
+	 * within a <section> scroll to the section instead.
+	 */
+	public scrollToErrorSection(): void {
+		let firstElementWithError =
+			document.querySelector('mat-form-field.ng-invalid') ||
+			document.querySelector('mat-radio-group.ng-invalid') ||
+			document.querySelector('mat-checkbox.ng-invalid');
+
+		if (firstElementWithError) {
+			const element =
+				firstElementWithError.closest('section') == null
+					? firstElementWithError
+					: firstElementWithError.closest('section');
+
+			this.scrollTo(element);
+		} else {
+			this.scrollTop();
+		}
 	}
 
 	//------------------------------------
