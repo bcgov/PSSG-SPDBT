@@ -47,7 +47,7 @@ export class InvitationCrrpaComponent implements OnInit {
 					this.message = resp.body.message;
 				} else {
 					// 200 success
-					this.router.navigateByUrl(`/${CrrpaRoutes.MODULE_PATH}`, { state: { crcaOrgData: resp.body } });
+					this.router.navigateByUrl(`/${CrrpaRoutes.MODULE_PATH}`, { state: { crrpaOrgData: resp.body } });
 				}
 			});
 	}

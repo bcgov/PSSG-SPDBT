@@ -43,4 +43,6 @@ export class SaChecklistComponent {
 	payerPreferenceTypeCodes = PayerPreferenceTypeCode;
 
 	@Input() payeeType!: PayerPreferenceTypeCode;
+	@Input() isPsso: boolean = false;
+	@Input() isCrrp: boolean = false;
 }

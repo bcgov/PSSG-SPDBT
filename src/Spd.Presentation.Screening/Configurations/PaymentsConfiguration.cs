@@ -11,9 +11,9 @@ public class PaymentsConfiguration
     public string OrgPortalPaymentFailPath { get; set; } = "crrp/payment-fail/";
     public string OrgPortalPaymentCancelPath { get; set; } = "crrp/crc-list";
     public string OrgPortalPaymentErrorPath { get; set; } = "crrp/payment-error/";
-    public string CrrpaPaymentSuccessPath { get; set; } = "crca/payment-success/";
-    public string CrrpaPaymentFailPath { get; set; } = "crca/payment-fail/";
-    public string CrrpaPaymentCancelPath { get; set; } = "crca/crc-list";
-    public string CrrpaPaymentErrorPath { get; set; } = "crca/payment-error/";
+    public string CrrpaPaymentSuccessPath { get; set; } = "crrpa/payment-success/";
+    public string CrrpaPaymentFailPath { get; set; } = "crrpa/payment-fail/";
+    public string CrrpaPaymentCancelPath { get; set; } = "crrpa/crc-list";
+    public string CrrpaPaymentErrorPath { get; set; } = "crrpa/payment-error/";
 
 }
