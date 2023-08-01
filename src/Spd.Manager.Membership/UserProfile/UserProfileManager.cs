@@ -84,8 +84,9 @@ namespace Spd.Manager.Membership.UserProfile
                 if (u != null)
                     ui = _mapper.Map<UserInfo>(u);
                 else
-                    ui = new UserInfo() { UserInfoMsgType = UserInfoMsgTypeCode.REGISTRATION_NOT_APPROVED };
+                    ui = new UserInfo() { UserInfoMsgType = UserInfoMsgTypeCode.NO_ACTIVE_ACCOUNT_FOR_ORG };
                 ui.OrgName = org.OrganizationName;
+                ui.OrgId = org.Id;
                 ui.OrgSettings = _mapper.Map<OrgSettings>(org);
                 userInfos.Add(ui);
             }
