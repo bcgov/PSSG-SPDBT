@@ -5,7 +5,7 @@ import { ApplicationStatisticsResponse, ContactAuthorizationTypeCode, OrgUserRes
 import { ApplicationService, OrgUserService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { ApplicationPortalStatisticsTypeCode } from 'src/app/core/code-types/application-portal-statistics-type.model';
-import { AuthUserService } from 'src/app/core/services/auth-user.service';
+import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
 import { CrrpRoutes } from '../crrp-routing.module';
 
 @Component({
@@ -275,8 +275,8 @@ export class CrrpHomeComponent implements OnInit {
 	applicationStatistics$!: Observable<ApplicationStatisticsResponse>;
 
 	constructor(
-		protected authUserService: AuthUserService,
 		private router: Router,
+		protected authUserService: AuthUserBceidService,
 		private applicationService: ApplicationService,
 		private orgUserService: OrgUserService
 	) {}

@@ -14,7 +14,7 @@ import {
 import { ApplicantService, PaymentService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { AuthUserService } from 'src/app/core/services/auth-user.service';
+import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 
@@ -209,7 +209,7 @@ export class SecurityScreeningListComponent implements OnInit {
 		private router: Router,
 		private applicantService: ApplicantService,
 		private paymentService: PaymentService,
-		private authUserService: AuthUserService,
+		private authUserService: AuthUserBcscService,
 		private utilService: UtilService
 	) {}
 

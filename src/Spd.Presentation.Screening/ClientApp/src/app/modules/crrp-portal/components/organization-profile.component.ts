@@ -15,7 +15,7 @@ import {
 import { OrgService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { AuthUserService } from 'src/app/core/services/auth-user.service';
+import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 
@@ -275,7 +275,7 @@ export class OrganizationProfileComponent implements OnInit {
 		private hotToast: HotToastService,
 		private maskPipe: NgxMaskPipe,
 		private orgService: OrgService,
-		private authUserService: AuthUserService
+		private authUserService: AuthUserBceidService
 	) {}
 
 	ngOnInit(): void {
@@ -352,7 +352,7 @@ export class OrganizationProfileComponent implements OnInit {
 					this.form.disable();
 					this.form.patchValue({ ...resp });
 					this.initialValues = this.form.value;
-					this.authUserService.updateOrgProfile();
+					this.authUserService.setUserOrgProfile();
 					this.hotToast.success('Organization Information was successfully updated');
 				});
 		}

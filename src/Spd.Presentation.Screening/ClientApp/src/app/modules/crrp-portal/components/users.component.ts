@@ -8,7 +8,7 @@ import { OrgUserService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { ContactAuthorizationTypes, SelectOptions } from 'src/app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { AuthUserService } from 'src/app/core/services/auth-user.service';
+import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { UserDialogData, UserEditModalComponent } from './user-edit-modal.component';
 
@@ -208,7 +208,7 @@ export class UsersComponent implements OnInit {
 		private router: Router,
 		private dialog: MatDialog,
 		private orgUserService: OrgUserService,
-		private authUserService: AuthUserService,
+		private authUserService: AuthUserBceidService,
 		private hotToast: HotToastService
 	) {}
 

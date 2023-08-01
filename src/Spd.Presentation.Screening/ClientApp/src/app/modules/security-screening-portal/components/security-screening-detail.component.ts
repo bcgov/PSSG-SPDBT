@@ -15,7 +15,7 @@ import {
 import { ApplicantService, PaymentService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { AuthUserService } from 'src/app/core/services/auth-user.service';
+import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 import {
@@ -223,7 +223,7 @@ export class SecurityScreeningDetailComponent implements OnInit, AfterViewInit {
 	constructor(
 		private router: Router,
 		private applicantService: ApplicantService,
-		private authUserService: AuthUserService,
+		private authUserService: AuthUserBcscService,
 		private paymentService: PaymentService,
 		private location: Location,
 		private utilService: UtilService,
