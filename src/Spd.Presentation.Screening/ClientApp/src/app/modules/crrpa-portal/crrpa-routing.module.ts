@@ -8,7 +8,7 @@ import { InvitationCrrpaComponent } from './invitation-crrpa.component';
 import { OrgAccessComponent } from './org-access.component';
 
 export class CrrpaRoutes {
-	public static CRRPA = 'crca';
+	public static CRRPA = 'crrpa';
 	public static INVITATION = 'invitation';
 	public static ORG_ACCESS = 'org-access';
 	public static PAYMENT_SUCCESS = 'payment-success';
