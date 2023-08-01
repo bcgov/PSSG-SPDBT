@@ -42,6 +42,7 @@ import {
 						class="large w-auto m-2"
 						aria-label="Download Receipt"
 						(click)="onDownloadReceipt()"
+						*ngIf="isNotAwaitingPayment"
 					>
 						<mat-icon>file_download</mat-icon>Download Receipt
 					</button>
@@ -200,6 +201,7 @@ import {
 	],
 })
 export class SecurityScreeningDetailComponent implements OnInit, AfterViewInit {
+	isNotAwaitingPayment: boolean = false;
 	applicantName = '';
 	applicationPortalStatusClass = '';
 	documentHistoryExists = false;
@@ -235,6 +237,8 @@ export class SecurityScreeningDetailComponent implements OnInit, AfterViewInit {
 		} else {
 			this.router.navigate([SecurityScreeningRoutes.path(SecurityScreeningRoutes.CRC_LIST)]);
 		}
+
+		this.isNotAwaitingPayment = applicationData.status != ApplicationPortalStatusCode.AwaitingPayment;
 	}
 
 	ngAfterViewInit() {

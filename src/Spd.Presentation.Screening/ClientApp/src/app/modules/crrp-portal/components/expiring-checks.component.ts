@@ -10,6 +10,7 @@ import { ApplicationInviteCreateRequest, ClearanceListResponse, ClearanceRespons
 import { ApplicationService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { AppRoutes } from 'src/app/app-routing.module';
+import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { UtilService } from 'src/app/core/services/util.service';
@@ -334,6 +335,8 @@ export class ExpiringChecksComponent implements OnInit {
 					};
 
 					const dialogOptions: ScreeningRequestAddDialogData = {
+						portal: PortalTypeCode.Crrp,
+						orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
 						inviteDefault,
 					};
 

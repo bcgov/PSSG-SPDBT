@@ -14,10 +14,12 @@ import { ApplicationService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
-import { ScreeningRequestAddCommonModalComponent } from './screening-request-add-common-modal.component';
+import {
+	ScreeningRequestAddCommonModalComponent,
+	ScreeningRequestAddDialogData,
+} from './screening-request-add-common-modal.component';
 
 export class ScreeningCheckFilter {
 	search: string = '';
@@ -212,6 +214,7 @@ export class ScreeningRequestsCommonComponent implements OnInit {
 	private queryParams: any = this.utilService.getDefaultQueryParams();
 	private currentSearch = '';
 
+	@Input() orgId: string | null = null;
 	@Input() portal: PortalTypeCode | null = null;
 	@Input() heading = '';
 	@Input() subtitle = '';
@@ -224,14 +227,12 @@ export class ScreeningRequestsCommonComponent implements OnInit {
 		private formBuilder: FormBuilder,
 		private dialog: MatDialog,
 		private applicationService: ApplicationService,
-		private authUserService: AuthUserService,
 		private hotToast: HotToastService
 	) {}
 
 	ngOnInit() {
-		const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
-		if (!orgId) {
-			console.debug('ScreeningRequestsCommonComponent - orgId', orgId);
+		if (!this.orgId) {
+			console.debug('ScreeningRequestsCommonComponent - missing orgId');
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 			return;
 		}
@@ -246,8 +247,15 @@ export class ScreeningRequestsCommonComponent implements OnInit {
 	}
 
 	onAddRequest(): void {
+		const dialogOptions: ScreeningRequestAddDialogData = {
+			portal: this.portal!,
+			orgId: this.orgId!,
+			inviteDefault: undefined,
+		};
+
 		this.dialog
 			.open(ScreeningRequestAddCommonModalComponent, {
+				data: dialogOptions,
 				width: '1400px',
 			})
 			.afterClosed()
@@ -276,7 +284,7 @@ export class ScreeningRequestsCommonComponent implements OnInit {
 					this.applicationService
 						.apiOrgsOrgIdApplicationInvitesApplicationInviteIdDelete({
 							applicationInviteId: application.id!,
-							orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
+							orgId: this.orgId!,
 						})
 						.pipe()
 						.subscribe((_res) => {
@@ -312,7 +320,7 @@ export class ScreeningRequestsCommonComponent implements OnInit {
 	private loadList(): void {
 		this.applicationService
 			.apiOrgsOrgIdApplicationInvitesGet({
-				orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
+				orgId: this.orgId!,
 				...this.queryParams,
 			})
 			.pipe()

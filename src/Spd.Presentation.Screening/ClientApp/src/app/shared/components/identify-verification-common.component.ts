@@ -21,7 +21,6 @@ import { AppRoutes } from 'src/app/app-routing.module';
 import { ApplicationPortalStatisticsTypeCode } from 'src/app/core/code-types/application-portal-statistics-type.model';
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { CrrpRoutes } from 'src/app/modules/crrp-portal/crrp-routing.module';
 import { PssoRoutes } from 'src/app/modules/psso-portal/psso-routing.module';
@@ -226,6 +225,7 @@ export class IdentifyVerificationCommonComponent implements OnInit {
 	applicationStatistics$!: Observable<ApplicationStatisticsResponse>;
 
 	@Input() portal: PortalTypeCode | null = null;
+	@Input() orgId: string | null = null;
 
 	@ViewChild(MatSort) sort!: MatSort;
 	@ViewChild('paginator') paginator!: MatPaginator;
@@ -235,18 +235,14 @@ export class IdentifyVerificationCommonComponent implements OnInit {
 		private utilService: UtilService,
 		private formBuilder: FormBuilder,
 		private location: Location,
-		private authUserService: AuthUserService,
 		private applicationService: ApplicationService,
 		private hotToast: HotToastService,
 		private dialog: MatDialog
-	) {
-		this.refreshStats();
-	}
+	) {}
 
 	ngOnInit() {
-		const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
-		if (!orgId) {
-			console.debug('IdentifyVerificationCommonComponent - orgId', orgId);
+		if (!this.orgId) {
+			console.debug('IdentifyVerificationCommonComponent - missing orgId');
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 			return;
 		}
@@ -254,6 +250,7 @@ export class IdentifyVerificationCommonComponent implements OnInit {
 		const caseId = (this.location.getState() as any)?.caseId;
 		this.formFilter.patchValue({ search: caseId });
 
+		this.refreshStats();
 		this.performSearch(caseId);
 	}
 
@@ -319,6 +316,8 @@ export class IdentifyVerificationCommonComponent implements OnInit {
 		};
 
 		const dialogOptions: ScreeningRequestAddDialogData = {
+			portal: this.portal!,
+			orgId: this.orgId!,
 			inviteDefault,
 		};
 
@@ -356,7 +355,7 @@ export class IdentifyVerificationCommonComponent implements OnInit {
 
 		this.applicationService
 			.apiOrgsOrgIdApplicationsGet({
-				orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
+				orgId: this.orgId!,
 				...this.queryParams,
 			})
 			.pipe()
@@ -371,7 +370,7 @@ export class IdentifyVerificationCommonComponent implements OnInit {
 	private verifyIdentity(application: IdentityVerificationResponse) {
 		this.applicationService
 			.apiOrgsOrgIdIdentityApplicationIdPut({
-				orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
+				orgId: this.orgId!,
 				applicationId: application.id!,
 				status: IdentityStatusCode.Verified,
 			})
@@ -385,7 +384,7 @@ export class IdentifyVerificationCommonComponent implements OnInit {
 	private rejectIdentity(application: IdentityVerificationResponse) {
 		this.applicationService
 			.apiOrgsOrgIdIdentityApplicationIdPut({
-				orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
+				orgId: this.orgId!,
 				applicationId: application.id!,
 				status: IdentityStatusCode.Rejected,
 			})
@@ -424,7 +423,7 @@ export class IdentifyVerificationCommonComponent implements OnInit {
 	private refreshStats(): void {
 		this.applicationStatistics$ = this.applicationService
 			.apiOrgsOrgIdApplicationStatisticsGet({
-				orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
+				orgId: this.orgId!,
 			})
 			.pipe(
 				tap((res: ApplicationStatisticsResponse) => {

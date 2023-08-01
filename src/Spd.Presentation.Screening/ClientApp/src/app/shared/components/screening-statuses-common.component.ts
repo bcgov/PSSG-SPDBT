@@ -40,7 +40,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 				</div>
 			</div>
 
-			<!-- TODO Add back later <app-status-statistics [orgId]="orgId"></app-status-statistics> -->
+			<app-status-statistics-common [orgId]="orgId"></app-status-statistics-common>
 
 			<div [formGroup]="formFilter">
 				<div class="row">
@@ -271,23 +271,6 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 	@Input() heading = '';
 	@Input() orgId: string | null = null;
 
-	// private _orgId: string | null = null;
-	// @Input()
-	// set orgId(data: string | null) {
-	// 	console.log('set orgId', data);
-	// 	if (data == null) {
-	// 		this._orgId = null;
-	// 		return;
-	// 	}
-
-	// 	this._orgId = data;
-
-	// 	this.loadList();
-	// }
-	// get orgId(): string | null {
-	// 	return this._orgId;
-	// }
-
 	@Output() emitManageDelegate: EventEmitter<ScreeningStatusResponse> = new EventEmitter<ScreeningStatusResponse>();
 	@Output() emitPayNow: EventEmitter<ScreeningStatusResponse> = new EventEmitter<ScreeningStatusResponse>();
 	@Output() emitVerifyIdentity: EventEmitter<ScreeningStatusResponse> = new EventEmitter<ScreeningStatusResponse>();
@@ -435,15 +418,18 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 			.pipe()
 			.subscribe((res: ApplicationListResponse) => {
 				const applications = res.applications as Array<ScreeningStatusResponse>;
-				const isNotVolunteerOrg = this.authUserService.bceidUserOrgProfile?.isNotVolunteerOrg ?? false;
+				const isNotVolunteerOrg =
+					this.portal == 'CRRP' ? this.authUserService.bceidUserOrgProfile?.isNotVolunteerOrg ?? false : false;
 
 				applications.forEach((app: ScreeningStatusResponse) => {
 					const itemClass = this.utilService.getApplicationPortalStatusClass(app.status);
 					app.applicationPortalStatusClass = itemClass;
 					app.isPayNow =
-						isNotVolunteerOrg &&
-						app.payeeType == PayerPreferenceTypeCode.Organization &&
-						app.status == ApplicationPortalStatusCode.AwaitingPayment;
+						this.portal == 'CRRP'
+							? isNotVolunteerOrg &&
+							  app.payeeType == PayerPreferenceTypeCode.Organization &&
+							  app.status == ApplicationPortalStatusCode.AwaitingPayment
+							: false;
 					app.isVerifyIdentity = app.status == ApplicationPortalStatusCode.VerifyIdentity;
 				});
 

@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { lastValueFrom } from 'rxjs';
 import { ApplicantService, OrgService, UserProfileService } from 'src/app/api/services';
+import { AppRoutes } from 'src/app/app-routing.module';
 import {
 	OrgSelectionDialogData,
 	OrgSelectionModalComponent,
@@ -34,6 +36,7 @@ export class AuthUserService {
 	idirUserWhoamiProfile: IdirUserProfileResponse | null = null;
 
 	constructor(
+		private router: Router,
 		private userProfileService: UserProfileService,
 		private applicantService: ApplicantService,
 		private orgService: OrgService,
@@ -54,6 +57,13 @@ export class AuthUserService {
 
 		this.bceidUserInfoProfile = bceidUserInfoProfile;
 		this.isAllowedGenericUpload = bceidUserInfoProfile.orgSettings?.genericUploadEnabled ?? false;
+
+		const userInfoMsgType = this.bceidUserInfoProfile?.userInfoMsgType;
+		if (userInfoMsgType) {
+			console.debug('setOrgProfile - userInfoMsgType', userInfoMsgType);
+			this.router.navigate([AppRoutes.ACCESS_DENIED], { state: { userInfoMsgType: userInfoMsgType } });
+			return Promise.resolve(false);
+		}
 
 		return this.updateOrgProfile();
 	}
@@ -107,21 +117,22 @@ export class AuthUserService {
 					console.error('User does not have any organizations');
 					return Promise.resolve(false);
 				} else {
+					let isSuccess = false;
 					if (defaultOrgId) {
 						const orgIdItem = uniqueUserInfoList.find((user) => user.orgId == defaultOrgId);
 						if (orgIdItem) {
-							await this.setOrgProfile(orgIdItem);
-							return Promise.resolve(true);
+							isSuccess = await this.setOrgProfile(orgIdItem);
+							return Promise.resolve(isSuccess);
 						}
 					}
 
 					if (uniqueUserInfoList.length > 1) {
 						const result = await this.orgSelectionAsync(uniqueUserInfoList);
-						await this.setOrgProfile(result);
+						isSuccess = await this.setOrgProfile(result);
 					} else {
-						await this.setOrgProfile(uniqueUserInfoList[0]);
+						isSuccess = await this.setOrgProfile(uniqueUserInfoList[0]);
 					}
-					return Promise.resolve(true);
+					return Promise.resolve(isSuccess);
 				}
 			}
 		} else if (loginType == IdentityProviderTypeCode.Idir) {

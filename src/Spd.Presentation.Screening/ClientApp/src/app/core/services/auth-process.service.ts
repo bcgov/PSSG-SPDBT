@@ -41,22 +41,14 @@ export class AuthProcessService {
 
 		if (nextUrl) {
 			const success = await this.authUserService.whoAmIAsync(identityProvider, defaultOrgId);
-
 			if (!success) {
-				this.notify(true);
+				this.notify(success);
 				console.debug('initializeCrrp - not success', identityProvider, nextUrl, success);
 				this.router.navigate([AppRoutes.ACCESS_DENIED]);
 				return Promise.resolve(null);
 			}
 
 			this.notify(success);
-
-			const userInfoMsgType = this.authUserService.bceidUserInfoProfile?.userInfoMsgType;
-			if (userInfoMsgType) {
-				console.debug('initializeCrrp - userInfoMsgType', userInfoMsgType);
-				this.router.navigate([AppRoutes.ACCESS_DENIED], { state: { userInfoMsgType: userInfoMsgType } });
-				return Promise.resolve(null);
-			}
 
 			const nextRoute = decodeURIComponent(nextUrl);
 			return Promise.resolve(nextRoute);
