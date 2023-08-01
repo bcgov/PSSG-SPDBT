@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
-import { AuthUserService } from 'src/app/core/services/auth-user.service';
+import { AuthUserIdirService } from 'src/app/core/services/auth-user-idir.service';
 import { ScreeningStatusResponse } from 'src/app/shared/components/screening-statuses-common.component';
 import { PssoRoutes } from '../psso-routing.module';
 import { DelegateManageDialogData, DelegateManageModalComponent } from './delegate-manage-modal.component';
@@ -25,7 +25,7 @@ export class ScreeningStatusesComponent implements OnInit {
 	orgId: string | null = null;
 	portal = PortalTypeCode;
 
-	constructor(private dialog: MatDialog, private router: Router, private authUserService: AuthUserService) {}
+	constructor(private dialog: MatDialog, private router: Router, private authUserService: AuthUserIdirService) {}
 
 	ngOnInit(): void {
 		const orgId = this.authUserService.idirUserWhoamiProfile?.orgId;

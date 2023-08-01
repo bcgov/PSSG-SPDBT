@@ -13,7 +13,7 @@ import { ApplicationService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
-import { AuthUserService } from 'src/app/core/services/auth-user.service';
+import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
@@ -135,7 +135,7 @@ export class GenericUploadsComponent implements OnInit {
 	constructor(
 		private router: Router,
 		private authProcessService: AuthProcessService,
-		private authUserService: AuthUserService,
+		private authUserService: AuthUserBceidService,
 		private applicationService: ApplicationService,
 		private utilService: UtilService,
 		private dialog: MatDialog

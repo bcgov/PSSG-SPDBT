@@ -12,7 +12,7 @@ import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { AuthUserService } from 'src/app/core/services/auth-user.service';
+import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import {
@@ -248,7 +248,7 @@ export class ExpiringChecksComponent implements OnInit {
 		private utilService: UtilService,
 		private formBuilder: FormBuilder,
 		private applicationService: ApplicationService,
-		private authUserService: AuthUserService,
+		private authUserService: AuthUserBceidService,
 		private hotToastService: HotToastService,
 		private dialog: MatDialog
 	) {}

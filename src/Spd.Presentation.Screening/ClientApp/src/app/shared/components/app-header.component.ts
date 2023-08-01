@@ -2,7 +2,9 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { IdentityProviderTypeCode } from 'src/app/api/models';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
-import { AuthUserService } from 'src/app/core/services/auth-user.service';
+import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
+import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
+import { AuthUserIdirService } from 'src/app/core/services/auth-user-idir.service';
 import { UtilService } from 'src/app/core/services/util.service';
 
 @Component({
@@ -70,7 +72,9 @@ export class HeaderComponent implements OnInit {
 
 	constructor(
 		protected router: Router,
-		private authUserService: AuthUserService,
+		private authUserBceidService: AuthUserBceidService,
+		private authUserBcscService: AuthUserBcscService,
+		private authUserIdirService: AuthUserIdirService,
 		private authProcessService: AuthProcessService,
 		private utilService: UtilService
 	) {}
@@ -91,21 +95,21 @@ export class HeaderComponent implements OnInit {
 	}
 
 	private getUserInfo(): void {
-		const loginType = this.authUserService.loginType;
+		const loginType = this.authProcessService.identityProvider;
 
 		if (loginType == IdentityProviderTypeCode.BcServicesCard) {
 			console.debug(
 				'BcServicesCard bcscUserInfoProfile',
-				this.authUserService.bcscUserInfoProfile,
+				this.authUserBcscService.bcscUserInfoProfile,
 				'bcscUserWhoamiProfile',
-				this.authUserService.bcscUserWhoamiProfile
+				this.authUserBcscService.bcscUserWhoamiProfile
 			);
 
-			let name = this.authUserService.bcscUserInfoProfile?.displayName;
+			let name = this.authUserBcscService.bcscUserInfoProfile?.displayName;
 			if (!name) {
 				name = this.utilService.getFullName(
-					this.authUserService.bcscUserWhoamiProfile?.firstName,
-					this.authUserService.bcscUserWhoamiProfile?.lastName
+					this.authUserBcscService.bcscUserWhoamiProfile?.firstName,
+					this.authUserBcscService.bcscUserWhoamiProfile?.lastName
 				);
 			}
 			this.loggedInUserDisplay = name ?? 'BCSC User';
@@ -113,18 +117,18 @@ export class HeaderComponent implements OnInit {
 		}
 
 		if (loginType == IdentityProviderTypeCode.Idir) {
-			this.loggedInUserDisplay = this.authUserService.idirUserWhoamiProfile?.userDisplayName ?? 'Idir User';
+			this.loggedInUserDisplay = this.authUserIdirService.idirUserWhoamiProfile?.userDisplayName ?? 'Idir User';
 			return;
 		}
 
 		console.debug(
 			'BCeID bceidUserInfoProfile',
-			this.authUserService.bceidUserInfoProfile,
+			this.authUserBceidService.bceidUserInfoProfile,
 			'loggedInUserTokenData',
 			this.authProcessService.loggedInUserTokenData
 		);
 
-		const userData = this.authUserService.bceidUserInfoProfile;
+		const userData = this.authUserBceidService.bceidUserInfoProfile;
 		let name = '';
 		if (userData) {
 			name = this.utilService.getFullName(userData.firstName, userData.lastName);
