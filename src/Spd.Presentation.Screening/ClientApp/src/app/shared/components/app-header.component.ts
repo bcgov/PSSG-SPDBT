@@ -17,7 +17,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 			<span style="flex: 1 1 auto;"></span>
 			<div *ngIf="loggedInUserDisplay">
 				<mat-icon matTooltip="Logout" class="logout-button me-2" (click)="onLogout()">logout</mat-icon>
-				<span class="d-none d-sm-inline">{{ loggedInUserDisplay }}</span>
+				<span class="d-none d-md-inline">{{ loggedInUserDisplay }}</span>
 			</div>
 		</mat-toolbar>
 	`,

@@ -49,7 +49,7 @@ import { ScreeningRequestAddCommonModalComponent } from './components/screening-
 import { ScreeningRequestsCommonComponent } from './components/screening-requests-common.component';
 import { ScreeningStatusFilterCommonComponent } from './components/screening-status-filter-common.component';
 import { ScreeningStatusesCommonComponent } from './components/screening-statuses-common.component';
-import { StatusStatisticsComponent } from './components/status-statistics.component';
+import { StatusStatisticsCommonComponent } from './components/status-statistics-common.component';
 import { StepTitleComponent } from './components/step-title.component';
 import { DefaultPipe } from './pipes/default.pipe';
 import { FullnamePipe } from './pipes/fullname.pipe';
@@ -74,7 +74,7 @@ const SHARED_COMPONENTS = [
 	FileUploadComponent,
 	AccessDeniedComponent,
 	AlertComponent,
-	StatusStatisticsComponent,
+	StatusStatisticsCommonComponent,
 	ApplicationsBannerComponent,
 	ScreeningStatusFilterCommonComponent,
 	ScreeningStatusesCommonComponent,

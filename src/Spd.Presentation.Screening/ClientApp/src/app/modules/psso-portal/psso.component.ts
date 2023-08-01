@@ -25,7 +25,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 	template: `
 		<div class="container-fluid p-0" *ngIf="isAuthenticated$ | async">
 			<div class="row flex-nowrap m-0">
-				<div class="col-auto px-0" style="background-color: var(--color-sidebar);">
+				<div class="col-auto mat-sidenav px-0" style="background-color: var(--color-sidebar);">
 					<div
 						class="d-flex flex-column align-items-sm-start pt-2 text-white "
 						style="min-height: calc(100vh - 138px)!important;"
@@ -78,7 +78,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 						</ul>
 					</div>
 				</div>
-				<div class="col py-3">
+				<div class="col mat-sidenav-content py-3">
 					<router-outlet></router-outlet>
 				</div>
 			</div>
