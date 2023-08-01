@@ -151,7 +151,7 @@ export class CrrpaComponent implements OnInit {
 
 		// Parameter must be orgData or accessCode
 
-		const orgData = (this.location.getState() as any).crcaOrgData;
+		const orgData = (this.location.getState() as any).crrpaOrgData;
 		if (orgData) {
 			orgData.orgAddress = this.utilService.getAddressString({
 				addressLine1: orgData.orgAddressLine1!,
@@ -257,7 +257,7 @@ export class CrrpaComponent implements OnInit {
 
 		//auth step 2 - unload angular, redirect to KC
 		// const decodedData = decodeURIComponent(authInfo.state);
-		this.utilService.setSessionData(this.utilService.CRC_PORTAL_STATE_KEY, stateInfo);
+		this.utilService.setSessionData(this.utilService.CRRPA_PORTAL_STATE_KEY, stateInfo);
 
 		const nextUrl = await this.authProcessService.initializeCrrpa();
 		if (nextUrl) {

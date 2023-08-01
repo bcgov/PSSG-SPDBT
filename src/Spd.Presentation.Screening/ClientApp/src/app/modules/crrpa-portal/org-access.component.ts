@@ -95,7 +95,7 @@ export class OrgAccessComponent {
 
 		this.orgService.apiOrgsAccessCodeAccessCodeGet$Response({ accessCode: this.form.value.accessCode }).subscribe({
 			next: (resp) => {
-				this.router.navigateByUrl(`/${CrrpaRoutes.MODULE_PATH}`, { state: { crcaOrgData: resp.body } });
+				this.router.navigateByUrl(`/${CrrpaRoutes.MODULE_PATH}`, { state: { crrpaOrgData: resp.body } });
 			},
 			error: (error) => {
 				// only 404 will be here as an error

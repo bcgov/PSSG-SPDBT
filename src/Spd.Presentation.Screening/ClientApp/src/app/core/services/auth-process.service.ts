@@ -9,6 +9,7 @@ import { CrrpRoutes } from 'src/app/modules/crrp-portal/crrp-routing.module';
 import { CrrpaRoutes } from 'src/app/modules/crrpa-portal/crrpa-routing.module';
 import { OrgRegistrationRoutes } from 'src/app/modules/org-registration-portal/org-registration-routing.module';
 import { PssoRoutes } from 'src/app/modules/psso-portal/psso-routing.module';
+import { PssoaRoutes } from 'src/app/modules/pssoa-portal/pssoa-routing.module';
 import { SecurityScreeningRoutes } from 'src/app/modules/security-screening-portal/security-screening-routing.module';
 import { AuthUserBceidService } from './auth-user-bceid.service';
 import { AuthUserBcscService } from './auth-user-bcsc.service';
@@ -99,7 +100,7 @@ export class AuthProcessService {
 			this.notify(success);
 
 			if (authInfo.state) {
-				const stateInfo = this.utilService.getSessionData(this.utilService.CRC_PORTAL_STATE_KEY);
+				const stateInfo = this.utilService.getSessionData(this.utilService.CRRPA_PORTAL_STATE_KEY);
 				if (stateInfo) {
 					return Promise.resolve(stateInfo);
 				}
@@ -154,6 +155,54 @@ export class AuthProcessService {
 				return Promise.resolve(null);
 			}
 
+			this.notify(success);
+
+			const nextRoute = decodeURIComponent(nextUrl);
+			return Promise.resolve(nextRoute);
+		}
+
+		this.notify(false);
+		return Promise.resolve(null);
+	}
+
+	//----------------------------------------------------------
+	// * Pssoa Screening
+	// *
+	async tryInitializePssoa(): Promise<string | null> {
+		this.identityProvider = IdentityProviderTypeCode.BcServicesCard;
+
+		//auth step 1 - user is not logged in, no state at all
+		//auth step 3 - angular loads again here, KC posts the token, oidc lib reads token and returns state
+		const authInfo = await this.authenticationService.tryLogin(this.identityProvider, PssoaRoutes.path());
+
+		if (authInfo.loggedIn) {
+			const success = await this.authUserBcscService.applicantUserInfoAsync();
+			this.notify(success);
+
+			if (authInfo.state) {
+				const stateInfo = this.utilService.getSessionData(this.utilService.PSSOA_PORTAL_STATE_KEY);
+				if (stateInfo) {
+					return Promise.resolve(stateInfo);
+				}
+			}
+			return Promise.resolve(null);
+		}
+
+		this.notify(false);
+		return Promise.resolve(null);
+	}
+
+	//----------------------------------------------------------
+	// * Pssoa Screening
+	// *
+	async initializePssoa(): Promise<string | null> {
+		this.identityProvider = IdentityProviderTypeCode.BcServicesCard;
+
+		const nextUrl = await this.authenticationService.login(this.identityProvider, PssoaRoutes.path());
+		console.debug('initializePssoa nextUrl', nextUrl);
+
+		if (nextUrl) {
+			const success = await this.authUserBcscService.applicantUserInfoAsync();
 			this.notify(success);
 
 			const nextRoute = decodeURIComponent(nextUrl);
