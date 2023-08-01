@@ -457,7 +457,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 					// At least one potential duplicate has been found
 					let dupRows = '';
 					duplicateResponses.forEach((item) => {
-						dupRows += `<li>${item.firstName} ${item.lastName} (${item.email})</li>`;
+						dupRows += `<li>${item.firstName} ${item.lastName} (${item.email ?? ''})</li>`;
 					});
 					const dupMessage = `<ul>${dupRows}</ul>`;
 

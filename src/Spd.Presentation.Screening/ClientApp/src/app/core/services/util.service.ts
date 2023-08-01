@@ -15,7 +15,8 @@ export class UtilService {
 	//------------------------------------
 	// Session storage
 	readonly ORG_REG_STATE_KEY: string = SPD_CONSTANTS.sessionStorage.organizationRegStateKey;
-	readonly CRC_PORTAL_STATE_KEY: string = SPD_CONSTANTS.sessionStorage.crcPortalStateKey;
+	readonly CRRPA_PORTAL_STATE_KEY: string = SPD_CONSTANTS.sessionStorage.crrpaPortalStateKey;
+	readonly PSSOA_PORTAL_STATE_KEY: string = SPD_CONSTANTS.sessionStorage.pssoaPortalStateKey;
 
 	setSessionData(key: string, data: any): void {
 		sessionStorage.setItem(key, data);
@@ -31,7 +32,8 @@ export class UtilService {
 
 	clearAllSessionData(): void {
 		this.clearSessionData(this.ORG_REG_STATE_KEY);
-		this.clearSessionData(this.CRC_PORTAL_STATE_KEY);
+		this.clearSessionData(this.CRRPA_PORTAL_STATE_KEY);
+		this.clearSessionData(this.PSSOA_PORTAL_STATE_KEY);
 	}
 
 	//------------------------------------
