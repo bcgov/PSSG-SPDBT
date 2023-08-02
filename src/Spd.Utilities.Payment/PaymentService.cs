@@ -1,8 +1,11 @@
 ﻿using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace Spd.Utilities.Payment
@@ -10,17 +13,20 @@ namespace Spd.Utilities.Payment
     internal class PaymentService : IPaymentService
     {
         private readonly PayBCSettings _config;
+        private readonly ISecurityTokenProvider _tokenProvider;
 
-        public PaymentService(IOptions<PayBCSettings> config)
+        public PaymentService(IOptions<PayBCSettings> config, HttpClient httpClient, ISecurityTokenProvider tokenProvider)
         {
             _config = config.Value;
+            _tokenProvider = tokenProvider;
         }
-        public PaymentResult HandleCommand(PaymentCommand cmd)
+        public async Task<PaymentResult> HandleCommand(PaymentCommand cmd)
         {
             return cmd switch
             {
                 CreateDirectPaymentLinkCommand c => CreateDirectPaymentLink(c),
                 ValidatePaymentResultStrCommand c => ValidatePaymentResultStr(c),
+                RefundPaymentCommand c => await RefundDirectPayment(c),
                 _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
             };
         }
@@ -68,7 +74,7 @@ namespace Spd.Utilities.Payment
             UriBuilder uriBuilder = new UriBuilder();
             uriBuilder.Scheme = "https";
             uriBuilder.Host = _config.Host;
-            uriBuilder.Path = _config.Path;
+            uriBuilder.Path = _config.DirectPayPath;
             uriBuilder.Query = query;
 
             return new CreateDirectPaymentLinkResult
@@ -89,7 +95,7 @@ namespace Spd.Utilities.Payment
             }
             string expectedHashValue = hashvalueStr.Split("=").Last();
             int pos = queryStr.LastIndexOf(hashvalueStr);
-            string query = queryStr.Substring(1, pos-2);
+            string query = queryStr.Substring(1, pos - 2);
             StringBuilder sb = new StringBuilder();
             using (MD5 md5 = MD5.Create())
             {
@@ -103,6 +109,23 @@ namespace Spd.Utilities.Payment
             }
             string calculatedHash = sb.ToString();
             return new PaymentValidationResult() { ValidationPassed = calculatedHash.Equals(expectedHashValue) };
+        }
+
+        public async Task<RefundPaymentResult> RefundDirectPayment(RefundPaymentCommand command)
+        {
+            string accessToken = await _tokenProvider.AcquireToken();
+            if (string.IsNullOrWhiteSpace(accessToken)) 
+                throw new InvalidOperationException("cannot get access token from paybc");
+
+            HttpClient requestHttpClient = new HttpClient();
+            requestHttpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
+            var requestResponse = await requestHttpClient.PostAsJsonAsync(_config.Host+_config.DirectRefundPath,
+                command);
+            if (requestResponse.IsSuccessStatusCode)
+                Console.WriteLine(await requestResponse.Content.ReadAsStringAsync());
+            else
+                Console.WriteLine("Error from sending request: " + requestResponse.StatusCode.ToString());
+            return null;
         }
     }
 }

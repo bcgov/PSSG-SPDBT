@@ -121,7 +121,7 @@ namespace Spd.Manager.Cases.Payment
 
             //generate the link string 
             //payment utility
-            var linkResult = (CreateDirectPaymentLinkResult)_paymentService.HandleCommand(
+            var linkResult =  (CreateDirectPaymentLinkResult)await _paymentService.HandleCommand(
                 new CreateDirectPaymentLinkCommand
                 {
                     RevenueAccount = spdPaymentConfig.PaybcRevenueAccount,
@@ -142,7 +142,7 @@ namespace Spd.Manager.Cases.Payment
         public async Task<Guid> Handle(PaymenCreateCommand command, CancellationToken ct)
         {
             //validate hashcode
-            PaymentValidationResult validated = (PaymentValidationResult)_paymentService.HandleCommand(new ValidatePaymentResultStrCommand() { QueryStr = command.QueryStr });
+            PaymentValidationResult validated = (PaymentValidationResult)await _paymentService.HandleCommand(new ValidatePaymentResultStrCommand() { QueryStr = command.QueryStr });
             if (!validated.ValidationPassed)
             {
                 throw new ApiException(HttpStatusCode.BadRequest, "payment result from paybc is not validated.");
