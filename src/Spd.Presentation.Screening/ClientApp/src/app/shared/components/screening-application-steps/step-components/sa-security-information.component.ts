@@ -24,14 +24,14 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 								<input matInput formControlName="orgName" />
 							</mat-form-field>
 						</div>
-						<div class="col-lg-4 col-md-6 col-sm-12">
+						<div class="col-lg-4 col-md-6 col-sm-12" *ngIf="orgData.isCrrpa">
 							<mat-form-field>
 								<mat-label>Organization Email</mat-label>
 								<input matInput formControlName="orgEmail" />
 							</mat-form-field>
 						</div>
 					</div>
-					<div class="row">
+					<div class="row" *ngIf="orgData.isCrrpa">
 						<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
 							<mat-form-field>
 								<mat-label>Organization Phone Number</mat-label>
@@ -93,15 +93,22 @@ export class SaSecurityInformationComponent implements CrcFormStepComponent {
 		let companyFacilityHint = '';
 
 		if (data.screeningType) {
-			// If coming from Portal Invitation (screeningType is provided). If shown, always required.
-			this.facilityNameShow = [ScreeningTypeCode.Contractor, ScreeningTypeCode.Licensee].includes(data.screeningType!);
-			this.facilityNameRequired = this.facilityNameShow;
+			if (data.isCrrpa) {
+				// If coming from Portal Invitation (screeningType is provided). If shown, always required.
+				this.facilityNameShow = [ScreeningTypeCode.Contractor, ScreeningTypeCode.Licensee].includes(
+					data.screeningType!
+				);
+				this.facilityNameRequired = this.facilityNameShow;
 
-			if (data.screeningType == ScreeningTypeCode.Contractor) {
-				companyFacilityLabel = 'Contracted Company Name';
-			} else if (data.screeningType == ScreeningTypeCode.Licensee) {
-				companyFacilityLabel = 'Facility Name';
-				companyFacilityHint = '(Licensed Child Care Name or Adult Care Facility Name)';
+				if (data.screeningType == ScreeningTypeCode.Contractor) {
+					companyFacilityLabel = 'Contracted Company Name';
+				} else if (data.screeningType == ScreeningTypeCode.Licensee) {
+					companyFacilityLabel = 'Facility Name';
+					companyFacilityHint = '(Licensed Child Care Name or Adult Care Facility Name)';
+				}
+			} else {
+				this.facilityNameShow = false;
+				this.facilityNameRequired = false;
 			}
 		} else {
 			// If coming from Access Code page, use these flags to determine if field is shown. If shown, always optional

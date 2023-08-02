@@ -3,7 +3,8 @@ export const SPD_CONSTANTS = {
 		defaultPageSize: 10,
 	},
 	date: {
-		birthDateStartAt: new Date(2000, 0, 1),
+		birthDateStartAtYears: 25,
+		birthDateMinAgeYears: 12,
 		dateFormat: 'yyyy-MM-dd',
 		formalDateFormat: 'MMM dd, yyyy',
 		formalDateTimeFormat: 'MMM dd, yyyy HH:mm',
