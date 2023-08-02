@@ -90,8 +90,7 @@ import { SaDeclarationComponent } from './step-components/sa-declaration.compone
 	encapsulation: ViewEncapsulation.None,
 })
 export class SaStepTermsAndCondComponent {
-	payeePreferenceTypeCodes = PayerPreferenceTypeCode;
-	agreeToShare: boolean = false;
+	agreeToShare: boolean = false; // default and also, does not apply to PSSO
 
 	@ViewChild('childstepper') childstepper!: MatStepper;
 
@@ -125,13 +124,16 @@ export class SaStepTermsAndCondComponent {
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 
-		const declarationData = this.declarationComponent.getDataToSave();
-		if (declarationData.agreeToShare) {
-			this.orgData!.performPaymentProcess = false;
-			this.agreeToShare = true;
-		} else {
-			this.orgData!.performPaymentProcess = this.orgData?.payeeType == PayerPreferenceTypeCode.Applicant ? true : false;
-			this.agreeToShare = false;
+		if (this.orgData?.isCrrpa) {
+			const declarationData = this.declarationComponent.getDataToSave();
+			if (declarationData.agreeToShare) {
+				this.orgData!.performPaymentProcess = false;
+				this.agreeToShare = true;
+			} else {
+				this.orgData!.performPaymentProcess =
+					this.orgData?.payeeType == PayerPreferenceTypeCode.Applicant ? true : false;
+				this.agreeToShare = false;
+			}
 		}
 
 		this.childstepper.next();

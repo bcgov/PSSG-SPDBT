@@ -19,7 +19,7 @@ import { filter, map } from 'rxjs';
 	styles: [],
 })
 export class AppComponent {
-	title = 'Security Programs Division';
+	title = '';
 
 	constructor(private router: Router) {
 		this.router.events
@@ -38,7 +38,7 @@ export class AppComponent {
 				})
 			)
 			.subscribe((title: string) => {
-				this.title = title ? title : 'Security Programs Division';
+				this.title = title ? title : 'Criminal Record Checks';
 			});
 	}
 }

@@ -7,7 +7,7 @@ import { catchError } from 'rxjs/operators';
 import { ApplicantService, OrgService, UserProfileService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { SecurityScreeningRoutes } from 'src/app/modules/security-screening-portal/security-screening-routing.module';
-import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
+import { DialogOopsComponent, DialogOopsOptions } from 'src/app/shared/components/dialog-oops.component';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
@@ -68,20 +68,16 @@ export class ErrorInterceptor implements HttpInterceptor {
 						message = errorResponse.message;
 					}
 				} else {
-					message = `<p><strong>The request failed to process due to a network error. Please retry.</strong></p>
+					message = `<p><strong>Technical error:</strong></p>
 						<p>Error Status: ${errorResponse.status}</p>
 						<p>Message: ${errorResponse.message}</p>`;
 				}
 
-				const dialogOptions: DialogOptions = {
-					icon: 'warning',
-					type: 'warn',
-					title,
+				const dialogOptions: DialogOopsOptions = {
 					message,
-					cancelText: 'Close',
 				};
 
-				this.dialog.open(DialogComponent, { data: dialogOptions });
+				this.dialog.open(DialogOopsComponent, { data: dialogOptions });
 				return throwError(() => new Error(message));
 			})
 		) as Observable<HttpEvent<any>>;

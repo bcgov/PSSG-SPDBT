@@ -266,7 +266,6 @@ export class OrganizationProfileComponent implements OnInit {
 			],
 		}
 	);
-	startAt = SPD_CONSTANTS.date.birthDateStartAt;
 	formValues = {};
 
 	constructor(
