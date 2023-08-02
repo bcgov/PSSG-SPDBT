@@ -15,6 +15,7 @@ import { HeaderComponent } from './components/app-header.component';
 import { ApplicationsBannerComponent } from './components/applications-banner.component';
 import { BaseFilterComponent } from './components/base-filter.component';
 import { CaptchaV2Component } from './components/captcha-v2.component';
+import { DialogOopsComponent } from './components/dialog-oops.component';
 import { DialogComponent } from './components/dialog.component';
 import { DropdownOverlayComponent } from './components/dropdown-overlay.component';
 import { FileUploadComponent } from './components/file-upload.component';
@@ -44,7 +45,7 @@ import { SaMailingAddressComponent } from './components/screening-application-st
 import { SaPersonalInformationComponent } from './components/screening-application-steps/step-components/sa-personal-information.component';
 import { SaPreviousNameComponent } from './components/screening-application-steps/step-components/sa-previous-name.component';
 import { SaSecurityInformationComponent } from './components/screening-application-steps/step-components/sa-security-information.component';
-import { SaSummaryComponent } from './components/screening-application-steps/step-components/summary.component';
+import { SaSummaryComponent } from './components/screening-application-steps/step-components/sa-summary.component';
 import { ScreeningRequestAddCommonModalComponent } from './components/screening-request-add-common-modal.component';
 import { ScreeningRequestsCommonComponent } from './components/screening-requests-common.component';
 import { ScreeningStatusFilterCommonComponent } from './components/screening-status-filter-common.component';
@@ -60,6 +61,7 @@ const SHARED_COMPONENTS = [
 	HeaderComponent,
 	FooterComponent,
 	DialogComponent,
+	DialogOopsComponent,
 	AddressAutocompleteComponent,
 	AddressModalComponent,
 	OrgSelectionModalComponent,

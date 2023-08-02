@@ -114,9 +114,15 @@ export interface AliasCreateRequest {
 						<div class="col-xl-3 col-lg-6 col-md-12">
 							<mat-form-field>
 								<mat-label>Date of Birth</mat-label>
-								<input matInput [matDatepicker]="picker" formControlName="dateOfBirth" [errorStateMatcher]="matcher" />
+								<input
+									matInput
+									[matDatepicker]="picker"
+									formControlName="dateOfBirth"
+									[max]="maxBirthDate"
+									[errorStateMatcher]="matcher"
+								/>
 								<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-								<mat-datepicker #picker startView="multi-year" [startAt]="startAt"></mat-datepicker>
+								<mat-datepicker #picker startView="multi-year" [startAt]="startAtBirthDate"></mat-datepicker>
 								<mat-error *ngIf="form.get('dateOfBirth')?.hasError('required')">This is required</mat-error>
 							</mat-form-field>
 						</div>
@@ -490,7 +496,8 @@ export class ManualSubmissionCommonComponent implements OnInit {
 			],
 		}
 	);
-	startAt = SPD_CONSTANTS.date.birthDateStartAt;
+	startAtBirthDate = this.utilService.getBirthDateStartAt();
+	maxBirthDate = this.utilService.getBirthDateMax();
 
 	@Input() portal: PortalTypeCode | null = null;
 	@Input() orgId: string | null = null;

@@ -4,17 +4,9 @@ import { Location } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { distinctUntilChanged, Observable, tap } from 'rxjs';
-import {
-	ApplicantAppCreateRequest,
-	ApplicationCreateResponse,
-	PaymentLinkCreateRequest,
-	PaymentLinkResponse,
-	PaymentMethodCode,
-	ServiceTypeCode,
-	ShareableClearanceResponse,
-} from 'src/app/api/models';
-import { ApplicantService, PaymentService } from 'src/app/api/services';
+import { distinctUntilChanged } from 'rxjs';
+import { ApplicantAppCreateRequest, ApplicationCreateResponse } from 'src/app/api/models';
+import { ApplicantService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
@@ -136,7 +128,6 @@ export class PssoaComponent implements OnInit {
 		private authProcessService: AuthProcessService,
 		private authUserService: AuthUserBcscService,
 		private applicantService: ApplicantService,
-		private paymentService: PaymentService,
 		private location: Location
 	) {}
 
@@ -162,8 +153,10 @@ export class PssoaComponent implements OnInit {
 				country: orgData.orgCountry!,
 			});
 
-			orgData.performPaymentProcess = false; //default
+			orgData.isCrrpa = false;
+			orgData.performPaymentProcess = false; // does not apply to psso
 			orgData.readonlyTombstone = false; // default
+			orgData.shareableCrcExists = false; // does not apply to psso
 		}
 
 		const stateInfo = await this.authProcessService.tryInitializePssoa();
@@ -171,11 +164,6 @@ export class PssoaComponent implements OnInit {
 			this.postLoginNavigate(stateInfo);
 		} else {
 			if (orgData) {
-				// If already logged in, get the shareable information
-				if (this.authenticationService.isLoggedIn()) {
-					this.populateShareableClearance(orgData.orgId, orgData.serviceType).subscribe();
-				}
-
 				this.assignApplicantUserInfoData(orgData);
 			}
 
@@ -267,29 +255,6 @@ export class PssoaComponent implements OnInit {
 		}
 	}
 
-	private populateShareableClearance(
-		orgId: string,
-		serviceType: ServiceTypeCode
-	): Observable<ShareableClearanceResponse> {
-		return this.applicantService
-			.apiApplicantsClearancesShareableGet({
-				withOrgId: orgId,
-				serviceType: serviceType,
-			})
-			.pipe(
-				tap((resp: ShareableClearanceResponse) => {
-					const shareableClearanceItem = resp?.items ? resp.items[0] : null;
-					if (shareableClearanceItem) {
-						this.orgData!.shareableClearanceItem = shareableClearanceItem;
-						this.orgData!.shareableCrcExists = true;
-						this.orgData!.sharedClearanceId = shareableClearanceItem.clearanceId;
-					} else {
-						this.orgData!.agreeToShare = false;
-					}
-				})
-			);
-	}
-
 	private postLoginNavigate(stepperData: any): void {
 		this.currentStateInfo = JSON.parse(stepperData);
 		console.debug('stepperData', stepperData);
@@ -300,18 +265,14 @@ export class PssoaComponent implements OnInit {
 		// Assign this at the end so that the orgData setters have the correct information.
 		this.orgData = orgData;
 
-		this.populateShareableClearance(orgData.orgId, orgData.serviceType).subscribe(
-			(_resp: ShareableClearanceResponse) => {
-				for (let i = 0; i <= 2; i++) {
-					let step = this.stepper.steps.get(i);
-					if (step) {
-						step.completed = true;
-					}
-				}
-
-				this.stepper.selectedIndex = 3;
+		for (let i = 0; i <= 2; i++) {
+			let step = this.stepper.steps.get(i);
+			if (step) {
+				step.completed = true;
 			}
-		);
+		}
+
+		this.stepper.selectedIndex = 3;
 	}
 
 	onSaveStepperStep(stepper: MatStepper): void {
@@ -337,11 +298,7 @@ export class PssoaComponent implements OnInit {
 				.apiApplicantsScreeningsPost({ body })
 				.pipe()
 				.subscribe((res: ApplicationCreateResponse) => {
-					if (this.orgData!.performPaymentProcess) {
-						this.payNow(res.applicationId!);
-					} else {
-						this.stepper.next();
-					}
+					this.stepper.next();
 				});
 		} else {
 			body.haveVerifiedIdentity = false;
@@ -349,31 +306,9 @@ export class PssoaComponent implements OnInit {
 				.apiApplicantsScreeningsAnonymousPost({ body })
 				.pipe()
 				.subscribe((res: ApplicationCreateResponse) => {
-					if (this.orgData!.performPaymentProcess) {
-						this.payNow(res.applicationId!);
-					} else {
-						this.stepper.next();
-					}
+					this.stepper.next();
 				});
 		}
-	}
-
-	private payNow(applicationId: string): void {
-		const body: PaymentLinkCreateRequest = {
-			applicationId: applicationId,
-			paymentMethod: PaymentMethodCode.CreditCard,
-			description: 'Payment for Case',
-		};
-		this.paymentService
-			.apiCrrpaPaymentLinkPost({
-				body,
-			})
-			.pipe()
-			.subscribe((res: PaymentLinkResponse) => {
-				if (res.paymentLinkUrl) {
-					window.location.assign(res.paymentLinkUrl);
-				}
-			});
 	}
 
 	private assignApplicantUserInfoData(orgData: AppInviteOrgData | null): void {

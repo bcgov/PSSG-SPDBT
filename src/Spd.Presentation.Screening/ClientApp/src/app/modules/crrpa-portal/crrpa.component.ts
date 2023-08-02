@@ -162,6 +162,7 @@ export class CrrpaComponent implements OnInit {
 				country: orgData.orgCountry!,
 			});
 
+			orgData.isCrrpa = true;
 			orgData.performPaymentProcess = false; //default
 			orgData.readonlyTombstone = false; // default
 		}

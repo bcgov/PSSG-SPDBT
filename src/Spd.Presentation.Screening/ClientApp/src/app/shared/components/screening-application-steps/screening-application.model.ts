@@ -13,11 +13,13 @@ export interface CrcFormStepComponent {
 export interface AppInviteOrgData extends ApplicantAppCreateRequest {
 	orgAddress?: string | null; // for display
 	readonlyTombstone?: boolean | null; // logic for screens - SPDBT-1272
+	isCrrpa: boolean;
 	performPaymentProcess?: boolean | null;
 	previousNameFlag?: boolean | null;
 	shareableCrcExists?: boolean | null;
 	shareableClearanceItem?: ShareableClearanceItem | null;
 	recaptcha?: string | null;
+	employeeId?: string | null; // TODO add to app org response
 	orgEmail?: null | string; // from AppOrgResponse
 	orgId?: string; // from AppOrgResponse
 	orgName?: null | string; // from AppOrgResponse

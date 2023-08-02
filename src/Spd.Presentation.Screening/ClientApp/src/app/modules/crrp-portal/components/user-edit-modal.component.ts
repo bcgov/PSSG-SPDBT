@@ -112,7 +112,6 @@ export class UserEditModalComponent implements OnInit {
 			],
 		}
 	);
-	startAt = SPD_CONSTANTS.date.birthDateStartAt;
 
 	constructor(
 		private formBuilder: FormBuilder,
