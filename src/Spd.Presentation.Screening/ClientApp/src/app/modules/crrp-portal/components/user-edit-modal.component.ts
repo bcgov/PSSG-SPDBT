@@ -6,7 +6,7 @@ import { ContactAuthorizationTypeCode, OrgUserResponse, OrgUserUpdateRequest } f
 import { OrgUserService } from 'src/app/api/services';
 import { ContactAuthorizationTypes } from 'src/app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { AuthUserService } from 'src/app/core/services/auth-user.service';
+import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 
@@ -119,7 +119,7 @@ export class UserEditModalComponent implements OnInit {
 		private dialogRef: MatDialogRef<UserEditModalComponent>,
 		private orgUserService: OrgUserService,
 		private maskPipe: NgxMaskPipe,
-		private authUserService: AuthUserService,
+		private authUserService: AuthUserBceidService,
 		@Inject(MAT_DIALOG_DATA) public dialogData: UserDialogData
 	) {}
 

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
-import { AuthUserService } from 'src/app/core/services/auth-user.service';
+import { AuthUserIdirService } from 'src/app/core/services/auth-user-idir.service';
 
 @Component({
 	selector: 'app-manual-submission',
@@ -13,7 +13,7 @@ export class ManualSubmissionComponent implements OnInit {
 	orgId: string | null = null;
 	portal = PortalTypeCode;
 
-	constructor(private router: Router, private authUserService: AuthUserService) {}
+	constructor(private router: Router, private authUserService: AuthUserIdirService) {}
 
 	ngOnInit(): void {
 		const orgId = this.authUserService.idirUserWhoamiProfile?.orgId;

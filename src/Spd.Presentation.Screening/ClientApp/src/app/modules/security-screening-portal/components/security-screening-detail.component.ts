@@ -15,7 +15,7 @@ import {
 import { ApplicantService, PaymentService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { AuthUserService } from 'src/app/core/services/auth-user.service';
+import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 import {
@@ -89,16 +89,20 @@ import {
 				<div class="col-md-11 col-sm-12">
 					<section class="px-4 py-2 ">
 						<div class="row mt-2">
-							<div class="col-lg-3 col-md-4">
+							<div class="col-lg-3 col-md-3">
 								<small class="d-block text-muted">Case ID</small>
 								<strong> {{ application.applicationNumber }} </strong>
 							</div>
-							<div class="col-lg-3 col-md-4">
+							<div class="col-lg-3 col-md-3">
 								<small class="d-block text-muted mt-2 mt-md-0">Submitted On</small>
 								<strong> {{ application.createdOn | date : constants.date.dateFormat : 'UTC' }} </strong>
 							</div>
-							<div class="col-lg-3 col-md-4">
-								<small class="d-block text-muted">Paid By</small>
+							<div class="col-lg-3 col-md-3">
+								<small class="d-block text-muted mt-2 mt-md-0">Service Type</small>
+								<strong> {{ application.serviceType | options : 'ServiceTypes' }}</strong>
+							</div>
+							<div class="col-lg-3 col-md-3">
+								<small class="d-block text-muted mt-2 mt-md-0">Paid By</small>
 								<strong> {{ application.payeeType }}</strong>
 							</div>
 						</div>
@@ -223,7 +227,7 @@ export class SecurityScreeningDetailComponent implements OnInit, AfterViewInit {
 	constructor(
 		private router: Router,
 		private applicantService: ApplicantService,
-		private authUserService: AuthUserService,
+		private authUserService: AuthUserBcscService,
 		private paymentService: PaymentService,
 		private location: Location,
 		private utilService: UtilService,

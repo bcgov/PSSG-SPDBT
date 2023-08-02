@@ -7,7 +7,7 @@ import { OrgReportService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { AuthUserService } from 'src/app/core/services/auth-user.service';
+import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
 import { UtilService } from 'src/app/core/services/util.service';
 
 @Component({
@@ -118,7 +118,7 @@ export class ReportsComponent implements OnInit {
 	constructor(
 		private router: Router,
 		private utilService: UtilService,
-		private authUserService: AuthUserService,
+		private authUserService: AuthUserBceidService,
 		private orgReportService: OrgReportService
 	) {}
 

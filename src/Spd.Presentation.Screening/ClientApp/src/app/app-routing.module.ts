@@ -46,7 +46,7 @@ const routes: Routes = [
 	{
 		path: AppRoutes.CRRPA_APPLICATION,
 		loadChildren: () => import('./modules/crrpa-portal/crrpa-portal.module').then((m) => m.CrrpaPortalModule),
-		data: { title: 'Criminal Record Check' },
+		data: { title: 'Criminal Record Check Application' },
 	},
 	{
 		path: AppRoutes.PSSO_APPLICATION,
@@ -56,7 +56,7 @@ const routes: Routes = [
 	{
 		path: AppRoutes.PSSOA_APPLICATION,
 		loadChildren: () => import('./modules/pssoa-portal/pssoa-portal.module').then((m) => m.PssoaPortalModule),
-		data: { title: 'Personnel Security Screening Office' },
+		data: { title: 'Personnel Security Screening Office Application' },
 	},
 	{
 		path: AppRoutes.SECURITY_SCREENING_APPLICATION,

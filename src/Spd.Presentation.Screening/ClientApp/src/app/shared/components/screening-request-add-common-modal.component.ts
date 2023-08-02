@@ -18,7 +18,7 @@ import {
 	ServiceTypesPsso,
 } from 'src/app/core/code-types/model-desc.models';
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
-import { AuthUserService } from 'src/app/core/services/auth-user.service';
+import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
@@ -227,7 +227,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 		private formBuilder: FormBuilder,
 		private dialogRef: MatDialogRef<ScreeningRequestAddCommonModalComponent>,
 		private applicationService: ApplicationService,
-		private authUserService: AuthUserService,
+		private authUserService: AuthUserBceidService,
 		private dialog: MatDialog,
 		@Inject(MAT_DIALOG_DATA) public dialogData: ScreeningRequestAddDialogData
 	) {}
@@ -457,7 +457,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 					// At least one potential duplicate has been found
 					let dupRows = '';
 					duplicateResponses.forEach((item) => {
-						dupRows += `<li>${item.firstName} ${item.lastName} (${item.email})</li>`;
+						dupRows += `<li>${item.firstName} ${item.lastName} (${item.email ?? ''})</li>`;
 					});
 					const dupMessage = `<ul>${dupRows}</ul>`;
 

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
-import { AuthUserService } from 'src/app/core/services/auth-user.service';
+import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
 
 @Component({
 	selector: 'app-identify-verification',
@@ -17,7 +17,7 @@ export class IdentifyVerificationComponent implements OnInit {
 	orgId: string | null = null;
 	portal = PortalTypeCode;
 
-	constructor(private router: Router, private authUserService: AuthUserService) {}
+	constructor(private router: Router, private authUserService: AuthUserBceidService) {}
 
 	ngOnInit(): void {
 		const orgId = this.authUserService.bceidUserInfoProfile?.orgId;

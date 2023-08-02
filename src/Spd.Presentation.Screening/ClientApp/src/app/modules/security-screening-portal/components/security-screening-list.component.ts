@@ -14,7 +14,7 @@ import {
 import { ApplicantService, PaymentService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { AuthUserService } from 'src/app/core/services/auth-user.service';
+import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 
@@ -85,11 +85,11 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
 						</mat-cell>
 					</ng-container>
 
-					<ng-container matColumnDef="serviceType">
-						<mat-header-cell *matHeaderCellDef>Service Type</mat-header-cell>
+					<ng-container matColumnDef="applicationNumber">
+						<mat-header-cell *matHeaderCellDef>Case ID</mat-header-cell>
 						<mat-cell *matCellDef="let application">
-							<span class="mobile-label">Type:</span>
-							{{ application.serviceType | options : 'ServiceTypes' }}
+							<span class="mobile-label">Case ID:</span>
+							{{ application.applicationNumber }}
 						</mat-cell>
 					</ng-container>
 
@@ -150,7 +150,7 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
 						<mat-header-cell *matHeaderCellDef></mat-header-cell>
 						<mat-cell *matCellDef="let application">
 							<button mat-flat-button (click)="onViewDetail(application)" class="table-button" aria-label="View Detail">
-								<mat-icon>wysiwyg</mat-icon>View Detail
+								Detail
 							</button>
 						</mat-cell>
 					</ng-container>
@@ -175,9 +175,9 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
 			}
 
 			.mat-column-action2 {
-				min-width: 190px;
+				min-width: 100px;
 				.table-button {
-					min-width: 160px;
+					min-width: 100px;
 				}
 			}
 
@@ -198,7 +198,7 @@ export class SecurityScreeningListComponent implements OnInit {
 	constants = SPD_CONSTANTS;
 	dataSource: MatTableDataSource<ApplicantApplicationStatusResponse> =
 		new MatTableDataSource<ApplicantApplicationStatusResponse>([]);
-	columns: string[] = ['orgName', 'createdOn', 'serviceType', 'payeeType', 'status', 'action1', 'action2'];
+	columns: string[] = ['orgName', 'createdOn', 'applicationNumber', 'payeeType', 'status', 'action1', 'action2'];
 
 	opportunityToRespondAlert: string | null = null;
 	requestForAdditionalInfoAlert: string | null = null;
@@ -209,7 +209,7 @@ export class SecurityScreeningListComponent implements OnInit {
 		private router: Router,
 		private applicantService: ApplicantService,
 		private paymentService: PaymentService,
-		private authUserService: AuthUserService,
+		private authUserService: AuthUserBcscService,
 		private utilService: UtilService
 	) {}
 
@@ -267,11 +267,6 @@ export class SecurityScreeningListComponent implements OnInit {
 	}
 
 	private loadList(): void {
-		this.applicantName = this.utilService.getFullName(
-			this.authUserService.bcscUserWhoamiProfile?.firstName,
-			this.authUserService.bcscUserWhoamiProfile?.lastName
-		);
-
 		this.opportunityToRespondAlert = null;
 		this.requestForAdditionalInfoAlert = null;
 		this.fingerprintsAlert = null;
@@ -289,6 +284,12 @@ export class SecurityScreeningListComponent implements OnInit {
 			.pipe()
 			.subscribe((res: ApplicantApplicationListResponse) => {
 				this.allApplications = res.applications as Array<ApplicantApplicationStatusResponse>;
+
+				const firstRecord = this.allApplications ? this.allApplications[0] : null;
+
+				this.applicantName = firstRecord
+					? this.utilService.getFullName(firstRecord.givenName, firstRecord.surname)
+					: '';
 
 				this.allApplications.forEach((app: ApplicantApplicationStatusResponse) => {
 					app.applicationPortalStatusClass = this.utilService.getApplicationPortalStatusClass(app.status);

@@ -3,7 +3,8 @@ import { Injectable } from '@angular/core';
 import { OAuthResourceServerErrorHandler } from 'angular-oauth2-oidc';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { AuthUserService } from '../services/auth-user.service';
+import { AuthUserBceidService } from '../services/auth-user-bceid.service';
+import { AuthUserIdirService } from '../services/auth-user-idir.service';
 import { AuthenticationService } from '../services/authentication.service';
 
 const includedURLs = [/^\/api\/.+$/];
@@ -11,7 +12,8 @@ const includedURLs = [/^\/api\/.+$/];
 @Injectable()
 export class AuthTokenInterceptor implements HttpInterceptor {
 	constructor(
-		private authUserService: AuthUserService,
+		private authUserBceidService: AuthUserBceidService,
+		private authUserIdirService: AuthUserIdirService,
 		private authenticationService: AuthenticationService,
 		private errorHandler: OAuthResourceServerErrorHandler
 	) {}
@@ -30,10 +32,10 @@ export class AuthTokenInterceptor implements HttpInterceptor {
 
 		const header = 'Bearer ' + token;
 		let headers = req.headers.set('Authorization', header);
-		if (this.authUserService.bceidUserInfoProfile?.orgId) {
-			headers = req.headers.set('organization', this.authUserService.bceidUserInfoProfile?.orgId);
-		} else if (this.authUserService.idirUserWhoamiProfile?.orgId) {
-			headers = req.headers.set('organization', this.authUserService.idirUserWhoamiProfile?.orgId);
+		if (this.authUserBceidService.bceidUserInfoProfile?.orgId) {
+			headers = req.headers.set('organization', this.authUserBceidService.bceidUserInfoProfile?.orgId);
+		} else if (this.authUserIdirService.idirUserWhoamiProfile?.orgId) {
+			headers = req.headers.set('organization', this.authUserIdirService.idirUserWhoamiProfile?.orgId);
 		}
 
 		req = req.clone({ headers });

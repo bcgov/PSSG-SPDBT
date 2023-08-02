@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { AuthUserService } from 'src/app/core/services/auth-user.service';
+import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
 
 @Component({
 	selector: 'app-crrp-header',
@@ -33,5 +33,5 @@ export class CrrpHeaderComponent {
 	loggedInOrgDisplay: string | null | undefined = this.authUserService.bceidUserInfoProfile?.orgName;
 	@Input() subtitle = '';
 
-	constructor(private authUserService: AuthUserService) {}
+	constructor(private authUserService: AuthUserBceidService) {}
 }
