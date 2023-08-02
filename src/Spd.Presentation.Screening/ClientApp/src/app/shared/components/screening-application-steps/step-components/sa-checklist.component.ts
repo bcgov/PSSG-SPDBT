@@ -13,7 +13,9 @@ import { PayerPreferenceTypeCode } from 'src/app/api/models';
 					<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12 mx-auto">
 						<ul *ngIf="payeeType == payerPreferenceTypeCodes.Applicant">
 							<li>Your BC Services Card (recommended), or other government issued identification.</li>
-							<li>A method of payment (Visa, Mastercard, American Express, Visa Debit, Mastercard Debit)</li>
+							<li *ngIf="isCrrpa">
+								A method of payment (Visa, Mastercard, American Express, Visa Debit, Mastercard Debit)
+							</li>
 							<li>
 								Before you submit a request for a criminal record check, if possible, verify your identity by using your
 								BC Services Card.
@@ -42,7 +44,6 @@ import { PayerPreferenceTypeCode } from 'src/app/api/models';
 export class SaChecklistComponent {
 	payerPreferenceTypeCodes = PayerPreferenceTypeCode;
 
-	@Input() payeeType!: PayerPreferenceTypeCode;
-	@Input() isPsso: boolean = false;
-	@Input() isCrrp: boolean = false;
+	@Input() payeeType: PayerPreferenceTypeCode | undefined = undefined;
+	@Input() isCrrpa: boolean = false;
 }

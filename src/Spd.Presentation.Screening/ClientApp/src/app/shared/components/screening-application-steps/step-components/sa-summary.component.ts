@@ -19,29 +19,35 @@ import { UtilService } from 'src/app/core/services/util.service';
 									<div class="text-label d-block text-muted">Requesting Organization</div>
 									<div class="text-data">{{ orgData.orgName }}</div>
 								</div>
-								<div class="col-xl-4 col-lg-3 col-md-12">
+								<div class="col-xl-4 col-lg-3 col-md-12" *ngIf="orgData.isCrrpa">
 									<div class="text-label d-block text-muted mt-2 mt-lg-0">Organization Phone Number</div>
 									<div class="text-data">
 										{{ orgData.orgPhoneNumber || '' | mask : appConstants.phone.displayMask }}
 									</div>
+								</div>
+								<div class="col-xl-4 col-lg-3 col-md-12" *ngIf="!orgData.isCrrpa">
+									<div class="text-label d-block text-muted mt-2 mt-lg-0">Job Title</div>
+									<div class="text-data">{{ orgData.jobTitle }}</div>
 								</div>
 								<div class="col-xl-1 col-lg-1 col-md-12 text-end">
 									<mat-icon matTooltip="Edit this data" (click)="onReEditOrg()">edit</mat-icon>
 								</div>
 							</div>
 
-							<mat-divider class="my-3"></mat-divider>
+							<ng-container *ngIf="orgData.isCrrpa">
+								<mat-divider class="my-3"></mat-divider>
 
-							<div class="row mb-2">
-								<div class="offset-xl-3 col-xl-4 offset-lg-4 col-lg-4 col-md-12">
-									<div class="text-label d-block text-muted">Organization Address</div>
-									<div class="text-data">{{ orgData.orgAddress }}</div>
+								<div class="row mb-2">
+									<div class="offset-xl-3 col-xl-4 offset-lg-4 col-lg-4 col-md-12">
+										<div class="text-label d-block text-muted">Organization Address</div>
+										<div class="text-data">{{ orgData.orgAddress }}</div>
+									</div>
+									<div class="col-xl-4 col-lg-4 col-md-12">
+										<div class="text-label d-block text-muted mt-2 mt-lg-0">Job Title</div>
+										<div class="text-data">{{ orgData.jobTitle }}</div>
+									</div>
 								</div>
-								<div class="col-xl-4 col-lg-4 col-md-12">
-									<div class="text-label d-block text-muted mt-2 mt-lg-0">Job Title</div>
-									<div class="text-data">{{ orgData.jobTitle }}</div>
-								</div>
-							</div>
+							</ng-container>
 						</section>
 					</div>
 				</div>
@@ -103,6 +109,13 @@ import { UtilService } from 'src/app/core/services/util.service';
 								<div class="col-xl-4 col-lg-4 col-md-12">
 									<div class="text-label d-block text-muted mt-2 mt-lg-0">Sex</div>
 									<div class="text-data">{{ orgData.genderCode | options : 'GenderTypes' | default }}</div>
+								</div>
+							</div>
+
+							<div class="row mb-2" *ngIf="!orgData.isCrrpa">
+								<div class="offset-xl-3 col-xl-4 offset-lg-4 col-lg-4 col-md-12">
+									<div class="text-label d-block text-muted">BC Government Employee ID</div>
+									<div class="text-data">{{ orgData.employeeId | default }}</div>
 								</div>
 							</div>
 
