@@ -23,6 +23,7 @@ export class ErrorInterceptor implements HttpInterceptor {
 					errorResponse.status == 401 &&
 					(errorResponse.url?.includes(UserProfileService.ApiUsersWhoamiGetPath) ||
 						errorResponse.url?.includes(UserProfileService.ApiApplicantsWhoamiGetPath) ||
+						errorResponse.url?.includes(UserProfileService.ApiIdirUsersWhoamiGetPath) ||
 						errorResponse.url?.includes(ApplicantService.ApiApplicantsUserinfoGetPath) ||
 						errorResponse.url?.includes(ApplicantService.ApiApplicantsInvitesPostPath))
 				) {
