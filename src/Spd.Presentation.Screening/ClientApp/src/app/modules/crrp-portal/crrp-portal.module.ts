@@ -18,6 +18,7 @@ import { PaymentsComponent } from './components/payments.component';
 import { ReportsComponent } from './components/reports.component';
 import { UserEditModalComponent } from './components/user-edit-modal.component';
 import { UsersComponent } from './components/users.component';
+import { CrrpOrgTermsAndCondsComponent } from './crrp-org-terms-and-conds.component';
 import { CrrpRoutingModule } from './crrp-routing.module';
 import { CrrpComponent } from './crrp.component';
 import { InvitationUserComponent } from './invitation-user.component';
@@ -44,6 +45,7 @@ import { InvitationUserComponent } from './invitation-user.component';
 		CrrpPaymentSuccessComponent,
 		CrrpPaymentManualComponent,
 		CrrpPaymentErrorComponent,
+		CrrpOrgTermsAndCondsComponent,
 	],
 	imports: [SharedModule, CrrpRoutingModule],
 })

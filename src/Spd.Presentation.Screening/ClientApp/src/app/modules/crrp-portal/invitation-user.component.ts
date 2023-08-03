@@ -50,11 +50,10 @@ export class InvitationUserComponent implements OnInit {
 				.apiUserInvitationPost({ body: invitationRequest })
 				.pipe()
 				.subscribe((resp: any) => {
-					console.debug('InvitationUserComponent, apiUserInvitationPost', resp);
 					if (resp?.isError) {
 						this.message = resp.message;
 					} else {
-						this.router.navigate([CrrpRoutes.path(CrrpRoutes.HOME)]);
+						this.router.navigate([CrrpRoutes.path(CrrpRoutes.ORG_TERMS_AND_CONDS)]);
 					}
 				});
 		}

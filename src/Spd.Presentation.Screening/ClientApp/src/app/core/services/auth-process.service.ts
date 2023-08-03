@@ -39,10 +39,11 @@ export class AuthProcessService {
 	//----------------------------------------------------------
 	// * CRRP Portal
 	// *
-	async initializeCrrp(defaultOrgId: string | null = null): Promise<string | null> {
+	async initializeCrrp(defaultOrgId: string | null = null, defaultRoute: string | null = null): Promise<string | null> {
 		this.identityProvider = IdentityProviderTypeCode.BusinessBceId;
 
-		const nextUrl = await this.authenticationService.login(this.identityProvider, CrrpRoutes.path(CrrpRoutes.HOME));
+		const nextRoute = defaultRoute ? defaultRoute : CrrpRoutes.path(CrrpRoutes.HOME);
+		const nextUrl = await this.authenticationService.login(this.identityProvider, nextRoute);
 		console.debug('initializeCrrp nextUrl', nextUrl);
 
 		if (nextUrl) {

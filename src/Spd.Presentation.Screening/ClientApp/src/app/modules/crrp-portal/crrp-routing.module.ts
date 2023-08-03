@@ -15,6 +15,7 @@ import { OrganizationProfileComponent } from './components/organization-profile.
 import { PaymentsComponent } from './components/payments.component';
 import { ReportsComponent } from './components/reports.component';
 import { UsersComponent } from './components/users.component';
+import { CrrpOrgTermsAndCondsComponent } from './crrp-org-terms-and-conds.component';
 import { CrrpComponent } from './crrp.component';
 import { InvitationUserComponent } from './invitation-user.component';
 
@@ -35,6 +36,7 @@ export class CrrpRoutes {
 	public static INVITATION = 'invitation';
 	public static REPORTS = 'reports';
 	public static USERS = 'users';
+	public static ORG_TERMS_AND_CONDS = 'org-terms-and-conds';
 
 	public static MODULE_PATH = 'crrp';
 
@@ -69,6 +71,10 @@ const routes: Routes = [
 	{
 		path: `${CrrpRoutes.INVITATION}/:id`,
 		component: InvitationUserComponent,
+	},
+	{
+		path: CrrpRoutes.ORG_TERMS_AND_CONDS,
+		component: CrrpOrgTermsAndCondsComponent,
 	},
 ];
 
