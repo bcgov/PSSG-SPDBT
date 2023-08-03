@@ -9,6 +9,7 @@ namespace Spd.Utilities.Payment
         {
             services.Configure<PayBCSettings>(opts => configuration.GetSection("PayBC").Bind(opts));
             services.AddTransient<IPaymentService, PaymentService>();
+            services.AddSingleton<ISecurityTokenProvider, OauthSecurityTokenProvider>();
             return services;
         }
     }

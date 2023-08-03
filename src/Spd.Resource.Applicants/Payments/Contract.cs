@@ -16,6 +16,7 @@ namespace Spd.Resource.Applicants.Payment
     {
         public Guid ApplicationId { get; set; }
         public Guid PaymentId { get; set; }
+        public string? TransactionNumber { get; set; }
         public string CaseNumber { get; set; }
         public bool PaidSuccess { get; set; }
         public string Message { get; set; }
