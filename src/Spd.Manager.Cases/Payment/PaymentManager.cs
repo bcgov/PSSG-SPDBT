@@ -25,6 +25,7 @@ namespace Spd.Manager.Cases.Payment
         IRequestHandler<PrePaymentLinkCreateCommand, PrePaymentLinkResponse>,
         IRequestHandler<PaymentReceiptQuery, FileResponse>,
         IRequestHandler<ManualPaymentFormQuery, FileResponse>,
+        IRequestHandler<PaymentRefundCommand, PaymentRefundResponse>,
         IPaymentManager
     {
         private readonly IPaymentService _paymentService;
@@ -121,7 +122,7 @@ namespace Spd.Manager.Cases.Payment
 
             //generate the link string 
             //payment utility
-            var linkResult =  (CreateDirectPaymentLinkResult)await _paymentService.HandleCommand(
+            var linkResult = (CreateDirectPaymentLinkResult)await _paymentService.HandleCommand(
                 new CreateDirectPaymentLinkCommand
                 {
                     RevenueAccount = spdPaymentConfig.PaybcRevenueAccount,
@@ -152,6 +153,26 @@ namespace Spd.Manager.Cases.Payment
             await _paymentRepository.ManageAsync(createCmd, ct);
             var updateCmd = _mapper.Map<UpdatePaymentCmd>(command.PaybcPaymentResult);
             return await _paymentRepository.ManageAsync(updateCmd, ct);
+        }
+
+        public async Task<PaymentRefundResponse> Handle(PaymentRefundCommand command, CancellationToken ct)
+        {
+            var paymentList = await _paymentRepository.QueryAsync(new PaymentQry(null, command.PaymentId), ct);
+            if(!paymentList.Items.Any())
+                throw new ApiException(HttpStatusCode.BadRequest, "cannot find the payment");
+            if (!paymentList.Items.First().PaidSuccess)
+                throw new ApiException(HttpStatusCode.BadRequest, "cannot do refund for non-successful payment.");
+
+            //ask paybc to do direct refund
+            SpdPaymentConfig spdPaymentConfig = await GetSpdPaymentConfigAsync(ct);
+            var cmd = _mapper.Map<RefundPaymentCmd>(paymentList.Items.First());
+            cmd.PbcRefNumber = spdPaymentConfig.PbcRefNumber;
+            var result = (RefundPaymentResult)await _paymentService.HandleCommand(cmd);
+            if (!result.IsSuccess)
+                throw new ApiException(HttpStatusCode.InternalServerError, result.Message);
+            var resp= _mapper.Map<PaymentRefundResponse>(result);
+            resp.PaymentId = command.PaymentId;
+            return resp;
         }
 
         public async Task<PaymentResponse> Handle(PaymentQuery query, CancellationToken ct)
@@ -192,7 +213,7 @@ namespace Spd.Manager.Cases.Payment
                 {
                     RegardingObjectId = query.ApplicationId,
                     DocTemplateType = DocTemplateTypeEnum.ManualPaymentForm
-                },ct);
+                }, ct);
             return new FileResponse
             {
                 Content = docResp.Content,

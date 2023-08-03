@@ -8,7 +8,7 @@ using System.Configuration;
 namespace Spd.Presentation.Dynamics.Controllers;
 
 /// <summary>
-/// For generating payment link
+/// Payment support for dynamics
 /// </summary>
 [Authorize]
 public class PaymentController : SpdControllerBase

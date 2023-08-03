@@ -50,7 +50,7 @@ namespace Spd.Utilities.Payment
     #endregion
 
     #region direct pay refund
-    public class RefundPaymentCommand : PaymentCommand
+    public class RefundPaymentCmd : PaymentCommand
     {
         public string OrderNumber { get; set; } = null!;
         public string PbcRefNumber { get; set; } = null!;
@@ -59,7 +59,8 @@ namespace Spd.Utilities.Payment
     }
     public class RefundPaymentResult : PaymentResult
     {
-        public string RefundId { get; set; }
+        public bool IsSuccess { get; set; } = false;
+        public string? RefundId { get; set; }
         public bool Approved { get; set; } //true: approved, false: declined.
         public decimal TxnAmount { get; set; }
         public string OrderNumber { get; set; } = null!;

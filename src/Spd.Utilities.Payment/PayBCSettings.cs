@@ -15,9 +15,5 @@ namespace Spd.Utilities.Payment
         public Uri OAuth2TokenEndpointUrl { get; set; } = null!;
         public string ClientId { get; set; } = string.Empty;
         public string ClientSecret { get; set; } = string.Empty;
-        public string ServiceAccountDomain { get; set; } = string.Empty;
-        public string ServiceAccountName { get; set; } = string.Empty;
-        public string ServiceAccountPassword { get; set; } = string.Empty;
-        public string ResourceName { get; set; } = string.Empty;
     }
 }
