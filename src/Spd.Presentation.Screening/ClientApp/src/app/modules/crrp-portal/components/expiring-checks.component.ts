@@ -164,10 +164,10 @@ export const ExpiringChecksFilterMap: Record<keyof ExpiringChecksFilter, string>
 									mat-flat-button
 									class="table-button"
 									style="color: var(--color-red);"
-									aria-label="Cancel"
-									(click)="onCancel(clearance)"
+									aria-label="Remove"
+									(click)="onRemove(clearance)"
 								>
-									<mat-icon>cancel</mat-icon>Cancel
+									<mat-icon>delete_outline</mat-icon>Remove
 								</button>
 							</mat-cell>
 						</ng-container>
@@ -358,12 +358,12 @@ export class ExpiringChecksComponent implements OnInit {
 			});
 	}
 
-	onCancel(clearance: ExpiredClearanceResponse) {
+	onRemove(clearance: ExpiredClearanceResponse) {
 		const data: DialogOptions = {
 			icon: 'info',
 			title: 'Confirmation',
-			message: `Are you sure you want to cancel the request for ${clearance.firstName} ${clearance.lastName}?`,
-			actionText: 'Yes, cancel',
+			message: `Are you sure you want to remove the request for ${clearance.firstName} ${clearance.lastName}?`,
+			actionText: 'Yes, remove',
 			cancelText: 'Cancel',
 		};
 
@@ -379,7 +379,7 @@ export class ExpiringChecksComponent implements OnInit {
 						})
 						.pipe()
 						.subscribe((_res) => {
-							this.hotToastService.success('The request was successfully cancelled');
+							this.hotToastService.success('The request was successfully removed');
 							this.loadList();
 						});
 				}

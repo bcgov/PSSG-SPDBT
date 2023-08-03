@@ -34,9 +34,9 @@ export class CrrpRoutes {
 	public static PAYMENT_MANUAL = 'payment-manual';
 	public static PAYMENT_ERROR = 'payment-error';
 	public static INVITATION = 'invitation';
+	public static INVITATION_ACCEPT = 'invitation-accept';
 	public static REPORTS = 'reports';
 	public static USERS = 'users';
-	public static ORG_TERMS_AND_CONDS = 'org-terms-and-conds';
 
 	public static MODULE_PATH = 'crrp';
 
@@ -70,11 +70,11 @@ const routes: Routes = [
 	},
 	{
 		path: `${CrrpRoutes.INVITATION}/:id`,
-		component: InvitationUserComponent,
+		component: CrrpOrgTermsAndCondsComponent,
 	},
 	{
-		path: CrrpRoutes.ORG_TERMS_AND_CONDS,
-		component: CrrpOrgTermsAndCondsComponent,
+		path: `${CrrpRoutes.INVITATION_ACCEPT}/:id`,
+		component: InvitationUserComponent,
 	},
 ];
 

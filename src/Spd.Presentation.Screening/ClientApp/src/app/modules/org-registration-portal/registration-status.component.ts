@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrgRegistrationStatusCode } from 'src/app/api/models';
 import { OrgRegistrationService } from 'src/app/api/services';
+import { AppRoutes } from 'src/app/app-routing.module';
 import { CrrpRoutes } from '../crrp-portal/crrp-routing.module';
 import { OrgRegistrationRoutes } from './org-registration-routing.module';
 
@@ -115,6 +116,10 @@ export class RegistrationStatusComponent implements OnInit {
 
 	ngOnInit(): void {
 		const registrationNumber = this.route.snapshot.paramMap.get('id');
+		if (!registrationNumber) {
+			console.debug('RegistrationStatusComponent - id', registrationNumber);
+			this.router.navigate([AppRoutes.ACCESS_DENIED]);
+		}
 
 		if (registrationNumber) {
 			this.orgRegistrationService

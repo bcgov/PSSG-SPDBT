@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AppRoutes } from 'src/app/app-routing.module';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
 import { UtilService } from 'src/app/core/services/util.service';
@@ -21,11 +22,11 @@ import { CrrpRoutes } from './crrp-routing.module';
 							<div class="row mt-4">
 								<div class="col-12">
 									<div class="conditions px-3 mb-3">
-										<strong>
-											Terms of Use for Authorized Contacts Accessing the Organization Online Service Portal
-										</strong>
-										<br /><br />
-
+										<p style="margin-top: .6rem;">
+											<strong>
+												Terms of Use for Authorized Contacts Accessing the Organization Online Service Portal
+											</strong>
+										</p>
 										<p>
 											In these Terms of Use, "you" or "your" includes the individual using or accessing the Organization
 											Online Service Portal (the "Site").
@@ -57,6 +58,17 @@ import { CrrpRoutes } from './crrp-routing.module';
 											<li>
 												WITHOUT LIMITING THE GENERAL NATURE OF THE FOREGOING, THE PROVINCE DOES NOT REPRESENT OR WARRANT
 												THAT:
+												<ol type="a">
+													<li>
+														THE ACCURACY, COMPLETENESS OR CURRENCY OF SERVICES OR ANY ASSOCIATED INFORMATION, OR THAT
+														ANY ERRORS WILL BE CORRECTED.
+													</li>
+													<li>
+														THE SERVICES WILL FUNCTION IN A TIMELY MANNER OR WILL BE AVAILABLE WITHOUT ERROR, FAILURE,
+														OR INTERRUPTION; OR
+													</li>
+													<li>THE SERVICES WILL MEET YOUR EXPECTATIONS OR REQUIREMENTS.</li>
+												</ol>
 											</li>
 											<li>The Province is not responsible for the content of the Payment Site as defined below.</li>
 											<strong>Information Collection:</strong>
@@ -106,9 +118,44 @@ import { CrrpRoutes } from './crrp-routing.module';
 												Services in accordance with their terms and any associated privacy statement(s).
 											</li>
 											<strong>Warranty:</strong>
-											<li>In accessing or using the Site, you represent and warrant that:</li>
+											<li>
+												In accessing or using the Site, you represent and warrant that:
+												<ol type="a">
+													<li>You are at least 16 years of age; and</li>
+													<li>
+														You have the power and capacity to accept, execute and comply with these Terms of Use.
+													</li>
+												</ol>
+											</li>
 											<strong>Acceptable Use and Security:</strong>
-											<li>You must not:</li>
+											<li>
+												You must not:
+												<ol type="a">
+													<li>
+														use the Services for any unlawful or inappropriate purpose, including hacking, data mining
+														or other intrusion activities.
+													</li>
+													<li>
+														input or upload any information which contains computer viruses such asTrojan horses, worms,
+														time bombs or other computer programming routines that may damage or interfere with the
+														performance or function of the Services or any Associated Service.
+													</li>
+													<li>
+														divulge, share, compromise or permit any other person to use your login and password to
+														access the Services.
+													</li>
+													<li>
+														take any action that might reasonably be construed as altering, destroying, defeating,
+														compromising, or rendering ineffective the security related to the Site or any Associated
+														Service, or being likely to affect other users of the Services.
+													</li>
+													<li>attempt to collect any information about other users of the Services; or</li>
+													<li>
+														decompile, disassemble, reverse engineer, or otherwise copy any source code associated with
+														the Site or any Associated Service.
+													</li>
+												</ol>
+											</li>
 											<strong>Ownership and Non-permitted Uses:</strong>
 											<li>
 												You acknowledge and agree that at all times the Province and/or the providers of the Associated
@@ -126,9 +173,26 @@ import { CrrpRoutes } from './crrp-routing.module';
 												trademark or logo displayed in connection with the Services.
 											</li>
 											<strong>Suspension or Cancellation of Services:</strong>
-											<li>Your use of any of the Services may be suspended or cancelled at any time if:</li>
+											<li>
+												Your use of any of the Services may be suspended or cancelled at any time if:
+												<ol type="a">
+													<li>
+														you fail to abide by these Terms of Use, or other terms and conditions that may be posted on
+														any website used to access the Services; or
+													</li>
+													<li>
+														the Province or the provider of any Associated Service deems such suspension or cancellation
+														necessary for any good and valid reason
+													</li>
+												</ol>
+											</li>
 											<li>
 												The Province and any provider of any Associated Service reserve the right, at any time, to:
+												<ol type="a">
+													<li>make changes to the Services;</li>
+													<li>stop providing the Services; and</li>
+													<li>modify these Terms of Use at any time, without notice being provided directly to you.</li>
+												</ol>
 											</li>
 											<strong>Limitation of Liability:</strong>
 											<li>
@@ -183,7 +247,7 @@ import { CrrpRoutes } from './crrp-routing.module';
 									>
 								</div>
 								<h3 class="subheading fw-normal my-3">
-									Terms and Conditions for use of the Organization’s Online Service Portal (the “Site”)in an Authorized
+									Terms and Conditions for use of the Organization’s Online Service Portal (the “Site”) in an Authorized
 									Contact Role:
 								</h3>
 								<div class="col-12">
@@ -252,7 +316,7 @@ import { CrrpRoutes } from './crrp-routing.module';
 								</div>
 								<div class="col-12">
 									<mat-checkbox formControlName="check5" (click)="onCheckboxChange()">
-										I understand that my misuse of the Site, or disregard for any of these T erms and Conditions, may
+										I understand that my misuse of the Site, or disregard for any of these Terms and Conditions, may
 										result in suspension or cancellation of any or all services available to theOrganization I
 										represent.
 									</mat-checkbox>
@@ -267,7 +331,7 @@ import { CrrpRoutes } from './crrp-routing.module';
 									>
 								</div>
 								<div class="col-12 mt-4">
-									<mat-form-field class="w-auto">
+									<mat-form-field class="w-auto" style="background-color: var(--color-grey-lightest);">
 										<mat-label>Date Signed</mat-label>
 										<input matInput formControlName="dateSigned" />
 										<mat-error *ngIf="form.get('dateSigned')?.hasError('required')">This is required</mat-error>
@@ -298,6 +362,7 @@ import { CrrpRoutes } from './crrp-routing.module';
 			li:not(:last-child) {
 				margin-bottom: 1em;
 			}
+
 			.subheading {
 				color: grey;
 			}
@@ -314,6 +379,7 @@ import { CrrpRoutes } from './crrp-routing.module';
 })
 export class CrrpOrgTermsAndCondsComponent implements OnInit {
 	isAuthenticated = this.authProcessService.waitUntilAuthentication$;
+	invitationId: string | null = null;
 
 	form: FormGroup = this.formBuilder.group({
 		readTerms: new FormControl(null, [Validators.requiredTrue]),
@@ -322,10 +388,11 @@ export class CrrpOrgTermsAndCondsComponent implements OnInit {
 		check3: new FormControl(null, [Validators.requiredTrue]),
 		check4: new FormControl(null, [Validators.requiredTrue]),
 		check5: new FormControl(null, [Validators.requiredTrue]),
-		dateSigned: new FormControl({ value: null, disabled: true }, [Validators.required]),
+		dateSigned: new FormControl({ value: null, disabled: true }),
 	});
 
 	constructor(
+		private route: ActivatedRoute,
 		private formBuilder: FormBuilder,
 		protected authUserService: AuthUserBceidService,
 		private authProcessService: AuthProcessService,
@@ -334,7 +401,13 @@ export class CrrpOrgTermsAndCondsComponent implements OnInit {
 	) {}
 
 	async ngOnInit(): Promise<void> {
-		await this.authProcessService.initializeCrrp(null, CrrpRoutes.path(CrrpRoutes.ORG_TERMS_AND_CONDS));
+		this.invitationId = this.route.snapshot.paramMap.get('id');
+		if (!this.invitationId) {
+			console.debug('CrrpOrgTermsAndCondsComponent - missing invitation id');
+			this.router.navigate([AppRoutes.ACCESS_DENIED]);
+		}
+
+		await this.authProcessService.initializeCrrp(null, location.pathname);
 	}
 
 	onCheckboxChange(): void {
@@ -349,8 +422,8 @@ export class CrrpOrgTermsAndCondsComponent implements OnInit {
 	onContinue(): void {
 		this.form.markAllAsTouched();
 		if (this.form.valid) {
-			const defaultOrgId = this.authUserService.bceidUserInfoProfile?.orgId;
-			this.router.navigate([CrrpRoutes.path(CrrpRoutes.HOME)], { queryParams: { orgId: defaultOrgId } });
+			const url = `${CrrpRoutes.path(CrrpRoutes.INVITATION_ACCEPT)}/${this.invitationId}`;
+			this.router.navigate([url]);
 		}
 	}
 }

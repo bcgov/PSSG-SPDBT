@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AppInviteVerifyRequest } from 'src/app/api/models';
 import { ApplicantService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
+import { AppRoutes } from 'src/app/app-routing.module';
 import { CrrpaRoutes } from './crrpa-routing.module';
 
 @Component({
@@ -36,6 +37,10 @@ export class InvitationCrrpaComponent implements OnInit {
 
 	ngOnInit(): void {
 		const id = this.route.snapshot.paramMap.get('id');
+		if (!id) {
+			console.debug('InvitationCrrpaComponent - id', id);
+			this.router.navigate([AppRoutes.ACCESS_DENIED]);
+		}
 
 		const invitationRequest: AppInviteVerifyRequest = { inviteEncryptedCode: id };
 		this.applicantService
