@@ -33,13 +33,13 @@ export class CrrpPaymentSuccessComponent implements OnInit {
 	ngOnInit(): void {
 		const paymentId = this.route.snapshot.paramMap.get('id');
 		if (!paymentId) {
-			console.debug('CrrpPaymentSuccessComponent - paymentId', paymentId);
+			console.debug('CrrpPaymentSuccessComponent - missing paymentId');
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 		}
 
 		const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
 		if (!orgId) {
-			console.debug('CrrpPaymentSuccessComponent - orgId', orgId);
+			console.debug('CrrpPaymentSuccessComponent - missing orgId');
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 			return;
 		}

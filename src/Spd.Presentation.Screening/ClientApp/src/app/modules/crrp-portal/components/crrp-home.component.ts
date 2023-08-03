@@ -286,7 +286,7 @@ export class CrrpHomeComponent implements OnInit {
 		const userId = this.authUserService.bceidUserInfoProfile?.userId;
 
 		if (!orgId || !userId) {
-			console.debug('CrrpHomeComponent - orgId', orgId, 'userId', userId);
+			console.debug('CrrpHomeComponent - missing orgId', orgId, 'userId', userId);
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 			return;
 		}
