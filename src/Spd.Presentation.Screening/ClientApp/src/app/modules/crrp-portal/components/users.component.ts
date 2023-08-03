@@ -215,7 +215,7 @@ export class UsersComponent implements OnInit {
 	ngOnInit(): void {
 		const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
 		if (!orgId) {
-			console.debug('UsersComponent - orgId', orgId);
+			console.debug('UsersComponent - missing orgId');
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 			return;
 		}

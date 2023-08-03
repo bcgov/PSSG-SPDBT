@@ -30,7 +30,7 @@ export class ApplicationStatusesComponent implements OnInit {
 	ngOnInit(): void {
 		const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
 		if (!orgId) {
-			console.debug('ApplicationStatusesComponent - orgId', orgId);
+			console.debug('ApplicationStatusesComponent - missing orgId');
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 			return;
 		}

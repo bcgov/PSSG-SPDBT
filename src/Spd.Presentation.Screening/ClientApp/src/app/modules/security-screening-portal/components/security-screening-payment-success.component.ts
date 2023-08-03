@@ -46,7 +46,7 @@ export class SecurityScreeningPaymentSuccessComponent implements OnInit {
 
 		const paymentId = this.route.snapshot.paramMap.get('id');
 		if (!paymentId) {
-			console.debug('SecurityScreeningPaymentSuccessComponent - paymentId', paymentId);
+			console.debug('SecurityScreeningPaymentSuccessComponent - missing paymentId');
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 		}
 

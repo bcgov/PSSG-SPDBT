@@ -7,6 +7,7 @@ import {
 	ApplicantApplicationResponse,
 	ApplicationPortalStatusCode,
 	CaseSubStatusCode,
+	PayerPreferenceTypeCode,
 	PaymentLinkCreateRequest,
 	PaymentLinkResponse,
 	PaymentMethodCode,
@@ -294,7 +295,10 @@ export class SecurityScreeningListComponent implements OnInit {
 				this.allApplications.forEach((app: ApplicantApplicationStatusResponse) => {
 					app.applicationPortalStatusClass = this.utilService.getApplicationPortalStatusClass(app.status);
 
-					if (app.status != ApplicationPortalStatusCode.AwaitingPayment) {
+					if (
+						app.status != ApplicationPortalStatusCode.AwaitingPayment ||
+						app.payeeType == PayerPreferenceTypeCode.Organization
+					) {
 						app.isPayManual = false;
 						app.isPayNow = false;
 					} else {

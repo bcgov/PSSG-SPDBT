@@ -25,7 +25,7 @@ export class ScreeningChecksComponent implements OnInit {
 	ngOnInit(): void {
 		const orgId = this.authUserService.idirUserWhoamiProfile?.orgId;
 		if (!orgId) {
-			console.debug('ScreeningChecksComponent - orgId', orgId);
+			console.debug('ScreeningChecksComponent - missing orgId');
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 			return;
 		}
