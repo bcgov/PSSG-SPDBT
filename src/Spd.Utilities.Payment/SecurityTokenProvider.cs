@@ -49,7 +49,7 @@ namespace Spd.Utilities.Payment
         }
     }
 
-    public record BasicAccessToken
+    internal record BasicAccessToken
     {
         public string access_token { get; set; }
         public string token_type { get; set; }

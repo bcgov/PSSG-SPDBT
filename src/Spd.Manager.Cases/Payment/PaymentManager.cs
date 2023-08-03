@@ -172,6 +172,8 @@ namespace Spd.Manager.Cases.Payment
                 throw new ApiException(HttpStatusCode.InternalServerError, result.Message);
             var resp= _mapper.Map<PaymentRefundResponse>(result);
             resp.PaymentId = command.PaymentId;
+
+            //todo: confirm with dynamics, do we need to change spd_payment status and other entity status?
             return resp;
         }
 
