@@ -14,7 +14,7 @@ import { CrrpRoutes } from './crrp-routing.module';
 			<section class="step-section my-4">
 				<div class="row m-4">
 					<div class="col-lg-8 mx-auto">
-						<h3>{{ authUserService.bceidUserInfoProfile?.orgName }}</h3>
+						<h2>{{ authUserService.bceidUserInfoProfile?.orgName }}</h2>
 
 						<h3 class="subheading fw-normal my-3">Terms and Conditions</h3>
 						<p>Read, download, and accept the Terms of Use to continue.</p>
