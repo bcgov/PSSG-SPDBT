@@ -86,7 +86,7 @@ namespace Spd.Presentation.Screening.Controllers
                     UserGuid = userIdentity.UserGuid,
                 };
             }
-            throw new ApiException(System.Net.HttpStatusCode.NotFound, "Cannot get idir info from token.");
+            throw new ApiException(System.Net.HttpStatusCode.Unauthorized, "Cannot get idir info from token.");
         }
     }
 }
