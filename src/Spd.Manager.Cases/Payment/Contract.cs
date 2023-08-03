@@ -113,7 +113,6 @@ namespace Spd.Manager.Cases.Payment
     public record PaymentRefundResponse()
     {
         public Guid PaymentId { get; set; }
-        public bool Success { get; set; }
         public string RefundId { get; set; } = null!;
         public bool Approved { get; set; } //true: approved, false: declined.
         public decimal TxnAmount { get; set; }
