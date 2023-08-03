@@ -224,6 +224,18 @@ export class AuthProcessService {
 		const authInfo = await this.authenticationService.tryLogin(this.identityProvider, OrgRegistrationRoutes.path());
 		console.debug('tryInitializeOrgReg', authInfo);
 
+		const isValidLogin = this.checkLoginIdentityIsValid(
+			authInfo.loggedIn,
+			this.identityProvider,
+			this.oauthService.getIdentityClaims()['preferred_username']
+		);
+
+		if (!isValidLogin) {
+			this.logout();
+			this.notify(false);
+			return Promise.resolve(null);
+		}
+
 		if (authInfo.loggedIn) {
 			this.notify(true);
 
@@ -292,5 +304,28 @@ export class AuthProcessService {
 			console.debug('[AuthenticationService.setDecodedToken] loggedInUserTokenData', this.loggedInUserTokenData);
 			this._waitUntilAuthentication$.next(true);
 		}
+	}
+
+	//----------------------------------------------------------
+	// * check that loginType matches oauthservice login type
+	// *
+	private checkLoginIdentityIsValid(
+		isLoggedIn: boolean,
+		loginType: IdentityProviderTypeCode,
+		preferredUsername: string | undefined
+	): boolean {
+		if (!isLoggedIn) return true;
+
+		let isValid = false;
+		if (loginType == IdentityProviderTypeCode.BusinessBceId) {
+			isValid = preferredUsername?.endsWith('bceidbusiness') ?? false;
+		} else if (loginType == IdentityProviderTypeCode.Idir) {
+			isValid = preferredUsername?.endsWith('idir') ?? false;
+		} else {
+			// IdentityProviderTypeCode.BcServicesCard
+			isValid = !preferredUsername;
+		}
+
+		return isValid;
 	}
 }
