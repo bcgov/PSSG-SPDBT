@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { IdentityProviderTypeCode, InvitationRequest } from 'src/app/api/models';
+import { InvitationRequest } from 'src/app/api/models';
 import { OrgUserService } from 'src/app/api/services';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { AppRoutes } from 'src/app/app-routing.module';
+import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
 import { CrrpRoutes } from './crrp-routing.module';
 
 @Component({
@@ -35,26 +36,28 @@ export class InvitationUserComponent implements OnInit {
 	constructor(
 		private route: ActivatedRoute,
 		private router: Router,
-		private authenticationService: AuthenticationService,
+		private authUserService: AuthUserBceidService,
 		private orgUserService: OrgUserService
 	) {}
 
 	async ngOnInit(): Promise<void> {
-		const nextUrl = await this.authenticationService.login(IdentityProviderTypeCode.BusinessBceId, location.pathname);
-
 		const id = this.route.snapshot.paramMap.get('id');
+		if (!id) {
+			console.debug('InvitationUserComponent - missing id');
+			this.router.navigate([AppRoutes.ACCESS_DENIED]);
+		}
 
-		if (nextUrl && id) {
+		if (id) {
 			const invitationRequest: InvitationRequest = { inviteEncryptedCode: id };
 			this.orgUserService
 				.apiUserInvitationPost({ body: invitationRequest })
 				.pipe()
 				.subscribe((resp: any) => {
-					console.debug('InvitationUserComponent, apiUserInvitationPost', resp);
 					if (resp?.isError) {
 						this.message = resp.message;
 					} else {
-						this.router.navigate([CrrpRoutes.path(CrrpRoutes.HOME)]);
+						const defaultOrgId = this.authUserService.bceidUserInfoProfile?.orgId;
+						this.router.navigate([CrrpRoutes.path(CrrpRoutes.HOME)], { queryParams: { orgId: defaultOrgId } });
 					}
 				});
 		}

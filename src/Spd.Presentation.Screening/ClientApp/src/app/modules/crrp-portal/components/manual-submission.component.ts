@@ -22,7 +22,7 @@ export class ManualSubmissionComponent implements OnInit {
 	ngOnInit(): void {
 		const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
 		if (!orgId) {
-			console.debug('ManualSubmissionComponent - orgId', orgId);
+			console.debug('ManualSubmissionComponent - missing orgId');
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 			return;
 		}

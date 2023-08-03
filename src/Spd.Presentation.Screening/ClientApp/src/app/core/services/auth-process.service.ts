@@ -39,17 +39,18 @@ export class AuthProcessService {
 	//----------------------------------------------------------
 	// * CRRP Portal
 	// *
-	async initializeCrrp(defaultOrgId: string | null = null): Promise<string | null> {
+	async initializeCrrp(defaultOrgId: string | null = null, defaultRoute: string | null = null): Promise<string | null> {
 		this.identityProvider = IdentityProviderTypeCode.BusinessBceId;
 
-		const nextUrl = await this.authenticationService.login(this.identityProvider, CrrpRoutes.path(CrrpRoutes.HOME));
+		const nextRoute = defaultRoute ? defaultRoute : CrrpRoutes.path(CrrpRoutes.HOME);
+		const nextUrl = await this.authenticationService.login(this.identityProvider, nextRoute);
 		console.debug('initializeCrrp nextUrl', nextUrl);
 
 		if (nextUrl) {
 			const success = await this.authUserBceidService.whoAmIAsync(defaultOrgId);
 			if (!success) {
 				this.notify(success);
-				console.debug('initializeCrrp - not success', this.identityProvider, nextUrl, success);
+				console.debug('initializeCrrp - whoami not successful', this.identityProvider, nextUrl, success);
 				this.router.navigate([AppRoutes.ACCESS_DENIED]);
 				return Promise.resolve(null);
 			}
@@ -150,7 +151,7 @@ export class AuthProcessService {
 
 			if (!success) {
 				this.notify(true);
-				console.debug('initializePsso - not success', this.identityProvider, nextUrl, success);
+				console.debug('initializePsso - whoami not successful', this.identityProvider, nextUrl, success);
 				this.router.navigate([AppRoutes.ACCESS_DENIED]);
 				return Promise.resolve(null);
 			}
