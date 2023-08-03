@@ -243,7 +243,8 @@ internal partial class ApplicationRepository : IApplicationRepository
         string submitToDate = null;
         if (appFilterBy.ToDateTime != null)
         {
-            var date = new Microsoft.OData.Edm.Date(((DateTimeOffset)appFilterBy.ToDateTime).Year, ((DateTimeOffset)appFilterBy.ToDateTime).Month, ((DateTimeOffset)appFilterBy.ToDateTime).AddDays(1).Day);
+            DateTimeOffset adjustToDateTime = appFilterBy.ToDateTime.Value.AddDays(1);
+            var date = new Microsoft.OData.Edm.Date(adjustToDateTime.Year, adjustToDateTime.Month, adjustToDateTime.Day);
             submitToDate = $"createdon lt {date}";
         }
 

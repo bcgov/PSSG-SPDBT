@@ -1,0 +1,58 @@
+﻿using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Options;
+using Spd.Utilities.Cache;
+using System;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Threading.Tasks;
+
+namespace Spd.Utilities.Payment
+{
+    internal interface ISecurityTokenProvider
+    {
+        Task<string> AcquireToken();
+    }
+
+    internal class OauthSecurityTokenProvider : ISecurityTokenProvider
+    {
+        private const string cacheKey = "paybc_oauth_token";
+
+        private readonly IHttpClientFactory httpClientFactory;
+        private readonly IDistributedCache cache;
+        private readonly PayBCSettings options;
+
+        public OauthSecurityTokenProvider(
+            IHttpClientFactory httpClientFactory,
+            IDistributedCache cache,
+            IOptions<PayBCSettings> options)
+        {
+            this.httpClientFactory = httpClientFactory;
+            this.cache = cache;
+            this.options = options.Value;
+        }
+
+        public async Task<string> AcquireToken() => await cache.GetOrSet(cacheKey, AcquireTokenInternal, TimeSpan.FromMinutes(5)) ?? string.Empty;
+
+
+        private async Task<string> AcquireTokenInternal()
+        {
+            using var httpClient = httpClientFactory.CreateClient("oauth");
+            string secret = $"{options.AuthenticationSettings.ClientId}:{options.AuthenticationSettings.ClientSecret}";
+            string basicToken = System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(secret));
+            httpClient.DefaultRequestHeaders.Add("Basic-Token", "Basic " + basicToken);
+            var response = await httpClient.GetAsync(options.AuthenticationSettings.OAuth2TokenEndpointUrl);
+
+            if (!response.IsSuccessStatusCode) throw new InvalidOperationException(response.ToString());
+
+            var resp = await response.Content.ReadFromJsonAsync<BasicAccessToken>();
+            return resp.access_token;
+        }
+    }
+
+    internal record BasicAccessToken
+    {
+        public string access_token { get; set; }
+        public string token_type { get; set; }
+        public DateTimeOffset expires_at { get; set; }
+    }
+}
