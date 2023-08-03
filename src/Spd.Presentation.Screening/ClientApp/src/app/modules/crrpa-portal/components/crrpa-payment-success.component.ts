@@ -38,7 +38,7 @@ export class CrrpaPaymentSuccessComponent implements OnInit {
 
 		const paymentId = this.route.snapshot.paramMap.get('id');
 		if (!paymentId) {
-			console.debug('CrrpaPaymentSuccessComponent - paymentId', paymentId);
+			console.debug('CrrpaPaymentSuccessComponent - missing paymentId');
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 		}
 

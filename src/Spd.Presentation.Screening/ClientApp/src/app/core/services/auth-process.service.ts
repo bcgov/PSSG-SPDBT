@@ -50,7 +50,7 @@ export class AuthProcessService {
 			const success = await this.authUserBceidService.whoAmIAsync(defaultOrgId);
 			if (!success) {
 				this.notify(success);
-				console.debug('initializeCrrp - not success', this.identityProvider, nextUrl, success);
+				console.debug('initializeCrrp - whoami not successful', this.identityProvider, nextUrl, success);
 				this.router.navigate([AppRoutes.ACCESS_DENIED]);
 				return Promise.resolve(null);
 			}
@@ -151,7 +151,7 @@ export class AuthProcessService {
 
 			if (!success) {
 				this.notify(true);
-				console.debug('initializePsso - not success', this.identityProvider, nextUrl, success);
+				console.debug('initializePsso - whoami not successful', this.identityProvider, nextUrl, success);
 				this.router.navigate([AppRoutes.ACCESS_DENIED]);
 				return Promise.resolve(null);
 			}

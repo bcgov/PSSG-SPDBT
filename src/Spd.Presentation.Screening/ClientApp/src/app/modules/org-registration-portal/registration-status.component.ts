@@ -117,7 +117,7 @@ export class RegistrationStatusComponent implements OnInit {
 	ngOnInit(): void {
 		const registrationNumber = this.route.snapshot.paramMap.get('id');
 		if (!registrationNumber) {
-			console.debug('RegistrationStatusComponent - id', registrationNumber);
+			console.debug('RegistrationStatusComponent - missing id');
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 		}
 

@@ -38,7 +38,7 @@ export class InvitationCrrpaComponent implements OnInit {
 	ngOnInit(): void {
 		const id = this.route.snapshot.paramMap.get('id');
 		if (!id) {
-			console.debug('InvitationCrrpaComponent - id', id);
+			console.debug('InvitationCrrpaComponent - missing id');
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 		}
 

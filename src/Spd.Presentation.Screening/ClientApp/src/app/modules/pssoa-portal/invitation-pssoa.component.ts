@@ -38,7 +38,7 @@ export class InvitationPssoaComponent implements OnInit {
 	ngOnInit(): void {
 		const id = this.route.snapshot.paramMap.get('id');
 		if (!id) {
-			console.debug('InvitationPssoaComponent - id', id);
+			console.debug('InvitationPssoaComponent - missing id');
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 		}
 

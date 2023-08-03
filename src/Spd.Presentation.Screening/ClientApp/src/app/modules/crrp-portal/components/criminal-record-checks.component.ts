@@ -27,7 +27,7 @@ export class CriminalRecordChecksComponent implements OnInit {
 	ngOnInit(): void {
 		const orgId = this.authUserService.bceidUserInfoProfile?.orgId;
 		if (!orgId) {
-			console.debug('CriminalRecordChecksComponent - orgId', orgId);
+			console.debug('CriminalRecordChecksComponent - missing orgId');
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 			return;
 		}
