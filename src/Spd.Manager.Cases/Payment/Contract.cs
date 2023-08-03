@@ -8,6 +8,7 @@ namespace Spd.Manager.Cases.Payment
     {
         public Task<PaymentLinkResponse> Handle(PaymentLinkCreateCommand command, CancellationToken ct);
         public Task<PrePaymentLinkResponse> Handle(PrePaymentLinkCreateCommand command, CancellationToken ct);
+        public Task<PaymentRefundResponse> Handle(PaymentRefundCommand command, CancellationToken ct);
         public Task<Guid> Handle(PaymenCreateCommand command, CancellationToken ct);
         public Task<PaymentResponse> Handle(PaymentQuery query, CancellationToken ct);
         public Task<int> Handle(PaymentFailedAttemptCountQuery query, CancellationToken ct);
@@ -15,11 +16,13 @@ namespace Spd.Manager.Cases.Payment
         public Task<FileResponse> Handle(ManualPaymentFormQuery query, CancellationToken ct);
     }
 
+    #region pre payment link
     //pre payment link - for dynamics internal use
     public record PrePaymentLinkCreateCommand(Guid ApplicationId, string ScreeningAppPaymentUrl) : IRequest<PrePaymentLinkResponse>;
     public record PrePaymentLinkResponse(string PrePaymentLinkUrl);
+    #endregion
 
-    //payment link
+    #region payment link
     public record PaymentLinkCreateCommand(PaymentLinkCreateRequest PaymentLinkCreateRequest, string RedirectUrl, int MaxFailedTimes = 3) : IRequest<PaymentLinkResponse>;
     public record PaymentLinkCreateRequest
     {
@@ -60,8 +63,9 @@ namespace Spd.Manager.Cases.Payment
         NoPayment,
         PayBC_SecurePaymentLink,
     }
+    #endregion
 
-    //payment result
+    #region payment result
     public record PaymenCreateCommand(string QueryStr, PaybcPaymentResult PaybcPaymentResult) : IRequest<Guid>;
     public record PaymentQuery(Guid PaymentId) : IRequest<PaymentResponse>;
     public record PaymentFailedAttemptCountQuery(Guid ApplicationId) : IRequest<int>;
@@ -93,10 +97,29 @@ namespace Spd.Manager.Cases.Payment
         public DateTimeOffset TransDateTime { get; set; }
         public decimal TransAmount { get; set; }
     }
+    #endregion
 
-    //payment receipt
+    #region payment-receipt
     public record PaymentReceiptQuery(Guid ApplicationId) : IRequest<FileResponse>;
+    #endregion
 
-    //payment form
+    #region manual-payment-form
     public record ManualPaymentFormQuery(Guid ApplicationId) : IRequest<FileResponse>;
+    #endregion
+
+    #region payment-refund
+    public record PaymentRefundCommand(Guid PaymentId) : IRequest<PaymentRefundResponse>;
+
+    public record PaymentRefundResponse()
+    {
+        public Guid PaymentId { get; set; }
+        public string RefundId { get; set; } = null!;
+        public bool Approved { get; set; } //true: approved, false: declined.
+        public decimal TxnAmount { get; set; }
+        public string OrderNumber { get; set; } = null!;
+        public string TxnNumber { get; set; } = null!;
+        public string Message { get; set; } = null!;
+        public DateTimeOffset RefundTxnDateTime { get; set; }
+    }
+    #endregion
 }
