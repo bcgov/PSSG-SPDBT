@@ -37,20 +37,20 @@ namespace Spd.Manager.Membership.UserProfile
         {
             Guid orgGuid = request.PortalUserIdentity.BizGuid;
             Guid? userGuid = request.PortalUserIdentity.UserGuid;
-            var orgResult = (OrgsQryResult)await _orgRepository.QueryOrgAsync(new OrgByOrgGuidQry(orgGuid), ct);
             List<UserInfo> userInfos = new();
-            if (orgResult == null || !orgResult.OrgResults.Any()) //no active org
+
+            //get all org reqistation which is not approved yet.
+            var orgRegisters = await _orgRegistrationRepository.Query(new OrgRegistrationQuery(null, orgGuid, IncludeInactive: true), ct);
+            foreach (var orgRegister in orgRegisters.OrgRegistrationResults)
             {
-                var orgRegisters = await _orgRegistrationRepository.Query(new OrgRegistrationQuery(null, orgGuid, IncludeInactive: true), ct);
-                var latestReg = orgRegisters.OrgRegistrationResults.OrderByDescending(reg => reg.CreatedOn).FirstOrDefault();
                 UserInfo ui = new UserInfo();
-                if (latestReg == null)
+                if (orgRegister == null)
                 {
                     ui.UserInfoMsgType = UserInfoMsgTypeCode.ACCOUNT_NOT_MATCH_RECORD;
                 }
                 else
                 {
-                    ui.OrgRegistrationStatusCode = latestReg?.OrgRegistrationStatusStr switch
+                    ui.OrgRegistrationStatusCode = orgRegister?.OrgRegistrationStatusStr switch
                     {
                         "New" => OrgRegistrationStatusCode.ApplicationSubmitted,
                         "InProgress" => OrgRegistrationStatusCode.InProgress,
@@ -58,27 +58,24 @@ namespace Spd.Manager.Membership.UserProfile
                         "Approved" => OrgRegistrationStatusCode.CompleteSuccess,
                         _ => OrgRegistrationStatusCode.CompleteFailed,
                     };
-                    ui.OrgRegistrationId = latestReg?.OrgRegistrationId;
-                    ui.OrgName = latestReg.OrganizationName;
+                    ui.OrgRegistrationId = orgRegister?.OrgRegistrationId;
+                    ui.OrgName = orgRegister?.OrganizationName;
                     if (ui.OrgRegistrationStatusCode == OrgRegistrationStatusCode.CompleteFailed)
                     {
                         ui.UserInfoMsgType = UserInfoMsgTypeCode.REGISTRATION_NOT_APPROVED;
                     }
                 }
-                userInfos.Add(ui);
-                OrgUserProfileResponse response = new()
+                if (ui.OrgRegistrationStatusCode != OrgRegistrationStatusCode.CompleteSuccess) //if org reg completes successfully, then there should be a valid org.
                 {
-                    IdentityProviderType = IdentityProviderTypeCode.BusinessBceId,
-                    UserDisplayName = request.PortalUserIdentity.DisplayName,
-                    UserGuid = request.PortalUserIdentity.UserGuid,
-                    UserInfos = userInfos
-                };
-                return response;
+                    userInfos.Add(ui);
+                }
             }
 
+            //get all orgs
+            var orgResult = (OrgsQryResult)await _orgRepository.QueryOrgAsync(new OrgByOrgGuidQry(orgGuid), ct);
             foreach (OrgResult org in orgResult.OrgResults)
             {
-                UserInfo ui;
+                UserInfo ui=new UserInfo();
                 var orgUsers = (OrgUsersResult)await _orgUserRepository.QueryOrgUserAsync(new OrgUsersSearch(org.Id), ct);
                 var u = orgUsers.UserResults.FirstOrDefault(u => u.UserGuid == userGuid && u.IsActive);
                 if (u != null)
