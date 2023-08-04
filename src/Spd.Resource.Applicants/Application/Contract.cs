@@ -192,6 +192,14 @@ public record ClearanceListQry
 public record ClearanceFilterBy(Guid OrgId)
 {
     public string? NameOrEmailContains { get; set; }
+    public ClearanceAccessStatusEnum ClearanceAccessStatus { get; set; } = ClearanceAccessStatusEnum.Approved;
+}
+
+public enum ClearanceAccessStatusEnum
+{
+    Draft,
+    Approved, //active status
+    Revoked
 }
 public record ClearanceSortBy(bool? ExpiresOn = true, bool? NameDesc = null, bool? CompanyNameDesc = null);
 public record ClearanceListResp
