@@ -65,7 +65,7 @@ export class AuthUserBceidService {
 
 		if (resp) {
 			const uniqueUserInfoList = [
-				...new Map(resp.userInfos?.filter((info) => info.orgId).map((item) => [item['orgId'], item])).values(),
+				...new Map(resp.userInfos?.filter((info) => info.orgName).map((item) => [item['orgName'], item])).values(), // remove if no Org Name
 			];
 
 			if (uniqueUserInfoList.length == 0) {
@@ -119,7 +119,8 @@ export class AuthUserBceidService {
 		this.isAllowedGenericUpload = bceidUserInfoProfile.orgSettings?.genericUploadEnabled ?? false;
 
 		const userInfoMsgType = this.bceidUserInfoProfile?.userInfoMsgType;
-		if (userInfoMsgType) {
+		// Access is denied if there is a userInfoMsgType or there is no orgId
+		if (userInfoMsgType || !this.bceidUserInfoProfile?.orgId) {
 			console.debug('setUserInfoProfile - userInfoMsgType', userInfoMsgType);
 			this.router.navigate([AppRoutes.ACCESS_DENIED], { state: { userInfoMsgType: userInfoMsgType } });
 			return Promise.resolve(false);
