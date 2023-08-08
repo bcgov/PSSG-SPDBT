@@ -63,6 +63,7 @@ namespace Spd.Resource.Organizations.Registration
         public Guid OrgRegistrationId { get; set; }
         public string OrgRegistrationStatusStr { get; set; } = null!;
         public DateTimeOffset CreatedOn { get; set; }
+        public string OrgRegistrationNumber { get; set; }
     };
 
     public enum RegistrationTypeCode
