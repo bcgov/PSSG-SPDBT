@@ -263,10 +263,6 @@ export class SecurityScreeningListComponent implements OnInit {
 		});
 	}
 
-	onDownloadClearanceLetter(clearance: any) {
-		//TODO download clearance letter
-	}
-
 	private loadList(): void {
 		this.opportunityToRespondAlert = null;
 		this.requestForAdditionalInfoAlert = null;
