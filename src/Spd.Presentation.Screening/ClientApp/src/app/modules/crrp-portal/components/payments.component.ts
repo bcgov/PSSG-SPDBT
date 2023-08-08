@@ -115,7 +115,7 @@ export interface PaymentResponse extends ApplicationPaymentResponse {
 							<mat-header-cell *matHeaderCellDef>Paid On</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Paid On:</span>
-								{{ application.paidOn | date : constants.date.dateFormat : 'UTC' }}
+								{{ application.paidOn | date : constants.date.dateFormat : 'UTC' | default }}
 							</mat-cell>
 						</ng-container>
 
