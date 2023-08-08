@@ -8,7 +8,7 @@ using System.Net;
 namespace Spd.Resource.Applicants.Application;
 internal partial class ApplicationRepository : IApplicationRepository
 {
-    public async Task<ClearanceListResp> QueryAsync(ClearanceListQry clearanceListQry, CancellationToken ct)
+    public async Task<ClearanceAccessListResp> QueryAsync(ClearanceAccessListQry clearanceListQry, CancellationToken ct)
     {
         if (clearanceListQry == null || clearanceListQry.FilterBy?.OrgId == null)
             throw new ArgumentNullException("clearanceListQry.FilterBy.OrgId", "Must query clearances by organization id.");
@@ -30,8 +30,8 @@ internal partial class ApplicationRepository : IApplicationRepository
 
         var result = (QueryOperationResponse<spd_clearanceaccess>)await clearanceaccesses.ExecuteAsync(ct);
 
-        var response = new ClearanceListResp();
-        response.Clearances = _mapper.Map<IEnumerable<ClearanceResp>>(result);
+        var response = new ClearanceAccessListResp();
+        response.Clearances = _mapper.Map<IEnumerable<ClearanceAccessResp>>(result);
         if (clearanceListQry.Paging != null)
         {
             response.Pagination = new PaginationResp();
@@ -87,7 +87,7 @@ internal partial class ApplicationRepository : IApplicationRepository
         await _context.SaveChangesAsync(cancellationToken);
     }
 
-    private string GetClearanceFilterString(ClearanceFilterBy clearanceFilterBy)
+    private string GetClearanceFilterString(ClearanceAccessFilterBy clearanceFilterBy)
     {
         ClearanceAccessStatusOptionSet status = Enum.Parse<ClearanceAccessStatusOptionSet>(clearanceFilterBy.ClearanceAccessStatus.ToString());
         string dateStr = DateTime.UtcNow.AddDays(90).Date.ToString("yyyy-MM-dd");
@@ -110,7 +110,7 @@ internal partial class ApplicationRepository : IApplicationRepository
         return result;
     }
 
-    private string GetClearanceSortBy(ClearanceSortBy? clearanceSortBy)
+    private string GetClearanceSortBy(ClearanceAccessSortBy? clearanceSortBy)
     {
         if (clearanceSortBy == null
             || (clearanceSortBy.ExpiresOn != null && (bool)clearanceSortBy.ExpiresOn))

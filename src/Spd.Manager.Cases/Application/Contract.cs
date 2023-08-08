@@ -21,7 +21,7 @@ namespace Spd.Manager.Cases.Application
         public Task<Unit> Handle(IdentityCommand request, CancellationToken ct);
         public Task<BulkHistoryListResponse> Handle(GetBulkUploadHistoryQuery request, CancellationToken ct);
         public Task<BulkUploadCreateResponse> Handle(BulkUploadCreateCommand cmd, CancellationToken ct);
-        public Task<ClearanceListResponse> Handle(ClearanceListQuery request, CancellationToken ct);
+        public Task<ClearanceAccessListResponse> Handle(ClearanceAccessListQuery request, CancellationToken ct);
         public Task<Unit> Handle(ClearanceAccessDeleteCommand request, CancellationToken ct);
         public Task<FileResponse> Handle(ClearanceLetterQuery query, CancellationToken ct);
         public Task<ApplicantApplicationListResponse> Handle(ApplicantApplicationListQuery request, CancellationToken ct);
@@ -90,6 +90,7 @@ namespace Spd.Manager.Cases.Application
     {
         public ServiceTypeCode ServiceType { get; set; } = ServiceTypeCode.CRRP_EMPLOYEE;
         public ScreeningTypeCode ScreeningType { get; set; } = ScreeningTypeCode.Staff;
+        public Guid? OriginalClearanceAccessId { get; set; } = null;
     }
     public record ApplicationInvitesCreateResponse(Guid OrgId)
     {
@@ -409,23 +410,23 @@ namespace Spd.Manager.Cases.Application
     #endregion
 
     #region clearances
-    public record ClearanceListQuery : IRequest<ClearanceListResponse>
+    public record ClearanceAccessListQuery : IRequest<ClearanceAccessListResponse>
     {
-        public ClearanceListFilterBy? FilterBy { get; set; } //null means no filter
-        public ClearanceListSortBy? SortBy { get; set; } //null means no sorting
+        public ClearanceAccessListFilterBy? FilterBy { get; set; } //null means no filter
+        public ClearanceAccessListSortBy? SortBy { get; set; } //null means no sorting
         public PaginationRequest Paging { get; set; } = null!;
     }
-    public record ClearanceListFilterBy(Guid OrgId)
+    public record ClearanceAccessListFilterBy(Guid OrgId)
     {
         public string? NameOrEmailContains { get; set; }
     }
-    public record ClearanceListSortBy(bool? ExpiresOn = true, bool? NameDesc = null, bool? CompanyNameDesc = null);
-    public record ClearanceListResponse
+    public record ClearanceAccessListSortBy(bool? ExpiresOn = true, bool? NameDesc = null, bool? CompanyNameDesc = null);
+    public record ClearanceAccessListResponse
     {
-        public IEnumerable<ClearanceResponse> Clearances { get; set; } = Array.Empty<ClearanceResponse>();
+        public IEnumerable<ClearanceAccessResponse> Clearances { get; set; } = Array.Empty<ClearanceAccessResponse>();
         public PaginationResponse Pagination { get; set; } = null!;
     }
-    public record ClearanceResponse
+    public record ClearanceAccessResponse
     {
         public Guid Id { get; set; }
         public string FirstName { get; set; } = null!;

@@ -92,7 +92,7 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.PaidOn, opt => opt.MapFrom(s => s.spd_paidon))
             .ForMember(d => d.NumberOfAttempts, opt => opt.MapFrom(s => s.spd_numberofattempts));
 
-            _ = CreateMap<spd_clearanceaccess, ClearanceResp>()
+            _ = CreateMap<spd_clearanceaccess, ClearanceAccessResp>()
             .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_clearanceaccessid))
             .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.spd_applicantfirstname))
             .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.spd_applicantlastname))

@@ -599,16 +599,16 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/orgs/{orgId}/clearances/expired")]
         [HttpGet]
-        public async Task<ClearanceListResponse> GetExpiredClearancesList([FromRoute] Guid orgId, [FromQuery] string? filters, [FromQuery] string? sorts, [FromQuery] int? page, [FromQuery] int? pageSize)
+        public async Task<ClearanceAccessListResponse> GetExpiredClearanceAccessList([FromRoute] Guid orgId, [FromQuery] string? filters, [FromQuery] string? sorts, [FromQuery] int? page, [FromQuery] int? pageSize)
         {
             page = (page == null || page < 0) ? 0 : page;
             pageSize = (pageSize == null || pageSize == 0 || pageSize > 100) ? 10 : pageSize;
             if (string.IsNullOrWhiteSpace(sorts)) sorts = "expireOn";
             PaginationRequest pagination = new PaginationRequest((int)page, (int)pageSize);
-            ClearanceListFilterBy filterBy = GetClearanceListFilterBy(filters, orgId);
-            ClearanceListSortBy sortBy = GetClearanceSortBy(sorts);
+            ClearanceAccessListFilterBy filterBy = GetClearanceListFilterBy(filters, orgId);
+            ClearanceAccessListSortBy sortBy = GetClearanceSortBy(sorts);
             return await _mediator.Send(
-                new ClearanceListQuery
+                new ClearanceAccessListQuery
                 {
                     FilterBy = filterBy,
                     SortBy = sortBy,
@@ -645,9 +645,9 @@ namespace Spd.Presentation.Screening.Controllers
             return File(content, contentType, response.FileName);
         }
 
-        private ClearanceListFilterBy GetClearanceListFilterBy(string? filters, Guid orgId)
+        private ClearanceAccessListFilterBy GetClearanceListFilterBy(string? filters, Guid orgId)
         {
-            ClearanceListFilterBy clearanceListFilterBy = new ClearanceListFilterBy(orgId);
+            ClearanceAccessListFilterBy clearanceListFilterBy = new ClearanceAccessListFilterBy(orgId);
             if (string.IsNullOrWhiteSpace(filters)) return clearanceListFilterBy;
 
             try
@@ -675,19 +675,19 @@ namespace Spd.Presentation.Screening.Controllers
             return clearanceListFilterBy;
         }
 
-        private ClearanceListSortBy GetClearanceSortBy(string? sortby)
+        private ClearanceAccessListSortBy GetClearanceSortBy(string? sortby)
         {
             //sorts string should be like: sorts = -submittedOn or sorts = name
             return sortby switch
             {
-                null => new ClearanceListSortBy(),
-                "expireson" => new ClearanceListSortBy(false),
-                "-expireson" => new ClearanceListSortBy(true),
-                "name" => new ClearanceListSortBy(null, false),
-                "-name" => new ClearanceListSortBy(null, true),
-                "companyname" => new ClearanceListSortBy(null, null, false),
-                "-companyname" => new ClearanceListSortBy(null, null, true),
-                _ => new ClearanceListSortBy()
+                null => new ClearanceAccessListSortBy(),
+                "expireson" => new ClearanceAccessListSortBy(false),
+                "-expireson" => new ClearanceAccessListSortBy(true),
+                "name" => new ClearanceAccessListSortBy(null, false),
+                "-name" => new ClearanceAccessListSortBy(null, true),
+                "companyname" => new ClearanceAccessListSortBy(null, null, false),
+                "-companyname" => new ClearanceAccessListSortBy(null, null, true),
+                _ => new ClearanceAccessListSortBy()
             };
         }
         #endregion

@@ -31,7 +31,7 @@ namespace Spd.Manager.Cases.Application
         IRequestHandler<IdentityCommand, Unit>,
         IRequestHandler<GetBulkUploadHistoryQuery, BulkHistoryListResponse>,
         IRequestHandler<BulkUploadCreateCommand, BulkUploadCreateResponse>,
-        IRequestHandler<ClearanceListQuery, ClearanceListResponse>,
+        IRequestHandler<ClearanceAccessListQuery, ClearanceAccessListResponse>,
         IRequestHandler<ClearanceAccessDeleteCommand, Unit>,
         IRequestHandler<ClearanceLetterQuery, FileResponse>,
         IRequestHandler<ShareableClearanceQuery, ShareableClearanceResponse>,
@@ -298,14 +298,14 @@ namespace Spd.Manager.Cases.Application
         #endregion
 
         #region clearances
-        public async Task<ClearanceListResponse> Handle(ClearanceListQuery request, CancellationToken ct)
+        public async Task<ClearanceAccessListResponse> Handle(ClearanceAccessListQuery request, CancellationToken ct)
         {
-            ClearanceFilterBy filterBy = _mapper.Map<ClearanceFilterBy>(request.FilterBy);
-            ClearanceSortBy sortBy = _mapper.Map<ClearanceSortBy>(request.SortBy);
+            ClearanceAccessFilterBy filterBy = _mapper.Map<ClearanceAccessFilterBy>(request.FilterBy);
+            ClearanceAccessSortBy sortBy = _mapper.Map<ClearanceAccessSortBy>(request.SortBy);
             Paging paging = _mapper.Map<Paging>(request.Paging);
 
             var response = await _applicationRepository.QueryAsync(
-                new ClearanceListQry
+                new ClearanceAccessListQry
                 {
                     FilterBy = filterBy,
                     SortBy = sortBy,
@@ -313,7 +313,7 @@ namespace Spd.Manager.Cases.Application
                 },
                 ct);
 
-            return _mapper.Map<ClearanceListResponse>(response);
+            return _mapper.Map<ClearanceAccessListResponse>(response);
 
         }
 

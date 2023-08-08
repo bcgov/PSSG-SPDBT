@@ -60,10 +60,10 @@ namespace Spd.Manager.Cases.Application
             CreateMap<AppBulkDuplicateCheckResult, DuplicateCheckResult>();
             CreateMap<ApplicationCreateRequestFromBulk, AppBulkDuplicateCheck>()
                 .IncludeBase<ApplicationCreateRequest, AppDuplicateCheck>();
-            CreateMap<ClearanceResp, ClearanceResponse>();
-            CreateMap<ClearanceListResp, ClearanceListResponse>();
-            CreateMap<ClearanceListFilterBy, ClearanceFilterBy>();
-            CreateMap<ClearanceListSortBy, ClearanceSortBy>();
+            CreateMap<ClearanceAccessResp, ClearanceAccessResponse>();
+            CreateMap<ClearanceAccessListResp, ClearanceAccessListResponse>();
+            CreateMap<ClearanceAccessListFilterBy, ClearanceAccessFilterBy>();
+            CreateMap<ClearanceAccessListSortBy, ClearanceAccessSortBy>();
             CreateMap<ClearanceAccessDeleteCommand, ClearanceAccessDeleteCmd>();
             CreateMap<ShareableClearance, ShareableClearanceItem>();
             CreateMap<AppInviteVerifyResp, AppOrgResponse>();
