@@ -80,7 +80,7 @@ internal partial class ApplicationRepository : IApplicationRepository
             throw new ApiException(HttpStatusCode.BadRequest, "Invalid OrgId or ClearanceAccessId");
 
         clearance.statecode = DynamicsConstants.StateCode_Inactive;
-        clearance.statuscode = DynamicsConstants.StatusCode_Inactive;
+        clearance.statuscode = (int)ClearanceAccessStatusOptionSet.Revoked;
 
         _context.UpdateObject(clearance);
 
@@ -89,9 +89,10 @@ internal partial class ApplicationRepository : IApplicationRepository
 
     private string GetClearanceFilterString(ClearanceFilterBy clearanceFilterBy)
     {
+        ClearanceAccessStatusOptionSet status = Enum.Parse<ClearanceAccessStatusOptionSet>(clearanceFilterBy.ClearanceAccessStatus.ToString());
         string dateStr = DateTime.UtcNow.AddDays(90).Date.ToString("yyyy-MM-dd");
         string orgFilter = $"_spd_organizationid_value eq {clearanceFilterBy.OrgId}";
-        string stateFilter = $"statecode eq {DynamicsConstants.StateCode_Active}";
+        string statusFilter = $"statuscode eq {(int)status}";
         string expireDateFilter = $"spd_expirydate le {dateStr}";
 
         string? contains = null;
@@ -100,7 +101,7 @@ internal partial class ApplicationRepository : IApplicationRepository
             contains = $"(contains(spd_applicantfullname,'{clearanceFilterBy.NameOrEmailContains}') or contains(spd_emailaddress1,'{clearanceFilterBy.NameOrEmailContains}'))";
         }
         string result = $"{orgFilter}";
-        result += $" and {stateFilter}";
+        result += $" and {statusFilter}";
         result += $" and {expireDateFilter}";
         if (contains != null)
         {

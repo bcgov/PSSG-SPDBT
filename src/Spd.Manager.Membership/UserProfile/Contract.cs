@@ -39,6 +39,7 @@ namespace Spd.Manager.Membership.UserProfile
         public Guid? OrgId { get; set; }
         public Guid? OrgRegistrationId { get; set; } = null;
         public OrgRegistrationStatusCode? OrgRegistrationStatusCode { get; set; } = null;
+        public string? OrgRegistrationNumber { get; set; } = null;
         public string? OrgName { get; set; }
         public Guid? UserGuid { get; set; }
         public UserInfoMsgTypeCode? UserInfoMsgType { get; set; }

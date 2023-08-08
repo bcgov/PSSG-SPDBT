@@ -51,7 +51,6 @@ export class AuthProcessService {
 			if (!success) {
 				this.notify(success);
 				console.debug('initializeCrrp - whoami not successful', this.identityProvider, nextUrl, success);
-				this.router.navigate([AppRoutes.ACCESS_DENIED]);
 				return Promise.resolve(null);
 			}
 

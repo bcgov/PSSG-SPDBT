@@ -12,6 +12,7 @@ export interface UserInfo {
   orgId?: null | string;
   orgName?: null | string;
   orgRegistrationId?: null | string;
+  orgRegistrationNumber?: null | string;
   orgRegistrationStatusCode?: OrgRegistrationStatusCode;
   orgSettings?: OrgSettings;
   userGuid?: null | string;
