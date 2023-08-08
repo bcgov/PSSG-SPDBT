@@ -43,6 +43,7 @@ namespace Spd.Resource.Organizations.Registration
             _ = CreateMap<spd_orgregistration, OrgRegistrationResult>()
             .IncludeBase<spd_orgregistration, OrgRegistration>()
             .ForMember(d => d.CreatedOn, opt => opt.MapFrom(s => s.createdon))
+            .ForMember(d => d.OrgRegistrationNumber, opt => opt.MapFrom(s => s.spd_registrationnumber))
             .ForMember(d => d.OrgRegistrationId, opt => opt.MapFrom(s => s.spd_orgregistrationid))
             .ForMember(d => d.OrgRegistrationStatusStr, opt => opt.MapFrom(s => ((OrgRegistrationStatus)s.statuscode).ToString()));
         }
