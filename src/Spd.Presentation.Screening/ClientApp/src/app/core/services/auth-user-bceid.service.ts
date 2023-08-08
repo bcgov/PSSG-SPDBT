@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { lastValueFrom } from 'rxjs';
 import { OrgService, UserProfileService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
+import { OrgRegistrationRoutes } from 'src/app/modules/org-registration-portal/org-registration-routing.module';
 import {
 	OrgSelectionDialogData,
 	OrgSelectionModalComponent,
@@ -118,15 +119,30 @@ export class AuthUserBceidService {
 		this.bceidUserInfoProfile = bceidUserInfoProfile;
 		this.isAllowedGenericUpload = bceidUserInfoProfile.orgSettings?.genericUploadEnabled ?? false;
 
-		const userInfoMsgType = this.bceidUserInfoProfile?.userInfoMsgType;
-		// Access is denied if there is a userInfoMsgType or there is no orgId
-		if (userInfoMsgType || !this.bceidUserInfoProfile?.orgId) {
-			console.debug('setUserInfoProfile - userInfoMsgType', userInfoMsgType);
-			this.router.navigate([AppRoutes.ACCESS_DENIED], { state: { userInfoMsgType: userInfoMsgType } });
-			return Promise.resolve(false);
+		if (this.bceidUserInfoProfile.orgId) {
+			return this.setUserOrgProfile();
 		}
 
-		return this.setUserOrgProfile();
+		// Access is denied if there is a userInfoMsgType or there is no orgId
+		if (this.bceidUserInfoProfile.orgRegistrationId) {
+			const userInfoMsgType = this.bceidUserInfoProfile.userInfoMsgType;
+			if (userInfoMsgType) {
+				this.router.navigate([AppRoutes.ACCESS_DENIED], { state: { userInfoMsgType: userInfoMsgType } });
+				return Promise.resolve(false);
+			}
+
+			if (this.bceidUserInfoProfile.orgRegistrationNumber) {
+				this.router.navigate([
+					`${OrgRegistrationRoutes.path(OrgRegistrationRoutes.INVITATION)}/${
+						this.bceidUserInfoProfile.orgRegistrationNumber
+					}`,
+				]);
+				return Promise.resolve(false);
+			}
+		}
+
+		this.router.navigate([AppRoutes.ACCESS_DENIED]);
+		return Promise.resolve(false);
 	}
 
 	//----------------------------------------------------------

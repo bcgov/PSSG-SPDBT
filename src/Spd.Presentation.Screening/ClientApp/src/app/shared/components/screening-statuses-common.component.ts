@@ -133,7 +133,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 							<mat-header-cell *matHeaderCellDef>Paid By</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Paid By:</span>
-								{{ application.payeeType }}
+								{{ application.payeeType | default }}
 							</mat-cell>
 						</ng-container>
 
