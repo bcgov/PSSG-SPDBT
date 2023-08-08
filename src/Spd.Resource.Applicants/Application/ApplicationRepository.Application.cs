@@ -141,9 +141,12 @@ internal partial class ApplicationRepository : IApplicationRepository
         _context.UpdateObject(contact);
 
         spd_clearanceaccess clearanceaccess = new spd_clearanceaccess() { spd_clearanceaccessid = Guid.NewGuid() };
+        clearanceaccess.statecode = DynamicsConstants.StateCode_Active;
+        clearanceaccess.statuscode = (int)ClearanceAccessStatusOptionSet.Draft;
         _context.AddTospd_clearanceaccesses(clearanceaccess);
         _context.SetLink(clearanceaccess, nameof(clearanceaccess.spd_OrganizationId), org);
         _context.SetLink(clearanceaccess, nameof(clearanceaccess.spd_ClearanceId), clearance);
+        //todo: add link to owner team
         await _context.SaveChangesAsync(ct);
     }
 
