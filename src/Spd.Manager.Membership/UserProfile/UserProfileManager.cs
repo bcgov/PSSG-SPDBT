@@ -60,6 +60,7 @@ namespace Spd.Manager.Membership.UserProfile
                     };
                     ui.OrgRegistrationId = orgRegister?.OrgRegistrationId;
                     ui.OrgName = orgRegister?.OrganizationName;
+                    ui.OrgRegistrationNumber = orgRegister?.OrgRegistrationNumber;
                     if (ui.OrgRegistrationStatusCode == OrgRegistrationStatusCode.CompleteFailed)
                     {
                         ui.UserInfoMsgType = UserInfoMsgTypeCode.REGISTRATION_NOT_APPROVED;

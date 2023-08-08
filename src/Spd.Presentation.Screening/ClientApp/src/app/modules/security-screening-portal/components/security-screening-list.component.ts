@@ -82,7 +82,7 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
 						<mat-header-cell *matHeaderCellDef>Submitted On</mat-header-cell>
 						<mat-cell *matCellDef="let application">
 							<span class="mobile-label">Submitted On:</span>
-							{{ application.createdOn | date : constants.date.dateFormat }}
+							{{ application.createdOn | date : constants.date.dateFormat : 'UTC' }}
 						</mat-cell>
 					</ng-container>
 
@@ -261,10 +261,6 @@ export class SecurityScreeningListComponent implements OnInit {
 		this.router.navigateByUrl(`/${SecurityScreeningRoutes.path(SecurityScreeningRoutes.PAYMENT_MANUAL)}`, {
 			state: { applicationData: application },
 		});
-	}
-
-	onDownloadClearanceLetter(clearance: any) {
-		//TODO download clearance letter
 	}
 
 	private loadList(): void {
