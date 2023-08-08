@@ -32,13 +32,12 @@ export class OrgSelectionModalComponent implements OnInit {
 
 	ngOnInit(): void {
 		const infos = this.dialogData.userInfos;
-		const infoFiltered = infos.filter((v, i, a) => a.findIndex((v2) => v.orgId === v2.orgId) === i);
-		infoFiltered.sort((a: UserInfo, b: UserInfo) => {
+		infos.sort((a: UserInfo, b: UserInfo) => {
 			const a1 = a.orgName?.toUpperCase() ?? '';
 			const b1 = b.orgName?.toUpperCase() ?? '';
 			return a1.localeCompare(b1);
 		});
-		this.userInfos = infoFiltered;
+		this.userInfos = infos;
 	}
 
 	onSelectOrg(userinfo: UserInfo) {

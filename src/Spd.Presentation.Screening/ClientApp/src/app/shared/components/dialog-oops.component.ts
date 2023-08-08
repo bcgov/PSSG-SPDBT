@@ -10,7 +10,7 @@ export interface DialogOopsOptions {
 	template: `
 		<mat-dialog-content>
 			<div class="d-flex justify-content-center">
-				<img class="error-image" src="/assets/something-went-wrong.png" />
+				<img class="error-image" src="/assets/something-went-wrong.png" (error)="onHandleMissingImage($event)" />
 			</div>
 			<h2 class="mt-2">Oops! Something went wrong</h2>
 			<p>Looks like something went wrong on our end. Please try again later.</p>
@@ -52,4 +52,8 @@ export interface DialogOopsOptions {
 })
 export class DialogOopsComponent {
 	constructor(@Inject(MAT_DIALOG_DATA) public data: DialogOopsOptions) {}
+
+	public onHandleMissingImage(event: Event) {
+		(event.target as HTMLImageElement).style.display = 'none';
+	}
 }
