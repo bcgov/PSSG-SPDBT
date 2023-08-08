@@ -99,7 +99,8 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.Facility, opt => opt.MapFrom(s => s.spd_contractedcompanyname))
             .ForMember(d => d.Email, opt => opt.MapFrom(s => s.spd_emailaddress1))
             .ForMember(d => d.ExpiresOn, opt => opt.MapFrom(s => s.spd_expirydate))
-            .ForMember(d => d.ClearanceId, opt => opt.MapFrom(s => s._spd_clearanceid_value));
+            .ForMember(d => d.ClearanceId, opt => opt.MapFrom(s => s._spd_clearanceid_value))
+            .ForMember(d => d.Status, opt => opt.MapFrom(s => ((ClearanceAccessStatusOptionSet)(s.statuscode)).ToString()));
 
             _ = CreateMap<spd_genericupload, BulkHistoryResp>()
             .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_genericuploadid))

@@ -221,4 +221,11 @@ namespace Spd.Utilities.Dynamics
         Successful = 2,
         Failure = 100000000,
     }
+
+    public enum ClearanceAccessStatusOptionSet
+    {
+        Draft = 1, //active status
+        Approved = 100000000, //active status
+        Revoked = 2
+    }
 }
