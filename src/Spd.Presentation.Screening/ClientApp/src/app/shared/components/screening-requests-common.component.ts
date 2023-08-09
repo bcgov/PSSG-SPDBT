@@ -250,7 +250,6 @@ export class ScreeningRequestsCommonComponent implements OnInit {
 		const dialogOptions: ScreeningRequestAddDialogData = {
 			portal: this.portal!,
 			orgId: this.orgId!,
-			inviteDefault: undefined,
 		};
 
 		this.dialog
