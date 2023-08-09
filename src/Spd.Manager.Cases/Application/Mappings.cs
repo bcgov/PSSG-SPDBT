@@ -60,10 +60,10 @@ namespace Spd.Manager.Cases.Application
             CreateMap<AppBulkDuplicateCheckResult, DuplicateCheckResult>();
             CreateMap<ApplicationCreateRequestFromBulk, AppBulkDuplicateCheck>()
                 .IncludeBase<ApplicationCreateRequest, AppDuplicateCheck>();
-            CreateMap<ClearanceResp, ClearanceResponse>();
-            CreateMap<ClearanceListResp, ClearanceListResponse>();
-            CreateMap<ClearanceListFilterBy, ClearanceFilterBy>();
-            CreateMap<ClearanceListSortBy, ClearanceSortBy>();
+            CreateMap<ClearanceAccessResp, ClearanceAccessResponse>();
+            CreateMap<ClearanceAccessListResp, ClearanceAccessListResponse>();
+            CreateMap<ClearanceAccessListFilterBy, ClearanceAccessFilterBy>();
+            CreateMap<ClearanceAccessListSortBy, ClearanceAccessSortBy>();
             CreateMap<ClearanceAccessDeleteCommand, ClearanceAccessDeleteCmd>();
             CreateMap<ShareableClearance, ShareableClearanceItem>();
             CreateMap<AppInviteVerifyResp, AppOrgResponse>();
@@ -76,7 +76,11 @@ namespace Spd.Manager.Cases.Application
                 .ForMember(d => d.Status, opt => opt.MapFrom(s => GetApplicationPortalStatusCode(s.ApplicationPortalStatus)))
                 .ForMember(d => d.CaseSubStatus, opt => opt.MapFrom(s => GetCaseSubStatusCode(s.CaseSubStatus)))
                 .ForMember(d => d.FailedPaymentAttempts, opt => opt.MapFrom(s => s.NumberOfAttempts ?? 0));
-
+            CreateMap<ApplicationResult, ApplicationInvitePrepopulateDataResponse>()
+                .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName))
+                .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.Surname))
+                .ForMember(d => d.Email, opt => opt.MapFrom(s => s.EmailAddress));
+                //.ForMember(d => d.ScreeningType, opt => opt.MapFrom(s => s.ScreeningType));
         }
 
         private static CaseSubStatusCode? GetCaseSubStatusCode(CaseSubStatusEnum? subStatusEnum)
