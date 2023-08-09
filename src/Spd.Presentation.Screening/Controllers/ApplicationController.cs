@@ -631,6 +631,23 @@ namespace Spd.Presentation.Screening.Controllers
         }
 
         /// <summary>
+        /// return 
+        /// </summary>
+        /// <param name="orgId"></param>
+        /// <param name="sorts"></param>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        [Route("api/orgs/{orgId}/clearances/expired/{clearanceId}")]
+        [HttpGet]
+        public async Task<ApplicationInvitePrepopulateDataResponse> GetApplicationInvitePrePopulateData([FromRoute] Guid orgId, [FromRoute] Guid clearanceId)
+        {
+            return await _mediator.Send(
+                new GetApplicationInvitePrepopulateDataQuery(clearanceId)
+            );
+        }
+
+        /// <summary>
         /// download the clearance letter
         /// </summary>
         /// <param name="clearanceId"></param>

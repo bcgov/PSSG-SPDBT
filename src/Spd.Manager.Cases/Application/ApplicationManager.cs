@@ -40,6 +40,7 @@ namespace Spd.Manager.Cases.Application
         IRequestHandler<ApplicantApplicationFileQuery, ApplicantApplicationFileListResponse>,
         IRequestHandler<CreateApplicantAppFileCommand, IEnumerable<ApplicantAppFileCreateResponse>>,
         IRequestHandler<PrepopulateFileTemplateQuery, FileResponse>,
+        IRequestHandler<GetApplicationInvitePrepopulateDataQuery, ApplicationInvitePrepopulateDataResponse>,
         IApplicationManager
     {
         private readonly IApplicationRepository _applicationRepository;
@@ -324,6 +325,16 @@ namespace Spd.Manager.Cases.Application
             return default;
         }
 
+        public async Task<ApplicationInvitePrepopulateDataResponse> Handle(GetApplicationInvitePrepopulateDataQuery request, CancellationToken ct)
+        {
+            var clearanceListResp = await _applicationRepository.QueryAsync(new ClearanceQry(ClearanceId: request.ClearanceId), ct);
+            if (!clearanceListResp.Clearances.Any())
+                throw new ApiException(HttpStatusCode.BadRequest, "do active clearance associated with the clearance id");
+            Guid appId = clearanceListResp.Clearances.First().ApplicationId;
+            var application = await _applicationRepository.QueryApplicationAsync(new ApplicationQry(appId), ct);
+            return _mapper.Map<ApplicationInvitePrepopulateDataResponse>(application);
+        }
+
         public async Task<FileResponse> Handle(ClearanceLetterQuery query, CancellationToken ct)
         {
             DocumentQry qry = new DocumentQry(ClearanceId: query.ClearanceId);
@@ -518,7 +529,6 @@ namespace Spd.Manager.Cases.Application
             }
             throw new ApiException(HttpStatusCode.NoContent, "No file found.");
         }
-
         #endregion
 
 

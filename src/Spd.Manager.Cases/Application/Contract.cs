@@ -23,6 +23,7 @@ namespace Spd.Manager.Cases.Application
         public Task<BulkUploadCreateResponse> Handle(BulkUploadCreateCommand cmd, CancellationToken ct);
         public Task<ClearanceAccessListResponse> Handle(ClearanceAccessListQuery request, CancellationToken ct);
         public Task<Unit> Handle(ClearanceAccessDeleteCommand request, CancellationToken ct);
+        public Task<ApplicationInvitePrepopulateDataResponse> Handle(GetApplicationInvitePrepopulateDataQuery request, CancellationToken ct);
         public Task<FileResponse> Handle(ClearanceLetterQuery query, CancellationToken ct);
         public Task<ApplicantApplicationListResponse> Handle(ApplicantApplicationListQuery request, CancellationToken ct);
         public Task<ShareableClearanceResponse> Handle(ShareableClearanceQuery request, CancellationToken ct);
@@ -455,6 +456,13 @@ namespace Spd.Manager.Cases.Application
         public Guid ClearanceId { get; set; }
     }
 
+    public record ApplicationInvitePrepopulateDataResponse : ApplicationInvite
+    {
+        public ServiceTypeCode ServiceType { get; set; } = ServiceTypeCode.CRRP_EMPLOYEE;
+        public ScreeningTypeCode ScreeningType { get; set; } = ScreeningTypeCode.Staff;
+    };
+
+    public record GetApplicationInvitePrepopulateDataQuery(Guid ClearanceId): IRequest<ApplicationInvitePrepopulateDataResponse>;
     #endregion
 
     #region validator

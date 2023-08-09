@@ -109,8 +109,9 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.UploadedDateTime, opt => opt.MapFrom(s => s.spd_datetimeuploaded))
             .ForMember(d => d.UploadedByUserFullName, opt => opt.MapFrom(s => s.spd_UploadedBy.spd_fullname));
 
-            _ = CreateMap<spd_clearance, ShareableClearanceResp>()
+            _ = CreateMap<spd_clearance, ClearanceResp>()
             .ForMember(d => d.OrgId, opt => opt.MapFrom(s => s.spd_CaseID._spd_organizationid_value))
+            .ForMember(d => d.ApplicationId, opt => opt.MapFrom(s => s.spd_CaseID._spd_applicationid_value))
             .ForMember(d => d.GrantedDate, opt => opt.MapFrom(s => s.spd_dategranted))
             .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => s.spd_expirydate))
             .ForMember(d => d.WorkWith, opt => opt.MapFrom(s => s.spd_workswith))
