@@ -1818,6 +1818,9 @@
         <NavigationProperty Name="regardingobjectid_spd_invoice" Type="mscrm.spd_invoice" Nullable="false" Partner="spd_invoice_AsyncOperations">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_invoiceid" />
         </NavigationProperty>
+        <NavigationProperty Name="regardingobjectid_spd_eventqueue" Type="mscrm.spd_eventqueue" Nullable="false" Partner="spd_eventqueue_AsyncOperations">
+          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_eventqueueid" />
+        </NavigationProperty>
         <NavigationProperty Name="regardingobjectid_report" Type="mscrm.report" Nullable="false" Partner="Report_AsyncOperations">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="reportid" />
         </NavigationProperty>
@@ -3663,6 +3666,9 @@
         </NavigationProperty>
         <NavigationProperty Name="regardingobjectid_spd_invoice" Type="mscrm.spd_invoice" Nullable="false" Partner="spd_invoice_BulkDeleteFailures">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_invoiceid" />
+        </NavigationProperty>
+        <NavigationProperty Name="regardingobjectid_spd_eventqueue" Type="mscrm.spd_eventqueue" Nullable="false" Partner="spd_eventqueue_BulkDeleteFailures">
+          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_eventqueueid" />
         </NavigationProperty>
         <NavigationProperty Name="regardingobjectid_customeraddress" Type="mscrm.customeraddress" Nullable="false" Partner="CustomerAddress_BulkDeleteFailures">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="customeraddressid" />
@@ -11536,6 +11542,9 @@
         <NavigationProperty Name="regardingobjectid_spd_invoice" Type="mscrm.spd_invoice" Nullable="false" Partner="spd_invoice_MailboxTrackingFolders">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_invoiceid" />
         </NavigationProperty>
+        <NavigationProperty Name="regardingobjectid_spd_eventqueue" Type="mscrm.spd_eventqueue" Nullable="false" Partner="spd_eventqueue_MailboxTrackingFolders">
+          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_eventqueueid" />
+        </NavigationProperty>
         <NavigationProperty Name="modifiedonbehalfby" Type="mscrm.systemuser" Nullable="false" Partner="lk_mailboxtrackingfolder_modifiedonbehalfby">
           <ReferentialConstraint Property="_modifiedonbehalfby_value" ReferencedProperty="systemuserid" />
         </NavigationProperty>
@@ -13497,6 +13506,7 @@
         <NavigationProperty Name="organization_spd_securityscreening" Type="Collection(mscrm.spd_securityscreening)" Partner="organizationid" />
         <NavigationProperty Name="organization_spd_organizationtype" Type="Collection(mscrm.spd_organizationtype)" Partner="organizationid" />
         <NavigationProperty Name="organization_spd_ministry" Type="Collection(mscrm.spd_ministry)" Partner="organizationid" />
+        <NavigationProperty Name="organization_spd_eventqueue" Type="Collection(mscrm.spd_eventqueue)" Partner="organizationid" />
         <NavigationProperty Name="modifiedonbehalfby" Type="mscrm.systemuser" Nullable="false" Partner="lk_organization_modifiedonbehalfby">
           <ReferentialConstraint Property="_modifiedonbehalfby_value" ReferencedProperty="systemuserid" />
         </NavigationProperty>
@@ -14900,6 +14910,9 @@
         <NavigationProperty Name="objectid_spd_invoice" Type="mscrm.spd_invoice" Nullable="false" Partner="spd_invoice_PrincipalObjectAttributeAccesses">
           <ReferentialConstraint Property="_objectid_value" ReferencedProperty="spd_invoiceid" />
         </NavigationProperty>
+        <NavigationProperty Name="objectid_spd_eventqueue" Type="mscrm.spd_eventqueue" Nullable="false" Partner="spd_eventqueue_PrincipalObjectAttributeAccesses">
+          <ReferentialConstraint Property="_objectid_value" ReferencedProperty="spd_eventqueueid" />
+        </NavigationProperty>
         <NavigationProperty Name="objectid_letter" Type="mscrm.letter" Nullable="false" Partner="letter_principalobjectattributeaccess" />
         <NavigationProperty Name="objectid_reportcategory" Type="mscrm.reportcategory" Nullable="false" Partner="reportcategory_principalobjectattributeaccess">
           <ReferentialConstraint Property="_objectid_value" ReferencedProperty="reportcategoryid" />
@@ -15302,6 +15315,9 @@
         </NavigationProperty>
         <NavigationProperty Name="regardingobjectid_spd_invoice" Type="mscrm.spd_invoice" Nullable="false" Partner="spd_invoice_ProcessSession">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_invoiceid" />
+        </NavigationProperty>
+        <NavigationProperty Name="regardingobjectid_spd_eventqueue" Type="mscrm.spd_eventqueue" Nullable="false" Partner="spd_eventqueue_ProcessSession">
+          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_eventqueueid" />
         </NavigationProperty>
         <NavigationProperty Name="regardingobjectid_queue" Type="mscrm.queue" Nullable="false" Partner="Queue_ProcessSessions">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="queueid" />
@@ -19514,82 +19530,83 @@
         <Key>
           <PropertyRef Name="spd_applicationid" />
         </Key>
-        <Property Name="_spd_applicantid_value" Type="Edm.Guid" />
-        <Property Name="spd_submittedon" Type="Edm.DateTimeOffset" />
-        <Property Name="spd_bcdriverslicense" Type="Edm.String" Unicode="false" />
-        <Property Name="_owningbusinessunit_value" Type="Edm.Guid" />
-        <Property Name="spd_declaration" Type="Edm.Boolean" />
-        <Property Name="spd_currentexpiredlicencenumber" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_permitpurpose" Type="Edm.Int32" />
-        <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
-        <Property Name="_ownerid_value" Type="Edm.Guid" />
-        <Property Name="spd_licencefee_base" Type="Edm.Decimal" Scale="Variable" />
-        <Property Name="spd_casesubstatus" Type="Edm.String" Unicode="false" />
-        <Property Name="exchangerate" Type="Edm.Decimal" Scale="Variable" />
-        <Property Name="spd_identityconfirmed" Type="Edm.Boolean" />
-        <Property Name="spd_legalnamechange" Type="Edm.Int32" />
-        <Property Name="spd_casestatus" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_applicanteyecolour" Type="Edm.Int32" />
-        <Property Name="spd_figaroid" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_consent" Type="Edm.Boolean" />
-        <Property Name="_modifiedby_value" Type="Edm.Guid" />
-        <Property Name="spd_employeeid" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_city" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_origin" Type="Edm.Int32" />
-        <Property Name="spd_paidon" Type="Edm.DateTimeOffset" />
-        <Property Name="spd_province" Type="Edm.String" Unicode="false" />
         <Property Name="spd_declarationdate" Type="Edm.DateTimeOffset" />
+        <Property Name="spd_licenceterm" Type="Edm.Int32" />
+        <Property Name="spd_country" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_paidon" Type="Edm.DateTimeOffset" />
+        <Property Name="spd_licencetype" Type="Edm.Int32" />
+        <Property Name="versionnumber" Type="Edm.Int64" />
+        <Property Name="spd_licencefee" Type="Edm.Decimal" Scale="Variable" />
+        <Property Name="spd_casestatus" Type="Edm.String" Unicode="false" />
         <Property Name="spd_contractedcompanyname" Type="Edm.String" Unicode="false" />
         <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
-        <Property Name="spd_phonenumber" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_currentlicenceexpirydate" Type="Edm.DateTimeOffset" />
-        <Property Name="_owningteam_value" Type="Edm.Guid" />
-        <Property Name="_transactioncurrencyid_value" Type="Edm.Guid" />
-        <Property Name="spd_licenceterm" Type="Edm.Int32" />
-        <Property Name="spd_numberofattempts" Type="Edm.Int32" />
-        <Property Name="_spd_organizationid_value" Type="Edm.Guid" />
-        <Property Name="spd_licencetype" Type="Edm.Int32" />
-        <Property Name="spd_postalcode" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_birthplace" Type="Edm.String" Unicode="false" />
-        <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
-        <Property Name="spd_name" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_criminalhistory" Type="Edm.Int32" />
-        <Property Name="spd_applicationid" Type="Edm.Guid" />
+        <Property Name="spd_declaration" Type="Edm.Boolean" />
+        <Property Name="spd_bcdriverslicense" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_city" Type="Edm.String" Unicode="false" />
         <Property Name="_modifiedonbehalfby_value" Type="Edm.Guid" />
-        <Property Name="spd_licencefee" Type="Edm.Decimal" Scale="Variable" />
-        <Property Name="statuscode" Type="Edm.Int32" />
-        <Property Name="versionnumber" Type="Edm.Int64" />
-        <Property Name="spd_addressline1" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_applicantsposition" Type="Edm.String" Unicode="false" />
-        <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
+        <Property Name="spd_figaroid" Type="Edm.String" Unicode="false" />
         <Property Name="spd_sex" Type="Edm.Int32" />
-        <Property Name="spd_lastname" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_applicantbornincanada" Type="Edm.Int32" />
+        <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
         <Property Name="spd_emailaddress1" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_middlename2" Type="Edm.String" Unicode="false" />
-        <Property Name="_createdonbehalfby_value" Type="Edm.Guid" />
-        <Property Name="spd_firstname" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_country" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_fullname" Type="Edm.String" Unicode="false" />
+        <Property Name="_spd_applicantid_value" Type="Edm.Guid" />
+        <Property Name="spd_submittedon" Type="Edm.DateTimeOffset" />
+        <Property Name="spd_currentlicenceexpirydate" Type="Edm.DateTimeOffset" />
+        <Property Name="spd_name" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_casesubstatus" Type="Edm.String" Unicode="false" />
+        <Property Name="createdon" Type="Edm.DateTimeOffset" />
+        <Property Name="spd_licenceapplicationtype" Type="Edm.Int32" />
+        <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
+        <Property Name="spd_birthplace" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_numberofattempts" Type="Edm.Int32" />
+        <Property Name="spd_currentexpiredlicencenumber" Type="Edm.String" Unicode="false" />
+        <Property Name="importsequencenumber" Type="Edm.Int32" />
         <Property Name="_spd_invoiceid_value" Type="Edm.Guid" />
+        <Property Name="_spd_organizationid_value" Type="Edm.Guid" />
+        <Property Name="spd_screeningrequesttype" Type="Edm.Int32" />
+        <Property Name="statecode" Type="Edm.Int32" />
+        <Property Name="spd_photoidtype" Type="Edm.Int32" />
+        <Property Name="_createdonbehalfby_value" Type="Edm.Guid" />
+        <Property Name="spd_middlename2" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_origin" Type="Edm.Int32" />
+        <Property Name="spd_lastname" Type="Edm.String" Unicode="false" />
+        <Property Name="_owningteam_value" Type="Edm.Guid" />
+        <Property Name="_modifiedby_value" Type="Edm.Guid" />
+        <Property Name="spd_applicantweight" Type="Edm.Int32" />
+        <Property Name="spd_payer" Type="Edm.Int32" />
+        <Property Name="spd_postalcode" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_middlename1" Type="Edm.String" Unicode="false" />
+        <Property Name="statuscode" Type="Edm.Int32" />
+        <Property Name="spd_applicanthaircolour" Type="Edm.Int32" />
+        <Property Name="spd_addressline1" Type="Edm.String" Unicode="false" />
+        <Property Name="_owninguser_value" Type="Edm.Guid" />
+        <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
+        <Property Name="_spd_ministry_value" Type="Edm.Guid" />
+        <Property Name="exchangerate" Type="Edm.Decimal" Scale="Variable" />
+        <Property Name="_spd_submittedby_value" Type="Edm.Guid" />
+        <Property Name="spd_permitpurpose" Type="Edm.Int32" />
+        <Property Name="spd_employeeid" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_consent" Type="Edm.Boolean" />
+        <Property Name="spd_criminalhistory" Type="Edm.Int32" />
+        <Property Name="spd_identityconfirmed" Type="Edm.Boolean" />
+        <Property Name="spd_province" Type="Edm.String" Unicode="false" />
+        <Property Name="_createdby_value" Type="Edm.Guid" />
         <Property Name="spd_addressline2" Type="Edm.String" Unicode="false" />
         <Property Name="_spd_servicetypeid_value" Type="Edm.Guid" />
-        <Property Name="_createdby_value" Type="Edm.Guid" />
+        <Property Name="spd_applicanteyecolour" Type="Edm.Int32" />
+        <Property Name="spd_licencefee_base" Type="Edm.Decimal" Scale="Variable" />
+        <Property Name="_owningbusinessunit_value" Type="Edm.Guid" />
+        <Property Name="spd_applicantsposition" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_legalnamechange" Type="Edm.Int32" />
         <Property Name="spd_applicantheight" Type="Edm.Int32" />
-        <Property Name="spd_middlename1" Type="Edm.String" Unicode="false" />
-        <Property Name="_owninguser_value" Type="Edm.Guid" />
-        <Property Name="spd_applicanthaircolour" Type="Edm.Int32" />
-        <Property Name="importsequencenumber" Type="Edm.Int32" />
-        <Property Name="_spd_ministry_value" Type="Edm.Guid" />
+        <Property Name="_ownerid_value" Type="Edm.Guid" />
+        <Property Name="_transactioncurrencyid_value" Type="Edm.Guid" />
         <Property Name="spd_dateofbirth" Type="Edm.Date" />
         <Property Name="spd_portalstatus" Type="Edm.Int32" />
-        <Property Name="spd_applicantweight" Type="Edm.Int32" />
-        <Property Name="statecode" Type="Edm.Int32" />
-        <Property Name="spd_licenceapplicationtype" Type="Edm.Int32" />
-        <Property Name="spd_fullname" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_payer" Type="Edm.Int32" />
-        <Property Name="_spd_submittedby_value" Type="Edm.Guid" />
-        <Property Name="spd_photoidtype" Type="Edm.Int32" />
-        <Property Name="createdon" Type="Edm.DateTimeOffset" />
-        <Property Name="spd_applicantbornincanada" Type="Edm.Int32" />
+        <Property Name="spd_applicationid" Type="Edm.Guid" />
+        <Property Name="spd_phonenumber" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_firstname" Type="Edm.String" Unicode="false" />
         <NavigationProperty Name="createdby" Type="mscrm.systemuser" Nullable="false" Partner="lk_spd_application_createdby">
           <ReferentialConstraint Property="_createdby_value" ReferencedProperty="systemuserid" />
         </NavigationProperty>
@@ -19860,6 +19877,52 @@
           <ReferentialConstraint Property="_spd_servicetypeid_value" ReferencedProperty="spd_servicetypeid" />
         </NavigationProperty>
         <NavigationProperty Name="spd_cpicbatch_incident" Type="Collection(mscrm.incident)" Partner="spd_CPICBatchId" />
+      </EntityType>
+      <EntityType Name="spd_eventqueue" BaseType="mscrm.crmbaseentity">
+        <Key>
+          <PropertyRef Name="spd_eventqueueid" />
+        </Key>
+        <Property Name="spd_regardingobjectlogicalname" Type="Edm.String" Unicode="false" />
+        <Property Name="_modifiedby_value" Type="Edm.Guid" />
+        <Property Name="createdon" Type="Edm.DateTimeOffset" />
+        <Property Name="_createdonbehalfby_value" Type="Edm.Guid" />
+        <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
+        <Property Name="statuscode" Type="Edm.Int32" />
+        <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
+        <Property Name="statecode" Type="Edm.Int32" />
+        <Property Name="_organizationid_value" Type="Edm.Guid" />
+        <Property Name="_createdby_value" Type="Edm.Guid" />
+        <Property Name="versionnumber" Type="Edm.Int64" />
+        <Property Name="spd_eventdate" Type="Edm.DateTimeOffset" />
+        <Property Name="importsequencenumber" Type="Edm.Int32" />
+        <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
+        <Property Name="spd_eventqueueid" Type="Edm.Guid" />
+        <Property Name="spd_eventtype" Type="Edm.Int32" />
+        <Property Name="spd_name" Type="Edm.String" Unicode="false" />
+        <Property Name="_modifiedonbehalfby_value" Type="Edm.Guid" />
+        <Property Name="spd_regardingobjectid" Type="Edm.String" Unicode="false" />
+        <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
+        <NavigationProperty Name="createdby" Type="mscrm.systemuser" Nullable="false" Partner="lk_spd_eventqueue_createdby">
+          <ReferentialConstraint Property="_createdby_value" ReferencedProperty="systemuserid" />
+        </NavigationProperty>
+        <NavigationProperty Name="createdonbehalfby" Type="mscrm.systemuser" Nullable="false" Partner="lk_spd_eventqueue_createdonbehalfby">
+          <ReferentialConstraint Property="_createdonbehalfby_value" ReferencedProperty="systemuserid" />
+        </NavigationProperty>
+        <NavigationProperty Name="modifiedby" Type="mscrm.systemuser" Nullable="false" Partner="lk_spd_eventqueue_modifiedby">
+          <ReferentialConstraint Property="_modifiedby_value" ReferencedProperty="systemuserid" />
+        </NavigationProperty>
+        <NavigationProperty Name="modifiedonbehalfby" Type="mscrm.systemuser" Nullable="false" Partner="lk_spd_eventqueue_modifiedonbehalfby">
+          <ReferentialConstraint Property="_modifiedonbehalfby_value" ReferencedProperty="systemuserid" />
+        </NavigationProperty>
+        <NavigationProperty Name="organizationid" Type="mscrm.organization" Nullable="false" Partner="organization_spd_eventqueue">
+          <ReferentialConstraint Property="_organizationid_value" ReferencedProperty="organizationid" />
+        </NavigationProperty>
+        <NavigationProperty Name="spd_eventqueue_SyncErrors" Type="Collection(mscrm.syncerror)" Partner="regardingobjectid_spd_eventqueue" />
+        <NavigationProperty Name="spd_eventqueue_AsyncOperations" Type="Collection(mscrm.asyncoperation)" Partner="regardingobjectid_spd_eventqueue" />
+        <NavigationProperty Name="spd_eventqueue_MailboxTrackingFolders" Type="Collection(mscrm.mailboxtrackingfolder)" Partner="regardingobjectid_spd_eventqueue" />
+        <NavigationProperty Name="spd_eventqueue_ProcessSession" Type="Collection(mscrm.processsession)" Partner="regardingobjectid_spd_eventqueue" />
+        <NavigationProperty Name="spd_eventqueue_BulkDeleteFailures" Type="Collection(mscrm.bulkdeletefailure)" Partner="regardingobjectid_spd_eventqueue" />
+        <NavigationProperty Name="spd_eventqueue_PrincipalObjectAttributeAccesses" Type="Collection(mscrm.principalobjectattributeaccess)" Partner="objectid_spd_eventqueue" />
       </EntityType>
       <EntityType Name="spd_finding" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -21374,6 +21437,9 @@
         <NavigationProperty Name="regardingobjectid_spd_invoice" Type="mscrm.spd_invoice" Nullable="false" Partner="spd_invoice_SyncErrors">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_invoiceid" />
         </NavigationProperty>
+        <NavigationProperty Name="regardingobjectid_spd_eventqueue" Type="mscrm.spd_eventqueue" Nullable="false" Partner="spd_eventqueue_SyncErrors">
+          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_eventqueueid" />
+        </NavigationProperty>
         <NavigationProperty Name="regardingobjectid_ExpiredProcess_syncerror" Type="mscrm.expiredprocess" Nullable="false" Partner="ExpiredProcess_SyncErrors">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="businessprocessflowinstanceid" />
         </NavigationProperty>
@@ -22382,6 +22448,10 @@
         <NavigationProperty Name="lk_spd_invoice_modifiedby" Type="Collection(mscrm.spd_invoice)" Partner="modifiedby" />
         <NavigationProperty Name="lk_spd_invoice_modifiedonbehalfby" Type="Collection(mscrm.spd_invoice)" Partner="modifiedonbehalfby" />
         <NavigationProperty Name="user_spd_invoice" Type="Collection(mscrm.spd_invoice)" Partner="owninguser" />
+        <NavigationProperty Name="lk_spd_eventqueue_createdby" Type="Collection(mscrm.spd_eventqueue)" Partner="createdby" />
+        <NavigationProperty Name="lk_spd_eventqueue_createdonbehalfby" Type="Collection(mscrm.spd_eventqueue)" Partner="createdonbehalfby" />
+        <NavigationProperty Name="lk_spd_eventqueue_modifiedby" Type="Collection(mscrm.spd_eventqueue)" Partner="modifiedby" />
+        <NavigationProperty Name="lk_spd_eventqueue_modifiedonbehalfby" Type="Collection(mscrm.spd_eventqueue)" Partner="modifiedonbehalfby" />
         <NavigationProperty Name="lk_slakpiinstancebase_createdonbehalfby" Type="Collection(mscrm.slakpiinstance)" Partner="createdonbehalfby" />
         <NavigationProperty Name="lk_mobileofflineprofileitemassocaition_modifiedonbehalfby" Type="Collection(mscrm.mobileofflineprofileitemassociation)" Partner="modifiedonbehalfby" />
         <NavigationProperty Name="lk_userqueryvisualizationbase_modifiedonbehalfby" Type="Collection(mscrm.userqueryvisualization)" Partner="modifiedonbehalfby" />
@@ -26721,12 +26791,43 @@
         <Parameter Name="EmailAddress" Type="Edm.String" Nullable="false" Unicode="false" />
         <ReturnType Type="mscrm.spd_CreateUnresolvedEmailResponse" Nullable="false" />
       </Action>
-      <ComplexType Name="spd_ExpirePortalInviteResponse">
+      <ComplexType Name="spd_ExpiredScreeningsReminderResponse">
         <Property Name="IsSuccess" Type="Edm.Boolean" />
+        <Property Name="Result" Type="Edm.String" Unicode="false" />
       </ComplexType>
-      <Action Name="spd_ExpirePortalInvite" IsBound="true">
-        <Parameter Name="entity" Type="mscrm.spd_portalinvitation" Nullable="false" />
-        <ReturnType Type="mscrm.spd_ExpirePortalInviteResponse" Nullable="false" />
+      <Action Name="spd_ExpiredScreeningsReminder" IsBound="true">
+        <Parameter Name="entity" Type="mscrm.spd_clearanceaccess" Nullable="false" />
+        <ReturnType Type="mscrm.spd_ExpiredScreeningsReminderResponse" Nullable="false" />
+      </Action>
+      <ComplexType Name="spd_ExpiredScreeningsReminderJobResponse">
+        <Property Name="MoreRecords" Type="Edm.Boolean" />
+        <Property Name="NewPagingCookie" Type="Edm.String" Unicode="false" />
+        <Property Name="ErrorMessage" Type="Edm.String" Unicode="false" />
+      </ComplexType>
+      <Action Name="spd_ExpiredScreeningsReminderJob" IsBound="true">
+        <Parameter Name="entity" Type="mscrm.bcgov_schedulejob" Nullable="false" />
+        <Parameter Name="PageNumber" Type="Edm.Int32" Nullable="false" />
+        <Parameter Name="OldPagingCookie" Type="Edm.String" Unicode="false" />
+        <ReturnType Type="mscrm.spd_ExpiredScreeningsReminderJobResponse" Nullable="false" />
+      </Action>
+      <ComplexType Name="spd_FingerprintReminderResponse">
+        <Property Name="IsSuccess" Type="Edm.Boolean" />
+        <Property Name="Result" Type="Edm.String" Unicode="false" />
+      </ComplexType>
+      <Action Name="spd_FingerprintReminder" IsBound="true">
+        <Parameter Name="entity" Type="mscrm.incident" Nullable="false" />
+        <ReturnType Type="mscrm.spd_FingerprintReminderResponse" Nullable="false" />
+      </Action>
+      <ComplexType Name="spd_FingerprintReminderJobResponse">
+        <Property Name="MoreRecords" Type="Edm.Boolean" />
+        <Property Name="NewPagingCookie" Type="Edm.String" Unicode="false" />
+        <Property Name="ErrorMessage" Type="Edm.String" Unicode="false" />
+      </ComplexType>
+      <Action Name="spd_FingerprintReminderJob" IsBound="true">
+        <Parameter Name="entity" Type="mscrm.bcgov_schedulejob" Nullable="false" />
+        <Parameter Name="PageNumber" Type="Edm.Int32" Nullable="false" />
+        <Parameter Name="OldPagingCookie" Type="Edm.String" Unicode="false" />
+        <ReturnType Type="mscrm.spd_FingerprintReminderJobResponse" Nullable="false" />
       </Action>
       <ComplexType Name="spd_GetAddressTitleResponse">
         <Property Name="NewName" Type="Edm.String" Unicode="false" />
@@ -26862,6 +26963,77 @@
         <Parameter Name="IdentifierText" Type="Edm.String" Unicode="false" />
         <ReturnType Type="mscrm.spd_JUSTINOffenderSearchResponse" Nullable="false" />
       </Action>
+      <ComplexType Name="spd_OrgMonthlyReportJobResponse">
+        <Property Name="MoreRecords" Type="Edm.Boolean" />
+        <Property Name="NewPagingCookie" Type="Edm.String" Unicode="false" />
+        <Property Name="ErrorMessage" Type="Edm.String" Unicode="false" />
+      </ComplexType>
+      <Action Name="spd_OrgMonthlyReportJob" IsBound="true">
+        <Parameter Name="entity" Type="mscrm.bcgov_schedulejob" Nullable="false" />
+        <Parameter Name="PageNumber" Type="Edm.Int32" Nullable="false" />
+        <Parameter Name="OldPagingCookie" Type="Edm.String" Unicode="false" />
+        <ReturnType Type="mscrm.spd_OrgMonthlyReportJobResponse" Nullable="false" />
+      </Action>
+      <ComplexType Name="spd_OrgWeeklyReportResponse">
+        <Property Name="IsSuccess" Type="Edm.Boolean" />
+        <Property Name="Result" Type="Edm.String" Unicode="false" />
+      </ComplexType>
+      <Action Name="spd_OrgWeeklyReport" IsBound="true">
+        <Parameter Name="entity" Type="mscrm.account" Nullable="false" />
+        <ReturnType Type="mscrm.spd_OrgWeeklyReportResponse" Nullable="false" />
+      </Action>
+      <ComplexType Name="spd_OrgWeeklyReportJobResponse">
+        <Property Name="MoreRecords" Type="Edm.Boolean" />
+        <Property Name="NewPagingCookie" Type="Edm.String" Unicode="false" />
+        <Property Name="ErrorMessage" Type="Edm.String" Unicode="false" />
+      </ComplexType>
+      <Action Name="spd_OrgWeeklyReportJob" IsBound="true">
+        <Parameter Name="entity" Type="mscrm.bcgov_schedulejob" Nullable="false" />
+        <Parameter Name="PageNumber" Type="Edm.Int32" Nullable="false" />
+        <Parameter Name="OldPagingCookie" Type="Edm.String" Unicode="false" />
+        <ReturnType Type="mscrm.spd_OrgWeeklyReportJobResponse" Nullable="false" />
+      </Action>
+      <ComplexType Name="spd_PortalInviteExpiryJobResponse">
+        <Property Name="MoreRecords" Type="Edm.Boolean" />
+        <Property Name="NewPagingCookie" Type="Edm.String" Unicode="false" />
+        <Property Name="ErrorMessage" Type="Edm.String" Unicode="false" />
+      </ComplexType>
+      <Action Name="spd_PortalInviteExpiryJob" IsBound="true">
+        <Parameter Name="entity" Type="mscrm.bcgov_schedulejob" Nullable="false" />
+        <Parameter Name="PageNumber" Type="Edm.Int32" Nullable="false" />
+        <Parameter Name="OldPagingCookie" Type="Edm.String" Unicode="false" />
+        <ReturnType Type="mscrm.spd_PortalInviteExpiryJobResponse" Nullable="false" />
+      </Action>
+      <ComplexType Name="spd_PortalUserExpiryJobResponse">
+        <Property Name="MoreRecords" Type="Edm.Boolean" />
+        <Property Name="NewPagingCookie" Type="Edm.String" Unicode="false" />
+        <Property Name="ErrorMessage" Type="Edm.String" Unicode="false" />
+      </ComplexType>
+      <Action Name="spd_PortalUserExpiryJob" IsBound="true">
+        <Parameter Name="entity" Type="mscrm.bcgov_schedulejob" Nullable="false" />
+        <Parameter Name="PageNumber" Type="Edm.Int32" Nullable="false" />
+        <Parameter Name="OldPagingCookie" Type="Edm.String" Unicode="false" />
+        <ReturnType Type="mscrm.spd_PortalUserExpiryJobResponse" Nullable="false" />
+      </Action>
+      <ComplexType Name="spd_RequestMoreInfoOnCaseResponse">
+        <Property Name="IsSuccess" Type="Edm.Boolean" />
+        <Property Name="Result" Type="Edm.String" Unicode="false" />
+      </ComplexType>
+      <Action Name="spd_RequestMoreInfoOnCase" IsBound="true">
+        <Parameter Name="entity" Type="mscrm.incident" Nullable="false" />
+        <ReturnType Type="mscrm.spd_RequestMoreInfoOnCaseResponse" Nullable="false" />
+      </Action>
+      <ComplexType Name="spd_RequestMoreInfoOnCaseJobResponse">
+        <Property Name="MoreRecords" Type="Edm.Boolean" />
+        <Property Name="NewPagingCookie" Type="Edm.String" Unicode="false" />
+        <Property Name="ErrorMessage" Type="Edm.String" Unicode="false" />
+      </ComplexType>
+      <Action Name="spd_RequestMoreInfoOnCaseJob" IsBound="true">
+        <Parameter Name="entity" Type="mscrm.bcgov_schedulejob" Nullable="false" />
+        <Parameter Name="PageNumber" Type="Edm.Int32" Nullable="false" />
+        <Parameter Name="OldPagingCookie" Type="Edm.String" Unicode="false" />
+        <ReturnType Type="mscrm.spd_RequestMoreInfoOnCaseJobResponse" Nullable="false" />
+      </Action>
       <ComplexType Name="spd_RevokeAccessResponse">
         <Property Name="IsSuccess" Type="Edm.Boolean" />
       </ComplexType>
@@ -26875,6 +27047,14 @@
       <Action Name="spd_SendEmail" IsBound="true">
         <Parameter Name="entity" Type="mscrm.email" Nullable="false" />
         <ReturnType Type="mscrm.spd_SendEmailResponse" Nullable="false" />
+      </Action>
+      <ComplexType Name="spd_StatutoryDeclarationReminderResponse">
+        <Property Name="IsSuccess" Type="Edm.Boolean" />
+        <Property Name="Result" Type="Edm.String" Unicode="false" />
+      </ComplexType>
+      <Action Name="spd_StatutoryDeclarationReminder" IsBound="true">
+        <Parameter Name="entity" Type="mscrm.incident" Nullable="false" />
+        <ReturnType Type="mscrm.spd_StatutoryDeclarationReminderResponse" Nullable="false" />
       </Action>
       <Action Name="UnlockInvoicePricing">
         <Parameter Name="InvoiceId" Type="Edm.Guid" Nullable="false" />
@@ -30351,6 +30531,7 @@
           <NavigationPropertyBinding Path="regardingobjectid_bcgov_schedulejob" Target="bcgov_schedulejobs" />
           <NavigationPropertyBinding Path="regardingobjectid_bcgov_schedulejobsession" Target="bcgov_schedulejobsessions" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_invoice" Target="spd_invoices" />
+          <NavigationPropertyBinding Path="regardingobjectid_spd_eventqueue" Target="spd_eventqueues" />
           <NavigationPropertyBinding Path="regardingobjectid_report" Target="reports" />
           <NavigationPropertyBinding Path="AsyncOperation_Emails" Target="emails" />
           <NavigationPropertyBinding Path="regardingobjectid_recurringappointmentmaster" Target="recurringappointmentmasters" />
@@ -30960,6 +31141,7 @@
           <NavigationPropertyBinding Path="regardingobjectid_bcgov_schedulejob" Target="bcgov_schedulejobs" />
           <NavigationPropertyBinding Path="regardingobjectid_bcgov_schedulejobsession" Target="bcgov_schedulejobsessions" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_invoice" Target="spd_invoices" />
+          <NavigationPropertyBinding Path="regardingobjectid_spd_eventqueue" Target="spd_eventqueues" />
           <NavigationPropertyBinding Path="regardingobjectid_customeraddress" Target="customeraddresses" />
           <NavigationPropertyBinding Path="regardingobjectid_annualfiscalcalendar" Target="annualfiscalcalendars" />
           <NavigationPropertyBinding Path="regardingobjectid_fax" Target="faxes" />
@@ -33462,6 +33644,7 @@
           <NavigationPropertyBinding Path="regardingobjectid_bcgov_schedulejob" Target="bcgov_schedulejobs" />
           <NavigationPropertyBinding Path="regardingobjectid_bcgov_schedulejobsession" Target="bcgov_schedulejobsessions" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_invoice" Target="spd_invoices" />
+          <NavigationPropertyBinding Path="regardingobjectid_spd_eventqueue" Target="spd_eventqueues" />
           <NavigationPropertyBinding Path="modifiedonbehalfby" Target="systemusers" />
           <NavigationPropertyBinding Path="ownerid" Target="owners" />
           <NavigationPropertyBinding Path="createdonbehalfby" Target="systemusers" />
@@ -33961,6 +34144,7 @@
           <NavigationPropertyBinding Path="organization_spd_securityscreening" Target="spd_securityscreenings" />
           <NavigationPropertyBinding Path="organization_spd_organizationtype" Target="spd_organizationtypes" />
           <NavigationPropertyBinding Path="organization_spd_ministry" Target="spd_ministries" />
+          <NavigationPropertyBinding Path="organization_spd_eventqueue" Target="spd_eventqueues" />
           <NavigationPropertyBinding Path="modifiedonbehalfby" Target="systemusers" />
           <NavigationPropertyBinding Path="organization_sdkmessagefilter" Target="sdkmessagefilters" />
           <NavigationPropertyBinding Path="webresource_organization" Target="webresourceset" />
@@ -34410,6 +34594,7 @@
           <NavigationPropertyBinding Path="objectid_bcgov_schedulejob" Target="bcgov_schedulejobs" />
           <NavigationPropertyBinding Path="objectid_bcgov_schedulejobsession" Target="bcgov_schedulejobsessions" />
           <NavigationPropertyBinding Path="objectid_spd_invoice" Target="spd_invoices" />
+          <NavigationPropertyBinding Path="objectid_spd_eventqueue" Target="spd_eventqueues" />
           <NavigationPropertyBinding Path="objectid_letter" Target="letters" />
           <NavigationPropertyBinding Path="objectid_reportcategory" Target="reportcategories" />
           <NavigationPropertyBinding Path="objectid_sharepointdocumentlocation" Target="sharepointdocumentlocations" />
@@ -34538,6 +34723,7 @@
           <NavigationPropertyBinding Path="regardingobjectid_bcgov_schedulejob" Target="bcgov_schedulejobs" />
           <NavigationPropertyBinding Path="regardingobjectid_bcgov_schedulejobsession" Target="bcgov_schedulejobsessions" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_invoice" Target="spd_invoices" />
+          <NavigationPropertyBinding Path="regardingobjectid_spd_eventqueue" Target="spd_eventqueues" />
           <NavigationPropertyBinding Path="regardingobjectid_queue" Target="queues" />
           <NavigationPropertyBinding Path="canceledby" Target="systemusers" />
           <NavigationPropertyBinding Path="regardingobjectid_contact" Target="contacts" />
@@ -35904,6 +36090,19 @@
           <NavigationPropertyBinding Path="spd_ServiceTypeId" Target="spd_servicetypes" />
           <NavigationPropertyBinding Path="spd_cpicbatch_incident" Target="incidents" />
         </EntitySet>
+        <EntitySet Name="spd_eventqueues" EntityType="Microsoft.Dynamics.CRM.spd_eventqueue">
+          <NavigationPropertyBinding Path="createdby" Target="systemusers" />
+          <NavigationPropertyBinding Path="createdonbehalfby" Target="systemusers" />
+          <NavigationPropertyBinding Path="modifiedby" Target="systemusers" />
+          <NavigationPropertyBinding Path="modifiedonbehalfby" Target="systemusers" />
+          <NavigationPropertyBinding Path="organizationid" Target="organizations" />
+          <NavigationPropertyBinding Path="spd_eventqueue_SyncErrors" Target="syncerrors" />
+          <NavigationPropertyBinding Path="spd_eventqueue_AsyncOperations" Target="asyncoperations" />
+          <NavigationPropertyBinding Path="spd_eventqueue_MailboxTrackingFolders" Target="mailboxtrackingfolders" />
+          <NavigationPropertyBinding Path="spd_eventqueue_ProcessSession" Target="processsessions" />
+          <NavigationPropertyBinding Path="spd_eventqueue_BulkDeleteFailures" Target="bulkdeletefailures" />
+          <NavigationPropertyBinding Path="spd_eventqueue_PrincipalObjectAttributeAccesses" Target="principalobjectattributeaccessset" />
+        </EntitySet>
         <EntitySet Name="spd_findings" EntityType="Microsoft.Dynamics.CRM.spd_finding">
           <NavigationPropertyBinding Path="createdby" Target="systemusers" />
           <NavigationPropertyBinding Path="createdonbehalfby" Target="systemusers" />
@@ -36359,6 +36558,7 @@
           <NavigationPropertyBinding Path="regardingobjectid_bcgov_schedulejob" Target="bcgov_schedulejobs" />
           <NavigationPropertyBinding Path="regardingobjectid_bcgov_schedulejobsession" Target="bcgov_schedulejobsessions" />
           <NavigationPropertyBinding Path="regardingobjectid_spd_invoice" Target="spd_invoices" />
+          <NavigationPropertyBinding Path="regardingobjectid_spd_eventqueue" Target="spd_eventqueues" />
           <NavigationPropertyBinding Path="regardingobjectid_ExpiredProcess_syncerror" Target="expiredprocesses" />
           <NavigationPropertyBinding Path="regardingobjectid_email_syncerror" Target="emails" />
           <NavigationPropertyBinding Path="regardingobjectid_systemuser" Target="systemusers" />
@@ -37027,6 +37227,10 @@
           <NavigationPropertyBinding Path="lk_spd_invoice_modifiedby" Target="spd_invoices" />
           <NavigationPropertyBinding Path="lk_spd_invoice_modifiedonbehalfby" Target="spd_invoices" />
           <NavigationPropertyBinding Path="user_spd_invoice" Target="spd_invoices" />
+          <NavigationPropertyBinding Path="lk_spd_eventqueue_createdby" Target="spd_eventqueues" />
+          <NavigationPropertyBinding Path="lk_spd_eventqueue_createdonbehalfby" Target="spd_eventqueues" />
+          <NavigationPropertyBinding Path="lk_spd_eventqueue_modifiedby" Target="spd_eventqueues" />
+          <NavigationPropertyBinding Path="lk_spd_eventqueue_modifiedonbehalfby" Target="spd_eventqueues" />
           <NavigationPropertyBinding Path="lk_slakpiinstancebase_createdonbehalfby" Target="slakpiinstances" />
           <NavigationPropertyBinding Path="lk_mobileofflineprofileitemassocaition_modifiedonbehalfby" Target="mobileofflineprofileitemassociations" />
           <NavigationPropertyBinding Path="lk_userqueryvisualizationbase_modifiedonbehalfby" Target="userqueryvisualizations" />
