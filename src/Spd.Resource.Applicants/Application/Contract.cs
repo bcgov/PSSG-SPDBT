@@ -78,7 +78,7 @@ public record ApplicationCreateCmd
     public Guid CreatedByUserId { get; set; }
     public PayerPreferenceTypeCode PayeeType { get; set; }
     public ServiceTypeEnum? ServiceType { get; set; }
-    public ScreenTypeEnum? ScreeningType { get; set; }
+    public ScreenTypeEnum ScreeningType { get; set; } = ScreenTypeEnum.Staff;
     public SpdTempFile? ConsentFormTempFile { get; set; } // would be null if applicant submit application
     public string? CreatedByApplicantBcscId { get; set; } = null;
     public Guid? SharedClearanceId { get; set; } = null;
@@ -128,6 +128,7 @@ public record ApplicationResult
     public DateTimeOffset? CreatedOn { get; set; }
     public string? OrgName { get; set; }
     public ServiceTypeEnum? ServiceType { get; set; }
+    public ScreenTypeEnum? ScreeningType { get; set; }
     public DateTimeOffset? PaidOn { get; set; }
     public int? NumberOfAttempts { get; set; }
 }
