@@ -1,9 +1,16 @@
+import { GenderCode } from 'src/app/api/models';
 import { CountryTypeCode } from './country-type.model';
 
 export interface SelectOptions<k = string | number | boolean> {
 	code: k;
 	desc: string;
 }
+
+export const GenderTypes: SelectOptions[] = [
+	{ desc: 'M', code: GenderCode.M },
+	{ desc: 'F', code: GenderCode.F },
+	{ desc: 'X', code: GenderCode.U },
+];
 
 export const CountryTypes: SelectOptions[] = [
 	{ desc: 'Canada', code: CountryTypeCode.Canada },
