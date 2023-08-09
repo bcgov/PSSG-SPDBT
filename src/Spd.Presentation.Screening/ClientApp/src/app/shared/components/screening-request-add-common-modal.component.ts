@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {
-	ApplicationInviteCreateRequest,
+	ApplicationInvitePrepopulateDataResponse,
 	ApplicationInvitesCreateRequest,
 	ApplicationInvitesCreateResponse,
 	BooleanTypeCode,
@@ -27,7 +27,8 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 export interface ScreeningRequestAddDialogData {
 	portal: PortalTypeCode;
 	orgId: string;
-	inviteDefault: ApplicationInviteCreateRequest | undefined;
+	clearanceId?: null | string;
+	clearanceAccessId?: null | string;
 }
 
 @Component({
@@ -161,7 +162,7 @@ export interface ScreeningRequestAddDialogData {
 							</div>
 						</ng-container>
 					</div>
-					<div class="row">
+					<div class="row" *ngIf="isAllowMultiple">
 						<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
 							<button
 								mat-stroked-button
@@ -205,6 +206,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 	isCrrpPortal = false;
 	isNotVolunteerOrg = false;
 	isDuplicateDetected = false;
+	isAllowMultiple = false;
 	duplicateName = '';
 	duplicateEmail = '';
 
@@ -275,12 +277,31 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 			crcs: this.formBuilder.array([]),
 		});
 
-		this.addFirstRow(this.dialogData?.inviteDefault ?? undefined);
+		const clearanceId = this.dialogData?.clearanceId;
+		if (clearanceId) {
+			this.isAllowMultiple = false;
+			this.applicationService
+				.apiOrgsOrgIdClearancesExpiredClearanceIdGet({
+					orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
+					clearanceId,
+				})
+				.pipe()
+				.subscribe((resp: ApplicationInvitePrepopulateDataResponse) => {
+					this.addFirstRow(resp);
+				});
+		} else {
+			this.isAllowMultiple = true;
+			this.addFirstRow();
+		}
 	}
 
-	initiateForm(inviteDefault?: ApplicationInviteCreateRequest): FormGroup {
-		const screeningTypeCodeDefault = this.showScreeningType ? '' : ScreeningTypeCode.Staff;
-		const serviceTypeCodeDefault = this.showServiceType ? '' : this.serviceTypeDefault;
+	initiateForm(inviteDefault?: ApplicationInvitePrepopulateDataResponse): FormGroup {
+		let screeningTypeCodeDefault = '';
+		if (this.showScreeningType) {
+			screeningTypeCodeDefault = inviteDefault?.screeningType ? inviteDefault?.screeningType : ScreeningTypeCode.Staff;
+		}
+
+		const serviceTypeCodeDefault = inviteDefault?.serviceType ? inviteDefault?.serviceType : this.serviceTypeDefault;
 
 		return this.formBuilder.group(
 			{
@@ -306,7 +327,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 		);
 	}
 
-	addFirstRow(inviteDefault?: ApplicationInviteCreateRequest) {
+	addFirstRow(inviteDefault?: ApplicationInvitePrepopulateDataResponse) {
 		const control = this.form.get('crcs') as FormArray;
 		control.push(this.initiateForm(inviteDefault));
 	}
@@ -376,6 +397,14 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 			applicationInviteCreateRequests: control,
 			requireDuplicateCheck: true,
 		};
+
+		const clearanceAccessId = this.dialogData?.clearanceAccessId;
+		if (clearanceAccessId) {
+			body.applicationInviteCreateRequests?.forEach((item) => {
+				item.originalClearanceAccessId = clearanceAccessId;
+			});
+		}
+
 		this.promptVulnerableSector(body);
 	}
 

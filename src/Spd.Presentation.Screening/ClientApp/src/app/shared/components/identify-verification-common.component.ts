@@ -318,7 +318,6 @@ export class IdentifyVerificationCommonComponent implements OnInit {
 		const dialogOptions: ScreeningRequestAddDialogData = {
 			portal: this.portal!,
 			orgId: this.orgId!,
-			inviteDefault,
 		};
 
 		this.dialog
