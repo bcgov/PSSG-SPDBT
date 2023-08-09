@@ -6,7 +6,11 @@ import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
-import { ApplicationInviteCreateRequest, ClearanceListResponse, ClearanceResponse } from 'src/app/api/models';
+import {
+	ApplicationInviteCreateRequest,
+	ClearanceAccessListResponse,
+	ClearanceAccessResponse,
+} from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { AppRoutes } from 'src/app/app-routing.module';
@@ -21,7 +25,7 @@ import {
 } from 'src/app/shared/components/screening-request-add-common-modal.component';
 import { CrrpRoutes } from '../crrp-routing.module';
 
-export interface ExpiredClearanceResponse extends ClearanceResponse {
+export interface ExpiredClearanceResponse extends ClearanceAccessResponse {
 	daysRemainingText: string;
 	daysRemainingClass: string;
 }
@@ -337,7 +341,8 @@ export class ExpiringChecksComponent implements OnInit {
 					const dialogOptions: ScreeningRequestAddDialogData = {
 						portal: PortalTypeCode.Crrp,
 						orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
-						inviteDefault,
+						clearanceId: clearance.clearanceId!,
+						clearanceAccessId: clearance.id!,
 					};
 
 					this.dialog
@@ -348,7 +353,6 @@ export class ExpiringChecksComponent implements OnInit {
 						.afterClosed()
 						.subscribe((resp) => {
 							if (resp.success) {
-								this.hotToastService.success('Expired check was successfully removed');
 								this.hotToastService.success(resp.message);
 
 								this.router.navigateByUrl(CrrpRoutes.path(CrrpRoutes.CRIMINAL_RECORD_CHECKS));
@@ -405,7 +409,7 @@ export class ExpiringChecksComponent implements OnInit {
 				...this.queryParams,
 			})
 			.pipe()
-			.subscribe((res: ClearanceListResponse) => {
+			.subscribe((res: ClearanceAccessListResponse) => {
 				const applications = res.clearances as Array<ExpiredClearanceResponse>;
 				applications.forEach((app: ExpiredClearanceResponse) => {
 					const [itemText, itemClass] = this.getDaysRemaining(app.expiresOn);
