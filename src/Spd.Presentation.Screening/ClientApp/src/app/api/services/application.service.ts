@@ -12,6 +12,7 @@ import { map, filter } from 'rxjs/operators';
 import { ActionResult } from '../models/action-result';
 import { ApplicationCreateResponse } from '../models/application-create-response';
 import { ApplicationInviteListResponse } from '../models/application-invite-list-response';
+import { ApplicationInvitePrepopulateDataResponse } from '../models/application-invite-prepopulate-data-response';
 import { ApplicationInvitesCreateRequest } from '../models/application-invites-create-request';
 import { ApplicationInvitesCreateResponse } from '../models/application-invites-create-response';
 import { ApplicationListResponse } from '../models/application-list-response';
@@ -19,7 +20,7 @@ import { ApplicationPaymentListResponse } from '../models/application-payment-li
 import { ApplicationStatisticsResponse } from '../models/application-statistics-response';
 import { BulkHistoryListResponse } from '../models/bulk-history-list-response';
 import { BulkUploadCreateResponse } from '../models/bulk-upload-create-response';
-import { ClearanceListResponse } from '../models/clearance-list-response';
+import { ClearanceAccessListResponse } from '../models/clearance-access-list-response';
 import { DelegateResponse } from '../models/delegate-response';
 import { IdentityStatusCode } from '../models/identity-status-code';
 
@@ -989,7 +990,7 @@ export class ApplicationService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<StrictHttpResponse<ClearanceListResponse>> {
+): Observable<StrictHttpResponse<ClearanceAccessListResponse>> {
 
     const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdClearancesExpiredGetPath, 'get');
     if (params) {
@@ -1007,7 +1008,7 @@ export class ApplicationService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<ClearanceListResponse>;
+        return r as StrictHttpResponse<ClearanceAccessListResponse>;
       })
     );
   }
@@ -1032,10 +1033,10 @@ export class ApplicationService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<ClearanceListResponse> {
+): Observable<ClearanceAccessListResponse> {
 
     return this.apiOrgsOrgIdClearancesExpiredGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<ClearanceListResponse>) => r.body as ClearanceListResponse)
+      map((r: StrictHttpResponse<ClearanceAccessListResponse>) => r.body as ClearanceAccessListResponse)
     );
   }
 
@@ -1100,6 +1101,70 @@ export class ApplicationService extends BaseService {
 
     return this.apiOrgsOrgIdClearancesExpiredClearanceAccessIdDelete$Response(params,context).pipe(
       map((r: StrictHttpResponse<ActionResult>) => r.body as ActionResult)
+    );
+  }
+
+  /**
+   * Path part for operation apiOrgsOrgIdClearancesExpiredClearanceIdGet
+   */
+  static readonly ApiOrgsOrgIdClearancesExpiredClearanceIdGetPath = '/api/orgs/{orgId}/clearances/expired/{clearanceId}';
+
+  /**
+   * return.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiOrgsOrgIdClearancesExpiredClearanceIdGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiOrgsOrgIdClearancesExpiredClearanceIdGet$Response(params: {
+    orgId: string;
+    clearanceId: string;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<ApplicationInvitePrepopulateDataResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdClearancesExpiredClearanceIdGetPath, 'get');
+    if (params) {
+      rb.path('orgId', params.orgId, {});
+      rb.path('clearanceId', params.clearanceId, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<ApplicationInvitePrepopulateDataResponse>;
+      })
+    );
+  }
+
+  /**
+   * return.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiOrgsOrgIdClearancesExpiredClearanceIdGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiOrgsOrgIdClearancesExpiredClearanceIdGet(params: {
+    orgId: string;
+    clearanceId: string;
+  },
+  context?: HttpContext
+
+): Observable<ApplicationInvitePrepopulateDataResponse> {
+
+    return this.apiOrgsOrgIdClearancesExpiredClearanceIdGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<ApplicationInvitePrepopulateDataResponse>) => r.body as ApplicationInvitePrepopulateDataResponse)
     );
   }
 
