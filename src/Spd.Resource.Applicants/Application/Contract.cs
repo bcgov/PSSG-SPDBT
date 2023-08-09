@@ -14,8 +14,8 @@ public interface IApplicationRepository
     public Task IdentityAsync(IdentityCmd cmd, CancellationToken ct);
     public Task<BulkAppsCreateResp> AddBulkAppsAsync(BulkAppsCreateCmd createApplicationCmds, CancellationToken cancellationToken);
     public Task<BulkHistoryListResp> QueryBulkHistoryAsync(BulkHistoryListQry query, CancellationToken cancellationToken);
-    public Task<ClearanceListResp> QueryAsync(ClearanceListQry clearanceListQry, CancellationToken ct);
-    public Task<ShareableClearanceListResp> QueryAsync(ShareableClearanceQry ShareableClearanceQry, CancellationToken ct);
+    public Task<ClearanceAccessListResp> QueryAsync(ClearanceAccessListQry clearanceListQry, CancellationToken ct);
+    public Task<ClearanceListResp> QueryAsync(ClearanceQry ShareableClearanceQry, CancellationToken ct);
     public Task DeleteClearanceAccessAsync(ClearanceAccessDeleteCmd clearanceAccessDeleteCmd, CancellationToken cancellationToken);
     public Task<ApplicantApplicationListResp> QueryApplicantApplicationListAsync(ApplicantApplicationListQry query, CancellationToken cancellationToken);
     public Task<ApplicationResult> QueryApplicationAsync(ApplicationQry query, CancellationToken cancellationToken);
@@ -182,14 +182,14 @@ public record ApplicationStatisticsResp
 #endregion
 
 #region clearance
-public record ClearanceListQry
+public record ClearanceAccessListQry
 {
     public Guid OrgId { get; set; }
-    public ClearanceFilterBy? FilterBy { get; set; } //null means no filter
-    public ClearanceSortBy? SortBy { get; set; } //null means no sorting
+    public ClearanceAccessFilterBy? FilterBy { get; set; } //null means no filter
+    public ClearanceAccessSortBy? SortBy { get; set; } //null means no sorting
     public Paging Paging { get; set; } = null!;
 }
-public record ClearanceFilterBy(Guid OrgId)
+public record ClearanceAccessFilterBy(Guid OrgId)
 {
     public string? NameOrEmailContains { get; set; }
     public ClearanceAccessStatusEnum ClearanceAccessStatus { get; set; } = ClearanceAccessStatusEnum.Approved;
@@ -201,13 +201,13 @@ public enum ClearanceAccessStatusEnum
     Approved, //active status
     Revoked
 }
-public record ClearanceSortBy(bool? ExpiresOn = true, bool? NameDesc = null, bool? CompanyNameDesc = null);
-public record ClearanceListResp
+public record ClearanceAccessSortBy(bool? ExpiresOn = true, bool? NameDesc = null, bool? CompanyNameDesc = null);
+public record ClearanceAccessListResp
 {
-    public IEnumerable<ClearanceResp> Clearances { get; set; } = Array.Empty<ClearanceResp>();
+    public IEnumerable<ClearanceAccessResp> Clearances { get; set; } = Array.Empty<ClearanceAccessResp>();
     public PaginationResp Pagination { get; set; } = null!;
 }
-public record ClearanceResp
+public record ClearanceAccessResp
 {
     public Guid Id { get; set; } //clearance access id
     public string FirstName { get; set; } = null!;
@@ -223,8 +223,13 @@ public record ClearanceAccessDeleteCmd
     public Guid ClearanceAccessId { get; set; }
     public Guid OrgId { get; set; }
 }
-public record ShareableClearanceQry(Guid ContactId, EmployeeInteractionTypeCode? WorkWith, DateTimeOffset FromDate, ServiceTypeEnum ServiceType, bool Shareable = true);
-public record ShareableClearanceResp
+public record ClearanceQry(Guid? ContactId = null,
+    EmployeeInteractionTypeCode? WorkWith = null,
+    DateTimeOffset? FromDate = null,
+    ServiceTypeEnum? ServiceType = null,
+    bool? Shareable = null,
+    Guid? ClearanceId = null);
+public record ClearanceResp
 {
     public Guid OrgId { get; set; }
     public ServiceTypeEnum ServiceType { get; set; }
@@ -232,10 +237,11 @@ public record ShareableClearanceResp
     public DateTimeOffset? ExpiryDate { get; set; }
     public EmployeeInteractionTypeCode? WorkWith { get; set; }
     public Guid ClearanceId { get; set; }
+    public Guid ApplicationId { get; set; }
 }
-public record ShareableClearanceListResp
+public record ClearanceListResp
 {
-    public IEnumerable<ShareableClearanceResp> Clearances { get; set; } = Array.Empty<ShareableClearanceResp>();
+    public IEnumerable<ClearanceResp> Clearances { get; set; } = Array.Empty<ClearanceResp>();
 }
 #endregion
 

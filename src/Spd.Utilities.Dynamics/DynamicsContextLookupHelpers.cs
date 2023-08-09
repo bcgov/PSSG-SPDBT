@@ -216,6 +216,11 @@ namespace Spd.Utilities.Dynamics
             .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
             .SingleOrDefaultAsync(ct);
 
+        public static async Task<spd_clearanceaccess?> GetClearanceAccessById(this DynamicsContext context, Guid clearanceAccessId, CancellationToken ct)
+           => await context.spd_clearanceaccesses.Where(a => a.spd_clearanceaccessid == clearanceAccessId)
+            .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
+            .SingleOrDefaultAsync(ct);
+
         public static async Task<contact?> GetContactById(this DynamicsContext context, Guid contactId, CancellationToken ct)
            => await context.contacts.Where(a => a.contactid == contactId)
             .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)

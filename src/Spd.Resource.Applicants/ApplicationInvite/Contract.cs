@@ -76,6 +76,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
         public PayerPreferenceTypeCode? PayeeType { get; set; }
         public ServiceTypeEnum ServiceType { get; set; }
         public ScreenTypeEnum ScreeningType { get; set; }
+        public Guid? OriginalClearanceAccessId { get; set; }
     }
 
     public record ApplicationInviteDeleteCmd
