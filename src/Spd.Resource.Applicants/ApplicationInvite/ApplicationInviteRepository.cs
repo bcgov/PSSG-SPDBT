@@ -80,6 +80,16 @@ namespace Spd.Resource.Applicants.ApplicationInvite
                 {
                     _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_ServiceTypeId), servicetype);
                 }
+
+                if(item.OriginalClearanceAccessId != null)
+                {
+                    spd_clearanceaccess access = await _dynaContext.GetClearanceAccessById((Guid)item.OriginalClearanceAccessId, ct);
+                    if (access == null || access._spd_organizationid_value != createInviteCmd.OrgId)
+                        throw new ApiException(HttpStatusCode.BadRequest, "Invalid clearance access id.");
+                    access.statecode = DynamicsConstants.StateCode_Inactive;
+                    access.statuscode = (int)ClearanceAccessStatusOptionSet.Revoked;
+                    _dynaContext.UpdateObject(access);
+                }
             }
             await _dynaContext.SaveChangesAsync(ct);
         }

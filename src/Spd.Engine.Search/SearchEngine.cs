@@ -38,7 +38,7 @@ namespace Spd.Engine.Search
             var contact = (ApplicantIdentityQueryResult?)await _identityRepo.Query(new ApplicantIdentityQuery(request.BcscId, IdentityProviderTypeEnum.BcServicesCard), ct);
             if (contact == null) return response;
 
-            ShareableClearanceQry qry = new ShareableClearanceQry(
+            ClearanceQry qry = new ClearanceQry(
                 ContactId: contact.ContactId,
                 FromDate: DateTimeOffset.UtcNow.AddMonths(SpdConstants.SHAREABLE_CLEARANCE_EXPIRED_DATE_BUFFER_IN_MONTHS),
                 Shareable: true,
