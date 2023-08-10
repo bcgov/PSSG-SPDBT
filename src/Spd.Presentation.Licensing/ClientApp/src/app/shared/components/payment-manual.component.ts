@@ -1,5 +1,4 @@
-import { Component, Input } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
 @Component({
 	selector: 'app-payment-manual',
@@ -15,7 +14,7 @@ import { Router } from '@angular/router';
 						color="primary"
 						class="large w-auto m-2"
 						aria-label="Back"
-						*ngIf="backRoute"
+						*ngIf="isBackRoute"
 						(click)="onBack()"
 					>
 						<mat-icon>arrow_back</mat-icon>Back
@@ -27,8 +26,8 @@ import { Router } from '@angular/router';
 		<mat-divider class="mb-2 mb-lg-4"></mat-divider>
 
 		<div class="d-flex justify-content-center">
-			<div class="fail-image text-center">
-				<img class="fail-image__item" src="/assets/payment-fail.png" />
+			<div class="payment__image text-center">
+				<img class="payment__image__item" src="/assets/payment-fail.png" />
 			</div>
 		</div>
 
@@ -48,38 +47,27 @@ import { Router } from '@angular/router';
 	`,
 	styles: [
 		`
-			.fail-image {
-				max-height: 8em;
-				border-radius: 50%;
-				width: 400px;
-				background: var(--color-grey-lighter);
-				font: 32px Arial, sans-serif;
-
-				&__item {
-					margin-top: 15px;
-					height: 5em;
-				}
-			}
-
-			.text {
-				font-weight: 700;
-				line-height: 1.5em;
-			}
-
 			a {
 				color: var(--bs-link-color) !important;
 			}
 		`,
 	],
 })
-export class PaymentManualComponent {
-	@Input() backRoute = '';
+export class PaymentManualComponent implements OnInit {
+	isBackRoute: boolean = false;
 
-	constructor(private router: Router) {}
+	@Output() backRoute: EventEmitter<any> = new EventEmitter();
+	@Output() downloadManualPaymentForm: EventEmitter<any> = new EventEmitter();
 
-	onDownloadManualPaymentForm(): void {}
+	ngOnInit(): void {
+		this.isBackRoute = this.backRoute.observed;
+	}
+
+	onDownloadManualPaymentForm(): void {
+		this.downloadManualPaymentForm.emit();
+	}
 
 	onBack(): void {
-		this.router.navigate([this.backRoute]);
+		this.backRoute.emit();
 	}
 }

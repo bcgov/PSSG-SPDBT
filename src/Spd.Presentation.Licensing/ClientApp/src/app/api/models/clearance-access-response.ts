@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-export interface ClearanceResponse {
+export interface ClearanceAccessResponse {
   clearanceId?: string;
   email?: null | string;
   expiresOn?: null | string;

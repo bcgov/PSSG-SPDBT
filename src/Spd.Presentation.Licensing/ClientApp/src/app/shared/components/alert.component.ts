@@ -1,12 +1,12 @@
 import { Component, ContentChild, ElementRef, Input } from '@angular/core';
 
-export type AlertType = 'success' | 'warning' | 'danger';
+export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 
 @Component({
 	selector: 'app-alert',
 	template: `
 		<div class="alert d-flex d-inline-flex align-items-center w-100" role="alert" [ngClass]="getType()">
-			<mat-icon class="d-none d-lg-block alert-icon me-2">{{ icon }}</mat-icon>
+			<mat-icon class="d-none d-lg-block alert-icon me-2" *ngIf="icon">{{ icon }}</mat-icon>
 			<ng-content #alertContent></ng-content>
 		</div>
 	`,
@@ -14,7 +14,7 @@ export type AlertType = 'success' | 'warning' | 'danger';
 })
 export class AlertComponent {
 	@Input() public type: AlertType = 'warning';
-	@Input() public icon: string = 'warning';
+	@Input() public icon: string | null = 'warning';
 
 	@ContentChild('alertContent') alertContent!: ElementRef;
 
