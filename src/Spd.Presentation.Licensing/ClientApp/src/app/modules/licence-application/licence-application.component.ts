@@ -265,8 +265,8 @@ import { distinctUntilChanged } from 'rxjs';
 				</mat-step>
 
 				<mat-step completed="true">
-					<ng-template matStepLabel>Summary</ng-template>
-					<app-summary-review></app-summary-review>
+					<ng-template matStepLabel>Residential Address</ng-template>
+					<app-address></app-address>
 
 					<div class="row mt-4">
 						<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -279,8 +279,8 @@ import { distinctUntilChanged } from 'rxjs';
 				</mat-step>
 
 				<mat-step completed="true">
-					<ng-template matStepLabel>Residential Address</ng-template>
-					<app-address></app-address>
+					<ng-template matStepLabel>Summary</ng-template>
+					<app-summary-review></app-summary-review>
 
 					<div class="row mt-4">
 						<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
