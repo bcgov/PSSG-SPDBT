@@ -374,6 +374,8 @@ namespace Spd.Manager.Cases.Application
         #region applicant-applications
         public async Task<ApplicationCreateResponse> Handle(ApplicantApplicationCreateCommand command, CancellationToken ct)
         {
+            //todo: add check if invite is still valid
+
             var result = new ApplicationCreateResponse();
             var cmd = _mapper.Map<ApplicationCreateCmd>(command.ApplicationCreateRequest);
             cmd.OrgId = command.ApplicationCreateRequest.OrgId;
