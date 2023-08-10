@@ -44,8 +44,8 @@ export class DeclarationModel {
 							<div>
 								You have an existing criminal record check for working with
 								{{ shareCrcWorksWith | options : 'EmployeeInteractionTypes' }}, issued on
-								{{ shareCrcGrantedDate | date : appConstants.date.formalDateFormat : 'UTC' }}. Do you want to share the
-								results of this criminal record check at no cost?
+								{{ shareCrcGrantedDate | date : appConstants.date.formalDateFormat }}. Do you want to share the results
+								of this criminal record check at no cost?
 							</div>
 							<mat-radio-group aria-label="Select an option" formControlName="agreeToShare">
 								<mat-radio-button [value]="true"> Yes, share my existing criminal record check </mat-radio-button>
