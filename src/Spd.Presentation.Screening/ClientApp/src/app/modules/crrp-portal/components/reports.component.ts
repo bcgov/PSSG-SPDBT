@@ -186,20 +186,17 @@ export class ReportsComponent implements OnInit {
 		} else if (this.reportMonthYearFrom && !this.reportMonthYearTo) {
 			reports = this.allReports.filter((rpt) => {
 				const reportDate = new Date(rpt.reportDate!);
-				const reportUtcDate = new Date(reportDate.getUTCFullYear(), reportDate.getUTCMonth(), reportDate.getUTCDate());
-				return reportUtcDate >= this.reportMonthYearFrom!;
+				return reportDate >= this.reportMonthYearFrom!;
 			});
 		} else if (!this.reportMonthYearFrom && this.reportMonthYearTo) {
 			reports = this.allReports.filter((rpt) => {
 				const reportDate = new Date(rpt.reportDate!);
-				const reportUtcDate = new Date(reportDate.getUTCFullYear(), reportDate.getUTCMonth(), reportDate.getUTCDate());
-				return reportUtcDate <= this.reportMonthYearTo!;
+				return reportDate <= this.reportMonthYearTo!;
 			});
 		} else {
 			reports = this.allReports.filter((rpt) => {
 				const reportDate = new Date(rpt.reportDate!);
-				const reportUtcDate = new Date(reportDate.getUTCFullYear(), reportDate.getUTCMonth(), reportDate.getUTCDate());
-				return reportUtcDate >= this.reportMonthYearFrom! && reportUtcDate <= this.reportMonthYearTo!;
+				return reportDate >= this.reportMonthYearFrom! && reportDate <= this.reportMonthYearTo!;
 			});
 		}
 
