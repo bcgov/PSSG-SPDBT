@@ -149,6 +149,7 @@ internal partial class ApplicationRepository : IApplicationRepository
         _context.SetLink(clearanceaccess, nameof(clearanceaccess.spd_OrganizationId), org);
         _context.SetLink(clearanceaccess, nameof(clearanceaccess.spd_ClearanceId), clearance);
         _context.SetLink(clearanceaccess, nameof(clearanceaccess.owningteam), team);
+        _context.SetLink(clearanceaccess, nameof(clearanceaccess.ownerid), team);
         await _context.SaveChangesAsync(ct);
     }
 
