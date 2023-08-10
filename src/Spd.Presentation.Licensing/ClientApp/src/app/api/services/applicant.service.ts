@@ -16,12 +16,11 @@ import { ApplicantAppCreateRequest } from '../models/applicant-app-create-reques
 import { ApplicantAppFileCreateResponse } from '../models/applicant-app-file-create-response';
 import { ApplicantApplicationFileListResponse } from '../models/applicant-application-file-list-response';
 import { ApplicantApplicationListResponse } from '../models/applicant-application-list-response';
-import { ApplicantPaymentLinkCreateRequest } from '../models/applicant-payment-link-create-request';
+import { ApplicantApplicationResponse } from '../models/applicant-application-response';
 import { ApplicantUserInfo } from '../models/applicant-user-info';
 import { ApplicationCreateResponse } from '../models/application-create-response';
 import { FileTemplateTypeCode } from '../models/file-template-type-code';
 import { FileTypeCode } from '../models/file-type-code';
-import { PaymentLinkResponse } from '../models/payment-link-response';
 import { ServiceTypeCode } from '../models/service-type-code';
 import { ShareableClearanceResponse } from '../models/shareable-clearance-response';
 
@@ -337,6 +336,62 @@ export class ApplicantService extends BaseService {
   }
 
   /**
+   * Path part for operation apiApplicantsApplicantIdScreeningsApplicationIdGet
+   */
+  static readonly ApiApplicantsApplicantIdScreeningsApplicationIdGetPath = '/api/applicants/{applicantId}/screenings/{applicationId}';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiApplicantsApplicantIdScreeningsApplicationIdGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantsApplicantIdScreeningsApplicationIdGet$Response(params: {
+    applicantId: string;
+    applicationId: string;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<ApplicantApplicationResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, ApplicantService.ApiApplicantsApplicantIdScreeningsApplicationIdGetPath, 'get');
+    if (params) {
+      rb.path('applicantId', params.applicantId, {});
+      rb.path('applicationId', params.applicationId, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<ApplicantApplicationResponse>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiApplicantsApplicantIdScreeningsApplicationIdGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantsApplicantIdScreeningsApplicationIdGet(params: {
+    applicantId: string;
+    applicationId: string;
+  },
+  context?: HttpContext
+
+): Observable<ApplicantApplicationResponse> {
+
+    return this.apiApplicantsApplicantIdScreeningsApplicationIdGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<ApplicantApplicationResponse>) => r.body as ApplicantApplicationResponse)
+    );
+  }
+
+  /**
    * Path part for operation apiApplicantsUserinfoGet
    */
   static readonly ApiApplicantsUserinfoGetPath = '/api/applicants/userinfo';
@@ -526,9 +581,9 @@ export class ApplicantService extends BaseService {
   }
 
   /**
-   * Path part for operation apiApplicantsScreeningsFileTemplatesGet
+   * Path part for operation apiApplicantsScreeningsApplicationIdFileTemplatesGet
    */
-  static readonly ApiApplicantsScreeningsFileTemplatesGetPath = '/api/applicants/screenings/file-templates';
+  static readonly ApiApplicantsScreeningsApplicationIdFileTemplatesGetPath = '/api/applicants/screenings/{applicationId}/file-templates';
 
   /**
    * download the template document.
@@ -536,19 +591,21 @@ export class ApplicantService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiApplicantsScreeningsFileTemplatesGet()` instead.
+   * To access only the response body, use `apiApplicantsScreeningsApplicationIdFileTemplatesGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantsScreeningsFileTemplatesGet$Response(params: {
+  apiApplicantsScreeningsApplicationIdFileTemplatesGet$Response(params: {
+    applicationId: string;
     fileTemplateType: FileTemplateTypeCode;
   },
   context?: HttpContext
 
 ): Observable<StrictHttpResponse<Blob>> {
 
-    const rb = new RequestBuilder(this.rootUrl, ApplicantService.ApiApplicantsScreeningsFileTemplatesGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, ApplicantService.ApiApplicantsScreeningsApplicationIdFileTemplatesGetPath, 'get');
     if (params) {
+      rb.path('applicationId', params.applicationId, {});
       rb.query('fileTemplateType', params.fileTemplateType, {});
     }
 
@@ -570,83 +627,20 @@ export class ApplicantService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiApplicantsScreeningsFileTemplatesGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiApplicantsScreeningsApplicationIdFileTemplatesGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantsScreeningsFileTemplatesGet(params: {
+  apiApplicantsScreeningsApplicationIdFileTemplatesGet(params: {
+    applicationId: string;
     fileTemplateType: FileTemplateTypeCode;
   },
   context?: HttpContext
 
 ): Observable<Blob> {
 
-    return this.apiApplicantsScreeningsFileTemplatesGet$Response(params,context).pipe(
+    return this.apiApplicantsScreeningsApplicationIdFileTemplatesGet$Response(params,context).pipe(
       map((r: StrictHttpResponse<Blob>) => r.body as Blob)
-    );
-  }
-
-  /**
-   * Path part for operation apiApplicantsScreeningsApplicationIdPaymentLinkPost
-   */
-  static readonly ApiApplicantsScreeningsApplicationIdPaymentLinkPostPath = '/api/applicants/screenings/{applicationId}/paymentLink';
-
-  /**
-   * Return the direct pay payment link.
-   *
-   *
-   *
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiApplicantsScreeningsApplicationIdPaymentLinkPost()` instead.
-   *
-   * This method sends `application/*+json` and handles request body of type `application/*+json`.
-   */
-  apiApplicantsScreeningsApplicationIdPaymentLinkPost$Response(params: {
-    applicationId: string;
-    body: ApplicantPaymentLinkCreateRequest
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<PaymentLinkResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, ApplicantService.ApiApplicantsScreeningsApplicationIdPaymentLinkPostPath, 'post');
-    if (params) {
-      rb.path('applicationId', params.applicationId, {});
-      rb.body(params.body, 'application/*+json');
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<PaymentLinkResponse>;
-      })
-    );
-  }
-
-  /**
-   * Return the direct pay payment link.
-   *
-   *
-   *
-   * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiApplicantsScreeningsApplicationIdPaymentLinkPost$Response()` instead.
-   *
-   * This method sends `application/*+json` and handles request body of type `application/*+json`.
-   */
-  apiApplicantsScreeningsApplicationIdPaymentLinkPost(params: {
-    applicationId: string;
-    body: ApplicantPaymentLinkCreateRequest
-  },
-  context?: HttpContext
-
-): Observable<PaymentLinkResponse> {
-
-    return this.apiApplicantsScreeningsApplicationIdPaymentLinkPost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<PaymentLinkResponse>) => r.body as PaymentLinkResponse)
     );
   }
 
