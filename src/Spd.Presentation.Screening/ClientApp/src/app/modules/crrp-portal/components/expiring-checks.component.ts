@@ -109,7 +109,7 @@ export const ExpiringChecksFilterMap: Record<keyof ExpiringChecksFilter, string>
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Expiring On</mat-header-cell>
 							<mat-cell *matCellDef="let clearance">
 								<span class="mobile-label">Expiring On:</span>
-								{{ clearance.expiresOn | date : constants.date.dateFormat : 'UTC' }}
+								{{ clearance.expiresOn | date : constants.date.dateFormat }}
 							</mat-cell>
 						</ng-container>
 

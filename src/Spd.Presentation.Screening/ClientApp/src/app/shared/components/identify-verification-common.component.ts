@@ -118,7 +118,7 @@ export interface IdentityVerificationResponse extends ApplicationResponse {
 							<mat-header-cell *matHeaderCellDef>Submitted On</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Submitted On:</span>
-								{{ application.createdOn | date : constants.date.dateFormat : 'UTC' }}
+								{{ application.createdOn | date : constants.date.dateFormat }}
 							</mat-cell>
 						</ng-container>
 

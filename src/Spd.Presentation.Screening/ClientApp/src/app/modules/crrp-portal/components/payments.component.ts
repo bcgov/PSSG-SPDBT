@@ -107,7 +107,7 @@ export interface PaymentResponse extends ApplicationPaymentResponse {
 							<mat-header-cell *matHeaderCellDef>Submitted On</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Submitted On:</span>
-								{{ application.createdOn | date : constants.date.dateFormat : 'UTC' }}
+								{{ application.createdOn | date : constants.date.dateFormat }}
 							</mat-cell>
 						</ng-container>
 
@@ -115,7 +115,7 @@ export interface PaymentResponse extends ApplicationPaymentResponse {
 							<mat-header-cell *matHeaderCellDef>Paid On</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Paid On:</span>
-								{{ application.paidOn | date : constants.date.dateFormat : 'UTC' | default }}
+								{{ application.paidOn | date : constants.date.dateFormat | default }}
 							</mat-cell>
 						</ng-container>
 
