@@ -140,13 +140,15 @@ internal partial class ApplicationRepository : IApplicationRepository
         _mapper.Map<ApplicationCreateCmd, contact>(createApplicationCmd, contact);
         _context.UpdateObject(contact);
 
+        Guid teamGuid = Guid.Parse(DynamicsConstants.Client_Service_Team_Guid);
+        team? team = await _context.teams.Where(t => t.teamid == teamGuid).FirstOrDefaultAsync(ct);
         spd_clearanceaccess clearanceaccess = new spd_clearanceaccess() { spd_clearanceaccessid = Guid.NewGuid() };
         clearanceaccess.statecode = DynamicsConstants.StateCode_Active;
         clearanceaccess.statuscode = (int)ClearanceAccessStatusOptionSet.Draft;
         _context.AddTospd_clearanceaccesses(clearanceaccess);
         _context.SetLink(clearanceaccess, nameof(clearanceaccess.spd_OrganizationId), org);
         _context.SetLink(clearanceaccess, nameof(clearanceaccess.spd_ClearanceId), clearance);
-        //todo: add link to owner team
+        _context.SetLink(clearanceaccess, nameof(clearanceaccess.owningteam), team);
         await _context.SaveChangesAsync(ct);
     }
 
