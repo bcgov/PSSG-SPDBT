@@ -174,6 +174,7 @@ namespace Spd.Manager.Cases.Payment
             resp.PaymentId = command.PaymentId;
 
             //todo: confirm with dynamics, do we need to change spd_payment status and other entity status?
+            //confirmed with dynamics, we do not need to do it for now.
             return resp;
         }
 
