@@ -232,27 +232,27 @@ body {
 
 .area-green {
   background-color: rgba(215, 228, 213, 1) !important;
-    color: #23471F !important;
+  color: #23471F !important;
 }
 
 .area-yellow {
   background-color: rgba(251, 227, 163, 1) !important;
-    color: #56451B !important;
+  color: #56451B !important;
 }
 
 .area-blue {
   background-color: rgba(211, 220, 229, 1) !important;
-    color: #013365 !important;
+  color: #013365 !important;
 }
 
 .area-grey {
   background-color: rgba(215, 215, 215, 1) !important;
-    color: #333333 !important;
+  color: #333333 !important;
 }
 
 .area-red {
   background-color: rgba(242, 222, 223, 1) !important;
-    color: #910012 !important;
+  color: #910012 !important;
 }
 
 .icon-size {
@@ -267,6 +267,10 @@ a {
 
 .optional-label {
   font-size: 0.8em;
+}
+
+.field-hint {  
+  font-size: small;
 }
 
 .step-section {
@@ -329,7 +333,7 @@ ngx-dropzone-remove-badge {
 }
 
 .step-container {
-  cursor: pointer;
+  cursor: default;
 
   &__box {
     height: 100%;
@@ -373,5 +377,25 @@ ngx-dropzone-remove-badge {
     mat-icon {
       color: var(--color-primary-light);
     }
+  }
+}
+
+.payment{
+  &__image {
+    max-height: 8em;
+    border-radius: 50%;
+    width: 400px;
+    background: var(--color-grey-lighter);
+    font: 32px Arial, sans-serif;
+
+    &__item {
+      margin-top: 15px;
+      height: 5em;
+    }
+  }
+
+  &__text {
+    font-weight: 700;
+    line-height: 1.5em;
   }
 }

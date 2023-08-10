@@ -51,6 +51,18 @@ export class UtilService {
 		return `${firstName ?? ''} ${lastName ?? ''}`.trim();
 	}
 
+	getBirthDateStartAt(): Date {
+		const today = new Date();
+		today.setFullYear(today.getFullYear() - SPD_CONSTANTS.date.birthDateStartAtYears);
+		return today;
+	}
+
+	getBirthDateMax(): Date {
+		const today = new Date();
+		today.setFullYear(new Date().getFullYear() - SPD_CONSTANTS.date.birthDateMinAgeYears);
+		return today;
+	}
+
 	removeFirstFromArray<T>(array: T[], toRemove: T): void {
 		const index = array.indexOf(toRemove);
 

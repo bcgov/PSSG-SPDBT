@@ -12,6 +12,7 @@ import { OrgService } from './services/org.service';
 import { OrgRegistrationService } from './services/org-registration.service';
 import { OrgReportService } from './services/org-report.service';
 import { OrgUserService } from './services/org-user.service';
+import { PaymentService } from './services/payment.service';
 import { UserProfileService } from './services/user-profile.service';
 
 /**
@@ -30,6 +31,7 @@ import { UserProfileService } from './services/user-profile.service';
     OrgRegistrationService,
     OrgReportService,
     OrgUserService,
+    PaymentService,
     UserProfileService,
     ApiConfiguration
   ],
