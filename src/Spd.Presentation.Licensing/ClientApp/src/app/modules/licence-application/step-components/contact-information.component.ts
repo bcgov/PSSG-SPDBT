@@ -7,7 +7,7 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 	selector: 'app-contact-information',
 	template: `
 		<div class="step">
-			<app-step-title title="Do you want to request authorization to use dogs or restraints?"></app-step-title>
+			<app-step-title title="Provide your contact information"></app-step-title>
 			<div class="step-container row">
 				<div class="col-xl-6 col-lg-8 col-md-12 col-sm-12 mx-auto">
 					<form [formGroup]="form" novalidate>
@@ -24,7 +24,7 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 							</div>
 							<div class="col-xl-4 col-lg-4 col-md-12">
 								<mat-form-field>
-									<mat-label>Phone Number</mat-label>
+									<mat-label>Personal Phone Number</mat-label>
 									<input
 										matInput
 										formControlName="phoneNumber"

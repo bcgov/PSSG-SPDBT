@@ -12,7 +12,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 						<mat-radio-group aria-label="Select an option" formControlName="licenceType">
 							<div class="row">
 								<div class="col-lg-4">
-									<mat-radio-button class="radio-label" value="a">New</mat-radio-button>
+									<mat-radio-button class="radio-label" value="N">New</mat-radio-button>
 								</div>
 								<div class="col-lg-8">
 									<app-alert type="info" icon="">
@@ -24,7 +24,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 							<mat-divider class="mb-3"></mat-divider>
 							<div class="row">
 								<div class="col-lg-4">
-									<mat-radio-button class="radio-label" value="b">Renewal</mat-radio-button>
+									<mat-radio-button class="radio-label" value="R">Renewal</mat-radio-button>
 								</div>
 								<div class="col-lg-8">
 									<app-alert type="info" icon=""
@@ -35,7 +35,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 							<mat-divider class="mb-3"></mat-divider>
 							<div class="row">
 								<div class="col-lg-4">
-									<mat-radio-button class="radio-label" value="c">Replacement</mat-radio-button>
+									<mat-radio-button class="radio-label" value="P">Replacement</mat-radio-button>
 								</div>
 								<div class="col-lg-8">
 									<app-alert type="info" icon="">
@@ -46,7 +46,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 							<mat-divider class="mb-3"></mat-divider>
 							<div class="row">
 								<div class="col-lg-4">
-									<mat-radio-button class="radio-label" value="d">Update</mat-radio-button>
+									<mat-radio-button class="radio-label" value="U">Update</mat-radio-button>
 								</div>
 								<div class="col-lg-8">
 									<app-alert type="info" icon="">

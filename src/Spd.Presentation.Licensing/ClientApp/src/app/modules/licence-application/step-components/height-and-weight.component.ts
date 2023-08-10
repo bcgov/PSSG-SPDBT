@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { GenderTypes } from 'src/app/core/code-types/model-desc.models';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
@@ -14,26 +15,34 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 							<div class="col-xl-6 col-lg-6 col-md-12">
 								<mat-form-field>
 									<mat-label>Hair Colour</mat-label>
-									<input matInput formControlName="hairColour" [errorStateMatcher]="matcher" maxlength="40" />
+									<mat-select formControlName="hairColour">
+										<mat-option *ngFor="let gdr of genderTypes" [value]="gdr.code">
+											{{ gdr.desc }}
+										</mat-option>
+									</mat-select>
 									<mat-error *ngIf="form.get('hairColour')?.hasError('required')"> This is required </mat-error>
 								</mat-form-field>
 							</div>
 							<div class="col-xl-6 col-lg-6 col-md-12">
 								<mat-form-field>
 									<mat-label>Eye Colour</mat-label>
-									<input matInput formControlName="eyeColour" maxlength="40" />
+									<mat-select formControlName="eyeColour">
+										<mat-option *ngFor="let gdr of genderTypes" [value]="gdr.code">
+											{{ gdr.desc }}
+										</mat-option>
+									</mat-select>
 								</mat-form-field>
 							</div>
 							<div class="col-xl-6 col-lg-6 col-md-12">
 								<mat-form-field>
 									<mat-label>Height (cm)</mat-label>
-									<input matInput formControlName="height" maxlength="40" />
+									<input matInput formControlName="height" mask="000.00" />
 								</mat-form-field>
 							</div>
 							<div class="col-xl-6 col-lg-6 col-md-12">
 								<mat-form-field>
 									<mat-label>Weight (kg)</mat-label>
-									<input matInput formControlName="weight" [errorStateMatcher]="matcher" maxlength="40" />
+									<input matInput formControlName="weight" [errorStateMatcher]="matcher" mask="000.00" />
 									<mat-error *ngIf="form.get('weight')?.hasError('required')"> This is required </mat-error>
 								</mat-form-field>
 							</div>
@@ -46,6 +55,7 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 	styles: [],
 })
 export class HeightAndWeightComponent {
+	genderTypes = GenderTypes;
 	matcher = new FormErrorStateMatcher();
 
 	form: FormGroup = this.formBuilder.group({

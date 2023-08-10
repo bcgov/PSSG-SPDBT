@@ -1,11 +1,11 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
 @Component({
-	selector: 'app-payment-manual',
+	selector: 'app-payment-error',
 	template: `
 		<div class="row">
 			<div class="col-xl-6 col-lg-4 col-md-12">
-				<h3 class="fw-normal m-2">Manual Payment</h3>
+				<h3 class="fw-normal m-2">Payment Error</h3>
 			</div>
 			<div class="col-xl-6 col-lg-8 col-md-12">
 				<div class="d-flex justify-content-end">
@@ -33,38 +33,23 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
 		<div class="row mx-4">
 			<div class="col-12 mt-4">
-				<div class="fw-normal fs-3 text-center">Your payment must be completed manually</div>
+				<div class="fw-normal fs-3 text-center">Your payment attempt failed with an error</div>
 			</div>
 
 			<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
-				<div class="lead fs-5 my-4">
-					Please download and complete the
-					<a (click)="onDownloadManualPaymentForm()">Manual Payment Form</a> then follow the instructions on the form to
-					submit payment to the Security Programs Division.
-				</div>
+				<div class="lead fs-5 my-4 text-center">An error occurred during the payment process</div>
 			</div>
 		</div>
 	`,
-	styles: [
-		`
-			a {
-				color: var(--bs-link-color) !important;
-			}
-		`,
-	],
+	styles: [],
 })
-export class PaymentManualComponent implements OnInit {
+export class PaymentErrorComponent implements OnInit {
 	isBackRoute: boolean = false;
 
 	@Output() backRoute: EventEmitter<any> = new EventEmitter();
-	@Output() downloadManualPaymentForm: EventEmitter<any> = new EventEmitter();
 
 	ngOnInit(): void {
 		this.isBackRoute = this.backRoute.observed;
-	}
-
-	onDownloadManualPaymentForm(): void {
-		this.downloadManualPaymentForm.emit();
 	}
 
 	onBack(): void {

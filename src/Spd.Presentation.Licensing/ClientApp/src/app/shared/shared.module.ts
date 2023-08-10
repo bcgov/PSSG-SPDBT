@@ -13,10 +13,12 @@ import { FooterComponent } from './components/app-footer.component';
 import { HeaderComponent } from './components/app-header.component';
 import { BaseFilterComponent } from './components/base-filter.component';
 import { CaptchaV2Component } from './components/captcha-v2.component';
+import { DialogOopsComponent } from './components/dialog-oops.component';
 import { DialogComponent } from './components/dialog.component';
 import { DropdownOverlayComponent } from './components/dropdown-overlay.component';
 import { FileUploadComponent } from './components/file-upload.component';
 import { MonthPickerComponent } from './components/month-picker.component';
+import { PaymentErrorComponent } from './components/payment-error.component';
 import { PaymentFailComponent } from './components/payment-fail.component';
 import { PaymentManualComponent } from './components/payment-manual.component';
 import { PaymentSuccessComponent } from './components/payment-success.component';
@@ -30,6 +32,7 @@ const SHARED_COMPONENTS = [
 	HeaderComponent,
 	FooterComponent,
 	DialogComponent,
+	DialogOopsComponent,
 	AddressAutocompleteComponent,
 	AddressModalComponent,
 	DropdownOverlayComponent,
@@ -45,6 +48,7 @@ const SHARED_COMPONENTS = [
 	AlertComponent,
 	MonthPickerComponent,
 	PaymentSuccessComponent,
+	PaymentErrorComponent,
 	PaymentFailComponent,
 	PaymentManualComponent,
 ];

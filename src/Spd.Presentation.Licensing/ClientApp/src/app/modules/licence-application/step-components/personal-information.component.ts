@@ -16,26 +16,26 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 					<form [formGroup]="form" novalidate>
 						<mat-checkbox formControlName="oneLegalName"> I have one legal name </mat-checkbox>
 						<div class="row">
-							<div class="col-xl-3 col-lg-6 col-md-12">
+							<div class="col-xl-4 col-lg-6 col-md-12">
 								<mat-form-field>
 									<mat-label>Legal Given Name</mat-label>
 									<input matInput formControlName="givenName" [errorStateMatcher]="matcher" maxlength="40" />
 									<mat-error *ngIf="form.get('givenName')?.hasError('required')"> This is required </mat-error>
 								</mat-form-field>
 							</div>
-							<div class="col-xl-3 col-lg-6 col-md-12">
+							<div class="col-xl-4 col-lg-6 col-md-12">
 								<mat-form-field>
 									<mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
 									<input matInput formControlName="middleName1" maxlength="40" />
 								</mat-form-field>
 							</div>
-							<div class="col-xl-3 col-lg-6 col-md-12">
+							<div class="col-xl-4 col-lg-6 col-md-12">
 								<mat-form-field>
 									<mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
 									<input matInput formControlName="middleName2" maxlength="40" />
 								</mat-form-field>
 							</div>
-							<div class="col-xl-3 col-lg-6 col-md-12">
+							<div class="col-xl-4 col-lg-6 col-md-12">
 								<mat-form-field>
 									<mat-label>Legal Surname</mat-label>
 									<input matInput formControlName="surname" [errorStateMatcher]="matcher" maxlength="40" />
@@ -43,7 +43,7 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 								</mat-form-field>
 							</div>
 
-							<div class="col-xl-3 col-lg-6 col-md-12">
+							<div class="col-xl-4 col-lg-6 col-md-12">
 								<mat-form-field>
 									<mat-label>Date of Birth</mat-label>
 									<input
@@ -58,7 +58,7 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 									<mat-error *ngIf="form.get('dateOfBirth')?.hasError('required')">This is required</mat-error>
 								</mat-form-field>
 							</div>
-							<div class="col-xl-3 col-lg-6 col-md-12">
+							<div class="col-xl-4 col-lg-6 col-md-12">
 								<mat-form-field>
 									<mat-label>Sex <span class="optional-label">(optional)</span></mat-label>
 									<mat-select formControlName="genderCode">

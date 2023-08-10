@@ -1,9 +1,17 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { LicencePaymentErrorComponent } from './components/licence-payment-error.component';
+import { LicencePaymentFailComponent } from './components/licence-payment-fail.component';
+import { LicencePaymentManualComponent } from './components/licence-payment-manual.component';
+import { LicencePaymentSuccessComponent } from './components/licence-payment-success.component';
 import { LicenceApplicationComponent } from './licence-application.component';
 
 export class LicenceApplicationRoutes {
 	public static LICENCE_APPLICATION = 'licence-application';
+	public static PAYMENT_SUCCESS = 'payment-success';
+	public static PAYMENT_FAIL = 'payment-fail';
+	public static PAYMENT_MANUAL = 'payment-manual';
+	public static PAYMENT_ERROR = 'payment-error';
 
 	public static MODULE_PATH = LicenceApplicationRoutes.LICENCE_APPLICATION;
 
@@ -13,21 +21,14 @@ export class LicenceApplicationRoutes {
 }
 
 const routes: Routes = [
-	// {
-	// 	path: '',
-	// 	component: LicenceComponent,
-	// 	children: [
-	// 		{ path: LicenceRoutes.IN_PROGRESS_APPLICATIONS, component: InProgressApplicationsComponent },
-	// 		{ path: LicenceRoutes.SUBMITTED_APPLICATIONS, component: SubmittedApplicationsComponent },
-	// 		{ path: LicenceRoutes.NEW_LICENCE, component: NewLicenceComponent },
-	// 		{ path: LicenceRoutes.ACTIVE_LICENCES, component: ActiveLicencesComponent },
-	// 		{ path: LicenceRoutes.EXPIRED_LICENCES, component: ExpiredLicencesComponent },
-	// 	],
-	// },
 	{
 		path: '',
 		component: LicenceApplicationComponent,
 	},
+	{ path: `${LicenceApplicationRoutes.PAYMENT_SUCCESS}/:id`, component: LicencePaymentSuccessComponent },
+	{ path: `${LicenceApplicationRoutes.PAYMENT_FAIL}/:id`, component: LicencePaymentFailComponent },
+	{ path: LicenceApplicationRoutes.PAYMENT_MANUAL, component: LicencePaymentManualComponent },
+	{ path: LicenceApplicationRoutes.PAYMENT_ERROR, component: LicencePaymentErrorComponent },
 ];
 
 @NgModule({

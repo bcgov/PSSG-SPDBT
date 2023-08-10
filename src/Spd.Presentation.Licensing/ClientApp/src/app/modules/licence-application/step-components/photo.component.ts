@@ -23,8 +23,8 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 							"
 							>This is required</mat-error
 						>
-						<div class="mt-2">Maximum file size is 25 MB</div>
-						<div>Format must be .jpg, .tif, .png, or .bmp</div>
+						<div class="field-hint mt-2">Maximum file size is 25 MB</div>
+						<div class="field-hint">Format must be .jpg, .tif, .png, or .bmp</div>
 					</form>
 				</div>
 			</div>

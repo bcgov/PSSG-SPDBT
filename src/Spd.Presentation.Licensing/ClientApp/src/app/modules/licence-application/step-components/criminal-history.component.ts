@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { BooleanTypeCode } from 'src/app/api/models';
 
 @Component({
 	selector: 'app-criminal-history',
@@ -10,9 +11,9 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 				<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
 					<form [formGroup]="form" novalidate>
 						<mat-radio-group aria-label="Select an option" formControlName="hasCriminalHistory">
-							<mat-radio-button class="radio-label" value="a">No</mat-radio-button>
-							<mat-divider class="my-3"></mat-divider>
-							<mat-radio-button class="radio-label" value="a">Yes</mat-radio-button>
+							<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
+							<mat-divider class="my-2"></mat-divider>
+							<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
 						</mat-radio-group>
 					</form>
 				</div>
@@ -22,6 +23,8 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 	styles: [],
 })
 export class CriminalHistoryComponent {
+	booleanTypeCodes = BooleanTypeCode;
+
 	form: FormGroup = this.formBuilder.group({
 		hasCriminalHistory: new FormControl(''),
 	});
