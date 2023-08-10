@@ -95,7 +95,7 @@ import {
 							</div>
 							<div class="col-lg-3 col-md-3">
 								<small class="d-block text-muted mt-2 mt-md-0">Submitted On</small>
-								<strong> {{ application.createdOn | date : constants.date.dateFormat : 'UTC' }} </strong>
+								<strong> {{ application.createdOn | date : constants.date.dateFormat }} </strong>
 							</div>
 							<div class="col-lg-3 col-md-3">
 								<small class="d-block text-muted mt-2 mt-md-0">Service Type</small>
@@ -181,7 +181,7 @@ import {
 							<mat-header-cell *matHeaderCellDef>Uploaded On</mat-header-cell>
 							<mat-cell *matCellDef="let document">
 								<span class="mobile-label">Uploaded On:</span>
-								{{ document.uploadedDateTime | date : constants.date.dateFormat : 'UTC' }}
+								{{ document.uploadedDateTime | date : constants.date.dateFormat }}
 							</mat-cell>
 						</ng-container>
 
