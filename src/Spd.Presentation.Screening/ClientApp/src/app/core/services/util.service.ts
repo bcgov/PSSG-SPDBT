@@ -118,7 +118,7 @@ export class UtilService {
 
 	//------------------------------------
 	// Download File
-	downloadFile(headers: HttpHeaders, file: Blob): void {
+	downloadFile(headers: HttpHeaders, file: Blob, notFoundMessage?: string | undefined): void {
 		let fileName = 'download-file';
 		const contentDisposition = headers.get('Content-Disposition');
 		if (contentDisposition) {
@@ -138,7 +138,9 @@ export class UtilService {
 			anchor.click();
 			document.body.removeChild(anchor);
 		} else {
-			this.hotToastService.error('File could not be found');
+			this.hotToastService.error(
+				notFoundMessage ? notFoundMessage : 'File could not be found. Please try again later.'
+			);
 			console.error(`fileName ${fileName} is empty`);
 		}
 	}

@@ -6,6 +6,6 @@ internal class Mappings : Profile
 {
     public Mappings()
     {
-        _ = CreateMap<ShareableClearanceResp, ShareableClearance>();
+        _ = CreateMap<ClearanceResp, ShareableClearance>();
     }
 }

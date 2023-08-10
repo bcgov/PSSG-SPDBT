@@ -8,7 +8,7 @@ using System.Net;
 namespace Spd.Resource.Applicants.Application;
 internal partial class ApplicationRepository : IApplicationRepository
 {
-    public async Task<ClearanceListResp> QueryAsync(ClearanceListQry clearanceListQry, CancellationToken ct)
+    public async Task<ClearanceAccessListResp> QueryAsync(ClearanceAccessListQry clearanceListQry, CancellationToken ct)
     {
         if (clearanceListQry == null || clearanceListQry.FilterBy?.OrgId == null)
             throw new ArgumentNullException("clearanceListQry.FilterBy.OrgId", "Must query clearances by organization id.");
@@ -30,8 +30,8 @@ internal partial class ApplicationRepository : IApplicationRepository
 
         var result = (QueryOperationResponse<spd_clearanceaccess>)await clearanceaccesses.ExecuteAsync(ct);
 
-        var response = new ClearanceListResp();
-        response.Clearances = _mapper.Map<IEnumerable<ClearanceResp>>(result);
+        var response = new ClearanceAccessListResp();
+        response.Clearances = _mapper.Map<IEnumerable<ClearanceAccessResp>>(result);
         if (clearanceListQry.Paging != null)
         {
             response.Pagination = new PaginationResp();
@@ -43,32 +43,50 @@ internal partial class ApplicationRepository : IApplicationRepository
         return response;
     }
 
-    public async Task<ShareableClearanceListResp> QueryAsync(ShareableClearanceQry shareableClearanceQry, CancellationToken ct)
+    public async Task<ClearanceListResp> QueryAsync(ClearanceQry clearanceQry, CancellationToken ct)
     {
-        ShareableClearanceListResp resp = new();
-        var keyExisted = DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(shareableClearanceQry.ServiceType.ToString(), out Guid stGuid);
-        if (!keyExisted)
-            throw new ArgumentException("invalid service type");
+        ClearanceListResp resp = new();
 
         var clearances = _context.spd_clearances
             .Expand(c => c.spd_CaseID)
-            .Where(c => c._spd_contactid_value == shareableClearanceQry.ContactId)
-            .Where(c => c._spd_servicetype_value == stGuid)
-            .Where(c => c.statecode != DynamicsConstants.StateCode_Inactive)
-            .Where(c => c.spd_expirydate > shareableClearanceQry.FromDate);
+            .Where(c => c.statecode != DynamicsConstants.StateCode_Inactive);
 
-        if (shareableClearanceQry.WorkWith == null || shareableClearanceQry.WorkWith == EmployeeInteractionTypeCode.Neither)
-            clearances = clearances.Where(c => c.spd_workswith == null);
-        else
+        if (clearanceQry.ClearanceId != null)
         {
-            int workwith = (int)Enum.Parse<WorksWithChildrenOptionSet>(shareableClearanceQry.WorkWith.ToString());
-            clearances = clearances.Where(c => c.spd_workswith == workwith);
+            clearances = clearances.Where(c => c.spd_clearanceid == clearanceQry.ClearanceId);
+        }
+        if (clearanceQry.ServiceType != null)
+        {
+            var keyExisted = DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(clearanceQry.ServiceType.ToString(), out Guid stGuid);
+            if (!keyExisted)
+                throw new ArgumentException("invalid service type");
+            clearances = clearances.Where(c => c._spd_servicetype_value == stGuid);
         }
 
-        if (shareableClearanceQry.Shareable)
-            clearances = clearances.Where(c => c.spd_sharable == (int)YesNoOptionSet.Yes);
+        if (clearanceQry.ContactId != null)
+            clearances = clearances.Where(c => c._spd_contactid_value == clearanceQry.ContactId);
 
-        resp.Clearances = _mapper.Map<IEnumerable<ShareableClearanceResp>>(clearances);
+        if (clearanceQry.FromDate != null)
+            clearances = clearances.Where(c => c.spd_expirydate > clearanceQry.FromDate);
+
+        if (clearanceQry.WorkWith != null)
+        {
+            if (clearanceQry.WorkWith == EmployeeInteractionTypeCode.Neither)
+                clearances = clearances.Where(c => c.spd_workswith == null);
+            else
+            {
+                int workwith = (int)Enum.Parse<WorksWithChildrenOptionSet>(clearanceQry.WorkWith.ToString());
+                clearances = clearances.Where(c => c.spd_workswith == workwith);
+            }
+        }
+
+        if (clearanceQry.Shareable != null)
+        {
+            clearances = (bool)clearanceQry.Shareable ? clearances.Where(c => c.spd_sharable == (int)YesNoOptionSet.Yes) :
+                clearances.Where(c => c.spd_sharable == (int)YesNoOptionSet.No);
+        }
+
+        resp.Clearances = _mapper.Map<IEnumerable<ClearanceResp>>(clearances);
         return resp;
     }
 
@@ -87,7 +105,7 @@ internal partial class ApplicationRepository : IApplicationRepository
         await _context.SaveChangesAsync(cancellationToken);
     }
 
-    private string GetClearanceFilterString(ClearanceFilterBy clearanceFilterBy)
+    private string GetClearanceFilterString(ClearanceAccessFilterBy clearanceFilterBy)
     {
         ClearanceAccessStatusOptionSet status = Enum.Parse<ClearanceAccessStatusOptionSet>(clearanceFilterBy.ClearanceAccessStatus.ToString());
         string dateStr = DateTime.UtcNow.AddDays(90).Date.ToString("yyyy-MM-dd");
@@ -110,7 +128,7 @@ internal partial class ApplicationRepository : IApplicationRepository
         return result;
     }
 
-    private string GetClearanceSortBy(ClearanceSortBy? clearanceSortBy)
+    private string GetClearanceSortBy(ClearanceAccessSortBy? clearanceSortBy)
     {
         if (clearanceSortBy == null
             || (clearanceSortBy.ExpiresOn != null && (bool)clearanceSortBy.ExpiresOn))

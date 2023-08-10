@@ -31,7 +31,7 @@ namespace Spd.Manager.Cases.Application
         IRequestHandler<IdentityCommand, Unit>,
         IRequestHandler<GetBulkUploadHistoryQuery, BulkHistoryListResponse>,
         IRequestHandler<BulkUploadCreateCommand, BulkUploadCreateResponse>,
-        IRequestHandler<ClearanceListQuery, ClearanceListResponse>,
+        IRequestHandler<ClearanceAccessListQuery, ClearanceAccessListResponse>,
         IRequestHandler<ClearanceAccessDeleteCommand, Unit>,
         IRequestHandler<ClearanceLetterQuery, FileResponse>,
         IRequestHandler<ShareableClearanceQuery, ShareableClearanceResponse>,
@@ -40,6 +40,7 @@ namespace Spd.Manager.Cases.Application
         IRequestHandler<ApplicantApplicationFileQuery, ApplicantApplicationFileListResponse>,
         IRequestHandler<CreateApplicantAppFileCommand, IEnumerable<ApplicantAppFileCreateResponse>>,
         IRequestHandler<PrepopulateFileTemplateQuery, FileResponse>,
+        IRequestHandler<GetApplicationInvitePrepopulateDataQuery, ApplicationInvitePrepopulateDataResponse>,
         IApplicationManager
     {
         private readonly IApplicationRepository _applicationRepository;
@@ -298,14 +299,14 @@ namespace Spd.Manager.Cases.Application
         #endregion
 
         #region clearances
-        public async Task<ClearanceListResponse> Handle(ClearanceListQuery request, CancellationToken ct)
+        public async Task<ClearanceAccessListResponse> Handle(ClearanceAccessListQuery request, CancellationToken ct)
         {
-            ClearanceFilterBy filterBy = _mapper.Map<ClearanceFilterBy>(request.FilterBy);
-            ClearanceSortBy sortBy = _mapper.Map<ClearanceSortBy>(request.SortBy);
+            ClearanceAccessFilterBy filterBy = _mapper.Map<ClearanceAccessFilterBy>(request.FilterBy);
+            ClearanceAccessSortBy sortBy = _mapper.Map<ClearanceAccessSortBy>(request.SortBy);
             Paging paging = _mapper.Map<Paging>(request.Paging);
 
             var response = await _applicationRepository.QueryAsync(
-                new ClearanceListQry
+                new ClearanceAccessListQry
                 {
                     FilterBy = filterBy,
                     SortBy = sortBy,
@@ -313,7 +314,7 @@ namespace Spd.Manager.Cases.Application
                 },
                 ct);
 
-            return _mapper.Map<ClearanceListResponse>(response);
+            return _mapper.Map<ClearanceAccessListResponse>(response);
 
         }
 
@@ -322,6 +323,16 @@ namespace Spd.Manager.Cases.Application
             var cmd = _mapper.Map<ClearanceAccessDeleteCmd>(request);
             await _applicationRepository.DeleteClearanceAccessAsync(cmd, ct);
             return default;
+        }
+
+        public async Task<ApplicationInvitePrepopulateDataResponse> Handle(GetApplicationInvitePrepopulateDataQuery request, CancellationToken ct)
+        {
+            var clearanceListResp = await _applicationRepository.QueryAsync(new ClearanceQry(ClearanceId: request.ClearanceId), ct);
+            if (!clearanceListResp.Clearances.Any())
+                throw new ApiException(HttpStatusCode.BadRequest, "do active clearance associated with the clearance id");
+            Guid appId = clearanceListResp.Clearances.First().ApplicationId;
+            var application = await _applicationRepository.QueryApplicationAsync(new ApplicationQry(appId), ct);
+            return _mapper.Map<ApplicationInvitePrepopulateDataResponse>(application);
         }
 
         public async Task<FileResponse> Handle(ClearanceLetterQuery query, CancellationToken ct)
@@ -363,6 +374,8 @@ namespace Spd.Manager.Cases.Application
         #region applicant-applications
         public async Task<ApplicationCreateResponse> Handle(ApplicantApplicationCreateCommand command, CancellationToken ct)
         {
+            //todo: add check if invite is still valid
+
             var result = new ApplicationCreateResponse();
             var cmd = _mapper.Map<ApplicationCreateCmd>(command.ApplicationCreateRequest);
             cmd.OrgId = command.ApplicationCreateRequest.OrgId;
@@ -518,7 +531,6 @@ namespace Spd.Manager.Cases.Application
             }
             throw new ApiException(HttpStatusCode.NoContent, "No file found.");
         }
-
         #endregion
 
 

@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
+using Spd.Resource.Applicants.ApplicationInvite;
 using Spd.Resource.Applicants.Incident;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.ResourceContracts;
@@ -37,6 +38,7 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.spd_payer, opt => opt.MapFrom(s => (int)Enum.Parse<PayerPreferenceOptionSet>(s.PayeeType.ToString())))
             .ForMember(d => d.spd_declarationdate, opt => opt.MapFrom(s => DateTime.Now))
             .ForMember(d => d.spd_identityconfirmed, opt => opt.MapFrom(s => s.HaveVerifiedIdentity))
+            .ForMember(d => d.spd_screeningrequesttype, opt => opt.MapFrom(s => (int)Enum.Parse<ScreenTypeOptionSet>(s.ScreeningType.ToString())))
             .ForMember(d => d.spd_sex, opt => opt.MapFrom(s => GetGender(s.GenderCode)))
             .ForMember(d => d.statuscode, opt => opt.MapFrom(s => s.HaveVerifiedIdentity == true ? ApplicationActiveStatus.PaymentPending : ApplicationActiveStatus.ApplicantVerification));
 
@@ -90,9 +92,10 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.OrgName, opt => opt.MapFrom(s => s.spd_OrganizationId.name))
             .ForMember(d => d.ServiceType, opt => opt.MapFrom(s => GetServiceType(s._spd_servicetypeid_value)))
             .ForMember(d => d.PaidOn, opt => opt.MapFrom(s => s.spd_paidon))
+            .ForMember(d => d.ScreeningType, opt => opt.MapFrom(s => GetScreenType(s.spd_screeningrequesttype)))
             .ForMember(d => d.NumberOfAttempts, opt => opt.MapFrom(s => s.spd_numberofattempts));
 
-            _ = CreateMap<spd_clearanceaccess, ClearanceResp>()
+            _ = CreateMap<spd_clearanceaccess, ClearanceAccessResp>()
             .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_clearanceaccessid))
             .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.spd_applicantfirstname))
             .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.spd_applicantlastname))
@@ -109,8 +112,9 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.UploadedDateTime, opt => opt.MapFrom(s => s.spd_datetimeuploaded))
             .ForMember(d => d.UploadedByUserFullName, opt => opt.MapFrom(s => s.spd_UploadedBy.spd_fullname));
 
-            _ = CreateMap<spd_clearance, ShareableClearanceResp>()
+            _ = CreateMap<spd_clearance, ClearanceResp>()
             .ForMember(d => d.OrgId, opt => opt.MapFrom(s => s.spd_CaseID._spd_organizationid_value))
+            .ForMember(d => d.ApplicationId, opt => opt.MapFrom(s => s.spd_CaseID._spd_applicationid_value))
             .ForMember(d => d.GrantedDate, opt => opt.MapFrom(s => s.spd_dategranted))
             .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => s.spd_expirydate))
             .ForMember(d => d.WorkWith, opt => opt.MapFrom(s => s.spd_workswith))
@@ -146,6 +150,12 @@ namespace Spd.Resource.Applicants.Application
             {
                 return null;
             }
+        }
+
+        private static ScreenTypeEnum GetScreenType(int? code)
+        {
+            if (code == null) return ScreenTypeEnum.Staff;
+            return Enum.Parse<ScreenTypeEnum>(Enum.GetName(typeof(ScreenTypeOptionSet), code));
         }
     }
 }
