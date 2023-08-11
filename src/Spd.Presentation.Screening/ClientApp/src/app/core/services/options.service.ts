@@ -17,19 +17,21 @@ export class OptionsService {
 				return of(this.ministries);
 			}
 			// by default, return only active
-			return of(this.ministries.filter((ministry) => ministry.isActive));
+			const activeOnly = this.ministries.filter((ministry) => ministry.isActive);
+			return of(activeOnly);
 		}
 
 		return this.ministryService.apiMinistriesGet().pipe(
 			tap((resp: Array<MinistryResponse>) => {
-				this.ministries = { ...resp };
+				this.ministries = [...resp];
 
 				if (allMinistries) {
 					return resp;
 				}
 
 				// by default, return only active
-				return of(resp.filter((ministry) => ministry.isActive));
+				const activeOnly = resp.filter((ministry) => ministry.isActive);
+				return of(activeOnly);
 			})
 		);
 	}
