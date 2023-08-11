@@ -4,7 +4,13 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
 import { NgxMaskPipe } from 'ngx-mask';
-import { ApplicationCreateResponse, BooleanTypeCode, ScreeningTypeCode, ServiceTypeCode } from 'src/app/api/models';
+import {
+	ApplicationCreateResponse,
+	BooleanTypeCode,
+	MinistryResponse,
+	ScreeningTypeCode,
+	ServiceTypeCode,
+} from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { ApplicationOriginTypeCode } from 'src/app/core/code-types/application-origin-type.model';
@@ -12,6 +18,7 @@ import { GenderTypes, ScreeningTypes } from 'src/app/core/code-types/model-desc.
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
+import { OptionsService } from 'src/app/core/services/options.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
@@ -191,11 +198,12 @@ export interface AliasCreateRequest {
 						<div class="col-xl-3 col-lg-6 col-md-12" *ngIf="portal == portalTypeCodes.Psso">
 							<mat-form-field>
 								<mat-label>Ministry</mat-label>
-								<mat-select formControlName="ministry">
-									<!-- TODO ministry list of values ?  -->
-									<mat-option *ngFor="let scr of screeningTypes" [value]="scr.code"> Ministry </mat-option>
+								<mat-select formControlName="ministryId">
+									<mat-option *ngFor="let ministry of ministries" [value]="ministry.id">
+										{{ ministry.name }}
+									</mat-option>
 								</mat-select>
-								<mat-error *ngIf="form.get('ministry')?.hasError('required')">This is required</mat-error>
+								<mat-error *ngIf="form.get('ministryId')?.hasError('required')">This is required</mat-error>
 							</mat-form-field>
 						</div>
 					</div>
@@ -219,7 +227,7 @@ export interface AliasCreateRequest {
 									form.get('previousNameFlag')?.invalid &&
 									form.get('previousNameFlag')?.hasError('required')
 								"
-								>An option must be selected</mat-error
+								>This is required</mat-error
 							>
 						</div>
 					</div>
@@ -434,6 +442,7 @@ export interface AliasCreateRequest {
 	],
 })
 export class ManualSubmissionCommonComponent implements OnInit {
+	ministries: Array<MinistryResponse> = [];
 	serviceType: ServiceTypeCode | null = null;
 	isNotVolunteerOrg = false;
 
@@ -465,7 +474,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 			screeningType: new FormControl('', [FormControlValidators.required]),
 			contractedCompanyName: new FormControl(''),
 			employeeId: new FormControl(''),
-			ministry: new FormControl(''),
+			ministryId: new FormControl(''),
 			previousNameFlag: new FormControl('', [FormControlValidators.required]),
 			addressSelected: new FormControl(false, [Validators.requiredTrue]),
 			addressLine1: new FormControl('', [FormControlValidators.required]),
@@ -490,6 +499,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 					'givenName',
 					(form) => form.get('oneLegalName')?.value != true
 				),
+				FormGroupValidators.conditionalRequiredValidator('ministryId', (form) => this.portal == PortalTypeCode.Psso),
 				FormGroupValidators.conditionalRequiredValidator('contractedCompanyName', (form) =>
 					[ScreeningTypeCode.Contractor, ScreeningTypeCode.Licensee].includes(form.get('screeningType')?.value)
 				),
@@ -509,6 +519,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 		private formBuilder: FormBuilder,
 		private applicationService: ApplicationService,
 		private authUserService: AuthUserBceidService,
+		private optionsService: OptionsService,
 		private utilService: UtilService,
 		private hotToast: HotToastService,
 		private maskPipe: NgxMaskPipe,
@@ -538,6 +549,10 @@ export class ManualSubmissionCommonComponent implements OnInit {
 
 			this.serviceType = orgProfile?.serviceTypes ? orgProfile?.serviceTypes[0] : null;
 		} else {
+			this.optionsService.getMinistries().subscribe((resp) => {
+				this.ministries = resp;
+			});
+
 			// using idir
 			this.isNotVolunteerOrg = true;
 			this.showScreeningType = false;
