@@ -2,6 +2,7 @@ export { AddressAutoCompleteService } from './services/address-auto-complete.ser
 export { ApplicantService } from './services/applicant.service';
 export { ApplicationService } from './services/application.service';
 export { ConfigurationService } from './services/configuration.service';
+export { MinistryService } from './services/ministry.service';
 export { OrgService } from './services/org.service';
 export { OrgRegistrationService } from './services/org-registration.service';
 export { OrgReportService } from './services/org-report.service';
