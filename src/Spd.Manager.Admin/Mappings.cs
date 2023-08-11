@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Spd.Resource.Applicants.Ministry;
 using Spd.Utilities.Address;
 
 namespace Spd.Manager.Admin
@@ -9,6 +10,7 @@ namespace Spd.Manager.Admin
         {
             CreateMap<AddressAutocompleteFindResponse, AddressFindResponse>();
             CreateMap<AddressAutocompleteRetrieveResponse, AddressRetrieveResponse>();
+            CreateMap<MinistryResp, MinistryResponse>();
         }
     }
 }
