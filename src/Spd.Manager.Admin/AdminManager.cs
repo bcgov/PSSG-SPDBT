@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Spd.Resource.Applicants.Ministry;
 using Spd.Resource.Organizations.Config;
 using Spd.Utilities.Address;
 
@@ -9,16 +10,19 @@ namespace Spd.Manager.Admin
         IRequestHandler<FindAddressQuery, IEnumerable<AddressFindResponse>>,
         IRequestHandler<RetrieveAddressByIdQuery, IEnumerable<AddressRetrieveResponse>>,
         IRequestHandler<GetBannerMsgQuery, string>,
+        IRequestHandler<GetMinistryQuery, IEnumerable<MinistryResponse>>,
         IAdminManager
     {
         private readonly IAddressAutocompleteClient _addressClient;
         private readonly IConfigRepository _configRepo;
+        private readonly IMinistryRepository _ministryRepo;
         private readonly IMapper _mapper;
-        public AdminManager(IAddressAutocompleteClient addressClient, IMapper mapper, IConfigRepository configRepo)
+        public AdminManager(IAddressAutocompleteClient addressClient, IMapper mapper, IConfigRepository configRepo, IMinistryRepository ministryRepository)
         {
             _addressClient = addressClient;
             _mapper = mapper;
             _configRepo = configRepo;
+            _ministryRepo = ministryRepository;
         }
 
         public async Task<IEnumerable<AddressFindResponse>> Handle(FindAddressQuery query, CancellationToken cancellationToken)
@@ -43,6 +47,12 @@ namespace Spd.Manager.Admin
                 .ConfigItems
                 .First()
                 .Value;
+        }
+
+        public async Task<IEnumerable<MinistryResponse>> Handle(GetMinistryQuery request, CancellationToken cancellationToken)
+        {
+            var result = await _ministryRepo.QueryAsync(new MinistryQry(), cancellationToken);
+            return _mapper.Map<IEnumerable<MinistryResponse>>(result.Items);
         }
     }
 }

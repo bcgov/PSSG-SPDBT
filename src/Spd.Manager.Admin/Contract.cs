@@ -7,6 +7,8 @@ namespace Spd.Manager.Admin
         public Task<IEnumerable<AddressFindResponse>> Handle(FindAddressQuery request, CancellationToken cancellationToken);
         public Task<IEnumerable<AddressRetrieveResponse>> Handle(RetrieveAddressByIdQuery request, CancellationToken cancellationToken);
         public Task<string> Handle(GetBannerMsgQuery request, CancellationToken cancellationToken);
+        public Task<IEnumerable<MinistryResponse>> Handle(GetMinistryQuery request, CancellationToken cancellationToken);
+
     }
 
     public record GetBannerMsgQuery : IRequest<string>;
@@ -68,6 +70,15 @@ namespace Spd.Manager.Admin
         public string? CountryName { get; set; }
         public string? PoBoxNumber { get; set; }
         public string? Label { get; set; }
+    }
+
+    public record GetMinistryQuery : IRequest<IEnumerable<MinistryResponse>>;
+
+    public record MinistryResponse
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; } = null!;
+        public bool IsActive { get; set; }
     }
 
 }
