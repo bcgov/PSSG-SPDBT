@@ -11,7 +11,7 @@ public interface IApplicationRepository
     public Task<bool> CheckApplicationDuplicateAsync(SearchApplicationQry searchApplicationQry, CancellationToken cancellationToken);
     public Task<ApplicationListResp> QueryAsync(ApplicationListQry query, CancellationToken cancellationToken);
     public Task<ApplicationStatisticsResp> QueryApplicationStatisticsAsync(ApplicationStatisticsQry query, CancellationToken cancellationToken);
-    public Task IdentityAsync(IdentityCmd cmd, CancellationToken ct);
+    public Task IdentityAsync(VerifyIdentityCmd cmd, CancellationToken ct);
     public Task<BulkAppsCreateResp> AddBulkAppsAsync(BulkAppsCreateCmd createApplicationCmds, CancellationToken cancellationToken);
     public Task<BulkHistoryListResp> QueryBulkHistoryAsync(BulkHistoryListQry query, CancellationToken cancellationToken);
     public Task<ClearanceAccessListResp> QueryAsync(ClearanceAccessListQry clearanceListQry, CancellationToken ct);
@@ -94,7 +94,7 @@ public record AliasCreateCmd
     public string? Surname { get; set; }
 
 }
-public record IdentityCmd
+public record VerifyIdentityCmd
 {
     public Guid OrgId { get; set; }
     public Guid ApplicationId { get; set; }

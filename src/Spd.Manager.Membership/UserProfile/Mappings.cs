@@ -17,7 +17,7 @@ namespace Spd.Manager.Membership.UserProfile
                .ForMember(d => d.OrgRegistrationId, opt => opt.Ignore())
                .ForMember(d => d.OrgId, opt => opt.MapFrom(s => s.OrganizationId));
 
-            CreateMap<ApplicantIdentityQueryResult, ApplicantProfileResponse>()
+            CreateMap<Identity, ApplicantProfileResponse>()
                 .ForMember(d => d.ApplicantId, opt => opt.MapFrom(s => s.ContactId));
         }
     }

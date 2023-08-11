@@ -229,7 +229,7 @@ namespace Spd.Manager.Cases.Application
 
         public async Task<Unit> Handle(IdentityCommand request, CancellationToken ct)
         {
-            var cmd = _mapper.Map<IdentityCmd>(request);
+            var cmd = _mapper.Map<VerifyIdentityCmd>(request);
             await _applicationRepository.IdentityAsync(cmd, ct);
             return default;
         }
@@ -387,7 +387,8 @@ namespace Spd.Manager.Cases.Application
                cmd.SharedClearanceId.HasValue &&
                cmd.CreatedByApplicantBcscId != null)//bcsc authenticated and has sharable clearance
             {
-                ApplicantIdentityQueryResult contact = (ApplicantIdentityQueryResult)await _identityRepository.Query(new ApplicantIdentityQuery(cmd.CreatedByApplicantBcscId, IdentityProviderTypeEnum.BcServicesCard), ct);
+                var contacts = await _identityRepository.Query(new IdentityQry(cmd.CreatedByApplicantBcscId, null, IdentityProviderTypeEnum.BcServicesCard), ct);
+                var contact = contacts.Items.FirstOrDefault();
                 if (contact == null)
                     throw new ArgumentException("No contact found");
                 cmd.ContactId = contact.ContactId;
@@ -434,7 +435,8 @@ namespace Spd.Manager.Cases.Application
 
         public async Task<ApplicantApplicationFileListResponse> Handle(ApplicantApplicationFileQuery query, CancellationToken ct)
         {
-            ApplicantIdentityQueryResult? contact = (ApplicantIdentityQueryResult?)await _identityRepository.Query(new ApplicantIdentityQuery(query.BcscId, IdentityProviderTypeEnum.BcServicesCard), ct);
+            var contacts = await _identityRepository.Query(new IdentityQry(query.BcscId, null, IdentityProviderTypeEnum.BcServicesCard), ct);
+            var contact = contacts.Items.FirstOrDefault();
             if (contact == null)
                 throw new ArgumentException("No contact found");
 
@@ -449,7 +451,8 @@ namespace Spd.Manager.Cases.Application
 
         public async Task<IEnumerable<ApplicantAppFileCreateResponse>> Handle(CreateApplicantAppFileCommand command, CancellationToken ct)
         {
-            ApplicantIdentityQueryResult? contact = (ApplicantIdentityQueryResult?)await _identityRepository.Query(new ApplicantIdentityQuery(command.BcscId, IdentityProviderTypeEnum.BcServicesCard), ct);
+            var contacts = await _identityRepository.Query(new IdentityQry(command.BcscId, null, IdentityProviderTypeEnum.BcServicesCard), ct);
+            var contact = contacts.Items.FirstOrDefault();
             if (contact == null)
                 throw new ArgumentException("No contact found");
 

@@ -4,21 +4,18 @@ namespace Spd.Resource.Organizations.Identity
 {
     public interface IIdentityRepository
     {
-        Task<IdentityQueryResult?> Query(IdentityQuery query, CancellationToken ct);
+        Task<IdentityQueryResult> Query(IdentityQry query, CancellationToken ct);
+        Task<IdentityCmdResult?> Manage(IdentityCmd query, CancellationToken ct);
     }
 
     //query
-    public abstract record IdentityQuery;
-    public record UserIdentityQuery(Guid UserGuid, Guid? OrgGuid) : IdentityQuery;
-    public record ApplicantIdentityQuery(string UserGuid, IdentityProviderTypeEnum IdentityProviderType) : IdentityQuery;
-    public abstract record IdentityQueryResult;
-    public record UserIdentityQueryResult(IEnumerable<Identity> Identities) : IdentityQueryResult;
-    public record ApplicantIdentityQueryResult : IdentityQueryResult
-    {
-        public Guid ContactId { get; set; }
-        public string? FirstName { get; set; }
-        public string? LastName { get; set; }
-    }
+    public record IdentityQry(string? UserGuid, Guid? OrgGuid, IdentityProviderTypeEnum? IdentityProviderType, bool includeInactive = false);
+    public record IdentityQueryResult(IEnumerable<Identity> Items);
+
+    //cmd
+    public abstract record IdentityCmd;
+    public record CreateIdentityCmd(string UserGuid, Guid? OrgGuid, IdentityProviderTypeEnum IdentityProviderType) : IdentityCmd;
+    public abstract record IdentityCmdResult(Guid Id);
 
     //shared content
     public record Identity
@@ -26,6 +23,9 @@ namespace Spd.Resource.Organizations.Identity
         public string? OrgId { get; set; }
         public string? IdentityNumber { get; set; }
         public Guid Id { get; set; }
+        public Guid? ContactId { get; set; }
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
     }
 
 }

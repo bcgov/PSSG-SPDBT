@@ -69,7 +69,7 @@ namespace Spd.Presentation.Screening.Controllers
         [Route("api/idir-users/whoami")]
         [HttpGet]
         [Authorize(Policy = "OnlyIdir")]
-        public IdirUserProfileResponse IdirUserWhoami()
+        public async Task<IdirUserProfileResponse> IdirUserWhoami()
         {
             string? identityProvider = _currentUser.GetIdentityProvider();
             if (identityProvider != null && identityProvider.Equals("idir", StringComparison.InvariantCultureIgnoreCase))

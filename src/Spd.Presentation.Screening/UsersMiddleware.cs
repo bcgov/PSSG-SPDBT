@@ -125,38 +125,13 @@ namespace Spd.Utilities.LogonUser
             //the user is from idir, so, should be bc gov
             if (context.User.GetIdentityProvider() == IPrincipalExtensions.IDIR_IDENTITY_PROVIDER)
             {
-                if (orgId != SpdConstants.BC_GOV_ORG_ID)
-                    await ReturnUnauthorized(context, "invalid user or organization");
-                //add ui to claims
-                context.User.UpdateUserClaims(Guid.Empty.ToString(), orgId.ToString(), "BCGovStaff");
-                //todo: once team agree on bc_gov will be one org, ministry will be departments of that org, we need to refactor UserProfileManager and IdentityRepository
+                return await ProcessIdirUser(orgId, context, mediator);
             }
 
             //the user is from bceid
             if (IPrincipalExtensions.BCeID_IDENTITY_PROVIDERS.Contains(context.User.GetIdentityProvider()))
             {
-                //validate if the orgId in httpHeader is belong to this user and add the user role to claims.
-                OrgUserProfileResponse? userProfile = await cache.Get<OrgUserProfileResponse>($"user-{context.User.GetUserGuid()}");
-                if (userProfile == null)
-                {
-                    var userIdInfo = context.User.GetPortalUserIdentityInfo();
-                    userProfile = await mediator.Send(new GetCurrentUserProfileQuery(mapper.Map<PortalUserIdentity>(userIdInfo)));
-                    await cache.Set<OrgUserProfileResponse>($"user-{context.User.GetUserGuid()}", userProfile, new TimeSpan(0, 30, 0));
-                }
-
-                if (userProfile?.UserInfos == null)
-                {
-                    await ReturnUnauthorized(context, "invalid user");
-                    return false;
-                }
-                UserInfo? ui = userProfile.UserInfos.FirstOrDefault(ui => ui.UserGuid == context.User.GetUserGuid() && ui.OrgId == orgId);
-                if (ui == null)
-                {
-                    await ReturnUnauthorized(context, "invalid user or organization");
-                    return false;
-                }
-                //add ui to claims
-                context.User.UpdateUserClaims(ui.UserId.ToString(), orgId.ToString(), ui.ContactAuthorizationTypeCode.ToString());
+                return await ProcessBceidUser(orgId, context, mediator);
             }
             return true;
         }
@@ -166,6 +141,51 @@ namespace Spd.Utilities.LogonUser
             context.Response.Clear();
             context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
             await context.Response.WriteAsync(msg);
+        }
+
+        private async Task<bool> ProcessIdirUser(Guid orgId, HttpContext context, IMediator mediator)
+        {
+            if (orgId != SpdConstants.BC_GOV_ORG_ID)
+            {
+                await ReturnUnauthorized(context, "invalid user or organization");
+                return false;
+            }
+            IdirUserProfileResponse? idirUserProfile = await cache.Get<IdirUserProfileResponse>($"idir-user-{context.User.GetUserGuid()}");
+            if (idirUserProfile == null)
+            {
+                var idirUserInfo = context.User.GetIdirUserIdentityInfo();
+                idirUserProfile = await mediator.Send(new ManageIdirUserCommand(mapper.Map<IdirUserIdentity>(idirUserInfo)));
+                await cache.Set<IdirUserProfileResponse>($"idir-user--{context.User.GetUserGuid()}", idirUserProfile, new TimeSpan(0, 30, 0));
+            }
+            context.User.UpdateUserClaims(Guid.Empty.ToString(), orgId.ToString(), "BCGovStaff");
+            return true;
+        }
+
+        private async Task<bool> ProcessBceidUser(Guid orgId, HttpContext context, IMediator mediator)
+        {
+            //validate if the orgId in httpHeader is belong to this user and add the user role to claims.
+            OrgUserProfileResponse? userProfile = await cache.Get<OrgUserProfileResponse>($"user-{context.User.GetUserGuid()}");
+            if (userProfile == null)
+            {
+                var userIdInfo = context.User.GetPortalUserIdentityInfo();
+                userProfile = await mediator.Send(new GetCurrentUserProfileQuery(mapper.Map<PortalUserIdentity>(userIdInfo)));
+                await cache.Set<OrgUserProfileResponse>($"user-{context.User.GetUserGuid()}", userProfile, new TimeSpan(0, 30, 0));
+            }
+
+            if (userProfile?.UserInfos == null)
+            {
+                await ReturnUnauthorized(context, "invalid user");
+                return false;
+            }
+            UserInfo? ui = userProfile.UserInfos.FirstOrDefault(ui => ui.UserGuid == context.User.GetUserGuid() && ui.OrgId == orgId);
+            if (ui == null)
+            {
+                await ReturnUnauthorized(context, "invalid user or organization");
+                return false;
+            }
+            //add ui to claims
+            context.User.UpdateUserClaims(ui.UserId.ToString(), orgId.ToString(), ui.ContactAuthorizationTypeCode.ToString());
+            return true;
         }
     }
 }

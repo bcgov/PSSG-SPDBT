@@ -63,7 +63,7 @@ internal partial class ApplicationRepository : IApplicationRepository
         return response;
     }
 
-    public async Task IdentityAsync(IdentityCmd identityCmd, CancellationToken cancellationToken)
+    public async Task IdentityAsync(VerifyIdentityCmd identityCmd, CancellationToken cancellationToken)
     {
         spd_application? app = await _context.GetApplicationById(identityCmd.ApplicationId, cancellationToken);
         if (app == null)

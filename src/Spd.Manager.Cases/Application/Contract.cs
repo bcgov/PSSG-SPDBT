@@ -198,6 +198,8 @@ namespace Spd.Manager.Cases.Application
         public bool? HaveVerifiedIdentity { get; set; }
         public IEnumerable<AliasCreateRequest> Aliases { get; set; } = Array.Empty<AliasCreateRequest>();
         public bool RequireDuplicateCheck { get; set; } = false;
+        public Guid? MinistryId { get; set; }
+        public string? EmployeeId { get; set; }
     }
     public record AliasCreateRequest
     {

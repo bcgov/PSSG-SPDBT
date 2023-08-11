@@ -49,7 +49,7 @@ namespace Spd.Manager.Cases.Application
             CreateMap<ApplicationInviteDeleteCommand, ApplicationInviteDeleteCmd>();
             CreateMap<ApplicationStatisticsQuery, ApplicationStatisticsQry>();
             CreateMap<ApplicationStatisticsResp, ApplicationStatisticsResponse>();
-            CreateMap<IdentityCommand, IdentityCmd>();
+            CreateMap<IdentityCommand, VerifyIdentityCmd>();
             CreateMap<BulkHistoryListResp, BulkHistoryListResponse>();
             CreateMap<BulkHistoryResp, BulkHistoryResponse>();
             CreateMap<BulkAppsCreateResp, BulkAppsCreateResponse>();
