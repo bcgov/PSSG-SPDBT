@@ -49,7 +49,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 						<ng-container matColumnDef="reportDate">
 							<mat-cell *matCellDef="let report">
 								<span class="mobile-label"></span>
-								Monthly Report - {{ report.reportDate | date : constants.date.monthYearFormat }}
+								Monthly Report - {{ report.reportDate | date : constants.date.monthYearFormat : 'UTC' }}
 							</mat-cell>
 						</ng-container>
 
@@ -186,17 +186,20 @@ export class ReportsComponent implements OnInit {
 		} else if (this.reportMonthYearFrom && !this.reportMonthYearTo) {
 			reports = this.allReports.filter((rpt) => {
 				const reportDate = new Date(rpt.reportDate!);
-				return reportDate >= this.reportMonthYearFrom!;
+				const reportUtcDate = new Date(reportDate.getUTCFullYear(), reportDate.getUTCMonth(), reportDate.getUTCDate());
+				return reportUtcDate >= this.reportMonthYearFrom!;
 			});
 		} else if (!this.reportMonthYearFrom && this.reportMonthYearTo) {
 			reports = this.allReports.filter((rpt) => {
 				const reportDate = new Date(rpt.reportDate!);
-				return reportDate <= this.reportMonthYearTo!;
+				const reportUtcDate = new Date(reportDate.getUTCFullYear(), reportDate.getUTCMonth(), reportDate.getUTCDate());
+				return reportUtcDate <= this.reportMonthYearTo!;
 			});
 		} else {
 			reports = this.allReports.filter((rpt) => {
 				const reportDate = new Date(rpt.reportDate!);
-				return reportDate >= this.reportMonthYearFrom! && reportDate <= this.reportMonthYearTo!;
+				const reportUtcDate = new Date(reportDate.getUTCFullYear(), reportDate.getUTCMonth(), reportDate.getUTCDate());
+				return reportUtcDate >= this.reportMonthYearFrom! && reportUtcDate <= this.reportMonthYearTo!;
 			});
 		}
 
