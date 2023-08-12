@@ -12,6 +12,7 @@ namespace Spd.Manager.Membership.UserProfile
     internal class UserProfileManager
         : IRequestHandler<GetCurrentUserProfileQuery, OrgUserProfileResponse>,
         IRequestHandler<GetApplicantProfileQuery, ApplicantProfileResponse>,
+        IRequestHandler<ManageIdirUserCommand, IdirUserProfileResponse>,
         IUserProfileManager
     {
         private readonly IOrgUserRepository _orgUserRepository;
@@ -109,9 +110,26 @@ namespace Spd.Manager.Membership.UserProfile
         public async Task<IdirUserProfileResponse> Handle(ManageIdirUserCommand cmd, CancellationToken ct)
         {
             var result = await _idRepository.Query(new IdentityQry(cmd.IdirUserIdentity.UserGuid, null, IdentityProviderTypeEnum.Idir), ct);
-            if (result == null)
+            var identity = result.Items.FirstOrDefault();
+            Guid? identityId = identity?.Id;
+            if (identity == null)
             {
-                var identity = await _idRepository.Manage(new CreateIdentityCmd(cmd.IdirUserIdentity.UserGuid, SpdConstants.BC_GOV_ORG_ID, IdentityProviderTypeEnum.Idir), ct);
+                var id = await _idRepository.Manage(new CreateIdentityCmd(cmd.IdirUserIdentity.UserGuid, SpdConstants.BC_GOV_ORG_ID, IdentityProviderTypeEnum.Idir), ct);
+                identityId = id?.Id;
+            }
+
+            var idirUser = (OrgUsersResult)await _orgUserRepository.QueryOrgUserAsync(new OrgUsersSearch(SpdConstants.BC_GOV_ORG_ID, identityId), ct);
+            if (!idirUser.UserResults.Any())
+            {
+                User user = new User()
+                {
+                    OrganizationId = SpdConstants.BC_GOV_ORG_ID,
+                    Email = cmd.IdirUserIdentity.Email,
+                    FirstName = cmd.IdirUserIdentity.FirstName,
+                    LastName = cmd.IdirUserIdentity.LastName,                   
+                };
+
+                await _orgUserRepository.ManageOrgUserAsync(new UserCreateCmd(user, null, identityId), ct);
             }
             return _mapper.Map<IdirUserProfileResponse>(result);
         }

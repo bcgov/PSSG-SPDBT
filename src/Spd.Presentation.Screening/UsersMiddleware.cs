@@ -32,10 +32,62 @@ namespace Spd.Utilities.LogonUser
             .Get<BcscAuthenticationConfiguration>();
         }
 
+        //public async Task InvokeAsync(HttpContext context, IMediator mediator)
+        //{
+        //    if (context.User.GetIssuer() == bceidConfig.Issuer) //bceid and idir have the same issuer
+        //    {
+        //        if (NoUserMiddlewareProcessNeededEndpoints(context) ||
+        //            context.User.Identity == null ||
+        //            !context.User.Identity.IsAuthenticated)
+        //        {
+        //            await next(context);
+        //            return;
+        //        }
+
+        //        if (context.Request.Headers.TryGetValue("organization", out var orgIdStr))
+        //        {
+        //            bool isSuccess = await ProcessUser(context, mediator, orgIdStr);
+        //            if (isSuccess)
+        //            {
+        //                await next(context);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            await ReturnUnauthorized(context, "missing organization in the header.");
+        //        }
+        //    }
+        //    else if (context.User.GetIssuer() == bcscConfig.Issuer)
+        //    {
+        //        var applicantInfo = context.User.GetApplicantIdentityInfo();
+        //        //we need to differentiate if current user-applicant has account in spd db. If yes, add role applicant.
+        //        ApplicantProfileResponse? appProfile = await cache.Get<ApplicantProfileResponse>($"applicant-{applicantInfo.Sub}");
+        //        if (appProfile == null)
+        //        {
+        //            appProfile = await mediator.Send(new GetApplicantProfileQuery(applicantInfo.Sub));
+        //            if (appProfile != null)
+        //                await cache.Set($"applicant-{applicantInfo.Sub}", appProfile, new TimeSpan(0, 30, 0));
+        //        }
+
+        //        if (appProfile != null)
+        //        {
+        //            context.User.AddUpdateClaim(ClaimTypes.Role, "Applicant");
+        //        }
+        //        await next(context);
+        //    }
+        //    else
+        //    {
+        //        await next(context);
+        //    }
+        //}
+
+        //endpoints that no authentication needed  
+
         public async Task InvokeAsync(HttpContext context, IMediator mediator)
         {
-            if (context.User.GetIssuer() == bceidConfig.Issuer) //bceid and idir have the same issuer
+            if (IPrincipalExtensions.BCeID_IDENTITY_PROVIDERS.Contains(context.User.GetIdentityProvider())) //bceid and idir have the same issuer
             {
+                //bceid user
                 if (NoUserMiddlewareProcessNeededEndpoints(context) ||
                     context.User.Identity == null ||
                     !context.User.Identity.IsAuthenticated)
@@ -46,7 +98,7 @@ namespace Spd.Utilities.LogonUser
 
                 if (context.Request.Headers.TryGetValue("organization", out var orgIdStr))
                 {
-                    bool isSuccess = await ProcessUser(context, mediator, orgIdStr);
+                    bool isSuccess = await ProcessBceidUser(orgIdStr, context, mediator);
                     if (isSuccess)
                     {
                         await next(context);
@@ -57,8 +109,18 @@ namespace Spd.Utilities.LogonUser
                     await ReturnUnauthorized(context, "missing organization in the header.");
                 }
             }
+            else if (context.User.GetIdentityProvider() == IPrincipalExtensions.IDIR_IDENTITY_PROVIDER)
+            {
+                //idir user
+                bool isSuccess = await ProcessIdirUser(SpdConstants.BC_GOV_ORG_ID, context, mediator);
+                if (isSuccess)
+                {
+                    await next(context);
+                }
+            }
             else if (context.User.GetIssuer() == bcscConfig.Issuer)
             {
+                //bcsc user
                 var applicantInfo = context.User.GetApplicantIdentityInfo();
                 //we need to differentiate if current user-applicant has account in spd db. If yes, add role applicant.
                 ApplicantProfileResponse? appProfile = await cache.Get<ApplicantProfileResponse>($"applicant-{applicantInfo.Sub}");
@@ -80,15 +142,12 @@ namespace Spd.Utilities.LogonUser
                 await next(context);
             }
         }
-
-        //endpoints that no authentication needed  
         private static bool NoUserMiddlewareProcessNeededEndpoints(HttpContext context)
         {
             var Endpoints = new List<(string method, string path)>
             {
                 ("GET", "api/health"),
                 ("GET", "api/users/whoami"),
-                ("GET", "api/idir-users/whoami"),
                 ("GET", "api/configuration"),
                 ("GET", "api/metadata/address"),
                 ("GET", "api/org-registrations"),
@@ -114,28 +173,6 @@ namespace Spd.Utilities.LogonUser
             return false;
         }
 
-        private async Task<bool> ProcessUser(HttpContext context, IMediator mediator, string? orgIdStr)
-        {
-            if (!Guid.TryParse(orgIdStr, out Guid orgId))
-            {
-                await ReturnUnauthorized(context, "organization is not a valid guid");
-                return false;
-            }
-
-            //the user is from idir, so, should be bc gov
-            if (context.User.GetIdentityProvider() == IPrincipalExtensions.IDIR_IDENTITY_PROVIDER)
-            {
-                return await ProcessIdirUser(orgId, context, mediator);
-            }
-
-            //the user is from bceid
-            if (IPrincipalExtensions.BCeID_IDENTITY_PROVIDERS.Contains(context.User.GetIdentityProvider()))
-            {
-                return await ProcessBceidUser(orgId, context, mediator);
-            }
-            return true;
-        }
-
         private async Task ReturnUnauthorized(HttpContext context, string msg)
         {
             context.Response.Clear();
@@ -145,11 +182,6 @@ namespace Spd.Utilities.LogonUser
 
         private async Task<bool> ProcessIdirUser(Guid orgId, HttpContext context, IMediator mediator)
         {
-            if (orgId != SpdConstants.BC_GOV_ORG_ID)
-            {
-                await ReturnUnauthorized(context, "invalid user or organization");
-                return false;
-            }
             IdirUserProfileResponse? idirUserProfile = await cache.Get<IdirUserProfileResponse>($"idir-user-{context.User.GetUserGuid()}");
             if (idirUserProfile == null)
             {
@@ -161,8 +193,14 @@ namespace Spd.Utilities.LogonUser
             return true;
         }
 
-        private async Task<bool> ProcessBceidUser(Guid orgId, HttpContext context, IMediator mediator)
+        private async Task<bool> ProcessBceidUser(string orgIdStr, HttpContext context, IMediator mediator)
         {
+            if (!Guid.TryParse(orgIdStr, out Guid orgId))
+            {
+                await ReturnUnauthorized(context, "organization is not a valid guid");
+                return false;
+            }
+
             //validate if the orgId in httpHeader is belong to this user and add the user role to claims.
             OrgUserProfileResponse? userProfile = await cache.Get<OrgUserProfileResponse>($"user-{context.User.GetUserGuid()}");
             if (userProfile == null)
