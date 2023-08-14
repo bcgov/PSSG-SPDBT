@@ -22,8 +22,18 @@ internal partial class ApplicationRepository : IApplicationRepository
         Guid teamGuid = Guid.Parse(DynamicsConstants.Client_Service_Team_Guid);
         team? serviceTeam = await _context.teams.Where(t => t.teamid == teamGuid).FirstOrDefaultAsync(ct);
         spd_servicetype? servicetype = _context.LookupServiceType(createApplicationCmd.ServiceType.ToString());
+        spd_ministry? ministry = null;
+        if (createApplicationCmd.MinistryId != null)
+        {
+            ministry = await _context.spd_ministries.Where(m => m.spd_ministryid == createApplicationCmd.MinistryId).FirstOrDefaultAsync(ct);
+        }
+        account? parentOrg = null;
+        if (createApplicationCmd.ParentOrgId != null)
+        {
+            parentOrg = await _context.GetOrgById((Guid)createApplicationCmd.ParentOrgId, ct);
+        }
         if (org != null && serviceTeam != null)
-            application = await CreateAppAsync(createApplicationCmd, org, user, serviceTeam, servicetype);
+            application = await CreateAppAsync(createApplicationCmd, org, user, serviceTeam, servicetype, ministry, parentOrg);
         await _context.SaveChangesAsync(ct);
 
         return application?.spd_applicationid;
@@ -320,7 +330,9 @@ internal partial class ApplicationRepository : IApplicationRepository
         account org,
         spd_portaluser? user,
         team team,
-        spd_servicetype? serviceType)
+        spd_servicetype? serviceType,
+        spd_ministry? ministry = null,
+        account? parentOrg = null)
     {
         spd_application app = _mapper.Map<spd_application>(createApplicationCmd);
 
@@ -335,7 +347,14 @@ internal partial class ApplicationRepository : IApplicationRepository
         {
             _context.SetLink(app, nameof(spd_application.spd_ServiceTypeId), serviceType);
         }
-
+        if (ministry != null)
+        {
+            _context.SetLink(app, nameof(spd_application.spd_Ministry), ministry);
+        }
+        if (parentOrg != null)
+        {
+            _context.SetLink(app, nameof(spd_application.spd_ParentOrganizationId), parentOrg);
+        }
         contact? contact;
         if (createApplicationCmd.CreatedByApplicantBcscId != null)//authenticated with 
         {

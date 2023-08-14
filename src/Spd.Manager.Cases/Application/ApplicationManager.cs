@@ -4,12 +4,14 @@ using Spd.Engine.Search;
 using Spd.Engine.Validation;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.ApplicationInvite;
+using Spd.Resource.Applicants.Delegates;
 using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.Incident;
 using Spd.Resource.Organizations.Identity;
 using Spd.Resource.Organizations.Org;
 using Spd.Resource.Organizations.Registration;
 using Spd.Utilities.FileStorage;
+using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.Shared.ManagerContract;
 using Spd.Utilities.Shared.ResourceContracts;
@@ -53,6 +55,7 @@ namespace Spd.Manager.Cases.Application
         private readonly IDocumentRepository _documentRepository;
         private readonly IFileStorageService _fileStorageService;
         private readonly IIncidentRepository _incidentRepository;
+        private readonly IDelegateRepository _delegateRepository;
         private readonly ISearchEngine _searchEngine;
 
         public ApplicationManager(IApplicationRepository applicationRepository,
@@ -65,7 +68,8 @@ namespace Spd.Manager.Cases.Application
             IIdentityRepository identityRepository,
             IDocumentRepository documentUrlRepository,
             IFileStorageService fileStorageService,
-            IIncidentRepository incidentRepository)
+            IIncidentRepository incidentRepository,
+            IDelegateRepository delegateRepository)
         {
             _applicationRepository = applicationRepository;
             _applicationInviteRepository = applicationInviteRepository;
@@ -77,6 +81,7 @@ namespace Spd.Manager.Cases.Application
             _documentRepository = documentUrlRepository;
             _fileStorageService = fileStorageService;
             _incidentRepository = incidentRepository;
+            _delegateRepository = delegateRepository;
             _searchEngine = searchEngine;
         }
 
@@ -169,7 +174,6 @@ namespace Spd.Manager.Cases.Application
                 };
             }
             var cmd = _mapper.Map<ApplicationCreateCmd>(request.ApplicationCreateRequest);
-            cmd.OrgId = request.OrgId;
             cmd.CreatedByUserId = request.UserId;
             Guid? applicationId = await _applicationRepository.AddApplicationAsync(cmd, ct);
             if (applicationId.HasValue && spdTempFile != null)
@@ -183,6 +187,20 @@ namespace Spd.Manager.Cases.Application
             }
             result.ApplicationId = applicationId.Value;
             result.CreateSuccess = true;
+
+            //if it is PSSO, add hiring manager
+            if (request.OrgId == SpdConstants.BC_GOV_ORG_ID)
+            {
+                //add hiring manager
+                await _delegateRepository.ManageAsync(
+                    new CreateDelegateCmd()
+                    {
+                        ApplicationId = applicationId.Value,
+                        PSSOUserRoleCode = PSSOUserRoleEnum.HiringManager,
+                        PortalUserId = request.UserId,
+                    }, ct);
+            }
+
             return result;
         }
 

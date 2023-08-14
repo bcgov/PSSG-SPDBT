@@ -228,4 +228,10 @@ namespace Spd.Utilities.Dynamics
         Approved = 100000000, //active status
         Revoked = 2
     }
+
+    public enum PSSOUserRoleOptionSet
+    {
+        Delegate = 100000000,
+        HiringManager = 100000001
+    }
 }

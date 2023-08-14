@@ -142,7 +142,7 @@ namespace Spd.Utilities.LogonUser
                 idirUserProfile = await mediator.Send(new ManageIdirUserCommand(mapper.Map<IdirUserIdentity>(idirUserInfo)));
                 await cache.Set<IdirUserProfileResponse>($"{IdirUserCacheKeyPrefix}{context.User.GetUserGuid()}", idirUserProfile, new TimeSpan(0, 30, 0));
             }
-            context.User.UpdateUserClaims(Guid.Empty.ToString(), orgId.ToString(), "BCGovStaff");
+            context.User.UpdateUserClaims(idirUserProfile.UserId.ToString(), orgId.ToString(), "BCGovStaff");
             return true;
         }
 
