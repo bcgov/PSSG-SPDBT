@@ -5,6 +5,7 @@ using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.ApplicationInvite;
 using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.Incident;
+using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.ManagerContract;
 using Spd.Utilities.Shared.ResourceContracts;
 
@@ -26,8 +27,11 @@ namespace Spd.Manager.Cases.Application
             CreateMap<AppInviteListSortBy, AppInviteSortBy>();
             CreateMap<ApplicationInviteResult, ApplicationInviteResponse>()
                .ForMember(d => d.Status, opt => opt.MapFrom(s => Enum.Parse<ApplicationInviteStatusCode>(s.Status)));
-            CreateMap<ApplicationCreateRequest, SearchApplicationQry>();
-            CreateMap<ApplicationCreateRequest, ApplicationCreateCmd>();
+            CreateMap<ApplicationCreateRequest, SearchApplicationQry>()
+               .ForMember(d => d.OrgId, opt => opt.MapFrom(s => GetOrgId(s)));
+            CreateMap<ApplicationCreateRequest, ApplicationCreateCmd>()
+                .ForMember(d => d.ParentOrgId, opt => opt.MapFrom(s => GetParentOrgId(s)))
+                .ForMember(d => d.OrgId, opt => opt.MapFrom(s => GetOrgId(s)));
             CreateMap<ApplicantAppCreateRequest, ApplicationCreateCmd>()
                  .IncludeBase<ApplicationCreateRequest, ApplicationCreateCmd>()
                  .ForMember(d => d.AgreeToConsent, opt => opt.MapFrom(s => true));
@@ -49,7 +53,7 @@ namespace Spd.Manager.Cases.Application
             CreateMap<ApplicationInviteDeleteCommand, ApplicationInviteDeleteCmd>();
             CreateMap<ApplicationStatisticsQuery, ApplicationStatisticsQry>();
             CreateMap<ApplicationStatisticsResp, ApplicationStatisticsResponse>();
-            CreateMap<IdentityCommand, IdentityCmd>();
+            CreateMap<VerifyIdentityCommand, VerifyIdentityCmd>();
             CreateMap<BulkHistoryListResp, BulkHistoryListResponse>();
             CreateMap<BulkHistoryResp, BulkHistoryResponse>();
             CreateMap<BulkAppsCreateResp, BulkAppsCreateResponse>();
@@ -80,7 +84,7 @@ namespace Spd.Manager.Cases.Application
                 .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName))
                 .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.Surname))
                 .ForMember(d => d.Email, opt => opt.MapFrom(s => s.EmailAddress));
-                //.ForMember(d => d.ScreeningType, opt => opt.MapFrom(s => s.ScreeningType));
+            //.ForMember(d => d.ScreeningType, opt => opt.MapFrom(s => s.ScreeningType));
         }
 
         private static CaseSubStatusCode? GetCaseSubStatusCode(CaseSubStatusEnum? subStatusEnum)
@@ -107,6 +111,26 @@ namespace Spd.Manager.Cases.Application
             {
                 return null;
             }
+        }
+
+        private static Guid GetOrgId(ApplicationCreateRequest appCreateRequest)
+        {
+            if (appCreateRequest.OrgId == SpdConstants.BC_GOV_ORG_ID)
+            {
+                //get orgId from appCreateRequest.MinistryId
+                //todo: when we know how to connect spd_ministry with idir logon user ministry
+                return Guid.Parse("4765533b-e33a-ee11-b845-00505683fbf4"); //temp
+            }
+            return appCreateRequest.OrgId;
+        }
+
+        private static Guid? GetParentOrgId(ApplicationCreateRequest appCreateRequest)
+        {
+            if (appCreateRequest.OrgId == SpdConstants.BC_GOV_ORG_ID)
+            {
+                return SpdConstants.BC_GOV_ORG_ID;
+            }
+            return null;
         }
     }
 }

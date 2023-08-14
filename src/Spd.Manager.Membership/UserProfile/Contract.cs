@@ -9,6 +9,7 @@ namespace Spd.Manager.Membership.UserProfile
     {
         public Task<OrgUserProfileResponse> Handle(GetCurrentUserProfileQuery request, CancellationToken ct);
         public Task<ApplicantProfileResponse> Handle(GetApplicantProfileQuery request, CancellationToken ct);
+        public Task<IdirUserProfileResponse> Handle(ManageIdirUserCommand request, CancellationToken ct);
     }
 
     #region UserProfile
@@ -87,15 +88,33 @@ namespace Spd.Manager.Membership.UserProfile
     #endregion
 
     #region IdirUserProfile
+
+    public record ManageIdirUserCommand(IdirUserIdentity IdirUserIdentity) : IRequest<IdirUserProfileResponse>;
+
     public class IdirUserProfileResponse
     {
         public Guid OrgId { get; set; } //would be hardcoded bcgov id.
+        public Guid UserId { get; set; }
         public string? UserGuid { get; set; }//from token
         public string? UserDisplayName { get; set; } //from token
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? IdirUserName { get; set; }
         public IdentityProviderTypeCode? IdentityProviderType { get; set; }
+    }
+
+    public class IdirUserIdentity
+    {
+        public string? IdirUserName { get; set; } //idir_username
+        public string? DisplayName { get; set; } //display_name
+        public string? FirstName { get; set; } //given_name
+        public string? LastName { get; set; } //family_name
+        public string? PreferredUserName { get; set; } //preferred_username
+        public string? UserGuid { get; set; } //idir_user_guid
+        public string? UserName { get; set; } //idir_username
+        public string? Issuer { get; set; } //iss
+        public bool? EmailVerified { get; set; } //email_verified
+        public string? Email { get; set; } //email
     }
     #endregion
 }
