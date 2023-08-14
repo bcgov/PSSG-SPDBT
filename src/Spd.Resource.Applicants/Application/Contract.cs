@@ -79,7 +79,7 @@ public record ApplicationCreateCmd
     public PayerPreferenceTypeCode PayeeType { get; set; }
     public ServiceTypeEnum? ServiceType { get; set; }
     public ScreenTypeEnum ScreeningType { get; set; } = ScreenTypeEnum.Staff;
-    public SpdTempFile? ConsentFormTempFile { get; set; } // would be null if applicant submit application
+    //public SpdTempFile? ConsentFormTempFile { get; set; } // would be null if applicant submit application
     public string? CreatedByApplicantBcscId { get; set; } = null;
     public Guid? SharedClearanceId { get; set; } = null;
     public Guid? ContactId { get; set; }

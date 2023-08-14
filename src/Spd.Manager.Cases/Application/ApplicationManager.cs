@@ -155,20 +155,24 @@ namespace Spd.Manager.Cases.Application
                 }
             }
 
-            string fileKey = await _tempFile.HandleCommand(new SaveTempFileCommand(request.ConsentFormFile), ct);
-            SpdTempFile spdTempFile = new()
+            SpdTempFile? spdTempFile = null;
+            if (request.ConsentFormFile != null)
             {
-                TempFileKey = fileKey,
-                ContentType = request.ConsentFormFile.ContentType,
-                FileName = request.ConsentFormFile.FileName,
-                FileSize = request.ConsentFormFile.Length,
-            };
+                //psso does not have consent form
+                string fileKey = await _tempFile.HandleCommand(new SaveTempFileCommand(request.ConsentFormFile), ct);
+                spdTempFile = new()
+                {
+                    TempFileKey = fileKey,
+                    ContentType = request.ConsentFormFile.ContentType,
+                    FileName = request.ConsentFormFile.FileName,
+                    FileSize = request.ConsentFormFile.Length,
+                };
+            }
             var cmd = _mapper.Map<ApplicationCreateCmd>(request.ApplicationCreateRequest);
             cmd.OrgId = request.OrgId;
             cmd.CreatedByUserId = request.UserId;
-            cmd.ConsentFormTempFile = spdTempFile;
             Guid? applicationId = await _applicationRepository.AddApplicationAsync(cmd, ct);
-            if (applicationId.HasValue)
+            if (applicationId.HasValue && spdTempFile != null)
             {
                 await _documentRepository.ManageAsync(new CreateDocumentCmd
                 {
@@ -176,10 +180,9 @@ namespace Spd.Manager.Cases.Application
                     ApplicationId = (Guid)applicationId,
                     DocumentType = DocumentTypeEnum.ApplicantConsentForm,
                 }, ct);
-
-                result.ApplicationId = applicationId.Value;
-                result.CreateSuccess = true;
             }
+            result.ApplicationId = applicationId.Value;
+            result.CreateSuccess = true;
             return result;
         }
 
@@ -379,7 +382,6 @@ namespace Spd.Manager.Cases.Application
             var result = new ApplicationCreateResponse();
             var cmd = _mapper.Map<ApplicationCreateCmd>(command.ApplicationCreateRequest);
             cmd.OrgId = command.ApplicationCreateRequest.OrgId;
-            cmd.ConsentFormTempFile = null;
             cmd.CreatedByApplicantBcscId = command.BcscId;
 
             if (command.ApplicationCreateRequest.AgreeToShare != null &&
