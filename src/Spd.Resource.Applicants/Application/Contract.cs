@@ -11,7 +11,7 @@ public interface IApplicationRepository
     public Task<bool> CheckApplicationDuplicateAsync(SearchApplicationQry searchApplicationQry, CancellationToken cancellationToken);
     public Task<ApplicationListResp> QueryAsync(ApplicationListQry query, CancellationToken cancellationToken);
     public Task<ApplicationStatisticsResp> QueryApplicationStatisticsAsync(ApplicationStatisticsQry query, CancellationToken cancellationToken);
-    public Task IdentityAsync(IdentityCmd cmd, CancellationToken ct);
+    public Task IdentityAsync(VerifyIdentityCmd cmd, CancellationToken ct);
     public Task<BulkAppsCreateResp> AddBulkAppsAsync(BulkAppsCreateCmd createApplicationCmds, CancellationToken cancellationToken);
     public Task<BulkHistoryListResp> QueryBulkHistoryAsync(BulkHistoryListQry query, CancellationToken cancellationToken);
     public Task<ClearanceAccessListResp> QueryAsync(ClearanceAccessListQry clearanceListQry, CancellationToken ct);
@@ -52,6 +52,7 @@ public record SearchApplicationQry
 public record ApplicationCreateCmd
 {
     public Guid OrgId { get; set; }
+    public Guid? ParentOrgId { get; set; }
     public ApplicationOriginTypeCode OriginTypeCode { get; set; }
     public string? GivenName { get; set; }
     public string? MiddleName1 { get; set; }
@@ -79,10 +80,12 @@ public record ApplicationCreateCmd
     public PayerPreferenceTypeCode PayeeType { get; set; }
     public ServiceTypeEnum? ServiceType { get; set; }
     public ScreenTypeEnum ScreeningType { get; set; } = ScreenTypeEnum.Staff;
-    public SpdTempFile? ConsentFormTempFile { get; set; } // would be null if applicant submit application
+    //public SpdTempFile? ConsentFormTempFile { get; set; } // would be null if applicant submit application
     public string? CreatedByApplicantBcscId { get; set; } = null;
     public Guid? SharedClearanceId { get; set; } = null;
     public Guid? ContactId { get; set; }
+    public Guid? MinistryId { get; set; } //for psso
+    public string? EmployeeId { get; set; } //for psso
 
 }
 
@@ -94,7 +97,7 @@ public record AliasCreateCmd
     public string? Surname { get; set; }
 
 }
-public record IdentityCmd
+public record VerifyIdentityCmd
 {
     public Guid OrgId { get; set; }
     public Guid ApplicationId { get; set; }

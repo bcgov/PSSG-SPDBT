@@ -69,22 +69,13 @@ namespace Spd.Presentation.Screening.Controllers
         [Route("api/idir-users/whoami")]
         [HttpGet]
         [Authorize(Policy = "OnlyIdir")]
-        public IdirUserProfileResponse IdirUserWhoami()
+        public async Task<IdirUserProfileResponse> IdirUserWhoami()
         {
             string? identityProvider = _currentUser.GetIdentityProvider();
             if (identityProvider != null && identityProvider.Equals("idir", StringComparison.InvariantCultureIgnoreCase))
             {
                 IdirUserIdentityInfo userIdentity = _currentUser.GetIdirUserIdentityInfo();
-                return new IdirUserProfileResponse
-                {
-                    OrgId = SpdConstants.BC_GOV_ORG_ID,
-                    IdentityProviderType = IdentityProviderTypeCode.Idir,
-                    UserDisplayName = userIdentity.DisplayName,
-                    FirstName = userIdentity.FirstName,
-                    LastName = userIdentity.LastName,
-                    IdirUserName = userIdentity.IdirUserName,
-                    UserGuid = userIdentity.UserGuid,
-                };
+                return await _mediator.Send(new ManageIdirUserCommand(_mapper.Map<IdirUserIdentity>(userIdentity)));
             }
             throw new ApiException(System.Net.HttpStatusCode.Unauthorized, "Cannot get idir info from token.");
         }

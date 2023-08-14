@@ -4,12 +4,14 @@ using Spd.Engine.Search;
 using Spd.Engine.Validation;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.ApplicationInvite;
+using Spd.Resource.Applicants.Delegates;
 using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.Incident;
 using Spd.Resource.Organizations.Identity;
 using Spd.Resource.Organizations.Org;
 using Spd.Resource.Organizations.Registration;
 using Spd.Utilities.FileStorage;
+using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.Shared.ManagerContract;
 using Spd.Utilities.Shared.ResourceContracts;
@@ -28,7 +30,7 @@ namespace Spd.Manager.Cases.Application
         IRequestHandler<ApplicationListQuery, ApplicationListResponse>,
         IRequestHandler<ApplicationPaymentListQuery, ApplicationPaymentListResponse>,
         IRequestHandler<ApplicationStatisticsQuery, ApplicationStatisticsResponse>,
-        IRequestHandler<IdentityCommand, Unit>,
+        IRequestHandler<VerifyIdentityCommand, Unit>,
         IRequestHandler<GetBulkUploadHistoryQuery, BulkHistoryListResponse>,
         IRequestHandler<BulkUploadCreateCommand, BulkUploadCreateResponse>,
         IRequestHandler<ClearanceAccessListQuery, ClearanceAccessListResponse>,
@@ -53,6 +55,7 @@ namespace Spd.Manager.Cases.Application
         private readonly IDocumentRepository _documentRepository;
         private readonly IFileStorageService _fileStorageService;
         private readonly IIncidentRepository _incidentRepository;
+        private readonly IDelegateRepository _delegateRepository;
         private readonly ISearchEngine _searchEngine;
 
         public ApplicationManager(IApplicationRepository applicationRepository,
@@ -65,7 +68,8 @@ namespace Spd.Manager.Cases.Application
             IIdentityRepository identityRepository,
             IDocumentRepository documentUrlRepository,
             IFileStorageService fileStorageService,
-            IIncidentRepository incidentRepository)
+            IIncidentRepository incidentRepository,
+            IDelegateRepository delegateRepository)
         {
             _applicationRepository = applicationRepository;
             _applicationInviteRepository = applicationInviteRepository;
@@ -77,6 +81,7 @@ namespace Spd.Manager.Cases.Application
             _documentRepository = documentUrlRepository;
             _fileStorageService = fileStorageService;
             _incidentRepository = incidentRepository;
+            _delegateRepository = delegateRepository;
             _searchEngine = searchEngine;
         }
 
@@ -155,20 +160,23 @@ namespace Spd.Manager.Cases.Application
                 }
             }
 
-            string fileKey = await _tempFile.HandleCommand(new SaveTempFileCommand(request.ConsentFormFile), ct);
-            SpdTempFile spdTempFile = new()
+            SpdTempFile? spdTempFile = null;
+            if (request.ConsentFormFile != null)
             {
-                TempFileKey = fileKey,
-                ContentType = request.ConsentFormFile.ContentType,
-                FileName = request.ConsentFormFile.FileName,
-                FileSize = request.ConsentFormFile.Length,
-            };
+                //psso does not have consent form
+                string fileKey = await _tempFile.HandleCommand(new SaveTempFileCommand(request.ConsentFormFile), ct);
+                spdTempFile = new()
+                {
+                    TempFileKey = fileKey,
+                    ContentType = request.ConsentFormFile.ContentType,
+                    FileName = request.ConsentFormFile.FileName,
+                    FileSize = request.ConsentFormFile.Length,
+                };
+            }
             var cmd = _mapper.Map<ApplicationCreateCmd>(request.ApplicationCreateRequest);
-            cmd.OrgId = request.OrgId;
             cmd.CreatedByUserId = request.UserId;
-            cmd.ConsentFormTempFile = spdTempFile;
             Guid? applicationId = await _applicationRepository.AddApplicationAsync(cmd, ct);
-            if (applicationId.HasValue)
+            if (applicationId.HasValue && spdTempFile != null)
             {
                 await _documentRepository.ManageAsync(new CreateDocumentCmd
                 {
@@ -176,10 +184,23 @@ namespace Spd.Manager.Cases.Application
                     ApplicationId = (Guid)applicationId,
                     DocumentType = DocumentTypeEnum.ApplicantConsentForm,
                 }, ct);
-
-                result.ApplicationId = applicationId.Value;
-                result.CreateSuccess = true;
             }
+            result.ApplicationId = applicationId.Value;
+            result.CreateSuccess = true;
+
+            //if it is PSSO, add hiring manager
+            if (request.OrgId == SpdConstants.BC_GOV_ORG_ID)
+            {
+                //add hiring manager
+                await _delegateRepository.ManageAsync(
+                    new CreateDelegateCmd()
+                    {
+                        ApplicationId = applicationId.Value,
+                        PSSOUserRoleCode = PSSOUserRoleEnum.HiringManager,
+                        PortalUserId = request.UserId,
+                    }, ct);
+            }
+
             return result;
         }
 
@@ -227,9 +248,9 @@ namespace Spd.Manager.Cases.Application
             return _mapper.Map<ApplicationStatisticsResponse>(response);
         }
 
-        public async Task<Unit> Handle(IdentityCommand request, CancellationToken ct)
+        public async Task<Unit> Handle(VerifyIdentityCommand request, CancellationToken ct)
         {
-            var cmd = _mapper.Map<IdentityCmd>(request);
+            var cmd = _mapper.Map<VerifyIdentityCmd>(request);
             await _applicationRepository.IdentityAsync(cmd, ct);
             return default;
         }
@@ -379,7 +400,6 @@ namespace Spd.Manager.Cases.Application
             var result = new ApplicationCreateResponse();
             var cmd = _mapper.Map<ApplicationCreateCmd>(command.ApplicationCreateRequest);
             cmd.OrgId = command.ApplicationCreateRequest.OrgId;
-            cmd.ConsentFormTempFile = null;
             cmd.CreatedByApplicantBcscId = command.BcscId;
 
             if (command.ApplicationCreateRequest.AgreeToShare != null &&
@@ -387,7 +407,8 @@ namespace Spd.Manager.Cases.Application
                cmd.SharedClearanceId.HasValue &&
                cmd.CreatedByApplicantBcscId != null)//bcsc authenticated and has sharable clearance
             {
-                ApplicantIdentityQueryResult contact = (ApplicantIdentityQueryResult)await _identityRepository.Query(new ApplicantIdentityQuery(cmd.CreatedByApplicantBcscId, IdentityProviderTypeEnum.BcServicesCard), ct);
+                var contacts = await _identityRepository.Query(new IdentityQry(cmd.CreatedByApplicantBcscId, null, IdentityProviderTypeEnum.BcServicesCard), ct);
+                var contact = contacts.Items.FirstOrDefault();
                 if (contact == null)
                     throw new ArgumentException("No contact found");
                 cmd.ContactId = contact.ContactId;
@@ -434,7 +455,8 @@ namespace Spd.Manager.Cases.Application
 
         public async Task<ApplicantApplicationFileListResponse> Handle(ApplicantApplicationFileQuery query, CancellationToken ct)
         {
-            ApplicantIdentityQueryResult? contact = (ApplicantIdentityQueryResult?)await _identityRepository.Query(new ApplicantIdentityQuery(query.BcscId, IdentityProviderTypeEnum.BcServicesCard), ct);
+            var contacts = await _identityRepository.Query(new IdentityQry(query.BcscId, null, IdentityProviderTypeEnum.BcServicesCard), ct);
+            var contact = contacts.Items.FirstOrDefault();
             if (contact == null)
                 throw new ArgumentException("No contact found");
 
@@ -449,7 +471,8 @@ namespace Spd.Manager.Cases.Application
 
         public async Task<IEnumerable<ApplicantAppFileCreateResponse>> Handle(CreateApplicantAppFileCommand command, CancellationToken ct)
         {
-            ApplicantIdentityQueryResult? contact = (ApplicantIdentityQueryResult?)await _identityRepository.Query(new ApplicantIdentityQuery(command.BcscId, IdentityProviderTypeEnum.BcServicesCard), ct);
+            var contacts = await _identityRepository.Query(new IdentityQry(command.BcscId, null, IdentityProviderTypeEnum.BcServicesCard), ct);
+            var contact = contacts.Items.FirstOrDefault();
             if (contact == null)
                 throw new ArgumentException("No contact found");
 

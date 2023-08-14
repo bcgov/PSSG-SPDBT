@@ -1,6 +1,7 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.ManagerContract;
 using System.ComponentModel;
 using GenderCode = Spd.Utilities.Shared.ManagerContract.GenderCode;
@@ -18,7 +19,7 @@ namespace Spd.Manager.Cases.Application
         public Task<ApplicationCreateResponse> Handle(ApplicationCreateCommand request, CancellationToken ct);
         public Task<ApplicationCreateResponse> Handle(ApplicantApplicationCreateCommand request, CancellationToken ct);
         public Task<ApplicationStatisticsResponse> Handle(ApplicationStatisticsQuery request, CancellationToken ct);
-        public Task<Unit> Handle(IdentityCommand request, CancellationToken ct);
+        public Task<Unit> Handle(VerifyIdentityCommand request, CancellationToken ct);
         public Task<BulkHistoryListResponse> Handle(GetBulkUploadHistoryQuery request, CancellationToken ct);
         public Task<BulkUploadCreateResponse> Handle(BulkUploadCreateCommand cmd, CancellationToken ct);
         public Task<ClearanceAccessListResponse> Handle(ClearanceAccessListQuery request, CancellationToken ct);
@@ -72,7 +73,7 @@ namespace Spd.Manager.Cases.Application
         public ServiceTypeCode? ServiceType { get; set; }
     };
 
-    public record IdentityCommand(Guid OrgId, Guid ApplicationId, IdentityStatusCode Status) : IRequest<Unit>;
+    public record VerifyIdentityCommand(Guid OrgId, Guid ApplicationId, IdentityStatusCode Status) : IRequest<Unit>;
     public record ApplicationInvitesCreateRequest
     {
         public string? HostUrl { get; set; }
@@ -129,7 +130,7 @@ namespace Spd.Manager.Cases.Application
     #endregion
 
     #region application
-    public record ApplicationCreateCommand(ApplicationCreateRequest ApplicationCreateRequest, Guid OrgId, Guid UserId, IFormFile ConsentFormFile) : IRequest<ApplicationCreateResponse>;
+    public record ApplicationCreateCommand(ApplicationCreateRequest ApplicationCreateRequest, Guid OrgId, Guid UserId, IFormFile? ConsentFormFile) : IRequest<ApplicationCreateResponse>;
     public record ApplicationListQuery : IRequest<ApplicationListResponse>
     {
         public AppListFilterBy? FilterBy { get; set; } //null means no filter
@@ -198,6 +199,8 @@ namespace Spd.Manager.Cases.Application
         public bool? HaveVerifiedIdentity { get; set; }
         public IEnumerable<AliasCreateRequest> Aliases { get; set; } = Array.Empty<AliasCreateRequest>();
         public bool RequireDuplicateCheck { get; set; } = false;
+        public Guid? MinistryId { get; set; } //for psso
+        public string? EmployeeId { get; set; } //for psso
     }
     public record AliasCreateRequest
     {
@@ -462,7 +465,7 @@ namespace Spd.Manager.Cases.Application
         public ScreeningTypeCode ScreeningType { get; set; } = ScreeningTypeCode.Staff;
     };
 
-    public record GetApplicationInvitePrepopulateDataQuery(Guid ClearanceId): IRequest<ApplicationInvitePrepopulateDataResponse>;
+    public record GetApplicationInvitePrepopulateDataQuery(Guid ClearanceId) : IRequest<ApplicationInvitePrepopulateDataResponse>;
     #endregion
 
     #region validator
@@ -664,6 +667,15 @@ namespace Spd.Manager.Cases.Application
 
             RuleFor(r => r.HaveVerifiedIdentity)
                 .NotNull(); // Must be true or false
+
+            RuleFor(r => r.MinistryId)
+                .NotNull()
+                .When(r => r.OrgId == SpdConstants.BC_GOV_ORG_ID);
+
+            RuleFor(r => r.EmployeeId) //Employee ID validation: Whole Number, max 7 digits
+                .MaximumLength(7)
+                .Must(r => int.TryParse(r, out var i) && i > 0)
+                .When(r => r.OrgId == SpdConstants.BC_GOV_ORG_ID && !string.IsNullOrEmpty(r.EmployeeId));
         }
     }
 

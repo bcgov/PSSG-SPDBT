@@ -226,6 +226,22 @@ namespace Spd.Utilities.Dynamics
             .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
             .SingleOrDefaultAsync(ct);
 
+        public static async Task<spd_identity?> GetIdentityById(this DynamicsContext context, Guid identityId, CancellationToken ct)
+        {
+            try
+            {
+                return await context.spd_identities.Where(a => a.spd_identityid == identityId).SingleOrDefaultAsync(ct);
+            }
+            catch (DataServiceQueryException ex)
+            {
+                if (ex.Response.StatusCode == 404)
+                    return null;
+                else
+                    throw;
+            }
+
+        }
+
         public static async Task<spd_payment?> GetPaymentById(this DynamicsContext context, Guid paymentId, CancellationToken ct)
         {
             try
