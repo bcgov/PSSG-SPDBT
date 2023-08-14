@@ -18,7 +18,7 @@ namespace Spd.Manager.Cases.Application
         public Task<ApplicationCreateResponse> Handle(ApplicationCreateCommand request, CancellationToken ct);
         public Task<ApplicationCreateResponse> Handle(ApplicantApplicationCreateCommand request, CancellationToken ct);
         public Task<ApplicationStatisticsResponse> Handle(ApplicationStatisticsQuery request, CancellationToken ct);
-        public Task<Unit> Handle(IdentityCommand request, CancellationToken ct);
+        public Task<Unit> Handle(VerifyIdentityCommand request, CancellationToken ct);
         public Task<BulkHistoryListResponse> Handle(GetBulkUploadHistoryQuery request, CancellationToken ct);
         public Task<BulkUploadCreateResponse> Handle(BulkUploadCreateCommand cmd, CancellationToken ct);
         public Task<ClearanceAccessListResponse> Handle(ClearanceAccessListQuery request, CancellationToken ct);
@@ -72,7 +72,7 @@ namespace Spd.Manager.Cases.Application
         public ServiceTypeCode? ServiceType { get; set; }
     };
 
-    public record IdentityCommand(Guid OrgId, Guid ApplicationId, IdentityStatusCode Status) : IRequest<Unit>;
+    public record VerifyIdentityCommand(Guid OrgId, Guid ApplicationId, IdentityStatusCode Status) : IRequest<Unit>;
     public record ApplicationInvitesCreateRequest
     {
         public string? HostUrl { get; set; }

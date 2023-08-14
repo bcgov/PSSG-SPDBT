@@ -315,7 +315,7 @@ namespace Spd.Presentation.Screening.Controllers
         [HttpPut]
         public async Task<ActionResult> IdentityVerify([FromRoute] Guid applicationId, [FromRoute] Guid orgId, [FromQuery] IdentityStatusCode status)
         {
-            await _mediator.Send(new IdentityCommand(orgId, applicationId, status));
+            await _mediator.Send(new VerifyIdentityCommand(orgId, applicationId, status));
             return Ok();
         }
 

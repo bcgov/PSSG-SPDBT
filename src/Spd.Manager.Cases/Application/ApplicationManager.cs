@@ -28,7 +28,7 @@ namespace Spd.Manager.Cases.Application
         IRequestHandler<ApplicationListQuery, ApplicationListResponse>,
         IRequestHandler<ApplicationPaymentListQuery, ApplicationPaymentListResponse>,
         IRequestHandler<ApplicationStatisticsQuery, ApplicationStatisticsResponse>,
-        IRequestHandler<IdentityCommand, Unit>,
+        IRequestHandler<VerifyIdentityCommand, Unit>,
         IRequestHandler<GetBulkUploadHistoryQuery, BulkHistoryListResponse>,
         IRequestHandler<BulkUploadCreateCommand, BulkUploadCreateResponse>,
         IRequestHandler<ClearanceAccessListQuery, ClearanceAccessListResponse>,
@@ -227,7 +227,7 @@ namespace Spd.Manager.Cases.Application
             return _mapper.Map<ApplicationStatisticsResponse>(response);
         }
 
-        public async Task<Unit> Handle(IdentityCommand request, CancellationToken ct)
+        public async Task<Unit> Handle(VerifyIdentityCommand request, CancellationToken ct)
         {
             var cmd = _mapper.Map<VerifyIdentityCmd>(request);
             await _applicationRepository.IdentityAsync(cmd, ct);
