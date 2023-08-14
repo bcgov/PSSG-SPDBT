@@ -109,8 +109,8 @@ namespace Spd.Manager.Membership.UserProfile
 
         public async Task<IdirUserProfileResponse> Handle(ManageIdirUserCommand cmd, CancellationToken ct)
         {
-            var result = await _idRepository.Query(new IdentityQry(cmd.IdirUserIdentity.UserGuid, null, IdentityProviderTypeEnum.Idir), ct);
-            var identity = result.Items.FirstOrDefault();
+            var existingIdentities = await _idRepository.Query(new IdentityQry(cmd.IdirUserIdentity.UserGuid, null, IdentityProviderTypeEnum.Idir), ct);
+            var identity = existingIdentities.Items.FirstOrDefault();
             Guid? identityId = identity?.Id;
             if (identity == null)
             {
@@ -118,20 +118,26 @@ namespace Spd.Manager.Membership.UserProfile
                 identityId = id?.Id;
             }
 
-            var idirUser = (OrgUsersResult)await _orgUserRepository.QueryOrgUserAsync(new OrgUsersSearch(SpdConstants.BC_GOV_ORG_ID, identityId), ct);
-            if (!idirUser.UserResults.Any())
+            var existingUser = (OrgUsersResult)await _orgUserRepository.QueryOrgUserAsync(new OrgUsersSearch(SpdConstants.BC_GOV_ORG_ID, identityId), ct);
+            var result = existingUser.UserResults.FirstOrDefault();
+            if (result == null)
             {
                 User user = new User()
                 {
                     OrganizationId = SpdConstants.BC_GOV_ORG_ID,
                     Email = cmd.IdirUserIdentity.Email,
                     FirstName = cmd.IdirUserIdentity.FirstName,
-                    LastName = cmd.IdirUserIdentity.LastName,                   
+                    LastName = cmd.IdirUserIdentity.LastName,
                 };
 
-                await _orgUserRepository.ManageOrgUserAsync(new UserCreateCmd(user, null, identityId), ct);
+                var userOrgResult = await _orgUserRepository.ManageOrgUserAsync(new UserCreateCmd(user, null, identityId), ct);
+                result = userOrgResult.UserResult;
             }
-            return _mapper.Map<IdirUserProfileResponse>(result);
+            var response = _mapper.Map<IdirUserProfileResponse>(result);
+            response.UserGuid=cmd.IdirUserIdentity?.UserGuid;
+            response.UserDisplayName=cmd.IdirUserIdentity?.DisplayName;
+            response.IdirUserName = cmd.IdirUserIdentity?.IdirUserName;
+            return response;
         }
     }
 }

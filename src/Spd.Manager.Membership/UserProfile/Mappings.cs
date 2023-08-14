@@ -19,6 +19,12 @@ namespace Spd.Manager.Membership.UserProfile
 
             CreateMap<Identity, ApplicantProfileResponse>()
                 .ForMember(d => d.ApplicantId, opt => opt.MapFrom(s => s.ContactId));
+
+            CreateMap<UserResult, IdirUserProfileResponse>()
+               .ForMember(d => d.OrgId, opt => opt.MapFrom(s => s.OrganizationId))
+               .ForMember(d => d.IdentityProviderType, opt => opt.MapFrom(s => IdentityProviderTypeCode.Idir))
+               .ForMember(d => d.UserId, opt => opt.MapFrom(s => s.Id))
+               .ForMember(d => d.OrgId, opt => opt.MapFrom(s => s.OrganizationId));
         }
     }
 }
