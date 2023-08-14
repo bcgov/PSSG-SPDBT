@@ -40,6 +40,7 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.spd_identityconfirmed, opt => opt.MapFrom(s => s.HaveVerifiedIdentity))
             .ForMember(d => d.spd_screeningrequesttype, opt => opt.MapFrom(s => (int)Enum.Parse<ScreenTypeOptionSet>(s.ScreeningType.ToString())))
             .ForMember(d => d.spd_sex, opt => opt.MapFrom(s => GetGender(s.GenderCode)))
+            .ForMember(d => d.spd_employeeid, opt => opt.MapFrom(s => s.EmployeeId))
             .ForMember(d => d.statuscode, opt => opt.MapFrom(s => s.HaveVerifiedIdentity == true ? ApplicationActiveStatus.PaymentPending : ApplicationActiveStatus.ApplicantVerification));
 
             _ = CreateMap<AliasCreateCmd, spd_alias>()

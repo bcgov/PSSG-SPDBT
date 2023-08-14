@@ -123,6 +123,21 @@ namespace Spd.Resource.Organizations.User
             user.spd_portaluserid = Guid.NewGuid();
             _dynaContext.AddTospd_portalusers(user);
             _dynaContext.SetLink(user, nameof(spd_portaluser.spd_OrganizationId), organization);
+
+            if(createUserCmd.IdentityId != null)
+            {
+                var id = await _dynaContext.GetIdentityById((Guid)createUserCmd.IdentityId, cancellationToken);
+                _dynaContext.SetLink(user, nameof(spd_portaluser.spd_IdentityId), id);
+            }
+
+            if (createUserCmd.User.OrganizationId == SpdConstants.BC_GOV_ORG_ID)
+            {
+                //psso: no role, no invitation.
+                await _dynaContext.SaveChangesAsync(cancellationToken);
+                return new OrgUserManageResult(_mapper.Map<UserResult>(user));
+            }
+
+            //crrp
             spd_role? role = _dynaContext.LookupRole(createUserCmd.User.ContactAuthorizationTypeCode.ToString());
             if (role != null)
             {
@@ -143,6 +158,7 @@ namespace Spd.Resource.Organizations.User
 
             user._spd_organizationid_value = createUserCmd.User.OrganizationId;
             user.spd_spd_role_spd_portaluser = new Collection<spd_role> { new spd_role() { spd_roleid = role.spd_roleid } };
+
             return new OrgUserManageResult(_mapper.Map<UserResult>(user));
         }
 

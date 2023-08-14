@@ -33,9 +33,10 @@ namespace Spd.Engine.Search
 
         private async Task<ShareableClearanceSearchResponse> SearchShareableClearanceAsync(ShareableClearanceSearchRequest request, CancellationToken ct)
         {
-            ShareableClearanceSearchResponse response = new ();
+            ShareableClearanceSearchResponse response = new();
             var org = (OrgQryResult)await _orgRepo.QueryOrgAsync(new OrgByIdentifierQry(request.OrgId), ct);
-            var contact = (ApplicantIdentityQueryResult?)await _identityRepo.Query(new ApplicantIdentityQuery(request.BcscId, IdentityProviderTypeEnum.BcServicesCard), ct);
+            var contacts = await _identityRepo.Query(new IdentityQry(request.BcscId, null, IdentityProviderTypeEnum.BcServicesCard), ct);
+            var contact = contacts.Items.FirstOrDefault();
             if (contact == null) return response;
 
             ClearanceQry qry = new ClearanceQry(
