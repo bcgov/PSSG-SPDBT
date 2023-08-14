@@ -15,7 +15,10 @@ namespace Spd.Resource.Organizations.Identity
     //cmd
     public abstract record IdentityCmd;
     public record CreateIdentityCmd(string UserGuid, Guid? OrgGuid, IdentityProviderTypeEnum IdentityProviderType) : IdentityCmd;
-    public record IdentityCmdResult(Guid Id);
+    public record IdentityCmdResult()
+    {
+        public Guid Id { get; set; }
+    };
 
     //shared content
     public record Identity

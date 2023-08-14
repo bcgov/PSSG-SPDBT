@@ -134,8 +134,8 @@ namespace Spd.Manager.Membership.UserProfile
                 result = userOrgResult.UserResult;
             }
             var response = _mapper.Map<IdirUserProfileResponse>(result);
-            response.UserGuid=cmd.IdirUserIdentity?.UserGuid;
-            response.UserDisplayName=cmd.IdirUserIdentity?.DisplayName;
+            response.UserGuid = cmd.IdirUserIdentity?.UserGuid;
+            response.UserDisplayName = cmd.IdirUserIdentity?.DisplayName;
             response.IdirUserName = cmd.IdirUserIdentity?.IdirUserName;
             return response;
         }

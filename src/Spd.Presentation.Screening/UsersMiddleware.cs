@@ -2,6 +2,7 @@ using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Membership.UserProfile;
+using Spd.Resource.Organizations.User;
 using Spd.Utilities.Cache;
 using Spd.Utilities.LogonUser.Configurations;
 using Spd.Utilities.Shared;
@@ -17,6 +18,9 @@ namespace Spd.Utilities.LogonUser
         private readonly IMapper mapper;
         private readonly BCeIDAuthenticationConfiguration? bceidConfig;
         private readonly BcscAuthenticationConfiguration? bcscConfig;
+        private readonly string OrgUserCacheKeyPrefix = "user-";
+        private readonly string ApplicantCacheKeyPrefix = "applicant-";
+        private readonly string IdirUserCacheKeyPrefix = "idir-user-";
 
         public UsersMiddleware(RequestDelegate next, IDistributedCache cache, IConfiguration configuration, IMapper mapper)
         {
@@ -32,60 +36,9 @@ namespace Spd.Utilities.LogonUser
             .Get<BcscAuthenticationConfiguration>();
         }
 
-        //public async Task InvokeAsync(HttpContext context, IMediator mediator)
-        //{
-        //    if (context.User.GetIssuer() == bceidConfig.Issuer) //bceid and idir have the same issuer
-        //    {
-        //        if (NoUserMiddlewareProcessNeededEndpoints(context) ||
-        //            context.User.Identity == null ||
-        //            !context.User.Identity.IsAuthenticated)
-        //        {
-        //            await next(context);
-        //            return;
-        //        }
-
-        //        if (context.Request.Headers.TryGetValue("organization", out var orgIdStr))
-        //        {
-        //            bool isSuccess = await ProcessUser(context, mediator, orgIdStr);
-        //            if (isSuccess)
-        //            {
-        //                await next(context);
-        //            }
-        //        }
-        //        else
-        //        {
-        //            await ReturnUnauthorized(context, "missing organization in the header.");
-        //        }
-        //    }
-        //    else if (context.User.GetIssuer() == bcscConfig.Issuer)
-        //    {
-        //        var applicantInfo = context.User.GetApplicantIdentityInfo();
-        //        //we need to differentiate if current user-applicant has account in spd db. If yes, add role applicant.
-        //        ApplicantProfileResponse? appProfile = await cache.Get<ApplicantProfileResponse>($"applicant-{applicantInfo.Sub}");
-        //        if (appProfile == null)
-        //        {
-        //            appProfile = await mediator.Send(new GetApplicantProfileQuery(applicantInfo.Sub));
-        //            if (appProfile != null)
-        //                await cache.Set($"applicant-{applicantInfo.Sub}", appProfile, new TimeSpan(0, 30, 0));
-        //        }
-
-        //        if (appProfile != null)
-        //        {
-        //            context.User.AddUpdateClaim(ClaimTypes.Role, "Applicant");
-        //        }
-        //        await next(context);
-        //    }
-        //    else
-        //    {
-        //        await next(context);
-        //    }
-        //}
-
-        //endpoints that no authentication needed  
-
         public async Task InvokeAsync(HttpContext context, IMediator mediator)
         {
-            if (IPrincipalExtensions.BCeID_IDENTITY_PROVIDERS.Contains(context.User.GetIdentityProvider())) //bceid and idir have the same issuer
+            if (IPrincipalExtensions.BCeID_IDENTITY_PROVIDERS.Contains(context.User.GetIdentityProvider()))
             {
                 //bceid user
                 if (NoUserMiddlewareProcessNeededEndpoints(context) ||
@@ -123,12 +76,12 @@ namespace Spd.Utilities.LogonUser
                 //bcsc user
                 var applicantInfo = context.User.GetApplicantIdentityInfo();
                 //we need to differentiate if current user-applicant has account in spd db. If yes, add role applicant.
-                ApplicantProfileResponse? appProfile = await cache.Get<ApplicantProfileResponse>($"applicant-{applicantInfo.Sub}");
+                ApplicantProfileResponse? appProfile = await cache.Get<ApplicantProfileResponse>($"{ApplicantCacheKeyPrefix}{applicantInfo.Sub}");
                 if (appProfile == null)
                 {
                     appProfile = await mediator.Send(new GetApplicantProfileQuery(applicantInfo.Sub));
                     if (appProfile != null)
-                        await cache.Set($"applicant-{applicantInfo.Sub}", appProfile, new TimeSpan(0, 30, 0));
+                        await cache.Set($"{ApplicantCacheKeyPrefix}{applicantInfo.Sub}", appProfile, new TimeSpan(0, 30, 0));
                 }
 
                 if (appProfile != null)
@@ -182,12 +135,12 @@ namespace Spd.Utilities.LogonUser
 
         private async Task<bool> ProcessIdirUser(Guid orgId, HttpContext context, IMediator mediator)
         {
-            IdirUserProfileResponse? idirUserProfile = await cache.Get<IdirUserProfileResponse>($"idir-user-{context.User.GetUserGuid()}");
+            IdirUserProfileResponse? idirUserProfile = await cache.Get<IdirUserProfileResponse>($"{IdirUserCacheKeyPrefix}{context.User.GetUserGuid()}");
             if (idirUserProfile == null)
             {
                 var idirUserInfo = context.User.GetIdirUserIdentityInfo();
                 idirUserProfile = await mediator.Send(new ManageIdirUserCommand(mapper.Map<IdirUserIdentity>(idirUserInfo)));
-                await cache.Set<IdirUserProfileResponse>($"idir-user--{context.User.GetUserGuid()}", idirUserProfile, new TimeSpan(0, 30, 0));
+                await cache.Set<IdirUserProfileResponse>($"{IdirUserCacheKeyPrefix}{context.User.GetUserGuid()}", idirUserProfile, new TimeSpan(0, 30, 0));
             }
             context.User.UpdateUserClaims(Guid.Empty.ToString(), orgId.ToString(), "BCGovStaff");
             return true;
@@ -202,12 +155,12 @@ namespace Spd.Utilities.LogonUser
             }
 
             //validate if the orgId in httpHeader is belong to this user and add the user role to claims.
-            OrgUserProfileResponse? userProfile = await cache.Get<OrgUserProfileResponse>($"user-{context.User.GetUserGuid()}");
+            OrgUserProfileResponse? userProfile = await cache.Get<OrgUserProfileResponse>($"{OrgUserCacheKeyPrefix}{context.User.GetUserGuid()}");
             if (userProfile == null)
             {
                 var userIdInfo = context.User.GetPortalUserIdentityInfo();
                 userProfile = await mediator.Send(new GetCurrentUserProfileQuery(mapper.Map<PortalUserIdentity>(userIdInfo)));
-                await cache.Set<OrgUserProfileResponse>($"user-{context.User.GetUserGuid()}", userProfile, new TimeSpan(0, 30, 0));
+                await cache.Set<OrgUserProfileResponse>($"{OrgUserCacheKeyPrefix}{context.User.GetUserGuid()}", userProfile, new TimeSpan(0, 30, 0));
             }
 
             if (userProfile?.UserInfos == null)
