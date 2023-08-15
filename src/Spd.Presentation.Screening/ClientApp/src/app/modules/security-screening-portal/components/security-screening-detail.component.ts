@@ -139,6 +139,23 @@ import {
 			</div>
 		</ng-container>
 
+		<ng-container *ngIf="statutoryDeclarationAlert">
+			<h4 class="subheading fw-normal mb-4">Upload Document</h4>
+			<div class="row">
+				<div class="col-xl-5 col-lg-6 col-md-12 col-sm-12">
+					<button
+						mat-flat-button
+						color="primary"
+						class="m-2"
+						aria-label="Upload a Word or PDF document providing more information"
+						(click)="onUploadFile()"
+					>
+						<mat-icon>file_upload</mat-icon>Upload Completed Statutory Declaration Form
+					</button>
+				</div>
+			</div>
+		</ng-container>
+
 		<ng-container *ngIf="opportunityToRespondAlert || requestForAdditionalInfoAlert">
 			<h4 class="subheading fw-normal mb-4">Upload Document</h4>
 			<div class="row">
