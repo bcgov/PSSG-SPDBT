@@ -42,9 +42,10 @@ namespace Spd.Resource.Organizations.User
                 UserCreateCmd c => await AddUserAsync(c, ct),
                 UserUpdateCmd c => await UpdateUserAsync(c, ct),
                 UserDeleteCmd c => await DeleteUserAsync(c.Id, ct),
+                UserUpdateLoginCmd c => await UpdateUserLoginAsync(c.Id, ct),
                 UserInvitationVerify v => await VerifyOrgUserInvitationAsync(v, ct),
                 _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
-            };
+            };;
         }
 
         private async Task<OrgUserManageResult> VerifyOrgUserInvitationAsync(UserInvitationVerify verify, CancellationToken ct)
@@ -248,6 +249,15 @@ namespace Spd.Resource.Organizations.User
             });
 
             return new OrgUsersResult(_mapper.Map<IEnumerable<UserResult>>(userList));
+        }
+
+        private async Task<OrgUserManageResult> UpdateUserLoginAsync(Guid userId, CancellationToken cancellationToken)
+        {
+            var user = await GetUserById(userId, cancellationToken);
+            user.spd_lastloggedin = DateTime.UtcNow;
+            _dynaContext.UpdateObject(user);
+            await _dynaContext.SaveChangesAsync(cancellationToken);
+            return new OrgUserManageResult();
         }
 
         private spd_portalinvitation? GetPortalInvitationByUserId(Guid userId)

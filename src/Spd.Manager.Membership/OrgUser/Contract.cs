@@ -12,6 +12,7 @@ namespace Spd.Manager.Membership.OrgUser
         public Task<OrgUserListResponse> Handle(OrgUserListQuery request, CancellationToken ct);
         public Task<Unit> Handle(OrgUserDeleteCommand request, CancellationToken ct);
         public Task<InvitationResponse> Handle(VerifyUserInvitation request, CancellationToken ct);
+        public Task<Unit> Handle(OrgUserUpdateLoginCommand command, CancellationToken ct);
     }
 
     public record OrgUserCreateCommand(OrgUserCreateRequest OrgUserCreateRequest, string HostUrl) : IRequest<OrgUserResponse>;
@@ -19,6 +20,7 @@ namespace Spd.Manager.Membership.OrgUser
     public record OrgUserGetQuery(Guid UserId) : IRequest<OrgUserResponse>;
     public record OrgUserListQuery(Guid OrganizationId, bool OnlyReturnActiveUsers = false) : IRequest<OrgUserListResponse>;
     public record OrgUserDeleteCommand(Guid UserId, Guid OrganizationId) : IRequest<Unit>;
+    public record OrgUserUpdateLoginCommand(Guid UserId) : IRequest<Unit>;
     public record VerifyUserInvitation(InvitationRequest InvitationRequest, Guid OrgGuid, Guid UserGuid) : IRequest<InvitationResponse>;
 
     public abstract record OrgUserUpsertRequest

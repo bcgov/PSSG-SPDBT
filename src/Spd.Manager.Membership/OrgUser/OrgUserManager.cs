@@ -12,6 +12,7 @@ namespace Spd.Manager.Membership.OrgUser
         IRequestHandler<OrgUserUpdateCommand, OrgUserResponse>,
         IRequestHandler<OrgUserGetQuery, OrgUserResponse>,
         IRequestHandler<OrgUserDeleteCommand, Unit>,
+        IRequestHandler<OrgUserUpdateLoginCommand, Unit>,
         IRequestHandler<OrgUserListQuery, OrgUserListResponse>,
         IRequestHandler<VerifyUserInvitation, InvitationResponse>,
         IOrgUserManager
@@ -104,6 +105,14 @@ namespace Spd.Manager.Membership.OrgUser
 
             await _orgUserRepository.ManageOrgUserAsync(
                 new UserDeleteCmd(request.UserId),
+                ct);
+            return default;
+        }
+
+        public async Task<Unit> Handle(OrgUserUpdateLoginCommand cmd, CancellationToken ct)
+        {
+            await _orgUserRepository.ManageOrgUserAsync(
+                new UserUpdateLoginCmd(cmd.UserId),
                 ct);
             return default;
         }
