@@ -88,7 +88,6 @@ namespace Spd.Manager.Membership.OrgUser
             var response = (OrgUserResult)await _orgUserRepository.QueryOrgUserAsync(
                 new OrgUserByIdQry(request.UserId),
                 ct);
-            await _orgUserRepository.ManageOrgUserAsync(new UserUpdateLoginCmd(request.UserId), ct);
             return _mapper.Map<OrgUserResponse>(response.UserResult);
         }
 
