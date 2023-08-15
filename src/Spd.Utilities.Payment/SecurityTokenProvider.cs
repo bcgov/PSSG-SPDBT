@@ -37,10 +37,10 @@ namespace Spd.Utilities.Payment
         private async Task<string> AcquireTokenInternal()
         {
             using var httpClient = httpClientFactory.CreateClient("oauth");
-            string secret = $"{options.AuthenticationSettings.ClientId}:{options.AuthenticationSettings.ClientSecret}";
+            string secret = $"{options.DirectRefund.AuthenticationSettings.ClientId}:{options.DirectRefund.AuthenticationSettings.ClientSecret}";
             string basicToken = System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(secret));
             httpClient.DefaultRequestHeaders.Add("Basic-Token", "Basic " + basicToken);
-            var response = await httpClient.GetAsync(options.AuthenticationSettings.OAuth2TokenEndpointUrl);
+            var response = await httpClient.GetAsync(options.DirectRefund.AuthenticationSettings.OAuth2TokenEndpointUrl);
 
             if (!response.IsSuccessStatusCode) throw new InvalidOperationException(response.ToString());
 

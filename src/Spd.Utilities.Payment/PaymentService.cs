@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -35,6 +36,9 @@ namespace Spd.Utilities.Payment
 
         public CreateDirectPaymentLinkResult CreateDirectPaymentLink(CreateDirectPaymentLinkCommand command)
         {
+            if (_config?.DirectPayment?.APIKey == null || _config?.DirectPayment?.DirectPayPath == null)
+                throw new ConfigurationErrorsException("Payment Direct Pay Configuration is not correct.");
+
             string trnDate = DateTime.Now.Date.ToString("yyyy-MM-dd");
             string pbcRefNumber = command.PbcRefNumber;
 
@@ -54,7 +58,7 @@ namespace Spd.Utilities.Payment
             string? ref1 = HttpUtility.HtmlEncode(command.Ref1);
             string? ref2 = HttpUtility.HtmlEncode(command.Ref2);
             string? ref3 = HttpUtility.HtmlEncode(command.Ref3);
-            string apikey = _config.APIKey;
+            string apikey = _config.DirectPayment.APIKey;
 
             string query = $"trnDate={trnDate}&pbcRefNumber={pbcRefNumber}&glDate={glDate}&description={description}&trnNumber={trnNumber}&trnAmount={trnAmount}&paymentMethod={paymentMethod}&currency={currency}&redirectUri={redirectUrl}&revenue={revenue}&ref1={ref1}&ref2={ref2}&ref3={ref3}";
             StringBuilder sb = new StringBuilder();
@@ -75,8 +79,8 @@ namespace Spd.Utilities.Payment
 
             UriBuilder uriBuilder = new UriBuilder();
             uriBuilder.Scheme = "https";
-            uriBuilder.Host = _config.Host;
-            uriBuilder.Path = _config.DirectPayPath;
+            uriBuilder.Host = _config.DirectPayment.Host;
+            uriBuilder.Path = _config.DirectPayment.DirectPayPath;
             uriBuilder.Query = query;
 
             return new CreateDirectPaymentLinkResult
@@ -87,7 +91,10 @@ namespace Spd.Utilities.Payment
 
         public PaymentValidationResult ValidatePaymentResultStr(ValidatePaymentResultStrCommand command)
         {
-            string apikey = _config.APIKey;
+            if (_config?.DirectPayment?.APIKey == null || _config?.DirectPayment?.DirectPayPath == null)
+                throw new ConfigurationErrorsException("Payment Direct Pay Configuration is not correct.");
+
+            string apikey = _config.DirectPayment.APIKey;
             string queryStr = command.QueryStr;
             string[] queries = queryStr.Split("&");
             string hashvalueStr = queries.FirstOrDefault(q => q.StartsWith("hashValue="));
@@ -115,6 +122,9 @@ namespace Spd.Utilities.Payment
 
         public async Task<RefundPaymentResult> RefundDirectPayment(RefundPaymentCmd command)
         {
+            if (_config?.DirectRefund?.AuthenticationSettings == null || _config?.DirectRefund?.DirectRefundPath == null)
+                throw new ConfigurationErrorsException("Payment Direct Refund Configuration is not correct.");
+
             string accessToken = await _tokenProvider.AcquireToken();
             if (string.IsNullOrWhiteSpace(accessToken))
                 throw new InvalidOperationException("cannot get access token from paybc");
@@ -125,7 +135,7 @@ namespace Spd.Utilities.Payment
             requestHttpClient.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/json");
             requestHttpClient.DefaultRequestHeaders.Add("Bearer-Token", "Bearer " + accessToken);
 
-            string url = $"https://{_config.Host}/{_config.DirectRefundPath}";
+            string url = $"https://{_config.DirectRefund.Host}/{_config.DirectRefund.DirectRefundPath}";
             var serializeOptions = new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,

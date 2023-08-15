@@ -4,10 +4,29 @@ namespace Spd.Utilities.Payment
 {
     internal class PayBCSettings
     {
+        public DirectPaymentSettings? DirectPayment { get; set; }
+        public DirectRefundSettings? DirectRefund { get; set; }
+        public ARInvoiceSettings? ARInvoice { get; set; }
+    }
+
+    internal class DirectPaymentSettings
+    {
         public string APIKey { get; set; }
         public string Host { get; set; }
         public string DirectPayPath { get; set; }
+    }
+
+    internal class DirectRefundSettings
+    {
+        public string Host { get; set; }
         public string DirectRefundPath { get; set; }
+        public OAuthSettings AuthenticationSettings { get; set; } = new OAuthSettings();
+    }
+
+    internal class ARInvoiceSettings
+    {
+        public string Host { get; set; }
+        public string InvoicePath { get; set; }
         public OAuthSettings AuthenticationSettings { get; set; } = new OAuthSettings();
     }
     internal class OAuthSettings
