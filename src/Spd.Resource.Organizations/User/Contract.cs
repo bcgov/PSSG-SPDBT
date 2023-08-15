@@ -10,6 +10,7 @@ namespace Spd.Resource.Organizations.User
     public abstract record OrgUserCmd;
     public record UserCreateCmd(User User, string HostUrl, Guid? IdentityId = null) : OrgUserCmd;
     public record UserUpdateCmd(Guid Id, User User, bool OnlyChangePhoneJob = false) : OrgUserCmd;
+    public record UserUpdateLoginCmd(Guid Id) : OrgUserCmd;
     public record UserDeleteCmd(Guid Id) : OrgUserCmd;
     public record UserInvitationVerify(string InviteIdEncryptedCode, Guid OrgGuid, Guid UserGuid) : OrgUserCmd;
     public record OrgUserManageResult(UserResult? UserResult = null);
