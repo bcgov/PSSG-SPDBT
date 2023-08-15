@@ -9,7 +9,7 @@ namespace Spd.Manager.Membership.UserProfile
     {
         public Task<OrgUserProfileResponse> Handle(GetCurrentUserProfileQuery request, CancellationToken ct);
         public Task<ApplicantProfileResponse> Handle(GetApplicantProfileQuery request, CancellationToken ct);
-        public Task<IdirUserProfileResponse> Handle(ManageIdirUserCommand request, CancellationToken ct);
+        public Task<IdirUserProfileResponse> Handle(ManageIdirUserCommand command, CancellationToken ct);
     }
 
     #region UserProfile
@@ -117,4 +117,5 @@ namespace Spd.Manager.Membership.UserProfile
         public string? Email { get; set; } //email
     }
     #endregion
+
 }
