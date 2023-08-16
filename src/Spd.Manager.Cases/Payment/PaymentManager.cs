@@ -26,6 +26,7 @@ namespace Spd.Manager.Cases.Payment
         IRequestHandler<PaymentReceiptQuery, FileResponse>,
         IRequestHandler<ManualPaymentFormQuery, FileResponse>,
         IRequestHandler<PaymentRefundCommand, PaymentRefundResponse>,
+        IRequestHandler<CreateInvoiceCommand, InvoiceResponse>,
         IPaymentManager
     {
         private readonly IPaymentService _paymentService;
@@ -158,7 +159,7 @@ namespace Spd.Manager.Cases.Payment
         public async Task<PaymentRefundResponse> Handle(PaymentRefundCommand command, CancellationToken ct)
         {
             var paymentList = await _paymentRepository.QueryAsync(new PaymentQry(null, command.PaymentId), ct);
-            if(!paymentList.Items.Any())
+            if (!paymentList.Items.Any())
                 throw new ApiException(HttpStatusCode.BadRequest, "cannot find the payment");
             if (!paymentList.Items.First().PaidSuccess)
                 throw new ApiException(HttpStatusCode.BadRequest, "cannot do refund for non-successful payment.");
@@ -170,7 +171,7 @@ namespace Spd.Manager.Cases.Payment
             var result = (RefundPaymentResult)await _paymentService.HandleCommand(cmd);
             if (!result.IsSuccess)
                 throw new ApiException(HttpStatusCode.InternalServerError, result.Message);
-            var resp= _mapper.Map<PaymentRefundResponse>(result);
+            var resp = _mapper.Map<PaymentRefundResponse>(result);
             resp.PaymentId = command.PaymentId;
 
             //todo: confirm with dynamics, do we need to change spd_payment status and other entity status?
@@ -225,6 +226,36 @@ namespace Spd.Manager.Cases.Payment
             };
         }
 
+        public async Task<InvoiceResponse> Handle(CreateInvoiceCommand command, CancellationToken ct)
+        {
+            CreateInvoiceCmd createInvoice = new CreateInvoiceCmd
+            {
+                PartyNumber = "98434",
+                AccountNumber = "4037",
+                SiteNumber = "29866",
+                BatchSource = "SECURITY PROGRAMS",
+                CustTrxType = "Security Programs",
+                TransactionDate = DateTime.Now,
+                GlDate = DateTime.Now,
+                Comments = "comments",
+                LateChargesFlag = "N",
+                TermName = "IMMEDIATE",
+                Lines = new List<InvoiceLine>
+                {
+                    new InvoiceLine
+                    {
+                        LineNumber=1,
+                        LineType="LINE",
+                        MemoLineName="Security Programs Division",
+                        Description="description",
+                        UnitPrice=50.00M,
+                        Quantity=1
+                    }
+                }
+            };
+            var result = (CreateInvoiceResult)await _paymentService.HandleCommand(createInvoice);
+            return new InvoiceResponse() { InvoiceNumber=result.InvoiceNumber};
+        }
         private async Task<SpdPaymentConfig> GetSpdPaymentConfigAsync(CancellationToken ct)
         {
             SpdPaymentConfig? spdPaymentConfig = await _cache.Get<SpdPaymentConfig>("spdPaymentConfig");

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
@@ -68,5 +69,49 @@ namespace Spd.Utilities.Payment
         public string Message { get; set; } = null!;
         public DateTimeOffset RefundTxnDateTime { get; set; }
     }
+    #endregion
+
+    #region Invoice
+    public class CreateInvoiceCmd : PaymentCommand
+    {
+        public string PartyNumber { get; set; } = null!;
+        public string AccountNumber { get; set; } = null!;
+        public string SiteNumber { get; set; } = null!;
+        public string BatchSource { get; set; } = null!;
+        public string CustTrxType { get; set; } = null!;
+        public DateTimeOffset TransactionDate { get; set; }
+        public DateTimeOffset GlDate { get; set; }
+        public string? Comments { get; set; }
+        public string LateChargesFlag { get; set; }
+        public string TermName { get; set; } = null!;
+        public IEnumerable<InvoiceLine> Lines { get; set; } = Array.Empty<InvoiceLine>();
+    }
+
+    public class InvoiceLine
+    {
+        public int LineNumber { get; set; }
+        public string LineType { get; set; } = null!;
+        public string MemoLineName { get; set; }
+        public string Description { get; set; }
+        public decimal UnitPrice { get; set; }
+        public int Quantity { get; set; }
+    }
+
+    public class CreateInvoiceResult : PaymentResult
+    {
+        public bool IsSuccess { get; set; }
+        public string? Message { get; set; }
+        public string InvoiceNumber { get; set; } = null!;
+        public string PbcRefNumber { get; set; } = null!;
+        public string PartyNumber { get; set; } = null!;
+        public string PartyName { get; set; } = null!;
+        public string AccountName { get; set; } = null!;
+        public string AccountNumber { get; set; } = null!;
+        public string CustomerSiteId { get; set; } = null!;
+        public string SiteNumber { get; set; } = null!;
+        public string CustTrxDate { get; set; }
+        public string TransactionDate { get; set; } = null!;
+        public double AmountDue { get; set; }
+    };
     #endregion
 }
