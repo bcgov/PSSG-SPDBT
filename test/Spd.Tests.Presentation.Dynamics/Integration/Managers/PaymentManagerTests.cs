@@ -26,7 +26,7 @@ public class PaymentManagerTests : ScenarioContextBase
     public async Task Handle_CreateInvoiceCommand_Success()
     {
         var mediator = Host.Services.GetRequiredService<IMediator>();
-        CreateInvoiceCommand command = new CreateInvoiceCommand(Guid.NewGuid());
+        CreateInvoicesCommand command = new CreateInvoicesCommand(Guid.NewGuid());
 
         var response = await mediator.Send(command);
         response.InvoiceNumber.ShouldNotBeNullOrEmpty();
