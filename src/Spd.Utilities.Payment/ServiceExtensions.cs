@@ -11,8 +11,8 @@ namespace Spd.Utilities.Payment
             services.Configure<PayBCSettings>(opts => configuration.GetSection("PayBC").Bind(opts));
             services.AddTransient<IPaymentService, PaymentService>();
             services.AddSingleton<ITokenProviderResolver, TokenProviderResolver>();
-            services.AddSingleton<ISecurityTokenProvider, BasicSecurityTokenProvider>();
-            services.AddSingleton<ISecurityTokenProvider, BearerSecurityTokenProvider>();
+            services.AddSingleton<BasicSecurityTokenProvider>();
+            services.AddSingleton<BearerSecurityTokenProvider>();
             return services;
         }
     }

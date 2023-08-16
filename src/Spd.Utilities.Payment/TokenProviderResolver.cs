@@ -5,7 +5,7 @@ using System;
 namespace Spd.Utilities.Payment;
 internal interface ITokenProviderResolver
 {
-    ISecurityTokenProvider? GetTokenProviderByName(string name);
+    ISecurityTokenProvider GetTokenProviderByName(string name);
 }
 
 internal class TokenProviderResolver : ITokenProviderResolver
@@ -15,7 +15,7 @@ internal class TokenProviderResolver : ITokenProviderResolver
     {
         _serviceProvider = serviceProvider;
     }
-    public ISecurityTokenProvider? GetTokenProviderByName(string name)
+    public ISecurityTokenProvider GetTokenProviderByName(string name)
     {
         if (name == "BasicTokenProvider")
             return _serviceProvider.GetService<BasicSecurityTokenProvider>();

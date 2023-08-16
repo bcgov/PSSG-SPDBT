@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Spd.Utilities.Payment.TokenProviders;
 internal class BasicSecurityTokenProvider : ISecurityTokenProvider
 {
-    private const string cacheKey = "paybc_oauth_token";
+    private const string cacheKey = "paybc_refund_oauth_token";
 
     private readonly IHttpClientFactory httpClientFactory;
     private readonly IDistributedCache cache;

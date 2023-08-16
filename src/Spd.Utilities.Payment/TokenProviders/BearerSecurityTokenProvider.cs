@@ -4,12 +4,13 @@ using Spd.Utilities.Cache;
 using System;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Spd.Utilities.Payment.TokenProviders;
 internal class BearerSecurityTokenProvider : ISecurityTokenProvider
 {
-    private const string cacheKey = "paybc_oauth_token";
+    private const string cacheKey = "paybc_invoice_oauth_token";
 
     private readonly IHttpClientFactory httpClientFactory;
     private readonly IDistributedCache cache;
@@ -33,8 +34,10 @@ internal class BearerSecurityTokenProvider : ISecurityTokenProvider
         using var httpClient = httpClientFactory.CreateClient("oauth");
         string secret = $"{options.ARInvoice.AuthenticationSettings.ClientId}:{options.ARInvoice.AuthenticationSettings.ClientSecret}";
         string basicToken = System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(secret));
-        httpClient.DefaultRequestHeaders.Add("Basic-Token", "Basic " + basicToken);
-        var response = await httpClient.GetAsync(options.DirectRefund.AuthenticationSettings.OAuth2TokenEndpointUrl);
+        httpClient.DefaultRequestHeaders.Add("Authorization", "Basic " + basicToken);
+        var content = new StringContent("grant_type=client_credentials", Encoding.UTF8, "application/x-www-form-urlencoded");
+        var response = await httpClient.PostAsync(options.ARInvoice.AuthenticationSettings.OAuth2TokenEndpointUrl,
+            content);
 
         if (!response.IsSuccessStatusCode) throw new InvalidOperationException(response.ToString());
 
@@ -47,5 +50,5 @@ internal record BearerAccessToken
 {
     public string access_token { get; set; }
     public string token_type { get; set; }
-    public DateTimeOffset expires_at { get; set; }
+    public int expires_in { get; set; }
 }
