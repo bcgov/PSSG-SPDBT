@@ -26,7 +26,7 @@ namespace Spd.Manager.Cases.Payment
         IRequestHandler<PaymentReceiptQuery, FileResponse>,
         IRequestHandler<ManualPaymentFormQuery, FileResponse>,
         IRequestHandler<PaymentRefundCommand, PaymentRefundResponse>,
-        IRequestHandler<CreateInvoiceCommand, InvoiceResponse>,
+        IRequestHandler<CreateInvoicesCommand, InvoiceResponse>,
         IPaymentManager
     {
         private readonly IPaymentService _paymentService;
@@ -226,7 +226,7 @@ namespace Spd.Manager.Cases.Payment
             };
         }
 
-        public async Task<InvoiceResponse> Handle(CreateInvoiceCommand command, CancellationToken ct)
+        public async Task<InvoiceResponse> Handle(CreateInvoicesCommand command, CancellationToken ct)
         {
             CreateInvoiceCmd createInvoice = new CreateInvoiceCmd
             {
