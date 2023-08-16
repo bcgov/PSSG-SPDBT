@@ -14,7 +14,7 @@ namespace Spd.Manager.Cases.Payment
         public Task<int> Handle(PaymentFailedAttemptCountQuery query, CancellationToken ct);
         public Task<FileResponse> Handle(PaymentReceiptQuery query, CancellationToken ct);
         public Task<FileResponse> Handle(ManualPaymentFormQuery query, CancellationToken ct);
-        public Task<InvoiceResponse> Handle(CreateInvoiceCommand command, CancellationToken ct);
+        public Task<InvoiceResponse> Handle(CreateInvoicesCommand command, CancellationToken ct);
     }
 
     #region pre payment link
@@ -125,7 +125,7 @@ namespace Spd.Manager.Cases.Payment
     #endregion
 
     #region invoice
-    public record CreateInvoiceCommand(Guid InvoiceId) : IRequest<InvoiceResponse>;
+    public record CreateInvoicesCommand(Guid InvoiceId) : IRequest<InvoiceResponse>;
 
     public record InvoiceResponse()
     {
