@@ -1,4 +1,5 @@
 using AutoMapper;
+using Spd.Resource.Applicants.Invoice;
 using Spd.Resource.Applicants.Payment;
 using Spd.Utilities.Payment;
 
@@ -12,12 +13,36 @@ namespace Spd.Manager.Cases.Payment
                 .ForMember(d => d.PaymentType, opt => opt.MapFrom(s => s.IsFromSecurePaymentLink ? PaymentTypeEnum.PayBC_SecurePaymentLink : PaymentTypeEnum.PayBC_OnSubmission));
             CreateMap<PaybcPaymentResult, UpdatePaymentCmd>();
             CreateMap<PaymentResp, PaymentResponse>()
-                .ForMember(d => d.PaymentStatus, opt => opt.MapFrom(s => s.PaidSuccess? PaymentStatusCode.Success: PaymentStatusCode.Failure));
+                .ForMember(d => d.PaymentStatus, opt => opt.MapFrom(s => s.PaidSuccess ? PaymentStatusCode.Success : PaymentStatusCode.Failure));
             CreateMap<PaymentResp, RefundPaymentCmd>()
-                .ForMember(d => d.TxnNumber, opt => opt.MapFrom(s =>s.TransactionNumber))
+                .ForMember(d => d.TxnNumber, opt => opt.MapFrom(s => s.TransactionNumber))
                 .ForMember(d => d.OrderNumber, opt => opt.MapFrom(s => s.TransOrderId))
-                .ForMember(d => d.TxnAmount, opt => opt.MapFrom(s => s.TransAmount)); 
+                .ForMember(d => d.TxnAmount, opt => opt.MapFrom(s => s.TransAmount));
             CreateMap<RefundPaymentResult, PaymentRefundResponse>();
+
+            CreateMap<InvoiceResp, CreateInvoiceCmd>()
+                .ForMember(d => d.TransactionDate, opt => opt.MapFrom(s => s.TransactionDate ?? DateTimeOffset.Now))
+                .ForMember(d => d.GlDate, opt => opt.MapFrom(s => s.GlDate ?? DateTimeOffset.Now))
+                .ForMember(d => d.BatchSource, opt => opt.MapFrom(s => "SECURITY PROGRAMS"))
+                .ForMember(d => d.CustTrxType, opt => opt.MapFrom(s => "Security Programs"))
+                .ForMember(d => d.LateChargesFlag, opt => opt.MapFrom(s => "N"))
+                .ForMember(d => d.TermName, opt => opt.MapFrom(s => "IMMEDIATE"))
+                .ForMember(d => d.Lines, opt => opt.MapFrom(s => GetInvoiceLines(s)));
+        }
+
+        private List<InvoiceLine> GetInvoiceLines(InvoiceResp invoiceResp)
+        {
+            return new List<InvoiceLine> {
+                new InvoiceLine()
+                {
+                    LineNumber = 1,
+                    LineType = "LINE",
+                    MemoLineName = "Security Programs Division",
+                    Description = "description",
+                    UnitPrice = invoiceResp.TotalAmount,
+                    Quantity = 1
+                }
+            };
         }
     }
 }

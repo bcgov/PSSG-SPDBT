@@ -30,7 +30,7 @@ internal class InvoiceRepository : IInvoiceRepository
         }
         return new InvoiceListResp
         {
-            Items = _mapper.Map<IEnumerable<InvoiceResp>>(invoices)
+            Items = _mapper.Map<IEnumerable<InvoiceResp>>(invoices.ToList())
         };
     }
 
@@ -45,15 +45,20 @@ internal class InvoiceRepository : IInvoiceRepository
 
     private async Task<InvoiceResp> UpdateInvoiceAsync(UpdateInvoiceCmd c, CancellationToken ct)
     {
-        spd_application app = await _context.GetApplicationById(c.ApplicationId, ct);
-        spd_portaluser user = await _context.GetUserById(c.PortalUserId, ct);
-        spd_delegate d = _mapper.Map<spd_delegate>(c);
-        _context.AddTospd_delegates(d);
-        _context.SetLink(d, nameof(d.spd_ApplicationId), app);
-        _context.SetLink(d, nameof(d.spd_PortalUserId), user);
-
+        spd_invoice? invoice = await _context.spd_invoices
+            .Where(i=>i.spd_invoiceid == c.InvoiceId)
+            .FirstOrDefaultAsync();
+        if (invoice == null)
+            throw new InvalidOperationException("Cannot find the correct invoice.");
+        if (c.InvoiceStatus != null) 
+        {
+            int status = (int)Enum.Parse<InvoiceStatusOptionSet>(c.InvoiceStatus.ToString());
+            invoice.statuscode = status;
+        }
+        if (c.InvoiceNumber != null) invoice.spd_castransactionid = c.InvoiceNumber;
+        _context.UpdateObject(invoice);
         await _context.SaveChangesAsync(ct);
-        return _mapper.Map<InvoiceResp>(d);
+        return _mapper.Map<InvoiceResp>(invoice);
     }
 
 }

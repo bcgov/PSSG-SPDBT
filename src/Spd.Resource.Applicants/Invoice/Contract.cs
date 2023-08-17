@@ -22,8 +22,8 @@ namespace Spd.Resource.Applicants.Invoice
         public string SiteNumber { get; set; } = null!;
         public int NumberOfApplications { get; set; }
         public decimal TotalAmount { get; set; }
-        public DateTimeOffset TransactionDate { get; set; }
-        public DateTimeOffset GlDate { get; set; }
+        public DateTimeOffset? TransactionDate { get; set; }
+        public DateTimeOffset? GlDate { get; set; }
         public string? Comments { get; set; }
     }
 
@@ -47,7 +47,8 @@ namespace Spd.Resource.Applicants.Invoice
     public record UpdateInvoiceCmd : InvoiceCmd
     {
         public Guid InvoiceId { get; set; }
-        public InvoiceStatusEnum InvoiceStatus { get; set; }
+        public InvoiceStatusEnum? InvoiceStatus { get; set; }
+        public string? InvoiceNumber { get; set; }
     }
 
 }
