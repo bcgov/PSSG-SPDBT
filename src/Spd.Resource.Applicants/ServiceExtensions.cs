@@ -5,6 +5,7 @@ using Spd.Resource.Applicants.Delegates;
 using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.DocumentTemplate;
 using Spd.Resource.Applicants.Incident;
+using Spd.Resource.Applicants.Invoice;
 using Spd.Resource.Applicants.Ministry;
 using Spd.Resource.Applicants.Payment;
 using Spd.Utilities.Hosting;
@@ -22,6 +23,7 @@ namespace Spd.Resource.Applicants
             configurationServices.Services.AddTransient<IMinistryRepository, MinistryRepository>();
             configurationServices.Services.AddTransient<IPaymentRepository, PaymentRepository>();
             configurationServices.Services.AddTransient<IDelegateRepository, DelegateRepository>();
+            configurationServices.Services.AddTransient<IInvoiceRepository, InvoiceRepository>();
             configurationServices.Services.AddTransient<IDocumentTemplateRepository, DocumentTemplateRepository>();
         }
     }
