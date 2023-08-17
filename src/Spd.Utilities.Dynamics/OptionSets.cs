@@ -234,4 +234,15 @@ namespace Spd.Utilities.Dynamics
         Delegate = 100000000,
         HiringManager = 100000001
     }
+
+    public enum InvoiceStatusOptionSet
+    {
+        Draft = 1,
+        Pending = 100000000,
+        Sent = 100000001,
+        Failed = 100000002,
+        Paid = 2,
+        Cancelled = 100000003
+    }
+
 }

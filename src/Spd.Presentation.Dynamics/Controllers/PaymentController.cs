@@ -75,8 +75,8 @@ public class PaymentController : SpdControllerBase
     /// </returns>
     [HttpPost]
     [Route("api/payment/invoices")]
-    public async Task<InvoiceResponse> CreateInvoiceInCasAsync(CancellationToken ct)
+    public async Task<CreateInvoicesInCasResponse> CreateInvoiceInCasAsync(CancellationToken ct)
     {
-        return await _mediator.Send(new CreateInvoicesCommand(Guid.NewGuid()), ct);
+        return await _mediator.Send(new CreateInvoicesInCasCommand(), ct);
     }
 }

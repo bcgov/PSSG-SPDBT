@@ -5,6 +5,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.DocumentTemplate;
+using Spd.Resource.Applicants.Invoice;
 using Spd.Resource.Applicants.Payment;
 using Spd.Resource.Organizations.Config;
 using Spd.Utilities.Cache;
@@ -26,7 +27,7 @@ namespace Spd.Manager.Cases.Payment
         IRequestHandler<PaymentReceiptQuery, FileResponse>,
         IRequestHandler<ManualPaymentFormQuery, FileResponse>,
         IRequestHandler<PaymentRefundCommand, PaymentRefundResponse>,
-        IRequestHandler<CreateInvoicesCommand, InvoiceResponse>,
+        IRequestHandler<CreateInvoicesInCasCommand, CreateInvoicesInCasResponse>,
         IPaymentManager
     {
         private readonly IPaymentService _paymentService;
@@ -38,6 +39,7 @@ namespace Spd.Manager.Cases.Payment
         private readonly IDocumentRepository _documentRepository;
         private readonly IDocumentTemplateRepository _documentTemplateRepository;
         private readonly IFileStorageService _fileStorageService;
+        private readonly IInvoiceRepository _invoiceRepository;
         private readonly ITimeLimitedDataProtector _dataProtector;
 
         public PaymentManager(IPaymentService paymentService,
@@ -49,7 +51,8 @@ namespace Spd.Manager.Cases.Payment
             IDataProtectionProvider dpProvider,
             IDocumentRepository documentRepository,
             IDocumentTemplateRepository documentTemplateRepository,
-            IFileStorageService fileStorageService)
+            IFileStorageService fileStorageService,
+            IInvoiceRepository invoiceRepository)
         {
             _paymentService = paymentService;
             _configRepository = configRepository;
@@ -60,6 +63,7 @@ namespace Spd.Manager.Cases.Payment
             _documentRepository = documentRepository;
             _documentTemplateRepository = documentTemplateRepository;
             _fileStorageService = fileStorageService;
+            _invoiceRepository = invoiceRepository;
             _dataProtector = dpProvider.CreateProtector(nameof(PrePaymentLinkCreateCommand)).ToTimeLimitedDataProtector();
         }
 
@@ -226,36 +230,31 @@ namespace Spd.Manager.Cases.Payment
             };
         }
 
-        public async Task<InvoiceResponse> Handle(CreateInvoicesCommand command, CancellationToken ct)
+        public async Task<CreateInvoicesInCasResponse> Handle(CreateInvoicesInCasCommand command, CancellationToken ct)
         {
-            CreateInvoiceCmd createInvoice = new CreateInvoiceCmd
+            var invoiceList = await _invoiceRepository.QueryAsync(new InvoiceQry() { InvoiceStatus = InvoiceStatusEnum.Pending }, ct);
+            int successCount = 0;
+            foreach(var invoice in invoiceList.Items)
             {
-                PartyNumber = "98434",
-                AccountNumber = "4037",
-                SiteNumber = "29866",
-                BatchSource = "SECURITY PROGRAMS",
-                CustTrxType = "Security Programs",
-                TransactionDate = DateTime.Now,
-                GlDate = DateTime.Now,
-                Comments = "comments",
-                LateChargesFlag = "N",
-                TermName = "IMMEDIATE",
-                Lines = new List<InvoiceLine>
+                var createInvoice = _mapper.Map<CreateInvoiceCmd>(invoice);
+                var result = (CreateInvoiceResult)await _paymentService.HandleCommand(createInvoice);
+                if (result.IsSuccess)
                 {
-                    new InvoiceLine
+                    UpdateInvoiceCmd update = new UpdateInvoiceCmd()
                     {
-                        LineNumber=1,
-                        LineType="LINE",
-                        MemoLineName="Security Programs Division",
-                        Description="description",
-                        UnitPrice=50.00M,
-                        Quantity=1
-                    }
+                        InvoiceId = invoice.Id,
+                        InvoiceStatus = InvoiceStatusEnum.Sent,
+                        InvoiceNumber = result.InvoiceNumber
+                    };
+                    await _invoiceRepository.ManageAsync(update, ct);
+                    successCount++;
                 }
-            };
-            var result = (CreateInvoiceResult)await _paymentService.HandleCommand(createInvoice);
-            return new InvoiceResponse() { InvoiceNumber=result.InvoiceNumber};
+            }
+            if (successCount != invoiceList.Items.Count()) 
+                return new CreateInvoicesInCasResponse(false);
+            return new CreateInvoicesInCasResponse(true);
         }
+
         private async Task<SpdPaymentConfig> GetSpdPaymentConfigAsync(CancellationToken ct)
         {
             SpdPaymentConfig? spdPaymentConfig = await _cache.Get<SpdPaymentConfig>("spdPaymentConfig");

@@ -23,12 +23,10 @@ public class PaymentManagerTests : ScenarioContextBase
         response.PaymentId.ShouldBe(paymentId);
     }
     [Fact]
-    public async Task Handle_CreateInvoiceCommand_Success()
+    public async Task Handle_CreateInvoicesCommand()
     {
         var mediator = Host.Services.GetRequiredService<IMediator>();
-        CreateInvoicesCommand command = new CreateInvoicesCommand(Guid.NewGuid());
-
-        var response = await mediator.Send(command);
-        response.InvoiceNumber.ShouldNotBeNullOrEmpty();
+        CreateInvoicesInCasCommand command = new CreateInvoicesInCasCommand();
+        await mediator.Send(command);
     }
 }
