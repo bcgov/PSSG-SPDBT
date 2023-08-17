@@ -1,6 +1,5 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
-using Spd.Resource.Applicants.Invoice;
 using Spd.Utilities.Dynamics;
 
 namespace Spd.Resource.Applicants.Invoice;
@@ -18,14 +17,20 @@ internal class InvoiceRepository : IInvoiceRepository
 
     public async Task<InvoiceListResp> QueryAsync(InvoiceQry qry, CancellationToken ct)
     {
-        IQueryable<spd_delegate> delegates = _context.spd_delegates
-            .Expand(d => d.spd_ApplicationId)
-            .Where(d => d.statecode != DynamicsConstants.StateCode_Inactive);
-        if (qry.ApplicationId != null) delegates = delegates.Where(d => d._spd_applicationid_value == qry.ApplicationId);
-        if (qry.PortalUserId != null) delegates = delegates.Where(d => d._spd_portaluserid_value == qry.PortalUserId);
+        IQueryable<spd_invoice> invoices = _context.spd_invoices
+            .Expand(d => d.spd_OrganizationId);
+
+        if (!qry.IncludeInactive)
+            invoices = invoices.Where(d => d.statecode != DynamicsConstants.StateCode_Inactive);
+        if (qry.OrganizationId != null) invoices = invoices.Where(d => d._spd_organizationid_value == qry.OrganizationId);
+        if (qry.InvoiceStatus != null)
+        {
+            int status = (int)Enum.Parse<InvoiceStatusOptionSet>(qry.InvoiceStatus.ToString());
+            invoices = invoices.Where(d => d.statuscode == status);
+        }
         return new InvoiceListResp
         {
-            Items = _mapper.Map<IEnumerable<InvoiceResp>>(delegates)
+            Items = _mapper.Map<IEnumerable<InvoiceResp>>(invoices)
         };
     }
 
@@ -33,12 +38,12 @@ internal class InvoiceRepository : IInvoiceRepository
     {
         return cmd switch
         {
-            CreateInvoiceCmd c => await CreatePssoUserAsync(c, ct),
+            UpdateInvoiceCmd c => await UpdateInvoiceAsync(c, ct),
             _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
         };
     }
 
-    private async Task<InvoiceResp> CreatePssoUserAsync(CreateInvoiceCmd c, CancellationToken ct)
+    private async Task<InvoiceResp> UpdateInvoiceAsync(UpdateInvoiceCmd c, CancellationToken ct)
     {
         spd_application app = await _context.GetApplicationById(c.ApplicationId, ct);
         spd_portaluser user = await _context.GetUserById(c.PortalUserId, ct);

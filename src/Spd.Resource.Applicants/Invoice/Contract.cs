@@ -14,30 +14,40 @@ namespace Spd.Resource.Applicants.Invoice
     public record InvoiceResp
     {
         public Guid Id { get; set; }
-        public Guid ApplicationId { get; set; }
-        public Guid PortalUserId { get; set; }
-        public string Name { get; set; } = null!;
-        public PSSOUserRoleEnum PSSOUserRoleCode { get; set; }
+        public Guid? OrganizationId { get; set; }
+        public InvoiceStatusEnum? InvoiceStatus { get; set; }
+        public string? InvoiceNumber { get; set; }
+        public string PartyNumber { get; set; } = null!;
+        public string AccountNumber { get; set; } = null!;
+        public string SiteNumber { get; set; } = null!;
+        public int NumberOfApplications { get; set; }
+        public decimal TotalAmount { get; set; }
+        public DateTimeOffset TransactionDate { get; set; }
+        public DateTimeOffset GlDate { get; set; }
+        public string? Comments { get; set; }
     }
 
     public record InvoiceQry
     {
-        public Guid? ApplicationId { get; set; }
-        public Guid? PortalUserId { get; set; }
+        public Guid? OrganizationId { get; set; }
+        public InvoiceStatusEnum? InvoiceStatus { get; set; }
+        public bool IncludeInactive { get; set; } = false;
     };
 
-    public abstract record InvoiceCmd { };
-    public record CreateInvoiceCmd : InvoiceCmd
+    public enum InvoiceStatusEnum
     {
-        public Guid ApplicationId { get; set; }
-        public Guid PortalUserId { get; set; }
-        public PSSOUserRoleEnum PSSOUserRoleCode { get; set; }
-        public string Name { get; set; } = null!;
+        Draft,
+        Pending,
+        Sent,
+        Failed,
+        Paid,
+        Cancelled
+    }
+    public abstract record InvoiceCmd { };
+    public record UpdateInvoiceCmd : InvoiceCmd
+    {
+        public Guid InvoiceId { get; set; }
+        public InvoiceStatusEnum InvoiceStatus { get; set; }
     }
 
-    public enum PSSOUserRoleEnum
-    {
-        Delegate,
-        HiringManager
-    }
 }
