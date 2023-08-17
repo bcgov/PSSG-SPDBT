@@ -89,18 +89,12 @@ export enum DialogCloseCode {
 export class DialogComponent {
 	constructor(public dialogRef: MatDialogRef<DialogComponent>, @Inject(MAT_DIALOG_DATA) public data: DialogOptions) {}
 
-  @HostListener('window:keyup.Enter', ['$event'])
-
 	public onConfirm(): void {
 		this.dialogRef.close(this.data.altOptionText ? DialogCloseCode.Action : true);
-  }
-
-  //default key enter will be the same as onConfirm.
-  public onDialogClick(event: KeyboardEvent): void {
-    this.dialogRef.close(this.data.altOptionText ? DialogCloseCode.Action : true);
   }
 
 	public onAltConfirm(): void {
 		this.dialogRef.close(DialogCloseCode.AltAction);
   }
 }
+
