@@ -1,6 +1,5 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
-using Spd.Resource.Applicants.ApplicationInvite;
 using Spd.Utilities.Dynamics;
 
 namespace Spd.Resource.Applicants.Invoice
@@ -9,12 +8,6 @@ namespace Spd.Resource.Applicants.Invoice
     {
         public Mappings()
         {
-            _ = CreateMap<UpdateInvoiceCmd, spd_invoice>()
-            //.ForMember(d => d.spd_delegateid, opt => opt.MapFrom(s => Guid.NewGuid()))
-            //.ForMember(d => d.spd_role, opt => opt.MapFrom(s => (int)Enum.Parse<PSSOUserRoleOptionSet>(s.PSSOUserRoleCode.ToString())))
-            //.ForMember(d => d.spd_fullname, opt => opt.MapFrom(s => s.Name));
-            ;
-
             _ = CreateMap<spd_invoice, InvoiceResp>()
             .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_invoiceid))
             .ForMember(d => d.SiteNumber, opt => opt.MapFrom(s => s.spd_OrganizationId.spd_cassitenumber))
@@ -26,7 +19,7 @@ namespace Spd.Resource.Applicants.Invoice
             .ForMember(d => d.OrganizationId, opt => opt.MapFrom(s => s._spd_organizationid_value))
             .ForMember(d => d.TransactionDate, opt => opt.MapFrom(s => s.spd_castransactiondate))
             .ForMember(d => d.InvoiceNumber, opt => opt.MapFrom(s => s.spd_castransactionid))
-            .ForMember(d => d.GlDate, opt => opt.MapFrom(s => new DateTimeOffset(s.spd_gldate.Value.Year, s.spd_gldate.Value.Month, s.spd_gldate.Value.Day, 0,0,0, TimeSpan.Zero)))
+            .ForMember(d => d.GlDate, opt => opt.MapFrom(s => new DateTimeOffset(s.spd_gldate.Value.Year, s.spd_gldate.Value.Month, s.spd_gldate.Value.Day, 0, 0, 0, TimeSpan.Zero)))
             .ForMember(d => d.Comments, opt => opt.MapFrom(s => s.spd_comments))
             ;
         }
