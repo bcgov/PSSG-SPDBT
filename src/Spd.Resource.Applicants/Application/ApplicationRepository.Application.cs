@@ -403,17 +403,17 @@ internal partial class ApplicationRepository : IApplicationRepository
             {
                 //if the same name
                 var existingContact = identity.spd_ContactId;
-                if (string.Equals(existingContact.firstname, createApplicationCmd.GivenName, StringComparison.InvariantCultureIgnoreCase)
-                    && string.Equals(existingContact.lastname, createApplicationCmd.Surname, StringComparison.InvariantCultureIgnoreCase))
-                    return existingContact;
-
-                //if the contact first name and lastname is different. make existing one to be alias and add the new one.
-                AliasCreateCmd newAlias = new AliasCreateCmd
+                if (!(string.Equals(existingContact.firstname, createApplicationCmd.GivenName, StringComparison.InvariantCultureIgnoreCase)
+                    && string.Equals(existingContact.lastname, createApplicationCmd.Surname, StringComparison.InvariantCultureIgnoreCase)))
                 {
-                    Surname = existingContact.lastname,
-                    GivenName = existingContact.firstname,
-                };
-                AddAlias(newAlias, existingContact);
+                    //if the contact first name and lastname is different. make existing one to be alias and add the new one.
+                    AliasCreateCmd newAlias = new AliasCreateCmd
+                    {
+                        Surname = existingContact.lastname,
+                        GivenName = existingContact.firstname,
+                    };
+                    AddAlias(newAlias, existingContact);
+                }
                 _mapper.Map<ApplicationCreateCmd, contact>(createApplicationCmd, existingContact);
                 _context.UpdateObject(existingContact);
                 return existingContact;
@@ -436,6 +436,12 @@ internal partial class ApplicationRepository : IApplicationRepository
             contact = _mapper.Map<contact>(createApplicationCmd);
             contact.contactid = Guid.NewGuid();
             _context.AddTocontacts(contact);
+        }
+        else
+        {
+            //update existing one
+            _mapper.Map<ApplicationCreateCmd, contact>(createApplicationCmd, contact);
+            _context.UpdateObject(contact);
         }
         return contact;
     }
