@@ -67,7 +67,7 @@ internal partial class ApplicationRepository : IApplicationRepository
         int begin = 0;
         //dynamics constraints: A maximum number of '1000' operations are allowed in a change set.
         //for each app create request, there is max 14 operations
-        int oneChangeSetMaxApps = 1000 / 14;
+        int oneChangeSetMaxApps = 1000 / 15;
         while (begin < createApps.Count)
         {
             int len = createApps.Count - begin;
