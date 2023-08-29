@@ -115,6 +115,7 @@ namespace Spd.Manager.Cases.Application
 
         private static Guid GetOrgId(ApplicationCreateRequest appCreateRequest)
         {
+            //todo: after we figure out what should be put into orgId
             //if (appCreateRequest.OrgId == SpdConstants.BC_GOV_ORG_ID)
             //{
             //    //get orgId from appCreateRequest.MinistryId
