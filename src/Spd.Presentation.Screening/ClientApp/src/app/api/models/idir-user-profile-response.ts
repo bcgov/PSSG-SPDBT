@@ -9,4 +9,5 @@ export interface IdirUserProfileResponse {
   orgId?: string;
   userDisplayName?: null | string;
   userGuid?: null | string;
+  userId?: string;
 }

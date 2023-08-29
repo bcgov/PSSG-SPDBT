@@ -564,6 +564,8 @@ export class ApplicationService extends BaseService {
 'payeeType'?: string;
 'screeningType'?: string;
 'serviceType'?: string;
+'ministryId'?: string | null;
+'employeeId'?: string | null;
 };
 }
   },
@@ -649,6 +651,8 @@ export class ApplicationService extends BaseService {
 'payeeType'?: string;
 'screeningType'?: string;
 'serviceType'?: string;
+'ministryId'?: string | null;
+'employeeId'?: string | null;
 };
 }
   },
