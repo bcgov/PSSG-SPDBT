@@ -52,7 +52,7 @@ import { SaDeclarationComponent } from './step-components/sa-declaration.compone
 			</mat-step>
 
 			<mat-step>
-				<app-sa-agreement-of-terms></app-sa-agreement-of-terms>
+				<app-sa-agreement-of-terms *ngIf="orgData" [orgData]="orgData"></app-sa-agreement-of-terms>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
