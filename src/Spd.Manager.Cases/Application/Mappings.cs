@@ -115,12 +115,13 @@ namespace Spd.Manager.Cases.Application
 
         private static Guid GetOrgId(ApplicationCreateRequest appCreateRequest)
         {
-            if (appCreateRequest.OrgId == SpdConstants.BC_GOV_ORG_ID)
-            {
-                //get orgId from appCreateRequest.MinistryId
-                //todo: when we know how to connect spd_ministry with idir logon user ministry
-                return Guid.Parse("4765533b-e33a-ee11-b845-00505683fbf4"); //temp
-            }
+            //todo: after we figure out what should be put into orgId
+            //if (appCreateRequest.OrgId == SpdConstants.BC_GOV_ORG_ID)
+            //{
+            //    //get orgId from appCreateRequest.MinistryId
+            //    //todo: when we know how to connect spd_ministry with idir logon user ministry
+            //    return Guid.Parse("4765533b-e33a-ee11-b845-00505683fbf4"); //temp
+            //}
             return appCreateRequest.OrgId;
         }
 
