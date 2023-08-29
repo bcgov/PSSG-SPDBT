@@ -604,7 +604,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 			createRequest.requireDuplicateCheck = true;
 
 			const body = {
-				ConsentFormFile: this.fileUploadComponent.files[0],
+				ConsentFormFile: this.portal == PortalTypeCode.Crrp ? this.fileUploadComponent.files[0] : null,
 				ApplicationCreateRequestJson: createRequest,
 			};
 
