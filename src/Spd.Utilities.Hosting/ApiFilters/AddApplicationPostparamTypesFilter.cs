@@ -300,6 +300,22 @@ namespace Rsvp.Cms.Api.Filters
                                             {
                                                 Type = "string",
                                             }
+                                        },
+                                        {
+                                            "ministryId",
+                                            new OpenApiSchema
+                                            {
+                                                Type = "string",
+                                                Nullable= true,
+                                            }
+                                        },
+                                        {
+                                            "employeeId",
+                                            new OpenApiSchema
+                                            {
+                                                Type = "string",
+                                                Nullable= true,
+                                            }
                                         }
                                     },
                                     Example = new OpenApiString(

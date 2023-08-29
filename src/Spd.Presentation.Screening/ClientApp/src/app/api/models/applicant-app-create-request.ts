@@ -26,12 +26,14 @@ export interface ApplicantAppCreateRequest {
   dateOfBirth?: null | string;
   driversLicense?: null | string;
   emailAddress?: null | string;
+  employeeId?: null | string;
   genderCode?: GenderCode;
   givenName?: null | string;
   haveVerifiedIdentity?: null | boolean;
   jobTitle?: null | string;
   middleName1?: null | string;
   middleName2?: null | string;
+  ministryId?: null | string;
   oneLegalName?: null | boolean;
   orgId?: string;
   originTypeCode?: ApplicationOriginTypeCode;
