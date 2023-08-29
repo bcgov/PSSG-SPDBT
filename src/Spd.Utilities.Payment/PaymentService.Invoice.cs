@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using System.Net.Http;
 
 namespace Spd.Utilities.Payment
 {
@@ -59,6 +60,38 @@ namespace Spd.Utilities.Payment
             }
 
         }
+
+        public async Task<InvoicePaymentResult> GetInvoiceStatusAsync(InvoiceStatusQuery cmd)
+        {
+            if (_config?.ARInvoice?.InvoicePath == null || _config?.ARInvoice?.AuthenticationSettings == null)
+                throw new ConfigurationErrorsException("Payment AR Invoice Configuration is not correct.");
+            ISecurityTokenProvider tokenProvider = _tokenProviderResolver.GetTokenProviderByName("BearerTokenProvider");
+            string accessToken = await tokenProvider.AcquireToken();
+            if (string.IsNullOrWhiteSpace(accessToken))
+                throw new InvalidOperationException("cannot get access token from paybc");
+
+            HttpClient requestHttpClient = new HttpClient();
+            //requestHttpClient.DefaultRequestHeaders.Clear();
+            //requestHttpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("*/*"));
+            requestHttpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
+
+            string url = $"https://{_config.ARInvoice.Host}/{_config.ARInvoice.InvoicePath}/parties/{cmd.PartyNumber}/accs/{cmd.AccountNumber}/sites/{cmd.SiteNumber}/invs/{cmd.InvoiceNumber}";
+            using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
+            var requestResponse = await requestHttpClient.SendAsync(request);
+            if (requestResponse.IsSuccessStatusCode)
+            {
+                var resp = await requestResponse.Content.ReadFromJsonAsync<CreateInvoiceResp>();
+                var result = _mapper.Map<InvoicePaymentResult>(resp);
+                return result;
+            }
+            else
+            {
+                var result = new InvoicePaymentResult();
+                return result;
+            }
+
+        }
+
     }
 
     internal class CreateInvoiceRequest

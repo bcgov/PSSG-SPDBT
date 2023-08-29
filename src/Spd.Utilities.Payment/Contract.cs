@@ -8,10 +8,12 @@ namespace Spd.Utilities.Payment
     public interface IPaymentService
     {
         Task<PaymentResult> HandleCommand(PaymentCommand cmd);
+        Task<PaymentResult> HandleQuery(PaymentQuery cmd);
     }
 
     public interface PaymentCommand { };
     public interface PaymentResult { };
+    public interface PaymentQuery { };
 
     # region direct payment link
     public class CreateDirectPaymentLinkCommand : PaymentCommand
@@ -113,5 +115,21 @@ namespace Spd.Utilities.Payment
         public string TransactionDate { get; set; } = null!;
         public double AmountDue { get; set; }
     };
+
+    public class InvoiceStatusQuery : PaymentQuery
+    {
+        public string PartyNumber { get; set; } = null!;
+        public string AccountNumber { get; set; } = null!;
+        public string SiteNumber { get; set; } = null!;
+        public string InvoiceNumber { get; set; } = null!;
+    }
+
+    public class InvoicePaymentResult : PaymentResult
+    {
+        public string TxnNumber { get; set; } = null!;
+        public string Message { get; set; } = null!;
+        public DateTimeOffset PaidTimeOffset { get; set; }
+        public string Status { get; set; }
+    }
     #endregion
 }

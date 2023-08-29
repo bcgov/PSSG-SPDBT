@@ -88,7 +88,7 @@ public class PaymentController : SpdControllerBase
     /// </returns>
     [HttpGet]
     [Route("api/payment/invoices/update-from-cas")]
-    public async Task<CreateInvoicesInCasResponse> UpdateInvoiceFromCasAsync(CancellationToken ct)
+    public async Task<UpdateInvoicesFromCasResponse> UpdateInvoiceFromCasAsync(CancellationToken ct)
     {
         return await _mediator.Send(new UpdateInvoicesFromCasCommand(), ct);
     }
