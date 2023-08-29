@@ -47,6 +47,7 @@ namespace Spd.Resource.Organizations.Org
         public string? AddressPostalCode { get; set; }
         public string? AddressProvince { get; set; }
         public EmployeeInteractionTypeCode? EmployeeInteractionType { get; set; }
+        public bool HasInvoiceSupport { get; set; }
     }
     public record OrgResult : Org
     {
