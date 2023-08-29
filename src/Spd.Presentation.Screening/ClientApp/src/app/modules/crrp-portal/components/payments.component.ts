@@ -39,6 +39,7 @@ export interface PaymentResponse extends ApplicationPaymentResponse {
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
 					<h2 class="mb-2 fw-normal">Payments</h2>
+
 					<ng-container *ngIf="applicationStatistics$ | async">
 						<app-alert type="warning" *ngIf="count > 0">
 							<ng-container>
@@ -51,6 +52,13 @@ export interface PaymentResponse extends ApplicationPaymentResponse {
 							</ng-container>
 						</app-alert>
 					</ng-container>
+
+					<app-alert type="success" icon="info" *ngIf="hasInvoiceSupport">
+						<div>
+							Click <a href="https://paydev.gov.bc.ca/public/searchInvoice" target="_blank">here</a> to access
+							{{ loggedInOrgDisplay }}'s monthly invoices and submit payment
+						</div>
+					</app-alert>
 				</div>
 			</div>
 
@@ -222,6 +230,8 @@ export class PaymentsComponent implements OnInit {
 	currentFilters = '';
 	currentSearch = '';
 	filterCriteriaExists = false;
+	hasInvoiceSupport: boolean | undefined = this.authUserService.bceidUserOrgProfile?.hasInvoiceSupport;
+	loggedInOrgDisplay: string | null | undefined = this.authUserService.bceidUserInfoProfile?.orgName;
 
 	dataSource: MatTableDataSource<PaymentResponse> = new MatTableDataSource<PaymentResponse>([]);
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
