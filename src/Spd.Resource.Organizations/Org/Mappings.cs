@@ -37,6 +37,7 @@ namespace Spd.Resource.Organizations.Org
             .ForMember(d => d.MaxContacts, opt => opt.MapFrom(s => s.spd_maximumnumberofcontacts))
             .ForMember(d => d.MaxPrimaryContacts, opt => opt.MapFrom(s => s.spd_noofprimaryauthorizedcontacts))
             .ForMember(d => d.AccessCode, opt => opt.MapFrom(s => s.spd_accesscode))
+            .ForMember(d => d.HasInvoiceSupport, opt => opt.MapFrom(s => s.spd_eligibleforcreditpayment != null && s.spd_eligibleforcreditpayment == (int)YesNoOptionSet.Yes))
             .ForMember(d => d.EmployeeOrganizationTypeCode, opt => opt.MapFrom(s => DynamicsContextLookupHelpers.GetTypeFromTypeId(s._spd_organizationtypeid_value).Item1))
             .ForMember(d => d.VolunteerOrganizationTypeCode, opt => opt.MapFrom(s => DynamicsContextLookupHelpers.GetTypeFromTypeId(s._spd_organizationtypeid_value).Item2));
         }
