@@ -12,17 +12,20 @@ namespace Spd.Presentation.Screening.Controllers
     {
         private readonly IOptions<BCeIDAuthenticationConfiguration> _bceidOption;
         private readonly IOptions<BcscAuthenticationConfiguration> _bcscOption;
+        private readonly IConfiguration _configuration;
         private readonly IOptions<GoogleReCaptchaConfiguration> _captchaOption;
         private readonly IMediator _mediator;
 
         public ConfigurationController(IOptions<BCeIDAuthenticationConfiguration> bceidConfiguration,
             IOptions<GoogleReCaptchaConfiguration> captchaOption,
             IMediator mediator,
-            IOptions<BcscAuthenticationConfiguration> bcscConfiguration)
+            IOptions<BcscAuthenticationConfiguration> bcscConfiguration,
+            IConfiguration configuration)
         {
             _bceidOption = bceidConfiguration;
             _captchaOption = captchaOption;
             _bcscOption = bcscConfiguration;
+            _configuration = configuration;
             _mediator = mediator;
         }
 
@@ -49,13 +52,14 @@ namespace Spd.Presentation.Screening.Controllers
             };
             RecaptchaConfiguration recaptchaResp = new RecaptchaConfiguration(_captchaOption.Value.ClientKey);
             var bannerMessage = await _mediator.Send(new GetBannerMsgQuery());
-
+            var payBcSearchInvoiceUrl = _configuration.GetValue<string>("PayBcSearchInvoiceUrl");
             return await Task.FromResult(new ConfigurationResponse()
             {
                 OidcConfiguration = oidcResp,
                 RecaptchaConfiguration = recaptchaResp,
                 BannerMessage = bannerMessage,
-                BcscConfiguration = bcscConfig
+                BcscConfiguration = bcscConfig,
+                PayBcSearchInvoiceUrl = payBcSearchInvoiceUrl
             });
         }
     }
@@ -66,6 +70,7 @@ namespace Spd.Presentation.Screening.Controllers
         public RecaptchaConfiguration RecaptchaConfiguration { get; set; } = null!;
         public BcscConfiguration BcscConfiguration { get; set; } = null!;
         public string BannerMessage { get; set; }
+        public string PayBcSearchInvoiceUrl { get; set; }
     }
 
     public record OidcConfiguration
