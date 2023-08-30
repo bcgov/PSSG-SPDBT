@@ -54,6 +54,7 @@ import { StatusStatisticsCommonComponent } from './components/status-statistics-
 import { StepTitleComponent } from './components/step-title.component';
 import { DefaultPipe } from './pipes/default.pipe';
 import { FullnamePipe } from './pipes/fullname.pipe';
+import { MinistryOptionsPipe } from './pipes/ministry-options.pipe';
 import { OptionsPipe } from './pipes/options.pipe';
 import { YesNoPipe } from './pipes/yes-no.pipe';
 
@@ -72,6 +73,7 @@ const SHARED_COMPONENTS = [
 	FullnamePipe,
 	YesNoPipe,
 	OptionsPipe,
+	MinistryOptionsPipe,
 	CaptchaV2Component,
 	FileUploadComponent,
 	AccessDeniedComponent,

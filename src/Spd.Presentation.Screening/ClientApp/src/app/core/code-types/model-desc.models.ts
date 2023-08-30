@@ -91,17 +91,6 @@ export const ServiceTypes: SelectOptions[] = [
 	{ desc: 'PSSO +Vulnerable Sector', code: ServiceTypeCode.PssoVs },
 ];
 
-export const ServiceTypesPsso: SelectOptions[] = [
-	{ desc: 'CRC', code: ServiceTypeCode.Psso },
-	{ desc: 'CRRP - Employee', code: ServiceTypeCode.CrrpEmployee },
-	{ desc: 'CRRP - Volunteer', code: ServiceTypeCode.CrrpVolunteer },
-	{ desc: 'MCFD', code: ServiceTypeCode.Mcfd },
-	{ desc: 'PE-CRC', code: ServiceTypeCode.PeCrc },
-	{ desc: 'PE-CRC +Vulnerable Sector', code: ServiceTypeCode.PeCrcVs },
-	{ desc: 'Licensing', code: ServiceTypeCode.Licensing },
-	{ desc: 'CRC +Vulnerable Sector', code: ServiceTypeCode.PssoVs },
-];
-
 export const GenderTypes: SelectOptions[] = [
 	{ desc: 'M', code: GenderCode.M },
 	{ desc: 'F', code: GenderCode.F },

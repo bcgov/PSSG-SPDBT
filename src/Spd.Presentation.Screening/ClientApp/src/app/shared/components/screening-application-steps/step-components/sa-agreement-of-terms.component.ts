@@ -41,7 +41,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 								<p>Please print a copy of these Terms of Use for your records.</p>
 
 								<ol>
-									<strong>Disclaimer:</strong>
+									<strong class="terms-subtitle">Disclaimer:</strong>
 									<li>
 										Reasonable efforts have been made to provide accurate, complete and timely information regarding the
 										Services and the Site in general. However, you are encouraged to refer to the Criminal Records
@@ -71,7 +71,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 
 									<li>The Province is not responsible for the content of the Payment Site as defined below.</li>
 
-									<strong>Information Collection:</strong>
+									<strong class="terms-subtitle">Information Collection:</strong>
 									<li>
 										When you visit the Site or use the Services, certain types of information are automatically
 										collected from you, through the use of audit logs or cookies. This information is collected, used
@@ -96,7 +96,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 										disclosed in accordance with the collection notice presented to you at the time of collection.
 									</li>
 
-									<strong>Authentication:</strong>
+									<strong class="terms-subtitle">Authentication:</strong>
 									<li>
 										You must be authenticated before you can login and submit an online request for a criminal record
 										check. Your identity will be verified through your BC Services Card, approved government-issued ID,
@@ -113,14 +113,14 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 										Site.
 									</li>
 
-									<strong>Payment:</strong>
+									<strong class="terms-subtitle">Payment:</strong>
 									<li>
 										You may be required to access an external payment processing site (“Payment Site”) in order to pay
 										the criminal record check fee. For volunteers completing an online request for a criminal record
 										check, no payment is required.
 									</li>
 
-									<strong>Additional Terms and Personal Information Collection:</strong>
+									<strong class="terms-subtitle">Additional Terms and Personal Information Collection:</strong>
 									<li>
 										You may be required to accept additional terms and conditions in order to use or access an
 										Associated Service, including the BC Services Card Site, and/or the Payment Site, in which case your
@@ -132,7 +132,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 										Services in accordance with their terms and any associated privacy statement(s).
 									</li>
 
-									<strong>Warranty:</strong>
+									<strong class="terms-subtitle">Warranty:</strong>
 									<li>
 										In accessing or using the Site, you represent and warrant that:
 										<ol type="a">
@@ -141,7 +141,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 										</ol>
 									</li>
 
-									<strong>Acceptable Use and Security:</strong>
+									<strong class="terms-subtitle">Acceptable Use and Security:</strong>
 									<li>
 										You must not:
 										<ol type="a">
@@ -171,7 +171,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 										</ol>
 									</li>
 
-									<strong>Ownership and Non-permitted Uses:</strong>
+									<strong class="terms-subtitle">Ownership and Non-permitted Uses:</strong>
 									<li>
 										You acknowledge and agree that at all times the Province and/or the providers of the Associated
 										Services, or their respective licensors are the owners of any software, hardware, servers, networks
@@ -188,7 +188,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 										trademark or logo displayed in connection with the Services.
 									</li>
 
-									<strong>Suspension or Cancellation of Services:</strong>
+									<strong class="terms-subtitle">Suspension or Cancellation of Services:</strong>
 									<li>
 										Your use of any of the Services may be suspended or cancelled at any time if:
 										<ol type="a">
@@ -211,7 +211,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 										</ol>
 									</li>
 
-									<strong>Limitation of Liability:</strong>
+									<strong class="terms-subtitle">Limitation of Liability:</strong>
 									<li>
 										In addition to the Province’s general
 										<a href="https://www2.gov.bc.ca/gov/content/home/disclaimer" target="_blank"
@@ -228,7 +228,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 										specifically advised of the possibility of any such loss, claim, injury or damage.
 									</li>
 
-									<strong>Enforceability and Jurisdiction:</strong>
+									<strong class="terms-subtitle">Enforceability and Jurisdiction:</strong>
 									<li>
 										If any term or provision of these Terms of Use is invalid, illegal or unenforceable, all other terms
 										and provisions of these Terms of Use will nonetheless remain in full force and effect.
@@ -271,7 +271,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 								<p>Please print a copy of these Terms of Use for your records.</p>
 
 								<ol>
-									<strong>Disclaimer:</strong>
+									<strong class="terms-subtitle">Disclaimer:</strong>
 									<li>
 										Reasonable efforts have been made to provide accurate, complete and timely information regarding the
 										Services and the Site in general. However, you are encouraged to refer to the BC Public Service
@@ -302,7 +302,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 
 									<li>The Province is not responsible for the content of the Payment Site as defined below.</li>
 
-									<strong>Information Collection:</strong>
+									<strong class="terms-subtitle">Information Collection:</strong>
 									<li>
 										When you visit the Site or use the Services, certain types of information are automatically
 										collected from you, through the use of audit logs or cookies. This information is collected, used
@@ -327,7 +327,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 										disclosed in accordance with the collection notice presented to you at the time of collection.
 									</li>
 
-									<strong>Authentication:</strong>
+									<strong class="terms-subtitle">Authentication:</strong>
 									<li>
 										You must be authenticated before you can login and submit an online request for a criminal record
 										check. Your identity will be verified through your BC Services Card, approved government-issued ID,
@@ -344,7 +344,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 										Site.
 									</li>
 
-									<strong>Additional Terms and Personal Information Collection:</strong>
+									<strong class="terms-subtitle">Additional Terms and Personal Information Collection:</strong>
 									<li>
 										You may be required to accept additional terms and conditions in order to use or access an
 										Associated Service, including the BC Services Card Site, in which case your access to, and use of
@@ -355,7 +355,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 										Services in accordance with their terms and any associated privacy statement(s).
 									</li>
 
-									<strong>Warranty:</strong>
+									<strong class="terms-subtitle">Warranty:</strong>
 									<li>
 										In accessing or using the Site, you represent and warrant that:
 										<ol type="a">
@@ -364,7 +364,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 										</ol>
 									</li>
 
-									<strong>Acceptable Use and Security:</strong>
+									<strong class="terms-subtitle">Acceptable Use and Security:</strong>
 									<li>
 										You must not:
 										<ol type="a">
@@ -394,7 +394,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 										</ol>
 									</li>
 
-									<strong>Ownership and Non-permitted Uses:</strong>
+									<strong class="terms-subtitle">Ownership and Non-permitted Uses:</strong>
 									<li>
 										You acknowledge and agree that at all times the Province and/or the providers of the Associated
 										Services, or their respective licensors are the owners of any software, hardware, servers, networks
@@ -411,7 +411,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 										trademark or logo displayed in connection with the Services.
 									</li>
 
-									<strong>Suspension or Cancellation of Services:</strong>
+									<strong class="terms-subtitle">Suspension or Cancellation of Services:</strong>
 									<li>
 										Your use of any of the Services may be suspended or cancelled at any time if:
 										<ol type="a">
@@ -434,7 +434,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 										</ol>
 									</li>
 
-									<strong>Limitation of Liability:</strong>
+									<strong class="terms-subtitle">Limitation of Liability:</strong>
 									<li>
 										In addition to the Province’s general
 										<a href="https://www2.gov.bc.ca/gov/content/home/disclaimer" target="_blank"
@@ -451,7 +451,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 										specifically advised of the possibility of any such loss, claim, injury or damage.
 									</li>
 
-									<strong>Enforceability and Jurisdiction:</strong>
+									<strong class="terms-subtitle">Enforceability and Jurisdiction:</strong>
 									<li>
 										If any term or provision of these Terms of Use is invalid, illegal or unenforceable, all other terms
 										and provisions of these Terms of Use will nonetheless remain in full force and effect.
