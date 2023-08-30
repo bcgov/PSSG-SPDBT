@@ -28,6 +28,7 @@ namespace Spd.Manager.Cases.Payment
         IRequestHandler<ManualPaymentFormQuery, FileResponse>,
         IRequestHandler<PaymentRefundCommand, PaymentRefundResponse>,
         IRequestHandler<CreateInvoicesInCasCommand, CreateInvoicesInCasResponse>,
+        IRequestHandler<UpdateInvoicesFromCasCommand, UpdateInvoicesFromCasResponse>,
         IPaymentManager
     {
         private readonly IPaymentService _paymentService;
@@ -237,7 +238,7 @@ namespace Spd.Manager.Cases.Payment
             foreach(var invoice in invoiceList.Items)
             {
                 var createInvoice = _mapper.Map<CreateInvoiceCmd>(invoice);
-                var result = (CreateInvoiceResult)await _paymentService.HandleCommand(createInvoice);
+                var result = (InvoiceResult)await _paymentService.HandleCommand(createInvoice);
                 if (result.IsSuccess)
                 {
                     UpdateInvoiceCmd update = new UpdateInvoiceCmd()
@@ -249,10 +250,51 @@ namespace Spd.Manager.Cases.Payment
                     await _invoiceRepository.ManageAsync(update, ct);
                     successCount++;
                 }
+                else
+                {
+                    if(result.Message!=null && result.Message.ToLower().StartsWith("bad request")) //update invoice to failed if create invoice failed with bad request (if other error, like authorization or network error, we do not set it to failed.)
+                    {
+                        UpdateInvoiceCmd update = new UpdateInvoiceCmd()
+                        {
+                            InvoiceId = invoice.Id,
+                            InvoiceStatus = InvoiceStatusEnum.Failed,
+                        };
+                        await _invoiceRepository.ManageAsync(update, ct);
+                        successCount++;
+                    }
+                }
             }
             if (successCount != invoiceList.Items.Count()) 
                 return new CreateInvoicesInCasResponse(false);
             return new CreateInvoicesInCasResponse(true);
+        }
+
+        public async Task<UpdateInvoicesFromCasResponse> Handle(UpdateInvoicesFromCasCommand command, CancellationToken ct)
+        {
+            var invoiceList = await _invoiceRepository.QueryAsync(new InvoiceQry() { InvoiceStatus = InvoiceStatusEnum.Sent }, ct);
+            int successCount = 0;
+            foreach (var invoice in invoiceList.Items)
+            {
+                var queryInvoice = _mapper.Map<InvoiceStatusQuery>(invoice);
+                var result = (InvoiceResult)await _paymentService.HandleQuery(queryInvoice);
+                if (result.IsSuccess)
+                {
+                    if (result.AmountDue == 0)
+                    {
+                        UpdateInvoiceCmd update = new UpdateInvoiceCmd()
+                        {
+                            InvoiceId = invoice.Id,
+                            InvoiceStatus = InvoiceStatusEnum.Paid,
+                            InvoiceNumber = result.InvoiceNumber,
+                        };
+                        await _invoiceRepository.ManageAsync(update, ct);
+                    }                   
+                    successCount++;
+                }
+            }
+            if (successCount != invoiceList.Items.Count())
+                return new UpdateInvoicesFromCasResponse(false);
+            return new UpdateInvoicesFromCasResponse(true);
         }
 
         private async Task<SpdPaymentConfig> GetSpdPaymentConfigAsync(CancellationToken ct)
