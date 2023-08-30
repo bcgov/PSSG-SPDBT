@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
 using MediatR;
-using Spd.Resource.Applicants.Ministry;
 using Spd.Resource.Organizations.Config;
+using Spd.Resource.Organizations.Org;
 using Spd.Utilities.Address;
+using Spd.Utilities.Shared;
 
 namespace Spd.Manager.Admin
 {
@@ -15,14 +16,14 @@ namespace Spd.Manager.Admin
     {
         private readonly IAddressAutocompleteClient _addressClient;
         private readonly IConfigRepository _configRepo;
-        private readonly IMinistryRepository _ministryRepo;
+        private readonly IOrgRepository _orgRepo;
         private readonly IMapper _mapper;
-        public AdminManager(IAddressAutocompleteClient addressClient, IMapper mapper, IConfigRepository configRepo, IMinistryRepository ministryRepository)
+        public AdminManager(IAddressAutocompleteClient addressClient, IMapper mapper, IConfigRepository configRepo, IOrgRepository orgRepo)
         {
             _addressClient = addressClient;
             _mapper = mapper;
             _configRepo = configRepo;
-            _ministryRepo = ministryRepository;
+            _orgRepo = orgRepo;
         }
 
         public async Task<IEnumerable<AddressFindResponse>> Handle(FindAddressQuery query, CancellationToken cancellationToken)
@@ -51,8 +52,8 @@ namespace Spd.Manager.Admin
 
         public async Task<IEnumerable<MinistryResponse>> Handle(GetMinistryQuery request, CancellationToken cancellationToken)
         {
-            var result = await _ministryRepo.QueryAsync(new MinistryQry(), cancellationToken);
-            return _mapper.Map<IEnumerable<MinistryResponse>>(result.Items);
+            var result = (OrgsQryResult)await _orgRepo.QueryOrgAsync(new OrgsQry(null, ParentOrgId: SpdConstants.BC_GOV_ORG_ID, IncludeInactive: true), cancellationToken);
+            return _mapper.Map<IEnumerable<MinistryResponse>>(result.OrgResults);
         }
     }
 }

@@ -16,7 +16,7 @@ namespace Spd.Resource.Organizations.Org
 
     //query
     public abstract record OrgQry;
-    public record OrgByOrgGuidQry(Guid OrgGuid) : OrgQry;
+    public record OrgsQry(Guid? OrgGuid, Guid? ParentOrgId = null, bool IncludeInactive = false) : OrgQry;
     public record OrgByIdentifierQry(Guid? OrgId, string? AccessCode = null) : OrgQry;
     public record SearchOrgQry : OrgQry
     {
@@ -60,5 +60,6 @@ namespace Spd.Resource.Organizations.Org
         public string? EmployeeOrganizationTypeCode { get; set; }
         public string? VolunteerOrganizationTypeCode { get; set; }
         public IEnumerable<ServiceTypeEnum> ServiceTypes { get; set; } = Array.Empty<ServiceTypeEnum>();
+        public bool IsActive { get; set; } = true;
     }
 }

@@ -23,7 +23,7 @@ namespace Spd.Resource.Organizations.Org
         {
             return query switch
             {
-                OrgByOrgGuidQry q => await GetOrgsByOrgGuidAsync(q, ct),
+                OrgsQry q => await GetOrgsAsync(q, ct),
                 OrgByIdentifierQry q => await GetOrgByIdentifierAsync(q, ct),
                 _ => throw new NotSupportedException($"{query.GetType().Name} is not supported")
             }; 
@@ -109,14 +109,17 @@ namespace Spd.Resource.Organizations.Org
             }
         }
 
-        private async Task<OrgsQryResult> GetOrgsByOrgGuidAsync(OrgByOrgGuidQry query, CancellationToken ct)
+        private async Task<OrgsQryResult> GetOrgsAsync(OrgsQry query, CancellationToken ct)
         {
-            var accounts = _dynaContext.accounts
-                .Where(a => a.spd_orgguid == query.OrgGuid.ToString())
-                .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
-                .ToList();
-            if (accounts == null) return null;
-            return new OrgsQryResult(_mapper.Map<IEnumerable<OrgResult>>(accounts));
+            IQueryable<account> accounts = _dynaContext.accounts;
+            if(!query.IncludeInactive)
+                accounts = accounts.Where(a => a.statecode != DynamicsConstants.StateCode_Inactive);
+            if (query.OrgGuid != null)
+                accounts = accounts.Where(a => a.spd_orgguid == query.OrgGuid.ToString());
+            if (query.ParentOrgId != null)
+                accounts = accounts.Where(a => a._parentaccountid_value == query.ParentOrgId);
+               
+            return new OrgsQryResult(_mapper.Map<IEnumerable<OrgResult>>(accounts.ToList()));
         }
 
         private async Task<OrgQryData?> GetOrgByIdentifierAsync(OrgByIdentifierQry query, CancellationToken ct)
