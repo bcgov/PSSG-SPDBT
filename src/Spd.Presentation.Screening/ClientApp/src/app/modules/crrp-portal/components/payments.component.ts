@@ -10,6 +10,7 @@ import {
 	ApplicationPaymentResponse,
 	ApplicationPortalStatusCode,
 	ApplicationStatisticsResponse,
+	ConfigurationResponse,
 	PaymentLinkCreateRequest,
 	PaymentLinkResponse,
 	PaymentMethodCode,
@@ -20,6 +21,7 @@ import { AppRoutes } from 'src/app/app-routing.module';
 import { ApplicationPortalStatisticsTypeCode } from 'src/app/core/code-types/application-portal-statistics-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
+import { ConfigService } from 'src/app/core/services/config.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { ScreeningStatusFilterMap } from 'src/app/shared/components/screening-status-filter-common.component';
 import { CrrpRoutes } from '../crrp-routing.module';
@@ -53,10 +55,10 @@ export interface PaymentResponse extends ApplicationPaymentResponse {
 						</app-alert>
 					</ng-container>
 
-					<app-alert type="success" icon="info" *ngIf="hasInvoiceSupport">
+					<app-alert type="success" icon="info" *ngIf="payBcSearchInvoiceUrl">
 						<div>
-							Click <a href="https://paydev.gov.bc.ca/public/searchInvoice" target="_blank">here</a> to access
-							{{ loggedInOrgDisplay }}'s monthly invoices and submit payment
+							Click <a [href]="payBcSearchInvoiceUrl" target="_blank">here</a> to access {{ loggedInOrgDisplay }}'s
+							monthly invoices and submit payment
 						</div>
 					</app-alert>
 				</div>
@@ -230,8 +232,8 @@ export class PaymentsComponent implements OnInit {
 	currentFilters = '';
 	currentSearch = '';
 	filterCriteriaExists = false;
-	hasInvoiceSupport: boolean | undefined = this.authUserService.bceidUserOrgProfile?.hasInvoiceSupport;
 	loggedInOrgDisplay: string | null | undefined = this.authUserService.bceidUserInfoProfile?.orgName;
+	payBcSearchInvoiceUrl: string | null | undefined = null;
 
 	dataSource: MatTableDataSource<PaymentResponse> = new MatTableDataSource<PaymentResponse>([]);
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
@@ -251,6 +253,7 @@ export class PaymentsComponent implements OnInit {
 		private applicationService: ApplicationService,
 		private paymentService: PaymentService,
 		private authUserService: AuthUserBceidService,
+		private configService: ConfigService,
 		private location: Location
 	) {
 		this.refreshStats();
@@ -262,6 +265,16 @@ export class PaymentsComponent implements OnInit {
 			console.debug('PaymentsComponent - missing orgId');
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 			return;
+		}
+
+		const hasInvoiceSupport = this.authUserService.bceidUserOrgProfile?.hasInvoiceSupport;
+		if (hasInvoiceSupport) {
+			this.configService
+				.getConfigs()
+				.pipe()
+				.subscribe((resp: ConfigurationResponse) => {
+					this.payBcSearchInvoiceUrl = resp.payBcSearchInvoiceUrl;
+				});
 		}
 
 		const caseId = (this.location.getState() as any)?.caseId;
