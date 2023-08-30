@@ -681,7 +681,6 @@ namespace Spd.Presentation.Screening.Controllers
 
             try
             {
-                //filters string should be like status==AwaitingPayment|AwaitingApplicant,searchText@=str
                 string[] items = filters.Split(',');
                 foreach (string item in items)
                 {

@@ -13,7 +13,7 @@ namespace Spd.Utilities.Payment
 {
     internal partial class PaymentService : IPaymentService
     {
-        public async Task<CreateInvoiceResult> CreateInvoiceAsync(CreateInvoiceCmd cmd)
+        public async Task<InvoiceResult> CreateInvoiceAsync(CreateInvoiceCmd cmd)
         {
             if (_config?.ARInvoice?.InvoicePath == null || _config?.ARInvoice?.AuthenticationSettings == null)
                 throw new ConfigurationErrorsException("Payment AR Invoice Configuration is not correct.");
@@ -46,18 +46,48 @@ namespace Spd.Utilities.Payment
             if (requestResponse.IsSuccessStatusCode)
             {
                 var resp = await requestResponse.Content.ReadFromJsonAsync<CreateInvoiceResp>();
-                var result = _mapper.Map<CreateInvoiceResult>(resp);
+                var result = _mapper.Map<InvoiceResult>(resp);
                 result.IsSuccess = true;
                 return result;
             }
             else
             {
-                var result = new CreateInvoiceResult();
+                string errorMsg = string.Join(";", requestResponse.Headers.GetValues("CAS-Returned-Messages"));
+                var result = new InvoiceResult();
                 result.IsSuccess = false;
-                result.Message = requestResponse.ReasonPhrase;
+                result.Message = $"{requestResponse.ReasonPhrase}-{errorMsg}";
                 return result;
             }
 
+        }
+
+        public async Task<InvoiceResult> GetInvoiceStatusAsync(InvoiceStatusQuery cmd)
+        {
+            if (_config?.ARInvoice?.InvoicePath == null || _config?.ARInvoice?.AuthenticationSettings == null)
+                throw new ConfigurationErrorsException("Payment AR Invoice Configuration is not correct.");
+            ISecurityTokenProvider tokenProvider = _tokenProviderResolver.GetTokenProviderByName("BearerTokenProvider");
+            string accessToken = await tokenProvider.AcquireToken();
+            if (string.IsNullOrWhiteSpace(accessToken))
+                throw new InvalidOperationException("cannot get access token from paybc");
+
+            var client = new HttpClient();
+            string url = $"https://{_config.ARInvoice.Host}/{_config.ARInvoice.InvoicePath}/parties/{cmd.PartyNumber}/accs/{cmd.AccountNumber}/sites/{cmd.SiteNumber}/invs/{cmd.InvoiceNumber}/";
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+            request.Headers.Add("Authorization", $"Bearer {accessToken}");
+            var response = await client.SendAsync(request);
+            if (response.IsSuccessStatusCode)
+            {
+                var resp = await response.Content.ReadFromJsonAsync<CreateInvoiceResp>();
+                var result = _mapper.Map<InvoiceResult>(resp);
+                result.IsSuccess = true;
+                return result;
+            }
+            else
+            {
+                var result = new InvoiceResult();
+                result.IsSuccess = false;
+                return result;
+            }
         }
     }
 
