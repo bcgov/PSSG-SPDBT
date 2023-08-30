@@ -11,7 +11,7 @@ namespace Spd.Utilities.Payment
                 .ForMember(d => d.Lines, opt => opt.MapFrom(s => s.Lines));
             CreateMap<InvoiceLine, Line>()
                  .ForMember(d => d.LineNumber, o => o.MapFrom(s => s.LineNumber));
-            CreateMap<CreateInvoiceResp, CreateInvoiceResult>();
+            CreateMap<CreateInvoiceResp, InvoiceResult>();
         }
     }
 

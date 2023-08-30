@@ -28,6 +28,8 @@ namespace Spd.Manager.Cases.Payment
                 .ForMember(d => d.LateChargesFlag, opt => opt.MapFrom(s => "N"))
                 .ForMember(d => d.TermName, opt => opt.MapFrom(s => "IMMEDIATE"))
                 .ForMember(d => d.Lines, opt => opt.MapFrom(s => GetInvoiceLines(s)));
+
+            CreateMap<InvoiceResp, InvoiceStatusQuery>();              
         }
 
         private List<InvoiceLine> GetInvoiceLines(InvoiceResp invoiceResp)
