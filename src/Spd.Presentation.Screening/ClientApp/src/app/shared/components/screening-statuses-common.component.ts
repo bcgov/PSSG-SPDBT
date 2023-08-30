@@ -294,7 +294,7 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 			return;
 		}
 
-		if (this.portal == 'CRRP') {
+		if (this.portal == PortalTypeCode.Crrp) {
 			this.columns = [
 				'applicantName',
 				'emailAddress',
@@ -305,7 +305,7 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 				'status',
 				'action1',
 			];
-		} else if (this.portal == 'PSSO') {
+		} else if (this.portal == PortalTypeCode.Psso) {
 			this.columns = [
 				'applicantName',
 				'emailAddress',
