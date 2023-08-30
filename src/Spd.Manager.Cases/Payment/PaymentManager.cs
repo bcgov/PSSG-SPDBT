@@ -238,7 +238,7 @@ namespace Spd.Manager.Cases.Payment
             foreach(var invoice in invoiceList.Items)
             {
                 var createInvoice = _mapper.Map<CreateInvoiceCmd>(invoice);
-                var result = (CreateInvoiceResult)await _paymentService.HandleCommand(createInvoice);
+                var result = (InvoiceResult)await _paymentService.HandleCommand(createInvoice);
                 if (result.IsSuccess)
                 {
                     UpdateInvoiceCmd update = new UpdateInvoiceCmd()
@@ -263,16 +263,19 @@ namespace Spd.Manager.Cases.Payment
             foreach (var invoice in invoiceList.Items)
             {
                 var queryInvoice = _mapper.Map<InvoiceStatusQuery>(invoice);
-                var result = (CreateInvoiceResult)await _paymentService.HandleQuery(queryInvoice);
+                var result = (InvoiceResult)await _paymentService.HandleQuery(queryInvoice);
                 if (result.IsSuccess)
                 {
-                    UpdateInvoiceCmd update = new UpdateInvoiceCmd()
+                    if (result.AmountDue == 0)
                     {
-                        InvoiceId = invoice.Id,
-                        InvoiceStatus = InvoiceStatusEnum.Sent,
-                        InvoiceNumber = result.InvoiceNumber
-                    };
-                    await _invoiceRepository.ManageAsync(update, ct);
+                        UpdateInvoiceCmd update = new UpdateInvoiceCmd()
+                        {
+                            InvoiceId = invoice.Id,
+                            InvoiceStatus = InvoiceStatusEnum.Paid,
+                            InvoiceNumber = result.InvoiceNumber,
+                        };
+                        await _invoiceRepository.ManageAsync(update, ct);
+                    }                   
                     successCount++;
                 }
             }

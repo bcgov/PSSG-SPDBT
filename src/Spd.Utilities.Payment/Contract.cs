@@ -99,7 +99,7 @@ namespace Spd.Utilities.Payment
         public int Quantity { get; set; }
     }
 
-    public class CreateInvoiceResult : PaymentResult
+    public class InvoiceResult : PaymentResult
     {
         public bool IsSuccess { get; set; }
         public string? Message { get; set; }
@@ -122,14 +122,6 @@ namespace Spd.Utilities.Payment
         public string AccountNumber { get; set; } = null!;
         public string SiteNumber { get; set; } = null!;
         public string InvoiceNumber { get; set; } = null!;
-    }
-
-    public class InvoicePaymentResult : PaymentResult
-    {
-        public string TxnNumber { get; set; } = null!;
-        public string Message { get; set; } = null!;
-        public DateTimeOffset PaidTimeOffset { get; set; }
-        public string Status { get; set; }
     }
     #endregion
 }

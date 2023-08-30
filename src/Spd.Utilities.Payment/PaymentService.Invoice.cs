@@ -8,13 +8,12 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using System.Net.Http;
 
 namespace Spd.Utilities.Payment
 {
     internal partial class PaymentService : IPaymentService
     {
-        public async Task<CreateInvoiceResult> CreateInvoiceAsync(CreateInvoiceCmd cmd)
+        public async Task<InvoiceResult> CreateInvoiceAsync(CreateInvoiceCmd cmd)
         {
             if (_config?.ARInvoice?.InvoicePath == null || _config?.ARInvoice?.AuthenticationSettings == null)
                 throw new ConfigurationErrorsException("Payment AR Invoice Configuration is not correct.");
@@ -47,13 +46,13 @@ namespace Spd.Utilities.Payment
             if (requestResponse.IsSuccessStatusCode)
             {
                 var resp = await requestResponse.Content.ReadFromJsonAsync<CreateInvoiceResp>();
-                var result = _mapper.Map<CreateInvoiceResult>(resp);
+                var result = _mapper.Map<InvoiceResult>(resp);
                 result.IsSuccess = true;
                 return result;
             }
             else
             {
-                var result = new CreateInvoiceResult();
+                var result = new InvoiceResult();
                 result.IsSuccess = false;
                 result.Message = requestResponse.ReasonPhrase;
                 return result;
@@ -61,7 +60,7 @@ namespace Spd.Utilities.Payment
 
         }
 
-        public async Task<InvoicePaymentResult> GetInvoiceStatusAsync(InvoiceStatusQuery cmd)
+        public async Task<InvoiceResult> GetInvoiceStatusAsync(InvoiceStatusQuery cmd)
         {
             if (_config?.ARInvoice?.InvoicePath == null || _config?.ARInvoice?.AuthenticationSettings == null)
                 throw new ConfigurationErrorsException("Payment AR Invoice Configuration is not correct.");
@@ -70,28 +69,25 @@ namespace Spd.Utilities.Payment
             if (string.IsNullOrWhiteSpace(accessToken))
                 throw new InvalidOperationException("cannot get access token from paybc");
 
-            HttpClient requestHttpClient = new HttpClient();
-            //requestHttpClient.DefaultRequestHeaders.Clear();
-            //requestHttpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("*/*"));
-            requestHttpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
-
-            string url = $"https://{_config.ARInvoice.Host}/{_config.ARInvoice.InvoicePath}/parties/{cmd.PartyNumber}/accs/{cmd.AccountNumber}/sites/{cmd.SiteNumber}/invs/{cmd.InvoiceNumber}";
-            using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
-            var requestResponse = await requestHttpClient.SendAsync(request);
-            if (requestResponse.IsSuccessStatusCode)
+            var client = new HttpClient();
+            string url = $"https://{_config.ARInvoice.Host}/{_config.ARInvoice.InvoicePath}/parties/{cmd.PartyNumber}/accs/{cmd.AccountNumber}/sites/{cmd.SiteNumber}/invs/{cmd.InvoiceNumber}/";
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+            request.Headers.Add("Authorization", $"Bearer {accessToken}");
+            var response = await client.SendAsync(request);
+            if (response.IsSuccessStatusCode)
             {
-                var resp = await requestResponse.Content.ReadFromJsonAsync<CreateInvoiceResp>();
-                var result = _mapper.Map<InvoicePaymentResult>(resp);
+                var resp = await response.Content.ReadFromJsonAsync<CreateInvoiceResp>();
+                var result = _mapper.Map<InvoiceResult>(resp);
+                result.IsSuccess = true;
                 return result;
             }
             else
             {
-                var result = new InvoicePaymentResult();
+                var result = new InvoiceResult();
+                result.IsSuccess = false;
                 return result;
             }
-
         }
-
     }
 
     internal class CreateInvoiceRequest
