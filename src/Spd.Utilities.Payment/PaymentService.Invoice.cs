@@ -52,9 +52,10 @@ namespace Spd.Utilities.Payment
             }
             else
             {
+                string errorMsg = string.Join(";", requestResponse.Headers.GetValues("CAS-Returned-Messages"));
                 var result = new InvoiceResult();
                 result.IsSuccess = false;
-                result.Message = requestResponse.ReasonPhrase;
+                result.Message = $"{requestResponse.ReasonPhrase}-{errorMsg}";
                 return result;
             }
 

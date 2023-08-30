@@ -250,6 +250,19 @@ namespace Spd.Manager.Cases.Payment
                     await _invoiceRepository.ManageAsync(update, ct);
                     successCount++;
                 }
+                else
+                {
+                    if(result.Message!=null && result.Message.ToLower().StartsWith("bad request")) //update invoice to failed if create invoice failed with bad request (if other error, like authorization or network error, we do not set it to failed.)
+                    {
+                        UpdateInvoiceCmd update = new UpdateInvoiceCmd()
+                        {
+                            InvoiceId = invoice.Id,
+                            InvoiceStatus = InvoiceStatusEnum.Failed,
+                        };
+                        await _invoiceRepository.ManageAsync(update, ct);
+                        successCount++;
+                    }
+                }
             }
             if (successCount != invoiceList.Items.Count()) 
                 return new CreateInvoicesInCasResponse(false);
