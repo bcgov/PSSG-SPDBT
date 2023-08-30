@@ -329,11 +329,13 @@ namespace Spd.Presentation.Screening.Controllers
         [HttpPost]
         public async Task<ApplicationCreateResponse> AddApplication([FromForm][Required] CreateApplication createApplication, [FromRoute] Guid orgId)
         {
+            bool isPSSO = false;
             if (this.HttpContext.User.GetOrgId() == SpdConstants.BC_GOV_ORG_ID.ToString()) 
             {
                 //PSSO
                 if (createApplication.ConsentFormFile != null)
                     throw new ApiException(System.Net.HttpStatusCode.BadRequest, "no need for consent file.");
+                isPSSO = true;
             }
             else
             {
@@ -354,7 +356,14 @@ namespace Spd.Presentation.Screening.Controllers
             if (!result.IsValid)
                 throw new ApiException(System.Net.HttpStatusCode.BadRequest, JsonSerializer.Serialize(result.Errors));
 
-            return await _mediator.Send(new ApplicationCreateCommand(appCreateRequest, orgId, Guid.Parse(userId), createApplication.ConsentFormFile));
+            if (isPSSO)
+            {
+                return await _mediator.Send(new ApplicationCreateCommand(appCreateRequest, SpdConstants.BC_GOV_ORG_ID, Guid.Parse(userId), null));
+            }
+            else
+            {
+                return await _mediator.Send(new ApplicationCreateCommand(appCreateRequest, orgId, Guid.Parse(userId), createApplication.ConsentFormFile));
+            }
         }
 
         /// <summary>
