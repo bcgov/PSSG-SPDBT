@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Spd.Resource.Applicants.Ministry;
+using Spd.Resource.Organizations.Org;
 using Spd.Utilities.Address;
 
 namespace Spd.Manager.Admin
@@ -10,7 +10,8 @@ namespace Spd.Manager.Admin
         {
             CreateMap<AddressAutocompleteFindResponse, AddressFindResponse>();
             CreateMap<AddressAutocompleteRetrieveResponse, AddressRetrieveResponse>();
-            CreateMap<MinistryResp, MinistryResponse>();
+            CreateMap<OrgResult, MinistryResponse>()
+                .ForMember(d => d.Name, opt => opt.MapFrom(s => s.OrganizationName));
         }
     }
 }

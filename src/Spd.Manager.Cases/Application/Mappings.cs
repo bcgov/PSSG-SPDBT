@@ -27,11 +27,8 @@ namespace Spd.Manager.Cases.Application
             CreateMap<AppInviteListSortBy, AppInviteSortBy>();
             CreateMap<ApplicationInviteResult, ApplicationInviteResponse>()
                .ForMember(d => d.Status, opt => opt.MapFrom(s => Enum.Parse<ApplicationInviteStatusCode>(s.Status)));
-            CreateMap<ApplicationCreateRequest, SearchApplicationQry>()
-               .ForMember(d => d.OrgId, opt => opt.MapFrom(s => GetOrgId(s)));
-            CreateMap<ApplicationCreateRequest, ApplicationCreateCmd>()
-                .ForMember(d => d.ParentOrgId, opt => opt.MapFrom(s => GetParentOrgId(s)))
-                .ForMember(d => d.OrgId, opt => opt.MapFrom(s => GetOrgId(s)));
+            CreateMap<ApplicationCreateRequest, SearchApplicationQry>();
+            CreateMap<ApplicationCreateRequest, ApplicationCreateCmd>();
             CreateMap<ApplicantAppCreateRequest, ApplicationCreateCmd>()
                  .IncludeBase<ApplicationCreateRequest, ApplicationCreateCmd>()
                  .ForMember(d => d.AgreeToConsent, opt => opt.MapFrom(s => true));
@@ -84,7 +81,6 @@ namespace Spd.Manager.Cases.Application
                 .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName))
                 .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.Surname))
                 .ForMember(d => d.Email, opt => opt.MapFrom(s => s.EmailAddress));
-            //.ForMember(d => d.ScreeningType, opt => opt.MapFrom(s => s.ScreeningType));
         }
 
         private static CaseSubStatusCode? GetCaseSubStatusCode(CaseSubStatusEnum? subStatusEnum)
@@ -113,25 +109,5 @@ namespace Spd.Manager.Cases.Application
             }
         }
 
-        private static Guid GetOrgId(ApplicationCreateRequest appCreateRequest)
-        {
-            //todo: after we figure out what should be put into orgId
-            //if (appCreateRequest.OrgId == SpdConstants.BC_GOV_ORG_ID)
-            //{
-            //    //get orgId from appCreateRequest.MinistryId
-            //    //todo: when we know how to connect spd_ministry with idir logon user ministry
-            //    return Guid.Parse("4765533b-e33a-ee11-b845-00505683fbf4"); //temp
-            //}
-            return appCreateRequest.OrgId;
-        }
-
-        private static Guid? GetParentOrgId(ApplicationCreateRequest appCreateRequest)
-        {
-            if (appCreateRequest.OrgId == SpdConstants.BC_GOV_ORG_ID)
-            {
-                return SpdConstants.BC_GOV_ORG_ID;
-            }
-            return null;
-        }
     }
 }
