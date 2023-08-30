@@ -149,7 +149,10 @@ namespace Spd.Manager.Cases.Application
         public async Task<ApplicationCreateResponse> Handle(ApplicationCreateCommand request, CancellationToken ct)
         {
             ApplicationCreateResponse result = new();
-            request.ApplicationCreateRequest.OrgId = request.OrgId;
+            if (request.ParentOrgId != SpdConstants.BC_GOV_ORG_ID)
+            {
+                request.ApplicationCreateRequest.OrgId = (Guid)request.ParentOrgId;
+            }
             if (request.ApplicationCreateRequest.RequireDuplicateCheck)
             {
                 result = await CheckDuplicateApp(request.ApplicationCreateRequest, ct);
@@ -175,6 +178,8 @@ namespace Spd.Manager.Cases.Application
             }
             var cmd = _mapper.Map<ApplicationCreateCmd>(request.ApplicationCreateRequest);
             cmd.CreatedByUserId = request.UserId;
+            if (request.ParentOrgId == SpdConstants.BC_GOV_ORG_ID)
+                cmd.ParentOrgId = request.ParentOrgId;
             Guid? applicationId = await _applicationRepository.AddApplicationAsync(cmd, ct);
             if (applicationId.HasValue && spdTempFile != null)
             {
@@ -189,7 +194,7 @@ namespace Spd.Manager.Cases.Application
             result.CreateSuccess = true;
 
             //if it is PSSO, add hiring manager
-            if (request.OrgId == SpdConstants.BC_GOV_ORG_ID)
+            if (request.ParentOrgId == SpdConstants.BC_GOV_ORG_ID)
             {
                 //add hiring manager
                 await _delegateRepository.ManageAsync(

@@ -83,7 +83,7 @@ namespace Spd.Manager.Membership.OrgRegistration
             //duplicated in organization
             if (_currentUser.IsAuthenticated())
             {
-                var org = (OrgsQryResult)await _orgRepository.QueryOrgAsync(new OrgByOrgGuidQry(_currentUser.GetBizGuid()), cancellationToken);
+                var org = (OrgsQryResult)await _orgRepository.QueryOrgAsync(new OrgsQry(_currentUser.GetBizGuid()), cancellationToken);
                 if (org != null && org.OrgResults.Any())
                 {
                     resp.HasPotentialDuplicate = true;
