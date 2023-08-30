@@ -45,7 +45,7 @@ export interface AliasCreateRequest {
 					<h2 class="fw-normal">
 						Manual Submissions
 						<div class="mt-2 fs-5 fw-light">
-							<ng-container *ngIf="portal == portalTypeCodes.Psso; crrpSubtitle">
+							<ng-container *ngIf="portal == portalTypeCodes.Psso; else crrpSubtitle">
 								Enter the applicant's information and submit their application
 							</ng-container>
 							<ng-template #crrpSubtitle>
@@ -395,13 +395,18 @@ export interface AliasCreateRequest {
 						</div>
 						<div class="col-md-12 col-sm-12">
 							<mat-checkbox formControlName="haveVerifiedIdentity">
-								I confirm that I have verified the identity of the applicant for this criminal record check
+								<ng-container *ngIf="portal == portalTypeCodes.Psso; else haveVerifiedIdentityCrrpLabel">
+									I have verified the identity of the applicant for this security screening
+								</ng-container>
+								<ng-template #haveVerifiedIdentityCrrpLabel>
+									I confirm that I have verified the identity of the applicant for this criminal record check
+								</ng-template>
 								<span class="optional-label">(optional)</span>
 							</mat-checkbox>
 						</div>
 					</div>
 
-					<ng-container *ngIf="portal == 'CRRP'">
+					<ng-container *ngIf="portal == portalTypeCodes.Crrp">
 						<mat-divider class="my-3"></mat-divider>
 						<div class="text-minor-heading fw-semibold mb-2">
 							Upload the copy of signed consent form sent by the applicant
@@ -757,7 +762,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 	private saveAndCheckDuplicates(body: any): void {
 		// Check for potential duplicate
 		this.applicationService
-			.apiOrgsOrgIdApplicationPost({ orgId: this.orgId!, body })
+			.apiOrgsOrgIdApplicationPost({ orgId: body.ministryId ? body.ministryId : this.orgId!, body })
 			.pipe()
 			.subscribe((dupres: ApplicationCreateResponse) => {
 				this.displayDataValidationMessage(body, dupres);
@@ -772,7 +777,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 
 		this.applicationService
 			.apiOrgsOrgIdApplicationPost({
-				orgId: this.orgId!,
+				orgId: body.ministryId ? body.ministryId : this.orgId!,
 				body,
 			})
 			.pipe()
