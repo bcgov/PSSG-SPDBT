@@ -15,6 +15,7 @@ namespace Spd.Manager.Cases.Payment
         public Task<FileResponse> Handle(PaymentReceiptQuery query, CancellationToken ct);
         public Task<FileResponse> Handle(ManualPaymentFormQuery query, CancellationToken ct);
         public Task<CreateInvoicesInCasResponse> Handle(CreateInvoicesInCasCommand command, CancellationToken ct);
+        public Task<UpdateInvoicesFromCasResponse> Handle(UpdateInvoicesFromCasCommand command, CancellationToken ct);
     }
 
     #region pre payment link
@@ -128,5 +129,9 @@ namespace Spd.Manager.Cases.Payment
     public record CreateInvoicesInCasCommand() : IRequest<CreateInvoicesInCasResponse>;
 
     public record CreateInvoicesInCasResponse(bool Success);
+
+    public record UpdateInvoicesFromCasCommand() : IRequest<UpdateInvoicesFromCasResponse>;
+
+    public record UpdateInvoicesFromCasResponse(bool Success);
     #endregion
 }

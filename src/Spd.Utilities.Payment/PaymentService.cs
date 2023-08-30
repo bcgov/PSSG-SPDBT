@@ -28,5 +28,14 @@ namespace Spd.Utilities.Payment
                 _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
             };
         }
+
+        public async Task<PaymentResult> HandleQuery(PaymentQuery cmd)
+        {
+            return cmd switch
+            {
+                InvoiceStatusQuery c => await GetInvoiceStatusAsync(c),
+                _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
+            };
+        }
     }
 }
