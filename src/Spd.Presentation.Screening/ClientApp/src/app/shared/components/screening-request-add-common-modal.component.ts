@@ -16,7 +16,6 @@ import {
 	ScreeningTypes,
 	SelectOptions,
 	ServiceTypes,
-	ServiceTypesPsso,
 } from 'src/app/core/code-types/model-desc.models';
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
@@ -559,7 +558,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 		this.isNotVolunteerOrg = false;
 		this.showScreeningType = false;
 		this.showServiceType = true;
-		this.serviceTypes = ServiceTypesPsso.filter(
+		this.serviceTypes = ServiceTypes.filter(
 			(item) => item.code == ServiceTypeCode.Psso || item.code == ServiceTypeCode.PssoVs
 		);
 	}

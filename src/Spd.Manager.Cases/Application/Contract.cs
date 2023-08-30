@@ -667,8 +667,8 @@ namespace Spd.Manager.Cases.Application
             RuleFor(r => r.HaveVerifiedIdentity)
                 .NotNull(); // Must be true or false
 
-            RuleFor(r => r.EmployeeId) //Employee ID validation: Whole Number, max 7 digits
-                .MaximumLength(7)
+            RuleFor(r => r.EmployeeId) //Employee ID validation: Whole Number, 7 digits
+                .Length(7)
                 .Must(r => int.TryParse(r, out var i) && i > 0)
                 .When(r => r.OrgId == SpdConstants.BC_GOV_ORG_ID && !string.IsNullOrEmpty(r.EmployeeId));
         }
