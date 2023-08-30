@@ -46,14 +46,18 @@ internal class InvoiceRepository : IInvoiceRepository
     private async Task<InvoiceResp> UpdateInvoiceAsync(UpdateInvoiceCmd c, CancellationToken ct)
     {
         spd_invoice? invoice = await _context.spd_invoices
-            .Where(i=>i.spd_invoiceid == c.InvoiceId)
+            .Where(i => i.spd_invoiceid == c.InvoiceId)
             .FirstOrDefaultAsync();
         if (invoice == null)
             throw new InvalidOperationException("Cannot find the correct invoice.");
-        if (c.InvoiceStatus != null) 
+        if (c.InvoiceStatus != null)
         {
             int status = (int)Enum.Parse<InvoiceStatusOptionSet>(c.InvoiceStatus.ToString());
             invoice.statuscode = status;
+            if (status == (int)InvoiceStatusOptionSet.Paid || status == (int)InvoiceStatusOptionSet.Cancelled)
+            {
+                invoice.statecode = DynamicsConstants.StateCode_Inactive;
+            }
         }
         if (c.InvoiceNumber != null) invoice.spd_castransactionid = c.InvoiceNumber;
         _context.UpdateObject(invoice);
