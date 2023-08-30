@@ -329,9 +329,9 @@ export class IdentifyVerificationCommonComponent implements OnInit {
 			.subscribe((resp) => {
 				if (resp.success) {
 					this.hotToast.success(resp.message);
-					if (this.portal == 'CRRP') {
+					if (this.portal == PortalTypeCode.Crrp) {
 						this.router.navigateByUrl(CrrpRoutes.path(CrrpRoutes.CRIMINAL_RECORD_CHECKS));
-					} else if (this.portal == 'PSSO') {
+					} else if (this.portal == PortalTypeCode.Psso) {
 						this.router.navigateByUrl(PssoRoutes.path(PssoRoutes.SCREENING_CHECKS));
 					}
 				}

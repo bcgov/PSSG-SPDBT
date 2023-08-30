@@ -191,8 +191,8 @@ export interface AliasCreateRequest {
 						<div class="col-xl-3 col-lg-6 col-md-12" *ngIf="portal == portalTypeCodes.Psso">
 							<mat-form-field>
 								<mat-label>Employee ID</mat-label>
-								<input matInput formControlName="employeeId" maxlength="100" />
-								<!-- TODO rules for employee id? -->
+								<input matInput formControlName="employeeId" mask="0000000" />
+								<mat-error *ngIf="form.get('employeeId')?.hasError('mask')"> This must be 7 digits </mat-error>
 							</mat-form-field>
 						</div>
 						<div class="col-xl-3 col-lg-6 col-md-12" *ngIf="portal == portalTypeCodes.Psso">
@@ -828,9 +828,9 @@ export class ManualSubmissionCommonComponent implements OnInit {
 
 	private handleSaveSuccess(): void {
 		this.hotToast.success('Your screening request has been sent to the applicant');
-		if (this.portal == 'CRRP') {
+		if (this.portal == PortalTypeCode.Crrp) {
 			this.router.navigateByUrl(CrrpRoutes.path(CrrpRoutes.APPLICATION_STATUSES));
-		} else if (this.portal == 'PSSO') {
+		} else if (this.portal == PortalTypeCode.Psso) {
 			this.router.navigateByUrl(PssoRoutes.path(PssoRoutes.SCREENING_STATUSES));
 		}
 	}
