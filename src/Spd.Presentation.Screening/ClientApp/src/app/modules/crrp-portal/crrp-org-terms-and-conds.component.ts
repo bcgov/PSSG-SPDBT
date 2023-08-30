@@ -48,8 +48,8 @@ import { CrrpRoutes } from './crrp-routing.module';
 										</p>
 										<p>Please print a copy of these Terms of Use for your records.</p>
 
-										<strong>Disclaimer:</strong>
 										<ol>
+											<strong class="terms-subtitle">Disclaimer:</strong>
 											<li>
 												THE SERVICES ARE PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND INCLUDING WARRANTY OF FITNESS
 												FOR A PARTICULAR PURPOSE. USE OF THE SERVICES IS ENTIRELY AT YOUR OWN RISK, AND YOU WILL BE
@@ -71,7 +71,7 @@ import { CrrpRoutes } from './crrp-routing.module';
 												</ol>
 											</li>
 											<li>The Province is not responsible for the content of the Payment Site as defined below.</li>
-											<strong>Information Collection:</strong>
+											<strong class="terms-subtitle">Information Collection:</strong>
 											<li>
 												When you visit the Site or use the Services, certain types of information are automatically
 												collected from you, by audit logs or cookies. This information is collected, used and disclosed
@@ -91,7 +91,7 @@ import { CrrpRoutes } from './crrp-routing.module';
 												The information that you input on the Site may also be logged and attributed to you for
 												verification purposes.
 											</li>
-											<strong>Authentication:</strong>
+											<strong class="terms-subtitle">Authentication:</strong>
 											<li>
 												You are required to be a Profile Manager for your Organization’s Business BCeID account to
 												login, access or use the Services.
@@ -100,13 +100,13 @@ import { CrrpRoutes } from './crrp-routing.module';
 												Each time you access the Site, you must be authenticated by following an external link to the
 												BCeID site, following which you will be returned to, and allowed to access the Site.
 											</li>
-											<strong>Payment:</strong>
+											<strong class="terms-subtitle">Payment:</strong>
 											<li>
 												You will be required to access an external payment processing site (“Payment Site” or, as the
 												context requires, “Associated Service”) in order to pay the criminal record check fee for
 												individual applicants for whom payment is required.
 											</li>
-											<strong>Additional Terms and Personal Information Collection:</strong>
+											<strong class="terms-subtitle">Additional Terms and Personal Information Collection:</strong>
 											<li>
 												You may be required to accept additional terms and conditions in order to use or access an
 												Associated Service, including the BCeID site, and/or the Payment Site, in which case your access
@@ -117,7 +117,7 @@ import { CrrpRoutes } from './crrp-routing.module';
 												Additional personal information may be collected from you by the providers of the Associated
 												Services in accordance with their terms and any associated privacy statement(s).
 											</li>
-											<strong>Warranty:</strong>
+											<strong class="terms-subtitle">Warranty:</strong>
 											<li>
 												In accessing or using the Site, you represent and warrant that:
 												<ol type="a">
@@ -127,7 +127,7 @@ import { CrrpRoutes } from './crrp-routing.module';
 													</li>
 												</ol>
 											</li>
-											<strong>Acceptable Use and Security:</strong>
+											<strong class="terms-subtitle">Acceptable Use and Security:</strong>
 											<li>
 												You must not:
 												<ol type="a">
@@ -156,7 +156,7 @@ import { CrrpRoutes } from './crrp-routing.module';
 													</li>
 												</ol>
 											</li>
-											<strong>Ownership and Non-permitted Uses:</strong>
+											<strong class="terms-subtitle">Ownership and Non-permitted Uses:</strong>
 											<li>
 												You acknowledge and agree that at all times the Province and/or the providers of the Associated
 												Services, or their respective licensors, are the owners of any software, hardware, servers,
@@ -172,7 +172,7 @@ import { CrrpRoutes } from './crrp-routing.module';
 												You will not remove or alter any proprietary symbol or notice, including any copyright notice,
 												trademark or logo displayed in connection with the Services.
 											</li>
-											<strong>Suspension or Cancellation of Services:</strong>
+											<strong class="terms-subtitle">Suspension or Cancellation of Services:</strong>
 											<li>
 												Your use of any of the Services may be suspended or cancelled at any time if:
 												<ol type="a">
@@ -194,7 +194,7 @@ import { CrrpRoutes } from './crrp-routing.module';
 													<li>modify these Terms of Use at any time, without notice being provided directly to you.</li>
 												</ol>
 											</li>
-											<strong>Limitation of Liability:</strong>
+											<strong class="terms-subtitle">Limitation of Liability:</strong>
 											<li>
 												In addition to the Province’s general
 												<a href="https://www2.gov.bc.ca/gov/content/home/disclaimer" target="_blank"
@@ -211,7 +211,7 @@ import { CrrpRoutes } from './crrp-routing.module';
 												Associated Service has been specifically advised of the possibility of any such loss, claim,
 												injury or damage.
 											</li>
-											<strong>Enforceability and Jurisdiction:</strong>
+											<strong class="terms-subtitle">Enforceability and Jurisdiction:</strong>
 											<li>
 												If any term or provision of these Terms of Use is invalid, illegal, or unenforceable, all other
 												terms and provisions of these Terms of Use will nonetheless remain in full force and effect.

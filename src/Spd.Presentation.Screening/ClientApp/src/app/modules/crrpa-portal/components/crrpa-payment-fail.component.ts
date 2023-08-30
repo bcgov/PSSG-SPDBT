@@ -23,6 +23,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 					[payment]="payment"
 					[numberOfAttemptsRemaining]="numberOfAttemptsRemaining"
 					[isCancelledPaymentFlow]="isCancelledPaymentFlow"
+					[isPayBySecureLink]="isPayBySecureLink"
 					(payNow)="onPayNow()"
 					(downloadManualPaymentForm)="onDownloadManualPaymentForm()"
 				></app-payment-fail>
@@ -35,6 +36,7 @@ export class CrrpaPaymentFailComponent implements OnInit {
 	isCancelledPaymentFlow: boolean = false;
 	numberOfAttemptsRemaining: number = 0;
 	payment: PaymentResponse | null = null;
+	isPayBySecureLink = false;
 
 	constructor(
 		private route: ActivatedRoute,
@@ -51,7 +53,7 @@ export class CrrpaPaymentFailComponent implements OnInit {
 			this.isCancelledPaymentFlow = true;
 		} else {
 			this.paymentService
-				.apiCrrpaPaymentsPaymentIdGet({ paymentId: paymentId! })
+				.apiCrrpaPaymentsPaymentIdGet({ paymentId: paymentId })
 				.pipe(
 					switchMap((paymentResp: PaymentResponse) => {
 						this.payment = paymentResp;
@@ -62,7 +64,8 @@ export class CrrpaPaymentFailComponent implements OnInit {
 					})
 				)
 				.subscribe((numberOfFails) => {
-					if (this.payment?.paymentType == PaymentTypeCode.PayBcSecurePaymentLink) {
+					this.isPayBySecureLink = this.payment?.paymentType == PaymentTypeCode.PayBcSecurePaymentLink;
+					if (this.isPayBySecureLink) {
 						this.numberOfAttemptsRemaining = 0;
 					} else {
 						const remaining = SPD_CONSTANTS.payment.maxNumberOfAttempts - numberOfFails;
