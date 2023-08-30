@@ -130,7 +130,7 @@ namespace Spd.Manager.Cases.Application
     #endregion
 
     #region application
-    public record ApplicationCreateCommand(ApplicationCreateRequest ApplicationCreateRequest, Guid OrgId, Guid UserId, IFormFile? ConsentFormFile) : IRequest<ApplicationCreateResponse>;
+    public record ApplicationCreateCommand(ApplicationCreateRequest ApplicationCreateRequest, Guid? ParentOrgId, Guid UserId, IFormFile? ConsentFormFile) : IRequest<ApplicationCreateResponse>;
     public record ApplicationListQuery : IRequest<ApplicationListResponse>
     {
         public AppListFilterBy? FilterBy { get; set; } //null means no filter
@@ -199,7 +199,6 @@ namespace Spd.Manager.Cases.Application
         public bool? HaveVerifiedIdentity { get; set; }
         public IEnumerable<AliasCreateRequest> Aliases { get; set; } = Array.Empty<AliasCreateRequest>();
         public bool RequireDuplicateCheck { get; set; } = false;
-        public Guid? MinistryId { get; set; } //for psso
         public string? EmployeeId { get; set; } //for psso
     }
     public record AliasCreateRequest
@@ -667,10 +666,6 @@ namespace Spd.Manager.Cases.Application
 
             RuleFor(r => r.HaveVerifiedIdentity)
                 .NotNull(); // Must be true or false
-
-            RuleFor(r => r.MinistryId)
-                .NotNull()
-                .When(r => r.OrgId == SpdConstants.BC_GOV_ORG_ID);
 
             RuleFor(r => r.EmployeeId) //Employee ID validation: Whole Number, 7 digits
                 .Length(7)

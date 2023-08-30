@@ -84,7 +84,6 @@ public record ApplicationCreateCmd
     public string? CreatedByApplicantBcscId { get; set; } = null;
     public Guid? SharedClearanceId { get; set; } = null;
     public Guid? ContactId { get; set; }
-    public Guid? MinistryId { get; set; } //for psso
     public string? EmployeeId { get; set; } //for psso
 
 }

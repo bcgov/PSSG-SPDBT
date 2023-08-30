@@ -75,7 +75,7 @@ namespace Spd.Manager.Membership.UserProfile
             }
 
             //get all orgs
-            var orgResult = (OrgsQryResult)await _orgRepository.QueryOrgAsync(new OrgByOrgGuidQry(orgGuid), ct);
+            var orgResult = (OrgsQryResult)await _orgRepository.QueryOrgAsync(new OrgsQry(orgGuid), ct);
             foreach (OrgResult org in orgResult.OrgResults)
             {
                 UserInfo ui = new UserInfo();
