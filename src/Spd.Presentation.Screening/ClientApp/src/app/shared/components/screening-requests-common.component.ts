@@ -237,9 +237,9 @@ export class ScreeningRequestsCommonComponent implements OnInit {
 			return;
 		}
 
-		if (this.portal == 'CRRP') {
+		if (this.portal == PortalTypeCode.Crrp) {
 			this.columns = ['applicantName', 'emailAddress', 'jobTitle', 'payeeType', 'createdOn', 'viewed', 'action1'];
-		} else if (this.portal == 'PSSO') {
+		} else if (this.portal == PortalTypeCode.Psso) {
 			this.columns = ['applicantName', 'emailAddress', 'jobTitle', 'createdOn', 'viewed', 'action1'];
 		}
 

@@ -71,7 +71,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             {
                 spd_portalinvitation invitation = _mapper.Map<spd_portalinvitation>(item);
                 var encryptedInviteId = WebUtility.UrlEncode(_dataProtector.Protect(invitation.spd_portalinvitationid.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.APPLICATION_INVITE_VALID_DAYS)));
-                invitation.spd_invitationlink = $"{createInviteCmd.HostUrl}{SpdConstants.APPLICATION_INVITE_LINK}{encryptedInviteId}";
+                invitation.spd_invitationlink = $"{createInviteCmd.HostUrl}{SpdConstants.CRRP_APPLICATION_INVITE_LINK}{encryptedInviteId}";
                 _dynaContext.AddTospd_portalinvitations(invitation);
                 _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_OrganizationId), org);
                 _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_PortalUserId), user);
@@ -81,7 +81,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
                     _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_ServiceTypeId), servicetype);
                 }
 
-                if(item.OriginalClearanceAccessId != null)
+                if (item.OriginalClearanceAccessId != null)
                 {
                     spd_clearanceaccess access = await _dynaContext.GetClearanceAccessById((Guid)item.OriginalClearanceAccessId, ct);
                     if (access == null || access._spd_organizationid_value != createInviteCmd.OrgId)
