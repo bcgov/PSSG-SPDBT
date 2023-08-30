@@ -16,6 +16,7 @@ import { ApplicationPortalStatisticsTypeCode } from 'src/app/core/code-types/app
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
+import { OptionsService } from 'src/app/core/services/options.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import {
 	ScreeningStatusFilter,
@@ -134,6 +135,14 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Paid By:</span>
 								{{ application.payeeType | default }}
+							</mat-cell>
+						</ng-container>
+
+						<ng-container matColumnDef="ministryId">
+							<mat-header-cell *matHeaderCellDef>Ministry</mat-header-cell>
+							<mat-cell *matCellDef="let application">
+								<span class="mobile-label">Ministry:</span>
+								{{ application.orgId | ministryoptions : 'Unknown' | async }}
 							</mat-cell>
 						</ng-container>
 
@@ -284,7 +293,8 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 		private utilService: UtilService,
 		private formBuilder: FormBuilder,
 		private applicationService: ApplicationService,
-		private authUserService: AuthUserBceidService
+		private authUserService: AuthUserBceidService,
+		private optionsService: OptionsService
 	) {}
 
 	ngOnInit() {
@@ -305,18 +315,24 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 				'status',
 				'action1',
 			];
+
+			this.loadList();
 		} else if (this.portal == PortalTypeCode.Psso) {
 			this.columns = [
 				'applicantName',
 				'emailAddress',
 				'createdOn',
+				'ministryId',
 				'applicationNumber',
 				'status',
 				'action1',
 				'delegates',
 			];
+
+			this.optionsService.getMinistries().subscribe((resp) => {
+				this.loadList();
+			});
 		}
-		this.loadList();
 	}
 
 	onPayNow(application: ScreeningStatusResponse): void {

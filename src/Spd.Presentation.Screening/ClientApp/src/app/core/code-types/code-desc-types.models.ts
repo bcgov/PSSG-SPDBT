@@ -7,5 +7,4 @@ export {
 	FileTypes,
 	GenderTypes,
 	ServiceTypes,
-	ServiceTypesPsso,
 } from './model-desc.models';
