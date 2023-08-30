@@ -6,6 +6,7 @@ import {
 	ApplicationInvitesCreateRequest,
 	ApplicationInvitesCreateResponse,
 	BooleanTypeCode,
+	MinistryResponse,
 	ScreeningTypeCode,
 	ServiceTypeCode,
 } from 'src/app/api/models';
@@ -19,6 +20,7 @@ import {
 } from 'src/app/core/code-types/model-desc.models';
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
+import { OptionsService } from 'src/app/core/services/options.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
@@ -126,7 +128,7 @@ export interface ScreeningRequestAddDialogData {
 
 								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0" *ngIf="serviceTypes">
 									<mat-form-field>
-										<mat-label>Service type</mat-label>
+										<mat-label>Service Type</mat-label>
 										<mat-select formControlName="serviceType" [errorStateMatcher]="matcher">
 											<mat-option *ngFor="let srv of serviceTypes" [value]="srv.code">
 												{{ srv.desc }}
@@ -136,14 +138,15 @@ export interface ScreeningRequestAddDialogData {
 									</mat-form-field>
 								</div>
 
-								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0" *ngIf="!isCrrpPortal">
+								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0" *ngIf="portal == portalTypeCodes.Psso">
 									<mat-form-field>
 										<mat-label>Ministry</mat-label>
-										<mat-select formControlName="ministry">
-											<!-- TODO ministry list of values ?  -->
-											<mat-option *ngFor="let scr of screeningTypes" [value]="scr.code"> Ministry </mat-option>
+										<mat-select formControlName="ministryId" [errorStateMatcher]="matcher">
+											<mat-option *ngFor="let ministry of ministries" [value]="ministry.id">
+												{{ ministry.name }}
+											</mat-option>
 										</mat-select>
-										<mat-error *ngIf="form.get('ministry')?.hasError('required')">This is required</mat-error>
+										<mat-error *ngIf="group.get('ministryId')?.hasError('required')">This is required</mat-error>
 									</mat-form-field>
 								</div>
 
@@ -203,7 +206,8 @@ export interface ScreeningRequestAddDialogData {
 	],
 })
 export class ScreeningRequestAddCommonModalComponent implements OnInit {
-	isCrrpPortal = false;
+	ministries: Array<MinistryResponse> = [];
+	portal: PortalTypeCode | null = null;
 	isNotVolunteerOrg = false;
 	isDuplicateDetected = false;
 	isAllowMultiple = false;
@@ -216,6 +220,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 	showServiceType = false;
 	serviceTypeDefault: ServiceTypeCode | null = null;
 	serviceTypes: null | SelectOptions[] = null;
+	portalTypeCodes = PortalTypeCode;
 
 	showScreeningType = false;
 	screeningTypes = ScreeningTypes;
@@ -230,47 +235,17 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 		private dialogRef: MatDialogRef<ScreeningRequestAddCommonModalComponent>,
 		private applicationService: ApplicationService,
 		private authUserService: AuthUserBceidService,
+		private optionsService: OptionsService,
 		private dialog: MatDialog,
 		@Inject(MAT_DIALOG_DATA) public dialogData: ScreeningRequestAddDialogData
 	) {}
 
 	ngOnInit(): void {
-		this.isCrrpPortal = this.dialogData?.portal == PortalTypeCode.Crrp;
-		if (this.isCrrpPortal) {
-			this.requestName = 'Criminal Record Check';
-
-			// using bceid
-			const orgProfile = this.authUserService.bceidUserOrgProfile;
-			this.isNotVolunteerOrg = orgProfile?.isNotVolunteerOrg ?? false;
-
-			if (this.isNotVolunteerOrg) {
-				this.showScreeningType = orgProfile
-					? orgProfile.contractorsNeedVulnerableSectorScreening == BooleanTypeCode.Yes ||
-					  orgProfile.licenseesNeedVulnerableSectorScreening == BooleanTypeCode.Yes
-					: false;
-			} else {
-				this.showScreeningType = false;
-			}
-
-			const serviceTypes = orgProfile?.serviceTypes ?? [];
-			if (serviceTypes.length > 0) {
-				if (serviceTypes.length == 1) {
-					this.serviceTypeDefault = serviceTypes[0];
-				} else {
-					this.showServiceType = true;
-					this.serviceTypes = ServiceTypes.filter((item) => serviceTypes.includes(item.code as ServiceTypeCode));
-				}
-			}
+		this.portal = this.dialogData?.portal;
+		if (this.portal == PortalTypeCode.Crrp) {
+			this.setupCrrp();
 		} else {
-			this.requestName = 'Screening Request';
-
-			// using idir
-			this.isNotVolunteerOrg = false;
-			this.showScreeningType = false;
-			this.showServiceType = true;
-			this.serviceTypes = ServiceTypesPsso.filter(
-				(item) => item.code == ServiceTypeCode.Psso || item.code == ServiceTypeCode.PssoVs
-			);
+			this.setupPsso();
 		}
 
 		this.form = this.formBuilder.group({
@@ -297,7 +272,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 
 	initiateForm(inviteDefault?: ApplicationInvitePrepopulateDataResponse): FormGroup {
 		let screeningTypeCodeDefault = '';
-		if (this.showScreeningType) {
+		if (!this.showScreeningType) {
 			screeningTypeCodeDefault = inviteDefault?.screeningType ? inviteDefault?.screeningType : ScreeningTypeCode.Staff;
 		}
 
@@ -315,13 +290,14 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 				payeeType: new FormControl(inviteDefault ? inviteDefault.payeeType : null, [FormControlValidators.required]),
 				screeningType: new FormControl(screeningTypeCodeDefault),
 				serviceType: new FormControl(serviceTypeCodeDefault),
-				ministry: new FormControl(),
+				ministryId: new FormControl(''),
 			},
 			{
 				validators: [
 					FormGroupValidators.conditionalRequiredValidator('screeningType', (form) => this.showScreeningType ?? false),
 					FormGroupValidators.conditionalRequiredValidator('serviceType', (form) => this.showServiceType ?? false),
 					FormGroupValidators.conditionalRequiredValidator('payeeType', (form) => this.isNotVolunteerOrg ?? false),
+					FormGroupValidators.conditionalRequiredValidator('ministryId', (form) => this.portal == PortalTypeCode.Psso),
 				],
 			}
 		);
@@ -414,9 +390,9 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 		const vulnerableQuestionMultiple =
 			'In their roles with your organization, will these individuals work directly with, or potentially have unsupervised access to, children and/or vulnerable adults?';
 
-    const dialogConfig = new MatDialogConfig();
-    dialogConfig.autoFocus = false;
-    dialogConfig.maxWidth = 600;
+		const dialogConfig = new MatDialogConfig();
+		dialogConfig.autoFocus = false;
+		dialogConfig.maxWidth = 600;
 
 		const data: DialogOptions = {
 			icon: 'info_outline',
@@ -429,9 +405,9 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 		data.message =
 			body.applicationInviteCreateRequests?.length == 1 ? vulnerableQuestionSingular : vulnerableQuestionMultiple;
 
-    dialogConfig.data = data;
+		dialogConfig.data = data;
 		this.dialog
-      .open(DialogComponent, dialogConfig)
+			.open(DialogComponent, dialogConfig)
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
@@ -543,6 +519,49 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 			success: true,
 			message,
 		});
+	}
+
+	private setupCrrp(): void {
+		this.requestName = 'Criminal Record Check';
+
+		// using bceid
+		const orgProfile = this.authUserService.bceidUserOrgProfile;
+		this.isNotVolunteerOrg = orgProfile?.isNotVolunteerOrg ?? false;
+
+		if (this.isNotVolunteerOrg) {
+			this.showScreeningType = orgProfile
+				? orgProfile.contractorsNeedVulnerableSectorScreening == BooleanTypeCode.Yes ||
+				  orgProfile.licenseesNeedVulnerableSectorScreening == BooleanTypeCode.Yes
+				: false;
+		} else {
+			this.showScreeningType = false;
+		}
+
+		const serviceTypes = orgProfile?.serviceTypes ?? [];
+		if (serviceTypes.length > 0) {
+			if (serviceTypes.length == 1) {
+				this.serviceTypeDefault = serviceTypes[0];
+			} else {
+				this.showServiceType = true;
+				this.serviceTypes = ServiceTypes.filter((item) => serviceTypes.includes(item.code as ServiceTypeCode));
+			}
+		}
+	}
+
+	private setupPsso(): void {
+		this.requestName = 'Screening Request';
+
+		this.optionsService.getMinistries().subscribe((resp) => {
+			this.ministries = resp;
+		});
+
+		// using idir
+		this.isNotVolunteerOrg = false;
+		this.showScreeningType = false;
+		this.showServiceType = true;
+		this.serviceTypes = ServiceTypesPsso.filter(
+			(item) => item.code == ServiceTypeCode.Psso || item.code == ServiceTypeCode.PssoVs
+		);
 	}
 
 	get getFormControls() {

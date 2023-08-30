@@ -1,5 +1,6 @@
 using AutoMapper;
 using Spd.Utilities.Dynamics;
+using Spd.Utilities.Shared;
 
 namespace Spd.Resource.Applicants.Ministry;
 internal class MinistryRepository : IMinistryRepository
@@ -16,7 +17,7 @@ internal class MinistryRepository : IMinistryRepository
 
     public async Task<MinistryListResp> QueryAsync(MinistryQry qry, CancellationToken ct)
     {
-        var ministries = _context.spd_ministries.ToList();
+        var ministries = _context.accounts.Where(o => o.parentaccountid.accountid == SpdConstants.BC_GOV_ORG_ID).ToList();
         return new MinistryListResp
         {
             Items = _mapper.Map<IEnumerable<MinistryResp>>(ministries)

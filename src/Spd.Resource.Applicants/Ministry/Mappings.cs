@@ -8,9 +8,9 @@ namespace Spd.Resource.Applicants.Ministry
     {
         public Mappings()
         {
-            _ = CreateMap<spd_ministry, MinistryResp>()
-            .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_ministryid))
-            .ForMember(d => d.Name, opt => opt.MapFrom(s => s.spd_ministry_name))
+            _ = CreateMap<account, MinistryResp>()
+            .ForMember(d => d.Id, opt => opt.MapFrom(s => s.accountid))
+            .ForMember(d => d.Name, opt => opt.MapFrom(s => s.name))
             .ForMember(d => d.IsActive, opt => opt.MapFrom(s => s.statecode == DynamicsConstants.StateCode_Active));
         }
     }
