@@ -65,6 +65,28 @@ export class AuthProcessService {
 	}
 
 	//----------------------------------------------------------
+	// * CRRP Portal - User Invitation
+	// * sign in but do not call whoami/org endpoints
+	//
+	async initializeCrrpUserInvitation(defaultRoute: string | null = null): Promise<string | null> {
+		this.identityProvider = IdentityProviderTypeCode.BusinessBceId;
+
+		const nextRoute = defaultRoute ? defaultRoute : CrrpRoutes.path(CrrpRoutes.HOME);
+		const nextUrl = await this.authenticationService.login(this.identityProvider, nextRoute);
+		console.debug('initializeCrrpUserInvitation nextUrl', nextUrl);
+
+		if (nextUrl) {
+			this.notify(true);
+
+			const nextRoute = decodeURIComponent(nextUrl);
+			return Promise.resolve(nextRoute);
+		}
+
+		this.notify(false);
+		return Promise.resolve(null);
+	}
+
+	//----------------------------------------------------------
 	// * Security Screening Portal
 	// *
 	async initializeSecurityScreening(): Promise<string | null> {

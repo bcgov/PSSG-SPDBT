@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { InvitationRequest } from 'src/app/api/models';
 import { OrgUserService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
+import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
 import { CrrpRoutes } from './crrp-routing.module';
 
@@ -37,6 +38,7 @@ export class InvitationUserComponent implements OnInit {
 		private route: ActivatedRoute,
 		private router: Router,
 		private authUserService: AuthUserBceidService,
+		private authProcessService: AuthProcessService,
 		private orgUserService: OrgUserService
 	) {}
 
@@ -52,10 +54,12 @@ export class InvitationUserComponent implements OnInit {
 			this.orgUserService
 				.apiUserInvitationPost({ body: invitationRequest })
 				.pipe()
-				.subscribe((resp: any) => {
+				.subscribe(async (resp: any) => {
 					if (resp?.isError) {
 						this.message = resp.message;
 					} else {
+						await this.authProcessService.initializeCrrp(location.pathname);
+
 						const defaultOrgId = this.authUserService.bceidUserInfoProfile?.orgId;
 						this.router.navigate([CrrpRoutes.path(CrrpRoutes.HOME)], { queryParams: { orgId: defaultOrgId } });
 					}
