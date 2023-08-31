@@ -218,7 +218,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 	isDuplicateDetected = false;
 	isAllowMultiple = false;
 	isPsaUser = false;
-	ministryOrgId = '';
+	ministryOrgId: string | null = null;
 	duplicateName = '';
 	duplicateEmail = '';
 
@@ -251,7 +251,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 	ngOnInit(): void {
 		this.portal = this.dialogData?.portal;
 		this.isPsaUser = this.dialogData?.isPsaUser ?? false;
-		this.ministryOrgId = this.dialogData?.ministryOrgId ?? '';
+		this.ministryOrgId = this.dialogData?.ministryOrgId ?? null;
 		if (this.portal == PortalTypeCode.Crrp) {
 			this.setupCrrp();
 		} else {
@@ -288,7 +288,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 
 		const serviceTypeCodeDefault = inviteDefault?.serviceType ? inviteDefault?.serviceType : this.serviceTypeDefault;
 
-		let ministryOrgIdDefault = '';
+		let ministryOrgIdDefault = null;
 		if (this.portal == PortalTypeCode.Psso && !this.isPsaUser) {
 			// if not PSA, default the ministry to the user's ministry
 			ministryOrgIdDefault = this.ministryOrgId;
