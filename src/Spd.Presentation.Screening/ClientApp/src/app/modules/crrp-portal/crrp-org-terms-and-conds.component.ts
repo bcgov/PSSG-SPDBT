@@ -407,7 +407,7 @@ export class CrrpOrgTermsAndCondsComponent implements OnInit {
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 		}
 
-		await this.authProcessService.initializeCrrp(null, location.pathname);
+		await this.authProcessService.initializeCrrpUserInvitation(location.pathname);
 	}
 
 	onCheckboxChange(): void {
