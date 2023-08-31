@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {
+	ApplicationInviteCreateRequest,
 	ApplicationInvitePrepopulateDataResponse,
 	ApplicationInvitesCreateRequest,
 	ApplicationInvitesCreateResponse,
@@ -30,6 +31,7 @@ export interface ScreeningRequestAddDialogData {
 	orgId: string;
 	clearanceId?: null | string;
 	clearanceAccessId?: null | string;
+	inviteDefault?: ApplicationInviteCreateRequest;
 }
 
 @Component({
@@ -154,7 +156,7 @@ export interface ScreeningRequestAddDialogData {
 										mat-icon-button
 										class="delete-row-button"
 										matTooltip="Remove criminal record check"
-										(click)="deleteRow(i)"
+										(click)="onDeleteRow(i)"
 										*ngIf="rowsExist"
 										aria-label="Remove criminal record check"
 									>
@@ -265,11 +267,11 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 				});
 		} else {
 			this.isAllowMultiple = true;
-			this.addFirstRow();
+			this.addFirstRow(this.dialogData?.inviteDefault);
 		}
 	}
 
-	initiateForm(inviteDefault?: ApplicationInvitePrepopulateDataResponse): FormGroup {
+	initiateForm(inviteDefault?: ApplicationInvitePrepopulateDataResponse | ApplicationInviteCreateRequest): FormGroup {
 		let screeningTypeCodeDefault = '';
 		if (!this.showScreeningType) {
 			screeningTypeCodeDefault = inviteDefault?.screeningType ? inviteDefault?.screeningType : ScreeningTypeCode.Staff;
@@ -305,17 +307,12 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 		);
 	}
 
-	addFirstRow(inviteDefault?: ApplicationInvitePrepopulateDataResponse) {
-		const control = this.form.get('crcs') as FormArray;
-		control.push(this.initiateForm(inviteDefault));
-	}
-
 	onAddRow() {
 		const control = this.form.get('crcs') as FormArray;
 		control.push(this.initiateForm());
 	}
 
-	deleteRow(index: number) {
+	onDeleteRow(index: number) {
 		const control = this.form.get('crcs') as FormArray;
 		if (control.length == 1) {
 			const data: DialogOptions = {
@@ -384,6 +381,11 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 		}
 
 		this.promptVulnerableSector(body);
+	}
+
+	private addFirstRow(inviteDefault?: ApplicationInvitePrepopulateDataResponse | ApplicationInviteCreateRequest) {
+		const control = this.form.get('crcs') as FormArray;
+		control.push(this.initiateForm(inviteDefault));
 	}
 
 	private promptVulnerableSector(body: ApplicationInvitesCreateRequest): void {

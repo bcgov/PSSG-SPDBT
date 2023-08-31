@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
 import { Observable, tap } from 'rxjs';
 import {
+	ApplicationInviteCreateRequest,
 	ApplicationListResponse,
 	ApplicationPortalStatusCode,
 	ApplicationResponse,
@@ -332,17 +333,18 @@ export class IdentifyVerificationCommonComponent implements OnInit {
 	}
 
 	private sendRequest(application: IdentityVerificationResponse) {
-		// const inviteDefault: ApplicationInviteCreateRequest = { //TODO FIX TODO correct?
-		// 	firstName: application.givenName,
-		// 	lastName: application.surname,
-		// 	email: application.emailAddress,
-		// 	jobTitle: application.jobTitle,
-		// 	payeeType: application.payeeType,
-		// };
+		const inviteDefault: ApplicationInviteCreateRequest = {
+			firstName: application.givenName,
+			lastName: application.surname,
+			email: application.emailAddress,
+			jobTitle: application.jobTitle,
+			payeeType: application.payeeType,
+		};
 
 		const dialogOptions: ScreeningRequestAddDialogData = {
 			portal: this.portal!,
 			orgId: this.orgId!,
+			inviteDefault,
 		};
 
 		this.dialog

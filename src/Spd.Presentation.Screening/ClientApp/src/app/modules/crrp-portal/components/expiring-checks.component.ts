@@ -326,14 +326,6 @@ export class ExpiringChecksComponent implements OnInit {
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
-					// const inviteDefault: ApplicationInviteCreateRequest = { TODO correct?
-					// 	firstName: clearance.firstName,
-					// 	lastName: clearance.lastName,
-					// 	email: clearance.email,
-					// 	jobTitle: '',
-					// 	payeeType: undefined,
-					// };
-
 					const dialogOptions: ScreeningRequestAddDialogData = {
 						portal: PortalTypeCode.Crrp,
 						orgId: this.authUserService.bceidUserInfoProfile?.orgId!,
