@@ -101,6 +101,8 @@ namespace Spd.Manager.Membership.UserProfile
         public string? LastName { get; set; }
         public string? IdirUserName { get; set; }
         public IdentityProviderTypeCode? IdentityProviderType { get; set; }
+        public bool IsPSA { get; set; } = true;
+        public Guid MinistryOrgId { get; set; } = Guid.Parse("64540211-d346-ee11-b845-00505683fbf4"); //todo: temp hardcode
     }
 
     public class IdirUserIdentity
