@@ -13,6 +13,8 @@ import { DelegateManageDialogData, DelegateManageModalComponent } from './delega
 	template: `
 		<app-screening-statuses-common
 			[portal]="portal.Psso"
+			[isPsaUser]="isPsaUser"
+			[ministryOrgId]="ministryOrgId"
 			[orgId]="orgId"
 			heading="Screening Statuses"
 			(emitManageDelegate)="onManageDelegates($event)"
@@ -24,6 +26,8 @@ import { DelegateManageDialogData, DelegateManageModalComponent } from './delega
 export class ScreeningStatusesComponent implements OnInit {
 	orgId: string | null = null;
 	portal = PortalTypeCode;
+	isPsaUser: boolean | undefined = this.authUserService.idirUserWhoamiProfile?.isPSA;
+	ministryOrgId: string | undefined = this.authUserService.idirUserWhoamiProfile?.ministryOrgId;
 
 	constructor(private dialog: MatDialog, private router: Router, private authUserService: AuthUserIdirService) {}
 

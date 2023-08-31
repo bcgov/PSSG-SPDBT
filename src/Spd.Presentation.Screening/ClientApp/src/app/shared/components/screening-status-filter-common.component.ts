@@ -6,6 +6,7 @@ import { BaseFilterComponent, FilterQueryList } from 'src/app/shared/components/
 
 export class ScreeningStatusFilter {
 	search: string = '';
+	applicationFilter: string = ''; // MY vs ALL Applications
 	statuses: string[] = [];
 	applicantName: string = '';
 	createdOn: string = '';
@@ -14,6 +15,7 @@ export class ScreeningStatusFilter {
 
 export const ScreeningStatusFilterMap: Record<keyof ScreeningStatusFilter, string> = {
 	search: 'searchText',
+	applicationFilter: 'applicationFilter',
 	statuses: 'status',
 	applicantName: 'name',
 	createdOn: 'submittedon',

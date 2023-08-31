@@ -14,7 +14,7 @@ import {
 import { ApplicationService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { ApplicationOriginTypeCode } from 'src/app/core/code-types/application-origin-type.model';
-import { GenderTypes, ScreeningTypes } from 'src/app/core/code-types/model-desc.models';
+import { GenderTypes, ScreeningTypes, SelectOptions, ServiceTypes } from 'src/app/core/code-types/model-desc.models';
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
@@ -195,15 +195,26 @@ export interface AliasCreateRequest {
 								<mat-error *ngIf="form.get('employeeId')?.hasError('mask')"> This must be 7 digits </mat-error>
 							</mat-form-field>
 						</div>
-						<div class="col-xl-3 col-lg-6 col-md-12" *ngIf="portal == portalTypeCodes.Psso">
+						<div class="col-xl-3 col-lg-6 col-md-12" *ngIf="portal == portalTypeCodes.Psso && isPsaUser">
 							<mat-form-field>
 								<mat-label>Ministry</mat-label>
-								<mat-select formControlName="ministryId">
+								<mat-select formControlName="ministryOrgId">
 									<mat-option *ngFor="let ministry of ministries" [value]="ministry.id">
 										{{ ministry.name }}
 									</mat-option>
 								</mat-select>
-								<mat-error *ngIf="form.get('ministryId')?.hasError('required')">This is required</mat-error>
+								<mat-error *ngIf="form.get('ministryOrgId')?.hasError('required')">This is required</mat-error>
+							</mat-form-field>
+						</div>
+						<div class="col-xl-3 col-lg-6 col-md-12" *ngIf="serviceTypes">
+							<mat-form-field>
+								<mat-label>Service Type</mat-label>
+								<mat-select formControlName="serviceType" [errorStateMatcher]="matcher">
+									<mat-option *ngFor="let srv of serviceTypes" [value]="srv.code">
+										{{ srv.desc }}
+									</mat-option>
+								</mat-select>
+								<mat-error *ngIf="form.get('serviceType')?.hasError('required')">This is required</mat-error>
 							</mat-form-field>
 						</div>
 					</div>
@@ -448,20 +459,24 @@ export interface AliasCreateRequest {
 })
 export class ManualSubmissionCommonComponent implements OnInit {
 	ministries: Array<MinistryResponse> = [];
-	serviceType: ServiceTypeCode | null = null;
 	isNotVolunteerOrg = false;
 
 	@ViewChild(AddressAutocompleteComponent) addressAutocompleteComponent!: AddressAutocompleteComponent;
 	matcher = new FormErrorStateMatcher();
-	showScreeningType = false;
 
+	showScreeningType = false;
 	screeningTypes = ScreeningTypes;
+	screeningTypeCodes = ScreeningTypeCode;
+
+	showServiceType = false;
+	serviceTypeDefault: ServiceTypeCode | null = null;
+	serviceTypes: null | SelectOptions[] = null;
+
 	genderTypes = GenderTypes;
 	portalTypeCodes = PortalTypeCode;
 
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	booleanTypeCodes = BooleanTypeCode;
-	screeningTypeCodes = ScreeningTypeCode;
 	form: FormGroup = this.formBuilder.group(
 		{
 			givenName: new FormControl('', [FormControlValidators.required]),
@@ -477,9 +492,10 @@ export class ManualSubmissionCommonComponent implements OnInit {
 			birthPlace: new FormControl('', [FormControlValidators.required]),
 			jobTitle: new FormControl('', [FormControlValidators.required]),
 			screeningType: new FormControl('', [FormControlValidators.required]),
+			serviceType: new FormControl(this.serviceTypeDefault),
 			contractedCompanyName: new FormControl(''),
 			employeeId: new FormControl(''),
-			ministryId: new FormControl(''),
+			ministryOrgId: new FormControl(null),
 			previousNameFlag: new FormControl('', [FormControlValidators.required]),
 			addressSelected: new FormControl(false, [Validators.requiredTrue]),
 			addressLine1: new FormControl('', [FormControlValidators.required]),
@@ -496,6 +512,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 		{
 			validators: [
 				FormGroupValidators.conditionalRequiredValidator('screeningType', (form) => this.showScreeningType ?? false),
+				FormGroupValidators.conditionalRequiredValidator('serviceType', (form) => this.showServiceType ?? false),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'attachments',
 					(form) => this.portal == PortalTypeCode.Crrp
@@ -504,7 +521,10 @@ export class ManualSubmissionCommonComponent implements OnInit {
 					'givenName',
 					(form) => form.get('oneLegalName')?.value != true
 				),
-				FormGroupValidators.conditionalRequiredValidator('ministryId', (form) => this.portal == PortalTypeCode.Psso),
+				FormGroupValidators.conditionalRequiredValidator(
+					'ministryOrgId',
+					(form) => this.portal == PortalTypeCode.Psso && this.isPsaUser == true
+				),
 				FormGroupValidators.conditionalRequiredValidator('contractedCompanyName', (form) =>
 					[ScreeningTypeCode.Contractor, ScreeningTypeCode.Licensee].includes(form.get('screeningType')?.value)
 				),
@@ -516,6 +536,8 @@ export class ManualSubmissionCommonComponent implements OnInit {
 
 	@Input() portal: PortalTypeCode | null = null;
 	@Input() orgId: string | null = null;
+	@Input() isPsaUser: boolean | undefined = undefined;
+	@Input() ministryOrgId: string | undefined = undefined;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
@@ -552,7 +574,8 @@ export class ManualSubmissionCommonComponent implements OnInit {
 				this.showScreeningType = false;
 			}
 
-			this.serviceType = orgProfile?.serviceTypes ? orgProfile?.serviceTypes[0] : null;
+			this.showServiceType = false;
+			this.serviceTypeDefault = orgProfile?.serviceTypes ? orgProfile?.serviceTypes[0] : null;
 		} else {
 			this.optionsService.getMinistries().subscribe((resp) => {
 				this.ministries = resp;
@@ -561,7 +584,11 @@ export class ManualSubmissionCommonComponent implements OnInit {
 			// using idir
 			this.isNotVolunteerOrg = true;
 			this.showScreeningType = false;
-			this.serviceType = ServiceTypeCode.Psso; // TODO how to handle service type for PSSO
+			this.showServiceType = true;
+			this.serviceTypeDefault = ServiceTypeCode.Psso;
+			this.serviceTypes = ServiceTypes.filter(
+				(item) => item.code == ServiceTypeCode.Psso || item.code == ServiceTypeCode.PssoVs
+			);
 		}
 
 		this.resetForm();
@@ -596,7 +623,6 @@ export class ManualSubmissionCommonComponent implements OnInit {
 			>[0]['body']['ApplicationCreateRequestJson'];
 
 			createRequest.originTypeCode = ApplicationOriginTypeCode.OrganizationSubmitted;
-			createRequest.serviceType = this.serviceType;
 			createRequest.phoneNumber = createRequest.phoneNumber
 				? this.maskPipe.transform(createRequest.phoneNumber, SPD_CONSTANTS.phone.backendMask)
 				: '';
@@ -607,6 +633,13 @@ export class ManualSubmissionCommonComponent implements OnInit {
 				? createRequest.contractedCompanyName
 				: '';
 			createRequest.requireDuplicateCheck = true;
+
+			// Set the org id - for PSSO this is the ministryOrgId, otherwise the CRRP org
+			if (this.portal == PortalTypeCode.Psso) {
+				createRequest.orgId = this.isPsaUser ? createRequest.ministryOrgId : this.ministryOrgId;
+			} else {
+				createRequest.orgId = this.orgId;
+			}
 
 			const body = {
 				ConsentFormFile: this.portal == PortalTypeCode.Crrp ? this.fileUploadComponent.files[0] : null,
@@ -762,7 +795,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 	private saveAndCheckDuplicates(body: any): void {
 		// Check for potential duplicate
 		this.applicationService
-			.apiOrgsOrgIdApplicationPost({ orgId: body.ministryId ? body.ministryId : this.orgId!, body })
+			.apiOrgsOrgIdApplicationPost({ orgId: this.orgId!, body })
 			.pipe()
 			.subscribe((dupres: ApplicationCreateResponse) => {
 				this.displayDataValidationMessage(body, dupres);
@@ -777,7 +810,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 
 		this.applicationService
 			.apiOrgsOrgIdApplicationPost({
-				orgId: body.ministryId ? body.ministryId : this.orgId!,
+				orgId: this.orgId!,
 				body,
 			})
 			.pipe()

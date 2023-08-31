@@ -122,6 +122,14 @@ export interface IdentityVerificationResponse extends ApplicationResponse {
 							</mat-cell>
 						</ng-container>
 
+						<ng-container matColumnDef="ministryOrgId">
+							<mat-header-cell *matHeaderCellDef>Ministry</mat-header-cell>
+							<mat-cell *matCellDef="let application">
+								<span class="mobile-label">Ministry:</span>
+								{{ application.orgId | ministryoptions | async | default }}
+							</mat-cell>
+						</ng-container>
+
 						<ng-container matColumnDef="applicationNumber">
 							<mat-header-cell *matHeaderCellDef>Case ID</mat-header-cell>
 							<mat-cell *matCellDef="let application">
@@ -207,16 +215,7 @@ export class IdentifyVerificationCommonComponent implements OnInit {
 		[]
 	);
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
-	columns: string[] = [
-		'applicantName',
-		'dateOfBirth',
-		'jobTitle',
-		'emailAddress',
-		'createdOn',
-		'applicationNumber',
-		'action1',
-		'action2',
-	];
+	columns: string[] = [];
 
 	formFilter: FormGroup = this.formBuilder.group({
 		search: new FormControl(''),
@@ -226,6 +225,8 @@ export class IdentifyVerificationCommonComponent implements OnInit {
 
 	@Input() portal: PortalTypeCode | null = null;
 	@Input() orgId: string | null = null;
+	@Input() isPsaUser: boolean | undefined = undefined;
+	@Input() ministryOrgId: string | undefined = undefined;
 
 	@ViewChild(MatSort) sort!: MatSort;
 	@ViewChild('paginator') paginator!: MatPaginator;
@@ -249,6 +250,44 @@ export class IdentifyVerificationCommonComponent implements OnInit {
 
 		const caseId = (this.location.getState() as any)?.caseId;
 		this.formFilter.patchValue({ search: caseId });
+
+		if (this.portal == PortalTypeCode.Crrp) {
+			this.columns = [
+				'applicantName',
+				'dateOfBirth',
+				'jobTitle',
+				'emailAddress',
+				'createdOn',
+				'applicationNumber',
+				'action1',
+				'action2',
+			];
+		} else if (this.portal == PortalTypeCode.Psso) {
+			if (this.isPsaUser) {
+				this.columns = [
+					'applicantName',
+					'dateOfBirth',
+					'jobTitle',
+					'emailAddress',
+					'createdOn',
+					'ministryOrgId',
+					'applicationNumber',
+					'action1',
+					'action2',
+				];
+			} else {
+				this.columns = [
+					'applicantName',
+					'dateOfBirth',
+					'jobTitle',
+					'emailAddress',
+					'createdOn',
+					'applicationNumber',
+					'action1',
+					'action2',
+				];
+			}
+		}
 
 		this.refreshStats();
 		this.performSearch(caseId);
@@ -318,6 +357,9 @@ export class IdentifyVerificationCommonComponent implements OnInit {
 		const dialogOptions: ScreeningRequestAddDialogData = {
 			portal: this.portal!,
 			orgId: this.orgId!,
+			isPsaUser: this.isPsaUser,
+			ministryOrgId: this.ministryOrgId,
+			inviteDefault,
 		};
 
 		this.dialog

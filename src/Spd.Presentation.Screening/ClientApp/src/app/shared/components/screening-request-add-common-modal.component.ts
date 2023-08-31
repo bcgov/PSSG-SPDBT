@@ -1,7 +1,8 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {
+	ApplicationInviteCreateRequest,
 	ApplicationInvitePrepopulateDataResponse,
 	ApplicationInvitesCreateRequest,
 	ApplicationInvitesCreateResponse,
@@ -28,8 +29,11 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 export interface ScreeningRequestAddDialogData {
 	portal: PortalTypeCode;
 	orgId: string;
-	clearanceId?: null | string;
-	clearanceAccessId?: null | string;
+	ministryOrgId?: string;
+	isPsaUser?: boolean;
+	clearanceId?: string;
+	clearanceAccessId?: string;
+	inviteDefault?: ApplicationInviteCreateRequest;
 }
 
 @Component({
@@ -137,15 +141,18 @@ export interface ScreeningRequestAddDialogData {
 									</mat-form-field>
 								</div>
 
-								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0" *ngIf="portal == portalTypeCodes.Psso">
+								<div
+									class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0"
+									*ngIf="portal == portalTypeCodes.Psso && isPsaUser"
+								>
 									<mat-form-field>
 										<mat-label>Ministry</mat-label>
-										<mat-select formControlName="ministryId" [errorStateMatcher]="matcher">
+										<mat-select formControlName="ministryOrgId" [errorStateMatcher]="matcher">
 											<mat-option *ngFor="let ministry of ministries" [value]="ministry.id">
 												{{ ministry.name }}
 											</mat-option>
 										</mat-select>
-										<mat-error *ngIf="group.get('ministryId')?.hasError('required')">This is required</mat-error>
+										<mat-error *ngIf="group.get('ministryOrgId')?.hasError('required')">This is required</mat-error>
 									</mat-form-field>
 								</div>
 
@@ -154,7 +161,7 @@ export interface ScreeningRequestAddDialogData {
 										mat-icon-button
 										class="delete-row-button"
 										matTooltip="Remove criminal record check"
-										(click)="deleteRow(i)"
+										(click)="onDeleteRow(i)"
 										*ngIf="rowsExist"
 										aria-label="Remove criminal record check"
 									>
@@ -210,6 +217,8 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 	isNotVolunteerOrg = false;
 	isDuplicateDetected = false;
 	isAllowMultiple = false;
+	isPsaUser = false;
+	ministryOrgId: string | null = null;
 	duplicateName = '';
 	duplicateEmail = '';
 
@@ -241,6 +250,8 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.portal = this.dialogData?.portal;
+		this.isPsaUser = this.dialogData?.isPsaUser ?? false;
+		this.ministryOrgId = this.dialogData?.ministryOrgId ?? null;
 		if (this.portal == PortalTypeCode.Crrp) {
 			this.setupCrrp();
 		} else {
@@ -265,17 +276,23 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 				});
 		} else {
 			this.isAllowMultiple = true;
-			this.addFirstRow();
+			this.addFirstRow(this.dialogData?.inviteDefault);
 		}
 	}
 
-	initiateForm(inviteDefault?: ApplicationInvitePrepopulateDataResponse): FormGroup {
+	initiateForm(inviteDefault?: ApplicationInvitePrepopulateDataResponse | ApplicationInviteCreateRequest): FormGroup {
 		let screeningTypeCodeDefault = '';
 		if (!this.showScreeningType) {
 			screeningTypeCodeDefault = inviteDefault?.screeningType ? inviteDefault?.screeningType : ScreeningTypeCode.Staff;
 		}
 
 		const serviceTypeCodeDefault = inviteDefault?.serviceType ? inviteDefault?.serviceType : this.serviceTypeDefault;
+
+		let ministryOrgIdDefault = null;
+		if (this.portal == PortalTypeCode.Psso && !this.isPsaUser) {
+			// if not PSA, default the ministry to the user's ministry
+			ministryOrgIdDefault = this.ministryOrgId;
+		}
 
 		return this.formBuilder.group(
 			{
@@ -289,22 +306,20 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 				payeeType: new FormControl(inviteDefault ? inviteDefault.payeeType : null, [FormControlValidators.required]),
 				screeningType: new FormControl(screeningTypeCodeDefault),
 				serviceType: new FormControl(serviceTypeCodeDefault),
-				ministryId: new FormControl(''),
+				ministryOrgId: new FormControl(ministryOrgIdDefault),
 			},
 			{
 				validators: [
 					FormGroupValidators.conditionalRequiredValidator('screeningType', (form) => this.showScreeningType ?? false),
 					FormGroupValidators.conditionalRequiredValidator('serviceType', (form) => this.showServiceType ?? false),
 					FormGroupValidators.conditionalRequiredValidator('payeeType', (form) => this.isNotVolunteerOrg ?? false),
-					FormGroupValidators.conditionalRequiredValidator('ministryId', (form) => this.portal == PortalTypeCode.Psso),
+					FormGroupValidators.conditionalRequiredValidator(
+						'ministryOrgId',
+						(form) => this.portal == PortalTypeCode.Psso && this.isPsaUser
+					),
 				],
 			}
 		);
-	}
-
-	addFirstRow(inviteDefault?: ApplicationInvitePrepopulateDataResponse) {
-		const control = this.form.get('crcs') as FormArray;
-		control.push(this.initiateForm(inviteDefault));
 	}
 
 	onAddRow() {
@@ -312,7 +327,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 		control.push(this.initiateForm());
 	}
 
-	deleteRow(index: number) {
+	onDeleteRow(index: number) {
 		const control = this.form.get('crcs') as FormArray;
 		if (control.length == 1) {
 			const data: DialogOptions = {
@@ -383,15 +398,16 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 		this.promptVulnerableSector(body);
 	}
 
+	private addFirstRow(inviteDefault?: ApplicationInvitePrepopulateDataResponse | ApplicationInviteCreateRequest) {
+		const control = this.form.get('crcs') as FormArray;
+		control.push(this.initiateForm(inviteDefault));
+	}
+
 	private promptVulnerableSector(body: ApplicationInvitesCreateRequest): void {
 		const vulnerableQuestionSingular =
 			'In their role with your organization, will this person work directly with, or potentially have unsupervised access to, children and/or vulnerable adults?';
 		const vulnerableQuestionMultiple =
 			'In their roles with your organization, will these individuals work directly with, or potentially have unsupervised access to, children and/or vulnerable adults?';
-
-		const dialogConfig = new MatDialogConfig();
-		dialogConfig.autoFocus = false;
-		dialogConfig.maxWidth = 600;
 
 		const data: DialogOptions = {
 			icon: 'info_outline',
@@ -404,9 +420,8 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 		data.message =
 			body.applicationInviteCreateRequests?.length == 1 ? vulnerableQuestionSingular : vulnerableQuestionMultiple;
 
-		dialogConfig.data = data;
 		this.dialog
-			.open(DialogComponent, dialogConfig)
+			.open(DialogComponent, { data })
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
