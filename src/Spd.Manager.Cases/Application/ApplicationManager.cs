@@ -91,7 +91,7 @@ namespace Spd.Manager.Cases.Application
             var org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(createCmd.OrgId), ct);
 
             // If not a volunteer org, then the payee type is required
-            if (org != null && org.OrgResult.VolunteerOrganizationTypeCode == null)
+            if (org != null && org.OrgResult.VolunteerOrganizationTypeCode == null && org.OrgResult.Id != SpdConstants.BC_GOV_ORG_ID )
             {
                 if (createCmd.ApplicationInvitesCreateRequest.ApplicationInviteCreateRequests.Any(a => a.PayeeType == null))
                 {
