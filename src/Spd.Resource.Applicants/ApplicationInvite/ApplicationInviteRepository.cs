@@ -64,31 +64,52 @@ namespace Spd.Resource.Applicants.ApplicationInvite
 
         public async Task AddApplicationInvitesAsync(ApplicationInvitesCreateCmd createInviteCmd, CancellationToken ct)
         {
-            account? org = await _dynaContext.GetOrgById(createInviteCmd.OrgId, ct);
             spd_portaluser? user = await _dynaContext.GetUserById(createInviteCmd.CreatedByUserId, ct);
-
-            foreach (var item in createInviteCmd.ApplicationInvites)
+            if (createInviteCmd.OrgId != SpdConstants.BC_GOV_ORG_ID)
             {
-                spd_portalinvitation invitation = _mapper.Map<spd_portalinvitation>(item);
-                var encryptedInviteId = WebUtility.UrlEncode(_dataProtector.Protect(invitation.spd_portalinvitationid.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.APPLICATION_INVITE_VALID_DAYS)));
-                invitation.spd_invitationlink = $"{createInviteCmd.HostUrl}{SpdConstants.CRRP_APPLICATION_INVITE_LINK}{encryptedInviteId}";
-                _dynaContext.AddTospd_portalinvitations(invitation);
-                _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_OrganizationId), org);
-                _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_PortalUserId), user);
-                spd_servicetype? servicetype = _dynaContext.LookupServiceType(item.ServiceType.ToString());
-                if (servicetype != null)
-                {
-                    _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_ServiceTypeId), servicetype);
-                }
+                account? org = await _dynaContext.GetOrgById(createInviteCmd.OrgId, ct);
 
-                if (item.OriginalClearanceAccessId != null)
+                foreach (var item in createInviteCmd.ApplicationInvites)
                 {
-                    spd_clearanceaccess access = await _dynaContext.GetClearanceAccessById((Guid)item.OriginalClearanceAccessId, ct);
-                    if (access == null || access._spd_organizationid_value != createInviteCmd.OrgId)
-                        throw new ApiException(HttpStatusCode.BadRequest, "Invalid clearance access id.");
-                    access.statecode = DynamicsConstants.StateCode_Inactive;
-                    access.statuscode = (int)ClearanceAccessStatusOptionSet.Revoked;
-                    _dynaContext.UpdateObject(access);
+                    spd_portalinvitation invitation = _mapper.Map<spd_portalinvitation>(item);
+                    var encryptedInviteId = WebUtility.UrlEncode(_dataProtector.Protect(invitation.spd_portalinvitationid.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.APPLICATION_INVITE_VALID_DAYS)));
+                    invitation.spd_invitationlink = $"{createInviteCmd.HostUrl}{SpdConstants.CRRP_APPLICATION_INVITE_LINK}{encryptedInviteId}";
+                    _dynaContext.AddTospd_portalinvitations(invitation);
+                    _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_OrganizationId), org);
+                    _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_PortalUserId), user);
+                    spd_servicetype? servicetype = _dynaContext.LookupServiceType(item.ServiceType.ToString());
+                    if (servicetype != null)
+                    {
+                        _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_ServiceTypeId), servicetype);
+                    }
+
+                    if (item.OriginalClearanceAccessId != null)
+                    {
+                        spd_clearanceaccess access = await _dynaContext.GetClearanceAccessById((Guid)item.OriginalClearanceAccessId, ct);
+                        if (access == null || access._spd_organizationid_value != createInviteCmd.OrgId)
+                            throw new ApiException(HttpStatusCode.BadRequest, "Invalid clearance access id.");
+                        access.statecode = DynamicsConstants.StateCode_Inactive;
+                        access.statuscode = (int)ClearanceAccessStatusOptionSet.Revoked;
+                        _dynaContext.UpdateObject(access);
+                    }
+                }
+            }
+            else
+            {
+                foreach (var item in createInviteCmd.ApplicationInvites)
+                {
+                    account? org = await _dynaContext.GetOrgById((Guid)item.MinistryOrgId, ct);
+                    spd_portalinvitation invitation = _mapper.Map<spd_portalinvitation>(item);
+                    var encryptedInviteId = WebUtility.UrlEncode(_dataProtector.Protect(invitation.spd_portalinvitationid.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.APPLICATION_INVITE_VALID_DAYS)));
+                    invitation.spd_invitationlink = $"{createInviteCmd.HostUrl}{SpdConstants.PSSO_APPLICATION_INVITE_LINK}{encryptedInviteId}";
+                    _dynaContext.AddTospd_portalinvitations(invitation);
+                    _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_OrganizationId), org);
+                    _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_PortalUserId), user);
+                    spd_servicetype? servicetype = _dynaContext.LookupServiceType(item.ServiceType.ToString());
+                    if (servicetype != null)
+                    {
+                        _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_ServiceTypeId), servicetype);
+                    }
                 }
             }
             await _dynaContext.SaveChangesAsync(ct);
