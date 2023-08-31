@@ -7,13 +7,19 @@ import { AuthUserIdirService } from 'src/app/core/services/auth-user-idir.servic
 @Component({
 	selector: 'app-identity-verification',
 	template: `
-		<app-identify-verification-common [portal]="portal.Psso" [orgId]="orgId"></app-identify-verification-common>
+		<app-identify-verification-common
+			[portal]="portal.Psso"
+			[isPsaUser]="isPsaUser"
+			[orgId]="orgId"
+		></app-identify-verification-common>
 	`,
 	styles: [],
 })
 export class IdentityVerificationComponent implements OnInit {
 	orgId: string | null = null;
 	portal = PortalTypeCode;
+	isPsaUser: boolean | undefined = this.authUserService.idirUserWhoamiProfile?.isPSA;
+	ministryOrgId: string | undefined = this.authUserService.idirUserWhoamiProfile?.ministryOrgId;
 
 	constructor(private router: Router, private authUserService: AuthUserIdirService) {}
 

@@ -6,11 +6,7 @@ import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
-import {
-	ApplicationInviteCreateRequest,
-	ClearanceAccessListResponse,
-	ClearanceAccessResponse,
-} from 'src/app/api/models';
+import { ClearanceAccessListResponse, ClearanceAccessResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { AppRoutes } from 'src/app/app-routing.module';
@@ -330,13 +326,13 @@ export class ExpiringChecksComponent implements OnInit {
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
-					const inviteDefault: ApplicationInviteCreateRequest = {
-						firstName: clearance.firstName,
-						lastName: clearance.lastName,
-						email: clearance.email,
-						jobTitle: '',
-						payeeType: undefined,
-					};
+					// const inviteDefault: ApplicationInviteCreateRequest = { TODO correct?
+					// 	firstName: clearance.firstName,
+					// 	lastName: clearance.lastName,
+					// 	email: clearance.email,
+					// 	jobTitle: '',
+					// 	payeeType: undefined,
+					// };
 
 					const dialogOptions: ScreeningRequestAddDialogData = {
 						portal: PortalTypeCode.Crrp,

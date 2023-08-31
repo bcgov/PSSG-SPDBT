@@ -140,12 +140,12 @@ export interface ScreeningRequestAddDialogData {
 								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0" *ngIf="portal == portalTypeCodes.Psso">
 									<mat-form-field>
 										<mat-label>Ministry</mat-label>
-										<mat-select formControlName="ministryId" [errorStateMatcher]="matcher">
+										<mat-select formControlName="ministryOrgId" [errorStateMatcher]="matcher">
 											<mat-option *ngFor="let ministry of ministries" [value]="ministry.id">
 												{{ ministry.name }}
 											</mat-option>
 										</mat-select>
-										<mat-error *ngIf="group.get('ministryId')?.hasError('required')">This is required</mat-error>
+										<mat-error *ngIf="group.get('ministryOrgId')?.hasError('required')">This is required</mat-error>
 									</mat-form-field>
 								</div>
 
@@ -289,14 +289,17 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 				payeeType: new FormControl(inviteDefault ? inviteDefault.payeeType : null, [FormControlValidators.required]),
 				screeningType: new FormControl(screeningTypeCodeDefault),
 				serviceType: new FormControl(serviceTypeCodeDefault),
-				ministryId: new FormControl(''),
+				ministryOrgId: new FormControl(''),
 			},
 			{
 				validators: [
 					FormGroupValidators.conditionalRequiredValidator('screeningType', (form) => this.showScreeningType ?? false),
 					FormGroupValidators.conditionalRequiredValidator('serviceType', (form) => this.showServiceType ?? false),
 					FormGroupValidators.conditionalRequiredValidator('payeeType', (form) => this.isNotVolunteerOrg ?? false),
-					FormGroupValidators.conditionalRequiredValidator('ministryId', (form) => this.portal == PortalTypeCode.Psso),
+					FormGroupValidators.conditionalRequiredValidator(
+						'ministryOrgId',
+						(form) => this.portal == PortalTypeCode.Psso
+					),
 				],
 			}
 		);

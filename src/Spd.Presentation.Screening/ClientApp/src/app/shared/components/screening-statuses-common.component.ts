@@ -44,6 +44,29 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 			<app-status-statistics-common [orgId]="orgId"></app-status-statistics-common>
 
 			<div [formGroup]="formFilter">
+				<ng-container *ngIf="isPsaUser">
+					<div class="row">
+						<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
+							<mat-divider class="mb-2"></mat-divider>
+						</div>
+					</div>
+					<div class="row">
+						<div class="offset-xl-4 col-xl-4 col-lg-6 col-md-12 ">
+							<div class="d-flex justify-content-end my-2">
+								<mat-button-toggle-group
+									formControlName="applicationFilter"
+									(change)="onApplicationFilterChange($event)"
+									class="w-100"
+									aria-label="Applications Filter"
+								>
+									<mat-button-toggle class="button-toggle w-100" value=""> My Applications </mat-button-toggle>
+									<mat-button-toggle class="button-toggle w-100" value="ALL"> All Applications </mat-button-toggle>
+								</mat-button-toggle-group>
+							</div>
+						</div>
+					</div>
+				</ng-container>
+
 				<div class="row">
 					<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
 						<mat-form-field>
@@ -138,11 +161,11 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="ministryId">
+						<ng-container matColumnDef="ministryOrgId">
 							<mat-header-cell *matHeaderCellDef>Ministry</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Ministry:</span>
-								{{ application.orgId | ministryoptions : 'Unknown' | async }}
+								{{ application.orgId | ministryoptions | async | default }}
 							</mat-cell>
 						</ng-container>
 
@@ -279,6 +302,8 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 	@Input() portal: PortalTypeCode | null = null;
 	@Input() heading = '';
 	@Input() orgId: string | null = null;
+	@Input() isPsaUser: boolean | undefined = undefined;
+	@Input() ministryOrgId: string | undefined = undefined;
 
 	@Output() emitManageDelegate: EventEmitter<ScreeningStatusResponse> = new EventEmitter<ScreeningStatusResponse>();
 	@Output() emitPayNow: EventEmitter<ScreeningStatusResponse> = new EventEmitter<ScreeningStatusResponse>();
@@ -322,7 +347,7 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 				'applicantName',
 				'emailAddress',
 				'createdOn',
-				'ministryId',
+				'ministryOrgId',
 				'applicationNumber',
 				'status',
 				'action1',
@@ -360,7 +385,14 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 		this.performSearch(this.formFilter.value.search);
 	}
 
+	onApplicationFilterChange(filters: any) {
+		// const searchString = filters.target.value;
+		console.log('onApplicationFilterChange', filters.value);
+		this.performSearch('');
+	}
+
 	onFilterChange(filters: any) {
+		console.log('filters', filters);
 		this.currentStatuses = this.statuses.value?.length > 0 ? [...this.statuses.value] : [];
 		this.currentFilters = filters;
 		this.queryParams.page = 0;
@@ -413,6 +445,7 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 	}
 
 	private performSearch(searchString: string): void {
+		console.log('this.formFilter.value', this.formFilter.value);
 		this.currentSearch = searchString ? `${ScreeningStatusFilterMap['search']}@=${searchString}` : '';
 		this.queryParams.page = 0;
 

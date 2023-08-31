@@ -10,6 +10,7 @@ import { AuthUserIdirService } from 'src/app/core/services/auth-user-idir.servic
 		<app-screening-requests-common
 			[portal]="portal.Psso"
 			[orgId]="orgId"
+			[isPsaUser]="isPsaUser"
 			heading="Screening Checks"
 			subtitle="Screening check links will expire 14 days after being sent"
 		></app-screening-requests-common>
@@ -19,6 +20,8 @@ import { AuthUserIdirService } from 'src/app/core/services/auth-user-idir.servic
 export class ScreeningChecksComponent implements OnInit {
 	orgId: string | null = null;
 	portal = PortalTypeCode;
+	isPsaUser: boolean | undefined = this.authUserService.idirUserWhoamiProfile?.isPSA;
+	ministryOrgId: string | undefined = this.authUserService.idirUserWhoamiProfile?.ministryOrgId;
 
 	constructor(private router: Router, private authUserService: AuthUserIdirService) {}
 

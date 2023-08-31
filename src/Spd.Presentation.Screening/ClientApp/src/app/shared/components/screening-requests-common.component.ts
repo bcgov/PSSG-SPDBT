@@ -41,7 +41,7 @@ export const ScreeningCheckFilterMap: Record<keyof ScreeningCheckFilter, string>
 					</h2>
 				</div>
 				<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 my-auto">
-					<button mat-flat-button class="large w-100 mat-green-button mb-2" (click)="onAddRequest()">
+					<button mat-flat-button type="button" class="large w-100 mat-green-button mb-2" (click)="onAddRequest()">
 						Add Request
 					</button>
 				</div>
@@ -119,6 +119,14 @@ export const ScreeningCheckFilterMap: Record<keyof ScreeningCheckFilter, string>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Request Sent:</span>
 								{{ application.createdOn | date : constants.date.dateFormat }}
+							</mat-cell>
+						</ng-container>
+
+						<ng-container matColumnDef="ministryOrgId">
+							<mat-header-cell *matHeaderCellDef>Ministry</mat-header-cell>
+							<mat-cell *matCellDef="let application">
+								<span class="mobile-label">Ministry:</span>
+								{{ application.orgId | ministryoptions | async | default }}
 							</mat-cell>
 						</ng-container>
 
@@ -206,7 +214,7 @@ export class ScreeningRequestsCommonComponent implements OnInit {
 
 	dataSource: MatTableDataSource<ApplicationInviteResponse> = new MatTableDataSource<ApplicationInviteResponse>([]);
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
-	columns: string[] = ['applicantName', 'emailAddress', 'jobTitle', 'payeeType', 'createdOn', 'viewed', 'action1'];
+	columns: string[] = [];
 	formFilter: FormGroup = this.formBuilder.group({
 		search: new FormControl(''),
 	});
@@ -216,6 +224,8 @@ export class ScreeningRequestsCommonComponent implements OnInit {
 
 	@Input() orgId: string | null = null;
 	@Input() portal: PortalTypeCode | null = null;
+	@Input() isPsaUser: boolean | undefined = undefined;
+	@Input() ministryOrgId: string | undefined = undefined;
 	@Input() heading = '';
 	@Input() subtitle = '';
 
@@ -240,7 +250,7 @@ export class ScreeningRequestsCommonComponent implements OnInit {
 		if (this.portal == PortalTypeCode.Crrp) {
 			this.columns = ['applicantName', 'emailAddress', 'jobTitle', 'payeeType', 'createdOn', 'viewed', 'action1'];
 		} else if (this.portal == PortalTypeCode.Psso) {
-			this.columns = ['applicantName', 'emailAddress', 'jobTitle', 'createdOn', 'viewed', 'action1'];
+			this.columns = ['applicantName', 'emailAddress', 'jobTitle', 'createdOn', 'ministryOrgId', 'viewed', 'action1'];
 		}
 
 		this.loadList();

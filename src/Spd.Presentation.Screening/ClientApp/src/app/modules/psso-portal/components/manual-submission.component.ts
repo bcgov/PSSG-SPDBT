@@ -6,12 +6,21 @@ import { AuthUserIdirService } from 'src/app/core/services/auth-user-idir.servic
 
 @Component({
 	selector: 'app-manual-submission',
-	template: ` <app-manual-submission-common [portal]="portal.Psso" [orgId]="orgId"></app-manual-submission-common> `,
+	template: `
+		<app-manual-submission-common
+			[portal]="portal.Psso"
+			[isPsaUser]="isPsaUser"
+			[ministryOrgId]="ministryOrgId"
+			[orgId]="orgId"
+		></app-manual-submission-common>
+	`,
 	styles: [],
 })
 export class ManualSubmissionComponent implements OnInit {
 	orgId: string | null = null;
 	portal = PortalTypeCode;
+	isPsaUser: boolean | undefined = this.authUserService.idirUserWhoamiProfile?.isPSA;
+	ministryOrgId: string | undefined = this.authUserService.idirUserWhoamiProfile?.ministryOrgId;
 
 	constructor(private router: Router, private authUserService: AuthUserIdirService) {}
 
