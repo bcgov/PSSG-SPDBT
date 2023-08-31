@@ -19,7 +19,6 @@ export interface AppInviteOrgData extends ApplicantAppCreateRequest {
 	shareableCrcExists?: boolean | null;
 	shareableClearanceItem?: ShareableClearanceItem | null;
 	recaptcha?: string | null;
-	employeeId?: string | null; // TODO add to app org response
 	orgEmail?: null | string; // from AppOrgResponse
 	orgId?: string; // from AppOrgResponse
 	orgName?: null | string; // from AppOrgResponse
