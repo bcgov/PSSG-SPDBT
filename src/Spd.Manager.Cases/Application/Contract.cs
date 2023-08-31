@@ -93,6 +93,7 @@ namespace Spd.Manager.Cases.Application
         public ServiceTypeCode ServiceType { get; set; } = ServiceTypeCode.CRRP_EMPLOYEE;
         public ScreeningTypeCode ScreeningType { get; set; } = ScreeningTypeCode.Staff;
         public Guid? OriginalClearanceAccessId { get; set; } = null;
+        public Guid? MinistryOrgId { get; set; }
     }
     public record ApplicationInvitesCreateResponse(Guid OrgId)
     {
