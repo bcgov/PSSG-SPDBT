@@ -140,10 +140,11 @@ namespace Spd.Manager.Cases.Application
     };
 
     public record ApplicationStatisticsQuery(Guid OrganizationId) : IRequest<ApplicationStatisticsResponse>;
-    public record AppListFilterBy(Guid OrgId)
+    public record AppListFilterBy(Guid? OrgId)
     {
         public IEnumerable<ApplicationPortalStatusCode>? ApplicationPortalStatus { get; set; }
         public string? NameOrEmailOrAppIdContains { get; set; }
+        public Guid? ParentOrgId { get; set; }
 
     }
     public record AppListSortBy(bool? SubmittedDateDesc = true, bool? NameDesc = null, bool? CompanyNameDesc = null);
