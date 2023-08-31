@@ -14,6 +14,7 @@ import { DelegateManageDialogData, DelegateManageModalComponent } from './delega
 		<app-screening-statuses-common
 			[portal]="portal.Psso"
 			[isPsaUser]="isPsaUser"
+			[ministryOrgId]="ministryOrgId"
 			[orgId]="orgId"
 			heading="Screening Statuses"
 			(emitManageDelegate)="onManageDelegates($event)"

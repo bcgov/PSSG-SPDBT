@@ -9,8 +9,9 @@ import { AuthUserIdirService } from 'src/app/core/services/auth-user-idir.servic
 	template: `
 		<app-screening-requests-common
 			[portal]="portal.Psso"
-			[orgId]="orgId"
 			[isPsaUser]="isPsaUser"
+			[ministryOrgId]="ministryOrgId"
+			[orgId]="orgId"
 			heading="Screening Checks"
 			subtitle="Screening check links will expire 14 days after being sent"
 		></app-screening-requests-common>

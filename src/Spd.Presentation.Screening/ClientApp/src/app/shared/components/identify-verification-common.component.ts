@@ -263,17 +263,30 @@ export class IdentifyVerificationCommonComponent implements OnInit {
 				'action2',
 			];
 		} else if (this.portal == PortalTypeCode.Psso) {
-			this.columns = [
-				'applicantName',
-				'dateOfBirth',
-				'jobTitle',
-				'emailAddress',
-				'createdOn',
-				'ministryOrgId',
-				'applicationNumber',
-				'action1',
-				'action2',
-			];
+			if (this.isPsaUser) {
+				this.columns = [
+					'applicantName',
+					'dateOfBirth',
+					'jobTitle',
+					'emailAddress',
+					'createdOn',
+					'ministryOrgId',
+					'applicationNumber',
+					'action1',
+					'action2',
+				];
+			} else {
+				this.columns = [
+					'applicantName',
+					'dateOfBirth',
+					'jobTitle',
+					'emailAddress',
+					'createdOn',
+					'applicationNumber',
+					'action1',
+					'action2',
+				];
+			}
 		}
 
 		this.refreshStats();
@@ -344,6 +357,8 @@ export class IdentifyVerificationCommonComponent implements OnInit {
 		const dialogOptions: ScreeningRequestAddDialogData = {
 			portal: this.portal!,
 			orgId: this.orgId!,
+			isPsaUser: this.isPsaUser,
+			ministryOrgId: this.ministryOrgId,
 			inviteDefault,
 		};
 

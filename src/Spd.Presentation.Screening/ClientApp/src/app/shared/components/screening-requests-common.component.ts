@@ -250,7 +250,11 @@ export class ScreeningRequestsCommonComponent implements OnInit {
 		if (this.portal == PortalTypeCode.Crrp) {
 			this.columns = ['applicantName', 'emailAddress', 'jobTitle', 'payeeType', 'createdOn', 'viewed', 'action1'];
 		} else if (this.portal == PortalTypeCode.Psso) {
-			this.columns = ['applicantName', 'emailAddress', 'jobTitle', 'createdOn', 'ministryOrgId', 'viewed', 'action1'];
+			if (this.isPsaUser) {
+				this.columns = ['applicantName', 'emailAddress', 'jobTitle', 'createdOn', 'ministryOrgId', 'viewed', 'action1'];
+			} else {
+				this.columns = ['applicantName', 'emailAddress', 'jobTitle', 'createdOn', 'viewed', 'action1'];
+			}
 		}
 
 		this.loadList();
@@ -260,6 +264,8 @@ export class ScreeningRequestsCommonComponent implements OnInit {
 		const dialogOptions: ScreeningRequestAddDialogData = {
 			portal: this.portal!,
 			orgId: this.orgId!,
+			isPsaUser: this.isPsaUser,
+			ministryOrgId: this.ministryOrgId,
 		};
 
 		this.dialog

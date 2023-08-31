@@ -343,16 +343,28 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 
 			this.loadList();
 		} else if (this.portal == PortalTypeCode.Psso) {
-			this.columns = [
-				'applicantName',
-				'emailAddress',
-				'createdOn',
-				'ministryOrgId',
-				'applicationNumber',
-				'status',
-				'action1',
-				'delegates',
-			];
+			if (this.isPsaUser) {
+				this.columns = [
+					'applicantName',
+					'emailAddress',
+					'createdOn',
+					'ministryOrgId',
+					'applicationNumber',
+					'status',
+					'action1',
+					'delegates',
+				];
+			} else {
+				this.columns = [
+					'applicantName',
+					'emailAddress',
+					'createdOn',
+					'applicationNumber',
+					'status',
+					'action1',
+					'delegates',
+				];
+			}
 
 			this.optionsService.getMinistries().subscribe((resp) => {
 				this.loadList();

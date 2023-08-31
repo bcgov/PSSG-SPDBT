@@ -10,6 +10,7 @@ import { AuthUserIdirService } from 'src/app/core/services/auth-user-idir.servic
 		<app-identify-verification-common
 			[portal]="portal.Psso"
 			[isPsaUser]="isPsaUser"
+			[ministryOrgId]="ministryOrgId"
 			[orgId]="orgId"
 		></app-identify-verification-common>
 	`,
