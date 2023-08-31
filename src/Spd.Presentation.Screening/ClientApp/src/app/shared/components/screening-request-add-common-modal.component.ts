@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {
 	ApplicationInvitePrepopulateDataResponse,
 	ApplicationInvitesCreateRequest,
@@ -389,10 +389,6 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 		const vulnerableQuestionMultiple =
 			'In their roles with your organization, will these individuals work directly with, or potentially have unsupervised access to, children and/or vulnerable adults?';
 
-		const dialogConfig = new MatDialogConfig();
-		dialogConfig.autoFocus = false;
-		dialogConfig.maxWidth = 600;
-
 		const data: DialogOptions = {
 			icon: 'info_outline',
 			title: 'Vulnerable sector',
@@ -404,9 +400,8 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 		data.message =
 			body.applicationInviteCreateRequests?.length == 1 ? vulnerableQuestionSingular : vulnerableQuestionMultiple;
 
-		dialogConfig.data = data;
 		this.dialog
-			.open(DialogComponent, dialogConfig)
+			.open(DialogComponent, { data })
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {

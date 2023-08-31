@@ -31,7 +31,7 @@ export interface OrgRegDuplicateDialogResponse {
 		<mat-dialog-actions>
 			<div class="row m-0 p-0 w-100">
 				<div class="col-md-5 col-sm-12 mb-2">
-					<button mat-stroked-button color="primary" [mat-dialog-close]="false" cdkFocusInitial>
+					<button mat-stroked-button color="primary" [mat-dialog-close]="false">
 						{{ dialogData.cancelText }}
 					</button>
 				</div>
