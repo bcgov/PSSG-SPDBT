@@ -2,7 +2,6 @@ using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Membership.UserProfile;
-using Spd.Resource.Organizations.User;
 using Spd.Utilities.Cache;
 using Spd.Utilities.LogonUser.Configurations;
 using Spd.Utilities.Shared;
@@ -156,7 +155,7 @@ namespace Spd.Utilities.LogonUser
 
             //validate if the orgId in httpHeader is belong to this user and add the user role to claims.
             OrgUserProfileResponse? userProfile = await cache.Get<OrgUserProfileResponse>($"{OrgUserCacheKeyPrefix}{context.User.GetUserGuid()}");
-            if (userProfile == null)
+            if (userProfile == null || userProfile.UserInfos.Any(u => u.UserId == Guid.Empty))
             {
                 var userIdInfo = context.User.GetPortalUserIdentityInfo();
                 userProfile = await mediator.Send(new GetCurrentUserProfileQuery(mapper.Map<PortalUserIdentity>(userIdInfo)));

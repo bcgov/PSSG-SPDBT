@@ -73,7 +73,7 @@ const routes: Routes = [
 		component: CrrpOrgTermsAndCondsComponent,
 	},
 	{
-		path: `${CrrpRoutes.INVITATION_ACCEPT}/:id`,
+		path: `${CrrpRoutes.INVITATION_ACCEPT}/:id`, // NOT called directly by user... this is called after terms are accepted in INVITATION route
 		component: InvitationUserComponent,
 	},
 ];
