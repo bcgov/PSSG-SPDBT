@@ -125,6 +125,10 @@ export class ApplicationService extends BaseService {
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   apiOrgsOrgIdApplicationInvitesPost$Response(params: {
+
+    /**
+     * organizationId, for PSSO, it should be BC Gov hard coded id.
+     */
     orgId: string;
     body: ApplicationInvitesCreateRequest
   },
@@ -161,6 +165,10 @@ export class ApplicationService extends BaseService {
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   apiOrgsOrgIdApplicationInvitesPost(params: {
+
+    /**
+     * organizationId, for PSSO, it should be BC Gov hard coded id.
+     */
     orgId: string;
     body: ApplicationInvitesCreateRequest
   },
@@ -564,7 +572,6 @@ export class ApplicationService extends BaseService {
 'payeeType'?: string;
 'screeningType'?: string;
 'serviceType'?: string;
-'ministryId'?: string | null;
 'employeeId'?: string | null;
 };
 }
@@ -651,7 +658,6 @@ export class ApplicationService extends BaseService {
 'payeeType'?: string;
 'screeningType'?: string;
 'serviceType'?: string;
-'ministryId'?: string | null;
 'employeeId'?: string | null;
 };
 }

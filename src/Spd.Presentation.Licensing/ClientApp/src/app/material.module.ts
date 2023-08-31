@@ -123,6 +123,8 @@ export class SpdDateYearMonthAdapter extends NativeDateAdapter {
 				width: '600px',
 				hasBackdrop: true,
 				disableClose: true,
+				autoFocus: 'dialog',
+				role: 'dialog',
 			},
 		},
 		{

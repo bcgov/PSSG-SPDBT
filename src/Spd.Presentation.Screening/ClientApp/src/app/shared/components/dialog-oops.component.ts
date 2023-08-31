@@ -21,9 +21,7 @@ export interface DialogOopsOptions {
 		<mat-dialog-actions>
 			<div class="row m-0 p-0 w-100 mt-2">
 				<div class="col-md-3 col-sm-12 mb-2">
-					<button mat-stroked-button color="primary" class="large" [mat-dialog-close]="false" cdkFocusInitial>
-						Close
-					</button>
+					<button mat-stroked-button color="primary" class="large" [mat-dialog-close]="false">Close</button>
 				</div>
 			</div>
 		</mat-dialog-actions>

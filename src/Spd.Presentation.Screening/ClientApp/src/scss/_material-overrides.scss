@@ -20,6 +20,17 @@ button.mdc-button {
   }
 }
 
+// BUTTON TOGGLES
+.mat-button-toggle-checked {
+  color: var(--color-white) !important;
+  background-color: var(--color-primary) !important;
+}
+
+.mat-button-toggle-appearance-standard {
+  background-color: var(--color-grey-lightest);
+  color: var(--color-primary);
+}
+
 // STEPPER 
 .mat-stepper-horizontal, .mat-stepper-vertical {
   background-color: var(--color-primary-lightest);

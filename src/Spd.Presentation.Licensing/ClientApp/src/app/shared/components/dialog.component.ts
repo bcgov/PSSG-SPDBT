@@ -36,14 +36,7 @@ export enum DialogCloseCode {
 		<mat-dialog-actions>
 			<div class="row m-0 p-0 w-100 mt-2">
 				<div class="col-md-3 col-sm-12 mb-2">
-					<button
-						*ngIf="data.cancelText"
-						mat-stroked-button
-						color="primary"
-						class="large"
-						[mat-dialog-close]="false"
-						cdkFocusInitial
-					>
+					<button *ngIf="data.cancelText" mat-stroked-button color="primary" class="large" [mat-dialog-close]="false">
 						{{ data.cancelText }}
 					</button>
 				</div>

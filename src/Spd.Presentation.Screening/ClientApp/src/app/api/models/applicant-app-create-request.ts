@@ -33,7 +33,6 @@ export interface ApplicantAppCreateRequest {
   jobTitle?: null | string;
   middleName1?: null | string;
   middleName2?: null | string;
-  ministryId?: null | string;
   oneLegalName?: null | boolean;
   orgId?: string;
   originTypeCode?: ApplicationOriginTypeCode;
