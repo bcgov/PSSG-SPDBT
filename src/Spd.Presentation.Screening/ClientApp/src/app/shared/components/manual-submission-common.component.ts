@@ -495,7 +495,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 			serviceType: new FormControl(this.serviceTypeDefault),
 			contractedCompanyName: new FormControl(''),
 			employeeId: new FormControl(''),
-			ministryOrgId: new FormControl(''),
+			ministryOrgId: new FormControl(null),
 			previousNameFlag: new FormControl('', [FormControlValidators.required]),
 			addressSelected: new FormControl(false, [Validators.requiredTrue]),
 			addressLine1: new FormControl('', [FormControlValidators.required]),
@@ -634,17 +634,9 @@ export class ManualSubmissionCommonComponent implements OnInit {
 				: '';
 			createRequest.requireDuplicateCheck = true;
 
-			// Set the org id for PSSO.
-			if (this.portal == PortalTypeCode.Psso && this.isPsaUser) {
-				createRequest.orgId = createRequest.ministryOrgId;
-			}
-
+			// Set the org id - for PSSO this is the ministryOrgId, otherwise the CRRP org
 			if (this.portal == PortalTypeCode.Psso) {
-				if (this.isPsaUser) {
-					createRequest.orgId = createRequest.ministryOrgId;
-				} else {
-					createRequest.orgId = this.ministryOrgId;
-				}
+				createRequest.orgId = this.isPsaUser ? createRequest.ministryOrgId : this.ministryOrgId;
 			} else {
 				createRequest.orgId = this.orgId;
 			}
