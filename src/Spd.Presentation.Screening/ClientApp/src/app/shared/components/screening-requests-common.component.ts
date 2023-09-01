@@ -126,7 +126,7 @@ export const ScreeningCheckFilterMap: Record<keyof ScreeningCheckFilter, string>
 							<mat-header-cell *matHeaderCellDef>Ministry</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Ministry:</span>
-								{{ application.orgId | ministryoptions | async | default }}
+								{{ application.ministryOrgId | ministryoptions | async | default }}
 							</mat-cell>
 						</ng-container>
 

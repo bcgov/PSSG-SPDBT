@@ -7,5 +7,6 @@ export interface ApplicationInviteDuplicateResponse {
   hasPotentialDuplicate?: boolean;
   jobTitle?: null | string;
   lastName?: null | string;
+  ministryOrgId?: null | string;
   payeeType?: PayerPreferenceTypeCode;
 }
