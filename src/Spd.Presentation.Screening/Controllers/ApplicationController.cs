@@ -10,6 +10,7 @@ using Spd.Utilities.Shared.ManagerContract;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 using System.Globalization;
+using System.Security.Principal;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -330,7 +331,7 @@ namespace Spd.Presentation.Screening.Controllers
         public async Task<ApplicationCreateResponse> AddApplication([FromForm][Required] CreateApplication createApplication, [FromRoute] Guid orgId)
         {
             bool isPSSO = false;
-            if (this.HttpContext.User.GetOrgId() == SpdConstants.BC_GOV_ORG_ID.ToString()) 
+            if (this.HttpContext.User.GetOrgId() == SpdConstants.BC_GOV_ORG_ID.ToString())
             {
                 //PSSO
                 if (createApplication.ConsentFormFile != null)
@@ -433,6 +434,12 @@ namespace Spd.Presentation.Screening.Controllers
         private AppListFilterBy GetAppListFilterBy(string? filters, Guid orgId)
         {
             AppListFilterBy appListFilterBy = new AppListFilterBy(orgId);
+            if (orgId == SpdConstants.BC_GOV_ORG_ID)
+            {
+                appListFilterBy = new AppListFilterBy(null);
+                appListFilterBy.ParentOrgId = orgId;
+            }
+            
             if (string.IsNullOrWhiteSpace(filters)) return appListFilterBy;
 
             try

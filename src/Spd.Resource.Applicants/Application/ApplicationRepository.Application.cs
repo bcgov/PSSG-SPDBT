@@ -36,7 +36,7 @@ internal partial class ApplicationRepository : IApplicationRepository
 
     public async Task<ApplicationListResp> QueryAsync(ApplicationListQry query, CancellationToken cancellationToken)
     {
-        if (query == null || query.FilterBy?.OrgId == null)
+        if (query == null || (query.FilterBy?.OrgId == null && query.FilterBy?.ParentOrgId == null))
             throw new ArgumentNullException("query.FilterBy.OrgId", "Must query applications by organization id.");
         string filterStr = GetAppFilterString(query.FilterBy);
         string sortStr = GetAppSortString(query.SortBy);
@@ -195,7 +195,14 @@ internal partial class ApplicationRepository : IApplicationRepository
     private string GetAppFilterString(AppFilterBy appFilterBy)
     {
         //orgfilter
-        string orgFilter = $"_spd_organizationid_value eq {appFilterBy.OrgId}";
+        string? orgFilter = null;
+        if (appFilterBy.OrgId != null)
+            orgFilter = $"_spd_organizationid_value eq {appFilterBy.OrgId}";
+
+        //parent org filter
+        string? parentOrgFilter = null;
+        if (appFilterBy.ParentOrgId != null)
+            parentOrgFilter = $"_spd_parentorganizationid_value eq {appFilterBy.ParentOrgId}";
 
         //portal status filter
         string? portalStatusFilter = null;
@@ -260,7 +267,16 @@ internal partial class ApplicationRepository : IApplicationRepository
         }
 
         //get result filter string
-        string result = $"{orgFilter}";
+        string result = string.Empty;
+        if (orgFilter != null)
+        {
+            result += $"{orgFilter}";
+        }
+        if(parentOrgFilter != null)
+        {
+            if (result == String.Empty) result += $"{parentOrgFilter}";
+            else result += $" and {parentOrgFilter}";
+        }
         if (portalStatusFilter != null)
         {
             result += $" and {portalStatusFilter}";

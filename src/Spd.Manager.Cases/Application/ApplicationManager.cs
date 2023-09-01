@@ -125,6 +125,13 @@ namespace Spd.Manager.Cases.Application
         public async Task<ApplicationInviteListResponse> Handle(ApplicationInviteListQuery request, CancellationToken ct)
         {
             ApplicationInviteQuery query = _mapper.Map<ApplicationInviteQuery>(request);
+            if (request.FilterBy.OrgId == SpdConstants.BC_GOV_ORG_ID)
+            {
+                List<ServiceTypeEnum> serviceTypes = new List<ServiceTypeEnum> { ServiceTypeEnum.PSSO, ServiceTypeEnum.PSSO_VS };
+                //psso, cannot use orgId to filter.
+                query.FilterBy=new AppInviteFilterBy(null, request.FilterBy.EmailOrNameContains, serviceTypes.ToArray());
+
+            }
             var response = await _applicationInviteRepository.QueryAsync(
                 query,
                 ct);
