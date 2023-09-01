@@ -87,6 +87,7 @@ namespace Spd.Manager.Cases.Application
         public string Email { get; set; } = null!;
         public string? JobTitle { get; set; }
         public PayerPreferenceTypeCode? PayeeType { get; set; }
+        public Guid? MinistryOrgId { get; set; }
     }
     public record ApplicationInviteCreateRequest : ApplicationInvite
     {
