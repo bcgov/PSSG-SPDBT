@@ -1,4 +1,4 @@
-import { Component, HostListener, Inject } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 export interface DialogOptions {
@@ -36,14 +36,7 @@ export enum DialogCloseCode {
 		<mat-dialog-actions>
 			<div class="row m-0 p-0 w-100 mt-2">
 				<div class="col-md-3 col-sm-12 mb-2">
-					<button
-						*ngIf="data.cancelText"
-						mat-stroked-button
-						color="primary"
-						class="large"
-						[mat-dialog-close]="false"
-						cdkFocusInitial
-					>
+					<button *ngIf="data.cancelText" mat-stroked-button color="primary" class="large" [mat-dialog-close]="false">
 						{{ data.cancelText }}
 					</button>
 				</div>
@@ -91,10 +84,9 @@ export class DialogComponent {
 
 	public onConfirm(): void {
 		this.dialogRef.close(this.data.altOptionText ? DialogCloseCode.Action : true);
-  }
+	}
 
 	public onAltConfirm(): void {
 		this.dialogRef.close(DialogCloseCode.AltAction);
-  }
+	}
 }
-

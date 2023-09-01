@@ -42,7 +42,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// create more than one application invites. if checkDuplicate is true, the implementation will check if there is existing duplicated applicants or invites.
         /// </summary>
         /// <param name="invitesCreateRequest"></param>
-        /// <param name="orgId">organizstionId, for PSSO, it should be BC Gov hard coded id.</param>
+        /// <param name="orgId">organizationId, for PSSO, it should be BC Gov hard coded id.</param>
         /// <returns></returns>
         [Route("api/orgs/{orgId}/application-invites")]
         [HttpPost]

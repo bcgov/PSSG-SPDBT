@@ -302,14 +302,6 @@ namespace Rsvp.Cms.Api.Filters
                                             }
                                         },
                                         {
-                                            "ministryId",
-                                            new OpenApiSchema
-                                            {
-                                                Type = "string",
-                                                Nullable= true,
-                                            }
-                                        },
-                                        {
                                             "employeeId",
                                             new OpenApiSchema
                                             {
