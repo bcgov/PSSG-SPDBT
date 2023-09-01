@@ -234,7 +234,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 								<button
 									mat-flat-button
 									(click)="onManageDelegates(application)"
-									class="m-2"
+									class="table-button"
 									style="color: var(--color-primary-light);"
 									aria-label="Edit delegates"
 								>

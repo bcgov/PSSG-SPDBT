@@ -10,6 +10,7 @@ export interface ApplicationInviteResponse {
   id?: string;
   jobTitle?: null | string;
   lastName?: null | string;
+  ministryOrgId?: null | string;
   payeeType?: PayerPreferenceTypeCode;
   status?: ApplicationInviteStatusCode;
   viewed?: null | boolean;
