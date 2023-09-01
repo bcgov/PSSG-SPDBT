@@ -16,7 +16,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
         public AppInviteSortBy? SortBy { get; set; }
         public Paging Paging { get; set; } = null!;
     }
-    public record AppInviteFilterBy(Guid OrgId, string? EmailOrNameContains);
+    public record AppInviteFilterBy(Guid? OrgId, string? EmailOrNameContains, ServiceTypeEnum[]? ServiceTypes = null);
     public record AppInviteSortBy(bool? SubmittedDateDesc);
     public class ApplicationInviteListResp
     {
