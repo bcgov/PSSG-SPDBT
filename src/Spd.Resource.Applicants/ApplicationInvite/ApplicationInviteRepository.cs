@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
 using Microsoft.OData.Client;
-using Spd.Resource.Applicants.Application;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
@@ -39,7 +38,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             if (query.FilterBy.ServiceTypes != null)
             {
                 List<Guid> stGuids = new List<Guid>();
-                foreach(ServiceTypeEnum st in query.FilterBy.ServiceTypes)
+                foreach (ServiceTypeEnum st in query.FilterBy.ServiceTypes)
                 {
                     var keyExisted = DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(st.ToString(), out Guid stGuid);
                     if (!keyExisted)
