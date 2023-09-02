@@ -147,11 +147,14 @@ namespace Spd.Utilities.Dynamics
         ScreeningRequest = 100000001,
     }
 
-    public enum InvitationActiveStatus
+    public enum InvitationStatus
     {
         Draft = 1,
         Sent = 100000000,
-        Failed = 100000001
+        Failed = 100000001,
+        Completed = 2,
+        Cancelled = 100000002,
+        Expired = 100000003
     }
 
     public enum ApplicationPortalStatus

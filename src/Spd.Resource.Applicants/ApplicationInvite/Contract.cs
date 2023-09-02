@@ -4,9 +4,8 @@ namespace Spd.Resource.Applicants.ApplicationInvite
 {
     public interface IApplicationInviteRepository
     {
-        public Task AddApplicationInvitesAsync(ApplicationInvitesCreateCmd createInviteCmd, CancellationToken cancellationToken);
         public Task<ApplicationInviteListResp> QueryAsync(ApplicationInviteQuery query, CancellationToken cancellationToken);
-        public Task DeleteApplicationInvitesAsync(ApplicationInviteDeleteCmd applicationInviteDeleteCmd, CancellationToken cancellationToken);
+        public Task ManageAsync(ApplicationInviteCmd query, CancellationToken cancellationToken);
         public Task<AppInviteVerifyResp> VerifyApplicationInvitesAsync(ApplicationInviteVerifyCmd createInviteCmd, CancellationToken cancellationToken);
     }
 
@@ -16,7 +15,9 @@ namespace Spd.Resource.Applicants.ApplicationInvite
         public AppInviteSortBy? SortBy { get; set; }
         public Paging Paging { get; set; } = null!;
     }
-    public record AppInviteFilterBy(Guid? OrgId, string? EmailOrNameContains, ServiceTypeEnum[]? ServiceTypes = null);
+    public interface ApplicationInviteCmd { };
+
+    public record AppInviteFilterBy(Guid? OrgId, string? EmailOrNameContains, ServiceTypeEnum[]? ServiceTypes = null, Guid? AppInviteId = null);
     public record AppInviteSortBy(bool? SubmittedDateDesc);
     public class ApplicationInviteListResp
     {
@@ -27,12 +28,12 @@ namespace Spd.Resource.Applicants.ApplicationInvite
     {
         public Guid Id { get; set; }
         public DateTimeOffset CreatedOn { get; set; }
-        public string Status { get; set; } = null!;
+        public ApplicationInviteStatusEnum Status { get; set; } 
         public string? ErrorMsg { get; set; }
         public bool? Viewed { get; set; }
     }
 
-    public record ApplicationInvitesCreateCmd
+    public record ApplicationInvitesCreateCmd : ApplicationInviteCmd
     {
         public Guid OrgId { get; set; }
         public Guid CreatedByUserId { get; set; }
@@ -80,10 +81,11 @@ namespace Spd.Resource.Applicants.ApplicationInvite
         public Guid? MinistryOrgId { get; set; }
     }
 
-    public record ApplicationInviteDeleteCmd
+    public record ApplicationInviteUpdateCmd : ApplicationInviteCmd
     {
         public Guid OrgId { get; set; }
         public Guid ApplicationInviteId { get; set; }
+        public ApplicationInviteStatusEnum ApplicationInviteStatusEnum { get; set; }
     }
 
     public record ApplicationInviteCreateResp
@@ -97,5 +99,15 @@ namespace Spd.Resource.Applicants.ApplicationInvite
         Staff,
         Contractor,
         Licensee
+    }
+
+    public enum ApplicationInviteStatusEnum
+    {
+        Draft,
+        Sent,
+        Failed,
+        Completed,
+        Cancelled,
+        Expired
     }
 }
