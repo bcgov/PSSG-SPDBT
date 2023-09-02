@@ -26,7 +26,7 @@ namespace Spd.Manager.Cases.Application
             CreateMap<AppInviteListFilterBy, AppInviteFilterBy>();
             CreateMap<AppInviteListSortBy, AppInviteSortBy>();
             CreateMap<ApplicationInviteResult, ApplicationInviteResponse>()
-               .ForMember(d => d.Status, opt => opt.MapFrom(s => Enum.Parse<ApplicationInviteStatusCode>(s.Status)));
+               .ForMember(d => d.Status, opt => opt.MapFrom(s => Enum.Parse<ApplicationInviteStatusCode>(s.Status.ToString())));
             CreateMap<ApplicationCreateRequest, SearchApplicationQry>();
             CreateMap<ApplicationCreateRequest, ApplicationCreateCmd>();
             CreateMap<ApplicantAppCreateRequest, ApplicationCreateCmd>()
