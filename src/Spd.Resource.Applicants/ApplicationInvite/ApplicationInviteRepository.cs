@@ -25,16 +25,18 @@ namespace Spd.Resource.Applicants.ApplicationInvite
 
         public async Task<ApplicationInviteListResp> QueryAsync(ApplicationInviteQuery query, CancellationToken cancellationToken)
         {
-            if (query == null || (query.FilterBy?.OrgId == null && query.FilterBy.ServiceTypes == null))
-                throw new ArgumentNullException("query.FilterBy.OrgId", "Must query applications by organization id.");
+            if (query == null || (query.FilterBy?.OrgId == null && query.FilterBy.ServiceTypes == null && query.FilterBy.AppInviteId == null))
+                throw new ArgumentNullException("query.FilterBy.OrgId", "Must query applications by organization id or service type or appInviteId.");
 
             var invites = _dynaContext.spd_portalinvitations
                     .Where(i => i.spd_invitationtype != null && i.spd_invitationtype == (int)InvitationTypeOptionSet.ScreeningRequest);
 
+            if (query.FilterBy.AppInviteId != null)
+                invites = invites.Where(i => i.spd_portalinvitationid == query.FilterBy.AppInviteId);
+
             if (query.FilterBy.OrgId != null)
-            {
                 invites = invites.Where(i => i._spd_organizationid_value == query.FilterBy.OrgId && i.statecode == DynamicsConstants.StateCode_Active);
-            }
+
             if (query.FilterBy.ServiceTypes != null)
             {
                 List<Guid> stGuids = new List<Guid>();
@@ -45,7 +47,10 @@ namespace Spd.Resource.Applicants.ApplicationInvite
                         throw new ArgumentException("invalid service type");
                     stGuids.Add(stGuid);
                 }
-                invites = invites.Where(i => i._spd_servicetypeid_value == stGuids[0] || i._spd_servicetypeid_value == stGuids[1]); //todo: only support two service types. Needs to figure out how to do 'in'.
+                if (stGuids.Count == 2)
+                {
+                    invites = invites.Where(i => i._spd_servicetypeid_value == stGuids[0] || i._spd_servicetypeid_value == stGuids[1]); //todo: only support two service types. Needs to figure out how to do 'in'.
+                }
             }
             string? filterValue = query.FilterBy.EmailOrNameContains;
             if (!string.IsNullOrWhiteSpace(filterValue))
@@ -78,7 +83,15 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             return response;
         }
 
-        public async Task AddApplicationInvitesAsync(ApplicationInvitesCreateCmd createInviteCmd, CancellationToken ct)
+        public async Task ManageAsync(ApplicationInviteCmd cmd, CancellationToken ct)
+        {
+            if (cmd is ApplicationInvitesCreateCmd)
+                await AddApplicationInvitesAsync((ApplicationInvitesCreateCmd)cmd, ct);
+            else if (cmd is ApplicationInviteUpdateCmd)
+                await UpdateApplicationInvitesAsync((ApplicationInviteUpdateCmd)cmd, ct);
+        }
+
+        private async Task AddApplicationInvitesAsync(ApplicationInvitesCreateCmd createInviteCmd, CancellationToken ct)
         {
             spd_portaluser? user = await _dynaContext.GetUserById(createInviteCmd.CreatedByUserId, ct);
             if (createInviteCmd.OrgId != SpdConstants.BC_GOV_ORG_ID)
@@ -131,16 +144,16 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             await _dynaContext.SaveChangesAsync(ct);
         }
 
-        public async Task DeleteApplicationInvitesAsync(ApplicationInviteDeleteCmd applicationInviteDeleteCmd, CancellationToken cancellationToken)
+        private async Task UpdateApplicationInvitesAsync(ApplicationInviteUpdateCmd applicationInviteUpdateCmd, CancellationToken cancellationToken)
         {
-            spd_portalinvitation? invite = await GetPortalInvitationById(applicationInviteDeleteCmd.OrgId, applicationInviteDeleteCmd.ApplicationInviteId);
+            spd_portalinvitation? invite = await GetPortalInvitationById(applicationInviteUpdateCmd.OrgId, applicationInviteUpdateCmd.ApplicationInviteId);
 
             if (invite == null)
                 throw new ApiException(HttpStatusCode.BadRequest, "Invalid OrgId or ApplicationInviteId");
 
             // Inactivate the invite
             invite.statecode = DynamicsConstants.StateCode_Inactive;
-            invite.statuscode = DynamicsConstants.StatusCode_Inactive;
+            invite.statuscode = (int)Enum.Parse<InvitationStatus>(applicationInviteUpdateCmd.ApplicationInviteStatusEnum.ToString());
             _dynaContext.UpdateObject(invite);
 
             await _dynaContext.SaveChangesAsync(cancellationToken);
