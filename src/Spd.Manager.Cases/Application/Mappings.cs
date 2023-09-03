@@ -26,7 +26,7 @@ namespace Spd.Manager.Cases.Application
             CreateMap<AppInviteListFilterBy, AppInviteFilterBy>();
             CreateMap<AppInviteListSortBy, AppInviteSortBy>();
             CreateMap<ApplicationInviteResult, ApplicationInviteResponse>()
-               .ForMember(d => d.Status, opt => opt.MapFrom(s => Enum.Parse<ApplicationInviteStatusCode>(s.Status)));
+               .ForMember(d => d.Status, opt => opt.MapFrom(s => Enum.Parse<ApplicationInviteStatusCode>(s.Status.ToString())));
             CreateMap<ApplicationCreateRequest, SearchApplicationQry>();
             CreateMap<ApplicationCreateRequest, ApplicationCreateCmd>();
             CreateMap<ApplicantAppCreateRequest, ApplicationCreateCmd>()
@@ -47,7 +47,7 @@ namespace Spd.Manager.Cases.Application
             CreateMap<ApplicationListResp, ApplicationPaymentListResponse>();
             CreateMap<PaginationRequest, Paging>();
             CreateMap<PaginationResp, PaginationResponse>();
-            CreateMap<ApplicationInviteDeleteCommand, ApplicationInviteDeleteCmd>();
+            CreateMap<ApplicationInviteDeleteCommand, ApplicationInviteUpdateCmd>();
             CreateMap<ApplicationStatisticsQuery, ApplicationStatisticsQry>();
             CreateMap<ApplicationStatisticsResp, ApplicationStatisticsResponse>();
             CreateMap<VerifyIdentityCommand, VerifyIdentityCmd>();

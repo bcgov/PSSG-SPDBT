@@ -91,7 +91,7 @@ namespace Spd.Manager.Cases.Application
             var org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(createCmd.OrgId), ct);
 
             // If not a volunteer org, then the payee type is required
-            if (org != null && org.OrgResult.VolunteerOrganizationTypeCode == null && org.OrgResult.Id != SpdConstants.BC_GOV_ORG_ID )
+            if (org != null && org.OrgResult.VolunteerOrganizationTypeCode == null && org.OrgResult.Id != SpdConstants.BC_GOV_ORG_ID)
             {
                 if (createCmd.ApplicationInvitesCreateRequest.ApplicationInviteCreateRequests.Any(a => a.PayeeType == null))
                 {
@@ -118,7 +118,7 @@ namespace Spd.Manager.Cases.Application
             var cmd = _mapper.Map<ApplicationInvitesCreateCmd>(createCmd.ApplicationInvitesCreateRequest);
             cmd.OrgId = createCmd.OrgId;
             cmd.CreatedByUserId = createCmd.UserId;
-            await _applicationInviteRepository.AddApplicationInvitesAsync(cmd, ct);
+            await _applicationInviteRepository.ManageAsync(cmd, ct);
             resp.CreateSuccess = true;
             return resp;
         }
@@ -129,7 +129,7 @@ namespace Spd.Manager.Cases.Application
             {
                 List<ServiceTypeEnum> serviceTypes = new List<ServiceTypeEnum> { ServiceTypeEnum.PSSO, ServiceTypeEnum.PSSO_VS };
                 //psso, cannot use orgId to filter.
-                query.FilterBy=new AppInviteFilterBy(null, request.FilterBy.EmailOrNameContains, serviceTypes.ToArray());
+                query.FilterBy = new AppInviteFilterBy(null, request.FilterBy.EmailOrNameContains, serviceTypes.ToArray());
 
             }
             var response = await _applicationInviteRepository.QueryAsync(
@@ -139,8 +139,9 @@ namespace Spd.Manager.Cases.Application
         }
         public async Task<Unit> Handle(ApplicationInviteDeleteCommand request, CancellationToken ct)
         {
-            var cmd = _mapper.Map<ApplicationInviteDeleteCmd>(request);
-            await _applicationInviteRepository.DeleteApplicationInvitesAsync(cmd, ct);
+            var cmd = _mapper.Map<ApplicationInviteUpdateCmd>(request);
+            cmd.ApplicationInviteStatusEnum = ApplicationInviteStatusEnum.Cancelled;
+            await _applicationInviteRepository.ManageAsync(cmd, ct);
             return default;
         }
         public async Task<AppOrgResponse> Handle(ApplicationInviteVerifyCommand request, CancellationToken ct)
@@ -407,7 +408,18 @@ namespace Spd.Manager.Cases.Application
         #region applicant-applications
         public async Task<ApplicationCreateResponse> Handle(ApplicantApplicationCreateCommand command, CancellationToken ct)
         {
-            //todo: add check if invite is still valid
+            //check if invite is still valid
+            if (command.ApplicationCreateRequest.AppInviteId != null)
+            {
+                var invite = await _applicationInviteRepository.QueryAsync(
+                    new ApplicationInviteQuery()
+                    {
+                        FilterBy = new AppInviteFilterBy(null, null, AppInviteId: command.ApplicationCreateRequest.AppInviteId)
+                    }, ct);
+                var i = invite.ApplicationInvites.FirstOrDefault();
+                if (i != null && (i.Status == ApplicationInviteStatusEnum.Completed || i.Status == ApplicationInviteStatusEnum.Cancelled || i.Status == ApplicationInviteStatusEnum.Expired))
+                    throw new ArgumentException("Invalid Invite status.");
+            }
 
             var result = new ApplicationCreateResponse();
             var cmd = _mapper.Map<ApplicationCreateCmd>(command.ApplicationCreateRequest);
@@ -441,11 +453,12 @@ namespace Spd.Manager.Cases.Application
 
             if (command.ApplicationCreateRequest.AppInviteId != null)
             {
-                await _applicationInviteRepository.DeleteApplicationInvitesAsync(
-                    new ApplicationInviteDeleteCmd()
+                await _applicationInviteRepository.ManageAsync(
+                    new ApplicationInviteUpdateCmd()
                     {
                         ApplicationInviteId = (Guid)command.ApplicationCreateRequest.AppInviteId,
                         OrgId = command.ApplicationCreateRequest.OrgId,
+                        ApplicationInviteStatusEnum = ApplicationInviteStatusEnum.Completed
                     }, ct);
             }
             return result;
