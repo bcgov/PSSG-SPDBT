@@ -137,6 +137,8 @@ namespace Spd.Manager.Membership.UserProfile
             response.UserGuid = cmd.IdirUserIdentity?.UserGuid;
             response.UserDisplayName = cmd.IdirUserIdentity?.DisplayName;
             response.IdirUserName = cmd.IdirUserIdentity?.IdirUserName;
+            //todo: temp hardcode
+            response.OrgId = Guid.Parse("64540211-d346-ee11-b845-00505683fbf4"); 
             return response;
         }
     }

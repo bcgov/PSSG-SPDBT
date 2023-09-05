@@ -28,7 +28,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             _ = CreateMap<spd_portalinvitation, ApplicationInviteResult>()
             .IncludeBase<spd_portalinvitation, ApplicationInvite>()
             .ForMember(d => d.PayeeType, opt => opt.MapFrom(s => GetPayeeType(s.spd_payeetype)))
-            .ForMember(d => d.MinistryOrgId, opt => opt.MapFrom(s => s._spd_organizationid_value))
+            .ForMember(d => d.OrgId, opt => opt.MapFrom(s => s._spd_organizationid_value))
             .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_portalinvitationid))
             .ForMember(d => d.ErrorMsg, opt => opt.MapFrom(s => s.spd_errormessage))
             .ForMember(d => d.Status, opt => opt.MapFrom(s => s.statuscode == null ? ApplicationInviteStatusEnum.Draft : Enum.Parse<ApplicationInviteStatusEnum>(((InvitationStatus)s.statuscode).ToString())))
