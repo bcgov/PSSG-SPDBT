@@ -29,7 +29,6 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 export interface ScreeningRequestAddDialogData {
 	portal: PortalTypeCode;
 	orgId: string;
-	ministryOrgId?: string;
 	isPsaUser?: boolean;
 	clearanceId?: string;
 	clearanceAccessId?: string;
@@ -147,12 +146,12 @@ export interface ScreeningRequestAddDialogData {
 								>
 									<mat-form-field>
 										<mat-label>Ministry</mat-label>
-										<mat-select formControlName="ministryOrgId" [errorStateMatcher]="matcher">
+										<mat-select formControlName="orgId" [errorStateMatcher]="matcher">
 											<mat-option *ngFor="let ministry of ministries" [value]="ministry.id">
 												{{ ministry.name }}
 											</mat-option>
 										</mat-select>
-										<mat-error *ngIf="group.get('ministryOrgId')?.hasError('required')">This is required</mat-error>
+										<mat-error *ngIf="group.get('orgId')?.hasError('required')">This is required</mat-error>
 									</mat-form-field>
 								</div>
 
@@ -218,7 +217,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 	isDuplicateDetected = false;
 	isAllowMultiple = false;
 	isPsaUser = false;
-	ministryOrgId: string | null = null;
+	orgId: string | null = null;
 	duplicateName = '';
 	duplicateEmail = '';
 
@@ -251,7 +250,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 	ngOnInit(): void {
 		this.portal = this.dialogData?.portal;
 		this.isPsaUser = this.dialogData?.isPsaUser ?? false;
-		this.ministryOrgId = this.dialogData?.ministryOrgId ?? null;
+		this.orgId = this.dialogData?.orgId ?? null;
 		if (this.portal == PortalTypeCode.Crrp) {
 			this.setupCrrp();
 		} else {
@@ -287,12 +286,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 		}
 
 		const serviceTypeCodeDefault = inviteDefault?.serviceType ? inviteDefault?.serviceType : this.serviceTypeDefault;
-
-		let ministryOrgIdDefault = null;
-		if (this.portal == PortalTypeCode.Psso && !this.isPsaUser) {
-			// if not PSA, default the ministry to the user's ministry
-			ministryOrgIdDefault = this.ministryOrgId;
-		}
+		const orgIdDefault = this.orgId;
 
 		return this.formBuilder.group(
 			{
@@ -306,7 +300,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 				payeeType: new FormControl(inviteDefault ? inviteDefault.payeeType : null, [FormControlValidators.required]),
 				screeningType: new FormControl(screeningTypeCodeDefault),
 				serviceType: new FormControl(serviceTypeCodeDefault),
-				ministryOrgId: new FormControl(ministryOrgIdDefault),
+				orgId: new FormControl(orgIdDefault),
 			},
 			{
 				validators: [
@@ -314,7 +308,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 					FormGroupValidators.conditionalRequiredValidator('serviceType', (form) => this.showServiceType ?? false),
 					FormGroupValidators.conditionalRequiredValidator('payeeType', (form) => this.isNotVolunteerOrg ?? false),
 					FormGroupValidators.conditionalRequiredValidator(
-						'ministryOrgId',
+						'orgId',
 						(form) => this.portal == PortalTypeCode.Psso && this.isPsaUser
 					),
 				],

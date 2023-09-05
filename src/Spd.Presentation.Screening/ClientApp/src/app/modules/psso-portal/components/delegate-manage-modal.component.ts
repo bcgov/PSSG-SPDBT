@@ -4,6 +4,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { HotToastService } from '@ngneat/hot-toast';
 import { DelegateResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
+import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { ScreeningStatusResponse } from 'src/app/shared/components/screening-statuses-common.component';
 import { DelegateAddModalComponent } from './delegate-add-modal.component';
@@ -45,6 +46,7 @@ export interface DelegateManageDialogData {
 									class="m-2"
 									style="color: var(--color-primary-light);"
 									aria-label="Remove delegate"
+									*ngIf="isAllowDelegateDelete(delegate)"
 								>
 									<mat-icon>delete_outline</mat-icon>Remove
 								</a>
@@ -62,7 +64,7 @@ export interface DelegateManageDialogData {
 				<div class="col-md-4 col-sm-12 mb-2">
 					<button mat-stroked-button mat-dialog-close class="large" color="primary">Close</button>
 				</div>
-				<div class="offset-md-4 col-md-4 col-sm-12 mb-2">
+				<div class="offset-md-4 col-md-4 col-sm-12 mb-2" *ngIf="isAllowDelegateAdd">
 					<button mat-flat-button color="primary" class="large" (click)="onAddDelegate()">Add Delegate</button>
 				</div>
 			</div>
@@ -96,6 +98,17 @@ export class DelegateManageModalComponent implements OnInit {
 					this.loadList();
 				}
 			});
+	}
+
+	isAllowDelegateDelete(delegate: DelegateResponse): boolean {
+		const numberOfDelegates = this.dataSource.data.length;
+		// A screening can't have 0 delegates
+		if (numberOfDelegates <= 1) return false;
+
+		// Hiring Manager can remove themselves from a screening as long as there is a delegate
+		// A screening can't have no hiring manager/PSA recruiter
+		// Delegates can remove themselves
+		return true;
 	}
 
 	onRemoveDelegate(delegate: DelegateResponse): void {
@@ -137,5 +150,10 @@ export class DelegateManageModalComponent implements OnInit {
 			.subscribe((res: Array<DelegateResponse>) => {
 				this.dataSource.data = res ?? [];
 			});
+	}
+
+	get isAllowDelegateAdd(): boolean {
+		// maximum of 4 delegates to be added to an application
+		return this.dataSource.data.length < SPD_CONSTANTS.maxNumberOfDelegates;
 	}
 }

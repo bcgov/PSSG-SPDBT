@@ -10,7 +10,6 @@ import { AuthUserIdirService } from 'src/app/core/services/auth-user-idir.servic
 		<app-manual-submission-common
 			[portal]="portal.Psso"
 			[isPsaUser]="isPsaUser"
-			[ministryOrgId]="ministryOrgId"
 			[orgId]="orgId"
 		></app-manual-submission-common>
 	`,
@@ -20,7 +19,6 @@ export class ManualSubmissionComponent implements OnInit {
 	orgId: string | null = null;
 	portal = PortalTypeCode;
 	isPsaUser: boolean | undefined = this.authUserService.idirUserWhoamiProfile?.isPSA;
-	ministryOrgId: string | undefined = this.authUserService.idirUserWhoamiProfile?.ministryOrgId;
 
 	constructor(private router: Router, private authUserService: AuthUserIdirService) {}
 
