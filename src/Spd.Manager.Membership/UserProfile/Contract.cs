@@ -93,7 +93,7 @@ namespace Spd.Manager.Membership.UserProfile
 
     public class IdirUserProfileResponse
     {
-        public Guid OrgId { get; set; } //would be hardcoded bcgov id.
+        public Guid OrgId { get; set; } //would be user's ministry from Idir.
         public Guid UserId { get; set; }
         public string? UserGuid { get; set; }//from token
         public string? UserDisplayName { get; set; } //from token
@@ -102,7 +102,6 @@ namespace Spd.Manager.Membership.UserProfile
         public string? IdirUserName { get; set; }
         public IdentityProviderTypeCode? IdentityProviderType { get; set; }
         public bool IsPSA { get; set; } = true;
-        public Guid MinistryOrgId { get; set; } = Guid.Parse("64540211-d346-ee11-b845-00505683fbf4"); //todo: temp hardcode
     }
 
     public class IdirUserIdentity
