@@ -10,7 +10,6 @@ using Spd.Utilities.Shared.ManagerContract;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 using System.Globalization;
-using System.Security.Principal;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -439,7 +438,7 @@ namespace Spd.Presentation.Screening.Controllers
                 appListFilterBy = new AppListFilterBy(null);
                 appListFilterBy.ParentOrgId = orgId;
             }
-            
+
             if (string.IsNullOrWhiteSpace(filters)) return appListFilterBy;
 
             try
