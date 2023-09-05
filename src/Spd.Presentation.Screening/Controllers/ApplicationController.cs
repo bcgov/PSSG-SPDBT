@@ -10,6 +10,7 @@ using Spd.Utilities.Shared.ManagerContract;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 using System.Globalization;
+using System.Security.Principal;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -23,16 +24,19 @@ namespace Spd.Presentation.Screening.Controllers
         private readonly IValidator<ApplicationCreateRequest> _appCreateRequestValidator;
         private readonly IValidator<ApplicationCreateRequestFromBulk> _appCreateRequestFromBulkValidator;
         private readonly IConfiguration _configuration;
+        private readonly IPrincipal _currentUser;
 
         public ApplicationController(IMediator mediator,
             IValidator<ApplicationCreateRequest> appCreateRequestValidator,
             IValidator<ApplicationCreateRequestFromBulk> appCreateRequestFromBulkValidator,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IPrincipal currentUser)
         {
             _mediator = mediator;
             _appCreateRequestValidator = appCreateRequestValidator;
             _appCreateRequestFromBulkValidator = appCreateRequestFromBulkValidator;
             _configuration = configuration;
+            _currentUser = currentUser;
         }
 
         #region application-invites
@@ -47,13 +51,13 @@ namespace Spd.Presentation.Screening.Controllers
         [HttpPost]
         public async Task<ApplicationInvitesCreateResponse> AddApplicationInvites([FromBody][Required] ApplicationInvitesCreateRequest invitesCreateRequest, [FromRoute] Guid orgId)
         {
-            var userId = this.HttpContext.User.GetUserId();
+            var userId = _currentUser.GetUserId();
             if (userId == null) throw new ApiException(System.Net.HttpStatusCode.Unauthorized);
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
             if (hostUrl == null)
                 throw new ConfigurationErrorsException("HostUrl is not set correctly in configuration.");
             invitesCreateRequest.HostUrl = hostUrl;
-            return await _mediator.Send(new ApplicationInviteCreateCommand(invitesCreateRequest, orgId, Guid.Parse(userId)));
+            return await _mediator.Send(new ApplicationInviteCreateCommand(invitesCreateRequest, orgId, Guid.Parse(userId), _currentUser.IsPSA()));
         }
 
         /// <summary>
@@ -70,6 +74,17 @@ namespace Spd.Presentation.Screening.Controllers
         [HttpGet]
         public async Task<ApplicationInviteListResponse> GetInvitesList([FromRoute] Guid orgId, [FromQuery] string? filters, [FromQuery] uint? page, [FromQuery] uint? pageSize)
         {
+            bool isPSSO = false;
+            bool isPSA = false;
+            Guid? idirUserId = null;
+
+            string? identityProvider = _currentUser.GetIdentityProvider();
+            if (identityProvider != null && identityProvider.Equals("idir", StringComparison.InvariantCultureIgnoreCase))
+            {
+                idirUserId = Guid.Parse(_currentUser.GetUserId());
+                isPSA = _currentUser.IsPSA();
+                isPSSO = true;
+            }
             page = (page == null || page < 0) ? 0 : page;
             pageSize = (pageSize == null || pageSize == 0 || pageSize > 100) ? 10 : pageSize;
             PaginationRequest pagination = new PaginationRequest((int)page, (int)pageSize);
@@ -90,11 +105,15 @@ namespace Spd.Presentation.Screening.Controllers
             }
             AppInviteListFilterBy filterBy = new AppInviteListFilterBy(orgId, EmailOrNameContains: filterValue);
             AppInviteListSortBy sortBy = new AppInviteListSortBy(SubmittedDateDesc: true);
+
             return await _mediator.Send(new ApplicationInviteListQuery()
             {
                 FilterBy = filterBy,
                 SortBy = sortBy,
-                Paging = pagination
+                Paging = pagination,
+                IsPSSO = isPSSO,
+                UserId = idirUserId,
+                IsPSA = isPSA
             });
         }
 
@@ -330,12 +349,20 @@ namespace Spd.Presentation.Screening.Controllers
         public async Task<ApplicationCreateResponse> AddApplication([FromForm][Required] CreateApplication createApplication, [FromRoute] Guid orgId)
         {
             bool isPSSO = false;
-            if (this.HttpContext.User.GetOrgId() == SpdConstants.BC_GOV_ORG_ID.ToString())
+            bool isPSA = false;
+
+            string? identityProvider = _currentUser.GetIdentityProvider();
+            if (identityProvider != null && identityProvider.Equals("idir", StringComparison.InvariantCultureIgnoreCase))
+            {
+                isPSA = _currentUser.IsPSA();
+                isPSSO = true;
+            }
+
+            if (isPSSO)
             {
                 //PSSO
                 if (createApplication.ConsentFormFile != null)
                     throw new ApiException(System.Net.HttpStatusCode.BadRequest, "no need for consent file.");
-                isPSSO = true;
             }
             else
             {
@@ -362,7 +389,7 @@ namespace Spd.Presentation.Screening.Controllers
             }
             else
             {
-                return await _mediator.Send(new ApplicationCreateCommand(appCreateRequest, orgId, Guid.Parse(userId), createApplication.ConsentFormFile));
+                return await _mediator.Send(new ApplicationCreateCommand(appCreateRequest, null, Guid.Parse(userId), createApplication.ConsentFormFile));
             }
         }
 

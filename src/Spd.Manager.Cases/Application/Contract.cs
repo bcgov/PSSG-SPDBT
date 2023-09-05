@@ -34,12 +34,15 @@ namespace Spd.Manager.Cases.Application
     }
 
     #region application invites
-    public record ApplicationInviteCreateCommand(ApplicationInvitesCreateRequest ApplicationInvitesCreateRequest, Guid OrgId, Guid UserId) : IRequest<ApplicationInvitesCreateResponse>;
+    public record ApplicationInviteCreateCommand(ApplicationInvitesCreateRequest ApplicationInvitesCreateRequest, Guid OrgId, Guid UserId, bool IsPSA = false) : IRequest<ApplicationInvitesCreateResponse>;
     public record ApplicationInviteListQuery() : IRequest<ApplicationInviteListResponse>
     {
         public AppInviteListFilterBy? FilterBy { get; set; }
         public AppInviteListSortBy? SortBy { get; set; }
         public PaginationRequest Paging { get; set; } = null!;
+        public bool IsPSSO { get; set; } = false;
+        public bool IsPSA { get; set; } = false;
+        public Guid? UserId { get; set; } = null;
     };
     public record ApplicationInviteDeleteCommand(Guid OrgId, Guid ApplicationInviteId) : IRequest<Unit>;
     public record ApplicationInviteVerifyCommand(AppInviteVerifyRequest AppInvitesVerifyRequest) : IRequest<AppOrgResponse>;

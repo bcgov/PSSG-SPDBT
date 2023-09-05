@@ -54,6 +54,7 @@ namespace Spd.Utilities.LogonUser
         }
 
         public static string? GetUserId(this IPrincipal principal) => ValidatePrincipal(principal).GetClaimValue(SPD_USERID);
+        public static bool IsPSA(this IPrincipal principal) => true;
 
         public static string? GetOrgId(this IPrincipal principal) => ValidatePrincipal(principal).GetClaimValue(SPD_ORGID);
 
