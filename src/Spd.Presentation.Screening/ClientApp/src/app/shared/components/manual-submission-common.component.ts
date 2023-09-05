@@ -285,7 +285,7 @@ export interface AliasCreateRequest {
 										class="delete-row-button mb-3"
 										matTooltip="Remove previous name"
 										(click)="onDeleteRow(i)"
-										[disabled]="moreThanOneAlias"
+										*ngIf="moreThanOneRowExists"
 										aria-label="Remove row"
 									>
 										<mat-icon>delete_outline</mat-icon>
@@ -293,7 +293,7 @@ export interface AliasCreateRequest {
 								</div>
 							</div>
 						</ng-container>
-						<div class="row" *ngIf="isMaxAliasCount">
+						<div class="row" *ngIf="isAllowAliasAdd">
 							<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
 								<button mat-stroked-button (click)="onAddRow()">
 									<mat-icon class="add-icon">add_circle</mat-icon>Add Another Name
@@ -537,7 +537,6 @@ export class ManualSubmissionCommonComponent implements OnInit {
 	@Input() portal: PortalTypeCode | null = null;
 	@Input() orgId: string | null = null;
 	@Input() isPsaUser: boolean | undefined = undefined;
-	@Input() ministryOrgId: string | undefined = undefined;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
@@ -634,12 +633,9 @@ export class ManualSubmissionCommonComponent implements OnInit {
 				: '';
 			createRequest.requireDuplicateCheck = true;
 
-			// Set the org id - for PSSO this is the ministryOrgId, otherwise the CRRP org
-			if (this.portal == PortalTypeCode.Psso) {
-				createRequest.orgId = this.isPsaUser ? createRequest.ministryOrgId : this.ministryOrgId;
-			} else {
-				createRequest.orgId = this.orgId;
-			}
+			// Set the org id - for PSSO this is the ministry OrgId, otherwise the CRRP org
+			createRequest.orgId =
+				this.portal == PortalTypeCode.Psso && this.isPsaUser ? createRequest.ministryOrgId : this.orgId;
 
 			const body = {
 				ConsentFormFile: this.portal == PortalTypeCode.Crrp ? this.fileUploadComponent.files[0] : null,
@@ -737,12 +733,12 @@ export class ManualSubmissionCommonComponent implements OnInit {
 		return this.form.get('screeningType') as FormControl;
 	}
 
-	get moreThanOneAlias(): boolean {
-		return this.aliases.length > 1 ? false : true;
+	get moreThanOneRowExists(): boolean {
+		return this.aliases.length > 1;
 	}
 
-	get isMaxAliasCount(): boolean {
-		return this.aliases.length >= 3 ? false : true;
+	get isAllowAliasAdd(): boolean {
+		return this.aliases.length < SPD_CONSTANTS.maxNumberOfAliases;
 	}
 
 	get isDisplayFacilityName(): boolean {

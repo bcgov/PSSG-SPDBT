@@ -226,7 +226,6 @@ export class IdentifyVerificationCommonComponent implements OnInit {
 	@Input() portal: PortalTypeCode | null = null;
 	@Input() orgId: string | null = null;
 	@Input() isPsaUser: boolean | undefined = undefined;
-	@Input() ministryOrgId: string | undefined = undefined;
 
 	@ViewChild(MatSort) sort!: MatSort;
 	@ViewChild('paginator') paginator!: MatPaginator;
@@ -308,10 +307,15 @@ export class IdentifyVerificationCommonComponent implements OnInit {
 	}
 
 	onConfirm(application: IdentityVerificationResponse) {
+		const message =
+			this.portal == PortalTypeCode.Crrp
+				? 'Are you sure you have verified the identity of the applicant for this criminal record check request?'
+				: 'Are you sure you have verified the identity of the applicant for this security screening?';
+
 		const data: DialogOptions = {
 			icon: 'warning',
 			title: 'Confirmation',
-			message: 'Are you sure you have verified the identity of the applicant for this criminal record check request?',
+			message,
 			actionText: 'Yes, submit',
 			cancelText: 'Cancel',
 		};
@@ -358,7 +362,6 @@ export class IdentifyVerificationCommonComponent implements OnInit {
 			portal: this.portal!,
 			orgId: this.orgId!,
 			isPsaUser: this.isPsaUser,
-			ministryOrgId: this.ministryOrgId,
 			inviteDefault,
 		};
 
@@ -425,7 +428,7 @@ export class IdentifyVerificationCommonComponent implements OnInit {
 	private rejectIdentity(application: IdentityVerificationResponse) {
 		this.applicationService
 			.apiOrgsOrgIdIdentityApplicationIdPut({
-				orgId: this.orgId!,
+				orgId: application.orgId!,
 				applicationId: application.id!,
 				status: IdentityStatusCode.Rejected,
 			})

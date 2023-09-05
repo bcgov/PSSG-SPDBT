@@ -29,7 +29,6 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 export interface ScreeningRequestAddDialogData {
 	portal: PortalTypeCode;
 	orgId: string;
-	ministryOrgId?: string;
 	isPsaUser?: boolean;
 	clearanceId?: string;
 	clearanceAccessId?: string;
@@ -218,7 +217,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 	isDuplicateDetected = false;
 	isAllowMultiple = false;
 	isPsaUser = false;
-	ministryOrgId: string | null = null;
+	orgId: string | null = null;
 	duplicateName = '';
 	duplicateEmail = '';
 
@@ -251,7 +250,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 	ngOnInit(): void {
 		this.portal = this.dialogData?.portal;
 		this.isPsaUser = this.dialogData?.isPsaUser ?? false;
-		this.ministryOrgId = this.dialogData?.ministryOrgId ?? null;
+		this.orgId = this.dialogData?.orgId ?? null;
 		if (this.portal == PortalTypeCode.Crrp) {
 			this.setupCrrp();
 		} else {
@@ -291,7 +290,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 		let ministryOrgIdDefault = null;
 		if (this.portal == PortalTypeCode.Psso && !this.isPsaUser) {
 			// if not PSA, default the ministry to the user's ministry
-			ministryOrgIdDefault = this.ministryOrgId;
+			ministryOrgIdDefault = this.orgId;
 		}
 
 		return this.formBuilder.group(

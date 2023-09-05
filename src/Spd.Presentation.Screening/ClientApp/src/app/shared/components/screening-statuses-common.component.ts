@@ -274,9 +274,9 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 			}
 
 			.mat-column-delegates {
-				min-width: 230px;
+				min-width: 210px;
 				.table-button {
-					min-width: 220px;
+					min-width: 190px;
 				}
 			}
 		`,
@@ -303,7 +303,6 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 	@Input() heading = '';
 	@Input() orgId: string | null = null;
 	@Input() isPsaUser: boolean | undefined = undefined;
-	@Input() ministryOrgId: string | undefined = undefined;
 
 	@Output() emitManageDelegate: EventEmitter<ScreeningStatusResponse> = new EventEmitter<ScreeningStatusResponse>();
 	@Output() emitPayNow: EventEmitter<ScreeningStatusResponse> = new EventEmitter<ScreeningStatusResponse>();

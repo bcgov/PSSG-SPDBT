@@ -265,7 +265,6 @@ export class ScreeningRequestsCommonComponent implements OnInit {
 			portal: this.portal!,
 			orgId: this.orgId!,
 			isPsaUser: this.isPsaUser,
-			ministryOrgId: this.ministryOrgId,
 		};
 
 		this.dialog
@@ -299,7 +298,7 @@ export class ScreeningRequestsCommonComponent implements OnInit {
 					this.applicationService
 						.apiOrgsOrgIdApplicationInvitesApplicationInviteIdDelete({
 							applicationInviteId: application.id!,
-							orgId: this.orgId!,
+							orgId: application.ministryOrgId!,
 						})
 						.pipe()
 						.subscribe((_res) => {
