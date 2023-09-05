@@ -300,8 +300,6 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 										</ol>
 									</li>
 
-									<li>The Province is not responsible for the content of the Payment Site as defined below.</li>
-
 									<strong class="terms-subtitle">Information Collection:</strong>
 									<li>
 										When you visit the Site or use the Services, certain types of information are automatically
