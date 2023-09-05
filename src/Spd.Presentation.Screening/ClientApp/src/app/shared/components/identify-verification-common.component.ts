@@ -122,7 +122,7 @@ export interface IdentityVerificationResponse extends ApplicationResponse {
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="ministryOrgId">
+						<ng-container matColumnDef="orgId">
 							<mat-header-cell *matHeaderCellDef>Ministry</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Ministry:</span>
@@ -269,7 +269,7 @@ export class IdentifyVerificationCommonComponent implements OnInit {
 					'jobTitle',
 					'emailAddress',
 					'createdOn',
-					'ministryOrgId',
+					'orgId',
 					'applicationNumber',
 					'action1',
 					'action2',

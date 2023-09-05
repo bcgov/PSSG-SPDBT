@@ -161,7 +161,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="ministryOrgId">
+						<ng-container matColumnDef="orgId">
 							<mat-header-cell *matHeaderCellDef>Ministry</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Ministry:</span>
@@ -347,7 +347,7 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 					'applicantName',
 					'emailAddress',
 					'createdOn',
-					'ministryOrgId',
+					'orgId',
 					'applicationNumber',
 					'status',
 					'action1',

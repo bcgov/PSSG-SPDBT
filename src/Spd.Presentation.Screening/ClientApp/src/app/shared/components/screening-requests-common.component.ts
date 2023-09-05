@@ -122,11 +122,11 @@ export const ScreeningCheckFilterMap: Record<keyof ScreeningCheckFilter, string>
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="ministryOrgId">
+						<ng-container matColumnDef="orgId">
 							<mat-header-cell *matHeaderCellDef>Ministry</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Ministry:</span>
-								{{ application.ministryOrgId | ministryoptions | async | default }}
+								{{ application.orgId | ministryoptions | async | default }}
 							</mat-cell>
 						</ng-container>
 
@@ -225,7 +225,6 @@ export class ScreeningRequestsCommonComponent implements OnInit {
 	@Input() orgId: string | null = null;
 	@Input() portal: PortalTypeCode | null = null;
 	@Input() isPsaUser: boolean | undefined = undefined;
-	@Input() ministryOrgId: string | undefined = undefined;
 	@Input() heading = '';
 	@Input() subtitle = '';
 
@@ -251,7 +250,7 @@ export class ScreeningRequestsCommonComponent implements OnInit {
 			this.columns = ['applicantName', 'emailAddress', 'jobTitle', 'payeeType', 'createdOn', 'viewed', 'action1'];
 		} else if (this.portal == PortalTypeCode.Psso) {
 			if (this.isPsaUser) {
-				this.columns = ['applicantName', 'emailAddress', 'jobTitle', 'createdOn', 'ministryOrgId', 'viewed', 'action1'];
+				this.columns = ['applicantName', 'emailAddress', 'jobTitle', 'createdOn', 'orgId', 'viewed', 'action1'];
 			} else {
 				this.columns = ['applicantName', 'emailAddress', 'jobTitle', 'createdOn', 'viewed', 'action1'];
 			}

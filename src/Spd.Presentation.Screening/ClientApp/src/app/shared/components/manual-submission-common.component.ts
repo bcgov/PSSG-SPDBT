@@ -190,7 +190,7 @@ export interface AliasCreateRequest {
 						</div>
 						<div class="col-xl-3 col-lg-6 col-md-12" *ngIf="portal == portalTypeCodes.Psso">
 							<mat-form-field>
-								<mat-label>Employee ID</mat-label>
+								<mat-label>Employee ID <span class="optional-label">(optional)</span></mat-label>
 								<input matInput formControlName="employeeId" mask="0000000" />
 								<mat-error *ngIf="form.get('employeeId')?.hasError('mask')"> This must be 7 digits </mat-error>
 							</mat-form-field>
@@ -198,12 +198,12 @@ export interface AliasCreateRequest {
 						<div class="col-xl-3 col-lg-6 col-md-12" *ngIf="portal == portalTypeCodes.Psso && isPsaUser">
 							<mat-form-field>
 								<mat-label>Ministry</mat-label>
-								<mat-select formControlName="ministryOrgId">
+								<mat-select formControlName="orgId">
 									<mat-option *ngFor="let ministry of ministries" [value]="ministry.id">
 										{{ ministry.name }}
 									</mat-option>
 								</mat-select>
-								<mat-error *ngIf="form.get('ministryOrgId')?.hasError('required')">This is required</mat-error>
+								<mat-error *ngIf="form.get('orgId')?.hasError('required')">This is required</mat-error>
 							</mat-form-field>
 						</div>
 						<div class="col-xl-3 col-lg-6 col-md-12" *ngIf="serviceTypes">
@@ -477,60 +477,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	booleanTypeCodes = BooleanTypeCode;
-	form: FormGroup = this.formBuilder.group(
-		{
-			givenName: new FormControl('', [FormControlValidators.required]),
-			middleName1: new FormControl(''),
-			middleName2: new FormControl(''),
-			surname: new FormControl('', [FormControlValidators.required]),
-			oneLegalName: new FormControl(false),
-			emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
-			phoneNumber: new FormControl('', [Validators.required]),
-			driversLicense: new FormControl(''),
-			genderCode: new FormControl(''),
-			dateOfBirth: new FormControl(null, [Validators.required]),
-			birthPlace: new FormControl('', [FormControlValidators.required]),
-			jobTitle: new FormControl('', [FormControlValidators.required]),
-			screeningType: new FormControl('', [FormControlValidators.required]),
-			serviceType: new FormControl(this.serviceTypeDefault),
-			contractedCompanyName: new FormControl(''),
-			employeeId: new FormControl(''),
-			ministryOrgId: new FormControl(null),
-			previousNameFlag: new FormControl('', [FormControlValidators.required]),
-			addressSelected: new FormControl(false, [Validators.requiredTrue]),
-			addressLine1: new FormControl('', [FormControlValidators.required]),
-			addressLine2: new FormControl(''),
-			city: new FormControl('', [FormControlValidators.required]),
-			postalCode: new FormControl('', [FormControlValidators.required]),
-			province: new FormControl('', [FormControlValidators.required]),
-			country: new FormControl('', [FormControlValidators.required]),
-			agreeToCompleteAndAccurate: new FormControl('', [Validators.requiredTrue]),
-			haveVerifiedIdentity: new FormControl(''),
-			aliases: this.formBuilder.array([]),
-			attachments: new FormControl('', [Validators.required]),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalRequiredValidator('screeningType', (form) => this.showScreeningType ?? false),
-				FormGroupValidators.conditionalRequiredValidator('serviceType', (form) => this.showServiceType ?? false),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'attachments',
-					(form) => this.portal == PortalTypeCode.Crrp
-				),
-				FormGroupValidators.conditionalRequiredValidator(
-					'givenName',
-					(form) => form.get('oneLegalName')?.value != true
-				),
-				FormGroupValidators.conditionalRequiredValidator(
-					'ministryOrgId',
-					(form) => this.portal == PortalTypeCode.Psso && this.isPsaUser == true
-				),
-				FormGroupValidators.conditionalRequiredValidator('contractedCompanyName', (form) =>
-					[ScreeningTypeCode.Contractor, ScreeningTypeCode.Licensee].includes(form.get('screeningType')?.value)
-				),
-			],
-		}
-	);
+	form!: FormGroup;
 	startAtBirthDate = this.utilService.getBirthDateStartAt();
 	maxBirthDate = this.utilService.getBirthDateMax();
 
@@ -558,6 +505,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 			return;
 		}
+		// Set the org id - for PSSO this is the ministry OrgId, otherwise the CRRP org
 
 		if (this.portal == PortalTypeCode.Crrp) {
 			// using bceid
@@ -589,6 +537,61 @@ export class ManualSubmissionCommonComponent implements OnInit {
 				(item) => item.code == ServiceTypeCode.Psso || item.code == ServiceTypeCode.PssoVs
 			);
 		}
+
+		this.form = this.formBuilder.group(
+			{
+				givenName: new FormControl('', [FormControlValidators.required]),
+				middleName1: new FormControl(''),
+				middleName2: new FormControl(''),
+				surname: new FormControl('', [FormControlValidators.required]),
+				oneLegalName: new FormControl(false),
+				emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
+				phoneNumber: new FormControl('', [Validators.required]),
+				driversLicense: new FormControl(''),
+				genderCode: new FormControl(''),
+				dateOfBirth: new FormControl(null, [Validators.required]),
+				birthPlace: new FormControl('', [FormControlValidators.required]),
+				jobTitle: new FormControl('', [FormControlValidators.required]),
+				screeningType: new FormControl('', [FormControlValidators.required]),
+				serviceType: new FormControl(this.serviceTypeDefault),
+				contractedCompanyName: new FormControl(''),
+				employeeId: new FormControl(''),
+				orgId: new FormControl(this.orgId),
+				previousNameFlag: new FormControl('', [FormControlValidators.required]),
+				addressSelected: new FormControl(false, [Validators.requiredTrue]),
+				addressLine1: new FormControl('', [FormControlValidators.required]),
+				addressLine2: new FormControl(''),
+				city: new FormControl('', [FormControlValidators.required]),
+				postalCode: new FormControl('', [FormControlValidators.required]),
+				province: new FormControl('', [FormControlValidators.required]),
+				country: new FormControl('', [FormControlValidators.required]),
+				agreeToCompleteAndAccurate: new FormControl('', [Validators.requiredTrue]),
+				haveVerifiedIdentity: new FormControl(''),
+				aliases: this.formBuilder.array([]),
+				attachments: new FormControl('', [Validators.required]),
+			},
+			{
+				validators: [
+					FormGroupValidators.conditionalRequiredValidator('screeningType', (form) => this.showScreeningType ?? false),
+					FormGroupValidators.conditionalRequiredValidator('serviceType', (form) => this.showServiceType ?? false),
+					FormGroupValidators.conditionalDefaultRequiredValidator(
+						'attachments',
+						(form) => this.portal == PortalTypeCode.Crrp
+					),
+					FormGroupValidators.conditionalRequiredValidator(
+						'givenName',
+						(form) => form.get('oneLegalName')?.value != true
+					),
+					FormGroupValidators.conditionalRequiredValidator(
+						'orgId',
+						(form) => this.portal == PortalTypeCode.Psso && this.isPsaUser == true
+					),
+					FormGroupValidators.conditionalRequiredValidator('contractedCompanyName', (form) =>
+						[ScreeningTypeCode.Contractor, ScreeningTypeCode.Licensee].includes(form.get('screeningType')?.value)
+					),
+				],
+			}
+		);
 
 		this.resetForm();
 	}
@@ -632,10 +635,6 @@ export class ManualSubmissionCommonComponent implements OnInit {
 				? createRequest.contractedCompanyName
 				: '';
 			createRequest.requireDuplicateCheck = true;
-
-			// Set the org id - for PSSO this is the ministry OrgId, otherwise the CRRP org
-			createRequest.orgId =
-				this.portal == PortalTypeCode.Psso && this.isPsaUser ? createRequest.ministryOrgId : this.orgId;
 
 			const body = {
 				ConsentFormFile: this.portal == PortalTypeCode.Crrp ? this.fileUploadComponent.files[0] : null,
