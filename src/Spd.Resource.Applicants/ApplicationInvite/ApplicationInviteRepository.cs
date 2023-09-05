@@ -29,13 +29,14 @@ namespace Spd.Resource.Applicants.ApplicationInvite
                 throw new ArgumentNullException("query.FilterBy.OrgId", "Must query applications by organization id or service type or appInviteId.");
 
             var invites = _dynaContext.spd_portalinvitations
+                    .Where(i=> i.statecode == DynamicsConstants.StateCode_Active)
                     .Where(i => i.spd_invitationtype != null && i.spd_invitationtype == (int)InvitationTypeOptionSet.ScreeningRequest);
 
             if (query.FilterBy.AppInviteId != null)
                 invites = invites.Where(i => i.spd_portalinvitationid == query.FilterBy.AppInviteId);
 
             if (query.FilterBy.OrgId != null)
-                invites = invites.Where(i => i._spd_organizationid_value == query.FilterBy.OrgId && i.statecode == DynamicsConstants.StateCode_Active);
+                invites = invites.Where(i => i._spd_organizationid_value == query.FilterBy.OrgId);
 
             if (query.FilterBy.ServiceTypes != null)
             {
