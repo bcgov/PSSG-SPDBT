@@ -8,7 +8,7 @@ export interface ApplicationInviteCreateRequest {
   firstName?: null | string;
   jobTitle?: null | string;
   lastName?: null | string;
-  ministryOrgId?: null | string;
+  orgId?: string;
   originalClearanceAccessId?: null | string;
   payeeType?: PayerPreferenceTypeCode;
   screeningType?: ScreeningTypeCode;
