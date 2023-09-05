@@ -29,13 +29,14 @@ namespace Spd.Resource.Applicants.ApplicationInvite
                 throw new ArgumentNullException("query.FilterBy.OrgId", "Must query applications by organization id or service type or appInviteId.");
 
             var invites = _dynaContext.spd_portalinvitations
+                    .Where(i=> i.statecode == DynamicsConstants.StateCode_Active)
                     .Where(i => i.spd_invitationtype != null && i.spd_invitationtype == (int)InvitationTypeOptionSet.ScreeningRequest);
 
             if (query.FilterBy.AppInviteId != null)
                 invites = invites.Where(i => i.spd_portalinvitationid == query.FilterBy.AppInviteId);
 
             if (query.FilterBy.OrgId != null)
-                invites = invites.Where(i => i._spd_organizationid_value == query.FilterBy.OrgId && i.statecode == DynamicsConstants.StateCode_Active);
+                invites = invites.Where(i => i._spd_organizationid_value == query.FilterBy.OrgId);
 
             if (query.FilterBy.ServiceTypes != null)
             {
@@ -127,7 +128,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             {
                 foreach (var item in createInviteCmd.ApplicationInvites)
                 {
-                    account? org = await _dynaContext.GetOrgById((Guid)item.MinistryOrgId, ct);
+                    account? org = await _dynaContext.GetOrgById((Guid)item.OrgId, ct);
                     spd_portalinvitation invitation = _mapper.Map<spd_portalinvitation>(item);
                     var encryptedInviteId = WebUtility.UrlEncode(_dataProtector.Protect(invitation.spd_portalinvitationid.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.APPLICATION_INVITE_VALID_DAYS)));
                     invitation.spd_invitationlink = $"{createInviteCmd.HostUrl}{SpdConstants.PSSO_APPLICATION_INVITE_LINK}{encryptedInviteId}";
