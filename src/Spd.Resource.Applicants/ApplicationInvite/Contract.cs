@@ -78,7 +78,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
         public ServiceTypeEnum ServiceType { get; set; }
         public ScreenTypeEnum ScreeningType { get; set; }
         public Guid? OriginalClearanceAccessId { get; set; }
-        public Guid? MinistryOrgId { get; set; }
+        public Guid? OrgId { get; set; }
     }
 
     public record ApplicationInviteUpdateCmd : ApplicationInviteCmd

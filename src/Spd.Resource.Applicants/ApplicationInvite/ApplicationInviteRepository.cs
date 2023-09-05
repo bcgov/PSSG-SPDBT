@@ -127,7 +127,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             {
                 foreach (var item in createInviteCmd.ApplicationInvites)
                 {
-                    account? org = await _dynaContext.GetOrgById((Guid)item.MinistryOrgId, ct);
+                    account? org = await _dynaContext.GetOrgById((Guid)item.OrgId, ct);
                     spd_portalinvitation invitation = _mapper.Map<spd_portalinvitation>(item);
                     var encryptedInviteId = WebUtility.UrlEncode(_dataProtector.Protect(invitation.spd_portalinvitationid.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.APPLICATION_INVITE_VALID_DAYS)));
                     invitation.spd_invitationlink = $"{createInviteCmd.HostUrl}{SpdConstants.PSSO_APPLICATION_INVITE_LINK}{encryptedInviteId}";
