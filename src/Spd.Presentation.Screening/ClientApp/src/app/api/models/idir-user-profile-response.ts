@@ -7,7 +7,6 @@ export interface IdirUserProfileResponse {
   idirUserName?: null | string;
   isPSA?: boolean;
   lastName?: null | string;
-  ministryOrgId?: string;
   orgId?: string;
   userDisplayName?: null | string;
   userGuid?: null | string;
