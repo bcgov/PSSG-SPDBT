@@ -4,12 +4,21 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
+const includedURLs = [/^\/api\/.+$/];
+
 @Injectable()
 export class LoaderInterceptor implements HttpInterceptor {
 	requestsInProgressCount = 0;
 	constructor(private spinnerService: NgxSpinnerService) {}
 
 	intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+		let isIncluded = includedURLs.some((regexp) => regexp.test(request.url));
+
+		// If the URL is NOT in the included list then DO NOT show the loading spinner.
+		if (!isIncluded) {
+			return next.handle(request);
+		}
+
 		this.requestsInProgressCount++;
 		this.spinnerService.show('loaderSpinner');
 
