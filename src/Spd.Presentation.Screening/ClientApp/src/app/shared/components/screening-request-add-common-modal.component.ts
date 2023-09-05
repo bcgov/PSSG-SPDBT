@@ -286,12 +286,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 		}
 
 		const serviceTypeCodeDefault = inviteDefault?.serviceType ? inviteDefault?.serviceType : this.serviceTypeDefault;
-
-		let ministryOrgIdDefault = null;
-		if (this.portal == PortalTypeCode.Psso && !this.isPsaUser) {
-			// if not PSA, default the ministry to the user's ministry
-			ministryOrgIdDefault = this.orgId;
-		}
+		const ministryOrgIdDefault = this.orgId;
 
 		return this.formBuilder.group(
 			{

@@ -298,7 +298,7 @@ export class ScreeningRequestsCommonComponent implements OnInit {
 					this.applicationService
 						.apiOrgsOrgIdApplicationInvitesApplicationInviteIdDelete({
 							applicationInviteId: application.id!,
-							orgId: application.ministryOrgId!,
+							orgId: application.orgId!,
 						})
 						.pipe()
 						.subscribe((_res) => {

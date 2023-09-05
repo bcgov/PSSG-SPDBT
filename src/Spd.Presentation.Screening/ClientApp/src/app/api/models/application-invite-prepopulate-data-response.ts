@@ -8,7 +8,7 @@ export interface ApplicationInvitePrepopulateDataResponse {
   firstName?: null | string;
   jobTitle?: null | string;
   lastName?: null | string;
-  ministryOrgId?: null | string;
+  orgId?: string;
   payeeType?: PayerPreferenceTypeCode;
   screeningType?: ScreeningTypeCode;
   serviceType?: ServiceTypeCode;
