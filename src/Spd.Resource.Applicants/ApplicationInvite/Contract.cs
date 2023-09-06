@@ -17,7 +17,11 @@ namespace Spd.Resource.Applicants.ApplicationInvite
     }
     public interface ApplicationInviteCmd { };
 
-    public record AppInviteFilterBy(Guid? OrgId, string? EmailOrNameContains, ServiceTypeEnum[]? ServiceTypes = null, Guid? AppInviteId = null);
+    public record AppInviteFilterBy(Guid? OrgId, 
+        string? EmailOrNameContains, 
+        ServiceTypeEnum[]? ServiceTypes = null, 
+        Guid? AppInviteId = null,
+        Guid? CreatedByUserId = null);
     public record AppInviteSortBy(bool? SubmittedDateDesc);
     public class ApplicationInviteListResp
     {

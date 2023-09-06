@@ -38,6 +38,9 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             if (query.FilterBy.OrgId != null)
                 invites = invites.Where(i => i._spd_organizationid_value == query.FilterBy.OrgId);
 
+            if(query.FilterBy.CreatedByUserId != null)
+                invites = invites.Where(i => i._spd_portaluserid_value == query.FilterBy.CreatedByUserId);
+
             if (query.FilterBy.ServiceTypes != null)
             {
                 List<Guid> stGuids = new List<Guid>();

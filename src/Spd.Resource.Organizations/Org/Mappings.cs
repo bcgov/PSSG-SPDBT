@@ -35,6 +35,7 @@ namespace Spd.Resource.Organizations.Org
             .ForMember(d => d.OrganizationName, opt => opt.MapFrom(s => s.name))
             .ForMember(d => d.OrganizationLegalName, opt => opt.MapFrom(s => s.spd_organizationlegalname))
             .ForMember(d => d.MaxContacts, opt => opt.MapFrom(s => s.spd_maximumnumberofcontacts))
+            .ForMember(d => d.ParentOrgId, opt => opt.MapFrom(s => s._parentaccountid_value))
             .ForMember(d => d.MaxPrimaryContacts, opt => opt.MapFrom(s => s.spd_noofprimaryauthorizedcontacts))
             .ForMember(d => d.AccessCode, opt => opt.MapFrom(s => s.spd_accesscode))
             .ForMember(d => d.HasInvoiceSupport, opt => opt.MapFrom(s => s.spd_eligibleforcreditpayment != null && s.spd_eligibleforcreditpayment == (int)YesNoOptionSet.Yes))
