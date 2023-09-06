@@ -101,7 +101,7 @@ namespace Spd.Manager.Membership.UserProfile
         public string? LastName { get; set; }
         public string? IdirUserName { get; set; }
         public IdentityProviderTypeCode? IdentityProviderType { get; set; }
-        public bool IsPSA { get; set; } = true;
+        public bool IsPSA { get; set; } = false;
     }
 
     public class IdirUserIdentity
