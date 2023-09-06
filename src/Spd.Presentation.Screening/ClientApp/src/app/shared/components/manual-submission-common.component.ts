@@ -556,7 +556,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 				serviceType: new FormControl(this.serviceTypeDefault),
 				contractedCompanyName: new FormControl(''),
 				employeeId: new FormControl(''),
-				orgId: new FormControl(this.orgId),
+				orgId: new FormControl(null),
 				previousNameFlag: new FormControl('', [FormControlValidators.required]),
 				addressSelected: new FormControl(false, [Validators.requiredTrue]),
 				addressLine1: new FormControl('', [FormControlValidators.required]),
@@ -748,6 +748,8 @@ export class ManualSubmissionCommonComponent implements OnInit {
 		this.form.reset();
 		this.aliases.clear();
 		this.onAddRow();
+
+		this.form.patchValue({ orgId: this.orgId });
 	}
 
 	private newAliasRow(): FormGroup {
