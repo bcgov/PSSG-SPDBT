@@ -29,7 +29,7 @@ public record ApplicationListQry
     public AppSortBy? SortBy { get; set; } //null means no sorting
     public Paging Paging { get; set; } = null!;
 }
-public record AppFilterBy(Guid? OrgId)
+public record AppFilterBy()
 {
     public IEnumerable<ApplicationPortalStatusEnum>? ApplicationPortalStatus { get; set; }
     public string? NameOrEmailOrAppIdContains { get; set; }
@@ -39,6 +39,7 @@ public record AppFilterBy(Guid? OrgId)
     public DateTimeOffset? ToDateTime { get; set; }
     public PayerPreferenceTypeCode? PayerType { get; set; } = null;
     public Guid? ParentOrgId { get; set; }
+    public Guid? OrgId { get; set; }
 }
 public record AppSortBy(bool? SubmittedDateDesc = null, bool? NameDesc = null, bool? CompanyNameDesc = null, bool? PaidAndSubmittedOnDesc = null);
 public record SearchApplicationQry

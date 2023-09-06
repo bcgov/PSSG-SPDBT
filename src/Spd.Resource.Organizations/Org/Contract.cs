@@ -61,5 +61,6 @@ namespace Spd.Resource.Organizations.Org
         public string? VolunteerOrganizationTypeCode { get; set; }
         public IEnumerable<ServiceTypeEnum> ServiceTypes { get; set; } = Array.Empty<ServiceTypeEnum>();
         public bool IsActive { get; set; } = true;
+        public Guid? ParentOrgId { get; set; }
     }
 }

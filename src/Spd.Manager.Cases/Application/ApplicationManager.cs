@@ -91,7 +91,7 @@ namespace Spd.Manager.Cases.Application
             var org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(createCmd.OrgId), ct);
 
             // If not a volunteer org, then the payee type is required
-            if (org != null && org.OrgResult.VolunteerOrganizationTypeCode == null && org.OrgResult.Id != SpdConstants.BC_GOV_ORG_ID)
+            if (org != null && org.OrgResult.VolunteerOrganizationTypeCode == null && org.OrgResult.ParentOrgId != SpdConstants.BC_GOV_ORG_ID)
             {
                 if (createCmd.ApplicationInvitesCreateRequest.ApplicationInviteCreateRequests.Any(a => a.PayeeType == null))
                 {
@@ -116,7 +116,10 @@ namespace Spd.Manager.Cases.Application
                 }
             }
             var cmd = _mapper.Map<ApplicationInvitesCreateCmd>(createCmd.ApplicationInvitesCreateRequest);
-            cmd.OrgId = createCmd.OrgId;
+            if (createCmd.IsPSA)
+                cmd.OrgId = SpdConstants.BC_GOV_ORG_ID;
+            else
+                cmd.OrgId = createCmd.OrgId;
             cmd.CreatedByUserId = createCmd.UserId;
             await _applicationInviteRepository.ManageAsync(cmd, ct);
             resp.CreateSuccess = true;
@@ -125,12 +128,20 @@ namespace Spd.Manager.Cases.Application
         public async Task<ApplicationInviteListResponse> Handle(ApplicationInviteListQuery request, CancellationToken ct)
         {
             ApplicationInviteQuery query = _mapper.Map<ApplicationInviteQuery>(request);
-            if (request.FilterBy.OrgId == SpdConstants.BC_GOV_ORG_ID)
+            if (request.IsPSSO)
             {
-                List<ServiceTypeEnum> serviceTypes = new List<ServiceTypeEnum> { ServiceTypeEnum.PSSO, ServiceTypeEnum.PSSO_VS };
                 //psso, cannot use orgId to filter.
-                query.FilterBy = new AppInviteFilterBy(null, request.FilterBy.EmailOrNameContains, serviceTypes.ToArray());
-
+                List<ServiceTypeEnum> serviceTypes = new List<ServiceTypeEnum> { ServiceTypeEnum.PSSO, ServiceTypeEnum.PSSO_VS };
+                if (request.IsPSA)
+                {
+                    //return all psso invites
+                    query.FilterBy = new AppInviteFilterBy(null, request.FilterBy.EmailOrNameContains, serviceTypes.ToArray());
+                }
+                else
+                {
+                    //return all created by invites.
+                    query.FilterBy = new AppInviteFilterBy(null, request.FilterBy.EmailOrNameContains, serviceTypes.ToArray(), request.UserId);
+                }
             }
             var response = await _applicationInviteRepository.QueryAsync(
                 query,
@@ -157,10 +168,6 @@ namespace Spd.Manager.Cases.Application
         public async Task<ApplicationCreateResponse> Handle(ApplicationCreateCommand request, CancellationToken ct)
         {
             ApplicationCreateResponse result = new();
-            if (request.ParentOrgId != SpdConstants.BC_GOV_ORG_ID)
-            {
-                request.ApplicationCreateRequest.OrgId = (Guid)request.ParentOrgId;
-            }
             if (request.ApplicationCreateRequest.RequireDuplicateCheck)
             {
                 result = await CheckDuplicateApp(request.ApplicationCreateRequest, ct);
@@ -222,6 +229,15 @@ namespace Spd.Manager.Cases.Application
             AppFilterBy filterBy = _mapper.Map<AppFilterBy>(request.FilterBy);
             AppSortBy sortBy = _mapper.Map<AppSortBy>(request.SortBy);
             Paging paging = _mapper.Map<Paging>(request.Paging);
+            if (request.IsPSSO)
+            {
+                filterBy.OrgId = null;
+                filterBy.ParentOrgId = SpdConstants.BC_GOV_ORG_ID;
+                if(!request.IsPSA)
+                {
+                    //todo: check the way to filter on delegates
+                }
+            }
 
             var response = await _applicationRepository.QueryAsync(
                 new ApplicationListQry
