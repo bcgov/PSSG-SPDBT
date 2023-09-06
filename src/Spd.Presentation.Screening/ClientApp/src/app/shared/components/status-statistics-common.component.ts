@@ -3,6 +3,7 @@ import { Observable, tap } from 'rxjs';
 import { ApplicationStatisticsResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { ApplicationPortalStatisticsTypeCode } from 'src/app/core/code-types/application-portal-statistics-type.model';
+import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { UtilService } from 'src/app/core/services/util.service';
 
 @Component({
@@ -14,39 +15,42 @@ import { UtilService } from 'src/app/core/services/util.service';
 				<div class="d-flex flex-wrap justify-content-start">
 					<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">
-							{{ applicationStatistics[statisticsCode.VerifyIdentity] ?? 0 }}
+							{{ applicationStatistics[statisticsCodes.VerifyIdentity] ?? 0 }}
 						</div>
-						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCode.VerifyIdentity) }}</div>
+						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCodes.VerifyIdentity) }}</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-green align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">
-							{{ applicationStatistics[statisticsCode.InProgress] ?? 0 }}
+							{{ applicationStatistics[statisticsCodes.InProgress] ?? 0 }}
 						</div>
-						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCode.InProgress) }}</div>
+						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCodes.InProgress) }}</div>
+					</div>
+					<div
+						class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2"
+						*ngIf="portal == portalTypeCodes.Crrp"
+					>
+						<div class="fw-semibold fs-4 m-2 ms-3">
+							{{ applicationStatistics[statisticsCodes.AwaitingPayment] ?? 0 }}
+						</div>
+						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCodes.AwaitingPayment) }}</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">
-							{{ applicationStatistics[statisticsCode.AwaitingPayment] ?? 0 }}
+							{{ applicationStatistics[statisticsCodes.AwaitingThirdParty] ?? 0 }}
 						</div>
-						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCode.AwaitingPayment) }}</div>
+						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCodes.AwaitingThirdParty) }}</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">
-							{{ applicationStatistics[statisticsCode.AwaitingThirdParty] ?? 0 }}
+							{{ applicationStatistics[statisticsCodes.AwaitingApplicant] ?? 0 }}
 						</div>
-						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCode.AwaitingThirdParty) }}</div>
-					</div>
-					<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
-						<div class="fw-semibold fs-4 m-2 ms-3">
-							{{ applicationStatistics[statisticsCode.AwaitingApplicant] ?? 0 }}
-						</div>
-						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCode.AwaitingApplicant) }}</div>
+						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCodes.AwaitingApplicant) }}</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-blue align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">
-							{{ applicationStatistics[statisticsCode.UnderAssessment] ?? 0 }}
+							{{ applicationStatistics[statisticsCodes.UnderAssessment] ?? 0 }}
 						</div>
-						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCode.UnderAssessment) }}</div>
+						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCodes.UnderAssessment) }}</div>
 					</div>
 				</div>
 			</div>
@@ -56,33 +60,36 @@ import { UtilService } from 'src/app/core/services/util.service';
 				<div class="d-flex flex-wrap justify-content-start">
 					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">
-							{{ applicationStatistics[statisticsCode.RiskFound] ?? 0 }}
+							{{ applicationStatistics[statisticsCodes.RiskFound] ?? 0 }}
 						</div>
-						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCode.RiskFound) }}</div>
+						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCodes.RiskFound) }}</div>
+					</div>
+					<div
+						class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2"
+						*ngIf="portal == portalTypeCodes.Crrp"
+					>
+						<div class="fw-semibold fs-4 m-2 ms-3">
+							{{ applicationStatistics[statisticsCodes.ClosedJudicialReview] ?? 0 }}
+						</div>
+						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCodes.ClosedJudicialReview) }}</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">
-							{{ applicationStatistics[statisticsCode.ClosedJudicialReview] ?? 0 }}
+							{{ applicationStatistics[statisticsCodes.ClosedNoResponse] ?? 0 }}
 						</div>
-						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCode.ClosedJudicialReview) }}</div>
+						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCodes.ClosedNoResponse) }}</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">
-							{{ applicationStatistics[statisticsCode.ClosedNoResponse] ?? 0 }}
+							{{ applicationStatistics[statisticsCodes.ClosedNoConsent] ?? 0 }}
 						</div>
-						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCode.ClosedNoResponse) }}</div>
+						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCodes.ClosedNoConsent) }}</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">
-							{{ applicationStatistics[statisticsCode.ClosedNoConsent] ?? 0 }}
+							{{ applicationStatistics[statisticsCodes.CancelledByApplicant] ?? 0 }}
 						</div>
-						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCode.ClosedNoConsent) }}</div>
-					</div>
-					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
-						<div class="fw-semibold fs-4 m-2 ms-3">
-							{{ applicationStatistics[statisticsCode.CancelledByApplicant] ?? 0 }}
-						</div>
-						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCode.CancelledByApplicant) }}</div>
+						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCodes.CancelledByApplicant) }}</div>
 					</div>
 				</div>
 			</div>
@@ -104,9 +111,11 @@ export class StatusStatisticsCommonComponent {
 	applicationStatistics$!: Observable<ApplicationStatisticsResponse>;
 	applicationStatistics!: { [key: string]: number | null };
 
-	statisticsCode = ApplicationPortalStatisticsTypeCode;
+	statisticsCodes = ApplicationPortalStatisticsTypeCode;
+	portalTypeCodes = PortalTypeCode;
 
 	@Input() orgId: string | null = null;
+	@Input() portal: PortalTypeCode | null = null;
 
 	constructor(private utilService: UtilService, private applicationService: ApplicationService) {}
 
