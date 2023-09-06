@@ -8,7 +8,8 @@ import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.serv
 			<div class="col-12">
 				<div class="d-flex justify-content-between">
 					<h3 class="mx-2 fw-light" [title]="loggedInOrgDisplay" [attr.aria-label]="loggedInOrgDisplay">
-						{{ loggedInOrgDisplay }}
+						<strong>{{ loggedInOrgDisplay }}</strong>
+						<span style="font-size: smaller;">&nbsp;&nbsp;{{ loggedInOrgTypeDisplay }}</span>
 					</h3>
 				</div>
 				<div *ngIf="subtitle" class="lead mx-2">{{ subtitle }}</div>
@@ -30,7 +31,12 @@ import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.serv
 	],
 })
 export class CrrpHeaderComponent {
-	loggedInOrgDisplay: string | null | undefined = this.authUserService.bceidUserInfoProfile?.orgName;
+	loggedInOrgDisplay: string | null | undefined = this.authUserService.bceidUserOrgProfile?.organizationName;
+	loggedInOrgTypeDisplay: string | null | undefined = this.authUserService.bceidUserOrgProfile
+		?.employeeOrganizationTypeCode
+		? 'EMPLOYEE'
+		: 'VOLUNTEER';
+
 	@Input() subtitle = '';
 
 	constructor(private authUserService: AuthUserBceidService) {}

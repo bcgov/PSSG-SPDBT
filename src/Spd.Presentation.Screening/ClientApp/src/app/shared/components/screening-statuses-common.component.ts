@@ -41,7 +41,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 				</div>
 			</div>
 
-			<app-status-statistics-common [orgId]="orgId"></app-status-statistics-common>
+			<app-status-statistics-common [orgId]="orgId" [portal]="portal"></app-status-statistics-common>
 
 			<div [formGroup]="formFilter">
 				<ng-container *ngIf="isPsaUser">
@@ -54,12 +54,12 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 						<div class="offset-xl-4 col-xl-4 col-lg-6 col-md-12 ">
 							<div class="d-flex justify-content-end my-2">
 								<mat-button-toggle-group
-									formControlName="applicationFilter"
+									formControlName="applications"
 									(change)="onApplicationFilterChange($event)"
 									class="w-100"
 									aria-label="Applications Filter"
 								>
-									<mat-button-toggle class="button-toggle w-100" value=""> My Applications </mat-button-toggle>
+									<mat-button-toggle class="button-toggle w-100" value="MY"> My Applications </mat-button-toggle>
 									<mat-button-toggle class="button-toggle w-100" value="ALL"> All Applications </mat-button-toggle>
 								</mat-button-toggle-group>
 							</div>
@@ -96,6 +96,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 							[matBadgeShow]="filterCriteriaExists"
 						>
 							<app-screening-status-filter-common
+								[portal]="portal"
 								[formGroup]="formFilter"
 								(filterChange)="onFilterChange($event)"
 								(filterClear)="onFilterClear()"
@@ -274,9 +275,9 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 			}
 
 			.mat-column-delegates {
-				min-width: 210px;
+				min-width: 180px;
 				.table-button {
-					min-width: 190px;
+					min-width: 160px;
 				}
 			}
 		`,
@@ -350,8 +351,8 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 					'orgId',
 					'applicationNumber',
 					'status',
-					'action1',
 					'delegates',
+					'action1',
 				];
 			} else {
 				this.columns = [
@@ -360,8 +361,8 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 					'createdOn',
 					'applicationNumber',
 					'status',
-					'action1',
 					'delegates',
+					'action1',
 				];
 			}
 
