@@ -1,12 +1,14 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { ApplicationPortalStatusCode } from 'src/app/api/models';
 import { SelectOptions } from 'src/app/core/code-types/model-desc.models';
+import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { UtilService } from 'src/app/core/services/util.service';
 import { BaseFilterComponent, FilterQueryList } from 'src/app/shared/components/base-filter.component';
 
 export class ScreeningStatusFilter {
 	search: string = '';
-	applicationFilter: string = ''; // MY vs ALL Applications
+	applications: string = 'MY'; // MY vs ALL Applications
 	statuses: string[] = [];
 	applicantName: string = '';
 	createdOn: string = '';
@@ -15,7 +17,7 @@ export class ScreeningStatusFilter {
 
 export const ScreeningStatusFilterMap: Record<keyof ScreeningStatusFilter, string> = {
 	search: 'searchText',
-	applicationFilter: 'applicationFilter',
+	applications: 'applications',
 	statuses: 'status',
 	applicantName: 'name',
 	createdOn: 'submittedon',
@@ -91,6 +93,7 @@ export const ScreeningStatusFilterMap: Record<keyof ScreeningStatusFilter, strin
 export class ScreeningStatusFilterCommonComponent extends BaseFilterComponent implements OnInit {
 	applicationPortalStatusCodes!: SelectOptions[];
 
+	@Input() portal: PortalTypeCode | null = null;
 	@Input() formGroup: FormGroup = this.formBuilder.group({
 		statuses: new FormControl(),
 	});
@@ -100,7 +103,25 @@ export class ScreeningStatusFilterCommonComponent extends BaseFilterComponent im
 	}
 
 	ngOnInit(): void {
-		this.applicationPortalStatusCodes = this.utilService.getCodeDescSorted('ApplicationPortalStatusTypes');
+		if (this.portal == PortalTypeCode.Psso) {
+			this.applicationPortalStatusCodes = this.utilService
+				.getCodeDescSorted('ApplicationPortalStatusTypes')
+				.filter(
+					(item) =>
+						item.code == ApplicationPortalStatusCode.VerifyIdentity ||
+						item.code == ApplicationPortalStatusCode.InProgress ||
+						item.code == ApplicationPortalStatusCode.AwaitingThirdParty ||
+						item.code == ApplicationPortalStatusCode.AwaitingApplicant ||
+						item.code == ApplicationPortalStatusCode.UnderAssessment ||
+						item.code == ApplicationPortalStatusCode.CompletedCleared ||
+						item.code == ApplicationPortalStatusCode.RiskFound ||
+						item.code == ApplicationPortalStatusCode.ClosedNoResponse ||
+						item.code == ApplicationPortalStatusCode.ClosedNoConsent ||
+						item.code == ApplicationPortalStatusCode.CancelledByOrganization
+				);
+		} else {
+			this.applicationPortalStatusCodes = this.utilService.getCodeDescSorted('ApplicationPortalStatusTypes');
+		}
 	}
 
 	onItemRemoved(item: string) {

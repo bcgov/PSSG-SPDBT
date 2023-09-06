@@ -556,7 +556,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 				serviceType: new FormControl(this.serviceTypeDefault),
 				contractedCompanyName: new FormControl(''),
 				employeeId: new FormControl(''),
-				orgId: new FormControl(this.orgId),
+				orgId: new FormControl(null),
 				previousNameFlag: new FormControl('', [FormControlValidators.required]),
 				addressSelected: new FormControl(false, [Validators.requiredTrue]),
 				addressLine1: new FormControl('', [FormControlValidators.required]),
@@ -641,7 +641,11 @@ export class ManualSubmissionCommonComponent implements OnInit {
 				ApplicationCreateRequestJson: createRequest,
 			};
 
-			this.promptVulnerableSector(body);
+			if (this.portal == PortalTypeCode.Psso && createRequest.serviceType != ServiceTypeCode.PssoVs) {
+				this.saveAndCheckDuplicates(body);
+			} else {
+				this.promptVulnerableSector(body);
+			}
 		}
 	}
 
@@ -748,6 +752,8 @@ export class ManualSubmissionCommonComponent implements OnInit {
 		this.form.reset();
 		this.aliases.clear();
 		this.onAddRow();
+
+		this.form.patchValue({ orgId: this.orgId });
 	}
 
 	private newAliasRow(): FormGroup {
