@@ -641,7 +641,11 @@ export class ManualSubmissionCommonComponent implements OnInit {
 				ApplicationCreateRequestJson: createRequest,
 			};
 
-			this.promptVulnerableSector(body);
+			if (this.portal == PortalTypeCode.Psso && createRequest.serviceType != ServiceTypeCode.PssoVs) {
+				this.saveAndCheckDuplicates(body);
+			} else {
+				this.promptVulnerableSector(body);
+			}
 		}
 	}
 
