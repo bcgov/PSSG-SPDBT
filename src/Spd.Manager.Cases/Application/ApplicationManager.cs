@@ -135,12 +135,12 @@ namespace Spd.Manager.Cases.Application
                 if (request.IsPSA)
                 {
                     //return all psso invites
-                    query.FilterBy = new AppInviteFilterBy(null, request.FilterBy.EmailOrNameContains, serviceTypes.ToArray());
+                    query.FilterBy = new AppInviteFilterBy(null, request.FilterBy?.EmailOrNameContains, serviceTypes.ToArray());
                 }
                 else
                 {
                     //return all created by invites.
-                    query.FilterBy = new AppInviteFilterBy(null, request.FilterBy.EmailOrNameContains, serviceTypes.ToArray(), request.UserId);
+                    query.FilterBy = new AppInviteFilterBy(null, request.FilterBy?.EmailOrNameContains, serviceTypes.ToArray(), CreatedByUserId: request.UserId);
                 }
             }
             var response = await _applicationInviteRepository.QueryAsync(
