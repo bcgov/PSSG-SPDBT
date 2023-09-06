@@ -349,12 +349,10 @@ namespace Spd.Presentation.Screening.Controllers
         public async Task<ApplicationCreateResponse> AddApplication([FromForm][Required] CreateApplication createApplication, [FromRoute] Guid orgId)
         {
             bool isPSSO = false;
-            bool isPSA = false;
 
             string? identityProvider = _currentUser.GetIdentityProvider();
             if (identityProvider != null && identityProvider.Equals("idir", StringComparison.InvariantCultureIgnoreCase))
             {
-                isPSA = _currentUser.IsPSA();
                 isPSSO = true;
             }
 
@@ -410,6 +408,18 @@ namespace Spd.Presentation.Screening.Controllers
         [HttpGet]
         public async Task<ApplicationListResponse> GetList([FromRoute] Guid orgId, [FromQuery] string? filters, [FromQuery] string? sorts, [FromQuery] int? page, [FromQuery] int? pageSize)
         {
+            bool isPSSO = false;
+            bool isPSA = false;
+            Guid? idirUserId = null;
+
+            string? identityProvider = _currentUser.GetIdentityProvider();
+            if (identityProvider != null && identityProvider.Equals("idir", StringComparison.InvariantCultureIgnoreCase))
+            {
+                idirUserId = Guid.Parse(_currentUser.GetUserId());
+                isPSA = _currentUser.IsPSA();
+                isPSSO = true;
+            }
+
             page = (page == null || page < 0) ? 0 : page;
             pageSize = (pageSize == null || pageSize == 0 || pageSize > 100) ? 10 : pageSize;
             if (string.IsNullOrWhiteSpace(sorts)) sorts = "-submittedOn";
@@ -421,7 +431,10 @@ namespace Spd.Presentation.Screening.Controllers
                 {
                     FilterBy = filterBy,
                     SortBy = sortBy,
-                    Paging = pagination
+                    Paging = pagination,
+                    IsPSA = isPSA,
+                    IsPSSO = isPSSO,
+                    UserId = idirUserId,
                 });
         }
 

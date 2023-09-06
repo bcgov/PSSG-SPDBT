@@ -140,6 +140,9 @@ namespace Spd.Manager.Cases.Application
         public AppListFilterBy? FilterBy { get; set; } //null means no filter
         public AppListSortBy? SortBy { get; set; } //null means no sorting
         public PaginationRequest Paging { get; set; } = null!;
+        public bool IsPSSO { get; set; } = false;
+        public bool IsPSA { get; set; } = false;
+        public Guid? UserId { get; set; } = null;
     };
 
     public record ApplicationStatisticsQuery(Guid OrganizationId) : IRequest<ApplicationStatisticsResponse>;

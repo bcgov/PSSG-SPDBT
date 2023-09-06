@@ -10,7 +10,6 @@ using Spd.Resource.Applicants.Incident;
 using Spd.Resource.Organizations.Identity;
 using Spd.Resource.Organizations.Org;
 using Spd.Resource.Organizations.Registration;
-using Spd.Resource.Organizations.User;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
@@ -18,7 +17,6 @@ using Spd.Utilities.Shared.ManagerContract;
 using Spd.Utilities.Shared.ResourceContracts;
 using Spd.Utilities.TempFileStorage;
 using System.Net;
-using System.Security.Principal;
 
 namespace Spd.Manager.Cases.Application
 {
@@ -130,7 +128,7 @@ namespace Spd.Manager.Cases.Application
         public async Task<ApplicationInviteListResponse> Handle(ApplicationInviteListQuery request, CancellationToken ct)
         {
             ApplicationInviteQuery query = _mapper.Map<ApplicationInviteQuery>(request);
-            if (request.IsPSSO )
+            if (request.IsPSSO)
             {
                 //psso, cannot use orgId to filter.
                 List<ServiceTypeEnum> serviceTypes = new List<ServiceTypeEnum> { ServiceTypeEnum.PSSO, ServiceTypeEnum.PSSO_VS };
@@ -231,6 +229,15 @@ namespace Spd.Manager.Cases.Application
             AppFilterBy filterBy = _mapper.Map<AppFilterBy>(request.FilterBy);
             AppSortBy sortBy = _mapper.Map<AppSortBy>(request.SortBy);
             Paging paging = _mapper.Map<Paging>(request.Paging);
+            if (request.IsPSSO)
+            {
+                filterBy.OrgId = null;
+                filterBy.ParentOrgId = SpdConstants.BC_GOV_ORG_ID;
+                if(!request.IsPSA)
+                {
+                    //todo: check the way to filter on delegates
+                }
+            }
 
             var response = await _applicationRepository.QueryAsync(
                 new ApplicationListQry
