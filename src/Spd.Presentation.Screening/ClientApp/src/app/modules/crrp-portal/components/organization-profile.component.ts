@@ -18,6 +18,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
+import { CrrpRoutes } from '../crrp-routing.module';
 
 @Component({
 	selector: 'app-organization-profile',
@@ -73,7 +74,7 @@ import { FormGroupValidators } from 'src/app/core/validators/form-group.validato
 					</div>
 				</div>
 
-				<mat-divider class="my-3"></mat-divider>
+				<mat-divider class="mb-3"></mat-divider>
 				<div class="text-minor-heading fw-semibold mb-2">Organization Address</div>
 				<div class="row">
 					<div class="col-xl-4 col-lg-12">
@@ -128,7 +129,7 @@ import { FormGroupValidators } from 'src/app/core/validators/form-group.validato
 				</div>
 
 				<ng-container *ngIf="isNotVolunteerOrg">
-					<mat-divider class="my-3"></mat-divider>
+					<mat-divider class="mb-3"></mat-divider>
 					<div class="text-minor-heading fw-semibold mb-2">Who pays for the criminal record checks?</div>
 					<div class="mb-2">
 						Set who is responsible for paying the fee. You can adjust this when you generate a new criminal record check
@@ -153,7 +154,7 @@ import { FormGroupValidators } from 'src/app/core/validators/form-group.validato
 					</div>
 				</ng-container>
 
-				<mat-divider class="my-3"></mat-divider>
+				<mat-divider class="mb-3"></mat-divider>
 				<div class="text-minor-heading fw-semibold mb-2">
 					Do you work with contractors who need vulnerable sector checks?
 				</div>
@@ -181,7 +182,7 @@ import { FormGroupValidators } from 'src/app/core/validators/form-group.validato
 				</div>
 
 				<ng-container *ngIf="displayLicenseesQuestion">
-					<mat-divider class="my-3"></mat-divider>
+					<mat-divider class="mb-3"></mat-divider>
 					<div class="text-minor-heading fw-semibold mb-2">
 						Do you work with licensees who need vulnerable sector checks?
 					</div>
@@ -209,7 +210,7 @@ import { FormGroupValidators } from 'src/app/core/validators/form-group.validato
 					</div>
 				</ng-container>
 			</form>
-			<div class="row mb-4" *ngIf="!viewOnly">
+			<div class="row" *ngIf="!viewOnly">
 				<div class="offset-xl-8 offset-lg-6 col-xl-2 col-lg-3 col-md-6 col-sm-12">
 					<button mat-stroked-button color="primary" class="large mb-2" (click)="onCancel()">
 						<i class="fa fa-times mr-2"></i>Cancel
@@ -218,6 +219,11 @@ import { FormGroupValidators } from 'src/app/core/validators/form-group.validato
 				<div class="col-xl-2 col-lg-3 col-md-6 col-sm-12">
 					<button mat-flat-button color="primary" class="large mb-2" (click)="onSave()">Submit</button>
 				</div>
+			</div>
+
+			<div *ngIf="viewOnly">
+				<mat-divider class="mb-3"></mat-divider>
+				<a [routerLink]="[crrpRoutes.path(crrpRoutes.TERMS_AND_CONDITIONS)]"> Terms and Conditions </a>
 			</div>
 		</section>
 	`,
@@ -231,6 +237,7 @@ import { FormGroupValidators } from 'src/app/core/validators/form-group.validato
 })
 export class OrganizationProfileComponent implements OnInit {
 	isNotVolunteerOrg = false;
+	crrpRoutes = CrrpRoutes;
 
 	editable: boolean = true;
 	viewOnly: boolean = true;

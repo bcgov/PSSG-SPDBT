@@ -14,6 +14,7 @@ import { ManualSubmissionComponent } from './components/manual-submission.compon
 import { OrganizationProfileComponent } from './components/organization-profile.component';
 import { PaymentsComponent } from './components/payments.component';
 import { ReportsComponent } from './components/reports.component';
+import { TermsAndConditionsComponent } from './components/terms-and-conditions.component';
 import { UsersComponent } from './components/users.component';
 import { CrrpOrgTermsAndCondsComponent } from './crrp-org-terms-and-conds.component';
 import { CrrpComponent } from './crrp.component';
@@ -28,6 +29,7 @@ export class CrrpRoutes {
 	public static IDENTITY_VERIFICATION = 'identity-verification';
 	public static MANUAL_SUBMISSIONS = 'manual-submissions';
 	public static ORGANIZATION_PROFILE = 'organization-profile';
+	public static TERMS_AND_CONDITIONS = 'terms-and-conditions';
 	public static PAYMENTS = 'payments';
 	public static PAYMENT_SUCCESS = 'payment-success';
 	public static PAYMENT_FAIL = 'payment-fail';
@@ -63,6 +65,7 @@ const routes: Routes = [
 			{ path: CrrpRoutes.PAYMENT_ERROR, component: CrrpPaymentErrorComponent },
 			{ path: CrrpRoutes.MANUAL_SUBMISSIONS, component: ManualSubmissionComponent },
 			{ path: CrrpRoutes.ORGANIZATION_PROFILE, component: OrganizationProfileComponent },
+			{ path: CrrpRoutes.TERMS_AND_CONDITIONS, component: TermsAndConditionsComponent },
 			{ path: CrrpRoutes.REPORTS, component: ReportsComponent },
 			{ path: CrrpRoutes.USERS, component: UsersComponent },
 			{ path: '', redirectTo: CrrpRoutes.path(CrrpRoutes.HOME), pathMatch: 'full' },
