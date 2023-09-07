@@ -65,7 +65,7 @@ namespace Spd.Manager.Membership.UserProfile
                     ui.OrgRegistrationNumber = orgRegister?.OrgRegistrationNumber;
                     if (ui.OrgRegistrationStatusCode == OrgRegistrationStatusCode.CompleteFailed)
                     {
-                        ui.UserInfoMsgType = UserInfoMsgTypeCode.REGISTRATION_NOT_APPROVED;
+                        ui.UserInfoMsgType = UserInfoMsgTypeCode.REGISTRATION_DENIED;
                     }
                 }
                 if (ui.OrgRegistrationStatusCode != OrgRegistrationStatusCode.CompleteSuccess) //if org reg completes successfully, then there should be a valid org.
