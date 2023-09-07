@@ -43,6 +43,7 @@ namespace Spd.Manager.Cases.Application
         IRequestHandler<CreateApplicantAppFileCommand, IEnumerable<ApplicantAppFileCreateResponse>>,
         IRequestHandler<PrepopulateFileTemplateQuery, FileResponse>,
         IRequestHandler<GetApplicationInvitePrepopulateDataQuery, ApplicationInvitePrepopulateDataResponse>,
+        IRequestHandler<DelegateListQuery, DelegateListResponse>,
         IApplicationManager
     {
         private readonly IApplicationRepository _applicationRepository;
@@ -233,7 +234,7 @@ namespace Spd.Manager.Cases.Application
             {
                 filterBy.OrgId = null;
                 filterBy.ParentOrgId = SpdConstants.BC_GOV_ORG_ID;
-                if(!request.IsPSA)
+                if (!request.IsPSA)
                 {
                     //todo: check the way to filter on delegates
                 }
@@ -597,6 +598,19 @@ namespace Spd.Manager.Cases.Application
         }
         #endregion
 
+        #region application-delegates
 
+        public async Task<DelegateListResponse> Handle(DelegateListQuery request, CancellationToken ct)
+        {
+            var delegates = await _delegateRepository.QueryAsync(new DelegateQry(request.ApplicationId), ct);
+            var delegateResps = _mapper.Map<IEnumerable<DelegateResponse>>(delegates.Delegates);
+
+            return new DelegateListResponse
+            {
+                Delegates = delegateResps
+            };
+        }
+
+        #endregion
     }
 }

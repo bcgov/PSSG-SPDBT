@@ -2,12 +2,11 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { HotToastService } from '@ngneat/hot-toast';
-import { DelegateResponse } from 'src/app/api/models';
+import { DelegateListResponse, DelegateResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
-import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { ScreeningStatusResponse } from 'src/app/shared/components/screening-statuses-common.component';
-import { DelegateAddModalComponent } from './delegate-add-modal.component';
+import { DelegateAddModalComponent, DelegateDialogData } from './delegate-add-modal.component';
 
 export interface DelegateManageDialogData {
 	application: ScreeningStatusResponse;
@@ -64,7 +63,7 @@ export interface DelegateManageDialogData {
 				<div class="col-md-4 col-sm-12 mb-2">
 					<button mat-stroked-button mat-dialog-close class="large" color="primary">Close</button>
 				</div>
-				<div class="offset-md-4 col-md-4 col-sm-12 mb-2" *ngIf="isAllowDelegateAdd">
+				<div class="offset-md-4 col-md-4 col-sm-12 mb-2">
 					<button mat-flat-button color="primary" class="large" (click)="onAddDelegate()">Add Delegate</button>
 				</div>
 			</div>
@@ -88,9 +87,14 @@ export class DelegateManageModalComponent implements OnInit {
 	}
 
 	onAddDelegate(): void {
+		const dialogOptions: DelegateDialogData = {
+			applicationId: this.data.application.id!,
+			orgId: this.data.application.orgId!,
+		};
+
 		this.dialog
 			.open(DelegateAddModalComponent, {
-				width: '800px',
+				data: dialogOptions,
 			})
 			.afterClosed()
 			.subscribe((resp) => {
@@ -147,13 +151,8 @@ export class DelegateManageModalComponent implements OnInit {
 				orgId: this.data.application.orgId!,
 			})
 			.pipe()
-			.subscribe((res: Array<DelegateResponse>) => {
-				this.dataSource.data = res ?? [];
+			.subscribe((res: DelegateListResponse) => {
+				this.dataSource.data = res.delegates ?? [];
 			});
-	}
-
-	get isAllowDelegateAdd(): boolean {
-		// maximum of 4 delegates to be added to an application
-		return this.dataSource.data.length < SPD_CONSTANTS.maxNumberOfDelegates;
 	}
 }

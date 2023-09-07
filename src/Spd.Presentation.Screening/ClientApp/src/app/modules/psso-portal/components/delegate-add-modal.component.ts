@@ -1,10 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { HotToastService } from '@ngneat/hot-toast';
 import { DelegateResponse } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
+
+export interface DelegateDialogData {
+	orgId: string;
+	applicationId: string;
+}
 
 @Component({
 	selector: 'app-delegate-add-modal',
@@ -13,26 +18,28 @@ import { FormControlValidators } from 'src/app/core/validators/form-control.vali
 		<mat-dialog-content>
 			<form [formGroup]="form" novalidate>
 				<div class="row">
-					<div class="col-md-4">
+					<div class="col-6">
 						<mat-form-field>
 							<mat-label>Given Name</mat-label>
 							<input matInput formControlName="firstName" maxlength="40" />
 							<mat-error *ngIf="form.get('firstName')?.hasError('required')">This is required</mat-error>
 						</mat-form-field>
 					</div>
-					<div class="col-md-4">
+					<div class="col-6">
 						<mat-form-field>
 							<mat-label>Surname</mat-label>
 							<input matInput formControlName="lastName" maxlength="40" />
 							<mat-error *ngIf="form.get('lastName')?.hasError('required')">This is required</mat-error>
 						</mat-form-field>
 					</div>
-					<div class="col-md-4">
+				</div>
+				<div class="row">
+					<div class="col-12">
 						<mat-form-field>
 							<mat-label>Email Address</mat-label>
-							<input matInput formControlName="email" placeholder="name@domain.com" maxlength="75" />
-							<mat-error *ngIf="form.get('email')?.hasError('email')"> Must be a valid email address </mat-error>
-							<mat-error *ngIf="form.get('email')?.hasError('required')">This is required</mat-error>
+							<input matInput formControlName="emailaddress" placeholder="name@domain.com" maxlength="75" />
+							<mat-error *ngIf="form.get('emailaddress')?.hasError('email')"> Must be a valid email address </mat-error>
+							<mat-error *ngIf="form.get('emailaddress')?.hasError('required')">This is required</mat-error>
 						</mat-form-field>
 					</div>
 				</div>
@@ -55,14 +62,15 @@ export class DelegateAddModalComponent {
 	form: FormGroup = this.formBuilder.group({
 		lastName: new FormControl('', [FormControlValidators.required]),
 		firstName: new FormControl('', [FormControlValidators.required]),
-		email: new FormControl('', [Validators.required, FormControlValidators.email]),
+		emailaddress: new FormControl('', [Validators.required, FormControlValidators.email]),
 	});
 
 	constructor(
 		private applicationService: ApplicationService,
 		private formBuilder: FormBuilder,
 		private hotToast: HotToastService,
-		private dialogRef: MatDialogRef<DelegateAddModalComponent>
+		private dialogRef: MatDialogRef<DelegateAddModalComponent>,
+		@Inject(MAT_DIALOG_DATA) public dialogData: DelegateDialogData
 	) {}
 
 	onSave(): void {
@@ -76,8 +84,8 @@ export class DelegateAddModalComponent {
 
 		this.applicationService
 			.apiOrgsOrgIdApplicationApplicationIdDelegatePost({
-				applicationId: '7214ba1e-1b15-ee11-b844-00505683fbf4',
-				orgId: '7214ba1e-1b15-ee11-b844-00505683fbf4',
+				applicationId: this.dialogData.applicationId,
+				orgId: this.dialogData.orgId,
 				body,
 			})
 			.pipe()

@@ -43,6 +43,8 @@ export { ClearanceAccessListResponse } from './models/clearance-access-list-resp
 export { ClearanceAccessResponse } from './models/clearance-access-response';
 export { ConfigurationResponse } from './models/configuration-response';
 export { ContactAuthorizationTypeCode } from './models/contact-authorization-type-code';
+export { DelegateCreateRequest } from './models/delegate-create-request';
+export { DelegateListResponse } from './models/delegate-list-response';
 export { DelegateResponse } from './models/delegate-response';
 export { DuplicateCheckResult } from './models/duplicate-check-result';
 export { EmployeeInteractionTypeCode } from './models/employee-interaction-type-code';
@@ -73,6 +75,7 @@ export { OrgUserListResponse } from './models/org-user-list-response';
 export { OrgUserProfileResponse } from './models/org-user-profile-response';
 export { OrgUserResponse } from './models/org-user-response';
 export { OrgUserUpdateRequest } from './models/org-user-update-request';
+export { PssoUserRoleEnum } from './models/psso-user-role-enum';
 export { PaginationResponse } from './models/pagination-response';
 export { PayerPreferenceTypeCode } from './models/payer-preference-type-code';
 export { PaymentLinkCreateRequest } from './models/payment-link-create-request';

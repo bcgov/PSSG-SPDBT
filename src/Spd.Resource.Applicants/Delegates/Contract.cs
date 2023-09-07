@@ -8,7 +8,7 @@ namespace Spd.Resource.Applicants.Delegates
 
     public record DelegateListResp
     {
-        public IEnumerable<DelegateResp> Items { get; set; } = Array.Empty<DelegateResp>();
+        public IEnumerable<DelegateResp> Delegates { get; set; } = Array.Empty<DelegateResp>();
     }
 
     public record DelegateResp
@@ -16,12 +16,18 @@ namespace Spd.Resource.Applicants.Delegates
         public Guid Id { get; set; }
         public Guid ApplicationId { get; set; }
         public Guid PortalUserId { get; set; }
-        public string Name { get; set; } = null!;
+        public string FirstName { get; set; } = null!;
+        public string LastName { get; set; } = null!;
+        public string EmailAddress { get; set; } = null!;
         public PSSOUserRoleEnum PSSOUserRoleCode { get; set; }
     }
 
-    public record DelegateQry 
+    public record DelegateQry
     {
+        public DelegateQry(Guid applicationId)
+        {
+            ApplicationId = applicationId;
+        }
         public Guid? ApplicationId { get; set; }
         public Guid? PortalUserId { get; set; }
     };

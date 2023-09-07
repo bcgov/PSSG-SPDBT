@@ -610,19 +610,10 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/orgs/{orgId}/application/{applicationId}/delegates")]
         [HttpGet]
-        public async Task<IEnumerable<DelegateResponse>> GetDelegateList([FromRoute] Guid applicationId, [FromRoute] Guid orgId)
+        public async Task<DelegateListResponse> GetDelegateList([FromRoute] Guid applicationId, [FromRoute] Guid orgId)
         {
-            //            await _mediator.Send(new DelegateCommand(orgId, applicationId));
-            IEnumerable<DelegateResponse> dataList = new List<DelegateResponse>();
-            DelegateResponse item = new DelegateResponse();
-            item.FirstName = "Jane";
-            item.LastName = "Thompson";
-            item.EmailAddress = "jane.thompson@test.com";
-            dataList = dataList.Append(item);
-
-            return dataList;
+            return await _mediator.Send(new DelegateListQuery(orgId, applicationId));
         }
-
 
         /// <summary>
         /// 
@@ -632,7 +623,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/orgs/{orgId}/application/{applicationId}/delegate")]
         [HttpPost]
-        public async Task<ActionResult> PostDelegate([FromBody][Required] DelegateResponse delegateRequest, [FromRoute] Guid applicationId, [FromRoute] Guid orgId)
+        public async Task<ActionResult> PostDelegate([FromBody][Required] DelegateCreateRequest delegateRequest, [FromRoute] Guid applicationId, [FromRoute] Guid orgId)
         {
             return Ok();
         }

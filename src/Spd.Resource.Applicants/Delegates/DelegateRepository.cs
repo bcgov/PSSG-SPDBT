@@ -18,14 +18,16 @@ internal class DelegateRepository : IDelegateRepository
     public async Task<DelegateListResp> QueryAsync(DelegateQry qry, CancellationToken ct)
     {
         IQueryable<spd_delegate> delegates = _context.spd_delegates
-            .Expand(d => d.spd_ApplicationId)
+            .Expand(d => d.spd_PortalUserId)
             .Where(d => d.statecode != DynamicsConstants.StateCode_Inactive);
+
         if (qry.ApplicationId != null) delegates = delegates.Where(d => d._spd_applicationid_value == qry.ApplicationId);
         if (qry.PortalUserId != null) delegates = delegates.Where(d => d._spd_portaluserid_value == qry.PortalUserId);
-        return new DelegateListResp
-        {
-            Items = _mapper.Map<IEnumerable<DelegateResp>>(delegates)
-        };
+
+        var result = delegates.ToList();
+        var response = new DelegateListResp();
+        response.Delegates = _mapper.Map<IEnumerable<DelegateResp>>(result);
+        return response;
     }
 
     public async Task<DelegateResp> ManageAsync(DelegateCmd cmd, CancellationToken ct)
@@ -49,7 +51,6 @@ internal class DelegateRepository : IDelegateRepository
         await _context.SaveChangesAsync(ct);
         return _mapper.Map<DelegateResp>(d);
     }
-
 }
 
 
