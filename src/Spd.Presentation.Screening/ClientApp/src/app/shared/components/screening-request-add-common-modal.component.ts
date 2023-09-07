@@ -360,7 +360,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 
 		if (!this.form.valid) return;
 
-		const control = (this.form.get('crcs') as FormArray).value;
+		const control: Array<ApplicationInviteCreateRequest> = (this.form.get('crcs') as FormArray).value;
 
 		const seen = new Set();
 		let duplicateInfo: any;
@@ -389,7 +389,17 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 			});
 		}
 
-		this.promptVulnerableSector(body);
+		if (this.portal == PortalTypeCode.Psso) {
+			// see if any crcs have PSSO+VS
+			const pssoVs = control.filter((item) => item.serviceType == ServiceTypeCode.PssoVs);
+			if (pssoVs.length > 0) {
+				this.promptVulnerableSector(body);
+			} else {
+				this.checkForDuplicates(body);
+			}
+		} else {
+			this.promptVulnerableSector(body);
+		}
 	}
 
 	private addFirstRow(inviteDefault?: ApplicationInvitePrepopulateDataResponse | ApplicationInviteCreateRequest) {
@@ -447,10 +457,6 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 			.subscribe((response: boolean) => {
 				if (!response) {
 					this.promptVulnerableSector(body);
-				} else {
-					this.dialogRef.close({
-						success: false,
-					});
 				}
 			});
 	}
@@ -475,7 +481,11 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 					// At least one potential duplicate has been found
 					let dupRows = '';
 					duplicateResponses.forEach((item) => {
-						dupRows += `<li>${item.firstName} ${item.lastName} (${item.email ?? ''})</li>`;
+						dupRows += `<li>${item.firstName} ${item.lastName}`;
+						if (item.email) {
+							dupRows += `(${item.email ?? ''})`;
+						}
+						dupRows += `</li>`;
 					});
 					const dupMessage = `<ul>${dupRows}</ul>`;
 
