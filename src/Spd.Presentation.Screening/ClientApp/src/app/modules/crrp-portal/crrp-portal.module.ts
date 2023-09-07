@@ -16,6 +16,8 @@ import { OrganizationProfileComponent } from './components/organization-profile.
 import { PaymentFilterComponent } from './components/payment-filter.component';
 import { PaymentsComponent } from './components/payments.component';
 import { ReportsComponent } from './components/reports.component';
+import { TermsAndConditionsComponent } from './components/terms-and-conditions.component';
+import { TermsTextComponent } from './components/terms-text.component';
 import { UserEditModalComponent } from './components/user-edit-modal.component';
 import { UsersComponent } from './components/users.component';
 import { CrrpOrgTermsAndCondsComponent } from './crrp-org-terms-and-conds.component';
@@ -46,6 +48,8 @@ import { InvitationUserComponent } from './invitation-user.component';
 		CrrpPaymentManualComponent,
 		CrrpPaymentErrorComponent,
 		CrrpOrgTermsAndCondsComponent,
+		TermsAndConditionsComponent,
+		TermsTextComponent,
 	],
 	imports: [SharedModule, CrrpRoutingModule],
 })
