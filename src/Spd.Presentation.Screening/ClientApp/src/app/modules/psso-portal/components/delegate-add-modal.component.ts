@@ -38,7 +38,9 @@ export interface DelegateDialogData {
 						<mat-form-field>
 							<mat-label>Email Address</mat-label>
 							<input matInput formControlName="emailaddress" placeholder="name@domain.com" maxlength="75" />
-							<mat-error *ngIf="form.get('emailaddress')?.hasError('email')"> Must be a valid email address </mat-error>
+							<mat-error *ngIf="form.get('emailaddress')?.hasError('govEmail')">
+								Must be a valid government email address (end with 'gov.bc.ca')
+							</mat-error>
 							<mat-error *ngIf="form.get('emailaddress')?.hasError('required')">This is required</mat-error>
 						</mat-form-field>
 					</div>
@@ -62,7 +64,7 @@ export class DelegateAddModalComponent {
 	form: FormGroup = this.formBuilder.group({
 		lastName: new FormControl('', [FormControlValidators.required]),
 		firstName: new FormControl('', [FormControlValidators.required]),
-		emailaddress: new FormControl('', [Validators.required, FormControlValidators.email]),
+		emailaddress: new FormControl('', [Validators.required, FormControlValidators.govEmail]),
 	});
 
 	constructor(
