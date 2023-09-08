@@ -49,6 +49,7 @@ namespace Spd.Resource.Applicants.Invoice
         public Guid InvoiceId { get; set; }
         public InvoiceStatusEnum? InvoiceStatus { get; set; }
         public string? InvoiceNumber { get; set; }
+        public string? CasResponse { get; set; }
     }
 
 }
