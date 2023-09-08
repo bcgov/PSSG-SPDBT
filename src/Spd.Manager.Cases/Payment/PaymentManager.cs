@@ -2,6 +2,7 @@ using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.DocumentTemplate;
@@ -15,6 +16,7 @@ using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.Shared.ManagerContract;
 using System.Net;
+using System.Text.Json.Serialization;
 
 namespace Spd.Manager.Cases.Payment
 {
@@ -241,12 +243,13 @@ namespace Spd.Manager.Cases.Payment
                 UpdateInvoiceCmd update = new UpdateInvoiceCmd()
                 {
                     InvoiceId = invoice.Id,
-                   // CasResponse = result.Message //todo: temp remove as dynamics set too small max size.
+                    CasResponse = result.Message 
                 };
                 if (result.IsSuccess)
                 {
                     update.InvoiceNumber= result.InvoiceNumber;
                     update.InvoiceStatus = InvoiceStatusEnum.Sent;
+                    update.CasResponse = CutOffResponse(update.CasResponse); // dynamics team do not want full json, as it is too big and no use.
                     await _invoiceRepository.ManageAsync(update, ct);
                 }
                 else
@@ -320,5 +323,42 @@ namespace Spd.Manager.Cases.Payment
             public string PaybcRevenueAccount { get; set; }
             public decimal ServiceCost { get; set; }
         }
+
+        private string CutOffResponse(string response)
+        {
+            try
+            {
+                var result = JsonConvert.DeserializeObject<CasInvoiceCreateRespCompact>(response);
+                return JsonConvert.SerializeObject(result);
+            }catch
+            {
+                return response;
+            }
+        }
+    }
+
+    internal class CasInvoiceCreateRespCompact
+    {
+        public string invoice_number { get; set; }
+        public string pbc_ref_number { get; set; }
+        public string party_number { get; set; }
+        public string party_name { get; set; }
+        public string account_name { get; set; }
+        public string account_number { get; set; }
+        public string customer_site_id { get; set; }
+        public string site_number { get; set; }
+        public string cust_trx_type { get; set; }
+        public DateTimeOffset transaction_date { get; set; }
+        public string batch_source { get; set; }
+        public string term_name { get; set; }
+        public DateTimeOffset term_due_date { get; set; }
+        public string comments { get; set; }
+        public object late_charges_flag { get; set; }
+        public double total { get; set; }
+        public double amount_due { get; set; }
+        public object amount_adjusted { get; set; }
+        public object amount_adjusted_pending { get; set; }
+        public string status { get; set; }
+        public string provider { get; set; }
     }
 }
