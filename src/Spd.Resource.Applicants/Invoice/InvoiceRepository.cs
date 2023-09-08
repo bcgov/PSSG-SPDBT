@@ -60,6 +60,7 @@ internal class InvoiceRepository : IInvoiceRepository
             }
         }
         if (c.InvoiceNumber != null) invoice.spd_castransactionid = c.InvoiceNumber;
+        if (c.CasResponse != null) invoice.spd_casresponse = c.CasResponse;
         _context.UpdateObject(invoice);
         await _context.SaveChangesAsync(ct);
         return _mapper.Map<InvoiceResp>(invoice);

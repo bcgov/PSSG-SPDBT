@@ -2,6 +2,7 @@ using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.DocumentTemplate;
@@ -15,6 +16,7 @@ using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.Shared.ManagerContract;
 using System.Net;
+using System.Text.Json.Serialization;
 
 namespace Spd.Manager.Cases.Payment
 {
@@ -234,38 +236,28 @@ namespace Spd.Manager.Cases.Payment
         public async Task<CreateInvoicesInCasResponse> Handle(CreateInvoicesInCasCommand command, CancellationToken ct)
         {
             var invoiceList = await _invoiceRepository.QueryAsync(new InvoiceQry() { InvoiceStatus = InvoiceStatusEnum.Pending }, ct);
-            int successCount = 0;
             foreach(var invoice in invoiceList.Items)
             {
                 var createInvoice = _mapper.Map<CreateInvoiceCmd>(invoice);
                 var result = (InvoiceResult)await _paymentService.HandleCommand(createInvoice);
+                UpdateInvoiceCmd update = new UpdateInvoiceCmd()
+                {
+                    InvoiceId = invoice.Id,
+                    CasResponse = result.Message 
+                };
                 if (result.IsSuccess)
                 {
-                    UpdateInvoiceCmd update = new UpdateInvoiceCmd()
-                    {
-                        InvoiceId = invoice.Id,
-                        InvoiceStatus = InvoiceStatusEnum.Sent,
-                        InvoiceNumber = result.InvoiceNumber
-                    };
+                    update.InvoiceNumber= result.InvoiceNumber;
+                    update.InvoiceStatus = InvoiceStatusEnum.Sent;
+                    update.CasResponse = CutOffResponse(update.CasResponse); // dynamics team do not want full json, as it is too big and no use.
                     await _invoiceRepository.ManageAsync(update, ct);
-                    successCount++;
                 }
                 else
                 {
-                    if(result.Message!=null && result.Message.ToLower().StartsWith("bad request")) //update invoice to failed if create invoice failed with bad request (if other error, like authorization or network error, we do not set it to failed.)
-                    {
-                        UpdateInvoiceCmd update = new UpdateInvoiceCmd()
-                        {
-                            InvoiceId = invoice.Id,
-                            InvoiceStatus = InvoiceStatusEnum.Failed,
-                        };
-                        await _invoiceRepository.ManageAsync(update, ct);
-                        successCount++;
-                    }
+                    update.InvoiceStatus = InvoiceStatusEnum.Failed;
+                    await _invoiceRepository.ManageAsync(update, ct);
                 }
             }
-            if (successCount != invoiceList.Items.Count()) 
-                return new CreateInvoicesInCasResponse(false);
             return new CreateInvoicesInCasResponse(true);
         }
 
@@ -331,5 +323,42 @@ namespace Spd.Manager.Cases.Payment
             public string PaybcRevenueAccount { get; set; }
             public decimal ServiceCost { get; set; }
         }
+
+        private string CutOffResponse(string response)
+        {
+            try
+            {
+                var result = JsonConvert.DeserializeObject<CasInvoiceCreateRespCompact>(response);
+                return JsonConvert.SerializeObject(result);
+            }catch
+            {
+                return response;
+            }
+        }
+    }
+
+    internal class CasInvoiceCreateRespCompact
+    {
+        public string invoice_number { get; set; }
+        public string pbc_ref_number { get; set; }
+        public string party_number { get; set; }
+        public string party_name { get; set; }
+        public string account_name { get; set; }
+        public string account_number { get; set; }
+        public string customer_site_id { get; set; }
+        public string site_number { get; set; }
+        public string cust_trx_type { get; set; }
+        public DateTimeOffset transaction_date { get; set; }
+        public string batch_source { get; set; }
+        public string term_name { get; set; }
+        public DateTimeOffset term_due_date { get; set; }
+        public string comments { get; set; }
+        public object late_charges_flag { get; set; }
+        public double total { get; set; }
+        public double amount_due { get; set; }
+        public object amount_adjusted { get; set; }
+        public object amount_adjusted_pending { get; set; }
+        public string status { get; set; }
+        public string provider { get; set; }
     }
 }
