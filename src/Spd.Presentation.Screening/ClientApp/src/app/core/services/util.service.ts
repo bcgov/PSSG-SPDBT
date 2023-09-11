@@ -93,9 +93,14 @@ export class UtilService {
 		country: string;
 		postalCode: string;
 	}): string {
-		return `${params.addressLine1}, ${params.addressLine2 ? params.addressLine2 + ',' : ''} ${params.city}, ${
-			params.province
-		}, ${params.country}, ${params.postalCode}`;
+		let addrString = params.addressLine1 + ', ';
+		addrString += `${params.addressLine2 ? params.addressLine2 + ', ' : ''}`;
+		addrString += `${params.city ? params.city + ', ' : ''}`;
+		addrString += `${params.province ? params.province + ', ' : ''}`;
+		addrString += `${params.country ? params.country + ', ' : ''}`;
+		addrString += `${params.postalCode ? params.postalCode : ''}`;
+
+		return addrString;
 	}
 
 	//------------------------------------

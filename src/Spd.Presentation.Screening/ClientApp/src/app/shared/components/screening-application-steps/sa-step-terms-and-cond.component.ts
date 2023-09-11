@@ -3,8 +3,8 @@ import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } 
 import { MatStepper } from '@angular/material/stepper';
 import { PayerPreferenceTypeCode } from 'src/app/api/models';
 import { AppInviteOrgData } from './screening-application.model';
-import { SaAgreementOfTermsComponent } from './step-components/sa-agreement-of-terms.component';
-import { SaConsentToCrcComponent } from './step-components/sa-consentToCrc.component';
+import { SaConsentToCrcComponent } from './step-components/sa-consent-to-crc.component';
+import { SaConsentToReleaseOfInfoComponent } from './step-components/sa-consent-to-release-of-info.component';
 import { SaDeclarationComponent } from './step-components/sa-declaration.component';
 
 @Component({
@@ -51,8 +51,8 @@ import { SaDeclarationComponent } from './step-components/sa-declaration.compone
 				</div>
 			</mat-step>
 
-			<mat-step>
-				<app-sa-agreement-of-terms *ngIf="orgData" [orgData]="orgData"></app-sa-agreement-of-terms>
+			<mat-step *ngIf="!agreeToShare">
+				<app-sa-consent-to-release-of-info *ngIf="orgData" [orgData]="orgData"></app-sa-consent-to-release-of-info>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -64,7 +64,7 @@ import { SaDeclarationComponent } from './step-components/sa-declaration.compone
 								mat-flat-button
 								color="primary"
 								class="large mb-2"
-								(click)="goToStepNext(STEP_TERMS)"
+								(click)="goToStepNext(STEP_CONSENT)"
 								aria-label="Pay now"
 							>
 								Pay Now
@@ -75,7 +75,7 @@ import { SaDeclarationComponent } from './step-components/sa-declaration.compone
 								mat-flat-button
 								color="primary"
 								class="large mb-2"
-								(click)="goToStepNext(STEP_TERMS)"
+								(click)="goToStepNext(STEP_CONSENT)"
 								aria-label="Submit"
 							>
 								Submit
@@ -101,7 +101,7 @@ export class SaStepTermsAndCondComponent {
 
 	readonly STEP_DECLARATION: number = 1;
 	readonly STEP_CONSENT_TO_CRC: number = 2;
-	readonly STEP_TERMS: number = 3;
+	readonly STEP_CONSENT: number = 3;
 
 	@ViewChild(SaDeclarationComponent)
 	declarationComponent!: SaDeclarationComponent;
@@ -109,14 +109,14 @@ export class SaStepTermsAndCondComponent {
 	@ViewChild(SaConsentToCrcComponent)
 	consentToCrcComponent!: SaConsentToCrcComponent;
 
-	@ViewChild(SaAgreementOfTermsComponent)
-	agreementOfTermsComponent!: SaAgreementOfTermsComponent;
+	@ViewChild(SaConsentToReleaseOfInfoComponent)
+	consentToReleaseOfInfoComponent!: SaConsentToReleaseOfInfoComponent;
 
 	getStepData(): any {
 		return {
 			...this.consentToCrcComponent?.getDataToSave(),
 			...this.declarationComponent.getDataToSave(),
-			...this.agreementOfTermsComponent.getDataToSave(),
+			...this.consentToReleaseOfInfoComponent.getDataToSave(),
 		};
 	}
 
@@ -127,11 +127,10 @@ export class SaStepTermsAndCondComponent {
 		if (this.orgData?.isCrrpa) {
 			const declarationData = this.declarationComponent.getDataToSave();
 			if (declarationData.agreeToShare) {
-				this.orgData!.performPaymentProcess = false;
+				this.orgData.performPaymentProcess = false;
 				this.agreeToShare = true;
 			} else {
-				this.orgData!.performPaymentProcess =
-					this.orgData?.payeeType == PayerPreferenceTypeCode.Applicant ? true : false;
+				this.orgData.performPaymentProcess = this.orgData?.payeeType == PayerPreferenceTypeCode.Applicant;
 				this.agreeToShare = false;
 			}
 		}
@@ -168,9 +167,9 @@ export class SaStepTermsAndCondComponent {
 			case this.STEP_CONSENT_TO_CRC:
 				this.consentToCrcComponent.form.markAllAsTouched();
 				return this.consentToCrcComponent.isFormValid();
-			case this.STEP_TERMS:
-				this.agreementOfTermsComponent.form.markAllAsTouched();
-				return this.agreementOfTermsComponent.isFormValid();
+			case this.STEP_CONSENT:
+				this.consentToReleaseOfInfoComponent.form.markAllAsTouched();
+				return this.consentToReleaseOfInfoComponent.isFormValid();
 			default:
 				console.error('Unknown Form', step);
 		}

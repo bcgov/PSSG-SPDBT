@@ -27,7 +27,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 								</div>
 								<div class="col-xl-4 col-lg-3 col-md-12" *ngIf="!orgData.isCrrpa">
 									<div class="text-label d-block text-muted mt-2 mt-lg-0">Job Title</div>
-									<div class="text-data">{{ orgData.jobTitle }}</div>
+									<div class="text-data">{{ orgData.jobTitle | default }}</div>
 								</div>
 								<div class="col-xl-1 col-lg-1 col-md-12 text-end">
 									<mat-icon matTooltip="Edit this data" (click)="onReEditOrg()">edit</mat-icon>
@@ -40,11 +40,11 @@ import { UtilService } from 'src/app/core/services/util.service';
 								<div class="row mb-2">
 									<div class="offset-xl-3 col-xl-4 offset-lg-4 col-lg-4 col-md-12">
 										<div class="text-label d-block text-muted">Organization Address</div>
-										<div class="text-data">{{ orgData.orgAddress }}</div>
+										<div class="text-data">{{ orgData.orgAddress | default }}</div>
 									</div>
 									<div class="col-xl-4 col-lg-4 col-md-12">
 										<div class="text-label d-block text-muted mt-2 mt-lg-0">Job Title</div>
-										<div class="text-data">{{ orgData.jobTitle }}</div>
+										<div class="text-data">{{ orgData.jobTitle | default }}</div>
 									</div>
 								</div>
 							</ng-container>
@@ -97,7 +97,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 								</div>
 								<div class="col-xl-4 col-lg-4 col-md-12">
 									<div class="text-label d-block text-muted mt-2 mt-lg-0">Birthplace</div>
-									<div class="text-data">{{ orgData.birthPlace }}</div>
+									<div class="text-data">{{ orgData.birthPlace | default }}</div>
 								</div>
 							</div>
 
