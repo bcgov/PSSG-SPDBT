@@ -17,7 +17,7 @@
   <ItemGroup>
     <PackageReference Include="IdentityModel" Version="6.2.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
-    <PackageReference Include="Microsoft.OData.Client" Version="7.17.0" />
+    <PackageReference Include="Microsoft.OData.Client" Version="7.18.0" />
     <PackageReference Include="Microsoft.OData.Core" Version="7.17.0" />
     <PackageReference Include="Microsoft.OData.Edm" Version="7.18.0" />
     <PackageReference Include="Microsoft.OData.Extensions.Client" Version="1.0.6" />
