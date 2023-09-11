@@ -131,7 +131,7 @@ export class AddressAutocompleteComponent implements OnInit {
 				switchMap((value: string) => {
 					this.addressAutocompleteFields = [];
 
-					lastIdExists = this.lastId ? true : false;
+					lastIdExists = !!this.lastId;
 
 					// reset this value so that this lastId isn't used again
 					const lastId = this.lastId;

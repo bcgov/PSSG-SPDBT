@@ -408,7 +408,7 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 		this.currentStatuses = this.statuses.value?.length > 0 ? [...this.statuses.value] : [];
 		this.currentFilters = filters;
 		this.queryParams.page = 0;
-		this.filterCriteriaExists = filters ? true : false;
+		this.filterCriteriaExists = !!filters;
 		this.onFilterClose();
 
 		this.loadList();

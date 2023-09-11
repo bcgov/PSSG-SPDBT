@@ -402,12 +402,12 @@ export class UsersComponent implements OnInit {
 
 	private setFlags(): void {
 		this.showAddArea = this.isUserPrimaryAuthorizedUser();
-		this.isAllowedAddContact = this.usersList.length >= this.maximumNumberOfContacts ? false : true;
+		this.isAllowedAddContact = this.usersList.length < this.maximumNumberOfContacts;
 
 		const numberOfPrimary = this.usersList.filter(
 			(user) => user.contactAuthorizationTypeCode == ContactAuthorizationTypeCode.Primary
 		)?.length;
-		this.isAllowedAddPrimary = numberOfPrimary >= this.maximumNumberOfPrimaryContacts ? false : true;
+		this.isAllowedAddPrimary = !(numberOfPrimary >= this.maximumNumberOfPrimaryContacts);
 	}
 
 	private userDialog(dialogOptions: UserDialogData, isCreate: boolean): void {

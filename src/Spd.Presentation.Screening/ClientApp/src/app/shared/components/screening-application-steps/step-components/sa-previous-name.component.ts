@@ -198,6 +198,6 @@ export class SaPreviousNameComponent implements OnInit, CrcFormStepComponent {
 
 	get moreThanOneRowExists(): boolean {
 		const control = this.form.get('aliases') as FormArray;
-		return control.length > 1 ? true : false;
+		return control.length > 1;
 	}
 }
