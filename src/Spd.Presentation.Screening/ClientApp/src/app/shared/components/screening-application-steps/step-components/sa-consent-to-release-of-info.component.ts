@@ -12,8 +12,6 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 				<div class="step">
 					<app-step-title title="Consent to a Criminal Record Check"></app-step-title>
 
-					<!-- <strong>Consent For Release of Information and Acknowledgements</strong> -->
-
 					<ng-container *ngIf="orgData?.isCrrpa; else isPssoa">
 						<div class="row">
 							<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
@@ -85,8 +83,6 @@ export class SaConsentToReleaseOfInfoComponent implements CrcFormStepComponent {
 		agreeToCriminalCheck: new FormControl(null, [Validators.requiredTrue]),
 		agreeToVulnerableSectorSearch: new FormControl(null, [Validators.requiredTrue]),
 	});
-	hasScrolledToBottom = false;
-	displayValidationErrors = false;
 
 	constructor(private formBuilder: FormBuilder, private authenticationService: AuthenticationService) {}
 
@@ -97,13 +93,6 @@ export class SaConsentToReleaseOfInfoComponent implements CrcFormStepComponent {
 	}
 
 	isFormValid(): boolean {
-		this.displayValidationErrors = !this.hasScrolledToBottom;
-		return this.form.valid && this.hasScrolledToBottom;
-	}
-
-	onScrollTermsAndConditions(e: any) {
-		if (e.target.scrollHeight < e.target.scrollTop + e.target.offsetHeight) {
-			this.hasScrolledToBottom = true;
-		}
+		return this.form.valid;
 	}
 }

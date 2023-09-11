@@ -113,11 +113,18 @@ export class SaStepTermsAndCondComponent {
 	consentToReleaseOfInfoComponent!: SaConsentToReleaseOfInfoComponent;
 
 	getStepData(): any {
-		return {
+		let data = {
 			...this.consentToCrcComponent?.getDataToSave(),
 			...this.declarationComponent.getDataToSave(),
-			...this.consentToReleaseOfInfoComponent.getDataToSave(),
 		};
+
+		if (this.consentToCrcComponent) {
+			data = { ...data, ...this.consentToCrcComponent.getDataToSave() };
+		} else {
+			data = { ...data, ...this.consentToReleaseOfInfoComponent.getDataToSave() };
+		}
+
+		return data;
 	}
 
 	onDeclarationNextStep(formNumber: number): void {
@@ -168,8 +175,13 @@ export class SaStepTermsAndCondComponent {
 				this.consentToCrcComponent.form.markAllAsTouched();
 				return this.consentToCrcComponent.isFormValid();
 			case this.STEP_CONSENT:
-				this.consentToReleaseOfInfoComponent.form.markAllAsTouched();
-				return this.consentToReleaseOfInfoComponent.isFormValid();
+				if (this.consentToCrcComponent) {
+					this.consentToCrcComponent.form.markAllAsTouched();
+					return this.consentToCrcComponent.isFormValid();
+				} else {
+					this.consentToReleaseOfInfoComponent.form.markAllAsTouched();
+					return this.consentToReleaseOfInfoComponent.isFormValid();
+				}
 			default:
 				console.error('Unknown Form', step);
 		}
