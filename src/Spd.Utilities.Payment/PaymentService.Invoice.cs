@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
@@ -48,11 +49,24 @@ namespace Spd.Utilities.Payment
                 var resp = await requestResponse.Content.ReadFromJsonAsync<CreateInvoiceResp>();
                 var result = _mapper.Map<InvoiceResult>(resp);
                 result.IsSuccess = true;
+                result.Message = await requestResponse.Content.ReadAsStringAsync();
                 return result;
             }
             else
             {
-                string errorMsg = string.Join(";", requestResponse.Headers.GetValues("CAS-Returned-Messages"));
+                string errorMsg = null;
+                if (requestResponse.StatusCode == HttpStatusCode.NotFound) 
+                {
+                    errorMsg = $"{url} cannot be found.";
+                }
+                else
+                {
+                    IEnumerable<string> values;
+                    if(requestResponse.Headers.TryGetValues("CAS-Returned-Messages", out values))
+                    {
+                        errorMsg = string.Join(";", values);
+                    }
+                }
                 var result = new InvoiceResult();
                 result.IsSuccess = false;
                 result.Message = $"{requestResponse.ReasonPhrase}-{errorMsg}";
