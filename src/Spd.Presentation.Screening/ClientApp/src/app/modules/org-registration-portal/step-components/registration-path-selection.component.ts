@@ -135,7 +135,7 @@ export class RegistrationPathSelectionComponent implements RegistrationFormStepC
 	}
 
 	isFormValid(): boolean {
-		const isValid = this.registrationTypeCode ? true : false;
+		const isValid = !!this.registrationTypeCode;
 		this.isDirtyAndInvalid = !isValid;
 		return isValid;
 	}

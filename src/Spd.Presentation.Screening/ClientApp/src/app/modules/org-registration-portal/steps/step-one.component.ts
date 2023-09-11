@@ -260,6 +260,6 @@ export class StepOneComponent {
 
 	setShowStepCompensationQuestionFlag(): void {
 		this.showStepCompensationQuestion =
-			this.registrationPathSelectionData.registrationTypeCode == RegistrationTypeCode.Employee ? false : true;
+			this.registrationPathSelectionData.registrationTypeCode != RegistrationTypeCode.Employee;
 	}
 }

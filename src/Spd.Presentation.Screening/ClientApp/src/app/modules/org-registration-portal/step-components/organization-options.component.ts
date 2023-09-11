@@ -316,9 +316,9 @@ export class OrganizationOptionsComponent implements RegistrationFormStepCompone
 	isFormValid(): boolean {
 		let isValid = false;
 		if (this.registrationTypeCode == RegistrationTypeCode.Employee) {
-			isValid = this.employeeOrganizationTypeCode ? true : false;
+			isValid = !!this.employeeOrganizationTypeCode;
 		} else {
-			isValid = this.volunteerOrganizationTypeCode ? true : false;
+			isValid = !!this.volunteerOrganizationTypeCode;
 		}
 
 		this.isDirtyAndInvalid = !isValid;

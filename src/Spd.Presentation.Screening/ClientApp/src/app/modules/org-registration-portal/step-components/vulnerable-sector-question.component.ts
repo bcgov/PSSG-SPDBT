@@ -133,7 +133,7 @@ export class VulnerableSectorQuestionComponent implements RegistrationFormStepCo
 	}
 
 	isFormValid(): boolean {
-		const isValid = this.employeeInteractionFlag ? true : false;
+		const isValid = !!this.employeeInteractionFlag;
 		this.isDirtyAndInvalid = !isValid;
 		return isValid;
 	}
