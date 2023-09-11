@@ -116,7 +116,7 @@ namespace Spd.Manager.Cases.Application
                 }
             }
             var cmd = _mapper.Map<ApplicationInvitesCreateCmd>(createCmd.ApplicationInvitesCreateRequest);
-            if (createCmd.IsPSA)
+            if (createCmd.IsPSA || org.OrgResult.ParentOrgId == SpdConstants.BC_GOV_ORG_ID)
                 cmd.OrgId = SpdConstants.BC_GOV_ORG_ID;
             else
                 cmd.OrgId = createCmd.OrgId;
