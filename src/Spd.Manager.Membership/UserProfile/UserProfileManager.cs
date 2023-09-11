@@ -113,10 +113,12 @@ namespace Spd.Manager.Membership.UserProfile
             var existingIdentities = await _idRepository.Query(new IdentityQry(cmd.IdirUserIdentity.UserGuid, null, IdentityProviderTypeEnum.Idir), ct);
             var identity = existingIdentities.Items.FirstOrDefault();
             Guid? identityId = identity?.Id;
+            bool isFirstTimeLogin = false;
             if (identity == null)
             {
                 var id = await _idRepository.Manage(new CreateIdentityCmd(cmd.IdirUserIdentity.UserGuid, SpdConstants.BC_GOV_ORG_ID, IdentityProviderTypeEnum.Idir), ct);
                 identityId = id?.Id;
+                isFirstTimeLogin = true;
             }
 
             var existingUser = (OrgUsersResult)await _orgUserRepository.QueryOrgUserAsync(new OrgUsersSearch(SpdConstants.BC_GOV_ORG_ID, identityId), ct);
@@ -138,6 +140,7 @@ namespace Spd.Manager.Membership.UserProfile
             response.UserGuid = cmd.IdirUserIdentity?.UserGuid;
             response.UserDisplayName = cmd.IdirUserIdentity?.DisplayName;
             response.IdirUserName = cmd.IdirUserIdentity?.IdirUserName;
+            response.IsFirstTimeLogin = isFirstTimeLogin;
             //todo: temp hardcode
             response.OrgId = Guid.Parse("64540211-d346-ee11-b845-00505683fbf4"); 
             return response;
