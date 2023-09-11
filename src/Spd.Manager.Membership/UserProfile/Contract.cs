@@ -9,7 +9,8 @@ namespace Spd.Manager.Membership.UserProfile
     {
         public Task<OrgUserProfileResponse> Handle(GetCurrentUserProfileQuery request, CancellationToken ct);
         public Task<ApplicantProfileResponse> Handle(GetApplicantProfileQuery request, CancellationToken ct);
-        public Task<IdirUserProfileResponse> Handle(ManageIdirUserCommand command, CancellationToken ct);
+        public Task<IdirUserProfileResponse?> Handle(GetIdirUserProfileQuery request, CancellationToken ct); //used for query idir user if user is already existing in spd
+        public Task<IdirUserProfileResponse> Handle(ManageIdirUserCommand command, CancellationToken ct); //used for whoami, which will register idir user to spd.
     }
 
     #region UserProfile
@@ -89,6 +90,7 @@ namespace Spd.Manager.Membership.UserProfile
 
     #region IdirUserProfile
 
+    public record GetIdirUserProfileQuery(IdirUserIdentity IdirUserIdentity) : IRequest<IdirUserProfileResponse>;
     public record ManageIdirUserCommand(IdirUserIdentity IdirUserIdentity) : IRequest<IdirUserProfileResponse>;
 
     public class IdirUserProfileResponse
@@ -102,6 +104,7 @@ namespace Spd.Manager.Membership.UserProfile
         public string? IdirUserName { get; set; }
         public IdentityProviderTypeCode? IdentityProviderType { get; set; }
         public bool IsPSA { get; set; } = false;
+        public bool IsFirstTimeLogin { get; set; } = false;
     }
 
     public class IdirUserIdentity

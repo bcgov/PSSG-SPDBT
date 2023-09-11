@@ -13,6 +13,7 @@ namespace Spd.Manager.Membership.UserProfile
         : IRequestHandler<GetCurrentUserProfileQuery, OrgUserProfileResponse>,
         IRequestHandler<GetApplicantProfileQuery, ApplicantProfileResponse>,
         IRequestHandler<ManageIdirUserCommand, IdirUserProfileResponse>,
+        IRequestHandler<GetIdirUserProfileQuery, IdirUserProfileResponse>,
         IUserProfileManager
     {
         private readonly IOrgUserRepository _orgUserRepository;
@@ -112,10 +113,12 @@ namespace Spd.Manager.Membership.UserProfile
             var existingIdentities = await _idRepository.Query(new IdentityQry(cmd.IdirUserIdentity.UserGuid, null, IdentityProviderTypeEnum.Idir), ct);
             var identity = existingIdentities.Items.FirstOrDefault();
             Guid? identityId = identity?.Id;
+            bool isFirstTimeLogin = false;
             if (identity == null)
             {
                 var id = await _idRepository.Manage(new CreateIdentityCmd(cmd.IdirUserIdentity.UserGuid, SpdConstants.BC_GOV_ORG_ID, IdentityProviderTypeEnum.Idir), ct);
                 identityId = id?.Id;
+                isFirstTimeLogin = true;
             }
 
             var existingUser = (OrgUsersResult)await _orgUserRepository.QueryOrgUserAsync(new OrgUsersSearch(SpdConstants.BC_GOV_ORG_ID, identityId), ct);
@@ -137,9 +140,36 @@ namespace Spd.Manager.Membership.UserProfile
             response.UserGuid = cmd.IdirUserIdentity?.UserGuid;
             response.UserDisplayName = cmd.IdirUserIdentity?.DisplayName;
             response.IdirUserName = cmd.IdirUserIdentity?.IdirUserName;
+            response.IsFirstTimeLogin = isFirstTimeLogin;
             //todo: temp hardcode
             response.OrgId = Guid.Parse("64540211-d346-ee11-b845-00505683fbf4"); 
             return response;
+        }
+
+        public async Task<IdirUserProfileResponse?> Handle(GetIdirUserProfileQuery qry, CancellationToken ct)
+        {
+            var existingIdentities = await _idRepository.Query(new IdentityQry(qry.IdirUserIdentity.UserGuid, null, IdentityProviderTypeEnum.Idir), ct);
+            var identity = existingIdentities.Items.FirstOrDefault();
+            Guid? identityId = identity?.Id;
+            if (identity != null)
+            {
+                var existingUser = (OrgUsersResult)await _orgUserRepository.QueryOrgUserAsync(new OrgUsersSearch(SpdConstants.BC_GOV_ORG_ID, identityId), ct);
+                var result = existingUser.UserResults.FirstOrDefault();
+                if (result != null)
+                {
+                    var response = _mapper.Map<IdirUserProfileResponse>(result);
+                    response.UserGuid = qry.IdirUserIdentity?.UserGuid;
+                    response.UserDisplayName = qry.IdirUserIdentity?.DisplayName;
+                    response.IdirUserName = qry.IdirUserIdentity?.IdirUserName;
+                    response.OrgId = Guid.Parse("64540211-d346-ee11-b845-00505683fbf4");
+                    return response;
+                }
+                return null;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }
