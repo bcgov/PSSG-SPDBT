@@ -138,8 +138,15 @@ namespace Spd.Utilities.LogonUser
             if (idirUserProfile == null)
             {
                 var idirUserInfo = context.User.GetIdirUserIdentityInfo();
-                idirUserProfile = await mediator.Send(new ManageIdirUserCommand(mapper.Map<IdirUserIdentity>(idirUserInfo)));
-                await cache.Set<IdirUserProfileResponse>($"{IdirUserCacheKeyPrefix}{context.User.GetUserGuid()}", idirUserProfile, new TimeSpan(0, 30, 0));
+                idirUserProfile = await mediator.Send(new GetIdirUserProfileQuery(mapper.Map<IdirUserIdentity>(idirUserInfo)));
+                if (idirUserProfile != null)
+                {
+                    await cache.Set<IdirUserProfileResponse>($"{IdirUserCacheKeyPrefix}{context.User.GetUserGuid()}", idirUserProfile, new TimeSpan(0, 30, 0));
+                }
+                else
+                {
+                    return true;
+                }
             }
             context.User.UpdateUserClaims(idirUserProfile.UserId.ToString(), orgId.ToString(), "BCGovStaff");
             return true;
