@@ -589,6 +589,6 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 
 	get rowsExist(): boolean {
 		const control = this.form.get('crcs') as FormArray;
-		return control.length > 1 ? true : false;
+		return control.length > 1;
 	}
 }

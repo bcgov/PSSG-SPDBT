@@ -139,7 +139,7 @@ export class SaDeclarationComponent implements OnInit, CrcFormStepComponent {
 
 	isFormValid(): boolean {
 		this.displayValidationErrors = !this.captchaPassed;
-		return this.form.valid && ((this.displayCaptcha && this.captchaPassed) || !this.displayCaptcha) ? true : false;
+		return this.form.valid && ((this.displayCaptcha && this.captchaPassed) || !this.displayCaptcha);
 	}
 
 	onTokenResponse($event: CaptchaResponse) {

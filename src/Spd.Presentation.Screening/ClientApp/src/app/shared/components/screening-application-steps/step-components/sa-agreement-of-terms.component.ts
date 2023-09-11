@@ -10,7 +10,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 		<section class="step-section p-3">
 			<form [formGroup]="form" novalidate>
 				<div class="step">
-					<app-step-title title="Review the following terms of agreement"></app-step-title>
+					<app-step-title title="Terms of Use"></app-step-title>
 					<div class="row">
 						<div
 							class="offset-lg-2 col-lg-8 col-md-12 col-sm-12 conditions px-3 mb-3"
@@ -477,38 +477,15 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 
 					<div class="row">
 						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
-							<mat-checkbox formControlName="agreeToCriminalCheck">
-								I hereby consent to a criminal record check pursuant to the Criminal Records Review Act (CRRA) to
-								determine whether I have a conviction or outstanding charge for any relevant or specified offence(s) as
-								defined under that ACT (CRRA check). I hereby consent to a check of available law enforcement systems as
-								further described below, including any local police records.
+							<mat-checkbox formControlName="readAndAcceptTerms">
+								I have read and accept the above Terms of Use
 							</mat-checkbox>
 							<mat-error
 								class="mat-option-error"
 								*ngIf="
-									(form.get('agreeToCriminalCheck')?.dirty || form.get('agreeToCriminalCheck')?.touched) &&
-									form.get('agreeToCriminalCheck')?.invalid &&
-									form.get('agreeToCriminalCheck')?.hasError('required')
-								"
-								>This is required</mat-error
-							>
-						</div>
-					</div>
-
-					<div class="row">
-						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
-							<mat-checkbox formControlName="agreeToVulnerableSectorSearch">
-								I hereby consent to a Vulnerable Sector search to check if I have been convicted if I have been
-								convicted of and received a record suspension (formerly known as a pardon) for any sexual offences as
-								per the Criminal Records Act.
-							</mat-checkbox>
-							<mat-error
-								class="mat-option-error"
-								*ngIf="
-									(form.get('agreeToVulnerableSectorSearch')?.dirty ||
-										form.get('agreeToVulnerableSectorSearch')?.touched) &&
-									form.get('agreeToVulnerableSectorSearch')?.invalid &&
-									form.get('agreeToVulnerableSectorSearch')?.hasError('required')
+									(form.get('readAndAcceptTerms')?.dirty || form.get('readAndAcceptTerms')?.touched) &&
+									form.get('readAndAcceptTerms')?.invalid &&
+									form.get('readAndAcceptTerms')?.hasError('required')
 								"
 								>This is required</mat-error
 							>
@@ -539,9 +516,9 @@ export class SaAgreementOfTermsComponent implements CrcFormStepComponent {
 	@Input() resetRecaptcha: Subject<void> = new Subject<void>();
 
 	form: FormGroup = this.formBuilder.group({
-		agreeToCriminalCheck: new FormControl(null, [Validators.requiredTrue]),
-		agreeToVulnerableSectorSearch: new FormControl(null, [Validators.requiredTrue]),
+		readAndAcceptTerms: new FormControl(null, [Validators.requiredTrue]),
 	});
+
 	hasScrolledToBottom = false;
 	displayValidationErrors = false;
 
@@ -555,7 +532,7 @@ export class SaAgreementOfTermsComponent implements CrcFormStepComponent {
 
 	isFormValid(): boolean {
 		this.displayValidationErrors = !this.hasScrolledToBottom;
-		return this.form.valid && this.hasScrolledToBottom ? true : false;
+		return this.form.valid && this.hasScrolledToBottom;
 	}
 
 	onScrollTermsAndConditions(e: any) {

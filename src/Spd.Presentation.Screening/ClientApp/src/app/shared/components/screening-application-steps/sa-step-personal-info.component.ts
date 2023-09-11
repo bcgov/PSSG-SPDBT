@@ -94,7 +94,7 @@ import { SaPreviousNameComponent } from './step-components/sa-previous-name.comp
 					(reEditCrcInformation)="onReEditCrcInformation()"
 				></app-sa-summary>
 
-				<div class="row mt-4">
+				<div class="row my-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
