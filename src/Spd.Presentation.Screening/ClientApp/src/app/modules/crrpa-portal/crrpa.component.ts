@@ -154,12 +154,12 @@ export class CrrpaComponent implements OnInit {
 		const orgData = (this.location.getState() as any).crrpaOrgData;
 		if (orgData) {
 			orgData.orgAddress = this.utilService.getAddressString({
-				addressLine1: orgData.orgAddressLine1!,
-				addressLine2: orgData.orgAddressLine2 ?? undefined,
-				city: orgData.orgCity!,
-				province: orgData.orgProvince!,
-				postalCode: orgData.orgPostalCode!,
-				country: orgData.orgCountry!,
+				addressLine1: orgData.orgAddressLine1 ?? '',
+				addressLine2: orgData.orgAddressLine2 ?? '',
+				city: orgData.orgCity ?? '',
+				province: orgData.orgProvince ?? '',
+				postalCode: orgData.orgPostalCode ?? '',
+				country: orgData.orgCountry ?? '',
 			});
 
 			orgData.isCrrpa = true;

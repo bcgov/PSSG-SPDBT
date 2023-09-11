@@ -124,7 +124,7 @@ export class UserEditModalComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.form.patchValue(this.dialogData.user);
-		this.isEdit = this.dialogData.user.id ? true : false;
+		this.isEdit = !!this.dialogData.user.id;
 		this.title = this.dialogData.user.id ? 'Edit User' : 'Add User';
 
 		if (!this.dialogData.isAllowedPrimary) {

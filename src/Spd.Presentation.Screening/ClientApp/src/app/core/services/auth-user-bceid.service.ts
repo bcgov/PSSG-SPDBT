@@ -49,7 +49,7 @@ export class AuthUserBceidService {
 		);
 		this.bceidUserOrgProfile = {
 			...bceidUserOrgProfile,
-			isNotVolunteerOrg: bceidUserOrgProfile.volunteerOrganizationTypeCode ? false : true,
+			isNotVolunteerOrg: !bceidUserOrgProfile.volunteerOrganizationTypeCode,
 		};
 
 		console.debug('[AuthUserBceidService] setUserOrgProfile bceidUserOrgProfile', this.bceidUserOrgProfile);

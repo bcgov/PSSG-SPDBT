@@ -141,7 +141,7 @@ export class StepThreeComponent {
 	private _registrationTypeCode: RegistrationTypeCode | null = null;
 	@Input() set registrationTypeCode(value: RegistrationTypeCode | null) {
 		this._registrationTypeCode = value;
-		this.showStepPaymentQuestion = value == RegistrationTypeCode.Employee ? true : false;
+		this.showStepPaymentQuestion = value == RegistrationTypeCode.Employee;
 	}
 	get registrationTypeCode(): RegistrationTypeCode | null {
 		return this._registrationTypeCode;
