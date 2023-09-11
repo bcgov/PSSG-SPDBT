@@ -117,7 +117,7 @@ export class PssoTermsAndCondsComponent implements OnInit {
 	onContinue(): void {
 		this.form.markAllAsTouched();
 		if (this.form.valid) {
-			this.router.navigateByUrl(PssoRoutes.path(PssoRoutes.SCREENING_CHECKS));
+			this.router.navigateByUrl(PssoRoutes.path(PssoRoutes.SCREENING_STATUSES));
 		}
 	}
 }
