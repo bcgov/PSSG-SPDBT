@@ -179,7 +179,13 @@ export class AuthProcessService {
 
 			this.notify(success);
 
-			const nextRoute = decodeURIComponent(nextUrl);
+			let nextRoute = decodeURIComponent(nextUrl);
+
+			// SPDBT-1535 - if this is the first time logging in, override the next route.
+			if (this.authUserIdirService.idirUserWhoamiProfile?.isFirstTimeLogin) {
+				nextRoute = PssoRoutes.path(PssoRoutes.TERMS_AND_CONDITIONS);
+			}
+
 			return Promise.resolve(nextRoute);
 		}
 
