@@ -101,7 +101,7 @@ export class PssoTermsAndCondsComponent implements OnInit {
 	ngOnInit(): void {
 		if (!this.authUserService.idirUserWhoamiProfile) {
 			// Force login
-			this.router.navigateByUrl(PssoRoutes.path(PssoRoutes.SCREENING_CHECKS));
+			this.router.navigateByUrl(PssoRoutes.path(PssoRoutes.SCREENING_STATUSES));
 		}
 	}
 
