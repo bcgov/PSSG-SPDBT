@@ -840,6 +840,7 @@ namespace Spd.Manager.Cases.Application
         public string LastName { get; set; } = null!;
         public string EmailAddress { get; set; } = null!;
         public PSSOUserRoleEnum PSSOUserRoleCode { get; set; }
+        public Guid? PortalUserId { get; set; }
     }
 
     public record DelegateCreateRequest
