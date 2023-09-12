@@ -21,7 +21,8 @@ import { ApplicationStatisticsResponse } from '../models/application-statistics-
 import { BulkHistoryListResponse } from '../models/bulk-history-list-response';
 import { BulkUploadCreateResponse } from '../models/bulk-upload-create-response';
 import { ClearanceAccessListResponse } from '../models/clearance-access-list-response';
-import { DelegateResponse } from '../models/delegate-response';
+import { DelegateCreateRequest } from '../models/delegate-create-request';
+import { DelegateListResponse } from '../models/delegate-list-response';
 import { IdentityStatusCode } from '../models/identity-status-code';
 
 @Injectable({
@@ -818,7 +819,7 @@ export class ApplicationService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<StrictHttpResponse<Array<DelegateResponse>>> {
+): Observable<StrictHttpResponse<DelegateListResponse>> {
 
     const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdApplicationApplicationIdDelegatesGetPath, 'get');
     if (params) {
@@ -833,7 +834,7 @@ export class ApplicationService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Array<DelegateResponse>>;
+        return r as StrictHttpResponse<DelegateListResponse>;
       })
     );
   }
@@ -850,10 +851,10 @@ export class ApplicationService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<Array<DelegateResponse>> {
+): Observable<DelegateListResponse> {
 
     return this.apiOrgsOrgIdApplicationApplicationIdDelegatesGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<Array<DelegateResponse>>) => r.body as Array<DelegateResponse>)
+      map((r: StrictHttpResponse<DelegateListResponse>) => r.body as DelegateListResponse)
     );
   }
 
@@ -871,7 +872,7 @@ export class ApplicationService extends BaseService {
   apiOrgsOrgIdApplicationApplicationIdDelegatePost$Response(params: {
     applicationId: string;
     orgId: string;
-    body: DelegateResponse
+    body: DelegateCreateRequest
   },
   context?: HttpContext
 
@@ -905,7 +906,7 @@ export class ApplicationService extends BaseService {
   apiOrgsOrgIdApplicationApplicationIdDelegatePost(params: {
     applicationId: string;
     orgId: string;
-    body: DelegateResponse
+    body: DelegateCreateRequest
   },
   context?: HttpContext
 
