@@ -44,6 +44,6 @@ namespace Spd.Resource.Applicants.Delegates
     public enum PSSOUserRoleEnum
     {
         Delegate,
-        HiringManager
+        Initiator
     }
 }

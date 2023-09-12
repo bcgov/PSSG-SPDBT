@@ -600,50 +600,6 @@ namespace Spd.Presentation.Screening.Controllers
         }
         #endregion
 
-        #region application-delegates
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="applicationId"></param>
-        /// <param name="orgId"></param>
-        /// <returns></returns>
-        [Route("api/orgs/{orgId}/application/{applicationId}/delegates")]
-        [HttpGet]
-        public async Task<DelegateListResponse> GetDelegateList([FromRoute] Guid applicationId, [FromRoute] Guid orgId)
-        {
-            return await _mediator.Send(new DelegateListQuery(orgId, applicationId));
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="applicationId"></param>
-        /// <param name="orgId"></param>
-        /// <returns></returns>
-        [Route("api/orgs/{orgId}/application/{applicationId}/delegate")]
-        [HttpPost]
-        public async Task<ActionResult> PostDelegate([FromBody][Required] DelegateCreateRequest delegateRequest, [FromRoute] Guid applicationId, [FromRoute] Guid orgId)
-        {
-            return Ok();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="delegateId"></param>
-        /// <param name="applicationId"></param>
-        /// <param name="orgId"></param>
-        /// <returns></returns>
-        [Route("api/orgs/{orgId}/application/{applicationId}/delegate/{delegateId}")]
-        [HttpDelete]
-        public async Task<ActionResult> DeleteDelegate([FromRoute] Guid delegateId, [FromRoute] Guid applicationId, [FromRoute] Guid orgId)
-        {
-            return Ok();
-        }
-
-        #endregion
-
         #region clearances
 
         /// <summary>

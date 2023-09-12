@@ -21,7 +21,7 @@ namespace Spd.Resource.Applicants
             configurationServices.Services.AddTransient<IIncidentRepository, IncidentRepository>();
             configurationServices.Services.AddTransient<IPaymentRepository, PaymentRepository>();
             configurationServices.Services.AddTransient<IDelegateRepository, DelegateRepository>();
-            configurationServices.Services.AddTransient<IInvoiceRepository, InvoiceRepository>();
+            configurationServices.Services.AddTransient<IInvoiceRepository, PortalUserRepository>();
             configurationServices.Services.AddTransient<IDocumentTemplateRepository, DocumentTemplateRepository>();
         }
     }

@@ -15,9 +15,9 @@ namespace Spd.Resource.Applicants.Delegates
 
             _ = CreateMap<spd_delegate, DelegateResp>()
             .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_delegateid))
-            .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.spd_PortalUserId.spd_firstname))
-            .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.spd_PortalUserId.spd_surname))
-            .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.spd_PortalUserId.spd_emailaddress1));
+            .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.spd_PortalUserId.spd_firstname ?? s.spd_firstname))
+            .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.spd_PortalUserId.spd_surname ?? s.spd_surname))
+            .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.spd_PortalUserId.spd_emailaddress1 ?? s.spd_email));
         }
     }
 }

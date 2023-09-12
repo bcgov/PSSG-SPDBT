@@ -20,7 +20,7 @@ using System.Net;
 
 namespace Spd.Manager.Cases.Application
 {
-    internal class ApplicationManager :
+    internal partial class ApplicationManager :
         IRequestHandler<ApplicationInviteCreateCommand, ApplicationInvitesCreateResponse>,
         IRequestHandler<ApplicantApplicationCreateCommand, ApplicationCreateResponse>,
         IRequestHandler<ApplicationInviteVerifyCommand, AppOrgResponse>,
@@ -44,6 +44,7 @@ namespace Spd.Manager.Cases.Application
         IRequestHandler<PrepopulateFileTemplateQuery, FileResponse>,
         IRequestHandler<GetApplicationInvitePrepopulateDataQuery, ApplicationInvitePrepopulateDataResponse>,
         IRequestHandler<DelegateListQuery, DelegateListResponse>,
+        IRequestHandler<CreateDelegateCommand, DelegateResponse>,
         IApplicationManager
     {
         private readonly IApplicationRepository _applicationRepository;
@@ -217,7 +218,7 @@ namespace Spd.Manager.Cases.Application
                     new CreateDelegateCmd()
                     {
                         ApplicationId = applicationId.Value,
-                        PSSOUserRoleCode = PSSOUserRoleEnum.HiringManager,
+                        PSSOUserRoleCode = PSSOUserRoleEnum.Initiator,
                         PortalUserId = request.UserId,
                     }, ct);
             }
@@ -633,21 +634,6 @@ namespace Spd.Manager.Cases.Application
             }
             throw new ApiException(HttpStatusCode.NoContent, "No file found.");
         }
-        #endregion
-
-        #region application-delegates
-
-        public async Task<DelegateListResponse> Handle(DelegateListQuery request, CancellationToken ct)
-        {
-            var delegates = await _delegateRepository.QueryAsync(new DelegateQry(request.ApplicationId), ct);
-            var delegateResps = _mapper.Map<IEnumerable<DelegateResponse>>(delegates.Delegates);
-
-            return new DelegateListResponse
-            {
-                Delegates = delegateResps
-            };
-        }
-
         #endregion
     }
 }

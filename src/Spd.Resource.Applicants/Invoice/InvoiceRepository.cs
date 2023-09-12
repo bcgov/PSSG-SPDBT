@@ -3,12 +3,12 @@ using Microsoft.Dynamics.CRM;
 using Spd.Utilities.Dynamics;
 
 namespace Spd.Resource.Applicants.Invoice;
-internal class InvoiceRepository : IInvoiceRepository
+internal class PortalUserRepository : IInvoiceRepository
 {
     private readonly DynamicsContext _context;
     private readonly IMapper _mapper;
 
-    public InvoiceRepository(IDynamicsContextFactory ctx,
+    public PortalUserRepository(IDynamicsContextFactory ctx,
         IMapper mapper)
     {
         _context = ctx.Create();

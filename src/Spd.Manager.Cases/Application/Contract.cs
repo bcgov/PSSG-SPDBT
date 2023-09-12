@@ -32,6 +32,8 @@ namespace Spd.Manager.Cases.Application
         public Task<ApplicantApplicationFileListResponse> Handle(ApplicantApplicationFileQuery query, CancellationToken ct);
         public Task<IEnumerable<ApplicantAppFileCreateResponse>> Handle(CreateApplicantAppFileCommand query, CancellationToken ct);
         public Task<FileResponse> Handle(PrepopulateFileTemplateQuery query, CancellationToken ct);
+        public Task<DelegateResponse> Handle(CreateDelegateCommand cmd, CancellationToken ct);
+        public Task<DelegateListResponse> Handle(DelegateListQuery query, CancellationToken ct);
     }
 
     #region application invites
@@ -848,6 +850,7 @@ namespace Spd.Manager.Cases.Application
     }
 
     public record DelegateListQuery(Guid OrgId, Guid ApplicationId) : IRequest<DelegateListResponse>;
+    public record CreateDelegateCommand(Guid OrgId, Guid ApplicationId, DelegateCreateRequest CreateRequest) : IRequest<DelegateResponse>;
 
     #endregion
 }
