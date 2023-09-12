@@ -7,11 +7,13 @@ import { ManualSubmissionComponent } from './components/manual-submission.compon
 import { ScreeningChecksComponent } from './components/screening-checks.component';
 import { ScreeningStatusesComponent } from './components/screening-statuses.component';
 import { PssoRoutingModule } from './psso-routing.module';
+import { PssoTermsAndCondsComponent } from './psso-terms-and-conds.component';
 import { PssoComponent } from './psso.component';
 
 @NgModule({
 	declarations: [
 		PssoComponent,
+		PssoTermsAndCondsComponent,
 		ScreeningStatusesComponent,
 		ScreeningChecksComponent,
 		IdentityVerificationComponent,
