@@ -1,6 +1,7 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Spd.Resource.Applicants.Delegates;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.ManagerContract;
 using System.ComponentModel;
@@ -31,6 +32,8 @@ namespace Spd.Manager.Cases.Application
         public Task<ApplicantApplicationFileListResponse> Handle(ApplicantApplicationFileQuery query, CancellationToken ct);
         public Task<IEnumerable<ApplicantAppFileCreateResponse>> Handle(CreateApplicantAppFileCommand query, CancellationToken ct);
         public Task<FileResponse> Handle(PrepopulateFileTemplateQuery query, CancellationToken ct);
+        public Task<DelegateResponse> Handle(CreateDelegateCommand cmd, CancellationToken ct);
+        public Task<DelegateListResponse> Handle(DelegateListQuery query, CancellationToken ct);
     }
 
     #region application invites
@@ -246,14 +249,6 @@ namespace Spd.Manager.Cases.Application
         public bool? HaveVerifiedIdentity { get; set; }
         public DateTimeOffset? CreatedOn { get; set; }
         public ApplicationPortalStatusCode? Status { get; set; }
-    }
-
-    public record DelegateResponse
-    {
-        public Guid Id { get; set; }
-        public string? FirstName { get; set; }
-        public string? LastName { get; set; }
-        public string? EmailAddress { get; set; }
     }
 
     public record ApplicationPaymentResponse : ApplicationResponse
@@ -828,5 +823,35 @@ namespace Spd.Manager.Cases.Application
         FingerprintsPkg,
         StatutoryDeclarationPkg
     }
+    #endregion
+
+
+    #region application-delegates
+
+    public class DelegateListResponse
+    {
+        public IEnumerable<DelegateResponse> Delegates { get; set; } = Array.Empty<DelegateResponse>();
+    }
+
+    public record DelegateResponse
+    {
+        public Guid Id { get; set; }
+        public string FirstName { get; set; } = null!;
+        public string LastName { get; set; } = null!;
+        public string EmailAddress { get; set; } = null!;
+        public PSSOUserRoleEnum PSSOUserRoleCode { get; set; }
+        public Guid? PortalUserId { get; set; }
+    }
+
+    public record DelegateCreateRequest
+    {
+        public string FirstName { get; set; } = null!;
+        public string LastName { get; set; } = null!;
+        public string EmailAddress { get; set; } = null!;
+    }
+
+    public record DelegateListQuery(Guid OrgId, Guid ApplicationId) : IRequest<DelegateListResponse>;
+    public record CreateDelegateCommand(Guid OrgId, Guid ApplicationId, DelegateCreateRequest CreateRequest) : IRequest<DelegateResponse>;
+
     #endregion
 }

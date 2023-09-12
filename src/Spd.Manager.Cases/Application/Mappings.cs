@@ -3,9 +3,9 @@ using Spd.Engine.Search;
 using Spd.Engine.Validation;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.ApplicationInvite;
+using Spd.Resource.Applicants.Delegates;
 using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.Incident;
-using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.ManagerContract;
 using Spd.Utilities.Shared.ResourceContracts;
 
@@ -81,6 +81,8 @@ namespace Spd.Manager.Cases.Application
                 .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName))
                 .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.Surname))
                 .ForMember(d => d.Email, opt => opt.MapFrom(s => s.EmailAddress));
+            CreateMap<DelegateResp, DelegateResponse>();
+            CreateMap<DelegateCreateRequest, CreateDelegateCmd>();
         }
 
         private static CaseSubStatusCode? GetCaseSubStatusCode(CaseSubStatusEnum? subStatusEnum)

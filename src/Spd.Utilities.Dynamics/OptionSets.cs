@@ -231,7 +231,7 @@ namespace Spd.Utilities.Dynamics
     public enum PSSOUserRoleOptionSet
     {
         Delegate = 100000000,
-        HiringManager = 100000001
+        Initiator = 100000001
     }
 
     public enum InvoiceStatusOptionSet
