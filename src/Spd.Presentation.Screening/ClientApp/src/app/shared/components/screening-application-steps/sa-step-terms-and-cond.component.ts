@@ -31,7 +31,7 @@ import { SaDeclarationComponent } from './step-components/sa-declaration.compone
 				</div>
 			</mat-step>
 
-			<mat-step *ngIf="agreeToShare">
+			<mat-step *ngIf="agreeToShareCrc">
 				<app-sa-consent-to-crc *ngIf="orgData" [orgData]="orgData"></app-sa-consent-to-crc>
 
 				<div class="row mt-4">
@@ -51,7 +51,7 @@ import { SaDeclarationComponent } from './step-components/sa-declaration.compone
 				</div>
 			</mat-step>
 
-			<mat-step *ngIf="!agreeToShare">
+			<mat-step *ngIf="!agreeToShareCrc">
 				<app-sa-consent-to-release-of-info *ngIf="orgData" [orgData]="orgData"></app-sa-consent-to-release-of-info>
 
 				<div class="row mt-4">
@@ -90,7 +90,7 @@ import { SaDeclarationComponent } from './step-components/sa-declaration.compone
 	encapsulation: ViewEncapsulation.None,
 })
 export class SaStepTermsAndCondComponent {
-	agreeToShare: boolean = false; // default and also, does not apply to PSSO
+	agreeToShareCrc: boolean = false; // default and also, does not apply to PSSO
 
 	@ViewChild('childstepper') childstepper!: MatStepper;
 
@@ -133,12 +133,12 @@ export class SaStepTermsAndCondComponent {
 
 		if (this.orgData?.isCrrpa) {
 			const declarationData = this.declarationComponent.getDataToSave();
-			if (declarationData.agreeToShare) {
+			if (declarationData.agreeToShareCrc) {
 				this.orgData.performPaymentProcess = false;
-				this.agreeToShare = true;
+				this.agreeToShareCrc = true;
 			} else {
 				this.orgData.performPaymentProcess = this.orgData?.payeeType == PayerPreferenceTypeCode.Applicant;
-				this.agreeToShare = false;
+				this.agreeToShareCrc = false;
 			}
 		}
 

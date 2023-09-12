@@ -20,7 +20,10 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 					<div class="row">
 						<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
 							<mat-form-field>
-								<mat-label>Requesting Organization</mat-label>
+								<mat-label>
+									<span *ngIf="orgData.isCrrpa">Requesting Organization</span>
+									<span *ngIf="!orgData.isCrrpa">Ministry</span>
+								</mat-label>
 								<input matInput formControlName="orgName" />
 							</mat-form-field>
 						</div>
