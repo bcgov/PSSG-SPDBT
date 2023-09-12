@@ -54,8 +54,8 @@ namespace Spd.Manager.Cases.Application
             CreateDelegateCmd cmd = _mapper.Map<CreateDelegateCmd>(command.CreateRequest);
             cmd.PortalUserId = userId;
             cmd.ApplicationId = command.ApplicationId;
-            await _delegateRepository.ManageAsync(cmd, ct);
-            return null;
+            var resp = await _delegateRepository.ManageAsync(cmd, ct);
+            return _mapper.Map<DelegateResponse>(resp);
         }
     }
 }
