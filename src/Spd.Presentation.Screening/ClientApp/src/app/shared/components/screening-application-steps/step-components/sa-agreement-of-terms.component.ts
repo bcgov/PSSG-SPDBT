@@ -476,7 +476,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 					</div>
 
 					<div class="row">
-						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
+						<div class="offset-lg-2 col-lg-5 col-md-8 col-sm-12">
 							<mat-checkbox formControlName="readAndAcceptTerms">
 								I have read and accept the above Terms of Use
 							</mat-checkbox>
@@ -489,6 +489,17 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 								"
 								>This is required</mat-error
 							>
+						</div>
+						<div class="col-lg-3 col-md-4 col-sm-12">
+							<button
+								mat-flat-button
+								class="table-button"
+								style="color: var(--color-primary-light);"
+								aria-label="Download Terms of Use"
+								(click)="onDownloadTermsOfUse()"
+							>
+								<mat-icon>file_download</mat-icon>Terms of Use
+							</button>
 						</div>
 					</div>
 				</div>
@@ -540,4 +551,6 @@ export class SaAgreementOfTermsComponent implements CrcFormStepComponent {
 			this.hasScrolledToBottom = true;
 		}
 	}
+
+	onDownloadTermsOfUse() {}
 }
