@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { UtilService } from 'src/app/core/services/util.service';
+import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application.model';
 
 @Component({
@@ -195,7 +196,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 											>This is required</mat-error
 										>
 									</p>
-									<strong> Collection notice </strong>
+									<strong> Collection Notice </strong>
 									<p>
 										The Security Programs Division (SPD) will collect your personal information for the purpose of
 										fulfilling the criminal record check requirements of the Criminal Records Review Act and in
@@ -268,7 +269,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 						<div class="offset-md-2 col-md-8 col-sm-12 mt-4">
 							<mat-form-field class="w-auto" style="background-color: var(--color-grey-lightest);">
 								<mat-label>Date Signed</mat-label>
-								<input matInput formControlName="dateSigned" />
+								<input matInput formControlName="dateSigned" [errorStateMatcher]="matcher" />
 								<mat-error *ngIf="form.get('dateSigned')?.hasError('required')">This is required</mat-error>
 							</mat-form-field>
 						</div>
@@ -294,6 +295,8 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 	],
 })
 export class SaConsentToReleaseOfInfoComponent implements CrcFormStepComponent {
+	matcher = new FormErrorStateMatcher();
+
 	@Input() resetRecaptcha: Subject<void> = new Subject<void>();
 
 	private _orgData: AppInviteOrgData | null = null;
