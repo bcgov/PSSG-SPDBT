@@ -7,6 +7,7 @@ using Spd.Resource.Applicants.ApplicationInvite;
 using Spd.Resource.Applicants.Delegates;
 using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.Incident;
+using Spd.Resource.Applicants.PortalUser;
 using Spd.Resource.Organizations.Identity;
 using Spd.Resource.Organizations.Org;
 using Spd.Resource.Organizations.Registration;
@@ -58,6 +59,7 @@ namespace Spd.Manager.Cases.Application
         private readonly IFileStorageService _fileStorageService;
         private readonly IIncidentRepository _incidentRepository;
         private readonly IDelegateRepository _delegateRepository;
+        private readonly IPortalUserRepository _portalUserRepository;
         private readonly ISearchEngine _searchEngine;
 
         public ApplicationManager(IApplicationRepository applicationRepository,
@@ -71,7 +73,8 @@ namespace Spd.Manager.Cases.Application
             IDocumentRepository documentUrlRepository,
             IFileStorageService fileStorageService,
             IIncidentRepository incidentRepository,
-            IDelegateRepository delegateRepository)
+            IDelegateRepository delegateRepository,
+            IPortalUserRepository portalUserRepository)
         {
             _applicationRepository = applicationRepository;
             _applicationInviteRepository = applicationInviteRepository;
@@ -85,6 +88,7 @@ namespace Spd.Manager.Cases.Application
             _incidentRepository = incidentRepository;
             _delegateRepository = delegateRepository;
             _searchEngine = searchEngine;
+            _portalUserRepository = portalUserRepository;
         }
 
         #region application-invite

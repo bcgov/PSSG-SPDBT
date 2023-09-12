@@ -82,6 +82,7 @@ namespace Spd.Manager.Cases.Application
                 .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.Surname))
                 .ForMember(d => d.Email, opt => opt.MapFrom(s => s.EmailAddress));
             CreateMap<DelegateResp, DelegateResponse>();
+            CreateMap<DelegateCreateRequest, CreateDelegateCmd>();
         }
 
         private static CaseSubStatusCode? GetCaseSubStatusCode(CaseSubStatusEnum? subStatusEnum)
