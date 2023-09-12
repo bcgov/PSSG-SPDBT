@@ -20,10 +20,10 @@ export interface DelegateManageDialogData {
 			<div class="row">
 				<div class="col-12">
 					<mat-table [dataSource]="dataSource" matSort matSortActive="createdOn" matSortDirection="desc">
-						<ng-container matColumnDef="name">
+						<ng-container matColumnDef="applicantName">
 							<mat-header-cell *matHeaderCellDef mat-sort-header>Applicant Name</mat-header-cell>
 							<mat-cell *matCellDef="let delegate">
-								<span class="mobile-label">Name:</span>
+								<span class="mobile-label">Applicant Name:</span>
 								{{ delegate | fullname }}
 							</mat-cell>
 						</ng-container>
@@ -74,7 +74,7 @@ export interface DelegateManageDialogData {
 })
 export class DelegateManageModalComponent implements OnInit {
 	dataSource: MatTableDataSource<DelegateResponse> = new MatTableDataSource<DelegateResponse>([]);
-	columns: string[] = ['name', 'emailAddress', 'actions'];
+	columns: string[] = ['applicantName', 'emailAddress', 'actions'];
 
 	constructor(
 		private applicationService: ApplicationService,
