@@ -685,23 +685,23 @@ namespace Spd.Manager.Cases.Application
             RuleFor(a => a.AgreeToCriminalCheck)
                 .NotEmpty()
                 .Equal(true)
-                .When(a => a.AgreeToShare != null && !(bool)a.AgreeToShare);
+                .When(a => a.AgreeToShareCrc != null && !(bool)a.AgreeToShareCrc);
             RuleFor(a => a.AgreeToVulnerableSectorSearch)
                 .NotEmpty()
                 .Equal(true)
-                .When(a => a.AgreeToShare != null && !(bool)a.AgreeToShare);
+                .When(a => a.AgreeToShareCrc != null && !(bool)a.AgreeToShareCrc);
             RuleFor(a => a.ConsentToCompletedCrc)
                 .Equal(true)
-                .When(a => a.AgreeToShare != null && (bool)a.AgreeToShare);
+                .When(a => a.AgreeToShareCrc != null && (bool)a.AgreeToShareCrc);
             RuleFor(a => a.ConsentToNotifyNoCrc)
                 .Equal(true)
-                .When(a => a.AgreeToShare != null && (bool)a.AgreeToShare);
+                .When(a => a.AgreeToShareCrc != null && (bool)a.AgreeToShareCrc);
             RuleFor(a => a.ConsentToNotifyRisk)
                 .Equal(true)
-                .When(a => a.AgreeToShare != null && (bool)a.AgreeToShare);
+                .When(a => a.AgreeToShareCrc != null && (bool)a.AgreeToShareCrc);
             RuleFor(a => a.ConsentToShareResultCrc)
                 .Equal(true)
-                .When(a => a.AgreeToShare != null && (bool)a.AgreeToShare);
+                .When(a => a.AgreeToShareCrc != null && (bool)a.AgreeToShareCrc);
         }
     }
     #endregion
@@ -714,7 +714,7 @@ namespace Spd.Manager.Cases.Application
         public Guid? AppInviteId { get; set; }
         public bool? AgreeToVulnerableSectorSearch { get; set; }
         public bool? AgreeToCriminalCheck { get; set; }
-        public bool? AgreeToShare { get; set; } = false;
+        public bool? AgreeToShareCrc { get; set; } = false;
         public Guid? SharedClearanceId { get; set; } = null;
         public bool? ConsentToShareResultCrc { get; set; } = null;
         public bool? ConsentToCompletedCrc { get; set; } = null;
