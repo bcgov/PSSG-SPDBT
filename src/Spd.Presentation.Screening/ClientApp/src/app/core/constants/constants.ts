@@ -43,6 +43,5 @@ export const SPD_CONSTANTS = {
 	payment: {
 		maxNumberOfAttempts: 3,
 	},
-	maxNumberOfDelegates: 4,
 	maxNumberOfAliases: 3,
 };

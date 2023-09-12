@@ -7,6 +7,7 @@ using Spd.Resource.Applicants.ApplicationInvite;
 using Spd.Resource.Applicants.Delegates;
 using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.Incident;
+using Spd.Resource.Applicants.PortalUser;
 using Spd.Resource.Organizations.Identity;
 using Spd.Resource.Organizations.Org;
 using Spd.Resource.Organizations.Registration;
@@ -20,7 +21,7 @@ using System.Net;
 
 namespace Spd.Manager.Cases.Application
 {
-    internal class ApplicationManager :
+    internal partial class ApplicationManager :
         IRequestHandler<ApplicationInviteCreateCommand, ApplicationInvitesCreateResponse>,
         IRequestHandler<ApplicantApplicationCreateCommand, ApplicationCreateResponse>,
         IRequestHandler<ApplicationInviteVerifyCommand, AppOrgResponse>,
@@ -43,6 +44,8 @@ namespace Spd.Manager.Cases.Application
         IRequestHandler<CreateApplicantAppFileCommand, IEnumerable<ApplicantAppFileCreateResponse>>,
         IRequestHandler<PrepopulateFileTemplateQuery, FileResponse>,
         IRequestHandler<GetApplicationInvitePrepopulateDataQuery, ApplicationInvitePrepopulateDataResponse>,
+        IRequestHandler<DelegateListQuery, DelegateListResponse>,
+        IRequestHandler<CreateDelegateCommand, DelegateResponse>,
         IApplicationManager
     {
         private readonly IApplicationRepository _applicationRepository;
@@ -56,6 +59,7 @@ namespace Spd.Manager.Cases.Application
         private readonly IFileStorageService _fileStorageService;
         private readonly IIncidentRepository _incidentRepository;
         private readonly IDelegateRepository _delegateRepository;
+        private readonly IPortalUserRepository _portalUserRepository;
         private readonly ISearchEngine _searchEngine;
 
         public ApplicationManager(IApplicationRepository applicationRepository,
@@ -69,7 +73,8 @@ namespace Spd.Manager.Cases.Application
             IDocumentRepository documentUrlRepository,
             IFileStorageService fileStorageService,
             IIncidentRepository incidentRepository,
-            IDelegateRepository delegateRepository)
+            IDelegateRepository delegateRepository,
+            IPortalUserRepository portalUserRepository)
         {
             _applicationRepository = applicationRepository;
             _applicationInviteRepository = applicationInviteRepository;
@@ -83,6 +88,7 @@ namespace Spd.Manager.Cases.Application
             _incidentRepository = incidentRepository;
             _delegateRepository = delegateRepository;
             _searchEngine = searchEngine;
+            _portalUserRepository = portalUserRepository;
         }
 
         #region application-invite
@@ -216,7 +222,7 @@ namespace Spd.Manager.Cases.Application
                     new CreateDelegateCmd()
                     {
                         ApplicationId = applicationId.Value,
-                        PSSOUserRoleCode = PSSOUserRoleEnum.HiringManager,
+                        PSSOUserRoleCode = PSSOUserRoleEnum.Initiator,
                         PortalUserId = request.UserId,
                     }, ct);
             }
@@ -633,7 +639,5 @@ namespace Spd.Manager.Cases.Application
             throw new ApiException(HttpStatusCode.NoContent, "No file found.");
         }
         #endregion
-
-
     }
 }
