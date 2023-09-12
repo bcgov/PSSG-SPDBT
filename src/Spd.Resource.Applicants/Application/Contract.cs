@@ -11,7 +11,7 @@ public interface IApplicationRepository
     public Task<bool> CheckApplicationDuplicateAsync(SearchApplicationQry searchApplicationQry, CancellationToken cancellationToken);
     public Task<ApplicationListResp> QueryAsync(ApplicationListQry query, CancellationToken cancellationToken);
     public Task<ApplicationStatisticsResp> QueryApplicationStatisticsAsync(ApplicationStatisticsQry query, CancellationToken cancellationToken);
-    public Task IdentityAsync(VerifyIdentityCmd cmd, CancellationToken ct);
+    public Task UpdateAsync(UpdateCmd cmd, CancellationToken ct);
     public Task<BulkAppsCreateResp> AddBulkAppsAsync(BulkAppsCreateCmd createApplicationCmds, CancellationToken cancellationToken);
     public Task<BulkHistoryListResp> QueryBulkHistoryAsync(BulkHistoryListQry query, CancellationToken cancellationToken);
     public Task<ClearanceAccessListResp> QueryAsync(ClearanceAccessListQry clearanceListQry, CancellationToken ct);
@@ -98,11 +98,21 @@ public record AliasCreateCmd
     public string? Surname { get; set; }
 
 }
-public record VerifyIdentityCmd
+public record UpdateCmd
 {
     public Guid OrgId { get; set; }
     public Guid ApplicationId { get; set; }
-    public IdentityStatusCode Status { get; set; }
+    public ApplicationStatusEnum? Status { get; set; }
+}
+
+public enum ApplicationStatusEnum
+{
+    Draft,
+    PaymentPending,
+    Incomplete,
+    ApplicantVerification,
+    Submitted,
+    Cancelled
 }
 public record SpdTempFile
 {

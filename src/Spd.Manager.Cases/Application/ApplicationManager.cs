@@ -233,7 +233,7 @@ namespace Spd.Manager.Cases.Application
             {
                 filterBy.OrgId = null;
                 filterBy.ParentOrgId = SpdConstants.BC_GOV_ORG_ID;
-                if(!request.IsPSA)
+                if (!request.IsPSA)
                 {
                     //todo: check the way to filter on delegates
                 }
@@ -279,8 +279,35 @@ namespace Spd.Manager.Cases.Application
 
         public async Task<Unit> Handle(VerifyIdentityCommand request, CancellationToken ct)
         {
-            var cmd = _mapper.Map<VerifyIdentityCmd>(request);
-            await _applicationRepository.IdentityAsync(cmd, ct);
+            OrgQryResult org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(request.OrgId), ct);
+            UpdateCmd updateCmd = new UpdateCmd()
+            {
+                OrgId = request.OrgId,
+                ApplicationId = request.ApplicationId,
+                Status = null
+            };
+            if (request.Status == IdentityStatusCode.Rejected)
+            {
+                updateCmd.Status = ApplicationStatusEnum.Cancelled;
+            }
+            else
+            {
+                //if org is psso or if org is volunteer crrp, set application status to submitted.
+                if (org.OrgResult.ParentOrgId == SpdConstants.BC_GOV_ORG_ID || org.OrgResult.ServiceTypes.Any(t => t == ServiceTypeEnum.CRRP_VOLUNTEER)) //is PSSO
+                {
+                    updateCmd.Status = ApplicationStatusEnum.Submitted;
+                }
+                else
+                {
+                    //if org is non-volunteer crrp
+                    ApplicationResult result = await _applicationRepository.QueryApplicationAsync(new ApplicationQry(request.ApplicationId), ct);
+                    if (result.PaidOn != null) //already paid
+                        updateCmd.Status = ApplicationStatusEnum.Submitted;
+                    else //not paid
+                        updateCmd.Status = ApplicationStatusEnum.PaymentPending;
+                }
+            }
+            await _applicationRepository.UpdateAsync(updateCmd, ct);
             return default;
         }
 
