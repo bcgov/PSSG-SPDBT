@@ -244,6 +244,20 @@ export class UtilService {
 		}
 	}
 
+	/**
+	 * @description
+	 * Scroll to a material form checkbox field that is invalid.
+	 */
+	public scrollToCheckbox(): void {
+		let firstElementWithError = document.querySelector('mat-checkbox.ng-invalid');
+
+		if (firstElementWithError) {
+			this.scrollTo(firstElementWithError);
+		} else {
+			this.scrollTop();
+		}
+	}
+
 	//------------------------------------
 	// Sort
 

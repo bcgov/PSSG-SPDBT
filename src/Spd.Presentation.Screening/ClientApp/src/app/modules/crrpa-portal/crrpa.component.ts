@@ -285,7 +285,7 @@ export class CrrpaComponent implements OnInit {
 						this.orgData!.shareableCrcExists = true;
 						this.orgData!.sharedClearanceId = shareableClearanceItem.clearanceId;
 					} else {
-						this.orgData!.agreeToShare = false;
+						this.orgData!.agreeToShareCrc = false;
 					}
 				})
 			);

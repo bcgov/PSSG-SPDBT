@@ -9,7 +9,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 
 export class DeclarationModel {
 	agreeToCompleteAndAccurate: string | null = null;
-	agreeToShare: boolean | null = null;
+	agreeToShareCrc: boolean | null = null;
 }
 
 @Component({
@@ -47,7 +47,7 @@ export class DeclarationModel {
 								{{ shareCrcGrantedDate | date : appConstants.date.formalDateFormat }}. Do you want to share the results
 								of this criminal record check at no cost?
 							</div>
-							<mat-radio-group aria-label="Select an option" formControlName="agreeToShare">
+							<mat-radio-group aria-label="Select an option" formControlName="agreeToShareCrc">
 								<mat-radio-button [value]="true"> Yes, share my existing criminal record check </mat-radio-button>
 								<mat-radio-button [value]="false"> No, I'll submit a new criminal record check </mat-radio-button>
 							</mat-radio-group>
@@ -58,9 +58,9 @@ export class DeclarationModel {
 							<mat-error
 								class="mat-option-error"
 								*ngIf="
-									(form.get('agreeToShare')?.dirty || form.get('agreeToShare')?.touched) &&
-									form.get('agreeToShare')?.invalid &&
-									form.get('agreeToShare')?.hasError('required')
+									(form.get('agreeToShareCrc')?.dirty || form.get('agreeToShareCrc')?.touched) &&
+									form.get('agreeToShareCrc')?.invalid &&
+									form.get('agreeToShareCrc')?.hasError('required')
 								"
 								>An option must be selected</mat-error
 							>
@@ -106,12 +106,12 @@ export class SaDeclarationComponent implements OnInit, CrcFormStepComponent {
 		this.form = this.formBuilder.group(
 			{
 				agreeToCompleteAndAccurate: new FormControl(data.agreeToCompleteAndAccurate, [Validators.requiredTrue]),
-				agreeToShare: new FormControl(data.agreeToShare),
+				agreeToShareCrc: new FormControl(data.agreeToShareCrc),
 			},
 			{
 				validators: [
 					FormGroupValidators.conditionalDefaultRequiredValidator(
-						'agreeToShare',
+						'agreeToShareCrc',
 						(form) => data.shareableCrcExists ?? false
 					),
 				],
