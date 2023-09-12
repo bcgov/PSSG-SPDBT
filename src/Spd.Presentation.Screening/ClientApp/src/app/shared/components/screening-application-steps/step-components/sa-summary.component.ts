@@ -16,7 +16,10 @@ import { UtilService } from 'src/app/core/services/util.service';
 									<h4>Organization<br />Information</h4>
 								</div>
 								<div class="col-xl-4 col-lg-4 col-md-12">
-									<div class="text-label d-block text-muted">Requesting Organization</div>
+									<div class="text-label d-block text-muted">
+										<span *ngIf="orgData.isCrrpa">Requesting Organization</span>
+										<span *ngIf="!orgData.isCrrpa">Ministry</span>
+									</div>
 									<div class="text-data">{{ orgData.orgName }}</div>
 								</div>
 								<div class="col-xl-4 col-lg-3 col-md-12" *ngIf="orgData.isCrrpa">
