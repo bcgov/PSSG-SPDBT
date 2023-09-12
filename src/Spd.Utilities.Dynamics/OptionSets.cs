@@ -70,16 +70,12 @@ namespace Spd.Utilities.Dynamics
         OrganizationSubmitted = 100000001
     }
 
-    public enum ApplicationActiveStatus
+    public enum ApplicationStatusOptionSet
     {
         Draft = 1,
         PaymentPending = 100000000,
         Incomplete = 100000001,
-        ApplicantVerification = 100000003
-    }
-
-    public enum ApplicationInactiveStatus
-    {
+        ApplicantVerification = 100000003,
         Submitted = 2,
         Cancelled = 100000002
     }
