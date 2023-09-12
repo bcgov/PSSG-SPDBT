@@ -221,6 +221,16 @@ namespace Spd.Manager.Cases.Application
                     }, ct);
             }
 
+            //update status : if psso or volunteer, go directly to submitted
+            if ((request.ParentOrgId == SpdConstants.BC_GOV_ORG_ID || request.ApplicationCreateRequest.ServiceType == ServiceTypeCode.CRRP_VOLUNTEER)
+                && request.ApplicationCreateRequest.HaveVerifiedIdentity == true)
+            {
+                await _applicationRepository.UpdateAsync(
+                    new UpdateCmd() { ApplicationId = applicationId.Value, 
+                        OrgId = request.ApplicationCreateRequest.OrgId, 
+                        Status = ApplicationStatusEnum.Submitted },
+                    ct);
+            }
             return result;
         }
 
