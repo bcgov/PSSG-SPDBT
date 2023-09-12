@@ -37,7 +37,8 @@ import { SaStepTermsAndCondComponent } from './components/screening-application-
 import { SaAgreementOfTermsComponent } from './components/screening-application-steps/step-components/sa-agreement-of-terms.component';
 import { SaApplicationSubmittedComponent } from './components/screening-application-steps/step-components/sa-application-submitted.component';
 import { SaChecklistComponent } from './components/screening-application-steps/step-components/sa-checklist.component';
-import { SaConsentToCrcComponent } from './components/screening-application-steps/step-components/sa-consentToCrc.component';
+import { SaConsentToCrcComponent } from './components/screening-application-steps/step-components/sa-consent-to-crc.component';
+import { SaConsentToReleaseOfInfoComponent } from './components/screening-application-steps/step-components/sa-consent-to-release-of-info.component';
 import { SaContactInformationComponent } from './components/screening-application-steps/step-components/sa-contact-information.component';
 import { SaDeclarationComponent } from './components/screening-application-steps/step-components/sa-declaration.component';
 import { SaLogInOptionsComponent } from './components/screening-application-steps/step-components/sa-log-in-options.component';
@@ -103,6 +104,7 @@ const SHARED_COMPONENTS = [
 	SaChecklistComponent,
 	SaLogInOptionsComponent,
 	SaAgreementOfTermsComponent,
+	SaConsentToReleaseOfInfoComponent,
 	SaPersonalInformationComponent,
 	SaPreviousNameComponent,
 	SaSummaryComponent,

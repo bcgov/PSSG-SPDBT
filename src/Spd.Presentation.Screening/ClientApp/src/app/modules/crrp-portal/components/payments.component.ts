@@ -337,7 +337,7 @@ export class PaymentsComponent implements OnInit {
 
 	onFilterChange(filters: any) {
 		this.currentFilters = filters;
-		this.filterCriteriaExists = filters ? true : false;
+		this.filterCriteriaExists = !!filters;
 		this.queryParams.page = 0;
 		this.onFilterClose();
 

@@ -68,35 +68,20 @@ internal partial class ApplicationRepository : IApplicationRepository
         return response;
     }
 
-    public async Task IdentityAsync(VerifyIdentityCmd identityCmd, CancellationToken cancellationToken)
+    public async Task UpdateAsync(UpdateCmd cmd, CancellationToken cancellationToken)
     {
-        spd_application? app = await _context.GetApplicationById(identityCmd.ApplicationId, cancellationToken);
+        spd_application? app = await _context.GetApplicationById(cmd.ApplicationId, cancellationToken);
         if (app == null)
             throw new ApiException(HttpStatusCode.BadRequest, "Invalid ApplicationId");
 
-
-        account? org = await _context.GetOrgById(identityCmd.OrgId, cancellationToken);
-
-        if (identityCmd.Status == IdentityStatusCode.Verified)
+        if (cmd.Status != null)
         {
-            var paid = app.statecode == DynamicsConstants.StateCode_Inactive ? true : false;
-            if (!paid)
-            {
-                app.statuscode = (int?)ApplicationActiveStatus.PaymentPending;
-                app.statecode = DynamicsConstants.StateCode_Active;
-            }
-            else
-            {
-                app.statuscode = (int?)ApplicationInactiveStatus.Submitted;
+            app.statuscode = (int)Enum.Parse<ApplicationStatusOptionSet>(cmd.Status.ToString());
+            if (cmd.Status == ApplicationStatusEnum.Submitted || cmd.Status == ApplicationStatusEnum.Cancelled)
                 app.statecode = DynamicsConstants.StateCode_Inactive;
-            }
+            else
+                app.statecode = DynamicsConstants.StateCode_Active;
         }
-        else
-        {
-            app.statuscode = (int?)ApplicationInactiveStatus.Cancelled;
-            app.statecode = DynamicsConstants.StateCode_Inactive;
-        }
-
         _context.UpdateObject(app);
         await _context.SaveChangesAsync(cancellationToken);
     }
@@ -272,7 +257,7 @@ internal partial class ApplicationRepository : IApplicationRepository
         {
             result += $"{orgFilter}";
         }
-        if(parentOrgFilter != null)
+        if (parentOrgFilter != null)
         {
             if (result == String.Empty) result += $"{parentOrgFilter}";
             else result += $" and {parentOrgFilter}";

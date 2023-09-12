@@ -196,7 +196,7 @@ namespace Spd.Manager.Cases.Application
         public string? BirthPlace { get; set; }
         public GenderCode? GenderCode { get; set; }
         public ScreeningTypeCode? ScreeningType { get; set; }
-        public ServiceTypeCode? ServiceType { get; set; }
+        public ServiceTypeCode ServiceType { get; set; }
         public string? AddressLine1 { get; set; }
         public string? AddressLine2 { get; set; }
         public string? City { get; set; }

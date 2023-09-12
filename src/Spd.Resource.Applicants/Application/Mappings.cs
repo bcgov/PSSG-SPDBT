@@ -41,7 +41,7 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.spd_screeningrequesttype, opt => opt.MapFrom(s => (int)Enum.Parse<ScreenTypeOptionSet>(s.ScreeningType.ToString())))
             .ForMember(d => d.spd_sex, opt => opt.MapFrom(s => GetGender(s.GenderCode)))
             .ForMember(d => d.spd_employeeid, opt => opt.MapFrom(s => s.EmployeeId))
-            .ForMember(d => d.statuscode, opt => opt.MapFrom(s => s.HaveVerifiedIdentity == true ? ApplicationActiveStatus.PaymentPending : ApplicationActiveStatus.ApplicantVerification));
+            .ForMember(d => d.statuscode, opt => opt.MapFrom(s => s.HaveVerifiedIdentity == true ? ApplicationStatusOptionSet.PaymentPending : ApplicationStatusOptionSet.ApplicantVerification));
 
             _ = CreateMap<AliasCreateCmd, spd_alias>()
             .ForMember(d => d.spd_aliasid, opt => opt.MapFrom(s => Guid.NewGuid()))
