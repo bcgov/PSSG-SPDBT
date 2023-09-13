@@ -27,7 +27,9 @@ internal class DelegateRepository : IDelegateRepository
 
         var result = delegates.ToList();
         var response = new DelegateListResp();
-        response.Items = _mapper.Map<IEnumerable<DelegateResp>>(result);
+        var list = _mapper.Map<IEnumerable<DelegateResp>>(result);
+        list = list.OrderBy(o => o.FirstName).ThenBy(o => o.LastName);
+        response.Items = list;
         return response;
     }
 

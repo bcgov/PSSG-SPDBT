@@ -73,7 +73,7 @@ export const ScreeningCheckFilterMap: Record<keyof ScreeningCheckFilter, string>
 
 			<div class="row">
 				<div class="col-12">
-					<mat-table matSort [dataSource]="dataSource">
+					<mat-table [dataSource]="dataSource">
 						<ng-container matColumnDef="applicantName">
 							<mat-header-cell *matHeaderCellDef>Applicant Name</mat-header-cell>
 							<mat-cell *matCellDef="let application">
@@ -284,7 +284,7 @@ export class ScreeningRequestsCommonComponent implements OnInit {
 		const data: DialogOptions = {
 			icon: 'warning',
 			title: 'Confirmation',
-			message: `Are you sure you want to cancel the request for ${application.firstName} ${application.lastName}?`,
+			message: `Are you sure you want to cancel the request for '${application.firstName} ${application.lastName}'?`,
 			actionText: 'Yes, cancel request',
 			cancelText: 'Cancel',
 		};
