@@ -44,6 +44,8 @@ namespace Spd.Resource.Applicants.Delegates
         public string EmailAddress { get; set; } = null!;
     }
 
+    public record DeleteDelegateCmd(Guid Id) : DelegateCmd;
+
     public enum PSSOUserRoleEnum
     {
         Delegate,

@@ -34,6 +34,7 @@ namespace Spd.Manager.Cases.Application
         public Task<FileResponse> Handle(PrepopulateFileTemplateQuery query, CancellationToken ct);
         public Task<DelegateResponse> Handle(CreateDelegateCommand cmd, CancellationToken ct);
         public Task<DelegateListResponse> Handle(DelegateListQuery query, CancellationToken ct);
+        public Task<Unit> Handle(DeleteDelegateCommand cmd, CancellationToken ct);
     }
 
     #region application invites
@@ -852,6 +853,7 @@ namespace Spd.Manager.Cases.Application
 
     public record DelegateListQuery(Guid OrgId, Guid ApplicationId) : IRequest<DelegateListResponse>;
     public record CreateDelegateCommand(Guid OrgId, Guid ApplicationId, DelegateCreateRequest CreateRequest) : IRequest<DelegateResponse>;
+    public record DeleteDelegateCommand(Guid Id, Guid CurrentUserId, Guid ApplicationId, bool IsPSA = false) : IRequest<Unit>;
 
     #endregion
 }

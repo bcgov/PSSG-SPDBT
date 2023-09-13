@@ -36,6 +36,7 @@ internal class DelegateRepository : IDelegateRepository
         return cmd switch
         {
             CreateDelegateCmd c => await CreateDelegateAsync(c, ct),
+            DeleteDelegateCmd c => await DeleteDelegateAsync(c, ct),
             _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
         };
     }
@@ -49,6 +50,16 @@ internal class DelegateRepository : IDelegateRepository
         _context.SetLink(d, nameof(d.spd_ApplicationId), app);
         if (user != null) _context.SetLink(d, nameof(d.spd_PortalUserId), user);
 
+        await _context.SaveChangesAsync(ct);
+        return _mapper.Map<DelegateResp>(d);
+    }
+
+    private async Task<DelegateResp> DeleteDelegateAsync(DeleteDelegateCmd c, CancellationToken ct)
+    {
+        spd_delegate? d = await _context.GetDelegateById(c.Id, ct);
+        d.statecode = DynamicsConstants.StateCode_Inactive;
+        d.statuscode = DynamicsConstants.StatusCode_Inactive;
+        _context.UpdateObject(d);
         await _context.SaveChangesAsync(ct);
         return _mapper.Map<DelegateResp>(d);
     }
