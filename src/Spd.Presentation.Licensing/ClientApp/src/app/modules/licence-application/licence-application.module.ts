@@ -21,12 +21,17 @@ import { LicenceExpiredComponent } from './step-components/licence-expired.compo
 import { LicenceSelectionComponent } from './step-components/licence-selection.component';
 import { LicenceTermComponent } from './step-components/licence-term.component';
 import { LicenceTypeComponent } from './step-components/licence-type.component';
+import { StepBackgroundComponent } from './step-components/main-steps/step-background.component';
+import { StepIdentificationComponent } from './step-components/main-steps/step-identification.component';
+import { StepLicenseSelectionComponent } from './step-components/main-steps/step-license-selection.component';
+import { StepReviewComponent } from './step-components/main-steps/step-review.component';
 import { MentalHealthConditionsComponent } from './step-components/mental-health-conditions.component';
 import { PersonalInformationComponent } from './step-components/personal-information.component';
 import { PhotoComponent } from './step-components/photo.component';
 import { PoliceBackgroundComponent } from './step-components/police-background.component';
 import { SoleProprietorComponent } from './step-components/sole-proprietor.component';
 import { SummaryReviewComponent } from './step-components/summary-review.component';
+import { SecurityWorkerLicenceCategoryComponent } from './step-components/security-worker-licence-category.component';
 
 @NgModule({
 	declarations: [
@@ -56,6 +61,11 @@ import { SummaryReviewComponent } from './step-components/summary-review.compone
 		LicencePaymentManualComponent,
 		LicencePaymentErrorComponent,
 		AddressComponent,
+		StepLicenseSelectionComponent,
+		StepBackgroundComponent,
+		StepIdentificationComponent,
+		StepReviewComponent,
+  SecurityWorkerLicenceCategoryComponent,
 	],
 	imports: [SharedModule, LicenceApplicationRoutingModule],
 })

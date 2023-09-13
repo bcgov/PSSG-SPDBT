@@ -5,23 +5,25 @@ import { BooleanTypeCode } from 'src/app/api/models';
 @Component({
 	selector: 'app-sole-proprietor',
 	template: `
-		<div class="step">
-			<app-step-title
-				title="Do you also want to apply for a Sole Proprietor Security Business Licence?"
-				subtitle="If you are a Sole Proprietor and need both a worker licence and a business licence, you can apply for them at the same time and pay only for the business licence."
-			></app-step-title>
-			<div class="step-container row">
-				<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
-					<form [formGroup]="form" novalidate>
-						<mat-radio-group aria-label="Select an option" formControlName="isSoleProprietor">
-							<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
-							<mat-divider class="my-2"></mat-divider>
-							<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
-						</mat-radio-group>
-					</form>
+		<section class="step-section p-3">
+			<div class="step">
+				<app-step-title
+					title="Do you also want to apply for a Sole Proprietor Security Business Licence?"
+					subtitle="If you are a Sole Proprietor and need both a worker licence and a business licence, you can apply for them at the same time and pay only for the business licence."
+				></app-step-title>
+				<div class="step-container row">
+					<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
+						<form [formGroup]="form" novalidate>
+							<mat-radio-group aria-label="Select an option" formControlName="isSoleProprietor">
+								<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
+								<mat-divider class="my-2"></mat-divider>
+								<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
+							</mat-radio-group>
+						</form>
+					</div>
 				</div>
 			</div>
-		</div>
+		</section>
 	`,
 	styles: [],
 })
