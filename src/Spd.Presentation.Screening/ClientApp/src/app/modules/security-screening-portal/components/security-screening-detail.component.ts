@@ -112,24 +112,24 @@ import {
 		</ng-container>
 
 		<ng-container *ngIf="fingerprintsAlert || statutoryDeclarationAlert">
-			<h4 class="subheading fw-normal mb-4">Downloadable Documents</h4>
+			<h4 class="subheading fw-normal mb-2">Downloadable Documents</h4>
 			<div class="row">
-				<div class="col-xl-4 col-lg-6 col-md-6 col-sm-12" *ngIf="fingerprintsAlert">
+				<div class="col-12" *ngIf="fingerprintsAlert">
 					<button
-						mat-flat-button
+						mat-stroked-button
 						color="primary"
-						class="m-2"
+						class="large w-auto mb-4"
 						(click)="onDownloadFile(fileTemplateTypeCodes.FingerprintsPkg)"
 						aria-label="Download Fingerprint Package"
 					>
 						<mat-icon>file_download</mat-icon>Download Fingerprint Package
 					</button>
 				</div>
-				<div class="col-xl-4 col-lg-6 col-md-6 col-sm-12" *ngIf="statutoryDeclarationAlert">
+				<div class="col-12" *ngIf="statutoryDeclarationAlert">
 					<button
-						mat-flat-button
+						mat-stroked-button
 						color="primary"
-						class="m-2"
+						class="large w-auto mb-4"
 						(click)="onDownloadFile(fileTemplateTypeCodes.StatutoryDeclarationPkg)"
 						aria-label="Download Statutory Declaration"
 					>
@@ -140,13 +140,13 @@ import {
 		</ng-container>
 
 		<ng-container *ngIf="statutoryDeclarationAlert">
-			<h4 class="subheading fw-normal mb-4">Upload Document</h4>
+			<h4 class="subheading fw-normal mb-2">Upload Document</h4>
 			<div class="row">
-				<div class="col-xl-5 col-lg-6 col-md-12 col-sm-12">
+				<div class="col-12">
 					<button
-						mat-flat-button
+						mat-stroked-button
 						color="primary"
-						class="m-2"
+						class="large w-auto mb-4"
 						aria-label="Upload a Word or PDF document providing more information"
 						(click)="onUploadFile()"
 					>
@@ -157,13 +157,13 @@ import {
 		</ng-container>
 
 		<ng-container *ngIf="opportunityToRespondAlert || requestForAdditionalInfoAlert">
-			<h4 class="subheading fw-normal mb-4">Upload Document</h4>
+			<h4 class="subheading fw-normal mb-2">Upload Document</h4>
 			<div class="row">
-				<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
+				<div class="col-12">
 					<button
-						mat-flat-button
+						mat-stroked-button
 						color="primary"
-						class="m-2"
+						class="large w-auto mb-4"
 						aria-label="Upload a Word or PDF document providing more information"
 						(click)="onUploadFile()"
 					>
@@ -319,7 +319,7 @@ export class SecurityScreeningDetailComponent implements OnInit, AfterViewInit {
 			.pipe()
 			.subscribe((res: ApplicantApplicationFileListResponse) => {
 				this.dataSourceHistory.data = res.items ?? [];
-				this.documentHistoryExists = this.dataSourceHistory.data.length > 0 ?? false;
+				this.documentHistoryExists = this.dataSourceHistory.data.length > 0;
 			});
 
 		this.applicantService
@@ -356,10 +356,11 @@ export class SecurityScreeningDetailComponent implements OnInit, AfterViewInit {
 					this.requestForAdditionalInfoAlert = this.getRequestForAdditionalInfoText();
 					this.associatedFileType = FileTypeCode.ApplicantInformation;
 					break;
-				case CaseSubStatusCode.StatutoryDeclaration:
-					this.statutoryDeclarationAlert = this.getStatutoryDeclarationText();
-					this.associatedFileType = FileTypeCode.StatutoryDeclaration;
-					break;
+			}
+		} else if (application.status == ApplicationPortalStatusCode.UnderAssessment) {
+			if (application.caseSubStatus == CaseSubStatusCode.StatutoryDeclaration) {
+				this.statutoryDeclarationAlert = this.getStatutoryDeclarationText();
+				this.associatedFileType = FileTypeCode.StatutoryDeclaration;
 			}
 		}
 
@@ -372,7 +373,7 @@ export class SecurityScreeningDetailComponent implements OnInit, AfterViewInit {
 			.pipe()
 			.subscribe((res: ApplicantApplicationFileListResponse) => {
 				this.dataSourceHistory.data = res.items ?? [];
-				this.documentHistoryExists = this.dataSourceHistory.data.length > 0 ?? false;
+				this.documentHistoryExists = this.dataSourceHistory.data.length > 0;
 			});
 	}
 
