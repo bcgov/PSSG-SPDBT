@@ -63,17 +63,22 @@ export class AuthUserBceidService {
 		this.clearUserData();
 
 		const resp: OrgUserProfileResponse = await lastValueFrom(this.userProfileService.apiUsersWhoamiGet());
-
 		if (resp) {
+			const userInfos = resp.userInfos ?? [];
 			const uniqueUserInfoList = [
-				...new Map(resp.userInfos?.filter((info) => info.orgName).map((item) => [item['orgName'], item])).values(), // remove if no Org Name
+				...new Map(userInfos.filter((info) => info.orgName).map((item) => [item['orgName'], item])).values(), // remove if no Org Name
 			];
 
+			let isSuccess = false;
 			if (uniqueUserInfoList.length == 0) {
-				console.error('User does not have any organizations');
-				return Promise.resolve(false);
+				if (userInfos.length > 0) {
+					// just grab first value - org name must be empty for this to occur
+					isSuccess = await this.setUserInfoProfile(userInfos[0]);
+				} else {
+					isSuccess = await this.setUserInfoProfile();
+				}
+				return Promise.resolve(isSuccess);
 			} else {
-				let isSuccess = false;
 				if (defaultOrgId) {
 					const orgIdItem = uniqueUserInfoList.find((user) => user.orgId == defaultOrgId);
 					if (orgIdItem) {
@@ -113,6 +118,8 @@ export class AuthUserBceidService {
 		if (!bceidUserInfoProfile) {
 			this.bceidUserInfoProfile = null;
 			this.isAllowedGenericUpload = false;
+			// if there is no profile, just display access denied
+			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 			return Promise.resolve(false);
 		}
 
