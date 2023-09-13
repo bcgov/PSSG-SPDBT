@@ -486,8 +486,8 @@ namespace Spd.Manager.Cases.Application
             cmd.OrgId = command.ApplicationCreateRequest.OrgId;
             cmd.CreatedByApplicantBcscId = command.BcscId;
 
-            if (command.ApplicationCreateRequest.AgreeToShare != null &&
-               (bool)command.ApplicationCreateRequest.AgreeToShare &&
+            if (command.ApplicationCreateRequest.AgreeToShareCrc != null &&
+               (bool)command.ApplicationCreateRequest.AgreeToShareCrc &&
                cmd.SharedClearanceId.HasValue &&
                cmd.CreatedByApplicantBcscId != null)//bcsc authenticated and has sharable clearance
             {
