@@ -45,7 +45,7 @@ import { UserDialogData, UserEditModalComponent } from './user-edit-modal.compon
 			</div>
 			<div class="row">
 				<div class="col-12">
-					<mat-table matSort [dataSource]="dataSource">
+					<mat-table [dataSource]="dataSource">
 						<ng-container matColumnDef="status">
 							<mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
 							<mat-cell *matCellDef="let user">
@@ -248,7 +248,7 @@ export class UsersComponent implements OnInit {
 		this.deleteUser({
 			user,
 			title: 'Confirmation',
-			message: 'Are you sure you want to permanently remove this user?',
+			message: `Are you sure you want to permanently remove '${user.firstName} ${user.lastName}'?`,
 			actionText: 'Yes, remove',
 			success: 'User was successfully removed',
 		});

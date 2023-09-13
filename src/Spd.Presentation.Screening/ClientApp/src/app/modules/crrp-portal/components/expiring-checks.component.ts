@@ -354,7 +354,7 @@ export class ExpiringChecksComponent implements OnInit {
 		const data: DialogOptions = {
 			icon: 'info',
 			title: 'Confirmation',
-			message: `Are you sure you want to remove the request for ${clearance.firstName} ${clearance.lastName}?`,
+			message: `Are you sure you want to remove the request for '${clearance.firstName} ${clearance.lastName}'?`,
 			actionText: 'Yes, remove',
 			cancelText: 'Cancel',
 		};

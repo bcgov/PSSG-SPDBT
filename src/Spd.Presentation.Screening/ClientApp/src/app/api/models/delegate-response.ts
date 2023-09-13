@@ -6,5 +6,6 @@ export interface DelegateResponse {
   firstName?: null | string;
   id?: string;
   lastName?: null | string;
+  portalUserId?: null | string;
   pssoUserRoleCode?: PssoUserRoleEnum;
 }

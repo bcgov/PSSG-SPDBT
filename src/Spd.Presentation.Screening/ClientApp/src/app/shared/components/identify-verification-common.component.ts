@@ -81,7 +81,7 @@ export interface IdentityVerificationResponse extends ApplicationResponse {
 
 			<div class="row">
 				<div class="col-12">
-					<mat-table matSort [dataSource]="dataSource" matSortActive="dateTimeSubmitted" matSortDirection="asc">
+					<mat-table [dataSource]="dataSource">
 						<ng-container matColumnDef="applicantName">
 							<mat-header-cell *matHeaderCellDef>Applicant Name</mat-header-cell>
 							<mat-cell *matCellDef="let application">
