@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { HotToastService } from '@ngneat/hot-toast';
 import { DelegateResponse } from 'src/app/api/models';
-import { ApplicationService } from 'src/app/api/services';
+import { DelegateService } from 'src/app/api/services';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 
 export interface DelegateDialogData {
@@ -36,7 +36,7 @@ export interface DelegateDialogData {
 				<div class="row">
 					<div class="col-12">
 						<mat-form-field>
-							<mat-label>Email Address</mat-label>
+							<mat-label>Email</mat-label>
 							<input matInput formControlName="emailaddress" placeholder="name@domain.com" maxlength="75" />
 							<mat-error *ngIf="form.get('emailaddress')?.hasError('govEmail')">
 								Must be a valid government email address (end with 'gov.bc.ca')
@@ -68,7 +68,7 @@ export class DelegateAddModalComponent {
 	});
 
 	constructor(
-		private applicationService: ApplicationService,
+		private delegateService: DelegateService,
 		private formBuilder: FormBuilder,
 		private hotToast: HotToastService,
 		private dialogRef: MatDialogRef<DelegateAddModalComponent>,
@@ -84,7 +84,7 @@ export class DelegateAddModalComponent {
 
 		const body: DelegateResponse = { ...this.form.value };
 
-		this.applicationService
+		this.delegateService
 			.apiOrgsOrgIdApplicationApplicationIdDelegatePost({
 				applicationId: this.dialogData.applicationId,
 				orgId: this.dialogData.orgId,

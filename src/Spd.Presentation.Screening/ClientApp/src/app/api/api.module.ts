@@ -8,6 +8,7 @@ import { AddressAutoCompleteService } from './services/address-auto-complete.ser
 import { ApplicantService } from './services/applicant.service';
 import { ApplicationService } from './services/application.service';
 import { ConfigurationService } from './services/configuration.service';
+import { DelegateService } from './services/delegate.service';
 import { MinistryService } from './services/ministry.service';
 import { OrgService } from './services/org.service';
 import { OrgRegistrationService } from './services/org-registration.service';
@@ -28,6 +29,7 @@ import { UserProfileService } from './services/user-profile.service';
     ApplicantService,
     ApplicationService,
     ConfigurationService,
+    DelegateService,
     MinistryService,
     OrgService,
     OrgRegistrationService,

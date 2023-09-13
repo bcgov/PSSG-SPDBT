@@ -14,15 +14,9 @@ export interface AddressDialogData {
 		<mat-dialog-content>
 			<div class="row">
 				<div class="col-12">
-					<mat-table
-						matSort
-						[dataSource]="dataSource"
-						matSortActive="status"
-						matSortDirection="asc"
-						style="max-height: 70vh;"
-					>
+					<mat-table [dataSource]="dataSource" style="max-height: 70vh;">
 						<ng-container matColumnDef="addrDescription">
-							<mat-header-cell *matHeaderCellDef mat-sort-header>Address</mat-header-cell>
+							<mat-header-cell *matHeaderCellDef>Address</mat-header-cell>
 							<mat-cell *matCellDef="let addr">
 								<span class="mobile-label">Address: </span>
 								{{ addr.text }} {{ addr.description }}

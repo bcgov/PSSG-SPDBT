@@ -43,7 +43,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 							<div class="row mt-2">
 								<div class="col-lg-6 col-md-12 col-sm-12">
 									<mat-form-field>
-										<mat-label>Email Address</mat-label>
+										<mat-label>Email</mat-label>
 										<input
 											matInput
 											formControlName="genericEmail"

@@ -2,5 +2,5 @@
 /* eslint-disable */
 export enum PssoUserRoleEnum {
   Delegate = 'Delegate',
-  HiringManager = 'HiringManager'
+  Initiator = 'Initiator'
 }

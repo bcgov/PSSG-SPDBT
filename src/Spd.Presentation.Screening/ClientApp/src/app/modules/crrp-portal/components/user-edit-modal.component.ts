@@ -51,7 +51,7 @@ export interface UserDialogData {
 					</div>
 					<div class="col-md-6">
 						<mat-form-field>
-							<mat-label>Email Address</mat-label>
+							<mat-label>Email</mat-label>
 							<input matInput formControlName="email" placeholder="name@domain.com" maxlength="75" />
 							<mat-error *ngIf="form.get('email')?.hasError('email')"> Must be a valid email address </mat-error>
 							<mat-error *ngIf="form.get('email')?.hasError('required')">This is required</mat-error>

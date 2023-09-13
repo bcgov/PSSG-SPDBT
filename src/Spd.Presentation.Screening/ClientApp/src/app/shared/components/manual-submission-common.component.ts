@@ -96,7 +96,7 @@ export interface AliasCreateRequest {
 
 						<div class="col-xl-3 col-lg-6 col-md-12">
 							<mat-form-field>
-								<mat-label>Email Address</mat-label>
+								<mat-label>Email</mat-label>
 								<input matInput formControlName="emailAddress" [errorStateMatcher]="matcher" maxlength="75" />
 								<mat-error *ngIf="form.get('emailAddress')?.hasError('required')"> This is required </mat-error>
 								<mat-error *ngIf="form.get('emailAddress')?.hasError('email')">

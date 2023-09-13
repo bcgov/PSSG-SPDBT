@@ -83,7 +83,7 @@ export interface ScreeningRequestAddDialogData {
 								</div>
 								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0">
 									<mat-form-field>
-										<mat-label>Email Address</mat-label>
+										<mat-label>Email</mat-label>
 										<input
 											matInput
 											formControlName="email"

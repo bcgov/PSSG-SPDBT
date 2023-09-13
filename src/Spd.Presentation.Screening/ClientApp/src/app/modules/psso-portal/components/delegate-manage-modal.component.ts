@@ -3,7 +3,8 @@ import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { HotToastService } from '@ngneat/hot-toast';
 import { DelegateListResponse, DelegateResponse } from 'src/app/api/models';
-import { ApplicationService } from 'src/app/api/services';
+import { DelegateService } from 'src/app/api/services';
+import { AuthUserIdirService } from 'src/app/core/services/auth-user-idir.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { ScreeningStatusResponse } from 'src/app/shared/components/screening-statuses-common.component';
 import { DelegateAddModalComponent, DelegateDialogData } from './delegate-add-modal.component';
@@ -11,6 +12,7 @@ import { DelegateAddModalComponent, DelegateDialogData } from './delegate-add-mo
 export interface DelegateManageDialogData {
 	application: ScreeningStatusResponse;
 }
+
 @Component({
 	selector: 'app-delegate-manage-modal',
 	template: `
@@ -18,11 +20,11 @@ export interface DelegateManageDialogData {
 		<mat-dialog-content>
 			<div class="row">
 				<div class="col-12">
-					<mat-table [dataSource]="dataSource" matSort matSortActive="createdOn" matSortDirection="desc">
-						<ng-container matColumnDef="applicantName">
-							<mat-header-cell *matHeaderCellDef mat-sort-header>Applicant Name</mat-header-cell>
+					<mat-table [dataSource]="dataSource">
+						<ng-container matColumnDef="name">
+							<mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
 							<mat-cell *matCellDef="let delegate">
-								<span class="mobile-label">Applicant Name:</span>
+								<span class="mobile-label">Name:</span>
 								{{ delegate | fullname }}
 							</mat-cell>
 						</ng-container>
@@ -73,12 +75,15 @@ export interface DelegateManageDialogData {
 })
 export class DelegateManageModalComponent implements OnInit {
 	dataSource: MatTableDataSource<DelegateResponse> = new MatTableDataSource<DelegateResponse>([]);
-	columns: string[] = ['applicantName', 'emailAddress', 'actions'];
+	columns: string[] = ['name', 'emailAddress', 'actions'];
+
+	isInitiator = false;
 
 	constructor(
-		private applicationService: ApplicationService,
+		private delegateService: DelegateService,
 		private dialog: MatDialog,
 		private hotToast: HotToastService,
+		private authUserService: AuthUserIdirService,
 		@Inject(MAT_DIALOG_DATA) public data: DelegateManageDialogData
 	) {}
 
@@ -106,20 +111,31 @@ export class DelegateManageModalComponent implements OnInit {
 
 	isAllowDelegateDelete(delegate: DelegateResponse): boolean {
 		const numberOfDelegates = this.dataSource.data.length;
+
 		// A screening can't have 0 delegates
 		if (numberOfDelegates <= 1) return false;
 
-		// Hiring Manager can remove themselves from a screening as long as there is a delegate
-		// A screening can't have no hiring manager/PSA recruiter
-		// Delegates can remove themselves
-		return true;
+		// Initiator or PSA can remove anyone
+		if (this.isInitiator || this.authUserService.idirUserWhoamiProfile?.isPSA) return true;
+
+		// User can only remove themselves
+		const userId = this.authUserService.idirUserWhoamiProfile?.userId;
+		return !!userId && delegate.portalUserId == userId;
 	}
 
 	onRemoveDelegate(delegate: DelegateResponse): void {
+		let message = `Are you sure you want to remove '${delegate.firstName} ${delegate.lastName}' from this screening?`;
+
+		// User can only remove themselves
+		const userId = this.authUserService.idirUserWhoamiProfile?.userId;
+		if (!!userId && delegate.portalUserId == userId) {
+			message = 'Are you sure you want to remove this screening from your list?';
+		}
+
 		const data: DialogOptions = {
 			icon: 'warning',
 			title: 'Confirmation',
-			message: 'Are you sure you want to remove this delegate?',
+			message,
 			actionText: 'Yes',
 			cancelText: 'Cancel',
 		};
@@ -129,7 +145,7 @@ export class DelegateManageModalComponent implements OnInit {
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
-					this.applicationService
+					this.delegateService
 						.apiOrgsOrgIdApplicationApplicationIdDelegateDelegateIdDelete({
 							delegateId: delegate.id!,
 							applicationId: this.data.application.id!,
@@ -145,7 +161,7 @@ export class DelegateManageModalComponent implements OnInit {
 	}
 
 	private loadList(): void {
-		this.applicationService
+		this.delegateService
 			.apiOrgsOrgIdApplicationApplicationIdDelegatesGet({
 				applicationId: this.data.application.id!,
 				orgId: this.data.application.orgId!,
