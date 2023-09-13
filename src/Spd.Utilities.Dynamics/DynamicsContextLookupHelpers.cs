@@ -256,5 +256,21 @@ namespace Spd.Utilities.Dynamics
                     throw;
             }
         }
+
+        public static async Task<spd_delegate?> GetDelegateById(this DynamicsContext context, Guid delegateId, CancellationToken ct)
+        {
+            try
+            {
+                return await context.spd_delegates.Where(a => a.spd_delegateid == delegateId).SingleOrDefaultAsync(ct);
+            }
+            catch (DataServiceQueryException ex)
+            {
+                if (ex.Response.StatusCode == 404)
+                    return null;
+                else
+                    throw;
+            }
+
+        }
     }
 }

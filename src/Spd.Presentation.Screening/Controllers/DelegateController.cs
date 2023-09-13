@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Cases.Application;
 using Spd.Manager.Membership.Org;
+using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Principal;
 
 namespace Spd.Presentation.Screening.Controllers
 {
@@ -17,11 +19,13 @@ namespace Spd.Presentation.Screening.Controllers
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
+        private readonly IPrincipal _currentUser;
 
-        public DelegateController( IMediator mediator, IMapper mapper)
+        public DelegateController( IMediator mediator, IMapper mapper, IPrincipal currentUser)
         {
             _mediator = mediator;
             _mapper = mapper;
+            _currentUser = currentUser;
         }
 
         #region application-delegates
@@ -63,7 +67,11 @@ namespace Spd.Presentation.Screening.Controllers
         [Route("api/orgs/{orgId}/application/{applicationId}/delegate/{delegateId}")]
         [HttpDelete]
         public async Task<ActionResult> DeleteDelegate([FromRoute] Guid delegateId, [FromRoute] Guid applicationId, [FromRoute] Guid orgId)
-        {
+        {     
+            await _mediator.Send(new DeleteDelegateCommand(delegateId,
+                Guid.Parse(_currentUser.GetUserId()), 
+                applicationId,
+                _currentUser.IsPSA()));
             return Ok();
         }
 

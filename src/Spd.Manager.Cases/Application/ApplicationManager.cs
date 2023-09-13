@@ -46,6 +46,7 @@ namespace Spd.Manager.Cases.Application
         IRequestHandler<GetApplicationInvitePrepopulateDataQuery, ApplicationInvitePrepopulateDataResponse>,
         IRequestHandler<DelegateListQuery, DelegateListResponse>,
         IRequestHandler<CreateDelegateCommand, DelegateResponse>,
+        IRequestHandler<DeleteDelegateCommand, Unit>,
         IApplicationManager
     {
         private readonly IApplicationRepository _applicationRepository;
