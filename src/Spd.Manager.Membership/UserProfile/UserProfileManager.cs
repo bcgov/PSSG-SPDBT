@@ -47,27 +47,20 @@ namespace Spd.Manager.Membership.UserProfile
             foreach (var orgRegister in orgRegisters.OrgRegistrationResults)
             {
                 UserInfo ui = new UserInfo();
-                if (orgRegister == null)
+                ui.OrgRegistrationStatusCode = orgRegister?.OrgRegistrationStatusStr switch
                 {
-                    ui.UserInfoMsgType = UserInfoMsgTypeCode.ACCOUNT_NOT_MATCH_RECORD;
-                }
-                else
+                    "New" => OrgRegistrationStatusCode.ApplicationSubmitted,
+                    "InProgress" => OrgRegistrationStatusCode.InProgress,
+                    "AwaitingOrganization" => OrgRegistrationStatusCode.InProgress,
+                    "Approved" => OrgRegistrationStatusCode.CompleteSuccess,
+                    _ => OrgRegistrationStatusCode.CompleteFailed,
+                };
+                ui.OrgRegistrationId = orgRegister?.OrgRegistrationId;
+                ui.OrgName = orgRegister?.OrganizationName;
+                ui.OrgRegistrationNumber = orgRegister?.OrgRegistrationNumber;
+                if (ui.OrgRegistrationStatusCode == OrgRegistrationStatusCode.CompleteFailed)
                 {
-                    ui.OrgRegistrationStatusCode = orgRegister?.OrgRegistrationStatusStr switch
-                    {
-                        "New" => OrgRegistrationStatusCode.ApplicationSubmitted,
-                        "InProgress" => OrgRegistrationStatusCode.InProgress,
-                        "AwaitingOrganization" => OrgRegistrationStatusCode.InProgress,
-                        "Approved" => OrgRegistrationStatusCode.CompleteSuccess,
-                        _ => OrgRegistrationStatusCode.CompleteFailed,
-                    };
-                    ui.OrgRegistrationId = orgRegister?.OrgRegistrationId;
-                    ui.OrgName = orgRegister?.OrganizationName;
-                    ui.OrgRegistrationNumber = orgRegister?.OrgRegistrationNumber;
-                    if (ui.OrgRegistrationStatusCode == OrgRegistrationStatusCode.CompleteFailed)
-                    {
-                        ui.UserInfoMsgType = UserInfoMsgTypeCode.REGISTRATION_DENIED;
-                    }
+                    ui.UserInfoMsgType = UserInfoMsgTypeCode.REGISTRATION_DENIED;
                 }
                 if (ui.OrgRegistrationStatusCode != OrgRegistrationStatusCode.CompleteSuccess) //if org reg completes successfully, then there should be a valid org.
                 {
@@ -89,6 +82,13 @@ namespace Spd.Manager.Membership.UserProfile
                 ui.OrgName = org.OrganizationName;
                 ui.OrgId = org.Id;
                 ui.OrgSettings = _mapper.Map<OrgSettings>(org);
+                userInfos.Add(ui);
+            }
+
+            if(!orgRegisters.OrgRegistrationResults.Any() && !orgResult.OrgResults.Any()) //not found in org registration and org
+            {
+                UserInfo ui = new UserInfo();
+                ui.UserInfoMsgType = UserInfoMsgTypeCode.ACCOUNT_NOT_MATCH_RECORD;
                 userInfos.Add(ui);
             }
 
