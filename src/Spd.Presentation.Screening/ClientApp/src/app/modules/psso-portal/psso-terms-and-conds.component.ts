@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { AuthUserIdirService } from 'src/app/core/services/auth-user-idir.service';
 import { UtilService } from 'src/app/core/services/util.service';
@@ -56,14 +57,21 @@ import { PssoRoutes } from './psso-routing.module';
 								</div>
 							</div>
 
-							<div class="row">
-								<div class="col-12">
-									<button
-										mat-flat-button
+							<div class="row mt-4">
+								<div class="col-6">
+									<a
+										mat-stroked-button
 										color="primary"
-										class="large w-auto  float-end mx-2 my-2"
-										(click)="onContinue()"
+										class="large w-auto"
+										aria-label="Download Terms of Use"
+										download="Psso-terms-and-conditions"
+										[href]="constants.files.pssoTerms"
 									>
+										<mat-icon>file_download</mat-icon>Terms of Use
+									</a>
+								</div>
+								<div class="col-6">
+									<button mat-flat-button color="primary" class="large w-auto float-end" (click)="onContinue()">
 										Continue
 									</button>
 								</div>
@@ -83,6 +91,7 @@ import { PssoRoutes } from './psso-routing.module';
 	],
 })
 export class PssoTermsAndCondsComponent implements OnInit {
+	constants = SPD_CONSTANTS;
 	isAuthenticated = this.authProcessService.waitUntilAuthentication$;
 
 	form: FormGroup = this.formBuilder.group({

@@ -20,6 +20,13 @@ button.mdc-button {
   }
 }
 
+a {  
+  &.large {
+    height: 46px !important;
+    font-size: 1rem;
+  }
+}
+
 // BUTTON TOGGLES
 .mat-button-toggle-checked {
   color: var(--color-white) !important;

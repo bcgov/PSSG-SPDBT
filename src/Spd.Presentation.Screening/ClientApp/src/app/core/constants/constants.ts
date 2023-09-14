@@ -44,4 +44,8 @@ export const SPD_CONSTANTS = {
 		maxNumberOfAttempts: 3,
 	},
 	maxNumberOfAliases: 3,
+	files: {
+		pssoTerms: '/assets/files/Psso-terms-and-conditions.pdf',
+		crrpTerms: '/assets/files/Crrp-terms-and-conditions.pdf',
+	},
 };
