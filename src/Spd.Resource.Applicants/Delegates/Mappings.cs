@@ -16,6 +16,7 @@ namespace Spd.Resource.Applicants.Delegates
             .ForMember(d => d.spd_email, opt => opt.MapFrom(s => s.EmailAddress));
 
             _ = CreateMap<spd_delegate, DelegateResp>()
+            .ForMember(d => d.PSSOUserRoleCode, opt => opt.MapFrom(s => ((PSSOUserRoleOptionSet)s.spd_role).ToString()))
             .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_delegateid))
             .ForMember(d => d.PortalUserId, opt => opt.MapFrom(s => s._spd_portaluserid_value))
             .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.spd_PortalUserId == null ? s.spd_firstname : s.spd_PortalUserId.spd_firstname))
