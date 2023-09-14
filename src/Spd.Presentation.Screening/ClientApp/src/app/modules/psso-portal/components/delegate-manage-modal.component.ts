@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { HotToastService } from '@ngneat/hot-toast';
-import { DelegateListResponse, DelegateResponse } from 'src/app/api/models';
+import { DelegateListResponse, DelegateResponse, PssoUserRoleEnum } from 'src/app/api/models';
 import { DelegateService } from 'src/app/api/services';
 import { AuthUserIdirService } from 'src/app/core/services/auth-user-idir.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
@@ -26,6 +26,13 @@ export interface DelegateManageDialogData {
 							<mat-cell *matCellDef="let delegate">
 								<span class="mobile-label">Name:</span>
 								{{ delegate | fullname }}
+								<mat-icon
+									class="initiator-icon"
+									matTooltip="Initiator"
+									*ngIf="delegate.pssoUserRoleCode == initiatorCode"
+								>
+									emergency
+								</mat-icon>
 							</mat-cell>
 						</ng-container>
 
@@ -71,13 +78,22 @@ export interface DelegateManageDialogData {
 			</div>
 		</mat-dialog-actions>
 	`,
-	styles: [],
+	styles: [
+		`
+			.initiator-icon {
+				cursor: pointer;
+				color: var(--color-primary-light);
+				margin-left: 0.5rem;
+			}
+		`,
+	],
 })
 export class DelegateManageModalComponent implements OnInit {
 	dataSource: MatTableDataSource<DelegateResponse> = new MatTableDataSource<DelegateResponse>([]);
 	columns: string[] = ['name', 'emailAddress', 'actions'];
 
 	isInitiator = false;
+	initiatorCode = PssoUserRoleEnum.Initiator;
 
 	constructor(
 		private delegateService: DelegateService,
@@ -119,8 +135,8 @@ export class DelegateManageModalComponent implements OnInit {
 		if (this.isInitiator || this.authUserService.idirUserWhoamiProfile?.isPSA) return true;
 
 		// User can only remove themselves
-		const userId = this.authUserService.idirUserWhoamiProfile?.userId;
-		return !!userId && delegate.portalUserId == userId;
+		const currentUserId = this.authUserService.idirUserWhoamiProfile?.userId;
+		return !!currentUserId && delegate.portalUserId == currentUserId;
 	}
 
 	onRemoveDelegate(delegate: DelegateResponse): void {
@@ -168,7 +184,13 @@ export class DelegateManageModalComponent implements OnInit {
 			})
 			.pipe()
 			.subscribe((res: DelegateListResponse) => {
-				this.dataSource.data = res.delegates ?? [];
+				const delegates = res.delegates ?? [];
+				this.dataSource.data = delegates;
+
+				const currentUserId = this.authUserService.idirUserWhoamiProfile?.userId;
+				this.isInitiator = !!delegates.find(
+					(item) => item.portalUserId == currentUserId && item.pssoUserRoleCode == PssoUserRoleEnum.Initiator
+				);
 			});
 	}
 }
