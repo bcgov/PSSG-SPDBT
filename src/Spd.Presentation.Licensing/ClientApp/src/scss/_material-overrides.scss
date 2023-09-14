@@ -19,6 +19,10 @@ button.mdc-button {
   }
 }
 
+.mat-expansion-panel-header {
+  background-color: var(--color-grey-lightest) !important;
+}
+
 // BUTTON TOGGLES
 .mat-button-toggle-checked {
   color: var(--color-white) !important;

@@ -3,6 +3,10 @@ import { StepperOrientation, StepperSelectionEvent } from '@angular/cdk/stepper'
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { distinctUntilChanged } from 'rxjs';
+import { StepBackgroundComponent } from './step-components/main-steps/step-background.component';
+import { StepIdentificationComponent } from './step-components/main-steps/step-identification.component';
+import { StepLicenseSelectionComponent } from './step-components/main-steps/step-license-selection.component';
+import { StepReviewComponent } from './step-components/main-steps/step-review.component';
 
 @Component({
 	selector: 'app-licence-application',
@@ -53,7 +57,24 @@ import { distinctUntilChanged } from 'rxjs';
 	styles: [],
 })
 export class LicenceApplicationComponent implements OnInit {
+	readonly STEP_LICENCE_SELECTION = 0;
+	readonly STEP_BACKGROUND = 1;
+	readonly STEP_IDENTIFICATION = 2;
+	readonly STEP_REVIEW = 3;
+
 	orientation: StepperOrientation = 'vertical';
+
+	@ViewChild(StepLicenseSelectionComponent)
+	stepLicenseSelectionComponent!: StepLicenseSelectionComponent;
+
+	@ViewChild(StepBackgroundComponent)
+	stepBackgroundComponent!: StepBackgroundComponent;
+
+	@ViewChild(StepIdentificationComponent)
+	stepIdentificationComponent!: StepIdentificationComponent;
+
+	@ViewChild(StepReviewComponent)
+	stepReviewComponent!: StepReviewComponent;
 
 	@ViewChild('stepper') stepper!: MatStepper;
 

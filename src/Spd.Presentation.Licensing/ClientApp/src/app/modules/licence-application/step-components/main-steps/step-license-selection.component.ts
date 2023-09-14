@@ -41,7 +41,7 @@ import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/cor
 				</div>
 			</mat-step>-->
 
-			<mat-step>
+			<!-- <mat-step>
 				<app-checklist></app-checklist>
 
 				<div class="row mt-4">
@@ -52,7 +52,7 @@ import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/cor
 						<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 					</div>
 				</div>
-			</mat-step>
+			</mat-step> -->
 
 			<!--
 			<mat-step>
@@ -85,10 +85,10 @@ import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/cor
 				<app-security-worker-licence-category></app-security-worker-licence-category>
 
 				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 					</div>
 				</div>
