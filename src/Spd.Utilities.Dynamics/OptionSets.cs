@@ -219,6 +219,7 @@ namespace Spd.Utilities.Dynamics
         Pending = 1,
         Successful = 2,
         Failure = 100000000,
+        Refunded = 100000001
     }
 
     public enum ClearanceAccessStatusOptionSet

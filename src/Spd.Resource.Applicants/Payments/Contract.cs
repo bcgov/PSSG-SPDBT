@@ -42,19 +42,26 @@ namespace Spd.Resource.Applicants.Payment
         public string? TransOrderId { get; set; }
         public DateTimeOffset? TransDateTime { get; set; }
         public string? MessageText { get; set; }
+        public PaymentStatusEnum? PaymentStatus { get; set; }
     }
 
     public record UpdatePaymentCmd : PaymentCmd
     {
         public Guid PaymentId { get; set; }
         public bool? Success { get; set; }
+        public string? ErrorMsg { get; set; }
+        public string? RefundId { get; set; }
+        public DateTimeOffset? RefundTxnDateTime { get; set; }
+        public string? RefundErrorMsg { get; set; }
+        public PaymentStatusEnum? PaymentStatus { get; set; }
     }
 
     public enum PaymentStatusEnum
     {
-        Success,
+        Successful,
         Failure,
-        Cancelled
+        Pending,
+        Refunded
     }
     public enum PaymentMethodEnum
     {
