@@ -19636,8 +19636,9 @@
         <Property Name="spd_licenceapplicationtype" Type="Edm.Int32" />
         <Property Name="_modifiedonbehalfby_value" Type="Edm.Guid" />
         <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
-        <Property Name="spd_licenceterm" Type="Edm.Int32" />
         <Property Name="importsequencenumber" Type="Edm.Int32" />
+        <Property Name="spd_licenceterm" Type="Edm.Int32" />
+        <Property Name="spd_soleproprietor" Type="Edm.Int32" />
         <Property Name="spd_addressline2" Type="Edm.String" Unicode="false" />
         <Property Name="spd_rationale" Type="Edm.String" Unicode="false" />
         <Property Name="spd_paidon" Type="Edm.DateTimeOffset" />
@@ -20544,37 +20545,40 @@
         <Key>
           <PropertyRef Name="spd_paymentid" />
         </Key>
-        <Property Name="importsequencenumber" Type="Edm.Int32" />
-        <Property Name="_owningbusinessunit_value" Type="Edm.Guid" />
-        <Property Name="_spd_applicationid_value" Type="Edm.Guid" />
-        <Property Name="_ownerid_value" Type="Edm.Guid" />
-        <Property Name="spd_amount" Type="Edm.Decimal" Scale="Variable" />
-        <Property Name="_modifiedonbehalfby_value" Type="Edm.Guid" />
-        <Property Name="exchangerate" Type="Edm.Decimal" Scale="Variable" />
-        <Property Name="spd_amount_base" Type="Edm.Decimal" Scale="Variable" />
-        <Property Name="_transactioncurrencyid_value" Type="Edm.Guid" />
-        <Property Name="_owninguser_value" Type="Edm.Guid" />
-        <Property Name="spd_paymenttype" Type="Edm.Int32" />
+        <Property Name="spd_response" Type="Edm.Int32" />
+        <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
+        <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
+        <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
+        <Property Name="_createdonbehalfby_value" Type="Edm.Guid" />
         <Property Name="createdon" Type="Edm.DateTimeOffset" />
         <Property Name="statuscode" Type="Edm.Int32" />
-        <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
-        <Property Name="spd_errordescription" Type="Edm.String" Unicode="false" />
         <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
-        <Property Name="spd_response" Type="Edm.Int32" />
-        <Property Name="spd_manualpayment" Type="Edm.Boolean" />
-        <Property Name="spd_datetimeofpayment" Type="Edm.DateTimeOffset" />
-        <Property Name="spd_paymentid" Type="Edm.Guid" />
-        <Property Name="spd_figaroid" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_transactionid" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_ordernumber" Type="Edm.String" Unicode="false" />
-        <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
+        <Property Name="_spd_applicationid_value" Type="Edm.Guid" />
         <Property Name="_owningteam_value" Type="Edm.Guid" />
-        <Property Name="statecode" Type="Edm.Int32" />
-        <Property Name="_createdonbehalfby_value" Type="Edm.Guid" />
-        <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
-        <Property Name="versionnumber" Type="Edm.Int64" />
-        <Property Name="_modifiedby_value" Type="Edm.Guid" />
+        <Property Name="exchangerate" Type="Edm.Decimal" Scale="Variable" />
         <Property Name="_createdby_value" Type="Edm.Guid" />
+        <Property Name="_owninguser_value" Type="Edm.Guid" />
+        <Property Name="spd_refundid" Type="Edm.String" Unicode="false" />
+        <Property Name="_transactioncurrencyid_value" Type="Edm.Guid" />
+        <Property Name="spd_refunderrordescription" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_paymentid" Type="Edm.Guid" />
+        <Property Name="spd_amount_base" Type="Edm.Decimal" Scale="Variable" />
+        <Property Name="spd_datetimeofpayment" Type="Edm.DateTimeOffset" />
+        <Property Name="_ownerid_value" Type="Edm.Guid" />
+        <Property Name="spd_amount" Type="Edm.Decimal" Scale="Variable" />
+        <Property Name="spd_ordernumber" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_paymenttype" Type="Edm.Int32" />
+        <Property Name="_modifiedby_value" Type="Edm.Guid" />
+        <Property Name="spd_errordescription" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_figaroid" Type="Edm.String" Unicode="false" />
+        <Property Name="statecode" Type="Edm.Int32" />
+        <Property Name="spd_refunddate" Type="Edm.DateTimeOffset" />
+        <Property Name="_owningbusinessunit_value" Type="Edm.Guid" />
+        <Property Name="importsequencenumber" Type="Edm.Int32" />
+        <Property Name="spd_transactionid" Type="Edm.String" Unicode="false" />
+        <Property Name="_modifiedonbehalfby_value" Type="Edm.Guid" />
+        <Property Name="spd_manualpayment" Type="Edm.Boolean" />
+        <Property Name="versionnumber" Type="Edm.Int64" />
         <NavigationProperty Name="createdby" Type="mscrm.systemuser" Nullable="false" Partner="lk_spd_payment_createdby">
           <ReferentialConstraint Property="_createdby_value" ReferencedProperty="systemuserid" />
         </NavigationProperty>
@@ -26848,6 +26852,17 @@
         <Parameter Name="BusinessUnit" Type="mscrm.businessunit" Nullable="false" />
         <Parameter Name="ReassignPrincipal" Type="mscrm.crmbaseentity" Nullable="false" />
       </Action>
+      <ComplexType Name="spd_CheckInvoiceStatusJobResponse">
+        <Property Name="MoreRecords" Type="Edm.Boolean" />
+        <Property Name="NewPagingCookie" Type="Edm.String" Unicode="false" />
+        <Property Name="ErrorMessage" Type="Edm.String" Unicode="false" />
+      </ComplexType>
+      <Action Name="spd_CheckInvoiceStatusJob" IsBound="true">
+        <Parameter Name="entity" Type="mscrm.bcgov_schedulejob" Nullable="false" />
+        <Parameter Name="PageNumber" Type="Edm.Int32" Nullable="false" />
+        <Parameter Name="OldPagingCookie" Type="Edm.String" Unicode="false" />
+        <ReturnType Type="mscrm.spd_CheckInvoiceStatusJobResponse" Nullable="false" />
+      </Action>
       <ComplexType Name="spd_ClearanceNotificationResponse">
         <Property Name="IsSuccess" Type="Edm.Boolean" />
         <Property Name="Result" Type="Edm.String" Unicode="false" />
@@ -27131,6 +27146,15 @@
       <Action Name="spd_HasHits" IsBound="true">
         <Parameter Name="entity" Type="mscrm.contact" Nullable="false" />
         <ReturnType Type="mscrm.spd_HasHitsResponse" Nullable="false" />
+      </Action>
+      <ComplexType Name="spd_InitiateRefundResponse">
+        <Property Name="IsSuccess" Type="Edm.Boolean" />
+        <Property Name="Result" Type="Edm.String" Unicode="false" />
+      </ComplexType>
+      <Action Name="spd_InitiateRefund" IsBound="true">
+        <Parameter Name="entity" Type="mscrm.spd_payment" Nullable="false" />
+        <Parameter Name="CancelApplication" Type="Edm.Boolean" Nullable="false" />
+        <ReturnType Type="mscrm.spd_InitiateRefundResponse" Nullable="false" />
       </Action>
       <ComplexType Name="spd_IsApplicationAuthenticatedResponse">
         <Property Name="IsAuthenticated" Type="Edm.Boolean" />

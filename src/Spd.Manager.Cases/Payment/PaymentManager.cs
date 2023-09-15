@@ -159,6 +159,7 @@ namespace Spd.Manager.Cases.Payment
             var createCmd = _mapper.Map<CreatePaymentCmd>(command.PaybcPaymentResult);
             await _paymentRepository.ManageAsync(createCmd, ct);
             var updateCmd = _mapper.Map<UpdatePaymentCmd>(command.PaybcPaymentResult);
+            updateCmd.PaymentStatus = command.PaybcPaymentResult.Success ? PaymentStatusEnum.Successful : PaymentStatusEnum.Failure;
             return await _paymentRepository.ManageAsync(updateCmd, ct);
         }
 
@@ -181,8 +182,9 @@ namespace Spd.Manager.Cases.Payment
                 PaymentId = command.PaymentId,
                 Success = result.Approved,
                 RefundId = result.RefundId,
-                RefundTxnDateTime = result.Approved? result.RefundTxnDateTime: null,
-                ErrorMsg = result.Approved ? null : result.Message
+                RefundTxnDateTime = result.Approved ? result.RefundTxnDateTime : null,
+                RefundErrorMsg = result.Approved ? null : result.Message,
+                PaymentStatus = result.Approved? PaymentStatusEnum.Refunded : PaymentStatusEnum.Failure
             };
             await _paymentRepository.ManageAsync(updatePaymentCmd, ct);
 

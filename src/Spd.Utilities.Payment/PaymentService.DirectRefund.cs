@@ -27,7 +27,7 @@ namespace Spd.Utilities.Payment
                 requestHttpClient.DefaultRequestHeaders.Clear();
                 requestHttpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
                 requestHttpClient.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/json");
-                requestHttpClient.DefaultRequestHeaders.Add("Bearer-Token", "Bearerr " + accessToken);
+                requestHttpClient.DefaultRequestHeaders.Add("Bearer-Token", "Bearer " + accessToken);
 
                 string url = $"https://{_config.DirectRefund.Host}/{_config.DirectRefund.DirectRefundPath}";
                 var serializeOptions = new JsonSerializerOptions
