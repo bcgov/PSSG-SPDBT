@@ -16,7 +16,6 @@ using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.Shared.ManagerContract;
 using System.Net;
-using System.Text.Json.Serialization;
 
 namespace Spd.Manager.Cases.Payment
 {
@@ -176,13 +175,19 @@ namespace Spd.Manager.Cases.Payment
             var cmd = _mapper.Map<RefundPaymentCmd>(paymentList.Items.First());
             cmd.PbcRefNumber = spdPaymentConfig.PbcRefNumber;
             var result = (RefundPaymentResult)await _paymentService.HandleCommand(cmd);
-            if (!result.IsSuccess)
-                throw new ApiException(HttpStatusCode.InternalServerError, result.Message);
+
+            UpdatePaymentCmd updatePaymentCmd = new UpdatePaymentCmd()
+            {
+                PaymentId = command.PaymentId,
+                Success = result.Approved,
+                RefundId = result.RefundId,
+                RefundTxnDateTime = result.Approved? result.RefundTxnDateTime: null,
+                ErrorMsg = result.Approved ? null : result.Message
+            };
+            await _paymentRepository.ManageAsync(updatePaymentCmd, ct);
+
             var resp = _mapper.Map<PaymentRefundResponse>(result);
             resp.PaymentId = command.PaymentId;
-
-            //todo: confirm with dynamics, do we need to change spd_payment status and other entity status?
-            //confirmed with dynamics, we do not need to do it for now.
             return resp;
         }
 
@@ -236,18 +241,18 @@ namespace Spd.Manager.Cases.Payment
         public async Task<CreateInvoicesInCasResponse> Handle(CreateInvoicesInCasCommand command, CancellationToken ct)
         {
             var invoiceList = await _invoiceRepository.QueryAsync(new InvoiceQry() { InvoiceStatus = InvoiceStatusEnum.Pending }, ct);
-            foreach(var invoice in invoiceList.Items)
+            foreach (var invoice in invoiceList.Items)
             {
                 var createInvoice = _mapper.Map<CreateInvoiceCmd>(invoice);
                 var result = (InvoiceResult)await _paymentService.HandleCommand(createInvoice);
                 UpdateInvoiceCmd update = new UpdateInvoiceCmd()
                 {
                     InvoiceId = invoice.Id,
-                    CasResponse = result.Message 
+                    CasResponse = result.Message
                 };
                 if (result.IsSuccess)
                 {
-                    update.InvoiceNumber= result.InvoiceNumber;
+                    update.InvoiceNumber = result.InvoiceNumber;
                     update.InvoiceStatus = InvoiceStatusEnum.Sent;
                     update.CasResponse = CutOffResponse(update.CasResponse); // dynamics team do not want full json, as it is too big and no use.
                     await _invoiceRepository.ManageAsync(update, ct);
@@ -280,7 +285,7 @@ namespace Spd.Manager.Cases.Payment
                             InvoiceNumber = result.InvoiceNumber,
                         };
                         await _invoiceRepository.ManageAsync(update, ct);
-                    }                   
+                    }
                     successCount++;
                 }
             }
@@ -330,7 +335,8 @@ namespace Spd.Manager.Cases.Payment
             {
                 var result = JsonConvert.DeserializeObject<CasInvoiceCreateRespCompact>(response);
                 return JsonConvert.SerializeObject(result);
-            }catch
+            }
+            catch
             {
                 return response;
             }

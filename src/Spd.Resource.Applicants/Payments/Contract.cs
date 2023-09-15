@@ -48,6 +48,9 @@ namespace Spd.Resource.Applicants.Payment
     {
         public Guid PaymentId { get; set; }
         public bool? Success { get; set; }
+        public string? RefundId { get; set; }
+        public string? ErrorMsg { get; set; }
+        public DateTimeOffset? RefundTxnDateTime { get; set; }
     }
 
     public enum PaymentStatusEnum
