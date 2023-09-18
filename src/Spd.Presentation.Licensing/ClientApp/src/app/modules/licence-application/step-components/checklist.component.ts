@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { LicenceFormStepComponent } from '../licence-application.component';
 
 @Component({
 	selector: 'app-checklist',
@@ -15,7 +16,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 						<form [formGroup]="form" novalidate>
 							<div class="checklist-heading">For all applicants:</div>
 
-							<mat-checkbox formControlName="checklist1">
+							<mat-checkbox formControlName="checklistItem">
 								<span class="checklist-label">Proof of fingerprinting request</span>
 							</mat-checkbox>
 							<p class="checklist-info">
@@ -24,7 +25,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 								completed.
 							</p>
 
-							<mat-checkbox formControlName="checklist1">
+							<mat-checkbox formControlName="checklistItem">
 								<span class="checklist-label">Proof of training and experience</span>
 							</mat-checkbox>
 							<p class="checklist-info">
@@ -32,14 +33,14 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 								Learn more​ about the types of documents we accept for each security worker category.
 							</p>
 
-							<mat-checkbox formControlName="checklist1">
+							<mat-checkbox formControlName="checklistItem">
 								<span class="checklist-label">Proof of Canadian citizenship or ability to work in Canada</span>
 							</mat-checkbox>
 							<p class="checklist-info">
 								See all accepted forms of identification on the Security Worker Licence requirements page.
 							</p>
 
-							<mat-checkbox formControlName="checklist1">
+							<mat-checkbox formControlName="checklistItem">
 								<span class="checklist-label">Photograph of yourself for the licence</span>
 							</mat-checkbox>
 							<p class="checklist-info">
@@ -49,7 +50,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 								of Canada’s passport photograph requirements.
 							</p>
 
-							<mat-checkbox formControlName="checklist1">
+							<mat-checkbox formControlName="checklistItem">
 								<span class="checklist-label">Credit card</span>
 							</mat-checkbox>
 							<p class="checklist-info">All major credit cards accepted through our secure payment platform.</p>
@@ -57,7 +58,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 							<mat-divider class="my-4"></mat-divider>
 							<div class="checklist-heading">For some applicants:</div>
 
-							<mat-checkbox formControlName="checklist1">
+							<mat-checkbox formControlName="checklistItem">
 								<span class="checklist-label">Expired licence (if applicable)</span>
 							</mat-checkbox>
 							<p class="checklist-info">
@@ -65,12 +66,12 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 								this application to your file.
 							</p>
 
-							<mat-checkbox formControlName="checklist1">
+							<mat-checkbox formControlName="checklistItem">
 								<span class="checklist-label">If you are a Peace Officer, provide a letter of no conflict</span>
 							</mat-checkbox>
 							<p class="checklist-info">Your superior officer must write a letter of no conflict for you to upload.</p>
 
-							<mat-checkbox formControlName="checklist1">
+							<mat-checkbox formControlName="checklistItem">
 								<span class="checklist-label">
 									If you have a mental health condition, provide a physician's assessment
 								</span>
@@ -104,11 +105,18 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 		`,
 	],
 })
-export class ChecklistComponent {
+export class ChecklistComponent implements LicenceFormStepComponent {
 	form: FormGroup = this.formBuilder.group({
-		checklist1: new FormControl(''),
-		checklist2: new FormControl(''),
+		checklistItem: new FormControl({ value: true, disabled: true }),
 	});
 
 	constructor(private formBuilder: FormBuilder) {}
+
+	isFormValid(): boolean {
+		return true;
+	}
+
+	getDataToSave(): any {
+		return {};
+	}
 }

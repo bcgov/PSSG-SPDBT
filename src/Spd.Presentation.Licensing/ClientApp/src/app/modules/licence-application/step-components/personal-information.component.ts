@@ -5,13 +5,17 @@ import { UtilService } from 'src/app/core/services/util.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
+import { LicenceFormStepComponent } from '../licence-application.component';
 
 @Component({
 	selector: 'app-personal-information',
 	template: `
 		<section class="step-section p-3">
 			<div class="step">
-				<app-step-title title="Your personal information"></app-step-title>
+				<app-step-title
+					title="Confirm your personal information"
+					subtitle="This information is from your BC Services Card. If you need to make any updates, please visit ICBC."
+				></app-step-title>
 				<div class="step-container row">
 					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<form [formGroup]="form" novalidate>
@@ -19,7 +23,7 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 							<div class="row">
 								<div class="col-xl-4 col-lg-6 col-md-12">
 									<mat-form-field>
-										<mat-label>Legal Given Name</mat-label>
+										<mat-label>Given Name</mat-label>
 										<input matInput formControlName="givenName" [errorStateMatcher]="matcher" maxlength="40" />
 										<mat-error *ngIf="form.get('givenName')?.hasError('required')"> This is required </mat-error>
 									</mat-form-field>
@@ -38,7 +42,7 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 								</div>
 								<div class="col-xl-4 col-lg-6 col-md-12">
 									<mat-form-field>
-										<mat-label>Legal Surname</mat-label>
+										<mat-label>Surname</mat-label>
 										<input matInput formControlName="surname" [errorStateMatcher]="matcher" maxlength="40" />
 										<mat-error *ngIf="form.get('surname')?.hasError('required')"> This is required </mat-error>
 									</mat-form-field>
@@ -78,9 +82,13 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 	`,
 	styles: [],
 })
-export class PersonalInformationComponent {
+export class PersonalInformationComponent implements LicenceFormStepComponent {
 	genderTypes = GenderTypes;
 	matcher = new FormErrorStateMatcher();
+
+	readonly subtitle_auth_new =
+		'This information is from your BC Services Card. If you need to make any updates, please visit ICBC.';
+	readonly subtitle_unauth_renew_update = 'Update any information that has changed since your last application';
 
 	startAtBirthDate = this.utilService.getBirthDateStartAt();
 	maxBirthDate = this.utilService.getBirthDateMax();
@@ -106,4 +114,12 @@ export class PersonalInformationComponent {
 	);
 
 	constructor(private formBuilder: FormBuilder, private utilService: UtilService) {}
+
+	isFormValid(): boolean {
+		return this.form.valid;
+	}
+
+	getDataToSave(): any {
+		return this.form.value;
+	}
 }

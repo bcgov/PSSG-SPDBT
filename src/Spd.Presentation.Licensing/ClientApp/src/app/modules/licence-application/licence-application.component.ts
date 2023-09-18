@@ -3,10 +3,21 @@ import { StepperOrientation, StepperSelectionEvent } from '@angular/cdk/stepper'
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { distinctUntilChanged } from 'rxjs';
+import { SwlTypeCode } from './step-components/licence-selection.component';
 import { StepBackgroundComponent } from './step-components/main-steps/step-background.component';
 import { StepIdentificationComponent } from './step-components/main-steps/step-identification.component';
 import { StepLicenseSelectionComponent } from './step-components/main-steps/step-license-selection.component';
 import { StepReviewComponent } from './step-components/main-steps/step-review.component';
+
+export interface LicenceFormStepComponent {
+	getDataToSave(): any;
+	// clearCurrentData(): void;
+	isFormValid(): boolean;
+}
+
+export class LicenceModel {
+	licenseTypeCode: SwlTypeCode | null = null;
+}
 
 @Component({
 	selector: 'app-licence-application',
@@ -61,6 +72,8 @@ export class LicenceApplicationComponent implements OnInit {
 	readonly STEP_BACKGROUND = 1;
 	readonly STEP_IDENTIFICATION = 2;
 	readonly STEP_REVIEW = 3;
+
+	licenceModel: LicenceModel = new LicenceModel();
 
 	orientation: StepperOrientation = 'vertical';
 

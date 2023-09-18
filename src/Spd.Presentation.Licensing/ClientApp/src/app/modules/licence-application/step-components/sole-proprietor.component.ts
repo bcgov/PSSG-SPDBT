@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/api/models';
+import { LicenceFormStepComponent } from '../licence-application.component';
 
 @Component({
 	selector: 'app-sole-proprietor',
@@ -8,7 +9,7 @@ import { BooleanTypeCode } from 'src/app/api/models';
 		<section class="step-section p-3">
 			<div class="step">
 				<app-step-title
-					title="Do you also want to apply for a Sole Proprietor Security Business Licence?"
+					title="Do you also want to 'apply for a' OR 'renew your' Sole Proprietor Security Business Licence?"
 					subtitle="If you are a Sole Proprietor and need both a worker licence and a business licence, you can apply for them at the same time and pay only for the business licence."
 				></app-step-title>
 				<div class="step-container row">
@@ -27,7 +28,7 @@ import { BooleanTypeCode } from 'src/app/api/models';
 	`,
 	styles: [],
 })
-export class SoleProprietorComponent {
+export class SoleProprietorComponent implements LicenceFormStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 
 	form: FormGroup = this.formBuilder.group({
@@ -35,4 +36,12 @@ export class SoleProprietorComponent {
 	});
 
 	constructor(private formBuilder: FormBuilder) {}
+
+	isFormValid(): boolean {
+		return this.form.valid;
+	}
+
+	getDataToSave(): any {
+		return this.form.value;
+	}
 }

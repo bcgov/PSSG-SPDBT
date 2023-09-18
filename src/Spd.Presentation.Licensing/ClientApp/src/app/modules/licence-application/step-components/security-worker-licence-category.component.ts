@@ -4,7 +4,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 import { SelectOptions } from 'src/app/core/code-types/model-desc.models';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 
-export enum SwlLicenceCategoryTypeCode {
+export enum SwlCategoryTypeCode {
 	ArmouredCarGuard = 'ARMOURED_CAR_GUARD',
 	BodyArmourSales = 'BODY_AMOUR_SALES',
 	ClosedCircuitTelevisionInstaller = 'CLOSED_CIRCUIT',
@@ -24,30 +24,30 @@ export enum SwlLicenceCategoryTypeCode {
 	SecurityConsultant = 'SECURITY_CONSULTANT',
 }
 
-export const SwlLicenceCategoryTypes: SelectOptions[] = [
-	{ desc: 'Armoured Car Guard', code: SwlLicenceCategoryTypeCode.ArmouredCarGuard },
-	{ desc: 'Body Armour Sales', code: SwlLicenceCategoryTypeCode.BodyArmourSales },
-	{ desc: 'Closed Circuit Television Installer', code: SwlLicenceCategoryTypeCode.ClosedCircuitTelevisionInstaller },
-	{ desc: 'Electronic Locking Device Installer', code: SwlLicenceCategoryTypeCode.ElectronicLockingDeviceInstaller },
-	{ desc: 'Fire Investigator', code: SwlLicenceCategoryTypeCode.FireInvestigator },
-	{ desc: 'Locksmith', code: SwlLicenceCategoryTypeCode.Locksmith },
-	{ desc: 'Locksmith - Under Supervision', code: SwlLicenceCategoryTypeCode.LocksmithUnderSupervision },
-	{ desc: 'Private Investigator', code: SwlLicenceCategoryTypeCode.PrivateInvestigator },
+export const SwlCategoryTypes: SelectOptions[] = [
+	{ desc: 'Armoured Car Guard', code: SwlCategoryTypeCode.ArmouredCarGuard },
+	{ desc: 'Body Armour Sales', code: SwlCategoryTypeCode.BodyArmourSales },
+	{ desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
+	{ desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
+	{ desc: 'Fire Investigator', code: SwlCategoryTypeCode.FireInvestigator },
+	{ desc: 'Locksmith', code: SwlCategoryTypeCode.Locksmith },
+	{ desc: 'Locksmith - Under Supervision', code: SwlCategoryTypeCode.LocksmithUnderSupervision },
+	{ desc: 'Private Investigator', code: SwlCategoryTypeCode.PrivateInvestigator },
 	{
 		desc: 'Private Investigator - Under Supervision',
-		code: SwlLicenceCategoryTypeCode.PrivateInvestigatorUnderSupervision,
+		code: SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision,
 	},
-	{ desc: 'Security Guard', code: SwlLicenceCategoryTypeCode.SecurityGuard },
-	{ desc: 'Security Guard - Under Supervision', code: SwlLicenceCategoryTypeCode.SecurityGuardUnderSupervision },
-	{ desc: 'Security Alarm Installer', code: SwlLicenceCategoryTypeCode.SecurityAlarmInstaller },
+	{ desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
+	{ desc: 'Security Guard - Under Supervision', code: SwlCategoryTypeCode.SecurityGuardUnderSupervision },
+	{ desc: 'Security Alarm Installer', code: SwlCategoryTypeCode.SecurityAlarmInstaller },
 	{
 		desc: 'Security Alarm Installer - Under Supervision',
-		code: SwlLicenceCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
+		code: SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
 	},
-	{ desc: 'Security Alarm Monitor', code: SwlLicenceCategoryTypeCode.SecurityAlarmMonitor },
-	{ desc: 'Security Alarm Response', code: SwlLicenceCategoryTypeCode.SecurityAlarmResponse },
-	{ desc: 'Security Alarm Sales', code: SwlLicenceCategoryTypeCode.SecurityAlarmSales },
-	{ desc: 'Security Consultant', code: SwlLicenceCategoryTypeCode.SecurityConsultant },
+	{ desc: 'Security Alarm Monitor', code: SwlCategoryTypeCode.SecurityAlarmMonitor },
+	{ desc: 'Security Alarm Response', code: SwlCategoryTypeCode.SecurityAlarmResponse },
+	{ desc: 'Security Alarm Sales', code: SwlCategoryTypeCode.SecurityAlarmSales },
+	{ desc: 'Security Consultant', code: SwlCategoryTypeCode.SecurityConsultant },
 ];
 
 @Component({
@@ -130,21 +130,15 @@ export class SecurityWorkerLicenceCategoryComponent {
 	category = '';
 	categoryList: any[] = [];
 
-	validCategoryList: SelectOptions[] = SwlLicenceCategoryTypes;
+	validCategoryList: SelectOptions[] = SwlCategoryTypes;
 
-	swlLicenceCategoryTypes = SwlLicenceCategoryTypes;
+	swlCategoryTypes = SwlCategoryTypes;
 
 	constructor(private dialog: MatDialog, private hotToast: HotToastService) {}
 
 	onAddCategory(): void {
 		if (this.category) {
-			// const isFound = this.categoryList.find((item) => item.code == this.category);
-			// if (isFound) {
-			// 	this.hotToast.error(`'${isFound.desc}' has already been added`);
-			// 	return;
-			// }
-
-			const option = this.swlLicenceCategoryTypes.find((item) => item.code == this.category)!;
+			const option = this.swlCategoryTypes.find((item) => item.code == this.category)!;
 			this.categoryList.push({ code: option?.code, desc: option.desc });
 
 			this.setValidCategoryList();
@@ -173,74 +167,72 @@ export class SecurityWorkerLicenceCategoryComponent {
 	}
 
 	setValidCategoryList(): void {
-		let updatedList = this.swlLicenceCategoryTypes;
+		let updatedList = this.swlCategoryTypes;
 
 		// if user has selected 'ArmouredCarGuard', then update the list of valid values
-		if (this.categoryList.find((cat) => cat.code == SwlLicenceCategoryTypeCode.ArmouredCarGuard)) {
+		if (this.categoryList.find((cat) => cat.code == SwlCategoryTypeCode.ArmouredCarGuard)) {
 			updatedList = updatedList.filter(
 				(cat) =>
-					cat.code != SwlLicenceCategoryTypeCode.ArmouredCarGuard &&
-					cat.code != SwlLicenceCategoryTypeCode.SecurityGuardUnderSupervision
+					cat.code != SwlCategoryTypeCode.ArmouredCarGuard &&
+					cat.code != SwlCategoryTypeCode.SecurityGuardUnderSupervision
 			);
 		}
 
 		// if user has selected 'BodyArmourSales', then update the list of valid values
-		if (this.categoryList.find((cat) => cat.code == SwlLicenceCategoryTypeCode.BodyArmourSales)) {
+		if (this.categoryList.find((cat) => cat.code == SwlCategoryTypeCode.BodyArmourSales)) {
 			updatedList = updatedList.filter(
 				(cat) =>
-					cat.code != SwlLicenceCategoryTypeCode.BodyArmourSales &&
-					cat.code != SwlLicenceCategoryTypeCode.SecurityGuardUnderSupervision
+					cat.code != SwlCategoryTypeCode.BodyArmourSales &&
+					cat.code != SwlCategoryTypeCode.SecurityGuardUnderSupervision
 			);
 		}
 
 		// if user has selected 'ClosedCircuitTelevisionInstaller', then update the list of valid values
-		if (this.categoryList.find((cat) => cat.code == SwlLicenceCategoryTypeCode.ClosedCircuitTelevisionInstaller)) {
+		if (this.categoryList.find((cat) => cat.code == SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller)) {
 			updatedList = updatedList.filter(
 				(cat) =>
-					cat.code != SwlLicenceCategoryTypeCode.ClosedCircuitTelevisionInstaller &&
-					cat.code != SwlLicenceCategoryTypeCode.SecurityAlarmInstaller &&
-					cat.code != SwlLicenceCategoryTypeCode.SecurityAlarmInstallerUnderSupervision &&
-					cat.code != SwlLicenceCategoryTypeCode.SecurityGuardUnderSupervision
+					cat.code != SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller &&
+					cat.code != SwlCategoryTypeCode.SecurityAlarmInstaller &&
+					cat.code != SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision &&
+					cat.code != SwlCategoryTypeCode.SecurityGuardUnderSupervision
 			);
 		}
 
 		// if user has selected 'ElectronicLockingDeviceInstaller', then update the list of valid values
-		if (this.categoryList.find((cat) => cat.code == SwlLicenceCategoryTypeCode.ElectronicLockingDeviceInstaller)) {
+		if (this.categoryList.find((cat) => cat.code == SwlCategoryTypeCode.ElectronicLockingDeviceInstaller)) {
 			updatedList = updatedList.filter(
 				(cat) =>
-					cat.code != SwlLicenceCategoryTypeCode.ElectronicLockingDeviceInstaller &&
-					cat.code != SwlLicenceCategoryTypeCode.Locksmith &&
-					cat.code != SwlLicenceCategoryTypeCode.LocksmithUnderSupervision &&
-					cat.code != SwlLicenceCategoryTypeCode.SecurityAlarmInstaller &&
-					cat.code != SwlLicenceCategoryTypeCode.SecurityAlarmInstallerUnderSupervision &&
-					cat.code != SwlLicenceCategoryTypeCode.SecurityGuardUnderSupervision
+					cat.code != SwlCategoryTypeCode.ElectronicLockingDeviceInstaller &&
+					cat.code != SwlCategoryTypeCode.Locksmith &&
+					cat.code != SwlCategoryTypeCode.LocksmithUnderSupervision &&
+					cat.code != SwlCategoryTypeCode.SecurityAlarmInstaller &&
+					cat.code != SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision &&
+					cat.code != SwlCategoryTypeCode.SecurityGuardUnderSupervision
 			);
 		}
 
 		// if user has selected 'FireInvestigator', then update the list of valid values
-		if (this.categoryList.find((cat) => cat.code == SwlLicenceCategoryTypeCode.FireInvestigator)) {
+		if (this.categoryList.find((cat) => cat.code == SwlCategoryTypeCode.FireInvestigator)) {
 			updatedList = updatedList.filter(
 				(cat) =>
-					cat.code != SwlLicenceCategoryTypeCode.PrivateInvestigator &&
-					cat.code != SwlLicenceCategoryTypeCode.PrivateInvestigatorUnderSupervision &&
-					cat.code != SwlLicenceCategoryTypeCode.FireInvestigator
+					cat.code != SwlCategoryTypeCode.PrivateInvestigator &&
+					cat.code != SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision &&
+					cat.code != SwlCategoryTypeCode.FireInvestigator
 			);
 		}
 
 		// if user has selected 'Locksmith' or 'LocksmithUnderSupervision', then update the list of valid values
 		if (
 			this.categoryList.find(
-				(cat) =>
-					cat.code == SwlLicenceCategoryTypeCode.Locksmith ||
-					cat.code == SwlLicenceCategoryTypeCode.LocksmithUnderSupervision
+				(cat) => cat.code == SwlCategoryTypeCode.Locksmith || cat.code == SwlCategoryTypeCode.LocksmithUnderSupervision
 			)
 		) {
 			updatedList = updatedList.filter(
 				(cat) =>
-					cat.code != SwlLicenceCategoryTypeCode.ElectronicLockingDeviceInstaller &&
-					cat.code != SwlLicenceCategoryTypeCode.Locksmith &&
-					cat.code != SwlLicenceCategoryTypeCode.LocksmithUnderSupervision &&
-					cat.code != SwlLicenceCategoryTypeCode.SecurityGuardUnderSupervision
+					cat.code != SwlCategoryTypeCode.ElectronicLockingDeviceInstaller &&
+					cat.code != SwlCategoryTypeCode.Locksmith &&
+					cat.code != SwlCategoryTypeCode.LocksmithUnderSupervision &&
+					cat.code != SwlCategoryTypeCode.SecurityGuardUnderSupervision
 			);
 		}
 
@@ -248,32 +240,32 @@ export class SecurityWorkerLicenceCategoryComponent {
 		if (
 			this.categoryList.find(
 				(cat) =>
-					cat.code == SwlLicenceCategoryTypeCode.PrivateInvestigator ||
-					cat.code == SwlLicenceCategoryTypeCode.PrivateInvestigatorUnderSupervision
+					cat.code == SwlCategoryTypeCode.PrivateInvestigator ||
+					cat.code == SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision
 			)
 		) {
 			updatedList = updatedList.filter(
 				(cat) =>
-					cat.code != SwlLicenceCategoryTypeCode.FireInvestigator &&
-					cat.code != SwlLicenceCategoryTypeCode.PrivateInvestigator &&
-					cat.code != SwlLicenceCategoryTypeCode.PrivateInvestigatorUnderSupervision &&
-					cat.code != SwlLicenceCategoryTypeCode.SecurityGuardUnderSupervision
+					cat.code != SwlCategoryTypeCode.FireInvestigator &&
+					cat.code != SwlCategoryTypeCode.PrivateInvestigator &&
+					cat.code != SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision &&
+					cat.code != SwlCategoryTypeCode.SecurityGuardUnderSupervision
 			);
 		}
 
 		// if user has selected 'SecurityGuard', then update the list of valid values
-		if (this.categoryList.find((cat) => cat.code == SwlLicenceCategoryTypeCode.SecurityGuard)) {
+		if (this.categoryList.find((cat) => cat.code == SwlCategoryTypeCode.SecurityGuard)) {
 			updatedList = updatedList.filter(
 				(cat) =>
-					cat.code != SwlLicenceCategoryTypeCode.SecurityAlarmMonitor &&
-					cat.code != SwlLicenceCategoryTypeCode.SecurityAlarmResponse &&
-					cat.code != SwlLicenceCategoryTypeCode.SecurityGuard &&
-					cat.code != SwlLicenceCategoryTypeCode.SecurityGuardUnderSupervision
+					cat.code != SwlCategoryTypeCode.SecurityAlarmMonitor &&
+					cat.code != SwlCategoryTypeCode.SecurityAlarmResponse &&
+					cat.code != SwlCategoryTypeCode.SecurityGuard &&
+					cat.code != SwlCategoryTypeCode.SecurityGuardUnderSupervision
 			);
 		}
 
 		// if user has selected 'SecurityGuardUnderSupervision', then update the list of valid values
-		if (this.categoryList.find((cat) => cat.code == SwlLicenceCategoryTypeCode.SecurityGuardUnderSupervision)) {
+		if (this.categoryList.find((cat) => cat.code == SwlCategoryTypeCode.SecurityGuardUnderSupervision)) {
 			updatedList = [];
 		}
 
@@ -281,20 +273,20 @@ export class SecurityWorkerLicenceCategoryComponent {
 		if (
 			this.categoryList.find(
 				(cat) =>
-					cat.code == SwlLicenceCategoryTypeCode.SecurityAlarmInstaller ||
-					cat.code == SwlLicenceCategoryTypeCode.SecurityAlarmInstallerUnderSupervision
+					cat.code == SwlCategoryTypeCode.SecurityAlarmInstaller ||
+					cat.code == SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision
 			)
 		) {
 			updatedList = updatedList.filter(
 				(cat) =>
-					cat.code != SwlLicenceCategoryTypeCode.ElectronicLockingDeviceInstaller &&
-					cat.code != SwlLicenceCategoryTypeCode.SecurityAlarmInstaller &&
-					cat.code != SwlLicenceCategoryTypeCode.SecurityAlarmInstallerUnderSupervision &&
-					cat.code != SwlLicenceCategoryTypeCode.SecurityAlarmMonitor &&
-					cat.code != SwlLicenceCategoryTypeCode.SecurityAlarmResponse &&
-					cat.code != SwlLicenceCategoryTypeCode.SecurityAlarmSales &&
-					cat.code != SwlLicenceCategoryTypeCode.ClosedCircuitTelevisionInstaller &&
-					cat.code != SwlLicenceCategoryTypeCode.SecurityGuardUnderSupervision
+					cat.code != SwlCategoryTypeCode.ElectronicLockingDeviceInstaller &&
+					cat.code != SwlCategoryTypeCode.SecurityAlarmInstaller &&
+					cat.code != SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision &&
+					cat.code != SwlCategoryTypeCode.SecurityAlarmMonitor &&
+					cat.code != SwlCategoryTypeCode.SecurityAlarmResponse &&
+					cat.code != SwlCategoryTypeCode.SecurityAlarmSales &&
+					cat.code != SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller &&
+					cat.code != SwlCategoryTypeCode.SecurityGuardUnderSupervision
 			);
 		}
 
@@ -302,40 +294,38 @@ export class SecurityWorkerLicenceCategoryComponent {
 		if (
 			this.categoryList.find(
 				(cat) =>
-					cat.code == SwlLicenceCategoryTypeCode.SecurityAlarmMonitor ||
-					cat.code == SwlLicenceCategoryTypeCode.SecurityAlarmResponse
+					cat.code == SwlCategoryTypeCode.SecurityAlarmMonitor || cat.code == SwlCategoryTypeCode.SecurityAlarmResponse
 			)
 		) {
 			updatedList = updatedList.filter(
 				(cat) =>
-					cat.code != SwlLicenceCategoryTypeCode.SecurityAlarmMonitor &&
-					cat.code != SwlLicenceCategoryTypeCode.SecurityAlarmResponse &&
-					cat.code != SwlLicenceCategoryTypeCode.SecurityAlarmInstaller &&
-					cat.code != SwlLicenceCategoryTypeCode.SecurityAlarmInstallerUnderSupervision &&
-					cat.code != SwlLicenceCategoryTypeCode.SecurityGuard &&
-					cat.code != SwlLicenceCategoryTypeCode.SecurityGuardUnderSupervision
+					cat.code != SwlCategoryTypeCode.SecurityAlarmMonitor &&
+					cat.code != SwlCategoryTypeCode.SecurityAlarmResponse &&
+					cat.code != SwlCategoryTypeCode.SecurityAlarmInstaller &&
+					cat.code != SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision &&
+					cat.code != SwlCategoryTypeCode.SecurityGuard &&
+					cat.code != SwlCategoryTypeCode.SecurityGuardUnderSupervision
 			);
 		}
 
 		// if user has selected 'SecurityAlarmSales', then update the list of valid values
-		if (this.categoryList.find((cat) => cat.code == SwlLicenceCategoryTypeCode.SecurityAlarmSales)) {
+		if (this.categoryList.find((cat) => cat.code == SwlCategoryTypeCode.SecurityAlarmSales)) {
 			updatedList = updatedList.filter(
 				(cat) =>
-					cat.code != SwlLicenceCategoryTypeCode.SecurityAlarmInstaller &&
-					cat.code != SwlLicenceCategoryTypeCode.SecurityAlarmInstallerUnderSupervision &&
-					cat.code != SwlLicenceCategoryTypeCode.SecurityAlarmMonitor &&
-					cat.code != SwlLicenceCategoryTypeCode.SecurityAlarmSales &&
-					cat.code != SwlLicenceCategoryTypeCode.SecurityGuard &&
-					cat.code != SwlLicenceCategoryTypeCode.SecurityGuardUnderSupervision
+					cat.code != SwlCategoryTypeCode.SecurityAlarmInstaller &&
+					cat.code != SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision &&
+					cat.code != SwlCategoryTypeCode.SecurityAlarmMonitor &&
+					cat.code != SwlCategoryTypeCode.SecurityAlarmSales &&
+					cat.code != SwlCategoryTypeCode.SecurityGuard &&
+					cat.code != SwlCategoryTypeCode.SecurityGuardUnderSupervision
 			);
 		}
 
 		// if user has selected 'SecurityConsultant', then update the list of valid values
-		if (this.categoryList.find((cat) => cat.code == SwlLicenceCategoryTypeCode.SecurityConsultant)) {
+		if (this.categoryList.find((cat) => cat.code == SwlCategoryTypeCode.SecurityConsultant)) {
 			updatedList = updatedList.filter(
 				(cat) =>
-					cat.code != SwlLicenceCategoryTypeCode.SecurityGuard &&
-					cat.code != SwlLicenceCategoryTypeCode.SecurityGuardUnderSupervision
+					cat.code != SwlCategoryTypeCode.SecurityGuard && cat.code != SwlCategoryTypeCode.SecurityGuardUnderSupervision
 			);
 		}
 

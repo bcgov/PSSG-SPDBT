@@ -18,6 +18,7 @@ import { CriminalHistoryComponent } from './step-components/criminal-history.com
 import { DogsOrRestraintsComponent } from './step-components/dogs-or-restraints.component';
 import { FingerprintsComponent } from './step-components/fingerprints.component';
 import { HeightAndWeightComponent } from './step-components/height-and-weight.component';
+import { LicenceAccessCodeComponent } from './step-components/licence-access-code.component';
 import { LicenceExpiredComponent } from './step-components/licence-expired.component';
 import { LicenceSelectionComponent } from './step-components/licence-selection.component';
 import { LicenceTermComponent } from './step-components/licence-term.component';
@@ -68,6 +69,7 @@ import { SummaryReviewComponent } from './step-components/summary-review.compone
 		StepReviewComponent,
 		SecurityWorkerLicenceCategoryComponent,
 		AdditionalGovIdComponent,
+		LicenceAccessCodeComponent,
 	],
 	imports: [SharedModule, LicenceApplicationRoutingModule],
 })

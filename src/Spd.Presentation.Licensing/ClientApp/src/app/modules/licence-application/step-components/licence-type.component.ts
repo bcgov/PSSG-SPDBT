@@ -1,5 +1,13 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { LicenceFormStepComponent } from '../licence-application.component';
+
+export enum SwlStatusTypeCode {
+	New = 'New',
+	Renewal = 'Renewal',
+	Replacement = 'Replacement',
+	Update = 'Update',
+}
 
 @Component({
 	selector: 'app-licence-type',
@@ -73,10 +81,18 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 	],
 	encapsulation: ViewEncapsulation.None,
 })
-export class LicenceTypeComponent {
+export class LicenceTypeComponent implements LicenceFormStepComponent {
 	form: FormGroup = this.formBuilder.group({
 		licenceType: new FormControl(''),
 	});
 
 	constructor(private formBuilder: FormBuilder) {}
+
+	isFormValid(): boolean {
+		return this.form.valid;
+	}
+
+	getDataToSave(): any {
+		return this.form.value;
+	}
 }

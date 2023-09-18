@@ -29,6 +29,19 @@ import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/cor
 			</mat-step>
 
 			<mat-step>
+				<app-licence-access-code></app-licence-access-code>
+
+				<div class="row mt-4">
+					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+					</div>
+					<div class="col-lg-3 col-md-4 col-sm-6">
+						<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
+					</div>
+				</div>
+			</mat-step>
+
+			<mat-step>
 				<app-sole-proprietor></app-sole-proprietor>
 
 				<div class="row mt-4">
@@ -111,15 +124,6 @@ import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/cor
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepLicenseSelectionComponent {
-	readonly STEP_REGISTRATION_PATH = 0;
-	readonly STEP_ORGANIZATION_OPTION = 1;
-	readonly STEP_COMPENSATION_OPTION = 2;
-	readonly STEP_VULNERABLE_SECTOR_OPTION = 3;
-
-	showStepCompensationQuestion = true;
-	showStepOrganizationProblem = false;
-	showStepEligibilityProblem = false;
-
 	// registrationPathSelectionData: RegistrationPathSelectionModel = { registrationTypeCode: null };
 
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
