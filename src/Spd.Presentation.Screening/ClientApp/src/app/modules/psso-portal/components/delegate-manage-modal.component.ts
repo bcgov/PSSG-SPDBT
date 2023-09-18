@@ -82,8 +82,9 @@ export interface DelegateManageDialogData {
 		`
 			.initiator-icon {
 				cursor: pointer;
+				font-size: small;
 				color: var(--color-primary-light);
-				margin-left: 0.5rem;
+				margin-left: 0.2rem;
 			}
 		`,
 	],

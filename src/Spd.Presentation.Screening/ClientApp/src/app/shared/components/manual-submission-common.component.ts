@@ -477,12 +477,66 @@ export class ManualSubmissionCommonComponent implements OnInit {
 
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	booleanTypeCodes = BooleanTypeCode;
-	form!: FormGroup;
+	form: FormGroup = this.formBuilder.group(
+		{
+			givenName: new FormControl('', [FormControlValidators.required]),
+			middleName1: new FormControl(''),
+			middleName2: new FormControl(''),
+			surname: new FormControl('', [FormControlValidators.required]),
+			oneLegalName: new FormControl(false),
+			emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
+			phoneNumber: new FormControl('', [Validators.required]),
+			driversLicense: new FormControl(''),
+			genderCode: new FormControl(''),
+			dateOfBirth: new FormControl(null, [Validators.required]),
+			birthPlace: new FormControl('', [FormControlValidators.required]),
+			jobTitle: new FormControl('', [FormControlValidators.required]),
+			screeningType: new FormControl('', [FormControlValidators.required]),
+			serviceType: new FormControl(this.serviceTypeDefault),
+			contractedCompanyName: new FormControl(''),
+			employeeId: new FormControl(''),
+			orgId: new FormControl(null),
+			previousNameFlag: new FormControl('', [FormControlValidators.required]),
+			addressSelected: new FormControl(false, [Validators.requiredTrue]),
+			addressLine1: new FormControl('', [FormControlValidators.required]),
+			addressLine2: new FormControl(''),
+			city: new FormControl('', [FormControlValidators.required]),
+			postalCode: new FormControl('', [FormControlValidators.required]),
+			province: new FormControl('', [FormControlValidators.required]),
+			country: new FormControl('', [FormControlValidators.required]),
+			agreeToCompleteAndAccurate: new FormControl('', [Validators.requiredTrue]),
+			haveVerifiedIdentity: new FormControl(''),
+			aliases: this.formBuilder.array([]),
+			attachments: new FormControl('', [Validators.required]),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalRequiredValidator('screeningType', (form) => this.showScreeningType ?? false),
+				FormGroupValidators.conditionalRequiredValidator('serviceType', (form) => this.showServiceType ?? false),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'attachments',
+					(form) => this.portal == PortalTypeCode.Crrp
+				),
+				FormGroupValidators.conditionalRequiredValidator(
+					'givenName',
+					(form) => form.get('oneLegalName')?.value != true
+				),
+				FormGroupValidators.conditionalRequiredValidator(
+					'orgId',
+					(form) => this.portal == PortalTypeCode.Psso && this.isPsaUser == true
+				),
+				FormGroupValidators.conditionalRequiredValidator('contractedCompanyName', (form) =>
+					[ScreeningTypeCode.Contractor, ScreeningTypeCode.Licensee].includes(form.get('screeningType')?.value)
+				),
+			],
+		}
+	);
 	startAtBirthDate = this.utilService.getBirthDateStartAt();
 	maxBirthDate = this.utilService.getBirthDateMax();
 
-	@Input() portal: PortalTypeCode | null = null;
+	// org id - for PSSO this is the ministry OrgId, otherwise the CRRP org
 	@Input() orgId: string | null = null;
+	@Input() portal: PortalTypeCode | null = null;
 	@Input() isPsaUser: boolean | undefined = undefined;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
@@ -505,7 +559,6 @@ export class ManualSubmissionCommonComponent implements OnInit {
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 			return;
 		}
-		// Set the org id - for PSSO this is the ministry OrgId, otherwise the CRRP org
 
 		if (this.portal == PortalTypeCode.Crrp) {
 			// using bceid
@@ -537,61 +590,6 @@ export class ManualSubmissionCommonComponent implements OnInit {
 				(item) => item.code == ServiceTypeCode.Psso || item.code == ServiceTypeCode.PssoVs
 			);
 		}
-
-		this.form = this.formBuilder.group(
-			{
-				givenName: new FormControl('', [FormControlValidators.required]),
-				middleName1: new FormControl(''),
-				middleName2: new FormControl(''),
-				surname: new FormControl('', [FormControlValidators.required]),
-				oneLegalName: new FormControl(false),
-				emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
-				phoneNumber: new FormControl('', [Validators.required]),
-				driversLicense: new FormControl(''),
-				genderCode: new FormControl(''),
-				dateOfBirth: new FormControl(null, [Validators.required]),
-				birthPlace: new FormControl('', [FormControlValidators.required]),
-				jobTitle: new FormControl('', [FormControlValidators.required]),
-				screeningType: new FormControl('', [FormControlValidators.required]),
-				serviceType: new FormControl(this.serviceTypeDefault),
-				contractedCompanyName: new FormControl(''),
-				employeeId: new FormControl(''),
-				orgId: new FormControl(null),
-				previousNameFlag: new FormControl('', [FormControlValidators.required]),
-				addressSelected: new FormControl(false, [Validators.requiredTrue]),
-				addressLine1: new FormControl('', [FormControlValidators.required]),
-				addressLine2: new FormControl(''),
-				city: new FormControl('', [FormControlValidators.required]),
-				postalCode: new FormControl('', [FormControlValidators.required]),
-				province: new FormControl('', [FormControlValidators.required]),
-				country: new FormControl('', [FormControlValidators.required]),
-				agreeToCompleteAndAccurate: new FormControl('', [Validators.requiredTrue]),
-				haveVerifiedIdentity: new FormControl(''),
-				aliases: this.formBuilder.array([]),
-				attachments: new FormControl('', [Validators.required]),
-			},
-			{
-				validators: [
-					FormGroupValidators.conditionalRequiredValidator('screeningType', (form) => this.showScreeningType ?? false),
-					FormGroupValidators.conditionalRequiredValidator('serviceType', (form) => this.showServiceType ?? false),
-					FormGroupValidators.conditionalDefaultRequiredValidator(
-						'attachments',
-						(form) => this.portal == PortalTypeCode.Crrp
-					),
-					FormGroupValidators.conditionalRequiredValidator(
-						'givenName',
-						(form) => form.get('oneLegalName')?.value != true
-					),
-					FormGroupValidators.conditionalRequiredValidator(
-						'orgId',
-						(form) => this.portal == PortalTypeCode.Psso && this.isPsaUser == true
-					),
-					FormGroupValidators.conditionalRequiredValidator('contractedCompanyName', (form) =>
-						[ScreeningTypeCode.Contractor, ScreeningTypeCode.Licensee].includes(form.get('screeningType')?.value)
-					),
-				],
-			}
-		);
 
 		this.resetForm();
 	}
@@ -753,7 +751,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 		this.aliases.clear();
 		this.onAddRow();
 
-		this.form.patchValue({ orgId: this.orgId });
+		this.form.patchValue({ orgId: this.orgId, serviceType: this.serviceTypeDefault });
 	}
 
 	private newAliasRow(): FormGroup {
