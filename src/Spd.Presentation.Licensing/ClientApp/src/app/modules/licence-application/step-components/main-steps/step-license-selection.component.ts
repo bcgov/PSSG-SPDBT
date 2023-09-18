@@ -5,7 +5,7 @@ import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/cor
 	selector: 'app-step-license-selection',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<!-- <mat-step>
+			<mat-step>
 				<app-licence-selection></app-licence-selection>
 
 				<div class="row mt-4">
@@ -39,9 +39,9 @@ import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/cor
 						<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 					</div>
 				</div>
-			</mat-step>-->
+			</mat-step>
 
-			<!-- <mat-step>
+			<mat-step>
 				<app-checklist></app-checklist>
 
 				<div class="row mt-4">
@@ -52,9 +52,8 @@ import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/cor
 						<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 					</div>
 				</div>
-			</mat-step> -->
+			</mat-step>
 
-			<!--
 			<mat-step>
 				<app-personal-information></app-personal-information>
 
@@ -79,7 +78,7 @@ import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/cor
 						<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 					</div>
 				</div>
-			</mat-step> -->
+			</mat-step>
 
 			<mat-step>
 				<app-security-worker-licence-category></app-security-worker-licence-category>

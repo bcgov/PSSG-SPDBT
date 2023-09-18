@@ -6,6 +6,7 @@ import { LicencePaymentManualComponent } from './components/licence-payment-manu
 import { LicencePaymentSuccessComponent } from './components/licence-payment-success.component';
 import { LicenceApplicationRoutingModule } from './licence-application-routing.module';
 import { LicenceApplicationComponent } from './licence-application.component';
+import { AdditionalGovIdComponent } from './step-components/additional-gov-id.component';
 import { AddressComponent } from './step-components/address.component';
 import { AliasesComponent } from './step-components/aliases.component';
 import { BcDriverLicenceComponent } from './step-components/bc-driver-licence.component';
@@ -29,9 +30,9 @@ import { MentalHealthConditionsComponent } from './step-components/mental-health
 import { PersonalInformationComponent } from './step-components/personal-information.component';
 import { PhotoComponent } from './step-components/photo.component';
 import { PoliceBackgroundComponent } from './step-components/police-background.component';
+import { SecurityWorkerLicenceCategoryComponent } from './step-components/security-worker-licence-category.component';
 import { SoleProprietorComponent } from './step-components/sole-proprietor.component';
 import { SummaryReviewComponent } from './step-components/summary-review.component';
-import { SecurityWorkerLicenceCategoryComponent } from './step-components/security-worker-licence-category.component';
 
 @NgModule({
 	declarations: [
@@ -65,7 +66,8 @@ import { SecurityWorkerLicenceCategoryComponent } from './step-components/securi
 		StepBackgroundComponent,
 		StepIdentificationComponent,
 		StepReviewComponent,
-  SecurityWorkerLicenceCategoryComponent,
+		SecurityWorkerLicenceCategoryComponent,
+		AdditionalGovIdComponent,
 	],
 	imports: [SharedModule, LicenceApplicationRoutingModule],
 })
