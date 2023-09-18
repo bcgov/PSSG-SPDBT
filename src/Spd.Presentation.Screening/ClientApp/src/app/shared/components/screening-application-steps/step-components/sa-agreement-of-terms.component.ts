@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
+import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application.model';
 
@@ -491,15 +492,29 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 							>
 						</div>
 						<div class="col-lg-3 col-md-4 col-sm-12">
-							<button
-								mat-flat-button
-								class="table-button"
-								style="color: var(--color-primary-light);"
+							<a
+								*ngIf="orgData?.isCrrpa"
+								mat-stroked-button
+								color="primary"
+								class="mt-2 float-end"
 								aria-label="Download Terms of Use"
-								(click)="onDownloadTermsOfUse()"
+								download="Crrp-terms-and-conditions"
+								[href]="constants.files.crrpTerms"
 							>
 								<mat-icon>file_download</mat-icon>Terms of Use
-							</button>
+							</a>
+
+							<a
+								*ngIf="!orgData?.isCrrpa"
+								mat-stroked-button
+								color="primary"
+								class="mt-2 float-end"
+								aria-label="Download Terms of Use"
+								download="Psso-terms-and-conditions"
+								[href]="constants.files.pssoTerms"
+							>
+								<mat-icon>file_download</mat-icon>Terms of Use
+							</a>
 						</div>
 					</div>
 				</div>
@@ -530,6 +545,7 @@ export class SaAgreementOfTermsComponent implements CrcFormStepComponent {
 		readAndAcceptTerms: new FormControl(null, [Validators.requiredTrue]),
 	});
 
+	constants = SPD_CONSTANTS;
 	hasScrolledToBottom = false;
 	displayValidationErrors = false;
 
@@ -551,6 +567,4 @@ export class SaAgreementOfTermsComponent implements CrcFormStepComponent {
 			this.hasScrolledToBottom = true;
 		}
 	}
-
-	onDownloadTermsOfUse() {}
 }

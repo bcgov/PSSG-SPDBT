@@ -23,8 +23,9 @@ namespace Spd.Resource.Applicants.Payment
 
             _ = CreateMap<UpdatePaymentCmd, spd_payment>()
                .ForMember(d => d.statecode, opt => opt.MapFrom(s => DynamicsConstants.StateCode_Inactive))
-               .ForMember(d => d.spd_response, opt => opt.MapFrom(s => GetResponseCode(s.Success)))
-               .ForMember(d => d.statuscode, opt => opt.MapFrom(s => (bool)s.Success ? PaymentStatusCodeOptionSet.Successful : PaymentStatusCodeOptionSet.Failure));
+               .ForMember(d => d.spd_refunderrordescription, opt => opt.MapFrom(s => s.RefundErrorMsg))
+               .ForMember(d => d.spd_refundid, opt => opt.MapFrom(s => s.RefundId))
+               .ForMember(d => d.spd_refunddate, opt => opt.MapFrom(s => s.RefundTxnDateTime));
 
             _ = CreateMap<spd_payment, PaymentResp>()
                 .ForMember(d => d.PaymentId, opt => opt.MapFrom(s => s.spd_paymentid))
