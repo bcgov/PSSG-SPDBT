@@ -29,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\bceidWebService\bceidWebService.csproj" />
     <ProjectReference Include="..\Spd.Manager.Admin\Spd.Manager.Admin.csproj" />
     <ProjectReference Include="..\Spd.Manager.Cases\Spd.Manager.Cases.csproj" />
     <ProjectReference Include="..\Spd.Manager.Membership\Spd.Manager.Membership.csproj" />
