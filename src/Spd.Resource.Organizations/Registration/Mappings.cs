@@ -17,6 +17,7 @@ namespace Spd.Resource.Organizations.Registration
             .ForMember(d => d.spd_receivemoneycompensation, opt => opt.MapFrom(s => (int)Enum.Parse<YesNoOptionSet>(s.EmployeeMonetaryCompensationFlag.ToString())))
             .ForMember(d => d.spd_city, opt => opt.MapFrom(s => s.MailingCity))
             .ForMember(d => d.spd_country, opt => opt.MapFrom(s => s.MailingCountry))
+            .ForMember(d => d.spd_declaration, opt => opt.MapFrom(s => s.AgreeToTermsAndConditions))
             .ForMember(d => d.spd_postalcode, opt => opt.MapFrom(s => s.MailingPostalCode))
             .ForMember(d => d.spd_province, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.MailingProvince)))
             .ForMember(d => d.spd_street1, opt => opt.MapFrom(s => s.MailingAddressLine1))
