@@ -6,6 +6,7 @@ import { LicencePaymentManualComponent } from './components/licence-payment-manu
 import { LicencePaymentSuccessComponent } from './components/licence-payment-success.component';
 import { LicenceApplicationRoutingModule } from './licence-application-routing.module';
 import { LicenceApplicationComponent } from './licence-application.component';
+import { AdditionalGovIdComponent } from './step-components/additional-gov-id.component';
 import { AddressComponent } from './step-components/address.component';
 import { AliasesComponent } from './step-components/aliases.component';
 import { BcDriverLicenceComponent } from './step-components/bc-driver-licence.component';
@@ -17,10 +18,16 @@ import { CriminalHistoryComponent } from './step-components/criminal-history.com
 import { DogsOrRestraintsComponent } from './step-components/dogs-or-restraints.component';
 import { FingerprintsComponent } from './step-components/fingerprints.component';
 import { HeightAndWeightComponent } from './step-components/height-and-weight.component';
+import { LicenceAccessCodeComponent } from './step-components/licence-access-code.component';
+import { LicenceCategoryComponent } from './step-components/licence-category.component';
 import { LicenceExpiredComponent } from './step-components/licence-expired.component';
 import { LicenceSelectionComponent } from './step-components/licence-selection.component';
 import { LicenceTermComponent } from './step-components/licence-term.component';
 import { LicenceTypeComponent } from './step-components/licence-type.component';
+import { StepBackgroundComponent } from './step-components/main-steps/step-background.component';
+import { StepIdentificationComponent } from './step-components/main-steps/step-identification.component';
+import { StepLicenseSelectionComponent } from './step-components/main-steps/step-license-selection.component';
+import { StepReviewComponent } from './step-components/main-steps/step-review.component';
 import { MentalHealthConditionsComponent } from './step-components/mental-health-conditions.component';
 import { PersonalInformationComponent } from './step-components/personal-information.component';
 import { PhotoComponent } from './step-components/photo.component';
@@ -56,6 +63,13 @@ import { SummaryReviewComponent } from './step-components/summary-review.compone
 		LicencePaymentManualComponent,
 		LicencePaymentErrorComponent,
 		AddressComponent,
+		StepLicenseSelectionComponent,
+		StepBackgroundComponent,
+		StepIdentificationComponent,
+		StepReviewComponent,
+		LicenceCategoryComponent,
+		AdditionalGovIdComponent,
+		LicenceAccessCodeComponent,
 	],
 	imports: [SharedModule, LicenceApplicationRoutingModule],
 })

@@ -4,7 +4,7 @@ import { PayerPreferenceTypeCode } from 'src/app/api/models';
 @Component({
 	selector: 'app-sa-checklist',
 	template: `
-		<section class="step-section p-3">
+		<section class="step-section p-4">
 			<div class="step">
 				<app-step-title
 					title="To submit a request for a criminal record check, you will need the following"

@@ -11,7 +11,7 @@ export interface ApplicantAppCreateRequest {
   addressLine2?: null | string;
   agreeToCompleteAndAccurate?: null | boolean;
   agreeToCriminalCheck?: null | boolean;
-  agreeToShare?: null | boolean;
+  agreeToShareCrc?: null | boolean;
   agreeToVulnerableSectorSearch?: null | boolean;
   aliases?: null | Array<AliasCreateRequest>;
   appInviteId?: null | string;
@@ -26,6 +26,7 @@ export interface ApplicantAppCreateRequest {
   dateOfBirth?: null | string;
   driversLicense?: null | string;
   emailAddress?: null | string;
+  employeeId?: null | string;
   genderCode?: GenderCode;
   givenName?: null | string;
   haveVerifiedIdentity?: null | boolean;

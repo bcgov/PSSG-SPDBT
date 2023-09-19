@@ -5,17 +5,19 @@ import { BooleanTypeCode } from 'src/app/api/models';
 @Component({
 	selector: 'app-address',
 	template: `
-		<div class="step">
-			<app-step-title
-				title="Provide your residential address"
-				subtitle="This is the address where you currently live"
-			></app-step-title>
-			<div class="step-container row">
-				<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
-					<form [formGroup]="form" novalidate></form>
+		<section class="step-section p-3">
+			<div class="step">
+				<app-step-title
+					title="Provide your residential address"
+					subtitle="This is the address where you currently live"
+				></app-step-title>
+				<div class="step-container row">
+					<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
+						<form [formGroup]="form" novalidate></form>
+					</div>
 				</div>
 			</div>
-		</div>
+		</section>
 	`,
 	styles: [],
 })
