@@ -7,7 +7,7 @@ import { UserInfoMsgTypeCode } from 'src/app/api/models';
 	template: `
 		<div class="container-fluid text-center mt-4">
 			<ng-container [ngSwitch]="userInfoMsgType">
-				<ng-container *ngSwitchCase="userInfoMsgTypeCodes.RegistrationNotApproved">
+				<ng-container *ngSwitchCase="userInfoMsgTypeCodes.RegistrationDenied">
 					<mat-icon>unpublished</mat-icon>
 					<h2 class="my-4">Your organization’s registration request was not approved</h2>
 					<p class="my-4">

@@ -6,51 +6,53 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 @Component({
 	selector: 'app-height-and-weight',
 	template: `
-		<div class="step">
-			<app-step-title title="Provide identifying information"></app-step-title>
-			<div class="step-container row">
-				<div class="col-xl-6 col-lg-8 col-md-12 col-sm-12 mx-auto">
-					<form [formGroup]="form" novalidate>
-						<div class="row">
-							<div class="col-xl-6 col-lg-6 col-md-12">
-								<mat-form-field>
-									<mat-label>Hair Colour</mat-label>
-									<mat-select formControlName="hairColour">
-										<mat-option *ngFor="let gdr of genderTypes" [value]="gdr.code">
-											{{ gdr.desc }}
-										</mat-option>
-									</mat-select>
-									<mat-error *ngIf="form.get('hairColour')?.hasError('required')"> This is required </mat-error>
-								</mat-form-field>
+		<section class="step-section p-3">
+			<div class="step">
+				<app-step-title title="Provide identifying information"></app-step-title>
+				<div class="step-container row">
+					<div class="col-xl-6 col-lg-8 col-md-12 col-sm-12 mx-auto">
+						<form [formGroup]="form" novalidate>
+							<div class="row">
+								<div class="col-xl-6 col-lg-6 col-md-12">
+									<mat-form-field>
+										<mat-label>Hair Colour</mat-label>
+										<mat-select formControlName="hairColour">
+											<mat-option *ngFor="let gdr of genderTypes" [value]="gdr.code">
+												{{ gdr.desc }}
+											</mat-option>
+										</mat-select>
+										<mat-error *ngIf="form.get('hairColour')?.hasError('required')"> This is required </mat-error>
+									</mat-form-field>
+								</div>
+								<div class="col-xl-6 col-lg-6 col-md-12">
+									<mat-form-field>
+										<mat-label>Eye Colour</mat-label>
+										<mat-select formControlName="eyeColour">
+											<mat-option *ngFor="let gdr of genderTypes" [value]="gdr.code">
+												{{ gdr.desc }}
+											</mat-option>
+										</mat-select>
+									</mat-form-field>
+								</div>
+								<div class="col-xl-6 col-lg-6 col-md-12">
+									<mat-form-field>
+										<mat-label>Height (cm)</mat-label>
+										<input matInput formControlName="height" mask="000.00" />
+									</mat-form-field>
+								</div>
+								<div class="col-xl-6 col-lg-6 col-md-12">
+									<mat-form-field>
+										<mat-label>Weight (kg)</mat-label>
+										<input matInput formControlName="weight" [errorStateMatcher]="matcher" mask="000.00" />
+										<mat-error *ngIf="form.get('weight')?.hasError('required')"> This is required </mat-error>
+									</mat-form-field>
+								</div>
 							</div>
-							<div class="col-xl-6 col-lg-6 col-md-12">
-								<mat-form-field>
-									<mat-label>Eye Colour</mat-label>
-									<mat-select formControlName="eyeColour">
-										<mat-option *ngFor="let gdr of genderTypes" [value]="gdr.code">
-											{{ gdr.desc }}
-										</mat-option>
-									</mat-select>
-								</mat-form-field>
-							</div>
-							<div class="col-xl-6 col-lg-6 col-md-12">
-								<mat-form-field>
-									<mat-label>Height (cm)</mat-label>
-									<input matInput formControlName="height" mask="000.00" />
-								</mat-form-field>
-							</div>
-							<div class="col-xl-6 col-lg-6 col-md-12">
-								<mat-form-field>
-									<mat-label>Weight (kg)</mat-label>
-									<input matInput formControlName="weight" [errorStateMatcher]="matcher" mask="000.00" />
-									<mat-error *ngIf="form.get('weight')?.hasError('required')"> This is required </mat-error>
-								</mat-form-field>
-							</div>
-						</div>
-					</form>
+						</form>
+					</div>
 				</div>
 			</div>
-		</div>
+		</section>
 	`,
 	styles: [],
 })

@@ -3,6 +3,10 @@ import { StepperOrientation, StepperSelectionEvent } from '@angular/cdk/stepper'
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { distinctUntilChanged } from 'rxjs';
+import { StepBackgroundComponent } from './step-components/main-steps/step-background.component';
+import { StepIdentificationComponent } from './step-components/main-steps/step-identification.component';
+import { StepLicenseSelectionComponent } from './step-components/main-steps/step-license-selection.component';
+import { StepReviewComponent } from './step-components/main-steps/step-review.component';
 
 @Component({
 	selector: 'app-licence-application',
@@ -17,356 +21,35 @@ import { distinctUntilChanged } from 'rxjs';
 			>
 				<mat-step completed="true">
 					<ng-template matStepLabel>Licence Selection</ng-template>
-
-					<section class="step-section p-4">
-						<app-licence-selection></app-licence-selection>
-
-						<div class="row mt-4">
-							<div class="offset-lg-4 col-lg-4 offset-md-4 col-md-4 col-sm-12">
-								<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-							</div>
-						</div>
-					</section>
+					<app-step-license-selection (nextStepperStep)="onNextStepperStep(stepper)"></app-step-license-selection>
 				</mat-step>
 
 				<mat-step completed="true">
-					<ng-template matStepLabel>Licence Type</ng-template>
-
-					<section class="step-section p-4">
-						<app-licence-type></app-licence-type>
-
-						<div class="row mt-4">
-							<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-								<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-							</div>
-							<div class="col-lg-3 col-md-4 col-sm-6">
-								<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-							</div>
-						</div>
-					</section>
+					<ng-template matStepLabel>Background</ng-template>
+					<app-step-background
+						(previousStepperStep)="onPreviousStepperStep(stepper)"
+						(nextStepperStep)="onNextStepperStep(stepper)"
+					></app-step-background>
 				</mat-step>
 
 				<mat-step completed="true">
-					<ng-template matStepLabel>Sole Proprietor</ng-template>
-
-					<section class="step-section p-4">
-						<app-sole-proprietor></app-sole-proprietor>
-
-						<div class="row mt-4">
-							<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-								<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-							</div>
-							<div class="col-lg-3 col-md-4 col-sm-6">
-								<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-							</div>
-						</div>
-					</section>
+					<ng-template matStepLabel>Identification</ng-template>
+					<app-step-identification
+						(previousStepperStep)="onPreviousStepperStep(stepper)"
+						(nextStepperStep)="onNextStepperStep(stepper)"
+					></app-step-identification>
 				</mat-step>
 
 				<mat-step completed="true">
-					<ng-template matStepLabel>Checklist</ng-template>
-
-					<section class="step-section p-4">
-						<app-checklist></app-checklist>
-
-						<div class="row mt-4">
-							<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-								<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-							</div>
-							<div class="col-lg-3 col-md-4 col-sm-6">
-								<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-							</div>
-						</div>
-					</section>
+					<ng-template matStepLabel>Review and Confirm</ng-template>
+					<app-step-review
+						(previousStepperStep)="onPreviousStepperStep(stepper)"
+						(nextStepperStep)="onNextStepperStep(stepper)"
+					></app-step-review>
 				</mat-step>
 
 				<mat-step completed="true">
-					<ng-template matStepLabel>Checklist</ng-template>
-
-					<section class="step-section p-4">
-						<app-personal-information></app-personal-information>
-
-						<div class="row mt-4">
-							<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-								<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-							</div>
-							<div class="col-lg-3 col-md-4 col-sm-6">
-								<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-							</div>
-						</div>
-					</section>
-				</mat-step>
-
-				<mat-step completed="true">
-					<ng-template matStepLabel>Licence Expired</ng-template>
-
-					<section class="step-section p-4">
-						<app-licence-expired></app-licence-expired>
-
-						<div class="row mt-4">
-							<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-								<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-							</div>
-							<div class="col-lg-3 col-md-4 col-sm-6">
-								<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-							</div>
-						</div>
-					</section>
-				</mat-step>
-
-				<mat-step completed="true">
-					<ng-template matStepLabel>Police Background</ng-template>
-
-					<section class="step-section p-4">
-						<app-police-background></app-police-background>
-
-						<div class="row mt-4">
-							<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-								<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-							</div>
-							<div class="col-lg-3 col-md-4 col-sm-6">
-								<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-							</div>
-						</div>
-					</section>
-				</mat-step>
-
-				<mat-step completed="true">
-					<ng-template matStepLabel>Dogs and Restraints</ng-template>
-
-					<section class="step-section p-4">
-						<app-dogs-or-restraints></app-dogs-or-restraints>
-
-						<div class="row mt-4">
-							<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-								<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-							</div>
-							<div class="col-lg-3 col-md-4 col-sm-6">
-								<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-							</div>
-						</div>
-					</section>
-				</mat-step>
-
-				<mat-step completed="true">
-					<ng-template matStepLabel>Mental Health Conditions</ng-template>
-
-					<section class="step-section p-4">
-						<app-mental-health-conditions></app-mental-health-conditions>
-
-						<div class="row mt-4">
-							<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-								<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-							</div>
-							<div class="col-lg-3 col-md-4 col-sm-6">
-								<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-							</div>
-						</div>
-					</section>
-				</mat-step>
-
-				<mat-step completed="true">
-					<ng-template matStepLabel>Criminal History</ng-template>
-
-					<section class="step-section p-4">
-						<app-criminal-history></app-criminal-history>
-
-						<div class="row mt-4">
-							<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-								<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-							</div>
-							<div class="col-lg-3 col-md-4 col-sm-6">
-								<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-							</div>
-						</div>
-					</section>
-				</mat-step>
-
-				<mat-step completed="true">
-					<ng-template matStepLabel>Fingerprints</ng-template>
-
-					<section class="step-section p-4">
-						<app-fingerprints></app-fingerprints>
-
-						<div class="row mt-4">
-							<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-								<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-							</div>
-							<div class="col-lg-3 col-md-4 col-sm-6">
-								<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-							</div>
-						</div>
-					</section>
-				</mat-step>
-
-				<mat-step completed="true">
-					<ng-template matStepLabel>Aliases</ng-template>
-
-					<section class="step-section p-4">
-						<app-aliases></app-aliases>
-
-						<div class="row mt-4">
-							<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-								<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-							</div>
-							<div class="col-lg-3 col-md-4 col-sm-6">
-								<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-							</div>
-						</div>
-					</section>
-				</mat-step>
-
-				<mat-step completed="true">
-					<ng-template matStepLabel>Citizenship</ng-template>
-
-					<section class="step-section p-4">
-						<app-citizenship></app-citizenship>
-
-						<div class="row mt-4">
-							<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-								<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-							</div>
-							<div class="col-lg-3 col-md-4 col-sm-6">
-								<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-							</div>
-						</div>
-					</section>
-				</mat-step>
-
-				<mat-step completed="true">
-					<ng-template matStepLabel>BC Driver's Licence</ng-template>
-
-					<section class="step-section p-4">
-						<app-bc-driver-licence></app-bc-driver-licence>
-
-						<div class="row mt-4">
-							<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-								<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-							</div>
-							<div class="col-lg-3 col-md-4 col-sm-6">
-								<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-							</div>
-						</div>
-					</section>
-				</mat-step>
-
-				<mat-step completed="true">
-					<ng-template matStepLabel>Height and Weight</ng-template>
-
-					<section class="step-section p-4">
-						<app-height-and-weight></app-height-and-weight>
-
-						<div class="row mt-4">
-							<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-								<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-							</div>
-							<div class="col-lg-3 col-md-4 col-sm-6">
-								<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-							</div>
-						</div>
-					</section>
-				</mat-step>
-
-				<mat-step completed="true">
-					<ng-template matStepLabel>Photo</ng-template>
-
-					<section class="step-section p-4">
-						<app-photo></app-photo>
-
-						<div class="row mt-4">
-							<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-								<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-							</div>
-							<div class="col-lg-3 col-md-4 col-sm-6">
-								<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-							</div>
-						</div>
-					</section>
-				</mat-step>
-
-				<mat-step completed="true">
-					<ng-template matStepLabel>Contact Information</ng-template>
-
-					<section class="step-section p-4">
-						<app-contact-information></app-contact-information>
-
-						<div class="row mt-4">
-							<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-								<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-							</div>
-							<div class="col-lg-3 col-md-4 col-sm-6">
-								<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-							</div>
-						</div>
-					</section>
-				</mat-step>
-
-				<mat-step completed="true">
-					<ng-template matStepLabel>Licence Term</ng-template>
-
-					<section class="step-section p-4">
-						<app-licence-term></app-licence-term>
-
-						<div class="row mt-4">
-							<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-								<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-							</div>
-							<div class="col-lg-3 col-md-4 col-sm-6">
-								<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-							</div>
-						</div>
-					</section>
-				</mat-step>
-
-				<mat-step completed="true">
-					<ng-template matStepLabel>Residential Address</ng-template>
-
-					<section class="step-section p-4">
-						<app-address></app-address>
-
-						<div class="row mt-4">
-							<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-								<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-							</div>
-							<div class="col-lg-3 col-md-4 col-sm-6">
-								<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-							</div>
-						</div>
-					</section>
-				</mat-step>
-
-				<mat-step completed="true">
-					<ng-template matStepLabel>Summary</ng-template>
-
-					<section class="step-section p-4">
-						<app-summary-review></app-summary-review>
-
-						<div class="row mt-4">
-							<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-								<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-							</div>
-							<div class="col-lg-3 col-md-4 col-sm-6">
-								<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-							</div>
-						</div>
-					</section>
-				</mat-step>
-
-				<mat-step completed="true">
-					<ng-template matStepLabel>Consent and Declaration</ng-template>
-
-					<section class="step-section p-4">
-						<app-consent-and-declaration></app-consent-and-declaration>
-
-						<div class="row mt-4">
-							<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-								<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-							</div>
-							<div class="col-lg-3 col-md-4 col-sm-6">
-								<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-							</div>
-						</div>
-					</section>
+					<ng-template matStepLabel>Pay</ng-template>
 				</mat-step>
 			</mat-stepper>
 		</div>
@@ -374,7 +57,24 @@ import { distinctUntilChanged } from 'rxjs';
 	styles: [],
 })
 export class LicenceApplicationComponent implements OnInit {
+	readonly STEP_LICENCE_SELECTION = 0;
+	readonly STEP_BACKGROUND = 1;
+	readonly STEP_IDENTIFICATION = 2;
+	readonly STEP_REVIEW = 3;
+
 	orientation: StepperOrientation = 'vertical';
+
+	@ViewChild(StepLicenseSelectionComponent)
+	stepLicenseSelectionComponent!: StepLicenseSelectionComponent;
+
+	@ViewChild(StepBackgroundComponent)
+	stepBackgroundComponent!: StepBackgroundComponent;
+
+	@ViewChild(StepIdentificationComponent)
+	stepIdentificationComponent!: StepIdentificationComponent;
+
+	@ViewChild(StepReviewComponent)
+	stepReviewComponent!: StepReviewComponent;
 
 	@ViewChild('stepper') stepper!: MatStepper;
 
@@ -388,7 +88,17 @@ export class LicenceApplicationComponent implements OnInit {
 	}
 
 	onStepSelectionChange(event: StepperSelectionEvent) {
-		this.onScrollIntoView();
+		this.scrollIntoView();
+	}
+
+	onPreviousStepperStep(stepper: MatStepper): void {
+		console.log('previous', stepper);
+		stepper.previous();
+	}
+
+	onNextStepperStep(stepper: MatStepper): void {
+		console.log('next', stepper);
+		stepper.next();
 	}
 
 	private breakpointChanged() {
@@ -399,7 +109,7 @@ export class LicenceApplicationComponent implements OnInit {
 		}
 	}
 
-	private onScrollIntoView(): void {
+	private scrollIntoView(): void {
 		const stepIndex = this.stepper.selectedIndex;
 		const stepId = this.stepper._getStepLabelId(stepIndex);
 		const stepElement = document.getElementById(stepId);
