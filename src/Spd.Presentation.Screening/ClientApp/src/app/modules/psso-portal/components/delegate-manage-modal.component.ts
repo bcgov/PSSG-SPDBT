@@ -73,7 +73,9 @@ export interface DelegateManageDialogData {
 					<button mat-stroked-button mat-dialog-close class="large" color="primary">Close</button>
 				</div>
 				<div class="offset-md-4 col-md-4 col-sm-12 mb-2">
-					<button mat-flat-button color="primary" class="large" (click)="onAddDelegate()">Add Delegate</button>
+					<button mat-flat-button color="primary" class="large" (click)="onAddDelegate()" *ngIf="isAllowDelegateAdd()">
+						Add Delegate
+					</button>
 				</div>
 			</div>
 		</mat-dialog-actions>
@@ -138,6 +140,14 @@ export class DelegateManageModalComponent implements OnInit {
 		// User can only remove themselves
 		const currentUserId = this.authUserService.idirUserWhoamiProfile?.userId;
 		return !!currentUserId && delegate.portalUserId == currentUserId;
+	}
+
+	isAllowDelegateAdd(): boolean {
+		const delegates = this.dataSource.data;
+
+		// A screening can only have 4 delegates plus the Initiator
+		const numberOfDelegates = delegates.filter((item) => item.pssoUserRoleCode == PssoUserRoleEnum.Delegate).length;
+		return numberOfDelegates < 4;
 	}
 
 	onRemoveDelegate(delegate: DelegateResponse): void {
