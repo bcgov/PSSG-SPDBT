@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
 	selector: 'app-terms-text',
 	template: `
 		<div class="row mt-4">
 			<div class="col-12">
-				<div class="conditions px-3 mb-3">
+				<div class="conditions px-3 mb-3" (scroll)="onScrollTermsAndConditions($event)">
 					<p style="margin-top: .6rem;">
 						<strong> Terms of Use for Authorized Contacts Accessing the Organization Online Service Portal </strong>
 					</p>
@@ -222,4 +222,12 @@ import { Component } from '@angular/core';
 		`,
 	],
 })
-export class TermsTextComponent {}
+export class TermsTextComponent {
+	@Output() hasScrolledToBottom: EventEmitter<boolean> = new EventEmitter();
+
+	onScrollTermsAndConditions(e: any) {
+		if (e.target.scrollHeight < e.target.scrollTop + e.target.offsetHeight) {
+			this.hasScrolledToBottom.emit(true);
+		}
+	}
+}
