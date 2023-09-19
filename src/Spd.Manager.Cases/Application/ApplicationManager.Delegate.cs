@@ -32,23 +32,30 @@ namespace Spd.Manager.Cases.Application
                 userId = userList.Items.First().Id;
             }
 
+
+
+            DelegateListResp? allDelegateList = await _delegateRepository.QueryAsync(
+                 new DelegateQry(command.ApplicationId),
+                 ct);
+
             //check if existing
-            DelegateListResp? delegateList = null;
+            bool delegateAlreadyExists = false;
             if (userId != null)
             {
-                delegateList = (DelegateListResp)await _delegateRepository.QueryAsync(
-                    new DelegateQry(command.ApplicationId) { PortalUserId = userId },
-                    ct);
+                delegateAlreadyExists = allDelegateList.Items.Where(o => o.PortalUserId == userId).Any();
             }
             else
             {
-                delegateList = (DelegateListResp)await _delegateRepository.QueryAsync(
-                    new DelegateQry(command.ApplicationId) { EmailAddress = command.CreateRequest.EmailAddress },
-                    ct);
+                delegateAlreadyExists = allDelegateList.Items.Where(o => o.EmailAddress == command.CreateRequest.EmailAddress).Any();
             }
-            if (delegateList.Items.Any())
+            if (delegateAlreadyExists)
             {
                 throw new ApiException(System.Net.HttpStatusCode.BadRequest, "The person is already added to the application as a delegate.");
+            }
+
+            if (allDelegateList.Items.Where(o => o.PSSOUserRoleCode == PSSOUserRoleEnum.Delegate).Count() >= 4)
+            {
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "The application can only have 4 delegates plus the Initiator.");
             }
 
             //create delegate
@@ -79,9 +86,9 @@ namespace Spd.Manager.Cases.Application
                     throw new ApiException(System.Net.HttpStatusCode.BadRequest, "None PSA and not connected to the application, cannot remove delegate.");
                 if (d.Id == command.Id) //can delete his own 
                     canDoDelete = true;
-                else if (d.PSSOUserRoleCode == PSSOUserRoleEnum.Initiator) 
+                else if (d.PSSOUserRoleCode == PSSOUserRoleEnum.Initiator)
                     canDoDelete = true; //initiator can delete others.
-                else 
+                else
                     throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Non initiator cannot delete other delegate.");
             }
 
