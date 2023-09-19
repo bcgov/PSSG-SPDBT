@@ -69,13 +69,12 @@ namespace Spd.Presentation.Screening
             services.AddTransient<IPrincipal>(provider => provider.GetService<IHttpContextAccessor>()?.HttpContext?.User);
 
             services.AddAutoMapper(assemblies);
-            services.AddBCeIDService(configuration);
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies));
             services.AddDistributedMemoryCache();
             services.AddTempFileStorageService();
             services.AddFileStorageProxy(configuration);
             services
-              //.AddBCeIDService(configuration)
+              .AddBCeIDService(configuration)
               .AddPaymentService(configuration)
               .AddDynamicsProxy(configuration)
               .AddAddressAutoComplete(configuration);
