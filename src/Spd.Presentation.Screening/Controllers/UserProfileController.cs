@@ -1,5 +1,4 @@
 using AutoMapper;
-using bceidWebService;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -72,8 +71,7 @@ namespace Spd.Presentation.Screening.Controllers
         [Authorize(Policy = "OnlyIdir")]
         public async Task<IdirUserProfileResponse> IdirUserWhoami()
         {
-            var testCls = new Class1();
-            testCls.Test();
+
             string? identityProvider = _currentUser.GetIdentityProvider();
             if (identityProvider != null && identityProvider.Equals("idir", StringComparison.InvariantCultureIgnoreCase))
             {

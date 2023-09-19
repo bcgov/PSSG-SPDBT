@@ -96,6 +96,7 @@ namespace Spd.Manager.Membership.UserProfile
     public class IdirUserProfileResponse
     {
         public Guid OrgId { get; set; } //would be user's ministry from Idir.
+        public string OrgName { get; set; }
         public Guid UserId { get; set; }
         public string? UserGuid { get; set; }//from token
         public string? UserDisplayName { get; set; } //from token
