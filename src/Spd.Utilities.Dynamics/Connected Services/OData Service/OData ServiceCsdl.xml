@@ -19584,6 +19584,7 @@
         <Property Name="spd_employerprovince" Type="Edm.String" Unicode="false" />
         <Property Name="spd_province" Type="Edm.String" Unicode="false" />
         <Property Name="spd_emailaddress1" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_country" Type="Edm.String" Unicode="false" />
         <Property Name="versionnumber" Type="Edm.Int64" />
         <Property Name="_owninguser_value" Type="Edm.Guid" />
         <Property Name="spd_mentalhealthcondition" Type="Edm.Int32" />
@@ -19617,9 +19618,10 @@
         <Property Name="_spd_invoiceid_value" Type="Edm.Guid" />
         <Property Name="_owningbusinessunit_value" Type="Edm.Guid" />
         <Property Name="spd_paybclink" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_country" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_resideincanada" Type="Edm.Int32" />
         <Property Name="spd_usephotofrombcsc" Type="Edm.Int32" />
         <Property Name="spd_phonenumber" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_delegateid" Type="Edm.String" Unicode="false" />
         <Property Name="spd_licencefee_base" Type="Edm.Decimal" Scale="Variable" />
         <Property Name="spd_applicanteyecolour" Type="Edm.Int32" />
         <Property Name="spd_permitpurpose" Type="Edm.Int32" />
@@ -19646,6 +19648,7 @@
         <Property Name="spd_applicationid" Type="Edm.Guid" />
         <Property Name="exchangerate" Type="Edm.Decimal" Scale="Variable" />
         <Property Name="spd_employeraddress2" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_fingerprintsonrecord" Type="Edm.Int32" />
         <Property Name="spd_employercity" Type="Edm.String" Unicode="false" />
         <Property Name="spd_employerphonenumber" Type="Edm.String" Unicode="false" />
         <Property Name="spd_requestdogs" Type="Edm.Int32" />

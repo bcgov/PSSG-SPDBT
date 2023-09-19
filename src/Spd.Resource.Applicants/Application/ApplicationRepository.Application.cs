@@ -36,6 +36,9 @@ internal partial class ApplicationRepository : IApplicationRepository
 
     public async Task<ApplicationListResp> QueryAsync(ApplicationListQry query, CancellationToken cancellationToken)
     {
+        var apps = _context.spd_applications.Where(a => a.spd_delegateid == "b5995bdd-3866-4ddd-9238-4fa3f12cbfa9");
+        var temp = apps.ToList();
+
         if (query == null || (query.FilterBy?.OrgId == null && query.FilterBy?.ParentOrgId == null))
             throw new ArgumentNullException("query.FilterBy.OrgId", "Must query applications by organization id.");
         string filterStr = GetAppFilterString(query.FilterBy);
