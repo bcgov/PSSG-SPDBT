@@ -20,7 +20,14 @@ import { CrrpRoutes } from './crrp-routing.module';
 						<h3 class="subheading fw-normal my-3">Terms and Conditions</h3>
 						<p>Read, download, and accept the Terms of Use to continue.</p>
 						<form [formGroup]="form" novalidate>
-							<app-terms-text></app-terms-text>
+							<app-terms-text (hasScrolledToBottom)="onHasScrolledToBottom()"></app-terms-text>
+
+							<div class="row" *ngIf="displayValidationErrors && !hasScrolledToBottom">
+								<div class="col-12 p-0">
+									<div class="alert alert-warning" role="alert">Please scroll to the bottom</div>
+								</div>
+							</div>
+
 							<div class="row">
 								<div class="col-12">
 									<mat-checkbox formControlName="readTerms" (click)="onCheckboxChange()">
@@ -166,6 +173,8 @@ export class CrrpOrgTermsAndCondsComponent implements OnInit {
 	constants = SPD_CONSTANTS;
 	isAuthenticated = this.authProcessService.waitUntilAuthentication$;
 	invitationId: string | null = null;
+	hasScrolledToBottom = false;
+	displayValidationErrors = false;
 
 	form: FormGroup = this.formBuilder.group({
 		readTerms: new FormControl(null, [Validators.requiredTrue]),
@@ -198,16 +207,33 @@ export class CrrpOrgTermsAndCondsComponent implements OnInit {
 
 	onCheckboxChange(): void {
 		const data = this.form.value;
-		if (data.readTerms && data.check1 && data.check2 && data.check3 && data.check4 && data.check5) {
+		if (
+			this.hasScrolledToBottom &&
+			data.readTerms &&
+			data.check1 &&
+			data.check2 &&
+			data.check3 &&
+			data.check4 &&
+			data.check5
+		) {
 			this.form.controls['dateSigned'].setValue(this.utilService.getDateString(new Date()));
 		} else {
 			this.form.controls['dateSigned'].setValue('');
 		}
 	}
 
+	onHasScrolledToBottom(): void {
+		this.hasScrolledToBottom = true;
+		this.onCheckboxChange();
+	}
+
 	onContinue(): void {
 		this.form.markAllAsTouched();
-		if (this.form.valid) {
+
+		this.displayValidationErrors = !this.hasScrolledToBottom;
+		const isValid = this.form.valid && this.hasScrolledToBottom;
+
+		if (isValid) {
 			const url = `${CrrpRoutes.path(CrrpRoutes.INVITATION_ACCEPT)}/${this.invitationId}`;
 			this.router.navigate([url]);
 		}
