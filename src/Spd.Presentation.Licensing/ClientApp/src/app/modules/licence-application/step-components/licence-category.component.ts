@@ -1,57 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { HotToastService } from '@ngneat/hot-toast';
 import { SelectOptions } from 'src/app/core/code-types/model-desc.models';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
-
-export enum SwlCategoryTypeCode {
-	ArmouredCarGuard = 'ARMOURED_CAR_GUARD',
-	BodyArmourSales = 'BODY_AMOUR_SALES',
-	ClosedCircuitTelevisionInstaller = 'CLOSED_CIRCUIT',
-	ElectronicLockingDeviceInstaller = 'ELECTRONIC_LOCKING',
-	FireInvestigator = 'FIRE_INVESTIGATOR',
-	Locksmith = 'LOCKSMITH',
-	LocksmithUnderSupervision = 'LOCKSMITH_UNDER_SUP',
-	PrivateInvestigator = 'PI',
-	PrivateInvestigatorUnderSupervision = 'PI_UNDER_SUP',
-	SecurityGuard = 'SECURITY_GUARD',
-	SecurityGuardUnderSupervision = 'SECURITY_GUARD_UNDER_SUP',
-	SecurityAlarmInstallerUnderSupervision = 'SA_INSTALLER_UNDER_SUP',
-	SecurityAlarmInstaller = 'SA_INSTALLER',
-	SecurityAlarmMonitor = 'SA_MONITOR',
-	SecurityAlarmResponse = 'SA_RESPONSE',
-	SecurityAlarmSales = 'SA_SALES',
-	SecurityConsultant = 'SECURITY_CONSULTANT',
-}
-
-export const SwlCategoryTypes: SelectOptions[] = [
-	{ desc: 'Armoured Car Guard', code: SwlCategoryTypeCode.ArmouredCarGuard },
-	{ desc: 'Body Armour Sales', code: SwlCategoryTypeCode.BodyArmourSales },
-	{ desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
-	{ desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
-	{ desc: 'Fire Investigator', code: SwlCategoryTypeCode.FireInvestigator },
-	{ desc: 'Locksmith', code: SwlCategoryTypeCode.Locksmith },
-	{ desc: 'Locksmith - Under Supervision', code: SwlCategoryTypeCode.LocksmithUnderSupervision },
-	{ desc: 'Private Investigator', code: SwlCategoryTypeCode.PrivateInvestigator },
-	{
-		desc: 'Private Investigator - Under Supervision',
-		code: SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision,
-	},
-	{ desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
-	{ desc: 'Security Guard - Under Supervision', code: SwlCategoryTypeCode.SecurityGuardUnderSupervision },
-	{ desc: 'Security Alarm Installer', code: SwlCategoryTypeCode.SecurityAlarmInstaller },
-	{
-		desc: 'Security Alarm Installer - Under Supervision',
-		code: SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
-	},
-	{ desc: 'Security Alarm Monitor', code: SwlCategoryTypeCode.SecurityAlarmMonitor },
-	{ desc: 'Security Alarm Response', code: SwlCategoryTypeCode.SecurityAlarmResponse },
-	{ desc: 'Security Alarm Sales', code: SwlCategoryTypeCode.SecurityAlarmSales },
-	{ desc: 'Security Consultant', code: SwlCategoryTypeCode.SecurityConsultant },
-];
+import {
+	LicenceApplicationService,
+	LicenceFormStepComponent,
+	SwlCategoryTypeCode,
+	SwlCategoryTypes,
+} from '../licence-application.service';
 
 @Component({
-	selector: 'app-security-worker-licence-category',
+	selector: 'app-licence-category',
 	template: `
 		<section class="step-section p-3">
 			<div class="step">
@@ -76,7 +35,7 @@ export const SwlCategoryTypes: SelectOptions[] = [
 								mat-stroked-button
 								color="primary"
 								class="large my-2"
-								*ngIf="categoryList.length < 6"
+								*ngIf="swlCategoryList.length < 6"
 								(click)="onAddCategory()"
 							>
 								Add Category
@@ -87,7 +46,7 @@ export const SwlCategoryTypes: SelectOptions[] = [
 					<div class="row">
 						<div class="offset-xxl-2 col-xxl-8 offset-xl-1 col-xl-10 col-lg-12">
 							<mat-accordion multi="false">
-								<mat-expansion-panel class="my-3" [expanded]="true" *ngFor="let item of categoryList; let i = index">
+								<mat-expansion-panel class="my-3" [expanded]="true" *ngFor="let item of swlCategoryList; let i = index">
 									<mat-expansion-panel-header>
 										<mat-panel-title>
 											<mat-chip-listbox class="me-4">
@@ -126,20 +85,26 @@ export const SwlCategoryTypes: SelectOptions[] = [
 	`,
 	styles: [],
 })
-export class SecurityWorkerLicenceCategoryComponent {
+export class LicenceCategoryComponent implements OnInit, LicenceFormStepComponent {
 	category = '';
-	categoryList: any[] = [];
+	swlCategoryList: SelectOptions[] = [];
 
 	validCategoryList: SelectOptions[] = SwlCategoryTypes;
 
 	swlCategoryTypes = SwlCategoryTypes;
 
-	constructor(private dialog: MatDialog, private hotToast: HotToastService) {}
+	constructor(private dialog: MatDialog, private licenceApplicationService: LicenceApplicationService) {}
+
+	ngOnInit(): void {
+		this.swlCategoryList = this.licenceApplicationService.licenceModel.swlCategoryList;
+
+		this.setValidCategoryList();
+	}
 
 	onAddCategory(): void {
 		if (this.category) {
 			const option = this.swlCategoryTypes.find((item) => item.code == this.category)!;
-			this.categoryList.push({ code: option?.code, desc: option.desc });
+			this.swlCategoryList.push({ code: option?.code, desc: option.desc });
 
 			this.setValidCategoryList();
 		}
@@ -159,18 +124,26 @@ export class SecurityWorkerLicenceCategoryComponent {
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
-					this.categoryList.splice(i, 1);
+					this.swlCategoryList.splice(i, 1);
 
 					this.setValidCategoryList();
 				}
 			});
 	}
 
-	setValidCategoryList(): void {
+	isFormValid(): boolean {
+		return this.swlCategoryList.length > 0;
+	}
+
+	getDataToSave(): any {
+		return { swlCategoryList: this.swlCategoryList }; // this.form.value;
+	}
+
+	private setValidCategoryList(): void {
 		let updatedList = this.swlCategoryTypes;
 
 		// if user has selected 'ArmouredCarGuard', then update the list of valid values
-		if (this.categoryList.find((cat) => cat.code == SwlCategoryTypeCode.ArmouredCarGuard)) {
+		if (this.swlCategoryList.find((cat) => cat.code == SwlCategoryTypeCode.ArmouredCarGuard)) {
 			updatedList = updatedList.filter(
 				(cat) =>
 					cat.code != SwlCategoryTypeCode.ArmouredCarGuard &&
@@ -179,7 +152,7 @@ export class SecurityWorkerLicenceCategoryComponent {
 		}
 
 		// if user has selected 'BodyArmourSales', then update the list of valid values
-		if (this.categoryList.find((cat) => cat.code == SwlCategoryTypeCode.BodyArmourSales)) {
+		if (this.swlCategoryList.find((cat) => cat.code == SwlCategoryTypeCode.BodyArmourSales)) {
 			updatedList = updatedList.filter(
 				(cat) =>
 					cat.code != SwlCategoryTypeCode.BodyArmourSales &&
@@ -188,7 +161,7 @@ export class SecurityWorkerLicenceCategoryComponent {
 		}
 
 		// if user has selected 'ClosedCircuitTelevisionInstaller', then update the list of valid values
-		if (this.categoryList.find((cat) => cat.code == SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller)) {
+		if (this.swlCategoryList.find((cat) => cat.code == SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller)) {
 			updatedList = updatedList.filter(
 				(cat) =>
 					cat.code != SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller &&
@@ -199,7 +172,7 @@ export class SecurityWorkerLicenceCategoryComponent {
 		}
 
 		// if user has selected 'ElectronicLockingDeviceInstaller', then update the list of valid values
-		if (this.categoryList.find((cat) => cat.code == SwlCategoryTypeCode.ElectronicLockingDeviceInstaller)) {
+		if (this.swlCategoryList.find((cat) => cat.code == SwlCategoryTypeCode.ElectronicLockingDeviceInstaller)) {
 			updatedList = updatedList.filter(
 				(cat) =>
 					cat.code != SwlCategoryTypeCode.ElectronicLockingDeviceInstaller &&
@@ -212,7 +185,7 @@ export class SecurityWorkerLicenceCategoryComponent {
 		}
 
 		// if user has selected 'FireInvestigator', then update the list of valid values
-		if (this.categoryList.find((cat) => cat.code == SwlCategoryTypeCode.FireInvestigator)) {
+		if (this.swlCategoryList.find((cat) => cat.code == SwlCategoryTypeCode.FireInvestigator)) {
 			updatedList = updatedList.filter(
 				(cat) =>
 					cat.code != SwlCategoryTypeCode.PrivateInvestigator &&
@@ -223,7 +196,7 @@ export class SecurityWorkerLicenceCategoryComponent {
 
 		// if user has selected 'Locksmith' or 'LocksmithUnderSupervision', then update the list of valid values
 		if (
-			this.categoryList.find(
+			this.swlCategoryList.find(
 				(cat) => cat.code == SwlCategoryTypeCode.Locksmith || cat.code == SwlCategoryTypeCode.LocksmithUnderSupervision
 			)
 		) {
@@ -238,7 +211,7 @@ export class SecurityWorkerLicenceCategoryComponent {
 
 		// if user has selected 'PrivateInvestigator' or 'PrivateInvestigatorUnderSupervision', then update the list of valid values
 		if (
-			this.categoryList.find(
+			this.swlCategoryList.find(
 				(cat) =>
 					cat.code == SwlCategoryTypeCode.PrivateInvestigator ||
 					cat.code == SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision
@@ -254,7 +227,7 @@ export class SecurityWorkerLicenceCategoryComponent {
 		}
 
 		// if user has selected 'SecurityGuard', then update the list of valid values
-		if (this.categoryList.find((cat) => cat.code == SwlCategoryTypeCode.SecurityGuard)) {
+		if (this.swlCategoryList.find((cat) => cat.code == SwlCategoryTypeCode.SecurityGuard)) {
 			updatedList = updatedList.filter(
 				(cat) =>
 					cat.code != SwlCategoryTypeCode.SecurityAlarmMonitor &&
@@ -265,13 +238,13 @@ export class SecurityWorkerLicenceCategoryComponent {
 		}
 
 		// if user has selected 'SecurityGuardUnderSupervision', then update the list of valid values
-		if (this.categoryList.find((cat) => cat.code == SwlCategoryTypeCode.SecurityGuardUnderSupervision)) {
+		if (this.swlCategoryList.find((cat) => cat.code == SwlCategoryTypeCode.SecurityGuardUnderSupervision)) {
 			updatedList = [];
 		}
 
 		// if user has selected 'SecurityAlarmInstaller' or 'SecurityAlarmInstallerUnderSupervision', then update the list of valid values
 		if (
-			this.categoryList.find(
+			this.swlCategoryList.find(
 				(cat) =>
 					cat.code == SwlCategoryTypeCode.SecurityAlarmInstaller ||
 					cat.code == SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision
@@ -292,7 +265,7 @@ export class SecurityWorkerLicenceCategoryComponent {
 
 		// if user has selected 'SecurityAlarmMonitor' or 'SecurityAlarmResponse, then update the list of valid values
 		if (
-			this.categoryList.find(
+			this.swlCategoryList.find(
 				(cat) =>
 					cat.code == SwlCategoryTypeCode.SecurityAlarmMonitor || cat.code == SwlCategoryTypeCode.SecurityAlarmResponse
 			)
@@ -309,7 +282,7 @@ export class SecurityWorkerLicenceCategoryComponent {
 		}
 
 		// if user has selected 'SecurityAlarmSales', then update the list of valid values
-		if (this.categoryList.find((cat) => cat.code == SwlCategoryTypeCode.SecurityAlarmSales)) {
+		if (this.swlCategoryList.find((cat) => cat.code == SwlCategoryTypeCode.SecurityAlarmSales)) {
 			updatedList = updatedList.filter(
 				(cat) =>
 					cat.code != SwlCategoryTypeCode.SecurityAlarmInstaller &&
@@ -322,14 +295,14 @@ export class SecurityWorkerLicenceCategoryComponent {
 		}
 
 		// if user has selected 'SecurityConsultant', then update the list of valid values
-		if (this.categoryList.find((cat) => cat.code == SwlCategoryTypeCode.SecurityConsultant)) {
+		if (this.swlCategoryList.find((cat) => cat.code == SwlCategoryTypeCode.SecurityConsultant)) {
 			updatedList = updatedList.filter(
 				(cat) =>
 					cat.code != SwlCategoryTypeCode.SecurityGuard && cat.code != SwlCategoryTypeCode.SecurityGuardUnderSupervision
 			);
 		}
 
-		console.log('updatedList', this.validCategoryList);
+		// console.log('updatedList', this.validCategoryList);
 
 		this.validCategoryList = [...updatedList];
 	}

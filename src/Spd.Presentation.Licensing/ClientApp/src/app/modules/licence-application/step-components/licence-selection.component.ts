@@ -1,12 +1,5 @@
-import { Component } from '@angular/core';
-import { LicenceFormStepComponent } from '../licence-application.component';
-
-export enum SwlTypeCode {
-	SecurityBusinessLicense = 'SecurityBusinessLicense',
-	SecurityWorkerLicense = 'SecurityWorkerLicense',
-	ArmouredVehicleLicense = 'ArmouredVehicleLicense',
-	BodyArmourLicense = 'BodyArmourLicense',
-}
+import { Component, OnInit } from '@angular/core';
+import { LicenceApplicationService, LicenceFormStepComponent, SwlTypeCode } from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-selection',
@@ -15,67 +8,69 @@ export enum SwlTypeCode {
 			<div class="step">
 				<app-step-title title="What licence or permit are you applying for?"></app-step-title>
 
-				<div class="step-container row">
-					<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6 col-sm-12 mb-3">
-						<div
-							class="step-container__box"
-							(click)="onLicenseTypeChange(swlTypeCodes.SecurityBusinessLicense)"
-							[ngClass]="{ 'active-selection-main': licenseTypeCode == swlTypeCodes.SecurityBusinessLicense }"
-						>
-							<div class="mb-4 mt-4 mt-md-0">
-								<div class="box__image d-none d-md-block">
-									<img class="box__image__item" src="/assets/security-business-licence.png" />
+				<div class="step-container" *ngIf="isImagesLoaded">
+					<div class="row">
+						<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6 col-sm-12 mb-3">
+							<div
+								class="step-container__box"
+								(click)="onLicenseTypeChange(swlTypeCodes.SecurityBusinessLicense)"
+								[ngClass]="{ 'active-selection-main': licenseTypeCode == swlTypeCodes.SecurityBusinessLicense }"
+							>
+								<div class="mb-4 mt-4 mt-md-0">
+									<div class="box__image d-none d-md-block">
+										<img class="box__image__item" src="/assets/security-business-licence.png" />
+									</div>
+									Security Business License
 								</div>
-								Security Business License
+							</div>
+						</div>
+						<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6 col-sm-12 mb-3">
+							<div
+								class="step-container__box"
+								(click)="onLicenseTypeChange(swlTypeCodes.SecurityWorkerLicense)"
+								[ngClass]="{ 'active-selection-main': licenseTypeCode == swlTypeCodes.SecurityWorkerLicense }"
+							>
+								<div class="mb-4 mt-4 mt-md-0">
+									<div class="box__image d-none d-md-block">
+										<img class="box__image__item" src="/assets/security-worker-licence.png" />
+									</div>
+									Security Worker Licence
+								</div>
+							</div>
+						</div>
+						<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6 col-sm-12 mb-3">
+							<div
+								class="step-container__box"
+								(click)="onLicenseTypeChange(swlTypeCodes.ArmouredVehicleLicense)"
+								[ngClass]="{ 'active-selection-main': licenseTypeCode == swlTypeCodes.ArmouredVehicleLicense }"
+							>
+								<div class="mb-4 mt-4 mt-md-0">
+									<div class="box__image d-none d-md-block">
+										<img class="box__image__item" src="/assets/armoured-vehicle.png" />
+									</div>
+									Permit to operate an armoured vehicle
+								</div>
+							</div>
+						</div>
+						<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6 col-sm-12 mb-3">
+							<div
+								class="step-container__box"
+								(click)="onLicenseTypeChange(swlTypeCodes.BodyArmourLicense)"
+								[ngClass]="{ 'active-selection-main': licenseTypeCode == swlTypeCodes.BodyArmourLicense }"
+							>
+								<div class="mb-4 mt-4 mt-md-0">
+									<div class="box__image d-none d-md-block">
+										<img class="box__image__item" src="/assets/body-armour.png" />
+									</div>
+									Permit to possess body armour
+								</div>
 							</div>
 						</div>
 					</div>
-					<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6 col-sm-12 mb-3">
-						<div
-							class="step-container__box"
-							(click)="onLicenseTypeChange(swlTypeCodes.SecurityWorkerLicense)"
-							[ngClass]="{ 'active-selection-main': licenseTypeCode == swlTypeCodes.SecurityWorkerLicense }"
-						>
-							<div class="mb-4 mt-4 mt-md-0">
-								<div class="box__image d-none d-md-block">
-									<img class="box__image__item" src="/assets/security-worker-licence.png" />
-								</div>
-								Security Worker Licence
-							</div>
-						</div>
-					</div>
-					<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6 col-sm-12 mb-3">
-						<div
-							class="step-container__box"
-							(click)="onLicenseTypeChange(swlTypeCodes.ArmouredVehicleLicense)"
-							[ngClass]="{ 'active-selection-main': licenseTypeCode == swlTypeCodes.ArmouredVehicleLicense }"
-						>
-							<div class="mb-4 mt-4 mt-md-0">
-								<div class="box__image d-none d-md-block">
-									<img class="box__image__item" src="/assets/armoured-vehicle.png" />
-								</div>
-								Permit to operate an armoured vehicle
-							</div>
-						</div>
-					</div>
-					<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6 col-sm-12 mb-3">
-						<div
-							class="step-container__box"
-							(click)="onLicenseTypeChange(swlTypeCodes.BodyArmourLicense)"
-							[ngClass]="{ 'active-selection-main': licenseTypeCode == swlTypeCodes.BodyArmourLicense }"
-						>
-							<div class="mb-4 mt-4 mt-md-0">
-								<div class="box__image d-none d-md-block">
-									<img class="box__image__item" src="/assets/body-armour.png" />
-								</div>
-								Permit to possess body armour
-							</div>
-						</div>
-					</div>
+					<mat-error class="mat-option-error" style="text-align: center;" *ngIf="isDirtyAndInvalid">
+						An option must be selected
+					</mat-error>
 				</div>
-				<!-- <mat-error class="mat-option-error" style="text-align: center;" *ngIf="isDirtyAndInvalid"
-      >An option must be selected</mat-error
-    > -->
 			</div>
 		</section>
 	`,
@@ -90,7 +85,7 @@ export enum SwlTypeCode {
 
 					&__item {
 						height: 3em;
-						max-width: 4em;
+						/* max-width: 4em; */
 					}
 				}
 
@@ -99,26 +94,38 @@ export enum SwlTypeCode {
 					line-height: 1.5em;
 				}
 			}
-
-			.icon-container {
-				display: block;
-				text-align: center;
-
-				.mat-icon {
-					color: var(--color-black);
-					font-size: 50px !important;
-					height: 50px !important;
-					width: 50px !important;
-				}
-			}
 		`,
 	],
 })
-export class LicenceSelectionComponent implements LicenceFormStepComponent {
-	licenseTypeCode: SwlTypeCode | null = SwlTypeCode.SecurityWorkerLicense;
+export class LicenceSelectionComponent implements OnInit, LicenceFormStepComponent {
+	licenseTypeCode: SwlTypeCode | null = null;
 	isDirtyAndInvalid = false;
 
 	swlTypeCodes = SwlTypeCode;
+
+	imageLoadedCount = 0;
+	isImagesLoaded = false;
+	imagePaths = [
+		'/assets/security-business-licence.png',
+		'/assets/security-worker-licence.png',
+		'/assets/armoured-vehicle.png',
+		'/assets/body-armour.png',
+	];
+
+	constructor(private licenceApplicationService: LicenceApplicationService) {}
+
+	ngOnInit(): void {
+		this.licenseTypeCode = this.licenceApplicationService.licenceModel.licenseTypeCode;
+
+		this.imagePaths.forEach((path) => {
+			// Preload the 'icon' images
+			const tmp = new Image();
+			tmp.onload = () => {
+				this.onImageLoaded();
+			};
+			tmp.src = path;
+		});
+	}
 
 	onLicenseTypeChange(_val: SwlTypeCode) {
 		this.licenseTypeCode = _val;
@@ -134,5 +141,12 @@ export class LicenceSelectionComponent implements LicenceFormStepComponent {
 
 	getDataToSave(): any {
 		return { licenseTypeCode: this.licenseTypeCode };
+	}
+
+	private onImageLoaded() {
+		this.imageLoadedCount++;
+		if (this.imagePaths.length == this.imageLoadedCount) {
+			this.isImagesLoaded = true;
+		}
 	}
 }

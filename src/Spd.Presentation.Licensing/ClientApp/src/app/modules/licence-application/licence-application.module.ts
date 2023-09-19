@@ -19,6 +19,7 @@ import { DogsOrRestraintsComponent } from './step-components/dogs-or-restraints.
 import { FingerprintsComponent } from './step-components/fingerprints.component';
 import { HeightAndWeightComponent } from './step-components/height-and-weight.component';
 import { LicenceAccessCodeComponent } from './step-components/licence-access-code.component';
+import { LicenceCategoryComponent } from './step-components/licence-category.component';
 import { LicenceExpiredComponent } from './step-components/licence-expired.component';
 import { LicenceSelectionComponent } from './step-components/licence-selection.component';
 import { LicenceTermComponent } from './step-components/licence-term.component';
@@ -31,7 +32,6 @@ import { MentalHealthConditionsComponent } from './step-components/mental-health
 import { PersonalInformationComponent } from './step-components/personal-information.component';
 import { PhotoComponent } from './step-components/photo.component';
 import { PoliceBackgroundComponent } from './step-components/police-background.component';
-import { SecurityWorkerLicenceCategoryComponent } from './step-components/security-worker-licence-category.component';
 import { SoleProprietorComponent } from './step-components/sole-proprietor.component';
 import { SummaryReviewComponent } from './step-components/summary-review.component';
 
@@ -67,7 +67,7 @@ import { SummaryReviewComponent } from './step-components/summary-review.compone
 		StepBackgroundComponent,
 		StepIdentificationComponent,
 		StepReviewComponent,
-		SecurityWorkerLicenceCategoryComponent,
+		LicenceCategoryComponent,
 		AdditionalGovIdComponent,
 		LicenceAccessCodeComponent,
 	],

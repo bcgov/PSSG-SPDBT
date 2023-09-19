@@ -1,21 +1,18 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { GenderTypes } from 'src/app/core/code-types/model-desc.models';
 import { UtilService } from 'src/app/core/services/util.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { LicenceFormStepComponent } from '../licence-application.component';
+import { LicenceApplicationService, LicenceFormStepComponent, SwlStatusTypeCode } from '../licence-application.service';
 
 @Component({
 	selector: 'app-personal-information',
 	template: `
 		<section class="step-section p-3">
 			<div class="step">
-				<app-step-title
-					title="Confirm your personal information"
-					subtitle="This information is from your BC Services Card. If you need to make any updates, please visit ICBC."
-				></app-step-title>
+				<app-step-title title="Confirm your personal information" [subtitle]="subtitle"></app-step-title>
 				<div class="step-container row">
 					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<form [formGroup]="form" novalidate>
@@ -82,7 +79,7 @@ import { LicenceFormStepComponent } from '../licence-application.component';
 	`,
 	styles: [],
 })
-export class PersonalInformationComponent implements LicenceFormStepComponent {
+export class PersonalInformationComponent implements OnInit, LicenceFormStepComponent {
 	genderTypes = GenderTypes;
 	matcher = new FormErrorStateMatcher();
 
@@ -93,14 +90,16 @@ export class PersonalInformationComponent implements LicenceFormStepComponent {
 	startAtBirthDate = this.utilService.getBirthDateStartAt();
 	maxBirthDate = this.utilService.getBirthDateMax();
 
+	subtitle = '';
+
 	form: FormGroup = this.formBuilder.group(
 		{
-			givenName: new FormControl('', [FormControlValidators.required]),
-			middleName1: new FormControl(''),
-			middleName2: new FormControl(''),
-			surname: new FormControl('', [FormControlValidators.required]),
+			givenName: new FormControl(null, [FormControlValidators.required]),
+			middleName1: new FormControl(null),
+			middleName2: new FormControl(null),
+			surname: new FormControl(null, [FormControlValidators.required]),
 			oneLegalName: new FormControl(false),
-			genderCode: new FormControl(''),
+			genderCode: new FormControl(null),
 			dateOfBirth: new FormControl(null, [Validators.required]),
 		},
 		{
@@ -113,9 +112,31 @@ export class PersonalInformationComponent implements LicenceFormStepComponent {
 		}
 	);
 
-	constructor(private formBuilder: FormBuilder, private utilService: UtilService) {}
+	constructor(
+		private formBuilder: FormBuilder,
+		private utilService: UtilService,
+		private licenceApplicationService: LicenceApplicationService
+	) {}
+
+	ngOnInit(): void {
+		this.subtitle =
+			this.licenceApplicationService.licenceModel.statusTypeCode == SwlStatusTypeCode.NewOrExpired
+				? 'This information is from your BC Services Card. If you need to make any updates, please visit ICBC.'
+				: 'Update any information that has changed since your last application.';
+
+		this.form.patchValue({
+			givenName: this.licenceApplicationService.licenceModel.givenName,
+			middleName1: this.licenceApplicationService.licenceModel.middleName1,
+			middleName2: this.licenceApplicationService.licenceModel.middleName2,
+			surname: this.licenceApplicationService.licenceModel.surname,
+			oneLegalName: this.licenceApplicationService.licenceModel.oneLegalName,
+			genderCode: this.licenceApplicationService.licenceModel.genderCode,
+			dateOfBirth: this.licenceApplicationService.licenceModel.dateOfBirth,
+		});
+	}
 
 	isFormValid(): boolean {
+		this.form.markAllAsTouched();
 		return this.form.valid;
 	}
 

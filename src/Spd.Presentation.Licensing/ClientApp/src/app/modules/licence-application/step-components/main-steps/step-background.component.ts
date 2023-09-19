@@ -5,7 +5,7 @@ import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/cor
 	selector: 'app-step-background',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<!-- <mat-step>
+			<mat-step>
 				<app-dogs-or-restraints></app-dogs-or-restraints>
 
 				<div class="row mt-4">
@@ -16,7 +16,7 @@ import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/cor
 						<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 					</div>
 				</div>
-			</mat-step> -->
+			</mat-step>
 
 			<mat-step>
 				<app-police-background></app-police-background>

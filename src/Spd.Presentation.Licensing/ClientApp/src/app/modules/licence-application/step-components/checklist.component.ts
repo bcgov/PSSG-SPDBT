@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { LicenceFormStepComponent } from '../licence-application.component';
+import { LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-checklist',
