@@ -5,8 +5,11 @@ export interface IdirUserProfileResponse {
   firstName?: null | string;
   identityProviderType?: IdentityProviderTypeCode;
   idirUserName?: null | string;
+  isFirstTimeLogin?: boolean;
+  isPSA?: boolean;
   lastName?: null | string;
   orgId?: string;
   userDisplayName?: null | string;
   userGuid?: null | string;
+  userId?: string;
 }
