@@ -250,9 +250,10 @@ namespace Spd.Manager.Cases.Application
             {
                 filterBy.OrgId = null;
                 filterBy.ParentOrgId = SpdConstants.BC_GOV_ORG_ID;
+                filterBy.DelegatePortalUserId = null;
                 if (!request.IsPSA)
                 {
-                    //todo: check the way to filter on delegates
+                    filterBy.DelegatePortalUserId = request.UserId.ToString();
                 }
             }
 

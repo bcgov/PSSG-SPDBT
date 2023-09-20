@@ -40,6 +40,7 @@ public record AppFilterBy()
     public PayerPreferenceTypeCode? PayerType { get; set; } = null;
     public Guid? ParentOrgId { get; set; }
     public Guid? OrgId { get; set; }
+    public string? DelegatePortalUserId { get; set; }
 }
 public record AppSortBy(bool? SubmittedDateDesc = null, bool? NameDesc = null, bool? CompanyNameDesc = null, bool? PaidAndSubmittedOnDesc = null);
 public record SearchApplicationQry
