@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { HotToastService } from '@ngneat/hot-toast';
+import { BehaviorSubject } from 'rxjs';
 import { BooleanTypeCode, GenderCode } from 'src/app/api/models';
 import { SelectOptions } from 'src/app/core/code-types/model-desc.models';
 
@@ -51,7 +53,7 @@ export enum SwlTermCode {
 
 export enum SwlCategoryTypeCode {
 	ArmouredCarGuard = 'ARMOURED_CAR_GUARD',
-	BodyArmourSales = 'BODY_AMOUR_SALES',
+	BodyArmourSales = 'BODY_ARMOUR_SALES',
 	ClosedCircuitTelevisionInstaller = 'CLOSED_CIRCUIT',
 	ElectronicLockingDeviceInstaller = 'ELECTRONIC_LOCKING',
 	FireInvestigator = 'FIRE_INVESTIGATOR',
@@ -82,8 +84,6 @@ export const SwlCategoryTypes: SelectOptions[] = [
 		desc: 'Private Investigator - Under Supervision',
 		code: SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision,
 	},
-	{ desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
-	{ desc: 'Security Guard - Under Supervision', code: SwlCategoryTypeCode.SecurityGuardUnderSupervision },
 	{ desc: 'Security Alarm Installer', code: SwlCategoryTypeCode.SecurityAlarmInstaller },
 	{
 		desc: 'Security Alarm Installer - Under Supervision',
@@ -93,34 +93,81 @@ export const SwlCategoryTypes: SelectOptions[] = [
 	{ desc: 'Security Alarm Response', code: SwlCategoryTypeCode.SecurityAlarmResponse },
 	{ desc: 'Security Alarm Sales', code: SwlCategoryTypeCode.SecurityAlarmSales },
 	{ desc: 'Security Consultant', code: SwlCategoryTypeCode.SecurityConsultant },
+	{ desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
+	{ desc: 'Security Guard - Under Supervision', code: SwlCategoryTypeCode.SecurityGuardUnderSupervision },
 ];
 
 @Injectable({
 	providedIn: 'root',
 })
 export class LicenceApplicationService {
-	licenceModel: LicenceModel = {
-		licenseTypeCode: null, // SwlTypeCode.ArmouredVehicleLicense,
-		statusTypeCode: null, //SwlStatusTypeCode.Renewal,
-		isSoleProprietor: null, //BooleanTypeCode.Yes,
-		currentLicenceNumber: null, //'123',
-		accessCode: null, //'456',
-		givenName: 'aa',
-		middleName1: 'bb',
-		middleName2: 'cc',
-		surname: 'ee',
-		oneLegalName: false,
-		genderCode: GenderCode.M,
-		dateOfBirth: '2009-10-07T00:00:00+00:00',
-		hasExpiredLicence: BooleanTypeCode.Yes,
-		expiredLicenceNumber: '789',
-		expiryDate: '2002-02-07T00:00:00+00:00',
-		licenceTermCode: SwlTermCode.ThreeYears,
-		swlCategoryList: [
-			{ code: 'ARMOURED_CAR_GUARD', desc: 'Armoured Car Guard' },
-			{ code: 'LOCKSMITH', desc: 'Locksmith' },
-		],
-	};
+	licenceModelLoaded$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-	constructor() {}
+	licenceModel: LicenceModel = new LicenceModel();
+
+	constructor(private hotToastService: HotToastService) {
+		this.loadLicence();
+	}
+
+	loadLicence(): void {
+		setTimeout(() => {
+			const defaults: LicenceModel = {
+				licenseTypeCode: SwlTypeCode.ArmouredVehicleLicense,
+				statusTypeCode: SwlStatusTypeCode.NewOrExpired,
+				isSoleProprietor: BooleanTypeCode.Yes,
+				currentLicenceNumber: '123',
+				accessCode: '456',
+				givenName: 'aa',
+				middleName1: 'bb',
+				middleName2: 'cc',
+				surname: 'ee',
+				oneLegalName: false,
+				genderCode: GenderCode.M,
+				dateOfBirth: '2009-10-07T00:00:00+00:00',
+				hasExpiredLicence: BooleanTypeCode.Yes,
+				expiredLicenceNumber: '789',
+				expiryDate: '2002-02-07T00:00:00+00:00',
+				licenceTermCode: SwlTermCode.ThreeYears,
+				swlCategoryList: [
+					{ code: 'ARMOURED_CAR_GUARD', desc: 'Armoured Car Guard' },
+					{ code: 'SECURITY_GUARD', desc: 'Security Guard' },
+				],
+			};
+			this.licenceModel = { ...defaults };
+			this.licenceModelLoaded$.next(true);
+		}, 1000);
+	}
+
+	loadLicence2(): void {
+		setTimeout(() => {
+			const defaults: LicenceModel = {
+				licenseTypeCode: SwlTypeCode.ArmouredVehicleLicense,
+				statusTypeCode: SwlStatusTypeCode.Renewal,
+				isSoleProprietor: BooleanTypeCode.Yes,
+				currentLicenceNumber: '123',
+				accessCode: '456',
+				givenName: 'aa',
+				middleName1: 'bb',
+				middleName2: 'cc',
+				surname: 'ee',
+				oneLegalName: false,
+				genderCode: GenderCode.M,
+				dateOfBirth: '2009-10-07T00:00:00+00:00',
+				hasExpiredLicence: BooleanTypeCode.Yes,
+				expiredLicenceNumber: '789',
+				expiryDate: '2002-02-07T00:00:00+00:00',
+				licenceTermCode: SwlTermCode.ThreeYears,
+				swlCategoryList: [
+					{ code: 'ARMOURED_CAR_GUARD', desc: 'Armoured Car Guard' },
+					{ code: 'LOCKSMITH', desc: 'Locksmith' },
+				],
+			};
+			this.licenceModel = { ...defaults };
+			this.licenceModelLoaded$.next(true);
+		}, 1000);
+	}
+
+	saveLicence(): void {
+		this.hotToastService.success('Licence information has been saved');
+	}
 }

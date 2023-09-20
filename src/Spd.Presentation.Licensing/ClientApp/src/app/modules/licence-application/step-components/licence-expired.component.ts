@@ -31,7 +31,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 								<div class="text-minor-heading fw-semibold mb-2">Expired Licence Information</div>
 								<ng-container>
 									<div class="row mt-2">
-										<div class="col-lg-4 col-md-12 col-sm-12">
+										<div class="col-lg-6 col-md-12 col-sm-12">
 											<mat-form-field>
 												<mat-label>Expired Licence Number</mat-label>
 												<input matInput formControlName="expiredLicenceNumber" [errorStateMatcher]="matcher" />
@@ -40,7 +40,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 												>
 											</mat-form-field>
 										</div>
-										<div class="col-lg-4 col-md-12 col-sm-12">
+										<div class="col-lg-6 col-md-12 col-sm-12">
 											<mat-form-field>
 												<mat-label>Expiry Date</mat-label>
 												<input
@@ -81,10 +81,16 @@ export class LicenceExpiredComponent implements OnInit, LicenceFormStepComponent
 	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.form.patchValue({
-			hasExpiredLicence: this.licenceApplicationService.licenceModel.hasExpiredLicence,
-			expiredLicenceNumber: this.licenceApplicationService.licenceModel.expiredLicenceNumber,
-			expiryDate: this.licenceApplicationService.licenceModel.expiryDate,
+		this.licenceApplicationService.licenceModelLoaded$.subscribe({
+			next: (loaded: boolean) => {
+				if (loaded) {
+					this.form.patchValue({
+						hasExpiredLicence: this.licenceApplicationService.licenceModel.hasExpiredLicence,
+						expiredLicenceNumber: this.licenceApplicationService.licenceModel.expiredLicenceNumber,
+						expiryDate: this.licenceApplicationService.licenceModel.expiryDate,
+					});
+				}
+			},
 		});
 	}
 

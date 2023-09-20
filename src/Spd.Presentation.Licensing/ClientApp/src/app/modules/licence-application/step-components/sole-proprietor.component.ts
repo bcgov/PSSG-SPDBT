@@ -51,13 +51,19 @@ export class SoleProprietorComponent implements OnInit, LicenceFormStepComponent
 	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.title =
-			this.licenceApplicationService.licenceModel.statusTypeCode == SwlStatusTypeCode.NewOrExpired
-				? 'Do you also want to apply for a Sole Proprietor Security Business Licence?'
-				: 'Do you also want to renew your Sole Proprietor Security Business Licence?';
+		this.licenceApplicationService.licenceModelLoaded$.subscribe({
+			next: (loaded: boolean) => {
+				if (loaded) {
+					this.title =
+						this.licenceApplicationService.licenceModel.statusTypeCode == SwlStatusTypeCode.NewOrExpired
+							? 'Do you also want to apply for a Sole Proprietor Security Business Licence?'
+							: 'Do you also want to renew your Sole Proprietor Security Business Licence?';
 
-		this.form.patchValue({
-			isSoleProprietor: this.licenceApplicationService.licenceModel.isSoleProprietor,
+					this.form.patchValue({
+						isSoleProprietor: this.licenceApplicationService.licenceModel.isSoleProprietor,
+					});
+				}
+			},
 		});
 	}
 

@@ -38,8 +38,14 @@ export class LicenceTermComponent implements OnInit, LicenceFormStepComponent {
 	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.form.patchValue({
-			licenceTermCode: this.licenceApplicationService.licenceModel.licenceTermCode,
+		this.licenceApplicationService.licenceModelLoaded$.subscribe({
+			next: (loaded: boolean) => {
+				if (loaded) {
+					this.form.patchValue({
+						licenceTermCode: this.licenceApplicationService.licenceModel.licenceTermCode,
+					});
+				}
+			},
 		});
 	}
 

@@ -1,6 +1,7 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
+import { SelectOptions } from 'src/app/core/code-types/model-desc.models';
 import { LicenceApplicationService, SwlStatusTypeCode } from '../../licence-application.service';
 import { LicenceAccessCodeComponent } from '../licence-access-code.component';
 import { LicenceCategoryComponent } from '../licence-category.component';
@@ -155,6 +156,26 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 				</div>
 			</mat-step>
 
+			<mat-step *ngFor="let category of swlCategoryList; let i = index">
+				<app-licence-category-specific [option]="category" [index]="i + 1"></app-licence-category-specific>
+
+				<div class="row mt-4">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+					</div>
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+						<button
+							mat-flat-button
+							color="primary"
+							class="large mb-2"
+							(click)="onFormValidNextStep(STEP_LICENCE_CATEGORY)"
+						>
+							Next
+						</button>
+					</div>
+				</div>
+			</mat-step>
+
 			<mat-step>
 				<app-licence-term></app-licence-term>
 
@@ -186,9 +207,9 @@ export class StepLicenseSelectionComponent {
 	showStepSoleProprietor = true;
 	showStepLicenceExpired = true;
 
+	swlCategoryList: SelectOptions[] = [];
+
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
-	// @Output() clearRegistrationData: EventEmitter<boolean> = new EventEmitter<boolean>();
-	// @Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
 
 	@ViewChild(LicenceSelectionComponent)
 	licenceSelectionComponent!: LicenceSelectionComponent;
@@ -220,14 +241,19 @@ export class StepLicenseSelectionComponent {
 
 	getStepData(): any {
 		return {
-			...this.licenceSelectionComponent.getDataToSave(),
-			...this.licenceTypeComponent.getDataToSave(),
+			// ...this.licenceSelectionComponent.getDataToSave(),
+			// ...this.licenceTypeComponent.getDataToSave(),
+			...(this.licenceSelectionComponent ? this.licenceSelectionComponent.getDataToSave() : {}),
+			...(this.licenceTypeComponent ? this.licenceTypeComponent.getDataToSave() : {}),
 			...(this.licenceAccessCodeComponent ? this.licenceAccessCodeComponent.getDataToSave() : {}),
 			...(this.soleProprietorComponent ? this.soleProprietorComponent.getDataToSave() : {}),
-			...this.personalInformationComponent.getDataToSave(),
+			// ...this.personalInformationComponent.getDataToSave(),
+			...(this.personalInformationComponent ? this.personalInformationComponent.getDataToSave() : {}),
 			...(this.licenceExpiredComponent ? this.licenceExpiredComponent.getDataToSave() : {}),
-			...this.licenceCategoryComponent.getDataToSave(),
-			...this.licenceTermComponent.getDataToSave(),
+			// ...this.licenceCategoryComponent.getDataToSave(),
+			// ...this.licenceTermComponent.getDataToSave(),
+			...(this.licenceCategoryComponent ? this.licenceCategoryComponent.getDataToSave() : {}),
+			...(this.licenceTermComponent ? this.licenceTermComponent.getDataToSave() : {}),
 		};
 	}
 
@@ -256,36 +282,17 @@ export class StepLicenseSelectionComponent {
 		const stepData = this.getStepData();
 		this.licenceApplicationService.licenceModel = { ...licenceModel, ...stepData };
 
+		this.licenceApplicationService.saveLicence();
+
 		console.log('stepData', stepData);
 		console.log('licenceModel', this.licenceApplicationService.licenceModel);
+
+		this.swlCategoryList = this.licenceApplicationService.licenceModel.swlCategoryList;
 
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 		this.childstepper.next();
 	}
-
-	// onVulnerableSectorQuestionNext(): void {
-	// 	const isValid = this.dirtyForm(this.STEP_VULNERABLE_SECTOR_OPTION);
-	// 	if (!isValid) return;
-	// 	if (this.showStepEligibilityProblem) {
-	// 		this.childstepper.next();
-	// 	} else {
-	// 		this.nextStepperStep.emit(true);
-	// 	}
-	// }
-
-	// onClearStepData(): void {
-	// 	this.organizationOptionsComponent?.clearCurrentData();
-	// 	this.compensationQuestionComponent?.clearCurrentData();
-	// 	this.vulnerableSectorQuestionComponent?.clearCurrentData();
-
-	// 	this.clearRegistrationData.emit(true);
-	// }
-
-	// onNoneApplyToOrganization(): void {
-	// 	this.showStepOrganizationProblem = true;
-	// 	this.childstepper.next();
-	// }
 
 	onStepSelectionChange(event: StepperSelectionEvent) {
 		// const licenceModel = this.licenceApplicationService.licenceModel;
@@ -334,12 +341,6 @@ export class StepLicenseSelectionComponent {
 					this.showStepLicenceExpired =
 						this.licenceApplicationService.licenceModel.statusTypeCode == SwlStatusTypeCode.NewOrExpired;
 				}
-				console.log(
-					'yyy',
-					this.licenceApplicationService.licenceModel.statusTypeCode,
-					isValid,
-					this.showStepAccessCode
-				);
 				return isValid;
 			case this.STEP_ACCESS_CODE:
 				return this.licenceAccessCodeComponent.isFormValid();
@@ -353,36 +354,9 @@ export class StepLicenseSelectionComponent {
 				return this.licenceCategoryComponent.isFormValid();
 			case this.STEP_LICENCE_TERM:
 				return this.licenceTermComponent.isFormValid();
-			// 			this.registrationPathSelectionData = this.registrationPathSelectionComponent.getDataToSave();
-			// 			return this.registrationPathSelectionComponent.isFormValid();
-			// 		case this.STEP_ORGANIZATION_OPTION:
-			// 			this.showStepCompensationQuestion = false;
-			// 			this.showStepOrganizationProblem = false;
-			// 			this.showStepEligibilityProblem = false;
-
-			// 			isValid = this.organizationOptionsComponent.isFormValid();
-			// 			if (isValid) {
-			// 				this.setShowStepCompensationQuestionFlag();
-			// 			}
-			// 			return isValid;
-			// 		case this.STEP_COMPENSATION_OPTION:
-			// 			return this.compensationQuestionComponent.isFormValid();
-			// 		case this.STEP_VULNERABLE_SECTOR_OPTION:
-			// 			isValid = this.vulnerableSectorQuestionComponent.isFormValid();
-			// 			if (isValid) {
-			// 				const vulnerableSectorQuestionData = this.vulnerableSectorQuestionComponent.getDataToSave();
-			// 				this.showStepEligibilityProblem =
-			// 					vulnerableSectorQuestionData.employeeInteractionFlag == EmployeeInteractionTypeCode.Neither;
-			// 			}
-			// 			return isValid;
-
-			// 		default:
-			// 			console.error('Unknown Form', step);
+			default:
+				console.error('Unknown Form', step);
 		}
 		return false;
 	}
-
-	// setShowStepAccessCode(): void {
-	// 	this.showStepAccessCode = this.licenceApplicationService.licenceModel.statusTypeCode != SwlStatusTypeCode.New;
-	// }
 }

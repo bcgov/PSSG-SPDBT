@@ -96,7 +96,13 @@ export class LicenceTypeComponent implements OnInit, LicenceFormStepComponent {
 	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.form.patchValue({ statusTypeCode: this.licenceApplicationService.licenceModel.statusTypeCode });
+		this.licenceApplicationService.licenceModelLoaded$.subscribe({
+			next: (loaded: boolean) => {
+				if (loaded) {
+					this.form.patchValue({ statusTypeCode: this.licenceApplicationService.licenceModel.statusTypeCode });
+				}
+			},
+		});
 	}
 
 	isFormValid(): boolean {

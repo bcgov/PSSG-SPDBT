@@ -85,6 +85,10 @@ button.mdc-button {
   background-color: transparent;
 }
 
+.mat-mdc-checkbox-disabled, .mdc-checkbox {
+  background-color: transparent;
+}
+
 .mdc-text-field--disabled.mdc-text-field--filled {
   background-color: transparent;
   color: var(--color-primary);

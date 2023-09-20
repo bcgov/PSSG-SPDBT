@@ -18,7 +18,7 @@ import { LicenceApplicationService, LicenceFormStepComponent, SwlTypeCode } from
 							>
 								<div class="mb-4 mt-4 mt-md-0">
 									<div class="box__image d-none d-md-block">
-										<img class="box__image__item" src="/assets/security-business-licence.png" />
+										<img class="box__image__item" [src]="image1" />
 									</div>
 									Security Business License
 								</div>
@@ -32,7 +32,7 @@ import { LicenceApplicationService, LicenceFormStepComponent, SwlTypeCode } from
 							>
 								<div class="mb-4 mt-4 mt-md-0">
 									<div class="box__image d-none d-md-block">
-										<img class="box__image__item" src="/assets/security-worker-licence.png" />
+										<img class="box__image__item" [src]="image2" />
 									</div>
 									Security Worker Licence
 								</div>
@@ -46,7 +46,7 @@ import { LicenceApplicationService, LicenceFormStepComponent, SwlTypeCode } from
 							>
 								<div class="mb-4 mt-4 mt-md-0">
 									<div class="box__image d-none d-md-block">
-										<img class="box__image__item" src="/assets/armoured-vehicle.png" />
+										<img class="box__image__item" [src]="image3" />
 									</div>
 									Permit to operate an armoured vehicle
 								</div>
@@ -60,7 +60,7 @@ import { LicenceApplicationService, LicenceFormStepComponent, SwlTypeCode } from
 							>
 								<div class="mb-4 mt-4 mt-md-0">
 									<div class="box__image d-none d-md-block">
-										<img class="box__image__item" src="/assets/body-armour.png" />
+										<img class="box__image__item" [src]="image4" />
 									</div>
 									Permit to possess body armour
 								</div>
@@ -98,6 +98,11 @@ import { LicenceApplicationService, LicenceFormStepComponent, SwlTypeCode } from
 	],
 })
 export class LicenceSelectionComponent implements OnInit, LicenceFormStepComponent {
+	readonly image1 = '/assets/security-business-licence.png';
+	readonly image2 = '/assets/security-worker-licence.png';
+	readonly image3 = '/assets/armoured-vehicle.png';
+	readonly image4 = '/assets/body-armour.png';
+
 	licenseTypeCode: SwlTypeCode | null = null;
 	isDirtyAndInvalid = false;
 
@@ -105,17 +110,17 @@ export class LicenceSelectionComponent implements OnInit, LicenceFormStepCompone
 
 	imageLoadedCount = 0;
 	isImagesLoaded = false;
-	imagePaths = [
-		'/assets/security-business-licence.png',
-		'/assets/security-worker-licence.png',
-		'/assets/armoured-vehicle.png',
-		'/assets/body-armour.png',
-	];
-
+	imagePaths = [this.image1, this.image2, this.image3, this.image4];
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.licenseTypeCode = this.licenceApplicationService.licenceModel.licenseTypeCode;
+		this.licenceApplicationService.licenceModelLoaded$.subscribe({
+			next: (loaded: boolean) => {
+				if (loaded) {
+					this.licenseTypeCode = this.licenceApplicationService.licenceModel.licenseTypeCode;
+				}
+			},
+		});
 
 		this.imagePaths.forEach((path) => {
 			// Preload the 'icon' images

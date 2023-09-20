@@ -19,6 +19,7 @@ import { DogsOrRestraintsComponent } from './step-components/dogs-or-restraints.
 import { FingerprintsComponent } from './step-components/fingerprints.component';
 import { HeightAndWeightComponent } from './step-components/height-and-weight.component';
 import { LicenceAccessCodeComponent } from './step-components/licence-access-code.component';
+import { LicenceCategorySpecificComponent } from './step-components/licence-category-specific.component';
 import { LicenceCategoryComponent } from './step-components/licence-category.component';
 import { LicenceExpiredComponent } from './step-components/licence-expired.component';
 import { LicenceSelectionComponent } from './step-components/licence-selection.component';
@@ -70,6 +71,7 @@ import { SummaryReviewComponent } from './step-components/summary-review.compone
 		LicenceCategoryComponent,
 		AdditionalGovIdComponent,
 		LicenceAccessCodeComponent,
+		LicenceCategorySpecificComponent,
 	],
 	imports: [SharedModule, LicenceApplicationRoutingModule],
 })
