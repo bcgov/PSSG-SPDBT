@@ -36,9 +36,6 @@ internal partial class ApplicationRepository : IApplicationRepository
 
     public async Task<ApplicationListResp> QueryAsync(ApplicationListQry query, CancellationToken cancellationToken)
     {
-        var apps = _context.spd_applications.Where(a => a.spd_delegateid == "b5995bdd-3866-4ddd-9238-4fa3f12cbfa9");
-        var temp = apps.ToList();
-
         if (query == null || (query.FilterBy?.OrgId == null && query.FilterBy?.ParentOrgId == null))
             throw new ArgumentNullException("query.FilterBy.OrgId", "Must query applications by organization id.");
         string filterStr = GetAppFilterString(query.FilterBy);
@@ -238,7 +235,7 @@ internal partial class ApplicationRepository : IApplicationRepository
         }
 
         //submitted from date
-        string submitFromDate = null;
+        string? submitFromDate = null;
         if (appFilterBy.FromDateTime != null)
         {
             var date = new Microsoft.OData.Edm.Date(((DateTimeOffset)appFilterBy.FromDateTime).Year, ((DateTimeOffset)appFilterBy.FromDateTime).Month, ((DateTimeOffset)appFilterBy.FromDateTime).Day);
@@ -246,12 +243,19 @@ internal partial class ApplicationRepository : IApplicationRepository
         }
 
         //submitted to date
-        string submitToDate = null;
+        string? submitToDate = null;
         if (appFilterBy.ToDateTime != null)
         {
             DateTimeOffset adjustToDateTime = appFilterBy.ToDateTime.Value.AddDays(1);
             var date = new Microsoft.OData.Edm.Date(adjustToDateTime.Year, adjustToDateTime.Month, adjustToDateTime.Day);
             submitToDate = $"createdon lt {date}";
+        }
+
+        //delegate portal user
+        string? delegateFilters = null;
+        if(appFilterBy.DelegatePortalUserId != null)
+        {
+            delegateFilters = $"spd_delegateid eq '{appFilterBy.DelegatePortalUserId}'";
         }
 
         //get result filter string
@@ -292,6 +296,10 @@ internal partial class ApplicationRepository : IApplicationRepository
         if (submitToDate != null)
         {
             result += $" and {submitToDate}";
+        }
+        if(delegateFilters != null)
+        {
+            result += $" and {delegateFilters}";
         }
         return result;
     }

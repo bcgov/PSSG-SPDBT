@@ -356,6 +356,8 @@
         <NavigationProperty Name="modifiedonbehalfby" Type="mscrm.systemuser" Nullable="false" Partner="lk_accountbase_modifiedonbehalfby">
           <ReferentialConstraint Property="_modifiedonbehalfby_value" ReferencedProperty="systemuserid" />
         </NavigationProperty>
+        <NavigationProperty Name="spd_license_Organization" Type="Collection(mscrm.spd_license)" Partner="spd_Organization" />
+        <NavigationProperty Name="spd_account_spd_businesscontact" Type="Collection(mscrm.spd_businesscontact)" Partner="spd_OrganizationId" />
       </EntityType>
       <EntityType Name="aciviewmapper" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -2030,6 +2032,9 @@
         </NavigationProperty>
         <NavigationProperty Name="regardingobjectid_import" Type="mscrm.import" Nullable="false" Partner="Import_AsyncOperations">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="importid" />
+        </NavigationProperty>
+        <NavigationProperty Name="regardingobjectid_spd_businesscontact" Type="mscrm.spd_businesscontact" Nullable="false" Partner="spd_businesscontact_AsyncOperations">
+          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_businesscontactid" />
         </NavigationProperty>
       </EntityType>
       <EntityType Name="attachment" BaseType="mscrm.crmbaseentity">
@@ -3805,6 +3810,9 @@
         <NavigationProperty Name="regardingobjectid_subject" Type="mscrm.subject" Nullable="false" Partner="Subject_BulkDeleteFailures">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="subjectid" />
         </NavigationProperty>
+        <NavigationProperty Name="regardingobjectid_spd_businesscontact" Type="mscrm.spd_businesscontact" Nullable="false" Partner="spd_businesscontact_BulkDeleteFailures">
+          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_businesscontactid" />
+        </NavigationProperty>
       </EntityType>
       <EntityType Name="bulkdeleteoperation" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -4245,6 +4253,7 @@
           <ReferentialConstraint Property="_parentbusinessunitid_value" ReferencedProperty="businessunitid" />
         </NavigationProperty>
         <NavigationProperty Name="business_unit_parent_business_unit" Type="Collection(mscrm.businessunit)" Partner="parentbusinessunitid" />
+        <NavigationProperty Name="business_unit_spd_businesscontact" Type="Collection(mscrm.spd_businesscontact)" Partner="owningbusinessunit" />
       </EntityType>
       <EntityType Name="calendarrule" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -5902,6 +5911,7 @@
         <NavigationProperty Name="Contact_Emails" Type="Collection(mscrm.email)" Partner="regardingobjectid_contact_email" />
         <NavigationProperty Name="contact_activity_parties" Type="Collection(mscrm.activityparty)" Partner="partyid_contact" />
         <NavigationProperty Name="Contact_Letters" Type="Collection(mscrm.letter)" Partner="regardingobjectid_contact_letter" />
+        <NavigationProperty Name="spd_contact_spd_businesscontact" Type="Collection(mscrm.spd_businesscontact)" Partner="spd_ContactId" />
       </EntityType>
       <EntityType Name="contractdetail" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -11595,6 +11605,9 @@
         <NavigationProperty Name="modifiedby" Type="mscrm.systemuser" Nullable="false" Partner="lk_mailboxtrackingfolder_modifiedby">
           <ReferentialConstraint Property="_modifiedby_value" ReferencedProperty="systemuserid" />
         </NavigationProperty>
+        <NavigationProperty Name="regardingobjectid_spd_businesscontact" Type="mscrm.spd_businesscontact" Nullable="false" Partner="spd_businesscontact_MailboxTrackingFolders">
+          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_businesscontactid" />
+        </NavigationProperty>
       </EntityType>
       <EntityType Name="mailmergetemplate" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -13760,6 +13773,7 @@
         <NavigationProperty Name="owner_importfiles" Type="Collection(mscrm.importfile)" Partner="ownerid" />
         <NavigationProperty Name="owner_importlogs" Type="Collection(mscrm.importlog)" Partner="ownerid" />
         <NavigationProperty Name="owner_SyncError" Type="Collection(mscrm.syncerror)" Partner="ownerid" />
+        <NavigationProperty Name="owner_spd_businesscontact" Type="Collection(mscrm.spd_businesscontact)" Partner="ownerid" />
       </EntityType>
       <EntityType Name="personaldocumenttemplate" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -14991,6 +15005,9 @@
           <ReferentialConstraint Property="_objectid_value" ReferencedProperty="goalid" />
         </NavigationProperty>
         <NavigationProperty Name="objectid_phonecall" Type="mscrm.phonecall" Nullable="false" Partner="phonecall_principalobjectattributeaccess" />
+        <NavigationProperty Name="objectid_spd_businesscontact" Type="mscrm.spd_businesscontact" Nullable="false" Partner="spd_businesscontact_PrincipalObjectAttributeAccesses">
+          <ReferentialConstraint Property="_objectid_value" ReferencedProperty="spd_businesscontactid" />
+        </NavigationProperty>
       </EntityType>
       <EntityType Name="privilege" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -15499,6 +15516,9 @@
         <NavigationProperty Name="regardingobjectid_recurringappointmentmaster" Type="mscrm.recurringappointmentmaster" Nullable="false" Partner="RecurringAppointmentMaster_ProcessSessions" />
         <NavigationProperty Name="completedby" Type="mscrm.systemuser" Nullable="false" Partner="lk_processsession_completedby">
           <ReferentialConstraint Property="_completedby_value" ReferencedProperty="systemuserid" />
+        </NavigationProperty>
+        <NavigationProperty Name="regardingobjectid_spd_businesscontact" Type="mscrm.spd_businesscontact" Nullable="false" Partner="spd_businesscontact_ProcessSession">
+          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_businesscontactid" />
         </NavigationProperty>
       </EntityType>
       <EntityType Name="processstage" BaseType="mscrm.crmbaseentity">
@@ -19574,10 +19594,11 @@
         <Property Name="spd_swlcategories" Type="Edm.String" Unicode="false" />
         <Property Name="spd_applicantsposition" Type="Edm.String" Unicode="false" />
         <Property Name="spd_numberofattempts" Type="Edm.Int32" />
-        <Property Name="spd_contractedcompanyname" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_controllingmemberhistory" Type="Edm.Int32" />
         <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
         <Property Name="spd_consent" Type="Edm.Boolean" />
         <Property Name="spd_declarationdate" Type="Edm.DateTimeOffset" />
+        <Property Name="_spd_controllingmemberotherbusiness_value" Type="Edm.Guid" />
         <Property Name="spd_middlename2" Type="Edm.String" Unicode="false" />
         <Property Name="spd_photoidtype" Type="Edm.Int32" />
         <Property Name="spd_policebackgroundrole" Type="Edm.Int32" />
@@ -19585,15 +19606,16 @@
         <Property Name="spd_province" Type="Edm.String" Unicode="false" />
         <Property Name="spd_emailaddress1" Type="Edm.String" Unicode="false" />
         <Property Name="spd_country" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_contractedcompanyname" Type="Edm.String" Unicode="false" />
         <Property Name="versionnumber" Type="Edm.Int64" />
         <Property Name="_owninguser_value" Type="Edm.Guid" />
         <Property Name="spd_mentalhealthcondition" Type="Edm.Int32" />
         <Property Name="spd_sex" Type="Edm.Int32" />
         <Property Name="spd_payer" Type="Edm.Int32" />
-        <Property Name="spd_applicantweight" Type="Edm.Int32" />
         <Property Name="spd_currentlicenceexpirydate" Type="Edm.DateTimeOffset" />
         <Property Name="_modifiedby_value" Type="Edm.Guid" />
         <Property Name="_owningteam_value" Type="Edm.Guid" />
+        <Property Name="spd_applicantweight" Type="Edm.Int32" />
         <Property Name="_spd_organizationid_value" Type="Edm.Guid" />
         <Property Name="spd_submittedon" Type="Edm.DateTimeOffset" />
         <Property Name="spd_postalcode" Type="Edm.String" Unicode="false" />
@@ -19727,6 +19749,72 @@
         <NavigationProperty Name="spd_application_RecurringAppointmentMasters" Type="Collection(mscrm.recurringappointmentmaster)" Partner="regardingobjectid_spd_application_recurringappointmentmaster" />
         <NavigationProperty Name="spd_application_SocialActivities" Type="Collection(mscrm.socialactivity)" Partner="regardingobjectid_spd_application_socialactivity" />
         <NavigationProperty Name="spd_application_ServiceAppointments" Type="Collection(mscrm.serviceappointment)" Partner="regardingobjectid_spd_application_serviceappointment" />
+        <NavigationProperty Name="spd_ControllingMemberOtherBusiness" Type="mscrm.spd_license" Nullable="false" Partner="spd_license_application_ControllingMemberOtherBusiness">
+          <ReferentialConstraint Property="_spd_controllingmemberotherbusiness_value" ReferencedProperty="spd_licenseid" />
+        </NavigationProperty>
+      </EntityType>
+      <EntityType Name="spd_businesscontact" BaseType="mscrm.crmbaseentity">
+        <Key>
+          <PropertyRef Name="spd_businesscontactid" />
+        </Key>
+        <Property Name="_createdby_value" Type="Edm.Guid" />
+        <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
+        <Property Name="_ownerid_value" Type="Edm.Guid" />
+        <Property Name="_modifiedby_value" Type="Edm.Guid" />
+        <Property Name="_owninguser_value" Type="Edm.Guid" />
+        <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
+        <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
+        <Property Name="_owningteam_value" Type="Edm.Guid" />
+        <Property Name="_owningbusinessunit_value" Type="Edm.Guid" />
+        <Property Name="_spd_contactid_value" Type="Edm.Guid" />
+        <Property Name="spd_businesscontactid" Type="Edm.Guid" />
+        <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
+        <Property Name="versionnumber" Type="Edm.Int64" />
+        <Property Name="importsequencenumber" Type="Edm.Int32" />
+        <Property Name="spd_fullname" Type="Edm.String" Unicode="false" />
+        <Property Name="statecode" Type="Edm.Int32" />
+        <Property Name="spd_role" Type="Edm.Int32" />
+        <Property Name="_modifiedonbehalfby_value" Type="Edm.Guid" />
+        <Property Name="_createdonbehalfby_value" Type="Edm.Guid" />
+        <Property Name="statuscode" Type="Edm.Int32" />
+        <Property Name="_spd_organizationid_value" Type="Edm.Guid" />
+        <Property Name="createdon" Type="Edm.DateTimeOffset" />
+        <NavigationProperty Name="createdby" Type="mscrm.systemuser" Nullable="false" Partner="lk_spd_businesscontact_createdby">
+          <ReferentialConstraint Property="_createdby_value" ReferencedProperty="systemuserid" />
+        </NavigationProperty>
+        <NavigationProperty Name="createdonbehalfby" Type="mscrm.systemuser" Nullable="false" Partner="lk_spd_businesscontact_createdonbehalfby">
+          <ReferentialConstraint Property="_createdonbehalfby_value" ReferencedProperty="systemuserid" />
+        </NavigationProperty>
+        <NavigationProperty Name="modifiedby" Type="mscrm.systemuser" Nullable="false" Partner="lk_spd_businesscontact_modifiedby">
+          <ReferentialConstraint Property="_modifiedby_value" ReferencedProperty="systemuserid" />
+        </NavigationProperty>
+        <NavigationProperty Name="modifiedonbehalfby" Type="mscrm.systemuser" Nullable="false" Partner="lk_spd_businesscontact_modifiedonbehalfby">
+          <ReferentialConstraint Property="_modifiedonbehalfby_value" ReferencedProperty="systemuserid" />
+        </NavigationProperty>
+        <NavigationProperty Name="owninguser" Type="mscrm.systemuser" Nullable="false" Partner="user_spd_businesscontact">
+          <ReferentialConstraint Property="_owninguser_value" ReferencedProperty="systemuserid" />
+        </NavigationProperty>
+        <NavigationProperty Name="owningteam" Type="mscrm.team" Nullable="false" Partner="team_spd_businesscontact">
+          <ReferentialConstraint Property="_owningteam_value" ReferencedProperty="teamid" />
+        </NavigationProperty>
+        <NavigationProperty Name="ownerid" Type="mscrm.principal" Nullable="false" Partner="owner_spd_businesscontact">
+          <ReferentialConstraint Property="_ownerid_value" ReferencedProperty="ownerid" />
+        </NavigationProperty>
+        <NavigationProperty Name="owningbusinessunit" Type="mscrm.businessunit" Nullable="false" Partner="business_unit_spd_businesscontact">
+          <ReferentialConstraint Property="_owningbusinessunit_value" ReferencedProperty="businessunitid" />
+        </NavigationProperty>
+        <NavigationProperty Name="spd_businesscontact_SyncErrors" Type="Collection(mscrm.syncerror)" Partner="regardingobjectid_spd_businesscontact" />
+        <NavigationProperty Name="spd_businesscontact_AsyncOperations" Type="Collection(mscrm.asyncoperation)" Partner="regardingobjectid_spd_businesscontact" />
+        <NavigationProperty Name="spd_businesscontact_MailboxTrackingFolders" Type="Collection(mscrm.mailboxtrackingfolder)" Partner="regardingobjectid_spd_businesscontact" />
+        <NavigationProperty Name="spd_businesscontact_ProcessSession" Type="Collection(mscrm.processsession)" Partner="regardingobjectid_spd_businesscontact" />
+        <NavigationProperty Name="spd_businesscontact_BulkDeleteFailures" Type="Collection(mscrm.bulkdeletefailure)" Partner="regardingobjectid_spd_businesscontact" />
+        <NavigationProperty Name="spd_businesscontact_PrincipalObjectAttributeAccesses" Type="Collection(mscrm.principalobjectattributeaccess)" Partner="objectid_spd_businesscontact" />
+        <NavigationProperty Name="spd_OrganizationId" Type="mscrm.account" Nullable="false" Partner="spd_account_spd_businesscontact">
+          <ReferentialConstraint Property="_spd_organizationid_value" ReferencedProperty="accountid" />
+        </NavigationProperty>
+        <NavigationProperty Name="spd_ContactId" Type="mscrm.contact" Nullable="false" Partner="spd_contact_spd_businesscontact">
+          <ReferentialConstraint Property="_spd_contactid_value" ReferencedProperty="contactid" />
+        </NavigationProperty>
       </EntityType>
       <EntityType Name="spd_clearanceaccess" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -20340,25 +20428,27 @@
         <Key>
           <PropertyRef Name="spd_licenseid" />
         </Key>
-        <Property Name="importsequencenumber" Type="Edm.Int32" />
-        <Property Name="statecode" Type="Edm.Int32" />
-        <Property Name="_createdby_value" Type="Edm.Guid" />
-        <Property Name="_owninguser_value" Type="Edm.Guid" />
         <Property Name="_ownerid_value" Type="Edm.Guid" />
-        <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
-        <Property Name="_owningteam_value" Type="Edm.Guid" />
-        <Property Name="versionnumber" Type="Edm.Int64" />
-        <Property Name="spd_licenseid" Type="Edm.Guid" />
-        <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
-        <Property Name="_modifiedby_value" Type="Edm.Guid" />
+        <Property Name="statecode" Type="Edm.Int32" />
         <Property Name="createdon" Type="Edm.DateTimeOffset" />
-        <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
-        <Property Name="spd_licensenumber" Type="Edm.String" Unicode="false" />
-        <Property Name="statuscode" Type="Edm.Int32" />
-        <Property Name="_modifiedonbehalfby_value" Type="Edm.Guid" />
-        <Property Name="_owningbusinessunit_value" Type="Edm.Guid" />
-        <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
+        <Property Name="versionnumber" Type="Edm.Int64" />
+        <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
+        <Property Name="_spd_organization_value" Type="Edm.Guid" />
+        <Property Name="_owninguser_value" Type="Edm.Guid" />
         <Property Name="_createdonbehalfby_value" Type="Edm.Guid" />
+        <Property Name="_owningbusinessunit_value" Type="Edm.Guid" />
+        <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
+        <Property Name="importsequencenumber" Type="Edm.Int32" />
+        <Property Name="_modifiedby_value" Type="Edm.Guid" />
+        <Property Name="_owningteam_value" Type="Edm.Guid" />
+        <Property Name="_modifiedonbehalfby_value" Type="Edm.Guid" />
+        <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
+        <Property Name="spd_licensenumber" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_licenceexpirydate" Type="Edm.Date" />
+        <Property Name="_createdby_value" Type="Edm.Guid" />
+        <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
+        <Property Name="statuscode" Type="Edm.Int32" />
+        <Property Name="spd_licenseid" Type="Edm.Guid" />
         <NavigationProperty Name="createdby" Type="mscrm.systemuser" Nullable="false" Partner="lk_spd_license_createdby">
           <ReferentialConstraint Property="_createdby_value" ReferencedProperty="systemuserid" />
         </NavigationProperty>
@@ -20391,6 +20481,10 @@
         <NavigationProperty Name="spd_license_ProcessSession" Type="Collection(mscrm.processsession)" Partner="regardingobjectid_spd_license" />
         <NavigationProperty Name="spd_license_BulkDeleteFailures" Type="Collection(mscrm.bulkdeletefailure)" Partner="regardingobjectid_spd_license" />
         <NavigationProperty Name="spd_license_PrincipalObjectAttributeAccesses" Type="Collection(mscrm.principalobjectattributeaccess)" Partner="objectid_spd_license" />
+        <NavigationProperty Name="spd_license_application_ControllingMemberOtherBusiness" Type="Collection(mscrm.spd_application)" Partner="spd_ControllingMemberOtherBusiness" />
+        <NavigationProperty Name="spd_Organization" Type="mscrm.account" Nullable="false" Partner="spd_license_Organization">
+          <ReferentialConstraint Property="_spd_organization_value" ReferencedProperty="accountid" />
+        </NavigationProperty>
       </EntityType>
       <EntityType Name="spd_organizationtype" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -21809,6 +21903,9 @@
         <NavigationProperty Name="regardingobjectid_transactioncurrency_syncerror" Type="mscrm.transactioncurrency" Nullable="false" Partner="TransactionCurrency_SyncErrors">
           <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="transactioncurrencyid" />
         </NavigationProperty>
+        <NavigationProperty Name="regardingobjectid_spd_businesscontact" Type="mscrm.spd_businesscontact" Nullable="false" Partner="spd_businesscontact_SyncErrors">
+          <ReferentialConstraint Property="_regardingobjectid_value" ReferencedProperty="spd_businesscontactid" />
+        </NavigationProperty>
       </EntityType>
       <EntityType Name="systemform" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -23187,6 +23284,11 @@
         <NavigationProperty Name="user_phonecall" Type="Collection(mscrm.phonecall)" Partner="owninguser_phonecall" />
         <NavigationProperty Name="user_appointment" Type="Collection(mscrm.appointment)" Partner="owninguser_appointment" />
         <NavigationProperty Name="lk_expiredprocess_createdonbehalfby" Type="Collection(mscrm.expiredprocess)" Partner="createdonbehalfbyname" />
+        <NavigationProperty Name="lk_spd_businesscontact_createdby" Type="Collection(mscrm.spd_businesscontact)" Partner="createdby" />
+        <NavigationProperty Name="lk_spd_businesscontact_createdonbehalfby" Type="Collection(mscrm.spd_businesscontact)" Partner="createdonbehalfby" />
+        <NavigationProperty Name="lk_spd_businesscontact_modifiedby" Type="Collection(mscrm.spd_businesscontact)" Partner="modifiedby" />
+        <NavigationProperty Name="lk_spd_businesscontact_modifiedonbehalfby" Type="Collection(mscrm.spd_businesscontact)" Partner="modifiedonbehalfby" />
+        <NavigationProperty Name="user_spd_businesscontact" Type="Collection(mscrm.spd_businesscontact)" Partner="owninguser" />
       </EntityType>
       <EntityType Name="systemusersyncmappingprofiles" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -23485,6 +23587,7 @@
         </NavigationProperty>
         <NavigationProperty Name="Team_BulkDeleteFailures" Type="Collection(mscrm.bulkdeletefailure)" Partner="regardingobjectid_team" />
         <NavigationProperty Name="team_goal_goalowner" Type="Collection(mscrm.goal)" Partner="goalownerid_team" />
+        <NavigationProperty Name="team_spd_businesscontact" Type="Collection(mscrm.spd_businesscontact)" Partner="owningteam" />
       </EntityType>
       <EntityType Name="teamsyncattributemappingprofiles" BaseType="mscrm.crmbaseentity">
         <Key>
@@ -30377,6 +30480,8 @@
           <NavigationPropertyBinding Path="Account_Letters" Target="letters" />
           <NavigationPropertyBinding Path="stageid_processstage" Target="processstages" />
           <NavigationPropertyBinding Path="modifiedonbehalfby" Target="systemusers" />
+          <NavigationPropertyBinding Path="spd_license_Organization" Target="spd_licenses" />
+          <NavigationPropertyBinding Path="spd_account_spd_businesscontact" Target="spd_businesscontacts" />
         </EntitySet>
         <EntitySet Name="aciviewmappers" EntityType="Microsoft.Dynamics.CRM.aciviewmapper">
           <NavigationPropertyBinding Path="createdby" Target="systemusers" />
@@ -30926,6 +31031,7 @@
           <NavigationPropertyBinding Path="regardingobjectid_activitypointer" Target="activitypointers" />
           <NavigationPropertyBinding Path="owninguser" Target="systemusers" />
           <NavigationPropertyBinding Path="regardingobjectid_import" Target="imports" />
+          <NavigationPropertyBinding Path="regardingobjectid_spd_businesscontact" Target="spd_businesscontacts" />
         </EntitySet>
         <EntitySet Name="attachments" EntityType="Microsoft.Dynamics.CRM.attachment">
           <NavigationPropertyBinding Path="Attachment_SyncErrors" Target="syncerrors" />
@@ -31506,6 +31612,7 @@
           <NavigationPropertyBinding Path="regardingobjectid_team" Target="teams" />
           <NavigationPropertyBinding Path="regardingobjectid_queueitem" Target="queueitems" />
           <NavigationPropertyBinding Path="regardingobjectid_subject" Target="subjects" />
+          <NavigationPropertyBinding Path="regardingobjectid_spd_businesscontact" Target="spd_businesscontacts" />
         </EntitySet>
         <EntitySet Name="bulkdeleteoperations" EntityType="Microsoft.Dynamics.CRM.bulkdeleteoperation">
           <NavigationPropertyBinding Path="owningbusinessunit" Target="businessunits" />
@@ -31727,6 +31834,7 @@
           <NavigationPropertyBinding Path="BusinessUnit_ImportMaps" Target="importmaps" />
           <NavigationPropertyBinding Path="parentbusinessunitid" Target="businessunits" />
           <NavigationPropertyBinding Path="business_unit_parent_business_unit" Target="businessunits" />
+          <NavigationPropertyBinding Path="business_unit_spd_businesscontact" Target="spd_businesscontacts" />
         </EntitySet>
         <EntitySet Name="calendarrules" EntityType="Microsoft.Dynamics.CRM.calendarrule">
           <NavigationPropertyBinding Path="serviceid" Target="services" />
@@ -32272,6 +32380,7 @@
           <NavigationPropertyBinding Path="Contact_Emails" Target="emails" />
           <NavigationPropertyBinding Path="contact_activity_parties" Target="activityparties" />
           <NavigationPropertyBinding Path="Contact_Letters" Target="letters" />
+          <NavigationPropertyBinding Path="spd_contact_spd_businesscontact" Target="spd_businesscontacts" />
         </EntitySet>
         <EntitySet Name="contractdetails" EntityType="Microsoft.Dynamics.CRM.contractdetail">
           <NavigationPropertyBinding Path="createdby" Target="systemusers" />
@@ -33978,6 +34087,7 @@
           <NavigationPropertyBinding Path="mailboxid" Target="mailboxes" />
           <NavigationPropertyBinding Path="owningbusinessunit" Target="businessunits" />
           <NavigationPropertyBinding Path="modifiedby" Target="systemusers" />
+          <NavigationPropertyBinding Path="regardingobjectid_spd_businesscontact" Target="spd_businesscontacts" />
         </EntitySet>
         <EntitySet Name="mailmergetemplates" EntityType="Microsoft.Dynamics.CRM.mailmergetemplate">
           <NavigationPropertyBinding Path="transactioncurrencyid" Target="transactioncurrencies" />
@@ -34943,6 +35053,7 @@
           <NavigationPropertyBinding Path="objectid_queueitem" Target="queueitems" />
           <NavigationPropertyBinding Path="objectid_goal" Target="goals" />
           <NavigationPropertyBinding Path="objectid_phonecall" Target="phonecalls" />
+          <NavigationPropertyBinding Path="objectid_spd_businesscontact" Target="spd_businesscontacts" />
         </EntitySet>
         <EntitySet Name="privileges" EntityType="Microsoft.Dynamics.CRM.privilege">
           <NavigationPropertyBinding Path="roletemplateprivileges_association" Target="roletemplates" />
@@ -35113,6 +35224,7 @@
           <NavigationPropertyBinding Path="regardingobjectid_mailbox" Target="mailboxes" />
           <NavigationPropertyBinding Path="regardingobjectid_recurringappointmentmaster" Target="recurringappointmentmasters" />
           <NavigationPropertyBinding Path="completedby" Target="systemusers" />
+          <NavigationPropertyBinding Path="regardingobjectid_spd_businesscontact" Target="spd_businesscontacts" />
         </EntitySet>
         <EntitySet Name="processstages" EntityType="Microsoft.Dynamics.CRM.processstage">
           <NavigationPropertyBinding Path="processstage_knowledgearticle" Target="knowledgearticles" />
@@ -36365,6 +36477,25 @@
           <NavigationPropertyBinding Path="spd_application_RecurringAppointmentMasters" Target="recurringappointmentmasters" />
           <NavigationPropertyBinding Path="spd_application_SocialActivities" Target="socialactivities" />
           <NavigationPropertyBinding Path="spd_application_ServiceAppointments" Target="serviceappointments" />
+          <NavigationPropertyBinding Path="spd_ControllingMemberOtherBusiness" Target="spd_licenses" />
+        </EntitySet>
+        <EntitySet Name="spd_businesscontacts" EntityType="Microsoft.Dynamics.CRM.spd_businesscontact">
+          <NavigationPropertyBinding Path="createdby" Target="systemusers" />
+          <NavigationPropertyBinding Path="createdonbehalfby" Target="systemusers" />
+          <NavigationPropertyBinding Path="modifiedby" Target="systemusers" />
+          <NavigationPropertyBinding Path="modifiedonbehalfby" Target="systemusers" />
+          <NavigationPropertyBinding Path="owninguser" Target="systemusers" />
+          <NavigationPropertyBinding Path="owningteam" Target="teams" />
+          <NavigationPropertyBinding Path="ownerid" Target="owners" />
+          <NavigationPropertyBinding Path="owningbusinessunit" Target="businessunits" />
+          <NavigationPropertyBinding Path="spd_businesscontact_SyncErrors" Target="syncerrors" />
+          <NavigationPropertyBinding Path="spd_businesscontact_AsyncOperations" Target="asyncoperations" />
+          <NavigationPropertyBinding Path="spd_businesscontact_MailboxTrackingFolders" Target="mailboxtrackingfolders" />
+          <NavigationPropertyBinding Path="spd_businesscontact_ProcessSession" Target="processsessions" />
+          <NavigationPropertyBinding Path="spd_businesscontact_BulkDeleteFailures" Target="bulkdeletefailures" />
+          <NavigationPropertyBinding Path="spd_businesscontact_PrincipalObjectAttributeAccesses" Target="principalobjectattributeaccessset" />
+          <NavigationPropertyBinding Path="spd_OrganizationId" Target="accounts" />
+          <NavigationPropertyBinding Path="spd_ContactId" Target="contacts" />
         </EntitySet>
         <EntitySet Name="spd_clearanceaccesses" EntityType="Microsoft.Dynamics.CRM.spd_clearanceaccess">
           <NavigationPropertyBinding Path="createdby" Target="systemusers" />
@@ -36551,6 +36682,8 @@
           <NavigationPropertyBinding Path="spd_license_ProcessSession" Target="processsessions" />
           <NavigationPropertyBinding Path="spd_license_BulkDeleteFailures" Target="bulkdeletefailures" />
           <NavigationPropertyBinding Path="spd_license_PrincipalObjectAttributeAccesses" Target="principalobjectattributeaccessset" />
+          <NavigationPropertyBinding Path="spd_license_application_ControllingMemberOtherBusiness" Target="spd_applications" />
+          <NavigationPropertyBinding Path="spd_Organization" Target="accounts" />
         </EntitySet>
         <EntitySet Name="spd_organizationtypes" EntityType="Microsoft.Dynamics.CRM.spd_organizationtype">
           <NavigationPropertyBinding Path="createdby" Target="systemusers" />
@@ -36995,6 +37128,7 @@
           <NavigationPropertyBinding Path="regardingobjectid_emailserverprofile_syncerror" Target="emailserverprofiles" />
           <NavigationPropertyBinding Path="regardingobjectid_goalrollupquery_syncerror" Target="goalrollupqueries" />
           <NavigationPropertyBinding Path="regardingobjectid_transactioncurrency_syncerror" Target="transactioncurrencies" />
+          <NavigationPropertyBinding Path="regardingobjectid_spd_businesscontact" Target="spd_businesscontacts" />
         </EntitySet>
         <EntitySet Name="systemforms" EntityType="Microsoft.Dynamics.CRM.systemform">
           <NavigationPropertyBinding Path="SystemForm_AsyncOperations" Target="asyncoperations" />
@@ -38151,6 +38285,11 @@
           <NavigationPropertyBinding Path="user_phonecall" Target="phonecalls" />
           <NavigationPropertyBinding Path="user_appointment" Target="appointments" />
           <NavigationPropertyBinding Path="lk_expiredprocess_createdonbehalfby" Target="expiredprocesses" />
+          <NavigationPropertyBinding Path="lk_spd_businesscontact_createdby" Target="spd_businesscontacts" />
+          <NavigationPropertyBinding Path="lk_spd_businesscontact_createdonbehalfby" Target="spd_businesscontacts" />
+          <NavigationPropertyBinding Path="lk_spd_businesscontact_modifiedby" Target="spd_businesscontacts" />
+          <NavigationPropertyBinding Path="lk_spd_businesscontact_modifiedonbehalfby" Target="spd_businesscontacts" />
+          <NavigationPropertyBinding Path="user_spd_businesscontact" Target="spd_businesscontacts" />
         </EntitySet>
         <EntitySet Name="systemusersyncmappingprofilescollection" EntityType="Microsoft.Dynamics.CRM.systemusersyncmappingprofiles" />
         <EntitySet Name="tasks" EntityType="Microsoft.Dynamics.CRM.task">
@@ -38347,6 +38486,7 @@
           <NavigationPropertyBinding Path="administratorid" Target="systemusers" />
           <NavigationPropertyBinding Path="Team_BulkDeleteFailures" Target="bulkdeletefailures" />
           <NavigationPropertyBinding Path="team_goal_goalowner" Target="goals" />
+          <NavigationPropertyBinding Path="team_spd_businesscontact" Target="spd_businesscontacts" />
         </EntitySet>
         <EntitySet Name="teamsyncattributemappingprofilescollection" EntityType="Microsoft.Dynamics.CRM.teamsyncattributemappingprofiles" />
         <EntitySet Name="teamtemplates" EntityType="Microsoft.Dynamics.CRM.teamtemplate">
