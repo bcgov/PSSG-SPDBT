@@ -2,6 +2,7 @@
 using FluentValidation.AspNetCore;
 using Spd.Manager.Membership;
 using Spd.Utilities.Address;
+using Spd.Utilities.BCeIDWS;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Hosting;
@@ -73,6 +74,7 @@ namespace Spd.Presentation.Screening
             services.AddTempFileStorageService();
             services.AddFileStorageProxy(configuration);
             services
+              .AddBCeIDService(configuration)
               .AddPaymentService(configuration)
               .AddDynamicsProxy(configuration)
               .AddAddressAutoComplete(configuration);

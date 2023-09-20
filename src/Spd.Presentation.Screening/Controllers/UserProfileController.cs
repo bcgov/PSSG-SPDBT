@@ -71,6 +71,7 @@ namespace Spd.Presentation.Screening.Controllers
         [Authorize(Policy = "OnlyIdir")]
         public async Task<IdirUserProfileResponse> IdirUserWhoami()
         {
+
             string? identityProvider = _currentUser.GetIdentityProvider();
             if (identityProvider != null && identityProvider.Equals("idir", StringComparison.InvariantCultureIgnoreCase))
             {
