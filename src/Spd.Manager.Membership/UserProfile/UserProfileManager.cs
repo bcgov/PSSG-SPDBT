@@ -5,6 +5,7 @@ using Spd.Resource.Organizations.Identity;
 using Spd.Resource.Organizations.Org;
 using Spd.Resource.Organizations.Registration;
 using Spd.Resource.Organizations.User;
+using Spd.Utilities.BCeIDWS;
 using Spd.Utilities.Shared;
 
 namespace Spd.Manager.Membership.UserProfile
@@ -20,6 +21,7 @@ namespace Spd.Manager.Membership.UserProfile
         private readonly IIdentityRepository _idRepository;
         private readonly IOrgRepository _orgRepository;
         private readonly IOrgRegistrationRepository _orgRegistrationRepository;
+        private readonly IBCeIDService _bceidService;
         private readonly IMapper _mapper;
 
         public UserProfileManager(
@@ -27,6 +29,7 @@ namespace Spd.Manager.Membership.UserProfile
             IIdentityRepository idRepository,
             IOrgRepository orgRepository,
             IOrgRegistrationRepository orgRegistrationRepository,
+            IBCeIDService bceidService,
             IMapper mapper)
         {
             _orgUserRepository = orgUserRepository;
@@ -34,6 +37,7 @@ namespace Spd.Manager.Membership.UserProfile
             _orgRepository = orgRepository;
             _mapper = mapper;
             _orgRegistrationRepository = orgRegistrationRepository;
+            _bceidService = bceidService;
         }
 
         public async Task<OrgUserProfileResponse> Handle(GetCurrentUserProfileQuery request, CancellationToken ct)
@@ -85,7 +89,7 @@ namespace Spd.Manager.Membership.UserProfile
                 userInfos.Add(ui);
             }
 
-            if(!orgRegisters.OrgRegistrationResults.Any() && !orgResult.OrgResults.Any()) //not found in org registration and org
+            if (!orgRegisters.OrgRegistrationResults.Any() && !orgResult.OrgResults.Any()) //not found in org registration and org
             {
                 UserInfo ui = new UserInfo();
                 ui.UserInfoMsgType = UserInfoMsgTypeCode.ACCOUNT_NOT_MATCH_RECORD;
@@ -110,6 +114,13 @@ namespace Spd.Manager.Membership.UserProfile
 
         public async Task<IdirUserProfileResponse> Handle(ManageIdirUserCommand cmd, CancellationToken ct)
         {
+            IDIRUserDetailResult idirDetail = (IDIRUserDetailResult)await _bceidService.HandleQuery(new IDIRUserDetailQuery()
+            {
+                RequesterGuid = cmd.IdirUserIdentity.UserGuid,
+                RequesterAccountType = RequesterAccountTypeEnum.Internal,
+                UserGuid = cmd.IdirUserIdentity.UserGuid
+            });
+
             var existingIdentities = await _idRepository.Query(new IdentityQry(cmd.IdirUserIdentity.UserGuid, null, IdentityProviderTypeEnum.Idir), ct);
             var identity = existingIdentities.Items.FirstOrDefault();
             Guid? identityId = identity?.Id;
@@ -137,12 +148,14 @@ namespace Spd.Manager.Membership.UserProfile
                 result = userOrgResult.UserResult;
             }
             var response = _mapper.Map<IdirUserProfileResponse>(result);
+            response.OrgName = idirDetail.MinistryName;
             response.UserGuid = cmd.IdirUserIdentity?.UserGuid;
             response.UserDisplayName = cmd.IdirUserIdentity?.DisplayName;
             response.IdirUserName = cmd.IdirUserIdentity?.IdirUserName;
             response.IsFirstTimeLogin = isFirstTimeLogin;
+            response.IsPSA = idirDetail.IsPSA;
             //todo: temp hardcode
-            response.OrgId = Guid.Parse("64540211-d346-ee11-b845-00505683fbf4"); 
+            response.OrgId = Guid.Parse("64540211-d346-ee11-b845-00505683fbf4");
             return response;
         }
 
