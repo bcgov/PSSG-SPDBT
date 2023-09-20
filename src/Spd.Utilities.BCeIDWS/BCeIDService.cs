@@ -1,0 +1,60 @@
+﻿using Microsoft.Extensions.Options;
+using ServiceReference;
+using Spd.Utilities.BCeIDWS;
+
+namespace Spd.Utilities.Payment
+{
+    internal partial class BCeIDService : IBCeIDService
+    {
+        private readonly BCeIDSettings _config;
+        private readonly BCeIDServiceSoap _client;
+
+        public BCeIDService(IOptions<BCeIDSettings> config, BCeIDServiceSoap client)
+        {
+            _config = config.Value;
+            _client = client;
+        }
+
+        public async Task<BCeIDResult> HandleQuery(BCeIDQuery qry)
+        {
+            return qry switch
+            {
+                IDIRUserDetailQuery q => await GetIDIRUserDetailsAsync(q),
+                _ => throw new NotSupportedException($"{qry.GetType().Name} is not supported")
+            };
+        }
+
+        public async Task<IDIRUserDetailResult> GetIDIRUserDetailsAsync(IDIRUserDetailQuery qry)
+        {
+            AccountDetailResponse accountDetailResp = await _client.getAccountDetailAsync(new AccountDetailRequest()
+            {
+                onlineServiceId = _config.OnlineServiceId,
+                requesterAccountTypeCode = BCeIDAccountTypeCode.Internal,
+                requesterUserGuid = qry.RequesterGuid,
+                userGuid = qry.UserGuid,
+                accountTypeCode = BCeIDAccountTypeCode.Internal,
+            });
+
+            InternalUserGroupInfoResponse groupResp = await _client.getInternalUserGroupInfoAsync(new InternalUserGroupInfoRequest()
+            {
+                onlineServiceId = _config.OnlineServiceId,
+                requesterAccountTypeCode = BCeIDAccountTypeCode.Internal,
+                requesterUserGuid = qry.RequesterGuid,
+                userGuid = qry.UserGuid,
+                groupMatches = new BCeIDInternalGroupMatch[]
+                {
+                    new BCeIDInternalGroupMatch
+                    {
+                        groupName="Portal_Service_Account"//"MY_IDIR_SECURITY_GROUP"
+                    }
+                }
+            });
+            return new IDIRUserDetailResult
+            {
+                MinistryCode = accountDetailResp.account.internalIdentity.organizationCode.value,
+                MinistryName = accountDetailResp.account.internalIdentity.company.value,
+                IsPSA = groupResp.groupList.Any(g => g.groupGuid.value.ToString() == "PSA-group-guid")
+            };
+        }
+    }
+}
