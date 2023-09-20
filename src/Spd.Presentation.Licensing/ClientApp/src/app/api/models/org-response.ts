@@ -19,6 +19,7 @@ export interface OrgResponse {
   employeeInteractionType?: EmployeeInteractionTypeCode;
   employeeOrganizationTypeCode?: EmployeeOrganizationTypeCode;
   genericUploadEnabled?: boolean;
+  hasInvoiceSupport?: boolean;
   id?: string;
   licenseesNeedVulnerableSectorScreening?: BooleanTypeCode;
   organizationLegalName?: null | string;
