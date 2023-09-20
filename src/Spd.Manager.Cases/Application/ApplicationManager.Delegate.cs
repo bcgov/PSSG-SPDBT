@@ -21,7 +21,7 @@ namespace Spd.Manager.Cases.Application
 
         public async Task<DelegateResponse> Handle(CreateDelegateCommand command, CancellationToken ct)
         {
-            //if already has an user.
+            //if already has an user. use email to connect
             Guid? userId = null;
             PortalUserListResp userList = await _portalUserRepository.QueryAsync(
                 new PortalUserQry() { OrganizationId = SpdConstants.BC_GOV_ORG_ID, UserEmail = command.CreateRequest.EmailAddress },
@@ -32,21 +32,19 @@ namespace Spd.Manager.Cases.Application
                 userId = userList.Items.First().Id;
             }
 
-
-
             DelegateListResp? allDelegateList = await _delegateRepository.QueryAsync(
                  new DelegateQry(command.ApplicationId),
                  ct);
 
-            //check if existing
+            //check if existing or over max
             bool delegateAlreadyExists = false;
             if (userId != null)
             {
-                delegateAlreadyExists = allDelegateList.Items.Where(o => o.PortalUserId == userId).Any();
+                delegateAlreadyExists = allDelegateList.Items.Any(o => o.PortalUserId == userId); //for initiator
             }
             else
             {
-                delegateAlreadyExists = allDelegateList.Items.Where(o => o.EmailAddress == command.CreateRequest.EmailAddress).Any();
+                delegateAlreadyExists = allDelegateList.Items.Any(o => o.EmailAddress == command.CreateRequest.EmailAddress);
             }
             if (delegateAlreadyExists)
             {
@@ -59,6 +57,14 @@ namespace Spd.Manager.Cases.Application
             }
 
             //create delegate
+            if (userId == null) 
+            {
+                //create user shell
+                var createPortalUserCmd = _mapper.Map<CreatePortalUserCmd>(command);
+                createPortalUserCmd.OrgId = SpdConstants.BC_GOV_ORG_ID;
+                var user = await _portalUserRepository.ManageAsync(createPortalUserCmd, ct);
+                userId = user.Id;
+            }
             CreateDelegateCmd cmd = _mapper.Map<CreateDelegateCmd>(command.CreateRequest);
             cmd.PortalUserId = userId;
             cmd.ApplicationId = command.ApplicationId;
