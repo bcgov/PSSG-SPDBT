@@ -6,6 +6,7 @@ using Spd.Resource.Applicants.ApplicationInvite;
 using Spd.Resource.Applicants.Delegates;
 using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.Incident;
+using Spd.Resource.Applicants.PortalUser;
 using Spd.Utilities.Shared.ManagerContract;
 using Spd.Utilities.Shared.ResourceContracts;
 
@@ -83,6 +84,7 @@ namespace Spd.Manager.Cases.Application
                 .ForMember(d => d.Email, opt => opt.MapFrom(s => s.EmailAddress));
             CreateMap<DelegateResp, DelegateResponse>();
             CreateMap<DelegateCreateRequest, CreateDelegateCmd>();
+            CreateMap<DelegateCreateRequest, CreatePortalUserCmd>();
         }
 
         private static CaseSubStatusCode? GetCaseSubStatusCode(CaseSubStatusEnum? subStatusEnum)
