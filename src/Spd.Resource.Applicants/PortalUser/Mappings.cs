@@ -8,7 +8,10 @@ namespace Spd.Resource.Applicants.PortalUser
         public Mappings()
         {
             _ = CreateMap<spd_portaluser, PortalUserResp>()
-            .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_portaluserid));
+            .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_portaluserid))
+            .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.spd_firstname))
+            .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.spd_surname))
+            .ForMember(d => d.OrganizationId, opt => opt.MapFrom(s => s._spd_organizationid_value));
 
             _ = CreateMap<CreatePortalUserCmd, spd_portaluser> ()
             .ForMember(d => d.spd_portaluserid, opt => opt.MapFrom(s => Guid.NewGuid()))

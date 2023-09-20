@@ -60,7 +60,7 @@ namespace Spd.Manager.Cases.Application
             if (userId == null) 
             {
                 //create user shell
-                var createPortalUserCmd = _mapper.Map<CreatePortalUserCmd>(command);
+                var createPortalUserCmd = _mapper.Map<CreatePortalUserCmd>(command.CreateRequest);
                 createPortalUserCmd.OrgId = SpdConstants.BC_GOV_ORG_ID;
                 var user = await _portalUserRepository.ManageAsync(createPortalUserCmd, ct);
                 userId = user.Id;
