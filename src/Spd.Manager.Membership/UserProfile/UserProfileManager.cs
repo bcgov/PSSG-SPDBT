@@ -174,7 +174,7 @@ namespace Spd.Manager.Membership.UserProfile
             response.IsFirstTimeLogin = isFirstTimeLogin;
             response.IsPSA = idirDetail?.IsPSA ?? false;
             //todo: temp hardcode
-            response.OrgId = SpdConstants.BC_GOV_ORG_ID;
+            response.OrgId = Guid.Parse("64540211-d346-ee11-b845-00505683fbf4");
             return response;
         }
 
