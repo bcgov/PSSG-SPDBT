@@ -7,6 +7,8 @@ import { AuthUserIdirService } from 'src/app/core/services/auth-user-idir.servic
 @Component({
 	selector: 'app-screening-checks',
 	template: `
+		<app-psso-header></app-psso-header>
+
 		<app-screening-requests-common
 			[portal]="portal.Psso"
 			[isPsaUser]="isPsaUser"
