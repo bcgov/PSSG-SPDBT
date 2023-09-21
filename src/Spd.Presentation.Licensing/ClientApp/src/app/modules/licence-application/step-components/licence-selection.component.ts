@@ -84,7 +84,7 @@ import { LicenceApplicationService, LicenceFormStepComponent, SwlTypeCode } from
 					font: 32px Arial, sans-serif;
 
 					&__item {
-						height: 3em;
+						height: 2.5em;
 						/* max-width: 4em; */
 					}
 				}

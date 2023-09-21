@@ -9,10 +9,16 @@ import { SwlCategoryTypeCode } from '../licence-application.service';
 	template: `
 		<section class="step-section p-3">
 			<div class="step">
-				<app-step-title [title]="title"> </app-step-title>
 				<div class="step-container">
 					<div class="row">
-						<div class="offset-xxl-3 col-xxl-8 offset-xl-2 col-xl-9 col-lg-12">
+						<div class="offset-xxl-2 col-xxl-8 offset-xl-1 col-xl-9 col-lg-12">
+							<div class="text-center">
+								<mat-chip-option [selectable]="false" class="mat-chip-green me-3"> {{ index }} </mat-chip-option>
+								<span class="title" style="position: relative; top: -5px;">{{ title }}</span>
+							</div>
+
+							<mat-divider class="mt-1 mb-4"></mat-divider>
+
 							<div [ngSwitch]="option?.code">
 								<div *ngSwitchCase="swlCategoryTypeCodes.ArmouredCarGuard">
 									<ng-container *ngTemplateOutlet="ArmouredCarGuard"></ng-container>
@@ -209,6 +215,13 @@ import { SwlCategoryTypeCode } from '../licence-application.service';
 				font-size: initial;
 				color: initial;
 			}
+
+			/* .title {
+				font-size: 1.7em;
+				font-weight: 400;
+				text-align: center;
+				color: var(--color-primary);
+			} */
 		`,
 	],
 	encapsulation: ViewEncapsulation.None,
@@ -232,7 +245,7 @@ export class LicenceCategorySpecificComponent implements OnInit {
 			attachments: new FormControl('', [Validators.required]),
 		});
 
-		this.title = `${this.index}.  ${this.option?.desc ?? ''}`;
+		this.title = `${this.option?.desc ?? ''}`;
 	}
 
 	public get requirement(): FormControl {
