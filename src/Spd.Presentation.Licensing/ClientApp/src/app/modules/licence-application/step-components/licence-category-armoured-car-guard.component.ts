@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { SelectOptions } from 'src/app/core/code-types/model-desc.models';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { LicenceFormStepComponent } from '../licence-application.service';
+import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-category-armoured-car-guard',
@@ -19,7 +19,7 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 								<span class="title" style="position: relative; top: -5px;">{{ title }}</span>
 							</div>
 
-							<mat-divider class="mt-1 mb-4"></mat-divider>
+							<mat-divider class="mt-1 mb-2"></mat-divider>
 
 							<div class="fs-5 fw-semibold mb-4">Authorization to Carry Certificate required</div>
 							<p>
@@ -87,7 +87,7 @@ export class LicenceCategoryArmouredCarGuardComponent implements OnInit, Licence
 	@Input() option: SelectOptions | null = null;
 	@Input() index: number = 0;
 
-	constructor(private formBuilder: FormBuilder) {}
+	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
 		this.form = this.formBuilder.group({

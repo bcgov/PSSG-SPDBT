@@ -18,7 +18,7 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 								<span class="title" style="position: relative; top: -5px;">{{ title }}</span>
 							</div>
 
-							<mat-divider class="mt-1 mb-4"></mat-divider>
+							<mat-divider class="mt-1 mb-2"></mat-divider>
 						</div>
 					</div>
 				</div>

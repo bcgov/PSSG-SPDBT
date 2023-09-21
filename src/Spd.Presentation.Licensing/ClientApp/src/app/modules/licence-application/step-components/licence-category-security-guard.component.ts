@@ -18,10 +18,10 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 								<span class="title" style="position: relative; top: -5px;">{{ title }}</span>
 							</div>
 
-							<mat-divider class="mt-1 mb-4"></mat-divider>
+							<mat-divider class="mt-1 mb-2"></mat-divider>
 
-							<div class="fs-5 fw-semibold mb-4">Proof of experience or training required</div>
-							<div class="fw-semibold mb-2">Experience:</div>
+							<div class="fs-5 mb-2">Proof of experience or training required</div>
+							<div class="mb-2">Experience:</div>
 							<p>
 								To qualify for a security guard security worker licence, you must meet one of the following training or
 								experience requirements:

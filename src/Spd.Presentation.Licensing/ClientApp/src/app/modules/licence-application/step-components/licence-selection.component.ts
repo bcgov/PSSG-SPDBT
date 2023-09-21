@@ -78,8 +78,8 @@ import { LicenceApplicationService, LicenceFormStepComponent, SwlTypeCode } from
 		`
 			.box {
 				&__image {
-					margin-top: 1em;
-					margin-bottom: 1em;
+					margin-top: 1.5em;
+					margin-bottom: 1.5em;
 					border-radius: 50%;
 					font: 32px Arial, sans-serif;
 

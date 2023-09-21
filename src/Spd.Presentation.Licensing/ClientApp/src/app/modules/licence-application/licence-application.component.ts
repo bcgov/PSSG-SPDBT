@@ -105,12 +105,12 @@ export class LicenceApplicationComponent implements OnInit {
 	}
 
 	onPreviousStepperStep(stepper: MatStepper): void {
-		console.log('previous', stepper);
+		// console.log('previous', stepper);
 		stepper.previous();
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
-		console.log('next', stepper);
+		// console.log('next', stepper);
 		stepper.next();
 	}
 

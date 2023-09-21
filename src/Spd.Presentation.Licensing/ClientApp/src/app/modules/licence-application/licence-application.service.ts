@@ -28,6 +28,23 @@ export class LicenceModel {
 	expiryDate: string | null = null;
 	licenceTermCode: SwlTermCode | null = null;
 	swlCategoryList: SelectOptions[] = [];
+	licenceCategoryArmouredCarGuard?: {};
+	licenceCategoryBodyArmourSales?: {};
+	licenceCategoryyClosedCircuitTelevisionInstaller?: {};
+	licenceCategoryElectronicLockingDeviceInstaller?: {};
+	licenceCategoryFireInvestigator?: {};
+	licenceCategoryLocksmithUnderSupervision?: {};
+	licenceCategoryLocksmith?: {};
+	licenceCategoryPrivateInvestigatorUnderSupervision?: {};
+	licenceCategoryPrivateInvestigator?: {};
+	licenceCategorySecurityAlarmInstallerUnderSupervision?: {};
+	licenceCategorySecurityAlarmInstaller?: {};
+	licenceCategorySecurityAlarmMonitor?: {};
+	licenceCategorySecurityAlarmResponse?: {};
+	licenceCategorySecurityAlarmSales?: {};
+	licenceCategorySecurityConsultant?: {};
+	licenceCategorySecurityGuardUnderSupervision?: {};
+	licenceCategorySecurityGuard?: {};
 }
 
 export enum SwlTypeCode {
@@ -129,8 +146,8 @@ export class LicenceApplicationService {
 				expiryDate: '2002-02-07T00:00:00+00:00',
 				licenceTermCode: SwlTermCode.ThreeYears,
 				swlCategoryList: [
-					{ code: 'ARMOURED_CAR_GUARD', desc: 'Armoured Car Guard' },
-					{ code: 'SECURITY_GUARD', desc: 'Security Guard' },
+					{ code: SwlCategoryTypeCode.SecurityAlarmSales, desc: 'Security Alarm Sales' },
+					{ code: SwlCategoryTypeCode.SecurityGuard, desc: 'Security Guard' },
 				],
 			};
 			this.licenceModel = { ...defaults };
@@ -170,5 +187,26 @@ export class LicenceApplicationService {
 	saveLicence(): void {
 		this.hotToastService.success('Licence information has been saved');
 		console.log('licence data', this.licenceModel);
+	}
+
+	clearLicenceCategoryData(): void {
+		// call function to delete all licence category data
+		delete this.licenceModel.licenceCategoryArmouredCarGuard;
+		delete this.licenceModel.licenceCategoryBodyArmourSales;
+		delete this.licenceModel.licenceCategoryyClosedCircuitTelevisionInstaller;
+		delete this.licenceModel.licenceCategoryElectronicLockingDeviceInstaller;
+		delete this.licenceModel.licenceCategoryFireInvestigator;
+		delete this.licenceModel.licenceCategoryLocksmithUnderSupervision;
+		delete this.licenceModel.licenceCategoryLocksmith;
+		delete this.licenceModel.licenceCategoryPrivateInvestigatorUnderSupervision;
+		delete this.licenceModel.licenceCategoryPrivateInvestigator;
+		delete this.licenceModel.licenceCategorySecurityAlarmInstallerUnderSupervision;
+		delete this.licenceModel.licenceCategorySecurityAlarmInstaller;
+		delete this.licenceModel.licenceCategorySecurityAlarmMonitor;
+		delete this.licenceModel.licenceCategorySecurityAlarmResponse;
+		delete this.licenceModel.licenceCategorySecurityAlarmSales;
+		delete this.licenceModel.licenceCategorySecurityConsultant;
+		delete this.licenceModel.licenceCategorySecurityGuardUnderSupervision;
+		delete this.licenceModel.licenceCategorySecurityGuard;
 	}
 }

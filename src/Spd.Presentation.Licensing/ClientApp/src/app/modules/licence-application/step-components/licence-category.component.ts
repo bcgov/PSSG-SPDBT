@@ -78,11 +78,9 @@ import {
 	styles: [
 		`
 			.category-title {
-				font-size: 1.5em;
+				font-size: 1.3em;
 				font-weight: 400;
 				color: var(--color-primary);
-				position: relative;
-				top: -5px;
 			}
 		`,
 	],
@@ -309,11 +307,12 @@ export class LicenceCategoryComponent implements OnInit, LicenceFormStepComponen
 		if (this.swlCategoryList.find((cat) => cat.code == SwlCategoryTypeCode.SecurityConsultant)) {
 			updatedList = updatedList.filter(
 				(cat) =>
-					cat.code != SwlCategoryTypeCode.SecurityGuard && cat.code != SwlCategoryTypeCode.SecurityGuardUnderSupervision
+					cat.code != SwlCategoryTypeCode.SecurityConsultant &&
+					cat.code != SwlCategoryTypeCode.SecurityGuardUnderSupervision
 			);
 		}
 
 		this.validCategoryList = [...updatedList];
-		console.log('updatedList', this.validCategoryList);
+		// console.log('updatedList', this.validCategoryList);
 	}
 }

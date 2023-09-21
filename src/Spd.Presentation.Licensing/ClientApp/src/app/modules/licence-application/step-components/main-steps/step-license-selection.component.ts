@@ -393,7 +393,7 @@ export class StepLicenseSelectionComponent {
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	getStepData(): any {
-		return {
+		let data = {
 			// ...this.licenceSelectionComponent.getDataToSave(),
 			// ...this.licenceTypeComponent.getDataToSave(),
 			...(this.licenceSelectionComponent ? this.licenceSelectionComponent.getDataToSave() : {}),
@@ -406,25 +406,147 @@ export class StepLicenseSelectionComponent {
 			// ...this.licenceCategoryComponent.getDataToSave(),
 			// ...this.licenceTermComponent.getDataToSave(),
 			...(this.licenceCategoryComponent ? this.licenceCategoryComponent.getDataToSave() : {}),
-			...(this.armouredCarGuardComponent ? this.armouredCarGuardComponent.getDataToSave() : {}),
-			...(this.bodyArmourSalesComponent ? this.bodyArmourSalesComponent.getDataToSave() : {}),
-			...(this.ccTelevisionInstallerComponent ? this.ccTelevisionInstallerComponent.getDataToSave() : {}),
-			...(this.elDeviceInstallerComponent ? this.elDeviceInstallerComponent.getDataToSave() : {}),
-			...(this.fireInvestigatorComponent ? this.fireInvestigatorComponent.getDataToSave() : {}),
-			...(this.locksmithComponent ? this.locksmithComponent.getDataToSave() : {}),
-			...(this.locksmithSupComponent ? this.locksmithSupComponent.getDataToSave() : {}),
-			...(this.privateInvestigatorComponent ? this.privateInvestigatorComponent.getDataToSave() : {}),
-			...(this.privateInvestigatorSupComponent ? this.privateInvestigatorSupComponent.getDataToSave() : {}),
-			...(this.securityGuardComponent ? this.securityGuardComponent.getDataToSave() : {}),
-			...(this.securityGuardSupComponent ? this.securityGuardSupComponent.getDataToSave() : {}),
-			...(this.securityAlarmInstallerSupComponent ? this.securityAlarmInstallerSupComponent.getDataToSave() : {}),
-			...(this.securityAlarmInstallerComponent ? this.securityAlarmInstallerComponent.getDataToSave() : {}),
-			...(this.securityAlarmMonitorComponent ? this.securityAlarmMonitorComponent.getDataToSave() : {}),
-			...(this.securityAlarmResponseComponent ? this.securityAlarmResponseComponent.getDataToSave() : {}),
-			...(this.securityAlarmSalesComponent ? this.securityAlarmSalesComponent.getDataToSave() : {}),
-			...(this.securityConsultantComponent ? this.securityConsultantComponent.getDataToSave() : {}),
+			// ...(this.armouredCarGuardComponent ? this.armouredCarGuardComponent.getDataToSave() : {}),
+			// ...(this.bodyArmourSalesComponent ? this.bodyArmourSalesComponent.getDataToSave() : {}),
+			// ...(this.ccTelevisionInstallerComponent ? this.ccTelevisionInstallerComponent.getDataToSave() : {}),
+			// ...(this.elDeviceInstallerComponent ? this.elDeviceInstallerComponent.getDataToSave() : {}),
+			// ...(this.fireInvestigatorComponent ? this.fireInvestigatorComponent.getDataToSave() : {}),
+			// ...(this.locksmithComponent ? this.locksmithComponent.getDataToSave() : {}),
+			// ...(this.locksmithSupComponent ? this.locksmithSupComponent.getDataToSave() : {}),
+			// ...(this.privateInvestigatorComponent ? this.privateInvestigatorComponent.getDataToSave() : {}),
+			// ...(this.privateInvestigatorSupComponent ? this.privateInvestigatorSupComponent.getDataToSave() : {}),
+			// ...(this.securityGuardComponent ? this.securityGuardComponent.getDataToSave() : {}),
+			// ...(this.securityGuardSupComponent ? this.securityGuardSupComponent.getDataToSave() : {}),
+			// ...(this.securityAlarmInstallerSupComponent ? this.securityAlarmInstallerSupComponent.getDataToSave() : {}),
+			// ...(this.securityAlarmInstallerComponent ? this.securityAlarmInstallerComponent.getDataToSave() : {}),
+			// ...(this.securityAlarmMonitorComponent ? this.securityAlarmMonitorComponent.getDataToSave() : {}),
+			// ...(this.securityAlarmResponseComponent ? this.securityAlarmResponseComponent.getDataToSave() : {}),
+			// ...(this.securityAlarmSalesComponent ? this.securityAlarmSalesComponent.getDataToSave() : {}),
+			// ...(this.securityConsultantComponent ? this.securityConsultantComponent.getDataToSave() : {}),
 			...(this.licenceTermComponent ? this.licenceTermComponent.getDataToSave() : {}),
 		};
+
+		const categories = this.licenceApplicationService.licenceModel.swlCategoryList;
+
+		// call function to delete all licence category data
+		this.licenceApplicationService.clearLicenceCategoryData();
+
+		// add back the appropriate licence category data
+		categories.forEach((item: any) => {
+			switch (item.code) {
+				case SwlCategoryTypeCode.ArmouredCarGuard: {
+					data = { ...data, ...(this.armouredCarGuardComponent ? this.armouredCarGuardComponent.getDataToSave() : {}) };
+					break;
+				}
+				case SwlCategoryTypeCode.BodyArmourSales: {
+					data = { ...data, ...(this.bodyArmourSalesComponent ? this.bodyArmourSalesComponent.getDataToSave() : {}) };
+					break;
+				}
+				case SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller: {
+					data = {
+						...data,
+						...(this.ccTelevisionInstallerComponent ? this.ccTelevisionInstallerComponent.getDataToSave() : {}),
+					};
+					break;
+				}
+				case SwlCategoryTypeCode.ElectronicLockingDeviceInstaller: {
+					data = {
+						...data,
+						...(this.elDeviceInstallerComponent ? this.elDeviceInstallerComponent.getDataToSave() : {}),
+					};
+					break;
+				}
+				case SwlCategoryTypeCode.FireInvestigator: {
+					data = { ...data, ...(this.fireInvestigatorComponent ? this.fireInvestigatorComponent.getDataToSave() : {}) };
+					break;
+				}
+				case SwlCategoryTypeCode.Locksmith: {
+					data = { ...data, ...(this.locksmithComponent ? this.locksmithComponent.getDataToSave() : {}) };
+					break;
+				}
+				case SwlCategoryTypeCode.LocksmithUnderSupervision: {
+					data = { ...data, ...(this.locksmithSupComponent ? this.locksmithSupComponent.getDataToSave() : {}) };
+					break;
+				}
+				case SwlCategoryTypeCode.PrivateInvestigator: {
+					data = {
+						...data,
+						...(this.privateInvestigatorComponent ? this.privateInvestigatorComponent.getDataToSave() : {}),
+					};
+					break;
+				}
+				case SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision: {
+					data = {
+						...data,
+						...(this.privateInvestigatorSupComponent ? this.privateInvestigatorSupComponent.getDataToSave() : {}),
+					};
+					break;
+				}
+				case SwlCategoryTypeCode.SecurityGuard: {
+					data = { ...data, ...(this.securityGuardComponent ? this.securityGuardComponent.getDataToSave() : {}) };
+					break;
+				}
+				case SwlCategoryTypeCode.SecurityGuardUnderSupervision: {
+					data = { ...data, ...(this.securityGuardSupComponent ? this.securityGuardSupComponent.getDataToSave() : {}) };
+					break;
+				}
+				case SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision: {
+					data = {
+						...data,
+						...(this.securityAlarmInstallerSupComponent ? this.securityAlarmInstallerSupComponent.getDataToSave() : {}),
+					};
+					break;
+				}
+				case SwlCategoryTypeCode.SecurityAlarmInstaller: {
+					data = {
+						...data,
+						...(this.securityAlarmInstallerComponent ? this.securityAlarmInstallerComponent.getDataToSave() : {}),
+					};
+					break;
+				}
+				case SwlCategoryTypeCode.SecurityAlarmMonitor: {
+					data = {
+						...data,
+						...(this.securityAlarmMonitorComponent ? this.securityAlarmMonitorComponent.getDataToSave() : {}),
+					};
+					break;
+				}
+				case SwlCategoryTypeCode.SecurityAlarmResponse: {
+					data = {
+						...data,
+						...(this.securityAlarmResponseComponent ? this.securityAlarmResponseComponent.getDataToSave() : {}),
+					};
+					break;
+				}
+				case SwlCategoryTypeCode.SecurityAlarmSales: {
+					data = {
+						...data,
+						...(this.securityAlarmSalesComponent ? this.securityAlarmSalesComponent.getDataToSave() : {}),
+					};
+					break;
+				}
+				case SwlCategoryTypeCode.SecurityConsultant: {
+					data = {
+						...data,
+						...(this.securityConsultantComponent ? this.securityConsultantComponent.getDataToSave() : {}),
+					};
+					break;
+				}
+			}
+		});
+
+		// if (categories.find((item) => item.code == SwlCategoryTypeCode.ArmouredCarGuard)) {
+		// 	const categoryData = this.armouredCarGuardComponent ? this.armouredCarGuardComponent.getDataToSave() : {};
+		// 	console.log('category exists', categoryData);
+
+		// 	data = { ...data, ...categoryData };
+		// } else {
+		// 	console.log('category DOES NOT exist');
+		// 	// data = {...data, ...{licenceCategoryArmouredCarGuard: {}}};
+		// 	// delete data.licenceCategoryArmouredCarGuard;
+		// }
+		// console.log('data', data);
+		return data;
 	}
 
 	onStepNext(): void {
@@ -432,7 +554,7 @@ export class StepLicenseSelectionComponent {
 		const stepData = this.getStepData();
 		this.licenceApplicationService.licenceModel = { ...licenceModel, ...stepData };
 
-		console.log('licenceModel', this.licenceApplicationService.licenceModel);
+		console.log('onStepNext licenceModel', this.licenceApplicationService.licenceModel);
 
 		// const isValid = this.dirtyForm(formNumber);
 		// if (!isValid) return;
@@ -454,8 +576,8 @@ export class StepLicenseSelectionComponent {
 
 		// this.licenceApplicationService.saveLicence();
 
-		console.log('stepData', stepData);
-		console.log('licenceModel', this.licenceApplicationService.licenceModel);
+		// console.log('stepData', stepData);
+		console.log('onFormValidNextStep licenceModel', this.licenceApplicationService.licenceModel);
 
 		this.swlCategoryList = this.licenceApplicationService.licenceModel.swlCategoryList;
 

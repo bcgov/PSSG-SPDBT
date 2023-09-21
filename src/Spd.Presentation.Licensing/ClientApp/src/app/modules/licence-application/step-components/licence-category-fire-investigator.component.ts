@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { SelectOptions } from 'src/app/core/code-types/model-desc.models';
 import { LicenceFormStepComponent } from '../licence-application.service';
 
@@ -18,7 +18,11 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 								<span class="title" style="position: relative; top: -5px;">{{ title }}</span>
 							</div>
 
-							<mat-divider class="mt-1 mb-4"></mat-divider>
+							<mat-divider class="mt-1 mb-2"></mat-divider>
+
+							<form [formGroup]="form" class="text-center my-4" novalidate>
+								<mat-checkbox class="w-auto" formControlName="checkbox"> Fire Investigator </mat-checkbox>
+							</form>
 						</div>
 					</div>
 				</div>
@@ -38,19 +42,17 @@ export class LicenceCategoryFireInvestigatorComponent implements OnInit, Licence
 
 	ngOnInit(): void {
 		this.form = this.formBuilder.group({
-			requirement: new FormControl(null, [Validators.required]),
-			documentExpiryDate: new FormControl(null, [Validators.required]),
-			attachments: new FormControl('', [Validators.required]),
+			checkbox: new FormControl({ value: true, disabled: true }),
 		});
 
 		this.title = `${this.option?.desc ?? ''}`;
 	}
 
 	isFormValid(): boolean {
-		return this.form.valid;
+		return true;
 	}
 
 	getDataToSave(): any {
-		return { licenceCategoryFireInvestigator: { ...this.form.value } };
+		return { licenceCategoryFireInvestigator: {} };
 	}
 }

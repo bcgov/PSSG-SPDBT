@@ -19,56 +19,69 @@ import { LicenceFormStepComponent, SwlCategoryTypeCode } from '../licence-applic
 								<span class="title" style="position: relative; top: -5px;">{{ title }}</span>
 							</div>
 
-							<mat-divider class="mt-1 mb-4"></mat-divider>
+							<mat-divider class="mt-1 mb-2"></mat-divider>
 
-							<div class="fs-5 fw-semibold mb-4">Authorization to Carry Certificate required</div>
+							<div class="fs-5 mb-2">Proof of experience or training required</div>
 							<p>
-								Armoured car guards carry firearms, which requires a firearm licence and an Authorization to Carry (ATC)
-								certificate. You must get this licence and ATC before you can apply to be an armoured car guard. More
-								information is available from the
-								<a href="https://www.rcmp-grc.gc.ca/en/firearms/authorization-carry" target="_blank">RCMP</a>.
+								To qualify for a locksmith security worker licence, you must meet one of the following experience and
+								training requirements. Whether a particular apprenticeship program or locksmithing course is approved by
+								the registrar will be based on a review of program or course content, and training time for each
+								component of the apprenticeship or course:
 							</p>
 
 							<form [formGroup]="form" novalidate>
-								<div class="text-minor-heading fw-semibold mb-2" *ngIf="requirement.value == 'b'; else uploadcopy">
-									Upload your valid Authorization to Carry certificate:
-								</div>
-								<ng-template #uploadcopy>
-									<div class="text-minor-heading fw-semibold mb-2">Upload a copy of your certificate:</div>
-								</ng-template>
-								<div class="my-4">
-									<app-file-upload [maxNumberOfFiles]="10"></app-file-upload>
-									<mat-error
-										class="mat-option-error"
-										*ngIf="
-											(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-											form.get('attachments')?.invalid &&
-											form.get('attachments')?.hasError('required')
-										"
-										>This is required</mat-error
-									>
-								</div>
-								<p>Accepted file formats: docx, doc, pdf, bmp, jpeg, jpg, tif, tiff, png, gif, html, htm</p>
-								<p>File size maximum: 25MB per file</p>
+								<mat-radio-group
+									class="category-radio-group"
+									aria-label="Select an option"
+									formControlName="requirement"
+								>
+									<mat-radio-button class="radio-label" value="a">
+										A Locksmith Certificate of Qualification
+									</mat-radio-button>
+									<mat-divider class="my-2"></mat-divider>
+									<mat-radio-button class="radio-label" value="b">
+										Two years experience of full-time employment as a locksmith under the supervision of a locksmith
+										security worker licensee, and proof of successful completion of an approved apprenticeship program
+									</mat-radio-button>
+									<mat-divider class="my-2"></mat-divider>
+									<mat-radio-button class="radio-label" value="c">
+										Proof of successful completion of an approved locksmithing course, proof of experience in full-time
+										employment as a locksmith under the supervision of a locksmith security worker licensee, and a
+										letter of recommendation and certification from your employer indicating that you are qualified to
+										perform the services of a locksmith unsupervised.
+									</mat-radio-button>
+								</mat-radio-group>
 
-								<div class="row">
-									<div class="col-lg-4 col-md-12 col-sm-12">
-										<mat-form-field>
-											<mat-label>Document Expiry Date</mat-label>
-											<input
-												matInput
-												[matDatepicker]="picker"
-												formControlName="documentExpiryDate"
-												[errorStateMatcher]="matcher"
-											/>
-											<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-											<mat-datepicker #picker startView="multi-year"></mat-datepicker>
-											<mat-error *ngIf="form.get('documentExpiryDate')?.hasError('required')"
-												>This is required</mat-error
-											>
-										</mat-form-field>
-									</div>
+								<mat-divider class="my-3"></mat-divider>
+
+								<div class="text-minor-heading fw-semibold mb-2" *ngIf="requirement.value == 'a'">
+									Upload a copy of your certificate:
 								</div>
+								<div class="text-minor-heading fw-semibold mb-2" *ngIf="requirement.value == 'b'">
+									Upload a letter of recommendation on company letterhead, and proof of successful completion of an
+									approved apprenticeship program, other than that provided by the Industry Training Authority:
+								</div>
+								<div class="text-minor-heading fw-semibold mb-2" *ngIf="requirement.value == 'c'">
+									Upload a letter of recommendation on company letterhead, proof of experience, and proof of successful
+									completion of an approved course:
+								</div>
+
+								<ng-container *ngIf="requirement.value">
+									<div class="my-4">
+										<app-file-upload [maxNumberOfFiles]="10"></app-file-upload>
+										<mat-error
+											class="mat-option-error"
+											*ngIf="
+												(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+												form.get('attachments')?.invalid &&
+												form.get('attachments')?.hasError('required')
+											"
+											>This is required</mat-error
+										>
+									</div>
+									<p>Accepted file formats: docx, doc, pdf, bmp, jpeg, jpg, tif, tiff, png, gif, html, htm</p>
+									<p>File size maximum: 25MB per file</p>
+								</ng-container>
 							</form>
 						</div>
 					</div>
@@ -76,7 +89,14 @@ import { LicenceFormStepComponent, SwlCategoryTypeCode } from '../licence-applic
 			</div>
 		</section>
 	`,
-	styles: [],
+	styles: [
+		`
+			.category-radio-group > .radio-label .mdc-label {
+				font-size: initial;
+				color: initial;
+			}
+		`,
+	],
 })
 export class LicenceCategoryLocksmithComponent implements OnInit, LicenceFormStepComponent {
 	form!: FormGroup;
@@ -93,7 +113,6 @@ export class LicenceCategoryLocksmithComponent implements OnInit, LicenceFormSte
 	ngOnInit(): void {
 		this.form = this.formBuilder.group({
 			requirement: new FormControl(null, [Validators.required]),
-			documentExpiryDate: new FormControl(null, [Validators.required]),
 			attachments: new FormControl('', [Validators.required]),
 		});
 
