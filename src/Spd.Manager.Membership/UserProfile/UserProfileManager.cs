@@ -1,10 +1,12 @@
 using AutoMapper;
 using MediatR;
 using Spd.Manager.Membership.OrgRegistration;
+using Spd.Resource.Applicants.PortalUser;
 using Spd.Resource.Organizations.Identity;
 using Spd.Resource.Organizations.Org;
 using Spd.Resource.Organizations.Registration;
 using Spd.Resource.Organizations.User;
+using Spd.Utilities.BCeIDWS;
 using Spd.Utilities.Shared;
 
 namespace Spd.Manager.Membership.UserProfile
@@ -20,6 +22,8 @@ namespace Spd.Manager.Membership.UserProfile
         private readonly IIdentityRepository _idRepository;
         private readonly IOrgRepository _orgRepository;
         private readonly IOrgRegistrationRepository _orgRegistrationRepository;
+        private readonly IPortalUserRepository _portalUserRepository;
+        private readonly IBCeIDService _bceidService;
         private readonly IMapper _mapper;
 
         public UserProfileManager(
@@ -27,6 +31,8 @@ namespace Spd.Manager.Membership.UserProfile
             IIdentityRepository idRepository,
             IOrgRepository orgRepository,
             IOrgRegistrationRepository orgRegistrationRepository,
+            IBCeIDService bceidService,
+            IPortalUserRepository portalUserRepository,
             IMapper mapper)
         {
             _orgUserRepository = orgUserRepository;
@@ -34,6 +40,8 @@ namespace Spd.Manager.Membership.UserProfile
             _orgRepository = orgRepository;
             _mapper = mapper;
             _orgRegistrationRepository = orgRegistrationRepository;
+            _bceidService = bceidService;
+            _portalUserRepository = portalUserRepository;
         }
 
         public async Task<OrgUserProfileResponse> Handle(GetCurrentUserProfileQuery request, CancellationToken ct)
@@ -85,7 +93,7 @@ namespace Spd.Manager.Membership.UserProfile
                 userInfos.Add(ui);
             }
 
-            if(!orgRegisters.OrgRegistrationResults.Any() && !orgResult.OrgResults.Any()) //not found in org registration and org
+            if (!orgRegisters.OrgRegistrationResults.Any() && !orgResult.OrgResults.Any()) //not found in org registration and org
             {
                 UserInfo ui = new UserInfo();
                 ui.UserInfoMsgType = UserInfoMsgTypeCode.ACCOUNT_NOT_MATCH_RECORD;
@@ -110,6 +118,13 @@ namespace Spd.Manager.Membership.UserProfile
 
         public async Task<IdirUserProfileResponse> Handle(ManageIdirUserCommand cmd, CancellationToken ct)
         {
+            IDIRUserDetailResult idirDetail = (IDIRUserDetailResult)await _bceidService.HandleQuery(new IDIRUserDetailQuery()
+            {
+                RequesterGuid = cmd.IdirUserIdentity.UserGuid,
+                RequesterAccountType = RequesterAccountTypeEnum.Internal,
+                UserGuid = cmd.IdirUserIdentity.UserGuid
+            });
+
             var existingIdentities = await _idRepository.Query(new IdentityQry(cmd.IdirUserIdentity.UserGuid, null, IdentityProviderTypeEnum.Idir), ct);
             var identity = existingIdentities.Items.FirstOrDefault();
             Guid? identityId = identity?.Id;
@@ -121,28 +136,45 @@ namespace Spd.Manager.Membership.UserProfile
                 isFirstTimeLogin = true;
             }
 
-            var existingUser = (OrgUsersResult)await _orgUserRepository.QueryOrgUserAsync(new OrgUsersSearch(SpdConstants.BC_GOV_ORG_ID, identityId), ct);
-            var result = existingUser.UserResults.FirstOrDefault();
+            var existingUser = (PortalUserListResp)await _portalUserRepository.QueryAsync(
+                new PortalUserQry() { UserEmail = cmd.IdirUserIdentity.Email },
+                ct);
+
+            var result = existingUser.Items.FirstOrDefault();
             if (result == null)
             {
-                User user = new User()
+                CreatePortalUserCmd createUserCmd = new CreatePortalUserCmd()
                 {
-                    OrganizationId = SpdConstants.BC_GOV_ORG_ID,
-                    Email = cmd.IdirUserIdentity.Email,
+                    OrgId = SpdConstants.BC_GOV_ORG_ID,
+                    EmailAddress = cmd.IdirUserIdentity.Email,
                     FirstName = cmd.IdirUserIdentity.FirstName,
                     LastName = cmd.IdirUserIdentity.LastName,
+                    IdentityId = identityId,
                 };
-
-                var userOrgResult = await _orgUserRepository.ManageOrgUserAsync(new UserCreateCmd(user, null, identityId), ct);
-                result = userOrgResult.UserResult;
+                await _portalUserRepository.ManageAsync(createUserCmd, ct);
+            }
+            else
+            {
+                UpdatePortalUserCmd updateUserCmd = new UpdatePortalUserCmd()
+                {
+                    Id = result.Id,
+                    OrgId = SpdConstants.BC_GOV_ORG_ID,
+                    EmailAddress = cmd.IdirUserIdentity.Email,
+                    FirstName = cmd.IdirUserIdentity.FirstName,
+                    LastName = cmd.IdirUserIdentity.LastName,
+                    IdentityId = identityId,
+                };
+                await _portalUserRepository.ManageAsync(updateUserCmd, ct);
             }
             var response = _mapper.Map<IdirUserProfileResponse>(result);
+            response.OrgName = idirDetail.MinistryName;
             response.UserGuid = cmd.IdirUserIdentity?.UserGuid;
             response.UserDisplayName = cmd.IdirUserIdentity?.DisplayName;
             response.IdirUserName = cmd.IdirUserIdentity?.IdirUserName;
             response.IsFirstTimeLogin = isFirstTimeLogin;
+            response.IsPSA = idirDetail.IsPSA;
             //todo: temp hardcode
-            response.OrgId = Guid.Parse("64540211-d346-ee11-b845-00505683fbf4"); 
+            response.OrgId = Guid.Parse("64540211-d346-ee11-b845-00505683fbf4");
             return response;
         }
 
@@ -153,8 +185,10 @@ namespace Spd.Manager.Membership.UserProfile
             Guid? identityId = identity?.Id;
             if (identity != null)
             {
-                var existingUser = (OrgUsersResult)await _orgUserRepository.QueryOrgUserAsync(new OrgUsersSearch(SpdConstants.BC_GOV_ORG_ID, identityId), ct);
-                var result = existingUser.UserResults.FirstOrDefault();
+                var existingUser = (PortalUserListResp)await _portalUserRepository.QueryAsync(
+                    new PortalUserQry() { IdentityId = identityId },
+                    ct);
+                var result = existingUser.Items.FirstOrDefault();
                 if (result != null)
                 {
                     var response = _mapper.Map<IdirUserProfileResponse>(result);

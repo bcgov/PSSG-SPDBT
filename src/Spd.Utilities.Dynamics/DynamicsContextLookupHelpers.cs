@@ -196,10 +196,6 @@ namespace Spd.Utilities.Dynamics
                     .Expand(a => a.spd_account_spd_servicetype)
                     .Where(a => a.accountid == organizationId)
                     .SingleOrDefaultAsync(ct);
-                if(account != null && !account.spd_account_spd_servicetype.Any())
-                {
-                    throw new InvalidOperationException($"organization {account.name} does not have service type.");
-                }
                 return account;
             }
             catch (DataServiceQueryException ex)
