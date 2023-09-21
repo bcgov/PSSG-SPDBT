@@ -7,6 +7,8 @@ import { AuthUserIdirService } from 'src/app/core/services/auth-user-idir.servic
 @Component({
 	selector: 'app-identity-verification',
 	template: `
+		<app-psso-header></app-psso-header>
+
 		<app-identify-verification-common
 			[portal]="portal.Psso"
 			[isPsaUser]="isPsaUser"
