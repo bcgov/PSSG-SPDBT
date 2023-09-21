@@ -50,11 +50,13 @@ import {
 					<div class="row mt-4">
 						<div class="offset-xxl-2 col-xxl-8 offset-xl-1 col-xl-10 col-lg-12">
 							<div class="row" *ngFor="let item of swlCategoryList; let i = index">
-								<div class="col-9">
-									<mat-chip-option [selectable]="false" class="mat-chip-green me-4"> {{ i + 1 }} </mat-chip-option>
-									<span class="title">{{ item.desc }}</span>
+								<div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12">
+									<mat-chip-option [selectable]="false" class="mat-chip-green"> Category #{{ i + 1 }} </mat-chip-option>
 								</div>
-								<div class="col-3">
+								<div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12">
+									<span class="category-title">{{ item.desc }}</span>
+								</div>
+								<div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12">
 									<button
 										mat-stroked-button
 										class="w-auto float-end"
@@ -67,133 +69,23 @@ import {
 								</div>
 								<mat-divider class="my-2"></mat-divider>
 							</div>
-							<!-- <br /><br /><br /><br />
-
-							<mat-accordion multi="false">
-								<mat-expansion-panel class="my-3" [expanded]="true" *ngFor="let item of swlCategoryList; let i = index">
-									<mat-expansion-panel-header>
-										<mat-panel-title>
-											<mat-chip-listbox class="me-4">
-												<mat-chip-option [selectable]="false" class="mat-chip-green"> {{ i + 1 }} </mat-chip-option>
-											</mat-chip-listbox>
-											<span class="title" style="white-space:nowrap">{{ item.desc }}</span>
-										</mat-panel-title>
-									</mat-expansion-panel-header>
-									<div class="row my-3">
-										<div class="col-12 mx-auto">
-											<button
-												mat-stroked-button
-												class="w-auto float-end"
-												style="color: var(--color-red);"
-												aria-label="Remove category"
-												(click)="onRemove(i)"
-											>
-												<mat-icon>delete_outline</mat-icon>Remove this Category
-											</button>
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-12">
-											<div [ngSwitch]="item.code">
-												<div *ngSwitchCase="swlCategoryTypeCodes.ArmouredCarGuard">
-													<ng-container *ngTemplateOutlet="ArmouredCarGuard"></ng-container>
-												</div>
-												<div *ngSwitchCase="swlCategoryTypeCodes.BodyArmourSales">
-													<ng-container *ngTemplateOutlet="BodyArmourSales"></ng-container>
-												</div>
-												<div *ngSwitchCase="swlCategoryTypeCodes.ClosedCircuitTelevisionInstaller">
-													<ng-container *ngTemplateOutlet="ClosedCircuitTelevisionInstaller"></ng-container>
-												</div>
-												<div *ngSwitchCase="swlCategoryTypeCodes.ElectronicLockingDeviceInstaller">
-													<ng-container *ngTemplateOutlet="ElectronicLockingDeviceInstaller"></ng-container>
-												</div>
-												<div *ngSwitchCase="swlCategoryTypeCodes.FireInvestigator">
-													<ng-container *ngTemplateOutlet="FireInvestigator"></ng-container>
-												</div>
-												<div *ngSwitchCase="swlCategoryTypeCodes.Locksmith">
-													<ng-container *ngTemplateOutlet="Locksmith"></ng-container>
-												</div>
-												<div *ngSwitchCase="swlCategoryTypeCodes.LocksmithUnderSupervision">
-													<ng-container *ngTemplateOutlet="LocksmithUnderSupervision"></ng-container>
-												</div>
-												<div *ngSwitchCase="swlCategoryTypeCodes.PrivateInvestigator">
-													<ng-container *ngTemplateOutlet="PrivateInvestigator"></ng-container>
-												</div>
-												<div *ngSwitchCase="swlCategoryTypeCodes.PrivateInvestigatorUnderSupervision">
-													<ng-container *ngTemplateOutlet="PrivateInvestigatorUnderSupervision"></ng-container>
-												</div>
-												<div *ngSwitchCase="swlCategoryTypeCodes.SecurityAlarmInstallerUnderSupervision">
-													<ng-container *ngTemplateOutlet="SecurityAlarmInstallerUnderSupervision"></ng-container>
-												</div>
-												<div *ngSwitchCase="swlCategoryTypeCodes.SecurityAlarmInstaller">
-													<ng-container *ngTemplateOutlet="SecurityAlarmInstaller"></ng-container>
-												</div>
-												<div *ngSwitchCase="swlCategoryTypeCodes.SecurityAlarmMonitor">
-													<ng-container *ngTemplateOutlet="SecurityAlarmMonitor"></ng-container>
-												</div>
-												<div *ngSwitchCase="swlCategoryTypeCodes.SecurityAlarmResponse">
-													<ng-container *ngTemplateOutlet="SecurityAlarmResponse"></ng-container>
-												</div>
-												<div *ngSwitchCase="swlCategoryTypeCodes.SecurityAlarmSales">
-													<ng-container *ngTemplateOutlet="SecurityAlarmSales"></ng-container>
-												</div>
-												<div *ngSwitchCase="swlCategoryTypeCodes.SecurityConsultant">
-													<ng-container *ngTemplateOutlet="SecurityConsultant"></ng-container>
-												</div>
-												<div *ngSwitchCase="swlCategoryTypeCodes.SecurityGuard">
-													<ng-container *ngTemplateOutlet="SecurityGuard"></ng-container>
-												</div>
-												<div *ngSwitchCase="swlCategoryTypeCodes.SecurityGuardUnderSupervision">
-													<ng-container *ngTemplateOutlet="SecurityGuardUnderSupervision"></ng-container>
-												</div>
-											</div>
-										</div>
-									</div>
-								</mat-expansion-panel>
-							</mat-accordion> -->
 						</div>
 					</div>
 				</div>
 			</div>
 		</section>
-
-		<!-- <ng-template #ArmouredCarGuard>
-			<mat-checkbox checked="true"> ARMOURED_CAR_GUARD </mat-checkbox>
-		</ng-template>
-
-		<ng-template #BodyArmourSales> BODY_ARMOUR_SALES </ng-template>
-
-		<ng-template #ClosedCircuitTelevisionInstaller> CLOSED_CIRCUIT </ng-template>
-
-		<ng-template #ElectronicLockingDeviceInstaller> ELECTRONIC_LOCKING </ng-template>
-
-		<ng-template #FireInvestigator> FIRE_INVESTIGATOR </ng-template>
-
-		<ng-template #Locksmith> LOCKSMITH </ng-template>
-
-		<ng-template #LocksmithUnderSupervision> LOCKSMITH_UNDER_SUP </ng-template>
-
-		<ng-template #PrivateInvestigator> PI </ng-template>
-
-		<ng-template #PrivateInvestigatorUnderSupervision> PI_UNDER_SUP </ng-template>
-
-		<ng-template #SecurityAlarmInstallerUnderSupervision> SA_INSTALLER_UNDER_SUP </ng-template>
-
-		<ng-template #SecurityAlarmInstaller> SA_INSTALLER </ng-template>
-
-		<ng-template #SecurityAlarmMonitor> SA_MONITOR </ng-template>
-
-		<ng-template #SecurityAlarmResponse> SA_RESPONSE </ng-template>
-
-		<ng-template #SecurityAlarmSales> SA_SALES </ng-template>
-
-		<ng-template #SecurityConsultant> SECURITY_CONSULTANT </ng-template>
-
-		<ng-template #SecurityGuard> SECURITY_GUARD </ng-template>
-
-		<ng-template #SecurityGuardUnderSupervision> SECURITY_GUARD_UNDER_SUP </ng-template> -->
 	`,
-	styles: [],
+	styles: [
+		`
+			.category-title {
+				font-size: 1.5em;
+				font-weight: 400;
+				color: var(--color-primary);
+				position: relative;
+				top: -5px;
+			}
+		`,
+	],
 })
 export class LicenceCategoryComponent implements OnInit, LicenceFormStepComponent {
 	category = '';

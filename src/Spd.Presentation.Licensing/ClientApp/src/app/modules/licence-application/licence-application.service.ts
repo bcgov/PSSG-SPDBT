@@ -169,5 +169,6 @@ export class LicenceApplicationService {
 
 	saveLicence(): void {
 		this.hotToastService.success('Licence information has been saved');
+		console.log('licence data', this.licenceModel);
 	}
 }

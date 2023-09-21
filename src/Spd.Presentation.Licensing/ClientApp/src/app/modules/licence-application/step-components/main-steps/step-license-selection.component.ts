@@ -2,8 +2,25 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { SelectOptions } from 'src/app/core/code-types/model-desc.models';
-import { LicenceApplicationService, SwlStatusTypeCode } from '../../licence-application.service';
+import { LicenceApplicationService, SwlCategoryTypeCode, SwlStatusTypeCode } from '../../licence-application.service';
 import { LicenceAccessCodeComponent } from '../licence-access-code.component';
+import { LicenceCategoryArmouredCarGuardComponent } from '../licence-category-armoured-car-guard.component';
+import { LicenceCategoryBodyArmourSalesComponent } from '../licence-category-body-armour-sales.component';
+import { LicenceCategoryClosedCircuitTelevisionInstallerComponent } from '../licence-category-closed-circuit-television-installer.component';
+import { LicenceCategoryElectronicLockingDeviceInstallerComponent } from '../licence-category-electronic-locking-device-installer.component';
+import { LicenceCategoryFireInvestigatorComponent } from '../licence-category-fire-investigator.component';
+import { LicenceCategoryLocksmithSupComponent } from '../licence-category-locksmith-sup.component';
+import { LicenceCategoryLocksmithComponent } from '../licence-category-locksmith.component';
+import { LicenceCategoryPrivateInvestigatorSupComponent } from '../licence-category-private-investigator-sup.component';
+import { LicenceCategoryPrivateInvestigatorComponent } from '../licence-category-private-investigator.component';
+import { LicenceCategorySecurityAlarmInstallerSupComponent } from '../licence-category-security-alarm-installer-sup.component';
+import { LicenceCategorySecurityAlarmInstallerComponent } from '../licence-category-security-alarm-installer.component';
+import { LicenceCategorySecurityAlarmMonitorComponent } from '../licence-category-security-alarm-monitor.component';
+import { LicenceCategorySecurityAlarmResponseComponent } from '../licence-category-security-alarm-response.component';
+import { LicenceCategorySecurityAlarmSalesComponent } from '../licence-category-security-alarm-sales.component';
+import { LicenceCategorySecurityConsultantComponent } from '../licence-category-security-consultant.component';
+import { LicenceCategorySecurityGuardSupComponent } from '../licence-category-security-guard-sup.component';
+import { LicenceCategorySecurityGuardComponent } from '../licence-category-security-guard.component';
 import { LicenceCategoryComponent } from '../licence-category.component';
 import { LicenceExpiredComponent } from '../licence-expired.component';
 import { LicenceSelectionComponent } from '../licence-selection.component';
@@ -157,7 +174,107 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 			</mat-step>
 
 			<mat-step *ngFor="let category of swlCategoryList; let i = index">
-				<app-licence-category-specific [option]="category" [index]="i + 1"></app-licence-category-specific>
+				<div [ngSwitch]="category.code">
+					<div *ngSwitchCase="swlCategoryTypeCodes.ArmouredCarGuard">
+						<app-licence-category-armoured-car-guard
+							[option]="category"
+							[index]="i + 1"
+						></app-licence-category-armoured-car-guard>
+					</div>
+					<div *ngSwitchCase="swlCategoryTypeCodes.BodyArmourSales">
+						<app-licence-category-body-armour-sales
+							[option]="category"
+							[index]="i + 1"
+						></app-licence-category-body-armour-sales>
+					</div>
+					<div *ngSwitchCase="swlCategoryTypeCodes.ClosedCircuitTelevisionInstaller">
+						<app-licence-category-closed-circuit-television-installer
+							[option]="category"
+							[index]="i + 1"
+						></app-licence-category-closed-circuit-television-installer>
+					</div>
+					<div *ngSwitchCase="swlCategoryTypeCodes.ElectronicLockingDeviceInstaller">
+						<app-licence-category-electronic-locking-device-installer
+							[option]="category"
+							[index]="i + 1"
+						></app-licence-category-electronic-locking-device-installer>
+					</div>
+					<div *ngSwitchCase="swlCategoryTypeCodes.FireInvestigator">
+						<app-licence-category-fire-investigator
+							[option]="category"
+							[index]="i + 1"
+						></app-licence-category-fire-investigator>
+					</div>
+					<div *ngSwitchCase="swlCategoryTypeCodes.Locksmith">
+						<app-licence-category-locksmith [option]="category" [index]="i + 1"></app-licence-category-locksmith>
+					</div>
+					<div *ngSwitchCase="swlCategoryTypeCodes.LocksmithUnderSupervision">
+						<app-licence-category-locksmith-sup
+							[option]="category"
+							[index]="i + 1"
+						></app-licence-category-locksmith-sup>
+					</div>
+					<div *ngSwitchCase="swlCategoryTypeCodes.PrivateInvestigator">
+						<app-licence-category-private-investigator
+							[option]="category"
+							[index]="i + 1"
+						></app-licence-category-private-investigator>
+					</div>
+					<div *ngSwitchCase="swlCategoryTypeCodes.PrivateInvestigatorUnderSupervision">
+						<app-licence-category-private-investigator-sup
+							[option]="category"
+							[index]="i + 1"
+						></app-licence-category-private-investigator-sup>
+					</div>
+					<div *ngSwitchCase="swlCategoryTypeCodes.SecurityAlarmInstallerUnderSupervision">
+						<app-licence-category-security-alarm-installer-sup
+							[option]="category"
+							[index]="i + 1"
+						></app-licence-category-security-alarm-installer-sup>
+					</div>
+					<div *ngSwitchCase="swlCategoryTypeCodes.SecurityAlarmInstaller">
+						<app-licence-category-security-alarm-installer
+							[option]="category"
+							[index]="i + 1"
+						></app-licence-category-security-alarm-installer>
+					</div>
+					<div *ngSwitchCase="swlCategoryTypeCodes.SecurityAlarmMonitor">
+						<app-licence-category-security-alarm-monitor
+							[option]="category"
+							[index]="i + 1"
+						></app-licence-category-security-alarm-monitor>
+					</div>
+					<div *ngSwitchCase="swlCategoryTypeCodes.SecurityAlarmResponse">
+						<app-licence-category-security-alarm-response
+							[option]="category"
+							[index]="i + 1"
+						></app-licence-category-security-alarm-response>
+					</div>
+					<div *ngSwitchCase="swlCategoryTypeCodes.SecurityAlarmSales">
+						<app-licence-category-security-alarm-sales
+							[option]="category"
+							[index]="i + 1"
+						></app-licence-category-security-alarm-sales>
+					</div>
+					<div *ngSwitchCase="swlCategoryTypeCodes.SecurityConsultant">
+						<app-licence-category-security-consultant
+							[option]="category"
+							[index]="i + 1"
+						></app-licence-category-security-consultant>
+					</div>
+					<div *ngSwitchCase="swlCategoryTypeCodes.SecurityGuard">
+						<app-licence-category-security-guard
+							[option]="category"
+							[index]="i + 1"
+						></app-licence-category-security-guard>
+					</div>
+					<div *ngSwitchCase="swlCategoryTypeCodes.SecurityGuardUnderSupervision">
+						<app-licence-category-security-guard-sup
+							[option]="category"
+							[index]="i + 1"
+						></app-licence-category-security-guard-sup>
+					</div>
+				</div>
 
 				<div class="row mt-4">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -208,6 +325,7 @@ export class StepLicenseSelectionComponent {
 	showStepLicenceExpired = true;
 
 	swlCategoryList: SelectOptions[] = [];
+	swlCategoryTypeCodes = SwlCategoryTypeCode;
 
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 
@@ -232,6 +350,41 @@ export class StepLicenseSelectionComponent {
 	@ViewChild(LicenceCategoryComponent)
 	licenceCategoryComponent!: LicenceCategoryComponent;
 
+	@ViewChild(LicenceCategoryArmouredCarGuardComponent)
+	armouredCarGuardComponent!: LicenceCategoryArmouredCarGuardComponent;
+	@ViewChild(LicenceCategoryBodyArmourSalesComponent)
+	bodyArmourSalesComponent!: LicenceCategoryBodyArmourSalesComponent;
+	@ViewChild(LicenceCategoryClosedCircuitTelevisionInstallerComponent)
+	ccTelevisionInstallerComponent!: LicenceCategoryClosedCircuitTelevisionInstallerComponent;
+	@ViewChild(LicenceCategoryElectronicLockingDeviceInstallerComponent)
+	elDeviceInstallerComponent!: LicenceCategoryElectronicLockingDeviceInstallerComponent;
+	@ViewChild(LicenceCategoryFireInvestigatorComponent)
+	fireInvestigatorComponent!: LicenceCategoryFireInvestigatorComponent;
+	@ViewChild(LicenceCategoryLocksmithComponent)
+	locksmithComponent!: LicenceCategoryLocksmithComponent;
+	@ViewChild(LicenceCategoryLocksmithSupComponent)
+	locksmithSupComponent!: LicenceCategoryLocksmithSupComponent;
+	@ViewChild(LicenceCategoryPrivateInvestigatorComponent)
+	privateInvestigatorComponent!: LicenceCategoryPrivateInvestigatorComponent;
+	@ViewChild(LicenceCategoryPrivateInvestigatorSupComponent)
+	privateInvestigatorSupComponent!: LicenceCategoryPrivateInvestigatorSupComponent;
+	@ViewChild(LicenceCategorySecurityGuardComponent)
+	securityGuardComponent!: LicenceCategorySecurityGuardComponent;
+	@ViewChild(LicenceCategorySecurityGuardSupComponent)
+	securityGuardSupComponent!: LicenceCategorySecurityGuardSupComponent;
+	@ViewChild(LicenceCategorySecurityAlarmInstallerSupComponent)
+	securityAlarmInstallerSupComponent!: LicenceCategorySecurityAlarmInstallerSupComponent;
+	@ViewChild(LicenceCategorySecurityAlarmInstallerComponent)
+	securityAlarmInstallerComponent!: LicenceCategorySecurityAlarmInstallerComponent;
+	@ViewChild(LicenceCategorySecurityAlarmMonitorComponent)
+	securityAlarmMonitorComponent!: LicenceCategorySecurityAlarmMonitorComponent;
+	@ViewChild(LicenceCategorySecurityAlarmResponseComponent)
+	securityAlarmResponseComponent!: LicenceCategorySecurityAlarmResponseComponent;
+	@ViewChild(LicenceCategorySecurityAlarmSalesComponent)
+	securityAlarmSalesComponent!: LicenceCategorySecurityAlarmSalesComponent;
+	@ViewChild(LicenceCategorySecurityConsultantComponent)
+	securityConsultantComponent!: LicenceCategorySecurityConsultantComponent;
+
 	@ViewChild(LicenceTermComponent)
 	licenceTermComponent!: LicenceTermComponent;
 
@@ -253,6 +406,23 @@ export class StepLicenseSelectionComponent {
 			// ...this.licenceCategoryComponent.getDataToSave(),
 			// ...this.licenceTermComponent.getDataToSave(),
 			...(this.licenceCategoryComponent ? this.licenceCategoryComponent.getDataToSave() : {}),
+			...(this.armouredCarGuardComponent ? this.armouredCarGuardComponent.getDataToSave() : {}),
+			...(this.bodyArmourSalesComponent ? this.bodyArmourSalesComponent.getDataToSave() : {}),
+			...(this.ccTelevisionInstallerComponent ? this.ccTelevisionInstallerComponent.getDataToSave() : {}),
+			...(this.elDeviceInstallerComponent ? this.elDeviceInstallerComponent.getDataToSave() : {}),
+			...(this.fireInvestigatorComponent ? this.fireInvestigatorComponent.getDataToSave() : {}),
+			...(this.locksmithComponent ? this.locksmithComponent.getDataToSave() : {}),
+			...(this.locksmithSupComponent ? this.locksmithSupComponent.getDataToSave() : {}),
+			...(this.privateInvestigatorComponent ? this.privateInvestigatorComponent.getDataToSave() : {}),
+			...(this.privateInvestigatorSupComponent ? this.privateInvestigatorSupComponent.getDataToSave() : {}),
+			...(this.securityGuardComponent ? this.securityGuardComponent.getDataToSave() : {}),
+			...(this.securityGuardSupComponent ? this.securityGuardSupComponent.getDataToSave() : {}),
+			...(this.securityAlarmInstallerSupComponent ? this.securityAlarmInstallerSupComponent.getDataToSave() : {}),
+			...(this.securityAlarmInstallerComponent ? this.securityAlarmInstallerComponent.getDataToSave() : {}),
+			...(this.securityAlarmMonitorComponent ? this.securityAlarmMonitorComponent.getDataToSave() : {}),
+			...(this.securityAlarmResponseComponent ? this.securityAlarmResponseComponent.getDataToSave() : {}),
+			...(this.securityAlarmSalesComponent ? this.securityAlarmSalesComponent.getDataToSave() : {}),
+			...(this.securityConsultantComponent ? this.securityConsultantComponent.getDataToSave() : {}),
 			...(this.licenceTermComponent ? this.licenceTermComponent.getDataToSave() : {}),
 		};
 	}
