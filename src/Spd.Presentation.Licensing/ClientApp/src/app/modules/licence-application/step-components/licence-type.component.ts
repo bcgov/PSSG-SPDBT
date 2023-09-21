@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { LicenceApplicationService, LicenceFormStepComponent, SwlStatusTypeCode } from '../licence-application.service';
 
@@ -75,15 +75,7 @@ import { LicenceApplicationService, LicenceFormStepComponent, SwlStatusTypeCode 
 			</div>
 		</section>
 	`,
-	styles: [
-		`
-			.radio-label .mdc-label {
-				font-size: 1.3em;
-				color: var(--color-primary);
-			}
-		`,
-	],
-	encapsulation: ViewEncapsulation.None,
+	styles: [],
 })
 export class LicenceTypeComponent implements OnInit, LicenceFormStepComponent {
 	statusTypeCodes = SwlStatusTypeCode;

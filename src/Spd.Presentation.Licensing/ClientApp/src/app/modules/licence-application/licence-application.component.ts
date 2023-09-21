@@ -4,6 +4,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { distinctUntilChanged } from 'rxjs';
+import { AppRoutes } from 'src/app/app-routing.module';
 import { LicenceApplicationService } from './licence-application.service';
 import { StepBackgroundComponent } from './step-components/main-steps/step-background.component';
 import { StepIdentificationComponent } from './step-components/main-steps/step-identification.component';
@@ -117,8 +118,8 @@ export class LicenceApplicationComponent implements OnInit {
 	onSave() {
 		this.licenceApplicationService.saveLicence();
 		// this.licenceApplicationService.loadLicence2();
-		// console.log('onSave', this.licenceApplicationService.licenceModel);
-		// this.router.navigate([AppRoutes.LANDING]);
+		console.log('onSave', this.licenceApplicationService.licenceModel);
+		this.router.navigate([AppRoutes.LANDING]);
 	}
 
 	private breakpointChanged() {

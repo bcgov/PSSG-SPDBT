@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { SelectOptions } from 'src/app/core/code-types/model-desc.models';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
@@ -12,7 +12,7 @@ import { SwlCategoryTypeCode } from '../licence-application.service';
 				<app-step-title [title]="title"> </app-step-title>
 				<div class="step-container">
 					<div class="row">
-						<div class="offset-xxl-2 col-xxl-8 offset-xl-1 col-xl-10 col-lg-12">
+						<div class="offset-xxl-3 col-xxl-8 offset-xl-2 col-xl-9 col-lg-12">
 							<div [ngSwitch]="option?.code">
 								<div *ngSwitchCase="swlCategoryTypeCodes.ArmouredCarGuard">
 									<ng-container *ngTemplateOutlet="ArmouredCarGuard"></ng-container>
@@ -159,7 +159,7 @@ import { SwlCategoryTypeCode } from '../licence-application.service';
 			</p>
 
 			<form [formGroup]="form" novalidate>
-				<mat-radio-group aria-label="Select an option" formControlName="requirement">
+				<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="requirement">
 					<mat-radio-button class="radio-label" value="a">
 						Basic Security Training Certificate issued by the Justice Institute of British Columbia (JIBC)
 					</mat-radio-button>
@@ -203,7 +203,15 @@ import { SwlCategoryTypeCode } from '../licence-application.service';
 
 		<ng-template #SecurityGuardUnderSupervision> SECURITY_GUARD_UNDER_SUP </ng-template>
 	`,
-	styles: [],
+	styles: [
+		`
+			.category-radio-group > .radio-label .mdc-label {
+				font-size: initial;
+				color: initial;
+			}
+		`,
+	],
+	encapsulation: ViewEncapsulation.None,
 })
 export class LicenceCategorySpecificComponent implements OnInit {
 	form!: FormGroup;
@@ -224,7 +232,7 @@ export class LicenceCategorySpecificComponent implements OnInit {
 			attachments: new FormControl('', [Validators.required]),
 		});
 
-		this.title = this.index + '. ' + this.option?.desc ?? '';
+		this.title = `${this.index}.  ${this.option?.desc ?? ''}`;
 	}
 
 	public get requirement(): FormControl {

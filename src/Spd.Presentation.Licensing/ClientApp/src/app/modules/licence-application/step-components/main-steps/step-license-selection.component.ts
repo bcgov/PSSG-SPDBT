@@ -16,7 +16,7 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 	selector: 'app-step-license-selection',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step>
+			<!-- <mat-step>
 				<app-licence-selection></app-licence-selection>
 
 				<div class="row mt-4">
@@ -134,7 +134,7 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 						</button>
 					</div>
 				</div>
-			</mat-step>
+			</mat-step> -->
 
 			<mat-step>
 				<app-licence-category></app-licence-category>
@@ -282,7 +282,7 @@ export class StepLicenseSelectionComponent {
 		const stepData = this.getStepData();
 		this.licenceApplicationService.licenceModel = { ...licenceModel, ...stepData };
 
-		this.licenceApplicationService.saveLicence();
+		// this.licenceApplicationService.saveLicence();
 
 		console.log('stepData', stepData);
 		console.log('licenceModel', this.licenceApplicationService.licenceModel);
