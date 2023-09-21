@@ -4,6 +4,7 @@ import { DelegateAddModalComponent } from './components/delegate-add-modal.compo
 import { DelegateManageModalComponent } from './components/delegate-manage-modal.component';
 import { IdentityVerificationComponent } from './components/identity-verification.component';
 import { ManualSubmissionComponent } from './components/manual-submission.component';
+import { PssoHeaderComponent } from './components/psso-header.component';
 import { ScreeningChecksComponent } from './components/screening-checks.component';
 import { ScreeningStatusesComponent } from './components/screening-statuses.component';
 import { PssoRoutingModule } from './psso-routing.module';
@@ -13,6 +14,7 @@ import { PssoComponent } from './psso.component';
 @NgModule({
 	declarations: [
 		PssoComponent,
+		PssoHeaderComponent,
 		PssoTermsAndCondsComponent,
 		ScreeningStatusesComponent,
 		ScreeningChecksComponent,

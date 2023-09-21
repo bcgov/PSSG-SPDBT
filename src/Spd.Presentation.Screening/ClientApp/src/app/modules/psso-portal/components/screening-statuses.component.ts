@@ -11,6 +11,8 @@ import { DelegateManageDialogData, DelegateManageModalComponent } from './delega
 @Component({
 	selector: 'app-screening-statuses',
 	template: `
+		<app-psso-header></app-psso-header>
+
 		<app-screening-statuses-common
 			[portal]="portal.Psso"
 			[isPsaUser]="isPsaUser"
