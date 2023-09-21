@@ -14,6 +14,10 @@ internal partial class ApplicationRepository : IApplicationRepository
         //create application
         spd_application? application = null;
         account? org = await _context.GetOrgById(createApplicationCmd.OrgId, ct);
+        if(org == null)
+        {
+            throw new InvalidOperationException($"cannot find org for {createApplicationCmd.OrgId}");
+        }
         spd_portaluser? user = null;
         if (createApplicationCmd.CreatedByUserId != Guid.Empty)
         {
