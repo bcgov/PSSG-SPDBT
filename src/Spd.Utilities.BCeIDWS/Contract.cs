@@ -2,7 +2,7 @@
 {
     public interface IBCeIDService
     {
-        Task<BCeIDResult> HandleQuery(BCeIDQuery cmd);
+        Task<BCeIDResult?> HandleQuery(BCeIDQuery cmd);
     }
 
     public interface BCeIDResult { };

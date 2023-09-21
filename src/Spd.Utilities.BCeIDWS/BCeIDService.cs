@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using ServiceReference;
 using Spd.Utilities.BCeIDWS;
 
@@ -8,14 +9,16 @@ namespace Spd.Utilities.Payment
     {
         private readonly BCeIDSettings _config;
         private readonly BCeIDServiceSoap _client;
+        private readonly ILogger<BCeIDService> _logger;
 
-        public BCeIDService(IOptions<BCeIDSettings> config, BCeIDServiceSoap client)
+        public BCeIDService(IOptions<BCeIDSettings> config, BCeIDServiceSoap client, ILogger<BCeIDService> logger)
         {
             _config = config.Value;
             _client = client;
+            _logger = logger;
         }
 
-        public async Task<BCeIDResult> HandleQuery(BCeIDQuery qry)
+        public async Task<BCeIDResult?> HandleQuery(BCeIDQuery qry)
         {
             return qry switch
             {
@@ -24,37 +27,45 @@ namespace Spd.Utilities.Payment
             };
         }
 
-        public async Task<IDIRUserDetailResult> GetIDIRUserDetailsAsync(IDIRUserDetailQuery qry)
+        public async Task<IDIRUserDetailResult?> GetIDIRUserDetailsAsync(IDIRUserDetailQuery qry)
         {
-            AccountDetailResponse accountDetailResp = await _client.getAccountDetailAsync(new AccountDetailRequest()
+            try
             {
-                onlineServiceId = _config.OnlineServiceId,
-                requesterAccountTypeCode = BCeIDAccountTypeCode.Internal,
-                requesterUserGuid = qry.RequesterGuid,
-                userGuid = qry.UserGuid,
-                accountTypeCode = BCeIDAccountTypeCode.Internal,
-            });
-
-            InternalUserGroupInfoResponse groupResp = await _client.getInternalUserGroupInfoAsync(new InternalUserGroupInfoRequest()
-            {
-                onlineServiceId = _config.OnlineServiceId,
-                requesterAccountTypeCode = BCeIDAccountTypeCode.Internal,
-                requesterUserGuid = qry.RequesterGuid,
-                userGuid = qry.UserGuid,
-                groupMatches = new BCeIDInternalGroupMatch[]
+                AccountDetailResponse accountDetailResp = await _client.getAccountDetailAsync(new AccountDetailRequest()
                 {
+                    onlineServiceId = _config.OnlineServiceId,
+                    requesterAccountTypeCode = BCeIDAccountTypeCode.Internal,
+                    requesterUserGuid = qry.RequesterGuid,
+                    userGuid = qry.UserGuid,
+                    accountTypeCode = BCeIDAccountTypeCode.Internal,
+                });
+
+                InternalUserGroupInfoResponse groupResp = await _client.getInternalUserGroupInfoAsync(new InternalUserGroupInfoRequest()
+                {
+                    onlineServiceId = _config.OnlineServiceId,
+                    requesterAccountTypeCode = BCeIDAccountTypeCode.Internal,
+                    requesterUserGuid = qry.RequesterGuid,
+                    userGuid = qry.UserGuid,
+                    groupMatches = new BCeIDInternalGroupMatch[]
+                    {
                     new BCeIDInternalGroupMatch
                     {
                         groupName="Portal_Service_Account"//"MY_IDIR_SECURITY_GROUP"
                     }
-                }
-            });
-            return new IDIRUserDetailResult
+                    }
+                });
+                return new IDIRUserDetailResult
+                {
+                    MinistryCode = accountDetailResp.account.internalIdentity.organizationCode.value,
+                    MinistryName = accountDetailResp.account.internalIdentity.company.value,
+                    IsPSA = groupResp.groupList.Any(g => g.groupGuid.value.ToString() == "PSA-group-guid")
+                };
+            }
+            catch(Exception ex) 
             {
-                MinistryCode = accountDetailResp.account.internalIdentity.organizationCode.value,
-                MinistryName = accountDetailResp.account.internalIdentity.company.value,
-                IsPSA = groupResp.groupList.Any(g => g.groupGuid.value.ToString() == "PSA-group-guid")
-            };
+                _logger.LogError(ex, "getAccountDetailAsync or getInternalUserGroupInfoAsync failed.");
+                return null;
+            }
         }
     }
 }

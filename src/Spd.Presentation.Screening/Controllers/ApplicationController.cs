@@ -406,17 +406,17 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/orgs/{orgId}/applications")]
         [HttpGet]
-        public async Task<ApplicationListResponse> GetList([FromRoute] Guid orgId, [FromQuery] string? filters, [FromQuery] string? sorts, [FromQuery] int? page, [FromQuery] int? pageSize)
+        public async Task<ApplicationListResponse> GetList([FromRoute] Guid orgId, [FromQuery] string? filters, [FromQuery] string? sorts, [FromQuery] int? page, [FromQuery] int? pageSize, bool showAllPSSOApps = false)
         {
             bool isPSSO = false;
-            bool isPSA = false;
+            bool showAll = false;
             Guid? idirUserId = null;
 
             string? identityProvider = _currentUser.GetIdentityProvider();
             if (identityProvider != null && identityProvider.Equals("idir", StringComparison.InvariantCultureIgnoreCase))
             {
-                idirUserId = Guid.Parse(_currentUser.GetUserId());
-                isPSA = _currentUser.IsPSA();
+                showAll = _currentUser.IsPSA() && showAllPSSOApps;
+                idirUserId = showAll ? null : Guid.Parse(_currentUser.GetUserId());
                 isPSSO = true;
             }
 
@@ -432,7 +432,7 @@ namespace Spd.Presentation.Screening.Controllers
                     FilterBy = filterBy,
                     SortBy = sortBy,
                     Paging = pagination,
-                    IsPSA = isPSA,
+                    ShowAllPSSOApps = showAll,
                     IsPSSO = isPSSO,
                     UserId = idirUserId,
                 });
