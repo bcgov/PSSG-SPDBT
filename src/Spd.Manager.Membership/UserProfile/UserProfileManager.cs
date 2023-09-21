@@ -118,7 +118,7 @@ namespace Spd.Manager.Membership.UserProfile
 
         public async Task<IdirUserProfileResponse> Handle(ManageIdirUserCommand cmd, CancellationToken ct)
         {
-            IDIRUserDetailResult idirDetail = (IDIRUserDetailResult)await _bceidService.HandleQuery(new IDIRUserDetailQuery()
+            IDIRUserDetailResult? idirDetail = (IDIRUserDetailResult)await _bceidService.HandleQuery(new IDIRUserDetailQuery()
             {
                 RequesterGuid = cmd.IdirUserIdentity.UserGuid,
                 RequesterAccountType = RequesterAccountTypeEnum.Internal,
@@ -167,14 +167,14 @@ namespace Spd.Manager.Membership.UserProfile
                 await _portalUserRepository.ManageAsync(updateUserCmd, ct);
             }
             var response = _mapper.Map<IdirUserProfileResponse>(result);
-            response.OrgName = idirDetail.MinistryName;
+            response.OrgName = idirDetail?.MinistryName;
             response.UserGuid = cmd.IdirUserIdentity?.UserGuid;
             response.UserDisplayName = cmd.IdirUserIdentity?.DisplayName;
             response.IdirUserName = cmd.IdirUserIdentity?.IdirUserName;
             response.IsFirstTimeLogin = isFirstTimeLogin;
-            response.IsPSA = idirDetail.IsPSA;
+            response.IsPSA = idirDetail?.IsPSA ?? false;
             //todo: temp hardcode
-            response.OrgId = Guid.Parse("64540211-d346-ee11-b845-00505683fbf4");
+            response.OrgId = SpdConstants.BC_GOV_ORG_ID;
             return response;
         }
 
