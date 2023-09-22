@@ -112,12 +112,12 @@ namespace Spd.Resource.Organizations.User
             return new OrgUserManageResult(new UserResult() { OrganizationId = invite._spd_organizationid_value });
         }
 
-        private async Task<OrgUserManageResult> AddUserAsync(UserCreateCmd createUserCmd, CancellationToken cancellationToken)
+        private async Task<OrgUserManageResult> AddUserAsync(UserCreateCmd createUserCmd, CancellationToken ct)
         {
             if (createUserCmd.User.OrganizationId == null)
                 throw new ApiException(HttpStatusCode.BadRequest, "Organization cannot be null");
 
-            var organization = await _dynaContext.GetOrgById((Guid)createUserCmd.User.OrganizationId, cancellationToken);
+            var organization = await _dynaContext.GetOrgById((Guid)createUserCmd.User.OrganizationId, ct);
 
             // create user 
             spd_portaluser user = _mapper.Map<spd_portaluser>(createUserCmd.User);
@@ -127,14 +127,14 @@ namespace Spd.Resource.Organizations.User
 
             if(createUserCmd.IdentityId != null)
             {
-                var id = await _dynaContext.GetIdentityById((Guid)createUserCmd.IdentityId, cancellationToken);
+                var id = await _dynaContext.GetIdentityById((Guid)createUserCmd.IdentityId, ct);
                 _dynaContext.SetLink(user, nameof(spd_portaluser.spd_IdentityId), id);
             }
 
             if (createUserCmd.User.OrganizationId == SpdConstants.BC_GOV_ORG_ID)
             {
                 //psso: no role, no invitation.
-                await _dynaContext.SaveChangesAsync(cancellationToken);
+                await _dynaContext.SaveChangesAsync(ct);
                 return new OrgUserManageResult(_mapper.Map<UserResult>(user));
             }
 
@@ -154,8 +154,13 @@ namespace Spd.Resource.Organizations.User
             _dynaContext.AddTospd_portalinvitations(invitation);
             _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_OrganizationId), organization);
             _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_PortalUserId), user);
+            if(createUserCmd.CreatedByUserId != null)
+            {
+                spd_portaluser invitedBy = await _dynaContext.GetUserById((Guid)createUserCmd.CreatedByUserId, ct);
+                _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_InvitedBy), invitedBy);
+            }
 
-            await _dynaContext.SaveChangesAsync(cancellationToken);
+            await _dynaContext.SaveChangesAsync(ct);
 
             user._spd_organizationid_value = createUserCmd.User.OrganizationId;
             user.spd_spd_role_spd_portaluser = new Collection<spd_role> { new spd_role() { spd_roleid = role.spd_roleid } };
