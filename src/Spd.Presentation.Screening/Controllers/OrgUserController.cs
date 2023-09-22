@@ -53,7 +53,7 @@ namespace Spd.Presentation.Screening.Controllers
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
             if (hostUrl == null)
                 throw new ConfigurationErrorsException("HostUrl is not set correctly in configuration.");
-            return await _mediator.Send(new OrgUserCreateCommand(orgUserCreateRequest, hostUrl));
+            return await _mediator.Send(new OrgUserCreateCommand(orgUserCreateRequest, hostUrl, Guid.Parse(_currentUser.GetUserId())));
         }
 
         [Authorize(Policy = "OnlyBCeID", Roles = "Primary,Contact")]
@@ -65,7 +65,7 @@ namespace Spd.Presentation.Screening.Controllers
             if (_currentUser.GetUserRole() == ContactAuthorizationTypeCode.Contact.ToString() &&
                 userId.ToString() != _currentUser.GetUserId())
             {
-               throw new ApiException(HttpStatusCode.Forbidden, "Authorized Contact can only change his own phone number and job title.");
+                throw new ApiException(HttpStatusCode.Forbidden, "Authorized Contact can only change his own phone number and job title.");
             }
             if (_currentUser.GetUserRole() == ContactAuthorizationTypeCode.Contact.ToString())
                 return await _mediator.Send(new OrgUserUpdateCommand(userId, orgUserUpdateRequest, true));
