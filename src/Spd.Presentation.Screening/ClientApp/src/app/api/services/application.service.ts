@@ -687,6 +687,7 @@ export class ApplicationService extends BaseService {
     sorts?: string;
     page?: number;
     pageSize?: number;
+    showAllPSSOApps?: boolean;
   },
   context?: HttpContext
 
@@ -699,6 +700,7 @@ export class ApplicationService extends BaseService {
       rb.query('sorts', params.sorts, {});
       rb.query('page', params.page, {});
       rb.query('pageSize', params.pageSize, {});
+      rb.query('showAllPSSOApps', params.showAllPSSOApps, {});
     }
 
     return this.http.request(rb.build({
@@ -725,6 +727,7 @@ export class ApplicationService extends BaseService {
     sorts?: string;
     page?: number;
     pageSize?: number;
+    showAllPSSOApps?: boolean;
   },
   context?: HttpContext
 
