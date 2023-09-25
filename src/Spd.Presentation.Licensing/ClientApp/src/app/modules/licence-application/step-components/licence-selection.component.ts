@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { LicenceApplicationService, LicenceFormStepComponent, SwlTypeCode } from '../licence-application.service';
+import { SwlTypeCode } from 'src/app/core/code-types/model-desc.models';
+import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-selection',

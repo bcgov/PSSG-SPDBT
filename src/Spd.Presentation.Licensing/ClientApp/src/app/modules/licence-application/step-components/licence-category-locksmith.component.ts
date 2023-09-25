@@ -1,8 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { SelectOptions } from 'src/app/core/code-types/model-desc.models';
+import { SelectOptions, SwlCategoryTypeCode } from 'src/app/core/code-types/model-desc.models';
+import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
+import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { LicenceFormStepComponent, SwlCategoryTypeCode } from '../licence-application.service';
+import { LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-category-locksmith',
@@ -65,6 +67,15 @@ import { LicenceFormStepComponent, SwlCategoryTypeCode } from '../licence-applic
 												you are qualified to perform the services of a locksmith unsupervised.
 											</mat-radio-button>
 										</mat-radio-group>
+										<mat-error
+											class="mat-option-error"
+											*ngIf="
+												(form.get('requirement')?.dirty || form.get('requirement')?.touched) &&
+												form.get('requirement')?.invalid &&
+												form.get('requirement')?.hasError('required')
+											"
+											>An option must be selected</mat-error
+										>
 									</div>
 								</div>
 
@@ -121,11 +132,13 @@ export class LicenceCategoryLocksmithComponent implements OnInit, LicenceFormSte
 	@Input() option: SelectOptions | null = null;
 	@Input() index: number = 0;
 
+	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
+
 	constructor(private formBuilder: FormBuilder) {}
 
 	ngOnInit(): void {
 		this.form = this.formBuilder.group({
-			requirement: new FormControl(null, [Validators.required]),
+			requirement: new FormControl(null, [FormControlValidators.required]),
 			attachments: new FormControl('', [Validators.required]),
 		});
 
@@ -133,6 +146,13 @@ export class LicenceCategoryLocksmithComponent implements OnInit, LicenceFormSte
 	}
 
 	isFormValid(): boolean {
+		const attachments =
+			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
+				? this.fileUploadComponent.files[0]
+				: '';
+		this.form.controls['attachments'].setValue(attachments);
+
+		this.form.markAllAsTouched();
 		return this.form.valid;
 	}
 

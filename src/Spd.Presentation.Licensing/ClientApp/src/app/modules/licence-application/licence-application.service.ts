@@ -2,7 +2,13 @@ import { Injectable } from '@angular/core';
 import { HotToastService } from '@ngneat/hot-toast';
 import { BehaviorSubject } from 'rxjs';
 import { BooleanTypeCode, GenderCode } from 'src/app/api/models';
-import { SelectOptions } from 'src/app/core/code-types/model-desc.models';
+import {
+	SelectOptions,
+	SwlCategoryTypeCode,
+	SwlStatusTypeCode,
+	SwlTermCode,
+	SwlTypeCode,
+} from 'src/app/core/code-types/model-desc.models';
 
 export interface LicenceFormStepComponent {
 	getDataToSave(): any;
@@ -47,73 +53,6 @@ export class LicenceModel {
 	licenceCategorySecurityGuard?: {};
 }
 
-export enum SwlTypeCode {
-	SecurityBusinessLicense = 'SecurityBusinessLicense',
-	SecurityWorkerLicense = 'SecurityWorkerLicense',
-	ArmouredVehicleLicense = 'ArmouredVehicleLicense',
-	BodyArmourLicense = 'BodyArmourLicense',
-}
-
-export enum SwlStatusTypeCode {
-	NewOrExpired = 'NewOrExpired',
-	Renewal = 'Renewal',
-	Replacement = 'Replacement',
-	Update = 'Update',
-}
-
-export enum SwlTermCode {
-	NintyDays = '90Days',
-	OneYear = '1Year',
-	TwoYears = '2Years',
-	ThreeYears = '3Years',
-}
-
-export enum SwlCategoryTypeCode {
-	ArmouredCarGuard = 'ARMOURED_CAR_GUARD',
-	BodyArmourSales = 'BODY_ARMOUR_SALES',
-	ClosedCircuitTelevisionInstaller = 'CLOSED_CIRCUIT',
-	ElectronicLockingDeviceInstaller = 'ELECTRONIC_LOCKING',
-	FireInvestigator = 'FIRE_INVESTIGATOR',
-	Locksmith = 'LOCKSMITH',
-	LocksmithUnderSupervision = 'LOCKSMITH_UNDER_SUP',
-	PrivateInvestigator = 'PI',
-	PrivateInvestigatorUnderSupervision = 'PI_UNDER_SUP',
-	SecurityGuard = 'SECURITY_GUARD',
-	SecurityGuardUnderSupervision = 'SECURITY_GUARD_UNDER_SUP',
-	SecurityAlarmInstallerUnderSupervision = 'SA_INSTALLER_UNDER_SUP',
-	SecurityAlarmInstaller = 'SA_INSTALLER',
-	SecurityAlarmMonitor = 'SA_MONITOR',
-	SecurityAlarmResponse = 'SA_RESPONSE',
-	SecurityAlarmSales = 'SA_SALES',
-	SecurityConsultant = 'SECURITY_CONSULTANT',
-}
-
-export const SwlCategoryTypes: SelectOptions[] = [
-	{ desc: 'Armoured Car Guard', code: SwlCategoryTypeCode.ArmouredCarGuard },
-	{ desc: 'Body Armour Sales', code: SwlCategoryTypeCode.BodyArmourSales },
-	{ desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
-	{ desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
-	{ desc: 'Fire Investigator', code: SwlCategoryTypeCode.FireInvestigator },
-	{ desc: 'Locksmith', code: SwlCategoryTypeCode.Locksmith },
-	{ desc: 'Locksmith - Under Supervision', code: SwlCategoryTypeCode.LocksmithUnderSupervision },
-	{ desc: 'Private Investigator', code: SwlCategoryTypeCode.PrivateInvestigator },
-	{
-		desc: 'Private Investigator - Under Supervision',
-		code: SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision,
-	},
-	{ desc: 'Security Alarm Installer', code: SwlCategoryTypeCode.SecurityAlarmInstaller },
-	{
-		desc: 'Security Alarm Installer - Under Supervision',
-		code: SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
-	},
-	{ desc: 'Security Alarm Monitor', code: SwlCategoryTypeCode.SecurityAlarmMonitor },
-	{ desc: 'Security Alarm Response', code: SwlCategoryTypeCode.SecurityAlarmResponse },
-	{ desc: 'Security Alarm Sales', code: SwlCategoryTypeCode.SecurityAlarmSales },
-	{ desc: 'Security Consultant', code: SwlCategoryTypeCode.SecurityConsultant },
-	{ desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
-	{ desc: 'Security Guard - Under Supervision', code: SwlCategoryTypeCode.SecurityGuardUnderSupervision },
-];
-
 @Injectable({
 	providedIn: 'root',
 })
@@ -146,32 +85,29 @@ export class LicenceApplicationService {
 				expiryDate: '2002-02-07T00:00:00+00:00',
 				licenceTermCode: SwlTermCode.ThreeYears,
 				swlCategoryList: [
-					{ code: SwlCategoryTypeCode.SecurityAlarmSales, desc: 'Security Alarm Sales' },
-					{ code: SwlCategoryTypeCode.SecurityGuard, desc: 'Security Guard' },
-
-					// { code: SwlCategoryTypeCode.ArmouredCarGuard, desc: 'ArmouredCarGuard' },
-					// { code: SwlCategoryTypeCode.BodyArmourSales, desc: 'BodyArmourSales' },
-					// { code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller, desc: 'ClosedCircuitTelevisionInstaller' },
-					// { code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller, desc: 'ElectronicLockingDeviceInstaller' },
-					// { code: SwlCategoryTypeCode.FireInvestigator, desc: 'FireInvestigator' },
-					// { code: SwlCategoryTypeCode.Locksmith, desc: 'Locksmith' },
-					// { code: SwlCategoryTypeCode.LocksmithUnderSupervision, desc: 'LocksmithUnderSupervision' },
-					// { code: SwlCategoryTypeCode.PrivateInvestigator, desc: 'PrivateInvestigator' },
+					// { desc: 'Armoured Car Guard', code: SwlCategoryTypeCode.ArmouredCarGuard },
+					// { desc: 'Body Armour Sales', code: SwlCategoryTypeCode.BodyArmourSales },
+					// { desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
+					// { desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
+					// { desc: 'Fire Investigator', code: SwlCategoryTypeCode.FireInvestigator },
+					// { desc: 'Locksmith', code: SwlCategoryTypeCode.Locksmith },
+					// { desc: 'Locksmith - Under Supervision', code: SwlCategoryTypeCode.LocksmithUnderSupervision },
+					// { desc: 'Private Investigator', code: SwlCategoryTypeCode.PrivateInvestigator },
 					// {
+					// 	desc: 'Private Investigator - Under Supervision',
 					// 	code: SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision,
-					// 	desc: 'PrivateInvestigatorUnderSupervision',
 					// },
-					// { code: SwlCategoryTypeCode.SecurityAlarmInstaller, desc: 'SecurityAlarmInstaller' },
+					// { desc: 'Security Alarm Installer', code: SwlCategoryTypeCode.SecurityAlarmInstaller },
 					// {
+					// 	desc: 'Security Alarm Installer - Under Supervision',
 					// 	code: SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
-					// 	desc: 'SecurityAlarmInstallerUnderSupervision',
 					// },
-					// { code: SwlCategoryTypeCode.SecurityAlarmMonitor, desc: 'SecurityAlarmMonitor' },
-					// { code: SwlCategoryTypeCode.SecurityAlarmResponse, desc: 'SecurityAlarmResponse' },
-					// { code: SwlCategoryTypeCode.SecurityAlarmSales, desc: 'SecurityAlarmSales' },
-					// { code: SwlCategoryTypeCode.SecurityConsultant, desc: 'SecurityConsultant' },
-					// { code: SwlCategoryTypeCode.SecurityGuard, desc: 'SecurityGuard' },
-					// { code: SwlCategoryTypeCode.SecurityGuardUnderSupervision, desc: 'SecurityGuardUnderSupervision' },
+					// { desc: 'Security Alarm Monitor', code: SwlCategoryTypeCode.SecurityAlarmMonitor },
+					// { desc: 'Security Alarm Response', code: SwlCategoryTypeCode.SecurityAlarmResponse },
+					// { desc: 'Security Alarm Sales', code: SwlCategoryTypeCode.SecurityAlarmSales },
+					// { desc: 'Security Consultant', code: SwlCategoryTypeCode.SecurityConsultant },
+					{ desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
+					// { desc: 'Security Guard - Under Supervision', code: SwlCategoryTypeCode.SecurityGuardUnderSupervision },
 				],
 			};
 			this.licenceModel = { ...defaults };

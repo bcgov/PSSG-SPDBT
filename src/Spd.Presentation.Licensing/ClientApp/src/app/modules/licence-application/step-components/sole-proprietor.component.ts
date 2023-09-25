@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/api/models';
-import { LicenceApplicationService, LicenceFormStepComponent, SwlStatusTypeCode } from '../licence-application.service';
+import { SwlStatusTypeCode } from 'src/app/core/code-types/model-desc.models';
+import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-sole-proprietor',

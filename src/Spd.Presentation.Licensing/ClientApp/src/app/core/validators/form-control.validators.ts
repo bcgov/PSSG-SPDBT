@@ -128,6 +128,7 @@ export class FormControlValidators {
 	 * data is trimmed first to prevent 'empty' values
 	 */
 	public static required(control: AbstractControl): ValidationErrors | null {
+		console.log('required', control);
 		if (!control.value) {
 			return { required: true };
 		}

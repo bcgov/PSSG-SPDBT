@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { GenderTypes } from 'src/app/core/code-types/model-desc.models';
+import { GenderTypes, SwlStatusTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { UtilService } from 'src/app/core/services/util.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { LicenceApplicationService, LicenceFormStepComponent, SwlStatusTypeCode } from '../licence-application.service';
+import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-personal-information',

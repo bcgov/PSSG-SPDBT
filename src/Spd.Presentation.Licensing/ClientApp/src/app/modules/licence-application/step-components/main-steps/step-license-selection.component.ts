@@ -1,8 +1,8 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { SelectOptions } from 'src/app/core/code-types/model-desc.models';
-import { LicenceApplicationService, SwlCategoryTypeCode, SwlStatusTypeCode } from '../../licence-application.service';
+import { SelectOptions, SwlCategoryTypeCode, SwlStatusTypeCode } from 'src/app/core/code-types/model-desc.models';
+import { LicenceApplicationService } from '../../licence-application.service';
 import { LicenceAccessCodeComponent } from '../licence-access-code.component';
 import { LicenceCategoryArmouredCarGuardComponent } from '../licence-category-armoured-car-guard.component';
 import { LicenceCategoryBodyArmourSalesComponent } from '../licence-category-body-armour-sales.component';
@@ -281,12 +281,7 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_LICENCE_CATEGORY)"
-						>
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(category.code)">
 							Next
 						</button>
 					</div>
@@ -311,14 +306,14 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepLicenseSelectionComponent {
-	readonly STEP_LICENCE_SELECTION = 0;
-	readonly STEP_LICENCE_TYPE = 1;
-	readonly STEP_ACCESS_CODE = 2;
-	readonly STEP_SOLE_PROPRIETOR = 3;
-	readonly STEP_PERSONAL_INFORMATION = 4;
-	readonly STEP_LICENCE_EXPIRED = 5;
-	readonly STEP_LICENCE_CATEGORY = 6;
-	readonly STEP_LICENCE_TERM = 7;
+	readonly STEP_LICENCE_SELECTION = '0';
+	readonly STEP_LICENCE_TYPE = '1';
+	readonly STEP_ACCESS_CODE = '2';
+	readonly STEP_SOLE_PROPRIETOR = '3';
+	readonly STEP_PERSONAL_INFORMATION = '4';
+	readonly STEP_LICENCE_EXPIRED = '5';
+	readonly STEP_LICENCE_CATEGORY = '6';
+	readonly STEP_LICENCE_TERM = '7';
 
 	showStepAccessCode = true;
 	showStepSoleProprietor = true;
@@ -569,7 +564,9 @@ export class StepLicenseSelectionComponent {
 	// 	this.nextStepperStep.emit(true);
 	// }
 
-	onFormValidNextStep(formNumber: number): void {
+	onFormValidNextStep(formNumber: string): void {
+		console.log('onFormValidNextStep formNumber:', formNumber);
+
 		const licenceModel = this.licenceApplicationService.licenceModel;
 		const stepData = this.getStepData();
 		this.licenceApplicationService.licenceModel = { ...licenceModel, ...stepData };
@@ -617,7 +614,7 @@ export class StepLicenseSelectionComponent {
 		// 	this.childstepper.selectedIndex = this.showStepCompensationQuestion ? 3 : 2;
 	}
 
-	private dirtyForm(step: number): boolean {
+	private dirtyForm(step: string): boolean {
 		switch (step) {
 			case this.STEP_LICENCE_SELECTION:
 				return this.licenceSelectionComponent.isFormValid();
@@ -646,6 +643,40 @@ export class StepLicenseSelectionComponent {
 				return this.licenceCategoryComponent.isFormValid();
 			case this.STEP_LICENCE_TERM:
 				return this.licenceTermComponent.isFormValid();
+			case SwlCategoryTypeCode.ArmouredCarGuard:
+				return this.armouredCarGuardComponent.isFormValid();
+			case SwlCategoryTypeCode.BodyArmourSales:
+				return this.bodyArmourSalesComponent.isFormValid();
+			case SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller:
+				return this.ccTelevisionInstallerComponent.isFormValid();
+			case SwlCategoryTypeCode.ElectronicLockingDeviceInstaller:
+				return this.elDeviceInstallerComponent.isFormValid();
+			case SwlCategoryTypeCode.FireInvestigator:
+				return this.fireInvestigatorComponent.isFormValid();
+			case SwlCategoryTypeCode.Locksmith:
+				return this.locksmithComponent.isFormValid();
+			case SwlCategoryTypeCode.LocksmithUnderSupervision:
+				return this.locksmithSupComponent.isFormValid();
+			case SwlCategoryTypeCode.PrivateInvestigator:
+				return this.privateInvestigatorComponent.isFormValid();
+			case SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision:
+				return this.privateInvestigatorSupComponent.isFormValid();
+			case SwlCategoryTypeCode.SecurityGuard:
+				return this.securityGuardComponent.isFormValid();
+			case SwlCategoryTypeCode.SecurityGuardUnderSupervision:
+				return this.securityGuardSupComponent.isFormValid();
+			case SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision:
+				return this.securityAlarmInstallerSupComponent.isFormValid();
+			case SwlCategoryTypeCode.SecurityAlarmInstaller:
+				return this.securityAlarmInstallerComponent.isFormValid();
+			case SwlCategoryTypeCode.SecurityAlarmMonitor:
+				return this.securityAlarmMonitorComponent.isFormValid();
+			case SwlCategoryTypeCode.SecurityAlarmResponse:
+				return this.securityAlarmResponseComponent.isFormValid();
+			case SwlCategoryTypeCode.SecurityAlarmSales:
+				return this.securityAlarmSalesComponent.isFormValid();
+			case SwlCategoryTypeCode.SecurityConsultant:
+				return this.securityConsultantComponent.isFormValid();
 			default:
 				console.error('Unknown Form', step);
 		}

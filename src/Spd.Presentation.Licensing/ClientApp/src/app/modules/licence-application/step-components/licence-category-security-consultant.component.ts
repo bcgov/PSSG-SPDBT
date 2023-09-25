@@ -1,6 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { SelectOptions } from 'src/app/core/code-types/model-desc.models';
+import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
+import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
@@ -48,13 +50,13 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 								<div class="text-minor-heading mb-2">Upload your resume:</div>
 
 								<div class="my-2">
-									<app-file-upload [maxNumberOfFiles]="10"></app-file-upload>
+									<app-file-upload [maxNumberOfFiles]="10" #resumeattachments></app-file-upload>
 									<mat-error
 										class="mat-option-error"
 										*ngIf="
-											(form.get('resumeattachment')?.dirty || form.get('resumeattachment')?.touched) &&
-											form.get('resumeattachment')?.invalid &&
-											form.get('resumeattachment')?.hasError('required')
+											(form.get('resumeattachments')?.dirty || form.get('resumeattachments')?.touched) &&
+											form.get('resumeattachments')?.invalid &&
+											form.get('resumeattachments')?.hasError('required')
 										"
 										>This is required</mat-error
 									>
@@ -77,6 +79,15 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 												Clients verifying your experience
 											</mat-radio-button>
 										</mat-radio-group>
+										<mat-error
+											class="mat-option-error"
+											*ngIf="
+												(form.get('requirement')?.dirty || form.get('requirement')?.touched) &&
+												form.get('requirement')?.invalid &&
+												form.get('requirement')?.hasError('required')
+											"
+											>An option must be selected</mat-error
+										>
 									</div>
 								</div>
 
@@ -87,7 +98,7 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 									</div>
 
 									<div class="my-2">
-										<app-file-upload [maxNumberOfFiles]="10"></app-file-upload>
+										<app-file-upload [maxNumberOfFiles]="10" #attachments></app-file-upload>
 										<mat-error
 											class="mat-option-error"
 											*ngIf="
@@ -115,13 +126,15 @@ export class LicenceCategorySecurityConsultantComponent implements OnInit, Licen
 	@Input() option: SelectOptions | null = null;
 	@Input() index: number = 0;
 
+	@ViewChild('resumeattachments') fileUploadComponent1!: FileUploadComponent;
+	@ViewChild('attachments') fileUploadComponent2!: FileUploadComponent;
+
 	constructor(private formBuilder: FormBuilder) {}
 
 	ngOnInit(): void {
 		this.form = this.formBuilder.group({
-			requirement: new FormControl(null, [Validators.required]),
-			documentExpiryDate: new FormControl(null, [Validators.required]),
-			resumeattachment: new FormControl('', [Validators.required]),
+			requirement: new FormControl(null, [FormControlValidators.required]),
+			resumeattachments: new FormControl('', [Validators.required]),
 			attachments: new FormControl('', [Validators.required]),
 		});
 
@@ -129,6 +142,19 @@ export class LicenceCategorySecurityConsultantComponent implements OnInit, Licen
 	}
 
 	isFormValid(): boolean {
+		const attachments1 =
+			this.fileUploadComponent1?.files && this.fileUploadComponent1?.files.length > 0
+				? this.fileUploadComponent1.files[0]
+				: '';
+		this.form.controls['resumeattachments'].setValue(attachments1);
+
+		const attachments2 =
+			this.fileUploadComponent2?.files && this.fileUploadComponent2?.files.length > 0
+				? this.fileUploadComponent2.files[0]
+				: '';
+		this.form.controls['attachments'].setValue(attachments2);
+
+		this.form.markAllAsTouched();
 		return this.form.valid;
 	}
 

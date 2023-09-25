@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { LicenceApplicationService, LicenceFormStepComponent, SwlTermCode } from '../licence-application.service';
+import { SwlTermCode } from 'src/app/core/code-types/model-desc.models';
+import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-term',
