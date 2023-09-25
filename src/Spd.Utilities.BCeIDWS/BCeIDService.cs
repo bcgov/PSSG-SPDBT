@@ -61,7 +61,7 @@ namespace Spd.Utilities.Payment
                     IsPSA = groupResp.groupList.Any(g => g.groupGuid.value.ToString() == "PSA-group-guid")
                 };
             }
-            catch(Exception ex) 
+            catch (Exception ex)
             {
                 _logger.LogError(ex, "getAccountDetailAsync or getInternalUserGroupInfoAsync failed.");
                 return null;

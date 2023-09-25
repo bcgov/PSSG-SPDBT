@@ -118,12 +118,13 @@ namespace Spd.Manager.Membership.UserProfile
 
         public async Task<IdirUserProfileResponse> Handle(ManageIdirUserCommand cmd, CancellationToken ct)
         {
-            IDIRUserDetailResult? idirDetail = (IDIRUserDetailResult)await _bceidService.HandleQuery(new IDIRUserDetailQuery()
-            {
-                RequesterGuid = cmd.IdirUserIdentity.UserGuid,
-                RequesterAccountType = RequesterAccountTypeEnum.Internal,
-                UserGuid = cmd.IdirUserIdentity.UserGuid
-            });
+            IDIRUserDetailResult? idirDetail = null;
+            //IDIRUserDetailResult? idirDetail = (IDIRUserDetailResult)await _bceidService.HandleQuery(new IDIRUserDetailQuery()
+            //{
+            //    RequesterGuid = cmd.IdirUserIdentity.UserGuid,
+            //    RequesterAccountType = RequesterAccountTypeEnum.Internal,
+            //    UserGuid = cmd.IdirUserIdentity.UserGuid
+            //});
 
             var existingIdentities = await _idRepository.Query(new IdentityQry(cmd.IdirUserIdentity.UserGuid, null, IdentityProviderTypeEnum.Idir), ct);
             var identity = existingIdentities.Items.FirstOrDefault();
