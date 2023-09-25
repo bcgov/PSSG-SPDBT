@@ -1,15 +1,87 @@
 import { GenderCode } from 'src/app/api/models';
 import { CountryTypeCode } from './country-type.model';
 
-export interface SelectOptions<k = string | number | boolean> {
+// export interface SelectOptions<k = string | number | boolean> {
+// 	code: k;
+// 	desc: string;
+// }
+
+export interface SelectOptions<k = string> {
 	code: k;
 	desc: string;
+}
+
+export enum SwlTypeCode {
+	SecurityBusinessLicense = 'SecurityBusinessLicense',
+	SecurityWorkerLicense = 'SecurityWorkerLicense',
+	ArmouredVehicleLicense = 'ArmouredVehicleLicense',
+	BodyArmourLicense = 'BodyArmourLicense',
+}
+
+export enum SwlStatusTypeCode {
+	NewOrExpired = 'NewOrExpired',
+	Renewal = 'Renewal',
+	Replacement = 'Replacement',
+	Update = 'Update',
+}
+
+export enum SwlTermCode {
+	NintyDays = '90Days',
+	OneYear = '1Year',
+	TwoYears = '2Years',
+	ThreeYears = '3Years',
+}
+
+export enum SwlCategoryTypeCode {
+	ArmouredCarGuard = 'ARMOURED_CAR_GUARD',
+	BodyArmourSales = 'BODY_ARMOUR_SALES',
+	ClosedCircuitTelevisionInstaller = 'CLOSED_CIRCUIT',
+	ElectronicLockingDeviceInstaller = 'ELECTRONIC_LOCKING',
+	FireInvestigator = 'FIRE_INVESTIGATOR',
+	Locksmith = 'LOCKSMITH',
+	LocksmithUnderSupervision = 'LOCKSMITH_UNDER_SUP',
+	PrivateInvestigator = 'PI',
+	PrivateInvestigatorUnderSupervision = 'PI_UNDER_SUP',
+	SecurityGuard = 'SECURITY_GUARD',
+	SecurityGuardUnderSupervision = 'SECURITY_GUARD_UNDER_SUP',
+	SecurityAlarmInstallerUnderSupervision = 'SA_INSTALLER_UNDER_SUP',
+	SecurityAlarmInstaller = 'SA_INSTALLER',
+	SecurityAlarmMonitor = 'SA_MONITOR',
+	SecurityAlarmResponse = 'SA_RESPONSE',
+	SecurityAlarmSales = 'SA_SALES',
+	SecurityConsultant = 'SECURITY_CONSULTANT',
 }
 
 export const GenderTypes: SelectOptions[] = [
 	{ desc: 'M', code: GenderCode.M },
 	{ desc: 'F', code: GenderCode.F },
 	{ desc: 'X', code: GenderCode.U },
+];
+
+export const SwlCategoryTypes: SelectOptions[] = [
+	{ desc: 'Armoured Car Guard', code: SwlCategoryTypeCode.ArmouredCarGuard },
+	{ desc: 'Body Armour Sales', code: SwlCategoryTypeCode.BodyArmourSales },
+	{ desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
+	{ desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
+	{ desc: 'Fire Investigator', code: SwlCategoryTypeCode.FireInvestigator },
+	{ desc: 'Locksmith', code: SwlCategoryTypeCode.Locksmith },
+	{ desc: 'Locksmith - Under Supervision', code: SwlCategoryTypeCode.LocksmithUnderSupervision },
+	{ desc: 'Private Investigator', code: SwlCategoryTypeCode.PrivateInvestigator },
+	{
+		desc: 'Private Investigator - Under Supervision',
+		code: SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision,
+	},
+	{ desc: 'Security Alarm Installer', code: SwlCategoryTypeCode.SecurityAlarmInstaller },
+	{
+		desc: 'Security Alarm Installer - Under Supervision',
+		code: SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
+	},
+	{ desc: 'Security Alarm Monitor', code: SwlCategoryTypeCode.SecurityAlarmMonitor },
+	{ desc: 'Security Alarm Response', code: SwlCategoryTypeCode.SecurityAlarmResponse },
+	{ desc: 'Security Alarm Sales', code: SwlCategoryTypeCode.SecurityAlarmSales },
+	{ desc: 'Security Consultant', code: SwlCategoryTypeCode.SecurityConsultant },
+	{ desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
+	{ desc: 'Security Guard - Under Supervision', code: SwlCategoryTypeCode.SecurityGuardUnderSupervision },
 ];
 
 export const CountryTypes: SelectOptions[] = [

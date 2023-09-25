@@ -1,6 +1,7 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { LicenceApplicationService, LicenceFormStepComponent, SwlStatusTypeCode } from '../licence-application.service';
+import { SwlStatusTypeCode } from 'src/app/core/code-types/model-desc.models';
+import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-type',
@@ -75,15 +76,7 @@ import { LicenceApplicationService, LicenceFormStepComponent, SwlStatusTypeCode 
 			</div>
 		</section>
 	`,
-	styles: [
-		`
-			.radio-label .mdc-label {
-				font-size: 1.3em;
-				color: var(--color-primary);
-			}
-		`,
-	],
-	encapsulation: ViewEncapsulation.None,
+	styles: [],
 })
 export class LicenceTypeComponent implements OnInit, LicenceFormStepComponent {
 	statusTypeCodes = SwlStatusTypeCode;
@@ -96,7 +89,13 @@ export class LicenceTypeComponent implements OnInit, LicenceFormStepComponent {
 	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.form.patchValue({ statusTypeCode: this.licenceApplicationService.licenceModel.statusTypeCode });
+		this.licenceApplicationService.licenceModelLoaded$.subscribe({
+			next: (loaded: boolean) => {
+				if (loaded) {
+					this.form.patchValue({ statusTypeCode: this.licenceApplicationService.licenceModel.statusTypeCode });
+				}
+			},
+		});
 	}
 
 	isFormValid(): boolean {
