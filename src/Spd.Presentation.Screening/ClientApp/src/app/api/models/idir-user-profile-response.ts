@@ -12,5 +12,5 @@ export interface IdirUserProfileResponse {
   orgName?: null | string;
   userDisplayName?: null | string;
   userGuid?: null | string;
-  userId?: string;
+  userId?: null | string;
 }
