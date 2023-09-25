@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/api/models';
 import { SwlStatusTypeCode } from 'src/app/core/code-types/model-desc.models';
+import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
@@ -46,7 +47,7 @@ export class SoleProprietorComponent implements OnInit, LicenceFormStepComponent
 	title: string = '';
 
 	form: FormGroup = this.formBuilder.group({
-		isSoleProprietor: new FormControl(null, [Validators.required]),
+		isSoleProprietor: new FormControl('', [FormControlValidators.required]),
 	});
 
 	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}

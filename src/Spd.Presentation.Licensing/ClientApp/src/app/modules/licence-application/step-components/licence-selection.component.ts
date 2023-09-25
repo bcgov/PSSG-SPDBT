@@ -49,7 +49,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									<div class="box__image d-none d-md-block">
 										<img class="box__image__item" [src]="image3" />
 									</div>
-									Permit to operate an armoured vehicle
+									<span class="px-2">Permit to operate an armoured vehicle</span>
 								</div>
 							</div>
 						</div>
@@ -63,7 +63,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									<div class="box__image d-none d-md-block">
 										<img class="box__image__item" [src]="image4" />
 									</div>
-									Permit to possess body armour
+									<span class="px-2">Permit to possess body armour</span>
 								</div>
 							</div>
 						</div>

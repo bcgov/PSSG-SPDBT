@@ -87,7 +87,7 @@ export class LicenceApplicationService {
 				swlCategoryList: [
 					// { desc: 'Armoured Car Guard', code: SwlCategoryTypeCode.ArmouredCarGuard },
 					// { desc: 'Body Armour Sales', code: SwlCategoryTypeCode.BodyArmourSales },
-					// { desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
+					{ desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
 					// { desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
 					// { desc: 'Fire Investigator', code: SwlCategoryTypeCode.FireInvestigator },
 					// { desc: 'Locksmith', code: SwlCategoryTypeCode.Locksmith },
@@ -106,7 +106,7 @@ export class LicenceApplicationService {
 					// { desc: 'Security Alarm Response', code: SwlCategoryTypeCode.SecurityAlarmResponse },
 					// { desc: 'Security Alarm Sales', code: SwlCategoryTypeCode.SecurityAlarmSales },
 					// { desc: 'Security Consultant', code: SwlCategoryTypeCode.SecurityConsultant },
-					{ desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
+					// { desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
 					// { desc: 'Security Guard - Under Supervision', code: SwlCategoryTypeCode.SecurityGuardUnderSupervision },
 				],
 			};

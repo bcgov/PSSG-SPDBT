@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/api/models';
+import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
+import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
@@ -22,6 +24,15 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									<mat-divider class="my-2"></mat-divider>
 									<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
 								</mat-radio-group>
+								<mat-error
+									class="mat-option-error"
+									*ngIf="
+										(form.get('hasExpiredLicence')?.dirty || form.get('hasExpiredLicence')?.touched) &&
+										form.get('hasExpiredLicence')?.invalid &&
+										form.get('hasExpiredLicence')?.hasError('required')
+									"
+									>An option must be selected</mat-error
+								>
 							</div>
 						</div>
 
@@ -72,11 +83,25 @@ export class LicenceExpiredComponent implements OnInit, LicenceFormStepComponent
 	maxDate = new Date();
 	matcher = new FormErrorStateMatcher();
 
-	form: FormGroup = this.formBuilder.group({
-		hasExpiredLicence: new FormControl(),
-		expiredLicenceNumber: new FormControl(),
-		expiryDate: new FormControl(),
-	});
+	form: FormGroup = this.formBuilder.group(
+		{
+			hasExpiredLicence: new FormControl('', [FormControlValidators.required]),
+			expiredLicenceNumber: new FormControl(),
+			expiryDate: new FormControl(),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalRequiredValidator(
+					'expiredLicenceNumber',
+					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'expiryDate',
+					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
+				),
+			],
+		}
+	);
 
 	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
 

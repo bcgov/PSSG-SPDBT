@@ -33,7 +33,7 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 	selector: 'app-step-license-selection',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<!-- <mat-step>
+			<mat-step>
 				<app-licence-selection></app-licence-selection>
 
 				<div class="row mt-4">
@@ -151,7 +151,7 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 						</button>
 					</div>
 				</div>
-			</mat-step> -->
+			</mat-step>
 
 			<mat-step>
 				<app-licence-category></app-licence-category>
@@ -296,7 +296,9 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext()">Next</button>
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_LICENCE_TERM)">
+							Next
+						</button>
 					</div>
 				</div>
 			</mat-step>
@@ -544,25 +546,17 @@ export class StepLicenseSelectionComponent {
 		return data;
 	}
 
-	onStepNext(): void {
+	onStepNext(formNumber: string): void {
 		const licenceModel = this.licenceApplicationService.licenceModel;
 		const stepData = this.getStepData();
 		this.licenceApplicationService.licenceModel = { ...licenceModel, ...stepData };
 
 		console.log('onStepNext licenceModel', this.licenceApplicationService.licenceModel);
 
-		// const isValid = this.dirtyForm(formNumber);
-		// if (!isValid) return;
-		// this.nextStepperStep.emit(true);
-
+		const isValid = this.dirtyForm(formNumber);
+		if (!isValid) return;
 		this.nextStepperStep.emit(true);
 	}
-
-	// onStepNext(formNumber: number): void {
-	// 	const isValid = this.dirtyForm(formNumber);
-	// 	if (!isValid) return;
-	// 	this.nextStepperStep.emit(true);
-	// }
 
 	onFormValidNextStep(formNumber: string): void {
 		console.log('onFormValidNextStep formNumber:', formNumber);
