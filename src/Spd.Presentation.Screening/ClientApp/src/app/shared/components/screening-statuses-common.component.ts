@@ -287,6 +287,7 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 	currentStatuses: any[] = [];
 	private currentFilters = '';
 	private currentSearch = '';
+	private showAllPSSOApps = false;
 	private queryParams: any = this.utilService.getDefaultQueryParams();
 
 	constants = SPD_CONSTANTS;
@@ -398,13 +399,10 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 	}
 
 	onApplicationFilterChange(filters: any) {
-		// const searchString = filters.target.value;
-		console.log('onApplicationFilterChange', filters.value);
-		this.performSearch('');
+		this.performApplicationsSearch(filters.value == 'ALL');
 	}
 
 	onFilterChange(filters: any) {
-		console.log('filters', filters);
 		this.currentStatuses = this.statuses.value?.length > 0 ? [...this.statuses.value] : [];
 		this.currentFilters = filters;
 		this.queryParams.page = 0;
@@ -418,6 +416,7 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 		this.currentStatuses = [];
 		this.currentFilters = '';
 		this.currentSearch = '';
+		this.showAllPSSOApps = false;
 		this.queryParams = this.utilService.getDefaultQueryParams();
 		this.filterCriteriaExists = false;
 		this.onFilterClose();
@@ -457,8 +456,14 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 	}
 
 	private performSearch(searchString: string): void {
-		console.log('this.formFilter.value', this.formFilter.value);
 		this.currentSearch = searchString ? `${ScreeningStatusFilterMap['search']}@=${searchString}` : '';
+		this.queryParams.page = 0;
+
+		this.loadList();
+	}
+
+	private performApplicationsSearch(showAllPSSOApps: boolean): void {
+		this.showAllPSSOApps = showAllPSSOApps;
 		this.queryParams.page = 0;
 
 		this.loadList();
@@ -474,6 +479,7 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 		this.applicationService
 			.apiOrgsOrgIdApplicationsGet({
 				orgId: this.orgId!,
+				showAllPSSOApps: this.showAllPSSOApps,
 				...this.queryParams,
 			})
 			.pipe()

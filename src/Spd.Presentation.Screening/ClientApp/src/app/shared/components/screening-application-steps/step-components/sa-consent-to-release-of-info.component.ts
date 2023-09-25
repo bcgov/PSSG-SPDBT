@@ -21,10 +21,11 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 
 									<p>
 										<mat-checkbox formControlName="agreeToCriminalCheck" (click)="onCheckboxChange()">
-											I hereby consent to a criminal record check pursuant to the Criminal Records Review Act (CRRA) to
-											determine whether I have a conviction or outstanding charge for any relevant or specified
-											offence(s) as defined under that Act (CRRA check). I hereby consent to a check of available law
-											enforcement systems as further described below, including any local police records.
+											I hereby consent to a criminal record check pursuant to the
+											<i>Criminal Records Review Act</i> (CRRA) to determine whether I have a conviction or outstanding
+											charge for any relevant or specified offence(s) as defined under that Act (CRRA check). I hereby
+											consent to a check of available law enforcement systems as further described below, including any
+											local police records.
 										</mat-checkbox>
 										<mat-error
 											class="mat-option-error"
@@ -39,12 +40,15 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 									<p>
 										<mat-checkbox formControlName="agreeToVulnerableSectorSearch" (click)="onCheckboxChange()">
 											I hereby consent to a Vulnerable Sector search to check if I have been convicted of and received a
-											record suspension (formerly known as a pardon) for any sexual offences as per the Criminal Records
-											Review Act. For more information on Vulnerable Sector searches, please visit the Royal Canadian
-											Mounted Police (RCMP) website. I understand that as part of the Vulnerable Sector search, I may be
-											required to submit fingerprints to confirm my identity. In addition, where the results of a check
-											indicate that a criminal record or outstanding charge for a relevant or specified offence(s) may
-											exist, I agree to provide my fingerprints to verify any such criminal record.
+											record suspension (formerly known as a pardon) for any sexual offences as per the
+											<i>Criminal Records Review Act</i>. For more information on Vulnerable Sector searches, please
+											visit the Royal Canadian Mounted Police (RCMP) website:
+											<a href="http://www.rcmp-grc.gc.ca/en/types-criminal-background-checks" target="_blank"
+												>http://www.rcmp-grc.gc.ca/en/types-criminal-background-checks</a
+											>. I understand that as part of the Vulnerable Sector search, I may be required to submit
+											fingerprints to confirm my identity. In addition, where the results of a check indicate that a
+											criminal record or outstanding charge for a relevant or specified offence(s) may exist, I agree to
+											provide my fingerprints to verify any such criminal record.
 										</mat-checkbox>
 										<mat-error
 											class="mat-option-error"
@@ -91,10 +95,10 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 									</p>
 									<p>
 										<mat-checkbox formControlName="agreeToBcCourtHistory" (click)="onCheckboxChange()">
-											Pursuant to the Freedom of Information and Protection of Privacy Act (FoIPPA), I hereby consent to
-											the disclosure by the Ministry of Attorney General to the Deputy Registrar of my name(s),
-											alias(es), if available, Correctional Service Number (CS#), history of contact with BC Court
-											System, and my date of birth as found in the Justice Information System, JUSTIN.
+											Pursuant to the <i>Freedom of Information and Protection of Privacy Act</i> (FoIPPA), I hereby
+											consent to the disclosure by the Ministry of Attorney General to the Deputy Registrar of my
+											name(s), alias(es), if available, Correctional Service Number (CS#), history of contact with BC
+											Court System, and my date of birth as found in the Justice Information System, JUSTIN.
 										</mat-checkbox>
 										<mat-error
 											class="mat-option-error"
@@ -168,11 +172,11 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 									</p>
 									<ul>
 										<li>
-											Criminal record check or fingerprint- based criminal record verification by searching the Canadian
-											Police Information Centre database;
+											• Criminal record check or fingerprint- based criminal record verification by searching the
+											Canadian Police Information Centre database;
 										</li>
 										<li>
-											A police information check, including the Police Records Information Management Environment
+											• A police information check, including the Police Records Information Management Environment
 											(PRIME-BC) and the Police Reporting and Occurrence System (PROS).
 										</li>
 									</ul>
@@ -206,7 +210,8 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 										activities to better serve you. Should you have any questions about the collection, use, or
 										disclosure of your personal information, please contact the Policy Analyst of the Criminal Records
 										Review Program, Security Programs Division via mail to PO Box 9217 Stn Prov Govt Victoria, BC V8W
-										9J1; email to criminalrecords@gov.bc.ca; or by telephone at 1- 855-587-0185 (option 2).
+										9J1; email to <a href="mailto:criminalrecords@gov.bc.ca">criminalrecords@gov.bc.ca</a>; or by
+										telephone at 1- 855-587-0185 (option 2).
 									</p>
 								</div>
 							</div>
