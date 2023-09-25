@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { LicenceApplicationService, LicenceFormStepComponent, SwlTypeCode } from '../licence-application.service';
+import { SwlTypeCode } from 'src/app/core/code-types/model-desc.models';
+import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-selection',
@@ -18,7 +19,7 @@ import { LicenceApplicationService, LicenceFormStepComponent, SwlTypeCode } from
 							>
 								<div class="mb-4 mt-4 mt-md-0">
 									<div class="box__image d-none d-md-block">
-										<img class="box__image__item" src="/assets/security-business-licence.png" />
+										<img class="box__image__item" [src]="image1" />
 									</div>
 									Security Business License
 								</div>
@@ -32,7 +33,7 @@ import { LicenceApplicationService, LicenceFormStepComponent, SwlTypeCode } from
 							>
 								<div class="mb-4 mt-4 mt-md-0">
 									<div class="box__image d-none d-md-block">
-										<img class="box__image__item" src="/assets/security-worker-licence.png" />
+										<img class="box__image__item" [src]="image2" />
 									</div>
 									Security Worker Licence
 								</div>
@@ -46,9 +47,9 @@ import { LicenceApplicationService, LicenceFormStepComponent, SwlTypeCode } from
 							>
 								<div class="mb-4 mt-4 mt-md-0">
 									<div class="box__image d-none d-md-block">
-										<img class="box__image__item" src="/assets/armoured-vehicle.png" />
+										<img class="box__image__item" [src]="image3" />
 									</div>
-									Permit to operate an armoured vehicle
+									<span class="px-2">Permit to operate an armoured vehicle</span>
 								</div>
 							</div>
 						</div>
@@ -60,9 +61,9 @@ import { LicenceApplicationService, LicenceFormStepComponent, SwlTypeCode } from
 							>
 								<div class="mb-4 mt-4 mt-md-0">
 									<div class="box__image d-none d-md-block">
-										<img class="box__image__item" src="/assets/body-armour.png" />
+										<img class="box__image__item" [src]="image4" />
 									</div>
-									Permit to possess body armour
+									<span class="px-2">Permit to possess body armour</span>
 								</div>
 							</div>
 						</div>
@@ -78,13 +79,13 @@ import { LicenceApplicationService, LicenceFormStepComponent, SwlTypeCode } from
 		`
 			.box {
 				&__image {
-					margin-top: 1em;
-					margin-bottom: 1em;
+					margin-top: 1.5em;
+					margin-bottom: 1.5em;
 					border-radius: 50%;
 					font: 32px Arial, sans-serif;
 
 					&__item {
-						height: 3em;
+						height: 2.5em;
 						/* max-width: 4em; */
 					}
 				}
@@ -98,6 +99,11 @@ import { LicenceApplicationService, LicenceFormStepComponent, SwlTypeCode } from
 	],
 })
 export class LicenceSelectionComponent implements OnInit, LicenceFormStepComponent {
+	readonly image1 = '/assets/security-business-licence.png';
+	readonly image2 = '/assets/security-worker-licence.png';
+	readonly image3 = '/assets/armoured-vehicle.png';
+	readonly image4 = '/assets/body-armour.png';
+
 	licenseTypeCode: SwlTypeCode | null = null;
 	isDirtyAndInvalid = false;
 
@@ -105,17 +111,17 @@ export class LicenceSelectionComponent implements OnInit, LicenceFormStepCompone
 
 	imageLoadedCount = 0;
 	isImagesLoaded = false;
-	imagePaths = [
-		'/assets/security-business-licence.png',
-		'/assets/security-worker-licence.png',
-		'/assets/armoured-vehicle.png',
-		'/assets/body-armour.png',
-	];
-
+	imagePaths = [this.image1, this.image2, this.image3, this.image4];
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.licenseTypeCode = this.licenceApplicationService.licenceModel.licenseTypeCode;
+		this.licenceApplicationService.licenceModelLoaded$.subscribe({
+			next: (loaded: boolean) => {
+				if (loaded) {
+					this.licenseTypeCode = this.licenceApplicationService.licenceModel.licenseTypeCode;
+				}
+			},
+		});
 
 		this.imagePaths.forEach((path) => {
 			// Preload the 'icon' images

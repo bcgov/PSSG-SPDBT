@@ -1,13 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { SelectOptions } from 'src/app/core/code-types/model-desc.models';
+import { SelectOptions, SwlCategoryTypeCode, SwlCategoryTypes } from 'src/app/core/code-types/model-desc.models';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
-import {
-	LicenceApplicationService,
-	LicenceFormStepComponent,
-	SwlCategoryTypeCode,
-	SwlCategoryTypes,
-} from '../licence-application.service';
+import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-category',
@@ -15,7 +10,7 @@ import {
 		<section class="step-section p-3">
 			<div class="step">
 				<app-step-title
-					title="What category of Security Worker Licence are you applying for?"
+					title="Which categories of Security Worker Licence are you applying for?"
 					subtitle="You can add up to a total of 6 categories"
 				></app-step-title>
 				<div class="step-container">
@@ -41,71 +36,79 @@ import {
 								Add Category
 							</button>
 						</div>
+
+						<mat-error class="mat-option-error" style="text-align: center;" *ngIf="isDirtyAndInvalid">
+							At least one category must be selected
+						</mat-error>
 					</div>
 
-					<div class="row">
+					<div class="row mt-4">
 						<div class="offset-xxl-2 col-xxl-8 offset-xl-1 col-xl-10 col-lg-12">
-							<mat-accordion multi="false">
-								<mat-expansion-panel class="my-3" [expanded]="true" *ngFor="let item of swlCategoryList; let i = index">
-									<mat-expansion-panel-header>
-										<mat-panel-title>
-											<mat-chip-listbox class="me-4">
-												<mat-chip-option [selectable]="false" class="mat-chip-green"> {{ i + 1 }} </mat-chip-option>
-											</mat-chip-listbox>
-											<span class="title" style="white-space:nowrap">{{ item.desc }}</span>
-										</mat-panel-title>
-									</mat-expansion-panel-header>
-									<div class="row my-3">
-										<div class="col-12 mx-auto">
-											<button
-												mat-stroked-button
-												class="w-auto float-end"
-												style="color: var(--color-red);"
-												aria-label="Remove category"
-												(click)="onRemove(i)"
-											>
-												<mat-icon>delete_outline</mat-icon>Remove this Category
-											</button>
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-12">
-											<mat-checkbox checked="true">
-												{{ item.desc }}
-											</mat-checkbox>
-										</div>
-									</div>
-								</mat-expansion-panel>
-							</mat-accordion>
+							<div class="row" *ngFor="let item of swlCategoryList; let i = index">
+								<div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12">
+									<mat-chip-option [selectable]="false" class="mat-chip-green"> Category #{{ i + 1 }} </mat-chip-option>
+								</div>
+								<div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12">
+									<span class="category-title">{{ item.desc }}</span>
+								</div>
+								<div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12">
+									<button
+										mat-stroked-button
+										class="w-auto float-end"
+										style="color: var(--color-red);"
+										aria-label="Remove category"
+										(click)="onRemove(i)"
+									>
+										<mat-icon>delete_outline</mat-icon>Remove
+									</button>
+								</div>
+								<mat-divider class="my-2"></mat-divider>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</section>
 	`,
-	styles: [],
+	styles: [
+		`
+			.category-title {
+				font-size: 1.3em;
+				font-weight: 400;
+				color: var(--color-primary);
+			}
+		`,
+	],
 })
 export class LicenceCategoryComponent implements OnInit, LicenceFormStepComponent {
 	category = '';
 	swlCategoryList: SelectOptions[] = [];
+	isDirtyAndInvalid = false;
 
 	validCategoryList: SelectOptions[] = SwlCategoryTypes;
 
 	swlCategoryTypes = SwlCategoryTypes;
+	swlCategoryTypeCodes = SwlCategoryTypeCode;
 
 	constructor(private dialog: MatDialog, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.swlCategoryList = this.licenceApplicationService.licenceModel.swlCategoryList;
-
-		this.setValidCategoryList();
+		this.licenceApplicationService.licenceModelLoaded$.subscribe({
+			next: (loaded: boolean) => {
+				if (loaded) {
+					this.swlCategoryList = this.licenceApplicationService.licenceModel.swlCategoryList;
+					this.setValidCategoryList();
+				}
+			},
+		});
 	}
 
 	onAddCategory(): void {
 		if (this.category) {
+			this.isDirtyAndInvalid = false;
+
 			const option = this.swlCategoryTypes.find((item) => item.code == this.category)!;
 			this.swlCategoryList.push({ code: option?.code, desc: option.desc });
-
 			this.setValidCategoryList();
 		}
 	}
@@ -125,14 +128,15 @@ export class LicenceCategoryComponent implements OnInit, LicenceFormStepComponen
 			.subscribe((response: boolean) => {
 				if (response) {
 					this.swlCategoryList.splice(i, 1);
-
 					this.setValidCategoryList();
 				}
 			});
 	}
 
 	isFormValid(): boolean {
-		return this.swlCategoryList.length > 0;
+		const isValid = this.swlCategoryList.length > 0;
+		this.isDirtyAndInvalid = !isValid;
+		return isValid;
 	}
 
 	getDataToSave(): any {
@@ -298,12 +302,12 @@ export class LicenceCategoryComponent implements OnInit, LicenceFormStepComponen
 		if (this.swlCategoryList.find((cat) => cat.code == SwlCategoryTypeCode.SecurityConsultant)) {
 			updatedList = updatedList.filter(
 				(cat) =>
-					cat.code != SwlCategoryTypeCode.SecurityGuard && cat.code != SwlCategoryTypeCode.SecurityGuardUnderSupervision
+					cat.code != SwlCategoryTypeCode.SecurityConsultant &&
+					cat.code != SwlCategoryTypeCode.SecurityGuardUnderSupervision
 			);
 		}
 
-		// console.log('updatedList', this.validCategoryList);
-
 		this.validCategoryList = [...updatedList];
+		// console.log('updatedList', this.validCategoryList);
 	}
 }

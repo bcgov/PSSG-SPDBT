@@ -9,7 +9,8 @@ export interface IdirUserProfileResponse {
   isPSA?: boolean;
   lastName?: null | string;
   orgId?: string;
+  orgName?: null | string;
   userDisplayName?: null | string;
   userGuid?: null | string;
-  userId?: string;
+  userId?: null | string;
 }

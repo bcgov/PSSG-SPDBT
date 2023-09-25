@@ -14,7 +14,7 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 				<div class="step-container row">
 					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<form [formGroup]="form" novalidate>
-							<div class="checklist-heading">For all applicants:</div>
+							<div class="fw-semibold fs-6">For all applicants:</div>
 
 							<mat-checkbox formControlName="checklistItem">
 								<span class="checklist-label">Proof of fingerprinting request</span>
@@ -56,7 +56,7 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 							<p class="checklist-info">All major credit cards accepted through our secure payment platform.</p>
 
 							<mat-divider class="my-4"></mat-divider>
-							<div class="checklist-heading">For some applicants:</div>
+							<div class="fw-semibold fs-6">For some applicants:</div>
 
 							<mat-checkbox formControlName="checklistItem">
 								<span class="checklist-label">Expired licence (if applicable)</span>
@@ -88,19 +88,15 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 	`,
 	styles: [
 		`
-			.checklist-heading {
-				font-weight: 400;
-				font-size: 1.2em;
-			}
-
 			.checklist-label {
 				font-weight: 400;
-				font-size: 1.4em;
+				font-size: 1.3em;
 				color: var(--color-primary);
 			}
 
 			.checklist-info {
-				margin-left: 2.6em;
+				margin-left: 3em;
+				font-size: 0.9em;
 			}
 		`,
 	],
