@@ -19,6 +19,53 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 							</div>
 
 							<mat-divider class="mt-1 mb-2"></mat-divider>
+
+							<div class="fs-5 mb-2">Proof of experience or training required</div>
+
+							<form [formGroup]="form" novalidate>
+								<div class="alert alert-category d-flex" role="alert">
+									<div>
+										To qualify for a security alarm installer security worker licence, you must meet one of the
+										following experience requirements:
+
+										<mat-radio-group
+											class="category-radio-group"
+											aria-label="Select an option"
+											formControlName="requirement"
+										>
+											<mat-radio-button class="radio-label" value="a">
+												Trades Qualification Certificate
+											</mat-radio-button>
+											<mat-divider class="my-2"></mat-divider>
+											<mat-radio-button class="radio-label" value="b">
+												Experience or training equivalent to the Trades Qualification Certificate
+											</mat-radio-button>
+										</mat-radio-group>
+									</div>
+								</div>
+
+								<ng-container *ngIf="requirement.value">
+									<div class="text-minor-heading mb-2">
+										<span *ngIf="requirement.value == 'a'"> Upload a copy of your certificate: </span>
+										<span *ngIf="requirement.value == 'b'">
+											Upload document(s) providing proof of equivalent training:
+										</span>
+									</div>
+
+									<div class="my-2">
+										<app-file-upload [maxNumberOfFiles]="10"></app-file-upload>
+										<mat-error
+											class="mat-option-error"
+											*ngIf="
+												(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+												form.get('attachments')?.invalid &&
+												form.get('attachments')?.hasError('required')
+											"
+											>This is required</mat-error
+										>
+									</div>
+								</ng-container>
+							</form>
 						</div>
 					</div>
 				</div>
@@ -52,5 +99,9 @@ export class LicenceCategorySecurityAlarmInstallerComponent implements OnInit, L
 
 	getDataToSave(): any {
 		return { licenceCategorySecurityAlarmInstaller: { ...this.form.value } };
+	}
+
+	public get requirement(): FormControl {
+		return this.form.get('requirement') as FormControl;
 	}
 }

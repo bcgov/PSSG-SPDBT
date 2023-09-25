@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { SelectOptions } from 'src/app/core/code-types/model-desc.models';
+import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
@@ -21,42 +22,53 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 							<mat-divider class="mt-1 mb-2"></mat-divider>
 
 							<div class="fs-5 mb-2">Proof of experience or training required</div>
-							<div class="mb-2">Experience:</div>
-							<p>
-								To qualify for a private investigator under supervision licence, you must meet one of the following
-								experience requirements:
-							</p>
 
 							<form [formGroup]="form" novalidate>
-								<mat-radio-group
-									class="category-radio-group"
-									aria-label="Select an option"
-									formControlName="requirement"
-								>
-									<mat-radio-button class="radio-label" value="a">
-										Successful completion of the Private Security Training Network (PSTnetwork) online course
-										<i>Introduction to Private Investigation</i> and proof of final exam completion
-									</mat-radio-button>
-									<mat-divider class="my-2"></mat-divider>
-									<mat-radio-button class="radio-label" value="b">
-										Completion of courses or demonstrated knowledge in the areas of:
-										<ul>
-											<li>Criminal law</li>
-										</ul>
-									</mat-radio-button>
-								</mat-radio-group>
+								<div class="alert alert-category d-flex" role="alert">
+									<div>
+										<div class="fs-5 mb-2">Experience:</div>
+										To qualify for a private investigator under supervision licence, you must meet one of the following
+										experience requirements:
 
-								<mat-divider class="my-3"></mat-divider>
-
-								<div class="text-minor-heading fw-semibold mb-2" *ngIf="requirement.value == 'a'">
-									Upload proof of course and exam completion:
-								</div>
-								<div class="text-minor-heading fw-semibold mb-2" *ngIf="requirement.value == 'b'">
-									Upload document(s) providing proof of course completion or equivalent knowledge:
+										<mat-radio-group
+											class="category-radio-group"
+											aria-label="Select an option"
+											formControlName="requirement"
+										>
+											<mat-radio-button class="radio-label" value="a">
+												Successful completion of the Private Security Training Network (PSTnetwork) online course
+												<i>Introduction to Private Investigation</i> and proof of final exam completion
+											</mat-radio-button>
+											<mat-divider class="my-2"></mat-divider>
+											<mat-radio-button class="radio-label" value="b">
+												Completion of courses or demonstrated knowledge in the areas of:
+												<ul>
+													<li>Criminal law</li>
+													<li>Civil law and process</li>
+													<li>Human rights legislation</li>
+													<li>Information and privacy legislation</li>
+													<li>Evidence recognition, presentation and protocols</li>
+													<li>Interviewing techniques</li>
+													<li>Report writing</li>
+													<li>Documentary research (electronic and hard copy), and</li>
+													<li>Surveillance techniques</li>
+												</ul>
+											</mat-radio-button>
+										</mat-radio-group>
+									</div>
 								</div>
 
 								<ng-container *ngIf="requirement.value">
-									<div class="my-4">
+									<mat-divider class="my-3"></mat-divider>
+
+									<div class="text-minor-heading mb-2">
+										<span *ngIf="requirement.value == 'a'"> Upload proof of course and exam completion: </span>
+										<span *ngIf="requirement.value == 'b'">
+											Upload document(s) providing proof of course completion or equivalent knowledge:
+										</span>
+									</div>
+
+									<div class="my-2">
 										<app-file-upload [maxNumberOfFiles]="10"></app-file-upload>
 										<mat-error
 											class="mat-option-error"
@@ -68,9 +80,50 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 											>This is required</mat-error
 										>
 									</div>
-									<p>Accepted file formats: docx, doc, pdf, bmp, jpeg, jpg, tif, tiff, png, gif, html, htm</p>
-									<p>File size maximum: 25MB per file</p>
+
+									<div class="row" *ngIf="requirement.value == 'a'">
+										<div class="col-lg-4 col-md-12 col-sm-12">
+											<mat-form-field>
+												<mat-label>Document Expiry Date</mat-label>
+												<input
+													matInput
+													[matDatepicker]="picker"
+													formControlName="documentExpiryDate"
+													[errorStateMatcher]="matcher"
+												/>
+												<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+												<mat-datepicker #picker startView="multi-year"></mat-datepicker>
+												<mat-error *ngIf="form.get('documentExpiryDate')?.hasError('required')"
+													>This is required</mat-error
+												>
+											</mat-form-field>
+										</div>
+									</div>
 								</ng-container>
+
+								<mat-divider class="my-3"></mat-divider>
+
+								<div class="alert alert-category d-flex" role="alert">
+									<div>
+										<div class="fs-5 mb-2">Training:</div>
+										You must provide proof of successfully completing any of the above two listed course requirements.
+									</div>
+								</div>
+
+								<div class="text-minor-heading mb-2">Upload proof of course completion:</div>
+
+								<div class="my-2">
+									<app-file-upload [maxNumberOfFiles]="10"></app-file-upload>
+									<mat-error
+										class="mat-option-error"
+										*ngIf="
+											(form.get('trainingattachments')?.dirty || form.get('trainingattachments')?.touched) &&
+											form.get('trainingattachments')?.invalid &&
+											form.get('trainingattachments')?.hasError('required')
+										"
+										>This is required</mat-error
+									>
+								</div>
 							</form>
 						</div>
 					</div>
@@ -82,6 +135,7 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 })
 export class LicenceCategoryPrivateInvestigatorSupComponent implements OnInit, LicenceFormStepComponent {
 	form!: FormGroup;
+	matcher = new FormErrorStateMatcher();
 	title = '';
 
 	@Input() option: SelectOptions | null = null;
@@ -94,6 +148,7 @@ export class LicenceCategoryPrivateInvestigatorSupComponent implements OnInit, L
 			requirement: new FormControl(null, [Validators.required]),
 			documentExpiryDate: new FormControl(null, [Validators.required]),
 			attachments: new FormControl('', [Validators.required]),
+			trainingattachments: new FormControl('', [Validators.required]),
 		});
 
 		this.title = `${this.option?.desc ?? ''}`;

@@ -148,6 +148,30 @@ export class LicenceApplicationService {
 				swlCategoryList: [
 					{ code: SwlCategoryTypeCode.SecurityAlarmSales, desc: 'Security Alarm Sales' },
 					{ code: SwlCategoryTypeCode.SecurityGuard, desc: 'Security Guard' },
+
+					// { code: SwlCategoryTypeCode.ArmouredCarGuard, desc: 'ArmouredCarGuard' },
+					// { code: SwlCategoryTypeCode.BodyArmourSales, desc: 'BodyArmourSales' },
+					// { code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller, desc: 'ClosedCircuitTelevisionInstaller' },
+					// { code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller, desc: 'ElectronicLockingDeviceInstaller' },
+					// { code: SwlCategoryTypeCode.FireInvestigator, desc: 'FireInvestigator' },
+					// { code: SwlCategoryTypeCode.Locksmith, desc: 'Locksmith' },
+					// { code: SwlCategoryTypeCode.LocksmithUnderSupervision, desc: 'LocksmithUnderSupervision' },
+					// { code: SwlCategoryTypeCode.PrivateInvestigator, desc: 'PrivateInvestigator' },
+					// {
+					// 	code: SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision,
+					// 	desc: 'PrivateInvestigatorUnderSupervision',
+					// },
+					// { code: SwlCategoryTypeCode.SecurityAlarmInstaller, desc: 'SecurityAlarmInstaller' },
+					// {
+					// 	code: SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
+					// 	desc: 'SecurityAlarmInstallerUnderSupervision',
+					// },
+					// { code: SwlCategoryTypeCode.SecurityAlarmMonitor, desc: 'SecurityAlarmMonitor' },
+					// { code: SwlCategoryTypeCode.SecurityAlarmResponse, desc: 'SecurityAlarmResponse' },
+					// { code: SwlCategoryTypeCode.SecurityAlarmSales, desc: 'SecurityAlarmSales' },
+					// { code: SwlCategoryTypeCode.SecurityConsultant, desc: 'SecurityConsultant' },
+					// { code: SwlCategoryTypeCode.SecurityGuard, desc: 'SecurityGuard' },
+					// { code: SwlCategoryTypeCode.SecurityGuardUnderSupervision, desc: 'SecurityGuardUnderSupervision' },
 				],
 			};
 			this.licenceModel = { ...defaults };

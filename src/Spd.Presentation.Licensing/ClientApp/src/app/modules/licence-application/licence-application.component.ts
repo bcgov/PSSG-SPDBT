@@ -4,6 +4,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { distinctUntilChanged } from 'rxjs';
+import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { LicenceApplicationService } from './licence-application.service';
 import { StepBackgroundComponent } from './step-components/main-steps/step-background.component';
 import { StepIdentificationComponent } from './step-components/main-steps/step-identification.component';
@@ -90,7 +91,8 @@ export class LicenceApplicationComponent implements OnInit {
 	constructor(
 		private router: Router,
 		private breakpointObserver: BreakpointObserver,
-		private licenceApplicationService: LicenceApplicationService
+		private licenceApplicationService: LicenceApplicationService,
+		private authProcessService: AuthProcessService
 	) {}
 
 	ngOnInit(): void {
@@ -99,6 +101,19 @@ export class LicenceApplicationComponent implements OnInit {
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
 	}
+
+	// async ngOnInit(): Promise<void> {
+	// 	this.breakpointObserver
+	// 		.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
+	// 		.pipe(distinctUntilChanged())
+	// 		.subscribe(() => this.breakpointChanged());
+
+	// 	const nextRoute = await this.authProcessService.initializeLicencing();
+
+	// 	if (nextRoute) {
+	// 		await this.router.navigate([nextRoute]);
+	// 	}
+	// }
 
 	onStepSelectionChange(event: StepperSelectionEvent) {
 		this.scrollIntoView();

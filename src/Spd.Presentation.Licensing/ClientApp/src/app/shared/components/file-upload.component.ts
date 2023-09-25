@@ -72,18 +72,18 @@ export class FileUploadHelper {
 			[accept]="accept"
 		>
 			<ngx-dropzone-label>
-				<div class="my-2">
-					<div class="mt-4 mb-2">
-						<mat-icon class="upload-file-icon">cloud_upload</mat-icon>
-					</div>
-					<div class="mb-4">
-						<strong>Drag and Drop your file here or click to browse</strong>
-						<div class="mat-option-error" *ngIf="maxNumberOfFiles > 1">
-							A maximum of {{ maxNumberOfFiles }} files can be uploaded at one time
-						</div>
-					</div>
-					<div class="fine-print mb-4">{{ message }}</div>
+				<div>
+					<mat-icon class="upload-file-icon">cloud_upload</mat-icon>
 				</div>
+				<div>
+					<strong>Drag and Drop your file here or click to browse</strong>
+					<div class="mat-option-error" *ngIf="accept">Accepted file formats: {{ accept }}</div>
+					<div class="mat-option-error" *ngIf="maxFileSizeMb">File size maximum: {{ maxFileSizeMb }} Mb</div>
+					<div class="mat-option-error" *ngIf="maxNumberOfFiles > 1">
+						Maximum number of files: {{ maxNumberOfFiles }}
+					</div>
+				</div>
+				<div class="fine-print mb-4" *ngIf="message">{{ message }}</div>
 			</ngx-dropzone-label>
 
 			<div *ngIf="files.length > 0" fxLayout="row wrap">
@@ -147,6 +147,7 @@ export class FileUploadComponent implements OnInit {
 	@Output() removeFile = new EventEmitter<any>();
 
 	maxFileSize: number = SPD_CONSTANTS.document.maxFileSize; // bytes
+	maxFileSizeMb: number = SPD_CONSTANTS.document.maxFileSizeInMb; // mb
 
 	constructor(private dialog: MatDialog, private hotToastService: HotToastService) {}
 

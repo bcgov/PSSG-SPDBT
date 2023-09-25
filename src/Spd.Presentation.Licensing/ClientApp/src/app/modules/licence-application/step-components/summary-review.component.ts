@@ -27,7 +27,7 @@ import { BooleanTypeCode } from 'src/app/api/models';
 												<div class="row mb-2">
 													<div class="col-12 mx-auto">
 														<mat-divider class="my-2"></mat-divider>
-														<div class="text-minor-heading fw-semibold">Licence Information</div>
+														<div class="text-minor-heading">Licence Information</div>
 														<div class="row mt-0 mt-lg-2">
 															<div class="col-lg-4 col-md-12">
 																<div class="text-label d-block text-muted mt-2 mt-lg-0">Licence type</div>
@@ -59,7 +59,7 @@ import { BooleanTypeCode } from 'src/app/api/models';
 															</div>
 														</div>
 														<mat-divider class="mt-4 mb-2"></mat-divider>
-														<div class="text-minor-heading fw-semibold">Expired Licence</div>
+														<div class="text-minor-heading">Expired Licence</div>
 														<div class="row mt-0 mt-lg-2">
 															<div class="col-lg-4 col-md-12">
 																<div class="text-label d-block text-muted mt-2 mt-lg-0">Expired Licence Number</div>
@@ -77,7 +77,7 @@ import { BooleanTypeCode } from 'src/app/api/models';
 															</div>
 														</div>
 														<mat-divider class="mt-4 mb-2"></mat-divider>
-														<div class="text-minor-heading fw-semibold">Documents Uploaded</div>
+														<div class="text-minor-heading">Documents Uploaded</div>
 														<div class="row mt-0 mt-lg-2">
 															<div class="col-lg-4 col-md-12">
 																<div class="text-label d-block text-muted mt-2 mt-lg-0">Document</div>
@@ -98,7 +98,7 @@ import { BooleanTypeCode } from 'src/app/api/models';
 													</mat-panel-title>
 												</mat-expansion-panel-header>
 												<mat-divider class="mt-4 mb-2"></mat-divider>
-												<div class="text-minor-heading fw-semibold">Police Background</div>
+												<div class="text-minor-heading">Police Background</div>
 												<div class="row mt-0 mt-lg-2">
 													<div class="col-lg-4 col-md-12">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">
@@ -116,7 +116,7 @@ import { BooleanTypeCode } from 'src/app/api/models';
 													</div>
 												</div>
 												<mat-divider class="mt-4 mb-2"></mat-divider>
-												<div class="text-minor-heading fw-semibold">Dog & Restraints Authorization</div>
+												<div class="text-minor-heading">Dog & Restraints Authorization</div>
 												<div class="row mt-0 mt-lg-2">
 													<div class="col-lg-4 col-md-12">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">Request to Use Dogs?</div>
@@ -144,7 +144,7 @@ import { BooleanTypeCode } from 'src/app/api/models';
 													</div>
 												</div>
 												<mat-divider class="mt-4 mb-2"></mat-divider>
-												<div class="text-minor-heading fw-semibold">Mental Health Conditions</div>
+												<div class="text-minor-heading">Mental Health Conditions</div>
 												<div class="row mt-0 mt-lg-2">
 													<div class="col-lg-4 col-md-12">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">Mental Health Conditions?</div>
@@ -156,7 +156,7 @@ import { BooleanTypeCode } from 'src/app/api/models';
 													</div>
 												</div>
 												<mat-divider class="mt-4 mb-2"></mat-divider>
-												<div class="text-minor-heading fw-semibold">Criminal History</div>
+												<div class="text-minor-heading">Criminal History</div>
 												<div class="row mt-0 mt-lg-2">
 													<div class="col-lg-4 col-md-12">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">Do you have a criminal record?</div>
@@ -164,7 +164,7 @@ import { BooleanTypeCode } from 'src/app/api/models';
 													</div>
 												</div>
 												<mat-divider class="mt-4 mb-2"></mat-divider>
-												<div class="text-minor-heading fw-semibold">Fingerprints</div>
+												<div class="text-minor-heading">Fingerprints</div>
 												<div class="row mt-0 mt-lg-2">
 													<div class="col-lg-4 col-md-12">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">

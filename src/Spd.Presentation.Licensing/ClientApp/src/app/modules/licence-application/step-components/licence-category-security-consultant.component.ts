@@ -19,6 +19,87 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 							</div>
 
 							<mat-divider class="mt-1 mb-2"></mat-divider>
+
+							<div class="fs-5 mb-2">Proof of experience required</div>
+
+							<form [formGroup]="form" novalidate>
+								<div class="alert alert-category d-flex" role="alert">
+									<div>
+										To qualify for a security consultant security worker licence, you must be able to provide advice and
+										expertise in a number of specialized areas, including but not limited to:
+										<ul>
+											<li>Security alarms</li>
+											<li>Closed circuit television</li>
+											<li>Access controls</li>
+											<li>Loss prevention surveys</li>
+											<li>Physical security design</li>
+											<li>Lighting and building design installation</li>
+											<li>Insurance</li>
+											<li>Electronic counter measures</li>
+											<li>Tool marks</li>
+											<li>Fingerprinting</li>
+										</ul>
+
+										You must provide proof of two years experience within the past five years in full-time employment
+										providing any of the above-mentioned services.
+									</div>
+								</div>
+
+								<div class="text-minor-heading mb-2">Upload your resume:</div>
+
+								<div class="my-2">
+									<app-file-upload [maxNumberOfFiles]="10"></app-file-upload>
+									<mat-error
+										class="mat-option-error"
+										*ngIf="
+											(form.get('resumeattachment')?.dirty || form.get('resumeattachment')?.touched) &&
+											form.get('resumeattachment')?.invalid &&
+											form.get('resumeattachment')?.hasError('required')
+										"
+										>This is required</mat-error
+									>
+								</div>
+
+								<div class="alert alert-category d-flex" role="alert">
+									<div>
+										You must meet the following experience requirements:
+										<mat-radio-group
+											class="category-radio-group"
+											aria-label="Select an option"
+											formControlName="requirement"
+										>
+											<mat-radio-button class="radio-label" value="a">
+												Written reference letters from previous employers (must be on company letterhead, dated and
+												signed)
+											</mat-radio-button>
+											<mat-divider class="my-2"></mat-divider>
+											<mat-radio-button class="radio-label" value="b">
+												Clients verifying your experience
+											</mat-radio-button>
+										</mat-radio-group>
+									</div>
+								</div>
+
+								<ng-container *ngIf="requirement.value">
+									<div class="text-minor-heading mb-2">
+										<span *ngIf="requirement.value == 'a'">Upload reference letters:</span>
+										<span *ngIf="requirement.value == 'b'"> Upload recommendation letters: </span>
+									</div>
+
+									<div class="my-2">
+										<app-file-upload [maxNumberOfFiles]="10"></app-file-upload>
+										<mat-error
+											class="mat-option-error"
+											*ngIf="
+												(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+												form.get('attachments')?.invalid &&
+												form.get('attachments')?.hasError('required')
+											"
+											>This is required</mat-error
+										>
+									</div>
+								</ng-container>
+							</form>
 						</div>
 					</div>
 				</div>
@@ -40,6 +121,7 @@ export class LicenceCategorySecurityConsultantComponent implements OnInit, Licen
 		this.form = this.formBuilder.group({
 			requirement: new FormControl(null, [Validators.required]),
 			documentExpiryDate: new FormControl(null, [Validators.required]),
+			resumeattachment: new FormControl('', [Validators.required]),
 			attachments: new FormControl('', [Validators.required]),
 		});
 
@@ -52,5 +134,9 @@ export class LicenceCategorySecurityConsultantComponent implements OnInit, Licen
 
 	getDataToSave(): any {
 		return { licenceCategorySecurityConsultant: { ...this.form.value } };
+	}
+
+	public get requirement(): FormControl {
+		return this.form.get('requirement') as FormControl;
 	}
 }

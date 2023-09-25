@@ -21,22 +21,19 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 
 							<mat-divider class="mt-1 mb-2"></mat-divider>
 
-							<div class="fs-5 fw-semibold mb-4">Authorization to Carry Certificate required</div>
-							<p>
-								Armoured car guards carry firearms, which requires a firearm licence and an Authorization to Carry (ATC)
-								certificate. You must get this licence and ATC before you can apply to be an armoured car guard. More
-								information is available from the
-								<a href="https://www.rcmp-grc.gc.ca/en/firearms/authorization-carry" target="_blank">RCMP</a>.
-							</p>
+							<div class="fs-5 fw-semibold mb-2">Authorization to Carry Certificate required</div>
+							<div class="alert alert-category d-flex" role="alert">
+								<div>
+									Armoured car guards carry firearms, which requires a firearm licence and an Authorization to Carry
+									(ATC) certificate. You must get this licence and ATC before you can apply to be an armoured car guard.
+									More information is available from the
+									<a href="https://www.rcmp-grc.gc.ca/en/firearms/authorization-carry" target="_blank">RCMP</a>.
+								</div>
+							</div>
 
 							<form [formGroup]="form" novalidate>
-								<div class="text-minor-heading fw-semibold mb-2" *ngIf="requirement.value == 'b'; else uploadcopy">
-									Upload your valid Authorization to Carry certificate:
-								</div>
-								<ng-template #uploadcopy>
-									<div class="text-minor-heading fw-semibold mb-2">Upload a copy of your certificate:</div>
-								</ng-template>
-								<div class="my-4">
+								<div class="text-minor-heading">Upload your valid Authorization to Carry certificate:</div>
+								<div class="my-2">
 									<app-file-upload [maxNumberOfFiles]="10"></app-file-upload>
 									<mat-error
 										class="mat-option-error"
@@ -48,8 +45,6 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 										>This is required</mat-error
 									>
 								</div>
-								<p>Accepted file formats: docx, doc, pdf, bmp, jpeg, jpg, tif, tiff, png, gif, html, htm</p>
-								<p>File size maximum: 25MB per file</p>
 
 								<div class="row">
 									<div class="col-lg-4 col-md-12 col-sm-12">
