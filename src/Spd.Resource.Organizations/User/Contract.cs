@@ -8,7 +8,7 @@ namespace Spd.Resource.Organizations.User
 
     //command
     public abstract record OrgUserCmd;
-    public record UserCreateCmd(User User, string HostUrl, Guid? IdentityId = null) : OrgUserCmd;
+    public record UserCreateCmd(User User, string HostUrl, Guid? IdentityId = null, Guid? CreatedByUserId = null) : OrgUserCmd;
     public record UserUpdateCmd(Guid Id, User User, bool OnlyChangePhoneJob = false) : OrgUserCmd;
     public record UserUpdateLoginCmd(Guid Id) : OrgUserCmd;
     public record UserDeleteCmd(Guid Id) : OrgUserCmd;

@@ -15,7 +15,7 @@ namespace Spd.Manager.Membership.OrgUser
         public Task<Unit> Handle(OrgUserUpdateLoginCommand command, CancellationToken ct);
     }
 
-    public record OrgUserCreateCommand(OrgUserCreateRequest OrgUserCreateRequest, string HostUrl) : IRequest<OrgUserResponse>;
+    public record OrgUserCreateCommand(OrgUserCreateRequest OrgUserCreateRequest, string HostUrl, Guid? CreatedByUserId) : IRequest<OrgUserResponse>;
     public record OrgUserUpdateCommand(Guid UserId, OrgUserUpdateRequest OrgUserUpdateRequest, bool OnlyChangePhoneJob = false) : IRequest<OrgUserResponse>;
     public record OrgUserGetQuery(Guid UserId) : IRequest<OrgUserResponse>;
     public record OrgUserListQuery(Guid OrganizationId, bool OnlyReturnActiveUsers = false) : IRequest<OrgUserListResponse>;

@@ -39,7 +39,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
                 invites = invites.Where(i => i._spd_organizationid_value == query.FilterBy.OrgId);
 
             if(query.FilterBy.CreatedByUserId != null)
-                invites = invites.Where(i => i._spd_portaluserid_value == query.FilterBy.CreatedByUserId);
+                invites = invites.Where(i => i._spd_invitedby_value == query.FilterBy.CreatedByUserId);
 
             if (query.FilterBy.ServiceTypes != null)
             {
@@ -109,7 +109,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
                     invitation.spd_invitationlink = $"{createInviteCmd.HostUrl}{SpdConstants.CRRP_APPLICATION_INVITE_LINK}{encryptedInviteId}";
                     _dynaContext.AddTospd_portalinvitations(invitation);
                     _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_OrganizationId), org);
-                    _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_PortalUserId), user);
+                    _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_InvitedBy), user);
                     spd_servicetype? servicetype = _dynaContext.LookupServiceType(item.ServiceType.ToString());
                     if (servicetype != null)
                     {
@@ -137,7 +137,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
                     invitation.spd_invitationlink = $"{createInviteCmd.HostUrl}{SpdConstants.PSSO_APPLICATION_INVITE_LINK}{encryptedInviteId}";
                     _dynaContext.AddTospd_portalinvitations(invitation);
                     _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_OrganizationId), org);
-                    _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_PortalUserId), user);
+                    _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_InvitedBy), user);
                     spd_servicetype? servicetype = _dynaContext.LookupServiceType(item.ServiceType.ToString());
                     if (servicetype != null)
                     {
@@ -193,6 +193,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
 
         private async Task<spd_portalinvitation?> GetPortalInvitationById(Guid organizationId, Guid portalInvitationId)
            => await _dynaContext.spd_portalinvitations
-                .Where(a => a.spd_portalinvitationid == portalInvitationId && a._spd_organizationid_value == organizationId).SingleOrDefaultAsync();
+                .Where(a => a.spd_portalinvitationid == portalInvitationId && a._spd_organizationid_value == organizationId)
+                .SingleOrDefaultAsync();
     }
 }

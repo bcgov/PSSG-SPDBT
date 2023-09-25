@@ -148,7 +148,8 @@ namespace Spd.Utilities.LogonUser
                     return true;
                 }
             }
-            context.User.UpdateUserClaims(idirUserProfile.UserId.ToString(), orgId.ToString(), "BCGovStaff");
+            if (idirUserProfile.UserId != null)
+                context.User.UpdateUserClaims(idirUserProfile.UserId.ToString(), orgId.ToString(), "BCGovStaff");
             return true;
         }
 

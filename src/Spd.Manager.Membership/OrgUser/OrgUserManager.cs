@@ -46,7 +46,7 @@ namespace Spd.Manager.Membership.OrgUser
 
             var user = _mapper.Map<User>(request.OrgUserCreateRequest);
             var response = await _orgUserRepository.ManageOrgUserAsync(
-                new UserCreateCmd(user, request.HostUrl),
+                new UserCreateCmd(user, request.HostUrl, CreatedByUserId: request.CreatedByUserId),
                 ct);
             return _mapper.Map<OrgUserResponse>(response.UserResult);
         }
