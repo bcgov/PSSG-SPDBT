@@ -77,11 +77,20 @@ button.mdc-button {
   background-color: rgba(245, 245, 245);
 }
 
+.radio-label .mdc-label {
+  font-size: 1.3em;
+  color: var(--color-primary);
+}
+
 .mdc-radio, .mdc-checkbox {
   background-color: rgba(245, 245, 245);
 }
 
 .mdc-radio--disabled {
+  background-color: transparent;
+}
+
+.mat-mdc-checkbox-disabled, .mdc-checkbox {
   background-color: transparent;
 }
 

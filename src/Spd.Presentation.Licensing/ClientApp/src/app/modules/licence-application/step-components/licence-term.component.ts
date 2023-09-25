@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { LicenceApplicationService, LicenceFormStepComponent, SwlTermCode } from '../licence-application.service';
+import { SwlTermCode } from 'src/app/core/code-types/model-desc.models';
+import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
+import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-term',
@@ -20,6 +22,15 @@ import { LicenceApplicationService, LicenceFormStepComponent, SwlTermCode } from
 								<mat-divider class="my-2"></mat-divider>
 								<mat-radio-button class="radio-label" [value]="termCodes.ThreeYears">3 Years ($240)</mat-radio-button>
 							</mat-radio-group>
+							<mat-error
+								class="mat-option-error"
+								*ngIf="
+									(form.get('licenceTermCode')?.dirty || form.get('licenceTermCode')?.touched) &&
+									form.get('licenceTermCode')?.invalid &&
+									form.get('licenceTermCode')?.hasError('required')
+								"
+								>An option must be selected</mat-error
+							>
 						</form>
 					</div>
 				</div>
@@ -32,14 +43,20 @@ export class LicenceTermComponent implements OnInit, LicenceFormStepComponent {
 	termCodes = SwlTermCode;
 
 	form: FormGroup = this.formBuilder.group({
-		licenceTermCode: new FormControl(),
+		licenceTermCode: new FormControl('', [FormControlValidators.required]),
 	});
 
 	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.form.patchValue({
-			licenceTermCode: this.licenceApplicationService.licenceModel.licenceTermCode,
+		this.licenceApplicationService.licenceModelLoaded$.subscribe({
+			next: (loaded: boolean) => {
+				if (loaded) {
+					this.form.patchValue({
+						licenceTermCode: this.licenceApplicationService.licenceModel.licenceTermCode,
+					});
+				}
+			},
 		});
 	}
 

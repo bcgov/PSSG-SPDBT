@@ -60,9 +60,15 @@ export class LicenceAccessCodeComponent implements OnInit, LicenceFormStepCompon
 	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.form.patchValue({
-			currentLicenceNumber: this.licenceApplicationService.licenceModel.currentLicenceNumber,
-			accessCode: this.licenceApplicationService.licenceModel.accessCode,
+		this.licenceApplicationService.licenceModelLoaded$.subscribe({
+			next: (loaded: boolean) => {
+				if (loaded) {
+					this.form.patchValue({
+						currentLicenceNumber: this.licenceApplicationService.licenceModel.currentLicenceNumber,
+						accessCode: this.licenceApplicationService.licenceModel.accessCode,
+					});
+				}
+			},
 		});
 	}
 

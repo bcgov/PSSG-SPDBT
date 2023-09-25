@@ -70,14 +70,14 @@ $spd-yellow: (
 
 @import "@bcgov/bc-sans/css/BCSans.css";
 
-// $fonts: (
-//   header: #{"BCSans, Noto Sans, Verdana, Arial, sans-serif"},
-//   body: #{"BCSans, Noto Sans, Verdana, Arial, sans-serif"},
-// );
 $fonts: (
-  header: #{"Noto Sans, Verdana, Arial, sans-serif"},
-  body: #{"Noto Sans, Verdana, Arial, sans-serif"},
+  header: #{"BCSans, Noto Sans, Verdana, Arial, sans-serif"},
+  body: #{"BCSans, Noto Sans, Verdana, Arial, sans-serif"},
 );
+// $fonts: (
+//   header: #{"Noto Sans, Verdana, Arial, sans-serif"},
+//   body: #{"Noto Sans, Verdana, Arial, sans-serif"},
+// );
 
 @function theme-font($font) {
   @return map-get($fonts, $font);
@@ -175,6 +175,11 @@ body {
   }
 }
 
+.text-minor-heading {
+  color: var(--color-primary);  
+  font-weight: 600;
+}
+
 .child-stepper {
   .mat-horizontal-stepper-header-container {
     display: none;
@@ -183,6 +188,12 @@ body {
 
 .alert {
   padding: .5rem 1rem;
+}
+
+.alert-category {
+  --bs-alert-color: #0f5132;
+  --bs-alert-bg: var(--color-grey-lightest);
+  --bs-alert-border-color: var(--color-grey-lighter);
 }
 
 .fs-7 {
@@ -200,6 +211,12 @@ body {
   background-color: transparent;
 }
 
+
+.info-icon {
+  color: var(--color-primary-light);
+  font-size: 16px;
+  height: 16px !important;
+}
 
 .search-icon-button {
   color: var(--color-white) !important;

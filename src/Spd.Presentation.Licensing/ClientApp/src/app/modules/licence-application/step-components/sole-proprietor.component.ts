@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/api/models';
-import { LicenceApplicationService, LicenceFormStepComponent, SwlStatusTypeCode } from '../licence-application.service';
+import { SwlStatusTypeCode } from 'src/app/core/code-types/model-desc.models';
+import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
+import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-sole-proprietor',
@@ -45,19 +47,25 @@ export class SoleProprietorComponent implements OnInit, LicenceFormStepComponent
 	title: string = '';
 
 	form: FormGroup = this.formBuilder.group({
-		isSoleProprietor: new FormControl(null, [Validators.required]),
+		isSoleProprietor: new FormControl('', [FormControlValidators.required]),
 	});
 
 	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.title =
-			this.licenceApplicationService.licenceModel.statusTypeCode == SwlStatusTypeCode.NewOrExpired
-				? 'Do you also want to apply for a Sole Proprietor Security Business Licence?'
-				: 'Do you also want to renew your Sole Proprietor Security Business Licence?';
+		this.licenceApplicationService.licenceModelLoaded$.subscribe({
+			next: (loaded: boolean) => {
+				if (loaded) {
+					this.title =
+						this.licenceApplicationService.licenceModel.statusTypeCode == SwlStatusTypeCode.NewOrExpired
+							? 'Do you also want to apply for a Sole Proprietor Security Business Licence?'
+							: 'Do you also want to renew your Sole Proprietor Security Business Licence?';
 
-		this.form.patchValue({
-			isSoleProprietor: this.licenceApplicationService.licenceModel.isSoleProprietor,
+					this.form.patchValue({
+						isSoleProprietor: this.licenceApplicationService.licenceModel.isSoleProprietor,
+					});
+				}
+			},
 		});
 	}
 

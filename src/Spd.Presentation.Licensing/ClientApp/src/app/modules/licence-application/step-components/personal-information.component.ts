@@ -1,18 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { GenderTypes } from 'src/app/core/code-types/model-desc.models';
+import { GenderTypes, SwlStatusTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { UtilService } from 'src/app/core/services/util.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { LicenceApplicationService, LicenceFormStepComponent, SwlStatusTypeCode } from '../licence-application.service';
+import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-personal-information',
 	template: `
 		<section class="step-section p-3">
 			<div class="step">
-				<app-step-title title="Confirm your personal information" [subtitle]="subtitle"></app-step-title>
+				<app-step-title [title]="title" [subtitle]="subtitle"></app-step-title>
 				<div class="step-container row">
 					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<form [formGroup]="form" novalidate>
@@ -83,6 +83,8 @@ export class PersonalInformationComponent implements OnInit, LicenceFormStepComp
 	genderTypes = GenderTypes;
 	matcher = new FormErrorStateMatcher();
 
+	readonly title_confirm = 'Confirm your personal information';
+	readonly title_view = 'View your personal information';
 	readonly subtitle_auth_new =
 		'This information is from your BC Services Card. If you need to make any updates, please visit ICBC.';
 	readonly subtitle_unauth_renew_update = 'Update any information that has changed since your last application';
@@ -90,6 +92,7 @@ export class PersonalInformationComponent implements OnInit, LicenceFormStepComp
 	startAtBirthDate = this.utilService.getBirthDateStartAt();
 	maxBirthDate = this.utilService.getBirthDateMax();
 
+	title = '';
 	subtitle = '';
 
 	form: FormGroup = this.formBuilder.group(
@@ -119,23 +122,45 @@ export class PersonalInformationComponent implements OnInit, LicenceFormStepComp
 	) {}
 
 	ngOnInit(): void {
-		this.subtitle =
-			this.licenceApplicationService.licenceModel.statusTypeCode == SwlStatusTypeCode.NewOrExpired
-				? 'This information is from your BC Services Card. If you need to make any updates, please visit ICBC.'
-				: 'Update any information that has changed since your last application.';
+		this.licenceApplicationService.licenceModelLoaded$.subscribe({
+			next: (loaded: boolean) => {
+				if (loaded) {
+					if (this.licenceApplicationService.licenceModel.statusTypeCode == SwlStatusTypeCode.Replacement) {
+						this.title = this.title_view;
+						this.subtitle = '';
+					} else {
+						this.title = this.title_confirm;
+						this.subtitle =
+							this.licenceApplicationService.licenceModel.statusTypeCode == SwlStatusTypeCode.NewOrExpired
+								? this.subtitle_auth_new
+								: this.subtitle_unauth_renew_update;
+					}
 
-		this.form.patchValue({
-			givenName: this.licenceApplicationService.licenceModel.givenName,
-			middleName1: this.licenceApplicationService.licenceModel.middleName1,
-			middleName2: this.licenceApplicationService.licenceModel.middleName2,
-			surname: this.licenceApplicationService.licenceModel.surname,
-			oneLegalName: this.licenceApplicationService.licenceModel.oneLegalName,
-			genderCode: this.licenceApplicationService.licenceModel.genderCode,
-			dateOfBirth: this.licenceApplicationService.licenceModel.dateOfBirth,
+					this.form.patchValue({
+						givenName: this.licenceApplicationService.licenceModel.givenName,
+						middleName1: this.licenceApplicationService.licenceModel.middleName1,
+						middleName2: this.licenceApplicationService.licenceModel.middleName2,
+						surname: this.licenceApplicationService.licenceModel.surname,
+						oneLegalName: this.licenceApplicationService.licenceModel.oneLegalName,
+						genderCode: this.licenceApplicationService.licenceModel.genderCode,
+						dateOfBirth: this.licenceApplicationService.licenceModel.dateOfBirth,
+					});
+
+					if (this.licenceApplicationService.licenceModel.statusTypeCode == SwlStatusTypeCode.Replacement) {
+						this.form.disable();
+					} else {
+						this.form.enable();
+					}
+				}
+			},
 		});
 	}
 
 	isFormValid(): boolean {
+		if (this.licenceApplicationService.licenceModel.statusTypeCode == SwlStatusTypeCode.Replacement) {
+			return true;
+		}
+
 		this.form.markAllAsTouched();
 		return this.form.valid;
 	}

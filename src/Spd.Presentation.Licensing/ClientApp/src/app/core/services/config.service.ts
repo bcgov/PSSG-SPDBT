@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AuthConfig, OAuthService } from 'angular-oauth2-oidc';
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { ConfigurationResponse } from 'src/app/api/models';
+import { ConfigurationResponse, IdentityProviderTypeCode } from 'src/app/api/models';
 import { ConfigurationService } from 'src/app/api/services';
 
 @Injectable({
@@ -13,15 +13,15 @@ export class ConfigService {
 
 	constructor(private oauthService: OAuthService, private configurationService: ConfigurationService) {}
 
-	public async configureOAuthService(redirectUri: string): Promise<void> {
+	public async configureOAuthService(loginType: IdentityProviderTypeCode, redirectUri: string): Promise<void> {
 		return this.getBcscConfig(redirectUri).then((config) => {
 			this.oauthService.configure(config);
-			// this.oauthService.setupAutomaticSilentRefresh();
 		});
 	}
 
 	private async getBcscConfig(redirectUri?: string): Promise<AuthConfig> {
 		const resp = this.configs?.bcscConfiguration!;
+
 		const bcscConfig = {
 			issuer: resp.issuer!,
 			clientId: resp.clientId!,

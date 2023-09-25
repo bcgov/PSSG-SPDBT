@@ -1,5 +1,69 @@
+// import { Injectable } from '@angular/core';
+// import { OAuthService } from 'angular-oauth2-oidc';
+// import { ConfigService } from './config.service';
+
+// @Injectable({ providedIn: 'root' })
+// export class AuthenticationService {
+// 	constructor(private oauthService: OAuthService, private configService: ConfigService) {}
+
+// 	//----------------------------------------------------------
+// 	// *
+// 	// *
+// 	public async tryLogin(returnComponentRoute: string): Promise<{ state: any; loggedIn: boolean }> {
+// 		await this.configService.configureOAuthService(window.location.origin + returnComponentRoute);
+
+// 		const isLoggedIn = await this.oauthService
+// 			.loadDiscoveryDocumentAndTryLogin()
+// 			.then((_) => this.oauthService.hasValidAccessToken())
+// 			.catch((_) => false);
+
+// 		console.debug('[AuthenticationService.tryLogin] isLoggedIn', isLoggedIn, this.oauthService.hasValidAccessToken());
+
+// 		return {
+// 			state: this.oauthService.state || null,
+// 			loggedIn: isLoggedIn,
+// 		};
+// 	}
+
+// 	//----------------------------------------------------------
+// 	// *
+// 	// *
+// 	public async login(returnComponentRoute: string | undefined = undefined): Promise<string | null> {
+// 		await this.configService.configureOAuthService(window.location.origin + returnComponentRoute);
+
+// 		const returnRoute = location.pathname.substring(1);
+// 		console.debug('[AuthenticationService] LOGIN', returnComponentRoute, returnRoute);
+
+// 		const isLoggedIn = await this.oauthService.loadDiscoveryDocumentAndLogin({
+// 			state: returnRoute,
+// 		});
+
+// 		console.debug('[AuthenticationService] ISLOGGEDIN', isLoggedIn, this.oauthService.state);
+
+// 		if (isLoggedIn) {
+// 			return Promise.resolve(this.oauthService.state || returnRoute);
+// 		}
+
+// 		return Promise.resolve(null);
+// 	}
+
+// 	//----------------------------------------------------------
+// 	// *
+// 	// *
+// 	public getToken(): string {
+// 		return this.oauthService.getAccessToken();
+// 	}
+
+// 	//----------------------------------------------------------
+// 	// *
+// 	// *
+// 	public isLoggedIn(): boolean {
+// 		return this.oauthService.hasValidAccessToken();
+// 	}
+// }
 import { Injectable } from '@angular/core';
 import { OAuthService } from 'angular-oauth2-oidc';
+import { IdentityProviderTypeCode } from 'src/app/api/models';
 import { ConfigService } from './config.service';
 
 @Injectable({ providedIn: 'root' })
@@ -9,8 +73,11 @@ export class AuthenticationService {
 	//----------------------------------------------------------
 	// *
 	// *
-	public async tryLogin(returnComponentRoute: string): Promise<{ state: any; loggedIn: boolean }> {
-		await this.configService.configureOAuthService(window.location.origin + returnComponentRoute);
+	public async tryLogin(
+		loginType: IdentityProviderTypeCode,
+		returnComponentRoute: string
+	): Promise<{ state: any; loggedIn: boolean }> {
+		await this.configService.configureOAuthService(loginType, window.location.origin + returnComponentRoute);
 
 		const isLoggedIn = await this.oauthService
 			.loadDiscoveryDocumentAndTryLogin()
@@ -28,8 +95,11 @@ export class AuthenticationService {
 	//----------------------------------------------------------
 	// *
 	// *
-	public async login(returnComponentRoute: string | undefined = undefined): Promise<string | null> {
-		await this.configService.configureOAuthService(window.location.origin + returnComponentRoute);
+	public async login(
+		loginType: IdentityProviderTypeCode,
+		returnComponentRoute: string | undefined = undefined
+	): Promise<string | null> {
+		await this.configService.configureOAuthService(loginType, window.location.origin + returnComponentRoute);
 
 		const returnRoute = location.pathname.substring(1);
 		console.debug('[AuthenticationService] LOGIN', returnComponentRoute, returnRoute);

@@ -19,6 +19,23 @@ import { DogsOrRestraintsComponent } from './step-components/dogs-or-restraints.
 import { FingerprintsComponent } from './step-components/fingerprints.component';
 import { HeightAndWeightComponent } from './step-components/height-and-weight.component';
 import { LicenceAccessCodeComponent } from './step-components/licence-access-code.component';
+import { LicenceCategoryArmouredCarGuardComponent } from './step-components/licence-category-armoured-car-guard.component';
+import { LicenceCategoryBodyArmourSalesComponent } from './step-components/licence-category-body-armour-sales.component';
+import { LicenceCategoryClosedCircuitTelevisionInstallerComponent } from './step-components/licence-category-closed-circuit-television-installer.component';
+import { LicenceCategoryElectronicLockingDeviceInstallerComponent } from './step-components/licence-category-electronic-locking-device-installer.component';
+import { LicenceCategoryFireInvestigatorComponent } from './step-components/licence-category-fire-investigator.component';
+import { LicenceCategoryLocksmithSupComponent } from './step-components/licence-category-locksmith-sup.component';
+import { LicenceCategoryLocksmithComponent } from './step-components/licence-category-locksmith.component';
+import { LicenceCategoryPrivateInvestigatorSupComponent } from './step-components/licence-category-private-investigator-sup.component';
+import { LicenceCategoryPrivateInvestigatorComponent } from './step-components/licence-category-private-investigator.component';
+import { LicenceCategorySecurityAlarmInstallerSupComponent } from './step-components/licence-category-security-alarm-installer-sup.component';
+import { LicenceCategorySecurityAlarmInstallerComponent } from './step-components/licence-category-security-alarm-installer.component';
+import { LicenceCategorySecurityAlarmMonitorComponent } from './step-components/licence-category-security-alarm-monitor.component';
+import { LicenceCategorySecurityAlarmResponseComponent } from './step-components/licence-category-security-alarm-response.component';
+import { LicenceCategorySecurityAlarmSalesComponent } from './step-components/licence-category-security-alarm-sales.component';
+import { LicenceCategorySecurityConsultantComponent } from './step-components/licence-category-security-consultant.component';
+import { LicenceCategorySecurityGuardSupComponent } from './step-components/licence-category-security-guard-sup.component';
+import { LicenceCategorySecurityGuardComponent } from './step-components/licence-category-security-guard.component';
 import { LicenceCategoryComponent } from './step-components/licence-category.component';
 import { LicenceExpiredComponent } from './step-components/licence-expired.component';
 import { LicenceSelectionComponent } from './step-components/licence-selection.component';
@@ -70,6 +87,23 @@ import { SummaryReviewComponent } from './step-components/summary-review.compone
 		LicenceCategoryComponent,
 		AdditionalGovIdComponent,
 		LicenceAccessCodeComponent,
+		LicenceCategoryLocksmithComponent,
+		LicenceCategoryArmouredCarGuardComponent,
+		LicenceCategoryBodyArmourSalesComponent,
+		LicenceCategoryClosedCircuitTelevisionInstallerComponent,
+		LicenceCategoryElectronicLockingDeviceInstallerComponent,
+		LicenceCategoryFireInvestigatorComponent,
+		LicenceCategoryLocksmithSupComponent,
+		LicenceCategoryPrivateInvestigatorComponent,
+		LicenceCategoryPrivateInvestigatorSupComponent,
+		LicenceCategorySecurityGuardComponent,
+		LicenceCategorySecurityGuardSupComponent,
+		LicenceCategorySecurityAlarmInstallerSupComponent,
+		LicenceCategorySecurityAlarmInstallerComponent,
+		LicenceCategorySecurityAlarmMonitorComponent,
+		LicenceCategorySecurityAlarmResponseComponent,
+		LicenceCategorySecurityAlarmSalesComponent,
+		LicenceCategorySecurityConsultantComponent,
 	],
 	imports: [SharedModule, LicenceApplicationRoutingModule],
 })
