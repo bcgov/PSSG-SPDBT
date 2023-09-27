@@ -34,5 +34,8 @@ namespace Spd.Utilities.Payment
         public Uri OAuth2TokenEndpointUrl { get; set; } = null!;
         public string ClientId { get; set; } = string.Empty;
         public string ClientSecret { get; set; } = string.Empty;
+        public int OAuthTokenRequestTimeoutInMilliSeconds { get; set; } = 2000;
+        public int OAuthTokenRequestMaxRetryTimes { get; set; } = 5;
+        public int OAuthTokenCachedInMins { get; set; } = 30;
     }
 }

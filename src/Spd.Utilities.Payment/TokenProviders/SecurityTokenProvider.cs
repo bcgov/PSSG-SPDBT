@@ -6,6 +6,4 @@ namespace Spd.Utilities.Payment.TokenProviders
     {
         Task<string> AcquireToken();
     }
-
-
 }
