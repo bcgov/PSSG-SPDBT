@@ -24,7 +24,7 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 
 						<div class="row mt-4" *ngIf="isBornInCanada.value">
 							<div class="offset-md-2 col-md-8 col-sm-12">
-								<mat-divider class="mb-3" style="border-top-color: var(--color-primary-light);"></mat-divider>
+								<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 
 								<ng-container *ngIf="isBornInCanada.value == booleanTypeCodes.Yes; else notBornInCanadaHeading">
 									<div class="text-minor-heading mb-2">Born in Canada</div>

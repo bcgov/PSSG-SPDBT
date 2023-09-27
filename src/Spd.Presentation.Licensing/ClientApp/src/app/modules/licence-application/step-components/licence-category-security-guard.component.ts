@@ -121,7 +121,7 @@ export class LicenceCategorySecurityGuardComponent implements OnInit, LicenceFor
 	isFormValid(): boolean {
 		const attachments =
 			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
-				? this.fileUploadComponent.files[0]
+				? this.fileUploadComponent.files
 				: '';
 		this.form.controls['attachments'].setValue(attachments);
 

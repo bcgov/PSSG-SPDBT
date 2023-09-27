@@ -9,6 +9,7 @@ import { CountryTypeCode } from './country-type.model';
 export interface SelectOptions<k = string> {
 	code: k;
 	desc: string;
+	selected?: boolean;
 }
 
 export enum SwlTypeCode {

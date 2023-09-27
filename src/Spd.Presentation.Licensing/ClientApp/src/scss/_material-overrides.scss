@@ -77,7 +77,7 @@ button.mdc-button {
   background-color: rgba(245, 245, 245);
 }
 
-.radio-label .mdc-label {
+.radio-label .mdc-label, .mat-mdc-checkbox label {
   font-size: 1.3em;
   color: var(--color-primary);
 }
@@ -123,7 +123,8 @@ button.mat-green-button {
 
 .mat-mdc-checkbox .mdc-form-field {
   // padding: 0.5rem !important;
-  padding: 0.5rem 0.5rem 0.5rem 0 !important;
+  // padding: 0.5rem 0.5rem 0.5rem 0 !important;
+  padding:  0 !important;
 }
 
 .mdc-form-field>label {

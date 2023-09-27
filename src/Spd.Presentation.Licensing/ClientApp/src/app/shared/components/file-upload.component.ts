@@ -86,15 +86,19 @@ export class FileUploadHelper {
 				<div class="fine-print mb-4" *ngIf="message">{{ message }}</div>
 			</ngx-dropzone-label>
 
-			<div *ngIf="files.length > 0" fxLayout="row wrap">
-				<ng-container *ngFor="let file of files">
-					<ngx-dropzone-preview class="file-preview" [removable]="true" (removed)="onRemoveFile(file)">
-						<ngx-dropzone-label fxLayout="row" fxLayout="start center">
-							<mat-icon class="preview-icon">{{ getFileIcon(file).icon }}</mat-icon>
-							<span>{{ file.name }} ({{ getFileSize(file.size) }} KB)</span>
-						</ngx-dropzone-label>
-					</ngx-dropzone-preview>
-				</ng-container>
+			<div *ngIf="files.length > 0">
+				<div class="row">
+					<ng-container *ngFor="let file of files">
+						<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+							<ngx-dropzone-preview class="file-preview" [removable]="true" (removed)="onRemoveFile(file)">
+								<ngx-dropzone-label>
+									<mat-icon class="preview-icon">{{ getFileIcon(file).icon }}</mat-icon>
+									<span>{{ file.name }} ({{ getFileSize(file.size) }} KB)</span>
+								</ngx-dropzone-label>
+							</ngx-dropzone-preview>
+						</div>
+					</ng-container>
+				</div>
 			</div>
 		</ngx-dropzone>
 
@@ -118,6 +122,8 @@ export class FileUploadHelper {
 
 			.file-preview {
 				max-width: unset !important;
+				height: unset !important;
+				min-height: 90px !important;
 			}
 
 			.preview-icon {
@@ -203,7 +209,7 @@ export class FileUploadComponent implements OnInit {
 	onRemoveFile(evt: any) {
 		let currentFiles = [...this.files];
 		this.removeFile.emit(this.files.indexOf(evt));
-		currentFiles.splice(this.files.indexOf(evt));
+		currentFiles.splice(this.files.indexOf(evt), 1);
 
 		this.files = currentFiles;
 	}

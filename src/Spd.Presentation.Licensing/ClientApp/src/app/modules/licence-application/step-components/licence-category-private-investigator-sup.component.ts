@@ -182,13 +182,13 @@ export class LicenceCategoryPrivateInvestigatorSupComponent implements OnInit, L
 	isFormValid(): boolean {
 		const attachments1 =
 			this.fileUploadComponent1?.files && this.fileUploadComponent1?.files.length > 0
-				? this.fileUploadComponent1.files[0]
+				? this.fileUploadComponent1.files
 				: '';
 		this.form.controls['attachments'].setValue(attachments1);
 
 		const attachments2 =
 			this.fileUploadComponent2?.files && this.fileUploadComponent2?.files.length > 0
-				? this.fileUploadComponent2.files[0]
+				? this.fileUploadComponent2.files
 				: '';
 		this.form.controls['trainingattachments'].setValue(attachments2);
 

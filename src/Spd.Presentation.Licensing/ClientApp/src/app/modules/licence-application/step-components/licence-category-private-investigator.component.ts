@@ -335,25 +335,25 @@ export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, Lice
 	isFormValid(): boolean {
 		const attachments1 =
 			this.fileUploadComponent1?.files && this.fileUploadComponent1?.files.length > 0
-				? this.fileUploadComponent1.files[0]
+				? this.fileUploadComponent1.files
 				: '';
 		this.form.controls['attachments'].setValue(attachments1);
 
 		const attachments2 =
 			this.fileUploadComponent2?.files && this.fileUploadComponent2?.files.length > 0
-				? this.fileUploadComponent2.files[0]
+				? this.fileUploadComponent2.files
 				: '';
 		this.form.controls['trainingattachments'].setValue(attachments2);
 
 		const attachments3 =
 			this.fileUploadComponent3?.files && this.fileUploadComponent3?.files.length > 0
-				? this.fileUploadComponent3.files[0]
+				? this.fileUploadComponent3.files
 				: '';
 		this.form.controls['fireinvestigatorcertificateattachments'].setValue(attachments3);
 
 		const attachments4 =
 			this.fileUploadComponent4?.files && this.fileUploadComponent4?.files.length > 0
-				? this.fileUploadComponent4.files[0]
+				? this.fileUploadComponent4.files
 				: '';
 		this.form.controls['fireinvestigatorletterattachments'].setValue(attachments4);
 

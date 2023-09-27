@@ -190,6 +190,10 @@ body {
   padding: .5rem 1rem;
 }
 
+.mat-divider-primary {
+  border-top-color: rgba(15, 72, 174, 0.52);
+}
+
 .alert-category {
   --bs-alert-color: #0f5132;
   --bs-alert-bg: var(--color-grey-lightest);

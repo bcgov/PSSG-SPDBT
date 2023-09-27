@@ -3,7 +3,6 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { GenderTypes, SwlStatusTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { UtilService } from 'src/app/core/services/util.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
-import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
@@ -16,13 +15,11 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 				<div class="step-container row">
 					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<form [formGroup]="form" novalidate>
-							<mat-checkbox formControlName="oneLegalName"> I have one legal name </mat-checkbox>
 							<div class="row">
 								<div class="col-xl-4 col-lg-6 col-md-12">
 									<mat-form-field>
 										<mat-label>Given Name</mat-label>
 										<input matInput formControlName="givenName" [errorStateMatcher]="matcher" maxlength="40" />
-										<mat-error *ngIf="form.get('givenName')?.hasError('required')"> This is required </mat-error>
 									</mat-form-field>
 								</div>
 								<div class="col-xl-4 col-lg-6 col-md-12">
@@ -68,6 +65,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 												{{ gdr.desc }}
 											</mat-option>
 										</mat-select>
+										<mat-error *ngIf="form.get('genderCode')?.hasError('required')">This is required</mat-error>
 									</mat-form-field>
 								</div>
 							</div>
@@ -86,7 +84,7 @@ export class PersonalInformationComponent implements OnInit, LicenceFormStepComp
 	readonly title_confirm = 'Confirm your personal information';
 	readonly title_view = 'View your personal information';
 	readonly subtitle_auth_new =
-		'This information is from your BC Services Card. If you need to make any updates, please visit ICBC.';
+		'This information is from your BC Services Card. If you need to make any updates, please <a href="https://www.icbc.com/driver-licensing/getting-licensed/Pages/Change-your-address-or-name.aspx"  target="_blank">visit ICBC</a>.';
 	readonly subtitle_unauth_renew_update = 'Update any information that has changed since your last application';
 
 	startAtBirthDate = this.utilService.getBirthDateStartAt();
@@ -95,25 +93,14 @@ export class PersonalInformationComponent implements OnInit, LicenceFormStepComp
 	title = '';
 	subtitle = '';
 
-	form: FormGroup = this.formBuilder.group(
-		{
-			givenName: new FormControl(null, [FormControlValidators.required]),
-			middleName1: new FormControl(null),
-			middleName2: new FormControl(null),
-			surname: new FormControl(null, [FormControlValidators.required]),
-			oneLegalName: new FormControl(false),
-			genderCode: new FormControl(null),
-			dateOfBirth: new FormControl(null, [Validators.required]),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalRequiredValidator(
-					'givenName',
-					(form) => form.get('oneLegalName')?.value != true
-				),
-			],
-		}
-	);
+	form: FormGroup = this.formBuilder.group({
+		givenName: new FormControl(null),
+		middleName1: new FormControl(null),
+		middleName2: new FormControl(null),
+		surname: new FormControl(null, [FormControlValidators.required]),
+		genderCode: new FormControl(null, [FormControlValidators.required]),
+		dateOfBirth: new FormControl(null, [Validators.required]),
+	});
 
 	constructor(
 		private formBuilder: FormBuilder,
@@ -141,7 +128,6 @@ export class PersonalInformationComponent implements OnInit, LicenceFormStepComp
 						middleName1: this.licenceApplicationService.licenceModel.middleName1,
 						middleName2: this.licenceApplicationService.licenceModel.middleName2,
 						surname: this.licenceApplicationService.licenceModel.surname,
-						oneLegalName: this.licenceApplicationService.licenceModel.oneLegalName,
 						genderCode: this.licenceApplicationService.licenceModel.genderCode,
 						dateOfBirth: this.licenceApplicationService.licenceModel.dateOfBirth,
 					});

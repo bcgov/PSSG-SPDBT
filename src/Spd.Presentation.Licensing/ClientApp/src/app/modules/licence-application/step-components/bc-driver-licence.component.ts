@@ -27,7 +27,7 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 
 					<div class="row mt-4" *ngIf="hasBcDriversLicence.value == booleanTypeCodes.Yes">
 						<div class="offset-md-2 col-md-8 col-sm-12">
-							<mat-divider class="mb-3" style="border-top-color: var(--color-primary-light);"></mat-divider>
+							<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 							<div class="row mt-2">
 								<div class="col-lg-6 col-md-12 col-sm-12">
 									<mat-form-field>

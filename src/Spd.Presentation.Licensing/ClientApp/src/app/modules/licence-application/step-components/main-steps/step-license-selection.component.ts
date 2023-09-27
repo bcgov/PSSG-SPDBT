@@ -3,6 +3,7 @@ import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@
 import { MatStepper } from '@angular/material/stepper';
 import { SelectOptions, SwlCategoryTypeCode, SwlStatusTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { LicenceApplicationService } from '../../licence-application.service';
+import { DogsOrRestraintsComponent } from '../dogs-or-restraints.component';
 import { LicenceAccessCodeComponent } from '../licence-access-code.component';
 import { LicenceCategoryArmouredCarGuardComponent } from '../licence-category-armoured-car-guard.component';
 import { LicenceCategoryBodyArmourSalesComponent } from '../licence-category-body-armour-sales.component';
@@ -33,7 +34,7 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 	selector: 'app-step-license-selection',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step>
+			<!-- <mat-step>
 				<app-licence-selection></app-licence-selection>
 
 				<div class="row mt-4">
@@ -151,9 +152,9 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 						</button>
 					</div>
 				</div>
-			</mat-step>
+			</mat-step> -->
 
-			<mat-step>
+			<!-- <mat-step>
 				<app-licence-category></app-licence-category>
 
 				<div class="row mt-4">
@@ -286,6 +287,26 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 						</button>
 					</div>
 				</div>
+			</mat-step> -->
+
+			<mat-step>
+				<app-dogs-or-restraints></app-dogs-or-restraints>
+
+				<div class="row mt-4">
+					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+					</div>
+					<div class="col-lg-3 col-md-4 col-sm-6">
+						<button
+							mat-flat-button
+							color="primary"
+							class="large mb-2"
+							(click)="onFormValidNextStep(STEP_DOGS_OR_RESTRAINT)"
+						>
+							Next
+						</button>
+					</div>
+				</div>
 			</mat-step>
 
 			<mat-step>
@@ -315,6 +336,7 @@ export class StepLicenseSelectionComponent {
 	readonly STEP_PERSONAL_INFORMATION = '4';
 	readonly STEP_LICENCE_EXPIRED = '5';
 	readonly STEP_LICENCE_CATEGORY = '6';
+	readonly STEP_DOGS_OR_RESTRAINT = '8';
 	readonly STEP_LICENCE_TERM = '7';
 
 	showStepAccessCode = true;
@@ -382,6 +404,9 @@ export class StepLicenseSelectionComponent {
 	@ViewChild(LicenceCategorySecurityConsultantComponent)
 	securityConsultantComponent!: LicenceCategorySecurityConsultantComponent;
 
+	@ViewChild(DogsOrRestraintsComponent)
+	dogsOrRestraintsComponent!: DogsOrRestraintsComponent;
+
 	@ViewChild(LicenceTermComponent)
 	licenceTermComponent!: LicenceTermComponent;
 
@@ -420,6 +445,7 @@ export class StepLicenseSelectionComponent {
 			// ...(this.securityAlarmResponseComponent ? this.securityAlarmResponseComponent.getDataToSave() : {}),
 			// ...(this.securityAlarmSalesComponent ? this.securityAlarmSalesComponent.getDataToSave() : {}),
 			// ...(this.securityConsultantComponent ? this.securityConsultantComponent.getDataToSave() : {}),
+			...(this.dogsOrRestraintsComponent ? this.dogsOrRestraintsComponent.getDataToSave() : {}),
 			...(this.licenceTermComponent ? this.licenceTermComponent.getDataToSave() : {}),
 		};
 
@@ -572,6 +598,8 @@ export class StepLicenseSelectionComponent {
 
 		this.swlCategoryList = this.licenceApplicationService.licenceModel.swlCategoryList;
 
+		this.licenceApplicationService.licenceModelLoaded$.next(true);
+
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 		this.childstepper.next();
@@ -635,6 +663,8 @@ export class StepLicenseSelectionComponent {
 				return this.licenceExpiredComponent.isFormValid();
 			case this.STEP_LICENCE_CATEGORY:
 				return this.licenceCategoryComponent.isFormValid();
+			case this.STEP_DOGS_OR_RESTRAINT:
+				return this.dogsOrRestraintsComponent.isFormValid();
 			case this.STEP_LICENCE_TERM:
 				return this.licenceTermComponent.isFormValid();
 			case SwlCategoryTypeCode.ArmouredCarGuard:

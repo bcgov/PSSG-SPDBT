@@ -44,7 +44,9 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 
 					<div class="row mt-4">
 						<div class="offset-xxl-2 col-xxl-8 offset-xl-1 col-xl-10 col-lg-12">
-							<div class="row" *ngFor="let item of swlCategoryList; let i = index">
+							<div class="row" *ngFor="let item of swlCategoryList; let i = index; let first = first">
+								<mat-divider class="mt-4 mb-3" *ngIf="first"></mat-divider>
+
 								<div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12">
 									<mat-chip-option [selectable]="false" class="mat-chip-green"> Category #{{ i + 1 }} </mat-chip-option>
 								</div>
@@ -62,7 +64,8 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 										<mat-icon>delete_outline</mat-icon>Remove
 									</button>
 								</div>
-								<mat-divider class="my-2"></mat-divider>
+
+								<mat-divider class="my-3"></mat-divider>
 							</div>
 						</div>
 					</div>
