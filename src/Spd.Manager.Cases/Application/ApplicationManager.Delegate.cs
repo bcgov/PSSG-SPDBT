@@ -8,6 +8,8 @@ namespace Spd.Manager.Cases.Application
 {
     internal partial class ApplicationManager
     {
+        internal readonly int MAX_DELEGATE_NUMBER = 4;
+        internal readonly int MIN_DELEGATE_INITIATOR_NUMBER = 1;
         public async Task<DelegateListResponse> Handle(DelegateListQuery query, CancellationToken ct)
         {
             var delegates = await _delegateRepository.QueryAsync(new DelegateQry(query.ApplicationId), ct);
@@ -15,7 +17,8 @@ namespace Spd.Manager.Cases.Application
 
             return new DelegateListResponse
             {
-                Delegates = delegateResps
+                Delegates = delegateResps.OrderBy(o => o.FirstName).ThenBy(o => o.LastName)
+
             };
         }
 
@@ -24,7 +27,7 @@ namespace Spd.Manager.Cases.Application
             //if already has an user. use email to connect
             Guid? userId = null;
             PortalUserListResp userList = await _portalUserRepository.QueryAsync(
-                new PortalUserQry() { OrganizationId = SpdConstants.BC_GOV_ORG_ID, UserEmail = command.CreateRequest.EmailAddress },
+                new PortalUserQry() { ParentOrganizationId = SpdConstants.BC_GOV_ORG_ID, UserEmail = command.CreateRequest.EmailAddress },
                 ct
                 );
             if (userList.Items.Any())
@@ -37,31 +40,23 @@ namespace Spd.Manager.Cases.Application
                  ct);
 
             //check if existing or over max
-            bool delegateAlreadyExists = false;
-            if (userId != null)
-            {
-                delegateAlreadyExists = allDelegateList.Items.Any(o => o.PortalUserId == userId); //for initiator
-            }
-            else
-            {
-                delegateAlreadyExists = allDelegateList.Items.Any(o => o.EmailAddress == command.CreateRequest.EmailAddress);
-            }
+            bool delegateAlreadyExists = allDelegateList.Items.Any(o => o.EmailAddress == command.CreateRequest.EmailAddress);
             if (delegateAlreadyExists)
             {
                 throw new ApiException(System.Net.HttpStatusCode.BadRequest, "The person is already added to the application as a delegate.");
             }
 
-            if (allDelegateList.Items.Where(o => o.PSSOUserRoleCode == PSSOUserRoleEnum.Delegate).Count() >= 4)
+            if (allDelegateList.Items.Where(o => o.PSSOUserRoleCode == PSSOUserRoleEnum.Delegate).Count() >= MAX_DELEGATE_NUMBER)
             {
-                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "The application can only have 4 delegates plus the Initiator.");
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"The application can only have {MAX_DELEGATE_NUMBER} delegates plus the Initiator.");
             }
 
             //create delegate
-            if (userId == null) 
+            if (userId == null)
             {
                 //create user shell
                 var createPortalUserCmd = _mapper.Map<CreatePortalUserCmd>(command.CreateRequest);
-                createPortalUserCmd.OrgId = SpdConstants.BC_GOV_ORG_ID;
+                createPortalUserCmd.OrgId = SpdConstants.BC_GOV_ORG_ID; //we do not know the user's org id yet.
                 var user = await _portalUserRepository.ManageAsync(createPortalUserCmd, ct);
                 userId = user.Id;
             }
@@ -78,12 +73,12 @@ namespace Spd.Manager.Cases.Application
             bool canDoDelete = false;
             var delegateList = await _delegateRepository.QueryAsync(
                 new DelegateQry(command.ApplicationId), ct);
-            if (delegateList.Items.Count() <= 1)
+            if (delegateList.Items.Count() <= MIN_DELEGATE_INITIATOR_NUMBER)
             {
-                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Only 1 delegate left, cannot delete the delegate.");
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"Only {MIN_DELEGATE_INITIATOR_NUMBER} delegate left, cannot delete the delegate.");
             }
 
-            if (command.IsPSA)
+            if (command.CurrentUserIsPSA)
                 canDoDelete = true;
             else
             {

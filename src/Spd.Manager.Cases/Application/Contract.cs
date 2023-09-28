@@ -846,14 +846,12 @@ namespace Spd.Manager.Cases.Application
 
     public record DelegateCreateRequest
     {
-        public string FirstName { get; set; } = null!;
-        public string LastName { get; set; } = null!;
         public string EmailAddress { get; set; } = null!;
     }
 
     public record DelegateListQuery(Guid OrgId, Guid ApplicationId) : IRequest<DelegateListResponse>;
     public record CreateDelegateCommand(Guid OrgId, Guid ApplicationId, DelegateCreateRequest CreateRequest) : IRequest<DelegateResponse>;
-    public record DeleteDelegateCommand(Guid Id, Guid CurrentUserId, Guid ApplicationId, bool IsPSA = false) : IRequest<Unit>;
+    public record DeleteDelegateCommand(Guid Id, Guid CurrentUserId, Guid ApplicationId, bool CurrentUserIsPSA = false) : IRequest<Unit>;
 
     #endregion
 }

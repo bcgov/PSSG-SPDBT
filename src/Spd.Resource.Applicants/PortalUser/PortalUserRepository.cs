@@ -30,6 +30,7 @@ internal class PortalUserRepository : IPortalUserRepository
         if (qry.OrganizationId != null) users = users.Where(d => d._spd_organizationid_value == qry.OrganizationId);
         if (qry.UserEmail != null) users = users.Where(d => d.spd_emailaddress1 == qry.UserEmail);
         if (qry.IdentityId != null) users = users.Where(d => d._spd_identityid_value == qry.IdentityId);
+        if (qry.ParentOrganizationId != null) users = users.Where(d => d.spd_OrganizationId._parentaccountid_value == qry.ParentOrganizationId);
 
         return new PortalUserListResp
         {

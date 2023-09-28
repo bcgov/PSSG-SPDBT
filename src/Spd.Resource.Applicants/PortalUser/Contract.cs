@@ -24,6 +24,7 @@ namespace Spd.Resource.Applicants.PortalUser
     public record PortalUserQry
     {
         public Guid? OrganizationId { get; set; }
+        public Guid? ParentOrganizationId { get; set; } = null;
         public Guid? IdentityId { get; set; }
         public string? UserEmail { get; set; }
         public bool IncludeInactive { get; set; } = false;
