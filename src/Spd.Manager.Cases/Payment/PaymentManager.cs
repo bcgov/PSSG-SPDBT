@@ -168,8 +168,8 @@ namespace Spd.Manager.Cases.Payment
             var paymentList = await _paymentRepository.QueryAsync(new PaymentQry(null, command.PaymentId), ct);
             if (!paymentList.Items.Any())
                 throw new ApiException(HttpStatusCode.BadRequest, "cannot find the payment");
-            if (!paymentList.Items.First().PaidSuccess)
-                throw new ApiException(HttpStatusCode.BadRequest, "cannot do refund for non-successful payment.");
+            if (!paymentList.Items.First().PaidSuccess || paymentList.Items.First().Refunded == true)
+                throw new ApiException(HttpStatusCode.BadRequest, "cannot do refund for non-successful or refunded payment.");
 
             //ask paybc to do direct refund
             SpdPaymentConfig spdPaymentConfig = await GetSpdPaymentConfigAsync(ct);

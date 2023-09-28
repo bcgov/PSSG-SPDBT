@@ -37,7 +37,8 @@ namespace Spd.Resource.Applicants.Payment
                 .ForMember(d => d.TransDateTime, opt => opt.MapFrom(s => s.spd_datetimeofpayment))
                 .ForMember(d => d.TransactionNumber, opt => opt.MapFrom(s => s.spd_transactionid))
                 .ForMember(d => d.PaymentType, opt => opt.MapFrom(s => GetPaymentType(s.spd_paymenttype)))
-                .ForMember(d => d.CaseNumber, opt => opt.MapFrom(s => s.spd_ApplicationId.spd_name));
+                .ForMember(d => d.CaseNumber, opt => opt.MapFrom(s => s.spd_ApplicationId.spd_name))
+                .ForMember(d => d.Refunded, opt => opt.MapFrom(s => s.statuscode == (int)PaymentStatusCodeOptionSet.Refunded));
         }
 
         private int? GetResponseCode(bool? success)
