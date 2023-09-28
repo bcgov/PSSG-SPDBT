@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Threading.Tasks;
@@ -10,12 +11,14 @@ namespace Spd.Utilities.Payment
         private readonly PayBCSettings _config;
         private readonly ITokenProviderResolver _tokenProviderResolver;
         private readonly IMapper _mapper;
+        private readonly ILogger<IPaymentService> _logger;
 
-        public PaymentService(IOptions<PayBCSettings> config, ITokenProviderResolver tokenProviderResolver, IMapper mapper)
+        public PaymentService(IOptions<PayBCSettings> config, ITokenProviderResolver tokenProviderResolver, IMapper mapper, ILogger<IPaymentService> logger)
         {
             _config = config.Value;
             _tokenProviderResolver = tokenProviderResolver;
             _mapper = mapper;
+            _logger = logger;
         }
         public async Task<PaymentResult> HandleCommand(PaymentCommand cmd)
         {

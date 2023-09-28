@@ -1,45 +1,37 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Spd.Utilities.Cache;
 using System;
 using System.Net.Http;
-using System.Net.Http.Json;
 using System.Threading.Tasks;
 
 namespace Spd.Utilities.Payment.TokenProviders;
-internal class BasicSecurityTokenProvider : ISecurityTokenProvider
+internal class BasicSecurityTokenProvider : SecurityTokenProvider
 {
     private const string cacheKey = "paybc_refund_oauth_token";
-
-    private readonly IHttpClientFactory httpClientFactory;
-    private readonly IDistributedCache cache;
-    private readonly PayBCSettings options;
-
     public BasicSecurityTokenProvider(
         IHttpClientFactory httpClientFactory,
         IDistributedCache cache,
-        IOptions<PayBCSettings> options)
+        IOptions<PayBCSettings> options,
+        ILogger<ISecurityTokenProvider> logger) : base(httpClientFactory, cache, options, logger)
+    { }
+
+    public override async Task<string> AcquireToken() =>
+        await cache.GetOrSet(cacheKey, AcquireRefundServiceToken, TimeSpan.FromMinutes(options.DirectRefund.AuthenticationSettings.OAuthTokenCachedInMins)) ?? string.Empty;
+
+    protected async Task<string?> AcquireRefundServiceToken()
     {
-        this.httpClientFactory = httpClientFactory;
-        this.cache = cache;
-        this.options = options.Value;
+        return await AcquireTokenInternal(options.DirectRefund.AuthenticationSettings, "GetTokenForRefund", typeof(BasicAccessToken));
     }
 
-    public async Task<string> AcquireToken() => await cache.GetOrSet(cacheKey, AcquireTokenInternal, TimeSpan.FromMinutes(5)) ?? string.Empty;
-
-
-    private async Task<string> AcquireTokenInternal()
+    protected override async Task<HttpResponseMessage> GetToken()
     {
         using var httpClient = httpClientFactory.CreateClient("oauth");
         string secret = $"{options.DirectRefund.AuthenticationSettings.ClientId}:{options.DirectRefund.AuthenticationSettings.ClientSecret}";
         string basicToken = System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(secret));
         httpClient.DefaultRequestHeaders.Add("Basic-Token", "Basic " + basicToken);
-        var response = await httpClient.GetAsync(options.DirectRefund.AuthenticationSettings.OAuth2TokenEndpointUrl);
-
-        if (!response.IsSuccessStatusCode) throw new InvalidOperationException(response.ToString());
-
-        var resp = await response.Content.ReadFromJsonAsync<BasicAccessToken>();
-        return resp.access_token;
+        return await httpClient.GetAsync(options.DirectRefund.AuthenticationSettings.OAuth2TokenEndpointUrl);
     }
 }
 

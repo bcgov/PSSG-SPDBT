@@ -24,6 +24,7 @@ namespace Spd.Resource.Applicants.Payment
         public DateTimeOffset TransDateTime { get; set; }
         public decimal TransAmount { get; set; }
         public PaymentTypeEnum? PaymentType { get; set; }
+        public bool? Refunded { get; set; } = null;
     }
 
     public abstract record PaymentCmd;
