@@ -14,22 +14,22 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 						<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6 col-sm-12 mb-3">
 							<div
 								class="step-container__box"
-								(click)="onLicenseTypeChange(swlTypeCodes.SecurityBusinessLicense)"
-								[ngClass]="{ 'active-selection-main': licenseTypeCode == swlTypeCodes.SecurityBusinessLicense }"
+								(click)="onLicenceTypeChange(swlTypeCodes.SecurityBusinessLicence)"
+								[ngClass]="{ 'active-selection-main': licenceTypeCode == swlTypeCodes.SecurityBusinessLicence }"
 							>
 								<div class="mb-4 mt-4 mt-md-0">
 									<div class="box__image d-none d-md-block">
 										<img class="box__image__item" [src]="image1" />
 									</div>
-									Security Business License
+									Security Business Licence
 								</div>
 							</div>
 						</div>
 						<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6 col-sm-12 mb-3">
 							<div
 								class="step-container__box"
-								(click)="onLicenseTypeChange(swlTypeCodes.SecurityWorkerLicense)"
-								[ngClass]="{ 'active-selection-main': licenseTypeCode == swlTypeCodes.SecurityWorkerLicense }"
+								(click)="onLicenceTypeChange(swlTypeCodes.SecurityWorkerLicence)"
+								[ngClass]="{ 'active-selection-main': licenceTypeCode == swlTypeCodes.SecurityWorkerLicence }"
 							>
 								<div class="mb-4 mt-4 mt-md-0">
 									<div class="box__image d-none d-md-block">
@@ -42,8 +42,8 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 						<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6 col-sm-12 mb-3">
 							<div
 								class="step-container__box"
-								(click)="onLicenseTypeChange(swlTypeCodes.ArmouredVehicleLicense)"
-								[ngClass]="{ 'active-selection-main': licenseTypeCode == swlTypeCodes.ArmouredVehicleLicense }"
+								(click)="onLicenceTypeChange(swlTypeCodes.ArmouredVehicleLicence)"
+								[ngClass]="{ 'active-selection-main': licenceTypeCode == swlTypeCodes.ArmouredVehicleLicence }"
 							>
 								<div class="mb-4 mt-4 mt-md-0">
 									<div class="box__image d-none d-md-block">
@@ -56,8 +56,8 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 						<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6 col-sm-12 mb-3">
 							<div
 								class="step-container__box"
-								(click)="onLicenseTypeChange(swlTypeCodes.BodyArmourLicense)"
-								[ngClass]="{ 'active-selection-main': licenseTypeCode == swlTypeCodes.BodyArmourLicense }"
+								(click)="onLicenceTypeChange(swlTypeCodes.BodyArmourLicence)"
+								[ngClass]="{ 'active-selection-main': licenceTypeCode == swlTypeCodes.BodyArmourLicence }"
 							>
 								<div class="mb-4 mt-4 mt-md-0">
 									<div class="box__image d-none d-md-block">
@@ -104,7 +104,7 @@ export class LicenceSelectionComponent implements OnInit, LicenceFormStepCompone
 	readonly image3 = '/assets/armoured-vehicle.png';
 	readonly image4 = '/assets/body-armour.png';
 
-	licenseTypeCode: SwlTypeCode | null = null;
+	licenceTypeCode: SwlTypeCode | null = null;
 	isDirtyAndInvalid = false;
 
 	swlTypeCodes = SwlTypeCode;
@@ -118,7 +118,7 @@ export class LicenceSelectionComponent implements OnInit, LicenceFormStepCompone
 		this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: boolean) => {
 				if (loaded) {
-					this.licenseTypeCode = this.licenceApplicationService.licenceModel.licenseTypeCode;
+					this.licenceTypeCode = this.licenceApplicationService.licenceModel.licenceTypeCode;
 				}
 			},
 		});
@@ -133,20 +133,20 @@ export class LicenceSelectionComponent implements OnInit, LicenceFormStepCompone
 		});
 	}
 
-	onLicenseTypeChange(_val: SwlTypeCode) {
-		this.licenseTypeCode = _val;
+	onLicenceTypeChange(_val: SwlTypeCode) {
+		this.licenceTypeCode = _val;
 		const isValid = this.isFormValid();
 		this.isDirtyAndInvalid = !isValid;
 	}
 
 	isFormValid(): boolean {
-		const isValid = !!this.licenseTypeCode;
+		const isValid = !!this.licenceTypeCode;
 		this.isDirtyAndInvalid = !isValid;
 		return isValid;
 	}
 
 	getDataToSave(): any {
-		return { licenseTypeCode: this.licenseTypeCode };
+		return { licenceTypeCode: this.licenceTypeCode };
 	}
 
 	private onImageLoaded() {

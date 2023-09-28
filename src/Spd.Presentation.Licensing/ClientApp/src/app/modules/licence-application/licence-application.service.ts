@@ -17,7 +17,7 @@ export interface LicenceFormStepComponent {
 }
 
 export class LicenceModel {
-	licenseTypeCode: SwlTypeCode | null = null;
+	licenceTypeCode: SwlTypeCode | null = null;
 	statusTypeCode: SwlStatusTypeCode | null = null;
 	isSoleProprietor: BooleanTypeCode | null = null;
 	currentLicenceNumber: string | null = null;
@@ -77,7 +77,7 @@ export class LicenceApplicationService {
 	loadLicence(): void {
 		setTimeout(() => {
 			const defaults: LicenceModel = {
-				licenseTypeCode: SwlTypeCode.ArmouredVehicleLicense,
+				licenceTypeCode: SwlTypeCode.ArmouredVehicleLicence,
 				statusTypeCode: SwlStatusTypeCode.NewOrExpired,
 				isSoleProprietor: BooleanTypeCode.Yes,
 				currentLicenceNumber: '123456',
@@ -136,7 +136,7 @@ export class LicenceApplicationService {
 	loadLicence2(): void {
 		setTimeout(() => {
 			const defaults: LicenceModel = {
-				licenseTypeCode: SwlTypeCode.SecurityBusinessLicense,
+				licenceTypeCode: SwlTypeCode.SecurityBusinessLicence,
 				statusTypeCode: SwlStatusTypeCode.Renewal,
 				isSoleProprietor: BooleanTypeCode.Yes,
 				currentLicenceNumber: '123',

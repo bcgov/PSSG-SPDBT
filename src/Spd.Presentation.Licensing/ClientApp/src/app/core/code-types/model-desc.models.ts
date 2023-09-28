@@ -13,10 +13,10 @@ export interface SelectOptions<k = string> {
 }
 
 export enum SwlTypeCode {
-	SecurityBusinessLicense = 'SecurityBusinessLicense',
-	SecurityWorkerLicense = 'SecurityWorkerLicense',
-	ArmouredVehicleLicense = 'ArmouredVehicleLicense',
-	BodyArmourLicense = 'BodyArmourLicense',
+	SecurityBusinessLicence = 'SecurityBusinessLicence',
+	SecurityWorkerLicence = 'SecurityWorkerLicence',
+	ArmouredVehicleLicence = 'ArmouredVehicleLicence',
+	BodyArmourLicence = 'BodyArmourLicence',
 }
 
 export enum SwlStatusTypeCode {

@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { IncompleteApplicationsComponent } from './components/incomplete-applications.component';
 import { LicencePaymentErrorComponent } from './components/licence-payment-error.component';
 import { LicencePaymentFailComponent } from './components/licence-payment-fail.component';
 import { LicencePaymentManualComponent } from './components/licence-payment-manual.component';
@@ -43,7 +44,7 @@ import { LicenceTermComponent } from './step-components/licence-term.component';
 import { LicenceTypeComponent } from './step-components/licence-type.component';
 import { StepBackgroundComponent } from './step-components/main-steps/step-background.component';
 import { StepIdentificationComponent } from './step-components/main-steps/step-identification.component';
-import { StepLicenseSelectionComponent } from './step-components/main-steps/step-license-selection.component';
+import { StepLicenceSelectionComponent } from './step-components/main-steps/step-licence-selection.component';
 import { StepReviewComponent } from './step-components/main-steps/step-review.component';
 import { MentalHealthConditionsComponent } from './step-components/mental-health-conditions.component';
 import { PersonalInformationComponent } from './step-components/personal-information.component';
@@ -51,6 +52,8 @@ import { PhotoComponent } from './step-components/photo.component';
 import { PoliceBackgroundComponent } from './step-components/police-background.component';
 import { SoleProprietorComponent } from './step-components/sole-proprietor.component';
 import { SummaryReviewComponent } from './step-components/summary-review.component';
+import { SecurityBusinessLicenceComponent } from './components/security-business-licence.component';
+import { SecurityWorkerLicenceComponent } from './components/security-worker-licence.component';
 
 @NgModule({
 	declarations: [
@@ -80,7 +83,7 @@ import { SummaryReviewComponent } from './step-components/summary-review.compone
 		LicencePaymentManualComponent,
 		LicencePaymentErrorComponent,
 		AddressComponent,
-		StepLicenseSelectionComponent,
+		StepLicenceSelectionComponent,
 		StepBackgroundComponent,
 		StepIdentificationComponent,
 		StepReviewComponent,
@@ -104,6 +107,9 @@ import { SummaryReviewComponent } from './step-components/summary-review.compone
 		LicenceCategorySecurityAlarmResponseComponent,
 		LicenceCategorySecurityAlarmSalesComponent,
 		LicenceCategorySecurityConsultantComponent,
+		IncompleteApplicationsComponent,
+  SecurityBusinessLicenceComponent,
+  SecurityWorkerLicenceComponent,
 	],
 	imports: [SharedModule, LicenceApplicationRoutingModule],
 })

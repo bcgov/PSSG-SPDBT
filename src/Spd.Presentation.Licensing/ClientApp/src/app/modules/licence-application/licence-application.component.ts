@@ -8,7 +8,7 @@ import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { LicenceApplicationService } from './licence-application.service';
 import { StepBackgroundComponent } from './step-components/main-steps/step-background.component';
 import { StepIdentificationComponent } from './step-components/main-steps/step-identification.component';
-import { StepLicenseSelectionComponent } from './step-components/main-steps/step-license-selection.component';
+import { StepLicenceSelectionComponent } from './step-components/main-steps/step-licence-selection.component';
 import { StepReviewComponent } from './step-components/main-steps/step-review.component';
 
 @Component({
@@ -26,7 +26,7 @@ import { StepReviewComponent } from './step-components/main-steps/step-review.co
 					>
 						<mat-step completed="true">
 							<ng-template matStepLabel>Licence Selection</ng-template>
-							<app-step-license-selection (nextStepperStep)="onNextStepperStep(stepper)"></app-step-license-selection>
+							<app-step-licence-selection (nextStepperStep)="onNextStepperStep(stepper)"></app-step-licence-selection>
 						</mat-step>
 
 						<mat-step completed="true">
@@ -74,8 +74,8 @@ export class LicenceApplicationComponent implements OnInit {
 
 	orientation: StepperOrientation = 'vertical';
 
-	@ViewChild(StepLicenseSelectionComponent)
-	stepLicenseSelectionComponent!: StepLicenseSelectionComponent;
+	@ViewChild(StepLicenceSelectionComponent)
+	stepLicenceSelectionComponent!: StepLicenceSelectionComponent;
 
 	@ViewChild(StepBackgroundComponent)
 	stepBackgroundComponent!: StepBackgroundComponent;

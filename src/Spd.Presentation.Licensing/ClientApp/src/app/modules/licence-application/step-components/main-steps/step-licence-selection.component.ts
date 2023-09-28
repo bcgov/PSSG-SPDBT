@@ -31,7 +31,7 @@ import { PersonalInformationComponent } from '../personal-information.component'
 import { SoleProprietorComponent } from '../sole-proprietor.component';
 
 @Component({
-	selector: 'app-step-license-selection',
+	selector: 'app-step-licence-selection',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
@@ -328,7 +328,7 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepLicenseSelectionComponent {
+export class StepLicenceSelectionComponent {
 	readonly STEP_LICENCE_SELECTION = '0';
 	readonly STEP_LICENCE_TYPE = '1';
 	readonly STEP_ACCESS_CODE = '2';
