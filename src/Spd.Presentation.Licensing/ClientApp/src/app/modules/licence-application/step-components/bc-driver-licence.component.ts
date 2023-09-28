@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/api/models';
+import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
@@ -25,7 +26,11 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 						</div>
 					</div>
 
-					<div class="row mt-4" *ngIf="hasBcDriversLicence.value == booleanTypeCodes.Yes">
+					<div
+						class="row mt-4"
+						*ngIf="hasBcDriversLicence.value == booleanTypeCodes.Yes"
+						@showHideTriggerSlideAnimation
+					>
 						<div class="offset-md-2 col-md-8 col-sm-12">
 							<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 							<div class="row mt-2">
@@ -46,6 +51,7 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 		</section>
 	`,
 	styles: [],
+	animations: [showHideTriggerSlideAnimation],
 })
 export class BcDriverLicenceComponent {
 	booleanTypeCodes = BooleanTypeCode;

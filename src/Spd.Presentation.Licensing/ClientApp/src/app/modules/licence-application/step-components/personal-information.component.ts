@@ -3,6 +3,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { GenderTypes, SwlStatusTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { UtilService } from 'src/app/core/services/util.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
+import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
@@ -16,6 +17,9 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<form [formGroup]="form" novalidate>
 							<div class="row">
+								<div class="w-100">
+									<mat-checkbox formControlName="oneLegalName"> I have one legal name </mat-checkbox>
+								</div>
 								<div class="col-xl-4 col-lg-6 col-md-12">
 									<mat-form-field>
 										<mat-label>Given Name</mat-label>
@@ -93,14 +97,25 @@ export class PersonalInformationComponent implements OnInit, LicenceFormStepComp
 	title = '';
 	subtitle = '';
 
-	form: FormGroup = this.formBuilder.group({
-		givenName: new FormControl(null),
-		middleName1: new FormControl(null),
-		middleName2: new FormControl(null),
-		surname: new FormControl(null, [FormControlValidators.required]),
-		genderCode: new FormControl(null, [FormControlValidators.required]),
-		dateOfBirth: new FormControl(null, [Validators.required]),
-	});
+	form: FormGroup = this.formBuilder.group(
+		{
+			oneLegalName: new FormControl(false),
+			givenName: new FormControl(null),
+			middleName1: new FormControl(null),
+			middleName2: new FormControl(null),
+			surname: new FormControl(null, [FormControlValidators.required]),
+			genderCode: new FormControl(null, [FormControlValidators.required]),
+			dateOfBirth: new FormControl(null, [Validators.required]),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalRequiredValidator(
+					'givenName',
+					(form) => form.get('oneLegalName')?.value != true
+				),
+			],
+		}
+	);
 
 	constructor(
 		private formBuilder: FormBuilder,
@@ -124,6 +139,7 @@ export class PersonalInformationComponent implements OnInit, LicenceFormStepComp
 					}
 
 					this.form.patchValue({
+						oneLegalName: this.licenceApplicationService.licenceModel.oneLegalName,
 						givenName: this.licenceApplicationService.licenceModel.givenName,
 						middleName1: this.licenceApplicationService.licenceModel.middleName1,
 						middleName2: this.licenceApplicationService.licenceModel.middleName2,

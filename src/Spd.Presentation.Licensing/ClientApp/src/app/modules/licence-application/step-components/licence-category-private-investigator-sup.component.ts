@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { SelectOptions } from 'src/app/core/code-types/model-desc.models';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
@@ -70,9 +71,7 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 									</div>
 								</div>
 
-								<ng-container *ngIf="requirement.value">
-									<mat-divider class="my-3"></mat-divider>
-
+								<div *ngIf="requirement.value" @showHideTriggerSlideAnimation>
 									<div class="text-minor-heading mb-2">
 										<span *ngIf="requirement.value == 'a'"> Upload proof of course and exam completion: </span>
 										<span *ngIf="requirement.value == 'b'">
@@ -111,11 +110,9 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 											</mat-form-field>
 										</div>
 									</div>
-								</ng-container>
+								</div>
 
-								<mat-divider class="my-3"></mat-divider>
-
-								<div class="alert alert-category d-flex" role="alert">
+								<div class="alert alert-category d-flex mt-4" role="alert">
 									<div>
 										<div class="fs-5 mb-2">Training:</div>
 										You must provide proof of successfully completing any of the above two listed course requirements.
@@ -144,6 +141,7 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 		</section>
 	`,
 	styles: [],
+	animations: [showHideTriggerSlideAnimation],
 })
 export class LicenceCategoryPrivateInvestigatorSupComponent implements OnInit, LicenceFormStepComponent {
 	form!: FormGroup;

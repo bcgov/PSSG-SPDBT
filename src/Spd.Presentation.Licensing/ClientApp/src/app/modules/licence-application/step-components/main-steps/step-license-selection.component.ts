@@ -112,8 +112,8 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 						<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 					</div>
 				</div>
-			</mat-step>
-
+			</mat-step> -->
+			<!-- 
 			<mat-step>
 				<app-personal-information></app-personal-information>
 
@@ -154,7 +154,7 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 				</div>
 			</mat-step> -->
 
-			<!-- <mat-step>
+			<mat-step>
 				<app-licence-category></app-licence-category>
 
 				<div class="row mt-4">
@@ -287,7 +287,7 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 						</button>
 					</div>
 				</div>
-			</mat-step> -->
+			</mat-step>
 
 			<mat-step>
 				<app-dogs-or-restraints></app-dogs-or-restraints>

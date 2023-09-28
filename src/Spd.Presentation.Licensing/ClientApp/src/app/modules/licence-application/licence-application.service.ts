@@ -2,7 +2,13 @@ import { Injectable } from '@angular/core';
 import { HotToastService } from '@ngneat/hot-toast';
 import { BehaviorSubject } from 'rxjs';
 import { BooleanTypeCode, GenderCode } from 'src/app/api/models';
-import { SelectOptions, SwlStatusTypeCode, SwlTermCode, SwlTypeCode } from 'src/app/core/code-types/model-desc.models';
+import {
+	SelectOptions,
+	SwlCategoryTypeCode,
+	SwlStatusTypeCode,
+	SwlTermCode,
+	SwlTypeCode,
+} from 'src/app/core/code-types/model-desc.models';
 
 export interface LicenceFormStepComponent {
 	getDataToSave(): any;
@@ -16,6 +22,7 @@ export class LicenceModel {
 	isSoleProprietor: BooleanTypeCode | null = null;
 	currentLicenceNumber: string | null = null;
 	accessCode: string | null = null;
+	oneLegalName: boolean | null = null;
 	givenName: string | null = null;
 	middleName1: string | null = null;
 	middleName2: string | null = null;
@@ -69,59 +76,59 @@ export class LicenceApplicationService {
 
 	loadLicence(): void {
 		setTimeout(() => {
-			// const defaults: LicenceModel = {
-			// 	licenseTypeCode: SwlTypeCode.ArmouredVehicleLicense,
-			// 	statusTypeCode: SwlStatusTypeCode.NewOrExpired,
-			// 	isSoleProprietor: BooleanTypeCode.Yes,
-			// 	currentLicenceNumber: '123456',
-			// 	accessCode: '456',
-			// 	givenName: 'Jane',
-			// 	middleName1: 'Alice',
-			// 	middleName2: 'Mary',
-			// 	surname: 'Johnson',
-			// 	// oneLegalName: false,
-			// 	genderCode: GenderCode.F,
-			// 	dateOfBirth: '2009-10-07T00:00:00+00:00',
-			// 	hasExpiredLicence: BooleanTypeCode.Yes,
-			// 	expiredLicenceNumber: '789',
-			// 	expiryDate: '2002-02-07T00:00:00+00:00',
-			// 	useDogsOrRestraints: BooleanTypeCode.Yes,
-			// 	isDogsPurposeProtection: true,
-			// 	isDogsPurposeDetectionDrugs: false,
-			// 	isDogsPurposeDetectionExplosives: true,
-			// 	carryAndUseRetraints: true,
-			// 	dogsPurposeDocument: 'b',
-			// 	// dogsPurposeAttachments?: string | null = null;
-			// 	carryAndUseRetraintsDocument: 'a',
-			// 	carryAndUseRetraintsAttachments: null,
-			// 	licenceTermCode: SwlTermCode.ThreeYears,
-			// 	swlCategoryList: [
-			// 		{ desc: 'Armoured Car Guard', code: SwlCategoryTypeCode.ArmouredCarGuard },
-			// 		{ desc: 'Body Armour Sales', code: SwlCategoryTypeCode.BodyArmourSales },
-			// 		{ desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
-			// 		{ desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
-			// 		{ desc: 'Fire Investigator', code: SwlCategoryTypeCode.FireInvestigator },
-			// 		{ desc: 'Locksmith', code: SwlCategoryTypeCode.Locksmith },
-			// 		{ desc: 'Locksmith - Under Supervision', code: SwlCategoryTypeCode.LocksmithUnderSupervision },
-			// 		{ desc: 'Private Investigator', code: SwlCategoryTypeCode.PrivateInvestigator },
-			// 		{
-			// 			desc: 'Private Investigator - Under Supervision',
-			// 			code: SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision,
-			// 		},
-			// 		{ desc: 'Security Alarm Installer', code: SwlCategoryTypeCode.SecurityAlarmInstaller },
-			// 		{
-			// 			desc: 'Security Alarm Installer - Under Supervision',
-			// 			code: SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
-			// 		},
-			// 		{ desc: 'Security Alarm Monitor', code: SwlCategoryTypeCode.SecurityAlarmMonitor },
-			// 		{ desc: 'Security Alarm Response', code: SwlCategoryTypeCode.SecurityAlarmResponse },
-			// 		{ desc: 'Security Alarm Sales', code: SwlCategoryTypeCode.SecurityAlarmSales },
-			// 		{ desc: 'Security Consultant', code: SwlCategoryTypeCode.SecurityConsultant },
-			// 		{ desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
-			// 		{ desc: 'Security Guard - Under Supervision', code: SwlCategoryTypeCode.SecurityGuardUnderSupervision },
-			// 	],
-			// };
-			// this.licenceModel = { ...defaults };
+			const defaults: LicenceModel = {
+				licenseTypeCode: SwlTypeCode.ArmouredVehicleLicense,
+				statusTypeCode: SwlStatusTypeCode.NewOrExpired,
+				isSoleProprietor: BooleanTypeCode.Yes,
+				currentLicenceNumber: '123456',
+				accessCode: '456',
+				oneLegalName: false,
+				givenName: 'Jane',
+				middleName1: 'Alice',
+				middleName2: 'Mary',
+				surname: 'Johnson',
+				genderCode: GenderCode.F,
+				dateOfBirth: '2009-10-07T00:00:00+00:00',
+				hasExpiredLicence: BooleanTypeCode.Yes,
+				expiredLicenceNumber: '789',
+				expiryDate: '2002-02-07T00:00:00+00:00',
+				useDogsOrRestraints: BooleanTypeCode.No,
+				// isDogsPurposeProtection: true,
+				// isDogsPurposeDetectionDrugs: false,
+				// isDogsPurposeDetectionExplosives: true,
+				// carryAndUseRetraints: true,
+				// dogsPurposeDocument: 'b',
+				// carryAndUseRetraintsDocument: 'a',
+				// carryAndUseRetraintsAttachments: null,
+
+				licenceTermCode: SwlTermCode.ThreeYears,
+				swlCategoryList: [
+					// { desc: 'Armoured Car Guard', code: SwlCategoryTypeCode.ArmouredCarGuard },
+					// { desc: 'Body Armour Sales', code: SwlCategoryTypeCode.BodyArmourSales },
+					{ desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
+					// { desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
+					// { desc: 'Fire Investigator', code: SwlCategoryTypeCode.FireInvestigator },
+					// { desc: 'Locksmith', code: SwlCategoryTypeCode.Locksmith },
+					// { desc: 'Locksmith - Under Supervision', code: SwlCategoryTypeCode.LocksmithUnderSupervision },
+					// { desc: 'Private Investigator', code: SwlCategoryTypeCode.PrivateInvestigator },
+					// {
+					// 	desc: 'Private Investigator - Under Supervision',
+					// 	code: SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision,
+					// },
+					// { desc: 'Security Alarm Installer', code: SwlCategoryTypeCode.SecurityAlarmInstaller },
+					// {
+					// 	desc: 'Security Alarm Installer - Under Supervision',
+					// 	code: SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
+					// },
+					// { desc: 'Security Alarm Monitor', code: SwlCategoryTypeCode.SecurityAlarmMonitor },
+					// { desc: 'Security Alarm Response', code: SwlCategoryTypeCode.SecurityAlarmResponse },
+					// { desc: 'Security Alarm Sales', code: SwlCategoryTypeCode.SecurityAlarmSales },
+					// { desc: 'Security Consultant', code: SwlCategoryTypeCode.SecurityConsultant },
+					// { desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
+					// { desc: 'Security Guard - Under Supervision', code: SwlCategoryTypeCode.SecurityGuardUnderSupervision },
+				],
+			};
+			this.licenceModel = { ...defaults };
 			this.licenceModelLoaded$.next(true);
 		}, 1000);
 	}
@@ -134,11 +141,11 @@ export class LicenceApplicationService {
 				isSoleProprietor: BooleanTypeCode.Yes,
 				currentLicenceNumber: '123',
 				accessCode: '456',
+				oneLegalName: false,
 				givenName: 'Blake',
 				middleName1: '',
 				middleName2: '',
 				surname: 'Smith',
-				// oneLegalName: false,
 				genderCode: GenderCode.M,
 				dateOfBirth: '2000-10-07T00:00:00+00:00',
 				hasExpiredLicence: BooleanTypeCode.No,

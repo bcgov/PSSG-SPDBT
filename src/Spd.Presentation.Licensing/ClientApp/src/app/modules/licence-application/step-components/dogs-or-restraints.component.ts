@@ -1,7 +1,7 @@
-import { animate, style, transition, trigger } from '@angular/animations';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/api/models';
+import { showHideTriggerAnimation, showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
@@ -35,7 +35,11 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 							</div>
 						</div>
 
-						<div class="row mt-4" *ngIf="useDogsOrRestraints.value == booleanTypeCodes.Yes">
+						<div
+							class="row mt-4"
+							*ngIf="useDogsOrRestraints.value == booleanTypeCodes.Yes"
+							@showHideTriggerSlideAnimation
+						>
 							<div class="offset-md-2 col-md-8 col-sm-12">
 								<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 
@@ -173,12 +177,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 		</section>
 	`,
 	styles: [],
-	animations: [
-		trigger('showHideTriggerAnimation', [
-			transition(':enter', [style({ opacity: 0 }), animate('500ms', style({ opacity: 1 }))]),
-			transition(':leave', [animate('100ms', style({ opacity: 0 }))]),
-		]),
-	],
+	animations: [showHideTriggerAnimation, showHideTriggerSlideAnimation],
 })
 export class DogsOrRestraintsComponent implements OnInit, LicenceFormStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
@@ -204,32 +203,40 @@ export class DogsOrRestraintsComponent implements OnInit, LicenceFormStepCompone
 		{
 			validators: [
 				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'carryAndUseRetraints',
-					(form) => form.get('useDogsOrRestraints')?.value == this.booleanTypeCodes.Yes
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'carryAndUseRetraintsDocument',
-					(form) => form.get('carryAndUseRetraints')?.value
+					(form) =>
+						form.get('useDogsOrRestraints')?.value == this.booleanTypeCodes.Yes &&
+						form.get('carryAndUseRetraints')?.value
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'carryAndUseRetraintsAttachments',
-					(form) => form.get('carryAndUseRetraints')?.value
+					(form) =>
+						form.get('useDogsOrRestraints')?.value == this.booleanTypeCodes.Yes &&
+						form.get('carryAndUseRetraints')?.value
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'dogPurposeFormGroup',
+					(form) => form.get('useDogsOrRestraints')?.value == this.booleanTypeCodes.Yes
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator('dogsPurposeDocument', (form) => {
-					const dogPurposeFormGroup = form.get('dogPurposeFormGroup') as FormGroup;
-					return (
-						(dogPurposeFormGroup.get('isDogsPurposeProtection') as FormControl).value ||
-						(dogPurposeFormGroup.get('isDogsPurposeDetectionDrugs') as FormControl).value ||
-						(dogPurposeFormGroup.get('isDogsPurposeDetectionExplosives') as FormControl).value
-					);
+					return this.isDogPurposesGroupDataRequired(form.get('dogPurposeFormGroup') as FormGroup);
+					// const dogPurposeFormGroup = form.get('dogPurposeFormGroup') as FormGroup;
+					// return (
+					// 	form.get('useDogsOrRestraints')?.value == this.booleanTypeCodes.Yes &&
+					// 	((dogPurposeFormGroup.get('isDogsPurposeProtection') as FormControl).value ||
+					// 		(dogPurposeFormGroup.get('isDogsPurposeDetectionDrugs') as FormControl).value ||
+					// 		(dogPurposeFormGroup.get('isDogsPurposeDetectionExplosives') as FormControl).value)
+					// );
 				}),
 				FormGroupValidators.conditionalDefaultRequiredValidator('dogsPurposeAttachments', (form) => {
-					const dogPurposeFormGroup = form.get('dogPurposeFormGroup') as FormGroup;
-					return (
-						(dogPurposeFormGroup.get('isDogsPurposeProtection') as FormControl).value ||
-						(dogPurposeFormGroup.get('isDogsPurposeDetectionDrugs') as FormControl).value ||
-						(dogPurposeFormGroup.get('isDogsPurposeDetectionExplosives') as FormControl).value
-					);
+					return this.isDogPurposesGroupDataRequired(form.get('dogPurposeFormGroup') as FormGroup);
+					// const dogPurposeFormGroup = form.get('dogPurposeFormGroup') as FormGroup;
+					// return (
+					// 	form.get('useDogsOrRestraints')?.value == this.booleanTypeCodes.Yes &&
+					// 	((dogPurposeFormGroup.get('isDogsPurposeProtection') as FormControl).value ||
+					// 		(dogPurposeFormGroup.get('isDogsPurposeDetectionDrugs') as FormControl).value ||
+					// 		(dogPurposeFormGroup.get('isDogsPurposeDetectionExplosives') as FormControl).value)
+					// );
 				}),
 			],
 		}
@@ -287,6 +294,16 @@ export class DogsOrRestraintsComponent implements OnInit, LicenceFormStepCompone
 		formValue = { ...formValue, ...formValue.dogPurposeFormGroup };
 		delete formValue.dogPurposeFormGroup;
 		return formValue;
+	}
+
+	isDogPurposesGroupDataRequired(form: FormGroup): boolean {
+		const dogPurposeFormGroup = form.get('dogPurposeFormGroup') as FormGroup;
+		return (
+			form.get('useDogsOrRestraints')?.value == this.booleanTypeCodes.Yes &&
+			((dogPurposeFormGroup.get('isDogsPurposeProtection') as FormControl).value ||
+				(dogPurposeFormGroup.get('isDogsPurposeDetectionDrugs') as FormControl).value ||
+				(dogPurposeFormGroup.get('isDogsPurposeDetectionExplosives') as FormControl).value)
+		);
 	}
 
 	get useDogsOrRestraints(): FormControl {

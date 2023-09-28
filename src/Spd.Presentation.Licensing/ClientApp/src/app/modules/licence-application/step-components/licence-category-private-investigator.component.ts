@@ -1,6 +1,7 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/api/models';
+import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { SelectOptions } from 'src/app/core/code-types/model-desc.models';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
@@ -81,9 +82,7 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 									</div>
 								</div>
 
-								<mat-divider class="my-3"></mat-divider>
-
-								<ng-container *ngIf="requirement.value">
+								<div *ngIf="requirement.value" @showHideTriggerSlideAnimation>
 									<div class="text-minor-heading">
 										<span *ngIf="requirement.value == 'a'">
 											Upload document(s) providing the following information:
@@ -136,9 +135,9 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 											</mat-form-field>
 										</div>
 									</div>
-								</ng-container>
+								</div>
 
-								<div class="alert alert-category d-flex" role="alert">
+								<div class="alert alert-category d-flex mt-4" role="alert">
 									<div>
 										<div class="fs-5 mb-2">Training:</div>
 										You must meet one of the following training requirements:
@@ -179,7 +178,7 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 									</div>
 								</div>
 
-								<ng-container *ngIf="training.value">
+								<div *ngIf="training.value" @showHideTriggerSlideAnimation>
 									<div class="my-2">
 										<div class="text-minor-heading mb-2">
 											<span *ngIf="training.value == 'a'">Upload a copy of your course certificate:</span>
@@ -198,11 +197,9 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 											>This is required</mat-error
 										>
 									</div>
-								</ng-container>
+								</div>
 
-								<mat-divider class="my-3"></mat-divider>
-
-								<div class="alert alert-category d-flex" role="alert">
+								<div class="alert alert-category d-flex mt-4" role="alert">
 									<div>
 										<div class="fs-5 mb-2">Do want to add Fire Investigator to this licence?</div>
 										<mat-radio-group
@@ -226,7 +223,7 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 									</div>
 								</div>
 
-								<ng-container *ngIf="addFireInvestigator.value == booleanTypeCodes.Yes">
+								<div *ngIf="addFireInvestigator.value == booleanTypeCodes.Yes" @showHideTriggerSlideAnimation>
 									<div class="fs-5 mb-2">Proof of experience or training required</div>
 
 									<div class="alert alert-category d-flex" role="alert">
@@ -258,6 +255,7 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 											>This is required</mat-error
 										>
 									</div>
+
 									<div class="my-2">
 										<div class="text-minor-heading mb-2">Upload a verification letter:</div>
 										<app-file-upload [maxNumberOfFiles]="10" #fireinvestigatorletterattachments></app-file-upload>
@@ -272,7 +270,7 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 											>This is required</mat-error
 										>
 									</div>
-								</ng-container>
+								</div>
 							</form>
 						</div>
 					</div>
@@ -281,6 +279,7 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 		</section>
 	`,
 	styles: [],
+	animations: [showHideTriggerSlideAnimation],
 })
 export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, LicenceFormStepComponent {
 	form!: FormGroup;

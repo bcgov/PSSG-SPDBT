@@ -20,8 +20,14 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 								<span class="checklist-label">Proof of fingerprinting request</span>
 							</mat-checkbox>
 							<p class="checklist-info">
-								All applicants must submit a proof of fingerprinting request. Download the Request for Fingerprinting
-								form, take it your local police department, and return to this application when you have this form
+								All applicants must submit a proof of fingerprinting request. Download the
+								<a
+									aria-label="Request for Fingerprinting form"
+									href="https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/workers/forms"
+									target="_blank"
+								>
+									Request for Fingerprinting form </a
+								>, take it your local police department, and return to this application when you have this form
 								completed.
 							</p>
 
@@ -30,14 +36,18 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 							</mat-checkbox>
 							<p class="checklist-info">
 								Some categories of security workers, such as security guards, require proof of training or experience.
-								Learn more​ about the types of documents we accept for each security worker category.
+								<a href="https://www2.gov.bc.ca/gov/content/home" target="_blank">Learn more</a>​ about the types of
+								documents we accept for each security worker category.
 							</p>
 
 							<mat-checkbox formControlName="checklistItem">
 								<span class="checklist-label">Proof of Canadian citizenship or ability to work in Canada</span>
 							</mat-checkbox>
 							<p class="checklist-info">
-								See all accepted forms of identification on the Security Worker Licence requirements page.
+								See all accepted forms of identification on the
+								<a href="https://www2.gov.bc.ca/gov/content/home" target="_blank"
+									>Security Worker Licence requirements page</a
+								>.
 							</p>
 
 							<mat-checkbox formControlName="checklistItem">
@@ -77,8 +87,14 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 								</span>
 							</mat-checkbox>
 							<p class="checklist-info">
-								Download Mental Health Condition Form, and give it to your physician to fill out. You will need to
-								upload the completed form.
+								Download the
+								<a
+									aria-label="Mental Health Condition form"
+									href="https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/workers/forms"
+									target="_blank"
+								>
+									Mental Health Condition form </a
+								>, and give it to your physician to fill out. You will need to upload the completed form.
 							</p>
 						</form>
 					</div>
@@ -92,6 +108,7 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 				font-weight: 400;
 				font-size: 1.3em;
 				color: var(--color-primary);
+				line-height: initial;
 			}
 
 			.checklist-info {

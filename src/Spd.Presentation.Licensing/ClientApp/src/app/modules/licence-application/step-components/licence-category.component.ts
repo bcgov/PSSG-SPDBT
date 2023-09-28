@@ -42,7 +42,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 						</mat-error>
 					</div>
 
-					<div class="row mt-4">
+					<div class="row">
 						<div class="offset-xxl-2 col-xxl-8 offset-xl-1 col-xl-10 col-lg-12">
 							<div class="row" *ngFor="let item of swlCategoryList; let i = index; let first = first">
 								<mat-divider class="mt-4 mb-3" *ngIf="first"></mat-divider>
@@ -113,6 +113,8 @@ export class LicenceCategoryComponent implements OnInit, LicenceFormStepComponen
 			const option = this.swlCategoryTypes.find((item) => item.code == this.category)!;
 			this.swlCategoryList.push({ code: option?.code, desc: option.desc });
 			this.setValidCategoryList();
+
+			this.category = '';
 		}
 	}
 

@@ -60,7 +60,7 @@ export class FormGroupValidators {
 		(minRequired = 1): ValidatorFn =>
 		(form: AbstractControl): ValidationErrors | null => {
 			let checked = 0;
-
+			console.log('form', form);
 			Object.keys(form.value).forEach((key) => {
 				const control = form.value[key];
 
