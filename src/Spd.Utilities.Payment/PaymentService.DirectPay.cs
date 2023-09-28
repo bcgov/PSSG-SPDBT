@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Configuration;
 using System.Linq;
 using System.Security.Cryptography;
@@ -12,6 +13,7 @@ namespace Spd.Utilities.Payment
     {
         public async Task<CreateDirectPaymentLinkResult> CreateDirectPaymentLinkAsync(CreateDirectPaymentLinkCommand command)
         {
+            _logger.LogInformation("CreateDirectPaymentLinkCommand");
             if (_config?.DirectPayment?.APIKey == null || _config?.DirectPayment?.DirectPayPath == null)
                 throw new ConfigurationErrorsException("Payment Direct Pay Configuration is not correct.");
 
@@ -67,6 +69,8 @@ namespace Spd.Utilities.Payment
 
         public async Task<PaymentValidationResult> ValidatePaymentResultStrAsync(ValidatePaymentResultStrCommand command)
         {
+            _logger.LogInformation("ValidatePaymentResultStrCommand");
+
             if (_config?.DirectPayment?.APIKey == null || _config?.DirectPayment?.DirectPayPath == null)
                 throw new ConfigurationErrorsException("Payment Direct Pay Configuration is not correct.");
 
