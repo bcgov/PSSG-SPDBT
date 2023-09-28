@@ -1,4 +1,5 @@
-﻿using Spd.Utilities.Payment.TokenProviders;
+﻿using Microsoft.Extensions.Logging;
+using Spd.Utilities.Payment.TokenProviders;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -16,6 +17,7 @@ namespace Spd.Utilities.Payment
     {
         public async Task<InvoiceResult> CreateInvoiceAsync(CreateInvoiceCmd cmd)
         {
+            _logger.LogInformation("PaymentService get CreateInvoiceCmd");
             if (_config?.ARInvoice?.InvoicePath == null || _config?.ARInvoice?.AuthenticationSettings == null)
                 throw new ConfigurationErrorsException("Payment AR Invoice Configuration is not correct.");
             ISecurityTokenProvider tokenProvider = _tokenProviderResolver.GetTokenProviderByName("BearerTokenProvider");
@@ -70,6 +72,7 @@ namespace Spd.Utilities.Payment
                 var result = new InvoiceResult();
                 result.IsSuccess = false;
                 result.Message = $"{requestResponse.ReasonPhrase}-{errorMsg}";
+                _logger.LogError(result.Message);
                 return result;
             }
 
@@ -77,6 +80,7 @@ namespace Spd.Utilities.Payment
 
         public async Task<InvoiceResult> GetInvoiceStatusAsync(InvoiceStatusQuery cmd)
         {
+            _logger.LogInformation("PaymentService get InvoiceStatusQuery");
             if (_config?.ARInvoice?.InvoicePath == null || _config?.ARInvoice?.AuthenticationSettings == null)
                 throw new ConfigurationErrorsException("Payment AR Invoice Configuration is not correct.");
             ISecurityTokenProvider tokenProvider = _tokenProviderResolver.GetTokenProviderByName("BearerTokenProvider");
@@ -98,6 +102,7 @@ namespace Spd.Utilities.Payment
             }
             else
             {
+                _logger.LogError($"GetInvoiceStatusAsync error {response}");
                 var result = new InvoiceResult();
                 result.IsSuccess = false;
                 return result;

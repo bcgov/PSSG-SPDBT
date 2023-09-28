@@ -1,7 +1,9 @@
+using Amazon.Runtime.Internal.Util;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Spd.Resource.Applicants.Application;
 using Spd.Resource.Applicants.Document;
@@ -42,6 +44,7 @@ namespace Spd.Manager.Cases.Payment
         private readonly IDocumentTemplateRepository _documentTemplateRepository;
         private readonly IFileStorageService _fileStorageService;
         private readonly IInvoiceRepository _invoiceRepository;
+        private readonly ILogger<IPaymentManager> _logger;
         private readonly ITimeLimitedDataProtector _dataProtector;
 
         public PaymentManager(IPaymentService paymentService,
@@ -54,7 +57,8 @@ namespace Spd.Manager.Cases.Payment
             IDocumentRepository documentRepository,
             IDocumentTemplateRepository documentTemplateRepository,
             IFileStorageService fileStorageService,
-            IInvoiceRepository invoiceRepository)
+            IInvoiceRepository invoiceRepository,
+            ILogger<IPaymentManager> logger)
         {
             _paymentService = paymentService;
             _configRepository = configRepository;
@@ -66,11 +70,13 @@ namespace Spd.Manager.Cases.Payment
             _documentTemplateRepository = documentTemplateRepository;
             _fileStorageService = fileStorageService;
             _invoiceRepository = invoiceRepository;
+            _logger = logger;
             _dataProtector = dpProvider.CreateProtector(nameof(PrePaymentLinkCreateCommand)).ToTimeLimitedDataProtector();
         }
 
         public async Task<PrePaymentLinkResponse> Handle(PrePaymentLinkCreateCommand command, CancellationToken ct)
         {
+            _logger.LogInformation("PaymentManager get PrePaymentLinkCreateCommand");
             var app = await _appRepository.QueryApplicationAsync(new ApplicationQry(command.ApplicationId), ct);
             if (app == null)
                 throw new ApiException(HttpStatusCode.BadRequest, "application does not exist.");
@@ -90,6 +96,7 @@ namespace Spd.Manager.Cases.Payment
             Guid applicationId;
             Guid paymentId;
             bool isFromSecurePaymentLink;
+            _logger.LogInformation("PaymentManager get PaymentLinkCreateCommand");
             if (command.PaymentLinkCreateRequest is PaymentLinkFromSecureLinkCreateRequest request)
             {
                 try
@@ -149,6 +156,7 @@ namespace Spd.Manager.Cases.Payment
 
         public async Task<Guid> Handle(PaymenCreateCommand command, CancellationToken ct)
         {
+            _logger.LogInformation("PaymentManager get PaymenCreateCommand");
             //validate hashcode
             PaymentValidationResult validated = (PaymentValidationResult)await _paymentService.HandleCommand(new ValidatePaymentResultStrCommand() { QueryStr = command.QueryStr });
             if (!validated.ValidationPassed)
@@ -165,6 +173,7 @@ namespace Spd.Manager.Cases.Payment
 
         public async Task<PaymentRefundResponse> Handle(PaymentRefundCommand command, CancellationToken ct)
         {
+            _logger.LogInformation("PaymentManager get PaymentRefundCommand");
             var paymentList = await _paymentRepository.QueryAsync(new PaymentQry(null, command.PaymentId), ct);
             if (!paymentList.Items.Any())
                 throw new ApiException(HttpStatusCode.BadRequest, "cannot find the payment");
@@ -242,6 +251,7 @@ namespace Spd.Manager.Cases.Payment
 
         public async Task<CreateInvoicesInCasResponse> Handle(CreateInvoicesInCasCommand command, CancellationToken ct)
         {
+            _logger.LogInformation("PaymentManager get CreateInvoicesInCasCommand");
             var invoiceList = await _invoiceRepository.QueryAsync(new InvoiceQry() { InvoiceStatus = InvoiceStatusEnum.Pending }, ct);
             foreach (var invoice in invoiceList.Items)
             {
@@ -270,6 +280,8 @@ namespace Spd.Manager.Cases.Payment
 
         public async Task<UpdateInvoicesFromCasResponse> Handle(UpdateInvoicesFromCasCommand command, CancellationToken ct)
         {
+            _logger.LogInformation("PaymentManager get UpdateInvoicesFromCasCommand");
+
             var invoiceList = await _invoiceRepository.QueryAsync(new InvoiceQry() { InvoiceStatus = InvoiceStatusEnum.Sent }, ct);
             int successCount = 0;
             foreach (var invoice in invoiceList.Items)
