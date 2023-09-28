@@ -57,10 +57,14 @@ export class FormGroupValidators {
 	}
 
 	public static atLeastOneCheckboxValidator =
-		(minRequired = 1): ValidatorFn =>
+		(requiredKey: string | null, requiredValue: string | null, minRequired = 1): ValidatorFn =>
 		(form: AbstractControl): ValidationErrors | null => {
+			// Check if this validation is required:
+			if (requiredKey && requiredValue && form.parent?.get(requiredKey)?.value != requiredValue) {
+				return null;
+			}
+
 			let checked = 0;
-			console.log('form', form);
 			Object.keys(form.value).forEach((key) => {
 				const control = form.value[key];
 

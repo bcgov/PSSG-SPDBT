@@ -136,6 +136,13 @@ export class LicenceExpiredComponent implements OnInit, LicenceFormStepComponent
 	}
 
 	getDataToSave(): any {
+		// remove any invalid data
+		if (this.hasExpiredLicence.value == this.booleanTypeCodes.No) {
+			this.form.patchValue({
+				expiredLicenceNumber: null,
+				expiryDate: null,
+			});
+		}
 		return this.form.value;
 	}
 

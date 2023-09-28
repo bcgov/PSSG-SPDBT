@@ -195,6 +195,13 @@ export class LicenceCategoryPrivateInvestigatorSupComponent implements OnInit, L
 	}
 
 	getDataToSave(): any {
+		// remove any invalid data
+		if (this.form.get('requirement')?.value != 'a') {
+			this.form.patchValue({
+				documentExpiryDate: null,
+			});
+		}
+
 		return { licenceCategoryPrivateInvestigatorUnderSupervision: { ...this.form.value } };
 	}
 

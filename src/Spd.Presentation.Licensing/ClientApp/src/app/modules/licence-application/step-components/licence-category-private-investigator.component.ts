@@ -361,6 +361,14 @@ export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, Lice
 	}
 
 	getDataToSave(): any {
+		// remove any invalid data
+		if (this.addFireInvestigator.value == this.booleanTypeCodes.No) {
+			this.form.patchValue({
+				fireinvestigatorcertificateattachments: null,
+				fireinvestigatorletterattachments: null,
+			});
+		}
+
 		return { licenceCategoryPrivateInvestigatorUnderSupervision: { ...this.form.value } };
 	}
 

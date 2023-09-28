@@ -30,8 +30,8 @@ export class LicenceModel {
 	genderCode: GenderCode | null = null;
 	dateOfBirth: string | null = null;
 	hasExpiredLicence: BooleanTypeCode | null = null;
-	expiredLicenceNumber: string | null = null;
-	expiryDate: string | null = null;
+	expiredLicenceNumber?: string | null = null;
+	expiryDate?: string | null = null;
 	swlCategoryList: SelectOptions[] = [];
 	licenceCategoryArmouredCarGuard?: {};
 	licenceCategoryBodyArmourSales?: {};
@@ -54,7 +54,7 @@ export class LicenceModel {
 	isDogsPurposeProtection?: boolean | null = false;
 	isDogsPurposeDetectionDrugs?: boolean | null = false;
 	isDogsPurposeDetectionExplosives?: boolean | null = false;
-	dogsPurposeDocument?: string | null = null;
+	dogsPurposeDocumentType?: string | null = null;
 	dogsPurposeAttachments?: Array<File>[] | null = null;
 	carryAndUseRetraints?: boolean | null = false;
 	carryAndUseRetraintsDocument?: string | null = null;
@@ -89,23 +89,23 @@ export class LicenceApplicationService {
 				surname: 'Johnson',
 				genderCode: GenderCode.F,
 				dateOfBirth: '2009-10-07T00:00:00+00:00',
-				hasExpiredLicence: BooleanTypeCode.Yes,
-				expiredLicenceNumber: '789',
-				expiryDate: '2002-02-07T00:00:00+00:00',
+				hasExpiredLicence: BooleanTypeCode.No,
+				// expiredLicenceNumber: '789',
+				// expiryDate: '2002-02-07T00:00:00+00:00',
 				useDogsOrRestraints: BooleanTypeCode.No,
 				// isDogsPurposeProtection: true,
 				// isDogsPurposeDetectionDrugs: false,
 				// isDogsPurposeDetectionExplosives: true,
 				// carryAndUseRetraints: true,
-				// dogsPurposeDocument: 'b',
+				// dogsPurposeDocumentType: 'b',
 				// carryAndUseRetraintsDocument: 'a',
 				// carryAndUseRetraintsAttachments: null,
 
 				licenceTermCode: SwlTermCode.ThreeYears,
 				swlCategoryList: [
 					// { desc: 'Armoured Car Guard', code: SwlCategoryTypeCode.ArmouredCarGuard },
-					// { desc: 'Body Armour Sales', code: SwlCategoryTypeCode.BodyArmourSales },
-					{ desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
+					{ desc: 'Body Armour Sales', code: SwlCategoryTypeCode.BodyArmourSales },
+					// { desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
 					// { desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
 					// { desc: 'Fire Investigator', code: SwlCategoryTypeCode.FireInvestigator },
 					// { desc: 'Locksmith', code: SwlCategoryTypeCode.Locksmith },
@@ -172,7 +172,63 @@ export class LicenceApplicationService {
 		console.log('licence data', this.licenceModel);
 	}
 
-	clearLicenceCategoryData(): void {
+	clearLicenceCategoryData(code: SwlCategoryTypeCode): void {
+		switch (code) {
+			case SwlCategoryTypeCode.ArmouredCarGuard:
+				delete this.licenceModel.licenceCategoryArmouredCarGuard;
+				break;
+			case SwlCategoryTypeCode.BodyArmourSales:
+				delete this.licenceModel.licenceCategoryBodyArmourSales;
+				break;
+			case SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller:
+				delete this.licenceModel.licenceCategoryyClosedCircuitTelevisionInstaller;
+				break;
+			case SwlCategoryTypeCode.ElectronicLockingDeviceInstaller:
+				delete this.licenceModel.licenceCategoryElectronicLockingDeviceInstaller;
+				break;
+			case SwlCategoryTypeCode.FireInvestigator:
+				delete this.licenceModel.licenceCategoryFireInvestigator;
+				break;
+			case SwlCategoryTypeCode.Locksmith:
+				delete this.licenceModel.licenceCategoryLocksmith;
+				break;
+			case SwlCategoryTypeCode.LocksmithUnderSupervision:
+				delete this.licenceModel.licenceCategoryLocksmithUnderSupervision;
+				break;
+			case SwlCategoryTypeCode.PrivateInvestigator:
+				delete this.licenceModel.licenceCategoryPrivateInvestigator;
+				break;
+			case SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision:
+				delete this.licenceModel.licenceCategoryPrivateInvestigatorUnderSupervision;
+				break;
+			case SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision:
+				delete this.licenceModel.licenceCategorySecurityAlarmInstallerUnderSupervision;
+				break;
+			case SwlCategoryTypeCode.SecurityAlarmInstaller:
+				delete this.licenceModel.licenceCategorySecurityAlarmInstaller;
+				break;
+			case SwlCategoryTypeCode.SecurityAlarmMonitor:
+				delete this.licenceModel.licenceCategorySecurityAlarmMonitor;
+				break;
+			case SwlCategoryTypeCode.SecurityAlarmResponse:
+				delete this.licenceModel.licenceCategorySecurityAlarmResponse;
+				break;
+			case SwlCategoryTypeCode.SecurityAlarmSales:
+				delete this.licenceModel.licenceCategorySecurityAlarmSales;
+				break;
+			case SwlCategoryTypeCode.SecurityConsultant:
+				delete this.licenceModel.licenceCategorySecurityConsultant;
+				break;
+			case SwlCategoryTypeCode.SecurityGuard:
+				delete this.licenceModel.licenceCategorySecurityGuard;
+				break;
+			case SwlCategoryTypeCode.SecurityGuardUnderSupervision:
+				delete this.licenceModel.licenceCategorySecurityGuardUnderSupervision;
+				break;
+		}
+	}
+
+	clearAllLicenceCategoryData(): void {
 		// call function to delete all licence category data
 		delete this.licenceModel.licenceCategoryArmouredCarGuard;
 		delete this.licenceModel.licenceCategoryBodyArmourSales;

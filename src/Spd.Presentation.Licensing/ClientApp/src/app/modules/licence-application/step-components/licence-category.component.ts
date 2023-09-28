@@ -59,7 +59,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 										class="w-auto float-end"
 										style="color: var(--color-red);"
 										aria-label="Remove category"
-										(click)="onRemove(i)"
+										(click)="onRemove(item.code, i)"
 									>
 										<mat-icon>delete_outline</mat-icon>Remove
 									</button>
@@ -118,7 +118,7 @@ export class LicenceCategoryComponent implements OnInit, LicenceFormStepComponen
 		}
 	}
 
-	onRemove(i: any) {
+	onRemove(code: string, i: any) {
 		const data: DialogOptions = {
 			icon: 'warning',
 			title: 'Confirmation',
@@ -132,7 +132,9 @@ export class LicenceCategoryComponent implements OnInit, LicenceFormStepComponen
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
+					const item = this.swlCategoryList.at(i);
 					this.swlCategoryList.splice(i, 1);
+					this.licenceApplicationService.clearLicenceCategoryData(code as SwlCategoryTypeCode);
 					this.setValidCategoryList();
 				}
 			});

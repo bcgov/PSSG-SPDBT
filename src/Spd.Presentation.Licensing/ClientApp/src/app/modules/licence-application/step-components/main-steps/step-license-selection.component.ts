@@ -34,7 +34,7 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 	selector: 'app-step-license-selection',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<!-- <mat-step>
+			<mat-step>
 				<app-licence-selection></app-licence-selection>
 
 				<div class="row mt-4">
@@ -112,8 +112,8 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 						<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 					</div>
 				</div>
-			</mat-step> -->
-			<!-- 
+			</mat-step>
+
 			<mat-step>
 				<app-personal-information></app-personal-information>
 
@@ -152,7 +152,7 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 						</button>
 					</div>
 				</div>
-			</mat-step> -->
+			</mat-step>
 
 			<mat-step>
 				<app-licence-category></app-licence-category>
@@ -452,7 +452,7 @@ export class StepLicenseSelectionComponent {
 		const categories = this.licenceApplicationService.licenceModel.swlCategoryList;
 
 		// call function to delete all licence category data
-		this.licenceApplicationService.clearLicenceCategoryData();
+		this.licenceApplicationService.clearAllLicenceCategoryData();
 
 		// add back the appropriate licence category data
 		categories.forEach((item: any) => {

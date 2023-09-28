@@ -132,7 +132,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									<mat-radio-group
 										class="category-radio-group"
 										aria-label="Select an option"
-										formControlName="dogsPurposeDocument"
+										formControlName="dogsPurposeDocumentType"
 									>
 										<mat-radio-button class="radio-label" value="a">
 											Security Dog Validation Certificate
@@ -145,9 +145,9 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									<mat-error
 										class="mat-option-error"
 										*ngIf="
-											(form.get('dogsPurposeDocument')?.dirty || form.get('dogsPurposeDocument')?.touched) &&
-											form.get('dogsPurposeDocument')?.invalid &&
-											form.get('dogsPurposeDocument')?.hasError('required')
+											(form.get('dogsPurposeDocumentType')?.dirty || form.get('dogsPurposeDocumentType')?.touched) &&
+											form.get('dogsPurposeDocumentType')?.invalid &&
+											form.get('dogsPurposeDocumentType')?.hasError('required')
 										"
 										>An option must be selected</mat-error
 									>
@@ -195,9 +195,9 @@ export class DogsOrRestraintsComponent implements OnInit, LicenceFormStepCompone
 					isDogsPurposeDetectionDrugs: new FormControl(false),
 					isDogsPurposeDetectionExplosives: new FormControl(false),
 				},
-				FormGroupValidators.atLeastOneCheckboxValidator()
+				FormGroupValidators.atLeastOneCheckboxValidator('useDogsOrRestraints', BooleanTypeCode.Yes)
 			),
-			dogsPurposeDocument: new FormControl(),
+			dogsPurposeDocumentType: new FormControl(),
 			dogsPurposeAttachments: new FormControl(),
 		},
 		{
@@ -214,29 +214,23 @@ export class DogsOrRestraintsComponent implements OnInit, LicenceFormStepCompone
 						form.get('useDogsOrRestraints')?.value == this.booleanTypeCodes.Yes &&
 						form.get('carryAndUseRetraints')?.value
 				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'dogPurposeFormGroup',
-					(form) => form.get('useDogsOrRestraints')?.value == this.booleanTypeCodes.Yes
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator('dogsPurposeDocument', (form) => {
-					return this.isDogPurposesGroupDataRequired(form.get('dogPurposeFormGroup') as FormGroup);
-					// const dogPurposeFormGroup = form.get('dogPurposeFormGroup') as FormGroup;
-					// return (
-					// 	form.get('useDogsOrRestraints')?.value == this.booleanTypeCodes.Yes &&
-					// 	((dogPurposeFormGroup.get('isDogsPurposeProtection') as FormControl).value ||
-					// 		(dogPurposeFormGroup.get('isDogsPurposeDetectionDrugs') as FormControl).value ||
-					// 		(dogPurposeFormGroup.get('isDogsPurposeDetectionExplosives') as FormControl).value)
-					// );
+				FormGroupValidators.conditionalDefaultRequiredValidator('dogsPurposeDocumentType', (form) => {
+					const dogPurposeFormGroup = form.get('dogPurposeFormGroup') as FormGroup;
+					return (
+						form.get('useDogsOrRestraints')?.value == this.booleanTypeCodes.Yes &&
+						((dogPurposeFormGroup.get('isDogsPurposeProtection') as FormControl).value ||
+							(dogPurposeFormGroup.get('isDogsPurposeDetectionDrugs') as FormControl).value ||
+							(dogPurposeFormGroup.get('isDogsPurposeDetectionExplosives') as FormControl).value)
+					);
 				}),
 				FormGroupValidators.conditionalDefaultRequiredValidator('dogsPurposeAttachments', (form) => {
-					return this.isDogPurposesGroupDataRequired(form.get('dogPurposeFormGroup') as FormGroup);
-					// const dogPurposeFormGroup = form.get('dogPurposeFormGroup') as FormGroup;
-					// return (
-					// 	form.get('useDogsOrRestraints')?.value == this.booleanTypeCodes.Yes &&
-					// 	((dogPurposeFormGroup.get('isDogsPurposeProtection') as FormControl).value ||
-					// 		(dogPurposeFormGroup.get('isDogsPurposeDetectionDrugs') as FormControl).value ||
-					// 		(dogPurposeFormGroup.get('isDogsPurposeDetectionExplosives') as FormControl).value)
-					// );
+					const dogPurposeFormGroup = form.get('dogPurposeFormGroup') as FormGroup;
+					return (
+						form.get('useDogsOrRestraints')?.value == this.booleanTypeCodes.Yes &&
+						((dogPurposeFormGroup.get('isDogsPurposeProtection') as FormControl).value ||
+							(dogPurposeFormGroup.get('isDogsPurposeDetectionDrugs') as FormControl).value ||
+							(dogPurposeFormGroup.get('isDogsPurposeDetectionExplosives') as FormControl).value)
+					);
 				}),
 			],
 		}
@@ -263,7 +257,7 @@ export class DogsOrRestraintsComponent implements OnInit, LicenceFormStepCompone
 							isDogsPurposeDetectionExplosives:
 								this.licenceApplicationService.licenceModel.isDogsPurposeDetectionExplosives,
 						},
-						dogsPurposeDocument: this.licenceApplicationService.licenceModel.dogsPurposeDocument,
+						dogsPurposeDocumentType: this.licenceApplicationService.licenceModel.dogsPurposeDocumentType,
 						dogsPurposeAttachments: this.licenceApplicationService.licenceModel.dogsPurposeAttachments,
 					});
 				}
@@ -293,17 +287,25 @@ export class DogsOrRestraintsComponent implements OnInit, LicenceFormStepCompone
 		let formValue = this.form.value;
 		formValue = { ...formValue, ...formValue.dogPurposeFormGroup };
 		delete formValue.dogPurposeFormGroup;
-		return formValue;
-	}
 
-	isDogPurposesGroupDataRequired(form: FormGroup): boolean {
-		const dogPurposeFormGroup = form.get('dogPurposeFormGroup') as FormGroup;
-		return (
-			form.get('useDogsOrRestraints')?.value == this.booleanTypeCodes.Yes &&
-			((dogPurposeFormGroup.get('isDogsPurposeProtection') as FormControl).value ||
-				(dogPurposeFormGroup.get('isDogsPurposeDetectionDrugs') as FormControl).value ||
-				(dogPurposeFormGroup.get('isDogsPurposeDetectionExplosives') as FormControl).value)
-		);
+		// remove any invalid data
+		if (this.useDogsOrRestraints.value == this.booleanTypeCodes.No) {
+			formValue = {
+				...formValue,
+				...{
+					carryAndUseRetraints: null,
+					carryAndUseRetraintsDocument: null,
+					carryAndUseRetraintsAttachments: null,
+					isDogsPurposeProtection: false,
+					isDogsPurposeDetectionDrugs: false,
+					isDogsPurposeDetectionExplosives: false,
+					dogsPurposeDocumentType: null,
+					dogsPurposeAttachments: null,
+				},
+			};
+		}
+
+		return formValue;
 	}
 
 	get useDogsOrRestraints(): FormControl {
