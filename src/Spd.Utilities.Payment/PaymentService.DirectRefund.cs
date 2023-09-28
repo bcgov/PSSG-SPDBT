@@ -1,4 +1,5 @@
-﻿using Spd.Utilities.Payment.TokenProviders;
+﻿using Microsoft.Extensions.Logging;
+using Spd.Utilities.Payment.TokenProviders;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -14,6 +15,8 @@ namespace Spd.Utilities.Payment
     {
         public async Task<RefundPaymentResult> RefundDirectPaymentAsync(RefundPaymentCmd command)
         {
+            _logger.LogInformation("PaymentService get RefundPaymentCmd");
+
             try
             {
                 if (_config?.DirectRefund?.AuthenticationSettings == null || _config?.DirectRefund?.DirectRefundPath == null)
@@ -67,6 +70,7 @@ namespace Spd.Utilities.Payment
                 }
             }catch(Exception ex)    
             {
+                _logger.LogError($"PaymentService {ex}");
                 return new RefundPaymentResult
                 {
                     IsSuccess = false,
