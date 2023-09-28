@@ -1,4 +1,3 @@
-using Amazon.Runtime.Internal.Util;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.DataProtection;
@@ -193,7 +192,7 @@ namespace Spd.Manager.Cases.Payment
                 RefundId = result.RefundId,
                 RefundTxnDateTime = result.Approved ? result.RefundTxnDateTime : null,
                 RefundErrorMsg = result.Approved ? null : result.Message,
-                PaymentStatus = result.Approved? PaymentStatusEnum.Refunded : PaymentStatusEnum.Failure
+                PaymentStatus = result.Approved ? PaymentStatusEnum.Refunded : PaymentStatusEnum.Failure
             };
             await _paymentRepository.ManageAsync(updatePaymentCmd, ct);
 
