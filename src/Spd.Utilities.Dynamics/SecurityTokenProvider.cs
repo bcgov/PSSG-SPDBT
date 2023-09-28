@@ -34,24 +34,27 @@ namespace Spd.Utilities.Dynamics
             this.options = options.Value;
         }
 
-        public async Task<string> AcquireToken() => await cache.GetOrSet(cacheKey, AcquireTokenInternal, TimeSpan.FromMinutes(30)) ?? string.Empty;
+        public async Task<string> AcquireToken() => 
+            await cache.GetOrSet(cacheKey, 
+                AcquireTokenInternal, 
+                TimeSpan.FromMinutes(options.AuthenticationSettings.OAuth2TokenCachedInMins)) ?? string.Empty;
 
 
         private async Task<string> AcquireTokenInternal()
         {
-            var timeoutInMilliSecs = 2000; // Time out the request after 200 ms
+            var timeoutInMilliSecs = this.options.AuthenticationSettings.OAuth2TokenRequestTimeoutInMilliSeconds; // Time out the request after 200 ms
             var timeoutPolicy = Policy.TimeoutAsync(TimeSpan.FromMilliseconds(timeoutInMilliSecs), TimeoutStrategy.Pessimistic);
             var retryPolicy = Policy.Handle<TimeoutRejectedException>() // notice that we are handling a TimeoutRejectedException
                     .WaitAndRetryAsync(
-                        5,
-                        _ => TimeSpan.FromMilliseconds(2000),
+                        this.options.AuthenticationSettings.OAuth2TokenRequestMaxRetryTimes,
+                        _ => TimeSpan.FromMilliseconds(timeoutInMilliSecs),
                         (result, timespan, retryNo, context) =>
                         {
                             logger.LogInformation($"{context.OperationKey}: Retry number {retryNo} within " +
                                 $"{timespan.TotalMilliseconds}ms. Get timeout rejection");
                         }
                     );
-            var pollyContext = new Context("test");
+            var pollyContext = new Context("GetDynamicsToken");
             var wrapper = Policy.WrapAsync(retryPolicy, timeoutPolicy);
 
             var response = await wrapper.ExecuteAsync( async ctx => 

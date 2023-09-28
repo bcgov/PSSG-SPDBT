@@ -17,5 +17,8 @@
         public string ServiceAccountName { get; set; } = string.Empty;
         public string ServiceAccountPassword { get; set; } = string.Empty;
         public string ResourceName { get; set; } = string.Empty;
+        public int OAuth2TokenRequestTimeoutInMilliSeconds { get; set; } = 2000;
+        public int OAuth2TokenRequestMaxRetryTimes { get; set; } = 5;
+        public int OAuth2TokenCachedInMins { get; set; } = 30;
     }
 }
