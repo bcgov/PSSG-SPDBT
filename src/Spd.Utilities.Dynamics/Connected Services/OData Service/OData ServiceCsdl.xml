@@ -5724,6 +5724,7 @@
         <Property Name="address1_fax" Type="Edm.String" Unicode="false" />
         <Property Name="paymenttermscode" Type="Edm.Int32" />
         <Property Name="address3_line2" Type="Edm.String" Unicode="false" />
+        <Property Name="_ownerid_value" Type="Edm.Guid" />
         <Property Name="donotpostalmail" Type="Edm.Boolean" />
         <Property Name="address3_composite" Type="Edm.String" Unicode="false" />
         <Property Name="externaluseridentifier" Type="Edm.String" Unicode="false" />
@@ -5792,6 +5793,7 @@
         <Property Name="traversedpath" Type="Edm.String" Unicode="false" />
         <Property Name="address1_utcoffset" Type="Edm.Int32" />
         <Property Name="governmentid" Type="Edm.String" Unicode="false" />
+        <Property Name="spd_accesscode" Type="Edm.String" Unicode="false" />
         <Property Name="fullname" Type="Edm.String" Unicode="false" />
         <Property Name="address1_stateorprovince" Type="Edm.String" Unicode="false" />
         <Property Name="donotsendmm" Type="Edm.Boolean" />
@@ -5815,7 +5817,7 @@
         <Property Name="address2_county" Type="Edm.String" Unicode="false" />
         <Property Name="shippingmethodcode" Type="Edm.Int32" />
         <Property Name="anniversary" Type="Edm.Date" />
-        <Property Name="_ownerid_value" Type="Edm.Guid" />
+        <Property Name="spd_licensingfingerprintsreceived" Type="Edm.DateTimeOffset" />
         <Property Name="_parentcontactid_value" Type="Edm.Guid" />
         <Property Name="haschildrencode" Type="Edm.Int32" />
         <Property Name="address2_fax" Type="Edm.String" Unicode="false" />
@@ -20111,28 +20113,25 @@
         <Key>
           <PropertyRef Name="spd_delegateid" />
         </Key>
-        <Property Name="_organizationid_value" Type="Edm.Guid" />
-        <Property Name="_createdonbehalfby_value" Type="Edm.Guid" />
-        <Property Name="spd_delegateid" Type="Edm.Guid" />
         <Property Name="_spd_applicationid_value" Type="Edm.Guid" />
-        <Property Name="spd_firstname" Type="Edm.String" Unicode="false" />
-        <Property Name="spd_fullname" Type="Edm.String" Unicode="false" />
-        <Property Name="_modifiedby_value" Type="Edm.Guid" />
-        <Property Name="createdon" Type="Edm.DateTimeOffset" />
-        <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
-        <Property Name="statecode" Type="Edm.Int32" />
-        <Property Name="_modifiedonbehalfby_value" Type="Edm.Guid" />
-        <Property Name="statuscode" Type="Edm.Int32" />
-        <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
-        <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
-        <Property Name="spd_surname" Type="Edm.String" Unicode="false" />
-        <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
         <Property Name="_createdby_value" Type="Edm.Guid" />
+        <Property Name="_modifiedonbehalfby_value" Type="Edm.Guid" />
         <Property Name="spd_role" Type="Edm.Int32" />
-        <Property Name="versionnumber" Type="Edm.Int64" />
-        <Property Name="spd_email" Type="Edm.String" Unicode="false" />
-        <Property Name="importsequencenumber" Type="Edm.Int32" />
+        <Property Name="_createdonbehalfby_value" Type="Edm.Guid" />
+        <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
         <Property Name="_spd_portaluserid_value" Type="Edm.Guid" />
+        <Property Name="_modifiedby_value" Type="Edm.Guid" />
+        <Property Name="spd_delegateid" Type="Edm.Guid" />
+        <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
+        <Property Name="statuscode" Type="Edm.Int32" />
+        <Property Name="utcconversiontimezonecode" Type="Edm.Int32" />
+        <Property Name="spd_fullname" Type="Edm.String" Unicode="false" />
+        <Property Name="createdon" Type="Edm.DateTimeOffset" />
+        <Property Name="statecode" Type="Edm.Int32" />
+        <Property Name="versionnumber" Type="Edm.Int64" />
+        <Property Name="importsequencenumber" Type="Edm.Int32" />
+        <Property Name="_organizationid_value" Type="Edm.Guid" />
+        <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
         <NavigationProperty Name="createdby" Type="mscrm.systemuser" Nullable="false" Partner="lk_spd_delegate_createdby">
           <ReferentialConstraint Property="_createdby_value" ReferencedProperty="systemuserid" />
         </NavigationProperty>
@@ -27515,13 +27514,20 @@
         <Parameter Name="OldPagingCookie" Type="Edm.String" Unicode="false" />
         <ReturnType Type="mscrm.spd_PortalUserExpiryJobResponse" Nullable="false" />
       </Action>
+      <ComplexType Name="spd_ReactivateResponse">
+        <Property Name="IsSuccess" Type="Edm.Boolean" />
+        <Property Name="Result" Type="Edm.String" Unicode="false" />
+      </ComplexType>
+      <Action Name="spd_Reactivate" IsBound="true">
+        <Parameter Name="entity" Type="mscrm.incident" Nullable="false" />
+        <ReturnType Type="mscrm.spd_ReactivateResponse" Nullable="false" />
+      </Action>
       <ComplexType Name="spd_RecordCORNETFindingsResponse">
         <Property Name="IsSuccess" Type="Edm.Boolean" />
         <Property Name="Result" Type="Edm.String" Unicode="false" />
       </ComplexType>
       <Action Name="spd_RecordCORNETFindings" IsBound="true">
         <Parameter Name="entity" Type="mscrm.incident" Nullable="false" />
-        <Parameter Name="ClientNumber" Type="Edm.String" Nullable="false" Unicode="false" />
         <Parameter Name="UserName" Type="Edm.String" Nullable="false" Unicode="false" />
         <Parameter Name="FullName" Type="Edm.String" Nullable="false" Unicode="false" />
         <Parameter Name="Client" Type="Edm.String" Nullable="false" Unicode="false" />
@@ -27533,7 +27539,6 @@
       </ComplexType>
       <Action Name="spd_RecordJUSTINFindings" IsBound="true">
         <Parameter Name="entity" Type="mscrm.incident" Nullable="false" />
-        <Parameter Name="ClientNumber" Type="Edm.String" Nullable="false" Unicode="false" />
         <ReturnType Type="mscrm.spd_RecordJUSTINFindingsResponse" Nullable="false" />
       </Action>
       <ComplexType Name="spd_RequestMoreInfoOnCaseResponse">
