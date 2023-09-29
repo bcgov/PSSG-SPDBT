@@ -23,12 +23,10 @@ internal class DelegateRepository : IDelegateRepository
 
         if (qry.ApplicationId != null) delegates = delegates.Where(d => d._spd_applicationid_value == qry.ApplicationId);
         if (qry.PortalUserId != null) delegates = delegates.Where(d => d._spd_portaluserid_value == qry.PortalUserId);
-        if (qry.EmailAddress != null) delegates = delegates.Where(d => d.spd_email == qry.EmailAddress);
 
         var result = delegates.ToList();
         var response = new DelegateListResp();
         var list = _mapper.Map<IEnumerable<DelegateResp>>(result);
-        list = list.OrderBy(o => o.FirstName).ThenBy(o => o.LastName);
         response.Items = list;
         return response;
     }

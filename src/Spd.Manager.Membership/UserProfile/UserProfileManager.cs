@@ -138,7 +138,7 @@ namespace Spd.Manager.Membership.UserProfile
             }
 
             var existingUser = (PortalUserListResp)await _portalUserRepository.QueryAsync(
-                new PortalUserQry() { UserEmail = cmd.IdirUserIdentity.Email },
+                new PortalUserQry() { UserEmail = cmd.IdirUserIdentity.Email, OrgIdOrParentOrgId = SpdConstants.BC_GOV_ORG_ID },
                 ct);
 
             var result = existingUser.Items.FirstOrDefault();
@@ -187,7 +187,7 @@ namespace Spd.Manager.Membership.UserProfile
             if (identity != null)
             {
                 var existingUser = (PortalUserListResp)await _portalUserRepository.QueryAsync(
-                    new PortalUserQry() { IdentityId = identityId },
+                    new PortalUserQry() { IdentityId = identityId, OrgIdOrParentOrgId = SpdConstants.BC_GOV_ORG_ID },
                     ct);
                 var result = existingUser.Items.FirstOrDefault();
                 if (result != null)
