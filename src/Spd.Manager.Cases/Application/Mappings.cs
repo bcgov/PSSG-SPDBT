@@ -112,6 +112,5 @@ namespace Spd.Manager.Cases.Application
                 return null;
             }
         }
-
     }
 }

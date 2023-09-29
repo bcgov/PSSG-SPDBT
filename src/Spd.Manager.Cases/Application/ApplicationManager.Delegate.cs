@@ -27,7 +27,7 @@ namespace Spd.Manager.Cases.Application
             //if already has an user. use email to connect
             Guid? userId = null;
             PortalUserListResp userList = await _portalUserRepository.QueryAsync(
-                new PortalUserQry() { ParentOrganizationId = SpdConstants.BC_GOV_ORG_ID, UserEmail = command.CreateRequest.EmailAddress },
+                new PortalUserQry() { UserEmail = command.CreateRequest.EmailAddress, OrgIdOrParentOrgId = SpdConstants.BC_GOV_ORG_ID },
                 ct
                 );
             if (userList.Items.Any())

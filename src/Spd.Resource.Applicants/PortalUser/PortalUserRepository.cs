@@ -27,14 +27,24 @@ internal class PortalUserRepository : IPortalUserRepository
 
         if (!qry.IncludeInactive)
             users = users.Where(d => d.statecode != DynamicsConstants.StateCode_Inactive);
-        if (qry.OrganizationId != null) users = users.Where(d => d._spd_organizationid_value == qry.OrganizationId);
+        if (qry.OrgId != null) users = users.Where(d => d._spd_organizationid_value == qry.OrgId);
         if (qry.UserEmail != null) users = users.Where(d => d.spd_emailaddress1 == qry.UserEmail);
         if (qry.IdentityId != null) users = users.Where(d => d._spd_identityid_value == qry.IdentityId);
-        if (qry.ParentOrganizationId != null) users = users.Where(d => d.spd_OrganizationId._parentaccountid_value == qry.ParentOrganizationId);
 
-        return new PortalUserListResp
+        List<spd_portaluser> userList = users.ToList();
+        IEnumerable<spd_portaluser> results = userList;
+        if (qry.ParentOrgId != null)
         {
-            Items = _mapper.Map<IEnumerable<PortalUserResp>>(users.ToList())
+            results = userList.Where(u => u.spd_OrganizationId._parentaccountid_value == qry.ParentOrgId);
+        }
+        if (qry.OrgIdOrParentOrgId != null)
+        {
+            results = userList.Where(d => d._spd_organizationid_value == qry.OrgIdOrParentOrgId || d.spd_OrganizationId._parentaccountid_value == qry.OrgIdOrParentOrgId);
+        }
+
+        return new PortalUserListResp 
+        {
+            Items = _mapper.Map<IEnumerable<PortalUserResp>>(results)
         };
     }
 
