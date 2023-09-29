@@ -306,22 +306,19 @@ export class SecurityScreeningListComponent implements OnInit {
 					let documentsRequiredCount = 0;
 					if (app.status == ApplicationPortalStatusCode.AwaitingApplicant) {
 						switch (app.caseSubStatus) {
-							case CaseSubStatusCode.Fingerprints:
-								documentsRequiredCount++;
-								fingerprintsCount++;
-								break;
-							case CaseSubStatusCode.ApplicantInformation:
+							case CaseSubStatusCode.OpportunityToRespond:
 								documentsRequiredCount++;
 								opportunityToRespondCount++;
 								break;
-							case CaseSubStatusCode.OpportunityToRespond:
+							case CaseSubStatusCode.ApplicantInformation:
 								documentsRequiredCount++;
 								requestForAdditionalInfoCount++;
 								break;
-							case CaseSubStatusCode.StatutoryDeclaration:
-								documentsRequiredCount++;
-								statutoryDeclarationCount++;
-								break;
+						}
+					} else if (app.status == ApplicationPortalStatusCode.UnderAssessment) {
+						if (app.caseSubStatus == CaseSubStatusCode.StatutoryDeclaration) {
+							documentsRequiredCount++;
+							statutoryDeclarationCount++;
 						}
 					}
 
