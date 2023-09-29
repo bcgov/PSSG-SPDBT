@@ -853,7 +853,22 @@ namespace Spd.Manager.Cases.Application
 
     public record DelegateListQuery(Guid OrgId, Guid ApplicationId) : IRequest<DelegateListResponse>;
     public record CreateDelegateCommand(Guid OrgId, Guid ApplicationId, DelegateCreateRequest CreateRequest) : IRequest<DelegateResponse>;
-    public record DeleteDelegateCommand(Guid Id, Guid CurrentUserId, Guid ApplicationId, bool IsPSA = false) : IRequest<Unit>;
+    public record DeleteDelegateCommand(Guid Id, Guid CurrentUserId, Guid ApplicationId, bool CurrentUserIsPSA = false) : IRequest<Unit>;
 
+    public class DelegateCreateRequestValidator : AbstractValidator<DelegateCreateRequest>
+    {
+        public DelegateCreateRequestValidator()
+        {
+            RuleFor(r => r.FirstName)
+                 .NotEmpty()
+                    .MaximumLength(40);
+
+            RuleFor(r => r.EmailAddress)
+                .NotEmpty()
+                .Must(e => e.EndsWith("gov.bc.ca"))
+                .EmailAddress()
+                .MaximumLength(75);
+        }
+    }
     #endregion
 }

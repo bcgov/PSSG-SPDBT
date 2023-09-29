@@ -39,9 +39,6 @@ namespace Spd.Resource.Applicants.Delegates
         public Guid ApplicationId { get; set; }
         public Guid? PortalUserId { get; set; }
         public PSSOUserRoleEnum PSSOUserRoleCode { get; set; } = PSSOUserRoleEnum.Delegate;
-        public string FirstName { get; set; } = null!;
-        public string LastName { get; set; } = null!;
-        public string EmailAddress { get; set; } = null!;
     }
 
     public record DeleteDelegateCmd(Guid Id) : DelegateCmd;
