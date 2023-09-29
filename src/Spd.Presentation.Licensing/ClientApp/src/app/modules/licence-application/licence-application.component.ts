@@ -131,7 +131,6 @@ export class LicenceApplicationComponent implements OnInit {
 
 	onSave() {
 		this.licenceApplicationService.saveLicence();
-		this.licenceApplicationService.loadLicence2();
 		// this.router.navigate([AppRoutes.LANDING]);
 	}
 

@@ -13,7 +13,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 					<div class="row">
 						<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6 col-sm-12 mb-3">
 							<div
-								class="step-container__box"
+								class="step-container__box step-container__box__fullheight"
 								(click)="onLicenceTypeChange(swlTypeCodes.SecurityBusinessLicence)"
 								[ngClass]="{ 'active-selection-main': licenceTypeCode == swlTypeCodes.SecurityBusinessLicence }"
 							>
@@ -27,7 +27,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 						</div>
 						<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6 col-sm-12 mb-3">
 							<div
-								class="step-container__box"
+								class="step-container__box step-container__box__fullheight"
 								(click)="onLicenceTypeChange(swlTypeCodes.SecurityWorkerLicence)"
 								[ngClass]="{ 'active-selection-main': licenceTypeCode == swlTypeCodes.SecurityWorkerLicence }"
 							>
@@ -41,7 +41,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 						</div>
 						<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6 col-sm-12 mb-3">
 							<div
-								class="step-container__box"
+								class="step-container__box step-container__box__fullheight"
 								(click)="onLicenceTypeChange(swlTypeCodes.ArmouredVehicleLicence)"
 								[ngClass]="{ 'active-selection-main': licenceTypeCode == swlTypeCodes.ArmouredVehicleLicence }"
 							>
@@ -55,7 +55,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 						</div>
 						<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6 col-sm-12 mb-3">
 							<div
-								class="step-container__box"
+								class="step-container__box step-container__box__fullheight"
 								(click)="onLicenceTypeChange(swlTypeCodes.BodyArmourLicence)"
 								[ngClass]="{ 'active-selection-main': licenceTypeCode == swlTypeCodes.BodyArmourLicence }"
 							>

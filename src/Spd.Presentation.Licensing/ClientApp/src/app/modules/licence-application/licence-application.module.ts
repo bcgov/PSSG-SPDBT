@@ -5,6 +5,7 @@ import { LicencePaymentErrorComponent } from './components/licence-payment-error
 import { LicencePaymentFailComponent } from './components/licence-payment-fail.component';
 import { LicencePaymentManualComponent } from './components/licence-payment-manual.component';
 import { LicencePaymentSuccessComponent } from './components/licence-payment-success.component';
+import { SecurityLicenceSelectionComponent } from './components/security-licence-selection.component';
 import { LicenceApplicationRoutingModule } from './licence-application-routing.module';
 import { LicenceApplicationComponent } from './licence-application.component';
 import { AdditionalGovIdComponent } from './step-components/additional-gov-id.component';
@@ -52,8 +53,6 @@ import { PhotoComponent } from './step-components/photo.component';
 import { PoliceBackgroundComponent } from './step-components/police-background.component';
 import { SoleProprietorComponent } from './step-components/sole-proprietor.component';
 import { SummaryReviewComponent } from './step-components/summary-review.component';
-import { SecurityBusinessLicenceComponent } from './components/security-business-licence.component';
-import { SecurityWorkerLicenceComponent } from './components/security-worker-licence.component';
 
 @NgModule({
 	declarations: [
@@ -108,8 +107,8 @@ import { SecurityWorkerLicenceComponent } from './components/security-worker-lic
 		LicenceCategorySecurityAlarmSalesComponent,
 		LicenceCategorySecurityConsultantComponent,
 		IncompleteApplicationsComponent,
-  SecurityBusinessLicenceComponent,
-  SecurityWorkerLicenceComponent,
+		SecurityLicenceSelectionComponent,
+		SecurityLicenceSelectionComponent,
 	],
 	imports: [SharedModule, LicenceApplicationRoutingModule],
 })

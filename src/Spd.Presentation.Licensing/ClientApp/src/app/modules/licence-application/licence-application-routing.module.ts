@@ -1,13 +1,17 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { IncompleteApplicationsComponent } from './components/incomplete-applications.component';
 import { LicencePaymentErrorComponent } from './components/licence-payment-error.component';
 import { LicencePaymentFailComponent } from './components/licence-payment-fail.component';
 import { LicencePaymentManualComponent } from './components/licence-payment-manual.component';
 import { LicencePaymentSuccessComponent } from './components/licence-payment-success.component';
+import { SecurityLicenceSelectionComponent } from './components/security-licence-selection.component';
 import { LicenceApplicationComponent } from './licence-application.component';
 
 export class LicenceApplicationRoutes {
 	public static LICENCE_APPLICATION = 'licence-application';
+	public static SECURITY_LICENCE_SELECTION = 'security-licence-selection';
+	public static APPLICATIONS = 'applications';
 	public static PAYMENT_SUCCESS = 'payment-success';
 	public static PAYMENT_FAIL = 'payment-fail';
 	public static PAYMENT_MANUAL = 'payment-manual';
@@ -21,6 +25,14 @@ export class LicenceApplicationRoutes {
 }
 
 const routes: Routes = [
+	{
+		path: LicenceApplicationRoutes.SECURITY_LICENCE_SELECTION,
+		component: SecurityLicenceSelectionComponent,
+	},
+	{
+		path: LicenceApplicationRoutes.APPLICATIONS,
+		component: IncompleteApplicationsComponent,
+	},
 	{
 		path: '',
 		component: LicenceApplicationComponent,
