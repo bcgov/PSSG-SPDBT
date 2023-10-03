@@ -19,7 +19,7 @@ export enum SwlTypeCode {
 	BodyArmourLicence = 'BodyArmourLicence',
 }
 
-export enum SwlStatusTypeCode {
+export enum SwlApplicationTypeCode {
 	NewOrExpired = 'NewOrExpired',
 	Renewal = 'Renewal',
 	Replacement = 'Replacement',
@@ -60,11 +60,11 @@ export const SwlTypeCodes: SelectOptions[] = [
 	{ desc: 'Body Armour Licence', code: SwlTypeCode.BodyArmourLicence },
 ];
 
-export const SwlStatusTypeCodes: SelectOptions[] = [
-	{ desc: 'New Or Expired', code: SwlStatusTypeCode.NewOrExpired },
-	{ desc: 'Renewal', code: SwlStatusTypeCode.Renewal },
-	{ desc: 'Replacement', code: SwlStatusTypeCode.Replacement },
-	{ desc: 'Update', code: SwlStatusTypeCode.Update },
+export const SwlApplicationTypeCodes: SelectOptions[] = [
+	{ desc: 'New Or Expired', code: SwlApplicationTypeCode.NewOrExpired },
+	{ desc: 'Renewal', code: SwlApplicationTypeCode.Renewal },
+	{ desc: 'Replacement', code: SwlApplicationTypeCode.Replacement },
+	{ desc: 'Update', code: SwlApplicationTypeCode.Update },
 ];
 
 export const GenderTypes: SelectOptions[] = [

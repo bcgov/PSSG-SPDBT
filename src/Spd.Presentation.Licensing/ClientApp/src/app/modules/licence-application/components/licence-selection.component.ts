@@ -11,7 +11,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 			<div class="step">
 				<app-step-title title="What licence or permit are you applying for?"></app-step-title>
 
-				<div class="step-container" *ngIf="isImagesLoaded">
+				<div class="step-container mx-3" *ngIf="isImagesLoaded">
 					<div class="row">
 						<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6 col-sm-12 mb-3">
 							<div
@@ -19,7 +19,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 								(click)="onLicenceTypeChange(swlTypeCodes.SecurityBusinessLicence)"
 								[ngClass]="{ 'active-selection-main': licenceTypeCode == swlTypeCodes.SecurityBusinessLicence }"
 							>
-								<div class="mb-4 mt-4 mt-md-0">
+								<div class="fs-5 mb-4 mt-4 mt-md-0">
 									<div class="box__image d-none d-md-block">
 										<img class="box__image__item" [src]="image1" />
 									</div>
@@ -33,7 +33,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 								(click)="onLicenceTypeChange(swlTypeCodes.SecurityWorkerLicence)"
 								[ngClass]="{ 'active-selection-main': licenceTypeCode == swlTypeCodes.SecurityWorkerLicence }"
 							>
-								<div class="mb-4 mt-4 mt-md-0">
+								<div class="fs-5 mb-4 mt-4 mt-md-0">
 									<div class="box__image d-none d-md-block">
 										<img class="box__image__item" [src]="image2" />
 									</div>
@@ -47,11 +47,11 @@ import { LicenceApplicationService } from '../licence-application.service';
 								(click)="onLicenceTypeChange(swlTypeCodes.ArmouredVehicleLicence)"
 								[ngClass]="{ 'active-selection-main': licenceTypeCode == swlTypeCodes.ArmouredVehicleLicence }"
 							>
-								<div class="mb-4 mt-4 mt-md-0">
+								<div class="fs-5 mb-4 mt-4 mt-md-0">
 									<div class="box__image d-none d-md-block">
 										<img class="box__image__item" [src]="image3" />
 									</div>
-									<span class="px-2">Permit to operate an armoured vehicle</span>
+									<span class="px-3">Permit to operate an armoured vehicle</span>
 								</div>
 							</div>
 						</div>
@@ -61,11 +61,11 @@ import { LicenceApplicationService } from '../licence-application.service';
 								(click)="onLicenceTypeChange(swlTypeCodes.BodyArmourLicence)"
 								[ngClass]="{ 'active-selection-main': licenceTypeCode == swlTypeCodes.BodyArmourLicence }"
 							>
-								<div class="mb-4 mt-4 mt-md-0">
+								<div class="fs-5 mb-4 mt-4 mt-md-0">
 									<div class="box__image d-none d-md-block">
 										<img class="box__image__item" [src]="image4" />
 									</div>
-									<span class="px-2">Permit to possess body armour</span>
+									<span class="px-3">Permit to possess body armour</span>
 								</div>
 							</div>
 						</div>
@@ -126,6 +126,7 @@ export class LicenceSelectionComponent implements OnInit {
 	ngOnInit(): void {
 		this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: boolean) => {
+				console.log('loaded', loaded);
 				if (loaded) {
 					this.licenceTypeCode = this.licenceApplicationService.licenceModel.licenceTypeCode;
 				}

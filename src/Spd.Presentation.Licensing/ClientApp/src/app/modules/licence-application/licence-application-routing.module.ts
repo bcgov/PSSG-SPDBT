@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { IncompleteApplicationsComponent } from './components/incomplete-applications.component';
+import { ApplicationsInProgressComponent } from './components/applications-in-progress.component';
 import { LicencePaymentErrorComponent } from './components/licence-payment-error.component';
 import { LicencePaymentFailComponent } from './components/licence-payment-fail.component';
 import { LicencePaymentManualComponent } from './components/licence-payment-manual.component';
@@ -42,7 +42,7 @@ const routes: Routes = [
 			},
 			{
 				path: LicenceApplicationRoutes.APPLICATIONS_IN_PROGRESS,
-				component: IncompleteApplicationsComponent,
+				component: ApplicationsInProgressComponent,
 			},
 			{
 				path: LicenceApplicationRoutes.LICENCE_SELECTION,

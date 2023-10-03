@@ -4,8 +4,9 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { distinctUntilChanged } from 'rxjs';
-import { SwlStatusTypeCode } from 'src/app/core/code-types/model-desc.models';
+import { SwlApplicationTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
+import { LicenceApplicationRoutes } from '../licence-application-routing.module';
 import { LicenceApplicationService } from '../licence-application.service';
 import { StepBackgroundComponent } from '../step-components/main-steps/step-background.component';
 import { StepIdentificationComponent } from '../step-components/main-steps/step-identification.component';
@@ -16,7 +17,7 @@ import { StepReviewComponent } from '../step-components/main-steps/step-review.c
 	selector: 'app-licence-wizard',
 	template: `
 		<div class="row">
-			<div class="col-10">
+			<div class="col-xl-10 col-lg-12">
 				<mat-stepper
 					linear
 					labelPosition="bottom"
@@ -66,8 +67,10 @@ import { StepReviewComponent } from '../step-components/main-steps/step-review.c
 					</mat-step>
 				</mat-stepper>
 			</div>
-			<div class="col-2">
-				<button mat-flat-button class="large mat-green-button mt-2" (click)="onSave()">Save & Exit</button>
+			<div class="col-xl-2 col-lg-12">
+				<button mat-stroked-button class="large w-auto mt-2" style="color: var(--color-green);" (click)="onSave()">
+					<mat-icon>save</mat-icon>Save & Exit
+				</button>
 			</div>
 		</div>
 	`,
@@ -113,9 +116,10 @@ export class LicenceWizardComponent implements OnInit {
 
 		this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: boolean) => {
+				console.log('loaded', loaded);
 				if (loaded) {
 					this.isReplacement =
-						this.licenceApplicationService.licenceModel.licenceStatusTypeCode == SwlStatusTypeCode.Replacement;
+						this.licenceApplicationService.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Replacement;
 					this.isNotReplacement = !this.isReplacement;
 				}
 			},
@@ -151,7 +155,7 @@ export class LicenceWizardComponent implements OnInit {
 
 	onSave() {
 		this.licenceApplicationService.saveLicence();
-		// this.router.navigate([AppRoutes.LANDING]);
+		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATIONS_IN_PROGRESS));
 	}
 
 	private breakpointChanged() {

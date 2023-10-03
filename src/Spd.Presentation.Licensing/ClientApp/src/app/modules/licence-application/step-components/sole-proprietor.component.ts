@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/api/models';
-import { SwlStatusTypeCode } from 'src/app/core/code-types/model-desc.models';
+import { SwlApplicationTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
@@ -62,7 +62,7 @@ export class SoleProprietorComponent implements OnInit, LicenceFormStepComponent
 			next: (loaded: boolean) => {
 				if (loaded) {
 					const isNewOrExpired =
-						this.licenceApplicationService.licenceModel.licenceStatusTypeCode == SwlStatusTypeCode.NewOrExpired;
+						this.licenceApplicationService.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired;
 					this.title = isNewOrExpired ? this.title_apply : this.title_renew;
 					this.infoTitle = isNewOrExpired ? this.subtitle_apply : this.subtitle_renew;
 

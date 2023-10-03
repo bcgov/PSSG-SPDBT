@@ -1,7 +1,7 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { SelectOptions, SwlCategoryTypeCode, SwlStatusTypeCode } from 'src/app/core/code-types/model-desc.models';
+import { SelectOptions, SwlApplicationTypeCode, SwlCategoryTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { LicenceApplicationService } from '../../licence-application.service';
 import { DogsOrRestraintsComponent } from '../dogs-or-restraints.component';
 import { LicenceAccessCodeComponent } from '../licence-access-code.component';
@@ -352,7 +352,7 @@ export class StepLicenceSelectionComponent {
 	readonly STEP_DOGS_OR_RESTRAINT = '8';
 	readonly STEP_LICENCE_TERM = '7';
 
-	licenceStatusTypeCode: SwlStatusTypeCode | null = null;
+	licenceStatusTypeCode: SwlApplicationTypeCode | null = null;
 
 	showStepAccessCode = true;
 	showStepSoleProprietor = true;
@@ -360,7 +360,7 @@ export class StepLicenceSelectionComponent {
 
 	swlCategoryList: SelectOptions[] = [];
 	swlCategoryTypeCodes = SwlCategoryTypeCode;
-	swlStatusTypeCodes = SwlStatusTypeCode;
+	swlStatusTypeCodes = SwlApplicationTypeCode;
 
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 

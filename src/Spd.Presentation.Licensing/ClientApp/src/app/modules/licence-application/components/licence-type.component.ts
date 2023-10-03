@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { SwlStatusTypeCode } from 'src/app/core/code-types/model-desc.models';
+import { SwlApplicationTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
 import { LicenceApplicationService } from '../licence-application.service';
 
@@ -96,7 +96,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 	styles: [],
 })
 export class LicenceTypeComponent implements OnInit {
-	licenceStatusTypeCodes = SwlStatusTypeCode;
+	licenceStatusTypeCodes = SwlApplicationTypeCode;
 	isDirtyAndInvalid = false;
 
 	form: FormGroup = this.formBuilder.group({
@@ -112,9 +112,10 @@ export class LicenceTypeComponent implements OnInit {
 	ngOnInit(): void {
 		this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: boolean) => {
+				console.log('loaded', loaded);
 				if (loaded) {
 					this.form.patchValue({
-						licenceStatusTypeCode: this.licenceApplicationService.licenceModel.licenceStatusTypeCode,
+						licenceStatusTypeCode: this.licenceApplicationService.licenceModel.applicationTypeCode,
 					});
 				}
 			},
@@ -139,6 +140,6 @@ export class LicenceTypeComponent implements OnInit {
 	}
 
 	updateDataToSave(): void {
-		this.licenceApplicationService.licenceModel.licenceStatusTypeCode = this.form.value.licenceStatusTypeCode;
+		this.licenceApplicationService.licenceModel.applicationTypeCode = this.form.value.licenceStatusTypeCode;
 	}
 }

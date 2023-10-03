@@ -4,8 +4,8 @@ import { BehaviorSubject } from 'rxjs';
 import { BooleanTypeCode, GenderCode } from 'src/app/api/models';
 import {
 	SelectOptions,
+	SwlApplicationTypeCode,
 	SwlCategoryTypeCode,
-	SwlStatusTypeCode,
 	SwlTermCode,
 	SwlTypeCode,
 } from 'src/app/core/code-types/model-desc.models';
@@ -18,7 +18,7 @@ export interface LicenceFormStepComponent {
 
 export class LicenceModel {
 	licenceTypeCode: SwlTypeCode | null = null;
-	licenceStatusTypeCode: SwlStatusTypeCode | null = null;
+	applicationTypeCode: SwlApplicationTypeCode | null = null;
 	isSoleProprietor: BooleanTypeCode | null = null;
 	currentLicenceNumber: string | null = null;
 	accessCode: string | null = null;
@@ -71,10 +71,11 @@ export class LicenceApplicationService {
 	licenceModel: LicenceModel = new LicenceModel();
 
 	constructor(private hotToastService: HotToastService) {
-		this.loadNewLicence();
+		// this.loadNewLicence();
 	}
 
 	loadNewLicence(): void {
+		console.log('loadNewLicence ');
 		this.licenceModel = new LicenceModel();
 		this.licenceModelLoaded$.next(true);
 	}
@@ -83,7 +84,7 @@ export class LicenceApplicationService {
 		setTimeout(() => {
 			const defaults: LicenceModel = {
 				licenceTypeCode: SwlTypeCode.ArmouredVehicleLicence,
-				licenceStatusTypeCode: SwlStatusTypeCode.NewOrExpired,
+				applicationTypeCode: SwlApplicationTypeCode.NewOrExpired,
 				isSoleProprietor: BooleanTypeCode.Yes,
 				currentLicenceNumber: '123456',
 				accessCode: '456',
@@ -133,16 +134,17 @@ export class LicenceApplicationService {
 					// { desc: 'Security Guard - Under Supervision', code: SwlCategoryTypeCode.SecurityGuardUnderSupervision },
 				],
 			};
+			console.log('loadLicenceNew defaults', defaults);
 			this.licenceModel = { ...defaults };
 			this.licenceModelLoaded$.next(true);
-		}, 1000);
+		}, 300);
 	}
 
 	loadLicenceRenewal(): void {
 		setTimeout(() => {
 			const defaults: LicenceModel = {
 				licenceTypeCode: SwlTypeCode.SecurityBusinessLicence,
-				licenceStatusTypeCode: SwlStatusTypeCode.Renewal,
+				applicationTypeCode: SwlApplicationTypeCode.Renewal,
 				isSoleProprietor: BooleanTypeCode.Yes,
 				currentLicenceNumber: '123',
 				accessCode: '456',
@@ -164,16 +166,17 @@ export class LicenceApplicationService {
 				licenceTermCode: SwlTermCode.NintyDays,
 				swlCategoryList: [{ desc: 'Locksmith', code: SwlCategoryTypeCode.Locksmith }],
 			};
+			console.log('loadLicenceRenewal defaults', defaults);
 			this.licenceModel = { ...defaults };
 			this.licenceModelLoaded$.next(true);
-		}, 1000);
+		}, 300);
 	}
 
 	loadLicenceReplacement(): void {
 		setTimeout(() => {
 			const defaults: LicenceModel = {
 				licenceTypeCode: SwlTypeCode.ArmouredVehicleLicence,
-				licenceStatusTypeCode: SwlStatusTypeCode.Replacement,
+				applicationTypeCode: SwlApplicationTypeCode.Replacement,
 				isSoleProprietor: BooleanTypeCode.Yes,
 				currentLicenceNumber: '123456',
 				accessCode: '456',
@@ -222,16 +225,17 @@ export class LicenceApplicationService {
 					// { desc: 'Security Guard - Under Supervision', code: SwlCategoryTypeCode.SecurityGuardUnderSupervision },
 				],
 			};
+			console.log('loadLicenceReplacement defaults', defaults);
 			this.licenceModel = { ...defaults };
 			this.licenceModelLoaded$.next(true);
-		}, 1000);
+		}, 300);
 	}
 
 	loadLicenceUpdate(): void {
 		setTimeout(() => {
 			const defaults: LicenceModel = {
 				licenceTypeCode: SwlTypeCode.ArmouredVehicleLicence,
-				licenceStatusTypeCode: SwlStatusTypeCode.Update,
+				applicationTypeCode: SwlApplicationTypeCode.Update,
 				isSoleProprietor: BooleanTypeCode.Yes,
 				currentLicenceNumber: '123456',
 				accessCode: '456',
@@ -280,9 +284,10 @@ export class LicenceApplicationService {
 					// { desc: 'Security Guard - Under Supervision', code: SwlCategoryTypeCode.SecurityGuardUnderSupervision },
 				],
 			};
+			console.log('loadLicenceUpdate defaults', defaults);
 			this.licenceModel = { ...defaults };
 			this.licenceModelLoaded$.next(true);
-		}, 1000);
+		}, 300);
 	}
 
 	saveLicence(): void {

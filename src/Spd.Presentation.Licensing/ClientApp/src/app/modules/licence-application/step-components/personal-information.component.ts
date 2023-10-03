@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { GenderTypes, SwlStatusTypeCode } from 'src/app/core/code-types/model-desc.models';
+import { GenderTypes, SwlApplicationTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { UtilService } from 'src/app/core/services/util.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
@@ -127,13 +127,13 @@ export class PersonalInformationComponent implements OnInit, LicenceFormStepComp
 		this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: boolean) => {
 				if (loaded) {
-					if (this.licenceApplicationService.licenceModel.licenceStatusTypeCode == SwlStatusTypeCode.Replacement) {
+					if (this.licenceApplicationService.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Replacement) {
 						this.title = this.title_view;
 						this.subtitle = '';
 					} else {
 						this.title = this.title_confirm;
 						this.subtitle =
-							this.licenceApplicationService.licenceModel.licenceStatusTypeCode == SwlStatusTypeCode.NewOrExpired
+							this.licenceApplicationService.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired
 								? this.subtitle_auth_new
 								: this.subtitle_unauth_renew_update;
 					}
@@ -148,7 +148,7 @@ export class PersonalInformationComponent implements OnInit, LicenceFormStepComp
 						dateOfBirth: this.licenceApplicationService.licenceModel.dateOfBirth,
 					});
 
-					if (this.licenceApplicationService.licenceModel.licenceStatusTypeCode == SwlStatusTypeCode.Replacement) {
+					if (this.licenceApplicationService.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Replacement) {
 						this.form.disable();
 					} else {
 						this.form.enable();
@@ -159,7 +159,7 @@ export class PersonalInformationComponent implements OnInit, LicenceFormStepComp
 	}
 
 	isFormValid(): boolean {
-		if (this.licenceApplicationService.licenceModel.licenceStatusTypeCode == SwlStatusTypeCode.Replacement) {
+		if (this.licenceApplicationService.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Replacement) {
 			return true;
 		}
 

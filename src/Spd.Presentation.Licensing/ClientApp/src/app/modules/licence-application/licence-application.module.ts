@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { IncompleteApplicationsComponent } from './components/incomplete-applications.component';
+import { ApplicationsInProgressComponent } from './components/applications-in-progress.component';
 import { LicencePaymentErrorComponent } from './components/licence-payment-error.component';
 import { LicencePaymentFailComponent } from './components/licence-payment-fail.component';
 import { LicencePaymentManualComponent } from './components/licence-payment-manual.component';
@@ -107,7 +107,7 @@ import { SummaryReviewComponent } from './step-components/summary-review.compone
 		LicenceCategorySecurityAlarmResponseComponent,
 		LicenceCategorySecurityAlarmSalesComponent,
 		LicenceCategorySecurityConsultantComponent,
-		IncompleteApplicationsComponent,
+		ApplicationsInProgressComponent,
 		LoginSelectionComponent,
 		LicenceWizardComponent,
 	],
