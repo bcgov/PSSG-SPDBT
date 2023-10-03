@@ -35,6 +35,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
         public ApplicationInviteStatusEnum Status { get; set; } 
         public string? ErrorMsg { get; set; }
         public bool? Viewed { get; set; }
+        public Guid? CreatedByUserId { get; set; }
     }
 
     public record ApplicationInvitesCreateCmd : ApplicationInviteCmd
