@@ -223,7 +223,14 @@ import { CrrpRoutes } from '../crrp-routing.module';
 
 			<div *ngIf="viewOnly">
 				<mat-divider class="mb-3"></mat-divider>
-				<a [routerLink]="[crrpRoutes.path(crrpRoutes.TERMS_AND_CONDITIONS)]"> Terms and Conditions </a>
+				<button
+					mat-stroked-button
+					color="primary"
+					class="w-auto"
+					[routerLink]="[crrpRoutes.path(crrpRoutes.TERMS_AND_CONDITIONS)]"
+				>
+					<mat-icon class="me-1">description</mat-icon>Terms and Conditions
+				</button>
 			</div>
 		</section>
 	`,

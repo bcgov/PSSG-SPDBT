@@ -1,8 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { HotToastService } from '@ngneat/hot-toast';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { DialogComponent, DialogOptions } from './dialog.component';
 
 export enum DocumentTypeCode {
 	Image = 'IMAGE',
@@ -72,30 +70,49 @@ export class FileUploadHelper {
 			[accept]="accept"
 		>
 			<ngx-dropzone-label>
-				<div class="my-2">
-					<div class="mt-4 mb-2">
-						<mat-icon class="upload-file-icon">cloud_upload</mat-icon>
-					</div>
-					<div class="mb-4">
-						<strong>Drag and Drop your file here or click to browse</strong>
-						<div class="mat-option-error" *ngIf="maxNumberOfFiles > 1">
-							A maximum of {{ maxNumberOfFiles }} files can be uploaded at one time
-						</div>
-					</div>
-					<div class="fine-print mb-4">{{ message }}</div>
+				<div>
+					<mat-icon class="upload-file-icon">cloud_upload</mat-icon>
 				</div>
+				<div>
+					<strong>Drag and Drop your file here or click to browse</strong>
+				</div>
+				<div class="fine-print mb-4" *ngIf="message">{{ message }}</div>
+				<ng-container *ngTemplateOutlet="infoText"></ng-container>
 			</ngx-dropzone-label>
 
-			<div *ngIf="files.length > 0" fxLayout="row wrap">
+			<ng-container *ngIf="files.length == 1">
 				<ng-container *ngFor="let file of files">
 					<ngx-dropzone-preview class="file-preview" [removable]="true" (removed)="onRemoveFile(file)">
-						<ngx-dropzone-label fxLayout="row" fxLayout="start center">
+						<ngx-dropzone-label>
 							<mat-icon class="preview-icon">{{ getFileIcon(file).icon }}</mat-icon>
 							<span>{{ file.name }} ({{ getFileSize(file.size) }} KB)</span>
 						</ngx-dropzone-label>
 					</ngx-dropzone-preview>
+
+					<div class="text-center w-100 mx-4 mb-2">
+						<ng-container *ngTemplateOutlet="infoText"></ng-container>
+					</div>
 				</ng-container>
-			</div>
+			</ng-container>
+
+			<ng-container *ngIf="files.length > 1">
+				<div class="row">
+					<ng-container *ngFor="let file of files">
+						<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+							<ngx-dropzone-preview class="file-preview" [removable]="true" (removed)="onRemoveFile(file)">
+								<ngx-dropzone-label>
+									<mat-icon class="preview-icon">{{ getFileIcon(file).icon }}</mat-icon>
+									<span>{{ file.name }} ({{ getFileSize(file.size) }} KB)</span>
+								</ngx-dropzone-label>
+							</ngx-dropzone-preview>
+						</div>
+					</ng-container>
+
+					<div class="text-center w-100 mx-4 mb-2">
+						<ng-container *ngTemplateOutlet="infoText"></ng-container>
+					</div>
+				</div>
+			</ng-container>
 		</ngx-dropzone>
 
 		<button
@@ -106,6 +123,12 @@ export class FileUploadHelper {
 		>
 			<mat-icon>file_open</mat-icon> Add file
 		</button>
+
+		<ng-template #infoText>
+			<div class="mat-option-error" *ngIf="accept">Accepted file formats: {{ accept }}</div>
+			<div class="mat-option-error" *ngIf="maxFileSizeMb">File size maximum: {{ maxFileSizeMb }} Mb</div>
+			<div class="mat-option-error" *ngIf="maxNumberOfFiles > 1">Maximum number of files: {{ maxNumberOfFiles }}</div>
+		</ng-template>
 	`,
 	styles: [
 		`
@@ -118,6 +141,8 @@ export class FileUploadHelper {
 
 			.file-preview {
 				max-width: unset !important;
+				height: unset !important;
+				min-height: 90px !important;
 			}
 
 			.preview-icon {
@@ -134,9 +159,9 @@ export class FileUploadHelper {
 })
 export class FileUploadComponent implements OnInit {
 	files: Array<File> = [];
+	multiple: boolean = false; // prevent multiple at one time
 
 	@Input() message: string = '';
-	@Input() multiple: boolean = false;
 	@Input() expandable: boolean = true;
 	@Input() disableClick: boolean = false;
 	@Input() isReadOnly: boolean = false;
@@ -147,8 +172,9 @@ export class FileUploadComponent implements OnInit {
 	@Output() removeFile = new EventEmitter<any>();
 
 	maxFileSize: number = SPD_CONSTANTS.document.maxFileSize; // bytes
+	maxFileSizeMb: number = SPD_CONSTANTS.document.maxFileSizeInMb; // mb
 
-	constructor(private dialog: MatDialog, private hotToastService: HotToastService) {}
+	constructor(private hotToastService: HotToastService) {}
 
 	ngOnInit(): void {
 		if (this.maxNumberOfFiles > SPD_CONSTANTS.document.maxNumberOfFiles) {
@@ -162,47 +188,46 @@ export class FileUploadComponent implements OnInit {
 		}
 
 		if (this.maxNumberOfFiles !== 0 && this.files.length >= this.maxNumberOfFiles) {
-			this.hotToastService.warning(`You are only allowed to upload a maximum of ${this.maxNumberOfFiles} files`);
+			this.hotToastService.error(`You are only allowed to upload a maximum of ${this.maxNumberOfFiles} files`);
 			return;
 		}
 
-		if (evt.addedFiles.length > 0) {
-			this.files.push(...evt.addedFiles);
+		// We can only upload one file at a time (multiple is set to false above), so the array of added/rejected files
+		// will only contain at most one element
 
+		// check if the file has already been uploaded
+		if (evt.addedFiles.length > 0) {
+			let dupFile: File | undefined = undefined;
+
+			const addedFile = evt.addedFiles[0];
+			dupFile = this.files?.find((item) => item.name == addedFile.name);
+
+			if (dupFile) {
+				this.hotToastService.error('A file with the same name has already been uploaded');
+				return;
+			}
+
+			this.files.push(...evt.addedFiles);
 			this.uploadedFile.emit(evt.addedFiles);
 		}
 
 		if (evt.rejectedFiles.length > 0) {
-			let text =
-				evt.rejectedFiles.length == 1
-					? 'This file cannot be uploaded:<br/><ul>'
-					: 'These files cannot be uploaded:<br/><ul>';
-
-			if (evt.rejectedFiles.length == 1) {
-				const rejectedFile = evt.rejectedFiles[0];
-				text += '<li>File Name: ' + rejectedFile.name + '</li><li>Reason: ' + rejectedFile.reason + '</li>';
-			} else {
-				evt.rejectedFiles.forEach((element: any) => {
-					text += '<li>File Name: ' + element.name + ', Reason: ' + element.reason + '</li>';
-				});
+			const rejectedFile = evt.rejectedFiles[0];
+			let reason = 'This file cannot be uploaded.';
+			if (rejectedFile.reason == 'size') {
+				reason = 'This file cannot be uploaded. The file size is too large.';
+			} else if (rejectedFile.reason == 'no_multiple') {
+				reason = 'Only one file was uploaded. Files must be uploaded one at a time.';
 			}
-			text += '</ul>';
 
-			const data: DialogOptions = {
-				icon: 'error',
-				title: 'Error',
-				message: text,
-				cancelText: 'Close',
-			};
-
-			this.dialog.open(DialogComponent, { data }).afterClosed().subscribe();
+			this.hotToastService.error(`${reason}`);
 		}
 	}
 
 	onRemoveFile(evt: any) {
 		let currentFiles = [...this.files];
 		this.removeFile.emit(this.files.indexOf(evt));
-		currentFiles.splice(this.files.indexOf(evt));
+		currentFiles.splice(this.files.indexOf(evt), 1);
 
 		this.files = currentFiles;
 	}

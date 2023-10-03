@@ -3,7 +3,6 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Cases.Application;
-using Spd.Manager.Membership.Org;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared;
 using System.ComponentModel.DataAnnotations;
@@ -21,7 +20,7 @@ namespace Spd.Presentation.Screening.Controllers
         private readonly IMapper _mapper;
         private readonly IPrincipal _currentUser;
 
-        public DelegateController( IMediator mediator, IMapper mapper, IPrincipal currentUser)
+        public DelegateController(IMediator mediator, IMapper mapper, IPrincipal currentUser)
         {
             _mediator = mediator;
             _mapper = mapper;
@@ -67,9 +66,9 @@ namespace Spd.Presentation.Screening.Controllers
         [Route("api/orgs/{orgId}/application/{applicationId}/delegate/{delegateId}")]
         [HttpDelete]
         public async Task<ActionResult> DeleteDelegate([FromRoute] Guid delegateId, [FromRoute] Guid applicationId, [FromRoute] Guid orgId)
-        {     
+        {
             await _mediator.Send(new DeleteDelegateCommand(delegateId,
-                Guid.Parse(_currentUser.GetUserId()), 
+                Guid.Parse(_currentUser.GetUserId()),
                 applicationId,
                 _currentUser.IsPSA()));
             return Ok();
