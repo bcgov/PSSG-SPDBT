@@ -172,11 +172,11 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 									</p>
 									<ul>
 										<li>
-											• Criminal record check or fingerprint- based criminal record verification by searching the
-											Canadian Police Information Centre database;
+											Criminal record check or fingerprint- based criminal record verification by searching the Canadian
+											Police Information Centre database;
 										</li>
 										<li>
-											• A police information check, including the Police Records Information Management Environment
+											A police information check, including the Police Records Information Management Environment
 											(PRIME-BC) and the Police Reporting and Occurrence System (PROS).
 										</li>
 									</ul>
@@ -224,23 +224,56 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 								<div class="conditions p-3 mb-3">
 									<strong>PERMISSION, WAIVER and RELEASE</strong><br /><br />
 									<p>
-										Pursuant to Section 8(1) of the Privacy Act of Canada, and Sections 32(b) and 33(2)(c) of the
-										British Columbia Freedom of Information and Protection of Privacy Act (FOIPPA), by my signature
-										below I hereby consent to a check for records of criminal convictions, outstanding charges, and/or
-										arrests. Other documents or information in the custody of the police, the courts, corrections, or
-										crown counsel may be accessed in order to assess any information found as a result of the criminal
-										record check.
+										<mat-checkbox formControlName="agreeToCriminalCheck" (click)="onCheckboxChange()">
+											Pursuant to Section 8(1) of the Privacy Act of Canada, and Sections 32(b) and 33(2)(c) of the
+											British Columbia Freedom of Information and Protection of Privacy Act (FOIPPA), by my signature
+											below I hereby consent to a check for records of criminal convictions, outstanding charges, and/or
+											arrests. Other documents or information in the custody of the police, the courts, corrections, or
+											crown counsel may be accessed in order to assess any information found as a result of the criminal
+											record check.
+										</mat-checkbox>
+										<mat-error
+											class="mat-option-error"
+											*ngIf="
+												(form.get('agreeToCriminalCheck')?.dirty || form.get('agreeToCriminalCheck')?.touched) &&
+												form.get('agreeToCriminalCheck')?.invalid &&
+												form.get('agreeToCriminalCheck')?.hasError('required')
+											"
+											>This is required</mat-error
+										>
 									</p>
 									<p>
-										I authorize the release of this information to the Personnel Security Screening Office of the
-										Ministry of Public Safety and Solicitor General for the purposes of determining my suitability for a
-										position in the BC Public Service. I understand that my consent will be retained on file.
+										<mat-checkbox formControlName="agreeToRelease" (click)="onCheckboxChange()">
+											I authorize the release of this information to the Personnel Security Screening Office of the
+											Ministry of Public Safety and Solicitor General for the purposes of determining my suitability for
+											a position in the BC Public Service. I understand that my consent will be retained on file.
+										</mat-checkbox>
+										<mat-error
+											class="mat-option-error"
+											*ngIf="
+												(form.get('agreeToRelease')?.dirty || form.get('agreeToRelease')?.touched) &&
+												form.get('agreeToRelease')?.invalid &&
+												form.get('agreeToRelease')?.hasError('required')
+											"
+											>This is required</mat-error
+										>
 									</p>
 									<p>
-										Subsequent to this record check, I agree to report any incident to the Personnel Security Screening
-										Office if I am arrested, charged or convicted of any criminal offence or any other federal or
-										provincial statutory offence, including any suspension of driving privileges but excluding any
-										ticket-only driving infractions or municipal by-law contraventions.
+										<mat-checkbox formControlName="agreeToReportCharge" (click)="onCheckboxChange()">
+											Subsequent to this record check, I agree to report any incident to the Personnel Security
+											Screening Office if I am arrested, charged or convicted of any criminal offence or any other
+											federal or provincial statutory offence, including any suspension of driving privileges but
+											excluding any ticket-only driving infractions or municipal by-law contraventions.
+										</mat-checkbox>
+										<mat-error
+											class="mat-option-error"
+											*ngIf="
+												(form.get('agreeToReportCharge')?.dirty || form.get('agreeToReportCharge')?.touched) &&
+												form.get('agreeToReportCharge')?.invalid &&
+												form.get('agreeToReportCharge')?.hasError('required')
+											"
+											>This is required</mat-error
+										>
 									</p>
 									<p>
 										This information is collected by the British Columbia Public Service under s.26(c) of FOIPPA. Any
@@ -309,14 +342,15 @@ export class SaConsentToReleaseOfInfoComponent implements CrcFormStepComponent {
 		this._orgData = value;
 
 		this.form = this.formBuilder.group({
-			agreeToCriminalCheck: new FormControl(null, value?.isCrrpa ? [Validators.requiredTrue] : []),
+			agreeToCriminalCheck: new FormControl(null, [Validators.requiredTrue]),
 			agreeToVulnerableSectorSearch: new FormControl(null, value?.isCrrpa ? [Validators.requiredTrue] : []),
-			agreeToReportCharge: new FormControl(null, value?.isCrrpa ? [Validators.requiredTrue] : []),
+			agreeToReportCharge: new FormControl(null, [Validators.requiredTrue]),
 			agreeToBcCourtHistory: new FormControl(null, value?.isCrrpa ? [Validators.requiredTrue] : []),
 			agreeToBcCorrectionsHistory: new FormControl(null, value?.isCrrpa ? [Validators.requiredTrue] : []),
 			agreeToDisclosurePersonalData: new FormControl(null, value?.isCrrpa ? [Validators.requiredTrue] : []),
 			agreeToDisclosureToRegistrar: new FormControl(null, value?.isCrrpa ? [Validators.requiredTrue] : []),
 			agreeToReleaseToRegistrar: new FormControl(null, value?.isCrrpa ? [Validators.requiredTrue] : []),
+			agreeToRelease: new FormControl(null, !value?.isCrrpa ? [Validators.requiredTrue] : []),
 			agreeToWaiver: new FormControl(null, !value?.isCrrpa ? [Validators.requiredTrue] : []),
 			dateSigned: new FormControl(null, [Validators.required]),
 		});
@@ -361,7 +395,7 @@ export class SaConsentToReleaseOfInfoComponent implements CrcFormStepComponent {
 				this.form.controls['dateSigned'].setValue('');
 			}
 		} else {
-			if (data.agreeToWaiver) {
+			if (data.agreeToCriminalCheck && data.agreeToRelease && data.agreeToReportCharge && data.agreeToWaiver) {
 				this.form.controls['dateSigned'].setValue(this.utilService.getDateString(new Date()));
 			} else {
 				this.form.controls['dateSigned'].setValue('');
