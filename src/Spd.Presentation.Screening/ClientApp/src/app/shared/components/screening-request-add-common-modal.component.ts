@@ -285,7 +285,13 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 			screeningTypeCodeDefault = inviteDefault?.screeningType ? inviteDefault?.screeningType : ScreeningTypeCode.Staff;
 		}
 
-		const serviceTypeCodeDefault = inviteDefault?.serviceType ? inviteDefault?.serviceType : this.serviceTypeDefault;
+		let serviceTypeCodeDefault: ServiceTypeCode | null = null;
+		if (this.portal == PortalTypeCode.Crrp) {
+			serviceTypeCodeDefault = inviteDefault?.serviceType ? inviteDefault?.serviceType : this.serviceTypeDefault;
+		} else {
+			serviceTypeCodeDefault = ServiceTypeCode.Psso;
+		}
+
 		const orgIdDefault = this.orgId;
 
 		return this.formBuilder.group(
