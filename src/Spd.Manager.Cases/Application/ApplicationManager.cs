@@ -1,3 +1,4 @@
+using Amazon.Runtime.Internal;
 using AutoMapper;
 using MediatR;
 using Spd.Engine.Search;
@@ -92,85 +93,6 @@ namespace Spd.Manager.Cases.Application
             _portalUserRepository = portalUserRepository;
         }
 
-        #region application-invite
-        public async Task<ApplicationInvitesCreateResponse> Handle(ApplicationInviteCreateCommand createCmd, CancellationToken ct)
-        {
-            var org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(createCmd.OrgId), ct);
-
-            // If not a volunteer org, then the payee type is required
-            if (org != null && org.OrgResult.VolunteerOrganizationTypeCode == null && org.OrgResult.ParentOrgId != SpdConstants.BC_GOV_ORG_ID)
-            {
-                if (createCmd.ApplicationInvitesCreateRequest.ApplicationInviteCreateRequests.Any(a => a.PayeeType == null))
-                {
-                    throw new ApiException(HttpStatusCode.BadRequest, "Payee Type is required");
-                }
-            }
-
-            ApplicationInvitesCreateResponse resp = new(createCmd.OrgId);
-            if (createCmd.ApplicationInvitesCreateRequest.RequireDuplicateCheck)
-            {
-                var checks = _mapper.Map<IEnumerable<AppInviteDuplicateCheck>>(createCmd.ApplicationInvitesCreateRequest.ApplicationInviteCreateRequests);
-                var duplicateResp = (AppInviteDuplicateCheckResponse)await _duplicateCheckEngine.DuplicateCheckAsync(
-                    new AppInviteDuplicateCheckRequest(checks, createCmd.OrgId),
-                    ct
-                    );
-                resp.IsDuplicateCheckRequired = createCmd.ApplicationInvitesCreateRequest.RequireDuplicateCheck;
-                resp.DuplicateResponses = _mapper.Map<IEnumerable<ApplicationInviteDuplicateResponse>>(duplicateResp.AppInviteCheckResults);
-                if (duplicateResp.AppInviteCheckResults.Any(r => r.HasPotentialDuplicate))
-                {
-                    resp.CreateSuccess = false;
-                    return resp;
-                }
-            }
-            var cmd = _mapper.Map<ApplicationInvitesCreateCmd>(createCmd.ApplicationInvitesCreateRequest);
-            if (createCmd.IsPSA || org.OrgResult.ParentOrgId == SpdConstants.BC_GOV_ORG_ID)
-                cmd.OrgId = SpdConstants.BC_GOV_ORG_ID;
-            else
-                cmd.OrgId = createCmd.OrgId;
-            cmd.CreatedByUserId = createCmd.UserId;
-            await _applicationInviteRepository.ManageAsync(cmd, ct);
-            resp.CreateSuccess = true;
-            return resp;
-        }
-        public async Task<ApplicationInviteListResponse> Handle(ApplicationInviteListQuery request, CancellationToken ct)
-        {
-            ApplicationInviteQuery query = _mapper.Map<ApplicationInviteQuery>(request);
-            if (request.IsPSSO)
-            {
-                //psso, cannot use orgId to filter.
-                List<ServiceTypeEnum> serviceTypes = new List<ServiceTypeEnum> { ServiceTypeEnum.PSSO, ServiceTypeEnum.PSSO_VS };
-                if (request.IsPSA)
-                {
-                    //return all psso invites
-                    query.FilterBy = new AppInviteFilterBy(null, request.FilterBy?.EmailOrNameContains, serviceTypes.ToArray());
-                }
-                else
-                {
-                    //return all created by invites.
-                    query.FilterBy = new AppInviteFilterBy(null, request.FilterBy?.EmailOrNameContains, serviceTypes.ToArray(), CreatedByUserId: request.UserId);
-                }
-            }
-            var response = await _applicationInviteRepository.QueryAsync(
-                query,
-                ct);
-            return _mapper.Map<ApplicationInviteListResponse>(response);
-        }
-        public async Task<Unit> Handle(ApplicationInviteDeleteCommand request, CancellationToken ct)
-        {
-            var cmd = _mapper.Map<ApplicationInviteUpdateCmd>(request);
-            cmd.ApplicationInviteStatusEnum = ApplicationInviteStatusEnum.Cancelled;
-            await _applicationInviteRepository.ManageAsync(cmd, ct);
-            return default;
-        }
-        public async Task<AppOrgResponse> Handle(ApplicationInviteVerifyCommand request, CancellationToken ct)
-        {
-            var result = await _applicationInviteRepository.VerifyApplicationInvitesAsync(
-                 new ApplicationInviteVerifyCmd(request.AppInvitesVerifyRequest.InviteEncryptedCode),
-                 ct);
-            return _mapper.Map<AppOrgResponse>(result);
-        }
-        #endregion
-
         #region application
         public async Task<ApplicationCreateResponse> Handle(ApplicationCreateCommand request, CancellationToken ct)
         {
@@ -200,8 +122,6 @@ namespace Spd.Manager.Cases.Application
             }
             var cmd = _mapper.Map<ApplicationCreateCmd>(request.ApplicationCreateRequest);
             cmd.CreatedByUserId = request.UserId;
-            if (request.ParentOrgId == SpdConstants.BC_GOV_ORG_ID)
-                cmd.ParentOrgId = request.ParentOrgId;
             Guid? applicationId = await _applicationRepository.AddApplicationAsync(cmd, ct);
             if (applicationId.HasValue && spdTempFile != null)
             {
@@ -218,7 +138,7 @@ namespace Spd.Manager.Cases.Application
             //if it is PSSO, add hiring manager
             if (request.ParentOrgId == SpdConstants.BC_GOV_ORG_ID)
             {
-                //add hiring manager
+                //add initiator
                 await _delegateRepository.ManageAsync(
                     new CreateDelegateCmd()
                     {
@@ -233,9 +153,12 @@ namespace Spd.Manager.Cases.Application
                 && request.ApplicationCreateRequest.HaveVerifiedIdentity == true)
             {
                 await _applicationRepository.UpdateAsync(
-                    new UpdateCmd() { ApplicationId = applicationId.Value, 
-                        OrgId = request.ApplicationCreateRequest.OrgId, 
-                        Status = ApplicationStatusEnum.Submitted },
+                    new UpdateCmd()
+                    {
+                        ApplicationId = applicationId.Value,
+                        OrgId = request.ApplicationCreateRequest.OrgId,
+                        Status = ApplicationStatusEnum.Submitted
+                    },
                     ct);
             }
             return result;
@@ -469,16 +392,17 @@ namespace Spd.Manager.Cases.Application
         #region applicant-applications
         public async Task<ApplicationCreateResponse> Handle(ApplicantApplicationCreateCommand command, CancellationToken ct)
         {
+            ApplicationInviteResult? invite = null;
             //check if invite is still valid
             if (command.ApplicationCreateRequest.AppInviteId != null)
             {
-                var invite = await _applicationInviteRepository.QueryAsync(
+                var invites = await _applicationInviteRepository.QueryAsync(
                     new ApplicationInviteQuery()
                     {
                         FilterBy = new AppInviteFilterBy(null, null, AppInviteId: command.ApplicationCreateRequest.AppInviteId)
                     }, ct);
-                var i = invite.ApplicationInvites.FirstOrDefault();
-                if (i != null && (i.Status == ApplicationInviteStatusEnum.Completed || i.Status == ApplicationInviteStatusEnum.Cancelled || i.Status == ApplicationInviteStatusEnum.Expired))
+                invite = invites.ApplicationInvites.FirstOrDefault();
+                if (invite != null && (invite.Status == ApplicationInviteStatusEnum.Completed || invite.Status == ApplicationInviteStatusEnum.Cancelled || invite.Status == ApplicationInviteStatusEnum.Expired))
                     throw new ArgumentException("Invalid Invite status.");
             }
 
@@ -510,8 +434,39 @@ namespace Spd.Manager.Cases.Application
                     result.ApplicationId = applicationId.Value;
                     result.CreateSuccess = true;
                 }
+
+                //update status : if psso or volunteer, go directly to submitted
+                if ((cmd.ParentOrgId == SpdConstants.BC_GOV_ORG_ID || command.ApplicationCreateRequest.ServiceType == ServiceTypeCode.CRRP_VOLUNTEER)
+                    && command.ApplicationCreateRequest.HaveVerifiedIdentity == true)
+                {
+                    await _applicationRepository.UpdateAsync(
+                        new UpdateCmd()
+                        {
+                            ApplicationId = applicationId.Value,
+                            OrgId = command.ApplicationCreateRequest.OrgId,
+                            Status = ApplicationStatusEnum.Submitted
+                        },
+                        ct);
+                }
+
+                //if orgId is bc government id, then add invite creator to application delegate as initiator.
+                if (cmd.ParentOrgId == SpdConstants.BC_GOV_ORG_ID)
+                {
+                    //add initiator
+                    if (invite?.CreatedByUserId != null)
+                    {
+                        await _delegateRepository.ManageAsync(
+                            new CreateDelegateCmd()
+                            {
+                                ApplicationId = applicationId.Value,
+                                PSSOUserRoleCode = PSSOUserRoleEnum.Initiator,
+                                PortalUserId = (Guid)(invite.CreatedByUserId),
+                            }, ct);
+                    }
+                }
             }
 
+            //inactivate invite
             if (command.ApplicationCreateRequest.AppInviteId != null)
             {
                 await _applicationInviteRepository.ManageAsync(
