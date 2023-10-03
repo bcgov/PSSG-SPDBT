@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { SwlStatusTypeCode } from 'src/app/core/code-types/model-desc.models';
-import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
+import { LicenceApplicationRoutes } from '../licence-application-routing.module';
+import { LicenceApplicationService } from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-type',
@@ -12,10 +14,12 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 				<div class="step-container row">
 					<div class="col-xl-6 col-lg-8 col-md-12 col-sm-12 mx-auto">
 						<form [formGroup]="form" novalidate>
-							<mat-radio-group aria-label="Select an option" formControlName="statusTypeCode">
+							<mat-radio-group aria-label="Select an option" formControlName="licenceStatusTypeCode">
 								<div class="row">
 									<div class="col-lg-4">
-										<mat-radio-button class="radio-label" [value]="statusTypeCodes.NewOrExpired">New</mat-radio-button>
+										<mat-radio-button class="radio-label" [value]="licenceStatusTypeCodes.NewOrExpired"
+											>New</mat-radio-button
+										>
 									</div>
 									<div class="col-lg-8">
 										<app-alert type="info" icon="">
@@ -27,7 +31,9 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 								<mat-divider class="mb-3"></mat-divider>
 								<div class="row">
 									<div class="col-lg-4">
-										<mat-radio-button class="radio-label" [value]="statusTypeCodes.Renewal">Renewal</mat-radio-button>
+										<mat-radio-button class="radio-label" [value]="licenceStatusTypeCodes.Renewal"
+											>Renewal</mat-radio-button
+										>
 									</div>
 									<div class="col-lg-8">
 										<app-alert type="info" icon="">
@@ -38,7 +44,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 								<mat-divider class="mb-3"></mat-divider>
 								<div class="row">
 									<div class="col-lg-4">
-										<mat-radio-button class="radio-label" [value]="statusTypeCodes.Replacement">
+										<mat-radio-button class="radio-label" [value]="licenceStatusTypeCodes.Replacement">
 											Replacement
 										</mat-radio-button>
 									</div>
@@ -51,7 +57,9 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 								<mat-divider class="mb-3"></mat-divider>
 								<div class="row">
 									<div class="col-lg-4">
-										<mat-radio-button class="radio-label" [value]="statusTypeCodes.Update">Update</mat-radio-button>
+										<mat-radio-button class="radio-label" [value]="licenceStatusTypeCodes.Update"
+											>Update</mat-radio-button
+										>
 									</div>
 									<div class="col-lg-8">
 										<app-alert type="info" icon="">
@@ -65,12 +73,21 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 						<mat-error
 							class="mat-option-error"
 							*ngIf="
-								(form.get('statusTypeCode')?.dirty || form.get('statusTypeCode')?.touched) &&
-								form.get('statusTypeCode')?.invalid &&
-								form.get('statusTypeCode')?.hasError('required')
+								(form.get('licenceStatusTypeCode')?.dirty || form.get('licenceStatusTypeCode')?.touched) &&
+								form.get('licenceStatusTypeCode')?.invalid &&
+								form.get('licenceStatusTypeCode')?.hasError('required')
 							"
 							>An option must be selected</mat-error
 						>
+					</div>
+				</div>
+
+				<div class="row mt-4">
+					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
+					</div>
+					<div class="col-lg-3 col-md-4 col-sm-6">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext()">Next</button>
 					</div>
 				</div>
 			</div>
@@ -78,24 +95,42 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 	`,
 	styles: [],
 })
-export class LicenceTypeComponent implements OnInit, LicenceFormStepComponent {
-	statusTypeCodes = SwlStatusTypeCode;
+export class LicenceTypeComponent implements OnInit {
+	licenceStatusTypeCodes = SwlStatusTypeCode;
 	isDirtyAndInvalid = false;
 
 	form: FormGroup = this.formBuilder.group({
-		statusTypeCode: new FormControl(null, [Validators.required]),
+		licenceStatusTypeCode: new FormControl(null, [Validators.required]),
 	});
 
-	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
+	constructor(
+		private formBuilder: FormBuilder,
+		private router: Router,
+		private licenceApplicationService: LicenceApplicationService
+	) {}
 
 	ngOnInit(): void {
 		this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: boolean) => {
 				if (loaded) {
-					this.form.patchValue({ statusTypeCode: this.licenceApplicationService.licenceModel.statusTypeCode });
+					this.form.patchValue({
+						licenceStatusTypeCode: this.licenceApplicationService.licenceModel.licenceStatusTypeCode,
+					});
 				}
 			},
 		});
+	}
+
+	onStepPrevious(): void {
+		this.updateDataToSave();
+		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LICENCE_SELECTION));
+	}
+
+	onStepNext(): void {
+		if (this.isFormValid()) {
+			this.updateDataToSave();
+			this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATION));
+		}
 	}
 
 	isFormValid(): boolean {
@@ -103,7 +138,7 @@ export class LicenceTypeComponent implements OnInit, LicenceFormStepComponent {
 		return this.form.valid;
 	}
 
-	getDataToSave(): any {
-		return this.form.value;
+	updateDataToSave(): void {
+		this.licenceApplicationService.licenceModel.licenceStatusTypeCode = this.form.value.licenceStatusTypeCode;
 	}
 }

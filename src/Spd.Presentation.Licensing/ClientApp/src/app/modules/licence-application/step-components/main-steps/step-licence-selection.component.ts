@@ -24,9 +24,7 @@ import { LicenceCategorySecurityGuardSupComponent } from '../licence-category-se
 import { LicenceCategorySecurityGuardComponent } from '../licence-category-security-guard.component';
 import { LicenceCategoryComponent } from '../licence-category.component';
 import { LicenceExpiredComponent } from '../licence-expired.component';
-import { LicenceSelectionComponent } from '../licence-selection.component';
 import { LicenceTermComponent } from '../licence-term.component';
-import { LicenceTypeComponent } from '../licence-type.component';
 import { PersonalInformationComponent } from '../personal-information.component';
 import { SoleProprietorComponent } from '../sole-proprietor.component';
 
@@ -34,7 +32,7 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 	selector: 'app-step-licence-selection',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step>
+			<!-- <mat-step>
 				<app-licence-selection></app-licence-selection>
 
 				<div class="row mt-4">
@@ -64,273 +62,288 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 						</button>
 					</div>
 				</div>
-			</mat-step>
+			</mat-step> -->
 
-			<mat-step *ngIf="showStepAccessCode">
-				<app-licence-access-code></app-licence-access-code>
+			<ng-container [ngSwitch]="licenceStatusTypeCode">
+				<ng-container *ngSwitchCase="swlStatusTypeCodes.NewOrExpired"></ng-container>
 
-				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_ACCESS_CODE)">
-							Next
-						</button>
-					</div>
-				</div>
-			</mat-step>
+				<mat-step *ngIf="showStepAccessCode">
+					<app-licence-access-code></app-licence-access-code>
 
-			<mat-step *ngIf="showStepSoleProprietor">
-				<app-sole-proprietor></app-sole-proprietor>
+					<div class="row mt-4">
+						<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+							<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+						</div>
+						<div class="col-lg-3 col-md-4 col-sm-6">
+							<button
+								mat-flat-button
+								color="primary"
+								class="large mb-2"
+								(click)="onFormValidNextStep(STEP_ACCESS_CODE)"
+							>
+								Next
+							</button>
+						</div>
+					</div>
+				</mat-step>
 
-				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_SOLE_PROPRIETOR)"
-						>
-							Next
-						</button>
-					</div>
-				</div>
-			</mat-step>
+				<mat-step *ngIf="showStepSoleProprietor">
+					<app-sole-proprietor></app-sole-proprietor>
 
-			<mat-step>
-				<app-checklist></app-checklist>
+					<div class="row mt-4">
+						<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+							<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+						</div>
+						<div class="col-lg-3 col-md-4 col-sm-6">
+							<button
+								mat-flat-button
+								color="primary"
+								class="large mb-2"
+								(click)="onFormValidNextStep(STEP_SOLE_PROPRIETOR)"
+							>
+								Next
+							</button>
+						</div>
+					</div>
+				</mat-step>
 
-				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-					</div>
-				</div>
-			</mat-step>
+				<mat-step>
+					<app-checklist></app-checklist>
 
-			<mat-step>
-				<app-personal-information></app-personal-information>
+					<div class="row mt-4">
+						<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+							<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+						</div>
+						<div class="col-lg-3 col-md-4 col-sm-6">
+							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
+						</div>
+					</div>
+				</mat-step>
 
-				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_PERSONAL_INFORMATION)"
-						>
-							Next
-						</button>
-					</div>
-				</div>
-			</mat-step>
+				<mat-step>
+					<app-personal-information></app-personal-information>
 
-			<mat-step *ngIf="showStepLicenceExpired">
-				<app-licence-expired></app-licence-expired>
+					<div class="row mt-4">
+						<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+							<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+						</div>
+						<div class="col-lg-3 col-md-4 col-sm-6">
+							<button
+								mat-flat-button
+								color="primary"
+								class="large mb-2"
+								(click)="onFormValidNextStep(STEP_PERSONAL_INFORMATION)"
+							>
+								Next
+							</button>
+						</div>
+					</div>
+				</mat-step>
 
-				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_LICENCE_EXPIRED)"
-						>
-							Next
-						</button>
-					</div>
-				</div>
-			</mat-step>
+				<mat-step *ngIf="showStepLicenceExpired">
+					<app-licence-expired></app-licence-expired>
 
-			<mat-step>
-				<app-licence-category></app-licence-category>
+					<div class="row mt-4">
+						<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+							<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+						</div>
+						<div class="col-lg-3 col-md-4 col-sm-6">
+							<button
+								mat-flat-button
+								color="primary"
+								class="large mb-2"
+								(click)="onFormValidNextStep(STEP_LICENCE_EXPIRED)"
+							>
+								Next
+							</button>
+						</div>
+					</div>
+				</mat-step>
 
-				<div class="row mt-4">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_LICENCE_CATEGORY)"
-						>
-							Next
-						</button>
-					</div>
-				</div>
-			</mat-step>
+				<mat-step>
+					<app-licence-category></app-licence-category>
 
-			<mat-step *ngFor="let category of swlCategoryList; let i = index">
-				<div [ngSwitch]="category.code">
-					<div *ngSwitchCase="swlCategoryTypeCodes.ArmouredCarGuard">
-						<app-licence-category-armoured-car-guard
-							[option]="category"
-							[index]="i + 1"
-						></app-licence-category-armoured-car-guard>
+					<div class="row mt-4">
+						<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+							<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+						</div>
+						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+							<button
+								mat-flat-button
+								color="primary"
+								class="large mb-2"
+								(click)="onFormValidNextStep(STEP_LICENCE_CATEGORY)"
+							>
+								Next
+							</button>
+						</div>
 					</div>
-					<div *ngSwitchCase="swlCategoryTypeCodes.BodyArmourSales">
-						<app-licence-category-body-armour-sales
-							[option]="category"
-							[index]="i + 1"
-						></app-licence-category-body-armour-sales>
-					</div>
-					<div *ngSwitchCase="swlCategoryTypeCodes.ClosedCircuitTelevisionInstaller">
-						<app-licence-category-closed-circuit-television-installer
-							[option]="category"
-							[index]="i + 1"
-						></app-licence-category-closed-circuit-television-installer>
-					</div>
-					<div *ngSwitchCase="swlCategoryTypeCodes.ElectronicLockingDeviceInstaller">
-						<app-licence-category-electronic-locking-device-installer
-							[option]="category"
-							[index]="i + 1"
-						></app-licence-category-electronic-locking-device-installer>
-					</div>
-					<div *ngSwitchCase="swlCategoryTypeCodes.FireInvestigator">
-						<app-licence-category-fire-investigator
-							[option]="category"
-							[index]="i + 1"
-						></app-licence-category-fire-investigator>
-					</div>
-					<div *ngSwitchCase="swlCategoryTypeCodes.Locksmith">
-						<app-licence-category-locksmith [option]="category" [index]="i + 1"></app-licence-category-locksmith>
-					</div>
-					<div *ngSwitchCase="swlCategoryTypeCodes.LocksmithUnderSupervision">
-						<app-licence-category-locksmith-sup
-							[option]="category"
-							[index]="i + 1"
-						></app-licence-category-locksmith-sup>
-					</div>
-					<div *ngSwitchCase="swlCategoryTypeCodes.PrivateInvestigator">
-						<app-licence-category-private-investigator
-							[option]="category"
-							[index]="i + 1"
-						></app-licence-category-private-investigator>
-					</div>
-					<div *ngSwitchCase="swlCategoryTypeCodes.PrivateInvestigatorUnderSupervision">
-						<app-licence-category-private-investigator-sup
-							[option]="category"
-							[index]="i + 1"
-						></app-licence-category-private-investigator-sup>
-					</div>
-					<div *ngSwitchCase="swlCategoryTypeCodes.SecurityAlarmInstallerUnderSupervision">
-						<app-licence-category-security-alarm-installer-sup
-							[option]="category"
-							[index]="i + 1"
-						></app-licence-category-security-alarm-installer-sup>
-					</div>
-					<div *ngSwitchCase="swlCategoryTypeCodes.SecurityAlarmInstaller">
-						<app-licence-category-security-alarm-installer
-							[option]="category"
-							[index]="i + 1"
-						></app-licence-category-security-alarm-installer>
-					</div>
-					<div *ngSwitchCase="swlCategoryTypeCodes.SecurityAlarmMonitor">
-						<app-licence-category-security-alarm-monitor
-							[option]="category"
-							[index]="i + 1"
-						></app-licence-category-security-alarm-monitor>
-					</div>
-					<div *ngSwitchCase="swlCategoryTypeCodes.SecurityAlarmResponse">
-						<app-licence-category-security-alarm-response
-							[option]="category"
-							[index]="i + 1"
-						></app-licence-category-security-alarm-response>
-					</div>
-					<div *ngSwitchCase="swlCategoryTypeCodes.SecurityAlarmSales">
-						<app-licence-category-security-alarm-sales
-							[option]="category"
-							[index]="i + 1"
-						></app-licence-category-security-alarm-sales>
-					</div>
-					<div *ngSwitchCase="swlCategoryTypeCodes.SecurityConsultant">
-						<app-licence-category-security-consultant
-							[option]="category"
-							[index]="i + 1"
-						></app-licence-category-security-consultant>
-					</div>
-					<div *ngSwitchCase="swlCategoryTypeCodes.SecurityGuard">
-						<app-licence-category-security-guard
-							[option]="category"
-							[index]="i + 1"
-						></app-licence-category-security-guard>
-					</div>
-					<div *ngSwitchCase="swlCategoryTypeCodes.SecurityGuardUnderSupervision">
-						<app-licence-category-security-guard-sup
-							[option]="category"
-							[index]="i + 1"
-						></app-licence-category-security-guard-sup>
-					</div>
-				</div>
+				</mat-step>
 
-				<div class="row mt-4">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+				<mat-step *ngFor="let category of swlCategoryList; let i = index">
+					<div [ngSwitch]="category.code">
+						<div *ngSwitchCase="swlCategoryTypeCodes.ArmouredCarGuard">
+							<app-licence-category-armoured-car-guard
+								[option]="category"
+								[index]="i + 1"
+							></app-licence-category-armoured-car-guard>
+						</div>
+						<div *ngSwitchCase="swlCategoryTypeCodes.BodyArmourSales">
+							<app-licence-category-body-armour-sales
+								[option]="category"
+								[index]="i + 1"
+							></app-licence-category-body-armour-sales>
+						</div>
+						<div *ngSwitchCase="swlCategoryTypeCodes.ClosedCircuitTelevisionInstaller">
+							<app-licence-category-closed-circuit-television-installer
+								[option]="category"
+								[index]="i + 1"
+							></app-licence-category-closed-circuit-television-installer>
+						</div>
+						<div *ngSwitchCase="swlCategoryTypeCodes.ElectronicLockingDeviceInstaller">
+							<app-licence-category-electronic-locking-device-installer
+								[option]="category"
+								[index]="i + 1"
+							></app-licence-category-electronic-locking-device-installer>
+						</div>
+						<div *ngSwitchCase="swlCategoryTypeCodes.FireInvestigator">
+							<app-licence-category-fire-investigator
+								[option]="category"
+								[index]="i + 1"
+							></app-licence-category-fire-investigator>
+						</div>
+						<div *ngSwitchCase="swlCategoryTypeCodes.Locksmith">
+							<app-licence-category-locksmith [option]="category" [index]="i + 1"></app-licence-category-locksmith>
+						</div>
+						<div *ngSwitchCase="swlCategoryTypeCodes.LocksmithUnderSupervision">
+							<app-licence-category-locksmith-sup
+								[option]="category"
+								[index]="i + 1"
+							></app-licence-category-locksmith-sup>
+						</div>
+						<div *ngSwitchCase="swlCategoryTypeCodes.PrivateInvestigator">
+							<app-licence-category-private-investigator
+								[option]="category"
+								[index]="i + 1"
+							></app-licence-category-private-investigator>
+						</div>
+						<div *ngSwitchCase="swlCategoryTypeCodes.PrivateInvestigatorUnderSupervision">
+							<app-licence-category-private-investigator-sup
+								[option]="category"
+								[index]="i + 1"
+							></app-licence-category-private-investigator-sup>
+						</div>
+						<div *ngSwitchCase="swlCategoryTypeCodes.SecurityAlarmInstallerUnderSupervision">
+							<app-licence-category-security-alarm-installer-sup
+								[option]="category"
+								[index]="i + 1"
+							></app-licence-category-security-alarm-installer-sup>
+						</div>
+						<div *ngSwitchCase="swlCategoryTypeCodes.SecurityAlarmInstaller">
+							<app-licence-category-security-alarm-installer
+								[option]="category"
+								[index]="i + 1"
+							></app-licence-category-security-alarm-installer>
+						</div>
+						<div *ngSwitchCase="swlCategoryTypeCodes.SecurityAlarmMonitor">
+							<app-licence-category-security-alarm-monitor
+								[option]="category"
+								[index]="i + 1"
+							></app-licence-category-security-alarm-monitor>
+						</div>
+						<div *ngSwitchCase="swlCategoryTypeCodes.SecurityAlarmResponse">
+							<app-licence-category-security-alarm-response
+								[option]="category"
+								[index]="i + 1"
+							></app-licence-category-security-alarm-response>
+						</div>
+						<div *ngSwitchCase="swlCategoryTypeCodes.SecurityAlarmSales">
+							<app-licence-category-security-alarm-sales
+								[option]="category"
+								[index]="i + 1"
+							></app-licence-category-security-alarm-sales>
+						</div>
+						<div *ngSwitchCase="swlCategoryTypeCodes.SecurityConsultant">
+							<app-licence-category-security-consultant
+								[option]="category"
+								[index]="i + 1"
+							></app-licence-category-security-consultant>
+						</div>
+						<div *ngSwitchCase="swlCategoryTypeCodes.SecurityGuard">
+							<app-licence-category-security-guard
+								[option]="category"
+								[index]="i + 1"
+							></app-licence-category-security-guard>
+						</div>
+						<div *ngSwitchCase="swlCategoryTypeCodes.SecurityGuardUnderSupervision">
+							<app-licence-category-security-guard-sup
+								[option]="category"
+								[index]="i + 1"
+							></app-licence-category-security-guard-sup>
+						</div>
 					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(category.code)">
-							Next
-						</button>
-					</div>
-				</div>
-			</mat-step>
 
-			<mat-step>
-				<app-dogs-or-restraints></app-dogs-or-restraints>
+					<div class="row mt-4">
+						<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+							<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+						</div>
+						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+							<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(category.code)">
+								Next
+							</button>
+						</div>
+					</div>
+				</mat-step>
 
-				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_DOGS_OR_RESTRAINT)"
-						>
-							Next
-						</button>
-					</div>
-				</div>
-			</mat-step>
+				<mat-step>
+					<app-dogs-or-restraints></app-dogs-or-restraints>
 
-			<mat-step>
-				<app-licence-term></app-licence-term>
+					<div class="row mt-4">
+						<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+							<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+						</div>
+						<div class="col-lg-3 col-md-4 col-sm-6">
+							<button
+								mat-flat-button
+								color="primary"
+								class="large mb-2"
+								(click)="onFormValidNextStep(STEP_DOGS_OR_RESTRAINT)"
+							>
+								Next
+							</button>
+						</div>
+					</div>
+				</mat-step>
 
-				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+				<mat-step>
+					<app-licence-term></app-licence-term>
+
+					<div class="row mt-4">
+						<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+							<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+						</div>
+						<div class="col-lg-3 col-md-4 col-sm-6">
+							<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_LICENCE_TERM)">
+								Next
+							</button>
+						</div>
 					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_LICENCE_TERM)">
-							Next
-						</button>
-					</div>
-				</div>
-			</mat-step>
+				</mat-step>
+
+				<ng-container *ngSwitchCase="swlStatusTypeCodes.Renewal"></ng-container>
+
+				<ng-container *ngSwitchCase="swlStatusTypeCodes.Replacement"></ng-container>
+
+				<ng-container *ngSwitchCase="swlStatusTypeCodes.Update"></ng-container>
+			</ng-container>
 		</mat-stepper>
 	`,
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepLicenceSelectionComponent {
-	readonly STEP_LICENCE_SELECTION = '0';
-	readonly STEP_LICENCE_TYPE = '1';
+	// readonly STEP_LICENCE_SELECTION = '0';
+	// readonly STEP_LICENCE_TYPE = '1';
 	readonly STEP_ACCESS_CODE = '2';
 	readonly STEP_SOLE_PROPRIETOR = '3';
 	readonly STEP_PERSONAL_INFORMATION = '4';
@@ -339,20 +352,23 @@ export class StepLicenceSelectionComponent {
 	readonly STEP_DOGS_OR_RESTRAINT = '8';
 	readonly STEP_LICENCE_TERM = '7';
 
+	licenceStatusTypeCode: SwlStatusTypeCode | null = null;
+
 	showStepAccessCode = true;
 	showStepSoleProprietor = true;
 	showStepLicenceExpired = true;
 
 	swlCategoryList: SelectOptions[] = [];
 	swlCategoryTypeCodes = SwlCategoryTypeCode;
+	swlStatusTypeCodes = SwlStatusTypeCode;
 
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 
-	@ViewChild(LicenceSelectionComponent)
-	licenceSelectionComponent!: LicenceSelectionComponent;
+	// @ViewChild(LicenceSelectionComponent)
+	// licenceSelectionComponent!: LicenceSelectionComponent;
 
-	@ViewChild(LicenceTypeComponent)
-	licenceTypeComponent!: LicenceTypeComponent;
+	// @ViewChild(LicenceTypeComponent)
+	// licenceTypeComponent!: LicenceTypeComponent;
 
 	@ViewChild(SoleProprietorComponent)
 	soleProprietorComponent!: SoleProprietorComponent;
@@ -418,8 +434,8 @@ export class StepLicenceSelectionComponent {
 		let data = {
 			// ...this.licenceSelectionComponent.getDataToSave(),
 			// ...this.licenceTypeComponent.getDataToSave(),
-			...(this.licenceSelectionComponent ? this.licenceSelectionComponent.getDataToSave() : {}),
-			...(this.licenceTypeComponent ? this.licenceTypeComponent.getDataToSave() : {}),
+			// ...(this.licenceSelectionComponent ? this.licenceSelectionComponent.getDataToSave() : {}),
+			// ...(this.licenceTypeComponent ? this.licenceTypeComponent.getDataToSave() : {}),
 			...(this.licenceAccessCodeComponent ? this.licenceAccessCodeComponent.getDataToSave() : {}),
 			...(this.soleProprietorComponent ? this.soleProprietorComponent.getDataToSave() : {}),
 			// ...this.personalInformationComponent.getDataToSave(),
@@ -638,21 +654,22 @@ export class StepLicenceSelectionComponent {
 
 	private dirtyForm(step: string): boolean {
 		switch (step) {
-			case this.STEP_LICENCE_SELECTION:
-				return this.licenceSelectionComponent.isFormValid();
-			case this.STEP_LICENCE_TYPE:
-				const isValid = this.licenceTypeComponent.isFormValid();
-				if (isValid) {
-					this.showStepAccessCode =
-						this.licenceApplicationService.licenceModel.statusTypeCode == SwlStatusTypeCode.Renewal ||
-						this.licenceApplicationService.licenceModel.statusTypeCode == SwlStatusTypeCode.Update;
-					this.showStepSoleProprietor =
-						this.licenceApplicationService.licenceModel.statusTypeCode == SwlStatusTypeCode.NewOrExpired ||
-						this.licenceApplicationService.licenceModel.statusTypeCode == SwlStatusTypeCode.Renewal;
-					this.showStepLicenceExpired =
-						this.licenceApplicationService.licenceModel.statusTypeCode == SwlStatusTypeCode.NewOrExpired;
-				}
-				return isValid;
+			// case this.STEP_LICENCE_SELECTION:
+			// 	return this.licenceSelectionComponent.isFormValid();
+			// case this.STEP_LICENCE_TYPE:
+			// 	const isValid = this.licenceTypeComponent.isFormValid();
+			// 	if (isValid) {
+			// 		this.licenceStatusTypeCode = this.licenceApplicationService.licenceModel.licenceStatusTypeCode;
+			// 		this.showStepAccessCode =
+			// 			this.licenceApplicationService.licenceModel.licenceStatusTypeCode == SwlStatusTypeCode.Renewal ||
+			// 			this.licenceApplicationService.licenceModel.licenceStatusTypeCode == SwlStatusTypeCode.Update;
+			// 		this.showStepSoleProprietor =
+			// 			this.licenceApplicationService.licenceModel.licenceStatusTypeCode == SwlStatusTypeCode.NewOrExpired ||
+			// 			this.licenceApplicationService.licenceModel.licenceStatusTypeCode == SwlStatusTypeCode.Renewal;
+			// 		this.showStepLicenceExpired =
+			// 			this.licenceApplicationService.licenceModel.licenceStatusTypeCode == SwlStatusTypeCode.NewOrExpired;
+			// 	}
+			// 	return isValid;
 			case this.STEP_ACCESS_CODE:
 				return this.licenceAccessCodeComponent.isFormValid();
 			case this.STEP_SOLE_PROPRIETOR:

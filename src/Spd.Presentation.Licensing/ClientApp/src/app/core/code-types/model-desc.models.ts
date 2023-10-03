@@ -53,6 +53,20 @@ export enum SwlCategoryTypeCode {
 	SecurityConsultant = 'SECURITY_CONSULTANT',
 }
 
+export const SwlTypeCodes: SelectOptions[] = [
+	{ desc: 'Security Business Licence', code: SwlTypeCode.SecurityBusinessLicence },
+	{ desc: 'Security Worker Licence', code: SwlTypeCode.SecurityWorkerLicence },
+	{ desc: 'Armoured Vehicle Licence', code: SwlTypeCode.ArmouredVehicleLicence },
+	{ desc: 'Body Armour Licence', code: SwlTypeCode.BodyArmourLicence },
+];
+
+export const SwlStatusTypeCodes: SelectOptions[] = [
+	{ desc: 'New Or Expired', code: SwlStatusTypeCode.NewOrExpired },
+	{ desc: 'Renewal', code: SwlStatusTypeCode.Renewal },
+	{ desc: 'Replacement', code: SwlStatusTypeCode.Replacement },
+	{ desc: 'Update', code: SwlStatusTypeCode.Update },
+];
+
 export const GenderTypes: SelectOptions[] = [
 	{ desc: 'M', code: GenderCode.M },
 	{ desc: 'F', code: GenderCode.F },

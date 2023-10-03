@@ -61,10 +61,8 @@ export class SoleProprietorComponent implements OnInit, LicenceFormStepComponent
 		this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: boolean) => {
 				if (loaded) {
-					console.log('SoleProprietorComponent loaded licenceModel', this.licenceApplicationService.licenceModel);
-
 					const isNewOrExpired =
-						this.licenceApplicationService.licenceModel.statusTypeCode == SwlStatusTypeCode.NewOrExpired;
+						this.licenceApplicationService.licenceModel.licenceStatusTypeCode == SwlStatusTypeCode.NewOrExpired;
 					this.title = isNewOrExpired ? this.title_apply : this.title_renew;
 					this.infoTitle = isNewOrExpired ? this.subtitle_apply : this.subtitle_renew;
 

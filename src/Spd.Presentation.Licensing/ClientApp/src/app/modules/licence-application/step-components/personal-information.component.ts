@@ -127,13 +127,13 @@ export class PersonalInformationComponent implements OnInit, LicenceFormStepComp
 		this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: boolean) => {
 				if (loaded) {
-					if (this.licenceApplicationService.licenceModel.statusTypeCode == SwlStatusTypeCode.Replacement) {
+					if (this.licenceApplicationService.licenceModel.licenceStatusTypeCode == SwlStatusTypeCode.Replacement) {
 						this.title = this.title_view;
 						this.subtitle = '';
 					} else {
 						this.title = this.title_confirm;
 						this.subtitle =
-							this.licenceApplicationService.licenceModel.statusTypeCode == SwlStatusTypeCode.NewOrExpired
+							this.licenceApplicationService.licenceModel.licenceStatusTypeCode == SwlStatusTypeCode.NewOrExpired
 								? this.subtitle_auth_new
 								: this.subtitle_unauth_renew_update;
 					}
@@ -148,7 +148,7 @@ export class PersonalInformationComponent implements OnInit, LicenceFormStepComp
 						dateOfBirth: this.licenceApplicationService.licenceModel.dateOfBirth,
 					});
 
-					if (this.licenceApplicationService.licenceModel.statusTypeCode == SwlStatusTypeCode.Replacement) {
+					if (this.licenceApplicationService.licenceModel.licenceStatusTypeCode == SwlStatusTypeCode.Replacement) {
 						this.form.disable();
 					} else {
 						this.form.enable();
@@ -159,7 +159,7 @@ export class PersonalInformationComponent implements OnInit, LicenceFormStepComp
 	}
 
 	isFormValid(): boolean {
-		if (this.licenceApplicationService.licenceModel.statusTypeCode == SwlStatusTypeCode.Replacement) {
+		if (this.licenceApplicationService.licenceModel.licenceStatusTypeCode == SwlStatusTypeCode.Replacement) {
 			return true;
 		}
 

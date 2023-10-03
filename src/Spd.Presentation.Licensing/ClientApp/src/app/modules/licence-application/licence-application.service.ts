@@ -18,7 +18,7 @@ export interface LicenceFormStepComponent {
 
 export class LicenceModel {
 	licenceTypeCode: SwlTypeCode | null = null;
-	statusTypeCode: SwlStatusTypeCode | null = null;
+	licenceStatusTypeCode: SwlStatusTypeCode | null = null;
 	isSoleProprietor: BooleanTypeCode | null = null;
 	currentLicenceNumber: string | null = null;
 	accessCode: string | null = null;
@@ -83,7 +83,7 @@ export class LicenceApplicationService {
 		setTimeout(() => {
 			const defaults: LicenceModel = {
 				licenceTypeCode: SwlTypeCode.ArmouredVehicleLicence,
-				statusTypeCode: SwlStatusTypeCode.NewOrExpired,
+				licenceStatusTypeCode: SwlStatusTypeCode.NewOrExpired,
 				isSoleProprietor: BooleanTypeCode.Yes,
 				currentLicenceNumber: '123456',
 				accessCode: '456',
@@ -142,7 +142,7 @@ export class LicenceApplicationService {
 		setTimeout(() => {
 			const defaults: LicenceModel = {
 				licenceTypeCode: SwlTypeCode.SecurityBusinessLicence,
-				statusTypeCode: SwlStatusTypeCode.Renewal,
+				licenceStatusTypeCode: SwlStatusTypeCode.Renewal,
 				isSoleProprietor: BooleanTypeCode.Yes,
 				currentLicenceNumber: '123',
 				accessCode: '456',
@@ -173,7 +173,7 @@ export class LicenceApplicationService {
 		setTimeout(() => {
 			const defaults: LicenceModel = {
 				licenceTypeCode: SwlTypeCode.ArmouredVehicleLicence,
-				statusTypeCode: SwlStatusTypeCode.Replacement,
+				licenceStatusTypeCode: SwlStatusTypeCode.Replacement,
 				isSoleProprietor: BooleanTypeCode.Yes,
 				currentLicenceNumber: '123456',
 				accessCode: '456',
@@ -231,7 +231,7 @@ export class LicenceApplicationService {
 		setTimeout(() => {
 			const defaults: LicenceModel = {
 				licenceTypeCode: SwlTypeCode.ArmouredVehicleLicence,
-				statusTypeCode: SwlStatusTypeCode.Update,
+				licenceStatusTypeCode: SwlStatusTypeCode.Update,
 				isSoleProprietor: BooleanTypeCode.Yes,
 				currentLicenceNumber: '123456',
 				accessCode: '456',

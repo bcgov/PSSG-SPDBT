@@ -5,7 +5,10 @@ import { LicencePaymentErrorComponent } from './components/licence-payment-error
 import { LicencePaymentFailComponent } from './components/licence-payment-fail.component';
 import { LicencePaymentManualComponent } from './components/licence-payment-manual.component';
 import { LicencePaymentSuccessComponent } from './components/licence-payment-success.component';
-import { SecurityLicenceSelectionComponent } from './components/security-licence-selection.component';
+import { LicenceSelectionComponent } from './components/licence-selection.component';
+import { LicenceTypeComponent } from './components/licence-type.component';
+import { LicenceWizardComponent } from './components/licence-wizard.component';
+import { LoginSelectionComponent } from './components/login-selection.component';
 import { LicenceApplicationRoutingModule } from './licence-application-routing.module';
 import { LicenceApplicationComponent } from './licence-application.component';
 import { AdditionalGovIdComponent } from './step-components/additional-gov-id.component';
@@ -40,9 +43,7 @@ import { LicenceCategorySecurityGuardSupComponent } from './step-components/lice
 import { LicenceCategorySecurityGuardComponent } from './step-components/licence-category-security-guard.component';
 import { LicenceCategoryComponent } from './step-components/licence-category.component';
 import { LicenceExpiredComponent } from './step-components/licence-expired.component';
-import { LicenceSelectionComponent } from './step-components/licence-selection.component';
 import { LicenceTermComponent } from './step-components/licence-term.component';
-import { LicenceTypeComponent } from './step-components/licence-type.component';
 import { StepBackgroundComponent } from './step-components/main-steps/step-background.component';
 import { StepIdentificationComponent } from './step-components/main-steps/step-identification.component';
 import { StepLicenceSelectionComponent } from './step-components/main-steps/step-licence-selection.component';
@@ -107,8 +108,8 @@ import { SummaryReviewComponent } from './step-components/summary-review.compone
 		LicenceCategorySecurityAlarmSalesComponent,
 		LicenceCategorySecurityConsultantComponent,
 		IncompleteApplicationsComponent,
-		SecurityLicenceSelectionComponent,
-		SecurityLicenceSelectionComponent,
+		LoginSelectionComponent,
+		LicenceWizardComponent,
 	],
 	imports: [SharedModule, LicenceApplicationRoutingModule],
 })

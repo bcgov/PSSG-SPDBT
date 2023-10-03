@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { SwlTypeCode } from 'src/app/core/code-types/model-desc.models';
-import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
+import { LicenceApplicationRoutes } from '../licence-application-routing.module';
+import { LicenceApplicationService } from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-selection',
@@ -72,6 +74,12 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 						An option must be selected
 					</mat-error>
 				</div>
+
+				<div class="row mt-4">
+					<div class="col-lg-3 col-md-4 col-sm-6 mx-auto">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext()">Next</button>
+					</div>
+				</div>
 			</div>
 		</section>
 	`,
@@ -98,7 +106,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 		`,
 	],
 })
-export class LicenceSelectionComponent implements OnInit, LicenceFormStepComponent {
+export class LicenceSelectionComponent implements OnInit {
 	readonly image1 = '/assets/security-business-licence.png';
 	readonly image2 = '/assets/security-worker-licence.png';
 	readonly image3 = '/assets/armoured-vehicle.png';
@@ -112,7 +120,8 @@ export class LicenceSelectionComponent implements OnInit, LicenceFormStepCompone
 	imageLoadedCount = 0;
 	isImagesLoaded = false;
 	imagePaths = [this.image1, this.image2, this.image3, this.image4];
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+
+	constructor(private router: Router, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
 		this.licenceApplicationService.licenceModelLoaded$.subscribe({
@@ -133,6 +142,13 @@ export class LicenceSelectionComponent implements OnInit, LicenceFormStepCompone
 		});
 	}
 
+	onStepNext(): void {
+		if (this.isFormValid()) {
+			this.licenceApplicationService.licenceModel.licenceTypeCode = this.licenceTypeCode;
+			this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LICENCE_TYPE));
+		}
+	}
+
 	onLicenceTypeChange(_val: SwlTypeCode) {
 		this.licenceTypeCode = _val;
 		const isValid = this.isFormValid();
@@ -145,9 +161,9 @@ export class LicenceSelectionComponent implements OnInit, LicenceFormStepCompone
 		return isValid;
 	}
 
-	getDataToSave(): any {
-		return { licenceTypeCode: this.licenceTypeCode };
-	}
+	// getDataToSave(): any {
+	// 	return { licenceTypeCode: this.licenceTypeCode };
+	// }
 
 	private onImageLoaded() {
 		this.imageLoadedCount++;
