@@ -1,3 +1,4 @@
+using Amazon.Runtime.Internal;
 using AutoMapper;
 using MediatR;
 using Spd.Engine.Search;
@@ -121,8 +122,6 @@ namespace Spd.Manager.Cases.Application
             }
             var cmd = _mapper.Map<ApplicationCreateCmd>(request.ApplicationCreateRequest);
             cmd.CreatedByUserId = request.UserId;
-            if (request.ParentOrgId == SpdConstants.BC_GOV_ORG_ID)
-                cmd.ParentOrgId = request.ParentOrgId;
             Guid? applicationId = await _applicationRepository.AddApplicationAsync(cmd, ct);
             if (applicationId.HasValue && spdTempFile != null)
             {
@@ -435,9 +434,23 @@ namespace Spd.Manager.Cases.Application
                     result.ApplicationId = applicationId.Value;
                     result.CreateSuccess = true;
                 }
+
+                //update status : if psso or volunteer, go directly to submitted
+                if ((cmd.ParentOrgId == SpdConstants.BC_GOV_ORG_ID || command.ApplicationCreateRequest.ServiceType == ServiceTypeCode.CRRP_VOLUNTEER)
+                    && command.ApplicationCreateRequest.HaveVerifiedIdentity == true)
+                {
+                    await _applicationRepository.UpdateAsync(
+                        new UpdateCmd()
+                        {
+                            ApplicationId = applicationId.Value,
+                            OrgId = command.ApplicationCreateRequest.OrgId,
+                            Status = ApplicationStatusEnum.Submitted
+                        },
+                        ct);
+                }
+
                 //if orgId is bc government id, then add invite creator to application delegate as initiator.
-                OrgQryResult o = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(cmd.OrgId), ct);
-                if (o.OrgResult.ParentOrgId == SpdConstants.BC_GOV_ORG_ID || o.OrgResult.Id == SpdConstants.BC_GOV_ORG_ID)
+                if (cmd.ParentOrgId == SpdConstants.BC_GOV_ORG_ID)
                 {
                     //add initiator
                     if (invite?.CreatedByUserId != null)
@@ -453,6 +466,7 @@ namespace Spd.Manager.Cases.Application
                 }
             }
 
+            //inactivate invite
             if (command.ApplicationCreateRequest.AppInviteId != null)
             {
                 await _applicationInviteRepository.ManageAsync(
