@@ -1,6 +1,7 @@
 using Amazon.Runtime.Internal;
 using AutoMapper;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using Spd.Engine.Search;
 using Spd.Engine.Validation;
 using Spd.Resource.Applicants.Application;
@@ -62,6 +63,7 @@ namespace Spd.Manager.Cases.Application
         private readonly IIncidentRepository _incidentRepository;
         private readonly IDelegateRepository _delegateRepository;
         private readonly IPortalUserRepository _portalUserRepository;
+        private readonly ILogger<IApplicationManager> _logger;
         private readonly ISearchEngine _searchEngine;
 
         public ApplicationManager(IApplicationRepository applicationRepository,
@@ -76,7 +78,8 @@ namespace Spd.Manager.Cases.Application
             IFileStorageService fileStorageService,
             IIncidentRepository incidentRepository,
             IDelegateRepository delegateRepository,
-            IPortalUserRepository portalUserRepository)
+            IPortalUserRepository portalUserRepository,
+            ILogger<IApplicationManager> logger)
         {
             _applicationRepository = applicationRepository;
             _applicationInviteRepository = applicationInviteRepository;
@@ -91,11 +94,13 @@ namespace Spd.Manager.Cases.Application
             _delegateRepository = delegateRepository;
             _searchEngine = searchEngine;
             _portalUserRepository = portalUserRepository;
+            _logger = logger;
         }
 
         #region application
         public async Task<ApplicationCreateResponse> Handle(ApplicationCreateCommand request, CancellationToken ct)
         {
+            _logger.LogDebug($"applicationCreateCommand={request}");
             ApplicationCreateResponse result = new();
             if (request.ApplicationCreateRequest.RequireDuplicateCheck)
             {
