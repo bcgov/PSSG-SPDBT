@@ -25,18 +25,21 @@ namespace Spd.Presentation.Screening.Controllers
         private readonly IValidator<ApplicationCreateRequestFromBulk> _appCreateRequestFromBulkValidator;
         private readonly IConfiguration _configuration;
         private readonly IPrincipal _currentUser;
+        private readonly ILogger<ApplicationController> _logger;
 
         public ApplicationController(IMediator mediator,
             IValidator<ApplicationCreateRequest> appCreateRequestValidator,
             IValidator<ApplicationCreateRequestFromBulk> appCreateRequestFromBulkValidator,
             IConfiguration configuration,
-            IPrincipal currentUser)
+            IPrincipal currentUser,
+            ILogger<ApplicationController> logger)
         {
             _mediator = mediator;
             _appCreateRequestValidator = appCreateRequestValidator;
             _appCreateRequestFromBulkValidator = appCreateRequestFromBulkValidator;
             _configuration = configuration;
             _currentUser = currentUser;
+            _logger = logger;
         }
 
         #region application-invites
@@ -355,7 +358,7 @@ namespace Spd.Presentation.Screening.Controllers
             {
                 isPSSO = true;
             }
-
+            _logger.LogDebug($"isPsso={isPSSO}");
             if (isPSSO)
             {
                 //PSSO
@@ -381,6 +384,7 @@ namespace Spd.Presentation.Screening.Controllers
             if (!result.IsValid)
                 throw new ApiException(System.Net.HttpStatusCode.BadRequest, JsonSerializer.Serialize(result.Errors));
 
+            _logger.LogDebug($"userId={userId}");
             if (isPSSO)
             {
                 return await _mediator.Send(new ApplicationCreateCommand(appCreateRequest, SpdConstants.BC_GOV_ORG_ID, Guid.Parse(userId), null));
