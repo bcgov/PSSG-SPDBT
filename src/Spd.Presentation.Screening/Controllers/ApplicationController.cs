@@ -423,13 +423,14 @@ namespace Spd.Presentation.Screening.Controllers
                 idirUserId = showAll ? null : Guid.Parse(_currentUser.GetUserId());
                 isPSSO = true;
             }
-
+            _logger.LogDebug($"idirUserId ={idirUserId}");
             page = (page == null || page < 0) ? 0 : page;
             pageSize = (pageSize == null || pageSize == 0 || pageSize > 100) ? 10 : pageSize;
             if (string.IsNullOrWhiteSpace(sorts)) sorts = "-submittedOn";
             PaginationRequest pagination = new PaginationRequest((int)page, (int)pageSize);
             AppListFilterBy filterBy = GetAppListFilterBy(filters, orgId);
             AppListSortBy sortBy = GetAppSortBy(sorts);
+            _logger.LogDebug($"filterBy ={filterBy}");
             return await _mediator.Send(
                 new ApplicationListQuery
                 {
