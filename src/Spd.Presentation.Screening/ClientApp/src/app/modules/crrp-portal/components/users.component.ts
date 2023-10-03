@@ -33,9 +33,9 @@ import { UserDialogData, UserEditModalComponent } from './user-edit-modal.compon
 					</h2>
 				</div>
 				<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-12 my-auto" *ngIf="showAddArea">
-					<ng-container *ngIf="isAllowedAddContact == true; else addNotAllowed">
-						<button mat-flat-button class="large w-100 mat-green-button mb-2" (click)="onAddUser()">Add User</button>
-					</ng-container>
+					<div class="text-end" *ngIf="isAllowedAddContact == true; else addNotAllowed">
+						<button mat-flat-button class="large w-auto mat-green-button mb-2" (click)="onAddUser()">Add User</button>
+					</div>
 					<ng-template #addNotAllowed>
 						<div class="alert alert-warning d-flex" role="alert">
 							<div>The maximum number of authorized users has been reached</div>

@@ -29,8 +29,10 @@ import { CrrpRoutes } from '../crrp-routing.module';
 				<div class="col-xl-9 col-lg-8 col-md-12 col-sm-12">
 					<h2 class="fw-normal">Organization Profile</h2>
 				</div>
-				<div class="col-xl-3 col-lg-4 col-md-12 col-sm-12" *ngIf="viewOnly && editable">
-					<button mat-flat-button color="primary" class="large mb-2" (click)="onEditView()">Edit Information</button>
+				<div class="col-xl-3 col-lg-4 col-md-12 col-sm-12 text-end" *ngIf="viewOnly && editable">
+					<button mat-flat-button color="primary" class="large w-auto mb-2" (click)="onEditView()">
+						Edit Information
+					</button>
 				</div>
 			</div>
 			<form [formGroup]="form" novalidate>
