@@ -185,6 +185,7 @@ namespace Spd.Manager.Cases.Application
                 }
             }
 
+            _logger.LogDebug($"filterBy={filterBy}");
             var response = await _applicationRepository.QueryAsync(
                 new ApplicationListQry
                 {
