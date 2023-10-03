@@ -7,6 +7,7 @@ using Spd.Resource.Applicants.Delegates;
 using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.Incident;
 using Spd.Resource.Applicants.PortalUser;
+using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.ManagerContract;
 using Spd.Utilities.Shared.ResourceContracts;
 
@@ -29,7 +30,8 @@ namespace Spd.Manager.Cases.Application
             CreateMap<ApplicationInviteResult, ApplicationInviteResponse>()
                .ForMember(d => d.Status, opt => opt.MapFrom(s => Enum.Parse<ApplicationInviteStatusCode>(s.Status.ToString())));
             CreateMap<ApplicationCreateRequest, SearchApplicationQry>();
-            CreateMap<ApplicationCreateRequest, ApplicationCreateCmd>();
+            CreateMap<ApplicationCreateRequest, ApplicationCreateCmd>()
+               .ForMember(d => d.ParentOrgId, opt => opt.MapFrom(s => GetParentOrgId(s.ServiceType)));
             CreateMap<ApplicantAppCreateRequest, ApplicationCreateCmd>()
                  .IncludeBase<ApplicationCreateRequest, ApplicationCreateCmd>()
                  .ForMember(d => d.AgreeToConsent, opt => opt.MapFrom(s => true));
@@ -111,6 +113,12 @@ namespace Spd.Manager.Cases.Application
             {
                 return null;
             }
+        }
+
+        private static Guid? GetParentOrgId(ServiceTypeCode serviceType)
+        {
+            if (serviceType == ServiceTypeCode.PSSO || serviceType == ServiceTypeCode.PSSO_VS) return SpdConstants.BC_GOV_ORG_ID;
+            return null;
         }
     }
 }

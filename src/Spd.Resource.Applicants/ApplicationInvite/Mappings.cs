@@ -31,6 +31,7 @@ namespace Spd.Resource.Applicants.ApplicationInvite
             .ForMember(d => d.OrgId, opt => opt.MapFrom(s => s._spd_organizationid_value))
             .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_portalinvitationid))
             .ForMember(d => d.ErrorMsg, opt => opt.MapFrom(s => s.spd_errormessage))
+            .ForMember(d => d.CreatedByUserId, opt => opt.MapFrom(s => s._spd_invitedby_value))
             .ForMember(d => d.Status, opt => opt.MapFrom(s => s.statuscode == null ? ApplicationInviteStatusEnum.Draft : Enum.Parse<ApplicationInviteStatusEnum>(((InvitationStatus)s.statuscode).ToString())))
             .ForMember(d => d.Viewed, opt => opt.MapFrom(s => s.spd_views != null && s.spd_views > 0));
 
