@@ -1,5 +1,6 @@
 using AutoMapper;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using Spd.Manager.Membership.OrgRegistration;
 using Spd.Resource.Applicants.PortalUser;
 using Spd.Resource.Organizations.Identity;
@@ -25,6 +26,7 @@ namespace Spd.Manager.Membership.UserProfile
         private readonly IPortalUserRepository _portalUserRepository;
         private readonly IBCeIDService _bceidService;
         private readonly IMapper _mapper;
+        private readonly ILogger<IUserProfileManager> _logger;
 
         public UserProfileManager(
             IOrgUserRepository orgUserRepository,
@@ -33,12 +35,14 @@ namespace Spd.Manager.Membership.UserProfile
             IOrgRegistrationRepository orgRegistrationRepository,
             IBCeIDService bceidService,
             IPortalUserRepository portalUserRepository,
-            IMapper mapper)
+            IMapper mapper,
+            ILogger<IUserProfileManager> logger)
         {
             _orgUserRepository = orgUserRepository;
             _idRepository = idRepository;
             _orgRepository = orgRepository;
             _mapper = mapper;
+            _logger = logger;
             _orgRegistrationRepository = orgRegistrationRepository;
             _bceidService = bceidService;
             _portalUserRepository = portalUserRepository;
@@ -125,10 +129,12 @@ namespace Spd.Manager.Membership.UserProfile
             //    RequesterAccountType = RequesterAccountTypeEnum.Internal,
             //    UserGuid = cmd.IdirUserIdentity.UserGuid
             //});
-
+            _logger.LogDebug($"userGuid = {cmd.IdirUserIdentity.UserGuid}");
             var existingIdentities = await _idRepository.Query(new IdentityQry(cmd.IdirUserIdentity.UserGuid, null, IdentityProviderTypeEnum.Idir), ct);
             var identity = existingIdentities.Items.FirstOrDefault();
             Guid? identityId = identity?.Id;
+            _logger.LogDebug($"identityId = {identityId}");
+
             bool isFirstTimeLogin = false;
             if (identity == null)
             {
@@ -142,6 +148,8 @@ namespace Spd.Manager.Membership.UserProfile
                 ct);
 
             var result = existingUser.Items.FirstOrDefault();
+            _logger.LogDebug($"userId = {result.Id}, username={result.LastName}, {result.FirstName}");
+
             if (result == null)
             {
                 CreatePortalUserCmd createUserCmd = new CreatePortalUserCmd()
