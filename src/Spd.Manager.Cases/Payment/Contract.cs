@@ -133,5 +133,8 @@ namespace Spd.Manager.Cases.Payment
     public record UpdateInvoicesFromCasCommand() : IRequest<UpdateInvoicesFromCasResponse>;
 
     public record UpdateInvoicesFromCasResponse(bool Success);
+
+    public record CreateOneInvoiceInCasCommand(Guid InvoiceId) : IRequest<CreateOneInvoiceInCasResponse>;
+    public record CreateOneInvoiceInCasResponse(bool Success);
     #endregion
 }
