@@ -118,8 +118,8 @@ $spd-theme: mat.define-light-theme((
 
 :root {
 	--color-white: #fff;
-  --color-primary-lightest: #f8f9fb;
-  --color-primary-lighter: #e5eaef;
+  --color-primary-lightest: #eff2f5; 
+  --color-primary-lighter: #d6ddec;
   --color-primary-light: #0f48ae;
   --color-sidebar: #385D8A;
   --color-primary: #003366; // BC Gov. Primary
@@ -153,7 +153,7 @@ $spd-theme: mat.define-light-theme((
 html, body { height: 100%; }
 body { 
   margin: 0; 
-  background-color: var(--color-primary-lighter);
+  background-color: var(--color-primary-lightest);
 }
 
 .step {

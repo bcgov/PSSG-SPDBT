@@ -3,26 +3,31 @@ import { Component } from '@angular/core';
 @Component({
 	selector: 'app-eligibility-problem',
 	template: `
-		<div class="step">
-			<app-step-title
-				title="Our program only handles criminal record checks for people who work with children or vulnerable adults"
-			></app-step-title>
-			<div class="row">
-				<div class="offset-md-3 col-md-6 col-sm-12">
-					<div style="text-align: center;">
-						<mat-icon class="eligibility-problem-icon">warning</mat-icon>
-					</div>
-					<div class="eligibility-problem">
-						Please make another selection, or refer to
-						<a href="https://www2.gov.bc.ca/gov/content/safety/crime-prevention/criminal-record-check" target="_blank">
-							our resources
-						</a>
-						on criminal record checks to find your local police detachment.
-						<mat-icon class="smaller-icon" matTooltip="To be determined">help_outline</mat-icon>
+		<section class="step-section p-4">
+			<div class="step">
+				<app-step-title
+					title="Our program only handles criminal record checks for people who work with children or vulnerable adults"
+				></app-step-title>
+				<div class="row">
+					<div class="offset-md-3 col-md-6 col-sm-12">
+						<div style="text-align: center;">
+							<mat-icon class="eligibility-problem-icon">warning</mat-icon>
+						</div>
+						<div class="eligibility-problem">
+							Please make another selection, or refer to
+							<a
+								href="https://www2.gov.bc.ca/gov/content/safety/crime-prevention/criminal-record-check"
+								target="_blank"
+							>
+								our resources
+							</a>
+							on criminal record checks to find your local police detachment.
+							<mat-icon class="smaller-icon" matTooltip="To be determined">help_outline</mat-icon>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+		</section>
 	`,
 	styles: [
 		`

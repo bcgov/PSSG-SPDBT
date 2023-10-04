@@ -50,13 +50,11 @@ import {
 			</div>
 		</div>
 
-		<mat-divider></mat-divider>
+		<mat-divider class="mat-divider-main my-2"></mat-divider>
 
 		<p class="warning-text fw-semibold my-2">
 			This page cannot be used as substitute for a clearance letter from the Criminal Records Review Program.
 		</p>
-
-		<mat-divider class="mb-2 mb-lg-4"></mat-divider>
 
 		<ng-container *ngIf="application">
 			<div class="row">

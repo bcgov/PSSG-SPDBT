@@ -9,94 +9,96 @@ export class VulnerableSectorQuestionModel {
 @Component({
 	selector: 'app-vulnerable-sector-question',
 	template: `
-		<div class="step">
-			<app-step-title
-				title="Tell us a bit more about your employees"
-				subtitle="To “Works With” means to have direct or unsupervised access to children and/or vulnerable adults."
-			></app-step-title>
-			<div class="step-container row">
-				<div class="col-md-3 col-sm-6 mb-3">
-					<div
-						class="step-container__box"
-						(click)="onDataChange(employeeInteractionTypeCodes.Children)"
-						[ngClass]="{ 'active-selection-whole': employeeInteractionFlag == employeeInteractionTypeCodes.Children }"
-					>
-						<ng-container *ngIf="displayHelp1; else noHelp1">
-							<div class="step-container__box__info">
-								<mat-icon class="larger-icon" (click)="onViewHelp1($event)">close</mat-icon>
-							</div>
-							<div class="px-2 pb-3">
-								<div class="step-container__box__help-title mb-2">What does child mean?</div>
-								<p>A child is a person who is under the age of 19.</p>
-							</div>
-						</ng-container>
-						<ng-template #noHelp1>
-							<div class="step-container__box__info">
-								<mat-icon class="larger-icon" (click)="onViewHelp1($event)">help_outline</mat-icon>
-							</div>
-							<div class="px-2 pb-3">
-								<div class="icon-container d-none d-md-block"><mat-icon>family_restroom</mat-icon></div>
-								My employees work with <strong>children</strong>
-							</div>
-						</ng-template>
+		<section class="step-section p-4">
+			<div class="step">
+				<app-step-title
+					title="Tell us a bit more about your employees"
+					subtitle="To “Works With” means to have direct or unsupervised access to children and/or vulnerable adults."
+				></app-step-title>
+				<div class="step-container row">
+					<div class="col-md-3 col-sm-6 mb-3">
+						<div
+							class="step-container__box"
+							(click)="onDataChange(employeeInteractionTypeCodes.Children)"
+							[ngClass]="{ 'active-selection-whole': employeeInteractionFlag == employeeInteractionTypeCodes.Children }"
+						>
+							<ng-container *ngIf="displayHelp1; else noHelp1">
+								<div class="step-container__box__info">
+									<mat-icon class="larger-icon" (click)="onViewHelp1($event)">close</mat-icon>
+								</div>
+								<div class="px-2 pb-3">
+									<div class="step-container__box__help-title mb-2">What does child mean?</div>
+									<p>A child is a person who is under the age of 19.</p>
+								</div>
+							</ng-container>
+							<ng-template #noHelp1>
+								<div class="step-container__box__info">
+									<mat-icon class="larger-icon" (click)="onViewHelp1($event)">help_outline</mat-icon>
+								</div>
+								<div class="px-2 pb-3">
+									<div class="icon-container d-none d-md-block"><mat-icon>family_restroom</mat-icon></div>
+									My employees work with <strong>children</strong>
+								</div>
+							</ng-template>
+						</div>
+					</div>
+					<div class="col-md-3 col-sm-6 mb-3">
+						<div
+							class="step-container__box"
+							(click)="onDataChange(employeeInteractionTypeCodes.Adults)"
+							[ngClass]="{ 'active-selection-whole': employeeInteractionFlag == employeeInteractionTypeCodes.Adults }"
+						>
+							<ng-container *ngIf="displayHelp2; else noHelp2">
+								<div class="step-container__box__info">
+									<mat-icon class="larger-icon" (click)="onViewHelp2($event)">close</mat-icon>
+								</div>
+								<div class="px-2 pb-3">
+									<div class="step-container__box__help-title mb-2">What does vulnerable adult mean?</div>
+									<p>A vulnerable adult is a person 19 and over who receives healthcare services that are not acute.</p>
+									<p>Acute means short-term treatment for a severe injury or illness.</p>
+								</div>
+							</ng-container>
+							<ng-template #noHelp2>
+								<div class="step-container__box__info">
+									<mat-icon class="larger-icon" (click)="onViewHelp2($event)">help_outline</mat-icon>
+								</div>
+								<div class="px-2 pb-3">
+									<div class="icon-container d-none d-md-block"><mat-icon>elderly</mat-icon></div>
+									My employees work with <strong>vulnerable adults</strong>
+								</div>
+							</ng-template>
+						</div>
+					</div>
+					<div class="col-md-3 col-sm-6 mb-3">
+						<div
+							class="step-container__box px-2 pb-3"
+							style="padding-top: 32px;"
+							(click)="onDataChange(employeeInteractionTypeCodes.ChildrenAndAdults)"
+							[ngClass]="{
+								'active-selection-whole': employeeInteractionFlag == employeeInteractionTypeCodes.ChildrenAndAdults
+							}"
+						>
+							<div class="icon-container d-none d-md-block"><mat-icon>diversity_3</mat-icon></div>
+							My employees work with <strong>children and vulnerable adults</strong>
+						</div>
+					</div>
+					<div class="col-md-3 col-sm-6 mb-3">
+						<div
+							class="step-container__box px-2 pb-3"
+							style="padding-top: 32px;"
+							(click)="onDataChange(employeeInteractionTypeCodes.Neither)"
+							[ngClass]="{ 'active-selection-whole': employeeInteractionFlag == employeeInteractionTypeCodes.Neither }"
+						>
+							<div class="icon-container d-none d-md-block"><mat-icon>person_off</mat-icon></div>
+							My employee <strong>do not work</strong> with children or vulnerable adults
+						</div>
 					</div>
 				</div>
-				<div class="col-md-3 col-sm-6 mb-3">
-					<div
-						class="step-container__box"
-						(click)="onDataChange(employeeInteractionTypeCodes.Adults)"
-						[ngClass]="{ 'active-selection-whole': employeeInteractionFlag == employeeInteractionTypeCodes.Adults }"
-					>
-						<ng-container *ngIf="displayHelp2; else noHelp2">
-							<div class="step-container__box__info">
-								<mat-icon class="larger-icon" (click)="onViewHelp2($event)">close</mat-icon>
-							</div>
-							<div class="px-2 pb-3">
-								<div class="step-container__box__help-title mb-2">What does vulnerable adult mean?</div>
-								<p>A vulnerable adult is a person 19 and over who receives healthcare services that are not acute.</p>
-								<p>Acute means short-term treatment for a severe injury or illness.</p>
-							</div>
-						</ng-container>
-						<ng-template #noHelp2>
-							<div class="step-container__box__info">
-								<mat-icon class="larger-icon" (click)="onViewHelp2($event)">help_outline</mat-icon>
-							</div>
-							<div class="px-2 pb-3">
-								<div class="icon-container d-none d-md-block"><mat-icon>elderly</mat-icon></div>
-								My employees work with <strong>vulnerable adults</strong>
-							</div>
-						</ng-template>
-					</div>
-				</div>
-				<div class="col-md-3 col-sm-6 mb-3">
-					<div
-						class="step-container__box px-2 pb-3"
-						style="padding-top: 32px;"
-						(click)="onDataChange(employeeInteractionTypeCodes.ChildrenAndAdults)"
-						[ngClass]="{
-							'active-selection-whole': employeeInteractionFlag == employeeInteractionTypeCodes.ChildrenAndAdults
-						}"
-					>
-						<div class="icon-container d-none d-md-block"><mat-icon>diversity_3</mat-icon></div>
-						My employees work with <strong>children and vulnerable adults</strong>
-					</div>
-				</div>
-				<div class="col-md-3 col-sm-6 mb-3">
-					<div
-						class="step-container__box px-2 pb-3"
-						style="padding-top: 32px;"
-						(click)="onDataChange(employeeInteractionTypeCodes.Neither)"
-						[ngClass]="{ 'active-selection-whole': employeeInteractionFlag == employeeInteractionTypeCodes.Neither }"
-					>
-						<div class="icon-container d-none d-md-block"><mat-icon>person_off</mat-icon></div>
-						My employee <strong>do not work</strong> with children or vulnerable adults
-					</div>
-				</div>
+				<mat-error class="mat-option-error" style="text-align: center;" *ngIf="isDirtyAndInvalid"
+					>An option must be selected</mat-error
+				>
 			</div>
-			<mat-error class="mat-option-error" style="text-align: center;" *ngIf="isDirtyAndInvalid"
-				>An option must be selected</mat-error
-			>
-		</div>
+		</section>
 	`,
 	styles: [
 		`

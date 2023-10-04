@@ -10,10 +10,13 @@ import { CrrpRoutes } from '../crrp-routing.module';
 @Component({
 	selector: 'app-crrp-payment-manual',
 	template: `
-		<app-payment-manual
-			(backRoute)="onBackRoute()"
-			(downloadManualPaymentForm)="onDownloadManualPaymentForm()"
-		></app-payment-manual>
+		<app-crrp-header></app-crrp-header>
+		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
+			<app-payment-manual
+				(backRoute)="onBackRoute()"
+				(downloadManualPaymentForm)="onDownloadManualPaymentForm()"
+			></app-payment-manual>
+		</section>
 	`,
 	styles: [],
 })
