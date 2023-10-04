@@ -30,6 +30,7 @@ namespace Spd.Manager.Cases.Payment
         IRequestHandler<ManualPaymentFormQuery, FileResponse>,
         IRequestHandler<PaymentRefundCommand, PaymentRefundResponse>,
         IRequestHandler<CreateInvoicesInCasCommand, CreateInvoicesInCasResponse>,
+        IRequestHandler<CreateOneInvoiceInCasCommand, CreateOneInvoiceInCasResponse>,
         IRequestHandler<UpdateInvoicesFromCasCommand, UpdateInvoicesFromCasResponse>,
         IPaymentManager
     {
@@ -277,6 +278,38 @@ namespace Spd.Manager.Cases.Payment
             return new CreateInvoicesInCasResponse(true);
         }
 
+        public async Task<CreateOneInvoiceInCasResponse> Handle(CreateOneInvoiceInCasCommand command, CancellationToken ct)
+        {
+            _logger.LogInformation("PaymentManager get CreateOneInvoiceInCasCommand");
+            var invoiceList = await _invoiceRepository.QueryAsync(new InvoiceQry() { InvoiceId = command.InvoiceId, InvoiceStatus = InvoiceStatusEnum.Pending }, ct);
+            var invoice = invoiceList.Items.FirstOrDefault();
+            if (invoice == null)
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "invoice is not found or not in pending state.");
+            }
+
+            var createInvoice = _mapper.Map<CreateInvoiceCmd>(invoice);
+            var result = (InvoiceResult)await _paymentService.HandleCommand(createInvoice);
+            UpdateInvoiceCmd update = new UpdateInvoiceCmd()
+            {
+                InvoiceId = invoice.Id,
+                CasResponse = result.Message
+            };
+            if (result.IsSuccess)
+            {
+                update.InvoiceNumber = result.InvoiceNumber;
+                update.InvoiceStatus = InvoiceStatusEnum.Sent;
+                update.CasResponse = CutOffResponse(update.CasResponse); // dynamics team do not want full json, as it is too big and no use.
+                await _invoiceRepository.ManageAsync(update, ct);
+            }
+            else
+            {
+                update.InvoiceStatus = InvoiceStatusEnum.Failed;
+                await _invoiceRepository.ManageAsync(update, ct);
+            }
+            return new CreateOneInvoiceInCasResponse(true);
+        }
+
         public async Task<UpdateInvoicesFromCasResponse> Handle(UpdateInvoicesFromCasCommand command, CancellationToken ct)
         {
             _logger.LogInformation("PaymentManager get UpdateInvoicesFromCasCommand");
@@ -354,6 +387,8 @@ namespace Spd.Manager.Cases.Payment
                 return response;
             }
         }
+
+
     }
 
     internal class CasInvoiceCreateRespCompact
