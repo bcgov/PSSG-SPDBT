@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/api/models';
+import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { GenderTypes } from 'src/app/core/code-types/model-desc.models';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 
@@ -22,9 +23,9 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 							</div>
 						</div>
 
-						<div class="row mt-4" *ngIf="isBornInCanada.value">
+						<div class="row mt-4" *ngIf="isBornInCanada.value" @showHideTriggerSlideAnimation>
 							<div class="offset-md-2 col-md-8 col-sm-12">
-								<mat-divider class="mb-3" style="border-top-color: var(--color-primary-light);"></mat-divider>
+								<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 
 								<ng-container *ngIf="isBornInCanada.value == booleanTypeCodes.Yes; else notBornInCanadaHeading">
 									<div class="text-minor-heading mb-2">Born in Canada</div>
@@ -110,6 +111,7 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 		</section>
 	`,
 	styles: [],
+	animations: [showHideTriggerSlideAnimation],
 })
 export class CitizenshipComponent {
 	maxDate = new Date();
