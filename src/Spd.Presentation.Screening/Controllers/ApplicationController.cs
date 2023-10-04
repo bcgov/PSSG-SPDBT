@@ -10,6 +10,7 @@ using Spd.Utilities.Shared.ManagerContract;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 using System.Globalization;
+using System.Linq;
 using System.Security.Principal;
 using System.Text;
 using System.Text.Json;
@@ -351,6 +352,9 @@ namespace Spd.Presentation.Screening.Controllers
         [HttpPost]
         public async Task<ApplicationCreateResponse> AddApplication([FromForm][Required] CreateApplication createApplication, [FromRoute] Guid orgId)
         {
+            var token = Request.Headers["Authorization"];
+            _logger.LogDebug($"AddApplication token={token}");
+
             bool isPSSO = false;
 
             string? identityProvider = _currentUser.GetIdentityProvider();
@@ -358,7 +362,7 @@ namespace Spd.Presentation.Screening.Controllers
             {
                 isPSSO = true;
             }
-            _logger.LogDebug($"isPsso={isPSSO}");
+            _logger.LogDebug($"AddApplication isPsso={isPSSO}");
             if (isPSSO)
             {
                 //PSSO
@@ -384,7 +388,7 @@ namespace Spd.Presentation.Screening.Controllers
             if (!result.IsValid)
                 throw new ApiException(System.Net.HttpStatusCode.BadRequest, JsonSerializer.Serialize(result.Errors));
 
-            _logger.LogDebug($"userId={userId}");
+            _logger.LogDebug($"AddApplication userId={userId}");
             if (isPSSO)
             {
                 return await _mediator.Send(new ApplicationCreateCommand(appCreateRequest, SpdConstants.BC_GOV_ORG_ID, Guid.Parse(userId), null));
@@ -412,6 +416,9 @@ namespace Spd.Presentation.Screening.Controllers
         [HttpGet]
         public async Task<ApplicationListResponse> GetList([FromRoute] Guid orgId, [FromQuery] string? filters, [FromQuery] string? sorts, [FromQuery] int? page, [FromQuery] int? pageSize, bool showAllPSSOApps = false)
         {
+            var token = Request.Headers["Authorization"];
+            _logger.LogDebug($"GetList token={token}");
+
             bool isPSSO = false;
             bool showAll = false;
             Guid? idirUserId = null;
@@ -423,14 +430,14 @@ namespace Spd.Presentation.Screening.Controllers
                 idirUserId = showAll ? null : Guid.Parse(_currentUser.GetUserId());
                 isPSSO = true;
             }
-            _logger.LogDebug($"idirUserId ={idirUserId}");
+            _logger.LogDebug($"GetList idirUserId ={idirUserId}");
             page = (page == null || page < 0) ? 0 : page;
             pageSize = (pageSize == null || pageSize == 0 || pageSize > 100) ? 10 : pageSize;
             if (string.IsNullOrWhiteSpace(sorts)) sorts = "-submittedOn";
             PaginationRequest pagination = new PaginationRequest((int)page, (int)pageSize);
             AppListFilterBy filterBy = GetAppListFilterBy(filters, orgId);
             AppListSortBy sortBy = GetAppSortBy(sorts);
-            _logger.LogDebug($"filterBy ={filterBy}");
+            _logger.LogDebug($"GetList filterBy ={filterBy}");
             return await _mediator.Send(
                 new ApplicationListQuery
                 {

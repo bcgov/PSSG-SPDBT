@@ -29,6 +29,7 @@ namespace Spd.Resource.Applicants.Invoice
 
     public record InvoiceQry
     {
+        public Guid? InvoiceId { get; set; }
         public Guid? OrganizationId { get; set; }
         public InvoiceStatusEnum? InvoiceStatus { get; set; }
         public bool IncludeInactive { get; set; } = false;
