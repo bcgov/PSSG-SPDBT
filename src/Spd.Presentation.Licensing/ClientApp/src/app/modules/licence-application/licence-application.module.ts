@@ -1,9 +1,14 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { ApplicationsInProgressComponent } from './components/applications-in-progress.component';
 import { LicencePaymentErrorComponent } from './components/licence-payment-error.component';
 import { LicencePaymentFailComponent } from './components/licence-payment-fail.component';
 import { LicencePaymentManualComponent } from './components/licence-payment-manual.component';
 import { LicencePaymentSuccessComponent } from './components/licence-payment-success.component';
+import { LicenceSelectionComponent } from './components/licence-selection.component';
+import { LicenceTypeComponent } from './components/licence-type.component';
+import { LicenceWizardComponent } from './components/licence-wizard.component';
+import { LoginSelectionComponent } from './components/login-selection.component';
 import { LicenceApplicationRoutingModule } from './licence-application-routing.module';
 import { LicenceApplicationComponent } from './licence-application.component';
 import { AdditionalGovIdComponent } from './step-components/additional-gov-id.component';
@@ -38,12 +43,10 @@ import { LicenceCategorySecurityGuardSupComponent } from './step-components/lice
 import { LicenceCategorySecurityGuardComponent } from './step-components/licence-category-security-guard.component';
 import { LicenceCategoryComponent } from './step-components/licence-category.component';
 import { LicenceExpiredComponent } from './step-components/licence-expired.component';
-import { LicenceSelectionComponent } from './step-components/licence-selection.component';
 import { LicenceTermComponent } from './step-components/licence-term.component';
-import { LicenceTypeComponent } from './step-components/licence-type.component';
 import { StepBackgroundComponent } from './step-components/main-steps/step-background.component';
 import { StepIdentificationComponent } from './step-components/main-steps/step-identification.component';
-import { StepLicenseSelectionComponent } from './step-components/main-steps/step-license-selection.component';
+import { StepLicenceSelectionComponent } from './step-components/main-steps/step-licence-selection.component';
 import { StepReviewComponent } from './step-components/main-steps/step-review.component';
 import { MentalHealthConditionsComponent } from './step-components/mental-health-conditions.component';
 import { PersonalInformationComponent } from './step-components/personal-information.component';
@@ -80,7 +83,7 @@ import { SummaryReviewComponent } from './step-components/summary-review.compone
 		LicencePaymentManualComponent,
 		LicencePaymentErrorComponent,
 		AddressComponent,
-		StepLicenseSelectionComponent,
+		StepLicenceSelectionComponent,
 		StepBackgroundComponent,
 		StepIdentificationComponent,
 		StepReviewComponent,
@@ -104,6 +107,9 @@ import { SummaryReviewComponent } from './step-components/summary-review.compone
 		LicenceCategorySecurityAlarmResponseComponent,
 		LicenceCategorySecurityAlarmSalesComponent,
 		LicenceCategorySecurityConsultantComponent,
+		ApplicationsInProgressComponent,
+		LoginSelectionComponent,
+		LicenceWizardComponent,
 	],
 	imports: [SharedModule, LicenceApplicationRoutingModule],
 })

@@ -9,16 +9,17 @@ import { CountryTypeCode } from './country-type.model';
 export interface SelectOptions<k = string> {
 	code: k;
 	desc: string;
+	selected?: boolean;
 }
 
 export enum SwlTypeCode {
-	SecurityBusinessLicense = 'SecurityBusinessLicense',
-	SecurityWorkerLicense = 'SecurityWorkerLicense',
-	ArmouredVehicleLicense = 'ArmouredVehicleLicense',
-	BodyArmourLicense = 'BodyArmourLicense',
+	SecurityBusinessLicence = 'SecurityBusinessLicence',
+	SecurityWorkerLicence = 'SecurityWorkerLicence',
+	ArmouredVehicleLicence = 'ArmouredVehicleLicence',
+	BodyArmourLicence = 'BodyArmourLicence',
 }
 
-export enum SwlStatusTypeCode {
+export enum SwlApplicationTypeCode {
 	NewOrExpired = 'NewOrExpired',
 	Renewal = 'Renewal',
 	Replacement = 'Replacement',
@@ -51,6 +52,20 @@ export enum SwlCategoryTypeCode {
 	SecurityAlarmSales = 'SA_SALES',
 	SecurityConsultant = 'SECURITY_CONSULTANT',
 }
+
+export const SwlTypeCodes: SelectOptions[] = [
+	{ desc: 'Security Business Licence', code: SwlTypeCode.SecurityBusinessLicence },
+	{ desc: 'Security Worker Licence', code: SwlTypeCode.SecurityWorkerLicence },
+	{ desc: 'Armoured Vehicle Licence', code: SwlTypeCode.ArmouredVehicleLicence },
+	{ desc: 'Body Armour Licence', code: SwlTypeCode.BodyArmourLicence },
+];
+
+export const SwlApplicationTypeCodes: SelectOptions[] = [
+	{ desc: 'New Or Expired', code: SwlApplicationTypeCode.NewOrExpired },
+	{ desc: 'Renewal', code: SwlApplicationTypeCode.Renewal },
+	{ desc: 'Replacement', code: SwlApplicationTypeCode.Replacement },
+	{ desc: 'Update', code: SwlApplicationTypeCode.Update },
+];
 
 export const GenderTypes: SelectOptions[] = [
 	{ desc: 'M', code: GenderCode.M },

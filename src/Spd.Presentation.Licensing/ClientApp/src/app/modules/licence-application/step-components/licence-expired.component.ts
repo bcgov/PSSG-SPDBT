@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { BooleanTypeCode } from 'src/app/api/models';
+import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
@@ -36,16 +38,25 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 							</div>
 						</div>
 
-						<div class="row mt-4" *ngIf="hasExpiredLicence.value == booleanTypeCodes.Yes">
+						<div
+							class="row mt-4"
+							*ngIf="hasExpiredLicence.value == booleanTypeCodes.Yes"
+							@showHideTriggerSlideAnimation
+						>
 							<div class="offset-md-2 col-md-8 col-sm-12">
-								<mat-divider class="mb-3" style="border-top-color: var(--color-primary-light);"></mat-divider>
+								<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 								<div class="text-minor-heading mb-2">Expired Licence Information</div>
 								<ng-container>
 									<div class="row mt-2">
 										<div class="col-lg-6 col-md-12 col-sm-12">
 											<mat-form-field>
 												<mat-label>Expired Licence Number</mat-label>
-												<input matInput formControlName="expiredLicenceNumber" [errorStateMatcher]="matcher" />
+												<input
+													matInput
+													formControlName="expiredLicenceNumber"
+													maxlength="20"
+													[errorStateMatcher]="matcher"
+												/>
 												<mat-error *ngIf="form.get('expiredLicenceNumber')?.hasError('required')"
 													>This is required</mat-error
 												>
@@ -76,8 +87,11 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 		</section>
 	`,
 	styles: [],
+	animations: [showHideTriggerSlideAnimation],
 })
-export class LicenceExpiredComponent implements OnInit, LicenceFormStepComponent {
+export class LicenceExpiredComponent implements OnInit, OnDestroy, LicenceFormStepComponent {
+	private licenceModelLoadedSubscription!: Subscription;
+
 	booleanTypeCodes = BooleanTypeCode;
 
 	maxDate = new Date();
@@ -106,7 +120,7 @@ export class LicenceExpiredComponent implements OnInit, LicenceFormStepComponent
 	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.licenceApplicationService.licenceModelLoaded$.subscribe({
+		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: boolean) => {
 				if (loaded) {
 					this.form.patchValue({
@@ -119,12 +133,23 @@ export class LicenceExpiredComponent implements OnInit, LicenceFormStepComponent
 		});
 	}
 
+	ngOnDestroy() {
+		this.licenceModelLoadedSubscription.unsubscribe();
+	}
+
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
 	}
 
 	getDataToSave(): any {
+		// remove any invalid data
+		if (this.hasExpiredLicence.value == this.booleanTypeCodes.No) {
+			this.form.patchValue({
+				expiredLicenceNumber: null,
+				expiryDate: null,
+			});
+		}
 		return this.form.value;
 	}
 

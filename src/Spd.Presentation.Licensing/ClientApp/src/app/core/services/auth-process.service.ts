@@ -104,7 +104,7 @@ export class AuthProcessService {
 
 		this.identityProvider = null;
 		this.oauthService.logOut();
-		this.utilService.clearAllSessionData();
+		// this.utilService.clearAllSessionData();
 
 		this.authUserBcscService.clearUserData();
 
