@@ -1,5 +1,5 @@
 ﻿namespace Spd.Utilities.LogonUser;
-public class ApplicantIdentityInfo
+public class BcscIdentityInfo
 {
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
@@ -15,7 +15,7 @@ public class ApplicantIdentityInfo
     public string? MiddleName2 { get; set; }
 }
 
-public class PortalUserIdentityInfo
+public class BceidIdentityInfo
 {
     public string? BCeIDUserName { get; set; }
     public string? DisplayName { get; set; }

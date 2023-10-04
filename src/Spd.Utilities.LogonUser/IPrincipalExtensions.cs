@@ -55,22 +55,9 @@ namespace Spd.Utilities.LogonUser
 
         public static string? GetUserId(this IPrincipal principal) => ValidatePrincipal(principal).GetClaimValue(SPD_USERID);
         public static bool IsPSA(this IPrincipal principal) => false;
-
-        public static string? GetOrgId(this IPrincipal principal) => ValidatePrincipal(principal).GetClaimValue(SPD_ORGID);
-
         public static string? GetUserRole(this IPrincipal principal) => ValidatePrincipal(principal).GetClaimValue(ClaimTypes.Role);
 
-        public static string? GetBizName(this IPrincipal principal)
-        {
-            if (BCeID_IDENTITY_PROVIDERS.Contains(principal.GetIdentityProvider()))
-            {
-                var claim = ValidatePrincipal(principal).GetClaimValue(BCeID_BUSINESS_NAME);
-                return claim;
-            }
-            return null;
-        }
-
-        public static ApplicantIdentityInfo GetApplicantIdentityInfo(this IPrincipal principal)
+        public static BcscIdentityInfo GetBcscUserIdentityInfo(this IPrincipal principal)
         {
             var claim = ValidatePrincipal(principal);
             var middleName = GetMiddleNames(claim.GetClaimValue("given_names"), claim.GetClaimValue("given_name"));
@@ -82,7 +69,7 @@ namespace Spd.Utilities.LogonUser
             if (sub == null)
                 throw new ArgumentNullException("principal.sub");
 
-            return new ApplicantIdentityInfo()
+            return new BcscIdentityInfo()
             {
                 Issuer = claim.GetClaimValue("iss"),
                 BirthDate = birthDate,
@@ -99,10 +86,10 @@ namespace Spd.Utilities.LogonUser
             };
         }
 
-        public static PortalUserIdentityInfo GetPortalUserIdentityInfo(this IPrincipal principal)
+        public static BceidIdentityInfo GetBceidUserIdentityInfo(this IPrincipal principal)
         {
             var claim = ValidatePrincipal(principal);
-            return new PortalUserIdentityInfo()
+            return new BceidIdentityInfo()
             {
                 DisplayName = claim.GetClaimValue("display_name"),
                 Email = claim.GetClaimValue("email"),
