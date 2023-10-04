@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { SwlTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
 import { LicenceApplicationService } from '../licence-application.service';
@@ -106,7 +107,9 @@ import { LicenceApplicationService } from '../licence-application.service';
 		`,
 	],
 })
-export class LicenceSelectionComponent implements OnInit {
+export class LicenceSelectionComponent implements OnInit, OnDestroy {
+	private licenceModelLoadedSubscription!: Subscription;
+
 	readonly image1 = '/assets/security-business-licence.png';
 	readonly image2 = '/assets/security-worker-licence.png';
 	readonly image3 = '/assets/armoured-vehicle.png';
@@ -124,7 +127,12 @@ export class LicenceSelectionComponent implements OnInit {
 	constructor(private router: Router, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.licenceApplicationService.licenceModelLoaded$.subscribe({
+		console.log('initialized', this.licenceApplicationService.initialized);
+		if (!this.licenceApplicationService.initialized) {
+			this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATIONS_IN_PROGRESS));
+		}
+
+		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: boolean) => {
 				console.log('loaded', loaded);
 				if (loaded) {
@@ -141,6 +149,10 @@ export class LicenceSelectionComponent implements OnInit {
 			};
 			tmp.src = path;
 		});
+	}
+
+	ngOnDestroy() {
+		this.licenceModelLoadedSubscription.unsubscribe();
 	}
 
 	onStepNext(): void {

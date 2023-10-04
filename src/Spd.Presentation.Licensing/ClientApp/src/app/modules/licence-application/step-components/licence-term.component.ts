@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { SwlTermCode } from 'src/app/core/code-types/model-desc.models';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
@@ -39,7 +40,9 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 	`,
 	styles: [],
 })
-export class LicenceTermComponent implements OnInit, LicenceFormStepComponent {
+export class LicenceTermComponent implements OnInit, OnDestroy, LicenceFormStepComponent {
+	private licenceModelLoadedSubscription!: Subscription;
+
 	termCodes = SwlTermCode;
 
 	form: FormGroup = this.formBuilder.group({
@@ -49,7 +52,7 @@ export class LicenceTermComponent implements OnInit, LicenceFormStepComponent {
 	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.licenceApplicationService.licenceModelLoaded$.subscribe({
+		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: boolean) => {
 				if (loaded) {
 					this.form.patchValue({
@@ -58,6 +61,10 @@ export class LicenceTermComponent implements OnInit, LicenceFormStepComponent {
 				}
 			},
 		});
+	}
+
+	ngOnDestroy() {
+		this.licenceModelLoadedSubscription.unsubscribe();
 	}
 
 	isFormValid(): boolean {

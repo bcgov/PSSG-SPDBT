@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { BooleanTypeCode } from 'src/app/api/models';
 import { SwlApplicationTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
@@ -39,7 +40,9 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 	`,
 	styles: [],
 })
-export class SoleProprietorComponent implements OnInit, LicenceFormStepComponent {
+export class SoleProprietorComponent implements OnInit, OnDestroy, LicenceFormStepComponent {
+	private licenceModelLoadedSubscription!: Subscription;
+
 	booleanTypeCodes = BooleanTypeCode;
 	title = '';
 	infoTitle = '';
@@ -58,9 +61,12 @@ export class SoleProprietorComponent implements OnInit, LicenceFormStepComponent
 	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.licenceApplicationService.licenceModelLoaded$.subscribe({
+		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: boolean) => {
 				if (loaded) {
+					// TODO Review question would only apply to those who have a SWL w/ Sole Prop already,
+					// otherwise they would see the same question shown to New applicants
+
 					const isNewOrExpired =
 						this.licenceApplicationService.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired;
 					this.title = isNewOrExpired ? this.title_apply : this.title_renew;
@@ -72,6 +78,10 @@ export class SoleProprietorComponent implements OnInit, LicenceFormStepComponent
 				}
 			},
 		});
+	}
+
+	ngOnDestroy() {
+		this.licenceModelLoadedSubscription.unsubscribe();
 	}
 
 	isFormValid(): boolean {

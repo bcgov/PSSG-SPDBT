@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HotToastService } from '@ngneat/hot-toast';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { BehaviorSubject } from 'rxjs';
 import { BooleanTypeCode, GenderCode } from 'src/app/api/models';
 import {
@@ -17,6 +18,12 @@ export interface LicenceFormStepComponent {
 }
 
 export class LicenceModel {
+	isReplacement?: boolean = false;
+	isNotReplacement?: boolean = false;
+	showStepAccessCode?: boolean = false;
+	showStepSoleProprietor?: boolean = false;
+	showStepLicenceExpired?: boolean = false;
+
 	licenceTypeCode: SwlTypeCode | null = null;
 	applicationTypeCode: SwlApplicationTypeCode | null = null;
 	isSoleProprietor: BooleanTypeCode | null = null;
@@ -66,21 +73,29 @@ export class LicenceModel {
 	providedIn: 'root',
 })
 export class LicenceApplicationService {
+	initialized = false;
 	licenceModelLoaded$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
 	licenceModel: LicenceModel = new LicenceModel();
 
-	constructor(private hotToastService: HotToastService) {
+	constructor(private hotToastService: HotToastService, private spinnerService: NgxSpinnerService) {
 		// this.loadNewLicence();
 	}
 
 	loadNewLicence(): void {
+		this.spinnerService.show('loaderSpinner');
 		console.log('loadNewLicence ');
+		this.initialized = true;
 		this.licenceModel = new LicenceModel();
+		this.setFlags();
 		this.licenceModelLoaded$.next(true);
+		this.spinnerService.hide('loaderSpinner');
 	}
 
 	loadLicenceNew(): void {
+		console.log('loadLicenceNew ');
+		this.spinnerService.show('loaderSpinner');
+		this.initialized = true;
 		setTimeout(() => {
 			const defaults: LicenceModel = {
 				licenceTypeCode: SwlTypeCode.ArmouredVehicleLicence,
@@ -136,11 +151,16 @@ export class LicenceApplicationService {
 			};
 			console.log('loadLicenceNew defaults', defaults);
 			this.licenceModel = { ...defaults };
+			this.setFlags();
 			this.licenceModelLoaded$.next(true);
-		}, 300);
+			this.spinnerService.hide('loaderSpinner');
+		}, 1000);
 	}
 
 	loadLicenceRenewal(): void {
+		console.log('loadLicenceRenewal ');
+		this.spinnerService.show('loaderSpinner');
+		this.initialized = true;
 		setTimeout(() => {
 			const defaults: LicenceModel = {
 				licenceTypeCode: SwlTypeCode.SecurityBusinessLicence,
@@ -168,11 +188,16 @@ export class LicenceApplicationService {
 			};
 			console.log('loadLicenceRenewal defaults', defaults);
 			this.licenceModel = { ...defaults };
+			this.setFlags();
 			this.licenceModelLoaded$.next(true);
-		}, 300);
+			this.spinnerService.hide('loaderSpinner');
+		}, 1000);
 	}
 
 	loadLicenceReplacement(): void {
+		console.log('loadLicenceReplacement ');
+		this.spinnerService.show('loaderSpinner');
+		this.initialized = true;
 		setTimeout(() => {
 			const defaults: LicenceModel = {
 				licenceTypeCode: SwlTypeCode.ArmouredVehicleLicence,
@@ -202,7 +227,7 @@ export class LicenceApplicationService {
 				swlCategoryList: [
 					// { desc: 'Armoured Car Guard', code: SwlCategoryTypeCode.ArmouredCarGuard },
 					// { desc: 'Body Armour Sales', code: SwlCategoryTypeCode.BodyArmourSales },
-					{ desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
+					// { desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
 					{ desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
 					// { desc: 'Fire Investigator', code: SwlCategoryTypeCode.FireInvestigator },
 					// { desc: 'Locksmith', code: SwlCategoryTypeCode.Locksmith },
@@ -227,11 +252,16 @@ export class LicenceApplicationService {
 			};
 			console.log('loadLicenceReplacement defaults', defaults);
 			this.licenceModel = { ...defaults };
+			this.setFlags();
 			this.licenceModelLoaded$.next(true);
-		}, 300);
+			this.spinnerService.hide('loaderSpinner');
+		}, 1000);
 	}
 
 	loadLicenceUpdate(): void {
+		console.log('loadLicenceUpdate ');
+		this.spinnerService.show('loaderSpinner');
+		this.initialized = true;
 		setTimeout(() => {
 			const defaults: LicenceModel = {
 				licenceTypeCode: SwlTypeCode.ArmouredVehicleLicence,
@@ -262,7 +292,7 @@ export class LicenceApplicationService {
 					// { desc: 'Armoured Car Guard', code: SwlCategoryTypeCode.ArmouredCarGuard },
 					// { desc: 'Body Armour Sales', code: SwlCategoryTypeCode.BodyArmourSales },
 					{ desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
-					{ desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
+					// { desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
 					// { desc: 'Fire Investigator', code: SwlCategoryTypeCode.FireInvestigator },
 					// { desc: 'Locksmith', code: SwlCategoryTypeCode.Locksmith },
 					// { desc: 'Locksmith - Under Supervision', code: SwlCategoryTypeCode.LocksmithUnderSupervision },
@@ -286,8 +316,10 @@ export class LicenceApplicationService {
 			};
 			console.log('loadLicenceUpdate defaults', defaults);
 			this.licenceModel = { ...defaults };
+			this.setFlags();
 			this.licenceModelLoaded$.next(true);
-		}, 300);
+			this.spinnerService.hide('loaderSpinner');
+		}, 1000);
 	}
 
 	saveLicence(): void {
@@ -370,5 +402,24 @@ export class LicenceApplicationService {
 		delete this.licenceModel.licenceCategorySecurityConsultant;
 		delete this.licenceModel.licenceCategorySecurityGuardUnderSupervision;
 		delete this.licenceModel.licenceCategorySecurityGuard;
+	}
+
+	setFlags(): void {
+		this.licenceModel.isReplacement = this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Replacement;
+
+		this.licenceModel.isNotReplacement = !this.licenceModel.isReplacement;
+
+		this.licenceModel.showStepAccessCode =
+			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Renewal ||
+			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Update;
+
+		// Review question would only apply to those who have a SWL w/ Sole Prop already,
+		// otherwise they would see the same question shown to New applicants
+		this.licenceModel.showStepSoleProprietor =
+			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired ||
+			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Renewal;
+
+		this.licenceModel.showStepLicenceExpired =
+			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired;
 	}
 }

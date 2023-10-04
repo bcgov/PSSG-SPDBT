@@ -1,6 +1,7 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
+import { Subscription } from 'rxjs';
 import { SelectOptions, SwlApplicationTypeCode, SwlCategoryTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { LicenceApplicationService } from '../../licence-application.service';
 import { DogsOrRestraintsComponent } from '../dogs-or-restraints.component';
@@ -32,41 +33,20 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 	selector: 'app-step-licence-selection',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<!-- <mat-step>
-				<app-licence-selection></app-licence-selection>
-
-				<div class="row mt-4">
-					<div class="offset-lg-4 col-lg-4 offset-md-4 col-md-4 col-sm-12">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_LICENCE_SELECTION)"
-						>
-							Next
-						</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<mat-step>
-				<app-licence-type></app-licence-type>
-
-				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_LICENCE_TYPE)">
-							Next
-						</button>
-					</div>
-				</div>
-			</mat-step> -->
-
-			<ng-container [ngSwitch]="licenceStatusTypeCode">
+			<!-- <ng-container [ngSwitch]="applicationTypeCode">
 				<ng-container *ngSwitchCase="swlStatusTypeCodes.NewOrExpired"></ng-container>
+				<ng-container *ngSwitchCase="swlStatusTypeCodes.Renewal"></ng-container>
+				<ng-container *ngSwitchCase="swlStatusTypeCodes.Replacement"></ng-container>
+				<ng-container *ngSwitchCase="swlStatusTypeCodes.Update"></ng-container> -->
 
+			<ng-container *ngIf="isReplacement">
+				<mat-step completed="true" *ngIf="isReplacement">
+					<ng-template matStepLabel>Licence Confirmation</ng-template>
+					<app-step-review></app-step-review>
+				</mat-step>
+			</ng-container>
+
+			<ng-container *ngIf="isNotReplacement">
 				<mat-step *ngIf="showStepAccessCode">
 					<app-licence-access-code></app-licence-access-code>
 
@@ -84,6 +64,11 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 								Next
 							</button>
 						</div>
+						<!-- <div class="col-lg-3 col-md-4 col-sm-6 text-end">
+							<button mat-stroked-button class="large w-auto" style=" color: var(--color-green-dark);">
+								Save & Exit
+							</button>
+						</div> -->
 					</div>
 				</mat-step>
 
@@ -329,21 +314,22 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 						</div>
 					</div>
 				</mat-step>
+			</ng-container>
 
-				<ng-container *ngSwitchCase="swlStatusTypeCodes.Renewal"></ng-container>
+			<!-- <ng-container *ngSwitchCase="swlStatusTypeCodes.Renewal"></ng-container>
 
 				<ng-container *ngSwitchCase="swlStatusTypeCodes.Replacement"></ng-container>
 
 				<ng-container *ngSwitchCase="swlStatusTypeCodes.Update"></ng-container>
-			</ng-container>
+			</ng-container> -->
 		</mat-stepper>
 	`,
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepLicenceSelectionComponent {
-	// readonly STEP_LICENCE_SELECTION = '0';
-	// readonly STEP_LICENCE_TYPE = '1';
+export class StepLicenceSelectionComponent implements OnInit, OnDestroy {
+	private licenceModelLoadedSubscription!: Subscription;
+
 	readonly STEP_ACCESS_CODE = '2';
 	readonly STEP_SOLE_PROPRIETOR = '3';
 	readonly STEP_PERSONAL_INFORMATION = '4';
@@ -352,23 +338,17 @@ export class StepLicenceSelectionComponent {
 	readonly STEP_DOGS_OR_RESTRAINT = '8';
 	readonly STEP_LICENCE_TERM = '7';
 
-	licenceStatusTypeCode: SwlApplicationTypeCode | null = null;
-
-	showStepAccessCode = true;
-	showStepSoleProprietor = true;
-	showStepLicenceExpired = true;
+	isReplacement = false;
+	isNotReplacement = false;
+	showStepAccessCode = false;
+	showStepSoleProprietor = false;
+	showStepLicenceExpired = false;
 
 	swlCategoryList: SelectOptions[] = [];
 	swlCategoryTypeCodes = SwlCategoryTypeCode;
 	swlStatusTypeCodes = SwlApplicationTypeCode;
 
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
-
-	// @ViewChild(LicenceSelectionComponent)
-	// licenceSelectionComponent!: LicenceSelectionComponent;
-
-	// @ViewChild(LicenceTypeComponent)
-	// licenceTypeComponent!: LicenceTypeComponent;
 
 	@ViewChild(SoleProprietorComponent)
 	soleProprietorComponent!: SoleProprietorComponent;
@@ -430,10 +410,36 @@ export class StepLicenceSelectionComponent {
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
+	ngOnInit(): void {
+		console.log('ngOnInit');
+		this.licenceModelLoadedSubscription = this.licenceModelLoadedSubscription =
+			this.licenceApplicationService.licenceModelLoaded$.subscribe({
+				next: (loaded: boolean) => {
+					console.log('loaded', loaded);
+					if (loaded) {
+						console.log(
+							'onInit StepLicenceSelectionComponent',
+							this.licenceApplicationService.licenceModel.applicationTypeCode
+						);
+
+						this.isReplacement = this.licenceApplicationService.licenceModel.isReplacement ?? false;
+						this.isNotReplacement = this.licenceApplicationService.licenceModel.isNotReplacement ?? false;
+						this.showStepAccessCode = this.licenceApplicationService.licenceModel.showStepAccessCode ?? false;
+						this.showStepSoleProprietor = this.licenceApplicationService.licenceModel.showStepSoleProprietor ?? false;
+						this.showStepLicenceExpired = this.licenceApplicationService.licenceModel.showStepLicenceExpired ?? false;
+					}
+				},
+			});
+	}
+
+	ngOnDestroy() {
+		this.licenceModelLoadedSubscription.unsubscribe();
+	}
+
 	getStepData(): any {
 		let data = {
-			// ...this.licenceSelectionComponent.getDataToSave(),
-			// ...this.licenceTypeComponent.getDataToSave(),
+			licenceTypeCode: this.licenceApplicationService.licenceModel.licenceTypeCode,
+			applicationTypeCode: this.licenceApplicationService.licenceModel.applicationTypeCode,
 			// ...(this.licenceSelectionComponent ? this.licenceSelectionComponent.getDataToSave() : {}),
 			// ...(this.licenceTypeComponent ? this.licenceTypeComponent.getDataToSave() : {}),
 			...(this.licenceAccessCodeComponent ? this.licenceAccessCodeComponent.getDataToSave() : {}),
@@ -614,7 +620,8 @@ export class StepLicenceSelectionComponent {
 
 		this.swlCategoryList = this.licenceApplicationService.licenceModel.swlCategoryList;
 
-		this.licenceApplicationService.licenceModelLoaded$.next(true);
+		// TODO how to fix?
+		// this.licenceApplicationService.licenceModelLoaded$.next(true);
 
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
@@ -659,15 +666,15 @@ export class StepLicenceSelectionComponent {
 			// case this.STEP_LICENCE_TYPE:
 			// 	const isValid = this.licenceTypeComponent.isFormValid();
 			// 	if (isValid) {
-			// 		this.licenceStatusTypeCode = this.licenceApplicationService.licenceModel.licenceStatusTypeCode;
+			// 		this.applicationTypeCode = this.licenceApplicationService.licenceModel.applicationTypeCode;
 			// 		this.showStepAccessCode =
-			// 			this.licenceApplicationService.licenceModel.licenceStatusTypeCode == SwlStatusTypeCode.Renewal ||
-			// 			this.licenceApplicationService.licenceModel.licenceStatusTypeCode == SwlStatusTypeCode.Update;
+			// 			this.licenceApplicationService.licenceModel.applicationTypeCode == SwlStatusTypeCode.Renewal ||
+			// 			this.licenceApplicationService.licenceModel.applicationTypeCode == SwlStatusTypeCode.Update;
 			// 		this.showStepSoleProprietor =
-			// 			this.licenceApplicationService.licenceModel.licenceStatusTypeCode == SwlStatusTypeCode.NewOrExpired ||
-			// 			this.licenceApplicationService.licenceModel.licenceStatusTypeCode == SwlStatusTypeCode.Renewal;
+			// 			this.licenceApplicationService.licenceModel.applicationTypeCode == SwlStatusTypeCode.NewOrExpired ||
+			// 			this.licenceApplicationService.licenceModel.applicationTypeCode == SwlStatusTypeCode.Renewal;
 			// 		this.showStepLicenceExpired =
-			// 			this.licenceApplicationService.licenceModel.licenceStatusTypeCode == SwlStatusTypeCode.NewOrExpired;
+			// 			this.licenceApplicationService.licenceModel.applicationTypeCode == SwlStatusTypeCode.NewOrExpired;
 			// 	}
 			// 	return isValid;
 			case this.STEP_ACCESS_CODE:

@@ -46,6 +46,7 @@ $spd-yellow: (
   700: #fbab12,
   800: #fba30e,
   900: #fa9408,
+  dark: #df9f03,
   A100: #ffffff,
   A200: #fff8ef,
   A400: #ffe0bc,
@@ -94,8 +95,7 @@ $spd-typography: mat.define-typography-config(
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
 $spd-primary: mat.define-palette($spd-blue, 500);
-// $spd-accent: mat.define-palette(mat.$blue-gray-palette, A200, A100, A400);
-$spd-accent: mat.define-palette($spd-yellow, 500);
+$spd-accent: mat.define-palette($spd-yellow, dark);
 
 // The warn palette is optional (defaults to red).
 $spd-warn: mat.define-palette(mat.$red-palette);
@@ -118,7 +118,7 @@ $spd-theme: mat.define-light-theme((
 
 :root {
 	--color-white: #fff;
-  --color-primary-lightest: #f8f9fb;
+  --color-primary-lightest: #eff2f5;
   --color-primary-lighter: #d6ddec;
   --color-primary-light: #0f48ae;
   --color-sidebar: #385D8A;
@@ -132,6 +132,7 @@ $spd-theme: mat.define-light-theme((
 	--color-red: #D8292F;
 	--color-green-light: #e9f6ee;
 	--color-green: #2E8540;
+  --color-green-dark: #155724;
   
   --color-grey-lightest: #eeeeee;
   --color-grey-lighter: #e1e1e1;
@@ -192,6 +193,10 @@ body {
 
 .mat-divider-primary {
   border-top-color: rgba(15, 72, 174, 0.52);
+}
+.mat-divider-main {
+  border-top-width: 2px !important;
+  border-top-color: var(--color-yellow);
 }
 
 .alert-category {

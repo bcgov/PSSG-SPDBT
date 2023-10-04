@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Subscription } from 'rxjs';
 import { SelectOptions, SwlCategoryTypeCode, SwlCategoryTypes } from 'src/app/core/code-types/model-desc.models';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
@@ -83,7 +84,9 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 		`,
 	],
 })
-export class LicenceCategoryComponent implements OnInit, LicenceFormStepComponent {
+export class LicenceCategoryComponent implements OnInit, OnDestroy, LicenceFormStepComponent {
+	private licenceModelLoadedSubscription!: Subscription;
+
 	category = '';
 	swlCategoryList: SelectOptions[] = [];
 	isDirtyAndInvalid = false;
@@ -96,7 +99,7 @@ export class LicenceCategoryComponent implements OnInit, LicenceFormStepComponen
 	constructor(private dialog: MatDialog, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.licenceApplicationService.licenceModelLoaded$.subscribe({
+		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: boolean) => {
 				if (loaded) {
 					this.swlCategoryList = this.licenceApplicationService.licenceModel.swlCategoryList;
@@ -104,6 +107,10 @@ export class LicenceCategoryComponent implements OnInit, LicenceFormStepComponen
 				}
 			},
 		});
+	}
+
+	ngOnDestroy() {
+		this.licenceModelLoadedSubscription.unsubscribe();
 	}
 
 	onAddCategory(): void {

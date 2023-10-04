@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { BooleanTypeCode } from 'src/app/api/models';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
@@ -88,7 +89,9 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class LicenceExpiredComponent implements OnInit, LicenceFormStepComponent {
+export class LicenceExpiredComponent implements OnInit, OnDestroy, LicenceFormStepComponent {
+	private licenceModelLoadedSubscription!: Subscription;
+
 	booleanTypeCodes = BooleanTypeCode;
 
 	maxDate = new Date();
@@ -117,7 +120,7 @@ export class LicenceExpiredComponent implements OnInit, LicenceFormStepComponent
 	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.licenceApplicationService.licenceModelLoaded$.subscribe({
+		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: boolean) => {
 				if (loaded) {
 					this.form.patchValue({
@@ -128,6 +131,10 @@ export class LicenceExpiredComponent implements OnInit, LicenceFormStepComponent
 				}
 			},
 		});
+	}
+
+	ngOnDestroy() {
+		this.licenceModelLoadedSubscription.unsubscribe();
 	}
 
 	isFormValid(): boolean {

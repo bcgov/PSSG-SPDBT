@@ -1,5 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { BooleanTypeCode } from 'src/app/api/models';
 import { showHideTriggerAnimation, showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
@@ -179,7 +180,9 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 	styles: [],
 	animations: [showHideTriggerAnimation, showHideTriggerSlideAnimation],
 })
-export class DogsOrRestraintsComponent implements OnInit, LicenceFormStepComponent {
+export class DogsOrRestraintsComponent implements OnInit, OnDestroy, LicenceFormStepComponent {
+	private licenceModelLoadedSubscription!: Subscription;
+
 	booleanTypeCodes = BooleanTypeCode;
 	matcher = new FormErrorStateMatcher();
 
@@ -242,7 +245,7 @@ export class DogsOrRestraintsComponent implements OnInit, LicenceFormStepCompone
 	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.licenceApplicationService.licenceModelLoaded$.subscribe({
+		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: boolean) => {
 				if (loaded) {
 					this.form.patchValue({
@@ -263,6 +266,10 @@ export class DogsOrRestraintsComponent implements OnInit, LicenceFormStepCompone
 				}
 			},
 		});
+	}
+
+	ngOnDestroy() {
+		this.licenceModelLoadedSubscription.unsubscribe();
 	}
 
 	isFormValid(): boolean {

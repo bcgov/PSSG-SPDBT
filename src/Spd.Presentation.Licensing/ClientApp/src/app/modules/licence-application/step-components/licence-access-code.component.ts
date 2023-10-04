@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
@@ -50,7 +51,9 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 	`,
 	styles: [],
 })
-export class LicenceAccessCodeComponent implements OnInit, LicenceFormStepComponent {
+export class LicenceAccessCodeComponent implements OnInit, OnDestroy, LicenceFormStepComponent {
+	private licenceModelLoadedSubscription!: Subscription;
+
 	matcher = new FormErrorStateMatcher();
 
 	form: FormGroup = this.formBuilder.group({
@@ -61,7 +64,7 @@ export class LicenceAccessCodeComponent implements OnInit, LicenceFormStepCompon
 	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.licenceApplicationService.licenceModelLoaded$.subscribe({
+		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: boolean) => {
 				if (loaded) {
 					this.form.patchValue({
@@ -71,6 +74,10 @@ export class LicenceAccessCodeComponent implements OnInit, LicenceFormStepCompon
 				}
 			},
 		});
+	}
+
+	ngOnDestroy() {
+		this.licenceModelLoadedSubscription.unsubscribe();
 	}
 
 	isFormValid(): boolean {

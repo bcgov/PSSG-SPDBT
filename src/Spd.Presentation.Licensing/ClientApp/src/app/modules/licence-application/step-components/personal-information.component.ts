@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { GenderTypes, SwlApplicationTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { UtilService } from 'src/app/core/services/util.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
@@ -81,7 +82,9 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 	`,
 	styles: [],
 })
-export class PersonalInformationComponent implements OnInit, LicenceFormStepComponent {
+export class PersonalInformationComponent implements OnInit, OnDestroy, LicenceFormStepComponent {
+	private licenceModelLoadedSubscription!: Subscription;
+
 	genderTypes = GenderTypes;
 	matcher = new FormErrorStateMatcher();
 
@@ -124,7 +127,7 @@ export class PersonalInformationComponent implements OnInit, LicenceFormStepComp
 	) {}
 
 	ngOnInit(): void {
-		this.licenceApplicationService.licenceModelLoaded$.subscribe({
+		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: boolean) => {
 				if (loaded) {
 					if (this.licenceApplicationService.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Replacement) {
@@ -156,6 +159,10 @@ export class PersonalInformationComponent implements OnInit, LicenceFormStepComp
 				}
 			},
 		});
+	}
+
+	ngOnDestroy() {
+		this.licenceModelLoadedSubscription.unsubscribe();
 	}
 
 	isFormValid(): boolean {

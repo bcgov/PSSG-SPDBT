@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { SwlApplicationTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
 import { LicenceApplicationService } from '../licence-application.service';
@@ -95,7 +96,9 @@ import { LicenceApplicationService } from '../licence-application.service';
 	`,
 	styles: [],
 })
-export class LicenceTypeComponent implements OnInit {
+export class LicenceTypeComponent implements OnInit, OnDestroy {
+	private licenceModelLoadedSubscription!: Subscription;
+
 	licenceStatusTypeCodes = SwlApplicationTypeCode;
 	isDirtyAndInvalid = false;
 
@@ -110,7 +113,12 @@ export class LicenceTypeComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		this.licenceApplicationService.licenceModelLoaded$.subscribe({
+		console.log('initialized', this.licenceApplicationService.initialized);
+		if (!this.licenceApplicationService.initialized) {
+			this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATIONS_IN_PROGRESS));
+		}
+
+		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: boolean) => {
 				console.log('loaded', loaded);
 				if (loaded) {
@@ -120,6 +128,10 @@ export class LicenceTypeComponent implements OnInit {
 				}
 			},
 		});
+	}
+
+	ngOnDestroy() {
+		this.licenceModelLoadedSubscription.unsubscribe();
 	}
 
 	onStepPrevious(): void {
