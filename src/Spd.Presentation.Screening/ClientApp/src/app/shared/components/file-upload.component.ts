@@ -76,7 +76,7 @@ export class FileUploadHelper {
 				<div>
 					<strong>Drag and Drop your file here or click to browse</strong>
 				</div>
-				<div class="fine-print mb-4" *ngIf="message">{{ message }}</div>
+				<div class="fine-print mb-2" *ngIf="message">{{ message }}</div>
 				<ng-container *ngTemplateOutlet="infoText"></ng-container>
 			</ngx-dropzone-label>
 

@@ -25,7 +25,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 	template: `
 		<app-crrp-header></app-crrp-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
-			<div class="row mb-4">
+			<div class="row mb-2">
 				<div class="col-xl-9 col-lg-8 col-md-12 col-sm-12">
 					<h2 class="fw-normal">Organization Profile</h2>
 				</div>
@@ -37,6 +37,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 			</div>
 			<form [formGroup]="form" novalidate>
 				<div class="row">
+					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 					<div class="col-xl-4 col-lg-12">
 						<div class="ms-3 mb-2">
 							<div class="text-minor-heading fw-semibold">Organization Name</div>

@@ -40,7 +40,7 @@ export interface AliasCreateRequest {
 	selector: 'app-manual-submission-common',
 	template: `
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
-			<div class="row mb-4">
+			<div class="row mb-2">
 				<div class="col-xl-10 col-lg-10 col-md-12 col-sm-12">
 					<h2 class="fw-normal">
 						Manual Submissions
@@ -62,7 +62,7 @@ export interface AliasCreateRequest {
 				</div>
 			</div>
 			<form [formGroup]="form" novalidate>
-				<mat-divider class="my-3"></mat-divider>
+				<mat-divider class="mat-divider-main mb-3"></mat-divider>
 				<section>
 					<div class="text-minor-heading fw-semibold mb-2">Applicant Information</div>
 					<mat-checkbox formControlName="oneLegalName"> I have one legal name </mat-checkbox>

@@ -17,7 +17,7 @@ import { UserDialogData, UserEditModalComponent } from './user-edit-modal.compon
 	template: `
 		<app-crrp-header></app-crrp-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
-			<div class="row">
+			<div class="row mb-2">
 				<div class="col-xxl-10 col-xl-9 col-lg-9 col-md-8 col-sm-12">
 					<h2 class="mb-2 fw-normal">
 						User Management <mat-icon class="info-icon" (click)="onManageUsersInfo()">info</mat-icon>
@@ -45,6 +45,7 @@ import { UserDialogData, UserEditModalComponent } from './user-edit-modal.compon
 			</div>
 			<div class="row">
 				<div class="col-12">
+					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 					<mat-table [dataSource]="dataSource">
 						<ng-container matColumnDef="status">
 							<mat-header-cell *matHeaderCellDef>Status</mat-header-cell>

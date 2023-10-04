@@ -48,6 +48,7 @@ export const ScreeningCheckFilterMap: Record<keyof ScreeningCheckFilter, string>
 			</div>
 
 			<div class="row mt-2" [formGroup]="formFilter">
+				<mat-divider class="mat-divider-main mb-4"></mat-divider>
 				<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
 					<mat-form-field>
 						<input
