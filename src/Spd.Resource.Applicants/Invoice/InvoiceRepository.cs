@@ -23,6 +23,7 @@ internal class InvoiceRepository : IInvoiceRepository
         if (!qry.IncludeInactive)
             invoices = invoices.Where(d => d.statecode != DynamicsConstants.StateCode_Inactive);
         if (qry.OrganizationId != null) invoices = invoices.Where(d => d._spd_organizationid_value == qry.OrganizationId);
+        if (qry.InvoiceId != null) invoices = invoices.Where(d => d.spd_invoiceid == qry.InvoiceId);
         if (qry.InvoiceStatus != null)
         {
             int status = (int)Enum.Parse<InvoiceStatusOptionSet>(qry.InvoiceStatus.ToString());
