@@ -1,4 +1,7 @@
 export {
-	CountryTypes
+	CountryTypes,
+	GenderTypes,
+	SwlApplicationTypeCodes,
+	SwlCategoryTypes,
+	SwlTypeCodes,
 } from './model-desc.models';
-

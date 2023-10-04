@@ -34,9 +34,9 @@ export const SPD_CONSTANTS = {
 			'.htm',
 		],
 	},
-	sessionStorage: {
-		organizationRegStateKey: 'state',
-		crcPortalStateKey: 'crc-state',
-		bannerMessageKey: 'banner-message',
-	},
+	// sessionStorage: {
+	// 	organizationRegStateKey: 'state',
+	// 	crcPortalStateKey: 'crc-state',
+	// 	bannerMessageKey: 'banner-message',
+	// },
 };

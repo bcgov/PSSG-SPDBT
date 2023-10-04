@@ -26,7 +26,7 @@ import { BooleanTypeCode } from 'src/app/api/models';
 
 					<div class="row mt-4" *ngIf="isTreatedForMHC.value == booleanTypeCodes.Yes">
 						<div class="offset-md-2 col-md-8 col-sm-12">
-							<mat-divider class="mb-3" style="border-top-color: var(--color-primary-light);"></mat-divider>
+							<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 							<ng-container>
 								<div class="row mt-2">
 									<div class="col-12">

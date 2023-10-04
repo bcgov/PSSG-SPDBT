@@ -61,6 +61,6 @@ export class LandingComponent {
 	}
 
 	goToLicenceApplication(): void {
-		this.router.navigateByUrl(LicenceApplicationRoutes.path());
+		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LOGIN_SELECTION));
 	}
 }
