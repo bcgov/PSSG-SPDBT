@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { SelectOptions, SwlCategoryTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
@@ -79,7 +80,7 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 									</div>
 								</div>
 
-								<ng-container *ngIf="requirement.value">
+								<div *ngIf="requirement.value" @showHideTriggerSlideAnimation>
 									<div class="text-minor-heading mb-2">
 										<span *ngIf="requirement.value == 'a'">Upload a copy of your certificate:</span>
 										<span *ngIf="requirement.value == 'b'">
@@ -105,7 +106,7 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 											>This is required</mat-error
 										>
 									</div>
-								</ng-container>
+								</div>
 							</form>
 						</div>
 					</div>
@@ -121,6 +122,7 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 			}
 		`,
 	],
+	animations: [showHideTriggerSlideAnimation],
 })
 export class LicenceCategoryLocksmithComponent implements OnInit, LicenceFormStepComponent {
 	form!: FormGroup;
@@ -148,7 +150,7 @@ export class LicenceCategoryLocksmithComponent implements OnInit, LicenceFormSte
 	isFormValid(): boolean {
 		const attachments =
 			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
-				? this.fileUploadComponent.files[0]
+				? this.fileUploadComponent.files
 				: '';
 		this.form.controls['attachments'].setValue(attachments);
 
