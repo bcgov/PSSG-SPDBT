@@ -15,8 +15,8 @@ export interface SelectOptions<k = string> {
 export enum SwlTypeCode {
 	SecurityBusinessLicence = 'SecurityBusinessLicence',
 	SecurityWorkerLicence = 'SecurityWorkerLicence',
-	ArmouredVehicleLicence = 'ArmouredVehicleLicence',
-	BodyArmourLicence = 'BodyArmourLicence',
+	ArmouredVehiclePermit = 'ArmouredVehiclePermit',
+	BodyArmourPermit = 'ArmouredVehiclePermit',
 }
 
 export enum SwlApplicationTypeCode {
@@ -31,6 +31,16 @@ export enum SwlTermCode {
 	OneYear = '1Year',
 	TwoYears = '2Years',
 	ThreeYears = '3Years',
+}
+
+export enum PoliceOfficerRoleCode {
+	AuxiliaryorReserveConstable = 'AuxiliaryorReserveConstable',
+	SheriffDeputySheriff = 'SheriffDeputySheriff',
+	CorrectionsOfficer = 'CorrectionsOfficer',
+	CourtAppointedBailiff = 'CourtAppointedBailiff',
+	SpecialProvincialOrMunicipalConstable = 'SpecialProvincialOrMunicipalConstable',
+	PoliceOfficer = 'PoliceOfficer',
+	Other = 'Other',
 }
 
 export enum SwlCategoryTypeCode {
@@ -56,8 +66,8 @@ export enum SwlCategoryTypeCode {
 export const SwlTypeCodes: SelectOptions[] = [
 	{ desc: 'Security Business Licence', code: SwlTypeCode.SecurityBusinessLicence },
 	{ desc: 'Security Worker Licence', code: SwlTypeCode.SecurityWorkerLicence },
-	{ desc: 'Armoured Vehicle Licence', code: SwlTypeCode.ArmouredVehicleLicence },
-	{ desc: 'Body Armour Licence', code: SwlTypeCode.BodyArmourLicence },
+	{ desc: 'Armoured Vehicle Permit', code: SwlTypeCode.ArmouredVehiclePermit },
+	{ desc: 'Body Armour Permit', code: SwlTypeCode.BodyArmourPermit },
 ];
 
 export const SwlApplicationTypeCodes: SelectOptions[] = [
@@ -97,6 +107,19 @@ export const SwlCategoryTypes: SelectOptions[] = [
 	{ desc: 'Security Consultant', code: SwlCategoryTypeCode.SecurityConsultant },
 	{ desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
 	{ desc: 'Security Guard - Under Supervision', code: SwlCategoryTypeCode.SecurityGuardUnderSupervision },
+];
+
+export const PoliceOfficerTypes: SelectOptions[] = [
+	{ desc: 'Auxiliary or Reserve Constable', code: PoliceOfficerRoleCode.AuxiliaryorReserveConstable },
+	{ desc: 'Corrections Officer', code: PoliceOfficerRoleCode.CorrectionsOfficer },
+	{ desc: 'Court Appointed Bailiff', code: PoliceOfficerRoleCode.CourtAppointedBailiff },
+	{ desc: 'Police Officer', code: PoliceOfficerRoleCode.PoliceOfficer },
+	{ desc: 'Sheriff Deputy Sheriff', code: PoliceOfficerRoleCode.SheriffDeputySheriff },
+	{
+		desc: 'Special Provincial Or Municipal Constable',
+		code: PoliceOfficerRoleCode.SpecialProvincialOrMunicipalConstable,
+	},
+	{ desc: 'Other', code: PoliceOfficerRoleCode.Other },
 ];
 
 export const CountryTypes: SelectOptions[] = [

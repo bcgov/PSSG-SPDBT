@@ -3,7 +3,7 @@ import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild, ViewEnca
 import { MatStepper } from '@angular/material/stepper';
 import { Subscription } from 'rxjs';
 import { SelectOptions, SwlApplicationTypeCode, SwlCategoryTypeCode } from 'src/app/core/code-types/model-desc.models';
-import { LicenceApplicationService } from '../../licence-application.service';
+import { LicenceApplicationService, LicenceModelSubject } from '../../licence-application.service';
 import { DogsOrRestraintsComponent } from '../dogs-or-restraints.component';
 import { LicenceAccessCodeComponent } from '../licence-access-code.component';
 import { LicenceCategoryArmouredCarGuardComponent } from '../licence-category-armoured-car-guard.component';
@@ -33,12 +33,6 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 	selector: 'app-step-licence-selection',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<!-- <ng-container [ngSwitch]="applicationTypeCode">
-				<ng-container *ngSwitchCase="swlStatusTypeCodes.NewOrExpired"></ng-container>
-				<ng-container *ngSwitchCase="swlStatusTypeCodes.Renewal"></ng-container>
-				<ng-container *ngSwitchCase="swlStatusTypeCodes.Replacement"></ng-container>
-				<ng-container *ngSwitchCase="swlStatusTypeCodes.Update"></ng-container> -->
-
 			<ng-container *ngIf="isReplacement">
 				<mat-step completed="true" *ngIf="isReplacement">
 					<ng-template matStepLabel>Licence Confirmation</ng-template>
@@ -280,7 +274,7 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 					</div>
 				</mat-step>
 
-				<mat-step>
+				<mat-step *ngIf="showStepDogsAndRestraints">
 					<app-dogs-or-restraints></app-dogs-or-restraints>
 
 					<div class="row mt-4">
@@ -316,11 +310,11 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 				</mat-step>
 			</ng-container>
 
-			<!-- <ng-container *ngSwitchCase="swlStatusTypeCodes.Renewal"></ng-container>
-
+			<!-- <ng-container [ngSwitch]="applicationTypeCode">
+				<ng-container *ngSwitchCase="swlStatusTypeCodes.NewOrExpired"></ng-container>
+				<ng-container *ngSwitchCase="swlStatusTypeCodes.Renewal"></ng-container>
 				<ng-container *ngSwitchCase="swlStatusTypeCodes.Replacement"></ng-container>
-
-				<ng-container *ngSwitchCase="swlStatusTypeCodes.Update"></ng-container>
+				<ng-container *ngSwitchCase="swlStatusTypeCodes.Update"></ng-container> 
 			</ng-container> -->
 		</mat-stepper>
 	`,
@@ -343,6 +337,7 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy {
 	showStepAccessCode = false;
 	showStepSoleProprietor = false;
 	showStepLicenceExpired = false;
+	showStepDogsAndRestraints = false;
 
 	swlCategoryList: SelectOptions[] = [];
 	swlCategoryTypeCodes = SwlCategoryTypeCode;
@@ -411,12 +406,10 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy {
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		console.log('ngOnInit');
 		this.licenceModelLoadedSubscription = this.licenceModelLoadedSubscription =
 			this.licenceApplicationService.licenceModelLoaded$.subscribe({
-				next: (loaded: boolean) => {
-					console.log('loaded', loaded);
-					if (loaded) {
+				next: (loaded: LicenceModelSubject) => {
+					if (loaded.isLoaded || loaded.isSetFlags) {
 						console.log(
 							'onInit StepLicenceSelectionComponent',
 							this.licenceApplicationService.licenceModel.applicationTypeCode
@@ -427,6 +420,8 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy {
 						this.showStepAccessCode = this.licenceApplicationService.licenceModel.showStepAccessCode ?? false;
 						this.showStepSoleProprietor = this.licenceApplicationService.licenceModel.showStepSoleProprietor ?? false;
 						this.showStepLicenceExpired = this.licenceApplicationService.licenceModel.showStepLicenceExpired ?? false;
+						this.showStepDogsAndRestraints =
+							this.licenceApplicationService.licenceModel.showStepDogsAndRestraints ?? false;
 					}
 				},
 			});
@@ -436,8 +431,8 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy {
 		this.licenceModelLoadedSubscription.unsubscribe();
 	}
 
-	getStepData(): any {
-		let data = {
+	setStepData(): void {
+		let stepData = {
 			licenceTypeCode: this.licenceApplicationService.licenceModel.licenceTypeCode,
 			applicationTypeCode: this.licenceApplicationService.licenceModel.applicationTypeCode,
 			// ...(this.licenceSelectionComponent ? this.licenceSelectionComponent.getDataToSave() : {}),
@@ -472,6 +467,7 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy {
 		};
 
 		const categories = this.licenceApplicationService.licenceModel.swlCategoryList;
+		console.log('categories', categories);
 
 		// call function to delete all licence category data
 		this.licenceApplicationService.clearAllLicenceCategoryData();
@@ -480,99 +476,114 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy {
 		categories.forEach((item: any) => {
 			switch (item.code) {
 				case SwlCategoryTypeCode.ArmouredCarGuard: {
-					data = { ...data, ...(this.armouredCarGuardComponent ? this.armouredCarGuardComponent.getDataToSave() : {}) };
+					stepData = {
+						...stepData,
+						...(this.armouredCarGuardComponent ? this.armouredCarGuardComponent.getDataToSave() : {}),
+					};
 					break;
 				}
 				case SwlCategoryTypeCode.BodyArmourSales: {
-					data = { ...data, ...(this.bodyArmourSalesComponent ? this.bodyArmourSalesComponent.getDataToSave() : {}) };
+					stepData = {
+						...stepData,
+						...(this.bodyArmourSalesComponent ? this.bodyArmourSalesComponent.getDataToSave() : {}),
+					};
 					break;
 				}
 				case SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller: {
-					data = {
-						...data,
+					stepData = {
+						...stepData,
 						...(this.ccTelevisionInstallerComponent ? this.ccTelevisionInstallerComponent.getDataToSave() : {}),
 					};
 					break;
 				}
 				case SwlCategoryTypeCode.ElectronicLockingDeviceInstaller: {
-					data = {
-						...data,
+					stepData = {
+						...stepData,
 						...(this.elDeviceInstallerComponent ? this.elDeviceInstallerComponent.getDataToSave() : {}),
 					};
 					break;
 				}
 				case SwlCategoryTypeCode.FireInvestigator: {
-					data = { ...data, ...(this.fireInvestigatorComponent ? this.fireInvestigatorComponent.getDataToSave() : {}) };
+					stepData = {
+						...stepData,
+						...(this.fireInvestigatorComponent ? this.fireInvestigatorComponent.getDataToSave() : {}),
+					};
 					break;
 				}
 				case SwlCategoryTypeCode.Locksmith: {
-					data = { ...data, ...(this.locksmithComponent ? this.locksmithComponent.getDataToSave() : {}) };
+					stepData = { ...stepData, ...(this.locksmithComponent ? this.locksmithComponent.getDataToSave() : {}) };
 					break;
 				}
 				case SwlCategoryTypeCode.LocksmithUnderSupervision: {
-					data = { ...data, ...(this.locksmithSupComponent ? this.locksmithSupComponent.getDataToSave() : {}) };
+					stepData = { ...stepData, ...(this.locksmithSupComponent ? this.locksmithSupComponent.getDataToSave() : {}) };
 					break;
 				}
 				case SwlCategoryTypeCode.PrivateInvestigator: {
-					data = {
-						...data,
+					stepData = {
+						...stepData,
 						...(this.privateInvestigatorComponent ? this.privateInvestigatorComponent.getDataToSave() : {}),
 					};
 					break;
 				}
 				case SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision: {
-					data = {
-						...data,
+					stepData = {
+						...stepData,
 						...(this.privateInvestigatorSupComponent ? this.privateInvestigatorSupComponent.getDataToSave() : {}),
 					};
 					break;
 				}
 				case SwlCategoryTypeCode.SecurityGuard: {
-					data = { ...data, ...(this.securityGuardComponent ? this.securityGuardComponent.getDataToSave() : {}) };
+					stepData = {
+						...stepData,
+						...(this.securityGuardComponent ? this.securityGuardComponent.getDataToSave() : {}),
+					};
 					break;
 				}
 				case SwlCategoryTypeCode.SecurityGuardUnderSupervision: {
-					data = { ...data, ...(this.securityGuardSupComponent ? this.securityGuardSupComponent.getDataToSave() : {}) };
+					stepData = {
+						...stepData,
+						...(this.securityGuardSupComponent ? this.securityGuardSupComponent.getDataToSave() : {}),
+					};
 					break;
 				}
 				case SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision: {
-					data = {
-						...data,
+					stepData = {
+						...stepData,
 						...(this.securityAlarmInstallerSupComponent ? this.securityAlarmInstallerSupComponent.getDataToSave() : {}),
 					};
 					break;
 				}
 				case SwlCategoryTypeCode.SecurityAlarmInstaller: {
-					data = {
-						...data,
+					stepData = {
+						...stepData,
 						...(this.securityAlarmInstallerComponent ? this.securityAlarmInstallerComponent.getDataToSave() : {}),
 					};
 					break;
 				}
 				case SwlCategoryTypeCode.SecurityAlarmMonitor: {
-					data = {
-						...data,
+					stepData = {
+						...stepData,
 						...(this.securityAlarmMonitorComponent ? this.securityAlarmMonitorComponent.getDataToSave() : {}),
 					};
 					break;
 				}
 				case SwlCategoryTypeCode.SecurityAlarmResponse: {
-					data = {
-						...data,
+					stepData = {
+						...stepData,
 						...(this.securityAlarmResponseComponent ? this.securityAlarmResponseComponent.getDataToSave() : {}),
 					};
 					break;
 				}
 				case SwlCategoryTypeCode.SecurityAlarmSales: {
-					data = {
-						...data,
+					stepData = {
+						...stepData,
 						...(this.securityAlarmSalesComponent ? this.securityAlarmSalesComponent.getDataToSave() : {}),
 					};
 					break;
 				}
 				case SwlCategoryTypeCode.SecurityConsultant: {
-					data = {
-						...data,
+					stepData = {
+						...stepData,
 						...(this.securityConsultantComponent ? this.securityConsultantComponent.getDataToSave() : {}),
 					};
 					break;
@@ -580,26 +591,19 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy {
 			}
 		});
 
-		// if (categories.find((item) => item.code == SwlCategoryTypeCode.ArmouredCarGuard)) {
-		// 	const categoryData = this.armouredCarGuardComponent ? this.armouredCarGuardComponent.getDataToSave() : {};
-		// 	console.log('category exists', categoryData);
+		const licenceModel = this.licenceApplicationService.licenceModel;
+		this.licenceApplicationService.licenceModel = { ...licenceModel, ...stepData };
 
-		// 	data = { ...data, ...categoryData };
-		// } else {
-		// 	console.log('category DOES NOT exist');
-		// 	// data = {...data, ...{licenceCategoryArmouredCarGuard: {}}};
-		// 	// delete data.licenceCategoryArmouredCarGuard;
-		// }
-		// console.log('data', data);
-		return data;
+		this.licenceApplicationService.updateFlags();
+
+		console.log('stepData', stepData);
+		// return stepData;
 	}
 
 	onStepNext(formNumber: string): void {
-		const licenceModel = this.licenceApplicationService.licenceModel;
-		const stepData = this.getStepData();
-		this.licenceApplicationService.licenceModel = { ...licenceModel, ...stepData };
+		console.log('onStepNext formNumber:', formNumber);
 
-		console.log('onStepNext licenceModel', this.licenceApplicationService.licenceModel);
+		this.setStepData();
 
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
@@ -609,19 +613,9 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy {
 	onFormValidNextStep(formNumber: string): void {
 		console.log('onFormValidNextStep formNumber:', formNumber);
 
-		const licenceModel = this.licenceApplicationService.licenceModel;
-		const stepData = this.getStepData();
-		this.licenceApplicationService.licenceModel = { ...licenceModel, ...stepData };
-
-		// this.licenceApplicationService.saveLicence();
-
-		// console.log('stepData', stepData);
-		console.log('onFormValidNextStep licenceModel', this.licenceApplicationService.licenceModel);
+		this.setStepData();
 
 		this.swlCategoryList = this.licenceApplicationService.licenceModel.swlCategoryList;
-
-		// TODO how to fix?
-		// this.licenceApplicationService.licenceModelLoaded$.next(true);
 
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
@@ -661,22 +655,6 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy {
 
 	private dirtyForm(step: string): boolean {
 		switch (step) {
-			// case this.STEP_LICENCE_SELECTION:
-			// 	return this.licenceSelectionComponent.isFormValid();
-			// case this.STEP_LICENCE_TYPE:
-			// 	const isValid = this.licenceTypeComponent.isFormValid();
-			// 	if (isValid) {
-			// 		this.applicationTypeCode = this.licenceApplicationService.licenceModel.applicationTypeCode;
-			// 		this.showStepAccessCode =
-			// 			this.licenceApplicationService.licenceModel.applicationTypeCode == SwlStatusTypeCode.Renewal ||
-			// 			this.licenceApplicationService.licenceModel.applicationTypeCode == SwlStatusTypeCode.Update;
-			// 		this.showStepSoleProprietor =
-			// 			this.licenceApplicationService.licenceModel.applicationTypeCode == SwlStatusTypeCode.NewOrExpired ||
-			// 			this.licenceApplicationService.licenceModel.applicationTypeCode == SwlStatusTypeCode.Renewal;
-			// 		this.showStepLicenceExpired =
-			// 			this.licenceApplicationService.licenceModel.applicationTypeCode == SwlStatusTypeCode.NewOrExpired;
-			// 	}
-			// 	return isValid;
 			case this.STEP_ACCESS_CODE:
 				return this.licenceAccessCodeComponent.isFormValid();
 			case this.STEP_SOLE_PROPRIETOR:

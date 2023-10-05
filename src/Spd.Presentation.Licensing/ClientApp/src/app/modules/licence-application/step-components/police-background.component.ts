@@ -1,100 +1,261 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { BooleanTypeCode } from 'src/app/api/models';
-import { GenderTypes } from 'src/app/core/code-types/model-desc.models';
+import {
+	PoliceOfficerRoleCode,
+	PoliceOfficerTypes,
+	SwlApplicationTypeCode,
+} from 'src/app/core/code-types/model-desc.models';
+import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
+import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
+import {
+	LicenceApplicationService,
+	LicenceFormStepComponent,
+	LicenceModelSubject,
+} from '../licence-application.service';
 
 @Component({
 	selector: 'app-police-background',
 	template: `
 		<section class="step-section p-3">
 			<div class="step">
-				<app-step-title
-					title="Are you currently a Police Officer or Peace Officer?"
-					subtitle="A member of a police force as defined in the British Columbia Police Act may not hold a security worker licence."
-				></app-step-title>
-				<div class="step-container row">
-					<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
-						<form [formGroup]="form" novalidate>
-							<mat-radio-group aria-label="Select an option" formControlName="isPoliceOrPeaceOfficer">
-								<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
-								<mat-divider class="my-2"></mat-divider>
-								<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
-							</mat-radio-group>
-						</form>
-					</div>
-
-					<div class="row mt-4" *ngIf="isPoliceOrPeaceOfficer.value == booleanTypeCodes.Yes">
-						<div class="offset-md-2 col-md-8 col-sm-12">
-							<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
-							<div class="text-minor-heading mb-2">Current Information</div>
-							<ng-container>
-								<div class="row mt-2">
-									<div class="col-lg-4 col-md-12 col-sm-12">
-										<mat-form-field>
-											<mat-label>Role</mat-label>
-											<mat-select formControlName="officerRole">
-												<mat-option *ngFor="let gdr of genderTypes" [value]="gdr.code">
-													{{ gdr.desc }}
-												</mat-option>
-											</mat-select>
-											<mat-error *ngIf="form.get('officerRole')?.hasError('required')">This is required</mat-error>
-										</mat-form-field>
-									</div>
+				<app-step-title [title]="title" [subtitle]="subtitle"></app-step-title>
+				<div class="step-container">
+					<form [formGroup]="form" novalidate>
+						<div class="row" *ngIf="isViewOnlyPoliceOrPeaceOfficer; else NotViewOnly">
+							<div class="col-12 text-center my-4">
+								<div class="text-minor-heading mb-2">
+									{{ policeOfficerSummaryText }}
+									<button mat-mini-fab color="primary" class="ms-2" style="top: 5px;" (click)="onEditInformation()">
+										<mat-icon>edit</mat-icon>
+									</button>
 								</div>
-								<div class="row mt-2">
-									<div class="col-12">
-										<div class="text-minor-heading fw-normal mb-2">
-											Upload a letter of no conflict from your superior officer
-										</div>
-										<app-file-upload [maxNumberOfFiles]="1" accept=".jpg,.tif,.png,.bmp"></app-file-upload>
-										<mat-error
-											class="mat-option-error"
-											*ngIf="
-												(form.get('photoOfYourself')?.dirty || form.get('photoOfYourself')?.touched) &&
-												form.get('photoOfYourself')?.invalid &&
-												form.get('photoOfYourself')?.hasError('required')
-											"
-											>This is required</mat-error
-										>
-										<div class="mt-2">
-											See Section 2.5.4 of the
-											<a
-												href="https://www2.gov.bc.ca/assets/gov/employment-business-and-economic-development/business-management/security-services/industry/legislation/licensingpolicy.pdf"
-												target="_blank"
-											>
-												Security Licensing Process and Licence Conditions Policies</a
-											>
-											for details on what must be in the letter.
-										</div>
-										<!-- 
-										<div class="field-hint mt-2">Maximum file size is 25 MB</div>
-									<div class="field-hint">Format must be .jpg, .tif, .png, or .bmp</div> -->
-									</div>
-								</div>
-							</ng-container>
+							</div>
 						</div>
-					</div>
+
+						<ng-template #NotViewOnly>
+							<div class="row">
+								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
+									<mat-radio-group aria-label="Select an option" formControlName="isPoliceOrPeaceOfficer">
+										<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
+										<mat-divider class="my-2"></mat-divider>
+										<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
+									</mat-radio-group>
+									<mat-error
+										class="mat-option-error"
+										*ngIf="
+											(form.get('isPoliceOrPeaceOfficer')?.dirty || form.get('isPoliceOrPeaceOfficer')?.touched) &&
+											form.get('isPoliceOrPeaceOfficer')?.invalid &&
+											form.get('isPoliceOrPeaceOfficer')?.hasError('required')
+										"
+										>An option must be selected</mat-error
+									>
+								</div>
+
+								<div class="row my-4" *ngIf="isPoliceOrPeaceOfficer.value == booleanTypeCodes.Yes">
+									<div class="offset-md-2 col-md-8 col-sm-12">
+										<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
+										<div class="text-minor-heading mb-2">Your Current Role</div>
+										<div class="row mt-2">
+											<div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
+												<mat-form-field>
+													<mat-select formControlName="officerRole">
+														<mat-option *ngFor="let item of policeOfficerTypes" [value]="item.code">
+															{{ item.desc }}
+														</mat-option>
+													</mat-select>
+													<mat-error *ngIf="form.get('officerRole')?.hasError('required')">This is required</mat-error>
+												</mat-form-field>
+											</div>
+											<div
+												class="col-xl-6 col-lg-12 col-md-12 col-sm-12"
+												*ngIf="officerRole.value == policeOfficerRoleCodes.Other"
+											>
+												<mat-form-field>
+													<mat-label>Describe Role</mat-label>
+													<input
+														matInput
+														formControlName="otherOfficerRole"
+														[errorStateMatcher]="matcher"
+														maxlength="50"
+													/>
+													<mat-error *ngIf="form.get('otherOfficerRole')?.hasError('required')"
+														>This is required</mat-error
+													>
+												</mat-form-field>
+											</div>
+										</div>
+										<div class="row mt-2">
+											<div class="col-12">
+												<div class="text-minor-heading mb-2">
+													Upload a letter of no conflict from your superior officer:
+												</div>
+												<p>
+													The letter from your supervisor must confirm any access you have to justice, court or police
+													information systems (PRIME/PIRS/PROS/CPIC or other police or corrections database). You cannot
+													utilize information from these systems while acting in the capacity of a security worker. See
+													Section 2.5.4 of the
+													<a
+														href="https://www2.gov.bc.ca/assets/gov/employment-business-and-economic-development/business-management/security-services/industry/legislation/licensingpolicy.pdf"
+														target="_blank"
+													>
+														Security Licensing Process and Licence Conditions Policies</a
+													>
+													for more information.
+												</p>
+
+												<app-file-upload [maxNumberOfFiles]="1"></app-file-upload>
+												<mat-error
+													class="mat-option-error"
+													*ngIf="
+														(form.get('letterOfNoConflictAttachments')?.dirty ||
+															form.get('letterOfNoConflictAttachments')?.touched) &&
+														form.get('letterOfNoConflictAttachments')?.invalid &&
+														form.get('letterOfNoConflictAttachments')?.hasError('required')
+													"
+													>This is required</mat-error
+												>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</ng-template>
+					</form>
 				</div>
 			</div>
 		</section>
 	`,
 	styles: [],
 })
-export class PoliceBackgroundComponent {
+export class PoliceBackgroundComponent implements OnInit, OnDestroy, LicenceFormStepComponent {
+	private licenceModelLoadedSubscription!: Subscription;
+
+	isViewOnlyPoliceOrPeaceOfficer = false;
+
 	booleanTypeCodes = BooleanTypeCode;
-	genderTypes = GenderTypes;
+	policeOfficerRoleCodes = PoliceOfficerRoleCode;
+	policeOfficerTypes = PoliceOfficerTypes;
+
+	policeOfficerSummaryText = '';
 
 	matcher = new FormErrorStateMatcher();
+	title = '';
+	subtitle = '';
 
-	form: FormGroup = this.formBuilder.group({
-		isPoliceOrPeaceOfficer: new FormControl(''),
-		officerRole: new FormControl(''),
-	});
+	readonly title_confirm = 'Are you currently a Police Officer or Peace Officer?';
+	readonly title_view = 'Confirm your Police Officer or Peace Officer information';
+	readonly subtitle_auth_new =
+		'A member of a police force as defined in the <i>British Columbia Police Act</i> may not hold a security worker licence.';
+	readonly subtitle_unauth_renew_update = 'Update any information that has changed since your last application';
 
-	constructor(private formBuilder: FormBuilder) {}
+	form: FormGroup = this.formBuilder.group(
+		{
+			isPoliceOrPeaceOfficer: new FormControl(),
+			officerRole: new FormControl(),
+			otherOfficerRole: new FormControl(),
+			letterOfNoConflictAttachments: new FormControl(),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalRequiredValidator(
+					'isPoliceOrPeaceOfficer',
+					(form) => !this.isViewOnlyPoliceOrPeaceOfficer
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'officerRole',
+					(form) => form.get('isPoliceOrPeaceOfficer')?.value == BooleanTypeCode.Yes
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'otherOfficerRole',
+					(form) => form.get('officerRole')?.value == PoliceOfficerRoleCode.Other
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'letterOfNoConflictAttachments',
+					(form) => form.get('isPoliceOrPeaceOfficer')?.value == BooleanTypeCode.Yes
+				),
+			],
+		}
+	);
+
+	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
+
+	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
+
+	ngOnInit(): void {
+		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
+			next: (loaded: LicenceModelSubject) => {
+				if (loaded.isLoaded) {
+					if (this.licenceApplicationService.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired) {
+						this.title = this.title_confirm;
+						this.subtitle = this.subtitle_auth_new;
+					} else {
+						this.title = this.title_view;
+						this.subtitle = this.subtitle_unauth_renew_update;
+					}
+
+					this.form.patchValue({
+						isPoliceOrPeaceOfficer: this.licenceApplicationService.licenceModel.isPoliceOrPeaceOfficer,
+						officerRole: this.licenceApplicationService.licenceModel.officerRole,
+						otherOfficerRole: this.licenceApplicationService.licenceModel.otherOfficerRole,
+						letterOfNoConflictAttachments: this.licenceApplicationService.licenceModel.letterOfNoConflictAttachments,
+					});
+
+					this.isViewOnlyPoliceOrPeaceOfficer =
+						this.licenceApplicationService.licenceModel.isViewOnlyPoliceOrPeaceOfficer ?? false;
+
+					if (this.isViewOnlyPoliceOrPeaceOfficer) {
+						if (this.licenceApplicationService.licenceModel.isPoliceOrPeaceOfficer == BooleanTypeCode.No) {
+							this.policeOfficerSummaryText = 'I am not a Police Officer or Peace Officer';
+						} else if (this.licenceApplicationService.licenceModel.isPoliceOrPeaceOfficer == BooleanTypeCode.Yes) {
+							if (this.licenceApplicationService.licenceModel.officerRole == PoliceOfficerRoleCode.Other) {
+								this.policeOfficerSummaryText = `I am a ${this.licenceApplicationService.licenceModel.otherOfficerRole}`;
+							} else {
+								const desc = PoliceOfficerTypes.find(
+									(item) => item.code == this.licenceApplicationService.licenceModel.officerRole
+								)?.desc;
+								this.policeOfficerSummaryText = `I am a ${desc}`;
+							}
+						}
+					}
+				}
+			},
+		});
+	}
+
+	ngOnDestroy() {
+		this.licenceModelLoadedSubscription.unsubscribe();
+	}
+
+	onEditInformation(): void {
+		this.isViewOnlyPoliceOrPeaceOfficer = false;
+	}
+
+	isFormValid(): boolean {
+		const attachments =
+			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
+				? this.fileUploadComponent.files
+				: '';
+		this.form.controls['letterOfNoConflictAttachments'].setValue(attachments);
+
+		this.form.markAllAsTouched();
+		return this.form.valid;
+	}
+
+	getDataToSave(): any {
+		if (this.officerRole.value != PoliceOfficerRoleCode.Other) {
+			this.form.patchValue({ otherOfficerRole: null });
+		}
+		return this.form.value;
+	}
 
 	get isPoliceOrPeaceOfficer(): FormControl {
 		return this.form.get('isPoliceOrPeaceOfficer') as FormControl;
+	}
+
+	get officerRole(): FormControl {
+		return this.form.get('officerRole') as FormControl;
 	}
 }

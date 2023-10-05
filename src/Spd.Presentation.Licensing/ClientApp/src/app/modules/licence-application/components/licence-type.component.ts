@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SwlApplicationTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
-import { LicenceApplicationService } from '../licence-application.service';
+import { LicenceApplicationService, LicenceModelSubject } from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-type',
@@ -15,10 +15,10 @@ import { LicenceApplicationService } from '../licence-application.service';
 				<div class="step-container row">
 					<div class="col-xl-6 col-lg-8 col-md-12 col-sm-12 mx-auto">
 						<form [formGroup]="form" novalidate>
-							<mat-radio-group aria-label="Select an option" formControlName="licenceStatusTypeCode">
+							<mat-radio-group aria-label="Select an option" formControlName="applicationTypeCode">
 								<div class="row">
 									<div class="col-lg-4">
-										<mat-radio-button class="radio-label" [value]="licenceStatusTypeCodes.NewOrExpired"
+										<mat-radio-button class="radio-label" [value]="applicationTypeCodes.NewOrExpired"
 											>New</mat-radio-button
 										>
 									</div>
@@ -32,7 +32,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 								<mat-divider class="mb-3"></mat-divider>
 								<div class="row">
 									<div class="col-lg-4">
-										<mat-radio-button class="radio-label" [value]="licenceStatusTypeCodes.Renewal"
+										<mat-radio-button class="radio-label" [value]="applicationTypeCodes.Renewal"
 											>Renewal</mat-radio-button
 										>
 									</div>
@@ -45,7 +45,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 								<mat-divider class="mb-3"></mat-divider>
 								<div class="row">
 									<div class="col-lg-4">
-										<mat-radio-button class="radio-label" [value]="licenceStatusTypeCodes.Replacement">
+										<mat-radio-button class="radio-label" [value]="applicationTypeCodes.Replacement">
 											Replacement
 										</mat-radio-button>
 									</div>
@@ -58,7 +58,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 								<mat-divider class="mb-3"></mat-divider>
 								<div class="row">
 									<div class="col-lg-4">
-										<mat-radio-button class="radio-label" [value]="licenceStatusTypeCodes.Update"
+										<mat-radio-button class="radio-label" [value]="applicationTypeCodes.Update"
 											>Update</mat-radio-button
 										>
 									</div>
@@ -74,9 +74,9 @@ import { LicenceApplicationService } from '../licence-application.service';
 						<mat-error
 							class="mat-option-error"
 							*ngIf="
-								(form.get('licenceStatusTypeCode')?.dirty || form.get('licenceStatusTypeCode')?.touched) &&
-								form.get('licenceStatusTypeCode')?.invalid &&
-								form.get('licenceStatusTypeCode')?.hasError('required')
+								(form.get('applicationTypeCode')?.dirty || form.get('applicationTypeCode')?.touched) &&
+								form.get('applicationTypeCode')?.invalid &&
+								form.get('applicationTypeCode')?.hasError('required')
 							"
 							>An option must be selected</mat-error
 						>
@@ -99,11 +99,11 @@ import { LicenceApplicationService } from '../licence-application.service';
 export class LicenceTypeComponent implements OnInit, OnDestroy {
 	private licenceModelLoadedSubscription!: Subscription;
 
-	licenceStatusTypeCodes = SwlApplicationTypeCode;
+	applicationTypeCodes = SwlApplicationTypeCode;
 	isDirtyAndInvalid = false;
 
 	form: FormGroup = this.formBuilder.group({
-		licenceStatusTypeCode: new FormControl(null, [Validators.required]),
+		applicationTypeCode: new FormControl(null, [Validators.required]),
 	});
 
 	constructor(
@@ -119,11 +119,11 @@ export class LicenceTypeComponent implements OnInit, OnDestroy {
 		}
 
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
-			next: (loaded: boolean) => {
+			next: (loaded: LicenceModelSubject) => {
 				console.log('loaded', loaded);
-				if (loaded) {
+				if (loaded.isLoaded) {
 					this.form.patchValue({
-						licenceStatusTypeCode: this.licenceApplicationService.licenceModel.applicationTypeCode,
+						applicationTypeCode: this.licenceApplicationService.licenceModel.applicationTypeCode,
 					});
 				}
 			},
@@ -152,6 +152,7 @@ export class LicenceTypeComponent implements OnInit, OnDestroy {
 	}
 
 	updateDataToSave(): void {
-		this.licenceApplicationService.licenceModel.applicationTypeCode = this.form.value.licenceStatusTypeCode;
+		this.licenceApplicationService.licenceModel.applicationTypeCode = this.form.value.applicationTypeCode;
+		this.licenceApplicationService.updateFlags();
 	}
 }

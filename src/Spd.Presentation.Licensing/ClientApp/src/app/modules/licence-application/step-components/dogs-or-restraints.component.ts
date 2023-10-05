@@ -7,7 +7,11 @@ import { FormControlValidators } from 'src/app/core/validators/form-control.vali
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
+import {
+	LicenceApplicationService,
+	LicenceFormStepComponent,
+	LicenceModelSubject,
+} from '../licence-application.service';
 
 @Component({
 	selector: 'app-dogs-or-restraints',
@@ -246,8 +250,8 @@ export class DogsOrRestraintsComponent implements OnInit, OnDestroy, LicenceForm
 
 	ngOnInit(): void {
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
-			next: (loaded: boolean) => {
-				if (loaded) {
+			next: (loaded: LicenceModelSubject) => {
+				if (loaded.isLoaded) {
 					this.form.patchValue({
 						useDogsOrRestraints: this.licenceApplicationService.licenceModel.useDogsOrRestraints,
 						carryAndUseRetraints: this.licenceApplicationService.licenceModel.carryAndUseRetraints,

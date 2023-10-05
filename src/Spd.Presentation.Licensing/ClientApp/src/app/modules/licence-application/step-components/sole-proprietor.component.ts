@@ -4,7 +4,11 @@ import { Subscription } from 'rxjs';
 import { BooleanTypeCode } from 'src/app/api/models';
 import { SwlApplicationTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
-import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
+import {
+	LicenceApplicationService,
+	LicenceFormStepComponent,
+	LicenceModelSubject,
+} from '../licence-application.service';
 
 @Component({
 	selector: 'app-sole-proprietor',
@@ -62,8 +66,8 @@ export class SoleProprietorComponent implements OnInit, OnDestroy, LicenceFormSt
 
 	ngOnInit(): void {
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
-			next: (loaded: boolean) => {
-				if (loaded) {
+			next: (loaded: LicenceModelSubject) => {
+				if (loaded.isLoaded || loaded.isSetFlags) {
 					// TODO Review question would only apply to those who have a SWL w/ Sole Prop already,
 					// otherwise they would see the same question shown to New applicants
 

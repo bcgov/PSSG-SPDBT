@@ -88,7 +88,7 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 													Upload a photo of your selected document type
 												</div>
 											</ng-template>
-											<app-file-upload [maxNumberOfFiles]="1" accept=".jpg,.tif,.png,.bmp"></app-file-upload>
+											<app-file-upload [maxNumberOfFiles]="1"></app-file-upload>
 											<mat-error
 												class="mat-option-error"
 												*ngIf="
@@ -98,8 +98,6 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 												"
 												>This is required</mat-error
 											>
-											<div class="field-hint mt-2">Maximum file size is 25 MB</div>
-											<div class="field-hint">Format must be .jpg, .tif, .png, or .bmp</div>
 										</div>
 									</div>
 								</ng-container>

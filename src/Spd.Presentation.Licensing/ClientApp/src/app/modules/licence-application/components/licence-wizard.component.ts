@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, distinctUntilChanged, Subscription } from 'rxjs';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
-import { LicenceApplicationService } from '../licence-application.service';
+import { LicenceApplicationService, LicenceModelSubject } from '../licence-application.service';
 import { StepBackgroundComponent } from '../step-components/main-steps/step-background.component';
 import { StepIdentificationComponent } from '../step-components/main-steps/step-identification.component';
 import { StepLicenceSelectionComponent } from '../step-components/main-steps/step-licence-selection.component';
@@ -24,24 +24,24 @@ import { StepReviewComponent } from '../step-components/main-steps/step-review.c
 						(selectionChange)="onStepSelectionChange($event)"
 						#stepper
 					>
-						<mat-step completed="true">
+						<!-- <mat-step completed="true">
 							<ng-template matStepLabel>
 								<span *ngIf="isNotReplacement; else isReplacementTabName">Licence Selection</span>
 								<ng-template #isReplacementTabName>Licence Confirmation</ng-template>
 							</ng-template>
 							<app-step-licence-selection (nextStepperStep)="onNextStepperStep(stepper)"></app-step-licence-selection>
-						</mat-step>
+						</mat-step> -->
 
 						<ng-container *ngIf="isNotReplacement">
-							<mat-step completed="true" *ngIf="isNotReplacement">
+							<!-- <mat-step completed="true">
 								<ng-template matStepLabel>Background</ng-template>
 								<app-step-background
 									(previousStepperStep)="onPreviousStepperStep(stepper)"
 									(nextStepperStep)="onNextStepperStep(stepper)"
 								></app-step-background>
-							</mat-step>
+							</mat-step> -->
 
-							<mat-step completed="true" *ngIf="isNotReplacement">
+							<mat-step completed="true">
 								<ng-template matStepLabel>Identification</ng-template>
 								<app-step-identification
 									(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -49,7 +49,7 @@ import { StepReviewComponent } from '../step-components/main-steps/step-review.c
 								></app-step-identification>
 							</mat-step>
 
-							<mat-step completed="true" *ngIf="isNotReplacement">
+							<mat-step completed="true">
 								<ng-template matStepLabel>Review and Confirm</ng-template>
 								<app-step-review
 									(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -59,7 +59,7 @@ import { StepReviewComponent } from '../step-components/main-steps/step-review.c
 						</ng-container>
 
 						<ng-container *ngIf="isReplacement">
-							<!-- <mat-step completed="true" *ngIf="isReplacement">
+							<!-- <mat-step completed="true">
 								<ng-template matStepLabel>Licence Confirmation</ng-template>
 								<app-step-review
 									(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -67,7 +67,7 @@ import { StepReviewComponent } from '../step-components/main-steps/step-review.c
 								></app-step-review>
 							</mat-step> -->
 
-							<mat-step completed="true" *ngIf="isReplacement">
+							<mat-step completed="true">
 								<ng-template matStepLabel>Address Update</ng-template>
 								<app-step-review
 									(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -152,8 +152,8 @@ export class LicenceWizardComponent implements OnInit, OnDestroy {
 		}
 
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
-			next: (loaded: boolean) => {
-				if (loaded) {
+			next: (loaded: LicenceModelSubject) => {
+				if (loaded.isLoaded || loaded.isSetFlags) {
 					this.isReplacement = this.licenceApplicationService.licenceModel.isReplacement ?? false;
 					this.isNotReplacement = this.licenceApplicationService.licenceModel.isNotReplacement ?? false;
 

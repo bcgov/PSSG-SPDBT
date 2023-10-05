@@ -4,6 +4,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { BehaviorSubject } from 'rxjs';
 import { BooleanTypeCode, GenderCode } from 'src/app/api/models';
 import {
+	PoliceOfficerRoleCode,
 	SelectOptions,
 	SwlApplicationTypeCode,
 	SwlCategoryTypeCode,
@@ -18,11 +19,18 @@ export interface LicenceFormStepComponent {
 }
 
 export class LicenceModel {
+	isNewOrExpired?: boolean = false;
 	isReplacement?: boolean = false;
 	isNotReplacement?: boolean = false;
 	showStepAccessCode?: boolean = false;
 	showStepSoleProprietor?: boolean = false;
 	showStepLicenceExpired?: boolean = false;
+	showStepDogsAndRestraints?: boolean = false;
+	showStepPoliceBackground?: boolean = false;
+	showStepMentalHealth?: boolean = false;
+	showStepCriminalHistory?: boolean = false;
+	showStepFingerprints?: boolean = false;
+	showStepBackgroundInfo?: boolean = false;
 
 	licenceTypeCode: SwlTypeCode | null = null;
 	applicationTypeCode: SwlApplicationTypeCode | null = null;
@@ -67,6 +75,22 @@ export class LicenceModel {
 	carryAndUseRetraintsDocument?: string | null = null;
 	carryAndUseRetraintsAttachments?: Array<File>[] | null = null;
 	licenceTermCode: SwlTermCode | null = null;
+	isViewOnlyPoliceOrPeaceOfficer?: boolean = false;
+	isPoliceOrPeaceOfficer: BooleanTypeCode | null = null;
+	officerRole?: string | null = null;
+	otherOfficerRole?: string | null = null;
+	letterOfNoConflictAttachments?: Array<File>[] | null = null;
+	isTreatedForMHC: BooleanTypeCode | null = null;
+	mentalHealthConditionAttachments?: Array<File>[] | null = null;
+	hasCriminalHistory: BooleanTypeCode | null = null;
+	proofOfFingerprintAttachments?: Array<File>[] | null = null;
+	previousNameFlag: BooleanTypeCode | null = null;
+	aliases?: Array<any>[] | null = null;
+}
+
+export class LicenceModelSubject {
+	isLoaded?: boolean = false;
+	isSetFlags?: boolean = false;
 }
 
 @Injectable({
@@ -74,7 +98,9 @@ export class LicenceModel {
 })
 export class LicenceApplicationService {
 	initialized = false;
-	licenceModelLoaded$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+	licenceModelLoaded$: BehaviorSubject<LicenceModelSubject> = new BehaviorSubject<LicenceModelSubject>(
+		new LicenceModelSubject()
+	);
 
 	licenceModel: LicenceModel = new LicenceModel();
 
@@ -88,7 +114,7 @@ export class LicenceApplicationService {
 		this.initialized = true;
 		this.licenceModel = new LicenceModel();
 		this.setFlags();
-		this.licenceModelLoaded$.next(true);
+		this.licenceModelLoaded$.next({ isLoaded: true, isSetFlags: false });
 		this.spinnerService.hide('loaderSpinner');
 	}
 
@@ -98,7 +124,7 @@ export class LicenceApplicationService {
 		this.initialized = true;
 		setTimeout(() => {
 			const defaults: LicenceModel = {
-				licenceTypeCode: SwlTypeCode.ArmouredVehicleLicence,
+				licenceTypeCode: SwlTypeCode.ArmouredVehiclePermit,
 				applicationTypeCode: SwlApplicationTypeCode.NewOrExpired,
 				isSoleProprietor: BooleanTypeCode.Yes,
 				currentLicenceNumber: '123456',
@@ -123,6 +149,10 @@ export class LicenceApplicationService {
 				// carryAndUseRetraintsAttachments: null,
 
 				licenceTermCode: SwlTermCode.ThreeYears,
+				isPoliceOrPeaceOfficer: BooleanTypeCode.No,
+				isTreatedForMHC: BooleanTypeCode.No,
+				hasCriminalHistory: BooleanTypeCode.No,
+				previousNameFlag: BooleanTypeCode.No,
 				swlCategoryList: [
 					// { desc: 'Armoured Car Guard', code: SwlCategoryTypeCode.ArmouredCarGuard },
 					{ desc: 'Body Armour Sales', code: SwlCategoryTypeCode.BodyArmourSales },
@@ -152,7 +182,7 @@ export class LicenceApplicationService {
 			console.log('loadLicenceNew defaults', defaults);
 			this.licenceModel = { ...defaults };
 			this.setFlags();
-			this.licenceModelLoaded$.next(true);
+			this.licenceModelLoaded$.next({ isLoaded: true, isSetFlags: false });
 			this.spinnerService.hide('loaderSpinner');
 		}, 1000);
 	}
@@ -184,12 +214,20 @@ export class LicenceApplicationService {
 				isDogsPurposeDetectionExplosives: null,
 				carryAndUseRetraints: null,
 				licenceTermCode: SwlTermCode.NintyDays,
-				swlCategoryList: [{ desc: 'Locksmith', code: SwlCategoryTypeCode.Locksmith }],
+				isPoliceOrPeaceOfficer: BooleanTypeCode.Yes,
+				officerRole: PoliceOfficerRoleCode.Other,
+				otherOfficerRole: 'Janitor',
+				isTreatedForMHC: null,
+				hasCriminalHistory: null,
+				previousNameFlag: null,
+				swlCategoryList: [
+					{ desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
+				],
 			};
 			console.log('loadLicenceRenewal defaults', defaults);
 			this.licenceModel = { ...defaults };
 			this.setFlags();
-			this.licenceModelLoaded$.next(true);
+			this.licenceModelLoaded$.next({ isLoaded: true, isSetFlags: false });
 			this.spinnerService.hide('loaderSpinner');
 		}, 1000);
 	}
@@ -200,7 +238,7 @@ export class LicenceApplicationService {
 		this.initialized = true;
 		setTimeout(() => {
 			const defaults: LicenceModel = {
-				licenceTypeCode: SwlTypeCode.ArmouredVehicleLicence,
+				licenceTypeCode: SwlTypeCode.ArmouredVehiclePermit,
 				applicationTypeCode: SwlApplicationTypeCode.Replacement,
 				isSoleProprietor: BooleanTypeCode.Yes,
 				currentLicenceNumber: '123456',
@@ -224,6 +262,10 @@ export class LicenceApplicationService {
 				carryAndUseRetraintsDocument: 'a',
 				carryAndUseRetraintsAttachments: null,
 				licenceTermCode: SwlTermCode.ThreeYears,
+				isPoliceOrPeaceOfficer: null,
+				isTreatedForMHC: null,
+				hasCriminalHistory: null,
+				previousNameFlag: null,
 				swlCategoryList: [
 					// { desc: 'Armoured Car Guard', code: SwlCategoryTypeCode.ArmouredCarGuard },
 					// { desc: 'Body Armour Sales', code: SwlCategoryTypeCode.BodyArmourSales },
@@ -253,7 +295,7 @@ export class LicenceApplicationService {
 			console.log('loadLicenceReplacement defaults', defaults);
 			this.licenceModel = { ...defaults };
 			this.setFlags();
-			this.licenceModelLoaded$.next(true);
+			this.licenceModelLoaded$.next({ isLoaded: true, isSetFlags: false });
 			this.spinnerService.hide('loaderSpinner');
 		}, 1000);
 	}
@@ -264,7 +306,7 @@ export class LicenceApplicationService {
 		this.initialized = true;
 		setTimeout(() => {
 			const defaults: LicenceModel = {
-				licenceTypeCode: SwlTypeCode.ArmouredVehicleLicence,
+				licenceTypeCode: SwlTypeCode.ArmouredVehiclePermit,
 				applicationTypeCode: SwlApplicationTypeCode.Update,
 				isSoleProprietor: BooleanTypeCode.Yes,
 				currentLicenceNumber: '123456',
@@ -288,11 +330,16 @@ export class LicenceApplicationService {
 				carryAndUseRetraintsDocument: 'a',
 				carryAndUseRetraintsAttachments: null,
 				licenceTermCode: SwlTermCode.ThreeYears,
+				isPoliceOrPeaceOfficer: BooleanTypeCode.Yes,
+				officerRole: PoliceOfficerRoleCode.AuxiliaryorReserveConstable,
+				isTreatedForMHC: null,
+				hasCriminalHistory: null,
+				previousNameFlag: null,
 				swlCategoryList: [
 					// { desc: 'Armoured Car Guard', code: SwlCategoryTypeCode.ArmouredCarGuard },
 					// { desc: 'Body Armour Sales', code: SwlCategoryTypeCode.BodyArmourSales },
 					{ desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
-					// { desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
+					{ desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
 					// { desc: 'Fire Investigator', code: SwlCategoryTypeCode.FireInvestigator },
 					// { desc: 'Locksmith', code: SwlCategoryTypeCode.Locksmith },
 					// { desc: 'Locksmith - Under Supervision', code: SwlCategoryTypeCode.LocksmithUnderSupervision },
@@ -317,7 +364,7 @@ export class LicenceApplicationService {
 			console.log('loadLicenceUpdate defaults', defaults);
 			this.licenceModel = { ...defaults };
 			this.setFlags();
-			this.licenceModelLoaded$.next(true);
+			this.licenceModelLoaded$.next({ isLoaded: true, isSetFlags: false });
 			this.spinnerService.hide('loaderSpinner');
 		}, 1000);
 	}
@@ -404,9 +451,16 @@ export class LicenceApplicationService {
 		delete this.licenceModel.licenceCategorySecurityGuard;
 	}
 
-	setFlags(): void {
-		this.licenceModel.isReplacement = this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Replacement;
+	updateFlags(): void {
+		this.setFlags();
+		console.log('updateFlags', this.licenceModel);
+		this.licenceModelLoaded$.next({ isLoaded: false, isSetFlags: true });
+	}
 
+	private setFlags(): void {
+		this.licenceModel.isNewOrExpired = this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired;
+
+		this.licenceModel.isReplacement = this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Replacement;
 		this.licenceModel.isNotReplacement = !this.licenceModel.isReplacement;
 
 		this.licenceModel.showStepAccessCode =
@@ -421,5 +475,55 @@ export class LicenceApplicationService {
 
 		this.licenceModel.showStepLicenceExpired =
 			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired;
+
+		this.licenceModel.showStepDogsAndRestraints = !!this.licenceModel.swlCategoryList.find(
+			(item) => item.code == SwlCategoryTypeCode.SecurityGuard
+		);
+
+		this.licenceModel.isViewOnlyPoliceOrPeaceOfficer = this.licenceModel.applicationTypeCode
+			? this.licenceModel.applicationTypeCode != SwlApplicationTypeCode.NewOrExpired
+			: false;
+
+		this.licenceModel.showStepPoliceBackground =
+			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired ||
+			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Update ||
+			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Renewal;
+
+		this.licenceModel.showStepMentalHealth =
+			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired ||
+			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Update ||
+			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Renewal;
+
+		this.licenceModel.showStepCriminalHistory =
+			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired ||
+			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Update ||
+			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Renewal;
+
+		this.licenceModel.showStepFingerprints =
+			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired ||
+			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Renewal;
+
+		this.licenceModel.showStepBackgroundInfo = false;
+
+		/*
+			
+
+		this.licenceModel.showStepPoliceBackground =
+			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired;
+
+		this.licenceModel.showStepMentalHealth =
+			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired;
+
+		this.licenceModel.showStepCriminalHistory =
+			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired;
+
+		this.licenceModel.showStepFingerprints =
+			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired ||
+			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Renewal;
+
+		this.licenceModel.showStepBackgroundInfo =
+			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Update ||
+			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Renewal;
+			*/
 	}
 }
