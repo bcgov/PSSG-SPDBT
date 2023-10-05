@@ -99,7 +99,7 @@ export class LicenceCategoryArmouredCarGuardComponent implements OnInit, Licence
 	isFormValid(): boolean {
 		const attachments =
 			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
-				? this.fileUploadComponent.files[0]
+				? this.fileUploadComponent.files
 				: '';
 		this.form.controls['attachments'].setValue(attachments);
 

@@ -10,25 +10,25 @@ import { SPD_CONSTANTS } from '../constants/constants';
 export class UtilService {
 	//------------------------------------
 	// Session storage
-	readonly ORG_REG_STATE_KEY: string = SPD_CONSTANTS.sessionStorage.organizationRegStateKey;
-	readonly CRC_PORTAL_STATE_KEY: string = SPD_CONSTANTS.sessionStorage.crcPortalStateKey;
+	// readonly ORG_REG_STATE_KEY: string = SPD_CONSTANTS.sessionStorage.organizationRegStateKey;
+	// readonly CRC_PORTAL_STATE_KEY: string = SPD_CONSTANTS.sessionStorage.crcPortalStateKey;
 
-	setSessionData(key: string, data: any): void {
-		sessionStorage.setItem(key, data);
-	}
+	// setSessionData(key: string, data: any): void {
+	// 	sessionStorage.setItem(key, data);
+	// }
 
-	getSessionData(key: string): any {
-		return sessionStorage.getItem(key);
-	}
+	// getSessionData(key: string): any {
+	// 	return sessionStorage.getItem(key);
+	// }
 
-	clearSessionData(key: string): void {
-		sessionStorage.removeItem(key);
-	}
+	// clearSessionData(key: string): void {
+	// 	sessionStorage.removeItem(key);
+	// }
 
-	clearAllSessionData(): void {
-		this.clearSessionData(this.ORG_REG_STATE_KEY);
-		this.clearSessionData(this.CRC_PORTAL_STATE_KEY);
-	}
+	// clearAllSessionData(): void {
+	// 	this.clearSessionData(this.ORG_REG_STATE_KEY);
+	// 	this.clearSessionData(this.CRC_PORTAL_STATE_KEY);
+	// }
 
 	//------------------------------------
 	// Table config

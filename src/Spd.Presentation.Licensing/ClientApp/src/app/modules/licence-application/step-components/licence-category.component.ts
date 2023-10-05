@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Subscription } from 'rxjs';
 import { SelectOptions, SwlCategoryTypeCode, SwlCategoryTypes } from 'src/app/core/code-types/model-desc.models';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
@@ -42,9 +43,11 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 						</mat-error>
 					</div>
 
-					<div class="row mt-4">
+					<div class="row">
 						<div class="offset-xxl-2 col-xxl-8 offset-xl-1 col-xl-10 col-lg-12">
-							<div class="row" *ngFor="let item of swlCategoryList; let i = index">
+							<div class="row" *ngFor="let item of swlCategoryList; let i = index; let first = first">
+								<mat-divider class="mt-4 mb-3" *ngIf="first"></mat-divider>
+
 								<div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12">
 									<mat-chip-option [selectable]="false" class="mat-chip-green"> Category #{{ i + 1 }} </mat-chip-option>
 								</div>
@@ -57,12 +60,13 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 										class="w-auto float-end"
 										style="color: var(--color-red);"
 										aria-label="Remove category"
-										(click)="onRemove(i)"
+										(click)="onRemove(item.code, i)"
 									>
 										<mat-icon>delete_outline</mat-icon>Remove
 									</button>
 								</div>
-								<mat-divider class="my-2"></mat-divider>
+
+								<mat-divider class="my-3"></mat-divider>
 							</div>
 						</div>
 					</div>
@@ -80,7 +84,9 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 		`,
 	],
 })
-export class LicenceCategoryComponent implements OnInit, LicenceFormStepComponent {
+export class LicenceCategoryComponent implements OnInit, OnDestroy, LicenceFormStepComponent {
+	private licenceModelLoadedSubscription!: Subscription;
+
 	category = '';
 	swlCategoryList: SelectOptions[] = [];
 	isDirtyAndInvalid = false;
@@ -93,7 +99,7 @@ export class LicenceCategoryComponent implements OnInit, LicenceFormStepComponen
 	constructor(private dialog: MatDialog, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.licenceApplicationService.licenceModelLoaded$.subscribe({
+		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: boolean) => {
 				if (loaded) {
 					this.swlCategoryList = this.licenceApplicationService.licenceModel.swlCategoryList;
@@ -103,6 +109,10 @@ export class LicenceCategoryComponent implements OnInit, LicenceFormStepComponen
 		});
 	}
 
+	ngOnDestroy() {
+		this.licenceModelLoadedSubscription.unsubscribe();
+	}
+
 	onAddCategory(): void {
 		if (this.category) {
 			this.isDirtyAndInvalid = false;
@@ -110,10 +120,12 @@ export class LicenceCategoryComponent implements OnInit, LicenceFormStepComponen
 			const option = this.swlCategoryTypes.find((item) => item.code == this.category)!;
 			this.swlCategoryList.push({ code: option?.code, desc: option.desc });
 			this.setValidCategoryList();
+
+			this.category = '';
 		}
 	}
 
-	onRemove(i: any) {
+	onRemove(code: string, i: any) {
 		const data: DialogOptions = {
 			icon: 'warning',
 			title: 'Confirmation',
@@ -127,7 +139,9 @@ export class LicenceCategoryComponent implements OnInit, LicenceFormStepComponen
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
+					const item = this.swlCategoryList.at(i);
 					this.swlCategoryList.splice(i, 1);
+					this.licenceApplicationService.clearLicenceCategoryData(code as SwlCategoryTypeCode);
 					this.setValidCategoryList();
 				}
 			});

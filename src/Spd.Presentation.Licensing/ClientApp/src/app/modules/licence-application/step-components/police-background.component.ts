@@ -26,7 +26,7 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 
 					<div class="row mt-4" *ngIf="isPoliceOrPeaceOfficer.value == booleanTypeCodes.Yes">
 						<div class="offset-md-2 col-md-8 col-sm-12">
-							<mat-divider class="mb-3" style="border-top-color: var(--color-primary-light);"></mat-divider>
+							<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 							<div class="text-minor-heading mb-2">Current Information</div>
 							<ng-container>
 								<div class="row mt-2">
