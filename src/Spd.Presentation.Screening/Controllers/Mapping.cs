@@ -12,7 +12,7 @@ internal class Mappings : Profile
 {
     public Mappings()
     {
-        CreateMap<PortalUserIdentityInfo, PortalUserIdentity>();
+        CreateMap<BceidIdentityInfo, PortalUserIdentity>();
         CreateMap<IdirUserIdentityInfo, IdirUserIdentity>();
         CreateMap<OrgResponse, AppOrgResponse>()
            .ForMember(d => d.OrgId, opt => opt.MapFrom(s => s.Id))
