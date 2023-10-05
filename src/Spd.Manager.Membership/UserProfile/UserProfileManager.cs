@@ -9,6 +9,7 @@ using Spd.Resource.Organizations.Registration;
 using Spd.Resource.Organizations.User;
 using Spd.Utilities.BCeIDWS;
 using Spd.Utilities.Shared;
+using Spd.Utilities.Shared.Exceptions;
 
 namespace Spd.Manager.Membership.UserProfile
 {
@@ -143,48 +144,55 @@ namespace Spd.Manager.Membership.UserProfile
                 isFirstTimeLogin = true;
             }
 
-            var existingUser = (PortalUserListResp)await _portalUserRepository.QueryAsync(
-                new PortalUserQry() { UserEmail = cmd.IdirUserIdentity.Email, OrgIdOrParentOrgId = SpdConstants.BC_GOV_ORG_ID },
-                ct);
-
-            var result = existingUser.Items.FirstOrDefault();
-            _logger.LogDebug($"userId = {result.Id}, username={result.LastName}, {result.FirstName}");
-
-            if (result == null)
+            if (cmd.IdirUserIdentity.Email != null)
             {
-                CreatePortalUserCmd createUserCmd = new CreatePortalUserCmd()
+                var existingUser = (PortalUserListResp)await _portalUserRepository.QueryAsync(
+                    new PortalUserQry() { UserEmail = cmd.IdirUserIdentity.Email, OrgIdOrParentOrgId = SpdConstants.BC_GOV_ORG_ID },
+                    ct);
+
+                var result = existingUser.Items.FirstOrDefault();
+
+                if (result == null)
                 {
-                    OrgId = SpdConstants.BC_GOV_ORG_ID,
-                    EmailAddress = cmd.IdirUserIdentity.Email,
-                    FirstName = cmd.IdirUserIdentity.FirstName,
-                    LastName = cmd.IdirUserIdentity.LastName,
-                    IdentityId = identityId,
-                };
-                await _portalUserRepository.ManageAsync(createUserCmd, ct);
+                    CreatePortalUserCmd createUserCmd = new CreatePortalUserCmd()
+                    {
+                        OrgId = SpdConstants.BC_GOV_ORG_ID,
+                        EmailAddress = cmd.IdirUserIdentity.Email,
+                        FirstName = cmd.IdirUserIdentity.FirstName,
+                        LastName = cmd.IdirUserIdentity.LastName,
+                        IdentityId = identityId,
+                    };
+                    result = await _portalUserRepository.ManageAsync(createUserCmd, ct);
+                }
+                else
+                {
+                    _logger.LogDebug($"userId = {result.Id}, username={result.LastName}, {result.FirstName}");
+                    UpdatePortalUserCmd updateUserCmd = new UpdatePortalUserCmd()
+                    {
+                        Id = result.Id,
+                        OrgId = SpdConstants.BC_GOV_ORG_ID,
+                        EmailAddress = cmd.IdirUserIdentity.Email,
+                        FirstName = cmd.IdirUserIdentity.FirstName,
+                        LastName = cmd.IdirUserIdentity.LastName,
+                        IdentityId = identityId,
+                    };
+                    result = await _portalUserRepository.ManageAsync(updateUserCmd, ct);
+                }
+                var response = _mapper.Map<IdirUserProfileResponse>(result);
+                response.OrgName = idirDetail?.MinistryName;
+                response.UserGuid = cmd.IdirUserIdentity?.UserGuid;
+                response.UserDisplayName = cmd.IdirUserIdentity?.DisplayName;
+                response.IdirUserName = cmd.IdirUserIdentity?.IdirUserName;
+                response.IsFirstTimeLogin = isFirstTimeLogin;
+                response.IsPSA = idirDetail?.IsPSA ?? false;
+                //todo: temp hardcode
+                response.OrgId = Guid.Parse("64540211-d346-ee11-b845-00505683fbf4");
+                return response;
             }
             else
             {
-                UpdatePortalUserCmd updateUserCmd = new UpdatePortalUserCmd()
-                {
-                    Id = result.Id,
-                    OrgId = SpdConstants.BC_GOV_ORG_ID,
-                    EmailAddress = cmd.IdirUserIdentity.Email,
-                    FirstName = cmd.IdirUserIdentity.FirstName,
-                    LastName = cmd.IdirUserIdentity.LastName,
-                    IdentityId = identityId,
-                };
-                await _portalUserRepository.ManageAsync(updateUserCmd, ct);
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "no email from idir.");
             }
-            var response = _mapper.Map<IdirUserProfileResponse>(result);
-            response.OrgName = idirDetail?.MinistryName;
-            response.UserGuid = cmd.IdirUserIdentity?.UserGuid;
-            response.UserDisplayName = cmd.IdirUserIdentity?.DisplayName;
-            response.IdirUserName = cmd.IdirUserIdentity?.IdirUserName;
-            response.IsFirstTimeLogin = isFirstTimeLogin;
-            response.IsPSA = idirDetail?.IsPSA ?? false;
-            //todo: temp hardcode
-            response.OrgId = Guid.Parse("64540211-d346-ee11-b845-00505683fbf4");
-            return response;
         }
 
         public async Task<IdirUserProfileResponse?> Handle(GetIdirUserProfileQuery qry, CancellationToken ct)

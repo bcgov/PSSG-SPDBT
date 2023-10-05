@@ -25,34 +25,6 @@ namespace Spd.Utilities.LogonUser
         }
 
         public static string? GetIssuer(this IPrincipal principal) => ValidatePrincipal(principal).GetClaimValue(ISSUER);
-
-        public static string? GetBcscSub(this IPrincipal principal) => ValidatePrincipal(principal).GetClaimValue(SUB);
-
-        public static string? GetUserName(this IPrincipal principal)
-        {
-            if (BCeID_IDENTITY_PROVIDERS.Contains(principal.GetIdentityProvider()))
-                return ValidatePrincipal(principal).GetClaimValue(BCeID_USER_NAME);
-            return null;
-        }
-
-        public static string? GetUserDisplayName(this IPrincipal principal) => ValidatePrincipal(principal).GetClaimValue(BCeID_DISPLAY_USER_NAME);
-
-        public static string? GetUserFirstName(this IPrincipal principal) => ValidatePrincipal(principal).GetClaimValue(ClaimTypes.GivenName);
-
-        public static string? GetUserLastName(this IPrincipal principal) => ValidatePrincipal(principal).GetClaimValue(ClaimTypes.Surname);
-
-        public static string? GetUserEmail(this IPrincipal principal) => ValidatePrincipal(principal).GetClaimValue(ClaimTypes.Email);
-
-        public static Guid GetUserGuid(this IPrincipal principal)
-        {
-            if (BCeID_IDENTITY_PROVIDERS.Contains(principal.GetIdentityProvider()))
-            {
-                var claim = ValidatePrincipal(principal).GetClaimValue(BCeID_USER_GUID);
-                return claim == null ? Guid.Empty : Guid.Parse(claim);
-            }
-            return Guid.Empty;
-        }
-
         public static string? GetUserId(this IPrincipal principal) => ValidatePrincipal(principal).GetClaimValue(SPD_USERID);
         public static bool IsPSA(this IPrincipal principal) => false;
         public static string? GetUserRole(this IPrincipal principal) => ValidatePrincipal(principal).GetClaimValue(ClaimTypes.Role);
@@ -121,15 +93,7 @@ namespace Spd.Utilities.LogonUser
                 IdirUserName = claim.GetClaimValue("idir_username")
             };
         }
-        public static Guid GetBizGuid(this IPrincipal principal)
-        {
-            if (BCeID_IDENTITY_PROVIDERS.Contains(principal.GetIdentityProvider()))
-            {
-                var claim = ValidatePrincipal(principal).GetClaimValue(BCeID_BUSINESS_GUID);
-                return claim == null ? Guid.Empty : Guid.Parse(claim);
-            }
-            return Guid.Empty;
-        }
+
         public static string? GetIdentityProvider(this IPrincipal principal) => ValidatePrincipal(principal).GetClaimValue(IDENTITY_PROVIDER);
 
 

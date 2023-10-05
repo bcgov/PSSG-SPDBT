@@ -164,13 +164,13 @@ namespace Spd.Utilities.LogonUser
                 return false;
             }
 
+            var userIdInfo = context.User.GetBceidUserIdentityInfo();
             //validate if the orgId in httpHeader is belong to this user and add the user role to claims.
-            OrgUserProfileResponse? userProfile = await cache.Get<OrgUserProfileResponse>($"{OrgUserCacheKeyPrefix}{context.User.GetUserGuid()}");
+            OrgUserProfileResponse? userProfile = await cache.Get<OrgUserProfileResponse>($"{OrgUserCacheKeyPrefix}{userIdInfo.UserGuid}");
             if (userProfile == null || userProfile.UserInfos.Any(u => u.UserId == Guid.Empty))
             {
-                var userIdInfo = context.User.GetBceidUserIdentityInfo();
                 userProfile = await mediator.Send(new GetCurrentUserProfileQuery(mapper.Map<PortalUserIdentity>(userIdInfo)));
-                await cache.Set<OrgUserProfileResponse>($"{OrgUserCacheKeyPrefix}{context.User.GetUserGuid()}", userProfile, new TimeSpan(0, 30, 0));
+                await cache.Set<OrgUserProfileResponse>($"{OrgUserCacheKeyPrefix}{userIdInfo.UserGuid}", userProfile, new TimeSpan(0, 30, 0));
             }
 
             if (userProfile?.UserInfos == null)
@@ -178,7 +178,7 @@ namespace Spd.Utilities.LogonUser
                 await ReturnUnauthorized(context, "invalid user");
                 return false;
             }
-            UserInfo? ui = userProfile.UserInfos.FirstOrDefault(ui => ui.UserGuid == context.User.GetUserGuid() && ui.OrgId == orgId);
+            UserInfo? ui = userProfile.UserInfos.FirstOrDefault(ui => ui.UserGuid == userIdInfo.UserGuid && ui.OrgId == orgId);
             if (ui == null)
             {
                 await ReturnUnauthorized(context, "invalid user or organization");
