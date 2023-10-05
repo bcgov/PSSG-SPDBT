@@ -40,7 +40,8 @@ namespace Spd.Presentation.Screening.Controllers
         [HttpPost]
         public async Task<InvitationResponse> VerifyUserInvitation([FromBody][Required] InvitationRequest orgUserInvitationRequest)
         {
-            return await _mediator.Send(new VerifyUserInvitation(orgUserInvitationRequest, _currentUser.GetBizGuid(), _currentUser.GetUserGuid()));
+            var userIdentityInfo = _currentUser.GetBceidUserIdentityInfo();
+            return await _mediator.Send(new VerifyUserInvitation(orgUserInvitationRequest, userIdentityInfo.BizGuid, (Guid)userIdentityInfo.UserGuid));
         }
 
         [Authorize(Policy = "OnlyBCeID", Roles = "Primary")]
