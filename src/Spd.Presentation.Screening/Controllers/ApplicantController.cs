@@ -64,7 +64,7 @@ namespace Spd.Presentation.Screening.Controllers
         [HttpPost]
         public async Task<ApplicationCreateResponse> CreateApplicantApp([FromBody] ApplicantAppCreateRequest appCreateRequest)
         {
-            var applicantInfo = _currentUser.GetApplicantIdentityInfo();
+            var applicantInfo = _currentUser.GetBcscUserIdentityInfo();
             appCreateRequest.OriginTypeCode = ApplicationOriginTypeCode.Portal;
 
             //bcsc user name and birth date must be the same as name inside ApplicantAppCreateRequest          
@@ -111,7 +111,7 @@ namespace Spd.Presentation.Screening.Controllers
         [HttpGet]
         public async Task<ShareableClearanceResponse> GetShareableClearanceWithOrg([FromQuery] Guid withOrgId, [FromQuery] ServiceTypeCode serviceType, CancellationToken ct)
         {
-            var applicantInfo = _currentUser.GetApplicantIdentityInfo();
+            var applicantInfo = _currentUser.GetBcscUserIdentityInfo();
             return await _mediator.Send(new ShareableClearanceQuery(withOrgId, applicantInfo.Sub, serviceType), ct);
         }
 
@@ -142,7 +142,7 @@ namespace Spd.Presentation.Screening.Controllers
         [Authorize(Policy = "OnlyBcsc")]
         public async Task<ApplicantUserInfo> ApplicantUserInfo()
         {
-            var info = _currentUser.GetApplicantIdentityInfo();
+            var info = _currentUser.GetBcscUserIdentityInfo();
             string? str = info.Gender?.ToLower();
             GenderCode? gender = str switch
             {
@@ -180,7 +180,7 @@ namespace Spd.Presentation.Screening.Controllers
         [HttpGet]
         public async Task<ApplicantApplicationFileListResponse> GetApplicantAppFiles([FromRoute] Guid applicationId)
         {
-            var applicantInfo = _currentUser.GetApplicantIdentityInfo();
+            var applicantInfo = _currentUser.GetBcscUserIdentityInfo();
 
             return await _mediator.Send(new ApplicantApplicationFileQuery(applicationId, applicantInfo.Sub));
         }
@@ -202,7 +202,7 @@ namespace Spd.Presentation.Screening.Controllers
             if (fileUploadConfig == null)
                 throw new ConfigurationErrorsException("UploadFile configuration does not exist.");
 
-            var applicantInfo = _currentUser.GetApplicantIdentityInfo();
+            var applicantInfo = _currentUser.GetBcscUserIdentityInfo();
 
             //validation files
             foreach (IFormFile file in fileUploadRequest.Files)

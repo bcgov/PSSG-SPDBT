@@ -46,13 +46,14 @@ namespace Spd.Manager.Membership.OrgRegistration
             var orgRegistration = _mapper.Map<Spd.Resource.Organizations.Registration.OrgRegistration>(request.CreateOrgRegistrationRequest);
             if (_currentUser.IsAuthenticated())
             {
+                var userIdentityInfo = _currentUser.GetBceidUserIdentityInfo();
                 orgRegistration.IdentityProviderTypeCode = _currentUser.GetIdentityProvider() switch
                 {
                     "bceidboth" or "bceidbusiness" => IdentityProviderTypeEnum.BusinessBceId,
                     _ => null
                 };
-                orgRegistration.BCeIDUserGuid = _currentUser.GetUserGuid();
-                orgRegistration.BizIdentityGuid = _currentUser.GetBizGuid();
+                orgRegistration.BCeIDUserGuid = userIdentityInfo.UserGuid;
+                orgRegistration.BizIdentityGuid = userIdentityInfo.BizGuid;
             }
             await _orgRegRepository.AddRegistrationAsync(new CreateOrganizationRegistrationCommand(orgRegistration, request.HostUrl), cancellationToken);
             response.CreateSuccess = true;
@@ -79,11 +80,12 @@ namespace Spd.Manager.Membership.OrgRegistration
         private async Task<OrgRegistrationCreateResponse> CheckDuplicate(OrgRegistrationCreateRequest request, CancellationToken cancellationToken)
         {
             OrgRegistrationCreateResponse resp = new OrgRegistrationCreateResponse();
+            var userIdentityInfo = _currentUser.GetBceidUserIdentityInfo();
 
             //duplicated in organization
             if (_currentUser.IsAuthenticated())
             {
-                var org = (OrgsQryResult)await _orgRepository.QueryOrgAsync(new OrgsQry(_currentUser.GetBizGuid()), cancellationToken);
+                var org = (OrgsQryResult)await _orgRepository.QueryOrgAsync(new OrgsQry(userIdentityInfo.BizGuid), cancellationToken);
                 if (org != null && org.OrgResults.Any())
                 {
                     resp.HasPotentialDuplicate = true;
@@ -103,7 +105,7 @@ namespace Spd.Manager.Membership.OrgRegistration
             //duplicated in org registration
             if (_currentUser.IsAuthenticated())
             {
-                var orgReg = await _orgRegRepository.Query(new OrgRegistrationQuery(null, _currentUser.GetBizGuid()), cancellationToken);
+                var orgReg = await _orgRegRepository.Query(new OrgRegistrationQuery(null, userIdentityInfo.BizGuid), cancellationToken);
                 if (orgReg != null && orgReg.OrgRegistrationResults.Any())
                 {
                     resp.HasPotentialDuplicate = true;

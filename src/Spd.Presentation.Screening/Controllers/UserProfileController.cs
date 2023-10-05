@@ -40,7 +40,7 @@ namespace Spd.Presentation.Screening.Controllers
         [Authorize(Policy = "OnlyBCeID")]
         public async Task<OrgUserProfileResponse> OrgUserWhoami()
         {
-            PortalUserIdentityInfo userIdentity = _currentUser.GetPortalUserIdentityInfo();
+            BceidIdentityInfo userIdentity = _currentUser.GetBceidUserIdentityInfo();
             return await _mediator.Send(new GetCurrentUserProfileQuery(_mapper.Map<PortalUserIdentity>(userIdentity)));
         }
 
@@ -53,7 +53,7 @@ namespace Spd.Presentation.Screening.Controllers
         [Authorize(Policy = "OnlyBcsc", Roles = "Applicant")]
         public async Task<ApplicantProfileResponse> ApplicantWhoami()
         {
-            var info = _currentUser.GetApplicantIdentityInfo();
+            var info = _currentUser.GetBcscUserIdentityInfo();
             var response = await _mediator.Send(new GetApplicantProfileQuery(info.Sub));
             if (response == null)
             {
