@@ -11,89 +11,91 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 @Component({
 	selector: 'app-mailing-address',
 	template: `
-		<form [formGroup]="form" novalidate>
+		<section class="step-section p-4">
 			<div class="step">
 				<app-step-title title="What is your organization's mailing address?"></app-step-title>
-				<div class="row">
-					<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
-						<app-address-form-autocomplete
-							(autocompleteAddress)="onAddressAutocomplete($event)"
-							(enterAddressManually)="onEnterAddressManually()"
-						>
-						</app-address-form-autocomplete>
-						<mat-error
-							*ngIf="
-								(form.get('addressSelected')?.dirty || form.get('addressSelected')?.touched) &&
-								form.get('addressSelected')?.invalid &&
-								form.get('addressSelected')?.hasError('required')
-							"
-						>
-							This is required
-						</mat-error>
-					</div>
-				</div>
-
-				<section *ngIf="form.get('addressSelected')?.value">
+				<form [formGroup]="form" novalidate>
 					<div class="row">
 						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
-							<mat-divider class="my-3" style="border-top-color: var(--color-primary-light);"></mat-divider>
-							<div class="text-minor-heading fw-semibold mb-2">Address Information</div>
-							<mat-form-field>
-								<mat-label>Street Address 1</mat-label>
-								<input matInput formControlName="mailingAddressLine1" [errorStateMatcher]="matcher" maxlength="100" />
-								<mat-error *ngIf="form.get('mailingAddressLine1')?.hasError('required')">This is required</mat-error>
-							</mat-form-field>
+							<app-address-form-autocomplete
+								(autocompleteAddress)="onAddressAutocomplete($event)"
+								(enterAddressManually)="onEnterAddressManually()"
+							>
+							</app-address-form-autocomplete>
+							<mat-error
+								*ngIf="
+									(form.get('addressSelected')?.dirty || form.get('addressSelected')?.touched) &&
+									form.get('addressSelected')?.invalid &&
+									form.get('addressSelected')?.hasError('required')
+								"
+							>
+								This is required
+							</mat-error>
 						</div>
 					</div>
 
-					<div class="row">
-						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
-							<mat-form-field>
-								<mat-label>Street Address 2 <span class="optional-label">(optional)</span></mat-label>
-								<input matInput formControlName="mailingAddressLine2" maxlength="100" />
-							</mat-form-field>
+					<section *ngIf="form.get('addressSelected')?.value">
+						<div class="row">
+							<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
+								<mat-divider class="my-3" style="border-top-color: var(--color-primary-light);"></mat-divider>
+								<div class="text-minor-heading fw-semibold mb-2">Address Information</div>
+								<mat-form-field>
+									<mat-label>Street Address 1</mat-label>
+									<input matInput formControlName="mailingAddressLine1" [errorStateMatcher]="matcher" maxlength="100" />
+									<mat-error *ngIf="form.get('mailingAddressLine1')?.hasError('required')">This is required</mat-error>
+								</mat-form-field>
+							</div>
 						</div>
-					</div>
-					<div class="row">
-						<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
-							<mat-form-field>
-								<mat-label>City</mat-label>
-								<input matInput formControlName="mailingCity" maxlength="100" />
-								<mat-error *ngIf="form.get('mailingCity')?.hasError('required')">This is required</mat-error>
-							</mat-form-field>
+
+						<div class="row">
+							<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
+								<mat-form-field>
+									<mat-label>Street Address 2 <span class="optional-label">(optional)</span></mat-label>
+									<input matInput formControlName="mailingAddressLine2" maxlength="100" />
+								</mat-form-field>
+							</div>
 						</div>
-						<div class="col-lg-4 col-md-6 col-sm-12">
-							<mat-form-field>
-								<mat-label>Postal/Zip Code</mat-label>
-								<input
-									matInput
-									formControlName="mailingPostalCode"
-									oninput="this.value = this.value.toUpperCase()"
-									maxlength="20"
-								/>
-								<mat-error *ngIf="form.get('mailingPostalCode')?.hasError('required')">This is required</mat-error>
-							</mat-form-field>
+						<div class="row">
+							<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
+								<mat-form-field>
+									<mat-label>City</mat-label>
+									<input matInput formControlName="mailingCity" maxlength="100" />
+									<mat-error *ngIf="form.get('mailingCity')?.hasError('required')">This is required</mat-error>
+								</mat-form-field>
+							</div>
+							<div class="col-lg-4 col-md-6 col-sm-12">
+								<mat-form-field>
+									<mat-label>Postal/Zip Code</mat-label>
+									<input
+										matInput
+										formControlName="mailingPostalCode"
+										oninput="this.value = this.value.toUpperCase()"
+										maxlength="20"
+									/>
+									<mat-error *ngIf="form.get('mailingPostalCode')?.hasError('required')">This is required</mat-error>
+								</mat-form-field>
+							</div>
 						</div>
-					</div>
-					<div class="row">
-						<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
-							<mat-form-field>
-								<mat-label>Province/State</mat-label>
-								<input matInput formControlName="mailingProvince" maxlength="100" />
-								<mat-error *ngIf="form.get('mailingProvince')?.hasError('required')">This is required</mat-error>
-							</mat-form-field>
+						<div class="row">
+							<div class="offset-lg-2 col-lg-4 col-md-6 col-sm-12">
+								<mat-form-field>
+									<mat-label>Province/State</mat-label>
+									<input matInput formControlName="mailingProvince" maxlength="100" />
+									<mat-error *ngIf="form.get('mailingProvince')?.hasError('required')">This is required</mat-error>
+								</mat-form-field>
+							</div>
+							<div class="col-lg-4 col-md-6 col-sm-12">
+								<mat-form-field>
+									<mat-label>Country</mat-label>
+									<input matInput formControlName="mailingCountry" maxlength="100" />
+									<mat-error *ngIf="form.get('mailingCountry')?.hasError('required')">This is required</mat-error>
+								</mat-form-field>
+							</div>
 						</div>
-						<div class="col-lg-4 col-md-6 col-sm-12">
-							<mat-form-field>
-								<mat-label>Country</mat-label>
-								<input matInput formControlName="mailingCountry" maxlength="100" />
-								<mat-error *ngIf="form.get('mailingCountry')?.hasError('required')">This is required</mat-error>
-							</mat-form-field>
-						</div>
-					</div>
-				</section>
+					</section>
+				</form>
 			</div>
-		</form>
+		</section>
 	`,
 	styles: [
 		`

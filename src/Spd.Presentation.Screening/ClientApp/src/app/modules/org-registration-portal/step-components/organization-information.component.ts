@@ -10,79 +10,81 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 @Component({
 	selector: 'app-organization-information',
 	template: `
-		<form [formGroup]="form" novalidate>
+		<section class="step-section p-4">
 			<div class="step">
 				<app-step-title
 					title="Does your organization have a shared inbox and/or central phone line?"
 					subtitle="This is where criminal record check results will be returned to"
 				></app-step-title>
-				<div class="row">
-					<div class="offset-md-4 col-md-4 col-sm-12">
-						<mat-radio-group aria-label="Select an option" formControlName="hasPhoneOrEmail">
-							<mat-radio-button class="wide-radio" [value]="booleanTypeCodes.No">No</mat-radio-button>
-							<mat-divider class="my-3"></mat-divider>
-							<mat-radio-button class="wide-radio" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
-						</mat-radio-group>
-						<mat-error
-							class="mat-option-error"
-							*ngIf="
-								(form.get('hasPhoneOrEmail')?.dirty || form.get('hasPhoneOrEmail')?.touched) &&
-								form.get('hasPhoneOrEmail')?.invalid &&
-								form.get('hasPhoneOrEmail')?.hasError('required')
-							"
-							>An option must be selected</mat-error
-						>
+				<form [formGroup]="form" novalidate>
+					<div class="row">
+						<div class="offset-md-4 col-md-4 col-sm-12">
+							<mat-radio-group aria-label="Select an option" formControlName="hasPhoneOrEmail">
+								<mat-radio-button class="wide-radio" [value]="booleanTypeCodes.No">No</mat-radio-button>
+								<mat-divider class="my-3"></mat-divider>
+								<mat-radio-button class="wide-radio" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
+							</mat-radio-group>
+							<mat-error
+								class="mat-option-error"
+								*ngIf="
+									(form.get('hasPhoneOrEmail')?.dirty || form.get('hasPhoneOrEmail')?.touched) &&
+									form.get('hasPhoneOrEmail')?.invalid &&
+									form.get('hasPhoneOrEmail')?.hasError('required')
+								"
+								>An option must be selected</mat-error
+							>
+						</div>
 					</div>
-				</div>
 
-				<div class="row mt-4" *ngIf="hasPhoneOrEmail.value == booleanTypeCodes.Yes">
-					<div class="offset-md-2 col-md-8 col-sm-12">
-						<mat-divider class="my-3" style="border-top-color: var(--color-primary-light);"></mat-divider>
-						<div class="text-minor-heading fw-semibold mb-2">Shared Inbox Information</div>
-						<ng-container *ngIf="hasPhoneOrEmail.value == booleanTypeCodes.Yes">
-							<div class="row mt-2">
-								<div class="col-lg-6 col-md-12 col-sm-12">
-									<mat-form-field>
-										<mat-label>Email</mat-label>
-										<input
-											matInput
-											formControlName="genericEmail"
-											type="email"
-											required
-											[errorStateMatcher]="matcher"
-											maxlength="75"
-										/>
-										<mat-error *ngIf="form.get('genericEmail')?.hasError('email')">
-											Must be a valid email address
-										</mat-error>
-										<mat-error *ngIf="form.get('genericEmail')?.hasError('required')">This is required</mat-error>
-									</mat-form-field>
+					<div class="row mt-4" *ngIf="hasPhoneOrEmail.value == booleanTypeCodes.Yes">
+						<div class="offset-md-2 col-md-8 col-sm-12">
+							<mat-divider class="my-3" style="border-top-color: var(--color-primary-light);"></mat-divider>
+							<div class="text-minor-heading fw-semibold mb-2">Shared Inbox Information</div>
+							<ng-container *ngIf="hasPhoneOrEmail.value == booleanTypeCodes.Yes">
+								<div class="row mt-2">
+									<div class="col-lg-6 col-md-12 col-sm-12">
+										<mat-form-field>
+											<mat-label>Email</mat-label>
+											<input
+												matInput
+												formControlName="genericEmail"
+												type="email"
+												required
+												[errorStateMatcher]="matcher"
+												maxlength="75"
+											/>
+											<mat-error *ngIf="form.get('genericEmail')?.hasError('email')">
+												Must be a valid email address
+											</mat-error>
+											<mat-error *ngIf="form.get('genericEmail')?.hasError('required')">This is required</mat-error>
+										</mat-form-field>
+									</div>
+									<div class="col-lg-6 col-md-12 col-sm-12">
+										<mat-form-field>
+											<mat-label>Phone Number</mat-label>
+											<input
+												matInput
+												formControlName="genericPhoneNumber"
+												[mask]="phoneMask"
+												[showMaskTyped]="true"
+												required
+												[errorStateMatcher]="matcher"
+											/>
+											<mat-error *ngIf="form.get('genericPhoneNumber')?.hasError('required')">
+												This is required
+											</mat-error>
+											<mat-error *ngIf="form.get('genericPhoneNumber')?.hasError('mask')">
+												This must be 10 digits
+											</mat-error>
+										</mat-form-field>
+									</div>
 								</div>
-								<div class="col-lg-6 col-md-12 col-sm-12">
-									<mat-form-field>
-										<mat-label>Phone Number</mat-label>
-										<input
-											matInput
-											formControlName="genericPhoneNumber"
-											[mask]="phoneMask"
-											[showMaskTyped]="true"
-											required
-											[errorStateMatcher]="matcher"
-										/>
-										<mat-error *ngIf="form.get('genericPhoneNumber')?.hasError('required')">
-											This is required
-										</mat-error>
-										<mat-error *ngIf="form.get('genericPhoneNumber')?.hasError('mask')">
-											This must be 10 digits
-										</mat-error>
-									</mat-form-field>
-								</div>
-							</div>
-						</ng-container>
+							</ng-container>
+						</div>
 					</div>
-				</div>
+				</form>
 			</div>
-		</form>
+		</section>
 	`,
 	styles: [],
 })
