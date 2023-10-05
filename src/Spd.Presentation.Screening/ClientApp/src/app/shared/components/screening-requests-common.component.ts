@@ -40,14 +40,15 @@ export const ScreeningCheckFilterMap: Record<keyof ScreeningCheckFilter, string>
 						<div class="mt-2 fs-5 fw-light">{{ subtitle }}</div>
 					</h2>
 				</div>
-				<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 my-auto">
-					<button mat-flat-button type="button" class="large w-100 mat-green-button mb-2" (click)="onAddRequest()">
+				<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 text-end">
+					<button mat-flat-button type="button" class="large w-auto mat-green-button mb-2" (click)="onAddRequest()">
 						Add Request
 					</button>
 				</div>
 			</div>
 
 			<div class="row mt-2" [formGroup]="formFilter">
+				<mat-divider class="mat-divider-main mb-4"></mat-divider>
 				<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
 					<mat-form-field>
 						<input
