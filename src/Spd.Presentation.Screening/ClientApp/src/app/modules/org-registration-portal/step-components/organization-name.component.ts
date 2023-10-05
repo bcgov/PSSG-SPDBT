@@ -8,27 +8,29 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 @Component({
 	selector: 'app-organization-name',
 	template: `
-		<form [formGroup]="form" novalidate>
+		<section class="step-section p-4">
 			<div class="step">
 				<app-step-title title="Provide us with more organization information"></app-step-title>
-				<div class="row">
-					<div class="offset-lg-3 col-lg-6 offset-md-1 col-md-10 col-sm-12">
-						<mat-form-field>
-							<mat-label>Organization Name</mat-label>
-							<input
-								matInput
-								formControlName="organizationName"
-								required
-								[errorStateMatcher]="matcher"
-								maxlength="160"
-							/>
-							<mat-hint>Please enter your 'Doing Business As' name</mat-hint>
-							<mat-error *ngIf="form.get('organizationName')?.hasError('required')">This is required</mat-error>
-						</mat-form-field>
+				<form [formGroup]="form" novalidate>
+					<div class="row">
+						<div class="offset-lg-3 col-lg-6 offset-md-1 col-md-10 col-sm-12">
+							<mat-form-field>
+								<mat-label>Organization Name</mat-label>
+								<input
+									matInput
+									formControlName="organizationName"
+									required
+									[errorStateMatcher]="matcher"
+									maxlength="160"
+								/>
+								<mat-hint>Please enter your 'Doing Business As' name</mat-hint>
+								<mat-error *ngIf="form.get('organizationName')?.hasError('required')">This is required</mat-error>
+							</mat-form-field>
+						</div>
 					</div>
-				</div>
+				</form>
 			</div>
-		</form>
+		</section>
 	`,
 	styles: [],
 })

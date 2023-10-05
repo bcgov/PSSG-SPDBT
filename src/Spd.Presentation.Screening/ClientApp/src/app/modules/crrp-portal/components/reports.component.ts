@@ -22,7 +22,8 @@ import { UtilService } from 'src/app/core/services/util.service';
 				</div>
 			</div>
 
-			<div class="row mt-4">
+			<div class="row mt-2">
+				<mat-divider class="mat-divider-main mb-4"></mat-divider>
 				<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
 					<app-month-picker
 						label="From Month/Year"
