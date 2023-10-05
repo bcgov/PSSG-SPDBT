@@ -13,13 +13,16 @@ import { CrrpRoutes } from '../crrp-routing.module';
 @Component({
 	selector: 'app-crrp-payment-fail',
 	template: `
-		<app-payment-fail
-			[payment]="payment"
-			[numberOfAttemptsRemaining]="numberOfAttemptsRemaining"
-			(backRoute)="onBackRoute()"
-			(payNow)="onPayNow()"
-			(downloadManualPaymentForm)="onDownloadManualPaymentForm()"
-		></app-payment-fail>
+		<app-crrp-header></app-crrp-header>
+		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
+			<app-payment-fail
+				[payment]="payment"
+				[numberOfAttemptsRemaining]="numberOfAttemptsRemaining"
+				(backRoute)="onBackRoute()"
+				(payNow)="onPayNow()"
+				(downloadManualPaymentForm)="onDownloadManualPaymentForm()"
+			></app-payment-fail>
+		</section>
 	`,
 	styles: [],
 })

@@ -48,7 +48,7 @@ export interface ApplicantApplicationStatusResponse extends ApplicantApplication
 			</div>
 		</div>
 
-		<mat-divider class="mb-2 mb-lg-4"></mat-divider>
+		<mat-divider class="mat-divider-main my-2 mb-lg-4"></mat-divider>
 
 		<div class="row">
 			<div class="col-12">

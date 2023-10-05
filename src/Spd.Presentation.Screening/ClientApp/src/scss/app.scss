@@ -118,7 +118,7 @@ $spd-theme: mat.define-light-theme((
 
 :root {
 	--color-white: #fff;
-  --color-primary-lightest: #f8f9fb;
+  --color-primary-lightest: #eff2f5; 
   --color-primary-lighter: #d6ddec;
   --color-primary-light: #0f48ae;
   --color-sidebar: #385D8A;
@@ -185,8 +185,49 @@ body {
   }
 }
 
+.mat-divider-main {
+  border-top-width: 2px !important;
+  border-top-color: var(--color-yellow);;
+}
+
 .alert {
   padding: .5rem 1rem;
+}
+
+.alert-info {
+  color: #0c5460;
+  background-color: #eef8fa;
+  border-color: #eef8fa;
+  border-left: 3px solid #0c5460;
+  border-radius: 0;
+
+  .content {
+    color: #333333;
+  }
+}
+
+.alert-success {
+  color: #155724;
+  background-color: #e8f5eb;
+  border-color: #e8f5eb;
+  border-left: 3px solid #155724;
+  border-radius: 0;
+}
+
+.alert-warning {
+  color: #856404;
+  background-color: #fff9e5;
+  border-color: #fff9e5;
+  border-left: 3px solid #856404;
+  border-radius: 0;
+}
+
+.alert-danger {
+  color: #721c24;
+  background-color: #fceded;
+  border-color: #fceded;
+  border-left: 3px solid #721c24;
+  border-radius: 0;
 }
 
 .fs-7 {
