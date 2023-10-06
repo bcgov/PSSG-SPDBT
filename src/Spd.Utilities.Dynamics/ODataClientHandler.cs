@@ -63,13 +63,12 @@ namespace Spd.Utilities.Dynamics
                             queries.Remove(skip);
                             queries.Add($"$skiptoken=<cookie pagenumber='{page}'/>");
                             string str = $"{e.RequestUri.Scheme}://{e.RequestUri.Host}{e.RequestUri.AbsolutePath}{string.Join("&", queries)}";
-                            //logger.LogCritical($"send {str} to dynamics");
                             e.RequestUri = new Uri(str);
                         }
                     }
                 }
             }
-            logger.LogCritical($"send {e.RequestUri.ToString()} to dynamics");
+            logger.LogDebug($"send {e.RequestUri.ToString()} to dynamics");
         }
 
 #pragma warning disable S3358 // Ternary operators should not be nested

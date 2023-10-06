@@ -124,7 +124,7 @@ namespace Spd.Resource.Organizations.Org
 
         private async Task<OrgQryData?> GetOrgByIdentifierAsync(OrgByIdentifierQry query, CancellationToken ct)
         {
-            IQueryable<account> accounts = _dynaContext.accounts.Where(a => a.statecode != DynamicsConstants.StateCode_Inactive);
+            IQueryable<account> accounts = _dynaContext.accounts.Where(a => a.statecode != DynamicsConst ants.StateCode_Inactive);
 
             if (query.OrgId != null)
                 accounts = accounts.Where(a => a.accountid == query.OrgId);
