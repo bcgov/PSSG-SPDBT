@@ -99,6 +99,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 								[portal]="portal"
 								[formGroup]="formFilter"
 								(filterChange)="onFilterChange($event)"
+								(filterReset)="onFilterReset()"
 								(filterClear)="onFilterClear()"
 								(filterClose)="onFilterClose()"
 							></app-screening-status-filter-common>
@@ -285,6 +286,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 })
 export class ScreeningStatusesCommonComponent implements OnInit {
 	currentStatuses: any[] = [];
+	defaultStatuses: ApplicationPortalStatusCode[] = [];
 	private currentFilters = '';
 	private currentSearch = '';
 	private showAllPSSOApps = false;
@@ -331,6 +333,15 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 		}
 
 		if (this.portal == PortalTypeCode.Crrp) {
+			this.defaultStatuses = [
+				ApplicationPortalStatusCode.AwaitingApplicant,
+				ApplicationPortalStatusCode.AwaitingPayment,
+				ApplicationPortalStatusCode.AwaitingThirdParty,
+				ApplicationPortalStatusCode.InProgress,
+				ApplicationPortalStatusCode.UnderAssessment,
+				ApplicationPortalStatusCode.VerifyIdentity,
+			];
+
 			this.columns = [
 				'applicantName',
 				'emailAddress',
@@ -342,8 +353,16 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 				'action1',
 			];
 
-			this.loadList();
+			this.onFilterReset();
 		} else if (this.portal == PortalTypeCode.Psso) {
+			this.defaultStatuses = [
+				ApplicationPortalStatusCode.AwaitingApplicant,
+				ApplicationPortalStatusCode.AwaitingThirdParty,
+				ApplicationPortalStatusCode.InProgress,
+				ApplicationPortalStatusCode.UnderAssessment,
+				ApplicationPortalStatusCode.VerifyIdentity,
+			];
+
 			if (this.isPsaUser) {
 				this.columns = [
 					'applicantName',
@@ -368,7 +387,7 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 			}
 
 			this.optionsService.getMinistries().subscribe((resp) => {
-				this.loadList();
+				this.onFilterReset();
 			});
 		}
 	}
@@ -412,6 +431,13 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 		this.loadList();
 	}
 
+	onFilterReset() {
+		const defaultSearch = `status==${this.defaultStatuses.join('|')},`;
+		this.statuses.setValue(this.defaultStatuses);
+
+		this.onFilterChange(defaultSearch);
+	}
+
 	onFilterClear() {
 		this.currentStatuses = [];
 		this.currentFilters = '';
@@ -452,7 +478,7 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 	}
 
 	getStatusDesc(code: string): string {
-		return this.filterComponent.getFilterStatusDesc(code);
+		return this.utilService.getApplicationPortalStatusDesc(code);
 	}
 
 	private performSearch(searchString: string): void {
