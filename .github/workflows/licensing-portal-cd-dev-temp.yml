@@ -1,4 +1,4 @@
-name: Screening Portal Scheduled Deployment For Test
+name: Licensing Portal Deployment For Dev
 
 #temp to deploy to dev for some internal testing
 on:
@@ -11,7 +11,7 @@ jobs:
     uses: ./.github/workflows/cd-workflow.yml
     with:
       DOCKER_CONTEXT: src
-      DOCKER_FILE: src/screening-portal.dockerfile
-      DOCKER_IMAGE_NAME: screening-portal
-      DOCKER_IMAGE_TAG: latest
+      DOCKER_FILE: src/licensing-portal.dockerfile
+      DOCKER_IMAGE_NAME: licensing-portal
+      DOCKER_IMAGE_TAG: lastest
     secrets: inherit
