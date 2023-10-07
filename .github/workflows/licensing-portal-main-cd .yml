@@ -1,4 +1,4 @@
-name: Licensing Protal CI/CD
+name: Licensing Portal CI/CD
 
 on:
   push:
