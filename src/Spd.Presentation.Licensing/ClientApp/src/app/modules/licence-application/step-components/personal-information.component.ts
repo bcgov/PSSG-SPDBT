@@ -6,7 +6,11 @@ import { UtilService } from 'src/app/core/services/util.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
+import {
+	LicenceApplicationService,
+	LicenceFormStepComponent,
+	LicenceModelSubject,
+} from '../licence-application.service';
 
 @Component({
 	selector: 'app-personal-information',
@@ -21,25 +25,25 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 								<div class="w-100">
 									<mat-checkbox formControlName="oneLegalName"> I have one legal name </mat-checkbox>
 								</div>
-								<div class="col-xl-4 col-lg-6 col-md-12">
+								<div class="col-xl-6 col-lg-6 col-md-12">
 									<mat-form-field>
 										<mat-label>Given Name</mat-label>
 										<input matInput formControlName="givenName" [errorStateMatcher]="matcher" maxlength="40" />
 									</mat-form-field>
 								</div>
-								<div class="col-xl-4 col-lg-6 col-md-12">
+								<div class="col-xl-6 col-lg-6 col-md-12">
 									<mat-form-field>
 										<mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
 										<input matInput formControlName="middleName1" maxlength="40" />
 									</mat-form-field>
 								</div>
-								<div class="col-xl-4 col-lg-6 col-md-12">
+								<div class="col-xl-6 col-lg-6 col-md-12">
 									<mat-form-field>
 										<mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
 										<input matInput formControlName="middleName2" maxlength="40" />
 									</mat-form-field>
 								</div>
-								<div class="col-xl-4 col-lg-6 col-md-12">
+								<div class="col-xl-6 col-lg-6 col-md-12">
 									<mat-form-field>
 										<mat-label>Surname</mat-label>
 										<input matInput formControlName="surname" [errorStateMatcher]="matcher" maxlength="40" />
@@ -47,7 +51,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									</mat-form-field>
 								</div>
 
-								<div class="col-xl-4 col-lg-6 col-md-12">
+								<div class="col-xl-6 col-lg-6 col-md-12">
 									<mat-form-field>
 										<mat-label>Date of Birth</mat-label>
 										<input
@@ -62,7 +66,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 										<mat-error *ngIf="form.get('dateOfBirth')?.hasError('required')">This is required</mat-error>
 									</mat-form-field>
 								</div>
-								<div class="col-xl-4 col-lg-6 col-md-12">
+								<div class="col-xl-6 col-lg-6 col-md-12">
 									<mat-form-field>
 										<mat-label>Sex <span class="optional-label">(optional)</span></mat-label>
 										<mat-select formControlName="genderCode">
@@ -107,7 +111,7 @@ export class PersonalInformationComponent implements OnInit, OnDestroy, LicenceF
 			middleName1: new FormControl(null),
 			middleName2: new FormControl(null),
 			surname: new FormControl(null, [FormControlValidators.required]),
-			genderCode: new FormControl(null, [FormControlValidators.required]),
+			genderCode: new FormControl(null),
 			dateOfBirth: new FormControl(null, [Validators.required]),
 		},
 		{
@@ -128,8 +132,8 @@ export class PersonalInformationComponent implements OnInit, OnDestroy, LicenceF
 
 	ngOnInit(): void {
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
-			next: (loaded: boolean) => {
-				if (loaded) {
+			next: (loaded: LicenceModelSubject) => {
+				if (loaded.isLoaded || loaded.isSetFlags) {
 					if (this.licenceApplicationService.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Replacement) {
 						this.title = this.title_view;
 						this.subtitle = '';
@@ -151,11 +155,11 @@ export class PersonalInformationComponent implements OnInit, OnDestroy, LicenceF
 						dateOfBirth: this.licenceApplicationService.licenceModel.dateOfBirth,
 					});
 
-					if (this.licenceApplicationService.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Replacement) {
-						this.form.disable();
-					} else {
-						this.form.enable();
-					}
+					// if (this.licenceApplicationService.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Replacement) {
+					// 	this.form.disable();
+					// } else {
+					// 	this.form.enable();
+					// }
 				}
 			},
 		});

@@ -4,7 +4,11 @@ import { Subscription } from 'rxjs';
 import { BooleanTypeCode } from 'src/app/api/models';
 import { SwlApplicationTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
-import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
+import {
+	LicenceApplicationService,
+	LicenceFormStepComponent,
+	LicenceModelSubject,
+} from '../licence-application.service';
 
 @Component({
 	selector: 'app-sole-proprietor',
@@ -16,7 +20,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 				<div class="step-container">
 					<form [formGroup]="form" novalidate>
 						<div class="row">
-							<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
+							<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
 								<mat-radio-group aria-label="Select an option" formControlName="isSoleProprietor">
 									<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
 									<mat-divider class="my-2"></mat-divider>
@@ -29,7 +33,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 										form.get('isSoleProprietor')?.invalid &&
 										form.get('isSoleProprietor')?.hasError('required')
 									"
-									>An option must be selected</mat-error
+									>This is required</mat-error
 								>
 							</div>
 						</div>
@@ -62,8 +66,8 @@ export class SoleProprietorComponent implements OnInit, OnDestroy, LicenceFormSt
 
 	ngOnInit(): void {
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
-			next: (loaded: boolean) => {
-				if (loaded) {
+			next: (loaded: LicenceModelSubject) => {
+				if (loaded.isLoaded || loaded.isSetFlags) {
 					// TODO Review question would only apply to those who have a SWL w/ Sole Prop already,
 					// otherwise they would see the same question shown to New applicants
 

@@ -1,7 +1,9 @@
 export {
 	CountryTypes,
 	GenderTypes,
-	SwlApplicationTypeCodes,
+	GovernmentIssuedPhotoIdTypes,
+	ProofOfCanadianCitizenshipTypes,
+	SwlApplicationTypes,
 	SwlCategoryTypes,
-	SwlTypeCodes,
+	SwlTypes,
 } from './model-desc.models';

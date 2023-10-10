@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SwlTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
-import { LicenceApplicationService } from '../licence-application.service';
+import { LicenceApplicationService, LicenceModelSubject } from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-selection',
@@ -45,8 +45,8 @@ import { LicenceApplicationService } from '../licence-application.service';
 						<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6 col-sm-12 mb-3">
 							<div
 								class="step-container__box step-container__box__fullheight"
-								(click)="onLicenceTypeChange(swlTypeCodes.ArmouredVehicleLicence)"
-								[ngClass]="{ 'active-selection-main': licenceTypeCode == swlTypeCodes.ArmouredVehicleLicence }"
+								(click)="onLicenceTypeChange(swlTypeCodes.ArmouredVehiclePermit)"
+								[ngClass]="{ 'active-selection-main': licenceTypeCode == swlTypeCodes.ArmouredVehiclePermit }"
 							>
 								<div class="fs-5 mb-4 mt-4 mt-md-0">
 									<div class="box__image d-none d-md-block">
@@ -59,8 +59,8 @@ import { LicenceApplicationService } from '../licence-application.service';
 						<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6 col-sm-12 mb-3">
 							<div
 								class="step-container__box step-container__box__fullheight"
-								(click)="onLicenceTypeChange(swlTypeCodes.BodyArmourLicence)"
-								[ngClass]="{ 'active-selection-main': licenceTypeCode == swlTypeCodes.BodyArmourLicence }"
+								(click)="onLicenceTypeChange(swlTypeCodes.BodyArmourPermit)"
+								[ngClass]="{ 'active-selection-main': licenceTypeCode == swlTypeCodes.BodyArmourPermit }"
 							>
 								<div class="fs-5 mb-4 mt-4 mt-md-0">
 									<div class="box__image d-none d-md-block">
@@ -133,9 +133,9 @@ export class LicenceSelectionComponent implements OnInit, OnDestroy {
 		}
 
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
-			next: (loaded: boolean) => {
+			next: (loaded: LicenceModelSubject) => {
 				console.log('loaded', loaded);
-				if (loaded) {
+				if (loaded.isLoaded) {
 					this.licenceTypeCode = this.licenceApplicationService.licenceModel.licenceTypeCode;
 				}
 			},

@@ -7,7 +7,11 @@ import { FormControlValidators } from 'src/app/core/validators/form-control.vali
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
+import {
+	LicenceApplicationService,
+	LicenceFormStepComponent,
+	LicenceModelSubject,
+} from '../licence-application.service';
 
 @Component({
 	selector: 'app-dogs-or-restraints',
@@ -18,7 +22,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 				<div class="step-container">
 					<form [formGroup]="form" novalidate>
 						<div class="row">
-							<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
+							<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
 								<mat-radio-group aria-label="Select an option" formControlName="useDogsOrRestraints">
 									<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
 									<mat-divider class="my-2"></mat-divider>
@@ -31,7 +35,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 										form.get('useDogsOrRestraints')?.invalid &&
 										form.get('useDogsOrRestraints')?.hasError('required')
 									"
-									>An option must be selected</mat-error
+									>This is required</mat-error
 								>
 							</div>
 						</div>
@@ -84,7 +88,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 											form.get('carryAndUseRetraintsDocument')?.invalid &&
 											form.get('carryAndUseRetraintsDocument')?.hasError('required')
 										"
-										>An option must be selected</mat-error
+										>This is required</mat-error
 									>
 
 									<div class="text-minor-heading mt-4 mb-2">Upload your proof of qualification</div>
@@ -150,7 +154,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 											form.get('dogsPurposeDocumentType')?.invalid &&
 											form.get('dogsPurposeDocumentType')?.hasError('required')
 										"
-										>An option must be selected</mat-error
+										>This is required</mat-error
 									>
 
 									<!-- Your Security Dog Validation Certificate has expired. Please upload your new proof of qualification. -->
@@ -246,8 +250,8 @@ export class DogsOrRestraintsComponent implements OnInit, OnDestroy, LicenceForm
 
 	ngOnInit(): void {
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
-			next: (loaded: boolean) => {
-				if (loaded) {
+			next: (loaded: LicenceModelSubject) => {
+				if (loaded.isLoaded) {
 					this.form.patchValue({
 						useDogsOrRestraints: this.licenceApplicationService.licenceModel.useDogsOrRestraints,
 						carryAndUseRetraints: this.licenceApplicationService.licenceModel.carryAndUseRetraints,
