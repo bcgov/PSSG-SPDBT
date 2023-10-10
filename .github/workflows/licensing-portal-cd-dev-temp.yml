@@ -1,0 +1,17 @@
+name: Licensing Portal Deployment For Dev
+
+#temp to deploy to dev for some internal testing
+on:
+  push:
+    branches:
+      - dev-temp
+
+jobs:
+  build-deploy-screening-portal-to-test:
+    uses: ./.github/workflows/cd-workflow.yml
+    with:
+      DOCKER_CONTEXT: src
+      DOCKER_FILE: src/licensing-portal.dockerfile
+      DOCKER_IMAGE_NAME: licensing-portal
+      DOCKER_IMAGE_TAG: lastest
+    secrets: inherit
