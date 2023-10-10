@@ -1,0 +1,21 @@
+name: Licensing Portal CI/CD
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      - '!src/Spd.Presentation.DynamicsHelper/**'
+      - '!src/Spd.Presentation.Screening/**'
+      - '!src/Spd.Utilities.FileStorage/**'
+      - .github/workflows/licensing-portal-main-cd.yml
+
+jobs:
+  build-deploy-licensing-portal:
+    uses: ./.github/workflows/cd-workflow.yml
+    with:
+      DOCKER_CONTEXT: src
+      DOCKER_FILE: src/licensing-portal.dockerfile
+      DOCKER_IMAGE_NAME: licensing-portal
+    secrets: inherit
