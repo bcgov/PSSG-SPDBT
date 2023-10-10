@@ -44,7 +44,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 				</div>
 			</div>
 
-			<div class="row mb-4">
+			<div class="row">
 				<div class="col-xxl-6 col-xl-8 col-lg-12 col-md-12 col-sm-12">
 					<mat-table [dataSource]="dataSource" class="report-table">
 						<ng-container matColumnDef="reportDate">
