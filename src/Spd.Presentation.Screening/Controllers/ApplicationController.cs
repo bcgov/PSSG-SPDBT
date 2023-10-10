@@ -323,9 +323,21 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/orgs/{orgId}/application-statistics")]
         [HttpGet]
-        public async Task<ApplicationStatisticsResponse> GetAppStatsList([FromRoute] Guid orgId)
+        public async Task<ApplicationStatisticsResponse> GetAppStatsListForOrg([FromRoute] Guid orgId)
         {
             return await _mediator.Send(new ApplicationStatisticsQuery(orgId));
+        }
+
+        /// <summary>
+        /// return the application statistics for a particular delegate.
+        /// </summary>
+        /// <param name="delegateUserId"></param>
+        /// <returns></returns>
+        [Route("api/users/{delegateUserId}/psso-application-statistics")]
+        [HttpGet]
+        public async Task<ApplicationStatisticsResponse> GetAppStatsListForDelegate([FromRoute] Guid delegateUserId, [FromQuery] bool showAllPSSOApps = false)
+        {
+            return await _mediator.Send(new ApplicationStatisticsQuery(null, delegateUserId, showAllPSSOApps));
         }
 
         /// <summary>
