@@ -190,7 +190,7 @@ public enum FileCategoryCode
 }
 
 //application statistics
-public record ApplicationStatisticsQry(Guid OrganizationId);
+public record ApplicationStatisticsQry(Guid? OrganizationId = null, Guid? DelegateUserId = null, bool ShowAllPSSOApps = false);
 public record ApplicationStatisticsResp
 {
     public IReadOnlyDictionary<ApplicationPortalStatisticsCd, int> Statistics { get; set; } = new Dictionary<ApplicationPortalStatisticsCd, int>();
