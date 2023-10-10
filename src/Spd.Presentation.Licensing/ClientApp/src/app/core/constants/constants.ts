@@ -34,6 +34,7 @@ export const SPD_CONSTANTS = {
 			'.htm',
 		],
 	},
+	maxNumberOfAliases: 3,
 	// sessionStorage: {
 	// 	organizationRegStateKey: 'state',
 	// 	crcPortalStateKey: 'crc-state',
