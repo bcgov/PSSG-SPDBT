@@ -14,57 +14,75 @@ import { CrrpRoutes } from '../crrp-routing.module';
 		<app-crrp-header></app-crrp-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
-				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
+				<div class="col-xxl-8 col-xl-10 col-lg-10 col-md-12 col-sm-12">
 					<app-applications-banner></app-applications-banner>
 				</div>
 			</div>
+
 			<div class="row">
-				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
+				<div class="col-xxl-8 col-xl-10 col-lg-10 col-md-12 col-sm-12">
 					<div class="row box-row gy-4">
-						<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
+						<div class="col-xxl-4 col-xl-6 col-lg-12 col-md-12 col-sm-12">
 							<div class="box mx-auto" [routerLink]="[crrpRoutes.path(crrpRoutes.CRIMINAL_RECORD_CHECKS)]">
 								<div class="box__image">
 									<img class="box__image__item" src="/assets/dashboard/new_screening.png" />
 								</div>
 								<div class="box__text">
-									<h4>Request a new criminal record check</h4>
-									<div class="d-grid gap-2 d-md-flex justify-content-between">
-										<p>Start a new check for one or more applicants</p>
-										<mat-icon class="ms-auto box__text__icon">arrow_forward_ios</mat-icon>
+									<div class="d-flex align-items-start flex-column bd-highlight mb-3" style="height: 120px;">
+										<div class="mb-auto p-2 pt-0 bd-highlight"><h4>Request a new criminal record check</h4></div>
+										<div class="p-2 pt-0 bd-highlight" style="overflow: hidden;">
+											<div class="d-grid gap-2 d-md-flex justify-content-between">
+												<div style="height: 50px;">Start a new check for one or more applicants</div>
+												<mat-icon class="ms-auto box__text__icon">arrow_forward_ios</mat-icon>
+											</div>
+										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-						<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
+
+						<div class="col-xxl-4 col-xl-6 col-lg-12 col-md-12 col-sm-12">
 							<div class="box mx-auto" [routerLink]="[crrpRoutes.path(crrpRoutes.APPLICATION_STATUSES)]">
 								<div class="box__image">
 									<img class="box__image__item" src="/assets/dashboard/screening_status.png" />
 								</div>
 								<div class="box__text">
-									<h4>View application status</h4>
-									<div class="d-grid gap-2 d-md-flex justify-content-between">
-										<p>See your applicants' criminal record check progress</p>
-										<mat-icon class="ms-auto box__text__icon">arrow_forward_ios</mat-icon>
+									<div class="d-flex align-items-start flex-column bd-highlight mb-3" style="height: 120px;">
+										<div class="mb-auto p-2 pt-0 bd-highlight"><h4>View application status</h4></div>
+										<div class="p-2 pt-0 bd-highlight" style="overflow: hidden;">
+											<div class="d-grid gap-2 d-md-flex justify-content-between">
+												<div style="height: 40px;">See your applicants' criminal record check progress</div>
+												<mat-icon class="ms-auto box__text__icon">arrow_forward_ios</mat-icon>
+											</div>
+										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-						<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
+
+						<div class="col-xxl-4 col-xl-6 col-lg-12 col-md-12 col-sm-12">
 							<div class="box mx-auto" [routerLink]="[crrpRoutes.path(crrpRoutes.EXPIRING_CHECKS)]">
 								<div class="box__image">
 									<img class="box__image__item" src="/assets/dashboard/expired_screenings.png" />
 								</div>
 								<div class="box__text">
-									<h4>View expiring criminal record checks</h4>
-									<div class="d-grid gap-2 d-md-flex justify-content-between">
-										<p>See clearances that are expiring soon</p>
-										<mat-icon class="ms-auto box__text__icon">arrow_forward_ios</mat-icon>
+									<div class="d-flex align-items-start flex-column bd-highlight mb-3" style="height: 120px;">
+										<div class="mb-auto p-2 pt-0 bd-highlight">
+											<h4>View expiring criminal record checks</h4>
+										</div>
+										<div class="p-2 pt-0 bd-highlight" style="overflow: hidden;">
+											<div class="d-grid gap-2 d-md-flex justify-content-between">
+												<div style="height: 50px;">See clearances that are expiring soon</div>
+												<mat-icon class="ms-auto box__text__icon">arrow_forward_ios</mat-icon>
+											</div>
+										</div>
 									</div>
 								</div>
 							</div>
 						</div>
+
 						<div
-							class="col-xl-4 col-lg-6 col-md-12 col-sm-12"
+							class="col-xxl-4 col-xl-6 col-lg-12 col-md-12 col-sm-12"
 							*ngIf="authUserService.bceidUserOrgProfile?.isNotVolunteerOrg ?? false"
 						>
 							<div class="box mx-auto" [routerLink]="[crrpRoutes.path(crrpRoutes.PAYMENTS)]">
@@ -72,40 +90,60 @@ import { CrrpRoutes } from '../crrp-routing.module';
 									<img class="box__image__item" src="/assets/dashboard/outstanding_payments.png" />
 								</div>
 								<div class="box__text">
-									<h4>Payments</h4>
-									<div class="d-grid gap-2 d-md-flex justify-content-between">
-										<p>Manage and view payments</p>
-										<mat-icon class="ms-auto box__text__icon">arrow_forward_ios</mat-icon>
+									<div class="d-flex align-items-start flex-column bd-highlight mb-3" style="height: 120px;">
+										<div class="mb-auto p-2 pt-0 bd-highlight">
+											<h4>Payments</h4>
+										</div>
+										<div class="p-2 pt-0 bd-highlight" style="overflow: hidden;">
+											<div class="d-grid gap-2 d-md-flex justify-content-between">
+												<div style="height: 50px;">Manage and view payments</div>
+												<mat-icon class="ms-auto box__text__icon">arrow_forward_ios</mat-icon>
+											</div>
+										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-						<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
+
+						<div class="col-xxl-4 col-xl-6 col-lg-12 col-md-12 col-sm-12">
 							<div class="box mx-auto" [routerLink]="[crrpRoutes.path(crrpRoutes.USERS)]">
 								<div class="box__image">
 									<img class="box__image__item" src="/assets/dashboard/authorized_users.png" />
 								</div>
 								<div class="box__text">
-									<h4 *ngIf="userPrimary == true">Manage authorized users</h4>
-									<h4 *ngIf="userPrimary == false">Update profile</h4>
-									<div class="d-grid gap-2 d-md-flex justify-content-between">
-										<p *ngIf="userPrimary == true">Add or remove team members</p>
-										<p *ngIf="userPrimary == false">Edit your personal information</p>
-										<mat-icon class="ms-auto box__text__icon">arrow_forward_ios</mat-icon>
+									<div class="d-flex align-items-start flex-column bd-highlight mb-3" style="height: 120px;">
+										<div class="mb-auto p-2 pt-0 bd-highlight">
+											<h4 *ngIf="userPrimary == true">Manage authorized users</h4>
+											<h4 *ngIf="userPrimary == false">Update profile</h4>
+										</div>
+										<div class="p-2 pt-0 bd-highlight" style="overflow: hidden;">
+											<div class="d-grid gap-2 d-md-flex justify-content-between">
+												<div style="height: 50px;" *ngIf="userPrimary == true">Add or remove team members</div>
+												<div style="height: 50px;" *ngIf="userPrimary == false">Edit your personal information</div>
+												<mat-icon class="ms-auto box__text__icon">arrow_forward_ios</mat-icon>
+											</div>
+										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-						<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
+
+						<div class="col-xxl-4 col-xl-6 col-lg-12 col-md-12 col-sm-12">
 							<div class="box mx-auto" [routerLink]="[crrpRoutes.path(crrpRoutes.IDENTITY_VERIFICATION)]">
 								<div class="box__image">
 									<img class="box__image__item" src="/assets/dashboard/applicant_identity.png" />
 								</div>
 								<div class="box__text">
-									<h4>Confirm applicant identity</h4>
-									<div class="d-grid gap-2 d-md-flex justify-content-between">
-										<p>See a list of applicants who required ID checks</p>
-										<mat-icon class="ms-auto box__text__icon">arrow_forward_ios</mat-icon>
+									<div class="d-flex align-items-start flex-column bd-highlight mb-3" style="height: 120px;">
+										<div class="mb-auto p-2 pt-0 bd-highlight">
+											<h4>Confirm applicant identity</h4>
+										</div>
+										<div class="p-2 pt-0 bd-highlight" style="overflow: hidden;">
+											<div class="d-grid gap-2 d-md-flex justify-content-between">
+												<div style="height: 50px;">See a list of applicants who required ID checks</div>
+												<mat-icon class="ms-auto box__text__icon">arrow_forward_ios</mat-icon>
+											</div>
+										</div>
 									</div>
 								</div>
 							</div>
@@ -116,7 +154,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 
 			<ng-container *ngIf="applicationStatistics$ | async">
 				<div class="row mt-4">
-					<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
+					<div class="col-xxl-8 col-xl-10 col-lg-10 col-md-12 col-sm-12">
 						<h4>To Do</h4>
 						<div class="row gy-4">
 							<div

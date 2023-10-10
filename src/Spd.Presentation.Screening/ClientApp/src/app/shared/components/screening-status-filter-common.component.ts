@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ApplicationPortalStatusCode } from 'src/app/api/models';
 import { SelectOptions } from 'src/app/core/code-types/model-desc.models';
@@ -62,7 +62,10 @@ export const ScreeningStatusFilterMap: Record<keyof ScreeningStatusFilter, strin
 					</mat-card-content>
 					<mat-divider class="my-3"></mat-divider>
 					<mat-card-actions>
-						<button mat-stroked-button class="large w-auto" (click)="emitFilterClear()">Clear</button>
+						<div>
+							<button mat-stroked-button class="large w-auto me-2" (click)="emitFilterClear()">Clear</button>
+							<button mat-flat-button class="large mat-green-button w-auto" (click)="emitFilterReset()">Reset</button>
+						</div>
 						<button mat-flat-button class="large w-auto" color="primary" (click)="emitFilterChange()">Search</button>
 					</mat-card-actions>
 				</mat-card>
@@ -94,9 +97,9 @@ export class ScreeningStatusFilterCommonComponent extends BaseFilterComponent im
 	applicationPortalStatusCodes!: SelectOptions[];
 
 	@Input() portal: PortalTypeCode | null = null;
-	@Input() formGroup: FormGroup = this.formBuilder.group({
-		statuses: new FormControl(),
-	});
+	@Input() formGroup: FormGroup = this.formBuilder.group(new ScreeningStatusFilter());
+
+	@Output() filterReset = new EventEmitter();
 
 	constructor(private formBuilder: FormBuilder, private utilService: UtilService) {
 		super();
@@ -108,19 +111,14 @@ export class ScreeningStatusFilterCommonComponent extends BaseFilterComponent im
 				.getCodeDescSorted('ApplicationPortalStatusTypes')
 				.filter(
 					(item) =>
-						item.code == ApplicationPortalStatusCode.VerifyIdentity ||
-						item.code == ApplicationPortalStatusCode.InProgress ||
-						item.code == ApplicationPortalStatusCode.AwaitingThirdParty ||
-						item.code == ApplicationPortalStatusCode.AwaitingApplicant ||
-						item.code == ApplicationPortalStatusCode.UnderAssessment ||
-						item.code == ApplicationPortalStatusCode.CompletedCleared ||
-						item.code == ApplicationPortalStatusCode.RiskFound ||
-						item.code == ApplicationPortalStatusCode.ClosedNoResponse ||
-						item.code == ApplicationPortalStatusCode.ClosedNoConsent ||
-						item.code == ApplicationPortalStatusCode.CancelledByOrganization
+						item.code != ApplicationPortalStatusCode.AwaitingPayment &&
+						item.code != ApplicationPortalStatusCode.ClosedJudicialReview &&
+						item.code != ApplicationPortalStatusCode.CancelledByApplicant
 				);
 		} else {
-			this.applicationPortalStatusCodes = this.utilService.getCodeDescSorted('ApplicationPortalStatusTypes');
+			this.applicationPortalStatusCodes = this.utilService
+				.getCodeDescSorted('ApplicationPortalStatusTypes')
+				.filter((item) => item.code != ApplicationPortalStatusCode.CancelledByApplicant);
 		}
 	}
 
@@ -132,6 +130,13 @@ export class ScreeningStatusFilterCommonComponent extends BaseFilterComponent im
 
 	emitFilterChange() {
 		this.filterChange.emit(this.constructFilterString(this.constructFilterList(this.formGroup.value)));
+	}
+
+	emitFilterReset() {
+		this.formGroup.reset();
+		this.formGroup.patchValue({ applications: 'MY' });
+
+		this.filterReset.emit();
 	}
 
 	override emitFilterClear() {
