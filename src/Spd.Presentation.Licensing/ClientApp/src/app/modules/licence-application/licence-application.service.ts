@@ -4,12 +4,19 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { BehaviorSubject } from 'rxjs';
 import { BooleanTypeCode, GenderCode } from 'src/app/api/models';
 import {
+	EyeColourCode,
+	GovernmentIssuedPhotoIdCode,
+	HairColourCode,
+	HeightUnitCode,
 	PoliceOfficerRoleCode,
+	ProofOfAbilityToWorkInCanadaCode,
+	ProofOfCanadianCitizenshipCode,
 	SelectOptions,
 	SwlApplicationTypeCode,
 	SwlCategoryTypeCode,
 	SwlTermCode,
 	SwlTypeCode,
+	WeightUnitCode,
 } from 'src/app/core/code-types/model-desc.models';
 
 export interface LicenceFormStepComponent {
@@ -85,7 +92,41 @@ export class LicenceModel {
 	hasCriminalHistory: BooleanTypeCode | null = null;
 	proofOfFingerprintAttachments?: Array<File>[] | null = null;
 	previousNameFlag: BooleanTypeCode | null = null;
-	aliases?: Array<any>[] | null = null;
+	aliases?: Array<AliasModel> | null = null;
+	isBornInCanada: BooleanTypeCode | null = null;
+	proofOfCitizenship: ProofOfCanadianCitizenshipCode | null = null;
+	proofOfAbility: ProofOfAbilityToWorkInCanadaCode | null = null;
+	citizenshipDocumentExpiryDate?: string | null = null;
+	citizenshipDocumentPhoto?: string | null = null;
+	governmentIssuedPhotoTypeCode: GovernmentIssuedPhotoIdCode | null = null;
+	governmentIssuedPhotoExpiryDate?: string | null = null;
+	governmentIssuedPhoto?: string | null = null;
+	hasBcDriversLicence: BooleanTypeCode | null = null;
+	bcDriversLicenceNumber?: string | null = null;
+	hairColourCode: HairColourCode | null = null;
+	eyeColourCode: EyeColourCode | null = null;
+	height: string | null = null;
+	heightUnitCode: HeightUnitCode | null = null;
+	weight: string | null = null;
+	weightUnitCode: WeightUnitCode | null = null;
+}
+
+export class AliasModel {
+	constructor(
+		givenName: string | null,
+		middleName1: string | null,
+		middleName2: string | null,
+		surname: string | null
+	) {
+		this.givenName = givenName;
+		this.middleName1 = middleName1;
+		this.middleName2 = middleName2;
+		this.surname = surname;
+	}
+	givenName: string | null = null;
+	middleName1: string | null = null;
+	middleName2: string | null = null;
+	surname: string | null = null;
 }
 
 export class LicenceModelSubject {
@@ -117,6 +158,34 @@ export class LicenceApplicationService {
 		this.licenceModelLoaded$.next({ isLoaded: true, isSetFlags: false });
 		this.spinnerService.hide('loaderSpinner');
 	}
+
+	/*
+		swlCategoryList: [
+					{ desc: 'Armoured Car Guard', code: SwlCategoryTypeCode.ArmouredCarGuard },
+					{ desc: 'Body Armour Sales', code: SwlCategoryTypeCode.BodyArmourSales },
+					{ desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
+					{ desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
+					{ desc: 'Fire Investigator', code: SwlCategoryTypeCode.FireInvestigator },
+					{ desc: 'Locksmith', code: SwlCategoryTypeCode.Locksmith },
+					{ desc: 'Locksmith - Under Supervision', code: SwlCategoryTypeCode.LocksmithUnderSupervision },
+					{ desc: 'Private Investigator', code: SwlCategoryTypeCode.PrivateInvestigator },
+					{
+						desc: 'Private Investigator - Under Supervision',
+						code: SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision,
+					},
+					{ desc: 'Security Alarm Installer', code: SwlCategoryTypeCode.SecurityAlarmInstaller },
+					{
+						desc: 'Security Alarm Installer - Under Supervision',
+						code: SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
+					},
+					{ desc: 'Security Alarm Monitor', code: SwlCategoryTypeCode.SecurityAlarmMonitor },
+					{ desc: 'Security Alarm Response', code: SwlCategoryTypeCode.SecurityAlarmResponse },
+					{ desc: 'Security Alarm Sales', code: SwlCategoryTypeCode.SecurityAlarmSales },
+					{ desc: 'Security Consultant', code: SwlCategoryTypeCode.SecurityConsultant },
+					{ desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
+					{ desc: 'Security Guard - Under Supervision', code: SwlCategoryTypeCode.SecurityGuardUnderSupervision },
+				],
+				*/
 
 	loadLicenceNew(): void {
 		console.log('loadLicenceNew ');
@@ -152,32 +221,24 @@ export class LicenceApplicationService {
 				isPoliceOrPeaceOfficer: BooleanTypeCode.No,
 				isTreatedForMHC: BooleanTypeCode.No,
 				hasCriminalHistory: BooleanTypeCode.No,
-				previousNameFlag: BooleanTypeCode.No,
-				swlCategoryList: [
-					// { desc: 'Armoured Car Guard', code: SwlCategoryTypeCode.ArmouredCarGuard },
-					{ desc: 'Body Armour Sales', code: SwlCategoryTypeCode.BodyArmourSales },
-					// { desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
-					// { desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
-					// { desc: 'Fire Investigator', code: SwlCategoryTypeCode.FireInvestigator },
-					// { desc: 'Locksmith', code: SwlCategoryTypeCode.Locksmith },
-					// { desc: 'Locksmith - Under Supervision', code: SwlCategoryTypeCode.LocksmithUnderSupervision },
-					// { desc: 'Private Investigator', code: SwlCategoryTypeCode.PrivateInvestigator },
-					// {
-					// 	desc: 'Private Investigator - Under Supervision',
-					// 	code: SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision,
-					// },
-					// { desc: 'Security Alarm Installer', code: SwlCategoryTypeCode.SecurityAlarmInstaller },
-					// {
-					// 	desc: 'Security Alarm Installer - Under Supervision',
-					// 	code: SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
-					// },
-					// { desc: 'Security Alarm Monitor', code: SwlCategoryTypeCode.SecurityAlarmMonitor },
-					// { desc: 'Security Alarm Response', code: SwlCategoryTypeCode.SecurityAlarmResponse },
-					// { desc: 'Security Alarm Sales', code: SwlCategoryTypeCode.SecurityAlarmSales },
-					// { desc: 'Security Consultant', code: SwlCategoryTypeCode.SecurityConsultant },
-					// { desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
-					// { desc: 'Security Guard - Under Supervision', code: SwlCategoryTypeCode.SecurityGuardUnderSupervision },
-				],
+				// previousNameFlag: BooleanTypeCode.No,
+				// aliases: [],
+				previousNameFlag: BooleanTypeCode.Yes,
+				aliases: [{ givenName: 'Abby', middleName1: '', middleName2: '', surname: 'Anderson' }],
+				isBornInCanada: BooleanTypeCode.Yes,
+				proofOfCitizenship: ProofOfCanadianCitizenshipCode.BirthCertificate,
+				proofOfAbility: null,
+				citizenshipDocumentExpiryDate: null,
+				citizenshipDocumentPhoto: null,
+				governmentIssuedPhotoTypeCode: GovernmentIssuedPhotoIdCode.BcServicesCard,
+				hasBcDriversLicence: BooleanTypeCode.No,
+				hairColourCode: HairColourCode.Black,
+				eyeColourCode: EyeColourCode.Blue,
+				height: '100',
+				heightUnitCode: HeightUnitCode.Inches,
+				weight: '75',
+				weightUnitCode: WeightUnitCode.Kilograms,
+				swlCategoryList: [{ desc: 'Body Armour Sales', code: SwlCategoryTypeCode.BodyArmourSales }],
 			};
 			console.log('loadLicenceNew defaults', defaults);
 			this.licenceModel = { ...defaults };
@@ -219,7 +280,20 @@ export class LicenceApplicationService {
 				otherOfficerRole: 'Janitor',
 				isTreatedForMHC: null,
 				hasCriminalHistory: null,
-				previousNameFlag: null,
+				previousNameFlag: BooleanTypeCode.No,
+				isBornInCanada: null,
+				proofOfCitizenship: null,
+				proofOfAbility: null,
+				citizenshipDocumentExpiryDate: null,
+				citizenshipDocumentPhoto: null,
+				governmentIssuedPhotoTypeCode: null,
+				hasBcDriversLicence: null,
+				hairColourCode: null,
+				eyeColourCode: null,
+				height: null,
+				heightUnitCode: null,
+				weight: null,
+				weightUnitCode: null,
 				swlCategoryList: [
 					{ desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
 				],
@@ -266,30 +340,21 @@ export class LicenceApplicationService {
 				isTreatedForMHC: null,
 				hasCriminalHistory: null,
 				previousNameFlag: null,
+				isBornInCanada: null,
+				proofOfCitizenship: null,
+				proofOfAbility: null,
+				citizenshipDocumentExpiryDate: null,
+				citizenshipDocumentPhoto: null,
+				governmentIssuedPhotoTypeCode: null,
+				hasBcDriversLicence: null,
+				hairColourCode: null,
+				eyeColourCode: null,
+				height: null,
+				heightUnitCode: null,
+				weight: null,
+				weightUnitCode: null,
 				swlCategoryList: [
-					// { desc: 'Armoured Car Guard', code: SwlCategoryTypeCode.ArmouredCarGuard },
-					// { desc: 'Body Armour Sales', code: SwlCategoryTypeCode.BodyArmourSales },
-					// { desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
 					{ desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
-					// { desc: 'Fire Investigator', code: SwlCategoryTypeCode.FireInvestigator },
-					// { desc: 'Locksmith', code: SwlCategoryTypeCode.Locksmith },
-					// { desc: 'Locksmith - Under Supervision', code: SwlCategoryTypeCode.LocksmithUnderSupervision },
-					// { desc: 'Private Investigator', code: SwlCategoryTypeCode.PrivateInvestigator },
-					// {
-					// 	desc: 'Private Investigator - Under Supervision',
-					// 	code: SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision,
-					// },
-					// { desc: 'Security Alarm Installer', code: SwlCategoryTypeCode.SecurityAlarmInstaller },
-					// {
-					// 	desc: 'Security Alarm Installer - Under Supervision',
-					// 	code: SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
-					// },
-					// { desc: 'Security Alarm Monitor', code: SwlCategoryTypeCode.SecurityAlarmMonitor },
-					// { desc: 'Security Alarm Response', code: SwlCategoryTypeCode.SecurityAlarmResponse },
-					// { desc: 'Security Alarm Sales', code: SwlCategoryTypeCode.SecurityAlarmSales },
-					// { desc: 'Security Consultant', code: SwlCategoryTypeCode.SecurityConsultant },
-					// { desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
-					// { desc: 'Security Guard - Under Supervision', code: SwlCategoryTypeCode.SecurityGuardUnderSupervision },
 				],
 			};
 			console.log('loadLicenceReplacement defaults', defaults);
@@ -335,30 +400,22 @@ export class LicenceApplicationService {
 				isTreatedForMHC: null,
 				hasCriminalHistory: null,
 				previousNameFlag: null,
+				isBornInCanada: null,
+				proofOfCitizenship: null,
+				proofOfAbility: null,
+				citizenshipDocumentExpiryDate: null,
+				citizenshipDocumentPhoto: null,
+				governmentIssuedPhotoTypeCode: null,
+				hasBcDriversLicence: null,
+				hairColourCode: null,
+				eyeColourCode: null,
+				height: null,
+				heightUnitCode: null,
+				weight: null,
+				weightUnitCode: null,
 				swlCategoryList: [
-					// { desc: 'Armoured Car Guard', code: SwlCategoryTypeCode.ArmouredCarGuard },
-					// { desc: 'Body Armour Sales', code: SwlCategoryTypeCode.BodyArmourSales },
 					{ desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
 					{ desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
-					// { desc: 'Fire Investigator', code: SwlCategoryTypeCode.FireInvestigator },
-					// { desc: 'Locksmith', code: SwlCategoryTypeCode.Locksmith },
-					// { desc: 'Locksmith - Under Supervision', code: SwlCategoryTypeCode.LocksmithUnderSupervision },
-					// { desc: 'Private Investigator', code: SwlCategoryTypeCode.PrivateInvestigator },
-					// {
-					// 	desc: 'Private Investigator - Under Supervision',
-					// 	code: SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision,
-					// },
-					// { desc: 'Security Alarm Installer', code: SwlCategoryTypeCode.SecurityAlarmInstaller },
-					// {
-					// 	desc: 'Security Alarm Installer - Under Supervision',
-					// 	code: SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
-					// },
-					// { desc: 'Security Alarm Monitor', code: SwlCategoryTypeCode.SecurityAlarmMonitor },
-					// { desc: 'Security Alarm Response', code: SwlCategoryTypeCode.SecurityAlarmResponse },
-					// { desc: 'Security Alarm Sales', code: SwlCategoryTypeCode.SecurityAlarmSales },
-					// { desc: 'Security Consultant', code: SwlCategoryTypeCode.SecurityConsultant },
-					// { desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
-					// { desc: 'Security Guard - Under Supervision', code: SwlCategoryTypeCode.SecurityGuardUnderSupervision },
 				],
 			};
 			console.log('loadLicenceUpdate defaults', defaults);

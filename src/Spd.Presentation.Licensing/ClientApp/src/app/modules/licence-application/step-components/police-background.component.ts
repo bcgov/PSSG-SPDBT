@@ -37,7 +37,7 @@ import {
 
 						<ng-template #NotViewOnly>
 							<div class="row">
-								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
+								<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
 									<mat-radio-group aria-label="Select an option" formControlName="isPoliceOrPeaceOfficer">
 										<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
 										<mat-divider class="my-2"></mat-divider>
@@ -50,7 +50,7 @@ import {
 											form.get('isPoliceOrPeaceOfficer')?.invalid &&
 											form.get('isPoliceOrPeaceOfficer')?.hasError('required')
 										"
-										>An option must be selected</mat-error
+										>This is required</mat-error
 									>
 								</div>
 

@@ -24,13 +24,13 @@ import { StepReviewComponent } from '../step-components/main-steps/step-review.c
 						(selectionChange)="onStepSelectionChange($event)"
 						#stepper
 					>
-						<!-- <mat-step completed="true">
+						<mat-step completed="true">
 							<ng-template matStepLabel>
 								<span *ngIf="isNotReplacement; else isReplacementTabName">Licence Selection</span>
 								<ng-template #isReplacementTabName>Licence Confirmation</ng-template>
 							</ng-template>
 							<app-step-licence-selection (nextStepperStep)="onNextStepperStep(stepper)"></app-step-licence-selection>
-						</mat-step> -->
+						</mat-step>
 
 						<ng-container *ngIf="isNotReplacement">
 							<!-- <mat-step completed="true">

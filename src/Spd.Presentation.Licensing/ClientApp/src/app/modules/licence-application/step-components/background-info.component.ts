@@ -57,7 +57,7 @@ import {
 									form.get('isPoliceOrPeaceOfficer')?.invalid &&
 									form.get('isPoliceOrPeaceOfficer')?.hasError('required')
 								"
-								>An option must be selected</mat-error
+								>This is required</mat-error
 							>
 						</div>
 

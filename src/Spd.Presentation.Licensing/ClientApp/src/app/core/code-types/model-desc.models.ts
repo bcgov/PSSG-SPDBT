@@ -33,6 +33,22 @@ export enum SwlTermCode {
 	ThreeYears = '3Years',
 }
 
+export enum ProofOfCanadianCitizenshipCode {
+	ValidCanadianPassport = 'ValidCanadianPassport',
+	BirthCertificate = 'BirthCertificate',
+	SecureCertificateOfIndianStatus = 'SecureCertificateOfIndianStatus',
+}
+
+export enum ProofOfAbilityToWorkInCanadaCode {
+	ValidCanadianCitizenship = 'ValidCanadianCitizenship',
+	ValidPermanentResidentCard = 'ValidPermanentResidentCard',
+	RecordOfLandingDocument = 'RecordOfLandingDocument',
+	ConfirmationOfPermanentResidenceDocument = 'ConfirmationOfPermanentResidenceDocument',
+	WorkPermit = 'WorkPermit',
+	StudyPermit = 'StudyPermit',
+	ValidDocumentToVerifyLegalWorkStatus = 'ValidDocumentToVerifyLegalWorkStatus',
+}
+
 export enum PoliceOfficerRoleCode {
 	AuxiliaryorReserveConstable = 'AuxiliaryorReserveConstable',
 	SheriffDeputySheriff = 'SheriffDeputySheriff',
@@ -41,6 +57,41 @@ export enum PoliceOfficerRoleCode {
 	SpecialProvincialOrMunicipalConstable = 'SpecialProvincialOrMunicipalConstable',
 	PoliceOfficer = 'PoliceOfficer',
 	Other = 'Other',
+}
+
+export enum GovernmentIssuedPhotoIdCode {
+	DriversLicence = 'DriversLicence',
+	CanadianFirearmsLicense = 'CanadianFirearmsLicense',
+	BcServicesCard = 'BcServicesCard',
+	CertificateOfIndianStatus = 'CertificateOfIndianStatus',
+	ValidGovernmentIssuedPhotoId = 'ValidGovernmentIssuedPhotoId',
+}
+
+export enum HairColourCode {
+	Black = 'Black',
+	Blonde = 'Blonde',
+	Brown = 'Brown',
+	Red = 'Red',
+	Grey = 'Grey',
+	Bald = 'Bald',
+}
+
+export enum EyeColourCode {
+	Blue = 'Blue',
+	Brown = 'Brown',
+	Black = 'Black',
+	Green = 'Green',
+	Hazel = 'Hazel',
+}
+
+export enum HeightUnitCode {
+	Centimeters = 'Centimeters',
+	Inches = 'Inches',
+}
+
+export enum WeightUnitCode {
+	Kilograms = 'Kilograms',
+	Pounds = 'Pounds',
 }
 
 export enum SwlCategoryTypeCode {
@@ -63,14 +114,14 @@ export enum SwlCategoryTypeCode {
 	SecurityConsultant = 'SECURITY_CONSULTANT',
 }
 
-export const SwlTypeCodes: SelectOptions[] = [
+export const SwlTypes: SelectOptions[] = [
 	{ desc: 'Security Business Licence', code: SwlTypeCode.SecurityBusinessLicence },
 	{ desc: 'Security Worker Licence', code: SwlTypeCode.SecurityWorkerLicence },
 	{ desc: 'Armoured Vehicle Permit', code: SwlTypeCode.ArmouredVehiclePermit },
 	{ desc: 'Body Armour Permit', code: SwlTypeCode.BodyArmourPermit },
 ];
 
-export const SwlApplicationTypeCodes: SelectOptions[] = [
+export const SwlApplicationTypes: SelectOptions[] = [
 	{ desc: 'New Or Expired', code: SwlApplicationTypeCode.NewOrExpired },
 	{ desc: 'Renewal', code: SwlApplicationTypeCode.Renewal },
 	{ desc: 'Replacement', code: SwlApplicationTypeCode.Replacement },
@@ -81,6 +132,63 @@ export const GenderTypes: SelectOptions[] = [
 	{ desc: 'M', code: GenderCode.M },
 	{ desc: 'F', code: GenderCode.F },
 	{ desc: 'X', code: GenderCode.U },
+];
+
+export const ProofOfCanadianCitizenshipTypes: SelectOptions[] = [
+	{ desc: 'Birth Certificate', code: ProofOfCanadianCitizenshipCode.BirthCertificate },
+	{ desc: 'Secure Certificate of Indian Status', code: ProofOfCanadianCitizenshipCode.SecureCertificateOfIndianStatus },
+	{ desc: 'Valid Canadian Passport', code: ProofOfCanadianCitizenshipCode.ValidCanadianPassport },
+];
+
+export const ProofOfAbilityToWorkInCanadaTypes: SelectOptions[] = [
+	{
+		desc: 'Confirmation of Permanent Residence Document',
+		code: ProofOfAbilityToWorkInCanadaCode.ConfirmationOfPermanentResidenceDocument,
+	},
+	{ desc: 'Record of Landing Document', code: ProofOfAbilityToWorkInCanadaCode.RecordOfLandingDocument },
+	{ desc: 'Study Permit', code: ProofOfAbilityToWorkInCanadaCode.StudyPermit },
+	{ desc: 'Valid Canadian Citizenship', code: ProofOfAbilityToWorkInCanadaCode.ValidCanadianCitizenship },
+	{
+		desc: 'Valid document to verify legal work status',
+		code: ProofOfAbilityToWorkInCanadaCode.ValidDocumentToVerifyLegalWorkStatus,
+	},
+	{ desc: 'Valid Permanent Resident Card', code: ProofOfAbilityToWorkInCanadaCode.ValidPermanentResidentCard },
+	{ desc: 'Work Permit', code: ProofOfAbilityToWorkInCanadaCode.WorkPermit },
+];
+
+export const GovernmentIssuedPhotoIdTypes: SelectOptions[] = [
+	{ desc: 'BC Services Card', code: GovernmentIssuedPhotoIdCode.BcServicesCard },
+	{ desc: 'Canadian Firearms License', code: GovernmentIssuedPhotoIdCode.CanadianFirearmsLicense },
+	{ desc: 'Certificate of Indian Status', code: GovernmentIssuedPhotoIdCode.CertificateOfIndianStatus },
+	{ desc: 'Drivers Licence', code: GovernmentIssuedPhotoIdCode.DriversLicence },
+	{ desc: 'Valid Government Issued Photo ID', code: GovernmentIssuedPhotoIdCode.ValidGovernmentIssuedPhotoId },
+];
+
+export const HairColourTypes: SelectOptions[] = [
+	{ desc: 'Bald', code: HairColourCode.Bald },
+	{ desc: 'Black', code: HairColourCode.Black },
+	{ desc: 'Blonde', code: HairColourCode.Blonde },
+	{ desc: 'Brown', code: HairColourCode.Brown },
+	{ desc: 'Grey', code: HairColourCode.Grey },
+	{ desc: 'Red', code: HairColourCode.Red },
+];
+
+export const EyeColourTypes: SelectOptions[] = [
+	{ desc: 'Black', code: EyeColourCode.Black },
+	{ desc: 'Blue', code: EyeColourCode.Blue },
+	{ desc: 'Brown', code: EyeColourCode.Brown },
+	{ desc: 'Green', code: EyeColourCode.Green },
+	{ desc: 'Hazel', code: EyeColourCode.Hazel },
+];
+
+export const HeightUnitTypes: SelectOptions[] = [
+	{ desc: 'Centimeters', code: HeightUnitCode.Centimeters },
+	{ desc: 'Inches', code: HeightUnitCode.Inches },
+];
+
+export const WeightUnitTypes: SelectOptions[] = [
+	{ desc: 'Kilograms', code: WeightUnitCode.Kilograms },
+	{ desc: 'Pounds', code: WeightUnitCode.Pounds },
 ];
 
 export const SwlCategoryTypes: SelectOptions[] = [

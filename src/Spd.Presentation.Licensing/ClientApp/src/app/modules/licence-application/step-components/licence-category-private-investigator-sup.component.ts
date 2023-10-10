@@ -66,7 +66,7 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 												form.get('requirement')?.invalid &&
 												form.get('requirement')?.hasError('required')
 											"
-											>An option must be selected</mat-error
+											>This is required</mat-error
 										>
 									</div>
 								</div>

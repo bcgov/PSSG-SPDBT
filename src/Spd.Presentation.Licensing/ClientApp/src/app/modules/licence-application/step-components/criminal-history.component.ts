@@ -16,7 +16,7 @@ import {
 			<div class="step">
 				<app-step-title title="Do you have criminal history to declare?"></app-step-title>
 				<div class="step-container row">
-					<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
+					<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
 						<form [formGroup]="form" novalidate>
 							<mat-radio-group aria-label="Select an option" formControlName="hasCriminalHistory">
 								<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
@@ -30,7 +30,7 @@ import {
 									form.get('hasCriminalHistory')?.invalid &&
 									form.get('hasCriminalHistory')?.hasError('required')
 								"
-								>An option must be selected</mat-error
+								>This is required</mat-error
 							>
 						</form>
 					</div>

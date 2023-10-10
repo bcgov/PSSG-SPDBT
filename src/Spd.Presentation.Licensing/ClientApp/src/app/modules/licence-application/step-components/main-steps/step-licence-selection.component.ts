@@ -431,37 +431,41 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy {
 		this.licenceModelLoadedSubscription.unsubscribe();
 	}
 
-	setStepData(): void {
+	onStepNext(formNumber: string): void {
+		console.log('onStepNext formNumber:', formNumber);
+
+		this.setStepData();
+
+		const isValid = this.dirtyForm(formNumber);
+		if (!isValid) return;
+		this.nextStepperStep.emit(true);
+	}
+
+	onFormValidNextStep(formNumber: string): void {
+		console.log('onFormValidNextStep formNumber:', formNumber);
+
+		this.setStepData();
+
+		this.swlCategoryList = this.licenceApplicationService.licenceModel.swlCategoryList;
+
+		const isValid = this.dirtyForm(formNumber);
+		if (!isValid) return;
+		this.childstepper.next();
+	}
+
+	onStepSelectionChange(event: StepperSelectionEvent) {
+		// TODO is needed?
+	}
+
+	private setStepData(): void {
 		let stepData = {
 			licenceTypeCode: this.licenceApplicationService.licenceModel.licenceTypeCode,
 			applicationTypeCode: this.licenceApplicationService.licenceModel.applicationTypeCode,
-			// ...(this.licenceSelectionComponent ? this.licenceSelectionComponent.getDataToSave() : {}),
-			// ...(this.licenceTypeComponent ? this.licenceTypeComponent.getDataToSave() : {}),
 			...(this.licenceAccessCodeComponent ? this.licenceAccessCodeComponent.getDataToSave() : {}),
 			...(this.soleProprietorComponent ? this.soleProprietorComponent.getDataToSave() : {}),
-			// ...this.personalInformationComponent.getDataToSave(),
 			...(this.personalInformationComponent ? this.personalInformationComponent.getDataToSave() : {}),
 			...(this.licenceExpiredComponent ? this.licenceExpiredComponent.getDataToSave() : {}),
-			// ...this.licenceCategoryComponent.getDataToSave(),
-			// ...this.licenceTermComponent.getDataToSave(),
 			...(this.licenceCategoryComponent ? this.licenceCategoryComponent.getDataToSave() : {}),
-			// ...(this.armouredCarGuardComponent ? this.armouredCarGuardComponent.getDataToSave() : {}),
-			// ...(this.bodyArmourSalesComponent ? this.bodyArmourSalesComponent.getDataToSave() : {}),
-			// ...(this.ccTelevisionInstallerComponent ? this.ccTelevisionInstallerComponent.getDataToSave() : {}),
-			// ...(this.elDeviceInstallerComponent ? this.elDeviceInstallerComponent.getDataToSave() : {}),
-			// ...(this.fireInvestigatorComponent ? this.fireInvestigatorComponent.getDataToSave() : {}),
-			// ...(this.locksmithComponent ? this.locksmithComponent.getDataToSave() : {}),
-			// ...(this.locksmithSupComponent ? this.locksmithSupComponent.getDataToSave() : {}),
-			// ...(this.privateInvestigatorComponent ? this.privateInvestigatorComponent.getDataToSave() : {}),
-			// ...(this.privateInvestigatorSupComponent ? this.privateInvestigatorSupComponent.getDataToSave() : {}),
-			// ...(this.securityGuardComponent ? this.securityGuardComponent.getDataToSave() : {}),
-			// ...(this.securityGuardSupComponent ? this.securityGuardSupComponent.getDataToSave() : {}),
-			// ...(this.securityAlarmInstallerSupComponent ? this.securityAlarmInstallerSupComponent.getDataToSave() : {}),
-			// ...(this.securityAlarmInstallerComponent ? this.securityAlarmInstallerComponent.getDataToSave() : {}),
-			// ...(this.securityAlarmMonitorComponent ? this.securityAlarmMonitorComponent.getDataToSave() : {}),
-			// ...(this.securityAlarmResponseComponent ? this.securityAlarmResponseComponent.getDataToSave() : {}),
-			// ...(this.securityAlarmSalesComponent ? this.securityAlarmSalesComponent.getDataToSave() : {}),
-			// ...(this.securityConsultantComponent ? this.securityConsultantComponent.getDataToSave() : {}),
 			...(this.dogsOrRestraintsComponent ? this.dogsOrRestraintsComponent.getDataToSave() : {}),
 			...(this.licenceTermComponent ? this.licenceTermComponent.getDataToSave() : {}),
 		};
@@ -597,60 +601,6 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy {
 		this.licenceApplicationService.updateFlags();
 
 		console.log('stepData', stepData);
-		// return stepData;
-	}
-
-	onStepNext(formNumber: string): void {
-		console.log('onStepNext formNumber:', formNumber);
-
-		this.setStepData();
-
-		const isValid = this.dirtyForm(formNumber);
-		if (!isValid) return;
-		this.nextStepperStep.emit(true);
-	}
-
-	onFormValidNextStep(formNumber: string): void {
-		console.log('onFormValidNextStep formNumber:', formNumber);
-
-		this.setStepData();
-
-		this.swlCategoryList = this.licenceApplicationService.licenceModel.swlCategoryList;
-
-		const isValid = this.dirtyForm(formNumber);
-		if (!isValid) return;
-		this.childstepper.next();
-	}
-
-	onStepSelectionChange(event: StepperSelectionEvent) {
-		// const licenceModel = this.licenceApplicationService.licenceModel;
-		// const stepData = this.getStepData();
-		// this.licenceApplicationService.licenceModel = { ...licenceModel, ...stepData };
-		// console.log('licenceModel', this.licenceApplicationService.licenceModel);
-		// 	if (event.selectedIndex == 1) {
-		// 		const data = this.registrationPathSelectionComponent.getDataToSave();
-		// 		this.selectRegistrationType.emit(data.registrationTypeCode!);
-		// 	}
-		// 	this.scrollIntoView.emit(true);
-		// }
-		// navigateToLastStep(currentStateInfo: any): void {
-		// 	// setup components with data in session
-		// 	this.registrationPathSelectionComponent.registrationTypeCode = currentStateInfo.registrationTypeCode;
-		// 	this.registrationPathSelectionData.registrationTypeCode = currentStateInfo.registrationTypeCode;
-		// 	this.organizationOptionsComponent.registrationTypeCode = currentStateInfo.registrationTypeCode;
-		// 	if (currentStateInfo.employeeOrganizationTypeCode) {
-		// 		this.organizationOptionsComponent.employeeOrganizationTypeCode = currentStateInfo.employeeOrganizationTypeCode;
-		// 	}
-		// 	if (currentStateInfo.volunteerOrganizationTypeCode) {
-		// 		this.organizationOptionsComponent.volunteerOrganizationTypeCode = currentStateInfo.volunteerOrganizationTypeCode;
-		// 	}
-		// 	this.setShowStepCompensationQuestionFlag();
-		// 	if (this.compensationQuestionComponent) {
-		// 		this.compensationQuestionComponent.employeeMonetaryCompensationFlag =
-		// 			currentStateInfo.employeeMonetaryCompensationFlag ? currentStateInfo.employeeMonetaryCompensationFlag : null;
-		// 	}
-		// 	this.vulnerableSectorQuestionComponent.employeeInteractionFlag = currentStateInfo.employeeInteractionFlag;
-		// 	this.childstepper.selectedIndex = this.showStepCompensationQuestion ? 3 : 2;
 	}
 
 	private dirtyForm(step: string): boolean {

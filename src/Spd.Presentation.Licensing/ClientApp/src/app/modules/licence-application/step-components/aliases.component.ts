@@ -22,8 +22,12 @@ import {
 				<div class="step-container">
 					<form [formGroup]="form" novalidate>
 						<div class="row">
-							<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
-								<mat-radio-group aria-label="Select an option" formControlName="previousNameFlag">
+							<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
+								<mat-radio-group
+									aria-label="Select an option"
+									formControlName="previousNameFlag"
+									(change)="onPreviousNameFlagChange()"
+								>
 									<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
 									<mat-divider class="my-2"></mat-divider>
 									<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
@@ -31,11 +35,11 @@ import {
 								<mat-error
 									class="mat-option-error"
 									*ngIf="
-										(form.get('isPoliceOrPeaceOfficer')?.dirty || form.get('isPoliceOrPeaceOfficer')?.touched) &&
-										form.get('isPoliceOrPeaceOfficer')?.invalid &&
-										form.get('isPoliceOrPeaceOfficer')?.hasError('required')
+										(form.get('previousNameFlag')?.dirty || form.get('previousNameFlag')?.touched) &&
+										form.get('previousNameFlag')?.invalid &&
+										form.get('previousNameFlag')?.hasError('required')
 									"
-									>An option must be selected</mat-error
+									>This is required</mat-error
 								>
 							</div>
 						</div>
@@ -46,25 +50,25 @@ import {
 									<div class="text-minor-heading fw-semibold mb-2">Previous Names</div>
 									<ng-container formArrayName="aliases" *ngFor="let group of getFormControls.controls; let i = index">
 										<div class="row" [formGroupName]="i">
-											<div class="col-md-5 col-sm-12">
+											<div class="col-lg-6 col-md-6 col-sm-12">
 												<mat-form-field>
 													<mat-label>Given Name <span class="optional-label">(optional)</span></mat-label>
 													<input matInput type="text" formControlName="givenName" maxlength="40" />
 												</mat-form-field>
 											</div>
-											<div class="col-md-5 col-sm-12">
+											<div class="col-lg-6 col-md-6 col-sm-12">
 												<mat-form-field>
 													<mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
 													<input matInput type="text" formControlName="middleName1" maxlength="40" />
 												</mat-form-field>
 											</div>
-											<div class="col-md-5 col-sm-12">
+											<div class="col-lg-6 col-md-6 col-sm-12">
 												<mat-form-field>
 													<mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
 													<input matInput type="text" formControlName="middleName2" maxlength="40" />
 												</mat-form-field>
 											</div>
-											<div class="col-md-5 col-sm-12">
+											<div class="col-md-6 col-sm-12" [ngClass]="moreThanOneRowExists ? 'col-lg-5' : 'col-lg-6'">
 												<mat-form-field>
 													<mat-label>Surname</mat-label>
 													<input
@@ -78,7 +82,7 @@ import {
 													<mat-error *ngIf="group.get('surname')?.hasError('required')"> This is required </mat-error>
 												</mat-form-field>
 											</div>
-											<div class="col-md-1 col-sm-12">
+											<div class="col-lg-1 col-md-6 col-sm-12">
 												<button
 													mat-mini-fab
 													class="delete-row-button mb-3"
@@ -90,9 +94,10 @@ import {
 													<mat-icon>delete_outline</mat-icon>
 												</button>
 											</div>
+											<mat-divider class="mb-3" *ngIf="moreThanOneRowExists"></mat-divider>
 										</div>
 									</ng-container>
-									<div class="row" *ngIf="isAllowAliasAdd">
+									<div class="row mb-2" *ngIf="isAllowAliasAdd">
 										<div class="col-12">
 											<button mat-stroked-button (click)="onAddRow()" class="w-auto">
 												<mat-icon class="add-icon">add_circle</mat-icon>Add Another Name
@@ -107,7 +112,24 @@ import {
 			</div>
 		</section>
 	`,
-	styles: [],
+	styles: [
+		`
+			.mat-mdc-mini-fab {
+				top: 10px;
+				width: 30px;
+				height: 30px;
+			}
+
+			.delete-row-button:not([disabled]) {
+				background-color: var(--color-red);
+				color: var(--color-white);
+			}
+
+			.add-icon {
+				color: var(--color-green);
+			}
+		`,
+	],
 })
 export class AliasesComponent implements OnInit, OnDestroy, LicenceFormStepComponent {
 	private licenceModelLoadedSubscription!: Subscription;
@@ -115,7 +137,7 @@ export class AliasesComponent implements OnInit, OnDestroy, LicenceFormStepCompo
 	booleanTypeCodes = BooleanTypeCode;
 
 	form: FormGroup = this.formBuilder.group({
-		previousNameFlag: new FormControl(''),
+		previousNameFlag: new FormControl(null, [FormControlValidators.required]),
 		aliases: this.formBuilder.array([]),
 	});
 
@@ -133,8 +155,22 @@ export class AliasesComponent implements OnInit, OnDestroy, LicenceFormStepCompo
 				if (loaded.isLoaded) {
 					this.form.patchValue({
 						previousNameFlag: this.licenceApplicationService.licenceModel.previousNameFlag,
-						aliases: this.licenceApplicationService.licenceModel.aliases,
 					});
+
+					const aliases = this.licenceApplicationService.licenceModel.aliases ?? [];
+					if (aliases.length > 0) {
+						const control = this.form.get('aliases') as FormArray;
+						aliases.forEach((item) => {
+							control.push(
+								this.formBuilder.group({
+									givenName: [item.givenName],
+									middleName1: [item.middleName1],
+									middleName2: [item.middleName2],
+									surname: [item.surname, [FormControlValidators.required]],
+								})
+							);
+						});
+					}
 				}
 			},
 		});
@@ -142,6 +178,14 @@ export class AliasesComponent implements OnInit, OnDestroy, LicenceFormStepCompo
 
 	ngOnDestroy() {
 		this.licenceModelLoadedSubscription.unsubscribe();
+	}
+
+	onPreviousNameFlagChange(): void {
+		if (this.form.value.previousNameFlag == BooleanTypeCode.Yes) {
+			this.onAddRow();
+		} else {
+			this.aliases.clear();
+		}
 	}
 
 	isFormValid(): boolean {

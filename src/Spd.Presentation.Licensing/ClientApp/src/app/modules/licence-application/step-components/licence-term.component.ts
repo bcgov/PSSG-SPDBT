@@ -34,7 +34,7 @@ import {
 									form.get('licenceTermCode')?.invalid &&
 									form.get('licenceTermCode')?.hasError('required')
 								"
-								>An option must be selected</mat-error
+								>This is required</mat-error
 							>
 						</form>
 					</div>

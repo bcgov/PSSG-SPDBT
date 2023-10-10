@@ -22,7 +22,7 @@ import {
 				<div class="step-container">
 					<form [formGroup]="form" novalidate>
 						<div class="row">
-							<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
+							<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
 								<mat-radio-group aria-label="Select an option" formControlName="useDogsOrRestraints">
 									<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
 									<mat-divider class="my-2"></mat-divider>
@@ -35,7 +35,7 @@ import {
 										form.get('useDogsOrRestraints')?.invalid &&
 										form.get('useDogsOrRestraints')?.hasError('required')
 									"
-									>An option must be selected</mat-error
+									>This is required</mat-error
 								>
 							</div>
 						</div>
@@ -88,7 +88,7 @@ import {
 											form.get('carryAndUseRetraintsDocument')?.invalid &&
 											form.get('carryAndUseRetraintsDocument')?.hasError('required')
 										"
-										>An option must be selected</mat-error
+										>This is required</mat-error
 									>
 
 									<div class="text-minor-heading mt-4 mb-2">Upload your proof of qualification</div>
@@ -154,7 +154,7 @@ import {
 											form.get('dogsPurposeDocumentType')?.invalid &&
 											form.get('dogsPurposeDocumentType')?.hasError('required')
 										"
-										>An option must be selected</mat-error
+										>This is required</mat-error
 									>
 
 									<!-- Your Security Dog Validation Certificate has expired. Please upload your new proof of qualification. -->
