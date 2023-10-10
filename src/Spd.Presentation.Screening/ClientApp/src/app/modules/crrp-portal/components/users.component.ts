@@ -43,7 +43,8 @@ import { UserDialogData, UserEditModalComponent } from './user-edit-modal.compon
 					</ng-template>
 				</div>
 			</div>
-			<div class="row">
+
+			<div class="row mb-2">
 				<div class="col-12">
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 					<mat-table [dataSource]="dataSource">

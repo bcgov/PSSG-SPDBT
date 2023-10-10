@@ -10,7 +10,7 @@ export type AlertType = 'success' | 'warning' | 'danger';
 			role="alert"
 			[ngClass]="getType()"
 		>
-			<mat-icon class="d-none d-lg-block alert-icon me-2">{{ icon }}</mat-icon>
+			<mat-icon class="d-none d-xl-block alert-icon me-2">{{ icon }}</mat-icon>
 			<ng-content #alertContent></ng-content>
 		</div>
 	`,
