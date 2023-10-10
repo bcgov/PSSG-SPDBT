@@ -77,7 +77,7 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 												form.get('requirement')?.invalid &&
 												form.get('requirement')?.hasError('required')
 											"
-											>An option must be selected</mat-error
+											>This is required</mat-error
 										>
 									</div>
 								</div>
@@ -173,7 +173,7 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 												form.get('training')?.invalid &&
 												form.get('training')?.hasError('required')
 											"
-											>An option must be selected</mat-error
+											>This is required</mat-error
 										>
 									</div>
 								</div>
@@ -218,7 +218,7 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 												form.get('addFireInvestigator')?.invalid &&
 												form.get('addFireInvestigator')?.hasError('required')
 											"
-											>An option must be selected</mat-error
+											>This is required</mat-error
 										>
 									</div>
 								</div>

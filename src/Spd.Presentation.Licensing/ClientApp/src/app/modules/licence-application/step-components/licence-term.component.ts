@@ -3,7 +3,11 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { SwlTermCode } from 'src/app/core/code-types/model-desc.models';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
-import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
+import {
+	LicenceApplicationService,
+	LicenceFormStepComponent,
+	LicenceModelSubject,
+} from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-term',
@@ -30,7 +34,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									form.get('licenceTermCode')?.invalid &&
 									form.get('licenceTermCode')?.hasError('required')
 								"
-								>An option must be selected</mat-error
+								>This is required</mat-error
 							>
 						</form>
 					</div>
@@ -53,8 +57,8 @@ export class LicenceTermComponent implements OnInit, OnDestroy, LicenceFormStepC
 
 	ngOnInit(): void {
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
-			next: (loaded: boolean) => {
-				if (loaded) {
+			next: (loaded: LicenceModelSubject) => {
+				if (loaded.isLoaded) {
 					this.form.patchValue({
 						licenceTermCode: this.licenceApplicationService.licenceModel.licenceTermCode,
 					});
