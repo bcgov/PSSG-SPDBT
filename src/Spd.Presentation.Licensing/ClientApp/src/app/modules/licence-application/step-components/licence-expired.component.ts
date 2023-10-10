@@ -6,7 +6,11 @@ import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
+import {
+	LicenceApplicationService,
+	LicenceFormStepComponent,
+	LicenceModelSubject,
+} from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-expired',
@@ -33,7 +37,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 										form.get('hasExpiredLicence')?.invalid &&
 										form.get('hasExpiredLicence')?.hasError('required')
 									"
-									>An option must be selected</mat-error
+									>This is required</mat-error
 								>
 							</div>
 						</div>
@@ -121,8 +125,8 @@ export class LicenceExpiredComponent implements OnInit, OnDestroy, LicenceFormSt
 
 	ngOnInit(): void {
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
-			next: (loaded: boolean) => {
-				if (loaded) {
+			next: (loaded: LicenceModelSubject) => {
+				if (loaded.isLoaded) {
 					this.form.patchValue({
 						hasExpiredLicence: this.licenceApplicationService.licenceModel.hasExpiredLicence,
 						expiredLicenceNumber: this.licenceApplicationService.licenceModel.expiredLicenceNumber,

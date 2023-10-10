@@ -54,6 +54,7 @@ import { PhotoComponent } from './step-components/photo.component';
 import { PoliceBackgroundComponent } from './step-components/police-background.component';
 import { SoleProprietorComponent } from './step-components/sole-proprietor.component';
 import { SummaryReviewComponent } from './step-components/summary-review.component';
+import { BackgroundInfoComponent } from './step-components/background-info.component';
 
 @NgModule({
 	declarations: [
@@ -110,6 +111,7 @@ import { SummaryReviewComponent } from './step-components/summary-review.compone
 		ApplicationsInProgressComponent,
 		LoginSelectionComponent,
 		LicenceWizardComponent,
+  BackgroundInfoComponent,
 	],
 	imports: [SharedModule, LicenceApplicationRoutingModule],
 })
