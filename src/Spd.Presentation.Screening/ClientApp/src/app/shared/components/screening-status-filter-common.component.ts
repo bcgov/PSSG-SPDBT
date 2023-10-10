@@ -133,6 +133,9 @@ export class ScreeningStatusFilterCommonComponent extends BaseFilterComponent im
 	}
 
 	emitFilterReset() {
+		this.formGroup.reset();
+		this.formGroup.patchValue({ applications: 'MY' });
+
 		this.filterReset.emit();
 	}
 

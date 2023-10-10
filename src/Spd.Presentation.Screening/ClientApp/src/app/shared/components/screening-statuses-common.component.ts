@@ -435,6 +435,10 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 		const defaultSearch = `status==${this.defaultStatuses.join('|')},`;
 		this.statuses.setValue(this.defaultStatuses);
 
+		this.currentFilters = '';
+		this.currentSearch = '';
+		this.showAllPSSOApps = false;
+
 		this.onFilterChange(defaultSearch);
 	}
 
