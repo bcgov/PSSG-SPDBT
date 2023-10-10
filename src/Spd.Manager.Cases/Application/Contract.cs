@@ -149,7 +149,7 @@ namespace Spd.Manager.Cases.Application
         public Guid? UserId { get; set; } = null;
     };
 
-    public record ApplicationStatisticsQuery(Guid OrganizationId) : IRequest<ApplicationStatisticsResponse>;
+    public record ApplicationStatisticsQuery(Guid? OrganizationId = null, Guid? DelegateUserId = null, bool ShowAllPSSOApps = false) : IRequest<ApplicationStatisticsResponse>;
     public record AppListFilterBy(Guid? OrgId)
     {
         public IEnumerable<ApplicationPortalStatusCode>? ApplicationPortalStatus { get; set; }
