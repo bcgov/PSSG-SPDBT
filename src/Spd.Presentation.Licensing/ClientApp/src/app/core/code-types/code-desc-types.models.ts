@@ -5,5 +5,6 @@ export {
 	ProofOfCanadianCitizenshipTypes,
 	SwlApplicationTypes,
 	SwlCategoryTypes,
+	SwlTermTypes,
 	SwlTypes,
 } from './model-desc.models';

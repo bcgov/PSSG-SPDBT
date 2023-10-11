@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HotToastService } from '@ngneat/hot-toast';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { BooleanTypeCode, GenderCode } from 'src/app/api/models';
 import {
 	EyeColourCode,
@@ -155,19 +155,7 @@ export class LicenceApplicationService {
 		private hotToastService: HotToastService,
 		private utilService: UtilService,
 		private spinnerService: NgxSpinnerService
-	) {
-		// this.loadNewLicence();
-	}
-
-	loadNewLicence(): void {
-		this.spinnerService.show('loaderSpinner');
-		console.log('loadNewLicence ');
-		this.initialized = true;
-		this.licenceModel = new LicenceModel();
-		// this.setFlags();
-		// this.licenceModelLoaded$.next({ isLoaded: true, isSetFlags: false });
-		this.spinnerService.hide('loaderSpinner');
-	}
+	) {}
 
 	/*
 		swlCategoryList: [
@@ -197,267 +185,367 @@ export class LicenceApplicationService {
 				],
 				*/
 
-	loadLicenceNew(): void {
-		console.log('loadLicenceNew ');
-		this.spinnerService.show('loaderSpinner');
-		this.initialized = true;
-		setTimeout(() => {
-			const myBlob = new Blob();
-			const myFile = this.utilService.blobToFile(myBlob, 'test.doc');
-
-			const defaults: LicenceModel = {
-				licenceTypeCode: SwlTypeCode.ArmouredVehiclePermit,
-				applicationTypeCode: SwlApplicationTypeCode.NewOrExpired,
-				isSoleProprietor: BooleanTypeCode.Yes,
-				currentLicenceNumber: '123456',
-				accessCode: '456',
-				oneLegalName: false,
-				givenName: 'Jane',
-				middleName1: 'Alice',
-				middleName2: 'Mary',
-				surname: 'Johnson',
-				genderCode: GenderCode.F,
-				dateOfBirth: '2009-10-07T00:00:00+00:00',
-				hasExpiredLicence: BooleanTypeCode.Yes,
-				expiredLicenceNumber: '789',
-				expiryDate: '2002-02-07T00:00:00+00:00',
-				useDogsOrRestraints: BooleanTypeCode.Yes,
-				isDogsPurposeProtection: true,
-				isDogsPurposeDetectionDrugs: false,
-				isDogsPurposeDetectionExplosives: true,
-				dogsPurposeDocumentType: 'b',
-				dogsPurposeAttachments: [myFile],
-				carryAndUseRetraints: true,
-				carryAndUseRetraintsDocument: 'a',
-				carryAndUseRetraintsAttachments: [myFile],
-				licenceTermCode: SwlTermCode.ThreeYears,
-				isPoliceOrPeaceOfficer: BooleanTypeCode.Yes,
-				officerRole: PoliceOfficerRoleCode.Other,
-				otherOfficerRole: 'testRole',
-				letterOfNoConflictAttachments: [myFile],
-				isTreatedForMHC: BooleanTypeCode.Yes,
-				mentalHealthConditionAttachments: [myFile],
-				hasCriminalHistory: BooleanTypeCode.No,
-				proofOfFingerprintAttachments: [myFile],
-				previousNameFlag: BooleanTypeCode.Yes,
-				aliases: [{ givenName: 'Abby', middleName1: '', middleName2: '', surname: 'Anderson' }],
-				isBornInCanada: BooleanTypeCode.Yes,
-				proofOfCitizenship: ProofOfCanadianCitizenshipCode.BirthCertificate,
-				proofOfAbility: null,
-				citizenshipDocumentExpiryDate: null,
-				citizenshipDocumentPhotoAttachments: [myFile],
-				governmentIssuedPhotoTypeCode: GovernmentIssuedPhotoIdCode.BcServicesCard,
-				governmentIssuedPhotoAttachments: [myFile],
-				hasBcDriversLicence: BooleanTypeCode.Yes,
-				bcDriversLicenceNumber: '5458877',
-				hairColourCode: HairColourCode.Black,
-				eyeColourCode: EyeColourCode.Blue,
-				height: '100',
-				heightUnitCode: HeightUnitCode.Inches,
-				weight: '75',
-				weightUnitCode: WeightUnitCode.Kilograms,
-				useBcServicesCardPhoto: BooleanTypeCode.No,
-				photoOfYourselfAttachments: [myFile],
-				contactEmailAddress: 'contact-test@test.gov.bc.ca',
-				contactPhoneNumber: '2508896363',
-				swlCategoryList: [
-					{ desc: 'Body Armour Sales', code: SwlCategoryTypeCode.BodyArmourSales },
-					{ desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
-				],
-				licenceCategorySecurityGuard: {
-					attachments: [myFile],
-					requirement: 'a',
-				},
-			};
-
-			console.log('loadLicenceNew defaults', defaults);
-
-			this.licenceModel = { ...defaults };
-			// this.setFlags();
-			// this.licenceModelLoaded$.next({ isLoaded: true, isSetFlags: false });
-			this.spinnerService.hide('loaderSpinner');
-		}, 1000);
+	reset(): void {
+		this.initialized = false;
+		this.licenceModel = new LicenceModel();
 	}
 
-	loadLicenceRenewal(): void {
+	createNewLicence(): Observable<any> {
+		console.log('createNewLicence ');
+		this.spinnerService.show('loaderSpinner');
+
+		return new Observable((observer) => {
+			setTimeout(() => {
+				this.licenceModel = new LicenceModel();
+				this.initialized = true;
+				this.spinnerService.hide('loaderSpinner');
+				observer.next(this.licenceModel);
+			}, 1000);
+		});
+	}
+
+	loadLicenceNew(): Observable<any> {
+		console.log('loadLicenceNew ');
+		this.spinnerService.show('loaderSpinner');
+
+		return new Observable((observer) => {
+			setTimeout(() => {
+				const myBlob = new Blob();
+				const myFile = this.utilService.blobToFile(myBlob, 'test.doc');
+
+				const defaults: LicenceModel = {
+					licenceTypeCode: SwlTypeCode.ArmouredVehiclePermit,
+					applicationTypeCode: SwlApplicationTypeCode.NewOrExpired,
+					isSoleProprietor: BooleanTypeCode.Yes,
+					currentLicenceNumber: '123456',
+					accessCode: '456',
+					oneLegalName: false,
+					givenName: 'John',
+					middleName1: 'Michael',
+					middleName2: 'Adam',
+					surname: 'Johnson',
+					genderCode: GenderCode.M,
+					dateOfBirth: '2009-10-07T00:00:00+00:00',
+					hasExpiredLicence: BooleanTypeCode.Yes,
+					expiredLicenceNumber: '789',
+					expiryDate: '2002-02-07T00:00:00+00:00',
+					useDogsOrRestraints: BooleanTypeCode.Yes,
+					isDogsPurposeProtection: true,
+					isDogsPurposeDetectionDrugs: false,
+					isDogsPurposeDetectionExplosives: true,
+					dogsPurposeDocumentType: 'b',
+					dogsPurposeAttachments: [myFile],
+					carryAndUseRetraints: true,
+					carryAndUseRetraintsDocument: 'a',
+					carryAndUseRetraintsAttachments: [myFile],
+					licenceTermCode: SwlTermCode.ThreeYears,
+					isPoliceOrPeaceOfficer: BooleanTypeCode.Yes,
+					officerRole: PoliceOfficerRoleCode.Other,
+					otherOfficerRole: 'testRole',
+					letterOfNoConflictAttachments: [myFile],
+					isTreatedForMHC: BooleanTypeCode.Yes,
+					mentalHealthConditionAttachments: [myFile],
+					hasCriminalHistory: BooleanTypeCode.No,
+					proofOfFingerprintAttachments: [myFile],
+					previousNameFlag: BooleanTypeCode.Yes,
+					aliases: [{ givenName: 'Abby', middleName1: '', middleName2: '', surname: 'Anderson' }],
+					isBornInCanada: BooleanTypeCode.Yes,
+					proofOfCitizenship: ProofOfCanadianCitizenshipCode.BirthCertificate,
+					proofOfAbility: null,
+					citizenshipDocumentExpiryDate: null,
+					citizenshipDocumentPhotoAttachments: [myFile],
+					governmentIssuedPhotoTypeCode: GovernmentIssuedPhotoIdCode.BcServicesCard,
+					governmentIssuedPhotoAttachments: [myFile],
+					hasBcDriversLicence: BooleanTypeCode.Yes,
+					bcDriversLicenceNumber: '5458877',
+					hairColourCode: HairColourCode.Black,
+					eyeColourCode: EyeColourCode.Blue,
+					height: '100',
+					heightUnitCode: HeightUnitCode.Inches,
+					weight: '75',
+					weightUnitCode: WeightUnitCode.Kilograms,
+					useBcServicesCardPhoto: BooleanTypeCode.No,
+					photoOfYourselfAttachments: [myFile],
+					contactEmailAddress: 'contact-test@test.gov.bc.ca',
+					contactPhoneNumber: '2508896363',
+					swlCategoryList: [
+						{ desc: 'Body Armour Sales', code: SwlCategoryTypeCode.BodyArmourSales },
+						{ desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
+					],
+					licenceCategorySecurityGuard: {
+						attachments: [myFile],
+						requirement: 'a',
+					},
+				};
+
+				console.log('loadLicenceNew defaults', defaults);
+
+				this.licenceModel = { ...defaults };
+				// this.notifyLoaded();
+				this.initialized = true;
+				this.spinnerService.hide('loaderSpinner');
+
+				observer.next(defaults);
+			}, 1000);
+		});
+	}
+
+	loadLicenceNew2(): Observable<any> {
+		console.log('loadLicenceNew2 ');
+		this.spinnerService.show('loaderSpinner');
+
+		return new Observable((observer) => {
+			setTimeout(() => {
+				const myBlob = new Blob();
+				const myFile = this.utilService.blobToFile(myBlob, 'test.doc');
+
+				const defaults: LicenceModel = {
+					licenceTypeCode: SwlTypeCode.ArmouredVehiclePermit,
+					applicationTypeCode: SwlApplicationTypeCode.NewOrExpired,
+					isSoleProprietor: BooleanTypeCode.Yes,
+					currentLicenceNumber: '123456',
+					accessCode: '456',
+					oneLegalName: false,
+					givenName: 'Jane',
+					middleName1: 'Alice',
+					middleName2: 'Mary',
+					surname: 'Johnson',
+					genderCode: GenderCode.F,
+					dateOfBirth: '2009-10-07T00:00:00+00:00',
+					hasExpiredLicence: BooleanTypeCode.No,
+					useDogsOrRestraints: BooleanTypeCode.No,
+					licenceTermCode: SwlTermCode.NintyDays,
+					isPoliceOrPeaceOfficer: BooleanTypeCode.No,
+					isTreatedForMHC: BooleanTypeCode.No,
+					hasCriminalHistory: BooleanTypeCode.No,
+					proofOfFingerprintAttachments: [myFile],
+					previousNameFlag: BooleanTypeCode.No,
+					isBornInCanada: BooleanTypeCode.Yes,
+					proofOfCitizenship: ProofOfCanadianCitizenshipCode.SecureCertificateOfIndianStatus,
+					proofOfAbility: null,
+					citizenshipDocumentExpiryDate: null,
+					citizenshipDocumentPhotoAttachments: [myFile],
+					governmentIssuedPhotoTypeCode: GovernmentIssuedPhotoIdCode.BcServicesCard,
+					governmentIssuedPhotoAttachments: [myFile],
+					hasBcDriversLicence: BooleanTypeCode.No,
+					hairColourCode: HairColourCode.Black,
+					eyeColourCode: EyeColourCode.Blue,
+					height: '200',
+					heightUnitCode: HeightUnitCode.Inches,
+					weight: '175',
+					weightUnitCode: WeightUnitCode.Kilograms,
+					useBcServicesCardPhoto: BooleanTypeCode.Yes,
+					contactEmailAddress: 'contact-test2@test.gov.bc.ca',
+					contactPhoneNumber: '2508896366',
+					swlCategoryList: [{ desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard }],
+					licenceCategorySecurityGuard: {
+						attachments: [myFile],
+						requirement: 'b',
+					},
+				};
+
+				console.log('loadLicenceNew2 defaults', defaults);
+
+				this.licenceModel = { ...defaults };
+				// this.notifyLoaded();
+				this.initialized = true;
+				this.spinnerService.hide('loaderSpinner');
+				observer.next(defaults);
+			}, 1000);
+		});
+	}
+
+	loadLicenceRenewal(): Observable<any> {
 		console.log('loadLicenceRenewal ');
 		this.spinnerService.show('loaderSpinner');
 		this.initialized = true;
-		setTimeout(() => {
-			const defaults: LicenceModel = {
-				licenceTypeCode: SwlTypeCode.SecurityBusinessLicence,
-				applicationTypeCode: SwlApplicationTypeCode.Renewal,
-				isSoleProprietor: BooleanTypeCode.Yes,
-				currentLicenceNumber: '123',
-				accessCode: '456',
-				oneLegalName: false,
-				givenName: 'Blake',
-				middleName1: '',
-				middleName2: '',
-				surname: 'Smith',
-				genderCode: GenderCode.M,
-				dateOfBirth: '2000-10-07T00:00:00+00:00',
-				hasExpiredLicence: BooleanTypeCode.No,
-				expiredLicenceNumber: '',
-				expiryDate: '',
-				useDogsOrRestraints: null,
-				isDogsPurposeProtection: null,
-				isDogsPurposeDetectionDrugs: null,
-				isDogsPurposeDetectionExplosives: null,
-				carryAndUseRetraints: null,
-				licenceTermCode: SwlTermCode.NintyDays,
-				isPoliceOrPeaceOfficer: BooleanTypeCode.Yes,
-				officerRole: PoliceOfficerRoleCode.Other,
-				otherOfficerRole: 'Janitor',
-				isTreatedForMHC: null,
-				hasCriminalHistory: null,
-				previousNameFlag: BooleanTypeCode.No,
-				isBornInCanada: null,
-				proofOfCitizenship: null,
-				proofOfAbility: null,
-				citizenshipDocumentExpiryDate: null,
-				citizenshipDocumentPhotoAttachments: [],
-				governmentIssuedPhotoTypeCode: null,
-				hasBcDriversLicence: null,
-				hairColourCode: null,
-				eyeColourCode: null,
-				height: null,
-				heightUnitCode: null,
-				weight: null,
-				weightUnitCode: null,
-				useBcServicesCardPhoto: null,
-				swlCategoryList: [
-					{ desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
-				],
-			};
-			console.log('loadLicenceRenewal defaults', defaults);
-			this.licenceModel = { ...defaults };
-			// this.setFlags();
-			// this.licenceModelLoaded$.next({ isLoaded: true, isSetFlags: false });
-			this.spinnerService.hide('loaderSpinner');
-		}, 1000);
+
+		return new Observable((observer) => {
+			setTimeout(() => {
+				const defaults: LicenceModel = {
+					licenceTypeCode: SwlTypeCode.SecurityBusinessLicence,
+					applicationTypeCode: SwlApplicationTypeCode.Renewal,
+					isSoleProprietor: BooleanTypeCode.Yes,
+					currentLicenceNumber: '123',
+					accessCode: '456',
+					oneLegalName: false,
+					givenName: 'Blake',
+					middleName1: '',
+					middleName2: '',
+					surname: 'Smith',
+					genderCode: GenderCode.M,
+					dateOfBirth: '2000-10-07T00:00:00+00:00',
+					hasExpiredLicence: BooleanTypeCode.No,
+					expiredLicenceNumber: '',
+					expiryDate: '',
+					useDogsOrRestraints: null,
+					isDogsPurposeProtection: null,
+					isDogsPurposeDetectionDrugs: null,
+					isDogsPurposeDetectionExplosives: null,
+					carryAndUseRetraints: null,
+					licenceTermCode: SwlTermCode.NintyDays,
+					isPoliceOrPeaceOfficer: BooleanTypeCode.Yes,
+					officerRole: PoliceOfficerRoleCode.Other,
+					otherOfficerRole: 'Janitor',
+					isTreatedForMHC: null,
+					hasCriminalHistory: null,
+					previousNameFlag: BooleanTypeCode.No,
+					isBornInCanada: null,
+					proofOfCitizenship: null,
+					proofOfAbility: null,
+					citizenshipDocumentExpiryDate: null,
+					citizenshipDocumentPhotoAttachments: [],
+					governmentIssuedPhotoTypeCode: null,
+					hasBcDriversLicence: null,
+					hairColourCode: null,
+					eyeColourCode: null,
+					height: null,
+					heightUnitCode: null,
+					weight: null,
+					weightUnitCode: null,
+					useBcServicesCardPhoto: null,
+					swlCategoryList: [
+						{ desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
+					],
+				};
+				console.log('loadLicenceRenewal defaults', defaults);
+				this.licenceModel = { ...defaults };
+				// this.notifyLoaded();
+				this.initialized = true;
+				this.spinnerService.hide('loaderSpinner');
+				observer.next(defaults);
+			}, 1000);
+		});
 	}
 
-	loadLicenceReplacement(): void {
+	loadLicenceReplacement(): Observable<any> {
 		console.log('loadLicenceReplacement ');
 		this.spinnerService.show('loaderSpinner');
 		this.initialized = true;
-		setTimeout(() => {
-			const defaults: LicenceModel = {
-				licenceTypeCode: SwlTypeCode.ArmouredVehiclePermit,
-				applicationTypeCode: SwlApplicationTypeCode.Replacement,
-				isSoleProprietor: BooleanTypeCode.Yes,
-				currentLicenceNumber: '123456',
-				accessCode: '456',
-				oneLegalName: false,
-				givenName: 'Jane',
-				middleName1: 'Alice',
-				middleName2: 'Mary',
-				surname: 'Johnson',
-				genderCode: GenderCode.F,
-				dateOfBirth: '2009-10-07T00:00:00+00:00',
-				hasExpiredLicence: BooleanTypeCode.Yes,
-				expiredLicenceNumber: '789',
-				expiryDate: '2002-02-07T00:00:00+00:00',
-				useDogsOrRestraints: BooleanTypeCode.Yes,
-				isDogsPurposeProtection: true,
-				isDogsPurposeDetectionDrugs: false,
-				isDogsPurposeDetectionExplosives: true,
-				carryAndUseRetraints: true,
-				dogsPurposeDocumentType: 'b',
-				carryAndUseRetraintsDocument: 'a',
-				carryAndUseRetraintsAttachments: [],
-				licenceTermCode: SwlTermCode.ThreeYears,
-				isPoliceOrPeaceOfficer: null,
-				isTreatedForMHC: null,
-				hasCriminalHistory: null,
-				previousNameFlag: null,
-				isBornInCanada: null,
-				proofOfCitizenship: null,
-				proofOfAbility: null,
-				citizenshipDocumentExpiryDate: null,
-				citizenshipDocumentPhotoAttachments: [],
-				governmentIssuedPhotoTypeCode: null,
-				hasBcDriversLicence: null,
-				hairColourCode: null,
-				eyeColourCode: null,
-				height: null,
-				heightUnitCode: null,
-				weight: null,
-				weightUnitCode: null,
-				useBcServicesCardPhoto: null,
-				swlCategoryList: [
-					{ desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
-				],
-			};
-			console.log('loadLicenceReplacement defaults', defaults);
-			this.licenceModel = { ...defaults };
-			// this.setFlags();
-			// this.licenceModelLoaded$.next({ isLoaded: true, isSetFlags: false });
-			this.spinnerService.hide('loaderSpinner');
-		}, 1000);
+
+		return new Observable((observer) => {
+			setTimeout(() => {
+				const defaults: LicenceModel = {
+					licenceTypeCode: SwlTypeCode.ArmouredVehiclePermit,
+					applicationTypeCode: SwlApplicationTypeCode.Replacement,
+					isSoleProprietor: BooleanTypeCode.Yes,
+					currentLicenceNumber: '123456',
+					accessCode: '456',
+					oneLegalName: false,
+					givenName: 'Jane',
+					middleName1: 'Alice',
+					middleName2: 'Mary',
+					surname: 'Johnson',
+					genderCode: GenderCode.F,
+					dateOfBirth: '2009-10-07T00:00:00+00:00',
+					hasExpiredLicence: BooleanTypeCode.Yes,
+					expiredLicenceNumber: '789',
+					expiryDate: '2002-02-07T00:00:00+00:00',
+					useDogsOrRestraints: BooleanTypeCode.Yes,
+					isDogsPurposeProtection: true,
+					isDogsPurposeDetectionDrugs: false,
+					isDogsPurposeDetectionExplosives: true,
+					carryAndUseRetraints: true,
+					dogsPurposeDocumentType: 'b',
+					carryAndUseRetraintsDocument: 'a',
+					carryAndUseRetraintsAttachments: [],
+					licenceTermCode: SwlTermCode.ThreeYears,
+					isPoliceOrPeaceOfficer: null,
+					isTreatedForMHC: null,
+					hasCriminalHistory: null,
+					previousNameFlag: null,
+					isBornInCanada: null,
+					proofOfCitizenship: null,
+					proofOfAbility: null,
+					citizenshipDocumentExpiryDate: null,
+					citizenshipDocumentPhotoAttachments: [],
+					governmentIssuedPhotoTypeCode: null,
+					hasBcDriversLicence: null,
+					hairColourCode: null,
+					eyeColourCode: null,
+					height: null,
+					heightUnitCode: null,
+					weight: null,
+					weightUnitCode: null,
+					useBcServicesCardPhoto: null,
+					swlCategoryList: [
+						{ desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
+					],
+				};
+				console.log('loadLicenceReplacement defaults', defaults);
+				this.licenceModel = { ...defaults };
+				// this.notifyLoaded();
+				this.initialized = true;
+				this.spinnerService.hide('loaderSpinner');
+				observer.next(defaults);
+			}, 1000);
+		});
 	}
 
-	loadLicenceUpdate(): void {
+	loadLicenceUpdate(): Observable<any> {
 		console.log('loadLicenceUpdate ');
 		this.spinnerService.show('loaderSpinner');
 		this.initialized = true;
-		setTimeout(() => {
-			const defaults: LicenceModel = {
-				licenceTypeCode: SwlTypeCode.ArmouredVehiclePermit,
-				applicationTypeCode: SwlApplicationTypeCode.Update,
-				isSoleProprietor: BooleanTypeCode.Yes,
-				currentLicenceNumber: '123456',
-				accessCode: '456',
-				oneLegalName: false,
-				givenName: 'Jane',
-				middleName1: 'Alice',
-				middleName2: 'Mary',
-				surname: 'Johnson',
-				genderCode: GenderCode.F,
-				dateOfBirth: '2009-10-07T00:00:00+00:00',
-				hasExpiredLicence: BooleanTypeCode.Yes,
-				expiredLicenceNumber: '789',
-				expiryDate: '2002-02-07T00:00:00+00:00',
-				useDogsOrRestraints: BooleanTypeCode.Yes,
-				isDogsPurposeProtection: true,
-				isDogsPurposeDetectionDrugs: false,
-				isDogsPurposeDetectionExplosives: true,
-				carryAndUseRetraints: true,
-				dogsPurposeDocumentType: 'b',
-				carryAndUseRetraintsDocument: 'a',
-				carryAndUseRetraintsAttachments: [],
-				licenceTermCode: SwlTermCode.ThreeYears,
-				isPoliceOrPeaceOfficer: BooleanTypeCode.Yes,
-				officerRole: PoliceOfficerRoleCode.AuxiliaryorReserveConstable,
-				isTreatedForMHC: null,
-				hasCriminalHistory: null,
-				previousNameFlag: null,
-				isBornInCanada: null,
-				proofOfCitizenship: null,
-				proofOfAbility: null,
-				citizenshipDocumentExpiryDate: null,
-				citizenshipDocumentPhotoAttachments: [],
-				governmentIssuedPhotoTypeCode: null,
-				hasBcDriversLicence: null,
-				hairColourCode: null,
-				eyeColourCode: null,
-				height: null,
-				heightUnitCode: null,
-				weight: null,
-				weightUnitCode: null,
-				useBcServicesCardPhoto: null,
-				swlCategoryList: [
-					{ desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
-					{ desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
-				],
-			};
-			console.log('loadLicenceUpdate defaults', defaults);
-			this.licenceModel = { ...defaults };
-			// this.setFlags();
-			// this.licenceModelLoaded$.next({ isLoaded: true, isSetFlags: false });
-			this.spinnerService.hide('loaderSpinner');
-		}, 1000);
+
+		return new Observable((observer) => {
+			setTimeout(() => {
+				const defaults: LicenceModel = {
+					licenceTypeCode: SwlTypeCode.ArmouredVehiclePermit,
+					applicationTypeCode: SwlApplicationTypeCode.Update,
+					isSoleProprietor: BooleanTypeCode.Yes,
+					currentLicenceNumber: '123456',
+					accessCode: '456',
+					oneLegalName: false,
+					givenName: 'Jane',
+					middleName1: 'Alice',
+					middleName2: 'Mary',
+					surname: 'Johnson',
+					genderCode: GenderCode.F,
+					dateOfBirth: '2009-10-07T00:00:00+00:00',
+					hasExpiredLicence: BooleanTypeCode.Yes,
+					expiredLicenceNumber: '789',
+					expiryDate: '2002-02-07T00:00:00+00:00',
+					useDogsOrRestraints: BooleanTypeCode.Yes,
+					isDogsPurposeProtection: true,
+					isDogsPurposeDetectionDrugs: false,
+					isDogsPurposeDetectionExplosives: true,
+					carryAndUseRetraints: true,
+					dogsPurposeDocumentType: 'b',
+					carryAndUseRetraintsDocument: 'a',
+					carryAndUseRetraintsAttachments: [],
+					licenceTermCode: SwlTermCode.ThreeYears,
+					isPoliceOrPeaceOfficer: BooleanTypeCode.Yes,
+					officerRole: PoliceOfficerRoleCode.AuxiliaryorReserveConstable,
+					isTreatedForMHC: null,
+					hasCriminalHistory: null,
+					previousNameFlag: null,
+					isBornInCanada: null,
+					proofOfCitizenship: null,
+					proofOfAbility: null,
+					citizenshipDocumentExpiryDate: null,
+					citizenshipDocumentPhotoAttachments: [],
+					governmentIssuedPhotoTypeCode: null,
+					hasBcDriversLicence: null,
+					hairColourCode: null,
+					eyeColourCode: null,
+					height: null,
+					heightUnitCode: null,
+					weight: null,
+					weightUnitCode: null,
+					useBcServicesCardPhoto: null,
+					swlCategoryList: [
+						{ desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
+						{ desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
+					],
+				};
+				console.log('loadLicenceUpdate defaults', defaults);
+				this.licenceModel = { ...defaults };
+				// this.notifyLoaded();
+				this.initialized = true;
+				this.spinnerService.hide('loaderSpinner');
+				observer.next(defaults);
+			}, 1000);
+		});
 	}
 
 	saveLicence(): void {

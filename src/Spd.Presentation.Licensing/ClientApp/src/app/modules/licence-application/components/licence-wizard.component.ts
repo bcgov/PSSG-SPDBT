@@ -142,7 +142,7 @@ export class LicenceWizardComponent implements OnInit, OnDestroy {
 	) {}
 
 	ngOnInit(): void {
-		console.log('LicenceWizardComponent ONINIT');
+		console.log('LicenceWizardComponent ONINIT', this.licenceApplicationService.initialized);
 
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
@@ -151,6 +151,7 @@ export class LicenceWizardComponent implements OnInit, OnDestroy {
 
 		if (!this.licenceApplicationService.initialized) {
 			this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATIONS_IN_PROGRESS));
+			return;
 		}
 
 		this.licenceApplicationService.notifyLoaded();
@@ -168,7 +169,7 @@ export class LicenceWizardComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnDestroy() {
-		this.licenceModelLoadedSubscription.unsubscribe();
+		if (this.licenceModelLoadedSubscription) this.licenceModelLoadedSubscription.unsubscribe();
 	}
 
 	onStepSelectionChange(event: StepperSelectionEvent) {

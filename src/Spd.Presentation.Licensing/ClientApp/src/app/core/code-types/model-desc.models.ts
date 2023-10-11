@@ -134,6 +134,18 @@ export const GenderTypes: SelectOptions[] = [
 	{ desc: 'X', code: GenderCode.U },
 ];
 
+export const SwlTermTypes: SelectOptions[] = [
+	{ desc: '90 Days', code: SwlTermCode.NintyDays },
+	{ desc: '1 Year', code: SwlTermCode.OneYear },
+	{ desc: '2 Years', code: SwlTermCode.TwoYears },
+	{ desc: '3 Years', code: SwlTermCode.ThreeYears },
+];
+
+// export const BooleanTypes: SelectOptions[] = [
+// 	{ desc: 'No', code: BooleanTypeCode.No },
+// 	{ desc: 'Yes', code: BooleanTypeCode.Yes },
+// ];
+
 export const ProofOfCanadianCitizenshipTypes: SelectOptions[] = [
 	{ desc: 'Birth Certificate', code: ProofOfCanadianCitizenshipCode.BirthCertificate },
 	{ desc: 'Secure Certificate of Indian Status', code: ProofOfCanadianCitizenshipCode.SecureCertificateOfIndianStatus },
