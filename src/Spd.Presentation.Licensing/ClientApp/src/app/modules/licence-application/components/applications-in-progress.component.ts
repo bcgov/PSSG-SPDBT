@@ -126,7 +126,7 @@ export interface ApplicationResponse {
 						</div>
 					</div> -->
 
-					<button mat-flat-button color="primary" class="large w-auto mb-4" (click)="onContinueWithNew()">
+					<button mat-flat-button color="primary" class="large w-auto mb-4" (click)="onCreateNew()">
 						Create a New Application
 					</button>
 				</div>
@@ -207,7 +207,7 @@ export class ApplicationsInProgressComponent implements OnInit {
 		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATION));
 	}
 
-	onContinueWithNew(): void {
+	onCreateNew(): void {
 		this.licenceApplicationService.loadNewLicence();
 		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LICENCE_SELECTION));
 	}

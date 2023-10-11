@@ -54,14 +54,18 @@ import {
 								</div>
 								<div class="row mb-2">
 									<div class="col-12">
-										<div class="text-minor-heading fw-normal mb-2">Upload a photo of your ID</div>
-										<app-file-upload [maxNumberOfFiles]="1"></app-file-upload>
+										<div class="text-minor-heading fw-normal mb-2">Upload a photo of your ID:</div>
+										<app-file-upload
+											[maxNumberOfFiles]="1"
+											[files]="governmentIssuedPhotoAttachments.value"
+										></app-file-upload>
 										<mat-error
 											class="mat-option-error"
 											*ngIf="
-												(form.get('governmentIssuedPhoto')?.dirty || form.get('governmentIssuedPhoto')?.touched) &&
-												form.get('governmentIssuedPhoto')?.invalid &&
-												form.get('governmentIssuedPhoto')?.hasError('required')
+												(form.get('governmentIssuedPhotoAttachments')?.dirty ||
+													form.get('governmentIssuedPhotoAttachments')?.touched) &&
+												form.get('governmentIssuedPhotoAttachments')?.invalid &&
+												form.get('governmentIssuedPhotoAttachments')?.hasError('required')
 											"
 											>This is required</mat-error
 										>
@@ -86,7 +90,7 @@ export class AdditionalGovIdComponent implements OnInit, OnDestroy, LicenceFormS
 	form: FormGroup = this.formBuilder.group({
 		governmentIssuedPhotoTypeCode: new FormControl(null, [FormControlValidators.required]),
 		governmentIssuedPhotoExpiryDate: new FormControl(),
-		governmentIssuedPhoto: new FormControl(null, [Validators.required]),
+		governmentIssuedPhotoAttachments: new FormControl(null, [Validators.required]),
 	});
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
@@ -96,14 +100,13 @@ export class AdditionalGovIdComponent implements OnInit, OnDestroy, LicenceFormS
 	ngOnInit(): void {
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: LicenceModelSubject) => {
-				console.log('additional', loaded);
 				if (loaded.isLoaded) {
-					console.log('additional', this.licenceApplicationService.licenceModel);
 					this.form.patchValue({
 						governmentIssuedPhotoTypeCode: this.licenceApplicationService.licenceModel.governmentIssuedPhotoTypeCode,
 						governmentIssuedPhotoExpiryDate:
 							this.licenceApplicationService.licenceModel.governmentIssuedPhotoExpiryDate,
-						governmentIssuedPhoto: this.licenceApplicationService.licenceModel.governmentIssuedPhoto,
+						governmentIssuedPhotoAttachments:
+							this.licenceApplicationService.licenceModel.governmentIssuedPhotoAttachments,
 					});
 				}
 			},
@@ -119,7 +122,7 @@ export class AdditionalGovIdComponent implements OnInit, OnDestroy, LicenceFormS
 			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
 				? this.fileUploadComponent.files
 				: '';
-		this.form.controls['governmentIssuedPhoto'].setValue(attachments);
+		this.form.controls['governmentIssuedPhotoAttachments'].setValue(attachments);
 
 		this.form.markAllAsTouched();
 		return this.form.valid;
@@ -127,5 +130,9 @@ export class AdditionalGovIdComponent implements OnInit, OnDestroy, LicenceFormS
 
 	getDataToSave(): any {
 		return this.form.value;
+	}
+
+	get governmentIssuedPhotoAttachments(): FormControl {
+		return this.form.get('governmentIssuedPhotoAttachments') as FormControl;
 	}
 }

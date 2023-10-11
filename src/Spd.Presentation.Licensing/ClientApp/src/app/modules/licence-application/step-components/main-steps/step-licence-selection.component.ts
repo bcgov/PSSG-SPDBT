@@ -474,122 +474,116 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy {
 		console.log('categories', categories);
 
 		// call function to delete all licence category data
-		this.licenceApplicationService.clearAllLicenceCategoryData();
+		// this.licenceApplicationService.clearAllLicenceCategoryData(); // TODO do this at the end ? what if save mid-way?
 
 		// add back the appropriate licence category data
 		categories.forEach((item: any) => {
 			switch (item.code) {
 				case SwlCategoryTypeCode.ArmouredCarGuard: {
-					stepData = {
-						...stepData,
-						...(this.armouredCarGuardComponent ? this.armouredCarGuardComponent.getDataToSave() : {}),
-					};
+					if (this.armouredCarGuardComponent) {
+						stepData = { ...stepData, ...this.armouredCarGuardComponent.getDataToSave() };
+					}
 					break;
 				}
 				case SwlCategoryTypeCode.BodyArmourSales: {
-					stepData = {
-						...stepData,
-						...(this.bodyArmourSalesComponent ? this.bodyArmourSalesComponent.getDataToSave() : {}),
-					};
+					if (this.bodyArmourSalesComponent) {
+						stepData = { ...stepData, ...this.bodyArmourSalesComponent.getDataToSave() };
+					}
 					break;
 				}
 				case SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller: {
-					stepData = {
-						...stepData,
-						...(this.ccTelevisionInstallerComponent ? this.ccTelevisionInstallerComponent.getDataToSave() : {}),
-					};
+					if (this.ccTelevisionInstallerComponent) {
+						stepData = { ...stepData, ...this.ccTelevisionInstallerComponent.getDataToSave() };
+					}
 					break;
 				}
 				case SwlCategoryTypeCode.ElectronicLockingDeviceInstaller: {
-					stepData = {
-						...stepData,
-						...(this.elDeviceInstallerComponent ? this.elDeviceInstallerComponent.getDataToSave() : {}),
-					};
+					if (this.elDeviceInstallerComponent) {
+						stepData = { ...stepData, ...this.elDeviceInstallerComponent.getDataToSave() };
+					}
 					break;
 				}
 				case SwlCategoryTypeCode.FireInvestigator: {
-					stepData = {
-						...stepData,
-						...(this.fireInvestigatorComponent ? this.fireInvestigatorComponent.getDataToSave() : {}),
-					};
+					if (this.fireInvestigatorComponent) {
+						stepData = { ...stepData, ...this.fireInvestigatorComponent.getDataToSave() };
+					}
 					break;
 				}
 				case SwlCategoryTypeCode.Locksmith: {
-					stepData = { ...stepData, ...(this.locksmithComponent ? this.locksmithComponent.getDataToSave() : {}) };
+					if (this.locksmithComponent) {
+						stepData = { ...stepData, ...this.locksmithComponent.getDataToSave() };
+					}
 					break;
 				}
 				case SwlCategoryTypeCode.LocksmithUnderSupervision: {
-					stepData = { ...stepData, ...(this.locksmithSupComponent ? this.locksmithSupComponent.getDataToSave() : {}) };
+					if (this.locksmithSupComponent) {
+						stepData = { ...stepData, ...this.locksmithSupComponent.getDataToSave() };
+					}
 					break;
 				}
 				case SwlCategoryTypeCode.PrivateInvestigator: {
-					stepData = {
-						...stepData,
-						...(this.privateInvestigatorComponent ? this.privateInvestigatorComponent.getDataToSave() : {}),
-					};
+					if (this.privateInvestigatorComponent) {
+						stepData = { ...stepData, ...this.privateInvestigatorComponent.getDataToSave() };
+					}
 					break;
 				}
 				case SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision: {
-					stepData = {
-						...stepData,
-						...(this.privateInvestigatorSupComponent ? this.privateInvestigatorSupComponent.getDataToSave() : {}),
-					};
+					if (this.privateInvestigatorSupComponent) {
+						stepData = { ...stepData, ...this.privateInvestigatorSupComponent.getDataToSave() };
+					}
 					break;
 				}
 				case SwlCategoryTypeCode.SecurityGuard: {
-					stepData = {
-						...stepData,
-						...(this.securityGuardComponent ? this.securityGuardComponent.getDataToSave() : {}),
-					};
+					if (this.securityGuardComponent) {
+						console.log(
+							'this.securityGuardComponent.getDataToSave()',
+							this.securityGuardComponent ? this.securityGuardComponent.getDataToSave() : {}
+						);
+						stepData = { ...stepData, ...this.securityGuardComponent.getDataToSave() };
+						console.log('this.securityGuardComponent.stepData', stepData);
+					}
 					break;
 				}
 				case SwlCategoryTypeCode.SecurityGuardUnderSupervision: {
-					stepData = {
-						...stepData,
-						...(this.securityGuardSupComponent ? this.securityGuardSupComponent.getDataToSave() : {}),
-					};
+					if (this.securityGuardSupComponent) {
+						stepData = { ...stepData, ...this.securityGuardSupComponent.getDataToSave() };
+					}
 					break;
 				}
 				case SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision: {
-					stepData = {
-						...stepData,
-						...(this.securityAlarmInstallerSupComponent ? this.securityAlarmInstallerSupComponent.getDataToSave() : {}),
-					};
+					if (this.securityAlarmInstallerSupComponent) {
+						stepData = { ...stepData, ...this.securityAlarmInstallerSupComponent.getDataToSave() };
+					}
 					break;
 				}
 				case SwlCategoryTypeCode.SecurityAlarmInstaller: {
-					stepData = {
-						...stepData,
-						...(this.securityAlarmInstallerComponent ? this.securityAlarmInstallerComponent.getDataToSave() : {}),
-					};
+					if (this.securityAlarmInstallerComponent) {
+						stepData = { ...stepData, ...this.securityAlarmInstallerComponent.getDataToSave() };
+					}
 					break;
 				}
 				case SwlCategoryTypeCode.SecurityAlarmMonitor: {
-					stepData = {
-						...stepData,
-						...(this.securityAlarmMonitorComponent ? this.securityAlarmMonitorComponent.getDataToSave() : {}),
-					};
+					if (this.securityAlarmMonitorComponent) {
+						stepData = { ...stepData, ...this.securityAlarmMonitorComponent.getDataToSave() };
+					}
 					break;
 				}
 				case SwlCategoryTypeCode.SecurityAlarmResponse: {
-					stepData = {
-						...stepData,
-						...(this.securityAlarmResponseComponent ? this.securityAlarmResponseComponent.getDataToSave() : {}),
-					};
+					if (this.securityAlarmResponseComponent) {
+						stepData = { ...stepData, ...this.securityAlarmResponseComponent.getDataToSave() };
+					}
 					break;
 				}
 				case SwlCategoryTypeCode.SecurityAlarmSales: {
-					stepData = {
-						...stepData,
-						...(this.securityAlarmSalesComponent ? this.securityAlarmSalesComponent.getDataToSave() : {}),
-					};
+					if (this.securityAlarmSalesComponent) {
+						stepData = { ...stepData, ...this.securityAlarmSalesComponent.getDataToSave() };
+					}
 					break;
 				}
 				case SwlCategoryTypeCode.SecurityConsultant: {
-					stepData = {
-						...stepData,
-						...(this.securityConsultantComponent ? this.securityConsultantComponent.getDataToSave() : {}),
-					};
+					if (this.securityConsultantComponent) {
+						stepData = { ...stepData, ...this.securityConsultantComponent.getDataToSave() };
+					}
 					break;
 				}
 			}
@@ -598,9 +592,10 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy {
 		const licenceModel = this.licenceApplicationService.licenceModel;
 		this.licenceApplicationService.licenceModel = { ...licenceModel, ...stepData };
 
-		this.licenceApplicationService.updateFlags();
+		this.licenceApplicationService.notifyUpdateFlags();
+		this.licenceApplicationService.notifyCategoryData();
 
-		console.log('stepData', stepData);
+		console.log('LICENCE SELECTION stepData', stepData);
 	}
 
 	private dirtyForm(step: string): boolean {

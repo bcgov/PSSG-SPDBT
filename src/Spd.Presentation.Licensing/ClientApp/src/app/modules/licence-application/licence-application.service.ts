@@ -18,6 +18,7 @@ import {
 	SwlTypeCode,
 	WeightUnitCode,
 } from 'src/app/core/code-types/model-desc.models';
+import { UtilService } from 'src/app/core/services/util.service';
 
 export interface LicenceFormStepComponent {
 	getDataToSave(): any;
@@ -77,30 +78,30 @@ export class LicenceModel {
 	isDogsPurposeDetectionDrugs?: boolean | null = false;
 	isDogsPurposeDetectionExplosives?: boolean | null = false;
 	dogsPurposeDocumentType?: string | null = null;
-	dogsPurposeAttachments?: Array<File>[] | null = null;
+	dogsPurposeAttachments?: Array<File> = [];
 	carryAndUseRetraints?: boolean | null = false;
 	carryAndUseRetraintsDocument?: string | null = null;
-	carryAndUseRetraintsAttachments?: Array<File>[] | null = null;
+	carryAndUseRetraintsAttachments?: Array<File> = [];
 	licenceTermCode: SwlTermCode | null = null;
 	isViewOnlyPoliceOrPeaceOfficer?: boolean = false;
 	isPoliceOrPeaceOfficer: BooleanTypeCode | null = null;
 	officerRole?: string | null = null;
 	otherOfficerRole?: string | null = null;
-	letterOfNoConflictAttachments?: Array<File>[] | null = null;
+	letterOfNoConflictAttachments?: Array<File> = [];
 	isTreatedForMHC: BooleanTypeCode | null = null;
-	mentalHealthConditionAttachments?: Array<File>[] | null = null;
+	mentalHealthConditionAttachments?: Array<File> = [];
 	hasCriminalHistory: BooleanTypeCode | null = null;
-	proofOfFingerprintAttachments?: Array<File>[] | null = null;
+	proofOfFingerprintAttachments?: Array<File> = [];
 	previousNameFlag: BooleanTypeCode | null = null;
 	aliases?: Array<AliasModel> | null = null;
 	isBornInCanada: BooleanTypeCode | null = null;
 	proofOfCitizenship: ProofOfCanadianCitizenshipCode | null = null;
 	proofOfAbility: ProofOfAbilityToWorkInCanadaCode | null = null;
 	citizenshipDocumentExpiryDate?: string | null = null;
-	citizenshipDocumentPhoto?: string | null = null;
+	citizenshipDocumentPhotoAttachments?: Array<File> = [];
 	governmentIssuedPhotoTypeCode: GovernmentIssuedPhotoIdCode | null = null;
 	governmentIssuedPhotoExpiryDate?: string | null = null;
-	governmentIssuedPhoto?: string | null = null;
+	governmentIssuedPhotoAttachments?: Array<File> = [];
 	hasBcDriversLicence: BooleanTypeCode | null = null;
 	bcDriversLicenceNumber?: string | null = null;
 	hairColourCode: HairColourCode | null = null;
@@ -109,6 +110,10 @@ export class LicenceModel {
 	heightUnitCode: HeightUnitCode | null = null;
 	weight: string | null = null;
 	weightUnitCode: WeightUnitCode | null = null;
+	useBcServicesCardPhoto: BooleanTypeCode | null = null;
+	photoOfYourselfAttachments?: Array<File> = [];
+	contactEmailAddress?: string | null = null;
+	contactPhoneNumber?: string | null = null;
 }
 
 export class AliasModel {
@@ -132,6 +137,7 @@ export class AliasModel {
 export class LicenceModelSubject {
 	isLoaded?: boolean = false;
 	isSetFlags?: boolean = false;
+	isCategoryLoaded?: boolean = false;
 }
 
 @Injectable({
@@ -145,7 +151,11 @@ export class LicenceApplicationService {
 
 	licenceModel: LicenceModel = new LicenceModel();
 
-	constructor(private hotToastService: HotToastService, private spinnerService: NgxSpinnerService) {
+	constructor(
+		private hotToastService: HotToastService,
+		private utilService: UtilService,
+		private spinnerService: NgxSpinnerService
+	) {
 		// this.loadNewLicence();
 	}
 
@@ -154,8 +164,8 @@ export class LicenceApplicationService {
 		console.log('loadNewLicence ');
 		this.initialized = true;
 		this.licenceModel = new LicenceModel();
-		this.setFlags();
-		this.licenceModelLoaded$.next({ isLoaded: true, isSetFlags: false });
+		// this.setFlags();
+		// this.licenceModelLoaded$.next({ isLoaded: true, isSetFlags: false });
 		this.spinnerService.hide('loaderSpinner');
 	}
 
@@ -192,6 +202,9 @@ export class LicenceApplicationService {
 		this.spinnerService.show('loaderSpinner');
 		this.initialized = true;
 		setTimeout(() => {
+			const myBlob = new Blob();
+			const myFile = this.utilService.blobToFile(myBlob, 'test.doc');
+
 			const defaults: LicenceModel = {
 				licenceTypeCode: SwlTypeCode.ArmouredVehiclePermit,
 				applicationTypeCode: SwlApplicationTypeCode.NewOrExpired,
@@ -205,45 +218,63 @@ export class LicenceApplicationService {
 				surname: 'Johnson',
 				genderCode: GenderCode.F,
 				dateOfBirth: '2009-10-07T00:00:00+00:00',
-				hasExpiredLicence: BooleanTypeCode.No,
-				// expiredLicenceNumber: '789',
-				// expiryDate: '2002-02-07T00:00:00+00:00',
-				useDogsOrRestraints: BooleanTypeCode.No,
-				// isDogsPurposeProtection: true,
-				// isDogsPurposeDetectionDrugs: false,
-				// isDogsPurposeDetectionExplosives: true,
-				// carryAndUseRetraints: true,
-				// dogsPurposeDocumentType: 'b',
-				// carryAndUseRetraintsDocument: 'a',
-				// carryAndUseRetraintsAttachments: null,
-
+				hasExpiredLicence: BooleanTypeCode.Yes,
+				expiredLicenceNumber: '789',
+				expiryDate: '2002-02-07T00:00:00+00:00',
+				useDogsOrRestraints: BooleanTypeCode.Yes,
+				isDogsPurposeProtection: true,
+				isDogsPurposeDetectionDrugs: false,
+				isDogsPurposeDetectionExplosives: true,
+				dogsPurposeDocumentType: 'b',
+				dogsPurposeAttachments: [myFile],
+				carryAndUseRetraints: true,
+				carryAndUseRetraintsDocument: 'a',
+				carryAndUseRetraintsAttachments: [myFile],
 				licenceTermCode: SwlTermCode.ThreeYears,
-				isPoliceOrPeaceOfficer: BooleanTypeCode.No,
-				isTreatedForMHC: BooleanTypeCode.No,
+				isPoliceOrPeaceOfficer: BooleanTypeCode.Yes,
+				officerRole: PoliceOfficerRoleCode.Other,
+				otherOfficerRole: 'testRole',
+				letterOfNoConflictAttachments: [myFile],
+				isTreatedForMHC: BooleanTypeCode.Yes,
+				mentalHealthConditionAttachments: [myFile],
 				hasCriminalHistory: BooleanTypeCode.No,
-				// previousNameFlag: BooleanTypeCode.No,
-				// aliases: [],
+				proofOfFingerprintAttachments: [myFile],
 				previousNameFlag: BooleanTypeCode.Yes,
 				aliases: [{ givenName: 'Abby', middleName1: '', middleName2: '', surname: 'Anderson' }],
 				isBornInCanada: BooleanTypeCode.Yes,
 				proofOfCitizenship: ProofOfCanadianCitizenshipCode.BirthCertificate,
 				proofOfAbility: null,
 				citizenshipDocumentExpiryDate: null,
-				citizenshipDocumentPhoto: null,
+				citizenshipDocumentPhotoAttachments: [myFile],
 				governmentIssuedPhotoTypeCode: GovernmentIssuedPhotoIdCode.BcServicesCard,
-				hasBcDriversLicence: BooleanTypeCode.No,
+				governmentIssuedPhotoAttachments: [myFile],
+				hasBcDriversLicence: BooleanTypeCode.Yes,
+				bcDriversLicenceNumber: '5458877',
 				hairColourCode: HairColourCode.Black,
 				eyeColourCode: EyeColourCode.Blue,
 				height: '100',
 				heightUnitCode: HeightUnitCode.Inches,
 				weight: '75',
 				weightUnitCode: WeightUnitCode.Kilograms,
-				swlCategoryList: [{ desc: 'Body Armour Sales', code: SwlCategoryTypeCode.BodyArmourSales }],
+				useBcServicesCardPhoto: BooleanTypeCode.No,
+				photoOfYourselfAttachments: [myFile],
+				contactEmailAddress: 'contact-test@test.gov.bc.ca',
+				contactPhoneNumber: '2508896363',
+				swlCategoryList: [
+					{ desc: 'Body Armour Sales', code: SwlCategoryTypeCode.BodyArmourSales },
+					{ desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
+				],
+				licenceCategorySecurityGuard: {
+					attachments: [myFile],
+					requirement: 'a',
+				},
 			};
+
 			console.log('loadLicenceNew defaults', defaults);
+
 			this.licenceModel = { ...defaults };
-			this.setFlags();
-			this.licenceModelLoaded$.next({ isLoaded: true, isSetFlags: false });
+			// this.setFlags();
+			// this.licenceModelLoaded$.next({ isLoaded: true, isSetFlags: false });
 			this.spinnerService.hide('loaderSpinner');
 		}, 1000);
 	}
@@ -285,7 +316,7 @@ export class LicenceApplicationService {
 				proofOfCitizenship: null,
 				proofOfAbility: null,
 				citizenshipDocumentExpiryDate: null,
-				citizenshipDocumentPhoto: null,
+				citizenshipDocumentPhotoAttachments: [],
 				governmentIssuedPhotoTypeCode: null,
 				hasBcDriversLicence: null,
 				hairColourCode: null,
@@ -294,14 +325,15 @@ export class LicenceApplicationService {
 				heightUnitCode: null,
 				weight: null,
 				weightUnitCode: null,
+				useBcServicesCardPhoto: null,
 				swlCategoryList: [
 					{ desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
 				],
 			};
 			console.log('loadLicenceRenewal defaults', defaults);
 			this.licenceModel = { ...defaults };
-			this.setFlags();
-			this.licenceModelLoaded$.next({ isLoaded: true, isSetFlags: false });
+			// this.setFlags();
+			// this.licenceModelLoaded$.next({ isLoaded: true, isSetFlags: false });
 			this.spinnerService.hide('loaderSpinner');
 		}, 1000);
 	}
@@ -334,7 +366,7 @@ export class LicenceApplicationService {
 				carryAndUseRetraints: true,
 				dogsPurposeDocumentType: 'b',
 				carryAndUseRetraintsDocument: 'a',
-				carryAndUseRetraintsAttachments: null,
+				carryAndUseRetraintsAttachments: [],
 				licenceTermCode: SwlTermCode.ThreeYears,
 				isPoliceOrPeaceOfficer: null,
 				isTreatedForMHC: null,
@@ -344,7 +376,7 @@ export class LicenceApplicationService {
 				proofOfCitizenship: null,
 				proofOfAbility: null,
 				citizenshipDocumentExpiryDate: null,
-				citizenshipDocumentPhoto: null,
+				citizenshipDocumentPhotoAttachments: [],
 				governmentIssuedPhotoTypeCode: null,
 				hasBcDriversLicence: null,
 				hairColourCode: null,
@@ -353,14 +385,15 @@ export class LicenceApplicationService {
 				heightUnitCode: null,
 				weight: null,
 				weightUnitCode: null,
+				useBcServicesCardPhoto: null,
 				swlCategoryList: [
 					{ desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
 				],
 			};
 			console.log('loadLicenceReplacement defaults', defaults);
 			this.licenceModel = { ...defaults };
-			this.setFlags();
-			this.licenceModelLoaded$.next({ isLoaded: true, isSetFlags: false });
+			// this.setFlags();
+			// this.licenceModelLoaded$.next({ isLoaded: true, isSetFlags: false });
 			this.spinnerService.hide('loaderSpinner');
 		}, 1000);
 	}
@@ -393,7 +426,7 @@ export class LicenceApplicationService {
 				carryAndUseRetraints: true,
 				dogsPurposeDocumentType: 'b',
 				carryAndUseRetraintsDocument: 'a',
-				carryAndUseRetraintsAttachments: null,
+				carryAndUseRetraintsAttachments: [],
 				licenceTermCode: SwlTermCode.ThreeYears,
 				isPoliceOrPeaceOfficer: BooleanTypeCode.Yes,
 				officerRole: PoliceOfficerRoleCode.AuxiliaryorReserveConstable,
@@ -404,7 +437,7 @@ export class LicenceApplicationService {
 				proofOfCitizenship: null,
 				proofOfAbility: null,
 				citizenshipDocumentExpiryDate: null,
-				citizenshipDocumentPhoto: null,
+				citizenshipDocumentPhotoAttachments: [],
 				governmentIssuedPhotoTypeCode: null,
 				hasBcDriversLicence: null,
 				hairColourCode: null,
@@ -413,6 +446,7 @@ export class LicenceApplicationService {
 				heightUnitCode: null,
 				weight: null,
 				weightUnitCode: null,
+				useBcServicesCardPhoto: null,
 				swlCategoryList: [
 					{ desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
 					{ desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
@@ -420,15 +454,15 @@ export class LicenceApplicationService {
 			};
 			console.log('loadLicenceUpdate defaults', defaults);
 			this.licenceModel = { ...defaults };
-			this.setFlags();
-			this.licenceModelLoaded$.next({ isLoaded: true, isSetFlags: false });
+			// this.setFlags();
+			// this.licenceModelLoaded$.next({ isLoaded: true, isSetFlags: false });
 			this.spinnerService.hide('loaderSpinner');
 		}, 1000);
 	}
 
 	saveLicence(): void {
 		this.hotToastService.success('Licence information has been saved');
-		console.log('licence data', this.licenceModel);
+		console.log('SAVE LICENCE DATA', this.licenceModel);
 	}
 
 	clearLicenceCategoryData(code: SwlCategoryTypeCode): void {
@@ -508,10 +542,21 @@ export class LicenceApplicationService {
 		delete this.licenceModel.licenceCategorySecurityGuard;
 	}
 
-	updateFlags(): void {
+	notifyLoaded(): void {
 		this.setFlags();
-		console.log('updateFlags', this.licenceModel);
+		console.log('notifyLoaded', this.licenceModel);
+		this.licenceModelLoaded$.next({ isLoaded: true, isSetFlags: false });
+	}
+
+	notifyUpdateFlags(): void {
+		this.setFlags();
+		console.log('notifyUpdateFlags', this.licenceModel);
 		this.licenceModelLoaded$.next({ isLoaded: false, isSetFlags: true });
+	}
+
+	notifyCategoryData(): void {
+		console.log('notifyCategoryData', this.licenceModel);
+		this.licenceModelLoaded$.next({ isLoaded: false, isSetFlags: false, isCategoryLoaded: true });
 	}
 
 	private setFlags(): void {

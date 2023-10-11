@@ -91,10 +91,14 @@ import {
 										>This is required</mat-error
 									>
 
-									<div class="text-minor-heading mt-4 mb-2">Upload your proof of qualification</div>
+									<div class="text-minor-heading mt-4 mb-2">Upload your proof of qualification:</div>
 
 									<div class="my-2">
-										<app-file-upload [maxNumberOfFiles]="10" #carryAndUseRetraintsAttachments></app-file-upload>
+										<app-file-upload
+											[maxNumberOfFiles]="10"
+											[files]="carryAndUseRetraintsAttachments.value"
+											#carryAndUseRetraintsAttachmentsRef
+										></app-file-upload>
 										<mat-error
 											class="mat-option-error"
 											*ngIf="
@@ -159,10 +163,14 @@ import {
 
 									<!-- Your Security Dog Validation Certificate has expired. Please upload your new proof of qualification. -->
 
-									<div class="text-minor-heading mt-4 mb-2">Upload your proof of qualification</div>
+									<div class="text-minor-heading mt-4 mb-2">Upload your proof of qualification:</div>
 
 									<div class="my-2">
-										<app-file-upload [maxNumberOfFiles]="10" #dogsPurposeAttachments></app-file-upload>
+										<app-file-upload
+											[maxNumberOfFiles]="10"
+											[files]="dogsPurposeAttachments.value"
+											#dogsPurposeAttachmentsRef
+										></app-file-upload>
 										<mat-error
 											class="mat-option-error"
 											*ngIf="
@@ -243,8 +251,8 @@ export class DogsOrRestraintsComponent implements OnInit, OnDestroy, LicenceForm
 		}
 	);
 
-	@ViewChild('carryAndUseRetraintsAttachments') fileUploadComponent1!: FileUploadComponent;
-	@ViewChild('dogsPurposeAttachments') fileUploadComponent2!: FileUploadComponent;
+	@ViewChild('carryAndUseRetraintsAttachmentsRef') fileUploadComponent1!: FileUploadComponent;
+	@ViewChild('dogsPurposeAttachmentsRef') fileUploadComponent2!: FileUploadComponent;
 
 	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
 
@@ -325,6 +333,14 @@ export class DogsOrRestraintsComponent implements OnInit, OnDestroy, LicenceForm
 
 	get carryAndUseRetraints(): FormControl {
 		return this.form.get('carryAndUseRetraints') as FormControl;
+	}
+
+	get carryAndUseRetraintsAttachments(): FormControl {
+		return this.form.get('carryAndUseRetraintsAttachments') as FormControl;
+	}
+
+	get dogsPurposeAttachments(): FormControl {
+		return this.form.get('dogsPurposeAttachments') as FormControl;
 	}
 
 	get isDogPurposesGroup(): boolean {

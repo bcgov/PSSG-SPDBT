@@ -31,8 +31,8 @@ import {
 								<mat-icon class="info-icon" matTooltip="TODO"> info </mat-icon>
 							</p>
 							<!-- TODO link to the form to download for reference -->
-							<div class="text-minor-heading fw-normal mb-2">Upload your document</div>
-							<app-file-upload [maxNumberOfFiles]="1"></app-file-upload>
+							<div class="text-minor-heading fw-normal mb-2">Upload your document:</div>
+							<app-file-upload [maxNumberOfFiles]="1" [files]="proofOfFingerprintAttachments.value"></app-file-upload>
 							<mat-error
 								class="mat-option-error"
 								*ngIf="
@@ -99,5 +99,9 @@ export class FingerprintsComponent implements OnInit, OnDestroy, LicenceFormStep
 
 	getDataToSave(): any {
 		return this.form.value;
+	}
+
+	get proofOfFingerprintAttachments(): FormControl {
+		return this.form.get('proofOfFingerprintAttachments') as FormControl;
 	}
 }

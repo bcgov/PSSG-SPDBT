@@ -33,13 +33,13 @@ import { StepReviewComponent } from '../step-components/main-steps/step-review.c
 						</mat-step>
 
 						<ng-container *ngIf="isNotReplacement">
-							<!-- <mat-step completed="true">
+							<mat-step completed="true">
 								<ng-template matStepLabel>Background</ng-template>
 								<app-step-background
 									(previousStepperStep)="onPreviousStepperStep(stepper)"
 									(nextStepperStep)="onNextStepperStep(stepper)"
 								></app-step-background>
-							</mat-step> -->
+							</mat-step>
 
 							<mat-step completed="true">
 								<ng-template matStepLabel>Identification</ng-template>
@@ -142,6 +142,8 @@ export class LicenceWizardComponent implements OnInit, OnDestroy {
 	) {}
 
 	ngOnInit(): void {
+		console.log('LicenceWizardComponent ONINIT');
+
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
@@ -150,6 +152,8 @@ export class LicenceWizardComponent implements OnInit, OnDestroy {
 		if (!this.licenceApplicationService.initialized) {
 			this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATIONS_IN_PROGRESS));
 		}
+
+		this.licenceApplicationService.notifyLoaded();
 
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: LicenceModelSubject) => {
@@ -183,7 +187,7 @@ export class LicenceWizardComponent implements OnInit, OnDestroy {
 
 	onSave() {
 		this.licenceApplicationService.saveLicence();
-		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATIONS_IN_PROGRESS));
+		// this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATIONS_IN_PROGRESS));
 	}
 
 	private breakpointChanged() {
