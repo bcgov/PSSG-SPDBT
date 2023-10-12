@@ -116,11 +116,11 @@ export class StepBackgroundComponent implements OnInit, OnDestroy {
 	readonly STEP_FINGERPRINTS = '4';
 	readonly STEP_BACKGROUND_INFO = '5';
 
-	showStepPoliceBackground: boolean = false;
-	showStepMentalHealth: boolean = false;
-	showStepCriminalHistory: boolean = false;
-	showStepFingerprints: boolean = false;
-	showStepBackgroundInfo: boolean = false;
+	showStepPoliceBackground: boolean = true;
+	showStepMentalHealth: boolean = true;
+	showStepCriminalHistory: boolean = true;
+	showStepFingerprints: boolean = true;
+	showStepBackgroundInfo: boolean = true;
 
 	@ViewChild(PoliceBackgroundComponent) policeBackgroundComponent!: PoliceBackgroundComponent;
 	@ViewChild(MentalHealthConditionsComponent) mentalHealthConditionsComponent!: MentalHealthConditionsComponent;
@@ -136,22 +136,30 @@ export class StepBackgroundComponent implements OnInit, OnDestroy {
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
+		console.log('onInit StepBackgroundComponent1');
+
 		this.licenceModelLoadedSubscription = this.licenceModelLoadedSubscription =
 			this.licenceApplicationService.licenceModelLoaded$.subscribe({
 				next: (loaded: LicenceModelSubject) => {
-					if (loaded.isLoaded || loaded.isSetFlags) {
-						console.log(
-							'onInit StepBackgroundComponent',
-							this.licenceApplicationService.licenceModel.applicationTypeCode
-						);
+					console.log(
+						'onInit StepBackgroundComponent2',
+						this.licenceApplicationService.licenceModel.applicationTypeCode,
+						this.showStepPoliceBackground
+					);
 
+					if (loaded.isLoaded || loaded.isSetFlags) {
 						this.showStepPoliceBackground =
-							this.licenceApplicationService.licenceModel.showStepPoliceBackground ?? false;
-						this.showStepMentalHealth = this.licenceApplicationService.licenceModel.showStepMentalHealth ?? false;
-						this.showStepCriminalHistory = this.licenceApplicationService.licenceModel.showStepCriminalHistory ?? false;
-						this.showStepFingerprints = this.licenceApplicationService.licenceModel.showStepFingerprints ?? false;
-						this.showStepBackgroundInfo = this.licenceApplicationService.licenceModel.showStepBackgroundInfo ?? false;
+							this.licenceApplicationService.licenceModel.showStepPoliceBackground ?? true;
+						this.showStepMentalHealth = this.licenceApplicationService.licenceModel.showStepMentalHealth ?? true;
+						this.showStepCriminalHistory = this.licenceApplicationService.licenceModel.showStepCriminalHistory ?? true;
+						this.showStepFingerprints = this.licenceApplicationService.licenceModel.showStepFingerprints ?? true;
+						this.showStepBackgroundInfo = this.licenceApplicationService.licenceModel.showStepBackgroundInfo ?? true;
 					}
+					console.log(
+						'onInit StepBackgroundComponent3',
+						this.licenceApplicationService.licenceModel.applicationTypeCode,
+						this.showStepPoliceBackground
+					);
 				},
 			});
 	}
@@ -159,8 +167,6 @@ export class StepBackgroundComponent implements OnInit, OnDestroy {
 	ngOnDestroy() {
 		this.licenceModelLoadedSubscription.unsubscribe();
 	}
-
-	setStepData(): void {}
 
 	onStepSelectionChange(event: StepperSelectionEvent) {}
 
@@ -187,6 +193,8 @@ export class StepBackgroundComponent implements OnInit, OnDestroy {
 		if (!isValid) return;
 		this.childstepper.next();
 	}
+
+	private setStepData(): void {}
 
 	private dirtyForm(step: string): boolean {
 		switch (step) {

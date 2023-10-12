@@ -12,9 +12,10 @@ import { LoginSelectionComponent } from './components/login-selection.component'
 import { LicenceApplicationRoutingModule } from './licence-application-routing.module';
 import { LicenceApplicationComponent } from './licence-application.component';
 import { AdditionalGovIdComponent } from './step-components/additional-gov-id.component';
-import { AddressComponent } from './step-components/address.component';
 import { AliasesComponent } from './step-components/aliases.component';
+import { BackgroundInfoComponent } from './step-components/background-info.component';
 import { BcDriverLicenceComponent } from './step-components/bc-driver-licence.component';
+import { BusinessAddressComponent } from './step-components/business-contact-information.component';
 import { ChecklistComponent } from './step-components/checklist.component';
 import { CitizenshipComponent } from './step-components/citizenship.component';
 import { ConsentAndDeclarationComponent } from './step-components/consent-and-declaration.component';
@@ -52,9 +53,9 @@ import { MentalHealthConditionsComponent } from './step-components/mental-health
 import { PersonalInformationComponent } from './step-components/personal-information.component';
 import { PhotoComponent } from './step-components/photo.component';
 import { PoliceBackgroundComponent } from './step-components/police-background.component';
+import { ResidentialAddressComponent } from './step-components/residential-address.component';
 import { SoleProprietorComponent } from './step-components/sole-proprietor.component';
 import { SummaryReviewComponent } from './step-components/summary-review.component';
-import { BackgroundInfoComponent } from './step-components/background-info.component';
 
 @NgModule({
 	declarations: [
@@ -76,6 +77,8 @@ import { BackgroundInfoComponent } from './step-components/background-info.compo
 		HeightAndWeightComponent,
 		PhotoComponent,
 		ContactInformationComponent,
+		ResidentialAddressComponent,
+		BusinessAddressComponent,
 		LicenceTermComponent,
 		SummaryReviewComponent,
 		ConsentAndDeclarationComponent,
@@ -83,7 +86,7 @@ import { BackgroundInfoComponent } from './step-components/background-info.compo
 		LicencePaymentFailComponent,
 		LicencePaymentManualComponent,
 		LicencePaymentErrorComponent,
-		AddressComponent,
+		ContactInformationComponent,
 		StepLicenceSelectionComponent,
 		StepBackgroundComponent,
 		StepIdentificationComponent,
@@ -111,7 +114,7 @@ import { BackgroundInfoComponent } from './step-components/background-info.compo
 		ApplicationsInProgressComponent,
 		LoginSelectionComponent,
 		LicenceWizardComponent,
-  BackgroundInfoComponent,
+		BackgroundInfoComponent,
 	],
 	imports: [SharedModule, LicenceApplicationRoutingModule],
 })

@@ -55,7 +55,10 @@ import {
 								<div class="row mt-2">
 									<div class="col-12">
 										<div class="text-minor-heading mb-2">Upload your mental health condition form:</div>
-										<app-file-upload [maxNumberOfFiles]="1"></app-file-upload>
+										<app-file-upload
+											[maxNumberOfFiles]="1"
+											[files]="mentalHealthConditionAttachments.value"
+										></app-file-upload>
 										<mat-error
 											class="mat-option-error"
 											*ngIf="
@@ -136,5 +139,9 @@ export class MentalHealthConditionsComponent implements OnInit, OnDestroy, Licen
 
 	get isTreatedForMHC(): FormControl {
 		return this.form.get('isTreatedForMHC') as FormControl;
+	}
+
+	get mentalHealthConditionAttachments(): FormControl {
+		return this.form.get('mentalHealthConditionAttachments') as FormControl;
 	}
 }

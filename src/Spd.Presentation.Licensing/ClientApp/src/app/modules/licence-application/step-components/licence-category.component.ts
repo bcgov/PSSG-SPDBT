@@ -162,6 +162,7 @@ export class LicenceCategoryComponent implements OnInit, OnDestroy, LicenceFormS
 	}
 
 	private setValidCategoryList(): void {
+		// TODO update to use matrix in the db.
 		let updatedList = this.swlCategoryTypes;
 
 		// if user has selected 'ArmouredCarGuard', then update the list of valid values
