@@ -1,3 +1,4 @@
+import { animate, style, transition, trigger } from '@angular/animations';
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
@@ -41,7 +42,9 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 				</div>
 			</div>
 
-			<app-status-statistics-common [orgId]="orgId" [portal]="portal"></app-status-statistics-common>
+			<div *ngIf="showStatusStatistics" @showHideTriggerAnimation>
+				<app-status-statistics-common [orgId]="orgId" [portal]="portal"></app-status-statistics-common>
+			</div>
 
 			<div [formGroup]="formFilter">
 				<ng-container *ngIf="isPsaUser">
@@ -283,10 +286,17 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 			}
 		`,
 	],
+	animations: [
+		trigger('showHideTriggerAnimation', [
+			transition(':enter', [style({ opacity: 0 }), animate('600ms ease-in', style({ opacity: 1 }))]),
+			transition(':leave', [animate('400ms ease-out', style({ opacity: 0 }))]),
+		]),
+	],
 })
 export class ScreeningStatusesCommonComponent implements OnInit {
 	currentStatuses: any[] = [];
 	defaultStatuses: ApplicationPortalStatusCode[] = [];
+	showStatusStatistics = true;
 	private currentFilters = '';
 	private currentSearch = '';
 	private showAllPSSOApps = false;
@@ -419,6 +429,7 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 
 	onApplicationFilterChange(filters: any) {
 		this.performApplicationsSearch(filters.value == 'ALL');
+		this.showStatusStatistics = !!this.isPsaUser && filters.value != 'ALL';
 	}
 
 	onFilterChange(filters: any) {
