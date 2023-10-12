@@ -153,6 +153,6 @@ export class LicenceTypeComponent implements OnInit, OnDestroy {
 
 	updateDataToSave(): void {
 		this.licenceApplicationService.licenceModel.applicationTypeCode = this.form.value.applicationTypeCode;
-		this.licenceApplicationService.updateFlags();
+		this.licenceApplicationService.notifyUpdateFlags();
 	}
 }

@@ -448,6 +448,70 @@ export class ApplicationService extends BaseService {
   }
 
   /**
+   * Path part for operation apiUsersDelegateUserIdPssoApplicationStatisticsGet
+   */
+  static readonly ApiUsersDelegateUserIdPssoApplicationStatisticsGetPath = '/api/users/{delegateUserId}/psso-application-statistics';
+
+  /**
+   * return the application statistics for a particular delegate.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiUsersDelegateUserIdPssoApplicationStatisticsGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiUsersDelegateUserIdPssoApplicationStatisticsGet$Response(params: {
+    delegateUserId: string;
+    showAllPSSOApps?: boolean;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<ApplicationStatisticsResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiUsersDelegateUserIdPssoApplicationStatisticsGetPath, 'get');
+    if (params) {
+      rb.path('delegateUserId', params.delegateUserId, {});
+      rb.query('showAllPSSOApps', params.showAllPSSOApps, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<ApplicationStatisticsResponse>;
+      })
+    );
+  }
+
+  /**
+   * return the application statistics for a particular delegate.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiUsersDelegateUserIdPssoApplicationStatisticsGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiUsersDelegateUserIdPssoApplicationStatisticsGet(params: {
+    delegateUserId: string;
+    showAllPSSOApps?: boolean;
+  },
+  context?: HttpContext
+
+): Observable<ApplicationStatisticsResponse> {
+
+    return this.apiUsersDelegateUserIdPssoApplicationStatisticsGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<ApplicationStatisticsResponse>) => r.body as ApplicationStatisticsResponse)
+    );
+  }
+
+  /**
    * Path part for operation apiOrgsOrgIdIdentityApplicationIdPut
    */
   static readonly ApiOrgsOrgIdIdentityApplicationIdPutPath = '/api/orgs/{orgId}/identity/{applicationId}';

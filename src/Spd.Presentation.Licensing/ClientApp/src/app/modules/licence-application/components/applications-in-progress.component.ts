@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { take, tap } from 'rxjs';
 import { SwlApplicationTypeCode, SwlTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
@@ -55,7 +56,7 @@ export interface ApplicationResponse {
 										<button
 											mat-stroked-button
 											color="primary"
-											*ngIf="i == 0"
+											*ngIf="i == 0 || i == 1"
 											class="large w-auto"
 											(click)="onResume(appl)"
 										>
@@ -126,7 +127,7 @@ export interface ApplicationResponse {
 						</div>
 					</div> -->
 
-					<button mat-flat-button color="primary" class="large w-auto mb-4" (click)="onContinueWithNew()">
+					<button mat-flat-button color="primary" class="large w-auto mb-4" (click)="onCreateNew()">
 						Create a New Application
 					</button>
 				</div>
@@ -154,7 +155,7 @@ export interface ApplicationResponse {
 		`,
 	],
 })
-export class ApplicationsInProgressComponent implements OnInit {
+export class ApplicationsInProgressComponent implements OnInit, OnDestroy {
 	constants = SPD_CONSTANTS;
 
 	applications: Array<ApplicationResponse> = [];
@@ -166,6 +167,13 @@ export class ApplicationsInProgressComponent implements OnInit {
 			{
 				id: '1',
 				caseId: 'CRE-NWQ3X7Y10528',
+				licenceTypeCode: SwlTypeCode.SecurityWorkerLicence,
+				applicationTypeCode: SwlApplicationTypeCode.NewOrExpired,
+				updatedOn: '2023-09-26T19:43:25+00:00',
+			},
+			{
+				id: '11',
+				caseId: 'CRE-NWQ3X7Y10511',
 				licenceTypeCode: SwlTypeCode.SecurityWorkerLicence,
 				applicationTypeCode: SwlApplicationTypeCode.NewOrExpired,
 				updatedOn: '2023-09-26T19:43:25+00:00',
@@ -194,21 +202,83 @@ export class ApplicationsInProgressComponent implements OnInit {
 		];
 	}
 
-	onResume(appl: ApplicationResponse): void {
-		if (appl.id == '1') {
-			this.licenceApplicationService.loadLicenceNew();
-		} else if (appl.id == '2') {
-			this.licenceApplicationService.loadLicenceRenewal();
-		} else if (appl.id == '3') {
-			this.licenceApplicationService.loadLicenceReplacement();
-		} else if (appl.id == '4') {
-			this.licenceApplicationService.loadLicenceUpdate();
-		}
-		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATION));
+	ngOnDestroy() {
+		// this.licenceModelLoadedSubscription.unsubscribe();
 	}
 
-	onContinueWithNew(): void {
-		this.licenceApplicationService.loadNewLicence();
-		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LICENCE_SELECTION));
+	onResume(appl: ApplicationResponse): void {
+		this.licenceApplicationService.reset();
+
+		if (appl.id == '1') {
+			this.licenceApplicationService
+				.loadLicenceNew()
+				.pipe(
+					tap((resp: any) => {
+						console.log('after1', resp);
+						this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATION));
+					}),
+					take(1)
+				)
+				.subscribe();
+		} else if (appl.id == '11') {
+			this.licenceApplicationService
+				.loadLicenceNew2()
+				.pipe(
+					tap((resp: any) => {
+						console.log('after2', resp);
+						this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATION));
+					}),
+					take(1)
+				)
+				.subscribe();
+		} else if (appl.id == '2') {
+			this.licenceApplicationService
+				.loadLicenceRenewal()
+				.pipe(
+					tap((resp: any) => {
+						console.log('after2', resp);
+						this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATION));
+					}),
+					take(1)
+				)
+				.subscribe();
+		} else if (appl.id == '3') {
+			this.licenceApplicationService
+				.loadLicenceReplacement()
+				.pipe(
+					tap((resp: any) => {
+						console.log('after2', resp);
+						this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATION));
+					}),
+					take(1)
+				)
+				.subscribe();
+		} else if (appl.id == '4') {
+			this.licenceApplicationService
+				.loadLicenceUpdate()
+				.pipe(
+					tap((resp: any) => {
+						console.log('after2', resp);
+						this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATION));
+					}),
+					take(1)
+				)
+				.subscribe();
+		}
+	}
+
+	onCreateNew(): void {
+		this.licenceApplicationService.reset();
+
+		this.licenceApplicationService
+			.createNewLicence()
+			.pipe(
+				tap((resp: any) => {
+					console.log('after3', resp);
+					this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LICENCE_SELECTION));
+				}),
+				take(1)
+			)
+			.subscribe();
 	}
 }

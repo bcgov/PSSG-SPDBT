@@ -106,7 +106,10 @@ import {
 													for more information.
 												</p>
 
-												<app-file-upload [maxNumberOfFiles]="1"></app-file-upload>
+												<app-file-upload
+													[maxNumberOfFiles]="1"
+													[files]="letterOfNoConflictAttachments.value"
+												></app-file-upload>
 												<mat-error
 													class="mat-option-error"
 													*ngIf="
@@ -187,6 +190,12 @@ export class PoliceBackgroundComponent implements OnInit, OnDestroy, LicenceForm
 	ngOnInit(): void {
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: LicenceModelSubject) => {
+				console.log(
+					'PoliceBackgroundComponent',
+					loaded,
+					this.licenceApplicationService.licenceModel.applicationTypeCode
+				); //|| loaded.isSetFlags
+
 				if (loaded.isLoaded) {
 					if (this.licenceApplicationService.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired) {
 						this.title = this.title_confirm;
@@ -257,5 +266,9 @@ export class PoliceBackgroundComponent implements OnInit, OnDestroy, LicenceForm
 
 	get officerRole(): FormControl {
 		return this.form.get('officerRole') as FormControl;
+	}
+
+	get letterOfNoConflictAttachments(): FormControl {
+		return this.form.get('letterOfNoConflictAttachments') as FormControl;
 	}
 }

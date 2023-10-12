@@ -80,38 +80,40 @@ export class FileUploadHelper {
 				<ng-container *ngTemplateOutlet="infoText"></ng-container>
 			</ngx-dropzone-label>
 
-			<ng-container *ngIf="files.length == 1">
-				<ng-container *ngFor="let file of files">
-					<ngx-dropzone-preview class="file-preview" [removable]="true" (removed)="onRemoveFile(file)">
-						<ngx-dropzone-label>
-							<mat-icon class="preview-icon">{{ getFileIcon(file).icon }}</mat-icon>
-							<span>{{ file.name }} ({{ getFileSize(file.size) }} KB)</span>
-						</ngx-dropzone-label>
-					</ngx-dropzone-preview>
-
-					<div class="text-center w-100 mx-4 mb-2">
-						<ng-container *ngTemplateOutlet="infoText"></ng-container>
-					</div>
-				</ng-container>
-			</ng-container>
-
-			<ng-container *ngIf="files.length > 1">
-				<div class="row">
+			<ng-container *ngIf="files">
+				<ng-container *ngIf="files.length == 1">
 					<ng-container *ngFor="let file of files">
-						<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
-							<ngx-dropzone-preview class="file-preview" [removable]="true" (removed)="onRemoveFile(file)">
-								<ngx-dropzone-label>
-									<mat-icon class="preview-icon">{{ getFileIcon(file).icon }}</mat-icon>
-									<span>{{ file.name }} ({{ getFileSize(file.size) }} KB)</span>
-								</ngx-dropzone-label>
-							</ngx-dropzone-preview>
+						<ngx-dropzone-preview class="file-preview" [removable]="true" (removed)="onRemoveFile(file)">
+							<ngx-dropzone-label>
+								<mat-icon class="preview-icon">{{ getFileIcon(file).icon }}</mat-icon>
+								<span>{{ file.name }} ({{ getFileSize(file.size) }} KB)</span>
+							</ngx-dropzone-label>
+						</ngx-dropzone-preview>
+
+						<div class="text-center w-100 mx-4 mb-2">
+							<ng-container *ngTemplateOutlet="infoText"></ng-container>
 						</div>
 					</ng-container>
+				</ng-container>
 
-					<div class="text-center w-100 mx-4 mb-2">
-						<ng-container *ngTemplateOutlet="infoText"></ng-container>
+				<ng-container *ngIf="files.length > 1">
+					<div class="row">
+						<ng-container *ngFor="let file of files">
+							<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+								<ngx-dropzone-preview class="file-preview" [removable]="true" (removed)="onRemoveFile(file)">
+									<ngx-dropzone-label>
+										<mat-icon class="preview-icon">{{ getFileIcon(file).icon }}</mat-icon>
+										<span>{{ file.name }} ({{ getFileSize(file.size) }} KB)</span>
+									</ngx-dropzone-label>
+								</ngx-dropzone-preview>
+							</div>
+						</ng-container>
+
+						<div class="text-center w-100 mx-4 mb-2">
+							<ng-container *ngTemplateOutlet="infoText"></ng-container>
+						</div>
 					</div>
-				</div>
+				</ng-container>
 			</ng-container>
 		</ngx-dropzone>
 
@@ -158,13 +160,13 @@ export class FileUploadHelper {
 	],
 })
 export class FileUploadComponent implements OnInit {
-	files: Array<File> = [];
 	multiple: boolean = false; // prevent multiple at one time
 
 	@Input() message: string = '';
 	@Input() expandable: boolean = true;
 	@Input() disableClick: boolean = false;
 	@Input() isReadOnly: boolean = false;
+	@Input() files: Array<File> = [];
 	@Input() maxNumberOfFiles: number = SPD_CONSTANTS.document.maxNumberOfFiles; // 0 or any number less than 0 means unlimited files
 	@Input() accept: string = SPD_CONSTANTS.document.acceptedFileTypes.join(', '); // Files types to accept
 
@@ -177,15 +179,19 @@ export class FileUploadComponent implements OnInit {
 	constructor(private hotToastService: HotToastService) {}
 
 	ngOnInit(): void {
+		if (!this.files) {
+			this.files = []; // default to empty array;
+		}
+
 		if (this.maxNumberOfFiles > SPD_CONSTANTS.document.maxNumberOfFiles) {
 			this.maxNumberOfFiles = SPD_CONSTANTS.document.maxNumberOfFiles;
 		}
 	}
 
 	onUploadFile(evt: any) {
-		if (this.maxNumberOfFiles == 1) {
-			this.files = [];
-		}
+		// if (this.maxNumberOfFiles == 1) {
+		// 	this.files = [];
+		// }
 
 		if (this.maxNumberOfFiles !== 0 && this.files.length >= this.maxNumberOfFiles) {
 			this.hotToastService.error(`You are only allowed to upload a maximum of ${this.maxNumberOfFiles} files`);
@@ -200,7 +206,7 @@ export class FileUploadComponent implements OnInit {
 			let dupFile: File | undefined = undefined;
 
 			const addedFile = evt.addedFiles[0];
-			dupFile = this.files?.find((item) => item.name == addedFile.name);
+			dupFile = this.files ? this.files.find((item) => item.name == addedFile.name) : undefined;
 
 			if (dupFile) {
 				this.hotToastService.error('A file with the same name has already been uploaded');

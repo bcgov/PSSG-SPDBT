@@ -6,7 +6,11 @@ import { UtilService } from 'src/app/core/services/util.service';
 export class OptionsPipe {
 	constructor(private utilService: UtilService) {}
 
-	transform(input: string | undefined, codeTableName: keyof typeof CodeDescTypes, defaultValue: string = ''): string {
+	transform(
+		input: string | null | undefined,
+		codeTableName: keyof typeof CodeDescTypes,
+		defaultValue: string = ''
+	): string {
 		return input ? this.utilService.getDescByCode(codeTableName, input) : defaultValue;
 	}
 }
