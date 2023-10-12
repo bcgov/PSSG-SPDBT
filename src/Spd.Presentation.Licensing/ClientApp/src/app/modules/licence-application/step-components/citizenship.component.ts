@@ -107,22 +107,25 @@ import {
 										<div class="col-12">
 											<ng-container *ngIf="isBornInCanada.value == booleanTypeCodes.Yes; else notBornInCanadaTitle">
 												<div class="text-minor-heading fw-normal mb-2">
-													Upload a photo of your passport or birth certificate
+													Upload a photo of your passport or birth certificate:
 												</div>
 											</ng-container>
 											<ng-template #notBornInCanadaTitle>
 												<div class="text-minor-heading fw-normal mb-2">
-													Upload a photo of your selected document type
+													Upload a photo of your selected document type:
 												</div>
 											</ng-template>
-											<app-file-upload [maxNumberOfFiles]="1"></app-file-upload>
+											<app-file-upload
+												[maxNumberOfFiles]="1"
+												[files]="citizenshipDocumentPhotoAttachments.value"
+											></app-file-upload>
 											<mat-error
 												class="mat-option-error"
 												*ngIf="
-													(form.get('citizenshipDocumentPhoto')?.dirty ||
-														form.get('citizenshipDocumentPhoto')?.touched) &&
-													form.get('citizenshipDocumentPhoto')?.invalid &&
-													form.get('citizenshipDocumentPhoto')?.hasError('required')
+													(form.get('citizenshipDocumentPhotoAttachments')?.dirty ||
+														form.get('citizenshipDocumentPhotoAttachments')?.touched) &&
+													form.get('citizenshipDocumentPhotoAttachments')?.invalid &&
+													form.get('citizenshipDocumentPhotoAttachments')?.hasError('required')
 												"
 												>This is required</mat-error
 											>
@@ -156,7 +159,7 @@ export class CitizenshipComponent implements OnInit, OnDestroy, LicenceFormStepC
 			proofOfCitizenship: new FormControl(),
 			proofOfAbility: new FormControl(),
 			citizenshipDocumentExpiryDate: new FormControl(),
-			citizenshipDocumentPhoto: new FormControl(null, [Validators.required]),
+			citizenshipDocumentPhotoAttachments: new FormControl(null, [Validators.required]),
 		},
 		{
 			validators: [
@@ -189,7 +192,8 @@ export class CitizenshipComponent implements OnInit, OnDestroy, LicenceFormStepC
 						proofOfCitizenship: this.licenceApplicationService.licenceModel.proofOfCitizenship,
 						proofOfAbility: this.licenceApplicationService.licenceModel.proofOfAbility,
 						citizenshipDocumentExpiryDate: this.licenceApplicationService.licenceModel.citizenshipDocumentExpiryDate,
-						citizenshipDocumentPhoto: this.licenceApplicationService.licenceModel.citizenshipDocumentPhoto,
+						citizenshipDocumentPhotoAttachments:
+							this.licenceApplicationService.licenceModel.citizenshipDocumentPhotoAttachments,
 					});
 				}
 			},
@@ -205,7 +209,7 @@ export class CitizenshipComponent implements OnInit, OnDestroy, LicenceFormStepC
 			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
 				? this.fileUploadComponent.files
 				: '';
-		this.form.controls['citizenshipDocumentPhoto'].setValue(attachments);
+		this.form.controls['citizenshipDocumentPhotoAttachments'].setValue(attachments);
 
 		this.form.markAllAsTouched();
 		return this.form.valid;
@@ -217,5 +221,9 @@ export class CitizenshipComponent implements OnInit, OnDestroy, LicenceFormStepC
 
 	get isBornInCanada(): FormControl {
 		return this.form.get('isBornInCanada') as FormControl;
+	}
+
+	get citizenshipDocumentPhotoAttachments(): FormControl {
+		return this.form.get('citizenshipDocumentPhotoAttachments') as FormControl;
 	}
 }
