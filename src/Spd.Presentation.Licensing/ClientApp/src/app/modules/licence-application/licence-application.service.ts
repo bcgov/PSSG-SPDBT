@@ -58,23 +58,56 @@ export class LicenceModel {
 	expiredLicenceNumber?: string | null = null;
 	expiryDate?: string | null = null;
 	swlCategoryList: SelectOptions[] = [];
-	licenceCategoryArmouredCarGuard?: {};
+	licenceCategoryArmouredCarGuard?: {
+		documentExpiryDate?: string | null;
+		attachments?: Array<File>;
+	};
 	licenceCategoryBodyArmourSales?: {};
 	licenceCategoryyClosedCircuitTelevisionInstaller?: {};
 	licenceCategoryElectronicLockingDeviceInstaller?: {};
-	licenceCategoryFireInvestigator?: {};
+	licenceCategoryFireInvestigator?: {
+		fireinvestigatorcertificateattachments?: Array<File>;
+		fireinvestigatorletterattachments?: Array<File>;
+	};
 	licenceCategoryLocksmithUnderSupervision?: {};
-	licenceCategoryLocksmith?: {};
-	licenceCategoryPrivateInvestigatorUnderSupervision?: {};
-	licenceCategoryPrivateInvestigator?: {};
+	licenceCategoryLocksmith?: {
+		requirement?: string | null;
+		attachments?: Array<File>;
+	};
+	licenceCategoryPrivateInvestigatorUnderSupervision?: {
+		requirement?: string | null;
+		// documentExpiryDate?: string | null;
+		attachments?: Array<File>;
+		trainingattachments?: Array<File>;
+	};
+	licenceCategoryPrivateInvestigator?: {
+		requirement?: string | null;
+		training?: string | null;
+		// documentExpiryDate?: string | null;
+		attachments?: Array<File>;
+		trainingattachments?: Array<File>;
+		fireinvestigatorcertificateattachments?: Array<File>;
+		fireinvestigatorletterattachments?: Array<File>;
+		addFireInvestigator?: BooleanTypeCode | null;
+	};
 	licenceCategorySecurityAlarmInstallerUnderSupervision?: {};
-	licenceCategorySecurityAlarmInstaller?: {};
+	licenceCategorySecurityAlarmInstaller?: {
+		requirement?: string | null;
+		attachments?: Array<File>;
+	};
 	licenceCategorySecurityAlarmMonitor?: {};
 	licenceCategorySecurityAlarmResponse?: {};
 	licenceCategorySecurityAlarmSales?: {};
-	licenceCategorySecurityConsultant?: {};
+	licenceCategorySecurityConsultant?: {
+		requirement?: string | null;
+		attachments?: Array<File>;
+		resumeattachments?: Array<File>;
+	};
 	licenceCategorySecurityGuardUnderSupervision?: {};
-	licenceCategorySecurityGuard?: {};
+	licenceCategorySecurityGuard?: {
+		requirement?: string | null;
+		attachments?: Array<File>;
+	};
 	useDogsOrRestraints: string | null = null;
 	isDogsPurposeProtection?: boolean | null = false;
 	isDogsPurposeDetectionDrugs?: boolean | null = false;
@@ -250,7 +283,10 @@ export class LicenceApplicationService {
 					hasCriminalHistory: BooleanTypeCode.No,
 					proofOfFingerprintAttachments: [myFile],
 					previousNameFlag: BooleanTypeCode.Yes,
-					aliases: [{ givenName: 'Abby', middleName1: '', middleName2: '', surname: 'Anderson' }],
+					aliases: [
+						{ givenName: 'Abby', middleName1: 'Betty', middleName2: 'Meg', surname: 'Brown' },
+						{ givenName: 'Abby', middleName1: '', middleName2: '', surname: 'Anderson' },
+					],
 					isBornInCanada: BooleanTypeCode.Yes,
 					proofOfCitizenship: ProofOfCanadianCitizenshipCode.BirthCertificate,
 					proofOfAbility: null,
@@ -271,12 +307,73 @@ export class LicenceApplicationService {
 					contactEmailAddress: 'contact-test@test.gov.bc.ca',
 					contactPhoneNumber: '2508896363',
 					swlCategoryList: [
+						// { desc: 'Body Armour Sales', code: SwlCategoryTypeCode.BodyArmourSales },
+						// { desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
+
+						{ desc: 'Armoured Car Guard', code: SwlCategoryTypeCode.ArmouredCarGuard },
 						{ desc: 'Body Armour Sales', code: SwlCategoryTypeCode.BodyArmourSales },
+						{ desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
+						{ desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
+						{ desc: 'Fire Investigator', code: SwlCategoryTypeCode.FireInvestigator },
+						{ desc: 'Locksmith', code: SwlCategoryTypeCode.Locksmith },
+						{ desc: 'Locksmith - Under Supervision', code: SwlCategoryTypeCode.LocksmithUnderSupervision },
+						{ desc: 'Private Investigator', code: SwlCategoryTypeCode.PrivateInvestigator },
+						{
+							desc: 'Private Investigator - Under Supervision',
+							code: SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision,
+						},
+						{ desc: 'Security Alarm Installer', code: SwlCategoryTypeCode.SecurityAlarmInstaller },
+						{
+							desc: 'Security Alarm Installer - Under Supervision',
+							code: SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
+						},
+						{ desc: 'Security Alarm Monitor', code: SwlCategoryTypeCode.SecurityAlarmMonitor },
+						{ desc: 'Security Alarm Response', code: SwlCategoryTypeCode.SecurityAlarmResponse },
+						{ desc: 'Security Alarm Sales', code: SwlCategoryTypeCode.SecurityAlarmSales },
+						{ desc: 'Security Consultant', code: SwlCategoryTypeCode.SecurityConsultant },
 						{ desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
+						{ desc: 'Security Guard - Under Supervision', code: SwlCategoryTypeCode.SecurityGuardUnderSupervision },
 					],
 					licenceCategorySecurityGuard: {
 						attachments: [myFile],
 						requirement: 'a',
+					},
+					licenceCategoryArmouredCarGuard: {
+						documentExpiryDate: '2009-10-07T00:00:00+00:00',
+						attachments: [myFile],
+					},
+
+					licenceCategoryFireInvestigator: {
+						fireinvestigatorcertificateattachments: [myFile],
+						fireinvestigatorletterattachments: [myFile],
+					},
+					licenceCategoryLocksmith: {
+						requirement: 'a',
+						attachments: [myFile],
+					},
+					licenceCategoryPrivateInvestigatorUnderSupervision: {
+						requirement: 'a',
+						// documentExpiryDate: '2009-10-07T00:00:00+00:00',
+						attachments: [myFile],
+						trainingattachments: [myFile],
+					},
+					licenceCategoryPrivateInvestigator: {
+						requirement: 'a',
+						training: 'a',
+						// documentExpiryDate: '2009-10-07T00:00:00+00:00',
+						attachments: [myFile],
+						trainingattachments: [myFile],
+						fireinvestigatorcertificateattachments: [myFile],
+						fireinvestigatorletterattachments: [myFile],
+					},
+					licenceCategorySecurityAlarmInstaller: {
+						requirement: 'a',
+						attachments: [myFile],
+					},
+					licenceCategorySecurityConsultant: {
+						requirement: 'a',
+						attachments: [myFile],
+						resumeattachments: [myFile],
 					},
 				};
 
