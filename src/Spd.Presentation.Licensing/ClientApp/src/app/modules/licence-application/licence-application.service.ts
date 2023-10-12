@@ -149,6 +149,19 @@ export class LicenceModel {
 	photoOfYourselfAttachments?: Array<File> = [];
 	contactEmailAddress?: string | null = null;
 	contactPhoneNumber?: string | null = null;
+	residentialAddressLine1?: string | null = null;
+	residentialAddressLine2?: string | null = null;
+	residentialCity?: string | null = null;
+	residentialPostalCode?: string | null = null;
+	residentialProvince?: string | null = null;
+	residentialCountry?: string | null = null;
+	isMailingTheSame?: boolean | null = null;
+	mailingAddressLine1?: string | null = null;
+	mailingAddressLine2?: string | null = null;
+	mailingCity?: string | null = null;
+	mailingPostalCode?: string | null = null;
+	mailingProvince?: string | null = null;
+	mailingCountry?: string | null = null;
 }
 
 export class AliasModel {
@@ -172,6 +185,7 @@ export class AliasModel {
 export class LicenceModelSubject {
 	isLoaded?: boolean = false;
 	isSetFlags?: boolean = false;
+	isUpdated?: boolean = false;
 	isCategoryLoaded?: boolean = false;
 }
 
@@ -306,33 +320,46 @@ export class LicenceApplicationService {
 					photoOfYourselfAttachments: [myFile],
 					contactEmailAddress: 'contact-test@test.gov.bc.ca',
 					contactPhoneNumber: '2508896363',
+					residentialAddressLine1: '123-720 Commonwealth Rd',
+					residentialAddressLine2: '',
+					residentialCity: 'Kelowna',
+					residentialCountry: 'Canada',
+					residentialPostalCode: 'V4V 1R8',
+					residentialProvince: 'British Columbia',
+					mailingAddressLine1: '777-798 Richmond St W',
+					mailingAddressLine2: '',
+					mailingCity: 'Toronto',
+					mailingCountry: 'Canada',
+					mailingPostalCode: 'M6J 3P3',
+					mailingProvince: 'Ontario',
+					isMailingTheSame: false,
 					swlCategoryList: [
-						// { desc: 'Body Armour Sales', code: SwlCategoryTypeCode.BodyArmourSales },
-						// { desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
-
 						{ desc: 'Armoured Car Guard', code: SwlCategoryTypeCode.ArmouredCarGuard },
-						{ desc: 'Body Armour Sales', code: SwlCategoryTypeCode.BodyArmourSales },
-						{ desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
-						{ desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
-						{ desc: 'Fire Investigator', code: SwlCategoryTypeCode.FireInvestigator },
-						{ desc: 'Locksmith', code: SwlCategoryTypeCode.Locksmith },
-						{ desc: 'Locksmith - Under Supervision', code: SwlCategoryTypeCode.LocksmithUnderSupervision },
-						{ desc: 'Private Investigator', code: SwlCategoryTypeCode.PrivateInvestigator },
-						{
-							desc: 'Private Investigator - Under Supervision',
-							code: SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision,
-						},
-						{ desc: 'Security Alarm Installer', code: SwlCategoryTypeCode.SecurityAlarmInstaller },
-						{
-							desc: 'Security Alarm Installer - Under Supervision',
-							code: SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
-						},
-						{ desc: 'Security Alarm Monitor', code: SwlCategoryTypeCode.SecurityAlarmMonitor },
-						{ desc: 'Security Alarm Response', code: SwlCategoryTypeCode.SecurityAlarmResponse },
-						{ desc: 'Security Alarm Sales', code: SwlCategoryTypeCode.SecurityAlarmSales },
-						{ desc: 'Security Consultant', code: SwlCategoryTypeCode.SecurityConsultant },
 						{ desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
-						{ desc: 'Security Guard - Under Supervision', code: SwlCategoryTypeCode.SecurityGuardUnderSupervision },
+
+						// { desc: 'Armoured Car Guard', code: SwlCategoryTypeCode.ArmouredCarGuard },
+						// { desc: 'Body Armour Sales', code: SwlCategoryTypeCode.BodyArmourSales },
+						// { desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
+						// { desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
+						// { desc: 'Fire Investigator', code: SwlCategoryTypeCode.FireInvestigator },
+						// { desc: 'Locksmith', code: SwlCategoryTypeCode.Locksmith },
+						// { desc: 'Locksmith - Under Supervision', code: SwlCategoryTypeCode.LocksmithUnderSupervision },
+						// { desc: 'Private Investigator', code: SwlCategoryTypeCode.PrivateInvestigator },
+						// {
+						// 	desc: 'Private Investigator - Under Supervision',
+						// 	code: SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision,
+						// },
+						// { desc: 'Security Alarm Installer', code: SwlCategoryTypeCode.SecurityAlarmInstaller },
+						// {
+						// 	desc: 'Security Alarm Installer - Under Supervision',
+						// 	code: SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
+						// },
+						// { desc: 'Security Alarm Monitor', code: SwlCategoryTypeCode.SecurityAlarmMonitor },
+						// { desc: 'Security Alarm Response', code: SwlCategoryTypeCode.SecurityAlarmResponse },
+						// { desc: 'Security Alarm Sales', code: SwlCategoryTypeCode.SecurityAlarmSales },
+						// { desc: 'Security Consultant', code: SwlCategoryTypeCode.SecurityConsultant },
+						// { desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
+						// { desc: 'Security Guard - Under Supervision', code: SwlCategoryTypeCode.SecurityGuardUnderSupervision },
 					],
 					licenceCategorySecurityGuard: {
 						attachments: [myFile],
@@ -729,21 +756,28 @@ export class LicenceApplicationService {
 		delete this.licenceModel.licenceCategorySecurityGuard;
 	}
 
+	notifyModelChanged(updatedData: any): void {
+		this.licenceModel = { ...this.licenceModel, ...updatedData };
+
+		console.log('notifyChanged', this.licenceModel);
+		this.licenceModelLoaded$.next({ isUpdated: true });
+	}
+
 	notifyLoaded(): void {
 		this.setFlags();
 		console.log('notifyLoaded', this.licenceModel);
-		this.licenceModelLoaded$.next({ isLoaded: true, isSetFlags: false });
+		this.licenceModelLoaded$.next({ isLoaded: true });
 	}
 
 	notifyUpdateFlags(): void {
 		this.setFlags();
 		console.log('notifyUpdateFlags', this.licenceModel);
-		this.licenceModelLoaded$.next({ isLoaded: false, isSetFlags: true });
+		this.licenceModelLoaded$.next({ isSetFlags: true });
 	}
 
 	notifyCategoryData(): void {
 		console.log('notifyCategoryData', this.licenceModel);
-		this.licenceModelLoaded$.next({ isLoaded: false, isSetFlags: false, isCategoryLoaded: true });
+		this.licenceModelLoaded$.next({ isCategoryLoaded: true });
 	}
 
 	private setFlags(): void {

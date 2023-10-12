@@ -9,10 +9,10 @@ import { LicenceApplicationService } from '../../licence-application.service';
 import { AdditionalGovIdComponent } from '../additional-gov-id.component';
 import { AliasesComponent } from '../aliases.component';
 import { BcDriverLicenceComponent } from '../bc-driver-licence.component';
-import { BusinessAddressComponent } from '../business-contact-information.component';
 import { CitizenshipComponent } from '../citizenship.component';
 import { ContactInformationComponent } from '../contact-information.component';
 import { HeightAndWeightComponent } from '../height-and-weight.component';
+import { MailingAddressComponent } from '../mailing-address.component';
 import { PhotoComponent } from '../photo.component';
 import { ResidentialAddressComponent } from '../residential-address.component';
 
@@ -146,7 +146,7 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 			</mat-step>
 
 			<mat-step>
-				<app-business-address></app-business-address>
+				<app-mailing-address></app-mailing-address>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -157,7 +157,7 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 							mat-flat-button
 							color="primary"
 							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_BUSINESS_ADDRESS)"
+							(click)="onFormValidNextStep(STEP_MAILING_ADDRESS)"
 						>
 							Next
 						</button>
@@ -192,7 +192,7 @@ export class StepIdentificationComponent {
 	readonly STEP_HEIGHT_AND_WEIGHT = '5';
 	readonly STEP_PHOTO = '6';
 	readonly STEP_RESIDENTIAL_ADDRESS = '7';
-	readonly STEP_BUSINESS_ADDRESS = '8';
+	readonly STEP_MAILING_ADDRESS = '8';
 	readonly STEP_CONTACT_INFORMATION = '9';
 
 	showAdditionalGovermentIdStep = true;
@@ -207,7 +207,7 @@ export class StepIdentificationComponent {
 	@ViewChild(HeightAndWeightComponent) heightAndWeightComponent!: HeightAndWeightComponent;
 	@ViewChild(PhotoComponent) photoComponent!: PhotoComponent;
 	@ViewChild(ResidentialAddressComponent) residentialAddressComponent!: ResidentialAddressComponent;
-	@ViewChild(BusinessAddressComponent) businessAddressComponent!: BusinessAddressComponent;
+	@ViewChild(MailingAddressComponent) mailingAddressComponent!: MailingAddressComponent;
 	@ViewChild(ContactInformationComponent) contactInformationComponent!: ContactInformationComponent;
 
 	@ViewChild('childstepper') private childstepper!: MatStepper;
@@ -259,16 +259,14 @@ export class StepIdentificationComponent {
 			...(this.bcDriverLicenceComponent ? this.bcDriverLicenceComponent.getDataToSave() : {}),
 			...(this.heightAndWeightComponent ? this.heightAndWeightComponent.getDataToSave() : {}),
 			...(this.residentialAddressComponent ? this.residentialAddressComponent.getDataToSave() : {}),
-			...(this.businessAddressComponent ? this.businessAddressComponent.getDataToSave() : {}),
+			...(this.mailingAddressComponent ? this.mailingAddressComponent.getDataToSave() : {}),
 			...(this.contactInformationComponent ? this.contactInformationComponent.getDataToSave() : {}),
 		};
 
-		const licenceModel = this.licenceApplicationService.licenceModel;
-		this.licenceApplicationService.licenceModel = { ...licenceModel, ...stepData };
-
-		// this.licenceApplicationService.updateFlags();
+		this.licenceApplicationService.notifyModelChanged(stepData);
 
 		console.log('IDENTIFICATION stepData', stepData);
+		console.log('IDENTIFICATION stepData2', this.licenceApplicationService.licenceModel);
 	}
 
 	private dirtyForm(step: string): boolean {
@@ -287,8 +285,8 @@ export class StepIdentificationComponent {
 				return this.photoComponent.isFormValid();
 			case this.STEP_RESIDENTIAL_ADDRESS:
 				return this.residentialAddressComponent.isFormValid();
-			case this.STEP_BUSINESS_ADDRESS:
-				return this.businessAddressComponent.isFormValid();
+			case this.STEP_MAILING_ADDRESS:
+				return this.mailingAddressComponent.isFormValid();
 			case this.STEP_CONTACT_INFORMATION:
 				return this.contactInformationComponent.isFormValid();
 			default:

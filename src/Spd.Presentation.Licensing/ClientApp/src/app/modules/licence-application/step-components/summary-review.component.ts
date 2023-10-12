@@ -91,11 +91,11 @@ import { LicenceApplicationService, LicenceModel, LicenceModelSubject } from '..
 												<mat-divider class="mt-4 mb-2"></mat-divider>
 												<div class="text-minor-heading mb-3">Documents Uploaded</div>
 
-												<div *ngFor="let item of licenceModel.swlCategoryList; let i = index">
-													<ng-container [ngSwitch]="item.code">
-														<ng-container *ngSwitchCase="categoryTypeCodes.ArmouredCarGuard">
-															<div class="row mt-0">
-																<div class="col-lg-8 col-md-12 mt-lg-2">
+												<div class="row mt-0">
+													<ng-container *ngFor="let item of licenceModel.swlCategoryList; let i = index">
+														<ng-container [ngSwitch]="item.code">
+															<ng-container *ngSwitchCase="categoryTypeCodes.ArmouredCarGuard">
+																<div class="col-lg-6 col-md-12 mt-lg-2">
 																	<div class="text-label d-block text-muted mt-2 mt-lg-0">
 																		{{ item.code | options : 'SwlCategoryTypes' }} Documents
 																	</div>
@@ -108,22 +108,18 @@ import { LicenceApplicationService, LicenceModel, LicenceModelSubject } from '..
 																		>
 																			{{ doc.name }}
 																		</div>
+																		<div>
+																			<span class="text-label">Expiry Date:</span>
+																			{{
+																				licenceModel.licenceCategoryArmouredCarGuard?.documentExpiryDate
+																					| date : constants.date.dateFormat
+																			}}
+																		</div>
 																	</div>
 																</div>
-																<div class="col-lg-4 col-md-12 mt-lg-2">
-																	<div class="text-label d-block text-muted mt-2 mt-lg-0">Document Expiry Date</div>
-																	<div class="text-data">
-																		{{
-																			licenceModel.licenceCategoryArmouredCarGuard?.documentExpiryDate
-																				| date : constants.date.dateFormat
-																		}}
-																	</div>
-																</div>
-															</div>
-														</ng-container>
-														<ng-container *ngSwitchCase="categoryTypeCodes.FireInvestigator">
-															<div class="row mt-0">
-																<div class="col-lg-8 col-md-12 mt-lg-2">
+															</ng-container>
+															<ng-container *ngSwitchCase="categoryTypeCodes.FireInvestigator">
+																<div class="col-lg-6 col-md-12 mt-lg-2">
 																	<div class="text-label d-block text-muted mt-2 mt-lg-0">
 																		{{ item.code | options : 'SwlCategoryTypes' }} Documents
 																	</div>
@@ -148,11 +144,9 @@ import { LicenceApplicationService, LicenceModel, LicenceModelSubject } from '..
 																		</div>
 																	</div>
 																</div>
-															</div>
-														</ng-container>
-														<ng-container *ngSwitchCase="categoryTypeCodes.Locksmith">
-															<div class="row mt-0">
-																<div class="col-lg-8 col-md-12 mt-lg-2">
+															</ng-container>
+															<ng-container *ngSwitchCase="categoryTypeCodes.Locksmith">
+																<div class="col-lg-6 col-md-12 mt-lg-2">
 																	<div class="text-label d-block text-muted mt-2 mt-lg-0">
 																		{{ item.code | options : 'SwlCategoryTypes' }} Documents
 																	</div>
@@ -167,11 +161,9 @@ import { LicenceApplicationService, LicenceModel, LicenceModelSubject } from '..
 																		</div>
 																	</div>
 																</div>
-															</div>
-														</ng-container>
-														<ng-container *ngSwitchCase="categoryTypeCodes.PrivateInvestigator">
-															<div class="row mt-0">
-																<div class="col-lg-8 col-md-12 mt-lg-2">
+															</ng-container>
+															<ng-container *ngSwitchCase="categoryTypeCodes.PrivateInvestigator">
+																<div class="col-lg-6 col-md-12 mt-lg-2">
 																	<div class="text-label d-block text-muted mt-2 mt-lg-0">
 																		{{ item.code | options : 'SwlCategoryTypes' }} Documents
 																	</div>
@@ -215,11 +207,9 @@ import { LicenceApplicationService, LicenceModel, LicenceModelSubject } from '..
 																		</div>
 																	</div>
 																</div>
-															</div>
-														</ng-container>
-														<ng-container *ngSwitchCase="categoryTypeCodes.PrivateInvestigatorUnderSupervision">
-															<div class="row mt-0">
-																<div class="col-lg-8 col-md-12 mt-lg-2">
+															</ng-container>
+															<ng-container *ngSwitchCase="categoryTypeCodes.PrivateInvestigatorUnderSupervision">
+																<div class="col-lg-6 col-md-12 mt-lg-2">
 																	<div class="text-label d-block text-muted mt-2 mt-lg-0">
 																		{{ item.code | options : 'SwlCategoryTypes' }} Documents
 																	</div>
@@ -245,11 +235,9 @@ import { LicenceApplicationService, LicenceModel, LicenceModelSubject } from '..
 																		</div>
 																	</div>
 																</div>
-															</div>
-														</ng-container>
-														<ng-container *ngSwitchCase="categoryTypeCodes.SecurityAlarmInstaller">
-															<div class="row mt-0">
-																<div class="col-lg-8 col-md-12 mt-lg-2">
+															</ng-container>
+															<ng-container *ngSwitchCase="categoryTypeCodes.SecurityAlarmInstaller">
+																<div class="col-lg-6 col-md-12 mt-lg-2">
 																	<div class="text-label d-block text-muted mt-2 mt-lg-0">
 																		{{ item.code | options : 'SwlCategoryTypes' }} Documents
 																	</div>
@@ -264,11 +252,9 @@ import { LicenceApplicationService, LicenceModel, LicenceModelSubject } from '..
 																		</div>
 																	</div>
 																</div>
-															</div>
-														</ng-container>
-														<ng-container *ngSwitchCase="categoryTypeCodes.SecurityGuard">
-															<div class="row mt-0">
-																<div class="col-lg-8 col-md-12 mt-lg-2">
+															</ng-container>
+															<ng-container *ngSwitchCase="categoryTypeCodes.SecurityGuard">
+																<div class="col-lg-6 col-md-12 mt-lg-2">
 																	<div class="text-label d-block text-muted mt-2 mt-lg-0">
 																		{{ item.code | options : 'SwlCategoryTypes' }} Documents
 																	</div>
@@ -283,11 +269,9 @@ import { LicenceApplicationService, LicenceModel, LicenceModelSubject } from '..
 																		</div>
 																	</div>
 																</div>
-															</div>
-														</ng-container>
-														<ng-container *ngSwitchCase="categoryTypeCodes.SecurityConsultant">
-															<div class="row mt-0">
-																<div class="col-lg-8 col-md-12 mt-lg-2">
+															</ng-container>
+															<ng-container *ngSwitchCase="categoryTypeCodes.SecurityConsultant">
+																<div class="col-lg-6 col-md-12 mt-lg-2">
 																	<div class="text-label d-block text-muted mt-2 mt-lg-0">
 																		{{ item.code | options : 'SwlCategoryTypes' }} Documents
 																	</div>
@@ -310,7 +294,7 @@ import { LicenceApplicationService, LicenceModel, LicenceModelSubject } from '..
 																		</div>
 																	</div>
 																</div>
-															</div>
+															</ng-container>
 														</ng-container>
 													</ng-container>
 												</div>
@@ -518,23 +502,6 @@ import { LicenceApplicationService, LicenceModel, LicenceModelSubject } from '..
 														</ng-container>
 													</div>
 												</div>
-
-												<!-- <div class="col-lg-3 col-md-12">
-																<div class="text-label d-block text-muted mt-2 mt-lg-0">Middle Name 1</div>
-																<div class="text-data">
-																	{{ alias.middleName1 }}
-																</div>
-															</div>
-															<div class="col-lg-3 col-md-12">
-																<div class="text-label d-block text-muted mt-2 mt-lg-0">Middle Name 2</div>
-																<div class="text-data">{{ alias.middleName2 }}</div>
-															</div>
-															<div class="col-lg-3 col-md-12">
-																<div class="text-label d-block text-muted mt-2 mt-lg-0">Surname</div>
-																<div class="text-data">
-																	{{ alias.surname }}
-																</div>
-															</div> -->
 												<mat-divider class="mt-4 mb-2"></mat-divider>
 												<div class="text-minor-heading">Identification</div>
 												<div class="row mt-0">
@@ -641,27 +608,31 @@ import { LicenceApplicationService, LicenceModel, LicenceModelSubject } from '..
 												<div class="row mt-0">
 													<div class="col-lg-4 col-md-12 mt-lg-2">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 1</div>
-														<div class="text-data">xxx</div>
+														<div class="text-data">{{ licenceModel.residentialAddressLine1 }}</div>
 													</div>
 													<div class="col-lg-4 col-md-12 mt-lg-2">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 2</div>
-														<div class="text-data">xxx</div>
+														<div class="text-data">{{ licenceModel.residentialAddressLine2 }}</div>
 													</div>
 													<div class="col-lg-4 col-md-12 mt-lg-2">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">City</div>
-														<div class="text-data">xxx</div>
+														<div class="text-data">{{ licenceModel.residentialCity }}</div>
 													</div>
 													<div class="col-lg-4 col-md-12 mt-lg-2">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">Postal Code</div>
-														<div class="text-data">xxx</div>
+														<div class="text-data">{{ licenceModel.residentialPostalCode }}</div>
 													</div>
 													<div class="col-lg-4 col-md-12 mt-lg-2">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">Province</div>
-														<div class="text-data">xxx</div>
+														<div class="text-data">
+															{{ licenceModel.residentialProvince }}
+														</div>
 													</div>
 													<div class="col-lg-4 col-md-12 mt-lg-2">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">Country</div>
-														<div class="text-data">xxx</div>
+														<div class="text-data">
+															{{ licenceModel.residentialCountry }}
+														</div>
 													</div>
 												</div>
 												<mat-divider class="mt-4 mb-2"></mat-divider>
@@ -669,27 +640,27 @@ import { LicenceApplicationService, LicenceModel, LicenceModelSubject } from '..
 												<div class="row mt-0">
 													<div class="col-lg-4 col-md-12 mt-lg-2">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 1</div>
-														<div class="text-data">xxx</div>
+														<div class="text-data">{{ licenceModel.mailingAddressLine1 }}</div>
 													</div>
 													<div class="col-lg-4 col-md-12 mt-lg-2">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 2</div>
-														<div class="text-data">xxx</div>
+														<div class="text-data">{{ licenceModel.mailingAddressLine2 }}</div>
 													</div>
 													<div class="col-lg-4 col-md-12 mt-lg-2">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">City</div>
-														<div class="text-data">xxx</div>
+														<div class="text-data">{{ licenceModel.mailingCity }}</div>
 													</div>
 													<div class="col-lg-4 col-md-12 mt-lg-2">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">Postal Code</div>
-														<div class="text-data">xxx</div>
+														<div class="text-data">{{ licenceModel.mailingPostalCode }}</div>
 													</div>
 													<div class="col-lg-4 col-md-12 mt-lg-2">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">Province</div>
-														<div class="text-data">xxx</div>
+														<div class="text-data">{{ licenceModel.mailingProvince }}</div>
 													</div>
 													<div class="col-lg-4 col-md-12 mt-lg-2">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">Country</div>
-														<div class="text-data">xxx</div>
+														<div class="text-data">{{ licenceModel.mailingCountry }}</div>
 													</div>
 												</div>
 											</div>
@@ -760,10 +731,12 @@ export class SummaryReviewComponent implements OnInit, OnDestroy {
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
+		console.log('SummaryReviewComponent ONINIT');
+
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: LicenceModelSubject) => {
 				console.log('SummaryReviewComponent', loaded);
-				if (loaded.isLoaded) {
+				if (loaded.isLoaded || loaded.isUpdated) {
 					this.licenceModel = this.licenceApplicationService.licenceModel;
 				}
 			},
