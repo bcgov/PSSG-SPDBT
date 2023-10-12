@@ -43,7 +43,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 			</div>
 
 			<div *ngIf="showStatusStatistics" @showHideTriggerAnimation>
-				<app-status-statistics-common [id]="statisticsId" [portal]="portal"></app-status-statistics-common>
+				<app-status-statistics-common [id]="idForStatistics" [portal]="portal"></app-status-statistics-common>
 			</div>
 
 			<div [formGroup]="formFilter">
@@ -312,7 +312,7 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 
 	showDropdownOverlay = false;
 	formFilter: FormGroup = this.formBuilder.group(new ScreeningStatusFilter());
-	statisticsId: string | null = null;
+	idForStatistics: string | null = null; // If CRRP, id is the OrgId, else for PSSO, id is the UserId
 
 	@Input() portal: PortalTypeCode | null = null;
 	@Input() heading = '';
@@ -345,7 +345,7 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 		}
 
 		if (this.portal == PortalTypeCode.Crrp) {
-			this.statisticsId = this.orgId;
+			this.idForStatistics = this.orgId;
 			this.defaultStatuses = [
 				ApplicationPortalStatusCode.AwaitingApplicant,
 				ApplicationPortalStatusCode.AwaitingPayment,
@@ -368,7 +368,7 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 
 			this.onFilterReset();
 		} else if (this.portal == PortalTypeCode.Psso) {
-			this.statisticsId = this.userId;
+			this.idForStatistics = this.userId;
 			this.defaultStatuses = [
 				ApplicationPortalStatusCode.AwaitingApplicant,
 				ApplicationPortalStatusCode.AwaitingThirdParty,
