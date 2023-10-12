@@ -17,6 +17,7 @@ import { DelegateManageDialogData, DelegateManageModalComponent } from './delega
 			[portal]="portal.Psso"
 			[isPsaUser]="isPsaUser"
 			[orgId]="orgId"
+			[userId]="userId"
 			heading="Screening Statuses"
 			(emitManageDelegate)="onManageDelegates($event)"
 			(emitVerifyIdentity)="onVerifyIdentity($event)"
@@ -26,6 +27,7 @@ import { DelegateManageDialogData, DelegateManageModalComponent } from './delega
 })
 export class ScreeningStatusesComponent implements OnInit {
 	orgId: string | null = null;
+	userId: string | null = null;
 	portal = PortalTypeCode;
 	isPsaUser: boolean | undefined = this.authUserService.idirUserWhoamiProfile?.isPSA;
 
@@ -40,6 +42,7 @@ export class ScreeningStatusesComponent implements OnInit {
 		}
 
 		this.orgId = orgId;
+		this.userId = this.authUserService.idirUserWhoamiProfile?.userId!;
 	}
 
 	onManageDelegates(application: ScreeningStatusResponse): void {

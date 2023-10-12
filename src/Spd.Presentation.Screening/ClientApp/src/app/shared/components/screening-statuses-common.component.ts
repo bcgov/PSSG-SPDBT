@@ -43,7 +43,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 			</div>
 
 			<div *ngIf="showStatusStatistics" @showHideTriggerAnimation>
-				<app-status-statistics-common [orgId]="orgId" [portal]="portal"></app-status-statistics-common>
+				<app-status-statistics-common [id]="statisticsId" [portal]="portal"></app-status-statistics-common>
 			</div>
 
 			<div [formGroup]="formFilter">
@@ -312,10 +312,12 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 
 	showDropdownOverlay = false;
 	formFilter: FormGroup = this.formBuilder.group(new ScreeningStatusFilter());
+	statisticsId: string | null = null;
 
 	@Input() portal: PortalTypeCode | null = null;
 	@Input() heading = '';
 	@Input() orgId: string | null = null;
+	@Input() userId: string | null = null; // Used by PSSO only
 	@Input() isPsaUser: boolean | undefined = undefined;
 
 	@Output() emitManageDelegate: EventEmitter<ScreeningStatusResponse> = new EventEmitter<ScreeningStatusResponse>();
@@ -343,6 +345,7 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 		}
 
 		if (this.portal == PortalTypeCode.Crrp) {
+			this.statisticsId = this.orgId;
 			this.defaultStatuses = [
 				ApplicationPortalStatusCode.AwaitingApplicant,
 				ApplicationPortalStatusCode.AwaitingPayment,
@@ -365,6 +368,7 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 
 			this.onFilterReset();
 		} else if (this.portal == PortalTypeCode.Psso) {
+			this.statisticsId = this.userId;
 			this.defaultStatuses = [
 				ApplicationPortalStatusCode.AwaitingApplicant,
 				ApplicationPortalStatusCode.AwaitingThirdParty,
