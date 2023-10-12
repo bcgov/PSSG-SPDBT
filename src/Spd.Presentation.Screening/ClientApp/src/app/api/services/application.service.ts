@@ -464,7 +464,6 @@ export class ApplicationService extends BaseService {
    */
   apiUsersDelegateUserIdPssoApplicationStatisticsGet$Response(params: {
     delegateUserId: string;
-    showAllPSSOApps?: boolean;
   },
   context?: HttpContext
 
@@ -473,7 +472,6 @@ export class ApplicationService extends BaseService {
     const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiUsersDelegateUserIdPssoApplicationStatisticsGetPath, 'get');
     if (params) {
       rb.path('delegateUserId', params.delegateUserId, {});
-      rb.query('showAllPSSOApps', params.showAllPSSOApps, {});
     }
 
     return this.http.request(rb.build({
@@ -500,7 +498,6 @@ export class ApplicationService extends BaseService {
    */
   apiUsersDelegateUserIdPssoApplicationStatisticsGet(params: {
     delegateUserId: string;
-    showAllPSSOApps?: boolean;
   },
   context?: HttpContext
 
