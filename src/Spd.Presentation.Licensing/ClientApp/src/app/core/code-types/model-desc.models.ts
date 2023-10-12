@@ -33,6 +33,17 @@ export enum SwlTermCode {
 	ThreeYears = '3Years',
 }
 
+export enum RestraintDocumentCode {
+	AdvancedSecurityTrainingCertificate = 'AdvancedSecurityTrainingCertificate',
+	UseOfForceLetter = 'UseOfForceLetter',
+	TrainingEquivalent = 'TrainingEquivalent',
+}
+
+export enum DogDocumentCode {
+	SecurityDogValidationCertificate = 'SecurityDogValidationCertificate',
+	CertificateOfAdvancedSecurityTraining = 'CertificateOfAdvancedSecurityTraining',
+}
+
 export enum ProofOfCanadianCitizenshipCode {
 	ValidCanadianPassport = 'ValidCanadianPassport',
 	BirthCertificate = 'BirthCertificate',
@@ -139,6 +150,32 @@ export const SwlTermTypes: SelectOptions[] = [
 	{ desc: '1 Year', code: SwlTermCode.OneYear },
 	{ desc: '2 Years', code: SwlTermCode.TwoYears },
 	{ desc: '3 Years', code: SwlTermCode.ThreeYears },
+];
+
+export const RestraintDocumentTypes: SelectOptions[] = [
+	{
+		desc: 'Advanced security training (AST) certificate',
+		code: RestraintDocumentCode.AdvancedSecurityTrainingCertificate,
+	},
+	{
+		desc: 'A Canadian police officer, correctional officer, sheriff, auxiliary, reserve or border service officer can provide a letter from their employer showing use of force training within the last 12 months.',
+		code: RestraintDocumentCode.UseOfForceLetter,
+	},
+	{
+		desc: 'Must be able to demonstrate, to the satisfaction of the registrar that he or she has training equivalent to the training referred above.',
+		code: RestraintDocumentCode.TrainingEquivalent,
+	},
+];
+
+export const DogDocumentTypes: SelectOptions[] = [
+	{
+		desc: 'Certificate of Advanced Security Training',
+		code: DogDocumentCode.CertificateOfAdvancedSecurityTraining,
+	},
+	{
+		desc: 'Security Dog Validation Certificate',
+		code: DogDocumentCode.SecurityDogValidationCertificate,
+	},
 ];
 
 // export const BooleanTypes: SelectOptions[] = [

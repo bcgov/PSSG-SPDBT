@@ -89,34 +89,42 @@ import { LicenceApplicationService, LicenceModel, LicenceModelSubject } from '..
 														<div class="text-data">x2026-09-23</div>
 													</div>
 												</div>
-												<mat-divider class="mt-4 mb-2"></mat-divider>
-												<div class="text-minor-heading">Dog & Restraints Authorization</div>
-												<div class="row mt-0 mt-lg-2">
-													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Request to Use Dogs?</div>
-														<div class="text-data">xYes</div>
-													</div>
-													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Reason</div>
-														<div class="text-data">xDetection - Drugs, Detection - Explosives</div>
-													</div>
-													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Validation Certificate</div>
-														<div class="text-data">xpdf</div>
-													</div>
-												</div>
-												<div class="row mt-0 mt-lg-2">
-													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">Request to Use Restraints?</div>
-														<div class="text-data">xYes</div>
-													</div>
-													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted mt-2 mt-lg-0">
-															Certificate of Advanced Security Training
+												<ng-container *ngIf="licenceModel.hasExpiredLicence == booleanTypeCodes.Yes">
+													<mat-divider class="mt-4 mb-2"></mat-divider>
+													<div class="text-minor-heading">Dog & Restraints Authorization</div>
+													<div class="row mt-0 mt-lg-2">
+														<div class="col-lg-4 col-md-12">
+															<div class="text-label d-block text-muted mt-2 mt-lg-0">Request to Use Restraints?</div>
+															<div class="text-data">{{ licenceModel.carryAndUseRetraints }}</div>
 														</div>
-														<div class="text-data">xpdf</div>
+														<div class="col-lg-4 col-md-12">
+															<div class="text-label d-block text-muted mt-2 mt-lg-0">
+																{{ licenceModel.carryAndUseRetraintsDocument | options : 'RestraintDocumentTypes' }}
+															</div>
+															<div class="text-data">???</div>
+														</div>
 													</div>
-												</div>
+													<div class="row mt-0 mt-lg-2">
+														<div class="col-lg-4 col-md-12">
+															<div class="text-label d-block text-muted mt-2 mt-lg-0">Request to Use Dogs?</div>
+															<div class="text-data">{{ licenceModel.useDogsOrRestraints }}</div>
+														</div>
+														<div class="col-lg-4 col-md-12">
+															<div class="text-label d-block text-muted mt-2 mt-lg-0">Reason</div>
+															<div class="text-data">
+																<div *ngIf="licenceModel.isDogsPurposeProtection">Protection</div>
+																<div *ngIf="licenceModel.isDogsPurposeDetectionDrugs">Detection - Drugs</div>
+																<div *ngIf="licenceModel.isDogsPurposeDetectionExplosives">Detection - Explosives</div>
+															</div>
+														</div>
+														<div class="col-lg-4 col-md-12">
+															<div class="text-label d-block text-muted mt-2 mt-lg-0">
+																{{ licenceModel.dogsPurposeDocumentType | options : 'DogDocumentTypes' }}
+															</div>
+															<div class="text-data">???</div>
+														</div>
+													</div>
+												</ng-container>
 											</div>
 										</mat-expansion-panel>
 

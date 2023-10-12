@@ -4,6 +4,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { BooleanTypeCode, GenderCode } from 'src/app/api/models';
 import {
+	DogDocumentCode,
 	EyeColourCode,
 	GovernmentIssuedPhotoIdCode,
 	HairColourCode,
@@ -11,6 +12,7 @@ import {
 	PoliceOfficerRoleCode,
 	ProofOfAbilityToWorkInCanadaCode,
 	ProofOfCanadianCitizenshipCode,
+	RestraintDocumentCode,
 	SelectOptions,
 	SwlApplicationTypeCode,
 	SwlCategoryTypeCode,
@@ -77,10 +79,10 @@ export class LicenceModel {
 	isDogsPurposeProtection?: boolean | null = false;
 	isDogsPurposeDetectionDrugs?: boolean | null = false;
 	isDogsPurposeDetectionExplosives?: boolean | null = false;
-	dogsPurposeDocumentType?: string | null = null;
+	dogsPurposeDocumentType?: DogDocumentCode | null = null;
 	dogsPurposeAttachments?: Array<File> = [];
 	carryAndUseRetraints?: boolean | null = false;
-	carryAndUseRetraintsDocument?: string | null = null;
+	carryAndUseRetraintsDocument?: RestraintDocumentCode | null = null;
 	carryAndUseRetraintsAttachments?: Array<File> = [];
 	licenceTermCode: SwlTermCode | null = null;
 	isViewOnlyPoliceOrPeaceOfficer?: boolean = false;
@@ -233,10 +235,10 @@ export class LicenceApplicationService {
 					isDogsPurposeProtection: true,
 					isDogsPurposeDetectionDrugs: false,
 					isDogsPurposeDetectionExplosives: true,
-					dogsPurposeDocumentType: 'b',
+					dogsPurposeDocumentType: DogDocumentCode.CertificateOfAdvancedSecurityTraining,
 					dogsPurposeAttachments: [myFile],
 					carryAndUseRetraints: true,
-					carryAndUseRetraintsDocument: 'a',
+					carryAndUseRetraintsDocument: RestraintDocumentCode.AdvancedSecurityTrainingCertificate,
 					carryAndUseRetraintsAttachments: [myFile],
 					licenceTermCode: SwlTermCode.ThreeYears,
 					isPoliceOrPeaceOfficer: BooleanTypeCode.Yes,
@@ -446,8 +448,8 @@ export class LicenceApplicationService {
 					isDogsPurposeDetectionDrugs: false,
 					isDogsPurposeDetectionExplosives: true,
 					carryAndUseRetraints: true,
-					dogsPurposeDocumentType: 'b',
-					carryAndUseRetraintsDocument: 'a',
+					dogsPurposeDocumentType: DogDocumentCode.SecurityDogValidationCertificate,
+					carryAndUseRetraintsDocument: RestraintDocumentCode.TrainingEquivalent,
 					carryAndUseRetraintsAttachments: [],
 					licenceTermCode: SwlTermCode.ThreeYears,
 					isPoliceOrPeaceOfficer: null,
@@ -510,8 +512,8 @@ export class LicenceApplicationService {
 					isDogsPurposeDetectionDrugs: false,
 					isDogsPurposeDetectionExplosives: true,
 					carryAndUseRetraints: true,
-					dogsPurposeDocumentType: 'b',
-					carryAndUseRetraintsDocument: 'a',
+					dogsPurposeDocumentType: DogDocumentCode.SecurityDogValidationCertificate,
+					carryAndUseRetraintsDocument: RestraintDocumentCode.AdvancedSecurityTrainingCertificate,
 					carryAndUseRetraintsAttachments: [],
 					licenceTermCode: SwlTermCode.ThreeYears,
 					isPoliceOrPeaceOfficer: BooleanTypeCode.Yes,

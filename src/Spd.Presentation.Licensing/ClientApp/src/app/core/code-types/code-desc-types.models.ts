@@ -1,8 +1,10 @@
 export {
 	CountryTypes,
+	DogDocumentTypes,
 	GenderTypes,
 	GovernmentIssuedPhotoIdTypes,
 	ProofOfCanadianCitizenshipTypes,
+	RestraintDocumentTypes,
 	SwlApplicationTypes,
 	SwlCategoryTypes,
 	SwlTermTypes,

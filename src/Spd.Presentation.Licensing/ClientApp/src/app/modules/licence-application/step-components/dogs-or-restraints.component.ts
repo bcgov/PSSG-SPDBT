@@ -3,6 +3,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { BooleanTypeCode } from 'src/app/api/models';
 import { showHideTriggerAnimation, showHideTriggerSlideAnimation } from 'src/app/core/animations';
+import { DogDocumentTypes, RestraintDocumentTypes } from 'src/app/core/code-types/model-desc.models';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
@@ -65,20 +66,12 @@ import {
 										aria-label="Select an option"
 										formControlName="carryAndUseRetraintsDocument"
 									>
-										<mat-radio-button class="radio-label" value="a">
-											Advanced security training (AST) certificate
-										</mat-radio-button>
-										<mat-divider class="my-2"></mat-divider>
-										<mat-radio-button class="radio-label" value="b">
-											A Canadian police officer, correctional officer, sheriff, auxiliary, reserve or border service
-											officer can provide a letter from their employer showing use of force training within the last 12
-											months.
-										</mat-radio-button>
-										<mat-divider class="my-2"></mat-divider>
-										<mat-radio-button class="radio-label" value="c">
-											Must be able to demonstrate, to the satisfaction of the registrar that he or she has training
-											equivalent to the training referred above.
-										</mat-radio-button>
+										<ng-container *ngFor="let doc of restraintDocumentTypes; let i = index; let last = last">
+											<mat-radio-button class="radio-label" [value]="doc.code">
+												{{ doc.desc }}
+											</mat-radio-button>
+											<mat-divider *ngIf="!last" class="my-2"></mat-divider>
+										</ng-container>
 									</mat-radio-group>
 									<mat-error
 										class="mat-option-error"
@@ -143,13 +136,12 @@ import {
 										aria-label="Select an option"
 										formControlName="dogsPurposeDocumentType"
 									>
-										<mat-radio-button class="radio-label" value="a">
-											Security Dog Validation Certificate
-										</mat-radio-button>
-										<mat-divider class="my-2"></mat-divider>
-										<mat-radio-button class="radio-label" value="b">
-											Certificate of Advanced Security Training
-										</mat-radio-button>
+										<ng-container *ngFor="let doc of dogDocumentTypes; let i = index; let last = last">
+											<mat-radio-button class="radio-label" [value]="doc.code">
+												{{ doc.desc }}
+											</mat-radio-button>
+											<mat-divider *ngIf="!last" class="my-2"></mat-divider>
+										</ng-container>
 									</mat-radio-group>
 									<mat-error
 										class="mat-option-error"
@@ -196,6 +188,9 @@ export class DogsOrRestraintsComponent implements OnInit, OnDestroy, LicenceForm
 	private licenceModelLoadedSubscription!: Subscription;
 
 	booleanTypeCodes = BooleanTypeCode;
+	restraintDocumentTypes = RestraintDocumentTypes;
+	dogDocumentTypes = DogDocumentTypes;
+
 	matcher = new FormErrorStateMatcher();
 
 	form: FormGroup = this.formBuilder.group(
