@@ -1,10 +1,15 @@
-import { Component, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { SelectOptions } from 'src/app/core/code-types/model-desc.models';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
-import { LicenceFormStepComponent } from '../licence-application.service';
+import {
+	LicenceApplicationService,
+	LicenceFormStepComponent,
+	LicenceModelSubject,
+} from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-category-security-guard',
@@ -70,7 +75,7 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 										<div class="text-minor-heading mb-2">Upload a copy of your certificate:</div>
 									</ng-template>
 									<div class="my-2">
-										<app-file-upload [maxNumberOfFiles]="10"></app-file-upload>
+										<app-file-upload [maxNumberOfFiles]="10" [files]="attachments.value"></app-file-upload>
 										<mat-error
 											class="mat-option-error"
 											*ngIf="
@@ -100,8 +105,13 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 	animations: [showHideTriggerSlideAnimation],
 	encapsulation: ViewEncapsulation.None,
 })
-export class LicenceCategorySecurityGuardComponent implements OnInit, LicenceFormStepComponent {
-	form!: FormGroup;
+export class LicenceCategorySecurityGuardComponent implements OnInit, OnDestroy, LicenceFormStepComponent {
+	private licenceModelLoadedSubscription!: Subscription;
+
+	form: FormGroup = this.formBuilder.group({
+		requirement: new FormControl(null, [FormControlValidators.required]),
+		attachments: new FormControl('', [Validators.required]),
+	});
 	title = '';
 
 	@Input() option: SelectOptions | null = null;
@@ -109,15 +119,34 @@ export class LicenceCategorySecurityGuardComponent implements OnInit, LicenceFor
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(private formBuilder: FormBuilder) {}
+	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.form = this.formBuilder.group({
-			requirement: new FormControl(null, [FormControlValidators.required]),
-			attachments: new FormControl('', [Validators.required]),
-		});
-
 		this.title = `${this.option?.desc ?? ''}`;
+
+		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
+			next: (loaded: LicenceModelSubject) => {
+				if (loaded.isCategoryLoaded) {
+					console.log('security guard', loaded);
+
+					const licenceCategorySecurityGuard = this.licenceApplicationService.licenceModel
+						.licenceCategorySecurityGuard as any;
+					console.log('licenceCategorySecurityGuard', licenceCategorySecurityGuard);
+					console.log('licenceCategorySecurityGuard licenceModel', this.licenceApplicationService.licenceModel);
+
+					if (licenceCategorySecurityGuard) {
+						this.form.patchValue({
+							requirement: licenceCategorySecurityGuard.requirement,
+							attachments: licenceCategorySecurityGuard.attachments,
+						});
+					}
+				}
+			},
+		});
+	}
+
+	ngOnDestroy() {
+		this.licenceModelLoadedSubscription.unsubscribe();
 	}
 
 	isFormValid(): boolean {
@@ -132,10 +161,15 @@ export class LicenceCategorySecurityGuardComponent implements OnInit, LicenceFor
 	}
 
 	getDataToSave(): any {
+		console.log('security guard getDataToSave', this.form.value);
 		return { licenceCategorySecurityGuard: { ...this.form.value } };
 	}
 
 	public get requirement(): FormControl {
 		return this.form.get('requirement') as FormControl;
+	}
+
+	public get attachments(): FormControl {
+		return this.form.get('attachments') as FormControl;
 	}
 }

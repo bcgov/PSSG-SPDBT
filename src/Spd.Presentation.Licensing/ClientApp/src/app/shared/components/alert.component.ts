@@ -5,20 +5,15 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 @Component({
 	selector: 'app-alert',
 	template: `
-		<div class=" alert d-flex d-inline-flex align-items-center w-100" role="alert" [ngClass]="getType()">
-			<mat-icon class="d-none d-lg-block alert-icon me-2" *ngIf="icon">{{ icon }}</mat-icon>
-			<ng-content #alertContent></ng-content>
+		<div class="alert d-flex d-inline-flex align-items-center w-100" role="alert" [ngClass]="getType()">
+			<mat-icon class="d-none d-lg-block alert-icon me-3" *ngIf="icon">{{ icon }}</mat-icon>
+			<div style="width: fit-content;">
+				<ng-content #alertContent> </ng-content>
+			</div>
 		</div>
 	`,
 	styles: [
 		`
-			/* .test {
-				background-color: #ededed !important;
-				border: none;
-				border-left: 3px solid blue;
-				border-radius: 0;
-			} */
-
 			.alert-info {
 				color: #0c5460;
 				background-color: #eef8fa;

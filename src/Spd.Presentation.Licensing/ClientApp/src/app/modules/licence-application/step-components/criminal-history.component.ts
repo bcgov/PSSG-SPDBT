@@ -14,7 +14,7 @@ import {
 	template: `
 		<section class="step-section p-3">
 			<div class="step">
-				<app-step-title title="Do you have criminal history to declare?"></app-step-title>
+				<app-step-title title="Have you previously been charged or convicted of a crime?"></app-step-title>
 				<div class="step-container row">
 					<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
 						<form [formGroup]="form" novalidate>
