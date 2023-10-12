@@ -5,7 +5,6 @@ using Spd.Manager.Membership.UserProfile;
 using Spd.Utilities.Cache;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.LogonUser.Configurations;
-using Spd.Utilities.Shared;
 using System.Net;
 using System.Security.Claims;
 
@@ -78,7 +77,7 @@ namespace Spd.Presentation.Licensing
 
                 if (appProfile != null)
                 {
-                    context.User.AddUpdateClaim(ClaimTypes.Role, "Applicant");
+                    context.User.AddUpdateClaim(ClaimTypes.Role, "Worker");
                 }
                 await next(context);
             }

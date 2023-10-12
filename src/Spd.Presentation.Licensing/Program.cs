@@ -1,4 +1,6 @@
 using Spd.Utilities.LogonUser;
+using System.Reflection;
+using System.Security.Principal;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.ConfigureAuthentication(builder.Configuration);
 builder.Services.ConfigureAuthorization();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient<IPrincipal>(provider => provider.GetService<IHttpContextAccessor>()?.HttpContext?.User);
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(Assembly.GetEntryAssembly()));
+builder.Services.AddDistributedMemoryCache();
 
 var app = builder.Build();
 
