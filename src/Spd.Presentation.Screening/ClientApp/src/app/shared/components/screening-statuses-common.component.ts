@@ -1,3 +1,4 @@
+import { animate, style, transition, trigger } from '@angular/animations';
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
@@ -41,7 +42,9 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 				</div>
 			</div>
 
-			<app-status-statistics-common [orgId]="orgId" [portal]="portal"></app-status-statistics-common>
+			<div *ngIf="showStatusStatistics" @showHideTriggerAnimation>
+				<app-status-statistics-common [id]="idForStatistics" [portal]="portal"></app-status-statistics-common>
+			</div>
 
 			<div [formGroup]="formFilter">
 				<ng-container *ngIf="isPsaUser">
@@ -283,10 +286,17 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 			}
 		`,
 	],
+	animations: [
+		trigger('showHideTriggerAnimation', [
+			transition(':enter', [style({ opacity: 0 }), animate('600ms ease-in', style({ opacity: 1 }))]),
+			transition(':leave', [animate('400ms ease-out', style({ opacity: 0 }))]),
+		]),
+	],
 })
 export class ScreeningStatusesCommonComponent implements OnInit {
 	currentStatuses: any[] = [];
 	defaultStatuses: ApplicationPortalStatusCode[] = [];
+	showStatusStatistics = true;
 	private currentFilters = '';
 	private currentSearch = '';
 	private showAllPSSOApps = false;
@@ -302,10 +312,12 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 
 	showDropdownOverlay = false;
 	formFilter: FormGroup = this.formBuilder.group(new ScreeningStatusFilter());
+	idForStatistics: string | null = null; // If CRRP, id is the OrgId, else for PSSO, id is the UserId
 
 	@Input() portal: PortalTypeCode | null = null;
 	@Input() heading = '';
 	@Input() orgId: string | null = null;
+	@Input() userId: string | null = null; // Used by PSSO only
 	@Input() isPsaUser: boolean | undefined = undefined;
 
 	@Output() emitManageDelegate: EventEmitter<ScreeningStatusResponse> = new EventEmitter<ScreeningStatusResponse>();
@@ -333,6 +345,7 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 		}
 
 		if (this.portal == PortalTypeCode.Crrp) {
+			this.idForStatistics = this.orgId;
 			this.defaultStatuses = [
 				ApplicationPortalStatusCode.AwaitingApplicant,
 				ApplicationPortalStatusCode.AwaitingPayment,
@@ -355,6 +368,7 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 
 			this.onFilterReset();
 		} else if (this.portal == PortalTypeCode.Psso) {
+			this.idForStatistics = this.userId;
 			this.defaultStatuses = [
 				ApplicationPortalStatusCode.AwaitingApplicant,
 				ApplicationPortalStatusCode.AwaitingThirdParty,
@@ -419,6 +433,7 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 
 	onApplicationFilterChange(filters: any) {
 		this.performApplicationsSearch(filters.value == 'ALL');
+		this.showStatusStatistics = !!this.isPsaUser && filters.value != 'ALL';
 	}
 
 	onFilterChange(filters: any) {
