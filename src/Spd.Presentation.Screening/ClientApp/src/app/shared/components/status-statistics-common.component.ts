@@ -114,21 +114,37 @@ export class StatusStatisticsCommonComponent {
 	statisticsCodes = ApplicationPortalStatisticsTypeCode;
 	portalTypeCodes = PortalTypeCode;
 
-	@Input() orgId: string | null = null;
+	@Input() id: string | null = null; // If CRRP, id is the OrgId, else for PSSO, id is the UserId
 	@Input() portal: PortalTypeCode | null = null;
 
 	constructor(private utilService: UtilService, private applicationService: ApplicationService) {}
 
 	ngOnInit(): void {
-		this.applicationStatistics$ = this.applicationService
-			.apiOrgsOrgIdApplicationStatisticsGet({
-				orgId: this.orgId!,
-			})
-			.pipe(
-				tap((res: ApplicationStatisticsResponse) => {
-					this.applicationStatistics = res.statistics ?? {};
+		if (!this.id) {
+			return;
+		}
+
+		if (this.portal == PortalTypeCode.Crrp) {
+			this.applicationStatistics$ = this.applicationService
+				.apiOrgsOrgIdApplicationStatisticsGet({
+					orgId: this.id,
 				})
-			);
+				.pipe(
+					tap((res: ApplicationStatisticsResponse) => {
+						this.applicationStatistics = res.statistics ?? {};
+					})
+				);
+		} else if (this.portal == PortalTypeCode.Psso) {
+			this.applicationStatistics$ = this.applicationService
+				.apiUsersDelegateUserIdPssoApplicationStatisticsGet({
+					delegateUserId: this.id,
+				})
+				.pipe(
+					tap((res: ApplicationStatisticsResponse) => {
+						this.applicationStatistics = res.statistics ?? {};
+					})
+				);
+		}
 	}
 
 	getStatusDesc(code: string): string {
