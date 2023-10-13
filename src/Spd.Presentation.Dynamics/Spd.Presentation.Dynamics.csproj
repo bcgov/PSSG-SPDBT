@@ -18,7 +18,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Spd.Manager.Cases\Spd.Manager.Cases.csproj" />
-		<ProjectReference Include="..\Spd.Utilities.Dynamics\Spd.Utilities.Dynamics.csproj" />
 		<ProjectReference Include="..\Spd.Utilities.FileStorage\Spd.Utilities.FileStorage.csproj" />
 		<ProjectReference Include="..\Spd.Utilities.Hosting\Spd.Utilities.Hosting.csproj" />
 		<ProjectReference Include="..\Spd.Utilities.Shared\Spd.Utilities.Shared.csproj" />
