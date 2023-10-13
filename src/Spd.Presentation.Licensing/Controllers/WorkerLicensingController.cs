@@ -22,7 +22,7 @@ namespace Spd.Presentation.Licensing.Controllers
             _currentUser = currentUser;
         }
 
-        [Route("api/license")]
+        [Route("api/licenses")]
         [HttpPost]
         public async Task<WorkerLicenseCreateResponse> CreateWorkerLicense([FromForm][Required] WorkerLicenseCreateRequest createApplication)
         {
