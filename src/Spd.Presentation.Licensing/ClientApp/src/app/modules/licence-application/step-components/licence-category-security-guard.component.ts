@@ -126,9 +126,8 @@ export class LicenceCategorySecurityGuardComponent implements OnInit, OnDestroy,
 
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: LicenceModelSubject) => {
+				console.log('SecurityGuardComponent', loaded);
 				if (loaded.isCategoryLoaded) {
-					console.log('security guard', loaded);
-
 					const licenceCategorySecurityGuard = this.licenceApplicationService.licenceModel
 						.licenceCategorySecurityGuard as any;
 					console.log('licenceCategorySecurityGuard', licenceCategorySecurityGuard);

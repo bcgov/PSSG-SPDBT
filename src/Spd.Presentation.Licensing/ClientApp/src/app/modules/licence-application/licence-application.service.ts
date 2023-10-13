@@ -764,7 +764,9 @@ export class LicenceApplicationService {
 	}
 
 	notifyModelChanged(updatedData: any): void {
-		this.licenceModel = { ...this.licenceModel, ...updatedData };
+		const licenceModel = { ...this.licenceModel, ...updatedData };
+		// this.cleanLicenceModel(licenceModel);
+		this.licenceModel = { ...licenceModel };
 
 		console.log('notifyChanged', this.licenceModel);
 		this.licenceModelLoaded$.next({ isUpdated: true });
@@ -785,6 +787,11 @@ export class LicenceApplicationService {
 	notifyCategoryData(): void {
 		console.log('notifyCategoryData', this.licenceModel);
 		this.licenceModelLoaded$.next({ isCategoryLoaded: true });
+	}
+
+	private cleanLicenceModel(origLicenceModel: LicenceModel): LicenceModel {
+		//TODO when to clean model?
+		return origLicenceModel;
 	}
 
 	private setFlags(): void {

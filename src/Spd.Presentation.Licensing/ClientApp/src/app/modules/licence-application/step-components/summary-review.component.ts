@@ -37,7 +37,7 @@ import { LicenceApplicationService, LicenceModel, LicenceModelSubject } from '..
 												</mat-panel-title>
 											</mat-expansion-panel-header>
 											<div class="panel-body">
-												<div class="text-minor-heading mb-3">Licence Information</div>
+												<div class="text-minor-heading">Licence Information</div>
 												<div class="row mt-0">
 													<div class="col-lg-4 col-md-12 mt-lg-2">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">Licence Type</div>
@@ -89,7 +89,7 @@ import { LicenceApplicationService, LicenceModel, LicenceModelSubject } from '..
 													</div>
 												</div>
 												<mat-divider class="mt-4 mb-2"></mat-divider>
-												<div class="text-minor-heading mb-3">Documents Uploaded</div>
+												<div class="text-minor-heading">Documents Uploaded</div>
 
 												<div class="row mt-0">
 													<ng-container *ngFor="let item of licenceModel.swlCategoryList; let i = index">
@@ -108,13 +108,13 @@ import { LicenceApplicationService, LicenceModel, LicenceModelSubject } from '..
 																		>
 																			{{ doc.name }}
 																		</div>
-																		<div>
+																		<!-- <div>
 																			<span class="text-label">Expiry Date:</span>
 																			{{
 																				licenceModel.licenceCategoryArmouredCarGuard?.documentExpiryDate
 																					| date : constants.date.dateFormat
 																			}}
-																		</div>
+																		</div> -->
 																	</div>
 																</div>
 															</ng-container>

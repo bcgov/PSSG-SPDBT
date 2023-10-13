@@ -438,6 +438,7 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy {
 
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
+
 		this.nextStepperStep.emit(true);
 	}
 
