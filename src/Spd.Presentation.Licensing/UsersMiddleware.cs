@@ -18,8 +18,8 @@ namespace Spd.Presentation.Licensing
         private readonly ILogger<UsersMiddleware> logger;
         private readonly BCeIDAuthenticationConfiguration? bceidConfig;
         private readonly BcscAuthenticationConfiguration? bcscConfig;
-        private readonly string OrgUserCacheKeyPrefix = "user-";
-        private readonly string ApplicantCacheKeyPrefix = "applicant-";
+        private readonly string BizUserCacheKeyPrefix = "biz-user-";
+        private readonly string WorkerCacheKeyPrefix = "security-worker-";
 
         public UsersMiddleware(RequestDelegate next, IDistributedCache cache, IConfiguration configuration, IMapper mapper, ILogger<UsersMiddleware> logger)
         {
@@ -41,38 +41,34 @@ namespace Spd.Presentation.Licensing
             if (IPrincipalExtensions.BCeID_IDENTITY_PROVIDERS.Contains(context.User.GetIdentityProvider()))
             {
                 //bceid user
-                if (NoUserMiddlewareProcessNeededEndpoints(context) ||
-                    context.User.Identity == null ||
-                    !context.User.Identity.IsAuthenticated)
-                {
-                    await next(context);
-                    return;
-                }
 
-                if (context.Request.Headers.TryGetValue("organization", out var orgIdStr))
+                //todo: do not know what biz user would be like yet.
+                //var userIdInfo = context.User.GetBceidUserIdentityInfo();
+                ////validate if the orgId in httpHeader is belong to this user and add the user role to claims.
+                //OrgUserProfileResponse? userProfile = await cache.Get<OrgUserProfileResponse>($"{BizUserCacheKeyPrefix}{userIdInfo.UserGuid}");
+                //if (userProfile == null || userProfile.UserInfos.Any(u => u.UserId == Guid.Empty))
+                //{
+                //    userProfile = await mediator.Send(new GetCurrentUserProfileQuery(mapper.Map<PortalUserIdentity>(userIdInfo)));
+                //    await cache.Set<OrgUserProfileResponse>($"{BizUserCacheKeyPrefix}{userIdInfo.UserGuid}", userProfile, new TimeSpan(0, 30, 0));
+                //}
+
+                //if (userProfile != null)
                 {
-                    bool isSuccess = await ProcessBceidUser(orgIdStr, context, mediator);
-                    if (isSuccess)
-                    {
-                        await next(context);
-                    }
+                    context.User.AddUpdateClaim(ClaimTypes.Role, "BizLicencee");
                 }
-                else
-                {
-                    await ReturnUnauthorized(context, "missing organization in the header.");
-                }
+                await next(context);
             }
             else if (context.User.GetIssuer() == bcscConfig.Issuer)
             {
                 //bcsc user
                 var applicantInfo = context.User.GetBcscUserIdentityInfo();
                 //we need to differentiate if current user-applicant has account in spd db. If yes, add role applicant.
-                ApplicantProfileResponse? appProfile = await cache.Get<ApplicantProfileResponse>($"{ApplicantCacheKeyPrefix}{applicantInfo.Sub}");
+                ApplicantProfileResponse? appProfile = await cache.Get<ApplicantProfileResponse>($"{WorkerCacheKeyPrefix}{applicantInfo.Sub}");
                 if (appProfile == null)
                 {
                     appProfile = await mediator.Send(new GetApplicantProfileQuery(applicantInfo.Sub));
                     if (appProfile != null)
-                        await cache.Set($"{ApplicantCacheKeyPrefix}{applicantInfo.Sub}", appProfile, new TimeSpan(0, 30, 0));
+                        await cache.Set($"{WorkerCacheKeyPrefix}{applicantInfo.Sub}", appProfile, new TimeSpan(0, 30, 0));
                 }
 
                 if (appProfile != null)
@@ -85,68 +81,6 @@ namespace Spd.Presentation.Licensing
             {
                 await next(context);
             }
-        }
-        private static bool NoUserMiddlewareProcessNeededEndpoints(HttpContext context)
-        {
-            var Endpoints = new List<(string method, string path)>
-            {
-                //("GET", "api/health"),
-            };
-
-            if (context.Request.Path.HasValue)
-            {
-                foreach (var (method, path) in Endpoints)
-                {
-                    if (context.Request.Path.Value.Contains(path, StringComparison.OrdinalIgnoreCase) &&
-                        method == context.Request.Method)
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
-
-        private async Task ReturnUnauthorized(HttpContext context, string msg)
-        {
-            context.Response.Clear();
-            context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-            await context.Response.WriteAsync(msg);
-        }
-
-        private async Task<bool> ProcessBceidUser(string orgIdStr, HttpContext context, IMediator mediator)
-        {
-            //if (!Guid.TryParse(orgIdStr, out Guid orgId))
-            //{
-            //    await ReturnUnauthorized(context, "organization is not a valid guid");
-            //    return false;
-            //}
-
-            //var userIdInfo = context.User.GetBceidUserIdentityInfo();
-            ////validate if the orgId in httpHeader is belong to this user and add the user role to claims.
-            //OrgUserProfileResponse? userProfile = await cache.Get<OrgUserProfileResponse>($"{OrgUserCacheKeyPrefix}{userIdInfo.UserGuid}");
-            //if (userProfile == null || userProfile.UserInfos.Any(u => u.UserId == Guid.Empty))
-            //{
-            //    userProfile = await mediator.Send(new GetCurrentUserProfileQuery(mapper.Map<PortalUserIdentity>(userIdInfo)));
-            //    await cache.Set<OrgUserProfileResponse>($"{OrgUserCacheKeyPrefix}{userIdInfo.UserGuid}", userProfile, new TimeSpan(0, 30, 0));
-            //}
-
-            //if (userProfile?.UserInfos == null)
-            //{
-            //    await ReturnUnauthorized(context, "invalid user");
-            //    return false;
-            //}
-            //UserInfo? ui = userProfile.UserInfos.FirstOrDefault(ui => ui.UserGuid == userIdInfo.UserGuid && ui.OrgId == orgId);
-            //if (ui == null)
-            //{
-            //    await ReturnUnauthorized(context, "invalid user or organization");
-            //    return false;
-            //}
-            ////add ui to claims
-            //context.User.UpdateUserClaims(ui.UserId.ToString(), orgId.ToString(), ui.ContactAuthorizationTypeCode.ToString());
-            //return true;
-            return false;
         }
     }
 }
