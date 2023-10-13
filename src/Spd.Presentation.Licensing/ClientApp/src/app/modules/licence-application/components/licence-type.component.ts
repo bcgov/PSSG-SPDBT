@@ -123,7 +123,8 @@ export class LicenceTypeComponent implements OnInit, OnDestroy {
 				console.log('loaded', loaded);
 				if (loaded.isLoaded) {
 					this.form.patchValue({
-						applicationTypeCode: this.licenceApplicationService.licenceModel.applicationTypeCode,
+						applicationTypeCode:
+							this.licenceApplicationService.licenceModelFormGroup.controls['applicationTypeCode'].value,
 					});
 				}
 			},

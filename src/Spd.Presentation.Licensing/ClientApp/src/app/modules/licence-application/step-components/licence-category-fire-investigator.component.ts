@@ -1,8 +1,8 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { SelectOptions } from 'src/app/core/code-types/model-desc.models';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
-import { LicenceFormStepComponent } from '../licence-application.service';
+import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-category-fire-investigator',
@@ -41,7 +41,11 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 
 								<div class="my-2">
 									<div class="text-minor-heading mb-2">Upload a copy of your course certificate:</div>
-									<app-file-upload [maxNumberOfFiles]="10" #fireinvestigatorcertificateattachments></app-file-upload>
+									<app-file-upload
+										[maxNumberOfFiles]="10"
+										#fireinvestigatorcertificateattachmentsRef
+										[files]="fireinvestigatorcertificateattachments.value"
+									></app-file-upload>
 									<mat-error
 										class="mat-option-error"
 										*ngIf="
@@ -56,7 +60,11 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 
 								<div class="mt-3 mb-2">
 									<div class="text-minor-heading mb-2">Upload a verification letter:</div>
-									<app-file-upload [maxNumberOfFiles]="10" #fireinvestigatorletterattachments></app-file-upload>
+									<app-file-upload
+										[maxNumberOfFiles]="10"
+										#fireinvestigatorletterattachmentsRef
+										[files]="fireinvestigatorletterattachments.value"
+									></app-file-upload>
 									<mat-error
 										class="mat-option-error"
 										*ngIf="
@@ -78,22 +86,22 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 	styles: [],
 })
 export class LicenceCategoryFireInvestigatorComponent implements OnInit, LicenceFormStepComponent {
-	form!: FormGroup;
+	form: FormGroup = this.licenceApplicationService.categoryFireInvestigatorFormGroup;
 	title = '';
 
 	@Input() option: SelectOptions | null = null;
 	@Input() index: number = 0;
 
-	@ViewChild('fireinvestigatorcertificateattachments') fileUploadComponent3!: FileUploadComponent;
-	@ViewChild('fireinvestigatorletterattachments') fileUploadComponent4!: FileUploadComponent;
+	@ViewChild('fireinvestigatorcertificateattachmentsRef') fileUploadComponent3!: FileUploadComponent;
+	@ViewChild('fireinvestigatorletterattachmentsRef') fileUploadComponent4!: FileUploadComponent;
 
-	constructor(private formBuilder: FormBuilder) {}
+	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.form = this.formBuilder.group({
-			fireinvestigatorcertificateattachments: new FormControl('', [Validators.required]),
-			fireinvestigatorletterattachments: new FormControl('', [Validators.required]),
-		});
+		// this.form = this.formBuilder.group({
+		// 	fireinvestigatorcertificateattachments: new FormControl('', [Validators.required]),
+		// 	fireinvestigatorletterattachments: new FormControl('', [Validators.required]),
+		// });
 
 		this.title = `${this.option?.desc ?? ''}`;
 	}
@@ -117,5 +125,13 @@ export class LicenceCategoryFireInvestigatorComponent implements OnInit, Licence
 
 	getDataToSave(): any {
 		return { licenceCategoryFireInvestigator: { ...this.form.value } };
+	}
+
+	public get fireinvestigatorcertificateattachments(): FormControl {
+		return this.form.get('fireinvestigatorcertificateattachments') as FormControl;
+	}
+
+	public get fireinvestigatorletterattachments(): FormControl {
+		return this.form.get('fireinvestigatorletterattachments') as FormControl;
 	}
 }

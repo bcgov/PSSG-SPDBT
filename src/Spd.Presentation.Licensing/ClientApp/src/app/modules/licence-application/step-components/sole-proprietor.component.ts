@@ -1,9 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { BooleanTypeCode } from 'src/app/api/models';
-import { SwlApplicationTypeCode } from 'src/app/core/code-types/model-desc.models';
-import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import {
 	LicenceApplicationService,
 	LicenceFormStepComponent,
@@ -58,9 +56,10 @@ export class SoleProprietorComponent implements OnInit, OnDestroy, LicenceFormSt
 	readonly subtitle_renew =
 		'<p>If you are a sole proprietor, you need both a security worker licence and a security business licence.</p> <p>First, renew your worker licence. When you receive it, you can then renew the business licence. Your security worker licence fee will be refunded at that point.</p>';
 
-	form: FormGroup = this.formBuilder.group({
-		isSoleProprietor: new FormControl('', [FormControlValidators.required]),
-	});
+	form: FormGroup = this.licenceApplicationService.soleProprietorFormGroup;
+	//  this.formBuilder.group({
+	// 	isSoleProprietor: new FormControl('', [FormControlValidators.required]),
+	// });
 
 	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
 
@@ -71,14 +70,23 @@ export class SoleProprietorComponent implements OnInit, OnDestroy, LicenceFormSt
 					// TODO Review question would only apply to those who have a SWL w/ Sole Prop already,
 					// otherwise they would see the same question shown to New applicants
 
-					const isNewOrExpired =
-						this.licenceApplicationService.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired;
-					this.title = isNewOrExpired ? this.title_apply : this.title_renew;
-					this.infoTitle = isNewOrExpired ? this.subtitle_apply : this.subtitle_renew;
+					// const isNewOrExpired =
+					// 	this.licenceApplicationService.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired;
+					// 	this.title = isNewOrExpired ? this.title_apply : this.title_renew;
+					// 	this.infoTitle = isNewOrExpired ? this.subtitle_apply : this.subtitle_renew;
+					this.title = this.title_apply;
+					this.infoTitle = this.subtitle_apply;
 
-					this.form.patchValue({
-						isSoleProprietor: this.licenceApplicationService.licenceModel.isSoleProprietor,
-					});
+					console.log('this.form', this.form.value);
+					console.log('this.licenceModelFormGroup', this.licenceApplicationService.licenceModelFormGroup.value);
+					console.log(
+						'this.soleProprietorFormGroup',
+						this.licenceApplicationService.licenceModelFormGroup.controls['soleProprietorFormGroup'].value
+					);
+
+					// this.form.patchValue({
+					// 	isSoleProprietor: this.licenceApplicationService.licenceModelFormGroup.controls['isSoleProprietor'].value,
+					// });
 				}
 			},
 		});

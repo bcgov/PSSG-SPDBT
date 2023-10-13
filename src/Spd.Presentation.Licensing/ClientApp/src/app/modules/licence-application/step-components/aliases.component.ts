@@ -136,10 +136,18 @@ export class AliasesComponent implements OnInit, OnDestroy, LicenceFormStepCompo
 
 	booleanTypeCodes = BooleanTypeCode;
 
-	form: FormGroup = this.formBuilder.group({
-		previousNameFlag: new FormControl(null, [FormControlValidators.required]),
-		aliases: this.formBuilder.array([]),
+	aliasForm = this.formBuilder.group({
+		givenName: new FormControl(''),
+		middleName1: new FormControl(''),
+		middleName2: new FormControl(''),
+		surname: new FormControl('', [FormControlValidators.required]),
 	});
+
+	form: FormGroup = this.licenceApplicationService.aliasesFormGroup;
+	//  this.formBuilder.group({
+	// 	previousNameFlag: new FormControl(null, [FormControlValidators.required]),
+	// 	aliases: this.formBuilder.array([]),
+	// });
 
 	matcher = new FormErrorStateMatcher();
 
@@ -161,14 +169,14 @@ export class AliasesComponent implements OnInit, OnDestroy, LicenceFormStepCompo
 					if (aliases.length > 0) {
 						const control = this.form.get('aliases') as FormArray;
 						aliases.forEach((item) => {
-							control.push(
-								this.formBuilder.group({
-									givenName: [item.givenName],
-									middleName1: [item.middleName1],
-									middleName2: [item.middleName2],
-									surname: [item.surname, [FormControlValidators.required]],
-								})
-							);
+							control.push(this.licenceApplicationService.aliasesFormGroup);
+							// 	this.formBuilder.group({
+							// 		givenName: [item.givenName],
+							// 		middleName1: [item.middleName1],
+							// 		middleName2: [item.middleName2],
+							// 		surname: [item.surname, [FormControlValidators.required]],
+							// 	})
+							// );
 						});
 					}
 				}

@@ -2,8 +2,6 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { BooleanTypeCode } from 'src/app/api/models';
-import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
-import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import {
 	LicenceApplicationService,
@@ -85,20 +83,21 @@ export class MentalHealthConditionsComponent implements OnInit, OnDestroy, Licen
 
 	booleanTypeCodes = BooleanTypeCode;
 
-	form: FormGroup = this.formBuilder.group(
-		{
-			isTreatedForMHC: new FormControl(null, [FormControlValidators.required]),
-			mentalHealthConditionAttachments: new FormControl(),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'mentalHealthConditionAttachments',
-					(form) => form.get('isTreatedForMHC')?.value == BooleanTypeCode.Yes
-				),
-			],
-		}
-	);
+	form: FormGroup = this.licenceApplicationService.mentalHealthConditionsFormGroup;
+	//  this.formBuilder.group(
+	// 	{
+	// 		isTreatedForMHC: new FormControl(null, [FormControlValidators.required]),
+	// 		mentalHealthConditionAttachments: new FormControl(),
+	// 	},
+	// 	{
+	// 		validators: [
+	// 			FormGroupValidators.conditionalDefaultRequiredValidator(
+	// 				'mentalHealthConditionAttachments',
+	// 				(form) => form.get('isTreatedForMHC')?.value == BooleanTypeCode.Yes
+	// 			),
+	// 		],
+	// 	}
+	// );
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
@@ -108,11 +107,11 @@ export class MentalHealthConditionsComponent implements OnInit, OnDestroy, Licen
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: LicenceModelSubject) => {
 				if (loaded.isLoaded) {
-					this.form.patchValue({
-						isTreatedForMHC: this.licenceApplicationService.licenceModel.isTreatedForMHC,
-						mentalHealthConditionAttachments:
-							this.licenceApplicationService.licenceModel.mentalHealthConditionAttachments,
-					});
+					// this.form.patchValue({
+					// 	isTreatedForMHC: this.licenceApplicationService.licenceModel.isTreatedForMHC,
+					// 	mentalHealthConditionAttachments:
+					// 		this.licenceApplicationService.licenceModel.mentalHealthConditionAttachments,
+					// });
 				}
 			},
 		});

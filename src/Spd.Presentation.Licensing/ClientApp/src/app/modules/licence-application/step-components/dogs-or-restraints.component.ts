@@ -4,8 +4,6 @@ import { Subscription } from 'rxjs';
 import { BooleanTypeCode } from 'src/app/api/models';
 import { showHideTriggerAnimation, showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { DogDocumentTypes, RestraintDocumentTypes } from 'src/app/core/code-types/model-desc.models';
-import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
-import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import {
@@ -193,58 +191,59 @@ export class DogsOrRestraintsComponent implements OnInit, OnDestroy, LicenceForm
 
 	matcher = new FormErrorStateMatcher();
 
-	form: FormGroup = this.formBuilder.group(
-		{
-			useDogsOrRestraints: new FormControl('', [FormControlValidators.required]),
-			carryAndUseRetraints: new FormControl(),
-			carryAndUseRetraintsDocument: new FormControl(),
-			carryAndUseRetraintsAttachments: new FormControl(),
-			dogPurposeFormGroup: new FormGroup(
-				{
-					isDogsPurposeProtection: new FormControl(false),
-					isDogsPurposeDetectionDrugs: new FormControl(false),
-					isDogsPurposeDetectionExplosives: new FormControl(false),
-				},
-				FormGroupValidators.atLeastOneCheckboxValidator('useDogsOrRestraints', BooleanTypeCode.Yes)
-			),
-			dogsPurposeDocumentType: new FormControl(),
-			dogsPurposeAttachments: new FormControl(),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'carryAndUseRetraintsDocument',
-					(form) =>
-						form.get('useDogsOrRestraints')?.value == this.booleanTypeCodes.Yes &&
-						form.get('carryAndUseRetraints')?.value
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'carryAndUseRetraintsAttachments',
-					(form) =>
-						form.get('useDogsOrRestraints')?.value == this.booleanTypeCodes.Yes &&
-						form.get('carryAndUseRetraints')?.value
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator('dogsPurposeDocumentType', (form) => {
-					const dogPurposeFormGroup = form.get('dogPurposeFormGroup') as FormGroup;
-					return (
-						form.get('useDogsOrRestraints')?.value == this.booleanTypeCodes.Yes &&
-						((dogPurposeFormGroup.get('isDogsPurposeProtection') as FormControl).value ||
-							(dogPurposeFormGroup.get('isDogsPurposeDetectionDrugs') as FormControl).value ||
-							(dogPurposeFormGroup.get('isDogsPurposeDetectionExplosives') as FormControl).value)
-					);
-				}),
-				FormGroupValidators.conditionalDefaultRequiredValidator('dogsPurposeAttachments', (form) => {
-					const dogPurposeFormGroup = form.get('dogPurposeFormGroup') as FormGroup;
-					return (
-						form.get('useDogsOrRestraints')?.value == this.booleanTypeCodes.Yes &&
-						((dogPurposeFormGroup.get('isDogsPurposeProtection') as FormControl).value ||
-							(dogPurposeFormGroup.get('isDogsPurposeDetectionDrugs') as FormControl).value ||
-							(dogPurposeFormGroup.get('isDogsPurposeDetectionExplosives') as FormControl).value)
-					);
-				}),
-			],
-		}
-	);
+	form: FormGroup = this.licenceApplicationService.dogsOrRestraintsFormGroup;
+	//  this.formBuilder.group(
+	// 	{
+	// 		useDogsOrRestraints: new FormControl('', [FormControlValidators.required]),
+	// 		carryAndUseRetraints: new FormControl(),
+	// 		carryAndUseRetraintsDocument: new FormControl(),
+	// 		carryAndUseRetraintsAttachments: new FormControl(),
+	// 		dogPurposeFormGroup: new FormGroup(
+	// 			{
+	// 				isDogsPurposeProtection: new FormControl(false),
+	// 				isDogsPurposeDetectionDrugs: new FormControl(false),
+	// 				isDogsPurposeDetectionExplosives: new FormControl(false),
+	// 			},
+	// 			FormGroupValidators.atLeastOneCheckboxValidator('useDogsOrRestraints', BooleanTypeCode.Yes)
+	// 		),
+	// 		dogsPurposeDocumentType: new FormControl(),
+	// 		dogsPurposeAttachments: new FormControl(),
+	// 	},
+	// 	{
+	// 		validators: [
+	// 			FormGroupValidators.conditionalDefaultRequiredValidator(
+	// 				'carryAndUseRetraintsDocument',
+	// 				(form) =>
+	// 					form.get('useDogsOrRestraints')?.value == this.booleanTypeCodes.Yes &&
+	// 					form.get('carryAndUseRetraints')?.value
+	// 			),
+	// 			FormGroupValidators.conditionalDefaultRequiredValidator(
+	// 				'carryAndUseRetraintsAttachments',
+	// 				(form) =>
+	// 					form.get('useDogsOrRestraints')?.value == this.booleanTypeCodes.Yes &&
+	// 					form.get('carryAndUseRetraints')?.value
+	// 			),
+	// 			FormGroupValidators.conditionalDefaultRequiredValidator('dogsPurposeDocumentType', (form) => {
+	// 				const dogPurposeFormGroup = form.get('dogPurposeFormGroup') as FormGroup;
+	// 				return (
+	// 					form.get('useDogsOrRestraints')?.value == this.booleanTypeCodes.Yes &&
+	// 					((dogPurposeFormGroup.get('isDogsPurposeProtection') as FormControl).value ||
+	// 						(dogPurposeFormGroup.get('isDogsPurposeDetectionDrugs') as FormControl).value ||
+	// 						(dogPurposeFormGroup.get('isDogsPurposeDetectionExplosives') as FormControl).value)
+	// 				);
+	// 			}),
+	// 			FormGroupValidators.conditionalDefaultRequiredValidator('dogsPurposeAttachments', (form) => {
+	// 				const dogPurposeFormGroup = form.get('dogPurposeFormGroup') as FormGroup;
+	// 				return (
+	// 					form.get('useDogsOrRestraints')?.value == this.booleanTypeCodes.Yes &&
+	// 					((dogPurposeFormGroup.get('isDogsPurposeProtection') as FormControl).value ||
+	// 						(dogPurposeFormGroup.get('isDogsPurposeDetectionDrugs') as FormControl).value ||
+	// 						(dogPurposeFormGroup.get('isDogsPurposeDetectionExplosives') as FormControl).value)
+	// 				);
+	// 			}),
+	// 		],
+	// 	}
+	// );
 
 	@ViewChild('carryAndUseRetraintsAttachmentsRef') fileUploadComponent1!: FileUploadComponent;
 	@ViewChild('dogsPurposeAttachmentsRef') fileUploadComponent2!: FileUploadComponent;
@@ -255,21 +254,21 @@ export class DogsOrRestraintsComponent implements OnInit, OnDestroy, LicenceForm
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: LicenceModelSubject) => {
 				if (loaded.isLoaded) {
-					this.form.patchValue({
-						useDogsOrRestraints: this.licenceApplicationService.licenceModel.useDogsOrRestraints,
-						carryAndUseRetraints: this.licenceApplicationService.licenceModel.carryAndUseRetraints,
-						carryAndUseRetraintsDocument: this.licenceApplicationService.licenceModel.carryAndUseRetraintsDocument,
-						carryAndUseRetraintsAttachments:
-							this.licenceApplicationService.licenceModel.carryAndUseRetraintsAttachments,
-						dogPurposeFormGroup: {
-							isDogsPurposeProtection: this.licenceApplicationService.licenceModel.isDogsPurposeProtection,
-							isDogsPurposeDetectionDrugs: this.licenceApplicationService.licenceModel.isDogsPurposeDetectionDrugs,
-							isDogsPurposeDetectionExplosives:
-								this.licenceApplicationService.licenceModel.isDogsPurposeDetectionExplosives,
-						},
-						dogsPurposeDocumentType: this.licenceApplicationService.licenceModel.dogsPurposeDocumentType,
-						dogsPurposeAttachments: this.licenceApplicationService.licenceModel.dogsPurposeAttachments,
-					});
+					// this.form.patchValue({
+					// 	useDogsOrRestraints: this.licenceApplicationService.licenceModel.useDogsOrRestraints,
+					// 	carryAndUseRetraints: this.licenceApplicationService.licenceModel.carryAndUseRetraints,
+					// 	carryAndUseRetraintsDocument: this.licenceApplicationService.licenceModel.carryAndUseRetraintsDocument,
+					// 	carryAndUseRetraintsAttachments:
+					// 		this.licenceApplicationService.licenceModel.carryAndUseRetraintsAttachments,
+					// 	dogPurposeFormGroup: {
+					// 		isDogsPurposeProtection: this.licenceApplicationService.licenceModel.isDogsPurposeProtection,
+					// 		isDogsPurposeDetectionDrugs: this.licenceApplicationService.licenceModel.isDogsPurposeDetectionDrugs,
+					// 		isDogsPurposeDetectionExplosives:
+					// 			this.licenceApplicationService.licenceModel.isDogsPurposeDetectionExplosives,
+					// 	},
+					// 	dogsPurposeDocumentType: this.licenceApplicationService.licenceModel.dogsPurposeDocumentType,
+					// 	dogsPurposeAttachments: this.licenceApplicationService.licenceModel.dogsPurposeAttachments,
+					// });
 				}
 			},
 		});

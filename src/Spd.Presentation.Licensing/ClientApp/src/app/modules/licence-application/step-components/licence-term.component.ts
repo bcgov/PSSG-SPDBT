@@ -1,8 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { SwlTermCode } from 'src/app/core/code-types/model-desc.models';
-import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import {
 	LicenceApplicationService,
 	LicenceFormStepComponent,
@@ -49,9 +48,10 @@ export class LicenceTermComponent implements OnInit, OnDestroy, LicenceFormStepC
 
 	termCodes = SwlTermCode;
 
-	form: FormGroup = this.formBuilder.group({
-		licenceTermCode: new FormControl('', [FormControlValidators.required]),
-	});
+	form: FormGroup = this.licenceApplicationService.licenceTermFormGroup;
+	//  this.formBuilder.group({
+	// 	licenceTermCode: new FormControl('', [FormControlValidators.required]),
+	// });
 
 	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
 
@@ -59,9 +59,9 @@ export class LicenceTermComponent implements OnInit, OnDestroy, LicenceFormStepC
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: LicenceModelSubject) => {
 				if (loaded.isLoaded) {
-					this.form.patchValue({
-						licenceTermCode: this.licenceApplicationService.licenceModel.licenceTermCode,
-					});
+					// this.form.patchValue({
+					// 	licenceTermCode: this.licenceApplicationService.licenceModel.licenceTermCode,
+					// });
 				}
 			},
 		});

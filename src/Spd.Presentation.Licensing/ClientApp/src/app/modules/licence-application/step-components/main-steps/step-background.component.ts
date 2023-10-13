@@ -3,7 +3,6 @@ import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild, ViewEnca
 import { MatStepper } from '@angular/material/stepper';
 import { Subscription } from 'rxjs';
 import { LicenceApplicationService, LicenceModelSubject } from '../../licence-application.service';
-import { BackgroundInfoComponent } from '../background-info.component';
 import { CriminalHistoryComponent } from '../criminal-history.component';
 import { FingerprintsComponent } from '../fingerprints.component';
 import { MentalHealthConditionsComponent } from '../mental-health-conditions.component';
@@ -126,7 +125,7 @@ export class StepBackgroundComponent implements OnInit, OnDestroy {
 	@ViewChild(MentalHealthConditionsComponent) mentalHealthConditionsComponent!: MentalHealthConditionsComponent;
 	@ViewChild(CriminalHistoryComponent) criminalHistoryComponent!: CriminalHistoryComponent;
 	@ViewChild(FingerprintsComponent) fingerprintsComponent!: FingerprintsComponent;
-	@ViewChild(BackgroundInfoComponent) backgroundInfoComponent!: BackgroundInfoComponent;
+	// @ViewChild(BackgroundInfoComponent) backgroundInfoComponent!: BackgroundInfoComponent;
 
 	@ViewChild('childstepper') private childstepper!: MatStepper;
 
@@ -153,7 +152,7 @@ export class StepBackgroundComponent implements OnInit, OnDestroy {
 						this.showStepMentalHealth = this.licenceApplicationService.licenceModel.showStepMentalHealth ?? true;
 						this.showStepCriminalHistory = this.licenceApplicationService.licenceModel.showStepCriminalHistory ?? true;
 						this.showStepFingerprints = this.licenceApplicationService.licenceModel.showStepFingerprints ?? true;
-						this.showStepBackgroundInfo = this.licenceApplicationService.licenceModel.showStepBackgroundInfo ?? true;
+						// this.showStepBackgroundInfo = this.licenceApplicationService.licenceModel.showStepBackgroundInfo ?? true;
 					}
 					console.log(
 						'onInit StepBackgroundComponent3',
@@ -200,7 +199,7 @@ export class StepBackgroundComponent implements OnInit, OnDestroy {
 			...(this.mentalHealthConditionsComponent ? this.mentalHealthConditionsComponent.getDataToSave() : {}),
 			...(this.criminalHistoryComponent ? this.criminalHistoryComponent.getDataToSave() : {}),
 			...(this.fingerprintsComponent ? this.fingerprintsComponent.getDataToSave() : {}),
-			...(this.backgroundInfoComponent ? this.backgroundInfoComponent.getDataToSave() : {}),
+			// ...(this.backgroundInfoComponent ? this.backgroundInfoComponent.getDataToSave() : {}),
 		};
 
 		this.licenceApplicationService.notifyModelChanged(stepData);
@@ -216,8 +215,8 @@ export class StepBackgroundComponent implements OnInit, OnDestroy {
 				return this.criminalHistoryComponent.isFormValid();
 			case this.STEP_FINGERPRINTS:
 				return this.fingerprintsComponent.isFormValid();
-			case this.STEP_BACKGROUND_INFO:
-				return this.backgroundInfoComponent.isFormValid();
+			// case this.STEP_BACKGROUND_INFO:
+			// 	return this.backgroundInfoComponent.isFormValid();
 		}
 		return false;
 	}

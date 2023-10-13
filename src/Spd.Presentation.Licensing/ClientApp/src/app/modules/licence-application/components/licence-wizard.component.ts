@@ -26,42 +26,43 @@ import { StepReviewComponent } from '../step-components/main-steps/step-review.c
 					>
 						<mat-step completed="true">
 							<ng-template matStepLabel>
-								<span *ngIf="isNotReplacement; else isReplacementTabName">Licence Selection</span>
-								<ng-template #isReplacementTabName>Licence Confirmation</ng-template>
+								Licence Selection
+								<!-- <span *ngIf="isNotReplacement; else isReplacementTabName">Licence Selection</span>
+								<ng-template #isReplacementTabName>Licence Confirmation</ng-template> -->
 							</ng-template>
 							<app-step-licence-selection (nextStepperStep)="onNextStepperStep(stepper)"></app-step-licence-selection>
 						</mat-step>
 
-						<ng-container *ngIf="isNotReplacement">
-							<mat-step completed="true">
-								<ng-template matStepLabel>Background</ng-template>
-								<app-step-background
+						<!-- <ng-container *ngIf="isNotReplacement"> -->
+						<mat-step completed="true">
+							<ng-template matStepLabel>Background</ng-template>
+							<app-step-background
+								(previousStepperStep)="onPreviousStepperStep(stepper)"
+								(nextStepperStep)="onNextStepperStep(stepper)"
+							></app-step-background>
+						</mat-step>
+
+						<mat-step completed="true">
+							<ng-template matStepLabel>Identification</ng-template>
+							<app-step-identification
+								(previousStepperStep)="onPreviousStepperStep(stepper)"
+								(nextStepperStep)="onNextStepperStep(stepper)"
+							></app-step-identification>
+						</mat-step>
+
+						<mat-step completed="true">
+							<ng-template matStepLabel>Review and Confirm</ng-template>
+							<ng-template matStepContent>
+								<app-step-review
 									(previousStepperStep)="onPreviousStepperStep(stepper)"
 									(nextStepperStep)="onNextStepperStep(stepper)"
-								></app-step-background>
-							</mat-step>
+								></app-step-review>
+							</ng-template>
+						</mat-step>
+						<!-- </ng-container> -->
 
-							<mat-step completed="true">
-								<ng-template matStepLabel>Identification</ng-template>
-								<app-step-identification
-									(previousStepperStep)="onPreviousStepperStep(stepper)"
-									(nextStepperStep)="onNextStepperStep(stepper)"
-								></app-step-identification>
-							</mat-step>
-
-							<mat-step completed="true">
-								<ng-template matStepLabel>Review and Confirm</ng-template>
-								<ng-template matStepContent>
-									<app-step-review
-										(previousStepperStep)="onPreviousStepperStep(stepper)"
-										(nextStepperStep)="onNextStepperStep(stepper)"
-									></app-step-review>
-								</ng-template>
-							</mat-step>
-						</ng-container>
-
-						<ng-container *ngIf="isReplacement">
-							<!-- <mat-step completed="true">
+						<!-- <ng-container *ngIf="isReplacement"> -->
+						<!-- <mat-step completed="true">
 								<ng-template matStepLabel>Licence Confirmation</ng-template>
 								<app-step-review
 									(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -69,14 +70,14 @@ import { StepReviewComponent } from '../step-components/main-steps/step-review.c
 								></app-step-review>
 							</mat-step> -->
 
-							<mat-step completed="true">
+						<!-- <mat-step completed="true">
 								<ng-template matStepLabel>Address Update</ng-template>
 								<app-step-review
 									(previousStepperStep)="onPreviousStepperStep(stepper)"
 									(nextStepperStep)="onNextStepperStep(stepper)"
 								></app-step-review>
 							</mat-step>
-						</ng-container>
+						</ng-container> -->
 
 						<mat-step completed="true">
 							<ng-template matStepLabel>Pay</ng-template>

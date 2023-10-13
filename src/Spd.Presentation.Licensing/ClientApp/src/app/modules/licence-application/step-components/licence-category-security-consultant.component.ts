@@ -1,10 +1,9 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { SelectOptions } from 'src/app/core/code-types/model-desc.models';
-import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
-import { LicenceFormStepComponent } from '../licence-application.service';
+import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-category-security-consultant',
@@ -51,7 +50,11 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 								<div class="text-minor-heading mb-2">Upload your resume:</div>
 
 								<div class="my-2">
-									<app-file-upload [maxNumberOfFiles]="10" #resumeattachments></app-file-upload>
+									<app-file-upload
+										[maxNumberOfFiles]="10"
+										#resumeattachmentsRef
+										[files]="attachments.value"
+									></app-file-upload>
 									<mat-error
 										class="mat-option-error"
 										*ngIf="
@@ -99,7 +102,11 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 									</div>
 
 									<div class="my-2">
-										<app-file-upload [maxNumberOfFiles]="10" #attachments></app-file-upload>
+										<app-file-upload
+											[maxNumberOfFiles]="10"
+											#attachmentsRef
+											[files]="attachments.value"
+										></app-file-upload>
 										<mat-error
 											class="mat-option-error"
 											*ngIf="
@@ -122,23 +129,23 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 	animations: [showHideTriggerSlideAnimation],
 })
 export class LicenceCategorySecurityConsultantComponent implements OnInit, LicenceFormStepComponent {
-	form!: FormGroup;
+	form: FormGroup = this.licenceApplicationService.categorySecurityConsultantFormGroup;
 	title = '';
 
 	@Input() option: SelectOptions | null = null;
 	@Input() index: number = 0;
 
-	@ViewChild('resumeattachments') fileUploadComponent1!: FileUploadComponent;
-	@ViewChild('attachments') fileUploadComponent2!: FileUploadComponent;
+	@ViewChild('resumeattachmentsRef') fileUploadComponent1!: FileUploadComponent;
+	@ViewChild('attachmentsRef') fileUploadComponent2!: FileUploadComponent;
 
-	constructor(private formBuilder: FormBuilder) {}
+	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.form = this.formBuilder.group({
-			requirement: new FormControl(null, [FormControlValidators.required]),
-			resumeattachments: new FormControl('', [Validators.required]),
-			attachments: new FormControl('', [Validators.required]),
-		});
+		// this.form = this.formBuilder.group({
+		// 	requirement: new FormControl(null, [FormControlValidators.required]),
+		// 	resumeattachments: new FormControl('', [Validators.required]),
+		// 	attachments: new FormControl('', [Validators.required]),
+		// });
 
 		this.title = `${this.option?.desc ?? ''}`;
 	}
@@ -166,5 +173,13 @@ export class LicenceCategorySecurityConsultantComponent implements OnInit, Licen
 
 	public get requirement(): FormControl {
 		return this.form.get('requirement') as FormControl;
+	}
+
+	public get attachments(): FormControl {
+		return this.form.get('attachments') as FormControl;
+	}
+
+	public get resumeattachments(): FormControl {
+		return this.form.get('resumeattachments') as FormControl;
 	}
 }

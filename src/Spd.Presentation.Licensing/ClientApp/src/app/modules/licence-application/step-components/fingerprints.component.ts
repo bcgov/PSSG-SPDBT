@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import {
@@ -62,9 +62,10 @@ import {
 export class FingerprintsComponent implements OnInit, OnDestroy, LicenceFormStepComponent {
 	private licenceModelLoadedSubscription!: Subscription;
 
-	form: FormGroup = this.formBuilder.group({
-		proofOfFingerprintAttachments: new FormControl(null, [Validators.required]),
-	});
+	form: FormGroup = this.licenceApplicationService.proofOfFingerprintFormGroup;
+	//  this.formBuilder.group({
+	// 	proofOfFingerprintAttachments: new FormControl(null, [Validators.required]),
+	// });
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
@@ -74,9 +75,9 @@ export class FingerprintsComponent implements OnInit, OnDestroy, LicenceFormStep
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: LicenceModelSubject) => {
 				if (loaded.isLoaded) {
-					this.form.patchValue({
-						proofOfFingerprintAttachments: this.licenceApplicationService.licenceModel.proofOfFingerprintAttachments,
-					});
+					// this.form.patchValue({
+					// 	proofOfFingerprintAttachments: this.licenceApplicationService.licenceModel.proofOfFingerprintAttachments,
+					// });
 				}
 			},
 		});

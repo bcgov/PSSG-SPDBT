@@ -1,9 +1,8 @@
 import { Component, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { SelectOptions } from 'src/app/core/code-types/model-desc.models';
-import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import {
 	LicenceApplicationService,
@@ -108,10 +107,11 @@ import {
 export class LicenceCategorySecurityGuardComponent implements OnInit, OnDestroy, LicenceFormStepComponent {
 	private licenceModelLoadedSubscription!: Subscription;
 
-	form: FormGroup = this.formBuilder.group({
-		requirement: new FormControl(null, [FormControlValidators.required]),
-		attachments: new FormControl('', [Validators.required]),
-	});
+	form: FormGroup = this.licenceApplicationService.categorySecurityGuardFormGroup;
+	//  this.formBuilder.group({
+	// 	requirement: new FormControl(null, [FormControlValidators.required]),
+	// 	attachments: new FormControl('', [Validators.required]),
+	// });
 	title = '';
 
 	@Input() option: SelectOptions | null = null;
@@ -128,17 +128,16 @@ export class LicenceCategorySecurityGuardComponent implements OnInit, OnDestroy,
 			next: (loaded: LicenceModelSubject) => {
 				console.log('SecurityGuardComponent', loaded);
 				if (loaded.isCategoryLoaded) {
-					const licenceCategorySecurityGuard = this.licenceApplicationService.licenceModel
-						.licenceCategorySecurityGuard as any;
-					console.log('licenceCategorySecurityGuard', licenceCategorySecurityGuard);
-					console.log('licenceCategorySecurityGuard licenceModel', this.licenceApplicationService.licenceModel);
-
-					if (licenceCategorySecurityGuard) {
-						this.form.patchValue({
-							requirement: licenceCategorySecurityGuard.requirement,
-							attachments: licenceCategorySecurityGuard.attachments,
-						});
-					}
+					// const licenceCategorySecurityGuard = this.licenceApplicationService.licenceModel
+					// 	.licenceCategorySecurityGuard as any;
+					// console.log('licenceCategorySecurityGuard', licenceCategorySecurityGuard);
+					// console.log('licenceCategorySecurityGuard licenceModel', this.licenceApplicationService.licenceModel);
+					// if (licenceCategorySecurityGuard) {
+					// 	this.form.patchValue({
+					// 		requirement: licenceCategorySecurityGuard.requirement,
+					// 		attachments: licenceCategorySecurityGuard.attachments,
+					// 	});
+					// }
 				}
 			},
 		});
@@ -160,8 +159,9 @@ export class LicenceCategorySecurityGuardComponent implements OnInit, OnDestroy,
 	}
 
 	getDataToSave(): any {
-		console.log('security guard getDataToSave', this.form.value);
-		return { licenceCategorySecurityGuard: { ...this.form.value } };
+		// console.log('security guard getDataToSave', this.form.value);
+		// return { licenceCategorySecurityGuard: { ...this.form.value } };
+		return this.form.value;
 	}
 
 	public get requirement(): FormControl {

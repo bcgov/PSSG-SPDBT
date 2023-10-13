@@ -1,8 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { BooleanTypeCode } from 'src/app/api/models';
-import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import {
 	LicenceApplicationService,
 	LicenceFormStepComponent,
@@ -45,9 +44,10 @@ export class CriminalHistoryComponent implements OnInit, OnDestroy, LicenceFormS
 
 	booleanTypeCodes = BooleanTypeCode;
 
-	form: FormGroup = this.formBuilder.group({
-		hasCriminalHistory: new FormControl(null, [FormControlValidators.required]),
-	});
+	form: FormGroup = this.licenceApplicationService.criminalHistoryFormGroup;
+	//  this.formBuilder.group({
+	// 	hasCriminalHistory: new FormControl(null, [FormControlValidators.required]),
+	// });
 
 	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
 
@@ -55,9 +55,9 @@ export class CriminalHistoryComponent implements OnInit, OnDestroy, LicenceFormS
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: LicenceModelSubject) => {
 				if (loaded.isLoaded) {
-					this.form.patchValue({
-						hasCriminalHistory: this.licenceApplicationService.licenceModel.hasCriminalHistory,
-					});
+					// this.form.patchValue({
+					// 	hasCriminalHistory: this.licenceApplicationService.licenceModel.hasCriminalHistory,
+					// });
 				}
 			},
 		});

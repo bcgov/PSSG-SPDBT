@@ -1,13 +1,11 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/api/models';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { SelectOptions } from 'src/app/core/code-types/model-desc.models';
-import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
-import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { LicenceFormStepComponent } from '../licence-application.service';
+import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-category-private-investigator',
@@ -106,7 +104,11 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 									</div>
 
 									<div class="my-2">
-										<app-file-upload [maxNumberOfFiles]="10" #attachments></app-file-upload>
+										<app-file-upload
+											[maxNumberOfFiles]="10"
+											#attachmentsRef
+											[files]="attachments.value"
+										></app-file-upload>
 										<mat-error
 											class="mat-option-error"
 											*ngIf="
@@ -117,7 +119,7 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 											>This is required</mat-error
 										>
 									</div>
-									<div class="row" *ngIf="requirement.value == 'b'">
+									<!-- <div class="row" *ngIf="requirement.value == 'b'">
 										<div class="col-lg-4 col-md-12 col-sm-12">
 											<mat-form-field>
 												<mat-label>Document Expiry Date</mat-label>
@@ -134,7 +136,7 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 												>
 											</mat-form-field>
 										</div>
-									</div>
+									</div> -->
 								</div>
 
 								<div class="alert alert-category d-flex mt-4" role="alert">
@@ -186,7 +188,11 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 												>Upload document(s) providing proof of course completion or equivalent knowledge:</span
 											>
 										</div>
-										<app-file-upload [maxNumberOfFiles]="10" #trainingattachments></app-file-upload>
+										<app-file-upload
+											[maxNumberOfFiles]="10"
+											#trainingattachmentsRef
+											[files]="attachments.value"
+										></app-file-upload>
 										<mat-error
 											class="mat-option-error"
 											*ngIf="
@@ -243,7 +249,11 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 
 									<div class="my-2">
 										<div class="text-minor-heading mb-2">Upload a copy of your course certificate:</div>
-										<app-file-upload [maxNumberOfFiles]="10" #fireinvestigatorcertificateattachments></app-file-upload>
+										<app-file-upload
+											[maxNumberOfFiles]="10"
+											#fireinvestigatorcertificateattachmentsRef
+											[files]="attachments.value"
+										></app-file-upload>
 										<mat-error
 											class="mat-option-error"
 											*ngIf="
@@ -258,7 +268,11 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 
 									<div class="my-2">
 										<div class="text-minor-heading mb-2">Upload a verification letter:</div>
-										<app-file-upload [maxNumberOfFiles]="10" #fireinvestigatorletterattachments></app-file-upload>
+										<app-file-upload
+											[maxNumberOfFiles]="10"
+											#fireinvestigatorletterattachmentsRef
+											[files]="attachments.value"
+										></app-file-upload>
 										<mat-error
 											class="mat-option-error"
 											*ngIf="
@@ -282,7 +296,7 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 	animations: [showHideTriggerSlideAnimation],
 })
 export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, LicenceFormStepComponent {
-	form!: FormGroup;
+	form: FormGroup = this.licenceApplicationService.categoryPrivateInvestigatorFormGroup;
 	matcher = new FormErrorStateMatcher();
 	title = '';
 
@@ -291,42 +305,42 @@ export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, Lice
 	@Input() option: SelectOptions | null = null;
 	@Input() index: number = 0;
 
-	@ViewChild('attachments') fileUploadComponent1!: FileUploadComponent;
-	@ViewChild('trainingattachments') fileUploadComponent2!: FileUploadComponent;
-	@ViewChild('fireinvestigatorcertificateattachments') fileUploadComponent3!: FileUploadComponent;
-	@ViewChild('fireinvestigatorletterattachments') fileUploadComponent4!: FileUploadComponent;
+	@ViewChild('attachmentsRef') fileUploadComponent1!: FileUploadComponent;
+	@ViewChild('trainingattachmentsRef') fileUploadComponent2!: FileUploadComponent;
+	@ViewChild('fireinvestigatorcertificateattachmentsRef') fileUploadComponent3!: FileUploadComponent;
+	@ViewChild('fireinvestigatorletterattachmentsRef') fileUploadComponent4!: FileUploadComponent;
 
-	constructor(private formBuilder: FormBuilder) {}
+	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.form = this.formBuilder.group(
-			{
-				requirement: new FormControl(null, [FormControlValidators.required]),
-				training: new FormControl(null, [FormControlValidators.required]),
-				documentExpiryDate: new FormControl(null),
-				attachments: new FormControl('', [Validators.required]),
-				trainingattachments: new FormControl('', [Validators.required]),
-				fireinvestigatorcertificateattachments: new FormControl(''),
-				fireinvestigatorletterattachments: new FormControl(''),
-				addFireInvestigator: new FormControl('', [FormControlValidators.required]),
-			},
-			{
-				validators: [
-					FormGroupValidators.conditionalDefaultRequiredValidator(
-						'documentExpiryDate',
-						(form) => form.get('requirement')?.value == 'b'
-					),
-					FormGroupValidators.conditionalDefaultRequiredValidator(
-						'fireinvestigatorcertificateattachments',
-						(form) => form.get('addFireInvestigator')?.value == this.booleanTypeCodes.Yes
-					),
-					FormGroupValidators.conditionalDefaultRequiredValidator(
-						'fireinvestigatorletterattachments',
-						(form) => form.get('addFireInvestigator')?.value == this.booleanTypeCodes.Yes
-					),
-				],
-			}
-		);
+		// this.form = this.formBuilder.group(
+		// 	{
+		// 		requirement: new FormControl(null, [FormControlValidators.required]),
+		// 		training: new FormControl(null, [FormControlValidators.required]),
+		// 		// documentExpiryDate: new FormControl(null),
+		// 		attachments: new FormControl('', [Validators.required]),
+		// 		trainingattachments: new FormControl('', [Validators.required]),
+		// 		fireinvestigatorcertificateattachments: new FormControl(''),
+		// 		fireinvestigatorletterattachments: new FormControl(''),
+		// 		addFireInvestigator: new FormControl('', [FormControlValidators.required]),
+		// 	},
+		// 	{
+		// 		validators: [
+		// 			// FormGroupValidators.conditionalDefaultRequiredValidator(
+		// 			// 	'documentExpiryDate',
+		// 			// 	(form) => form.get('requirement')?.value == 'b'
+		// 			// ),
+		// 			FormGroupValidators.conditionalDefaultRequiredValidator(
+		// 				'fireinvestigatorcertificateattachments',
+		// 				(form) => form.get('addFireInvestigator')?.value == this.booleanTypeCodes.Yes
+		// 			),
+		// 			FormGroupValidators.conditionalDefaultRequiredValidator(
+		// 				'fireinvestigatorletterattachments',
+		// 				(form) => form.get('addFireInvestigator')?.value == this.booleanTypeCodes.Yes
+		// 			),
+		// 		],
+		// 	}
+		// );
 
 		this.title = `${this.option?.desc ?? ''}`;
 	}
@@ -374,6 +388,22 @@ export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, Lice
 
 	public get requirement(): FormControl {
 		return this.form.get('requirement') as FormControl;
+	}
+
+	public get attachments(): FormControl {
+		return this.form.get('attachments') as FormControl;
+	}
+
+	public get trainingattachments(): FormControl {
+		return this.form.get('trainingattachments') as FormControl;
+	}
+
+	public get fireinvestigatorcertificateattachments(): FormControl {
+		return this.form.get('fireinvestigatorcertificateattachments') as FormControl;
+	}
+
+	public get fireinvestigatorletterattachments(): FormControl {
+		return this.form.get('fireinvestigatorletterattachments') as FormControl;
 	}
 
 	public get training(): FormControl {

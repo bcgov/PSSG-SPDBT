@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { SelectOptions } from 'src/app/core/code-types/model-desc.models';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
@@ -35,7 +35,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 							<form [formGroup]="form" novalidate>
 								<div class="text-minor-heading">Upload your valid Authorization to Carry certificate:</div>
 								<div class="my-2">
-									<app-file-upload [maxNumberOfFiles]="10"></app-file-upload>
+									<app-file-upload [maxNumberOfFiles]="10" [files]="attachments.value"></app-file-upload>
 									<mat-error
 										class="mat-option-error"
 										*ngIf="
@@ -75,7 +75,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 	styles: [],
 })
 export class LicenceCategoryArmouredCarGuardComponent implements OnInit, LicenceFormStepComponent {
-	form!: FormGroup;
+	form: FormGroup = this.licenceApplicationService.categoryArmouredCarGuardFormGroup;
 	title = '';
 
 	matcher = new FormErrorStateMatcher();
@@ -88,10 +88,10 @@ export class LicenceCategoryArmouredCarGuardComponent implements OnInit, Licence
 	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.form = this.formBuilder.group({
-			documentExpiryDate: new FormControl(null, [Validators.required]),
-			attachments: new FormControl('', [Validators.required]),
-		});
+		// this.form = this.formBuilder.group({
+		// 	documentExpiryDate: new FormControl(null, [Validators.required]),
+		// 	attachments: new FormControl('', [Validators.required]),
+		// });
 
 		this.title = `${this.option?.desc ?? ''}`;
 	}
@@ -113,5 +113,9 @@ export class LicenceCategoryArmouredCarGuardComponent implements OnInit, Licence
 
 	public get requirement(): FormControl {
 		return this.form.get('requirement') as FormControl;
+	}
+
+	public get attachments(): FormControl {
+		return this.form.get('attachments') as FormControl;
 	}
 }

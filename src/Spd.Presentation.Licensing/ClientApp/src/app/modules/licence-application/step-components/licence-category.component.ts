@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { SelectOptions, SwlCategoryTypeCode, SwlCategoryTypes } from 'src/app/core/code-types/model-desc.models';
@@ -35,7 +36,7 @@ import {
 								mat-stroked-button
 								color="primary"
 								class="large my-2"
-								*ngIf="swlCategoryList.length < 6"
+								*ngIf="categories.value.length < 6"
 								(click)="onAddCategory()"
 							>
 								Add Category
@@ -47,33 +48,37 @@ import {
 						</mat-error>
 					</div>
 
-					<div class="row">
-						<div class="offset-xxl-2 col-xxl-8 offset-xl-1 col-xl-10 col-lg-12">
-							<div class="row" *ngFor="let item of swlCategoryList; let i = index; let first = first">
-								<mat-divider class="mt-4 mb-3" *ngIf="first"></mat-divider>
+					<form [formGroup]="form" novalidate>
+						<div class="row">
+							<div class="offset-xxl-2 col-xxl-8 offset-xl-1 col-xl-10 col-lg-12">
+								<div class="row" *ngFor="let item of categories.value; let i = index; let first = first">
+									<mat-divider class="mt-4 mb-3" *ngIf="first"></mat-divider>
 
-								<div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12">
-									<mat-chip-option [selectable]="false" class="mat-chip-green"> Category #{{ i + 1 }} </mat-chip-option>
-								</div>
-								<div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12">
-									<span class="category-title">{{ item.desc }}</span>
-								</div>
-								<div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12">
-									<button
-										mat-stroked-button
-										class="w-auto float-end"
-										style="color: var(--color-red);"
-										aria-label="Remove category"
-										(click)="onRemove(item.code, i)"
-									>
-										<mat-icon>delete_outline</mat-icon>Remove
-									</button>
-								</div>
+									<div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12">
+										<mat-chip-option [selectable]="false" class="mat-chip-green">
+											Category #{{ i + 1 }}
+										</mat-chip-option>
+									</div>
+									<div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12">
+										<span class="category-title">{{ item.desc }}</span>
+									</div>
+									<div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12">
+										<button
+											mat-stroked-button
+											class="w-auto float-end"
+											style="color: var(--color-red);"
+											aria-label="Remove category"
+											(click)="onRemove(item.code, i)"
+										>
+											<mat-icon>delete_outline</mat-icon>Remove
+										</button>
+									</div>
 
-								<mat-divider class="my-3"></mat-divider>
+									<mat-divider class="my-3"></mat-divider>
+								</div>
 							</div>
 						</div>
-					</div>
+					</form>
 				</div>
 			</div>
 		</section>
@@ -91,8 +96,10 @@ import {
 export class LicenceCategoryComponent implements OnInit, OnDestroy, LicenceFormStepComponent {
 	private licenceModelLoadedSubscription!: Subscription;
 
+	form: FormGroup = this.licenceApplicationService.categoriesFormGroup;
+
 	category = '';
-	swlCategoryList: SelectOptions[] = [];
+	// swlCategoryList: SelectOptions[] = [];
 	isDirtyAndInvalid = false;
 
 	validCategoryList: SelectOptions[] = SwlCategoryTypes;
@@ -105,10 +112,11 @@ export class LicenceCategoryComponent implements OnInit, OnDestroy, LicenceFormS
 	ngOnInit(): void {
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: LicenceModelSubject) => {
-				if (loaded.isLoaded) {
-					this.swlCategoryList = this.licenceApplicationService.licenceModel.swlCategoryList;
-					this.setValidCategoryList();
-				}
+				console.log('xxxx', this.form.value);
+				// if (loaded.isLoaded) {
+				// 	// this.swlCategoryList = this.licenceApplicationService.licenceModel.swlCategoryList;
+				// 	this.setValidCategoryList();
+				// }
 			},
 		});
 	}
@@ -122,7 +130,7 @@ export class LicenceCategoryComponent implements OnInit, OnDestroy, LicenceFormS
 			this.isDirtyAndInvalid = false;
 
 			const option = this.swlCategoryTypes.find((item) => item.code == this.category)!;
-			this.swlCategoryList.push({ code: option?.code, desc: option.desc });
+			this.categories.value.push({ code: option?.code, desc: option.desc });
 			this.setValidCategoryList();
 
 			this.category = '';
@@ -143,190 +151,181 @@ export class LicenceCategoryComponent implements OnInit, OnDestroy, LicenceFormS
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
-					const item = this.swlCategoryList.at(i);
-					this.swlCategoryList.splice(i, 1);
-					this.licenceApplicationService.clearLicenceCategoryData(code as SwlCategoryTypeCode);
-					this.setValidCategoryList();
+					// const item = this.swlCategoryList.at(i);
+					// this.swlCategoryList.splice(i, 1);
+					// this.licenceApplicationService.clearLicenceCategoryData(code as SwlCategoryTypeCode);
+					// this.setValidCategoryList();
 				}
 			});
 	}
 
 	isFormValid(): boolean {
-		const isValid = this.swlCategoryList.length > 0;
-		this.isDirtyAndInvalid = !isValid;
-		return isValid;
+		// const isValid = this.swlCategoryList.length > 0;
+		// this.isDirtyAndInvalid = !isValid;
+		// return isValid;
+		return true;
 	}
 
 	getDataToSave(): any {
-		return { swlCategoryList: this.swlCategoryList }; // this.form.value;
+		return this.form.value;
 	}
 
 	private setValidCategoryList(): void {
 		// TODO update to use matrix in the db.
-		let updatedList = this.swlCategoryTypes;
-
-		// if user has selected 'ArmouredCarGuard', then update the list of valid values
-		if (this.swlCategoryList.find((cat) => cat.code == SwlCategoryTypeCode.ArmouredCarGuard)) {
-			updatedList = updatedList.filter(
-				(cat) =>
-					cat.code != SwlCategoryTypeCode.ArmouredCarGuard &&
-					cat.code != SwlCategoryTypeCode.SecurityGuardUnderSupervision
-			);
-		}
-
-		// if user has selected 'BodyArmourSales', then update the list of valid values
-		if (this.swlCategoryList.find((cat) => cat.code == SwlCategoryTypeCode.BodyArmourSales)) {
-			updatedList = updatedList.filter(
-				(cat) =>
-					cat.code != SwlCategoryTypeCode.BodyArmourSales &&
-					cat.code != SwlCategoryTypeCode.SecurityGuardUnderSupervision
-			);
-		}
-
-		// if user has selected 'ClosedCircuitTelevisionInstaller', then update the list of valid values
-		if (this.swlCategoryList.find((cat) => cat.code == SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller)) {
-			updatedList = updatedList.filter(
-				(cat) =>
-					cat.code != SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller &&
-					cat.code != SwlCategoryTypeCode.SecurityAlarmInstaller &&
-					cat.code != SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision &&
-					cat.code != SwlCategoryTypeCode.SecurityGuardUnderSupervision
-			);
-		}
-
-		// if user has selected 'ElectronicLockingDeviceInstaller', then update the list of valid values
-		if (this.swlCategoryList.find((cat) => cat.code == SwlCategoryTypeCode.ElectronicLockingDeviceInstaller)) {
-			updatedList = updatedList.filter(
-				(cat) =>
-					cat.code != SwlCategoryTypeCode.ElectronicLockingDeviceInstaller &&
-					cat.code != SwlCategoryTypeCode.Locksmith &&
-					cat.code != SwlCategoryTypeCode.LocksmithUnderSupervision &&
-					cat.code != SwlCategoryTypeCode.SecurityAlarmInstaller &&
-					cat.code != SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision &&
-					cat.code != SwlCategoryTypeCode.SecurityGuardUnderSupervision
-			);
-		}
-
-		// if user has selected 'FireInvestigator', then update the list of valid values
-		if (this.swlCategoryList.find((cat) => cat.code == SwlCategoryTypeCode.FireInvestigator)) {
-			updatedList = updatedList.filter(
-				(cat) =>
-					cat.code != SwlCategoryTypeCode.PrivateInvestigator &&
-					cat.code != SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision &&
-					cat.code != SwlCategoryTypeCode.FireInvestigator
-			);
-		}
-
-		// if user has selected 'Locksmith' or 'LocksmithUnderSupervision', then update the list of valid values
-		if (
-			this.swlCategoryList.find(
-				(cat) => cat.code == SwlCategoryTypeCode.Locksmith || cat.code == SwlCategoryTypeCode.LocksmithUnderSupervision
-			)
-		) {
-			updatedList = updatedList.filter(
-				(cat) =>
-					cat.code != SwlCategoryTypeCode.ElectronicLockingDeviceInstaller &&
-					cat.code != SwlCategoryTypeCode.Locksmith &&
-					cat.code != SwlCategoryTypeCode.LocksmithUnderSupervision &&
-					cat.code != SwlCategoryTypeCode.SecurityGuardUnderSupervision
-			);
-		}
-
-		// if user has selected 'PrivateInvestigator' or 'PrivateInvestigatorUnderSupervision', then update the list of valid values
-		if (
-			this.swlCategoryList.find(
-				(cat) =>
-					cat.code == SwlCategoryTypeCode.PrivateInvestigator ||
-					cat.code == SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision
-			)
-		) {
-			updatedList = updatedList.filter(
-				(cat) =>
-					cat.code != SwlCategoryTypeCode.FireInvestigator &&
-					cat.code != SwlCategoryTypeCode.PrivateInvestigator &&
-					cat.code != SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision &&
-					cat.code != SwlCategoryTypeCode.SecurityGuardUnderSupervision
-			);
-		}
-
-		// if user has selected 'SecurityGuard', then update the list of valid values
-		if (this.swlCategoryList.find((cat) => cat.code == SwlCategoryTypeCode.SecurityGuard)) {
-			updatedList = updatedList.filter(
-				(cat) =>
-					cat.code != SwlCategoryTypeCode.SecurityAlarmMonitor &&
-					cat.code != SwlCategoryTypeCode.SecurityAlarmResponse &&
-					cat.code != SwlCategoryTypeCode.SecurityGuard &&
-					cat.code != SwlCategoryTypeCode.SecurityGuardUnderSupervision
-			);
-		}
-
-		// if user has selected 'SecurityGuardUnderSupervision', then update the list of valid values
-		if (this.swlCategoryList.find((cat) => cat.code == SwlCategoryTypeCode.SecurityGuardUnderSupervision)) {
-			updatedList = [];
-		}
-
-		// if user has selected 'SecurityAlarmInstaller' or 'SecurityAlarmInstallerUnderSupervision', then update the list of valid values
-		if (
-			this.swlCategoryList.find(
-				(cat) =>
-					cat.code == SwlCategoryTypeCode.SecurityAlarmInstaller ||
-					cat.code == SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision
-			)
-		) {
-			updatedList = updatedList.filter(
-				(cat) =>
-					cat.code != SwlCategoryTypeCode.ElectronicLockingDeviceInstaller &&
-					cat.code != SwlCategoryTypeCode.SecurityAlarmInstaller &&
-					cat.code != SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision &&
-					cat.code != SwlCategoryTypeCode.SecurityAlarmMonitor &&
-					cat.code != SwlCategoryTypeCode.SecurityAlarmResponse &&
-					cat.code != SwlCategoryTypeCode.SecurityAlarmSales &&
-					cat.code != SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller &&
-					cat.code != SwlCategoryTypeCode.SecurityGuardUnderSupervision
-			);
-		}
-
-		// if user has selected 'SecurityAlarmMonitor' or 'SecurityAlarmResponse, then update the list of valid values
-		if (
-			this.swlCategoryList.find(
-				(cat) =>
-					cat.code == SwlCategoryTypeCode.SecurityAlarmMonitor || cat.code == SwlCategoryTypeCode.SecurityAlarmResponse
-			)
-		) {
-			updatedList = updatedList.filter(
-				(cat) =>
-					cat.code != SwlCategoryTypeCode.SecurityAlarmMonitor &&
-					cat.code != SwlCategoryTypeCode.SecurityAlarmResponse &&
-					cat.code != SwlCategoryTypeCode.SecurityAlarmInstaller &&
-					cat.code != SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision &&
-					cat.code != SwlCategoryTypeCode.SecurityGuard &&
-					cat.code != SwlCategoryTypeCode.SecurityGuardUnderSupervision
-			);
-		}
-
-		// if user has selected 'SecurityAlarmSales', then update the list of valid values
-		if (this.swlCategoryList.find((cat) => cat.code == SwlCategoryTypeCode.SecurityAlarmSales)) {
-			updatedList = updatedList.filter(
-				(cat) =>
-					cat.code != SwlCategoryTypeCode.SecurityAlarmInstaller &&
-					cat.code != SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision &&
-					cat.code != SwlCategoryTypeCode.SecurityAlarmMonitor &&
-					cat.code != SwlCategoryTypeCode.SecurityAlarmSales &&
-					cat.code != SwlCategoryTypeCode.SecurityGuard &&
-					cat.code != SwlCategoryTypeCode.SecurityGuardUnderSupervision
-			);
-		}
-
-		// if user has selected 'SecurityConsultant', then update the list of valid values
-		if (this.swlCategoryList.find((cat) => cat.code == SwlCategoryTypeCode.SecurityConsultant)) {
-			updatedList = updatedList.filter(
-				(cat) =>
-					cat.code != SwlCategoryTypeCode.SecurityConsultant &&
-					cat.code != SwlCategoryTypeCode.SecurityGuardUnderSupervision
-			);
-		}
-
-		this.validCategoryList = [...updatedList];
+		// let updatedList = this.swlCategoryTypes;
+		// // if user has selected 'ArmouredCarGuard', then update the list of valid values
+		// if (this.swlCategoryList.find((cat) => cat.code == SwlCategoryTypeCode.ArmouredCarGuard)) {
+		// 	updatedList = updatedList.filter(
+		// 		(cat) =>
+		// 			cat.code != SwlCategoryTypeCode.ArmouredCarGuard &&
+		// 			cat.code != SwlCategoryTypeCode.SecurityGuardUnderSupervision
+		// 	);
+		// }
+		// // if user has selected 'BodyArmourSales', then update the list of valid values
+		// if (this.swlCategoryList.find((cat) => cat.code == SwlCategoryTypeCode.BodyArmourSales)) {
+		// 	updatedList = updatedList.filter(
+		// 		(cat) =>
+		// 			cat.code != SwlCategoryTypeCode.BodyArmourSales &&
+		// 			cat.code != SwlCategoryTypeCode.SecurityGuardUnderSupervision
+		// 	);
+		// }
+		// // if user has selected 'ClosedCircuitTelevisionInstaller', then update the list of valid values
+		// if (this.swlCategoryList.find((cat) => cat.code == SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller)) {
+		// 	updatedList = updatedList.filter(
+		// 		(cat) =>
+		// 			cat.code != SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller &&
+		// 			cat.code != SwlCategoryTypeCode.SecurityAlarmInstaller &&
+		// 			cat.code != SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision &&
+		// 			cat.code != SwlCategoryTypeCode.SecurityGuardUnderSupervision
+		// 	);
+		// }
+		// // if user has selected 'ElectronicLockingDeviceInstaller', then update the list of valid values
+		// if (this.swlCategoryList.find((cat) => cat.code == SwlCategoryTypeCode.ElectronicLockingDeviceInstaller)) {
+		// 	updatedList = updatedList.filter(
+		// 		(cat) =>
+		// 			cat.code != SwlCategoryTypeCode.ElectronicLockingDeviceInstaller &&
+		// 			cat.code != SwlCategoryTypeCode.Locksmith &&
+		// 			cat.code != SwlCategoryTypeCode.LocksmithUnderSupervision &&
+		// 			cat.code != SwlCategoryTypeCode.SecurityAlarmInstaller &&
+		// 			cat.code != SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision &&
+		// 			cat.code != SwlCategoryTypeCode.SecurityGuardUnderSupervision
+		// 	);
+		// }
+		// // if user has selected 'FireInvestigator', then update the list of valid values
+		// if (this.swlCategoryList.find((cat) => cat.code == SwlCategoryTypeCode.FireInvestigator)) {
+		// 	updatedList = updatedList.filter(
+		// 		(cat) =>
+		// 			cat.code != SwlCategoryTypeCode.PrivateInvestigator &&
+		// 			cat.code != SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision &&
+		// 			cat.code != SwlCategoryTypeCode.FireInvestigator
+		// 	);
+		// }
+		// // if user has selected 'Locksmith' or 'LocksmithUnderSupervision', then update the list of valid values
+		// if (
+		// 	this.swlCategoryList.find(
+		// 		(cat) => cat.code == SwlCategoryTypeCode.Locksmith || cat.code == SwlCategoryTypeCode.LocksmithUnderSupervision
+		// 	)
+		// ) {
+		// 	updatedList = updatedList.filter(
+		// 		(cat) =>
+		// 			cat.code != SwlCategoryTypeCode.ElectronicLockingDeviceInstaller &&
+		// 			cat.code != SwlCategoryTypeCode.Locksmith &&
+		// 			cat.code != SwlCategoryTypeCode.LocksmithUnderSupervision &&
+		// 			cat.code != SwlCategoryTypeCode.SecurityGuardUnderSupervision
+		// 	);
+		// }
+		// // if user has selected 'PrivateInvestigator' or 'PrivateInvestigatorUnderSupervision', then update the list of valid values
+		// if (
+		// 	this.swlCategoryList.find(
+		// 		(cat) =>
+		// 			cat.code == SwlCategoryTypeCode.PrivateInvestigator ||
+		// 			cat.code == SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision
+		// 	)
+		// ) {
+		// 	updatedList = updatedList.filter(
+		// 		(cat) =>
+		// 			cat.code != SwlCategoryTypeCode.FireInvestigator &&
+		// 			cat.code != SwlCategoryTypeCode.PrivateInvestigator &&
+		// 			cat.code != SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision &&
+		// 			cat.code != SwlCategoryTypeCode.SecurityGuardUnderSupervision
+		// 	);
+		// }
+		// // if user has selected 'SecurityGuard', then update the list of valid values
+		// if (this.swlCategoryList.find((cat) => cat.code == SwlCategoryTypeCode.SecurityGuard)) {
+		// 	updatedList = updatedList.filter(
+		// 		(cat) =>
+		// 			cat.code != SwlCategoryTypeCode.SecurityAlarmMonitor &&
+		// 			cat.code != SwlCategoryTypeCode.SecurityAlarmResponse &&
+		// 			cat.code != SwlCategoryTypeCode.SecurityGuard &&
+		// 			cat.code != SwlCategoryTypeCode.SecurityGuardUnderSupervision
+		// 	);
+		// }
+		// // if user has selected 'SecurityGuardUnderSupervision', then update the list of valid values
+		// if (this.swlCategoryList.find((cat) => cat.code == SwlCategoryTypeCode.SecurityGuardUnderSupervision)) {
+		// 	updatedList = [];
+		// }
+		// // if user has selected 'SecurityAlarmInstaller' or 'SecurityAlarmInstallerUnderSupervision', then update the list of valid values
+		// if (
+		// 	this.swlCategoryList.find(
+		// 		(cat) =>
+		// 			cat.code == SwlCategoryTypeCode.SecurityAlarmInstaller ||
+		// 			cat.code == SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision
+		// 	)
+		// ) {
+		// 	updatedList = updatedList.filter(
+		// 		(cat) =>
+		// 			cat.code != SwlCategoryTypeCode.ElectronicLockingDeviceInstaller &&
+		// 			cat.code != SwlCategoryTypeCode.SecurityAlarmInstaller &&
+		// 			cat.code != SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision &&
+		// 			cat.code != SwlCategoryTypeCode.SecurityAlarmMonitor &&
+		// 			cat.code != SwlCategoryTypeCode.SecurityAlarmResponse &&
+		// 			cat.code != SwlCategoryTypeCode.SecurityAlarmSales &&
+		// 			cat.code != SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller &&
+		// 			cat.code != SwlCategoryTypeCode.SecurityGuardUnderSupervision
+		// 	);
+		// }
+		// // if user has selected 'SecurityAlarmMonitor' or 'SecurityAlarmResponse, then update the list of valid values
+		// if (
+		// 	this.swlCategoryList.find(
+		// 		(cat) =>
+		// 			cat.code == SwlCategoryTypeCode.SecurityAlarmMonitor || cat.code == SwlCategoryTypeCode.SecurityAlarmResponse
+		// 	)
+		// ) {
+		// 	updatedList = updatedList.filter(
+		// 		(cat) =>
+		// 			cat.code != SwlCategoryTypeCode.SecurityAlarmMonitor &&
+		// 			cat.code != SwlCategoryTypeCode.SecurityAlarmResponse &&
+		// 			cat.code != SwlCategoryTypeCode.SecurityAlarmInstaller &&
+		// 			cat.code != SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision &&
+		// 			cat.code != SwlCategoryTypeCode.SecurityGuard &&
+		// 			cat.code != SwlCategoryTypeCode.SecurityGuardUnderSupervision
+		// 	);
+		// }
+		// // if user has selected 'SecurityAlarmSales', then update the list of valid values
+		// if (this.swlCategoryList.find((cat) => cat.code == SwlCategoryTypeCode.SecurityAlarmSales)) {
+		// 	updatedList = updatedList.filter(
+		// 		(cat) =>
+		// 			cat.code != SwlCategoryTypeCode.SecurityAlarmInstaller &&
+		// 			cat.code != SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision &&
+		// 			cat.code != SwlCategoryTypeCode.SecurityAlarmMonitor &&
+		// 			cat.code != SwlCategoryTypeCode.SecurityAlarmSales &&
+		// 			cat.code != SwlCategoryTypeCode.SecurityGuard &&
+		// 			cat.code != SwlCategoryTypeCode.SecurityGuardUnderSupervision
+		// 	);
+		// }
+		// // if user has selected 'SecurityConsultant', then update the list of valid values
+		// if (this.swlCategoryList.find((cat) => cat.code == SwlCategoryTypeCode.SecurityConsultant)) {
+		// 	updatedList = updatedList.filter(
+		// 		(cat) =>
+		// 			cat.code != SwlCategoryTypeCode.SecurityConsultant &&
+		// 			cat.code != SwlCategoryTypeCode.SecurityGuardUnderSupervision
+		// 	);
+		// }
+		// this.validCategoryList = [...updatedList];
 		// console.log('updatedList', this.validCategoryList);
+	}
+
+	public get categories(): FormControl {
+		return this.form.get('categories') as FormControl;
 	}
 }

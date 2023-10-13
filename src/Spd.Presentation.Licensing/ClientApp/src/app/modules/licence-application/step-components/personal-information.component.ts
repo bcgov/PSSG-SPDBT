@@ -1,10 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { GenderTypes, SwlApplicationTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { UtilService } from 'src/app/core/services/util.service';
-import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
-import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import {
 	LicenceApplicationService,
@@ -104,25 +102,26 @@ export class PersonalInformationComponent implements OnInit, OnDestroy, LicenceF
 	title = '';
 	subtitle = '';
 
-	form: FormGroup = this.formBuilder.group(
-		{
-			oneLegalName: new FormControl(false),
-			givenName: new FormControl(null),
-			middleName1: new FormControl(null),
-			middleName2: new FormControl(null),
-			surname: new FormControl(null, [FormControlValidators.required]),
-			genderCode: new FormControl(null),
-			dateOfBirth: new FormControl(null, [Validators.required]),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalRequiredValidator(
-					'givenName',
-					(form) => form.get('oneLegalName')?.value != true
-				),
-			],
-		}
-	);
+	form: FormGroup = this.licenceApplicationService.personalInformationFormGroup;
+	// form: FormGroup = this.formBuilder.group(
+	// 	{
+	// 		oneLegalName: new FormControl(false),
+	// 		givenName: new FormControl(null),
+	// 		middleName1: new FormControl(null),
+	// 		middleName2: new FormControl(null),
+	// 		surname: new FormControl(null, [FormControlValidators.required]),
+	// 		genderCode: new FormControl(null),
+	// 		dateOfBirth: new FormControl(null, [Validators.required]),
+	// 	},
+	// 	{
+	// 		validators: [
+	// 			FormGroupValidators.conditionalRequiredValidator(
+	// 				'givenName',
+	// 				(form) => form.get('oneLegalName')?.value != true
+	// 			),
+	// 		],
+	// 	}
+	// );
 
 	constructor(
 		private formBuilder: FormBuilder,
@@ -145,15 +144,15 @@ export class PersonalInformationComponent implements OnInit, OnDestroy, LicenceF
 								: this.subtitle_unauth_renew_update;
 					}
 
-					this.form.patchValue({
-						oneLegalName: this.licenceApplicationService.licenceModel.oneLegalName,
-						givenName: this.licenceApplicationService.licenceModel.givenName,
-						middleName1: this.licenceApplicationService.licenceModel.middleName1,
-						middleName2: this.licenceApplicationService.licenceModel.middleName2,
-						surname: this.licenceApplicationService.licenceModel.surname,
-						genderCode: this.licenceApplicationService.licenceModel.genderCode,
-						dateOfBirth: this.licenceApplicationService.licenceModel.dateOfBirth,
-					});
+					// this.form.patchValue({
+					// 	oneLegalName: this.licenceApplicationService.licenceModel.oneLegalName,
+					// 	givenName: this.licenceApplicationService.licenceModel.givenName,
+					// 	middleName1: this.licenceApplicationService.licenceModel.middleName1,
+					// 	middleName2: this.licenceApplicationService.licenceModel.middleName2,
+					// 	surname: this.licenceApplicationService.licenceModel.surname,
+					// 	genderCode: this.licenceApplicationService.licenceModel.genderCode,
+					// 	dateOfBirth: this.licenceApplicationService.licenceModel.dateOfBirth,
+					// });
 
 					// if (this.licenceApplicationService.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Replacement) {
 					// 	this.form.disable();

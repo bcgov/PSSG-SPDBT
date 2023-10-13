@@ -3,8 +3,6 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { BooleanTypeCode } from 'src/app/api/models';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
-import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
-import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import {
 	LicenceApplicationService,
@@ -101,25 +99,26 @@ export class LicenceExpiredComponent implements OnInit, OnDestroy, LicenceFormSt
 	maxDate = new Date();
 	matcher = new FormErrorStateMatcher();
 
-	form: FormGroup = this.formBuilder.group(
-		{
-			hasExpiredLicence: new FormControl('', [FormControlValidators.required]),
-			expiredLicenceNumber: new FormControl(),
-			expiryDate: new FormControl(),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalRequiredValidator(
-					'expiredLicenceNumber',
-					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'expiryDate',
-					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
-				),
-			],
-		}
-	);
+	form: FormGroup = this.licenceApplicationService.expiredLicenceFormGroup;
+	//  formBuilder.group(
+	// 	{
+	// 		hasExpiredLicence: new FormControl('', [FormControlValidators.required]),
+	// 		expiredLicenceNumber: new FormControl(),
+	// 		expiryDate: new FormControl(),
+	// 	},
+	// 	{
+	// 		validators: [
+	// 			FormGroupValidators.conditionalRequiredValidator(
+	// 				'expiredLicenceNumber',
+	// 				(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
+	// 			),
+	// 			FormGroupValidators.conditionalDefaultRequiredValidator(
+	// 				'expiryDate',
+	// 				(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
+	// 			),
+	// 		],
+	// 	}
+	// );
 
 	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
 
@@ -127,11 +126,11 @@ export class LicenceExpiredComponent implements OnInit, OnDestroy, LicenceFormSt
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: LicenceModelSubject) => {
 				if (loaded.isLoaded) {
-					this.form.patchValue({
-						hasExpiredLicence: this.licenceApplicationService.licenceModel.hasExpiredLicence,
-						expiredLicenceNumber: this.licenceApplicationService.licenceModel.expiredLicenceNumber,
-						expiryDate: this.licenceApplicationService.licenceModel.expiryDate,
-					});
+					// this.form.patchValue({
+					// 	hasExpiredLicence: this.licenceApplicationService.licenceModel.hasExpiredLicence,
+					// 	expiredLicenceNumber: this.licenceApplicationService.licenceModel.expiredLicenceNumber,
+					// 	expiryDate: this.licenceApplicationService.licenceModel.expiryDate,
+					// });
 				}
 			},
 		});
