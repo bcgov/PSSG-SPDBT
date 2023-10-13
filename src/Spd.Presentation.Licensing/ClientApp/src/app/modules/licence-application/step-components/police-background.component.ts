@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 import { BooleanTypeCode } from 'src/app/api/models';
 import {
 	PoliceOfficerRoleCode,
-	PoliceOfficerTypes,
+	PoliceOfficerRoleTypes,
 	SwlApplicationTypeCode,
 } from 'src/app/core/code-types/model-desc.models';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
@@ -62,7 +62,7 @@ import {
 											<div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
 												<mat-form-field>
 													<mat-select formControlName="officerRole">
-														<mat-option *ngFor="let item of policeOfficerTypes" [value]="item.code">
+														<mat-option *ngFor="let item of policeOfficerRoleTypes" [value]="item.code">
 															{{ item.desc }}
 														</mat-option>
 													</mat-select>
@@ -140,7 +140,7 @@ export class PoliceBackgroundComponent implements OnInit, OnDestroy, LicenceForm
 
 	booleanTypeCodes = BooleanTypeCode;
 	policeOfficerRoleCodes = PoliceOfficerRoleCode;
-	policeOfficerTypes = PoliceOfficerTypes;
+	policeOfficerRoleTypes = PoliceOfficerRoleTypes;
 
 	policeOfficerSummaryText = '';
 
@@ -222,7 +222,7 @@ export class PoliceBackgroundComponent implements OnInit, OnDestroy, LicenceForm
 							if (this.licenceApplicationService.licenceModel.officerRole == PoliceOfficerRoleCode.Other) {
 								this.policeOfficerSummaryText = `I am a ${this.licenceApplicationService.licenceModel.otherOfficerRole}`;
 							} else {
-								const desc = PoliceOfficerTypes.find(
+								const desc = PoliceOfficerRoleTypes.find(
 									(item) => item.code == this.licenceApplicationService.licenceModel.officerRole
 								)?.desc;
 								this.policeOfficerSummaryText = `I am a ${desc}`;

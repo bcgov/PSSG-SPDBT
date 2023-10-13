@@ -1,13 +1,19 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { AddressRetrieveResponse } from 'src/app/api/models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { Address } from 'src/app/shared/components/address-autocomplete.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
+import {
+	LicenceApplicationService,
+	LicenceFormStepComponent,
+	LicenceModelSubject,
+} from '../licence-application.service';
 
 @Component({
-	selector: 'app-business-address',
+	selector: 'app-mailing-address',
 	template: `
 		<section class="step-section p-3">
 			<div class="step">
@@ -100,29 +106,46 @@ import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-stat
 	`,
 	styles: [],
 })
-export class BusinessAddressComponent {
+export class MailingAddressComponent implements OnInit, OnDestroy, LicenceFormStepComponent {
+	private licenceModelLoadedSubscription!: Subscription;
+
 	matcher = new FormErrorStateMatcher();
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 
-	form: FormGroup = this.formBuilder.group({
-		emailAddress: new FormControl(''),
-		phoneNumber: new FormControl(''),
+	form = this.formBuilder.group({
+		addressSelected: new FormControl(false, [Validators.requiredTrue]),
+		mailingAddressLine1: new FormControl('', [FormControlValidators.required]),
+		mailingAddressLine2: new FormControl(''),
+		mailingCity: new FormControl('', [FormControlValidators.required]),
+		mailingPostalCode: new FormControl('', [FormControlValidators.required]),
+		mailingProvince: new FormControl('', [FormControlValidators.required]),
+		mailingCountry: new FormControl('', [FormControlValidators.required]),
 	});
 
 	addressAutocompleteFields: AddressRetrieveResponse[] = [];
 
-	constructor(private formBuilder: FormBuilder) {}
+	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.form = this.formBuilder.group({
-			addressSelected: new FormControl(false, [Validators.requiredTrue]),
-			mailingAddressLine1: new FormControl('', [FormControlValidators.required]),
-			mailingAddressLine2: new FormControl(''),
-			mailingCity: new FormControl('', [FormControlValidators.required]),
-			mailingPostalCode: new FormControl('', [FormControlValidators.required]),
-			mailingProvince: new FormControl('', [FormControlValidators.required]),
-			mailingCountry: new FormControl('', [FormControlValidators.required]),
+		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
+			next: (loaded: LicenceModelSubject) => {
+				if (loaded.isLoaded) {
+					this.form.patchValue({
+						addressSelected: !!this.licenceApplicationService.licenceModel.mailingAddressLine1,
+						mailingAddressLine1: this.licenceApplicationService.licenceModel.mailingAddressLine1,
+						mailingAddressLine2: this.licenceApplicationService.licenceModel.mailingAddressLine2,
+						mailingCity: this.licenceApplicationService.licenceModel.mailingCity,
+						mailingPostalCode: this.licenceApplicationService.licenceModel.mailingPostalCode,
+						mailingProvince: this.licenceApplicationService.licenceModel.mailingProvince,
+						mailingCountry: this.licenceApplicationService.licenceModel.mailingCountry,
+					});
+				}
+			},
 		});
+	}
+
+	ngOnDestroy() {
+		this.licenceModelLoadedSubscription.unsubscribe();
 	}
 
 	onAddressAutocomplete(address: Address): void {
@@ -162,10 +185,7 @@ export class BusinessAddressComponent {
 	}
 
 	isFormValid(): boolean {
-		return true; // this.form.valid;
-	}
-
-	clearCurrentData(): void {
-		this.form.reset();
+		this.form.markAllAsTouched();
+		return this.form.valid;
 	}
 }

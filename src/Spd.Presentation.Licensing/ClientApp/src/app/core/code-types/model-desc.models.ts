@@ -1,4 +1,4 @@
-import { GenderCode } from 'src/app/api/models';
+import { BooleanTypeCode, GenderCode } from 'src/app/api/models';
 import { CountryTypeCode } from './country-type.model';
 
 // export interface SelectOptions<k = string | number | boolean> {
@@ -178,10 +178,10 @@ export const DogDocumentTypes: SelectOptions[] = [
 	},
 ];
 
-// export const BooleanTypes: SelectOptions[] = [
-// 	{ desc: 'No', code: BooleanTypeCode.No },
-// 	{ desc: 'Yes', code: BooleanTypeCode.Yes },
-// ];
+export const BooleanTypes: SelectOptions[] = [
+	{ desc: 'No', code: BooleanTypeCode.No },
+	{ desc: 'Yes', code: BooleanTypeCode.Yes },
+];
 
 export const ProofOfCanadianCitizenshipTypes: SelectOptions[] = [
 	{ desc: 'Birth Certificate', code: ProofOfCanadianCitizenshipCode.BirthCertificate },
@@ -266,7 +266,7 @@ export const SwlCategoryTypes: SelectOptions[] = [
 	{ desc: 'Security Guard - Under Supervision', code: SwlCategoryTypeCode.SecurityGuardUnderSupervision },
 ];
 
-export const PoliceOfficerTypes: SelectOptions[] = [
+export const PoliceOfficerRoleTypes: SelectOptions[] = [
 	{ desc: 'Auxiliary or Reserve Constable', code: PoliceOfficerRoleCode.AuxiliaryorReserveConstable },
 	{ desc: 'Corrections Officer', code: PoliceOfficerRoleCode.CorrectionsOfficer },
 	{ desc: 'Court Appointed Bailiff', code: PoliceOfficerRoleCode.CourtAppointedBailiff },
