@@ -185,6 +185,7 @@ export class MailingAddressComponent implements OnInit, OnDestroy, LicenceFormSt
 	}
 
 	isFormValid(): boolean {
+		this.form.markAllAsTouched();
 		return this.form.valid;
 	}
 }

@@ -155,7 +155,7 @@ export class LicenceModel {
 	residentialPostalCode?: string | null = null;
 	residentialProvince?: string | null = null;
 	residentialCountry?: string | null = null;
-	isMailingTheSame?: boolean | null = null;
+	isMailingTheSameAsResidential?: boolean | null = null;
 	mailingAddressLine1?: string | null = null;
 	mailingAddressLine2?: string | null = null;
 	mailingCity?: string | null = null;
@@ -320,6 +320,7 @@ export class LicenceApplicationService {
 					photoOfYourselfAttachments: [myFile],
 					contactEmailAddress: 'contact-test@test.gov.bc.ca',
 					contactPhoneNumber: '2508896363',
+					isMailingTheSameAsResidential: false,
 					residentialAddressLine1: '123-720 Commonwealth Rd',
 					residentialAddressLine2: '',
 					residentialCity: 'Kelowna',
@@ -332,7 +333,6 @@ export class LicenceApplicationService {
 					mailingCountry: 'Canada',
 					mailingPostalCode: 'M6J 3P3',
 					mailingProvince: 'Ontario',
-					isMailingTheSame: false,
 					swlCategoryList: [
 						{ desc: 'Armoured Car Guard', code: SwlCategoryTypeCode.ArmouredCarGuard },
 						{ desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
@@ -463,6 +463,13 @@ export class LicenceApplicationService {
 					useBcServicesCardPhoto: BooleanTypeCode.Yes,
 					contactEmailAddress: 'contact-test2@test.gov.bc.ca',
 					contactPhoneNumber: '2508896366',
+					isMailingTheSameAsResidential: true,
+					residentialAddressLine1: '123-720 Commonwealth Rd',
+					residentialAddressLine2: '',
+					residentialCity: 'Kelowna',
+					residentialCountry: 'Canada',
+					residentialPostalCode: 'V4V 1R8',
+					residentialProvince: 'British Columbia',
 					swlCategoryList: [{ desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard }],
 					licenceCategorySecurityGuard: {
 						attachments: [myFile],

@@ -110,7 +110,7 @@ import {
 						</div>
 						<div class="row">
 							<div class="offset-lg-2 col-lg-8 col-md-6 col-sm-12">
-								<mat-checkbox formControlName="isMailingTheSame">
+								<mat-checkbox formControlName="isMailingTheSameAsResidential">
 									My residential address and mailing address are the same
 								</mat-checkbox>
 							</div>
@@ -136,7 +136,7 @@ export class ResidentialAddressComponent implements OnInit, OnDestroy, LicenceFo
 		residentialPostalCode: new FormControl('', [FormControlValidators.required]),
 		residentialProvince: new FormControl('', [FormControlValidators.required]),
 		residentialCountry: new FormControl('', [FormControlValidators.required]),
-		isMailingTheSame: new FormControl(),
+		isMailingTheSameAsResidential: new FormControl(),
 	});
 
 	addressAutocompleteFields: AddressRetrieveResponse[] = [];
@@ -155,7 +155,7 @@ export class ResidentialAddressComponent implements OnInit, OnDestroy, LicenceFo
 						residentialPostalCode: this.licenceApplicationService.licenceModel.residentialPostalCode,
 						residentialProvince: this.licenceApplicationService.licenceModel.residentialProvince,
 						residentialCountry: this.licenceApplicationService.licenceModel.residentialCountry,
-						isMailingTheSame: this.licenceApplicationService.licenceModel.isMailingTheSame,
+						isMailingTheSameAsResidential: this.licenceApplicationService.licenceModel.isMailingTheSameAsResidential,
 					});
 				}
 			},
@@ -164,15 +164,6 @@ export class ResidentialAddressComponent implements OnInit, OnDestroy, LicenceFo
 
 	ngOnDestroy() {
 		this.licenceModelLoadedSubscription.unsubscribe();
-	}
-
-	isFormValid(): boolean {
-		this.form.markAllAsTouched();
-		return this.form.valid;
-	}
-
-	getDataToSave(): any {
-		return this.form.value;
 	}
 
 	onAddressAutocomplete(address: Address): void {
@@ -207,15 +198,12 @@ export class ResidentialAddressComponent implements OnInit, OnDestroy, LicenceFo
 		});
 	}
 
-	// getDataToSave(): any {
-	// 	return this.form.value;
-	// }
+	isFormValid(): boolean {
+		this.form.markAllAsTouched();
+		return this.form.valid;
+	}
 
-	// isFormValid(): boolean {
-	// 	return this.form.valid;
-	// }
-
-	// clearCurrentData(): void {
-	// 	this.form.reset();
-	// }
+	getDataToSave(): any {
+		return this.form.value;
+	}
 }

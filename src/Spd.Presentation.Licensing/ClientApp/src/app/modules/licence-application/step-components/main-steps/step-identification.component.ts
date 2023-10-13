@@ -145,7 +145,7 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 				</div>
 			</mat-step>
 
-			<mat-step>
+			<mat-step *ngIf="showMailingAddressStep">
 				<app-mailing-address></app-mailing-address>
 
 				<div class="row mt-4">
@@ -196,6 +196,7 @@ export class StepIdentificationComponent {
 	readonly STEP_CONTACT_INFORMATION = '9';
 
 	showAdditionalGovermentIdStep = true;
+	showMailingAddressStep = true;
 
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
@@ -246,6 +247,8 @@ export class StepIdentificationComponent {
 				this.licenceApplicationService.licenceModel.proofOfAbility ==
 					ProofOfAbilityToWorkInCanadaCode.ValidPermanentResidentCard
 			);
+		} else if (formNumber == this.STEP_RESIDENTIAL_ADDRESS) {
+			this.showMailingAddressStep = !this.licenceApplicationService.licenceModel.isMailingTheSameAsResidential;
 		}
 
 		this.childstepper.next();
