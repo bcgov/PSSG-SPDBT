@@ -51,10 +51,12 @@ import { StepReviewComponent } from '../step-components/main-steps/step-review.c
 
 							<mat-step completed="true">
 								<ng-template matStepLabel>Review and Confirm</ng-template>
-								<app-step-review
-									(previousStepperStep)="onPreviousStepperStep(stepper)"
-									(nextStepperStep)="onNextStepperStep(stepper)"
-								></app-step-review>
+								<ng-template matStepContent>
+									<app-step-review
+										(previousStepperStep)="onPreviousStepperStep(stepper)"
+										(nextStepperStep)="onNextStepperStep(stepper)"
+									></app-step-review>
+								</ng-template>
 							</mat-step>
 						</ng-container>
 

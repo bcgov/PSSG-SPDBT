@@ -438,6 +438,7 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy {
 
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
+
 		this.nextStepperStep.emit(true);
 	}
 
@@ -589,9 +590,7 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy {
 			}
 		});
 
-		const licenceModel = this.licenceApplicationService.licenceModel;
-		this.licenceApplicationService.licenceModel = { ...licenceModel, ...stepData };
-
+		this.licenceApplicationService.notifyModelChanged(stepData);
 		this.licenceApplicationService.notifyUpdateFlags();
 		this.licenceApplicationService.notifyCategoryData();
 
