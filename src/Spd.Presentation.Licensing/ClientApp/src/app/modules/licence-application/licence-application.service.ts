@@ -58,23 +58,56 @@ export class LicenceModel {
 	expiredLicenceNumber?: string | null = null;
 	expiryDate?: string | null = null;
 	swlCategoryList: SelectOptions[] = [];
-	licenceCategoryArmouredCarGuard?: {};
+	licenceCategoryArmouredCarGuard?: {
+		documentExpiryDate?: string | null;
+		attachments?: Array<File>;
+	};
 	licenceCategoryBodyArmourSales?: {};
 	licenceCategoryyClosedCircuitTelevisionInstaller?: {};
 	licenceCategoryElectronicLockingDeviceInstaller?: {};
-	licenceCategoryFireInvestigator?: {};
+	licenceCategoryFireInvestigator?: {
+		fireinvestigatorcertificateattachments?: Array<File>;
+		fireinvestigatorletterattachments?: Array<File>;
+	};
 	licenceCategoryLocksmithUnderSupervision?: {};
-	licenceCategoryLocksmith?: {};
-	licenceCategoryPrivateInvestigatorUnderSupervision?: {};
-	licenceCategoryPrivateInvestigator?: {};
+	licenceCategoryLocksmith?: {
+		requirement?: string | null;
+		attachments?: Array<File>;
+	};
+	licenceCategoryPrivateInvestigatorUnderSupervision?: {
+		requirement?: string | null;
+		// documentExpiryDate?: string | null;
+		attachments?: Array<File>;
+		trainingattachments?: Array<File>;
+	};
+	licenceCategoryPrivateInvestigator?: {
+		requirement?: string | null;
+		training?: string | null;
+		// documentExpiryDate?: string | null;
+		attachments?: Array<File>;
+		trainingattachments?: Array<File>;
+		fireinvestigatorcertificateattachments?: Array<File>;
+		fireinvestigatorletterattachments?: Array<File>;
+		addFireInvestigator?: BooleanTypeCode | null;
+	};
 	licenceCategorySecurityAlarmInstallerUnderSupervision?: {};
-	licenceCategorySecurityAlarmInstaller?: {};
+	licenceCategorySecurityAlarmInstaller?: {
+		requirement?: string | null;
+		attachments?: Array<File>;
+	};
 	licenceCategorySecurityAlarmMonitor?: {};
 	licenceCategorySecurityAlarmResponse?: {};
 	licenceCategorySecurityAlarmSales?: {};
-	licenceCategorySecurityConsultant?: {};
+	licenceCategorySecurityConsultant?: {
+		requirement?: string | null;
+		attachments?: Array<File>;
+		resumeattachments?: Array<File>;
+	};
 	licenceCategorySecurityGuardUnderSupervision?: {};
-	licenceCategorySecurityGuard?: {};
+	licenceCategorySecurityGuard?: {
+		requirement?: string | null;
+		attachments?: Array<File>;
+	};
 	useDogsOrRestraints: string | null = null;
 	isDogsPurposeProtection?: boolean | null = false;
 	isDogsPurposeDetectionDrugs?: boolean | null = false;
@@ -116,6 +149,19 @@ export class LicenceModel {
 	photoOfYourselfAttachments?: Array<File> = [];
 	contactEmailAddress?: string | null = null;
 	contactPhoneNumber?: string | null = null;
+	residentialAddressLine1?: string | null = null;
+	residentialAddressLine2?: string | null = null;
+	residentialCity?: string | null = null;
+	residentialPostalCode?: string | null = null;
+	residentialProvince?: string | null = null;
+	residentialCountry?: string | null = null;
+	isMailingTheSameAsResidential?: boolean | null = null;
+	mailingAddressLine1?: string | null = null;
+	mailingAddressLine2?: string | null = null;
+	mailingCity?: string | null = null;
+	mailingPostalCode?: string | null = null;
+	mailingProvince?: string | null = null;
+	mailingCountry?: string | null = null;
 }
 
 export class AliasModel {
@@ -139,6 +185,7 @@ export class AliasModel {
 export class LicenceModelSubject {
 	isLoaded?: boolean = false;
 	isSetFlags?: boolean = false;
+	isUpdated?: boolean = false;
 	isCategoryLoaded?: boolean = false;
 }
 
@@ -250,7 +297,10 @@ export class LicenceApplicationService {
 					hasCriminalHistory: BooleanTypeCode.No,
 					proofOfFingerprintAttachments: [myFile],
 					previousNameFlag: BooleanTypeCode.Yes,
-					aliases: [{ givenName: 'Abby', middleName1: '', middleName2: '', surname: 'Anderson' }],
+					aliases: [
+						{ givenName: 'Abby', middleName1: 'Betty', middleName2: 'Meg', surname: 'Brown' },
+						{ givenName: 'Abby', middleName1: '', middleName2: '', surname: 'Anderson' },
+					],
 					isBornInCanada: BooleanTypeCode.Yes,
 					proofOfCitizenship: ProofOfCanadianCitizenshipCode.BirthCertificate,
 					proofOfAbility: null,
@@ -270,13 +320,87 @@ export class LicenceApplicationService {
 					photoOfYourselfAttachments: [myFile],
 					contactEmailAddress: 'contact-test@test.gov.bc.ca',
 					contactPhoneNumber: '2508896363',
+					isMailingTheSameAsResidential: false,
+					residentialAddressLine1: '123-720 Commonwealth Rd',
+					residentialAddressLine2: '',
+					residentialCity: 'Kelowna',
+					residentialCountry: 'Canada',
+					residentialPostalCode: 'V4V 1R8',
+					residentialProvince: 'British Columbia',
+					mailingAddressLine1: '777-798 Richmond St W',
+					mailingAddressLine2: '',
+					mailingCity: 'Toronto',
+					mailingCountry: 'Canada',
+					mailingPostalCode: 'M6J 3P3',
+					mailingProvince: 'Ontario',
 					swlCategoryList: [
-						{ desc: 'Body Armour Sales', code: SwlCategoryTypeCode.BodyArmourSales },
+						{ desc: 'Armoured Car Guard', code: SwlCategoryTypeCode.ArmouredCarGuard },
 						{ desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
+
+						// { desc: 'Armoured Car Guard', code: SwlCategoryTypeCode.ArmouredCarGuard },
+						// { desc: 'Body Armour Sales', code: SwlCategoryTypeCode.BodyArmourSales },
+						// { desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
+						// { desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
+						// { desc: 'Fire Investigator', code: SwlCategoryTypeCode.FireInvestigator },
+						// { desc: 'Locksmith', code: SwlCategoryTypeCode.Locksmith },
+						// { desc: 'Locksmith - Under Supervision', code: SwlCategoryTypeCode.LocksmithUnderSupervision },
+						// { desc: 'Private Investigator', code: SwlCategoryTypeCode.PrivateInvestigator },
+						// {
+						// 	desc: 'Private Investigator - Under Supervision',
+						// 	code: SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision,
+						// },
+						// { desc: 'Security Alarm Installer', code: SwlCategoryTypeCode.SecurityAlarmInstaller },
+						// {
+						// 	desc: 'Security Alarm Installer - Under Supervision',
+						// 	code: SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
+						// },
+						// { desc: 'Security Alarm Monitor', code: SwlCategoryTypeCode.SecurityAlarmMonitor },
+						// { desc: 'Security Alarm Response', code: SwlCategoryTypeCode.SecurityAlarmResponse },
+						// { desc: 'Security Alarm Sales', code: SwlCategoryTypeCode.SecurityAlarmSales },
+						// { desc: 'Security Consultant', code: SwlCategoryTypeCode.SecurityConsultant },
+						// { desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
+						// { desc: 'Security Guard - Under Supervision', code: SwlCategoryTypeCode.SecurityGuardUnderSupervision },
 					],
 					licenceCategorySecurityGuard: {
 						attachments: [myFile],
 						requirement: 'a',
+					},
+					licenceCategoryArmouredCarGuard: {
+						documentExpiryDate: '2009-10-07T00:00:00+00:00',
+						attachments: [myFile],
+					},
+
+					licenceCategoryFireInvestigator: {
+						fireinvestigatorcertificateattachments: [myFile],
+						fireinvestigatorletterattachments: [myFile],
+					},
+					licenceCategoryLocksmith: {
+						requirement: 'a',
+						attachments: [myFile],
+					},
+					licenceCategoryPrivateInvestigatorUnderSupervision: {
+						requirement: 'a',
+						// documentExpiryDate: '2009-10-07T00:00:00+00:00',
+						attachments: [myFile],
+						trainingattachments: [myFile],
+					},
+					licenceCategoryPrivateInvestigator: {
+						requirement: 'a',
+						training: 'a',
+						// documentExpiryDate: '2009-10-07T00:00:00+00:00',
+						attachments: [myFile],
+						trainingattachments: [myFile],
+						fireinvestigatorcertificateattachments: [myFile],
+						fireinvestigatorletterattachments: [myFile],
+					},
+					licenceCategorySecurityAlarmInstaller: {
+						requirement: 'a',
+						attachments: [myFile],
+					},
+					licenceCategorySecurityConsultant: {
+						requirement: 'a',
+						attachments: [myFile],
+						resumeattachments: [myFile],
 					},
 				};
 
@@ -339,6 +463,13 @@ export class LicenceApplicationService {
 					useBcServicesCardPhoto: BooleanTypeCode.Yes,
 					contactEmailAddress: 'contact-test2@test.gov.bc.ca',
 					contactPhoneNumber: '2508896366',
+					isMailingTheSameAsResidential: true,
+					residentialAddressLine1: '123-720 Commonwealth Rd',
+					residentialAddressLine2: '',
+					residentialCity: 'Kelowna',
+					residentialCountry: 'Canada',
+					residentialPostalCode: 'V4V 1R8',
+					residentialProvince: 'British Columbia',
 					swlCategoryList: [{ desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard }],
 					licenceCategorySecurityGuard: {
 						attachments: [myFile],
@@ -632,21 +763,35 @@ export class LicenceApplicationService {
 		delete this.licenceModel.licenceCategorySecurityGuard;
 	}
 
+	notifyModelChanged(updatedData: any): void {
+		const licenceModel = { ...this.licenceModel, ...updatedData };
+		// this.cleanLicenceModel(licenceModel);
+		this.licenceModel = { ...licenceModel };
+
+		console.log('notifyChanged', this.licenceModel);
+		this.licenceModelLoaded$.next({ isUpdated: true });
+	}
+
 	notifyLoaded(): void {
 		this.setFlags();
 		console.log('notifyLoaded', this.licenceModel);
-		this.licenceModelLoaded$.next({ isLoaded: true, isSetFlags: false });
+		this.licenceModelLoaded$.next({ isLoaded: true });
 	}
 
 	notifyUpdateFlags(): void {
 		this.setFlags();
 		console.log('notifyUpdateFlags', this.licenceModel);
-		this.licenceModelLoaded$.next({ isLoaded: false, isSetFlags: true });
+		this.licenceModelLoaded$.next({ isSetFlags: true });
 	}
 
 	notifyCategoryData(): void {
 		console.log('notifyCategoryData', this.licenceModel);
-		this.licenceModelLoaded$.next({ isLoaded: false, isSetFlags: false, isCategoryLoaded: true });
+		this.licenceModelLoaded$.next({ isCategoryLoaded: true });
+	}
+
+	private cleanLicenceModel(origLicenceModel: LicenceModel): LicenceModel {
+		//TODO when to clean model?
+		return origLicenceModel;
 	}
 
 	private setFlags(): void {

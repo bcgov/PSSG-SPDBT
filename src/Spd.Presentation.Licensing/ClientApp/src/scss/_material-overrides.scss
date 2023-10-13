@@ -26,9 +26,22 @@ a {
   }
 }
 
+// EXPANSION HEADER
 .mat-expansion-panel-header {
-  background-color: var(--color-grey-lightest) !important;
+  background-color: var(--color-primary-lighter) !important;
 }
+
+.mat-expansion-panel-header-title {
+  // color: rgba(0, 0, 0, 0.87);
+  color: var(--color-primary-dark) !important;
+}
+
+// .mat-toolbar {
+//   background-color: var(--color-primary-lighter) !important;
+//   color: var(--color-primary-dark) !important;
+//   padding: 0;
+
+// }
 
 // BUTTON TOGGLES
 .mat-button-toggle-checked {

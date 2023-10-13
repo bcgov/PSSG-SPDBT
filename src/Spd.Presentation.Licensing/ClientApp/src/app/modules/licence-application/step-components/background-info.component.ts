@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { BooleanTypeCode } from 'src/app/api/models';
-import { PoliceOfficerRoleCode, PoliceOfficerTypes } from 'src/app/core/code-types/model-desc.models';
+import { PoliceOfficerRoleCode, PoliceOfficerRoleTypes } from 'src/app/core/code-types/model-desc.models';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
@@ -69,7 +69,7 @@ import {
 									<div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
 										<mat-form-field>
 											<mat-select formControlName="officerRole">
-												<mat-option *ngFor="let item of policeOfficerTypes" [value]="item.code">
+												<mat-option *ngFor="let item of policeOfficerRoleTypes" [value]="item.code">
 													{{ item.desc }}
 												</mat-option>
 											</mat-select>
@@ -132,7 +132,7 @@ export class BackgroundInfoComponent implements OnInit, OnDestroy, LicenceFormSt
 	private licenceModelLoadedSubscription!: Subscription;
 	booleanTypeCodes = BooleanTypeCode;
 	policeOfficerRoleCodes = PoliceOfficerRoleCode;
-	policeOfficerTypes = PoliceOfficerTypes;
+	policeOfficerRoleTypes = PoliceOfficerRoleTypes;
 
 	matcher = new FormErrorStateMatcher();
 

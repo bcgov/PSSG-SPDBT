@@ -194,7 +194,17 @@ export class StepBackgroundComponent implements OnInit, OnDestroy {
 		this.childstepper.next();
 	}
 
-	private setStepData(): void {}
+	private setStepData(): void {
+		let stepData = {
+			...(this.policeBackgroundComponent ? this.policeBackgroundComponent.getDataToSave() : {}),
+			...(this.mentalHealthConditionsComponent ? this.mentalHealthConditionsComponent.getDataToSave() : {}),
+			...(this.criminalHistoryComponent ? this.criminalHistoryComponent.getDataToSave() : {}),
+			...(this.fingerprintsComponent ? this.fingerprintsComponent.getDataToSave() : {}),
+			...(this.backgroundInfoComponent ? this.backgroundInfoComponent.getDataToSave() : {}),
+		};
+
+		this.licenceApplicationService.notifyModelChanged(stepData);
+	}
 
 	private dirtyForm(step: string): boolean {
 		switch (step) {
@@ -206,8 +216,8 @@ export class StepBackgroundComponent implements OnInit, OnDestroy {
 				return this.criminalHistoryComponent.isFormValid();
 			case this.STEP_FINGERPRINTS:
 				return this.fingerprintsComponent.isFormValid();
-			// case  this.STEP_BACKGROUND_INFO:
-			// return this.backgroundInfoComponent.isFormValid();
+			case this.STEP_BACKGROUND_INFO:
+				return this.backgroundInfoComponent.isFormValid();
 		}
 		return false;
 	}

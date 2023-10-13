@@ -15,7 +15,6 @@ import { AdditionalGovIdComponent } from './step-components/additional-gov-id.co
 import { AliasesComponent } from './step-components/aliases.component';
 import { BackgroundInfoComponent } from './step-components/background-info.component';
 import { BcDriverLicenceComponent } from './step-components/bc-driver-licence.component';
-import { BusinessAddressComponent } from './step-components/business-contact-information.component';
 import { ChecklistComponent } from './step-components/checklist.component';
 import { CitizenshipComponent } from './step-components/citizenship.component';
 import { ConsentAndDeclarationComponent } from './step-components/consent-and-declaration.component';
@@ -45,6 +44,7 @@ import { LicenceCategorySecurityGuardComponent } from './step-components/licence
 import { LicenceCategoryComponent } from './step-components/licence-category.component';
 import { LicenceExpiredComponent } from './step-components/licence-expired.component';
 import { LicenceTermComponent } from './step-components/licence-term.component';
+import { MailingAddressComponent } from './step-components/mailing-address.component';
 import { StepBackgroundComponent } from './step-components/main-steps/step-background.component';
 import { StepIdentificationComponent } from './step-components/main-steps/step-identification.component';
 import { StepLicenceSelectionComponent } from './step-components/main-steps/step-licence-selection.component';
@@ -78,7 +78,7 @@ import { SummaryReviewComponent } from './step-components/summary-review.compone
 		PhotoComponent,
 		ContactInformationComponent,
 		ResidentialAddressComponent,
-		BusinessAddressComponent,
+		MailingAddressComponent,
 		LicenceTermComponent,
 		SummaryReviewComponent,
 		ConsentAndDeclarationComponent,
