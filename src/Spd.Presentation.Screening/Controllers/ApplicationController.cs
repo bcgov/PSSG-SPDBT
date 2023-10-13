@@ -364,8 +364,6 @@ namespace Spd.Presentation.Screening.Controllers
         [HttpPost]
         public async Task<ApplicationCreateResponse> AddApplication([FromForm][Required] CreateApplication createApplication, [FromRoute] Guid orgId)
         {
-            var token = Request.Headers["Authorization"];
-            _logger.LogDebug($"AddApplication token={token}");
 
             bool isPSSO = false;
 
@@ -400,7 +398,6 @@ namespace Spd.Presentation.Screening.Controllers
             if (!result.IsValid)
                 throw new ApiException(System.Net.HttpStatusCode.BadRequest, JsonSerializer.Serialize(result.Errors));
 
-            _logger.LogDebug($"AddApplication userId={userId}");
             if (isPSSO)
             {
                 return await _mediator.Send(new ApplicationCreateCommand(appCreateRequest, SpdConstants.BC_GOV_ORG_ID, Guid.Parse(userId), null));
