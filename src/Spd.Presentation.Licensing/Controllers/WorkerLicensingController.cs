@@ -1,7 +1,7 @@
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Spd.Manager.Cases.License;
+using Spd.Manager.Cases.Licence;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
@@ -24,7 +24,7 @@ namespace Spd.Presentation.Licensing.Controllers
 
         [Route("api/licenses")]
         [HttpPost]
-        public async Task<WorkerLicenseCreateResponse> CreateWorkerLicense([FromForm][Required] WorkerLicenseCreateRequest createApplication)
+        public async Task<WorkerLicenceCreateResponse> CreateWorkerLicense([FromForm][Required] WorkerLicenceCreateRequest createApplication)
         {
             var userId = this.HttpContext.User.GetUserId();
             if (userId == null) throw new ApiException(System.Net.HttpStatusCode.Unauthorized);
