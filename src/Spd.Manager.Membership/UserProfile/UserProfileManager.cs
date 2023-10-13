@@ -117,7 +117,6 @@ namespace Spd.Manager.Membership.UserProfile
         public async Task<ApplicantProfileResponse> Handle(GetApplicantProfileQuery request, CancellationToken ct)
         {
             var result = await _idRepository.Query(new IdentityQry(request.BcscSub, null, IdentityProviderTypeEnum.BcServicesCard), ct);
-
             return _mapper.Map<ApplicantProfileResponse>(result.Items.FirstOrDefault());
         }
 

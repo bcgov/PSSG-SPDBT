@@ -58,8 +58,7 @@ namespace Spd.Presentation.Screening
                 {
                     fv.RegisterValidatorsFromAssemblyContaining<FluentValidationEntry>();
                     fv.ImplicitlyValidateChildProperties = true;
-                });
-            ;
+                });           
 
             services.AddGoogleRecaptcha(configuration);
             services.AddValidatorsFromAssemblies(assemblies);

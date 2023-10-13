@@ -1,11 +1,50 @@
+using Microsoft.Dynamics.CRM;
+using Microsoft.Extensions.Configuration;
+using Spd.Utilities.Address;
+using Spd.Utilities.BCeIDWS;
+using Spd.Utilities.Dynamics;
+using Spd.Utilities.FileStorage;
+using Spd.Utilities.Hosting;
+using Spd.Utilities.LogonUser;
+using Spd.Utilities.Payment;
+using Spd.Utilities.TempFileStorage;
+using System.Configuration;
+using System.Reflection;
+using System.Security.Principal;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+string assembliesPrefix = "Spd";
+
+Assembly[] assemblies = Directory.GetFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty, "*.dll", SearchOption.TopDirectoryOnly)
+     .Where(assembly =>
+     {
+         var assemblyName = Path.GetFileName(assembly);
+         return !assemblyName.StartsWith("System.") && !assemblyName.StartsWith("Microsoft.") && (string.IsNullOrEmpty(assembliesPrefix) || assemblyName.StartsWith(assembliesPrefix));
+     })
+     .Select(assembly => Assembly.LoadFrom(assembly))
+     .ToArray();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.ConfigureAuthentication(builder.Configuration);
+builder.Services.ConfigureAuthorization();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient<IPrincipal>(provider => provider.GetService<IHttpContextAccessor>()?.HttpContext?.User);
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies));
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddAutoMapper(assemblies);
+builder.Services.AddTempFileStorageService();
+builder.Services.AddFileStorageProxy(builder.Configuration);
+builder.Services
+  .AddBCeIDService(builder.Configuration)
+  .AddPaymentService(builder.Configuration)
+  .AddDynamicsProxy(builder.Configuration)
+  .AddAddressAutoComplete(builder.Configuration);
+builder.Services.ConfigureComponentServices(builder.Configuration, builder.Environment, assemblies);
 
 var app = builder.Build();
 
@@ -23,7 +62,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller}/{action=Index}/{id?}"); 
+    pattern: "{controller}/{action=Index}/{id?}");
 app.MapFallbackToFile("index.html");
 
 app.Run();
