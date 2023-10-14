@@ -144,25 +144,24 @@ export class StepBackgroundComponent implements OnInit, OnDestroy {
 		this.licenceModelLoadedSubscription = this.licenceModelLoadedSubscription =
 			this.licenceApplicationService.licenceModelLoaded$.subscribe({
 				next: (loaded: LicenceModelSubject) => {
-					console.log(
-						'onInit StepBackgroundComponent2',
-						this.licenceApplicationService.licenceModel.applicationTypeCode,
-						this.showStepPoliceBackground
-					);
-
-					if (loaded.isLoaded || loaded.isSetFlags) {
-						this.showStepPoliceBackground =
-							this.licenceApplicationService.licenceModel.showStepPoliceBackground ?? true;
-						this.showStepMentalHealth = this.licenceApplicationService.licenceModel.showStepMentalHealth ?? true;
-						this.showStepCriminalHistory = this.licenceApplicationService.licenceModel.showStepCriminalHistory ?? true;
-						this.showStepFingerprints = this.licenceApplicationService.licenceModel.showStepFingerprints ?? true;
-						// this.showStepBackgroundInfo = this.licenceApplicationService.licenceModel.showStepBackgroundInfo ?? true;
-					}
-					console.log(
-						'onInit StepBackgroundComponent3',
-						this.licenceApplicationService.licenceModel.applicationTypeCode,
-						this.showStepPoliceBackground
-					);
+					// console.log(
+					// 	'onInit StepBackgroundComponent2',
+					// 	this.licenceApplicationService.licenceModel.applicationTypeCode,
+					// 	this.showStepPoliceBackground
+					// );
+					// if (loaded.isLoaded || loaded.isSetFlags) {
+					// 	this.showStepPoliceBackground =
+					// 		this.licenceApplicationService.licenceModel.showStepPoliceBackground ?? true;
+					// 	this.showStepMentalHealth = this.licenceApplicationService.licenceModel.showStepMentalHealth ?? true;
+					// 	this.showStepCriminalHistory = this.licenceApplicationService.licenceModel.showStepCriminalHistory ?? true;
+					// 	this.showStepFingerprints = this.licenceApplicationService.licenceModel.showStepFingerprints ?? true;
+					// 	// this.showStepBackgroundInfo = this.licenceApplicationService.licenceModel.showStepBackgroundInfo ?? true;
+					// }
+					// console.log(
+					// 	'onInit StepBackgroundComponent3',
+					// 	this.licenceApplicationService.licenceModel.applicationTypeCode,
+					// 	this.showStepPoliceBackground
+					// );
 				},
 			});
 	}

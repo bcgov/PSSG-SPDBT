@@ -169,12 +169,12 @@ export class BackgroundInfoComponent implements OnInit, OnDestroy, LicenceFormSt
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: LicenceModelSubject) => {
 				if (loaded.isLoaded) {
-					this.form.patchValue({
-						isPoliceOrPeaceOfficer: this.licenceApplicationService.licenceModel.isPoliceOrPeaceOfficer,
-						officerRole: this.licenceApplicationService.licenceModel.officerRole,
-						otherOfficerRole: this.licenceApplicationService.licenceModel.otherOfficerRole,
-						letterOfNoConflictAttachments: this.licenceApplicationService.licenceModel.letterOfNoConflictAttachments,
-					});
+					// this.form.patchValue({
+					// 	isPoliceOrPeaceOfficer: this.licenceApplicationService.licenceModel.isPoliceOrPeaceOfficer,
+					// 	officerRole: this.licenceApplicationService.licenceModel.officerRole,
+					// 	otherOfficerRole: this.licenceApplicationService.licenceModel.otherOfficerRole,
+					// 	letterOfNoConflictAttachments: this.licenceApplicationService.licenceModel.letterOfNoConflictAttachments,
+					// });
 				}
 			},
 		});

@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SwlTypeCode } from 'src/app/core/code-types/model-desc.models';
@@ -124,6 +125,8 @@ export class LicenceSelectionComponent implements OnInit, OnDestroy {
 	isImagesLoaded = false;
 	imagePaths = [this.image1, this.image2, this.image3, this.image4];
 
+	form: FormGroup = this.licenceApplicationService.licenceTypeFormGroup;
+
 	constructor(private router: Router, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
@@ -134,10 +137,10 @@ export class LicenceSelectionComponent implements OnInit, OnDestroy {
 
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: LicenceModelSubject) => {
-				console.log('loaded', loaded);
-				if (loaded.isLoaded) {
-					this.licenceTypeCode = this.licenceApplicationService.licenceModel.licenceTypeCode;
-				}
+				// console.log('loaded', loaded);
+				// if (loaded.isLoaded) {
+				// 	this.licenceTypeCode = this.licenceApplicationService.licenceModel.licenceTypeCode;
+				// }
 			},
 		});
 
@@ -157,21 +160,23 @@ export class LicenceSelectionComponent implements OnInit, OnDestroy {
 
 	onStepNext(): void {
 		if (this.isFormValid()) {
-			this.licenceApplicationService.licenceModel.licenceTypeCode = this.licenceTypeCode;
+			// this.licenceApplicationService.licenceModel.licenceTypeCode = this.licenceTypeCode;
 			this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LICENCE_TYPE));
 		}
 	}
 
 	onLicenceTypeChange(_val: SwlTypeCode) {
+		this.form.patchValue({ licenceTypeCode: _val });
 		this.licenceTypeCode = _val;
 		const isValid = this.isFormValid();
 		this.isDirtyAndInvalid = !isValid;
 	}
 
 	isFormValid(): boolean {
-		const isValid = !!this.licenceTypeCode;
-		this.isDirtyAndInvalid = !isValid;
-		return isValid;
+		// const isValid = !!this.licenceTypeCode;
+		// this.isDirtyAndInvalid = !isValid;
+
+		return this.form.valid;
 	}
 
 	// getDataToSave(): any {

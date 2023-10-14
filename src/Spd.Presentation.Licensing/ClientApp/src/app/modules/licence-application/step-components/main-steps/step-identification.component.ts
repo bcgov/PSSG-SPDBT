@@ -1,5 +1,6 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 import {
 	ProofOfAbilityToWorkInCanadaCode,
@@ -241,14 +242,23 @@ export class StepIdentificationComponent {
 		if (!isValid) return;
 
 		if (formNumber == this.STEP_CITIZENSHIP) {
+			const proofOfCitizenship = this.licenceApplicationService.licenceModelFormGroup.controls[
+				'citizenshipFormGroup'
+			].get('proofOfCitizenship') as FormControl;
+			const proofOfAbility = this.licenceApplicationService.licenceModelFormGroup.controls['citizenshipFormGroup'].get(
+				'proofOfAbility'
+			) as FormControl;
+
 			this.showAdditionalGovermentIdStep = !(
-				this.licenceApplicationService.licenceModel.proofOfCitizenship ==
-					ProofOfCanadianCitizenshipCode.ValidCanadianPassport ||
-				this.licenceApplicationService.licenceModel.proofOfAbility ==
-					ProofOfAbilityToWorkInCanadaCode.ValidPermanentResidentCard
+				proofOfCitizenship.value == ProofOfCanadianCitizenshipCode.ValidCanadianPassport ||
+				proofOfAbility.value == ProofOfAbilityToWorkInCanadaCode.ValidPermanentResidentCard
 			);
 		} else if (formNumber == this.STEP_RESIDENTIAL_ADDRESS) {
-			this.showMailingAddressStep = !this.licenceApplicationService.licenceModel.isMailingTheSameAsResidential;
+			const isMailingTheSameAsResidential = this.licenceApplicationService.licenceModelFormGroup.controls[
+				'residentialAddressFormGroup'
+			].get('isMailingTheSameAsResidential') as FormControl;
+
+			this.showMailingAddressStep = !isMailingTheSameAsResidential.value;
 		}
 
 		this.childstepper.next();
@@ -268,8 +278,8 @@ export class StepIdentificationComponent {
 
 		this.licenceApplicationService.notifyModelChanged(stepData);
 
-		console.log('IDENTIFICATION stepData', stepData);
-		console.log('IDENTIFICATION stepData2', this.licenceApplicationService.licenceModel);
+		// console.log('IDENTIFICATION stepData', stepData);
+		// console.log('IDENTIFICATION stepData2', this.licenceApplicationService.licenceModel);
 	}
 
 	private dirtyForm(step: string): boolean {

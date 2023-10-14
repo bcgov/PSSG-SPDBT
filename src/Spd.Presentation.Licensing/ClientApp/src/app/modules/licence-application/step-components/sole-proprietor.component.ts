@@ -2,11 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { BooleanTypeCode } from 'src/app/api/models';
-import {
-	LicenceApplicationService,
-	LicenceFormStepComponent,
-	LicenceModelSubject,
-} from '../licence-application.service';
+import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-sole-proprietor',
@@ -64,32 +60,32 @@ export class SoleProprietorComponent implements OnInit, OnDestroy, LicenceFormSt
 	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
-			next: (loaded: LicenceModelSubject) => {
-				if (loaded.isLoaded || loaded.isSetFlags) {
-					// TODO Review question would only apply to those who have a SWL w/ Sole Prop already,
-					// otherwise they would see the same question shown to New applicants
+		// this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
+		// 	next: (loaded: LicenceModelSubject) => {
+		// 		if (loaded.isLoaded || loaded.isSetFlags) {
+		// TODO Review question would only apply to those who have a SWL w/ Sole Prop already,
+		// otherwise they would see the same question shown to New applicants
 
-					// const isNewOrExpired =
-					// 	this.licenceApplicationService.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired;
-					// 	this.title = isNewOrExpired ? this.title_apply : this.title_renew;
-					// 	this.infoTitle = isNewOrExpired ? this.subtitle_apply : this.subtitle_renew;
-					this.title = this.title_apply;
-					this.infoTitle = this.subtitle_apply;
+		// const isNewOrExpired =
+		// 	this.licenceApplicationService.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired;
+		// 	this.title = isNewOrExpired ? this.title_apply : this.title_renew;
+		// 	this.infoTitle = isNewOrExpired ? this.subtitle_apply : this.subtitle_renew;
+		this.title = this.title_apply;
+		this.infoTitle = this.subtitle_apply;
 
-					console.log('this.form', this.form.value);
-					console.log('this.licenceModelFormGroup', this.licenceApplicationService.licenceModelFormGroup.value);
-					console.log(
-						'this.soleProprietorFormGroup',
-						this.licenceApplicationService.licenceModelFormGroup.controls['soleProprietorFormGroup'].value
-					);
+		console.log('this.form', this.form.value);
+		console.log('this.licenceModelFormGroup', this.licenceApplicationService.licenceModelFormGroup.value);
+		console.log(
+			'this.soleProprietorFormGroup',
+			this.licenceApplicationService.licenceModelFormGroup.controls['soleProprietorFormGroup'].value
+		);
 
-					// this.form.patchValue({
-					// 	isSoleProprietor: this.licenceApplicationService.licenceModelFormGroup.controls['isSoleProprietor'].value,
-					// });
-				}
-			},
-		});
+		// this.form.patchValue({
+		// 	isSoleProprietor: this.licenceApplicationService.licenceModelFormGroup.controls['isSoleProprietor'].value,
+		// });
+		// 		}
+		// 	},
+		// });
 	}
 
 	ngOnDestroy() {

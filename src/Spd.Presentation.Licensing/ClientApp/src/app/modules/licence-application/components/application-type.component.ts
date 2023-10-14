@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SwlApplicationTypeCode } from 'src/app/core/code-types/model-desc.models';
@@ -7,7 +7,7 @@ import { LicenceApplicationRoutes } from '../licence-application-routing.module'
 import { LicenceApplicationService, LicenceModelSubject } from '../licence-application.service';
 
 @Component({
-	selector: 'app-licence-type',
+	selector: 'app-application-type',
 	template: `
 		<section class="step-section p-3">
 			<div class="step">
@@ -96,15 +96,16 @@ import { LicenceApplicationService, LicenceModelSubject } from '../licence-appli
 	`,
 	styles: [],
 })
-export class LicenceTypeComponent implements OnInit, OnDestroy {
+export class ApplicationTypeComponent implements OnInit, OnDestroy {
 	private licenceModelLoadedSubscription!: Subscription;
 
 	applicationTypeCodes = SwlApplicationTypeCode;
 	isDirtyAndInvalid = false;
 
-	form: FormGroup = this.formBuilder.group({
-		applicationTypeCode: new FormControl(null, [Validators.required]),
-	});
+	form: FormGroup = this.licenceApplicationService.applicationTypeFormGroup;
+	//  this.formBuilder.group({
+	// 	applicationTypeCode: new FormControl(null, [Validators.required]),
+	// });
 
 	constructor(
 		private formBuilder: FormBuilder,
@@ -120,13 +121,13 @@ export class LicenceTypeComponent implements OnInit, OnDestroy {
 
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: LicenceModelSubject) => {
-				console.log('loaded', loaded);
-				if (loaded.isLoaded) {
-					this.form.patchValue({
-						applicationTypeCode:
-							this.licenceApplicationService.licenceModelFormGroup.controls['applicationTypeCode'].value,
-					});
-				}
+				// console.log('loaded', loaded);
+				// if (loaded.isLoaded) {
+				// 	this.form.patchValue({
+				// 		applicationTypeCode:
+				// 			this.licenceApplicationService.licenceModelFormGroup.controls['applicationTypeCode'].value,
+				// 	});
+				// }
 			},
 		});
 	}
@@ -153,7 +154,7 @@ export class LicenceTypeComponent implements OnInit, OnDestroy {
 	}
 
 	updateDataToSave(): void {
-		this.licenceApplicationService.licenceModel.applicationTypeCode = this.form.value.applicationTypeCode;
+		// this.licenceApplicationService.licenceModel.applicationTypeCode = this.form.value.applicationTypeCode;
 		this.licenceApplicationService.notifyUpdateFlags();
 	}
 }

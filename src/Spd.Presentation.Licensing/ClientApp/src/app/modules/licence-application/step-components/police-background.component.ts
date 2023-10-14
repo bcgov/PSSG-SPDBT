@@ -5,11 +5,7 @@ import { BooleanTypeCode } from 'src/app/api/models';
 import { PoliceOfficerRoleCode, PoliceOfficerRoleTypes } from 'src/app/core/code-types/model-desc.models';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import {
-	LicenceApplicationService,
-	LicenceFormStepComponent,
-	LicenceModelSubject,
-} from '../licence-application.service';
+import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-police-background',
@@ -184,50 +180,50 @@ export class PoliceBackgroundComponent implements OnInit, OnDestroy, LicenceForm
 	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
-			next: (loaded: LicenceModelSubject) => {
-				console.log(
-					'PoliceBackgroundComponent',
-					loaded,
-					this.licenceApplicationService.licenceModel.applicationTypeCode
-				); //|| loaded.isSetFlags
+		// this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
+		// 	next: (loaded: LicenceModelSubject) => {
+		// 		// console.log(
+		// 		// 	'PoliceBackgroundComponent',
+		// 		// 	loaded,
+		// 		// 	this.licenceApplicationService.licenceModel.applicationTypeCode
+		// 		// ); //|| loaded.isSetFlags
 
-				if (loaded.isLoaded) {
-					// if (this.licenceApplicationService.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired) {
-					this.title = this.title_confirm;
-					this.subtitle = this.subtitle_auth_new;
-					// } else {
-					// 	this.title = this.title_view;
-					// 	this.subtitle = this.subtitle_unauth_renew_update;
-					// }
+		// 		if (loaded.isLoaded) {
+		// if (this.licenceApplicationService.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired) {
+		this.title = this.title_confirm;
+		this.subtitle = this.subtitle_auth_new;
+		// } else {
+		// 	this.title = this.title_view;
+		// 	this.subtitle = this.subtitle_unauth_renew_update;
+		// }
 
-					// this.form.patchValue({
-					// 	isPoliceOrPeaceOfficer: this.licenceApplicationService.licenceModel.isPoliceOrPeaceOfficer,
-					// 	officerRole: this.licenceApplicationService.licenceModel.officerRole,
-					// 	otherOfficerRole: this.licenceApplicationService.licenceModel.otherOfficerRole,
-					// 	letterOfNoConflictAttachments: this.licenceApplicationService.licenceModel.letterOfNoConflictAttachments,
-					// });
+		// this.form.patchValue({
+		// 	isPoliceOrPeaceOfficer: this.licenceApplicationService.licenceModel.isPoliceOrPeaceOfficer,
+		// 	officerRole: this.licenceApplicationService.licenceModel.officerRole,
+		// 	otherOfficerRole: this.licenceApplicationService.licenceModel.otherOfficerRole,
+		// 	letterOfNoConflictAttachments: this.licenceApplicationService.licenceModel.letterOfNoConflictAttachments,
+		// });
 
-					// this.isViewOnlyPoliceOrPeaceOfficer =
-					// 	this.licenceApplicationService.licenceModel.isViewOnlyPoliceOrPeaceOfficer ?? false;
+		// this.isViewOnlyPoliceOrPeaceOfficer =
+		// 	this.licenceApplicationService.licenceModel.isViewOnlyPoliceOrPeaceOfficer ?? false;
 
-					// if (this.isViewOnlyPoliceOrPeaceOfficer) {
-					// 	if (this.licenceApplicationService.licenceModel.isPoliceOrPeaceOfficer == BooleanTypeCode.No) {
-					// 		this.policeOfficerSummaryText = 'I am not a Police Officer or Peace Officer';
-					// 	} else if (this.licenceApplicationService.licenceModel.isPoliceOrPeaceOfficer == BooleanTypeCode.Yes) {
-					// 		if (this.licenceApplicationService.licenceModel.officerRole == PoliceOfficerRoleCode.Other) {
-					// 			this.policeOfficerSummaryText = `I am a ${this.licenceApplicationService.licenceModel.otherOfficerRole}`;
-					// 		} else {
-					// 			const desc = PoliceOfficerRoleTypes.find(
-					// 				(item) => item.code == this.licenceApplicationService.licenceModel.officerRole
-					// 			)?.desc;
-					// 			this.policeOfficerSummaryText = `I am a ${desc}`;
-					// 		}
-					// 	}
-					// }
-				}
-			},
-		});
+		// if (this.isViewOnlyPoliceOrPeaceOfficer) {
+		// 	if (this.licenceApplicationService.licenceModel.isPoliceOrPeaceOfficer == BooleanTypeCode.No) {
+		// 		this.policeOfficerSummaryText = 'I am not a Police Officer or Peace Officer';
+		// 	} else if (this.licenceApplicationService.licenceModel.isPoliceOrPeaceOfficer == BooleanTypeCode.Yes) {
+		// 		if (this.licenceApplicationService.licenceModel.officerRole == PoliceOfficerRoleCode.Other) {
+		// 			this.policeOfficerSummaryText = `I am a ${this.licenceApplicationService.licenceModel.otherOfficerRole}`;
+		// 		} else {
+		// 			const desc = PoliceOfficerRoleTypes.find(
+		// 				(item) => item.code == this.licenceApplicationService.licenceModel.officerRole
+		// 			)?.desc;
+		// 			this.policeOfficerSummaryText = `I am a ${desc}`;
+		// 		}
+		// 	}
+		// }
+		// 		}
+		// 	},
+		// });
 	}
 
 	ngOnDestroy() {

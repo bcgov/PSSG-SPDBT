@@ -70,12 +70,12 @@ export class LicenceAccessCodeComponent implements OnInit, OnDestroy, LicenceFor
 	ngOnInit(): void {
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: LicenceModelSubject) => {
-				if (loaded.isLoaded) {
-					this.form.patchValue({
-						currentLicenceNumber: this.licenceApplicationService.licenceModel.currentLicenceNumber,
-						accessCode: this.licenceApplicationService.licenceModel.accessCode,
-					});
-				}
+				// if (loaded.isLoaded) {
+				// 	this.form.patchValue({
+				// 		currentLicenceNumber: this.licenceApplicationService.licenceModel.currentLicenceNumber,
+				// 		accessCode: this.licenceApplicationService.licenceModel.accessCode,
+				// 	});
+				// }
 			},
 		});
 	}

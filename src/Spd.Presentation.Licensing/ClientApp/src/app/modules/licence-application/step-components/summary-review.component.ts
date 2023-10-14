@@ -3,7 +3,7 @@ import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/api/models';
 import { PoliceOfficerRoleCode, SwlCategoryTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { LicenceApplicationService, LicenceModel } from '../licence-application.service';
+import { LicenceApplicationService } from '../licence-application.service';
 
 @Component({
 	selector: 'app-summary-review',
@@ -711,7 +711,7 @@ import { LicenceApplicationService, LicenceModel } from '../licence-application.
 export class SummaryReviewComponent implements OnInit, OnDestroy {
 	// private licenceModelLoadedSubscription!: Subscription;
 
-	licenceModel: LicenceModel | null = null;
+	// licenceModel: LicenceModel | null = null;
 	form = this.licenceApplicationService.licenceModelFormGroup;
 
 	constants = SPD_CONSTANTS;
@@ -738,10 +738,10 @@ export class SummaryReviewComponent implements OnInit, OnDestroy {
 	}
 
 	get licenceTypeCode(): FormControl {
-		return this.form.get('licenceTypeCode') as FormControl;
+		return this.form.controls['licenceTypeFormGroup'].get('licenceTypeCode') as FormControl;
 	}
 	get applicationTypeCode(): FormControl {
-		return this.form.get('applicationTypeCode') as FormControl;
+		return this.form.controls['applicationTypeFormGroup'].get('applicationTypeCode') as FormControl;
 	}
 
 	get isSoleProprietor(): FormControl {

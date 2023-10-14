@@ -34,12 +34,12 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 	selector: 'app-step-licence-selection',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<ng-container *ngIf="isReplacement">
+			<!-- <ng-container *ngIf="isReplacement">
 				<mat-step completed="true" *ngIf="isReplacement">
 					<ng-template matStepLabel>Licence Confirmation</ng-template>
 					<app-step-review></app-step-review>
 				</mat-step>
-			</ng-container>
+			</ng-container> -->
 
 			<!-- <ng-container *ngIf="isNotReplacement"> -->
 			<!-- <mat-step *ngIf="showStepAccessCode">
@@ -68,7 +68,8 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 							</button>
 						</div> -->
 
-			<mat-step *ngIf="showStepSoleProprietor">
+			<!-- *ngIf="showStepSoleProprietor"-->
+			<mat-step>
 				<app-sole-proprietor></app-sole-proprietor>
 
 				<div class="row mt-4">
@@ -121,7 +122,8 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 				</div>
 			</mat-step>
 
-			<mat-step *ngIf="showStepLicenceExpired">
+			<!-- *ngIf="showStepLicenceExpired"-->
+			<mat-step>
 				<app-licence-expired></app-licence-expired>
 
 				<div class="row mt-4">
@@ -411,20 +413,19 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy {
 		this.licenceModelLoadedSubscription = this.licenceModelLoadedSubscription =
 			this.licenceApplicationService.licenceModelLoaded$.subscribe({
 				next: (loaded: LicenceModelSubject) => {
-					if (loaded.isLoaded || loaded.isSetFlags) {
-						console.log(
-							'onInit StepLicenceSelectionComponent',
-							this.licenceApplicationService.licenceModel.applicationTypeCode
-						);
-
-						this.isReplacement = this.licenceApplicationService.licenceModel.isReplacement ?? false;
-						this.isNotReplacement = this.licenceApplicationService.licenceModel.isNotReplacement ?? false;
-						this.showStepAccessCode = this.licenceApplicationService.licenceModel.showStepAccessCode ?? false;
-						this.showStepSoleProprietor = this.licenceApplicationService.licenceModel.showStepSoleProprietor ?? false;
-						this.showStepLicenceExpired = this.licenceApplicationService.licenceModel.showStepLicenceExpired ?? false;
-						this.showStepDogsAndRestraints =
-							this.licenceApplicationService.licenceModel.showStepDogsAndRestraints ?? false;
-					}
+					// if (loaded.isLoaded || loaded.isSetFlags) {
+					// 	console.log(
+					// 		'onInit StepLicenceSelectionComponent',
+					// 		this.licenceApplicationService.licenceModel.applicationTypeCode
+					// 	);
+					// 	this.isReplacement = this.licenceApplicationService.licenceModel.isReplacement ?? false;
+					// 	this.isNotReplacement = this.licenceApplicationService.licenceModel.isNotReplacement ?? false;
+					// 	this.showStepAccessCode = this.licenceApplicationService.licenceModel.showStepAccessCode ?? false;
+					// 	this.showStepSoleProprietor = this.licenceApplicationService.licenceModel.showStepSoleProprietor ?? false;
+					// 	this.showStepLicenceExpired = this.licenceApplicationService.licenceModel.showStepLicenceExpired ?? false;
+					// 	this.showStepDogsAndRestraints =
+					// 		this.licenceApplicationService.licenceModel.showStepDogsAndRestraints ?? false;
+					// }
 				},
 			});
 	}
@@ -462,8 +463,8 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy {
 
 	private setStepData(): void {
 		let stepData = {
-			licenceTypeCode: this.licenceApplicationService.licenceModel.licenceTypeCode,
-			applicationTypeCode: this.licenceApplicationService.licenceModel.applicationTypeCode,
+			// licenceTypeCode: this.licenceApplicationService.licenceModel.licenceTypeCode,
+			// applicationTypeCode: this.licenceApplicationService.licenceModel.applicationTypeCode,
 			...(this.licenceAccessCodeComponent ? this.licenceAccessCodeComponent.getDataToSave() : {}),
 			...(this.soleProprietorComponent ? this.soleProprietorComponent.getDataToSave() : {}),
 			...(this.personalInformationComponent ? this.personalInformationComponent.getDataToSave() : {}),

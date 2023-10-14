@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { GenderTypes, SwlApplicationTypeCode } from 'src/app/core/code-types/model-desc.models';
+import { GenderTypes } from 'src/app/core/code-types/model-desc.models';
 import { UtilService } from 'src/app/core/services/util.service';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import {
@@ -133,16 +133,19 @@ export class PersonalInformationComponent implements OnInit, OnDestroy, LicenceF
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: LicenceModelSubject) => {
 				if (loaded.isLoaded || loaded.isSetFlags) {
-					if (this.licenceApplicationService.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Replacement) {
-						this.title = this.title_view;
-						this.subtitle = '';
-					} else {
-						this.title = this.title_confirm;
-						this.subtitle =
-							this.licenceApplicationService.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired
-								? this.subtitle_auth_new
-								: this.subtitle_unauth_renew_update;
-					}
+					// if (this.licenceApplicationService.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Replacement) {
+					// 	this.title = this.title_view;
+					// 	this.subtitle = '';
+					// } else {
+					// this.title = this.title_confirm;
+					// this.subtitle =
+					// 	this.licenceApplicationService.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired
+					// 		? this.subtitle_auth_new
+					// 		: this.subtitle_unauth_renew_update;
+					// }
+
+					this.title = this.title_confirm;
+					this.subtitle = this.subtitle_auth_new;
 
 					// this.form.patchValue({
 					// 	oneLegalName: this.licenceApplicationService.licenceModel.oneLegalName,
@@ -169,9 +172,9 @@ export class PersonalInformationComponent implements OnInit, OnDestroy, LicenceF
 	}
 
 	isFormValid(): boolean {
-		if (this.licenceApplicationService.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Replacement) {
-			return true;
-		}
+		// if (this.licenceApplicationService.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Replacement) {
+		// 	return true;
+		// }
 
 		this.form.markAllAsTouched();
 		return this.form.valid;

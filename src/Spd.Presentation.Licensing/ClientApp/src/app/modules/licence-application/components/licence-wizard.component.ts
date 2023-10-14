@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, distinctUntilChanged, Subscription } from 'rxjs';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
-import { LicenceApplicationService, LicenceModelSubject } from '../licence-application.service';
+import { LicenceApplicationService } from '../licence-application.service';
 import { StepBackgroundComponent } from '../step-components/main-steps/step-background.component';
 import { StepIdentificationComponent } from '../step-components/main-steps/step-identification.component';
 import { StepLicenceSelectionComponent } from '../step-components/main-steps/step-licence-selection.component';
@@ -24,31 +24,29 @@ import { StepReviewComponent } from '../step-components/main-steps/step-review.c
 						(selectionChange)="onStepSelectionChange($event)"
 						#stepper
 					>
-						<!-- <mat-step completed="true">
-							<ng-template matStepLabel>
-								Licence Selection
-							</ng-template>
+						<mat-step completed="true">
+							<ng-template matStepLabel> Licence Selection </ng-template>
 							<app-step-licence-selection (nextStepperStep)="onNextStepperStep(stepper)"></app-step-licence-selection>
-						</mat-step> -->
+						</mat-step>
 						<!-- <span *ngIf="isNotReplacement; else isReplacementTabName">Licence Selection</span>
 								<ng-template #isReplacementTabName>Licence Confirmation</ng-template> -->
 
 						<!-- <ng-container *ngIf="isNotReplacement"> -->
-						<!-- <mat-step completed="true">
+						<mat-step completed="true">
 							<ng-template matStepLabel>Background</ng-template>
 							<app-step-background
 								(previousStepperStep)="onPreviousStepperStep(stepper)"
 								(nextStepperStep)="onNextStepperStep(stepper)"
 							></app-step-background>
-						</mat-step> -->
+						</mat-step>
 
-						<!-- <mat-step completed="true">
+						<mat-step completed="true">
 							<ng-template matStepLabel>Identification</ng-template>
 							<app-step-identification
 								(previousStepperStep)="onPreviousStepperStep(stepper)"
 								(nextStepperStep)="onNextStepperStep(stepper)"
 							></app-step-identification>
-						</mat-step> -->
+						</mat-step>
 
 						<mat-step completed="true">
 							<ng-template matStepLabel>Review and Confirm</ng-template>
@@ -145,7 +143,11 @@ export class LicenceWizardComponent implements OnInit, OnDestroy {
 	) {}
 
 	ngOnInit(): void {
-		console.log('LicenceWizardComponent ONINIT', this.licenceApplicationService.initialized);
+		console.log(
+			'LicenceWizardComponent ONINIT',
+			this.licenceApplicationService.initialized,
+			this.licenceApplicationService.licenceModelFormGroup.value
+		);
 
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
@@ -157,22 +159,21 @@ export class LicenceWizardComponent implements OnInit, OnDestroy {
 			return;
 		}
 
-		this.licenceApplicationService.notifyLoaded();
+		// this.licenceApplicationService.notifyLoaded();
 
-		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
-			next: (loaded: LicenceModelSubject) => {
-				if (loaded.isLoaded || loaded.isSetFlags) {
-					this.isReplacement = this.licenceApplicationService.licenceModel.isReplacement ?? false;
-					this.isNotReplacement = this.licenceApplicationService.licenceModel.isNotReplacement ?? false;
-
-					this.isLoaded$.next(true);
-				}
-			},
-		});
+		// this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
+		// 	next: (loaded: LicenceModelSubject) => {
+		// if (loaded.isLoaded || loaded.isSetFlags) {
+		// 	this.isReplacement = this.licenceApplicationService.licenceModel.isReplacement ?? false;
+		// 	this.isNotReplacement = this.licenceApplicationService.licenceModel.isNotReplacement ?? false;
+		this.isLoaded$.next(true);
+		// }
+		// 	},
+		// });
 	}
 
 	ngOnDestroy() {
-		if (this.licenceModelLoadedSubscription) this.licenceModelLoadedSubscription.unsubscribe();
+		// if (this.licenceModelLoadedSubscription) this.licenceModelLoadedSubscription.unsubscribe();
 	}
 
 	onStepSelectionChange(event: StepperSelectionEvent) {

@@ -31,19 +31,19 @@ export interface LicenceFormStepComponent {
 	isFormValid(): boolean;
 }
 
-export class LicenceModel {
-	isNewOrExpired?: boolean = false;
+export class LicenceBackendModel {
+	isNewOrExpired?: boolean = true;
 	isReplacement?: boolean = false;
-	isNotReplacement?: boolean = false;
+	isNotReplacement?: boolean = true;
 	showStepAccessCode?: boolean = false;
-	showStepSoleProprietor?: boolean = false;
-	showStepLicenceExpired?: boolean = false;
-	showStepDogsAndRestraints?: boolean = false;
-	showStepPoliceBackground?: boolean = false;
-	showStepMentalHealth?: boolean = false;
-	showStepCriminalHistory?: boolean = false;
-	showStepFingerprints?: boolean = false;
-	showStepBackgroundInfo?: boolean = false;
+	showStepSoleProprietor?: boolean = true;
+	showStepLicenceExpired?: boolean = true;
+	showStepDogsAndRestraints?: boolean = true;
+	showStepPoliceBackground?: boolean = true;
+	showStepMentalHealth?: boolean = true;
+	showStepCriminalHistory?: boolean = true;
+	showStepFingerprints?: boolean = true;
+	showStepBackgroundInfo?: boolean = true;
 
 	licenceTypeCode: SwlTypeCode | null = null;
 	applicationTypeCode: SwlApplicationTypeCode | null = null;
@@ -202,6 +202,14 @@ export class LicenceApplicationService {
 	licenceModelLoaded$: BehaviorSubject<LicenceModelSubject> = new BehaviorSubject<LicenceModelSubject>(
 		new LicenceModelSubject()
 	);
+
+	licenceTypeFormGroup: FormGroup = this.formBuilder.group({
+		licenceTypeCode: new FormControl('', [Validators.required]),
+	});
+
+	applicationTypeFormGroup: FormGroup = this.formBuilder.group({
+		applicationTypeCode: new FormControl('', [Validators.required]),
+	});
 
 	personalInformationFormGroup = this.formBuilder.group(
 		{
@@ -508,20 +516,22 @@ export class LicenceApplicationService {
 
 	licenceModelFormGroup: FormGroup = this.formBuilder.group(
 		{
-			showStepAccessCode: new FormControl(false),
-			showStepSoleProprietor: new FormControl(true),
-			showStepLicenceExpired: new FormControl(true),
-			showStepDogsAndRestraints: new FormControl(true),
-			showStepPoliceBackground: new FormControl(true),
-			showStepMentalHealth: new FormControl(true),
-			showStepCriminalHistory: new FormControl(true),
-			showStepFingerprints: new FormControl(true),
+			// showStepAccessCode: new FormControl(false),
+			// showStepSoleProprietor: new FormControl(true),
+			// showStepLicenceExpired: new FormControl(true),
+			// showStepDogsAndRestraints: new FormControl(true),
+			// showStepPoliceBackground: new FormControl(true),
+			// showStepMentalHealth: new FormControl(true),
+			// showStepCriminalHistory: new FormControl(true),
+			// showStepFingerprints: new FormControl(true),
 
-			licenceTypeCode: new FormControl('', [Validators.required]),
-			applicationTypeCode: new FormControl('', [Validators.required]),
+			// licenceTypeCode: new FormControl('', [Validators.required]),
+			// applicationTypeCode: new FormControl('', [Validators.required]),
 
 			// aliasFormGroup: this.aliasFormGroup,
 			soleProprietorFormGroup: this.soleProprietorFormGroup,
+			licenceTypeFormGroup: this.licenceTypeFormGroup,
+			applicationTypeFormGroup: this.applicationTypeFormGroup,
 			personalInformationFormGroup: this.personalInformationFormGroup,
 			expiredLicenceFormGroup: this.expiredLicenceFormGroup,
 			licenceTermFormGroup: this.licenceTermFormGroup,
@@ -674,7 +684,7 @@ export class LicenceApplicationService {
 		}
 	);
 
-	licenceModel: LicenceModel = new LicenceModel();
+	// licenceModel: LicenceModel = new LicenceModel();
 
 	constructor(
 		private formBuilder: FormBuilder,
@@ -713,7 +723,8 @@ export class LicenceApplicationService {
 
 	reset(): void {
 		this.initialized = false;
-		this.licenceModel = new LicenceModel();
+		// this.licenceModel = new LicenceModel();
+		this.licenceModelFormGroup.reset();
 	}
 
 	createNewLicence(): Observable<any> {
@@ -723,10 +734,10 @@ export class LicenceApplicationService {
 		return new Observable((observer) => {
 			setTimeout(() => {
 				this.licenceModelFormGroup.reset();
-				this.licenceModel = new LicenceModel();
+				// this.licenceModel = new LicenceModel();
 				this.initialized = true;
 				this.spinnerService.hide('loaderSpinner');
-				observer.next(this.licenceModel);
+				observer.next(this.licenceModelFormGroup.value);
 			}, 1000);
 		});
 	}
@@ -741,8 +752,12 @@ export class LicenceApplicationService {
 				const myFile = this.utilService.blobToFile(myBlob, 'test.doc');
 
 				const defaults: any = {
-					licenceTypeCode: SwlTypeCode.ArmouredVehiclePermit,
-					applicationTypeCode: SwlApplicationTypeCode.NewOrExpired,
+					licenceTypeFormGroup: {
+						licenceTypeCode: SwlTypeCode.ArmouredVehiclePermit,
+					},
+					applicationTypeFormGroup: {
+						applicationTypeCode: SwlApplicationTypeCode.NewOrExpired,
+					},
 					soleProprietorFormGroup: {
 						isSoleProprietor: BooleanTypeCode.Yes,
 					},
@@ -980,7 +995,7 @@ export class LicenceApplicationService {
 				const myBlob = new Blob();
 				const myFile = this.utilService.blobToFile(myBlob, 'test.doc');
 
-				const defaults: LicenceModel = {
+				const defaults: LicenceBackendModel = {
 					licenceTypeCode: SwlTypeCode.ArmouredVehiclePermit,
 					applicationTypeCode: SwlApplicationTypeCode.NewOrExpired,
 					isSoleProprietor: BooleanTypeCode.Yes,
@@ -1051,7 +1066,7 @@ export class LicenceApplicationService {
 
 		return new Observable((observer) => {
 			setTimeout(() => {
-				const defaults: LicenceModel = {
+				const defaults: LicenceBackendModel = {
 					licenceTypeCode: SwlTypeCode.SecurityBusinessLicence,
 					applicationTypeCode: SwlApplicationTypeCode.Renewal,
 					isSoleProprietor: BooleanTypeCode.Yes,
@@ -1115,7 +1130,7 @@ export class LicenceApplicationService {
 
 		return new Observable((observer) => {
 			setTimeout(() => {
-				const defaults: LicenceModel = {
+				const defaults: LicenceBackendModel = {
 					licenceTypeCode: SwlTypeCode.ArmouredVehiclePermit,
 					applicationTypeCode: SwlApplicationTypeCode.Replacement,
 					isSoleProprietor: BooleanTypeCode.Yes,
@@ -1180,7 +1195,7 @@ export class LicenceApplicationService {
 
 		return new Observable((observer) => {
 			setTimeout(() => {
-				const defaults: LicenceModel = {
+				const defaults: LicenceBackendModel = {
 					licenceTypeCode: SwlTypeCode.ArmouredVehiclePermit,
 					applicationTypeCode: SwlApplicationTypeCode.Update,
 					isSoleProprietor: BooleanTypeCode.Yes,
@@ -1242,95 +1257,95 @@ export class LicenceApplicationService {
 
 	saveLicence(): void {
 		this.hotToastService.success('Licence information has been saved');
-		console.log('SAVE LICENCE DATA', this.licenceModel);
+		// console.log('SAVE LICENCE DATA', this.licenceModel);
 		// this.licenceModelFormGroup.markAllAsTouched();
 		console.log('SAVE LICENCE FORM DATA', this.licenceModelFormGroup.valid, this.licenceModelFormGroup.value);
 	}
 
 	clearLicenceCategoryData(code: SwlCategoryTypeCode): void {
-		switch (code) {
-			case SwlCategoryTypeCode.ArmouredCarGuard:
-				delete this.licenceModel.licenceCategoryArmouredCarGuard;
-				break;
-			case SwlCategoryTypeCode.BodyArmourSales:
-				delete this.licenceModel.licenceCategoryBodyArmourSales;
-				break;
-			case SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller:
-				delete this.licenceModel.licenceCategoryyClosedCircuitTelevisionInstaller;
-				break;
-			case SwlCategoryTypeCode.ElectronicLockingDeviceInstaller:
-				delete this.licenceModel.licenceCategoryElectronicLockingDeviceInstaller;
-				break;
-			case SwlCategoryTypeCode.FireInvestigator:
-				delete this.licenceModel.licenceCategoryFireInvestigator;
-				break;
-			case SwlCategoryTypeCode.Locksmith:
-				delete this.licenceModel.licenceCategoryLocksmith;
-				break;
-			case SwlCategoryTypeCode.LocksmithUnderSupervision:
-				delete this.licenceModel.licenceCategoryLocksmithUnderSupervision;
-				break;
-			case SwlCategoryTypeCode.PrivateInvestigator:
-				delete this.licenceModel.licenceCategoryPrivateInvestigator;
-				break;
-			case SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision:
-				delete this.licenceModel.licenceCategoryPrivateInvestigatorUnderSupervision;
-				break;
-			case SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision:
-				delete this.licenceModel.licenceCategorySecurityAlarmInstallerUnderSupervision;
-				break;
-			case SwlCategoryTypeCode.SecurityAlarmInstaller:
-				delete this.licenceModel.licenceCategorySecurityAlarmInstaller;
-				break;
-			case SwlCategoryTypeCode.SecurityAlarmMonitor:
-				delete this.licenceModel.licenceCategorySecurityAlarmMonitor;
-				break;
-			case SwlCategoryTypeCode.SecurityAlarmResponse:
-				delete this.licenceModel.licenceCategorySecurityAlarmResponse;
-				break;
-			case SwlCategoryTypeCode.SecurityAlarmSales:
-				delete this.licenceModel.licenceCategorySecurityAlarmSales;
-				break;
-			case SwlCategoryTypeCode.SecurityConsultant:
-				delete this.licenceModel.licenceCategorySecurityConsultant;
-				break;
-			case SwlCategoryTypeCode.SecurityGuard:
-				delete this.licenceModel.licenceCategorySecurityGuard;
-				break;
-			case SwlCategoryTypeCode.SecurityGuardUnderSupervision:
-				delete this.licenceModel.licenceCategorySecurityGuardUnderSupervision;
-				break;
-		}
+		// switch (code) {
+		// 	case SwlCategoryTypeCode.ArmouredCarGuard:
+		// 		delete this.licenceModel.licenceCategoryArmouredCarGuard;
+		// 		break;
+		// 	case SwlCategoryTypeCode.BodyArmourSales:
+		// 		delete this.licenceModel.licenceCategoryBodyArmourSales;
+		// 		break;
+		// 	case SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller:
+		// 		delete this.licenceModel.licenceCategoryyClosedCircuitTelevisionInstaller;
+		// 		break;
+		// 	case SwlCategoryTypeCode.ElectronicLockingDeviceInstaller:
+		// 		delete this.licenceModel.licenceCategoryElectronicLockingDeviceInstaller;
+		// 		break;
+		// 	case SwlCategoryTypeCode.FireInvestigator:
+		// 		delete this.licenceModel.licenceCategoryFireInvestigator;
+		// 		break;
+		// 	case SwlCategoryTypeCode.Locksmith:
+		// 		delete this.licenceModel.licenceCategoryLocksmith;
+		// 		break;
+		// 	case SwlCategoryTypeCode.LocksmithUnderSupervision:
+		// 		delete this.licenceModel.licenceCategoryLocksmithUnderSupervision;
+		// 		break;
+		// 	case SwlCategoryTypeCode.PrivateInvestigator:
+		// 		delete this.licenceModel.licenceCategoryPrivateInvestigator;
+		// 		break;
+		// 	case SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision:
+		// 		delete this.licenceModel.licenceCategoryPrivateInvestigatorUnderSupervision;
+		// 		break;
+		// 	case SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision:
+		// 		delete this.licenceModel.licenceCategorySecurityAlarmInstallerUnderSupervision;
+		// 		break;
+		// 	case SwlCategoryTypeCode.SecurityAlarmInstaller:
+		// 		delete this.licenceModel.licenceCategorySecurityAlarmInstaller;
+		// 		break;
+		// 	case SwlCategoryTypeCode.SecurityAlarmMonitor:
+		// 		delete this.licenceModel.licenceCategorySecurityAlarmMonitor;
+		// 		break;
+		// 	case SwlCategoryTypeCode.SecurityAlarmResponse:
+		// 		delete this.licenceModel.licenceCategorySecurityAlarmResponse;
+		// 		break;
+		// 	case SwlCategoryTypeCode.SecurityAlarmSales:
+		// 		delete this.licenceModel.licenceCategorySecurityAlarmSales;
+		// 		break;
+		// 	case SwlCategoryTypeCode.SecurityConsultant:
+		// 		delete this.licenceModel.licenceCategorySecurityConsultant;
+		// 		break;
+		// 	case SwlCategoryTypeCode.SecurityGuard:
+		// 		delete this.licenceModel.licenceCategorySecurityGuard;
+		// 		break;
+		// 	case SwlCategoryTypeCode.SecurityGuardUnderSupervision:
+		// 		delete this.licenceModel.licenceCategorySecurityGuardUnderSupervision;
+		// 		break;
+		// }
 	}
 
 	clearAllLicenceCategoryData(): void {
 		// call function to delete all licence category data
-		delete this.licenceModel.licenceCategoryArmouredCarGuard;
-		delete this.licenceModel.licenceCategoryBodyArmourSales;
-		delete this.licenceModel.licenceCategoryyClosedCircuitTelevisionInstaller;
-		delete this.licenceModel.licenceCategoryElectronicLockingDeviceInstaller;
-		delete this.licenceModel.licenceCategoryFireInvestigator;
-		delete this.licenceModel.licenceCategoryLocksmithUnderSupervision;
-		delete this.licenceModel.licenceCategoryLocksmith;
-		delete this.licenceModel.licenceCategoryPrivateInvestigatorUnderSupervision;
-		delete this.licenceModel.licenceCategoryPrivateInvestigator;
-		delete this.licenceModel.licenceCategorySecurityAlarmInstallerUnderSupervision;
-		delete this.licenceModel.licenceCategorySecurityAlarmInstaller;
-		delete this.licenceModel.licenceCategorySecurityAlarmMonitor;
-		delete this.licenceModel.licenceCategorySecurityAlarmResponse;
-		delete this.licenceModel.licenceCategorySecurityAlarmSales;
-		delete this.licenceModel.licenceCategorySecurityConsultant;
-		delete this.licenceModel.licenceCategorySecurityGuardUnderSupervision;
-		delete this.licenceModel.licenceCategorySecurityGuard;
+		// delete this.licenceModel.licenceCategoryArmouredCarGuard;
+		// delete this.licenceModel.licenceCategoryBodyArmourSales;
+		// delete this.licenceModel.licenceCategoryyClosedCircuitTelevisionInstaller;
+		// delete this.licenceModel.licenceCategoryElectronicLockingDeviceInstaller;
+		// delete this.licenceModel.licenceCategoryFireInvestigator;
+		// delete this.licenceModel.licenceCategoryLocksmithUnderSupervision;
+		// delete this.licenceModel.licenceCategoryLocksmith;
+		// delete this.licenceModel.licenceCategoryPrivateInvestigatorUnderSupervision;
+		// delete this.licenceModel.licenceCategoryPrivateInvestigator;
+		// delete this.licenceModel.licenceCategorySecurityAlarmInstallerUnderSupervision;
+		// delete this.licenceModel.licenceCategorySecurityAlarmInstaller;
+		// delete this.licenceModel.licenceCategorySecurityAlarmMonitor;
+		// delete this.licenceModel.licenceCategorySecurityAlarmResponse;
+		// delete this.licenceModel.licenceCategorySecurityAlarmSales;
+		// delete this.licenceModel.licenceCategorySecurityConsultant;
+		// delete this.licenceModel.licenceCategorySecurityGuardUnderSupervision;
+		// delete this.licenceModel.licenceCategorySecurityGuard;
 	}
 
 	notifyModelChanged(updatedData: any): void {
 		// const licenceModel = { ...this.licenceModel, ...updatedData };
 		// this.cleanLicenceModel(licenceModel);
 		// this.licenceModel = { ...licenceModel };
-		console.log('notifyModelChanged licenceModel', this.licenceModel);
+		// console.log('notifyModelChanged licenceModel', this.licenceModel);
 
-		this.licenceModelFormGroup.patchValue({ ...updatedData });
+		// this.licenceModelFormGroup.patchValue({ ...updatedData });
 
 		console.log(
 			'notifyModelChanged licenceModelFormGroup',
@@ -1342,25 +1357,25 @@ export class LicenceApplicationService {
 
 	notifyLoaded(): void {
 		this.setFlags();
-		console.log('notifyLoaded', this.licenceModel);
+		console.log('notifyLoaded', this.licenceModelFormGroup.value);
 		this.licenceModelLoaded$.next({ isLoaded: true });
 	}
 
 	notifyUpdateFlags(): void {
 		this.setFlags();
-		console.log('notifyUpdateFlags', this.licenceModel);
+		console.log('notifyUpdateFlags', this.licenceModelFormGroup.value);
 		this.licenceModelLoaded$.next({ isSetFlags: true });
 	}
 
 	notifyCategoryData(): void {
-		console.log('notifyCategoryData', this.licenceModel);
+		console.log('notifyCategoryData', this.licenceModelFormGroup.value);
 		this.licenceModelLoaded$.next({ isCategoryLoaded: true });
 	}
 
-	private cleanLicenceModel(origLicenceModel: LicenceModel): LicenceModel {
-		//TODO when to clean model?
-		return origLicenceModel;
-	}
+	// private cleanLicenceModel(origLicenceModel: LicenceModel): LicenceModel {
+	// 	//TODO when to clean model?
+	// 	return origLicenceModel;
+	// }
 
 	private setFlags(): void {
 		// const flags = {
@@ -1373,73 +1388,41 @@ export class LicenceApplicationService {
 		// this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Renewal,
 		// showStepLicenceExpired: 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired
 		// };
-		this.licenceModel.isNewOrExpired = this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired;
-
-		this.licenceModel.isReplacement = this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Replacement;
-		this.licenceModel.isNotReplacement = !this.licenceModel.isReplacement;
-
-		this.licenceModel.showStepAccessCode =
-			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Renewal ||
-			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Update;
-
-		// Review question would only apply to those who have a SWL w/ Sole Prop already,
-		// otherwise they would see the same question shown to New applicants
-		this.licenceModel.showStepSoleProprietor =
-			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired ||
-			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Renewal;
-
-		this.licenceModel.showStepLicenceExpired =
-			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired;
-
-		this.licenceModel.showStepDogsAndRestraints = !!this.licenceModel.swlCategoryList.find(
-			(item) => item.code == SwlCategoryTypeCode.SecurityGuard
-		);
-
-		this.licenceModel.isViewOnlyPoliceOrPeaceOfficer = this.licenceModel.applicationTypeCode
-			? this.licenceModel.applicationTypeCode != SwlApplicationTypeCode.NewOrExpired
-			: false;
-
-		this.licenceModel.showStepPoliceBackground =
-			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired ||
-			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Update ||
-			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Renewal;
-
-		this.licenceModel.showStepMentalHealth =
-			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired ||
-			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Update ||
-			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Renewal;
-
-		this.licenceModel.showStepCriminalHistory =
-			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired ||
-			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Update ||
-			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Renewal;
-
-		this.licenceModel.showStepFingerprints =
-			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired ||
-			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Renewal;
-
-		this.licenceModel.showStepBackgroundInfo = false;
-
+		// this.licenceModel.isNewOrExpired = this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired;
+		// this.licenceModel.isReplacement = this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Replacement;
+		// this.licenceModel.isNotReplacement = !this.licenceModel.isReplacement;
+		// this.licenceModel.showStepAccessCode =
+		// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Renewal ||
+		// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Update;
+		// // Review question would only apply to those who have a SWL w/ Sole Prop already,
+		// // otherwise they would see the same question shown to New applicants
+		// this.licenceModel.showStepSoleProprietor =
+		// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired ||
+		// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Renewal;
+		// this.licenceModel.showStepLicenceExpired =
+		// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired;
+		// this.licenceModel.showStepDogsAndRestraints = !!this.licenceModel.swlCategoryList.find(
+		// 	(item) => item.code == SwlCategoryTypeCode.SecurityGuard
+		// );
+		// this.licenceModel.isViewOnlyPoliceOrPeaceOfficer = this.licenceModel.applicationTypeCode
+		// 	? this.licenceModel.applicationTypeCode != SwlApplicationTypeCode.NewOrExpired
+		// 	: false;
+		// this.licenceModel.showStepPoliceBackground =
+		// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired ||
+		// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Update ||
+		// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Renewal;
+		// this.licenceModel.showStepMentalHealth =
+		// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired ||
+		// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Update ||
+		// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Renewal;
+		// this.licenceModel.showStepCriminalHistory =
+		// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired ||
+		// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Update ||
+		// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Renewal;
+		// this.licenceModel.showStepFingerprints =
+		// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired ||
+		// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Renewal;
+		// this.licenceModel.showStepBackgroundInfo = false;
 		// this.licenceModelFormGroup.patchValue();
-		/*
-			
-
-		this.licenceModel.showStepPoliceBackground =
-			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired;
-
-		this.licenceModel.showStepMentalHealth =
-			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired;
-
-		this.licenceModel.showStepCriminalHistory =
-			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired;
-
-		this.licenceModel.showStepFingerprints =
-			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired ||
-			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Renewal;
-
-		this.licenceModel.showStepBackgroundInfo =
-			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Update ||
-			this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Renewal;
-			*/
 	}
 }
