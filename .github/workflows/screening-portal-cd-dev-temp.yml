@@ -1,13 +1,13 @@
-name: Screening Portal Scheduled Deployment For Test
+name: Screening Portal Scheduled Deployment For Dev testing
 
 #temp to deploy to dev for some internal testing
 on:
   push:
     branches:
-      - dev-temp
+      - dev-temp-screening
 
 jobs:
-  build-deploy-screening-portal-to-test:
+  build-deploy-screening-portal-to-dev:
     uses: ./.github/workflows/cd-workflow.yml
     with:
       DOCKER_CONTEXT: src
