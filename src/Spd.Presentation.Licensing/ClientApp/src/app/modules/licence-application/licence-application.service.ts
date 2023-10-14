@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { HotToastService } from '@ngneat/hot-toast';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -203,18 +203,6 @@ export class LicenceApplicationService {
 		new LicenceModelSubject()
 	);
 
-	aliasesFormGroup: FormGroup = this.formBuilder.group({
-		previousNameFlag: new FormControl(null, [FormControlValidators.required]),
-		aliases: this.formBuilder.array([]),
-	});
-
-	aliasRowForm = this.formBuilder.group({
-		givenName: new FormControl(''),
-		middleName1: new FormControl(''),
-		middleName2: new FormControl(''),
-		surname: new FormControl('', [FormControlValidators.required]),
-	});
-
 	personalInformationFormGroup = this.formBuilder.group(
 		{
 			oneLegalName: new FormControl(false),
@@ -267,13 +255,25 @@ export class LicenceApplicationService {
 		licenceTermCode: new FormControl('', [FormControlValidators.required]),
 	});
 
-	categoryRowForm = this.formBuilder.group({
-		desc: new FormControl(''),
-		code: new FormControl(''),
+	aliasesFormGroup: FormGroup = this.formBuilder.group({
+		previousNameFlag: new FormControl(null, [FormControlValidators.required]),
+		aliases: this.formBuilder.array([]),
+	});
+
+	aliasRowForm = this.formBuilder.group({
+		givenName: new FormControl(''),
+		middleName1: new FormControl(''),
+		middleName2: new FormControl(''),
+		surname: new FormControl('', [FormControlValidators.required]),
 	});
 
 	categoriesFormGroup: FormGroup = this.formBuilder.group({
 		categories: this.formBuilder.array([]),
+	});
+
+	categoryRowForm = this.formBuilder.group({
+		desc: new FormControl(''),
+		code: new FormControl(''),
 	});
 
 	categorySecurityGuardFormGroup: FormGroup = this.formBuilder.group({
@@ -417,6 +417,95 @@ export class LicenceApplicationService {
 		proofOfFingerprintAttachments: new FormControl('', [Validators.required]),
 	});
 
+	citizenshipFormGroup: FormGroup = this.formBuilder.group(
+		{
+			isBornInCanada: new FormControl(null, [FormControlValidators.required]),
+			proofOfCitizenship: new FormControl(),
+			proofOfAbility: new FormControl(),
+			citizenshipDocumentExpiryDate: new FormControl(),
+			citizenshipDocumentPhotoAttachments: new FormControl(null, [Validators.required]),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'proofOfCitizenship',
+					(form) => form.get('isBornInCanada')?.value == this.booleanTypeCodes.Yes
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'proofOfAbility',
+					(form) => form.get('isBornInCanada')?.value == this.booleanTypeCodes.No
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'citizenshipDocumentExpiryDate',
+					(form) =>
+						form.get('proofOfAbility')?.value == ProofOfAbilityToWorkInCanadaCode.WorkPermit ||
+						form.get('proofOfAbility')?.value == ProofOfAbilityToWorkInCanadaCode.StudyPermit
+				),
+			],
+		}
+	);
+
+	govIssuedIdFormGroup: FormGroup = this.formBuilder.group({
+		governmentIssuedPhotoTypeCode: new FormControl(null, [FormControlValidators.required]),
+		governmentIssuedPhotoExpiryDate: new FormControl(),
+		governmentIssuedPhotoAttachments: new FormControl(null, [Validators.required]),
+	});
+
+	bcDriversLicenceFormGroup: FormGroup = this.formBuilder.group({
+		hasBcDriversLicence: new FormControl(null, [FormControlValidators.required]),
+		bcDriversLicenceNumber: new FormControl(),
+	});
+
+	characteristicsFormGroup: FormGroup = this.formBuilder.group({
+		hairColourCode: new FormControl(null, [FormControlValidators.required]),
+		eyeColourCode: new FormControl(null, [FormControlValidators.required]),
+		height: new FormControl(null, [FormControlValidators.required]),
+		heightUnitCode: new FormControl(null, [FormControlValidators.required]),
+		weight: new FormControl(null, [FormControlValidators.required]),
+		weightUnitCode: new FormControl(null, [FormControlValidators.required]),
+	});
+
+	photographOfYourselfFormGroup: FormGroup = this.formBuilder.group(
+		{
+			useBcServicesCardPhoto: new FormControl(null, [FormControlValidators.required]),
+			photoOfYourselfAttachments: new FormControl(''),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'photoOfYourselfAttachments',
+					(form) => form.get('useBcServicesCardPhoto')?.value == this.booleanTypeCodes.No
+				),
+			],
+		}
+	);
+
+	contactInformationFormGroup: FormGroup = this.formBuilder.group({
+		contactEmailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
+		contactPhoneNumber: new FormControl('', [Validators.required]),
+	});
+
+	residentialAddressFormGroup: FormGroup = this.formBuilder.group({
+		addressSelected: new FormControl(false, [Validators.requiredTrue]),
+		residentialAddressLine1: new FormControl('', [FormControlValidators.required]),
+		residentialAddressLine2: new FormControl(''),
+		residentialCity: new FormControl('', [FormControlValidators.required]),
+		residentialPostalCode: new FormControl('', [FormControlValidators.required]),
+		residentialProvince: new FormControl('', [FormControlValidators.required]),
+		residentialCountry: new FormControl('', [FormControlValidators.required]),
+		isMailingTheSameAsResidential: new FormControl(),
+	});
+
+	mailingAddressFormGroup: FormGroup = this.formBuilder.group({
+		addressSelected: new FormControl(false, [Validators.requiredTrue]),
+		mailingAddressLine1: new FormControl('', [FormControlValidators.required]),
+		mailingAddressLine2: new FormControl(''),
+		mailingCity: new FormControl('', [FormControlValidators.required]),
+		mailingPostalCode: new FormControl('', [FormControlValidators.required]),
+		mailingProvince: new FormControl('', [FormControlValidators.required]),
+		mailingCountry: new FormControl('', [FormControlValidators.required]),
+	});
+
 	licenceModelFormGroup: FormGroup = this.formBuilder.group(
 		{
 			showStepAccessCode: new FormControl(false),
@@ -450,6 +539,15 @@ export class LicenceApplicationService {
 			categoryPrivateInvestigatorFormGroup: this.categoryPrivateInvestigatorFormGroup,
 			categorySecurityAlarmInstallerFormGroup: this.categorySecurityAlarmInstallerFormGroup,
 			categorySecurityConsultantFormGroup: this.categorySecurityConsultantFormGroup,
+			aliasesFormGroup: this.aliasesFormGroup,
+			citizenshipFormGroup: this.citizenshipFormGroup,
+			govIssuedIdFormGroup: this.govIssuedIdFormGroup,
+			bcDriversLicenceFormGroup: this.bcDriversLicenceFormGroup,
+			characteristicsFormGroup: this.characteristicsFormGroup,
+			photographOfYourselfFormGroup: this.photographOfYourselfFormGroup,
+			contactInformationFormGroup: this.contactInformationFormGroup,
+			residentialAddressFormGroup: this.residentialAddressFormGroup,
+			mailingAddressFormGroup: this.mailingAddressFormGroup,
 
 			// isSoleProprietor: new FormControl('', [FormControlValidators.required]),
 			// oneLegalName: new FormControl(false),
@@ -703,38 +801,56 @@ export class LicenceApplicationService {
 							{ givenName: 'Abby', middleName1: '', middleName2: '', surname: 'Anderson' },
 						],
 					},
-					isBornInCanada: BooleanTypeCode.Yes,
-					proofOfCitizenship: ProofOfCanadianCitizenshipCode.BirthCertificate,
-					proofOfAbility: null,
-					citizenshipDocumentExpiryDate: null,
-					citizenshipDocumentPhotoAttachments: [myFile],
-					governmentIssuedPhotoTypeCode: GovernmentIssuedPhotoIdCode.BcServicesCard,
-					governmentIssuedPhotoAttachments: [myFile],
-					hasBcDriversLicence: BooleanTypeCode.Yes,
-					bcDriversLicenceNumber: '5458877',
-					hairColourCode: HairColourCode.Black,
-					eyeColourCode: EyeColourCode.Blue,
-					height: '100',
-					heightUnitCode: HeightUnitCode.Inches,
-					weight: '75',
-					weightUnitCode: WeightUnitCode.Kilograms,
-					useBcServicesCardPhoto: BooleanTypeCode.No,
-					photoOfYourselfAttachments: [myFile],
-					contactEmailAddress: 'contact-test@test.gov.bc.ca',
-					contactPhoneNumber: '2508896363',
-					isMailingTheSameAsResidential: false,
-					residentialAddressLine1: '123-720 Commonwealth Rd',
-					residentialAddressLine2: '',
-					residentialCity: 'Kelowna',
-					residentialCountry: 'Canada',
-					residentialPostalCode: 'V4V 1R8',
-					residentialProvince: 'British Columbia',
-					mailingAddressLine1: '777-798 Richmond St W',
-					mailingAddressLine2: '',
-					mailingCity: 'Toronto',
-					mailingCountry: 'Canada',
-					mailingPostalCode: 'M6J 3P3',
-					mailingProvince: 'Ontario',
+					citizenshipFormGroup: {
+						isBornInCanada: BooleanTypeCode.Yes,
+						proofOfCitizenship: ProofOfCanadianCitizenshipCode.BirthCertificate,
+						proofOfAbility: null,
+						citizenshipDocumentExpiryDate: null,
+						citizenshipDocumentPhotoAttachments: [myFile],
+					},
+					govIssuedIdFormGroup: {
+						governmentIssuedPhotoTypeCode: GovernmentIssuedPhotoIdCode.BcServicesCard,
+						governmentIssuedPhotoAttachments: [myFile],
+					},
+					bcDriversLicenceFormGroup: {
+						hasBcDriversLicence: BooleanTypeCode.Yes,
+						bcDriversLicenceNumber: '5458877',
+					},
+					characteristicsFormGroup: {
+						hairColourCode: HairColourCode.Black,
+						eyeColourCode: EyeColourCode.Blue,
+						height: '100',
+						heightUnitCode: HeightUnitCode.Inches,
+						weight: '75',
+						weightUnitCode: WeightUnitCode.Kilograms,
+					},
+					photographOfYourselfFormGroup: {
+						useBcServicesCardPhoto: BooleanTypeCode.No,
+						photoOfYourselfAttachments: [myFile],
+					},
+					contactInformationFormGroup: {
+						contactEmailAddress: 'contact-test@test.gov.bc.ca',
+						contactPhoneNumber: '2508896363',
+					},
+					residentialAddressFormGroup: {
+						addressSelected: true,
+						isMailingTheSameAsResidential: false,
+						residentialAddressLine1: '123-720 Commonwealth Rd',
+						residentialAddressLine2: '',
+						residentialCity: 'Kelowna',
+						residentialCountry: 'Canada',
+						residentialPostalCode: 'V4V 1R8',
+						residentialProvince: 'British Columbia',
+					},
+					mailingAddressFormGroup: {
+						addressSelected: true,
+						mailingAddressLine1: '777-798 Richmond St W',
+						mailingAddressLine2: '',
+						mailingCity: 'Toronto',
+						mailingCountry: 'Canada',
+						mailingPostalCode: 'M6J 3P3',
+						mailingProvince: 'Ontario',
+					},
 					categoriesFormGroup: {
 						categories: [
 							// { desc: 'Armoured Car Guard', code: SwlCategoryTypeCode.ArmouredCarGuard },
@@ -810,12 +926,43 @@ export class LicenceApplicationService {
 
 				// this.licenceModel = { ...defaults };
 				this.licenceModelFormGroup.patchValue({ ...defaults });
+
+				const categoriesFormGroup = this.licenceModelFormGroup.controls['categoriesFormGroup'].value;
+				console.log('categoriesFormGroup', categoriesFormGroup);
+
+				defaults.categoriesFormGroup.categories.forEach((item: any) => {
+					console.log('item', item);
+
+					const categoryItem = this.formBuilder.group({
+						desc: new FormControl(item.desc),
+						code: new FormControl(item.code),
+					});
+
+					(this.licenceModelFormGroup.controls['categoriesFormGroup'].get('categories') as FormArray<FormGroup>).push(
+						categoryItem
+					);
+				});
+
+				const aliasesFormGroup = this.licenceModelFormGroup.controls['aliasesFormGroup'].value;
+				console.log('aliasesFormGroup', aliasesFormGroup);
+
+				defaults.aliasesFormGroup.aliases.forEach((item: any) => {
+					console.log('item', item);
+
+					const aliasItem = this.formBuilder.group({
+						givenName: new FormControl(item.givenName),
+						middleName1: new FormControl(item.middleName1),
+						middleName2: new FormControl(item.middleName2),
+						surname: new FormControl(item.surname, [FormControlValidators.required]),
+					});
+
+					(this.licenceModelFormGroup.controls['aliasesFormGroup'].get('aliases') as FormArray<FormGroup>).push(
+						aliasItem
+					);
+				});
+
 				console.log('this.licenceModelFormGroup', this.licenceModelFormGroup.value);
-				// console.log(
-				// 	'this.categorySecurityGuardFormGroup',
-				// 	this.licenceModelFormGroup.controls['categorySecurityGuardFormGroup'].value
-				// );
-				// this.notifyLoaded();
+
 				this.initialized = true;
 				this.spinnerService.hide('loaderSpinner');
 

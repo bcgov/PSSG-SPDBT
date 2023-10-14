@@ -12,7 +12,8 @@ import { PoliceBackgroundComponent } from '../police-background.component';
 	selector: 'app-step-background',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step *ngIf="showStepPoliceBackground">
+			<mat-step
+				><!-- *ngIf="showStepPoliceBackground"-->
 				<app-police-background></app-police-background>
 
 				<div class="row mt-4">
@@ -32,7 +33,8 @@ import { PoliceBackgroundComponent } from '../police-background.component';
 				</div>
 			</mat-step>
 
-			<mat-step *ngIf="showStepMentalHealth">
+			<mat-step
+				><!-- *ngIf="showStepMentalHealth"-->
 				<app-mental-health-conditions></app-mental-health-conditions>
 
 				<div class="row mt-4">
@@ -52,7 +54,8 @@ import { PoliceBackgroundComponent } from '../police-background.component';
 				</div>
 			</mat-step>
 
-			<mat-step *ngIf="showStepCriminalHistory">
+			<mat-step
+				><!-- *ngIf="showStepCriminalHistory"-->
 				<app-criminal-history></app-criminal-history>
 
 				<div class="row mt-4">
@@ -72,7 +75,8 @@ import { PoliceBackgroundComponent } from '../police-background.component';
 				</div>
 			</mat-step>
 
-			<mat-step *ngIf="showStepFingerprints">
+			<mat-step>
+				<!--  *ngIf="showStepFingerprints" -->
 				<app-fingerprints></app-fingerprints>
 
 				<div class="row mt-4">

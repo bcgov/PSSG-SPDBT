@@ -1,9 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { AddressRetrieveResponse } from 'src/app/api/models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { Address } from 'src/app/shared/components/address-autocomplete.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import {
@@ -112,15 +111,16 @@ export class MailingAddressComponent implements OnInit, OnDestroy, LicenceFormSt
 	matcher = new FormErrorStateMatcher();
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 
-	form = this.formBuilder.group({
-		addressSelected: new FormControl(false, [Validators.requiredTrue]),
-		mailingAddressLine1: new FormControl('', [FormControlValidators.required]),
-		mailingAddressLine2: new FormControl(''),
-		mailingCity: new FormControl('', [FormControlValidators.required]),
-		mailingPostalCode: new FormControl('', [FormControlValidators.required]),
-		mailingProvince: new FormControl('', [FormControlValidators.required]),
-		mailingCountry: new FormControl('', [FormControlValidators.required]),
-	});
+	form: FormGroup = this.licenceApplicationService.mailingAddressFormGroup;
+	//  this.formBuilder.group({
+	// 	addressSelected: new FormControl(false, [Validators.requiredTrue]),
+	// 	mailingAddressLine1: new FormControl('', [FormControlValidators.required]),
+	// 	mailingAddressLine2: new FormControl(''),
+	// 	mailingCity: new FormControl('', [FormControlValidators.required]),
+	// 	mailingPostalCode: new FormControl('', [FormControlValidators.required]),
+	// 	mailingProvince: new FormControl('', [FormControlValidators.required]),
+	// 	mailingCountry: new FormControl('', [FormControlValidators.required]),
+	// });
 
 	addressAutocompleteFields: AddressRetrieveResponse[] = [];
 
@@ -129,17 +129,17 @@ export class MailingAddressComponent implements OnInit, OnDestroy, LicenceFormSt
 	ngOnInit(): void {
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: LicenceModelSubject) => {
-				if (loaded.isLoaded) {
-					this.form.patchValue({
-						addressSelected: !!this.licenceApplicationService.licenceModel.mailingAddressLine1,
-						mailingAddressLine1: this.licenceApplicationService.licenceModel.mailingAddressLine1,
-						mailingAddressLine2: this.licenceApplicationService.licenceModel.mailingAddressLine2,
-						mailingCity: this.licenceApplicationService.licenceModel.mailingCity,
-						mailingPostalCode: this.licenceApplicationService.licenceModel.mailingPostalCode,
-						mailingProvince: this.licenceApplicationService.licenceModel.mailingProvince,
-						mailingCountry: this.licenceApplicationService.licenceModel.mailingCountry,
-					});
-				}
+				// if (loaded.isLoaded) {
+				// 	this.form.patchValue({
+				// 		addressSelected: !!this.licenceApplicationService.licenceModel.mailingAddressLine1,
+				// 		mailingAddressLine1: this.licenceApplicationService.licenceModel.mailingAddressLine1,
+				// 		mailingAddressLine2: this.licenceApplicationService.licenceModel.mailingAddressLine2,
+				// 		mailingCity: this.licenceApplicationService.licenceModel.mailingCity,
+				// 		mailingPostalCode: this.licenceApplicationService.licenceModel.mailingPostalCode,
+				// 		mailingProvince: this.licenceApplicationService.licenceModel.mailingProvince,
+				// 		mailingCountry: this.licenceApplicationService.licenceModel.mailingCountry,
+				// 	});
+				// }
 			},
 		});
 	}

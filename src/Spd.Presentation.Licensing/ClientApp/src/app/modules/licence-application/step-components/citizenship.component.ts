@@ -1,15 +1,12 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { BooleanTypeCode } from 'src/app/api/models';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import {
-	ProofOfAbilityToWorkInCanadaCode,
 	ProofOfAbilityToWorkInCanadaTypes,
 	ProofOfCanadianCitizenshipTypes,
 } from 'src/app/core/code-types/model-desc.models';
-import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
-import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import {
@@ -153,33 +150,34 @@ export class CitizenshipComponent implements OnInit, OnDestroy, LicenceFormStepC
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	form: FormGroup = this.formBuilder.group(
-		{
-			isBornInCanada: new FormControl(null, [FormControlValidators.required]),
-			proofOfCitizenship: new FormControl(),
-			proofOfAbility: new FormControl(),
-			citizenshipDocumentExpiryDate: new FormControl(),
-			citizenshipDocumentPhotoAttachments: new FormControl(null, [Validators.required]),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'proofOfCitizenship',
-					(form) => form.get('isBornInCanada')?.value == this.booleanTypeCodes.Yes
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'proofOfAbility',
-					(form) => form.get('isBornInCanada')?.value == this.booleanTypeCodes.No
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'citizenshipDocumentExpiryDate',
-					(form) =>
-						form.get('proofOfAbility')?.value == ProofOfAbilityToWorkInCanadaCode.WorkPermit ||
-						form.get('proofOfAbility')?.value == ProofOfAbilityToWorkInCanadaCode.StudyPermit
-				),
-			],
-		}
-	);
+	form: FormGroup = this.licenceApplicationService.citizenshipFormGroup;
+	//  this.formBuilder.group(
+	// 	{
+	// 		isBornInCanada: new FormControl(null, [FormControlValidators.required]),
+	// 		proofOfCitizenship: new FormControl(),
+	// 		proofOfAbility: new FormControl(),
+	// 		citizenshipDocumentExpiryDate: new FormControl(),
+	// 		citizenshipDocumentPhotoAttachments: new FormControl(null, [Validators.required]),
+	// 	},
+	// 	{
+	// 		validators: [
+	// 			FormGroupValidators.conditionalDefaultRequiredValidator(
+	// 				'proofOfCitizenship',
+	// 				(form) => form.get('isBornInCanada')?.value == this.booleanTypeCodes.Yes
+	// 			),
+	// 			FormGroupValidators.conditionalDefaultRequiredValidator(
+	// 				'proofOfAbility',
+	// 				(form) => form.get('isBornInCanada')?.value == this.booleanTypeCodes.No
+	// 			),
+	// 			FormGroupValidators.conditionalDefaultRequiredValidator(
+	// 				'citizenshipDocumentExpiryDate',
+	// 				(form) =>
+	// 					form.get('proofOfAbility')?.value == ProofOfAbilityToWorkInCanadaCode.WorkPermit ||
+	// 					form.get('proofOfAbility')?.value == ProofOfAbilityToWorkInCanadaCode.StudyPermit
+	// 			),
+	// 		],
+	// 	}
+	// );
 
 	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
 
@@ -187,14 +185,14 @@ export class CitizenshipComponent implements OnInit, OnDestroy, LicenceFormStepC
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: LicenceModelSubject) => {
 				if (loaded.isLoaded) {
-					this.form.patchValue({
-						isBornInCanada: this.licenceApplicationService.licenceModel.isBornInCanada,
-						proofOfCitizenship: this.licenceApplicationService.licenceModel.proofOfCitizenship,
-						proofOfAbility: this.licenceApplicationService.licenceModel.proofOfAbility,
-						citizenshipDocumentExpiryDate: this.licenceApplicationService.licenceModel.citizenshipDocumentExpiryDate,
-						citizenshipDocumentPhotoAttachments:
-							this.licenceApplicationService.licenceModel.citizenshipDocumentPhotoAttachments,
-					});
+					// this.form.patchValue({
+					// 	isBornInCanada: this.licenceApplicationService.licenceModel.isBornInCanada,
+					// 	proofOfCitizenship: this.licenceApplicationService.licenceModel.proofOfCitizenship,
+					// 	proofOfAbility: this.licenceApplicationService.licenceModel.proofOfAbility,
+					// 	citizenshipDocumentExpiryDate: this.licenceApplicationService.licenceModel.citizenshipDocumentExpiryDate,
+					// 	citizenshipDocumentPhotoAttachments:
+					// 		this.licenceApplicationService.licenceModel.citizenshipDocumentPhotoAttachments,
+					// });
 				}
 			},
 		});

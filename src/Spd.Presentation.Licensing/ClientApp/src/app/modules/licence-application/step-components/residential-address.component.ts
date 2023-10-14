@@ -1,9 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { AddressRetrieveResponse } from 'src/app/api/models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { Address } from 'src/app/shared/components/address-autocomplete.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import {
@@ -128,16 +127,17 @@ export class ResidentialAddressComponent implements OnInit, OnDestroy, LicenceFo
 	matcher = new FormErrorStateMatcher();
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 
-	form: FormGroup = this.formBuilder.group({
-		addressSelected: new FormControl(false, [Validators.requiredTrue]),
-		residentialAddressLine1: new FormControl('', [FormControlValidators.required]),
-		residentialAddressLine2: new FormControl(''),
-		residentialCity: new FormControl('', [FormControlValidators.required]),
-		residentialPostalCode: new FormControl('', [FormControlValidators.required]),
-		residentialProvince: new FormControl('', [FormControlValidators.required]),
-		residentialCountry: new FormControl('', [FormControlValidators.required]),
-		isMailingTheSameAsResidential: new FormControl(),
-	});
+	form: FormGroup = this.licenceApplicationService.residentialAddressFormGroup;
+	//  this.formBuilder.group({
+	// 	addressSelected: new FormControl(false, [Validators.requiredTrue]),
+	// 	residentialAddressLine1: new FormControl('', [FormControlValidators.required]),
+	// 	residentialAddressLine2: new FormControl(''),
+	// 	residentialCity: new FormControl('', [FormControlValidators.required]),
+	// 	residentialPostalCode: new FormControl('', [FormControlValidators.required]),
+	// 	residentialProvince: new FormControl('', [FormControlValidators.required]),
+	// 	residentialCountry: new FormControl('', [FormControlValidators.required]),
+	// 	isMailingTheSameAsResidential: new FormControl(),
+	// });
 
 	addressAutocompleteFields: AddressRetrieveResponse[] = [];
 
@@ -146,18 +146,18 @@ export class ResidentialAddressComponent implements OnInit, OnDestroy, LicenceFo
 	ngOnInit(): void {
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: LicenceModelSubject) => {
-				if (loaded.isLoaded) {
-					this.form.patchValue({
-						addressSelected: !!this.licenceApplicationService.licenceModel.residentialAddressLine1,
-						residentialAddressLine1: this.licenceApplicationService.licenceModel.residentialAddressLine1,
-						residentialAddressLine2: this.licenceApplicationService.licenceModel.residentialAddressLine2,
-						residentialCity: this.licenceApplicationService.licenceModel.residentialCity,
-						residentialPostalCode: this.licenceApplicationService.licenceModel.residentialPostalCode,
-						residentialProvince: this.licenceApplicationService.licenceModel.residentialProvince,
-						residentialCountry: this.licenceApplicationService.licenceModel.residentialCountry,
-						isMailingTheSameAsResidential: this.licenceApplicationService.licenceModel.isMailingTheSameAsResidential,
-					});
-				}
+				// if (loaded.isLoaded) {
+				// 	this.form.patchValue({
+				// 		addressSelected: !!this.licenceApplicationService.licenceModel.residentialAddressLine1,
+				// 		residentialAddressLine1: this.licenceApplicationService.licenceModel.residentialAddressLine1,
+				// 		residentialAddressLine2: this.licenceApplicationService.licenceModel.residentialAddressLine2,
+				// 		residentialCity: this.licenceApplicationService.licenceModel.residentialCity,
+				// 		residentialPostalCode: this.licenceApplicationService.licenceModel.residentialPostalCode,
+				// 		residentialProvince: this.licenceApplicationService.licenceModel.residentialProvince,
+				// 		residentialCountry: this.licenceApplicationService.licenceModel.residentialCountry,
+				// 		isMailingTheSameAsResidential: this.licenceApplicationService.licenceModel.isMailingTheSameAsResidential,
+				// 	});
+				// }
 			},
 		});
 	}

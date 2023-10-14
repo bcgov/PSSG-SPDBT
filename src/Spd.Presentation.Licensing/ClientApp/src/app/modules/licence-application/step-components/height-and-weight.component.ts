@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import {
 	EyeColourTypes,
@@ -7,7 +7,6 @@ import {
 	HeightUnitTypes,
 	WeightUnitTypes,
 } from 'src/app/core/code-types/model-desc.models';
-import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import {
 	LicenceApplicationService,
@@ -107,30 +106,31 @@ export class HeightAndWeightComponent implements OnInit, OnDestroy, LicenceFormS
 	weightUnitTypes = WeightUnitTypes;
 	matcher = new FormErrorStateMatcher();
 
-	form: FormGroup = this.formBuilder.group({
-		hairColourCode: new FormControl(null, [FormControlValidators.required]),
-		eyeColourCode: new FormControl(null, [FormControlValidators.required]),
-		height: new FormControl(null, [FormControlValidators.required]),
-		heightUnitCode: new FormControl(null, [FormControlValidators.required]),
-		weight: new FormControl(null, [FormControlValidators.required]),
-		weightUnitCode: new FormControl(null, [FormControlValidators.required]),
-	});
+	form: FormGroup = this.licenceApplicationService.characteristicsFormGroup;
+	//  this.formBuilder.group({
+	// 	hairColourCode: new FormControl(null, [FormControlValidators.required]),
+	// 	eyeColourCode: new FormControl(null, [FormControlValidators.required]),
+	// 	height: new FormControl(null, [FormControlValidators.required]),
+	// 	heightUnitCode: new FormControl(null, [FormControlValidators.required]),
+	// 	weight: new FormControl(null, [FormControlValidators.required]),
+	// 	weightUnitCode: new FormControl(null, [FormControlValidators.required]),
+	// });
 
 	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: LicenceModelSubject) => {
-				if (loaded.isLoaded) {
-					this.form.patchValue({
-						hairColourCode: this.licenceApplicationService.licenceModel.hairColourCode,
-						eyeColourCode: this.licenceApplicationService.licenceModel.eyeColourCode,
-						height: this.licenceApplicationService.licenceModel.height,
-						heightUnitCode: this.licenceApplicationService.licenceModel.heightUnitCode,
-						weight: this.licenceApplicationService.licenceModel.weight,
-						weightUnitCode: this.licenceApplicationService.licenceModel.weightUnitCode,
-					});
-				}
+				// if (loaded.isLoaded) {
+				// 	this.form.patchValue({
+				// 		hairColourCode: this.licenceApplicationService.licenceModel.hairColourCode,
+				// 		eyeColourCode: this.licenceApplicationService.licenceModel.eyeColourCode,
+				// 		height: this.licenceApplicationService.licenceModel.height,
+				// 		heightUnitCode: this.licenceApplicationService.licenceModel.heightUnitCode,
+				// 		weight: this.licenceApplicationService.licenceModel.weight,
+				// 		weightUnitCode: this.licenceApplicationService.licenceModel.weightUnitCode,
+				// 	});
+				// }
 			},
 		});
 	}

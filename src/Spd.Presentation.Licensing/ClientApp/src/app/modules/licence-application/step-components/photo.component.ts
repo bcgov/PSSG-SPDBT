@@ -3,8 +3,6 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { BooleanTypeCode } from 'src/app/api/models';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
-import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
-import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import {
 	LicenceApplicationService,
@@ -102,20 +100,21 @@ export class PhotoComponent implements OnInit, OnDestroy, LicenceFormStepCompone
 	booleanTypeCodes = BooleanTypeCode;
 	accept = ['.jpeg', '.jpg', '.tif', '.tiff', '.png'].join(', ');
 
-	form: FormGroup = this.formBuilder.group(
-		{
-			useBcServicesCardPhoto: new FormControl(null, [FormControlValidators.required]),
-			photoOfYourselfAttachments: new FormControl(''),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'photoOfYourselfAttachments',
-					(form) => form.get('useBcServicesCardPhoto')?.value == this.booleanTypeCodes.No
-				),
-			],
-		}
-	);
+	form: FormGroup = this.licenceApplicationService.photographOfYourselfFormGroup;
+	//  this.formBuilder.group(
+	// 	{
+	// 		useBcServicesCardPhoto: new FormControl(null, [FormControlValidators.required]),
+	// 		photoOfYourselfAttachments: new FormControl(''),
+	// 	},
+	// 	{
+	// 		validators: [
+	// 			FormGroupValidators.conditionalDefaultRequiredValidator(
+	// 				'photoOfYourselfAttachments',
+	// 				(form) => form.get('useBcServicesCardPhoto')?.value == this.booleanTypeCodes.No
+	// 			),
+	// 		],
+	// 	}
+	// );
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
@@ -124,12 +123,12 @@ export class PhotoComponent implements OnInit, OnDestroy, LicenceFormStepCompone
 	ngOnInit(): void {
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: LicenceModelSubject) => {
-				if (loaded.isLoaded) {
-					this.form.patchValue({
-						useBcServicesCardPhoto: this.licenceApplicationService.licenceModel.useBcServicesCardPhoto,
-						photoOfYourselfAttachments: this.licenceApplicationService.licenceModel.photoOfYourselfAttachments,
-					});
-				}
+				// if (loaded.isLoaded) {
+				// 	this.form.patchValue({
+				// 		useBcServicesCardPhoto: this.licenceApplicationService.licenceModel.useBcServicesCardPhoto,
+				// 		photoOfYourselfAttachments: this.licenceApplicationService.licenceModel.photoOfYourselfAttachments,
+				// 	});
+				// }
 			},
 		});
 	}

@@ -161,24 +161,23 @@ export class AliasesComponent implements OnInit, OnDestroy, LicenceFormStepCompo
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: LicenceModelSubject) => {
 				if (loaded.isLoaded) {
-					this.form.patchValue({
-						previousNameFlag: this.licenceApplicationService.licenceModel.previousNameFlag,
-					});
-
-					const aliases = this.licenceApplicationService.licenceModel.aliases ?? [];
-					if (aliases.length > 0) {
-						const control = this.form.get('aliases') as FormArray;
-						aliases.forEach((item) => {
-							control.push(this.licenceApplicationService.aliasesFormGroup);
-							// 	this.formBuilder.group({
-							// 		givenName: [item.givenName],
-							// 		middleName1: [item.middleName1],
-							// 		middleName2: [item.middleName2],
-							// 		surname: [item.surname, [FormControlValidators.required]],
-							// 	})
-							// );
-						});
-					}
+					// this.form.patchValue({
+					// 	previousNameFlag: this.licenceApplicationService.licenceModel.previousNameFlag,
+					// });
+					// const aliases = this.licenceApplicationService.licenceModel.aliases ?? [];
+					// if (aliases.length > 0) {
+					// 	const control = this.form.get('aliases') as FormArray;
+					// 	aliases.forEach((item) => {
+					// 		control.push(this.licenceApplicationService.aliasesFormGroup);
+					// 		// 	this.formBuilder.group({
+					// 		// 		givenName: [item.givenName],
+					// 		// 		middleName1: [item.middleName1],
+					// 		// 		middleName2: [item.middleName2],
+					// 		// 		surname: [item.surname, [FormControlValidators.required]],
+					// 		// 	})
+					// 		// );
+					// 	});
+					// }
 				}
 			},
 		});

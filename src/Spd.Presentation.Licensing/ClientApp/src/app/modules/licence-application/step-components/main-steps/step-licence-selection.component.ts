@@ -1,8 +1,9 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 import { Subscription } from 'rxjs';
-import { SelectOptions, SwlApplicationTypeCode, SwlCategoryTypeCode } from 'src/app/core/code-types/model-desc.models';
+import { SwlApplicationTypeCode, SwlCategoryTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { LicenceApplicationService, LicenceModelSubject } from '../../licence-application.service';
 import { DogsOrRestraintsComponent } from '../dogs-or-restraints.component';
 import { LicenceAccessCodeComponent } from '../licence-access-code.component';
@@ -160,7 +161,7 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 				</div>
 			</mat-step>
 
-			<mat-step *ngFor="let category of swlCategoryList; let i = index">
+			<mat-step *ngFor="let category of categories; let i = index">
 				<div [ngSwitch]="category.code">
 					<div *ngSwitchCase="swlCategoryTypeCodes.ArmouredCarGuard">
 						<app-licence-category-armoured-car-guard
@@ -340,7 +341,7 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy {
 	showStepLicenceExpired = false;
 	showStepDogsAndRestraints = false;
 
-	swlCategoryList: SelectOptions[] = [];
+	// swlCategoryList: SelectOptions[] = [];
 	swlCategoryTypeCodes = SwlCategoryTypeCode;
 	swlStatusTypeCodes = SwlApplicationTypeCode;
 
@@ -448,7 +449,7 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy {
 
 		this.setStepData();
 
-		this.swlCategoryList = this.licenceApplicationService.licenceModel.swlCategoryList;
+		// this.swlCategoryList = this.licenceApplicationService.licenceModel.swlCategoryList;
 
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
@@ -472,14 +473,20 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy {
 			...(this.licenceTermComponent ? this.licenceTermComponent.getDataToSave() : {}),
 		};
 
-		const categories = this.licenceApplicationService.licenceModel.swlCategoryList;
-		console.log('categories', categories);
+		// const categories = this.licenceApplicationService.licenceModel.swlCategoryList;
+		// const categoriesFormGroup = this.licenceModelFormGroup.controls['categoriesFormGroup'].value;
+		const categoriesFormGroup = this.licenceApplicationService.licenceModelFormGroup.controls[
+			'categoriesFormGroup'
+		] as FormGroup;
+		const categories = categoriesFormGroup.controls['categories'].value;
+		console.log('xxxxxxxxxxxxxx categories', categories);
 
 		// call function to delete all licence category data
 		// this.licenceApplicationService.clearAllLicenceCategoryData(); // TODO do this at the end ? what if save mid-way?
 
 		// add back the appropriate licence category data
 		categories.forEach((item: any) => {
+			console.log('item', item);
 			switch (item.code) {
 				case SwlCategoryTypeCode.ArmouredCarGuard: {
 					if (this.armouredCarGuardComponent) {
@@ -652,5 +659,14 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy {
 				console.error('Unknown Form', step);
 		}
 		return false;
+	}
+
+	get categories(): Array<any> {
+		// const categories = this.licenceApplicationService.licenceModel.swlCategoryList;
+		// const categoriesFormGroup = this.licenceModelFormGroup.controls['categoriesFormGroup'].value;
+		const categoriesFormGroup = this.licenceApplicationService.licenceModelFormGroup.controls[
+			'categoriesFormGroup'
+		] as FormGroup;
+		return categoriesFormGroup.controls['categories'].value;
 	}
 }

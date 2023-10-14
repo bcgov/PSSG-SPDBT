@@ -1,8 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { GovernmentIssuedPhotoIdTypes } from 'src/app/core/code-types/model-desc.models';
-import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import {
@@ -87,11 +86,12 @@ export class AdditionalGovIdComponent implements OnInit, OnDestroy, LicenceFormS
 
 	matcher = new FormErrorStateMatcher();
 
-	form: FormGroup = this.formBuilder.group({
-		governmentIssuedPhotoTypeCode: new FormControl(null, [FormControlValidators.required]),
-		governmentIssuedPhotoExpiryDate: new FormControl(),
-		governmentIssuedPhotoAttachments: new FormControl(null, [Validators.required]),
-	});
+	form: FormGroup = this.licenceApplicationService.govIssuedIdFormGroup;
+	//  this.formBuilder.group({
+	// 	governmentIssuedPhotoTypeCode: new FormControl(null, [FormControlValidators.required]),
+	// 	governmentIssuedPhotoExpiryDate: new FormControl(),
+	// 	governmentIssuedPhotoAttachments: new FormControl(null, [Validators.required]),
+	// });
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
@@ -101,13 +101,13 @@ export class AdditionalGovIdComponent implements OnInit, OnDestroy, LicenceFormS
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: LicenceModelSubject) => {
 				if (loaded.isLoaded) {
-					this.form.patchValue({
-						governmentIssuedPhotoTypeCode: this.licenceApplicationService.licenceModel.governmentIssuedPhotoTypeCode,
-						governmentIssuedPhotoExpiryDate:
-							this.licenceApplicationService.licenceModel.governmentIssuedPhotoExpiryDate,
-						governmentIssuedPhotoAttachments:
-							this.licenceApplicationService.licenceModel.governmentIssuedPhotoAttachments,
-					});
+					// this.form.patchValue({
+					// 	governmentIssuedPhotoTypeCode: this.licenceApplicationService.licenceModel.governmentIssuedPhotoTypeCode,
+					// 	governmentIssuedPhotoExpiryDate:
+					// 		this.licenceApplicationService.licenceModel.governmentIssuedPhotoExpiryDate,
+					// 	governmentIssuedPhotoAttachments:
+					// 		this.licenceApplicationService.licenceModel.governmentIssuedPhotoAttachments,
+					// });
 				}
 			},
 		});

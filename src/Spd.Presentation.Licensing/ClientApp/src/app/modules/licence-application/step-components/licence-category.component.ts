@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { SelectOptions, SwlCategoryTypeCode, SwlCategoryTypes } from 'src/app/core/code-types/model-desc.models';
@@ -325,7 +325,7 @@ export class LicenceCategoryComponent implements OnInit, OnDestroy, LicenceFormS
 		// console.log('updatedList', this.validCategoryList);
 	}
 
-	public get categories(): FormControl {
-		return this.form.get('categories') as FormControl;
+	public get categories(): FormArray {
+		return this.form.get('categories') as FormArray;
 	}
 }

@@ -1,8 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import {
 	LicenceApplicationService,
 	LicenceFormStepComponent,
@@ -61,22 +60,23 @@ export class ContactInformationComponent implements OnInit, OnDestroy, LicenceFo
 	// matcher = new FormErrorStateMatcher();
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 
-	form: FormGroup = this.formBuilder.group({
-		contactEmailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
-		contactPhoneNumber: new FormControl('', [Validators.required]),
-	});
+	form: FormGroup = this.licenceApplicationService.contactInformationFormGroup;
+	//  this.formBuilder.group({
+	// 	contactEmailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
+	// 	contactPhoneNumber: new FormControl('', [Validators.required]),
+	// });
 
 	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: LicenceModelSubject) => {
-				if (loaded.isLoaded) {
-					this.form.patchValue({
-						contactEmailAddress: this.licenceApplicationService.licenceModel.contactEmailAddress,
-						contactPhoneNumber: this.licenceApplicationService.licenceModel.contactPhoneNumber,
-					});
-				}
+				// if (loaded.isLoaded) {
+				// 	this.form.patchValue({
+				// 		contactEmailAddress: this.licenceApplicationService.licenceModel.contactEmailAddress,
+				// 		contactPhoneNumber: this.licenceApplicationService.licenceModel.contactPhoneNumber,
+				// 	});
+				// }
 			},
 		});
 	}

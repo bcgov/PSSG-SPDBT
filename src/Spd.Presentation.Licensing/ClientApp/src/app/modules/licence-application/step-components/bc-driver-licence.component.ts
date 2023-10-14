@@ -3,7 +3,6 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { BooleanTypeCode } from 'src/app/api/models';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
-import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import {
 	LicenceApplicationService,
@@ -75,22 +74,23 @@ export class BcDriverLicenceComponent implements OnInit, OnDestroy, LicenceFormS
 	booleanTypeCodes = BooleanTypeCode;
 	matcher = new FormErrorStateMatcher();
 
-	form: FormGroup = this.formBuilder.group({
-		hasBcDriversLicence: new FormControl(null, [FormControlValidators.required]),
-		bcDriversLicenceNumber: new FormControl(),
-	});
+	form: FormGroup = this.licenceApplicationService.bcDriversLicenceFormGroup;
+	//  this.formBuilder.group({
+	// 	hasBcDriversLicence: new FormControl(null, [FormControlValidators.required]),
+	// 	bcDriversLicenceNumber: new FormControl(),
+	// });
 
 	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: LicenceModelSubject) => {
-				if (loaded.isLoaded) {
-					this.form.patchValue({
-						hasBcDriversLicence: this.licenceApplicationService.licenceModel.hasBcDriversLicence,
-						bcDriversLicenceNumber: this.licenceApplicationService.licenceModel.bcDriversLicenceNumber,
-					});
-				}
+				// if (loaded.isLoaded) {
+				// 	this.form.patchValue({
+				// 		hasBcDriversLicence: this.licenceApplicationService.licenceModel.hasBcDriversLicence,
+				// 		bcDriversLicenceNumber: this.licenceApplicationService.licenceModel.bcDriversLicenceNumber,
+				// 	});
+				// }
 			},
 		});
 	}
