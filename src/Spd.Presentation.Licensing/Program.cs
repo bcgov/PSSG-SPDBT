@@ -26,6 +26,9 @@ Assembly[] assemblies = Directory.GetFiles(Path.GetDirectoryName(Assembly.GetExe
      .Select(assembly => Assembly.LoadFrom(assembly))
      .ToArray();
 
+var secretsFile = Environment.GetEnvironmentVariable($"SECRETS_FILE");
+if (!string.IsNullOrEmpty(secretsFile)) builder.Configuration.AddJsonFile(secretsFile, true, true);
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
