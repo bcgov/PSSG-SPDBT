@@ -424,8 +424,7 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 				</div>
 			</mat-step>-->
 
-			<!-- *ngIf="showStepDogsAndRestraints"-->
-			<mat-step>
+			<mat-step *ngIf="showStepDogsAndRestraints">
 				<app-dogs-or-restraints></app-dogs-or-restraints>
 
 				<div class="row mt-4">
@@ -475,12 +474,12 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy {
 	readonly STEP_DOGS_OR_RESTRAINT = '8';
 	readonly STEP_LICENCE_TERM = '7';
 
-	isReplacement = false;
-	isNotReplacement = false;
-	showStepAccessCode = false;
-	showStepSoleProprietor = false;
-	showStepLicenceExpired = false;
-	showStepDogsAndRestraints = false;
+	// isReplacement = false;
+	// isNotReplacement = false;
+	// showStepAccessCode = false;
+	// showStepSoleProprietor = false;
+	// showStepLicenceExpired = false;
+	// showStepDogsAndRestraints = false;
 
 	// swlCategoryList: SelectOptions[] = [];
 	swlCategoryTypeCodes = SwlCategoryTypeCode;
@@ -824,9 +823,10 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy {
 	// }
 
 	get categoriesArray(): FormArray {
-		const temp2 = <FormArray>this.form.get('categories');
-		// const temp = <FormArray>this.licenceApplicationService.licenceModelFormGroup.get('categories');
-		// console.log('TEMP', temp, temp2);
-		return temp2;
+		return <FormArray>this.form.get('categories');
+	}
+
+	get showStepDogsAndRestraints(): boolean {
+		return !!this.categoriesArray.controls.find((element) => element.value.code == SwlCategoryTypeCode.SecurityGuard);
 	}
 }

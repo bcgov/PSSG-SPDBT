@@ -32,7 +32,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 								mat-stroked-button
 								color="primary"
 								class="large my-2"
-								*ngIf="categories.value.length < 6"
+								*ngIf="categoriesArray.value.length < 6"
 								(click)="onAddCategory()"
 							>
 								Add Category
@@ -53,7 +53,6 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 								>
 									<div class="row" [formGroupName]="i">
 										<mat-divider class="mt-4 mb-3" *ngIf="first"></mat-divider>
-										<!-- <div class="category-title">{{ group.get('desc')?.value }}</div> -->
 
 										<div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12">
 											<mat-chip-option [selectable]="false" class="mat-chip-green">
@@ -69,7 +68,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 												class="w-auto float-end"
 												style="color: var(--color-red);"
 												aria-label="Remove category"
-												(click)="onRemove(group.get('code')?.value, i)"
+												(click)="onRemove(i)"
 											>
 												<mat-icon>delete_outline</mat-icon>Remove
 											</button>
@@ -78,32 +77,6 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 										<mat-divider class="my-3"></mat-divider>
 									</div>
 								</ng-container>
-
-								<!-- <div class="row" *ngFor="let category of categories.value; let i = index; let first = first">
-									<mat-divider class="mt-4 mb-3" *ngIf="first"></mat-divider>
-
-									<div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12">
-										<mat-chip-option [selectable]="false" class="mat-chip-green">
-											Category #{{ i + 1 }}
-										</mat-chip-option>
-									</div>
-									<div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12">
-										<span class="category-title">{{ category.get('desc').value }}</span>
-									</div>
-									<div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12">
-										<button
-											mat-stroked-button
-											class="w-auto float-end"
-											style="color: var(--color-red);"
-											aria-label="Remove category"
-											(click)="onRemove(category.get('code').value, i)"
-										>
-											<mat-icon>delete_outline</mat-icon>Remove
-										</button>
-									</div>
-
-									<mat-divider class="my-3"></mat-divider>
-								</div> -->
 							</div>
 						</div>
 					</form>
@@ -191,7 +164,7 @@ export class LicenceCategoryComponent implements OnInit, OnDestroy, LicenceFormS
 		}
 	}
 
-	onRemove(code: string, i: any) {
+	onRemove(i: any) {
 		const data: DialogOptions = {
 			icon: 'warning',
 			title: 'Confirmation',
@@ -205,9 +178,7 @@ export class LicenceCategoryComponent implements OnInit, OnDestroy, LicenceFormS
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
-					// const item = this.swlCategoryList.at(i);
-					// this.swlCategoryList.splice(i, 1);
-					// this.licenceApplicationService.clearLicenceCategoryData(code as SwlCategoryTypeCode);
+					this.categoriesArray.removeAt(i);
 					// this.setValidCategoryList();
 				}
 			});
@@ -217,7 +188,7 @@ export class LicenceCategoryComponent implements OnInit, OnDestroy, LicenceFormS
 		// const isValid = this.swlCategoryList.length > 0;
 		// this.isDirtyAndInvalid = !isValid;
 		// return isValid;
-		return true;
+		return this.categoriesArray.length > 0;
 	}
 
 	getDataToSave(): any {
@@ -379,9 +350,9 @@ export class LicenceCategoryComponent implements OnInit, OnDestroy, LicenceFormS
 		// console.log('updatedList', this.validCategoryList);
 	}
 
-	public get categories(): FormArray {
-		return this.form.get('categories') as FormArray;
-	}
+	// public get categories(): FormArray {
+	// 	return this.form.get('categories') as FormArray;
+	// }
 
 	get categoriesArray(): FormArray {
 		return <FormArray>this.form.get('categories');

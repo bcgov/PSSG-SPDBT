@@ -1,7 +1,7 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
-import { FormControl } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
+import { BooleanTypeCode } from 'src/app/api/models';
 import {
 	ProofOfAbilityToWorkInCanadaCode,
 	ProofOfCanadianCitizenshipCode,
@@ -196,9 +196,6 @@ export class StepIdentificationComponent {
 	readonly STEP_MAILING_ADDRESS = '8';
 	readonly STEP_CONTACT_INFORMATION = '9';
 
-	showAdditionalGovermentIdStep = true;
-	showMailingAddressStep = true;
-
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -217,7 +214,7 @@ export class StepIdentificationComponent {
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
-	onStepSelectionChange(event: StepperSelectionEvent) {
+	onStepSelectionChange(_event: StepperSelectionEvent) {
 		this.scrollIntoView.emit(true);
 	}
 
@@ -228,8 +225,6 @@ export class StepIdentificationComponent {
 	onStepNext(formNumber: string): void {
 		console.log('onStepNext formNumber:', formNumber);
 
-		this.setStepData();
-
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 
@@ -237,50 +232,11 @@ export class StepIdentificationComponent {
 	}
 
 	onFormValidNextStep(formNumber: string): void {
-		this.setStepData();
-
 		const isValid = this.dirtyForm(formNumber);
 		// console.log('onFormValidNextStep formNumber:', formNumber, isValid);
 
 		if (!isValid) return;
-
-		if (formNumber == this.STEP_CITIZENSHIP) {
-			const proofOfCitizenship = this.licenceApplicationService.licenceModelFormGroup.controls[
-				'citizenshipFormGroup'
-			].get('proofOfCitizenship') as FormControl;
-			const proofOfAbility = this.licenceApplicationService.licenceModelFormGroup.controls['citizenshipFormGroup'].get(
-				'proofOfAbility'
-			) as FormControl;
-
-			this.showAdditionalGovermentIdStep = !(
-				proofOfCitizenship.value == ProofOfCanadianCitizenshipCode.ValidCanadianPassport ||
-				proofOfAbility.value == ProofOfAbilityToWorkInCanadaCode.ValidPermanentResidentCard
-			);
-		} else if (formNumber == this.STEP_RESIDENTIAL_ADDRESS) {
-			const isMailingTheSameAsResidential = this.licenceApplicationService.licenceModelFormGroup.controls[
-				'residentialAddressFormGroup'
-			].get('isMailingTheSameAsResidential') as FormControl;
-
-			this.showMailingAddressStep = !isMailingTheSameAsResidential.value;
-		}
-
 		this.childstepper.next();
-	}
-
-	private setStepData(): void {
-		// let stepData = {
-		// 	...(this.aliasesComponent ? this.aliasesComponent.getDataToSave() : {}),
-		// 	...(this.citizenshipComponent ? this.citizenshipComponent.getDataToSave() : {}),
-		// 	...(this.additionalGovIdComponent ? this.additionalGovIdComponent.getDataToSave() : {}),
-		// 	...(this.bcDriverLicenceComponent ? this.bcDriverLicenceComponent.getDataToSave() : {}),
-		// 	...(this.heightAndWeightComponent ? this.heightAndWeightComponent.getDataToSave() : {}),
-		// 	...(this.residentialAddressComponent ? this.residentialAddressComponent.getDataToSave() : {}),
-		// 	...(this.mailingAddressComponent ? this.mailingAddressComponent.getDataToSave() : {}),
-		// 	...(this.contactInformationComponent ? this.contactInformationComponent.getDataToSave() : {}),
-		// };
-		// this.licenceApplicationService.notifyModelChanged(stepData);
-		// console.log('IDENTIFICATION stepData', stepData);
-		// console.log('IDENTIFICATION stepData2', this.licenceApplicationService.licenceModel);
 	}
 
 	private dirtyForm(step: string): boolean {
@@ -307,5 +263,20 @@ export class StepIdentificationComponent {
 				console.error('Unknown Form', step);
 		}
 		return false;
+	}
+
+	get showMailingAddressStep(): boolean {
+		const form = this.licenceApplicationService.residentialAddressFormGroup;
+		return !form.value.isMailingTheSameAsResidential;
+	}
+
+	get showAdditionalGovermentIdStep(): boolean {
+		const form = this.licenceApplicationService.citizenshipFormGroup;
+		return (
+			(form.value.isBornInCanada == BooleanTypeCode.Yes &&
+				form.value.proofOfCitizenship != ProofOfCanadianCitizenshipCode.ValidCanadianPassport) ||
+			(form.value.isBornInCanada == BooleanTypeCode.No &&
+				form.value.proofOfAbility != ProofOfAbilityToWorkInCanadaCode.ValidPermanentResidentCard)
+		);
 	}
 }
