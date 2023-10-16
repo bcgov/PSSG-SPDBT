@@ -18,7 +18,7 @@ import { DelegateManageDialogData, DelegateManageModalComponent } from './delega
 			[isPsaUser]="isPsaUser"
 			[orgId]="orgId"
 			[userId]="userId"
-			heading="Screening Statuses"
+			heading="Application Statuses"
 			(emitManageDelegate)="onManageDelegates($event)"
 			(emitVerifyIdentity)="onVerifyIdentity($event)"
 		></app-screening-statuses-common>

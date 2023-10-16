@@ -13,8 +13,8 @@ import { AuthUserIdirService } from 'src/app/core/services/auth-user-idir.servic
 			[portal]="portal.Psso"
 			[isPsaUser]="isPsaUser"
 			[orgId]="orgId"
-			heading="Screening Checks"
-			subtitle="Screening check links will expire 14 days after being sent"
+			heading="Criminal Record Checks"
+			subtitle="Criminal Record check links will expire 14 days after being sent"
 		></app-screening-requests-common>
 	`,
 	styles: [],
