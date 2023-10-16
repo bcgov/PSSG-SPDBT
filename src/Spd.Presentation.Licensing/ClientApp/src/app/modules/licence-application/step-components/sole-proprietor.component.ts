@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs';
 import { BooleanTypeCode } from 'src/app/api/models';
 import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
@@ -39,7 +38,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 	styles: [],
 })
 export class SoleProprietorComponent implements OnInit, OnDestroy, LicenceFormStepComponent {
-	private licenceModelLoadedSubscription!: Subscription;
+	// private licenceModelLoadedSubscription!: Subscription;
 
 	booleanTypeCodes = BooleanTypeCode;
 	title = '';
@@ -89,7 +88,7 @@ export class SoleProprietorComponent implements OnInit, OnDestroy, LicenceFormSt
 	}
 
 	ngOnDestroy() {
-		this.licenceModelLoadedSubscription.unsubscribe();
+		// this.licenceModelLoadedSubscription.unsubscribe();
 	}
 
 	isFormValid(): boolean {

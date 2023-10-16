@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs';
 import { GenderTypes } from 'src/app/core/code-types/model-desc.models';
 import { UtilService } from 'src/app/core/services/util.service';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
@@ -81,7 +80,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 	styles: [],
 })
 export class PersonalInformationComponent implements OnInit, OnDestroy, LicenceFormStepComponent {
-	private licenceModelLoadedSubscription!: Subscription;
+	// private licenceModelLoadedSubscription!: Subscription;
 
 	genderTypes = GenderTypes;
 	matcher = new FormErrorStateMatcher();
@@ -164,7 +163,7 @@ export class PersonalInformationComponent implements OnInit, OnDestroy, LicenceF
 	}
 
 	ngOnDestroy() {
-		this.licenceModelLoadedSubscription.unsubscribe();
+		// this.licenceModelLoadedSubscription.unsubscribe();
 	}
 
 	isFormValid(): boolean {

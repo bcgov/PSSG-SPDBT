@@ -63,21 +63,22 @@ import { LicenceApplicationService } from '../licence-application.service';
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Licence Category</div>
 															<div class="text-data">
-																<!-- <div *ngFor="let category of categories.value; let i = index">
-																	{{ category.get('desc').value }}
-																</div> -->
-
-																<!-- <ng-container
-																	formArrayName="categories"
-																	*ngFor="let group of categoriesArray.controls; let i = index; let first = first"
-																>
-																	<div [formGroupName]="i">
-																		{{ group.get('desc')?.value }}
+																<ul class="m-0">
+																	<div formGroupName="categoriesFormGroup">
+																		<ng-container
+																			formArrayName="categories"
+																			*ngFor="let group of categoriesArray.controls; let i = index; let last = last"
+																		>
+																			<ng-container [formGroupName]="i">
+																				<li [ngClass]="last ? 'mb-0' : 'mb-1'">
+																					{{ group.get('desc')?.value }}
+																				</li>
+																			</ng-container>
+																		</ng-container>
 																	</div>
-																</ng-container> -->
+																</ul>
 															</div>
 														</div>
-
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Licence Term</div>
 															<div class="text-data">{{ licenceTermCode.value | options : 'SwlTermTypes' }}</div>
@@ -100,225 +101,199 @@ import { LicenceApplicationService } from '../licence-application.service';
 														</div>
 													</div>
 													<mat-divider class="mt-4 mb-2"></mat-divider>
+
 													<div class="text-minor-heading">Documents Uploaded</div>
-
-													<!-- <div class="row mt-0">
-														<ng-container
-															formArrayName="categories"
-															*ngFor="let group of categoriesArray.controls; let i = index; let first = first"
-														>
-															<div class="row" [formGroupName]="i">
-																<div class="col-lg-6 col-md-12 mt-lg-2">
-																	{{ group.get('desc')?.value }}
-																</div>
-															</div>
-														</ng-container>
-													</div> -->
-
-													<!--
 													<div class="row mt-0">
-														<ng-container *ngFor="let category of categories.value; let i = index">
-															<ng-container [ngSwitch]="category.get('code').value">
-																<ng-container *ngSwitchCase="categoryTypeCodes.ArmouredCarGuard">
-																	<div class="col-lg-6 col-md-12 mt-lg-2">
-																		<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																			{{ category.get('code').value | options : 'SwlCategoryTypes' }} Documents
-																		</div>
-																		<div class="text-data">
-																			<div
-																				*ngFor="
-																					let doc of licenceModel.licenceCategoryArmouredCarGuard?.attachments;
-																					let i = index
-																				"
-																			>
-																				{{ doc.name }}
+														<ng-container formGroupName="categoriesFormGroup">
+															<ng-container
+																formArrayName="categories"
+																*ngFor="let group of categoriesArray.controls; let i = index; let last = last"
+															>
+																<ng-container [formGroupName]="i">
+																	<ng-container [ngSwitch]="group.get('code')?.value">
+																		<ng-container *ngSwitchCase="categoryTypeCodes.ArmouredCarGuard">
+																			<div class="col-lg-6 col-md-12 mt-lg-2">
+																				<div class="text-label d-block text-muted mt-2 mt-lg-0">
+																					{{ group.get('code')?.value | options : 'SwlCategoryTypes' }} Documents
+																				</div>
+																				<div class="text-data">
+																					<div
+																						*ngFor="let doc of categoryArmouredCarGuardAttachments.value; let i = index"
+																					>
+																						{{ doc.name }}
+																					</div>
+																				</div>
 																			</div>
-																		
-																		</div>
-																	</div>
-																</ng-container>
-																<ng-container *ngSwitchCase="categoryTypeCodes.FireInvestigator">
-																	<div class="col-lg-6 col-md-12 mt-lg-2">
-																		<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																			{{ category.get('code').value | options : 'SwlCategoryTypes' }} Documents
-																		</div>
-																		<div class="text-data">
-																			<div
-																				*ngFor="
-																					let doc of licenceModel.licenceCategoryFireInvestigator
-																						?.fireinvestigatorcertificateattachments;
-																					let i = index
-																				"
-																			>
-																				{{ doc.name }}
+																		</ng-container>
+																		<ng-container *ngSwitchCase="categoryTypeCodes.FireInvestigator">
+																			<div class="col-lg-6 col-md-12 mt-lg-2">
+																				<div class="text-label d-block text-muted mt-2 mt-lg-0">
+																					{{ group.get('code')?.value | options : 'SwlCategoryTypes' }} Documents
+																				</div>
+																				<div class="text-data">
+																					<div
+																						*ngFor="
+																							let doc of categoryFireInvestigatorCertificateAttachments.value;
+																							let i = index
+																						"
+																					>
+																						{{ doc.name }}
+																					</div>
+																					<div
+																						*ngFor="
+																							let doc of categoryFireInvestigatorLetterAttachments.value;
+																							let i = index
+																						"
+																					>
+																						{{ doc.name }}
+																					</div>
+																				</div>
 																			</div>
-																			<div
-																				*ngFor="
-																					let doc of licenceModel.licenceCategoryFireInvestigator
-																						?.fireinvestigatorletterattachments;
-																					let i = index
-																				"
-																			>
-																				{{ doc.name }}
+																		</ng-container>
+																		<ng-container *ngSwitchCase="categoryTypeCodes.Locksmith">
+																			<div class="col-lg-6 col-md-12 mt-lg-2">
+																				<div class="text-label d-block text-muted mt-2 mt-lg-0">
+																					{{ group.get('code')?.value | options : 'SwlCategoryTypes' }} Documents
+																				</div>
+																				<div class="text-data">
+																					<div *ngFor="let doc of categoryLocksmithAttachments.value; let i = index">
+																						{{ doc.name }}
+																					</div>
+																				</div>
 																			</div>
-																		</div>
-																	</div>
-																</ng-container>
-																<ng-container *ngSwitchCase="categoryTypeCodes.Locksmith">
-																	<div class="col-lg-6 col-md-12 mt-lg-2">
-																		<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																			{{ category.get('code').value | options : 'SwlCategoryTypes' }} Documents
-																		</div>
-																		<div class="text-data">
-																			<div
-																				*ngFor="
-																					let doc of licenceModel.licenceCategoryLocksmith?.attachments;
-																					let i = index
-																				"
-																			>
-																				{{ doc.name }}
-																			</div>
-																		</div>
-																	</div>
-																</ng-container>
-																<ng-container *ngSwitchCase="categoryTypeCodes.PrivateInvestigator">
-																	<div class="col-lg-6 col-md-12 mt-lg-2">
-																		<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																			{{ category.get('code').value | options : 'SwlCategoryTypes' }} Documents
-																		</div>
-																		<div class="text-data">
-																			<div
-																				*ngFor="
-																					let doc of licenceModel.licenceCategoryPrivateInvestigator?.attachments;
-																					let i = index
-																				"
-																			>
-																				{{ doc.name }}
-																			</div>
+																		</ng-container>
+																		<ng-container *ngSwitchCase="categoryTypeCodes.PrivateInvestigator">
+																			<div class="col-lg-6 col-md-12 mt-lg-2">
+																				<div class="text-label d-block text-muted mt-2 mt-lg-0">
+																					{{ group.get('code')?.value | options : 'SwlCategoryTypes' }} Documents
+																				</div>
+																				<div class="text-data">
+																					<div
+																						*ngFor="
+																							let doc of categoryPrivateInvestigatorAttachments.value;
+																							let i = index
+																						"
+																					>
+																						{{ doc.name }}
+																					</div>
 
-																			<div
-																				*ngFor="
-																					let doc of licenceModel.licenceCategoryPrivateInvestigator
-																						?.trainingattachments;
-																					let i = index
-																				"
-																			>
-																				{{ doc.name }}
-																			</div>
+																					<div
+																						*ngFor="
+																							let doc of categoryPrivateInvestigatorTrainingAttachments.value;
+																							let i = index
+																						"
+																					>
+																						{{ doc.name }}
+																					</div>
 
-																			<div
-																				*ngFor="
-																					let doc of licenceModel.licenceCategoryPrivateInvestigator
-																						?.fireinvestigatorcertificateattachments;
-																					let i = index
-																				"
-																			>
-																				{{ doc.name }}
-																			</div>
+																					<div
+																						*ngFor="
+																							let doc of categoryPrivateInvestigatorFireCertificateAttachments.value;
+																							let i = index
+																						"
+																					>
+																						{{ doc.name }}
+																					</div>
 
-																			<div
-																				*ngFor="
-																					let doc of licenceModel.licenceCategoryPrivateInvestigator
-																						?.fireinvestigatorletterattachments;
-																					let i = index
-																				"
-																			>
-																				{{ doc.name }}
+																					<div
+																						*ngFor="
+																							let doc of categoryPrivateInvestigatorFireLetterAttachments.value;
+																							let i = index
+																						"
+																					>
+																						{{ doc.name }}
+																					</div>
+																				</div>
 																			</div>
-																		</div>
-																	</div>
-																</ng-container>
-																<ng-container *ngSwitchCase="categoryTypeCodes.PrivateInvestigatorUnderSupervision">
-																	<div class="col-lg-6 col-md-12 mt-lg-2">
-																		<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																			{{ category.get('code').value | options : 'SwlCategoryTypes' }} Documents
-																		</div>
-																		<div class="text-data">
-																			<div
-																				*ngFor="
-																					let doc of licenceModel.licenceCategoryPrivateInvestigatorUnderSupervision
-																						?.attachments;
-																					let i = index
-																				"
-																			>
-																				{{ doc.name }}
-																			</div>
+																		</ng-container>
+																		<ng-container *ngSwitchCase="categoryTypeCodes.PrivateInvestigatorUnderSupervision">
+																			<div class="col-lg-6 col-md-12 mt-lg-2">
+																				<div class="text-label d-block text-muted mt-2 mt-lg-0">
+																					{{ group.get('code')?.value | options : 'SwlCategoryTypes' }} Documents
+																				</div>
+																				<div class="text-data">
+																					<div
+																						*ngFor="
+																							let doc of categoryPrivateInvestigatorUnderSupervisionAttachments.value;
+																							let i = index
+																						"
+																					>
+																						{{ doc.name }}
+																					</div>
 
-																			<div
-																				*ngFor="
-																					let doc of licenceModel.licenceCategoryPrivateInvestigatorUnderSupervision
-																						?.trainingattachments;
-																					let i = index
-																				"
-																			>
-																				{{ doc.name }}
+																					<div
+																						*ngFor="
+																							let doc of categoryPrivateInvestigatorUnderSupervisionTrainingAttachments.value;
+																							let i = index
+																						"
+																					>
+																						{{ doc.name }}
+																					</div>
+																				</div>
 																			</div>
-																		</div>
-																	</div>
-																</ng-container>
-																<ng-container *ngSwitchCase="categoryTypeCodes.SecurityAlarmInstaller">
-																	<div class="col-lg-6 col-md-12 mt-lg-2">
-																		<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																			{{ category.get('code').value | options : 'SwlCategoryTypes' }} Documents
-																		</div>
-																		<div class="text-data">
-																			<div
-																				*ngFor="
-																					let doc of licenceModel.licenceCategorySecurityAlarmInstaller?.attachments;
-																					let i = index
-																				"
-																			>
-																				{{ doc.name }}
+																		</ng-container>
+																		<ng-container *ngSwitchCase="categoryTypeCodes.SecurityAlarmInstaller">
+																			<div class="col-lg-6 col-md-12 mt-lg-2">
+																				<div class="text-label d-block text-muted mt-2 mt-lg-0">
+																					{{ group.get('code')?.value | options : 'SwlCategoryTypes' }} Documents
+																				</div>
+																				<div class="text-data">
+																					<div
+																						*ngFor="
+																							let doc of categorySecurityAlarmInstallerAttachments.value;
+																							let i = index
+																						"
+																					>
+																						{{ doc.name }}
+																					</div>
+																				</div>
 																			</div>
-																		</div>
-																	</div>
-																</ng-container>
-																<ng-container *ngSwitchCase="categoryTypeCodes.SecurityGuard">
-																	<div class="col-lg-6 col-md-12 mt-lg-2">
-																		<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																			{{ category.get('code').value | options : 'SwlCategoryTypes' }} Documents
-																		</div>
-																		<div class="text-data">
-																			<div
-																				*ngFor="
-																					let doc of licenceModel.licenceCategorySecurityGuard?.attachments;
-																					let i = index
-																				"
-																			>
-																				{{ doc.name }}
+																		</ng-container>
+																		<ng-container *ngSwitchCase="categoryTypeCodes.SecurityGuard">
+																			<div class="col-lg-6 col-md-12 mt-lg-2">
+																				<div class="text-label d-block text-muted mt-2 mt-lg-0">
+																					{{ group.get('code')?.value | options : 'SwlCategoryTypes' }} Documents
+																				</div>
+																				<div class="text-data">
+																					<div
+																						*ngFor="let doc of categorySecurityGuardAttachments.value; let i = index"
+																					>
+																						{{ doc.name }}
+																					</div>
+																				</div>
 																			</div>
-																		</div>
-																	</div>
-																</ng-container>
-																<ng-container *ngSwitchCase="categoryTypeCodes.SecurityConsultant">
-																	<div class="col-lg-6 col-md-12 mt-lg-2">
-																		<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																			{{ category.get('code').value | options : 'SwlCategoryTypes' }} Documents
-																		</div>
-																		<div class="text-data">
-																			<div
-																				*ngFor="
-																					let doc of licenceModel.licenceCategorySecurityConsultant?.attachments;
-																					let i = index
-																				"
-																			>
-																				{{ doc.name }}
+																		</ng-container>
+																		<ng-container *ngSwitchCase="categoryTypeCodes.SecurityConsultant">
+																			<div class="col-lg-6 col-md-12 mt-lg-2">
+																				<div class="text-label d-block text-muted mt-2 mt-lg-0">
+																					{{ group.get('code')?.value | options : 'SwlCategoryTypes' }} Documents
+																				</div>
+																				<div class="text-data">
+																					<div
+																						*ngFor="
+																							let doc of categorySecurityConsultantAttachments.value;
+																							let i = index
+																						"
+																					>
+																						{{ doc.name }}
+																					</div>
+																					<div
+																						*ngFor="
+																							let doc of categorySecurityConsultantResumeAttachments.value;
+																							let i = index
+																						"
+																					>
+																						{{ doc.name }}
+																					</div>
+																				</div>
 																			</div>
-																			<div
-																				*ngFor="
-																					let doc of licenceModel.licenceCategorySecurityConsultant?.resumeattachments;
-																					let i = index
-																				"
-																			>
-																				{{ doc.name }}
-																			</div>
-																		</div>
-																	</div>
+																		</ng-container>
+																	</ng-container>
 																</ng-container>
 															</ng-container>
 														</ng-container>
 													</div>
--->
+
 													<ng-container *ngIf="hasExpiredLicence.value == booleanTypeCodes.Yes">
 														<mat-divider class="mt-4 mb-2"></mat-divider>
 														<div class="text-minor-heading">Dog & Restraints Authorization</div>
@@ -393,26 +368,34 @@ import { LicenceApplicationService } from '../licence-application.service';
 															</div>
 															<div class="text-data">{{ isPoliceOrPeaceOfficer.value }}</div>
 														</div>
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Role</div>
-															<div class="text-data">
-																<span
-																	*ngIf="officerRole.value != policeOfficerRoleCodes.Other; else otherPoliceOfficerRole"
-																	>{{ officerRole.value | options : 'PoliceOfficerRoleTypes' | default }}</span
-																>
-																<ng-template #otherPoliceOfficerRole> Other: {{ otherOfficerRole.value }} </ng-template>
-															</div>
-														</div>
-														<div class="col-lg-4 col-md-12 mt-lg-2" *ngIf="letterOfNoConflictAttachments.value">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Letter of No Conflict</div>
-															<div class="text-data">
-																<div *ngFor="let doc of letterOfNoConflictAttachments.value; let i = index">
-																	{{ doc.name }}
+														<ng-container *ngIf="isPoliceOrPeaceOfficer.value == booleanTypeCodes.Yes">
+															<div class="col-lg-4 col-md-12 mt-lg-2">
+																<div class="text-label d-block text-muted mt-2 mt-lg-0">Role</div>
+																<div class="text-data">
+																	<span
+																		*ngIf="
+																			officerRole.value != policeOfficerRoleCodes.Other;
+																			else otherPoliceOfficerRole
+																		"
+																		>{{ officerRole.value | options : 'PoliceOfficerRoleTypes' | default }}</span
+																	>
+																	<ng-template #otherPoliceOfficerRole>
+																		Other: {{ otherOfficerRole.value }}
+																	</ng-template>
 																</div>
 															</div>
-														</div>
+															<div class="col-lg-4 col-md-12 mt-lg-2" *ngIf="letterOfNoConflictAttachments.value">
+																<div class="text-label d-block text-muted mt-2 mt-lg-0">Letter of No Conflict</div>
+																<div class="text-data">
+																	<div *ngFor="let doc of letterOfNoConflictAttachments.value; let i = index">
+																		{{ doc.name }}
+																	</div>
+																</div>
+															</div>
+														</ng-container>
 													</div>
 													<mat-divider class="mt-4 mb-2"></mat-divider>
+
 													<div class="text-minor-heading">Mental Health Conditions</div>
 													<div class="row mt-0">
 														<div class="col-lg-6 col-md-12 mt-lg-2">
@@ -429,6 +412,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 														</div>
 													</div>
 													<mat-divider class="mt-4 mb-2"></mat-divider>
+
 													<div class="text-minor-heading">Criminal History</div>
 													<div class="row mt-0">
 														<div class="col-12 mt-lg-2">
@@ -439,6 +423,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 														</div>
 													</div>
 													<mat-divider class="mt-4 mb-2"></mat-divider>
+
 													<div class="text-minor-heading">Fingerprints</div>
 													<div class="row mt-0">
 														<div class="col-12 mt-lg-2">
@@ -495,6 +480,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 														</div>
 													</div>
 													<mat-divider class="mt-4 mb-2"></mat-divider>
+
 													<div class="text-minor-heading">Aliases</div>
 													<div class="row mt-0">
 														<div class="col-lg-4 col-md-12 mt-lg-2">
@@ -518,6 +504,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 														</div>
 													</div>
 													<mat-divider class="mt-4 mb-2"></mat-divider>
+
 													<div class="text-minor-heading">Identification</div>
 													<div class="row mt-0">
 														<div class="col-lg-8 col-md-12">
@@ -623,6 +610,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 														</div>
 													</div>
 													<mat-divider class="mt-4 mb-2"></mat-divider>
+
 													<div class="text-minor-heading">Residential Address</div>
 													<div class="row mt-0">
 														<div class="col-lg-4 col-md-12 mt-lg-2">
@@ -655,33 +643,36 @@ import { LicenceApplicationService } from '../licence-application.service';
 														</div>
 													</div>
 													<mat-divider class="mt-4 mb-2"></mat-divider>
-													<div class="text-minor-heading">Mailing Address</div>
-													<div class="row mt-0">
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 1</div>
-															<div class="text-data">{{ mailingAddressLine1.value | default }}</div>
+
+													<ng-container *ngIf="!isMailingTheSameAsResidential.value">
+														<div class="text-minor-heading">Mailing Address</div>
+														<div class="row mt-0">
+															<div class="col-lg-4 col-md-12 mt-lg-2">
+																<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 1</div>
+																<div class="text-data">{{ mailingAddressLine1.value | default }}</div>
+															</div>
+															<div class="col-lg-4 col-md-12 mt-lg-2">
+																<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 2</div>
+																<div class="text-data">{{ mailingAddressLine2.value | default }}</div>
+															</div>
+															<div class="col-lg-4 col-md-12 mt-lg-2">
+																<div class="text-label d-block text-muted mt-2 mt-lg-0">City</div>
+																<div class="text-data">{{ mailingCity.value | default }}</div>
+															</div>
+															<div class="col-lg-4 col-md-12 mt-lg-2">
+																<div class="text-label d-block text-muted mt-2 mt-lg-0">Postal Code</div>
+																<div class="text-data">{{ mailingPostalCode.value | default }}</div>
+															</div>
+															<div class="col-lg-4 col-md-12 mt-lg-2">
+																<div class="text-label d-block text-muted mt-2 mt-lg-0">Province</div>
+																<div class="text-data">{{ mailingProvince.value | default }}</div>
+															</div>
+															<div class="col-lg-4 col-md-12 mt-lg-2">
+																<div class="text-label d-block text-muted mt-2 mt-lg-0">Country</div>
+																<div class="text-data">{{ mailingCountry.value | default }}</div>
+															</div>
 														</div>
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 2</div>
-															<div class="text-data">{{ mailingAddressLine2.value | default }}</div>
-														</div>
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">City</div>
-															<div class="text-data">{{ mailingCity.value | default }}</div>
-														</div>
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Postal Code</div>
-															<div class="text-data">{{ mailingPostalCode.value | default }}</div>
-														</div>
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Province</div>
-															<div class="text-data">{{ mailingProvince.value | default }}</div>
-														</div>
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Country</div>
-															<div class="text-data">{{ mailingCountry.value | default }}</div>
-														</div>
-													</div>
+													</ng-container>
 												</div>
 											</mat-expansion-panel>
 										</mat-accordion>
@@ -781,16 +772,61 @@ export class SummaryReviewComponent implements OnInit, OnDestroy {
 		return this.form.controls['soleProprietorFormGroup'].get('isSoleProprietor') as FormControl;
 	}
 
-	// get categories(): FormGroup {
-	// 	return this.form.controls['categoriesFormGroup'] as FormGroup;
-	// }
-
-	// get categories(): FormArray {
-	// 	return this.form.controls['categoriesFormGroup'].get('categories') as FormArray;
-	// }
-
 	get categoriesArray(): FormArray {
 		return this.form.controls['categoriesFormGroup'].get('categories') as FormArray;
+	}
+	get categoryArmouredCarGuardAttachments(): FormControl {
+		return this.form.controls['categoryArmouredCarGuardFormGroup'].get('attachments') as FormControl;
+	}
+
+	get categoryFireInvestigatorCertificateAttachments(): FormControl {
+		return this.form.controls['categoryFireInvestigatorFormGroup'].get(
+			'fireinvestigatorcertificateattachments'
+		) as FormControl;
+	}
+	get categoryFireInvestigatorLetterAttachments(): FormControl {
+		return this.form.controls['categoryFireInvestigatorFormGroup'].get(
+			'fireinvestigatorletterattachments'
+		) as FormControl;
+	}
+	get categoryLocksmithAttachments(): FormControl {
+		return this.form.controls['categoryLocksmithFormGroup'].get('attachments') as FormControl;
+	}
+	get categorySecurityGuardAttachments(): FormControl {
+		return this.form.controls['categorySecurityGuardFormGroup'].get('attachments') as FormControl;
+	}
+	get categorySecurityConsultantAttachments(): FormControl {
+		return this.form.controls['categorySecurityConsultantFormGroup'].get('attachments') as FormControl;
+	}
+	get categorySecurityConsultantResumeAttachments(): FormControl {
+		return this.form.controls['categorySecurityConsultantFormGroup'].get('resumeattachments') as FormControl;
+	}
+	get categorySecurityAlarmInstallerAttachments(): FormControl {
+		return this.form.controls['categorySecurityAlarmInstallerFormGroup'].get('attachments') as FormControl;
+	}
+	get categoryPrivateInvestigatorAttachments(): FormControl {
+		return this.form.controls['categoryPrivateInvestigatorFormGroup'].get('attachments') as FormControl;
+	}
+	get categoryPrivateInvestigatorTrainingAttachments(): FormControl {
+		return this.form.controls['categoryPrivateInvestigatorFormGroup'].get('trainingattachments') as FormControl;
+	}
+	get categoryPrivateInvestigatorFireCertificateAttachments(): FormControl {
+		return this.form.controls['categoryPrivateInvestigatorFormGroup'].get(
+			'fireinvestigatorcertificateattachments'
+		) as FormControl;
+	}
+	get categoryPrivateInvestigatorFireLetterAttachments(): FormControl {
+		return this.form.controls['categoryPrivateInvestigatorFormGroup'].get(
+			'fireinvestigatorletterattachments'
+		) as FormControl;
+	}
+	get categoryPrivateInvestigatorUnderSupervisionAttachments(): FormControl {
+		return this.form.controls['categoryPrivateInvestigatorUnderSupervisionFormGroup'].get('attachments') as FormControl;
+	}
+	get categoryPrivateInvestigatorUnderSupervisionTrainingAttachments(): FormControl {
+		return this.form.controls['categoryPrivateInvestigatorUnderSupervisionFormGroup'].get(
+			'trainingattachments'
+		) as FormControl;
 	}
 
 	get licenceTermCode(): FormControl {

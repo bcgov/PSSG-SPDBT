@@ -31,11 +31,8 @@ import { StepReviewComponent } from '../step-components/main-steps/step-review.c
 								(scrollIntoView)="onScrollIntoView()"
 							></app-step-licence-selection>
 						</mat-step>
-						<!-- <span *ngIf="isNotReplacement; else isReplacementTabName">Licence Selection</span>
-								<ng-template #isReplacementTabName>Licence Confirmation</ng-template> -->
 
-						<!-- <ng-container *ngIf="isNotReplacement"> -->
-						<mat-step completed="true">
+						<!-- 	<mat-step completed="true">
 							<ng-template matStepLabel>Background</ng-template>
 							<app-step-background
 								(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -51,7 +48,7 @@ import { StepReviewComponent } from '../step-components/main-steps/step-review.c
 								(nextStepperStep)="onNextStepperStep(stepper)"
 								(scrollIntoView)="onScrollIntoView()"
 							></app-step-identification>
-						</mat-step>
+						</mat-step> -->
 
 						<mat-step completed="true">
 							<ng-template matStepLabel>Review and Confirm</ng-template>
@@ -63,25 +60,6 @@ import { StepReviewComponent } from '../step-components/main-steps/step-review.c
 								></app-step-review>
 							</ng-template>
 						</mat-step>
-						<!-- </ng-container> -->
-
-						<!-- <ng-container *ngIf="isReplacement"> -->
-						<!-- <mat-step completed="true">
-								<ng-template matStepLabel>Licence Confirmation</ng-template>
-								<app-step-review
-									(previousStepperStep)="onPreviousStepperStep(stepper)"
-									(nextStepperStep)="onNextStepperStep(stepper)"
-								></app-step-review>
-							</mat-step> -->
-
-						<!-- <mat-step completed="true">
-								<ng-template matStepLabel>Address Update</ng-template>
-								<app-step-review
-									(previousStepperStep)="onPreviousStepperStep(stepper)"
-									(nextStepperStep)="onNextStepperStep(stepper)"
-								></app-step-review>
-							</mat-step>
-						</ng-container> -->
 
 						<mat-step completed="true">
 							<ng-template matStepLabel>Pay</ng-template>
@@ -180,7 +158,7 @@ export class LicenceWizardComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnDestroy() {
-		// if (this.licenceModelLoadedSubscription) this.licenceModelLoadedSubscription.unsubscribe();
+		if (this.licenceModelLoadedSubscription) this.licenceModelLoadedSubscription.unsubscribe();
 	}
 
 	onStepSelectionChange(event: StepperSelectionEvent) {

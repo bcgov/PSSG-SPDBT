@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { Subscription } from 'rxjs';
 import { SelectOptions, SwlCategoryTypeCode, SwlCategoryTypes } from 'src/app/core/code-types/model-desc.models';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
@@ -95,7 +94,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 	],
 })
 export class LicenceCategoryComponent implements OnInit, OnDestroy, LicenceFormStepComponent {
-	private licenceModelLoadedSubscription!: Subscription;
+	// private licenceModelLoadedSubscription!: Subscription;
 
 	form: FormGroup = this.licenceApplicationService.categoriesFormGroup;
 
@@ -130,7 +129,7 @@ export class LicenceCategoryComponent implements OnInit, OnDestroy, LicenceFormS
 	}
 
 	ngOnDestroy() {
-		this.licenceModelLoadedSubscription.unsubscribe();
+		// this.licenceModelLoadedSubscription.unsubscribe();
 	}
 
 	onAddCategory(): void {

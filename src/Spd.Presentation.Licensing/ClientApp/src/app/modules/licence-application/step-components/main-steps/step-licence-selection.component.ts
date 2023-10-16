@@ -2,9 +2,8 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
-import { Subscription } from 'rxjs';
 import { SwlApplicationTypeCode, SwlCategoryTypeCode } from 'src/app/core/code-types/model-desc.models';
-import { LicenceApplicationService, LicenceModelSubject } from '../../licence-application.service';
+import { LicenceApplicationService } from '../../licence-application.service';
 import { DogsOrRestraintsComponent } from '../dogs-or-restraints.component';
 import { LicenceAccessCodeComponent } from '../licence-access-code.component';
 import { LicenceCategoryArmouredCarGuardComponent } from '../licence-category-armoured-car-guard.component';
@@ -464,7 +463,7 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepLicenceSelectionComponent implements OnInit, OnDestroy {
-	private licenceModelLoadedSubscription!: Subscription;
+	// private licenceModelLoadedSubscription!: Subscription;
 
 	readonly STEP_ACCESS_CODE = '2';
 	readonly STEP_SOLE_PROPRIETOR = '3';
@@ -550,29 +549,29 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy {
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		console.log('this.form.value', this.form.value);
-		this.licenceModelLoadedSubscription = this.licenceModelLoadedSubscription =
-			this.licenceApplicationService.licenceModelLoaded$.subscribe({
-				next: (loaded: LicenceModelSubject) => {
-					// if (loaded.isLoaded || loaded.isSetFlags) {
-					// 	console.log(
-					// 		'onInit StepLicenceSelectionComponent',
-					// 		this.licenceApplicationService.licenceModel.applicationTypeCode
-					// 	);
-					// 	this.isReplacement = this.licenceApplicationService.licenceModel.isReplacement ?? false;
-					// 	this.isNotReplacement = this.licenceApplicationService.licenceModel.isNotReplacement ?? false;
-					// 	this.showStepAccessCode = this.licenceApplicationService.licenceModel.showStepAccessCode ?? false;
-					// 	this.showStepSoleProprietor = this.licenceApplicationService.licenceModel.showStepSoleProprietor ?? false;
-					// 	this.showStepLicenceExpired = this.licenceApplicationService.licenceModel.showStepLicenceExpired ?? false;
-					// 	this.showStepDogsAndRestraints =
-					// 		this.licenceApplicationService.licenceModel.showStepDogsAndRestraints ?? false;
-					// }
-				},
-			});
+		// console.log('this.form.value', this.form.value);
+		// this.licenceModelLoadedSubscription = this.licenceModelLoadedSubscription =
+		// 	this.licenceApplicationService.licenceModelLoaded$.subscribe({
+		// 		next: (loaded: LicenceModelSubject) => {
+		// 			// if (loaded.isLoaded || loaded.isSetFlags) {
+		// 			// 	console.log(
+		// 			// 		'onInit StepLicenceSelectionComponent',
+		// 			// 		this.licenceApplicationService.licenceModel.applicationTypeCode
+		// 			// 	);
+		// 			// 	this.isReplacement = this.licenceApplicationService.licenceModel.isReplacement ?? false;
+		// 			// 	this.isNotReplacement = this.licenceApplicationService.licenceModel.isNotReplacement ?? false;
+		// 			// 	this.showStepAccessCode = this.licenceApplicationService.licenceModel.showStepAccessCode ?? false;
+		// 			// 	this.showStepSoleProprietor = this.licenceApplicationService.licenceModel.showStepSoleProprietor ?? false;
+		// 			// 	this.showStepLicenceExpired = this.licenceApplicationService.licenceModel.showStepLicenceExpired ?? false;
+		// 			// 	this.showStepDogsAndRestraints =
+		// 			// 		this.licenceApplicationService.licenceModel.showStepDogsAndRestraints ?? false;
+		// 			// }
+		// 		},
+		// 	});
 	}
 
 	ngOnDestroy() {
-		this.licenceModelLoadedSubscription.unsubscribe();
+		// this.licenceModelLoadedSubscription.unsubscribe();
 	}
 
 	onStepNext(formNumber: string): void {
@@ -805,22 +804,6 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy {
 		}
 		return false;
 	}
-
-	// get categories(): Array<any> {
-	// 	// const categories = this.licenceApplicationService.licenceModel.swlCategoryList;
-	// 	// const categoriesFormGroup = this.licenceModelFormGroup.controls['categoriesFormGroup'].value;
-	// 	const categoriesFormGroup = this.licenceApplicationService.licenceModelFormGroup.controls[
-	// 		'categoriesFormGroup'
-	// 	] as FormGroup;
-	// 	return categoriesFormGroup.controls['categories'].value;
-	// }
-
-	// get categories(): FormArray {
-	// 	// console.log('zzz', this.licenceApplicationService.licenceModelFormGroup.value);
-	// 	return this.licenceApplicationService.licenceModelFormGroup.controls['categoriesFormGroup'].get(
-	// 		'categories'
-	// 	) as FormArray;
-	// }
 
 	get categoriesArray(): FormArray {
 		return <FormArray>this.form.get('categories');
