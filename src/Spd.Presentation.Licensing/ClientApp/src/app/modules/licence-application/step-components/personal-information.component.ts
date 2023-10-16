@@ -4,11 +4,7 @@ import { Subscription } from 'rxjs';
 import { GenderTypes } from 'src/app/core/code-types/model-desc.models';
 import { UtilService } from 'src/app/core/services/util.service';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import {
-	LicenceApplicationService,
-	LicenceFormStepComponent,
-	LicenceModelSubject,
-} from '../licence-application.service';
+import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-personal-information',
@@ -130,41 +126,41 @@ export class PersonalInformationComponent implements OnInit, OnDestroy, LicenceF
 	) {}
 
 	ngOnInit(): void {
-		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
-			next: (loaded: LicenceModelSubject) => {
-				if (loaded.isLoaded || loaded.isSetFlags) {
-					// if (this.licenceApplicationService.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Replacement) {
-					// 	this.title = this.title_view;
-					// 	this.subtitle = '';
-					// } else {
-					// this.title = this.title_confirm;
-					// this.subtitle =
-					// 	this.licenceApplicationService.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired
-					// 		? this.subtitle_auth_new
-					// 		: this.subtitle_unauth_renew_update;
-					// }
+		// this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
+		// 	next: (loaded: LicenceModelSubject) => {
+		// 		if (loaded.isLoaded || loaded.isSetFlags) {
+		// if (this.licenceApplicationService.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Replacement) {
+		// 	this.title = this.title_view;
+		// 	this.subtitle = '';
+		// } else {
+		// this.title = this.title_confirm;
+		// this.subtitle =
+		// 	this.licenceApplicationService.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired
+		// 		? this.subtitle_auth_new
+		// 		: this.subtitle_unauth_renew_update;
+		// }
 
-					this.title = this.title_confirm;
-					this.subtitle = this.subtitle_auth_new;
+		this.title = this.title_confirm;
+		this.subtitle = this.subtitle_auth_new;
 
-					// this.form.patchValue({
-					// 	oneLegalName: this.licenceApplicationService.licenceModel.oneLegalName,
-					// 	givenName: this.licenceApplicationService.licenceModel.givenName,
-					// 	middleName1: this.licenceApplicationService.licenceModel.middleName1,
-					// 	middleName2: this.licenceApplicationService.licenceModel.middleName2,
-					// 	surname: this.licenceApplicationService.licenceModel.surname,
-					// 	genderCode: this.licenceApplicationService.licenceModel.genderCode,
-					// 	dateOfBirth: this.licenceApplicationService.licenceModel.dateOfBirth,
-					// });
+		// this.form.patchValue({
+		// 	oneLegalName: this.licenceApplicationService.licenceModel.oneLegalName,
+		// 	givenName: this.licenceApplicationService.licenceModel.givenName,
+		// 	middleName1: this.licenceApplicationService.licenceModel.middleName1,
+		// 	middleName2: this.licenceApplicationService.licenceModel.middleName2,
+		// 	surname: this.licenceApplicationService.licenceModel.surname,
+		// 	genderCode: this.licenceApplicationService.licenceModel.genderCode,
+		// 	dateOfBirth: this.licenceApplicationService.licenceModel.dateOfBirth,
+		// });
 
-					// if (this.licenceApplicationService.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Replacement) {
-					// 	this.form.disable();
-					// } else {
-					// 	this.form.enable();
-					// }
-				}
-			},
-		});
+		// if (this.licenceApplicationService.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Replacement) {
+		// 	this.form.disable();
+		// } else {
+		// 	this.form.enable();
+		// 			// }
+		// 		}
+		// 	},
+		// });
 	}
 
 	ngOnDestroy() {

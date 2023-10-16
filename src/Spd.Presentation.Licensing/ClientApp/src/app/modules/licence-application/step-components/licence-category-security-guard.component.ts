@@ -1,9 +1,9 @@
 import { Component, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
-import { SelectOptions } from 'src/app/core/code-types/model-desc.models';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
+import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 import {
 	LicenceApplicationService,
 	LicenceFormStepComponent,
@@ -108,21 +108,17 @@ export class LicenceCategorySecurityGuardComponent implements OnInit, OnDestroy,
 	private licenceModelLoadedSubscription!: Subscription;
 
 	form: FormGroup = this.licenceApplicationService.categorySecurityGuardFormGroup;
-	//  this.formBuilder.group({
-	// 	requirement: new FormControl(null, [FormControlValidators.required]),
-	// 	attachments: new FormControl('', [Validators.required]),
-	// });
 	title = '';
 
-	@Input() option: SelectOptions | null = null;
+	@Input() option: string | null = null;
 	@Input() index: number = 0;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.title = `${this.option?.desc ?? ''}`;
+		this.title = this.optionsPipe.transform(this.option, 'SwlCategoryTypes');
 
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: LicenceModelSubject) => {

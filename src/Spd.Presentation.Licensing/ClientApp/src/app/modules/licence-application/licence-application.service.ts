@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { HotToastService } from '@ngneat/hot-toast';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -866,36 +866,36 @@ export class LicenceApplicationService {
 						mailingPostalCode: 'M6J 3P3',
 						mailingProvince: 'Ontario',
 					},
-					categoriesFormGroup: {
-						categories: [
-							// { desc: 'Armoured Car Guard', code: SwlCategoryTypeCode.ArmouredCarGuard },
-							{ desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
+					// categoriesFormGroup: {
+					// 	categories: [
+					// 		// { desc: 'Armoured Car Guard', code: SwlCategoryTypeCode.ArmouredCarGuard },
+					// 		{ desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
 
-							{ desc: 'Armoured Car Guard', code: SwlCategoryTypeCode.ArmouredCarGuard },
-							// { desc: 'Body Armour Sales', code: SwlCategoryTypeCode.BodyArmourSales },
-							// { desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
-							// { desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
-							{ desc: 'Fire Investigator', code: SwlCategoryTypeCode.FireInvestigator },
-							{ desc: 'Locksmith', code: SwlCategoryTypeCode.Locksmith },
-							// { desc: 'Locksmith - Under Supervision', code: SwlCategoryTypeCode.LocksmithUnderSupervision },
-							{ desc: 'Private Investigator', code: SwlCategoryTypeCode.PrivateInvestigator },
-							// {
-							// 	desc: 'Private Investigator - Under Supervision',
-							// 	code: SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision,
-							// },
-							{ desc: 'Security Alarm Installer', code: SwlCategoryTypeCode.SecurityAlarmInstaller },
-							// {
-							// 	desc: 'Security Alarm Installer - Under Supervision',
-							// 	code: SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
-							// },
-							// { desc: 'Security Alarm Monitor', code: SwlCategoryTypeCode.SecurityAlarmMonitor },
-							// { desc: 'Security Alarm Response', code: SwlCategoryTypeCode.SecurityAlarmResponse },
-							// { desc: 'Security Alarm Sales', code: SwlCategoryTypeCode.SecurityAlarmSales },
-							{ desc: 'Security Consultant', code: SwlCategoryTypeCode.SecurityConsultant },
-							// { desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
-							// { desc: 'Security Guard - Under Supervision', code: SwlCategoryTypeCode.SecurityGuardUnderSupervision },
-						],
-					},
+					// 		{ desc: 'Armoured Car Guard', code: SwlCategoryTypeCode.ArmouredCarGuard },
+					// 		// { desc: 'Body Armour Sales', code: SwlCategoryTypeCode.BodyArmourSales },
+					// 		// { desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
+					// 		// { desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
+					// 		{ desc: 'Fire Investigator', code: SwlCategoryTypeCode.FireInvestigator },
+					// 		{ desc: 'Locksmith', code: SwlCategoryTypeCode.Locksmith },
+					// 		// { desc: 'Locksmith - Under Supervision', code: SwlCategoryTypeCode.LocksmithUnderSupervision },
+					// 		{ desc: 'Private Investigator', code: SwlCategoryTypeCode.PrivateInvestigator },
+					// 		// {
+					// 		// 	desc: 'Private Investigator - Under Supervision',
+					// 		// 	code: SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision,
+					// 		// },
+					// 		{ desc: 'Security Alarm Installer', code: SwlCategoryTypeCode.SecurityAlarmInstaller },
+					// 		// {
+					// 		// 	desc: 'Security Alarm Installer - Under Supervision',
+					// 		// 	code: SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
+					// 		// },
+					// 		// { desc: 'Security Alarm Monitor', code: SwlCategoryTypeCode.SecurityAlarmMonitor },
+					// 		// { desc: 'Security Alarm Response', code: SwlCategoryTypeCode.SecurityAlarmResponse },
+					// 		// { desc: 'Security Alarm Sales', code: SwlCategoryTypeCode.SecurityAlarmSales },
+					// 		{ desc: 'Security Consultant', code: SwlCategoryTypeCode.SecurityConsultant },
+					// 		// { desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
+					// 		// { desc: 'Security Guard - Under Supervision', code: SwlCategoryTypeCode.SecurityGuardUnderSupervision },
+					// 	],
+					// },
 					categorySecurityGuardFormGroup: {
 						attachments: [myFile],
 						requirement: 'a',
@@ -942,39 +942,117 @@ export class LicenceApplicationService {
 				// this.licenceModel = { ...defaults };
 				this.licenceModelFormGroup.patchValue({ ...defaults });
 
-				const categoriesFormGroup = this.licenceModelFormGroup.controls['categoriesFormGroup'].value;
-				console.log('categoriesFormGroup', categoriesFormGroup);
+				// const categoriesFormGroup = this.licenceModelFormGroup.controls['categoriesFormGroup'].value;
+				// console.log('categoriesFormGroup', categoriesFormGroup);
 
-				defaults.categoriesFormGroup.categories.forEach((item: any) => {
-					console.log('item', item);
+				// // const categoryItem = this.formBuilder.group({
+				// // 	desc: new FormControl(option.desc),
+				// // 	code: new FormControl(option?.code),
+				// // });
+				// // console.log('xxxx categoryItem', categoryItem);
 
-					const categoryItem = this.formBuilder.group({
+				// // this.categories.value.push(categoryItem);
+
+				// const categories = this.licenceModelFormGroup.controls['categoriesFormGroup'].get('categories') as FormArray;
+				// const categories = this.formBuilder.array([]);
+
+				const defaultCategories = [
+					{ desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
+					{ desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
+					// { desc: 'Armoured Car Guard', code: SwlCategoryTypeCode.ArmouredCarGuard },
+					// { desc: 'Fire Investigator', code: SwlCategoryTypeCode.FireInvestigator },
+					// { desc: 'Locksmith', code: SwlCategoryTypeCode.Locksmith },
+					// { desc: 'Private Investigator', code: SwlCategoryTypeCode.PrivateInvestigator },
+					// { desc: 'Security Alarm Installer', code: SwlCategoryTypeCode.SecurityAlarmInstaller },
+					// { desc: 'Security Consultant', code: SwlCategoryTypeCode.SecurityConsultant },
+				];
+
+				let transformedCategoryItems = defaultCategories.map((item: any) =>
+					this.formBuilder.group({
 						desc: new FormControl(item.desc),
 						code: new FormControl(item.code),
-					});
+					})
+				);
+				const yy = this.licenceModelFormGroup.controls['categoriesFormGroup'] as FormGroup;
+				yy.setControl('categories', this.formBuilder.array(transformedCategoryItems));
+				console.log('categories', yy);
+				console.log('categories', yy.value.length);
 
-					(this.licenceModelFormGroup.controls['categoriesFormGroup'].get('categories') as FormArray<FormGroup>).push(
-						categoryItem
-					);
-				});
+				// defaultCategories.forEach((item: any) => {
+				// 	console.log('item', item);
 
-				const aliasesFormGroup = this.licenceModelFormGroup.controls['aliasesFormGroup'].value;
-				console.log('aliasesFormGroup', aliasesFormGroup);
+				// 	const categoryItem = this.formBuilder.group({
+				// 		desc: new FormControl(item.desc),
+				// 		code: new FormControl(item.code),
+				// 	});
 
-				defaults.aliasesFormGroup.aliases.forEach((item: any) => {
-					console.log('item', item);
+				// 	categories.value.push(categoryItem);
+				// 	// categories.value.push(
+				// 	// 	aliasItem
+				// 	// );
+				// });
+				// console.log('categories', categories);
 
-					const aliasItem = this.formBuilder.group({
+				// const aliasesFormGroup = this.licenceModelFormGroup.controls['aliasesFormGroup'].value;
+				// const aliases = this.licenceModelFormGroup.controls['aliasesFormGroup'].get('aliases') as FormArray;
+				// console.log('aliasesFormGroup', aliasesFormGroup);
+				// console.log('aliases', aliases);
+
+				// defaults.aliasesFormGroup.aliases.forEach((item: any) => {
+				// 	console.log('item', item);
+
+				// 	const aliasItem = this.formBuilder.group({
+				// 		givenName: new FormControl(item.givenName),
+				// 		middleName1: new FormControl(item.middleName1),
+				// 		middleName2: new FormControl(item.middleName2),
+				// 		surname: new FormControl(item.surname, [FormControlValidators.required]),
+				// 	});
+
+				// 	// (this.licenceModelFormGroup.controls['aliasesFormGroup'].get('aliases') as FormArray<FormGroup>).push(
+				// 	// 	aliasItem
+				// 	// );
+				// 	aliases.value.push(aliasItem);
+				// });
+				// console.log('aliases', aliases);
+				// console.log('aliases', aliases.value.length);
+
+				// const aliasesFormGroup = this.licenceModelFormGroup.controls['aliasesFormGroup'].value;
+				// const aliases = this.licenceModelFormGroup.controls['aliasesFormGroup'].get('aliases') as FormArray;
+				// console.log('aliasesFormGroup', aliasesFormGroup);
+				// console.log('aliases', aliases);
+
+				let transformedAliasItems = defaults.aliasesFormGroup.aliases.map((item: any) =>
+					this.formBuilder.group({
 						givenName: new FormControl(item.givenName),
 						middleName1: new FormControl(item.middleName1),
 						middleName2: new FormControl(item.middleName2),
 						surname: new FormControl(item.surname, [FormControlValidators.required]),
-					});
+					})
+				);
 
-					(this.licenceModelFormGroup.controls['aliasesFormGroup'].get('aliases') as FormArray<FormGroup>).push(
-						aliasItem
-					);
-				});
+				console.log('transformedItems', transformedAliasItems);
+				const xx = this.licenceModelFormGroup.controls['aliasesFormGroup'] as FormGroup;
+				xx.setControl('aliases', this.formBuilder.array(transformedAliasItems));
+
+				// defaults.aliasesFormGroup.aliases.forEach((item: any) => {
+				// 	console.log('item', item);
+
+				// 	const aliasItem = this.formBuilder.group({
+				// 		givenName: new FormControl(item.givenName),
+				// 		middleName1: new FormControl(item.middleName1),
+				// 		middleName2: new FormControl(item.middleName2),
+				// 		surname: new FormControl(item.surname, [FormControlValidators.required]),
+				// 	});
+
+				// 	// (this.licenceModelFormGroup.controls['aliasesFormGroup'].get('aliases') as FormArray<FormGroup>).push(
+				// 	// 	aliasItem
+				// 	// );
+				// 	aliases.value.push(aliasItem);
+				// });
+				console.log('aliases', xx);
+				console.log('aliases', xx.value.length);
+
+				// this.ToDoListForm.setControl('items', this.fb.array(transformedItems));
 
 				console.log('this.licenceModelFormGroup', this.licenceModelFormGroup.value);
 

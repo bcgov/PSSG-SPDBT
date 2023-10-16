@@ -135,6 +135,7 @@ export class StepBackgroundComponent implements OnInit, OnDestroy {
 
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
+	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
@@ -170,7 +171,9 @@ export class StepBackgroundComponent implements OnInit, OnDestroy {
 		this.licenceModelLoadedSubscription.unsubscribe();
 	}
 
-	onStepSelectionChange(event: StepperSelectionEvent) {}
+	onStepSelectionChange(event: StepperSelectionEvent) {
+		this.scrollIntoView.emit(true);
+	}
 
 	onStepPrevious(): void {
 		this.previousStepperStep.emit(true);
@@ -197,15 +200,14 @@ export class StepBackgroundComponent implements OnInit, OnDestroy {
 	}
 
 	private setStepData(): void {
-		let stepData = {
-			...(this.policeBackgroundComponent ? this.policeBackgroundComponent.getDataToSave() : {}),
-			...(this.mentalHealthConditionsComponent ? this.mentalHealthConditionsComponent.getDataToSave() : {}),
-			...(this.criminalHistoryComponent ? this.criminalHistoryComponent.getDataToSave() : {}),
-			...(this.fingerprintsComponent ? this.fingerprintsComponent.getDataToSave() : {}),
-			// ...(this.backgroundInfoComponent ? this.backgroundInfoComponent.getDataToSave() : {}),
-		};
-
-		this.licenceApplicationService.notifyModelChanged(stepData);
+		// let stepData = {
+		// 	...(this.policeBackgroundComponent ? this.policeBackgroundComponent.getDataToSave() : {}),
+		// 	...(this.mentalHealthConditionsComponent ? this.mentalHealthConditionsComponent.getDataToSave() : {}),
+		// 	...(this.criminalHistoryComponent ? this.criminalHistoryComponent.getDataToSave() : {}),
+		// 	...(this.fingerprintsComponent ? this.fingerprintsComponent.getDataToSave() : {}),
+		// 	// ...(this.backgroundInfoComponent ? this.backgroundInfoComponent.getDataToSave() : {}),
+		// };
+		// this.licenceApplicationService.notifyModelChanged(stepData);
 	}
 
 	private dirtyForm(step: string): boolean {

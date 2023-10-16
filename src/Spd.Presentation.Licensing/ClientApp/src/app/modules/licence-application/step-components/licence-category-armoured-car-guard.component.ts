@@ -1,8 +1,8 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { SelectOptions } from 'src/app/core/code-types/model-desc.models';
+import { FormControl, FormGroup } from '@angular/forms';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
+import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
@@ -80,12 +80,12 @@ export class LicenceCategoryArmouredCarGuardComponent implements OnInit, Licence
 
 	matcher = new FormErrorStateMatcher();
 
-	@Input() option: SelectOptions | null = null;
+	@Input() option: string | null = null;
 	@Input() index: number = 0;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
 		// this.form = this.formBuilder.group({
@@ -93,7 +93,7 @@ export class LicenceCategoryArmouredCarGuardComponent implements OnInit, Licence
 		// 	attachments: new FormControl('', [Validators.required]),
 		// });
 
-		this.title = `${this.option?.desc ?? ''}`;
+		this.title = this.optionsPipe.transform(this.option, 'SwlCategoryTypes');
 	}
 
 	isFormValid(): boolean {

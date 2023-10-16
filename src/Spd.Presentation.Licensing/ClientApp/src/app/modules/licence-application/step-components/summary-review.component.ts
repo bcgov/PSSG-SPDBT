@@ -63,18 +63,28 @@ import { LicenceApplicationService } from '../licence-application.service';
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Licence Category</div>
 															<div class="text-data">
-																<div *ngFor="let item of categories.value; let i = index">
-																	{{ item.desc }}
-																</div>
+																<!-- <div *ngFor="let category of categories.value; let i = index">
+																	{{ category.get('desc').value }}
+																</div> -->
+
+																<!-- <ng-container
+																	formArrayName="categories"
+																	*ngFor="let group of categoriesArray.controls; let i = index; let first = first"
+																>
+																	<div [formGroupName]="i">
+																		{{ group.get('desc')?.value }}
+																	</div>
+																</ng-container> -->
 															</div>
 														</div>
+
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Licence Term</div>
 															<div class="text-data">{{ licenceTermCode.value | options : 'SwlTermTypes' }}</div>
 														</div>
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Fee</div>
-															<div class="text-data">??</div>
+															<div class="text-data">---</div>
 														</div>
 													</div>
 													<div class="row mt-0" *ngIf="hasExpiredLicence.value == booleanTypeCodes.Yes">
@@ -92,14 +102,27 @@ import { LicenceApplicationService } from '../licence-application.service';
 													<mat-divider class="mt-4 mb-2"></mat-divider>
 													<div class="text-minor-heading">Documents Uploaded</div>
 
+													<!-- <div class="row mt-0">
+														<ng-container
+															formArrayName="categories"
+															*ngFor="let group of categoriesArray.controls; let i = index; let first = first"
+														>
+															<div class="row" [formGroupName]="i">
+																<div class="col-lg-6 col-md-12 mt-lg-2">
+																	{{ group.get('desc')?.value }}
+																</div>
+															</div>
+														</ng-container>
+													</div> -->
+
 													<!--
 													<div class="row mt-0">
-														<ng-container *ngFor="let item of licenceModel.swlCategoryList; let i = index">
-															<ng-container [ngSwitch]="item.code">
+														<ng-container *ngFor="let category of categories.value; let i = index">
+															<ng-container [ngSwitch]="category.get('code').value">
 																<ng-container *ngSwitchCase="categoryTypeCodes.ArmouredCarGuard">
 																	<div class="col-lg-6 col-md-12 mt-lg-2">
 																		<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																			{{ item.code | options : 'SwlCategoryTypes' }} Documents
+																			{{ category.get('code').value | options : 'SwlCategoryTypes' }} Documents
 																		</div>
 																		<div class="text-data">
 																			<div
@@ -117,7 +140,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 																<ng-container *ngSwitchCase="categoryTypeCodes.FireInvestigator">
 																	<div class="col-lg-6 col-md-12 mt-lg-2">
 																		<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																			{{ item.code | options : 'SwlCategoryTypes' }} Documents
+																			{{ category.get('code').value | options : 'SwlCategoryTypes' }} Documents
 																		</div>
 																		<div class="text-data">
 																			<div
@@ -144,7 +167,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 																<ng-container *ngSwitchCase="categoryTypeCodes.Locksmith">
 																	<div class="col-lg-6 col-md-12 mt-lg-2">
 																		<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																			{{ item.code | options : 'SwlCategoryTypes' }} Documents
+																			{{ category.get('code').value | options : 'SwlCategoryTypes' }} Documents
 																		</div>
 																		<div class="text-data">
 																			<div
@@ -161,7 +184,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 																<ng-container *ngSwitchCase="categoryTypeCodes.PrivateInvestigator">
 																	<div class="col-lg-6 col-md-12 mt-lg-2">
 																		<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																			{{ item.code | options : 'SwlCategoryTypes' }} Documents
+																			{{ category.get('code').value | options : 'SwlCategoryTypes' }} Documents
 																		</div>
 																		<div class="text-data">
 																			<div
@@ -208,7 +231,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 																<ng-container *ngSwitchCase="categoryTypeCodes.PrivateInvestigatorUnderSupervision">
 																	<div class="col-lg-6 col-md-12 mt-lg-2">
 																		<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																			{{ item.code | options : 'SwlCategoryTypes' }} Documents
+																			{{ category.get('code').value | options : 'SwlCategoryTypes' }} Documents
 																		</div>
 																		<div class="text-data">
 																			<div
@@ -236,7 +259,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 																<ng-container *ngSwitchCase="categoryTypeCodes.SecurityAlarmInstaller">
 																	<div class="col-lg-6 col-md-12 mt-lg-2">
 																		<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																			{{ item.code | options : 'SwlCategoryTypes' }} Documents
+																			{{ category.get('code').value | options : 'SwlCategoryTypes' }} Documents
 																		</div>
 																		<div class="text-data">
 																			<div
@@ -253,7 +276,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 																<ng-container *ngSwitchCase="categoryTypeCodes.SecurityGuard">
 																	<div class="col-lg-6 col-md-12 mt-lg-2">
 																		<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																			{{ item.code | options : 'SwlCategoryTypes' }} Documents
+																			{{ category.get('code').value | options : 'SwlCategoryTypes' }} Documents
 																		</div>
 																		<div class="text-data">
 																			<div
@@ -270,7 +293,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 																<ng-container *ngSwitchCase="categoryTypeCodes.SecurityConsultant">
 																	<div class="col-lg-6 col-md-12 mt-lg-2">
 																		<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																			{{ item.code | options : 'SwlCategoryTypes' }} Documents
+																			{{ category.get('code').value | options : 'SwlCategoryTypes' }} Documents
 																		</div>
 																		<div class="text-data">
 																			<div
@@ -375,12 +398,12 @@ import { LicenceApplicationService } from '../licence-application.service';
 															<div class="text-data">
 																<span
 																	*ngIf="officerRole.value != policeOfficerRoleCodes.Other; else otherPoliceOfficerRole"
-																	>{{ officerRole.value | options : 'PoliceOfficerRoleTypes' }}</span
+																	>{{ officerRole.value | options : 'PoliceOfficerRoleTypes' | default }}</span
 																>
 																<ng-template #otherPoliceOfficerRole> Other: {{ otherOfficerRole.value }} </ng-template>
 															</div>
 														</div>
-														<div class="col-lg-4 col-md-12 mt-lg-2">
+														<div class="col-lg-4 col-md-12 mt-lg-2" *ngIf="letterOfNoConflictAttachments.value">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Letter of No Conflict</div>
 															<div class="text-data">
 																<div *ngFor="let doc of letterOfNoConflictAttachments.value; let i = index">
@@ -392,11 +415,11 @@ import { LicenceApplicationService } from '../licence-application.service';
 													<mat-divider class="mt-4 mb-2"></mat-divider>
 													<div class="text-minor-heading">Mental Health Conditions</div>
 													<div class="row mt-0">
-														<div class="col-lg-4 col-md-12 mt-lg-2">
+														<div class="col-lg-6 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Mental Health Conditions?</div>
 															<div class="text-data">{{ isTreatedForMHC.value }}</div>
 														</div>
-														<div class="col-lg-4 col-md-12 mt-lg-2">
+														<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="mentalHealthConditionAttachments.value">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Mental Health Condition Form</div>
 															<div class="text-data">
 																<div *ngFor="let doc of mentalHealthConditionAttachments.value; let i = index">
@@ -408,7 +431,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 													<mat-divider class="mt-4 mb-2"></mat-divider>
 													<div class="text-minor-heading">Criminal History</div>
 													<div class="row mt-0">
-														<div class="col-lg-4 col-md-12 mt-lg-2">
+														<div class="col-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">
 																Have you previously been charged or convicted of a crime?
 															</div>
@@ -418,7 +441,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 													<mat-divider class="mt-4 mb-2"></mat-divider>
 													<div class="text-minor-heading">Fingerprints</div>
 													<div class="row mt-0">
-														<div class="col-lg-4 col-md-12 mt-lg-2">
+														<div class="col-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">
 																Request for Fingerprinting Form
 															</div>
@@ -467,7 +490,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 														<div class="col-lg-3 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Sex</div>
 															<div class="text-data">
-																{{ genderCode.value | options : 'GenderTypes' }}
+																{{ genderCode.value | options : 'GenderTypes' | default }}
 															</div>
 														</div>
 													</div>
@@ -524,15 +547,10 @@ import { LicenceApplicationService } from '../licence-application.service';
 																</div>
 																<div class="col-lg-6 col-md-12 mt-lg-2">
 																	<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																		<span *ngIf="proofOfCitizenship">
-																			{{ proofOfCitizenship.value | options : 'ProofOfCanadianCitizenshipTypes' }}
-																		</span>
-																		<span *ngIf="proofOfAbility">
-																			{{ proofOfAbility.value | options : 'ProofOfAbilityToWorkInCanadaTypes' }}
-																		</span>
+																		{{ governmentIssuedPhotoTypeCode.value | options : 'GovernmentIssuedPhotoIdTypes' }}
 																	</div>
 																	<div class="text-data">
-																		<div *ngFor="let doc of citizenshipDocumentPhotoAttachments.value; let i = index">
+																		<div *ngFor="let doc of governmentIssuedPhotoAttachments.value; let i = index">
 																			{{ doc.name }}
 																		</div>
 																	</div>
@@ -592,34 +610,47 @@ import { LicenceApplicationService } from '../licence-application.service';
 													</mat-panel-title>
 												</mat-expansion-panel-header>
 												<div class="panel-body">
+													<div class="row mt-0">
+														<div class="col-lg-4 col-md-12 mt-lg-2">
+															<div class="text-label d-block text-muted mt-2 mt-lg-0">Email Address</div>
+															<div class="text-data">{{ contactEmailAddress.value | default }}</div>
+														</div>
+														<div class="col-lg-4 col-md-12 mt-lg-2">
+															<div class="text-label d-block text-muted mt-2 mt-lg-0">Phone Number</div>
+															<div class="text-data">
+																{{ contactPhoneNumber.value | mask : constants.phone.displayMask }}
+															</div>
+														</div>
+													</div>
+													<mat-divider class="mt-4 mb-2"></mat-divider>
 													<div class="text-minor-heading">Residential Address</div>
 													<div class="row mt-0">
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 1</div>
-															<div class="text-data">{{ residentialAddressLine1.value }}</div>
+															<div class="text-data">{{ residentialAddressLine1.value | default }}</div>
 														</div>
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 2</div>
-															<div class="text-data">{{ residentialAddressLine2.value }}</div>
+															<div class="text-data">{{ residentialAddressLine2.value | default }}</div>
 														</div>
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">City</div>
-															<div class="text-data">{{ residentialCity.value }}</div>
+															<div class="text-data">{{ residentialCity.value | default }}</div>
 														</div>
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Postal Code</div>
-															<div class="text-data">{{ residentialPostalCode.value }}</div>
+															<div class="text-data">{{ residentialPostalCode.value | default }}</div>
 														</div>
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Province</div>
 															<div class="text-data">
-																{{ residentialProvince.value }}
+																{{ residentialProvince.value | default }}
 															</div>
 														</div>
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Country</div>
 															<div class="text-data">
-																{{ residentialCountry.value }}
+																{{ residentialCountry.value | default }}
 															</div>
 														</div>
 													</div>
@@ -628,27 +659,27 @@ import { LicenceApplicationService } from '../licence-application.service';
 													<div class="row mt-0">
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 1</div>
-															<div class="text-data">{{ mailingAddressLine1.value }}</div>
+															<div class="text-data">{{ mailingAddressLine1.value | default }}</div>
 														</div>
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Address Line 2</div>
-															<div class="text-data">{{ mailingAddressLine2.value }}</div>
+															<div class="text-data">{{ mailingAddressLine2.value | default }}</div>
 														</div>
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">City</div>
-															<div class="text-data">{{ mailingCity.value }}</div>
+															<div class="text-data">{{ mailingCity.value | default }}</div>
 														</div>
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Postal Code</div>
-															<div class="text-data">{{ mailingPostalCode.value }}</div>
+															<div class="text-data">{{ mailingPostalCode.value | default }}</div>
 														</div>
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Province</div>
-															<div class="text-data">{{ mailingProvince.value }}</div>
+															<div class="text-data">{{ mailingProvince.value | default }}</div>
 														</div>
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Country</div>
-															<div class="text-data">{{ mailingCountry.value }}</div>
+															<div class="text-data">{{ mailingCountry.value | default }}</div>
 														</div>
 													</div>
 												</div>
@@ -714,6 +745,8 @@ export class SummaryReviewComponent implements OnInit, OnDestroy {
 	// licenceModel: LicenceModel | null = null;
 	form = this.licenceApplicationService.licenceModelFormGroup;
 
+	// categoriesFormGroup: FormGroup = this.licenceApplicationService.categoriesFormGroup;
+
 	constants = SPD_CONSTANTS;
 	booleanTypeCodes = BooleanTypeCode;
 	policeOfficerRoleCodes = PoliceOfficerRoleCode;
@@ -748,7 +781,15 @@ export class SummaryReviewComponent implements OnInit, OnDestroy {
 		return this.form.controls['soleProprietorFormGroup'].get('isSoleProprietor') as FormControl;
 	}
 
-	get categories(): FormArray {
+	// get categories(): FormGroup {
+	// 	return this.form.controls['categoriesFormGroup'] as FormGroup;
+	// }
+
+	// get categories(): FormArray {
+	// 	return this.form.controls['categoriesFormGroup'].get('categories') as FormArray;
+	// }
+
+	get categoriesArray(): FormArray {
 		return this.form.controls['categoriesFormGroup'].get('categories') as FormArray;
 	}
 

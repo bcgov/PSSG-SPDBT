@@ -1,14 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { SelectOptions, SwlCategoryTypeCode, SwlCategoryTypes } from 'src/app/core/code-types/model-desc.models';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
-import {
-	LicenceApplicationService,
-	LicenceFormStepComponent,
-	LicenceModelSubject,
-} from '../licence-application.service';
+import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-category',
@@ -51,7 +47,39 @@ import {
 					<form [formGroup]="form" novalidate>
 						<div class="row">
 							<div class="offset-xxl-2 col-xxl-8 offset-xl-1 col-xl-10 col-lg-12">
-								<div class="row" *ngFor="let item of categories.value; let i = index; let first = first">
+								<ng-container
+									formArrayName="categories"
+									*ngFor="let group of categoriesArray.controls; let i = index; let first = first"
+								>
+									<div class="row" [formGroupName]="i">
+										<mat-divider class="mt-4 mb-3" *ngIf="first"></mat-divider>
+										<!-- <div class="category-title">{{ group.get('desc')?.value }}</div> -->
+
+										<div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12">
+											<mat-chip-option [selectable]="false" class="mat-chip-green">
+												Category #{{ i + 1 }}
+											</mat-chip-option>
+										</div>
+										<div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12">
+											<span class="category-title">{{ group.get('desc')?.value }}</span>
+										</div>
+										<div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12">
+											<button
+												mat-stroked-button
+												class="w-auto float-end"
+												style="color: var(--color-red);"
+												aria-label="Remove category"
+												(click)="onRemove(group.get('code')?.value, i)"
+											>
+												<mat-icon>delete_outline</mat-icon>Remove
+											</button>
+										</div>
+
+										<mat-divider class="my-3"></mat-divider>
+									</div>
+								</ng-container>
+
+								<!-- <div class="row" *ngFor="let category of categories.value; let i = index; let first = first">
 									<mat-divider class="mt-4 mb-3" *ngIf="first"></mat-divider>
 
 									<div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12">
@@ -60,7 +88,7 @@ import {
 										</mat-chip-option>
 									</div>
 									<div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12">
-										<span class="category-title">{{ item.desc }}</span>
+										<span class="category-title">{{ category.get('desc').value }}</span>
 									</div>
 									<div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12">
 										<button
@@ -68,14 +96,14 @@ import {
 											class="w-auto float-end"
 											style="color: var(--color-red);"
 											aria-label="Remove category"
-											(click)="onRemove(item.code, i)"
+											(click)="onRemove(category.get('code').value, i)"
 										>
 											<mat-icon>delete_outline</mat-icon>Remove
 										</button>
 									</div>
 
 									<mat-divider class="my-3"></mat-divider>
-								</div>
+								</div> -->
 							</div>
 						</div>
 					</form>
@@ -107,18 +135,25 @@ export class LicenceCategoryComponent implements OnInit, OnDestroy, LicenceFormS
 	swlCategoryTypes = SwlCategoryTypes;
 	swlCategoryTypeCodes = SwlCategoryTypeCode;
 
-	constructor(private dialog: MatDialog, private licenceApplicationService: LicenceApplicationService) {}
+	constructor(
+		private dialog: MatDialog,
+		private formBuilder: FormBuilder,
+		private licenceApplicationService: LicenceApplicationService
+	) {}
 
 	ngOnInit(): void {
-		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
-			next: (loaded: LicenceModelSubject) => {
-				console.log('xxxx', this.form.value);
-				// if (loaded.isLoaded) {
-				// 	// this.swlCategoryList = this.licenceApplicationService.licenceModel.swlCategoryList;
-				// 	this.setValidCategoryList();
-				// }
-			},
-		});
+		console.log('categories init', this.form.value);
+		console.log('categories init', this.categoriesArray.value.length);
+		console.log('categoriesArray', <FormArray>this.form.get('categories'));
+		// this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
+		// 	next: (loaded: LicenceModelSubject) => {
+		// 		console.log('xxxx', this.form.value);
+		// 		// if (loaded.isLoaded) {
+		// 		// 	// this.swlCategoryList = this.licenceApplicationService.licenceModel.swlCategoryList;
+		// 		// 	this.setValidCategoryList();
+		// 		// }
+		// 	},
+		// });
 	}
 
 	ngOnDestroy() {
@@ -130,7 +165,26 @@ export class LicenceCategoryComponent implements OnInit, OnDestroy, LicenceFormS
 			this.isDirtyAndInvalid = false;
 
 			const option = this.swlCategoryTypes.find((item) => item.code == this.category)!;
-			this.categories.value.push({ code: option?.code, desc: option.desc });
+			// this.categories.value.push({ code: option?.code, desc: option.desc });
+
+			const categoryItem = this.formBuilder.group({
+				desc: new FormControl(option.desc),
+				code: new FormControl(option?.code),
+			});
+
+			console.log('xxxx categoryItem', categoryItem);
+
+			this.categoriesArray.push(categoryItem);
+			// (this.licenceModelFormGroup.controls['categoriesFormGroup'].get('categories') as FormArray<FormGroup>).push(
+			// 	categoryItem
+			// );
+
+			// (this.licenceModelFormGroup.controls['categoriesFormGroup'].get('categories') as FormArray<FormGroup>).push(
+			// 	categoryItem
+			// );
+
+			console.log('xxxx', this.form.value);
+			console.log('yyyy', this.licenceApplicationService.licenceModelFormGroup.value);
 			this.setValidCategoryList();
 
 			this.category = '';
@@ -327,5 +381,9 @@ export class LicenceCategoryComponent implements OnInit, OnDestroy, LicenceFormS
 
 	public get categories(): FormArray {
 		return this.form.get('categories') as FormArray;
+	}
+
+	get categoriesArray(): FormArray {
+		return <FormArray>this.form.get('categories');
 	}
 }

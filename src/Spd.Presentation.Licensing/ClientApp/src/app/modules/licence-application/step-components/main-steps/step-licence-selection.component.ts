@@ -1,6 +1,6 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormArray, FormGroup } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 import { Subscription } from 'rxjs';
 import { SwlApplicationTypeCode, SwlCategoryTypeCode } from 'src/app/core/code-types/model-desc.models';
@@ -89,18 +89,18 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 				</div>
 			</mat-step>
 
-			<!-- <mat-step> TODO 
-					<app-checklist></app-checklist>
+			<mat-step>
+				<app-checklist></app-checklist>
 
-					<div class="row mt-4">
-						<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-							<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-						</div>
-						<div class="col-lg-3 col-md-4 col-sm-6">
-							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-						</div>
+				<div class="row mt-4">
+					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-				</mat-step> -->
+					<div class="col-lg-3 col-md-4 col-sm-6">
+						<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
+					</div>
+				</div>
+			</mat-step>
 
 			<mat-step>
 				<app-personal-information></app-personal-information>
@@ -163,122 +163,269 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 				</div>
 			</mat-step>
 
-			<mat-step *ngFor="let category of categories; let i = index">
-				<div [ngSwitch]="category.code">
+			<!-- <form [formGroup]="form" novalidate>
+	<mat-step formArrayName="categories" *ngFor="let group of categoriesArray.controls; let i = index">
+		<div class="row" [formGroupName]="i">
+			<div class="category-title">{{ group.get('code')?.value }}</div>
+		</div>
+	</mat-step>
+</form> -->
+
+			<form [formGroup]="form" novalidate>
+				<mat-step formArrayName="categories" *ngFor="let group of categoriesArray.controls; let i = index">
+					<div class="row" [formGroupName]="i">
+						<div [ngSwitch]="group.get('code')?.value">
+							<div *ngSwitchCase="swlCategoryTypeCodes.ArmouredCarGuard">
+								<app-licence-category-armoured-car-guard
+									[option]="group.get('code')?.value"
+									[index]="i + 1"
+								></app-licence-category-armoured-car-guard>
+							</div>
+							<div *ngSwitchCase="swlCategoryTypeCodes.BodyArmourSales">
+								<app-licence-category-body-armour-sales
+									[option]="group.get('code')?.value"
+									[index]="i + 1"
+								></app-licence-category-body-armour-sales>
+							</div>
+							<div *ngSwitchCase="swlCategoryTypeCodes.ClosedCircuitTelevisionInstaller">
+								<app-licence-category-closed-circuit-television-installer
+									[option]="group.get('code')?.value"
+									[index]="i + 1"
+								></app-licence-category-closed-circuit-television-installer>
+							</div>
+							<div *ngSwitchCase="swlCategoryTypeCodes.ElectronicLockingDeviceInstaller">
+								<app-licence-category-electronic-locking-device-installer
+									[option]="group.get('code')?.value"
+									[index]="i + 1"
+								></app-licence-category-electronic-locking-device-installer>
+							</div>
+							<div *ngSwitchCase="swlCategoryTypeCodes.FireInvestigator">
+								<app-licence-category-fire-investigator
+									[option]="group.get('code')?.value"
+									[index]="i + 1"
+								></app-licence-category-fire-investigator>
+							</div>
+							<div *ngSwitchCase="swlCategoryTypeCodes.Locksmith">
+								<app-licence-category-locksmith
+									[option]="group.get('code')?.value"
+									[index]="i + 1"
+								></app-licence-category-locksmith>
+							</div>
+							<div *ngSwitchCase="swlCategoryTypeCodes.LocksmithUnderSupervision">
+								<app-licence-category-locksmith-sup
+									[option]="group.get('code')?.value"
+									[index]="i + 1"
+								></app-licence-category-locksmith-sup>
+							</div>
+							<div *ngSwitchCase="swlCategoryTypeCodes.PrivateInvestigator">
+								<app-licence-category-private-investigator
+									[option]="group.get('code')?.value"
+									[index]="i + 1"
+								></app-licence-category-private-investigator>
+							</div>
+							<div *ngSwitchCase="swlCategoryTypeCodes.PrivateInvestigatorUnderSupervision">
+								<app-licence-category-private-investigator-sup
+									[option]="group.get('code')?.value"
+									[index]="i + 1"
+								></app-licence-category-private-investigator-sup>
+							</div>
+							<div *ngSwitchCase="swlCategoryTypeCodes.SecurityAlarmInstallerUnderSupervision">
+								<app-licence-category-security-alarm-installer-sup
+									[option]="group.get('code')?.value"
+									[index]="i + 1"
+								></app-licence-category-security-alarm-installer-sup>
+							</div>
+							<div *ngSwitchCase="swlCategoryTypeCodes.SecurityAlarmInstaller">
+								<app-licence-category-security-alarm-installer
+									[option]="group.get('code')?.value"
+									[index]="i + 1"
+								></app-licence-category-security-alarm-installer>
+							</div>
+							<div *ngSwitchCase="swlCategoryTypeCodes.SecurityAlarmMonitor">
+								<app-licence-category-security-alarm-monitor
+									[option]="group.get('code')?.value"
+									[index]="i + 1"
+								></app-licence-category-security-alarm-monitor>
+							</div>
+							<div *ngSwitchCase="swlCategoryTypeCodes.SecurityAlarmResponse">
+								<app-licence-category-security-alarm-response
+									[option]="group.get('code')?.value"
+									[index]="i + 1"
+								></app-licence-category-security-alarm-response>
+							</div>
+							<div *ngSwitchCase="swlCategoryTypeCodes.SecurityAlarmSales">
+								<app-licence-category-security-alarm-sales
+									[option]="group.get('code')?.value"
+									[index]="i + 1"
+								></app-licence-category-security-alarm-sales>
+							</div>
+							<div *ngSwitchCase="swlCategoryTypeCodes.SecurityConsultant">
+								<app-licence-category-security-consultant
+									[option]="group.get('code')?.value"
+									[index]="i + 1"
+								></app-licence-category-security-consultant>
+							</div>
+							<div *ngSwitchCase="swlCategoryTypeCodes.SecurityGuard">
+								<app-licence-category-security-guard
+									[option]="group.get('code')?.value"
+									[index]="i + 1"
+								></app-licence-category-security-guard>
+							</div>
+							<div *ngSwitchCase="swlCategoryTypeCodes.SecurityGuardUnderSupervision">
+								<app-licence-category-security-guard-sup
+									[option]="group.get('code')?.value"
+									[index]="i + 1"
+								></app-licence-category-security-guard-sup>
+							</div>
+						</div>
+
+						<div class="row mt-4">
+							<div
+								class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6"
+							>
+								<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+							</div>
+							<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+								<button
+									mat-flat-button
+									color="primary"
+									class="large mb-2"
+									(click)="onFormValidNextStep(group.get('code')?.value)"
+								>
+									Next
+								</button>
+							</div>
+						</div>
+					</div>
+				</mat-step>
+			</form>
+
+			<!-- 	<mat-step *ngFor="let category of categories.value; let i = index">
+			
+				<div [ngSwitch]="category.get('code').value">
 					<div *ngSwitchCase="swlCategoryTypeCodes.ArmouredCarGuard">
 						<app-licence-category-armoured-car-guard
-							[option]="category"
+							[option]="group.get('code')?.value"
 							[index]="i + 1"
 						></app-licence-category-armoured-car-guard>
 					</div>
 					<div *ngSwitchCase="swlCategoryTypeCodes.BodyArmourSales">
 						<app-licence-category-body-armour-sales
-							[option]="category"
+							[option]="group.get('code')?.value"
 							[index]="i + 1"
 						></app-licence-category-body-armour-sales>
 					</div>
 					<div *ngSwitchCase="swlCategoryTypeCodes.ClosedCircuitTelevisionInstaller">
 						<app-licence-category-closed-circuit-television-installer
-							[option]="category"
+							[option]="group.get('code')?.value"
 							[index]="i + 1"
 						></app-licence-category-closed-circuit-television-installer>
 					</div>
 					<div *ngSwitchCase="swlCategoryTypeCodes.ElectronicLockingDeviceInstaller">
 						<app-licence-category-electronic-locking-device-installer
-							[option]="category"
+							[option]="group.get('code')?.value"
 							[index]="i + 1"
 						></app-licence-category-electronic-locking-device-installer>
 					</div>
 					<div *ngSwitchCase="swlCategoryTypeCodes.FireInvestigator">
 						<app-licence-category-fire-investigator
-							[option]="category"
+							[option]="group.get('code')?.value"
 							[index]="i + 1"
 						></app-licence-category-fire-investigator>
 					</div>
 					<div *ngSwitchCase="swlCategoryTypeCodes.Locksmith">
-						<app-licence-category-locksmith [option]="category" [index]="i + 1"></app-licence-category-locksmith>
+						<app-licence-category-locksmith
+							[option]="group.get('code')?.value"
+							[index]="i + 1"
+						></app-licence-category-locksmith>
 					</div>
 					<div *ngSwitchCase="swlCategoryTypeCodes.LocksmithUnderSupervision">
 						<app-licence-category-locksmith-sup
-							[option]="category"
+							[option]="group.get('code')?.value"
 							[index]="i + 1"
 						></app-licence-category-locksmith-sup>
 					</div>
 					<div *ngSwitchCase="swlCategoryTypeCodes.PrivateInvestigator">
 						<app-licence-category-private-investigator
-							[option]="category"
+							[option]="group.get('code')?.value"
 							[index]="i + 1"
 						></app-licence-category-private-investigator>
 					</div>
 					<div *ngSwitchCase="swlCategoryTypeCodes.PrivateInvestigatorUnderSupervision">
 						<app-licence-category-private-investigator-sup
-							[option]="category"
+							[option]="group.get('code')?.value"
 							[index]="i + 1"
 						></app-licence-category-private-investigator-sup>
 					</div>
 					<div *ngSwitchCase="swlCategoryTypeCodes.SecurityAlarmInstallerUnderSupervision">
 						<app-licence-category-security-alarm-installer-sup
-							[option]="category"
+							[option]="group.get('code')?.value"
 							[index]="i + 1"
 						></app-licence-category-security-alarm-installer-sup>
 					</div>
 					<div *ngSwitchCase="swlCategoryTypeCodes.SecurityAlarmInstaller">
 						<app-licence-category-security-alarm-installer
-							[option]="category"
+							[option]="group.get('code')?.value"
 							[index]="i + 1"
 						></app-licence-category-security-alarm-installer>
 					</div>
 					<div *ngSwitchCase="swlCategoryTypeCodes.SecurityAlarmMonitor">
 						<app-licence-category-security-alarm-monitor
-							[option]="category"
+							[option]="group.get('code')?.value"
 							[index]="i + 1"
 						></app-licence-category-security-alarm-monitor>
 					</div>
 					<div *ngSwitchCase="swlCategoryTypeCodes.SecurityAlarmResponse">
 						<app-licence-category-security-alarm-response
-							[option]="category"
+							[option]="group.get('code')?.value"
 							[index]="i + 1"
 						></app-licence-category-security-alarm-response>
 					</div>
 					<div *ngSwitchCase="swlCategoryTypeCodes.SecurityAlarmSales">
 						<app-licence-category-security-alarm-sales
-							[option]="category"
+							[option]="group.get('code')?.value"
 							[index]="i + 1"
 						></app-licence-category-security-alarm-sales>
 					</div>
 					<div *ngSwitchCase="swlCategoryTypeCodes.SecurityConsultant">
 						<app-licence-category-security-consultant
-							[option]="category"
+							[option]="group.get('code')?.value"
 							[index]="i + 1"
 						></app-licence-category-security-consultant>
 					</div>
 					<div *ngSwitchCase="swlCategoryTypeCodes.SecurityGuard">
 						<app-licence-category-security-guard
-							[option]="category"
+							[option]="group.get('code')?.value"
 							[index]="i + 1"
 						></app-licence-category-security-guard>
 					</div>
 					<div *ngSwitchCase="swlCategoryTypeCodes.SecurityGuardUnderSupervision">
 						<app-licence-category-security-guard-sup
-							[option]="category"
+							[option]="group.get('code')?.value"
 							[index]="i + 1"
 						></app-licence-category-security-guard-sup>
 					</div>
-				</div>
+				</div> 
 
 				<div class="row mt-4">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(category.code)">
+						<button
+							mat-flat-button
+							color="primary"
+							class="large mb-2"
+							(click)="onFormValidNextStep(category.get('code').value)"
+						>
 							Next
 						</button>
 					</div>
 				</div>
-			</mat-step>
+			</mat-step>-->
 
-			<mat-step *ngIf="showStepDogsAndRestraints">
+			<!-- *ngIf="showStepDogsAndRestraints"-->
+			<mat-step>
 				<app-dogs-or-restraints></app-dogs-or-restraints>
 
 				<div class="row mt-4">
@@ -312,14 +459,6 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 					</div>
 				</div>
 			</mat-step>
-			<!-- </ng-container> -->
-
-			<!-- <ng-container [ngSwitch]="applicationTypeCode">
-				<ng-container *ngSwitchCase="swlStatusTypeCodes.NewOrExpired"></ng-container>
-				<ng-container *ngSwitchCase="swlStatusTypeCodes.Renewal"></ng-container>
-				<ng-container *ngSwitchCase="swlStatusTypeCodes.Replacement"></ng-container>
-				<ng-container *ngSwitchCase="swlStatusTypeCodes.Update"></ng-container> 
-			</ng-container> -->
 		</mat-stepper>
 	`,
 	styles: [],
@@ -348,6 +487,7 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy {
 	swlStatusTypeCodes = SwlApplicationTypeCode;
 
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
+	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
 
 	@ViewChild(SoleProprietorComponent)
 	soleProprietorComponent!: SoleProprietorComponent;
@@ -407,9 +547,11 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy {
 
 	@ViewChild('childstepper') private childstepper!: MatStepper;
 
+	form: FormGroup = this.licenceApplicationService.categoriesFormGroup;
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
+		console.log('this.form.value', this.form.value);
 		this.licenceModelLoadedSubscription = this.licenceModelLoadedSubscription =
 			this.licenceApplicationService.licenceModelLoaded$.subscribe({
 				next: (loaded: LicenceModelSubject) => {
@@ -437,7 +579,7 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy {
 	onStepNext(formNumber: string): void {
 		console.log('onStepNext formNumber:', formNumber);
 
-		this.setStepData();
+		// this.setStepData();
 
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
@@ -448,20 +590,22 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy {
 	onFormValidNextStep(formNumber: string): void {
 		console.log('onFormValidNextStep formNumber:', formNumber);
 
-		this.setStepData();
+		// this.setStepData();
 
 		// this.swlCategoryList = this.licenceApplicationService.licenceModel.swlCategoryList;
 
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
+
 		this.childstepper.next();
 	}
 
 	onStepSelectionChange(event: StepperSelectionEvent) {
-		// TODO is needed?
+		this.scrollIntoView.emit(true);
 	}
 
 	private setStepData(): void {
+		/*
 		let stepData = {
 			// licenceTypeCode: this.licenceApplicationService.licenceModel.licenceTypeCode,
 			// applicationTypeCode: this.licenceApplicationService.licenceModel.applicationTypeCode,
@@ -604,6 +748,7 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy {
 		this.licenceApplicationService.notifyCategoryData();
 
 		console.log('LICENCE SELECTION stepData', stepData);
+		*/
 	}
 
 	private dirtyForm(step: string): boolean {
@@ -662,12 +807,26 @@ export class StepLicenceSelectionComponent implements OnInit, OnDestroy {
 		return false;
 	}
 
-	get categories(): Array<any> {
-		// const categories = this.licenceApplicationService.licenceModel.swlCategoryList;
-		// const categoriesFormGroup = this.licenceModelFormGroup.controls['categoriesFormGroup'].value;
-		const categoriesFormGroup = this.licenceApplicationService.licenceModelFormGroup.controls[
-			'categoriesFormGroup'
-		] as FormGroup;
-		return categoriesFormGroup.controls['categories'].value;
+	// get categories(): Array<any> {
+	// 	// const categories = this.licenceApplicationService.licenceModel.swlCategoryList;
+	// 	// const categoriesFormGroup = this.licenceModelFormGroup.controls['categoriesFormGroup'].value;
+	// 	const categoriesFormGroup = this.licenceApplicationService.licenceModelFormGroup.controls[
+	// 		'categoriesFormGroup'
+	// 	] as FormGroup;
+	// 	return categoriesFormGroup.controls['categories'].value;
+	// }
+
+	// get categories(): FormArray {
+	// 	// console.log('zzz', this.licenceApplicationService.licenceModelFormGroup.value);
+	// 	return this.licenceApplicationService.licenceModelFormGroup.controls['categoriesFormGroup'].get(
+	// 		'categories'
+	// 	) as FormArray;
+	// }
+
+	get categoriesArray(): FormArray {
+		const temp2 = <FormArray>this.form.get('categories');
+		// const temp = <FormArray>this.licenceApplicationService.licenceModelFormGroup.get('categories');
+		// console.log('TEMP', temp, temp2);
+		return temp2;
 	}
 }

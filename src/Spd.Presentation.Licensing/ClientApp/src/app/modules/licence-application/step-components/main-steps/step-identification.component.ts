@@ -201,6 +201,7 @@ export class StepIdentificationComponent {
 
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
+	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
 
 	@ViewChild(AliasesComponent) aliasesComponent!: AliasesComponent;
 	@ViewChild(CitizenshipComponent) citizenshipComponent!: CitizenshipComponent;
@@ -216,7 +217,9 @@ export class StepIdentificationComponent {
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
-	onStepSelectionChange(event: StepperSelectionEvent) {}
+	onStepSelectionChange(event: StepperSelectionEvent) {
+		this.scrollIntoView.emit(true);
+	}
 
 	onStepPrevious(): void {
 		this.previousStepperStep.emit(true);
@@ -265,19 +268,17 @@ export class StepIdentificationComponent {
 	}
 
 	private setStepData(): void {
-		let stepData = {
-			...(this.aliasesComponent ? this.aliasesComponent.getDataToSave() : {}),
-			...(this.citizenshipComponent ? this.citizenshipComponent.getDataToSave() : {}),
-			...(this.additionalGovIdComponent ? this.additionalGovIdComponent.getDataToSave() : {}),
-			...(this.bcDriverLicenceComponent ? this.bcDriverLicenceComponent.getDataToSave() : {}),
-			...(this.heightAndWeightComponent ? this.heightAndWeightComponent.getDataToSave() : {}),
-			...(this.residentialAddressComponent ? this.residentialAddressComponent.getDataToSave() : {}),
-			...(this.mailingAddressComponent ? this.mailingAddressComponent.getDataToSave() : {}),
-			...(this.contactInformationComponent ? this.contactInformationComponent.getDataToSave() : {}),
-		};
-
-		this.licenceApplicationService.notifyModelChanged(stepData);
-
+		// let stepData = {
+		// 	...(this.aliasesComponent ? this.aliasesComponent.getDataToSave() : {}),
+		// 	...(this.citizenshipComponent ? this.citizenshipComponent.getDataToSave() : {}),
+		// 	...(this.additionalGovIdComponent ? this.additionalGovIdComponent.getDataToSave() : {}),
+		// 	...(this.bcDriverLicenceComponent ? this.bcDriverLicenceComponent.getDataToSave() : {}),
+		// 	...(this.heightAndWeightComponent ? this.heightAndWeightComponent.getDataToSave() : {}),
+		// 	...(this.residentialAddressComponent ? this.residentialAddressComponent.getDataToSave() : {}),
+		// 	...(this.mailingAddressComponent ? this.mailingAddressComponent.getDataToSave() : {}),
+		// 	...(this.contactInformationComponent ? this.contactInformationComponent.getDataToSave() : {}),
+		// };
+		// this.licenceApplicationService.notifyModelChanged(stepData);
 		// console.log('IDENTIFICATION stepData', stepData);
 		// console.log('IDENTIFICATION stepData2', this.licenceApplicationService.licenceModel);
 	}

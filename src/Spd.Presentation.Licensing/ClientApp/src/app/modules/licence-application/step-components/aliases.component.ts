@@ -1,17 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { Subscription } from 'rxjs';
 import { BooleanTypeCode } from 'src/app/api/models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import {
-	LicenceApplicationService,
-	LicenceFormStepComponent,
-	LicenceModelSubject,
-} from '../licence-application.service';
+import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-aliases',
@@ -48,7 +43,7 @@ import {
 								<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 									<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 									<div class="text-minor-heading fw-semibold mb-2">Previous Names</div>
-									<ng-container formArrayName="aliases" *ngFor="let group of getFormControls.controls; let i = index">
+									<ng-container formArrayName="aliases" *ngFor="let group of aliasesArray.controls; let i = index">
 										<div class="row" [formGroupName]="i">
 											<div class="col-lg-6 col-md-6 col-sm-12">
 												<mat-form-field>
@@ -82,7 +77,7 @@ import {
 													<mat-error *ngIf="group.get('surname')?.hasError('required')"> This is required </mat-error>
 												</mat-form-field>
 											</div>
-											<div class="col-lg-1 col-md-6 col-sm-12">
+											<div class="col-xl-1 col-lg-1 col-md-6 col-sm-12">
 												<button
 													mat-mini-fab
 													class="delete-row-button mb-3"
@@ -94,7 +89,6 @@ import {
 													<mat-icon>delete_outline</mat-icon>
 												</button>
 											</div>
-											<mat-divider class="mb-3" *ngIf="moreThanOneRowExists"></mat-divider>
 										</div>
 									</ng-container>
 									<div class="row mb-2" *ngIf="isAllowAliasAdd">
@@ -132,7 +126,7 @@ import {
 	],
 })
 export class AliasesComponent implements OnInit, OnDestroy, LicenceFormStepComponent {
-	private licenceModelLoadedSubscription!: Subscription;
+	// private licenceModelLoadedSubscription!: Subscription;
 
 	booleanTypeCodes = BooleanTypeCode;
 
@@ -144,10 +138,6 @@ export class AliasesComponent implements OnInit, OnDestroy, LicenceFormStepCompo
 	});
 
 	form: FormGroup = this.licenceApplicationService.aliasesFormGroup;
-	//  this.formBuilder.group({
-	// 	previousNameFlag: new FormControl(null, [FormControlValidators.required]),
-	// 	aliases: this.formBuilder.array([]),
-	// });
 
 	matcher = new FormErrorStateMatcher();
 
@@ -158,40 +148,43 @@ export class AliasesComponent implements OnInit, OnDestroy, LicenceFormStepCompo
 	) {}
 
 	ngOnInit(): void {
-		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
-			next: (loaded: LicenceModelSubject) => {
-				if (loaded.isLoaded) {
-					// this.form.patchValue({
-					// 	previousNameFlag: this.licenceApplicationService.licenceModel.previousNameFlag,
-					// });
-					// const aliases = this.licenceApplicationService.licenceModel.aliases ?? [];
-					// if (aliases.length > 0) {
-					// 	const control = this.form.get('aliases') as FormArray;
-					// 	aliases.forEach((item) => {
-					// 		control.push(this.licenceApplicationService.aliasesFormGroup);
-					// 		// 	this.formBuilder.group({
-					// 		// 		givenName: [item.givenName],
-					// 		// 		middleName1: [item.middleName1],
-					// 		// 		middleName2: [item.middleName2],
-					// 		// 		surname: [item.surname, [FormControlValidators.required]],
-					// 		// 	})
-					// 		// );
-					// 	});
-					// }
-				}
-			},
-		});
+		console.log('aliases init', this.form.value);
+		console.log('aliases init', this.aliasesArray.value.length);
+		console.log(' <FormArray>this.form.get(aliases)', <FormArray>this.form.get('aliases'));
+		// this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
+		// 	next: (loaded: LicenceModelSubject) => {
+		// 		// if (loaded.isLoaded) {
+		// 		// this.form.patchValue({
+		// 		// 	previousNameFlag: this.licenceApplicationService.licenceModel.previousNameFlag,
+		// 		// });
+		// 		// const aliases = this.licenceApplicationService.licenceModel.aliases ?? [];
+		// 		// if (aliases.length > 0) {
+		// 		// 	const control = this.form.get('aliases') as FormArray;
+		// 		// 	aliases.forEach((item) => {
+		// 		// 		control.push(this.licenceApplicationService.aliasesFormGroup);
+		// 		// 		// 	this.formBuilder.group({
+		// 		// 		// 		givenName: [item.givenName],
+		// 		// 		// 		middleName1: [item.middleName1],
+		// 		// 		// 		middleName2: [item.middleName2],
+		// 		// 		// 		surname: [item.surname, [FormControlValidators.required]],
+		// 		// 		// 	})
+		// 		// 		// );
+		// 		// 	});
+		// 		// }
+		// 		// }
+		// 	},
+		// });
 	}
 
 	ngOnDestroy() {
-		this.licenceModelLoadedSubscription.unsubscribe();
+		// this.licenceModelLoadedSubscription.unsubscribe();
 	}
 
 	onPreviousNameFlagChange(): void {
 		if (this.form.value.previousNameFlag == BooleanTypeCode.Yes) {
 			this.onAddRow();
-		} else {
-			this.aliases.clear();
+			// } else {
+			// this.aliases.clear();
 		}
 	}
 
@@ -251,24 +244,41 @@ export class AliasesComponent implements OnInit, OnDestroy, LicenceFormStepCompo
 		});
 	}
 
-	get getFormControls() {
-		const control = this.form.get('aliases') as FormArray;
-		return control;
-	}
+	// get getFormControls() {
+	// 	const control = this.form.get('aliases') as FormArray;
+	// 	return control;
+	// }
 
-	get aliases(): FormArray {
-		return this.form.get('aliases') as FormArray;
-	}
+	// get aliases(): FormArray {
+	// 	return this.form.get('aliases') as FormArray;
+	// }
 
 	get previousNameFlag(): FormControl {
 		return this.form.get('previousNameFlag') as FormControl;
 	}
 
 	get moreThanOneRowExists(): boolean {
-		return this.aliases.length > 1;
+		return this.aliasesArray.length > 1;
 	}
 
 	get isAllowAliasAdd(): boolean {
-		return this.aliases.length < SPD_CONSTANTS.maxNumberOfAliases;
+		return this.aliasesArray.length < SPD_CONSTANTS.maxNumberOfAliases;
+	}
+	// track(item: any, index: number) {
+	// 	return index;
+	// }
+	// 	track(index: number, item: { id: any }) {
+	// 		return index;
+	//  }
+	//  trackByFn(index: any, item: { id: any }) {
+	// 	return item ? item.id : undefined;
+	// }
+
+	trackByIndex(item: any, index: number) {
+		return index;
+	}
+
+	get aliasesArray(): FormArray {
+		return <FormArray>this.form.get('aliases');
 	}
 }

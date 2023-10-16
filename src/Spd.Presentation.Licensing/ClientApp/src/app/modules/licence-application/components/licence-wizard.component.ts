@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, distinctUntilChanged, Subscription } from 'rxjs';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
-import { LicenceApplicationService } from '../licence-application.service';
+import { LicenceApplicationService, LicenceModelSubject } from '../licence-application.service';
 import { StepBackgroundComponent } from '../step-components/main-steps/step-background.component';
 import { StepIdentificationComponent } from '../step-components/main-steps/step-identification.component';
 import { StepLicenceSelectionComponent } from '../step-components/main-steps/step-licence-selection.component';
@@ -26,7 +26,10 @@ import { StepReviewComponent } from '../step-components/main-steps/step-review.c
 					>
 						<mat-step completed="true">
 							<ng-template matStepLabel> Licence Selection </ng-template>
-							<app-step-licence-selection (nextStepperStep)="onNextStepperStep(stepper)"></app-step-licence-selection>
+							<app-step-licence-selection
+								(nextStepperStep)="onNextStepperStep(stepper)"
+								(scrollIntoView)="onScrollIntoView()"
+							></app-step-licence-selection>
 						</mat-step>
 						<!-- <span *ngIf="isNotReplacement; else isReplacementTabName">Licence Selection</span>
 								<ng-template #isReplacementTabName>Licence Confirmation</ng-template> -->
@@ -37,6 +40,7 @@ import { StepReviewComponent } from '../step-components/main-steps/step-review.c
 							<app-step-background
 								(previousStepperStep)="onPreviousStepperStep(stepper)"
 								(nextStepperStep)="onNextStepperStep(stepper)"
+								(scrollIntoView)="onScrollIntoView()"
 							></app-step-background>
 						</mat-step>
 
@@ -45,6 +49,7 @@ import { StepReviewComponent } from '../step-components/main-steps/step-review.c
 							<app-step-identification
 								(previousStepperStep)="onPreviousStepperStep(stepper)"
 								(nextStepperStep)="onNextStepperStep(stepper)"
+								(scrollIntoView)="onScrollIntoView()"
 							></app-step-identification>
 						</mat-step>
 
@@ -54,6 +59,7 @@ import { StepReviewComponent } from '../step-components/main-steps/step-review.c
 								<app-step-review
 									(previousStepperStep)="onPreviousStepperStep(stepper)"
 									(nextStepperStep)="onNextStepperStep(stepper)"
+									(scrollIntoView)="onScrollIntoView()"
 								></app-step-review>
 							</ng-template>
 						</mat-step>
@@ -161,15 +167,16 @@ export class LicenceWizardComponent implements OnInit, OnDestroy {
 
 		// this.licenceApplicationService.notifyLoaded();
 
-		// this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
-		// 	next: (loaded: LicenceModelSubject) => {
-		// if (loaded.isLoaded || loaded.isSetFlags) {
-		// 	this.isReplacement = this.licenceApplicationService.licenceModel.isReplacement ?? false;
-		// 	this.isNotReplacement = this.licenceApplicationService.licenceModel.isNotReplacement ?? false;
-		this.isLoaded$.next(true);
-		// }
-		// 	},
-		// });
+		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
+			next: (loaded: LicenceModelSubject) => {
+				// if (loaded.isLoaded || loaded.isSetFlags) {
+				// 	this.isReplacement = this.licenceApplicationService.licenceModel.isReplacement ?? false;
+				// 	this.isNotReplacement = this.licenceApplicationService.licenceModel.isNotReplacement ?? false;
+				console.log('ISLOADED');
+				this.isLoaded$.next(true);
+				// }
+			},
+		});
 	}
 
 	ngOnDestroy() {
@@ -177,6 +184,10 @@ export class LicenceWizardComponent implements OnInit, OnDestroy {
 	}
 
 	onStepSelectionChange(event: StepperSelectionEvent) {
+		// 	this.scrollIntoView();
+	}
+
+	onScrollIntoView(): void {
 		this.scrollIntoView();
 	}
 
@@ -187,6 +198,7 @@ export class LicenceWizardComponent implements OnInit, OnDestroy {
 
 	onNextStepperStep(stepper: MatStepper): void {
 		// console.log('next', stepper);
+		console.log('next step', this.licenceApplicationService.licenceModelFormGroup.value);
 		stepper.next();
 	}
 

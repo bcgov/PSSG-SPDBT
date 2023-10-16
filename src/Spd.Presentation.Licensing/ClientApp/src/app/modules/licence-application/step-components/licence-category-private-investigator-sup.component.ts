@@ -1,9 +1,9 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
-import { SelectOptions } from 'src/app/core/code-types/model-desc.models';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
+import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
@@ -154,13 +154,17 @@ export class LicenceCategoryPrivateInvestigatorSupComponent implements OnInit, L
 	matcher = new FormErrorStateMatcher();
 	title = '';
 
-	@Input() option: SelectOptions | null = null;
+	@Input() option: string | null = null;
 	@Input() index: number = 0;
 
 	@ViewChild('attachmentsRef') fileUploadComponent1!: FileUploadComponent;
 	@ViewChild('trainingattachmentsRef') fileUploadComponent2!: FileUploadComponent;
 
-	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
+	constructor(
+		private formBuilder: FormBuilder,
+		private optionsPipe: OptionsPipe,
+		private licenceApplicationService: LicenceApplicationService
+	) {}
 
 	ngOnInit(): void {
 		// this.form = this.formBuilder.group(
@@ -180,7 +184,7 @@ export class LicenceCategoryPrivateInvestigatorSupComponent implements OnInit, L
 		// 	// }
 		// );
 
-		this.title = `${this.option?.desc ?? ''}`;
+		this.title = this.optionsPipe.transform(this.option, 'SwlCategoryTypes');
 	}
 
 	isFormValid(): boolean {

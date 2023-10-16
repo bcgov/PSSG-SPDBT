@@ -2,9 +2,9 @@ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/api/models';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
-import { SelectOptions } from 'src/app/core/code-types/model-desc.models';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
+import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
@@ -302,7 +302,7 @@ export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, Lice
 
 	booleanTypeCodes = BooleanTypeCode;
 
-	@Input() option: SelectOptions | null = null;
+	@Input() option: string | null = null;
 	@Input() index: number = 0;
 
 	@ViewChild('attachmentsRef') fileUploadComponent1!: FileUploadComponent;
@@ -310,7 +310,11 @@ export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, Lice
 	@ViewChild('fireinvestigatorcertificateattachmentsRef') fileUploadComponent3!: FileUploadComponent;
 	@ViewChild('fireinvestigatorletterattachmentsRef') fileUploadComponent4!: FileUploadComponent;
 
-	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
+	constructor(
+		private formBuilder: FormBuilder,
+		private optionsPipe: OptionsPipe,
+		private licenceApplicationService: LicenceApplicationService
+	) {}
 
 	ngOnInit(): void {
 		// this.form = this.formBuilder.group(
@@ -342,7 +346,7 @@ export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, Lice
 		// 	}
 		// );
 
-		this.title = `${this.option?.desc ?? ''}`;
+		this.title = this.optionsPipe.transform(this.option, 'SwlCategoryTypes');
 	}
 
 	isFormValid(): boolean {
