@@ -1,7 +1,12 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/api/models';
-import { PoliceOfficerRoleCode, SwlCategoryTypeCode } from 'src/app/core/code-types/model-desc.models';
+import {
+	PoliceOfficerRoleCode,
+	SelectOptions,
+	SwlCategoryTypeCode,
+	SwlCategoryTypes,
+} from 'src/app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { LicenceApplicationService } from '../licence-application.service';
 
@@ -64,18 +69,11 @@ import { LicenceApplicationService } from '../licence-application.service';
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Licence Category</div>
 															<div class="text-data">
 																<ul class="m-0">
-																	<div formGroupName="categoriesFormGroup">
-																		<ng-container
-																			formArrayName="categories"
-																			*ngFor="let group of categoriesArray.controls; let i = index; let last = last"
-																		>
-																			<ng-container [formGroupName]="i">
-																				<li [ngClass]="last ? 'mb-0' : 'mb-1'">
-																					{{ group.get('desc')?.value }}
-																				</li>
-																			</ng-container>
-																		</ng-container>
-																	</div>
+																	<ng-container *ngFor="let category of categoryList; let i = index; let last = last">
+																		<li [ngClass]="last ? 'mb-0' : 'mb-1'">
+																			{{ category.desc }}
+																		</li>
+																	</ng-container>
 																</ul>
 															</div>
 														</div>
@@ -104,197 +102,153 @@ import { LicenceApplicationService } from '../licence-application.service';
 
 													<div class="text-minor-heading">Documents Uploaded</div>
 													<div class="row mt-0">
-														<ng-container formGroupName="categoriesFormGroup">
-															<ng-container
-																formArrayName="categories"
-																*ngFor="let group of categoriesArray.controls; let i = index; let last = last"
-															>
-																<ng-container [formGroupName]="i">
-																	<ng-container [ngSwitch]="group.get('code')?.value">
-																		<ng-container *ngSwitchCase="categoryTypeCodes.ArmouredCarGuard">
-																			<div class="col-lg-6 col-md-12 mt-lg-2">
-																				<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																					{{ group.get('code')?.value | options : 'SwlCategoryTypes' }} Documents
-																				</div>
-																				<div class="text-data">
-																					<div
-																						*ngFor="let doc of categoryArmouredCarGuardAttachments.value; let i = index"
-																					>
-																						{{ doc.name }}
-																					</div>
-																				</div>
-																			</div>
-																		</ng-container>
-																		<ng-container *ngSwitchCase="categoryTypeCodes.FireInvestigator">
-																			<div class="col-lg-6 col-md-12 mt-lg-2">
-																				<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																					{{ group.get('code')?.value | options : 'SwlCategoryTypes' }} Documents
-																				</div>
-																				<div class="text-data">
-																					<div
-																						*ngFor="
-																							let doc of categoryFireInvestigatorCertificateAttachments.value;
-																							let i = index
-																						"
-																					>
-																						{{ doc.name }}
-																					</div>
-																					<div
-																						*ngFor="
-																							let doc of categoryFireInvestigatorLetterAttachments.value;
-																							let i = index
-																						"
-																					>
-																						{{ doc.name }}
-																					</div>
-																				</div>
-																			</div>
-																		</ng-container>
-																		<ng-container *ngSwitchCase="categoryTypeCodes.Locksmith">
-																			<div class="col-lg-6 col-md-12 mt-lg-2">
-																				<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																					{{ group.get('code')?.value | options : 'SwlCategoryTypes' }} Documents
-																				</div>
-																				<div class="text-data">
-																					<div *ngFor="let doc of categoryLocksmithAttachments.value; let i = index">
-																						{{ doc.name }}
-																					</div>
-																				</div>
-																			</div>
-																		</ng-container>
-																		<ng-container *ngSwitchCase="categoryTypeCodes.PrivateInvestigator">
-																			<div class="col-lg-6 col-md-12 mt-lg-2">
-																				<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																					{{ group.get('code')?.value | options : 'SwlCategoryTypes' }} Documents
-																				</div>
-																				<div class="text-data">
-																					<div
-																						*ngFor="
-																							let doc of categoryPrivateInvestigatorAttachments.value;
-																							let i = index
-																						"
-																					>
-																						{{ doc.name }}
-																					</div>
+														<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showArmouredCarGuard">
+															<div class="text-label d-block text-muted mt-2 mt-lg-0">
+																{{ categoryTypeCodes.ArmouredCarGuard | options : 'SwlCategoryTypes' }} Documents
+															</div>
+															<div class="text-data">
+																<div *ngFor="let doc of categoryArmouredCarGuardAttachments.value; let i = index">
+																	{{ doc.name }}
+																</div>
+															</div>
+														</div>
+														<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showFireInvestigator">
+															<div class="text-label d-block text-muted mt-2 mt-lg-0">
+																{{ categoryTypeCodes.FireInvestigator | options : 'SwlCategoryTypes' }} Documents
+															</div>
+															<div class="text-data">
+																<div
+																	*ngFor="
+																		let doc of categoryFireInvestigatorCertificateAttachments.value;
+																		let i = index
+																	"
+																>
+																	{{ doc.name }}
+																</div>
+																<div *ngFor="let doc of categoryFireInvestigatorLetterAttachments.value; let i = index">
+																	{{ doc.name }}
+																</div>
+															</div>
+														</div>
+														<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showLocksmith">
+															<div class="text-label d-block text-muted mt-2 mt-lg-0">
+																{{ categoryTypeCodes.Locksmith | options : 'SwlCategoryTypes' }} Documents
+															</div>
+															<div class="text-data">
+																<div *ngFor="let doc of categoryLocksmithAttachments.value; let i = index">
+																	{{ doc.name }}
+																</div>
+															</div>
+														</div>
 
-																					<div
-																						*ngFor="
-																							let doc of categoryPrivateInvestigatorTrainingAttachments.value;
-																							let i = index
-																						"
-																					>
-																						{{ doc.name }}
-																					</div>
+														<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showPrivateInvestigator">
+															<div class="text-label d-block text-muted mt-2 mt-lg-0">
+																{{ categoryTypeCodes.PrivateInvestigator | options : 'SwlCategoryTypes' }} Documents
+															</div>
+															<div class="text-data">
+																<div class="text-data">
+																	<div *ngFor="let doc of categoryPrivateInvestigatorAttachments.value; let i = index">
+																		{{ doc.name }}
+																	</div>
 
-																					<div
-																						*ngFor="
-																							let doc of categoryPrivateInvestigatorFireCertificateAttachments.value;
-																							let i = index
-																						"
-																					>
-																						{{ doc.name }}
-																					</div>
+																	<div
+																		*ngFor="
+																			let doc of categoryPrivateInvestigatorTrainingAttachments.value;
+																			let i = index
+																		"
+																	>
+																		{{ doc.name }}
+																	</div>
 
-																					<div
-																						*ngFor="
-																							let doc of categoryPrivateInvestigatorFireLetterAttachments.value;
-																							let i = index
-																						"
-																					>
-																						{{ doc.name }}
-																					</div>
-																				</div>
-																			</div>
-																		</ng-container>
-																		<ng-container *ngSwitchCase="categoryTypeCodes.PrivateInvestigatorUnderSupervision">
-																			<div class="col-lg-6 col-md-12 mt-lg-2">
-																				<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																					{{ group.get('code')?.value | options : 'SwlCategoryTypes' }} Documents
-																				</div>
-																				<div class="text-data">
-																					<div
-																						*ngFor="
-																							let doc of categoryPrivateInvestigatorUnderSupervisionAttachments.value;
-																							let i = index
-																						"
-																					>
-																						{{ doc.name }}
-																					</div>
+																	<div
+																		*ngFor="
+																			let doc of categoryPrivateInvestigatorFireCertificateAttachments.value;
+																			let i = index
+																		"
+																	>
+																		{{ doc.name }}
+																	</div>
 
-																					<div
-																						*ngFor="
-																							let doc of categoryPrivateInvestigatorUnderSupervisionTrainingAttachments.value;
-																							let i = index
-																						"
-																					>
-																						{{ doc.name }}
-																					</div>
-																				</div>
-																			</div>
-																		</ng-container>
-																		<ng-container *ngSwitchCase="categoryTypeCodes.SecurityAlarmInstaller">
-																			<div class="col-lg-6 col-md-12 mt-lg-2">
-																				<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																					{{ group.get('code')?.value | options : 'SwlCategoryTypes' }} Documents
-																				</div>
-																				<div class="text-data">
-																					<div
-																						*ngFor="
-																							let doc of categorySecurityAlarmInstallerAttachments.value;
-																							let i = index
-																						"
-																					>
-																						{{ doc.name }}
-																					</div>
-																				</div>
-																			</div>
-																		</ng-container>
-																		<ng-container *ngSwitchCase="categoryTypeCodes.SecurityGuard">
-																			<div class="col-lg-6 col-md-12 mt-lg-2">
-																				<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																					{{ group.get('code')?.value | options : 'SwlCategoryTypes' }} Documents
-																				</div>
-																				<div class="text-data">
-																					<div
-																						*ngFor="let doc of categorySecurityGuardAttachments.value; let i = index"
-																					>
-																						{{ doc.name }}
-																					</div>
-																				</div>
-																			</div>
-																		</ng-container>
-																		<ng-container *ngSwitchCase="categoryTypeCodes.SecurityConsultant">
-																			<div class="col-lg-6 col-md-12 mt-lg-2">
-																				<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																					{{ group.get('code')?.value | options : 'SwlCategoryTypes' }} Documents
-																				</div>
-																				<div class="text-data">
-																					<div
-																						*ngFor="
-																							let doc of categorySecurityConsultantAttachments.value;
-																							let i = index
-																						"
-																					>
-																						{{ doc.name }}
-																					</div>
-																					<div
-																						*ngFor="
-																							let doc of categorySecurityConsultantResumeAttachments.value;
-																							let i = index
-																						"
-																					>
-																						{{ doc.name }}
-																					</div>
-																				</div>
-																			</div>
-																		</ng-container>
-																	</ng-container>
-																</ng-container>
-															</ng-container>
-														</ng-container>
+																	<div
+																		*ngFor="
+																			let doc of categoryPrivateInvestigatorFireLetterAttachments.value;
+																			let i = index
+																		"
+																	>
+																		{{ doc.name }}
+																	</div>
+																</div>
+															</div>
+														</div>
+
+														<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showPrivateInvestigatorUnderSupervision">
+															<div class="text-label d-block text-muted mt-2 mt-lg-0">
+																{{
+																	categoryTypeCodes.PrivateInvestigatorUnderSupervision | options : 'SwlCategoryTypes'
+																}}
+																Documents
+															</div>
+															<div class="text-data">
+																<div
+																	*ngFor="
+																		let doc of categoryPrivateInvestigatorUnderSupervisionAttachments.value;
+																		let i = index
+																	"
+																>
+																	{{ doc.name }}
+																</div>
+
+																<div
+																	*ngFor="
+																		let doc of categoryPrivateInvestigatorUnderSupervisionTrainingAttachments.value;
+																		let i = index
+																	"
+																>
+																	{{ doc.name }}
+																</div>
+															</div>
+														</div>
+
+														<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showSecurityAlarmInstaller">
+															<div class="text-label d-block text-muted mt-2 mt-lg-0">
+																{{ categoryTypeCodes.SecurityAlarmInstaller | options : 'SwlCategoryTypes' }} Documents
+															</div>
+															<div class="text-data">
+																<div *ngFor="let doc of categorySecurityAlarmInstallerAttachments.value; let i = index">
+																	{{ doc.name }}
+																</div>
+															</div>
+														</div>
+
+														<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showSecurityConsultant">
+															<div class="text-label d-block text-muted mt-2 mt-lg-0">
+																{{ categoryTypeCodes.SecurityConsultant | options : 'SwlCategoryTypes' }} Documents
+															</div>
+															<div class="text-data">
+																<div *ngFor="let doc of categorySecurityConsultantAttachments.value; let i = index">
+																	{{ doc.name }}
+																</div>
+																<div
+																	*ngFor="let doc of categorySecurityConsultantResumeAttachments.value; let i = index"
+																>
+																	{{ doc.name }}
+																</div>
+															</div>
+														</div>
+
+														<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showSecurityGuard">
+															<div class="text-label d-block text-muted mt-2 mt-lg-0">
+																{{ categoryTypeCodes.SecurityGuard | options : 'SwlCategoryTypes' }} Documents
+															</div>
+															<div class="text-data">
+																<div *ngFor="let doc of categorySecurityGuardAttachments.value; let i = index">
+																	{{ doc.name }}
+																</div>
+															</div>
+														</div>
 													</div>
 
-													<ng-container *ngIf="hasExpiredLicence.value == booleanTypeCodes.Yes">
+													<ng-container *ngIf="useDogsOrRestraints.value == booleanTypeCodes.Yes">
 														<mat-divider class="mt-4 mb-2"></mat-divider>
 														<div class="text-minor-heading">Dog & Restraints Authorization</div>
 														<div class="row mt-0">
@@ -739,36 +693,43 @@ import { LicenceApplicationService } from '../licence-application.service';
 		`,
 	],
 })
-export class SummaryReviewComponent implements OnInit, OnDestroy {
-	// private licenceModelLoadedSubscription!: Subscription;
-
-	// licenceModel: LicenceModel | null = null;
+export class SummaryReviewComponent implements OnInit {
 	form = this.licenceApplicationService.licenceModelFormGroup;
-
-	// categoriesFormGroup: FormGroup = this.licenceApplicationService.categoriesFormGroup;
 
 	constants = SPD_CONSTANTS;
 	booleanTypeCodes = BooleanTypeCode;
 	policeOfficerRoleCodes = PoliceOfficerRoleCode;
 	categoryTypeCodes = SwlCategoryTypeCode;
+	swlCategoryTypes = SwlCategoryTypes;
+
+	categoryArmouredCarGuardFormGroup: FormGroup = this.licenceApplicationService.categoryArmouredCarGuardFormGroup;
+	categoryBodyArmourSalesFormGroup: FormGroup = this.licenceApplicationService.categoryBodyArmourSalesFormGroup;
+	categoryClosedCircuitTelevisionInstallerFormGroup: FormGroup =
+		this.licenceApplicationService.categoryClosedCircuitTelevisionInstallerFormGroup;
+	categoryElectronicLockingDeviceInstallerFormGroup: FormGroup =
+		this.licenceApplicationService.categoryElectronicLockingDeviceInstallerFormGroup;
+	categoryFireInvestigatorFormGroup: FormGroup = this.licenceApplicationService.categoryFireInvestigatorFormGroup;
+	categoryLocksmithFormGroup: FormGroup = this.licenceApplicationService.categoryLocksmithFormGroup;
+	categoryPrivateInvestigatorSupFormGroup: FormGroup =
+		this.licenceApplicationService.categoryPrivateInvestigatorSupFormGroup;
+	categoryPrivateInvestigatorFormGroup: FormGroup = this.licenceApplicationService.categoryPrivateInvestigatorFormGroup;
+	categorySecurityAlarmInstallerFormGroup: FormGroup =
+		this.licenceApplicationService.categorySecurityAlarmInstallerFormGroup;
+	categorySecurityConsultantFormGroup: FormGroup = this.licenceApplicationService.categorySecurityConsultantFormGroup;
+	categoryLocksmithSupFormGroup: FormGroup = this.licenceApplicationService.categoryLocksmithSupFormGroup;
+	categorySecurityAlarmInstallerSupFormGroup: FormGroup =
+		this.licenceApplicationService.categorySecurityAlarmInstallerSupFormGroup;
+	categorySecurityAlarmMonitorFormGroup: FormGroup =
+		this.licenceApplicationService.categorySecurityAlarmMonitorFormGroup;
+	categorySecurityAlarmResponseFormGroup: FormGroup =
+		this.licenceApplicationService.categorySecurityAlarmResponseFormGroup;
+	categorySecurityAlarmSalesFormGroup: FormGroup = this.licenceApplicationService.categorySecurityAlarmSalesFormGroup;
+	categorySecurityGuardFormGroup: FormGroup = this.licenceApplicationService.categorySecurityGuardFormGroup;
+	categorySecurityGuardSupFormGroup: FormGroup = this.licenceApplicationService.categorySecurityGuardSupFormGroup;
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
-	ngOnInit(): void {
-		// 	console.log('SummaryReviewComponent ONINIT');
-		// 	this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
-		// 		next: (loaded: LicenceModelSubject) => {
-		// 			// console.log('SummaryReviewComponent', loaded);
-		// 			// if (loaded.isLoaded || loaded.isUpdated) {
-		// 			// 	this.licenceModel = this.licenceApplicationService.licenceModel;
-		// 			// }
-		// 		},
-		// 	});
-	}
-
-	ngOnDestroy() {
-		// 	this.licenceModelLoadedSubscription.unsubscribe();
-	}
+	ngOnInit(): void {}
 
 	get licenceTypeCode(): FormControl {
 		return this.form.controls['licenceTypeFormGroup'].get('licenceTypeCode') as FormControl;
@@ -781,9 +742,6 @@ export class SummaryReviewComponent implements OnInit, OnDestroy {
 		return this.form.controls['soleProprietorFormGroup'].get('isSoleProprietor') as FormControl;
 	}
 
-	get categoriesArray(): FormArray {
-		return this.form.controls['categoriesFormGroup'].get('categories') as FormArray;
-	}
 	get categoryArmouredCarGuardAttachments(): FormControl {
 		return this.form.controls['categoryArmouredCarGuardFormGroup'].get('attachments') as FormControl;
 	}
@@ -830,12 +788,10 @@ export class SummaryReviewComponent implements OnInit, OnDestroy {
 		) as FormControl;
 	}
 	get categoryPrivateInvestigatorUnderSupervisionAttachments(): FormControl {
-		return this.form.controls['categoryPrivateInvestigatorUnderSupervisionFormGroup'].get('attachments') as FormControl;
+		return this.form.controls['categoryPrivateInvestigatorSupFormGroup'].get('attachments') as FormControl;
 	}
 	get categoryPrivateInvestigatorUnderSupervisionTrainingAttachments(): FormControl {
-		return this.form.controls['categoryPrivateInvestigatorUnderSupervisionFormGroup'].get(
-			'trainingattachments'
-		) as FormControl;
+		return this.form.controls['categoryPrivateInvestigatorSupFormGroup'].get('trainingattachments') as FormControl;
 	}
 
 	get licenceTermCode(): FormControl {
@@ -1048,5 +1004,114 @@ export class SummaryReviewComponent implements OnInit, OnDestroy {
 	}
 	get mailingCountry(): FormControl {
 		return this.form.controls['mailingAddressFormGroup'].get('mailingCountry') as FormControl;
+	}
+	get categoryList(): Array<SelectOptions> {
+		const list: Array<SelectOptions> = [];
+		if (this.categoryArmouredCarGuardFormGroup.get('isInclude')?.value) {
+			const element = this.swlCategoryTypes.find((item) => item.code == SwlCategoryTypeCode.ArmouredCarGuard);
+			if (element) list.push(element);
+		}
+
+		if (this.categoryBodyArmourSalesFormGroup.get('isInclude')?.value) {
+			const element = this.swlCategoryTypes.find((item) => item.code == SwlCategoryTypeCode.BodyArmourSales);
+			if (element) list.push(element);
+		}
+		if (this.categoryClosedCircuitTelevisionInstallerFormGroup.get('isInclude')?.value) {
+			const element = this.swlCategoryTypes.find(
+				(item) => item.code == SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller
+			);
+			if (element) list.push(element);
+		}
+		if (this.categoryElectronicLockingDeviceInstallerFormGroup.get('isInclude')?.value) {
+			const element = this.swlCategoryTypes.find(
+				(item) => item.code == SwlCategoryTypeCode.ElectronicLockingDeviceInstaller
+			);
+			if (element) list.push(element);
+		}
+		if (this.categoryFireInvestigatorFormGroup.get('isInclude')?.value) {
+			const element = this.swlCategoryTypes.find((item) => item.code == SwlCategoryTypeCode.FireInvestigator);
+			if (element) list.push(element);
+		}
+		if (this.categoryLocksmithFormGroup.get('isInclude')?.value) {
+			const element = this.swlCategoryTypes.find((item) => item.code == SwlCategoryTypeCode.Locksmith);
+			if (element) list.push(element);
+		}
+		if (this.categoryLocksmithSupFormGroup.get('isInclude')?.value) {
+			const element = this.swlCategoryTypes.find((item) => item.code == SwlCategoryTypeCode.LocksmithUnderSupervision);
+			if (element) list.push(element);
+		}
+		if (this.categoryPrivateInvestigatorFormGroup.get('isInclude')?.value) {
+			const element = this.swlCategoryTypes.find((item) => item.code == SwlCategoryTypeCode.PrivateInvestigator);
+			if (element) list.push(element);
+		}
+		if (this.categoryPrivateInvestigatorSupFormGroup.get('isInclude')?.value) {
+			const element = this.swlCategoryTypes.find(
+				(item) => item.code == SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision
+			);
+			if (element) list.push(element);
+		}
+		if (this.categorySecurityAlarmInstallerFormGroup.get('isInclude')?.value) {
+			const element = this.swlCategoryTypes.find((item) => item.code == SwlCategoryTypeCode.SecurityAlarmInstaller);
+			if (element) list.push(element);
+		}
+		if (this.categorySecurityAlarmInstallerSupFormGroup.get('isInclude')?.value) {
+			const element = this.swlCategoryTypes.find(
+				(item) => item.code == SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision
+			);
+			if (element) list.push(element);
+		}
+		if (this.categorySecurityAlarmMonitorFormGroup.get('isInclude')?.value) {
+			const element = this.swlCategoryTypes.find((item) => item.code == SwlCategoryTypeCode.SecurityAlarmMonitor);
+			if (element) list.push(element);
+		}
+		if (this.categorySecurityAlarmResponseFormGroup.get('isInclude')?.value) {
+			const element = this.swlCategoryTypes.find((item) => item.code == SwlCategoryTypeCode.SecurityAlarmResponse);
+			if (element) list.push(element);
+		}
+		if (this.categorySecurityAlarmSalesFormGroup.get('isInclude')?.value) {
+			const element = this.swlCategoryTypes.find((item) => item.code == SwlCategoryTypeCode.SecurityAlarmSales);
+			if (element) list.push(element);
+		}
+		if (this.categorySecurityConsultantFormGroup.get('isInclude')?.value) {
+			const element = this.swlCategoryTypes.find((item) => item.code == SwlCategoryTypeCode.SecurityConsultant);
+			if (element) list.push(element);
+		}
+		if (this.categorySecurityGuardFormGroup.get('isInclude')?.value) {
+			const element = this.swlCategoryTypes.find((item) => item.code == SwlCategoryTypeCode.SecurityGuard);
+			if (element) list.push(element);
+		}
+		if (this.categorySecurityGuardSupFormGroup.get('isInclude')?.value) {
+			const element = this.swlCategoryTypes.find(
+				(item) => item.code == SwlCategoryTypeCode.SecurityGuardUnderSupervision
+			);
+			if (element) list.push(element);
+		}
+
+		return list;
+	}
+
+	get showArmouredCarGuard(): boolean {
+		return this.categoryArmouredCarGuardFormGroup.get('isInclude')?.value;
+	}
+	get showFireInvestigator(): boolean {
+		return this.categoryFireInvestigatorFormGroup.get('isInclude')?.value;
+	}
+	get showLocksmith(): boolean {
+		return this.categoryLocksmithFormGroup.get('isInclude')?.value;
+	}
+	get showPrivateInvestigator(): boolean {
+		return this.categoryPrivateInvestigatorFormGroup.get('isInclude')?.value;
+	}
+	get showPrivateInvestigatorUnderSupervision(): boolean {
+		return this.categoryPrivateInvestigatorSupFormGroup.get('isInclude')?.value;
+	}
+	get showSecurityAlarmInstaller(): boolean {
+		return this.categorySecurityAlarmInstallerFormGroup.get('isInclude')?.value;
+	}
+	get showSecurityConsultant(): boolean {
+		return this.categorySecurityConsultantFormGroup.get('isInclude')?.value;
+	}
+	get showSecurityGuard(): boolean {
+		return this.categorySecurityGuardFormGroup.get('isInclude')?.value;
 	}
 }
