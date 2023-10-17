@@ -1,12 +1,7 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Component } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/api/models';
-import {
-	LicenceApplicationService,
-	LicenceFormStepComponent,
-	LicenceModelSubject,
-} from '../licence-application.service';
+import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-criminal-history',
@@ -39,40 +34,15 @@ import {
 	`,
 	styles: [],
 })
-export class CriminalHistoryComponent implements OnInit, OnDestroy, LicenceFormStepComponent {
-	private licenceModelLoadedSubscription!: Subscription;
-
+export class CriminalHistoryComponent implements LicenceFormStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 
 	form: FormGroup = this.licenceApplicationService.criminalHistoryFormGroup;
-	//  this.formBuilder.group({
-	// 	hasCriminalHistory: new FormControl(null, [FormControlValidators.required]),
-	// });
 
-	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
-
-	ngOnInit(): void {
-		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
-			next: (loaded: LicenceModelSubject) => {
-				if (loaded.isLoaded) {
-					// this.form.patchValue({
-					// 	hasCriminalHistory: this.licenceApplicationService.licenceModel.hasCriminalHistory,
-					// });
-				}
-			},
-		});
-	}
-
-	ngOnDestroy() {
-		this.licenceModelLoadedSubscription.unsubscribe();
-	}
+	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
-	}
-
-	getDataToSave(): any {
-		return this.form.value;
 	}
 }

@@ -53,8 +53,4 @@ export class LicenceCategorySecurityAlarmInstallerSupComponent implements OnInit
 	isFormValid(): boolean {
 		return true;
 	}
-
-	getDataToSave(): any {
-		return { licenceCategorySecurityAlarmInstallerUnderSupervision: {} };
-	}
 }

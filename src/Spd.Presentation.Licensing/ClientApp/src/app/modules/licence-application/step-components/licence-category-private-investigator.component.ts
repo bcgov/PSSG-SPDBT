@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/api/models';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
@@ -108,6 +108,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 											[maxNumberOfFiles]="10"
 											#attachmentsRef
 											[files]="attachments.value"
+											(filesChanged)="onFilesChanged()"
 										></app-file-upload>
 										<mat-error
 											class="mat-option-error"
@@ -191,7 +192,8 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 										<app-file-upload
 											[maxNumberOfFiles]="10"
 											#trainingattachmentsRef
-											[files]="attachments.value"
+											[files]="trainingattachments.value"
+											(filesChanged)="onTrainingFilesChanged()"
 										></app-file-upload>
 										<mat-error
 											class="mat-option-error"
@@ -252,7 +254,8 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 										<app-file-upload
 											[maxNumberOfFiles]="10"
 											#fireinvestigatorcertificateattachmentsRef
-											[files]="attachments.value"
+											[files]="fireinvestigatorcertificateattachments.value"
+											(filesChanged)="onFireCertFilesChanged()"
 										></app-file-upload>
 										<mat-error
 											class="mat-option-error"
@@ -271,7 +274,8 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 										<app-file-upload
 											[maxNumberOfFiles]="10"
 											#fireinvestigatorletterattachmentsRef
-											[files]="attachments.value"
+											[files]="fireinvestigatorletterattachments.value"
+											(filesChanged)="onFireLetterFilesChanged()"
 										></app-file-upload>
 										<mat-error
 											class="mat-option-error"
@@ -310,84 +314,52 @@ export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, Lice
 	@ViewChild('fireinvestigatorcertificateattachmentsRef') fileUploadComponent3!: FileUploadComponent;
 	@ViewChild('fireinvestigatorletterattachmentsRef') fileUploadComponent4!: FileUploadComponent;
 
-	constructor(
-		private formBuilder: FormBuilder,
-		private optionsPipe: OptionsPipe,
-		private licenceApplicationService: LicenceApplicationService
-	) {}
+	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		// this.form = this.formBuilder.group(
-		// 	{
-		// 		requirement: new FormControl(null, [FormControlValidators.required]),
-		// 		training: new FormControl(null, [FormControlValidators.required]),
-		// 		// documentExpiryDate: new FormControl(null),
-		// 		attachments: new FormControl('', [Validators.required]),
-		// 		trainingattachments: new FormControl('', [Validators.required]),
-		// 		fireinvestigatorcertificateattachments: new FormControl(''),
-		// 		fireinvestigatorletterattachments: new FormControl(''),
-		// 		addFireInvestigator: new FormControl('', [FormControlValidators.required]),
-		// 	},
-		// 	{
-		// 		validators: [
-		// 			// FormGroupValidators.conditionalDefaultRequiredValidator(
-		// 			// 	'documentExpiryDate',
-		// 			// 	(form) => form.get('requirement')?.value == 'b'
-		// 			// ),
-		// 			FormGroupValidators.conditionalDefaultRequiredValidator(
-		// 				'fireinvestigatorcertificateattachments',
-		// 				(form) => form.get('addFireInvestigator')?.value == this.booleanTypeCodes.Yes
-		// 			),
-		// 			FormGroupValidators.conditionalDefaultRequiredValidator(
-		// 				'fireinvestigatorletterattachments',
-		// 				(form) => form.get('addFireInvestigator')?.value == this.booleanTypeCodes.Yes
-		// 			),
-		// 		],
-		// 	}
-		// );
-
 		this.title = this.optionsPipe.transform(this.option, 'SwlCategoryTypes');
 	}
 
 	isFormValid(): boolean {
-		const attachments1 =
-			this.fileUploadComponent1?.files && this.fileUploadComponent1?.files.length > 0
-				? this.fileUploadComponent1.files
-				: '';
-		this.form.controls['attachments'].setValue(attachments1);
-
-		const attachments2 =
-			this.fileUploadComponent2?.files && this.fileUploadComponent2?.files.length > 0
-				? this.fileUploadComponent2.files
-				: '';
-		this.form.controls['trainingattachments'].setValue(attachments2);
-
-		const attachments3 =
-			this.fileUploadComponent3?.files && this.fileUploadComponent3?.files.length > 0
-				? this.fileUploadComponent3.files
-				: '';
-		this.form.controls['fireinvestigatorcertificateattachments'].setValue(attachments3);
-
-		const attachments4 =
-			this.fileUploadComponent4?.files && this.fileUploadComponent4?.files.length > 0
-				? this.fileUploadComponent4.files
-				: '';
-		this.form.controls['fireinvestigatorletterattachments'].setValue(attachments4);
+		this.onFilesChanged();
+		this.onTrainingFilesChanged();
+		this.onFireCertFilesChanged();
+		this.onFireLetterFilesChanged();
 
 		this.form.markAllAsTouched();
 		return this.form.valid;
 	}
 
-	getDataToSave(): any {
-		// remove any invalid data
-		if (this.addFireInvestigator.value == this.booleanTypeCodes.No) {
-			this.form.patchValue({
-				fireinvestigatorcertificateattachments: null,
-				fireinvestigatorletterattachments: null,
-			});
-		}
+	onFilesChanged(): void {
+		const attachments =
+			this.fileUploadComponent1?.files && this.fileUploadComponent1?.files.length > 0
+				? this.fileUploadComponent1.files
+				: [];
+		this.form.controls['attachments'].setValue(attachments);
+	}
 
-		return { licenceCategoryPrivateInvestigatorUnderSupervision: { ...this.form.value } };
+	onTrainingFilesChanged(): void {
+		const attachments =
+			this.fileUploadComponent2?.files && this.fileUploadComponent2?.files.length > 0
+				? this.fileUploadComponent2.files
+				: [];
+		this.form.controls['trainingattachments'].setValue(attachments);
+	}
+
+	onFireCertFilesChanged(): void {
+		const attachments =
+			this.fileUploadComponent3?.files && this.fileUploadComponent3?.files.length > 0
+				? this.fileUploadComponent3.files
+				: [];
+		this.form.controls['fireinvestigatorcertificateattachments'].setValue(attachments);
+	}
+
+	onFireLetterFilesChanged(): void {
+		const attachments =
+			this.fileUploadComponent4?.files && this.fileUploadComponent4?.files.length > 0
+				? this.fileUploadComponent4.files
+				: [];
+		this.form.controls['fireinvestigatorletterattachments'].setValue(attachments);
 	}
 
 	public get requirement(): FormControl {

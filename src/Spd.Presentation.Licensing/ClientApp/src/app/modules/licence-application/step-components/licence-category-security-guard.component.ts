@@ -1,14 +1,9 @@
 import { Component, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
-import {
-	LicenceApplicationService,
-	LicenceFormStepComponent,
-	LicenceModelSubject,
-} from '../licence-application.service';
+import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-category-security-guard',
@@ -74,7 +69,11 @@ import {
 										<div class="text-minor-heading mb-2">Upload a copy of your certificate:</div>
 									</ng-template>
 									<div class="my-2">
-										<app-file-upload [maxNumberOfFiles]="10" [files]="attachments.value"></app-file-upload>
+										<app-file-upload
+											[maxNumberOfFiles]="10"
+											[files]="attachments.value"
+											(filesChanged)="onFilesChanged()"
+										></app-file-upload>
 										<mat-error
 											class="mat-option-error"
 											*ngIf="
@@ -105,7 +104,7 @@ import {
 	encapsulation: ViewEncapsulation.None,
 })
 export class LicenceCategorySecurityGuardComponent implements OnInit, OnDestroy, LicenceFormStepComponent {
-	private licenceModelLoadedSubscription!: Subscription;
+	// private licenceModelLoadedSubscription!: Subscription;
 
 	form: FormGroup = this.licenceApplicationService.categorySecurityGuardFormGroup;
 	title = '';
@@ -119,45 +118,25 @@ export class LicenceCategorySecurityGuardComponent implements OnInit, OnDestroy,
 
 	ngOnInit(): void {
 		this.title = this.optionsPipe.transform(this.option, 'SwlCategoryTypes');
-
-		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
-			next: (loaded: LicenceModelSubject) => {
-				console.log('SecurityGuardComponent', loaded);
-				if (loaded.isCategoryLoaded) {
-					// const licenceCategorySecurityGuard = this.licenceApplicationService.licenceModel
-					// 	.licenceCategorySecurityGuard as any;
-					// console.log('licenceCategorySecurityGuard', licenceCategorySecurityGuard);
-					// console.log('licenceCategorySecurityGuard licenceModel', this.licenceApplicationService.licenceModel);
-					// if (licenceCategorySecurityGuard) {
-					// 	this.form.patchValue({
-					// 		requirement: licenceCategorySecurityGuard.requirement,
-					// 		attachments: licenceCategorySecurityGuard.attachments,
-					// 	});
-					// }
-				}
-			},
-		});
 	}
 
 	ngOnDestroy() {
-		this.licenceModelLoadedSubscription.unsubscribe();
+		// this.licenceModelLoadedSubscription.unsubscribe();
 	}
 
 	isFormValid(): boolean {
-		const attachments =
-			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
-				? this.fileUploadComponent.files
-				: '';
-		this.form.controls['attachments'].setValue(attachments);
+		this.onFilesChanged();
 
 		this.form.markAllAsTouched();
 		return this.form.valid;
 	}
 
-	getDataToSave(): any {
-		// console.log('security guard getDataToSave', this.form.value);
-		// return { licenceCategorySecurityGuard: { ...this.form.value } };
-		return this.form.value;
+	onFilesChanged(): void {
+		const attachments =
+			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
+				? this.fileUploadComponent.files
+				: [];
+		this.form.controls['attachments'].setValue(attachments);
 	}
 
 	public get requirement(): FormControl {

@@ -1,16 +1,11 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Component, ViewChild } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/api/models';
 import { showHideTriggerAnimation, showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { DogDocumentTypes, RestraintDocumentTypes } from 'src/app/core/code-types/model-desc.models';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import {
-	LicenceApplicationService,
-	LicenceFormStepComponent,
-	LicenceModelSubject,
-} from '../licence-application.service';
+import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-dogs-or-restraints',
@@ -89,6 +84,7 @@ import {
 											[maxNumberOfFiles]="10"
 											[files]="carryAndUseRetraintsAttachments.value"
 											#carryAndUseRetraintsAttachmentsRef
+											(filesChanged)="onRestraintsFilesChanged()"
 										></app-file-upload>
 										<mat-error
 											class="mat-option-error"
@@ -160,6 +156,7 @@ import {
 											[maxNumberOfFiles]="10"
 											[files]="dogsPurposeAttachments.value"
 											#dogsPurposeAttachmentsRef
+											(filesChanged)="onDogFilesChanged()"
 										></app-file-upload>
 										<mat-error
 											class="mat-option-error"
@@ -182,9 +179,7 @@ import {
 	styles: [],
 	animations: [showHideTriggerAnimation, showHideTriggerSlideAnimation],
 })
-export class DogsOrRestraintsComponent implements OnInit, OnDestroy, LicenceFormStepComponent {
-	private licenceModelLoadedSubscription!: Subscription;
-
+export class DogsOrRestraintsComponent implements LicenceFormStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 	restraintDocumentTypes = RestraintDocumentTypes;
 	dogDocumentTypes = DogDocumentTypes;
@@ -192,133 +187,34 @@ export class DogsOrRestraintsComponent implements OnInit, OnDestroy, LicenceForm
 	matcher = new FormErrorStateMatcher();
 
 	form: FormGroup = this.licenceApplicationService.dogsOrRestraintsFormGroup;
-	//  this.formBuilder.group(
-	// 	{
-	// 		useDogsOrRestraints: new FormControl('', [FormControlValidators.required]),
-	// 		carryAndUseRetraints: new FormControl(),
-	// 		carryAndUseRetraintsDocument: new FormControl(),
-	// 		carryAndUseRetraintsAttachments: new FormControl(),
-	// 		dogPurposeFormGroup: new FormGroup(
-	// 			{
-	// 				isDogsPurposeProtection: new FormControl(false),
-	// 				isDogsPurposeDetectionDrugs: new FormControl(false),
-	// 				isDogsPurposeDetectionExplosives: new FormControl(false),
-	// 			},
-	// 			FormGroupValidators.atLeastOneCheckboxValidator('useDogsOrRestraints', BooleanTypeCode.Yes)
-	// 		),
-	// 		dogsPurposeDocumentType: new FormControl(),
-	// 		dogsPurposeAttachments: new FormControl(),
-	// 	},
-	// 	{
-	// 		validators: [
-	// 			FormGroupValidators.conditionalDefaultRequiredValidator(
-	// 				'carryAndUseRetraintsDocument',
-	// 				(form) =>
-	// 					form.get('useDogsOrRestraints')?.value == this.booleanTypeCodes.Yes &&
-	// 					form.get('carryAndUseRetraints')?.value
-	// 			),
-	// 			FormGroupValidators.conditionalDefaultRequiredValidator(
-	// 				'carryAndUseRetraintsAttachments',
-	// 				(form) =>
-	// 					form.get('useDogsOrRestraints')?.value == this.booleanTypeCodes.Yes &&
-	// 					form.get('carryAndUseRetraints')?.value
-	// 			),
-	// 			FormGroupValidators.conditionalDefaultRequiredValidator('dogsPurposeDocumentType', (form) => {
-	// 				const dogPurposeFormGroup = form.get('dogPurposeFormGroup') as FormGroup;
-	// 				return (
-	// 					form.get('useDogsOrRestraints')?.value == this.booleanTypeCodes.Yes &&
-	// 					((dogPurposeFormGroup.get('isDogsPurposeProtection') as FormControl).value ||
-	// 						(dogPurposeFormGroup.get('isDogsPurposeDetectionDrugs') as FormControl).value ||
-	// 						(dogPurposeFormGroup.get('isDogsPurposeDetectionExplosives') as FormControl).value)
-	// 				);
-	// 			}),
-	// 			FormGroupValidators.conditionalDefaultRequiredValidator('dogsPurposeAttachments', (form) => {
-	// 				const dogPurposeFormGroup = form.get('dogPurposeFormGroup') as FormGroup;
-	// 				return (
-	// 					form.get('useDogsOrRestraints')?.value == this.booleanTypeCodes.Yes &&
-	// 					((dogPurposeFormGroup.get('isDogsPurposeProtection') as FormControl).value ||
-	// 						(dogPurposeFormGroup.get('isDogsPurposeDetectionDrugs') as FormControl).value ||
-	// 						(dogPurposeFormGroup.get('isDogsPurposeDetectionExplosives') as FormControl).value)
-	// 				);
-	// 			}),
-	// 		],
-	// 	}
-	// );
 
 	@ViewChild('carryAndUseRetraintsAttachmentsRef') fileUploadComponent1!: FileUploadComponent;
 	@ViewChild('dogsPurposeAttachmentsRef') fileUploadComponent2!: FileUploadComponent;
 
-	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
-
-	ngOnInit(): void {
-		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
-			next: (loaded: LicenceModelSubject) => {
-				if (loaded.isLoaded) {
-					// this.form.patchValue({
-					// 	useDogsOrRestraints: this.licenceApplicationService.licenceModel.useDogsOrRestraints,
-					// 	carryAndUseRetraints: this.licenceApplicationService.licenceModel.carryAndUseRetraints,
-					// 	carryAndUseRetraintsDocument: this.licenceApplicationService.licenceModel.carryAndUseRetraintsDocument,
-					// 	carryAndUseRetraintsAttachments:
-					// 		this.licenceApplicationService.licenceModel.carryAndUseRetraintsAttachments,
-					// 	dogPurposeFormGroup: {
-					// 		isDogsPurposeProtection: this.licenceApplicationService.licenceModel.isDogsPurposeProtection,
-					// 		isDogsPurposeDetectionDrugs: this.licenceApplicationService.licenceModel.isDogsPurposeDetectionDrugs,
-					// 		isDogsPurposeDetectionExplosives:
-					// 			this.licenceApplicationService.licenceModel.isDogsPurposeDetectionExplosives,
-					// 	},
-					// 	dogsPurposeDocumentType: this.licenceApplicationService.licenceModel.dogsPurposeDocumentType,
-					// 	dogsPurposeAttachments: this.licenceApplicationService.licenceModel.dogsPurposeAttachments,
-					// });
-				}
-			},
-		});
-	}
-
-	ngOnDestroy() {
-		this.licenceModelLoadedSubscription.unsubscribe();
-	}
+	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	isFormValid(): boolean {
-		const attachments1 =
-			this.fileUploadComponent1?.files && this.fileUploadComponent1?.files.length > 0
-				? this.fileUploadComponent1.files
-				: '';
-		this.form.controls['carryAndUseRetraintsAttachments'].setValue(attachments1);
-
-		const attachments2 =
-			this.fileUploadComponent2?.files && this.fileUploadComponent2?.files.length > 0
-				? this.fileUploadComponent2.files
-				: '';
-		this.form.controls['dogsPurposeAttachments'].setValue(attachments2);
+		this.onRestraintsFilesChanged();
+		this.onDogFilesChanged();
 
 		this.form.markAllAsTouched();
 		return this.form.valid;
 	}
 
-	getDataToSave(): any {
-		// flatten the 'dogPurposeFormGroup' data
-		let formValue = this.form.value;
-		formValue = { ...formValue, ...formValue.dogPurposeFormGroup };
-		delete formValue.dogPurposeFormGroup;
+	onRestraintsFilesChanged(): void {
+		const attachments =
+			this.fileUploadComponent1?.files && this.fileUploadComponent1?.files.length > 0
+				? this.fileUploadComponent1.files
+				: [];
+		this.form.controls['carryAndUseRetraintsAttachments'].setValue(attachments);
+	}
 
-		// remove any invalid data
-		if (this.useDogsOrRestraints.value == this.booleanTypeCodes.No) {
-			formValue = {
-				...formValue,
-				...{
-					carryAndUseRetraints: null,
-					carryAndUseRetraintsDocument: null,
-					carryAndUseRetraintsAttachments: null,
-					isDogsPurposeProtection: false,
-					isDogsPurposeDetectionDrugs: false,
-					isDogsPurposeDetectionExplosives: false,
-					dogsPurposeDocumentType: null,
-					dogsPurposeAttachments: null,
-				},
-			};
-		}
-
-		return formValue;
+	onDogFilesChanged(): void {
+		const attachments =
+			this.fileUploadComponent2?.files && this.fileUploadComponent2?.files.length > 0
+				? this.fileUploadComponent2.files
+				: [];
+		this.form.controls['dogsPurposeAttachments'].setValue(attachments);
 	}
 
 	get useDogsOrRestraints(): FormControl {

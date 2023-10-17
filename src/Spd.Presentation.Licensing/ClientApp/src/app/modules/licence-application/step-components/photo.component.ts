@@ -1,14 +1,9 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Component, ViewChild } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/api/models';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
-import {
-	LicenceApplicationService,
-	LicenceFormStepComponent,
-	LicenceModelSubject,
-} from '../licence-application.service';
+import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-photo',
@@ -72,6 +67,7 @@ import {
 										[maxNumberOfFiles]="1"
 										[files]="photoOfYourselfAttachments.value"
 										[accept]="accept"
+										(filesChanged)="onFilesChanged()"
 									></app-file-upload>
 									<mat-error
 										class="mat-option-error"
@@ -94,62 +90,29 @@ import {
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class PhotoComponent implements OnInit, OnDestroy, LicenceFormStepComponent {
-	private licenceModelLoadedSubscription!: Subscription;
-
+export class PhotoComponent implements LicenceFormStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 	accept = ['.jpeg', '.jpg', '.tif', '.tiff', '.png'].join(', ');
 
 	form: FormGroup = this.licenceApplicationService.photographOfYourselfFormGroup;
-	//  this.formBuilder.group(
-	// 	{
-	// 		useBcServicesCardPhoto: new FormControl(null, [FormControlValidators.required]),
-	// 		photoOfYourselfAttachments: new FormControl(''),
-	// 	},
-	// 	{
-	// 		validators: [
-	// 			FormGroupValidators.conditionalDefaultRequiredValidator(
-	// 				'photoOfYourselfAttachments',
-	// 				(form) => form.get('useBcServicesCardPhoto')?.value == this.booleanTypeCodes.No
-	// 			),
-	// 		],
-	// 	}
-	// );
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
-
-	ngOnInit(): void {
-		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
-			next: (loaded: LicenceModelSubject) => {
-				// if (loaded.isLoaded) {
-				// 	this.form.patchValue({
-				// 		useBcServicesCardPhoto: this.licenceApplicationService.licenceModel.useBcServicesCardPhoto,
-				// 		photoOfYourselfAttachments: this.licenceApplicationService.licenceModel.photoOfYourselfAttachments,
-				// 	});
-				// }
-			},
-		});
-	}
-
-	ngOnDestroy() {
-		this.licenceModelLoadedSubscription.unsubscribe();
-	}
+	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	isFormValid(): boolean {
-		const attachments =
-			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
-				? this.fileUploadComponent.files
-				: '';
-		this.form.controls['photoOfYourselfAttachments'].setValue(attachments);
+		this.onFilesChanged();
 
 		this.form.markAllAsTouched();
 		return this.form.valid;
 	}
 
-	getDataToSave(): any {
-		return this.form.value;
+	onFilesChanged(): void {
+		const attachments =
+			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
+				? this.fileUploadComponent.files
+				: [];
+		this.form.controls['photoOfYourselfAttachments'].setValue(attachments);
 	}
 
 	get useBcServicesCardPhoto(): FormControl {

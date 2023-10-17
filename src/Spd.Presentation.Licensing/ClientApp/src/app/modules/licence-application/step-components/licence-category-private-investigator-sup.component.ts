@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
@@ -82,6 +82,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 											[maxNumberOfFiles]="10"
 											#attachmentsRef
 											[files]="attachments.value"
+											(filesChanged)="onFilesChanged()"
 										></app-file-upload>
 										<mat-error
 											class="mat-option-error"
@@ -127,7 +128,8 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									<app-file-upload
 										[maxNumberOfFiles]="10"
 										#trainingattachmentsRef
-										[files]="attachments.value"
+										[files]="trainingattachments.value"
+										(filesChanged)="onTrainingFilesChanged()"
 									></app-file-upload>
 									<mat-error
 										class="mat-option-error"
@@ -150,7 +152,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 	animations: [showHideTriggerSlideAnimation],
 })
 export class LicenceCategoryPrivateInvestigatorSupComponent implements OnInit, LicenceFormStepComponent {
-	form: FormGroup = this.licenceApplicationService.categoryLocksmithFormGroup;
+	form: FormGroup = this.licenceApplicationService.categoryPrivateInvestigatorUnderSupervisionFormGroup;
 	matcher = new FormErrorStateMatcher();
 	title = '';
 
@@ -160,59 +162,34 @@ export class LicenceCategoryPrivateInvestigatorSupComponent implements OnInit, L
 	@ViewChild('attachmentsRef') fileUploadComponent1!: FileUploadComponent;
 	@ViewChild('trainingattachmentsRef') fileUploadComponent2!: FileUploadComponent;
 
-	constructor(
-		private formBuilder: FormBuilder,
-		private optionsPipe: OptionsPipe,
-		private licenceApplicationService: LicenceApplicationService
-	) {}
+	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		// this.form = this.formBuilder.group(
-		// 	{
-		// 		requirement: new FormControl(null, [FormControlValidators.required]),
-		// 		// documentExpiryDate: new FormControl(null),
-		// 		attachments: new FormControl('', [Validators.required]),
-		// 		trainingattachments: new FormControl('', [Validators.required]),
-		// 	}
-		// 	// {
-		// 	// 	validators: [
-		// 	// 		FormGroupValidators.conditionalDefaultRequiredValidator(
-		// 	// 			'documentExpiryDate',
-		// 	// 			(form) => form.get('requirement')?.value == 'a'
-		// 	// 		),
-		// 	// 	],
-		// 	// }
-		// );
-
 		this.title = this.optionsPipe.transform(this.option, 'SwlCategoryTypes');
 	}
 
 	isFormValid(): boolean {
-		const attachments1 =
-			this.fileUploadComponent1?.files && this.fileUploadComponent1?.files.length > 0
-				? this.fileUploadComponent1.files
-				: '';
-		this.form.controls['attachments'].setValue(attachments1);
-
-		const attachments2 =
-			this.fileUploadComponent2?.files && this.fileUploadComponent2?.files.length > 0
-				? this.fileUploadComponent2.files
-				: '';
-		this.form.controls['trainingattachments'].setValue(attachments2);
+		this.onFilesChanged();
+		this.onTrainingFilesChanged();
 
 		this.form.markAllAsTouched();
 		return this.form.valid;
 	}
 
-	getDataToSave(): any {
-		// remove any invalid data
-		// if (this.form.get('requirement')?.value != 'a') {
-		// 	this.form.patchValue({
-		// 		documentExpiryDate: null,
-		// 	});
-		// }
+	onFilesChanged(): void {
+		const attachments =
+			this.fileUploadComponent1?.files && this.fileUploadComponent1?.files.length > 0
+				? this.fileUploadComponent1.files
+				: [];
+		this.form.controls['attachments'].setValue(attachments);
+	}
 
-		return { licenceCategoryPrivateInvestigatorUnderSupervision: { ...this.form.value } };
+	onTrainingFilesChanged(): void {
+		const attachments =
+			this.fileUploadComponent2?.files && this.fileUploadComponent2?.files.length > 0
+				? this.fileUploadComponent2.files
+				: [];
+		this.form.controls['trainingattachments'].setValue(attachments);
 	}
 
 	public get requirement(): FormControl {

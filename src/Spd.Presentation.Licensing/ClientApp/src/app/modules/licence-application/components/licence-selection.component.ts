@@ -1,10 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
 import { SwlTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
-import { LicenceApplicationService, LicenceModelSubject } from '../licence-application.service';
+import { LicenceApplicationService } from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-selection',
@@ -108,9 +107,7 @@ import { LicenceApplicationService, LicenceModelSubject } from '../licence-appli
 		`,
 	],
 })
-export class LicenceSelectionComponent implements OnInit, OnDestroy {
-	private licenceModelLoadedSubscription!: Subscription;
-
+export class LicenceSelectionComponent implements OnInit {
 	readonly image1 = '/assets/security-business-licence.png';
 	readonly image2 = '/assets/security-worker-licence.png';
 	readonly image3 = '/assets/armoured-vehicle.png';
@@ -130,19 +127,9 @@ export class LicenceSelectionComponent implements OnInit, OnDestroy {
 	constructor(private router: Router, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		console.log('initialized', this.licenceApplicationService.initialized);
 		if (!this.licenceApplicationService.initialized) {
 			this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATIONS_IN_PROGRESS));
 		}
-
-		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
-			next: (loaded: LicenceModelSubject) => {
-				// console.log('loaded', loaded);
-				// if (loaded.isLoaded) {
-				// 	this.licenceTypeCode = this.licenceApplicationService.licenceModel.licenceTypeCode;
-				// }
-			},
-		});
 
 		this.imagePaths.forEach((path) => {
 			// Preload the 'icon' images
@@ -152,15 +139,14 @@ export class LicenceSelectionComponent implements OnInit, OnDestroy {
 			};
 			tmp.src = path;
 		});
-	}
 
-	ngOnDestroy() {
-		this.licenceModelLoadedSubscription.unsubscribe();
+		this.licenceTypeCode = this.form.value.licenceTypeCode;
 	}
 
 	onStepNext(): void {
-		if (this.isFormValid()) {
-			// this.licenceApplicationService.licenceModel.licenceTypeCode = this.licenceTypeCode;
+		const isValid = this.isFormValid();
+
+		if (isValid) {
 			this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LICENCE_TYPE));
 		}
 	}
@@ -168,20 +154,15 @@ export class LicenceSelectionComponent implements OnInit, OnDestroy {
 	onLicenceTypeChange(_val: SwlTypeCode) {
 		this.form.patchValue({ licenceTypeCode: _val });
 		this.licenceTypeCode = _val;
-		const isValid = this.isFormValid();
+
+		this.isFormValid();
+	}
+
+	private isFormValid(): boolean {
+		const isValid = this.form.valid;
 		this.isDirtyAndInvalid = !isValid;
+		return isValid;
 	}
-
-	isFormValid(): boolean {
-		// const isValid = !!this.licenceTypeCode;
-		// this.isDirtyAndInvalid = !isValid;
-
-		return this.form.valid;
-	}
-
-	// getDataToSave(): any {
-	// 	return { licenceTypeCode: this.licenceTypeCode };
-	// }
 
 	private onImageLoaded() {
 		this.imageLoadedCount++;

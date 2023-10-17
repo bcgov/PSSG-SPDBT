@@ -1,10 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
 import { SwlApplicationTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
-import { LicenceApplicationService, LicenceModelSubject } from '../licence-application.service';
+import { LicenceApplicationService } from '../licence-application.service';
 
 @Component({
 	selector: 'app-application-type',
@@ -96,54 +95,25 @@ import { LicenceApplicationService, LicenceModelSubject } from '../licence-appli
 	`,
 	styles: [],
 })
-export class ApplicationTypeComponent implements OnInit, OnDestroy {
-	private licenceModelLoadedSubscription!: Subscription;
-
+export class ApplicationTypeComponent implements OnInit {
 	applicationTypeCodes = SwlApplicationTypeCode;
-	isDirtyAndInvalid = false;
 
 	form: FormGroup = this.licenceApplicationService.applicationTypeFormGroup;
-	//  this.formBuilder.group({
-	// 	applicationTypeCode: new FormControl(null, [Validators.required]),
-	// });
 
-	constructor(
-		private formBuilder: FormBuilder,
-		private router: Router,
-		private licenceApplicationService: LicenceApplicationService
-	) {}
+	constructor(private router: Router, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		console.log('initialized', this.licenceApplicationService.initialized);
 		if (!this.licenceApplicationService.initialized) {
 			this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATIONS_IN_PROGRESS));
 		}
-
-		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
-			next: (loaded: LicenceModelSubject) => {
-				// console.log('loaded', loaded);
-				// if (loaded.isLoaded) {
-				// 	this.form.patchValue({
-				// 		applicationTypeCode:
-				// 			this.licenceApplicationService.licenceModelFormGroup.controls['applicationTypeCode'].value,
-				// 	});
-				// }
-			},
-		});
-	}
-
-	ngOnDestroy() {
-		this.licenceModelLoadedSubscription.unsubscribe();
 	}
 
 	onStepPrevious(): void {
-		this.updateDataToSave();
 		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LICENCE_SELECTION));
 	}
 
 	onStepNext(): void {
 		if (this.isFormValid()) {
-			this.updateDataToSave();
 			this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATION));
 		}
 	}
@@ -151,10 +121,5 @@ export class ApplicationTypeComponent implements OnInit, OnDestroy {
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
-	}
-
-	updateDataToSave(): void {
-		// this.licenceApplicationService.licenceModel.applicationTypeCode = this.form.value.applicationTypeCode;
-		this.licenceApplicationService.notifyUpdateFlags();
 	}
 }

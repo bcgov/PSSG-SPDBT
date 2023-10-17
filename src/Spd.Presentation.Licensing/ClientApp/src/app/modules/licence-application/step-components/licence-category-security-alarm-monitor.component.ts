@@ -51,8 +51,4 @@ export class LicenceCategorySecurityAlarmMonitorComponent implements OnInit, Lic
 	isFormValid(): boolean {
 		return true;
 	}
-
-	getDataToSave(): any {
-		return { licenceCategorySecurityAlarmMonitor: {} };
-	}
 }

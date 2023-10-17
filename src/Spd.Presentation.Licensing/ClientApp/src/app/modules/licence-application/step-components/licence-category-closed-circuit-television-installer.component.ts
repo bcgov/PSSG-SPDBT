@@ -54,8 +54,4 @@ export class LicenceCategoryClosedCircuitTelevisionInstallerComponent implements
 	isFormValid(): boolean {
 		return true;
 	}
-
-	getDataToSave(): any {
-		return { licenceCategoryyClosedCircuitTelevisionInstaller: {} };
-	}
 }

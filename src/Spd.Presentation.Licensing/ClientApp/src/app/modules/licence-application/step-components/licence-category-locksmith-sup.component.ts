@@ -51,8 +51,4 @@ export class LicenceCategoryLocksmithSupComponent implements OnInit, LicenceForm
 	isFormValid(): boolean {
 		return true;
 	}
-
-	getDataToSave(): any {
-		return { licenceCategoryLocksmithUnderSupervision: {} };
-	}
 }

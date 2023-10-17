@@ -1,15 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Component } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { AddressRetrieveResponse } from 'src/app/api/models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { Address } from 'src/app/shared/components/address-autocomplete.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import {
-	LicenceApplicationService,
-	LicenceFormStepComponent,
-	LicenceModelSubject,
-} from '../licence-application.service';
+import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-mailing-address',
@@ -105,9 +100,7 @@ import {
 	`,
 	styles: [],
 })
-export class MailingAddressComponent implements OnInit, OnDestroy, LicenceFormStepComponent {
-	private licenceModelLoadedSubscription!: Subscription;
-
+export class MailingAddressComponent implements LicenceFormStepComponent {
 	matcher = new FormErrorStateMatcher();
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 
@@ -124,29 +117,7 @@ export class MailingAddressComponent implements OnInit, OnDestroy, LicenceFormSt
 
 	addressAutocompleteFields: AddressRetrieveResponse[] = [];
 
-	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
-
-	ngOnInit(): void {
-		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
-			next: (loaded: LicenceModelSubject) => {
-				// if (loaded.isLoaded) {
-				// 	this.form.patchValue({
-				// 		addressSelected: !!this.licenceApplicationService.licenceModel.mailingAddressLine1,
-				// 		mailingAddressLine1: this.licenceApplicationService.licenceModel.mailingAddressLine1,
-				// 		mailingAddressLine2: this.licenceApplicationService.licenceModel.mailingAddressLine2,
-				// 		mailingCity: this.licenceApplicationService.licenceModel.mailingCity,
-				// 		mailingPostalCode: this.licenceApplicationService.licenceModel.mailingPostalCode,
-				// 		mailingProvince: this.licenceApplicationService.licenceModel.mailingProvince,
-				// 		mailingCountry: this.licenceApplicationService.licenceModel.mailingCountry,
-				// 	});
-				// }
-			},
-		});
-	}
-
-	ngOnDestroy() {
-		this.licenceModelLoadedSubscription.unsubscribe();
-	}
+	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	onAddressAutocomplete(address: Address): void {
 		if (!address) {
@@ -178,10 +149,6 @@ export class MailingAddressComponent implements OnInit, OnDestroy, LicenceFormSt
 		this.form.patchValue({
 			addressSelected: true,
 		});
-	}
-
-	getDataToSave(): any {
-		return this.form.value;
 	}
 
 	isFormValid(): boolean {

@@ -51,8 +51,4 @@ export class LicenceCategorySecurityAlarmSalesComponent implements OnInit, Licen
 	isFormValid(): boolean {
 		return true;
 	}
-
-	getDataToSave(): any {
-		return { licenceCategorySecurityAlarmSales: {} };
-	}
 }

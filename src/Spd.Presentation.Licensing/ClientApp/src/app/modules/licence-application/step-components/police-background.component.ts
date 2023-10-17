@@ -1,6 +1,5 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/api/models';
 import { PoliceOfficerRoleCode, PoliceOfficerRoleTypes } from 'src/app/core/code-types/model-desc.models';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
@@ -100,6 +99,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 												<app-file-upload
 													[maxNumberOfFiles]="1"
 													[files]="letterOfNoConflictAttachments.value"
+													(filesChanged)="onFilesChanged()"
 												></app-file-upload>
 												<mat-error
 													class="mat-option-error"
@@ -124,9 +124,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 	`,
 	styles: [],
 })
-export class PoliceBackgroundComponent implements OnInit, OnDestroy, LicenceFormStepComponent {
-	private licenceModelLoadedSubscription!: Subscription;
-
+export class PoliceBackgroundComponent implements OnInit, LicenceFormStepComponent {
 	isViewOnlyPoliceOrPeaceOfficer = false;
 
 	booleanTypeCodes = BooleanTypeCode;
@@ -146,88 +144,14 @@ export class PoliceBackgroundComponent implements OnInit, OnDestroy, LicenceForm
 	readonly subtitle_unauth_renew_update = 'Update any information that has changed since your last application';
 
 	form: FormGroup = this.licenceApplicationService.policeBackgroundFormGroup;
-	//  this.formBuilder.group(
-	// 	{
-	// 		isPoliceOrPeaceOfficer: new FormControl(),
-	// 		officerRole: new FormControl(),
-	// 		otherOfficerRole: new FormControl(),
-	// 		letterOfNoConflictAttachments: new FormControl(),
-	// 	},
-	// 	{
-	// 		validators: [
-	// 			FormGroupValidators.conditionalRequiredValidator(
-	// 				'isPoliceOrPeaceOfficer',
-	// 				(form) => !this.isViewOnlyPoliceOrPeaceOfficer
-	// 			),
-	// 			FormGroupValidators.conditionalDefaultRequiredValidator(
-	// 				'officerRole',
-	// 				(form) => form.get('isPoliceOrPeaceOfficer')?.value == BooleanTypeCode.Yes
-	// 			),
-	// 			FormGroupValidators.conditionalDefaultRequiredValidator(
-	// 				'otherOfficerRole',
-	// 				(form) => form.get('officerRole')?.value == PoliceOfficerRoleCode.Other
-	// 			),
-	// 			FormGroupValidators.conditionalDefaultRequiredValidator(
-	// 				'letterOfNoConflictAttachments',
-	// 				(form) => form.get('isPoliceOrPeaceOfficer')?.value == BooleanTypeCode.Yes
-	// 			),
-	// 		],
-	// 	}
-	// );
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		// this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
-		// 	next: (loaded: LicenceModelSubject) => {
-		// 		// console.log(
-		// 		// 	'PoliceBackgroundComponent',
-		// 		// 	loaded,
-		// 		// 	this.licenceApplicationService.licenceModel.applicationTypeCode
-		// 		// ); //|| loaded.isSetFlags
-
-		// 		if (loaded.isLoaded) {
-		// if (this.licenceApplicationService.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired) {
 		this.title = this.title_confirm;
 		this.subtitle = this.subtitle_auth_new;
-		// } else {
-		// 	this.title = this.title_view;
-		// 	this.subtitle = this.subtitle_unauth_renew_update;
-		// }
-
-		// this.form.patchValue({
-		// 	isPoliceOrPeaceOfficer: this.licenceApplicationService.licenceModel.isPoliceOrPeaceOfficer,
-		// 	officerRole: this.licenceApplicationService.licenceModel.officerRole,
-		// 	otherOfficerRole: this.licenceApplicationService.licenceModel.otherOfficerRole,
-		// 	letterOfNoConflictAttachments: this.licenceApplicationService.licenceModel.letterOfNoConflictAttachments,
-		// });
-
-		// this.isViewOnlyPoliceOrPeaceOfficer =
-		// 	this.licenceApplicationService.licenceModel.isViewOnlyPoliceOrPeaceOfficer ?? false;
-
-		// if (this.isViewOnlyPoliceOrPeaceOfficer) {
-		// 	if (this.licenceApplicationService.licenceModel.isPoliceOrPeaceOfficer == BooleanTypeCode.No) {
-		// 		this.policeOfficerSummaryText = 'I am not a Police Officer or Peace Officer';
-		// 	} else if (this.licenceApplicationService.licenceModel.isPoliceOrPeaceOfficer == BooleanTypeCode.Yes) {
-		// 		if (this.licenceApplicationService.licenceModel.officerRole == PoliceOfficerRoleCode.Other) {
-		// 			this.policeOfficerSummaryText = `I am a ${this.licenceApplicationService.licenceModel.otherOfficerRole}`;
-		// 		} else {
-		// 			const desc = PoliceOfficerRoleTypes.find(
-		// 				(item) => item.code == this.licenceApplicationService.licenceModel.officerRole
-		// 			)?.desc;
-		// 			this.policeOfficerSummaryText = `I am a ${desc}`;
-		// 		}
-		// 	}
-		// }
-		// 		}
-		// 	},
-		// });
-	}
-
-	ngOnDestroy() {
-		this.licenceModelLoadedSubscription.unsubscribe();
 	}
 
 	onEditInformation(): void {
@@ -235,21 +159,18 @@ export class PoliceBackgroundComponent implements OnInit, OnDestroy, LicenceForm
 	}
 
 	isFormValid(): boolean {
-		const attachments =
-			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
-				? this.fileUploadComponent.files
-				: '';
-		this.form.controls['letterOfNoConflictAttachments'].setValue(attachments);
+		this.onFilesChanged();
 
 		this.form.markAllAsTouched();
 		return this.form.valid;
 	}
 
-	getDataToSave(): any {
-		if (this.officerRole.value != PoliceOfficerRoleCode.Other) {
-			this.form.patchValue({ otherOfficerRole: null });
-		}
-		return this.form.value;
+	onFilesChanged(): void {
+		const attachments =
+			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
+				? this.fileUploadComponent.files
+				: [];
+		this.form.controls['letterOfNoConflictAttachments'].setValue(attachments);
 	}
 
 	get isPoliceOrPeaceOfficer(): FormControl {

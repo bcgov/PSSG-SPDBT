@@ -51,8 +51,4 @@ export class LicenceCategorySecurityAlarmResponseComponent implements OnInit, Li
 	isFormValid(): boolean {
 		return true;
 	}
-
-	getDataToSave(): any {
-		return { licenceCategorySecurityAlarmResponse: {} };
-	}
 }

@@ -32,7 +32,7 @@ import { StepReviewComponent } from '../step-components/main-steps/step-review.c
 							></app-step-licence-selection>
 						</mat-step>
 
-						<!-- 	<mat-step completed="true">
+						<mat-step completed="true">
 							<ng-template matStepLabel>Background</ng-template>
 							<app-step-background
 								(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -48,7 +48,7 @@ import { StepReviewComponent } from '../step-components/main-steps/step-review.c
 								(nextStepperStep)="onNextStepperStep(stepper)"
 								(scrollIntoView)="onScrollIntoView()"
 							></app-step-identification>
-						</mat-step> -->
+						</mat-step>
 
 						<mat-step completed="true">
 							<ng-template matStepLabel>Review and Confirm</ng-template>

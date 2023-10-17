@@ -1,19 +1,14 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Component } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import {
-	LicenceApplicationService,
-	LicenceFormStepComponent,
-	LicenceModelSubject,
-} from '../licence-application.service';
+import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-contact-information',
 	template: `
 		<section class="step-section p-3">
 			<div class="step">
-				<app-step-title title="Provide your contact Information"></app-step-title>
+				<app-step-title title="Provide your contact information"></app-step-title>
 				<div class="step-container row">
 					<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12 mx-auto">
 						<form [formGroup]="form" novalidate>
@@ -54,43 +49,15 @@ import {
 	`,
 	styles: [],
 })
-export class ContactInformationComponent implements OnInit, OnDestroy, LicenceFormStepComponent {
-	private licenceModelLoadedSubscription!: Subscription;
-
-	// matcher = new FormErrorStateMatcher();
+export class ContactInformationComponent implements LicenceFormStepComponent {
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 
 	form: FormGroup = this.licenceApplicationService.contactInformationFormGroup;
-	//  this.formBuilder.group({
-	// 	contactEmailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
-	// 	contactPhoneNumber: new FormControl('', [Validators.required]),
-	// });
 
-	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
-
-	ngOnInit(): void {
-		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
-			next: (loaded: LicenceModelSubject) => {
-				// if (loaded.isLoaded) {
-				// 	this.form.patchValue({
-				// 		contactEmailAddress: this.licenceApplicationService.licenceModel.contactEmailAddress,
-				// 		contactPhoneNumber: this.licenceApplicationService.licenceModel.contactPhoneNumber,
-				// 	});
-				// }
-			},
-		});
-	}
-
-	ngOnDestroy() {
-		this.licenceModelLoadedSubscription.unsubscribe();
-	}
+	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
-	}
-
-	getDataToSave(): any {
-		return this.form.value;
 	}
 }

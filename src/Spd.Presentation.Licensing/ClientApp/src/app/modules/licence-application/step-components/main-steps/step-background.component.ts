@@ -1,8 +1,7 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { Subscription } from 'rxjs';
-import { LicenceApplicationService, LicenceModelSubject } from '../../licence-application.service';
+import { LicenceApplicationService } from '../../licence-application.service';
 import { CriminalHistoryComponent } from '../criminal-history.component';
 import { FingerprintsComponent } from '../fingerprints.component';
 import { MentalHealthConditionsComponent } from '../mental-health-conditions.component';
@@ -110,9 +109,7 @@ import { PoliceBackgroundComponent } from '../police-background.component';
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepBackgroundComponent implements OnInit, OnDestroy {
-	private licenceModelLoadedSubscription!: Subscription;
-
+export class StepBackgroundComponent implements OnInit {
 	readonly STEP_POLICE_BACKGROUND = '1';
 	readonly STEP_MENTAL_HEALTH_CONDITIONS = '2';
 	readonly STEP_CRIMINAL_HISTORY = '3';
@@ -141,34 +138,6 @@ export class StepBackgroundComponent implements OnInit, OnDestroy {
 
 	ngOnInit(): void {
 		console.log('onInit StepBackgroundComponent1');
-
-		this.licenceModelLoadedSubscription = this.licenceModelLoadedSubscription =
-			this.licenceApplicationService.licenceModelLoaded$.subscribe({
-				next: (loaded: LicenceModelSubject) => {
-					// console.log(
-					// 	'onInit StepBackgroundComponent2',
-					// 	this.licenceApplicationService.licenceModel.applicationTypeCode,
-					// 	this.showStepPoliceBackground
-					// );
-					// if (loaded.isLoaded || loaded.isSetFlags) {
-					// 	this.showStepPoliceBackground =
-					// 		this.licenceApplicationService.licenceModel.showStepPoliceBackground ?? true;
-					// 	this.showStepMentalHealth = this.licenceApplicationService.licenceModel.showStepMentalHealth ?? true;
-					// 	this.showStepCriminalHistory = this.licenceApplicationService.licenceModel.showStepCriminalHistory ?? true;
-					// 	this.showStepFingerprints = this.licenceApplicationService.licenceModel.showStepFingerprints ?? true;
-					// 	// this.showStepBackgroundInfo = this.licenceApplicationService.licenceModel.showStepBackgroundInfo ?? true;
-					// }
-					// console.log(
-					// 	'onInit StepBackgroundComponent3',
-					// 	this.licenceApplicationService.licenceModel.applicationTypeCode,
-					// 	this.showStepPoliceBackground
-					// );
-				},
-			});
-	}
-
-	ngOnDestroy() {
-		this.licenceModelLoadedSubscription.unsubscribe();
 	}
 
 	onStepSelectionChange(event: StepperSelectionEvent) {
@@ -182,8 +151,6 @@ export class StepBackgroundComponent implements OnInit, OnDestroy {
 	onStepNext(formNumber: string): void {
 		console.log('onStepNext formNumber:', formNumber);
 
-		this.setStepData();
-
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 		this.nextStepperStep.emit(true);
@@ -192,22 +159,9 @@ export class StepBackgroundComponent implements OnInit, OnDestroy {
 	onFormValidNextStep(formNumber: string): void {
 		console.log('onFormValidNextStep formNumber:', formNumber);
 
-		this.setStepData();
-
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 		this.childstepper.next();
-	}
-
-	private setStepData(): void {
-		// let stepData = {
-		// 	...(this.policeBackgroundComponent ? this.policeBackgroundComponent.getDataToSave() : {}),
-		// 	...(this.mentalHealthConditionsComponent ? this.mentalHealthConditionsComponent.getDataToSave() : {}),
-		// 	...(this.criminalHistoryComponent ? this.criminalHistoryComponent.getDataToSave() : {}),
-		// 	...(this.fingerprintsComponent ? this.fingerprintsComponent.getDataToSave() : {}),
-		// 	// ...(this.backgroundInfoComponent ? this.backgroundInfoComponent.getDataToSave() : {}),
-		// };
-		// this.licenceApplicationService.notifyModelChanged(stepData);
 	}
 
 	private dirtyForm(step: string): boolean {

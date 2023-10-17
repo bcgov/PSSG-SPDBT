@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { SelectOptions, SwlCategoryTypeCode, SwlCategoryTypes } from 'src/app/core/code-types/model-desc.models';
@@ -37,13 +37,23 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 								Add Category
 							</button>
 						</div>
-
-						<mat-error class="mat-option-error" style="text-align: center;" *ngIf="isDirtyAndInvalid">
-							At least one category must be selected
-						</mat-error>
 					</div>
 
 					<form [formGroup]="form" novalidate>
+						<div class="row">
+							<div class="offset-xxl-2 col-xxl-5 offset-xl-1 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+								<mat-error
+									class="mat-option-error"
+									*ngIf="
+										(categoriesArray?.dirty || categoriesArray?.touched) &&
+										categoriesArray?.invalid &&
+										categoriesArray?.hasError('required')
+									"
+									>At least one category must be added</mat-error
+								>
+							</div>
+						</div>
+
 						<div class="row">
 							<div class="offset-xxl-2 col-xxl-8 offset-xl-1 col-xl-10 col-lg-12">
 								<ng-container
@@ -93,14 +103,10 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 		`,
 	],
 })
-export class LicenceCategoryComponent implements OnInit, OnDestroy, LicenceFormStepComponent {
-	// private licenceModelLoadedSubscription!: Subscription;
-
+export class LicenceCategoryComponent implements LicenceFormStepComponent {
 	form: FormGroup = this.licenceApplicationService.categoriesFormGroup;
 
 	category = '';
-	// swlCategoryList: SelectOptions[] = [];
-	isDirtyAndInvalid = false;
 
 	validCategoryList: SelectOptions[] = SwlCategoryTypes;
 
@@ -113,50 +119,17 @@ export class LicenceCategoryComponent implements OnInit, OnDestroy, LicenceFormS
 		private licenceApplicationService: LicenceApplicationService
 	) {}
 
-	ngOnInit(): void {
-		console.log('categories init', this.form.value);
-		console.log('categories init', this.categoriesArray.value.length);
-		console.log('categoriesArray', <FormArray>this.form.get('categories'));
-		// this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
-		// 	next: (loaded: LicenceModelSubject) => {
-		// 		console.log('xxxx', this.form.value);
-		// 		// if (loaded.isLoaded) {
-		// 		// 	// this.swlCategoryList = this.licenceApplicationService.licenceModel.swlCategoryList;
-		// 		// 	this.setValidCategoryList();
-		// 		// }
-		// 	},
-		// });
-	}
-
-	ngOnDestroy() {
-		// this.licenceModelLoadedSubscription.unsubscribe();
-	}
-
 	onAddCategory(): void {
 		if (this.category) {
-			this.isDirtyAndInvalid = false;
-
 			const option = this.swlCategoryTypes.find((item) => item.code == this.category)!;
-			// this.categories.value.push({ code: option?.code, desc: option.desc });
 
 			const categoryItem = this.formBuilder.group({
 				desc: new FormControl(option.desc),
 				code: new FormControl(option?.code),
 			});
 
-			console.log('xxxx categoryItem', categoryItem);
-
 			this.categoriesArray.push(categoryItem);
-			// (this.licenceModelFormGroup.controls['categoriesFormGroup'].get('categories') as FormArray<FormGroup>).push(
-			// 	categoryItem
-			// );
 
-			// (this.licenceModelFormGroup.controls['categoriesFormGroup'].get('categories') as FormArray<FormGroup>).push(
-			// 	categoryItem
-			// );
-
-			console.log('xxxx', this.form.value);
-			console.log('yyyy', this.licenceApplicationService.licenceModelFormGroup.value);
 			this.setValidCategoryList();
 
 			this.category = '';
@@ -178,20 +151,14 @@ export class LicenceCategoryComponent implements OnInit, OnDestroy, LicenceFormS
 			.subscribe((response: boolean) => {
 				if (response) {
 					this.categoriesArray.removeAt(i);
-					// this.setValidCategoryList();
+					this.setValidCategoryList();
 				}
 			});
 	}
 
 	isFormValid(): boolean {
-		// const isValid = this.swlCategoryList.length > 0;
-		// this.isDirtyAndInvalid = !isValid;
-		// return isValid;
-		return this.categoriesArray.length > 0;
-	}
-
-	getDataToSave(): any {
-		return this.form.value;
+		this.form.markAllAsTouched();
+		return this.form.valid;
 	}
 
 	private setValidCategoryList(): void {
@@ -348,10 +315,6 @@ export class LicenceCategoryComponent implements OnInit, OnDestroy, LicenceFormS
 		// this.validCategoryList = [...updatedList];
 		// console.log('updatedList', this.validCategoryList);
 	}
-
-	// public get categories(): FormArray {
-	// 	return this.form.get('categories') as FormArray;
-	// }
 
 	get categoriesArray(): FormArray {
 		return <FormArray>this.form.get('categories');

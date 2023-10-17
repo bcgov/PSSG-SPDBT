@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
@@ -53,7 +53,8 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									<app-file-upload
 										[maxNumberOfFiles]="10"
 										#resumeattachmentsRef
-										[files]="attachments.value"
+										[files]="resumeattachments.value"
+										(filesChanged)="onResumeFilesChanged()"
 									></app-file-upload>
 									<mat-error
 										class="mat-option-error"
@@ -106,6 +107,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 											[maxNumberOfFiles]="10"
 											#attachmentsRef
 											[files]="attachments.value"
+											(filesChanged)="onFilesChanged()"
 										></app-file-upload>
 										<mat-error
 											class="mat-option-error"
@@ -138,41 +140,34 @@ export class LicenceCategorySecurityConsultantComponent implements OnInit, Licen
 	@ViewChild('resumeattachmentsRef') fileUploadComponent1!: FileUploadComponent;
 	@ViewChild('attachmentsRef') fileUploadComponent2!: FileUploadComponent;
 
-	constructor(
-		private formBuilder: FormBuilder,
-		private optionsPipe: OptionsPipe,
-		private licenceApplicationService: LicenceApplicationService
-	) {}
+	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		// this.form = this.formBuilder.group({
-		// 	requirement: new FormControl(null, [FormControlValidators.required]),
-		// 	resumeattachments: new FormControl('', [Validators.required]),
-		// 	attachments: new FormControl('', [Validators.required]),
-		// });
-
 		this.title = this.optionsPipe.transform(this.option, 'SwlCategoryTypes');
 	}
 
 	isFormValid(): boolean {
-		const attachments1 =
-			this.fileUploadComponent1?.files && this.fileUploadComponent1?.files.length > 0
-				? this.fileUploadComponent1.files
-				: '';
-		this.form.controls['resumeattachments'].setValue(attachments1);
-
-		const attachments2 =
-			this.fileUploadComponent2?.files && this.fileUploadComponent2?.files.length > 0
-				? this.fileUploadComponent2.files
-				: '';
-		this.form.controls['attachments'].setValue(attachments2);
+		this.onFilesChanged();
+		this.onResumeFilesChanged();
 
 		this.form.markAllAsTouched();
 		return this.form.valid;
 	}
 
-	getDataToSave(): any {
-		return { licenceCategorySecurityConsultant: { ...this.form.value } };
+	onFilesChanged(): void {
+		const attachments =
+			this.fileUploadComponent2?.files && this.fileUploadComponent2?.files.length > 0
+				? this.fileUploadComponent2.files
+				: [];
+		this.form.controls['attachments'].setValue(attachments);
+	}
+
+	onResumeFilesChanged(): void {
+		const attachments =
+			this.fileUploadComponent1?.files && this.fileUploadComponent1?.files.length > 0
+				? this.fileUploadComponent1.files
+				: [];
+		this.form.controls['resumeattachments'].setValue(attachments);
 	}
 
 	public get requirement(): FormControl {

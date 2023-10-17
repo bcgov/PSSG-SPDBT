@@ -35,7 +35,11 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 							<form [formGroup]="form" novalidate>
 								<div class="text-minor-heading">Upload your valid Authorization to Carry certificate:</div>
 								<div class="my-2">
-									<app-file-upload [maxNumberOfFiles]="10" [files]="attachments.value"></app-file-upload>
+									<app-file-upload
+										[maxNumberOfFiles]="10"
+										[files]="attachments.value"
+										(filesChanged)="onFilesChanged()"
+									></app-file-upload>
 									<mat-error
 										class="mat-option-error"
 										*ngIf="
@@ -88,27 +92,22 @@ export class LicenceCategoryArmouredCarGuardComponent implements OnInit, Licence
 	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		// this.form = this.formBuilder.group({
-		// 	documentExpiryDate: new FormControl(null, [Validators.required]),
-		// 	attachments: new FormControl('', [Validators.required]),
-		// });
-
 		this.title = this.optionsPipe.transform(this.option, 'SwlCategoryTypes');
 	}
 
 	isFormValid(): boolean {
-		const attachments =
-			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
-				? this.fileUploadComponent.files
-				: '';
-		this.form.controls['attachments'].setValue(attachments);
+		this.onFilesChanged();
 
 		this.form.markAllAsTouched();
 		return this.form.valid;
 	}
 
-	getDataToSave(): any {
-		return { licenceCategoryArmouredCarGuard: { ...this.form.value } };
+	onFilesChanged(): void {
+		const attachments =
+			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
+				? this.fileUploadComponent.files
+				: [];
+		this.form.controls['attachments'].setValue(attachments);
 	}
 
 	public get requirement(): FormControl {

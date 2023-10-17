@@ -51,8 +51,4 @@ export class LicenceCategoryBodyArmourSalesComponent implements OnInit, LicenceF
 	isFormValid(): boolean {
 		return true;
 	}
-
-	getDataToSave(): any {
-		return { licenceCategoryBodyArmourSales: {} };
-	}
 }

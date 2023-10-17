@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { HotToastService } from '@ngneat/hot-toast';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -26,8 +26,6 @@ import { FormControlValidators } from 'src/app/core/validators/form-control.vali
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 
 export interface LicenceFormStepComponent {
-	getDataToSave(): any;
-	// clearCurrentData(): void;
 	isFormValid(): boolean;
 }
 
@@ -268,60 +266,62 @@ export class LicenceApplicationService {
 		aliases: this.formBuilder.array([]),
 	});
 
-	aliasRowForm = this.formBuilder.group({
-		givenName: new FormControl(''),
-		middleName1: new FormControl(''),
-		middleName2: new FormControl(''),
-		surname: new FormControl('', [FormControlValidators.required]),
-	});
-
 	categoriesFormGroup: FormGroup = this.formBuilder.group({
-		categories: this.formBuilder.array([]),
-	});
-
-	categoryRowForm = this.formBuilder.group({
-		desc: new FormControl(''),
-		code: new FormControl(''),
+		categories: this.formBuilder.array([], [Validators.required]),
 	});
 
 	categoryArmouredCarGuardFormGroup: FormGroup = this.formBuilder.group({
 		documentExpiryDate: new FormControl('', [Validators.required]),
-		attachments: new FormControl('', [Validators.required]),
+		attachments: new FormControl([], [Validators.required]),
 	});
 	categoryFireInvestigatorFormGroup: FormGroup = this.formBuilder.group({
-		fireinvestigatorcertificateattachments: new FormControl('', [Validators.required]),
-		fireinvestigatorletterattachments: new FormControl('', [Validators.required]),
+		fireinvestigatorcertificateattachments: new FormControl([], [Validators.required]),
+		fireinvestigatorletterattachments: new FormControl([], [Validators.required]),
 	});
 	categoryLocksmithFormGroup: FormGroup = this.formBuilder.group({
 		requirement: new FormControl('', [FormControlValidators.required]),
-		attachments: new FormControl('', [Validators.required]),
+		attachments: new FormControl([], [Validators.required]),
 	});
 	categoryPrivateInvestigatorUnderSupervisionFormGroup: FormGroup = this.formBuilder.group({
 		requirement: new FormControl('', [FormControlValidators.required]),
-		attachments: new FormControl('', [Validators.required]),
-		trainingattachments: new FormControl('', [Validators.required]),
+		attachments: new FormControl([], [Validators.required]),
+		trainingattachments: new FormControl([], [Validators.required]),
 	});
-	categoryPrivateInvestigatorFormGroup: FormGroup = this.formBuilder.group({
-		requirement: new FormControl('', [FormControlValidators.required]),
-		training: new FormControl('', [FormControlValidators.required]),
-		attachments: new FormControl('', [Validators.required]),
-		trainingattachments: new FormControl('', [Validators.required]),
-		fireinvestigatorcertificateattachments: new FormControl(''),
-		fireinvestigatorletterattachments: new FormControl(''),
-		addFireInvestigator: new FormControl(''),
-	});
+	categoryPrivateInvestigatorFormGroup: FormGroup = this.formBuilder.group(
+		{
+			requirement: new FormControl('', [FormControlValidators.required]),
+			training: new FormControl('', [FormControlValidators.required]),
+			attachments: new FormControl([], [Validators.required]),
+			trainingattachments: new FormControl([], [Validators.required]),
+			fireinvestigatorcertificateattachments: new FormControl([]),
+			fireinvestigatorletterattachments: new FormControl([]),
+			addFireInvestigator: new FormControl('', [Validators.required]),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalRequiredValidator(
+					'fireinvestigatorcertificateattachments',
+					(form) => form.get('addFireInvestigator')?.value == this.booleanTypeCodes.Yes
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'fireinvestigatorletterattachments',
+					(form) => form.get('addFireInvestigator')?.value == this.booleanTypeCodes.Yes
+				),
+			],
+		}
+	);
 	categorySecurityAlarmInstallerFormGroup: FormGroup = this.formBuilder.group({
 		requirement: new FormControl('', [FormControlValidators.required]),
-		attachments: new FormControl('', [Validators.required]),
+		attachments: new FormControl([], [Validators.required]),
 	});
 	categorySecurityConsultantFormGroup: FormGroup = this.formBuilder.group({
 		requirement: new FormControl('', [FormControlValidators.required]),
-		attachments: new FormControl('', [Validators.required]),
-		resumeattachments: new FormControl('', [Validators.required]),
+		attachments: new FormControl([], [Validators.required]),
+		resumeattachments: new FormControl([], [Validators.required]),
 	});
 	categorySecurityGuardFormGroup: FormGroup = this.formBuilder.group({
 		requirement: new FormControl('', [FormControlValidators.required]),
-		attachments: new FormControl('', [Validators.required]),
+		attachments: new FormControl([], [Validators.required]),
 	});
 
 	dogsOrRestraintsFormGroup: FormGroup = this.formBuilder.group(
@@ -329,7 +329,7 @@ export class LicenceApplicationService {
 			useDogsOrRestraints: new FormControl('', [FormControlValidators.required]),
 			carryAndUseRetraints: new FormControl(''),
 			carryAndUseRetraintsDocument: new FormControl(''),
-			carryAndUseRetraintsAttachments: new FormControl(''),
+			carryAndUseRetraintsAttachments: new FormControl([]),
 			dogPurposeFormGroup: new FormGroup(
 				{
 					isDogsPurposeProtection: new FormControl(false),
@@ -339,7 +339,7 @@ export class LicenceApplicationService {
 				FormGroupValidators.atLeastOneCheckboxValidator('useDogsOrRestraints', BooleanTypeCode.Yes)
 			),
 			dogsPurposeDocumentType: new FormControl(''),
-			dogsPurposeAttachments: new FormControl(''),
+			dogsPurposeAttachments: new FormControl([]),
 		},
 		{
 			validators: [
@@ -427,11 +427,11 @@ export class LicenceApplicationService {
 
 	citizenshipFormGroup: FormGroup = this.formBuilder.group(
 		{
-			isBornInCanada: new FormControl(null, [FormControlValidators.required]),
-			proofOfCitizenship: new FormControl(),
-			proofOfAbility: new FormControl(),
-			citizenshipDocumentExpiryDate: new FormControl(),
-			citizenshipDocumentPhotoAttachments: new FormControl(null, [Validators.required]),
+			isBornInCanada: new FormControl('', [FormControlValidators.required]),
+			proofOfCitizenship: new FormControl(''),
+			proofOfAbility: new FormControl(''),
+			citizenshipDocumentExpiryDate: new FormControl(''),
+			citizenshipDocumentPhotoAttachments: new FormControl([], [Validators.required]),
 		},
 		{
 			validators: [
@@ -454,28 +454,28 @@ export class LicenceApplicationService {
 	);
 
 	govIssuedIdFormGroup: FormGroup = this.formBuilder.group({
-		governmentIssuedPhotoTypeCode: new FormControl(null, [FormControlValidators.required]),
-		governmentIssuedPhotoExpiryDate: new FormControl(),
-		governmentIssuedPhotoAttachments: new FormControl(null, [Validators.required]),
+		governmentIssuedPhotoTypeCode: new FormControl('', [FormControlValidators.required]),
+		governmentIssuedPhotoExpiryDate: new FormControl(''),
+		governmentIssuedPhotoAttachments: new FormControl('', [Validators.required]),
 	});
 
 	bcDriversLicenceFormGroup: FormGroup = this.formBuilder.group({
-		hasBcDriversLicence: new FormControl(null, [FormControlValidators.required]),
+		hasBcDriversLicence: new FormControl('', [FormControlValidators.required]),
 		bcDriversLicenceNumber: new FormControl(),
 	});
 
 	characteristicsFormGroup: FormGroup = this.formBuilder.group({
-		hairColourCode: new FormControl(null, [FormControlValidators.required]),
-		eyeColourCode: new FormControl(null, [FormControlValidators.required]),
-		height: new FormControl(null, [FormControlValidators.required]),
-		heightUnitCode: new FormControl(null, [FormControlValidators.required]),
-		weight: new FormControl(null, [FormControlValidators.required]),
-		weightUnitCode: new FormControl(null, [FormControlValidators.required]),
+		hairColourCode: new FormControl('', [FormControlValidators.required]),
+		eyeColourCode: new FormControl('', [FormControlValidators.required]),
+		height: new FormControl('', [FormControlValidators.required]),
+		heightUnitCode: new FormControl('', [FormControlValidators.required]),
+		weight: new FormControl('', [FormControlValidators.required]),
+		weightUnitCode: new FormControl('', [FormControlValidators.required]),
 	});
 
 	photographOfYourselfFormGroup: FormGroup = this.formBuilder.group(
 		{
-			useBcServicesCardPhoto: new FormControl(null, [FormControlValidators.required]),
+			useBcServicesCardPhoto: new FormControl('', [FormControlValidators.required]),
 			photoOfYourselfAttachments: new FormControl(''),
 		},
 		{
@@ -592,8 +592,15 @@ export class LicenceApplicationService {
 
 	reset(): void {
 		this.initialized = false;
-		// this.licenceModel = new LicenceModel();
 		this.licenceModelFormGroup.reset();
+
+		const categories = this.licenceModelFormGroup.controls['categoriesFormGroup'].get('categories') as FormArray;
+		categories.clear();
+
+		const aliases = this.licenceModelFormGroup.controls['aliasesFormGroup'].get('aliases') as FormArray;
+		aliases.clear();
+
+		console.log('RESET licenceModelFormGroup', this.licenceModelFormGroup.value);
 	}
 
 	createNewLicence(): Observable<any> {
@@ -603,7 +610,6 @@ export class LicenceApplicationService {
 		return new Observable((observer) => {
 			setTimeout(() => {
 				this.licenceModelFormGroup.reset();
-				// this.licenceModel = new LicenceModel();
 				this.initialized = true;
 				this.spinnerService.hide('loaderSpinner');
 				observer.next(this.licenceModelFormGroup.value);
@@ -738,30 +744,31 @@ export class LicenceApplicationService {
 					categoriesFormGroup: {
 						categories: [
 							// { desc: 'Armoured Car Guard', code: SwlCategoryTypeCode.ArmouredCarGuard },
-							{ desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
-							{ desc: 'Armoured Car Guard', code: SwlCategoryTypeCode.ArmouredCarGuard },
-							// { desc: 'Body Armour Sales', code: SwlCategoryTypeCode.BodyArmourSales },
-							// { desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
-							// { desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
+							// // { desc: 'Body Armour Sales', code: SwlCategoryTypeCode.BodyArmourSales },
+							{
+								desc: 'Closed Circuit Television Installer',
+								code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller,
+							},
+							// // { desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
 							// { desc: 'Fire Investigator', code: SwlCategoryTypeCode.FireInvestigator },
 							// { desc: 'Locksmith', code: SwlCategoryTypeCode.Locksmith },
-							// { desc: 'Locksmith - Under Supervision', code: SwlCategoryTypeCode.LocksmithUnderSupervision },
+							// // { desc: 'Locksmith - Under Supervision', code: SwlCategoryTypeCode.LocksmithUnderSupervision },
 							// { desc: 'Private Investigator', code: SwlCategoryTypeCode.PrivateInvestigator },
 							// {
 							// 	desc: 'Private Investigator - Under Supervision',
 							// 	code: SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision,
 							// },
 							// { desc: 'Security Alarm Installer', code: SwlCategoryTypeCode.SecurityAlarmInstaller },
-							// {
-							// 	desc: 'Security Alarm Installer - Under Supervision',
-							// 	code: SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
-							// },
-							// { desc: 'Security Alarm Monitor', code: SwlCategoryTypeCode.SecurityAlarmMonitor },
-							// { desc: 'Security Alarm Response', code: SwlCategoryTypeCode.SecurityAlarmResponse },
-							// { desc: 'Security Alarm Sales', code: SwlCategoryTypeCode.SecurityAlarmSales },
+							// // {
+							// // 	desc: 'Security Alarm Installer - Under Supervision',
+							// // 	code: SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
+							// // },
+							// // { desc: 'Security Alarm Monitor', code: SwlCategoryTypeCode.SecurityAlarmMonitor },
+							// // { desc: 'Security Alarm Response', code: SwlCategoryTypeCode.SecurityAlarmResponse },
+							// // { desc: 'Security Alarm Sales', code: SwlCategoryTypeCode.SecurityAlarmSales },
 							// { desc: 'Security Consultant', code: SwlCategoryTypeCode.SecurityConsultant },
 							// { desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
-							// { desc: 'Security Guard - Under Supervision', code: SwlCategoryTypeCode.SecurityGuardUnderSupervision },
+							// // { desc: 'Security Guard - Under Supervision', code: SwlCategoryTypeCode.SecurityGuardUnderSupervision },
 						],
 					},
 					categorySecurityGuardFormGroup: {

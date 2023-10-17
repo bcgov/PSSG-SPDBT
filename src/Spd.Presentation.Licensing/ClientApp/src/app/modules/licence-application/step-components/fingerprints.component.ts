@@ -1,12 +1,7 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Component, ViewChild } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
-import {
-	LicenceApplicationService,
-	LicenceFormStepComponent,
-	LicenceModelSubject,
-} from '../licence-application.service';
+import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-fingerprints',
@@ -32,7 +27,11 @@ import {
 							</p>
 							<!-- TODO link to the form to download for reference -->
 							<div class="text-minor-heading fw-normal mb-2">Upload your document:</div>
-							<app-file-upload [maxNumberOfFiles]="1" [files]="proofOfFingerprintAttachments.value"></app-file-upload>
+							<app-file-upload
+								[maxNumberOfFiles]="1"
+								[files]="proofOfFingerprintAttachments.value"
+								(filesChanged)="onFilesChanged()"
+							></app-file-upload>
 							<mat-error
 								class="mat-option-error"
 								*ngIf="
@@ -59,47 +58,26 @@ import {
 	`,
 	styles: [],
 })
-export class FingerprintsComponent implements OnInit, OnDestroy, LicenceFormStepComponent {
-	private licenceModelLoadedSubscription!: Subscription;
-
+export class FingerprintsComponent implements LicenceFormStepComponent {
 	form: FormGroup = this.licenceApplicationService.proofOfFingerprintFormGroup;
-	//  this.formBuilder.group({
-	// 	proofOfFingerprintAttachments: new FormControl(null, [Validators.required]),
-	// });
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
-
-	ngOnInit(): void {
-		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
-			next: (loaded: LicenceModelSubject) => {
-				if (loaded.isLoaded) {
-					// this.form.patchValue({
-					// 	proofOfFingerprintAttachments: this.licenceApplicationService.licenceModel.proofOfFingerprintAttachments,
-					// });
-				}
-			},
-		});
-	}
-
-	ngOnDestroy() {
-		this.licenceModelLoadedSubscription.unsubscribe();
-	}
+	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	isFormValid(): boolean {
-		const attachments =
-			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
-				? this.fileUploadComponent.files
-				: '';
-		this.form.controls['proofOfFingerprintAttachments'].setValue(attachments);
+		this.onFilesChanged();
 
 		this.form.markAllAsTouched();
 		return this.form.valid;
 	}
 
-	getDataToSave(): any {
-		return this.form.value;
+	onFilesChanged(): void {
+		const attachments =
+			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
+				? this.fileUploadComponent.files
+				: [];
+		this.form.controls['proofOfFingerprintAttachments'].setValue(attachments);
 	}
 
 	get proofOfFingerprintAttachments(): FormControl {

@@ -1,14 +1,9 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Component, ViewChild } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { GovernmentIssuedPhotoIdTypes } from 'src/app/core/code-types/model-desc.models';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import {
-	LicenceApplicationService,
-	LicenceFormStepComponent,
-	LicenceModelSubject,
-} from '../licence-application.service';
+import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-additional-gov-id',
@@ -57,6 +52,7 @@ import {
 										<app-file-upload
 											[maxNumberOfFiles]="1"
 											[files]="governmentIssuedPhotoAttachments.value"
+											(filesChanged)="onFilesChanged()"
 										></app-file-upload>
 										<mat-error
 											class="mat-option-error"
@@ -79,57 +75,30 @@ import {
 	`,
 	styles: [],
 })
-export class AdditionalGovIdComponent implements OnInit, OnDestroy, LicenceFormStepComponent {
-	private licenceModelLoadedSubscription!: Subscription;
-
+export class AdditionalGovIdComponent implements LicenceFormStepComponent {
 	governmentIssuedPhotoIdTypes = GovernmentIssuedPhotoIdTypes;
 
 	matcher = new FormErrorStateMatcher();
 
 	form: FormGroup = this.licenceApplicationService.govIssuedIdFormGroup;
-	//  this.formBuilder.group({
-	// 	governmentIssuedPhotoTypeCode: new FormControl(null, [FormControlValidators.required]),
-	// 	governmentIssuedPhotoExpiryDate: new FormControl(),
-	// 	governmentIssuedPhotoAttachments: new FormControl(null, [Validators.required]),
-	// });
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
-
-	ngOnInit(): void {
-		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
-			next: (loaded: LicenceModelSubject) => {
-				if (loaded.isLoaded) {
-					// this.form.patchValue({
-					// 	governmentIssuedPhotoTypeCode: this.licenceApplicationService.licenceModel.governmentIssuedPhotoTypeCode,
-					// 	governmentIssuedPhotoExpiryDate:
-					// 		this.licenceApplicationService.licenceModel.governmentIssuedPhotoExpiryDate,
-					// 	governmentIssuedPhotoAttachments:
-					// 		this.licenceApplicationService.licenceModel.governmentIssuedPhotoAttachments,
-					// });
-				}
-			},
-		});
-	}
-
-	ngOnDestroy() {
-		this.licenceModelLoadedSubscription.unsubscribe();
-	}
+	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	isFormValid(): boolean {
-		const attachments =
-			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
-				? this.fileUploadComponent.files
-				: '';
-		this.form.controls['governmentIssuedPhotoAttachments'].setValue(attachments);
+		this.onFilesChanged();
 
 		this.form.markAllAsTouched();
 		return this.form.valid;
 	}
 
-	getDataToSave(): any {
-		return this.form.value;
+	onFilesChanged(): void {
+		const attachments =
+			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
+				? this.fileUploadComponent.files
+				: [];
+		this.form.controls['governmentIssuedPhotoAttachments'].setValue(attachments);
 	}
 
 	get governmentIssuedPhotoAttachments(): FormControl {

@@ -1,5 +1,5 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/api/models';
 import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
@@ -37,9 +37,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 	`,
 	styles: [],
 })
-export class SoleProprietorComponent implements OnInit, OnDestroy, LicenceFormStepComponent {
-	// private licenceModelLoadedSubscription!: Subscription;
-
+export class SoleProprietorComponent implements OnInit, LicenceFormStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 	title = '';
 	infoTitle = '';
@@ -52,51 +50,16 @@ export class SoleProprietorComponent implements OnInit, OnDestroy, LicenceFormSt
 		'<p>If you are a sole proprietor, you need both a security worker licence and a security business licence.</p> <p>First, renew your worker licence. When you receive it, you can then renew the business licence. Your security worker licence fee will be refunded at that point.</p>';
 
 	form: FormGroup = this.licenceApplicationService.soleProprietorFormGroup;
-	//  this.formBuilder.group({
-	// 	isSoleProprietor: new FormControl('', [FormControlValidators.required]),
-	// });
 
-	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		// this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
-		// 	next: (loaded: LicenceModelSubject) => {
-		// 		if (loaded.isLoaded || loaded.isSetFlags) {
-		// TODO Review question would only apply to those who have a SWL w/ Sole Prop already,
-		// otherwise they would see the same question shown to New applicants
-
-		// const isNewOrExpired =
-		// 	this.licenceApplicationService.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired;
-		// 	this.title = isNewOrExpired ? this.title_apply : this.title_renew;
-		// 	this.infoTitle = isNewOrExpired ? this.subtitle_apply : this.subtitle_renew;
 		this.title = this.title_apply;
 		this.infoTitle = this.subtitle_apply;
-
-		console.log('this.form', this.form.value);
-		console.log('this.licenceModelFormGroup', this.licenceApplicationService.licenceModelFormGroup.value);
-		console.log(
-			'this.soleProprietorFormGroup',
-			this.licenceApplicationService.licenceModelFormGroup.controls['soleProprietorFormGroup'].value
-		);
-
-		// this.form.patchValue({
-		// 	isSoleProprietor: this.licenceApplicationService.licenceModelFormGroup.controls['isSoleProprietor'].value,
-		// });
-		// 		}
-		// 	},
-		// });
-	}
-
-	ngOnDestroy() {
-		// this.licenceModelLoadedSubscription.unsubscribe();
 	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
-	}
-
-	getDataToSave(): any {
-		return this.form.value;
 	}
 }

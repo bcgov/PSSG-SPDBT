@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AddressRetrieveResponse } from 'src/app/api/models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
@@ -116,9 +116,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 	`,
 	styles: [],
 })
-export class ResidentialAddressComponent implements OnInit, OnDestroy, LicenceFormStepComponent {
-	// private licenceModelLoadedSubscription!: Subscription;
-
+export class ResidentialAddressComponent implements LicenceFormStepComponent {
 	matcher = new FormErrorStateMatcher();
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 
@@ -127,29 +125,6 @@ export class ResidentialAddressComponent implements OnInit, OnDestroy, LicenceFo
 	addressAutocompleteFields: AddressRetrieveResponse[] = [];
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
-
-	ngOnInit(): void {
-		// this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
-		// 	next: (loaded: LicenceModelSubject) => {
-		// 		// if (loaded.isLoaded) {
-		// 		// 	this.form.patchValue({
-		// 		// 		addressSelected: !!this.licenceApplicationService.licenceModel.residentialAddressLine1,
-		// 		// 		residentialAddressLine1: this.licenceApplicationService.licenceModel.residentialAddressLine1,
-		// 		// 		residentialAddressLine2: this.licenceApplicationService.licenceModel.residentialAddressLine2,
-		// 		// 		residentialCity: this.licenceApplicationService.licenceModel.residentialCity,
-		// 		// 		residentialPostalCode: this.licenceApplicationService.licenceModel.residentialPostalCode,
-		// 		// 		residentialProvince: this.licenceApplicationService.licenceModel.residentialProvince,
-		// 		// 		residentialCountry: this.licenceApplicationService.licenceModel.residentialCountry,
-		// 		// 		isMailingTheSameAsResidential: this.licenceApplicationService.licenceModel.isMailingTheSameAsResidential,
-		// 		// 	});
-		// 		// }
-		// 	},
-		// });
-	}
-
-	ngOnDestroy() {
-		// this.licenceModelLoadedSubscription.unsubscribe();
-	}
 
 	onAddressAutocomplete(address: Address): void {
 		if (!address) {
@@ -186,9 +161,5 @@ export class ResidentialAddressComponent implements OnInit, OnDestroy, LicenceFo
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
-	}
-
-	getDataToSave(): any {
-		return this.form.value;
 	}
 }

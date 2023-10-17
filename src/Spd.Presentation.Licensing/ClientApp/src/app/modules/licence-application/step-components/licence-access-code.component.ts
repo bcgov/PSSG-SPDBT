@@ -1,12 +1,7 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import {
-	LicenceApplicationService,
-	LicenceFormStepComponent,
-	LicenceModelSubject,
-} from '../licence-application.service';
+import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-access-code',
@@ -55,9 +50,7 @@ import {
 	`,
 	styles: [],
 })
-export class LicenceAccessCodeComponent implements OnInit, OnDestroy, LicenceFormStepComponent {
-	private licenceModelLoadedSubscription!: Subscription;
-
+export class LicenceAccessCodeComponent implements LicenceFormStepComponent {
 	matcher = new FormErrorStateMatcher();
 
 	form: FormGroup = this.formBuilder.group({
@@ -67,29 +60,8 @@ export class LicenceAccessCodeComponent implements OnInit, OnDestroy, LicenceFor
 
 	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
 
-	ngOnInit(): void {
-		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
-			next: (loaded: LicenceModelSubject) => {
-				// if (loaded.isLoaded) {
-				// 	this.form.patchValue({
-				// 		currentLicenceNumber: this.licenceApplicationService.licenceModel.currentLicenceNumber,
-				// 		accessCode: this.licenceApplicationService.licenceModel.accessCode,
-				// 	});
-				// }
-			},
-		});
-	}
-
-	ngOnDestroy() {
-		this.licenceModelLoadedSubscription.unsubscribe();
-	}
-
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
-	}
-
-	getDataToSave(): any {
-		return this.form.value;
 	}
 }

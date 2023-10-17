@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
@@ -64,7 +64,11 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									</div>
 
 									<div class="my-2">
-										<app-file-upload [maxNumberOfFiles]="10" [files]="attachments.value"></app-file-upload>
+										<app-file-upload
+											[maxNumberOfFiles]="10"
+											[files]="attachments.value"
+											(filesChanged)="onFilesChanged()"
+										></app-file-upload>
 										<mat-error
 											class="mat-option-error"
 											*ngIf="
@@ -95,34 +99,25 @@ export class LicenceCategorySecurityAlarmInstallerComponent implements OnInit, L
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(
-		private formBuilder: FormBuilder,
-		private optionsPipe: OptionsPipe,
-		private licenceApplicationService: LicenceApplicationService
-	) {}
+	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		// this.form = this.formBuilder.group({
-		// 	requirement: new FormControl(null, [FormControlValidators.required]),
-		// 	attachments: new FormControl('', [Validators.required]),
-		// });
-
 		this.title = this.optionsPipe.transform(this.option, 'SwlCategoryTypes');
 	}
 
 	isFormValid(): boolean {
-		const attachments =
-			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
-				? this.fileUploadComponent.files
-				: '';
-		this.form.controls['attachments'].setValue(attachments);
+		this.onFilesChanged();
 
 		this.form.markAllAsTouched();
 		return this.form.valid;
 	}
 
-	getDataToSave(): any {
-		return { licenceCategorySecurityAlarmInstaller: { ...this.form.value } };
+	onFilesChanged(): void {
+		const attachments =
+			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
+				? this.fileUploadComponent.files
+				: [];
+		this.form.controls['attachments'].setValue(attachments);
 	}
 
 	public get requirement(): FormControl {

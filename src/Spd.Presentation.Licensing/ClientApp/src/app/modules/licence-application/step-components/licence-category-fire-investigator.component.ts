@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
@@ -45,6 +45,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 										[maxNumberOfFiles]="10"
 										#fireinvestigatorcertificateattachmentsRef
 										[files]="fireinvestigatorcertificateattachments.value"
+										(filesChanged)="onCertificationFilesChanged()"
 									></app-file-upload>
 									<mat-error
 										class="mat-option-error"
@@ -64,6 +65,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 										[maxNumberOfFiles]="10"
 										#fireinvestigatorletterattachmentsRef
 										[files]="fireinvestigatorletterattachments.value"
+										(filesChanged)="onLetterFilesChanged()"
 									></app-file-upload>
 									<mat-error
 										class="mat-option-error"
@@ -95,40 +97,34 @@ export class LicenceCategoryFireInvestigatorComponent implements OnInit, Licence
 	@ViewChild('fireinvestigatorcertificateattachmentsRef') fileUploadComponent3!: FileUploadComponent;
 	@ViewChild('fireinvestigatorletterattachmentsRef') fileUploadComponent4!: FileUploadComponent;
 
-	constructor(
-		private formBuilder: FormBuilder,
-		private optionsPipe: OptionsPipe,
-		private licenceApplicationService: LicenceApplicationService
-	) {}
+	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		// this.form = this.formBuilder.group({
-		// 	fireinvestigatorcertificateattachments: new FormControl('', [Validators.required]),
-		// 	fireinvestigatorletterattachments: new FormControl('', [Validators.required]),
-		// });
-
 		this.title = this.optionsPipe.transform(this.option, 'SwlCategoryTypes');
 	}
 
 	isFormValid(): boolean {
-		const attachments3 =
-			this.fileUploadComponent3?.files && this.fileUploadComponent3?.files.length > 0
-				? this.fileUploadComponent3.files
-				: '';
-		this.form.controls['fireinvestigatorcertificateattachments'].setValue(attachments3);
-
-		const attachments4 =
-			this.fileUploadComponent4?.files && this.fileUploadComponent4?.files.length > 0
-				? this.fileUploadComponent4.files
-				: '';
-		this.form.controls['fireinvestigatorletterattachments'].setValue(attachments4);
+		this.onCertificationFilesChanged();
+		this.onLetterFilesChanged();
 
 		this.form.markAllAsTouched();
 		return this.form.valid;
 	}
 
-	getDataToSave(): any {
-		return { licenceCategoryFireInvestigator: { ...this.form.value } };
+	onCertificationFilesChanged(): void {
+		const attachments =
+			this.fileUploadComponent3?.files && this.fileUploadComponent3?.files.length > 0
+				? this.fileUploadComponent3.files
+				: [];
+		this.form.controls['fireinvestigatorcertificateattachments'].setValue(attachments);
+	}
+
+	onLetterFilesChanged(): void {
+		const attachments =
+			this.fileUploadComponent4?.files && this.fileUploadComponent4?.files.length > 0
+				? this.fileUploadComponent4.files
+				: [];
+		this.form.controls['fireinvestigatorletterattachments'].setValue(attachments);
 	}
 
 	public get fireinvestigatorcertificateattachments(): FormControl {

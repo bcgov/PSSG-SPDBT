@@ -53,8 +53,4 @@ export class LicenceCategorySecurityGuardSupComponent implements OnInit, Licence
 	isFormValid(): boolean {
 		return true;
 	}
-
-	getDataToSave(): any {
-		return { licenceCategorySecurityGuardUnderSupervision: {} };
-	}
 }

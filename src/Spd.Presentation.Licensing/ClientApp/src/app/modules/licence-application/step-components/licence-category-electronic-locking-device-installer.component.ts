@@ -53,8 +53,4 @@ export class LicenceCategoryElectronicLockingDeviceInstallerComponent implements
 	isFormValid(): boolean {
 		return true;
 	}
-
-	getDataToSave(): any {
-		return { licenceCategoryElectronicLockingDeviceInstaller: {} };
-	}
 }
