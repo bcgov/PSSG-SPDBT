@@ -5,7 +5,6 @@ using Spd.Manager.Membership.UserProfile;
 using Spd.Utilities.Cache;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.LogonUser.Configurations;
-using System.Net;
 using System.Security.Claims;
 
 namespace Spd.Presentation.Licensing
