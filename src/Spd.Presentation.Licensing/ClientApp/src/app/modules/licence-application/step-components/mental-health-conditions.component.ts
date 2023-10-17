@@ -1,15 +1,8 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Component, ViewChild } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/api/models';
-import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
-import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
-import {
-	LicenceApplicationService,
-	LicenceFormStepComponent,
-	LicenceModelSubject,
-} from '../licence-application.service';
+import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-mental-health-conditions',
@@ -58,6 +51,7 @@ import {
 										<app-file-upload
 											[maxNumberOfFiles]="1"
 											[files]="mentalHealthConditionAttachments.value"
+											(filesChanged)="onFilesChanged()"
 										></app-file-upload>
 										<mat-error
 											class="mat-option-error"
@@ -80,61 +74,28 @@ import {
 	`,
 	styles: [],
 })
-export class MentalHealthConditionsComponent implements OnInit, OnDestroy, LicenceFormStepComponent {
-	private licenceModelLoadedSubscription!: Subscription;
-
+export class MentalHealthConditionsComponent implements LicenceFormStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 
-	form: FormGroup = this.formBuilder.group(
-		{
-			isTreatedForMHC: new FormControl(null, [FormControlValidators.required]),
-			mentalHealthConditionAttachments: new FormControl(),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'mentalHealthConditionAttachments',
-					(form) => form.get('isTreatedForMHC')?.value == BooleanTypeCode.Yes
-				),
-			],
-		}
-	);
+	form: FormGroup = this.licenceApplicationService.mentalHealthConditionsFormGroup;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
-
-	ngOnInit(): void {
-		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
-			next: (loaded: LicenceModelSubject) => {
-				if (loaded.isLoaded) {
-					this.form.patchValue({
-						isTreatedForMHC: this.licenceApplicationService.licenceModel.isTreatedForMHC,
-						mentalHealthConditionAttachments:
-							this.licenceApplicationService.licenceModel.mentalHealthConditionAttachments,
-					});
-				}
-			},
-		});
-	}
-
-	ngOnDestroy() {
-		this.licenceModelLoadedSubscription.unsubscribe();
-	}
+	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	isFormValid(): boolean {
-		const attachments =
-			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
-				? this.fileUploadComponent.files
-				: '';
-		this.form.controls['mentalHealthConditionAttachments'].setValue(attachments);
+		this.onFilesChanged();
 
 		this.form.markAllAsTouched();
 		return this.form.valid;
 	}
 
-	getDataToSave(): any {
-		return this.form.value;
+	onFilesChanged(): void {
+		const attachments =
+			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
+				? this.fileUploadComponent.files
+				: [];
+		this.form.controls['mentalHealthConditionAttachments'].setValue(attachments);
 	}
 
 	get isTreatedForMHC(): FormControl {

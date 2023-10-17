@@ -1,16 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
-import { GenderTypes, SwlApplicationTypeCode } from 'src/app/core/code-types/model-desc.models';
+import { Component, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { GenderTypes } from 'src/app/core/code-types/model-desc.models';
 import { UtilService } from 'src/app/core/services/util.service';
-import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
-import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import {
-	LicenceApplicationService,
-	LicenceFormStepComponent,
-	LicenceModelSubject,
-} from '../licence-application.service';
+import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-personal-information',
@@ -29,6 +22,7 @@ import {
 									<mat-form-field>
 										<mat-label>Given Name</mat-label>
 										<input matInput formControlName="givenName" [errorStateMatcher]="matcher" maxlength="40" />
+										<mat-error *ngIf="form.get('givenName')?.hasError('required')"> This is required </mat-error>
 									</mat-form-field>
 								</div>
 								<div class="col-xl-6 col-lg-6 col-md-12">
@@ -86,9 +80,7 @@ import {
 	`,
 	styles: [],
 })
-export class PersonalInformationComponent implements OnInit, OnDestroy, LicenceFormStepComponent {
-	private licenceModelLoadedSubscription!: Subscription;
-
+export class PersonalInformationComponent implements OnInit, LicenceFormStepComponent {
 	genderTypes = GenderTypes;
 	matcher = new FormErrorStateMatcher();
 
@@ -104,81 +96,17 @@ export class PersonalInformationComponent implements OnInit, OnDestroy, LicenceF
 	title = '';
 	subtitle = '';
 
-	form: FormGroup = this.formBuilder.group(
-		{
-			oneLegalName: new FormControl(false),
-			givenName: new FormControl(null),
-			middleName1: new FormControl(null),
-			middleName2: new FormControl(null),
-			surname: new FormControl(null, [FormControlValidators.required]),
-			genderCode: new FormControl(null),
-			dateOfBirth: new FormControl(null, [Validators.required]),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalRequiredValidator(
-					'givenName',
-					(form) => form.get('oneLegalName')?.value != true
-				),
-			],
-		}
-	);
+	form: FormGroup = this.licenceApplicationService.personalInformationFormGroup;
 
-	constructor(
-		private formBuilder: FormBuilder,
-		private utilService: UtilService,
-		private licenceApplicationService: LicenceApplicationService
-	) {}
+	constructor(private utilService: UtilService, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
-			next: (loaded: LicenceModelSubject) => {
-				if (loaded.isLoaded || loaded.isSetFlags) {
-					if (this.licenceApplicationService.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Replacement) {
-						this.title = this.title_view;
-						this.subtitle = '';
-					} else {
-						this.title = this.title_confirm;
-						this.subtitle =
-							this.licenceApplicationService.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired
-								? this.subtitle_auth_new
-								: this.subtitle_unauth_renew_update;
-					}
-
-					this.form.patchValue({
-						oneLegalName: this.licenceApplicationService.licenceModel.oneLegalName,
-						givenName: this.licenceApplicationService.licenceModel.givenName,
-						middleName1: this.licenceApplicationService.licenceModel.middleName1,
-						middleName2: this.licenceApplicationService.licenceModel.middleName2,
-						surname: this.licenceApplicationService.licenceModel.surname,
-						genderCode: this.licenceApplicationService.licenceModel.genderCode,
-						dateOfBirth: this.licenceApplicationService.licenceModel.dateOfBirth,
-					});
-
-					// if (this.licenceApplicationService.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Replacement) {
-					// 	this.form.disable();
-					// } else {
-					// 	this.form.enable();
-					// }
-				}
-			},
-		});
-	}
-
-	ngOnDestroy() {
-		this.licenceModelLoadedSubscription.unsubscribe();
+		this.title = this.title_confirm;
+		this.subtitle = this.subtitle_auth_new;
 	}
 
 	isFormValid(): boolean {
-		if (this.licenceApplicationService.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Replacement) {
-			return true;
-		}
-
 		this.form.markAllAsTouched();
 		return this.form.valid;
-	}
-
-	getDataToSave(): any {
-		return this.form.value;
 	}
 }

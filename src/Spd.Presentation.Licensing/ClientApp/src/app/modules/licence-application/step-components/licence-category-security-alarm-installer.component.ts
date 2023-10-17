@@ -1,10 +1,9 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
-import { SelectOptions } from 'src/app/core/code-types/model-desc.models';
-import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
-import { LicenceFormStepComponent } from '../licence-application.service';
+import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
+import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-category-security-alarm-installer',
@@ -65,7 +64,11 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 									</div>
 
 									<div class="my-2">
-										<app-file-upload [maxNumberOfFiles]="10"></app-file-upload>
+										<app-file-upload
+											[maxNumberOfFiles]="10"
+											[files]="attachments.value"
+											(filesChanged)="onFilesChanged()"
+										></app-file-upload>
 										<mat-error
 											class="mat-option-error"
 											*ngIf="
@@ -88,41 +91,40 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 	animations: [showHideTriggerSlideAnimation],
 })
 export class LicenceCategorySecurityAlarmInstallerComponent implements OnInit, LicenceFormStepComponent {
-	form!: FormGroup;
+	form: FormGroup = this.licenceApplicationService.categorySecurityAlarmInstallerFormGroup;
 	title = '';
 
-	@Input() option: SelectOptions | null = null;
+	@Input() option: string | null = null;
 	@Input() index: number = 0;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(private formBuilder: FormBuilder) {}
+	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.form = this.formBuilder.group({
-			requirement: new FormControl(null, [FormControlValidators.required]),
-			attachments: new FormControl('', [Validators.required]),
-		});
-
-		this.title = `${this.option?.desc ?? ''}`;
+		this.title = this.optionsPipe.transform(this.option, 'SwlCategoryTypes');
 	}
 
 	isFormValid(): boolean {
-		const attachments =
-			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
-				? this.fileUploadComponent.files
-				: '';
-		this.form.controls['attachments'].setValue(attachments);
+		this.onFilesChanged();
 
 		this.form.markAllAsTouched();
 		return this.form.valid;
 	}
 
-	getDataToSave(): any {
-		return { licenceCategorySecurityAlarmInstaller: { ...this.form.value } };
+	onFilesChanged(): void {
+		const attachments =
+			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
+				? this.fileUploadComponent.files
+				: [];
+		this.form.controls['attachments'].setValue(attachments);
 	}
 
 	public get requirement(): FormControl {
 		return this.form.get('requirement') as FormControl;
+	}
+
+	public get attachments(): FormControl {
+		return this.form.get('attachments') as FormControl;
 	}
 }

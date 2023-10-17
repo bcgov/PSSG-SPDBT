@@ -37,10 +37,13 @@ import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/cor
 })
 export class StepReviewComponent {
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
+	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
 
 	onStepPrevious(): void {
 		this.previousStepperStep.emit(true);
 	}
 
-	onStepSelectionChange(event: StepperSelectionEvent) {}
+	onStepSelectionChange(event: StepperSelectionEvent) {
+		this.scrollIntoView.emit(true);
+	}
 }

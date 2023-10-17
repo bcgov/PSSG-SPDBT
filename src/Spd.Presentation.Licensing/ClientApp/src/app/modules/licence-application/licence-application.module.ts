@@ -6,7 +6,7 @@ import { LicencePaymentFailComponent } from './components/licence-payment-fail.c
 import { LicencePaymentManualComponent } from './components/licence-payment-manual.component';
 import { LicencePaymentSuccessComponent } from './components/licence-payment-success.component';
 import { LicenceSelectionComponent } from './components/licence-selection.component';
-import { LicenceTypeComponent } from './components/licence-type.component';
+import { ApplicationTypeComponent } from './components/application-type.component';
 import { LicenceWizardComponent } from './components/licence-wizard.component';
 import { LoginSelectionComponent } from './components/login-selection.component';
 import { LicenceApplicationRoutingModule } from './licence-application-routing.module';
@@ -61,7 +61,7 @@ import { SummaryReviewComponent } from './step-components/summary-review.compone
 	declarations: [
 		LicenceApplicationComponent,
 		LicenceSelectionComponent,
-		LicenceTypeComponent,
+		ApplicationTypeComponent,
 		SoleProprietorComponent,
 		ChecklistComponent,
 		PersonalInformationComponent,

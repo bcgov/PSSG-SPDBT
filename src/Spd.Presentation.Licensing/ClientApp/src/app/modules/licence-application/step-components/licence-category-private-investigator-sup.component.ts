@@ -1,12 +1,10 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
-import { SelectOptions } from 'src/app/core/code-types/model-desc.models';
-import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
-import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { LicenceFormStepComponent } from '../licence-application.service';
+import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
+import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-category-private-investigator-sup',
@@ -80,7 +78,12 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 									</div>
 
 									<div class="my-2">
-										<app-file-upload [maxNumberOfFiles]="10" #attachments></app-file-upload>
+										<app-file-upload
+											[maxNumberOfFiles]="10"
+											#attachmentsRef
+											[files]="attachments.value"
+											(filesChanged)="onFilesChanged()"
+										></app-file-upload>
 										<mat-error
 											class="mat-option-error"
 											*ngIf="
@@ -92,7 +95,7 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 										>
 									</div>
 
-									<div class="row" *ngIf="requirement.value == 'a'">
+									<!-- <div class="row" *ngIf="requirement.value == 'a'">
 										<div class="col-lg-4 col-md-12 col-sm-12">
 											<mat-form-field>
 												<mat-label>Document Expiry Date</mat-label>
@@ -109,7 +112,7 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 												>
 											</mat-form-field>
 										</div>
-									</div>
+									</div> -->
 								</div>
 
 								<div class="alert alert-category d-flex mt-4" role="alert">
@@ -122,7 +125,12 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 								<div class="text-minor-heading mb-2">Upload proof of course completion:</div>
 
 								<div class="my-2">
-									<app-file-upload [maxNumberOfFiles]="10" #trainingattachments></app-file-upload>
+									<app-file-upload
+										[maxNumberOfFiles]="10"
+										#trainingattachmentsRef
+										[files]="trainingattachments.value"
+										(filesChanged)="onTrainingFilesChanged()"
+									></app-file-upload>
 									<mat-error
 										class="mat-option-error"
 										*ngIf="
@@ -144,68 +152,55 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 	animations: [showHideTriggerSlideAnimation],
 })
 export class LicenceCategoryPrivateInvestigatorSupComponent implements OnInit, LicenceFormStepComponent {
-	form!: FormGroup;
+	form: FormGroup = this.licenceApplicationService.categoryPrivateInvestigatorUnderSupervisionFormGroup;
 	matcher = new FormErrorStateMatcher();
 	title = '';
 
-	@Input() option: SelectOptions | null = null;
+	@Input() option: string | null = null;
 	@Input() index: number = 0;
 
-	@ViewChild('attachments') fileUploadComponent1!: FileUploadComponent;
-	@ViewChild('trainingattachments') fileUploadComponent2!: FileUploadComponent;
+	@ViewChild('attachmentsRef') fileUploadComponent1!: FileUploadComponent;
+	@ViewChild('trainingattachmentsRef') fileUploadComponent2!: FileUploadComponent;
 
-	constructor(private formBuilder: FormBuilder) {}
+	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.form = this.formBuilder.group(
-			{
-				requirement: new FormControl(null, [FormControlValidators.required]),
-				documentExpiryDate: new FormControl(null),
-				attachments: new FormControl('', [Validators.required]),
-				trainingattachments: new FormControl('', [Validators.required]),
-			},
-			{
-				validators: [
-					FormGroupValidators.conditionalDefaultRequiredValidator(
-						'documentExpiryDate',
-						(form) => form.get('requirement')?.value == 'a'
-					),
-				],
-			}
-		);
-
-		this.title = `${this.option?.desc ?? ''}`;
+		this.title = this.optionsPipe.transform(this.option, 'SwlCategoryTypes');
 	}
 
 	isFormValid(): boolean {
-		const attachments1 =
-			this.fileUploadComponent1?.files && this.fileUploadComponent1?.files.length > 0
-				? this.fileUploadComponent1.files
-				: '';
-		this.form.controls['attachments'].setValue(attachments1);
-
-		const attachments2 =
-			this.fileUploadComponent2?.files && this.fileUploadComponent2?.files.length > 0
-				? this.fileUploadComponent2.files
-				: '';
-		this.form.controls['trainingattachments'].setValue(attachments2);
+		this.onFilesChanged();
+		this.onTrainingFilesChanged();
 
 		this.form.markAllAsTouched();
 		return this.form.valid;
 	}
 
-	getDataToSave(): any {
-		// remove any invalid data
-		if (this.form.get('requirement')?.value != 'a') {
-			this.form.patchValue({
-				documentExpiryDate: null,
-			});
-		}
+	onFilesChanged(): void {
+		const attachments =
+			this.fileUploadComponent1?.files && this.fileUploadComponent1?.files.length > 0
+				? this.fileUploadComponent1.files
+				: [];
+		this.form.controls['attachments'].setValue(attachments);
+	}
 
-		return { licenceCategoryPrivateInvestigatorUnderSupervision: { ...this.form.value } };
+	onTrainingFilesChanged(): void {
+		const attachments =
+			this.fileUploadComponent2?.files && this.fileUploadComponent2?.files.length > 0
+				? this.fileUploadComponent2.files
+				: [];
+		this.form.controls['trainingattachments'].setValue(attachments);
 	}
 
 	public get requirement(): FormControl {
 		return this.form.get('requirement') as FormControl;
+	}
+
+	public get attachments(): FormControl {
+		return this.form.get('attachments') as FormControl;
+	}
+
+	public get trainingattachments(): FormControl {
+		return this.form.get('trainingattachments') as FormControl;
 	}
 }
