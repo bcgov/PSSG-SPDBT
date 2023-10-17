@@ -86,9 +86,9 @@ export class LicenceBackendModel {
 		// documentExpiryDate?: string | null;
 		attachments?: Array<File>;
 		trainingattachments?: Array<File>;
-		fireinvestigatorcertificateattachments?: Array<File>;
-		fireinvestigatorletterattachments?: Array<File>;
-		addFireInvestigator?: BooleanTypeCode | null;
+		// fireinvestigatorcertificateattachments?: Array<File>;
+		// fireinvestigatorletterattachments?: Array<File>;
+		// addFireInvestigator?: BooleanTypeCode | null;
 	};
 	licenceCategorySecurityAlarmInstallerSup?: {};
 	licenceCategorySecurityAlarmInstaller?: {
@@ -375,9 +375,9 @@ export class LicenceApplicationService {
 			training: new FormControl(''),
 			attachments: new FormControl([]),
 			trainingattachments: new FormControl([]),
-			fireinvestigatorcertificateattachments: new FormControl([]),
-			fireinvestigatorletterattachments: new FormControl([]),
-			addFireInvestigator: new FormControl(''),
+			// fireinvestigatorcertificateattachments: new FormControl([]),
+			// fireinvestigatorletterattachments: new FormControl([]),
+			// addFireInvestigator: new FormControl(''),
 		},
 		{
 			validators: [
@@ -388,14 +388,14 @@ export class LicenceApplicationService {
 					'trainingattachments',
 					(form) => form.get('isInclude')?.value
 				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'fireinvestigatorcertificateattachments',
-					(form) => form.get('isInclude')?.value && form.get('addFireInvestigator')?.value == this.booleanTypeCodes.Yes
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'fireinvestigatorletterattachments',
-					(form) => form.get('isInclude')?.value && form.get('addFireInvestigator')?.value == this.booleanTypeCodes.Yes
-				),
+				// FormGroupValidators.conditionalDefaultRequiredValidator(
+				// 	'fireinvestigatorcertificateattachments',
+				// 	(form) => form.get('isInclude')?.value && form.get('addFireInvestigator')?.value == this.booleanTypeCodes.Yes
+				// ),
+				// FormGroupValidators.conditionalDefaultRequiredValidator(
+				// 	'fireinvestigatorletterattachments',
+				// 	(form) => form.get('isInclude')?.value && form.get('addFireInvestigator')?.value == this.booleanTypeCodes.Yes
+				// ),
 			],
 		}
 	);
