@@ -21,10 +21,11 @@ export interface ApplicationResponse {
 		<section class="step-section px-4 py-2">
 			<div class="row">
 				<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
-					<h2 class="my-3 fw-normal">Your Applications</h2>
+					<h2 class="my-3 fw-normal">Security Licences & Permits</h2>
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
-					<div class="card-section my-4 px-4 py-3" *ngFor="let appl of applications; let i = index">
+					<div class="fs-5 mt-4 mb-2">Active Licences & Permits</div>
+					<div class="card-section mb-4 px-4 py-3" *ngFor="let appl of applications; let i = index">
 						<div class="row">
 							<div class="col-lg-2">
 								<div class="fs-5 fw-normal" style="color: var(--color-primary);">
@@ -45,7 +46,7 @@ export interface ApplicationResponse {
 								</div>
 								<div class="row mb-2">
 									<div class="col-lg-6">
-										<small class="d-block">Case ID</small>
+										<small class="d-block">ID</small>
 										<strong> {{ appl.caseId }}</strong>
 									</div>
 									<div class="col-lg-3">
@@ -67,6 +68,8 @@ export interface ApplicationResponse {
 							</div>
 						</div>
 					</div>
+
+					<!-- <h3 class="mt-4 fw-normal">Expired Licences & Permits</h3> -->
 
 					<!-- <div class="card-section my-4 px-4 py-3" *ngFor="let appl of applications; let i = index">
 						<div class="row">
@@ -128,7 +131,7 @@ export interface ApplicationResponse {
 					</div> -->
 
 					<button mat-flat-button color="primary" class="large w-auto mb-4" (click)="onCreateNew()">
-						Create a New Application
+						Apply for a New Licence or Permit
 					</button>
 				</div>
 			</div>
@@ -231,39 +234,39 @@ export class ApplicationsInProgressComponent implements OnInit, OnDestroy {
 					take(1)
 				)
 				.subscribe();
-		} else if (appl.id == '2') {
-			this.licenceApplicationService
-				.loadLicenceRenewal()
-				.pipe(
-					tap((resp: any) => {
-						console.log('after2', resp);
-						this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATION));
-					}),
-					take(1)
-				)
-				.subscribe();
-		} else if (appl.id == '3') {
-			this.licenceApplicationService
-				.loadLicenceReplacement()
-				.pipe(
-					tap((resp: any) => {
-						console.log('after2', resp);
-						this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATION));
-					}),
-					take(1)
-				)
-				.subscribe();
-		} else if (appl.id == '4') {
-			this.licenceApplicationService
-				.loadLicenceUpdate()
-				.pipe(
-					tap((resp: any) => {
-						console.log('after2', resp);
-						this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATION));
-					}),
-					take(1)
-				)
-				.subscribe();
+			// } else if (appl.id == '2') {
+			// 	this.licenceApplicationService
+			// 		.loadLicenceRenewal()
+			// 		.pipe(
+			// 			tap((resp: any) => {
+			// 				console.log('after2', resp);
+			// 				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATION));
+			// 			}),
+			// 			take(1)
+			// 		)
+			// 		.subscribe();
+			// } else if (appl.id == '3') {
+			// 	this.licenceApplicationService
+			// 		.loadLicenceReplacement()
+			// 		.pipe(
+			// 			tap((resp: any) => {
+			// 				console.log('after2', resp);
+			// 				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATION));
+			// 			}),
+			// 			take(1)
+			// 		)
+			// 		.subscribe();
+			// } else if (appl.id == '4') {
+			// 	this.licenceApplicationService
+			// 		.loadLicenceUpdate()
+			// 		.pipe(
+			// 			tap((resp: any) => {
+			// 				console.log('after2', resp);
+			// 				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATION));
+			// 			}),
+			// 			take(1)
+			// 		)
+			// 		.subscribe();
 		}
 	}
 

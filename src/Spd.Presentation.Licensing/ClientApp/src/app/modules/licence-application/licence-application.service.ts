@@ -16,7 +16,6 @@ import {
 	RestraintDocumentCode,
 	SelectOptions,
 	SwlApplicationTypeCode,
-	SwlCategoryTypeCode,
 	SwlTermCode,
 	SwlTypeCode,
 	WeightUnitCode,
@@ -70,12 +69,12 @@ export class LicenceBackendModel {
 		fireinvestigatorcertificateattachments?: Array<File>;
 		fireinvestigatorletterattachments?: Array<File>;
 	};
-	licenceCategoryLocksmithUnderSupervision?: {};
+	licenceCategoryLocksmithSup?: {};
 	licenceCategoryLocksmith?: {
 		requirement?: string | null;
 		attachments?: Array<File>;
 	};
-	licenceCategoryPrivateInvestigatorUnderSupervision?: {
+	licenceCategoryPrivateInvestigatorSup?: {
 		requirement?: string | null;
 		// documentExpiryDate?: string | null;
 		attachments?: Array<File>;
@@ -91,7 +90,7 @@ export class LicenceBackendModel {
 		fireinvestigatorletterattachments?: Array<File>;
 		addFireInvestigator?: BooleanTypeCode | null;
 	};
-	licenceCategorySecurityAlarmInstallerUnderSupervision?: {};
+	licenceCategorySecurityAlarmInstallerSup?: {};
 	licenceCategorySecurityAlarmInstaller?: {
 		requirement?: string | null;
 		attachments?: Array<File>;
@@ -104,7 +103,7 @@ export class LicenceBackendModel {
 		attachments?: Array<File>;
 		resumeattachments?: Array<File>;
 	};
-	licenceCategorySecurityGuardUnderSupervision?: {};
+	licenceCategorySecurityGuardSup?: {};
 	licenceCategorySecurityGuard?: {
 		requirement?: string | null;
 		attachments?: Array<File>;
@@ -195,6 +194,7 @@ export class LicenceModelSubject {
 })
 export class LicenceApplicationService {
 	initialized = false;
+
 	booleanTypeCodes = BooleanTypeCode;
 
 	licenceModelLoaded$: BehaviorSubject<LicenceModelSubject> = new BehaviorSubject<LicenceModelSubject>(
@@ -266,29 +266,111 @@ export class LicenceApplicationService {
 		aliases: this.formBuilder.array([]),
 	});
 
-	categoriesFormGroup: FormGroup = this.formBuilder.group({
-		categories: this.formBuilder.array([], [Validators.required]),
+	categoryBodyArmourSalesFormGroup = this.formBuilder.group({
+		isInclude: new FormControl(false),
+		checkbox: new FormControl({ value: true, disabled: true }),
 	});
-
-	categoryArmouredCarGuardFormGroup: FormGroup = this.formBuilder.group({
-		documentExpiryDate: new FormControl('', [Validators.required]),
-		attachments: new FormControl([], [Validators.required]),
+	categoryClosedCircuitTelevisionInstallerFormGroup = this.formBuilder.group({
+		isInclude: new FormControl(false),
+		checkbox: new FormControl({ value: true, disabled: true }),
 	});
-	categoryFireInvestigatorFormGroup: FormGroup = this.formBuilder.group({
-		fireinvestigatorcertificateattachments: new FormControl([], [Validators.required]),
-		fireinvestigatorletterattachments: new FormControl([], [Validators.required]),
+	categoryElectronicLockingDeviceInstallerFormGroup = this.formBuilder.group({
+		isInclude: new FormControl(false),
+		checkbox: new FormControl({ value: true, disabled: true }),
 	});
-	categoryLocksmithFormGroup: FormGroup = this.formBuilder.group({
-		requirement: new FormControl('', [FormControlValidators.required]),
-		attachments: new FormControl([], [Validators.required]),
+	categoryLocksmithSupFormGroup = this.formBuilder.group({
+		isInclude: new FormControl(false),
+		checkbox: new FormControl({ value: true, disabled: true }),
 	});
-	categoryPrivateInvestigatorUnderSupervisionFormGroup: FormGroup = this.formBuilder.group({
-		requirement: new FormControl('', [FormControlValidators.required]),
-		attachments: new FormControl([], [Validators.required]),
-		trainingattachments: new FormControl([], [Validators.required]),
+	categorySecurityAlarmInstallerSupFormGroup = this.formBuilder.group({
+		isInclude: new FormControl(false),
+		checkbox: new FormControl({ value: true, disabled: true }),
 	});
+	categorySecurityAlarmMonitorFormGroup = this.formBuilder.group({
+		isInclude: new FormControl(false),
+		checkbox: new FormControl({ value: true, disabled: true }),
+	});
+	categorySecurityAlarmResponseFormGroup = this.formBuilder.group({
+		isInclude: new FormControl(false),
+		checkbox: new FormControl({ value: true, disabled: true }),
+	});
+	categorySecurityAlarmSalesFormGroup = this.formBuilder.group({
+		isInclude: new FormControl(false),
+		checkbox: new FormControl({ value: true, disabled: true }),
+	});
+	categorySecurityGuardSupFormGroup = this.formBuilder.group({
+		isInclude: new FormControl(false),
+		checkbox: new FormControl({ value: true, disabled: true }),
+	});
+	categoryArmouredCarGuardFormGroup: FormGroup = this.formBuilder.group(
+		{
+			isInclude: new FormControl(false),
+			documentExpiryDate: new FormControl(''),
+			attachments: new FormControl([]),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'documentExpiryDate',
+					(form) => form.get('isInclude')?.value
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator('attachments', (form) => form.get('isInclude')?.value),
+			],
+		}
+	);
+	categoryFireInvestigatorFormGroup: FormGroup = this.formBuilder.group(
+		{
+			isInclude: new FormControl(false),
+			fireinvestigatorcertificateattachments: new FormControl([]),
+			fireinvestigatorletterattachments: new FormControl([]),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalRequiredValidator(
+					'fireinvestigatorcertificateattachments',
+					(form) => form.get('isInclude')?.value
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'fireinvestigatorletterattachments',
+					(form) => form.get('isInclude')?.value
+				),
+			],
+		}
+	);
+	categoryLocksmithFormGroup: FormGroup = this.formBuilder.group(
+		{
+			isInclude: new FormControl(false),
+			requirement: new FormControl(''),
+			attachments: new FormControl([]),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalRequiredValidator('requirement', (form) => form.get('isInclude')?.value),
+				FormGroupValidators.conditionalDefaultRequiredValidator('attachments', (form) => form.get('isInclude')?.value),
+			],
+		}
+	);
+	categoryPrivateInvestigatorSupFormGroup: FormGroup = this.formBuilder.group(
+		{
+			isInclude: new FormControl(false),
+			requirement: new FormControl(''),
+			attachments: new FormControl([]),
+			trainingattachments: new FormControl([]),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalRequiredValidator('requirement', (form) => form.get('isInclude')?.value),
+				FormGroupValidators.conditionalDefaultRequiredValidator('attachments', (form) => form.get('isInclude')?.value),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'trainingattachments',
+					(form) => form.get('isInclude')?.value
+				),
+			],
+		}
+	);
 	categoryPrivateInvestigatorFormGroup: FormGroup = this.formBuilder.group(
 		{
+			isInclude: new FormControl(false),
 			requirement: new FormControl('', [FormControlValidators.required]),
 			training: new FormControl('', [FormControlValidators.required]),
 			attachments: new FormControl([], [Validators.required]),
@@ -299,30 +381,68 @@ export class LicenceApplicationService {
 		},
 		{
 			validators: [
-				FormGroupValidators.conditionalRequiredValidator(
+				FormGroupValidators.conditionalRequiredValidator('requirement', (form) => form.get('isInclude')?.value),
+				FormGroupValidators.conditionalRequiredValidator('training', (form) => form.get('isInclude')?.value),
+				FormGroupValidators.conditionalDefaultRequiredValidator('attachments', (form) => form.get('isInclude')?.value),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'trainingattachments',
+					(form) => form.get('isInclude')?.value
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'fireinvestigatorcertificateattachments',
-					(form) => form.get('addFireInvestigator')?.value == this.booleanTypeCodes.Yes
+					(form) => form.get('isInclude')?.value && form.get('addFireInvestigator')?.value == this.booleanTypeCodes.Yes
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'fireinvestigatorletterattachments',
-					(form) => form.get('addFireInvestigator')?.value == this.booleanTypeCodes.Yes
+					(form) => form.get('isInclude')?.value && form.get('addFireInvestigator')?.value == this.booleanTypeCodes.Yes
 				),
 			],
 		}
 	);
-	categorySecurityAlarmInstallerFormGroup: FormGroup = this.formBuilder.group({
-		requirement: new FormControl('', [FormControlValidators.required]),
-		attachments: new FormControl([], [Validators.required]),
-	});
-	categorySecurityConsultantFormGroup: FormGroup = this.formBuilder.group({
-		requirement: new FormControl('', [FormControlValidators.required]),
-		attachments: new FormControl([], [Validators.required]),
-		resumeattachments: new FormControl([], [Validators.required]),
-	});
-	categorySecurityGuardFormGroup: FormGroup = this.formBuilder.group({
-		requirement: new FormControl('', [FormControlValidators.required]),
-		attachments: new FormControl([], [Validators.required]),
-	});
+	categorySecurityAlarmInstallerFormGroup: FormGroup = this.formBuilder.group(
+		{
+			isInclude: new FormControl(false),
+			requirement: new FormControl(''),
+			attachments: new FormControl([]),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalRequiredValidator('requirement', (form) => form.get('isInclude')?.value),
+				FormGroupValidators.conditionalDefaultRequiredValidator('attachments', (form) => form.get('isInclude')?.value),
+			],
+		}
+	);
+	categorySecurityConsultantFormGroup: FormGroup = this.formBuilder.group(
+		{
+			isInclude: new FormControl(false),
+			requirement: new FormControl(''),
+			attachments: new FormControl([]),
+			resumeattachments: new FormControl([]),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalRequiredValidator('requirement', (form) => form.get('isInclude')?.value),
+				FormGroupValidators.conditionalDefaultRequiredValidator('attachments', (form) => form.get('isInclude')?.value),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'resumeattachments',
+					(form) => form.get('isInclude')?.value
+				),
+			],
+		}
+	);
+	categorySecurityGuardFormGroup: FormGroup = this.formBuilder.group(
+		{
+			isInclude: new FormControl(false),
+			requirement: new FormControl(''),
+			attachments: new FormControl([]),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalRequiredValidator('requirement', (form) => form.get('isInclude')?.value),
+				FormGroupValidators.conditionalDefaultRequiredValidator('attachments', (form) => form.get('isInclude')?.value),
+			],
+		}
+	);
 
 	dogsOrRestraintsFormGroup: FormGroup = this.formBuilder.group(
 		{
@@ -535,15 +655,25 @@ export class LicenceApplicationService {
 		mentalHealthConditionsFormGroup: this.mentalHealthConditionsFormGroup,
 		criminalHistoryFormGroup: this.criminalHistoryFormGroup,
 		proofOfFingerprintFormGroup: this.proofOfFingerprintFormGroup,
-		categoriesFormGroup: this.categoriesFormGroup,
-		categorySecurityGuardFormGroup: this.categorySecurityGuardFormGroup,
+
 		categoryArmouredCarGuardFormGroup: this.categoryArmouredCarGuardFormGroup,
+		categoryBodyArmourSalesFormGroup: this.categoryBodyArmourSalesFormGroup,
+		categoryClosedCircuitTelevisionInstallerFormGroup: this.categoryClosedCircuitTelevisionInstallerFormGroup,
+		categoryElectronicLockingDeviceInstallerFormGroup: this.categoryElectronicLockingDeviceInstallerFormGroup,
 		categoryFireInvestigatorFormGroup: this.categoryFireInvestigatorFormGroup,
 		categoryLocksmithFormGroup: this.categoryLocksmithFormGroup,
-		categoryPrivateInvestigatorUnderSupervisionFormGroup: this.categoryPrivateInvestigatorUnderSupervisionFormGroup,
+		categoryLocksmithSupFormGroup: this.categoryLocksmithSupFormGroup,
 		categoryPrivateInvestigatorFormGroup: this.categoryPrivateInvestigatorFormGroup,
+		categoryPrivateInvestigatorSupFormGroup: this.categoryPrivateInvestigatorSupFormGroup,
 		categorySecurityAlarmInstallerFormGroup: this.categorySecurityAlarmInstallerFormGroup,
+		categorySecurityAlarmInstallerSupFormGroup: this.categorySecurityAlarmInstallerSupFormGroup,
 		categorySecurityConsultantFormGroup: this.categorySecurityConsultantFormGroup,
+		categorySecurityAlarmMonitorFormGroup: this.categorySecurityAlarmMonitorFormGroup,
+		categorySecurityAlarmResponseFormGroup: this.categorySecurityAlarmResponseFormGroup,
+		categorySecurityAlarmSalesFormGroup: this.categorySecurityAlarmSalesFormGroup,
+		categorySecurityGuardFormGroup: this.categorySecurityGuardFormGroup,
+		categorySecurityGuardSupFormGroup: this.categorySecurityGuardSupFormGroup,
+
 		aliasesFormGroup: this.aliasesFormGroup,
 		citizenshipFormGroup: this.citizenshipFormGroup,
 		govIssuedIdFormGroup: this.govIssuedIdFormGroup,
@@ -562,40 +692,9 @@ export class LicenceApplicationService {
 		private spinnerService: NgxSpinnerService
 	) {}
 
-	/*
-		swlCategoryList: [
-					{ desc: 'Armoured Car Guard', code: SwlCategoryTypeCode.ArmouredCarGuard },
-					{ desc: 'Body Armour Sales', code: SwlCategoryTypeCode.BodyArmourSales },
-					{ desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
-					{ desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
-					{ desc: 'Fire Investigator', code: SwlCategoryTypeCode.FireInvestigator },
-					{ desc: 'Locksmith', code: SwlCategoryTypeCode.Locksmith },
-					{ desc: 'Locksmith - Under Supervision', code: SwlCategoryTypeCode.LocksmithUnderSupervision },
-					{ desc: 'Private Investigator', code: SwlCategoryTypeCode.PrivateInvestigator },
-					{
-						desc: 'Private Investigator - Under Supervision',
-						code: SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision,
-					},
-					{ desc: 'Security Alarm Installer', code: SwlCategoryTypeCode.SecurityAlarmInstaller },
-					{
-						desc: 'Security Alarm Installer - Under Supervision',
-						code: SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
-					},
-					{ desc: 'Security Alarm Monitor', code: SwlCategoryTypeCode.SecurityAlarmMonitor },
-					{ desc: 'Security Alarm Response', code: SwlCategoryTypeCode.SecurityAlarmResponse },
-					{ desc: 'Security Alarm Sales', code: SwlCategoryTypeCode.SecurityAlarmSales },
-					{ desc: 'Security Consultant', code: SwlCategoryTypeCode.SecurityConsultant },
-					{ desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
-					{ desc: 'Security Guard - Under Supervision', code: SwlCategoryTypeCode.SecurityGuardUnderSupervision },
-				],
-				*/
-
 	reset(): void {
 		this.initialized = false;
 		this.licenceModelFormGroup.reset();
-
-		const categories = this.licenceModelFormGroup.controls['categoriesFormGroup'].get('categories') as FormArray;
-		categories.clear();
 
 		const aliases = this.licenceModelFormGroup.controls['aliasesFormGroup'].get('aliases') as FormArray;
 		aliases.clear();
@@ -610,6 +709,68 @@ export class LicenceApplicationService {
 		return new Observable((observer) => {
 			setTimeout(() => {
 				this.licenceModelFormGroup.reset();
+				// this.licenceModelFormGroup.patchValue({
+				// 	categoryArmouredCarGuardFormGroup: {
+				// 		isInclude: false,
+				// 	},
+				// 	categoryBodyArmourSalesFormGroup: {
+				// 		isInclude: false,
+				// 		checkbox: true,
+				// 	},
+				// 	categoryClosedCircuitTelevisionInstallerFormGroup: {
+				// 		isInclude: false,
+				// 		checkbox: true,
+				// 	},
+				// 	categoryElectronicLockingDeviceInstallerFormGroup: {
+				// 		isInclude: false,
+				// 		checkbox: true,
+				// 	},
+				// 	categoryFireInvestigatorFormGroup: {
+				// 		isInclude: false,
+				// 	},
+				// 	categoryLocksmithFormGroup: {
+				// 		isInclude: false,
+				// 	},
+				// 	categoryLocksmithSupFormGroup: {
+				// 		isInclude: false,
+				// 		checkbox: true,
+				// 	},
+				// 	categoryPrivateInvestigatorSupFormGroup: {
+				// 		isInclude: false,
+				// 	},
+				// 	categoryPrivateInvestigatorFormGroup: {
+				// 		isInclude: false,
+				// 	},
+				// 	categorySecurityAlarmInstallerFormGroup: {
+				// 		isInclude: false,
+				// 	},
+				// 	categorySecurityAlarmInstallerSupFormGroup: {
+				// 		isInclude: false,
+				// 		checkbox: true,
+				// 	},
+				// 	categorySecurityAlarmMonitorFormGroup: {
+				// 		isInclude: false,
+				// 		checkbox: true,
+				// 	},
+				// 	categorySecurityAlarmResponseFormGroup: {
+				// 		isInclude: false,
+				// 		checkbox: true,
+				// 	},
+				// 	categorySecurityAlarmSalesFormGroup: {
+				// 		isInclude: false,
+				// 		checkbox: true,
+				// 	},
+				// 	categorySecurityConsultantFormGroup: {
+				// 		isInclude: false,
+				// 	},
+				// 	categorySecurityGuardFormGroup: {
+				// 		isInclude: false,
+				// 	},
+				// 	categorySecurityGuardSupFormGroup: {
+				// 		isInclude: false,
+				// 		checkbox: true,
+				// 	},
+				// });
 				this.initialized = true;
 				this.spinnerService.hide('loaderSpinner');
 				observer.next(this.licenceModelFormGroup.value);
@@ -741,58 +902,45 @@ export class LicenceApplicationService {
 						mailingPostalCode: 'M6J 3P3',
 						mailingProvince: 'Ontario',
 					},
-					categoriesFormGroup: {
-						categories: [
-							// { desc: 'Armoured Car Guard', code: SwlCategoryTypeCode.ArmouredCarGuard },
-							// // { desc: 'Body Armour Sales', code: SwlCategoryTypeCode.BodyArmourSales },
-							{
-								desc: 'Closed Circuit Television Installer',
-								code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller,
-							},
-							// // { desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
-							// { desc: 'Fire Investigator', code: SwlCategoryTypeCode.FireInvestigator },
-							// { desc: 'Locksmith', code: SwlCategoryTypeCode.Locksmith },
-							// // { desc: 'Locksmith - Under Supervision', code: SwlCategoryTypeCode.LocksmithUnderSupervision },
-							// { desc: 'Private Investigator', code: SwlCategoryTypeCode.PrivateInvestigator },
-							// {
-							// 	desc: 'Private Investigator - Under Supervision',
-							// 	code: SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision,
-							// },
-							// { desc: 'Security Alarm Installer', code: SwlCategoryTypeCode.SecurityAlarmInstaller },
-							// // {
-							// // 	desc: 'Security Alarm Installer - Under Supervision',
-							// // 	code: SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
-							// // },
-							// // { desc: 'Security Alarm Monitor', code: SwlCategoryTypeCode.SecurityAlarmMonitor },
-							// // { desc: 'Security Alarm Response', code: SwlCategoryTypeCode.SecurityAlarmResponse },
-							// // { desc: 'Security Alarm Sales', code: SwlCategoryTypeCode.SecurityAlarmSales },
-							// { desc: 'Security Consultant', code: SwlCategoryTypeCode.SecurityConsultant },
-							// { desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
-							// // { desc: 'Security Guard - Under Supervision', code: SwlCategoryTypeCode.SecurityGuardUnderSupervision },
-						],
-					},
-					categorySecurityGuardFormGroup: {
-						attachments: [myFile],
-						requirement: 'a',
-					},
 					categoryArmouredCarGuardFormGroup: {
+						isInclude: false,
 						documentExpiryDate: '2009-10-07T00:00:00+00:00',
 						attachments: [myFile],
 					},
+					categoryBodyArmourSalesFormGroup: {
+						isInclude: false,
+						checkbox: true,
+					},
+					categoryClosedCircuitTelevisionInstallerFormGroup: {
+						isInclude: false,
+						checkbox: true,
+					},
+					categoryElectronicLockingDeviceInstallerFormGroup: {
+						isInclude: false,
+						checkbox: true,
+					},
 					categoryFireInvestigatorFormGroup: {
+						isInclude: false,
 						fireinvestigatorcertificateattachments: [myFile],
 						fireinvestigatorletterattachments: [myFile],
 					},
 					categoryLocksmithFormGroup: {
+						isInclude: false,
 						requirement: 'a',
 						attachments: [myFile],
 					},
-					categoryPrivateInvestigatorUnderSupervisionFormGroup: {
+					categoryLocksmithSupFormGroup: {
+						isInclude: false,
+						checkbox: true,
+					},
+					categoryPrivateInvestigatorSupFormGroup: {
+						isInclude: true,
 						requirement: 'a',
 						attachments: [myFile],
 						trainingattachments: [myFile],
 					},
 					categoryPrivateInvestigatorFormGroup: {
+						isInclude: true,
 						requirement: 'a',
 						training: 'a',
 						attachments: [myFile],
@@ -802,43 +950,46 @@ export class LicenceApplicationService {
 						addFireInvestigator: BooleanTypeCode.Yes,
 					},
 					categorySecurityAlarmInstallerFormGroup: {
+						isInclude: true,
 						requirement: 'a',
 						attachments: [myFile],
 					},
+					categorySecurityAlarmInstallerSupFormGroup: {
+						isInclude: false,
+						checkbox: true,
+					},
+					categorySecurityAlarmMonitorFormGroup: {
+						isInclude: false,
+						checkbox: true,
+					},
+					categorySecurityAlarmResponseFormGroup: {
+						isInclude: false,
+						checkbox: true,
+					},
+					categorySecurityAlarmSalesFormGroup: {
+						isInclude: false,
+						checkbox: true,
+					},
 					categorySecurityConsultantFormGroup: {
+						isInclude: false,
 						requirement: 'a',
 						attachments: [myFile],
 						resumeattachments: [myFile],
 					},
+					categorySecurityGuardFormGroup: {
+						isInclude: true,
+						attachments: [myFile],
+						requirement: 'a',
+					},
+					categorySecurityGuardSupFormGroup: {
+						isInclude: false,
+						checkbox: true,
+					},
 				};
 
-				console.log('loadLicenceNew defaults', defaults);
+				console.debug('loadLicenceNew defaults', defaults);
 
 				this.licenceModelFormGroup.patchValue({ ...defaults });
-
-				// const defaultCategories = [
-				// 	{ desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
-				// 	{ desc: 'Armoured Car Guard', code: SwlCategoryTypeCode.ArmouredCarGuard },
-				// 	{ desc: 'Fire Investigator', code: SwlCategoryTypeCode.FireInvestigator },
-				// 	{ desc: 'Locksmith', code: SwlCategoryTypeCode.Locksmith },
-				// 	{ desc: 'Private Investigator', code: SwlCategoryTypeCode.PrivateInvestigator },
-				// 	{ desc: 'Security Alarm Installer', code: SwlCategoryTypeCode.SecurityAlarmInstaller },
-				// 	{ desc: 'Security Consultant', code: SwlCategoryTypeCode.SecurityConsultant },
-				// ];
-
-				if (defaults.categoriesFormGroup.categories?.length > 0) {
-					let transformedCategoryItems = defaults.categoriesFormGroup.categories.map((item: any) =>
-						// let transformedCategoryItems = defaultCategories.map((item: any) =>
-						this.formBuilder.group({
-							desc: new FormControl(item.desc),
-							code: new FormControl(item.code),
-						})
-					);
-					const categoriesFormGroup = this.licenceModelFormGroup.controls['categoriesFormGroup'] as FormGroup;
-					categoriesFormGroup.setControl('categories', this.formBuilder.array(transformedCategoryItems));
-					// console.log('categories', categoriesFormGroup);
-					// console.log('categories', categoriesFormGroup.value.length);
-				}
 
 				if (defaults.aliasesFormGroup.aliases?.length > 0) {
 					let transformedAliasItems = defaults.aliasesFormGroup.aliases.map((item: any) =>
@@ -850,11 +1001,8 @@ export class LicenceApplicationService {
 						})
 					);
 
-					console.log('transformedItems', transformedAliasItems);
 					const aliasesFormGroup = this.licenceModelFormGroup.controls['aliasesFormGroup'] as FormGroup;
 					aliasesFormGroup.setControl('aliases', this.formBuilder.array(transformedAliasItems));
-					// console.log('aliases', aliasesFormGroup);
-					// console.log('aliases', aliasesFormGroup.value.length);
 				}
 
 				console.debug('this.licenceModelFormGroup', this.licenceModelFormGroup.value);
@@ -958,110 +1106,24 @@ export class LicenceApplicationService {
 						residentialPostalCode: 'V4V 1R8',
 						residentialProvince: 'British Columbia',
 					},
-					categoriesFormGroup: {
-						categories: [
-							// { desc: 'Armoured Car Guard', code: SwlCategoryTypeCode.ArmouredCarGuard },
-							// { desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
-							// { desc: 'Armoured Car Guard', code: SwlCategoryTypeCode.ArmouredCarGuard },
-							// { desc: 'Body Armour Sales', code: SwlCategoryTypeCode.BodyArmourSales },
-							// { desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
-							// { desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
-							// { desc: 'Fire Investigator', code: SwlCategoryTypeCode.FireInvestigator },
-							// { desc: 'Locksmith', code: SwlCategoryTypeCode.Locksmith },
-							// { desc: 'Locksmith - Under Supervision', code: SwlCategoryTypeCode.LocksmithUnderSupervision },
-							// { desc: 'Private Investigator', code: SwlCategoryTypeCode.PrivateInvestigator },
-							// {
-							// 	desc: 'Private Investigator - Under Supervision',
-							// 	code: SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision,
-							// },
-							{ desc: 'Security Alarm Installer', code: SwlCategoryTypeCode.SecurityAlarmInstaller },
-							// {
-							// 	desc: 'Security Alarm Installer - Under Supervision',
-							// 	code: SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
-							// },
-							// { desc: 'Security Alarm Monitor', code: SwlCategoryTypeCode.SecurityAlarmMonitor },
-							// { desc: 'Security Alarm Response', code: SwlCategoryTypeCode.SecurityAlarmResponse },
-							// { desc: 'Security Alarm Sales', code: SwlCategoryTypeCode.SecurityAlarmSales },
-							// { desc: 'Security Consultant', code: SwlCategoryTypeCode.SecurityConsultant },
-							// { desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
-							// { desc: 'Security Guard - Under Supervision', code: SwlCategoryTypeCode.SecurityGuardUnderSupervision },
-						],
+					// categorySecurityAlarmInstallerFormGroup: {
+					// 	isInclude: true,
+					// 	requirement: 'a',
+					// 	attachments: [myFile],
+					// },
+					categorySecurityAlarmResponseFormGroup: {
+						isInclude: true,
+						checkbox: true,
 					},
-					// categorySecurityGuardFormGroup: {
-					// 	attachments: [myFile],
-					// 	requirement: 'a',
-					// },
-					// categoryArmouredCarGuardFormGroup: {
-					// 	documentExpiryDate: '2009-10-07T00:00:00+00:00',
-					// 	attachments: [myFile],
-					// },
-					// categoryFireInvestigatorFormGroup: {
-					// 	fireinvestigatorcertificateattachments: [myFile],
-					// 	fireinvestigatorletterattachments: [myFile],
-					// },
-					// categoryLocksmithFormGroup: {
-					// 	requirement: 'a',
-					// 	attachments: [myFile],
-					// },
-					// categoryPrivateInvestigatorUnderSupervisionFormGroup: {
-					// 	requirement: 'a',
-					// 	attachments: [myFile],
-					// 	trainingattachments: [myFile],
-					// },
-					// categoryPrivateInvestigatorFormGroup: {
-					// 	requirement: 'a',
-					// 	training: 'a',
-					// 	attachments: [myFile],
-					// 	trainingattachments: [myFile],
-					// 	fireinvestigatorcertificateattachments: [myFile],
-					// 	fireinvestigatorletterattachments: [myFile],
-					// 	addFireInvestigator: BooleanTypeCode.Yes,
-					// },
-					categorySecurityAlarmInstallerFormGroup: {
-						requirement: 'a',
-						attachments: [myFile],
+					categoryClosedCircuitTelevisionInstallerFormGroup: {
+						isInclude: true,
+						checkbox: true,
 					},
-					// categorySecurityConsultantFormGroup: {
-					// 	requirement: 'a',
-					// 	attachments: [myFile],
-					// 	resumeattachments: [myFile],
-					// },
 				};
 
-				console.log('loadLicenceNew2 defaults', defaults);
-
-				// // this.licenceModel = { ...defaults };
-				// this.licenceModelFormGroup.patchValue({ ...defaults });
-				// // this.notifyLoaded();
-				// this.initialized = true;
-				// this.spinnerService.hide('loaderSpinner');
-				// observer.next(defaults);
+				console.debug('loadLicenceNew2 defaults', defaults);
 
 				this.licenceModelFormGroup.patchValue({ ...defaults });
-
-				// const defaultCategories = [
-				// 	{ desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
-				// 	{ desc: 'Armoured Car Guard', code: SwlCategoryTypeCode.ArmouredCarGuard },
-				// 	{ desc: 'Fire Investigator', code: SwlCategoryTypeCode.FireInvestigator },
-				// 	{ desc: 'Locksmith', code: SwlCategoryTypeCode.Locksmith },
-				// 	{ desc: 'Private Investigator', code: SwlCategoryTypeCode.PrivateInvestigator },
-				// 	{ desc: 'Security Alarm Installer', code: SwlCategoryTypeCode.SecurityAlarmInstaller },
-				// 	{ desc: 'Security Consultant', code: SwlCategoryTypeCode.SecurityConsultant },
-				// ];
-
-				if (defaults.categoriesFormGroup.categories?.length > 0) {
-					let transformedCategoryItems = defaults.categoriesFormGroup.categories.map((item: any) =>
-						// let transformedCategoryItems = defaultCategories.map((item: any) =>
-						this.formBuilder.group({
-							desc: new FormControl(item.desc),
-							code: new FormControl(item.code),
-						})
-					);
-					const categoriesFormGroup = this.licenceModelFormGroup.controls['categoriesFormGroup'] as FormGroup;
-					categoriesFormGroup.setControl('categories', this.formBuilder.array(transformedCategoryItems));
-					// console.log('categories', categoriesFormGroup);
-					// console.log('categories', categoriesFormGroup.value.length);
-				}
 
 				if (defaults.aliasesFormGroup.aliases?.length > 0) {
 					let transformedAliasItems = defaults.aliasesFormGroup.aliases.map((item: any) =>
@@ -1073,11 +1135,8 @@ export class LicenceApplicationService {
 						})
 					);
 
-					console.log('transformedItems', transformedAliasItems);
 					const aliasesFormGroup = this.licenceModelFormGroup.controls['aliasesFormGroup'] as FormGroup;
 					aliasesFormGroup.setControl('aliases', this.formBuilder.array(transformedAliasItems));
-					// console.log('aliases', aliasesFormGroup);
-					// console.log('aliases', aliasesFormGroup.value.length);
 				}
 
 				console.debug('this.licenceModelFormGroup', this.licenceModelFormGroup.value);
@@ -1090,201 +1149,201 @@ export class LicenceApplicationService {
 		});
 	}
 
-	loadLicenceRenewal(): Observable<any> {
-		console.log('loadLicenceRenewal ');
-		this.spinnerService.show('loaderSpinner');
-		this.initialized = true;
+	// loadLicenceRenewal(): Observable<any> {
+	// 	console.log('loadLicenceRenewal ');
+	// 	this.spinnerService.show('loaderSpinner');
+	// 	this.initialized = true;
 
-		return new Observable((observer) => {
-			setTimeout(() => {
-				const defaults: LicenceBackendModel = {
-					licenceTypeCode: SwlTypeCode.SecurityBusinessLicence,
-					applicationTypeCode: SwlApplicationTypeCode.Renewal,
-					isSoleProprietor: BooleanTypeCode.Yes,
-					currentLicenceNumber: '123',
-					accessCode: '456',
-					oneLegalName: false,
-					givenName: 'Blake',
-					middleName1: '',
-					middleName2: '',
-					surname: 'Smith',
-					genderCode: GenderCode.M,
-					dateOfBirth: '2000-10-07T00:00:00+00:00',
-					hasExpiredLicence: BooleanTypeCode.No,
-					expiredLicenceNumber: '',
-					expiryDate: '',
-					useDogsOrRestraints: null,
-					isDogsPurposeProtection: null,
-					isDogsPurposeDetectionDrugs: null,
-					isDogsPurposeDetectionExplosives: null,
-					carryAndUseRetraints: null,
-					licenceTermCode: SwlTermCode.NintyDays,
-					isPoliceOrPeaceOfficer: BooleanTypeCode.Yes,
-					officerRole: PoliceOfficerRoleCode.Other,
-					otherOfficerRole: 'Janitor',
-					isTreatedForMHC: null,
-					hasCriminalHistory: null,
-					previousNameFlag: BooleanTypeCode.No,
-					isBornInCanada: null,
-					proofOfCitizenship: null,
-					proofOfAbility: null,
-					citizenshipDocumentExpiryDate: null,
-					citizenshipDocumentPhotoAttachments: [],
-					governmentIssuedPhotoTypeCode: null,
-					hasBcDriversLicence: null,
-					hairColourCode: null,
-					eyeColourCode: null,
-					height: null,
-					heightUnitCode: null,
-					weight: null,
-					weightUnitCode: null,
-					useBcServicesCardPhoto: null,
-					swlCategoryList: [
-						{ desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
-					],
-				};
-				console.log('loadLicenceRenewal defaults', defaults);
-				// this.licenceModel = { ...defaults };
-				this.licenceModelFormGroup.patchValue({ ...defaults });
-				// this.notifyLoaded();
-				this.initialized = true;
-				this.spinnerService.hide('loaderSpinner');
-				observer.next(defaults);
-			}, 1000);
-		});
-	}
+	// 	return new Observable((observer) => {
+	// 		setTimeout(() => {
+	// 			const defaults: LicenceBackendModel = {
+	// 				licenceTypeCode: SwlTypeCode.SecurityBusinessLicence,
+	// 				applicationTypeCode: SwlApplicationTypeCode.Renewal,
+	// 				isSoleProprietor: BooleanTypeCode.Yes,
+	// 				currentLicenceNumber: '123',
+	// 				accessCode: '456',
+	// 				oneLegalName: false,
+	// 				givenName: 'Blake',
+	// 				middleName1: '',
+	// 				middleName2: '',
+	// 				surname: 'Smith',
+	// 				genderCode: GenderCode.M,
+	// 				dateOfBirth: '2000-10-07T00:00:00+00:00',
+	// 				hasExpiredLicence: BooleanTypeCode.No,
+	// 				expiredLicenceNumber: '',
+	// 				expiryDate: '',
+	// 				useDogsOrRestraints: null,
+	// 				isDogsPurposeProtection: null,
+	// 				isDogsPurposeDetectionDrugs: null,
+	// 				isDogsPurposeDetectionExplosives: null,
+	// 				carryAndUseRetraints: null,
+	// 				licenceTermCode: SwlTermCode.NintyDays,
+	// 				isPoliceOrPeaceOfficer: BooleanTypeCode.Yes,
+	// 				officerRole: PoliceOfficerRoleCode.Other,
+	// 				otherOfficerRole: 'Janitor',
+	// 				isTreatedForMHC: null,
+	// 				hasCriminalHistory: null,
+	// 				previousNameFlag: BooleanTypeCode.No,
+	// 				isBornInCanada: null,
+	// 				proofOfCitizenship: null,
+	// 				proofOfAbility: null,
+	// 				citizenshipDocumentExpiryDate: null,
+	// 				citizenshipDocumentPhotoAttachments: [],
+	// 				governmentIssuedPhotoTypeCode: null,
+	// 				hasBcDriversLicence: null,
+	// 				hairColourCode: null,
+	// 				eyeColourCode: null,
+	// 				height: null,
+	// 				heightUnitCode: null,
+	// 				weight: null,
+	// 				weightUnitCode: null,
+	// 				useBcServicesCardPhoto: null,
+	// 				swlCategoryList: [
+	// 					{ desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
+	// 				],
+	// 			};
+	// 			console.log('loadLicenceRenewal defaults', defaults);
+	// 			// this.licenceModel = { ...defaults };
+	// 			this.licenceModelFormGroup.patchValue({ ...defaults });
+	// 			// this.notifyLoaded();
+	// 			this.initialized = true;
+	// 			this.spinnerService.hide('loaderSpinner');
+	// 			observer.next(defaults);
+	// 		}, 1000);
+	// 	});
+	// }
 
-	loadLicenceReplacement(): Observable<any> {
-		console.log('loadLicenceReplacement ');
-		this.spinnerService.show('loaderSpinner');
-		this.initialized = true;
+	// loadLicenceReplacement(): Observable<any> {
+	// 	console.log('loadLicenceReplacement ');
+	// 	this.spinnerService.show('loaderSpinner');
+	// 	this.initialized = true;
 
-		return new Observable((observer) => {
-			setTimeout(() => {
-				const defaults: LicenceBackendModel = {
-					licenceTypeCode: SwlTypeCode.ArmouredVehiclePermit,
-					applicationTypeCode: SwlApplicationTypeCode.Replacement,
-					isSoleProprietor: BooleanTypeCode.Yes,
-					currentLicenceNumber: '123456',
-					accessCode: '456',
-					oneLegalName: false,
-					givenName: 'Jane',
-					middleName1: 'Alice',
-					middleName2: 'Mary',
-					surname: 'Johnson',
-					genderCode: GenderCode.F,
-					dateOfBirth: '2009-10-07T00:00:00+00:00',
-					hasExpiredLicence: BooleanTypeCode.Yes,
-					expiredLicenceNumber: '789',
-					expiryDate: '2002-02-07T00:00:00+00:00',
-					useDogsOrRestraints: BooleanTypeCode.Yes,
-					isDogsPurposeProtection: true,
-					isDogsPurposeDetectionDrugs: false,
-					isDogsPurposeDetectionExplosives: true,
-					carryAndUseRetraints: true,
-					dogsPurposeDocumentType: DogDocumentCode.SecurityDogValidationCertificate,
-					carryAndUseRetraintsDocument: RestraintDocumentCode.TrainingEquivalent,
-					carryAndUseRetraintsAttachments: [],
-					licenceTermCode: SwlTermCode.ThreeYears,
-					isPoliceOrPeaceOfficer: null,
-					isTreatedForMHC: null,
-					hasCriminalHistory: null,
-					previousNameFlag: null,
-					isBornInCanada: null,
-					proofOfCitizenship: null,
-					proofOfAbility: null,
-					citizenshipDocumentExpiryDate: null,
-					citizenshipDocumentPhotoAttachments: [],
-					governmentIssuedPhotoTypeCode: null,
-					hasBcDriversLicence: null,
-					hairColourCode: null,
-					eyeColourCode: null,
-					height: null,
-					heightUnitCode: null,
-					weight: null,
-					weightUnitCode: null,
-					useBcServicesCardPhoto: null,
-					swlCategoryList: [
-						{ desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
-					],
-				};
-				console.log('loadLicenceReplacement defaults', defaults);
-				// this.licenceModel = { ...defaults };
-				this.licenceModelFormGroup.patchValue({ ...defaults });
-				// this.notifyLoaded();
-				this.initialized = true;
-				this.spinnerService.hide('loaderSpinner');
-				observer.next(defaults);
-			}, 1000);
-		});
-	}
+	// 	return new Observable((observer) => {
+	// 		setTimeout(() => {
+	// 			const defaults: LicenceBackendModel = {
+	// 				licenceTypeCode: SwlTypeCode.ArmouredVehiclePermit,
+	// 				applicationTypeCode: SwlApplicationTypeCode.Replacement,
+	// 				isSoleProprietor: BooleanTypeCode.Yes,
+	// 				currentLicenceNumber: '123456',
+	// 				accessCode: '456',
+	// 				oneLegalName: false,
+	// 				givenName: 'Jane',
+	// 				middleName1: 'Alice',
+	// 				middleName2: 'Mary',
+	// 				surname: 'Johnson',
+	// 				genderCode: GenderCode.F,
+	// 				dateOfBirth: '2009-10-07T00:00:00+00:00',
+	// 				hasExpiredLicence: BooleanTypeCode.Yes,
+	// 				expiredLicenceNumber: '789',
+	// 				expiryDate: '2002-02-07T00:00:00+00:00',
+	// 				useDogsOrRestraints: BooleanTypeCode.Yes,
+	// 				isDogsPurposeProtection: true,
+	// 				isDogsPurposeDetectionDrugs: false,
+	// 				isDogsPurposeDetectionExplosives: true,
+	// 				carryAndUseRetraints: true,
+	// 				dogsPurposeDocumentType: DogDocumentCode.SecurityDogValidationCertificate,
+	// 				carryAndUseRetraintsDocument: RestraintDocumentCode.TrainingEquivalent,
+	// 				carryAndUseRetraintsAttachments: [],
+	// 				licenceTermCode: SwlTermCode.ThreeYears,
+	// 				isPoliceOrPeaceOfficer: null,
+	// 				isTreatedForMHC: null,
+	// 				hasCriminalHistory: null,
+	// 				previousNameFlag: null,
+	// 				isBornInCanada: null,
+	// 				proofOfCitizenship: null,
+	// 				proofOfAbility: null,
+	// 				citizenshipDocumentExpiryDate: null,
+	// 				citizenshipDocumentPhotoAttachments: [],
+	// 				governmentIssuedPhotoTypeCode: null,
+	// 				hasBcDriversLicence: null,
+	// 				hairColourCode: null,
+	// 				eyeColourCode: null,
+	// 				height: null,
+	// 				heightUnitCode: null,
+	// 				weight: null,
+	// 				weightUnitCode: null,
+	// 				useBcServicesCardPhoto: null,
+	// 				swlCategoryList: [
+	// 					{ desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
+	// 				],
+	// 			};
+	// 			console.log('loadLicenceReplacement defaults', defaults);
+	// 			// this.licenceModel = { ...defaults };
+	// 			this.licenceModelFormGroup.patchValue({ ...defaults });
+	// 			// this.notifyLoaded();
+	// 			this.initialized = true;
+	// 			this.spinnerService.hide('loaderSpinner');
+	// 			observer.next(defaults);
+	// 		}, 1000);
+	// 	});
+	// }
 
-	loadLicenceUpdate(): Observable<any> {
-		console.log('loadLicenceUpdate ');
-		this.spinnerService.show('loaderSpinner');
-		this.initialized = true;
+	// loadLicenceUpdate(): Observable<any> {
+	// 	console.log('loadLicenceUpdate ');
+	// 	this.spinnerService.show('loaderSpinner');
+	// 	this.initialized = true;
 
-		return new Observable((observer) => {
-			setTimeout(() => {
-				const defaults: LicenceBackendModel = {
-					licenceTypeCode: SwlTypeCode.ArmouredVehiclePermit,
-					applicationTypeCode: SwlApplicationTypeCode.Update,
-					isSoleProprietor: BooleanTypeCode.Yes,
-					currentLicenceNumber: '123456',
-					accessCode: '456',
-					oneLegalName: false,
-					givenName: 'Jane',
-					middleName1: 'Alice',
-					middleName2: 'Mary',
-					surname: 'Johnson',
-					genderCode: GenderCode.F,
-					dateOfBirth: '2009-10-07T00:00:00+00:00',
-					hasExpiredLicence: BooleanTypeCode.Yes,
-					expiredLicenceNumber: '789',
-					expiryDate: '2002-02-07T00:00:00+00:00',
-					useDogsOrRestraints: BooleanTypeCode.Yes,
-					isDogsPurposeProtection: true,
-					isDogsPurposeDetectionDrugs: false,
-					isDogsPurposeDetectionExplosives: true,
-					carryAndUseRetraints: true,
-					dogsPurposeDocumentType: DogDocumentCode.SecurityDogValidationCertificate,
-					carryAndUseRetraintsDocument: RestraintDocumentCode.AdvancedSecurityTrainingCertificate,
-					carryAndUseRetraintsAttachments: [],
-					licenceTermCode: SwlTermCode.ThreeYears,
-					isPoliceOrPeaceOfficer: BooleanTypeCode.Yes,
-					officerRole: PoliceOfficerRoleCode.AuxiliaryorReserveConstable,
-					isTreatedForMHC: null,
-					hasCriminalHistory: null,
-					previousNameFlag: null,
-					isBornInCanada: null,
-					proofOfCitizenship: null,
-					proofOfAbility: null,
-					citizenshipDocumentExpiryDate: null,
-					citizenshipDocumentPhotoAttachments: [],
-					governmentIssuedPhotoTypeCode: null,
-					hasBcDriversLicence: null,
-					hairColourCode: null,
-					eyeColourCode: null,
-					height: null,
-					heightUnitCode: null,
-					weight: null,
-					weightUnitCode: null,
-					useBcServicesCardPhoto: null,
-					swlCategoryList: [
-						{ desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
-						{ desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
-					],
-				};
-				console.log('loadLicenceUpdate defaults', defaults);
-				// this.licenceModel = { ...defaults };
-				this.licenceModelFormGroup.patchValue({ ...defaults });
-				// this.notifyLoaded();
-				this.initialized = true;
-				this.spinnerService.hide('loaderSpinner');
-				observer.next(defaults);
-			}, 1000);
-		});
-	}
+	// 	return new Observable((observer) => {
+	// 		setTimeout(() => {
+	// 			const defaults: LicenceBackendModel = {
+	// 				licenceTypeCode: SwlTypeCode.ArmouredVehiclePermit,
+	// 				applicationTypeCode: SwlApplicationTypeCode.Update,
+	// 				isSoleProprietor: BooleanTypeCode.Yes,
+	// 				currentLicenceNumber: '123456',
+	// 				accessCode: '456',
+	// 				oneLegalName: false,
+	// 				givenName: 'Jane',
+	// 				middleName1: 'Alice',
+	// 				middleName2: 'Mary',
+	// 				surname: 'Johnson',
+	// 				genderCode: GenderCode.F,
+	// 				dateOfBirth: '2009-10-07T00:00:00+00:00',
+	// 				hasExpiredLicence: BooleanTypeCode.Yes,
+	// 				expiredLicenceNumber: '789',
+	// 				expiryDate: '2002-02-07T00:00:00+00:00',
+	// 				useDogsOrRestraints: BooleanTypeCode.Yes,
+	// 				isDogsPurposeProtection: true,
+	// 				isDogsPurposeDetectionDrugs: false,
+	// 				isDogsPurposeDetectionExplosives: true,
+	// 				carryAndUseRetraints: true,
+	// 				dogsPurposeDocumentType: DogDocumentCode.SecurityDogValidationCertificate,
+	// 				carryAndUseRetraintsDocument: RestraintDocumentCode.AdvancedSecurityTrainingCertificate,
+	// 				carryAndUseRetraintsAttachments: [],
+	// 				licenceTermCode: SwlTermCode.ThreeYears,
+	// 				isPoliceOrPeaceOfficer: BooleanTypeCode.Yes,
+	// 				officerRole: PoliceOfficerRoleCode.AuxiliaryorReserveConstable,
+	// 				isTreatedForMHC: null,
+	// 				hasCriminalHistory: null,
+	// 				previousNameFlag: null,
+	// 				isBornInCanada: null,
+	// 				proofOfCitizenship: null,
+	// 				proofOfAbility: null,
+	// 				citizenshipDocumentExpiryDate: null,
+	// 				citizenshipDocumentPhotoAttachments: [],
+	// 				governmentIssuedPhotoTypeCode: null,
+	// 				hasBcDriversLicence: null,
+	// 				hairColourCode: null,
+	// 				eyeColourCode: null,
+	// 				height: null,
+	// 				heightUnitCode: null,
+	// 				weight: null,
+	// 				weightUnitCode: null,
+	// 				useBcServicesCardPhoto: null,
+	// 				swlCategoryList: [
+	// 					{ desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
+	// 					{ desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
+	// 				],
+	// 			};
+	// 			console.log('loadLicenceUpdate defaults', defaults);
+	// 			// this.licenceModel = { ...defaults };
+	// 			this.licenceModelFormGroup.patchValue({ ...defaults });
+	// 			// this.notifyLoaded();
+	// 			this.initialized = true;
+	// 			this.spinnerService.hide('loaderSpinner');
+	// 			observer.next(defaults);
+	// 		}, 1000);
+	// 	});
+	// }
 
 	saveLicence(): void {
 		this.hotToastService.success('Licence information has been saved');
@@ -1293,167 +1352,167 @@ export class LicenceApplicationService {
 		console.log('SAVE LICENCE FORM DATA', this.licenceModelFormGroup.valid, this.licenceModelFormGroup.value);
 	}
 
-	clearLicenceCategoryData(code: SwlCategoryTypeCode): void {
-		// switch (code) {
-		// 	case SwlCategoryTypeCode.ArmouredCarGuard:
-		// 		delete this.licenceModel.licenceCategoryArmouredCarGuard;
-		// 		break;
-		// 	case SwlCategoryTypeCode.BodyArmourSales:
-		// 		delete this.licenceModel.licenceCategoryBodyArmourSales;
-		// 		break;
-		// 	case SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller:
-		// 		delete this.licenceModel.licenceCategoryyClosedCircuitTelevisionInstaller;
-		// 		break;
-		// 	case SwlCategoryTypeCode.ElectronicLockingDeviceInstaller:
-		// 		delete this.licenceModel.licenceCategoryElectronicLockingDeviceInstaller;
-		// 		break;
-		// 	case SwlCategoryTypeCode.FireInvestigator:
-		// 		delete this.licenceModel.licenceCategoryFireInvestigator;
-		// 		break;
-		// 	case SwlCategoryTypeCode.Locksmith:
-		// 		delete this.licenceModel.licenceCategoryLocksmith;
-		// 		break;
-		// 	case SwlCategoryTypeCode.LocksmithUnderSupervision:
-		// 		delete this.licenceModel.licenceCategoryLocksmithUnderSupervision;
-		// 		break;
-		// 	case SwlCategoryTypeCode.PrivateInvestigator:
-		// 		delete this.licenceModel.licenceCategoryPrivateInvestigator;
-		// 		break;
-		// 	case SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision:
-		// 		delete this.licenceModel.licenceCategoryPrivateInvestigatorUnderSupervision;
-		// 		break;
-		// 	case SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision:
-		// 		delete this.licenceModel.licenceCategorySecurityAlarmInstallerUnderSupervision;
-		// 		break;
-		// 	case SwlCategoryTypeCode.SecurityAlarmInstaller:
-		// 		delete this.licenceModel.licenceCategorySecurityAlarmInstaller;
-		// 		break;
-		// 	case SwlCategoryTypeCode.SecurityAlarmMonitor:
-		// 		delete this.licenceModel.licenceCategorySecurityAlarmMonitor;
-		// 		break;
-		// 	case SwlCategoryTypeCode.SecurityAlarmResponse:
-		// 		delete this.licenceModel.licenceCategorySecurityAlarmResponse;
-		// 		break;
-		// 	case SwlCategoryTypeCode.SecurityAlarmSales:
-		// 		delete this.licenceModel.licenceCategorySecurityAlarmSales;
-		// 		break;
-		// 	case SwlCategoryTypeCode.SecurityConsultant:
-		// 		delete this.licenceModel.licenceCategorySecurityConsultant;
-		// 		break;
-		// 	case SwlCategoryTypeCode.SecurityGuard:
-		// 		delete this.licenceModel.licenceCategorySecurityGuard;
-		// 		break;
-		// 	case SwlCategoryTypeCode.SecurityGuardUnderSupervision:
-		// 		delete this.licenceModel.licenceCategorySecurityGuardUnderSupervision;
-		// 		break;
-		// }
-	}
+	// clearLicenceCategoryData(code: SwlCategoryTypeCode): void {
+	// switch (code) {
+	// 	case SwlCategoryTypeCode.ArmouredCarGuard:
+	// 		delete this.licenceModel.licenceCategoryArmouredCarGuard;
+	// 		break;
+	// 	case SwlCategoryTypeCode.BodyArmourSales:
+	// 		delete this.licenceModel.licenceCategoryBodyArmourSales;
+	// 		break;
+	// 	case SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller:
+	// 		delete this.licenceModel.licenceCategoryyClosedCircuitTelevisionInstaller;
+	// 		break;
+	// 	case SwlCategoryTypeCode.ElectronicLockingDeviceInstaller:
+	// 		delete this.licenceModel.licenceCategoryElectronicLockingDeviceInstaller;
+	// 		break;
+	// 	case SwlCategoryTypeCode.FireInvestigator:
+	// 		delete this.licenceModel.licenceCategoryFireInvestigator;
+	// 		break;
+	// 	case SwlCategoryTypeCode.Locksmith:
+	// 		delete this.licenceModel.licenceCategoryLocksmith;
+	// 		break;
+	// 	case SwlCategoryTypeCode.LocksmithSup:
+	// 		delete this.licenceModel.licenceCategoryLocksmithSup;
+	// 		break;
+	// 	case SwlCategoryTypeCode.PrivateInvestigator:
+	// 		delete this.licenceModel.licenceCategoryPrivateInvestigator;
+	// 		break;
+	// 	case SwlCategoryTypeCode.PrivateInvestigatorSup:
+	// 		delete this.licenceModel.licenceCategoryPrivateInvestigatorSup;
+	// 		break;
+	// 	case SwlCategoryTypeCode.SecurityAlarmInstallerSup:
+	// 		delete this.licenceModel.licenceCategorySecurityAlarmInstallerSup;
+	// 		break;
+	// 	case SwlCategoryTypeCode.SecurityAlarmInstaller:
+	// 		delete this.licenceModel.licenceCategorySecurityAlarmInstaller;
+	// 		break;
+	// 	case SwlCategoryTypeCode.SecurityAlarmMonitor:
+	// 		delete this.licenceModel.licenceCategorySecurityAlarmMonitor;
+	// 		break;
+	// 	case SwlCategoryTypeCode.SecurityAlarmResponse:
+	// 		delete this.licenceModel.licenceCategorySecurityAlarmResponse;
+	// 		break;
+	// 	case SwlCategoryTypeCode.SecurityAlarmSales:
+	// 		delete this.licenceModel.licenceCategorySecurityAlarmSales;
+	// 		break;
+	// 	case SwlCategoryTypeCode.SecurityConsultant:
+	// 		delete this.licenceModel.licenceCategorySecurityConsultant;
+	// 		break;
+	// 	case SwlCategoryTypeCode.SecurityGuard:
+	// 		delete this.licenceModel.licenceCategorySecurityGuard;
+	// 		break;
+	// 	case SwlCategoryTypeCode.SecurityGuardSup:
+	// 		delete this.licenceModel.licenceCategorySecurityGuardSup;
+	// 		break;
+	// }
+	// }
 
-	clearAllLicenceCategoryData(): void {
-		// call function to delete all licence category data
-		// delete this.licenceModel.licenceCategoryArmouredCarGuard;
-		// delete this.licenceModel.licenceCategoryBodyArmourSales;
-		// delete this.licenceModel.licenceCategoryyClosedCircuitTelevisionInstaller;
-		// delete this.licenceModel.licenceCategoryElectronicLockingDeviceInstaller;
-		// delete this.licenceModel.licenceCategoryFireInvestigator;
-		// delete this.licenceModel.licenceCategoryLocksmithUnderSupervision;
-		// delete this.licenceModel.licenceCategoryLocksmith;
-		// delete this.licenceModel.licenceCategoryPrivateInvestigatorUnderSupervision;
-		// delete this.licenceModel.licenceCategoryPrivateInvestigator;
-		// delete this.licenceModel.licenceCategorySecurityAlarmInstallerUnderSupervision;
-		// delete this.licenceModel.licenceCategorySecurityAlarmInstaller;
-		// delete this.licenceModel.licenceCategorySecurityAlarmMonitor;
-		// delete this.licenceModel.licenceCategorySecurityAlarmResponse;
-		// delete this.licenceModel.licenceCategorySecurityAlarmSales;
-		// delete this.licenceModel.licenceCategorySecurityConsultant;
-		// delete this.licenceModel.licenceCategorySecurityGuardUnderSupervision;
-		// delete this.licenceModel.licenceCategorySecurityGuard;
-	}
+	// clearAllLicenceCategoryData(): void {
+	// call function to delete all licence category data
+	// delete this.licenceModel.licenceCategoryArmouredCarGuard;
+	// delete this.licenceModel.licenceCategoryBodyArmourSales;
+	// delete this.licenceModel.licenceCategoryyClosedCircuitTelevisionInstaller;
+	// delete this.licenceModel.licenceCategoryElectronicLockingDeviceInstaller;
+	// delete this.licenceModel.licenceCategoryFireInvestigator;
+	// delete this.licenceModel.licenceCategoryLocksmithSup;
+	// delete this.licenceModel.licenceCategoryLocksmith;
+	// delete this.licenceModel.licenceCategoryPrivateInvestigatorSup;
+	// delete this.licenceModel.licenceCategoryPrivateInvestigator;
+	// delete this.licenceModel.licenceCategorySecurityAlarmInstallerSup;
+	// delete this.licenceModel.licenceCategorySecurityAlarmInstaller;
+	// delete this.licenceModel.licenceCategorySecurityAlarmMonitor;
+	// delete this.licenceModel.licenceCategorySecurityAlarmResponse;
+	// delete this.licenceModel.licenceCategorySecurityAlarmSales;
+	// delete this.licenceModel.licenceCategorySecurityConsultant;
+	// delete this.licenceModel.licenceCategorySecurityGuardSup;
+	// delete this.licenceModel.licenceCategorySecurityGuard;
+	// }
 
-	notifyModelChanged(updatedData: any): void {
-		// const licenceModel = { ...this.licenceModel, ...updatedData };
-		// this.cleanLicenceModel(licenceModel);
-		// this.licenceModel = { ...licenceModel };
-		// console.log('notifyModelChanged licenceModel', this.licenceModel);
+	// notifyModelChanged(updatedData: any): void {
+	// 	// const licenceModel = { ...this.licenceModel, ...updatedData };
+	// 	// this.cleanLicenceModel(licenceModel);
+	// 	// this.licenceModel = { ...licenceModel };
+	// 	// console.log('notifyModelChanged licenceModel', this.licenceModel);
 
-		// this.licenceModelFormGroup.patchValue({ ...updatedData });
+	// 	// this.licenceModelFormGroup.patchValue({ ...updatedData });
 
-		console.log(
-			'notifyModelChanged licenceModelFormGroup',
-			this.licenceModelFormGroup.valid,
-			this.licenceModelFormGroup.value
-		);
-		this.licenceModelLoaded$.next({ isUpdated: true });
-	}
+	// 	console.log(
+	// 		'notifyModelChanged licenceModelFormGroup',
+	// 		this.licenceModelFormGroup.valid,
+	// 		this.licenceModelFormGroup.value
+	// 	);
+	// 	this.licenceModelLoaded$.next({ isUpdated: true });
+	// }
 
-	notifyLoaded(): void {
-		this.setFlags();
-		console.log('notifyLoaded', this.licenceModelFormGroup.value);
-		this.licenceModelLoaded$.next({ isLoaded: true });
-	}
+	// notifyLoaded(): void {
+	// 	this.setFlags();
+	// 	console.log('notifyLoaded', this.licenceModelFormGroup.value);
+	// 	this.licenceModelLoaded$.next({ isLoaded: true });
+	// }
 
-	notifyUpdateFlags(): void {
-		this.setFlags();
-		console.log('notifyUpdateFlags', this.licenceModelFormGroup.value);
-		this.licenceModelLoaded$.next({ isSetFlags: true });
-	}
+	// notifyUpdateFlags(): void {
+	// 	this.setFlags();
+	// 	console.log('notifyUpdateFlags', this.licenceModelFormGroup.value);
+	// 	this.licenceModelLoaded$.next({ isSetFlags: true });
+	// }
 
-	notifyCategoryData(): void {
-		console.log('notifyCategoryData', this.licenceModelFormGroup.value);
-		this.licenceModelLoaded$.next({ isCategoryLoaded: true });
-	}
+	// notifyCategoryData(): void {
+	// 	console.log('notifyCategoryData', this.licenceModelFormGroup.value);
+	// 	this.licenceModelLoaded$.next({ isCategoryLoaded: true });
+	// }
 
 	// private cleanLicenceModel(origLicenceModel: LicenceModel): LicenceModel {
 	// 	//TODO when to clean model?
 	// 	return origLicenceModel;
 	// }
 
-	private setFlags(): void {
-		// const flags = {
-		// isNewOrExpired: this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired,
-		// isReplacement: this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Replacement,
-		// isNotReplacement: this.licenceModel.applicationTypeCode != SwlApplicationTypeCode.Replacement,
-		// showStepAccessCode: 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Renewal ||
-		// this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Update,
-		// showStepSoleProprietor: this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired ||
-		// this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Renewal,
-		// showStepLicenceExpired: 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired
-		// };
-		// this.licenceModel.isNewOrExpired = this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired;
-		// this.licenceModel.isReplacement = this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Replacement;
-		// this.licenceModel.isNotReplacement = !this.licenceModel.isReplacement;
-		// this.licenceModel.showStepAccessCode =
-		// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Renewal ||
-		// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Update;
-		// // Review question would only apply to those who have a SWL w/ Sole Prop already,
-		// // otherwise they would see the same question shown to New applicants
-		// this.licenceModel.showStepSoleProprietor =
-		// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired ||
-		// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Renewal;
-		// this.licenceModel.showStepLicenceExpired =
-		// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired;
-		// this.licenceModel.showStepDogsAndRestraints = !!this.licenceModel.swlCategoryList.find(
-		// 	(item) => item.code == SwlCategoryTypeCode.SecurityGuard
-		// );
-		// this.licenceModel.isViewOnlyPoliceOrPeaceOfficer = this.licenceModel.applicationTypeCode
-		// 	? this.licenceModel.applicationTypeCode != SwlApplicationTypeCode.NewOrExpired
-		// 	: false;
-		// this.licenceModel.showStepPoliceBackground =
-		// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired ||
-		// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Update ||
-		// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Renewal;
-		// this.licenceModel.showStepMentalHealth =
-		// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired ||
-		// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Update ||
-		// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Renewal;
-		// this.licenceModel.showStepCriminalHistory =
-		// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired ||
-		// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Update ||
-		// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Renewal;
-		// this.licenceModel.showStepFingerprints =
-		// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired ||
-		// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Renewal;
-		// this.licenceModel.showStepBackgroundInfo = false;
-		// this.licenceModelFormGroup.patchValue();
-	}
+	// private setFlags(): void {
+	// const flags = {
+	// isNewOrExpired: this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired,
+	// isReplacement: this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Replacement,
+	// isNotReplacement: this.licenceModel.applicationTypeCode != SwlApplicationTypeCode.Replacement,
+	// showStepAccessCode: 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Renewal ||
+	// this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Update,
+	// showStepSoleProprietor: this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired ||
+	// this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Renewal,
+	// showStepLicenceExpired: 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired
+	// };
+	// this.licenceModel.isNewOrExpired = this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired;
+	// this.licenceModel.isReplacement = this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Replacement;
+	// this.licenceModel.isNotReplacement = !this.licenceModel.isReplacement;
+	// this.licenceModel.showStepAccessCode =
+	// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Renewal ||
+	// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Update;
+	// // Review question would only apply to those who have a SWL w/ Sole Prop already,
+	// // otherwise they would see the same question shown to New applicants
+	// this.licenceModel.showStepSoleProprietor =
+	// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired ||
+	// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Renewal;
+	// this.licenceModel.showStepLicenceExpired =
+	// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired;
+	// this.licenceModel.showStepDogsAndRestraints = !!this.licenceModel.swlCategoryList.find(
+	// 	(item) => item.code == SwlCategoryTypeCode.SecurityGuard
+	// );
+	// this.licenceModel.isViewOnlyPoliceOrPeaceOfficer = this.licenceModel.applicationTypeCode
+	// 	? this.licenceModel.applicationTypeCode != SwlApplicationTypeCode.NewOrExpired
+	// 	: false;
+	// this.licenceModel.showStepPoliceBackground =
+	// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired ||
+	// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Update ||
+	// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Renewal;
+	// this.licenceModel.showStepMentalHealth =
+	// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired ||
+	// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Update ||
+	// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Renewal;
+	// this.licenceModel.showStepCriminalHistory =
+	// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired ||
+	// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Update ||
+	// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Renewal;
+	// this.licenceModel.showStepFingerprints =
+	// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired ||
+	// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.Renewal;
+	// this.licenceModel.showStepBackgroundInfo = false;
+	// this.licenceModelFormGroup.patchValue();
+	// }
 }

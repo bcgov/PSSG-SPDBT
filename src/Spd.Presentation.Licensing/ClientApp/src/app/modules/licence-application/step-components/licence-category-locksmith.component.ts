@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { SwlCategoryTypeCode } from 'src/app/core/code-types/model-desc.models';
@@ -16,9 +16,6 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 					<div class="row">
 						<div class="offset-xxl-2 col-xxl-8 offset-xl-1 col-xl-9 col-lg-12">
 							<div class="text-center">
-								<mat-chip-option [selectable]="false" class="mat-chip-green me-3">
-									Category #{{ index }}
-								</mat-chip-option>
 								<span class="title" style="position: relative; top: -5px;">{{ title }}</span>
 							</div>
 
@@ -135,15 +132,12 @@ export class LicenceCategoryLocksmithComponent implements OnInit, LicenceFormSte
 	swlCategoryTypeCodes = SwlCategoryTypeCode;
 	matcher = new FormErrorStateMatcher();
 
-	@Input() option: string | null = null;
-	@Input() index: number = 0;
-
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
 	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.title = this.optionsPipe.transform(this.option, 'SwlCategoryTypes');
+		this.title = this.optionsPipe.transform(SwlCategoryTypeCode.Locksmith, 'SwlCategoryTypes');
 	}
 
 	isFormValid(): boolean {

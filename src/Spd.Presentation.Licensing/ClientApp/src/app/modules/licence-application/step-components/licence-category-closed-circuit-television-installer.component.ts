@@ -1,8 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { SwlCategoryTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
-import { LicenceFormStepComponent } from '../licence-application.service';
+import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-category-closed-circuit-television-installer',
@@ -13,9 +12,6 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 					<div class="row">
 						<div class="offset-xxl-2 col-xxl-8 offset-xl-1 col-xl-9 col-lg-12">
 							<div class="text-center">
-								<mat-chip-option [selectable]="false" class="mat-chip-green me-3">
-									Category #{{ index }}
-								</mat-chip-option>
 								<span class="title" style="position: relative; top: -5px;">{{ title }}</span>
 							</div>
 
@@ -23,7 +19,7 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 
 							<form [formGroup]="form" class="text-center my-4" novalidate>
 								<mat-checkbox class="w-auto" formControlName="checkbox">
-									Closed Circuit Television Installer
+									{{ title }}
 								</mat-checkbox>
 							</form>
 						</div>
@@ -35,23 +31,19 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 	styles: [],
 })
 export class LicenceCategoryClosedCircuitTelevisionInstallerComponent implements OnInit, LicenceFormStepComponent {
-	form!: FormGroup;
+	form = this.licenceApplicationService.categoryClosedCircuitTelevisionInstallerFormGroup;
 	title = '';
 
 	@Input() option: SwlCategoryTypeCode | null = null;
-	@Input() index: number = 0;
 
-	constructor(private formBuilder: FormBuilder, private optionsPipe: OptionsPipe) {}
+	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.form = this.formBuilder.group({
-			checkbox: new FormControl({ value: true, disabled: true }),
-		});
-
-		this.title = this.optionsPipe.transform(this.option, 'SwlCategoryTypes');
+		this.form.patchValue({ checkbox: true });
+		this.title = this.optionsPipe.transform(SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller, 'SwlCategoryTypes');
 	}
 
 	isFormValid(): boolean {
-		return true;
+		return this.form.valid;
 	}
 }

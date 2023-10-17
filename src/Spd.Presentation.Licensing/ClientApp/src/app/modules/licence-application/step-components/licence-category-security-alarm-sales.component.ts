@@ -1,7 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { SwlCategoryTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
-import { LicenceFormStepComponent } from '../licence-application.service';
+import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-category-security-alarm-sales',
@@ -12,16 +12,13 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 					<div class="row">
 						<div class="offset-xxl-2 col-xxl-8 offset-xl-1 col-xl-9 col-lg-12">
 							<div class="text-center">
-								<mat-chip-option [selectable]="false" class="mat-chip-green me-3">
-									Category #{{ index }}
-								</mat-chip-option>
 								<span class="title" style="position: relative; top: -5px;">{{ title }}</span>
 							</div>
 
 							<mat-divider class="mt-1 mb-2"></mat-divider>
 
 							<form [formGroup]="form" class="text-center my-4" novalidate>
-								<mat-checkbox class="w-auto" formControlName="checkbox"> Security Alarm Sales </mat-checkbox>
+								<mat-checkbox class="w-auto" formControlName="checkbox"> {{ title }} </mat-checkbox>
 							</form>
 						</div>
 					</div>
@@ -32,23 +29,17 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 	styles: [],
 })
 export class LicenceCategorySecurityAlarmSalesComponent implements OnInit, LicenceFormStepComponent {
-	form!: FormGroup;
+	form = this.licenceApplicationService.categorySecurityAlarmSalesFormGroup;
 	title = '';
 
-	@Input() option: string | null = null;
-	@Input() index: number = 0;
-
-	constructor(private formBuilder: FormBuilder, private optionsPipe: OptionsPipe) {}
+	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.form = this.formBuilder.group({
-			checkbox: new FormControl({ value: true, disabled: true }),
-		});
-
-		this.title = this.optionsPipe.transform(this.option, 'SwlCategoryTypes');
+		this.form.patchValue({ checkbox: true });
+		this.title = this.optionsPipe.transform(SwlCategoryTypeCode.SecurityAlarmSales, 'SwlCategoryTypes');
 	}
 
 	isFormValid(): boolean {
-		return true;
+		return this.form.valid;
 	}
 }

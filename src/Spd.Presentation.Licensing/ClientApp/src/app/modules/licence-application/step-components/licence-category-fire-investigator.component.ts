@@ -1,5 +1,6 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { SwlCategoryTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
@@ -13,9 +14,6 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 					<div class="row">
 						<div class="offset-xxl-2 col-xxl-8 offset-xl-1 col-xl-9 col-lg-12">
 							<div class="text-center">
-								<mat-chip-option [selectable]="false" class="mat-chip-green me-3">
-									Category #{{ index }}
-								</mat-chip-option>
 								<span class="title" style="position: relative; top: -5px;">{{ title }}</span>
 							</div>
 
@@ -91,16 +89,13 @@ export class LicenceCategoryFireInvestigatorComponent implements OnInit, Licence
 	form: FormGroup = this.licenceApplicationService.categoryFireInvestigatorFormGroup;
 	title = '';
 
-	@Input() option: string | null = null;
-	@Input() index: number = 0;
-
 	@ViewChild('fireinvestigatorcertificateattachmentsRef') fileUploadComponent3!: FileUploadComponent;
 	@ViewChild('fireinvestigatorletterattachmentsRef') fileUploadComponent4!: FileUploadComponent;
 
 	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.title = this.optionsPipe.transform(this.option, 'SwlCategoryTypes');
+		this.title = this.optionsPipe.transform(SwlCategoryTypeCode.FireInvestigator, 'SwlCategoryTypes');
 	}
 
 	isFormValid(): boolean {

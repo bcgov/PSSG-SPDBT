@@ -14,7 +14,9 @@ import { LicenceApplicationService } from '../licence-application.service';
 
 				<div class="step-container mx-3" *ngIf="isImagesLoaded">
 					<div class="row">
-						<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6 col-sm-12 mb-3">
+						<div class="col-xxl-9 col-xl-12 mx-auto">
+							<div class="row">
+								<!-- <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6 col-sm-12 mb-3">
 							<div
 								class="step-container__box step-container__box__fullheight"
 								(click)="onLicenceTypeChange(swlTypeCodes.SecurityBusinessLicence)"
@@ -27,46 +29,48 @@ import { LicenceApplicationService } from '../licence-application.service';
 									Security Business Licence
 								</div>
 							</div>
-						</div>
-						<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6 col-sm-12 mb-3">
-							<div
-								class="step-container__box step-container__box__fullheight"
-								(click)="onLicenceTypeChange(swlTypeCodes.SecurityWorkerLicence)"
-								[ngClass]="{ 'active-selection-main': licenceTypeCode == swlTypeCodes.SecurityWorkerLicence }"
-							>
-								<div class="fs-5 mb-4 mt-4 mt-md-0">
-									<div class="box__image d-none d-md-block">
-										<img class="box__image__item" [src]="image2" />
+						</div> -->
+								<div class="col-xxl-4 col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-3">
+									<div
+										class="step-container__box step-container__box__fullheight"
+										(click)="onLicenceTypeChange(swlTypeCodes.SecurityWorkerLicence)"
+										[ngClass]="{ 'active-selection-main': licenceTypeCode == swlTypeCodes.SecurityWorkerLicence }"
+									>
+										<div class="fs-5 mb-4 mt-4 mt-md-0">
+											<div class="box__image d-none d-md-block">
+												<img class="box__image__item" [src]="image2" />
+											</div>
+											Security Worker Licence
+										</div>
 									</div>
-									Security Worker Licence
 								</div>
-							</div>
-						</div>
-						<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6 col-sm-12 mb-3">
-							<div
-								class="step-container__box step-container__box__fullheight"
-								(click)="onLicenceTypeChange(swlTypeCodes.ArmouredVehiclePermit)"
-								[ngClass]="{ 'active-selection-main': licenceTypeCode == swlTypeCodes.ArmouredVehiclePermit }"
-							>
-								<div class="fs-5 mb-4 mt-4 mt-md-0">
-									<div class="box__image d-none d-md-block">
-										<img class="box__image__item" [src]="image3" />
+								<div class="col-xxl-4 col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-3">
+									<div
+										class="step-container__box step-container__box__fullheight"
+										(click)="onLicenceTypeChange(swlTypeCodes.ArmouredVehiclePermit)"
+										[ngClass]="{ 'active-selection-main': licenceTypeCode == swlTypeCodes.ArmouredVehiclePermit }"
+									>
+										<div class="fs-5 mb-4 mt-4 mt-md-0">
+											<div class="box__image d-none d-md-block">
+												<img class="box__image__item" [src]="image3" />
+											</div>
+											<span class="px-3">Permit to operate an armoured vehicle</span>
+										</div>
 									</div>
-									<span class="px-3">Permit to operate an armoured vehicle</span>
 								</div>
-							</div>
-						</div>
-						<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6 col-sm-12 mb-3">
-							<div
-								class="step-container__box step-container__box__fullheight"
-								(click)="onLicenceTypeChange(swlTypeCodes.BodyArmourPermit)"
-								[ngClass]="{ 'active-selection-main': licenceTypeCode == swlTypeCodes.BodyArmourPermit }"
-							>
-								<div class="fs-5 mb-4 mt-4 mt-md-0">
-									<div class="box__image d-none d-md-block">
-										<img class="box__image__item" [src]="image4" />
+								<div class="col-xxl-4 col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-3">
+									<div
+										class="step-container__box step-container__box__fullheight"
+										(click)="onLicenceTypeChange(swlTypeCodes.BodyArmourPermit)"
+										[ngClass]="{ 'active-selection-main': licenceTypeCode == swlTypeCodes.BodyArmourPermit }"
+									>
+										<div class="fs-5 mb-4 mt-4 mt-md-0">
+											<div class="box__image d-none d-md-block">
+												<img class="box__image__item" [src]="image4" />
+											</div>
+											<span class="px-3">Permit to possess body armour</span>
+										</div>
 									</div>
-									<span class="px-3">Permit to possess body armour</span>
 								</div>
 							</div>
 						</div>
@@ -94,7 +98,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 					font: 32px Arial, sans-serif;
 
 					&__item {
-						height: 2.5em;
+						height: 3em;
 						/* max-width: 4em; */
 					}
 				}
