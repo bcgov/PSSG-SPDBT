@@ -178,27 +178,27 @@ export class ApplicationsInProgressComponent implements OnInit, OnDestroy {
 				applicationTypeCode: SwlApplicationTypeCode.NewOrExpired,
 				updatedOn: '2023-09-26T19:43:25+00:00',
 			},
-			{
-				id: '2',
-				caseId: 'CSK-RNS2V9K40521m',
-				licenceTypeCode: SwlTypeCode.ArmouredVehiclePermit,
-				applicationTypeCode: SwlApplicationTypeCode.Renewal,
-				updatedOn: '2023-06-11T16:43:25+00:00',
-			},
-			{
-				id: '3',
-				caseId: 'CLW-RPC2V8K10521b',
-				licenceTypeCode: SwlTypeCode.BodyArmourPermit,
-				applicationTypeCode: SwlApplicationTypeCode.Replacement,
-				updatedOn: '2023-03-07T19:43:25+00:00',
-			},
-			{
-				id: '4',
-				caseId: 'CLW-UPC2V8K10521b',
-				licenceTypeCode: SwlTypeCode.SecurityBusinessLicence,
-				applicationTypeCode: SwlApplicationTypeCode.Update,
-				updatedOn: '2023-03-07T19:43:25+00:00',
-			},
+			// {
+			// 	id: '2',
+			// 	caseId: 'CSK-RNS2V9K40521m',
+			// 	licenceTypeCode: SwlTypeCode.ArmouredVehiclePermit,
+			// 	applicationTypeCode: SwlApplicationTypeCode.Renewal,
+			// 	updatedOn: '2023-06-11T16:43:25+00:00',
+			// },
+			// {
+			// 	id: '3',
+			// 	caseId: 'CLW-RPC2V8K10521b',
+			// 	licenceTypeCode: SwlTypeCode.BodyArmourPermit,
+			// 	applicationTypeCode: SwlApplicationTypeCode.Replacement,
+			// 	updatedOn: '2023-03-07T19:43:25+00:00',
+			// },
+			// {
+			// 	id: '4',
+			// 	caseId: 'CLW-UPC2V8K10521b',
+			// 	licenceTypeCode: SwlTypeCode.SecurityBusinessLicence,
+			// 	applicationTypeCode: SwlApplicationTypeCode.Update,
+			// 	updatedOn: '2023-03-07T19:43:25+00:00',
+			// },
 		];
 	}
 

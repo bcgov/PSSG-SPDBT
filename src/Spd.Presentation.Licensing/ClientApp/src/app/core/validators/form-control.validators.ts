@@ -132,7 +132,10 @@ export class FormControlValidators {
 			return { required: true };
 		}
 
-		const currentLength = control.value ? control.value.trim().length : 0;
+		let currentLength = control.value ? control.value.length : 0;
+		if (typeof control.value == 'string') {
+			currentLength = control.value ? control.value.trim().length : 0;
+		}
 		const valid = control.valid && currentLength > 0;
 		return valid ? null : { required: true };
 	}

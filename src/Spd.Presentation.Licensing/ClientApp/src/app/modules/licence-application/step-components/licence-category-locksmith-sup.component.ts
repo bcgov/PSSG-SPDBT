@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { SelectOptions } from 'src/app/core/code-types/model-desc.models';
+import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 import { LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
@@ -35,24 +35,20 @@ export class LicenceCategoryLocksmithSupComponent implements OnInit, LicenceForm
 	form!: FormGroup;
 	title = '';
 
-	@Input() option: SelectOptions | null = null;
+	@Input() option: string | null = null;
 	@Input() index: number = 0;
 
-	constructor(private formBuilder: FormBuilder) {}
+	constructor(private formBuilder: FormBuilder, private optionsPipe: OptionsPipe) {}
 
 	ngOnInit(): void {
 		this.form = this.formBuilder.group({
 			checkbox: new FormControl({ value: true, disabled: true }),
 		});
 
-		this.title = `${this.option?.desc ?? ''}`;
+		this.title = this.optionsPipe.transform(this.option, 'SwlCategoryTypes');
 	}
 
 	isFormValid(): boolean {
 		return true;
-	}
-
-	getDataToSave(): any {
-		return { licenceCategoryLocksmithUnderSupervision: {} };
 	}
 }

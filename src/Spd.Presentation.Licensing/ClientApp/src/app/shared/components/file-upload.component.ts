@@ -172,6 +172,7 @@ export class FileUploadComponent implements OnInit {
 
 	@Output() uploadedFile = new EventEmitter<any>();
 	@Output() removeFile = new EventEmitter<any>();
+	@Output() filesChanged = new EventEmitter<any>();
 
 	maxFileSize: number = SPD_CONSTANTS.document.maxFileSize; // bytes
 	maxFileSizeMb: number = SPD_CONSTANTS.document.maxFileSizeInMb; // mb
@@ -215,6 +216,7 @@ export class FileUploadComponent implements OnInit {
 
 			this.files.push(...evt.addedFiles);
 			this.uploadedFile.emit(evt.addedFiles);
+			this.filesChanged.emit(true);
 		}
 
 		if (evt.rejectedFiles.length > 0) {
@@ -236,6 +238,7 @@ export class FileUploadComponent implements OnInit {
 		currentFiles.splice(this.files.indexOf(evt), 1);
 
 		this.files = currentFiles;
+		this.filesChanged.emit(true);
 	}
 
 	removeAllFiles(): void {

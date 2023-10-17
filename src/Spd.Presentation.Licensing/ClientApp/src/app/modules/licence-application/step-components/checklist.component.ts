@@ -128,8 +128,4 @@ export class ChecklistComponent implements LicenceFormStepComponent {
 	isFormValid(): boolean {
 		return true;
 	}
-
-	getDataToSave(): any {
-		return {};
-	}
 }

@@ -1,8 +1,8 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { SelectOptions } from 'src/app/core/code-types/model-desc.models';
+import { FormControl, FormGroup } from '@angular/forms';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
+import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
@@ -35,7 +35,11 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 							<form [formGroup]="form" novalidate>
 								<div class="text-minor-heading">Upload your valid Authorization to Carry certificate:</div>
 								<div class="my-2">
-									<app-file-upload [maxNumberOfFiles]="10"></app-file-upload>
+									<app-file-upload
+										[maxNumberOfFiles]="10"
+										[files]="attachments.value"
+										(filesChanged)="onFilesChanged()"
+									></app-file-upload>
 									<mat-error
 										class="mat-option-error"
 										*ngIf="
@@ -75,43 +79,42 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 	styles: [],
 })
 export class LicenceCategoryArmouredCarGuardComponent implements OnInit, LicenceFormStepComponent {
-	form!: FormGroup;
+	form: FormGroup = this.licenceApplicationService.categoryArmouredCarGuardFormGroup;
 	title = '';
 
 	matcher = new FormErrorStateMatcher();
 
-	@Input() option: SelectOptions | null = null;
+	@Input() option: string | null = null;
 	@Input() index: number = 0;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.form = this.formBuilder.group({
-			documentExpiryDate: new FormControl(null, [Validators.required]),
-			attachments: new FormControl('', [Validators.required]),
-		});
-
-		this.title = `${this.option?.desc ?? ''}`;
+		this.title = this.optionsPipe.transform(this.option, 'SwlCategoryTypes');
 	}
 
 	isFormValid(): boolean {
-		const attachments =
-			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
-				? this.fileUploadComponent.files
-				: '';
-		this.form.controls['attachments'].setValue(attachments);
+		this.onFilesChanged();
 
 		this.form.markAllAsTouched();
 		return this.form.valid;
 	}
 
-	getDataToSave(): any {
-		return { licenceCategoryArmouredCarGuard: { ...this.form.value } };
+	onFilesChanged(): void {
+		const attachments =
+			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
+				? this.fileUploadComponent.files
+				: [];
+		this.form.controls['attachments'].setValue(attachments);
 	}
 
 	public get requirement(): FormControl {
 		return this.form.get('requirement') as FormControl;
+	}
+
+	public get attachments(): FormControl {
+		return this.form.get('attachments') as FormControl;
 	}
 }

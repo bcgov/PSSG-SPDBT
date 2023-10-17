@@ -1,17 +1,12 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs';
 import { BooleanTypeCode } from 'src/app/api/models';
 import { PoliceOfficerRoleCode, PoliceOfficerRoleTypes } from 'src/app/core/code-types/model-desc.models';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import {
-	LicenceApplicationService,
-	LicenceFormStepComponent,
-	LicenceModelSubject,
-} from '../licence-application.service';
+import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-background-info',
@@ -106,7 +101,7 @@ import {
 											for more information.
 										</p>
 
-										<app-file-upload [maxNumberOfFiles]="1"></app-file-upload>
+										<app-file-upload [maxNumberOfFiles]="1" onFilesChanged></app-file-upload>
 										<mat-error
 											class="mat-option-error"
 											*ngIf="
@@ -128,8 +123,7 @@ import {
 	`,
 	styles: [],
 })
-export class BackgroundInfoComponent implements OnInit, OnDestroy, LicenceFormStepComponent {
-	private licenceModelLoadedSubscription!: Subscription;
+export class BackgroundInfoComponent implements LicenceFormStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 	policeOfficerRoleCodes = PoliceOfficerRoleCode;
 	policeOfficerRoleTypes = PoliceOfficerRoleTypes;
@@ -165,41 +159,19 @@ export class BackgroundInfoComponent implements OnInit, OnDestroy, LicenceFormSt
 
 	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
 
-	ngOnInit(): void {
-		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
-			next: (loaded: LicenceModelSubject) => {
-				if (loaded.isLoaded) {
-					this.form.patchValue({
-						isPoliceOrPeaceOfficer: this.licenceApplicationService.licenceModel.isPoliceOrPeaceOfficer,
-						officerRole: this.licenceApplicationService.licenceModel.officerRole,
-						otherOfficerRole: this.licenceApplicationService.licenceModel.otherOfficerRole,
-						letterOfNoConflictAttachments: this.licenceApplicationService.licenceModel.letterOfNoConflictAttachments,
-					});
-				}
-			},
-		});
-	}
-
-	ngOnDestroy() {
-		this.licenceModelLoadedSubscription.unsubscribe();
-	}
-
 	isFormValid(): boolean {
-		const attachments =
-			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
-				? this.fileUploadComponent.files
-				: '';
-		this.form.controls['letterOfNoConflictAttachments'].setValue(attachments);
+		this.onFilesChanged();
 
 		this.form.markAllAsTouched();
 		return this.form.valid;
 	}
 
-	getDataToSave(): any {
-		if (this.officerRole.value != PoliceOfficerRoleCode.Other) {
-			this.form.patchValue({ otherOfficerRole: null });
-		}
-		return this.form.value;
+	onFilesChanged(): void {
+		const attachments =
+			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
+				? this.fileUploadComponent.files
+				: [];
+		this.form.controls['letterOfNoConflictAttachments'].setValue(attachments);
 	}
 
 	get isPoliceOrPeaceOfficer(): FormControl {
