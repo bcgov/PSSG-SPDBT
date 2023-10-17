@@ -49,7 +49,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 										<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 										<div class="text-minor-heading mb-2">Your Current Role</div>
 										<div class="row mt-2">
-											<div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
+											<div class="col-xl-7 col-lg-12 col-md-12 col-sm-12">
 												<mat-form-field>
 													<mat-select formControlName="officerRole">
 														<mat-option *ngFor="let item of policeOfficerRoleTypes" [value]="item.code">
@@ -60,7 +60,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 												</mat-form-field>
 											</div>
 											<div
-												class="col-xl-6 col-lg-12 col-md-12 col-sm-12"
+												class="col-xl-5 col-lg-12 col-md-12 col-sm-12"
 												*ngIf="officerRole.value == policeOfficerRoleCodes.Other"
 											>
 												<mat-form-field>
