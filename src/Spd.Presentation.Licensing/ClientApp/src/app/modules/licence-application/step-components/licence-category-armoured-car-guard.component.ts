@@ -9,70 +9,52 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 @Component({
 	selector: 'app-licence-category-armoured-car-guard',
 	template: `
-		<section class="step-section p-3">
-			<div class="step">
-				<div class="step-container">
-					<div class="row">
-						<div class="offset-xxl-2 col-xxl-8 offset-xl-1 col-xl-9 col-lg-12">
-							<div class="text-center">
-								<span class="title" style="position: relative; top: -5px;">{{ title }}</span>
-							</div>
+		<div class="fs-5 fw-semibold mb-2">Authorization to Carry Certificate required</div>
+		<div class="alert alert-category d-flex" role="alert">
+			<div>
+				Armoured car guards carry firearms, which requires a firearm licence and an Authorization to Carry (ATC)
+				certificate. You must get this licence and ATC before you can apply to be an armoured car guard. More
+				information is available from the
+				<a href="https://www.rcmp-grc.gc.ca/en/firearms/authorization-carry" target="_blank">RCMP</a>.
+			</div>
+		</div>
 
-							<mat-divider class="mt-1 mb-2"></mat-divider>
+		<form [formGroup]="form" novalidate>
+			<div class="text-minor-heading">Upload your valid Authorization to Carry certificate:</div>
+			<div class="my-2">
+				<app-file-upload
+					[maxNumberOfFiles]="10"
+					[files]="attachments.value"
+					(filesChanged)="onFilesChanged()"
+				></app-file-upload>
+				<mat-error
+					class="mat-option-error"
+					*ngIf="
+						(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+						form.get('attachments')?.invalid &&
+						form.get('attachments')?.hasError('required')
+					"
+					>This is required</mat-error
+				>
+			</div>
 
-							<div class="fs-5 fw-semibold mb-2">Authorization to Carry Certificate required</div>
-							<div class="alert alert-category d-flex" role="alert">
-								<div>
-									Armoured car guards carry firearms, which requires a firearm licence and an Authorization to Carry
-									(ATC) certificate. You must get this licence and ATC before you can apply to be an armoured car guard.
-									More information is available from the
-									<a href="https://www.rcmp-grc.gc.ca/en/firearms/authorization-carry" target="_blank">RCMP</a>.
-								</div>
-							</div>
-
-							<form [formGroup]="form" novalidate>
-								<div class="text-minor-heading">Upload your valid Authorization to Carry certificate:</div>
-								<div class="my-2">
-									<app-file-upload
-										[maxNumberOfFiles]="10"
-										[files]="attachments.value"
-										(filesChanged)="onFilesChanged()"
-									></app-file-upload>
-									<mat-error
-										class="mat-option-error"
-										*ngIf="
-											(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-											form.get('attachments')?.invalid &&
-											form.get('attachments')?.hasError('required')
-										"
-										>This is required</mat-error
-									>
-								</div>
-
-								<div class="row">
-									<div class="col-lg-4 col-md-12 col-sm-12">
-										<mat-form-field>
-											<mat-label>Document Expiry Date</mat-label>
-											<input
-												matInput
-												[matDatepicker]="picker"
-												formControlName="documentExpiryDate"
-												[errorStateMatcher]="matcher"
-											/>
-											<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-											<mat-datepicker #picker startView="multi-year"></mat-datepicker>
-											<mat-error *ngIf="form.get('documentExpiryDate')?.hasError('required')"
-												>This is required</mat-error
-											>
-										</mat-form-field>
-									</div>
-								</div>
-							</form>
-						</div>
-					</div>
+			<div class="row">
+				<div class="col-lg-4 col-md-12 col-sm-12">
+					<mat-form-field>
+						<mat-label>Document Expiry Date</mat-label>
+						<input
+							matInput
+							[matDatepicker]="picker"
+							formControlName="documentExpiryDate"
+							[errorStateMatcher]="matcher"
+						/>
+						<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+						<mat-datepicker #picker startView="multi-year"></mat-datepicker>
+						<mat-error *ngIf="form.get('documentExpiryDate')?.hasError('required')">This is required</mat-error>
+					</mat-form-field>
 				</div>
 			</div>
-		</section>
+		</form>
 	`,
 	styles: [],
 })

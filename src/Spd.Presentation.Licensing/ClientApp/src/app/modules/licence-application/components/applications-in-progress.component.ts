@@ -69,67 +69,6 @@ export interface ApplicationResponse {
 						</div>
 					</div>
 
-					<!-- <h3 class="mt-4 fw-normal">Expired Licences & Permits</h3> -->
-
-					<!-- <div class="card-section my-4 px-4 py-3" *ngFor="let appl of applications; let i = index">
-						<div class="row">
-							<div class="col-lg-2">
-								<mat-icon style="color: var(--color-primary); height: 60px;width: 60px;font-size: 60px;">
-								badge
-								</mat-icon>
-							</div>
-
-							<div class="col-lg-10">
-								<div class="row">
-									<div class="col-lg-6">
-										<small class="d-block">Licence Term</small>
-										<strong> {{ appl.licenceTypeCode | options : 'SwlTypes' }} </strong>
-									</div>
-									<div class="col-lg-6">
-										<small class="d-block">Application Type</small>
-										<strong> {{ appl.applicationTypeCode | options : 'SwlApplicationTypes' }} </strong>
-									</div>
-									<div class="col-lg-3">
-								<small class="d-block">Application Type</small>
-								<strong> {{ appl.applicationTypeCode | options : 'SwlApplicationTypes' }} </strong>
-							</div>
-									<mat-divider class="my-2"></mat-divider>
-								</div>
-							</div>
-						</div>
-
-						<div class="row mb-2">
-							<div class="offset-lg-2 col-lg-5">
-								<small class="d-block">Case ID</small>
-								<strong> {{ appl.caseId }}</strong>
-							</div>
-							<div class="col-lg-5">
-								<small class="d-block">Last Updated</small>
-								<strong>{{ appl.updatedOn | date : constants.date.dateFormat }}</strong>
-							</div>
-						</div>
-
-						<div class="row mb-2">
-							<div class="offset-lg-2 col-lg-7">
-								<small class="d-block">Licence Categories</small>
-								<div class="text">
-									<div>Armoured Car Guard</div>
-									<div>Security Guard</div>
-								</div>
-							</div>
-							<div class="col-lg-3">
-								<small class="d-block">Authorizations</small>
-								<div class="text">test</div>
-							</div>
-						</div>
-
-						<div class="row">
-							<div class="offset-lg-2 col-lg-10 text-end">
-								<button mat-flat-button color="primary" class="large w-auto" (click)="onResume(appl)">Resume</button>
-							</div>
-						</div>
-					</div> -->
-
 					<button mat-flat-button color="primary" class="large w-auto mb-4" (click)="onCreateNew()">
 						Apply for a New Licence or Permit
 					</button>

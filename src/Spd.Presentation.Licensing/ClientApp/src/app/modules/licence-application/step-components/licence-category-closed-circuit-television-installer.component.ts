@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { SwlCategoryTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
@@ -6,35 +6,17 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 @Component({
 	selector: 'app-licence-category-closed-circuit-television-installer',
 	template: `
-		<section class="step-section p-3">
-			<div class="step">
-				<div class="step-container">
-					<div class="row">
-						<div class="offset-xxl-2 col-xxl-8 offset-xl-1 col-xl-9 col-lg-12">
-							<div class="text-center">
-								<span class="title" style="position: relative; top: -5px;">{{ title }}</span>
-							</div>
-
-							<mat-divider class="mt-1 mb-2"></mat-divider>
-
-							<form [formGroup]="form" class="text-center my-4" novalidate>
-								<mat-checkbox class="w-auto" formControlName="checkbox">
-									{{ title }}
-								</mat-checkbox>
-							</form>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
+		<form [formGroup]="form" class="text-center my-4" novalidate>
+			<mat-checkbox class="w-auto" formControlName="checkbox">
+				{{ title }}
+			</mat-checkbox>
+		</form>
 	`,
 	styles: [],
 })
 export class LicenceCategoryClosedCircuitTelevisionInstallerComponent implements OnInit, LicenceFormStepComponent {
 	form = this.licenceApplicationService.categoryClosedCircuitTelevisionInstallerFormGroup;
 	title = '';
-
-	@Input() option: SwlCategoryTypeCode | null = null;
 
 	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
 

@@ -6,23 +6,6 @@ import { SwlApplicationTypeCode, SwlCategoryTypeCode } from 'src/app/core/code-t
 import { LicenceApplicationService } from '../../licence-application.service';
 import { DogsOrRestraintsComponent } from '../dogs-or-restraints.component';
 import { LicenceAccessCodeComponent } from '../licence-access-code.component';
-import { LicenceCategoryArmouredCarGuardComponent } from '../licence-category-armoured-car-guard.component';
-import { LicenceCategoryBodyArmourSalesComponent } from '../licence-category-body-armour-sales.component';
-import { LicenceCategoryClosedCircuitTelevisionInstallerComponent } from '../licence-category-closed-circuit-television-installer.component';
-import { LicenceCategoryElectronicLockingDeviceInstallerComponent } from '../licence-category-electronic-locking-device-installer.component';
-import { LicenceCategoryFireInvestigatorComponent } from '../licence-category-fire-investigator.component';
-import { LicenceCategoryLocksmithSupComponent } from '../licence-category-locksmith-sup.component';
-import { LicenceCategoryLocksmithComponent } from '../licence-category-locksmith.component';
-import { LicenceCategoryPrivateInvestigatorSupComponent } from '../licence-category-private-investigator-sup.component';
-import { LicenceCategoryPrivateInvestigatorComponent } from '../licence-category-private-investigator.component';
-import { LicenceCategorySecurityAlarmInstallerSupComponent } from '../licence-category-security-alarm-installer-sup.component';
-import { LicenceCategorySecurityAlarmInstallerComponent } from '../licence-category-security-alarm-installer.component';
-import { LicenceCategorySecurityAlarmMonitorComponent } from '../licence-category-security-alarm-monitor.component';
-import { LicenceCategorySecurityAlarmResponseComponent } from '../licence-category-security-alarm-response.component';
-import { LicenceCategorySecurityAlarmSalesComponent } from '../licence-category-security-alarm-sales.component';
-import { LicenceCategorySecurityConsultantComponent } from '../licence-category-security-consultant.component';
-import { LicenceCategorySecurityGuardSupComponent } from '../licence-category-security-guard-sup.component';
-import { LicenceCategorySecurityGuardComponent } from '../licence-category-security-guard.component';
 import { LicenceCategoryComponent } from '../licence-category.component';
 import { LicenceExpiredComponent } from '../licence-expired.component';
 import { LicenceTermComponent } from '../licence-term.component';
@@ -161,7 +144,7 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 					</div>
 				</div>
 			</mat-step>
-
+			<!-- 
 			<mat-step *ngIf="showArmouredCarGuard">
 				<app-licence-category-armoured-car-guard></app-licence-category-armoured-car-guard>
 
@@ -499,7 +482,7 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 						</button>
 					</div>
 				</div>
-			</mat-step>
+			</mat-step> -->
 
 			<mat-step *ngIf="showStepDogsAndRestraints">
 				<app-dogs-or-restraints></app-dogs-or-restraints>
@@ -570,40 +553,40 @@ export class StepLicenceSelectionComponent {
 	@ViewChild(LicenceCategoryComponent)
 	licenceCategoryComponent!: LicenceCategoryComponent;
 
-	@ViewChild(LicenceCategoryArmouredCarGuardComponent)
-	armouredCarGuardComponent!: LicenceCategoryArmouredCarGuardComponent;
-	@ViewChild(LicenceCategoryBodyArmourSalesComponent)
-	bodyArmourSalesComponent!: LicenceCategoryBodyArmourSalesComponent;
-	@ViewChild(LicenceCategoryClosedCircuitTelevisionInstallerComponent)
-	ccTelevisionInstallerComponent!: LicenceCategoryClosedCircuitTelevisionInstallerComponent;
-	@ViewChild(LicenceCategoryElectronicLockingDeviceInstallerComponent)
-	elDeviceInstallerComponent!: LicenceCategoryElectronicLockingDeviceInstallerComponent;
-	@ViewChild(LicenceCategoryFireInvestigatorComponent)
-	fireInvestigatorComponent!: LicenceCategoryFireInvestigatorComponent;
-	@ViewChild(LicenceCategoryLocksmithComponent)
-	locksmithComponent!: LicenceCategoryLocksmithComponent;
-	@ViewChild(LicenceCategoryLocksmithSupComponent)
-	locksmithSupComponent!: LicenceCategoryLocksmithSupComponent;
-	@ViewChild(LicenceCategoryPrivateInvestigatorComponent)
-	privateInvestigatorComponent!: LicenceCategoryPrivateInvestigatorComponent;
-	@ViewChild(LicenceCategoryPrivateInvestigatorSupComponent)
-	privateInvestigatorSupComponent!: LicenceCategoryPrivateInvestigatorSupComponent;
-	@ViewChild(LicenceCategorySecurityGuardComponent)
-	securityGuardComponent!: LicenceCategorySecurityGuardComponent;
-	@ViewChild(LicenceCategorySecurityGuardSupComponent)
-	securityGuardSupComponent!: LicenceCategorySecurityGuardSupComponent;
-	@ViewChild(LicenceCategorySecurityAlarmInstallerSupComponent)
-	securityAlarmInstallerSupComponent!: LicenceCategorySecurityAlarmInstallerSupComponent;
-	@ViewChild(LicenceCategorySecurityAlarmInstallerComponent)
-	securityAlarmInstallerComponent!: LicenceCategorySecurityAlarmInstallerComponent;
-	@ViewChild(LicenceCategorySecurityAlarmMonitorComponent)
-	securityAlarmMonitorComponent!: LicenceCategorySecurityAlarmMonitorComponent;
-	@ViewChild(LicenceCategorySecurityAlarmResponseComponent)
-	securityAlarmResponseComponent!: LicenceCategorySecurityAlarmResponseComponent;
-	@ViewChild(LicenceCategorySecurityAlarmSalesComponent)
-	securityAlarmSalesComponent!: LicenceCategorySecurityAlarmSalesComponent;
-	@ViewChild(LicenceCategorySecurityConsultantComponent)
-	securityConsultantComponent!: LicenceCategorySecurityConsultantComponent;
+	// @ViewChild(LicenceCategoryArmouredCarGuardComponent)
+	// armouredCarGuardComponent!: LicenceCategoryArmouredCarGuardComponent;
+	// @ViewChild(LicenceCategoryBodyArmourSalesComponent)
+	// bodyArmourSalesComponent!: LicenceCategoryBodyArmourSalesComponent;
+	// @ViewChild(LicenceCategoryClosedCircuitTelevisionInstallerComponent)
+	// ccTelevisionInstallerComponent!: LicenceCategoryClosedCircuitTelevisionInstallerComponent;
+	// @ViewChild(LicenceCategoryElectronicLockingDeviceInstallerComponent)
+	// elDeviceInstallerComponent!: LicenceCategoryElectronicLockingDeviceInstallerComponent;
+	// @ViewChild(LicenceCategoryFireInvestigatorComponent)
+	// fireInvestigatorComponent!: LicenceCategoryFireInvestigatorComponent;
+	// @ViewChild(LicenceCategoryLocksmithComponent)
+	// locksmithComponent!: LicenceCategoryLocksmithComponent;
+	// @ViewChild(LicenceCategoryLocksmithSupComponent)
+	// locksmithSupComponent!: LicenceCategoryLocksmithSupComponent;
+	// @ViewChild(LicenceCategoryPrivateInvestigatorComponent)
+	// privateInvestigatorComponent!: LicenceCategoryPrivateInvestigatorComponent;
+	// @ViewChild(LicenceCategoryPrivateInvestigatorSupComponent)
+	// privateInvestigatorSupComponent!: LicenceCategoryPrivateInvestigatorSupComponent;
+	// @ViewChild(LicenceCategorySecurityGuardComponent)
+	// securityGuardComponent!: LicenceCategorySecurityGuardComponent;
+	// @ViewChild(LicenceCategorySecurityGuardSupComponent)
+	// securityGuardSupComponent!: LicenceCategorySecurityGuardSupComponent;
+	// @ViewChild(LicenceCategorySecurityAlarmInstallerSupComponent)
+	// securityAlarmInstallerSupComponent!: LicenceCategorySecurityAlarmInstallerSupComponent;
+	// @ViewChild(LicenceCategorySecurityAlarmInstallerComponent)
+	// securityAlarmInstallerComponent!: LicenceCategorySecurityAlarmInstallerComponent;
+	// @ViewChild(LicenceCategorySecurityAlarmMonitorComponent)
+	// securityAlarmMonitorComponent!: LicenceCategorySecurityAlarmMonitorComponent;
+	// @ViewChild(LicenceCategorySecurityAlarmResponseComponent)
+	// securityAlarmResponseComponent!: LicenceCategorySecurityAlarmResponseComponent;
+	// @ViewChild(LicenceCategorySecurityAlarmSalesComponent)
+	// securityAlarmSalesComponent!: LicenceCategorySecurityAlarmSalesComponent;
+	// @ViewChild(LicenceCategorySecurityConsultantComponent)
+	// securityConsultantComponent!: LicenceCategorySecurityConsultantComponent;
 
 	@ViewChild(DogsOrRestraintsComponent)
 	dogsOrRestraintsComponent!: DogsOrRestraintsComponent;
@@ -613,30 +596,30 @@ export class StepLicenceSelectionComponent {
 
 	@ViewChild('childstepper') private childstepper!: MatStepper;
 
-	categoryArmouredCarGuardFormGroup: FormGroup = this.licenceApplicationService.categoryArmouredCarGuardFormGroup;
-	categoryFireInvestigatorFormGroup: FormGroup = this.licenceApplicationService.categoryFireInvestigatorFormGroup;
-	categoryLocksmithFormGroup: FormGroup = this.licenceApplicationService.categoryLocksmithFormGroup;
-	categoryPrivateInvestigatorSupFormGroup: FormGroup =
-		this.licenceApplicationService.categoryPrivateInvestigatorSupFormGroup;
-	categoryPrivateInvestigatorFormGroup: FormGroup = this.licenceApplicationService.categoryPrivateInvestigatorFormGroup;
-	categorySecurityAlarmInstallerFormGroup: FormGroup =
-		this.licenceApplicationService.categorySecurityAlarmInstallerFormGroup;
-	categorySecurityConsultantFormGroup: FormGroup = this.licenceApplicationService.categorySecurityConsultantFormGroup;
-	categoryBodyArmourSalesFormGroup: FormGroup = this.licenceApplicationService.categoryBodyArmourSalesFormGroup;
-	categoryCctInstallerFormGroup: FormGroup =
-		this.licenceApplicationService.categoryClosedCircuitTelevisionInstallerFormGroup;
-	categoryEldInstallerFormGroup: FormGroup =
-		this.licenceApplicationService.categoryElectronicLockingDeviceInstallerFormGroup;
-	categoryLocksmithSupFormGroup: FormGroup = this.licenceApplicationService.categoryLocksmithSupFormGroup;
-	categorySecurityAlarmInstallerSupFormGroup: FormGroup =
-		this.licenceApplicationService.categorySecurityAlarmInstallerSupFormGroup;
-	categorySecurityAlarmMonitorFormGroup: FormGroup =
-		this.licenceApplicationService.categorySecurityAlarmMonitorFormGroup;
-	categorySecurityAlarmResponseFormGroup: FormGroup =
-		this.licenceApplicationService.categorySecurityAlarmResponseFormGroup;
-	categorySecurityAlarmSalesFormGroup: FormGroup = this.licenceApplicationService.categorySecurityAlarmSalesFormGroup;
+	// categoryArmouredCarGuardFormGroup: FormGroup = this.licenceApplicationService.categoryArmouredCarGuardFormGroup;
+	// categoryFireInvestigatorFormGroup: FormGroup = this.licenceApplicationService.categoryFireInvestigatorFormGroup;
+	// categoryLocksmithFormGroup: FormGroup = this.licenceApplicationService.categoryLocksmithFormGroup;
+	// categoryPrivateInvestigatorSupFormGroup: FormGroup =
+	// 	this.licenceApplicationService.categoryPrivateInvestigatorSupFormGroup;
+	// categoryPrivateInvestigatorFormGroup: FormGroup = this.licenceApplicationService.categoryPrivateInvestigatorFormGroup;
+	// categorySecurityAlarmInstallerFormGroup: FormGroup =
+	// 	this.licenceApplicationService.categorySecurityAlarmInstallerFormGroup;
+	// categorySecurityConsultantFormGroup: FormGroup = this.licenceApplicationService.categorySecurityConsultantFormGroup;
+	// categoryBodyArmourSalesFormGroup: FormGroup = this.licenceApplicationService.categoryBodyArmourSalesFormGroup;
+	// categoryClosedCircuitTelevisionInstallerFormGroup: FormGroup =
+	// 	this.licenceApplicationService.categoryClosedCircuitTelevisionInstallerFormGroup;
+	// categoryElectronicLockingDeviceInstallerFormGroup: FormGroup =
+	// 	this.licenceApplicationService.categoryElectronicLockingDeviceInstallerFormGroup;
+	// categoryLocksmithSupFormGroup: FormGroup = this.licenceApplicationService.categoryLocksmithSupFormGroup;
+	// categorySecurityAlarmInstallerSupFormGroup: FormGroup =
+	// 	this.licenceApplicationService.categorySecurityAlarmInstallerSupFormGroup;
+	// categorySecurityAlarmMonitorFormGroup: FormGroup =
+	// 	this.licenceApplicationService.categorySecurityAlarmMonitorFormGroup;
+	// categorySecurityAlarmResponseFormGroup: FormGroup =
+	// 	this.licenceApplicationService.categorySecurityAlarmResponseFormGroup;
+	// categorySecurityAlarmSalesFormGroup: FormGroup = this.licenceApplicationService.categorySecurityAlarmSalesFormGroup;
 	categorySecurityGuardFormGroup: FormGroup = this.licenceApplicationService.categorySecurityGuardFormGroup;
-	categorySecurityGuardSupFormGroup: FormGroup = this.licenceApplicationService.categorySecurityGuardSupFormGroup;
+	// categorySecurityGuardSupFormGroup: FormGroup = this.licenceApplicationService.categorySecurityGuardSupFormGroup;
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
@@ -674,40 +657,40 @@ export class StepLicenceSelectionComponent {
 				return this.dogsOrRestraintsComponent.isFormValid();
 			case this.STEP_LICENCE_TERM:
 				return this.licenceTermComponent.isFormValid();
-			case SwlCategoryTypeCode.ArmouredCarGuard:
-				return this.armouredCarGuardComponent.isFormValid();
-			case SwlCategoryTypeCode.BodyArmourSales:
-				return this.bodyArmourSalesComponent.isFormValid();
-			case SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller:
-				return this.ccTelevisionInstallerComponent.isFormValid();
-			case SwlCategoryTypeCode.ElectronicLockingDeviceInstaller:
-				return this.elDeviceInstallerComponent.isFormValid();
-			case SwlCategoryTypeCode.FireInvestigator:
-				return this.fireInvestigatorComponent.isFormValid();
-			case SwlCategoryTypeCode.Locksmith:
-				return this.locksmithComponent.isFormValid();
-			case SwlCategoryTypeCode.LocksmithUnderSupervision:
-				return this.locksmithSupComponent.isFormValid();
-			case SwlCategoryTypeCode.PrivateInvestigator:
-				return this.privateInvestigatorComponent.isFormValid();
-			case SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision:
-				return this.privateInvestigatorSupComponent.isFormValid();
-			case SwlCategoryTypeCode.SecurityGuard:
-				return this.securityGuardComponent.isFormValid();
-			case SwlCategoryTypeCode.SecurityGuardUnderSupervision:
-				return this.securityGuardSupComponent.isFormValid();
-			case SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision:
-				return this.securityAlarmInstallerSupComponent.isFormValid();
-			case SwlCategoryTypeCode.SecurityAlarmInstaller:
-				return this.securityAlarmInstallerComponent.isFormValid();
-			case SwlCategoryTypeCode.SecurityAlarmMonitor:
-				return this.securityAlarmMonitorComponent.isFormValid();
-			case SwlCategoryTypeCode.SecurityAlarmResponse:
-				return this.securityAlarmResponseComponent.isFormValid();
-			case SwlCategoryTypeCode.SecurityAlarmSales:
-				return this.securityAlarmSalesComponent.isFormValid();
-			case SwlCategoryTypeCode.SecurityConsultant:
-				return this.securityConsultantComponent.isFormValid();
+			// case SwlCategoryTypeCode.ArmouredCarGuard:
+			// 	return this.armouredCarGuardComponent.isFormValid();
+			// case SwlCategoryTypeCode.BodyArmourSales:
+			// 	return this.bodyArmourSalesComponent.isFormValid();
+			// case SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller:
+			// 	return this.ccTelevisionInstallerComponent.isFormValid();
+			// case SwlCategoryTypeCode.ElectronicLockingDeviceInstaller:
+			// 	return this.elDeviceInstallerComponent.isFormValid();
+			// case SwlCategoryTypeCode.FireInvestigator:
+			// 	return this.fireInvestigatorComponent.isFormValid();
+			// case SwlCategoryTypeCode.Locksmith:
+			// 	return this.locksmithComponent.isFormValid();
+			// case SwlCategoryTypeCode.LocksmithUnderSupervision:
+			// 	return this.locksmithSupComponent.isFormValid();
+			// case SwlCategoryTypeCode.PrivateInvestigator:
+			// 	return this.privateInvestigatorComponent.isFormValid();
+			// case SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision:
+			// 	return this.privateInvestigatorSupComponent.isFormValid();
+			// case SwlCategoryTypeCode.SecurityGuard:
+			// 	return this.securityGuardComponent.isFormValid();
+			// case SwlCategoryTypeCode.SecurityGuardUnderSupervision:
+			// 	return this.securityGuardSupComponent.isFormValid();
+			// case SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision:
+			// 	return this.securityAlarmInstallerSupComponent.isFormValid();
+			// case SwlCategoryTypeCode.SecurityAlarmInstaller:
+			// 	return this.securityAlarmInstallerComponent.isFormValid();
+			// case SwlCategoryTypeCode.SecurityAlarmMonitor:
+			// 	return this.securityAlarmMonitorComponent.isFormValid();
+			// case SwlCategoryTypeCode.SecurityAlarmResponse:
+			// 	return this.securityAlarmResponseComponent.isFormValid();
+			// case SwlCategoryTypeCode.SecurityAlarmSales:
+			// 	return this.securityAlarmSalesComponent.isFormValid();
+			// case SwlCategoryTypeCode.SecurityConsultant:
+			// 	return this.securityConsultantComponent.isFormValid();
 			default:
 				console.error('Unknown Form', step);
 		}
@@ -718,55 +701,55 @@ export class StepLicenceSelectionComponent {
 		return this.categorySecurityGuardFormGroup.get('isInclude')?.value;
 	}
 
-	get showArmouredCarGuard(): boolean {
-		return this.categoryArmouredCarGuardFormGroup.get('isInclude')?.value;
-	}
-	get showBodyArmourSales(): boolean {
-		return this.categoryBodyArmourSalesFormGroup.get('isInclude')?.value;
-	}
-	get showClosedCircuitTelevisionInstaller(): boolean {
-		return this.categoryCctInstallerFormGroup.get('isInclude')?.value;
-	}
-	get showElectronicLockingDeviceInstaller(): boolean {
-		return this.categoryEldInstallerFormGroup.get('isInclude')?.value;
-	}
-	get showFireInvestigator(): boolean {
-		return this.categoryFireInvestigatorFormGroup.get('isInclude')?.value;
-	}
-	get showLocksmith(): boolean {
-		return this.categoryLocksmithFormGroup.get('isInclude')?.value;
-	}
-	get showLocksmithUnderSupervision(): boolean {
-		return this.categoryLocksmithSupFormGroup.get('isInclude')?.value;
-	}
-	get showPrivateInvestigatorUnderSupervision(): boolean {
-		return this.categoryPrivateInvestigatorSupFormGroup.get('isInclude')?.value;
-	}
-	get showPrivateInvestigator(): boolean {
-		return this.categoryPrivateInvestigatorFormGroup.get('isInclude')?.value;
-	}
-	get showSecurityAlarmInstaller(): boolean {
-		return this.categorySecurityAlarmInstallerFormGroup.get('isInclude')?.value;
-	}
-	get showSecurityAlarmInstallerUnderSupervision(): boolean {
-		return this.categorySecurityAlarmInstallerSupFormGroup.get('isInclude')?.value;
-	}
-	get showSecurityConsultant(): boolean {
-		return this.categorySecurityConsultantFormGroup.get('isInclude')?.value;
-	}
-	get showSecurityGuard(): boolean {
-		return this.categorySecurityGuardFormGroup.get('isInclude')?.value;
-	}
-	get showSecurityAlarmMonitor(): boolean {
-		return this.categorySecurityAlarmMonitorFormGroup.get('isInclude')?.value;
-	}
-	get showSecurityAlarmResponse(): boolean {
-		return this.categorySecurityAlarmResponseFormGroup.get('isInclude')?.value;
-	}
-	get showSecurityAlarmSales(): boolean {
-		return this.categorySecurityAlarmSalesFormGroup.get('isInclude')?.value;
-	}
-	get showSecurityGuardUnderSupervision(): boolean {
-		return this.categorySecurityGuardSupFormGroup.get('isInclude')?.value;
-	}
+	// get showArmouredCarGuard(): boolean {
+	// 	return this.categoryArmouredCarGuardFormGroup.get('isInclude')?.value;
+	// }
+	// get showBodyArmourSales(): boolean {
+	// 	return this.categoryBodyArmourSalesFormGroup.get('isInclude')?.value;
+	// }
+	// get showClosedCircuitTelevisionInstaller(): boolean {
+	// 	return this.categoryClosedCircuitTelevisionInstallerFormGroup.get('isInclude')?.value;
+	// }
+	// get showElectronicLockingDeviceInstaller(): boolean {
+	// 	return this.categoryElectronicLockingDeviceInstallerFormGroup.get('isInclude')?.value;
+	// }
+	// get showFireInvestigator(): boolean {
+	// 	return this.categoryFireInvestigatorFormGroup.get('isInclude')?.value;
+	// }
+	// get showLocksmith(): boolean {
+	// 	return this.categoryLocksmithFormGroup.get('isInclude')?.value;
+	// }
+	// get showLocksmithUnderSupervision(): boolean {
+	// 	return this.categoryLocksmithSupFormGroup.get('isInclude')?.value;
+	// }
+	// get showPrivateInvestigatorUnderSupervision(): boolean {
+	// 	return this.categoryPrivateInvestigatorSupFormGroup.get('isInclude')?.value;
+	// }
+	// get showPrivateInvestigator(): boolean {
+	// 	return this.categoryPrivateInvestigatorFormGroup.get('isInclude')?.value;
+	// }
+	// get showSecurityAlarmInstaller(): boolean {
+	// 	return this.categorySecurityAlarmInstallerFormGroup.get('isInclude')?.value;
+	// }
+	// get showSecurityAlarmInstallerUnderSupervision(): boolean {
+	// 	return this.categorySecurityAlarmInstallerSupFormGroup.get('isInclude')?.value;
+	// }
+	// get showSecurityConsultant(): boolean {
+	// 	return this.categorySecurityConsultantFormGroup.get('isInclude')?.value;
+	// }
+	// get showSecurityGuard(): boolean {
+	// 	return this.categorySecurityGuardFormGroup.get('isInclude')?.value;
+	// }
+	// get showSecurityAlarmMonitor(): boolean {
+	// 	return this.categorySecurityAlarmMonitorFormGroup.get('isInclude')?.value;
+	// }
+	// get showSecurityAlarmResponse(): boolean {
+	// 	return this.categorySecurityAlarmResponseFormGroup.get('isInclude')?.value;
+	// }
+	// get showSecurityAlarmSales(): boolean {
+	// 	return this.categorySecurityAlarmSalesFormGroup.get('isInclude')?.value;
+	// }
+	// get showSecurityGuardUnderSupervision(): boolean {
+	// 	return this.categorySecurityGuardSupFormGroup.get('isInclude')?.value;
+	// }
 }

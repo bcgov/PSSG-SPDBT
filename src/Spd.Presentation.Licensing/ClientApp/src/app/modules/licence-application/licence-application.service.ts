@@ -371,13 +371,13 @@ export class LicenceApplicationService {
 	categoryPrivateInvestigatorFormGroup: FormGroup = this.formBuilder.group(
 		{
 			isInclude: new FormControl(false),
-			requirement: new FormControl('', [FormControlValidators.required]),
-			training: new FormControl('', [FormControlValidators.required]),
-			attachments: new FormControl([], [Validators.required]),
-			trainingattachments: new FormControl([], [Validators.required]),
+			requirement: new FormControl(''),
+			training: new FormControl(''),
+			attachments: new FormControl([]),
+			trainingattachments: new FormControl([]),
 			fireinvestigatorcertificateattachments: new FormControl([]),
 			fireinvestigatorletterattachments: new FormControl([]),
-			addFireInvestigator: new FormControl('', [Validators.required]),
+			addFireInvestigator: new FormControl(''),
 		},
 		{
 			validators: [
@@ -934,13 +934,13 @@ export class LicenceApplicationService {
 						checkbox: true,
 					},
 					categoryPrivateInvestigatorSupFormGroup: {
-						isInclude: true,
+						isInclude: false,
 						requirement: 'a',
 						attachments: [myFile],
 						trainingattachments: [myFile],
 					},
 					categoryPrivateInvestigatorFormGroup: {
-						isInclude: true,
+						isInclude: false,
 						requirement: 'a',
 						training: 'a',
 						attachments: [myFile],
@@ -977,7 +977,7 @@ export class LicenceApplicationService {
 						resumeattachments: [myFile],
 					},
 					categorySecurityGuardFormGroup: {
-						isInclude: true,
+						isInclude: false,
 						attachments: [myFile],
 						requirement: 'a',
 					},

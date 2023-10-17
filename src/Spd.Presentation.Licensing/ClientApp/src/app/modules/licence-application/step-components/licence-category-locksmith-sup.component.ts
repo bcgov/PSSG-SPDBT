@@ -6,25 +6,9 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 @Component({
 	selector: 'app-licence-category-locksmith-sup',
 	template: `
-		<section class="step-section p-3">
-			<div class="step">
-				<div class="step-container">
-					<div class="row">
-						<div class="offset-xxl-2 col-xxl-8 offset-xl-1 col-xl-9 col-lg-12">
-							<div class="text-center">
-								<span class="title" style="position: relative; top: -5px;">{{ title }}</span>
-							</div>
-
-							<mat-divider class="mt-1 mb-2"></mat-divider>
-
-							<form [formGroup]="form" class="text-center my-4" novalidate>
-								<mat-checkbox class="w-auto" formControlName="checkbox"> {{ title }} </mat-checkbox>
-							</form>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
+		<form [formGroup]="form" class="text-center my-4" novalidate>
+			<mat-checkbox class="w-auto" formControlName="checkbox"> {{ title }} </mat-checkbox>
+		</form>
 	`,
 	styles: [],
 })
