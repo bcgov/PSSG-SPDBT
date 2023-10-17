@@ -407,7 +407,7 @@ export interface AliasCreateRequest {
 						<div class="col-md-12 col-sm-12">
 							<mat-checkbox formControlName="haveVerifiedIdentity">
 								<ng-container *ngIf="portal == portalTypeCodes.Psso; else haveVerifiedIdentityCrrpLabel">
-									I have verified the identity of the applicant for this security screening
+									I have verified the identity of the applicant for this criminal record check
 								</ng-container>
 								<ng-template #haveVerifiedIdentityCrrpLabel>
 									I confirm that I have verified the identity of the applicant for this criminal record check

@@ -573,7 +573,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 	}
 
 	private setupPsso(): void {
-		this.requestName = 'Screening Request';
+		this.requestName = 'Criminal Record Check';
 
 		this.optionsService.getMinistries().subscribe((resp) => {
 			this.ministries = resp;
