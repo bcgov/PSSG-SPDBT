@@ -1,15 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Component } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/api/models';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
-import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import {
-	LicenceApplicationService,
-	LicenceFormStepComponent,
-	LicenceModelSubject,
-} from '../licence-application.service';
+import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-bc-driver-licence',
@@ -69,43 +63,17 @@ import {
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class BcDriverLicenceComponent implements OnInit, OnDestroy, LicenceFormStepComponent {
-	private licenceModelLoadedSubscription!: Subscription;
-
+export class BcDriverLicenceComponent implements LicenceFormStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 	matcher = new FormErrorStateMatcher();
 
-	form: FormGroup = this.formBuilder.group({
-		hasBcDriversLicence: new FormControl(null, [FormControlValidators.required]),
-		bcDriversLicenceNumber: new FormControl(),
-	});
+	form: FormGroup = this.licenceApplicationService.bcDriversLicenceFormGroup;
 
-	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
-
-	ngOnInit(): void {
-		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
-			next: (loaded: LicenceModelSubject) => {
-				if (loaded.isLoaded) {
-					this.form.patchValue({
-						hasBcDriversLicence: this.licenceApplicationService.licenceModel.hasBcDriversLicence,
-						bcDriversLicenceNumber: this.licenceApplicationService.licenceModel.bcDriversLicenceNumber,
-					});
-				}
-			},
-		});
-	}
-
-	ngOnDestroy() {
-		this.licenceModelLoadedSubscription.unsubscribe();
-	}
+	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
-	}
-
-	getDataToSave(): any {
-		return this.form.value;
 	}
 
 	get hasBcDriversLicence(): FormControl {

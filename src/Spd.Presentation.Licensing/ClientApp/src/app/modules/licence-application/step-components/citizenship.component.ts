@@ -1,22 +1,14 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Component, ViewChild } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/api/models';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import {
-	ProofOfAbilityToWorkInCanadaCode,
 	ProofOfAbilityToWorkInCanadaTypes,
 	ProofOfCanadianCitizenshipTypes,
 } from 'src/app/core/code-types/model-desc.models';
-import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
-import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import {
-	LicenceApplicationService,
-	LicenceFormStepComponent,
-	LicenceModelSubject,
-} from '../licence-application.service';
+import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-citizenship',
@@ -118,6 +110,7 @@ import {
 											<app-file-upload
 												[maxNumberOfFiles]="1"
 												[files]="citizenshipDocumentPhotoAttachments.value"
+												(filesChanged)="onFilesChanged()"
 											></app-file-upload>
 											<mat-error
 												class="mat-option-error"
@@ -142,9 +135,7 @@ import {
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class CitizenshipComponent implements OnInit, OnDestroy, LicenceFormStepComponent {
-	private licenceModelLoadedSubscription!: Subscription;
-
+export class CitizenshipComponent implements LicenceFormStepComponent {
 	proofOfCanadianCitizenshipTypes = ProofOfCanadianCitizenshipTypes;
 	proofOfAbilityToWorkInCanadaTypes = ProofOfAbilityToWorkInCanadaTypes;
 
@@ -153,70 +144,23 @@ export class CitizenshipComponent implements OnInit, OnDestroy, LicenceFormStepC
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	form: FormGroup = this.formBuilder.group(
-		{
-			isBornInCanada: new FormControl(null, [FormControlValidators.required]),
-			proofOfCitizenship: new FormControl(),
-			proofOfAbility: new FormControl(),
-			citizenshipDocumentExpiryDate: new FormControl(),
-			citizenshipDocumentPhotoAttachments: new FormControl(null, [Validators.required]),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'proofOfCitizenship',
-					(form) => form.get('isBornInCanada')?.value == this.booleanTypeCodes.Yes
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'proofOfAbility',
-					(form) => form.get('isBornInCanada')?.value == this.booleanTypeCodes.No
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'citizenshipDocumentExpiryDate',
-					(form) =>
-						form.get('proofOfAbility')?.value == ProofOfAbilityToWorkInCanadaCode.WorkPermit ||
-						form.get('proofOfAbility')?.value == ProofOfAbilityToWorkInCanadaCode.StudyPermit
-				),
-			],
-		}
-	);
+	form: FormGroup = this.licenceApplicationService.citizenshipFormGroup;
 
-	constructor(private formBuilder: FormBuilder, private licenceApplicationService: LicenceApplicationService) {}
-
-	ngOnInit(): void {
-		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
-			next: (loaded: LicenceModelSubject) => {
-				if (loaded.isLoaded) {
-					this.form.patchValue({
-						isBornInCanada: this.licenceApplicationService.licenceModel.isBornInCanada,
-						proofOfCitizenship: this.licenceApplicationService.licenceModel.proofOfCitizenship,
-						proofOfAbility: this.licenceApplicationService.licenceModel.proofOfAbility,
-						citizenshipDocumentExpiryDate: this.licenceApplicationService.licenceModel.citizenshipDocumentExpiryDate,
-						citizenshipDocumentPhotoAttachments:
-							this.licenceApplicationService.licenceModel.citizenshipDocumentPhotoAttachments,
-					});
-				}
-			},
-		});
-	}
-
-	ngOnDestroy() {
-		this.licenceModelLoadedSubscription.unsubscribe();
-	}
+	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	isFormValid(): boolean {
-		const attachments =
-			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
-				? this.fileUploadComponent.files
-				: '';
-		this.form.controls['citizenshipDocumentPhotoAttachments'].setValue(attachments);
+		this.onFilesChanged();
 
 		this.form.markAllAsTouched();
 		return this.form.valid;
 	}
 
-	getDataToSave(): any {
-		return this.form.value;
+	onFilesChanged(): void {
+		const attachments =
+			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
+				? this.fileUploadComponent.files
+				: [];
+		this.form.controls['citizenshipDocumentPhotoAttachments'].setValue(attachments);
 	}
 
 	get isBornInCanada(): FormControl {

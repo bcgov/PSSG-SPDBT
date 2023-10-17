@@ -25,58 +25,41 @@ import { StepReviewComponent } from '../step-components/main-steps/step-review.c
 						#stepper
 					>
 						<mat-step completed="true">
-							<ng-template matStepLabel>
-								<span *ngIf="isNotReplacement; else isReplacementTabName">Licence Selection</span>
-								<ng-template #isReplacementTabName>Licence Confirmation</ng-template>
-							</ng-template>
-							<app-step-licence-selection (nextStepperStep)="onNextStepperStep(stepper)"></app-step-licence-selection>
+							<ng-template matStepLabel> Licence Selection </ng-template>
+							<app-step-licence-selection
+								(nextStepperStep)="onNextStepperStep(stepper)"
+								(scrollIntoView)="onScrollIntoView()"
+							></app-step-licence-selection>
 						</mat-step>
 
-						<ng-container *ngIf="isNotReplacement">
-							<mat-step completed="true">
-								<ng-template matStepLabel>Background</ng-template>
-								<app-step-background
-									(previousStepperStep)="onPreviousStepperStep(stepper)"
-									(nextStepperStep)="onNextStepperStep(stepper)"
-								></app-step-background>
-							</mat-step>
+						<mat-step completed="true">
+							<ng-template matStepLabel>Background</ng-template>
+							<app-step-background
+								(previousStepperStep)="onPreviousStepperStep(stepper)"
+								(nextStepperStep)="onNextStepperStep(stepper)"
+								(scrollIntoView)="onScrollIntoView()"
+							></app-step-background>
+						</mat-step>
 
-							<mat-step completed="true">
-								<ng-template matStepLabel>Identification</ng-template>
-								<app-step-identification
-									(previousStepperStep)="onPreviousStepperStep(stepper)"
-									(nextStepperStep)="onNextStepperStep(stepper)"
-								></app-step-identification>
-							</mat-step>
+						<mat-step completed="true">
+							<ng-template matStepLabel>Identification</ng-template>
+							<app-step-identification
+								(previousStepperStep)="onPreviousStepperStep(stepper)"
+								(nextStepperStep)="onNextStepperStep(stepper)"
+								(scrollIntoView)="onScrollIntoView()"
+							></app-step-identification>
+						</mat-step>
 
-							<mat-step completed="true">
-								<ng-template matStepLabel>Review and Confirm</ng-template>
-								<ng-template matStepContent>
-									<app-step-review
-										(previousStepperStep)="onPreviousStepperStep(stepper)"
-										(nextStepperStep)="onNextStepperStep(stepper)"
-									></app-step-review>
-								</ng-template>
-							</mat-step>
-						</ng-container>
-
-						<ng-container *ngIf="isReplacement">
-							<!-- <mat-step completed="true">
-								<ng-template matStepLabel>Licence Confirmation</ng-template>
+						<mat-step completed="true">
+							<ng-template matStepLabel>Review and Confirm</ng-template>
+							<ng-template matStepContent>
 								<app-step-review
 									(previousStepperStep)="onPreviousStepperStep(stepper)"
 									(nextStepperStep)="onNextStepperStep(stepper)"
+									(scrollIntoView)="onScrollIntoView()"
 								></app-step-review>
-							</mat-step> -->
-
-							<mat-step completed="true">
-								<ng-template matStepLabel>Address Update</ng-template>
-								<app-step-review
-									(previousStepperStep)="onPreviousStepperStep(stepper)"
-									(nextStepperStep)="onNextStepperStep(stepper)"
-								></app-step-review>
-							</mat-step>
-						</ng-container>
+							</ng-template>
+						</mat-step>
 
 						<mat-step completed="true">
 							<ng-template matStepLabel>Pay</ng-template>
@@ -144,7 +127,11 @@ export class LicenceWizardComponent implements OnInit, OnDestroy {
 	) {}
 
 	ngOnInit(): void {
-		console.log('LicenceWizardComponent ONINIT', this.licenceApplicationService.initialized);
+		console.log(
+			'LicenceWizardComponent ONINIT',
+			this.licenceApplicationService.initialized,
+			this.licenceApplicationService.licenceModelFormGroup.value
+		);
 
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
@@ -156,16 +143,16 @@ export class LicenceWizardComponent implements OnInit, OnDestroy {
 			return;
 		}
 
-		this.licenceApplicationService.notifyLoaded();
+		// this.licenceApplicationService.notifyLoaded();
 
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
 			next: (loaded: LicenceModelSubject) => {
-				if (loaded.isLoaded || loaded.isSetFlags) {
-					this.isReplacement = this.licenceApplicationService.licenceModel.isReplacement ?? false;
-					this.isNotReplacement = this.licenceApplicationService.licenceModel.isNotReplacement ?? false;
-
-					this.isLoaded$.next(true);
-				}
+				// if (loaded.isLoaded || loaded.isSetFlags) {
+				// 	this.isReplacement = this.licenceApplicationService.licenceModel.isReplacement ?? false;
+				// 	this.isNotReplacement = this.licenceApplicationService.licenceModel.isNotReplacement ?? false;
+				console.log('ISLOADED');
+				this.isLoaded$.next(true);
+				// }
 			},
 		});
 	}
@@ -175,6 +162,10 @@ export class LicenceWizardComponent implements OnInit, OnDestroy {
 	}
 
 	onStepSelectionChange(event: StepperSelectionEvent) {
+		// 	this.scrollIntoView();
+	}
+
+	onScrollIntoView(): void {
 		this.scrollIntoView();
 	}
 
@@ -185,6 +176,7 @@ export class LicenceWizardComponent implements OnInit, OnDestroy {
 
 	onNextStepperStep(stepper: MatStepper): void {
 		// console.log('next', stepper);
+		console.log('next step', this.licenceApplicationService.licenceModelFormGroup.value);
 		stepper.next();
 	}
 

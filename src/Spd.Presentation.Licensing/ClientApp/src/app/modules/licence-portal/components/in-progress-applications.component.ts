@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { UtilService } from 'src/app/core/services/util.service';
@@ -72,7 +72,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 	`,
 	styles: [],
 })
-export class InProgressApplicationsComponent {
+export class InProgressApplicationsComponent implements OnInit {
 	dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
 	columns: string[] = ['applicationType', 'startedOn', 'caseId', 'action1'];
