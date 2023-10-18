@@ -1,8 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { take, tap } from 'rxjs';
 import { SwlApplicationTypeCode, SwlTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
 import { LicenceApplicationService } from '../licence-application.service';
 
@@ -25,7 +27,7 @@ export interface ApplicationResponse {
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
 					<app-alert type="warning">
-						Your armoured vehicle permit is expiring in 71 days. Please renew by December 15, 2023.
+						Your armoured vehicle permit is expiring in 71 days. Please renew by <b>December 15, 2023</b>.
 					</app-alert>
 
 					<div class="mb-4" *ngIf="incompleteApplications.length > 0">
@@ -39,11 +41,11 @@ export interface ApplicationResponse {
 								</div>
 								<div class="col-lg-3">
 									<small class="d-block text-muted mt-2 mt-md-0">Application Type</small>
-									<strong> {{ appl.applicationTypeCode | options : 'SwlApplicationTypes' }} </strong>
+									<div class="text-data">{{ appl.applicationTypeCode | options : 'SwlApplicationTypes' }}</div>
 								</div>
 								<div class="col-lg-2">
 									<small class="d-block text-muted mt-2 mt-md-0">Create Date</small>
-									<strong>{{ appl.expiresOn | date : constants.date.formalDateFormat }}</strong>
+									<div class="text-data">{{ appl.expiresOn | date : constants.date.formalDateFormat }}</div>
 								</div>
 								<div class="col-lg-3 text-end">
 									<button mat-flat-button color="primary" class="large w-auto" (click)="onResume(appl)">
@@ -67,15 +69,15 @@ export interface ApplicationResponse {
 									<div class="row">
 										<div class="col-lg-3">
 											<small class="d-block text-muted mt-2 mt-md-0">Licence Id</small>
-											<strong> {{ appl.licenceId }}</strong>
+											<div class="text-data">{{ appl.licenceId }}</div>
 										</div>
 										<div class="col-lg-3">
 											<small class="d-block text-muted mt-2 mt-md-0">Licence Term</small>
-											<strong>1 Year</strong>
+											<div class="text-data">1 Year</div>
 										</div>
 										<div class="col-lg-3">
 											<small class="d-block text-muted mt-2 mt-md-0">Application Type</small>
-											<strong> {{ appl.applicationTypeCode | options : 'SwlApplicationTypes' }} </strong>
+											<div class="text-data">{{ appl.applicationTypeCode | options : 'SwlApplicationTypes' }}</div>
 										</div>
 										<div class="col-lg-3 text-end">
 											<mat-chip-option [selectable]="false" class="mat-chip-green" style="height: 38px; width: 135px;">
@@ -89,21 +91,25 @@ export interface ApplicationResponse {
 									<div class="row mb-2">
 										<div class="col-lg-3">
 											<small class="d-block text-muted mt-2 mt-md-0">Expiry Date</small>
-											<strong>{{ appl.expiresOn | date : constants.date.formalDateFormat }}</strong>
+											<div class="text-data">{{ appl.expiresOn | date : constants.date.formalDateFormat }}</div>
 										</div>
 										<div class="col-lg-4">
 											<small class="d-block text-muted mt-2 mt-md-0">Licence Categories</small>
-											<strong>
+											<div class="text-data">
 												<ul class="m-0">
 													<li>Armoured Car Guard</li>
 													<li>Security Guard</li>
 													<li>Security Alarm Installer - Under Supervision</li>
 												</ul>
-											</strong>
+											</div>
 										</div>
 										<div class="col-lg-5">
 											<small class="d-block text-muted mt-2 mt-md-0">Authorization Documents</small>
-											<strong> </strong>
+											<div class="text-data">Authorization to use dogs</div>
+											<div>Expires on Nov 23, 2023</div>
+											<div>
+												<a class="large" (click)="onUpdateAuthorization()"> Update Authorization </a>
+											</div>
 										</div>
 										<mat-divider class="my-2"></mat-divider>
 									</div>
@@ -130,9 +136,7 @@ export interface ApplicationResponse {
 									<div class="col-12">
 										<mat-divider class="my-2"></mat-divider>
 										<span class="fw-semibold">Lost your licence?</span>
-										<a class="large" href="https://id.gov.bc.ca/account/" target="_blank">
-											Request a replacement card
-										</a>
+										<a class="large" href="http://www.google.ca/" target="_blank"> Request a replacement card </a>
 										and we'll send you one in xx-xx business days.
 									</div>
 								</div>
@@ -153,15 +157,15 @@ export interface ApplicationResponse {
 									<div class="row">
 										<div class="col-lg-3">
 											<small class="d-block text-muted mt-2 mt-md-0">Licence Id</small>
-											<strong> {{ appl.licenceId }}</strong>
+											<div class="text-data">{{ appl.licenceId }}</div>
 										</div>
 										<div class="col-lg-3">
 											<small class="d-block text-muted mt-2 mt-md-0">Licence Term</small>
-											<strong>5 Years</strong>
+											<div class="text-data">5 Years</div>
 										</div>
 										<div class="col-lg-3">
 											<small class="d-block text-muted mt-2 mt-md-0">Expiry Date</small>
-											<strong>{{ appl.expiresOn | date : constants.date.formalDateFormat }}</strong>
+											<div class="text-data">{{ appl.expiresOn | date : constants.date.formalDateFormat }}</div>
 										</div>
 										<div class="col-lg-3 text-end">
 											<mat-chip-option [selectable]="false" class="mat-chip-red" style="height: 38px; width: 135px;">
@@ -197,8 +201,8 @@ export interface ApplicationResponse {
 				line-height: 1.3em;
 			}
 
-			.text {
-				line-height: 1.4em;
+			.text-data {
+				font-weight: 500;
 			}
 
 			.card-section {
@@ -218,7 +222,11 @@ export class ApplicationsInProgressComponent implements OnInit, OnDestroy {
 	activeApplications: Array<ApplicationResponse> = [];
 	expiredApplications: Array<ApplicationResponse> = [];
 
-	constructor(private router: Router, private licenceApplicationService: LicenceApplicationService) {}
+	constructor(
+		private router: Router,
+		private dialog: MatDialog,
+		private licenceApplicationService: LicenceApplicationService
+	) {}
 
 	ngOnInit(): void {
 		this.incompleteApplications = [
@@ -282,6 +290,24 @@ export class ApplicationsInProgressComponent implements OnInit, OnDestroy {
 
 	ngOnDestroy() {
 		// this.licenceModelLoadedSubscription.unsubscribe();
+	}
+
+	onUpdateAuthorization(): void {
+		const data: DialogOptions = {
+			icon: 'warning',
+			title: 'UpdateAuthorization',
+			message: 'UpdateAuthorization',
+			actionText: 'Save',
+			cancelText: 'Cancel',
+		};
+
+		this.dialog
+			.open(DialogComponent, { data })
+			.afterClosed()
+			.subscribe((response: boolean) => {
+				if (response) {
+				}
+			});
 	}
 
 	onResume(appl: ApplicationResponse): void {

@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { ApplicationTypeComponent } from './components/application-type.component';
 import { ApplicationsInProgressComponent } from './components/applications-in-progress.component';
+import { ApplyNameChangeModalComponent } from './components/apply-name-change-modal.component';
 import { LicencePaymentErrorComponent } from './components/licence-payment-error.component';
 import { LicencePaymentFailComponent } from './components/licence-payment-fail.component';
 import { LicencePaymentManualComponent } from './components/licence-payment-manual.component';
@@ -57,9 +58,9 @@ import { StepBackgroundComponent } from './step-components/wizard-steps/step-bac
 import { StepIdentificationComponent } from './step-components/wizard-steps/step-identification.component';
 import { StepLicenceSelectionComponent } from './step-components/wizard-steps/step-licence-selection.component';
 import { StepReviewComponent } from './step-components/wizard-steps/step-review.component';
-import { StepLicenceUpdatesComponent } from './step-components/wizard-update-steps/step-licence-updates.component';
 import { StepConfirmMailingAddressComponent } from './step-components/wizard-update-steps/step-confirm-mailing-address.component';
 import { StepConfirmUpdatesComponent } from './step-components/wizard-update-steps/step-confirm-updates.component';
+import { StepLicenceUpdatesComponent } from './step-components/wizard-update-steps/step-licence-updates.component';
 
 @NgModule({
 	declarations: [
@@ -120,9 +121,10 @@ import { StepConfirmUpdatesComponent } from './step-components/wizard-update-ste
 		LicenceWizardComponent,
 		BackgroundInfoComponent,
 		LicenceWizardUpdateComponent,
-  StepLicenceUpdatesComponent,
-  StepConfirmMailingAddressComponent,
-  StepConfirmUpdatesComponent,
+		StepLicenceUpdatesComponent,
+		StepConfirmMailingAddressComponent,
+		StepConfirmUpdatesComponent,
+		ApplyNameChangeModalComponent,
 	],
 	imports: [SharedModule, LicenceApplicationRoutingModule],
 })

@@ -75,10 +75,6 @@ $fonts: (
   header: #{"BCSans, Noto Sans, Verdana, Arial, sans-serif"},
   body: #{"BCSans, Noto Sans, Verdana, Arial, sans-serif"},
 );
-// $fonts: (
-//   header: #{"Noto Sans, Verdana, Arial, sans-serif"},
-//   body: #{"Noto Sans, Verdana, Arial, sans-serif"},
-// );
 
 @function theme-font($font) {
   @return map-get($fonts, $font);
@@ -289,7 +285,7 @@ body {
 
 a {  
   cursor: pointer;
-  text-decoration: none;
+  // text-decoration: none;
 }
 
 .optional-label {
