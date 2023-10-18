@@ -1,16 +1,17 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperOrientation, StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { BehaviorSubject, distinctUntilChanged, Subscription } from 'rxjs';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
-import { LicenceApplicationService, LicenceModelSubject } from '../licence-application.service';
-import { StepBackgroundComponent } from '../step-components/main-steps/step-background.component';
-import { StepIdentificationComponent } from '../step-components/main-steps/step-identification.component';
-import { StepLicenceSelectionComponent } from '../step-components/main-steps/step-licence-selection.component';
-import { StepReviewComponent } from '../step-components/main-steps/step-review.component';
+import { LicenceApplicationService } from '../licence-application.service';
+import { StepBackgroundComponent } from '../step-components/wizard-steps/step-background.component';
+import { StepIdentificationComponent } from '../step-components/wizard-steps/step-identification.component';
+import { StepLicenceSelectionComponent } from '../step-components/wizard-steps/step-licence-selection.component';
+import { StepReviewComponent } from '../step-components/wizard-steps/step-review.component';
+
 @Component({
 	selector: 'app-licence-wizard',
 	template: `
@@ -24,7 +25,7 @@ import { StepReviewComponent } from '../step-components/main-steps/step-review.c
 						(selectionChange)="onStepSelectionChange($event)"
 						#stepper
 					>
-						<mat-step completed="true">
+						<mat-step [completed]="step1Complete">
 							<ng-template matStepLabel> Licence Selection </ng-template>
 							<app-step-licence-selection
 								(nextStepperStep)="onNextStepperStep(stepper)"
@@ -32,7 +33,7 @@ import { StepReviewComponent } from '../step-components/main-steps/step-review.c
 							></app-step-licence-selection>
 						</mat-step>
 
-						<mat-step completed="true">
+						<mat-step [completed]="step2Complete">
 							<ng-template matStepLabel>Background</ng-template>
 							<app-step-background
 								(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -41,7 +42,7 @@ import { StepReviewComponent } from '../step-components/main-steps/step-review.c
 							></app-step-background>
 						</mat-step>
 
-						<mat-step completed="true">
+						<mat-step [completed]="step3Complete">
 							<ng-template matStepLabel>Identification</ng-template>
 							<app-step-identification
 								(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -50,7 +51,7 @@ import { StepReviewComponent } from '../step-components/main-steps/step-review.c
 							></app-step-identification>
 						</mat-step>
 
-						<mat-step completed="true">
+						<mat-step completed="false">
 							<ng-template matStepLabel>Review and Confirm</ng-template>
 							<ng-template matStepContent>
 								<app-step-review
@@ -61,7 +62,7 @@ import { StepReviewComponent } from '../step-components/main-steps/step-review.c
 							</ng-template>
 						</mat-step>
 
-						<mat-step completed="true">
+						<mat-step completed="false">
 							<ng-template matStepLabel>Pay</ng-template>
 						</mat-step>
 					</mat-stepper>
@@ -90,7 +91,7 @@ import { StepReviewComponent } from '../step-components/main-steps/step-review.c
 	`,
 	styles: [],
 })
-export class LicenceWizardComponent implements OnInit, OnDestroy {
+export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit {
 	private licenceModelLoadedSubscription!: Subscription;
 
 	readonly STEP_LICENCE_SELECTION = 0;
@@ -101,6 +102,10 @@ export class LicenceWizardComponent implements OnInit, OnDestroy {
 	isLoaded$ = new BehaviorSubject<boolean>(false);
 
 	orientation: StepperOrientation = 'vertical';
+
+	step1Complete = false;
+	step2Complete = false;
+	step3Complete = false;
 
 	isReplacement: boolean = false;
 	isNotReplacement: boolean = false;
@@ -143,18 +148,29 @@ export class LicenceWizardComponent implements OnInit, OnDestroy {
 			return;
 		}
 
-		// this.licenceApplicationService.notifyLoaded();
-
 		this.licenceModelLoadedSubscription = this.licenceApplicationService.licenceModelLoaded$.subscribe({
-			next: (loaded: LicenceModelSubject) => {
-				// if (loaded.isLoaded || loaded.isSetFlags) {
-				// 	this.isReplacement = this.licenceApplicationService.licenceModel.isReplacement ?? false;
-				// 	this.isNotReplacement = this.licenceApplicationService.licenceModel.isNotReplacement ?? false;
-				console.log('ISLOADED');
+			next: () => {
+				console.log('LicenceWizardComponent ISLOADED');
+
+				this.step1Complete = this.licenceApplicationService.isStep1Complete();
+				this.step2Complete = this.licenceApplicationService.isStep2Complete();
+				this.step3Complete = this.licenceApplicationService.isStep3Complete();
+
 				this.isLoaded$.next(true);
-				// }
 			},
 		});
+	}
+
+	ngAfterViewInit(): void {
+		if (this.step1Complete) {
+			if (this.step3Complete) {
+				this.stepper.selectedIndex = this.STEP_REVIEW;
+			} else if (this.step2Complete) {
+				this.stepper.selectedIndex = this.STEP_IDENTIFICATION;
+			} else {
+				this.stepper.selectedIndex = this.STEP_BACKGROUND;
+			}
+		}
 	}
 
 	ngOnDestroy() {
@@ -175,7 +191,8 @@ export class LicenceWizardComponent implements OnInit, OnDestroy {
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
-		// console.log('next', stepper);
+		if (stepper?.selected) stepper.selected.completed = true;
+
 		console.log('next step', this.licenceApplicationService.licenceModelFormGroup.value);
 		stepper.next();
 	}

@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
-import { SwlCategoryTypeCode } from 'src/app/core/code-types/model-desc.models';
+import { LocksmithRequirementCode, SwlCategoryTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
@@ -20,8 +20,8 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 					will be based on a review of program or course content, and training time for each component of the
 					apprenticeship or course:
 
-					<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="requirement">
-						<mat-radio-button class="radio-label" value="a">
+					<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="requirementCode">
+						<mat-radio-button class="radio-label" [value]="locksmithRequirementCodes.CertificateOfQualification">
 							A Locksmith Certificate of Qualification
 							<mat-icon
 								class="info-icon"
@@ -31,7 +31,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 							</mat-icon>
 						</mat-radio-button>
 						<mat-divider class="my-2"></mat-divider>
-						<mat-radio-button class="radio-label" value="b">
+						<mat-radio-button class="radio-label" [value]="locksmithRequirementCodes.ExperienceAndApprenticeship">
 							Two years experience of full-time employment as a locksmith under the supervision of a locksmith security
 							worker licensee, and proof of successful completion of an approved apprenticeship program
 							<mat-icon
@@ -42,7 +42,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 							</mat-icon>
 						</mat-radio-button>
 						<mat-divider class="my-2"></mat-divider>
-						<mat-radio-button class="radio-label" value="c">
+						<mat-radio-button class="radio-label" [value]="locksmithRequirementCodes.ApprovedLocksmithCourse">
 							Proof of successful completion of an approved locksmithing course, proof of experience in full-time
 							employment as a locksmith under the supervision of a locksmith security worker licensee, and a letter of
 							recommendation and certification from your employer indicating that you are qualified to perform the
@@ -52,24 +52,26 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 					<mat-error
 						class="mat-option-error"
 						*ngIf="
-							(form.get('requirement')?.dirty || form.get('requirement')?.touched) &&
-							form.get('requirement')?.invalid &&
-							form.get('requirement')?.hasError('required')
+							(form.get('requirementCode')?.dirty || form.get('requirementCode')?.touched) &&
+							form.get('requirementCode')?.invalid &&
+							form.get('requirementCode')?.hasError('required')
 						"
 						>This is required</mat-error
 					>
 				</div>
 			</div>
 
-			<div *ngIf="requirement.value" @showHideTriggerSlideAnimation>
+			<div *ngIf="requirementCode.value" @showHideTriggerSlideAnimation>
 				<div class="text-minor-heading mb-2">
-					<span *ngIf="requirement.value == 'a'">Upload a copy of your certificate:</span>
-					<span *ngIf="requirement.value == 'b'">
+					<span *ngIf="requirementCode.value == locksmithRequirementCodes.CertificateOfQualification">
+						Upload a copy of your certificate:
+					</span>
+					<span *ngIf="requirementCode.value == locksmithRequirementCodes.ExperienceAndApprenticeship">
 						Upload a letter of recommendation on company letterhead, and proof of successful completion of an approved
 						apprenticeship program, other than that provided by the
 						<i>Industry Training Authority</i>:
 					</span>
-					<span *ngIf="requirement.value == 'c'">
+					<span *ngIf="requirementCode.value == locksmithRequirementCodes.ApprovedLocksmithCourse">
 						Upload a letter of recommendation on company letterhead, proof of experience, and proof of successful
 						completion of an approved course:
 					</span>
@@ -111,6 +113,8 @@ export class LicenceCategoryLocksmithComponent implements OnInit, LicenceFormSte
 	swlCategoryTypeCodes = SwlCategoryTypeCode;
 	matcher = new FormErrorStateMatcher();
 
+	locksmithRequirementCodes = LocksmithRequirementCode;
+
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
 	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
@@ -134,8 +138,8 @@ export class LicenceCategoryLocksmithComponent implements OnInit, LicenceFormSte
 		this.form.controls['attachments'].setValue(attachments);
 	}
 
-	public get requirement(): FormControl {
-		return this.form.get('requirement') as FormControl;
+	public get requirementCode(): FormControl {
+		return this.form.get('requirementCode') as FormControl;
 	}
 
 	public get attachments(): FormControl {

@@ -1,12 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { ApplicationTypeComponent } from './components/application-type.component';
 import { ApplicationsInProgressComponent } from './components/applications-in-progress.component';
 import { LicencePaymentErrorComponent } from './components/licence-payment-error.component';
 import { LicencePaymentFailComponent } from './components/licence-payment-fail.component';
 import { LicencePaymentManualComponent } from './components/licence-payment-manual.component';
 import { LicencePaymentSuccessComponent } from './components/licence-payment-success.component';
 import { LicenceSelectionComponent } from './components/licence-selection.component';
-import { ApplicationTypeComponent } from './components/application-type.component';
+import { LicenceWizardUpdateComponent } from './components/licence-wizard-update.component';
 import { LicenceWizardComponent } from './components/licence-wizard.component';
 import { LoginSelectionComponent } from './components/login-selection.component';
 import { LicenceApplicationComponent } from './licence-application.component';
@@ -15,6 +16,7 @@ export class LicenceApplicationRoutes {
 	public static LICENCE_APPLICATION = 'licence-application';
 	public static LOGIN_SELECTION = 'login-selection';
 	public static APPLICATIONS_IN_PROGRESS = 'applications-in-progress';
+	public static LICENCE_UPDATE = 'licence-update';
 	public static LICENCE_SELECTION = 'licence-selection';
 	public static LICENCE_TYPE = 'licence-type';
 	public static APPLICATION = 'application';
@@ -51,6 +53,10 @@ const routes: Routes = [
 			{
 				path: LicenceApplicationRoutes.LICENCE_TYPE,
 				component: ApplicationTypeComponent,
+			},
+			{
+				path: LicenceApplicationRoutes.LICENCE_UPDATE,
+				component: LicenceWizardUpdateComponent,
 			},
 			{
 				path: LicenceApplicationRoutes.APPLICATION,

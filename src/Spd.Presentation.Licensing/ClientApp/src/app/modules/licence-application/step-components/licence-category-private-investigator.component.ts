@@ -2,7 +2,11 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/api/models';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
-import { SwlCategoryTypeCode } from 'src/app/core/code-types/model-desc.models';
+import {
+	PrivateInvestigatorRequirementCode,
+	PrivateInvestigatorTrainingCode,
+	SwlCategoryTypeCode,
+} from 'src/app/core/code-types/model-desc.models';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
@@ -20,8 +24,8 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 					To qualify for a private investigator security worker licence, you must meet one of the following experience
 					requirements:
 
-					<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="requirement">
-						<mat-radio-button class="radio-label" value="a">
+					<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="requirementCode">
+						<mat-radio-button class="radio-label" [value]="privateInvestigatorRequirementCodes.ExperienceAndCourses">
 							a) Two years of documented experience providing the services of a private investigator or private
 							investigator under supervision, AND successful completion of recognized courses in evidence gathering and
 							presentation and in the aspects of criminal and civil law that are relevant to the work of a private
@@ -34,7 +38,10 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 							</mat-icon>
 						</mat-radio-button>
 						<mat-divider class="my-2"></mat-divider>
-						<mat-radio-button class="radio-label" value="b">
+						<mat-radio-button
+							class="radio-label"
+							[value]="privateInvestigatorRequirementCodes.TenYearsPoliceExperienceAndTraining"
+						>
 							b) Ten years of experience performing general police duties in a Canadian police force, AND proof of
 							registration in the Private Security Training Network online course
 							<i>Introduction to Private Investigation</i>.
@@ -46,25 +53,25 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 							</mat-icon>
 						</mat-radio-button>
 						<mat-divider class="my-2"></mat-divider>
-						<mat-radio-button class="radio-label" value="c">
+						<mat-radio-button class="radio-label" [value]="privateInvestigatorRequirementCodes.KnowledgeAndExperience">
 							c) Knowledge and experience equivalent to that which would be obtained under paragraph (a) above.
 						</mat-radio-button>
 					</mat-radio-group>
 					<mat-error
 						class="mat-option-error"
 						*ngIf="
-							(form.get('requirement')?.dirty || form.get('requirement')?.touched) &&
-							form.get('requirement')?.invalid &&
-							form.get('requirement')?.hasError('required')
+							(form.get('requirementCode')?.dirty || form.get('requirementCode')?.touched) &&
+							form.get('requirementCode')?.invalid &&
+							form.get('requirementCode')?.hasError('required')
 						"
 						>This is required</mat-error
 					>
 				</div>
 			</div>
 
-			<div *ngIf="requirement.value" @showHideTriggerSlideAnimation>
+			<div *ngIf="requirementCode.value" @showHideTriggerSlideAnimation>
 				<div class="text-minor-heading">
-					<span *ngIf="requirement.value == 'a'">
+					<span *ngIf="requirementCode.value == privateInvestigatorRequirementCodes.ExperienceAndCourses">
 						Upload document(s) providing the following information:
 						<span class="fw-normal">
 							<ul>
@@ -76,11 +83,13 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 							</ul>
 						</span>
 					</span>
-					<span *ngIf="requirement.value == 'b'">
+					<span
+						*ngIf="requirementCode.value == privateInvestigatorRequirementCodes.TenYearsPoliceExperienceAndTraining"
+					>
 						Upload proof of registration in the Private Security Training Network online course Introduction to Private
 						Investigation:
 					</span>
-					<span *ngIf="requirement.value == 'c'">
+					<span *ngIf="requirementCode.value == privateInvestigatorRequirementCodes.KnowledgeAndExperience">
 						Upload document(s) providing proof of relevant knowledge and experience:
 					</span>
 				</div>
@@ -102,7 +111,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 						>This is required</mat-error
 					>
 				</div>
-				<!-- <div class="row" *ngIf="requirement.value == 'b'">
+				<!-- <div class="row" *ngIf="requirementCode.value == 'b'">
 										<div class="col-lg-4 col-md-12 col-sm-12">
 											<mat-form-field>
 												<mat-label>Document Expiry Date</mat-label>
@@ -127,12 +136,18 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 					<div class="fs-5 mb-2">Training:</div>
 					You must meet one of the following training requirements:
 
-					<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="training">
-						<mat-radio-button class="radio-label" value="a">
+					<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="trainingCode">
+						<mat-radio-button
+							class="radio-label"
+							[value]="privateInvestigatorTrainingCodes.CompleteRecognizedTrainingCourse"
+						>
 							You must have completed a recognized training course
 						</mat-radio-button>
 						<mat-divider class="my-2"></mat-divider>
-						<mat-radio-button class="radio-label" value="b">
+						<mat-radio-button
+							class="radio-label"
+							[value]="privateInvestigatorTrainingCodes.CompleteOtherCoursesOrKnowledge"
+						>
 							You must provide proof of completion of courses or knowledge in the areas of:
 							<ul>
 								<li>Criminal law</li>
@@ -150,35 +165,37 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 					<mat-error
 						class="mat-option-error"
 						*ngIf="
-							(form.get('training')?.dirty || form.get('training')?.touched) &&
-							form.get('training')?.invalid &&
-							form.get('training')?.hasError('required')
+							(form.get('trainingCode')?.dirty || form.get('trainingCode')?.touched) &&
+							form.get('trainingCode')?.invalid &&
+							form.get('trainingCode')?.hasError('required')
 						"
 						>This is required</mat-error
 					>
 				</div>
 			</div>
 
-			<div *ngIf="training.value" @showHideTriggerSlideAnimation>
+			<div *ngIf="trainingCode.value" @showHideTriggerSlideAnimation>
 				<div class="my-2">
 					<div class="text-minor-heading mb-2">
-						<span *ngIf="training.value == 'a'">Upload a copy of your course certificate:</span>
-						<span *ngIf="training.value == 'b'"
+						<span *ngIf="trainingCode.value == privateInvestigatorTrainingCodes.CompleteRecognizedTrainingCourse">
+							Upload a copy of your course certificate:
+						</span>
+						<span *ngIf="trainingCode.value == privateInvestigatorTrainingCodes.CompleteOtherCoursesOrKnowledge"
 							>Upload document(s) providing proof of course completion or equivalent knowledge:</span
 						>
 					</div>
 					<app-file-upload
 						[maxNumberOfFiles]="10"
-						#trainingattachmentsRef
-						[files]="trainingattachments.value"
+						#trainingAttachmentsRef
+						[files]="trainingAttachments.value"
 						(filesChanged)="onTrainingFilesChanged()"
 					></app-file-upload>
 					<mat-error
 						class="mat-option-error"
 						*ngIf="
-							(form.get('trainingattachments')?.dirty || form.get('trainingattachments')?.touched) &&
-							form.get('trainingattachments')?.invalid &&
-							form.get('trainingattachments')?.hasError('required')
+							(form.get('trainingAttachments')?.dirty || form.get('trainingAttachments')?.touched) &&
+							form.get('trainingAttachments')?.invalid &&
+							form.get('trainingAttachments')?.hasError('required')
 						"
 						>This is required</mat-error
 					>
@@ -231,17 +248,17 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 					<div class="text-minor-heading mb-2">Upload a copy of your course certificate:</div>
 					<app-file-upload
 						[maxNumberOfFiles]="10"
-						#fireinvestigatorcertificateattachmentsRef
-						[files]="fireinvestigatorcertificateattachments.value"
+						#fireCourseCertificateAttachmentsRef
+						[files]="fireCourseCertificateAttachments.value"
 						(filesChanged)="onFireCertFilesChanged()"
 					></app-file-upload>
 					<mat-error
 						class="mat-option-error"
 						*ngIf="
-							(form.get('fireinvestigatorcertificateattachments')?.dirty ||
-								form.get('fireinvestigatorcertificateattachments')?.touched) &&
-							form.get('fireinvestigatorcertificateattachments')?.invalid &&
-							form.get('fireinvestigatorcertificateattachments')?.hasError('required')
+							(form.get('fireCourseCertificateAttachments')?.dirty ||
+								form.get('fireCourseCertificateAttachments')?.touched) &&
+							form.get('fireCourseCertificateAttachments')?.invalid &&
+							form.get('fireCourseCertificateAttachments')?.hasError('required')
 						"
 						>This is required</mat-error
 					>
@@ -251,17 +268,17 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 					<div class="text-minor-heading mb-2">Upload a verification letter:</div>
 					<app-file-upload
 						[maxNumberOfFiles]="10"
-						#fireinvestigatorletterattachmentsRef
-						[files]="fireinvestigatorletterattachments.value"
+						#fireVerificationLetterAttachmentsRef
+						[files]="fireVerificationLetterAttachments.value"
 						(filesChanged)="onFireLetterFilesChanged()"
 					></app-file-upload>
 					<mat-error
 						class="mat-option-error"
 						*ngIf="
-							(form.get('fireinvestigatorletterattachments')?.dirty ||
-								form.get('fireinvestigatorletterattachments')?.touched) &&
-							form.get('fireinvestigatorletterattachments')?.invalid &&
-							form.get('fireinvestigatorletterattachments')?.hasError('required')
+							(form.get('fireVerificationLetterAttachments')?.dirty ||
+								form.get('fireVerificationLetterAttachments')?.touched) &&
+							form.get('fireVerificationLetterAttachments')?.invalid &&
+							form.get('fireVerificationLetterAttachments')?.hasError('required')
 						"
 						>This is required</mat-error
 					>
@@ -278,11 +295,13 @@ export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, Lice
 	title = '';
 
 	booleanTypeCodes = BooleanTypeCode;
+	privateInvestigatorRequirementCodes = PrivateInvestigatorRequirementCode;
+	privateInvestigatorTrainingCodes = PrivateInvestigatorTrainingCode;
 
 	@ViewChild('attachmentsRef') fileUploadComponent1!: FileUploadComponent;
-	@ViewChild('trainingattachmentsRef') fileUploadComponent2!: FileUploadComponent;
-	@ViewChild('fireinvestigatorcertificateattachmentsRef') fileUploadComponent3!: FileUploadComponent;
-	@ViewChild('fireinvestigatorletterattachmentsRef') fileUploadComponent4!: FileUploadComponent;
+	@ViewChild('trainingAttachmentsRef') fileUploadComponent2!: FileUploadComponent;
+	@ViewChild('fireCourseCertificateAttachmentsRef') fileUploadComponent3!: FileUploadComponent;
+	@ViewChild('fireVerificationLetterAttachmentsRef') fileUploadComponent4!: FileUploadComponent;
 
 	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
 
@@ -313,7 +332,7 @@ export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, Lice
 			this.fileUploadComponent2?.files && this.fileUploadComponent2?.files.length > 0
 				? this.fileUploadComponent2.files
 				: [];
-		this.form.controls['trainingattachments'].setValue(attachments);
+		this.form.controls['trainingAttachments'].setValue(attachments);
 	}
 
 	onFireCertFilesChanged(): void {
@@ -321,7 +340,7 @@ export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, Lice
 			this.fileUploadComponent3?.files && this.fileUploadComponent3?.files.length > 0
 				? this.fileUploadComponent3.files
 				: [];
-		this.form.controls['fireinvestigatorcertificateattachments'].setValue(attachments);
+		this.form.controls['fireCourseCertificateAttachments'].setValue(attachments);
 	}
 
 	onFireLetterFilesChanged(): void {
@@ -329,31 +348,31 @@ export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, Lice
 			this.fileUploadComponent4?.files && this.fileUploadComponent4?.files.length > 0
 				? this.fileUploadComponent4.files
 				: [];
-		this.form.controls['fireinvestigatorletterattachments'].setValue(attachments);
+		this.form.controls['fireVerificationLetterAttachments'].setValue(attachments);
 	}
 
-	public get requirement(): FormControl {
-		return this.form.get('requirement') as FormControl;
+	public get requirementCode(): FormControl {
+		return this.form.get('requirementCode') as FormControl;
 	}
 
 	public get attachments(): FormControl {
 		return this.form.get('attachments') as FormControl;
 	}
 
-	public get trainingattachments(): FormControl {
-		return this.form.get('trainingattachments') as FormControl;
+	public get trainingAttachments(): FormControl {
+		return this.form.get('trainingAttachments') as FormControl;
 	}
 
-	public get fireinvestigatorcertificateattachments(): FormControl {
-		return this.form.get('fireinvestigatorcertificateattachments') as FormControl;
+	public get fireCourseCertificateAttachments(): FormControl {
+		return this.form.get('fireCourseCertificateAttachments') as FormControl;
 	}
 
-	public get fireinvestigatorletterattachments(): FormControl {
-		return this.form.get('fireinvestigatorletterattachments') as FormControl;
+	public get fireVerificationLetterAttachments(): FormControl {
+		return this.form.get('fireVerificationLetterAttachments') as FormControl;
 	}
 
-	public get training(): FormControl {
-		return this.form.get('training') as FormControl;
+	public get trainingCode(): FormControl {
+		return this.form.get('trainingCode') as FormControl;
 	}
 
 	public get addFireInvestigator(): FormControl {

@@ -10,10 +10,17 @@ import {
 	GovernmentIssuedPhotoIdCode,
 	HairColourCode,
 	HeightUnitCode,
+	LocksmithRequirementCode,
 	PoliceOfficerRoleCode,
+	PrivateInvestigatorRequirementCode,
+	PrivateInvestigatorSupRequirementCode,
+	PrivateInvestigatorTrainingCode,
 	ProofOfAbilityToWorkInCanadaCode,
 	ProofOfCanadianCitizenshipCode,
 	RestraintDocumentCode,
+	SecurityAlarmInstallerRequirementCode,
+	SecurityConsultantRequirementCode,
+	SecurityGuardRequirementCode,
 	SelectOptions,
 	SwlApplicationTypeCode,
 	SwlTermCode,
@@ -66,46 +73,46 @@ export class LicenceBackendModel {
 	licenceCategoryyClosedCircuitTelevisionInstaller?: {};
 	licenceCategoryElectronicLockingDeviceInstaller?: {};
 	licenceCategoryFireInvestigator?: {
-		fireinvestigatorcertificateattachments?: Array<File>;
-		fireinvestigatorletterattachments?: Array<File>;
+		fireCourseCertificateAttachments?: Array<File>;
+		fireVerificationLetterAttachments?: Array<File>;
 	};
 	licenceCategoryLocksmithSup?: {};
 	licenceCategoryLocksmith?: {
-		requirement?: string | null;
+		requirementCode?: string | null;
 		attachments?: Array<File>;
 	};
 	licenceCategoryPrivateInvestigatorSup?: {
-		requirement?: string | null;
+		requirementCode?: string | null;
 		// documentExpiryDate?: string | null;
 		attachments?: Array<File>;
-		trainingattachments?: Array<File>;
+		trainingAttachments?: Array<File>;
 	};
 	licenceCategoryPrivateInvestigator?: {
-		requirement?: string | null;
-		training?: string | null;
+		requirementCode?: string | null;
+		trainingCode?: string | null;
 		// documentExpiryDate?: string | null;
 		attachments?: Array<File>;
-		trainingattachments?: Array<File>;
-		// fireinvestigatorcertificateattachments?: Array<File>;
-		// fireinvestigatorletterattachments?: Array<File>;
+		trainingAttachments?: Array<File>;
+		// fireCourseCertificateAttachments?: Array<File>;
+		// fireVerificationLetterAttachments?: Array<File>;
 		// addFireInvestigator?: BooleanTypeCode | null;
 	};
 	licenceCategorySecurityAlarmInstallerSup?: {};
 	licenceCategorySecurityAlarmInstaller?: {
-		requirement?: string | null;
+		requirementCode?: string | null;
 		attachments?: Array<File>;
 	};
 	licenceCategorySecurityAlarmMonitor?: {};
 	licenceCategorySecurityAlarmResponse?: {};
 	licenceCategorySecurityAlarmSales?: {};
 	licenceCategorySecurityConsultant?: {
-		requirement?: string | null;
+		requirementCode?: string | null;
 		attachments?: Array<File>;
-		resumeattachments?: Array<File>;
+		resumeAttachments?: Array<File>;
 	};
 	licenceCategorySecurityGuardSup?: {};
 	licenceCategorySecurityGuard?: {
-		requirement?: string | null;
+		requirementCode?: string | null;
 		attachments?: Array<File>;
 	};
 	useDogsOrRestraints: string | null = null;
@@ -321,17 +328,17 @@ export class LicenceApplicationService {
 	categoryFireInvestigatorFormGroup: FormGroup = this.formBuilder.group(
 		{
 			isInclude: new FormControl(false),
-			fireinvestigatorcertificateattachments: new FormControl([]),
-			fireinvestigatorletterattachments: new FormControl([]),
+			fireCourseCertificateAttachments: new FormControl([]),
+			fireVerificationLetterAttachments: new FormControl([]),
 		},
 		{
 			validators: [
 				FormGroupValidators.conditionalRequiredValidator(
-					'fireinvestigatorcertificateattachments',
+					'fireCourseCertificateAttachments',
 					(form) => form.get('isInclude')?.value
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'fireinvestigatorletterattachments',
+					'fireVerificationLetterAttachments',
 					(form) => form.get('isInclude')?.value
 				),
 			],
@@ -340,12 +347,12 @@ export class LicenceApplicationService {
 	categoryLocksmithFormGroup: FormGroup = this.formBuilder.group(
 		{
 			isInclude: new FormControl(false),
-			requirement: new FormControl(''),
+			requirementCode: new FormControl(''),
 			attachments: new FormControl([]),
 		},
 		{
 			validators: [
-				FormGroupValidators.conditionalRequiredValidator('requirement', (form) => form.get('isInclude')?.value),
+				FormGroupValidators.conditionalRequiredValidator('requirementCode', (form) => form.get('isInclude')?.value),
 				FormGroupValidators.conditionalDefaultRequiredValidator('attachments', (form) => form.get('isInclude')?.value),
 			],
 		}
@@ -353,16 +360,16 @@ export class LicenceApplicationService {
 	categoryPrivateInvestigatorSupFormGroup: FormGroup = this.formBuilder.group(
 		{
 			isInclude: new FormControl(false),
-			requirement: new FormControl(''),
+			requirementCode: new FormControl(''),
 			attachments: new FormControl([]),
-			trainingattachments: new FormControl([]),
+			trainingAttachments: new FormControl([]),
 		},
 		{
 			validators: [
-				FormGroupValidators.conditionalRequiredValidator('requirement', (form) => form.get('isInclude')?.value),
+				FormGroupValidators.conditionalRequiredValidator('requirementCode', (form) => form.get('isInclude')?.value),
 				FormGroupValidators.conditionalDefaultRequiredValidator('attachments', (form) => form.get('isInclude')?.value),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'trainingattachments',
+					'trainingAttachments',
 					(form) => form.get('isInclude')?.value
 				),
 			],
@@ -371,29 +378,29 @@ export class LicenceApplicationService {
 	categoryPrivateInvestigatorFormGroup: FormGroup = this.formBuilder.group(
 		{
 			isInclude: new FormControl(false),
-			requirement: new FormControl(''),
-			training: new FormControl(''),
+			requirementCode: new FormControl(''),
+			trainingCode: new FormControl(''),
 			attachments: new FormControl([]),
-			trainingattachments: new FormControl([]),
-			// fireinvestigatorcertificateattachments: new FormControl([]),
-			// fireinvestigatorletterattachments: new FormControl([]),
+			trainingAttachments: new FormControl([]),
+			// fireCourseCertificateAttachments: new FormControl([]),
+			// fireVerificationLetterAttachments: new FormControl([]),
 			// addFireInvestigator: new FormControl(''),
 		},
 		{
 			validators: [
-				FormGroupValidators.conditionalRequiredValidator('requirement', (form) => form.get('isInclude')?.value),
-				FormGroupValidators.conditionalRequiredValidator('training', (form) => form.get('isInclude')?.value),
+				FormGroupValidators.conditionalRequiredValidator('requirementCode', (form) => form.get('isInclude')?.value),
+				FormGroupValidators.conditionalRequiredValidator('trainingCode', (form) => form.get('isInclude')?.value),
 				FormGroupValidators.conditionalDefaultRequiredValidator('attachments', (form) => form.get('isInclude')?.value),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'trainingattachments',
+					'trainingAttachments',
 					(form) => form.get('isInclude')?.value
 				),
 				// FormGroupValidators.conditionalDefaultRequiredValidator(
-				// 	'fireinvestigatorcertificateattachments',
+				// 	'fireCourseCertificateAttachments',
 				// 	(form) => form.get('isInclude')?.value && form.get('addFireInvestigator')?.value == this.booleanTypeCodes.Yes
 				// ),
 				// FormGroupValidators.conditionalDefaultRequiredValidator(
-				// 	'fireinvestigatorletterattachments',
+				// 	'fireVerificationLetterAttachments',
 				// 	(form) => form.get('isInclude')?.value && form.get('addFireInvestigator')?.value == this.booleanTypeCodes.Yes
 				// ),
 			],
@@ -402,12 +409,12 @@ export class LicenceApplicationService {
 	categorySecurityAlarmInstallerFormGroup: FormGroup = this.formBuilder.group(
 		{
 			isInclude: new FormControl(false),
-			requirement: new FormControl(''),
+			requirementCode: new FormControl(''),
 			attachments: new FormControl([]),
 		},
 		{
 			validators: [
-				FormGroupValidators.conditionalRequiredValidator('requirement', (form) => form.get('isInclude')?.value),
+				FormGroupValidators.conditionalRequiredValidator('requirementCode', (form) => form.get('isInclude')?.value),
 				FormGroupValidators.conditionalDefaultRequiredValidator('attachments', (form) => form.get('isInclude')?.value),
 			],
 		}
@@ -415,16 +422,16 @@ export class LicenceApplicationService {
 	categorySecurityConsultantFormGroup: FormGroup = this.formBuilder.group(
 		{
 			isInclude: new FormControl(false),
-			requirement: new FormControl(''),
+			requirementCode: new FormControl(''),
 			attachments: new FormControl([]),
-			resumeattachments: new FormControl([]),
+			resumeAttachments: new FormControl([]),
 		},
 		{
 			validators: [
-				FormGroupValidators.conditionalRequiredValidator('requirement', (form) => form.get('isInclude')?.value),
+				FormGroupValidators.conditionalRequiredValidator('requirementCode', (form) => form.get('isInclude')?.value),
 				FormGroupValidators.conditionalDefaultRequiredValidator('attachments', (form) => form.get('isInclude')?.value),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'resumeattachments',
+					'resumeAttachments',
 					(form) => form.get('isInclude')?.value
 				),
 			],
@@ -433,12 +440,12 @@ export class LicenceApplicationService {
 	categorySecurityGuardFormGroup: FormGroup = this.formBuilder.group(
 		{
 			isInclude: new FormControl(false),
-			requirement: new FormControl(''),
+			requirementCode: new FormControl(''),
 			attachments: new FormControl([]),
 		},
 		{
 			validators: [
-				FormGroupValidators.conditionalRequiredValidator('requirement', (form) => form.get('isInclude')?.value),
+				FormGroupValidators.conditionalRequiredValidator('requirementCode', (form) => form.get('isInclude')?.value),
 				FormGroupValidators.conditionalDefaultRequiredValidator('attachments', (form) => form.get('isInclude')?.value),
 			],
 		}
@@ -644,17 +651,13 @@ export class LicenceApplicationService {
 		// showStepCriminalHistory: new FormControl(true),
 		// showStepFingerprints: new FormControl(true),
 
-		soleProprietorFormGroup: this.soleProprietorFormGroup,
 		licenceTypeFormGroup: this.licenceTypeFormGroup,
 		applicationTypeFormGroup: this.applicationTypeFormGroup,
+		soleProprietorFormGroup: this.soleProprietorFormGroup,
 		personalInformationFormGroup: this.personalInformationFormGroup,
 		expiredLicenceFormGroup: this.expiredLicenceFormGroup,
 		licenceTermFormGroup: this.licenceTermFormGroup,
 		dogsOrRestraintsFormGroup: this.dogsOrRestraintsFormGroup,
-		policeBackgroundFormGroup: this.policeBackgroundFormGroup,
-		mentalHealthConditionsFormGroup: this.mentalHealthConditionsFormGroup,
-		criminalHistoryFormGroup: this.criminalHistoryFormGroup,
-		proofOfFingerprintFormGroup: this.proofOfFingerprintFormGroup,
 
 		categoryArmouredCarGuardFormGroup: this.categoryArmouredCarGuardFormGroup,
 		categoryBodyArmourSalesFormGroup: this.categoryBodyArmourSalesFormGroup,
@@ -674,15 +677,20 @@ export class LicenceApplicationService {
 		categorySecurityGuardFormGroup: this.categorySecurityGuardFormGroup,
 		categorySecurityGuardSupFormGroup: this.categorySecurityGuardSupFormGroup,
 
+		policeBackgroundFormGroup: this.policeBackgroundFormGroup,
+		mentalHealthConditionsFormGroup: this.mentalHealthConditionsFormGroup,
+		criminalHistoryFormGroup: this.criminalHistoryFormGroup,
+		proofOfFingerprintFormGroup: this.proofOfFingerprintFormGroup,
+
 		aliasesFormGroup: this.aliasesFormGroup,
 		citizenshipFormGroup: this.citizenshipFormGroup,
 		govIssuedIdFormGroup: this.govIssuedIdFormGroup,
 		bcDriversLicenceFormGroup: this.bcDriversLicenceFormGroup,
 		characteristicsFormGroup: this.characteristicsFormGroup,
 		photographOfYourselfFormGroup: this.photographOfYourselfFormGroup,
-		contactInformationFormGroup: this.contactInformationFormGroup,
 		residentialAddressFormGroup: this.residentialAddressFormGroup,
 		mailingAddressFormGroup: this.mailingAddressFormGroup,
+		contactInformationFormGroup: this.contactInformationFormGroup,
 	});
 
 	constructor(
@@ -921,12 +929,12 @@ export class LicenceApplicationService {
 					},
 					categoryFireInvestigatorFormGroup: {
 						isInclude: false,
-						fireinvestigatorcertificateattachments: [myFile],
-						fireinvestigatorletterattachments: [myFile],
+						fireCourseCertificateAttachments: [myFile],
+						fireVerificationLetterAttachments: [myFile],
 					},
 					categoryLocksmithFormGroup: {
 						isInclude: false,
-						requirement: 'a',
+						requirementCode: LocksmithRequirementCode.ExperienceAndApprenticeship,
 						attachments: [myFile],
 					},
 					categoryLocksmithSupFormGroup: {
@@ -935,23 +943,23 @@ export class LicenceApplicationService {
 					},
 					categoryPrivateInvestigatorSupFormGroup: {
 						isInclude: false,
-						requirement: 'a',
+						requirementCode: PrivateInvestigatorSupRequirementCode.PrivateSecurityTrainingNetworkCompletion,
 						attachments: [myFile],
-						trainingattachments: [myFile],
+						trainingAttachments: [myFile],
 					},
 					categoryPrivateInvestigatorFormGroup: {
 						isInclude: false,
-						requirement: 'a',
-						training: 'a',
+						requirementCode: PrivateInvestigatorRequirementCode.ExperienceAndCourses,
+						trainingCode: PrivateInvestigatorTrainingCode.CompleteOtherCoursesOrKnowledge,
 						attachments: [myFile],
-						trainingattachments: [myFile],
-						fireinvestigatorcertificateattachments: [myFile],
-						fireinvestigatorletterattachments: [myFile],
+						trainingAttachments: [myFile],
+						fireCourseCertificateAttachments: [myFile],
+						fireVerificationLetterAttachments: [myFile],
 						addFireInvestigator: BooleanTypeCode.Yes,
 					},
 					categorySecurityAlarmInstallerFormGroup: {
 						isInclude: true,
-						requirement: 'a',
+						requirementCode: SecurityAlarmInstallerRequirementCode.ExperienceOrTrainingEquivalent,
 						attachments: [myFile],
 					},
 					categorySecurityAlarmInstallerSupFormGroup: {
@@ -972,14 +980,14 @@ export class LicenceApplicationService {
 					},
 					categorySecurityConsultantFormGroup: {
 						isInclude: false,
-						requirement: 'a',
+						requirementCode: SecurityConsultantRequirementCode.RecommendationLetters,
 						attachments: [myFile],
-						resumeattachments: [myFile],
+						resumeAttachments: [myFile],
 					},
 					categorySecurityGuardFormGroup: {
 						isInclude: false,
 						attachments: [myFile],
-						requirement: 'a',
+						requirementCode: SecurityGuardRequirementCode.BasicSecurityTrainingCertificate,
 					},
 					categorySecurityGuardSupFormGroup: {
 						isInclude: false,
@@ -1056,7 +1064,7 @@ export class LicenceApplicationService {
 						isPoliceOrPeaceOfficer: BooleanTypeCode.No,
 					},
 					mentalHealthConditionsFormGroup: {
-						isTreatedForMHC: BooleanTypeCode.No,
+						// isTreatedForMHC: BooleanTypeCode.No,
 					},
 					criminalHistoryFormGroup: {
 						hasCriminalHistory: BooleanTypeCode.No,
@@ -1086,7 +1094,7 @@ export class LicenceApplicationService {
 						eyeColourCode: EyeColourCode.Blue,
 						height: '100',
 						heightUnitCode: HeightUnitCode.Inches,
-						weight: '75',
+						// weight: '75',
 						weightUnitCode: WeightUnitCode.Kilograms,
 					},
 					photographOfYourselfFormGroup: {
@@ -1108,7 +1116,7 @@ export class LicenceApplicationService {
 					},
 					// categorySecurityAlarmInstallerFormGroup: {
 					// 	isInclude: true,
-					// 	requirement: 'a',
+					// 	requirementCode: 'a',
 					// 	attachments: [myFile],
 					// },
 					categorySecurityAlarmResponseFormGroup: {
@@ -1147,6 +1155,58 @@ export class LicenceApplicationService {
 				observer.next(defaults);
 			}, 1000);
 		});
+	}
+
+	isStep1Complete(): boolean {
+		return (
+			this.licenceTypeFormGroup.valid &&
+			this.applicationTypeFormGroup.valid &&
+			this.soleProprietorFormGroup.valid &&
+			this.personalInformationFormGroup.valid &&
+			this.expiredLicenceFormGroup.valid &&
+			this.licenceTermFormGroup.valid &&
+			this.dogsOrRestraintsFormGroup.valid &&
+			this.categoryArmouredCarGuardFormGroup.valid &&
+			this.categoryBodyArmourSalesFormGroup.valid &&
+			this.categoryClosedCircuitTelevisionInstallerFormGroup.valid &&
+			this.categoryElectronicLockingDeviceInstallerFormGroup.valid &&
+			this.categoryFireInvestigatorFormGroup.valid &&
+			this.categoryLocksmithFormGroup.valid &&
+			this.categoryLocksmithSupFormGroup.valid &&
+			this.categoryPrivateInvestigatorFormGroup.valid &&
+			this.categoryPrivateInvestigatorSupFormGroup.valid &&
+			this.categorySecurityAlarmInstallerFormGroup.valid &&
+			this.categorySecurityAlarmInstallerSupFormGroup.valid &&
+			this.categorySecurityConsultantFormGroup.valid &&
+			this.categorySecurityAlarmMonitorFormGroup.valid &&
+			this.categorySecurityAlarmResponseFormGroup.valid &&
+			this.categorySecurityAlarmSalesFormGroup.valid &&
+			this.categorySecurityGuardFormGroup.valid &&
+			this.categorySecurityGuardSupFormGroup.valid
+		);
+	}
+
+	isStep2Complete(): boolean {
+		return (
+			this.policeBackgroundFormGroup.valid &&
+			this.mentalHealthConditionsFormGroup.valid &&
+			this.criminalHistoryFormGroup.valid &&
+			this.proofOfFingerprintFormGroup.valid
+		);
+	}
+
+	isStep3Complete(): boolean {
+		return (
+			this.aliasesFormGroup.valid &&
+			this.citizenshipFormGroup.valid &&
+			this.govIssuedIdFormGroup.valid &&
+			this.bcDriversLicenceFormGroup.valid &&
+			this.characteristicsFormGroup.valid &&
+			this.photographOfYourselfFormGroup.valid &&
+			this.residentialAddressFormGroup.valid &&
+			this.mailingAddressFormGroup.valid &&
+			this.contactInformationFormGroup.valid
+		);
 	}
 
 	// loadLicenceRenewal(): Observable<any> {

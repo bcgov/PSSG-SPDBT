@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
-import { SwlCategoryTypeCode } from 'src/app/core/code-types/model-desc.models';
+import { SecurityAlarmInstallerRequirementCode, SwlCategoryTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
@@ -17,29 +17,41 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 					To qualify for a security alarm installer security worker licence, you must meet one of the following
 					experience requirements:
 
-					<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="requirement">
-						<mat-radio-button class="radio-label" value="a"> Trades Qualification Certificate </mat-radio-button>
+					<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="requirementCode">
+						<mat-radio-button
+							class="radio-label"
+							[value]="securityAlarmInstallerRequirementCodes.TradesQualificationCertificate"
+						>
+							Trades Qualification Certificate
+						</mat-radio-button>
 						<mat-divider class="my-2"></mat-divider>
-						<mat-radio-button class="radio-label" value="b">
+						<mat-radio-button
+							class="radio-label"
+							[value]="securityAlarmInstallerRequirementCodes.ExperienceOrTrainingEquivalent"
+						>
 							Experience or training equivalent to the Trades Qualification Certificate
 						</mat-radio-button>
 					</mat-radio-group>
 					<mat-error
 						class="mat-option-error"
 						*ngIf="
-							(form.get('requirement')?.dirty || form.get('requirement')?.touched) &&
-							form.get('requirement')?.invalid &&
-							form.get('requirement')?.hasError('required')
+							(form.get('requirementCode')?.dirty || form.get('requirementCode')?.touched) &&
+							form.get('requirementCode')?.invalid &&
+							form.get('requirementCode')?.hasError('required')
 						"
 						>This is required</mat-error
 					>
 				</div>
 			</div>
 
-			<div *ngIf="requirement.value" @showHideTriggerSlideAnimation>
+			<div *ngIf="requirementCode.value" @showHideTriggerSlideAnimation>
 				<div class="text-minor-heading mb-2">
-					<span *ngIf="requirement.value == 'a'"> Upload a copy of your certificate: </span>
-					<span *ngIf="requirement.value == 'b'"> Upload document(s) providing proof of equivalent training: </span>
+					<span *ngIf="requirementCode.value == securityAlarmInstallerRequirementCodes.TradesQualificationCertificate">
+						Upload a copy of your certificate:
+					</span>
+					<span *ngIf="requirementCode.value == securityAlarmInstallerRequirementCodes.ExperienceOrTrainingEquivalent">
+						Upload document(s) providing proof of equivalent training:
+					</span>
 				</div>
 
 				<div class="my-2">
@@ -68,6 +80,8 @@ export class LicenceCategorySecurityAlarmInstallerComponent implements OnInit, L
 	form: FormGroup = this.licenceApplicationService.categorySecurityAlarmInstallerFormGroup;
 	title = '';
 
+	securityAlarmInstallerRequirementCodes = SecurityAlarmInstallerRequirementCode;
+
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
 	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
@@ -91,8 +105,8 @@ export class LicenceCategorySecurityAlarmInstallerComponent implements OnInit, L
 		this.form.controls['attachments'].setValue(attachments);
 	}
 
-	public get requirement(): FormControl {
-		return this.form.get('requirement') as FormControl;
+	public get requirementCode(): FormControl {
+		return this.form.get('requirementCode') as FormControl;
 	}
 
 	public get attachments(): FormControl {

@@ -748,12 +748,12 @@ export class SummaryReviewComponent implements OnInit {
 
 	get categoryFireInvestigatorCertificateAttachments(): FormControl {
 		return this.form.controls['categoryFireInvestigatorFormGroup'].get(
-			'fireinvestigatorcertificateattachments'
+			'fireCourseCertificateAttachments'
 		) as FormControl;
 	}
 	get categoryFireInvestigatorLetterAttachments(): FormControl {
 		return this.form.controls['categoryFireInvestigatorFormGroup'].get(
-			'fireinvestigatorletterattachments'
+			'fireVerificationLetterAttachments'
 		) as FormControl;
 	}
 	get categoryLocksmithAttachments(): FormControl {
@@ -766,7 +766,7 @@ export class SummaryReviewComponent implements OnInit {
 		return this.form.controls['categorySecurityConsultantFormGroup'].get('attachments') as FormControl;
 	}
 	get categorySecurityConsultantResumeAttachments(): FormControl {
-		return this.form.controls['categorySecurityConsultantFormGroup'].get('resumeattachments') as FormControl;
+		return this.form.controls['categorySecurityConsultantFormGroup'].get('resumeAttachments') as FormControl;
 	}
 	get categorySecurityAlarmInstallerAttachments(): FormControl {
 		return this.form.controls['categorySecurityAlarmInstallerFormGroup'].get('attachments') as FormControl;
@@ -775,23 +775,23 @@ export class SummaryReviewComponent implements OnInit {
 		return this.form.controls['categoryPrivateInvestigatorFormGroup'].get('attachments') as FormControl;
 	}
 	get categoryPrivateInvestigatorTrainingAttachments(): FormControl {
-		return this.form.controls['categoryPrivateInvestigatorFormGroup'].get('trainingattachments') as FormControl;
+		return this.form.controls['categoryPrivateInvestigatorFormGroup'].get('trainingAttachments') as FormControl;
 	}
 	get categoryPrivateInvestigatorFireCertificateAttachments(): FormControl {
 		return this.form.controls['categoryPrivateInvestigatorFormGroup'].get(
-			'fireinvestigatorcertificateattachments'
+			'fireCourseCertificateAttachments'
 		) as FormControl;
 	}
 	get categoryPrivateInvestigatorFireLetterAttachments(): FormControl {
 		return this.form.controls['categoryPrivateInvestigatorFormGroup'].get(
-			'fireinvestigatorletterattachments'
+			'fireVerificationLetterAttachments'
 		) as FormControl;
 	}
 	get categoryPrivateInvestigatorUnderSupervisionAttachments(): FormControl {
 		return this.form.controls['categoryPrivateInvestigatorSupFormGroup'].get('attachments') as FormControl;
 	}
 	get categoryPrivateInvestigatorUnderSupervisionTrainingAttachments(): FormControl {
-		return this.form.controls['categoryPrivateInvestigatorSupFormGroup'].get('trainingattachments') as FormControl;
+		return this.form.controls['categoryPrivateInvestigatorSupFormGroup'].get('trainingAttachments') as FormControl;
 	}
 
 	get licenceTermCode(): FormControl {

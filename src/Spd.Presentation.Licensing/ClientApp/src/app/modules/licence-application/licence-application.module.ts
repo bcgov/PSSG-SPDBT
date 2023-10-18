@@ -1,12 +1,13 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { ApplicationTypeComponent } from './components/application-type.component';
 import { ApplicationsInProgressComponent } from './components/applications-in-progress.component';
 import { LicencePaymentErrorComponent } from './components/licence-payment-error.component';
 import { LicencePaymentFailComponent } from './components/licence-payment-fail.component';
 import { LicencePaymentManualComponent } from './components/licence-payment-manual.component';
 import { LicencePaymentSuccessComponent } from './components/licence-payment-success.component';
 import { LicenceSelectionComponent } from './components/licence-selection.component';
-import { ApplicationTypeComponent } from './components/application-type.component';
+import { LicenceWizardUpdateComponent } from './components/licence-wizard-update.component';
 import { LicenceWizardComponent } from './components/licence-wizard.component';
 import { LoginSelectionComponent } from './components/login-selection.component';
 import { LicenceApplicationRoutingModule } from './licence-application-routing.module';
@@ -45,10 +46,6 @@ import { LicenceCategoryComponent } from './step-components/licence-category.com
 import { LicenceExpiredComponent } from './step-components/licence-expired.component';
 import { LicenceTermComponent } from './step-components/licence-term.component';
 import { MailingAddressComponent } from './step-components/mailing-address.component';
-import { StepBackgroundComponent } from './step-components/main-steps/step-background.component';
-import { StepIdentificationComponent } from './step-components/main-steps/step-identification.component';
-import { StepLicenceSelectionComponent } from './step-components/main-steps/step-licence-selection.component';
-import { StepReviewComponent } from './step-components/main-steps/step-review.component';
 import { MentalHealthConditionsComponent } from './step-components/mental-health-conditions.component';
 import { PersonalInformationComponent } from './step-components/personal-information.component';
 import { PhotoComponent } from './step-components/photo.component';
@@ -56,6 +53,13 @@ import { PoliceBackgroundComponent } from './step-components/police-background.c
 import { ResidentialAddressComponent } from './step-components/residential-address.component';
 import { SoleProprietorComponent } from './step-components/sole-proprietor.component';
 import { SummaryReviewComponent } from './step-components/summary-review.component';
+import { StepBackgroundComponent } from './step-components/wizard-steps/step-background.component';
+import { StepIdentificationComponent } from './step-components/wizard-steps/step-identification.component';
+import { StepLicenceSelectionComponent } from './step-components/wizard-steps/step-licence-selection.component';
+import { StepReviewComponent } from './step-components/wizard-steps/step-review.component';
+import { StepLicenceUpdatesComponent } from './step-components/wizard-update-steps/step-licence-updates.component';
+import { StepConfirmMailingAddressComponent } from './step-components/wizard-update-steps/step-confirm-mailing-address.component';
+import { StepConfirmUpdatesComponent } from './step-components/wizard-update-steps/step-confirm-updates.component';
 
 @NgModule({
 	declarations: [
@@ -115,6 +119,10 @@ import { SummaryReviewComponent } from './step-components/summary-review.compone
 		LoginSelectionComponent,
 		LicenceWizardComponent,
 		BackgroundInfoComponent,
+		LicenceWizardUpdateComponent,
+  StepLicenceUpdatesComponent,
+  StepConfirmMailingAddressComponent,
+  StepConfirmUpdatesComponent,
 	],
 	imports: [SharedModule, LicenceApplicationRoutingModule],
 })
