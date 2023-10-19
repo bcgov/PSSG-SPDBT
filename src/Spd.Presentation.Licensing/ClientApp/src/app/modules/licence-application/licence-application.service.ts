@@ -451,55 +451,50 @@ export class LicenceApplicationService {
 		}
 	);
 
-	dogsOrRestraintsFormGroup: FormGroup = this.formBuilder.group(
+	restraintsFormGroup: FormGroup = this.formBuilder.group(
 		{
-			useDogsOrRestraints: new FormControl('', [FormControlValidators.required]),
-			carryAndUseRetraints: new FormControl(''),
+			carryAndUseRetraints: new FormControl('', [FormControlValidators.required]),
 			carryAndUseRetraintsDocument: new FormControl(''),
-			carryAndUseRetraintsAttachments: new FormControl([]),
-			dogPurposeFormGroup: new FormGroup(
-				{
-					isDogsPurposeProtection: new FormControl(false),
-					isDogsPurposeDetectionDrugs: new FormControl(false),
-					isDogsPurposeDetectionExplosives: new FormControl(false),
-				},
-				FormGroupValidators.atLeastOneCheckboxValidator('useDogsOrRestraints', BooleanTypeCode.Yes)
-			),
-			dogsPurposeDocumentType: new FormControl(''),
-			dogsPurposeAttachments: new FormControl([]),
+			attachments: new FormControl([]),
 		},
 		{
 			validators: [
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'carryAndUseRetraintsDocument',
-					(form) =>
-						form.get('useDogsOrRestraints')?.value == this.booleanTypeCodes.Yes &&
-						form.get('carryAndUseRetraints')?.value
+					(form) => form.get('carryAndUseRetraints')?.value == this.booleanTypeCodes.Yes
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'carryAndUseRetraintsAttachments',
-					(form) =>
-						form.get('useDogsOrRestraints')?.value == this.booleanTypeCodes.Yes &&
-						form.get('carryAndUseRetraints')?.value
+					'attachments',
+					(form) => form.get('carryAndUseRetraints')?.value == this.booleanTypeCodes.Yes
 				),
-				FormGroupValidators.conditionalDefaultRequiredValidator('dogsPurposeDocumentType', (form) => {
-					const dogPurposeFormGroup = form.get('dogPurposeFormGroup') as FormGroup;
-					return (
-						form.get('useDogsOrRestraints')?.value == this.booleanTypeCodes.Yes &&
-						((dogPurposeFormGroup.get('isDogsPurposeProtection') as FormControl).value ||
-							(dogPurposeFormGroup.get('isDogsPurposeDetectionDrugs') as FormControl).value ||
-							(dogPurposeFormGroup.get('isDogsPurposeDetectionExplosives') as FormControl).value)
-					);
-				}),
-				FormGroupValidators.conditionalDefaultRequiredValidator('dogsPurposeAttachments', (form) => {
-					const dogPurposeFormGroup = form.get('dogPurposeFormGroup') as FormGroup;
-					return (
-						form.get('useDogsOrRestraints')?.value == this.booleanTypeCodes.Yes &&
-						((dogPurposeFormGroup.get('isDogsPurposeProtection') as FormControl).value ||
-							(dogPurposeFormGroup.get('isDogsPurposeDetectionDrugs') as FormControl).value ||
-							(dogPurposeFormGroup.get('isDogsPurposeDetectionExplosives') as FormControl).value)
-					);
-				}),
+			],
+		}
+	);
+
+	dogsFormGroup: FormGroup = this.formBuilder.group(
+		{
+			useDogs: new FormControl('', [FormControlValidators.required]),
+			dogsPurposeFormGroup: new FormGroup(
+				{
+					isDogsPurposeProtection: new FormControl(false),
+					isDogsPurposeDetectionDrugs: new FormControl(false),
+					isDogsPurposeDetectionExplosives: new FormControl(false),
+				},
+				FormGroupValidators.atLeastOneCheckboxValidator('useDogs', BooleanTypeCode.Yes)
+			),
+			dogsPurposeDocumentType: new FormControl(''),
+			attachments: new FormControl([]),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'dogsPurposeDocumentType',
+					(form) => form.get('useDogs')?.value == this.booleanTypeCodes.Yes
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'attachments',
+					(form) => form.get('useDogs')?.value == this.booleanTypeCodes.Yes
+				),
 			],
 		}
 	);
@@ -657,7 +652,8 @@ export class LicenceApplicationService {
 		personalInformationFormGroup: this.personalInformationFormGroup,
 		expiredLicenceFormGroup: this.expiredLicenceFormGroup,
 		licenceTermFormGroup: this.licenceTermFormGroup,
-		dogsOrRestraintsFormGroup: this.dogsOrRestraintsFormGroup,
+		restraintsFormGroup: this.restraintsFormGroup,
+		dogsFormGroup: this.dogsFormGroup,
 
 		categoryArmouredCarGuardFormGroup: this.categoryArmouredCarGuardFormGroup,
 		categoryBodyArmourSalesFormGroup: this.categoryBodyArmourSalesFormGroup,
@@ -819,18 +815,20 @@ export class LicenceApplicationService {
 						expiredLicenceNumber: '789',
 						expiryDate: '2002-02-07T00:00:00+00:00',
 					},
-					dogsOrRestraintsFormGroup: {
-						useDogsOrRestraints: BooleanTypeCode.Yes,
-						dogPurposeFormGroup: {
+					restraintsFormGroup: {
+						carryAndUseRetraints: BooleanTypeCode.Yes,
+						carryAndUseRetraintsDocument: RestraintDocumentCode.AdvancedSecurityTrainingCertificate,
+						attachments: [myFile],
+					},
+					dogsFormGroup: {
+						useDogs: BooleanTypeCode.Yes,
+						dogsPurposeFormGroup: {
 							isDogsPurposeProtection: true,
 							isDogsPurposeDetectionDrugs: false,
 							isDogsPurposeDetectionExplosives: true,
 						},
 						dogsPurposeDocumentType: DogDocumentCode.CertificateOfAdvancedSecurityTraining,
-						dogsPurposeAttachments: [myFile],
-						carryAndUseRetraints: true,
-						carryAndUseRetraintsDocument: RestraintDocumentCode.AdvancedSecurityTrainingCertificate,
-						carryAndUseRetraintsAttachments: [myFile],
+						attachments: [myFile],
 					},
 					licenceTermFormGroup: {
 						licenceTermCode: SwlTermCode.ThreeYears,
@@ -958,7 +956,7 @@ export class LicenceApplicationService {
 						addFireInvestigator: BooleanTypeCode.Yes,
 					},
 					categorySecurityAlarmInstallerFormGroup: {
-						isInclude: true,
+						isInclude: false,
 						requirementCode: SecurityAlarmInstallerRequirementCode.ExperienceOrTrainingEquivalent,
 						attachments: [myFile],
 					},
@@ -985,7 +983,7 @@ export class LicenceApplicationService {
 						resumeAttachments: [myFile],
 					},
 					categorySecurityGuardFormGroup: {
-						isInclude: false,
+						isInclude: true,
 						attachments: [myFile],
 						requirementCode: SecurityGuardRequirementCode.BasicSecurityTrainingCertificate,
 					},
@@ -1054,7 +1052,10 @@ export class LicenceApplicationService {
 					expiredLicenceFormGroup: {
 						hasExpiredLicence: BooleanTypeCode.No,
 					},
-					dogsOrRestraintsFormGroup: {
+					restraintsFormGroup: {
+						carryAndUseRetraints: BooleanTypeCode.No,
+					},
+					dogsFormGroup: {
 						useDogsOrRestraints: BooleanTypeCode.No,
 					},
 					licenceTermFormGroup: {
@@ -1165,7 +1166,8 @@ export class LicenceApplicationService {
 			this.personalInformationFormGroup.valid &&
 			this.expiredLicenceFormGroup.valid &&
 			this.licenceTermFormGroup.valid &&
-			this.dogsOrRestraintsFormGroup.valid &&
+			this.restraintsFormGroup.valid &&
+			this.dogsFormGroup.valid &&
 			this.categoryArmouredCarGuardFormGroup.valid &&
 			this.categoryBodyArmourSalesFormGroup.valid &&
 			this.categoryClosedCircuitTelevisionInstallerFormGroup.valid &&

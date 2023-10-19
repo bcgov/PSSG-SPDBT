@@ -173,15 +173,15 @@ export interface ApplicationResponse {
 												<span class="my-3 ms-2 fs-5 fw-bold" style="position: relative; top: -5px;">Expired</span>
 											</mat-chip-option>
 										</div>
-										<mat-divider class="my-2"></mat-divider>
+										<!-- <mat-divider class="my-2"></mat-divider> -->
 									</div>
-									<div class="row mb-2">
+									<!-- <div class="row mb-2">
 										<div class="col-12 text-end">
 											<button mat-flat-button class="mat-red-button large w-auto" (click)="onReapply(appl)">
 												<mat-icon>double_arrow</mat-icon>Reapply
 											</button>
 										</div>
-									</div>
+									</div> -->
 								</div>
 							</div>
 						</div>

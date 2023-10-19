@@ -65,7 +65,7 @@ import {
 						<div class="col-xxl-8 col-xl-9 col-lg-10 col-md-12 col-sm-12 mx-auto">
 							<div class="fs-4 mt-3 mb-2">
 								<mat-icon class="me-2">shopping_cart</mat-icon>
-								Your updates to save:
+								Your updates:
 							</div>
 						</div>
 					</div>
@@ -74,10 +74,10 @@ import {
 						<div class="offset-xxl-2 col-xxl-8 col-xl-4 col-lg-6 col-md-12 col-sm-12">
 							<div class="card-section mb-2 px-4 py-3" *ngFor="let update of updates; let i = index">
 								<div class="row">
-									<div class="col-lg-8 col-md-12">
+									<div class="col-lg-9 col-md-12">
 										<div class="fs-6 fw-normal" style="color: var(--color-primary);">{{ update }}</div>
 									</div>
-									<div class="col-lg-4 col-md-12">
+									<div class="col-lg-3 col-md-12">
 										<button mat-stroked-button>Remove</button>
 									</div>
 								</div>

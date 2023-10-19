@@ -4,12 +4,13 @@ import { FormGroup } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 import { SwlApplicationTypeCode, SwlCategoryTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { LicenceApplicationService } from '../../licence-application.service';
-import { DogsOrRestraintsComponent } from '../dogs-or-restraints.component';
+import { DogsComponent } from '../dogs.component';
 import { LicenceAccessCodeComponent } from '../licence-access-code.component';
 import { LicenceCategoryComponent } from '../licence-category.component';
 import { LicenceExpiredComponent } from '../licence-expired.component';
 import { LicenceTermComponent } from '../licence-term.component';
 import { PersonalInformationComponent } from '../personal-information.component';
+import { RestraintsComponent } from '../restraints.component';
 import { SoleProprietorComponent } from '../sole-proprietor.component';
 
 @Component({
@@ -485,19 +486,29 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 			</mat-step> -->
 
 			<mat-step *ngIf="showStepDogsAndRestraints">
-				<app-dogs-or-restraints></app-dogs-or-restraints>
+				<app-restraints></app-restraints>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_DOGS_OR_RESTRAINT)"
-						>
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_RESTRAINTS)">
+							Next
+						</button>
+					</div>
+				</div>
+			</mat-step>
+
+			<mat-step *ngIf="showStepDogsAndRestraints">
+				<app-dogs></app-dogs>
+
+				<div class="row mt-4">
+					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+					</div>
+					<div class="col-lg-3 col-md-4 col-sm-6">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_DOGS)">
 							Next
 						</button>
 					</div>
@@ -529,7 +540,8 @@ export class StepLicenceSelectionComponent {
 	readonly STEP_PERSONAL_INFORMATION = '4';
 	readonly STEP_LICENCE_EXPIRED = '5';
 	readonly STEP_LICENCE_CATEGORY = '6';
-	readonly STEP_DOGS_OR_RESTRAINT = '8';
+	readonly STEP_DOGS = '8';
+	readonly STEP_RESTRAINTS = '9';
 	readonly STEP_LICENCE_TERM = '7';
 
 	swlCategoryTypeCodes = SwlCategoryTypeCode;
@@ -588,8 +600,11 @@ export class StepLicenceSelectionComponent {
 	// @ViewChild(LicenceCategorySecurityConsultantComponent)
 	// securityConsultantComponent!: LicenceCategorySecurityConsultantComponent;
 
-	@ViewChild(DogsOrRestraintsComponent)
-	dogsOrRestraintsComponent!: DogsOrRestraintsComponent;
+	@ViewChild(RestraintsComponent)
+	restraintsComponent!: RestraintsComponent;
+
+	@ViewChild(DogsComponent)
+	dogsComponent!: DogsComponent;
 
 	@ViewChild(LicenceTermComponent)
 	licenceTermComponent!: LicenceTermComponent;
@@ -653,8 +668,10 @@ export class StepLicenceSelectionComponent {
 				return this.licenceExpiredComponent.isFormValid();
 			case this.STEP_LICENCE_CATEGORY:
 				return this.licenceCategoryComponent.isFormValid();
-			case this.STEP_DOGS_OR_RESTRAINT:
-				return this.dogsOrRestraintsComponent.isFormValid();
+			case this.STEP_RESTRAINTS:
+				return this.restraintsComponent.isFormValid();
+			case this.STEP_DOGS:
+				return this.dogsComponent.isFormValid();
 			case this.STEP_LICENCE_TERM:
 				return this.licenceTermComponent.isFormValid();
 			// case SwlCategoryTypeCode.ArmouredCarGuard:

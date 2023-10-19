@@ -248,9 +248,9 @@ import { LicenceApplicationService } from '../licence-application.service';
 														</div>
 													</div>
 
-													<ng-container *ngIf="useDogsOrRestraints.value == booleanTypeCodes.Yes">
+													<ng-container *ngIf="carryAndUseRetraints.value == booleanTypeCodes.Yes">
 														<mat-divider class="mt-4 mb-2"></mat-divider>
-														<div class="text-minor-heading">Dog & Restraints Authorization</div>
+														<div class="text-minor-heading">Restraints Authorization</div>
 														<div class="row mt-0">
 															<div class="col-lg-4 col-md-12 mt-lg-2">
 																<div class="text-label d-block text-muted mt-2 mt-lg-0">Request to use restraints?</div>
@@ -269,10 +269,15 @@ import { LicenceApplicationService } from '../licence-application.service';
 																</div>
 															</div>
 														</div>
+													</ng-container>
+
+													<ng-container *ngIf="useDogs.value == booleanTypeCodes.Yes">
+														<mat-divider class="mt-4 mb-2"></mat-divider>
+														<div class="text-minor-heading">Dog Authorization</div>
 														<div class="row mt-0">
 															<div class="col-lg-4 col-md-12 mt-lg-2">
 																<div class="text-label d-block text-muted mt-2 mt-lg-0">Request to use dogs?</div>
-																<div class="text-data">{{ useDogsOrRestraints.value }}</div>
+																<div class="text-data">{{ useDogs.value }}</div>
 															</div>
 															<div class="col-lg-4 col-md-12 mt-lg-2">
 																<div class="text-label d-block text-muted mt-2 mt-lg-0">Reason</div>
@@ -808,38 +813,38 @@ export class SummaryReviewComponent implements OnInit {
 		return this.form.controls['expiredLicenceFormGroup'].get('expiryDate') as FormControl;
 	}
 
-	get useDogsOrRestraints(): FormControl {
-		return this.form.controls['dogsOrRestraintsFormGroup'].get('useDogsOrRestraints') as FormControl;
-	}
 	get carryAndUseRetraints(): FormControl {
-		return this.form.controls['dogsOrRestraintsFormGroup'].get('carryAndUseRetraints') as FormControl;
+		return this.form.controls['restraintsFormGroup'].get('carryAndUseRetraints') as FormControl;
 	}
 	get carryAndUseRetraintsDocument(): FormControl {
-		return this.form.controls['dogsOrRestraintsFormGroup'].get('carryAndUseRetraintsDocument') as FormControl;
+		return this.form.controls['restraintsFormGroup'].get('carryAndUseRetraintsDocument') as FormControl;
 	}
 	get carryAndUseRetraintsAttachments(): FormControl {
-		return this.form.controls['dogsOrRestraintsFormGroup'].get('carryAndUseRetraintsAttachments') as FormControl;
+		return this.form.controls['restraintsFormGroup'].get('attachments') as FormControl;
+	}
+	get useDogs(): FormControl {
+		return this.form.controls['dogsFormGroup'].get('useDogs') as FormControl;
 	}
 	get isDogsPurposeProtection(): FormControl {
-		return (this.form.controls['dogsOrRestraintsFormGroup'].get('dogPurposeFormGroup') as FormGroup).get(
+		return (this.form.controls['dogsFormGroup'].get('dogsPurposeFormGroup') as FormGroup).get(
 			'isDogsPurposeProtection'
 		) as FormControl;
 	}
 	get isDogsPurposeDetectionDrugs(): FormControl {
-		return (this.form.controls['dogsOrRestraintsFormGroup'].get('dogPurposeFormGroup') as FormGroup).get(
+		return (this.form.controls['dogsFormGroup'].get('dogsPurposeFormGroup') as FormGroup).get(
 			'isDogsPurposeDetectionDrugs'
 		) as FormControl;
 	}
 	get isDogsPurposeDetectionExplosives(): FormControl {
-		return (this.form.controls['dogsOrRestraintsFormGroup'].get('dogPurposeFormGroup') as FormGroup).get(
+		return (this.form.controls['dogsFormGroup'].get('dogsPurposeFormGroup') as FormGroup).get(
 			'isDogsPurposeDetectionExplosives'
 		) as FormControl;
 	}
 	get dogsPurposeDocumentType(): FormControl {
-		return this.form.controls['dogsOrRestraintsFormGroup'].get('dogsPurposeDocumentType') as FormControl;
+		return this.form.controls['dogsFormGroup'].get('dogsPurposeDocumentType') as FormControl;
 	}
 	get dogsPurposeAttachments(): FormControl {
-		return this.form.controls['dogsOrRestraintsFormGroup'].get('dogsPurposeAttachments') as FormControl;
+		return this.form.controls['dogsFormGroup'].get('attachments') as FormControl;
 	}
 
 	get isPoliceOrPeaceOfficer(): FormControl {
