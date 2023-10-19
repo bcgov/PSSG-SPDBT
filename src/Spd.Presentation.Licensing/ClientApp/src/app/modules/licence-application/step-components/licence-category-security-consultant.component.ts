@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
-import { SwlCategoryTypeCode } from 'src/app/core/code-types/model-desc.models';
+import { SecurityConsultantRequirementCode, SwlCategoryTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
@@ -9,7 +9,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 @Component({
 	selector: 'app-licence-category-security-consultant',
 	template: `
-		<div class="fs-5 mb-2">Proof of experience required</div>
+		<div class="text-minor-heading mb-2">Proof of experience required</div>
 
 		<form [formGroup]="form" novalidate>
 			<div class="alert alert-category d-flex" role="alert">
@@ -34,21 +34,21 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 				</div>
 			</div>
 
-			<div class="text-minor-heading mb-2">Upload your resume:</div>
+			<div class="fs-6 fw-bold mb-2">Upload your resume:</div>
 
 			<div class="my-2">
 				<app-file-upload
 					[maxNumberOfFiles]="10"
-					#resumeattachmentsRef
-					[files]="resumeattachments.value"
+					#resumeAttachmentsRef
+					[files]="resumeAttachments.value"
 					(filesChanged)="onResumeFilesChanged()"
 				></app-file-upload>
 				<mat-error
 					class="mat-option-error"
 					*ngIf="
-						(form.get('resumeattachments')?.dirty || form.get('resumeattachments')?.touched) &&
-						form.get('resumeattachments')?.invalid &&
-						form.get('resumeattachments')?.hasError('required')
+						(form.get('resumeAttachments')?.dirty || form.get('resumeAttachments')?.touched) &&
+						form.get('resumeAttachments')?.invalid &&
+						form.get('resumeAttachments')?.hasError('required')
 					"
 					>This is required</mat-error
 				>
@@ -57,29 +57,35 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 			<div class="alert alert-category d-flex" role="alert">
 				<div>
 					You must meet the following experience requirements:
-					<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="requirement">
-						<mat-radio-button class="radio-label" value="a">
+					<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="requirementCode">
+						<mat-radio-button class="radio-label" [value]="securityConsultantRequirementCodes.ReferenceLetters">
 							Written reference letters from previous employers (must be on company letterhead, dated and signed)
 						</mat-radio-button>
 						<mat-divider class="my-2"></mat-divider>
-						<mat-radio-button class="radio-label" value="b"> Clients verifying your experience </mat-radio-button>
+						<mat-radio-button class="radio-label" [value]="securityConsultantRequirementCodes.RecommendationLetters">
+							Clients verifying your experience
+						</mat-radio-button>
 					</mat-radio-group>
 					<mat-error
 						class="mat-option-error"
 						*ngIf="
-							(form.get('requirement')?.dirty || form.get('requirement')?.touched) &&
-							form.get('requirement')?.invalid &&
-							form.get('requirement')?.hasError('required')
+							(form.get('requirementCode')?.dirty || form.get('requirementCode')?.touched) &&
+							form.get('requirementCode')?.invalid &&
+							form.get('requirementCode')?.hasError('required')
 						"
 						>This is required</mat-error
 					>
 				</div>
 			</div>
 
-			<div *ngIf="requirement.value" @showHideTriggerSlideAnimation>
-				<div class="text-minor-heading mb-2">
-					<span *ngIf="requirement.value == 'a'">Upload reference letters:</span>
-					<span *ngIf="requirement.value == 'b'"> Upload recommendation letters: </span>
+			<div *ngIf="requirementCode.value" @showHideTriggerSlideAnimation>
+				<div class="fs-6 fw-bold mb-2">
+					<span *ngIf="requirementCode.value == securityConsultantRequirementCodes.ReferenceLetters">
+						Upload reference letters:
+					</span>
+					<span *ngIf="requirementCode.value == securityConsultantRequirementCodes.RecommendationLetters">
+						Upload recommendation letters:
+					</span>
 				</div>
 
 				<div class="my-2">
@@ -109,7 +115,9 @@ export class LicenceCategorySecurityConsultantComponent implements OnInit, Licen
 	form: FormGroup = this.licenceApplicationService.categorySecurityConsultantFormGroup;
 	title = '';
 
-	@ViewChild('resumeattachmentsRef') fileUploadComponent1!: FileUploadComponent;
+	securityConsultantRequirementCodes = SecurityConsultantRequirementCode;
+
+	@ViewChild('resumeAttachmentsRef') fileUploadComponent1!: FileUploadComponent;
 	@ViewChild('attachmentsRef') fileUploadComponent2!: FileUploadComponent;
 
 	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
@@ -139,18 +147,18 @@ export class LicenceCategorySecurityConsultantComponent implements OnInit, Licen
 			this.fileUploadComponent1?.files && this.fileUploadComponent1?.files.length > 0
 				? this.fileUploadComponent1.files
 				: [];
-		this.form.controls['resumeattachments'].setValue(attachments);
+		this.form.controls['resumeAttachments'].setValue(attachments);
 	}
 
-	public get requirement(): FormControl {
-		return this.form.get('requirement') as FormControl;
+	public get requirementCode(): FormControl {
+		return this.form.get('requirementCode') as FormControl;
 	}
 
 	public get attachments(): FormControl {
 		return this.form.get('attachments') as FormControl;
 	}
 
-	public get resumeattachments(): FormControl {
-		return this.form.get('resumeattachments') as FormControl;
+	public get resumeAttachments(): FormControl {
+		return this.form.get('resumeAttachments') as FormControl;
 	}
 }

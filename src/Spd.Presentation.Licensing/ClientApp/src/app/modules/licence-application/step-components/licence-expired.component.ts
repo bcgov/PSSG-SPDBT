@@ -42,7 +42,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 						>
 							<div class="offset-md-2 col-md-8 col-sm-12">
 								<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
-								<div class="text-minor-heading mb-2">Expired Licence Information</div>
+								<div class="text-minor-heading mb-2">Expired licence information:</div>
 								<ng-container>
 									<div class="row mt-2">
 										<div class="col-lg-6 col-md-12 col-sm-12">

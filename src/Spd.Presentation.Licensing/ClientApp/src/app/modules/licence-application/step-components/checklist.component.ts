@@ -105,8 +105,7 @@ import { LicenceFormStepComponent } from '../licence-application.service';
 	styles: [
 		`
 			.checklist-label {
-				font-weight: 400;
-				font-size: 1.3em;
+				font-weight: 600;
 				color: var(--color-primary);
 				line-height: initial;
 			}
