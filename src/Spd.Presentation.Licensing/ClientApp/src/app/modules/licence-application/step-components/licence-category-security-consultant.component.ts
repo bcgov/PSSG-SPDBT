@@ -9,7 +9,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 @Component({
 	selector: 'app-licence-category-security-consultant',
 	template: `
-		<div class="fs-5 fw-semibold mb-2">Proof of experience required</div>
+		<div class="text-minor-heading mb-2">Proof of experience required</div>
 
 		<form [formGroup]="form" novalidate>
 			<div class="alert alert-category d-flex" role="alert">
@@ -34,7 +34,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 				</div>
 			</div>
 
-			<div class="text-minor-heading mb-2">Upload your resume:</div>
+			<div class="fs-6 fw-bold mb-2">Upload your resume:</div>
 
 			<div class="my-2">
 				<app-file-upload
@@ -79,7 +79,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 			</div>
 
 			<div *ngIf="requirementCode.value" @showHideTriggerSlideAnimation>
-				<div class="text-minor-heading mb-2">
+				<div class="fs-6 fw-bold mb-2">
 					<span *ngIf="requirementCode.value == securityConsultantRequirementCodes.ReferenceLetters">
 						Upload reference letters:
 					</span>

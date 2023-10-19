@@ -42,7 +42,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 							<div class="row">
 								<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 									<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
-									<div class="text-minor-heading fw-semibold mb-2">Previous Names</div>
+									<div class="text-minor-heading mb-2">Previous names:</div>
 									<ng-container formArrayName="aliases" *ngFor="let group of aliasesArray.controls; let i = index">
 										<div class="row" [formGroupName]="i">
 											<div class="col-lg-6 col-md-6 col-sm-12">

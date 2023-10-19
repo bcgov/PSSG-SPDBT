@@ -174,8 +174,9 @@ body {
 }
 
 .text-minor-heading {
-  color: var(--color-primary);  
-  font-weight: 600;
+  font-size: 1.1rem !important;
+  color: var(--color-primary) !important;
+    font-weight: 600 !important;
 }
 
 .child-stepper {

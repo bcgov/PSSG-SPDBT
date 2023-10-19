@@ -9,12 +9,12 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 @Component({
 	selector: 'app-licence-category-security-guard',
 	template: `
-		<div class="fs-5 fw-semibold mb-2">Proof of experience or training required</div>
+		<div class="text-minor-heading mb-2">Proof of experience or training required</div>
 
 		<form [formGroup]="form" novalidate>
 			<div class="alert alert-category d-flex" role="alert">
 				<div>
-					<div class="fs-5 mb-2">Experience:</div>
+					<div class="fs-6 fw-bold mb-2">Experience:</div>
 					To qualify for a security guard security worker licence, you must meet one of the following training or
 					experience requirements:
 					<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="requirementCode">
@@ -51,13 +51,13 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 
 			<div *ngIf="requirementCode.value" @showHideTriggerSlideAnimation>
 				<div
-					class="text-minor-heading mb-2"
+					class="fs-6 fw-bold mb-2"
 					*ngIf="requirementCode.value == securityGuardRequirementCodes.PoliceExperienceOrTraining; else uploadcopy"
 				>
 					Upload a training certificate or reference letter from your employment supervisor or human resources office:
 				</div>
 				<ng-template #uploadcopy>
-					<div class="text-minor-heading mb-2">Upload a copy of your certificate:</div>
+					<div class="fs-6 fw-bold mb-2">Upload a copy of your certificate:</div>
 				</ng-template>
 				<div class="my-2">
 					<app-file-upload

@@ -47,11 +47,10 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									aria-label="Select an option"
 									formControlName="carryAndUseRetraintsDocument"
 								>
-									<ng-container *ngFor="let doc of restraintDocumentTypes; let i = index; let last = last">
+									<ng-container *ngFor="let doc of restraintDocumentTypes; let i = index">
 										<mat-radio-button class="radio-label" [value]="doc.code">
 											{{ doc.desc }}
 										</mat-radio-button>
-										<mat-divider *ngIf="!last" class="my-2"></mat-divider>
 									</ng-container>
 								</mat-radio-group>
 								<mat-error

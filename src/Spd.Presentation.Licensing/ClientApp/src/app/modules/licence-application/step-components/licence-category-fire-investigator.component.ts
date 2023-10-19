@@ -8,12 +8,12 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 @Component({
 	selector: 'app-licence-category-fire-investigator',
 	template: `
-		<div class="fs-5 fw-semibold mb-2">Proof of experience or training required</div>
+		<div class="text-minor-heading mb-2">Proof of experience or training required</div>
 
 		<form [formGroup]="form" novalidate>
 			<div class="alert alert-category d-flex" role="alert">
 				<div>
-					<div class="fs-5 mb-2">Experience:</div>
+					<div class="fs-6 fw-bold mb-2">Experience:</div>
 					To qualify for a Fire Investigator security worker licence, you must meet both of the following experience
 					requirements:
 					<ul>
@@ -27,7 +27,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 			</div>
 
 			<div class="my-2">
-				<div class="text-minor-heading mb-2">Upload a copy of your course certificate:</div>
+				<div class="fs-6 fw-bold mb-2">Upload a copy of your course certificate:</div>
 				<app-file-upload
 					[maxNumberOfFiles]="10"
 					#fireCourseCertificateAttachmentsRef
@@ -47,7 +47,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 			</div>
 
 			<div class="mt-3 mb-2">
-				<div class="text-minor-heading mb-2">Upload a verification letter:</div>
+				<div class="fs-6 fw-bold mb-2">Upload a verification letter:</div>
 				<app-file-upload
 					[maxNumberOfFiles]="10"
 					#fireVerificationLetterAttachmentsRef

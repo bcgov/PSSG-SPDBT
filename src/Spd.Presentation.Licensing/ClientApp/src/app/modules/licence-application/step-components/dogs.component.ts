@@ -40,7 +40,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 								<div class="row mt-2">
 									<div class="col-12">
 										<div class="form-group" formGroupName="dogsPurposeFormGroup">
-											<mat-label class="fw-semibold">I request authorization to use dogs for the purpose of</mat-label>
+											<div class="text-minor-heading my-2">I request authorization to use dogs for the purpose of:</div>
 											<mat-checkbox formControlName="isDogsPurposeProtection"> Protection </mat-checkbox>
 											<mat-checkbox formControlName="isDogsPurposeDetectionDrugs"> Detection - Drugs </mat-checkbox>
 											<mat-checkbox formControlName="isDogsPurposeDetectionExplosives">
@@ -65,11 +65,10 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									aria-label="Select an option"
 									formControlName="dogsPurposeDocumentType"
 								>
-									<ng-container *ngFor="let doc of dogDocumentTypes; let i = index; let last = last">
+									<ng-container *ngFor="let doc of dogDocumentTypes; let i = index">
 										<mat-radio-button class="radio-label" [value]="doc.code">
 											{{ doc.desc }}
 										</mat-radio-button>
-										<mat-divider *ngIf="!last" class="my-2"></mat-divider>
 									</ng-container>
 								</mat-radio-group>
 								<mat-error

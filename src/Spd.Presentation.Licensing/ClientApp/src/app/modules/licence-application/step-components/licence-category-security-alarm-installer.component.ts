@@ -9,7 +9,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 @Component({
 	selector: 'app-licence-category-security-alarm-installer',
 	template: `
-		<div class="fs-5 fw-semibold mb-2">Proof of experience or training required</div>
+		<div class="text-minor-heading mb-2">Proof of experience or training required</div>
 
 		<form [formGroup]="form" novalidate>
 			<div class="alert alert-category d-flex" role="alert">
@@ -45,7 +45,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 			</div>
 
 			<div *ngIf="requirementCode.value" @showHideTriggerSlideAnimation>
-				<div class="text-minor-heading mb-2">
+				<div class="fs-6 fw-bold mb-2">
 					<span *ngIf="requirementCode.value == securityAlarmInstallerRequirementCodes.TradesQualificationCertificate">
 						Upload a copy of your certificate:
 					</span>

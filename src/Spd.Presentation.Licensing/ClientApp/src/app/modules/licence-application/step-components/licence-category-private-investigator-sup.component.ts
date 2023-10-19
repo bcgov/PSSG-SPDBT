@@ -10,12 +10,12 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 @Component({
 	selector: 'app-licence-category-private-investigator-sup',
 	template: `
-		<div class="fs-5 fw-semibold mb-2">Proof of experience or training required</div>
+		<div class="text-minor-heading mb-2">Proof of experience or training required</div>
 
 		<form [formGroup]="form" novalidate>
 			<div class="alert alert-category d-flex" role="alert">
 				<div>
-					<div class="fs-5 mb-2">Experience:</div>
+					<div class="fs-6 fw-bold mb-2">Experience:</div>
 					To qualify for a private investigator under supervision licence, you must meet one of the following experience
 					requirements:
 
@@ -59,7 +59,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 			</div>
 
 			<div *ngIf="requirementCode.value" @showHideTriggerSlideAnimation>
-				<div class="text-minor-heading mb-2">
+				<div class="fs-6 fw-bold mb-2">
 					<span
 						*ngIf="
 							requirementCode.value == privateInvestigatorSupRequirementCodes.PrivateSecurityTrainingNetworkCompletion
@@ -112,12 +112,12 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 
 			<div class="alert alert-category d-flex mt-4" role="alert">
 				<div>
-					<div class="fs-5 mb-2">Training:</div>
+					<div class="fs-6 fw-bold mb-2">Training:</div>
 					You must provide proof of successfully completing any of the above two listed course requirements.
 				</div>
 			</div>
 
-			<div class="text-minor-heading mb-2">Upload proof of course completion:</div>
+			<div class="fs-6 fw-bold mb-2">Upload proof of course completion:</div>
 
 			<div class="my-2">
 				<app-file-upload

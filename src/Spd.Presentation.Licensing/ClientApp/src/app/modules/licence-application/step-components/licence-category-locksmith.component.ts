@@ -10,7 +10,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 @Component({
 	selector: 'app-licence-category-locksmith',
 	template: `
-		<div class="fs-5 fw-semibold mb-2">Proof of experience or training required</div>
+		<div class="text-minor-heading mb-2">Proof of experience or training required</div>
 
 		<form [formGroup]="form" novalidate>
 			<div class="alert alert-category d-flex" role="alert">
@@ -62,21 +62,25 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 			</div>
 
 			<div *ngIf="requirementCode.value" @showHideTriggerSlideAnimation>
-				<div class="text-minor-heading mb-2">
+				<div class="fs-6 fw-bold mb-2">
 					<span *ngIf="requirementCode.value == locksmithRequirementCodes.CertificateOfQualification">
 						Upload a copy of your certificate:
 					</span>
 					<span *ngIf="requirementCode.value == locksmithRequirementCodes.ExperienceAndApprenticeship">
-						Upload a letter of recommendation on company letterhead, and proof of successful completion of an approved
-						apprenticeship program, other than that provided by the
-						<i>Industry Training Authority</i>:
+						Upload a letter of recommendation:
+						<div class="fw-normal mb-2">
+							This letter must be on company letterhead, and proof of successful completion of an approved
+							apprenticeship program, other than that provided by the <i>Industry Training Authority</i>.
+						</div>
 					</span>
 					<span *ngIf="requirementCode.value == locksmithRequirementCodes.ApprovedLocksmithCourse">
-						Upload a letter of recommendation on company letterhead, proof of experience, and proof of successful
-						completion of an approved course:
+						Upload a letter of recommendation:
+						<div class="fw-normal mb-2">
+							This letter must be on company letterhead, proof of experience, and proof of successful completion of an
+							approved course.
+						</div>
 					</span>
 				</div>
-
 				<div class="my-2">
 					<app-file-upload
 						[maxNumberOfFiles]="10"

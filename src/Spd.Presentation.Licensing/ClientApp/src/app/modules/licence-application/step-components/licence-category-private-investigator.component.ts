@@ -15,12 +15,12 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 @Component({
 	selector: 'app-licence-category-private-investigator',
 	template: `
-		<div class="fs-5 fw-semibold mb-2">Proof of experience or training required</div>
+		<div class="text-minor-heading mb-2">Proof of experience or training required</div>
 
 		<form [formGroup]="form" novalidate>
 			<div class="alert alert-category d-flex" role="alert">
 				<div>
-					<div class="fs-5 mb-2">Experience:</div>
+					<div class="fs-6 fw-bold mb-2">Experience:</div>
 					To qualify for a private investigator security worker licence, you must meet one of the following experience
 					requirements:
 
@@ -70,7 +70,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 			</div>
 
 			<div *ngIf="requirementCode.value" @showHideTriggerSlideAnimation>
-				<div class="text-minor-heading">
+				<div class="fs-6 fw-bold">
 					<span *ngIf="requirementCode.value == privateInvestigatorRequirementCodes.ExperienceAndCourses">
 						Upload document(s) providing the following information:
 						<span class="fw-normal">
@@ -133,7 +133,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 
 			<div class="alert alert-category d-flex mt-4" role="alert">
 				<div>
-					<div class="fs-5 mb-2">Training:</div>
+					<div class="fs-6 fw-bold mb-2">Training:</div>
 					You must meet one of the following training requirements:
 
 					<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="trainingCode">
@@ -176,7 +176,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 
 			<div *ngIf="trainingCode.value" @showHideTriggerSlideAnimation>
 				<div class="my-2">
-					<div class="text-minor-heading mb-2">
+					<div class="fs-6 fw-bold mb-2">
 						<span *ngIf="trainingCode.value == privateInvestigatorTrainingCodes.CompleteRecognizedTrainingCourse">
 							Upload a copy of your course certificate:
 						</span>
@@ -204,7 +204,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 
 			<!-- <div class="alert alert-category d-flex mt-4" role="alert">
 				<div>
-					<div class="fs-5 mb-2">Do want to add Fire Investigator to this licence?</div>
+					<div class="fs-6 fw-bold mb-2">Do want to add Fire Investigator to this licence?</div>
 					<mat-radio-group
 						class="category-radio-group"
 						aria-label="Select an option"
@@ -227,11 +227,11 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 			</div>
 
 			<div *ngIf="addFireInvestigator.value == booleanTypeCodes.Yes" @showHideTriggerSlideAnimation>
-				<div class="fs-5 mb-2">Proof of experience or training required</div>
+				<div class="fs-6 fw-bold mb-2">Proof of experience or training required</div>
 
 				<div class="alert alert-category d-flex" role="alert">
 					<div>
-						<div class="fs-5 mb-2">Experience:</div>
+						<div class="fs-6 fw-bold mb-2">Experience:</div>
 						To qualify for a fire investigator security worker licence, you must meet both of the following experience
 						requirements:
 						<ul>

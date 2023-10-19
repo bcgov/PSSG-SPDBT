@@ -42,10 +42,10 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 								<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 
 								<ng-container *ngIf="isBornInCanada.value == booleanTypeCodes.Yes; else notBornInCanadaHeading">
-									<div class="text-minor-heading mb-2">Born in Canada</div>
+									<div class="text-minor-heading mb-2">Select proof of Canadian citizenship to upload:</div>
 								</ng-container>
 								<ng-template #notBornInCanadaHeading>
-									<div class="text-minor-heading mb-2">Not Born in Canada</div>
+									<div class="text-minor-heading mb-2">Select proof of ability to work in Canada:</div>
 								</ng-template>
 
 								<ng-container>
@@ -53,7 +53,6 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 										<div class="col-lg-6 col-md-12">
 											<ng-container *ngIf="isBornInCanada.value == booleanTypeCodes.Yes; else notBornInCanada">
 												<mat-form-field>
-													<mat-label>Select proof of Canadian citizenship to upload</mat-label>
 													<mat-select formControlName="proofOfCitizenship">
 														<mat-option *ngFor="let item of proofOfCanadianCitizenshipTypes" [value]="item.code">
 															{{ item.desc }}
@@ -66,7 +65,6 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 											</ng-container>
 											<ng-template #notBornInCanada>
 												<mat-form-field>
-													<mat-label>Select proof of ability to work in Canada</mat-label>
 													<mat-select formControlName="proofOfAbility">
 														<mat-option *ngFor="let item of proofOfAbilityToWorkInCanadaTypes" [value]="item.code">
 															{{ item.desc }}
@@ -98,14 +96,10 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									<div class="row mb-2">
 										<div class="col-12">
 											<ng-container *ngIf="isBornInCanada.value == booleanTypeCodes.Yes; else notBornInCanadaTitle">
-												<div class="text-minor-heading fw-normal mb-2">
-													Upload a photo of your passport or birth certificate:
-												</div>
+												<div class="text-minor-heading mb-2">Upload a photo of your passport or birth certificate:</div>
 											</ng-container>
 											<ng-template #notBornInCanadaTitle>
-												<div class="text-minor-heading fw-normal mb-2">
-													Upload a photo of your selected document type:
-												</div>
+												<div class="text-minor-heading mb-2">Upload a photo of your selected document type:</div>
 											</ng-template>
 											<app-file-upload
 												[maxNumberOfFiles]="1"

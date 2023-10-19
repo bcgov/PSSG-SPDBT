@@ -453,13 +453,17 @@ export class LicenceApplicationService {
 
 	restraintsFormGroup: FormGroup = this.formBuilder.group(
 		{
-			carryAndUseRetraints: new FormControl('', [FormControlValidators.required]),
+			carryAndUseRetraints: new FormControl(''),
 			carryAndUseRetraintsDocument: new FormControl(''),
 			attachments: new FormControl([]),
 		},
 		{
 			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator(
+				FormGroupValidators.conditionalRequiredValidator(
+					'carryAndUseRetraints',
+					(form) => this.categorySecurityGuardFormGroup.get('isInclude')?.value
+				),
+				FormGroupValidators.conditionalRequiredValidator(
 					'carryAndUseRetraintsDocument',
 					(form) => form.get('carryAndUseRetraints')?.value == this.booleanTypeCodes.Yes
 				),
@@ -473,7 +477,7 @@ export class LicenceApplicationService {
 
 	dogsFormGroup: FormGroup = this.formBuilder.group(
 		{
-			useDogs: new FormControl('', [FormControlValidators.required]),
+			useDogs: new FormControl(''),
 			dogsPurposeFormGroup: new FormGroup(
 				{
 					isDogsPurposeProtection: new FormControl(false),
@@ -487,7 +491,11 @@ export class LicenceApplicationService {
 		},
 		{
 			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator(
+				FormGroupValidators.conditionalRequiredValidator(
+					'useDogs',
+					(form) => this.categorySecurityGuardFormGroup.get('isInclude')?.value
+				),
+				FormGroupValidators.conditionalRequiredValidator(
 					'dogsPurposeDocumentType',
 					(form) => form.get('useDogs')?.value == this.booleanTypeCodes.Yes
 				),
@@ -626,15 +634,45 @@ export class LicenceApplicationService {
 		isMailingTheSameAsResidential: new FormControl(),
 	});
 
-	mailingAddressFormGroup: FormGroup = this.formBuilder.group({
-		addressSelected: new FormControl(false, [Validators.requiredTrue]),
-		mailingAddressLine1: new FormControl('', [FormControlValidators.required]),
-		mailingAddressLine2: new FormControl(''),
-		mailingCity: new FormControl('', [FormControlValidators.required]),
-		mailingPostalCode: new FormControl('', [FormControlValidators.required]),
-		mailingProvince: new FormControl('', [FormControlValidators.required]),
-		mailingCountry: new FormControl('', [FormControlValidators.required]),
-	});
+	mailingAddressFormGroup: FormGroup = this.formBuilder.group(
+		{
+			addressSelected: new FormControl(false), //, [Validators.requiredTrue]),
+			mailingAddressLine1: new FormControl(''), //, [FormControlValidators.required]),
+			mailingAddressLine2: new FormControl(''),
+			mailingCity: new FormControl(''), //, [FormControlValidators.required]),
+			mailingPostalCode: new FormControl(''), //, [FormControlValidators.required]),
+			mailingProvince: new FormControl(''), //, [FormControlValidators.required]),
+			mailingCountry: new FormControl(''), //, [FormControlValidators.required]),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalRequiredValidator(
+					'addressSelected',
+					(form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value
+				),
+				FormGroupValidators.conditionalRequiredValidator(
+					'mailingAddressLine1',
+					(form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value
+				),
+				FormGroupValidators.conditionalRequiredValidator(
+					'mailingCity',
+					(form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value
+				),
+				FormGroupValidators.conditionalRequiredValidator(
+					'mailingPostalCode',
+					(form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value
+				),
+				FormGroupValidators.conditionalRequiredValidator(
+					'mailingProvince',
+					(form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value
+				),
+				FormGroupValidators.conditionalRequiredValidator(
+					'mailingCountry',
+					(form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value
+				),
+			],
+		}
+	);
 
 	licenceModelFormGroup: FormGroup = this.formBuilder.group({
 		// showStepAccessCode: new FormControl(false),
@@ -909,7 +947,7 @@ export class LicenceApplicationService {
 						mailingProvince: 'Ontario',
 					},
 					categoryArmouredCarGuardFormGroup: {
-						isInclude: false,
+						isInclude: true,
 						documentExpiryDate: '2009-10-07T00:00:00+00:00',
 						attachments: [myFile],
 					},
@@ -918,7 +956,7 @@ export class LicenceApplicationService {
 						checkbox: true,
 					},
 					categoryClosedCircuitTelevisionInstallerFormGroup: {
-						isInclude: true,
+						isInclude: false,
 						checkbox: true,
 					},
 					categoryElectronicLockingDeviceInstallerFormGroup: {
@@ -926,12 +964,12 @@ export class LicenceApplicationService {
 						checkbox: true,
 					},
 					categoryFireInvestigatorFormGroup: {
-						isInclude: false,
+						isInclude: true,
 						fireCourseCertificateAttachments: [myFile],
 						fireVerificationLetterAttachments: [myFile],
 					},
 					categoryLocksmithFormGroup: {
-						isInclude: false,
+						isInclude: true,
 						requirementCode: LocksmithRequirementCode.ExperienceAndApprenticeship,
 						attachments: [myFile],
 					},
@@ -940,13 +978,13 @@ export class LicenceApplicationService {
 						checkbox: true,
 					},
 					categoryPrivateInvestigatorSupFormGroup: {
-						isInclude: false,
+						isInclude: true,
 						requirementCode: PrivateInvestigatorSupRequirementCode.PrivateSecurityTrainingNetworkCompletion,
 						attachments: [myFile],
 						trainingAttachments: [myFile],
 					},
 					categoryPrivateInvestigatorFormGroup: {
-						isInclude: false,
+						isInclude: true,
 						requirementCode: PrivateInvestigatorRequirementCode.ExperienceAndCourses,
 						trainingCode: PrivateInvestigatorTrainingCode.CompleteOtherCoursesOrKnowledge,
 						attachments: [myFile],
@@ -977,7 +1015,7 @@ export class LicenceApplicationService {
 						checkbox: true,
 					},
 					categorySecurityConsultantFormGroup: {
-						isInclude: false,
+						isInclude: true,
 						requirementCode: SecurityConsultantRequirementCode.RecommendationLetters,
 						attachments: [myFile],
 						resumeAttachments: [myFile],
@@ -1053,10 +1091,10 @@ export class LicenceApplicationService {
 						hasExpiredLicence: BooleanTypeCode.No,
 					},
 					restraintsFormGroup: {
-						carryAndUseRetraints: BooleanTypeCode.No,
+						// carryAndUseRetraints: BooleanTypeCode.No,
 					},
 					dogsFormGroup: {
-						useDogsOrRestraints: BooleanTypeCode.No,
+						// useDogsOrRestraints: BooleanTypeCode.No,
 					},
 					licenceTermFormGroup: {
 						licenceTermCode: SwlTermCode.NintyDays,
@@ -1065,7 +1103,7 @@ export class LicenceApplicationService {
 						isPoliceOrPeaceOfficer: BooleanTypeCode.No,
 					},
 					mentalHealthConditionsFormGroup: {
-						// isTreatedForMHC: BooleanTypeCode.No,
+						isTreatedForMHC: BooleanTypeCode.No,
 					},
 					criminalHistoryFormGroup: {
 						hasCriminalHistory: BooleanTypeCode.No,
@@ -1095,7 +1133,7 @@ export class LicenceApplicationService {
 						eyeColourCode: EyeColourCode.Blue,
 						height: '100',
 						heightUnitCode: HeightUnitCode.Inches,
-						// weight: '75',
+						weight: '75',
 						weightUnitCode: WeightUnitCode.Kilograms,
 					},
 					photographOfYourselfFormGroup: {
@@ -1121,7 +1159,7 @@ export class LicenceApplicationService {
 					// 	attachments: [myFile],
 					// },
 					categorySecurityAlarmResponseFormGroup: {
-						isInclude: true,
+						isInclude: false,
 						checkbox: true,
 					},
 					categoryClosedCircuitTelevisionInstallerFormGroup: {
@@ -1159,6 +1197,35 @@ export class LicenceApplicationService {
 	}
 
 	isStep1Complete(): boolean {
+		// console.log(
+		// 	'isStep1Complete',
+		// 	this.licenceTypeFormGroup.valid,
+		// 	this.applicationTypeFormGroup.valid,
+		// 	this.soleProprietorFormGroup.valid,
+		// 	this.personalInformationFormGroup.valid,
+		// 	this.expiredLicenceFormGroup.valid,
+		// 	this.licenceTermFormGroup.valid,
+		// 	this.restraintsFormGroup.valid,
+		// 	this.dogsFormGroup.valid,
+		// 	this.categoryArmouredCarGuardFormGroup.valid,
+		// 	this.categoryBodyArmourSalesFormGroup.valid,
+		// 	this.categoryClosedCircuitTelevisionInstallerFormGroup.valid,
+		// 	this.categoryElectronicLockingDeviceInstallerFormGroup.valid,
+		// 	this.categoryFireInvestigatorFormGroup.valid,
+		// 	this.categoryLocksmithFormGroup.valid,
+		// 	this.categoryLocksmithSupFormGroup.valid,
+		// 	this.categoryPrivateInvestigatorFormGroup.valid,
+		// 	this.categoryPrivateInvestigatorSupFormGroup.valid,
+		// 	this.categorySecurityAlarmInstallerFormGroup.valid,
+		// 	this.categorySecurityAlarmInstallerSupFormGroup.valid,
+		// 	this.categorySecurityConsultantFormGroup.valid,
+		// 	this.categorySecurityAlarmMonitorFormGroup.valid,
+		// 	this.categorySecurityAlarmResponseFormGroup.valid,
+		// 	this.categorySecurityAlarmSalesFormGroup.valid,
+		// 	this.categorySecurityGuardFormGroup.valid,
+		// 	this.categorySecurityGuardSupFormGroup.valid
+		// );
+
 		return (
 			this.licenceTypeFormGroup.valid &&
 			this.applicationTypeFormGroup.valid &&
@@ -1189,6 +1256,14 @@ export class LicenceApplicationService {
 	}
 
 	isStep2Complete(): boolean {
+		// console.log(
+		// 	'isStep2Complete',
+		// 	this.policeBackgroundFormGroup.valid,
+		// 	this.mentalHealthConditionsFormGroup.valid,
+		// 	this.criminalHistoryFormGroup.valid,
+		// 	this.proofOfFingerprintFormGroup.valid
+		// );
+
 		return (
 			this.policeBackgroundFormGroup.valid &&
 			this.mentalHealthConditionsFormGroup.valid &&
@@ -1198,6 +1273,19 @@ export class LicenceApplicationService {
 	}
 
 	isStep3Complete(): boolean {
+		// console.log(
+		// 	'isStep3Complete',
+		// 	this.aliasesFormGroup.valid,
+		// 	this.citizenshipFormGroup.valid,
+		// 	this.govIssuedIdFormGroup.valid,
+		// 	this.bcDriversLicenceFormGroup.valid,
+		// 	this.characteristicsFormGroup.valid,
+		// 	this.photographOfYourselfFormGroup.valid,
+		// 	this.residentialAddressFormGroup.valid,
+		// 	this.mailingAddressFormGroup.valid,
+		// 	this.contactInformationFormGroup.valid
+		// );
+
 		return (
 			this.aliasesFormGroup.valid &&
 			this.citizenshipFormGroup.valid &&

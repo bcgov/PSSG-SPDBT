@@ -26,7 +26,7 @@ import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/cor
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-lg-3 col-md-4 col-sm-6">
-						<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onPayNow()">Pay Now</button>
 					</div>
 				</div>
 			</mat-step>
@@ -43,6 +43,8 @@ export class StepReviewComponent {
 	onStepPrevious(): void {
 		this.previousStepperStep.emit(true);
 	}
+
+	onPayNow(): void {}
 
 	onGoToStep(step: number): void {
 		this.goToStep.emit(step);

@@ -930,7 +930,7 @@ export class LicenceCategoryComponent implements OnInit, LicenceFormStepComponen
 		// );
 
 		this.isDirtyAndInvalid = this.categoryList.length == 0;
-		return isValid;
+		return isValid && !this.isDirtyAndInvalid;
 	}
 
 	get categoryList(): Array<string> {
