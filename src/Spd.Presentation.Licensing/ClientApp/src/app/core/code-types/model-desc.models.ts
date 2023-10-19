@@ -12,6 +12,18 @@ export interface SelectOptions<k = string> {
 	selected?: boolean;
 }
 
+// ============================================================
+// ENUMs
+// ============================================================
+
+export enum LicenceUpdateTypeCode {
+	UpdateName = 'UpdateName',
+	UpdatePhoto = 'UpdatePhoto',
+	AddLicenceCategory = 'AddLicenceCategory',
+	AddRequestAuthorizationToUseRestraints = 'AddRequestAuthorizationToUseRestraints',
+	AddRequestAuthorizationToUseDogs = 'AddRequestAuthorizationToUseDogs',
+}
+
 export enum SwlTypeCode {
 	SecurityBusinessLicence = 'SecurityBusinessLicence',
 	SecurityWorkerLicence = 'SecurityWorkerLicence',
@@ -106,24 +118,66 @@ export enum WeightUnitCode {
 }
 
 export enum SwlCategoryTypeCode {
-	ArmouredCarGuard = 'ARMOURED_CAR_GUARD',
-	BodyArmourSales = 'BODY_ARMOUR_SALES',
-	ClosedCircuitTelevisionInstaller = 'CLOSED_CIRCUIT',
-	ElectronicLockingDeviceInstaller = 'ELECTRONIC_LOCKING',
-	FireInvestigator = 'FIRE_INVESTIGATOR',
-	Locksmith = 'LOCKSMITH',
-	LocksmithUnderSupervision = 'LOCKSMITH_UNDER_SUP',
-	PrivateInvestigator = 'PI',
-	PrivateInvestigatorUnderSupervision = 'PI_UNDER_SUP',
-	SecurityGuard = 'SECURITY_GUARD',
-	SecurityGuardUnderSupervision = 'SECURITY_GUARD_UNDER_SUP',
-	SecurityAlarmInstallerUnderSupervision = 'SA_INSTALLER_UNDER_SUP',
-	SecurityAlarmInstaller = 'SA_INSTALLER',
-	SecurityAlarmMonitor = 'SA_MONITOR',
-	SecurityAlarmResponse = 'SA_RESPONSE',
-	SecurityAlarmSales = 'SA_SALES',
-	SecurityConsultant = 'SECURITY_CONSULTANT',
+	ArmouredCarGuard = 'ArmouredCarGuard',
+	BodyArmourSales = 'BodyArmourSales',
+	ClosedCircuitTelevisionInstaller = 'ClosedCircuitTelevisionInstaller',
+	ElectronicLockingDeviceInstaller = 'ElectronicLockingDeviceInstaller',
+	FireInvestigator = 'FireInvestigator',
+	Locksmith = 'Locksmith',
+	LocksmithUnderSupervision = 'LocksmithUnderSupervision',
+	PrivateInvestigator = 'PrivateInvestigator',
+	PrivateInvestigatorUnderSupervision = 'PrivateInvestigatorUnderSupervision',
+	SecurityGuard = 'SecurityGuard',
+	SecurityGuardUnderSupervision = 'SecurityGuardUnderSupervision',
+	SecurityAlarmInstallerUnderSupervision = 'SecurityAlarmInstallerUnderSupervision',
+	SecurityAlarmInstaller = 'SecurityAlarmInstaller',
+	SecurityAlarmMonitor = 'SecurityAlarmMonitor',
+	SecurityAlarmResponse = 'SecurityAlarmResponse',
+	SecurityAlarmSales = 'SecurityAlarmSales',
+	SecurityConsultant = 'SecurityConsultant',
 }
+
+export enum LocksmithRequirementCode {
+	CertificateOfQualification = 'CertificateOfQualification',
+	ExperienceAndApprenticeship = 'ExperienceAndApprenticeship',
+	ApprovedLocksmithCourse = 'ApprovedLocksmithCourse',
+}
+
+export enum PrivateInvestigatorRequirementCode {
+	ExperienceAndCourses = 'ExperienceAndCourses',
+	TenYearsPoliceExperienceAndTraining = 'TenYearsPoliceExperienceAndTraining',
+	KnowledgeAndExperience = 'KnowledgeAndExperience',
+}
+
+export enum PrivateInvestigatorTrainingCode {
+	CompleteRecognizedTrainingCourse = 'CompleteRecognizedTrainingCourse',
+	CompleteOtherCoursesOrKnowledge = 'CompleteOtherCoursesOrKnowledge',
+}
+
+export enum PrivateInvestigatorSupRequirementCode {
+	PrivateSecurityTrainingNetworkCompletion = 'PrivateSecurityTrainingNetworkCompletion',
+	OtherCourseCompletion = 'OtherCourseCompletion',
+}
+
+export enum SecurityAlarmInstallerRequirementCode {
+	TradesQualificationCertificate = 'TradesQualificationCertificate',
+	ExperienceOrTrainingEquivalent = 'ExperienceOrTrainingEquivalent',
+}
+
+export enum SecurityConsultantRequirementCode {
+	ReferenceLetters = 'ReferenceLetters',
+	RecommendationLetters = 'RecommendationLetters',
+}
+
+export enum SecurityGuardRequirementCode {
+	BasicSecurityTrainingCertificate = 'BasicSecurityTrainingCertificate',
+	PoliceExperienceOrTraining = 'PoliceExperienceOrTraining',
+	BasicSecurityTrainingCourseEquivalent = 'BasicSecurityTrainingCourseEquivalent',
+}
+
+// ============================================================
+// SelectOptions Lists
+// ============================================================
 
 export const SwlTypes: SelectOptions[] = [
 	{ desc: 'Security Business Licence', code: SwlTypeCode.SecurityBusinessLicence },

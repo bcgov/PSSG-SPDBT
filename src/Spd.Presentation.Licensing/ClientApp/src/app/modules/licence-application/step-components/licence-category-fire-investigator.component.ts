@@ -8,12 +8,12 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 @Component({
 	selector: 'app-licence-category-fire-investigator',
 	template: `
-		<div class="fs-5 mb-2">Proof of experience or training required</div>
+		<div class="text-minor-heading mb-2">Proof of experience or training required</div>
 
 		<form [formGroup]="form" novalidate>
 			<div class="alert alert-category d-flex" role="alert">
 				<div>
-					<div class="fs-5 mb-2">Experience:</div>
+					<div class="fs-6 fw-bold mb-2">Experience:</div>
 					To qualify for a Fire Investigator security worker licence, you must meet both of the following experience
 					requirements:
 					<ul>
@@ -27,40 +27,40 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 			</div>
 
 			<div class="my-2">
-				<div class="text-minor-heading mb-2">Upload a copy of your course certificate:</div>
+				<div class="fs-6 fw-bold mb-2">Upload a copy of your course certificate:</div>
 				<app-file-upload
 					[maxNumberOfFiles]="10"
-					#fireinvestigatorcertificateattachmentsRef
-					[files]="fireinvestigatorcertificateattachments.value"
+					#fireCourseCertificateAttachmentsRef
+					[files]="fireCourseCertificateAttachments.value"
 					(filesChanged)="onCertificationFilesChanged()"
 				></app-file-upload>
 				<mat-error
 					class="mat-option-error"
 					*ngIf="
-						(form.get('fireinvestigatorcertificateattachments')?.dirty ||
-							form.get('fireinvestigatorcertificateattachments')?.touched) &&
-						form.get('fireinvestigatorcertificateattachments')?.invalid &&
-						form.get('fireinvestigatorcertificateattachments')?.hasError('required')
+						(form.get('fireCourseCertificateAttachments')?.dirty ||
+							form.get('fireCourseCertificateAttachments')?.touched) &&
+						form.get('fireCourseCertificateAttachments')?.invalid &&
+						form.get('fireCourseCertificateAttachments')?.hasError('required')
 					"
 					>This is required</mat-error
 				>
 			</div>
 
 			<div class="mt-3 mb-2">
-				<div class="text-minor-heading mb-2">Upload a verification letter:</div>
+				<div class="fs-6 fw-bold mb-2">Upload a verification letter:</div>
 				<app-file-upload
 					[maxNumberOfFiles]="10"
-					#fireinvestigatorletterattachmentsRef
-					[files]="fireinvestigatorletterattachments.value"
+					#fireVerificationLetterAttachmentsRef
+					[files]="fireVerificationLetterAttachments.value"
 					(filesChanged)="onLetterFilesChanged()"
 				></app-file-upload>
 				<mat-error
 					class="mat-option-error"
 					*ngIf="
-						(form.get('fireinvestigatorletterattachments')?.dirty ||
-							form.get('fireinvestigatorletterattachments')?.touched) &&
-						form.get('fireinvestigatorletterattachments')?.invalid &&
-						form.get('fireinvestigatorletterattachments')?.hasError('required')
+						(form.get('fireVerificationLetterAttachments')?.dirty ||
+							form.get('fireVerificationLetterAttachments')?.touched) &&
+						form.get('fireVerificationLetterAttachments')?.invalid &&
+						form.get('fireVerificationLetterAttachments')?.hasError('required')
 					"
 					>This is required</mat-error
 				>
@@ -73,8 +73,8 @@ export class LicenceCategoryFireInvestigatorComponent implements OnInit, Licence
 	form: FormGroup = this.licenceApplicationService.categoryFireInvestigatorFormGroup;
 	title = '';
 
-	@ViewChild('fireinvestigatorcertificateattachmentsRef') fileUploadComponent3!: FileUploadComponent;
-	@ViewChild('fireinvestigatorletterattachmentsRef') fileUploadComponent4!: FileUploadComponent;
+	@ViewChild('fireCourseCertificateAttachmentsRef') fileUploadComponent3!: FileUploadComponent;
+	@ViewChild('fireVerificationLetterAttachmentsRef') fileUploadComponent4!: FileUploadComponent;
 
 	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
 
@@ -95,7 +95,7 @@ export class LicenceCategoryFireInvestigatorComponent implements OnInit, Licence
 			this.fileUploadComponent3?.files && this.fileUploadComponent3?.files.length > 0
 				? this.fileUploadComponent3.files
 				: [];
-		this.form.controls['fireinvestigatorcertificateattachments'].setValue(attachments);
+		this.form.controls['fireCourseCertificateAttachments'].setValue(attachments);
 	}
 
 	onLetterFilesChanged(): void {
@@ -103,14 +103,14 @@ export class LicenceCategoryFireInvestigatorComponent implements OnInit, Licence
 			this.fileUploadComponent4?.files && this.fileUploadComponent4?.files.length > 0
 				? this.fileUploadComponent4.files
 				: [];
-		this.form.controls['fireinvestigatorletterattachments'].setValue(attachments);
+		this.form.controls['fireVerificationLetterAttachments'].setValue(attachments);
 	}
 
-	public get fireinvestigatorcertificateattachments(): FormControl {
-		return this.form.get('fireinvestigatorcertificateattachments') as FormControl;
+	public get fireCourseCertificateAttachments(): FormControl {
+		return this.form.get('fireCourseCertificateAttachments') as FormControl;
 	}
 
-	public get fireinvestigatorletterattachments(): FormControl {
-		return this.form.get('fireinvestigatorletterattachments') as FormControl;
+	public get fireVerificationLetterAttachments(): FormControl {
+		return this.form.get('fireVerificationLetterAttachments') as FormControl;
 	}
 }

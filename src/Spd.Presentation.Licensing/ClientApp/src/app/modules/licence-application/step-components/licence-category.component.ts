@@ -856,7 +856,7 @@ export class LicenceCategoryComponent implements OnInit, LicenceFormStepComponen
 			title: 'Confirmation',
 			message: 'Would you also like to add Fire Investigator to this licence?',
 			actionText: 'Yes',
-			cancelText: 'Cancel',
+			cancelText: 'No',
 		};
 
 		this.dialog
@@ -930,7 +930,7 @@ export class LicenceCategoryComponent implements OnInit, LicenceFormStepComponen
 		// );
 
 		this.isDirtyAndInvalid = this.categoryList.length == 0;
-		return isValid;
+		return isValid && !this.isDirtyAndInvalid;
 	}
 
 	get categoryList(): Array<string> {

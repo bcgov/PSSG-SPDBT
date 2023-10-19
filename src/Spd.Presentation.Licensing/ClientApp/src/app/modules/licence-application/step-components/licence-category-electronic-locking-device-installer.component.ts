@@ -8,7 +8,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 	template: `
 		<form [formGroup]="form" class="text-center my-4" novalidate>
 			<mat-checkbox class="w-auto" formControlName="checkbox">
-				{{ title }}
+				<span class="fw-semibold" style="color: black;">{{ title }} </span>
 			</mat-checkbox>
 		</form>
 	`,

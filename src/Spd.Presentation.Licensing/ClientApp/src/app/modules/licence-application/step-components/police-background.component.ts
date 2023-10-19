@@ -47,7 +47,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 								<div class="row my-4" *ngIf="isPoliceOrPeaceOfficer.value == booleanTypeCodes.Yes">
 									<div class="offset-md-2 col-md-8 col-sm-12">
 										<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
-										<div class="text-minor-heading mb-2">Your Current Role</div>
+										<div class="text-minor-heading mb-2">Your current role:</div>
 										<div class="row mt-2">
 											<div class="col-xl-7 col-lg-12 col-md-12 col-sm-12">
 												<mat-form-field>

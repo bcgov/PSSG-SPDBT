@@ -10,6 +10,7 @@ import { Component, Input } from '@angular/core';
 					<div class="fs-6 mt-2" *ngIf="subtitle" [innerHtml]="subtitle"></div>
 					<div class="fs-6 mt-2 text-start" *ngIf="info" [innerHtml]="info"></div>
 				</div>
+				<mat-divider *ngIf="showDivider" class="mat-divider-main mb-4"></mat-divider>
 			</div>
 		</div>
 	`,
@@ -28,4 +29,5 @@ export class StepTitleComponent {
 	@Input() title = '';
 	@Input() subtitle = '';
 	@Input() info = '';
+	@Input() showDivider = false;
 }
