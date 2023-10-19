@@ -24,6 +24,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 							>
 							</app-address-form-autocomplete>
 							<mat-error
+								class="mat-option-error"
 								*ngIf="
 									(form.get('addressSelected')?.dirty || form.get('addressSelected')?.touched) &&
 									form.get('addressSelected')?.invalid &&

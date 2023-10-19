@@ -83,7 +83,7 @@ export interface ApplicationResponse {
 										<div class="col-lg-3 text-end">
 											<mat-chip-option [selectable]="false" class="mat-chip-green" style="height: 38px; width: 135px;">
 												<mat-icon>check_circle</mat-icon>
-												<span class="my-3 ms-2 fs-5 fw-bold" style="position: relative; top: -5px;">Active</span>
+												<span class="my-3 ms-2 fs-6 fw-bold" style="position: relative; top: -6px;">Active</span>
 											</mat-chip-option>
 										</div>
 										<mat-divider class="my-2"></mat-divider>
@@ -117,7 +117,7 @@ export interface ApplicationResponse {
 
 									<div class="row mb-2">
 										<div class="col-lg-9">
-											The following updates have a $20 licence re-print fee:
+											The following updates have a $20 licence reprint fee:
 											<ul class="m-0">
 												<li>changes to licence category</li>
 												<li>requests for authorization for dogs or restraints</li>
@@ -171,7 +171,7 @@ export interface ApplicationResponse {
 										<div class="col-lg-3 text-end">
 											<mat-chip-option [selectable]="false" class="mat-chip-red" style="height: 38px; width: 135px;">
 												<mat-icon>cancel</mat-icon>
-												<span class="my-3 ms-2 fs-5 fw-bold" style="position: relative; top: -5px;">Expired</span>
+												<span class="my-3 ms-2 fs-6 fw-bold" style="position: relative; top: -6px;">Expired</span>
 											</mat-chip-option>
 										</div>
 										<!-- <mat-divider class="my-2"></mat-divider> -->

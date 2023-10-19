@@ -24,6 +24,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 							>
 							</app-address-form-autocomplete>
 							<mat-error
+								class="mat-option-error"
 								*ngIf="
 									(form.get('addressSelected')?.dirty || form.get('addressSelected')?.touched) &&
 									form.get('addressSelected')?.invalid &&
@@ -105,15 +106,6 @@ export class MailingAddressComponent implements LicenceFormStepComponent {
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 
 	form: FormGroup = this.licenceApplicationService.mailingAddressFormGroup;
-	//  this.formBuilder.group({
-	// 	addressSelected: new FormControl(false, [Validators.requiredTrue]),
-	// 	mailingAddressLine1: new FormControl('', [FormControlValidators.required]),
-	// 	mailingAddressLine2: new FormControl(''),
-	// 	mailingCity: new FormControl('', [FormControlValidators.required]),
-	// 	mailingPostalCode: new FormControl('', [FormControlValidators.required]),
-	// 	mailingProvince: new FormControl('', [FormControlValidators.required]),
-	// 	mailingCountry: new FormControl('', [FormControlValidators.required]),
-	// });
 
 	addressAutocompleteFields: AddressRetrieveResponse[] = [];
 
