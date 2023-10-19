@@ -24,6 +24,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 							>
 							</app-address-form-autocomplete>
 							<mat-error
+								class="mat-option-error"
 								*ngIf="
 									(form.get('addressSelected')?.dirty || form.get('addressSelected')?.touched) &&
 									form.get('addressSelected')?.invalid &&
@@ -39,7 +40,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 						<div class="row">
 							<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
 								<mat-divider class="my-3" style="border-top-color: var(--color-primary-light);"></mat-divider>
-								<div class="text-minor-heading fw-semibold mb-2">Address Information</div>
+								<div class="text-minor-heading mb-2">Address information:</div>
 								<mat-form-field>
 									<mat-label>Street Address 1</mat-label>
 									<input matInput formControlName="mailingAddressLine1" [errorStateMatcher]="matcher" maxlength="100" />
@@ -105,15 +106,6 @@ export class MailingAddressComponent implements LicenceFormStepComponent {
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 
 	form: FormGroup = this.licenceApplicationService.mailingAddressFormGroup;
-	//  this.formBuilder.group({
-	// 	addressSelected: new FormControl(false, [Validators.requiredTrue]),
-	// 	mailingAddressLine1: new FormControl('', [FormControlValidators.required]),
-	// 	mailingAddressLine2: new FormControl(''),
-	// 	mailingCity: new FormControl('', [FormControlValidators.required]),
-	// 	mailingPostalCode: new FormControl('', [FormControlValidators.required]),
-	// 	mailingProvince: new FormControl('', [FormControlValidators.required]),
-	// 	mailingCountry: new FormControl('', [FormControlValidators.required]),
-	// });
 
 	addressAutocompleteFields: AddressRetrieveResponse[] = [];
 

@@ -9,7 +9,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 @Component({
 	selector: 'app-licence-category-armoured-car-guard',
 	template: `
-		<div class="fs-5 fw-semibold mb-2">Authorization to Carry Certificate required</div>
+		<div class="text-minor-heading mb-2">Authorization to Carry Certificate required</div>
 		<div class="alert alert-category d-flex" role="alert">
 			<div>
 				Armoured car guards carry firearms, which requires a firearm licence and an Authorization to Carry (ATC)
@@ -20,7 +20,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 		</div>
 
 		<form [formGroup]="form" novalidate>
-			<div class="text-minor-heading">Upload your valid Authorization to Carry certificate:</div>
+			<div class="fs-6 fw-bold">Upload your valid Authorization to Carry certificate:</div>
 			<div class="my-2">
 				<app-file-upload
 					[maxNumberOfFiles]="10"

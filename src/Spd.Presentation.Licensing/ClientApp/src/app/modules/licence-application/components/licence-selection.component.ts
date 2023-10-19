@@ -17,19 +17,19 @@ import { LicenceApplicationService } from '../licence-application.service';
 						<div class="col-xxl-9 col-xl-12 mx-auto">
 							<div class="row">
 								<!-- <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6 col-sm-12 mb-3">
-							<div
-								class="step-container__box step-container__box__fullheight"
-								(click)="onLicenceTypeChange(swlTypeCodes.SecurityBusinessLicence)"
-								[ngClass]="{ 'active-selection-main': licenceTypeCode == swlTypeCodes.SecurityBusinessLicence }"
-							>
-								<div class="fs-5 mb-4 mt-4 mt-md-0">
-									<div class="box__image d-none d-md-block">
-										<img class="box__image__item" [src]="image1" />
-									</div>
-									Security Business Licence
-								</div>
-							</div>
-						</div> -->
+										<div
+											class="step-container__box step-container__box__fullheight"
+											(click)="onLicenceTypeChange(swlTypeCodes.SecurityBusinessLicence)"
+											[ngClass]="{ 'active-selection-main': licenceTypeCode == swlTypeCodes.SecurityBusinessLicence }"
+										>
+											<div class="fs-5 mb-4 mt-4 mt-md-0">
+												<div class="box__image d-none d-md-block">
+													<img class="box__image__item" [src]="image1" />
+												</div>
+												Security Business Licence
+											</div>
+										</div>
+									</div> -->
 								<div class="col-xxl-4 col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-3">
 									<div
 										class="step-container__box step-container__box__fullheight"
@@ -72,12 +72,13 @@ import { LicenceApplicationService } from '../licence-application.service';
 										</div>
 									</div>
 								</div>
+
+								<mat-error class="mat-option-error" style="text-align: center;" *ngIf="isDirtyAndInvalid">
+									An option must be selected
+								</mat-error>
 							</div>
 						</div>
 					</div>
-					<mat-error class="mat-option-error" style="text-align: center;" *ngIf="isDirtyAndInvalid">
-						An option must be selected
-					</mat-error>
 				</div>
 
 				<div class="row mt-4">

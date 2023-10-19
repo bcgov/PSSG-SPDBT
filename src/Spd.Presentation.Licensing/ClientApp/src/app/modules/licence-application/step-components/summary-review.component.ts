@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/api/models';
 import {
@@ -26,16 +26,17 @@ import { LicenceApplicationService } from '../licence-application.service';
 								<div class="row mb-3">
 									<div class="col-12">
 										<mat-accordion multi="true">
-											<mat-expansion-panel [expanded]="true">
+											<mat-expansion-panel class="mb-2" [expanded]="true">
 												<mat-expansion-panel-header>
 													<mat-panel-title class="review-panel-title">
 														<mat-toolbar class="d-flex justify-content-between">
-															<div class="fs-5 fw-semibold my-2">Licence Selection</div>
+															<div class="fs-4 my-2">Licence Selection</div>
 															<button
 																mat-mini-fab
 																class="go-to-step-button"
 																matTooltip="Go to Step 1"
 																aria-label="Go to Step 1"
+																(click)="$event.stopPropagation(); onEditStep(0)"
 															>
 																<mat-icon>edit</mat-icon>
 															</button>
@@ -43,7 +44,9 @@ import { LicenceApplicationService } from '../licence-application.service';
 													</mat-panel-title>
 												</mat-expansion-panel-header>
 												<div class="panel-body">
-													<div class="text-minor-heading">Licence Information</div>
+													<!-- <mat-divider class="mt-2 mb-2"></mat-divider> -->
+													<div class="text-minor-heading mt-4">Licence Information</div>
+													<!-- <mat-divider class="mt-2 mb-0"></mat-divider> -->
 													<div class="row mt-0">
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Licence Type</div>
@@ -65,18 +68,18 @@ import { LicenceApplicationService } from '../licence-application.service';
 														</div>
 													</div>
 													<div class="row mt-0">
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Licence Category</div>
-															<div class="text-data">
-																<ul class="m-0">
-																	<ng-container *ngFor="let category of categoryList; let i = index; let last = last">
-																		<li [ngClass]="last ? 'mb-0' : 'mb-1'">
-																			{{ category.desc }}
-																		</li>
-																	</ng-container>
-																</ul>
+														<ng-container
+															*ngFor="let category of categoryList; let i = index; let first = first; let last = last"
+														>
+															<div class="col-lg-4 col-md-12 mt-lg-2">
+																<div class="text-label d-block text-muted mt-2 mt-lg-0">
+																	Licence Category <span *ngIf="categoryList.length > 1"> #{{ i + 1 }}</span>
+																</div>
+																<div class="text-data">
+																	{{ category.desc }}
+																</div>
 															</div>
-														</div>
+														</ng-container>
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Licence Term</div>
 															<div class="text-data">{{ licenceTermCode.value | options : 'SwlTermTypes' }}</div>
@@ -98,159 +101,150 @@ import { LicenceApplicationService } from '../licence-application.service';
 															</div>
 														</div>
 													</div>
-													<mat-divider class="mt-4 mb-2"></mat-divider>
 
-													<div class="text-minor-heading">Documents Uploaded</div>
-													<div class="row mt-0">
-														<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showArmouredCarGuard">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																{{ categoryTypeCodes.ArmouredCarGuard | options : 'SwlCategoryTypes' }} Documents
-															</div>
-															<div class="text-data">
-																<div *ngFor="let doc of categoryArmouredCarGuardAttachments.value; let i = index">
-																	{{ doc.name }}
-																</div>
-															</div>
-														</div>
-														<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showFireInvestigator">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																{{ categoryTypeCodes.FireInvestigator | options : 'SwlCategoryTypes' }} Documents
-															</div>
-															<div class="text-data">
-																<div
-																	*ngFor="
-																		let doc of categoryFireInvestigatorCertificateAttachments.value;
-																		let i = index
-																	"
-																>
-																	{{ doc.name }}
-																</div>
-																<div *ngFor="let doc of categoryFireInvestigatorLetterAttachments.value; let i = index">
-																	{{ doc.name }}
-																</div>
-															</div>
-														</div>
-														<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showLocksmith">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																{{ categoryTypeCodes.Locksmith | options : 'SwlCategoryTypes' }} Documents
-															</div>
-															<div class="text-data">
-																<div *ngFor="let doc of categoryLocksmithAttachments.value; let i = index">
-																	{{ doc.name }}
-																</div>
-															</div>
-														</div>
-
-														<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showPrivateInvestigator">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																{{ categoryTypeCodes.PrivateInvestigator | options : 'SwlCategoryTypes' }} Documents
-															</div>
-															<div class="text-data">
-																<div class="text-data">
-																	<div *ngFor="let doc of categoryPrivateInvestigatorAttachments.value; let i = index">
-																		{{ doc.name }}
-																	</div>
-
-																	<div
-																		*ngFor="
-																			let doc of categoryPrivateInvestigatorTrainingAttachments.value;
-																			let i = index
-																		"
-																	>
-																		{{ doc.name }}
-																	</div>
-
-																	<div
-																		*ngFor="
-																			let doc of categoryPrivateInvestigatorFireCertificateAttachments.value;
-																			let i = index
-																		"
-																	>
-																		{{ doc.name }}
-																	</div>
-
-																	<div
-																		*ngFor="
-																			let doc of categoryPrivateInvestigatorFireLetterAttachments.value;
-																			let i = index
-																		"
-																	>
-																		{{ doc.name }}
-																	</div>
-																</div>
-															</div>
-														</div>
-
-														<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showPrivateInvestigatorUnderSupervision">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																{{
-																	categoryTypeCodes.PrivateInvestigatorUnderSupervision | options : 'SwlCategoryTypes'
-																}}
-																Documents
-															</div>
-															<div class="text-data">
-																<div
-																	*ngFor="
-																		let doc of categoryPrivateInvestigatorUnderSupervisionAttachments.value;
-																		let i = index
-																	"
-																>
-																	{{ doc.name }}
-																</div>
-
-																<div
-																	*ngFor="
-																		let doc of categoryPrivateInvestigatorUnderSupervisionTrainingAttachments.value;
-																		let i = index
-																	"
-																>
-																	{{ doc.name }}
-																</div>
-															</div>
-														</div>
-
-														<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showSecurityAlarmInstaller">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																{{ categoryTypeCodes.SecurityAlarmInstaller | options : 'SwlCategoryTypes' }} Documents
-															</div>
-															<div class="text-data">
-																<div *ngFor="let doc of categorySecurityAlarmInstallerAttachments.value; let i = index">
-																	{{ doc.name }}
-																</div>
-															</div>
-														</div>
-
-														<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showSecurityConsultant">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																{{ categoryTypeCodes.SecurityConsultant | options : 'SwlCategoryTypes' }} Documents
-															</div>
-															<div class="text-data">
-																<div *ngFor="let doc of categorySecurityConsultantAttachments.value; let i = index">
-																	{{ doc.name }}
-																</div>
-																<div
-																	*ngFor="let doc of categorySecurityConsultantResumeAttachments.value; let i = index"
-																>
-																	{{ doc.name }}
-																</div>
-															</div>
-														</div>
-
-														<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showSecurityGuard">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																{{ categoryTypeCodes.SecurityGuard | options : 'SwlCategoryTypes' }} Documents
-															</div>
-															<div class="text-data">
-																<div *ngFor="let doc of categorySecurityGuardAttachments.value; let i = index">
-																	{{ doc.name }}
-																</div>
-															</div>
-														</div>
-													</div>
-
-													<ng-container *ngIf="useDogsOrRestraints.value == booleanTypeCodes.Yes">
+													<ng-container *ngIf="isAnyDocuments">
 														<mat-divider class="mt-4 mb-2"></mat-divider>
-														<div class="text-minor-heading">Dog & Restraints Authorization</div>
+														<div class="text-minor-heading">Documents Uploaded</div>
+														<div class="row mt-0">
+															<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showArmouredCarGuard">
+																<div class="text-label d-block text-muted mt-2 mt-lg-0">
+																	{{ categoryTypeCodes.ArmouredCarGuard | options : 'SwlCategoryTypes' }} Documents
+																</div>
+																<div class="text-data">
+																	<div *ngFor="let doc of categoryArmouredCarGuardAttachments.value; let i = index">
+																		{{ doc.name }}
+																	</div>
+																</div>
+															</div>
+															<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showFireInvestigator">
+																<div class="text-label d-block text-muted mt-2 mt-lg-0">
+																	{{ categoryTypeCodes.FireInvestigator | options : 'SwlCategoryTypes' }} Documents
+																</div>
+																<div class="text-data">
+																	<div
+																		*ngFor="
+																			let doc of categoryFireInvestigatorCertificateAttachments.value;
+																			let i = index
+																		"
+																	>
+																		{{ doc.name }}
+																	</div>
+																	<div
+																		*ngFor="let doc of categoryFireInvestigatorLetterAttachments.value; let i = index"
+																	>
+																		{{ doc.name }}
+																	</div>
+																</div>
+															</div>
+															<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showLocksmith">
+																<div class="text-label d-block text-muted mt-2 mt-lg-0">
+																	{{ categoryTypeCodes.Locksmith | options : 'SwlCategoryTypes' }} Documents
+																</div>
+																<div class="text-data">
+																	<div *ngFor="let doc of categoryLocksmithAttachments.value; let i = index">
+																		{{ doc.name }}
+																	</div>
+																</div>
+															</div>
+
+															<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showPrivateInvestigator">
+																<div class="text-label d-block text-muted mt-2 mt-lg-0">
+																	{{ categoryTypeCodes.PrivateInvestigator | options : 'SwlCategoryTypes' }} Documents
+																</div>
+																<div class="text-data">
+																	<div class="text-data">
+																		<div
+																			*ngFor="let doc of categoryPrivateInvestigatorAttachments.value; let i = index"
+																		>
+																			{{ doc.name }}
+																		</div>
+
+																		<div
+																			*ngFor="
+																				let doc of categoryPrivateInvestigatorTrainingAttachments.value;
+																				let i = index
+																			"
+																		>
+																			{{ doc.name }}
+																		</div>
+																	</div>
+																</div>
+															</div>
+
+															<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showPrivateInvestigatorUnderSupervision">
+																<div class="text-label d-block text-muted mt-2 mt-lg-0">
+																	{{
+																		categoryTypeCodes.PrivateInvestigatorUnderSupervision | options : 'SwlCategoryTypes'
+																	}}
+																	Documents
+																</div>
+																<div class="text-data">
+																	<div
+																		*ngFor="
+																			let doc of categoryPrivateInvestigatorUnderSupervisionAttachments.value;
+																			let i = index
+																		"
+																	>
+																		{{ doc.name }}
+																	</div>
+
+																	<div
+																		*ngFor="
+																			let doc of categoryPrivateInvestigatorUnderSupervisionTrainingAttachments.value;
+																			let i = index
+																		"
+																	>
+																		{{ doc.name }}
+																	</div>
+																</div>
+															</div>
+
+															<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showSecurityAlarmInstaller">
+																<div class="text-label d-block text-muted mt-2 mt-lg-0">
+																	{{ categoryTypeCodes.SecurityAlarmInstaller | options : 'SwlCategoryTypes' }}
+																	Documents
+																</div>
+																<div class="text-data">
+																	<div
+																		*ngFor="let doc of categorySecurityAlarmInstallerAttachments.value; let i = index"
+																	>
+																		{{ doc.name }}
+																	</div>
+																</div>
+															</div>
+
+															<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showSecurityConsultant">
+																<div class="text-label d-block text-muted mt-2 mt-lg-0">
+																	{{ categoryTypeCodes.SecurityConsultant | options : 'SwlCategoryTypes' }} Documents
+																</div>
+																<div class="text-data">
+																	<div *ngFor="let doc of categorySecurityConsultantAttachments.value; let i = index">
+																		{{ doc.name }}
+																	</div>
+																	<div
+																		*ngFor="let doc of categorySecurityConsultantResumeAttachments.value; let i = index"
+																	>
+																		{{ doc.name }}
+																	</div>
+																</div>
+															</div>
+
+															<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showSecurityGuard">
+																<div class="text-label d-block text-muted mt-2 mt-lg-0">
+																	{{ categoryTypeCodes.SecurityGuard | options : 'SwlCategoryTypes' }} Documents
+																</div>
+																<div class="text-data">
+																	<div *ngFor="let doc of categorySecurityGuardAttachments.value; let i = index">
+																		{{ doc.name }}
+																	</div>
+																</div>
+															</div>
+														</div>
+													</ng-container>
+
+													<ng-container *ngIf="carryAndUseRetraints.value == booleanTypeCodes.Yes">
+														<mat-divider class="mt-4 mb-2"></mat-divider>
+														<div class="text-minor-heading">Restraints Authorization</div>
 														<div class="row mt-0">
 															<div class="col-lg-4 col-md-12 mt-lg-2">
 																<div class="text-label d-block text-muted mt-2 mt-lg-0">Request to use restraints?</div>
@@ -269,10 +263,15 @@ import { LicenceApplicationService } from '../licence-application.service';
 																</div>
 															</div>
 														</div>
+													</ng-container>
+
+													<ng-container *ngIf="useDogs.value == booleanTypeCodes.Yes">
+														<mat-divider class="mt-4 mb-2"></mat-divider>
+														<div class="text-minor-heading">Dog Authorization</div>
 														<div class="row mt-0">
 															<div class="col-lg-4 col-md-12 mt-lg-2">
 																<div class="text-label d-block text-muted mt-2 mt-lg-0">Request to use dogs?</div>
-																<div class="text-data">{{ useDogsOrRestraints.value }}</div>
+																<div class="text-data">{{ useDogs.value }}</div>
 															</div>
 															<div class="col-lg-4 col-md-12 mt-lg-2">
 																<div class="text-label d-block text-muted mt-2 mt-lg-0">Reason</div>
@@ -297,16 +296,17 @@ import { LicenceApplicationService } from '../licence-application.service';
 												</div>
 											</mat-expansion-panel>
 
-											<mat-expansion-panel [expanded]="true">
+											<mat-expansion-panel class="mb-2" [expanded]="true">
 												<mat-expansion-panel-header>
 													<mat-panel-title class="review-panel-title">
 														<mat-toolbar class="d-flex justify-content-between">
-															<div class="fs-5 fw-semibold my-2">Background Information</div>
+															<div class="fs-4 my-2">Background Information</div>
 															<button
 																mat-mini-fab
 																class="go-to-step-button"
 																matTooltip="Go to Step 2"
 																aria-label="Go to Step 2"
+																(click)="$event.stopPropagation(); onEditStep(1)"
 															>
 																<mat-icon>edit</mat-icon>
 															</button>
@@ -314,7 +314,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 													</mat-panel-title>
 												</mat-expansion-panel-header>
 												<div class="panel-body">
-													<div class="text-minor-heading">Police Background</div>
+													<div class="text-minor-heading mt-4">Police Background</div>
 													<div class="row mt-0">
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">
@@ -356,7 +356,10 @@ import { LicenceApplicationService } from '../licence-application.service';
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Mental Health Conditions?</div>
 															<div class="text-data">{{ isTreatedForMHC.value }}</div>
 														</div>
-														<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="mentalHealthConditionAttachments.value">
+														<div
+															class="col-lg-6 col-md-12 mt-lg-2"
+															*ngIf="mentalHealthConditionAttachments.value?.length > 0"
+														>
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Mental Health Condition Form</div>
 															<div class="text-data">
 																<div *ngFor="let doc of mentalHealthConditionAttachments.value; let i = index">
@@ -394,16 +397,17 @@ import { LicenceApplicationService } from '../licence-application.service';
 												</div>
 											</mat-expansion-panel>
 
-											<mat-expansion-panel [expanded]="true">
+											<mat-expansion-panel class="mb-2" [expanded]="true">
 												<mat-expansion-panel-header>
 													<mat-panel-title class="review-panel-title">
 														<mat-toolbar class="d-flex justify-content-between">
-															<div class="fs-5 fw-semibold my-2">Identification</div>
+															<div class="fs-4 my-2">Identification</div>
 															<button
 																mat-mini-fab
 																class="go-to-step-button"
 																matTooltip="Go to Step 3"
 																aria-label="Go to Step 3"
+																(click)="$event.stopPropagation(); onEditStep(2)"
 															>
 																<mat-icon>edit</mat-icon>
 															</button>
@@ -411,7 +415,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 													</mat-panel-title>
 												</mat-expansion-panel-header>
 												<div class="panel-body">
-													<div class="text-minor-heading">Personal Information</div>
+													<div class="text-minor-heading mt-4">Personal Information</div>
 													<div class="row mt-0">
 														<div class="col-lg-6 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Applicant Name</div>
@@ -534,16 +538,17 @@ import { LicenceApplicationService } from '../licence-application.service';
 												</div>
 											</mat-expansion-panel>
 
-											<mat-expansion-panel [expanded]="true">
+											<mat-expansion-panel class="mb-2" [expanded]="true">
 												<mat-expansion-panel-header>
 													<mat-panel-title class="review-panel-title">
 														<mat-toolbar class="d-flex justify-content-between">
-															<div class="fs-5 fw-semibold my-2">Contact Information</div>
+															<div class="fs-4 my-2">Contact Information</div>
 															<button
 																mat-mini-fab
 																class="go-to-step-button"
-																matTooltip="Go to Step 4"
-																aria-label="Go to Step 4"
+																matTooltip="Go to Step 3"
+																aria-label="Go to Step 3"
+																(click)="$event.stopPropagation(); onEditStep(3)"
 															>
 																<mat-icon>edit</mat-icon>
 															</button>
@@ -551,6 +556,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 													</mat-panel-title>
 												</mat-expansion-panel-header>
 												<div class="panel-body">
+													<div class="text-minor-heading mt-4">Contact</div>
 													<div class="row mt-0">
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Email Address</div>
@@ -666,12 +672,24 @@ import { LicenceApplicationService } from '../licence-application.service';
 				margin-bottom: 10px;
 			}
 
-			.text-data {
-				font-size: 1.05rem;
-				font-weight: 400;
-				line-height: 1.3em;
+			.text-minor-heading {
+				font-size: 1.1rem !important;
+				color: var(--color-primary-light) !important;
+				font-weight: 300 !important;
 			}
 
+			.text-data {
+				/* line-height: 1.3em; */
+				font-size: 1rem !important;
+				font-weight: 600 !important;
+				color: var(--color-primary);
+			}
+
+			.text-minor-heading {
+				font-size: 1.1rem !important;
+				color: var(--color-primary-light) !important;
+				font-weight: 300 !important;
+			}
 			.text-label {
 				font-size: smaller;
 			}
@@ -693,7 +711,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 		`,
 	],
 })
-export class SummaryReviewComponent implements OnInit {
+export class SummaryReviewComponent {
 	form = this.licenceApplicationService.licenceModelFormGroup;
 
 	constants = SPD_CONSTANTS;
@@ -727,9 +745,13 @@ export class SummaryReviewComponent implements OnInit {
 	categorySecurityGuardFormGroup: FormGroup = this.licenceApplicationService.categorySecurityGuardFormGroup;
 	categorySecurityGuardSupFormGroup: FormGroup = this.licenceApplicationService.categorySecurityGuardSupFormGroup;
 
+	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
+
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
-	ngOnInit(): void {}
+	onEditStep(stepNumber: number) {
+		this.editStep.emit(stepNumber);
+	}
 
 	get licenceTypeCode(): FormControl {
 		return this.form.controls['licenceTypeFormGroup'].get('licenceTypeCode') as FormControl;
@@ -748,12 +770,12 @@ export class SummaryReviewComponent implements OnInit {
 
 	get categoryFireInvestigatorCertificateAttachments(): FormControl {
 		return this.form.controls['categoryFireInvestigatorFormGroup'].get(
-			'fireinvestigatorcertificateattachments'
+			'fireCourseCertificateAttachments'
 		) as FormControl;
 	}
 	get categoryFireInvestigatorLetterAttachments(): FormControl {
 		return this.form.controls['categoryFireInvestigatorFormGroup'].get(
-			'fireinvestigatorletterattachments'
+			'fireVerificationLetterAttachments'
 		) as FormControl;
 	}
 	get categoryLocksmithAttachments(): FormControl {
@@ -766,7 +788,7 @@ export class SummaryReviewComponent implements OnInit {
 		return this.form.controls['categorySecurityConsultantFormGroup'].get('attachments') as FormControl;
 	}
 	get categorySecurityConsultantResumeAttachments(): FormControl {
-		return this.form.controls['categorySecurityConsultantFormGroup'].get('resumeattachments') as FormControl;
+		return this.form.controls['categorySecurityConsultantFormGroup'].get('resumeAttachments') as FormControl;
 	}
 	get categorySecurityAlarmInstallerAttachments(): FormControl {
 		return this.form.controls['categorySecurityAlarmInstallerFormGroup'].get('attachments') as FormControl;
@@ -775,23 +797,23 @@ export class SummaryReviewComponent implements OnInit {
 		return this.form.controls['categoryPrivateInvestigatorFormGroup'].get('attachments') as FormControl;
 	}
 	get categoryPrivateInvestigatorTrainingAttachments(): FormControl {
-		return this.form.controls['categoryPrivateInvestigatorFormGroup'].get('trainingattachments') as FormControl;
+		return this.form.controls['categoryPrivateInvestigatorFormGroup'].get('trainingAttachments') as FormControl;
 	}
 	get categoryPrivateInvestigatorFireCertificateAttachments(): FormControl {
 		return this.form.controls['categoryPrivateInvestigatorFormGroup'].get(
-			'fireinvestigatorcertificateattachments'
+			'fireCourseCertificateAttachments'
 		) as FormControl;
 	}
 	get categoryPrivateInvestigatorFireLetterAttachments(): FormControl {
 		return this.form.controls['categoryPrivateInvestigatorFormGroup'].get(
-			'fireinvestigatorletterattachments'
+			'fireVerificationLetterAttachments'
 		) as FormControl;
 	}
 	get categoryPrivateInvestigatorUnderSupervisionAttachments(): FormControl {
 		return this.form.controls['categoryPrivateInvestigatorSupFormGroup'].get('attachments') as FormControl;
 	}
 	get categoryPrivateInvestigatorUnderSupervisionTrainingAttachments(): FormControl {
-		return this.form.controls['categoryPrivateInvestigatorSupFormGroup'].get('trainingattachments') as FormControl;
+		return this.form.controls['categoryPrivateInvestigatorSupFormGroup'].get('trainingAttachments') as FormControl;
 	}
 
 	get licenceTermCode(): FormControl {
@@ -808,38 +830,38 @@ export class SummaryReviewComponent implements OnInit {
 		return this.form.controls['expiredLicenceFormGroup'].get('expiryDate') as FormControl;
 	}
 
-	get useDogsOrRestraints(): FormControl {
-		return this.form.controls['dogsOrRestraintsFormGroup'].get('useDogsOrRestraints') as FormControl;
-	}
 	get carryAndUseRetraints(): FormControl {
-		return this.form.controls['dogsOrRestraintsFormGroup'].get('carryAndUseRetraints') as FormControl;
+		return this.form.controls['restraintsFormGroup'].get('carryAndUseRetraints') as FormControl;
 	}
 	get carryAndUseRetraintsDocument(): FormControl {
-		return this.form.controls['dogsOrRestraintsFormGroup'].get('carryAndUseRetraintsDocument') as FormControl;
+		return this.form.controls['restraintsFormGroup'].get('carryAndUseRetraintsDocument') as FormControl;
 	}
 	get carryAndUseRetraintsAttachments(): FormControl {
-		return this.form.controls['dogsOrRestraintsFormGroup'].get('carryAndUseRetraintsAttachments') as FormControl;
+		return this.form.controls['restraintsFormGroup'].get('attachments') as FormControl;
+	}
+	get useDogs(): FormControl {
+		return this.form.controls['dogsFormGroup'].get('useDogs') as FormControl;
 	}
 	get isDogsPurposeProtection(): FormControl {
-		return (this.form.controls['dogsOrRestraintsFormGroup'].get('dogPurposeFormGroup') as FormGroup).get(
+		return (this.form.controls['dogsFormGroup'].get('dogsPurposeFormGroup') as FormGroup).get(
 			'isDogsPurposeProtection'
 		) as FormControl;
 	}
 	get isDogsPurposeDetectionDrugs(): FormControl {
-		return (this.form.controls['dogsOrRestraintsFormGroup'].get('dogPurposeFormGroup') as FormGroup).get(
+		return (this.form.controls['dogsFormGroup'].get('dogsPurposeFormGroup') as FormGroup).get(
 			'isDogsPurposeDetectionDrugs'
 		) as FormControl;
 	}
 	get isDogsPurposeDetectionExplosives(): FormControl {
-		return (this.form.controls['dogsOrRestraintsFormGroup'].get('dogPurposeFormGroup') as FormGroup).get(
+		return (this.form.controls['dogsFormGroup'].get('dogsPurposeFormGroup') as FormGroup).get(
 			'isDogsPurposeDetectionExplosives'
 		) as FormControl;
 	}
 	get dogsPurposeDocumentType(): FormControl {
-		return this.form.controls['dogsOrRestraintsFormGroup'].get('dogsPurposeDocumentType') as FormControl;
+		return this.form.controls['dogsFormGroup'].get('dogsPurposeDocumentType') as FormControl;
 	}
 	get dogsPurposeAttachments(): FormControl {
-		return this.form.controls['dogsOrRestraintsFormGroup'].get('dogsPurposeAttachments') as FormControl;
+		return this.form.controls['dogsFormGroup'].get('attachments') as FormControl;
 	}
 
 	get isPoliceOrPeaceOfficer(): FormControl {
@@ -1088,6 +1110,19 @@ export class SummaryReviewComponent implements OnInit {
 		}
 
 		return list;
+	}
+
+	get isAnyDocuments(): boolean {
+		return (
+			this.showArmouredCarGuard ||
+			this.showFireInvestigator ||
+			this.showLocksmith ||
+			this.showPrivateInvestigator ||
+			this.showPrivateInvestigatorUnderSupervision ||
+			this.showSecurityAlarmInstaller ||
+			this.showSecurityConsultant ||
+			this.showSecurityGuard
+		);
 	}
 
 	get showArmouredCarGuard(): boolean {

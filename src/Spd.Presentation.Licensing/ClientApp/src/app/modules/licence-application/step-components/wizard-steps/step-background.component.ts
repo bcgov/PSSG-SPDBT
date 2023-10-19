@@ -156,6 +156,10 @@ export class StepBackgroundComponent implements OnInit {
 		this.nextStepperStep.emit(true);
 	}
 
+	onGoToFirstStep() {
+		this.childstepper.selectedIndex = 0;
+	}
+
 	onFormValidNextStep(formNumber: string): void {
 		console.log('onFormValidNextStep formNumber:', formNumber);
 
