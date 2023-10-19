@@ -685,6 +685,11 @@ import { LicenceApplicationService } from '../licence-application.service';
 				color: var(--color-primary);
 			}
 
+			.text-minor-heading {
+				font-size: 1.1rem !important;
+				color: var(--color-primary-light) !important;
+				font-weight: 300 !important;
+			}
 			.text-label {
 				font-size: smaller;
 			}
