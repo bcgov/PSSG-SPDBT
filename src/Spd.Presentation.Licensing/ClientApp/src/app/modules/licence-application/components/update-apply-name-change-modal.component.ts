@@ -4,14 +4,25 @@ import { UserInfo } from 'src/app/api/models';
 
 export interface ApplyNameChangeDialogData {}
 @Component({
-	selector: 'app-apply-name-change-modal',
+	selector: 'app-update-apply-name-change-modal',
 	template: `
-		<div mat-dialog-title>Apply Name Change</div>
-		<mat-divider></mat-divider>
+		<div mat-dialog-title>Apply Name Change <mat-divider></mat-divider></div>
 		<mat-dialog-content>
 			<div class="mb-2">Your licence will be updated with your new name:</div>
-			<div><b>New name:</b> Joanna Lee</div>
-			<div><b>Previous name:</b> Joanna Lee Smith</div>
+			<div class="row">
+				<div class="col-md-6 col-sm-12">
+					<div class="text-label d-block text-muted mt-2 mt-lg-0">New Name</div>
+					<div class="text-data">Joanna Lee</div>
+				</div>
+				<div class="col-md-6 col-sm-12">
+					<div class="text-label d-block text-muted mt-2 mt-lg-0">Previous Name</div>
+					<div class="text-data">Joanna Lee Smith</div>
+				</div>
+
+				<!-- <div class="col-md-6 col-sm-12">Joanna Lee</div>
+				<div class="col-md-6 col-sm-12"><b>Previous name:</b></div>
+				<div class="col-md-6 col-sm-12">Joanna Lee Smith</div> -->
+			</div>
 		</mat-dialog-content>
 		<mat-dialog-actions>
 			<div class="row m-0 w-100">
@@ -24,15 +35,27 @@ export interface ApplyNameChangeDialogData {}
 			</div>
 		</mat-dialog-actions>
 	`,
-	styles: [],
+	styles: [
+		`
+			.text-data {
+				font-size: 1.05rem;
+				font-weight: 400;
+				line-height: 1.3em;
+			}
+
+			.text-label {
+				font-size: smaller;
+			}
+		`,
+	],
 })
-export class ApplyNameChangeModalComponent implements OnInit {
+export class UpdateApplyNameChangeModalComponent implements OnInit {
 	selectedOrg: any = null;
 	userInfos: Array<UserInfo> = [];
 	title: string = 'Organization selection';
 
 	constructor(
-		private dialogRef: MatDialogRef<ApplyNameChangeModalComponent>,
+		private dialogRef: MatDialogRef<UpdateApplyNameChangeModalComponent>,
 		@Inject(MAT_DIALOG_DATA) public dialogData: ApplyNameChangeDialogData
 	) {}
 
@@ -42,6 +65,6 @@ export class ApplyNameChangeModalComponent implements OnInit {
 	}
 
 	onSave() {
-		this.dialogRef.close();
+		this.dialogRef.close({ success: true });
 	}
 }

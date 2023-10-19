@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/api/models';
 import {
@@ -26,7 +26,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 								<div class="row mb-3">
 									<div class="col-12">
 										<mat-accordion multi="true">
-											<mat-expansion-panel [expanded]="true">
+											<mat-expansion-panel class="mb-2" [expanded]="true">
 												<mat-expansion-panel-header>
 													<mat-panel-title class="review-panel-title">
 														<mat-toolbar class="d-flex justify-content-between">
@@ -36,6 +36,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 																class="go-to-step-button"
 																matTooltip="Go to Step 1"
 																aria-label="Go to Step 1"
+																(click)="$event.stopPropagation(); onEditStep(0)"
 															>
 																<mat-icon>edit</mat-icon>
 															</button>
@@ -160,7 +161,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 																		{{ doc.name }}
 																	</div>
 
-																	<div
+																	<!-- <div
 																		*ngFor="
 																			let doc of categoryPrivateInvestigatorFireCertificateAttachments.value;
 																			let i = index
@@ -176,7 +177,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 																		"
 																	>
 																		{{ doc.name }}
-																	</div>
+																	</div> -->
 																</div>
 															</div>
 														</div>
@@ -302,7 +303,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 												</div>
 											</mat-expansion-panel>
 
-											<mat-expansion-panel [expanded]="true">
+											<mat-expansion-panel class="mb-2" [expanded]="true">
 												<mat-expansion-panel-header>
 													<mat-panel-title class="review-panel-title">
 														<mat-toolbar class="d-flex justify-content-between">
@@ -312,6 +313,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 																class="go-to-step-button"
 																matTooltip="Go to Step 2"
 																aria-label="Go to Step 2"
+																(click)="$event.stopPropagation(); onEditStep(1)"
 															>
 																<mat-icon>edit</mat-icon>
 															</button>
@@ -399,7 +401,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 												</div>
 											</mat-expansion-panel>
 
-											<mat-expansion-panel [expanded]="true">
+											<mat-expansion-panel class="mb-2" [expanded]="true">
 												<mat-expansion-panel-header>
 													<mat-panel-title class="review-panel-title">
 														<mat-toolbar class="d-flex justify-content-between">
@@ -409,6 +411,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 																class="go-to-step-button"
 																matTooltip="Go to Step 3"
 																aria-label="Go to Step 3"
+																(click)="$event.stopPropagation(); onEditStep(2)"
 															>
 																<mat-icon>edit</mat-icon>
 															</button>
@@ -539,7 +542,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 												</div>
 											</mat-expansion-panel>
 
-											<mat-expansion-panel [expanded]="true">
+											<mat-expansion-panel class="mb-2" [expanded]="true">
 												<mat-expansion-panel-header>
 													<mat-panel-title class="review-panel-title">
 														<mat-toolbar class="d-flex justify-content-between">
@@ -547,8 +550,9 @@ import { LicenceApplicationService } from '../licence-application.service';
 															<button
 																mat-mini-fab
 																class="go-to-step-button"
-																matTooltip="Go to Step 4"
-																aria-label="Go to Step 4"
+																matTooltip="Go to Step 3"
+																aria-label="Go to Step 3"
+																(click)="$event.stopPropagation(); onEditStep(3)"
 															>
 																<mat-icon>edit</mat-icon>
 															</button>
@@ -698,7 +702,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 		`,
 	],
 })
-export class SummaryReviewComponent implements OnInit {
+export class SummaryReviewComponent {
 	form = this.licenceApplicationService.licenceModelFormGroup;
 
 	constants = SPD_CONSTANTS;
@@ -732,9 +736,13 @@ export class SummaryReviewComponent implements OnInit {
 	categorySecurityGuardFormGroup: FormGroup = this.licenceApplicationService.categorySecurityGuardFormGroup;
 	categorySecurityGuardSupFormGroup: FormGroup = this.licenceApplicationService.categorySecurityGuardSupFormGroup;
 
+	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
+
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
-	ngOnInit(): void {}
+	onEditStep(stepNumber: number) {
+		this.editStep.emit(stepNumber);
+	}
 
 	get licenceTypeCode(): FormControl {
 		return this.form.controls['licenceTypeFormGroup'].get('licenceTypeCode') as FormControl;

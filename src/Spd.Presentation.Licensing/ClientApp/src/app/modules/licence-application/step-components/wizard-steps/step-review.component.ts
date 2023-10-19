@@ -6,7 +6,7 @@ import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/cor
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-summary-review></app-summary-review>
+				<app-summary-review (editStep)="onGoToStep($event)"></app-summary-review>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -38,9 +38,14 @@ import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/cor
 export class StepReviewComponent {
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
+	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
 
 	onStepPrevious(): void {
 		this.previousStepperStep.emit(true);
+	}
+
+	onGoToStep(step: number): void {
+		this.goToStep.emit(step);
 	}
 
 	onStepSelectionChange(event: StepperSelectionEvent) {

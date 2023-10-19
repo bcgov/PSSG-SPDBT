@@ -186,15 +186,15 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepIdentificationComponent {
-	readonly STEP_ALIASES = '1';
-	readonly STEP_CITIZENSHIP = '2';
-	readonly STEP_ADDITIONAL_GOV_ID = '3';
-	readonly STEP_BC_DRIVERS_LICENCE = '4';
-	readonly STEP_HEIGHT_AND_WEIGHT = '5';
-	readonly STEP_PHOTO = '6';
-	readonly STEP_RESIDENTIAL_ADDRESS = '7';
-	readonly STEP_MAILING_ADDRESS = '8';
-	readonly STEP_CONTACT_INFORMATION = '9';
+	readonly STEP_ALIASES = '0';
+	readonly STEP_CITIZENSHIP = '1';
+	readonly STEP_ADDITIONAL_GOV_ID = '2';
+	readonly STEP_BC_DRIVERS_LICENCE = '3';
+	readonly STEP_HEIGHT_AND_WEIGHT = '4';
+	readonly STEP_PHOTO = '5';
+	readonly STEP_RESIDENTIAL_ADDRESS = '6';
+	readonly STEP_MAILING_ADDRESS = '7';
+	readonly STEP_CONTACT_INFORMATION = '8';
 
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
@@ -237,6 +237,14 @@ export class StepIdentificationComponent {
 
 		if (!isValid) return;
 		this.childstepper.next();
+	}
+
+	onGoToFirstStep() {
+		this.childstepper.selectedIndex = 0;
+	}
+
+	onGoToContactStep() {
+		this.childstepper.selectedIndex = this.STEP_RESIDENTIAL_ADDRESS;
 	}
 
 	private dirtyForm(step: string): boolean {

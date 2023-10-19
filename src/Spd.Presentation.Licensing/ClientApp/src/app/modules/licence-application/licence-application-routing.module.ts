@@ -10,6 +10,7 @@ import { LicenceSelectionComponent } from './components/licence-selection.compon
 import { LicenceWizardUpdateComponent } from './components/licence-wizard-update.component';
 import { LicenceWizardComponent } from './components/licence-wizard.component';
 import { LoginSelectionComponent } from './components/login-selection.component';
+import { UserProfileComponent } from './components/user-profile.component';
 import { LicenceApplicationComponent } from './licence-application.component';
 
 export class LicenceApplicationRoutes {
@@ -20,6 +21,7 @@ export class LicenceApplicationRoutes {
 	public static LICENCE_SELECTION = 'licence-selection';
 	public static LICENCE_TYPE = 'licence-type';
 	public static APPLICATION = 'application';
+	public static USER_PROFILE = 'user-profile';
 
 	public static PAYMENT_SUCCESS = 'payment-success';
 	public static PAYMENT_FAIL = 'payment-fail';
@@ -45,6 +47,10 @@ const routes: Routes = [
 			{
 				path: LicenceApplicationRoutes.APPLICATIONS_IN_PROGRESS,
 				component: ApplicationsInProgressComponent,
+			},
+			{
+				path: LicenceApplicationRoutes.USER_PROFILE,
+				component: UserProfileComponent,
 			},
 			{
 				path: LicenceApplicationRoutes.LICENCE_SELECTION,

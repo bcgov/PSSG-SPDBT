@@ -16,6 +16,14 @@ export interface SelectOptions<k = string> {
 // ENUMs
 // ============================================================
 
+export enum LicenceUpdateTypeCode {
+	UpdateName = 'UpdateName',
+	UpdatePhoto = 'UpdatePhoto',
+	AddLicenceCategory = 'AddLicenceCategory',
+	AddRequestAuthorizationToUseRestraints = 'AddRequestAuthorizationToUseRestraints',
+	AddRequestAuthorizationToUseDogs = 'AddRequestAuthorizationToUseDogs',
+}
+
 export enum SwlTypeCode {
 	SecurityBusinessLicence = 'SecurityBusinessLicence',
 	SecurityWorkerLicence = 'SecurityWorkerLicence',

@@ -2,7 +2,8 @@ import { NgModule } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { ApplicationTypeComponent } from './components/application-type.component';
 import { ApplicationsInProgressComponent } from './components/applications-in-progress.component';
-import { ApplyNameChangeModalComponent } from './components/apply-name-change-modal.component';
+import { UpdateApplyNameChangeModalComponent } from './components/update-apply-name-change-modal.component';
+import { UpdateLicenceCategoryModalComponent } from './components/update-licence-category-modal.component';
 import { LicencePaymentErrorComponent } from './components/licence-payment-error.component';
 import { LicencePaymentFailComponent } from './components/licence-payment-fail.component';
 import { LicencePaymentManualComponent } from './components/licence-payment-manual.component';
@@ -11,6 +12,7 @@ import { LicenceSelectionComponent } from './components/licence-selection.compon
 import { LicenceWizardUpdateComponent } from './components/licence-wizard-update.component';
 import { LicenceWizardComponent } from './components/licence-wizard.component';
 import { LoginSelectionComponent } from './components/login-selection.component';
+import { UserProfileComponent } from './components/user-profile.component';
 import { LicenceApplicationRoutingModule } from './licence-application-routing.module';
 import { LicenceApplicationComponent } from './licence-application.component';
 import { AdditionalGovIdComponent } from './step-components/additional-gov-id.component';
@@ -62,6 +64,9 @@ import { StepReviewComponent } from './step-components/wizard-steps/step-review.
 import { StepConfirmMailingAddressComponent } from './step-components/wizard-update-steps/step-confirm-mailing-address.component';
 import { StepConfirmUpdatesComponent } from './step-components/wizard-update-steps/step-confirm-updates.component';
 import { StepLicenceUpdatesComponent } from './step-components/wizard-update-steps/step-licence-updates.component';
+import { UpdateAddRestraintsModalComponent } from './components/update-add-restraints-modal.component';
+import { UpdateAddDogsModalComponent } from './components/update-add-dogs-modal.component';
+import { UpdatePhotoModalComponent } from './components/update-photo-modal.component';
 
 @NgModule({
 	declarations: [
@@ -126,7 +131,12 @@ import { StepLicenceUpdatesComponent } from './step-components/wizard-update-ste
 		StepLicenceUpdatesComponent,
 		StepConfirmMailingAddressComponent,
 		StepConfirmUpdatesComponent,
-		ApplyNameChangeModalComponent,
+		UpdateApplyNameChangeModalComponent,
+		UpdateLicenceCategoryModalComponent,
+		UserProfileComponent,
+  UpdateAddRestraintsModalComponent,
+  UpdateAddDogsModalComponent,
+  UpdatePhotoModalComponent,
 	],
 	imports: [SharedModule, LicenceApplicationRoutingModule],
 })

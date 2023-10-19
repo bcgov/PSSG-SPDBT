@@ -918,7 +918,7 @@ export class LicenceApplicationService {
 						checkbox: true,
 					},
 					categoryClosedCircuitTelevisionInstallerFormGroup: {
-						isInclude: false,
+						isInclude: true,
 						checkbox: true,
 					},
 					categoryElectronicLockingDeviceInstallerFormGroup: {
@@ -956,7 +956,7 @@ export class LicenceApplicationService {
 						addFireInvestigator: BooleanTypeCode.Yes,
 					},
 					categorySecurityAlarmInstallerFormGroup: {
-						isInclude: false,
+						isInclude: true,
 						requirementCode: SecurityAlarmInstallerRequirementCode.ExperienceOrTrainingEquivalent,
 						attachments: [myFile],
 					},

@@ -10,7 +10,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 @Component({
 	selector: 'app-licence-category-private-investigator-sup',
 	template: `
-		<div class="fs-5 mb-2">Proof of experience or training required</div>
+		<div class="fs-5 fw-semibold mb-2">Proof of experience or training required</div>
 
 		<form [formGroup]="form" novalidate>
 			<div class="alert alert-category d-flex" role="alert">

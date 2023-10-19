@@ -58,6 +58,7 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 									(previousStepperStep)="onPreviousStepperStep(stepper)"
 									(nextStepperStep)="onNextStepperStep(stepper)"
 									(scrollIntoView)="onScrollIntoView()"
+									(goToStep)="onGoToStep($event)"
 								></app-step-review>
 							</ng-template>
 						</mat-step>
@@ -195,6 +196,19 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 
 		console.log('next step', this.licenceApplicationService.licenceModelFormGroup.value);
 		stepper.next();
+	}
+
+	onGoToStep(step: number) {
+		if (step == 3) {
+			this.stepIdentificationComponent.onGoToContactStep();
+			this.stepper.selectedIndex = 2;
+			return;
+		}
+
+		this.stepLicenceSelectionComponent.onGoToFirstStep();
+		this.stepBackgroundComponent.onGoToFirstStep();
+		this.stepIdentificationComponent.onGoToFirstStep();
+		this.stepper.selectedIndex = step;
 	}
 
 	onSave() {

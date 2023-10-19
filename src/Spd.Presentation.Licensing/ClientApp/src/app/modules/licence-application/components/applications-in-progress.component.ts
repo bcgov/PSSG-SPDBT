@@ -26,12 +26,13 @@ export interface ApplicationResponse {
 					<h2 class="my-3 fw-normal">Security Licences & Permits</h2>
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
-					<app-alert type="warning">
-						Your armoured vehicle permit is expiring in 71 days. Please renew by <b>December 15, 2023</b>.
+					<app-alert type="info">
+						We noticed you changed your name recently. Do you want a new licence printed with your new name, for a $20
+						fee?
 					</app-alert>
 
 					<div class="mb-4" *ngIf="incompleteApplications.length > 0">
-						<div class="fs-5 mb-2">Incomplete Licences & Permits</div>
+						<div class="fs-5 mb-2">Incomplete Licences/Permits</div>
 						<div class="card-section mb-2 px-4 py-3" *ngFor="let appl of incompleteApplications; let i = index">
 							<div class="row">
 								<div class="col-lg-4">
@@ -57,7 +58,7 @@ export interface ApplicationResponse {
 					</div>
 
 					<div class="mb-4" *ngIf="activeApplications.length > 0">
-						<div class="fs-5 mb-2">Active Licences & Permits</div>
+						<div class="fs-5 mb-2">Active Licences/Permits</div>
 						<div class="card-section mb-2 px-4 py-3" *ngFor="let appl of activeApplications; let i = index">
 							<div class="row">
 								<div class="col-lg-2">
@@ -145,7 +146,7 @@ export interface ApplicationResponse {
 					</div>
 
 					<div class="mb-4" *ngIf="expiredApplications.length > 0">
-						<div class="fs-5 mb-2">Expired Licences & Permits</div>
+						<div class="fs-5 mb-2">Expired Licences/Permits</div>
 						<div class="card-section mb-2 px-4 py-3" *ngFor="let appl of expiredApplications; let i = index">
 							<div class="row">
 								<div class="col-lg-2">
@@ -190,6 +191,15 @@ export interface ApplicationResponse {
 					<button mat-flat-button color="primary" class="large w-auto mb-4" (click)="onCreateNew()">
 						Apply for a New Licence or Permit
 					</button>
+
+					<button
+						mat-flat-button
+						color="accent"
+						class="large w-auto mb-4 mx-4"
+						[routerLink]="[licenceApplicationRoutes.path(licenceApplicationRoutes.USER_PROFILE)]"
+					>
+						User Profile
+					</button>
 				</div>
 			</div>
 		</section>
@@ -221,6 +231,8 @@ export class ApplicationsInProgressComponent implements OnInit, OnDestroy {
 	incompleteApplications: Array<ApplicationResponse> = [];
 	activeApplications: Array<ApplicationResponse> = [];
 	expiredApplications: Array<ApplicationResponse> = [];
+
+	licenceApplicationRoutes = LicenceApplicationRoutes;
 
 	constructor(
 		private router: Router,

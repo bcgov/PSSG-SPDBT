@@ -231,8 +231,22 @@ mat-label {
   border: 2px solid var(--color-yellow);
 }
 
-.mat-mdc-dialog-actions {
-  padding: 0 8px 9px !important;
+// .mat-mdc-dialog-actions {
+//   padding: 0 8px 9px !important;
+// }
+
+
+.mat-mdc-dialog-surface {
+  overflow-y: hidden !important;
+}
+
+.mat-mdc-dialog-title {
+  font-weight: 600!important;
+}
+
+.mat-mdc-dialog-content {
+  font-weight: 400!important;
+  color: var(--color-grey-dark)!important;
 }
 
 // OVERLAY
