@@ -1,7 +1,7 @@
-import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
-import { SwlCategoryTypeCode } from 'src/app/core/code-types/model-desc.models';
+import { SecurityGuardRequirementCode, SwlCategoryTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
@@ -9,46 +9,55 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 @Component({
 	selector: 'app-licence-category-security-guard',
 	template: `
-		<div class="fs-5 mb-2">Proof of experience or training required</div>
+		<div class="text-minor-heading mb-2">Proof of experience or training required</div>
 
 		<form [formGroup]="form" novalidate>
 			<div class="alert alert-category d-flex" role="alert">
 				<div>
-					<div class="fs-5 mb-2">Experience:</div>
+					<div class="fs-6 fw-bold mb-2">Experience:</div>
 					To qualify for a security guard security worker licence, you must meet one of the following training or
 					experience requirements:
-					<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="requirement">
-						<mat-radio-button class="radio-label" value="a">
+					<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="requirementCode">
+						<mat-radio-button
+							class="radio-label"
+							[value]="securityGuardRequirementCodes.BasicSecurityTrainingCertificate"
+						>
 							Basic Security Training Certificate issued by the Justice Institute of British Columbia (JIBC)
 						</mat-radio-button>
 						<mat-divider class="my-2"></mat-divider>
-						<mat-radio-button class="radio-label" value="b">
+						<mat-radio-button class="radio-label" [value]="securityGuardRequirementCodes.PoliceExperienceOrTraining">
 							Proof of training or experience providing general duties as a Canadian police officer, correctional
 							officer, sheriff, auxiliary, reserve, or border service officer
 						</mat-radio-button>
 						<mat-divider class="my-2"></mat-divider>
-						<mat-radio-button class="radio-label" value="c">
+						<mat-radio-button
+							class="radio-label"
+							[value]="securityGuardRequirementCodes.BasicSecurityTrainingCourseEquivalent"
+						>
 							Certificate equivalent to the Basic Security Training course offered by JIBC
 						</mat-radio-button>
 					</mat-radio-group>
 					<mat-error
 						class="mat-option-error"
 						*ngIf="
-							(form.get('requirement')?.dirty || form.get('requirement')?.touched) &&
-							form.get('requirement')?.invalid &&
-							form.get('requirement')?.hasError('required')
+							(form.get('requirementCode')?.dirty || form.get('requirementCode')?.touched) &&
+							form.get('requirementCode')?.invalid &&
+							form.get('requirementCode')?.hasError('required')
 						"
 						>This is required</mat-error
 					>
 				</div>
 			</div>
 
-			<div *ngIf="requirement.value" @showHideTriggerSlideAnimation>
-				<div class="text-minor-heading mb-2" *ngIf="requirement.value == 'b'; else uploadcopy">
+			<div *ngIf="requirementCode.value" @showHideTriggerSlideAnimation>
+				<div
+					class="fs-6 fw-bold mb-2"
+					*ngIf="requirementCode.value == securityGuardRequirementCodes.PoliceExperienceOrTraining; else uploadcopy"
+				>
 					Upload a training certificate or reference letter from your employment supervisor or human resources office:
 				</div>
 				<ng-template #uploadcopy>
-					<div class="text-minor-heading mb-2">Upload a copy of your certificate:</div>
+					<div class="fs-6 fw-bold mb-2">Upload a copy of your certificate:</div>
 				</ng-template>
 				<div class="my-2">
 					<app-file-upload
@@ -80,11 +89,11 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 	animations: [showHideTriggerSlideAnimation],
 	encapsulation: ViewEncapsulation.None,
 })
-export class LicenceCategorySecurityGuardComponent implements OnInit, OnDestroy, LicenceFormStepComponent {
-	// private licenceModelLoadedSubscription!: Subscription;
-
+export class LicenceCategorySecurityGuardComponent implements OnInit, LicenceFormStepComponent {
 	form: FormGroup = this.licenceApplicationService.categorySecurityGuardFormGroup;
 	title = '';
+
+	securityGuardRequirementCodes = SecurityGuardRequirementCode;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
@@ -92,10 +101,6 @@ export class LicenceCategorySecurityGuardComponent implements OnInit, OnDestroy,
 
 	ngOnInit(): void {
 		this.title = this.optionsPipe.transform(SwlCategoryTypeCode.SecurityGuard, 'SwlCategoryTypes');
-	}
-
-	ngOnDestroy() {
-		// this.licenceModelLoadedSubscription.unsubscribe();
 	}
 
 	isFormValid(): boolean {
@@ -113,8 +118,8 @@ export class LicenceCategorySecurityGuardComponent implements OnInit, OnDestroy,
 		this.form.controls['attachments'].setValue(attachments);
 	}
 
-	public get requirement(): FormControl {
-		return this.form.get('requirement') as FormControl;
+	public get requirementCode(): FormControl {
+		return this.form.get('requirementCode') as FormControl;
 	}
 
 	public get attachments(): FormControl {

@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
-import { SwlCategoryTypeCode } from 'src/app/core/code-types/model-desc.models';
+import { PrivateInvestigatorSupRequirementCode, SwlCategoryTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
@@ -10,22 +10,28 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 @Component({
 	selector: 'app-licence-category-private-investigator-sup',
 	template: `
-		<div class="fs-5 mb-2">Proof of experience or training required</div>
+		<div class="text-minor-heading mb-2">Proof of experience or training required</div>
 
 		<form [formGroup]="form" novalidate>
 			<div class="alert alert-category d-flex" role="alert">
 				<div>
-					<div class="fs-5 mb-2">Experience:</div>
+					<div class="fs-6 fw-bold mb-2">Experience:</div>
 					To qualify for a private investigator under supervision licence, you must meet one of the following experience
 					requirements:
 
-					<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="requirement">
-						<mat-radio-button class="radio-label" value="a">
+					<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="requirementCode">
+						<mat-radio-button
+							class="radio-label"
+							[value]="privateInvestigatorSupRequirementCodes.PrivateSecurityTrainingNetworkCompletion"
+						>
 							Successful completion of the Private Security Training Network (PSTnetwork) online course
 							<i>Introduction to Private Investigation</i> and proof of final exam completion
 						</mat-radio-button>
 						<mat-divider class="my-2"></mat-divider>
-						<mat-radio-button class="radio-label" value="b">
+						<mat-radio-button
+							class="radio-label"
+							[value]="privateInvestigatorSupRequirementCodes.OtherCourseCompletion"
+						>
 							Completion of courses or demonstrated knowledge in the areas of:
 							<ul>
 								<li>Criminal law</li>
@@ -43,19 +49,25 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 					<mat-error
 						class="mat-option-error"
 						*ngIf="
-							(form.get('requirement')?.dirty || form.get('requirement')?.touched) &&
-							form.get('requirement')?.invalid &&
-							form.get('requirement')?.hasError('required')
+							(form.get('requirementCode')?.dirty || form.get('requirementCode')?.touched) &&
+							form.get('requirementCode')?.invalid &&
+							form.get('requirementCode')?.hasError('required')
 						"
 						>This is required</mat-error
 					>
 				</div>
 			</div>
 
-			<div *ngIf="requirement.value" @showHideTriggerSlideAnimation>
-				<div class="text-minor-heading mb-2">
-					<span *ngIf="requirement.value == 'a'"> Upload proof of course and exam completion: </span>
-					<span *ngIf="requirement.value == 'b'">
+			<div *ngIf="requirementCode.value" @showHideTriggerSlideAnimation>
+				<div class="fs-6 fw-bold mb-2">
+					<span
+						*ngIf="
+							requirementCode.value == privateInvestigatorSupRequirementCodes.PrivateSecurityTrainingNetworkCompletion
+						"
+					>
+						Upload proof of course and exam completion:
+					</span>
+					<span *ngIf="requirementCode.value == privateInvestigatorSupRequirementCodes.OtherCourseCompletion">
 						Upload document(s) providing proof of course completion or equivalent knowledge:
 					</span>
 				</div>
@@ -100,26 +112,26 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 
 			<div class="alert alert-category d-flex mt-4" role="alert">
 				<div>
-					<div class="fs-5 mb-2">Training:</div>
+					<div class="fs-6 fw-bold mb-2">Training:</div>
 					You must provide proof of successfully completing any of the above two listed course requirements.
 				</div>
 			</div>
 
-			<div class="text-minor-heading mb-2">Upload proof of course completion:</div>
+			<div class="fs-6 fw-bold mb-2">Upload proof of course completion:</div>
 
 			<div class="my-2">
 				<app-file-upload
 					[maxNumberOfFiles]="10"
-					#trainingattachmentsRef
-					[files]="trainingattachments.value"
+					#trainingAttachmentsRef
+					[files]="trainingAttachments.value"
 					(filesChanged)="onTrainingFilesChanged()"
 				></app-file-upload>
 				<mat-error
 					class="mat-option-error"
 					*ngIf="
-						(form.get('trainingattachments')?.dirty || form.get('trainingattachments')?.touched) &&
-						form.get('trainingattachments')?.invalid &&
-						form.get('trainingattachments')?.hasError('required')
+						(form.get('trainingAttachments')?.dirty || form.get('trainingAttachments')?.touched) &&
+						form.get('trainingAttachments')?.invalid &&
+						form.get('trainingAttachments')?.hasError('required')
 					"
 					>This is required</mat-error
 				>
@@ -134,8 +146,10 @@ export class LicenceCategoryPrivateInvestigatorSupComponent implements OnInit, L
 	matcher = new FormErrorStateMatcher();
 	title = '';
 
+	privateInvestigatorSupRequirementCodes = PrivateInvestigatorSupRequirementCode;
+
 	@ViewChild('attachmentsRef') fileUploadComponent1!: FileUploadComponent;
-	@ViewChild('trainingattachmentsRef') fileUploadComponent2!: FileUploadComponent;
+	@ViewChild('trainingAttachmentsRef') fileUploadComponent2!: FileUploadComponent;
 
 	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
 
@@ -167,18 +181,18 @@ export class LicenceCategoryPrivateInvestigatorSupComponent implements OnInit, L
 			this.fileUploadComponent2?.files && this.fileUploadComponent2?.files.length > 0
 				? this.fileUploadComponent2.files
 				: [];
-		this.form.controls['trainingattachments'].setValue(attachments);
+		this.form.controls['trainingAttachments'].setValue(attachments);
 	}
 
-	public get requirement(): FormControl {
-		return this.form.get('requirement') as FormControl;
+	public get requirementCode(): FormControl {
+		return this.form.get('requirementCode') as FormControl;
 	}
 
 	public get attachments(): FormControl {
 		return this.form.get('attachments') as FormControl;
 	}
 
-	public get trainingattachments(): FormControl {
-		return this.form.get('trainingattachments') as FormControl;
+	public get trainingAttachments(): FormControl {
+		return this.form.get('trainingAttachments') as FormControl;
 	}
 }

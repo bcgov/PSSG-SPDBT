@@ -24,7 +24,7 @@
     "@angular/router": "^16.0.0",
     "@angular/cdk": "^16.0.0",
     "@angular/material": "^16.0.0",
-    "@bcgov/bc-sans": "^1.0.1",
+    "@bcgov/bc-sans": "^2.1.0",
     "@ngneat/hot-toast": "^5.0.1",
     "@ngneat/until-destroy": "^9.2.3",
     "angular-oauth2-oidc": "^15.0.1",
