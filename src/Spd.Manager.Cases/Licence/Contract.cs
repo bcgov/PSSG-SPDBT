@@ -10,24 +10,41 @@ namespace Spd.Manager.Cases.Licence
 
     public class WorkerLicenceCreateRequest
     {
-        public WorkerLicenceTypeCode WorkerLicenceTypeCode { get; set; }
-        public AppTypeCode AppTypeCode { get; set; }
-        public bool IsSoleProprietor { get; set; } = false;
-        public PersonalInfo PersonalInfo { get; set; }
-        public bool HasExpiredLicence { get; set; } = false;
-        public string ExpiredLicenceNumber { get; set; }
-        public DateOnly ExpiredLicenceExpiryDate { get; set; }
-        public DogsOrRestraintsInfo? DogOrRestraintsInfo { get; set; } = null;
-        public WorkerLicenceTermCode? WorkerLicenceTermCode { get; set; } = null;
-        public BackgroundInfo? BackgroundInfo { get; set; }
-        public MentalHealthInfo? MentalHealthInfo { get; set; }
-        public bool? HasCriminalHistory { get; set; }
+        public LicenceTypeData? LicenceTypeData { get; set; }
+        public ApplicationTypeData? ApplicationTypeData { get; set; }
+        public SoleProprietorData? SoleProprietorData { get; set; }
+        public PersonalInformationData? PersonalInformationData { get; set; }
+        public ExpiredLicenceData? ExpiredLicenceData { get; set; }
+        public DogsOrRestraintsData? DogsOrRestraintsData { get; set; } = null;
+        public LicenceTermData? licenceTermData { get; set; } = null;
+        public PoliceBackgroundData? PoliceBackgroundData { get; set; }
+        public MentalHealthConditionsData? MentalHealthConditionsData { get; set; }
+        public CriminalHistoryData? CriminalHistoryData { get; set; }
+        public ProofOfFingerprintData? ProofOfFingerprintData { get; set; }
+        public AliasesData? AliasesData { get; set; }
+        public CitizenshipData? CitizenshipData { get; set; }
+        public GovIssuedIdData? GovIssuedIdData { get; set; }
+        public BcDriversLicenceData? BcDriversLicenceData { get; set; }
+        public CharacteristicsData? CharacteristicsData { get; set; }
+        public PhotographOfYourselfData? PhotographOfYourselfData { get; set; }
+        public ContactInformationData? ContactInformationData { get; set; }
+        public ResidentialAddressData? ResidentialAddressData { get; set; }
+        public MailingAddressData? MailingAddressData { get; set; }
+        public WorkerLicenceCategoryData[] Categories { get; set; }
     }
-
     public class WorkerLicenceCreateResponse
     { }
 
-    public record PersonalInfo
+    public record LicenceTypeData(WorkerLicenceTypeCode WorkerLicenceTypeCode);
+    public record ApplicationTypeData(ApplicationTypeCode ApplicationTypeCode);
+    public record SoleProprietorData(bool isSoleProprietor);
+    public record ExpiredLicenceData
+    {
+        public string? ExpiredLicenceNumber { get; set; }
+        public DateTimeOffset? ExpiryDate { get; set; }
+        public bool? HasExpiredLicence { get; set; }
+    };
+    public record PersonalInformationData
     {
         public string? GivenName { get; set; }
         public string? MiddleName1 { get; set; }
@@ -37,31 +54,114 @@ namespace Spd.Manager.Cases.Licence
         public GenderCode? GenderCode { get; set; }
         public bool? OneLegalName { get; set; }
     }
-
-    public record DogsOrRestraintsInfo
+    public record DogsOrRestraintsData
     {
-        public bool UseDogsOrRestraints { get; set; }
-        public DogsPurposeCode[] DogsPurposeCodes { get; set; } = Array.Empty<DogsPurposeCode>();
-        public DogsPurposeDocumentTypeCode? DogsPurposeDocumentTypeCode { get; set; }
-        public IFormFile[] DogsPurposeAttachments { get; set; } = Array.Empty<IFormFile>();
-        public bool UseRestraints { get; set; }
-        public RestraintDocumentCode? RestraintDocumentCode { get; set; }
-        public IFormFile[] RestraintsAttachments { get; set; } = Array.Empty<IFormFile>();
-    }
+        public bool? UseDogsOrRestraints { get; set; }
+        public DogsPurposeCode[]? DogsPurposeCodes { get; set; } = Array.Empty<DogsPurposeCode>();
+        public bool CarryAndUseRetraints { get; set; }
+        public Documents[]? Documents { get; set; }
 
-    public record BackgroundInfo
+    }
+    public record LicenceTermData(LicenceTermCode LicenceTermCode) { };
+    public record PoliceBackgroundData
     {
         public bool IsPoliceOrPeaceOfficer { get; set; }
         public PoliceOfficerRoleCode? PoliceOfficerRoleCode { get; set; }
-        public string? SpecifiedOtherRole { get; set; }
-        public IFormFile[] LetterOfNoConflictAttachments { get; set; } = Array.Empty<IFormFile>();
+        public string? OtherOfficerRole { get; set; }
+        public Documents? Documents { get; set; }
+    }
+    public record MentalHealthConditionsData
+    {
+        public bool? IsTreatedForMHC { get; set; }
+        public Documents? Documents { get; set; }
+    }
+    public record CriminalHistoryData(bool? HasCriminalHistory) { };
+    public record ProofOfFingerprintData
+    {
+        public Documents? Documents { get; set; }
+    }
+    public record AliasesData
+    {
+        public bool HasPreviousName{get;set;}
+        public Alias[]? Aliases { get; set; }
+    }
+    public record CitizenshipData
+    {
+        public bool IsBornInCanada { get; set; }
+        public ProofOfCanadianCitizenshipCode? ProofOfCanadianCitizenshipCode { get; set; }
+		public ProofOfAbilityToWorkInCanadaCode? ProofOfAbilityToWorkInCanadaCode { get; set; } //?
+        public Documents Documents { get; set; }
+    }
+    public record GovIssuedIdData
+    {
+        public GovernmentIssuedPhotoIdCode GovernmentIssuedPhotoIdCode { get;set;}
+        public Documents Documents { get; set; }
+    }
+    public record BcDriversLicenceData 
+    {
+		public bool? HasBcDriversLicence { get; set; }
+		public string? BcDriversLicenceNumber { get; set; }
+	}
+    public record CharacteristicsData
+    {
+        public HairColourCode? HairColourCode { get; set; }
+        public EyeColourCode? EyeColourCode { get; set; }
+        public int Height { get; set; }
+        public HeightUnitCode HeightUnitCode { get; set; }
+        public int Weight { get; set; }
+        public WeightUnitCode WeightUnitCode { get; set; }
+    }
+    public record PhotographOfYourselfData
+    {
+        public bool? UseBcServicesCardPhoto { get; set; }
+        public Documents Documents { get; set;}
+    }
+    public record ContactInformationData
+    {
+        public string? ContactEmailAddress { get; set; }
+        public string? ContactPhoneNumber { get; set; }
+    }
+    public record ResidentialAddressData() : AddressData
+    { 
+        public bool IsMailingTheSameAsResidential { get; set; }
+    }
+    public record MailingAddressData() : AddressData;
+
+    public abstract record AddressData
+    {
+        public bool AddressSelected { get; set; }
+        public string? AddressLine1 { get; set; }
+        public string? AddressLine2 { get; set; }
+        public string? City { get; set; }
+        public string? Country { get; set; }
+        public string? PostalCode { get; set; }
+        public string? Province { get; set; }
     }
 
-    public record MentalHealthInfo
+    public record WorkerLicenceCategoryData
     {
-        public bool? IsTreatedForMentalHealth { get; set; }
-        public IFormFile[] MentalHealthAttachments { get; set; } = Array.Empty<IFormFile>();
+        public SwlCategoryTypeCode SwlCategoryTypeCode { get; set; }
+        public Documents[]? Documents { get; set; } = null;
+        public bool? Confirmed { get; set; }
+        public bool? SecurityAlarmSales { get; set; }
     }
+
+    public record Documents
+    {
+        public DocumentTypeCode DocumentTypeCode { get; set; }
+        public IFormFile[] Attachments { get; set; } = Array.Empty<IFormFile>();
+        public DateTimeOffset? ExpiredDate { get;set; }
+    }
+
+    public record Alias
+    {
+        public string? GivenName { get; set; }
+        public string? MiddleName1 { get; set; }
+        public string? MiddleName2 { get; set; }
+        public string? Surname { get; set; }
+    }
+
+
 
     public enum WorkerLicenceTypeCode
     {
@@ -70,7 +170,7 @@ namespace Spd.Manager.Cases.Licence
         BodyArmourPermit
     }
 
-    public enum AppTypeCode
+    public enum ApplicationTypeCode
     {
         New,
         Renewal,
@@ -85,20 +185,35 @@ namespace Spd.Manager.Cases.Licence
         ExplosiveDetection,
     }
 
-    public enum DogsPurposeDocumentTypeCode
+    public enum DocumentTypeCode
     {
-        SecurityDogValidationCertificate,
-        CertificateOfAdvancedSecurityTraining,
+        DogsSecurityDogValidationCertificate,
+        DogsCertificateOfAdvancedSecurityTraining,
+        RestraintsAdvancedSecurityTrainingCertificate,
+        RestraintsUseOfForceLetter,
+        RestraintsTrainingEquivalent,
+        PoliceBackgroundLetterOfNoConflictAttachments,
+        MentalHealthConditionAttachments,
+        ProofOfFingerprintAttachments,
+        CitizenshipDocumentPhotoAttachments,
+        PhotoDriversLicence,
+        PhotoCanadianFirearmsLicence,
+        PhotoBcServicesCard,
+        PhotoCertificateOfIndianStatus,
+        PhotoValidGovernmentIssuedPhotoId,
+        PhotoOfYourselfAttachments,
+        CategoryBasicSecurityTraingCertificate,
+        CategoryCanadianPoliceOfficerTrainingProof,
+        CategoryEquivalentBasicSecurityTrainingJIBC,
+        CategoryFirearmLicenceAndATCCertificate,
+        CategoryTradesQualificationCertificate,
+        CategoryTradesQualificationCertificateEquivalent,
+        CategoryLocksmithCertificate,
+        CategoryProofOfLocksmithExperienceAndApprenticeship,
+        CategoryApprovedLocksmithCourse,
+        CategoryPrivateInvestigatorCourseCompletionProof,
     }
-
-    public enum RestraintDocumentCode
-    {
-        AdvancedSecurityTrainingCertificate,
-        UseOfForceLetter,
-        TrainingEquivalent,
-    }
-
-    public enum WorkerLicenceTermCode
+    public enum LicenceTermCode
     {
         NintyDays,
         OneYear,
@@ -140,5 +255,57 @@ namespace Spd.Manager.Cases.Licence
         BcServicesCard,
         CertificateOfIndianStatus,
         ValidGovernmentIssuedPhotoId,
+    }
+
+    public enum HairColourCode
+    {
+        Black,
+        Blonde,
+        Brown,
+        Red,
+        Grey,
+        Bald,
+    }
+
+    public enum EyeColourCode
+    {
+        Blue,
+        Brown,
+        Black,
+        Green,
+        Hazel,
+    }
+
+    public enum HeightUnitCode
+    {
+        Centimeters,
+        Inches,
+    }
+
+    public enum WeightUnitCode
+    {
+        Kilograms,
+        Pounds,
+    }
+
+    public enum SwlCategoryTypeCode
+    {
+        ArmouredCarGuard,
+        BodyArmourSales,
+        ClosedCircuitTelevisionInstaller,
+        ElectronicLockingDeviceInstaller,
+        FireInvestigator,
+        Locksmith,
+        LocksmithUnderSupervision,
+        PrivateInvestigator,
+        PrivateInvestigatorUnderSupervision,
+        SecurityGuard,
+        SecurityGuardUnderSupervision,
+        SecurityAlarmInstallerUnderSupervision,
+        SecurityAlarmInstaller,
+        SecurityAlarmMonitor,
+        SecurityAlarmResponse,
+        SecurityAlarmSales,
+        SecurityConsultant,
     }
 }
