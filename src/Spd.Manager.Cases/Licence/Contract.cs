@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using GenderCode = Spd.Utilities.Shared.ManagerContract.GenderCode;
 
@@ -5,11 +6,14 @@ namespace Spd.Manager.Cases.Licence
 {
     public interface ILicenceManager
     {
-
+        public Task<WorkerLicenceCreateResponse> Handle(WorkerLicenceCreateCommand command, CancellationToken ct);
     }
+
+    public record WorkerLicenceCreateCommand(WorkerLicenceCreateRequest LicenceCreateRequest, string BcscGuid) : IRequest<WorkerLicenceCreateResponse>;
 
     public class WorkerLicenceCreateRequest
     {
+        public Guid? LicenceId { get; set; }
         public LicenceTypeData? LicenceTypeData { get; set; }
         public ApplicationTypeData? ApplicationTypeData { get; set; }
         public SoleProprietorData? SoleProprietorData { get; set; }
@@ -33,7 +37,9 @@ namespace Spd.Manager.Cases.Licence
         public WorkerLicenceCategoryData[] Categories { get; set; }
     }
     public class WorkerLicenceCreateResponse
-    { }
+    {
+        public Guid LicenceId { get; set; }
+    }
 
     public record LicenceTypeData(WorkerLicenceTypeCode WorkerLicenceTypeCode);
     public record ApplicationTypeData(ApplicationTypeCode ApplicationTypeCode);
@@ -82,26 +88,26 @@ namespace Spd.Manager.Cases.Licence
     }
     public record AliasesData
     {
-        public bool HasPreviousName{get;set;}
+        public bool HasPreviousName { get; set; }
         public Alias[]? Aliases { get; set; }
     }
     public record CitizenshipData
     {
         public bool IsBornInCanada { get; set; }
         public ProofOfCanadianCitizenshipCode? ProofOfCanadianCitizenshipCode { get; set; }
-		public ProofOfAbilityToWorkInCanadaCode? ProofOfAbilityToWorkInCanadaCode { get; set; } //?
+        public ProofOfAbilityToWorkInCanadaCode? ProofOfAbilityToWorkInCanadaCode { get; set; } //?
         public Documents Documents { get; set; }
     }
     public record GovIssuedIdData
     {
-        public GovernmentIssuedPhotoIdCode GovernmentIssuedPhotoIdCode { get;set;}
+        public GovernmentIssuedPhotoIdCode GovernmentIssuedPhotoIdCode { get; set; }
         public Documents Documents { get; set; }
     }
-    public record BcDriversLicenceData 
+    public record BcDriversLicenceData
     {
-		public bool? HasBcDriversLicence { get; set; }
-		public string? BcDriversLicenceNumber { get; set; }
-	}
+        public bool? HasBcDriversLicence { get; set; }
+        public string? BcDriversLicenceNumber { get; set; }
+    }
     public record CharacteristicsData
     {
         public HairColourCode? HairColourCode { get; set; }
@@ -114,7 +120,7 @@ namespace Spd.Manager.Cases.Licence
     public record PhotographOfYourselfData
     {
         public bool? UseBcServicesCardPhoto { get; set; }
-        public Documents Documents { get; set;}
+        public Documents Documents { get; set; }
     }
     public record ContactInformationData
     {
@@ -122,7 +128,7 @@ namespace Spd.Manager.Cases.Licence
         public string? ContactPhoneNumber { get; set; }
     }
     public record ResidentialAddressData() : AddressData
-    { 
+    {
         public bool IsMailingTheSameAsResidential { get; set; }
     }
     public record MailingAddressData() : AddressData;
@@ -150,7 +156,7 @@ namespace Spd.Manager.Cases.Licence
     {
         public DocumentTypeCode DocumentTypeCode { get; set; }
         public IFormFile[] Attachments { get; set; } = Array.Empty<IFormFile>();
-        public DateTimeOffset? ExpiredDate { get;set; }
+        public DateTimeOffset? ExpiredDate { get; set; }
     }
 
     public record Alias
