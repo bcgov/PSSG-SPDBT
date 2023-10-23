@@ -19,7 +19,8 @@ namespace Spd.Manager.Cases.Licence
         public SoleProprietorData? SoleProprietorData { get; set; }
         public PersonalInformationData? PersonalInformationData { get; set; }
         public ExpiredLicenceData? ExpiredLicenceData { get; set; }
-        public DogsOrRestraintsData? DogsOrRestraintsData { get; set; } = null;
+        public DogsAuthorizationData? DogsAuthorizationData { get; set; } = null;
+        public RestraintsAuthorizationData? RestraintsAuthorizationData { get; set; } = null;
         public LicenceTermData? licenceTermData { get; set; } = null;
         public PoliceBackgroundData? PoliceBackgroundData { get; set; }
         public MentalHealthConditionsData? MentalHealthConditionsData { get; set; }
@@ -60,12 +61,18 @@ namespace Spd.Manager.Cases.Licence
         public GenderCode? GenderCode { get; set; }
         public bool? OneLegalName { get; set; }
     }
-    public record DogsOrRestraintsData
+    public record DogsAuthorizationData
     {
-        public bool? UseDogsOrRestraints { get; set; }
-        public DogsPurposeCode[]? DogsPurposeCodes { get; set; } = Array.Empty<DogsPurposeCode>();
-        public bool CarryAndUseRetraints { get; set; }
-        public Documents[]? Documents { get; set; }
+        public bool? UseDogs { get; set; }
+        public bool? IsDogsPurposeProtection { get; set; }
+        public bool? IsDogsPurposeDetectionDrugs { get; set; }
+        public bool? IsDogsPurposeDetectionExplosives { get; set; }
+        public Documents? Documents { get; set; }
+    }
+    public record RestraintsAuthorizationData
+    {
+        public bool? CarryAndUseRetraints { get; set; }
+        public Documents? Documents { get; set; }
 
     }
     public record LicenceTermData(LicenceTermCode LicenceTermCode) { };
@@ -94,13 +101,10 @@ namespace Spd.Manager.Cases.Licence
     public record CitizenshipData
     {
         public bool IsBornInCanada { get; set; }
-        public ProofOfCanadianCitizenshipCode? ProofOfCanadianCitizenshipCode { get; set; }
-        public ProofOfAbilityToWorkInCanadaCode? ProofOfAbilityToWorkInCanadaCode { get; set; } //?
         public Documents Documents { get; set; }
     }
     public record GovIssuedIdData
     {
-        public GovernmentIssuedPhotoIdCode GovernmentIssuedPhotoIdCode { get; set; }
         public Documents Documents { get; set; }
     }
     public record BcDriversLicenceData
@@ -148,8 +152,6 @@ namespace Spd.Manager.Cases.Licence
     {
         public SwlCategoryTypeCode SwlCategoryTypeCode { get; set; }
         public Documents[]? Documents { get; set; } = null;
-        public bool? Confirmed { get; set; }
-        public bool? SecurityAlarmSales { get; set; }
     }
 
     public record Documents
@@ -167,8 +169,6 @@ namespace Spd.Manager.Cases.Licence
         public string? Surname { get; set; }
     }
 
-
-
     public enum WorkerLicenceTypeCode
     {
         SecurityWorkerLicence,
@@ -184,13 +184,6 @@ namespace Spd.Manager.Cases.Licence
         Update,
     }
 
-    public enum DogsPurposeCode
-    {
-        Protection,
-        DrugDetection,
-        ExplosiveDetection,
-    }
-
     public enum DocumentTypeCode
     {
         DogsSecurityDogValidationCertificate,
@@ -198,26 +191,41 @@ namespace Spd.Manager.Cases.Licence
         RestraintsAdvancedSecurityTrainingCertificate,
         RestraintsUseOfForceLetter,
         RestraintsTrainingEquivalent,
-        PoliceBackgroundLetterOfNoConflictAttachments,
-        MentalHealthConditionAttachments,
-        ProofOfFingerprintAttachments,
-        CitizenshipDocumentPhotoAttachments,
-        PhotoDriversLicence,
-        PhotoCanadianFirearmsLicence,
-        PhotoBcServicesCard,
-        PhotoCertificateOfIndianStatus,
-        PhotoValidGovernmentIssuedPhotoId,
-        PhotoOfYourselfAttachments,
-        CategoryBasicSecurityTraingCertificate,
-        CategoryCanadianPoliceOfficerTrainingProof,
-        CategoryEquivalentBasicSecurityTrainingJIBC,
-        CategoryFirearmLicenceAndATCCertificate,
-        CategoryTradesQualificationCertificate,
-        CategoryTradesQualificationCertificateEquivalent,
-        CategoryLocksmithCertificate,
-        CategoryProofOfLocksmithExperienceAndApprenticeship,
-        CategoryApprovedLocksmithCourse,
-        CategoryPrivateInvestigatorCourseCompletionProof,
+        PoliceBackgroundLetterOfNoConflict,
+        MentalHealthCondition,
+        ProofOfFingerprint,
+        DriversLicence,
+        CanadianFirearmsLicence,
+        BcServicesCard,
+        CertificateOfIndianStatus,
+        GovernmentIssuedPhotoId,
+        PhotoOfYourself,
+        CanadianPassport,
+        BirthCertificate,
+        CanadianCitizenship,
+        PermanentResidentCard,
+        RecordOfLandingDocument,
+        ConfirmationOfPermanentResidenceDocument,
+        WorkPermit,
+        StudyPermit,
+        ValidDocumentToVerifyLegalWorkStatus,
+        CategoryLocksmith_CertificateOfQualification,
+        CategoryLocksmith_ExperienceAndApprenticeship,
+        CategoryLocksmith_ApprovedLocksmithCourse,
+        CategoryPrivateInvestigator_ExperienceAndCourses,
+        CategoryPrivateInvestigator_TenYearsPoliceExperienceAndTraining,
+        CategoryPrivateInvestigator_KnowledgeAndExperience,
+        CategoryPrivateInvestigator_CompleteRecognizedTrainingCourse,
+        CategoryPrivateInvestigator_CompleteOtherCoursesOrKnowledge,
+        CategoryPrivateInvestigator_PrivateSecurityTrainingNetworkCompletion,
+        CategoryPrivateInvestigator_OtherCourseCompletion,
+        CategorySecurityAlarmInstaller_TradesQualificationCertificate,
+        CategorySecurityAlarmInstaller_ExperienceOrTrainingEquivalent,
+        CategorySecurityConsultant_ReferenceLetters,
+        CategorySecurityConsultant_RecommendationLetters,
+        CategorySecurityGuard_BasicSecurityTrainingCertificate,
+        CategorySecurityGuard_PoliceExperienceOrTraining,
+        CategorySecurityGuard_BasicSecurityTrainingCourseEquivalent
     }
     public enum LicenceTermCode
     {
@@ -236,31 +244,6 @@ namespace Spd.Manager.Cases.Licence
         SpecialProvincialOrMunicipalConstable,
         PoliceOfficer,
         Other,
-    }
-    public enum ProofOfCanadianCitizenshipCode
-    {
-        ValidCanadianPassport,
-        BirthCertificate,
-        SecureCertificateOfIndianStatus,
-    }
-
-    public enum ProofOfAbilityToWorkInCanadaCode
-    {
-        ValidCanadianCitizenship,
-        ValidPermanentResidentCard,
-        RecordOfLandingDocument,
-        ConfirmationOfPermanentResidenceDocument,
-        WorkPermit,
-        StudyPermit,
-        ValidDocumentToVerifyLegalWorkStatus,
-    }
-    public enum GovernmentIssuedPhotoIdCode
-    {
-        DriversLicence,
-        CanadianFirearmsLicence,
-        BcServicesCard,
-        CertificateOfIndianStatus,
-        ValidGovernmentIssuedPhotoId,
     }
 
     public enum HairColourCode
