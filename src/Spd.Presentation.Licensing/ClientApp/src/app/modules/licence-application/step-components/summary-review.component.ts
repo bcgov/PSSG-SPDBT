@@ -679,17 +679,11 @@ import { LicenceApplicationService } from '../licence-application.service';
 			}
 
 			.text-data {
-				/* line-height: 1.3em; */
 				font-size: 1rem !important;
 				font-weight: 600 !important;
 				color: var(--color-primary);
 			}
 
-			.text-minor-heading {
-				font-size: 1.1rem !important;
-				color: var(--color-primary-light) !important;
-				font-weight: 300 !important;
-			}
 			.text-label {
 				font-size: smaller;
 			}
@@ -754,14 +748,14 @@ export class SummaryReviewComponent {
 	}
 
 	get licenceTypeCode(): FormControl {
-		return this.form.controls['licenceTypeFormGroup'].get('licenceTypeCode') as FormControl;
+		return this.form.controls['licenceTypeData'].get('licenceTypeCode') as FormControl;
 	}
 	get applicationTypeCode(): FormControl {
-		return this.form.controls['applicationTypeFormGroup'].get('applicationTypeCode') as FormControl;
+		return this.form.controls['applicationTypeData'].get('applicationTypeCode') as FormControl;
 	}
 
 	get isSoleProprietor(): FormControl {
-		return this.form.controls['soleProprietorFormGroup'].get('isSoleProprietor') as FormControl;
+		return this.form.controls['soleProprietorData'].get('isSoleProprietor') as FormControl;
 	}
 
 	get categoryArmouredCarGuardAttachments(): FormControl {
@@ -817,215 +811,215 @@ export class SummaryReviewComponent {
 	}
 
 	get licenceTermCode(): FormControl {
-		return this.form.controls['licenceTermFormGroup'].get('licenceTermCode') as FormControl;
+		return this.form.controls['licenceTermData'].get('licenceTermCode') as FormControl;
 	}
 
 	get hasExpiredLicence(): FormControl {
-		return this.form.controls['expiredLicenceFormGroup'].get('hasExpiredLicence') as FormControl;
+		return this.form.controls['expiredLicenceData'].get('hasExpiredLicence') as FormControl;
 	}
 	get expiredLicenceNumber(): FormControl {
-		return this.form.controls['expiredLicenceFormGroup'].get('expiredLicenceNumber') as FormControl;
+		return this.form.controls['expiredLicenceData'].get('expiredLicenceNumber') as FormControl;
 	}
 	get expiryDate(): FormControl {
-		return this.form.controls['expiredLicenceFormGroup'].get('expiryDate') as FormControl;
+		return this.form.controls['expiredLicenceData'].get('expiryDate') as FormControl;
 	}
 
 	get carryAndUseRetraints(): FormControl {
-		return this.form.controls['restraintsFormGroup'].get('carryAndUseRetraints') as FormControl;
+		return this.form.controls['restraintsAuthorizationData'].get('carryAndUseRetraints') as FormControl;
 	}
 	get carryAndUseRetraintsDocument(): FormControl {
-		return this.form.controls['restraintsFormGroup'].get('carryAndUseRetraintsDocument') as FormControl;
+		return this.form.controls['restraintsAuthorizationData'].get('carryAndUseRetraintsDocument') as FormControl;
 	}
 	get carryAndUseRetraintsAttachments(): FormControl {
-		return this.form.controls['restraintsFormGroup'].get('attachments') as FormControl;
+		return this.form.controls['restraintsAuthorizationData'].get('attachments') as FormControl;
 	}
 	get useDogs(): FormControl {
-		return this.form.controls['dogsFormGroup'].get('useDogs') as FormControl;
+		return this.form.controls['dogsAuthorizationData'].get('useDogs') as FormControl;
 	}
 	get isDogsPurposeProtection(): FormControl {
-		return (this.form.controls['dogsFormGroup'].get('dogsPurposeFormGroup') as FormGroup).get(
+		return (this.form.controls['dogsAuthorizationData'].get('dogsPurposeFormGroup') as FormGroup).get(
 			'isDogsPurposeProtection'
 		) as FormControl;
 	}
 	get isDogsPurposeDetectionDrugs(): FormControl {
-		return (this.form.controls['dogsFormGroup'].get('dogsPurposeFormGroup') as FormGroup).get(
+		return (this.form.controls['dogsAuthorizationData'].get('dogsPurposeFormGroup') as FormGroup).get(
 			'isDogsPurposeDetectionDrugs'
 		) as FormControl;
 	}
 	get isDogsPurposeDetectionExplosives(): FormControl {
-		return (this.form.controls['dogsFormGroup'].get('dogsPurposeFormGroup') as FormGroup).get(
+		return (this.form.controls['dogsAuthorizationData'].get('dogsPurposeFormGroup') as FormGroup).get(
 			'isDogsPurposeDetectionExplosives'
 		) as FormControl;
 	}
 	get dogsPurposeDocumentType(): FormControl {
-		return this.form.controls['dogsFormGroup'].get('dogsPurposeDocumentType') as FormControl;
+		return this.form.controls['dogsAuthorizationData'].get('dogsPurposeDocumentType') as FormControl;
 	}
 	get dogsPurposeAttachments(): FormControl {
-		return this.form.controls['dogsFormGroup'].get('attachments') as FormControl;
+		return this.form.controls['dogsAuthorizationData'].get('attachments') as FormControl;
 	}
 
 	get isPoliceOrPeaceOfficer(): FormControl {
-		return this.form.controls['policeBackgroundFormGroup'].get('isPoliceOrPeaceOfficer') as FormControl;
+		return this.form.controls['policeBackgroundData'].get('isPoliceOrPeaceOfficer') as FormControl;
 	}
 	get officerRole(): FormControl {
-		return this.form.controls['policeBackgroundFormGroup'].get('officerRole') as FormControl;
+		return this.form.controls['policeBackgroundData'].get('officerRole') as FormControl;
 	}
 	get otherOfficerRole(): FormControl {
-		return this.form.controls['policeBackgroundFormGroup'].get('otherOfficerRole') as FormControl;
+		return this.form.controls['policeBackgroundData'].get('otherOfficerRole') as FormControl;
 	}
 	get letterOfNoConflictAttachments(): FormControl {
-		return this.form.controls['policeBackgroundFormGroup'].get('letterOfNoConflictAttachments') as FormControl;
+		return this.form.controls['policeBackgroundData'].get('letterOfNoConflictAttachments') as FormControl;
 	}
 
 	get oneLegalName(): FormControl {
-		return this.form.controls['personalInformationFormGroup'].get('oneLegalName') as FormControl;
+		return this.form.controls['personalInformationData'].get('oneLegalName') as FormControl;
 	}
 	get givenName(): FormControl {
-		return this.form.controls['personalInformationFormGroup'].get('givenName') as FormControl;
+		return this.form.controls['personalInformationData'].get('givenName') as FormControl;
 	}
 	get middleName1(): FormControl {
-		return this.form.controls['personalInformationFormGroup'].get('middleName1') as FormControl;
+		return this.form.controls['personalInformationData'].get('middleName1') as FormControl;
 	}
 	get middleName2(): FormControl {
-		return this.form.controls['personalInformationFormGroup'].get('middleName2') as FormControl;
+		return this.form.controls['personalInformationData'].get('middleName2') as FormControl;
 	}
 	get surname(): FormControl {
-		return this.form.controls['personalInformationFormGroup'].get('surname') as FormControl;
+		return this.form.controls['personalInformationData'].get('surname') as FormControl;
 	}
 	get genderCode(): FormControl {
-		return this.form.controls['personalInformationFormGroup'].get('genderCode') as FormControl;
+		return this.form.controls['personalInformationData'].get('genderCode') as FormControl;
 	}
 	get dateOfBirth(): FormControl {
-		return this.form.controls['personalInformationFormGroup'].get('dateOfBirth') as FormControl;
+		return this.form.controls['personalInformationData'].get('dateOfBirth') as FormControl;
 	}
 
 	get previousNameFlag(): FormControl {
-		return this.form.controls['aliasesFormGroup'].get('previousNameFlag') as FormControl;
+		return this.form.controls['aliasesData'].get('previousNameFlag') as FormControl;
 	}
 	get aliases(): FormArray {
-		return this.form.controls['aliasesFormGroup'].get('aliases') as FormArray;
+		return this.form.controls['aliasesData'].get('aliases') as FormArray;
 	}
 
 	get isTreatedForMHC(): FormControl {
-		return this.form.controls['mentalHealthConditionsFormGroup'].get('isTreatedForMHC') as FormControl;
+		return this.form.controls['mentalHealthConditionsData'].get('isTreatedForMHC') as FormControl;
 	}
 	get mentalHealthConditionAttachments(): FormControl {
-		return this.form.controls['mentalHealthConditionsFormGroup'].get('mentalHealthConditionAttachments') as FormControl;
+		return this.form.controls['mentalHealthConditionsData'].get('mentalHealthConditionAttachments') as FormControl;
 	}
 
 	get hasCriminalHistory(): FormControl {
-		return this.form.controls['criminalHistoryFormGroup'].get('hasCriminalHistory') as FormControl;
+		return this.form.controls['criminalHistoryData'].get('hasCriminalHistory') as FormControl;
 	}
 
 	get proofOfFingerprintAttachments(): FormControl {
-		return this.form.controls['proofOfFingerprintFormGroup'].get('proofOfFingerprintAttachments') as FormControl;
+		return this.form.controls['proofOfFingerprintData'].get('proofOfFingerprintAttachments') as FormControl;
 	}
 
 	get isBornInCanada(): FormControl {
-		return this.form.controls['citizenshipFormGroup'].get('isBornInCanada') as FormControl;
+		return this.form.controls['citizenshipData'].get('isBornInCanada') as FormControl;
 	}
 	get proofOfCitizenship(): FormControl {
-		return this.form.controls['citizenshipFormGroup'].get('proofOfCitizenship') as FormControl;
+		return this.form.controls['citizenshipData'].get('proofOfCitizenship') as FormControl;
 	}
 	get proofOfAbility(): FormControl {
-		return this.form.controls['citizenshipFormGroup'].get('proofOfAbility') as FormControl;
+		return this.form.controls['citizenshipData'].get('proofOfAbility') as FormControl;
 	}
 	get citizenshipDocumentExpiryDate(): FormControl {
-		return this.form.controls['citizenshipFormGroup'].get('citizenshipDocumentExpiryDate') as FormControl;
+		return this.form.controls['citizenshipData'].get('citizenshipDocumentExpiryDate') as FormControl;
 	}
 	get citizenshipDocumentPhotoAttachments(): FormControl {
-		return this.form.controls['citizenshipFormGroup'].get('citizenshipDocumentPhotoAttachments') as FormControl;
+		return this.form.controls['citizenshipData'].get('citizenshipDocumentPhotoAttachments') as FormControl;
 	}
 
 	get governmentIssuedPhotoTypeCode(): FormControl {
-		return this.form.controls['govIssuedIdFormGroup'].get('governmentIssuedPhotoTypeCode') as FormControl;
+		return this.form.controls['govIssuedIdData'].get('governmentIssuedPhotoTypeCode') as FormControl;
 	}
 	get governmentIssuedPhotoExpiryDate(): FormControl {
-		return this.form.controls['govIssuedIdFormGroup'].get('governmentIssuedPhotoExpiryDate') as FormControl;
+		return this.form.controls['govIssuedIdData'].get('governmentIssuedPhotoExpiryDate') as FormControl;
 	}
 	get governmentIssuedPhotoAttachments(): FormControl {
-		return this.form.controls['govIssuedIdFormGroup'].get('governmentIssuedPhotoAttachments') as FormControl;
+		return this.form.controls['govIssuedIdData'].get('governmentIssuedPhotoAttachments') as FormControl;
 	}
 
 	get hasBcDriversLicence(): FormControl {
-		return this.form.controls['bcDriversLicenceFormGroup'].get('hasBcDriversLicence') as FormControl;
+		return this.form.controls['bcDriversLicenceData'].get('hasBcDriversLicence') as FormControl;
 	}
 	get bcDriversLicenceNumber(): FormControl {
-		return this.form.controls['bcDriversLicenceFormGroup'].get('bcDriversLicenceNumber') as FormControl;
+		return this.form.controls['bcDriversLicenceData'].get('bcDriversLicenceNumber') as FormControl;
 	}
 
 	get hairColourCode(): FormControl {
-		return this.form.controls['characteristicsFormGroup'].get('hairColourCode') as FormControl;
+		return this.form.controls['characteristicsData'].get('hairColourCode') as FormControl;
 	}
 	get eyeColourCode(): FormControl {
-		return this.form.controls['characteristicsFormGroup'].get('eyeColourCode') as FormControl;
+		return this.form.controls['characteristicsData'].get('eyeColourCode') as FormControl;
 	}
 	get height(): FormControl {
-		return this.form.controls['characteristicsFormGroup'].get('height') as FormControl;
+		return this.form.controls['characteristicsData'].get('height') as FormControl;
 	}
 	get heightUnitCode(): FormControl {
-		return this.form.controls['characteristicsFormGroup'].get('heightUnitCode') as FormControl;
+		return this.form.controls['characteristicsData'].get('heightUnitCode') as FormControl;
 	}
 	get weight(): FormControl {
-		return this.form.controls['characteristicsFormGroup'].get('weight') as FormControl;
+		return this.form.controls['characteristicsData'].get('weight') as FormControl;
 	}
 	get weightUnitCode(): FormControl {
-		return this.form.controls['characteristicsFormGroup'].get('weightUnitCode') as FormControl;
+		return this.form.controls['characteristicsData'].get('weightUnitCode') as FormControl;
 	}
 
 	get useBcServicesCardPhoto(): FormControl {
-		return this.form.controls['photographOfYourselfFormGroup'].get('useBcServicesCardPhoto') as FormControl;
+		return this.form.controls['photographOfYourselfData'].get('useBcServicesCardPhoto') as FormControl;
 	}
 	get photoOfYourselfAttachments(): FormControl {
-		return this.form.controls['photographOfYourselfFormGroup'].get('photoOfYourselfAttachments') as FormControl;
+		return this.form.controls['photographOfYourselfData'].get('photoOfYourselfAttachments') as FormControl;
 	}
 
 	get contactEmailAddress(): FormControl {
-		return this.form.controls['contactInformationFormGroup'].get('contactEmailAddress') as FormControl;
+		return this.form.controls['contactInformationData'].get('contactEmailAddress') as FormControl;
 	}
 	get contactPhoneNumber(): FormControl {
-		return this.form.controls['contactInformationFormGroup'].get('contactPhoneNumber') as FormControl;
+		return this.form.controls['contactInformationData'].get('contactPhoneNumber') as FormControl;
 	}
 
 	get residentialAddressLine1(): FormControl {
-		return this.form.controls['residentialAddressFormGroup'].get('residentialAddressLine1') as FormControl;
+		return this.form.controls['residentialAddressData'].get('residentialAddressLine1') as FormControl;
 	}
 	get residentialAddressLine2(): FormControl {
-		return this.form.controls['residentialAddressFormGroup'].get('residentialAddressLine2') as FormControl;
+		return this.form.controls['residentialAddressData'].get('residentialAddressLine2') as FormControl;
 	}
 	get residentialCity(): FormControl {
-		return this.form.controls['residentialAddressFormGroup'].get('residentialCity') as FormControl;
+		return this.form.controls['residentialAddressData'].get('residentialCity') as FormControl;
 	}
 	get residentialPostalCode(): FormControl {
-		return this.form.controls['residentialAddressFormGroup'].get('residentialPostalCode') as FormControl;
+		return this.form.controls['residentialAddressData'].get('residentialPostalCode') as FormControl;
 	}
 	get residentialProvince(): FormControl {
-		return this.form.controls['residentialAddressFormGroup'].get('residentialProvince') as FormControl;
+		return this.form.controls['residentialAddressData'].get('residentialProvince') as FormControl;
 	}
 	get residentialCountry(): FormControl {
-		return this.form.controls['residentialAddressFormGroup'].get('residentialCountry') as FormControl;
+		return this.form.controls['residentialAddressData'].get('residentialCountry') as FormControl;
 	}
 	get isMailingTheSameAsResidential(): FormControl {
-		return this.form.controls['residentialAddressFormGroup'].get('isMailingTheSameAsResidential') as FormControl;
+		return this.form.controls['residentialAddressData'].get('isMailingTheSameAsResidential') as FormControl;
 	}
 
 	get mailingAddressLine1(): FormControl {
-		return this.form.controls['mailingAddressFormGroup'].get('mailingAddressLine1') as FormControl;
+		return this.form.controls['mailingAddressData'].get('mailingAddressLine1') as FormControl;
 	}
 	get mailingAddressLine2(): FormControl {
-		return this.form.controls['mailingAddressFormGroup'].get('mailingAddressLine2') as FormControl;
+		return this.form.controls['mailingAddressData'].get('mailingAddressLine2') as FormControl;
 	}
 	get mailingCity(): FormControl {
-		return this.form.controls['mailingAddressFormGroup'].get('mailingCity') as FormControl;
+		return this.form.controls['mailingAddressData'].get('mailingCity') as FormControl;
 	}
 	get mailingPostalCode(): FormControl {
-		return this.form.controls['mailingAddressFormGroup'].get('mailingPostalCode') as FormControl;
+		return this.form.controls['mailingAddressData'].get('mailingPostalCode') as FormControl;
 	}
 	get mailingProvince(): FormControl {
-		return this.form.controls['mailingAddressFormGroup'].get('mailingProvince') as FormControl;
+		return this.form.controls['mailingAddressData'].get('mailingProvince') as FormControl;
 	}
 	get mailingCountry(): FormControl {
-		return this.form.controls['mailingAddressFormGroup'].get('mailingCountry') as FormControl;
+		return this.form.controls['mailingAddressData'].get('mailingCountry') as FormControl;
 	}
 	get categoryList(): Array<SelectOptions> {
 		const list: Array<SelectOptions> = [];
