@@ -1,9 +1,13 @@
 import { Component, Inject, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { SelectOptions, SwlCategoryTypes } from 'src/app/core/code-types/model-desc.models';
+import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
+import { SelectOptions, SwlCategoryTypeCode, SwlCategoryTypes } from 'src/app/core/code-types/model-desc.models';
 import { LicenceApplicationService } from '../licence-application.service';
 
-export interface LicenceCategoryDialogData {}
+export interface LicenceCategoryDialogData {
+	category: SwlCategoryTypeCode | null;
+}
 
 @Component({
 	selector: 'app-update-apply-name-change-modal',
@@ -13,31 +17,111 @@ export interface LicenceCategoryDialogData {}
 			<mat-divider></mat-divider>
 		</div>
 		<div mat-dialog-content>
-			<div class="row">
-				<div class="col-lg-8 col-md-6 col-sm-12">
-					<mat-form-field>
-						<mat-label>Category</mat-label>
-						<mat-select [(ngModel)]="category">
-							<mat-option *ngFor="let item of validCategoryList" [value]="item.code">
-								{{ item.desc }}
-							</mat-option>
-						</mat-select>
-					</mat-form-field>
-					<mat-error class="mat-option-error" *ngIf="isDirtyAndInvalid">
-						At least one category must be added
-					</mat-error>
-				</div>
-				<div class="col-lg-4 col-md-6 col-sm-12">
-					<button mat-stroked-button color="primary" class="large mb-3" (click)="onAddCategory()">Add Category</button>
-				</div>
-			</div>
+			<section class="step-section-modal">
+				<div class="step mt-3">
+					<div class="step-container">
+						<div class="row" *ngIf="!category">
+							<div class="col-md-6 col-sm-12 mx-auto">
+								<mat-form-field>
+									<mat-label>Category</mat-label>
+									<mat-select (selectionChange)="onAddCategory($event)">
+										<mat-option *ngFor="let item of validCategoryList" [value]="item.code">
+											{{ item.desc }}
+										</mat-option>
+									</mat-select>
+								</mat-form-field>
+								<mat-error class="mat-option-error" *ngIf="isDirtyAndInvalid">
+									At least one category must be added
+								</mat-error>
+							</div>
+							<!-- <div class="col-md-6 col-sm-12" *ngIf="categoryList.length < 6">
+								<button mat-stroked-button color="primary" class="large my-2" (click)="onAddCategory()">
+									Add Category
+								</button>
+							</div> -->
+						</div>
 
-			<!-- <app-licence-category-private-investigator></app-licence-category-private-investigator> -->
+						<div class="row" *ngIf="category" @showHideTriggerSlideAnimation>
+							<div class="col-12">
+								<mat-accordion multi="false">
+									<ng-container *ngIf="category == swlCategoryTypeCodes.ArmouredCarGuard">
+										<app-licence-category-armoured-car-guard></app-licence-category-armoured-car-guard>
+									</ng-container>
+
+									<ng-container *ngIf="category == swlCategoryTypeCodes.BodyArmourSales">
+										<app-licence-category-body-armour-sales></app-licence-category-body-armour-sales>
+									</ng-container>
+
+									<ng-container *ngIf="category == swlCategoryTypeCodes.ClosedCircuitTelevisionInstaller">
+										<app-licence-category-closed-circuit-television-installer></app-licence-category-closed-circuit-television-installer>
+									</ng-container>
+
+									<ng-container *ngIf="category == swlCategoryTypeCodes.ElectronicLockingDeviceInstaller">
+										<app-licence-category-electronic-locking-device-installer></app-licence-category-electronic-locking-device-installer>
+									</ng-container>
+
+									<ng-container *ngIf="category == swlCategoryTypeCodes.FireInvestigator">
+										<app-licence-category-fire-investigator></app-licence-category-fire-investigator>
+									</ng-container>
+
+									<ng-container *ngIf="category == swlCategoryTypeCodes.Locksmith">
+										<app-licence-category-locksmith></app-licence-category-locksmith>
+									</ng-container>
+
+									<ng-container *ngIf="category == swlCategoryTypeCodes.LocksmithUnderSupervision">
+										<app-licence-category-locksmith-sup></app-licence-category-locksmith-sup>
+									</ng-container>
+
+									<ng-container *ngIf="category == swlCategoryTypeCodes.PrivateInvestigator">
+										<app-licence-category-private-investigator></app-licence-category-private-investigator>
+									</ng-container>
+
+									<ng-container *ngIf="category == swlCategoryTypeCodes.PrivateInvestigatorUnderSupervision">
+										<app-licence-category-private-investigator-sup></app-licence-category-private-investigator-sup>
+									</ng-container>
+
+									<ng-container *ngIf="category == swlCategoryTypeCodes.SecurityAlarmInstaller">
+										<app-licence-category-security-alarm-installer></app-licence-category-security-alarm-installer>
+									</ng-container>
+
+									<ng-container *ngIf="category == swlCategoryTypeCodes.SecurityAlarmInstallerUnderSupervision">
+										<app-licence-category-security-alarm-installer-sup></app-licence-category-security-alarm-installer-sup>
+									</ng-container>
+
+									<ng-container *ngIf="category == swlCategoryTypeCodes.SecurityAlarmMonitor">
+										<app-licence-category-security-alarm-monitor></app-licence-category-security-alarm-monitor>
+									</ng-container>
+
+									<ng-container *ngIf="category == swlCategoryTypeCodes.SecurityAlarmResponse">
+										<app-licence-category-security-alarm-response></app-licence-category-security-alarm-response>
+									</ng-container>
+
+									<ng-container *ngIf="category == swlCategoryTypeCodes.SecurityAlarmSales">
+										<app-licence-category-security-alarm-sales></app-licence-category-security-alarm-sales>
+									</ng-container>
+
+									<ng-container *ngIf="category == swlCategoryTypeCodes.SecurityConsultant">
+										<app-licence-category-security-consultant></app-licence-category-security-consultant>
+									</ng-container>
+
+									<ng-container *ngIf="category == swlCategoryTypeCodes.SecurityGuard">
+										<app-licence-category-security-guard></app-licence-category-security-guard>
+									</ng-container>
+
+									<ng-container *ngIf="category == swlCategoryTypeCodes.SecurityGuardUnderSupervision">
+										<app-licence-category-security-guard-sup></app-licence-category-security-guard-sup>
+									</ng-container>
+								</mat-accordion>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
 		</div>
 		<div mat-dialog-actions>
 			<div class="row m-0 w-100">
 				<div class="col-lg-3 col-md-4 col-sm-12 mb-2">
-					<button mat-stroked-button mat-dialog-close class="large" color="primary">Cancel</button>
+					<button mat-stroked-button mat-dialog-close class="large" color="primary" (click)="onCancel()">Cancel</button>
 				</div>
 				<div class="offset-lg-6 col-lg-3 offset-md-4 col-md-4 col-sm-12 mb-2">
 					<button mat-flat-button color="primary" class="large" (click)="onSave()">Save</button>
@@ -46,13 +130,41 @@ export interface LicenceCategoryDialogData {}
 		</div>
 	`,
 	styles: [],
+	animations: [showHideTriggerSlideAnimation],
 })
 export class UpdateLicenceCategoryModalComponent implements OnInit {
-	category = '';
+	category: SwlCategoryTypeCode | null = null;
 	isDirtyAndInvalid = false;
 
 	validCategoryList: SelectOptions[] = SwlCategoryTypes;
-	// categoryPrivateInvestigatorFormGroup = this.licenceApplicationService.categoryPrivateInvestigatorFormGroup;
+
+	swlCategoryTypes = SwlCategoryTypes;
+	swlCategoryTypeCodes = SwlCategoryTypeCode;
+
+	categoryArmouredCarGuardFormGroup: FormGroup = this.licenceApplicationService.categoryArmouredCarGuardFormGroup;
+	categoryBodyArmourSalesFormGroup: FormGroup = this.licenceApplicationService.categoryBodyArmourSalesFormGroup;
+	categoryClosedCircuitTelevisionInstallerFormGroup: FormGroup =
+		this.licenceApplicationService.categoryClosedCircuitTelevisionInstallerFormGroup;
+	categoryElectronicLockingDeviceInstallerFormGroup: FormGroup =
+		this.licenceApplicationService.categoryElectronicLockingDeviceInstallerFormGroup;
+	categoryFireInvestigatorFormGroup: FormGroup = this.licenceApplicationService.categoryFireInvestigatorFormGroup;
+	categoryLocksmithFormGroup: FormGroup = this.licenceApplicationService.categoryLocksmithFormGroup;
+	categoryPrivateInvestigatorSupFormGroup: FormGroup =
+		this.licenceApplicationService.categoryPrivateInvestigatorSupFormGroup;
+	categoryPrivateInvestigatorFormGroup: FormGroup = this.licenceApplicationService.categoryPrivateInvestigatorFormGroup;
+	categorySecurityAlarmInstallerFormGroup: FormGroup =
+		this.licenceApplicationService.categorySecurityAlarmInstallerFormGroup;
+	categorySecurityConsultantFormGroup: FormGroup = this.licenceApplicationService.categorySecurityConsultantFormGroup;
+	categoryLocksmithSupFormGroup: FormGroup = this.licenceApplicationService.categoryLocksmithSupFormGroup;
+	categorySecurityAlarmInstallerSupFormGroup: FormGroup =
+		this.licenceApplicationService.categorySecurityAlarmInstallerSupFormGroup;
+	categorySecurityAlarmMonitorFormGroup: FormGroup =
+		this.licenceApplicationService.categorySecurityAlarmMonitorFormGroup;
+	categorySecurityAlarmResponseFormGroup: FormGroup =
+		this.licenceApplicationService.categorySecurityAlarmResponseFormGroup;
+	categorySecurityAlarmSalesFormGroup: FormGroup = this.licenceApplicationService.categorySecurityAlarmSalesFormGroup;
+	categorySecurityGuardFormGroup: FormGroup = this.licenceApplicationService.categorySecurityGuardFormGroup;
+	categorySecurityGuardSupFormGroup: FormGroup = this.licenceApplicationService.categorySecurityGuardSupFormGroup;
 
 	constructor(
 		private dialogRef: MatDialogRef<UpdateLicenceCategoryModalComponent>,
@@ -61,17 +173,233 @@ export class UpdateLicenceCategoryModalComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		// this.categoryPrivateInvestigatorFormGroup.patchValue({ isInclude: true });
+		this.category = this.dialogData.category;
+		this.setValidCategoryList();
 	}
 
-	onAddCategory() {}
-
 	onSave() {
-		// this.categoryPrivateInvestigatorFormGroup.markAllAsTouched();
-		// console.log('xxx', this.categoryPrivateInvestigatorFormGroup.valid);
-		// console.log('xxx', this.categoryPrivateInvestigatorFormGroup.value);
-		// if (!this.categoryPrivateInvestigatorFormGroup.valid) return;
+		const data: LicenceCategoryDialogData = { category: this.category };
+		this.dialogRef.close({ data });
+	}
 
-		this.dialogRef.close({ success: true });
+	onCancel() {
+		this.updateCategoryInclude(this.category, false);
+		this.dialogRef.close({});
+	}
+
+	onAddCategory(event: any): void {
+		this.category = event.value;
+		this.updateCategoryInclude(this.category, true);
+	}
+
+	onPromptFireInvestigator() {
+		// if (this.showFireInvestigator) {
+		// 	return; // this has already been added
+		// }
+		// const data: DialogOptions = {
+		// 	icon: 'warning',
+		// 	title: 'Confirmation',
+		// 	message: 'Would you also like to add Fire Investigator to this licence?',
+		// 	actionText: 'Yes',
+		// 	cancelText: 'No',
+		// };
+		// this.dialog
+		// 	.open(DialogComponent, { data })
+		// 	.afterClosed()
+		// 	.subscribe((response: boolean) => {
+		// 		if (response) {
+		// 			this.categoryFireInvestigatorFormGroup.patchValue({ isInclude: true });
+		// 			this.setValidCategoryList();
+		// 		}
+		// 	});
+	}
+
+	isFormValid(): boolean {
+		this.categoryArmouredCarGuardFormGroup.markAllAsTouched();
+		this.categoryBodyArmourSalesFormGroup.markAllAsTouched();
+		this.categoryClosedCircuitTelevisionInstallerFormGroup.markAllAsTouched();
+		this.categoryElectronicLockingDeviceInstallerFormGroup.markAllAsTouched();
+		this.categoryFireInvestigatorFormGroup.markAllAsTouched();
+		this.categoryLocksmithFormGroup.markAllAsTouched();
+		this.categoryPrivateInvestigatorSupFormGroup.markAllAsTouched();
+		this.categoryPrivateInvestigatorFormGroup.markAllAsTouched();
+		this.categorySecurityConsultantFormGroup.markAllAsTouched();
+		this.categoryLocksmithSupFormGroup.markAllAsTouched();
+		this.categorySecurityAlarmInstallerFormGroup.markAllAsTouched();
+		this.categorySecurityAlarmInstallerSupFormGroup.markAllAsTouched();
+		this.categorySecurityAlarmMonitorFormGroup.markAllAsTouched();
+		this.categorySecurityAlarmResponseFormGroup.markAllAsTouched();
+		this.categorySecurityAlarmSalesFormGroup.markAllAsTouched();
+		this.categorySecurityGuardFormGroup.markAllAsTouched();
+		this.categorySecurityGuardSupFormGroup.markAllAsTouched();
+
+		const isValid =
+			this.categoryArmouredCarGuardFormGroup.valid &&
+			this.categoryBodyArmourSalesFormGroup.valid &&
+			this.categoryClosedCircuitTelevisionInstallerFormGroup.valid &&
+			this.categoryElectronicLockingDeviceInstallerFormGroup.valid &&
+			this.categoryFireInvestigatorFormGroup.valid &&
+			this.categoryLocksmithFormGroup.valid &&
+			this.categoryPrivateInvestigatorSupFormGroup.valid &&
+			this.categoryPrivateInvestigatorFormGroup.valid &&
+			this.categorySecurityConsultantFormGroup.valid &&
+			this.categoryLocksmithSupFormGroup.valid &&
+			this.categorySecurityAlarmInstallerFormGroup.valid &&
+			this.categorySecurityAlarmInstallerSupFormGroup.valid &&
+			this.categorySecurityAlarmMonitorFormGroup.valid &&
+			this.categorySecurityAlarmResponseFormGroup.valid &&
+			this.categorySecurityAlarmSalesFormGroup.valid &&
+			this.categorySecurityGuardFormGroup.valid &&
+			this.categorySecurityGuardSupFormGroup.valid;
+
+		// console.log(
+		// 	this.categoryArmouredCarGuardFormGroup.valid,
+		// 	this.categoryBodyArmourSalesFormGroup.valid,
+		// 	this.categoryClosedCircuitTelevisionInstallerFormGroup.valid,
+		// 	this.categoryElectronicLockingDeviceInstallerFormGroup.valid,
+		// 	this.categoryFireInvestigatorFormGroup.valid,
+		// 	this.categoryLocksmithFormGroup.valid,
+		// 	this.categoryPrivateInvestigatorSupFormGroup.valid,
+		// 	this.categoryPrivateInvestigatorFormGroup.valid,
+		// 	this.categorySecurityConsultantFormGroup.valid,
+		// 	this.categoryLocksmithSupFormGroup.valid,
+		// 	this.categorySecurityAlarmInstallerFormGroup.valid,
+		// 	this.categorySecurityAlarmInstallerSupFormGroup.valid,
+		// 	this.categorySecurityAlarmMonitorFormGroup.valid,
+		// 	this.categorySecurityAlarmResponseFormGroup.valid,
+		// 	this.categorySecurityAlarmSalesFormGroup.valid,
+		// 	this.categorySecurityGuardFormGroup.valid,
+		// 	this.categorySecurityGuardSupFormGroup.valid
+		// );
+
+		this.isDirtyAndInvalid = this.categoryList.length == 0;
+		return isValid && !this.isDirtyAndInvalid;
+	}
+
+	get categoryList(): Array<string> {
+		const list: Array<string> = [];
+		if (this.categoryArmouredCarGuardFormGroup.get('isInclude')?.value) {
+			list.push(SwlCategoryTypeCode.ArmouredCarGuard);
+		}
+		if (this.categoryBodyArmourSalesFormGroup.get('isInclude')?.value) {
+			list.push(SwlCategoryTypeCode.BodyArmourSales);
+		}
+		if (this.categoryClosedCircuitTelevisionInstallerFormGroup.get('isInclude')?.value) {
+			list.push(SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller);
+		}
+		if (this.categoryElectronicLockingDeviceInstallerFormGroup.get('isInclude')?.value) {
+			list.push(SwlCategoryTypeCode.ElectronicLockingDeviceInstaller);
+		}
+		if (this.categoryFireInvestigatorFormGroup.get('isInclude')?.value) {
+			list.push(SwlCategoryTypeCode.FireInvestigator);
+		}
+		if (this.categoryLocksmithFormGroup.get('isInclude')?.value) {
+			list.push(SwlCategoryTypeCode.Locksmith);
+		}
+		if (this.categoryLocksmithSupFormGroup.get('isInclude')?.value) {
+			list.push(SwlCategoryTypeCode.LocksmithUnderSupervision);
+		}
+		if (this.categoryPrivateInvestigatorFormGroup.get('isInclude')?.value) {
+			list.push(SwlCategoryTypeCode.PrivateInvestigator);
+		}
+		if (this.categoryPrivateInvestigatorSupFormGroup.get('isInclude')?.value) {
+			list.push(SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision);
+		}
+		if (this.categorySecurityAlarmInstallerFormGroup.get('isInclude')?.value) {
+			list.push(SwlCategoryTypeCode.SecurityAlarmInstaller);
+		}
+		if (this.categorySecurityAlarmInstallerSupFormGroup.get('isInclude')?.value) {
+			list.push(SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision);
+		}
+		if (this.categorySecurityAlarmMonitorFormGroup.get('isInclude')?.value) {
+			list.push(SwlCategoryTypeCode.SecurityAlarmMonitor);
+		}
+		if (this.categorySecurityAlarmResponseFormGroup.get('isInclude')?.value) {
+			list.push(SwlCategoryTypeCode.SecurityAlarmResponse);
+		}
+		if (this.categorySecurityAlarmSalesFormGroup.get('isInclude')?.value) {
+			list.push(SwlCategoryTypeCode.SecurityAlarmSales);
+		}
+		if (this.categorySecurityConsultantFormGroup.get('isInclude')?.value) {
+			list.push(SwlCategoryTypeCode.SecurityConsultant);
+		}
+		if (this.categorySecurityGuardFormGroup.get('isInclude')?.value) {
+			list.push(SwlCategoryTypeCode.SecurityGuard);
+		}
+		if (this.categorySecurityGuardSupFormGroup.get('isInclude')?.value) {
+			list.push(SwlCategoryTypeCode.SecurityGuardUnderSupervision);
+		}
+
+		return list;
+	}
+
+	private setValidCategoryList(): void {
+		const currentList = this.categoryList;
+		let updatedList = this.swlCategoryTypes;
+		updatedList = updatedList.filter((cat) => !currentList.find((item) => item == cat.code));
+
+		this.validCategoryList = [...updatedList];
+	}
+
+	updateCategoryInclude(category: SwlCategoryTypeCode | null, isInclude: boolean): void {
+		if (category) {
+			switch (category) {
+				case SwlCategoryTypeCode.ArmouredCarGuard:
+					this.categoryArmouredCarGuardFormGroup.patchValue({ isInclude });
+					break;
+				case SwlCategoryTypeCode.BodyArmourSales:
+					this.categoryBodyArmourSalesFormGroup.patchValue({ isInclude });
+					break;
+				case SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller:
+					this.categoryClosedCircuitTelevisionInstallerFormGroup.patchValue({ isInclude });
+					break;
+				case SwlCategoryTypeCode.ElectronicLockingDeviceInstaller:
+					this.categoryElectronicLockingDeviceInstallerFormGroup.patchValue({ isInclude });
+					break;
+				case SwlCategoryTypeCode.FireInvestigator:
+					this.categoryFireInvestigatorFormGroup.patchValue({ isInclude });
+					break;
+				case SwlCategoryTypeCode.Locksmith:
+					this.categoryLocksmithFormGroup.patchValue({ isInclude });
+					break;
+				case SwlCategoryTypeCode.LocksmithUnderSupervision:
+					this.categoryLocksmithSupFormGroup.patchValue({ isInclude });
+					break;
+				case SwlCategoryTypeCode.PrivateInvestigator:
+					this.categoryPrivateInvestigatorFormGroup.patchValue({ isInclude });
+					this.onPromptFireInvestigator();
+					break;
+				case SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision:
+					this.categoryPrivateInvestigatorSupFormGroup.patchValue({ isInclude });
+					break;
+				case SwlCategoryTypeCode.SecurityGuard:
+					this.categorySecurityGuardFormGroup.patchValue({ isInclude });
+					break;
+				case SwlCategoryTypeCode.SecurityGuardUnderSupervision:
+					this.categorySecurityGuardSupFormGroup.patchValue({ isInclude });
+					break;
+				case SwlCategoryTypeCode.SecurityAlarmInstaller:
+					this.categorySecurityAlarmInstallerFormGroup.patchValue({ isInclude });
+					break;
+				case SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision:
+					this.categorySecurityAlarmInstallerSupFormGroup.patchValue({ isInclude });
+					break;
+				case SwlCategoryTypeCode.SecurityAlarmMonitor:
+					this.categorySecurityAlarmMonitorFormGroup.patchValue({ isInclude });
+					break;
+				case SwlCategoryTypeCode.SecurityAlarmResponse:
+					this.categorySecurityAlarmResponseFormGroup.patchValue({ isInclude });
+					break;
+				case SwlCategoryTypeCode.SecurityAlarmSales:
+					this.categorySecurityAlarmSalesFormGroup.patchValue({ isInclude });
+					break;
+				case SwlCategoryTypeCode.SecurityConsultant:
+					this.categorySecurityConsultantFormGroup.patchValue({ isInclude });
+					break;
+			}
+
+			this.setValidCategoryList();
+			this.isDirtyAndInvalid = false;
+		}
 	}
 }

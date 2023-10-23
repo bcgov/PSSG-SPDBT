@@ -136,8 +136,8 @@ export interface ApplicationResponse {
 								<div class="row">
 									<div class="col-12">
 										<mat-divider class="my-2"></mat-divider>
-										<span class="fw-semibold">Lost your licence?</span>
-										<a class="large" href="http://www.google.ca/" target="_blank"> Request a replacement card </a>
+										<span class="fw-semibold">Lost your licence? </span>
+										<a class="large" href="http://www.google.ca/" target="_blank">Request a replacement card</a>
 										and we'll send you one in xx-xx business days.
 									</div>
 								</div>
@@ -382,10 +382,14 @@ export class ApplicationsInProgressComponent implements OnInit, OnDestroy {
 	}
 
 	onUpdate(appl: ApplicationResponse): void {
+		this.licenceApplicationService.reset();
+
 		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LICENCE_UPDATE));
 	}
 
-	onReapply(appl: ApplicationResponse): void {}
+	onReapply(appl: ApplicationResponse): void {
+		this.licenceApplicationService.reset();
+	}
 
 	onCreateNew(): void {
 		this.licenceApplicationService.reset();

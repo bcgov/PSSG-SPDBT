@@ -12,7 +12,7 @@ export interface RestraintAuthorizationDialogData {}
 			<mat-divider></mat-divider>
 		</div>
 		<div mat-dialog-content>
-			<!-- <app-restraints></app-restraints> -->
+			<app-restraints-authorization [isCalledFromModal]="true"></app-restraints-authorization>
 		</div>
 		<div mat-dialog-actions>
 			<div class="row m-0 w-100">
