@@ -1,17 +1,28 @@
-using MediatR;
 using Microsoft.AspNetCore.Http;
-using GenderCode = Spd.Utilities.Shared.ManagerContract.GenderCode;
+using Spd.Resource.Applicants.Application;
 
-namespace Spd.Manager.Cases.Licence
+namespace Spd.Resource.Applicants.Licence
 {
-    public interface ILicenceManager
+    public interface ILicenceRepository
     {
-        public Task<WorkerLicenceCreateResponse> Handle(WorkerLicenceCreateCommand command, CancellationToken ct);
+        public Task<LicenceListResp> QueryAsync(LicenceQry query, CancellationToken cancellationToken);
+        public Task<LicenceResp> ManageAsync(LicenceCmd cmd, CancellationToken cancellationToken);
     }
 
-    public record WorkerLicenceCreateCommand(WorkerLicenceCreateRequest LicenceCreateRequest, string BcscGuid) : IRequest<WorkerLicenceCreateResponse>;
+    public record LicenceQry(Guid? LicenceId = null);
+    public record LicenceListResp
+    {
+        public IEnumerable<LicenceResp> Items { get; set; } = Array.Empty<LicenceResp>();
+    }
 
-    public class WorkerLicenceCreateRequest
+    public record LicenceResp
+    {
+        public Guid? LicenceId { get; set; } = null;
+    }
+
+    public abstract record LicenceCmd;
+
+    public record CreateLicenceCmd : LicenceCmd
     {
         public Guid? LicenceId { get; set; }
         public LicenceTypeData? LicenceTypeData { get; set; }
@@ -19,8 +30,7 @@ namespace Spd.Manager.Cases.Licence
         public SoleProprietorData? SoleProprietorData { get; set; }
         public PersonalInformationData? PersonalInformationData { get; set; }
         public ExpiredLicenceData? ExpiredLicenceData { get; set; }
-        public DogsAuthorizationData? DogsAuthorizationData { get; set; } = null;
-        public RestraintsAuthorizationData? RestraintsAuthorizationData { get; set; } = null;
+        public DogsOrRestraintsData? DogsOrRestraintsData { get; set; } = null;
         public LicenceTermData? licenceTermData { get; set; } = null;
         public PoliceBackgroundData? PoliceBackgroundData { get; set; }
         public MentalHealthConditionsData? MentalHealthConditionsData { get; set; }
@@ -37,13 +47,9 @@ namespace Spd.Manager.Cases.Licence
         public MailingAddressData? MailingAddressData { get; set; }
         public WorkerLicenceCategoryData[] CategoriesData { get; set; }
     }
-    public class WorkerLicenceCreateResponse
-    {
-        public Guid LicenceId { get; set; }
-    }
 
-    public record LicenceTypeData(WorkerLicenceTypeCode WorkerLicenceTypeCode);
-    public record ApplicationTypeData(ApplicationTypeCode ApplicationTypeCode);
+    public record LicenceTypeData(WorkerLicenceTypeEnum WorkerLicenceTypeCode);
+    public record ApplicationTypeData(ApplicationTypeEnum ApplicationTypeCode);
     public record SoleProprietorData(bool isSoleProprietor);
     public record ExpiredLicenceData
     {
@@ -61,25 +67,19 @@ namespace Spd.Manager.Cases.Licence
         public GenderCode? GenderCode { get; set; }
         public bool? OneLegalName { get; set; }
     }
-    public record DogsAuthorizationData
+    public record DogsOrRestraintsData
     {
-        public bool? UseDogs { get; set; }
-        public bool? IsDogsPurposeProtection { get; set; }
-        public bool? IsDogsPurposeDetectionDrugs { get; set; }
-        public bool? IsDogsPurposeDetectionExplosives { get; set; }
-        public Documents? Documents { get; set; }
-    }
-    public record RestraintsAuthorizationData
-    {
-        public bool? CarryAndUseRetraints { get; set; }
-        public Documents? Documents { get; set; }
+        public bool? UseDogsOrRestraints { get; set; }
+        public DogsPurposeEnum[]? DogsPurposeCodes { get; set; } = Array.Empty<DogsPurposeEnum>();
+        public bool CarryAndUseRetraints { get; set; }
+        public Documents[]? Documents { get; set; }
 
     }
-    public record LicenceTermData(LicenceTermCode LicenceTermCode) { };
+    public record LicenceTermData(LicenceTermEnum LicenceTermCode) { };
     public record PoliceBackgroundData
     {
         public bool IsPoliceOrPeaceOfficer { get; set; }
-        public PoliceOfficerRoleCode? PoliceOfficerRoleCode { get; set; }
+        public PoliceOfficerRoleEnum? PoliceOfficerRoleCode { get; set; }
         public string? OtherOfficerRole { get; set; }
         public Documents? Documents { get; set; }
     }
@@ -101,10 +101,13 @@ namespace Spd.Manager.Cases.Licence
     public record CitizenshipData
     {
         public bool IsBornInCanada { get; set; }
+        public ProofOfCanadianCitizenshipEnum? ProofOfCanadianCitizenshipCode { get; set; }
+        public ProofOfAbilityToWorkInCanadaEnum? ProofOfAbilityToWorkInCanadaCode { get; set; } //?
         public Documents Documents { get; set; }
     }
     public record GovIssuedIdData
     {
+        public GovernmentIssuedPhotoIdEnum GovernmentIssuedPhotoIdCode { get; set; }
         public Documents Documents { get; set; }
     }
     public record BcDriversLicenceData
@@ -114,12 +117,12 @@ namespace Spd.Manager.Cases.Licence
     }
     public record CharacteristicsData
     {
-        public HairColourCode? HairColourCode { get; set; }
-        public EyeColourCode? EyeColourCode { get; set; }
+        public HairColourEnum? HairColourCode { get; set; }
+        public EyeColourEnum? EyeColourCode { get; set; }
         public int Height { get; set; }
-        public HeightUnitCode HeightUnitCode { get; set; }
+        public HeightUnitEnum HeightUnitCode { get; set; }
         public int Weight { get; set; }
-        public WeightUnitCode WeightUnitCode { get; set; }
+        public WeightUnitEnum WeightUnitCode { get; set; }
     }
     public record PhotographOfYourselfData
     {
@@ -150,13 +153,15 @@ namespace Spd.Manager.Cases.Licence
 
     public record WorkerLicenceCategoryData
     {
-        public SwlCategoryTypeCode SwlCategoryTypeCode { get; set; }
+        public SwlCategoryTypeEnum SwlCategoryTypeCode { get; set; }
         public Documents[]? Documents { get; set; } = null;
+        public bool? Confirmed { get; set; }
+        public bool? SecurityAlarmSales { get; set; }
     }
 
     public record Documents
     {
-        public DocumentTypeCode DocumentTypeCode { get; set; }
+        public DocumentTypeEnum DocumentTypeCode { get; set; }
         public IFormFile[] Attachments { get; set; } = Array.Empty<IFormFile>();
         public DateTimeOffset? ExpiredDate { get; set; }
     }
@@ -169,14 +174,16 @@ namespace Spd.Manager.Cases.Licence
         public string? Surname { get; set; }
     }
 
-    public enum WorkerLicenceTypeCode
+
+
+    public enum WorkerLicenceTypeEnum
     {
         SecurityWorkerLicence,
         ArmouredVehiclePermit,
         BodyArmourPermit
     }
 
-    public enum ApplicationTypeCode
+    public enum ApplicationTypeEnum
     {
         New,
         Renewal,
@@ -184,50 +191,42 @@ namespace Spd.Manager.Cases.Licence
         Update,
     }
 
-    public enum DocumentTypeCode
+    public enum DogsPurposeEnum
+    {
+        Protection,
+        DrugDetection,
+        ExplosiveDetection,
+    }
+
+    public enum DocumentTypeEnum
     {
         DogsSecurityDogValidationCertificate,
         DogsCertificateOfAdvancedSecurityTraining,
         RestraintsAdvancedSecurityTrainingCertificate,
         RestraintsUseOfForceLetter,
         RestraintsTrainingEquivalent,
-        PoliceBackgroundLetterOfNoConflict,
-        MentalHealthCondition,
-        ProofOfFingerprint,
-        DriversLicence,
-        CanadianFirearmsLicence,
-        BcServicesCard,
-        CertificateOfIndianStatus,
-        GovernmentIssuedPhotoId,
-        PhotoOfYourself,
-        CanadianPassport,
-        BirthCertificate,
-        CanadianCitizenship,
-        PermanentResidentCard,
-        RecordOfLandingDocument,
-        ConfirmationOfPermanentResidenceDocument,
-        WorkPermit,
-        StudyPermit,
-        ValidDocumentToVerifyLegalWorkStatus,
-        CategoryLocksmith_CertificateOfQualification,
-        CategoryLocksmith_ExperienceAndApprenticeship,
-        CategoryLocksmith_ApprovedLocksmithCourse,
-        CategoryPrivateInvestigator_ExperienceAndCourses,
-        CategoryPrivateInvestigator_TenYearsPoliceExperienceAndTraining,
-        CategoryPrivateInvestigator_KnowledgeAndExperience,
-        CategoryPrivateInvestigator_CompleteRecognizedTrainingCourse,
-        CategoryPrivateInvestigator_CompleteOtherCoursesOrKnowledge,
-        CategoryPrivateInvestigator_PrivateSecurityTrainingNetworkCompletion,
-        CategoryPrivateInvestigator_OtherCourseCompletion,
-        CategorySecurityAlarmInstaller_TradesQualificationCertificate,
-        CategorySecurityAlarmInstaller_ExperienceOrTrainingEquivalent,
-        CategorySecurityConsultant_ReferenceLetters,
-        CategorySecurityConsultant_RecommendationLetters,
-        CategorySecurityGuard_BasicSecurityTrainingCertificate,
-        CategorySecurityGuard_PoliceExperienceOrTraining,
-        CategorySecurityGuard_BasicSecurityTrainingCourseEquivalent
+        PoliceBackgroundLetterOfNoConflictAttachments,
+        MentalHealthConditionAttachments,
+        ProofOfFingerprintAttachments,
+        CitizenshipDocumentPhotoAttachments,
+        PhotoDriversLicence,
+        PhotoCanadianFirearmsLicence,
+        PhotoBcServicesCard,
+        PhotoCertificateOfIndianStatus,
+        PhotoValidGovernmentIssuedPhotoId,
+        PhotoOfYourselfAttachments,
+        CategoryBasicSecurityTraingCertificate,
+        CategoryCanadianPoliceOfficerTrainingProof,
+        CategoryEquivalentBasicSecurityTrainingJIBC,
+        CategoryFirearmLicenceAndATCCertificate,
+        CategoryTradesQualificationCertificate,
+        CategoryTradesQualificationCertificateEquivalent,
+        CategoryLocksmithCertificate,
+        CategoryProofOfLocksmithExperienceAndApprenticeship,
+        CategoryApprovedLocksmithCourse,
+        CategoryPrivateInvestigatorCourseCompletionProof,
     }
-    public enum LicenceTermCode
+    public enum LicenceTermEnum
     {
         NintyDays,
         OneYear,
@@ -235,7 +234,7 @@ namespace Spd.Manager.Cases.Licence
         ThreeYears,
     }
 
-    public enum PoliceOfficerRoleCode
+    public enum PoliceOfficerRoleEnum
     {
         AuxiliaryorReserveConstable,
         SheriffDeputySheriff,
@@ -245,8 +244,33 @@ namespace Spd.Manager.Cases.Licence
         PoliceOfficer,
         Other,
     }
+    public enum ProofOfCanadianCitizenshipEnum
+    {
+        ValidCanadianPassport,
+        BirthCertificate,
+        SecureCertificateOfIndianStatus,
+    }
 
-    public enum HairColourCode
+    public enum ProofOfAbilityToWorkInCanadaEnum
+    {
+        ValidCanadianCitizenship,
+        ValidPermanentResidentCard,
+        RecordOfLandingDocument,
+        ConfirmationOfPermanentResidenceDocument,
+        WorkPermit,
+        StudyPermit,
+        ValidDocumentToVerifyLegalWorkStatus,
+    }
+    public enum GovernmentIssuedPhotoIdEnum
+    {
+        DriversLicence,
+        CanadianFirearmsLicence,
+        BcServicesCard,
+        CertificateOfIndianStatus,
+        ValidGovernmentIssuedPhotoId,
+    }
+
+    public enum HairColourEnum
     {
         Black,
         Blonde,
@@ -256,7 +280,7 @@ namespace Spd.Manager.Cases.Licence
         Bald,
     }
 
-    public enum EyeColourCode
+    public enum EyeColourEnum
     {
         Blue,
         Brown,
@@ -265,19 +289,19 @@ namespace Spd.Manager.Cases.Licence
         Hazel,
     }
 
-    public enum HeightUnitCode
+    public enum HeightUnitEnum
     {
         Centimeters,
         Inches,
     }
 
-    public enum WeightUnitCode
+    public enum WeightUnitEnum
     {
         Kilograms,
         Pounds,
     }
 
-    public enum SwlCategoryTypeCode
+    public enum SwlCategoryTypeEnum
     {
         ArmouredCarGuard,
         BodyArmourSales,

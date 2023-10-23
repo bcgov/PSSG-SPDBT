@@ -4,7 +4,7 @@ using Spd.Resource.Applicants.PortalUser;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
 
-namespace Spd.Manager.Cases.Application
+namespace Spd.Manager.Cases.Screening
 {
     internal partial class ApplicationManager
     {

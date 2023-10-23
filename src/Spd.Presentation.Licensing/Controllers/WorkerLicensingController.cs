@@ -1,7 +1,9 @@
 
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Cases.Licence;
+using Spd.Manager.Membership.UserProfile;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
@@ -15,20 +17,22 @@ namespace Spd.Presentation.Licensing.Controllers
     {
         private readonly ILogger<WorkerLicensingController> _logger;
         private readonly IPrincipal _currentUser;
+        private readonly IMediator _mediator;
 
-        public WorkerLicensingController(ILogger<WorkerLicensingController> logger, IPrincipal currentUser)
+        public WorkerLicensingController(ILogger<WorkerLicensingController> logger, IPrincipal currentUser, IMediator mediator)
         {
             _logger = logger;
             _currentUser = currentUser;
+            _mediator = mediator;
         }
 
         [Route("api/licenses")]
         [HttpPost]
-        public async Task<WorkerLicenceCreateResponse> CreateWorkerLicense([FromForm][Required] WorkerLicenceCreateRequest createApplication)
+        public async Task<WorkerLicenceCreateResponse> CreateWorkerLicense([FromForm][Required] WorkerLicenceCreateRequest licenceCreateRequest)
         {
-            var userId = this.HttpContext.User.GetUserId();
-            if (userId == null) throw new ApiException(System.Net.HttpStatusCode.Unauthorized);
-            return null;
+            _logger.LogInformation("Get WorkerLicenceCreateRequest");
+            var info = _currentUser.GetBcscUserIdentityInfo();
+            return await _mediator.Send(new WorkerLicenceCreateCommand(licenceCreateRequest, info.Sub));
         }
     }
 }

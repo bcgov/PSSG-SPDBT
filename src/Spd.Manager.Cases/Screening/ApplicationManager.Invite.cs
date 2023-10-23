@@ -7,7 +7,7 @@ using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.Shared.ResourceContracts;
 using System.Net;
 
-namespace Spd.Manager.Cases.Application
+namespace Spd.Manager.Cases.Screening
 {
     internal partial class ApplicationManager
     {

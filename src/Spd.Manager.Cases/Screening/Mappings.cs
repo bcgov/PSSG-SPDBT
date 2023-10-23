@@ -11,7 +11,7 @@ using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.ManagerContract;
 using Spd.Utilities.Shared.ResourceContracts;
 
-namespace Spd.Manager.Cases.Application
+namespace Spd.Manager.Cases.Screening
 {
     internal class Mappings : Profile
     {
