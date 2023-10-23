@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Spd.Manager.Cases.Application;
+using Spd.Manager.Cases.Screening;
 using Spd.Manager.Cases.Payment;
 using Spd.Utilities.Hosting;
 

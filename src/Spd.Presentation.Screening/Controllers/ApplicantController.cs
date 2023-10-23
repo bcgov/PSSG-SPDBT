@@ -2,7 +2,7 @@ using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Spd.Manager.Cases.Application;
+using Spd.Manager.Cases.Screening;
 using Spd.Presentation.Screening.Configurations;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Recaptcha;
