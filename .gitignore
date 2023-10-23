@@ -21,5 +21,4 @@ bld/
 .vs/
 
 src/Spd.Presentation.Screening/key-*.xml
-
-key-61112405-ba45-40b0-9bc7-f9e2cd37693d.xml
+key*.xml
