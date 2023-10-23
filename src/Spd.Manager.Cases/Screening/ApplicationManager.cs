@@ -21,7 +21,8 @@ using Spd.Utilities.Shared.ResourceContracts;
 using Spd.Utilities.TempFileStorage;
 using System.Net;
 
-namespace Spd.Manager.Cases.Application
+namespace Spd.Manager.Cases.Screening
+
 {
     internal partial class ApplicationManager :
         IRequestHandler<ApplicationInviteCreateCommand, ApplicationInvitesCreateResponse>,
