@@ -12,7 +12,7 @@ export interface DogAuthorizationDialogData {}
 			<mat-divider></mat-divider>
 		</div>
 		<div mat-dialog-content>
-			<!-- <app-dogs></app-dogs> -->
+			<app-dogs-authorization [isCalledFromModal]="true"></app-dogs-authorization>
 		</div>
 		<div mat-dialog-actions>
 			<div class="row m-0 w-100">

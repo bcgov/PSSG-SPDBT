@@ -4,13 +4,13 @@ import { FormGroup } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 import { SwlApplicationTypeCode, SwlCategoryTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { LicenceApplicationService } from '../../licence-application.service';
-import { DogsComponent } from '../dogs.component';
+import { DogsAuthorizationComponent } from '../dogs-authorization.component';
 import { LicenceAccessCodeComponent } from '../licence-access-code.component';
 import { LicenceCategoryComponent } from '../licence-category.component';
 import { LicenceExpiredComponent } from '../licence-expired.component';
 import { LicenceTermComponent } from '../licence-term.component';
 import { PersonalInformationComponent } from '../personal-information.component';
-import { RestraintsComponent } from '../restraints.component';
+import { RestraintsAuthorizationComponent } from '../restraints-authorization.component';
 import { SoleProprietorComponent } from '../sole-proprietor.component';
 
 @Component({
@@ -111,7 +111,7 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 			</mat-step>
 
 			<mat-step *ngIf="showStepDogsAndRestraints">
-				<app-restraints></app-restraints>
+				<app-restraints-authorization></app-restraints-authorization>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -126,7 +126,7 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 			</mat-step>
 
 			<mat-step *ngIf="showStepDogsAndRestraints">
-				<app-dogs></app-dogs>
+				<app-dogs-authorization></app-dogs-authorization>
 
 				<div class="row mt-4">
 					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
@@ -190,11 +190,11 @@ export class StepLicenceSelectionComponent {
 	@ViewChild(LicenceCategoryComponent)
 	licenceCategoryComponent!: LicenceCategoryComponent;
 
-	@ViewChild(RestraintsComponent)
-	restraintsComponent!: RestraintsComponent;
+	@ViewChild(RestraintsAuthorizationComponent)
+	restraintsComponent!: RestraintsAuthorizationComponent;
 
-	@ViewChild(DogsComponent)
-	dogsComponent!: DogsComponent;
+	@ViewChild(DogsAuthorizationComponent)
+	dogsComponent!: DogsAuthorizationComponent;
 
 	@ViewChild(LicenceTermComponent)
 	licenceTermComponent!: LicenceTermComponent;

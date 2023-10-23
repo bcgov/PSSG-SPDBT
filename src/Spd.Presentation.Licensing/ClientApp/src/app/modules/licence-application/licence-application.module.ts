@@ -24,7 +24,7 @@ import { CitizenshipComponent } from './step-components/citizenship.component';
 import { ConsentAndDeclarationComponent } from './step-components/consent-and-declaration.component';
 import { ContactInformationComponent } from './step-components/contact-information.component';
 import { CriminalHistoryComponent } from './step-components/criminal-history.component';
-import { DogsComponent } from './step-components/dogs.component';
+import { DogsAuthorizationComponent } from './step-components/dogs-authorization.component';
 import { FingerprintsComponent } from './step-components/fingerprints.component';
 import { HeightAndWeightComponent } from './step-components/height-and-weight.component';
 import { LicenceAccessCodeComponent } from './step-components/licence-access-code.component';
@@ -54,7 +54,7 @@ import { PersonalInformationComponent } from './step-components/personal-informa
 import { PhotoComponent } from './step-components/photo.component';
 import { PoliceBackgroundComponent } from './step-components/police-background.component';
 import { ResidentialAddressComponent } from './step-components/residential-address.component';
-import { RestraintsComponent } from './step-components/restraints.component';
+import { RestraintsAuthorizationComponent } from './step-components/restraints-authorization.component';
 import { SoleProprietorComponent } from './step-components/sole-proprietor.component';
 import { SummaryReviewComponent } from './step-components/summary-review.component';
 import { StepBackgroundComponent } from './step-components/wizard-steps/step-background.component';
@@ -78,8 +78,8 @@ import { UpdatePhotoModalComponent } from './components/update-photo-modal.compo
 		PersonalInformationComponent,
 		LicenceExpiredComponent,
 		PoliceBackgroundComponent,
-		RestraintsComponent,
-		DogsComponent,
+		RestraintsAuthorizationComponent,
+		DogsAuthorizationComponent,
 		MentalHealthConditionsComponent,
 		CriminalHistoryComponent,
 		FingerprintsComponent,
