@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/api/models';
 import { showHideTriggerAnimation, showHideTriggerSlideAnimation } from 'src/app/core/animations';
@@ -7,14 +7,17 @@ import { FileUploadComponent } from 'src/app/shared/components/file-upload.compo
 import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({
-	selector: 'app-restraints',
+	selector: 'app-restraints-authorization',
 	template: `
-		<section class="step-section p-3">
+		<section [ngClass]="isCalledFromModal ? 'step-section-modal' : 'step-section p-3'">
 			<div class="step">
-				<app-step-title title="Do you want to request authorization to use restraints?"></app-step-title>
+				<app-step-title
+					*ngIf="!isCalledFromModal"
+					title="Do you want to request authorization to use restraints?"
+				></app-step-title>
 				<div class="step-container">
 					<form [formGroup]="form" novalidate>
-						<div class="row">
+						<div class="row" *ngIf="!isCalledFromModal">
 							<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
 								<mat-radio-group aria-label="Select an option" formControlName="carryAndUseRetraints">
 									<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
@@ -33,13 +36,9 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 							</div>
 						</div>
 
-						<div
-							class="row mt-4"
-							*ngIf="carryAndUseRetraints.value == booleanTypeCodes.Yes"
-							@showHideTriggerSlideAnimation
-						>
-							<div class="offset-md-2 col-md-8 col-sm-12">
-								<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
+						<div class="row" *ngIf="carryAndUseRetraints.value == booleanTypeCodes.Yes" @showHideTriggerSlideAnimation>
+							<div [ngClass]="isCalledFromModal ? 'col-12' : 'offset-md-2 col-md-8 col-sm-12'">
+								<mat-divider class="mb-3 mt-4 mat-divider-primary" *ngIf="!isCalledFromModal"></mat-divider>
 
 								<div class="text-minor-heading my-2">Document type:</div>
 								<mat-radio-group
@@ -92,15 +91,25 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 	styles: [],
 	animations: [showHideTriggerAnimation, showHideTriggerSlideAnimation],
 })
-export class RestraintsComponent implements LicenceFormStepComponent {
+export class RestraintsAuthorizationComponent implements OnInit, LicenceFormStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 	restraintDocumentTypes = RestraintDocumentTypes;
 
-	form: FormGroup = this.licenceApplicationService.restraintsFormGroup;
+	form: FormGroup = this.licenceApplicationService.restraintsAuthorizationFormGroup;
+
+	@Input() isCalledFromModal: boolean = false;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
+
+	ngOnInit(): void {
+		if (this.isCalledFromModal) {
+			this.form.patchValue({
+				carryAndUseRetraints: BooleanTypeCode.Yes,
+			});
+		}
+	}
 
 	isFormValid(): boolean {
 		this.onRestraintsFilesChanged();

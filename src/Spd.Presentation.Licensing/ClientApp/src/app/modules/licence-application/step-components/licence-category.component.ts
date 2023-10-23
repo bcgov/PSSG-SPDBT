@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { SelectOptions, SwlCategoryTypeCode, SwlCategoryTypes } from 'src/app/core/code-types/model-desc.models';
@@ -8,15 +8,22 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 @Component({
 	selector: 'app-licence-category',
 	template: `
-		<section class="step-section p-3">
+		<section [ngClass]="isCalledFromModal ? 'step-section-modal' : 'step-section p-3'">
 			<div class="step">
 				<app-step-title
 					title="Which categories of Security Worker Licence are you applying for?"
 					subtitle="You can add up to a total of 6 categories"
+					[ngClass]="isCalledFromModal ? 'fs-7' : ''"
 				></app-step-title>
 				<div class="step-container">
 					<div class="row">
-						<div class="offset-xxl-2 col-xxl-5 offset-xl-1 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+						<div
+							[ngClass]="
+								isCalledFromModal
+									? 'col-md-6 col-sm-12'
+									: 'offset-xxl-2 col-xxl-5 offset-xl-1 col-xl-6 col-lg-6 col-md-6 col-sm-12'
+							"
+						>
 							<mat-form-field>
 								<mat-label>Category</mat-label>
 								<mat-select [(ngModel)]="category">
@@ -29,7 +36,10 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 								At least one category must be added
 							</mat-error>
 						</div>
-						<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6 col-sm-12" *ngIf="categoryList.length < 6">
+						<div
+							[ngClass]="isCalledFromModal ? 'col-md-6 col-sm-12' : 'col-xxl-3 col-xl-4 col-lg-6 col-md-6 col-sm-12'"
+							*ngIf="categoryList.length < 6"
+						>
 							<button mat-stroked-button color="primary" class="large my-2" (click)="onAddCategory()">
 								Add Category
 							</button>
@@ -37,7 +47,9 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 					</div>
 
 					<div class="row">
-						<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
+						<div
+							[ngClass]="isCalledFromModal ? 'col-12' : 'col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto'"
+						>
 							<mat-accordion multi="false">
 								<ng-container *ngIf="showArmouredCarGuard">
 									<mat-expansion-panel class="my-3" [expanded]="true">
@@ -667,8 +679,6 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 	],
 })
 export class LicenceCategoryComponent implements OnInit, LicenceFormStepComponent {
-	// form: FormGroup = this.licenceApplicationService.categoriesFormGroup;
-
 	category = '';
 	isDirtyAndInvalid = false;
 
@@ -701,6 +711,8 @@ export class LicenceCategoryComponent implements OnInit, LicenceFormStepComponen
 	categorySecurityAlarmSalesFormGroup: FormGroup = this.licenceApplicationService.categorySecurityAlarmSalesFormGroup;
 	categorySecurityGuardFormGroup: FormGroup = this.licenceApplicationService.categorySecurityGuardFormGroup;
 	categorySecurityGuardSupFormGroup: FormGroup = this.licenceApplicationService.categorySecurityGuardSupFormGroup;
+
+	@Input() isCalledFromModal: boolean = false;
 
 	constructor(private dialog: MatDialog, private licenceApplicationService: LicenceApplicationService) {}
 

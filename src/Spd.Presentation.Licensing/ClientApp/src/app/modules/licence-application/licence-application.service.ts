@@ -21,7 +21,6 @@ import {
 	SecurityAlarmInstallerRequirementCode,
 	SecurityConsultantRequirementCode,
 	SecurityGuardRequirementCode,
-	SelectOptions,
 	SwlApplicationTypeCode,
 	SwlTermCode,
 	SwlTypeCode,
@@ -35,166 +34,166 @@ export interface LicenceFormStepComponent {
 	isFormValid(): boolean;
 }
 
-export class LicenceBackendModel {
-	// isNewOrExpired?: boolean = true;
-	// isReplacement?: boolean = false;
-	// isNotReplacement?: boolean = true;
-	// showStepAccessCode?: boolean = false;
-	// showStepSoleProprietor?: boolean = true;
-	// showStepLicenceExpired?: boolean = true;
-	// showStepDogsAndRestraints?: boolean = true;
-	// showStepPoliceBackground?: boolean = true;
-	// showStepMentalHealth?: boolean = true;
-	// showStepCriminalHistory?: boolean = true;
-	// showStepFingerprints?: boolean = true;
-	// showStepBackgroundInfo?: boolean = true;
+// export class LicenceBackendModel {
+// 	// isNewOrExpired?: boolean = true;
+// 	// isReplacement?: boolean = false;
+// 	// isNotReplacement?: boolean = true;
+// 	// showStepAccessCode?: boolean = false;
+// 	// showStepSoleProprietor?: boolean = true;
+// 	// showStepLicenceExpired?: boolean = true;
+// 	// showStepDogsAndRestraints?: boolean = true;
+// 	// showStepPoliceBackground?: boolean = true;
+// 	// showStepMentalHealth?: boolean = true;
+// 	// showStepCriminalHistory?: boolean = true;
+// 	// showStepFingerprints?: boolean = true;
+// 	// showStepBackgroundInfo?: boolean = true;
 
-	licenceTypeCode: SwlTypeCode | null = null;
-	applicationTypeCode: SwlApplicationTypeCode | null = null;
-	isSoleProprietor: BooleanTypeCode | null = null;
-	currentLicenceNumber: string | null = null;
-	accessCode: string | null = null;
-	oneLegalName: boolean | null = null;
-	givenName: string | null = null;
-	middleName1: string | null = null;
-	middleName2: string | null = null;
-	surname: string | null = null;
-	genderCode: GenderCode | null = null;
-	dateOfBirth: string | null = null;
-	hasExpiredLicence: BooleanTypeCode | null = null;
-	expiredLicenceNumber?: string | null = null;
-	expiryDate?: string | null = null;
-	swlCategoryList: SelectOptions[] = [];
-	licenceCategoryArmouredCarGuard?: {
-		documentExpiryDate?: string | null;
-		attachments?: Array<File>;
-	};
-	licenceCategoryBodyArmourSales?: {};
-	licenceCategoryyClosedCircuitTelevisionInstaller?: {};
-	licenceCategoryElectronicLockingDeviceInstaller?: {};
-	licenceCategoryFireInvestigator?: {
-		fireCourseCertificateAttachments?: Array<File>;
-		fireVerificationLetterAttachments?: Array<File>;
-	};
-	licenceCategoryLocksmithSup?: {};
-	licenceCategoryLocksmith?: {
-		requirementCode?: string | null;
-		attachments?: Array<File>;
-	};
-	licenceCategoryPrivateInvestigatorSup?: {
-		requirementCode?: string | null;
-		// documentExpiryDate?: string | null;
-		attachments?: Array<File>;
-		trainingAttachments?: Array<File>;
-	};
-	licenceCategoryPrivateInvestigator?: {
-		requirementCode?: string | null;
-		trainingCode?: string | null;
-		// documentExpiryDate?: string | null;
-		attachments?: Array<File>;
-		trainingAttachments?: Array<File>;
-		// fireCourseCertificateAttachments?: Array<File>;
-		// fireVerificationLetterAttachments?: Array<File>;
-		// addFireInvestigator?: BooleanTypeCode | null;
-	};
-	licenceCategorySecurityAlarmInstallerSup?: {};
-	licenceCategorySecurityAlarmInstaller?: {
-		requirementCode?: string | null;
-		attachments?: Array<File>;
-	};
-	licenceCategorySecurityAlarmMonitor?: {};
-	licenceCategorySecurityAlarmResponse?: {};
-	licenceCategorySecurityAlarmSales?: {};
-	licenceCategorySecurityConsultant?: {
-		requirementCode?: string | null;
-		attachments?: Array<File>;
-		resumeAttachments?: Array<File>;
-	};
-	licenceCategorySecurityGuardSup?: {};
-	licenceCategorySecurityGuard?: {
-		requirementCode?: string | null;
-		attachments?: Array<File>;
-	};
-	useDogsOrRestraints: string | null = null;
-	isDogsPurposeProtection?: boolean | null = false;
-	isDogsPurposeDetectionDrugs?: boolean | null = false;
-	isDogsPurposeDetectionExplosives?: boolean | null = false;
-	dogsPurposeDocumentType?: DogDocumentCode | null = null;
-	dogsPurposeAttachments?: Array<File> = [];
-	carryAndUseRetraints?: boolean | null = false;
-	carryAndUseRetraintsDocument?: RestraintDocumentCode | null = null;
-	carryAndUseRetraintsAttachments?: Array<File> = [];
-	licenceTermCode: SwlTermCode | null = null;
-	isViewOnlyPoliceOrPeaceOfficer?: boolean = false;
-	isPoliceOrPeaceOfficer: BooleanTypeCode | null = null;
-	officerRole?: string | null = null;
-	otherOfficerRole?: string | null = null;
-	letterOfNoConflictAttachments?: Array<File> = [];
-	isTreatedForMHC: BooleanTypeCode | null = null;
-	mentalHealthConditionAttachments?: Array<File> = [];
-	hasCriminalHistory: BooleanTypeCode | null = null;
-	proofOfFingerprintAttachments?: Array<File> = [];
-	previousNameFlag: BooleanTypeCode | null = null;
-	aliases?: Array<AliasModel> | null = null;
-	isBornInCanada: BooleanTypeCode | null = null;
-	proofOfCitizenship: ProofOfCanadianCitizenshipCode | null = null;
-	proofOfAbility: ProofOfAbilityToWorkInCanadaCode | null = null;
-	citizenshipDocumentExpiryDate?: string | null = null;
-	citizenshipDocumentPhotoAttachments?: Array<File> = [];
-	governmentIssuedPhotoTypeCode: GovernmentIssuedPhotoIdCode | null = null;
-	governmentIssuedPhotoExpiryDate?: string | null = null;
-	governmentIssuedPhotoAttachments?: Array<File> = [];
-	hasBcDriversLicence: BooleanTypeCode | null = null;
-	bcDriversLicenceNumber?: string | null = null;
-	hairColourCode: HairColourCode | null = null;
-	eyeColourCode: EyeColourCode | null = null;
-	height: string | null = null;
-	heightUnitCode: HeightUnitCode | null = null;
-	weight: string | null = null;
-	weightUnitCode: WeightUnitCode | null = null;
-	useBcServicesCardPhoto: BooleanTypeCode | null = null;
-	photoOfYourselfAttachments?: Array<File> = [];
-	contactEmailAddress?: string | null = null;
-	contactPhoneNumber?: string | null = null;
-	residentialAddressLine1?: string | null = null;
-	residentialAddressLine2?: string | null = null;
-	residentialCity?: string | null = null;
-	residentialPostalCode?: string | null = null;
-	residentialProvince?: string | null = null;
-	residentialCountry?: string | null = null;
-	isMailingTheSameAsResidential?: boolean | null = null;
-	mailingAddressLine1?: string | null = null;
-	mailingAddressLine2?: string | null = null;
-	mailingCity?: string | null = null;
-	mailingPostalCode?: string | null = null;
-	mailingProvince?: string | null = null;
-	mailingCountry?: string | null = null;
-}
+// 	licenceTypeCode: SwlTypeCode | null = null;
+// 	applicationTypeCode: SwlApplicationTypeCode | null = null;
+// 	isSoleProprietor: BooleanTypeCode | null = null;
+// 	currentLicenceNumber: string | null = null;
+// 	accessCode: string | null = null;
+// 	oneLegalName: boolean | null = null;
+// 	givenName: string | null = null;
+// 	middleName1: string | null = null;
+// 	middleName2: string | null = null;
+// 	surname: string | null = null;
+// 	genderCode: GenderCode | null = null;
+// 	dateOfBirth: string | null = null;
+// 	hasExpiredLicence: BooleanTypeCode | null = null;
+// 	expiredLicenceNumber?: string | null = null;
+// 	expiryDate?: string | null = null;
+// 	swlCategoryList: SelectOptions[] = [];
+// 	licenceCategoryArmouredCarGuard?: {
+// 		documentExpiryDate?: string | null;
+// 		attachments?: Array<File>;
+// 	};
+// 	licenceCategoryBodyArmourSales?: {};
+// 	licenceCategoryyClosedCircuitTelevisionInstaller?: {};
+// 	licenceCategoryElectronicLockingDeviceInstaller?: {};
+// 	licenceCategoryFireInvestigator?: {
+// 		fireCourseCertificateAttachments?: Array<File>;
+// 		fireVerificationLetterAttachments?: Array<File>;
+// 	};
+// 	licenceCategoryLocksmithSup?: {};
+// 	licenceCategoryLocksmith?: {
+// 		requirementCode?: string | null;
+// 		attachments?: Array<File>;
+// 	};
+// 	licenceCategoryPrivateInvestigatorSup?: {
+// 		requirementCode?: string | null;
+// 		// documentExpiryDate?: string | null;
+// 		attachments?: Array<File>;
+// 		trainingAttachments?: Array<File>;
+// 	};
+// 	licenceCategoryPrivateInvestigator?: {
+// 		requirementCode?: string | null;
+// 		trainingCode?: string | null;
+// 		// documentExpiryDate?: string | null;
+// 		attachments?: Array<File>;
+// 		trainingAttachments?: Array<File>;
+// 		// fireCourseCertificateAttachments?: Array<File>;
+// 		// fireVerificationLetterAttachments?: Array<File>;
+// 		// addFireInvestigator?: BooleanTypeCode | null;
+// 	};
+// 	licenceCategorySecurityAlarmInstallerSup?: {};
+// 	licenceCategorySecurityAlarmInstaller?: {
+// 		requirementCode?: string | null;
+// 		attachments?: Array<File>;
+// 	};
+// 	licenceCategorySecurityAlarmMonitor?: {};
+// 	licenceCategorySecurityAlarmResponse?: {};
+// 	licenceCategorySecurityAlarmSales?: {};
+// 	licenceCategorySecurityConsultant?: {
+// 		requirementCode?: string | null;
+// 		attachments?: Array<File>;
+// 		resumeAttachments?: Array<File>;
+// 	};
+// 	licenceCategorySecurityGuardSup?: {};
+// 	licenceCategorySecurityGuard?: {
+// 		requirementCode?: string | null;
+// 		attachments?: Array<File>;
+// 	};
+// 	useDogsOrRestraints: string | null = null;
+// 	isDogsPurposeProtection?: boolean | null = false;
+// 	isDogsPurposeDetectionDrugs?: boolean | null = false;
+// 	isDogsPurposeDetectionExplosives?: boolean | null = false;
+// 	dogsPurposeDocumentType?: DogDocumentCode | null = null;
+// 	dogsPurposeAttachments?: Array<File> = [];
+// 	carryAndUseRetraints?: boolean | null = false;
+// 	carryAndUseRetraintsDocument?: RestraintDocumentCode | null = null;
+// 	carryAndUseRetraintsAttachments?: Array<File> = [];
+// 	licenceTermCode: SwlTermCode | null = null;
+// 	isViewOnlyPoliceOrPeaceOfficer?: boolean = false;
+// 	isPoliceOrPeaceOfficer: BooleanTypeCode | null = null;
+// 	officerRole?: string | null = null;
+// 	otherOfficerRole?: string | null = null;
+// 	letterOfNoConflictAttachments?: Array<File> = [];
+// 	isTreatedForMHC: BooleanTypeCode | null = null;
+// 	mentalHealthConditionAttachments?: Array<File> = [];
+// 	hasCriminalHistory: BooleanTypeCode | null = null;
+// 	proofOfFingerprintAttachments?: Array<File> = [];
+// 	previousNameFlag: BooleanTypeCode | null = null;
+// 	aliases?: Array<AliasModel> | null = null;
+// 	isBornInCanada: BooleanTypeCode | null = null;
+// 	proofOfCitizenship: ProofOfCanadianCitizenshipCode | null = null;
+// 	proofOfAbility: ProofOfAbilityToWorkInCanadaCode | null = null;
+// 	citizenshipDocumentExpiryDate?: string | null = null;
+// 	citizenshipDocumentPhotoAttachments?: Array<File> = [];
+// 	governmentIssuedPhotoTypeCode: GovernmentIssuedPhotoIdCode | null = null;
+// 	governmentIssuedPhotoExpiryDate?: string | null = null;
+// 	governmentIssuedPhotoAttachments?: Array<File> = [];
+// 	hasBcDriversLicence: BooleanTypeCode | null = null;
+// 	bcDriversLicenceNumber?: string | null = null;
+// 	hairColourCode: HairColourCode | null = null;
+// 	eyeColourCode: EyeColourCode | null = null;
+// 	height: string | null = null;
+// 	heightUnitCode: HeightUnitCode | null = null;
+// 	weight: string | null = null;
+// 	weightUnitCode: WeightUnitCode | null = null;
+// 	useBcServicesCardPhoto: BooleanTypeCode | null = null;
+// 	photoOfYourselfAttachments?: Array<File> = [];
+// 	contactEmailAddress?: string | null = null;
+// 	contactPhoneNumber?: string | null = null;
+// 	residentialAddressLine1?: string | null = null;
+// 	residentialAddressLine2?: string | null = null;
+// 	residentialCity?: string | null = null;
+// 	residentialPostalCode?: string | null = null;
+// 	residentialProvince?: string | null = null;
+// 	residentialCountry?: string | null = null;
+// 	isMailingTheSameAsResidential?: boolean | null = null;
+// 	mailingAddressLine1?: string | null = null;
+// 	mailingAddressLine2?: string | null = null;
+// 	mailingCity?: string | null = null;
+// 	mailingPostalCode?: string | null = null;
+// 	mailingProvince?: string | null = null;
+// 	mailingCountry?: string | null = null;
+// }
 
-export class AliasModel {
-	constructor(
-		givenName: string | null,
-		middleName1: string | null,
-		middleName2: string | null,
-		surname: string | null
-	) {
-		this.givenName = givenName;
-		this.middleName1 = middleName1;
-		this.middleName2 = middleName2;
-		this.surname = surname;
-	}
-	givenName: string | null = null;
-	middleName1: string | null = null;
-	middleName2: string | null = null;
-	surname: string | null = null;
-}
+// export class AliasModel {
+// 	constructor(
+// 		givenName: string | null,
+// 		middleName1: string | null,
+// 		middleName2: string | null,
+// 		surname: string | null
+// 	) {
+// 		this.givenName = givenName;
+// 		this.middleName1 = middleName1;
+// 		this.middleName2 = middleName2;
+// 		this.surname = surname;
+// 	}
+// 	givenName: string | null = null;
+// 	middleName1: string | null = null;
+// 	middleName2: string | null = null;
+// 	surname: string | null = null;
+// }
 
-export class LicenceModelSubject {
-	isLoaded?: boolean = false;
-	isSetFlags?: boolean = false;
-	isUpdated?: boolean = false;
-	isCategoryLoaded?: boolean = false;
-}
+// export class LicenceModelSubject {
+// 	isLoaded?: boolean = false;
+// 	isSetFlags?: boolean = false;
+// 	isUpdated?: boolean = false;
+// 	isCategoryLoaded?: boolean = false;
+// }
 
 @Injectable({
 	providedIn: 'root',
@@ -204,9 +203,7 @@ export class LicenceApplicationService {
 
 	booleanTypeCodes = BooleanTypeCode;
 
-	licenceModelLoaded$: BehaviorSubject<LicenceModelSubject> = new BehaviorSubject<LicenceModelSubject>(
-		new LicenceModelSubject()
-	);
+	licenceModelLoaded$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
 	licenceTypeFormGroup: FormGroup = this.formBuilder.group({
 		licenceTypeCode: new FormControl('', [Validators.required]),
@@ -451,7 +448,7 @@ export class LicenceApplicationService {
 		}
 	);
 
-	restraintsFormGroup: FormGroup = this.formBuilder.group(
+	restraintsAuthorizationFormGroup: FormGroup = this.formBuilder.group(
 		{
 			carryAndUseRetraints: new FormControl(''),
 			carryAndUseRetraintsDocument: new FormControl(''),
@@ -475,7 +472,7 @@ export class LicenceApplicationService {
 		}
 	);
 
-	dogsFormGroup: FormGroup = this.formBuilder.group(
+	dogsAuthorizationFormGroup: FormGroup = this.formBuilder.group(
 		{
 			useDogs: new FormControl(''),
 			dogsPurposeFormGroup: new FormGroup(
@@ -684,14 +681,14 @@ export class LicenceApplicationService {
 		// showStepCriminalHistory: new FormControl(true),
 		// showStepFingerprints: new FormControl(true),
 
-		licenceTypeFormGroup: this.licenceTypeFormGroup,
-		applicationTypeFormGroup: this.applicationTypeFormGroup,
-		soleProprietorFormGroup: this.soleProprietorFormGroup,
-		personalInformationFormGroup: this.personalInformationFormGroup,
-		expiredLicenceFormGroup: this.expiredLicenceFormGroup,
-		licenceTermFormGroup: this.licenceTermFormGroup,
-		restraintsFormGroup: this.restraintsFormGroup,
-		dogsFormGroup: this.dogsFormGroup,
+		licenceTypeData: this.licenceTypeFormGroup,
+		applicationTypeData: this.applicationTypeFormGroup,
+		soleProprietorData: this.soleProprietorFormGroup,
+		personalInformationData: this.personalInformationFormGroup,
+		expiredLicenceData: this.expiredLicenceFormGroup,
+		licenceTermData: this.licenceTermFormGroup,
+		restraintsAuthorizationData: this.restraintsAuthorizationFormGroup,
+		dogsAuthorizationData: this.dogsAuthorizationFormGroup,
 
 		categoryArmouredCarGuardFormGroup: this.categoryArmouredCarGuardFormGroup,
 		categoryBodyArmourSalesFormGroup: this.categoryBodyArmourSalesFormGroup,
@@ -711,20 +708,20 @@ export class LicenceApplicationService {
 		categorySecurityGuardFormGroup: this.categorySecurityGuardFormGroup,
 		categorySecurityGuardSupFormGroup: this.categorySecurityGuardSupFormGroup,
 
-		policeBackgroundFormGroup: this.policeBackgroundFormGroup,
-		mentalHealthConditionsFormGroup: this.mentalHealthConditionsFormGroup,
-		criminalHistoryFormGroup: this.criminalHistoryFormGroup,
-		proofOfFingerprintFormGroup: this.proofOfFingerprintFormGroup,
+		policeBackgroundData: this.policeBackgroundFormGroup,
+		mentalHealthConditionsData: this.mentalHealthConditionsFormGroup,
+		criminalHistoryData: this.criminalHistoryFormGroup,
+		proofOfFingerprintData: this.proofOfFingerprintFormGroup,
 
-		aliasesFormGroup: this.aliasesFormGroup,
-		citizenshipFormGroup: this.citizenshipFormGroup,
-		govIssuedIdFormGroup: this.govIssuedIdFormGroup,
-		bcDriversLicenceFormGroup: this.bcDriversLicenceFormGroup,
-		characteristicsFormGroup: this.characteristicsFormGroup,
-		photographOfYourselfFormGroup: this.photographOfYourselfFormGroup,
-		residentialAddressFormGroup: this.residentialAddressFormGroup,
-		mailingAddressFormGroup: this.mailingAddressFormGroup,
-		contactInformationFormGroup: this.contactInformationFormGroup,
+		aliasesData: this.aliasesFormGroup,
+		citizenshipData: this.citizenshipFormGroup,
+		govIssuedIdData: this.govIssuedIdFormGroup,
+		bcDriversLicenceData: this.bcDriversLicenceFormGroup,
+		characteristicsData: this.characteristicsFormGroup,
+		photographOfYourselfData: this.photographOfYourselfFormGroup,
+		residentialAddressData: this.residentialAddressFormGroup,
+		mailingAddressData: this.mailingAddressFormGroup,
+		contactInformationData: this.contactInformationFormGroup,
 	});
 
 	constructor(
@@ -738,7 +735,7 @@ export class LicenceApplicationService {
 		this.initialized = false;
 		this.licenceModelFormGroup.reset();
 
-		const aliases = this.licenceModelFormGroup.controls['aliasesFormGroup'].get('aliases') as FormArray;
+		const aliases = this.licenceModelFormGroup.controls['aliasesData'].get('aliases') as FormArray;
 		aliases.clear();
 
 		console.log('RESET licenceModelFormGroup', this.licenceModelFormGroup.value);
@@ -827,19 +824,19 @@ export class LicenceApplicationService {
 		return new Observable((observer) => {
 			setTimeout(() => {
 				const myBlob = new Blob();
-				const myFile = this.utilService.blobToFile(myBlob, 'test.doc');
+				const myFile = this.utilService.blobToFile(myBlob, 'test1.doc');
 
 				const defaults: any = {
-					licenceTypeFormGroup: {
+					licenceTypeData: {
 						licenceTypeCode: SwlTypeCode.ArmouredVehiclePermit,
 					},
-					applicationTypeFormGroup: {
+					applicationTypeData: {
 						applicationTypeCode: SwlApplicationTypeCode.NewOrExpired,
 					},
-					soleProprietorFormGroup: {
+					soleProprietorData: {
 						isSoleProprietor: BooleanTypeCode.Yes,
 					},
-					personalInformationFormGroup: {
+					personalInformationData: {
 						oneLegalName: false,
 						givenName: 'John',
 						middleName1: 'Michael',
@@ -848,17 +845,17 @@ export class LicenceApplicationService {
 						genderCode: GenderCode.M,
 						dateOfBirth: '2009-10-07T00:00:00+00:00',
 					},
-					expiredLicenceFormGroup: {
+					expiredLicenceData: {
 						hasExpiredLicence: BooleanTypeCode.Yes,
 						expiredLicenceNumber: '789',
 						expiryDate: '2002-02-07T00:00:00+00:00',
 					},
-					restraintsFormGroup: {
+					restraintsAuthorizationData: {
 						carryAndUseRetraints: BooleanTypeCode.Yes,
 						carryAndUseRetraintsDocument: RestraintDocumentCode.AdvancedSecurityTrainingCertificate,
 						attachments: [myFile],
 					},
-					dogsFormGroup: {
+					dogsAuthorizationData: {
 						useDogs: BooleanTypeCode.Yes,
 						dogsPurposeFormGroup: {
 							isDogsPurposeProtection: true,
@@ -868,50 +865,50 @@ export class LicenceApplicationService {
 						dogsPurposeDocumentType: DogDocumentCode.CertificateOfAdvancedSecurityTraining,
 						attachments: [myFile],
 					},
-					licenceTermFormGroup: {
+					licenceTermData: {
 						licenceTermCode: SwlTermCode.ThreeYears,
 					},
 					// currentLicenceNumber: '123456',
 					// accessCode: '456',
-					policeBackgroundFormGroup: {
+					policeBackgroundData: {
 						isPoliceOrPeaceOfficer: BooleanTypeCode.Yes,
 						officerRole: PoliceOfficerRoleCode.Other,
 						otherOfficerRole: 'testRole',
 						letterOfNoConflictAttachments: [myFile],
 					},
-					mentalHealthConditionsFormGroup: {
+					mentalHealthConditionsData: {
 						isTreatedForMHC: BooleanTypeCode.Yes,
 						mentalHealthConditionAttachments: [myFile],
 					},
-					criminalHistoryFormGroup: {
+					criminalHistoryData: {
 						hasCriminalHistory: BooleanTypeCode.No,
 					},
-					proofOfFingerprintFormGroup: {
+					proofOfFingerprintData: {
 						proofOfFingerprintAttachments: [myFile],
 					},
-					aliasesFormGroup: {
+					aliasesData: {
 						previousNameFlag: BooleanTypeCode.Yes,
 						aliases: [
 							{ givenName: 'Abby', middleName1: 'Betty', middleName2: 'Meg', surname: 'Brown' },
 							{ givenName: 'Abby', middleName1: '', middleName2: '', surname: 'Anderson' },
 						],
 					},
-					citizenshipFormGroup: {
+					citizenshipData: {
 						isBornInCanada: BooleanTypeCode.Yes,
 						proofOfCitizenship: ProofOfCanadianCitizenshipCode.BirthCertificate,
 						proofOfAbility: null,
 						citizenshipDocumentExpiryDate: null,
 						citizenshipDocumentPhotoAttachments: [myFile],
 					},
-					govIssuedIdFormGroup: {
+					govIssuedIdData: {
 						governmentIssuedPhotoTypeCode: GovernmentIssuedPhotoIdCode.BcServicesCard,
 						governmentIssuedPhotoAttachments: [myFile],
 					},
-					bcDriversLicenceFormGroup: {
+					bcDriversLicenceData: {
 						hasBcDriversLicence: BooleanTypeCode.Yes,
 						bcDriversLicenceNumber: '5458877',
 					},
-					characteristicsFormGroup: {
+					characteristicsData: {
 						hairColourCode: HairColourCode.Black,
 						eyeColourCode: EyeColourCode.Blue,
 						height: '100',
@@ -919,15 +916,15 @@ export class LicenceApplicationService {
 						weight: '75',
 						weightUnitCode: WeightUnitCode.Kilograms,
 					},
-					photographOfYourselfFormGroup: {
+					photographOfYourselfData: {
 						useBcServicesCardPhoto: BooleanTypeCode.No,
 						photoOfYourselfAttachments: [myFile],
 					},
-					contactInformationFormGroup: {
+					contactInformationData: {
 						contactEmailAddress: 'contact-test@test.gov.bc.ca',
 						contactPhoneNumber: '2508896363',
 					},
-					residentialAddressFormGroup: {
+					residentialAddressData: {
 						addressSelected: true,
 						isMailingTheSameAsResidential: false,
 						residentialAddressLine1: '123-720 Commonwealth Rd',
@@ -937,7 +934,7 @@ export class LicenceApplicationService {
 						residentialPostalCode: 'V4V 1R8',
 						residentialProvince: 'British Columbia',
 					},
-					mailingAddressFormGroup: {
+					mailingAddressData: {
 						addressSelected: true,
 						mailingAddressLine1: '777-798 Richmond St W',
 						mailingAddressLine2: '',
@@ -1035,8 +1032,8 @@ export class LicenceApplicationService {
 
 				this.licenceModelFormGroup.patchValue({ ...defaults });
 
-				if (defaults.aliasesFormGroup.aliases?.length > 0) {
-					let transformedAliasItems = defaults.aliasesFormGroup.aliases.map((item: any) =>
+				if (defaults.aliasesData.aliases?.length > 0) {
+					let transformedAliasItems = defaults.aliasesData.aliases.map((item: any) =>
 						this.formBuilder.group({
 							givenName: new FormControl(item.givenName),
 							middleName1: new FormControl(item.middleName1),
@@ -1045,8 +1042,8 @@ export class LicenceApplicationService {
 						})
 					);
 
-					const aliasesFormGroup = this.licenceModelFormGroup.controls['aliasesFormGroup'] as FormGroup;
-					aliasesFormGroup.setControl('aliases', this.formBuilder.array(transformedAliasItems));
+					const aliasesData = this.licenceModelFormGroup.controls['aliasesData'] as FormGroup;
+					aliasesData.setControl('aliases', this.formBuilder.array(transformedAliasItems));
 				}
 
 				console.debug('this.licenceModelFormGroup', this.licenceModelFormGroup.value);
@@ -1069,16 +1066,16 @@ export class LicenceApplicationService {
 				const myFile = this.utilService.blobToFile(myBlob, 'test.doc');
 
 				const defaults: any = {
-					licenceTypeFormGroup: {
+					licenceTypeData: {
 						licenceTypeCode: SwlTypeCode.BodyArmourPermit,
 					},
-					applicationTypeFormGroup: {
+					applicationTypeData: {
 						applicationTypeCode: SwlApplicationTypeCode.NewOrExpired,
 					},
-					soleProprietorFormGroup: {
+					soleProprietorData: {
 						isSoleProprietor: BooleanTypeCode.No,
 					},
-					personalInformationFormGroup: {
+					personalInformationData: {
 						oneLegalName: false,
 						givenName: 'Alice',
 						middleName1: 'Michael',
@@ -1087,48 +1084,48 @@ export class LicenceApplicationService {
 						genderCode: GenderCode.F,
 						dateOfBirth: '2005-10-07T00:00:00+00:00',
 					},
-					expiredLicenceFormGroup: {
+					expiredLicenceData: {
 						hasExpiredLicence: BooleanTypeCode.No,
 					},
-					restraintsFormGroup: {
+					restraintsAuthorizationData: {
 						// carryAndUseRetraints: BooleanTypeCode.No,
 					},
-					dogsFormGroup: {
+					dogsAuthorizationData: {
 						// useDogsOrRestraints: BooleanTypeCode.No,
 					},
-					licenceTermFormGroup: {
+					licenceTermData: {
 						licenceTermCode: SwlTermCode.NintyDays,
 					},
-					policeBackgroundFormGroup: {
+					policeBackgroundData: {
 						isPoliceOrPeaceOfficer: BooleanTypeCode.No,
 					},
-					mentalHealthConditionsFormGroup: {
+					mentalHealthConditionsData: {
 						isTreatedForMHC: BooleanTypeCode.No,
 					},
-					criminalHistoryFormGroup: {
+					criminalHistoryData: {
 						hasCriminalHistory: BooleanTypeCode.No,
 					},
-					proofOfFingerprintFormGroup: {
+					proofOfFingerprintData: {
 						proofOfFingerprintAttachments: [myFile],
 					},
-					aliasesFormGroup: {
+					aliasesData: {
 						previousNameFlag: BooleanTypeCode.No,
 					},
-					citizenshipFormGroup: {
+					citizenshipData: {
 						isBornInCanada: BooleanTypeCode.Yes,
 						proofOfCitizenship: ProofOfCanadianCitizenshipCode.BirthCertificate,
 						proofOfAbility: null,
 						citizenshipDocumentExpiryDate: null,
 						citizenshipDocumentPhotoAttachments: [myFile],
 					},
-					govIssuedIdFormGroup: {
+					govIssuedIdData: {
 						governmentIssuedPhotoTypeCode: GovernmentIssuedPhotoIdCode.BcServicesCard,
 						governmentIssuedPhotoAttachments: [myFile],
 					},
-					bcDriversLicenceFormGroup: {
+					bcDriversLicenceData: {
 						hasBcDriversLicence: BooleanTypeCode.No,
 					},
-					characteristicsFormGroup: {
+					characteristicsData: {
 						hairColourCode: HairColourCode.Black,
 						eyeColourCode: EyeColourCode.Blue,
 						height: '100',
@@ -1136,14 +1133,14 @@ export class LicenceApplicationService {
 						weight: '75',
 						weightUnitCode: WeightUnitCode.Kilograms,
 					},
-					photographOfYourselfFormGroup: {
+					photographOfYourselfData: {
 						useBcServicesCardPhoto: BooleanTypeCode.Yes,
 					},
-					contactInformationFormGroup: {
+					contactInformationData: {
 						contactEmailAddress: 'contact-test22@test.gov.bc.ca',
 						contactPhoneNumber: '2508896363',
 					},
-					residentialAddressFormGroup: {
+					residentialAddressData: {
 						addressSelected: true,
 						isMailingTheSameAsResidential: true,
 						residentialAddressLine1: '123-720 Commonwealth Rd',
@@ -1172,8 +1169,8 @@ export class LicenceApplicationService {
 
 				this.licenceModelFormGroup.patchValue({ ...defaults });
 
-				if (defaults.aliasesFormGroup.aliases?.length > 0) {
-					let transformedAliasItems = defaults.aliasesFormGroup.aliases.map((item: any) =>
+				if (defaults.aliasesData.aliases?.length > 0) {
+					let transformedAliasItems = defaults.aliasesData.aliases.map((item: any) =>
 						this.formBuilder.group({
 							givenName: new FormControl(item.givenName),
 							middleName1: new FormControl(item.middleName1),
@@ -1182,8 +1179,8 @@ export class LicenceApplicationService {
 						})
 					);
 
-					const aliasesFormGroup = this.licenceModelFormGroup.controls['aliasesFormGroup'] as FormGroup;
-					aliasesFormGroup.setControl('aliases', this.formBuilder.array(transformedAliasItems));
+					const aliasesData = this.licenceModelFormGroup.controls['aliasesData'] as FormGroup;
+					aliasesData.setControl('aliases', this.formBuilder.array(transformedAliasItems));
 				}
 
 				console.debug('this.licenceModelFormGroup', this.licenceModelFormGroup.value);
@@ -1205,8 +1202,8 @@ export class LicenceApplicationService {
 		// 	this.personalInformationFormGroup.valid,
 		// 	this.expiredLicenceFormGroup.valid,
 		// 	this.licenceTermFormGroup.valid,
-		// 	this.restraintsFormGroup.valid,
-		// 	this.dogsFormGroup.valid,
+		// 	this.restraintsAuthorizationFormGroup.valid,
+		// 	this.dogsAuthorizationFormGroup.valid,
 		// 	this.categoryArmouredCarGuardFormGroup.valid,
 		// 	this.categoryBodyArmourSalesFormGroup.valid,
 		// 	this.categoryClosedCircuitTelevisionInstallerFormGroup.valid,
@@ -1233,8 +1230,8 @@ export class LicenceApplicationService {
 			this.personalInformationFormGroup.valid &&
 			this.expiredLicenceFormGroup.valid &&
 			this.licenceTermFormGroup.valid &&
-			this.restraintsFormGroup.valid &&
-			this.dogsFormGroup.valid &&
+			this.restraintsAuthorizationFormGroup.valid &&
+			this.dogsAuthorizationFormGroup.valid &&
 			this.categoryArmouredCarGuardFormGroup.valid &&
 			this.categoryBodyArmourSalesFormGroup.valid &&
 			this.categoryClosedCircuitTelevisionInstallerFormGroup.valid &&

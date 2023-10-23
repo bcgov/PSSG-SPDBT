@@ -12,9 +12,7 @@ export interface UpdatePhotoDialogData {}
 			<mat-divider></mat-divider>
 		</div>
 		<div mat-dialog-content>
-			<div class="row">
-				<div class="col-12"></div>
-			</div>
+			<app-photo [isCalledFromModal]="true"></app-photo>
 		</div>
 		<div mat-dialog-actions>
 			<div class="row m-0 w-100">
