@@ -29,11 +29,11 @@ export class ConfigurationService extends BaseService {
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiConfigurationGet()` instead.
+   * To access only the response body, use `apiConfigurationGet$Plain()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiConfigurationGet$Response(params?: {
+  apiConfigurationGet$Plain$Response(params?: {
   },
   context?: HttpContext
 
@@ -44,8 +44,8 @@ export class ConfigurationService extends BaseService {
     }
 
     return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
+      responseType: 'text',
+      accept: 'text/plain',
       context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
@@ -57,17 +57,62 @@ export class ConfigurationService extends BaseService {
 
   /**
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiConfigurationGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiConfigurationGet$Plain$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiConfigurationGet(params?: {
+  apiConfigurationGet$Plain(params?: {
   },
   context?: HttpContext
 
 ): Observable<ConfigurationResponse> {
 
-    return this.apiConfigurationGet$Response(params,context).pipe(
+    return this.apiConfigurationGet$Plain$Response(params,context).pipe(
+      map((r: StrictHttpResponse<ConfigurationResponse>) => r.body as ConfigurationResponse)
+    );
+  }
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiConfigurationGet$Json()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiConfigurationGet$Json$Response(params?: {
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<ConfigurationResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, ConfigurationService.ApiConfigurationGetPath, 'get');
+    if (params) {
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'text/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<ConfigurationResponse>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiConfigurationGet$Json$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiConfigurationGet$Json(params?: {
+  },
+  context?: HttpContext
+
+): Observable<ConfigurationResponse> {
+
+    return this.apiConfigurationGet$Json$Response(params,context).pipe(
       map((r: StrictHttpResponse<ConfigurationResponse>) => r.body as ConfigurationResponse)
     );
   }

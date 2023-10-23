@@ -3,8 +3,9 @@ import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@ang
 import { HotToastService } from '@ngneat/hot-toast';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { BooleanTypeCode, GenderCode } from 'src/app/api/models';
+import { GenderCode } from 'src/app/api/models';
 import {
+	BooleanTypeCode,
 	DogDocumentCode,
 	EyeColourCode,
 	GovernmentIssuedPhotoIdCode,

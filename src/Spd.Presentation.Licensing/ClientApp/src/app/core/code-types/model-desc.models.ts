@@ -1,4 +1,4 @@
-import { BooleanTypeCode, GenderCode } from 'src/app/api/models';
+import { GenderCode } from 'src/app/api/models';
 import { CountryTypeCode } from './country-type.model';
 
 // export interface SelectOptions<k = string | number | boolean> {
@@ -15,6 +15,10 @@ export interface SelectOptions<k = string> {
 // ============================================================
 // ENUMs
 // ============================================================
+export enum BooleanTypeCode {
+	Yes = 'Yes',
+	No = 'No',
+}
 
 export enum LicenceUpdateTypeCode {
 	UpdateName = 'UpdateName',
@@ -28,7 +32,7 @@ export enum SwlTypeCode {
 	SecurityBusinessLicence = 'SecurityBusinessLicence',
 	SecurityWorkerLicence = 'SecurityWorkerLicence',
 	ArmouredVehiclePermit = 'ArmouredVehiclePermit',
-	BodyArmourPermit = 'ArmouredVehiclePermit',
+	BodyArmourPermit = 'BodyArmourPermit',
 }
 
 export enum SwlApplicationTypeCode {

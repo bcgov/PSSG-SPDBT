@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { BooleanTypeCode } from 'src/app/api/models';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import {
+	BooleanTypeCode,
 	PrivateInvestigatorRequirementCode,
 	PrivateInvestigatorTrainingCode,
 	SwlCategoryTypeCode,

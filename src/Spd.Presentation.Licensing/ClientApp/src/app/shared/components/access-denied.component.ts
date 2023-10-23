@@ -1,12 +1,11 @@
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { UserInfoMsgTypeCode } from 'src/app/api/models';
 
 @Component({
 	selector: 'app-access-denied',
 	template: `
 		<div class="container-fluid text-center mt-4">
-			<ng-container [ngSwitch]="userInfoMsgType">
+			<!-- <ng-container [ngSwitch]="userInfoMsgType">
 				<ng-container *ngSwitchCase="userInfoMsgTypeCodes.RegistrationDenied">
 					<mat-icon>unpublished</mat-icon>
 					<h2 class="my-4">Your organization’s registration request was not approved</h2>
@@ -35,12 +34,12 @@ import { UserInfoMsgTypeCode } from 'src/app/api/models';
 					</p>
 					<button mat-flat-button color="primary" class="large my-2" style="width: 12em;">Back</button>
 				</ng-container>
-				<ng-container *ngSwitchDefault>
-					<mat-icon>do_not_disturb</mat-icon>
-					<h2 class="my-4">Access Denied</h2>
-					<p class="fs-5 my-4">You currently do not have permission to access this page.</p>
-				</ng-container>
-			</ng-container>
+				<ng-container *ngSwitchDefault> -->
+			<mat-icon>do_not_disturb</mat-icon>
+			<h2 class="my-4">Access Denied</h2>
+			<p class="fs-5 my-4">You currently do not have permission to access this page.</p>
+			<!-- </ng-container>
+			</ng-container> -->
 		</div>
 	`,
 	styles: [
@@ -56,12 +55,12 @@ import { UserInfoMsgTypeCode } from 'src/app/api/models';
 	],
 })
 export class AccessDeniedComponent implements OnInit {
-	userInfoMsgType: UserInfoMsgTypeCode | null = null;
-	userInfoMsgTypeCodes = UserInfoMsgTypeCode;
+	// userInfoMsgType: UserInfoMsgTypeCode | null = null;
+	// userInfoMsgTypeCodes = UserInfoMsgTypeCode;
 
 	constructor(private location: Location) {}
 
 	ngOnInit(): void {
-		this.userInfoMsgType = (this.location.getState() as any).userInfoMsgType;
+		// this.userInfoMsgType = (this.location.getState() as any).userInfoMsgType;
 	}
 }

@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
-import { BooleanTypeCode } from 'src/app/api/models';
 import {
+	BooleanTypeCode,
 	PoliceOfficerRoleCode,
 	SelectOptions,
 	SwlCategoryTypeCode,

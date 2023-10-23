@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { BooleanTypeCode } from 'src/app/api/models';
+import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
 @Component({

@@ -1,7 +1,6 @@
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ApplicationPaymentResponse } from 'src/app/api/models';
 
 @Component({
 	selector: 'app-licence-payment-manual',
@@ -15,7 +14,7 @@ import { ApplicationPaymentResponse } from 'src/app/api/models';
 	styles: [],
 })
 export class LicencePaymentManualComponent implements OnInit {
-	applicationData: ApplicationPaymentResponse | null = null;
+	// applicationData: ApplicationPaymentResponse | null = null;
 
 	constructor(private router: Router, private location: Location) {}
 

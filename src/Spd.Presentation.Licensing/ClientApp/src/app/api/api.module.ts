@@ -4,18 +4,9 @@ import { NgModule, ModuleWithProviders, SkipSelf, Optional } from '@angular/core
 import { HttpClient } from '@angular/common/http';
 import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 
-import { AddressAutoCompleteService } from './services/address-auto-complete.service';
-import { ApplicantService } from './services/applicant.service';
-import { ApplicationService } from './services/application.service';
 import { ConfigurationService } from './services/configuration.service';
-import { DelegateService } from './services/delegate.service';
-import { MinistryService } from './services/ministry.service';
-import { OrgService } from './services/org.service';
-import { OrgRegistrationService } from './services/org-registration.service';
-import { OrgReportService } from './services/org-report.service';
-import { OrgUserService } from './services/org-user.service';
-import { PaymentService } from './services/payment.service';
 import { UserProfileService } from './services/user-profile.service';
+import { WorkerLicensingService } from './services/worker-licensing.service';
 
 /**
  * Module that provides all services and configuration.
@@ -25,18 +16,9 @@ import { UserProfileService } from './services/user-profile.service';
   exports: [],
   declarations: [],
   providers: [
-    AddressAutoCompleteService,
-    ApplicantService,
-    ApplicationService,
     ConfigurationService,
-    DelegateService,
-    MinistryService,
-    OrgService,
-    OrgRegistrationService,
-    OrgReportService,
-    OrgUserService,
-    PaymentService,
     UserProfileService,
+    WorkerLicensingService,
     ApiConfiguration
   ],
 })
