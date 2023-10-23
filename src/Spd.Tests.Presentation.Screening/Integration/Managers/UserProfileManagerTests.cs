@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using Spd.Manager.Cases;
-using Spd.Manager.Cases.Application;
+using Spd.Manager.Cases.Screening;
 using Spd.Manager.Membership.UserProfile;
 using Xunit.Abstractions;
 

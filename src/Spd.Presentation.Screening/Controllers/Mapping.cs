@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Spd.Manager.Cases.Application;
+using Spd.Manager.Cases.Screening;
 using Spd.Manager.Cases.Payment;
 using Spd.Manager.Membership.Org;
 using Spd.Manager.Membership.UserProfile;

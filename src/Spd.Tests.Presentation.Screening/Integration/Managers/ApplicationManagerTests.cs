@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
-using Spd.Manager.Cases.Application;
+using Spd.Manager.Cases.Screening;
 using Xunit.Abstractions;
 
 namespace Spd.Tests.Presentation.Screening.Integration.Managers;
