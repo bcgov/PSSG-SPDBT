@@ -45,7 +45,8 @@ namespace Spd.Utilities.Hosting
                 // Set the comments path for the Swagger JSON and UI.
                 var xmlFileName = $"{assemblyName}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFileName);
-                c.IncludeXmlComments(xmlPath);
+                if(File.Exists(xmlPath))
+                    c.IncludeXmlComments(xmlPath);
                 // Provide sample for JsonElement
                 //c.SchemaFilter<ExamplesSchemaFilter>();
                 //c.SchemaFilter<EnumSchemaFilter>(xmlPath);
