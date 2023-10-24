@@ -44,7 +44,7 @@ namespace Spd.Manager.Membership.OrgRegistration
         public ScreeningsCountTypeCode ScreeningsCount { get; set; }
         public string? LoginIdentityGuid { get; set; }
         public string? LoginIdentityProvider { get; set; }
-        public PortalUserIdentityTypeCode? PortalUserIdentityTypeCode { get; set; }
+        public IdentityProviderTypeCode? PortalUserIdentityTypeCode { get; set; }
         public BooleanTypeCode HasPotentialDuplicate { get; set; } = BooleanTypeCode.No;
         public bool RequireDuplicateCheck { get; set; } = true;
     }
@@ -81,19 +81,6 @@ namespace Spd.Manager.Membership.OrgRegistration
         NotSure
     }
 
-
-
-    public enum PortalUserIdentityTypeCode
-    {
-        [Description("Business BCeID")]
-        BusinessBceId,
-
-        [Description("BC Services Card")]
-        BcServicesCard,
-
-        [Description("IDIR")]
-        Idir,
-    }
 
     public class OrgRegistrationCreateRequestValidator : AbstractValidator<OrgRegistrationCreateRequest>
     {
