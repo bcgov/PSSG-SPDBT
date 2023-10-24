@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { WorkerCategoryTypeCode } from 'src/app/api/models';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
-import { SecurityConsultantRequirementCode, SwlCategoryTypeCode } from 'src/app/core/code-types/model-desc.models';
+import { SecurityConsultantRequirementCode } from 'src/app/core/code-types/model-desc.models';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
@@ -123,7 +124,7 @@ export class LicenceCategorySecurityConsultantComponent implements OnInit, Licen
 	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.title = this.optionsPipe.transform(SwlCategoryTypeCode.SecurityConsultant, 'SwlCategoryTypes');
+		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.SecurityConsultant, 'SwlCategoryTypes');
 	}
 
 	isFormValid(): boolean {

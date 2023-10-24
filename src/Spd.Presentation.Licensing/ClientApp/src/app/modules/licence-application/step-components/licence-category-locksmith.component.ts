@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { WorkerCategoryTypeCode } from 'src/app/api/models';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
-import { LocksmithRequirementCode, SwlCategoryTypeCode } from 'src/app/core/code-types/model-desc.models';
+import { LocksmithRequirementCode } from 'src/app/core/code-types/model-desc.models';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
@@ -114,7 +115,6 @@ export class LicenceCategoryLocksmithComponent implements OnInit, LicenceFormSte
 	form: FormGroup = this.licenceApplicationService.categoryLocksmithFormGroup;
 	title = '';
 
-	swlCategoryTypeCodes = SwlCategoryTypeCode;
 	matcher = new FormErrorStateMatcher();
 
 	locksmithRequirementCodes = LocksmithRequirementCode;
@@ -124,7 +124,7 @@ export class LicenceCategoryLocksmithComponent implements OnInit, LicenceFormSte
 	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.title = this.optionsPipe.transform(SwlCategoryTypeCode.Locksmith, 'SwlCategoryTypes');
+		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.Locksmith, 'SwlCategoryTypes');
 	}
 
 	isFormValid(): boolean {

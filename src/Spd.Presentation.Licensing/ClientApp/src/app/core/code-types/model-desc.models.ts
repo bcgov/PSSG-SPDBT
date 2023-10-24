@@ -1,4 +1,15 @@
-import { BooleanTypeCode, GenderCode } from 'src/app/api/models';
+import {
+	ApplicationTypeCode,
+	EyeColourCode,
+	GenderCode,
+	HairColourCode,
+	HeightUnitCode,
+	LicenceTermCode,
+	PoliceOfficerRoleCode,
+	WeightUnitCode,
+	WorkerCategoryTypeCode,
+	WorkerLicenceTypeCode,
+} from 'src/app/api/models';
 import { CountryTypeCode } from './country-type.model';
 
 // export interface SelectOptions<k = string | number | boolean> {
@@ -15,6 +26,10 @@ export interface SelectOptions<k = string> {
 // ============================================================
 // ENUMs
 // ============================================================
+export enum BooleanTypeCode {
+	Yes = 'Yes',
+	No = 'No',
+}
 
 export enum LicenceUpdateTypeCode {
 	UpdateName = 'UpdateName',
@@ -22,27 +37,6 @@ export enum LicenceUpdateTypeCode {
 	AddLicenceCategory = 'AddLicenceCategory',
 	AddRequestAuthorizationToUseRestraints = 'AddRequestAuthorizationToUseRestraints',
 	AddRequestAuthorizationToUseDogs = 'AddRequestAuthorizationToUseDogs',
-}
-
-export enum SwlTypeCode {
-	SecurityBusinessLicence = 'SecurityBusinessLicence',
-	SecurityWorkerLicence = 'SecurityWorkerLicence',
-	ArmouredVehiclePermit = 'ArmouredVehiclePermit',
-	BodyArmourPermit = 'ArmouredVehiclePermit',
-}
-
-export enum SwlApplicationTypeCode {
-	NewOrExpired = 'NewOrExpired',
-	Renewal = 'Renewal',
-	Replacement = 'Replacement',
-	Update = 'Update',
-}
-
-export enum SwlTermCode {
-	NintyDays = '90Days',
-	OneYear = '1Year',
-	TwoYears = '2Years',
-	ThreeYears = '3Years',
 }
 
 export enum RestraintDocumentCode {
@@ -72,69 +66,12 @@ export enum ProofOfAbilityToWorkInCanadaCode {
 	ValidDocumentToVerifyLegalWorkStatus = 'ValidDocumentToVerifyLegalWorkStatus',
 }
 
-export enum PoliceOfficerRoleCode {
-	AuxiliaryorReserveConstable = 'AuxiliaryorReserveConstable',
-	SheriffDeputySheriff = 'SheriffDeputySheriff',
-	CorrectionsOfficer = 'CorrectionsOfficer',
-	CourtAppointedBailiff = 'CourtAppointedBailiff',
-	SpecialProvincialOrMunicipalConstable = 'SpecialProvincialOrMunicipalConstable',
-	PoliceOfficer = 'PoliceOfficer',
-	Other = 'Other',
-}
-
 export enum GovernmentIssuedPhotoIdCode {
 	DriversLicence = 'DriversLicence',
 	CanadianFirearmsLicense = 'CanadianFirearmsLicense',
 	BcServicesCard = 'BcServicesCard',
 	CertificateOfIndianStatus = 'CertificateOfIndianStatus',
 	ValidGovernmentIssuedPhotoId = 'ValidGovernmentIssuedPhotoId',
-}
-
-export enum HairColourCode {
-	Black = 'Black',
-	Blonde = 'Blonde',
-	Brown = 'Brown',
-	Red = 'Red',
-	Grey = 'Grey',
-	Bald = 'Bald',
-}
-
-export enum EyeColourCode {
-	Blue = 'Blue',
-	Brown = 'Brown',
-	Black = 'Black',
-	Green = 'Green',
-	Hazel = 'Hazel',
-}
-
-export enum HeightUnitCode {
-	Centimeters = 'Centimeters',
-	Inches = 'Inches',
-}
-
-export enum WeightUnitCode {
-	Kilograms = 'Kilograms',
-	Pounds = 'Pounds',
-}
-
-export enum SwlCategoryTypeCode {
-	ArmouredCarGuard = 'ArmouredCarGuard',
-	BodyArmourSales = 'BodyArmourSales',
-	ClosedCircuitTelevisionInstaller = 'ClosedCircuitTelevisionInstaller',
-	ElectronicLockingDeviceInstaller = 'ElectronicLockingDeviceInstaller',
-	FireInvestigator = 'FireInvestigator',
-	Locksmith = 'Locksmith',
-	LocksmithUnderSupervision = 'LocksmithUnderSupervision',
-	PrivateInvestigator = 'PrivateInvestigator',
-	PrivateInvestigatorUnderSupervision = 'PrivateInvestigatorUnderSupervision',
-	SecurityGuard = 'SecurityGuard',
-	SecurityGuardUnderSupervision = 'SecurityGuardUnderSupervision',
-	SecurityAlarmInstallerUnderSupervision = 'SecurityAlarmInstallerUnderSupervision',
-	SecurityAlarmInstaller = 'SecurityAlarmInstaller',
-	SecurityAlarmMonitor = 'SecurityAlarmMonitor',
-	SecurityAlarmResponse = 'SecurityAlarmResponse',
-	SecurityAlarmSales = 'SecurityAlarmSales',
-	SecurityConsultant = 'SecurityConsultant',
 }
 
 export enum LocksmithRequirementCode {
@@ -180,17 +117,17 @@ export enum SecurityGuardRequirementCode {
 // ============================================================
 
 export const SwlTypes: SelectOptions[] = [
-	{ desc: 'Security Business Licence', code: SwlTypeCode.SecurityBusinessLicence },
-	{ desc: 'Security Worker Licence', code: SwlTypeCode.SecurityWorkerLicence },
-	{ desc: 'Armoured Vehicle Permit', code: SwlTypeCode.ArmouredVehiclePermit },
-	{ desc: 'Body Armour Permit', code: SwlTypeCode.BodyArmourPermit },
+	// { desc: 'Security Business Licence', code: WorkerLicenceTypeCode.SecurityBusinessLicence },
+	{ desc: 'Security Worker Licence', code: WorkerLicenceTypeCode.SecurityWorkerLicence },
+	{ desc: 'Armoured Vehicle Permit', code: WorkerLicenceTypeCode.ArmouredVehiclePermit },
+	{ desc: 'Body Armour Permit', code: WorkerLicenceTypeCode.BodyArmourPermit },
 ];
 
 export const SwlApplicationTypes: SelectOptions[] = [
-	{ desc: 'New Or Expired', code: SwlApplicationTypeCode.NewOrExpired },
-	{ desc: 'Renewal', code: SwlApplicationTypeCode.Renewal },
-	{ desc: 'Replacement', code: SwlApplicationTypeCode.Replacement },
-	{ desc: 'Update', code: SwlApplicationTypeCode.Update },
+	{ desc: 'New Or Expired', code: ApplicationTypeCode.New },
+	{ desc: 'Renewal', code: ApplicationTypeCode.Renewal },
+	{ desc: 'Replacement', code: ApplicationTypeCode.Replacement },
+	{ desc: 'Update', code: ApplicationTypeCode.Update },
 ];
 
 export const GenderTypes: SelectOptions[] = [
@@ -200,10 +137,10 @@ export const GenderTypes: SelectOptions[] = [
 ];
 
 export const SwlTermTypes: SelectOptions[] = [
-	{ desc: '90 Days', code: SwlTermCode.NintyDays },
-	{ desc: '1 Year', code: SwlTermCode.OneYear },
-	{ desc: '2 Years', code: SwlTermCode.TwoYears },
-	{ desc: '3 Years', code: SwlTermCode.ThreeYears },
+	{ desc: '90 Days', code: LicenceTermCode.NintyDays },
+	{ desc: '1 Year', code: LicenceTermCode.OneYear },
+	{ desc: '2 Years', code: LicenceTermCode.TwoYears },
+	{ desc: '3 Years', code: LicenceTermCode.ThreeYears },
 ];
 
 export const RestraintDocumentTypes: SelectOptions[] = [
@@ -295,29 +232,29 @@ export const WeightUnitTypes: SelectOptions[] = [
 ];
 
 export const SwlCategoryTypes: SelectOptions[] = [
-	{ desc: 'Armoured Car Guard', code: SwlCategoryTypeCode.ArmouredCarGuard },
-	{ desc: 'Body Armour Sales', code: SwlCategoryTypeCode.BodyArmourSales },
-	{ desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
-	{ desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
-	{ desc: 'Fire Investigator', code: SwlCategoryTypeCode.FireInvestigator },
-	{ desc: 'Locksmith', code: SwlCategoryTypeCode.Locksmith },
-	{ desc: 'Locksmith - Under Supervision', code: SwlCategoryTypeCode.LocksmithUnderSupervision },
-	{ desc: 'Private Investigator', code: SwlCategoryTypeCode.PrivateInvestigator },
+	{ desc: 'Armoured Car Guard', code: WorkerCategoryTypeCode.ArmouredCarGuard },
+	{ desc: 'Body Armour Sales', code: WorkerCategoryTypeCode.BodyArmourSales },
+	{ desc: 'Closed Circuit Television Installer', code: WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller },
+	{ desc: 'Electronic Locking Device Installer', code: WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller },
+	{ desc: 'Fire Investigator', code: WorkerCategoryTypeCode.FireInvestigator },
+	{ desc: 'Locksmith', code: WorkerCategoryTypeCode.Locksmith },
+	{ desc: 'Locksmith - Under Supervision', code: WorkerCategoryTypeCode.LocksmithUnderSupervision },
+	{ desc: 'Private Investigator', code: WorkerCategoryTypeCode.PrivateInvestigator },
 	{
 		desc: 'Private Investigator - Under Supervision',
-		code: SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision,
+		code: WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision,
 	},
-	{ desc: 'Security Alarm Installer', code: SwlCategoryTypeCode.SecurityAlarmInstaller },
+	{ desc: 'Security Alarm Installer', code: WorkerCategoryTypeCode.SecurityAlarmInstaller },
 	{
 		desc: 'Security Alarm Installer - Under Supervision',
-		code: SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
+		code: WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
 	},
-	{ desc: 'Security Alarm Monitor', code: SwlCategoryTypeCode.SecurityAlarmMonitor },
-	{ desc: 'Security Alarm Response', code: SwlCategoryTypeCode.SecurityAlarmResponse },
-	{ desc: 'Security Alarm Sales', code: SwlCategoryTypeCode.SecurityAlarmSales },
-	{ desc: 'Security Consultant', code: SwlCategoryTypeCode.SecurityConsultant },
-	{ desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
-	{ desc: 'Security Guard - Under Supervision', code: SwlCategoryTypeCode.SecurityGuardUnderSupervision },
+	{ desc: 'Security Alarm Monitor', code: WorkerCategoryTypeCode.SecurityAlarmMonitor },
+	{ desc: 'Security Alarm Response', code: WorkerCategoryTypeCode.SecurityAlarmResponse },
+	{ desc: 'Security Alarm Sales', code: WorkerCategoryTypeCode.SecurityAlarmSales },
+	{ desc: 'Security Consultant', code: WorkerCategoryTypeCode.SecurityConsultant },
+	{ desc: 'Security Guard', code: WorkerCategoryTypeCode.SecurityGuard },
+	{ desc: 'Security Guard - Under Supervision', code: WorkerCategoryTypeCode.SecurityGuardUnderSupervision },
 ];
 
 export const PoliceOfficerRoleTypes: SelectOptions[] = [

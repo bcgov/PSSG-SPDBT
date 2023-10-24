@@ -1,6 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { UserInfo } from 'src/app/api/models';
 
 export interface ApplyNameChangeDialogData {}
 @Component({
@@ -51,7 +50,7 @@ export interface ApplyNameChangeDialogData {}
 })
 export class UpdateApplyNameChangeModalComponent implements OnInit {
 	selectedOrg: any = null;
-	userInfos: Array<UserInfo> = [];
+	userInfos: Array<any> = [];
 	title: string = 'Organization selection';
 
 	constructor(
