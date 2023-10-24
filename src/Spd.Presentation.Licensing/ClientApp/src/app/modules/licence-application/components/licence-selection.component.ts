@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { SwlTypeCode } from 'src/app/core/code-types/model-desc.models';
+import { WorkerLicenceTypeCode } from 'src/app/api/models';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
 import { LicenceApplicationService } from '../licence-application.service';
 
@@ -19,8 +19,8 @@ import { LicenceApplicationService } from '../licence-application.service';
 								<!-- <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6 col-sm-12 mb-3">
 										<div
 											class="step-container__box step-container__box__fullheight"
-											(click)="onLicenceTypeChange(swlTypeCodes.SecurityBusinessLicence)"
-											[ngClass]="{ 'active-selection-main': licenceTypeCode == swlTypeCodes.SecurityBusinessLicence }"
+											(click)="onLicenceTypeChange(workerLicenceTypeCodes.SecurityBusinessLicence)"
+											[ngClass]="{ 'active-selection-main': licenceTypeCode == workerLicenceTypeCodes.SecurityBusinessLicence }"
 										>
 											<div class="fs-5 mb-4 mt-4 mt-md-0">
 												<div class="box__image d-none d-md-block">
@@ -33,8 +33,10 @@ import { LicenceApplicationService } from '../licence-application.service';
 								<div class="col-xxl-4 col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-3">
 									<div
 										class="step-container__box step-container__box__fullheight"
-										(click)="onLicenceTypeChange(swlTypeCodes.SecurityWorkerLicence)"
-										[ngClass]="{ 'active-selection-main': licenceTypeCode == swlTypeCodes.SecurityWorkerLicence }"
+										(click)="onLicenceTypeChange(workerLicenceTypeCodes.SecurityWorkerLicence)"
+										[ngClass]="{
+											'active-selection-main': licenceTypeCode == workerLicenceTypeCodes.SecurityWorkerLicence
+										}"
 									>
 										<div class="fs-5 mb-4 mt-4 mt-md-0">
 											<div class="box__image d-none d-md-block">
@@ -47,8 +49,10 @@ import { LicenceApplicationService } from '../licence-application.service';
 								<div class="col-xxl-4 col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-3">
 									<div
 										class="step-container__box step-container__box__fullheight"
-										(click)="onLicenceTypeChange(swlTypeCodes.ArmouredVehiclePermit)"
-										[ngClass]="{ 'active-selection-main': licenceTypeCode == swlTypeCodes.ArmouredVehiclePermit }"
+										(click)="onLicenceTypeChange(workerLicenceTypeCodes.ArmouredVehiclePermit)"
+										[ngClass]="{
+											'active-selection-main': licenceTypeCode == workerLicenceTypeCodes.ArmouredVehiclePermit
+										}"
 									>
 										<div class="fs-5 mb-4 mt-4 mt-md-0">
 											<div class="box__image d-none d-md-block">
@@ -61,8 +65,8 @@ import { LicenceApplicationService } from '../licence-application.service';
 								<div class="col-xxl-4 col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-3">
 									<div
 										class="step-container__box step-container__box__fullheight"
-										(click)="onLicenceTypeChange(swlTypeCodes.BodyArmourPermit)"
-										[ngClass]="{ 'active-selection-main': licenceTypeCode == swlTypeCodes.BodyArmourPermit }"
+										(click)="onLicenceTypeChange(workerLicenceTypeCodes.BodyArmourPermit)"
+										[ngClass]="{ 'active-selection-main': licenceTypeCode == workerLicenceTypeCodes.BodyArmourPermit }"
 									>
 										<div class="fs-5 mb-4 mt-4 mt-md-0">
 											<div class="box__image d-none d-md-block">
@@ -118,10 +122,10 @@ export class LicenceSelectionComponent implements OnInit {
 	readonly image3 = '/assets/armoured-vehicle.png';
 	readonly image4 = '/assets/body-armour.png';
 
-	licenceTypeCode: SwlTypeCode | null = null;
+	licenceTypeCode: WorkerLicenceTypeCode | null = null;
 	isDirtyAndInvalid = false;
 
-	swlTypeCodes = SwlTypeCode;
+	workerLicenceTypeCodes = WorkerLicenceTypeCode;
 
 	imageLoadedCount = 0;
 	isImagesLoaded = false;
@@ -156,7 +160,7 @@ export class LicenceSelectionComponent implements OnInit {
 		}
 	}
 
-	onLicenceTypeChange(_val: SwlTypeCode) {
+	onLicenceTypeChange(_val: WorkerLicenceTypeCode) {
 		this.form.patchValue({ licenceTypeCode: _val });
 		this.licenceTypeCode = _val;
 

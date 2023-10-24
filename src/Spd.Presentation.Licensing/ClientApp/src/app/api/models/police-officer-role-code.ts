@@ -1,11 +1,11 @@
 /* tslint:disable */
 /* eslint-disable */
 export enum PoliceOfficerRoleCode {
-  $0 = 0,
-  $1 = 1,
-  $2 = 2,
-  $3 = 3,
-  $4 = 4,
-  $5 = 5,
-  $6 = 6
+  AuxiliaryorReserveConstable = 'AuxiliaryorReserveConstable',
+  SheriffDeputySheriff = 'SheriffDeputySheriff',
+  CorrectionsOfficer = 'CorrectionsOfficer',
+  CourtAppointedBailiff = 'CourtAppointedBailiff',
+  SpecialProvincialOrMunicipalConstable = 'SpecialProvincialOrMunicipalConstable',
+  PoliceOfficer = 'PoliceOfficer',
+  Other = 'Other'
 }

@@ -28,57 +28,17 @@ export class UserProfileService extends BaseService {
   static readonly ApiSecurityWorkerWhoamiGetPath = '/api/security-worker/whoami';
 
   /**
+   * Security Worker login, for security worker portal
+   * return 204 No Content when there is no contact found with this BCSC.
+   *
+   *
+   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiSecurityWorkerWhoamiGet$Plain()` instead.
+   * To access only the response body, use `apiSecurityWorkerWhoamiGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiSecurityWorkerWhoamiGet$Plain$Response(params?: {
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<ApplicantProfileResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, UserProfileService.ApiSecurityWorkerWhoamiGetPath, 'get');
-    if (params) {
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'text',
-      accept: 'text/plain',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<ApplicantProfileResponse>;
-      })
-    );
-  }
-
-  /**
-   * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiSecurityWorkerWhoamiGet$Plain$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiSecurityWorkerWhoamiGet$Plain(params?: {
-  },
-  context?: HttpContext
-
-): Observable<ApplicantProfileResponse> {
-
-    return this.apiSecurityWorkerWhoamiGet$Plain$Response(params,context).pipe(
-      map((r: StrictHttpResponse<ApplicantProfileResponse>) => r.body as ApplicantProfileResponse)
-    );
-  }
-
-  /**
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiSecurityWorkerWhoamiGet$Json()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiSecurityWorkerWhoamiGet$Json$Response(params?: {
+  apiSecurityWorkerWhoamiGet$Response(params?: {
   },
   context?: HttpContext
 
@@ -90,7 +50,7 @@ export class UserProfileService extends BaseService {
 
     return this.http.request(rb.build({
       responseType: 'json',
-      accept: 'text/json',
+      accept: 'application/json',
       context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
@@ -101,18 +61,23 @@ export class UserProfileService extends BaseService {
   }
 
   /**
+   * Security Worker login, for security worker portal
+   * return 204 No Content when there is no contact found with this BCSC.
+   *
+   *
+   *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiSecurityWorkerWhoamiGet$Json$Response()` instead.
+   * To access the full response (for headers, for example), `apiSecurityWorkerWhoamiGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiSecurityWorkerWhoamiGet$Json(params?: {
+  apiSecurityWorkerWhoamiGet(params?: {
   },
   context?: HttpContext
 
 ): Observable<ApplicantProfileResponse> {
 
-    return this.apiSecurityWorkerWhoamiGet$Json$Response(params,context).pipe(
+    return this.apiSecurityWorkerWhoamiGet$Response(params,context).pipe(
       map((r: StrictHttpResponse<ApplicantProfileResponse>) => r.body as ApplicantProfileResponse)
     );
   }
@@ -123,57 +88,16 @@ export class UserProfileService extends BaseService {
   static readonly ApiBizLicenceWhoamiGetPath = '/api/biz-licence/whoami';
 
   /**
+   * Biz bceid login, for biz licence.
+   *
+   *
+   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiBizLicenceWhoamiGet$Plain()` instead.
+   * To access only the response body, use `apiBizLicenceWhoamiGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiBizLicenceWhoamiGet$Plain$Response(params?: {
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<ApplicantProfileResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, UserProfileService.ApiBizLicenceWhoamiGetPath, 'get');
-    if (params) {
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'text',
-      accept: 'text/plain',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<ApplicantProfileResponse>;
-      })
-    );
-  }
-
-  /**
-   * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiBizLicenceWhoamiGet$Plain$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiBizLicenceWhoamiGet$Plain(params?: {
-  },
-  context?: HttpContext
-
-): Observable<ApplicantProfileResponse> {
-
-    return this.apiBizLicenceWhoamiGet$Plain$Response(params,context).pipe(
-      map((r: StrictHttpResponse<ApplicantProfileResponse>) => r.body as ApplicantProfileResponse)
-    );
-  }
-
-  /**
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiBizLicenceWhoamiGet$Json()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiBizLicenceWhoamiGet$Json$Response(params?: {
+  apiBizLicenceWhoamiGet$Response(params?: {
   },
   context?: HttpContext
 
@@ -185,7 +109,7 @@ export class UserProfileService extends BaseService {
 
     return this.http.request(rb.build({
       responseType: 'json',
-      accept: 'text/json',
+      accept: 'application/json',
       context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
@@ -196,18 +120,22 @@ export class UserProfileService extends BaseService {
   }
 
   /**
+   * Biz bceid login, for biz licence.
+   *
+   *
+   *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiBizLicenceWhoamiGet$Json$Response()` instead.
+   * To access the full response (for headers, for example), `apiBizLicenceWhoamiGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiBizLicenceWhoamiGet$Json(params?: {
+  apiBizLicenceWhoamiGet(params?: {
   },
   context?: HttpContext
 
 ): Observable<ApplicantProfileResponse> {
 
-    return this.apiBizLicenceWhoamiGet$Json$Response(params,context).pipe(
+    return this.apiBizLicenceWhoamiGet$Response(params,context).pipe(
       map((r: StrictHttpResponse<ApplicantProfileResponse>) => r.body as ApplicantProfileResponse)
     );
   }

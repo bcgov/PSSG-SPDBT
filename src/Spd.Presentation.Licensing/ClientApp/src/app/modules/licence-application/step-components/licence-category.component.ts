@@ -1,7 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { SelectOptions, SwlCategoryTypeCode, SwlCategoryTypes } from 'src/app/core/code-types/model-desc.models';
+import { SwlCategoryTypeCode } from 'src/app/api/models';
+import { SelectOptions, SwlCategoryTypes } from 'src/app/core/code-types/model-desc.models';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { LicenceUpdateTypeCode, SwlCategoryTypeCode } from 'src/app/core/code-types/model-desc.models';
+import { SwlCategoryTypeCode } from 'src/app/api/models';
+import { LicenceUpdateTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 import {

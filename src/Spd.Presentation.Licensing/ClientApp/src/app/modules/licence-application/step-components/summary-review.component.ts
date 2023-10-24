@@ -1,12 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
-import {
-	BooleanTypeCode,
-	PoliceOfficerRoleCode,
-	SelectOptions,
-	SwlCategoryTypeCode,
-	SwlCategoryTypes,
-} from 'src/app/core/code-types/model-desc.models';
+import { PoliceOfficerRoleCode, SwlCategoryTypeCode } from 'src/app/api/models';
+import { BooleanTypeCode, SelectOptions, SwlCategoryTypes } from 'src/app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { LicenceApplicationService } from '../licence-application.service';
 

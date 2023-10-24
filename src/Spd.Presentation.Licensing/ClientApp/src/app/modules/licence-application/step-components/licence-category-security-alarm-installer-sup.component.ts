@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SwlCategoryTypeCode } from 'src/app/core/code-types/model-desc.models';
+import { SwlCategoryTypeCode } from 'src/app/api/models';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 

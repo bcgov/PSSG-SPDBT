@@ -1,10 +1,10 @@
 /* tslint:disable */
 /* eslint-disable */
 export enum HairColourCode {
-  $0 = 0,
-  $1 = 1,
-  $2 = 2,
-  $3 = 3,
-  $4 = 4,
-  $5 = 5
+  Black = 'Black',
+  Blonde = 'Blonde',
+  Brown = 'Brown',
+  Red = 'Red',
+  Grey = 'Grey',
+  Bald = 'Bald'
 }

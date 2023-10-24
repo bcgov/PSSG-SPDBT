@@ -1,8 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { SwlCategoryTypeCode } from 'src/app/api/models';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
-import { SelectOptions, SwlCategoryTypeCode, SwlCategoryTypes } from 'src/app/core/code-types/model-desc.models';
+import { SelectOptions, SwlCategoryTypes } from 'src/app/core/code-types/model-desc.models';
 import { LicenceApplicationService } from '../licence-application.service';
 
 export interface LicenceCategoryDialogData {

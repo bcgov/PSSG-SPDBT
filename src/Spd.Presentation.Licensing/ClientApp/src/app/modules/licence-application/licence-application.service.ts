@@ -3,16 +3,22 @@ import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@ang
 import { HotToastService } from '@ngneat/hot-toast';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { GenderCode } from 'src/app/api/models';
+import {
+	ApplicationTypeCode,
+	EyeColourCode,
+	GenderCode,
+	HairColourCode,
+	HeightUnitCode,
+	LicenceTermCode,
+	PoliceOfficerRoleCode,
+	WeightUnitCode,
+	WorkerLicenceTypeCode,
+} from 'src/app/api/models';
 import {
 	BooleanTypeCode,
 	DogDocumentCode,
-	EyeColourCode,
 	GovernmentIssuedPhotoIdCode,
-	HairColourCode,
-	HeightUnitCode,
 	LocksmithRequirementCode,
-	PoliceOfficerRoleCode,
 	PrivateInvestigatorRequirementCode,
 	PrivateInvestigatorSupRequirementCode,
 	PrivateInvestigatorTrainingCode,
@@ -22,10 +28,6 @@ import {
 	SecurityAlarmInstallerRequirementCode,
 	SecurityConsultantRequirementCode,
 	SecurityGuardRequirementCode,
-	SwlApplicationTypeCode,
-	SwlTermCode,
-	SwlTypeCode,
-	WeightUnitCode,
 } from 'src/app/core/code-types/model-desc.models';
 import { UtilService } from 'src/app/core/services/util.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
@@ -829,10 +831,10 @@ export class LicenceApplicationService {
 
 				const defaults: any = {
 					licenceTypeData: {
-						licenceTypeCode: SwlTypeCode.ArmouredVehiclePermit,
+						licenceTypeCode: WorkerLicenceTypeCode.ArmouredVehiclePermit,
 					},
 					applicationTypeData: {
-						applicationTypeCode: SwlApplicationTypeCode.NewOrExpired,
+						applicationTypeCode: ApplicationTypeCode.New,
 					},
 					soleProprietorData: {
 						isSoleProprietor: BooleanTypeCode.Yes,
@@ -867,7 +869,7 @@ export class LicenceApplicationService {
 						attachments: [myFile],
 					},
 					licenceTermData: {
-						licenceTermCode: SwlTermCode.ThreeYears,
+						licenceTermCode: LicenceTermCode.ThreeYears,
 					},
 					// currentLicenceNumber: '123456',
 					// accessCode: '456',
@@ -1068,10 +1070,10 @@ export class LicenceApplicationService {
 
 				const defaults: any = {
 					licenceTypeData: {
-						licenceTypeCode: SwlTypeCode.BodyArmourPermit,
+						licenceTypeCode: WorkerLicenceTypeCode.BodyArmourPermit,
 					},
 					applicationTypeData: {
-						applicationTypeCode: SwlApplicationTypeCode.NewOrExpired,
+						applicationTypeCode: ApplicationTypeCode.New,
 					},
 					soleProprietorData: {
 						isSoleProprietor: BooleanTypeCode.No,
@@ -1095,7 +1097,7 @@ export class LicenceApplicationService {
 						// useDogsOrRestraints: BooleanTypeCode.No,
 					},
 					licenceTermData: {
-						licenceTermCode: SwlTermCode.NintyDays,
+						licenceTermCode: LicenceTermCode.NintyDays,
 					},
 					policeBackgroundData: {
 						isPoliceOrPeaceOfficer: BooleanTypeCode.No,

@@ -4,6 +4,7 @@ import { NgModule, ModuleWithProviders, SkipSelf, Optional } from '@angular/core
 import { HttpClient } from '@angular/common/http';
 import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 
+import { AddressAutoCompleteService } from './services/address-auto-complete.service';
 import { ConfigurationService } from './services/configuration.service';
 import { UserProfileService } from './services/user-profile.service';
 import { WorkerLicensingService } from './services/worker-licensing.service';
@@ -16,6 +17,7 @@ import { WorkerLicensingService } from './services/worker-licensing.service';
   exports: [],
   declarations: [],
   providers: [
+    AddressAutoCompleteService,
     ConfigurationService,
     UserProfileService,
     WorkerLicensingService,

@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { SwlCategoryTypeCode } from 'src/app/core/code-types/model-desc.models';
+import { SwlCategoryTypeCode } from 'src/app/api/models';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';

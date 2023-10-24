@@ -1,7 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export enum GenderCode {
-	M = 'M',
-	F = 'F',
-	U = 'U',
+  M = 'M',
+  F = 'F',
+  U = 'U'
 }

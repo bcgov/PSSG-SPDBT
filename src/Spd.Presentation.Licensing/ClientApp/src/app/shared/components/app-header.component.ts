@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthUserBcscService } from 'src/app/core/auth-user-bcsc.service';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
-import { AuthUserService } from 'src/app/core/services/auth-user.service';
 import { UtilService } from 'src/app/core/services/util.service';
 
 @Component({
@@ -69,7 +69,7 @@ export class HeaderComponent implements OnInit {
 
 	constructor(
 		protected router: Router,
-		private authUserService: AuthUserService,
+		private authUserBcscService: AuthUserBcscService,
 		private authProcessService: AuthProcessService,
 		private utilService: UtilService
 	) {}
@@ -90,20 +90,12 @@ export class HeaderComponent implements OnInit {
 	}
 
 	private getUserInfo(): void {
-		console.debug(
-			'BcServicesCard bcscUserInfoProfile',
-			this.authUserService.bcscUserInfoProfile,
-			'bcscUserWhoamiProfile',
-			this.authUserService.bcscUserWhoamiProfile
-		);
+		console.debug('BcServicesCard bcscUserInfoProfile', this.authUserBcscService.bcscUserWhoamiProfile);
 
-		let name = this.authUserService.bcscUserInfoProfile?.displayName;
-		if (!name) {
-			name = this.utilService.getFullName(
-				this.authUserService.bcscUserWhoamiProfile?.firstName,
-				this.authUserService.bcscUserWhoamiProfile?.lastName
-			);
-		}
+		const name = this.utilService.getFullName(
+			this.authUserBcscService.bcscUserWhoamiProfile?.firstName,
+			this.authUserBcscService.bcscUserWhoamiProfile?.lastName
+		);
 		this.loggedInUserDisplay = name ?? 'User';
 	}
 }

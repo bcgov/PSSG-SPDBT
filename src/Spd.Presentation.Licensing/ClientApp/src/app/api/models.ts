@@ -1,3 +1,5 @@
+export { AddressFindResponse } from './models/address-find-response';
+export { AddressRetrieveResponse } from './models/address-retrieve-response';
 export { Alias } from './models/alias';
 export { ApplicantProfileResponse } from './models/applicant-profile-response';
 export { ApplicationTypeCode } from './models/application-type-code';
@@ -9,6 +11,7 @@ export { EyeColourCode } from './models/eye-colour-code';
 export { GenderCode } from './models/gender-code';
 export { HairColourCode } from './models/hair-colour-code';
 export { HeightUnitCode } from './models/height-unit-code';
+export { IdentityProviderTypeCode } from './models/identity-provider-type-code';
 export { LicenceTermCode } from './models/licence-term-code';
 export { OidcConfiguration } from './models/oidc-configuration';
 export { PoliceOfficerRoleCode } from './models/police-officer-role-code';
