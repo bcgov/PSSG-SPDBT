@@ -619,6 +619,11 @@ namespace Spd.Manager.Cases.Screening
                 .MaximumLength(75)
                 .When(r => r.ServiceType != ServiceTypeCode.PSSO && r.ServiceType != ServiceTypeCode.PSSO_VS);
 
+            RuleFor(r => r.EmailAddress)
+                .EmailAddress()
+                .MaximumLength(75)
+                .When(r => !string.IsNullOrWhiteSpace(r.EmailAddress));
+
             RuleFor(r => r.PhoneNumber)
                     .NotEmpty();
 
