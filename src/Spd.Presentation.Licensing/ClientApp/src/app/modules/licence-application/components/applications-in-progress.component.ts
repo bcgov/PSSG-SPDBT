@@ -38,12 +38,12 @@ export interface ApplicationResponse {
 							<div class="row">
 								<div class="col-lg-4">
 									<div class="fs-5 fw-normal" style="color: var(--color-primary);">
-										{{ appl.licenceTypeCode | options : 'SwlTypes' }}
+										{{ appl.licenceTypeCode | options : 'WorkerLicenceTypes' }}
 									</div>
 								</div>
 								<div class="col-lg-3">
 									<small class="d-block text-muted mt-2 mt-md-0">Application Type</small>
-									<div class="text-data">{{ appl.applicationTypeCode | options : 'SwlApplicationTypes' }}</div>
+									<div class="text-data">{{ appl.applicationTypeCode | options : 'ApplicationTypes' }}</div>
 								</div>
 								<div class="col-lg-2">
 									<small class="d-block text-muted mt-2 mt-md-0">Create Date</small>
@@ -64,7 +64,7 @@ export interface ApplicationResponse {
 							<div class="row">
 								<div class="col-lg-2">
 									<div class="fs-5 fw-normal" style="color: var(--color-primary);">
-										{{ appl.licenceTypeCode | options : 'SwlTypes' }}
+										{{ appl.licenceTypeCode | options : 'WorkerLicenceTypes' }}
 									</div>
 								</div>
 								<div class="col-lg-10">
@@ -79,7 +79,7 @@ export interface ApplicationResponse {
 										</div>
 										<div class="col-lg-3">
 											<small class="d-block text-muted mt-2 mt-md-0">Application Type</small>
-											<div class="text-data">{{ appl.applicationTypeCode | options : 'SwlApplicationTypes' }}</div>
+											<div class="text-data">{{ appl.applicationTypeCode | options : 'ApplicationTypes' }}</div>
 										</div>
 										<div class="col-lg-3 text-end">
 											<mat-chip-option [selectable]="false" class="mat-chip-green" style="height: 38px; width: 135px;">
@@ -152,7 +152,7 @@ export interface ApplicationResponse {
 							<div class="row">
 								<div class="col-lg-2">
 									<div class="fs-5 fw-normal" style="color: var(--color-primary);">
-										{{ appl.licenceTypeCode | options : 'SwlTypes' }}
+										{{ appl.licenceTypeCode | options : 'WorkerLicenceTypes' }}
 									</div>
 								</div>
 								<div class="col-lg-10">

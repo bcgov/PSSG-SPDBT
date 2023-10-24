@@ -24,7 +24,7 @@ export class LicenceCategoryElectronicLockingDeviceInstallerComponent implements
 		this.form.patchValue({ checkbox: true });
 		this.title = this.optionsPipe.transform(
 			WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller,
-			'SwlCategoryTypes'
+			'WorkerCategoryTypes'
 		);
 	}
 

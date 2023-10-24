@@ -73,17 +73,16 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 
 								<app-file-upload
 									[maxNumberOfFiles]="1"
-									[files]="photoOfYourselfAttachments.value"
+									[files]="attachments.value"
 									[accept]="accept"
 									(filesChanged)="onFilesChanged()"
 								></app-file-upload>
 								<mat-error
 									class="mat-option-error"
 									*ngIf="
-										(form.get('photoOfYourselfAttachments')?.dirty ||
-											form.get('photoOfYourselfAttachments')?.touched) &&
-										form.get('photoOfYourselfAttachments')?.invalid &&
-										form.get('photoOfYourselfAttachments')?.hasError('required')
+										(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+										form.get('attachments')?.invalid &&
+										form.get('attachments')?.hasError('required')
 									"
 									>This is required</mat-error
 								>
@@ -121,14 +120,14 @@ export class PhotoComponent implements LicenceFormStepComponent {
 			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
 				? this.fileUploadComponent.files
 				: [];
-		this.form.controls['photoOfYourselfAttachments'].setValue(attachments);
+		this.form.controls['attachments'].setValue(attachments);
 	}
 
 	get useBcServicesCardPhoto(): FormControl {
 		return this.form.get('useBcServicesCardPhoto') as FormControl;
 	}
 
-	get photoOfYourselfAttachments(): FormControl {
-		return this.form.get('photoOfYourselfAttachments') as FormControl;
+	get attachments(): FormControl {
+		return this.form.get('attachments') as FormControl;
 	}
 }

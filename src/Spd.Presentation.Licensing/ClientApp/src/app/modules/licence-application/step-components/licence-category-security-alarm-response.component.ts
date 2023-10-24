@@ -22,7 +22,7 @@ export class LicenceCategorySecurityAlarmResponseComponent implements OnInit, Li
 
 	ngOnInit(): void {
 		this.form.patchValue({ checkbox: true });
-		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.SecurityAlarmResponse, 'SwlCategoryTypes');
+		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.SecurityAlarmResponse, 'WorkerCategoryTypes');
 	}
 
 	isFormValid(): boolean {

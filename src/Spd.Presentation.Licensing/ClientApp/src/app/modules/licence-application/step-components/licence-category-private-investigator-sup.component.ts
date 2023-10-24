@@ -23,7 +23,9 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 					<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="requirementCode">
 						<mat-radio-button
 							class="radio-label"
-							[value]="privateInvestigatorSupRequirementCodes.PrivateSecurityTrainingNetworkCompletion"
+							[value]="
+								privateInvestigatorSupRequirementCodes.CategoryPrivateInvestigatorUnderSupervision_PrivateSecurityTrainingNetworkCompletion
+							"
 						>
 							Successful completion of the Private Security Training Network (PSTnetwork) online course
 							<i>Introduction to Private Investigation</i> and proof of final exam completion
@@ -31,7 +33,9 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 						<mat-divider class="my-2"></mat-divider>
 						<mat-radio-button
 							class="radio-label"
-							[value]="privateInvestigatorSupRequirementCodes.OtherCourseCompletion"
+							[value]="
+								privateInvestigatorSupRequirementCodes.CategoryPrivateInvestigatorUnderSupervision_OtherCourseCompletion
+							"
 						>
 							Completion of courses or demonstrated knowledge in the areas of:
 							<ul>
@@ -63,12 +67,18 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 				<div class="fs-6 fw-bold mb-2">
 					<span
 						*ngIf="
-							requirementCode.value == privateInvestigatorSupRequirementCodes.PrivateSecurityTrainingNetworkCompletion
+							requirementCode.value ==
+							privateInvestigatorSupRequirementCodes.CategoryPrivateInvestigatorUnderSupervision_PrivateSecurityTrainingNetworkCompletion
 						"
 					>
 						Upload proof of course and exam completion:
 					</span>
-					<span *ngIf="requirementCode.value == privateInvestigatorSupRequirementCodes.OtherCourseCompletion">
+					<span
+						*ngIf="
+							requirementCode.value ==
+							privateInvestigatorSupRequirementCodes.CategoryPrivateInvestigatorUnderSupervision_OtherCourseCompletion
+						"
+					>
 						Upload document(s) providing proof of course completion or equivalent knowledge:
 					</span>
 				</div>
@@ -157,7 +167,7 @@ export class LicenceCategoryPrivateInvestigatorSupComponent implements OnInit, L
 	ngOnInit(): void {
 		this.title = this.optionsPipe.transform(
 			WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision,
-			'SwlCategoryTypes'
+			'WorkerCategoryTypes'
 		);
 	}
 

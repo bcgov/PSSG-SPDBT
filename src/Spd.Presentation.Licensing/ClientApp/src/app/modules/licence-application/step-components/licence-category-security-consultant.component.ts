@@ -59,11 +59,17 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 				<div>
 					You must meet the following experience requirements:
 					<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="requirementCode">
-						<mat-radio-button class="radio-label" [value]="securityConsultantRequirementCodes.ReferenceLetters">
+						<mat-radio-button
+							class="radio-label"
+							[value]="securityConsultantRequirementCodes.CategorySecurityConsultant_ExperienceLetters"
+						>
 							Written reference letters from previous employers (must be on company letterhead, dated and signed)
 						</mat-radio-button>
 						<mat-divider class="my-2"></mat-divider>
-						<mat-radio-button class="radio-label" [value]="securityConsultantRequirementCodes.RecommendationLetters">
+						<mat-radio-button
+							class="radio-label"
+							[value]="securityConsultantRequirementCodes.CategorySecurityConsultant_RecommendationLetters"
+						>
 							Clients verifying your experience
 						</mat-radio-button>
 					</mat-radio-group>
@@ -81,10 +87,19 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 
 			<div *ngIf="requirementCode.value" @showHideTriggerSlideAnimation>
 				<div class="fs-6 fw-bold mb-2">
-					<span *ngIf="requirementCode.value == securityConsultantRequirementCodes.ReferenceLetters">
+					<span
+						*ngIf="
+							requirementCode.value == securityConsultantRequirementCodes.CategorySecurityConsultant_ExperienceLetters
+						"
+					>
 						Upload reference letters:
 					</span>
-					<span *ngIf="requirementCode.value == securityConsultantRequirementCodes.RecommendationLetters">
+					<span
+						*ngIf="
+							requirementCode.value ==
+							securityConsultantRequirementCodes.CategorySecurityConsultant_RecommendationLetters
+						"
+					>
 						Upload recommendation letters:
 					</span>
 				</div>
@@ -124,7 +139,7 @@ export class LicenceCategorySecurityConsultantComponent implements OnInit, Licen
 	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.SecurityConsultant, 'SwlCategoryTypes');
+		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.SecurityConsultant, 'WorkerCategoryTypes');
 	}
 
 	isFormValid(): boolean {

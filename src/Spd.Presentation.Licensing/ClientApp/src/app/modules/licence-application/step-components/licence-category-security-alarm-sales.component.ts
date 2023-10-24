@@ -22,7 +22,7 @@ export class LicenceCategorySecurityAlarmSalesComponent implements OnInit, Licen
 
 	ngOnInit(): void {
 		this.form.patchValue({ checkbox: true });
-		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.SecurityAlarmSales, 'SwlCategoryTypes');
+		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.SecurityAlarmSales, 'WorkerCategoryTypes');
 	}
 
 	isFormValid(): boolean {
