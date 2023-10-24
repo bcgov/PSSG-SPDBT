@@ -616,7 +616,8 @@ namespace Spd.Manager.Cases.Screening
             RuleFor(r => r.EmailAddress)
                 .NotEmpty()
                 .EmailAddress()
-                .MaximumLength(75);
+                .MaximumLength(75)
+                .When(r => r.ServiceType != ServiceTypeCode.PSSO && r.ServiceType != ServiceTypeCode.PSSO_VS);
 
             RuleFor(r => r.PhoneNumber)
                     .NotEmpty();
