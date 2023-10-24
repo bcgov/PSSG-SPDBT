@@ -79,7 +79,7 @@ export class LicenceCategoryFireInvestigatorComponent implements OnInit, Licence
 	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.FireInvestigator, 'SwlCategoryTypes');
+		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.FireInvestigator, 'WorkerCategoryTypes');
 	}
 
 	isFormValid(): boolean {

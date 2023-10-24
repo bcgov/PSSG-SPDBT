@@ -22,7 +22,10 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 					apprenticeship or course:
 
 					<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="requirementCode">
-						<mat-radio-button class="radio-label" [value]="locksmithRequirementCodes.CertificateOfQualification">
+						<mat-radio-button
+							class="radio-label"
+							[value]="locksmithRequirementCodes.CategoryLocksmith_ApprovedLocksmithCourse"
+						>
 							A Locksmith Certificate of Qualification
 							<mat-icon
 								class="info-icon"
@@ -32,7 +35,10 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 							</mat-icon>
 						</mat-radio-button>
 						<mat-divider class="my-2"></mat-divider>
-						<mat-radio-button class="radio-label" [value]="locksmithRequirementCodes.ExperienceAndApprenticeship">
+						<mat-radio-button
+							class="radio-label"
+							[value]="locksmithRequirementCodes.CategoryLocksmith_ExperienceAndApprenticeship"
+						>
 							Two years experience of full-time employment as a locksmith under the supervision of a locksmith security
 							worker licensee, and proof of successful completion of an approved apprenticeship program
 							<mat-icon
@@ -43,7 +49,10 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 							</mat-icon>
 						</mat-radio-button>
 						<mat-divider class="my-2"></mat-divider>
-						<mat-radio-button class="radio-label" [value]="locksmithRequirementCodes.ApprovedLocksmithCourse">
+						<mat-radio-button
+							class="radio-label"
+							[value]="locksmithRequirementCodes.CategoryLocksmith_CertificateOfQualification"
+						>
 							Proof of successful completion of an approved locksmithing course, proof of experience in full-time
 							employment as a locksmith under the supervision of a locksmith security worker licensee, and a letter of
 							recommendation and certification from your employer indicating that you are qualified to perform the
@@ -64,17 +73,19 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 
 			<div *ngIf="requirementCode.value" @showHideTriggerSlideAnimation>
 				<div class="fs-6 fw-bold mb-2">
-					<span *ngIf="requirementCode.value == locksmithRequirementCodes.CertificateOfQualification">
+					<span *ngIf="requirementCode.value == locksmithRequirementCodes.CategoryLocksmith_CertificateOfQualification">
 						Upload a copy of your certificate:
 					</span>
-					<span *ngIf="requirementCode.value == locksmithRequirementCodes.ExperienceAndApprenticeship">
+					<span
+						*ngIf="requirementCode.value == locksmithRequirementCodes.CategoryLocksmith_ExperienceAndApprenticeship"
+					>
 						Upload a letter of recommendation:
 						<div class="fw-normal mb-2">
 							This letter must be on company letterhead, and proof of successful completion of an approved
 							apprenticeship program, other than that provided by the <i>Industry Training Authority</i>.
 						</div>
 					</span>
-					<span *ngIf="requirementCode.value == locksmithRequirementCodes.ApprovedLocksmithCourse">
+					<span *ngIf="requirementCode.value == locksmithRequirementCodes.CategoryLocksmith_ApprovedLocksmithCourse">
 						Upload a letter of recommendation:
 						<div class="fw-normal mb-2">
 							This letter must be on company letterhead, proof of experience, and proof of successful completion of an
@@ -124,7 +135,7 @@ export class LicenceCategoryLocksmithComponent implements OnInit, LicenceFormSte
 	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.Locksmith, 'SwlCategoryTypes');
+		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.Locksmith, 'WorkerCategoryTypes');
 	}
 
 	isFormValid(): boolean {

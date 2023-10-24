@@ -158,7 +158,7 @@ namespace Spd.Manager.Cases.Licence
     {
         public DocumentTypeCode DocumentTypeCode { get; set; }
         public IFormFile[] Attachments { get; set; } = Array.Empty<IFormFile>();
-        public DateTimeOffset? ExpiredDate { get; set; }
+        public DateTimeOffset? ExpiryDate { get; set; }
     }
 
     public record Alias
@@ -186,46 +186,50 @@ namespace Spd.Manager.Cases.Licence
 
     public enum DocumentTypeCode
     {
-        DogsSecurityDogValidationCertificate,
-        DogsCertificateOfAdvancedSecurityTraining,
-        RestraintsAdvancedSecurityTrainingCertificate,
-        RestraintsUseOfForceLetter,
-        RestraintsTrainingEquivalent,
-        PoliceBackgroundLetterOfNoConflict,
-        MentalHealthCondition,
-        ProofOfFingerprint,
-        DriversLicence,
-        CanadianFirearmsLicence,
         BcServicesCard,
-        CertificateOfIndianStatus,
-        GovernmentIssuedPhotoId,
-        PhotoOfYourself,
-        CanadianPassport,
         BirthCertificate,
         CanadianCitizenship,
-        PermanentResidentCard,
-        RecordOfLandingDocument,
-        ConfirmationOfPermanentResidenceDocument,
-        WorkPermit,
-        StudyPermit,
-        ValidDocumentToVerifyLegalWorkStatus,
+        CanadianFirearmsLicence,
+        CanadianPassport,
+        CategoryArmouredCarGuard_AuthorizationToCarryCertificate,
+        CategoryFireInvestigator_CourseCertificate,
+        CategoryFireInvestigator_VerificationLetter,
         CategoryLocksmith_CertificateOfQualification,
         CategoryLocksmith_ExperienceAndApprenticeship,
         CategoryLocksmith_ApprovedLocksmithCourse,
         CategoryPrivateInvestigator_ExperienceAndCourses,
         CategoryPrivateInvestigator_TenYearsPoliceExperienceAndTraining,
         CategoryPrivateInvestigator_KnowledgeAndExperience,
-        CategoryPrivateInvestigator_CompleteRecognizedTrainingCourse,
-        CategoryPrivateInvestigator_CompleteOtherCoursesOrKnowledge,
-        CategoryPrivateInvestigator_PrivateSecurityTrainingNetworkCompletion,
-        CategoryPrivateInvestigator_OtherCourseCompletion,
+        CategoryPrivateInvestigator_TrainingRecognizedCourse,
+        CategoryPrivateInvestigator_TrainingOtherCoursesOrKnowledge,
+        CategoryPrivateInvestigatorUnderSupervision_PrivateSecurityTrainingNetworkCompletion,
+        CategoryPrivateInvestigatorUnderSupervision_OtherCourseCompletion,
+        CategoryPrivateInvestigatorUnderSupervision_Training,
         CategorySecurityAlarmInstaller_TradesQualificationCertificate,
         CategorySecurityAlarmInstaller_ExperienceOrTrainingEquivalent,
-        CategorySecurityConsultant_ReferenceLetters,
+        CategorySecurityConsultant_ExperienceLetters,
         CategorySecurityConsultant_RecommendationLetters,
         CategorySecurityGuard_BasicSecurityTrainingCertificate,
         CategorySecurityGuard_PoliceExperienceOrTraining,
-        CategorySecurityGuard_BasicSecurityTrainingCourseEquivalent
+        CategorySecurityGuard_BasicSecurityTrainingCourseEquivalent,
+        CertificateOfIndianStatus,
+        ConfirmationOfPermanentResidenceDocument,
+        DocumentToVerifyLegalWorkStatus,
+        DogsSecurityDogValidationCertificate,
+        DogsCertificateOfAdvancedSecurityTraining,
+        DriversLicence,
+        GovernmentIssuedPhotoId,
+        MentalHealthCondition,
+        PermanentResidentCard,
+        PhotoOfYourself,
+        PoliceBackgroundLetterOfNoConflict,
+        ProofOfFingerprint,
+        RecordOfLandingDocument,
+        RestraintsAdvancedSecurityTrainingCertificate,
+        RestraintsUseOfForceLetter,
+        RestraintsTrainingEquivalent,
+        StudyPermit,
+        WorkPermit
     }
     public enum LicenceTermCode
     {
