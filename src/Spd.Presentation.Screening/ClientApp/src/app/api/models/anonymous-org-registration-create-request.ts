@@ -4,8 +4,8 @@ import { BooleanTypeCode } from './boolean-type-code';
 import { EmployeeInteractionTypeCode } from './employee-interaction-type-code';
 import { EmployeeOrganizationTypeCode } from './employee-organization-type-code';
 import { FundsFromBcGovtExceedsThresholdCode } from './funds-from-bc-govt-exceeds-threshold-code';
+import { IdentityProviderTypeCode } from './identity-provider-type-code';
 import { PayerPreferenceTypeCode } from './payer-preference-type-code';
-import { PortalUserIdentityTypeCode } from './portal-user-identity-type-code';
 import { RegistrationTypeCode } from './registration-type-code';
 import { ScreeningsCountTypeCode } from './screenings-count-type-code';
 import { VolunteerOrganizationTypeCode } from './volunteer-organization-type-code';
@@ -38,7 +38,7 @@ export interface AnonymousOrgRegistrationCreateRequest {
   operatingBudgetFlag?: FundsFromBcGovtExceedsThresholdCode;
   organizationName?: null | string;
   payerPreference?: PayerPreferenceTypeCode;
-  portalUserIdentityTypeCode?: PortalUserIdentityTypeCode;
+  portalUserIdentityTypeCode?: IdentityProviderTypeCode;
   recaptcha?: null | string;
   registrationTypeCode?: RegistrationTypeCode;
   requireDuplicateCheck?: boolean;
