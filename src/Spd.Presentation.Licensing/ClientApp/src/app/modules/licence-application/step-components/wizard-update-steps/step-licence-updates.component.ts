@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { SwlCategoryTypeCode } from 'src/app/api/models';
+import { WorkerCategoryTypeCode } from 'src/app/api/models';
 import { LicenceUpdateTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
@@ -24,7 +24,7 @@ import { UpdatePhotoDialogData, UpdatePhotoModalComponent } from '../../componen
 
 export interface UpdateOptionListData {
 	updateTypeCode: LicenceUpdateTypeCode;
-	category?: SwlCategoryTypeCode | null;
+	category?: WorkerCategoryTypeCode | null;
 	categoryDesc?: string | null;
 	label: string;
 	allowEdit: boolean;

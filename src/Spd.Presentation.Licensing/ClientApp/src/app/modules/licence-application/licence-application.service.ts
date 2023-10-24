@@ -1349,7 +1349,7 @@ export class LicenceApplicationService {
 	// 				weightUnitCode: null,
 	// 				useBcServicesCardPhoto: null,
 	// 				swlCategoryList: [
-	// 					{ desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
+	// 					{ desc: 'Closed Circuit Television Installer', code: WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller },
 	// 				],
 	// 			};
 	// 			console.log('loadLicenceRenewal defaults', defaults);
@@ -1414,7 +1414,7 @@ export class LicenceApplicationService {
 	// 				weightUnitCode: null,
 	// 				useBcServicesCardPhoto: null,
 	// 				swlCategoryList: [
-	// 					{ desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
+	// 					{ desc: 'Electronic Locking Device Installer', code: WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller },
 	// 				],
 	// 			};
 	// 			console.log('loadLicenceReplacement defaults', defaults);
@@ -1480,8 +1480,8 @@ export class LicenceApplicationService {
 	// 				weightUnitCode: null,
 	// 				useBcServicesCardPhoto: null,
 	// 				swlCategoryList: [
-	// 					{ desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
-	// 					{ desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
+	// 					{ desc: 'Closed Circuit Television Installer', code: WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller },
+	// 					{ desc: 'Electronic Locking Device Installer', code: WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller },
 	// 				],
 	// 			};
 	// 			console.log('loadLicenceUpdate defaults', defaults);
@@ -1502,57 +1502,57 @@ export class LicenceApplicationService {
 		console.log('SAVE LICENCE FORM DATA', this.licenceModelFormGroup.valid, this.licenceModelFormGroup.value);
 	}
 
-	// clearLicenceCategoryData(code: SwlCategoryTypeCode): void {
+	// clearLicenceCategoryData(code: WorkerCategoryTypeCode): void {
 	// switch (code) {
-	// 	case SwlCategoryTypeCode.ArmouredCarGuard:
+	// 	case WorkerCategoryTypeCode.ArmouredCarGuard:
 	// 		delete this.licenceModel.licenceCategoryArmouredCarGuard;
 	// 		break;
-	// 	case SwlCategoryTypeCode.BodyArmourSales:
+	// 	case WorkerCategoryTypeCode.BodyArmourSales:
 	// 		delete this.licenceModel.licenceCategoryBodyArmourSales;
 	// 		break;
-	// 	case SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller:
+	// 	case WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller:
 	// 		delete this.licenceModel.licenceCategoryyClosedCircuitTelevisionInstaller;
 	// 		break;
-	// 	case SwlCategoryTypeCode.ElectronicLockingDeviceInstaller:
+	// 	case WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller:
 	// 		delete this.licenceModel.licenceCategoryElectronicLockingDeviceInstaller;
 	// 		break;
-	// 	case SwlCategoryTypeCode.FireInvestigator:
+	// 	case WorkerCategoryTypeCode.FireInvestigator:
 	// 		delete this.licenceModel.licenceCategoryFireInvestigator;
 	// 		break;
-	// 	case SwlCategoryTypeCode.Locksmith:
+	// 	case WorkerCategoryTypeCode.Locksmith:
 	// 		delete this.licenceModel.licenceCategoryLocksmith;
 	// 		break;
-	// 	case SwlCategoryTypeCode.LocksmithSup:
+	// 	case WorkerCategoryTypeCode.LocksmithSup:
 	// 		delete this.licenceModel.licenceCategoryLocksmithSup;
 	// 		break;
-	// 	case SwlCategoryTypeCode.PrivateInvestigator:
+	// 	case WorkerCategoryTypeCode.PrivateInvestigator:
 	// 		delete this.licenceModel.licenceCategoryPrivateInvestigator;
 	// 		break;
-	// 	case SwlCategoryTypeCode.PrivateInvestigatorSup:
+	// 	case WorkerCategoryTypeCode.PrivateInvestigatorSup:
 	// 		delete this.licenceModel.licenceCategoryPrivateInvestigatorSup;
 	// 		break;
-	// 	case SwlCategoryTypeCode.SecurityAlarmInstallerSup:
+	// 	case WorkerCategoryTypeCode.SecurityAlarmInstallerSup:
 	// 		delete this.licenceModel.licenceCategorySecurityAlarmInstallerSup;
 	// 		break;
-	// 	case SwlCategoryTypeCode.SecurityAlarmInstaller:
+	// 	case WorkerCategoryTypeCode.SecurityAlarmInstaller:
 	// 		delete this.licenceModel.licenceCategorySecurityAlarmInstaller;
 	// 		break;
-	// 	case SwlCategoryTypeCode.SecurityAlarmMonitor:
+	// 	case WorkerCategoryTypeCode.SecurityAlarmMonitor:
 	// 		delete this.licenceModel.licenceCategorySecurityAlarmMonitor;
 	// 		break;
-	// 	case SwlCategoryTypeCode.SecurityAlarmResponse:
+	// 	case WorkerCategoryTypeCode.SecurityAlarmResponse:
 	// 		delete this.licenceModel.licenceCategorySecurityAlarmResponse;
 	// 		break;
-	// 	case SwlCategoryTypeCode.SecurityAlarmSales:
+	// 	case WorkerCategoryTypeCode.SecurityAlarmSales:
 	// 		delete this.licenceModel.licenceCategorySecurityAlarmSales;
 	// 		break;
-	// 	case SwlCategoryTypeCode.SecurityConsultant:
+	// 	case WorkerCategoryTypeCode.SecurityConsultant:
 	// 		delete this.licenceModel.licenceCategorySecurityConsultant;
 	// 		break;
-	// 	case SwlCategoryTypeCode.SecurityGuard:
+	// 	case WorkerCategoryTypeCode.SecurityGuard:
 	// 		delete this.licenceModel.licenceCategorySecurityGuard;
 	// 		break;
-	// 	case SwlCategoryTypeCode.SecurityGuardSup:
+	// 	case WorkerCategoryTypeCode.SecurityGuardSup:
 	// 		delete this.licenceModel.licenceCategorySecurityGuardSup;
 	// 		break;
 	// }
@@ -1642,7 +1642,7 @@ export class LicenceApplicationService {
 	// this.licenceModel.showStepLicenceExpired =
 	// 	this.licenceModel.applicationTypeCode == SwlApplicationTypeCode.NewOrExpired;
 	// this.licenceModel.showStepDogsAndRestraints = !!this.licenceModel.swlCategoryList.find(
-	// 	(item) => item.code == SwlCategoryTypeCode.SecurityGuard
+	// 	(item) => item.code == WorkerCategoryTypeCode.SecurityGuard
 	// );
 	// this.licenceModel.isViewOnlyPoliceOrPeaceOfficer = this.licenceModel.applicationTypeCode
 	// 	? this.licenceModel.applicationTypeCode != SwlApplicationTypeCode.NewOrExpired

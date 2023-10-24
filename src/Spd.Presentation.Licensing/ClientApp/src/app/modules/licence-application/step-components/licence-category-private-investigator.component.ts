@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { SwlCategoryTypeCode } from 'src/app/api/models';
+import { WorkerCategoryTypeCode } from 'src/app/api/models';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import {
 	BooleanTypeCode,
@@ -306,7 +306,7 @@ export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, Lice
 	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.title = this.optionsPipe.transform(SwlCategoryTypeCode.PrivateInvestigator, 'SwlCategoryTypes');
+		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.PrivateInvestigator, 'SwlCategoryTypes');
 	}
 
 	isFormValid(): boolean {

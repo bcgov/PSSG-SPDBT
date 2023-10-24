@@ -6,8 +6,8 @@ import {
 	HeightUnitCode,
 	LicenceTermCode,
 	PoliceOfficerRoleCode,
-	SwlCategoryTypeCode,
 	WeightUnitCode,
+	WorkerCategoryTypeCode,
 	WorkerLicenceTypeCode,
 } from 'src/app/api/models';
 import { CountryTypeCode } from './country-type.model';
@@ -232,29 +232,29 @@ export const WeightUnitTypes: SelectOptions[] = [
 ];
 
 export const SwlCategoryTypes: SelectOptions[] = [
-	{ desc: 'Armoured Car Guard', code: SwlCategoryTypeCode.ArmouredCarGuard },
-	{ desc: 'Body Armour Sales', code: SwlCategoryTypeCode.BodyArmourSales },
-	{ desc: 'Closed Circuit Television Installer', code: SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller },
-	{ desc: 'Electronic Locking Device Installer', code: SwlCategoryTypeCode.ElectronicLockingDeviceInstaller },
-	{ desc: 'Fire Investigator', code: SwlCategoryTypeCode.FireInvestigator },
-	{ desc: 'Locksmith', code: SwlCategoryTypeCode.Locksmith },
-	{ desc: 'Locksmith - Under Supervision', code: SwlCategoryTypeCode.LocksmithUnderSupervision },
-	{ desc: 'Private Investigator', code: SwlCategoryTypeCode.PrivateInvestigator },
+	{ desc: 'Armoured Car Guard', code: WorkerCategoryTypeCode.ArmouredCarGuard },
+	{ desc: 'Body Armour Sales', code: WorkerCategoryTypeCode.BodyArmourSales },
+	{ desc: 'Closed Circuit Television Installer', code: WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller },
+	{ desc: 'Electronic Locking Device Installer', code: WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller },
+	{ desc: 'Fire Investigator', code: WorkerCategoryTypeCode.FireInvestigator },
+	{ desc: 'Locksmith', code: WorkerCategoryTypeCode.Locksmith },
+	{ desc: 'Locksmith - Under Supervision', code: WorkerCategoryTypeCode.LocksmithUnderSupervision },
+	{ desc: 'Private Investigator', code: WorkerCategoryTypeCode.PrivateInvestigator },
 	{
 		desc: 'Private Investigator - Under Supervision',
-		code: SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision,
+		code: WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision,
 	},
-	{ desc: 'Security Alarm Installer', code: SwlCategoryTypeCode.SecurityAlarmInstaller },
+	{ desc: 'Security Alarm Installer', code: WorkerCategoryTypeCode.SecurityAlarmInstaller },
 	{
 		desc: 'Security Alarm Installer - Under Supervision',
-		code: SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
+		code: WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
 	},
-	{ desc: 'Security Alarm Monitor', code: SwlCategoryTypeCode.SecurityAlarmMonitor },
-	{ desc: 'Security Alarm Response', code: SwlCategoryTypeCode.SecurityAlarmResponse },
-	{ desc: 'Security Alarm Sales', code: SwlCategoryTypeCode.SecurityAlarmSales },
-	{ desc: 'Security Consultant', code: SwlCategoryTypeCode.SecurityConsultant },
-	{ desc: 'Security Guard', code: SwlCategoryTypeCode.SecurityGuard },
-	{ desc: 'Security Guard - Under Supervision', code: SwlCategoryTypeCode.SecurityGuardUnderSupervision },
+	{ desc: 'Security Alarm Monitor', code: WorkerCategoryTypeCode.SecurityAlarmMonitor },
+	{ desc: 'Security Alarm Response', code: WorkerCategoryTypeCode.SecurityAlarmResponse },
+	{ desc: 'Security Alarm Sales', code: WorkerCategoryTypeCode.SecurityAlarmSales },
+	{ desc: 'Security Consultant', code: WorkerCategoryTypeCode.SecurityConsultant },
+	{ desc: 'Security Guard', code: WorkerCategoryTypeCode.SecurityGuard },
+	{ desc: 'Security Guard - Under Supervision', code: WorkerCategoryTypeCode.SecurityGuardUnderSupervision },
 ];
 
 export const PoliceOfficerRoleTypes: SelectOptions[] = [

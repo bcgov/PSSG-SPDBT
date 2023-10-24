@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SwlCategoryTypeCode } from 'src/app/api/models';
+import { WorkerCategoryTypeCode } from 'src/app/api/models';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
@@ -23,7 +23,7 @@ export class LicenceCategorySecurityAlarmInstallerSupComponent implements OnInit
 	ngOnInit(): void {
 		this.form.patchValue({ checkbox: true });
 		this.title = this.optionsPipe.transform(
-			SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
+			WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
 			'SwlCategoryTypes'
 		);
 	}

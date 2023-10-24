@@ -2,7 +2,6 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
-import { ApplicationTypeCode, SwlCategoryTypeCode } from 'src/app/api/models';
 import { LicenceApplicationService } from '../../licence-application.service';
 import { DogsAuthorizationComponent } from '../dogs-authorization.component';
 import { LicenceAccessCodeComponent } from '../licence-access-code.component';
@@ -168,9 +167,6 @@ export class StepLicenceSelectionComponent {
 	readonly STEP_DOGS = '8';
 	readonly STEP_RESTRAINTS = '9';
 	readonly STEP_LICENCE_TERM = '7';
-
-	swlCategoryTypeCodes = SwlCategoryTypeCode;
-	swlStatusTypeCodes = ApplicationTypeCode;
 
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();

@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { SwlCategoryTypeCode } from 'src/app/api/models';
+import { WorkerCategoryTypeCode } from 'src/app/api/models';
 import { SelectOptions, SwlCategoryTypes } from 'src/app/core/code-types/model-desc.models';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
@@ -56,7 +56,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									<mat-expansion-panel class="my-3" [expanded]="true">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
-												>{{ swlCategoryTypeCodes.ArmouredCarGuard | options : 'SwlCategoryTypes' }}
+												>{{ workerCategoryTypeCodes.ArmouredCarGuard | options : 'SwlCategoryTypes' }}
 											</mat-panel-title>
 											<mat-panel-description>
 												<mat-icon
@@ -77,7 +77,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 													class="w-auto float-end"
 													style="color: var(--color-red);"
 													aria-label="Remove category"
-													(click)="onRemove(swlCategoryTypeCodes.ArmouredCarGuard)"
+													(click)="onRemove(workerCategoryTypeCodes.ArmouredCarGuard)"
 												>
 													<mat-icon>delete_outline</mat-icon>Remove this Category
 												</button>
@@ -91,7 +91,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									<mat-expansion-panel class="my-3" [expanded]="true">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
-												>{{ swlCategoryTypeCodes.BodyArmourSales | options : 'SwlCategoryTypes' }}
+												>{{ workerCategoryTypeCodes.BodyArmourSales | options : 'SwlCategoryTypes' }}
 											</mat-panel-title>
 											<mat-panel-description>
 												<mat-icon
@@ -110,7 +110,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 													class="w-auto float-end"
 													style="color: var(--color-red);"
 													aria-label="Remove category"
-													(click)="onRemove(swlCategoryTypeCodes.BodyArmourSales)"
+													(click)="onRemove(workerCategoryTypeCodes.BodyArmourSales)"
 												>
 													<mat-icon>delete_outline</mat-icon>Remove this Category
 												</button>
@@ -124,7 +124,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									<mat-expansion-panel class="my-3" [expanded]="true">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
-												>{{ swlCategoryTypeCodes.ClosedCircuitTelevisionInstaller | options : 'SwlCategoryTypes' }}
+												>{{ workerCategoryTypeCodes.ClosedCircuitTelevisionInstaller | options : 'SwlCategoryTypes' }}
 											</mat-panel-title>
 											<mat-panel-description>
 												<mat-icon
@@ -146,7 +146,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 													class="w-auto float-end"
 													style="color: var(--color-red);"
 													aria-label="Remove category"
-													(click)="onRemove(swlCategoryTypeCodes.ClosedCircuitTelevisionInstaller)"
+													(click)="onRemove(workerCategoryTypeCodes.ClosedCircuitTelevisionInstaller)"
 												>
 													<mat-icon>delete_outline</mat-icon>Remove this Category
 												</button>
@@ -161,7 +161,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									<mat-expansion-panel class="my-3" [expanded]="true">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
-												>{{ swlCategoryTypeCodes.ElectronicLockingDeviceInstaller | options : 'SwlCategoryTypes' }}
+												>{{ workerCategoryTypeCodes.ElectronicLockingDeviceInstaller | options : 'SwlCategoryTypes' }}
 											</mat-panel-title>
 											<mat-panel-description>
 												<mat-icon
@@ -183,7 +183,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 													class="w-auto float-end"
 													style="color: var(--color-red);"
 													aria-label="Remove category"
-													(click)="onRemove(swlCategoryTypeCodes.ElectronicLockingDeviceInstaller)"
+													(click)="onRemove(workerCategoryTypeCodes.ElectronicLockingDeviceInstaller)"
 												>
 													<mat-icon>delete_outline</mat-icon>Remove this Category
 												</button>
@@ -198,7 +198,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									<mat-expansion-panel class="my-3" [expanded]="true">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
-												>{{ swlCategoryTypeCodes.FireInvestigator | options : 'SwlCategoryTypes' }}
+												>{{ workerCategoryTypeCodes.FireInvestigator | options : 'SwlCategoryTypes' }}
 											</mat-panel-title>
 											<mat-panel-description>
 												<mat-icon
@@ -219,7 +219,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 													class="w-auto float-end"
 													style="color: var(--color-red);"
 													aria-label="Remove category"
-													(click)="onRemove(swlCategoryTypeCodes.FireInvestigator)"
+													(click)="onRemove(workerCategoryTypeCodes.FireInvestigator)"
 												>
 													<mat-icon>delete_outline</mat-icon>Remove this Category
 												</button>
@@ -234,7 +234,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									<mat-expansion-panel class="my-3" [expanded]="true">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
-												>{{ swlCategoryTypeCodes.Locksmith | options : 'SwlCategoryTypes' }}
+												>{{ workerCategoryTypeCodes.Locksmith | options : 'SwlCategoryTypes' }}
 											</mat-panel-title>
 											<mat-panel-description>
 												<mat-icon
@@ -253,7 +253,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 													class="w-auto float-end"
 													style="color: var(--color-red);"
 													aria-label="Remove category"
-													(click)="onRemove(swlCategoryTypeCodes.Locksmith)"
+													(click)="onRemove(workerCategoryTypeCodes.Locksmith)"
 												>
 													<mat-icon>delete_outline</mat-icon>Remove this Category
 												</button>
@@ -268,7 +268,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									<mat-expansion-panel class="my-3" [expanded]="true">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
-												>{{ swlCategoryTypeCodes.LocksmithUnderSupervision | options : 'SwlCategoryTypes' }}
+												>{{ workerCategoryTypeCodes.LocksmithUnderSupervision | options : 'SwlCategoryTypes' }}
 											</mat-panel-title>
 											<mat-panel-description>
 												<mat-icon
@@ -287,7 +287,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 													class="w-auto float-end"
 													style="color: var(--color-red);"
 													aria-label="Remove category"
-													(click)="onRemove(swlCategoryTypeCodes.LocksmithUnderSupervision)"
+													(click)="onRemove(workerCategoryTypeCodes.LocksmithUnderSupervision)"
 												>
 													<mat-icon>delete_outline</mat-icon>Remove this Category
 												</button>
@@ -302,7 +302,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									<mat-expansion-panel class="my-3" [expanded]="true">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
-												>{{ swlCategoryTypeCodes.PrivateInvestigator | options : 'SwlCategoryTypes' }}
+												>{{ workerCategoryTypeCodes.PrivateInvestigator | options : 'SwlCategoryTypes' }}
 											</mat-panel-title>
 											<mat-panel-description>
 												<mat-icon
@@ -324,7 +324,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 													class="w-auto float-end"
 													style="color: var(--color-red);"
 													aria-label="Remove category"
-													(click)="onRemove(swlCategoryTypeCodes.PrivateInvestigator)"
+													(click)="onRemove(workerCategoryTypeCodes.PrivateInvestigator)"
 												>
 													<mat-icon>delete_outline</mat-icon>Remove this Category
 												</button>
@@ -339,7 +339,9 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									<mat-expansion-panel class="my-3" [expanded]="true">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
-												>{{ swlCategoryTypeCodes.PrivateInvestigatorUnderSupervision | options : 'SwlCategoryTypes' }}
+												>{{
+													workerCategoryTypeCodes.PrivateInvestigatorUnderSupervision | options : 'SwlCategoryTypes'
+												}}
 											</mat-panel-title>
 											<mat-panel-description>
 												<mat-icon
@@ -361,7 +363,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 													class="w-auto float-end"
 													style="color: var(--color-red);"
 													aria-label="Remove category"
-													(click)="onRemove(swlCategoryTypeCodes.PrivateInvestigatorUnderSupervision)"
+													(click)="onRemove(workerCategoryTypeCodes.PrivateInvestigatorUnderSupervision)"
 												>
 													<mat-icon>delete_outline</mat-icon>Remove this Category
 												</button>
@@ -376,7 +378,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									<mat-expansion-panel class="my-3" [expanded]="true">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
-												>{{ swlCategoryTypeCodes.SecurityAlarmInstaller | options : 'SwlCategoryTypes' }}
+												>{{ workerCategoryTypeCodes.SecurityAlarmInstaller | options : 'SwlCategoryTypes' }}
 											</mat-panel-title>
 											<mat-panel-description>
 												<mat-icon
@@ -398,7 +400,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 													class="w-auto float-end"
 													style="color: var(--color-red);"
 													aria-label="Remove category"
-													(click)="onRemove(swlCategoryTypeCodes.SecurityAlarmInstaller)"
+													(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmInstaller)"
 												>
 													<mat-icon>delete_outline</mat-icon>Remove this Category
 												</button>
@@ -414,7 +416,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
 												>{{
-													swlCategoryTypeCodes.SecurityAlarmInstallerUnderSupervision | options : 'SwlCategoryTypes'
+													workerCategoryTypeCodes.SecurityAlarmInstallerUnderSupervision | options : 'SwlCategoryTypes'
 												}}
 											</mat-panel-title>
 											<mat-panel-description>
@@ -437,7 +439,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 													class="w-auto float-end"
 													style="color: var(--color-red);"
 													aria-label="Remove category"
-													(click)="onRemove(swlCategoryTypeCodes.SecurityAlarmInstallerUnderSupervision)"
+													(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmInstallerUnderSupervision)"
 												>
 													<mat-icon>delete_outline</mat-icon>Remove this Category
 												</button>
@@ -452,7 +454,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									<mat-expansion-panel class="my-3" [expanded]="true">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
-												>{{ swlCategoryTypeCodes.SecurityAlarmMonitor | options : 'SwlCategoryTypes' }}
+												>{{ workerCategoryTypeCodes.SecurityAlarmMonitor | options : 'SwlCategoryTypes' }}
 											</mat-panel-title>
 											<mat-panel-description>
 												<mat-icon
@@ -474,7 +476,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 													class="w-auto float-end"
 													style="color: var(--color-red);"
 													aria-label="Remove category"
-													(click)="onRemove(swlCategoryTypeCodes.SecurityAlarmMonitor)"
+													(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmMonitor)"
 												>
 													<mat-icon>delete_outline</mat-icon>Remove this Category
 												</button>
@@ -489,7 +491,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									<mat-expansion-panel class="my-3" [expanded]="true">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
-												>{{ swlCategoryTypeCodes.SecurityAlarmResponse | options : 'SwlCategoryTypes' }}
+												>{{ workerCategoryTypeCodes.SecurityAlarmResponse | options : 'SwlCategoryTypes' }}
 											</mat-panel-title>
 											<mat-panel-description>
 												<mat-icon
@@ -511,7 +513,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 													class="w-auto float-end"
 													style="color: var(--color-red);"
 													aria-label="Remove category"
-													(click)="onRemove(swlCategoryTypeCodes.SecurityAlarmResponse)"
+													(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmResponse)"
 												>
 													<mat-icon>delete_outline</mat-icon>Remove this Category
 												</button>
@@ -526,7 +528,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									<mat-expansion-panel class="my-3" [expanded]="true">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
-												>{{ swlCategoryTypeCodes.SecurityAlarmSales | options : 'SwlCategoryTypes' }}
+												>{{ workerCategoryTypeCodes.SecurityAlarmSales | options : 'SwlCategoryTypes' }}
 											</mat-panel-title>
 											<mat-panel-description>
 												<mat-icon
@@ -547,7 +549,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 													class="w-auto float-end"
 													style="color: var(--color-red);"
 													aria-label="Remove category"
-													(click)="onRemove(swlCategoryTypeCodes.SecurityAlarmSales)"
+													(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmSales)"
 												>
 													<mat-icon>delete_outline</mat-icon>Remove this Category
 												</button>
@@ -562,7 +564,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									<mat-expansion-panel class="my-3" [expanded]="true">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
-												>{{ swlCategoryTypeCodes.SecurityConsultant | options : 'SwlCategoryTypes' }}
+												>{{ workerCategoryTypeCodes.SecurityConsultant | options : 'SwlCategoryTypes' }}
 											</mat-panel-title>
 											<mat-panel-description>
 												<mat-icon
@@ -583,7 +585,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 													class="w-auto float-end"
 													style="color: var(--color-red);"
 													aria-label="Remove category"
-													(click)="onRemove(swlCategoryTypeCodes.SecurityConsultant)"
+													(click)="onRemove(workerCategoryTypeCodes.SecurityConsultant)"
 												>
 													<mat-icon>delete_outline</mat-icon>Remove this Category
 												</button>
@@ -598,7 +600,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									<mat-expansion-panel class="my-3" [expanded]="true">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
-												>{{ swlCategoryTypeCodes.SecurityGuard | options : 'SwlCategoryTypes' }}
+												>{{ workerCategoryTypeCodes.SecurityGuard | options : 'SwlCategoryTypes' }}
 											</mat-panel-title>
 											<mat-panel-description>
 												<mat-icon
@@ -617,7 +619,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 													class="w-auto float-end"
 													style="color: var(--color-red);"
 													aria-label="Remove category"
-													(click)="onRemove(swlCategoryTypeCodes.SecurityGuard)"
+													(click)="onRemove(workerCategoryTypeCodes.SecurityGuard)"
 												>
 													<mat-icon>delete_outline</mat-icon>Remove this Category
 												</button>
@@ -631,7 +633,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									<mat-expansion-panel class="my-3" [expanded]="true">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
-												>{{ swlCategoryTypeCodes.SecurityGuardUnderSupervision | options : 'SwlCategoryTypes' }}
+												>{{ workerCategoryTypeCodes.SecurityGuardUnderSupervision | options : 'SwlCategoryTypes' }}
 											</mat-panel-title>
 											<mat-panel-description>
 												<mat-icon
@@ -652,7 +654,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 													class="w-auto float-end"
 													style="color: var(--color-red);"
 													aria-label="Remove category"
-													(click)="onRemove(swlCategoryTypeCodes.SecurityGuardUnderSupervision)"
+													(click)="onRemove(workerCategoryTypeCodes.SecurityGuardUnderSupervision)"
 												>
 													<mat-icon>delete_outline</mat-icon>Remove this Category
 												</button>
@@ -685,8 +687,8 @@ export class LicenceCategoryComponent implements OnInit, LicenceFormStepComponen
 
 	validCategoryList: SelectOptions[] = SwlCategoryTypes;
 
-	swlCategoryTypes = SwlCategoryTypes;
-	swlCategoryTypeCodes = SwlCategoryTypeCode;
+	workerCategoryTypes = SwlCategoryTypes;
+	workerCategoryTypeCodes = WorkerCategoryTypeCode;
 
 	categoryArmouredCarGuardFormGroup: FormGroup = this.licenceApplicationService.categoryArmouredCarGuardFormGroup;
 	categoryBodyArmourSalesFormGroup: FormGroup = this.licenceApplicationService.categoryBodyArmourSalesFormGroup;
@@ -724,56 +726,56 @@ export class LicenceCategoryComponent implements OnInit, LicenceFormStepComponen
 	onAddCategory(): void {
 		if (this.category) {
 			switch (this.category) {
-				case SwlCategoryTypeCode.ArmouredCarGuard:
+				case WorkerCategoryTypeCode.ArmouredCarGuard:
 					this.categoryArmouredCarGuardFormGroup.patchValue({ isInclude: true });
 					break;
-				case SwlCategoryTypeCode.BodyArmourSales:
+				case WorkerCategoryTypeCode.BodyArmourSales:
 					this.categoryBodyArmourSalesFormGroup.patchValue({ isInclude: true });
 					break;
-				case SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller:
+				case WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller:
 					this.categoryClosedCircuitTelevisionInstallerFormGroup.patchValue({ isInclude: true });
 					break;
-				case SwlCategoryTypeCode.ElectronicLockingDeviceInstaller:
+				case WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller:
 					this.categoryElectronicLockingDeviceInstallerFormGroup.patchValue({ isInclude: true });
 					break;
-				case SwlCategoryTypeCode.FireInvestigator:
+				case WorkerCategoryTypeCode.FireInvestigator:
 					this.categoryFireInvestigatorFormGroup.patchValue({ isInclude: true });
 					break;
-				case SwlCategoryTypeCode.Locksmith:
+				case WorkerCategoryTypeCode.Locksmith:
 					this.categoryLocksmithFormGroup.patchValue({ isInclude: true });
 					break;
-				case SwlCategoryTypeCode.LocksmithUnderSupervision:
+				case WorkerCategoryTypeCode.LocksmithUnderSupervision:
 					this.categoryLocksmithSupFormGroup.patchValue({ isInclude: true });
 					break;
-				case SwlCategoryTypeCode.PrivateInvestigator:
+				case WorkerCategoryTypeCode.PrivateInvestigator:
 					this.categoryPrivateInvestigatorFormGroup.patchValue({ isInclude: true });
 					this.onPromptFireInvestigator();
 					break;
-				case SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision:
+				case WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision:
 					this.categoryPrivateInvestigatorSupFormGroup.patchValue({ isInclude: true });
 					break;
-				case SwlCategoryTypeCode.SecurityGuard:
+				case WorkerCategoryTypeCode.SecurityGuard:
 					this.categorySecurityGuardFormGroup.patchValue({ isInclude: true });
 					break;
-				case SwlCategoryTypeCode.SecurityGuardUnderSupervision:
+				case WorkerCategoryTypeCode.SecurityGuardUnderSupervision:
 					this.categorySecurityGuardSupFormGroup.patchValue({ isInclude: true });
 					break;
-				case SwlCategoryTypeCode.SecurityAlarmInstaller:
+				case WorkerCategoryTypeCode.SecurityAlarmInstaller:
 					this.categorySecurityAlarmInstallerFormGroup.patchValue({ isInclude: true });
 					break;
-				case SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision:
+				case WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision:
 					this.categorySecurityAlarmInstallerSupFormGroup.patchValue({ isInclude: true });
 					break;
-				case SwlCategoryTypeCode.SecurityAlarmMonitor:
+				case WorkerCategoryTypeCode.SecurityAlarmMonitor:
 					this.categorySecurityAlarmMonitorFormGroup.patchValue({ isInclude: true });
 					break;
-				case SwlCategoryTypeCode.SecurityAlarmResponse:
+				case WorkerCategoryTypeCode.SecurityAlarmResponse:
 					this.categorySecurityAlarmResponseFormGroup.patchValue({ isInclude: true });
 					break;
-				case SwlCategoryTypeCode.SecurityAlarmSales:
+				case WorkerCategoryTypeCode.SecurityAlarmSales:
 					this.categorySecurityAlarmSalesFormGroup.patchValue({ isInclude: true });
 					break;
-				case SwlCategoryTypeCode.SecurityConsultant:
+				case WorkerCategoryTypeCode.SecurityConsultant:
 					this.categorySecurityConsultantFormGroup.patchValue({ isInclude: true });
 					break;
 			}
@@ -800,55 +802,55 @@ export class LicenceCategoryComponent implements OnInit, LicenceFormStepComponen
 			.subscribe((response: boolean) => {
 				if (response) {
 					switch (code) {
-						case SwlCategoryTypeCode.ArmouredCarGuard:
+						case WorkerCategoryTypeCode.ArmouredCarGuard:
 							this.categoryArmouredCarGuardFormGroup.patchValue({ isInclude: false });
 							break;
-						case SwlCategoryTypeCode.BodyArmourSales:
+						case WorkerCategoryTypeCode.BodyArmourSales:
 							this.categoryBodyArmourSalesFormGroup.patchValue({ isInclude: false });
 							break;
-						case SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller:
+						case WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller:
 							this.categoryClosedCircuitTelevisionInstallerFormGroup.patchValue({ isInclude: false });
 							break;
-						case SwlCategoryTypeCode.ElectronicLockingDeviceInstaller:
+						case WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller:
 							this.categoryElectronicLockingDeviceInstallerFormGroup.patchValue({ isInclude: false });
 							break;
-						case SwlCategoryTypeCode.FireInvestigator:
+						case WorkerCategoryTypeCode.FireInvestigator:
 							this.categoryFireInvestigatorFormGroup.patchValue({ isInclude: false });
 							break;
-						case SwlCategoryTypeCode.Locksmith:
+						case WorkerCategoryTypeCode.Locksmith:
 							this.categoryLocksmithFormGroup.patchValue({ isInclude: false });
 							break;
-						case SwlCategoryTypeCode.LocksmithUnderSupervision:
+						case WorkerCategoryTypeCode.LocksmithUnderSupervision:
 							this.categoryLocksmithSupFormGroup.patchValue({ isInclude: false });
 							break;
-						case SwlCategoryTypeCode.PrivateInvestigator:
+						case WorkerCategoryTypeCode.PrivateInvestigator:
 							this.categoryPrivateInvestigatorFormGroup.patchValue({ isInclude: false });
 							break;
-						case SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision:
+						case WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision:
 							this.categoryPrivateInvestigatorSupFormGroup.patchValue({ isInclude: false });
 							break;
-						case SwlCategoryTypeCode.SecurityGuard:
+						case WorkerCategoryTypeCode.SecurityGuard:
 							this.categorySecurityGuardFormGroup.patchValue({ isInclude: false });
 							break;
-						case SwlCategoryTypeCode.SecurityGuardUnderSupervision:
+						case WorkerCategoryTypeCode.SecurityGuardUnderSupervision:
 							this.categorySecurityGuardSupFormGroup.patchValue({ isInclude: false });
 							break;
-						case SwlCategoryTypeCode.SecurityAlarmInstaller:
+						case WorkerCategoryTypeCode.SecurityAlarmInstaller:
 							this.categorySecurityAlarmInstallerFormGroup.patchValue({ isInclude: false });
 							break;
-						case SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision:
+						case WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision:
 							this.categorySecurityAlarmInstallerSupFormGroup.patchValue({ isInclude: false });
 							break;
-						case SwlCategoryTypeCode.SecurityAlarmMonitor:
+						case WorkerCategoryTypeCode.SecurityAlarmMonitor:
 							this.categorySecurityAlarmMonitorFormGroup.patchValue({ isInclude: false });
 							break;
-						case SwlCategoryTypeCode.SecurityAlarmResponse:
+						case WorkerCategoryTypeCode.SecurityAlarmResponse:
 							this.categorySecurityAlarmResponseFormGroup.patchValue({ isInclude: false });
 							break;
-						case SwlCategoryTypeCode.SecurityAlarmSales:
+						case WorkerCategoryTypeCode.SecurityAlarmSales:
 							this.categorySecurityAlarmSalesFormGroup.patchValue({ isInclude: false });
 							break;
-						case SwlCategoryTypeCode.SecurityConsultant:
+						case WorkerCategoryTypeCode.SecurityConsultant:
 							this.categorySecurityConsultantFormGroup.patchValue({ isInclude: false });
 							break;
 					}
@@ -949,55 +951,55 @@ export class LicenceCategoryComponent implements OnInit, LicenceFormStepComponen
 	get categoryList(): Array<string> {
 		const list: Array<string> = [];
 		if (this.categoryArmouredCarGuardFormGroup.get('isInclude')?.value) {
-			list.push(SwlCategoryTypeCode.ArmouredCarGuard);
+			list.push(WorkerCategoryTypeCode.ArmouredCarGuard);
 		}
 		if (this.categoryBodyArmourSalesFormGroup.get('isInclude')?.value) {
-			list.push(SwlCategoryTypeCode.BodyArmourSales);
+			list.push(WorkerCategoryTypeCode.BodyArmourSales);
 		}
 		if (this.categoryClosedCircuitTelevisionInstallerFormGroup.get('isInclude')?.value) {
-			list.push(SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller);
+			list.push(WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller);
 		}
 		if (this.categoryElectronicLockingDeviceInstallerFormGroup.get('isInclude')?.value) {
-			list.push(SwlCategoryTypeCode.ElectronicLockingDeviceInstaller);
+			list.push(WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller);
 		}
 		if (this.categoryFireInvestigatorFormGroup.get('isInclude')?.value) {
-			list.push(SwlCategoryTypeCode.FireInvestigator);
+			list.push(WorkerCategoryTypeCode.FireInvestigator);
 		}
 		if (this.categoryLocksmithFormGroup.get('isInclude')?.value) {
-			list.push(SwlCategoryTypeCode.Locksmith);
+			list.push(WorkerCategoryTypeCode.Locksmith);
 		}
 		if (this.categoryLocksmithSupFormGroup.get('isInclude')?.value) {
-			list.push(SwlCategoryTypeCode.LocksmithUnderSupervision);
+			list.push(WorkerCategoryTypeCode.LocksmithUnderSupervision);
 		}
 		if (this.categoryPrivateInvestigatorFormGroup.get('isInclude')?.value) {
-			list.push(SwlCategoryTypeCode.PrivateInvestigator);
+			list.push(WorkerCategoryTypeCode.PrivateInvestigator);
 		}
 		if (this.categoryPrivateInvestigatorSupFormGroup.get('isInclude')?.value) {
-			list.push(SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision);
+			list.push(WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision);
 		}
 		if (this.categorySecurityAlarmInstallerFormGroup.get('isInclude')?.value) {
-			list.push(SwlCategoryTypeCode.SecurityAlarmInstaller);
+			list.push(WorkerCategoryTypeCode.SecurityAlarmInstaller);
 		}
 		if (this.categorySecurityAlarmInstallerSupFormGroup.get('isInclude')?.value) {
-			list.push(SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision);
+			list.push(WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision);
 		}
 		if (this.categorySecurityAlarmMonitorFormGroup.get('isInclude')?.value) {
-			list.push(SwlCategoryTypeCode.SecurityAlarmMonitor);
+			list.push(WorkerCategoryTypeCode.SecurityAlarmMonitor);
 		}
 		if (this.categorySecurityAlarmResponseFormGroup.get('isInclude')?.value) {
-			list.push(SwlCategoryTypeCode.SecurityAlarmResponse);
+			list.push(WorkerCategoryTypeCode.SecurityAlarmResponse);
 		}
 		if (this.categorySecurityAlarmSalesFormGroup.get('isInclude')?.value) {
-			list.push(SwlCategoryTypeCode.SecurityAlarmSales);
+			list.push(WorkerCategoryTypeCode.SecurityAlarmSales);
 		}
 		if (this.categorySecurityConsultantFormGroup.get('isInclude')?.value) {
-			list.push(SwlCategoryTypeCode.SecurityConsultant);
+			list.push(WorkerCategoryTypeCode.SecurityConsultant);
 		}
 		if (this.categorySecurityGuardFormGroup.get('isInclude')?.value) {
-			list.push(SwlCategoryTypeCode.SecurityGuard);
+			list.push(WorkerCategoryTypeCode.SecurityGuard);
 		}
 		if (this.categorySecurityGuardSupFormGroup.get('isInclude')?.value) {
-			list.push(SwlCategoryTypeCode.SecurityGuardUnderSupervision);
+			list.push(WorkerCategoryTypeCode.SecurityGuardUnderSupervision);
 		}
 
 		return list;
@@ -1005,158 +1007,158 @@ export class LicenceCategoryComponent implements OnInit, LicenceFormStepComponen
 
 	private setValidCategoryList(): void {
 		const currentList = this.categoryList;
-		let updatedList = this.swlCategoryTypes;
+		let updatedList = this.workerCategoryTypes;
 		updatedList = updatedList.filter((cat) => !currentList.find((xxx) => xxx == cat.code));
 		this.validCategoryList = [...updatedList];
 
 		// TODO update to use matrix in the db.
-		// let updatedList = this.swlCategoryTypes;
+		// let updatedList = this.workerCategoryTypes;
 		// // if user has selected 'ArmouredCarGuard', then update the list of valid values
-		// if (currentList.find((cat) => cat == SwlCategoryTypeCode.ArmouredCarGuard)) {
+		// if (currentList.find((cat) => cat == WorkerCategoryTypeCode.ArmouredCarGuard)) {
 		// 	updatedList = updatedList.filter(
 		// 		(cat) =>
-		// 			cat != SwlCategoryTypeCode.ArmouredCarGuard &&
-		// 			cat != SwlCategoryTypeCode.SecurityGuardUnderSupervision
+		// 			cat != WorkerCategoryTypeCode.ArmouredCarGuard &&
+		// 			cat != WorkerCategoryTypeCode.SecurityGuardUnderSupervision
 		// 	);
 		// }
 		// // if user has selected 'BodyArmourSales', then update the list of valid values
-		// if (currentList.find((cat) => cat == SwlCategoryTypeCode.BodyArmourSales)) {
+		// if (currentList.find((cat) => cat == WorkerCategoryTypeCode.BodyArmourSales)) {
 		// 	updatedList = updatedList.filter(
 		// 		(cat) =>
-		// 			cat != SwlCategoryTypeCode.BodyArmourSales &&
-		// 			cat != SwlCategoryTypeCode.SecurityGuardUnderSupervision
+		// 			cat != WorkerCategoryTypeCode.BodyArmourSales &&
+		// 			cat != WorkerCategoryTypeCode.SecurityGuardUnderSupervision
 		// 	);
 		// }
 		// // if user has selected 'ClosedCircuitTelevisionInstaller', then update the list of valid values
-		// if (currentList.find((cat) => cat == SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller)) {
+		// if (currentList.find((cat) => cat == WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller)) {
 		// 	updatedList = updatedList.filter(
 		// 		(cat) =>
-		// 			cat != SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller &&
-		// 			cat != SwlCategoryTypeCode.SecurityAlarmInstaller &&
-		// 			cat != SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision &&
-		// 			cat != SwlCategoryTypeCode.SecurityGuardUnderSupervision
+		// 			cat != WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller &&
+		// 			cat != WorkerCategoryTypeCode.SecurityAlarmInstaller &&
+		// 			cat != WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision &&
+		// 			cat != WorkerCategoryTypeCode.SecurityGuardUnderSupervision
 		// 	);
 		// }
 		// // if user has selected 'ElectronicLockingDeviceInstaller', then update the list of valid values
-		// if (currentList.find((cat) => cat == SwlCategoryTypeCode.ElectronicLockingDeviceInstaller)) {
+		// if (currentList.find((cat) => cat == WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller)) {
 		// 	updatedList = updatedList.filter(
 		// 		(cat) =>
-		// 			cat != SwlCategoryTypeCode.ElectronicLockingDeviceInstaller &&
-		// 			cat != SwlCategoryTypeCode.Locksmith &&
-		// 			cat != SwlCategoryTypeCode.LocksmithUnderSupervision &&
-		// 			cat != SwlCategoryTypeCode.SecurityAlarmInstaller &&
-		// 			cat != SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision &&
-		// 			cat != SwlCategoryTypeCode.SecurityGuardUnderSupervision
+		// 			cat != WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller &&
+		// 			cat != WorkerCategoryTypeCode.Locksmith &&
+		// 			cat != WorkerCategoryTypeCode.LocksmithUnderSupervision &&
+		// 			cat != WorkerCategoryTypeCode.SecurityAlarmInstaller &&
+		// 			cat != WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision &&
+		// 			cat != WorkerCategoryTypeCode.SecurityGuardUnderSupervision
 		// 	);
 		// }
 		// // if user has selected 'FireInvestigator', then update the list of valid values
-		// if (currentList.find((cat) => cat == SwlCategoryTypeCode.FireInvestigator)) {
+		// if (currentList.find((cat) => cat == WorkerCategoryTypeCode.FireInvestigator)) {
 		// 	updatedList = updatedList.filter(
 		// 		(cat) =>
-		// 			cat != SwlCategoryTypeCode.PrivateInvestigator &&
-		// 			cat != SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision &&
-		// 			cat != SwlCategoryTypeCode.FireInvestigator
+		// 			cat != WorkerCategoryTypeCode.PrivateInvestigator &&
+		// 			cat != WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision &&
+		// 			cat != WorkerCategoryTypeCode.FireInvestigator
 		// 	);
 		// }
 		// // if user has selected 'Locksmith' or 'LocksmithUnderSupervision', then update the list of valid values
 		// if (
 		// 	currentList.find(
-		// 		(cat) => cat == SwlCategoryTypeCode.Locksmith || cat == SwlCategoryTypeCode.LocksmithUnderSupervision
+		// 		(cat) => cat == WorkerCategoryTypeCode.Locksmith || cat == WorkerCategoryTypeCode.LocksmithUnderSupervision
 		// 	)
 		// ) {
 		// 	updatedList = updatedList.filter(
 		// 		(cat) =>
-		// 			cat != SwlCategoryTypeCode.ElectronicLockingDeviceInstaller &&
-		// 			cat != SwlCategoryTypeCode.Locksmith &&
-		// 			cat != SwlCategoryTypeCode.LocksmithUnderSupervision &&
-		// 			cat != SwlCategoryTypeCode.SecurityGuardUnderSupervision
+		// 			cat != WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller &&
+		// 			cat != WorkerCategoryTypeCode.Locksmith &&
+		// 			cat != WorkerCategoryTypeCode.LocksmithUnderSupervision &&
+		// 			cat != WorkerCategoryTypeCode.SecurityGuardUnderSupervision
 		// 	);
 		// }
 		// // if user has selected 'PrivateInvestigator' or 'PrivateInvestigatorUnderSupervision', then update the list of valid values
 		// if (
 		// 	currentList.find(
 		// 		(cat) =>
-		// 			cat == SwlCategoryTypeCode.PrivateInvestigator ||
-		// 			cat == SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision
+		// 			cat == WorkerCategoryTypeCode.PrivateInvestigator ||
+		// 			cat == WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision
 		// 	)
 		// ) {
 		// 	updatedList = updatedList.filter(
 		// 		(cat) =>
-		// 			cat != SwlCategoryTypeCode.FireInvestigator &&
-		// 			cat != SwlCategoryTypeCode.PrivateInvestigator &&
-		// 			cat != SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision &&
-		// 			cat != SwlCategoryTypeCode.SecurityGuardUnderSupervision
+		// 			cat != WorkerCategoryTypeCode.FireInvestigator &&
+		// 			cat != WorkerCategoryTypeCode.PrivateInvestigator &&
+		// 			cat != WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision &&
+		// 			cat != WorkerCategoryTypeCode.SecurityGuardUnderSupervision
 		// 	);
 		// }
 		// // if user has selected 'SecurityGuard', then update the list of valid values
-		// if (currentList.find((cat) => cat == SwlCategoryTypeCode.SecurityGuard)) {
+		// if (currentList.find((cat) => cat == WorkerCategoryTypeCode.SecurityGuard)) {
 		// 	updatedList = updatedList.filter(
 		// 		(cat) =>
-		// 			cat != SwlCategoryTypeCode.SecurityAlarmMonitor &&
-		// 			cat != SwlCategoryTypeCode.SecurityAlarmResponse &&
-		// 			cat != SwlCategoryTypeCode.SecurityGuard &&
-		// 			cat != SwlCategoryTypeCode.SecurityGuardUnderSupervision
+		// 			cat != WorkerCategoryTypeCode.SecurityAlarmMonitor &&
+		// 			cat != WorkerCategoryTypeCode.SecurityAlarmResponse &&
+		// 			cat != WorkerCategoryTypeCode.SecurityGuard &&
+		// 			cat != WorkerCategoryTypeCode.SecurityGuardUnderSupervision
 		// 	);
 		// }
 		// // if user has selected 'SecurityGuardUnderSupervision', then update the list of valid values
-		// if (currentList.find((cat) => cat == SwlCategoryTypeCode.SecurityGuardUnderSupervision)) {
+		// if (currentList.find((cat) => cat == WorkerCategoryTypeCode.SecurityGuardUnderSupervision)) {
 		// 	updatedList = [];
 		// }
 		// // if user has selected 'SecurityAlarmInstaller' or 'SecurityAlarmInstallerUnderSupervision', then update the list of valid values
 		// if (
 		// 	currentList.find(
 		// 		(cat) =>
-		// 			cat == SwlCategoryTypeCode.SecurityAlarmInstaller ||
-		// 			cat == SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision
+		// 			cat == WorkerCategoryTypeCode.SecurityAlarmInstaller ||
+		// 			cat == WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision
 		// 	)
 		// ) {
 		// 	updatedList = updatedList.filter(
 		// 		(cat) =>
-		// 			cat != SwlCategoryTypeCode.ElectronicLockingDeviceInstaller &&
-		// 			cat != SwlCategoryTypeCode.SecurityAlarmInstaller &&
-		// 			cat != SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision &&
-		// 			cat != SwlCategoryTypeCode.SecurityAlarmMonitor &&
-		// 			cat != SwlCategoryTypeCode.SecurityAlarmResponse &&
-		// 			cat != SwlCategoryTypeCode.SecurityAlarmSales &&
-		// 			cat != SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller &&
-		// 			cat != SwlCategoryTypeCode.SecurityGuardUnderSupervision
+		// 			cat != WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller &&
+		// 			cat != WorkerCategoryTypeCode.SecurityAlarmInstaller &&
+		// 			cat != WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision &&
+		// 			cat != WorkerCategoryTypeCode.SecurityAlarmMonitor &&
+		// 			cat != WorkerCategoryTypeCode.SecurityAlarmResponse &&
+		// 			cat != WorkerCategoryTypeCode.SecurityAlarmSales &&
+		// 			cat != WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller &&
+		// 			cat != WorkerCategoryTypeCode.SecurityGuardUnderSupervision
 		// 	);
 		// }
 		// // if user has selected 'SecurityAlarmMonitor' or 'SecurityAlarmResponse, then update the list of valid values
 		// if (
 		// 	currentList.find(
 		// 		(cat) =>
-		// 			cat == SwlCategoryTypeCode.SecurityAlarmMonitor || cat == SwlCategoryTypeCode.SecurityAlarmResponse
+		// 			cat == WorkerCategoryTypeCode.SecurityAlarmMonitor || cat == WorkerCategoryTypeCode.SecurityAlarmResponse
 		// 	)
 		// ) {
 		// 	updatedList = updatedList.filter(
 		// 		(cat) =>
-		// 			cat != SwlCategoryTypeCode.SecurityAlarmMonitor &&
-		// 			cat != SwlCategoryTypeCode.SecurityAlarmResponse &&
-		// 			cat != SwlCategoryTypeCode.SecurityAlarmInstaller &&
-		// 			cat != SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision &&
-		// 			cat != SwlCategoryTypeCode.SecurityGuard &&
-		// 			cat != SwlCategoryTypeCode.SecurityGuardUnderSupervision
+		// 			cat != WorkerCategoryTypeCode.SecurityAlarmMonitor &&
+		// 			cat != WorkerCategoryTypeCode.SecurityAlarmResponse &&
+		// 			cat != WorkerCategoryTypeCode.SecurityAlarmInstaller &&
+		// 			cat != WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision &&
+		// 			cat != WorkerCategoryTypeCode.SecurityGuard &&
+		// 			cat != WorkerCategoryTypeCode.SecurityGuardUnderSupervision
 		// 	);
 		// }
 		// // if user has selected 'SecurityAlarmSales', then update the list of valid values
-		// if (currentList.find((cat) => cat == SwlCategoryTypeCode.SecurityAlarmSales)) {
+		// if (currentList.find((cat) => cat == WorkerCategoryTypeCode.SecurityAlarmSales)) {
 		// 	updatedList = updatedList.filter(
 		// 		(cat) =>
-		// 			cat != SwlCategoryTypeCode.SecurityAlarmInstaller &&
-		// 			cat != SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision &&
-		// 			cat != SwlCategoryTypeCode.SecurityAlarmMonitor &&
-		// 			cat != SwlCategoryTypeCode.SecurityAlarmSales &&
-		// 			cat != SwlCategoryTypeCode.SecurityGuard &&
-		// 			cat != SwlCategoryTypeCode.SecurityGuardUnderSupervision
+		// 			cat != WorkerCategoryTypeCode.SecurityAlarmInstaller &&
+		// 			cat != WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision &&
+		// 			cat != WorkerCategoryTypeCode.SecurityAlarmMonitor &&
+		// 			cat != WorkerCategoryTypeCode.SecurityAlarmSales &&
+		// 			cat != WorkerCategoryTypeCode.SecurityGuard &&
+		// 			cat != WorkerCategoryTypeCode.SecurityGuardUnderSupervision
 		// 	);
 		// }
 		// // if user has selected 'SecurityConsultant', then update the list of valid values
-		// if (currentList.find((cat) => cat == SwlCategoryTypeCode.SecurityConsultant)) {
+		// if (currentList.find((cat) => cat == WorkerCategoryTypeCode.SecurityConsultant)) {
 		// 	updatedList = updatedList.filter(
 		// 		(cat) =>
-		// 			cat != SwlCategoryTypeCode.SecurityConsultant &&
-		// 			cat != SwlCategoryTypeCode.SecurityGuardUnderSupervision
+		// 			cat != WorkerCategoryTypeCode.SecurityConsultant &&
+		// 			cat != WorkerCategoryTypeCode.SecurityGuardUnderSupervision
 		// 	);
 		// }
 		// this.validCategoryList = [...updatedList];

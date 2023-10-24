@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-export enum SwlCategoryTypeCode {
+export enum WorkerCategoryTypeCode {
   ArmouredCarGuard = 'ArmouredCarGuard',
   BodyArmourSales = 'BodyArmourSales',
   ClosedCircuitTelevisionInstaller = 'ClosedCircuitTelevisionInstaller',

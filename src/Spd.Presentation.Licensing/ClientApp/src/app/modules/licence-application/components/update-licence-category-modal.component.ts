@@ -1,13 +1,13 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { SwlCategoryTypeCode } from 'src/app/api/models';
+import { WorkerCategoryTypeCode } from 'src/app/api/models';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { SelectOptions, SwlCategoryTypes } from 'src/app/core/code-types/model-desc.models';
 import { LicenceApplicationService } from '../licence-application.service';
 
 export interface LicenceCategoryDialogData {
-	category: SwlCategoryTypeCode | null;
+	category: WorkerCategoryTypeCode | null;
 }
 
 @Component({
@@ -45,71 +45,71 @@ export interface LicenceCategoryDialogData {
 						<div class="row" *ngIf="category" @showHideTriggerSlideAnimation>
 							<div class="col-12">
 								<mat-accordion multi="false">
-									<ng-container *ngIf="category == swlCategoryTypeCodes.ArmouredCarGuard">
+									<ng-container *ngIf="category == workerCategoryTypeCodes.ArmouredCarGuard">
 										<app-licence-category-armoured-car-guard></app-licence-category-armoured-car-guard>
 									</ng-container>
 
-									<ng-container *ngIf="category == swlCategoryTypeCodes.BodyArmourSales">
+									<ng-container *ngIf="category == workerCategoryTypeCodes.BodyArmourSales">
 										<app-licence-category-body-armour-sales></app-licence-category-body-armour-sales>
 									</ng-container>
 
-									<ng-container *ngIf="category == swlCategoryTypeCodes.ClosedCircuitTelevisionInstaller">
+									<ng-container *ngIf="category == workerCategoryTypeCodes.ClosedCircuitTelevisionInstaller">
 										<app-licence-category-closed-circuit-television-installer></app-licence-category-closed-circuit-television-installer>
 									</ng-container>
 
-									<ng-container *ngIf="category == swlCategoryTypeCodes.ElectronicLockingDeviceInstaller">
+									<ng-container *ngIf="category == workerCategoryTypeCodes.ElectronicLockingDeviceInstaller">
 										<app-licence-category-electronic-locking-device-installer></app-licence-category-electronic-locking-device-installer>
 									</ng-container>
 
-									<ng-container *ngIf="category == swlCategoryTypeCodes.FireInvestigator">
+									<ng-container *ngIf="category == workerCategoryTypeCodes.FireInvestigator">
 										<app-licence-category-fire-investigator></app-licence-category-fire-investigator>
 									</ng-container>
 
-									<ng-container *ngIf="category == swlCategoryTypeCodes.Locksmith">
+									<ng-container *ngIf="category == workerCategoryTypeCodes.Locksmith">
 										<app-licence-category-locksmith></app-licence-category-locksmith>
 									</ng-container>
 
-									<ng-container *ngIf="category == swlCategoryTypeCodes.LocksmithUnderSupervision">
+									<ng-container *ngIf="category == workerCategoryTypeCodes.LocksmithUnderSupervision">
 										<app-licence-category-locksmith-sup></app-licence-category-locksmith-sup>
 									</ng-container>
 
-									<ng-container *ngIf="category == swlCategoryTypeCodes.PrivateInvestigator">
+									<ng-container *ngIf="category == workerCategoryTypeCodes.PrivateInvestigator">
 										<app-licence-category-private-investigator></app-licence-category-private-investigator>
 									</ng-container>
 
-									<ng-container *ngIf="category == swlCategoryTypeCodes.PrivateInvestigatorUnderSupervision">
+									<ng-container *ngIf="category == workerCategoryTypeCodes.PrivateInvestigatorUnderSupervision">
 										<app-licence-category-private-investigator-sup></app-licence-category-private-investigator-sup>
 									</ng-container>
 
-									<ng-container *ngIf="category == swlCategoryTypeCodes.SecurityAlarmInstaller">
+									<ng-container *ngIf="category == workerCategoryTypeCodes.SecurityAlarmInstaller">
 										<app-licence-category-security-alarm-installer></app-licence-category-security-alarm-installer>
 									</ng-container>
 
-									<ng-container *ngIf="category == swlCategoryTypeCodes.SecurityAlarmInstallerUnderSupervision">
+									<ng-container *ngIf="category == workerCategoryTypeCodes.SecurityAlarmInstallerUnderSupervision">
 										<app-licence-category-security-alarm-installer-sup></app-licence-category-security-alarm-installer-sup>
 									</ng-container>
 
-									<ng-container *ngIf="category == swlCategoryTypeCodes.SecurityAlarmMonitor">
+									<ng-container *ngIf="category == workerCategoryTypeCodes.SecurityAlarmMonitor">
 										<app-licence-category-security-alarm-monitor></app-licence-category-security-alarm-monitor>
 									</ng-container>
 
-									<ng-container *ngIf="category == swlCategoryTypeCodes.SecurityAlarmResponse">
+									<ng-container *ngIf="category == workerCategoryTypeCodes.SecurityAlarmResponse">
 										<app-licence-category-security-alarm-response></app-licence-category-security-alarm-response>
 									</ng-container>
 
-									<ng-container *ngIf="category == swlCategoryTypeCodes.SecurityAlarmSales">
+									<ng-container *ngIf="category == workerCategoryTypeCodes.SecurityAlarmSales">
 										<app-licence-category-security-alarm-sales></app-licence-category-security-alarm-sales>
 									</ng-container>
 
-									<ng-container *ngIf="category == swlCategoryTypeCodes.SecurityConsultant">
+									<ng-container *ngIf="category == workerCategoryTypeCodes.SecurityConsultant">
 										<app-licence-category-security-consultant></app-licence-category-security-consultant>
 									</ng-container>
 
-									<ng-container *ngIf="category == swlCategoryTypeCodes.SecurityGuard">
+									<ng-container *ngIf="category == workerCategoryTypeCodes.SecurityGuard">
 										<app-licence-category-security-guard></app-licence-category-security-guard>
 									</ng-container>
 
-									<ng-container *ngIf="category == swlCategoryTypeCodes.SecurityGuardUnderSupervision">
+									<ng-container *ngIf="category == workerCategoryTypeCodes.SecurityGuardUnderSupervision">
 										<app-licence-category-security-guard-sup></app-licence-category-security-guard-sup>
 									</ng-container>
 								</mat-accordion>
@@ -134,13 +134,13 @@ export interface LicenceCategoryDialogData {
 	animations: [showHideTriggerSlideAnimation],
 })
 export class UpdateLicenceCategoryModalComponent implements OnInit {
-	category: SwlCategoryTypeCode | null = null;
+	category: WorkerCategoryTypeCode | null = null;
 	isDirtyAndInvalid = false;
 
 	validCategoryList: SelectOptions[] = SwlCategoryTypes;
 
 	swlCategoryTypes = SwlCategoryTypes;
-	swlCategoryTypeCodes = SwlCategoryTypeCode;
+	workerCategoryTypeCodes = WorkerCategoryTypeCode;
 
 	categoryArmouredCarGuardFormGroup: FormGroup = this.licenceApplicationService.categoryArmouredCarGuardFormGroup;
 	categoryBodyArmourSalesFormGroup: FormGroup = this.licenceApplicationService.categoryBodyArmourSalesFormGroup;
@@ -280,55 +280,55 @@ export class UpdateLicenceCategoryModalComponent implements OnInit {
 	get categoryList(): Array<string> {
 		const list: Array<string> = [];
 		if (this.categoryArmouredCarGuardFormGroup.get('isInclude')?.value) {
-			list.push(SwlCategoryTypeCode.ArmouredCarGuard);
+			list.push(WorkerCategoryTypeCode.ArmouredCarGuard);
 		}
 		if (this.categoryBodyArmourSalesFormGroup.get('isInclude')?.value) {
-			list.push(SwlCategoryTypeCode.BodyArmourSales);
+			list.push(WorkerCategoryTypeCode.BodyArmourSales);
 		}
 		if (this.categoryClosedCircuitTelevisionInstallerFormGroup.get('isInclude')?.value) {
-			list.push(SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller);
+			list.push(WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller);
 		}
 		if (this.categoryElectronicLockingDeviceInstallerFormGroup.get('isInclude')?.value) {
-			list.push(SwlCategoryTypeCode.ElectronicLockingDeviceInstaller);
+			list.push(WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller);
 		}
 		if (this.categoryFireInvestigatorFormGroup.get('isInclude')?.value) {
-			list.push(SwlCategoryTypeCode.FireInvestigator);
+			list.push(WorkerCategoryTypeCode.FireInvestigator);
 		}
 		if (this.categoryLocksmithFormGroup.get('isInclude')?.value) {
-			list.push(SwlCategoryTypeCode.Locksmith);
+			list.push(WorkerCategoryTypeCode.Locksmith);
 		}
 		if (this.categoryLocksmithSupFormGroup.get('isInclude')?.value) {
-			list.push(SwlCategoryTypeCode.LocksmithUnderSupervision);
+			list.push(WorkerCategoryTypeCode.LocksmithUnderSupervision);
 		}
 		if (this.categoryPrivateInvestigatorFormGroup.get('isInclude')?.value) {
-			list.push(SwlCategoryTypeCode.PrivateInvestigator);
+			list.push(WorkerCategoryTypeCode.PrivateInvestigator);
 		}
 		if (this.categoryPrivateInvestigatorSupFormGroup.get('isInclude')?.value) {
-			list.push(SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision);
+			list.push(WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision);
 		}
 		if (this.categorySecurityAlarmInstallerFormGroup.get('isInclude')?.value) {
-			list.push(SwlCategoryTypeCode.SecurityAlarmInstaller);
+			list.push(WorkerCategoryTypeCode.SecurityAlarmInstaller);
 		}
 		if (this.categorySecurityAlarmInstallerSupFormGroup.get('isInclude')?.value) {
-			list.push(SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision);
+			list.push(WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision);
 		}
 		if (this.categorySecurityAlarmMonitorFormGroup.get('isInclude')?.value) {
-			list.push(SwlCategoryTypeCode.SecurityAlarmMonitor);
+			list.push(WorkerCategoryTypeCode.SecurityAlarmMonitor);
 		}
 		if (this.categorySecurityAlarmResponseFormGroup.get('isInclude')?.value) {
-			list.push(SwlCategoryTypeCode.SecurityAlarmResponse);
+			list.push(WorkerCategoryTypeCode.SecurityAlarmResponse);
 		}
 		if (this.categorySecurityAlarmSalesFormGroup.get('isInclude')?.value) {
-			list.push(SwlCategoryTypeCode.SecurityAlarmSales);
+			list.push(WorkerCategoryTypeCode.SecurityAlarmSales);
 		}
 		if (this.categorySecurityConsultantFormGroup.get('isInclude')?.value) {
-			list.push(SwlCategoryTypeCode.SecurityConsultant);
+			list.push(WorkerCategoryTypeCode.SecurityConsultant);
 		}
 		if (this.categorySecurityGuardFormGroup.get('isInclude')?.value) {
-			list.push(SwlCategoryTypeCode.SecurityGuard);
+			list.push(WorkerCategoryTypeCode.SecurityGuard);
 		}
 		if (this.categorySecurityGuardSupFormGroup.get('isInclude')?.value) {
-			list.push(SwlCategoryTypeCode.SecurityGuardUnderSupervision);
+			list.push(WorkerCategoryTypeCode.SecurityGuardUnderSupervision);
 		}
 
 		return list;
@@ -342,59 +342,59 @@ export class UpdateLicenceCategoryModalComponent implements OnInit {
 		this.validCategoryList = [...updatedList];
 	}
 
-	updateCategoryInclude(category: SwlCategoryTypeCode | null, isInclude: boolean): void {
+	updateCategoryInclude(category: WorkerCategoryTypeCode | null, isInclude: boolean): void {
 		if (category) {
 			switch (category) {
-				case SwlCategoryTypeCode.ArmouredCarGuard:
+				case WorkerCategoryTypeCode.ArmouredCarGuard:
 					this.categoryArmouredCarGuardFormGroup.patchValue({ isInclude });
 					break;
-				case SwlCategoryTypeCode.BodyArmourSales:
+				case WorkerCategoryTypeCode.BodyArmourSales:
 					this.categoryBodyArmourSalesFormGroup.patchValue({ isInclude });
 					break;
-				case SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller:
+				case WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller:
 					this.categoryClosedCircuitTelevisionInstallerFormGroup.patchValue({ isInclude });
 					break;
-				case SwlCategoryTypeCode.ElectronicLockingDeviceInstaller:
+				case WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller:
 					this.categoryElectronicLockingDeviceInstallerFormGroup.patchValue({ isInclude });
 					break;
-				case SwlCategoryTypeCode.FireInvestigator:
+				case WorkerCategoryTypeCode.FireInvestigator:
 					this.categoryFireInvestigatorFormGroup.patchValue({ isInclude });
 					break;
-				case SwlCategoryTypeCode.Locksmith:
+				case WorkerCategoryTypeCode.Locksmith:
 					this.categoryLocksmithFormGroup.patchValue({ isInclude });
 					break;
-				case SwlCategoryTypeCode.LocksmithUnderSupervision:
+				case WorkerCategoryTypeCode.LocksmithUnderSupervision:
 					this.categoryLocksmithSupFormGroup.patchValue({ isInclude });
 					break;
-				case SwlCategoryTypeCode.PrivateInvestigator:
+				case WorkerCategoryTypeCode.PrivateInvestigator:
 					this.categoryPrivateInvestigatorFormGroup.patchValue({ isInclude });
 					this.onPromptFireInvestigator();
 					break;
-				case SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision:
+				case WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision:
 					this.categoryPrivateInvestigatorSupFormGroup.patchValue({ isInclude });
 					break;
-				case SwlCategoryTypeCode.SecurityGuard:
+				case WorkerCategoryTypeCode.SecurityGuard:
 					this.categorySecurityGuardFormGroup.patchValue({ isInclude });
 					break;
-				case SwlCategoryTypeCode.SecurityGuardUnderSupervision:
+				case WorkerCategoryTypeCode.SecurityGuardUnderSupervision:
 					this.categorySecurityGuardSupFormGroup.patchValue({ isInclude });
 					break;
-				case SwlCategoryTypeCode.SecurityAlarmInstaller:
+				case WorkerCategoryTypeCode.SecurityAlarmInstaller:
 					this.categorySecurityAlarmInstallerFormGroup.patchValue({ isInclude });
 					break;
-				case SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision:
+				case WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision:
 					this.categorySecurityAlarmInstallerSupFormGroup.patchValue({ isInclude });
 					break;
-				case SwlCategoryTypeCode.SecurityAlarmMonitor:
+				case WorkerCategoryTypeCode.SecurityAlarmMonitor:
 					this.categorySecurityAlarmMonitorFormGroup.patchValue({ isInclude });
 					break;
-				case SwlCategoryTypeCode.SecurityAlarmResponse:
+				case WorkerCategoryTypeCode.SecurityAlarmResponse:
 					this.categorySecurityAlarmResponseFormGroup.patchValue({ isInclude });
 					break;
-				case SwlCategoryTypeCode.SecurityAlarmSales:
+				case WorkerCategoryTypeCode.SecurityAlarmSales:
 					this.categorySecurityAlarmSalesFormGroup.patchValue({ isInclude });
 					break;
-				case SwlCategoryTypeCode.SecurityConsultant:
+				case WorkerCategoryTypeCode.SecurityConsultant:
 					this.categorySecurityConsultantFormGroup.patchValue({ isInclude });
 					break;
 			}
