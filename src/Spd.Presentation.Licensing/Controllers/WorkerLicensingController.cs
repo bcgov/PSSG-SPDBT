@@ -11,7 +11,6 @@ using System.Security.Principal;
 namespace Spd.Presentation.Licensing.Controllers
 {
     [ApiController]
-    [Authorize(Policy = "OnlyBcsc")]
     public class WorkerLicensingController : ControllerBase
     {
         private readonly ILogger<WorkerLicensingController> _logger;
@@ -31,6 +30,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="licenceCreateRequest"></param>
         /// <returns></returns>
         [Route("api/worker-licences")]
+        [Authorize(Policy = "OnlyBcsc")]
         [HttpPost]
         public async Task<WorkerLicenceCreateResponse> CreateWorkerLicence([FromBody][Required] WorkerLicenceCreateRequest licenceCreateRequest)
         {
