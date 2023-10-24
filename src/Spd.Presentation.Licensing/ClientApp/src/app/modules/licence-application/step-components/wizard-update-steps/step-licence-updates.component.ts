@@ -170,11 +170,12 @@ export interface UpdateOptionListData {
 			}
 
 			.text-data {
-				font-weight: 500;
+				/* font-weight: 500; */
+				font-size: 0.9rem !important;
 			}
 
 			.card-section {
-				background-color: #ededed !important;
+				background-color: #f6f6f6 !important;
 				border-left: 3px solid #38598a;
 				border-bottom-width: 1px;
 				border-bottom-style: solid;

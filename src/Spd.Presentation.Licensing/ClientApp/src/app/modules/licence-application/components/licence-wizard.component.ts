@@ -75,14 +75,39 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 					<button
 						mat-fab
 						class="icon-button-large"
-						color="accent"
+						color="primary"
 						style="color: white; top: 10px;"
 						matTooltip="Save & Exit"
-						aria-label="Save & Exit"
+						aria-label="Save and Exit"
 						(click)="onSave()"
 					>
 						<mat-icon>save</mat-icon>
 					</button>
+
+					<button
+						*ngIf="isFormValid"
+						mat-fab
+						class="icon-button-large mt-3"
+						color="primary"
+						style="color: white; top: 10px;"
+						matTooltip="Back to Review page"
+						aria-label="Back to Review page"
+						(click)="onGoToReview()"
+					>
+						<mat-icon>skip_next</mat-icon>
+					</button>
+
+					<!-- <button
+						*ngIf="isFormValid"
+						mat-raised-button
+						class="large mt-3"
+						color="primary"
+						matTooltip="Back to Review page"
+						aria-label="Back to Review page"
+						(click)="onGoToReview()"
+					>
+						Next: Review >
+					</button> -->
 					<!-- <button mat-fab color="primary" matTooltip="Save & Exit" aria-label="Save & Exit">
 					<mat-icon>save</mat-icon>
 				</button> -->
@@ -105,7 +130,8 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 
 	orientation: StepperOrientation = 'vertical';
 
-	valueChanged = false;
+	hasValueChanged = false;
+	isFormValid = false;
 
 	step1Complete = false;
 	step2Complete = false;
@@ -141,6 +167,7 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 			this.licenceApplicationService.initialized,
 			this.licenceApplicationService.licenceModelFormGroup.value
 		);
+		this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
 
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
@@ -167,8 +194,9 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelFormGroup.valueChanges
 			.pipe(debounceTime(500), distinctUntilChanged())
 			.subscribe((form: any) => {
-				this.valueChanged = true;
+				this.hasValueChanged = true;
 				console.log('valueChanges', form);
+				this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
 			});
 	}
 
@@ -198,7 +226,7 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 	}
 
 	onPreviousStepperStep(stepper: MatStepper): void {
-		console.log('onPreviousStepperStep valueChanged', this.valueChanged);
+		console.log('onPreviousStepperStep hasValueChanged', this.hasValueChanged);
 		this.saveIfChanged();
 
 		// console.log('previous', stepper);
@@ -206,7 +234,7 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
-		console.log('onNextStepperStep valueChanged', this.valueChanged);
+		console.log('onNextStepperStep hasValueChanged', this.hasValueChanged);
 		this.saveIfChanged();
 
 		if (stepper?.selected) stepper.selected.completed = true;
@@ -216,7 +244,7 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 	}
 
 	onGoToStep(step: number) {
-		console.log('onGoToStep valueChanged', this.valueChanged);
+		console.log('onGoToStep hasValueChanged', this.hasValueChanged);
 		this.saveIfChanged();
 
 		if (step == 3) {
@@ -236,12 +264,16 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 		// this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATIONS_IN_PROGRESS));
 	}
 
-	private saveIfChanged() {
-		console.log('saveIfChanged', this.valueChanged);
+	onGoToReview() {
+		this.stepper.selectedIndex = this.STEP_REVIEW;
+	}
 
-		if (this.valueChanged) {
+	private saveIfChanged() {
+		console.log('saveIfChanged', this.hasValueChanged);
+
+		if (this.hasValueChanged) {
 			this.licenceApplicationService.saveLicence();
-			this.valueChanged = false;
+			this.hasValueChanged = false;
 		}
 	}
 

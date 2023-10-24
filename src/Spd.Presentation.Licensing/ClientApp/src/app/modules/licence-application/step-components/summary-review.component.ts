@@ -28,6 +28,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 															<div class="fs-4 my-2">Licence Selection</div>
 															<button
 																mat-mini-fab
+																color="primary"
 																class="go-to-step-button"
 																matTooltip="Go to Step 1"
 																aria-label="Go to Step 1"
@@ -144,9 +145,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 
 															<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showPrivateInvestigator">
 																<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																	{{
-																		categoryTypeCodes.PrivateInvestigator | options : 'WorkerCategoryTypes'
-																	}}
+																	{{ categoryTypeCodes.PrivateInvestigator | options : 'WorkerCategoryTypes' }}
 																	Documents
 																</div>
 																<div class="text-data">
@@ -302,6 +301,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 															<div class="fs-4 my-2">Background Information</div>
 															<button
 																mat-mini-fab
+																color="primary"
 																class="go-to-step-button"
 																matTooltip="Go to Step 2"
 																aria-label="Go to Step 2"
@@ -403,6 +403,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 															<div class="fs-4 my-2">Identification</div>
 															<button
 																mat-mini-fab
+																color="primary"
 																class="go-to-step-button"
 																matTooltip="Go to Step 3"
 																aria-label="Go to Step 3"
@@ -544,6 +545,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 															<div class="fs-4 my-2">Contact Information</div>
 															<button
 																mat-mini-fab
+																color="primary"
 																class="go-to-step-button"
 																matTooltip="Go to Step 3"
 																aria-label="Go to Step 3"
@@ -684,7 +686,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 			}
 
 			.text-label {
-				font-size: smaller;
+				font-size: 0.8rem !important;
 			}
 
 			.review-panel-title {

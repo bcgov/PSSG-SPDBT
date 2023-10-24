@@ -111,15 +111,11 @@ export class LicenceApplicationService {
 			validators: [
 				FormGroupValidators.conditionalRequiredValidator(
 					'expiredLicenceNumber',
-					(form) =>
-						form.get('showStepLicenceExpired')?.value &&
-						form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
+					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'expiryDate',
-					(form) =>
-						form.get('showStepLicenceExpired')?.value &&
-						form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
+					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
 				),
 			],
 		}
