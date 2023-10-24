@@ -154,7 +154,7 @@ namespace Spd.Resource.Applicants.Licence
 
     public record WorkerLicenceCategoryData
     {
-        public SwlCategoryTypeEnum SwlCategoryTypeCode { get; set; }
+        public WorkerCategoryTypeEnum WorkerCategoryTypeCode { get; set; }
         public Documents[]? Documents { get; set; } = null;
     }
 
@@ -301,7 +301,7 @@ namespace Spd.Resource.Applicants.Licence
         Pounds,
     }
 
-    public enum SwlCategoryTypeEnum
+    public enum WorkerCategoryTypeEnum
     {
         ArmouredCarGuard,
         BodyArmourSales,

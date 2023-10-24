@@ -1,8 +1,8 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { BooleanTypeCode } from 'src/app/api/models';
 import {
+	BooleanTypeCode,
 	ProofOfAbilityToWorkInCanadaCode,
 	ProofOfCanadianCitizenshipCode,
 } from 'src/app/core/code-types/model-desc.models';

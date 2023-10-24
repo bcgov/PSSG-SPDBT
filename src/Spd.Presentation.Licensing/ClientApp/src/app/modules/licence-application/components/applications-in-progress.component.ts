@@ -2,8 +2,9 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { take, tap } from 'rxjs';
-import { SwlApplicationTypeCode, SwlTypeCode } from 'src/app/core/code-types/model-desc.models';
+import { ApplicationTypeCode, WorkerLicenceTypeCode } from 'src/app/api/models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
+import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
 import { LicenceApplicationService } from '../licence-application.service';
@@ -11,8 +12,8 @@ import { LicenceApplicationService } from '../licence-application.service';
 export interface ApplicationResponse {
 	id?: string;
 	licenceId?: string;
-	licenceTypeCode?: SwlTypeCode;
-	applicationTypeCode?: SwlApplicationTypeCode;
+	licenceTypeCode?: WorkerLicenceTypeCode;
+	applicationTypeCode?: ApplicationTypeCode;
 	expiresOn?: null | string;
 }
 
@@ -237,23 +238,32 @@ export class ApplicationsInProgressComponent implements OnInit, OnDestroy {
 	constructor(
 		private router: Router,
 		private dialog: MatDialog,
+		private authProcessService: AuthProcessService,
 		private licenceApplicationService: LicenceApplicationService
 	) {}
+
+	// async ngOnInit(): Promise<void> {
+	// 	const nextRoute = await this.authProcessService.initializeLicencing();
+
+	// 	if (nextRoute) {
+	// 		await this.router.navigate([nextRoute]);
+	// 	}
+	// }
 
 	ngOnInit(): void {
 		this.incompleteApplications = [
 			{
 				id: '1',
 				licenceId: 'SWL-NWQ3X7Y',
-				licenceTypeCode: SwlTypeCode.SecurityWorkerLicence,
-				applicationTypeCode: SwlApplicationTypeCode.NewOrExpired,
+				licenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
+				applicationTypeCode: ApplicationTypeCode.New,
 				expiresOn: '2023-09-26T19:43:25+00:00',
 			},
 			{
 				id: '11',
 				licenceId: 'SWL-NWQ3X7Z',
-				licenceTypeCode: SwlTypeCode.SecurityWorkerLicence,
-				applicationTypeCode: SwlApplicationTypeCode.NewOrExpired,
+				licenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
+				applicationTypeCode: ApplicationTypeCode.New,
 				expiresOn: '2023-09-26T19:43:25+00:00',
 			},
 			// {
@@ -283,8 +293,8 @@ export class ApplicationsInProgressComponent implements OnInit, OnDestroy {
 			{
 				id: '1',
 				licenceId: 'SWL-NWQ3X7Y',
-				licenceTypeCode: SwlTypeCode.SecurityWorkerLicence,
-				applicationTypeCode: SwlApplicationTypeCode.NewOrExpired,
+				licenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
+				applicationTypeCode: ApplicationTypeCode.New,
 				expiresOn: '2023-09-26T19:43:25+00:00',
 			},
 		];
@@ -293,8 +303,8 @@ export class ApplicationsInProgressComponent implements OnInit, OnDestroy {
 			{
 				id: '1',
 				licenceId: 'SWL-NWQ3AB7Y',
-				licenceTypeCode: SwlTypeCode.SecurityWorkerLicence,
-				applicationTypeCode: SwlApplicationTypeCode.NewOrExpired,
+				licenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
+				applicationTypeCode: ApplicationTypeCode.New,
 				expiresOn: '2022-09-26T19:43:25+00:00',
 			},
 		];
