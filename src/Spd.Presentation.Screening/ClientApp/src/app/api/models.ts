@@ -84,7 +84,6 @@ export { PaymentMethodCode } from './models/payment-method-code';
 export { PaymentResponse } from './models/payment-response';
 export { PaymentStatusCode } from './models/payment-status-code';
 export { PaymentTypeCode } from './models/payment-type-code';
-export { PortalUserIdentityTypeCode } from './models/portal-user-identity-type-code';
 export { RecaptchaConfiguration } from './models/recaptcha-configuration';
 export { RegistrationTypeCode } from './models/registration-type-code';
 export { ScreeningTypeCode } from './models/screening-type-code';
