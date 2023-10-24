@@ -3,6 +3,7 @@ using Spd.Resource.Applicants.PortalUser;
 using Spd.Resource.Organizations.Identity;
 using Spd.Resource.Organizations.Org;
 using Spd.Resource.Organizations.User;
+using Spd.Utilities.Shared.ManagerContract;
 
 namespace Spd.Manager.Membership.UserProfile
 {

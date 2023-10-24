@@ -130,4 +130,11 @@ namespace Spd.Utilities.Shared.ManagerContract
         public byte[] Content { get; set; } = Array.Empty<byte>();
         public string? FileName { get; set; } = null!;
     }
+
+    public enum IdentityProviderTypeCode
+    {
+        BusinessBceId,
+        BcServicesCard,
+        Idir,
+    }
 }
