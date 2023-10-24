@@ -24,7 +24,7 @@ export class LicenceCategorySecurityAlarmInstallerSupComponent implements OnInit
 		this.form.patchValue({ checkbox: true });
 		this.title = this.optionsPipe.transform(
 			WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
-			'SwlCategoryTypes'
+			'WorkerCategoryTypes'
 		);
 	}
 

@@ -98,16 +98,15 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 
 												<app-file-upload
 													[maxNumberOfFiles]="1"
-													[files]="letterOfNoConflictAttachments.value"
+													[files]="attachments.value"
 													(filesChanged)="onFilesChanged()"
 												></app-file-upload>
 												<mat-error
 													class="mat-option-error"
 													*ngIf="
-														(form.get('letterOfNoConflictAttachments')?.dirty ||
-															form.get('letterOfNoConflictAttachments')?.touched) &&
-														form.get('letterOfNoConflictAttachments')?.invalid &&
-														form.get('letterOfNoConflictAttachments')?.hasError('required')
+														(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+														form.get('attachments')?.invalid &&
+														form.get('attachments')?.hasError('required')
 													"
 													>This is required</mat-error
 												>
@@ -170,7 +169,7 @@ export class PoliceBackgroundComponent implements OnInit, LicenceFormStepCompone
 			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
 				? this.fileUploadComponent.files
 				: [];
-		this.form.controls['letterOfNoConflictAttachments'].setValue(attachments);
+		this.form.controls['attachments'].setValue(attachments);
 	}
 
 	get isPoliceOrPeaceOfficer(): FormControl {
@@ -181,7 +180,7 @@ export class PoliceBackgroundComponent implements OnInit, LicenceFormStepCompone
 		return this.form.get('officerRole') as FormControl;
 	}
 
-	get letterOfNoConflictAttachments(): FormControl {
-		return this.form.get('letterOfNoConflictAttachments') as FormControl;
+	get attachments(): FormControl {
+		return this.form.get('attachments') as FormControl;
 	}
 }

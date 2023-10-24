@@ -22,7 +22,10 @@ export class LicenceCategorySecurityGuardSupComponent implements OnInit, Licence
 
 	ngOnInit(): void {
 		this.form.patchValue({ checkbox: true });
-		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.SecurityGuardUnderSupervision, 'SwlCategoryTypes');
+		this.title = this.optionsPipe.transform(
+			WorkerCategoryTypeCode.SecurityGuardUnderSupervision,
+			'WorkerCategoryTypes'
+		);
 	}
 
 	isFormValid(): boolean {

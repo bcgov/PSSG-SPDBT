@@ -53,24 +53,24 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 										<div class="col-lg-6 col-md-12">
 											<ng-container *ngIf="isBornInCanada.value == booleanTypeCodes.Yes; else notBornInCanada">
 												<mat-form-field>
-													<mat-select formControlName="proofOfCitizenship">
+													<mat-select formControlName="proofTypeCode">
 														<mat-option *ngFor="let item of proofOfCanadianCitizenshipTypes" [value]="item.code">
 															{{ item.desc }}
 														</mat-option>
 													</mat-select>
-													<mat-error *ngIf="form.get('proofOfCitizenship')?.hasError('required')">
+													<mat-error *ngIf="form.get('proofTypeCode')?.hasError('required')">
 														This is required
 													</mat-error>
 												</mat-form-field>
 											</ng-container>
 											<ng-template #notBornInCanada>
 												<mat-form-field>
-													<mat-select formControlName="proofOfAbility">
+													<mat-select formControlName="proofTypeCode">
 														<mat-option *ngFor="let item of proofOfAbilityToWorkInCanadaTypes" [value]="item.code">
 															{{ item.desc }}
 														</mat-option>
 													</mat-select>
-													<mat-error *ngIf="form.get('proofOfAbility')?.hasError('required')">
+													<mat-error *ngIf="form.get('proofTypeCode')?.hasError('required')">
 														This is required
 													</mat-error>
 												</mat-form-field>
@@ -82,14 +82,12 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 												<input
 													matInput
 													[matDatepicker]="picker"
-													formControlName="citizenshipDocumentExpiryDate"
+													formControlName="expiryDate"
 													[errorStateMatcher]="matcher"
 												/>
 												<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
 												<mat-datepicker #picker startView="multi-year"></mat-datepicker>
-												<mat-error *ngIf="form.get('citizenshipDocumentExpiryDate')?.hasError('required')">
-													This is required
-												</mat-error>
+												<mat-error *ngIf="form.get('expiryDate')?.hasError('required')"> This is required </mat-error>
 											</mat-form-field>
 										</div>
 									</div>
@@ -103,16 +101,15 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 											</ng-template>
 											<app-file-upload
 												[maxNumberOfFiles]="1"
-												[files]="citizenshipDocumentPhotoAttachments.value"
+												[files]="attachments.value"
 												(filesChanged)="onFilesChanged()"
 											></app-file-upload>
 											<mat-error
 												class="mat-option-error"
 												*ngIf="
-													(form.get('citizenshipDocumentPhotoAttachments')?.dirty ||
-														form.get('citizenshipDocumentPhotoAttachments')?.touched) &&
-													form.get('citizenshipDocumentPhotoAttachments')?.invalid &&
-													form.get('citizenshipDocumentPhotoAttachments')?.hasError('required')
+													(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+													form.get('attachments')?.invalid &&
+													form.get('attachments')?.hasError('required')
 												"
 												>This is required</mat-error
 											>
@@ -154,14 +151,14 @@ export class CitizenshipComponent implements LicenceFormStepComponent {
 			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
 				? this.fileUploadComponent.files
 				: [];
-		this.form.controls['citizenshipDocumentPhotoAttachments'].setValue(attachments);
+		this.form.controls['attachments'].setValue(attachments);
 	}
 
 	get isBornInCanada(): FormControl {
 		return this.form.get('isBornInCanada') as FormControl;
 	}
 
-	get citizenshipDocumentPhotoAttachments(): FormControl {
-		return this.form.get('citizenshipDocumentPhotoAttachments') as FormControl;
+	get attachments(): FormControl {
+		return this.form.get('attachments') as FormControl;
 	}
 }

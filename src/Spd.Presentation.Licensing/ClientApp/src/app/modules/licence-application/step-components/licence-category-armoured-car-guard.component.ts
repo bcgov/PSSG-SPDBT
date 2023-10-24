@@ -69,7 +69,7 @@ export class LicenceCategoryArmouredCarGuardComponent implements OnInit, Licence
 	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.ArmouredCarGuard, 'SwlCategoryTypes');
+		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.ArmouredCarGuard, 'WorkerCategoryTypes');
 	}
 
 	isFormValid(): boolean {

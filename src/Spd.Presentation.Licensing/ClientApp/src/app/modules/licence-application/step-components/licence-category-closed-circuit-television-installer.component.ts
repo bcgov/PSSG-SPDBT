@@ -24,7 +24,7 @@ export class LicenceCategoryClosedCircuitTelevisionInstallerComponent implements
 		this.form.patchValue({ checkbox: true });
 		this.title = this.optionsPipe.transform(
 			WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller,
-			'SwlCategoryTypes'
+			'WorkerCategoryTypes'
 		);
 	}
 

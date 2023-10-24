@@ -1,4 +1,5 @@
 export {
+	ApplicationTypes,
 	BooleanTypes,
 	CountryTypes,
 	DogDocumentTypes,
@@ -7,13 +8,12 @@ export {
 	GovernmentIssuedPhotoIdTypes,
 	HairColourTypes,
 	HeightUnitTypes,
+	LicenceTermTypes,
 	PoliceOfficerRoleTypes,
 	ProofOfAbilityToWorkInCanadaTypes,
 	ProofOfCanadianCitizenshipTypes,
 	RestraintDocumentTypes,
-	SwlApplicationTypes,
-	SwlCategoryTypes,
-	SwlTermTypes,
-	SwlTypes,
 	WeightUnitTypes,
+	WorkerCategoryTypes,
+	WorkerLicenceTypes,
 } from './model-desc.models';

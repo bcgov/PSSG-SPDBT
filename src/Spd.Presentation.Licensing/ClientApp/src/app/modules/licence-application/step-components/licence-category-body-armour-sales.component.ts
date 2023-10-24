@@ -22,7 +22,7 @@ export class LicenceCategoryBodyArmourSalesComponent implements OnInit, LicenceF
 
 	ngOnInit(): void {
 		this.form.patchValue({ checkbox: true });
-		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.BodyArmourSales, 'SwlCategoryTypes');
+		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.BodyArmourSales, 'WorkerCategoryTypes');
 	}
 
 	isFormValid(): boolean {
