@@ -129,7 +129,7 @@ namespace Spd.Resource.Applicants.Application
             return Enum.GetName(typeof(PayerPreferenceOptionSet), code);
         }
 
-        private static int? GetGender(GenderCode? code)
+        private static int? GetGender(GenderEnum? code)
         {
             if (code == null) return (int)GenderOptionSet.U;
             return (int)Enum.Parse<GenderOptionSet>(code.ToString());

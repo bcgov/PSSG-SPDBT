@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Http;
-using Spd.Resource.Applicants.Application;
+using Spd.Utilities.Shared.ResourceContracts;
 
 namespace Spd.Resource.Applicants.Licence
 {
@@ -30,7 +30,8 @@ namespace Spd.Resource.Applicants.Licence
         public SoleProprietorData? SoleProprietorData { get; set; }
         public PersonalInformationData? PersonalInformationData { get; set; }
         public ExpiredLicenceData? ExpiredLicenceData { get; set; }
-        public DogsOrRestraintsData? DogsOrRestraintsData { get; set; } = null;
+        public DogsAuthorizationData? DogsAuthorizationData { get; set; } = null;
+        public RestraintsAuthorizationData? RestraintsAuthorizationData { get; set; } = null;
         public LicenceTermData? licenceTermData { get; set; } = null;
         public PoliceBackgroundData? PoliceBackgroundData { get; set; }
         public MentalHealthConditionsData? MentalHealthConditionsData { get; set; }
@@ -64,16 +65,21 @@ namespace Spd.Resource.Applicants.Licence
         public string? MiddleName2 { get; set; }
         public string? Surname { get; set; }
         public DateTimeOffset? DateOfBirth { get; set; }
-        public GenderCode? GenderCode { get; set; }
+        public GenderEnum? GenderCode { get; set; }
         public bool? OneLegalName { get; set; }
     }
-    public record DogsOrRestraintsData
+    public record DogsAuthorizationData
     {
-        public bool? UseDogsOrRestraints { get; set; }
-        public DogsPurposeEnum[]? DogsPurposeCodes { get; set; } = Array.Empty<DogsPurposeEnum>();
-        public bool CarryAndUseRetraints { get; set; }
-        public Documents[]? Documents { get; set; }
-
+        public bool? UseDogs { get; set; }
+        public bool? IsDogsPurposeProtection { get; set; }
+        public bool? IsDogsPurposeDetectionDrugs { get; set; }
+        public bool? IsDogsPurposeDetectionExplosives { get; set; }
+        public Documents? Documents { get; set; }
+    }
+    public record RestraintsAuthorizationData
+    {
+        public bool? CarryAndUseRetraints { get; set; }
+        public Documents? Documents { get; set; }
     }
     public record LicenceTermData(LicenceTermEnum LicenceTermCode) { };
     public record PoliceBackgroundData
@@ -107,7 +113,6 @@ namespace Spd.Resource.Applicants.Licence
     }
     public record GovIssuedIdData
     {
-        public GovernmentIssuedPhotoIdEnum GovernmentIssuedPhotoIdCode { get; set; }
         public Documents Documents { get; set; }
     }
     public record BcDriversLicenceData
@@ -155,8 +160,6 @@ namespace Spd.Resource.Applicants.Licence
     {
         public SwlCategoryTypeEnum SwlCategoryTypeCode { get; set; }
         public Documents[]? Documents { get; set; } = null;
-        public bool? Confirmed { get; set; }
-        public bool? SecurityAlarmSales { get; set; }
     }
 
     public record Documents
@@ -191,13 +194,6 @@ namespace Spd.Resource.Applicants.Licence
         Update,
     }
 
-    public enum DogsPurposeEnum
-    {
-        Protection,
-        DrugDetection,
-        ExplosiveDetection,
-    }
-
     public enum DocumentTypeEnum
     {
         DogsSecurityDogValidationCertificate,
@@ -205,27 +201,43 @@ namespace Spd.Resource.Applicants.Licence
         RestraintsAdvancedSecurityTrainingCertificate,
         RestraintsUseOfForceLetter,
         RestraintsTrainingEquivalent,
-        PoliceBackgroundLetterOfNoConflictAttachments,
-        MentalHealthConditionAttachments,
-        ProofOfFingerprintAttachments,
-        CitizenshipDocumentPhotoAttachments,
-        PhotoDriversLicence,
-        PhotoCanadianFirearmsLicence,
-        PhotoBcServicesCard,
-        PhotoCertificateOfIndianStatus,
-        PhotoValidGovernmentIssuedPhotoId,
-        PhotoOfYourselfAttachments,
-        CategoryBasicSecurityTraingCertificate,
-        CategoryCanadianPoliceOfficerTrainingProof,
-        CategoryEquivalentBasicSecurityTrainingJIBC,
-        CategoryFirearmLicenceAndATCCertificate,
-        CategoryTradesQualificationCertificate,
-        CategoryTradesQualificationCertificateEquivalent,
-        CategoryLocksmithCertificate,
-        CategoryProofOfLocksmithExperienceAndApprenticeship,
-        CategoryApprovedLocksmithCourse,
-        CategoryPrivateInvestigatorCourseCompletionProof,
+        PoliceBackgroundLetterOfNoConflict,
+        MentalHealthCondition,
+        ProofOfFingerprint,
+        DriversLicence,
+        CanadianFirearmsLicence,
+        BcServicesCard,
+        CertificateOfIndianStatus,
+        GovernmentIssuedPhotoId,
+        PhotoOfYourself,
+        CanadianPassport,
+        BirthCertificate,
+        CanadianCitizenship,
+        PermanentResidentCard,
+        RecordOfLandingDocument,
+        ConfirmationOfPermanentResidenceDocument,
+        WorkPermit,
+        StudyPermit,
+        ValidDocumentToVerifyLegalWorkStatus,
+        CategoryLocksmith_CertificateOfQualification,
+        CategoryLocksmith_ExperienceAndApprenticeship,
+        CategoryLocksmith_ApprovedLocksmithCourse,
+        CategoryPrivateInvestigator_ExperienceAndCourses,
+        CategoryPrivateInvestigator_TenYearsPoliceExperienceAndTraining,
+        CategoryPrivateInvestigator_KnowledgeAndExperience,
+        CategoryPrivateInvestigator_CompleteRecognizedTrainingCourse,
+        CategoryPrivateInvestigator_CompleteOtherCoursesOrKnowledge,
+        CategoryPrivateInvestigator_PrivateSecurityTrainingNetworkCompletion,
+        CategoryPrivateInvestigator_OtherCourseCompletion,
+        CategorySecurityAlarmInstaller_TradesQualificationCertificate,
+        CategorySecurityAlarmInstaller_ExperienceOrTrainingEquivalent,
+        CategorySecurityConsultant_ReferenceLetters,
+        CategorySecurityConsultant_RecommendationLetters,
+        CategorySecurityGuard_BasicSecurityTrainingCertificate,
+        CategorySecurityGuard_PoliceExperienceOrTraining,
+        CategorySecurityGuard_BasicSecurityTrainingCourseEquivalent
     }
+
     public enum LicenceTermEnum
     {
         NintyDays,
@@ -260,14 +272,6 @@ namespace Spd.Resource.Applicants.Licence
         WorkPermit,
         StudyPermit,
         ValidDocumentToVerifyLegalWorkStatus,
-    }
-    public enum GovernmentIssuedPhotoIdEnum
-    {
-        DriversLicence,
-        CanadianFirearmsLicence,
-        BcServicesCard,
-        CertificateOfIndianStatus,
-        ValidGovernmentIssuedPhotoId,
     }
 
     public enum HairColourEnum

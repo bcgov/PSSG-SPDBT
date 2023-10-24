@@ -66,7 +66,7 @@ public record ApplicationCreateCmd
     public string? DriversLicense { get; set; }
     public DateTimeOffset? DateOfBirth { get; set; }
     public string? BirthPlace { get; set; }
-    public GenderCode? GenderCode { get; set; }
+    public GenderEnum? GenderCode { get; set; }
     public string? JobTitle { get; set; }
     public string? ContractedCompanyName { get; set; }
     public string? AddressLine1 { get; set; }
@@ -172,12 +172,7 @@ public enum ApplicationOriginTypeCode
     GenericUpload,
     OrganizationSubmitted
 }
-public enum GenderCode
-{
-    M,
-    F,
-    U
-}
+
 public enum IdentityStatusCode
 {
     Verified,
