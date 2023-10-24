@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using Spd.Engine.Validation;
 using Spd.Resource.Applicants.Document;
 using Spd.Resource.Applicants.Incident;
-using Spd.Resource.Applicants.Licence;
+using Spd.Resource.Applicants.LicenceApplication;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.TempFileStorage;
 

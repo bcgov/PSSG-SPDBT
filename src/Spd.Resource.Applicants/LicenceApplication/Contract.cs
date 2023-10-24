@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Spd.Utilities.Shared.ResourceContracts;
 
-namespace Spd.Resource.Applicants.Licence
+namespace Spd.Resource.Applicants.LicenceApplication
 {
     public interface ILicenceRepository
     {

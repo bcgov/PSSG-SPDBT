@@ -25,7 +25,7 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
-        /// Create Security Worker Licence
+        /// Create Security Worker LicenceApplication
         /// </summary>
         /// <param name="licenceCreateRequest"></param>
         /// <returns></returns>

@@ -4,7 +4,7 @@ using Spd.Utilities.Shared.ResourceContracts;
 
 namespace Spd.Resource.Applicants.Application;
 
-public interface IApplicationRepository
+public partial interface IApplicationRepository
 {
     public Task<Guid?> AddApplicationAsync(ApplicationCreateCmd createApplicationCmd, CancellationToken cancellationToken);
     public Task ProcessAppWithSharableClearanceAsync(ApplicationCreateCmd createApplicationCmd, CancellationToken cancellationToken);

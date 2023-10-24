@@ -4,13 +4,13 @@ using Spd.Utilities.Dynamics;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.TempFileStorage;
 
-namespace Spd.Resource.Applicants.Licence;
-internal class LicenceRepository : ILicenceRepository
+namespace Spd.Resource.Applicants.LicenceApplication;
+internal class LicenceApplicationRepository : ILicenceRepository
 {
     private readonly DynamicsContext _context;
     private readonly IMapper _mapper;
 
-    public LicenceRepository(IDynamicsContextFactory ctx,
+    public LicenceApplicationRepository(IDynamicsContextFactory ctx,
         IMapper mapper,
         IFileStorageService fileStorageService,
         ITempFileStorageService tempFileService)
@@ -47,10 +47,26 @@ internal class LicenceRepository : ILicenceRepository
             app = _mapper.Map<spd_application>(cmd);
             _context.AddTospd_applications(app);
         }
+        LinkServiceType(cmd.LicenceTypeData.WorkerLicenceTypeCode, app);
         await _context.SaveChangesAsync();
         return new LicenceResp(app.spd_applicationid);
     }
 
+    private void LinkServiceType(WorkerLicenceTypeEnum? licenceType, spd_application app)
+    {
+        if (licenceType == null) throw new ArgumentException("invalid LicenceApplication type");
+        string serviceTypeStr = licenceType switch
+        {
+            WorkerLicenceTypeEnum.SecurityWorkerLicence => "SECURITY_WORKER_LICENCE",
+            WorkerLicenceTypeEnum.ArmouredVehiclePermit => "AVAMCCA",
+            WorkerLicenceTypeEnum.BodyArmourPermit => "BACA",
+        };
+        spd_servicetype? servicetype = _context.LookupServiceType(serviceTypeStr);
+        if (servicetype != null)
+        {
+            _context.SetLink(app, nameof(spd_application.spd_ServiceTypeId), servicetype);
+        }
+    }
 
 }
 
