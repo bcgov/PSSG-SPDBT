@@ -1,6 +1,6 @@
 import { Pipe } from '@angular/core';
-import { BooleanTypeCode } from 'src/app/api/models';
 import * as CodeDescTypes from 'src/app/core/code-types/code-desc-types.models';
+import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { UtilService } from 'src/app/core/services/util.service';
 
 @Pipe({ name: 'options', pure: true })

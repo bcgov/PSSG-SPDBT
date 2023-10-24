@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { SwlApplicationTypeCode } from 'src/app/core/code-types/model-desc.models';
+import { ApplicationTypeCode } from 'src/app/api/models';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
 import { LicenceApplicationService } from '../licence-application.service';
 
@@ -17,9 +17,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 							<mat-radio-group aria-label="Select an option" formControlName="applicationTypeCode">
 								<div class="row">
 									<div class="col-lg-4">
-										<mat-radio-button class="radio-label" [value]="applicationTypeCodes.NewOrExpired"
-											>New</mat-radio-button
-										>
+										<mat-radio-button class="radio-label" [value]="applicationTypeCodes.New">New</mat-radio-button>
 									</div>
 									<div class="col-lg-8">
 										<app-alert type="info" icon="">
@@ -96,7 +94,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 	styles: [],
 })
 export class ApplicationTypeComponent implements OnInit {
-	applicationTypeCodes = SwlApplicationTypeCode;
+	applicationTypeCodes = ApplicationTypeCode;
 
 	form: FormGroup = this.licenceApplicationService.applicationTypeFormGroup;
 

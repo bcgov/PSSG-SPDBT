@@ -1,12 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
-import { BooleanTypeCode } from 'src/app/api/models';
-import {
-	PoliceOfficerRoleCode,
-	SelectOptions,
-	SwlCategoryTypeCode,
-	SwlCategoryTypes,
-} from 'src/app/core/code-types/model-desc.models';
+import { PoliceOfficerRoleCode, WorkerCategoryTypeCode } from 'src/app/api/models';
+import { BooleanTypeCode, SelectOptions, SwlCategoryTypes } from 'src/app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { LicenceApplicationService } from '../licence-application.service';
 
@@ -711,7 +706,7 @@ export class SummaryReviewComponent {
 	constants = SPD_CONSTANTS;
 	booleanTypeCodes = BooleanTypeCode;
 	policeOfficerRoleCodes = PoliceOfficerRoleCode;
-	categoryTypeCodes = SwlCategoryTypeCode;
+	categoryTypeCodes = WorkerCategoryTypeCode;
 	swlCategoryTypes = SwlCategoryTypes;
 
 	categoryArmouredCarGuardFormGroup: FormGroup = this.licenceApplicationService.categoryArmouredCarGuardFormGroup;
@@ -1024,81 +1019,83 @@ export class SummaryReviewComponent {
 	get categoryList(): Array<SelectOptions> {
 		const list: Array<SelectOptions> = [];
 		if (this.categoryArmouredCarGuardFormGroup.get('isInclude')?.value) {
-			const element = this.swlCategoryTypes.find((item) => item.code == SwlCategoryTypeCode.ArmouredCarGuard);
+			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.ArmouredCarGuard);
 			if (element) list.push(element);
 		}
 
 		if (this.categoryBodyArmourSalesFormGroup.get('isInclude')?.value) {
-			const element = this.swlCategoryTypes.find((item) => item.code == SwlCategoryTypeCode.BodyArmourSales);
+			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.BodyArmourSales);
 			if (element) list.push(element);
 		}
 		if (this.categoryClosedCircuitTelevisionInstallerFormGroup.get('isInclude')?.value) {
 			const element = this.swlCategoryTypes.find(
-				(item) => item.code == SwlCategoryTypeCode.ClosedCircuitTelevisionInstaller
+				(item) => item.code == WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller
 			);
 			if (element) list.push(element);
 		}
 		if (this.categoryElectronicLockingDeviceInstallerFormGroup.get('isInclude')?.value) {
 			const element = this.swlCategoryTypes.find(
-				(item) => item.code == SwlCategoryTypeCode.ElectronicLockingDeviceInstaller
+				(item) => item.code == WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller
 			);
 			if (element) list.push(element);
 		}
 		if (this.categoryFireInvestigatorFormGroup.get('isInclude')?.value) {
-			const element = this.swlCategoryTypes.find((item) => item.code == SwlCategoryTypeCode.FireInvestigator);
+			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.FireInvestigator);
 			if (element) list.push(element);
 		}
 		if (this.categoryLocksmithFormGroup.get('isInclude')?.value) {
-			const element = this.swlCategoryTypes.find((item) => item.code == SwlCategoryTypeCode.Locksmith);
+			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.Locksmith);
 			if (element) list.push(element);
 		}
 		if (this.categoryLocksmithSupFormGroup.get('isInclude')?.value) {
-			const element = this.swlCategoryTypes.find((item) => item.code == SwlCategoryTypeCode.LocksmithUnderSupervision);
+			const element = this.swlCategoryTypes.find(
+				(item) => item.code == WorkerCategoryTypeCode.LocksmithUnderSupervision
+			);
 			if (element) list.push(element);
 		}
 		if (this.categoryPrivateInvestigatorFormGroup.get('isInclude')?.value) {
-			const element = this.swlCategoryTypes.find((item) => item.code == SwlCategoryTypeCode.PrivateInvestigator);
+			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.PrivateInvestigator);
 			if (element) list.push(element);
 		}
 		if (this.categoryPrivateInvestigatorSupFormGroup.get('isInclude')?.value) {
 			const element = this.swlCategoryTypes.find(
-				(item) => item.code == SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision
+				(item) => item.code == WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision
 			);
 			if (element) list.push(element);
 		}
 		if (this.categorySecurityAlarmInstallerFormGroup.get('isInclude')?.value) {
-			const element = this.swlCategoryTypes.find((item) => item.code == SwlCategoryTypeCode.SecurityAlarmInstaller);
+			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.SecurityAlarmInstaller);
 			if (element) list.push(element);
 		}
 		if (this.categorySecurityAlarmInstallerSupFormGroup.get('isInclude')?.value) {
 			const element = this.swlCategoryTypes.find(
-				(item) => item.code == SwlCategoryTypeCode.SecurityAlarmInstallerUnderSupervision
+				(item) => item.code == WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision
 			);
 			if (element) list.push(element);
 		}
 		if (this.categorySecurityAlarmMonitorFormGroup.get('isInclude')?.value) {
-			const element = this.swlCategoryTypes.find((item) => item.code == SwlCategoryTypeCode.SecurityAlarmMonitor);
+			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.SecurityAlarmMonitor);
 			if (element) list.push(element);
 		}
 		if (this.categorySecurityAlarmResponseFormGroup.get('isInclude')?.value) {
-			const element = this.swlCategoryTypes.find((item) => item.code == SwlCategoryTypeCode.SecurityAlarmResponse);
+			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.SecurityAlarmResponse);
 			if (element) list.push(element);
 		}
 		if (this.categorySecurityAlarmSalesFormGroup.get('isInclude')?.value) {
-			const element = this.swlCategoryTypes.find((item) => item.code == SwlCategoryTypeCode.SecurityAlarmSales);
+			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.SecurityAlarmSales);
 			if (element) list.push(element);
 		}
 		if (this.categorySecurityConsultantFormGroup.get('isInclude')?.value) {
-			const element = this.swlCategoryTypes.find((item) => item.code == SwlCategoryTypeCode.SecurityConsultant);
+			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.SecurityConsultant);
 			if (element) list.push(element);
 		}
 		if (this.categorySecurityGuardFormGroup.get('isInclude')?.value) {
-			const element = this.swlCategoryTypes.find((item) => item.code == SwlCategoryTypeCode.SecurityGuard);
+			const element = this.swlCategoryTypes.find((item) => item.code == WorkerCategoryTypeCode.SecurityGuard);
 			if (element) list.push(element);
 		}
 		if (this.categorySecurityGuardSupFormGroup.get('isInclude')?.value) {
 			const element = this.swlCategoryTypes.find(
-				(item) => item.code == SwlCategoryTypeCode.SecurityGuardUnderSupervision
+				(item) => item.code == WorkerCategoryTypeCode.SecurityGuardUnderSupervision
 			);
 			if (element) list.push(element);
 		}

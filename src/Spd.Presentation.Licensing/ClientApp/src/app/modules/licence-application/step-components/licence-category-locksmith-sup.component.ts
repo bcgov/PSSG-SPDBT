@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SwlCategoryTypeCode } from 'src/app/core/code-types/model-desc.models';
+import { WorkerCategoryTypeCode } from 'src/app/api/models';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
 import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
@@ -22,7 +22,7 @@ export class LicenceCategoryLocksmithSupComponent implements OnInit, LicenceForm
 
 	ngOnInit(): void {
 		this.form.patchValue({ checkbox: true });
-		this.title = this.optionsPipe.transform(SwlCategoryTypeCode.LocksmithUnderSupervision, 'SwlCategoryTypes');
+		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.LocksmithUnderSupervision, 'SwlCategoryTypes');
 	}
 
 	isFormValid(): boolean {

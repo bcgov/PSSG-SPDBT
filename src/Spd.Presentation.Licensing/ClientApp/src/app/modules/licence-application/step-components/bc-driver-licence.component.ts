@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { BooleanTypeCode } from 'src/app/api/models';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
+import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
