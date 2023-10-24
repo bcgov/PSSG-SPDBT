@@ -1,5 +1,6 @@
 import {
 	ApplicationTypeCode,
+	DocumentTypeCode,
 	EyeColourCode,
 	GenderCode,
 	HairColourCode,
@@ -39,91 +40,100 @@ export enum LicenceUpdateTypeCode {
 	AddRequestAuthorizationToUseDogs = 'AddRequestAuthorizationToUseDogs',
 }
 
-export enum RestraintDocumentCode {
-	AdvancedSecurityTrainingCertificate = 'AdvancedSecurityTrainingCertificate',
-	UseOfForceLetter = 'UseOfForceLetter',
-	TrainingEquivalent = 'TrainingEquivalent',
-}
+type LocksmithRequirementCodeSubset = Extract<
+	DocumentTypeCode,
+	| DocumentTypeCode.CategoryLocksmithApprovedLocksmithCourse
+	| DocumentTypeCode.CategoryLocksmithCertificateOfQualification
+	| DocumentTypeCode.CategoryLocksmithExperienceAndApprenticeship
+>;
+export const LocksmithRequirementCode: Record<LocksmithRequirementCodeSubset, string> = {
+	[DocumentTypeCode.CategoryLocksmithApprovedLocksmithCourse]: 'CategoryLocksmithApprovedLocksmithCourse',
+	[DocumentTypeCode.CategoryLocksmithCertificateOfQualification]: 'CategoryLocksmithCertificateOfQualification',
+	[DocumentTypeCode.CategoryLocksmithExperienceAndApprenticeship]: 'CategoryLocksmithExperienceAndApprenticeship',
+};
 
-export enum DogDocumentCode {
-	SecurityDogValidationCertificate = 'SecurityDogValidationCertificate',
-	CertificateOfAdvancedSecurityTraining = 'CertificateOfAdvancedSecurityTraining',
-}
-
-export enum ProofOfCanadianCitizenshipCode {
-	ValidCanadianPassport = 'ValidCanadianPassport',
-	BirthCertificate = 'BirthCertificate',
-	SecureCertificateOfIndianStatus = 'SecureCertificateOfIndianStatus',
-}
-
-export enum ProofOfAbilityToWorkInCanadaCode {
-	ValidCanadianCitizenship = 'ValidCanadianCitizenship',
-	ValidPermanentResidentCard = 'ValidPermanentResidentCard',
-	RecordOfLandingDocument = 'RecordOfLandingDocument',
-	ConfirmationOfPermanentResidenceDocument = 'ConfirmationOfPermanentResidenceDocument',
-	WorkPermit = 'WorkPermit',
-	StudyPermit = 'StudyPermit',
-	ValidDocumentToVerifyLegalWorkStatus = 'ValidDocumentToVerifyLegalWorkStatus',
-}
-
-export enum GovernmentIssuedPhotoIdCode {
-	DriversLicence = 'DriversLicence',
-	CanadianFirearmsLicense = 'CanadianFirearmsLicense',
-	BcServicesCard = 'BcServicesCard',
-	CertificateOfIndianStatus = 'CertificateOfIndianStatus',
-	ValidGovernmentIssuedPhotoId = 'ValidGovernmentIssuedPhotoId',
-}
-
-export enum LocksmithRequirementCode {
-	CertificateOfQualification = 'CertificateOfQualification',
-	ExperienceAndApprenticeship = 'ExperienceAndApprenticeship',
-	ApprovedLocksmithCourse = 'ApprovedLocksmithCourse',
-}
-
-export enum PrivateInvestigatorRequirementCode {
-	ExperienceAndCourses = 'ExperienceAndCourses',
-	TenYearsPoliceExperienceAndTraining = 'TenYearsPoliceExperienceAndTraining',
-	KnowledgeAndExperience = 'KnowledgeAndExperience',
-}
+type PrivateInvestigatorRequirementCodeSubset = Extract<
+	DocumentTypeCode,
+	| DocumentTypeCode.CategoryPrivateInvestigatorExperienceAndCourses
+	| DocumentTypeCode.CategoryPrivateInvestigatorKnowledgeAndExperience
+	| DocumentTypeCode.CategoryPrivateInvestigatorTenYearsPoliceExperienceAndTraining
+>;
+export const PrivateInvestigatorRequirementCode: Record<PrivateInvestigatorRequirementCodeSubset, string> = {
+	[DocumentTypeCode.CategoryPrivateInvestigatorExperienceAndCourses]: 'CategoryPrivateInvestigatorExperienceAndCourses',
+	[DocumentTypeCode.CategoryPrivateInvestigatorKnowledgeAndExperience]:
+		'CategoryPrivateInvestigatorKnowledgeAndExperience',
+	[DocumentTypeCode.CategoryPrivateInvestigatorTenYearsPoliceExperienceAndTraining]:
+		'CategoryPrivateInvestigatorTenYearsPoliceExperienceAndTraining',
+};
 
 export enum PrivateInvestigatorTrainingCode {
 	CompleteRecognizedTrainingCourse = 'CompleteRecognizedTrainingCourse',
 	CompleteOtherCoursesOrKnowledge = 'CompleteOtherCoursesOrKnowledge',
 }
 
-export enum PrivateInvestigatorSupRequirementCode {
-	PrivateSecurityTrainingNetworkCompletion = 'PrivateSecurityTrainingNetworkCompletion',
-	OtherCourseCompletion = 'OtherCourseCompletion',
-}
+type PrivateInvestigatorSupRequirementCodeSubset = Extract<
+	DocumentTypeCode,
+	| DocumentTypeCode.CategoryPrivateInvestigatorUnderSupervisionOtherCourseCompletion
+	| DocumentTypeCode.CategoryPrivateInvestigatorUnderSupervisionPrivateSecurityTrainingNetworkCompletion
+	| DocumentTypeCode.CategoryPrivateInvestigatorUnderSupervisionTraining
+>;
+export const PrivateInvestigatorSupRequirementCode: Record<PrivateInvestigatorSupRequirementCodeSubset, string> = {
+	[DocumentTypeCode.CategoryPrivateInvestigatorUnderSupervisionOtherCourseCompletion]:
+		'CategoryPrivateInvestigatorUnderSupervisionOtherCourseCompletion',
+	[DocumentTypeCode.CategoryPrivateInvestigatorUnderSupervisionPrivateSecurityTrainingNetworkCompletion]:
+		'CategoryPrivateInvestigatorUnderSupervisionPrivateSecurityTrainingNetworkCompletion',
+	[DocumentTypeCode.CategoryPrivateInvestigatorUnderSupervisionTraining]:
+		'CategoryPrivateInvestigatorUnderSupervisionTraining',
+};
 
-export enum SecurityAlarmInstallerRequirementCode {
-	TradesQualificationCertificate = 'TradesQualificationCertificate',
-	ExperienceOrTrainingEquivalent = 'ExperienceOrTrainingEquivalent',
-}
+type SecurityAlarmInstallerRequirementCodeSubset = Extract<
+	DocumentTypeCode,
+	| DocumentTypeCode.CategorySecurityAlarmInstallerExperienceOrTrainingEquivalent
+	| DocumentTypeCode.CategorySecurityAlarmInstallerTradesQualificationCertificate
+>;
+export const SecurityAlarmInstallerRequirementCode: Record<SecurityAlarmInstallerRequirementCodeSubset, string> = {
+	[DocumentTypeCode.CategorySecurityAlarmInstallerExperienceOrTrainingEquivalent]:
+		'CategorySecurityAlarmInstallerExperienceOrTrainingEquivalent',
+	[DocumentTypeCode.CategorySecurityAlarmInstallerTradesQualificationCertificate]:
+		'CategorySecurityAlarmInstallerTradesQualificationCertificate',
+};
 
-export enum SecurityConsultantRequirementCode {
-	ReferenceLetters = 'ReferenceLetters',
-	RecommendationLetters = 'RecommendationLetters',
-}
+type SecurityConsultantRequirementCodeSubset = Extract<
+	DocumentTypeCode,
+	| DocumentTypeCode.CategorySecurityConsultantExperienceLetters
+	| DocumentTypeCode.CategorySecurityConsultantRecommendationLetters
+>;
+export const SecurityConsultantRequirementCode: Record<SecurityConsultantRequirementCodeSubset, string> = {
+	[DocumentTypeCode.CategorySecurityConsultantExperienceLetters]: 'CategorySecurityConsultantExperienceLetters',
+	[DocumentTypeCode.CategorySecurityConsultantRecommendationLetters]: 'CategorySecurityConsultantRecommendationLetters',
+};
 
-export enum SecurityGuardRequirementCode {
-	BasicSecurityTrainingCertificate = 'BasicSecurityTrainingCertificate',
-	PoliceExperienceOrTraining = 'PoliceExperienceOrTraining',
-	BasicSecurityTrainingCourseEquivalent = 'BasicSecurityTrainingCourseEquivalent',
-}
+type SecurityGuardRequirementCodeSubset = Extract<
+	DocumentTypeCode,
+	| DocumentTypeCode.CategorySecurityGuardBasicSecurityTrainingCertificate
+	| DocumentTypeCode.CategorySecurityGuardBasicSecurityTrainingCourseEquivalent
+	| DocumentTypeCode.CategorySecurityGuardPoliceExperienceOrTraining
+>;
+export const SecurityGuardRequirementCode: Record<SecurityGuardRequirementCodeSubset, string> = {
+	[DocumentTypeCode.CategorySecurityGuardBasicSecurityTrainingCertificate]:
+		'CategorySecurityGuardBasicSecurityTrainingCertificate',
+	[DocumentTypeCode.CategorySecurityGuardBasicSecurityTrainingCourseEquivalent]:
+		'CategorySecurityGuardBasicSecurityTrainingCourseEquivalent',
+	[DocumentTypeCode.CategorySecurityGuardPoliceExperienceOrTraining]: 'CategorySecurityGuardPoliceExperienceOrTraining',
+};
 
 // ============================================================
 // SelectOptions Lists
 // ============================================================
 
-export const SwlTypes: SelectOptions[] = [
+export const WorkerLicenceTypes: SelectOptions[] = [
 	// { desc: 'Security Business Licence', code: WorkerLicenceTypeCode.SecurityBusinessLicence },
 	{ desc: 'Security Worker Licence', code: WorkerLicenceTypeCode.SecurityWorkerLicence },
 	{ desc: 'Armoured Vehicle Permit', code: WorkerLicenceTypeCode.ArmouredVehiclePermit },
 	{ desc: 'Body Armour Permit', code: WorkerLicenceTypeCode.BodyArmourPermit },
 ];
 
-export const SwlApplicationTypes: SelectOptions[] = [
+export const ApplicationTypes: SelectOptions[] = [
 	{ desc: 'New Or Expired', code: ApplicationTypeCode.New },
 	{ desc: 'Renewal', code: ApplicationTypeCode.Renewal },
 	{ desc: 'Replacement', code: ApplicationTypeCode.Replacement },
@@ -136,7 +146,7 @@ export const GenderTypes: SelectOptions[] = [
 	{ desc: 'X', code: GenderCode.U },
 ];
 
-export const SwlTermTypes: SelectOptions[] = [
+export const LicenceTermTypes: SelectOptions[] = [
 	{ desc: '90 Days', code: LicenceTermCode.NintyDays },
 	{ desc: '1 Year', code: LicenceTermCode.OneYear },
 	{ desc: '2 Years', code: LicenceTermCode.TwoYears },
@@ -146,26 +156,26 @@ export const SwlTermTypes: SelectOptions[] = [
 export const RestraintDocumentTypes: SelectOptions[] = [
 	{
 		desc: 'Advanced security training (AST) certificate',
-		code: RestraintDocumentCode.AdvancedSecurityTrainingCertificate,
+		code: DocumentTypeCode.RestraintsAdvancedSecurityTrainingCertificate,
 	},
 	{
 		desc: 'A Canadian police officer, correctional officer, sheriff, auxiliary, reserve or border service officer can provide a letter from their employer showing use of force training within the last 12 months.',
-		code: RestraintDocumentCode.UseOfForceLetter,
+		code: DocumentTypeCode.RestraintsUseOfForceLetter,
 	},
 	{
 		desc: 'Must be able to demonstrate, to the satisfaction of the registrar that he or she has training equivalent to the training referred above.',
-		code: RestraintDocumentCode.TrainingEquivalent,
+		code: DocumentTypeCode.RestraintsTrainingEquivalent,
 	},
 ];
 
 export const DogDocumentTypes: SelectOptions[] = [
 	{
 		desc: 'Certificate of Advanced Security Training',
-		code: DogDocumentCode.CertificateOfAdvancedSecurityTraining,
+		code: DocumentTypeCode.DogsCertificateOfAdvancedSecurityTraining,
 	},
 	{
 		desc: 'Security Dog Validation Certificate',
-		code: DogDocumentCode.SecurityDogValidationCertificate,
+		code: DocumentTypeCode.DogsSecurityDogValidationCertificate,
 	},
 ];
 
@@ -175,33 +185,30 @@ export const BooleanTypes: SelectOptions[] = [
 ];
 
 export const ProofOfCanadianCitizenshipTypes: SelectOptions[] = [
-	{ desc: 'Birth Certificate', code: ProofOfCanadianCitizenshipCode.BirthCertificate },
-	{ desc: 'Secure Certificate of Indian Status', code: ProofOfCanadianCitizenshipCode.SecureCertificateOfIndianStatus },
-	{ desc: 'Valid Canadian Passport', code: ProofOfCanadianCitizenshipCode.ValidCanadianPassport },
+	{ desc: 'Birth Certificate', code: DocumentTypeCode.BirthCertificate },
+	{ desc: 'Secure Certificate of Indian Status', code: DocumentTypeCode.CertificateOfIndianStatus },
+	{ desc: 'Valid Canadian Passport', code: DocumentTypeCode.CanadianPassport },
 ];
 
 export const ProofOfAbilityToWorkInCanadaTypes: SelectOptions[] = [
 	{
 		desc: 'Confirmation of Permanent Residence Document',
-		code: ProofOfAbilityToWorkInCanadaCode.ConfirmationOfPermanentResidenceDocument,
+		code: DocumentTypeCode.ConfirmationOfPermanentResidenceDocument,
 	},
-	{ desc: 'Record of Landing Document', code: ProofOfAbilityToWorkInCanadaCode.RecordOfLandingDocument },
-	{ desc: 'Study Permit', code: ProofOfAbilityToWorkInCanadaCode.StudyPermit },
-	{ desc: 'Valid Canadian Citizenship', code: ProofOfAbilityToWorkInCanadaCode.ValidCanadianCitizenship },
-	{
-		desc: 'Valid document to verify legal work status',
-		code: ProofOfAbilityToWorkInCanadaCode.ValidDocumentToVerifyLegalWorkStatus,
-	},
-	{ desc: 'Valid Permanent Resident Card', code: ProofOfAbilityToWorkInCanadaCode.ValidPermanentResidentCard },
-	{ desc: 'Work Permit', code: ProofOfAbilityToWorkInCanadaCode.WorkPermit },
+	{ desc: 'Record of Landing Document', code: DocumentTypeCode.RecordOfLandingDocument },
+	{ desc: 'Study Permit', code: DocumentTypeCode.StudyPermit },
+	{ desc: 'Valid Canadian Citizenship', code: DocumentTypeCode.CanadianCitizenship },
+	{ desc: 'Valid document to verify legal work status', code: DocumentTypeCode.DocumentToVerifyLegalWorkStatus },
+	{ desc: 'Valid Permanent Resident Card', code: DocumentTypeCode.PermanentResidentCard },
+	{ desc: 'Work Permit', code: DocumentTypeCode.WorkPermit },
 ];
 
 export const GovernmentIssuedPhotoIdTypes: SelectOptions[] = [
-	{ desc: 'BC Services Card', code: GovernmentIssuedPhotoIdCode.BcServicesCard },
-	{ desc: 'Canadian Firearms License', code: GovernmentIssuedPhotoIdCode.CanadianFirearmsLicense },
-	{ desc: 'Certificate of Indian Status', code: GovernmentIssuedPhotoIdCode.CertificateOfIndianStatus },
-	{ desc: 'Drivers Licence', code: GovernmentIssuedPhotoIdCode.DriversLicence },
-	{ desc: 'Valid Government Issued Photo ID', code: GovernmentIssuedPhotoIdCode.ValidGovernmentIssuedPhotoId },
+	{ desc: 'BC Services Card', code: DocumentTypeCode.BcServicesCard },
+	{ desc: 'Canadian Firearms License', code: DocumentTypeCode.CanadianFirearmsLicence },
+	{ desc: 'Certificate of Indian Status', code: DocumentTypeCode.CertificateOfIndianStatus },
+	{ desc: 'Drivers Licence', code: DocumentTypeCode.DriversLicence },
+	{ desc: 'Valid Government Issued Photo ID', code: DocumentTypeCode.GovernmentIssuedPhotoId },
 ];
 
 export const HairColourTypes: SelectOptions[] = [
@@ -231,7 +238,7 @@ export const WeightUnitTypes: SelectOptions[] = [
 	{ desc: 'Pounds', code: WeightUnitCode.Pounds },
 ];
 
-export const SwlCategoryTypes: SelectOptions[] = [
+export const WorkerCategoryTypes: SelectOptions[] = [
 	{ desc: 'Armoured Car Guard', code: WorkerCategoryTypeCode.ArmouredCarGuard },
 	{ desc: 'Body Armour Sales', code: WorkerCategoryTypeCode.BodyArmourSales },
 	{ desc: 'Closed Circuit Television Installer', code: WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller },

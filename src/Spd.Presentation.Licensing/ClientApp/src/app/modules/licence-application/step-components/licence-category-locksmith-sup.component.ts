@@ -22,7 +22,7 @@ export class LicenceCategoryLocksmithSupComponent implements OnInit, LicenceForm
 
 	ngOnInit(): void {
 		this.form.patchValue({ checkbox: true });
-		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.LocksmithUnderSupervision, 'SwlCategoryTypes');
+		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.LocksmithUnderSupervision, 'WorkerCategoryTypes');
 	}
 
 	isFormValid(): boolean {

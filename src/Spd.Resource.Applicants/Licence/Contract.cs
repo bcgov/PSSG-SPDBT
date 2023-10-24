@@ -163,7 +163,7 @@ namespace Spd.Resource.Applicants.Licence
     {
         public DocumentTypeEnum DocumentTypeCode { get; set; }
         public IFormFile[] Attachments { get; set; } = Array.Empty<IFormFile>();
-        public DateTimeOffset? ExpiredDate { get; set; }
+        public DateTimeOffset? ExpiryDate { get; set; }
     }
 
     public record Alias

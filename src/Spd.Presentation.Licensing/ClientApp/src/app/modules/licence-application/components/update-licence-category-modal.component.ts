@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { WorkerCategoryTypeCode } from 'src/app/api/models';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
-import { SelectOptions, SwlCategoryTypes } from 'src/app/core/code-types/model-desc.models';
+import { SelectOptions, WorkerCategoryTypes } from 'src/app/core/code-types/model-desc.models';
 import { LicenceApplicationService } from '../licence-application.service';
 
 export interface LicenceCategoryDialogData {
@@ -137,9 +137,9 @@ export class UpdateLicenceCategoryModalComponent implements OnInit {
 	category: WorkerCategoryTypeCode | null = null;
 	isDirtyAndInvalid = false;
 
-	validCategoryList: SelectOptions[] = SwlCategoryTypes;
+	validCategoryList: SelectOptions[] = WorkerCategoryTypes;
 
-	swlCategoryTypes = SwlCategoryTypes;
+	swlCategoryTypes = WorkerCategoryTypes;
 	workerCategoryTypeCodes = WorkerCategoryTypeCode;
 
 	categoryArmouredCarGuardFormGroup: FormGroup = this.licenceApplicationService.categoryArmouredCarGuardFormGroup;

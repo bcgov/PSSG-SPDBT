@@ -105,10 +105,10 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 										<mat-error
 											class="mat-option-error"
 											*ngIf="
-												(form.get('letterOfNoConflictAttachments')?.dirty ||
-													form.get('letterOfNoConflictAttachments')?.touched) &&
-												form.get('letterOfNoConflictAttachments')?.invalid &&
-												form.get('letterOfNoConflictAttachments')?.hasError('required')
+												(form.get('attachments')?.dirty ||
+													form.get('attachments')?.touched) &&
+												form.get('attachments')?.invalid &&
+												form.get('attachments')?.hasError('required')
 											"
 											>This is required</mat-error
 										>
@@ -135,7 +135,7 @@ export class BackgroundInfoComponent implements LicenceFormStepComponent {
 			isPoliceOrPeaceOfficer: new FormControl(null, [FormControlValidators.required]),
 			officerRole: new FormControl(),
 			otherOfficerRole: new FormControl(),
-			letterOfNoConflictAttachments: new FormControl(),
+			attachments: new FormControl(),
 		},
 		{
 			validators: [
@@ -148,7 +148,7 @@ export class BackgroundInfoComponent implements LicenceFormStepComponent {
 					(form) => form.get('officerRole')?.value == PoliceOfficerRoleCode.Other
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'letterOfNoConflictAttachments',
+					'attachments',
 					(form) => form.get('isPoliceOrPeaceOfficer')?.value == BooleanTypeCode.Yes
 				),
 			],
@@ -171,7 +171,7 @@ export class BackgroundInfoComponent implements LicenceFormStepComponent {
 			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
 				? this.fileUploadComponent.files
 				: [];
-		this.form.controls['letterOfNoConflictAttachments'].setValue(attachments);
+		this.form.controls['attachments'].setValue(attachments);
 	}
 
 	get isPoliceOrPeaceOfficer(): FormControl {

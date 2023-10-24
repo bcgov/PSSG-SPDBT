@@ -313,7 +313,7 @@ export class StepLicenceUpdatesComponent {
 			.subscribe((resp) => {
 				const category = resp.data?.category;
 				if (category) {
-					const categoryDesc = this.optionsPipe.transform(category, 'SwlCategoryTypes');
+					const categoryDesc = this.optionsPipe.transform(category, 'WorkerCategoryTypes');
 
 					this.updates.push({
 						updateTypeCode: LicenceUpdateTypeCode.AddLicenceCategory,

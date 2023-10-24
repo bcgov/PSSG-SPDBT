@@ -50,16 +50,15 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 										<div class="text-minor-heading mb-2">Upload your mental health condition form:</div>
 										<app-file-upload
 											[maxNumberOfFiles]="1"
-											[files]="mentalHealthConditionAttachments.value"
+											[files]="attachments.value"
 											(filesChanged)="onFilesChanged()"
 										></app-file-upload>
 										<mat-error
 											class="mat-option-error"
 											*ngIf="
-												(form.get('mentalHealthConditionAttachments')?.dirty ||
-													form.get('mentalHealthConditionAttachments')?.touched) &&
-												form.get('mentalHealthConditionAttachments')?.invalid &&
-												form.get('mentalHealthConditionAttachments')?.hasError('required')
+												(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+												form.get('attachments')?.invalid &&
+												form.get('attachments')?.hasError('required')
 											"
 											>This is required</mat-error
 										>
@@ -95,14 +94,14 @@ export class MentalHealthConditionsComponent implements LicenceFormStepComponent
 			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
 				? this.fileUploadComponent.files
 				: [];
-		this.form.controls['mentalHealthConditionAttachments'].setValue(attachments);
+		this.form.controls['attachments'].setValue(attachments);
 	}
 
 	get isTreatedForMHC(): FormControl {
 		return this.form.get('isTreatedForMHC') as FormControl;
 	}
 
-	get mentalHealthConditionAttachments(): FormControl {
-		return this.form.get('mentalHealthConditionAttachments') as FormControl;
+	get attachments(): FormControl {
+		return this.form.get('attachments') as FormControl;
 	}
 }

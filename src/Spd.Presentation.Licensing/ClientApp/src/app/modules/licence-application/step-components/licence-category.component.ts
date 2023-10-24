@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { WorkerCategoryTypeCode } from 'src/app/api/models';
-import { SelectOptions, SwlCategoryTypes } from 'src/app/core/code-types/model-desc.models';
+import { SelectOptions, WorkerCategoryTypes } from 'src/app/core/code-types/model-desc.models';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
 
@@ -56,7 +56,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									<mat-expansion-panel class="my-3" [expanded]="true">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
-												>{{ workerCategoryTypeCodes.ArmouredCarGuard | options : 'SwlCategoryTypes' }}
+												>{{ workerCategoryTypeCodes.ArmouredCarGuard | options : 'WorkerCategoryTypes' }}
 											</mat-panel-title>
 											<mat-panel-description>
 												<mat-icon
@@ -91,7 +91,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									<mat-expansion-panel class="my-3" [expanded]="true">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
-												>{{ workerCategoryTypeCodes.BodyArmourSales | options : 'SwlCategoryTypes' }}
+												>{{ workerCategoryTypeCodes.BodyArmourSales | options : 'WorkerCategoryTypes' }}
 											</mat-panel-title>
 											<mat-panel-description>
 												<mat-icon
@@ -124,7 +124,9 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									<mat-expansion-panel class="my-3" [expanded]="true">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
-												>{{ workerCategoryTypeCodes.ClosedCircuitTelevisionInstaller | options : 'SwlCategoryTypes' }}
+												>{{
+													workerCategoryTypeCodes.ClosedCircuitTelevisionInstaller | options : 'WorkerCategoryTypes'
+												}}
 											</mat-panel-title>
 											<mat-panel-description>
 												<mat-icon
@@ -161,7 +163,9 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									<mat-expansion-panel class="my-3" [expanded]="true">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
-												>{{ workerCategoryTypeCodes.ElectronicLockingDeviceInstaller | options : 'SwlCategoryTypes' }}
+												>{{
+													workerCategoryTypeCodes.ElectronicLockingDeviceInstaller | options : 'WorkerCategoryTypes'
+												}}
 											</mat-panel-title>
 											<mat-panel-description>
 												<mat-icon
@@ -198,7 +202,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									<mat-expansion-panel class="my-3" [expanded]="true">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
-												>{{ workerCategoryTypeCodes.FireInvestigator | options : 'SwlCategoryTypes' }}
+												>{{ workerCategoryTypeCodes.FireInvestigator | options : 'WorkerCategoryTypes' }}
 											</mat-panel-title>
 											<mat-panel-description>
 												<mat-icon
@@ -234,7 +238,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									<mat-expansion-panel class="my-3" [expanded]="true">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
-												>{{ workerCategoryTypeCodes.Locksmith | options : 'SwlCategoryTypes' }}
+												>{{ workerCategoryTypeCodes.Locksmith | options : 'WorkerCategoryTypes' }}
 											</mat-panel-title>
 											<mat-panel-description>
 												<mat-icon
@@ -268,7 +272,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									<mat-expansion-panel class="my-3" [expanded]="true">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
-												>{{ workerCategoryTypeCodes.LocksmithUnderSupervision | options : 'SwlCategoryTypes' }}
+												>{{ workerCategoryTypeCodes.LocksmithUnderSupervision | options : 'WorkerCategoryTypes' }}
 											</mat-panel-title>
 											<mat-panel-description>
 												<mat-icon
@@ -302,7 +306,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									<mat-expansion-panel class="my-3" [expanded]="true">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
-												>{{ workerCategoryTypeCodes.PrivateInvestigator | options : 'SwlCategoryTypes' }}
+												>{{ workerCategoryTypeCodes.PrivateInvestigator | options : 'WorkerCategoryTypes' }}
 											</mat-panel-title>
 											<mat-panel-description>
 												<mat-icon
@@ -340,7 +344,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
 												>{{
-													workerCategoryTypeCodes.PrivateInvestigatorUnderSupervision | options : 'SwlCategoryTypes'
+													workerCategoryTypeCodes.PrivateInvestigatorUnderSupervision | options : 'WorkerCategoryTypes'
 												}}
 											</mat-panel-title>
 											<mat-panel-description>
@@ -378,7 +382,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									<mat-expansion-panel class="my-3" [expanded]="true">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
-												>{{ workerCategoryTypeCodes.SecurityAlarmInstaller | options : 'SwlCategoryTypes' }}
+												>{{ workerCategoryTypeCodes.SecurityAlarmInstaller | options : 'WorkerCategoryTypes' }}
 											</mat-panel-title>
 											<mat-panel-description>
 												<mat-icon
@@ -416,7 +420,8 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
 												>{{
-													workerCategoryTypeCodes.SecurityAlarmInstallerUnderSupervision | options : 'SwlCategoryTypes'
+													workerCategoryTypeCodes.SecurityAlarmInstallerUnderSupervision
+														| options : 'WorkerCategoryTypes'
 												}}
 											</mat-panel-title>
 											<mat-panel-description>
@@ -454,7 +459,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									<mat-expansion-panel class="my-3" [expanded]="true">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
-												>{{ workerCategoryTypeCodes.SecurityAlarmMonitor | options : 'SwlCategoryTypes' }}
+												>{{ workerCategoryTypeCodes.SecurityAlarmMonitor | options : 'WorkerCategoryTypes' }}
 											</mat-panel-title>
 											<mat-panel-description>
 												<mat-icon
@@ -491,7 +496,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									<mat-expansion-panel class="my-3" [expanded]="true">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
-												>{{ workerCategoryTypeCodes.SecurityAlarmResponse | options : 'SwlCategoryTypes' }}
+												>{{ workerCategoryTypeCodes.SecurityAlarmResponse | options : 'WorkerCategoryTypes' }}
 											</mat-panel-title>
 											<mat-panel-description>
 												<mat-icon
@@ -528,7 +533,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									<mat-expansion-panel class="my-3" [expanded]="true">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
-												>{{ workerCategoryTypeCodes.SecurityAlarmSales | options : 'SwlCategoryTypes' }}
+												>{{ workerCategoryTypeCodes.SecurityAlarmSales | options : 'WorkerCategoryTypes' }}
 											</mat-panel-title>
 											<mat-panel-description>
 												<mat-icon
@@ -564,7 +569,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									<mat-expansion-panel class="my-3" [expanded]="true">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
-												>{{ workerCategoryTypeCodes.SecurityConsultant | options : 'SwlCategoryTypes' }}
+												>{{ workerCategoryTypeCodes.SecurityConsultant | options : 'WorkerCategoryTypes' }}
 											</mat-panel-title>
 											<mat-panel-description>
 												<mat-icon
@@ -600,7 +605,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									<mat-expansion-panel class="my-3" [expanded]="true">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
-												>{{ workerCategoryTypeCodes.SecurityGuard | options : 'SwlCategoryTypes' }}
+												>{{ workerCategoryTypeCodes.SecurityGuard | options : 'WorkerCategoryTypes' }}
 											</mat-panel-title>
 											<mat-panel-description>
 												<mat-icon
@@ -633,7 +638,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 									<mat-expansion-panel class="my-3" [expanded]="true">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="title text-nowrap"
-												>{{ workerCategoryTypeCodes.SecurityGuardUnderSupervision | options : 'SwlCategoryTypes' }}
+												>{{ workerCategoryTypeCodes.SecurityGuardUnderSupervision | options : 'WorkerCategoryTypes' }}
 											</mat-panel-title>
 											<mat-panel-description>
 												<mat-icon
@@ -685,9 +690,9 @@ export class LicenceCategoryComponent implements OnInit, LicenceFormStepComponen
 	category = '';
 	isDirtyAndInvalid = false;
 
-	validCategoryList: SelectOptions[] = SwlCategoryTypes;
+	validCategoryList: SelectOptions[] = WorkerCategoryTypes;
 
-	workerCategoryTypes = SwlCategoryTypes;
+	workerCategoryTypes = WorkerCategoryTypes;
 	workerCategoryTypeCodes = WorkerCategoryTypeCode;
 
 	categoryArmouredCarGuardFormGroup: FormGroup = this.licenceApplicationService.categoryArmouredCarGuardFormGroup;

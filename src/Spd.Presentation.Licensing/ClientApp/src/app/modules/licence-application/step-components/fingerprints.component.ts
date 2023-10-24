@@ -29,16 +29,15 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 							<div class="text-minor-heading fw-normal mb-2">Upload your document:</div>
 							<app-file-upload
 								[maxNumberOfFiles]="1"
-								[files]="proofOfFingerprintAttachments.value"
+								[files]="attachments.value"
 								(filesChanged)="onFilesChanged()"
 							></app-file-upload>
 							<mat-error
 								class="mat-option-error"
 								*ngIf="
-									(form.get('proofOfFingerprintAttachments')?.dirty ||
-										form.get('proofOfFingerprintAttachments')?.touched) &&
-									form.get('proofOfFingerprintAttachments')?.invalid &&
-									form.get('proofOfFingerprintAttachments')?.hasError('required')
+									(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+									form.get('attachments')?.invalid &&
+									form.get('attachments')?.hasError('required')
 								"
 								>Your fingerprints must be taken to continue to verify your identity.<br /><br />
 								Download the
@@ -77,10 +76,10 @@ export class FingerprintsComponent implements LicenceFormStepComponent {
 			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
 				? this.fileUploadComponent.files
 				: [];
-		this.form.controls['proofOfFingerprintAttachments'].setValue(attachments);
+		this.form.controls['attachments'].setValue(attachments);
 	}
 
-	get proofOfFingerprintAttachments(): FormControl {
-		return this.form.get('proofOfFingerprintAttachments') as FormControl;
+	get attachments(): FormControl {
+		return this.form.get('attachments') as FormControl;
 	}
 }
