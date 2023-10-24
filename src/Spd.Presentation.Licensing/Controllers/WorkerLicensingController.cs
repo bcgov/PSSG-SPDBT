@@ -26,7 +26,12 @@ namespace Spd.Presentation.Licensing.Controllers
             _mediator = mediator;
         }
 
-        [Route("api/licenses")]
+        /// <summary>
+        /// Create Security Worker Licence
+        /// </summary>
+        /// <param name="licenceCreateRequest"></param>
+        /// <returns></returns>
+        [Route("api/worker-licenses")]
         [HttpPost]
         public async Task<WorkerLicenceCreateResponse> CreateWorkerLicense([FromForm][Required] WorkerLicenceCreateRequest licenceCreateRequest)
         {

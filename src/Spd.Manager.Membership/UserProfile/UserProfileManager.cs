@@ -10,6 +10,7 @@ using Spd.Resource.Organizations.User;
 using Spd.Utilities.BCeIDWS;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
+using Spd.Utilities.Shared.ManagerContract;
 
 namespace Spd.Manager.Membership.UserProfile
 {

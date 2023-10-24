@@ -24,12 +24,6 @@ namespace Spd.Manager.Membership.UserProfile
         public IEnumerable<UserInfo> UserInfos { get; set; } = Array.Empty<UserInfo>();
     }
 
-    public enum IdentityProviderTypeCode
-    {
-        BusinessBceId,
-        BcServicesCard,
-        Idir,
-    }
     public record UserInfo
     {
         public Guid UserId { get; set; }//from spd, portal user id
@@ -85,6 +79,7 @@ namespace Spd.Manager.Membership.UserProfile
         public Guid ApplicantId { get; set; } //which is contact id in db
         public string? FirstName { get; set; } // which is contact firstname
         public string? LastName { get; set; } // which is contact lastname
+        public IdentityProviderTypeCode IdentityProviderTypeCode { get; set; } = IdentityProviderTypeCode.BcServicesCard;
     }
     #endregion
 

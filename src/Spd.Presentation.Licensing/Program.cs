@@ -11,6 +11,7 @@ using Spd.Utilities.TempFileStorage;
 using System.Configuration;
 using System.Reflection;
 using System.Security.Principal;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,9 +30,17 @@ Assembly[] assemblies = Directory.GetFiles(Path.GetDirectoryName(Assembly.GetExe
 var secretsFile = Environment.GetEnvironmentVariable($"SECRETS_FILE");
 if (!string.IsNullOrEmpty(secretsFile)) builder.Configuration.AddJsonFile(secretsFile, true, true);
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
+builder.Services.ConfigureCors(builder.Configuration);
+var assemblyName = $"{typeof(Program).GetTypeInfo().Assembly.GetName().Name}";
+builder.Services.ConfigureSwagger(assemblyName);
+builder.Services
+    .AddEndpointsApiExplorer()
+    .AddControllers()
+    .AddJsonOptions(x =>
+    {
+        x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
+
 builder.Services.AddSwaggerGen();
 builder.Services.ConfigureAuthentication(builder.Configuration);
 builder.Services.ConfigureAuthorization();
