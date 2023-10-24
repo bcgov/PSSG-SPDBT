@@ -25,7 +25,10 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 					requirements:
 
 					<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="requirementCode">
-						<mat-radio-button class="radio-label" [value]="privateInvestigatorRequirementCodes.ExperienceAndCourses">
+						<mat-radio-button
+							class="radio-label"
+							[value]="privateInvestigatorRequirementCodes.CategoryPrivateInvestigator_ExperienceAndCourses"
+						>
 							a) Two years of documented experience providing the services of a private investigator or private
 							investigator under supervision, AND successful completion of recognized courses in evidence gathering and
 							presentation and in the aspects of criminal and civil law that are relevant to the work of a private
@@ -40,7 +43,9 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 						<mat-divider class="my-2"></mat-divider>
 						<mat-radio-button
 							class="radio-label"
-							[value]="privateInvestigatorRequirementCodes.TenYearsPoliceExperienceAndTraining"
+							[value]="
+								privateInvestigatorRequirementCodes.CategoryPrivateInvestigator_TenYearsPoliceExperienceAndTraining
+							"
 						>
 							b) Ten years of experience performing general police duties in a Canadian police force, AND proof of
 							registration in the Private Security Training Network online course
@@ -53,7 +58,10 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 							</mat-icon>
 						</mat-radio-button>
 						<mat-divider class="my-2"></mat-divider>
-						<mat-radio-button class="radio-label" [value]="privateInvestigatorRequirementCodes.KnowledgeAndExperience">
+						<mat-radio-button
+							class="radio-label"
+							[value]="privateInvestigatorRequirementCodes.CategoryPrivateInvestigator_KnowledgeAndExperience"
+						>
 							c) Knowledge and experience equivalent to that which would be obtained under paragraph (a) above.
 						</mat-radio-button>
 					</mat-radio-group>
@@ -71,7 +79,12 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 
 			<div *ngIf="requirementCode.value" @showHideTriggerSlideAnimation>
 				<div class="fs-6 fw-bold">
-					<span *ngIf="requirementCode.value == privateInvestigatorRequirementCodes.ExperienceAndCourses">
+					<span
+						*ngIf="
+							requirementCode.value ==
+							privateInvestigatorRequirementCodes.CategoryPrivateInvestigator_ExperienceAndCourses
+						"
+					>
 						Upload document(s) providing the following information:
 						<span class="fw-normal">
 							<ul>
@@ -84,12 +97,20 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 						</span>
 					</span>
 					<span
-						*ngIf="requirementCode.value == privateInvestigatorRequirementCodes.TenYearsPoliceExperienceAndTraining"
+						*ngIf="
+							requirementCode.value ==
+							privateInvestigatorRequirementCodes.CategoryPrivateInvestigator_TenYearsPoliceExperienceAndTraining
+						"
 					>
 						Upload proof of registration in the Private Security Training Network online course Introduction to Private
 						Investigation:
 					</span>
-					<span *ngIf="requirementCode.value == privateInvestigatorRequirementCodes.KnowledgeAndExperience">
+					<span
+						*ngIf="
+							requirementCode.value ==
+							privateInvestigatorRequirementCodes.CategoryPrivateInvestigator_KnowledgeAndExperience
+						"
+					>
 						Upload document(s) providing proof of relevant knowledge and experience:
 					</span>
 				</div>
@@ -306,7 +327,7 @@ export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, Lice
 	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.PrivateInvestigator, 'SwlCategoryTypes');
+		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.PrivateInvestigator, 'WorkerCategoryTypes');
 	}
 
 	isFormValid(): boolean {

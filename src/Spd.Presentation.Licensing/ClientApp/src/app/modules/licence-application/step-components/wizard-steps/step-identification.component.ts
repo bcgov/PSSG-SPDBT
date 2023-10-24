@@ -1,11 +1,8 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import {
-	BooleanTypeCode,
-	ProofOfAbilityToWorkInCanadaCode,
-	ProofOfCanadianCitizenshipCode,
-} from 'src/app/core/code-types/model-desc.models';
+import { DocumentTypeCode } from 'src/app/api/models';
+import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { LicenceApplicationService } from '../../licence-application.service';
 import { AdditionalGovIdComponent } from '../additional-gov-id.component';
 import { AliasesComponent } from '../aliases.component';
@@ -282,9 +279,9 @@ export class StepIdentificationComponent {
 		const form = this.licenceApplicationService.citizenshipFormGroup;
 		return (
 			(form.value.isBornInCanada == BooleanTypeCode.Yes &&
-				form.value.proofOfCitizenship != ProofOfCanadianCitizenshipCode.ValidCanadianPassport) ||
+				form.value.proofOfCitizenship != DocumentTypeCode.CanadianPassport) ||
 			(form.value.isBornInCanada == BooleanTypeCode.No &&
-				form.value.proofOfAbility != ProofOfAbilityToWorkInCanadaCode.ValidPermanentResidentCard)
+				form.value.proofOfAbility != DocumentTypeCode.PermanentResidentCard)
 		);
 	}
 }

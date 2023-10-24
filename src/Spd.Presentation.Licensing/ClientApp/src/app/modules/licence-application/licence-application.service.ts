@@ -4,31 +4,49 @@ import { HotToastService } from '@ngneat/hot-toast';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { BehaviorSubject, Observable } from 'rxjs';
 import {
-	Alias,
+	AliasesData,
 	ApplicationTypeCode,
+	ApplicationTypeData,
+	BcDriversLicenceData,
+	CharacteristicsData,
+	CitizenshipData,
+	ContactInformationData,
+	CriminalHistoryData,
+	Documents,
 	DocumentTypeCode,
+	DogsAuthorizationData,
+	ExpiredLicenceData,
 	EyeColourCode,
 	GenderCode,
+	GovIssuedIdData,
 	HairColourCode,
 	HeightUnitCode,
 	LicenceTermCode,
+	LicenceTermData,
+	LicenceTypeData,
+	MailingAddressData,
+	MentalHealthConditionsData,
+	PersonalInformationData,
+	PhotographOfYourselfData,
+	PoliceBackgroundData,
 	PoliceOfficerRoleCode,
+	ProofOfFingerprintData,
+	ResidentialAddressData,
+	RestraintsAuthorizationData,
+	SoleProprietorData,
 	WeightUnitCode,
+	WorkerCategoryTypeCode,
 	WorkerLicenceCategoryData,
+	WorkerLicenceCreateRequest,
 	WorkerLicenceTypeCode,
 } from 'src/app/api/models';
 import { WorkerLicensingService } from 'src/app/api/services';
 import {
 	BooleanTypeCode,
-	DogDocumentCode,
-	GovernmentIssuedPhotoIdCode,
 	LocksmithRequirementCode,
 	PrivateInvestigatorRequirementCode,
 	PrivateInvestigatorSupRequirementCode,
 	PrivateInvestigatorTrainingCode,
-	ProofOfAbilityToWorkInCanadaCode,
-	ProofOfCanadianCitizenshipCode,
-	RestraintDocumentCode,
 	SecurityAlarmInstallerRequirementCode,
 	SecurityConsultantRequirementCode,
 	SecurityGuardRequirementCode,
@@ -39,208 +57,6 @@ import { FormGroupValidators } from 'src/app/core/validators/form-group.validato
 
 export interface LicenceFormStepComponent {
 	isFormValid(): boolean;
-}
-
-export class LicenceBackendModel {
-	LicenceId?: string;
-	LicenceTypeData?: { WorkerLicenceTypeCode?: WorkerLicenceTypeCode };
-	ApplicationTypeData?: { ApplicationTypeCode?: ApplicationTypeCode };
-	'SoleProprietorData.isSoleProprietor': boolean;
-	'PersonalInformationData.GivenName'?: string;
-	'PersonalInformationData.MiddleName1'?: string;
-	'PersonalInformationData.MiddleName2'?: string;
-	'PersonalInformationData.Surname'?: string;
-	'PersonalInformationData.DateOfBirth'?: string;
-	'PersonalInformationData.GenderCode'?: GenderCode;
-	'PersonalInformationData.OneLegalName'?: boolean;
-	'ExpiredLicenceData.ExpiredLicenceNumber'?: string;
-	'ExpiredLicenceData.ExpiryDate'?: string;
-	'ExpiredLicenceData.HasExpiredLicence'?: boolean;
-	'DogsAuthorizationData.UseDogs'?: boolean;
-	'DogsAuthorizationData.IsDogsPurposeProtection'?: boolean;
-	'DogsAuthorizationData.IsDogsPurposeDetectionDrugs'?: boolean;
-	'DogsAuthorizationData.IsDogsPurposeDetectionExplosives'?: boolean;
-	'DogsAuthorizationData.Documents.DocumentTypeCode'?: DocumentTypeCode;
-	'DogsAuthorizationData.Documents.Attachments'?: Array<Blob>;
-	'DogsAuthorizationData.Documents.ExpiredDate'?: string;
-	'RestraintsAuthorizationData.CarryAndUseRetraints'?: boolean;
-	'RestraintsAuthorizationData.Documents.DocumentTypeCode'?: DocumentTypeCode;
-	'RestraintsAuthorizationData.Documents.Attachments'?: Array<Blob>;
-	'RestraintsAuthorizationData.Documents.ExpiredDate'?: string;
-	'licenceTermData.LicenceTermCode'?: LicenceTermCode;
-	'PoliceBackgroundData.IsPoliceOrPeaceOfficer'?: boolean;
-	'PoliceBackgroundData.PoliceOfficerRoleCode'?: PoliceOfficerRoleCode;
-	'PoliceBackgroundData.OtherOfficerRole'?: string;
-	'PoliceBackgroundData.Documents.DocumentTypeCode'?: DocumentTypeCode;
-	'PoliceBackgroundData.Documents.Attachments'?: Array<Blob>;
-	'PoliceBackgroundData.Documents.ExpiredDate'?: string;
-	'MentalHealthConditionsData.IsTreatedForMHC'?: boolean;
-	'MentalHealthConditionsData.Documents.DocumentTypeCode'?: DocumentTypeCode;
-	'MentalHealthConditionsData.Documents.Attachments'?: Array<Blob>;
-	'MentalHealthConditionsData.Documents.ExpiredDate'?: string;
-	'CriminalHistoryData.HasCriminalHistory'?: boolean;
-	'ProofOfFingerprintData.Documents.DocumentTypeCode'?: DocumentTypeCode;
-	'ProofOfFingerprintData.Documents.Attachments'?: Array<Blob>;
-	'ProofOfFingerprintData.Documents.ExpiredDate'?: string;
-	'AliasesData.HasPreviousName'?: boolean;
-	'AliasesData.Aliases'?: Array<Alias>;
-	'CitizenshipData.IsBornInCanada'?: boolean;
-	'CitizenshipData.Documents.DocumentTypeCode'?: DocumentTypeCode;
-	'CitizenshipData.Documents.Attachments'?: Array<Blob>;
-	'CitizenshipData.Documents.ExpiredDate'?: string;
-	'GovIssuedIdData.Documents.DocumentTypeCode'?: DocumentTypeCode;
-	'GovIssuedIdData.Documents.Attachments'?: Array<Blob>;
-	'GovIssuedIdData.Documents.ExpiredDate'?: string;
-	'BcDriversLicenceData.HasBcDriversLicence'?: boolean;
-	'BcDriversLicenceData.BcDriversLicenceNumber'?: string;
-	'CharacteristicsData.HairColourCode'?: HairColourCode;
-	'CharacteristicsData.EyeColourCode'?: EyeColourCode;
-	'CharacteristicsData.Height'?: number;
-	'CharacteristicsData.HeightUnitCode'?: HeightUnitCode;
-	'CharacteristicsData.Weight'?: number;
-	'CharacteristicsData.WeightUnitCode'?: WeightUnitCode;
-	'PhotographOfYourselfData.UseBcServicesCardPhoto'?: boolean;
-	'PhotographOfYourselfData.Documents.DocumentTypeCode'?: DocumentTypeCode;
-	'PhotographOfYourselfData.Documents.Attachments'?: Array<Blob>;
-	'PhotographOfYourselfData.Documents.ExpiredDate'?: string;
-	'ContactInformationData.ContactEmailAddress'?: string;
-	'ContactInformationData.ContactPhoneNumber'?: string;
-	'ResidentialAddressData.IsMailingTheSameAsResidential'?: boolean;
-	'ResidentialAddressData.AddressSelected'?: boolean;
-	'ResidentialAddressData.AddressLine1'?: string;
-	'ResidentialAddressData.AddressLine2'?: string;
-	'ResidentialAddressData.City'?: string;
-	'ResidentialAddressData.Country'?: string;
-	'ResidentialAddressData.PostalCode'?: string;
-	'ResidentialAddressData.Province'?: string;
-	'MailingAddressData.AddressSelected'?: boolean;
-	'MailingAddressData.AddressLine1'?: string;
-	'MailingAddressData.AddressLine2'?: string;
-	'MailingAddressData.City'?: string;
-	'MailingAddressData.Country'?: string;
-	'MailingAddressData.PostalCode'?: string;
-	'MailingAddressData.Province'?: string;
-	'CategoriesData'?: Array<WorkerLicenceCategoryData>;
-
-	// 		licenceId: string| null = null;
-	// licenceTypeCode: WorkerLicenceTypeCode | null = null;
-	// applicationTypeCode: ApplicationTypeCode | null = null;
-	// isSoleProprietor: boolean | null = null;
-	// oneLegalName: boolean | null = null;
-	// givenName: string | null = null;
-	// middleName1: string | null = null;
-	// middleName2: string | null = null;
-	// surname: string | null = null;
-	// genderCode: GenderCode | null = null;
-	// dateOfBirth: string | null = null;
-	// hasExpiredLicence: boolean | null = null;
-	// expiredLicenceNumber?: string | null = null;
-	// expiryDate?: string | null = null;
-	// swlCategoryList: SelectOptions[] = [];
-	// licenceCategoryArmouredCarGuard?: {
-	// 	documentExpiryDate?: string | null;
-	// 	attachments?: Array<File>;
-	// };
-	// licenceCategoryBodyArmourSales?: {};
-	// licenceCategoryyClosedCircuitTelevisionInstaller?: {};
-	// licenceCategoryElectronicLockingDeviceInstaller?: {};
-	// licenceCategoryFireInvestigator?: {
-	// 	fireCourseCertificateAttachments?: Array<File>;
-	// 	fireVerificationLetterAttachments?: Array<File>;
-	// };
-	// licenceCategoryLocksmithSup?: {};
-	// licenceCategoryLocksmith?: {
-	// 	requirementCode?: string | null;
-	// 	attachments?: Array<File>;
-	// };
-	// licenceCategoryPrivateInvestigatorSup?: {
-	// 	requirementCode?: string | null;
-	// 	// documentExpiryDate?: string | null;
-	// 	attachments?: Array<File>;
-	// 	trainingAttachments?: Array<File>;
-	// };
-	// licenceCategoryPrivateInvestigator?: {
-	// 	requirementCode?: string | null;
-	// 	trainingCode?: string | null;
-	// 	// documentExpiryDate?: string | null;
-	// 	attachments?: Array<File>;
-	// 	trainingAttachments?: Array<File>;
-	// 	// fireCourseCertificateAttachments?: Array<File>;
-	// 	// fireVerificationLetterAttachments?: Array<File>;
-	// 	// addFireInvestigator?: BooleanTypeCode | null;
-	// };
-	// licenceCategorySecurityAlarmInstallerSup?: {};
-	// licenceCategorySecurityAlarmInstaller?: {
-	// 	requirementCode?: string | null;
-	// 	attachments?: Array<File>;
-	// };
-	// licenceCategorySecurityAlarmMonitor?: {};
-	// licenceCategorySecurityAlarmResponse?: {};
-	// licenceCategorySecurityAlarmSales?: {};
-	// licenceCategorySecurityConsultant?: {
-	// 	requirementCode?: string | null;
-	// 	attachments?: Array<File>;
-	// 	resumeAttachments?: Array<File>;
-	// };
-	// licenceCategorySecurityGuardSup?: {};
-	// licenceCategorySecurityGuard?: {
-	// 	requirementCode?: string | null;
-	// 	attachments?: Array<File>;
-	// };
-	// useDogsOrRestraints: string | null = null;
-	// isDogsPurposeProtection?: boolean | null = false;
-	// isDogsPurposeDetectionDrugs?: boolean | null = false;
-	// isDogsPurposeDetectionExplosives?: boolean | null = false;
-	// dogsPurposeDocumentType?: DogDocumentCode | null = null;
-	// dogsPurposeAttachments?: Array<File> = [];
-	// carryAndUseRetraints?: boolean | null = false;
-	// carryAndUseRetraintsDocument?: RestraintDocumentCode | null = null;
-	// carryAndUseRetraintsAttachments?: Array<File> = [];
-	// licenceTermCode: SwlTermCode | null = null;
-	// isViewOnlyPoliceOrPeaceOfficer?: boolean = false;
-	// isPoliceOrPeaceOfficer: BooleanTypeCode | null = null;
-	// officerRole?: string | null = null;
-	// otherOfficerRole?: string | null = null;
-	// letterOfNoConflictAttachments?: Array<File> = [];
-	// isTreatedForMHC: BooleanTypeCode | null = null;
-	// mentalHealthConditionAttachments?: Array<File> = [];
-	// hasCriminalHistory: BooleanTypeCode | null = null;
-	// proofOfFingerprintAttachments?: Array<File> = [];
-	// previousNameFlag: BooleanTypeCode | null = null;
-	// aliases?: Array<AliasModel> | null = null;
-	// isBornInCanada: BooleanTypeCode | null = null;
-	// proofOfCitizenship: ProofOfCanadianCitizenshipCode | null = null;
-	// proofOfAbility: ProofOfAbilityToWorkInCanadaCode | null = null;
-	// citizenshipDocumentExpiryDate?: string | null = null;
-	// citizenshipDocumentPhotoAttachments?: Array<File> = [];
-	// governmentIssuedPhotoTypeCode: GovernmentIssuedPhotoIdCode | null = null;
-	// governmentIssuedPhotoExpiryDate?: string | null = null;
-	// governmentIssuedPhotoAttachments?: Array<File> = [];
-	// hasBcDriversLicence: BooleanTypeCode | null = null;
-	// bcDriversLicenceNumber?: string | null = null;
-	// hairColourCode: HairColourCode | null = null;
-	// eyeColourCode: EyeColourCode | null = null;
-	// height: string | null = null;
-	// heightUnitCode: HeightUnitCode | null = null;
-	// weight: string | null = null;
-	// weightUnitCode: WeightUnitCode | null = null;
-	// useBcServicesCardPhoto: BooleanTypeCode | null = null;
-	// photoOfYourselfAttachments?: Array<File> = [];
-	// contactEmailAddress?: string | null = null;
-	// contactPhoneNumber?: string | null = null;
-	// residentialAddressLine1?: string | null = null;
-	// residentialAddressLine2?: string | null = null;
-	// residentialCity?: string | null = null;
-	// residentialPostalCode?: string | null = null;
-	// residentialProvince?: string | null = null;
-	// residentialCountry?: string | null = null;
-	// isMailingTheSameAsResidential?: boolean | null = null;
-	// mailingAddressLine1?: string | null = null;
-	// mailingAddressLine2?: string | null = null;
-	// mailingCity?: string | null = null;
-	// mailingPostalCode?: string | null = null;
-	// mailingProvince?: string | null = null;
-	// mailingCountry?: string | null = null;
 }
 
 @Injectable({
@@ -557,7 +373,7 @@ export class LicenceApplicationService {
 			isPoliceOrPeaceOfficer: new FormControl('', [FormControlValidators.required]),
 			officerRole: new FormControl(''),
 			otherOfficerRole: new FormControl(''),
-			letterOfNoConflictAttachments: new FormControl(''),
+			attachments: new FormControl(''),
 		},
 		{
 			validators: [
@@ -570,7 +386,7 @@ export class LicenceApplicationService {
 					(form) => form.get('officerRole')?.value == PoliceOfficerRoleCode.Other
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'letterOfNoConflictAttachments',
+					'attachments',
 					(form) => form.get('isPoliceOrPeaceOfficer')?.value == BooleanTypeCode.Yes
 				),
 			],
@@ -580,12 +396,12 @@ export class LicenceApplicationService {
 	mentalHealthConditionsFormGroup: FormGroup = this.formBuilder.group(
 		{
 			isTreatedForMHC: new FormControl('', [FormControlValidators.required]),
-			mentalHealthConditionAttachments: new FormControl(''),
+			attachments: new FormControl(''),
 		},
 		{
 			validators: [
 				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'mentalHealthConditionAttachments',
+					'attachments',
 					(form) => form.get('isTreatedForMHC')?.value == BooleanTypeCode.Yes
 				),
 			],
@@ -597,32 +413,23 @@ export class LicenceApplicationService {
 	});
 
 	proofOfFingerprintFormGroup: FormGroup = this.formBuilder.group({
-		proofOfFingerprintAttachments: new FormControl('', [Validators.required]),
+		attachments: new FormControl('', [Validators.required]),
 	});
 
 	citizenshipFormGroup: FormGroup = this.formBuilder.group(
 		{
 			isBornInCanada: new FormControl('', [FormControlValidators.required]),
-			proofOfCitizenship: new FormControl(''),
-			proofOfAbility: new FormControl(''),
-			citizenshipDocumentExpiryDate: new FormControl(''),
-			citizenshipDocumentPhotoAttachments: new FormControl([], [Validators.required]),
+			proofTypeCode: new FormControl('', [FormControlValidators.required]),
+			expiryDate: new FormControl(''),
+			attachments: new FormControl([], [Validators.required]),
 		},
 		{
 			validators: [
 				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'proofOfCitizenship',
-					(form) => form.get('isBornInCanada')?.value == this.booleanTypeCodes.Yes
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'proofOfAbility',
-					(form) => form.get('isBornInCanada')?.value == this.booleanTypeCodes.No
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'citizenshipDocumentExpiryDate',
+					'expiryDate',
 					(form) =>
-						form.get('proofOfAbility')?.value == ProofOfAbilityToWorkInCanadaCode.WorkPermit ||
-						form.get('proofOfAbility')?.value == ProofOfAbilityToWorkInCanadaCode.StudyPermit
+						form.get('proofOfAbility')?.value == DocumentTypeCode.WorkPermit ||
+						form.get('proofOfAbility')?.value == DocumentTypeCode.StudyPermit
 				),
 			],
 		}
@@ -631,7 +438,7 @@ export class LicenceApplicationService {
 	govIssuedIdFormGroup: FormGroup = this.formBuilder.group({
 		governmentIssuedPhotoTypeCode: new FormControl('', [FormControlValidators.required]),
 		governmentIssuedPhotoExpiryDate: new FormControl(''),
-		governmentIssuedPhotoAttachments: new FormControl('', [Validators.required]),
+		attachments: new FormControl('', [Validators.required]),
 	});
 
 	bcDriversLicenceFormGroup: FormGroup = this.formBuilder.group({
@@ -651,12 +458,12 @@ export class LicenceApplicationService {
 	photographOfYourselfFormGroup: FormGroup = this.formBuilder.group(
 		{
 			useBcServicesCardPhoto: new FormControl('', [FormControlValidators.required]),
-			photoOfYourselfAttachments: new FormControl(''),
+			attachments: new FormControl(''),
 		},
 		{
 			validators: [
 				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'photoOfYourselfAttachments',
+					'attachments',
 					(form) => form.get('useBcServicesCardPhoto')?.value == this.booleanTypeCodes.No
 				),
 			],
@@ -720,14 +527,6 @@ export class LicenceApplicationService {
 	);
 
 	licenceModelFormGroup: FormGroup = this.formBuilder.group({
-		// showStepAccessCode: new FormControl(false),
-		// showStepSoleProprietor: new FormControl(true),
-		// showStepLicenceExpired: new FormControl(true),
-		// showStepDogsAndRestraints: new FormControl(true),
-		// showStepPoliceBackground: new FormControl(true),
-		// showStepMentalHealth: new FormControl(true),
-		// showStepCriminalHistory: new FormControl(true),
-		// showStepFingerprints: new FormControl(true),
 		licenceId: new FormControl(''),
 		licenceTypeData: this.licenceTypeFormGroup,
 		applicationTypeData: this.applicationTypeFormGroup,
@@ -797,68 +596,6 @@ export class LicenceApplicationService {
 		return new Observable((observer) => {
 			setTimeout(() => {
 				this.licenceModelFormGroup.reset();
-				// this.licenceModelFormGroup.patchValue({
-				// 	categoryArmouredCarGuardFormGroup: {
-				// 		isInclude: false,
-				// 	},
-				// 	categoryBodyArmourSalesFormGroup: {
-				// 		isInclude: false,
-				// 		checkbox: true,
-				// 	},
-				// 	categoryClosedCircuitTelevisionInstallerFormGroup: {
-				// 		isInclude: false,
-				// 		checkbox: true,
-				// 	},
-				// 	categoryElectronicLockingDeviceInstallerFormGroup: {
-				// 		isInclude: false,
-				// 		checkbox: true,
-				// 	},
-				// 	categoryFireInvestigatorFormGroup: {
-				// 		isInclude: false,
-				// 	},
-				// 	categoryLocksmithFormGroup: {
-				// 		isInclude: false,
-				// 	},
-				// 	categoryLocksmithSupFormGroup: {
-				// 		isInclude: false,
-				// 		checkbox: true,
-				// 	},
-				// 	categoryPrivateInvestigatorSupFormGroup: {
-				// 		isInclude: false,
-				// 	},
-				// 	categoryPrivateInvestigatorFormGroup: {
-				// 		isInclude: false,
-				// 	},
-				// 	categorySecurityAlarmInstallerFormGroup: {
-				// 		isInclude: false,
-				// 	},
-				// 	categorySecurityAlarmInstallerSupFormGroup: {
-				// 		isInclude: false,
-				// 		checkbox: true,
-				// 	},
-				// 	categorySecurityAlarmMonitorFormGroup: {
-				// 		isInclude: false,
-				// 		checkbox: true,
-				// 	},
-				// 	categorySecurityAlarmResponseFormGroup: {
-				// 		isInclude: false,
-				// 		checkbox: true,
-				// 	},
-				// 	categorySecurityAlarmSalesFormGroup: {
-				// 		isInclude: false,
-				// 		checkbox: true,
-				// 	},
-				// 	categorySecurityConsultantFormGroup: {
-				// 		isInclude: false,
-				// 	},
-				// 	categorySecurityGuardFormGroup: {
-				// 		isInclude: false,
-				// 	},
-				// 	categorySecurityGuardSupFormGroup: {
-				// 		isInclude: false,
-				// 		checkbox: true,
-				// 	},
-				// });
 				this.initialized = true;
 				this.spinnerService.hide('loaderSpinner');
 				observer.next(this.licenceModelFormGroup.value);
@@ -901,7 +638,7 @@ export class LicenceApplicationService {
 					},
 					restraintsAuthorizationData: {
 						carryAndUseRetraints: BooleanTypeCode.Yes,
-						carryAndUseRetraintsDocument: RestraintDocumentCode.AdvancedSecurityTrainingCertificate,
+						carryAndUseRetraintsDocument: DocumentTypeCode.RestraintsAdvancedSecurityTrainingCertificate,
 						attachments: [myFile],
 					},
 					dogsAuthorizationData: {
@@ -911,7 +648,7 @@ export class LicenceApplicationService {
 							isDogsPurposeDetectionDrugs: false,
 							isDogsPurposeDetectionExplosives: true,
 						},
-						dogsPurposeDocumentType: DogDocumentCode.CertificateOfAdvancedSecurityTraining,
+						dogsPurposeDocumentType: DocumentTypeCode.DogsCertificateOfAdvancedSecurityTraining,
 						attachments: [myFile],
 					},
 					licenceTermData: {
@@ -923,17 +660,17 @@ export class LicenceApplicationService {
 						isPoliceOrPeaceOfficer: BooleanTypeCode.Yes,
 						officerRole: PoliceOfficerRoleCode.Other,
 						otherOfficerRole: 'testRole',
-						letterOfNoConflictAttachments: [myFile],
+						attachments: [myFile],
 					},
 					mentalHealthConditionsData: {
 						isTreatedForMHC: BooleanTypeCode.Yes,
-						mentalHealthConditionAttachments: [myFile],
+						attachments: [myFile],
 					},
 					criminalHistoryData: {
 						hasCriminalHistory: BooleanTypeCode.No,
 					},
 					proofOfFingerprintData: {
-						proofOfFingerprintAttachments: [myFile],
+						attachments: [myFile],
 					},
 					aliasesData: {
 						previousNameFlag: BooleanTypeCode.Yes,
@@ -944,14 +681,13 @@ export class LicenceApplicationService {
 					},
 					citizenshipData: {
 						isBornInCanada: BooleanTypeCode.Yes,
-						proofOfCitizenship: ProofOfCanadianCitizenshipCode.BirthCertificate,
-						proofOfAbility: null,
-						citizenshipDocumentExpiryDate: null,
-						citizenshipDocumentPhotoAttachments: [myFile],
+						proofTypeCode: DocumentTypeCode.BirthCertificate,
+						expiryDate: null,
+						attachments: [myFile],
 					},
 					govIssuedIdData: {
-						governmentIssuedPhotoTypeCode: GovernmentIssuedPhotoIdCode.BcServicesCard,
-						governmentIssuedPhotoAttachments: [myFile],
+						governmentIssuedPhotoTypeCode: DocumentTypeCode.BcServicesCard,
+						attachments: [myFile],
 					},
 					bcDriversLicenceData: {
 						hasBcDriversLicence: BooleanTypeCode.Yes,
@@ -967,7 +703,7 @@ export class LicenceApplicationService {
 					},
 					photographOfYourselfData: {
 						useBcServicesCardPhoto: BooleanTypeCode.No,
-						photoOfYourselfAttachments: [myFile],
+						attachments: [myFile],
 					},
 					contactInformationData: {
 						contactEmailAddress: 'contact-test@test.gov.bc.ca',
@@ -1016,7 +752,7 @@ export class LicenceApplicationService {
 					},
 					categoryLocksmithFormGroup: {
 						isInclude: true,
-						requirementCode: LocksmithRequirementCode.ExperienceAndApprenticeship,
+						requirementCode: LocksmithRequirementCode.CategoryLocksmith_ExperienceAndApprenticeship,
 						attachments: [myFile],
 					},
 					categoryLocksmithSupFormGroup: {
@@ -1025,13 +761,14 @@ export class LicenceApplicationService {
 					},
 					categoryPrivateInvestigatorSupFormGroup: {
 						isInclude: true,
-						requirementCode: PrivateInvestigatorSupRequirementCode.PrivateSecurityTrainingNetworkCompletion,
+						requirementCode:
+							PrivateInvestigatorSupRequirementCode.CategoryPrivateInvestigatorUnderSupervision_PrivateSecurityTrainingNetworkCompletion,
 						attachments: [myFile],
 						trainingAttachments: [myFile],
 					},
 					categoryPrivateInvestigatorFormGroup: {
 						isInclude: true,
-						requirementCode: PrivateInvestigatorRequirementCode.ExperienceAndCourses,
+						requirementCode: PrivateInvestigatorRequirementCode.CategoryPrivateInvestigator_ExperienceAndCourses,
 						trainingCode: PrivateInvestigatorTrainingCode.CompleteOtherCoursesOrKnowledge,
 						attachments: [myFile],
 						trainingAttachments: [myFile],
@@ -1041,7 +778,8 @@ export class LicenceApplicationService {
 					},
 					categorySecurityAlarmInstallerFormGroup: {
 						isInclude: true,
-						requirementCode: SecurityAlarmInstallerRequirementCode.ExperienceOrTrainingEquivalent,
+						requirementCode:
+							SecurityAlarmInstallerRequirementCode.CategorySecurityAlarmInstaller_ExperienceOrTrainingEquivalent,
 						attachments: [myFile],
 					},
 					categorySecurityAlarmInstallerSupFormGroup: {
@@ -1062,14 +800,14 @@ export class LicenceApplicationService {
 					},
 					categorySecurityConsultantFormGroup: {
 						isInclude: true,
-						requirementCode: SecurityConsultantRequirementCode.RecommendationLetters,
+						requirementCode: SecurityConsultantRequirementCode.CategorySecurityConsultant_RecommendationLetters,
 						attachments: [myFile],
 						resumeAttachments: [myFile],
 					},
 					categorySecurityGuardFormGroup: {
 						isInclude: true,
 						attachments: [myFile],
-						requirementCode: SecurityGuardRequirementCode.BasicSecurityTrainingCertificate,
+						requirementCode: SecurityGuardRequirementCode.CategorySecurityGuard_BasicSecurityTrainingCertificate,
 					},
 					categorySecurityGuardSupFormGroup: {
 						isInclude: false,
@@ -1155,21 +893,20 @@ export class LicenceApplicationService {
 						hasCriminalHistory: BooleanTypeCode.No,
 					},
 					proofOfFingerprintData: {
-						proofOfFingerprintAttachments: [myFile],
+						attachments: [myFile],
 					},
 					aliasesData: {
 						previousNameFlag: BooleanTypeCode.No,
 					},
 					citizenshipData: {
 						isBornInCanada: BooleanTypeCode.Yes,
-						proofOfCitizenship: ProofOfCanadianCitizenshipCode.BirthCertificate,
-						proofOfAbility: null,
-						citizenshipDocumentExpiryDate: null,
-						citizenshipDocumentPhotoAttachments: [myFile],
+						proofTypeCode: DocumentTypeCode.BirthCertificate,
+						expiryDate: null,
+						attachments: [myFile],
 					},
 					govIssuedIdData: {
-						governmentIssuedPhotoTypeCode: GovernmentIssuedPhotoIdCode.BcServicesCard,
-						governmentIssuedPhotoAttachments: [myFile],
+						governmentIssuedPhotoTypeCode: DocumentTypeCode.BcServicesCard,
+						attachments: [myFile],
 					},
 					bcDriversLicenceData: {
 						hasBcDriversLicence: BooleanTypeCode.No,
@@ -1345,315 +1082,333 @@ export class LicenceApplicationService {
 		);
 	}
 
-	// loadLicenceRenewal(): Observable<any> {
-	// 	console.log('loadLicenceRenewal ');
-	// 	this.spinnerService.show('loaderSpinner');
-	// 	this.initialized = true;
-
-	// 	return new Observable((observer) => {
-	// 		setTimeout(() => {
-	// 			const defaults: LicenceBackendModel = {
-	// 				licenceTypeCode: SwlTypeCode.SecurityBusinessLicence,
-	// 				applicationTypeCode: SwlApplicationTypeCode.Renewal,
-	// 				isSoleProprietor: BooleanTypeCode.Yes,
-	// 				currentLicenceNumber: '123',
-	// 				accessCode: '456',
-	// 				oneLegalName: false,
-	// 				givenName: 'Blake',
-	// 				middleName1: '',
-	// 				middleName2: '',
-	// 				surname: 'Smith',
-	// 				genderCode: GenderCode.M,
-	// 				dateOfBirth: '2000-10-07T00:00:00+00:00',
-	// 				hasExpiredLicence: BooleanTypeCode.No,
-	// 				expiredLicenceNumber: '',
-	// 				expiryDate: '',
-	// 				useDogsOrRestraints: null,
-	// 				isDogsPurposeProtection: null,
-	// 				isDogsPurposeDetectionDrugs: null,
-	// 				isDogsPurposeDetectionExplosives: null,
-	// 				carryAndUseRetraints: null,
-	// 				licenceTermCode: SwlTermCode.NintyDays,
-	// 				isPoliceOrPeaceOfficer: BooleanTypeCode.Yes,
-	// 				officerRole: PoliceOfficerRoleCode.Other,
-	// 				otherOfficerRole: 'Janitor',
-	// 				isTreatedForMHC: null,
-	// 				hasCriminalHistory: null,
-	// 				previousNameFlag: BooleanTypeCode.No,
-	// 				isBornInCanada: null,
-	// 				proofOfCitizenship: null,
-	// 				proofOfAbility: null,
-	// 				citizenshipDocumentExpiryDate: null,
-	// 				citizenshipDocumentPhotoAttachments: [],
-	// 				governmentIssuedPhotoTypeCode: null,
-	// 				hasBcDriversLicence: null,
-	// 				hairColourCode: null,
-	// 				eyeColourCode: null,
-	// 				height: null,
-	// 				heightUnitCode: null,
-	// 				weight: null,
-	// 				weightUnitCode: null,
-	// 				useBcServicesCardPhoto: null,
-	// 				swlCategoryList: [
-	// 					{ desc: 'Closed Circuit Television Installer', code: WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller },
-	// 				],
-	// 			};
-	// 			console.log('loadLicenceRenewal defaults', defaults);
-	// 			// this.licenceModel = { ...defaults };
-	// 			this.licenceModelFormGroup.patchValue({ ...defaults });
-	// 			// this.notifyLoaded();
-	// 			this.initialized = true;
-	// 			this.spinnerService.hide('loaderSpinner');
-	// 			observer.next(defaults);
-	// 		}, 1000);
-	// 	});
-	// }
-
-	// loadLicenceReplacement(): Observable<any> {
-	// 	console.log('loadLicenceReplacement ');
-	// 	this.spinnerService.show('loaderSpinner');
-	// 	this.initialized = true;
-
-	// 	return new Observable((observer) => {
-	// 		setTimeout(() => {
-	// 			const defaults: LicenceBackendModel = {
-	// 				licenceTypeCode: SwlTypeCode.ArmouredVehiclePermit,
-	// 				applicationTypeCode: SwlApplicationTypeCode.Replacement,
-	// 				isSoleProprietor: BooleanTypeCode.Yes,
-	// 				currentLicenceNumber: '123456',
-	// 				accessCode: '456',
-	// 				oneLegalName: false,
-	// 				givenName: 'Jane',
-	// 				middleName1: 'Alice',
-	// 				middleName2: 'Mary',
-	// 				surname: 'Johnson',
-	// 				genderCode: GenderCode.F,
-	// 				dateOfBirth: '2009-10-07T00:00:00+00:00',
-	// 				hasExpiredLicence: BooleanTypeCode.Yes,
-	// 				expiredLicenceNumber: '789',
-	// 				expiryDate: '2002-02-07T00:00:00+00:00',
-	// 				useDogsOrRestraints: BooleanTypeCode.Yes,
-	// 				isDogsPurposeProtection: true,
-	// 				isDogsPurposeDetectionDrugs: false,
-	// 				isDogsPurposeDetectionExplosives: true,
-	// 				carryAndUseRetraints: true,
-	// 				dogsPurposeDocumentType: DogDocumentCode.SecurityDogValidationCertificate,
-	// 				carryAndUseRetraintsDocument: RestraintDocumentCode.TrainingEquivalent,
-	// 				carryAndUseRetraintsAttachments: [],
-	// 				licenceTermCode: SwlTermCode.ThreeYears,
-	// 				isPoliceOrPeaceOfficer: null,
-	// 				isTreatedForMHC: null,
-	// 				hasCriminalHistory: null,
-	// 				previousNameFlag: null,
-	// 				isBornInCanada: null,
-	// 				proofOfCitizenship: null,
-	// 				proofOfAbility: null,
-	// 				citizenshipDocumentExpiryDate: null,
-	// 				citizenshipDocumentPhotoAttachments: [],
-	// 				governmentIssuedPhotoTypeCode: null,
-	// 				hasBcDriversLicence: null,
-	// 				hairColourCode: null,
-	// 				eyeColourCode: null,
-	// 				height: null,
-	// 				heightUnitCode: null,
-	// 				weight: null,
-	// 				weightUnitCode: null,
-	// 				useBcServicesCardPhoto: null,
-	// 				swlCategoryList: [
-	// 					{ desc: 'Electronic Locking Device Installer', code: WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller },
-	// 				],
-	// 			};
-	// 			console.log('loadLicenceReplacement defaults', defaults);
-	// 			// this.licenceModel = { ...defaults };
-	// 			this.licenceModelFormGroup.patchValue({ ...defaults });
-	// 			// this.notifyLoaded();
-	// 			this.initialized = true;
-	// 			this.spinnerService.hide('loaderSpinner');
-	// 			observer.next(defaults);
-	// 		}, 1000);
-	// 	});
-	// }
-
-	// loadLicenceUpdate(): Observable<any> {
-	// 	console.log('loadLicenceUpdate ');
-	// 	this.spinnerService.show('loaderSpinner');
-	// 	this.initialized = true;
-
-	// 	return new Observable((observer) => {
-	// 		setTimeout(() => {
-	// 			const defaults: LicenceBackendModel = {
-	// 				licenceTypeCode: SwlTypeCode.ArmouredVehiclePermit,
-	// 				applicationTypeCode: SwlApplicationTypeCode.Update,
-	// 				isSoleProprietor: BooleanTypeCode.Yes,
-	// 				currentLicenceNumber: '123456',
-	// 				accessCode: '456',
-	// 				oneLegalName: false,
-	// 				givenName: 'Jane',
-	// 				middleName1: 'Alice',
-	// 				middleName2: 'Mary',
-	// 				surname: 'Johnson',
-	// 				genderCode: GenderCode.F,
-	// 				dateOfBirth: '2009-10-07T00:00:00+00:00',
-	// 				hasExpiredLicence: BooleanTypeCode.Yes,
-	// 				expiredLicenceNumber: '789',
-	// 				expiryDate: '2002-02-07T00:00:00+00:00',
-	// 				useDogsOrRestraints: BooleanTypeCode.Yes,
-	// 				isDogsPurposeProtection: true,
-	// 				isDogsPurposeDetectionDrugs: false,
-	// 				isDogsPurposeDetectionExplosives: true,
-	// 				carryAndUseRetraints: true,
-	// 				dogsPurposeDocumentType: DogDocumentCode.SecurityDogValidationCertificate,
-	// 				carryAndUseRetraintsDocument: RestraintDocumentCode.AdvancedSecurityTrainingCertificate,
-	// 				carryAndUseRetraintsAttachments: [],
-	// 				licenceTermCode: SwlTermCode.ThreeYears,
-	// 				isPoliceOrPeaceOfficer: BooleanTypeCode.Yes,
-	// 				officerRole: PoliceOfficerRoleCode.AuxiliaryorReserveConstable,
-	// 				isTreatedForMHC: null,
-	// 				hasCriminalHistory: null,
-	// 				previousNameFlag: null,
-	// 				isBornInCanada: null,
-	// 				proofOfCitizenship: null,
-	// 				proofOfAbility: null,
-	// 				citizenshipDocumentExpiryDate: null,
-	// 				citizenshipDocumentPhotoAttachments: [],
-	// 				governmentIssuedPhotoTypeCode: null,
-	// 				hasBcDriversLicence: null,
-	// 				hairColourCode: null,
-	// 				eyeColourCode: null,
-	// 				height: null,
-	// 				heightUnitCode: null,
-	// 				weight: null,
-	// 				weightUnitCode: null,
-	// 				useBcServicesCardPhoto: null,
-	// 				swlCategoryList: [
-	// 					{ desc: 'Closed Circuit Television Installer', code: WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller },
-	// 					{ desc: 'Electronic Locking Device Installer', code: WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller },
-	// 				],
-	// 			};
-	// 			console.log('loadLicenceUpdate defaults', defaults);
-	// 			// this.licenceModel = { ...defaults };
-	// 			this.licenceModelFormGroup.patchValue({ ...defaults });
-	// 			// this.notifyLoaded();
-	// 			this.initialized = true;
-	// 			this.spinnerService.hide('loaderSpinner');
-	// 			observer.next(defaults);
-	// 		}, 1000);
-	// 	});
-	// }
-
 	saveLicence(): void {
-		/*
-		{
-			'LicenceId'?: string;
-			'LicenceTypeData.WorkerLicenceTypeCode'?: WorkerLicenceTypeCode;
-			'ApplicationTypeData.ApplicationTypeCode'?: ApplicationTypeCode;
-			'SoleProprietorData.isSoleProprietor'?: boolean;
-			'PersonalInformationData.GivenName'?: string;
-			'PersonalInformationData.MiddleName1'?: string;
-			'PersonalInformationData.MiddleName2'?: string;
-			'PersonalInformationData.Surname'?: string;
-			'PersonalInformationData.DateOfBirth'?: string;
-			'PersonalInformationData.GenderCode'?: GenderCode;
-			'PersonalInformationData.OneLegalName'?: boolean;
-			'ExpiredLicenceData.ExpiredLicenceNumber'?: string;
-			'ExpiredLicenceData.ExpiryDate'?: string;
-			'ExpiredLicenceData.HasExpiredLicence'?: boolean;
-			'DogsAuthorizationData.UseDogs'?: boolean;
-			'DogsAuthorizationData.IsDogsPurposeProtection'?: boolean;
-			'DogsAuthorizationData.IsDogsPurposeDetectionDrugs'?: boolean;
-			'DogsAuthorizationData.IsDogsPurposeDetectionExplosives'?: boolean;
-			'DogsAuthorizationData.Documents.DocumentTypeCode'?: DocumentTypeCode;
-			'DogsAuthorizationData.Documents.Attachments'?: Array<Blob>;
-			'DogsAuthorizationData.Documents.ExpiredDate'?: string;
-			'RestraintsAuthorizationData.CarryAndUseRetraints'?: boolean;
-			'RestraintsAuthorizationData.Documents.DocumentTypeCode'?: DocumentTypeCode;
-			'RestraintsAuthorizationData.Documents.Attachments'?: Array<Blob>;
-			'RestraintsAuthorizationData.Documents.ExpiredDate'?: string;
-			'licenceTermData.LicenceTermCode'?: LicenceTermCode;
-			'PoliceBackgroundData.IsPoliceOrPeaceOfficer'?: boolean;
-			'PoliceBackgroundData.PoliceOfficerRoleCode'?: PoliceOfficerRoleCode;
-			'PoliceBackgroundData.OtherOfficerRole'?: string;
-			'PoliceBackgroundData.Documents.DocumentTypeCode'?: DocumentTypeCode;
-			'PoliceBackgroundData.Documents.Attachments'?: Array<Blob>;
-			'PoliceBackgroundData.Documents.ExpiredDate'?: string;
-			'MentalHealthConditionsData.IsTreatedForMHC'?: boolean;
-			'MentalHealthConditionsData.Documents.DocumentTypeCode'?: DocumentTypeCode;
-			'MentalHealthConditionsData.Documents.Attachments'?: Array<Blob>;
-			'MentalHealthConditionsData.Documents.ExpiredDate'?: string;
-			'CriminalHistoryData.HasCriminalHistory'?: boolean;
-			'ProofOfFingerprintData.Documents.DocumentTypeCode'?: DocumentTypeCode;
-			'ProofOfFingerprintData.Documents.Attachments'?: Array<Blob>;
-			'ProofOfFingerprintData.Documents.ExpiredDate'?: string;
-			'AliasesData.HasPreviousName'?: boolean;
-			'AliasesData.Aliases'?: Array<Alias>;
-			'CitizenshipData.IsBornInCanada'?: boolean;
-			'CitizenshipData.Documents.DocumentTypeCode'?: DocumentTypeCode;
-			'CitizenshipData.Documents.Attachments'?: Array<Blob>;
-			'CitizenshipData.Documents.ExpiredDate'?: string;
-			'GovIssuedIdData.Documents.DocumentTypeCode'?: DocumentTypeCode;
-			'GovIssuedIdData.Documents.Attachments'?: Array<Blob>;
-			'GovIssuedIdData.Documents.ExpiredDate'?: string;
-			'BcDriversLicenceData.HasBcDriversLicence'?: boolean;
-			'BcDriversLicenceData.BcDriversLicenceNumber'?: string;
-			'CharacteristicsData.HairColourCode'?: HairColourCode;
-			'CharacteristicsData.EyeColourCode'?: EyeColourCode;
-			'CharacteristicsData.Height'?: number;
-			'CharacteristicsData.HeightUnitCode'?: HeightUnitCode;
-			'CharacteristicsData.Weight'?: number;
-			'CharacteristicsData.WeightUnitCode'?: WeightUnitCode;
-			'PhotographOfYourselfData.UseBcServicesCardPhoto'?: boolean;
-			'PhotographOfYourselfData.Documents.DocumentTypeCode'?: DocumentTypeCode;
-			'PhotographOfYourselfData.Documents.Attachments'?: Array<Blob>;
-			'PhotographOfYourselfData.Documents.ExpiredDate'?: string;
-			'ContactInformationData.ContactEmailAddress'?: string;
-			'ContactInformationData.ContactPhoneNumber'?: string;
-			'ResidentialAddressData.IsMailingTheSameAsResidential'?: boolean;
-			'ResidentialAddressData.AddressSelected'?: boolean;
-			'ResidentialAddressData.AddressLine1'?: string;
-			'ResidentialAddressData.AddressLine2'?: string;
-			'ResidentialAddressData.City'?: string;
-			'ResidentialAddressData.Country'?: string;
-			'ResidentialAddressData.PostalCode'?: string;
-			'ResidentialAddressData.Province'?: string;
-			'MailingAddressData.AddressSelected'?: boolean;
-			'MailingAddressData.AddressLine1'?: string;
-			'MailingAddressData.AddressLine2'?: string;
-			'MailingAddressData.City'?: string;
-			'MailingAddressData.Country'?: string;
-			'MailingAddressData.PostalCode'?: string;
-			'MailingAddressData.Province'?: string;
-			'CategoriesData'?: Array<WorkerLicenceCategoryData>;
-			}
-
-		*/
-
-		// export class AliasModel {
-		// 	constructor(
-		// 		givenName: string | null,
-		// 		middleName1: string | null,
-		// 		middleName2: string | null,
-		// 		surname: string | null
-		// 	) {
-		// 		this.givenName = givenName;
-		// 		this.middleName1 = middleName1;
-		// 		this.middleName2 = middleName2;
-		// 		this.surname = surname;
-		// 	}
-		// 	givenName: string | null = null;
-		// 	middleName1: string | null = null;
-		// 	middleName2: string | null = null;
-		// 	surname: string | null = null;
-		// }
-
-		// export class LicenceModelSubject {
-		// 	isLoaded?: boolean = false;
-		// 	isSetFlags?: boolean = false;
-		// 	isUpdated?: boolean = false;
-		// 	isCategoryLoaded?: boolean = false;
-		// }
-
 		const formValue = this.licenceModelFormGroup.value;
 		console.log('formValue', formValue);
+
+		const aliasesData: AliasesData = {
+			aliases: formValue.aliasesData.aliases,
+			hasPreviousName: formValue.aliasesData.previousNameFlag == BooleanTypeCode.Yes,
+		};
+
+		const applicationTypeData: ApplicationTypeData = {
+			applicationTypeCode: formValue.applicationTypeData.applicationTypeCode,
+		};
+
+		const bcDriversLicenceData: BcDriversLicenceData = {
+			bcDriversLicenceNumber: formValue.bcDriversLicenceData.bcDriversLicenceNumber,
+			hasBcDriversLicence: formValue.bcDriversLicenceData.hasBcDriversLicence == BooleanTypeCode.Yes,
+		};
+
+		const categoriesData: null | Array<WorkerLicenceCategoryData> = [];
+
+		if (formValue.categoryArmouredCarGuardFormGroup.isInclude) {
+			const workerLicenceCategoryDocs: Documents = {
+				attachments: [...formValue.categoryArmouredCarGuardFormGroup.attachments],
+				documentTypeCode: DocumentTypeCode.CategoryArmouredCarGuardAuthorizationToCarryCertificate,
+				expiryDate: formValue.categoryArmouredCarGuardFormGroup.documentExpiryDate,
+			};
+			const workerLicenceCategoryData: WorkerLicenceCategoryData = {
+				documents: [workerLicenceCategoryDocs],
+				workerCategoryTypeCode: WorkerCategoryTypeCode.ArmouredCarGuard,
+			};
+			categoriesData.push(workerLicenceCategoryData);
+		}
+
+		if (formValue.categoryBodyArmourSalesFormGroup.isInclude) {
+			categoriesData.push({
+				workerCategoryTypeCode: WorkerCategoryTypeCode.BodyArmourSales,
+			});
+		}
+
+		if (formValue.categoryClosedCircuitTelevisionInstallerFormGroup.isInclude) {
+			categoriesData.push({
+				workerCategoryTypeCode: WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller,
+			});
+		}
+
+		if (formValue.categoryElectronicLockingDeviceInstallerFormGroup.isInclude) {
+			categoriesData.push({
+				workerCategoryTypeCode: WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller,
+			});
+		}
+
+		if (formValue.categoryFireInvestigatorFormGroup.isInclude) {
+			const workerLicenceCategoryDocs: Array<Documents> = [
+				{
+					attachments: [...formValue.categoryFireInvestigatorFormGroup.fireCourseCertificateAttachments],
+					documentTypeCode: DocumentTypeCode.CategoryFireInvestigatorCourseCertificate,
+				},
+				{
+					attachments: [...formValue.categoryFireInvestigatorFormGroup.fireVerificationLetterAttachments],
+					documentTypeCode: DocumentTypeCode.CategoryFireInvestigatorVerificationLetter,
+				},
+			];
+			const workerLicenceCategoryData: WorkerLicenceCategoryData = {
+				documents: workerLicenceCategoryDocs,
+				workerCategoryTypeCode: WorkerCategoryTypeCode.FireInvestigator,
+			};
+			categoriesData.push(workerLicenceCategoryData);
+		}
+
+		if (formValue.categoryLocksmithFormGroup.isInclude) {
+			const workerLicenceCategoryDocs: Array<Documents> = [
+				{
+					attachments: [...formValue.categoryLocksmithFormGroup.attachments],
+					documentTypeCode: formValue.categoryLocksmithFormGroup.requirementCode,
+				},
+			];
+			const workerLicenceCategoryData: WorkerLicenceCategoryData = {
+				documents: workerLicenceCategoryDocs,
+				workerCategoryTypeCode: WorkerCategoryTypeCode.Locksmith,
+			};
+			categoriesData.push(workerLicenceCategoryData);
+		}
+
+		if (formValue.categoryLocksmithSupFormGroup.isInclude) {
+			categoriesData.push({
+				workerCategoryTypeCode: WorkerCategoryTypeCode.LocksmithUnderSupervision,
+			});
+		}
+
+		if (formValue.categoryPrivateInvestigatorFormGroup.isInclude) {
+			const workerLicenceCategoryDocs: Array<Documents> = [
+				{
+					attachments: [...formValue.categoryPrivateInvestigatorFormGroup.attachments],
+					documentTypeCode: formValue.categoryPrivateInvestigatorFormGroup.requirementCode,
+				},
+				{
+					attachments: [...formValue.categoryPrivateInvestigatorFormGroup.trainingAttachments],
+					documentTypeCode: formValue.categoryPrivateInvestigatorFormGroup.trainingCode,
+				},
+			];
+			const workerLicenceCategoryData: WorkerLicenceCategoryData = {
+				documents: workerLicenceCategoryDocs,
+				workerCategoryTypeCode: WorkerCategoryTypeCode.PrivateInvestigator,
+			};
+			categoriesData.push(workerLicenceCategoryData);
+		}
+
+		if (formValue.categoryPrivateInvestigatorSupFormGroup.isInclude) {
+			const workerLicenceCategoryDocs: Array<Documents> = [
+				{
+					attachments: [...formValue.categoryPrivateInvestigatorSupFormGroup.attachments],
+					documentTypeCode: formValue.categoryPrivateInvestigatorSupFormGroup.requirementCode,
+				},
+				{
+					attachments: [...formValue.categoryPrivateInvestigatorSupFormGroup.trainingAttachments],
+					documentTypeCode: DocumentTypeCode.CategoryPrivateInvestigatorUnderSupervisionTraining,
+				},
+			];
+			const workerLicenceCategoryData: WorkerLicenceCategoryData = {
+				documents: workerLicenceCategoryDocs,
+				workerCategoryTypeCode: WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision,
+			};
+			categoriesData.push(workerLicenceCategoryData);
+		}
+
+		if (formValue.categorySecurityGuardFormGroup.isInclude) {
+			const workerLicenceCategoryDocs: Array<Documents> = [
+				{
+					attachments: [...formValue.categorySecurityGuardFormGroup.attachments],
+					documentTypeCode: formValue.categorySecurityGuardFormGroup.requirementCode,
+				},
+			];
+			const workerLicenceCategoryData: WorkerLicenceCategoryData = {
+				documents: workerLicenceCategoryDocs,
+				workerCategoryTypeCode: WorkerCategoryTypeCode.SecurityGuard,
+			};
+			categoriesData.push(workerLicenceCategoryData);
+		}
+
+		if (formValue.categorySecurityGuardSupFormGroup.isInclude) {
+			categoriesData.push({
+				workerCategoryTypeCode: WorkerCategoryTypeCode.SecurityGuardUnderSupervision,
+			});
+		}
+
+		if (formValue.categorySecurityAlarmInstallerFormGroup.isInclude) {
+			const workerLicenceCategoryDocs: Array<Documents> = [
+				{
+					attachments: [...formValue.categorySecurityAlarmInstallerFormGroup.attachments],
+					documentTypeCode: formValue.categorySecurityAlarmInstallerFormGroup.requirementCode,
+				},
+			];
+			const workerLicenceCategoryData: WorkerLicenceCategoryData = {
+				documents: workerLicenceCategoryDocs,
+				workerCategoryTypeCode: WorkerCategoryTypeCode.SecurityAlarmInstaller,
+			};
+			categoriesData.push(workerLicenceCategoryData);
+		}
+
+		if (formValue.categorySecurityAlarmInstallerSupFormGroup.isInclude) {
+			categoriesData.push({
+				workerCategoryTypeCode: WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
+			});
+		}
+
+		if (formValue.categorySecurityAlarmMonitorFormGroup.isInclude) {
+			categoriesData.push({
+				workerCategoryTypeCode: WorkerCategoryTypeCode.SecurityAlarmMonitor,
+			});
+		}
+
+		if (formValue.categorySecurityAlarmResponseFormGroup.isInclude) {
+			categoriesData.push({
+				workerCategoryTypeCode: WorkerCategoryTypeCode.SecurityAlarmResponse,
+			});
+		}
+
+		if (formValue.categorySecurityAlarmSalesFormGroup.isInclude) {
+			categoriesData.push({
+				workerCategoryTypeCode: WorkerCategoryTypeCode.SecurityAlarmSales,
+			});
+		}
+
+		if (formValue.categorySecurityConsultantFormGroup.isInclude) {
+			const workerLicenceCategoryDocs: Array<Documents> = [
+				{
+					attachments: [...formValue.categorySecurityConsultantFormGroup.attachments],
+					documentTypeCode: formValue.categorySecurityConsultantFormGroup.requirementCode,
+				},
+				{
+					attachments: [...formValue.categorySecurityConsultantFormGroup.resumeAttachments],
+					documentTypeCode: formValue.categorySecurityConsultantFormGroup.requirementCode,
+				},
+			];
+
+			const workerLicenceCategoryData: WorkerLicenceCategoryData = {
+				documents: workerLicenceCategoryDocs,
+				workerCategoryTypeCode: WorkerCategoryTypeCode.SecurityConsultant,
+			};
+			categoriesData.push(workerLicenceCategoryData);
+		}
+
+		const characteristicsData: CharacteristicsData = { ...formValue.characteristicsData };
+
+		const citizenshipDocs: Documents = {
+			attachments: [...formValue.citizenshipData.attachments],
+			documentTypeCode: formValue.citizenshipData.proofTypeCode,
+			expiryDate: formValue.citizenshipData.expiryDate,
+		};
+		const citizenshipData: CitizenshipData = {
+			documents: citizenshipDocs,
+			isBornInCanada: formValue.citizenshipData.isBornInCanada == BooleanTypeCode.Yes,
+		};
+
+		const contactInformationData: ContactInformationData = { ...formValue.contactInformationData };
+
+		const criminalHistoryData: CriminalHistoryData = { ...formValue.criminalHistoryData };
+
+		const dogsAuthorizationDocs: Documents = {
+			attachments: [...formValue.dogsAuthorizationData.attachments],
+			documentTypeCode: formValue.dogsAuthorizationData.dogsPurposeDocumentType,
+		};
+		const dogsAuthorizationData: DogsAuthorizationData = {
+			documents: dogsAuthorizationDocs,
+			isDogsPurposeDetectionDrugs: formValue.dogsAuthorizationData.isDogsPurposeDetectionDrugs,
+			isDogsPurposeDetectionExplosives: formValue.dogsAuthorizationData.isDogsPurposeDetectionExplosives,
+			isDogsPurposeProtection: formValue.dogsAuthorizationData.isDogsPurposeProtection,
+			useDogs: formValue.dogsAuthorizationData.useDogs == BooleanTypeCode.Yes,
+		};
+
+		const expiredLicenceData: ExpiredLicenceData = { ...formValue.expiredLicenceData };
+
+		const govIssuedIdDocs: Documents = {
+			attachments: [...formValue.govIssuedIdData.attachments],
+			documentTypeCode: formValue.govIssuedIdData.governmentIssuedPhotoTypeCode,
+		};
+		const govIssuedIdData: GovIssuedIdData = {
+			documents: govIssuedIdDocs,
+		};
+
+		const licenceId = formValue.licenceId;
+
+		const licenceTermData: LicenceTermData = { ...formValue.licenceTermData };
+
+		const licenceTypeData: LicenceTypeData = { ...formValue.licenceTypeData };
+
+		const mailingAddressData: MailingAddressData = { ...formValue.mailingAddressData };
+
+		const mentalHealthConditionsDocs: Documents = {
+			attachments: [...formValue.mentalHealthConditionsData.attachments],
+			documentTypeCode: formValue.mentalHealthConditionsData.governmentIssuedPhotoTypeCode,
+		};
+		const mentalHealthConditionsData: MentalHealthConditionsData = {
+			documents: mentalHealthConditionsDocs,
+			isTreatedForMHC: formValue.mentalHealthConditionsData.isTreatedForMHC == BooleanTypeCode.Yes,
+		};
+
+		const personalInformationData: PersonalInformationData = { ...formValue.personalInformationData };
+
+		const photographOfYourselfDocs: Documents = {
+			attachments: [...formValue.photographOfYourselfData.attachments],
+			documentTypeCode: DocumentTypeCode.PhotoOfYourself,
+		};
+		const photographOfYourselfData: PhotographOfYourselfData = {
+			documents: photographOfYourselfDocs,
+			useBcServicesCardPhoto: formValue.photographOfYourselfData.useBcServicesCardPhoto == BooleanTypeCode.Yes,
+		};
+
+		const policeBackgroundDocs: Documents = {
+			attachments: [...formValue.policeBackgroundData.attachments],
+			documentTypeCode: DocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
+		};
+		const policeBackgroundData: PoliceBackgroundData = {
+			documents: policeBackgroundDocs,
+			isPoliceOrPeaceOfficer: formValue.policeBackgroundData.isPoliceOrPeaceOfficer == BooleanTypeCode.Yes,
+			otherOfficerRole: formValue.policeBackgroundData.otherOfficerRole,
+			policeOfficerRoleCode: formValue.policeBackgroundData.policeOfficerRoleCode,
+		};
+
+		const proofOfFingerprintDocs: Documents = {
+			attachments: [...formValue.proofOfFingerprintData.attachments],
+			documentTypeCode: DocumentTypeCode.ProofOfFingerprint,
+		};
+		const proofOfFingerprintData: ProofOfFingerprintData = {
+			documents: proofOfFingerprintDocs,
+		};
+
+		const residentialAddressData: ResidentialAddressData = { ...formValue.residentialAddressData };
+
+		const restraintsAuthorizationDocs: Documents = {
+			attachments: [...formValue.restraintsAuthorizationData.attachments],
+			documentTypeCode: formValue.restraintsAuthorizationData.carryAndUseRetraintsDocument,
+		};
+		const restraintsAuthorizationData: RestraintsAuthorizationData = {
+			carryAndUseRetraints: formValue.restraintsAuthorizationData.carryAndUseRetraints == BooleanTypeCode.Yes,
+			documents: restraintsAuthorizationDocs,
+		};
+
+		const soleProprietorData: SoleProprietorData = {
+			isSoleProprietor: formValue.soleProprietorData.isSoleProprietor == BooleanTypeCode.Yes,
+		};
+
+		const body: WorkerLicenceCreateRequest = {
+			aliasesData,
+			applicationTypeData,
+			bcDriversLicenceData,
+			categoriesData,
+			characteristicsData,
+			citizenshipData,
+			contactInformationData,
+			criminalHistoryData,
+			dogsAuthorizationData,
+			expiredLicenceData,
+			govIssuedIdData,
+			licenceId,
+			licenceTermData,
+			licenceTypeData,
+			mailingAddressData,
+			mentalHealthConditionsData,
+			personalInformationData,
+			photographOfYourselfData,
+			policeBackgroundData,
+			proofOfFingerprintData,
+			residentialAddressData,
+			restraintsAuthorizationData,
+			soleProprietorData,
+		};
 		// const body = {
 		// 	LicenceId: formValue.licenceId,
 		// 	'LicenceTypeData.WorkerLicenceTypeCode': formValue.licenceTypeData.licenceTypeCode,
@@ -1661,89 +1416,7 @@ export class LicenceApplicationService {
 		// 	'SoleProprietorData.isSoleProprietor': formValue.soleProprietorData.isSoleProprietor,
 		// };
 
-		// console.log('body to save:', body);
-		// {
-		// 	'LicenceId'?: string;
-		// 	'LicenceTypeData.WorkerLicenceTypeCode'?: WorkerLicenceTypeCode;
-		// 	'ApplicationTypeData.ApplicationTypeCode'?: ApplicationTypeCode;
-		// 	'SoleProprietorData.isSoleProprietor'?: boolean;
-		// 	'PersonalInformationData.GivenName'?: string;
-		// 	'PersonalInformationData.MiddleName1'?: string;
-		// 	'PersonalInformationData.MiddleName2'?: string;
-		// 	'PersonalInformationData.Surname'?: string;
-		// 	'PersonalInformationData.DateOfBirth'?: string;
-		// 	'PersonalInformationData.GenderCode'?: GenderCode;
-		// 	'PersonalInformationData.OneLegalName'?: boolean;
-		// 	'ExpiredLicenceData.ExpiredLicenceNumber'?: string;
-		// 	'ExpiredLicenceData.ExpiryDate'?: string;
-		// 	'ExpiredLicenceData.HasExpiredLicence'?: boolean;
-		// 	'DogsAuthorizationData.UseDogs'?: boolean;
-		// 	'DogsAuthorizationData.IsDogsPurposeProtection'?: boolean;
-		// 	'DogsAuthorizationData.IsDogsPurposeDetectionDrugs'?: boolean;
-		// 	'DogsAuthorizationData.IsDogsPurposeDetectionExplosives'?: boolean;
-		// 	'DogsAuthorizationData.Documents.DocumentTypeCode'?: DocumentTypeCode;
-		// 	'DogsAuthorizationData.Documents.Attachments'?: Array<Blob>;
-		// 	'DogsAuthorizationData.Documents.ExpiredDate'?: string;
-		// 	'RestraintsAuthorizationData.CarryAndUseRetraints'?: boolean;
-		// 	'RestraintsAuthorizationData.Documents.DocumentTypeCode'?: DocumentTypeCode;
-		// 	'RestraintsAuthorizationData.Documents.Attachments'?: Array<Blob>;
-		// 	'RestraintsAuthorizationData.Documents.ExpiredDate'?: string;
-		// 	'licenceTermData.LicenceTermCode'?: LicenceTermCode;
-		// 	'PoliceBackgroundData.IsPoliceOrPeaceOfficer'?: boolean;
-		// 	'PoliceBackgroundData.PoliceOfficerRoleCode'?: PoliceOfficerRoleCode;
-		// 	'PoliceBackgroundData.OtherOfficerRole'?: string;
-		// 	'PoliceBackgroundData.Documents.DocumentTypeCode'?: DocumentTypeCode;
-		// 	'PoliceBackgroundData.Documents.Attachments'?: Array<Blob>;
-		// 	'PoliceBackgroundData.Documents.ExpiredDate'?: string;
-		// 	'MentalHealthConditionsData.IsTreatedForMHC'?: boolean;
-		// 	'MentalHealthConditionsData.Documents.DocumentTypeCode'?: DocumentTypeCode;
-		// 	'MentalHealthConditionsData.Documents.Attachments'?: Array<Blob>;
-		// 	'MentalHealthConditionsData.Documents.ExpiredDate'?: string;
-		// 	'CriminalHistoryData.HasCriminalHistory'?: boolean;
-		// 	'ProofOfFingerprintData.Documents.DocumentTypeCode'?: DocumentTypeCode;
-		// 	'ProofOfFingerprintData.Documents.Attachments'?: Array<Blob>;
-		// 	'ProofOfFingerprintData.Documents.ExpiredDate'?: string;
-		// 	'AliasesData.HasPreviousName'?: boolean;
-		// 	'AliasesData.Aliases'?: Array<Alias>;
-		// 	'CitizenshipData.IsBornInCanada'?: boolean;
-		// 	'CitizenshipData.Documents.DocumentTypeCode'?: DocumentTypeCode;
-		// 	'CitizenshipData.Documents.Attachments'?: Array<Blob>;
-		// 	'CitizenshipData.Documents.ExpiredDate'?: string;
-		// 	'GovIssuedIdData.Documents.DocumentTypeCode'?: DocumentTypeCode;
-		// 	'GovIssuedIdData.Documents.Attachments'?: Array<Blob>;
-		// 	'GovIssuedIdData.Documents.ExpiredDate'?: string;
-		// 	'BcDriversLicenceData.HasBcDriversLicence'?: boolean;
-		// 	'BcDriversLicenceData.BcDriversLicenceNumber'?: string;
-		// 	'CharacteristicsData.HairColourCode'?: HairColourCode;
-		// 	'CharacteristicsData.EyeColourCode'?: EyeColourCode;
-		// 	'CharacteristicsData.Height'?: number;
-		// 	'CharacteristicsData.HeightUnitCode'?: HeightUnitCode;
-		// 	'CharacteristicsData.Weight'?: number;
-		// 	'CharacteristicsData.WeightUnitCode'?: WeightUnitCode;
-		// 	'PhotographOfYourselfData.UseBcServicesCardPhoto'?: boolean;
-		// 	'PhotographOfYourselfData.Documents.DocumentTypeCode'?: DocumentTypeCode;
-		// 	'PhotographOfYourselfData.Documents.Attachments'?: Array<Blob>;
-		// 	'PhotographOfYourselfData.Documents.ExpiredDate'?: string;
-		// 	'ContactInformationData.ContactEmailAddress'?: string;
-		// 	'ContactInformationData.ContactPhoneNumber'?: string;
-		// 	'ResidentialAddressData.IsMailingTheSameAsResidential'?: boolean;
-		// 	'ResidentialAddressData.AddressSelected'?: boolean;
-		// 	'ResidentialAddressData.AddressLine1'?: string;
-		// 	'ResidentialAddressData.AddressLine2'?: string;
-		// 	'ResidentialAddressData.City'?: string;
-		// 	'ResidentialAddressData.Country'?: string;
-		// 	'ResidentialAddressData.PostalCode'?: string;
-		// 	'ResidentialAddressData.Province'?: string;
-		// 	'MailingAddressData.AddressSelected'?: boolean;
-		// 	'MailingAddressData.AddressLine1'?: string;
-		// 	'MailingAddressData.AddressLine2'?: string;
-		// 	'MailingAddressData.City'?: string;
-		// 	'MailingAddressData.Country'?: string;
-		// 	'MailingAddressData.PostalCode'?: string;
-		// 	'MailingAddressData.Province'?: string;
-		// 	'CategoriesData'?: Array<WorkerLicenceCategoryData>;
-		// 	}
-
+		console.log('*************** body to save:', body);
 		// this.workerLicensingService
 		// 	.apiWorkerLicencesPost()
 		// 	.pipe()
