@@ -1,7 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
-import { PaymentResponse } from 'src/app/api/models';
-import { AppRoutes } from 'src/app/app-routing.module';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 
 @Component({
@@ -55,7 +53,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 			</div>
 		</div>
 
-		<div class="row text-center mb-4">
+		<!-- <div class="row text-center mb-4">
 			<div class="offset-xl-3 col-xl-2 offset-lg-2 col-lg-3 mt-4">
 				<small class="d-block"> Case ID </small>
 				<div class="payment__text">{{ payment?.caseNumber }}</div>
@@ -70,7 +68,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 				<small class="d-block">Invoice/Order Number</small>
 				<div class="payment__text">{{ payment?.transOrderId }}</div>
 			</div>
-		</div>
+		</div> -->
 
 		<div
 			class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12"
@@ -127,9 +125,9 @@ export class PaymentSuccessComponent implements OnInit {
 
 		this._payment = data;
 
-		if (data.paidSuccess != true) {
-			this.router.navigate([AppRoutes.ACCESS_DENIED]);
-		}
+		// if (data.paidSuccess != true) {
+		// 	this.router.navigate([AppRoutes.ACCESS_DENIED]);
+		// }
 	}
 	get payment(): PaymentResponse | null {
 		return this._payment;

@@ -1,7 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
-import { PaymentResponse } from 'src/app/api/models';
-import { AppRoutes } from 'src/app/app-routing.module';
 
 @Component({
 	selector: 'app-payment-fail',
@@ -48,7 +46,7 @@ import { AppRoutes } from 'src/app/app-routing.module';
 		</div>
 
 		<div class="row mx-4">
-			<div class="col-12 mt-4">
+			<!-- <div class="col-12 mt-4">
 				<div class="fw-normal fs-3 text-center">
 					<span *ngIf="isCancelledPaymentFlow; else paymentFailedSubHeader"
 						>Your payment attempt has been cancelled</span
@@ -58,7 +56,7 @@ import { AppRoutes } from 'src/app/app-routing.module';
 						Case ID: {{ payment?.caseNumber }}
 					</ng-template>
 				</div>
-			</div>
+			</div> -->
 
 			<ng-container *ngIf="isCancelledPaymentFlow; else paymentFailed">
 				<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
@@ -123,9 +121,9 @@ export class PaymentFailComponent implements OnInit {
 
 		this._payment = data;
 
-		if (data.paidSuccess) {
-			this.router.navigate([AppRoutes.ACCESS_DENIED]);
-		}
+		// if (data.paidSuccess) {
+		// 	this.router.navigate([AppRoutes.ACCESS_DENIED]);
+		// }
 	}
 	get payment(): PaymentResponse | null {
 		return this._payment;

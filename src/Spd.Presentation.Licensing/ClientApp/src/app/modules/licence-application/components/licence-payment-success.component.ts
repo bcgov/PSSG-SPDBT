@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PaymentResponse } from 'src/app/api/models';
 import { UtilService } from 'src/app/core/services/util.service';
 
 @Component({

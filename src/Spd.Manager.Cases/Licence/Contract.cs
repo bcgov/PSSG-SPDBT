@@ -150,7 +150,7 @@ namespace Spd.Manager.Cases.Licence
 
     public record WorkerLicenceCategoryData
     {
-        public SwlCategoryTypeCode SwlCategoryTypeCode { get; set; }
+        public WorkerCategoryTypeCode WorkerCategoryTypeCode { get; set; }
         public Documents[]? Documents { get; set; } = null;
     }
 
@@ -277,7 +277,7 @@ namespace Spd.Manager.Cases.Licence
         Pounds,
     }
 
-    public enum SwlCategoryTypeCode
+    public enum WorkerCategoryTypeCode
     {
         ArmouredCarGuard,
         BodyArmourSales,

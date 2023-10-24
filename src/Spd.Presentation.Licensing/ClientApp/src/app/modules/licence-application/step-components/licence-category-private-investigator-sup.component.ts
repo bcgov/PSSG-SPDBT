@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { WorkerCategoryTypeCode } from 'src/app/api/models';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
-import { PrivateInvestigatorSupRequirementCode, SwlCategoryTypeCode } from 'src/app/core/code-types/model-desc.models';
+import { PrivateInvestigatorSupRequirementCode } from 'src/app/core/code-types/model-desc.models';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
@@ -155,7 +156,7 @@ export class LicenceCategoryPrivateInvestigatorSupComponent implements OnInit, L
 
 	ngOnInit(): void {
 		this.title = this.optionsPipe.transform(
-			SwlCategoryTypeCode.PrivateInvestigatorUnderSupervision,
+			WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision,
 			'SwlCategoryTypes'
 		);
 	}

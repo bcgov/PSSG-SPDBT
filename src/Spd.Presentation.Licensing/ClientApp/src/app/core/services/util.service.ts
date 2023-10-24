@@ -1,7 +1,6 @@
 import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import jwt_decode from 'jwt-decode';
-import { PaginationResponse } from 'src/app/api/models';
 import * as CodeDescTypes from 'src/app/core/code-types/code-desc-types.models';
 import { SelectOptions } from '../code-types/model-desc.models';
 import { SPD_CONSTANTS } from '../constants/constants';
@@ -14,8 +13,10 @@ export class UtilService {
 		return { page: 0, pageSize: SPD_CONSTANTS.list.defaultPageSize };
 	}
 
-	getDefaultTablePaginatorConfig(): PaginationResponse {
-		const defaultTableConfig: PaginationResponse = {
+	getDefaultTablePaginatorConfig(): any {
+		//PaginationResponse {
+		const defaultTableConfig: any = {
+			//PaginationResponse = { TODO
 			pageSize: SPD_CONSTANTS.list.defaultPageSize,
 			pageIndex: 0,
 			length: 0,
