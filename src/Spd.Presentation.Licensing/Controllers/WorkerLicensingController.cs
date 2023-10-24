@@ -33,7 +33,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/worker-licenses")]
         [HttpPost]
-        public async Task<WorkerLicenceCreateResponse> CreateWorkerLicense([FromForm][Required] WorkerLicenceCreateRequest licenceCreateRequest)
+        public async Task<WorkerLicenceCreateResponse> CreateWorkerLicense([FromBody][Required] WorkerLicenceCreateRequest licenceCreateRequest)
         {
             _logger.LogInformation("Get WorkerLicenceCreateRequest");
             var info = _currentUser.GetBcscUserIdentityInfo();

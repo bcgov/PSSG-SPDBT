@@ -15,14 +15,10 @@ namespace Spd.Resource.Applicants.Licence
         public IEnumerable<LicenceResp> Items { get; set; } = Array.Empty<LicenceResp>();
     }
 
-    public record LicenceResp
-    {
-        public Guid? LicenceId { get; set; } = null;
-    }
-
+    public record LicenceResp(Guid? LicenceId);
     public abstract record LicenceCmd;
 
-    public record CreateLicenceCmd : LicenceCmd
+    public record SaveLicenceCmd : LicenceCmd
     {
         public Guid? LicenceId { get; set; }
         public LicenceTypeData? LicenceTypeData { get; set; }

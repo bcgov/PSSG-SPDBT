@@ -26,21 +26,30 @@ internal class LicenceRepository : ILicenceRepository
     {
         return cmd switch
         {
-            CreateLicenceCmd c => await LicenceCreateAsync(c, ct),
+            SaveLicenceCmd c => await SaveLicenceAsync(c, ct),
             _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
         };
     }
 
-    private async Task<LicenceResp> LicenceCreateAsync(CreateLicenceCmd cmd, CancellationToken ct)
+    private async Task<LicenceResp> SaveLicenceAsync(SaveLicenceCmd cmd, CancellationToken ct)
     {
+        spd_application? app;
         if (cmd.LicenceId != null)
         {
-            spd_application? application = await _context.GetApplicationById((Guid)cmd.LicenceId, ct);
-            if (application == null)
-                throw new ArgumentException("invalid application id");
+            app = await _context.GetApplicationById((Guid)cmd.LicenceId, ct);
+            if (app == null)
+                throw new ArgumentException("invalid app id");
+            _mapper.Map<SaveLicenceCmd, spd_application>(cmd, app);
+            _context.UpdateObject(app);
+            
         }
-
-        return null;
+        else
+        {
+            app = _mapper.Map<spd_application>(cmd);
+            _context.AddTospd_applications(app);
+        }
+        await _context.SaveChangesAsync();
+        return new LicenceResp(app.spd_applicationid)
     }
 
 

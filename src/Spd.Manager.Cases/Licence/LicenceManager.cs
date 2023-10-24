@@ -44,7 +44,7 @@ internal class LicenceManager :
     public async Task<WorkerLicenceCreateResponse> Handle(WorkerLicenceCreateCommand request, CancellationToken ct)
     {
         _logger.LogDebug($"manager get WorkerLicenceCreateCommand={request}");
-        var response = _licenceRepository.ManageAsync(_mapper.Map<CreateLicenceCmd>(request), ct);
+        var response = _licenceRepository.ManageAsync(_mapper.Map<SaveLicenceCmd>(request), ct);
 
         return _mapper.Map<WorkerLicenceCreateResponse>(response);
     }
