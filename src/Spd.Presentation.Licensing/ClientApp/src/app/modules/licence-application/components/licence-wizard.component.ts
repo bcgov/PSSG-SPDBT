@@ -3,7 +3,7 @@ import { StepperOrientation, StepperSelectionEvent } from '@angular/cdk/stepper'
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { BehaviorSubject, distinctUntilChanged, Subscription } from 'rxjs';
+import { BehaviorSubject, debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
 import { LicenceApplicationService } from '../licence-application.service';
@@ -94,6 +94,7 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 })
 export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit {
 	private licenceModelLoadedSubscription!: Subscription;
+	private licenceModelChangedSubscription!: Subscription;
 
 	readonly STEP_LICENCE_SELECTION = 0;
 	readonly STEP_BACKGROUND = 1;
@@ -103,6 +104,8 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 	isLoaded$ = new BehaviorSubject<boolean>(false);
 
 	orientation: StepperOrientation = 'vertical';
+
+	valueChanged = false;
 
 	step1Complete = false;
 	step2Complete = false;
@@ -160,6 +163,13 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 				this.isLoaded$.next(true);
 			},
 		});
+
+		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelFormGroup.valueChanges
+			.pipe(debounceTime(500), distinctUntilChanged())
+			.subscribe((form: any) => {
+				this.valueChanged = true;
+				console.log('valueChanges', form);
+			});
 	}
 
 	ngAfterViewInit(): void {
@@ -176,6 +186,7 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 
 	ngOnDestroy() {
 		if (this.licenceModelLoadedSubscription) this.licenceModelLoadedSubscription.unsubscribe();
+		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	}
 
 	onStepSelectionChange(event: StepperSelectionEvent) {
@@ -187,11 +198,17 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 	}
 
 	onPreviousStepperStep(stepper: MatStepper): void {
+		console.log('onPreviousStepperStep valueChanged', this.valueChanged);
+		this.saveIfChanged();
+
 		// console.log('previous', stepper);
 		stepper.previous();
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
+		console.log('onNextStepperStep valueChanged', this.valueChanged);
+		this.saveIfChanged();
+
 		if (stepper?.selected) stepper.selected.completed = true;
 
 		console.log('next step', this.licenceApplicationService.licenceModelFormGroup.value);
@@ -199,6 +216,9 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 	}
 
 	onGoToStep(step: number) {
+		console.log('onGoToStep valueChanged', this.valueChanged);
+		this.saveIfChanged();
+
 		if (step == 3) {
 			this.stepIdentificationComponent.onGoToContactStep();
 			this.stepper.selectedIndex = 2;
@@ -214,6 +234,15 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 	onSave() {
 		this.licenceApplicationService.saveLicence();
 		// this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATIONS_IN_PROGRESS));
+	}
+
+	private saveIfChanged() {
+		console.log('saveIfChanged', this.valueChanged);
+
+		if (this.valueChanged) {
+			this.licenceApplicationService.saveLicence();
+			this.valueChanged = false;
+		}
 	}
 
 	private breakpointChanged() {

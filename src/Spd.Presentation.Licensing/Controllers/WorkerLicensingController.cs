@@ -1,11 +1,8 @@
 
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Cases.Licence;
-using Spd.Manager.Membership.UserProfile;
 using Spd.Utilities.LogonUser;
-using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Principal;
 
@@ -31,9 +28,9 @@ namespace Spd.Presentation.Licensing.Controllers
         /// </summary>
         /// <param name="licenceCreateRequest"></param>
         /// <returns></returns>
-        [Route("api/worker-licenses")]
+        [Route("api/worker-licences")]
         [HttpPost]
-        public async Task<WorkerLicenceCreateResponse> CreateWorkerLicense([FromForm][Required] WorkerLicenceCreateRequest licenceCreateRequest)
+        public async Task<WorkerLicenceCreateResponse> CreateWorkerLicence([FromForm][Required] WorkerLicenceCreateRequest licenceCreateRequest)
         {
             _logger.LogInformation("Get WorkerLicenceCreateRequest");
             var info = _currentUser.GetBcscUserIdentityInfo();

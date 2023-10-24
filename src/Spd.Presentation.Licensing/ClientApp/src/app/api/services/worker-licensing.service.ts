@@ -35,9 +35,9 @@ export class WorkerLicensingService extends BaseService {
   }
 
   /**
-   * Path part for operation apiWorkerLicensesPost
+   * Path part for operation apiWorkerLicencesPost
    */
-  static readonly ApiWorkerLicensesPostPath = '/api/worker-licenses';
+  static readonly ApiWorkerLicencesPostPath = '/api/worker-licences';
 
   /**
    * Create Security Worker Licence.
@@ -45,11 +45,11 @@ export class WorkerLicensingService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiWorkerLicensesPost()` instead.
+   * To access only the response body, use `apiWorkerLicencesPost()` instead.
    *
    * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
-  apiWorkerLicensesPost$Response(params?: {
+  apiWorkerLicencesPost$Response(params?: {
     body?: {
 'LicenceId'?: string;
 'LicenceTypeData.WorkerLicenceTypeCode'?: WorkerLicenceTypeCode;
@@ -136,7 +136,7 @@ export class WorkerLicensingService extends BaseService {
 
 ): Observable<StrictHttpResponse<WorkerLicenceCreateResponse>> {
 
-    const rb = new RequestBuilder(this.rootUrl, WorkerLicensingService.ApiWorkerLicensesPostPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, WorkerLicensingService.ApiWorkerLicencesPostPath, 'post');
     if (params) {
       rb.body(params.body, 'multipart/form-data');
     }
@@ -159,11 +159,11 @@ export class WorkerLicensingService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiWorkerLicensesPost$Response()` instead.
+   * To access the full response (for headers, for example), `apiWorkerLicencesPost$Response()` instead.
    *
    * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
-  apiWorkerLicensesPost(params?: {
+  apiWorkerLicencesPost(params?: {
     body?: {
 'LicenceId'?: string;
 'LicenceTypeData.WorkerLicenceTypeCode'?: WorkerLicenceTypeCode;
@@ -250,7 +250,7 @@ export class WorkerLicensingService extends BaseService {
 
 ): Observable<WorkerLicenceCreateResponse> {
 
-    return this.apiWorkerLicensesPost$Response(params,context).pipe(
+    return this.apiWorkerLicencesPost$Response(params,context).pipe(
       map((r: StrictHttpResponse<WorkerLicenceCreateResponse>) => r.body as WorkerLicenceCreateResponse)
     );
   }

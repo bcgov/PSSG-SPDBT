@@ -43,9 +43,10 @@ export class SoleProprietorComponent implements OnInit, LicenceFormStepComponent
 	infoTitle = '';
 
 	readonly title_apply = 'Do you also want to apply for a Sole Proprietor Security Business Licence?';
-	readonly title_renew = 'Do you also want to renew your Sole Proprietor Security Business Licence?';
 	readonly subtitle_apply =
 		'<p>If you are a Sole Proprietor and need both a worker licence and a business licence, you can apply for them at the same time and pay only for the business licence.</p> <p>First, apply for the worker licence. When you receive it, you can then apply for the business licence. Your security worker licence fee will be refunded at that point.</p>';
+
+	readonly title_renew = 'Do you also want to renew your Sole Proprietor Security Business Licence?';
 	readonly subtitle_renew =
 		'<p>If you are a sole proprietor, you need both a security worker licence and a security business licence.</p> <p>First, renew your worker licence. When you receive it, you can then renew the business licence. Your security worker licence fee will be refunded at that point.</p>';
 
