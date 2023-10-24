@@ -40,8 +40,7 @@ internal class LicenceRepository : ILicenceRepository
             if (app == null)
                 throw new ArgumentException("invalid app id");
             _mapper.Map<SaveLicenceCmd, spd_application>(cmd, app);
-            _context.UpdateObject(app);
-            
+            _context.UpdateObject(app);            
         }
         else
         {
@@ -49,7 +48,7 @@ internal class LicenceRepository : ILicenceRepository
             _context.AddTospd_applications(app);
         }
         await _context.SaveChangesAsync();
-        return new LicenceResp(app.spd_applicationid)
+        return new LicenceResp(app.spd_applicationid);
     }
 
 
