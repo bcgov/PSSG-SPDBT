@@ -51,16 +51,15 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 										<div class="text-minor-heading fw-normal mb-2">Upload a photo of your ID:</div>
 										<app-file-upload
 											[maxNumberOfFiles]="1"
-											[files]="governmentIssuedPhotoAttachments.value"
+											[files]="attachments.value"
 											(filesChanged)="onFilesChanged()"
 										></app-file-upload>
 										<mat-error
 											class="mat-option-error"
 											*ngIf="
-												(form.get('governmentIssuedPhotoAttachments')?.dirty ||
-													form.get('governmentIssuedPhotoAttachments')?.touched) &&
-												form.get('governmentIssuedPhotoAttachments')?.invalid &&
-												form.get('governmentIssuedPhotoAttachments')?.hasError('required')
+												(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+												form.get('attachments')?.invalid &&
+												form.get('attachments')?.hasError('required')
 											"
 											>This is required</mat-error
 										>
@@ -98,10 +97,10 @@ export class AdditionalGovIdComponent implements LicenceFormStepComponent {
 			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
 				? this.fileUploadComponent.files
 				: [];
-		this.form.controls['governmentIssuedPhotoAttachments'].setValue(attachments);
+		this.form.controls['attachments'].setValue(attachments);
 	}
 
-	get governmentIssuedPhotoAttachments(): FormControl {
-		return this.form.get('governmentIssuedPhotoAttachments') as FormControl;
+	get attachments(): FormControl {
+		return this.form.get('attachments') as FormControl;
 	}
 }

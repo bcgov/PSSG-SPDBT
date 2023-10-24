@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { PoliceOfficerRoleCode, WorkerCategoryTypeCode } from 'src/app/api/models';
-import { BooleanTypeCode, SelectOptions, SwlCategoryTypes } from 'src/app/core/code-types/model-desc.models';
+import { BooleanTypeCode, SelectOptions, WorkerCategoryTypes } from 'src/app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { LicenceApplicationService } from '../licence-application.service';
 
@@ -46,13 +46,13 @@ import { LicenceApplicationService } from '../licence-application.service';
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Licence Type</div>
 															<div class="text-data">
-																{{ licenceTypeCode.value | options : 'SwlTypes' }}
+																{{ licenceTypeCode.value | options : 'WorkerLicenceTypes' }}
 															</div>
 														</div>
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Application Type</div>
 															<div class="text-data">
-																{{ applicationTypeCode.value | options : 'SwlApplicationTypes' }}
+																{{ applicationTypeCode.value | options : 'ApplicationTypes' }}
 															</div>
 														</div>
 														<div class="col-lg-4 col-md-12 mt-lg-2">
@@ -77,7 +77,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 														</ng-container>
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Licence Term</div>
-															<div class="text-data">{{ licenceTermCode.value | options : 'SwlTermTypes' }}</div>
+															<div class="text-data">{{ licenceTermCode.value | options : 'LicenceTermTypes' }}</div>
 														</div>
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Fee</div>
@@ -92,7 +92,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Expired Licence Expiry Date</div>
 															<div class="text-data">
-																{{ expiryDate.value | date : constants.date.dateFormat | default }}
+																{{ expiredLicenceExpiryDate.value | date : constants.date.dateFormat | default }}
 															</div>
 														</div>
 													</div>
@@ -103,7 +103,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 														<div class="row mt-0">
 															<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showArmouredCarGuard">
 																<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																	{{ categoryTypeCodes.ArmouredCarGuard | options : 'SwlCategoryTypes' }} Documents
+																	{{ categoryTypeCodes.ArmouredCarGuard | options : 'WorkerCategoryTypes' }} Documents
 																</div>
 																<div class="text-data">
 																	<div *ngFor="let doc of categoryArmouredCarGuardAttachments.value; let i = index">
@@ -113,7 +113,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 															</div>
 															<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showFireInvestigator">
 																<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																	{{ categoryTypeCodes.FireInvestigator | options : 'SwlCategoryTypes' }} Documents
+																	{{ categoryTypeCodes.FireInvestigator | options : 'WorkerCategoryTypes' }} Documents
 																</div>
 																<div class="text-data">
 																	<div
@@ -133,7 +133,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 															</div>
 															<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showLocksmith">
 																<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																	{{ categoryTypeCodes.Locksmith | options : 'SwlCategoryTypes' }} Documents
+																	{{ categoryTypeCodes.Locksmith | options : 'WorkerCategoryTypes' }} Documents
 																</div>
 																<div class="text-data">
 																	<div *ngFor="let doc of categoryLocksmithAttachments.value; let i = index">
@@ -144,7 +144,10 @@ import { LicenceApplicationService } from '../licence-application.service';
 
 															<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showPrivateInvestigator">
 																<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																	{{ categoryTypeCodes.PrivateInvestigator | options : 'SwlCategoryTypes' }} Documents
+																	{{
+																		categoryTypeCodes.PrivateInvestigator | options : 'WorkerCategoryTypes'
+																	}}
+																	Documents
 																</div>
 																<div class="text-data">
 																	<div class="text-data">
@@ -169,7 +172,8 @@ import { LicenceApplicationService } from '../licence-application.service';
 															<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showPrivateInvestigatorUnderSupervision">
 																<div class="text-label d-block text-muted mt-2 mt-lg-0">
 																	{{
-																		categoryTypeCodes.PrivateInvestigatorUnderSupervision | options : 'SwlCategoryTypes'
+																		categoryTypeCodes.PrivateInvestigatorUnderSupervision
+																			| options : 'WorkerCategoryTypes'
 																	}}
 																	Documents
 																</div>
@@ -196,7 +200,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 
 															<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showSecurityAlarmInstaller">
 																<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																	{{ categoryTypeCodes.SecurityAlarmInstaller | options : 'SwlCategoryTypes' }}
+																	{{ categoryTypeCodes.SecurityAlarmInstaller | options : 'WorkerCategoryTypes' }}
 																	Documents
 																</div>
 																<div class="text-data">
@@ -210,7 +214,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 
 															<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showSecurityConsultant">
 																<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																	{{ categoryTypeCodes.SecurityConsultant | options : 'SwlCategoryTypes' }} Documents
+																	{{ categoryTypeCodes.SecurityConsultant | options : 'WorkerCategoryTypes' }} Documents
 																</div>
 																<div class="text-data">
 																	<div *ngFor="let doc of categorySecurityConsultantAttachments.value; let i = index">
@@ -226,7 +230,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 
 															<div class="col-lg-6 col-md-12 mt-lg-2" *ngIf="showSecurityGuard">
 																<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																	{{ categoryTypeCodes.SecurityGuard | options : 'SwlCategoryTypes' }} Documents
+																	{{ categoryTypeCodes.SecurityGuard | options : 'WorkerCategoryTypes' }} Documents
 																</div>
 																<div class="text-data">
 																	<div *ngFor="let doc of categorySecurityGuardAttachments.value; let i = index">
@@ -476,7 +480,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 																		</span>
 																	</div>
 																	<div class="text-data">
-																		<div *ngFor="let doc of citizenshipDocumentPhotoAttachments.value; let i = index">
+																		<div *ngFor="let doc of attachments.value; let i = index">
 																			{{ doc.name }}
 																		</div>
 																	</div>
@@ -707,7 +711,7 @@ export class SummaryReviewComponent {
 	booleanTypeCodes = BooleanTypeCode;
 	policeOfficerRoleCodes = PoliceOfficerRoleCode;
 	categoryTypeCodes = WorkerCategoryTypeCode;
-	swlCategoryTypes = SwlCategoryTypes;
+	swlCategoryTypes = WorkerCategoryTypes;
 
 	categoryArmouredCarGuardFormGroup: FormGroup = this.licenceApplicationService.categoryArmouredCarGuardFormGroup;
 	categoryBodyArmourSalesFormGroup: FormGroup = this.licenceApplicationService.categoryBodyArmourSalesFormGroup;
@@ -815,7 +819,7 @@ export class SummaryReviewComponent {
 	get expiredLicenceNumber(): FormControl {
 		return this.form.controls['expiredLicenceData'].get('expiredLicenceNumber') as FormControl;
 	}
-	get expiryDate(): FormControl {
+	get expiredLicenceExpiryDate(): FormControl {
 		return this.form.controls['expiredLicenceData'].get('expiryDate') as FormControl;
 	}
 
@@ -863,7 +867,7 @@ export class SummaryReviewComponent {
 		return this.form.controls['policeBackgroundData'].get('otherOfficerRole') as FormControl;
 	}
 	get letterOfNoConflictAttachments(): FormControl {
-		return this.form.controls['policeBackgroundData'].get('letterOfNoConflictAttachments') as FormControl;
+		return this.form.controls['policeBackgroundData'].get('attachments') as FormControl;
 	}
 
 	get oneLegalName(): FormControl {
@@ -899,7 +903,7 @@ export class SummaryReviewComponent {
 		return this.form.controls['mentalHealthConditionsData'].get('isTreatedForMHC') as FormControl;
 	}
 	get mentalHealthConditionAttachments(): FormControl {
-		return this.form.controls['mentalHealthConditionsData'].get('mentalHealthConditionAttachments') as FormControl;
+		return this.form.controls['mentalHealthConditionsData'].get('attachments') as FormControl;
 	}
 
 	get hasCriminalHistory(): FormControl {
@@ -907,7 +911,7 @@ export class SummaryReviewComponent {
 	}
 
 	get proofOfFingerprintAttachments(): FormControl {
-		return this.form.controls['proofOfFingerprintData'].get('proofOfFingerprintAttachments') as FormControl;
+		return this.form.controls['proofOfFingerprintData'].get('attachments') as FormControl;
 	}
 
 	get isBornInCanada(): FormControl {
@@ -919,11 +923,11 @@ export class SummaryReviewComponent {
 	get proofOfAbility(): FormControl {
 		return this.form.controls['citizenshipData'].get('proofOfAbility') as FormControl;
 	}
-	get citizenshipDocumentExpiryDate(): FormControl {
-		return this.form.controls['citizenshipData'].get('citizenshipDocumentExpiryDate') as FormControl;
+	get citizenshipExpiryDate(): FormControl {
+		return this.form.controls['citizenshipData'].get('expiryDate') as FormControl;
 	}
-	get citizenshipDocumentPhotoAttachments(): FormControl {
-		return this.form.controls['citizenshipData'].get('citizenshipDocumentPhotoAttachments') as FormControl;
+	get attachments(): FormControl {
+		return this.form.controls['citizenshipData'].get('attachments') as FormControl;
 	}
 
 	get governmentIssuedPhotoTypeCode(): FormControl {
@@ -933,7 +937,7 @@ export class SummaryReviewComponent {
 		return this.form.controls['govIssuedIdData'].get('governmentIssuedPhotoExpiryDate') as FormControl;
 	}
 	get governmentIssuedPhotoAttachments(): FormControl {
-		return this.form.controls['govIssuedIdData'].get('governmentIssuedPhotoAttachments') as FormControl;
+		return this.form.controls['govIssuedIdData'].get('attachments') as FormControl;
 	}
 
 	get hasBcDriversLicence(): FormControl {
@@ -966,7 +970,7 @@ export class SummaryReviewComponent {
 		return this.form.controls['photographOfYourselfData'].get('useBcServicesCardPhoto') as FormControl;
 	}
 	get photoOfYourselfAttachments(): FormControl {
-		return this.form.controls['photographOfYourselfData'].get('photoOfYourselfAttachments') as FormControl;
+		return this.form.controls['photographOfYourselfData'].get('attachments') as FormControl;
 	}
 
 	get contactEmailAddress(): FormControl {

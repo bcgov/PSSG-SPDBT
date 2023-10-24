@@ -21,14 +21,18 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 					<mat-radio-group class="category-radio-group" aria-label="Select an option" formControlName="requirementCode">
 						<mat-radio-button
 							class="radio-label"
-							[value]="securityAlarmInstallerRequirementCodes.TradesQualificationCertificate"
+							[value]="
+								securityAlarmInstallerRequirementCodes.CategorySecurityAlarmInstaller_TradesQualificationCertificate
+							"
 						>
 							Trades Qualification Certificate
 						</mat-radio-button>
 						<mat-divider class="my-2"></mat-divider>
 						<mat-radio-button
 							class="radio-label"
-							[value]="securityAlarmInstallerRequirementCodes.ExperienceOrTrainingEquivalent"
+							[value]="
+								securityAlarmInstallerRequirementCodes.CategorySecurityAlarmInstaller_ExperienceOrTrainingEquivalent
+							"
 						>
 							Experience or training equivalent to the Trades Qualification Certificate
 						</mat-radio-button>
@@ -47,10 +51,20 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 
 			<div *ngIf="requirementCode.value" @showHideTriggerSlideAnimation>
 				<div class="fs-6 fw-bold mb-2">
-					<span *ngIf="requirementCode.value == securityAlarmInstallerRequirementCodes.TradesQualificationCertificate">
+					<span
+						*ngIf="
+							requirementCode.value ==
+							securityAlarmInstallerRequirementCodes.CategorySecurityAlarmInstaller_TradesQualificationCertificate
+						"
+					>
 						Upload a copy of your certificate:
 					</span>
-					<span *ngIf="requirementCode.value == securityAlarmInstallerRequirementCodes.ExperienceOrTrainingEquivalent">
+					<span
+						*ngIf="
+							requirementCode.value ==
+							securityAlarmInstallerRequirementCodes.CategorySecurityAlarmInstaller_ExperienceOrTrainingEquivalent
+						"
+					>
 						Upload document(s) providing proof of equivalent training:
 					</span>
 				</div>
@@ -88,7 +102,7 @@ export class LicenceCategorySecurityAlarmInstallerComponent implements OnInit, L
 	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.SecurityAlarmInstaller, 'SwlCategoryTypes');
+		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.SecurityAlarmInstaller, 'WorkerCategoryTypes');
 	}
 
 	isFormValid(): boolean {
