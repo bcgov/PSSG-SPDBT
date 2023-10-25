@@ -8,7 +8,6 @@ import { LicenceAccessCodeComponent } from '../licence-access-code.component';
 import { LicenceCategoryComponent } from '../licence-category.component';
 import { LicenceExpiredComponent } from '../licence-expired.component';
 import { LicenceTermComponent } from '../licence-term.component';
-import { PersonalInformationComponent } from '../personal-information.component';
 import { RestraintsAuthorizationComponent } from '../restraints-authorization.component';
 import { SoleProprietorComponent } from '../sole-proprietor.component';
 
@@ -20,10 +19,21 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 				<app-sole-proprietor></app-sole-proprietor>
 
 				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+					<!-- <div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6"> -->
+					<!-- <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+						<button
+							mat-stroked-button
+							color="accent"
+							style="border-color: var(--mdc-outlined-button-label-text-color, inherit);"
+							class="large mb-2"
+						>
+							Save & Exit
+						</button>
+					</div> -->
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
 							color="primary"
@@ -33,6 +43,16 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 							Next
 						</button>
 					</div>
+					<!-- <div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-3 col-sm-6">
+						<button
+							mat-stroked-button
+							color="accent"
+							style="border-color: var(--mdc-outlined-button-label-text-color, inherit);"
+							class="large mb-2"
+						>
+							Next: Review
+						</button>
+					</div> -->
 				</div>
 			</mat-step>
 
@@ -40,23 +60,23 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 				<app-checklist></app-checklist>
 
 				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 					</div>
 				</div>
 			</mat-step>
 
-			<mat-step>
+			<!-- <mat-step>
 				<app-personal-information></app-personal-information>
 
 				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
 							color="primary"
@@ -67,16 +87,16 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 						</button>
 					</div>
 				</div>
-			</mat-step>
+			</mat-step> -->
 
 			<mat-step>
 				<app-licence-expired></app-licence-expired>
 
 				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
 							color="primary"
@@ -113,10 +133,10 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 				<app-restraints-authorization></app-restraints-authorization>
 
 				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_RESTRAINTS)">
 							Next
 						</button>
@@ -128,10 +148,10 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 				<app-dogs-authorization></app-dogs-authorization>
 
 				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_DOGS)">
 							Next
 						</button>
@@ -143,10 +163,10 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 				<app-licence-term></app-licence-term>
 
 				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_LICENCE_TERM)">
 							Next
 						</button>
@@ -161,7 +181,7 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 export class StepLicenceSelectionComponent {
 	readonly STEP_ACCESS_CODE = '2';
 	readonly STEP_SOLE_PROPRIETOR = '3';
-	readonly STEP_PERSONAL_INFORMATION = '4';
+	// readonly STEP_PERSONAL_INFORMATION = '4';
 	readonly STEP_LICENCE_EXPIRED = '5';
 	readonly STEP_LICENCE_CATEGORY = '6';
 	readonly STEP_DOGS = '8';
@@ -177,8 +197,8 @@ export class StepLicenceSelectionComponent {
 	@ViewChild(LicenceAccessCodeComponent)
 	licenceAccessCodeComponent!: LicenceAccessCodeComponent;
 
-	@ViewChild(PersonalInformationComponent)
-	personalInformationComponent!: PersonalInformationComponent;
+	// @ViewChild(PersonalInformationComponent)
+	// personalInformationComponent!: PersonalInformationComponent;
 
 	@ViewChild(LicenceExpiredComponent)
 	licenceExpiredComponent!: LicenceExpiredComponent;
@@ -229,8 +249,8 @@ export class StepLicenceSelectionComponent {
 				return this.licenceAccessCodeComponent.isFormValid();
 			case this.STEP_SOLE_PROPRIETOR:
 				return this.soleProprietorComponent.isFormValid();
-			case this.STEP_PERSONAL_INFORMATION:
-				return this.personalInformationComponent.isFormValid();
+			// case this.STEP_PERSONAL_INFORMATION:
+			// 	return this.personalInformationComponent.isFormValid();
 			case this.STEP_LICENCE_EXPIRED:
 				return this.licenceExpiredComponent.isFormValid();
 			case this.STEP_LICENCE_CATEGORY:

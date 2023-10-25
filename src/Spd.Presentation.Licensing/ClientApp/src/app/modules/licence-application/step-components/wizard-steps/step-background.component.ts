@@ -11,15 +11,14 @@ import { PoliceBackgroundComponent } from '../police-background.component';
 	selector: 'app-step-background',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step
-				><!-- *ngIf="showStepPoliceBackground"-->
+			<mat-step>
 				<app-police-background></app-police-background>
 
 				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
 					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
 							color="primary"
@@ -32,15 +31,14 @@ import { PoliceBackgroundComponent } from '../police-background.component';
 				</div>
 			</mat-step>
 
-			<mat-step
-				><!-- *ngIf="showStepMentalHealth"-->
+			<mat-step>
 				<app-mental-health-conditions></app-mental-health-conditions>
 
 				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
 							color="primary"
@@ -53,15 +51,14 @@ import { PoliceBackgroundComponent } from '../police-background.component';
 				</div>
 			</mat-step>
 
-			<mat-step
-				><!-- *ngIf="showStepCriminalHistory"-->
+			<mat-step>
 				<app-criminal-history></app-criminal-history>
 
 				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
 							color="primary"
@@ -75,14 +72,13 @@ import { PoliceBackgroundComponent } from '../police-background.component';
 			</mat-step>
 
 			<mat-step>
-				<!--  *ngIf="showStepFingerprints" -->
 				<app-fingerprints></app-fingerprints>
 
 				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_FINGERPRINTS)">
 							Next
 						</button>
@@ -94,10 +90,10 @@ import { PoliceBackgroundComponent } from '../police-background.component';
 				<app-background-info></app-background-info>
 
 				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_BACKGROUND_INFO)">
 							Next
 						</button>

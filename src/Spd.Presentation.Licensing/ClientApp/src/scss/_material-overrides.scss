@@ -93,6 +93,14 @@ a {
   background-color: unset;// rgba(0, 0, 0, 0.04);
 }
 
+.mat-vertical-content {
+  padding: 0 12px 12px 12px !important;
+}
+
+.mat-vertical-content-container {
+  margin-left: 12px !important;
+}
+
 // CARD
 .mat-mdc-card-content {  
   text-align: center;
@@ -284,6 +292,7 @@ mat-label {
     padding: 8px 24px;
     border-bottom-width: 1px !important;
     border-bottom-style: solid !important; 
+    border-bottom-color:  rgba(15, 72, 174, 0.52)!important;
   }
   
   .mat-column-action1:empty, .mat-column-action2:empty {

@@ -74,7 +74,7 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 				</button> -->
 					<button
 						mat-fab
-						class="icon-button-large"
+						class="icon-button-large mx-3"
 						color="primary"
 						style="color: white; top: 10px;"
 						matTooltip="Save & Exit"
@@ -87,11 +87,11 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 					<button
 						*ngIf="isFormValid"
 						mat-fab
-						class="icon-button-large mt-3"
+						class="icon-button-large m-3"
 						color="primary"
 						style="color: white; top: 10px;"
-						matTooltip="Back to Review page"
-						aria-label="Back to Review page"
+						matTooltip="Go to Review"
+						aria-label="Go to Review"
 						(click)="onGoToReview()"
 					>
 						<mat-icon>skip_next</mat-icon>
@@ -102,8 +102,8 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 						mat-raised-button
 						class="large mt-3"
 						color="primary"
-						matTooltip="Back to Review page"
-						aria-label="Back to Review page"
+						matTooltip="Go to Review"
+						aria-label="Go to Review"
 						(click)="onGoToReview()"
 					>
 						Next: Review >

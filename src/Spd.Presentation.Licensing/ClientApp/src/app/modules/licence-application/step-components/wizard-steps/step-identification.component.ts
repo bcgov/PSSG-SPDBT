@@ -11,6 +11,7 @@ import { CitizenshipComponent } from '../citizenship.component';
 import { ContactInformationComponent } from '../contact-information.component';
 import { HeightAndWeightComponent } from '../height-and-weight.component';
 import { MailingAddressComponent } from '../mailing-address.component';
+import { PersonalInformationComponent } from '../personal-information.component';
 import { PhotoComponent } from '../photo.component';
 import { ResidentialAddressComponent } from '../residential-address.component';
 
@@ -19,13 +20,33 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
+				<app-personal-information></app-personal-information>
+
+				<div class="row mt-4">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
+					</div>
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+						<button
+							mat-flat-button
+							color="primary"
+							class="large mb-2"
+							(click)="onFormValidNextStep(STEP_PERSONAL_INFORMATION)"
+						>
+							Next
+						</button>
+					</div>
+				</div>
+			</mat-step>
+
+			<mat-step>
 				<app-aliases></app-aliases>
 
 				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_ALIASES)">
 							Next
 						</button>
@@ -37,10 +58,10 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 				<app-citizenship></app-citizenship>
 
 				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_CITIZENSHIP)">
 							Next
 						</button>
@@ -52,10 +73,10 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 				<app-additional-gov-id></app-additional-gov-id>
 
 				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
 							color="primary"
@@ -72,10 +93,10 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 				<app-bc-driver-licence></app-bc-driver-licence>
 
 				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
 							color="primary"
@@ -92,10 +113,10 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 				<app-height-and-weight></app-height-and-weight>
 
 				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
 							color="primary"
@@ -112,10 +133,10 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 				<app-photo></app-photo>
 
 				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_PHOTO)">
 							Next
 						</button>
@@ -127,10 +148,10 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 				<app-residential-address></app-residential-address>
 
 				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
 							color="primary"
@@ -147,10 +168,10 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 				<app-mailing-address></app-mailing-address>
 
 				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
 							color="primary"
@@ -167,10 +188,10 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 				<app-contact-information></app-contact-information>
 
 				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_CONTACT_INFORMATION)">
 							Next
 						</button>
@@ -183,6 +204,7 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepIdentificationComponent {
+	readonly STEP_PERSONAL_INFORMATION = '9';
 	readonly STEP_ALIASES = '0';
 	readonly STEP_CITIZENSHIP = '1';
 	readonly STEP_ADDITIONAL_GOV_ID = '2';
@@ -197,6 +219,7 @@ export class StepIdentificationComponent {
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
 
+	@ViewChild(PersonalInformationComponent) personalInformationComponent!: PersonalInformationComponent;
 	@ViewChild(AliasesComponent) aliasesComponent!: AliasesComponent;
 	@ViewChild(CitizenshipComponent) citizenshipComponent!: CitizenshipComponent;
 	@ViewChild(AdditionalGovIdComponent) additionalGovIdComponent!: AdditionalGovIdComponent;
@@ -246,6 +269,8 @@ export class StepIdentificationComponent {
 
 	private dirtyForm(step: string): boolean {
 		switch (step) {
+			case this.STEP_PERSONAL_INFORMATION:
+				return this.personalInformationComponent.isFormValid();
 			case this.STEP_ALIASES:
 				return this.aliasesComponent.isFormValid();
 			case this.STEP_CITIZENSHIP:

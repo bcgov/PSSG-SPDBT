@@ -25,7 +25,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 												<mat-expansion-panel-header>
 													<mat-panel-title class="review-panel-title">
 														<mat-toolbar class="d-flex justify-content-between">
-															<div class="fs-4 my-2">Licence Selection</div>
+															<div class="panel-header fs-4 my-2">Licence Selection</div>
 															<button
 																mat-mini-fab
 																color="primary"
@@ -40,9 +40,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 													</mat-panel-title>
 												</mat-expansion-panel-header>
 												<div class="panel-body">
-													<!-- <mat-divider class="mt-2 mb-2"></mat-divider> -->
 													<div class="text-minor-heading mt-4">Licence Information</div>
-													<!-- <mat-divider class="mt-2 mb-0"></mat-divider> -->
 													<div class="row mt-0">
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Licence Type</div>
@@ -83,18 +81,6 @@ import { LicenceApplicationService } from '../licence-application.service';
 														<div class="col-lg-4 col-md-12 mt-lg-2">
 															<div class="text-label d-block text-muted mt-2 mt-lg-0">Fee</div>
 															<div class="text-data">---</div>
-														</div>
-													</div>
-													<div class="row mt-0" *ngIf="hasExpiredLicence.value == booleanTypeCodes.Yes">
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Expired Licence Number</div>
-															<div class="text-data">{{ expiredLicenceNumber.value | default }}</div>
-														</div>
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Expired Licence Expiry Date</div>
-															<div class="text-data">
-																{{ expiredLicenceExpiryDate.value | date : constants.date.dateFormat | default }}
-															</div>
 														</div>
 													</div>
 
@@ -240,6 +226,25 @@ import { LicenceApplicationService } from '../licence-application.service';
 														</div>
 													</ng-container>
 
+													<ng-container *ngIf="hasExpiredLicence.value == booleanTypeCodes.Yes">
+														<mat-divider class="mt-4 mb-2"></mat-divider>
+														<div class="text-minor-heading">Expired Licence</div>
+														<div class="row mt-0">
+															<div class="col-lg-4 col-md-12 mt-lg-2">
+																<div class="text-label d-block text-muted mt-2 mt-lg-0">Expired Licence Number</div>
+																<div class="text-data">{{ expiredLicenceNumber.value | default }}</div>
+															</div>
+															<div class="col-lg-4 col-md-12 mt-lg-2">
+																<div class="text-label d-block text-muted mt-2 mt-lg-0">
+																	Expired Licence Expiry Date
+																</div>
+																<div class="text-data">
+																	{{ expiredLicenceExpiryDate.value | date : constants.date.dateFormat | default }}
+																</div>
+															</div>
+														</div>
+													</ng-container>
+
 													<ng-container *ngIf="carryAndUseRetraints.value == booleanTypeCodes.Yes">
 														<mat-divider class="mt-4 mb-2"></mat-divider>
 														<div class="text-minor-heading">Restraints Authorization</div>
@@ -298,7 +303,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 												<mat-expansion-panel-header>
 													<mat-panel-title class="review-panel-title">
 														<mat-toolbar class="d-flex justify-content-between">
-															<div class="fs-4 my-2">Background Information</div>
+															<div class="panel-header fs-4 my-2">Background Information</div>
 															<button
 																mat-mini-fab
 																color="primary"
@@ -400,7 +405,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 												<mat-expansion-panel-header>
 													<mat-panel-title class="review-panel-title">
 														<mat-toolbar class="d-flex justify-content-between">
-															<div class="fs-4 my-2">Identification</div>
+															<div class="panel-header fs-4 my-2">Identification</div>
 															<button
 																mat-mini-fab
 																color="primary"
@@ -542,7 +547,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 												<mat-expansion-panel-header>
 													<mat-panel-title class="review-panel-title">
 														<mat-toolbar class="d-flex justify-content-between">
-															<div class="fs-4 my-2">Contact Information</div>
+															<div class="panel-header fs-4 my-2">Contact Information</div>
 															<button
 																mat-mini-fab
 																color="primary"
@@ -657,10 +662,10 @@ import { LicenceApplicationService } from '../licence-application.service';
 	`,
 	styles: [
 		`
-			.title {
+			/* .title {
 				margin-top: 20px;
 				margin-bottom: 10px;
-			}
+			} */
 			.mat-expansion-panel {
 				border-radius: 0;
 			}
@@ -696,6 +701,10 @@ import { LicenceApplicationService } from '../licence-application.service';
 					background-color: var(--color-primary-lighter) !important;
 					color: var(--color-primary-dark) !important;
 					padding: 0;
+
+					.panel-header {
+						white-space: normal;
+					}
 				}
 			}
 
