@@ -245,4 +245,11 @@ namespace Spd.Utilities.Dynamics
         Cancelled = 100000003
     }
 
+    public enum LicenceApplicationTypeOptionSet
+    {
+        New_Expired = 100000000,
+        Renewal = 100000001,
+        Update = 100000002,
+        Replacement = 100000003
+    }
 }

@@ -65,4 +65,11 @@ namespace Spd.Utilities.Shared.ResourceContracts
         LICENSING,
         PSSO_VS
     }
+
+    public enum GenderEnum
+    {
+        M,
+        F,
+        U
+    }
 }
