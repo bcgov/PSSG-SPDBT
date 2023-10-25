@@ -22,7 +22,6 @@ export { GovIssuedIdData } from './models/gov-issued-id-data';
 export { HairColourCode } from './models/hair-colour-code';
 export { HeightUnitCode } from './models/height-unit-code';
 export { IdentityProviderTypeCode } from './models/identity-provider-type-code';
-export { InvalidWorkerLicenceCategoryMatrixConfiguration } from './models/invalid-worker-licence-category-matrix-configuration';
 export { LicenceTermCode } from './models/licence-term-code';
 export { LicenceTermData } from './models/licence-term-data';
 export { LicenceTypeData } from './models/licence-type-data';
