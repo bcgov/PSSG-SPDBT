@@ -9,7 +9,7 @@ namespace Spd.Manager.Cases.Licence
         public Task<WorkerLicenceCreateResponse> Handle(WorkerLicenceCreateCommand command, CancellationToken ct);
     }
 
-    public record WorkerLicenceCreateCommand(WorkerLicenceCreateRequest LicenceCreateRequest, string BcscGuid) : IRequest<WorkerLicenceCreateResponse>;
+    public record WorkerLicenceCreateCommand(WorkerLicenceCreateRequest LicenceCreateRequest, string? BcscGuid = null) : IRequest<WorkerLicenceCreateResponse>;
 
     public class WorkerLicenceCreateRequest
     {

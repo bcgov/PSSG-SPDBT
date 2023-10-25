@@ -25,7 +25,7 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
-        /// Create Security Worker Licence
+        /// Create Security Worker Licence Application
         /// </summary>
         /// <param name="licenceCreateRequest"></param>
         /// <returns></returns>
@@ -38,5 +38,21 @@ namespace Spd.Presentation.Licensing.Controllers
             var info = _currentUser.GetBcscUserIdentityInfo();
             return await _mediator.Send(new WorkerLicenceCreateCommand(licenceCreateRequest, info.Sub));
         }
+
+        /// <summary>
+        /// Create Security Worker Licence Application Anonymously
+        /// </summary>
+        /// <param name="licenceCreateRequest"></param>
+        /// <returns></returns>
+        [Route("api/anonymous-worker-licences")]
+        [HttpPost]
+        public async Task<WorkerLicenceCreateResponse> CreateWorkerLicenceAnonymously([FromBody][Required] WorkerLicenceCreateRequest licenceCreateRequest)
+        {
+            _logger.LogInformation("Get CreateWorkerLicenceAnonymously");
+            return await _mediator.Send(new WorkerLicenceCreateCommand(licenceCreateRequest));
+        }
+
+
     }
+
 }
