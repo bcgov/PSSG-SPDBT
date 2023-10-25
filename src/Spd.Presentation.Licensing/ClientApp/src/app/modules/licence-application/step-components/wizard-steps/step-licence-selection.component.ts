@@ -16,47 +16,6 @@ import { RestraintsAuthorizationComponent } from '../restraints-authorization.co
 	selector: 'app-step-licence-selection',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<!-- <mat-step>
-				<app-sole-proprietor></app-sole-proprietor>
-
-				<div class="row mt-4"> -->
-			<!-- <div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6"> -->
-			<!-- <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button
-							mat-stroked-button
-							color="accent"
-							style="border-color: var(--mdc-outlined-button-label-text-color, inherit);"
-							class="large mb-2"
-						>
-							Save & Exit
-						</button>
-					</div> -->
-			<!-- <div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_SOLE_PROPRIETOR)"
-						>
-							Next
-						</button>
-					</div> -->
-			<!-- <div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-3 col-sm-6">
-						<button
-							mat-stroked-button
-							color="accent"
-							style="border-color: var(--mdc-outlined-button-label-text-color, inherit);"
-							class="large mb-2"
-						>
-							Next: Review
-						</button>
-					</div> -->
-			<!-- </div>
-			</mat-step> -->
-
 			<mat-step>
 				<app-checklist></app-checklist>
 
@@ -69,26 +28,6 @@ import { RestraintsAuthorizationComponent } from '../restraints-authorization.co
 					</div>
 				</div>
 			</mat-step>
-
-			<!-- <mat-step>
-				<app-personal-information></app-personal-information>
-
-				<div class="row mt-4">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_PERSONAL_INFORMATION)"
-						>
-							Next
-						</button>
-					</div>
-				</div>
-			</mat-step> -->
 
 			<mat-step>
 				<app-licence-expired></app-licence-expired>
@@ -181,8 +120,6 @@ import { RestraintsAuthorizationComponent } from '../restraints-authorization.co
 })
 export class StepLicenceSelectionComponent {
 	readonly STEP_ACCESS_CODE = '2';
-	// readonly STEP_SOLE_PROPRIETOR = '3';
-	// readonly STEP_PERSONAL_INFORMATION = '4';
 	readonly STEP_LICENCE_EXPIRED = '5';
 	readonly STEP_LICENCE_CATEGORY = '6';
 	readonly STEP_DOGS = '8';
@@ -192,14 +129,8 @@ export class StepLicenceSelectionComponent {
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-	// @ViewChild(SoleProprietorComponent)
-	// soleProprietorComponent!: SoleProprietorComponent;
-
 	@ViewChild(LicenceAccessCodeComponent)
 	licenceAccessCodeComponent!: LicenceAccessCodeComponent;
-
-	// @ViewChild(PersonalInformationComponent)
-	// personalInformationComponent!: PersonalInformationComponent;
 
 	@ViewChild(LicenceExpiredComponent)
 	licenceExpiredComponent!: LicenceExpiredComponent;
@@ -252,10 +183,6 @@ export class StepLicenceSelectionComponent {
 		switch (step) {
 			case this.STEP_ACCESS_CODE:
 				return this.licenceAccessCodeComponent.isFormValid();
-			// case this.STEP_SOLE_PROPRIETOR:
-			// 	return this.soleProprietorComponent.isFormValid();
-			// case this.STEP_PERSONAL_INFORMATION:
-			// 	return this.personalInformationComponent.isFormValid();
 			case this.STEP_LICENCE_EXPIRED:
 				return this.licenceExpiredComponent.isFormValid();
 			case this.STEP_LICENCE_CATEGORY:

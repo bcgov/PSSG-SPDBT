@@ -10,6 +10,7 @@ import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
 import { ConfigurationResponse } from '../models/configuration-response';
+import { InvalidWorkerLicenceCategoryMatrixConfiguration } from '../models/invalid-worker-licence-category-matrix-configuration';
 
 @Injectable({
   providedIn: 'root',
@@ -69,6 +70,64 @@ export class ConfigurationService extends BaseService {
 
     return this.apiConfigurationGet$Response(params,context).pipe(
       map((r: StrictHttpResponse<ConfigurationResponse>) => r.body as ConfigurationResponse)
+    );
+  }
+
+  /**
+   * Path part for operation apiInvalidCategoryMatrixGet
+   */
+  static readonly ApiInvalidCategoryMatrixGetPath = '/api/invalid-category-matrix';
+
+  /**
+   * Get Invalid Security Worker licence category combination Matrix.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiInvalidCategoryMatrixGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiInvalidCategoryMatrixGet$Response(params?: {
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<InvalidWorkerLicenceCategoryMatrixConfiguration>> {
+
+    const rb = new RequestBuilder(this.rootUrl, ConfigurationService.ApiInvalidCategoryMatrixGetPath, 'get');
+    if (params) {
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<InvalidWorkerLicenceCategoryMatrixConfiguration>;
+      })
+    );
+  }
+
+  /**
+   * Get Invalid Security Worker licence category combination Matrix.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiInvalidCategoryMatrixGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiInvalidCategoryMatrixGet(params?: {
+  },
+  context?: HttpContext
+
+): Observable<InvalidWorkerLicenceCategoryMatrixConfiguration> {
+
+    return this.apiInvalidCategoryMatrixGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<InvalidWorkerLicenceCategoryMatrixConfiguration>) => r.body as InvalidWorkerLicenceCategoryMatrixConfiguration)
     );
   }
 
