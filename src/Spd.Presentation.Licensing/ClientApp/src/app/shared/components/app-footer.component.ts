@@ -23,6 +23,7 @@ import { Component } from '@angular/core';
 				padding-right: 10px;
 				color: white;
 				font-size: smaller;
+				text-decoration: none !important;
 			}
 
 			@media (max-width: 575px) {

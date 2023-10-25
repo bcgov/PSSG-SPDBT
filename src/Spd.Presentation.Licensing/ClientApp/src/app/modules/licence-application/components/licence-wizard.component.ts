@@ -81,7 +81,7 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 						aria-label="Save and Exit"
 						(click)="onSave()"
 					>
-						<mat-icon>save</mat-icon>
+						<mat-icon>exit_to_app</mat-icon>
 					</button>
 
 					<button

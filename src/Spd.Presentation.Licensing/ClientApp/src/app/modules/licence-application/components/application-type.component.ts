@@ -112,7 +112,7 @@ export class ApplicationTypeComponent implements OnInit {
 
 	onStepNext(): void {
 		if (this.isFormValid()) {
-			this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATION));
+			this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.SOLE_PROPRIETOR));
 		}
 	}
 

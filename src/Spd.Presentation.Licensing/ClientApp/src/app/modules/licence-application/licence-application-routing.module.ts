@@ -10,6 +10,7 @@ import { LicenceSelectionComponent } from './components/licence-selection.compon
 import { LicenceWizardUpdateComponent } from './components/licence-wizard-update.component';
 import { LicenceWizardComponent } from './components/licence-wizard.component';
 import { LoginSelectionComponent } from './components/login-selection.component';
+import { SoleProprietorComponent } from './components/sole-proprietor.component';
 import { UserProfileComponent } from './components/user-profile.component';
 import { LicenceApplicationComponent } from './licence-application.component';
 
@@ -19,7 +20,8 @@ export class LicenceApplicationRoutes {
 	public static APPLICATIONS_IN_PROGRESS = 'applications-in-progress';
 	public static LICENCE_UPDATE = 'licence-update';
 	public static LICENCE_SELECTION = 'licence-selection';
-	public static LICENCE_TYPE = 'licence-type';
+	public static APPLICATION_TYPE = 'application-type';
+	public static SOLE_PROPRIETOR = 'sole-proprietor';
 	public static APPLICATION = 'application';
 	public static USER_PROFILE = 'user-profile';
 
@@ -57,8 +59,12 @@ const routes: Routes = [
 				component: LicenceSelectionComponent,
 			},
 			{
-				path: LicenceApplicationRoutes.LICENCE_TYPE,
+				path: LicenceApplicationRoutes.APPLICATION_TYPE,
 				component: ApplicationTypeComponent,
+			},
+			{
+				path: LicenceApplicationRoutes.SOLE_PROPRIETOR,
+				component: SoleProprietorComponent,
 			},
 			{
 				path: LicenceApplicationRoutes.LICENCE_UPDATE,

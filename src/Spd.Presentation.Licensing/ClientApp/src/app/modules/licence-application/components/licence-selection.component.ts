@@ -156,7 +156,7 @@ export class LicenceSelectionComponent implements OnInit {
 		const isValid = this.isFormValid();
 
 		if (isValid) {
-			this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LICENCE_TYPE));
+			this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATION_TYPE));
 		}
 	}
 

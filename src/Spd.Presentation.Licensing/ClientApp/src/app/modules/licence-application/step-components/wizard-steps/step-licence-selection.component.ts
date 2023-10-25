@@ -2,6 +2,8 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
+import { Router } from '@angular/router';
+import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
 import { LicenceApplicationService } from '../../licence-application.service';
 import { DogsAuthorizationComponent } from '../dogs-authorization.component';
 import { LicenceAccessCodeComponent } from '../licence-access-code.component';
@@ -9,18 +11,17 @@ import { LicenceCategoryComponent } from '../licence-category.component';
 import { LicenceExpiredComponent } from '../licence-expired.component';
 import { LicenceTermComponent } from '../licence-term.component';
 import { RestraintsAuthorizationComponent } from '../restraints-authorization.component';
-import { SoleProprietorComponent } from '../sole-proprietor.component';
 
 @Component({
 	selector: 'app-step-licence-selection',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step>
+			<!-- <mat-step>
 				<app-sole-proprietor></app-sole-proprietor>
 
-				<div class="row mt-4">
-					<!-- <div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6"> -->
-					<!-- <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+				<div class="row mt-4"> -->
+			<!-- <div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6"> -->
+			<!-- <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-stroked-button
 							color="accent"
@@ -30,7 +31,7 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 							Save & Exit
 						</button>
 					</div> -->
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+			<!-- <div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
@@ -42,8 +43,8 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 						>
 							Next
 						</button>
-					</div>
-					<!-- <div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-3 col-sm-6">
+					</div> -->
+			<!-- <div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-3 col-sm-6">
 						<button
 							mat-stroked-button
 							color="accent"
@@ -53,15 +54,15 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 							Next: Review
 						</button>
 					</div> -->
-				</div>
-			</mat-step>
+			<!-- </div>
+			</mat-step> -->
 
 			<mat-step>
 				<app-checklist></app-checklist>
 
 				<div class="row mt-4">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
+						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
@@ -180,7 +181,7 @@ import { SoleProprietorComponent } from '../sole-proprietor.component';
 })
 export class StepLicenceSelectionComponent {
 	readonly STEP_ACCESS_CODE = '2';
-	readonly STEP_SOLE_PROPRIETOR = '3';
+	// readonly STEP_SOLE_PROPRIETOR = '3';
 	// readonly STEP_PERSONAL_INFORMATION = '4';
 	readonly STEP_LICENCE_EXPIRED = '5';
 	readonly STEP_LICENCE_CATEGORY = '6';
@@ -191,8 +192,8 @@ export class StepLicenceSelectionComponent {
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-	@ViewChild(SoleProprietorComponent)
-	soleProprietorComponent!: SoleProprietorComponent;
+	// @ViewChild(SoleProprietorComponent)
+	// soleProprietorComponent!: SoleProprietorComponent;
 
 	@ViewChild(LicenceAccessCodeComponent)
 	licenceAccessCodeComponent!: LicenceAccessCodeComponent;
@@ -219,13 +220,17 @@ export class StepLicenceSelectionComponent {
 
 	categorySecurityGuardFormGroup: FormGroup = this.licenceApplicationService.categorySecurityGuardFormGroup;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private router: Router, private licenceApplicationService: LicenceApplicationService) {}
 
 	onStepNext(formNumber: string): void {
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 
 		this.nextStepperStep.emit(true);
+	}
+
+	onStepPrevious(): void {
+		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.SOLE_PROPRIETOR));
 	}
 
 	onFormValidNextStep(formNumber: string): void {
@@ -247,8 +252,8 @@ export class StepLicenceSelectionComponent {
 		switch (step) {
 			case this.STEP_ACCESS_CODE:
 				return this.licenceAccessCodeComponent.isFormValid();
-			case this.STEP_SOLE_PROPRIETOR:
-				return this.soleProprietorComponent.isFormValid();
+			// case this.STEP_SOLE_PROPRIETOR:
+			// 	return this.soleProprietorComponent.isFormValid();
 			// case this.STEP_PERSONAL_INFORMATION:
 			// 	return this.personalInformationComponent.isFormValid();
 			case this.STEP_LICENCE_EXPIRED:
