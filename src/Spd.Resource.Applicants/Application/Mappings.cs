@@ -131,7 +131,7 @@ namespace Spd.Resource.Applicants.Application
              .ForMember(d => d.spd_middlename2, opt => opt.MapFrom(s => s.PersonalInformationData == null ? null : s.PersonalInformationData.MiddleName2))
              .ForMember(d => d.spd_dateofbirth, opt => opt.MapFrom(s => s.PersonalInformationData == null ? null : s.PersonalInformationData.DateOfBirth))
              .ForMember(d => d.spd_sex, opt => opt.MapFrom(s => GetGender(s.PersonalInformationData)))
-             //.ForMember(d => d.spd, opt => opt.MapFrom(s => GetGender(s.PersonalInformationData)))
+             .ForMember(d => d.spd_requestdogs, opt => opt.MapFrom(s => GetGender(s.PersonalInformationData)))
              .ForMember(d => d.statecode, opt => opt.MapFrom(s => DynamicsConstants.StateCode_Active))
              .ForMember(d => d.statuscode, opt => opt.MapFrom(s => PaymentStatusCodeOptionSet.Pending));
 

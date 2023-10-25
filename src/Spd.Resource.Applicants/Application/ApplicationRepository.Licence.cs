@@ -45,11 +45,12 @@ internal partial class ApplicationRepository : IApplicationRepository
     private void LinkExpiredLicence(ExpiredLicenceData? expiredLicence, spd_application app)
     {
         if (expiredLicence?.HasExpiredLicence == null || !(bool)expiredLicence.HasExpiredLicence) return;
-        _context.spd_
-        spd_servicetype? servicetype = _context.LookupServiceType(serviceTypeStr);
-        if (servicetype != null)
+        var licence = _context.spd_licenses.Where(l => l.spd_licensenumber == expiredLicence.ExpiredLicenceNumber 
+            && l.spd_licenceexpirydate == expiredLicence.ExpiryDate.Value.Date)
+            .FirstOrDefault();
+        if (licence != null)
         {
-            _context.SetLink(app, nameof(spd_application.spd_ServiceTypeId), servicetype);
+            _context.SetLink(app, nameof(spd_application.spd_CurrentExpiredLicense), licence);
         }
     }
 }
