@@ -66,7 +66,7 @@ export class Address {
 						mat-button
 						type="button"
 						color="primary"
-						class="w-auto"
+						class="w-auto mt-2 mt-md-0"
 						[disabled]="showAddressFields"
 						(click)="onShowManualAddress()"
 					>

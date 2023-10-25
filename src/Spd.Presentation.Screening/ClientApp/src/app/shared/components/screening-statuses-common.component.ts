@@ -36,7 +36,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 	template: `
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
-				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
+				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12 col-12">
 					<h2 class="mb-2 fw-normal">{{ heading }}</h2>
 					<app-applications-banner></app-applications-banner>
 				</div>
@@ -71,7 +71,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 				</ng-container>
 
 				<div class="row">
-					<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
+					<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12 col-12">
 						<mat-form-field>
 							<input
 								matInput
