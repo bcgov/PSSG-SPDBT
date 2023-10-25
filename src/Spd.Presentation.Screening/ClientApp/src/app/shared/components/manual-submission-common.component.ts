@@ -437,7 +437,7 @@ export interface AliasCreateRequest {
 					</ng-container>
 				</section>
 			</form>
-			<div class="row mb-4">
+			<div class="row">
 				<div class="offset-xl-8 offset-lg-6 col-xl-2 col-lg-3 col-md-6 col-sm-12">
 					<button mat-stroked-button color="primary" class="large mb-2" (click)="onCancel()">
 						<i class="fa fa-times mr-2"></i>Cancel
