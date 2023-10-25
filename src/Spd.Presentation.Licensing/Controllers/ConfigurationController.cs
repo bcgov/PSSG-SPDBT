@@ -48,208 +48,18 @@ namespace Spd.Presentation.Licensing.Controllers
                 Scope = _bcscOption.Value.Scope,
             };
             RecaptchaConfiguration recaptchaResp = new RecaptchaConfiguration(_captchaOption.Value.ClientKey);
+
+            var invalidMatrix = _configuration.GetSection("InvalidWorkerLicenceCategoryMatrix").Get<Dictionary<WorkerCategoryTypeCode, List<WorkerCategoryTypeCode>>>();
+            if (invalidMatrix == null)
+                throw new ApiException(System.Net.HttpStatusCode.InternalServerError, "missing configuration for invalid worker licence category matrix");
+
             return await Task.FromResult(new ConfigurationResponse()
             {
                 OidcConfiguration = oidcResp,
                 RecaptchaConfiguration = recaptchaResp,
                 BcscConfiguration = bcscConfig,
+                InvalidWorkerLicenceCategoryMatrixConfiguration = invalidMatrix
             });
-        }
-
-        /// <summary>
-        /// Get Invalid Security Worker licence category combination Matrix
-        /// </summary>
-        /// <returns>InvalidWorkerLicenceCategoryMatrixConfiguration</returns>
-        [Route("api/invalid-category-matrix")]
-        [HttpGet]
-        public async Task<InvalidWorkerLicenceCategoryMatrixConfiguration> GetInvalidCategoryMatrix()
-        {
-            var response = new InvalidWorkerLicenceCategoryMatrixConfiguration();
-            var invalidMatrix = _configuration.GetSection("InvalidWorkerLicenceCategoryMatrix").Get<Dictionary<WorkerCategoryTypeCode, List<WorkerCategoryTypeCode>>>();
-            if (invalidMatrix == null)
-                throw new ApiException(System.Net.HttpStatusCode.InternalServerError, "missing configuration for invalid worker licence category matrix");
-            response.InvalidWorkerLicenceCategoryMatrix = invalidMatrix;
-            #region temp generation code
-            //response.InvalidWorkerLicenceCategoryMatrix = new Dictionary<WorkerCategoryTypeCode, List<WorkerCategoryTypeCode>>
-            //{
-            //    {
-            //        WorkerCategoryTypeCode.ArmouredCarGuard,
-            //        new List<WorkerCategoryTypeCode> {
-            //        WorkerCategoryTypeCode.ArmouredCarGuard,
-            //        WorkerCategoryTypeCode.SecurityGuardUnderSupervision
-            //        }
-            //    },
-            //    {
-            //        WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller,
-            //        new List<WorkerCategoryTypeCode> {
-            //        WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller,
-            //        WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
-            //        WorkerCategoryTypeCode.SecurityAlarmInstaller,
-            //        WorkerCategoryTypeCode.LocksmithUnderSupervision,
-            //        WorkerCategoryTypeCode.Locksmith,
-            //        WorkerCategoryTypeCode.SecurityGuardUnderSupervision
-            //        }
-            //    },
-            //    {
-            //        WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
-            //        new List<WorkerCategoryTypeCode> {
-            //        WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller,
-            //        WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
-            //        WorkerCategoryTypeCode.SecurityAlarmInstaller,
-            //        WorkerCategoryTypeCode.SecurityAlarmMonitor,
-            //        WorkerCategoryTypeCode.SecurityAlarmResponse,
-            //        WorkerCategoryTypeCode.SecurityAlarmSales,
-            //        WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller,
-            //        WorkerCategoryTypeCode.SecurityGuardUnderSupervision
-            //        }
-            //    },
-            //    {
-            //        WorkerCategoryTypeCode.SecurityAlarmInstaller,
-            //        new List<WorkerCategoryTypeCode> {
-            //        WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller,
-            //        WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
-            //        WorkerCategoryTypeCode.SecurityAlarmInstaller,
-            //        WorkerCategoryTypeCode.SecurityAlarmMonitor,
-            //        WorkerCategoryTypeCode.SecurityAlarmResponse,
-            //        WorkerCategoryTypeCode.SecurityAlarmSales,
-            //        WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller,
-            //        WorkerCategoryTypeCode.SecurityGuardUnderSupervision
-            //        }
-            //    },
-            //    {
-            //        WorkerCategoryTypeCode.SecurityAlarmMonitor,
-            //        new List<WorkerCategoryTypeCode> {
-            //        WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
-            //        WorkerCategoryTypeCode.SecurityAlarmInstaller,
-            //        WorkerCategoryTypeCode.SecurityAlarmMonitor,
-            //        WorkerCategoryTypeCode.SecurityAlarmResponse,
-            //        WorkerCategoryTypeCode.SecurityGuardUnderSupervision,
-            //        WorkerCategoryTypeCode.SecurityGuard
-            //        }
-            //    },
-            //    {
-            //        WorkerCategoryTypeCode.SecurityAlarmResponse,
-            //        new List<WorkerCategoryTypeCode> {
-            //        WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
-            //        WorkerCategoryTypeCode.SecurityAlarmInstaller,
-            //        WorkerCategoryTypeCode.SecurityAlarmMonitor,
-            //        WorkerCategoryTypeCode.SecurityAlarmResponse,
-            //        WorkerCategoryTypeCode.SecurityGuardUnderSupervision,
-            //        WorkerCategoryTypeCode.SecurityGuard
-            //        }
-            //    },
-            //    {
-            //        WorkerCategoryTypeCode.SecurityAlarmSales,
-            //        new List<WorkerCategoryTypeCode> {
-            //        WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
-            //        WorkerCategoryTypeCode.SecurityAlarmInstaller,
-            //        WorkerCategoryTypeCode.SecurityAlarmMonitor,
-            //        WorkerCategoryTypeCode.SecurityAlarmSales,
-            //        WorkerCategoryTypeCode.SecurityGuardUnderSupervision,
-            //        WorkerCategoryTypeCode.SecurityGuard
-            //        }
-            //    },
-            //    {
-            //        WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller,
-            //        new List<WorkerCategoryTypeCode> {
-            //        WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
-            //        WorkerCategoryTypeCode.SecurityAlarmInstaller,
-            //        WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller,
-            //        WorkerCategoryTypeCode.SecurityGuardUnderSupervision
-            //        }
-            //    },
-            //    {
-            //        WorkerCategoryTypeCode.LocksmithUnderSupervision,
-            //        new List<WorkerCategoryTypeCode> {
-            //        WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller,
-            //        WorkerCategoryTypeCode.LocksmithUnderSupervision,
-            //        WorkerCategoryTypeCode.Locksmith,
-            //        WorkerCategoryTypeCode.SecurityGuardUnderSupervision
-            //        }
-            //    },
-            //    {
-            //        WorkerCategoryTypeCode.Locksmith,
-            //        new List<WorkerCategoryTypeCode> {
-            //        WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller,
-            //        WorkerCategoryTypeCode.LocksmithUnderSupervision,
-            //        WorkerCategoryTypeCode.Locksmith,
-            //        WorkerCategoryTypeCode.SecurityGuardUnderSupervision
-            //        }
-            //    },
-            //    {
-            //        WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision,
-            //        new List<WorkerCategoryTypeCode> {
-            //        WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision,
-            //        WorkerCategoryTypeCode.PrivateInvestigator,
-            //        WorkerCategoryTypeCode.FireInvestigator,
-            //        WorkerCategoryTypeCode.SecurityGuardUnderSupervision
-            //        }
-            //    },
-            //    {
-            //        WorkerCategoryTypeCode.PrivateInvestigator,
-            //        new List<WorkerCategoryTypeCode> {
-            //        WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision,
-            //        WorkerCategoryTypeCode.PrivateInvestigator,
-            //        WorkerCategoryTypeCode.FireInvestigator,
-            //        WorkerCategoryTypeCode.SecurityGuardUnderSupervision
-            //        }
-            //    },
-            //    {
-            //        WorkerCategoryTypeCode.FireInvestigator,
-            //        new List<WorkerCategoryTypeCode> {
-            //        WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision,
-            //        WorkerCategoryTypeCode.PrivateInvestigator,
-            //        WorkerCategoryTypeCode.FireInvestigator,
-            //        }
-            //    },
-            //    {
-            //        WorkerCategoryTypeCode.SecurityConsultant,
-            //        new List<WorkerCategoryTypeCode> {
-            //        WorkerCategoryTypeCode.SecurityConsultant,
-            //        WorkerCategoryTypeCode.SecurityGuardUnderSupervision,
-            //        }
-            //    },
-            //    {
-            //        WorkerCategoryTypeCode.SecurityGuardUnderSupervision,
-            //        new List<WorkerCategoryTypeCode> {
-            //        WorkerCategoryTypeCode.ArmouredCarGuard,
-            //        WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller,
-            //        WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
-            //        WorkerCategoryTypeCode.SecurityAlarmInstaller,
-            //        WorkerCategoryTypeCode.SecurityAlarmMonitor,
-            //        WorkerCategoryTypeCode.SecurityAlarmResponse,
-            //        WorkerCategoryTypeCode.SecurityAlarmSales,
-            //        WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller,
-            //        WorkerCategoryTypeCode.LocksmithUnderSupervision,
-            //        WorkerCategoryTypeCode.Locksmith,
-            //        WorkerCategoryTypeCode.PrivateInvestigator,
-            //        WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision,
-            //        WorkerCategoryTypeCode.FireInvestigator,
-            //        WorkerCategoryTypeCode.SecurityConsultant,
-            //        WorkerCategoryTypeCode.SecurityGuardUnderSupervision,
-            //        WorkerCategoryTypeCode.SecurityGuard,
-            //        WorkerCategoryTypeCode.BodyArmourSales
-            //        }
-            //    },
-            //    {
-            //        WorkerCategoryTypeCode.SecurityGuard,
-            //        new List<WorkerCategoryTypeCode> {
-            //        WorkerCategoryTypeCode.SecurityAlarmMonitor,
-            //        WorkerCategoryTypeCode.SecurityAlarmResponse,
-            //        WorkerCategoryTypeCode.SecurityGuardUnderSupervision,
-            //        WorkerCategoryTypeCode.SecurityGuard
-            //        }
-            //    },
-            //    {
-            //        WorkerCategoryTypeCode.BodyArmourSales,
-            //        new List<WorkerCategoryTypeCode> {
-            //        WorkerCategoryTypeCode.SecurityGuardUnderSupervision,
-            //        WorkerCategoryTypeCode.BodyArmourSales
-            //        }
-            //    }
-            //};
-            #endregion
-            return response;
         }
     }
 
@@ -258,6 +68,7 @@ namespace Spd.Presentation.Licensing.Controllers
         public OidcConfiguration OidcConfiguration { get; set; } = null!;
         public RecaptchaConfiguration RecaptchaConfiguration { get; set; } = null!;
         public BcscConfiguration BcscConfiguration { get; set; } = null!;
+        public Dictionary<WorkerCategoryTypeCode, List<WorkerCategoryTypeCode>> InvalidWorkerLicenceCategoryMatrixConfiguration { get; set; } = null!;
     }
 
     public record OidcConfiguration
@@ -270,8 +81,4 @@ namespace Spd.Presentation.Licensing.Controllers
     }
     public record BcscConfiguration : OidcConfiguration;
     public record RecaptchaConfiguration(string Key);
-    public class InvalidWorkerLicenceCategoryMatrixConfiguration
-    {
-        public Dictionary<WorkerCategoryTypeCode, List<WorkerCategoryTypeCode>> InvalidWorkerLicenceCategoryMatrix { get; set; }
-    }
 }
