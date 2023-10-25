@@ -484,7 +484,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 			middleName2: new FormControl(''),
 			surname: new FormControl('', [FormControlValidators.required]),
 			oneLegalName: new FormControl(false),
-			emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
+			emailAddress: new FormControl('', [FormControlValidators.email]),
 			phoneNumber: new FormControl('', [Validators.required]),
 			driversLicense: new FormControl(''),
 			genderCode: new FormControl(''),
@@ -513,6 +513,10 @@ export class ManualSubmissionCommonComponent implements OnInit {
 			validators: [
 				FormGroupValidators.conditionalRequiredValidator('screeningType', (form) => this.showScreeningType ?? false),
 				FormGroupValidators.conditionalRequiredValidator('serviceType', (form) => this.showServiceType ?? false),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'emailAddress',
+					(form) => this.portal == PortalTypeCode.Crrp
+				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'attachments',
 					(form) => this.portal == PortalTypeCode.Crrp
