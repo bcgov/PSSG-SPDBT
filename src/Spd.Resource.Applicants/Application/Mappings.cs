@@ -8,7 +8,7 @@ using Spd.Utilities.Shared.Tools;
 
 namespace Spd.Resource.Applicants.Application
 {
-    internal class Mappings : Profile
+    internal partial class Mappings : Profile
     {
         public Mappings()
         {
@@ -121,6 +121,20 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.WorkWith, opt => opt.MapFrom(s => s.spd_workswith))
             .ForMember(d => d.ServiceType, opt => opt.MapFrom(s => DynamicsContextLookupHelpers.LookupServiceTypeKey(s._spd_servicetype_value)))
             .ForMember(d => d.ClearanceId, opt => opt.MapFrom(s => s.spd_clearanceid));
+
+            _ = CreateMap<SaveLicenceApplicationCmd, spd_application>()
+             .ForMember(d => d.spd_applicationid, opt => opt.MapFrom(s => Guid.NewGuid()))
+             .ForMember(d => d.spd_licenceapplicationtype, opt => opt.MapFrom(s => GetLicenceApplicationType(s.ApplicationTypeData)))
+             .ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => s.PersonalInformationData == null ? null : s.PersonalInformationData.GivenName))
+             .ForMember(d => d.spd_lastname, opt => opt.MapFrom(s => s.PersonalInformationData == null ? null : s.PersonalInformationData.Surname))
+             .ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => s.PersonalInformationData == null ? null : s.PersonalInformationData.MiddleName1))
+             .ForMember(d => d.spd_middlename2, opt => opt.MapFrom(s => s.PersonalInformationData == null ? null : s.PersonalInformationData.MiddleName2))
+             .ForMember(d => d.spd_dateofbirth, opt => opt.MapFrom(s => s.PersonalInformationData == null ? null : s.PersonalInformationData.DateOfBirth))
+             .ForMember(d => d.spd_sex, opt => opt.MapFrom(s => GetGender(s.PersonalInformationData)))
+             .ForMember(d => d.spd_requestdogs, opt => opt.MapFrom(s => GetGender(s.PersonalInformationData)))
+             .ForMember(d => d.statecode, opt => opt.MapFrom(s => DynamicsConstants.StateCode_Active))
+             .ForMember(d => d.statuscode, opt => opt.MapFrom(s => PaymentStatusCodeOptionSet.Pending));
+
         }
 
         private static string? GetPayeeType(int? code)
@@ -129,7 +143,7 @@ namespace Spd.Resource.Applicants.Application
             return Enum.GetName(typeof(PayerPreferenceOptionSet), code);
         }
 
-        private static int? GetGender(GenderCode? code)
+        private static int? GetGender(GenderEnum? code)
         {
             if (code == null) return (int)GenderOptionSet.U;
             return (int)Enum.Parse<GenderOptionSet>(code.ToString());
@@ -157,6 +171,25 @@ namespace Spd.Resource.Applicants.Application
         {
             if (code == null) return ScreenTypeEnum.Staff;
             return Enum.Parse<ScreenTypeEnum>(Enum.GetName(typeof(ScreenTypeOptionSet), code));
+        }
+
+        private static int? GetLicenceApplicationType(ApplicationTypeData? applicationTypeData)
+        {
+            if (applicationTypeData?.ApplicationTypeCode == null)
+                return null;
+            return applicationTypeData.ApplicationTypeCode switch
+            {
+                ApplicationTypeEnum.Update => (int)LicenceApplicationTypeOptionSet.Update,
+                ApplicationTypeEnum.Replacement => (int)LicenceApplicationTypeOptionSet.Replacement,
+                ApplicationTypeEnum.New => (int)LicenceApplicationTypeOptionSet.New_Expired,
+                ApplicationTypeEnum.Renewal => (int)LicenceApplicationTypeOptionSet.Renewal,
+                _ => throw new ArgumentException("invalid application type code")
+            };
+        }
+        private static int? GetGender(PersonalInformationData? data)
+        {
+            if (data?.GenderCode == null) return (int)GenderOptionSet.U;
+            return (int)Enum.Parse<GenderOptionSet>(data.GenderCode.ToString());
         }
     }
 }

@@ -2195,6 +2195,7 @@
         <Property Name="bcgov_filename" Type="Edm.String" Unicode="false" />
         <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
         <Property Name="modifiedon" Type="Edm.DateTimeOffset" />
+        <Property Name="spd_expirydate" Type="Edm.Date" />
         <Property Name="_bcgov_appointmentid_value" Type="Edm.Guid" />
         <Property Name="statuscode" Type="Edm.Int32" />
         <Property Name="_owningbusinessunit_value" Type="Edm.Guid" />
@@ -9284,7 +9285,6 @@
         <Property Name="emailaddress" Type="Edm.String" Unicode="false" />
         <Property Name="_resolvebykpiid_value" Type="Edm.Guid" />
         <Property Name="blockedprofile" Type="Edm.Boolean" />
-        <Property Name="casetypecode" Type="Edm.Int32" />
         <Property Name="customercontacted" Type="Edm.Boolean" />
         <Property Name="timezoneruleversionnumber" Type="Edm.Int32" />
         <Property Name="_owningteam_value" Type="Edm.Guid" />
@@ -9305,7 +9305,8 @@
         <Property Name="importsequencenumber" Type="Edm.Int32" />
         <Property Name="billedserviceunits" Type="Edm.Int32" />
         <Property Name="decremententitlementterm" Type="Edm.Boolean" />
-        <Property Name="spd_fingerprints" Type="Edm.Int32" />
+        <Property Name="spd_eligiblefortemporarylicense" Type="Edm.Boolean" />
+        <Property Name="casetypecode" Type="Edm.Int32" />
         <Property Name="resolveby" Type="Edm.DateTimeOffset" />
         <Property Name="spd_recommendationcompleted" Type="Edm.Int32" />
         <Property Name="spd_risklevel" Type="Edm.Int32" />
@@ -9315,7 +9316,7 @@
         <Property Name="_contactid_value" Type="Edm.Guid" />
         <Property Name="_existingcase_value" Type="Edm.Guid" />
         <Property Name="_spd_organizationid_value" Type="Edm.Guid" />
-        <Property Name="_primarycontactid_value" Type="Edm.Guid" />
+        <Property Name="spd_declaredhistoryofmentalillness" Type="Edm.Int32" />
         <Property Name="severitycode" Type="Edm.Int32" />
         <Property Name="productserialnumber" Type="Edm.String" Unicode="false" />
         <Property Name="spd_cornethitfound" Type="Edm.Int32" />
@@ -9328,6 +9329,7 @@
         <Property Name="_modifiedby_value" Type="Edm.Guid" />
         <Property Name="_createdonbehalfby_value" Type="Edm.Guid" />
         <Property Name="spd_reroutetoclientservices" Type="Edm.Boolean" />
+        <Property Name="_primarycontactid_value" Type="Edm.Guid" />
         <Property Name="entityimage_timestamp" Type="Edm.Int64" />
         <Property Name="statecode" Type="Edm.Int32" />
         <Property Name="overriddencreatedon" Type="Edm.DateTimeOffset" />
@@ -9339,6 +9341,7 @@
         <Property Name="_createdbyexternalparty_value" Type="Edm.Guid" />
         <Property Name="entityimageid" Type="Edm.Guid" />
         <Property Name="_entitlementid_value" Type="Edm.Guid" />
+        <Property Name="spd_fingerprints" Type="Edm.Int32" />
         <Property Name="spd_resolutionreason" Type="Edm.Int32" />
         <Property Name="spd_justincheckcompleted" Type="Edm.Boolean" />
         <Property Name="activitiescomplete" Type="Edm.Boolean" />
@@ -9356,6 +9359,7 @@
         <Property Name="sentimentvalue" Type="Edm.Double" />
         <Property Name="spd_applicantsdateofbirth" Type="Edm.DateTimeOffset" />
         <Property Name="_slaid_value" Type="Edm.Guid" />
+        <Property Name="messagetypecode" Type="Edm.Int32" />
         <Property Name="influencescore" Type="Edm.Double" />
         <Property Name="_firstresponsebykpiid_value" Type="Edm.Guid" />
         <Property Name="actualserviceunits" Type="Edm.Int32" />
@@ -9381,12 +9385,14 @@
         <Property Name="spd_datecompleted" Type="Edm.DateTimeOffset" />
         <Property Name="lastonholdtime" Type="Edm.DateTimeOffset" />
         <Property Name="spd_justinhitfound" Type="Edm.Int32" />
+        <Property Name="spd_issuetemporarylicense" Type="Edm.Int32" />
         <Property Name="_owninguser_value" Type="Edm.Guid" />
-        <Property Name="messagetypecode" Type="Edm.Int32" />
+        <Property Name="spd_photomeetsstandards" Type="Edm.Boolean" />
         <Property Name="isdecrementing" Type="Edm.Boolean" />
         <Property Name="spd_companyfacilityname" Type="Edm.String" Unicode="false" />
         <Property Name="customersatisfactioncode" Type="Edm.Int32" />
         <Property Name="_createdby_value" Type="Edm.Guid" />
+        <Property Name="spd_disclosedcriminalhistory" Type="Edm.Int32" />
         <Property Name="_kbarticleid_value" Type="Edm.Guid" />
         <Property Name="_spd_applicationid_value" Type="Edm.Guid" />
         <Property Name="firstresponsesent" Type="Edm.Boolean" />
