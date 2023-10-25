@@ -230,9 +230,10 @@ mat-label {
   .mat-mdc-row { 
     flex-direction: column;
     align-items: start;
-    padding: 8px 24px;
+    padding: 8px 12px;
     border-bottom-width: 1px !important;
     border-bottom-style: solid !important; 
+    border-bottom-color:  rgba(15, 72, 174, 0.52)!important;
   }
   
   .mat-column-action1:empty, .mat-column-action2:empty {
@@ -297,4 +298,9 @@ mat-label {
 // MAT ERROR
 .mat-option-error {
   font-size: .8em;
+}
+
+// MAT HINT
+.mat-mdc-form-field-hint {  
+  line-height: initial;
 }

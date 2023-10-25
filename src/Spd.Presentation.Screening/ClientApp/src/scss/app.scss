@@ -156,6 +156,12 @@ body {
   background-color: var(--color-primary-lightest);
 }
 
+@media (max-width: 991px) {
+  body { 
+    background-color: transparent;
+  }
+}
+
 .step {
   width: 100%;
   align-items: center;
@@ -323,17 +329,12 @@ a {
 
 @media (max-width: 991px) {
   .step-section {
-    border-radius: none;
-    background-color: transparent;
+    border-radius: 0;
     border: none;
     box-shadow: none;
   }
 }
 
-
-// ngx-dropzone-remove-badge {
-//   z-index: 9999 !important;
-// }
 ngx-dropzone-remove-badge {
   opacity: 1 !important;
 }
