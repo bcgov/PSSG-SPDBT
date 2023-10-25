@@ -55,8 +55,10 @@ import { UtilService } from 'src/app/core/services/util.service';
 				</div>
 			</div>
 
-			<div class="mb-4">
-				<div class="fw-semibold">Completed applications <span class="fw-normal">(for the last 365 days)</span></div>
+			<div class="row mb-4">
+				<div class="col-10 fw-semibold">
+					Completed applications <span class="fw-normal">(for the last 365 days)</span>
+				</div>
 				<div class="d-flex flex-wrap justify-content-start">
 					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
 						<div class="fw-semibold fs-4 m-2 ms-3">
@@ -103,6 +105,12 @@ import { UtilService } from 'src/app/core/services/util.service';
 				width: 10.5em;
 				box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14),
 					0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+			}
+
+			@media (max-width: 627px) {
+				.statistic-card {
+					width: 100% !important;
+				}
 			}
 		`,
 	],
