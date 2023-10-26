@@ -37,7 +37,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12 col-12">
-					<h2 class="mb-2 fw-normal">{{ heading }}</h2>
+					<h2 class="mb-2">{{ heading }}</h2>
 					<app-applications-banner></app-applications-banner>
 				</div>
 			</div>
@@ -115,7 +115,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 							*ngFor="let status of currentStatuses"
 							[removable]="true"
 							(removed)="onItemRemoved(status)"
-							class="me-2 mb-2"
+							class="filter-chip me-2 mb-2"
 							selected
 						>
 							{{ getStatusDesc(status) }}
@@ -213,8 +213,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 								<button
 									mat-flat-button
 									(click)="onPayNow(application)"
-									class="table-button"
-									style="color: var(--color-green);"
+									class="table-button mat-green-button"
 									aria-label="Pay now"
 									*ngIf="application.isPayNow"
 								>
@@ -224,7 +223,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 									mat-flat-button
 									(click)="onVerifyApplicant(application)"
 									class="table-button"
-									style="color: var(--color-primary-light);"
+									color="primary"
 									aria-label="Verify Applicant"
 									*ngIf="application.isVerifyIdentity"
 								>
