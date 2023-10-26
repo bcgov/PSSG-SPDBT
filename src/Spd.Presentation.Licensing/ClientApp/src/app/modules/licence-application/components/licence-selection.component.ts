@@ -22,7 +22,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 											(click)="onLicenceTypeChange(workerLicenceTypeCodes.SecurityBusinessLicence)"
 											[ngClass]="{ 'active-selection-main': licenceTypeCode == workerLicenceTypeCodes.SecurityBusinessLicence }"
 										>
-											<div class="fs-5 mb-4 mt-4 mt-md-0">
+											<div class="fs-4 mb-4 mt-4 mx-2 mt-md-0">
 												<div class="box__image d-none d-md-block">
 													<img class="box__image__item" [src]="image1" />
 												</div>
@@ -38,7 +38,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 											'active-selection-main': licenceTypeCode == workerLicenceTypeCodes.SecurityWorkerLicence
 										}"
 									>
-										<div class="fs-5 mb-4 mt-4 mt-md-0">
+										<div class="fs-4 mb-4 mt-4 mx-2 mt-md-0">
 											<div class="box__image d-none d-md-block">
 												<img class="box__image__item" [src]="image2" />
 											</div>
@@ -54,11 +54,11 @@ import { LicenceApplicationService } from '../licence-application.service';
 											'active-selection-main': licenceTypeCode == workerLicenceTypeCodes.ArmouredVehiclePermit
 										}"
 									>
-										<div class="fs-5 mb-4 mt-4 mt-md-0">
+										<div class="fs-4 mb-4 mt-4 mx-2 mt-md-0">
 											<div class="box__image d-none d-md-block">
 												<img class="box__image__item" [src]="image3" />
 											</div>
-											<span class="px-3">Permit to operate an armoured vehicle</span>
+											Permit to operate an armoured vehicle
 										</div>
 									</div>
 								</div>
@@ -68,11 +68,11 @@ import { LicenceApplicationService } from '../licence-application.service';
 										(click)="onLicenceTypeChange(workerLicenceTypeCodes.BodyArmourPermit)"
 										[ngClass]="{ 'active-selection-main': licenceTypeCode == workerLicenceTypeCodes.BodyArmourPermit }"
 									>
-										<div class="fs-5 mb-4 mt-4 mt-md-0">
+										<div class="fs-4 mb-4 mt-4 mx-2 mt-md-0">
 											<div class="box__image d-none d-md-block">
 												<img class="box__image__item" [src]="image4" />
 											</div>
-											<span class="px-3">Permit to possess body armour</span>
+											Permit to possess body armour
 										</div>
 									</div>
 								</div>
@@ -156,7 +156,7 @@ export class LicenceSelectionComponent implements OnInit {
 		const isValid = this.isFormValid();
 
 		if (isValid) {
-			this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LICENCE_TYPE));
+			this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATION_TYPE));
 		}
 	}
 

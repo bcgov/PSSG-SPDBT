@@ -1,10 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { WorkerCategoryTypeCode } from 'src/app/api/models';
-import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
-import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
+import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-category-armoured-car-guard',
@@ -22,11 +21,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 		<form [formGroup]="form" novalidate>
 			<div class="fs-6 fw-bold">Upload your valid Authorization to Carry certificate:</div>
 			<div class="my-2">
-				<app-file-upload
-					[maxNumberOfFiles]="10"
-					[files]="attachments.value"
-					(filesChanged)="onFilesChanged()"
-				></app-file-upload>
+				<app-file-upload [maxNumberOfFiles]="10" [control]="attachments" [files]="attachments.value"></app-file-upload>
 				<mat-error
 					class="mat-option-error"
 					*ngIf="
@@ -58,13 +53,11 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 	`,
 	styles: [],
 })
-export class LicenceCategoryArmouredCarGuardComponent implements OnInit, LicenceFormStepComponent {
+export class LicenceCategoryArmouredCarGuardComponent implements OnInit, LicenceChildStepperStepComponent {
 	form: FormGroup = this.licenceApplicationService.categoryArmouredCarGuardFormGroup;
 	title = '';
 
 	matcher = new FormErrorStateMatcher();
-
-	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
 	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
 
@@ -73,18 +66,8 @@ export class LicenceCategoryArmouredCarGuardComponent implements OnInit, Licence
 	}
 
 	isFormValid(): boolean {
-		this.onFilesChanged();
-
 		this.form.markAllAsTouched();
 		return this.form.valid;
-	}
-
-	onFilesChanged(): void {
-		const attachments =
-			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
-				? this.fileUploadComponent.files
-				: [];
-		this.form.controls['attachments'].setValue(attachments);
 	}
 
 	public get requirement(): FormControl {

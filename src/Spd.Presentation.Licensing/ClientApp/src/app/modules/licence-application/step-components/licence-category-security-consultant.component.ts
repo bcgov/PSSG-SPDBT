@@ -1,11 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { WorkerCategoryTypeCode } from 'src/app/api/models';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { SecurityConsultantRequirementCode } from 'src/app/core/code-types/model-desc.models';
-import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
-import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
+import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-category-security-consultant',
@@ -39,10 +38,10 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 
 			<div class="my-2">
 				<app-file-upload
+					[control]="resumeAttachments"
 					[maxNumberOfFiles]="10"
 					#resumeAttachmentsRef
 					[files]="resumeAttachments.value"
-					(filesChanged)="onResumeFilesChanged()"
 				></app-file-upload>
 				<mat-error
 					class="mat-option-error"
@@ -106,10 +105,10 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 
 				<div class="my-2">
 					<app-file-upload
+						[control]="attachments"
 						[maxNumberOfFiles]="10"
 						#attachmentsRef
 						[files]="attachments.value"
-						(filesChanged)="onFilesChanged()"
 					></app-file-upload>
 					<mat-error
 						class="mat-option-error"
@@ -127,14 +126,11 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class LicenceCategorySecurityConsultantComponent implements OnInit, LicenceFormStepComponent {
+export class LicenceCategorySecurityConsultantComponent implements OnInit, LicenceChildStepperStepComponent {
 	form: FormGroup = this.licenceApplicationService.categorySecurityConsultantFormGroup;
 	title = '';
 
 	securityConsultantRequirementCodes = SecurityConsultantRequirementCode;
-
-	@ViewChild('resumeAttachmentsRef') fileUploadComponent1!: FileUploadComponent;
-	@ViewChild('attachmentsRef') fileUploadComponent2!: FileUploadComponent;
 
 	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
 
@@ -143,27 +139,8 @@ export class LicenceCategorySecurityConsultantComponent implements OnInit, Licen
 	}
 
 	isFormValid(): boolean {
-		this.onFilesChanged();
-		this.onResumeFilesChanged();
-
 		this.form.markAllAsTouched();
 		return this.form.valid;
-	}
-
-	onFilesChanged(): void {
-		const attachments =
-			this.fileUploadComponent2?.files && this.fileUploadComponent2?.files.length > 0
-				? this.fileUploadComponent2.files
-				: [];
-		this.form.controls['attachments'].setValue(attachments);
-	}
-
-	onResumeFilesChanged(): void {
-		const attachments =
-			this.fileUploadComponent1?.files && this.fileUploadComponent1?.files.length > 0
-				? this.fileUploadComponent1.files
-				: [];
-		this.form.controls['resumeAttachments'].setValue(attachments);
 	}
 
 	public get requirementCode(): FormControl {

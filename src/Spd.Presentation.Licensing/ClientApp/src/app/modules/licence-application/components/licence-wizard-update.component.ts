@@ -20,10 +20,12 @@ import { LicenceApplicationRoutes } from '../licence-application-routing.module'
 							></app-step-licence-updates>
 
 							<div class="row mt-4">
-								<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+								<div
+									class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6"
+								>
 									<button mat-stroked-button color="primary" class="large mb-2" (click)="onCancel()">Cancel</button>
 								</div>
-								<div class="col-lg-3 col-md-4 col-sm-6">
+								<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 									<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 								</div>
 							</div>
@@ -34,10 +36,12 @@ import { LicenceApplicationRoutes } from '../licence-application-routing.module'
 							<app-step-confirm-mailing-address></app-step-confirm-mailing-address>
 
 							<div class="row mt-4">
-								<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+								<div
+									class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6"
+								>
 									<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 								</div>
-								<div class="col-lg-3 col-md-4 col-sm-6">
+								<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 									<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
 								</div>
 							</div>
@@ -48,10 +52,12 @@ import { LicenceApplicationRoutes } from '../licence-application-routing.module'
 							<app-step-confirm-updates></app-step-confirm-updates>
 
 							<div class="row mt-4">
-								<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+								<div
+									class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6"
+								>
 									<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 								</div>
-								<div class="col-lg-3 col-md-4 col-sm-6">
+								<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 									<button mat-flat-button color="primary" class="large mb-2">Pay</button>
 								</div>
 							</div>

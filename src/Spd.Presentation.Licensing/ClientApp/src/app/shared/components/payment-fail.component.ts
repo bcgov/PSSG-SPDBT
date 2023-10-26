@@ -60,7 +60,7 @@ import { Router } from '@angular/router';
 
 			<ng-container *ngIf="isCancelledPaymentFlow; else paymentFailed">
 				<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
-					<div class="lead fs-5 mt-4 text-center">
+					<div class="lead fs-4 mt-4 text-center">
 						Your application is submitted, but it won't be processed until payment is received.
 					</div>
 				</div>
@@ -69,10 +69,10 @@ import { Router } from '@angular/router';
 			<ng-template #paymentFailed>
 				<ng-container *ngIf="numberOfAttemptsRemaining == 0; else remainingAttempts">
 					<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
-						<div class="lead fs-5 mt-4">
+						<div class="lead fs-4 mt-4">
 							Your application has been submitted, but it won't be processed until payment is received.
 						</div>
-						<div class="lead fs-5 my-4">
+						<div class="lead fs-4 my-4">
 							Please download and complete the
 							<a (click)="onDownloadManualPaymentForm()">Manual Payment Form</a> then follow the instructions on the
 							form to submit payment to the Security Programs Division.
@@ -82,12 +82,12 @@ import { Router } from '@angular/router';
 
 				<ng-template #remainingAttempts>
 					<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
-						<div class="lead fs-5 mt-4">
+						<div class="lead fs-4 mt-4">
 							Please ensure the information you entered is correct and try again, or use a different credit card. You
 							have
 							{{ numberOfAttemptsRemaining }} more attempt{{ numberOfAttemptsRemaining == 1 ? '' : 's' }}.
 						</div>
-						<div class="lead fs-5 my-4">
+						<div class="lead fs-4 my-4">
 							Alternatively, you can download the
 							<a (click)="onDownloadManualPaymentForm()">Manual Payment Form</a>. Fill it out, and follow the
 							instructions to submit it to the Security Programs Division.

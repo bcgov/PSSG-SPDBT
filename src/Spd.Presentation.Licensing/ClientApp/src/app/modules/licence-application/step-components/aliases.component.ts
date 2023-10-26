@@ -6,7 +6,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
+import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-aliases',
@@ -125,7 +125,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 		`,
 	],
 })
-export class AliasesComponent implements LicenceFormStepComponent {
+export class AliasesComponent implements LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 
 	form: FormGroup = this.licenceApplicationService.aliasesFormGroup;

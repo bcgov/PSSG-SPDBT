@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
-import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
+import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-criminal-history',
@@ -34,7 +34,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 	`,
 	styles: [],
 })
-export class CriminalHistoryComponent implements LicenceFormStepComponent {
+export class CriminalHistoryComponent implements LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 
 	form: FormGroup = this.licenceApplicationService.criminalHistoryFormGroup;
