@@ -24,6 +24,7 @@ namespace Spd.Presentation.Licensing.Controllers
             _mediator = mediator;
         }
 
+        #region bcsc authenticated
         /// <summary>
         /// Create Security Worker Licence Application
         /// </summary>
@@ -32,12 +33,73 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/worker-licences")]
         [Authorize(Policy = "OnlyBcsc")]
         [HttpPost]
-        public async Task<WorkerLicenceCreateResponse> CreateWorkerLicence([FromBody][Required] WorkerLicenceCreateRequest licenceCreateRequest)
+        public async Task<WorkerLicenceUpsertResponse> SaveWorkerLicence([FromBody][Required] WorkerLicenceUpsertRequest licenceCreateRequest)
         {
-            _logger.LogInformation("Get WorkerLicenceCreateRequest");
+            _logger.LogInformation("Get WorkerLicenceUpsertRequest");
             var info = _currentUser.GetBcscUserIdentityInfo();
-            return await _mediator.Send(new WorkerLicenceCreateCommand(licenceCreateRequest, info.Sub));
+            return await _mediator.Send(new WorkerLicenceUpsertCommand(licenceCreateRequest, info.Sub));
         }
+
+        /// <summary>
+        /// Create Security Worker Licence Application police background
+        /// </summary>
+        /// <param name="licenceCreateRequest"></param>
+        /// <returns></returns>
+        [Route("api/worker-licences-police-backgroung")]
+        [Authorize(Policy = "OnlyBcsc")]
+        [HttpPost]
+        public async Task<WorkerLicenceUpsertResponse> SaveWorkerLicencePoliceBackground([FromBody][Required] PoliceBackgroundUpsertRequest licenceCreateRequest)
+        {
+            _logger.LogInformation("Get WorkerLicenceUpsertRequest");
+            var info = _currentUser.GetBcscUserIdentityInfo();
+            return null;
+        }
+
+        /// <summary>
+        /// Create Security Worker Licence Application mental health
+        /// </summary>
+        /// <param name="licenceCreateRequest"></param>
+        /// <returns></returns>
+        [Route("api/worker-licences-mental-health")]
+        [Authorize(Policy = "OnlyBcsc")]
+        [HttpPost]
+        public async Task<WorkerLicenceUpsertResponse> SaveWorkerLicenceMentalHealth([FromBody][Required] MentalHealthUpsertRequest mentalHealth)
+        {
+            _logger.LogInformation("Get SaveWorkerLicenceMentalHealth");
+            var info = _currentUser.GetBcscUserIdentityInfo();
+            return null;
+        }
+
+        /// <summary>
+        /// Create Security Worker Licence Application fingerprint
+        /// </summary>
+        /// <param name="licenceCreateRequest"></param>
+        /// <returns></returns>
+        [Route("api/worker-licences-fingerprint")]
+        [Authorize(Policy = "OnlyBcsc")]
+        [HttpPost]
+        public async Task<WorkerLicenceUpsertResponse> SaveWorkerLicenceFingerPrint([FromBody][Required] ProofOfFingerprintUpsertRequest fingerprint)
+        {
+            _logger.LogInformation("Get SaveWorkerLicenceFingerPrint");
+            var info = _currentUser.GetBcscUserIdentityInfo();
+            return null;
+        }
+
+        /// <summary>
+        /// Create Security Worker Licence Application PhotographOfYourself
+        /// </summary>
+        /// <param name="licenceCreateRequest"></param>
+        /// <returns></returns>
+        [Route("api/worker-licences-fingerprint")]
+        [Authorize(Policy = "OnlyBcsc")]
+        [HttpPost]
+        public async Task<WorkerLicenceUpsertResponse> SaveWorkerLicencePhotographOfYourself([FromBody][Required] PhotographOfYourselfUpsertRequest fingerprint)
+        {
+            _logger.LogInformation("Get SaveWorkerLicencePhotographOfYourself");
+            var info = _currentUser.GetBcscUserIdentityInfo();
+            return null;
+        }
+        #endregion
 
         /// <summary>
         /// Create Security Worker Licence Application Anonymously
@@ -46,10 +108,10 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/anonymous-worker-licences")]
         [HttpPost]
-        public async Task<WorkerLicenceCreateResponse> CreateWorkerLicenceAnonymously([FromBody][Required] WorkerLicenceCreateRequest licenceCreateRequest)
+        public async Task<WorkerLicenceUpsertResponse> CreateWorkerLicenceAnonymously([FromBody][Required] WorkerLicenceUpsertRequest licenceCreateRequest)
         {
             _logger.LogInformation("Get CreateWorkerLicenceAnonymously");
-            return await _mediator.Send(new WorkerLicenceCreateCommand(licenceCreateRequest));
+            return await _mediator.Send(new WorkerLicenceUpsertCommand(licenceCreateRequest));
         }
 
 

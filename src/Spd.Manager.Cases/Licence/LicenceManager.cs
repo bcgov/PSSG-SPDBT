@@ -10,7 +10,7 @@ using Spd.Utilities.TempFileStorage;
 
 namespace Spd.Manager.Cases.Licence;
 internal class LicenceManager :
-        IRequestHandler<WorkerLicenceCreateCommand, WorkerLicenceCreateResponse>,
+        IRequestHandler<WorkerLicenceUpsertCommand, WorkerLicenceUpsertResponse>,
         ILicenceManager
 {
     private readonly IApplicationRepository _applicationRepository;
@@ -41,11 +41,11 @@ internal class LicenceManager :
         _logger = logger;
     }
 
-    public async Task<WorkerLicenceCreateResponse> Handle(WorkerLicenceCreateCommand request, CancellationToken ct)
+    public async Task<WorkerLicenceUpsertResponse> Handle(WorkerLicenceUpsertCommand cmd, CancellationToken ct)
     {
-        _logger.LogDebug($"manager get WorkerLicenceCreateCommand={request}");
-        var response = await _applicationRepository.SaveLicenceApplicationAsync(_mapper.Map<SaveLicenceApplicationCmd>(request), ct);
+        _logger.LogDebug($"manager get WorkerLicenceUpsertCommand={cmd}");
+        var response = await _applicationRepository.SaveLicenceApplicationAsync(_mapper.Map<SaveLicenceApplicationCmd>(cmd.LicenceUpsertRequest), ct);
 
-        return _mapper.Map<WorkerLicenceCreateResponse>(response);
+        return _mapper.Map<WorkerLicenceUpsertResponse>(response);
     }
 }

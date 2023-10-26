@@ -124,14 +124,18 @@ namespace Spd.Resource.Applicants.Application
 
             _ = CreateMap<SaveLicenceApplicationCmd, spd_application>()
              .ForMember(d => d.spd_applicationid, opt => opt.MapFrom(s => Guid.NewGuid()))
-             .ForMember(d => d.spd_licenceapplicationtype, opt => opt.MapFrom(s => GetLicenceApplicationType(s.ApplicationTypeData)))
-             .ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => s.PersonalInformationData == null ? null : s.PersonalInformationData.GivenName))
-             .ForMember(d => d.spd_lastname, opt => opt.MapFrom(s => s.PersonalInformationData == null ? null : s.PersonalInformationData.Surname))
-             .ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => s.PersonalInformationData == null ? null : s.PersonalInformationData.MiddleName1))
-             .ForMember(d => d.spd_middlename2, opt => opt.MapFrom(s => s.PersonalInformationData == null ? null : s.PersonalInformationData.MiddleName2))
-             .ForMember(d => d.spd_dateofbirth, opt => opt.MapFrom(s => s.PersonalInformationData == null ? null : s.PersonalInformationData.DateOfBirth))
-             .ForMember(d => d.spd_sex, opt => opt.MapFrom(s => GetGender(s.PersonalInformationData)))
-             .ForMember(d => d.spd_requestdogs, opt => opt.MapFrom(s => GetGender(s.PersonalInformationData)))
+             .ForMember(d => d.spd_licenceapplicationtype, opt => opt.MapFrom(s => GetLicenceApplicationType(s.ApplicationTypeCode)))
+             .ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => s.GivenName))
+             .ForMember(d => d.spd_lastname, opt => opt.MapFrom(s => s.Surname))
+             .ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => s.MiddleName1))
+             .ForMember(d => d.spd_middlename2, opt => opt.MapFrom(s => s.MiddleName2))
+             .ForMember(d => d.spd_dateofbirth, opt => opt.MapFrom(s => s.DateOfBirth))
+             .ForMember(d => d.spd_sex, opt => opt.MapFrom(s => GetGender(s.GenderCode)))
+             .ForMember(d => d.spd_licenceterm, opt => opt.MapFrom(s => GetLicenceTerm(s.LicenceTermCode)))
+             .ForMember(d => d.spd_criminalhistory, opt => opt.MapFrom(s => GetYesNo(s.HasCriminalHistory)))
+             .ForMember(d => d.spd_bcdriverslicense, opt => opt.MapFrom(s => s.BcDriversLicenceNumber))
+             .ForMember(d => d.spd_applicanthaircolour, opt => opt.MapFrom(s => GetHairColor(s.HairColourCode)))
+             .ForMember(d => d.spd_applicanteyecolour, opt => opt.MapFrom(s => GetEyeColor(s.EyeColourCode)))
              .ForMember(d => d.statecode, opt => opt.MapFrom(s => DynamicsConstants.StateCode_Active))
              .ForMember(d => d.statuscode, opt => opt.MapFrom(s => PaymentStatusCodeOptionSet.Pending));
 
@@ -173,11 +177,11 @@ namespace Spd.Resource.Applicants.Application
             return Enum.Parse<ScreenTypeEnum>(Enum.GetName(typeof(ScreenTypeOptionSet), code));
         }
 
-        private static int? GetLicenceApplicationType(ApplicationTypeData? applicationTypeData)
+        private static int? GetLicenceApplicationType(ApplicationTypeEnum? applicationType)
         {
-            if (applicationTypeData?.ApplicationTypeCode == null)
+            if (applicationType == null)
                 return null;
-            return applicationTypeData.ApplicationTypeCode switch
+            return applicationType switch
             {
                 ApplicationTypeEnum.Update => (int)LicenceApplicationTypeOptionSet.Update,
                 ApplicationTypeEnum.Replacement => (int)LicenceApplicationTypeOptionSet.Replacement,
@@ -186,10 +190,28 @@ namespace Spd.Resource.Applicants.Application
                 _ => throw new ArgumentException("invalid application type code")
             };
         }
-        private static int? GetGender(PersonalInformationData? data)
+        private static int? GetLicenceTerm(LicenceTermEnum? code)
         {
-            if (data?.GenderCode == null) return (int)GenderOptionSet.U;
-            return (int)Enum.Parse<GenderOptionSet>(data.GenderCode.ToString());
+            if (code == null) return null;
+            return (int)Enum.Parse<LicenceTermOptionSet>(code.ToString());
+        }
+
+        private static int? GetYesNo(bool? value)
+        {
+            if (value == null) return null;
+            return value.Value ? (int)YesNoOptionSet.Yes : (int)YesNoOptionSet.No;
+        }
+
+        private static int? GetHairColor(HairColourEnum? code)
+        {
+            if (code == null) return null;
+            return (int)Enum.Parse<HairColorOptionSet>(code.ToString());
+        }
+
+        private static int? GetEyeColor(EyeColourEnum? code)
+        {
+            if (code == null) return null;
+            return (int)Enum.Parse<EyeColorOptionSet>(code.ToString());
         }
     }
 }
