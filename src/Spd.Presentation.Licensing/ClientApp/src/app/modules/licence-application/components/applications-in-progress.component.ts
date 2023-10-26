@@ -33,11 +33,11 @@ export interface ApplicationResponse {
 					</app-alert>
 
 					<div class="mb-4" *ngIf="incompleteApplications.length > 0">
-						<div class="fs-5 mb-2">Incomplete Licences/Permits</div>
+						<div class="fs-4 fw-light mb-2">Incomplete Licences/Permits</div>
 						<div class="card-section mb-2 px-4 py-3" *ngFor="let appl of incompleteApplications; let i = index">
 							<div class="row">
 								<div class="col-lg-4">
-									<div class="fs-5 fw-normal" style="color: var(--color-primary);">
+									<div class="fs-4 fw-normal" style="color: var(--color-primary);">
 										{{ appl.licenceTypeCode | options : 'WorkerLicenceTypes' }}
 									</div>
 								</div>
@@ -59,11 +59,11 @@ export interface ApplicationResponse {
 					</div>
 
 					<div class="mb-4" *ngIf="activeApplications.length > 0">
-						<div class="fs-5 mb-2">Active Licences/Permits</div>
+						<div class="fs-4 fw-light mb-2">Active Licences/Permits</div>
 						<div class="card-section mb-2 px-4 py-3" *ngFor="let appl of activeApplications; let i = index">
 							<div class="row">
 								<div class="col-lg-2">
-									<div class="fs-5 fw-normal" style="color: var(--color-primary);">
+									<div class="fs-4 fw-normal" style="color: var(--color-primary);">
 										{{ appl.licenceTypeCode | options : 'WorkerLicenceTypes' }}
 									</div>
 								</div>
@@ -147,11 +147,11 @@ export interface ApplicationResponse {
 					</div>
 
 					<div class="mb-4" *ngIf="expiredApplications.length > 0">
-						<div class="fs-5 mb-2">Expired Licences/Permits</div>
+						<div class="fs-4 fw-light mb-2">Expired Licences/Permits</div>
 						<div class="card-section mb-2 px-4 py-3" *ngFor="let appl of expiredApplications; let i = index">
 							<div class="row">
 								<div class="col-lg-2">
-									<div class="fs-5 fw-normal" style="color: var(--color-primary);">
+									<div class="fs-4 fw-normal" style="color: var(--color-primary);">
 										{{ appl.licenceTypeCode | options : 'WorkerLicenceTypes' }}
 									</div>
 								</div>

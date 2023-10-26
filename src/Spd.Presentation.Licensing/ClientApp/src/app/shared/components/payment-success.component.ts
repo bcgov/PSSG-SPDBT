@@ -74,10 +74,10 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 			class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12"
 			*ngIf="isApplicationReceived; else noApplicationReceivedMessage"
 		>
-			<div class="lead fs-5 mt-4">
+			<div class="lead fs-4 mt-4">
 				Thank you for submitting your application to the Criminal Records Review Program.
 			</div>
-			<div class="lead fs-5 my-4">
+			<div class="lead fs-4 my-4">
 				Your application will be reviewed shortly. We will contact you if further information is required.
 			</div>
 		</div>
@@ -85,7 +85,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 		<ng-template #noApplicationReceivedMessage>
 			<div class="row" *ngIf="sendEmailTo; else successMessage">
 				<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
-					<div class="lead fs-5 mb-4">
+					<div class="lead fs-4 mb-4">
 						Your payment has been received and your application will be reviewed shortly. You will be contacted if it is
 						found to be incomplete or inaccurate. An email with a receipt has been sent to:
 						<strong>{{ sendEmailTo }}</strong
@@ -97,7 +97,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 			<ng-template #successMessage>
 				<div class="row">
 					<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
-						<div class="lead fs-5 mb-4">
+						<div class="lead fs-4 mb-4">
 							Thank you for your payment. This application will be reviewed shortly. We will contact the applicant if
 							further information is required.
 						</div>

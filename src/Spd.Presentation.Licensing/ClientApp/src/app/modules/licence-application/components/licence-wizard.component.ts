@@ -254,10 +254,8 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 	}
 
 	onPreviousStepperStep(stepper: MatStepper): void {
-		console.log('onPreviousStepperStep hasValueChanged', this.hasValueChanged);
 		this.saveIfChanged();
 
-		// console.log('previous', stepper);
 		stepper.previous();
 
 		switch (stepper.selectedIndex) {
@@ -270,18 +268,14 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 			case this.STEP_IDENTIFICATION:
 				this.stepIdentificationComponent?.onGoToLastStep();
 				break;
-			// case this.STEP_REVIEW:
-			// 	break;
 		}
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
-		console.log('onNextStepperStep hasValueChanged', this.hasValueChanged);
 		this.saveIfChanged();
 
 		if (stepper?.selected) stepper.selected.completed = true;
 
-		console.log('next step', this.licenceApplicationService.licenceModelFormGroup.value);
 		stepper.next();
 
 		switch (stepper.selectedIndex) {
@@ -294,20 +288,16 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 			case this.STEP_IDENTIFICATION:
 				this.stepIdentificationComponent?.onGoToFirstStep();
 				break;
-			// case this.STEP_REVIEW:
-			// 	this.stepReviewComponent.onGoToFirstStep();
-			// 	break;
 		}
 	}
 
 	onGoToStep(step: number) {
-		console.log('onGoToStep hasValueChanged', this.hasValueChanged);
+		console.debug('onGoToStep', step);
 		this.saveIfChanged();
 
 		if (step == 3) {
-			// TODO test this
-			this.stepIdentificationComponent.onGoToContactStep();
 			this.stepper.selectedIndex = 2;
+			this.stepIdentificationComponent.onGoToContactStep();
 			return;
 		}
 
