@@ -129,7 +129,7 @@ export class StepBackgroundComponent implements LicenceStepperStepComponent {
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
-	@Output() pressNextStep: EventEmitter<boolean> = new EventEmitter<boolean>();
+	@Output() childNextStep: EventEmitter<boolean> = new EventEmitter<boolean>();
 
 	constructor() {}
 
@@ -147,6 +147,10 @@ export class StepBackgroundComponent implements LicenceStepperStepComponent {
 		this.nextStepperStep.emit(true);
 	}
 
+	onGoToNextStep() {
+		this.childstepper.next();
+	}
+
 	onGoToFirstStep() {
 		this.childstepper.selectedIndex = 0;
 	}
@@ -159,8 +163,7 @@ export class StepBackgroundComponent implements LicenceStepperStepComponent {
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 
-		this.pressNextStep.emit(true);
-		this.childstepper.next();
+		this.childNextStep.emit(true);
 	}
 
 	private dirtyForm(step: string): boolean {

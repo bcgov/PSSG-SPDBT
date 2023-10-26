@@ -128,7 +128,7 @@ export class StepLicenceSelectionComponent implements LicenceStepperStepComponen
 
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
-	@Output() pressNextStep: EventEmitter<boolean> = new EventEmitter<boolean>();
+	@Output() childNextStep: EventEmitter<boolean> = new EventEmitter<boolean>();
 
 	@ViewChild(LicenceAccessCodeComponent)
 	licenceAccessCodeComponent!: LicenceAccessCodeComponent;
@@ -169,12 +169,15 @@ export class StepLicenceSelectionComponent implements LicenceStepperStepComponen
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 
-		this.pressNextStep.emit(true);
-		this.childstepper.next();
+		this.childNextStep.emit(true);
 	}
 
 	onStepSelectionChange(event: StepperSelectionEvent) {
 		this.scrollIntoView.emit(true);
+	}
+
+	onGoToNextStep() {
+		this.childstepper.next();
 	}
 
 	onGoToFirstStep() {

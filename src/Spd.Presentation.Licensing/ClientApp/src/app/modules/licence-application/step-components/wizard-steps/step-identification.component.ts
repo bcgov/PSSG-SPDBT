@@ -218,7 +218,7 @@ export class StepIdentificationComponent implements LicenceStepperStepComponent 
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
-	@Output() pressNextStep: EventEmitter<boolean> = new EventEmitter<boolean>();
+	@Output() childNextStep: EventEmitter<boolean> = new EventEmitter<boolean>();
 
 	@ViewChild(PersonalInformationComponent) personalInformationComponent!: PersonalInformationComponent;
 	@ViewChild(AliasesComponent) aliasesComponent!: AliasesComponent;
@@ -244,8 +244,6 @@ export class StepIdentificationComponent implements LicenceStepperStepComponent 
 	}
 
 	onStepNext(formNumber: string): void {
-		console.log('onStepNext formNumber:', formNumber);
-
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 
@@ -256,7 +254,10 @@ export class StepIdentificationComponent implements LicenceStepperStepComponent 
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 
-		this.pressNextStep.emit(true);
+		this.childNextStep.emit(true);
+	}
+
+	onGoToNextStep() {
 		this.childstepper.next();
 	}
 

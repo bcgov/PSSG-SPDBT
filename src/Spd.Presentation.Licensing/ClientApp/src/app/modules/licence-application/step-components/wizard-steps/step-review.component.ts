@@ -69,6 +69,10 @@ export class StepReviewComponent implements LicenceStepperStepComponent {
 		// unused
 	}
 
+	onGoToNextStep() {
+		this.childstepper.next();
+	}
+
 	onGoToFirstStep() {
 		this.childstepper.selectedIndex = 0;
 		this.summaryReviewComponent.onUpdateData();

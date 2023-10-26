@@ -1,7 +1,6 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Injectable } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { HotToastService } from '@ngneat/hot-toast';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { BehaviorSubject, Observable } from 'rxjs';
 import {
@@ -39,9 +38,11 @@ import {
 	WorkerCategoryTypeCode,
 	WorkerLicenceCategoryData,
 	WorkerLicenceCreateRequest,
+	WorkerLicenceCreateResponse,
 	WorkerLicenceTypeCode,
 } from 'src/app/api/models';
 import { WorkerLicensingService } from 'src/app/api/services';
+import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import {
 	BooleanTypeCode,
 	LocksmithRequirementCode,
@@ -61,6 +62,7 @@ export interface LicenceStepperStepComponent {
 	onStepPrevious(): void;
 	onFormValidNextStep(formNumber: string): void;
 	onStepSelectionChange(event: StepperSelectionEvent): void;
+	onGoToNextStep(): void;
 	onGoToFirstStep(): void;
 	onGoToLastStep(): void;
 }
@@ -485,13 +487,13 @@ export class LicenceApplicationService {
 
 	mailingAddressFormGroup: FormGroup = this.formBuilder.group(
 		{
-			addressSelected: new FormControl(false), //, [Validators.requiredTrue]),
-			mailingAddressLine1: new FormControl(''), //, [FormControlValidators.required]),
+			addressSelected: new FormControl(false),
+			mailingAddressLine1: new FormControl(''),
 			mailingAddressLine2: new FormControl(''),
-			mailingCity: new FormControl(''), //, [FormControlValidators.required]),
-			mailingPostalCode: new FormControl(''), //, [FormControlValidators.required]),
-			mailingProvince: new FormControl(''), //, [FormControlValidators.required]),
-			mailingCountry: new FormControl(''), //, [FormControlValidators.required]),
+			mailingCity: new FormControl(''),
+			mailingPostalCode: new FormControl(''),
+			mailingProvince: new FormControl(''),
+			mailingCountry: new FormControl(''),
 		},
 		{
 			validators: [
@@ -570,7 +572,6 @@ export class LicenceApplicationService {
 
 	constructor(
 		private formBuilder: FormBuilder,
-		private hotToastService: HotToastService,
 		private utilService: UtilService,
 		private spinnerService: NgxSpinnerService,
 		private workerLicensingService: WorkerLicensingService
@@ -1078,13 +1079,13 @@ export class LicenceApplicationService {
 		);
 	}
 
-	saveLicence(): void {
+	saveLicence(): Observable<StrictHttpResponse<WorkerLicenceCreateResponse>> {
 		const formValue = this.licenceModelFormGroup.value;
 		console.debug('saveLicence licenceModelFormGroup', formValue);
 
 		const aliasesData: AliasesData = {
-			aliases: formValue.aliasesData.aliases,
 			hasPreviousName: formValue.aliasesData.previousNameFlag == BooleanTypeCode.Yes,
+			aliases: formValue.aliasesData.previousNameFlag == BooleanTypeCode.Yes ? formValue.aliasesData.aliases : [],
 		};
 
 		const applicationTypeData: ApplicationTypeData = {
@@ -1092,7 +1093,10 @@ export class LicenceApplicationService {
 		};
 
 		const bcDriversLicenceData: BcDriversLicenceData = {
-			bcDriversLicenceNumber: formValue.bcDriversLicenceData.bcDriversLicenceNumber,
+			bcDriversLicenceNumber:
+				formValue.bcDriversLicenceData.hasBcDriversLicence == BooleanTypeCode.Yes
+					? formValue.bcDriversLicenceData.bcDriversLicenceNumber
+					: '',
 			hasBcDriversLicence: formValue.bcDriversLicenceData.hasBcDriversLicence == BooleanTypeCode.Yes,
 		};
 
@@ -1282,41 +1286,71 @@ export class LicenceApplicationService {
 
 		const characteristicsData: CharacteristicsData = { ...formValue.characteristicsData };
 
-		const citizenshipDocs: Documents = {
-			attachments: [...formValue.citizenshipData.attachments],
-			documentTypeCode: formValue.citizenshipData.proofTypeCode,
-			expiryDate: formValue.citizenshipData.expiryDate,
-		};
-		const citizenshipData: CitizenshipData = {
-			documents: citizenshipDocs,
-			isBornInCanada: formValue.citizenshipData.isBornInCanada == BooleanTypeCode.Yes,
-		};
+		let citizenshipData: CitizenshipData = {};
+		let govIssuedIdData: GovIssuedIdData = {};
+
+		if (formValue.citizenshipData.attachments) {
+			const citizenshipDocs: Documents = {
+				attachments: [...formValue.citizenshipData.attachments],
+				documentTypeCode: formValue.citizenshipData.proofTypeCode,
+				expiryDate: formValue.citizenshipData.expiryDate,
+			};
+			citizenshipData = {
+				documents: citizenshipDocs,
+				isBornInCanada: formValue.citizenshipData.isBornInCanada == BooleanTypeCode.Yes,
+			};
+
+			const includeAdditionalGovermentIdStepData =
+				(citizenshipData && formValue.citizenshipData.proofTypeCode != DocumentTypeCode.CanadianPassport) ||
+				(!citizenshipData.isBornInCanada &&
+					formValue.citizenshipData.proofTypeCode != DocumentTypeCode.PermanentResidentCard);
+
+			if (includeAdditionalGovermentIdStepData) {
+				const govIssuedIdDocs: Documents = {
+					attachments: [...formValue.govIssuedIdData.attachments],
+					documentTypeCode: formValue.govIssuedIdData.governmentIssuedPhotoTypeCode,
+				};
+				govIssuedIdData = {
+					documents: govIssuedIdDocs,
+				};
+			}
+		}
 
 		const contactInformationData: ContactInformationData = { ...formValue.contactInformationData };
 
 		const criminalHistoryData: CriminalHistoryData = { ...formValue.criminalHistoryData };
 
-		const dogsAuthorizationDocs: Documents = {
-			attachments: [...formValue.dogsAuthorizationData.attachments],
-			documentTypeCode: formValue.dogsAuthorizationData.dogsPurposeDocumentType,
-		};
-		const dogsAuthorizationData: DogsAuthorizationData = {
-			documents: dogsAuthorizationDocs,
-			isDogsPurposeDetectionDrugs: formValue.dogsAuthorizationData.isDogsPurposeDetectionDrugs,
-			isDogsPurposeDetectionExplosives: formValue.dogsAuthorizationData.isDogsPurposeDetectionExplosives,
-			isDogsPurposeProtection: formValue.dogsAuthorizationData.isDogsPurposeProtection,
-			useDogs: formValue.dogsAuthorizationData.useDogs == BooleanTypeCode.Yes,
-		};
+		let dogsAuthorizationData: DogsAuthorizationData = {};
+		let restraintsAuthorizationData: RestraintsAuthorizationData = {};
+
+		if (formValue.categorySecurityGuardFormGroup.isInclude) {
+			const dogsAuthorizationDocs: Documents = {
+				attachments: [...formValue.dogsAuthorizationData.attachments],
+				documentTypeCode: formValue.dogsAuthorizationData.dogsPurposeDocumentType,
+			};
+			const useDogs = formValue.dogsAuthorizationData.useDogs == BooleanTypeCode.Yes;
+			dogsAuthorizationData = {
+				documents: useDogs ? dogsAuthorizationDocs : undefined,
+				isDogsPurposeDetectionDrugs: useDogs ? formValue.dogsAuthorizationData.isDogsPurposeDetectionDrugs : null,
+				isDogsPurposeDetectionExplosives: useDogs
+					? formValue.dogsAuthorizationData.isDogsPurposeDetectionExplosives
+					: null,
+				isDogsPurposeProtection: useDogs ? formValue.dogsAuthorizationData.isDogsPurposeProtection : null,
+				useDogs,
+			};
+
+			const carryAndUseRetraints = formValue.restraintsAuthorizationData.carryAndUseRetraints == BooleanTypeCode.Yes;
+			const restraintsAuthorizationDocs: Documents = {
+				attachments: [...formValue.restraintsAuthorizationData.attachments],
+				documentTypeCode: formValue.restraintsAuthorizationData.carryAndUseRetraintsDocument,
+			};
+			restraintsAuthorizationData = {
+				carryAndUseRetraints,
+				documents: carryAndUseRetraints ? restraintsAuthorizationDocs : undefined,
+			};
+		}
 
 		const expiredLicenceData: ExpiredLicenceData = { ...formValue.expiredLicenceData };
-
-		const govIssuedIdDocs: Documents = {
-			attachments: [...formValue.govIssuedIdData.attachments],
-			documentTypeCode: formValue.govIssuedIdData.governmentIssuedPhotoTypeCode,
-		};
-		const govIssuedIdData: GovIssuedIdData = {
-			documents: govIssuedIdDocs,
-		};
 
 		const licenceId = formValue.licenceId;
 
@@ -1324,57 +1358,68 @@ export class LicenceApplicationService {
 
 		const licenceTypeData: LicenceTypeData = { ...formValue.licenceTypeData };
 
-		const mailingAddressData: MailingAddressData = { ...formValue.mailingAddressData };
-
-		const mentalHealthConditionsDocs: Documents = {
-			attachments: [...formValue.mentalHealthConditionsData.attachments],
-			documentTypeCode: formValue.mentalHealthConditionsData.governmentIssuedPhotoTypeCode,
-		};
-		const mentalHealthConditionsData: MentalHealthConditionsData = {
-			documents: mentalHealthConditionsDocs,
-			isTreatedForMHC: formValue.mentalHealthConditionsData.isTreatedForMHC == BooleanTypeCode.Yes,
-		};
+		let mentalHealthConditionsData: MentalHealthConditionsData = {};
+		if (formValue.mentalHealthConditionsData.attachments) {
+			const mentalHealthConditionsDocs: Documents = {
+				attachments: [...formValue.mentalHealthConditionsData.attachments],
+				documentTypeCode: formValue.mentalHealthConditionsData.governmentIssuedPhotoTypeCode,
+			};
+			const isTreatedForMHC = formValue.mentalHealthConditionsData.isTreatedForMHC == BooleanTypeCode.Yes;
+			mentalHealthConditionsData = {
+				documents: isTreatedForMHC ? mentalHealthConditionsDocs : undefined,
+				isTreatedForMHC,
+			};
+		}
 
 		const personalInformationData: PersonalInformationData = { ...formValue.personalInformationData };
 
-		const photographOfYourselfDocs: Documents = {
-			attachments: [...formValue.photographOfYourselfData.attachments],
-			documentTypeCode: DocumentTypeCode.PhotoOfYourself,
-		};
-		const photographOfYourselfData: PhotographOfYourselfData = {
-			documents: photographOfYourselfDocs,
-			useBcServicesCardPhoto: formValue.photographOfYourselfData.useBcServicesCardPhoto == BooleanTypeCode.Yes,
-		};
+		const useBcServicesCardPhoto = formValue.photographOfYourselfData.useBcServicesCardPhoto == BooleanTypeCode.Yes;
+		let photographOfYourselfData: PhotographOfYourselfData = { useBcServicesCardPhoto };
+		if (formValue.photographOfYourselfData.attachments) {
+			const photographOfYourselfDocs: Documents = {
+				attachments: [...formValue.photographOfYourselfData.attachments],
+				documentTypeCode: DocumentTypeCode.PhotoOfYourself,
+			};
+			photographOfYourselfData = {
+				documents: useBcServicesCardPhoto ? photographOfYourselfDocs : undefined,
+				useBcServicesCardPhoto,
+			};
+		}
 
-		const policeBackgroundDocs: Documents = {
-			attachments: [...formValue.policeBackgroundData.attachments],
-			documentTypeCode: DocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
-		};
-		const policeBackgroundData: PoliceBackgroundData = {
-			documents: policeBackgroundDocs,
-			isPoliceOrPeaceOfficer: formValue.policeBackgroundData.isPoliceOrPeaceOfficer == BooleanTypeCode.Yes,
-			otherOfficerRole: formValue.policeBackgroundData.otherOfficerRole,
-			policeOfficerRoleCode: formValue.policeBackgroundData.policeOfficerRoleCode,
-		};
+		const isPoliceOrPeaceOfficer = formValue.policeBackgroundData.isPoliceOrPeaceOfficer == BooleanTypeCode.Yes;
+		let policeBackgroundData: PoliceBackgroundData = { isPoliceOrPeaceOfficer };
+		if (formValue.policeBackgroundData.attachments) {
+			const policeBackgroundDocs: Documents = {
+				attachments: [...formValue.policeBackgroundData.attachments],
+				documentTypeCode: DocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
+			};
+			policeBackgroundData = {
+				documents: isPoliceOrPeaceOfficer ? policeBackgroundDocs : undefined,
+				isPoliceOrPeaceOfficer,
+				otherOfficerRole:
+					formValue.policeBackgroundData.policeOfficerRoleCode == PoliceOfficerRoleCode.Other
+						? formValue.policeBackgroundData.otherOfficerRole
+						: null,
+				policeOfficerRoleCode: isPoliceOrPeaceOfficer ? formValue.policeBackgroundData.policeOfficerRoleCode : null,
+			};
+		}
 
-		const proofOfFingerprintDocs: Documents = {
-			attachments: [...formValue.proofOfFingerprintData.attachments],
-			documentTypeCode: DocumentTypeCode.ProofOfFingerprint,
-		};
-		const proofOfFingerprintData: ProofOfFingerprintData = {
-			documents: proofOfFingerprintDocs,
-		};
+		let proofOfFingerprintData: ProofOfFingerprintData = {};
+		if (formValue.proofOfFingerprintData.attachments) {
+			const proofOfFingerprintDocs: Documents = {
+				attachments: [...formValue.proofOfFingerprintData.attachments],
+				documentTypeCode: DocumentTypeCode.ProofOfFingerprint,
+			};
+			proofOfFingerprintData = {
+				documents: proofOfFingerprintDocs,
+			};
+		}
 
 		const residentialAddressData: ResidentialAddressData = { ...formValue.residentialAddressData };
-
-		const restraintsAuthorizationDocs: Documents = {
-			attachments: [...formValue.restraintsAuthorizationData.attachments],
-			documentTypeCode: formValue.restraintsAuthorizationData.carryAndUseRetraintsDocument,
-		};
-		const restraintsAuthorizationData: RestraintsAuthorizationData = {
-			carryAndUseRetraints: formValue.restraintsAuthorizationData.carryAndUseRetraints == BooleanTypeCode.Yes,
-			documents: restraintsAuthorizationDocs,
-		};
+		let mailingAddressData: MailingAddressData = {};
+		if (!residentialAddressData.isMailingTheSameAsResidential) {
+			mailingAddressData = { ...formValue.mailingAddressData };
+		}
 
 		const soleProprietorData: SoleProprietorData = {
 			isSoleProprietor: formValue.soleProprietorData.isSoleProprietor == BooleanTypeCode.Yes,
@@ -1405,21 +1450,9 @@ export class LicenceApplicationService {
 			restraintsAuthorizationData,
 			soleProprietorData,
 		};
-		// const body = {
-		// 	LicenceId: formValue.licenceId,
-		// 	'LicenceTypeData.WorkerLicenceTypeCode': formValue.licenceTypeData.licenceTypeCode,
-		// 	'ApplicationTypeData.ApplicationTypeCode': formValue.applicationTypeData.applicationTypeCode,
-		// 	'SoleProprietorData.isSoleProprietor': formValue.soleProprietorData.isSoleProprietor,
-		// };
 
 		console.debug('*************** body to save:', body);
-		// this.workerLicensingService
-		// 	.apiWorkerLicencesPost()
-		// 	.pipe()
-		// 	.subscribe((resp: WorkerLicenceCreateResponse) => {
-		// 		this.licenceModelFormGroup.patchValue({ licenceId: resp.licenceId }, { emitEvent: false });
-		this.hotToastService.success('Licence information has been saved');
-		// 	console.debug('SAVE LICENCE FORM DATA', this.licenceModelFormGroup.valid, this.licenceModelFormGroup.value);
-		// });
+
+		return this.workerLicensingService.apiWorkerLicencesPost$Response({ body });
 	}
 }

@@ -3,6 +3,7 @@ import { StepperOrientation, StepperSelectionEvent } from '@angular/cdk/stepper'
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
+import { HotToastService } from '@ngneat/hot-toast';
 import { BehaviorSubject, debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
@@ -28,7 +29,7 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 						<mat-step [completed]="step1Complete">
 							<ng-template matStepLabel> Licence Selection </ng-template>
 							<app-step-licence-selection
-								(pressNextStep)="onPressNextStep()"
+								(childNextStep)="onChildNextStep()"
 								(nextStepperStep)="onNextStepperStep(stepper)"
 								(scrollIntoView)="onScrollIntoView()"
 							></app-step-licence-selection>
@@ -37,7 +38,7 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 						<mat-step [completed]="step2Complete">
 							<ng-template matStepLabel>Background</ng-template>
 							<app-step-background
-								(pressNextStep)="onPressNextStep()"
+								(childNextStep)="onChildNextStep()"
 								(previousStepperStep)="onPreviousStepperStep(stepper)"
 								(nextStepperStep)="onNextStepperStep(stepper)"
 								(scrollIntoView)="onScrollIntoView()"
@@ -47,7 +48,7 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 						<mat-step [completed]="step3Complete">
 							<ng-template matStepLabel>Identification</ng-template>
 							<app-step-identification
-								(pressNextStep)="onPressNextStep()"
+								(childNextStep)="onChildNextStep()"
 								(previousStepperStep)="onPreviousStepperStep(stepper)"
 								(nextStepperStep)="onNextStepperStep(stepper)"
 								(scrollIntoView)="onScrollIntoView()"
@@ -58,7 +59,7 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 							<ng-template matStepLabel>Review and Confirm</ng-template>
 							<ng-template matStepContent>
 								<app-step-review
-									(pressNextStep)="onPressNextStep()"
+									(childNextStep)="onChildNextStep()"
 									(previousStepperStep)="onPreviousStepperStep(stepper)"
 									(nextStepperStep)="onNextStepperStep(stepper)"
 									(scrollIntoView)="onScrollIntoView()"
@@ -162,7 +163,8 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 		private router: Router,
 		private breakpointObserver: BreakpointObserver,
 		private licenceApplicationService: LicenceApplicationService,
-		private authProcessService: AuthProcessService
+		private authProcessService: AuthProcessService,
+		private hotToastService: HotToastService
 	) {}
 
 	ngOnInit(): void {
@@ -254,7 +256,7 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 	}
 
 	onPreviousStepperStep(stepper: MatStepper): void {
-		this.saveIfChanged();
+		// this.saveIfChanged();
 
 		stepper.previous();
 
@@ -272,28 +274,44 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
-		this.saveIfChanged();
+		// this.saveIfChanged();
+		if (this.hasValueChanged) {
+			this.licenceApplicationService.saveLicence().subscribe({
+				next: (resp) => {
+					this.hotToastService.success('Licence information has been saved');
+					this.hasValueChanged = false;
 
-		if (stepper?.selected) stepper.selected.completed = true;
+					if (stepper?.selected) stepper.selected.completed = true;
 
-		stepper.next();
+					stepper.next();
 
-		switch (stepper.selectedIndex) {
-			case this.STEP_LICENCE_SELECTION:
-				this.stepLicenceSelectionComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_BACKGROUND:
-				this.stepBackgroundComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_IDENTIFICATION:
-				this.stepIdentificationComponent?.onGoToFirstStep();
-				break;
+					switch (stepper.selectedIndex) {
+						case this.STEP_LICENCE_SELECTION:
+							this.stepLicenceSelectionComponent?.onGoToFirstStep();
+							break;
+						case this.STEP_BACKGROUND:
+							this.stepBackgroundComponent?.onGoToFirstStep();
+							break;
+						case this.STEP_IDENTIFICATION:
+							this.stepIdentificationComponent?.onGoToFirstStep();
+							break;
+					}
+				},
+				error: (error) => {
+					// only 404 will be here as an error
+					console.log('An error occurred during save', error);
+				},
+			});
+		} else {
+			this.hasValueChanged = false;
+			if (stepper?.selected) stepper.selected.completed = true;
+			stepper.next();
 		}
 	}
 
 	onGoToStep(step: number) {
 		console.debug('onGoToStep', step);
-		this.saveIfChanged();
+		// this.saveIfChanged();
 
 		if (step == 3) {
 			this.stepper.selectedIndex = 2;
@@ -308,26 +326,71 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 	}
 
 	onSave() {
-		this.licenceApplicationService.saveLicence();
-		// this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATIONS_IN_PROGRESS));
+		this.licenceApplicationService.saveLicence().subscribe({
+			next: (resp) => {
+				this.hotToastService.success('Licence information has been saved');
+				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATIONS_IN_PROGRESS));
+			},
+			error: (error) => {
+				// only 404 will be here as an error
+				console.log('An error occurred during save', error);
+			},
+		});
 	}
 
 	onGoToReview() {
 		this.stepper.selectedIndex = this.STEP_REVIEW;
 	}
 
-	onPressNextStep() {
-		this.saveIfChanged();
-	}
-
-	private saveIfChanged() {
-		console.log('saveIfChanged', this.hasValueChanged);
-
+	onChildNextStep() {
+		// this.saveIfChanged();
 		if (this.hasValueChanged) {
-			this.licenceApplicationService.saveLicence();
-			this.hasValueChanged = false;
+			this.licenceApplicationService.saveLicence().subscribe({
+				next: (resp) => {
+					this.hotToastService.success('Licence information has been saved');
+					this.hasValueChanged = false;
+					this.goToChildNextStep();
+				},
+				error: (error) => {
+					// only 404 will be here as an error
+					console.log('An error occurred during save', error);
+				},
+			});
+		} else {
+			this.goToChildNextStep();
 		}
 	}
+
+	private goToChildNextStep() {
+		switch (this.stepper.selectedIndex) {
+			case this.STEP_LICENCE_SELECTION:
+				this.stepLicenceSelectionComponent?.onGoToNextStep();
+				break;
+			case this.STEP_BACKGROUND:
+				this.stepBackgroundComponent?.onGoToNextStep();
+				break;
+			case this.STEP_IDENTIFICATION:
+				this.stepIdentificationComponent?.onGoToNextStep();
+				break;
+		}
+	}
+
+	// private saveIfChanged() {
+	// 	console.log('saveIfChanged', this.hasValueChanged);
+
+	// 	if (this.hasValueChanged) {
+	// 		this.licenceApplicationService.saveLicence().subscribe({
+	// 			next: (resp) => {
+	// 				this.hotToastService.success('Licence information has been saved');
+	// 				this.hasValueChanged = false;
+	// 			},
+	// 			error: (error) => {
+	// 				// only 404 will be here as an error
+	// 				console.log('An error occurred during save', error);
+	// 			},
+	// 		});
+	// 	}
+	// }
 
 	private breakpointChanged() {
 		if (this.breakpointObserver.isMatched(Breakpoints.XLarge) || this.breakpointObserver.isMatched(Breakpoints.Large)) {
