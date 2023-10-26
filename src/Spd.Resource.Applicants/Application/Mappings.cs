@@ -136,8 +136,18 @@ namespace Spd.Resource.Applicants.Application
              .ForMember(d => d.spd_bcdriverslicense, opt => opt.MapFrom(s => s.BcDriversLicenceNumber))
              .ForMember(d => d.spd_applicanthaircolour, opt => opt.MapFrom(s => GetHairColor(s.HairColourCode)))
              .ForMember(d => d.spd_applicanteyecolour, opt => opt.MapFrom(s => GetEyeColor(s.EyeColourCode)))
+             .ForMember(d => d.spd_applicantheight, opt => opt.MapFrom(s => s.Height))
+             .ForMember(d => d.spd_applicantweight, opt => opt.MapFrom(s => s.Weight))
+             .ForMember(d => d.spd_emailaddress1, opt => opt.MapFrom(s => s.ContactEmailAddress))
+             .ForMember(d => d.spd_phonenumber, opt => opt.MapFrom(s => s.ContactPhoneNumber))
+             .ForMember(d => d.spd_addressline1, opt => opt.MapFrom(s => s.MailingAddressData == null ? null : s.MailingAddressData.AddressLine1))
+             .ForMember(d => d.spd_addressline2, opt => opt.MapFrom(s => s.MailingAddressData == null ? null : s.MailingAddressData.AddressLine2))
+             .ForMember(d => d.spd_city, opt => opt.MapFrom(s => s.MailingAddressData == null ? null : s.MailingAddressData.City))
+             .ForMember(d => d.spd_province, opt => opt.MapFrom(s => s.MailingAddressData == null ? null : s.MailingAddressData.Province))
+             .ForMember(d => d.spd_country, opt => opt.MapFrom(s => s.MailingAddressData == null ? null : s.MailingAddressData.Country))
+             .ForMember(d => d.spd_postalcode, opt => opt.MapFrom(s => s.MailingAddressData == null ? null : s.MailingAddressData.PostalCode))
              .ForMember(d => d.statecode, opt => opt.MapFrom(s => DynamicsConstants.StateCode_Active))
-             .ForMember(d => d.statuscode, opt => opt.MapFrom(s => PaymentStatusCodeOptionSet.Pending));
+             .ForMember(d => d.statuscode, opt => opt.MapFrom(s => ApplicationStatusOptionSet.Draft));
 
         }
 
@@ -212,6 +222,13 @@ namespace Spd.Resource.Applicants.Application
         {
             if (code == null) return null;
             return (int)Enum.Parse<EyeColorOptionSet>(code.ToString());
+        }
+
+        private static string? GetAddressLine1(SaveLicenceApplicationCmd cmd)
+        {
+            if (cmd.IsMailingTheSameAsResidential == null) return null;
+            if (cmd.MailingAddressData == null) return null;
+            return cmd.MailingAddressData.AddressLine1;
         }
     }
 }

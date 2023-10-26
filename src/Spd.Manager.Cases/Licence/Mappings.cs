@@ -6,6 +6,6 @@ internal class Mappings : Profile
 {
     public Mappings()
     {
-        CreateMap<WorkerLicenceUpsertRequest, SearchApplicationQry>();
+        CreateMap<WorkerLicenceUpsertRequest, SaveLicenceApplicationCmd>();
     }
 }
