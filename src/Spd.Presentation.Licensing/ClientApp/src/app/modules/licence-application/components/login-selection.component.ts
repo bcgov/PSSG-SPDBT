@@ -70,7 +70,7 @@ import { LicenceApplicationRoutes } from '../licence-application-routing.module'
 								<div class="step-container">
 									<div class="step-container__box step-container__border">
 										<div class="step-container__box__title pb-2">
-											<div class="mx-2 mt-3">Log in with <span class="fw-bold">BC Service Card</span></div>
+											<div class="mx-2 mt-3">Log in with <span class="fw-bold">BC Services Card</span></div>
 										</div>
 										<div class="step-container__box__content pe-4" style="padding-left: 5em!important;">
 											<table class="me-5 mb-4" style="text-align: left;">
