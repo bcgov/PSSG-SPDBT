@@ -40,7 +40,7 @@ export interface PaymentResponse extends ApplicationPaymentResponse {
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
-					<h2 class="mb-2 fw-normal">Payments</h2>
+					<h2 class="mb-2">Payments</h2>
 
 					<ng-container *ngIf="applicationStatistics$ | async">
 						<app-alert type="warning" *ngIf="count > 0">

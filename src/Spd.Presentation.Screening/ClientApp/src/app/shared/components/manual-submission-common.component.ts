@@ -42,7 +42,7 @@ export interface AliasCreateRequest {
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row mb-2">
 				<div class="col-xl-10 col-lg-10 col-md-12 col-sm-12">
-					<h2 class="fw-normal">
+					<h2>
 						Manual Submissions
 						<div class="mt-2 fs-5 fw-light">
 							<ng-container *ngIf="portal == portalTypeCodes.Psso; else crrpSubtitle">

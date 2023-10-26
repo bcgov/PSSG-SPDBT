@@ -18,7 +18,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-12">
-					<h2 class="mb-2 fw-normal">Monthly Reports</h2>
+					<h2 class="mb-2">Monthly Reports</h2>
 				</div>
 			</div>
 

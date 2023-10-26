@@ -19,7 +19,7 @@ import { UserDialogData, UserEditModalComponent } from './user-edit-modal.compon
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row mb-2">
 				<div class="col-xxl-10 col-xl-9 col-lg-9 col-md-8 col-sm-12">
-					<h2 class="mb-2 fw-normal">
+					<h2 class="mb-2">
 						User Management <mat-icon class="info-icon" (click)="onManageUsersInfo()">info</mat-icon>
 						<div class="mt-2 fs-5 fw-light">
 							<ul>

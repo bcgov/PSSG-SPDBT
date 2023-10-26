@@ -41,7 +41,7 @@ export interface IdentityVerificationResponse extends ApplicationResponse {
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
-					<h2 class="mb-2 fw-normal">Identity Verification</h2>
+					<h2 class="mb-2">Identity Verification</h2>
 					<ng-container *ngIf="applicationStatistics$ | async">
 						<app-alert type="warning" icon="warning" *ngIf="count > 0">
 							<ng-container *ngIf="count == 1; else notOne">
@@ -222,9 +222,11 @@ export class IdentifyVerificationCommonComponent implements OnInit {
 	});
 
 	applicationStatistics$!: Observable<ApplicationStatisticsResponse>;
+	idForStatistics: string | null = null; // If CRRP, id is the OrgId, else for PSSO, id is the UserId
 
 	@Input() portal: PortalTypeCode | null = null;
 	@Input() orgId: string | null = null;
+	@Input() userId: string | null = null; // Used by PSSO only
 	@Input() isPsaUser: boolean | undefined = undefined;
 
 	@ViewChild(MatSort) sort!: MatSort;
@@ -251,6 +253,7 @@ export class IdentifyVerificationCommonComponent implements OnInit {
 		this.formFilter.patchValue({ search: caseId });
 
 		if (this.portal == PortalTypeCode.Crrp) {
+			this.idForStatistics = this.orgId;
 			this.columns = [
 				'applicantName',
 				'dateOfBirth',
@@ -262,6 +265,7 @@ export class IdentifyVerificationCommonComponent implements OnInit {
 				'action2',
 			];
 		} else if (this.portal == PortalTypeCode.Psso) {
+			this.idForStatistics = this.userId;
 			if (this.isPsaUser) {
 				this.columns = [
 					'applicantName',
@@ -465,15 +469,28 @@ export class IdentifyVerificationCommonComponent implements OnInit {
 	}
 
 	private refreshStats(): void {
-		this.applicationStatistics$ = this.applicationService
-			.apiOrgsOrgIdApplicationStatisticsGet({
-				orgId: this.orgId!,
-			})
-			.pipe(
-				tap((res: ApplicationStatisticsResponse) => {
-					const applicationStatistics = res.statistics ?? {};
-					this.count = applicationStatistics[ApplicationPortalStatisticsTypeCode.VerifyIdentity];
+		if (this.portal == PortalTypeCode.Crrp) {
+			this.applicationStatistics$ = this.applicationService
+				.apiOrgsOrgIdApplicationStatisticsGet({
+					orgId: this.idForStatistics!,
 				})
-			);
+				.pipe(
+					tap((res: ApplicationStatisticsResponse) => {
+						const applicationStatistics = res.statistics ?? {};
+						this.count = applicationStatistics[ApplicationPortalStatisticsTypeCode.VerifyIdentity];
+					})
+				);
+		} else if (this.portal == PortalTypeCode.Psso) {
+			this.applicationStatistics$ = this.applicationService
+				.apiUsersDelegateUserIdPssoApplicationStatisticsGet({
+					delegateUserId: this.idForStatistics!,
+				})
+				.pipe(
+					tap((res: ApplicationStatisticsResponse) => {
+						const applicationStatistics = res.statistics ?? {};
+						this.count = applicationStatistics[ApplicationPortalStatisticsTypeCode.VerifyIdentity];
+					})
+				);
+		}
 	}
 }

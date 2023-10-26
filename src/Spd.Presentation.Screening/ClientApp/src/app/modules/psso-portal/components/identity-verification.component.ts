@@ -13,12 +13,14 @@ import { AuthUserIdirService } from 'src/app/core/services/auth-user-idir.servic
 			[portal]="portal.Psso"
 			[isPsaUser]="isPsaUser"
 			[orgId]="orgId"
+			[userId]="userId"
 		></app-identify-verification-common>
 	`,
 	styles: [],
 })
 export class IdentityVerificationComponent implements OnInit {
 	orgId: string | null = null;
+	userId: string | null = null;
 	portal = PortalTypeCode;
 	isPsaUser: boolean | undefined = this.authUserService.idirUserWhoamiProfile?.isPSA;
 
@@ -33,5 +35,6 @@ export class IdentityVerificationComponent implements OnInit {
 		}
 
 		this.orgId = orgId;
+		this.userId = this.authUserService.idirUserWhoamiProfile?.userId!;
 	}
 }
