@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
+import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-expired',
@@ -86,7 +86,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class LicenceExpiredComponent implements LicenceFormStepComponent {
+export class LicenceExpiredComponent implements LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 
 	maxDate = new Date();

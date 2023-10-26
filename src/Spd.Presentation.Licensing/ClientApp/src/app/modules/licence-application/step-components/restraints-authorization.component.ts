@@ -1,9 +1,8 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { showHideTriggerAnimation, showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { BooleanTypeCode, RestraintDocumentTypes } from 'src/app/core/code-types/model-desc.models';
-import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
-import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
+import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-restraints-authorization',
@@ -66,9 +65,9 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 
 								<div class="my-2">
 									<app-file-upload
+										[control]="attachments"
 										[maxNumberOfFiles]="10"
 										[files]="attachments.value"
-										(filesChanged)="onRestraintsFilesChanged()"
 									></app-file-upload>
 									<mat-error
 										class="mat-option-error"
@@ -90,15 +89,13 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 	styles: [],
 	animations: [showHideTriggerAnimation, showHideTriggerSlideAnimation],
 })
-export class RestraintsAuthorizationComponent implements OnInit, LicenceFormStepComponent {
+export class RestraintsAuthorizationComponent implements OnInit, LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 	restraintDocumentTypes = RestraintDocumentTypes;
 
 	form: FormGroup = this.licenceApplicationService.restraintsAuthorizationFormGroup;
 
 	@Input() isCalledFromModal: boolean = false;
-
-	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
@@ -111,18 +108,8 @@ export class RestraintsAuthorizationComponent implements OnInit, LicenceFormStep
 	}
 
 	isFormValid(): boolean {
-		this.onRestraintsFilesChanged();
-
 		this.form.markAllAsTouched();
 		return this.form.valid;
-	}
-
-	onRestraintsFilesChanged(): void {
-		const attachments =
-			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
-				? this.fileUploadComponent.files
-				: [];
-		this.form.controls['attachments'].setValue(attachments);
 	}
 
 	get carryAndUseRetraints(): FormControl {

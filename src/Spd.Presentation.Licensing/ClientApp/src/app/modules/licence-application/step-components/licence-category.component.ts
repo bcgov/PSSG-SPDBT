@@ -3,8 +3,9 @@ import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { WorkerCategoryTypeCode } from 'src/app/api/models';
 import { SelectOptions, WorkerCategoryTypes } from 'src/app/core/code-types/model-desc.models';
+import { ConfigService } from 'src/app/core/services/config.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
-import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
+import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-category',
@@ -686,7 +687,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 		`,
 	],
 })
-export class LicenceCategoryComponent implements OnInit, LicenceFormStepComponent {
+export class LicenceCategoryComponent implements OnInit, LicenceChildStepperStepComponent {
 	category = '';
 	isDirtyAndInvalid = false;
 
@@ -722,7 +723,11 @@ export class LicenceCategoryComponent implements OnInit, LicenceFormStepComponen
 
 	@Input() isCalledFromModal: boolean = false;
 
-	constructor(private dialog: MatDialog, private licenceApplicationService: LicenceApplicationService) {}
+	constructor(
+		private configService: ConfigService,
+		private dialog: MatDialog,
+		private licenceApplicationService: LicenceApplicationService
+	) {}
 
 	ngOnInit(): void {
 		this.setValidCategoryList();
@@ -1011,164 +1016,17 @@ export class LicenceCategoryComponent implements OnInit, LicenceFormStepComponen
 	}
 
 	private setValidCategoryList(): void {
+		const invalidCategories = this.configService.configs?.invalidWorkerLicenceCategoryMatrixConfiguration!;
 		const currentList = this.categoryList;
 		let updatedList = this.workerCategoryTypes;
-		updatedList = updatedList.filter((cat) => !currentList.find((xxx) => xxx == cat.code));
-		this.validCategoryList = [...updatedList];
 
-		// TODO update to use matrix in the db.
-		// let updatedList = this.workerCategoryTypes;
-		// // if user has selected 'ArmouredCarGuard', then update the list of valid values
-		// if (currentList.find((cat) => cat == WorkerCategoryTypeCode.ArmouredCarGuard)) {
-		// 	updatedList = updatedList.filter(
-		// 		(cat) =>
-		// 			cat != WorkerCategoryTypeCode.ArmouredCarGuard &&
-		// 			cat != WorkerCategoryTypeCode.SecurityGuardUnderSupervision
-		// 	);
-		// }
-		// // if user has selected 'BodyArmourSales', then update the list of valid values
-		// if (currentList.find((cat) => cat == WorkerCategoryTypeCode.BodyArmourSales)) {
-		// 	updatedList = updatedList.filter(
-		// 		(cat) =>
-		// 			cat != WorkerCategoryTypeCode.BodyArmourSales &&
-		// 			cat != WorkerCategoryTypeCode.SecurityGuardUnderSupervision
-		// 	);
-		// }
-		// // if user has selected 'ClosedCircuitTelevisionInstaller', then update the list of valid values
-		// if (currentList.find((cat) => cat == WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller)) {
-		// 	updatedList = updatedList.filter(
-		// 		(cat) =>
-		// 			cat != WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller &&
-		// 			cat != WorkerCategoryTypeCode.SecurityAlarmInstaller &&
-		// 			cat != WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision &&
-		// 			cat != WorkerCategoryTypeCode.SecurityGuardUnderSupervision
-		// 	);
-		// }
-		// // if user has selected 'ElectronicLockingDeviceInstaller', then update the list of valid values
-		// if (currentList.find((cat) => cat == WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller)) {
-		// 	updatedList = updatedList.filter(
-		// 		(cat) =>
-		// 			cat != WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller &&
-		// 			cat != WorkerCategoryTypeCode.Locksmith &&
-		// 			cat != WorkerCategoryTypeCode.LocksmithUnderSupervision &&
-		// 			cat != WorkerCategoryTypeCode.SecurityAlarmInstaller &&
-		// 			cat != WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision &&
-		// 			cat != WorkerCategoryTypeCode.SecurityGuardUnderSupervision
-		// 	);
-		// }
-		// // if user has selected 'FireInvestigator', then update the list of valid values
-		// if (currentList.find((cat) => cat == WorkerCategoryTypeCode.FireInvestigator)) {
-		// 	updatedList = updatedList.filter(
-		// 		(cat) =>
-		// 			cat != WorkerCategoryTypeCode.PrivateInvestigator &&
-		// 			cat != WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision &&
-		// 			cat != WorkerCategoryTypeCode.FireInvestigator
-		// 	);
-		// }
-		// // if user has selected 'Locksmith' or 'LocksmithUnderSupervision', then update the list of valid values
-		// if (
-		// 	currentList.find(
-		// 		(cat) => cat == WorkerCategoryTypeCode.Locksmith || cat == WorkerCategoryTypeCode.LocksmithUnderSupervision
-		// 	)
-		// ) {
-		// 	updatedList = updatedList.filter(
-		// 		(cat) =>
-		// 			cat != WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller &&
-		// 			cat != WorkerCategoryTypeCode.Locksmith &&
-		// 			cat != WorkerCategoryTypeCode.LocksmithUnderSupervision &&
-		// 			cat != WorkerCategoryTypeCode.SecurityGuardUnderSupervision
-		// 	);
-		// }
-		// // if user has selected 'PrivateInvestigator' or 'PrivateInvestigatorUnderSupervision', then update the list of valid values
-		// if (
-		// 	currentList.find(
-		// 		(cat) =>
-		// 			cat == WorkerCategoryTypeCode.PrivateInvestigator ||
-		// 			cat == WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision
-		// 	)
-		// ) {
-		// 	updatedList = updatedList.filter(
-		// 		(cat) =>
-		// 			cat != WorkerCategoryTypeCode.FireInvestigator &&
-		// 			cat != WorkerCategoryTypeCode.PrivateInvestigator &&
-		// 			cat != WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision &&
-		// 			cat != WorkerCategoryTypeCode.SecurityGuardUnderSupervision
-		// 	);
-		// }
-		// // if user has selected 'SecurityGuard', then update the list of valid values
-		// if (currentList.find((cat) => cat == WorkerCategoryTypeCode.SecurityGuard)) {
-		// 	updatedList = updatedList.filter(
-		// 		(cat) =>
-		// 			cat != WorkerCategoryTypeCode.SecurityAlarmMonitor &&
-		// 			cat != WorkerCategoryTypeCode.SecurityAlarmResponse &&
-		// 			cat != WorkerCategoryTypeCode.SecurityGuard &&
-		// 			cat != WorkerCategoryTypeCode.SecurityGuardUnderSupervision
-		// 	);
-		// }
-		// // if user has selected 'SecurityGuardUnderSupervision', then update the list of valid values
-		// if (currentList.find((cat) => cat == WorkerCategoryTypeCode.SecurityGuardUnderSupervision)) {
-		// 	updatedList = [];
-		// }
-		// // if user has selected 'SecurityAlarmInstaller' or 'SecurityAlarmInstallerUnderSupervision', then update the list of valid values
-		// if (
-		// 	currentList.find(
-		// 		(cat) =>
-		// 			cat == WorkerCategoryTypeCode.SecurityAlarmInstaller ||
-		// 			cat == WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision
-		// 	)
-		// ) {
-		// 	updatedList = updatedList.filter(
-		// 		(cat) =>
-		// 			cat != WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller &&
-		// 			cat != WorkerCategoryTypeCode.SecurityAlarmInstaller &&
-		// 			cat != WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision &&
-		// 			cat != WorkerCategoryTypeCode.SecurityAlarmMonitor &&
-		// 			cat != WorkerCategoryTypeCode.SecurityAlarmResponse &&
-		// 			cat != WorkerCategoryTypeCode.SecurityAlarmSales &&
-		// 			cat != WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller &&
-		// 			cat != WorkerCategoryTypeCode.SecurityGuardUnderSupervision
-		// 	);
-		// }
-		// // if user has selected 'SecurityAlarmMonitor' or 'SecurityAlarmResponse, then update the list of valid values
-		// if (
-		// 	currentList.find(
-		// 		(cat) =>
-		// 			cat == WorkerCategoryTypeCode.SecurityAlarmMonitor || cat == WorkerCategoryTypeCode.SecurityAlarmResponse
-		// 	)
-		// ) {
-		// 	updatedList = updatedList.filter(
-		// 		(cat) =>
-		// 			cat != WorkerCategoryTypeCode.SecurityAlarmMonitor &&
-		// 			cat != WorkerCategoryTypeCode.SecurityAlarmResponse &&
-		// 			cat != WorkerCategoryTypeCode.SecurityAlarmInstaller &&
-		// 			cat != WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision &&
-		// 			cat != WorkerCategoryTypeCode.SecurityGuard &&
-		// 			cat != WorkerCategoryTypeCode.SecurityGuardUnderSupervision
-		// 	);
-		// }
-		// // if user has selected 'SecurityAlarmSales', then update the list of valid values
-		// if (currentList.find((cat) => cat == WorkerCategoryTypeCode.SecurityAlarmSales)) {
-		// 	updatedList = updatedList.filter(
-		// 		(cat) =>
-		// 			cat != WorkerCategoryTypeCode.SecurityAlarmInstaller &&
-		// 			cat != WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision &&
-		// 			cat != WorkerCategoryTypeCode.SecurityAlarmMonitor &&
-		// 			cat != WorkerCategoryTypeCode.SecurityAlarmSales &&
-		// 			cat != WorkerCategoryTypeCode.SecurityGuard &&
-		// 			cat != WorkerCategoryTypeCode.SecurityGuardUnderSupervision
-		// 	);
-		// }
-		// // if user has selected 'SecurityConsultant', then update the list of valid values
-		// if (currentList.find((cat) => cat == WorkerCategoryTypeCode.SecurityConsultant)) {
-		// 	updatedList = updatedList.filter(
-		// 		(cat) =>
-		// 			cat != WorkerCategoryTypeCode.SecurityConsultant &&
-		// 			cat != WorkerCategoryTypeCode.SecurityGuardUnderSupervision
-		// 	);
-		// }
-		// this.validCategoryList = [...updatedList];
-		// console.log('updatedList', this.validCategoryList);
+		currentList.forEach((item) => {
+			updatedList = updatedList.filter((cat) => !invalidCategories[item].includes(cat.code as WorkerCategoryTypeCode));
+		});
+
+		this.validCategoryList = [...updatedList];
 	}
+
 	get showArmouredCarGuard(): boolean {
 		return this.categoryArmouredCarGuardFormGroup.get('isInclude')?.value;
 	}

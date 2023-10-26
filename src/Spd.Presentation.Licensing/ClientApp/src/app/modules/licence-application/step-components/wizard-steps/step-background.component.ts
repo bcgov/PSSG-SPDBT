@@ -1,7 +1,7 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Component, EventEmitter, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { LicenceApplicationService } from '../../licence-application.service';
+import { LicenceStepperStepComponent } from '../../licence-application.service';
 import { CriminalHistoryComponent } from '../criminal-history.component';
 import { FingerprintsComponent } from '../fingerprints.component';
 import { MentalHealthConditionsComponent } from '../mental-health-conditions.component';
@@ -11,15 +11,14 @@ import { PoliceBackgroundComponent } from '../police-background.component';
 	selector: 'app-step-background',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step
-				><!-- *ngIf="showStepPoliceBackground"-->
+			<mat-step>
 				<app-police-background></app-police-background>
 
 				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
 					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
 							color="primary"
@@ -32,15 +31,14 @@ import { PoliceBackgroundComponent } from '../police-background.component';
 				</div>
 			</mat-step>
 
-			<mat-step
-				><!-- *ngIf="showStepMentalHealth"-->
+			<mat-step>
 				<app-mental-health-conditions></app-mental-health-conditions>
 
 				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
 							color="primary"
@@ -53,15 +51,14 @@ import { PoliceBackgroundComponent } from '../police-background.component';
 				</div>
 			</mat-step>
 
-			<mat-step
-				><!-- *ngIf="showStepCriminalHistory"-->
+			<mat-step>
 				<app-criminal-history></app-criminal-history>
 
 				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button
 							mat-flat-button
 							color="primary"
@@ -75,14 +72,13 @@ import { PoliceBackgroundComponent } from '../police-background.component';
 			</mat-step>
 
 			<mat-step>
-				<!--  *ngIf="showStepFingerprints" -->
 				<app-fingerprints></app-fingerprints>
 
 				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_FINGERPRINTS)">
 							Next
 						</button>
@@ -94,10 +90,10 @@ import { PoliceBackgroundComponent } from '../police-background.component';
 				<app-background-info></app-background-info>
 
 				<div class="row mt-4">
-					<div class="offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_BACKGROUND_INFO)">
 							Next
 						</button>
@@ -109,7 +105,7 @@ import { PoliceBackgroundComponent } from '../police-background.component';
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepBackgroundComponent implements OnInit {
+export class StepBackgroundComponent implements LicenceStepperStepComponent {
 	readonly STEP_POLICE_BACKGROUND = '1';
 	readonly STEP_MENTAL_HEALTH_CONDITIONS = '2';
 	readonly STEP_CRIMINAL_HISTORY = '3';
@@ -133,12 +129,9 @@ export class StepBackgroundComponent implements OnInit {
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
+	@Output() childNextStep: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
-
-	ngOnInit(): void {
-		console.log('onInit StepBackgroundComponent1');
-	}
+	constructor() {}
 
 	onStepSelectionChange(event: StepperSelectionEvent) {
 		this.scrollIntoView.emit(true);
@@ -149,23 +142,28 @@ export class StepBackgroundComponent implements OnInit {
 	}
 
 	onStepNext(formNumber: string): void {
-		console.log('onStepNext formNumber:', formNumber);
-
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 		this.nextStepperStep.emit(true);
+	}
+
+	onGoToNextStep() {
+		this.childstepper.next();
 	}
 
 	onGoToFirstStep() {
 		this.childstepper.selectedIndex = 0;
 	}
 
-	onFormValidNextStep(formNumber: string): void {
-		console.log('onFormValidNextStep formNumber:', formNumber);
+	onGoToLastStep() {
+		this.childstepper.selectedIndex = this.childstepper.steps.length - 1;
+	}
 
+	onFormValidNextStep(formNumber: string): void {
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
-		this.childstepper.next();
+
+		this.childNextStep.emit(true);
 	}
 
 	private dirtyForm(step: string): boolean {

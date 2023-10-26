@@ -43,7 +43,7 @@ export interface ApplyNameChangeDialogData {}
 			}
 
 			.text-label {
-				font-size: smaller;
+				font-size: 0.8rem !important;
 			}
 		`,
 	],

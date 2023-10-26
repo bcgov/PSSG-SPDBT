@@ -12,13 +12,13 @@ import { LicenceApplicationRoutes } from '../licence-application-routing.module'
 						<div class="row">
 							<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
 								<div class="login-title fs-4 mt-2 mb-3">
-									Log in to manage your <strong>security business licence:</strong>
+									Log in to manage your<br /><strong>security business licence:</strong>
 								</div>
 
 								<div class="step-container">
 									<div class="step-container__box step-container__border">
 										<div class="step-container__box__title pb-2">
-											<div class="mx-2 mt-3">Log in <span class="fw-bold">with</span> Business BCeID</div>
+											<div class="mx-2 mt-3">Log in with <span class="fw-bold">Business BCeID</span></div>
 										</div>
 										<div class="step-container__box__content pe-4" style="padding-left: 5em!important;">
 											<table class="me-5 mb-4" style="text-align: left;">
@@ -44,11 +44,13 @@ import { LicenceApplicationRoutes } from '../licence-application-routing.module'
 										</div>
 										<div class="step-container__box__footer m-4 mb-2">
 											<button mat-flat-button class="large" color="primary" (click)="onRegisterWithBceid()">
-												<span style="vertical-align: text-bottom;"> Log In with Business BCeID </span>
+												<span style="vertical-align: text-bottom;">
+													Log In with <span class="fw-bold">Business BCeID</span>
+												</span>
 											</button>
 										</div>
 										<div class="step-container__box__footer mx-4 my-3">
-											Don't have Business BCeID?
+											Don't have Business BCeID?<br />
 											<a
 												class="large"
 												href="https://www.bceid.ca/register/business/getting_started/getting_started.aspx"
@@ -62,13 +64,13 @@ import { LicenceApplicationRoutes } from '../licence-application-routing.module'
 							</div>
 							<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
 								<div class="login-title fs-4  mt-2 mb-3">
-									Log in to manage your <strong>security worker licence:</strong>
+									Log in to manage your<br /><strong>security worker licence:</strong>
 								</div>
 
 								<div class="step-container">
 									<div class="step-container__box step-container__border">
 										<div class="step-container__box__title pb-2">
-											<div class="mx-2 mt-3">Log in <span class="fw-bold">with</span> BC Service Card</div>
+											<div class="mx-2 mt-3">Log in with <span class="fw-bold">BC Services Card</span></div>
 										</div>
 										<div class="step-container__box__content pe-4" style="padding-left: 5em!important;">
 											<table class="me-5 mb-4" style="text-align: left;">
@@ -95,11 +97,13 @@ import { LicenceApplicationRoutes } from '../licence-application-routing.module'
 
 										<div class="step-container__box__footer m-4 mb-2">
 											<button mat-flat-button class="large" color="primary" (click)="onRegisterWithBcServicesCard()">
-												<span style="vertical-align: text-bottom;"> Log In with BC Services Card </span>
+												<span style="vertical-align: text-bottom;">
+													Log In with <span class="fw-bold">BC Services Card</span>
+												</span>
 											</button>
 										</div>
 										<div class="step-container__box__footer mx-4 my-3">
-											Don't have BC Services Card?
+											Don't have BC Services Card?<br />
 											<a class="large" href="https://id.gov.bc.ca/account/" target="_blank">
 												Set up your account today
 											</a>
@@ -110,7 +114,7 @@ import { LicenceApplicationRoutes } from '../licence-application-routing.module'
 										features available to registered users.
 									</p>
 									<p class="mx-3 mt-2">
-										<a class="large" (click)="onContinue()"> Continue without a BC Services Card </a>
+										<a class="fw-bold" (click)="onContinue()"> Continue without a BC Services Card </a>
 									</p>
 								</div>
 							</div>
@@ -131,7 +135,7 @@ import { LicenceApplicationRoutes } from '../licence-application-routing.module'
 				cursor: initial;
 
 				&__border {
-					border: 8px solid var(--color-yellow);
+					border: 4px solid var(--color-yellow);
 				}
 			}
 
