@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
+import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-contact-information',
@@ -49,7 +49,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 	`,
 	styles: [],
 })
-export class ContactInformationComponent implements LicenceFormStepComponent {
+export class ContactInformationComponent implements LicenceChildStepperStepComponent {
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 
 	form: FormGroup = this.licenceApplicationService.contactInformationFormGroup;

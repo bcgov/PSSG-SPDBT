@@ -1,7 +1,6 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
-import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
+import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-fingerprints',
@@ -28,9 +27,9 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 							<!-- TODO link to the form to download for reference -->
 							<div class="text-minor-heading fw-normal mb-2">Upload your document:</div>
 							<app-file-upload
+								[control]="attachments"
 								[maxNumberOfFiles]="1"
 								[files]="attachments.value"
-								(filesChanged)="onFilesChanged()"
 							></app-file-upload>
 							<mat-error
 								class="mat-option-error"
@@ -57,26 +56,14 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 	`,
 	styles: [],
 })
-export class FingerprintsComponent implements LicenceFormStepComponent {
+export class FingerprintsComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.licenceApplicationService.proofOfFingerprintFormGroup;
-
-	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	isFormValid(): boolean {
-		this.onFilesChanged();
-
 		this.form.markAllAsTouched();
 		return this.form.valid;
-	}
-
-	onFilesChanged(): void {
-		const attachments =
-			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
-				? this.fileUploadComponent.files
-				: [];
-		this.form.controls['attachments'].setValue(attachments);
 	}
 
 	get attachments(): FormControl {

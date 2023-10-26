@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { WorkerCategoryTypeCode } from 'src/app/api/models';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
@@ -7,10 +7,9 @@ import {
 	PrivateInvestigatorRequirementCode,
 	PrivateInvestigatorTrainingCode,
 } from 'src/app/core/code-types/model-desc.models';
-import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
-import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
+import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-category-private-investigator',
@@ -117,10 +116,10 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 
 				<div class="my-2">
 					<app-file-upload
+						[control]="attachments"
 						[maxNumberOfFiles]="10"
 						#attachmentsRef
 						[files]="attachments.value"
-						(filesChanged)="onFilesChanged()"
 					></app-file-upload>
 					<mat-error
 						class="mat-option-error"
@@ -206,10 +205,10 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 						>
 					</div>
 					<app-file-upload
+						[control]="trainingAttachments"
 						[maxNumberOfFiles]="10"
 						#trainingAttachmentsRef
 						[files]="trainingAttachments.value"
-						(filesChanged)="onTrainingFilesChanged()"
 					></app-file-upload>
 					<mat-error
 						class="mat-option-error"
@@ -310,7 +309,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, LicenceFormStepComponent {
+export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, LicenceChildStepperStepComponent {
 	form: FormGroup = this.licenceApplicationService.categoryPrivateInvestigatorFormGroup;
 	matcher = new FormErrorStateMatcher();
 	title = '';
@@ -319,11 +318,6 @@ export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, Lice
 	privateInvestigatorRequirementCodes = PrivateInvestigatorRequirementCode;
 	privateInvestigatorTrainingCodes = PrivateInvestigatorTrainingCode;
 
-	@ViewChild('attachmentsRef') fileUploadComponent1!: FileUploadComponent;
-	@ViewChild('trainingAttachmentsRef') fileUploadComponent2!: FileUploadComponent;
-	@ViewChild('fireCourseCertificateAttachmentsRef') fileUploadComponent3!: FileUploadComponent;
-	@ViewChild('fireVerificationLetterAttachmentsRef') fileUploadComponent4!: FileUploadComponent;
-
 	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
@@ -331,45 +325,8 @@ export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, Lice
 	}
 
 	isFormValid(): boolean {
-		this.onFilesChanged();
-		this.onTrainingFilesChanged();
-		this.onFireCertFilesChanged();
-		this.onFireLetterFilesChanged();
-
 		this.form.markAllAsTouched();
 		return this.form.valid;
-	}
-
-	onFilesChanged(): void {
-		const attachments =
-			this.fileUploadComponent1?.files && this.fileUploadComponent1?.files.length > 0
-				? this.fileUploadComponent1.files
-				: [];
-		this.form.controls['attachments'].setValue(attachments);
-	}
-
-	onTrainingFilesChanged(): void {
-		const attachments =
-			this.fileUploadComponent2?.files && this.fileUploadComponent2?.files.length > 0
-				? this.fileUploadComponent2.files
-				: [];
-		this.form.controls['trainingAttachments'].setValue(attachments);
-	}
-
-	onFireCertFilesChanged(): void {
-		const attachments =
-			this.fileUploadComponent3?.files && this.fileUploadComponent3?.files.length > 0
-				? this.fileUploadComponent3.files
-				: [];
-		this.form.controls['fireCourseCertificateAttachments'].setValue(attachments);
-	}
-
-	onFireLetterFilesChanged(): void {
-		const attachments =
-			this.fileUploadComponent4?.files && this.fileUploadComponent4?.files.length > 0
-				? this.fileUploadComponent4.files
-				: [];
-		this.form.controls['fireVerificationLetterAttachments'].setValue(attachments);
 	}
 
 	public get requirementCode(): FormControl {

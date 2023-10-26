@@ -117,7 +117,7 @@ $spd-theme: mat.define-light-theme((
   --color-primary-lightest: #eff2f5;
   --color-primary-lighter: #d6ddec;
   --color-primary-light: #0f48ae;
-  --color-sidebar: #385D8A;
+  --color-sidebar: #003366; //#385D8A;
   --color-primary: #003366; // BC Gov. Primary
   --color-primary-dark: #001b4a;
 
@@ -152,6 +152,7 @@ html, body { height: 100%; }
 body { 
   margin: 0; 
   background-color: var(--color-primary-lightest);
+	font-family: 'BCSans', 'Noto Sans', Arial, sans-serif;
 }
 
 .step {

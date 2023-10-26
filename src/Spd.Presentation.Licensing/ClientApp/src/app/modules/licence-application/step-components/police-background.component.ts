@@ -1,10 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { PoliceOfficerRoleCode } from 'src/app/api/models';
 import { BooleanTypeCode, PoliceOfficerRoleTypes } from 'src/app/core/code-types/model-desc.models';
-import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
+import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-police-background',
@@ -97,9 +96,9 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 												</p>
 
 												<app-file-upload
+													[control]="attachments"
 													[maxNumberOfFiles]="1"
 													[files]="attachments.value"
-													(filesChanged)="onFilesChanged()"
 												></app-file-upload>
 												<mat-error
 													class="mat-option-error"
@@ -123,7 +122,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 	`,
 	styles: [],
 })
-export class PoliceBackgroundComponent implements OnInit, LicenceFormStepComponent {
+export class PoliceBackgroundComponent implements OnInit, LicenceChildStepperStepComponent {
 	isViewOnlyPoliceOrPeaceOfficer = false;
 
 	booleanTypeCodes = BooleanTypeCode;
@@ -144,8 +143,6 @@ export class PoliceBackgroundComponent implements OnInit, LicenceFormStepCompone
 
 	form: FormGroup = this.licenceApplicationService.policeBackgroundFormGroup;
 
-	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
-
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
@@ -158,18 +155,8 @@ export class PoliceBackgroundComponent implements OnInit, LicenceFormStepCompone
 	}
 
 	isFormValid(): boolean {
-		this.onFilesChanged();
-
 		this.form.markAllAsTouched();
 		return this.form.valid;
-	}
-
-	onFilesChanged(): void {
-		const attachments =
-			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
-				? this.fileUploadComponent.files
-				: [];
-		this.form.controls['attachments'].setValue(attachments);
 	}
 
 	get isPoliceOrPeaceOfficer(): FormControl {

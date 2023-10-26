@@ -1,11 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { WorkerCategoryTypeCode } from 'src/app/api/models';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { SecurityAlarmInstallerRequirementCode } from 'src/app/core/code-types/model-desc.models';
-import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
-import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
+import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-category-security-alarm-installer',
@@ -71,9 +70,9 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 
 				<div class="my-2">
 					<app-file-upload
+						[control]="attachments"
 						[maxNumberOfFiles]="10"
 						[files]="attachments.value"
-						(filesChanged)="onFilesChanged()"
 					></app-file-upload>
 					<mat-error
 						class="mat-option-error"
@@ -91,13 +90,11 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class LicenceCategorySecurityAlarmInstallerComponent implements OnInit, LicenceFormStepComponent {
+export class LicenceCategorySecurityAlarmInstallerComponent implements OnInit, LicenceChildStepperStepComponent {
 	form: FormGroup = this.licenceApplicationService.categorySecurityAlarmInstallerFormGroup;
 	title = '';
 
 	securityAlarmInstallerRequirementCodes = SecurityAlarmInstallerRequirementCode;
-
-	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
 	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
 
@@ -106,18 +103,8 @@ export class LicenceCategorySecurityAlarmInstallerComponent implements OnInit, L
 	}
 
 	isFormValid(): boolean {
-		this.onFilesChanged();
-
 		this.form.markAllAsTouched();
 		return this.form.valid;
-	}
-
-	onFilesChanged(): void {
-		const attachments =
-			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
-				? this.fileUploadComponent.files
-				: [];
-		this.form.controls['attachments'].setValue(attachments);
 	}
 
 	public get requirementCode(): FormControl {
