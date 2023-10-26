@@ -25,7 +25,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 		<app-crrp-header></app-crrp-header>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
-				<h2 class="mb-2 fw-normal">Generic Uploads</h2>
+				<h2 class="mb-2">Generic Uploads</h2>
 				<div class="col-lg-8 col-md-12 col-sm-12 my-4">
 					<app-file-upload
 						accept=".tsv"

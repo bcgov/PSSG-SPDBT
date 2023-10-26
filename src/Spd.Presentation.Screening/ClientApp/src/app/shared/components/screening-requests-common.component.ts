@@ -35,7 +35,7 @@ export const ScreeningCheckFilterMap: Record<keyof ScreeningCheckFilter, string>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-xxl-10 col-xl-9 col-lg-6 col-md-6 col-sm-12">
-					<h2 class="mb-2 fw-normal">
+					<h2 class="mb-2">
 						{{ heading }}
 						<div class="mt-2 fs-5 fw-light">{{ subtitle }}</div>
 					</h2>
