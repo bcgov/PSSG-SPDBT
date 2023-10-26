@@ -3,7 +3,7 @@ import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@
 import { MatStepper } from '@angular/material/stepper';
 import { DocumentTypeCode } from 'src/app/api/models';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
-import { LicenceApplicationService } from '../../licence-application.service';
+import { LicenceApplicationService, LicenceStepperStepComponent } from '../../licence-application.service';
 import { AdditionalGovIdComponent } from '../additional-gov-id.component';
 import { AliasesComponent } from '../aliases.component';
 import { BcDriverLicenceComponent } from '../bc-driver-licence.component';
@@ -203,7 +203,7 @@ import { ResidentialAddressComponent } from '../residential-address.component';
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepIdentificationComponent {
+export class StepIdentificationComponent implements LicenceStepperStepComponent {
 	readonly STEP_PERSONAL_INFORMATION = '9';
 	readonly STEP_ALIASES = '0';
 	readonly STEP_CITIZENSHIP = '1';
@@ -218,6 +218,7 @@ export class StepIdentificationComponent {
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
+	@Output() pressNextStep: EventEmitter<boolean> = new EventEmitter<boolean>();
 
 	@ViewChild(PersonalInformationComponent) personalInformationComponent!: PersonalInformationComponent;
 	@ViewChild(AliasesComponent) aliasesComponent!: AliasesComponent;
@@ -253,14 +254,18 @@ export class StepIdentificationComponent {
 
 	onFormValidNextStep(formNumber: string): void {
 		const isValid = this.dirtyForm(formNumber);
-		// console.log('onFormValidNextStep formNumber:', formNumber, isValid);
-
 		if (!isValid) return;
+
+		this.pressNextStep.emit(true);
 		this.childstepper.next();
 	}
 
 	onGoToFirstStep() {
 		this.childstepper.selectedIndex = 0;
+	}
+
+	onGoToLastStep() {
+		this.childstepper.selectedIndex = this.childstepper.steps.length - 1;
 	}
 
 	onGoToContactStep() {
@@ -304,7 +309,7 @@ export class StepIdentificationComponent {
 		const form = this.licenceApplicationService.citizenshipFormGroup;
 		return (
 			(form.value.isBornInCanada == BooleanTypeCode.Yes &&
-				form.value.proofOfCitizenship != DocumentTypeCode.CanadianPassport) ||
+				form.value.proofTypeCode != DocumentTypeCode.CanadianPassport) ||
 			(form.value.isBornInCanada == BooleanTypeCode.No &&
 				form.value.proofOfAbility != DocumentTypeCode.PermanentResidentCard)
 		);

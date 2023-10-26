@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import {
@@ -6,9 +6,8 @@ import {
 	ProofOfAbilityToWorkInCanadaTypes,
 	ProofOfCanadianCitizenshipTypes,
 } from 'src/app/core/code-types/model-desc.models';
-import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
+import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-citizenship',
@@ -100,9 +99,9 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 												<div class="text-minor-heading mb-2">Upload a photo of your selected document type:</div>
 											</ng-template>
 											<app-file-upload
+												[control]="attachments"
 												[maxNumberOfFiles]="1"
 												[files]="attachments.value"
-												(filesChanged)="onFilesChanged()"
 											></app-file-upload>
 											<mat-error
 												class="mat-option-error"
@@ -126,32 +125,20 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class CitizenshipComponent implements LicenceFormStepComponent {
+export class CitizenshipComponent implements LicenceChildStepperStepComponent {
 	proofOfCanadianCitizenshipTypes = ProofOfCanadianCitizenshipTypes;
 	proofOfAbilityToWorkInCanadaTypes = ProofOfAbilityToWorkInCanadaTypes;
 
 	booleanTypeCodes = BooleanTypeCode;
 	matcher = new FormErrorStateMatcher();
 
-	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
-
 	form: FormGroup = this.licenceApplicationService.citizenshipFormGroup;
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	isFormValid(): boolean {
-		this.onFilesChanged();
-
 		this.form.markAllAsTouched();
 		return this.form.valid;
-	}
-
-	onFilesChanged(): void {
-		const attachments =
-			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
-				? this.fileUploadComponent.files
-				: [];
-		this.form.controls['attachments'].setValue(attachments);
 	}
 
 	get isBornInCanada(): FormControl {

@@ -407,8 +407,7 @@ export class ApplicationsInProgressComponent implements OnInit, OnDestroy {
 		this.licenceApplicationService
 			.createNewLicence()
 			.pipe(
-				tap((resp: any) => {
-					console.log('after3', resp);
+				tap((_resp: any) => {
 					this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LICENCE_SELECTION));
 				}),
 				take(1)

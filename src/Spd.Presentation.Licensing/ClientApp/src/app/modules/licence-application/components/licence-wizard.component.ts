@@ -28,6 +28,7 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 						<mat-step [completed]="step1Complete">
 							<ng-template matStepLabel> Licence Selection </ng-template>
 							<app-step-licence-selection
+								(pressNextStep)="onPressNextStep()"
 								(nextStepperStep)="onNextStepperStep(stepper)"
 								(scrollIntoView)="onScrollIntoView()"
 							></app-step-licence-selection>
@@ -36,6 +37,7 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 						<mat-step [completed]="step2Complete">
 							<ng-template matStepLabel>Background</ng-template>
 							<app-step-background
+								(pressNextStep)="onPressNextStep()"
 								(previousStepperStep)="onPreviousStepperStep(stepper)"
 								(nextStepperStep)="onNextStepperStep(stepper)"
 								(scrollIntoView)="onScrollIntoView()"
@@ -45,6 +47,7 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 						<mat-step [completed]="step3Complete">
 							<ng-template matStepLabel>Identification</ng-template>
 							<app-step-identification
+								(pressNextStep)="onPressNextStep()"
 								(previousStepperStep)="onPreviousStepperStep(stepper)"
 								(nextStepperStep)="onNextStepperStep(stepper)"
 								(scrollIntoView)="onScrollIntoView()"
@@ -55,6 +58,7 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 							<ng-template matStepLabel>Review and Confirm</ng-template>
 							<ng-template matStepContent>
 								<app-step-review
+									(pressNextStep)="onPressNextStep()"
 									(previousStepperStep)="onPreviousStepperStep(stepper)"
 									(nextStepperStep)="onNextStepperStep(stepper)"
 									(scrollIntoView)="onScrollIntoView()"
@@ -83,7 +87,7 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 					>
 						<mat-icon>exit_to_app</mat-icon>
 					</button>
-
+					<!--TODO   && stepper.selectedIndex != STEP_REVIEW -->
 					<button
 						*ngIf="isFormValid"
 						mat-fab
@@ -193,9 +197,14 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 
 		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelFormGroup.valueChanges
 			.pipe(debounceTime(500), distinctUntilChanged())
-			.subscribe((form: any) => {
+			.subscribe((xxx: any) => {
 				this.hasValueChanged = true;
-				console.log('valueChanges', form);
+				console.log('valueChanges', this.licenceApplicationService.licenceModelFormGroup.valid);
+				// console.log('xxx', this.licenceApplicationService.licenceModelFormGroup);
+
+				// Object.keys(this.form.controls).forEach((key) => {
+				// 	console.log(this.form.get(key)?.errors);
+				// });
 				this.isFormValid = this.licenceApplicationService.licenceModelFormGroup.valid;
 			});
 	}
@@ -218,6 +227,25 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 	}
 
 	onStepSelectionChange(event: StepperSelectionEvent) {
+		if (event.selectedIndex == 3) {
+			console.log('onStepSelectionChange', event);
+		}
+
+		switch (event.selectedIndex) {
+			case this.STEP_LICENCE_SELECTION:
+				this.stepLicenceSelectionComponent?.onGoToFirstStep();
+				break;
+			case this.STEP_BACKGROUND:
+				this.stepBackgroundComponent?.onGoToFirstStep();
+				break;
+			case this.STEP_IDENTIFICATION:
+				this.stepIdentificationComponent?.onGoToFirstStep();
+				break;
+			case this.STEP_REVIEW:
+				this.stepReviewComponent?.onGoToFirstStep();
+				break;
+		}
+
 		// 	this.scrollIntoView();
 	}
 
@@ -231,6 +259,20 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 
 		// console.log('previous', stepper);
 		stepper.previous();
+
+		switch (stepper.selectedIndex) {
+			case this.STEP_LICENCE_SELECTION:
+				this.stepLicenceSelectionComponent?.onGoToLastStep();
+				break;
+			case this.STEP_BACKGROUND:
+				this.stepBackgroundComponent?.onGoToLastStep();
+				break;
+			case this.STEP_IDENTIFICATION:
+				this.stepIdentificationComponent?.onGoToLastStep();
+				break;
+			// case this.STEP_REVIEW:
+			// 	break;
+		}
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
@@ -241,6 +283,21 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 
 		console.log('next step', this.licenceApplicationService.licenceModelFormGroup.value);
 		stepper.next();
+
+		switch (stepper.selectedIndex) {
+			case this.STEP_LICENCE_SELECTION:
+				this.stepLicenceSelectionComponent?.onGoToFirstStep();
+				break;
+			case this.STEP_BACKGROUND:
+				this.stepBackgroundComponent?.onGoToFirstStep();
+				break;
+			case this.STEP_IDENTIFICATION:
+				this.stepIdentificationComponent?.onGoToFirstStep();
+				break;
+			// case this.STEP_REVIEW:
+			// 	this.stepReviewComponent.onGoToFirstStep();
+			// 	break;
+		}
 	}
 
 	onGoToStep(step: number) {
@@ -248,14 +305,15 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 		this.saveIfChanged();
 
 		if (step == 3) {
+			// TODO test this
 			this.stepIdentificationComponent.onGoToContactStep();
 			this.stepper.selectedIndex = 2;
 			return;
 		}
 
-		this.stepLicenceSelectionComponent.onGoToFirstStep();
-		this.stepBackgroundComponent.onGoToFirstStep();
-		this.stepIdentificationComponent.onGoToFirstStep();
+		this.stepLicenceSelectionComponent?.onGoToFirstStep();
+		this.stepBackgroundComponent?.onGoToFirstStep();
+		this.stepIdentificationComponent?.onGoToFirstStep();
 		this.stepper.selectedIndex = step;
 	}
 
@@ -266,6 +324,10 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 
 	onGoToReview() {
 		this.stepper.selectedIndex = this.STEP_REVIEW;
+	}
+
+	onPressNextStep() {
+		this.saveIfChanged();
 	}
 
 	private saveIfChanged() {

@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { GenderTypes } from 'src/app/core/code-types/model-desc.models';
 import { UtilService } from 'src/app/core/services/util.service';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
+import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-personal-information',
@@ -80,7 +80,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 	`,
 	styles: [],
 })
-export class PersonalInformationComponent implements OnInit, LicenceFormStepComponent {
+export class PersonalInformationComponent implements OnInit, LicenceChildStepperStepComponent {
 	genderTypes = GenderTypes;
 	matcher = new FormErrorStateMatcher();
 

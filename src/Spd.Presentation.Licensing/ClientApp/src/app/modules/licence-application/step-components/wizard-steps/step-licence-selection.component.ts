@@ -4,7 +4,7 @@ import { FormGroup } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
-import { LicenceApplicationService } from '../../licence-application.service';
+import { LicenceApplicationService, LicenceStepperStepComponent } from '../../licence-application.service';
 import { DogsAuthorizationComponent } from '../dogs-authorization.component';
 import { LicenceAccessCodeComponent } from '../licence-access-code.component';
 import { LicenceCategoryComponent } from '../licence-category.component';
@@ -118,7 +118,7 @@ import { RestraintsAuthorizationComponent } from '../restraints-authorization.co
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepLicenceSelectionComponent {
+export class StepLicenceSelectionComponent implements LicenceStepperStepComponent {
 	readonly STEP_ACCESS_CODE = '2';
 	readonly STEP_LICENCE_EXPIRED = '5';
 	readonly STEP_LICENCE_CATEGORY = '6';
@@ -128,6 +128,7 @@ export class StepLicenceSelectionComponent {
 
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
+	@Output() pressNextStep: EventEmitter<boolean> = new EventEmitter<boolean>();
 
 	@ViewChild(LicenceAccessCodeComponent)
 	licenceAccessCodeComponent!: LicenceAccessCodeComponent;
@@ -168,6 +169,7 @@ export class StepLicenceSelectionComponent {
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 
+		this.pressNextStep.emit(true);
 		this.childstepper.next();
 	}
 
@@ -177,6 +179,10 @@ export class StepLicenceSelectionComponent {
 
 	onGoToFirstStep() {
 		this.childstepper.selectedIndex = 0;
+	}
+
+	onGoToLastStep() {
+		this.childstepper.selectedIndex = this.childstepper.steps.length - 1;
 	}
 
 	private dirtyForm(step: string): boolean {

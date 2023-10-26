@@ -5,7 +5,7 @@ import { WorkerCategoryTypeCode } from 'src/app/api/models';
 import { SelectOptions, WorkerCategoryTypes } from 'src/app/core/code-types/model-desc.models';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
-import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
+import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-category',
@@ -687,7 +687,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 		`,
 	],
 })
-export class LicenceCategoryComponent implements OnInit, LicenceFormStepComponent {
+export class LicenceCategoryComponent implements OnInit, LicenceChildStepperStepComponent {
 	category = '';
 	isDirtyAndInvalid = false;
 

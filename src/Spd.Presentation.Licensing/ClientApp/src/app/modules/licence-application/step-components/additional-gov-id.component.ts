@@ -1,9 +1,8 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { GovernmentIssuedPhotoIdTypes } from 'src/app/core/code-types/model-desc.models';
-import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
+import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-additional-gov-id',
@@ -51,8 +50,8 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 										<div class="text-minor-heading fw-normal mb-2">Upload a photo of your ID:</div>
 										<app-file-upload
 											[maxNumberOfFiles]="1"
+											[control]="attachments"
 											[files]="attachments.value"
-											(filesChanged)="onFilesChanged()"
 										></app-file-upload>
 										<mat-error
 											class="mat-option-error"
@@ -74,30 +73,18 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 	`,
 	styles: [],
 })
-export class AdditionalGovIdComponent implements LicenceFormStepComponent {
+export class AdditionalGovIdComponent implements LicenceChildStepperStepComponent {
 	governmentIssuedPhotoIdTypes = GovernmentIssuedPhotoIdTypes;
 
 	matcher = new FormErrorStateMatcher();
 
 	form: FormGroup = this.licenceApplicationService.govIssuedIdFormGroup;
 
-	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
-
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	isFormValid(): boolean {
-		this.onFilesChanged();
-
 		this.form.markAllAsTouched();
 		return this.form.valid;
-	}
-
-	onFilesChanged(): void {
-		const attachments =
-			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
-				? this.fileUploadComponent.files
-				: [];
-		this.form.controls['attachments'].setValue(attachments);
 	}
 
 	get attachments(): FormControl {

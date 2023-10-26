@@ -1,7 +1,7 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Component, EventEmitter, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { LicenceApplicationService } from '../../licence-application.service';
+import { LicenceStepperStepComponent } from '../../licence-application.service';
 import { CriminalHistoryComponent } from '../criminal-history.component';
 import { FingerprintsComponent } from '../fingerprints.component';
 import { MentalHealthConditionsComponent } from '../mental-health-conditions.component';
@@ -105,7 +105,7 @@ import { PoliceBackgroundComponent } from '../police-background.component';
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepBackgroundComponent implements OnInit {
+export class StepBackgroundComponent implements LicenceStepperStepComponent {
 	readonly STEP_POLICE_BACKGROUND = '1';
 	readonly STEP_MENTAL_HEALTH_CONDITIONS = '2';
 	readonly STEP_CRIMINAL_HISTORY = '3';
@@ -129,12 +129,9 @@ export class StepBackgroundComponent implements OnInit {
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
+	@Output() pressNextStep: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
-
-	ngOnInit(): void {
-		console.log('onInit StepBackgroundComponent1');
-	}
+	constructor() {}
 
 	onStepSelectionChange(event: StepperSelectionEvent) {
 		this.scrollIntoView.emit(true);
@@ -145,8 +142,6 @@ export class StepBackgroundComponent implements OnInit {
 	}
 
 	onStepNext(formNumber: string): void {
-		console.log('onStepNext formNumber:', formNumber);
-
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 		this.nextStepperStep.emit(true);
@@ -156,11 +151,15 @@ export class StepBackgroundComponent implements OnInit {
 		this.childstepper.selectedIndex = 0;
 	}
 
-	onFormValidNextStep(formNumber: string): void {
-		console.log('onFormValidNextStep formNumber:', formNumber);
+	onGoToLastStep() {
+		this.childstepper.selectedIndex = this.childstepper.steps.length - 1;
+	}
 
+	onFormValidNextStep(formNumber: string): void {
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
+
+		this.pressNextStep.emit(true);
 		this.childstepper.next();
 	}
 

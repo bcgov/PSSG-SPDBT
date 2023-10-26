@@ -1,9 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { WorkerCategoryTypeCode } from 'src/app/api/models';
-import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
-import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
+import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-licence-category-fire-investigator',
@@ -29,10 +28,10 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 			<div class="my-2">
 				<div class="fs-6 fw-bold mb-2">Upload a copy of your course certificate:</div>
 				<app-file-upload
+					[control]="fireCourseCertificateAttachments"
 					[maxNumberOfFiles]="10"
 					#fireCourseCertificateAttachmentsRef
 					[files]="fireCourseCertificateAttachments.value"
-					(filesChanged)="onCertificationFilesChanged()"
 				></app-file-upload>
 				<mat-error
 					class="mat-option-error"
@@ -49,10 +48,10 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 			<div class="mt-3 mb-2">
 				<div class="fs-6 fw-bold mb-2">Upload a verification letter:</div>
 				<app-file-upload
+					[control]="fireVerificationLetterAttachments"
 					[maxNumberOfFiles]="10"
 					#fireVerificationLetterAttachmentsRef
 					[files]="fireVerificationLetterAttachments.value"
-					(filesChanged)="onLetterFilesChanged()"
 				></app-file-upload>
 				<mat-error
 					class="mat-option-error"
@@ -69,12 +68,9 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 	`,
 	styles: [],
 })
-export class LicenceCategoryFireInvestigatorComponent implements OnInit, LicenceFormStepComponent {
+export class LicenceCategoryFireInvestigatorComponent implements OnInit, LicenceChildStepperStepComponent {
 	form: FormGroup = this.licenceApplicationService.categoryFireInvestigatorFormGroup;
 	title = '';
-
-	@ViewChild('fireCourseCertificateAttachmentsRef') fileUploadComponent3!: FileUploadComponent;
-	@ViewChild('fireVerificationLetterAttachmentsRef') fileUploadComponent4!: FileUploadComponent;
 
 	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
 
@@ -83,27 +79,8 @@ export class LicenceCategoryFireInvestigatorComponent implements OnInit, Licence
 	}
 
 	isFormValid(): boolean {
-		this.onCertificationFilesChanged();
-		this.onLetterFilesChanged();
-
 		this.form.markAllAsTouched();
 		return this.form.valid;
-	}
-
-	onCertificationFilesChanged(): void {
-		const attachments =
-			this.fileUploadComponent3?.files && this.fileUploadComponent3?.files.length > 0
-				? this.fileUploadComponent3.files
-				: [];
-		this.form.controls['fireCourseCertificateAttachments'].setValue(attachments);
-	}
-
-	onLetterFilesChanged(): void {
-		const attachments =
-			this.fileUploadComponent4?.files && this.fileUploadComponent4?.files.length > 0
-				? this.fileUploadComponent4.files
-				: [];
-		this.form.controls['fireVerificationLetterAttachments'].setValue(attachments);
 	}
 
 	public get fireCourseCertificateAttachments(): FormControl {

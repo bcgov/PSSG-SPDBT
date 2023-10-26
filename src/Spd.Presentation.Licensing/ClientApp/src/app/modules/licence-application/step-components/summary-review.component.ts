@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { PoliceOfficerRoleCode, WorkerCategoryTypeCode } from 'src/app/api/models';
-import { BooleanTypeCode, SelectOptions, WorkerCategoryTypes } from 'src/app/core/code-types/model-desc.models';
+import { BooleanTypeCode, WorkerCategoryTypes } from 'src/app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { LicenceApplicationService } from '../licence-application.service';
 
@@ -16,51 +16,51 @@ import { LicenceApplicationService } from '../licence-application.service';
 				></app-step-title>
 				<div class="step-container">
 					<div class="row">
-						<form [formGroup]="form" novalidate>
-							<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
-								<div class="row mb-3">
-									<div class="col-12">
-										<mat-accordion multi="true">
-											<mat-expansion-panel class="mb-2" [expanded]="true">
-												<mat-expansion-panel-header>
-													<mat-panel-title class="review-panel-title">
-														<mat-toolbar class="d-flex justify-content-between">
-															<div class="panel-header fs-4 my-2">Licence Selection</div>
-															<button
-																mat-mini-fab
-																color="primary"
-																class="go-to-step-button"
-																matTooltip="Go to Step 1"
-																aria-label="Go to Step 1"
-																(click)="$event.stopPropagation(); onEditStep(0)"
-															>
-																<mat-icon>edit</mat-icon>
-															</button>
-														</mat-toolbar>
-													</mat-panel-title>
-												</mat-expansion-panel-header>
-												<div class="panel-body">
-													<div class="text-minor-heading mt-4">Licence Information</div>
-													<div class="row mt-0">
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Licence Type</div>
-															<div class="text-data">
-																{{ licenceTypeCode.value | options : 'WorkerLicenceTypes' }}
-															</div>
-														</div>
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">Application Type</div>
-															<div class="text-data">
-																{{ applicationTypeCode.value | options : 'ApplicationTypes' }}
-															</div>
-														</div>
-														<div class="col-lg-4 col-md-12 mt-lg-2">
-															<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																Sole Proprietorship Security Business Licence
-															</div>
-															<div class="text-data">{{ isSoleProprietor.value }}</div>
+						<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
+							<div class="row mb-3">
+								<div class="col-12">
+									<mat-accordion multi="true">
+										<mat-expansion-panel class="mb-2" [expanded]="true">
+											<mat-expansion-panel-header>
+												<mat-panel-title class="review-panel-title">
+													<mat-toolbar class="d-flex justify-content-between">
+														<div class="panel-header fs-4 my-2">Licence Selection</div>
+														<button
+															mat-mini-fab
+															color="primary"
+															class="go-to-step-button"
+															matTooltip="Go to Step 1"
+															aria-label="Go to Step 1"
+															(click)="$event.stopPropagation(); onEditStep(0)"
+														>
+															<mat-icon>edit</mat-icon>
+														</button>
+													</mat-toolbar>
+												</mat-panel-title>
+											</mat-expansion-panel-header>
+											<div class="panel-body">
+												<div class="text-minor-heading mt-4">Licence Information</div>
+												<div class="row mt-0">
+													<div class="col-lg-4 col-md-12 mt-lg-2">
+														<div class="text-label d-block text-muted mt-2 mt-lg-0">Licence Type</div>
+														<div class="text-data">
+															{{ licenceTypeCode | options : 'WorkerLicenceTypes' }}
 														</div>
 													</div>
+													<div class="col-lg-4 col-md-12 mt-lg-2">
+														<div class="text-label d-block text-muted mt-2 mt-lg-0">Application Type</div>
+														<div class="text-data">
+															{{ applicationTypeCode | options : 'ApplicationTypes' }}
+														</div>
+													</div>
+													<div class="col-lg-4 col-md-12 mt-lg-2">
+														<div class="text-label d-block text-muted mt-2 mt-lg-0">
+															Sole Proprietorship Security Business Licence
+														</div>
+														<div class="text-data">{{ isSoleProprietor }}</div>
+													</div>
+												</div>
+												<!--
 													<div class="row mt-0">
 														<ng-container
 															*ngFor="let category of categoryList; let i = index; let first = first; let last = last"
@@ -296,9 +296,10 @@ import { LicenceApplicationService } from '../licence-application.service';
 															</div>
 														</div>
 													</ng-container>
-												</div>
-											</mat-expansion-panel>
-
+																-->
+											</div>
+										</mat-expansion-panel>
+										<!--
 											<mat-expansion-panel class="mb-2" [expanded]="true">
 												<mat-expansion-panel-header>
 													<mat-panel-title class="review-panel-title">
@@ -400,7 +401,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 													</div>
 												</div>
 											</mat-expansion-panel>
-
+											
 											<mat-expansion-panel class="mb-2" [expanded]="true">
 												<mat-expansion-panel-header>
 													<mat-panel-title class="review-panel-title">
@@ -478,8 +479,8 @@ import { LicenceApplicationService } from '../licence-application.service';
 																</div>
 																<div class="col-lg-6 col-md-12 mt-lg-2">
 																	<div class="text-label d-block text-muted mt-2 mt-lg-0">
-																		<span *ngIf="proofOfCitizenship">
-																			{{ proofOfCitizenship.value | options : 'ProofOfCanadianCitizenshipTypes' }}
+																		<span *ngIf="proofTypeCode">
+																			{{ proofTypeCode.value | options : 'ProofOfCanadianCitizenshipTypes' }}
 																		</span>
 																		<span *ngIf="proofOfAbility">
 																			{{ proofOfAbility.value | options : 'ProofOfAbilityToWorkInCanadaTypes' }}
@@ -542,7 +543,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 													</div>
 												</div>
 											</mat-expansion-panel>
-
+											
 											<mat-expansion-panel class="mb-2" [expanded]="true">
 												<mat-expansion-panel-header>
 													<mat-panel-title class="review-panel-title">
@@ -649,26 +650,23 @@ import { LicenceApplicationService } from '../licence-application.service';
 														</div>
 													</ng-template>
 												</div>
-											</mat-expansion-panel>
-										</mat-accordion>
-									</div>
+											</mat-expansion-panel>-->
+									</mat-accordion>
 								</div>
 							</div>
-						</form>
+						</div>
 					</div>
+					{{ licenceModelData | json }}
 				</div>
 			</div>
 		</section>
 	`,
 	styles: [
 		`
-			/* .title {
-				margin-top: 20px;
-				margin-bottom: 10px;
-			} */
 			.mat-expansion-panel {
 				border-radius: 0;
 			}
+
 			.mat-expansion-panel-header {
 				height: unset;
 			}
@@ -716,7 +714,9 @@ import { LicenceApplicationService } from '../licence-application.service';
 	],
 })
 export class SummaryReviewComponent {
-	form = this.licenceApplicationService.licenceModelFormGroup;
+	// form = this.licenceApplicationService.licenceModelFormGroup;
+
+	licenceModelData: any = {};
 
 	constants = SPD_CONSTANTS;
 	booleanTypeCodes = BooleanTypeCode;
@@ -753,13 +753,31 @@ export class SummaryReviewComponent {
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
+	ngOnInit(): void {
+		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.value };
+	}
+
 	onEditStep(stepNumber: number) {
 		this.editStep.emit(stepNumber);
 	}
 
-	get licenceTypeCode(): FormControl {
-		return this.form.controls['licenceTypeData'].get('licenceTypeCode') as FormControl;
+	onUpdateData(): void {
+		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.value };
+		console.log('XXX onUpdateData', this.licenceModelData);
 	}
+
+	get licenceTypeCode(): string {
+		return this.licenceModelData.licenceTypeData.licenceTypeCode ?? '';
+	}
+
+	get applicationTypeCode(): string {
+		return this.licenceModelData.applicationTypeData.applicationTypeCode ?? '';
+	}
+
+	get isSoleProprietor(): string {
+		return this.licenceModelData.soleProprietorData.isSoleProprietor ?? '';
+	}
+	/*
 	get applicationTypeCode(): FormControl {
 		return this.form.controls['applicationTypeData'].get('applicationTypeCode') as FormControl;
 	}
@@ -767,7 +785,6 @@ export class SummaryReviewComponent {
 	get isSoleProprietor(): FormControl {
 		return this.form.controls['soleProprietorData'].get('isSoleProprietor') as FormControl;
 	}
-
 	get categoryArmouredCarGuardAttachments(): FormControl {
 		return this.form.controls['categoryArmouredCarGuardFormGroup'].get('attachments') as FormControl;
 	}
@@ -928,8 +945,8 @@ export class SummaryReviewComponent {
 	get isBornInCanada(): FormControl {
 		return this.form.controls['citizenshipData'].get('isBornInCanada') as FormControl;
 	}
-	get proofOfCitizenship(): FormControl {
-		return this.form.controls['citizenshipData'].get('proofOfCitizenship') as FormControl;
+	get proofTypeCode(): FormControl {
+		return this.form.controls['citizenshipData'].get('proofTypeCode') as FormControl;
 	}
 	get proofOfAbility(): FormControl {
 		return this.form.controls['citizenshipData'].get('proofOfAbility') as FormControl;
@@ -1132,27 +1149,28 @@ export class SummaryReviewComponent {
 	}
 
 	get showArmouredCarGuard(): boolean {
-		return this.categoryArmouredCarGuardFormGroup.get('isInclude')?.value;
+		return this.categoryArmouredCarGuardFormGroup?.get('isInclude')?.value ?? false;
 	}
 	get showFireInvestigator(): boolean {
-		return this.categoryFireInvestigatorFormGroup.get('isInclude')?.value;
+		return this.categoryFireInvestigatorFormGroup?.get('isInclude')?.value ?? false;
 	}
 	get showLocksmith(): boolean {
-		return this.categoryLocksmithFormGroup.get('isInclude')?.value;
+		return this.categoryLocksmithFormGroup?.get('isInclude')?.value ?? false;
 	}
 	get showPrivateInvestigator(): boolean {
-		return this.categoryPrivateInvestigatorFormGroup.get('isInclude')?.value;
+		return this.categoryPrivateInvestigatorFormGroup?.get('isInclude')?.value ?? false;
 	}
 	get showPrivateInvestigatorUnderSupervision(): boolean {
-		return this.categoryPrivateInvestigatorSupFormGroup.get('isInclude')?.value;
+		return this.categoryPrivateInvestigatorSupFormGroup?.get('isInclude')?.value ?? false;
 	}
 	get showSecurityAlarmInstaller(): boolean {
-		return this.categorySecurityAlarmInstallerFormGroup.get('isInclude')?.value;
+		return this.categorySecurityAlarmInstallerFormGroup?.get('isInclude')?.value ?? false;
 	}
 	get showSecurityConsultant(): boolean {
-		return this.categorySecurityConsultantFormGroup.get('isInclude')?.value;
+		return this.categorySecurityConsultantFormGroup?.get('isInclude')?.value ?? false;
 	}
 	get showSecurityGuard(): boolean {
-		return this.categorySecurityGuardFormGroup.get('isInclude')?.value;
+		return this.categorySecurityGuardFormGroup?.get('isInclude')?.value ?? false;
 	}
+	*/
 }

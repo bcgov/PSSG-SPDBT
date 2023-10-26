@@ -1,5 +1,8 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { MatStepper } from '@angular/material/stepper';
+import { LicenceStepperStepComponent } from '../../licence-application.service';
+import { SummaryReviewComponent } from '../summary-review.component';
 
 @Component({
 	selector: 'app-step-review',
@@ -35,10 +38,14 @@ import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/cor
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepReviewComponent {
+export class StepReviewComponent implements LicenceStepperStepComponent {
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
+
+	@ViewChild('childstepper') private childstepper!: MatStepper;
+
+	@ViewChild(SummaryReviewComponent) summaryReviewComponent!: SummaryReviewComponent;
 
 	onStepPrevious(): void {
 		this.previousStepperStep.emit(true);
@@ -52,5 +59,22 @@ export class StepReviewComponent {
 
 	onStepSelectionChange(event: StepperSelectionEvent) {
 		this.scrollIntoView.emit(true);
+	}
+
+	onStepNext(formNumber: string): void {
+		// unused
+	}
+
+	onFormValidNextStep(formNumber: string): void {
+		// unused
+	}
+
+	onGoToFirstStep() {
+		this.childstepper.selectedIndex = 0;
+		this.summaryReviewComponent.onUpdateData();
+	}
+
+	onGoToLastStep() {
+		this.childstepper.selectedIndex = this.childstepper.steps.length - 1;
 	}
 }

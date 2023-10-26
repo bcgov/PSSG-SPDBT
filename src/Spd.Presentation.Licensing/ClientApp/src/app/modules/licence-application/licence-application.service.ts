@@ -1,43 +1,19 @@
+import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Injectable } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { HotToastService } from '@ngneat/hot-toast';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { BehaviorSubject, Observable } from 'rxjs';
 import {
-	AliasesData,
 	ApplicationTypeCode,
-	ApplicationTypeData,
-	BcDriversLicenceData,
-	CharacteristicsData,
-	CitizenshipData,
-	ContactInformationData,
-	CriminalHistoryData,
-	Documents,
 	DocumentTypeCode,
-	DogsAuthorizationData,
-	ExpiredLicenceData,
 	EyeColourCode,
 	GenderCode,
-	GovIssuedIdData,
 	HairColourCode,
 	HeightUnitCode,
 	LicenceTermCode,
-	LicenceTermData,
-	LicenceTypeData,
-	MailingAddressData,
-	MentalHealthConditionsData,
-	PersonalInformationData,
-	PhotographOfYourselfData,
-	PoliceBackgroundData,
 	PoliceOfficerRoleCode,
-	ProofOfFingerprintData,
-	ResidentialAddressData,
-	RestraintsAuthorizationData,
-	SoleProprietorData,
 	WeightUnitCode,
-	WorkerCategoryTypeCode,
-	WorkerLicenceCategoryData,
-	WorkerLicenceCreateRequest,
 	WorkerLicenceTypeCode,
 } from 'src/app/api/models';
 import { WorkerLicensingService } from 'src/app/api/services';
@@ -55,7 +31,16 @@ import { UtilService } from 'src/app/core/services/util.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 
-export interface LicenceFormStepComponent {
+export interface LicenceStepperStepComponent {
+	onStepNext(formNumber: string): void;
+	onStepPrevious(): void;
+	onFormValidNextStep(formNumber: string): void;
+	onStepSelectionChange(event: StepperSelectionEvent): void;
+	onGoToFirstStep(): void;
+	onGoToLastStep(): void;
+}
+
+export interface LicenceChildStepperStepComponent {
 	isFormValid(): boolean;
 }
 
@@ -132,39 +117,30 @@ export class LicenceApplicationService {
 
 	categoryBodyArmourSalesFormGroup = this.formBuilder.group({
 		isInclude: new FormControl(false),
-		checkbox: new FormControl({ value: true, disabled: true }),
 	});
 	categoryClosedCircuitTelevisionInstallerFormGroup = this.formBuilder.group({
 		isInclude: new FormControl(false),
-		checkbox: new FormControl({ value: true, disabled: true }),
 	});
 	categoryElectronicLockingDeviceInstallerFormGroup = this.formBuilder.group({
 		isInclude: new FormControl(false),
-		checkbox: new FormControl({ value: true, disabled: true }),
 	});
 	categoryLocksmithSupFormGroup = this.formBuilder.group({
 		isInclude: new FormControl(false),
-		checkbox: new FormControl({ value: true, disabled: true }),
 	});
 	categorySecurityAlarmInstallerSupFormGroup = this.formBuilder.group({
 		isInclude: new FormControl(false),
-		checkbox: new FormControl({ value: true, disabled: true }),
 	});
 	categorySecurityAlarmMonitorFormGroup = this.formBuilder.group({
 		isInclude: new FormControl(false),
-		checkbox: new FormControl({ value: true, disabled: true }),
 	});
 	categorySecurityAlarmResponseFormGroup = this.formBuilder.group({
 		isInclude: new FormControl(false),
-		checkbox: new FormControl({ value: true, disabled: true }),
 	});
 	categorySecurityAlarmSalesFormGroup = this.formBuilder.group({
 		isInclude: new FormControl(false),
-		checkbox: new FormControl({ value: true, disabled: true }),
 	});
 	categorySecurityGuardSupFormGroup = this.formBuilder.group({
 		isInclude: new FormControl(false),
-		checkbox: new FormControl({ value: true, disabled: true }),
 	});
 	categoryArmouredCarGuardFormGroup: FormGroup = this.formBuilder.group(
 		{
@@ -318,7 +294,7 @@ export class LicenceApplicationService {
 			validators: [
 				FormGroupValidators.conditionalRequiredValidator(
 					'carryAndUseRetraints',
-					(form) => this.categorySecurityGuardFormGroup.get('isInclude')?.value
+					(form) => this.categorySecurityGuardFormGroup?.get('isInclude')?.value ?? false
 				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'carryAndUseRetraintsDocument',
@@ -350,7 +326,7 @@ export class LicenceApplicationService {
 			validators: [
 				FormGroupValidators.conditionalRequiredValidator(
 					'useDogs',
-					(form) => this.categorySecurityGuardFormGroup.get('isInclude')?.value
+					(form) => this.categorySecurityGuardFormGroup?.get('isInclude')?.value ?? false
 				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'dogsPurposeDocumentType',
@@ -1079,332 +1055,332 @@ export class LicenceApplicationService {
 	}
 
 	saveLicence(): void {
-		const formValue = this.licenceModelFormGroup.value;
-		console.log('formValue', formValue);
+		// const formValue = this.licenceModelFormGroup.value;
+		// console.log('formValue', formValue);
 
-		const aliasesData: AliasesData = {
-			aliases: formValue.aliasesData.aliases,
-			hasPreviousName: formValue.aliasesData.previousNameFlag == BooleanTypeCode.Yes,
-		};
+		// const aliasesData: AliasesData = {
+		// 	aliases: formValue.aliasesData.aliases,
+		// 	hasPreviousName: formValue.aliasesData.previousNameFlag == BooleanTypeCode.Yes,
+		// };
 
-		const applicationTypeData: ApplicationTypeData = {
-			applicationTypeCode: formValue.applicationTypeData.applicationTypeCode,
-		};
+		// const applicationTypeData: ApplicationTypeData = {
+		// 	applicationTypeCode: formValue.applicationTypeData.applicationTypeCode,
+		// };
 
-		const bcDriversLicenceData: BcDriversLicenceData = {
-			bcDriversLicenceNumber: formValue.bcDriversLicenceData.bcDriversLicenceNumber,
-			hasBcDriversLicence: formValue.bcDriversLicenceData.hasBcDriversLicence == BooleanTypeCode.Yes,
-		};
+		// const bcDriversLicenceData: BcDriversLicenceData = {
+		// 	bcDriversLicenceNumber: formValue.bcDriversLicenceData.bcDriversLicenceNumber,
+		// 	hasBcDriversLicence: formValue.bcDriversLicenceData.hasBcDriversLicence == BooleanTypeCode.Yes,
+		// };
 
-		const categoriesData: null | Array<WorkerLicenceCategoryData> = [];
+		// const categoriesData: null | Array<WorkerLicenceCategoryData> = [];
 
-		if (formValue.categoryArmouredCarGuardFormGroup.isInclude) {
-			const workerLicenceCategoryDocs: Documents = {
-				attachments: [...formValue.categoryArmouredCarGuardFormGroup.attachments],
-				documentTypeCode: DocumentTypeCode.CategoryArmouredCarGuardAuthorizationToCarryCertificate,
-				expiryDate: formValue.categoryArmouredCarGuardFormGroup.documentExpiryDate,
-			};
-			const workerLicenceCategoryData: WorkerLicenceCategoryData = {
-				documents: [workerLicenceCategoryDocs],
-				workerCategoryTypeCode: WorkerCategoryTypeCode.ArmouredCarGuard,
-			};
-			categoriesData.push(workerLicenceCategoryData);
-		}
+		// if (formValue.categoryArmouredCarGuardFormGroup.isInclude) {
+		// 	const workerLicenceCategoryDocs: Documents = {
+		// 		attachments: [...formValue.categoryArmouredCarGuardFormGroup.attachments],
+		// 		documentTypeCode: DocumentTypeCode.CategoryArmouredCarGuardAuthorizationToCarryCertificate,
+		// 		expiryDate: formValue.categoryArmouredCarGuardFormGroup.documentExpiryDate,
+		// 	};
+		// 	const workerLicenceCategoryData: WorkerLicenceCategoryData = {
+		// 		documents: [workerLicenceCategoryDocs],
+		// 		workerCategoryTypeCode: WorkerCategoryTypeCode.ArmouredCarGuard,
+		// 	};
+		// 	categoriesData.push(workerLicenceCategoryData);
+		// }
 
-		if (formValue.categoryBodyArmourSalesFormGroup.isInclude) {
-			categoriesData.push({
-				workerCategoryTypeCode: WorkerCategoryTypeCode.BodyArmourSales,
-			});
-		}
+		// if (formValue.categoryBodyArmourSalesFormGroup.isInclude) {
+		// 	categoriesData.push({
+		// 		workerCategoryTypeCode: WorkerCategoryTypeCode.BodyArmourSales,
+		// 	});
+		// }
 
-		if (formValue.categoryClosedCircuitTelevisionInstallerFormGroup.isInclude) {
-			categoriesData.push({
-				workerCategoryTypeCode: WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller,
-			});
-		}
+		// if (formValue.categoryClosedCircuitTelevisionInstallerFormGroup.isInclude) {
+		// 	categoriesData.push({
+		// 		workerCategoryTypeCode: WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller,
+		// 	});
+		// }
 
-		if (formValue.categoryElectronicLockingDeviceInstallerFormGroup.isInclude) {
-			categoriesData.push({
-				workerCategoryTypeCode: WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller,
-			});
-		}
+		// if (formValue.categoryElectronicLockingDeviceInstallerFormGroup.isInclude) {
+		// 	categoriesData.push({
+		// 		workerCategoryTypeCode: WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller,
+		// 	});
+		// }
 
-		if (formValue.categoryFireInvestigatorFormGroup.isInclude) {
-			const workerLicenceCategoryDocs: Array<Documents> = [
-				{
-					attachments: [...formValue.categoryFireInvestigatorFormGroup.fireCourseCertificateAttachments],
-					documentTypeCode: DocumentTypeCode.CategoryFireInvestigatorCourseCertificate,
-				},
-				{
-					attachments: [...formValue.categoryFireInvestigatorFormGroup.fireVerificationLetterAttachments],
-					documentTypeCode: DocumentTypeCode.CategoryFireInvestigatorVerificationLetter,
-				},
-			];
-			const workerLicenceCategoryData: WorkerLicenceCategoryData = {
-				documents: workerLicenceCategoryDocs,
-				workerCategoryTypeCode: WorkerCategoryTypeCode.FireInvestigator,
-			};
-			categoriesData.push(workerLicenceCategoryData);
-		}
+		// if (formValue.categoryFireInvestigatorFormGroup.isInclude) {
+		// 	const workerLicenceCategoryDocs: Array<Documents> = [
+		// 		{
+		// 			attachments: [...formValue.categoryFireInvestigatorFormGroup.fireCourseCertificateAttachments],
+		// 			documentTypeCode: DocumentTypeCode.CategoryFireInvestigatorCourseCertificate,
+		// 		},
+		// 		{
+		// 			attachments: [...formValue.categoryFireInvestigatorFormGroup.fireVerificationLetterAttachments],
+		// 			documentTypeCode: DocumentTypeCode.CategoryFireInvestigatorVerificationLetter,
+		// 		},
+		// 	];
+		// 	const workerLicenceCategoryData: WorkerLicenceCategoryData = {
+		// 		documents: workerLicenceCategoryDocs,
+		// 		workerCategoryTypeCode: WorkerCategoryTypeCode.FireInvestigator,
+		// 	};
+		// 	categoriesData.push(workerLicenceCategoryData);
+		// }
 
-		if (formValue.categoryLocksmithFormGroup.isInclude) {
-			const workerLicenceCategoryDocs: Array<Documents> = [
-				{
-					attachments: [...formValue.categoryLocksmithFormGroup.attachments],
-					documentTypeCode: formValue.categoryLocksmithFormGroup.requirementCode,
-				},
-			];
-			const workerLicenceCategoryData: WorkerLicenceCategoryData = {
-				documents: workerLicenceCategoryDocs,
-				workerCategoryTypeCode: WorkerCategoryTypeCode.Locksmith,
-			};
-			categoriesData.push(workerLicenceCategoryData);
-		}
+		// if (formValue.categoryLocksmithFormGroup.isInclude) {
+		// 	const workerLicenceCategoryDocs: Array<Documents> = [
+		// 		{
+		// 			attachments: [...formValue.categoryLocksmithFormGroup.attachments],
+		// 			documentTypeCode: formValue.categoryLocksmithFormGroup.requirementCode,
+		// 		},
+		// 	];
+		// 	const workerLicenceCategoryData: WorkerLicenceCategoryData = {
+		// 		documents: workerLicenceCategoryDocs,
+		// 		workerCategoryTypeCode: WorkerCategoryTypeCode.Locksmith,
+		// 	};
+		// 	categoriesData.push(workerLicenceCategoryData);
+		// }
 
-		if (formValue.categoryLocksmithSupFormGroup.isInclude) {
-			categoriesData.push({
-				workerCategoryTypeCode: WorkerCategoryTypeCode.LocksmithUnderSupervision,
-			});
-		}
+		// if (formValue.categoryLocksmithSupFormGroup.isInclude) {
+		// 	categoriesData.push({
+		// 		workerCategoryTypeCode: WorkerCategoryTypeCode.LocksmithUnderSupervision,
+		// 	});
+		// }
 
-		if (formValue.categoryPrivateInvestigatorFormGroup.isInclude) {
-			const workerLicenceCategoryDocs: Array<Documents> = [
-				{
-					attachments: [...formValue.categoryPrivateInvestigatorFormGroup.attachments],
-					documentTypeCode: formValue.categoryPrivateInvestigatorFormGroup.requirementCode,
-				},
-				{
-					attachments: [...formValue.categoryPrivateInvestigatorFormGroup.trainingAttachments],
-					documentTypeCode: formValue.categoryPrivateInvestigatorFormGroup.trainingCode,
-				},
-			];
-			const workerLicenceCategoryData: WorkerLicenceCategoryData = {
-				documents: workerLicenceCategoryDocs,
-				workerCategoryTypeCode: WorkerCategoryTypeCode.PrivateInvestigator,
-			};
-			categoriesData.push(workerLicenceCategoryData);
-		}
+		// if (formValue.categoryPrivateInvestigatorFormGroup.isInclude) {
+		// 	const workerLicenceCategoryDocs: Array<Documents> = [
+		// 		{
+		// 			attachments: [...formValue.categoryPrivateInvestigatorFormGroup.attachments],
+		// 			documentTypeCode: formValue.categoryPrivateInvestigatorFormGroup.requirementCode,
+		// 		},
+		// 		{
+		// 			attachments: [...formValue.categoryPrivateInvestigatorFormGroup.trainingAttachments],
+		// 			documentTypeCode: formValue.categoryPrivateInvestigatorFormGroup.trainingCode,
+		// 		},
+		// 	];
+		// 	const workerLicenceCategoryData: WorkerLicenceCategoryData = {
+		// 		documents: workerLicenceCategoryDocs,
+		// 		workerCategoryTypeCode: WorkerCategoryTypeCode.PrivateInvestigator,
+		// 	};
+		// 	categoriesData.push(workerLicenceCategoryData);
+		// }
 
-		if (formValue.categoryPrivateInvestigatorSupFormGroup.isInclude) {
-			const workerLicenceCategoryDocs: Array<Documents> = [
-				{
-					attachments: [...formValue.categoryPrivateInvestigatorSupFormGroup.attachments],
-					documentTypeCode: formValue.categoryPrivateInvestigatorSupFormGroup.requirementCode,
-				},
-				{
-					attachments: [...formValue.categoryPrivateInvestigatorSupFormGroup.trainingAttachments],
-					documentTypeCode: DocumentTypeCode.CategoryPrivateInvestigatorUnderSupervisionTraining,
-				},
-			];
-			const workerLicenceCategoryData: WorkerLicenceCategoryData = {
-				documents: workerLicenceCategoryDocs,
-				workerCategoryTypeCode: WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision,
-			};
-			categoriesData.push(workerLicenceCategoryData);
-		}
+		// if (formValue.categoryPrivateInvestigatorSupFormGroup.isInclude) {
+		// 	const workerLicenceCategoryDocs: Array<Documents> = [
+		// 		{
+		// 			attachments: [...formValue.categoryPrivateInvestigatorSupFormGroup.attachments],
+		// 			documentTypeCode: formValue.categoryPrivateInvestigatorSupFormGroup.requirementCode,
+		// 		},
+		// 		{
+		// 			attachments: [...formValue.categoryPrivateInvestigatorSupFormGroup.trainingAttachments],
+		// 			documentTypeCode: DocumentTypeCode.CategoryPrivateInvestigatorUnderSupervisionTraining,
+		// 		},
+		// 	];
+		// 	const workerLicenceCategoryData: WorkerLicenceCategoryData = {
+		// 		documents: workerLicenceCategoryDocs,
+		// 		workerCategoryTypeCode: WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision,
+		// 	};
+		// 	categoriesData.push(workerLicenceCategoryData);
+		// }
 
-		if (formValue.categorySecurityGuardFormGroup.isInclude) {
-			const workerLicenceCategoryDocs: Array<Documents> = [
-				{
-					attachments: [...formValue.categorySecurityGuardFormGroup.attachments],
-					documentTypeCode: formValue.categorySecurityGuardFormGroup.requirementCode,
-				},
-			];
-			const workerLicenceCategoryData: WorkerLicenceCategoryData = {
-				documents: workerLicenceCategoryDocs,
-				workerCategoryTypeCode: WorkerCategoryTypeCode.SecurityGuard,
-			};
-			categoriesData.push(workerLicenceCategoryData);
-		}
+		// if (formValue.categorySecurityGuardFormGroup.isInclude) {
+		// 	const workerLicenceCategoryDocs: Array<Documents> = [
+		// 		{
+		// 			attachments: [...formValue.categorySecurityGuardFormGroup.attachments],
+		// 			documentTypeCode: formValue.categorySecurityGuardFormGroup.requirementCode,
+		// 		},
+		// 	];
+		// 	const workerLicenceCategoryData: WorkerLicenceCategoryData = {
+		// 		documents: workerLicenceCategoryDocs,
+		// 		workerCategoryTypeCode: WorkerCategoryTypeCode.SecurityGuard,
+		// 	};
+		// 	categoriesData.push(workerLicenceCategoryData);
+		// }
 
-		if (formValue.categorySecurityGuardSupFormGroup.isInclude) {
-			categoriesData.push({
-				workerCategoryTypeCode: WorkerCategoryTypeCode.SecurityGuardUnderSupervision,
-			});
-		}
+		// if (formValue.categorySecurityGuardSupFormGroup.isInclude) {
+		// 	categoriesData.push({
+		// 		workerCategoryTypeCode: WorkerCategoryTypeCode.SecurityGuardUnderSupervision,
+		// 	});
+		// }
 
-		if (formValue.categorySecurityAlarmInstallerFormGroup.isInclude) {
-			const workerLicenceCategoryDocs: Array<Documents> = [
-				{
-					attachments: [...formValue.categorySecurityAlarmInstallerFormGroup.attachments],
-					documentTypeCode: formValue.categorySecurityAlarmInstallerFormGroup.requirementCode,
-				},
-			];
-			const workerLicenceCategoryData: WorkerLicenceCategoryData = {
-				documents: workerLicenceCategoryDocs,
-				workerCategoryTypeCode: WorkerCategoryTypeCode.SecurityAlarmInstaller,
-			};
-			categoriesData.push(workerLicenceCategoryData);
-		}
+		// if (formValue.categorySecurityAlarmInstallerFormGroup.isInclude) {
+		// 	const workerLicenceCategoryDocs: Array<Documents> = [
+		// 		{
+		// 			attachments: [...formValue.categorySecurityAlarmInstallerFormGroup.attachments],
+		// 			documentTypeCode: formValue.categorySecurityAlarmInstallerFormGroup.requirementCode,
+		// 		},
+		// 	];
+		// 	const workerLicenceCategoryData: WorkerLicenceCategoryData = {
+		// 		documents: workerLicenceCategoryDocs,
+		// 		workerCategoryTypeCode: WorkerCategoryTypeCode.SecurityAlarmInstaller,
+		// 	};
+		// 	categoriesData.push(workerLicenceCategoryData);
+		// }
 
-		if (formValue.categorySecurityAlarmInstallerSupFormGroup.isInclude) {
-			categoriesData.push({
-				workerCategoryTypeCode: WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
-			});
-		}
+		// if (formValue.categorySecurityAlarmInstallerSupFormGroup.isInclude) {
+		// 	categoriesData.push({
+		// 		workerCategoryTypeCode: WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision,
+		// 	});
+		// }
 
-		if (formValue.categorySecurityAlarmMonitorFormGroup.isInclude) {
-			categoriesData.push({
-				workerCategoryTypeCode: WorkerCategoryTypeCode.SecurityAlarmMonitor,
-			});
-		}
+		// if (formValue.categorySecurityAlarmMonitorFormGroup.isInclude) {
+		// 	categoriesData.push({
+		// 		workerCategoryTypeCode: WorkerCategoryTypeCode.SecurityAlarmMonitor,
+		// 	});
+		// }
 
-		if (formValue.categorySecurityAlarmResponseFormGroup.isInclude) {
-			categoriesData.push({
-				workerCategoryTypeCode: WorkerCategoryTypeCode.SecurityAlarmResponse,
-			});
-		}
+		// if (formValue.categorySecurityAlarmResponseFormGroup.isInclude) {
+		// 	categoriesData.push({
+		// 		workerCategoryTypeCode: WorkerCategoryTypeCode.SecurityAlarmResponse,
+		// 	});
+		// }
 
-		if (formValue.categorySecurityAlarmSalesFormGroup.isInclude) {
-			categoriesData.push({
-				workerCategoryTypeCode: WorkerCategoryTypeCode.SecurityAlarmSales,
-			});
-		}
+		// if (formValue.categorySecurityAlarmSalesFormGroup.isInclude) {
+		// 	categoriesData.push({
+		// 		workerCategoryTypeCode: WorkerCategoryTypeCode.SecurityAlarmSales,
+		// 	});
+		// }
 
-		if (formValue.categorySecurityConsultantFormGroup.isInclude) {
-			const workerLicenceCategoryDocs: Array<Documents> = [
-				{
-					attachments: [...formValue.categorySecurityConsultantFormGroup.attachments],
-					documentTypeCode: formValue.categorySecurityConsultantFormGroup.requirementCode,
-				},
-				{
-					attachments: [...formValue.categorySecurityConsultantFormGroup.resumeAttachments],
-					documentTypeCode: formValue.categorySecurityConsultantFormGroup.requirementCode,
-				},
-			];
+		// if (formValue.categorySecurityConsultantFormGroup.isInclude) {
+		// 	const workerLicenceCategoryDocs: Array<Documents> = [
+		// 		{
+		// 			attachments: [...formValue.categorySecurityConsultantFormGroup.attachments],
+		// 			documentTypeCode: formValue.categorySecurityConsultantFormGroup.requirementCode,
+		// 		},
+		// 		{
+		// 			attachments: [...formValue.categorySecurityConsultantFormGroup.resumeAttachments],
+		// 			documentTypeCode: formValue.categorySecurityConsultantFormGroup.requirementCode,
+		// 		},
+		// 	];
 
-			const workerLicenceCategoryData: WorkerLicenceCategoryData = {
-				documents: workerLicenceCategoryDocs,
-				workerCategoryTypeCode: WorkerCategoryTypeCode.SecurityConsultant,
-			};
-			categoriesData.push(workerLicenceCategoryData);
-		}
+		// 	const workerLicenceCategoryData: WorkerLicenceCategoryData = {
+		// 		documents: workerLicenceCategoryDocs,
+		// 		workerCategoryTypeCode: WorkerCategoryTypeCode.SecurityConsultant,
+		// 	};
+		// 	categoriesData.push(workerLicenceCategoryData);
+		// }
 
-		const characteristicsData: CharacteristicsData = { ...formValue.characteristicsData };
+		// const characteristicsData: CharacteristicsData = { ...formValue.characteristicsData };
 
-		const citizenshipDocs: Documents = {
-			attachments: [...formValue.citizenshipData.attachments],
-			documentTypeCode: formValue.citizenshipData.proofTypeCode,
-			expiryDate: formValue.citizenshipData.expiryDate,
-		};
-		const citizenshipData: CitizenshipData = {
-			documents: citizenshipDocs,
-			isBornInCanada: formValue.citizenshipData.isBornInCanada == BooleanTypeCode.Yes,
-		};
+		// const citizenshipDocs: Documents = {
+		// 	attachments: [...formValue.citizenshipData.attachments],
+		// 	documentTypeCode: formValue.citizenshipData.proofTypeCode,
+		// 	expiryDate: formValue.citizenshipData.expiryDate,
+		// };
+		// const citizenshipData: CitizenshipData = {
+		// 	documents: citizenshipDocs,
+		// 	isBornInCanada: formValue.citizenshipData.isBornInCanada == BooleanTypeCode.Yes,
+		// };
 
-		const contactInformationData: ContactInformationData = { ...formValue.contactInformationData };
+		// const contactInformationData: ContactInformationData = { ...formValue.contactInformationData };
 
-		const criminalHistoryData: CriminalHistoryData = { ...formValue.criminalHistoryData };
+		// const criminalHistoryData: CriminalHistoryData = { ...formValue.criminalHistoryData };
 
-		const dogsAuthorizationDocs: Documents = {
-			attachments: [...formValue.dogsAuthorizationData.attachments],
-			documentTypeCode: formValue.dogsAuthorizationData.dogsPurposeDocumentType,
-		};
-		const dogsAuthorizationData: DogsAuthorizationData = {
-			documents: dogsAuthorizationDocs,
-			isDogsPurposeDetectionDrugs: formValue.dogsAuthorizationData.isDogsPurposeDetectionDrugs,
-			isDogsPurposeDetectionExplosives: formValue.dogsAuthorizationData.isDogsPurposeDetectionExplosives,
-			isDogsPurposeProtection: formValue.dogsAuthorizationData.isDogsPurposeProtection,
-			useDogs: formValue.dogsAuthorizationData.useDogs == BooleanTypeCode.Yes,
-		};
+		// const dogsAuthorizationDocs: Documents = {
+		// 	attachments: [...formValue.dogsAuthorizationData.attachments],
+		// 	documentTypeCode: formValue.dogsAuthorizationData.dogsPurposeDocumentType,
+		// };
+		// const dogsAuthorizationData: DogsAuthorizationData = {
+		// 	documents: dogsAuthorizationDocs,
+		// 	isDogsPurposeDetectionDrugs: formValue.dogsAuthorizationData.isDogsPurposeDetectionDrugs,
+		// 	isDogsPurposeDetectionExplosives: formValue.dogsAuthorizationData.isDogsPurposeDetectionExplosives,
+		// 	isDogsPurposeProtection: formValue.dogsAuthorizationData.isDogsPurposeProtection,
+		// 	useDogs: formValue.dogsAuthorizationData.useDogs == BooleanTypeCode.Yes,
+		// };
 
-		const expiredLicenceData: ExpiredLicenceData = { ...formValue.expiredLicenceData };
+		// const expiredLicenceData: ExpiredLicenceData = { ...formValue.expiredLicenceData };
 
-		const govIssuedIdDocs: Documents = {
-			attachments: [...formValue.govIssuedIdData.attachments],
-			documentTypeCode: formValue.govIssuedIdData.governmentIssuedPhotoTypeCode,
-		};
-		const govIssuedIdData: GovIssuedIdData = {
-			documents: govIssuedIdDocs,
-		};
+		// const govIssuedIdDocs: Documents = {
+		// 	attachments: [...formValue.govIssuedIdData.attachments],
+		// 	documentTypeCode: formValue.govIssuedIdData.governmentIssuedPhotoTypeCode,
+		// };
+		// const govIssuedIdData: GovIssuedIdData = {
+		// 	documents: govIssuedIdDocs,
+		// };
 
-		const licenceId = formValue.licenceId;
+		// const licenceId = formValue.licenceId;
 
-		const licenceTermData: LicenceTermData = { ...formValue.licenceTermData };
+		// const licenceTermData: LicenceTermData = { ...formValue.licenceTermData };
 
-		const licenceTypeData: LicenceTypeData = { ...formValue.licenceTypeData };
+		// const licenceTypeData: LicenceTypeData = { ...formValue.licenceTypeData };
 
-		const mailingAddressData: MailingAddressData = { ...formValue.mailingAddressData };
+		// const mailingAddressData: MailingAddressData = { ...formValue.mailingAddressData };
 
-		const mentalHealthConditionsDocs: Documents = {
-			attachments: [...formValue.mentalHealthConditionsData.attachments],
-			documentTypeCode: formValue.mentalHealthConditionsData.governmentIssuedPhotoTypeCode,
-		};
-		const mentalHealthConditionsData: MentalHealthConditionsData = {
-			documents: mentalHealthConditionsDocs,
-			isTreatedForMHC: formValue.mentalHealthConditionsData.isTreatedForMHC == BooleanTypeCode.Yes,
-		};
+		// const mentalHealthConditionsDocs: Documents = {
+		// 	attachments: [...formValue.mentalHealthConditionsData.attachments],
+		// 	documentTypeCode: formValue.mentalHealthConditionsData.governmentIssuedPhotoTypeCode,
+		// };
+		// const mentalHealthConditionsData: MentalHealthConditionsData = {
+		// 	documents: mentalHealthConditionsDocs,
+		// 	isTreatedForMHC: formValue.mentalHealthConditionsData.isTreatedForMHC == BooleanTypeCode.Yes,
+		// };
 
-		const personalInformationData: PersonalInformationData = { ...formValue.personalInformationData };
+		// const personalInformationData: PersonalInformationData = { ...formValue.personalInformationData };
 
-		const photographOfYourselfDocs: Documents = {
-			attachments: [...formValue.photographOfYourselfData.attachments],
-			documentTypeCode: DocumentTypeCode.PhotoOfYourself,
-		};
-		const photographOfYourselfData: PhotographOfYourselfData = {
-			documents: photographOfYourselfDocs,
-			useBcServicesCardPhoto: formValue.photographOfYourselfData.useBcServicesCardPhoto == BooleanTypeCode.Yes,
-		};
+		// const photographOfYourselfDocs: Documents = {
+		// 	attachments: [...formValue.photographOfYourselfData.attachments],
+		// 	documentTypeCode: DocumentTypeCode.PhotoOfYourself,
+		// };
+		// const photographOfYourselfData: PhotographOfYourselfData = {
+		// 	documents: photographOfYourselfDocs,
+		// 	useBcServicesCardPhoto: formValue.photographOfYourselfData.useBcServicesCardPhoto == BooleanTypeCode.Yes,
+		// };
 
-		const policeBackgroundDocs: Documents = {
-			attachments: [...formValue.policeBackgroundData.attachments],
-			documentTypeCode: DocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
-		};
-		const policeBackgroundData: PoliceBackgroundData = {
-			documents: policeBackgroundDocs,
-			isPoliceOrPeaceOfficer: formValue.policeBackgroundData.isPoliceOrPeaceOfficer == BooleanTypeCode.Yes,
-			otherOfficerRole: formValue.policeBackgroundData.otherOfficerRole,
-			policeOfficerRoleCode: formValue.policeBackgroundData.policeOfficerRoleCode,
-		};
+		// const policeBackgroundDocs: Documents = {
+		// 	attachments: [...formValue.policeBackgroundData.attachments],
+		// 	documentTypeCode: DocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
+		// };
+		// const policeBackgroundData: PoliceBackgroundData = {
+		// 	documents: policeBackgroundDocs,
+		// 	isPoliceOrPeaceOfficer: formValue.policeBackgroundData.isPoliceOrPeaceOfficer == BooleanTypeCode.Yes,
+		// 	otherOfficerRole: formValue.policeBackgroundData.otherOfficerRole,
+		// 	policeOfficerRoleCode: formValue.policeBackgroundData.policeOfficerRoleCode,
+		// };
 
-		const proofOfFingerprintDocs: Documents = {
-			attachments: [...formValue.proofOfFingerprintData.attachments],
-			documentTypeCode: DocumentTypeCode.ProofOfFingerprint,
-		};
-		const proofOfFingerprintData: ProofOfFingerprintData = {
-			documents: proofOfFingerprintDocs,
-		};
+		// const proofOfFingerprintDocs: Documents = {
+		// 	attachments: [...formValue.proofOfFingerprintData.attachments],
+		// 	documentTypeCode: DocumentTypeCode.ProofOfFingerprint,
+		// };
+		// const proofOfFingerprintData: ProofOfFingerprintData = {
+		// 	documents: proofOfFingerprintDocs,
+		// };
 
-		const residentialAddressData: ResidentialAddressData = { ...formValue.residentialAddressData };
+		// const residentialAddressData: ResidentialAddressData = { ...formValue.residentialAddressData };
 
-		const restraintsAuthorizationDocs: Documents = {
-			attachments: [...formValue.restraintsAuthorizationData.attachments],
-			documentTypeCode: formValue.restraintsAuthorizationData.carryAndUseRetraintsDocument,
-		};
-		const restraintsAuthorizationData: RestraintsAuthorizationData = {
-			carryAndUseRetraints: formValue.restraintsAuthorizationData.carryAndUseRetraints == BooleanTypeCode.Yes,
-			documents: restraintsAuthorizationDocs,
-		};
+		// const restraintsAuthorizationDocs: Documents = {
+		// 	attachments: [...formValue.restraintsAuthorizationData.attachments],
+		// 	documentTypeCode: formValue.restraintsAuthorizationData.carryAndUseRetraintsDocument,
+		// };
+		// const restraintsAuthorizationData: RestraintsAuthorizationData = {
+		// 	carryAndUseRetraints: formValue.restraintsAuthorizationData.carryAndUseRetraints == BooleanTypeCode.Yes,
+		// 	documents: restraintsAuthorizationDocs,
+		// };
 
-		const soleProprietorData: SoleProprietorData = {
-			isSoleProprietor: formValue.soleProprietorData.isSoleProprietor == BooleanTypeCode.Yes,
-		};
+		// const soleProprietorData: SoleProprietorData = {
+		// 	isSoleProprietor: formValue.soleProprietorData.isSoleProprietor == BooleanTypeCode.Yes,
+		// };
 
-		const body: WorkerLicenceCreateRequest = {
-			aliasesData,
-			applicationTypeData,
-			bcDriversLicenceData,
-			categoriesData,
-			characteristicsData,
-			citizenshipData,
-			contactInformationData,
-			criminalHistoryData,
-			dogsAuthorizationData,
-			expiredLicenceData,
-			govIssuedIdData,
-			licenceId,
-			licenceTermData,
-			licenceTypeData,
-			mailingAddressData,
-			mentalHealthConditionsData,
-			personalInformationData,
-			photographOfYourselfData,
-			policeBackgroundData,
-			proofOfFingerprintData,
-			residentialAddressData,
-			restraintsAuthorizationData,
-			soleProprietorData,
-		};
+		// const body: WorkerLicenceCreateRequest = {
+		// 	aliasesData,
+		// 	applicationTypeData,
+		// 	bcDriversLicenceData,
+		// 	categoriesData,
+		// 	characteristicsData,
+		// 	citizenshipData,
+		// 	contactInformationData,
+		// 	criminalHistoryData,
+		// 	dogsAuthorizationData,
+		// 	expiredLicenceData,
+		// 	govIssuedIdData,
+		// 	licenceId,
+		// 	licenceTermData,
+		// 	licenceTypeData,
+		// 	mailingAddressData,
+		// 	mentalHealthConditionsData,
+		// 	personalInformationData,
+		// 	photographOfYourselfData,
+		// 	policeBackgroundData,
+		// 	proofOfFingerprintData,
+		// 	residentialAddressData,
+		// 	restraintsAuthorizationData,
+		// 	soleProprietorData,
+		// };
 		// const body = {
 		// 	LicenceId: formValue.licenceId,
 		// 	'LicenceTypeData.WorkerLicenceTypeCode': formValue.licenceTypeData.licenceTypeCode,
@@ -1412,7 +1388,7 @@ export class LicenceApplicationService {
 		// 	'SoleProprietorData.isSoleProprietor': formValue.soleProprietorData.isSoleProprietor,
 		// };
 
-		console.log('*************** body to save:', body);
+		// console.log('*************** body to save:', body);
 		// this.workerLicensingService
 		// 	.apiWorkerLicencesPost()
 		// 	.pipe()
