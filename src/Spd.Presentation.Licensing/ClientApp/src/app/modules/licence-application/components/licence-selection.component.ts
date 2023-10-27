@@ -22,7 +22,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 											(click)="onLicenceTypeChange(workerLicenceTypeCodes.SecurityBusinessLicence)"
 											[ngClass]="{ 'active-selection-main': licenceTypeCode == workerLicenceTypeCodes.SecurityBusinessLicence }"
 										>
-											<div class="fs-4 mb-4 mt-4 mx-2 mt-md-0">
+											<div class="fs-4 mb-4 mt-4 mx-3 mt-md-0">
 												<div class="box__image d-none d-md-block">
 													<img class="box__image__item" [src]="image1" />
 												</div>
@@ -38,7 +38,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 											'active-selection-main': licenceTypeCode == workerLicenceTypeCodes.SecurityWorkerLicence
 										}"
 									>
-										<div class="fs-4 mb-4 mt-4 mx-2 mt-md-0">
+										<div class="fs-4 mb-4 mt-4 mx-3 mt-md-0">
 											<div class="box__image d-none d-md-block">
 												<img class="box__image__item" [src]="image2" />
 											</div>
@@ -54,7 +54,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 											'active-selection-main': licenceTypeCode == workerLicenceTypeCodes.ArmouredVehiclePermit
 										}"
 									>
-										<div class="fs-4 mb-4 mt-4 mx-2 mt-md-0">
+										<div class="fs-4 mb-4 mt-4 mx-3 mt-md-0">
 											<div class="box__image d-none d-md-block">
 												<img class="box__image__item" [src]="image3" />
 											</div>
@@ -68,7 +68,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 										(click)="onLicenceTypeChange(workerLicenceTypeCodes.BodyArmourPermit)"
 										[ngClass]="{ 'active-selection-main': licenceTypeCode == workerLicenceTypeCodes.BodyArmourPermit }"
 									>
-										<div class="fs-4 mb-4 mt-4 mx-2 mt-md-0">
+										<div class="fs-4 mb-4 mt-4 mx-3 mt-md-0">
 											<div class="box__image d-none d-md-block">
 												<img class="box__image__item" [src]="image4" />
 											</div>

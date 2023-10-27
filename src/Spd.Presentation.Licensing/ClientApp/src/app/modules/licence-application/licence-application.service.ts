@@ -71,6 +71,13 @@ export interface LicenceChildStepperStepComponent {
 	isFormValid(): boolean;
 }
 
+export enum LicenceSaveTypeCode {
+	BasicInformation = 'BasicInformation',
+	CategoriesDogsRestraints = 'CategoriesDogsRestraints',
+	MentalHealthPoliceFingerprints = 'MentalHealthPoliceFingerprints',
+	PhotoCitizenshipGovIssuedId = 'PhotoCitizenshipGovIssuedId',
+}
+
 @Injectable({
 	providedIn: 'root',
 })
@@ -1079,7 +1086,7 @@ export class LicenceApplicationService {
 		);
 	}
 
-	saveLicence(): Observable<StrictHttpResponse<WorkerLicenceCreateResponse>> {
+	saveLicence(saveTypeCode: LicenceSaveTypeCode): Observable<StrictHttpResponse<WorkerLicenceCreateResponse>> {
 		const formValue = this.licenceModelFormGroup.value;
 		console.debug('saveLicence licenceModelFormGroup', formValue);
 
