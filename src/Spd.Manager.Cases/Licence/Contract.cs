@@ -14,12 +14,12 @@ namespace Spd.Manager.Cases.Licence
     public record GetWorkerLicenceQuery(Guid LicenceApplicationId) : IRequest<WorkerLicenceResponse>;
 
 
-    public abstract record WorkerLicence
+    public abstract record WorkerLicenceApplication
     {
-        public Guid? LicenceId { get; set; }
-        public WorkerLicenceTypeCode WorkerLicenceTypeCode { get; set; }
-        public ApplicationTypeCode ApplicationTypeCode { get; set; }
-        public bool isSoleProprietor { get; set; }
+        public Guid? LicenceApplicationId { get; set; }
+        public WorkerLicenceTypeCode? WorkerLicenceTypeCode { get; set; }
+        public ApplicationTypeCode? ApplicationTypeCode { get; set; }
+        public bool? isSoleProprietor { get; set; }
         public string? GivenName { get; set; }
         public string? MiddleName1 { get; set; }
         public string? MiddleName2 { get; set; }
@@ -30,25 +30,25 @@ namespace Spd.Manager.Cases.Licence
         public string? ExpiredLicenceNumber { get; set; }
         public DateTimeOffset? ExpiryDate { get; set; }
         public bool? HasExpiredLicence { get; set; }
-        public LicenceTermCode LicenceTermCode { get; set; }
+        public LicenceTermCode? LicenceTermCode { get; set; }
         public bool? HasCriminalHistory { get; set; }
-        public bool HasPreviousName { get; set; }
+        public bool? HasPreviousName { get; set; }
         public Alias[]? Aliases { get; set; }
         public bool? HasBcDriversLicence { get; set; }
         public string? BcDriversLicenceNumber { get; set; }
         public HairColourCode? HairColourCode { get; set; }
         public EyeColourCode? EyeColourCode { get; set; }
         public int Height { get; set; }
-        public HeightUnitCode HeightUnitCode { get; set; }
-        public int Weight { get; set; }
-        public WeightUnitCode WeightUnitCode { get; set; }
+        public HeightUnitCode? HeightUnitCode { get; set; }
+        public int? Weight { get; set; }
+        public WeightUnitCode? WeightUnitCode { get; set; }
         public string? ContactEmailAddress { get; set; }
         public string? ContactPhoneNumber { get; set; }
-        public bool IsMailingTheSameAsResidential { get; set; }
+        public bool? IsMailingTheSameAsResidential { get; set; }
         public ResidentialAddress? ResidentialAddressData { get; set; }
         public MailingAddress? MailingAddressData { get; set; }
     }
-    public record WorkerLicenceUpsertRequest : WorkerLicence;
+    public record WorkerLicenceUpsertRequest : WorkerLicenceApplication;
 
     public record WorkerLicenceCategoryUpsertRequest
     {
@@ -116,7 +116,7 @@ namespace Spd.Manager.Cases.Licence
     {
         public Guid LicenceApplicationId { get; set; }
     }
-    public record WorkerLicenceResponse : WorkerLicence;
+    public record WorkerLicenceResponse : WorkerLicenceApplication;
     public record ResidentialAddress : Address;
 
     public record MailingAddress : Address;

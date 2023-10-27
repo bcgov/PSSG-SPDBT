@@ -62,8 +62,13 @@ namespace Spd.Utilities.Shared.ResourceContracts
         MCFD,
         PE_CRC,
         PE_CRC_VS,
-        LICENSING,
-        PSSO_VS
+        SecurityWorkerLicence,
+        PSSO_VS,
+        SECURITY_BUSINESS_LICENCE,
+        ArmouredVehiclePermit,
+        BodyArmourPermit,
+        MDRA,
+        SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC
     }
 
     public enum GenderEnum

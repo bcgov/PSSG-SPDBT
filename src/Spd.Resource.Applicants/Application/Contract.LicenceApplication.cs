@@ -8,7 +8,7 @@ public partial interface IApplicationRepository
     public Task<LicenceApplicationResp> GetLicenceApplicationAsync(Guid licenceApplicationId, CancellationToken cancellationToken);
 }
 
-public record LicenceApplicationCmdResp(Guid? LicenceId);
+public record LicenceApplicationCmdResp(Guid? LicenceApplicationId);
 
 public record LicenceApplication
 {
@@ -34,15 +34,15 @@ public record LicenceApplication
     public string? BcDriversLicenceNumber { get; set; }
     public HairColourEnum? HairColourCode { get; set; }
     public EyeColourEnum? EyeColourCode { get; set; }
-    public int Height { get; set; }
-    public HeightUnitEnum HeightUnitCode { get; set; }
-    public int Weight { get; set; }
-    public WeightUnitEnum WeightUnitCode { get; set; }
+    public int? Height { get; set; }
+    public HeightUnitEnum? HeightUnitCode { get; set; }
+    public int? Weight { get; set; }
+    public WeightUnitEnum? WeightUnitCode { get; set; }
     public string? ContactEmailAddress { get; set; }
     public string? ContactPhoneNumber { get; set; }
-    public bool IsMailingTheSameAsResidential { get; set; }
-    public ResidentialAddress? ResidentialAddressData { get; set; }
-    public MailingAddress? MailingAddressData { get; set; }
+    public bool? IsMailingTheSameAsResidential { get; set; }
+    public ResidentialAddr? ResidentialAddressData { get; set; }
+    public MailingAddr? MailingAddressData { get; set; }
 }
 
 public record SaveLicenceApplicationCmd() : LicenceApplication;
@@ -51,9 +51,9 @@ public record LicenceApplicationResp(): LicenceApplication;
 
 public record GetLicenceApplicationQry(Guid LicenceApplicationId);
 
-public record MailingAddress() : Address;
-public record ResidentialAddress() : Address;
-public abstract record Address
+public record MailingAddr() : Addr;
+public record ResidentialAddr() : Addr;
+public abstract record Addr
 {
     public bool AddressSelected { get; set; }
     public string? AddressLine1 { get; set; }

@@ -9,5 +9,7 @@ internal class Mappings : Profile
         CreateMap<WorkerLicenceUpsertRequest, SaveLicenceApplicationCmd>();
         CreateMap<LicenceApplicationCmdResp, WorkerLicenceUpsertResponse>();
         CreateMap<LicenceApplicationResp, WorkerLicenceResponse>();
+        CreateMap<ResidentialAddr, ResidentialAddress>();
+        CreateMap<MailingAddr, MailingAddress>();
     }
 }
