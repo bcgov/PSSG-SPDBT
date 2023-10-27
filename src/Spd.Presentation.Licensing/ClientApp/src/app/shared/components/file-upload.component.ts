@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { HotToastService } from '@ngneat/hot-toast';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 
@@ -162,6 +163,8 @@ export class FileUploadHelper {
 export class FileUploadComponent implements OnInit {
 	multiple: boolean = false; // prevent multiple at one time
 
+	@Input() control!: FormControl;
+
 	@Input() message: string = '';
 	@Input() expandable: boolean = true;
 	@Input() disableClick: boolean = false;
@@ -190,10 +193,6 @@ export class FileUploadComponent implements OnInit {
 	}
 
 	onUploadFile(evt: any) {
-		// if (this.maxNumberOfFiles == 1) {
-		// 	this.files = [];
-		// }
-
 		if (this.maxNumberOfFiles !== 0 && this.files.length >= this.maxNumberOfFiles) {
 			this.hotToastService.error(`You are only allowed to upload a maximum of ${this.maxNumberOfFiles} files`);
 			return;
@@ -216,7 +215,7 @@ export class FileUploadComponent implements OnInit {
 
 			this.files.push(...evt.addedFiles);
 			this.uploadedFile.emit(evt.addedFiles);
-			this.filesChanged.emit(true);
+			this.onFilesChanged();
 		}
 
 		if (evt.rejectedFiles.length > 0) {
@@ -238,7 +237,12 @@ export class FileUploadComponent implements OnInit {
 		currentFiles.splice(this.files.indexOf(evt), 1);
 
 		this.files = currentFiles;
-		this.filesChanged.emit(true);
+		this.onFilesChanged();
+	}
+
+	onFilesChanged(): void {
+		const files = this.files && this.files.length > 0 ? this.files : [];
+		this.control.setValue(files);
 	}
 
 	removeAllFiles(): void {

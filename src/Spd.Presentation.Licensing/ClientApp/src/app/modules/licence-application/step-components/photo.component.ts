@@ -1,9 +1,8 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
-import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
-import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
+import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-photo',
@@ -72,10 +71,10 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 								</app-alert>
 
 								<app-file-upload
+									[control]="attachments"
 									[maxNumberOfFiles]="1"
 									[files]="attachments.value"
 									[accept]="accept"
-									(filesChanged)="onFilesChanged()"
 								></app-file-upload>
 								<mat-error
 									class="mat-option-error"
@@ -96,7 +95,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class PhotoComponent implements LicenceFormStepComponent {
+export class PhotoComponent implements LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 	accept = ['.jpeg', '.jpg', '.tif', '.tiff', '.png'].join(', ');
 
@@ -104,23 +103,11 @@ export class PhotoComponent implements LicenceFormStepComponent {
 
 	@Input() isCalledFromModal: boolean = false;
 
-	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
-
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	isFormValid(): boolean {
-		this.onFilesChanged();
-
 		this.form.markAllAsTouched();
 		return this.form.valid;
-	}
-
-	onFilesChanged(): void {
-		const attachments =
-			this.fileUploadComponent?.files && this.fileUploadComponent?.files.length > 0
-				? this.fileUploadComponent.files
-				: [];
-		this.form.controls['attachments'].setValue(attachments);
 	}
 
 	get useBcServicesCardPhoto(): FormControl {

@@ -70,13 +70,9 @@ $spd-yellow: (
 
 @import "@bcgov/bc-sans/css/BCSans.css";
 
-// $fonts: (
-//   header: #{"BCSans, Noto Sans, Verdana, Arial, sans-serif"},
-//   body: #{"BCSans, Noto Sans, Verdana, Arial, sans-serif"},
-// );
 $fonts: (
-  header: #{"Noto Sans, Verdana, Arial, sans-serif"},
-  body: #{"Noto Sans, Verdana, Arial, sans-serif"},
+  header: #{"BCSans, Noto Sans, Verdana, Arial, sans-serif"},
+  body: #{"BCSans, Noto Sans, Verdana, Arial, sans-serif"},
 );
 
 @function theme-font($font) {
@@ -121,7 +117,7 @@ $spd-theme: mat.define-light-theme((
   --color-primary-lightest: #eff2f5; 
   --color-primary-lighter: #d6ddec;
   --color-primary-light: #0f48ae;
-  --color-sidebar: #385D8A;
+  --color-sidebar: #003366;// #385D8A;
   --color-primary: #003366; // BC Gov. Primary
   --color-primary-dark: #001b4a;
 
@@ -154,6 +150,13 @@ html, body { height: 100%; }
 body { 
   margin: 0; 
   background-color: var(--color-primary-lightest);
+	font-family: 'BCSans', 'Noto Sans', Arial, sans-serif;
+}
+
+@media (max-width: 991px) {
+  body { 
+    background-color: transparent;
+  }
 }
 
 .step {
@@ -187,7 +190,7 @@ body {
 
 .mat-divider-main {
   border-top-width: 2px !important;
-  border-top-color: var(--color-yellow);;
+  border-top-color: var(--color-yellow);
 }
 
 .alert {
@@ -323,17 +326,12 @@ a {
 
 @media (max-width: 991px) {
   .step-section {
-    border-radius: none;
-    background-color: transparent;
+    border-radius: 0;
     border: none;
     box-shadow: none;
   }
 }
 
-
-// ngx-dropzone-remove-badge {
-//   z-index: 9999 !important;
-// }
 ngx-dropzone-remove-badge {
   opacity: 1 !important;
 }
@@ -438,5 +436,18 @@ ngx-dropzone-remove-badge {
   &__text {
     font-weight: 700;
     line-height: 1.5em;
+  }
+}
+
+
+.filter-chip {
+  background-color: rgba(91, 124, 156, 1) !important;
+
+  .mat-mdc-chip-action-label {
+    color: white !important;
+  }
+
+  .mat-icon {
+    color: white !important;
   }
 }

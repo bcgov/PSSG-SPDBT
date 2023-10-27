@@ -10,17 +10,17 @@ import { UtilService } from 'src/app/core/services/util.service';
 	selector: 'app-status-statistics-common',
 	template: `
 		<ng-container *ngIf="applicationStatistics$ | async">
-			<div class="mb-4">
-				<div class="fw-semibold">Active applications <span class="fw-normal">(for the last 365 days)</span></div>
+			<div class="fw-semibold mb-4">
+				<div>Active applications <span class="fw-normal">(for the last 365 days)</span></div>
 				<div class="d-flex flex-wrap justify-content-start">
 					<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
-						<div class="fw-semibold fs-4 m-2 ms-3">
+						<div class=" fs-4 m-2 ms-3">
 							{{ applicationStatistics[statisticsCodes.VerifyIdentity] ?? 0 }}
 						</div>
 						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCodes.VerifyIdentity) }}</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-green align-items-center mt-2 me-2">
-						<div class="fw-semibold fs-4 m-2 ms-3">
+						<div class="fs-4 m-2 ms-3">
 							{{ applicationStatistics[statisticsCodes.InProgress] ?? 0 }}
 						</div>
 						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCodes.InProgress) }}</div>
@@ -29,25 +29,25 @@ import { UtilService } from 'src/app/core/services/util.service';
 						class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2"
 						*ngIf="portal == portalTypeCodes.Crrp"
 					>
-						<div class="fw-semibold fs-4 m-2 ms-3">
+						<div class="fs-4 m-2 ms-3">
 							{{ applicationStatistics[statisticsCodes.AwaitingPayment] ?? 0 }}
 						</div>
 						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCodes.AwaitingPayment) }}</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
-						<div class="fw-semibold fs-4 m-2 ms-3">
+						<div class="fs-4 m-2 ms-3">
 							{{ applicationStatistics[statisticsCodes.AwaitingThirdParty] ?? 0 }}
 						</div>
 						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCodes.AwaitingThirdParty) }}</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
-						<div class="fw-semibold fs-4 m-2 ms-3">
+						<div class="fs-4 m-2 ms-3">
 							{{ applicationStatistics[statisticsCodes.AwaitingApplicant] ?? 0 }}
 						</div>
 						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCodes.AwaitingApplicant) }}</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-blue align-items-center mt-2 me-2">
-						<div class="fw-semibold fs-4 m-2 ms-3">
+						<div class="fs-4 m-2 ms-3">
 							{{ applicationStatistics[statisticsCodes.UnderAssessment] ?? 0 }}
 						</div>
 						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCodes.UnderAssessment) }}</div>
@@ -55,11 +55,11 @@ import { UtilService } from 'src/app/core/services/util.service';
 				</div>
 			</div>
 
-			<div class="mb-4">
-				<div class="fw-semibold">Completed applications <span class="fw-normal">(for the last 365 days)</span></div>
+			<div class="row fw-semibold mb-4">
+				<div class="col-10">Completed applications <span class="fw-normal">(for the last 365 days)</span></div>
 				<div class="d-flex flex-wrap justify-content-start">
 					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
-						<div class="fw-semibold fs-4 m-2 ms-3">
+						<div class="fs-4 m-2 ms-3">
 							{{ applicationStatistics[statisticsCodes.RiskFound] ?? 0 }}
 						</div>
 						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCodes.RiskFound) }}</div>
@@ -68,25 +68,25 @@ import { UtilService } from 'src/app/core/services/util.service';
 						class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2"
 						*ngIf="portal == portalTypeCodes.Crrp"
 					>
-						<div class="fw-semibold fs-4 m-2 ms-3">
+						<div class="fs-4 m-2 ms-3">
 							{{ applicationStatistics[statisticsCodes.ClosedJudicialReview] ?? 0 }}
 						</div>
 						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCodes.ClosedJudicialReview) }}</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
-						<div class="fw-semibold fs-4 m-2 ms-3">
+						<div class="fs-4 m-2 ms-3">
 							{{ applicationStatistics[statisticsCodes.ClosedNoResponse] ?? 0 }}
 						</div>
 						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCodes.ClosedNoResponse) }}</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
-						<div class="fw-semibold fs-4 m-2 ms-3">
+						<div class="fs-4 m-2 ms-3">
 							{{ applicationStatistics[statisticsCodes.ClosedNoConsent] ?? 0 }}
 						</div>
 						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCodes.ClosedNoConsent) }}</div>
 					</div>
 					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
-						<div class="fw-semibold fs-4 m-2 ms-3">
+						<div class="fs-4 m-2 ms-3">
 							{{ applicationStatistics[statisticsCodes.CancelledByApplicant] ?? 0 }}
 						</div>
 						<div class="fs-7 m-2">{{ getStatusDesc(statisticsCodes.CancelledByApplicant) }}</div>
@@ -103,6 +103,12 @@ import { UtilService } from 'src/app/core/services/util.service';
 				width: 10.5em;
 				box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14),
 					0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+			}
+
+			@media (max-width: 627px) {
+				.statistic-card {
+					width: 100% !important;
+				}
 			}
 		`,
 	],

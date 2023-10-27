@@ -42,7 +42,7 @@ export interface AliasCreateRequest {
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row mb-2">
 				<div class="col-xl-10 col-lg-10 col-md-12 col-sm-12">
-					<h2 class="fw-normal">
+					<h2>
 						Manual Submissions
 						<div class="mt-2 fs-5 fw-light">
 							<ng-container *ngIf="portal == portalTypeCodes.Psso; else crrpSubtitle">
@@ -437,7 +437,7 @@ export interface AliasCreateRequest {
 					</ng-container>
 				</section>
 			</form>
-			<div class="row mb-4">
+			<div class="row">
 				<div class="offset-xl-8 offset-lg-6 col-xl-2 col-lg-3 col-md-6 col-sm-12">
 					<button mat-stroked-button color="primary" class="large mb-2" (click)="onCancel()">
 						<i class="fa fa-times mr-2"></i>Cancel

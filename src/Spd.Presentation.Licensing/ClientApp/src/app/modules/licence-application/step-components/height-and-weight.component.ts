@@ -7,7 +7,7 @@ import {
 	WeightUnitTypes,
 } from 'src/app/core/code-types/model-desc.models';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
-import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
+import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-height-and-weight',
@@ -92,7 +92,7 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 	`,
 	styles: [],
 })
-export class HeightAndWeightComponent implements LicenceFormStepComponent {
+export class HeightAndWeightComponent implements LicenceChildStepperStepComponent {
 	hairColourTypes = HairColourTypes;
 	eyeColourTypes = EyeColourTypes;
 	heightUnitTypes = HeightUnitTypes;

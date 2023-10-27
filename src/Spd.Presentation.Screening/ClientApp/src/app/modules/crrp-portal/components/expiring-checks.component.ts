@@ -47,7 +47,7 @@ export const ExpiringChecksFilterMap: Record<keyof ExpiringChecksFilter, string>
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
-					<h2 class="mb-2 fw-normal">Expiring Criminal Record Checks</h2>
+					<h2 class="mb-2">Expiring Criminal Record Checks</h2>
 					<app-applications-banner></app-applications-banner>
 				</div>
 			</div>

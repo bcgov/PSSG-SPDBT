@@ -37,7 +37,7 @@ import { Component, OnInit } from '@angular/core';
 				<ng-container *ngSwitchDefault> -->
 			<mat-icon>do_not_disturb</mat-icon>
 			<h2 class="my-4">Access Denied</h2>
-			<p class="fs-5 my-4">You currently do not have permission to access this page.</p>
+			<p class="fs-4 my-4">You currently do not have permission to access this page.</p>
 			<!-- </ng-container>
 			</ng-container> -->
 		</div>

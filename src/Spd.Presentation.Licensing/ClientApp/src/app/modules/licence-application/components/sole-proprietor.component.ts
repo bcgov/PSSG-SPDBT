@@ -1,14 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
-import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-application.service';
+import { LicenceApplicationRoutes } from '../licence-application-routing.module';
+import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../licence-application.service';
 
 @Component({
 	selector: 'app-sole-proprietor',
 	template: `
 		<section class="step-section p-3">
 			<div class="step">
-				<app-step-title [title]="title" [info]="infoTitle"> </app-step-title>
+				<app-step-title [title]="title" [subtitle]="infoTitle"> </app-step-title>
 
 				<div class="step-container">
 					<form [formGroup]="form" novalidate>
@@ -32,27 +34,32 @@ import { LicenceApplicationService, LicenceFormStepComponent } from '../licence-
 						</div>
 					</form>
 				</div>
+
+				<div class="row mt-4">
+					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 offset-md-2 col-md-4 col-sm-6">
+						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
+					</div>
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6">
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext()">Next</button>
+					</div>
+				</div>
 			</div>
 		</section>
 	`,
 	styles: [],
 })
-export class SoleProprietorComponent implements OnInit, LicenceFormStepComponent {
+export class SoleProprietorComponent implements OnInit, LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 	title = '';
 	infoTitle = '';
 
 	readonly title_apply = 'Do you also want to apply for a Sole Proprietor Security Business Licence?';
 	readonly subtitle_apply =
-		'<p>If you are a Sole Proprietor and need both a worker licence and a business licence, you can apply for them at the same time and pay only for the business licence.</p> <p>First, apply for the worker licence. When you receive it, you can then apply for the business licence. Your security worker licence fee will be refunded at that point.</p>';
-
-	readonly title_renew = 'Do you also want to renew your Sole Proprietor Security Business Licence?';
-	readonly subtitle_renew =
-		'<p>If you are a sole proprietor, you need both a security worker licence and a security business licence.</p> <p>First, renew your worker licence. When you receive it, you can then renew the business licence. Your security worker licence fee will be refunded at that point.</p>';
+		'If you are a sole proprietor, you need both a security worker licence and a security business licence. If you apply for them together, the fee for the worker licence will be waived.';
 
 	form: FormGroup = this.licenceApplicationService.soleProprietorFormGroup;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private router: Router, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
 		this.title = this.title_apply;
@@ -62,5 +69,15 @@ export class SoleProprietorComponent implements OnInit, LicenceFormStepComponent
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
+	}
+
+	onStepPrevious(): void {
+		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATION_TYPE));
+	}
+
+	onStepNext(): void {
+		if (this.isFormValid()) {
+			this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATION));
+		}
 	}
 }
