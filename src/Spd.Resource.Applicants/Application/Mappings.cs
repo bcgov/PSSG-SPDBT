@@ -122,9 +122,9 @@ namespace Spd.Resource.Applicants.Application
             .ForMember(d => d.ServiceType, opt => opt.MapFrom(s => DynamicsContextLookupHelpers.LookupServiceTypeKey(s._spd_servicetype_value)))
             .ForMember(d => d.ClearanceId, opt => opt.MapFrom(s => s.spd_clearanceid));
 
-            _ = CreateMap<SaveLicenceApplicationCmd, spd_application>()
+            _ = CreateMap<LicenceApplication, spd_application>()
              .ForMember(d => d.spd_applicationid, opt => opt.MapFrom(s => Guid.NewGuid()))
-             .ForMember(d => d.spd_licenceapplicationtype, opt => opt.MapFrom(s => GetLicenceApplicationType(s.ApplicationTypeCode)))
+             .ForMember(d => d.spd_licenceapplicationtype, opt => opt.MapFrom(s => GetLicenceApplicationTypeOptionSet(s.ApplicationTypeCode)))
              .ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => s.GivenName))
              .ForMember(d => d.spd_lastname, opt => opt.MapFrom(s => s.Surname))
              .ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => s.MiddleName1))
@@ -140,15 +140,32 @@ namespace Spd.Resource.Applicants.Application
              .ForMember(d => d.spd_applicantweight, opt => opt.MapFrom(s => s.Weight))
              .ForMember(d => d.spd_emailaddress1, opt => opt.MapFrom(s => s.ContactEmailAddress))
              .ForMember(d => d.spd_phonenumber, opt => opt.MapFrom(s => s.ContactPhoneNumber))
-             .ForMember(d => d.spd_addressline1, opt => opt.MapFrom(s => s.MailingAddressData == null ? null : s.MailingAddressData.AddressLine1))
-             .ForMember(d => d.spd_addressline2, opt => opt.MapFrom(s => s.MailingAddressData == null ? null : s.MailingAddressData.AddressLine2))
-             .ForMember(d => d.spd_city, opt => opt.MapFrom(s => s.MailingAddressData == null ? null : s.MailingAddressData.City))
-             .ForMember(d => d.spd_province, opt => opt.MapFrom(s => s.MailingAddressData == null ? null : s.MailingAddressData.Province))
-             .ForMember(d => d.spd_country, opt => opt.MapFrom(s => s.MailingAddressData == null ? null : s.MailingAddressData.Country))
-             .ForMember(d => d.spd_postalcode, opt => opt.MapFrom(s => s.MailingAddressData == null ? null : s.MailingAddressData.PostalCode))
+             .ForMember(d => d.spd_addressline1, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : GetMailingAddress(s).AddressLine1))
+             .ForMember(d => d.spd_addressline2, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : GetMailingAddress(s).AddressLine2))
+             .ForMember(d => d.spd_city, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : GetMailingAddress(s).City))
+             .ForMember(d => d.spd_province, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : GetMailingAddress(s).Province))
+             .ForMember(d => d.spd_country, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : GetMailingAddress(s).Country))
+             .ForMember(d => d.spd_postalcode, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : GetMailingAddress(s).PostalCode))
+             .ForMember(d => d.spd_residentialaddress1, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : s.ResidentialAddressData.AddressLine1))
+             .ForMember(d => d.spd_residentialaddress2, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : s.ResidentialAddressData.AddressLine2))
+             .ForMember(d => d.spd_residentialcity, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : s.ResidentialAddressData.City))
+             .ForMember(d => d.spd_residentialcountry, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : s.ResidentialAddressData.Province))
+             .ForMember(d => d.spd_residentialprovince, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : s.ResidentialAddressData.Country))
+             .ForMember(d => d.spd_residentialpostalcode, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : s.ResidentialAddressData.PostalCode))
              .ForMember(d => d.statecode, opt => opt.MapFrom(s => DynamicsConstants.StateCode_Active))
-             .ForMember(d => d.statuscode, opt => opt.MapFrom(s => ApplicationStatusOptionSet.Draft));
+             .ForMember(d => d.statuscode, opt => opt.MapFrom(s => ApplicationStatusOptionSet.Draft))
+             .ReverseMap()
+             .ForMember(d => d.LicenceApplicationId, opt => opt.MapFrom(s => s.spd_applicationid))
+             .ForMember(d => d.ApplicationTypeCode, opt => opt.MapFrom(s => GetLicenceApplicationTypeEnum(s.spd_licenceapplicationtype)))
+             //.ForMember(d => d.GenderCode, opt => opt.MapFrom(s => GetGender(s.spd_sex)))
+              ;
 
+
+            _ = CreateMap<SaveLicenceApplicationCmd, spd_application>()
+              .IncludeBase<LicenceApplication, spd_application>();
+
+            _ = CreateMap<spd_application, LicenceApplicationResp>()
+              .IncludeBase<spd_application, LicenceApplication>();
         }
 
         private static string? GetPayeeType(int? code)
@@ -187,7 +204,7 @@ namespace Spd.Resource.Applicants.Application
             return Enum.Parse<ScreenTypeEnum>(Enum.GetName(typeof(ScreenTypeOptionSet), code));
         }
 
-        private static int? GetLicenceApplicationType(ApplicationTypeEnum? applicationType)
+        private static int? GetLicenceApplicationTypeOptionSet(ApplicationTypeEnum? applicationType)
         {
             if (applicationType == null)
                 return null;
@@ -198,6 +215,20 @@ namespace Spd.Resource.Applicants.Application
                 ApplicationTypeEnum.New => (int)LicenceApplicationTypeOptionSet.New_Expired,
                 ApplicationTypeEnum.Renewal => (int)LicenceApplicationTypeOptionSet.Renewal,
                 _ => throw new ArgumentException("invalid application type code")
+            };
+        }
+
+        private static ApplicationTypeEnum? GetLicenceApplicationTypeEnum(int? applicationTypeOptionSet)
+        {
+            if (applicationTypeOptionSet == null)
+                return null;
+            return applicationTypeOptionSet switch
+            {
+                (int)LicenceApplicationTypeOptionSet.Update => ApplicationTypeEnum.Update,
+                (int)LicenceApplicationTypeOptionSet.Replacement => ApplicationTypeEnum.Replacement,
+                (int)LicenceApplicationTypeOptionSet.New_Expired => ApplicationTypeEnum.New,
+                (int)LicenceApplicationTypeOptionSet.Renewal => ApplicationTypeEnum.Renewal,
+                _ => throw new ArgumentException("invalid int application type option set")
             };
         }
         private static int? GetLicenceTerm(LicenceTermEnum? code)
@@ -224,11 +255,13 @@ namespace Spd.Resource.Applicants.Application
             return (int)Enum.Parse<EyeColorOptionSet>(code.ToString());
         }
 
-        private static string? GetAddressLine1(SaveLicenceApplicationCmd cmd)
+        private static Address GetMailingAddress(LicenceApplication cmd)
         {
-            if (cmd.IsMailingTheSameAsResidential == null) return null;
-            if (cmd.MailingAddressData == null) return null;
-            return cmd.MailingAddressData.AddressLine1;
+            //if residential address is the same as mailing address, fe will send an empty mailing address
+            if (cmd.IsMailingTheSameAsResidential == null || !(bool)cmd.IsMailingTheSameAsResidential) return cmd.ResidentialAddressData;
+            if ((bool)cmd.IsMailingTheSameAsResidential) return cmd.MailingAddressData;
+            return cmd.MailingAddressData;
         }
+
     }
 }

@@ -7,16 +7,16 @@ namespace Spd.Manager.Cases.Licence
     public interface ILicenceManager
     {
         public Task<WorkerLicenceUpsertResponse> Handle(WorkerLicenceUpsertCommand command, CancellationToken ct);
+        public Task<WorkerLicenceResponse> Handle(GetWorkerLicenceQuery query, CancellationToken ct);
     }
 
     public record WorkerLicenceUpsertCommand(WorkerLicenceUpsertRequest LicenceUpsertRequest, string? BcscGuid = null) : IRequest<WorkerLicenceUpsertResponse>;
+    public record GetWorkerLicenceQuery(Guid LicenceApplicationId) : IRequest<WorkerLicenceResponse>;
 
-    public abstract record WorkerLicenceRequest
+
+    public abstract record WorkerLicence
     {
         public Guid? LicenceId { get; set; }
-    }
-    public record WorkerLicenceUpsertRequest : WorkerLicenceRequest
-    {
         public WorkerLicenceTypeCode WorkerLicenceTypeCode { get; set; }
         public ApplicationTypeCode ApplicationTypeCode { get; set; }
         public bool isSoleProprietor { get; set; }
@@ -48,64 +48,75 @@ namespace Spd.Manager.Cases.Licence
         public ResidentialAddress? ResidentialAddressData { get; set; }
         public MailingAddress? MailingAddressData { get; set; }
     }
+    public record WorkerLicenceUpsertRequest : WorkerLicence;
 
-    public record WorkerLicenceCategoryUpsertRequest : WorkerLicenceRequest
+    public record WorkerLicenceCategoryUpsertRequest
     {
+        public Guid LicenceApplicationId { get; set; }
         public WorkerLicenceCategoryData[] CategoriesData { get; set; }
     }
 
-    public record PoliceBackgroundUpsertRequest : WorkerLicenceRequest
+    public record PoliceBackgroundUpsertRequest
     {
+        public Guid LicenceApplicationId { get; set; }
         public bool IsPoliceOrPeaceOfficer { get; set; }
         public PoliceOfficerRoleCode? PoliceOfficerRoleCode { get; set; }
         public string? OtherOfficerRole { get; set; }
         public Documents? Documents { get; set; }
     }
 
-    public record MentalHealthUpsertRequest : WorkerLicenceRequest
+    public record MentalHealthUpsertRequest
     {
+        public Guid LicenceApplicationId { get; set; }
         public bool? IsTreatedForMHC { get; set; }
         public Documents? Documents { get; set; }
     }
 
-    public record ProofOfFingerprintUpsertRequest : WorkerLicenceRequest
+    public record ProofOfFingerprintUpsertRequest
     {
+        public Guid LicenceApplicationId { get; set; }
         public Documents? Documents { get; set; }
     }
 
-    public record PhotographOfYourselfUpsertRequest : WorkerLicenceRequest
+    public record PhotographOfYourselfUpsertRequest 
     {
+        public Guid LicenceApplicationId { get; set; }
         public bool? UseBcServicesCardPhoto { get; set; }
         public Documents Documents { get; set; }
     }
-    public record DogsAuthorizationUpsertRequest : WorkerLicenceRequest
+    public record DogsAuthorizationUpsertRequest
     {
+        public Guid LicenceApplicationId { get; set; }
         public bool? UseDogs { get; set; }
         public bool? IsDogsPurposeProtection { get; set; }
         public bool? IsDogsPurposeDetectionDrugs { get; set; }
         public bool? IsDogsPurposeDetectionExplosives { get; set; }
         public Documents? Documents { get; set; }
     }
-    public record RestraintsAuthorizationUpsertRequest : WorkerLicenceRequest
+    public record RestraintsAuthorizationUpsertRequest
     {
+        public Guid LicenceApplicationId { get; set; }
         public bool? CarryAndUseRetraints { get; set; }
         public Documents? Documents { get; set; }
 
     }
-    public record CitizenshipUpsertRequest : WorkerLicenceRequest
+    public record CitizenshipUpsertRequest
     {
+        public Guid LicenceApplicationId { get; set; }
         public bool IsBornInCanada { get; set; }
         public Documents Documents { get; set; }
     }
-    public record GovIssuedIdUpsertRequest : WorkerLicenceRequest
+    public record GovIssuedIdUpsertRequest 
     {
+        public Guid LicenceApplicationId { get; set; }
         public Documents Documents { get; set; }
     }
 
-    public class WorkerLicenceUpsertResponse
+    public record WorkerLicenceUpsertResponse
     {
-        public Guid LicenceId { get; set; }
+        public Guid LicenceApplicationId { get; set; }
     }
+    public record WorkerLicenceResponse : WorkerLicence;
     public record ResidentialAddress : Address;
 
     public record MailingAddress : Address;

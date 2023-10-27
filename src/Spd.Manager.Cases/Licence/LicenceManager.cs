@@ -11,6 +11,7 @@ using Spd.Utilities.TempFileStorage;
 namespace Spd.Manager.Cases.Licence;
 internal class LicenceManager :
         IRequestHandler<WorkerLicenceUpsertCommand, WorkerLicenceUpsertResponse>,
+        IRequestHandler<GetWorkerLicenceQuery, WorkerLicenceResponse>,
         ILicenceManager
 {
     private readonly IApplicationRepository _applicationRepository;
@@ -47,5 +48,12 @@ internal class LicenceManager :
         var response = await _applicationRepository.SaveLicenceApplicationAsync(_mapper.Map<SaveLicenceApplicationCmd>(cmd.LicenceUpsertRequest), ct);
 
         return _mapper.Map<WorkerLicenceUpsertResponse>(response);
+    }
+
+    public async Task<WorkerLicenceResponse> Handle(GetWorkerLicenceQuery query, CancellationToken ct)
+    {
+        var response = await _applicationRepository.GetLicenceApplicationAsync(query.LicenceApplicationId, ct);
+
+        return _mapper.Map<WorkerLicenceResponse>(response);
     }
 }

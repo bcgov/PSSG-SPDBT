@@ -4,16 +4,15 @@ namespace Spd.Resource.Applicants.Application;
 
 public partial interface IApplicationRepository
 {
-    public Task<LicenceApplicationResp> SaveLicenceApplicationAsync(SaveLicenceApplicationCmd cmd, CancellationToken cancellationToken);
+    public Task<LicenceApplicationCmdResp> SaveLicenceApplicationAsync(SaveLicenceApplicationCmd cmd, CancellationToken cancellationToken);
+    public Task<LicenceApplicationResp> GetLicenceApplicationAsync(Guid licenceApplicationId, CancellationToken cancellationToken);
 }
 
-public record LicenceApplicationResp(Guid? LicenceId);
-public abstract record LicenceApplication()
+public record LicenceApplicationCmdResp(Guid? LicenceId);
+
+public record LicenceApplication
 {
-    public Guid? LicenceId { get; set; }
-}
-public record SaveLicenceApplicationCmd : LicenceApplication
-{
+    public Guid? LicenceApplicationId { get; set; }
     public WorkerLicenceTypeEnum WorkerLicenceTypeCode { get; set; }
     public ApplicationTypeEnum ApplicationTypeCode { get; set; }
     public bool isSoleProprietor { get; set; }
@@ -27,7 +26,7 @@ public record SaveLicenceApplicationCmd : LicenceApplication
     public string? ExpiredLicenceNumber { get; set; }
     public DateTimeOffset? ExpiryDate { get; set; }
     public bool? HasExpiredLicence { get; set; }
-    public LicenceTermEnum LicenceTermCode { get; set; }
+    public LicenceTermEnum? LicenceTermCode { get; set; }
     public bool? HasCriminalHistory { get; set; }
     public bool? HasPreviousName { get; set; }
     public Alias[]? Aliases { get; set; }
@@ -46,6 +45,11 @@ public record SaveLicenceApplicationCmd : LicenceApplication
     public MailingAddress? MailingAddressData { get; set; }
 }
 
+public record SaveLicenceApplicationCmd() : LicenceApplication;
+
+public record LicenceApplicationResp(): LicenceApplication;
+
+public record GetLicenceApplicationQry(Guid LicenceApplicationId);
 
 public record MailingAddress() : Address;
 public record ResidentialAddress() : Address;

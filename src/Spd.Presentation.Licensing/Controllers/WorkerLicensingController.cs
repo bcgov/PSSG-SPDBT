@@ -30,14 +30,26 @@ namespace Spd.Presentation.Licensing.Controllers
         /// </summary>
         /// <param name="licenceCreateRequest"></param>
         /// <returns></returns>
-        [Route("api/worker-licences")]
+        [Route("api/worker-licence-applications")]
         [Authorize(Policy = "OnlyBcsc")]
         [HttpPost]
-        public async Task<WorkerLicenceUpsertResponse> SaveWorkerLicence([FromBody][Required] WorkerLicenceUpsertRequest licenceCreateRequest)
+        public async Task<WorkerLicenceUpsertResponse> SaveSecurityWorkerLicenceApplication([FromBody][Required] WorkerLicenceUpsertRequest licenceCreateRequest)
         {
             _logger.LogInformation("Get WorkerLicenceUpsertRequest");
             var info = _currentUser.GetBcscUserIdentityInfo();
             return await _mediator.Send(new WorkerLicenceUpsertCommand(licenceCreateRequest, info.Sub));
+        }
+
+        /// <summary>
+        /// Create Security Worker Licence Application
+        /// </summary>
+        /// <param name="licenceCreateRequest"></param>
+        /// <returns></returns>
+        [Route("api/worker-licence-applications/{id}")]
+        [HttpGet]
+        public async Task<WorkerLicenceResponse> GetSecurityWorkerLicenceApplication([FromRoute][Required] Guid id)
+        {
+            return await _mediator.Send(new GetWorkerLicenceQuery(id));
         }
 
         /// <summary>

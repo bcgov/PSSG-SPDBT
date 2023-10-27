@@ -4,12 +4,12 @@ using Spd.Utilities.Dynamics;
 namespace Spd.Resource.Applicants.Application;
 internal partial class ApplicationRepository : IApplicationRepository
 {
-    public async Task<LicenceApplicationResp> SaveLicenceApplicationAsync(SaveLicenceApplicationCmd cmd, CancellationToken ct)
+    public async Task<LicenceApplicationCmdResp> SaveLicenceApplicationAsync(SaveLicenceApplicationCmd cmd, CancellationToken ct)
     {
         spd_application? app;
-        if (cmd.LicenceId != null)
+        if (cmd.LicenceApplicationId != null)
         {
-            app = await _context.GetApplicationById((Guid)cmd.LicenceId, ct);
+            app = await _context.GetApplicationById((Guid)cmd.LicenceApplicationId, ct);
             if (app == null)
                 throw new ArgumentException("invalid app id");
             _mapper.Map<SaveLicenceApplicationCmd, spd_application>(cmd, app);
@@ -28,9 +28,17 @@ internal partial class ApplicationRepository : IApplicationRepository
             //
         }
         LinkServiceType(cmd.WorkerLicenceTypeCode, app);
-        if(cmd.HasExpiredLicence==true) LinkExpiredLicence(cmd.ExpiredLicenceNumber, cmd.ExpiryDate, app);
+        if (cmd.HasExpiredLicence == true) LinkExpiredLicence(cmd.ExpiredLicenceNumber, cmd.ExpiryDate, app);
         await _context.SaveChangesAsync();
-        return new LicenceApplicationResp(app.spd_applicationid);
+        return new LicenceApplicationCmdResp(app.spd_applicationid);
+    }
+
+    public async Task<LicenceApplicationResp> GetLicenceApplicationAsync(Guid licenceApplicationId, CancellationToken ct)
+    {
+        var app = await _context.GetApplicationById(licenceApplicationId, ct);
+        if (app == null)
+            throw new ArgumentException("invalid app id");
+        return _mapper.Map<LicenceApplicationResp>(app);
     }
 
     private void LinkServiceType(WorkerLicenceTypeEnum? licenceType, spd_application app)
