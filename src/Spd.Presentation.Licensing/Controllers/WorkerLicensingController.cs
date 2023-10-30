@@ -52,65 +52,7 @@ namespace Spd.Presentation.Licensing.Controllers
             return await _mediator.Send(new GetWorkerLicenceQuery(id));
         }
 
-        /// <summary>
-        /// Create Security Worker Licence Application police background
-        /// </summary>
-        /// <param name="licenceCreateRequest"></param>
-        /// <returns></returns>
-        [Route("api/worker-licences-police-backgroung")]
-        [Authorize(Policy = "OnlyBcsc")]
-        [HttpPost]
-        public async Task<WorkerLicenceUpsertResponse> SaveWorkerLicencePoliceBackground([FromBody][Required] PoliceBackgroundUpsertRequest licenceCreateRequest)
-        {
-            _logger.LogInformation("Get WorkerLicenceUpsertRequest");
-            var info = _currentUser.GetBcscUserIdentityInfo();
-            return null;
-        }
 
-        /// <summary>
-        /// Create Security Worker Licence Application mental health
-        /// </summary>
-        /// <param name="licenceCreateRequest"></param>
-        /// <returns></returns>
-        [Route("api/worker-licences-mental-health")]
-        [Authorize(Policy = "OnlyBcsc")]
-        [HttpPost]
-        public async Task<WorkerLicenceUpsertResponse> SaveWorkerLicenceMentalHealth([FromBody][Required] MentalHealthUpsertRequest mentalHealth)
-        {
-            _logger.LogInformation("Get SaveWorkerLicenceMentalHealth");
-            var info = _currentUser.GetBcscUserIdentityInfo();
-            return null;
-        }
-
-        /// <summary>
-        /// Create Security Worker Licence Application fingerprint
-        /// </summary>
-        /// <param name="licenceCreateRequest"></param>
-        /// <returns></returns>
-        [Route("api/worker-licences-fingerprint")]
-        [Authorize(Policy = "OnlyBcsc")]
-        [HttpPost]
-        public async Task<WorkerLicenceUpsertResponse> SaveWorkerLicenceFingerprint([FromBody][Required] ProofOfFingerprintUpsertRequest fingerprint)
-        {
-            _logger.LogInformation("Get SaveWorkerLicenceFingerprint");
-            var info = _currentUser.GetBcscUserIdentityInfo();
-            return null;
-        }
-
-        /// <summary>
-        /// Create Security Worker Licence Application PhotographOfYourself
-        /// </summary>
-        /// <param name="licenceCreateRequest"></param>
-        /// <returns></returns>
-        [Route("api/worker-licences-photograph-of-yourself")]
-        [Authorize(Policy = "OnlyBcsc")]
-        [HttpPost]
-        public async Task<WorkerLicenceUpsertResponse> SaveWorkerLicencePhotographOfYourself([FromBody][Required] PhotographOfYourselfUpsertRequest fingerprint)
-        {
-            _logger.LogInformation("Get SaveWorkerLicencePhotographOfYourself");
-            var info = _currentUser.GetBcscUserIdentityInfo();
-            return null;
-        }
         #endregion
 
         /// <summary>

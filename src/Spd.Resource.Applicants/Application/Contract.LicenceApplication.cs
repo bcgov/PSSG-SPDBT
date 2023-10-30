@@ -43,6 +43,13 @@ public record LicenceApplication
     public bool? IsMailingTheSameAsResidential { get; set; }
     public ResidentialAddr? ResidentialAddressData { get; set; }
     public MailingAddr? MailingAddressData { get; set; }
+    public bool? IsPoliceOrPeaceOfficer { get; set; }
+    public PoliceOfficerRoleEnum? PoliceOfficerRoleCode { get; set; }
+    public string? OtherOfficerRole { get; set; }
+    public bool? IsTreatedForMHC { get; set; }
+    public bool? UseBcServicesCardPhoto { get; set; }
+    public bool? CarryAndUseRetraints { get; set; }
+    public bool IsBornInCanada { get; set; }
 }
 
 public record SaveLicenceApplicationCmd() : LicenceApplication;
@@ -148,23 +155,6 @@ public enum PoliceOfficerRoleEnum
     SpecialProvincialOrMunicipalConstable,
     PoliceOfficer,
     Other,
-}
-public enum ProofOfCanadianCitizenshipEnum
-{
-    ValidCanadianPassport,
-    BirthCertificate,
-    SecureCertificateOfIndianStatus,
-}
-
-public enum ProofOfAbilityToWorkInCanadaEnum
-{
-    ValidCanadianCitizenship,
-    ValidPermanentResidentCard,
-    RecordOfLandingDocument,
-    ConfirmationOfPermanentResidenceDocument,
-    WorkPermit,
-    StudyPermit,
-    ValidDocumentToVerifyLegalWorkStatus,
 }
 
 public enum HairColourEnum

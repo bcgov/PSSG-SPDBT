@@ -47,6 +47,13 @@ namespace Spd.Manager.Cases.Licence
         public bool? IsMailingTheSameAsResidential { get; set; }
         public ResidentialAddress? ResidentialAddressData { get; set; }
         public MailingAddress? MailingAddressData { get; set; }
+        public bool? IsPoliceOrPeaceOfficer { get; set; }
+        public PoliceOfficerRoleCode? PoliceOfficerRoleCode { get; set; }
+        public string? OtherOfficerRole { get; set; }
+        public bool? IsTreatedForMHC { get; set; }
+        public bool? UseBcServicesCardPhoto { get; set; }
+        public bool? CarryAndUseRetraints { get; set; }
+        public bool IsBornInCanada { get; set; }
     }
     public record WorkerLicenceUpsertRequest : WorkerLicenceApplication;
 
@@ -56,34 +63,15 @@ namespace Spd.Manager.Cases.Licence
         public WorkerLicenceCategoryData[] CategoriesData { get; set; }
     }
 
-    public record PoliceBackgroundUpsertRequest
-    {
-        public Guid LicenceApplicationId { get; set; }
-        public bool IsPoliceOrPeaceOfficer { get; set; }
-        public PoliceOfficerRoleCode? PoliceOfficerRoleCode { get; set; }
-        public string? OtherOfficerRole { get; set; }
-        public Documents? Documents { get; set; }
-    }
-
-    public record MentalHealthUpsertRequest
-    {
-        public Guid LicenceApplicationId { get; set; }
-        public bool? IsTreatedForMHC { get; set; }
-        public Documents? Documents { get; set; }
-    }
-
-    public record ProofOfFingerprintUpsertRequest
+    public record FileUploadRequest
     {
         public Guid LicenceApplicationId { get; set; }
         public Documents? Documents { get; set; }
     }
 
-    public record PhotographOfYourselfUpsertRequest 
-    {
-        public Guid LicenceApplicationId { get; set; }
-        public bool? UseBcServicesCardPhoto { get; set; }
-        public Documents Documents { get; set; }
-    }
+
+
+
     public record DogsAuthorizationUpsertRequest
     {
         public Guid LicenceApplicationId { get; set; }
@@ -93,25 +81,6 @@ namespace Spd.Manager.Cases.Licence
         public bool? IsDogsPurposeDetectionExplosives { get; set; }
         public Documents? Documents { get; set; }
     }
-    public record RestraintsAuthorizationUpsertRequest
-    {
-        public Guid LicenceApplicationId { get; set; }
-        public bool? CarryAndUseRetraints { get; set; }
-        public Documents? Documents { get; set; }
-
-    }
-    public record CitizenshipUpsertRequest
-    {
-        public Guid LicenceApplicationId { get; set; }
-        public bool IsBornInCanada { get; set; }
-        public Documents Documents { get; set; }
-    }
-    public record GovIssuedIdUpsertRequest 
-    {
-        public Guid LicenceApplicationId { get; set; }
-        public Documents Documents { get; set; }
-    }
-
     public record WorkerLicenceUpsertResponse
     {
         public Guid LicenceApplicationId { get; set; }

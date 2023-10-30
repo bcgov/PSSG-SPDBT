@@ -150,9 +150,16 @@ namespace Spd.Resource.Applicants.Application
              .ForMember(d => d.spd_residentialaddress1, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : s.ResidentialAddressData.AddressLine1))
              .ForMember(d => d.spd_residentialaddress2, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : s.ResidentialAddressData.AddressLine2))
              .ForMember(d => d.spd_residentialcity, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : s.ResidentialAddressData.City))
-             .ForMember(d => d.spd_residentialcountry, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : s.ResidentialAddressData.Province))
-             .ForMember(d => d.spd_residentialprovince, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : s.ResidentialAddressData.Country))
+             .ForMember(d => d.spd_residentialcountry, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : s.ResidentialAddressData.Country))
+             .ForMember(d => d.spd_residentialprovince, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : s.ResidentialAddressData.Province))
              .ForMember(d => d.spd_residentialpostalcode, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : s.ResidentialAddressData.PostalCode))
+             .ForMember(d => d.spd_peaceofficer, opt => opt.MapFrom(s => GetYesNo(s.IsPoliceOrPeaceOfficer)))
+             .ForMember(d => d.spd_policebackgroundrole, opt => opt.MapFrom(s => GetPoliceRoleOptionSet(s.PoliceOfficerRoleCode)))
+             .ForMember(d => d.spd_policebackgroundother, opt => opt.MapFrom(s => s.OtherOfficerRole))
+             .ForMember(d => d.spd_mentalhealthcondition, opt => opt.MapFrom(s => GetYesNo(s.IsTreatedForMHC)))
+             .ForMember(d => d.spd_usephotofrombcsc, opt => opt.MapFrom(s => GetYesNo(s.UseBcServicesCardPhoto)))
+             .ForMember(d => d.spd_requestrestraints, opt => opt.MapFrom(s => GetYesNo(s.CarryAndUseRetraints)))
+             .ForMember(d => d.spd_applicantbornincanada, opt => opt.MapFrom(s => GetYesNo(s.IsBornInCanada)))
              .ForMember(d => d.statecode, opt => opt.MapFrom(s => DynamicsConstants.StateCode_Active))
              .ForMember(d => d.statuscode, opt => opt.MapFrom(s => ApplicationStatusOptionSet.Draft))
              .ReverseMap()
@@ -171,6 +178,12 @@ namespace Spd.Resource.Applicants.Application
              .ForMember(d => d.HeightUnitCode, opt => opt.MapFrom(s => GetHeightUnitCode(s.spd_height)))
              .ForMember(d => d.Weight, opt => opt.MapFrom(s => GetWeightNumber(s.spd_weight)))
              .ForMember(d => d.WeightUnitCode, opt => opt.MapFrom(s => GetWeightUnitCode(s.spd_weight)))
+             .ForMember(d => d.IsPoliceOrPeaceOfficer, opt => opt.MapFrom(s => GetBool(s.spd_peaceofficer)))
+             .ForMember(d => d.IsTreatedForMHC, opt => opt.MapFrom(s => GetBool(s.spd_mentalhealthcondition)))
+             .ForMember(d => d.UseBcServicesCardPhoto, opt => opt.MapFrom(s => GetBool(s.spd_usephotofrombcsc)))
+             .ForMember(d => d.CarryAndUseRetraints, opt => opt.MapFrom(s => GetBool(s.spd_requestrestraints)))
+             .ForMember(d => d.IsBornInCanada, opt => opt.MapFrom(s => GetBool(s.spd_applicantbornincanada)))
+             .ForMember(d => d.PoliceOfficerRoleCode, opt => opt.MapFrom(s => GetPoliceRoleEnum(s.spd_policebackgroundrole)))
              ;
 
             _ = CreateMap<SaveLicenceApplicationCmd, spd_application>()
@@ -450,6 +463,19 @@ namespace Spd.Resource.Applicants.Application
                 app.spd_residentialprovince == app.spd_province &&
                 app.spd_residentialcountry == app.spd_country &&
                 app.spd_residentialpostalcode == app.spd_postalcode;
+        }
+
+        private static int? GetPoliceRoleOptionSet(PoliceOfficerRoleEnum? policeRole)
+        {
+            if (policeRole == null)
+                return null;
+            return (int)Enum.Parse<PoliceOfficerRoleOptionSet>(policeRole.ToString());
+        }
+
+        private static PoliceOfficerRoleEnum? GetPoliceRoleEnum(int? optionset)
+        {
+            if (optionset == null) return null;
+            return Enum.Parse<PoliceOfficerRoleEnum>(Enum.GetName(typeof(PoliceOfficerRoleOptionSet), optionset));
         }
     }
 }
