@@ -4,15 +4,16 @@ using Spd.Utilities.Dynamics;
 namespace Spd.Resource.Applicants.Application;
 internal partial class ApplicationRepository : IApplicationRepository
 {
-    public async Task<LicenceApplicationResp> SaveLicenceApplicationAsync(SaveLicenceApplicationCmd cmd, CancellationToken ct)
+    public async Task<LicenceApplicationCmdResp> SaveLicenceApplicationAsync(SaveLicenceApplicationCmd cmd, CancellationToken ct)
     {
         spd_application? app;
-        if (cmd.LicenceId != null)
+        if (cmd.LicenceApplicationId != null)
         {
-            app = await _context.GetApplicationById((Guid)cmd.LicenceId, ct);
+            app = await _context.GetApplicationById((Guid)cmd.LicenceApplicationId, ct);
             if (app == null)
                 throw new ArgumentException("invalid app id");
             _mapper.Map<SaveLicenceApplicationCmd, spd_application>(cmd, app);
+            app.spd_applicationid = (Guid)(cmd.LicenceApplicationId);
             _context.UpdateObject(app);
         }
         else
@@ -20,33 +21,44 @@ internal partial class ApplicationRepository : IApplicationRepository
             app = _mapper.Map<spd_application>(cmd);
             _context.AddTospd_applications(app);
         }
-        LinkServiceType(cmd.LicenceTypeData.WorkerLicenceTypeCode, app);
-        LinkExpiredLicence(cmd.ExpiredLicenceData, app);
+        //create contact
+
+        //create alias
+        if (cmd.HasPreviousName.Value)
+        {
+            //
+        }
+        LinkServiceType(cmd.WorkerLicenceTypeCode, app);
+        if (cmd.HasExpiredLicence == true) LinkExpiredLicence(cmd.ExpiredLicenceNumber, cmd.ExpiryDate, app);
         await _context.SaveChangesAsync();
-        return new LicenceApplicationResp(app.spd_applicationid);
+        return new LicenceApplicationCmdResp(app.spd_applicationid);
+    }
+
+    public async Task<LicenceApplicationResp> GetLicenceApplicationAsync(Guid licenceApplicationId, CancellationToken ct)
+    {
+        var app = await _context.spd_applications.Expand(a => a.spd_ServiceTypeId)
+            .Where(a => a.spd_applicationid == licenceApplicationId).SingleOrDefaultAsync(ct);
+        if (app == null)
+            throw new ArgumentException("invalid app id");
+
+        return _mapper.Map<LicenceApplicationResp>(app);
     }
 
     private void LinkServiceType(WorkerLicenceTypeEnum? licenceType, spd_application app)
     {
         if (licenceType == null) throw new ArgumentException("invalid LicenceApplication type");
-        string serviceTypeStr = licenceType switch
-        {
-            WorkerLicenceTypeEnum.SecurityWorkerLicence => "SECURITY_WORKER_LICENCE",
-            WorkerLicenceTypeEnum.ArmouredVehiclePermit => "AVAMCCA",
-            WorkerLicenceTypeEnum.BodyArmourPermit => "BACA",
-        };
-        spd_servicetype? servicetype = _context.LookupServiceType(serviceTypeStr);
+        spd_servicetype? servicetype = _context.LookupServiceType(licenceType.ToString());
         if (servicetype != null)
         {
             _context.SetLink(app, nameof(spd_application.spd_ServiceTypeId), servicetype);
         }
     }
 
-    private void LinkExpiredLicence(ExpiredLicenceData? expiredLicence, spd_application app)
+    private void LinkExpiredLicence(string? expiredLicenceNumber, DateTimeOffset? expiryDate, spd_application app)
     {
-        if (expiredLicence?.HasExpiredLicence == null || !(bool)expiredLicence.HasExpiredLicence) return;
-        var licence = _context.spd_licenses.Where(l => l.spd_licensenumber == expiredLicence.ExpiredLicenceNumber 
-            && l.spd_licenceexpirydate == expiredLicence.ExpiryDate.Value.Date)
+        if (expiredLicenceNumber == null || expiryDate == null) return;
+        var licence = _context.spd_licenses.Where(l => l.spd_licensenumber == expiredLicenceNumber
+            && l.spd_licenceexpirydate == expiryDate.Value.Date)
             .FirstOrDefault();
         if (licence != null)
         {
