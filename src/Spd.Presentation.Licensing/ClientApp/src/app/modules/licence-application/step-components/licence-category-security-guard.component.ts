@@ -67,6 +67,7 @@ import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../
 				</ng-template>
 				<div class="my-2">
 					<app-file-upload
+						(filesChanged)="onFilesChanged()"
 						[control]="attachments"
 						[maxNumberOfFiles]="10"
 						[files]="attachments.value"
@@ -105,6 +106,10 @@ export class LicenceCategorySecurityGuardComponent implements OnInit, LicenceChi
 
 	ngOnInit(): void {
 		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.SecurityGuard, 'WorkerCategoryTypes');
+	}
+
+	onFilesChanged(): void {
+		this.licenceApplicationService.hasDocumentsChanged = true;
 	}
 
 	isFormValid(): boolean {

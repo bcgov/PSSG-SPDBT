@@ -7,7 +7,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 import { BehaviorSubject, debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
-import { LicenceApplicationService, LicenceSaveTypeCode } from '../licence-application.service';
+import { LicenceApplicationService } from '../licence-application.service';
 import { StepBackgroundComponent } from '../step-components/wizard-steps/step-background.component';
 import { StepIdentificationComponent } from '../step-components/wizard-steps/step-identification.component';
 import { StepLicenceSelectionComponent } from '../step-components/wizard-steps/step-licence-selection.component';
@@ -29,7 +29,7 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 						<mat-step [completed]="step1Complete">
 							<ng-template matStepLabel> Licence Selection </ng-template>
 							<app-step-licence-selection
-								(childNextStep)="onChildNextStep($event)"
+								(childNextStep)="onChildNextStep()"
 								(nextStepperStep)="onNextStepperStep(stepper)"
 								(scrollIntoView)="onScrollIntoView()"
 							></app-step-licence-selection>
@@ -38,7 +38,7 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 						<mat-step [completed]="step2Complete">
 							<ng-template matStepLabel>Background</ng-template>
 							<app-step-background
-								(childNextStep)="onChildNextStep($event)"
+								(childNextStep)="onChildNextStep()"
 								(previousStepperStep)="onPreviousStepperStep(stepper)"
 								(nextStepperStep)="onNextStepperStep(stepper)"
 								(scrollIntoView)="onScrollIntoView()"
@@ -48,7 +48,7 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 						<mat-step [completed]="step3Complete">
 							<ng-template matStepLabel>Identification</ng-template>
 							<app-step-identification
-								(childNextStep)="onChildNextStep($event)"
+								(childNextStep)="onChildNextStep()"
 								(previousStepperStep)="onPreviousStepperStep(stepper)"
 								(nextStepperStep)="onNextStepperStep(stepper)"
 								(scrollIntoView)="onScrollIntoView()"
@@ -134,7 +134,7 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 
 	orientation: StepperOrientation = 'vertical';
 
-	hasValueChanged = false;
+	// hasValueChanged = false;
 	isFormValid = false;
 
 	step1Complete = false;
@@ -197,10 +197,18 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 		});
 
 		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelFormGroup.valueChanges
-			.pipe(debounceTime(500), distinctUntilChanged())
-			.subscribe((xxx: any) => {
-				this.hasValueChanged = true;
-				console.log('valueChanges', this.licenceApplicationService.licenceModelFormGroup.valid);
+			.pipe(debounceTime(200), distinctUntilChanged())
+			.subscribe((_resp: any) => {
+				this.licenceApplicationService.hasValueChanged = true;
+
+				console.log(
+					'valueChanges changed flags',
+					this.licenceApplicationService.hasValueChanged,
+					this.licenceApplicationService.hasDocumentsChanged
+				);
+
+				console.log('valueChanges isFormValid', this.licenceApplicationService.licenceModelFormGroup.valid);
+				// this.licenceApplicationService.hasDocumentsChanged();
 				// console.log('xxx', this.licenceApplicationService.licenceModelFormGroup);
 
 				// Object.keys(this.form.controls).forEach((key) => {
@@ -273,16 +281,13 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
-		let saveTypeCode = LicenceSaveTypeCode.BasicInformation;
-		if (stepper.selectedIndex == this.STEP_BACKGROUND) {
-			saveTypeCode = LicenceSaveTypeCode.MentalHealthPoliceFingerprints;
-		}
-
-		if (this.hasValueChanged) {
-			this.licenceApplicationService.saveLicence(saveTypeCode).subscribe({
+		if (this.licenceApplicationService.hasValueChanged) {
+			this.licenceApplicationService.saveLicence().subscribe({
 				next: (resp: any) => {
+					this.licenceApplicationService.hasValueChanged = false;
+					this.licenceApplicationService.hasDocumentsChanged = false;
+
 					this.hotToastService.success('Licence information has been saved');
-					this.hasValueChanged = false;
 
 					if (stepper?.selected) stepper.selected.completed = true;
 
@@ -299,7 +304,6 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 							this.stepIdentificationComponent?.onGoToFirstStep();
 							break;
 					}
-					this.hotToastService.error('An error occurred during the save. Please try again.');
 				},
 				error: (error: any) => {
 					// only 404 will be here as an error
@@ -308,7 +312,6 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 				},
 			});
 		} else {
-			this.hasValueChanged = false;
 			if (stepper?.selected) stepper.selected.completed = true;
 			stepper.next();
 		}
@@ -316,7 +319,6 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 
 	onGoToStep(step: number) {
 		console.debug('onGoToStep', step);
-		// this.saveIfChanged();
 
 		if (step == 3) {
 			this.stepper.selectedIndex = 2;
@@ -331,17 +333,17 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 	}
 
 	onSave() {
-		let saveTypeCode = LicenceSaveTypeCode.BasicInformation;
-		if (this.stepper.selectedIndex == this.STEP_BACKGROUND) {
-			saveTypeCode = LicenceSaveTypeCode.MentalHealthPoliceFingerprints;
-		}
-		this.licenceApplicationService.saveLicence(saveTypeCode).subscribe({
+		this.licenceApplicationService.saveLicence().subscribe({
 			next: (resp: any) => {
+				this.licenceApplicationService.hasValueChanged = false;
+				this.licenceApplicationService.hasDocumentsChanged = false;
+
 				this.hotToastService.success('Licence information has been saved');
 				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATIONS_IN_PROGRESS));
 			},
 			error: (error: any) => {
 				// only 404 will be here as an error
+				// TODO what error codes to handle here?
 				console.log('An error occurred during save', error);
 				this.hotToastService.error('An error occurred during the save. Please try again.');
 			},
@@ -352,12 +354,14 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 		this.stepper.selectedIndex = this.STEP_REVIEW;
 	}
 
-	onChildNextStep(saveTypeCode: LicenceSaveTypeCode) {
-		if (this.hasValueChanged) {
-			this.licenceApplicationService.saveLicence(saveTypeCode).subscribe({
+	onChildNextStep() {
+		if (this.licenceApplicationService.hasValueChanged) {
+			this.licenceApplicationService.saveLicence().subscribe({
 				next: (resp: any) => {
+					this.licenceApplicationService.hasValueChanged = false;
+					this.licenceApplicationService.hasDocumentsChanged = false;
+
 					this.hotToastService.success('Licence information has been saved');
-					this.hasValueChanged = false;
 					this.goToChildNextStep();
 				},
 				error: (error: any) => {

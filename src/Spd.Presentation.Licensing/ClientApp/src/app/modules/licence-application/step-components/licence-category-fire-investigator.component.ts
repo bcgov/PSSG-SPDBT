@@ -28,6 +28,7 @@ import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../
 			<div class="my-2">
 				<div class="fs-6 fw-bold mb-2">Upload a copy of your course certificate:</div>
 				<app-file-upload
+					(filesChanged)="onFilesChanged()"
 					[control]="fireCourseCertificateAttachments"
 					[maxNumberOfFiles]="10"
 					#fireCourseCertificateAttachmentsRef
@@ -48,6 +49,7 @@ import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../
 			<div class="mt-3 mb-2">
 				<div class="fs-6 fw-bold mb-2">Upload a verification letter:</div>
 				<app-file-upload
+					(filesChanged)="onFilesChanged()"
 					[control]="fireVerificationLetterAttachments"
 					[maxNumberOfFiles]="10"
 					#fireVerificationLetterAttachmentsRef
@@ -76,6 +78,10 @@ export class LicenceCategoryFireInvestigatorComponent implements OnInit, Licence
 
 	ngOnInit(): void {
 		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.FireInvestigator, 'WorkerCategoryTypes');
+	}
+
+	onFilesChanged(): void {
+		this.licenceApplicationService.hasDocumentsChanged = true;
 	}
 
 	isFormValid(): boolean {

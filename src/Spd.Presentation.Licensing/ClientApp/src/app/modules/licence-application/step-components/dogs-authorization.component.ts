@@ -88,6 +88,7 @@ import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../
 
 								<div class="my-2">
 									<app-file-upload
+										(filesChanged)="onFilesChanged()"
 										[control]="attachments"
 										[maxNumberOfFiles]="10"
 										[files]="attachments.value"
@@ -128,6 +129,10 @@ export class DogsAuthorizationComponent implements OnInit, LicenceChildStepperSt
 				useDogs: BooleanTypeCode.Yes,
 			});
 		}
+	}
+
+	onFilesChanged(): void {
+		this.licenceApplicationService.hasDocumentsChanged = true;
 	}
 
 	isFormValid(): boolean {

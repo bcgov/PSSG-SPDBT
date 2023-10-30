@@ -27,6 +27,7 @@ import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../
 							<!-- TODO link to the form to download for reference -->
 							<div class="text-minor-heading fw-normal mb-2">Upload your document:</div>
 							<app-file-upload
+								(filesChanged)="onFilesChanged()"
 								[control]="attachments"
 								[maxNumberOfFiles]="1"
 								[files]="attachments.value"
@@ -60,6 +61,10 @@ export class FingerprintsComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.licenceApplicationService.proofOfFingerprintFormGroup;
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
+
+	onFilesChanged(): void {
+		this.licenceApplicationService.hasDocumentsChanged = true;
+	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();

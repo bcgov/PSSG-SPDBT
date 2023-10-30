@@ -94,6 +94,7 @@ import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../
 				</div>
 				<div class="my-2">
 					<app-file-upload
+						(filesChanged)="onFilesChanged()"
 						[control]="attachments"
 						[maxNumberOfFiles]="10"
 						[files]="attachments.value"
@@ -133,6 +134,10 @@ export class LicenceCategoryLocksmithComponent implements OnInit, LicenceChildSt
 
 	ngOnInit(): void {
 		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.Locksmith, 'WorkerCategoryTypes');
+	}
+
+	onFilesChanged(): void {
+		this.licenceApplicationService.hasDocumentsChanged = true;
 	}
 
 	isFormValid(): boolean {

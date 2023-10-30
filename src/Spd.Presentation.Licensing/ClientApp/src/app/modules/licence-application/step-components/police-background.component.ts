@@ -96,6 +96,7 @@ import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../
 												</p>
 
 												<app-file-upload
+													(filesChanged)="onFilesChanged()"
 													[control]="attachments"
 													[maxNumberOfFiles]="1"
 													[files]="attachments.value"
@@ -152,6 +153,10 @@ export class PoliceBackgroundComponent implements OnInit, LicenceChildStepperSte
 
 	onEditInformation(): void {
 		this.isViewOnlyPoliceOrPeaceOfficer = false;
+	}
+
+	onFilesChanged(): void {
+		this.licenceApplicationService.hasDocumentsChanged = true;
 	}
 
 	isFormValid(): boolean {

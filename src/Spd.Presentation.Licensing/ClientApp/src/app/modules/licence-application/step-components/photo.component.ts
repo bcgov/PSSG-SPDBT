@@ -71,6 +71,7 @@ import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../
 								</app-alert>
 
 								<app-file-upload
+									(filesChanged)="onFilesChanged()"
 									[control]="attachments"
 									[maxNumberOfFiles]="1"
 									[files]="attachments.value"
@@ -104,6 +105,10 @@ export class PhotoComponent implements LicenceChildStepperStepComponent {
 	@Input() isCalledFromModal: boolean = false;
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
+
+	onFilesChanged(): void {
+		this.licenceApplicationService.hasDocumentsChanged = true;
+	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();

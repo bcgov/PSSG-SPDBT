@@ -84,6 +84,7 @@ import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../
 
 				<div class="my-2">
 					<app-file-upload
+						(filesChanged)="onFilesChanged()"
 						[control]="attachments"
 						[maxNumberOfFiles]="10"
 						#attachmentsRef
@@ -131,6 +132,7 @@ import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../
 
 			<div class="my-2">
 				<app-file-upload
+					(filesChanged)="onFilesChanged()"
 					[control]="trainingAttachments"
 					[maxNumberOfFiles]="10"
 					#trainingAttachmentsRef
@@ -165,6 +167,10 @@ export class LicenceCategoryPrivateInvestigatorSupComponent implements OnInit, L
 			WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision,
 			'WorkerCategoryTypes'
 		);
+	}
+
+	onFilesChanged(): void {
+		this.licenceApplicationService.hasDocumentsChanged = true;
 	}
 
 	isFormValid(): boolean {

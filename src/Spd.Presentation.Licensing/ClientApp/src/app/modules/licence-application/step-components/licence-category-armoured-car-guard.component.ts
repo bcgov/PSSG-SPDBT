@@ -21,7 +21,12 @@ import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../
 		<form [formGroup]="form" novalidate>
 			<div class="fs-6 fw-bold">Upload your valid Authorization to Carry certificate:</div>
 			<div class="my-2">
-				<app-file-upload [maxNumberOfFiles]="10" [control]="attachments" [files]="attachments.value"></app-file-upload>
+				<app-file-upload
+					(filesChanged)="onFilesChanged()"
+					[maxNumberOfFiles]="10"
+					[control]="attachments"
+					[files]="attachments.value"
+				></app-file-upload>
 				<mat-error
 					class="mat-option-error"
 					*ngIf="
@@ -63,6 +68,10 @@ export class LicenceCategoryArmouredCarGuardComponent implements OnInit, Licence
 
 	ngOnInit(): void {
 		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.ArmouredCarGuard, 'WorkerCategoryTypes');
+	}
+
+	onFilesChanged(): void {
+		this.licenceApplicationService.hasDocumentsChanged = true;
 	}
 
 	isFormValid(): boolean {

@@ -65,6 +65,7 @@ import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../
 
 								<div class="my-2">
 									<app-file-upload
+										(filesChanged)="onFilesChanged()"
 										[control]="attachments"
 										[maxNumberOfFiles]="10"
 										[files]="attachments.value"
@@ -105,6 +106,10 @@ export class RestraintsAuthorizationComponent implements OnInit, LicenceChildSte
 				carryAndUseRetraints: BooleanTypeCode.Yes,
 			});
 		}
+	}
+
+	onFilesChanged(): void {
+		this.licenceApplicationService.hasDocumentsChanged = true;
 	}
 
 	isFormValid(): boolean {

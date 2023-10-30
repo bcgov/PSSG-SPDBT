@@ -49,6 +49,7 @@ import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../
 									<div class="col-12">
 										<div class="text-minor-heading fw-normal mb-2">Upload a photo of your ID:</div>
 										<app-file-upload
+											(filesChanged)="onFilesChanged()"
 											[maxNumberOfFiles]="1"
 											[control]="attachments"
 											[files]="attachments.value"
@@ -81,6 +82,10 @@ export class AdditionalGovIdComponent implements LicenceChildStepperStepComponen
 	form: FormGroup = this.licenceApplicationService.govIssuedIdFormGroup;
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
+
+	onFilesChanged(): void {
+		this.licenceApplicationService.hasDocumentsChanged = true;
+	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();

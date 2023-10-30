@@ -99,6 +99,7 @@ import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../
 												<div class="text-minor-heading mb-2">Upload a photo of your selected document type:</div>
 											</ng-template>
 											<app-file-upload
+												(filesChanged)="onFilesChanged()"
 												[control]="attachments"
 												[maxNumberOfFiles]="1"
 												[files]="attachments.value"
@@ -135,6 +136,10 @@ export class CitizenshipComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.licenceApplicationService.citizenshipFormGroup;
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
+
+	onFilesChanged(): void {
+		this.licenceApplicationService.hasDocumentsChanged = true;
+	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();

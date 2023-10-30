@@ -169,7 +169,7 @@ export class LicenceSelectionComponent implements OnInit {
 		this.isFormValid();
 	}
 
-	private isFormValid(): boolean {
+	isFormValid(): boolean {
 		const isValid = this.form.valid;
 		this.isDirtyAndInvalid = !isValid;
 		return isValid;

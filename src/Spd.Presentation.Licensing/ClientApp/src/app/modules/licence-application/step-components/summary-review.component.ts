@@ -722,7 +722,6 @@ export class SummaryReviewComponent {
 
 	ngOnInit(): void {
 		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.value };
-		console.log('XXX onUpdateData', this.licenceModelData);
 	}
 
 	onEditStep(stepNumber: number) {
@@ -731,7 +730,6 @@ export class SummaryReviewComponent {
 
 	onUpdateData(): void {
 		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.value };
-		console.log('XXX onUpdateData', this.licenceModelData);
 	}
 
 	get workerLicenceTypeCode(): string {

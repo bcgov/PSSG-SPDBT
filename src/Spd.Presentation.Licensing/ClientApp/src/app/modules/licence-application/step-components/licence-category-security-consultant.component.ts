@@ -38,6 +38,7 @@ import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../
 
 			<div class="my-2">
 				<app-file-upload
+					(filesChanged)="onFilesChanged()"
 					[control]="resumeAttachments"
 					[maxNumberOfFiles]="10"
 					#resumeAttachmentsRef
@@ -105,6 +106,7 @@ import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../
 
 				<div class="my-2">
 					<app-file-upload
+						(filesChanged)="onFilesChanged()"
 						[control]="attachments"
 						[maxNumberOfFiles]="10"
 						#attachmentsRef
@@ -136,6 +138,10 @@ export class LicenceCategorySecurityConsultantComponent implements OnInit, Licen
 
 	ngOnInit(): void {
 		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.SecurityConsultant, 'WorkerCategoryTypes');
+	}
+
+	onFilesChanged(): void {
+		this.licenceApplicationService.hasDocumentsChanged = true;
 	}
 
 	isFormValid(): boolean {

@@ -48,6 +48,7 @@ import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../
 									<div class="col-12">
 										<div class="text-minor-heading mb-2">Upload your mental health condition form:</div>
 										<app-file-upload
+											(filesChanged)="onFilesChanged()"
 											[control]="attachments"
 											[maxNumberOfFiles]="1"
 											[files]="attachments.value"
@@ -78,6 +79,10 @@ export class MentalHealthConditionsComponent implements LicenceChildStepperStepC
 	form: FormGroup = this.licenceApplicationService.mentalHealthConditionsFormGroup;
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
+
+	onFilesChanged(): void {
+		this.licenceApplicationService.hasDocumentsChanged = true;
+	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();

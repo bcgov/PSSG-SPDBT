@@ -243,6 +243,8 @@ export class FileUploadComponent implements OnInit {
 	onFilesChanged(): void {
 		const files = this.files && this.files.length > 0 ? this.files : [];
 		this.control.setValue(files);
+
+		this.filesChanged.emit(true);
 	}
 
 	removeAllFiles(): void {
