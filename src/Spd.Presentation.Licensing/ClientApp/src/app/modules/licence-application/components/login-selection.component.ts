@@ -12,7 +12,8 @@ import { LicenceApplicationRoutes } from '../licence-application-routing.module'
 						<div class="row">
 							<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
 								<div class="login-title fs-4 mt-2 mb-3">
-									Log in to manage your<br /><strong>security business licence:</strong>
+									<img class="image" src="/assets/security-business-licence.png" />
+									<div>Log in to manage your<br /><strong>security business licence:</strong></div>
 								</div>
 
 								<div class="step-container">
@@ -64,7 +65,8 @@ import { LicenceApplicationRoutes } from '../licence-application-routing.module'
 							</div>
 							<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
 								<div class="login-title fs-4  mt-2 mb-3">
-									Log in to manage your<br /><strong>security worker licence:</strong>
+									<img class="image" src="/assets/security-worker-licence.png" />
+									<div>Log in to manage your<br /><strong>security worker licence:</strong></div>
 								</div>
 
 								<div class="step-container">
@@ -141,6 +143,12 @@ import { LicenceApplicationRoutes } from '../licence-application-routing.module'
 
 			.login-title {
 				line-height: normal;
+				display: flex;
+				justify-content: space-around;
+			}
+
+			.image {
+				height: 3em;
 			}
 		`,
 	],

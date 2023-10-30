@@ -1,7 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import { Documents } from './documents';
-export interface CitizenshipData {
+export interface ProofOfFingerprintUpsertRequest {
   documents?: Documents;
-  isBornInCanada?: boolean;
+  licenceApplicationId?: string;
 }

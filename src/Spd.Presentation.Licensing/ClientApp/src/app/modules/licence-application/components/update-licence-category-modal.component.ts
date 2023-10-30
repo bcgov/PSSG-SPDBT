@@ -139,7 +139,6 @@ export class UpdateLicenceCategoryModalComponent implements OnInit {
 
 	validCategoryList: SelectOptions[] = WorkerCategoryTypes;
 
-	swlCategoryTypes = WorkerCategoryTypes;
 	workerCategoryTypeCodes = WorkerCategoryTypeCode;
 
 	categoryArmouredCarGuardFormGroup: FormGroup = this.licenceApplicationService.categoryArmouredCarGuardFormGroup;
@@ -175,7 +174,7 @@ export class UpdateLicenceCategoryModalComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.category = this.dialogData.category;
-		this.setValidCategoryList();
+		this.validCategoryList = this.licenceApplicationService.getValidCategoryList(this.categoryList);
 	}
 
 	onSave() {
@@ -334,13 +333,13 @@ export class UpdateLicenceCategoryModalComponent implements OnInit {
 		return list;
 	}
 
-	private setValidCategoryList(): void {
-		const currentList = this.categoryList;
-		let updatedList = this.swlCategoryTypes;
-		updatedList = updatedList.filter((cat) => !currentList.find((item) => item == cat.code));
+	// private setValidCategoryList(): void {
+	// 	const currentList = this.categoryList;
+	// 	let updatedList = this.swlCategoryTypes;
+	// 	updatedList = updatedList.filter((cat) => !currentList.find((item) => item == cat.code));
 
-		this.validCategoryList = [...updatedList];
-	}
+	// 	this.validCategoryList = [...updatedList];
+	// }
 
 	updateCategoryInclude(category: WorkerCategoryTypeCode | null, isInclude: boolean): void {
 		if (category) {
@@ -399,7 +398,7 @@ export class UpdateLicenceCategoryModalComponent implements OnInit {
 					break;
 			}
 
-			this.setValidCategoryList();
+			this.validCategoryList = this.licenceApplicationService.getValidCategoryList(this.categoryList);
 			this.isDirtyAndInvalid = false;
 		}
 	}

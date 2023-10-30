@@ -7,7 +7,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 import { BehaviorSubject, debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
-import { LicenceApplicationService } from '../licence-application.service';
+import { LicenceApplicationService, LicenceSaveTypeCode } from '../licence-application.service';
 import { StepBackgroundComponent } from '../step-components/wizard-steps/step-background.component';
 import { StepIdentificationComponent } from '../step-components/wizard-steps/step-identification.component';
 import { StepLicenceSelectionComponent } from '../step-components/wizard-steps/step-licence-selection.component';
@@ -29,7 +29,7 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 						<mat-step [completed]="step1Complete">
 							<ng-template matStepLabel> Licence Selection </ng-template>
 							<app-step-licence-selection
-								(childNextStep)="onChildNextStep()"
+								(childNextStep)="onChildNextStep($event)"
 								(nextStepperStep)="onNextStepperStep(stepper)"
 								(scrollIntoView)="onScrollIntoView()"
 							></app-step-licence-selection>
@@ -38,7 +38,7 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 						<mat-step [completed]="step2Complete">
 							<ng-template matStepLabel>Background</ng-template>
 							<app-step-background
-								(childNextStep)="onChildNextStep()"
+								(childNextStep)="onChildNextStep($event)"
 								(previousStepperStep)="onPreviousStepperStep(stepper)"
 								(nextStepperStep)="onNextStepperStep(stepper)"
 								(scrollIntoView)="onScrollIntoView()"
@@ -48,7 +48,7 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 						<mat-step [completed]="step3Complete">
 							<ng-template matStepLabel>Identification</ng-template>
 							<app-step-identification
-								(childNextStep)="onChildNextStep()"
+								(childNextStep)="onChildNextStep($event)"
 								(previousStepperStep)="onPreviousStepperStep(stepper)"
 								(nextStepperStep)="onNextStepperStep(stepper)"
 								(scrollIntoView)="onScrollIntoView()"
@@ -59,7 +59,6 @@ import { StepReviewComponent } from '../step-components/wizard-steps/step-review
 							<ng-template matStepLabel>Review and Confirm</ng-template>
 							<ng-template matStepContent>
 								<app-step-review
-									(childNextStep)="onChildNextStep()"
 									(previousStepperStep)="onPreviousStepperStep(stepper)"
 									(nextStepperStep)="onNextStepperStep(stepper)"
 									(scrollIntoView)="onScrollIntoView()"
@@ -274,9 +273,13 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
-		// this.saveIfChanged();
+		let saveTypeCode = LicenceSaveTypeCode.BasicInformation;
+		if (stepper.selectedIndex == this.STEP_BACKGROUND) {
+			saveTypeCode = LicenceSaveTypeCode.MentalHealthPoliceFingerprints;
+		}
+
 		if (this.hasValueChanged) {
-			this.licenceApplicationService.saveLicence().subscribe({
+			this.licenceApplicationService.saveLicence(saveTypeCode).subscribe({
 				next: (resp) => {
 					this.hotToastService.success('Licence information has been saved');
 					this.hasValueChanged = false;
@@ -326,7 +329,12 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 	}
 
 	onSave() {
-		this.licenceApplicationService.saveLicence().subscribe({
+		let saveTypeCode = LicenceSaveTypeCode.BasicInformation;
+		if (this.stepper.selectedIndex == this.STEP_BACKGROUND) {
+			saveTypeCode = LicenceSaveTypeCode.MentalHealthPoliceFingerprints;
+		}
+
+		this.licenceApplicationService.saveLicence(saveTypeCode).subscribe({
 			next: (resp) => {
 				this.hotToastService.success('Licence information has been saved');
 				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.APPLICATIONS_IN_PROGRESS));
@@ -342,10 +350,9 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 		this.stepper.selectedIndex = this.STEP_REVIEW;
 	}
 
-	onChildNextStep() {
-		// this.saveIfChanged();
+	onChildNextStep(saveTypeCode: LicenceSaveTypeCode) {
 		if (this.hasValueChanged) {
-			this.licenceApplicationService.saveLicence().subscribe({
+			this.licenceApplicationService.saveLicence(saveTypeCode).subscribe({
 				next: (resp) => {
 					this.hotToastService.success('Licence information has been saved');
 					this.hasValueChanged = false;
@@ -374,23 +381,6 @@ export class LicenceWizardComponent implements OnInit, OnDestroy, AfterViewInit 
 				break;
 		}
 	}
-
-	// private saveIfChanged() {
-	// 	console.log('saveIfChanged', this.hasValueChanged);
-
-	// 	if (this.hasValueChanged) {
-	// 		this.licenceApplicationService.saveLicence().subscribe({
-	// 			next: (resp) => {
-	// 				this.hotToastService.success('Licence information has been saved');
-	// 				this.hasValueChanged = false;
-	// 			},
-	// 			error: (error) => {
-	// 				// only 404 will be here as an error
-	// 				console.log('An error occurred during save', error);
-	// 			},
-	// 		});
-	// 	}
-	// }
 
 	private breakpointChanged() {
 		if (this.breakpointObserver.isMatched(Breakpoints.XLarge) || this.breakpointObserver.isMatched(Breakpoints.Large)) {
