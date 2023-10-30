@@ -3,7 +3,6 @@ import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { WorkerCategoryTypeCode } from 'src/app/api/models';
 import { SelectOptions, WorkerCategoryTypes } from 'src/app/core/code-types/model-desc.models';
-import { ConfigService } from 'src/app/core/services/config.service';
 import { DialogComponent, DialogOptions } from 'src/app/shared/components/dialog.component';
 import { LicenceApplicationService, LicenceChildStepperStepComponent } from '../licence-application.service';
 
@@ -723,14 +722,11 @@ export class LicenceCategoryComponent implements OnInit, LicenceChildStepperStep
 
 	@Input() isCalledFromModal: boolean = false;
 
-	constructor(
-		private configService: ConfigService,
-		private dialog: MatDialog,
-		private licenceApplicationService: LicenceApplicationService
-	) {}
+	constructor(private dialog: MatDialog, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
-		this.setValidCategoryList();
+		// this.setValidCategoryList();
+		this.validCategoryList = this.licenceApplicationService.getValidCategoryList(this.categoryList);
 	}
 
 	onAddCategory(): void {
@@ -790,7 +786,8 @@ export class LicenceCategoryComponent implements OnInit, LicenceChildStepperStep
 					break;
 			}
 
-			this.setValidCategoryList();
+			// this.setValidCategoryList();
+			this.validCategoryList = this.licenceApplicationService.getValidCategoryList(this.categoryList);
 
 			this.category = '';
 			this.isDirtyAndInvalid = false;
@@ -865,7 +862,8 @@ export class LicenceCategoryComponent implements OnInit, LicenceChildStepperStep
 							break;
 					}
 
-					this.setValidCategoryList();
+					// this.setValidCategoryList();
+					this.validCategoryList = this.licenceApplicationService.getValidCategoryList(this.categoryList);
 					this.isDirtyAndInvalid = false;
 				}
 			});
@@ -891,7 +889,8 @@ export class LicenceCategoryComponent implements OnInit, LicenceChildStepperStep
 				if (response) {
 					this.categoryFireInvestigatorFormGroup.patchValue({ isInclude: true });
 
-					this.setValidCategoryList();
+					// this.setValidCategoryList();
+					this.validCategoryList = this.licenceApplicationService.getValidCategoryList(this.categoryList);
 				}
 			});
 	}
@@ -1015,17 +1014,17 @@ export class LicenceCategoryComponent implements OnInit, LicenceChildStepperStep
 		return list;
 	}
 
-	private setValidCategoryList(): void {
-		const invalidCategories = this.configService.configs?.invalidWorkerLicenceCategoryMatrixConfiguration!;
-		const currentList = this.categoryList;
-		let updatedList = this.workerCategoryTypes;
+	// private setValidCategoryList(): void {
+	// 	const invalidCategories = this.configService.configs?.invalidWorkerLicenceCategoryMatrixConfiguration!;
+	// 	const currentList = this.categoryList;
+	// 	let updatedList = this.workerCategoryTypes;
 
-		currentList.forEach((item) => {
-			updatedList = updatedList.filter((cat) => !invalidCategories[item].includes(cat.code as WorkerCategoryTypeCode));
-		});
+	// 	currentList.forEach((item) => {
+	// 		updatedList = updatedList.filter((cat) => !invalidCategories[item].includes(cat.code as WorkerCategoryTypeCode));
+	// 	});
 
-		this.validCategoryList = [...updatedList];
-	}
+	// 	this.validCategoryList = [...updatedList];
+	// }
 
 	get showArmouredCarGuard(): boolean {
 		return this.categoryArmouredCarGuardFormGroup.get('isInclude')?.value;

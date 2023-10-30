@@ -52,7 +52,10 @@ import {
 	SecurityAlarmInstallerRequirementCode,
 	SecurityConsultantRequirementCode,
 	SecurityGuardRequirementCode,
+	SelectOptions,
+	WorkerCategoryTypes,
 } from 'src/app/core/code-types/model-desc.models';
+import { ConfigService } from 'src/app/core/services/config.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
@@ -580,6 +583,7 @@ export class LicenceApplicationService {
 	constructor(
 		private formBuilder: FormBuilder,
 		private utilService: UtilService,
+		private configService: ConfigService,
 		private spinnerService: NgxSpinnerService,
 		private workerLicensingService: WorkerLicensingService
 	) {}
@@ -1084,6 +1088,17 @@ export class LicenceApplicationService {
 			this.mailingAddressFormGroup.valid &&
 			this.contactInformationFormGroup.valid
 		);
+	}
+
+	getValidCategoryList(categoryList: string[]): SelectOptions<string>[] {
+		const invalidCategories = this.configService.configs?.invalidWorkerLicenceCategoryMatrixConfiguration!;
+		let updatedList = [...WorkerCategoryTypes];
+
+		categoryList.forEach((item) => {
+			updatedList = updatedList.filter((cat) => !invalidCategories[item].includes(cat.code as WorkerCategoryTypeCode));
+		});
+
+		return [...updatedList];
 	}
 
 	saveLicence(saveTypeCode: LicenceSaveTypeCode): Observable<StrictHttpResponse<WorkerLicenceCreateResponse>> {
