@@ -4,5 +4,6 @@ export enum LicenceTermCode {
   NintyDays = 'NintyDays',
   OneYear = 'OneYear',
   TwoYears = 'TwoYears',
-  ThreeYears = 'ThreeYears'
+  ThreeYears = 'ThreeYears',
+  FiveYears = 'FiveYears'
 }

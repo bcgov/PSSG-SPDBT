@@ -44,7 +44,7 @@ import { LicenceApplicationService } from '../licence-application.service';
 													<div class="col-lg-4 col-md-12 mt-lg-2">
 														<div class="text-label d-block text-muted mt-2 mt-lg-0">Licence Type</div>
 														<div class="text-data">
-															{{ licenceTypeCode | options : 'WorkerLicenceTypes' }}
+															{{ workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}
 														</div>
 													</div>
 													<div class="col-lg-4 col-md-12 mt-lg-2">
@@ -734,8 +734,8 @@ export class SummaryReviewComponent {
 		console.log('XXX onUpdateData', this.licenceModelData);
 	}
 
-	get licenceTypeCode(): string {
-		return this.licenceModelData.licenceTypeData?.licenceTypeCode ?? '';
+	get workerLicenceTypeCode(): string {
+		return this.licenceModelData.workerLicenceTypeData?.workerLicenceTypeCode ?? '';
 	}
 
 	get applicationTypeCode(): string {

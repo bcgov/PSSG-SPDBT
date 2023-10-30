@@ -4,7 +4,11 @@ import { FormGroup } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
-import { LicenceApplicationService, LicenceStepperStepComponent } from '../../licence-application.service';
+import {
+	LicenceApplicationService,
+	LicenceSaveTypeCode,
+	LicenceStepperStepComponent,
+} from '../../licence-application.service';
 import { DogsAuthorizationComponent } from '../dogs-authorization.component';
 import { LicenceAccessCodeComponent } from '../licence-access-code.component';
 import { LicenceCategoryComponent } from '../licence-category.component';
@@ -128,7 +132,7 @@ export class StepLicenceSelectionComponent implements LicenceStepperStepComponen
 
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
-	@Output() childNextStep: EventEmitter<boolean> = new EventEmitter<boolean>();
+	@Output() childNextStep: EventEmitter<LicenceSaveTypeCode> = new EventEmitter<LicenceSaveTypeCode>();
 
 	@ViewChild(LicenceAccessCodeComponent)
 	licenceAccessCodeComponent!: LicenceAccessCodeComponent;
@@ -169,7 +173,16 @@ export class StepLicenceSelectionComponent implements LicenceStepperStepComponen
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 
-		this.childNextStep.emit(true);
+		let saveTypeCode = LicenceSaveTypeCode.BasicInformation;
+
+		switch (formNumber) {
+			case this.STEP_LICENCE_CATEGORY:
+			case this.STEP_RESTRAINTS:
+			case this.STEP_DOGS:
+				saveTypeCode = LicenceSaveTypeCode.CategoriesDogsRestraints;
+		}
+
+		this.childNextStep.emit(saveTypeCode);
 	}
 
 	onStepSelectionChange(event: StepperSelectionEvent) {
