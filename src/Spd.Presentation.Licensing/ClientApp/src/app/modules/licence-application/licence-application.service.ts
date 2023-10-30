@@ -4,42 +4,18 @@ import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@ang
 import { NgxSpinnerService } from 'ngx-spinner';
 import { BehaviorSubject, Observable } from 'rxjs';
 import {
-	AliasesData,
 	ApplicationTypeCode,
-	ApplicationTypeData,
-	BcDriversLicenceData,
-	CharacteristicsData,
-	CitizenshipData,
-	ContactInformationData,
-	CriminalHistoryData,
-	Documents,
 	DocumentTypeCode,
-	DogsAuthorizationData,
-	ExpiredLicenceData,
 	EyeColourCode,
 	GenderCode,
-	GovIssuedIdData,
 	HairColourCode,
 	HeightUnitCode,
 	LicenceTermCode,
-	LicenceTermData,
-	LicenceTypeData,
-	MailingAddressData,
-	MentalHealthConditionsData,
-	PersonalInformationData,
-	PhotographOfYourselfData,
-	PoliceBackgroundData,
 	PoliceOfficerRoleCode,
-	ProofOfFingerprintData,
-	ResidentialAddressData,
-	RestraintsAuthorizationData,
-	SoleProprietorData,
 	WeightUnitCode,
 	WorkerCategoryTypeCode,
-	WorkerLicenceCategoryData,
-	WorkerLicenceCreateRequest,
-	WorkerLicenceCreateResponse,
 	WorkerLicenceTypeCode,
+	WorkerLicenceUpsertRequest,
 } from 'src/app/api/models';
 import { WorkerLicensingService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
@@ -52,7 +28,10 @@ import {
 	SecurityAlarmInstallerRequirementCode,
 	SecurityConsultantRequirementCode,
 	SecurityGuardRequirementCode,
+	SelectOptions,
+	WorkerCategoryTypes,
 } from 'src/app/core/code-types/model-desc.models';
+import { ConfigService } from 'src/app/core/services/config.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
@@ -71,6 +50,13 @@ export interface LicenceChildStepperStepComponent {
 	isFormValid(): boolean;
 }
 
+export enum LicenceSaveTypeCode {
+	BasicInformation = 'BasicInformation',
+	CategoriesDogsRestraints = 'CategoriesDogsRestraints',
+	MentalHealthPoliceFingerprints = 'MentalHealthPoliceFingerprints',
+	PhotoCitizenshipGovIssuedId = 'PhotoCitizenshipGovIssuedId',
+}
+
 @Injectable({
 	providedIn: 'root',
 })
@@ -81,8 +67,8 @@ export class LicenceApplicationService {
 
 	licenceModelLoaded$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-	licenceTypeFormGroup: FormGroup = this.formBuilder.group({
-		licenceTypeCode: new FormControl('', [Validators.required]),
+	workerLicenceTypeFormGroup: FormGroup = this.formBuilder.group({
+		workerLicenceTypeCode: new FormControl('', [Validators.required]),
 	});
 
 	applicationTypeFormGroup: FormGroup = this.formBuilder.group({
@@ -526,8 +512,8 @@ export class LicenceApplicationService {
 	);
 
 	licenceModelFormGroup: FormGroup = this.formBuilder.group({
-		licenceId: new FormControl(''),
-		licenceTypeData: this.licenceTypeFormGroup,
+		licenceApplicationId: new FormControl(''),
+		workerLicenceTypeData: this.workerLicenceTypeFormGroup,
 		applicationTypeData: this.applicationTypeFormGroup,
 		soleProprietorData: this.soleProprietorFormGroup,
 		personalInformationData: this.personalInformationFormGroup,
@@ -573,6 +559,7 @@ export class LicenceApplicationService {
 	constructor(
 		private formBuilder: FormBuilder,
 		private utilService: UtilService,
+		private configService: ConfigService,
 		private spinnerService: NgxSpinnerService,
 		private workerLicensingService: WorkerLicensingService
 	) {}
@@ -611,8 +598,8 @@ export class LicenceApplicationService {
 				const myFile = this.utilService.blobToFile(myBlob, 'test1.doc');
 
 				const defaults: any = {
-					licenceTypeData: {
-						licenceTypeCode: WorkerLicenceTypeCode.ArmouredVehiclePermit,
+					workerLicenceTypeData: {
+						workerLicenceTypeCode: WorkerLicenceTypeCode.ArmouredVehiclePermit,
 					},
 					applicationTypeData: {
 						applicationTypeCode: ApplicationTypeCode.New,
@@ -850,8 +837,8 @@ export class LicenceApplicationService {
 				const myFile = this.utilService.blobToFile(myBlob, 'test.doc');
 
 				const defaults: any = {
-					licenceTypeData: {
-						licenceTypeCode: WorkerLicenceTypeCode.BodyArmourPermit,
+					workerLicenceTypeData: {
+						workerLicenceTypeCode: WorkerLicenceTypeCode.BodyArmourPermit,
 					},
 					applicationTypeData: {
 						applicationTypeCode: ApplicationTypeCode.New,
@@ -979,7 +966,7 @@ export class LicenceApplicationService {
 	isStep1Complete(): boolean {
 		// console.debug(
 		// 	'isStep1Complete',
-		// 	this.licenceTypeFormGroup.valid,
+		// 	this.workerLicenceTypeFormGroup.valid,
 		// 	this.applicationTypeFormGroup.valid,
 		// 	this.soleProprietorFormGroup.valid,
 		// 	this.personalInformationFormGroup.valid,
@@ -1007,7 +994,7 @@ export class LicenceApplicationService {
 		// );
 
 		return (
-			this.licenceTypeFormGroup.valid &&
+			this.workerLicenceTypeFormGroup.valid &&
 			this.applicationTypeFormGroup.valid &&
 			this.soleProprietorFormGroup.valid &&
 			this.personalInformationFormGroup.valid &&
@@ -1079,10 +1066,21 @@ export class LicenceApplicationService {
 		);
 	}
 
-	saveLicence(): Observable<StrictHttpResponse<WorkerLicenceCreateResponse>> {
+	getValidCategoryList(categoryList: string[]): SelectOptions<string>[] {
+		const invalidCategories = this.configService.configs?.invalidWorkerLicenceCategoryMatrixConfiguration!;
+		let updatedList = [...WorkerCategoryTypes];
+
+		categoryList.forEach((item) => {
+			updatedList = updatedList.filter((cat) => !invalidCategories[item].includes(cat.code as WorkerCategoryTypeCode));
+		});
+
+		return [...updatedList];
+	}
+
+	saveLicence(saveTypeCode: LicenceSaveTypeCode): Observable<StrictHttpResponse<WorkerLicenceUpsertRequest>> {
 		const formValue = this.licenceModelFormGroup.value;
 		console.debug('saveLicence licenceModelFormGroup', formValue);
-
+		/*
 		const aliasesData: AliasesData = {
 			hasPreviousName: formValue.aliasesData.previousNameFlag == BooleanTypeCode.Yes,
 			aliases: formValue.aliasesData.previousNameFlag == BooleanTypeCode.Yes ? formValue.aliasesData.aliases : [],
@@ -1352,11 +1350,11 @@ export class LicenceApplicationService {
 
 		const expiredLicenceData: ExpiredLicenceData = { ...formValue.expiredLicenceData };
 
-		const licenceId = formValue.licenceId;
+		const licenceApplicationId = formValue.licenceApplicationId;
 
 		const licenceTermData: LicenceTermData = { ...formValue.licenceTermData };
 
-		const licenceTypeData: LicenceTypeData = { ...formValue.licenceTypeData };
+		const workerLicenceTypeData: LicenceTypeData = { ...formValue.workerLicenceTypeData };
 
 		let mentalHealthConditionsData: MentalHealthConditionsData = {};
 		if (formValue.mentalHealthConditionsData.attachments) {
@@ -1437,9 +1435,9 @@ export class LicenceApplicationService {
 			dogsAuthorizationData,
 			expiredLicenceData,
 			govIssuedIdData,
-			licenceId,
+			licenceApplicationId,
 			licenceTermData,
-			licenceTypeData,
+			workerLicenceTypeData,
 			mailingAddressData,
 			mentalHealthConditionsData,
 			personalInformationData,
@@ -1454,5 +1452,60 @@ export class LicenceApplicationService {
 		console.debug('*************** body to save:', body);
 
 		return this.workerLicensingService.apiWorkerLicencesPost$Response({ body });
+		*/
+
+		const workerLicenceTypeData = { ...formValue.workerLicenceTypeData };
+		const applicationTypeData = { ...formValue.applicationTypeData };
+		const soleProprietorData = { ...formValue.soleProprietorData };
+		const contactInformationData = { ...formValue.contactInformationData };
+		const expiredLicenceData = { ...formValue.expiredLicenceData };
+		const characteristicsData = { ...formValue.characteristicsData };
+		const personalInformationData = { ...formValue.personalInformationData };
+		const residentialAddressData = { ...formValue.residentialAddressData };
+		const mailingAddressData = { ...formValue.mailingAddressData };
+
+		const body: WorkerLicenceUpsertRequest = {
+			// licenceApplicationId: formValue.applicationTypeData.licenceApplicationId,
+			applicationTypeCode: applicationTypeData.applicationTypeCode,
+			workerLicenceTypeCode: workerLicenceTypeData.workerLicenceTypeCode,
+			isSoleProprietor: soleProprietorData.isSoleProprietor == BooleanTypeCode.Yes,
+			// hasPreviousName: formValue.aliasesData.previousNameFlag == BooleanTypeCode.Yes,
+			// aliases: formValue.aliasesData.previousNameFlag == BooleanTypeCode.Yes ? formValue.aliasesData.aliases : [],
+			// hasBcDriversLicence: formValue.bcDriversLicenceData.hasBcDriversLicence == BooleanTypeCode.Yes,
+			// bcDriversLicenceNumber:
+			// 	formValue.bcDriversLicenceData.hasBcDriversLicence == BooleanTypeCode.Yes
+			// 		? formValue.bcDriversLicenceData.bcDriversLicenceNumber
+			// 		: null,
+			// contactEmailAddress: contactInformationData.contactEmailAddress,
+			// contactPhoneNumber: contactInformationData.contactPhoneNumber,
+			// dateOfBirth: formValue.applicationTypeData.dateOfBirth,
+			// hasExpiredLicence: formValue.expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes,
+			// expiredLicenceNumber:
+			// 	formValue.expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes
+			// 		? expiredLicenceData.expiredLicenceNumber
+			// 		: null,
+			// expiryDate:
+			// 	formValue.expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes ? expiredLicenceData.expiryDate : null,
+			// eyeColourCode: characteristicsData.eyeColourCode,
+			// hairColourCode: characteristicsData.hairColourCode,
+			// height: characteristicsData.height,
+			// heightUnitCode: characteristicsData.heightUnitCode,
+			// weight: characteristicsData.weight,
+			// weightUnitCode: characteristicsData.weightUnitCode,
+			// genderCode: personalInformationData.genderCode,
+			// givenName: personalInformationData.givenName,
+			// oneLegalName: personalInformationData.oneLegalName,
+			// middleName1: personalInformationData.middleName1,
+			// middleName2: personalInformationData.middleName2,
+			// surname: personalInformationData.surname,
+			// hasCriminalHistory: formValue.applicationTypeData.hasCriminalHistory == BooleanTypeCode.Yes,
+			// licenceTermCode: formValue.applicationTypeData.licenceTermCode,
+			// isMailingTheSameAsResidential: residentialAddressData.isMailingTheSameAsResidential,
+			// mailingAddressData: residentialAddressData.isMailingTheSameAsResidential
+			// 	? residentialAddressData
+			// 	: mailingAddressData,
+			// residentialAddressData,
+		};
+		return this.workerLicensingService.apiAnonymousWorkerLicencesPost$Response({ body });
 	}
 }

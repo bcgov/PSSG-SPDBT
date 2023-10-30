@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-export interface MailingAddressData {
+export interface MailingAddress {
   addressLine1?: null | string;
   addressLine2?: null | string;
   addressSelected?: boolean;

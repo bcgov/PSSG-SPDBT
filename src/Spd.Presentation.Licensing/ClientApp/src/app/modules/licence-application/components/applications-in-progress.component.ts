@@ -11,8 +11,8 @@ import { LicenceApplicationService } from '../licence-application.service';
 
 export interface ApplicationResponse {
 	id?: string;
-	licenceId?: string;
-	licenceTypeCode?: WorkerLicenceTypeCode;
+	licenceApplicationId?: string;
+	workerLicenceTypeCode?: WorkerLicenceTypeCode;
 	applicationTypeCode?: ApplicationTypeCode;
 	expiresOn?: null | string;
 }
@@ -38,7 +38,7 @@ export interface ApplicationResponse {
 							<div class="row">
 								<div class="col-lg-4">
 									<div class="fs-4 fw-normal" style="color: var(--color-primary);">
-										{{ appl.licenceTypeCode | options : 'WorkerLicenceTypes' }}
+										{{ appl.workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}
 									</div>
 								</div>
 								<div class="col-lg-3">
@@ -64,14 +64,14 @@ export interface ApplicationResponse {
 							<div class="row">
 								<div class="col-lg-2">
 									<div class="fs-4 fw-normal" style="color: var(--color-primary);">
-										{{ appl.licenceTypeCode | options : 'WorkerLicenceTypes' }}
+										{{ appl.workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}
 									</div>
 								</div>
 								<div class="col-lg-10">
 									<div class="row">
 										<div class="col-lg-3">
 											<small class="d-block text-muted mt-2 mt-md-0">Licence Id</small>
-											<div class="text-data">{{ appl.licenceId }}</div>
+											<div class="text-data">{{ appl.licenceApplicationId }}</div>
 										</div>
 										<div class="col-lg-3">
 											<small class="d-block text-muted mt-2 mt-md-0">Licence Term</small>
@@ -152,14 +152,14 @@ export interface ApplicationResponse {
 							<div class="row">
 								<div class="col-lg-2">
 									<div class="fs-4 fw-normal" style="color: var(--color-primary);">
-										{{ appl.licenceTypeCode | options : 'WorkerLicenceTypes' }}
+										{{ appl.workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}
 									</div>
 								</div>
 								<div class="col-lg-10">
 									<div class="row">
 										<div class="col-lg-3">
 											<small class="d-block text-muted mt-2 mt-md-0">Licence Id</small>
-											<div class="text-data">{{ appl.licenceId }}</div>
+											<div class="text-data">{{ appl.licenceApplicationId }}</div>
 										</div>
 										<div class="col-lg-3">
 											<small class="d-block text-muted mt-2 mt-md-0">Licence Term</small>
@@ -254,36 +254,36 @@ export class ApplicationsInProgressComponent implements OnInit, OnDestroy {
 		this.incompleteApplications = [
 			{
 				id: '1',
-				licenceId: 'SWL-NWQ3X7Y',
-				licenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
+				licenceApplicationId: 'SWL-NWQ3X7Y',
+				workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
 				applicationTypeCode: ApplicationTypeCode.New,
 				expiresOn: '2023-09-26T19:43:25+00:00',
 			},
 			{
 				id: '11',
-				licenceId: 'SWL-NWQ3X7Z',
-				licenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
+				licenceApplicationId: 'SWL-NWQ3X7Z',
+				workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
 				applicationTypeCode: ApplicationTypeCode.New,
 				expiresOn: '2023-09-26T19:43:25+00:00',
 			},
 			// {
 			// 	id: '2',
-			// 	licenceId: 'CSK-RNS2V9K40521m',
-			// 	licenceTypeCode: SwlTypeCode.ArmouredVehiclePermit,
+			// 	licenceApplicationId: 'CSK-RNS2V9K40521m',
+			// 	workerLicenceTypeCode: SwlTypeCode.ArmouredVehiclePermit,
 			// 	applicationTypeCode: SwlApplicationTypeCode.Renewal,
 			// 	expiresOn: '2023-06-11T16:43:25+00:00',
 			// },
 			// {
 			// 	id: '3',
-			// 	licenceId: 'CLW-RPC2V8K10521b',
-			// 	licenceTypeCode: SwlTypeCode.BodyArmourPermit,
+			// 	licenceApplicationId: 'CLW-RPC2V8K10521b',
+			// 	workerLicenceTypeCode: SwlTypeCode.BodyArmourPermit,
 			// 	applicationTypeCode: SwlApplicationTypeCode.Replacement,
 			// 	expiresOn: '2023-03-07T19:43:25+00:00',
 			// },
 			// {
 			// 	id: '4',
-			// 	licenceId: 'CLW-UPC2V8K10521b',
-			// 	licenceTypeCode: SwlTypeCode.SecurityBusinessLicence,
+			// 	licenceApplicationId: 'CLW-UPC2V8K10521b',
+			// 	workerLicenceTypeCode: SwlTypeCode.SecurityBusinessLicence,
 			// 	applicationTypeCode: SwlApplicationTypeCode.Update,
 			// 	expiresOn: '2023-03-07T19:43:25+00:00',
 			// },
@@ -292,8 +292,8 @@ export class ApplicationsInProgressComponent implements OnInit, OnDestroy {
 		this.activeApplications = [
 			{
 				id: '1',
-				licenceId: 'SWL-NWQ3X7Y',
-				licenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
+				licenceApplicationId: 'SWL-NWQ3X7Y',
+				workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
 				applicationTypeCode: ApplicationTypeCode.New,
 				expiresOn: '2023-09-26T19:43:25+00:00',
 			},
@@ -302,8 +302,8 @@ export class ApplicationsInProgressComponent implements OnInit, OnDestroy {
 		this.expiredApplications = [
 			{
 				id: '1',
-				licenceId: 'SWL-NWQ3AB7Y',
-				licenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
+				licenceApplicationId: 'SWL-NWQ3AB7Y',
+				workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
 				applicationTypeCode: ApplicationTypeCode.New,
 				expiresOn: '2022-09-26T19:43:25+00:00',
 			},
