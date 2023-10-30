@@ -1,4 +1,15 @@
-﻿namespace Spd.Manager.Cases.Licence;
-internal class Mappings
+﻿using AutoMapper;
+using Spd.Resource.Applicants.Application;
+
+namespace Spd.Manager.Cases.Licence;
+internal class Mappings : Profile
 {
+    public Mappings()
+    {
+        CreateMap<WorkerLicenceUpsertRequest, SaveLicenceApplicationCmd>();
+        CreateMap<LicenceApplicationCmdResp, WorkerLicenceUpsertResponse>();
+        CreateMap<LicenceApplicationResp, WorkerLicenceResponse>();
+        CreateMap<ResidentialAddr, ResidentialAddress>();
+        CreateMap<MailingAddr, MailingAddress>();
+    }
 }
