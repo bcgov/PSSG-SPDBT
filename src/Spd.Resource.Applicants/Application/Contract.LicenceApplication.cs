@@ -55,7 +55,6 @@ public record MailingAddr() : Addr;
 public record ResidentialAddr() : Addr;
 public abstract record Addr
 {
-    public bool AddressSelected { get; set; }
     public string? AddressLine1 { get; set; }
     public string? AddressLine2 { get; set; }
     public string? City { get; set; }
